@@ -1,25 +1,25 @@
 ####### kdevelop will overwrite this part!!! (begin)##########
 
-SUBDIRS = kmymoney2 po doc developer-doc 
+SUBDIRS = kmymoney2 po doc developer-doc
 
-EXTRA_DIST = kmymoney2.kdevprj AUTHORS COPYING ChangeLog INSTALL README TODO ChangeLog.original configure.in.in 
+EXTRA_DIST = kmymoney2.kdevprj AUTHORS COPYING ChangeLog INSTALL README TODO ChangeLog.original configure.in.in
 
 ####### kdevelop will overwrite this part!!! (end)############
-# not a GNU package. You can remove this line, if 
+# not a GNU package. You can remove this line, if
 # have all needed files, that a GNU package needs
 AUTOMAKE_OPTIONS = foreign
 
 $(top_srcdir)/configure.in: configure.in.in $(top_srcdir)/subdirs
 	cd $(top_srcdir) && $(MAKE) -f admin/Makefile.common configure.in ;
 
-$(top_srcdir)/subdirs:
-	cd $(top_srcdir) && $(MAKE) -f admin/Makefile.common subdirs
+$(top_srcdir)/subdirs: 
+	cd $(top_srcdir) && $(MAKE) -f admin/Makefile.common subdir
 
 $(top_srcdir)/acinclude.m4: $(top_srcdir)/admin/acinclude.m4.in $(top_srcdir)/admin/libtool.m4.in
 	@cd $(top_srcdir) && cat admin/acinclude.m4.in admin/libtool.m4.in > acinclude.m4
 
 DISTCLEANFILES=kmymoney2.kdevses kmymoney2-*.tar.gz
-MAINTAINERCLEANFILES = subdirs configure.in acinclude.m4 configure.files 
+MAINTAINERCLEANFILES = subdirs configure.in acinclude.m4 configure.files
 
 package-messages:
 	$(MAKE) -f admin/Makefile.common package-messages
@@ -33,9 +33,3 @@ EXTRA_DIST += admin/acinclude.m4.in admin/libtool.m4.in admin/conf.change.pl adm
 dist-hook:
 	cd $(top_distdir) && perl admin/am_edit -padmin
 	cd $(top_distdir) && $(MAKE) -f admin/Makefile.common subdirs
-_SOURCES =  kequitytransactiondlg.h
-_SOURCES =  kequitytransactiondlg.h kequitytransactiondlg.cpp
-_SOURCES =  kequitytransactiondlg.h kequitytransactiondlg.cpp kequitytransaction.h
-_SOURCES =  kequitytransactiondlg.h kequitytransactiondlg.cpp kequitytransaction.h kequitytransaction.cpp
-_SOURCES =  kequitypriceupdatedlg.h
-_SOURCES =  kequitypriceupdatedlg.h kequitypriceupdatedlg.cpp
