@@ -101,6 +101,7 @@ public:
   static const char ActionWithdrawal[];
   static const char ActionATM[];
   static const char ActionAmortization[];
+  static const char ActionInterest[];
   
 private:
   /**
