@@ -56,6 +56,7 @@
 #include <klocale.h>
 //#include <kdebug.h>
 //#include <knotifyclient.h>
+#include <kdeversion.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -63,7 +64,8 @@
 #include "../mymoney/mymoneyscheduled.h"
 
 kMyMoneyScheduledDateTbl::kMyMoneyScheduledDateTbl(QWidget *parent, QDate date_, const char* name, WFlags f )
-  : kMyMoneyDateTbl(parent, date_, name, f)
+  : kMyMoneyDateTbl(parent, date_, name, f),
+  m_filterBills(false), m_filterDeposits(false), m_filterTransfers(false)
 {
 }
 
@@ -85,13 +87,24 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int row, int 
   // -----
   font.setPointSize(fontsize);
   QFont fontLarge(font);
+  QFont fontSmall(font);
   fontLarge.setPointSize(fontsize*2);
+  fontSmall.setPointSize(fontsize-1);
+  
 
   painter->setFont(font);
 
   if (m_type == MONTHLY)
   {
-    pen=lightGray;
+    if (theDate.month() != date.month())
+    {
+      painter->setFont(fontSmall);
+      pen = lightGray;
+    }
+    else
+    {
+      pen = gray;
+    }
 
     if (theDate == date)
     {
@@ -121,10 +134,31 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int row, int 
     {
       scheduled = MyMoneyScheduled::instance();
 
-      schedules = scheduled->getScheduled(
-          m_accountId,
-          theDate,
-          theDate);
+      // Honour the filter.
+      if (!m_filterBills)
+      {
+        schedules += scheduled->getScheduled(
+            m_accountId,
+            theDate,
+            theDate,
+            MyMoneySchedule::TYPE_BILL);
+      }
+      if (!m_filterDeposits)
+      {
+        schedules += scheduled->getScheduled(
+            m_accountId,
+            theDate,
+            theDate,
+            MyMoneySchedule::TYPE_DEPOSIT);
+      }
+      if (!m_filterTransfers)
+      {
+        schedules += scheduled->getScheduled(
+            m_accountId,
+            theDate,
+            theDate,
+            MyMoneySchedule::TYPE_TRANSFER);
+      }
     }
     catch ( MyMoneyException*)
     {
@@ -180,39 +214,48 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int row, int 
     const MyMoneySchedule::occurenceE occurence=MyMoneySchedule::OCCUR_ANY);
 */
       text = "";
-      billSchedules = scheduled->getScheduled(
-          m_accountId,
-          theDate,
-          theDate,
-          MyMoneySchedule::TYPE_BILL);
-      if (billSchedules.count() >= 1)
+
+      if (!m_filterBills)
       {
-        text += QString::number(billSchedules.count());
-        text += " Bills.  ";
-      }
-      
-      depositSchedules = scheduled->getScheduled(
-          m_accountId,
-          theDate,
-          theDate,
-          MyMoneySchedule::TYPE_DEPOSIT);
-      if (depositSchedules.count() >= 1)
-      {
-        text += QString::number(depositSchedules.count());
-        text += " Deposits.  ";
+        billSchedules = scheduled->getScheduled(
+            m_accountId,
+            theDate,
+            theDate,
+            MyMoneySchedule::TYPE_BILL);
+        if (billSchedules.count() >= 1)
+        {
+          text += QString::number(billSchedules.count());
+          text += " Bills.  ";
+        }
       }
 
-      transferSchedules = scheduled->getScheduled(
-          m_accountId,
-          theDate,
-          theDate,
-          MyMoneySchedule::TYPE_TRANSFER);
-      if (transferSchedules.count() >= 1)
+      if (!m_filterDeposits)
       {
-        text += QString::number(transferSchedules.count());
-        text += " Transfers.";
+        depositSchedules = scheduled->getScheduled(
+            m_accountId,
+            theDate,
+            theDate,
+            MyMoneySchedule::TYPE_DEPOSIT);
+        if (depositSchedules.count() >= 1)
+        {
+          text += QString::number(depositSchedules.count());
+          text += " Deposits.  ";
+        }
       }
 
+      if (!m_filterTransfers)
+      {
+        transferSchedules = scheduled->getScheduled(
+            m_accountId,
+            theDate,
+            theDate,
+            MyMoneySchedule::TYPE_TRANSFER);
+        if (transferSchedules.count() >= 1)
+        {
+          text += QString::number(transferSchedules.count());
+          text += " Transfers.";
+        }
+      }
     }
     catch (MyMoneyException*)
     {
@@ -240,12 +283,16 @@ void kMyMoneyScheduledDateTbl::addDayPostfix(QString& text)
   switch (d)
   {
     case 1:
+    case 21:
+    case 31:
       text += i18n("st");
       break;
     case 2:
+    case 22:
       text += i18n("nd");
       break;
     case 3:
+    case 23:
       text += i18n("rd");
       break;
     default:
@@ -256,5 +303,141 @@ void kMyMoneyScheduledDateTbl::addDayPostfix(QString& text)
 void kMyMoneyScheduledDateTbl::refresh(const QCString& accountId)
 {
   m_accountId = accountId;
+  repaintContents(false);
+}
+
+void kMyMoneyScheduledDateTbl::contentsMouseMoveEvent(QMouseEvent* e)
+{
+  int row, col, pos;
+  QPoint mouseCoord;
+
+  mouseCoord = e->pos();
+  row = rowAt(mouseCoord.y());
+  col = columnAt(mouseCoord.x());
+  if (row<1 || col<0)
+  {
+    return;
+  }
+
+#if KDE_VERSION < 310
+  int firstWeekDay = KGlobal::locale()->weekStartsMonday() ? 1 : 0;
+#else
+  int firstWeekDay = KGlobal::locale()->weekStartDay();
+#endif
+
+  QDate drawDate(date);
+  QString text;
+
+  if (m_type == MONTHLY)
+  {
+    pos=7*(row-1)+col;
+    if ( firstWeekDay < 4 )
+      pos += firstWeekDay;
+    else
+      pos += firstWeekDay - 7;
+
+    if (pos<firstday || (firstday+numdays<=pos))
+    { // we are either
+      // ° painting a day of the previous month or
+      // ° painting a day of the following month
+
+      if (pos<firstday)
+      { // previous month
+        drawDate = drawDate.addMonths(-1);
+        text.setNum(numDaysPrevMonth+pos-firstday+1);
+        drawDate.setYMD(drawDate.year(), drawDate.month(), text.toInt());
+      } else { // following month
+        drawDate = drawDate.addMonths(1);
+        text.setNum(pos-firstday-numdays+1);
+        drawDate.setYMD(drawDate.year(), drawDate.month(), text.toInt());
+      }
+    } else { // paint a day of the current month
+      text.setNum(pos-firstday+1);
+      drawDate.setYMD(drawDate.year(), drawDate.month(), text.toInt());
+    }
+  }
+  else if (m_type == WEEKLY)
+  {
+    // TODO: Handle other start weekdays than Monday
+    text = QDate::shortDayName(row);
+    text += " ";
+
+    int dayOfWeek = date.dayOfWeek();
+    int diff;
+
+    if (row < dayOfWeek)
+    {
+      diff = -(dayOfWeek - row);
+    }
+    else
+    {
+      diff = row - dayOfWeek;
+    }
+
+    drawDate = date.addDays(diff);
+  }
+  else if (m_type == QUARTERLY)
+  {
+  }
+
+  m_drawDateOrig = drawDate;
+  MyMoneyScheduled *scheduled;
+  QStringList schedules;
+
+  try
+  {
+    scheduled = MyMoneyScheduled::instance();
+
+    if (!m_filterBills)
+    {
+      schedules += scheduled->getScheduled(
+          m_accountId,
+          drawDate,
+          drawDate,
+          MyMoneySchedule::TYPE_BILL);
+    }
+
+    if (!m_filterDeposits)
+    {
+      schedules += scheduled->getScheduled(
+          m_accountId,
+          drawDate,
+          drawDate,
+          MyMoneySchedule::TYPE_DEPOSIT);
+    }
+
+    if (!m_filterTransfers)
+    {
+      schedules += scheduled->getScheduled(
+          m_accountId,
+          drawDate,
+          drawDate,
+          MyMoneySchedule::TYPE_TRANSFER);
+    }
+  }
+  catch ( MyMoneyException*)
+  {
+    // SAfe to ignore here, cause no schedules might exist
+    // for the selected account
+  }
+
+  emit hoverSchedules(m_accountId, schedules, drawDate);
+}
+
+void kMyMoneyScheduledDateTbl::filterBills(bool enable)
+{
+  m_filterBills = enable;
+  repaintContents(false);
+}
+
+void kMyMoneyScheduledDateTbl::filterDeposits(bool enable)
+{
+  m_filterDeposits = enable;
+  repaintContents(false);
+}
+
+void kMyMoneyScheduledDateTbl::filterTransfers(bool enable)
+{
+  m_filterTransfers = enable;
   repaintContents(false);
 }

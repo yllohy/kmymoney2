@@ -59,6 +59,7 @@
 #include <klocale.h>
 #include <kdebug.h>
 #include <knotifyclient.h>
+#include <kdeversion.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -81,6 +82,10 @@ kMyMoneyDateTbl::kMyMoneyDateTbl(QWidget *parent, QDate date_, const char* name,
   viewport()->setEraseColor(KGlobalSettings::baseColor());
   
   setDate(date_); // this initializes firstday, numdays, numDaysPrevMonth
+
+  // So we can emit hoverDate
+  QApplication::setGlobalMouseTracking(true);
+  setMouseTracking(true);
 }
 
 void
@@ -351,9 +356,9 @@ kMyMoneyDateTbl::wheelEvent ( QWheelEvent * e )
 }
 
 void
-kMyMoneyDateTbl::contentsMousePressEvent(QMouseEvent *e)
+kMyMoneyDateTbl::contentsMouseReleaseEvent(QMouseEvent *e)
 {
-  if (e->type()!=QEvent::MouseButtonPress)
+  if (e->type()!=QEvent::MouseButtonRelease)
   { // the KDatePicker only reacts on mouse press events:
     return;
   }
@@ -542,4 +547,87 @@ void kMyMoneyDateTbl::setType(calendarType type)
   setVScrollBarMode(AlwaysOff);
 
   viewportResizeEvent(NULL);
+}
+
+void kMyMoneyDateTbl::contentsMouseMoveEvent(QMouseEvent* e)
+{
+  int row, col, pos;
+  QPoint mouseCoord;
+
+  mouseCoord = e->pos();
+  row = rowAt(mouseCoord.y());
+  col = columnAt(mouseCoord.x());
+  if (row<1 || col<0)
+  {
+    return;
+  }
+
+#if KDE_VERSION < 310
+  int firstweekDay = KGlobal::locale()->weekStartsMonday() ? 1 : 0;
+#else
+  int firstWeekDay = KGlobal::locale()->weekStartDay();
+#endif
+
+  QDate drawDate(date);
+  QString text;
+
+  if (m_type == MONTHLY)
+  {
+    pos=7*(row-1)+col;
+    if ( firstWeekDay < 4 )
+      pos += firstWeekDay;
+    else
+      pos += firstWeekDay - 7;
+
+    if (pos<firstday || (firstday+numdays<=pos))
+    { // we are either
+      // ° painting a day of the previous month or
+      // ° painting a day of the following month
+
+      if (pos<firstday)
+      { // previous month
+        drawDate = drawDate.addMonths(-1);
+        text.setNum(numDaysPrevMonth+pos-firstday+1);
+        drawDate.setYMD(drawDate.year(), drawDate.month(), text.toInt());
+      } else { // following month
+        drawDate = drawDate.addMonths(1);
+        text.setNum(pos-firstday-numdays+1);
+        drawDate.setYMD(drawDate.year(), drawDate.month(), text.toInt());
+      }
+    } else { // paint a day of the current month
+      text.setNum(pos-firstday+1);
+      drawDate.setYMD(drawDate.year(), drawDate.month(), text.toInt());
+    }
+  }
+  else if (m_type == WEEKLY)
+  {
+    // TODO: Handle other start weekdays than Monday
+    text = QDate::shortDayName(row);
+    text += " ";
+
+    int dayOfWeek = date.dayOfWeek();
+    int diff;
+
+    if (row < dayOfWeek)
+    {
+      diff = -(dayOfWeek - row);
+    }
+    else
+    {
+      diff = row - dayOfWeek;
+    }
+
+    drawDate = date.addDays(diff);
+  }
+  else if (m_type == QUARTERLY)
+  {
+  }
+
+  if (m_drawDateOrig != drawDate)
+  {
+    m_drawDateOrig = drawDate;
+    emit hoverDate(drawDate);
+  }
+  
+  QGridView::contentsMouseMoveEvent(e);
 }

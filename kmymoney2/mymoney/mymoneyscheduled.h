@@ -370,6 +370,14 @@ public:
   **/
   void setName(const QString& nm) { m_name = nm; }    
 
+  /**
+    * Helper method to convert the type enum.
+    *
+    * @param none.
+    * @return The textual description of the type.
+  **/
+  QString typeToString(void) const;
+
 private:
   /// Its occurence
   occurenceE m_occurence;
@@ -427,7 +435,7 @@ private:
   * @short A class to represent a set of schedules.
   * @see MyMoneySchedule
   */
-class MyMoneyScheduled {
+  class MyMoneyScheduled {
 public:
 
   /**

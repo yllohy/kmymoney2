@@ -24,6 +24,7 @@
 // QT Includes
 #include <qpushbutton.h>
 #include <qkeysequence.h>
+#include <qcursor.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -56,6 +57,9 @@ kMyMoneyScheduledCalendar::kMyMoneyScheduledCalendar(QWidget *parent, const char
   setUserButton1(true, pb1);
   
   init( QDate::currentDate() );
+
+  connect(m_scheduledDateTable, SIGNAL(hoverSchedules(QCString, QStringList, QDate)),
+    this, SLOT(slotHoverSchedules(QCString, QStringList, QDate)));
 }
 
 kMyMoneyScheduledCalendar::~kMyMoneyScheduledCalendar()
@@ -65,14 +69,31 @@ kMyMoneyScheduledCalendar::~kMyMoneyScheduledCalendar()
 void kMyMoneyScheduledCalendar::slotSetViewBills()
 {
   kpopupmenu->setItemChecked(0, ((kpopupmenu->isItemChecked(0)) ? false : true));
+  m_scheduledDateTable->filterBills(!kpopupmenu->isItemChecked(0));
 }
 
 void kMyMoneyScheduledCalendar::slotSetViewDeposits()
 {
   kpopupmenu->setItemChecked(1, ((kpopupmenu->isItemChecked(1)) ? false : true));
+  m_scheduledDateTable->filterDeposits(!kpopupmenu->isItemChecked(1));
 }
 
 void kMyMoneyScheduledCalendar::slotSetViewTransfers()
 {
   kpopupmenu->setItemChecked(2, ((kpopupmenu->isItemChecked(2)) ? false : true));
+  m_scheduledDateTable->filterTransfers(!kpopupmenu->isItemChecked(2));
+}
+
+void kMyMoneyScheduledCalendar::slotHoverSchedules(QCString accountId, QStringList list, QDate date)
+{
+  if (list.count() >= 1)
+  {
+    briefWidget.setSchedules(accountId, list);
+    briefWidget.move(QCursor::pos());
+    briefWidget.show();
+  }
+  else
+  {
+    briefWidget.hide();
+  }
 }

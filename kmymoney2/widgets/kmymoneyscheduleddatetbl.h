@@ -46,13 +46,21 @@ public:
 
   ~kMyMoneyScheduledDateTbl();
   void refresh(const QCString& accountId);
+  void filterBills(bool enable);
+  void filterDeposits(bool enable);
+  void filterTransfers(bool enable);
+
+signals:
+  void hoverSchedules(QCString, QStringList, QDate);
 
 protected:
   void drawCellContents(QPainter *painter, int row, int col, const QDate& theDate);
   void addDayPostfix(QString& text);
+  void contentsMouseMoveEvent(QMouseEvent* e);
 
 private:
   QCString m_accountId;
+  bool m_filterBills, m_filterDeposits, m_filterTransfers;
 };
 
 #endif

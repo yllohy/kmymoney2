@@ -1,3 +1,13 @@
+2003-07-07 Michael Edwardes <mte@users.sourceforge.net>
+  * Added a hoverDate signal to the table.
+  * Set mouse tracking in the table so we get all mouse move events.  (Doesnt Work?)
+  * Added UI file for the schedule brief description widget.
+  * Implemented the select schedules combo box option to filter the calendar
+    on schedule types.
+  * Use contentsMouseReleaseEvent rather than contentsMousePressEvent in
+    the base class kMyMoneyDateTbl.
+  * Fix implementation of kMyMoneyScheduledDateTbl::addDayPostfix.
+
 2003-07-05 Michael Edwardes <mte@users.sourceforge.net>
   * Fixed bug in KMyMoneyCalendar to create the private objects *before* the
     initialisation.

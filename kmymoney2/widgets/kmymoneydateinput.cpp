@@ -34,10 +34,10 @@
 
 // ----------------------------------------------------------------------------
 // KDE Includes
-
 #include <kglobal.h>
 #include <klocale.h>
 #include <kstandarddirs.h>
+#include <kdeversion.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes

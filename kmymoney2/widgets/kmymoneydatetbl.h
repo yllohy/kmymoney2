@@ -106,6 +106,11 @@ signals:
      */
     void tableClicked();
 
+    /**
+      *
+    **/
+    virtual void hoverDate(QDate);
+
 protected:
     /**
      * Paint a cell.
@@ -118,13 +123,15 @@ protected:
     /**
      * React on mouse clicks that select a date.
      */
-    virtual void contentsMousePressEvent(QMouseEvent *);
+    virtual void contentsMouseReleaseEvent(QMouseEvent *);
     virtual void wheelEvent( QWheelEvent * e );
     virtual void keyPressEvent( QKeyEvent *e );
     virtual void focusInEvent( QFocusEvent *e );
     virtual void focusOutEvent( QFocusEvent *e );
 
     virtual void drawCellContents(QPainter *painter, int row, int col, const QDate& theDate) = 0;
+
+    virtual void contentsMouseMoveEvent(QMouseEvent* e);
 
     /**
      * The font size of the displayed text.
@@ -162,6 +169,9 @@ protected:
     calendarType m_type;
     int m_colCount;
     int m_rowCount;
+
+    ///
+    QDate m_drawDateOrig;
 };
 
 #endif

@@ -33,6 +33,7 @@
 // Project Includes
 #include "kmymoneycalendar.h"
 #include "kmymoneyscheduleddatetbl.h"
+#include "kmymoneybriefschedule.h"
 
 class KPopupMenu;
 class kMyMoneyDateTbl;
@@ -72,10 +73,12 @@ protected slots:
   void slotSetViewBills();
   void slotSetViewDeposits();
   void slotSetViewTransfers();
+  void slotHoverSchedules(QCString, QStringList, QDate date);
 
 private:
   KPopupMenu* kpopupmenu;
   kMyMoneyScheduledDateTbl *m_scheduledDateTable;
+  KMyMoneyBriefSchedule briefWidget;
 };
 
 #endif

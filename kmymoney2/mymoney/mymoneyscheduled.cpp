@@ -787,3 +787,18 @@ unsigned int MyMoneyScheduled::count(const QCString& accountId)
 
   return 0;
 }
+
+QString MyMoneySchedule::typeToString(void) const
+{
+  switch (m_type)
+  {
+    case TYPE_BILL:
+      return i18n("Bill");
+    case TYPE_DEPOSIT:
+      return i18n("Deposit");
+    case TYPE_TRANSFER:
+      return i18n("Transfer");
+    case TYPE_ANY:
+      return i18n("Unknown");
+  }
+}

@@ -68,6 +68,7 @@
 #include <knotifyclient.h>
 #include <kdatetbl.h> // for maximum re-use
 #include <kpopupmenu.h>
+#include <kdeversion.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -246,6 +247,8 @@ kMyMoneyCalendar::resizeEvent(QResizeEvent*)
     // ----- adjust the table:
     table->setGeometry(0, buttonHeight, width(),
     height()-buttonHeight-sizes[0].height());
+
+    table->setFocus();
 }
 
 void
