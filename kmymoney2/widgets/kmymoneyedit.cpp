@@ -146,13 +146,21 @@ void kMyMoneyEdit::resetText(void)
 
 void kMyMoneyEdit::theTextChanged(const QString & theText)
 {
+  KLocale * l = KGlobal::locale();
+  QString d = l->monetaryDecimalSymbol();
   QString l_text = theText;
   int i = 0;
   if(isEnabled()) {
     QValidator::State state =  this->validator()->validate( l_text, i);
-    if (state==QValidator::Invalid || state==QValidator::Intermediate && (!l_text.isEmpty() && (l_text!="-"))) {
+    if(state == QValidator::Intermediate) {
+      if(l_text.length() == 1) {
+        if(l_text != d && l_text != "-")
+          state = QValidator::Invalid;
+      }
+    }
+    if (state==QValidator::Invalid)
       setText(previousText);
-    } else
+    else
       previousText = l_text;
   }
 }
