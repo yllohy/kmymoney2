@@ -1,15 +1,23 @@
+2005-03-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Revised install/uninstall instructions in icons subdirectories
+  * Improved reparenting of accounts
+  * Don't allow removal of accounts that have transactions assigned
+  * Remove reference to kapptest.  KDExecutor is much better ;-)
+  * Removed unused icon file kfm_home.png
+  * Allow removal of unused stock accounts
+
 2005-03-13 Ace Jones <acejones@users.sourceforge.net>
   * Online quotes will now only fetch quotes for the first security using a
     given trading symbol.  It's assumed that multiple securities using the
     same symbol is an error condition.
-    
+
 2005-03-12 Ace Jones <acejones@users.sourceforge.net>
   * Removed most OFX dependencies in the main program--all that's left is the
     OFX Direct Connect and the OFX importer test cases
   * Reworked Web Connect to work on ANY plugin-handled file, not just
     OFX.
   * Removed "stripped.txt" from being output during online quote retrieval
-    
+
 2005-03-12 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added option to control whether selecting a different transaction/split
     using the mouse should be treated as Enter (saving changes) or Cancel
