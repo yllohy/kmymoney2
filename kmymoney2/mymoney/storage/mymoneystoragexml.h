@@ -71,14 +71,11 @@ public:
 
   void readStream(QDataStream& s, IMyMoneySerialize* storage);
 
+  void writeStream(QDataStream& s, IMyMoneySerialize* storage);
+
 private:
   xmlpp::XMLParser<MyMoneyStorageXMLCallback> *m_parser;
-  void addCategory(IMyMoneySerialize* storage,
-                   QMap<QString, QCString>& categories,
-                   const QString& majorName,
-                   const QString& minorName,
-                   const MyMoneyAccount::accountTypeE type);
-  
+
   /**
     * Instantiates the XML parser if it hasn't been created already.
     */
@@ -95,15 +92,6 @@ private:
     * to be used when writing a file.
     */
   static unsigned int fileVersionWrite;
-
-  #define VERSION_0_3_3 0x00000006    // MAGIC1 for version 0.33 files
-
-  #define VERSION_0_4_0 0x00000007    // MAGIC1 for version 0.4 files
-
-  #define MAGIC_0_50  0x4B4D794D      // "KMyM" MAGIC1 for version 0.5 files
-  #define MAGIC_0_51  0x6F6E6579      // "oney" second part of MAGIC
-
-  #define VERSION_0_5_0 0x00000010    // Version 0.5 file version info
 
   /**
     * This member variable signals, if the MyMoneyFile object is

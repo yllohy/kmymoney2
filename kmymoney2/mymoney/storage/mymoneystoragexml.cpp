@@ -86,11 +86,9 @@ void MyMoneyStorageXML::readStream(QDataStream& s, IMyMoneySerialize* storage)
   }
 }
 
-void MyMoneyStorageXML::addCategory(IMyMoneySerialize* storage,QMap<QString, QCString>& categories,
-                                    const QString& majorName, const QString& minorName,
-                                    const MyMoneyAccount::accountTypeE type)
+void MyMoneyStorageXML::writeStream(QDataStream& s, IMyMoneySerialize* storage)
 {
-
+  qDebug("XMLWRITER: not implemented yet!");
 }
 
 bool MyMoneyStorageXML::CreateXMLParser()
