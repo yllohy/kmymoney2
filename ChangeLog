@@ -1,3 +1,11 @@
+2003-02-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added missing account types to utility functions
+  * Fixed online documentation in MyMoneyFile
+  * Added dialog to select an account
+  * Moved the MyMoneyQifProfileEditor to the dialog subdir
+  * Removed some circular references among classes
+  * More work on QIF import
+
 2003-02-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added some methods to KNewAccountWizard to be capable to preset values
   * Added opening date to account wizard
