@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>KNewFileDlgDecl</class>
 <widget class="QDialog">
     <property name="name">
@@ -315,5 +315,17 @@ your KMyMoney file.</string>
         </widget>
     </vbox>
 </widget>
+<tabstops>
+    <tabstop>userNameEdit</tabstop>
+    <tabstop>streetEdit</tabstop>
+    <tabstop>townEdit</tabstop>
+    <tabstop>countyEdit</tabstop>
+    <tabstop>postcodeEdit</tabstop>
+    <tabstop>telephoneEdit</tabstop>
+    <tabstop>emailEdit</tabstop>
+    <tabstop>kabcBtn</tabstop>
+    <tabstop>okBtn</tabstop>
+    <tabstop>cancelBtn</tabstop>
+</tabstops>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
