@@ -34,9 +34,9 @@ private:
   MyMoneyInstitution m_institution;
 
 public:
-  KNewBankDlg(MyMoneyInstitution& institution, QWidget *parent, const char *name);
+  KNewBankDlg(MyMoneyInstitution& institution, bool isEditing, QWidget *parent, const char *name);
 	~KNewBankDlg();
-  MyMoneyInstitution KNewBankDlg::institution(void);
+  MyMoneyInstitution institution(void);
 
 protected slots:
   void okClicked();

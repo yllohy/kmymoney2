@@ -40,8 +40,9 @@
 #include <qcheckbox.h>
 #include "../mymoney/mymoneyexception.h"
 #include "../mymoney/storage/mymoneyseqaccessmgr.h"
+#include "../dialogs/knewbankdlg.h"
 
-KNewAccountDlg::KNewAccountDlg(MyMoneyAccount& account, MyMoneyFile* file, QWidget *parent,
+KNewAccountDlg::KNewAccountDlg(MyMoneyAccount& account, MyMoneyFile* file, bool isEditing, QWidget *parent,
     const char *name, const char *title)
   : KNewAccountDlgDecl(parent,name,true), m_account(account)
 {
@@ -65,23 +66,74 @@ KNewAccountDlg::KNewAccountDlg(MyMoneyAccount& account, MyMoneyFile* file, QWidg
   QFont defaultFont = QFont("helvetica", 12);
   m_qlistviewParentAccounts->header()->setFont(config->readFontEntry("listHeaderFont", &defaultFont));
 
-  try
+  if (isEditing)
   {
-    institutionNameLabel->setText(m_file->institution(account.institutionId()).name());
     accountNameEdit->setText(account.name());
     accountNoEdit->setText(account.number());
     descriptionEdit->setText(account.description());
     startDateEdit->setDate(account.openingDate());
     startBalanceEdit->setText(account.openingBalance().formatMoney());
+
+    // Hardcoded but acceptable
+    switch (account.accountType())
+    {
+      case MyMoneyAccount::Checkings:
+        typeCombo->setCurrentItem(0);
+        break;
+      case MyMoneyAccount::Savings:
+        typeCombo->setCurrentItem(1);
+        break;
+      case MyMoneyAccount::Cash:
+        typeCombo->setCurrentItem(2);
+        break;
+      case MyMoneyAccount::CreditCard:
+        typeCombo->setCurrentItem(3);
+        break;
+      case MyMoneyAccount::Loan:
+        typeCombo->setCurrentItem(4);
+        break;
+      case MyMoneyAccount::CertificateDep:
+        typeCombo->setCurrentItem(5);
+        break;
+      case MyMoneyAccount::Investment:
+        typeCombo->setCurrentItem(6);
+        break;
+      case MyMoneyAccount::MoneyMarket:
+        typeCombo->setCurrentItem(7);
+        break;
+      case MyMoneyAccount::Currency:
+        typeCombo->setCurrentItem(8);
+        break;
+      default:
+        typeCombo->setCurrentItem(1);
+    }
+  }
+
+  // Load the institutions
+  // then the accounts
+  QString institutionName;
+  QString accountName;
+
+  try
+  {
+    if (isEditing)
+      institutionName = m_file->institution(account.institutionId()).name();
+    else
+      institutionName = "";
+
+    if (isEditing)
+      accountName = m_file->institution(account.institutionId()).name();
+    else
+      accountName = "";
   }
   catch (MyMoneyException *e)
   {
-    qDebug("unhandled excpetion in KNewAccountDlg: %s", e->what().latin1());
+    qDebug("excpetion in init for accoutn dialog: %s", e->what().latin1());
     delete e;
   }
 
-  initParentWidget();
-  //parentAccountWidget->setParentAccount(account.parentAccountId());
+  loadInstitutions(institutionName);
+  initParentWidget(accountName);
 
   accountNameEdit->setFocus();
 	
@@ -93,6 +145,7 @@ KNewAccountDlg::KNewAccountDlg(MyMoneyAccount& account, MyMoneyFile* file, QWidg
   connect(m_qcheckboxSubAccount, SIGNAL(toggled(bool)), this, SLOT(slotSubAccountsToggled(bool)));
   connect(m_qlistviewParentAccounts, SIGNAL(selectionChanged(QListViewItem*)),
     this, SLOT(slotSelectionChanged(QListViewItem*)));
+  connect(m_qbuttonNew, SIGNAL(clicked()), this, SLOT(slotNewClicked()));
 }
 
 KNewAccountDlg::~KNewAccountDlg()
@@ -111,6 +164,33 @@ void KNewAccountDlg::okClicked()
     KMessageBox::error(this, i18n("You have not specified a name.\nPlease fill in this field"));
     accountNameEdit->setFocus();
     return;
+  }
+
+  QString institutionNameText = m_qcomboboxInstitutions->currentText();
+  if (institutionNameText == i18n("<No Institution>"))
+  {
+      //KMessageBox::error(this, i18n("You have not specified an institution.\nPlease fill in this field"));
+      KMessageBox::information(this, i18n("Do we want to force the user to use an institution?"));
+      //m_qcomboboxInstitution->setFocus();
+      //return;
+  }
+  else
+  {
+    try
+    {
+      QValueList<MyMoneyInstitution> list = m_file->institutionList();
+      QValueList<MyMoneyInstitution>::ConstIterator institutionIterator;
+      for (institutionIterator = list.begin(); institutionIterator != list.end(); ++institutionIterator)
+      {
+        if ((*institutionIterator).name() == institutionNameText)
+          m_account.setInstitutionId((*institutionIterator).id());
+      }
+    }
+    catch (MyMoneyException *e)
+    {
+      qDebug("Exception in account institution set: %s", e->what().latin1());
+      delete e;
+    }
   }
 
   m_account.setName(accountNameText);
@@ -193,12 +273,14 @@ const MyMoneyAccount KNewAccountDlg::parentAccount(void)
   }
 }
 
-void KNewAccountDlg::initParentWidget()
+void KNewAccountDlg::initParentWidget(const QString& name)
 {
   MyMoneyAccount liabilityAccount = m_file->liability();
   MyMoneyAccount assetAccount = m_file->asset();
   MyMoneyAccount expenseAccount = m_file->expense();
   MyMoneyAccount incomeAccount = m_file->income();
+
+  m_bFoundItem = false;
 
   // Do all 4 account roots
   try
@@ -214,10 +296,16 @@ void KNewAccountDlg::initParentWidget()
       KAccountListItem *accountItem = new KAccountListItem(assetTopLevelAccount,
           m_file->account(*it).name(), m_file->account(*it).id(), false);
 
+      if (name == m_file->account(*it).name())
+      {
+        m_bFoundItem = true;
+        m_foundItem = accountItem;
+      }
+
       QCStringList subAccounts = m_file->account(*it).accountList();
       if (subAccounts.count() >= 1)
       {
-        showSubAccounts(subAccounts, accountItem, m_file);
+        showSubAccounts(subAccounts, accountItem, m_file, name);
       }
     }
 
@@ -232,10 +320,16 @@ void KNewAccountDlg::initParentWidget()
       KAccountListItem *accountItem = new KAccountListItem(liabilityTopLevelAccount,
           m_file->account(*it).name(), m_file->account(*it).id(), false);
 
+      if (name == m_file->account(*it).name())
+      {
+        m_bFoundItem = true;
+        m_foundItem = accountItem;
+      }
+
       QCStringList subAccounts = m_file->account(*it).accountList();
       if (subAccounts.count() >= 1)
       {
-        showSubAccounts(subAccounts, accountItem, m_file);
+        showSubAccounts(subAccounts, accountItem, m_file, name);
       }
     }
 
@@ -250,10 +344,16 @@ void KNewAccountDlg::initParentWidget()
       KAccountListItem *accountItem = new KAccountListItem(incomeTopLevelAccount,
           m_file->account(*it).name(), m_file->account(*it).id(), false);
 
+      if (name == m_file->account(*it).name())
+      {
+        m_bFoundItem = true;
+        m_foundItem = accountItem;
+      }
+
       QCStringList subAccounts = m_file->account(*it).accountList();
       if (subAccounts.count() >= 1)
       {
-        showSubAccounts(subAccounts, accountItem, m_file);
+        showSubAccounts(subAccounts, accountItem, m_file, name);
       }
     }
 
@@ -268,10 +368,16 @@ void KNewAccountDlg::initParentWidget()
       KAccountListItem *accountItem = new KAccountListItem(expenseTopLevelAccount,
           m_file->account(*it).name(), m_file->account(*it).id(), false);
 
+      if (name == m_file->account(*it).name())
+      {
+        m_bFoundItem = true;
+        m_foundItem = accountItem;
+      }
+
       QCStringList subAccounts = m_file->account(*it).accountList();
       if (subAccounts.count() >= 1)
       {
-        showSubAccounts(subAccounts, accountItem, m_file);
+        showSubAccounts(subAccounts, accountItem, m_file, name);
       }
     }
   }
@@ -282,19 +388,31 @@ void KNewAccountDlg::initParentWidget()
   }
 
 	m_qlistviewParentAccounts->setColumnWidth(0, m_qlistviewParentAccounts->width());
+
+  if (m_bFoundItem)
+  {
+    m_qlistviewParentAccounts->setSelected(m_foundItem, true);
+  }
 }
 
-void KNewAccountDlg::showSubAccounts(QCStringList accounts, KAccountListItem *parentItem, MyMoneyFile *file)
+void KNewAccountDlg::showSubAccounts(QCStringList accounts, KAccountListItem *parentItem, MyMoneyFile *file,
+  const QString& name)
 {
   for ( QCStringList::ConstIterator it = accounts.begin(); it != accounts.end(); ++it )
   {
     KAccountListItem *accountItem  = new KAccountListItem(parentItem,
           m_file->account(*it).name(), file->account(*it).id(), false);
 
+      if (name == m_file->account(*it).name())
+      {
+        m_bFoundItem = true;
+        m_foundItem = accountItem;
+      }
+
     QCStringList subAccounts = m_file->account(*it).accountList();
     if (subAccounts.count() >= 1)
     {
-      showSubAccounts(subAccounts, accountItem, m_file);
+      showSubAccounts(subAccounts, accountItem, m_file, name);
     }
   }
 }
@@ -339,5 +457,56 @@ void KNewAccountDlg::slotSubAccountsToggled(bool on)
   {
     m_qcheckboxSubAccount->setText(i18n("Is a sub account"));
     m_bSelectedParentAccount = false;
+  }
+}
+
+void KNewAccountDlg::loadInstitutions(const QString& name)
+{
+  int id=-1, counter=0;
+  m_qcomboboxInstitutions->clear();
+  // Are we forcing the user to use institutions?
+  m_qcomboboxInstitutions->insertItem(i18n("<No Institution>"));
+  try
+  {
+    QValueList<MyMoneyInstitution> list = m_file->institutionList();
+    QValueList<MyMoneyInstitution>::ConstIterator institutionIterator;
+    for (institutionIterator = list.begin(), counter=1; institutionIterator != list.end(); ++institutionIterator, counter++)
+    {
+      if ((*institutionIterator).name() == name)
+        id = counter;
+      m_qcomboboxInstitutions->insertItem((*institutionIterator).name());
+    }
+
+    if (id != -1)
+    {
+      m_qcomboboxInstitutions->setCurrentItem(id);
+    }
+  }
+  catch (MyMoneyException *e)
+  {
+    qDebug("Exception in institution load: %s", e->what().latin1());
+    delete e;
+  }
+}
+
+void KNewAccountDlg::slotNewClicked()
+{
+  MyMoneyInstitution institution;
+
+  KNewBankDlg dlg(institution, false, this, "newbankdlg");
+  if (dlg.exec())
+  {
+    try
+    {
+      institution = dlg.institution();
+      m_file->addInstitution(institution);
+      loadInstitutions(institution.name());
+    }
+    catch (MyMoneyException *e)
+    {
+      delete e;
+      KMessageBox::information(this, i18n("Cannot add institution"));
+      return;
+    }
   }
 }

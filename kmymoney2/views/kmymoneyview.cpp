@@ -238,7 +238,7 @@ void KMyMoneyView::slotAccountEdit()
   {
     MyMoneyAccount account = m_file->account(accountsView->currentAccount(accountSuccess));
 
-    KNewAccountDlg dlg(account, m_file, this, "hi", i18n("Edit an Account"));
+    KNewAccountDlg dlg(account, m_file, true, this, "hi", i18n("Edit an Account"));
 
     if (dlg.exec())
     {
@@ -372,7 +372,7 @@ void KMyMoneyView::slotBankNew(void)
 
   MyMoneyInstitution institution;
   
-  KNewBankDlg dlg(institution, this, "newbankdlg");
+  KNewBankDlg dlg(institution, false, this, "newbankdlg");
   if (dlg.exec())
   {
     try
@@ -397,7 +397,7 @@ void KMyMoneyView::slotAccountNew(void)
 
   MyMoneyAccount account;
 
-  KNewAccountDlg dialog(account, m_file, this, "hi", i18n("Create a new Account"));
+  KNewAccountDlg dialog(account, m_file, false, this, "hi", i18n("Create a new Account"));
 
   if (dialog.exec())
   {

@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>645</width>
-            <height>637</height>
+            <width>577</width>
+            <height>599</height>
         </rect>
     </property>
     <property name="caption">
@@ -29,7 +29,7 @@
             <property name="name">
                 <cstring>Layout10</cstring>
             </property>
-            <grid>
+            <hbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
@@ -39,7 +39,7 @@
                 <property name="spacing">
                     <number>6</number>
                 </property>
-                <widget class="QLabel" row="0" column="0" rowspan="2" colspan="1">
+                <widget class="QLabel">
                     <property name="name">
                         <cstring>m_qpixmaplabel</cstring>
                     </property>
@@ -61,7 +61,7 @@
                         <string>TextLabel1</string>
                     </property>
                 </widget>
-                <widget class="QLabel" row="1" column="1">
+                <widget class="QLabel">
                     <property name="name">
                         <cstring>TextLabel1_3</cstring>
                     </property>
@@ -70,70 +70,24 @@
 My Current Account</string>
                     </property>
                 </widget>
-                <widget class="QLayoutWidget" row="0" column="1">
-                    <property name="name">
-                        <cstring>Layout8</cstring>
-                    </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <property name="margin">
-                            <number>0</number>
-                        </property>
-                        <property name="spacing">
-                            <number>6</number>
-                        </property>
-                        <widget class="QLabel">
-                            <property name="name">
-                                <cstring>TextLabel1_2</cstring>
-                            </property>
-                            <property name="maximumSize">
-                                <size>
-                                    <width>32767</width>
-                                    <height>30</height>
-                                </size>
-                            </property>
-                            <property name="text">
-                                <string>Creating new account for institution:</string>
-                            </property>
-                        </widget>
-                        <widget class="QLabel">
-                            <property name="name">
-                                <cstring>institutionNameLabel</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>0</hsizetype>
-                                    <vsizetype>0</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="maximumSize">
-                                <size>
-                                    <width>32767</width>
-                                    <height>30</height>
-                                </size>
-                            </property>
-                            <property name="text">
-                                <string>name</string>
-                            </property>
-                        </widget>
-                        <spacer>
-                            <property name="name">
-                                <cstring>Spacer2</cstring>
-                            </property>
-                            <property name="orientation">
-                                <enum>Horizontal</enum>
-                            </property>
-                            <property name="sizeType">
-                                <enum>Expanding</enum>
-                            </property>
-                        </spacer>
-                    </hbox>
-                </widget>
-            </grid>
+            </hbox>
+        </widget>
+        <widget class="Line">
+            <property name="name">
+                <cstring>Line1</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Raised</enum>
+            </property>
+            <property name="lineWidth">
+                <number>1</number>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
         </widget>
         <widget class="QGroupBox">
             <property name="name">
@@ -261,67 +215,70 @@ My Current Account</string>
                             <property name="title">
                                 <string>Account type</string>
                             </property>
-                            <widget class="QComboBox">
-                                <item>
-                                    <property name="text">
-                                        <string>Checking Account</string>
-                                    </property>
-                                </item>
-                                <item>
-                                    <property name="text">
-                                        <string>Savings Account</string>
-                                    </property>
-                                </item>
-                                <item>
-                                    <property name="text">
-                                        <string>Cash</string>
-                                    </property>
-                                </item>
-                                <item>
-                                    <property name="text">
-                                        <string>Credit Cards</string>
-                                    </property>
-                                </item>
-                                <item>
-                                    <property name="text">
-                                        <string>Loan</string>
-                                    </property>
-                                </item>
-                                <item>
-                                    <property name="text">
-                                        <string>CD</string>
-                                    </property>
-                                </item>
-                                <item>
-                                    <property name="text">
-                                        <string>Investment</string>
-                                    </property>
-                                </item>
-                                <item>
-                                    <property name="text">
-                                        <string>Money Market</string>
-                                    </property>
-                                </item>
-                                <item>
-                                    <property name="text">
-                                        <string>Currency</string>
-                                    </property>
-                                </item>
+                            <vbox>
                                 <property name="name">
-                                    <cstring>typeCombo</cstring>
+                                    <cstring>unnamed</cstring>
                                 </property>
-                                <property name="enabled">
-                                    <bool>true</bool>
+                                <property name="margin">
+                                    <number>11</number>
                                 </property>
-                                <property name="geometry">
-                                    <rect>
-                                        <x>10</x>
-                                        <y>20</y>
-                                        <width>150</width>
-                                        <height>22</height>
-                                    </rect>
+                                <property name="spacing">
+                                    <number>6</number>
                                 </property>
-                            </widget>
+                                <widget class="QComboBox">
+                                    <item>
+                                        <property name="text">
+                                            <string>Checking Account</string>
+                                        </property>
+                                    </item>
+                                    <item>
+                                        <property name="text">
+                                            <string>Savings Account</string>
+                                        </property>
+                                    </item>
+                                    <item>
+                                        <property name="text">
+                                            <string>Cash</string>
+                                        </property>
+                                    </item>
+                                    <item>
+                                        <property name="text">
+                                            <string>Credit Cards</string>
+                                        </property>
+                                    </item>
+                                    <item>
+                                        <property name="text">
+                                            <string>Loan</string>
+                                        </property>
+                                    </item>
+                                    <item>
+                                        <property name="text">
+                                            <string>CD</string>
+                                        </property>
+                                    </item>
+                                    <item>
+                                        <property name="text">
+                                            <string>Investment</string>
+                                        </property>
+                                    </item>
+                                    <item>
+                                        <property name="text">
+                                            <string>Money Market</string>
+                                        </property>
+                                    </item>
+                                    <item>
+                                        <property name="text">
+                                            <string>Currency</string>
+                                        </property>
+                                    </item>
+                                    <property name="name">
+                                        <cstring>typeCombo</cstring>
+                                    </property>
+                                    <property name="enabled">
+                                        <bool>true</bool>
+                                    </property>
+                                </widget>
+                            </vbox>
                         </widget>
                         <widget class="QGroupBox">
                             <property name="name">
@@ -476,24 +433,44 @@ My Current Account</string>
                         <cstring>m_qlistviewParentAccounts</cstring>
                     </property>
                 </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>Layout11</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <property name="margin">
+                            <number>0</number>
+                        </property>
+                        <property name="spacing">
+                            <number>6</number>
+                        </property>
+                        <widget class="QComboBox">
+                            <property name="name">
+                                <cstring>m_qcomboboxInstitutions</cstring>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>m_qbuttonNew</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>0</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="text">
+                                <string>New...</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
             </vbox>
-        </widget>
-        <widget class="Line">
-            <property name="name">
-                <cstring>Line1</cstring>
-            </property>
-            <property name="frameShape">
-                <enum>HLine</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Raised</enum>
-            </property>
-            <property name="lineWidth">
-                <number>1</number>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">

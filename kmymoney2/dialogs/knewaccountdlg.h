@@ -40,12 +40,15 @@ private:
   MyMoneyAccount m_parentAccount;
   MyMoneyFile *m_file;
   bool m_bSelectedParentAccount;
+  KAccountListItem *m_foundItem;
+  bool m_bFoundItem;
 
-  void initParentWidget();
-  void showSubAccounts(QCStringList accounts, KAccountListItem *parentItem, MyMoneyFile *file);
+  void initParentWidget(const QString&);
+  void showSubAccounts(QCStringList accounts, KAccountListItem *parentItem, MyMoneyFile *file, const QString&);
+  void loadInstitutions(const QString&);
 
 public:
-	KNewAccountDlg(MyMoneyAccount& account, MyMoneyFile* file, QWidget *parent=0, const char *name=0, const char *title=0);
+	KNewAccountDlg(MyMoneyAccount& account, MyMoneyFile* file, bool isEditing, QWidget *parent=0, const char *name=0, const char *title=0);
 	~KNewAccountDlg();
   MyMoneyAccount account(void);
   const MyMoneyAccount parentAccount(void);
@@ -57,6 +60,7 @@ protected slots:
   void okClicked();
   void slotSelectionChanged(QListViewItem *item);
   void slotSubAccountsToggled(bool on);
+  void slotNewClicked();
 };
 
 #endif

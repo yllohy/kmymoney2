@@ -1,3 +1,8 @@
+2002-06-07 Michael Edwardes <mte@users.sourceforge.net>
+  * Adding institution in the account dialog now works.
+  * The edit account dialog now loads nearly all the 'fields'
+    properly.
+
 2002-06-06 Michael Edwardes <mte@users.sourceforge.net>
   * Selecting the four root accounts in the parent account widget
     now works.

@@ -31,7 +31,7 @@
 
 #include "knewbankdlg.h"
 
-KNewBankDlg::KNewBankDlg(MyMoneyInstitution& institution, QWidget *parent, const char *name)
+KNewBankDlg::KNewBankDlg(MyMoneyInstitution& institution,  bool /*isEditing*/, QWidget *parent, const char *name)
   : KNewBankDlgDecl(parent,name,true), m_institution(institution)
 {
   QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_new_institution.png");
