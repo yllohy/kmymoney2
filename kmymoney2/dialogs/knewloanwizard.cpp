@@ -721,7 +721,7 @@ int KNewLoanWizard::calculateLoan(void)
   }
 
   if(!m_interestRateEdit->text().isEmpty()) {
-    val = static_cast<long double> (m_interestRateEdit->getMoneyValue().abs().toDouble()) / 100.0;
+    val = static_cast<long double> (m_interestRateEdit->getMoneyValue().abs().toDouble());
     calc.setIr(val);
   }
 
@@ -748,7 +748,7 @@ int KNewLoanWizard::calculateLoan(void)
     if(m_loanAmountEdit->text().isEmpty()) {
       // calculate the amount of the loan out of the other information
       val = calc.presentValue();
-      m_loanAmountEdit->loadText(MyMoneyMoney(static_cast<double>(val/100.0)).abs().formatMoney());
+      m_loanAmountEdit->loadText(MyMoneyMoney(static_cast<double>(val)).abs().formatMoney());
       result = i18n("KMyMoney has calculated the amount of the loan as %1.")
                         .arg(m_loanAmountEdit->text());
 
@@ -762,7 +762,7 @@ int KNewLoanWizard::calculateLoan(void)
     } else if(m_paymentEdit->text().isEmpty()) {
       // calculate the periodical amount of the payment out of the other information
       val = calc.payment();
-      m_paymentEdit->setText(MyMoneyMoney(static_cast<double>(val/100.0)).abs().formatMoney());
+      m_paymentEdit->setText(MyMoneyMoney(static_cast<double>(val)).abs().formatMoney());
 
       result = i18n("KMyMoney has calculated a periodic payment of %1 to cover amortization and interest.")
                       .arg(m_paymentEdit->text());
@@ -773,7 +773,7 @@ int KNewLoanWizard::calculateLoan(void)
         calc.setNpp(calc.npp()-1);
         updateTermWidgets(calc.npp());
         val = calc.futureValue();
-        MyMoneyMoney refVal(static_cast<double>(val/100.0));
+        MyMoneyMoney refVal(static_cast<double>(val));
         m_finalPaymentEdit->loadText(refVal.abs().formatMoney());
         result += QString(" ");
         result += i18n("The number of payments has been decremented and the final payment has been modified to %1.")
@@ -794,7 +794,7 @@ int KNewLoanWizard::calculateLoan(void)
       if(val != floorl(val)) {
         calc.setNpp(floorl(val));
         val = calc.futureValue();
-        MyMoneyMoney refVal(static_cast<double>(val/100.0));
+        MyMoneyMoney refVal(static_cast<double>(val));
         m_finalPaymentEdit->loadText(refVal.abs().formatMoney());
         result += i18n("The final payment has been modified to %1.")
                       .arg(m_finalPaymentEdit->text());
@@ -803,7 +803,7 @@ int KNewLoanWizard::calculateLoan(void)
     } else {
       // calculate the future value of the loan out of the other information
       val = calc.futureValue();
-      MyMoneyMoney refVal(static_cast<double>(val/100.0));
+      MyMoneyMoney refVal(static_cast<double>(val));
 
       if((m_borrowButton->isChecked() && val < 0)
       || (m_lendButton->isChecked() && val > 0)) {
