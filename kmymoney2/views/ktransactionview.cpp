@@ -1129,6 +1129,7 @@ void KTransactionView::updateTransactionList(int row, int col)
     m_index=-1;
 
     int i = 0;
+    bool haveCurrentDate = false;
     transactionsTable->setNumRows((m_transactions->count() * NO_ROWS) + 2);
 
     initAmountWidth();
@@ -1144,6 +1145,14 @@ void KTransactionView::updateTransactionList(int row, int col)
          (usedate == true && transaction->date() >= m_date->getQDate()) ||
          (userow == true && m_index >= i))
       {
+
+      if(!haveCurrentDate && transaction->date() > QDate::currentDate()) {
+        haveCurrentDate = true;
+        transactionsTable->setCurrentDateRow(rowCount);
+      }
+      if(!haveCurrentDate && transaction->date() < QDate::currentDate()) {
+        transactionsTable->setCurrentDateRow(rowCount);
+      }
 
       switch (transaction->method()) {
         case MyMoneyTransaction::Cheque:
@@ -1246,6 +1255,11 @@ void KTransactionView::updateTransactionList(int row, int col)
 			currentBalance = KGlobal::locale()->formatMoney(balance.amount(),"");
     }
 
+    if(!haveCurrentDate && rowCount > 0) {
+      transactionsTable->setCurrentDateRow(rowCount);
+    } else if(!haveCurrentDate)
+      transactionsTable->setCurrentDateRow(-1);
+
 		if (m_viewType==NORMAL) {
       transactionsTable->ensureCellVisible(rowCount+1, 0);
 
@@ -1260,9 +1274,9 @@ void KTransactionView::updateTransactionList(int row, int col)
         transactionsTable->setText(rowCount+1, 0, "");
         transactionsTable->setText(rowCount+1, 1, i18n("Number"));
         transactionsTable->setText(rowCount+1, 2, i18n("Category|Description"));
-        transactionsTable->setText(rowCount+1, 3, i18n(""));
-        transactionsTable->setText(rowCount+1, 4, i18n(""));
-        transactionsTable->setText(rowCount+1, 5, i18n(""));
+        transactionsTable->setText(rowCount+1, 3, "");
+        transactionsTable->setText(rowCount+1, 4, "");
+        transactionsTable->setText(rowCount+1, 5, "");
       }
 
   		lblBalanceAmt->setText(currentBalance);
@@ -1440,10 +1454,8 @@ void KTransactionView::slotNextTransaction(){
 
 void KTransactionView::viewTypeActivated(int num)
 {
-  if (num == 1 && m_viewType != SUBSET)
-    emit viewTypeSearchActivated();
-  else if (num == 0 && m_viewType != NORMAL)
-    emit viewTypeNormalActivated();
+  viewingType prevViewType = m_viewType;
+
   switch (num) {
     case 0:
       m_viewType = NORMAL;
@@ -1452,6 +1464,11 @@ void KTransactionView::viewTypeActivated(int num)
       m_viewType = SUBSET;
       break;
   }
+
+  if (num == 1 && prevViewType != SUBSET)
+    emit viewTypeSearchActivated();
+  else if (num == 0 && prevViewType != NORMAL)
+    emit viewTypeNormalActivated();
 }
 
 void KTransactionView::resizeEvent(QResizeEvent*)
