@@ -1,3 +1,8 @@
+2005-03-21 Ace Jones <acejones@users.sourceforge.net>
+  * Cleaned up small issues in reports wrt foreign stocks.  These were
+    exposed by the fixes in Tom's last checkin.
+  * Edited the warning message for foreign stocks. 
+
 2005-03-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Allow payment of stock transactions to be in different currency
     than the stock's security

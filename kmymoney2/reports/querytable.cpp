@@ -450,15 +450,7 @@ void QueryTable::constructTransactionTable(void)
     else
       if((*it_transaction).commodity() != file->baseCurrency().id())
         qtransactionrow["currency"] = (*it_transaction).commodity();
-
-    // -----------
-    // FIXME: transaction currency is currently broken in case of foreign stocks.
-    // Once that's fixed, this code should work as-written.  Prior to that,
-    // I may want to write a version of this that works for investments WITHOUT
-    // the transaction price.  However, I'm not sure if it's broken so much I
-    // won't even be able to do that
-    // -----------
-        
+       
     // A table row ALWAYS has one asset/liability account.  A transaction
     // will generate one table row for each A/L account.
     //
@@ -590,7 +582,7 @@ skip_addsplit:
   }
 }
 
-void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow& result ) const
+void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow& result, const MyMoneyMoney& displayprice ) const
 {
   MyMoneyFile* file = MyMoneyFile::instance();
   MyMoneySecurity security = file->security(account.currencyId());
@@ -681,12 +673,12 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
     kdDebug(2) << e << endl;
   }
 
-  result["buys"] = (-(buys.total())).toString();
-  result["sells"] = (-(sells.total())).toString();
-  result["cashincome"] = cashincome.total().toString();
-  result["reinvestincome"] = reinvestincome.total().toString();
-  result["startingbal"] = startingBal.toString();
-  result["endingbal"] = endingBal.toString();
+  result["buys"] = (-(buys.total())*displayprice).toString();
+  result["sells"] = (-(sells.total())*displayprice).toString();
+  result["cashincome"] = (cashincome.total()*displayprice).toString();
+  result["reinvestincome"] = (reinvestincome.total()*displayprice).toString();
+  result["startingbal"] = (startingBal*displayprice).toString();
+  result["endingbal"] = (endingBal*displayprice).toString();
 }
 
 void QueryTable::constructAccountTable(void)
@@ -743,7 +735,7 @@ void QueryTable::constructAccountTable(void)
       // it's an expensive calculation done for no reason
       if ( account.accountType() == MyMoneyAccount::Stock )
       {
-        constructPerformanceRow( account, qaccountrow );
+        constructPerformanceRow( account, qaccountrow, displayprice );
       }
       else
         qaccountrow["equitytype"] = QString();
@@ -821,6 +813,10 @@ void QueryTable::render( QString& result, QString& csv ) const
   // the list of columns which represent money, so we can display them correctly
   QStringList moneyColumns = QStringList::split(",","value,shares,price,latestprice,netinvvalue,buys,sells,cashincome,reinvestincome,startingbal");
 
+  // the list of columns which represent shares, which is like money except the
+  // transaction currency will not be displayed
+  QStringList sharesColumns = QStringList::split(",","shares");
+  
   // the list of columns which represent a percentage, so we can display them correctly
   QStringList percentColumns = QStringList::split(",","return");
 
@@ -933,7 +929,18 @@ void QueryTable::render( QString& result, QString& csv ) const
     {
       QString data = (*it_row)[*it_column];
 
-      if ( moneyColumns.contains(*it_column) )
+      if ( sharesColumns.contains(*it_column) )
+      {
+        result += QString("<td>%1</td>")
+          .arg(MyMoneyMoney(data).formatMoney());
+
+        MyMoneyMoney::setThousandSeparator('\0');
+
+        csv += MyMoneyMoney(data).formatMoney() + ",";
+
+        MyMoneyMoney::setThousandSeparator(savethsep);
+      }
+      else if ( moneyColumns.contains(*it_column) )
       {
         result += QString("<td>%1&nbsp;%2</td>")
           .arg((*it_row)["currency"])

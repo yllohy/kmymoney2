@@ -1007,7 +1007,7 @@ QString PivotTable::renderHTML( void ) const
           .arg((*it_row).m_total.isZero() ? colspan : "")
           .arg(rowname.hierarchyDepth() - 1)
           .arg(rowname.name().replace(QRegExp(" "), "&nbsp;"))
-          .arg((m_config_f.isConvertCurrency() || !rowname.isForiegnCurrency() )?QString():QString(" (%1)").arg(rowname.currencyId()));
+          .arg((m_config_f.isConvertCurrency() || !rowname.isForiegnCurrency() )?QString():QString(" (%1)").arg(rowname.currency()));
 
         if ( !(*it_row).m_total.isZero() )
           innergroupdata += rowdata;
@@ -1050,7 +1050,7 @@ QString PivotTable::renderHTML( void ) const
           .arg( m_config_f.isShowingSubAccounts() ? "id=\"solo\"" : "" )
           .arg(rowname.hierarchyDepth() - 1)
           .arg(rowname.name().replace(QRegExp(" "), "&nbsp;"))
-          .arg((m_config_f.isConvertCurrency() || !rowname.isForiegnCurrency() )?QString():QString(" (%1)").arg(rowname.currencyId()));
+          .arg((m_config_f.isConvertCurrency() || !rowname.isForiegnCurrency() )?QString():QString(" (%1)").arg(rowname.currency()));
       }
 
       // Finish the row started above, unless told not to
@@ -1110,8 +1110,6 @@ QString PivotTable::renderHTML( void ) const
   result += QString("<tr class=\"spacer\"><td>&nbsp;</td></tr>\n");
   result += QString("<tr class=\"spacer\"><td>&nbsp;</td></tr>\n");
   result += "</table>\n";
-
-//   MyMoneyMoney::setNegativeMonetarySignPosition(savesignpos);
 
   return result;
 }

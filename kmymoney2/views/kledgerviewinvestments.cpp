@@ -1846,7 +1846,7 @@ const bool KLedgerViewInvestments::slotDataChanged(int field)
     MyMoneyAccount acc = MyMoneyFile::instance()->account(id);
     if(acc.currencyId() != m_security.tradingCurrency()) {
       MyMoneySecurity currency = MyMoneyFile::instance()->security(m_security.tradingCurrency());
-      KMessageBox::information(this, QString("<p>")+i18n("The %1 <b>%2</b> uses a different security than the selected stock. Please make sure to enter all values in <b>%2</b>. When you later save the transaction you will have the chance to enter the necessary conversion rates.").arg(fieldName).arg(acc.name()).arg(currency.name()), i18n("Stock security"), "StockDifferentSecurityWarning");
+      KMessageBox::information(this, QString("<p>")+i18n("The %1 <b>%2</b> uses a different currency than the selected investment. Please make sure to enter all values for this transaction in <b>%2</b>. When you save this transaction you will have the chance to enter the necessary conversion rates.").arg(fieldName).arg(acc.name()).arg(currency.name()), i18n("Stock security"), "StockDifferentSecurityWarning");
     }
   }
 
