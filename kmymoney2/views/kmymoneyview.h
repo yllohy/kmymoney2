@@ -61,7 +61,7 @@ class MyMoneyTransaction;
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.39 2003/08/31 19:31:49 ipwizard Exp $
+  * $Id: kmymoneyview.h,v 1.40 2003/09/01 17:51:34 mte Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -221,6 +221,7 @@ public:
   bool dirty(void);
 
   /**
+
     * Creates a new file first making sure that one isn't open already.  Opens
     * up a KNewFileDlg to input the new details.
     *
@@ -325,6 +326,14 @@ public slots:
   void slotPayeeSelected(const QCString& payeeId, const QCString& accountId, const QCString& transactionId);
 
   /**
+    * Called, whenever the schedule view should pop up and a specific
+    * schedule should be shown.
+    *
+    * @param schedule The ID of the schedule to be shown
+    */
+  void slotScheduleSelected(const QCString& schedule);
+
+  /**
     * Called whenever the user wishes to create a new bank.  Brings up the input
     * dialog and saves the information.  It then enables the banks view.
     *
@@ -356,6 +365,7 @@ public slots:
     * @see KNewAccountDlg
 
     * @see MyMoneyFile
+
     * @see MyMoneyAccount
   **/
   void slotCategoryNew(void);
@@ -501,6 +511,7 @@ private:
     * either directly in the destination file if it is on
     * the local file system or in a temporary file when
     * the final destination is reached over a network
+
     * protocol (e.g. FTP)
     *
     * @param qf pointer to QFile representing the opened file

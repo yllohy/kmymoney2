@@ -122,7 +122,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
     DesktopIcon("schedule"));
   m_scheduledView = new KScheduledView(m_scheduleViewFrame, "scheduledView");
   connect(m_scheduledView, SIGNAL(signalViewActivated()), this, SLOT(slotActivatedScheduledView()));
-  // connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_scheduledView, SLOT(slotReloadView()));
+  connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_scheduledView, SLOT(slotReloadView()));
 
   // Page 3
   m_categoriesViewFrame = addVBoxPage( i18n("Categories"), i18n("Categories"),
@@ -180,6 +180,9 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
 
   connect(m_homeView, SIGNAL(ledgerSelected(const QCString&, const QCString&)),
           this, SLOT(slotLedgerSelected(const QCString&, const QCString&)));
+
+  connect(m_homeView, SIGNAL(scheduleSelected(const QCString&)),
+    this, SLOT(slotScheduleSelected(const QCString&)));
   
 /*
   connect(transactionView, SIGNAL(viewTypeSearchActivated()),
@@ -324,6 +327,12 @@ void KMyMoneyView::slotPayeeSelected(const QCString& payee, const QCString& acco
 {
   showPage(pageIndex(m_payeesViewFrame));
   m_payeesView->slotSelectPayeeAndTransaction(payee, account, transaction);
+}
+
+void KMyMoneyView::slotScheduleSelected(const QCString& schedule)
+{
+  showPage(pageIndex(m_scheduleViewFrame));
+  m_scheduledView->slotSelectSchedule(schedule);
 }
 
 void KMyMoneyView::slotAccountDoubleClick(void)
@@ -1277,7 +1286,7 @@ void KMyMoneyView::slotRefreshViews()
   m_payeesView->slotRefreshView();
   m_homeView->slotRefreshView();
 
-  m_scheduledView->refreshView();
+  m_scheduledView->slotReloadView();
 }
 
 void KMyMoneyView::slotFindTransaction(void)
