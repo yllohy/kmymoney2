@@ -39,6 +39,8 @@
 #include <klocale.h>
 #include <kglobal.h>
 #include <kpushbutton.h>
+#include <kiconloader.h>
+#include <kguiitem.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -194,30 +196,48 @@ kMyMoneyTransactionForm::kMyMoneyTransactionForm( KLedgerView* parent,  const ch
 
   buttonLayout = new QHBoxLayout( 0, 0, 10, "buttonLayout");
 
-  buttonNew = new KPushButton( formFrame, "buttonNew" );
+  KIconLoader *il = KGlobal::iconLoader();
+  
+  KGuiItem newButtItem( i18n( "&New" ),
+                    QIconSet(il->loadIcon("filenew", KIcon::Small, KIcon::SizeSmall)),  
+                    i18n("Create a new transaction"),
+                    i18n("Use this to create a new transaction in the ledger"));
+  buttonNew = new KPushButton( newButtItem, formFrame, "buttonNew" );
   buttonNew->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)3, (QSizePolicy::SizeType)0, 0, 0, buttonNew->sizePolicy().hasHeightForWidth() ) );
-  buttonNew->setText( i18n( "&New" ) );
   buttonLayout->addWidget( buttonNew );
 
-  buttonEdit = new KPushButton( formFrame, "buttonEdit" );
+  KGuiItem editButtItem( i18n( "&Edit" ),
+                    QIconSet(il->loadIcon("edit", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Modify a transaction"),
+                    i18n("Use this to modify the current selected transaction in the ledger"));
+  buttonEdit = new KPushButton( editButtItem, formFrame, "buttonEdit" );
   buttonEdit->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)3, (QSizePolicy::SizeType)0, 0, 0, buttonEdit->sizePolicy().hasHeightForWidth() ) );
-  buttonEdit->setText( i18n( "&Edit" ) );
   buttonLayout->addWidget( buttonEdit );
 
-  buttonEnter = new KPushButton( formFrame, "buttonEnter" );
+  KGuiItem enterButtItem( i18n( "Enter" ),
+                    QIconSet(il->loadIcon("button_ok", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Enter transaction into ledger"),
+                    i18n("Use this to enter the current transaction into the ledger"));
+  buttonEnter = new KPushButton( enterButtItem, formFrame, "buttonEnter" );
   buttonEnter->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)3, (QSizePolicy::SizeType)0, 0, 0, buttonEnter->sizePolicy().hasHeightForWidth() ) );
-  buttonEnter->setText( i18n( "Enter" ) );
   buttonLayout->addWidget( buttonEnter );
 
-  buttonCancel = new KPushButton( formFrame, "buttonCancel" );
+  KGuiItem cancelButtItem( i18n( "&Cancel" ),
+                    QIconSet(il->loadIcon("button_cancel", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Forget changes made to this transaction"),
+                    i18n("Use this to abort the changes to the current transaction"));
+  buttonCancel = new KPushButton( cancelButtItem, formFrame, "buttonCancel" );
   buttonCancel->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)3, (QSizePolicy::SizeType)0, 0, 0, buttonCancel->sizePolicy().hasHeightForWidth() ) );
-  buttonCancel->setText( i18n( "&Cancel" ) );
   buttonLayout->addWidget( buttonCancel );
 
-  buttonMore = new KPushButton( formFrame, "buttonMore" );
+  KGuiItem moreButtItem( i18n( "&More" ),
+                    QIconSet(il->loadIcon("configure", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Access more functions"),
+                    i18n("Use this to access special functions"));
+  buttonMore = new KPushButton( moreButtItem, formFrame, "buttonMore" );
   buttonMore->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)3, (QSizePolicy::SizeType)0, 0, 0, buttonMore->sizePolicy().hasHeightForWidth() ) );
-  buttonMore->setText( i18n( "&More" ) );
   buttonLayout->addWidget( buttonMore );
+  
   QSpacerItem* spacer = new QSpacerItem( 20, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
   buttonLayout->addItem( spacer );
 

@@ -1,262 +1,246 @@
-<!DOCTYPE UI><UI>
+<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
 <class>kSplitCorrectionDlgDecl</class>
-<widget>
-    <class>QDialog</class>
-    <property stdset="1">
-        <name>name</name>
+<widget class="QDialog">
+    <property name="name">
         <cstring>kSplitCorrectionDlgDecl</cstring>
     </property>
-    <property stdset="1">
-        <name>geometry</name>
+    <property name="geometry">
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>432</width>
-            <height>187</height>
+            <width>434</width>
+            <height>214</height>
         </rect>
     </property>
-    <property stdset="1">
-        <name>caption</name>
+    <property name="minimumSize">
+        <size>
+            <width>80</width>
+            <height>0</height>
+        </size>
+    </property>
+    <property name="caption">
         <string>Correct splits</string>
     </property>
     <hbox>
-        <property stdset="1">
-            <name>margin</name>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
             <number>11</number>
         </property>
-        <property stdset="1">
-            <name>spacing</name>
+        <property name="spacing">
             <number>6</number>
         </property>
-        <widget>
-            <class>QLayoutWidget</class>
-            <property stdset="1">
-                <name>name</name>
-                <cstring>Layout3</cstring>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>Layout11</cstring>
             </property>
-            <vbox>
-                <property stdset="1">
-                    <name>margin</name>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
                     <number>0</number>
                 </property>
-                <property stdset="1">
-                    <name>spacing</name>
+                <property name="spacing">
                     <number>6</number>
                 </property>
-                <widget>
-                    <class>QLabel</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>explanation</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>frameShape</name>
-                        <enum>MShape</enum>
-                    </property>
-                    <property stdset="1">
-                        <name>frameShadow</name>
-                        <enum>Raised</enum>
-                    </property>
-                    <property stdset="1">
-                        <name>text</name>
-                        <string>The total amount of this transaction is %1 while the sum of the splits is %2. The remaining %3 are unassigned.</string>
-                    </property>
-                    <property stdset="1">
-                        <name>alignment</name>
-                        <set>WordBreak|AlignTop|AlignLeft</set>
-                    </property>
-                    <property>
-                        <name>vAlign</name>
-                    </property>
-                    <property>
-                        <name>wordwrap</name>
-                    </property>
-                </widget>
-                <widget>
-                    <class>QLabel</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>question</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>enabled</name>
-                        <bool>true</bool>
-                    </property>
-                    <property stdset="1">
-                        <name>text</name>
-                        <string>What should happen with the difference?</string>
-                    </property>
-                </widget>
-                <widget>
-                    <class>QButtonGroup</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>buttonGroup</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>frameShape</name>
-                        <enum>NoFrame</enum>
-                    </property>
-                    <property stdset="1">
-                        <name>title</name>
-                        <string></string>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>Layout3</cstring>
                     </property>
                     <vbox>
-                        <property stdset="1">
-                            <name>margin</name>
-                            <number>11</number>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
                         </property>
-                        <property stdset="1">
-                            <name>spacing</name>
+                        <property name="margin">
+                            <number>0</number>
+                        </property>
+                        <property name="spacing">
                             <number>6</number>
                         </property>
-                        <widget>
-                            <class>QRadioButton</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>continueBtn</cstring>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>explanation</cstring>
                             </property>
-                            <property stdset="1">
-                                <name>text</name>
-                                <string>Continue to &amp;edit splits</string>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>5</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>5</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
                             </property>
-                            <property stdset="1">
-                                <name>checked</name>
+                            <property name="frameShape">
+                                <enum>MShape</enum>
+                            </property>
+                            <property name="frameShadow">
+                                <enum>Raised</enum>
+                            </property>
+                            <property name="text">
+                                <string>The total amount of this transaction is %1 while the sum of the splits is %2. The remaining %3 are unassigned.</string>
+                            </property>
+                            <property name="alignment">
+                                <set>WordBreak|AlignTop|AlignLeft</set>
+                            </property>
+                            <property name="vAlign" stdset="0">
+                            </property>
+                            <property name="wordwrap" stdset="0">
+                            </property>
+                        </widget>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>question</cstring>
+                            </property>
+                            <property name="enabled">
                                 <bool>true</bool>
                             </property>
-                        </widget>
-                        <widget>
-                            <class>QRadioButton</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>changeBtn</cstring>
-                            </property>
-                            <property stdset="1">
-                                <name>text</name>
-                                <string>&amp;Change transaction amount into %2</string>
+                            <property name="text">
+                                <string>What should happen with the difference?</string>
                             </property>
                         </widget>
-                        <widget>
-                            <class>QRadioButton</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>distributeBtn</cstring>
+                        <widget class="QButtonGroup">
+                            <property name="name">
+                                <cstring>buttonGroup</cstring>
                             </property>
-                            <property stdset="1">
-                                <name>enabled</name>
-                                <bool>false</bool>
+                            <property name="frameShape">
+                                <enum>NoFrame</enum>
                             </property>
-                            <property stdset="1">
-                                <name>text</name>
-                                <string>&amp;Distribute difference among all splits</string>
+                            <property name="title">
+                                <string></string>
                             </property>
-                        </widget>
-                        <widget>
-                            <class>QRadioButton</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>leaveBtn</cstring>
-                            </property>
-                            <property stdset="1">
-                                <name>text</name>
-                                <string>&amp;Leave unassigned</string>
-                            </property>
+                            <vbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <property name="margin">
+                                    <number>11</number>
+                                </property>
+                                <property name="spacing">
+                                    <number>6</number>
+                                </property>
+                                <widget class="QRadioButton">
+                                    <property name="name">
+                                        <cstring>continueBtn</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Continue to &amp;edit splits</string>
+                                    </property>
+                                    <property name="checked">
+                                        <bool>true</bool>
+                                    </property>
+                                </widget>
+                                <widget class="QRadioButton">
+                                    <property name="name">
+                                        <cstring>changeBtn</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>&amp;Change transaction amount into %2</string>
+                                    </property>
+                                </widget>
+                                <widget class="QRadioButton">
+                                    <property name="name">
+                                        <cstring>distributeBtn</cstring>
+                                    </property>
+                                    <property name="enabled">
+                                        <bool>false</bool>
+                                    </property>
+                                    <property name="text">
+                                        <string>&amp;Distribute difference among all splits</string>
+                                    </property>
+                                </widget>
+                                <widget class="QRadioButton">
+                                    <property name="name">
+                                        <cstring>leaveBtn</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>&amp;Leave unassigned</string>
+                                    </property>
+                                </widget>
+                            </vbox>
                         </widget>
                     </vbox>
                 </widget>
-            </vbox>
-        </widget>
-        <widget>
-            <class>QLayoutWidget</class>
-            <property stdset="1">
-                <name>name</name>
-                <cstring>Layout6</cstring>
-            </property>
-            <property stdset="1">
-                <name>maximumSize</name>
-                <size>
-                    <width>82</width>
-                    <height>32767</height>
-                </size>
-            </property>
-            <vbox>
-                <property stdset="1">
-                    <name>margin</name>
-                    <number>0</number>
-                </property>
-                <property stdset="1">
-                    <name>spacing</name>
-                    <number>6</number>
-                </property>
-                <widget>
-                    <class>QPushButton</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>okBtn</cstring>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>Layout10</cstring>
                     </property>
-                    <property stdset="1">
-                        <name>maximumSize</name>
-                        <size>
-                            <width>82</width>
-                            <height>32767</height>
-                        </size>
-                    </property>
-                    <property stdset="1">
-                        <name>text</name>
-                        <string>OK</string>
-                    </property>
-                    <property stdset="1">
-                        <name>default</name>
-                        <bool>true</bool>
-                    </property>
-                    <property>
-                        <name>vAlign</name>
-                    </property>
-                    <property>
-                        <name>wordwrap</name>
-                    </property>
+                    <vbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <property name="margin">
+                            <number>0</number>
+                        </property>
+                        <property name="spacing">
+                            <number>6</number>
+                        </property>
+                        <widget class="KPushButton">
+                            <property name="name">
+                                <cstring>okBtn</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>4</hsizetype>
+                                    <vsizetype>1</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>80</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string>&amp;Ok</string>
+                            </property>
+                        </widget>
+                        <widget class="KPushButton">
+                            <property name="name">
+                                <cstring>cancelBtn</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>4</hsizetype>
+                                    <vsizetype>1</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>80</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string>&amp;Cancel</string>
+                            </property>
+                        </widget>
+                        <spacer>
+                            <property name="name">
+                                <cstring>Spacer1</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Vertical</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>0</width>
+                                    <height>117</height>
+                                </size>
+                            </property>
+                        </spacer>
+                    </vbox>
                 </widget>
-                <widget>
-                    <class>QPushButton</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>cancelBtn</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>maximumSize</name>
-                        <size>
-                            <width>82</width>
-                            <height>32767</height>
-                        </size>
-                    </property>
-                    <property stdset="1">
-                        <name>text</name>
-                        <string>Cancel</string>
-                    </property>
-                </widget>
-                <spacer>
-                    <property>
-                        <name>name</name>
-                        <cstring>Spacer1</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>orientation</name>
-                        <enum>Vertical</enum>
-                    </property>
-                    <property stdset="1">
-                        <name>sizeType</name>
-                        <enum>Expanding</enum>
-                    </property>
-                    <property>
-                        <name>sizeHint</name>
-                        <size>
-                            <width>20</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-            </vbox>
+            </hbox>
         </widget>
     </hbox>
 </widget>
+<layoutdefaults spacing="6" margin="11"/>
 </UI>

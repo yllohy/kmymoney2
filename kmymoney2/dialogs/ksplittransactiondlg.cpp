@@ -43,6 +43,8 @@
 #include <klocale.h>
 #include <kiconloader.h>
 #include <kmessagebox.h>
+#include <kguiitem.h>
+#include <kpushbutton.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -95,6 +97,27 @@ KSplitTransactionDlg::KSplitTransactionDlg(const MyMoneyTransaction& t,
     }
   }
 
+  // add icons to buttons
+  KIconLoader *il = KGlobal::iconLoader();
+  KGuiItem finishButtenItem( i18n( "&Finish" ),
+                    QIconSet(il->loadIcon("button_ok", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Accept splits and return to transaction form"),
+                    i18n("Use this to accept all changes to the splits and return to the transaction"));
+  finishBtn->setGuiItem(finishButtenItem);
+    
+  KGuiItem cancelButtenItem( i18n( "&Cancel" ),
+                    QIconSet(il->loadIcon("button_cancel", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Reject all changes to the splits and return to transaction form"),
+                    i18n("Use this to reject all changes to the splits and return to the transaction"));
+  cancelBtn->setGuiItem(cancelButtenItem);
+                      
+  KGuiItem clearButtenItem( i18n( "Clear &All" ),
+                    QIconSet(il->loadIcon("edittrash", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Clear all splits"),
+                    i18n("Use this to clear all splits of this transaction"));
+  clearAllBtn->setGuiItem(clearButtenItem);
+
+  
   // make finish the default
   finishBtn->setDefault(true);
 
@@ -139,11 +162,10 @@ KSplitTransactionDlg::KSplitTransactionDlg(const MyMoneyTransaction& t,
     this, SLOT(slotFinishClicked()));
 
   // setup the context menu
-  KIconLoader *kiconloader = KGlobal::iconLoader();
   m_contextMenu = new KPopupMenu(this);
-  m_contextMenu->insertTitle(kiconloader->loadIcon("transaction", KIcon::MainToolbar), i18n("Transaction Options"));
-  m_contextMenu->insertItem(kiconloader->loadIcon("edit", KIcon::Small), i18n("Edit ..."), this, SLOT(slotStartEdit()));
-  m_contextMenuDelete = m_contextMenu->insertItem(kiconloader->loadIcon("delete", KIcon::Small),
+  m_contextMenu->insertTitle(il->loadIcon("transaction", KIcon::MainToolbar), i18n("Transaction Options"));
+  m_contextMenu->insertItem(il->loadIcon("edit", KIcon::Small), i18n("Edit ..."), this, SLOT(slotStartEdit()));
+  m_contextMenuDelete = m_contextMenu->insertItem(il->loadIcon("delete", KIcon::Small),
                         i18n("Delete ..."),
                         this, SLOT(slotDeleteSplit()));
 
@@ -223,7 +245,7 @@ void KSplitTransactionDlg::initSize(void)
   QDialog::resize(width(), height()+1);
 }
 
-void KSplitTransactionDlg::resizeEvent(QResizeEvent* ev)
+void KSplitTransactionDlg::resizeEvent(QResizeEvent* /* ev */)
 {
   int w = transactionsTable->visibleWidth() - m_amountWidth;
 
@@ -250,6 +272,21 @@ void KSplitTransactionDlg::slotFinishClicked()
   if(diffAmount() != 0) {
     MyMoneySplit split = m_transaction.split(m_account.id());
     kSplitCorrectionDlgDecl* dlg = new kSplitCorrectionDlgDecl(0, 0, true);
+
+    // add icons to buttons
+    KIconLoader *il = KGlobal::iconLoader();
+    KGuiItem okButtenItem( i18n("&Ok" ),
+                      QIconSet(il->loadIcon("button_ok", KIcon::Small, KIcon::SizeSmall)),
+                      i18n("Accepts the selected action and continues"),
+                      i18n("Use this to accept accept the action and perform it"));
+    dlg->okBtn->setGuiItem(okButtenItem);
+
+    KGuiItem cancelButtenItem( i18n( "&Cancel" ),
+                      QIconSet(il->loadIcon("button_cancel", KIcon::Small, KIcon::SizeSmall)),
+                      i18n("Return to split transaction dialog"),
+                      i18n("Use this to continue editing the splits"));
+    dlg->cancelBtn->setGuiItem(cancelButtenItem);
+
     QString total = (-split.value()).formatMoney();
     QString sums = splitsValue().formatMoney();
     QString diff = diffAmount().formatMoney();
@@ -426,7 +463,7 @@ const QValueList<MyMoneySplit> KSplitTransactionDlg::getSplits(void) const
   return list;
 }
 
-void KSplitTransactionDlg::updateSplit(int row, int col)
+void KSplitTransactionDlg::updateSplit(int row, int /* col */)
 {
   unsigned long rowCount=0;
 
@@ -554,7 +591,7 @@ void KSplitTransactionDlg::slotStartEdit(void)
   slotStartEdit(transactionsTable->currentRow(), 0, Qt::LeftButton, QPoint(0, 0));
 }
 
-void KSplitTransactionDlg::slotStartEdit(int row, int col, int button, const QPoint&  point)
+void KSplitTransactionDlg::slotStartEdit(int row, int col, int button, const QPoint&  /* point */)
 {
   // only start editing if inside used area
   if(row <= static_cast<int> (m_transaction.splits().count()-1)) {
@@ -635,7 +672,7 @@ void KSplitTransactionDlg::slotNavigationKey(int key)
   slotFocusChange(row, 0, Qt::LeftButton, QPoint(0, 0));
 }
 
-void KSplitTransactionDlg::slotFocusChange(int realrow, int col, int button, const QPoint&  point)
+void KSplitTransactionDlg::slotFocusChange(int realrow, int col, int button, const QPoint& /* point */)
 {
   int   row = realrow;
 
