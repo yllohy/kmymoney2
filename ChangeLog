@@ -1,3 +1,6 @@
+2002-04-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed compile and link order problem
+
 2002-04-26 Arni Ingimundarson <arniing@users.sourceforge.net>
   * Got rid of KTempDatePicker and used the standar kde 
     KDatePicker.  A popup problem still remains.
@@ -8,10 +11,10 @@
 2002-03-22 Arni Ingimundarson <arniing@users.sourceforge.net>
   * Added support for keyboard input in kMyMoneyDateInput
     +/- now works and PgDn popsup the DatePickerWidget.
-  
+
 2002-03-20 Arni Ingimundarson <arniing@users.sourceforge.net>
   * Fixed Datepicker inconsistency (bug 502805)
-  
+
 2002-03-19 Arni Ingimundarson <arniing@users.sourceforge.net>
   * Fixed file dialog choose->cancel bug (490427)
     in kbackupdlg.cpp, kexportdlg.cpp and kimportdlg.cpp
