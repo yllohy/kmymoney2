@@ -44,7 +44,9 @@
 #include "../mymoney/mymoneyequity.h"
 #include "../mymoney/mymoneyonlinepriceupdate.h"
 
-KEquityPriceUpdateDlg::KEquityPriceUpdateDlg(QWidget *parent) : KEquityPriceUpdateDlgDecl(parent)
+KEquityPriceUpdateDlg::KEquityPriceUpdateDlg(QWidget *parent) :
+  KEquityPriceUpdateDlgDecl(parent),
+  m_pPriceUpdate(0)
 {
   lvEquityList->setRootIsDecorated(true);
   lvEquityList->setColumnText(0, QString(i18n("Symbol")));
@@ -55,7 +57,7 @@ KEquityPriceUpdateDlg::KEquityPriceUpdateDlg(QWidget *parent) : KEquityPriceUpda
   lvEquityList->setColumnWidthMode(0, QListView::Maximum);
   //lvEquityList->header()->setResizeEnabled(true);
   lvEquityList->setAllColumnsShowFocus(true);
-  
+
   MyMoneyFile* file = MyMoneyFile::instance();
   QValueList<MyMoneyEquity> equities = file->equityList();
   qDebug("KEquityPriceUpdateDlg: Number of equity objects: %d", equities.size());
@@ -66,7 +68,7 @@ KEquityPriceUpdateDlg::KEquityPriceUpdateDlg(QWidget *parent) : KEquityPriceUpda
     KListViewItem* item = new KListViewItem(lvEquityList, (*it).name(), (*it).tradingSymbol());
     lvEquityList->insertItem(item);
   }
-  
+
   connect(btnOK, SIGNAL(clicked()), this, SLOT(slotOKClicked()));
   connect(btnCancel, SIGNAL(clicked()), this, SLOT(slotCancelClicked()));
   connect(btnUpdateSelected, SIGNAL(clicked()), this, SLOT(slotUpdateSelectedClicked()));
@@ -115,19 +117,19 @@ void KEquityPriceUpdateDlg::slotUpdateSelectedClicked()
   {
     m_pPriceUpdate = new MyMoneyOnlinePriceUpdate();
   }
-  
+
   //m_pPriceUpdate->
 }
 
 void KEquityPriceUpdateDlg::slotUpdateAllClicked()
 {
   qDebug("KEquityPriceUpdateDlg: Updating All");
-  
+
   if(!m_pPriceUpdate)
   {
     m_pPriceUpdate = new MyMoneyOnlinePriceUpdate();
   }
-  
+
   QStringList list;
   QPtrList<QListViewItem> selectedItems = lvEquityList->selectedItems();
   for(QPtrList<QListViewItem>::ConstIterator it = selectedItems.begin(); it != selectedItems.end(); ++it)
@@ -136,7 +138,7 @@ void KEquityPriceUpdateDlg::slotUpdateAllClicked()
     QListViewItem* item = (*it);
     list.push_back(item->text(0));
   }
-  
+
   int result = m_pPriceUpdate->getQuotes(list);
 }
 
