@@ -53,15 +53,16 @@ KTransactionView::KTransactionView(QWidget *parent, const char *name)
 		
 	transactionsTable->horizontalHeader()->setResizeEnabled(false);
 	transactionsTable->horizontalHeader()->setMovingEnabled(false);
+/*
   int w=transactionsTable->width();
   transactionsTable->setColumnWidth(0, 100);
   transactionsTable->setColumnWidth(1, 100);
-  transactionsTable->setColumnWidth(2, w-530-20);
+  transactionsTable->setColumnWidth(2, w-530-25);
   transactionsTable->setColumnWidth(3, 30);
   transactionsTable->setColumnWidth(4, 100);
   transactionsTable->setColumnWidth(5, 100);
   transactionsTable->setColumnWidth(6, 100);
-
+*/
 	KConfig *config = KGlobal::config();
   QFont defaultFont = QFont("helvetica", 12);
   transactionsTable->horizontalHeader()->setFont(config->readFontEntry("listHeaderFont", &defaultFont));
@@ -1310,7 +1311,7 @@ void KTransactionView::resizeEvent(QResizeEvent*)
   int w=transactionsTable->width();
   transactionsTable->setColumnWidth(0, 100);
   transactionsTable->setColumnWidth(1, 100);
-  transactionsTable->setColumnWidth(2, w-530-20);
+  transactionsTable->setColumnWidth(2, w-530-25);
   transactionsTable->setColumnWidth(3, 30);
   transactionsTable->setColumnWidth(4, 100);
   transactionsTable->setColumnWidth(5, 100);
