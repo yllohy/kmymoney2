@@ -1,15 +1,18 @@
+2005-03-29 Ace Jones <acejones@users.sourceforge.net>
+  * Cleaned up welcome html pages a bit, with some help from Rob.
+  
 2005-03-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed INT64_MIN, INT64_MAX definition problem
   * Fixed initial startup behaviour
   * Added tabs for personal information and transaction history in payees view
   * Remove symlinks to header files before (re-)creating them during configure
 
-2005-03-29 Ace Jones <acejones@users.sourceforge.net>
+2005-03-27 Ace Jones <acejones@users.sourceforge.net>
   * Added new welcome and whats new screens
     (Submitted by Robert Wadley <rob@robntina.fastmail.us>)
   * Hooked up logic for all the links and added a bunch of whats new text 
 
-2005-03-28 Ace Jones <acejones@users.sourceforge.net>
+2005-03-26 Ace Jones <acejones@users.sourceforge.net>
   * Handle QIF-imported opening balances the new way
   * Terminology changes to US-english-ize the base text
     (Submitted by Robert Wadley <rob@robntina.fastmail.us>)

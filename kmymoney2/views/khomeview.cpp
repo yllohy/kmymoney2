@@ -513,69 +513,71 @@ const QString KHomeView::linkend(void) const
 
 void KHomeView::slotOpenURL(const KURL &url, const KParts::URLArgs& /* args */)
 {
+  QString protocol = url.protocol();
   QString view = url.fileName(false);
   QCString id = url.queryItem("id").data();
   QCString mode = url.queryItem("mode").data();
 
-  // qDebug("view = '%s'", url.fileName(false).latin1());
-  // qDebug("id = '%s'", url.queryItem("id").latin1());
+//   qDebug("protocol = '%s'", protocol.latin1());
+//   qDebug("view = '%s'", view.latin1());
+//   qDebug("id = '%s'", static_cast<const char*>(id));
+//   qDebug("mode = '%s'", static_cast<const char*>(mode));
 
-  if(view == VIEW_LEDGER) {
-    emit ledgerSelected(id, QCString());
+  if ( protocol == "http" )
+  {
+    KApplication::kApplication()->invokeBrowser(url.prettyURL());
+  }
+  else if ( protocol == "mailto" )
+  {
+    KApplication::kApplication()->invokeMailer(url);
+  }
+  else
+  {
+    if(view == VIEW_LEDGER) {
+      emit ledgerSelected(id, QCString());
+  
+    } else if(view == VIEW_SCHEDULE) {
+      if(!id.isEmpty())
+        emit scheduleSelected(id);
+      if(!mode.isEmpty()) {
+        m_showAllSchedules = (mode == QCString("full"));
+        slotRefreshView();
+      }
+  
+    } else if(view == VIEW_REPORTS) {
+      emit reportSelected(id);
+  
+    } else if(view == VIEW_WELCOME) {
+      KMainWindow* mw = dynamic_cast<KMainWindow*>(qApp->mainWidget());
+      Q_CHECK_PTR(mw);
+      if ( mode == "whatsnew" )
+      {
+        m_part->openURL(KGlobal::dirs()->findResource("appdata", "html/whats_new.html"));
+      }
+      else if ( mode == "manual" )
+      {
+        KMessageBox::sorry(qApp->mainWidget(),i18n("There is no user manual yet"),i18n("No manual"));
+      }
+      else 
+        m_part->openURL(m_filename);
+  
+    } else if(view == "action") {
+        KMainWindow* mw = dynamic_cast<KMainWindow*>(qApp->mainWidget());
+        Q_CHECK_PTR(mw);
+        mw->actionCollection()->action( id )->activate();
 
-  } else if(view == VIEW_SCHEDULE) {
-    if(!id.isEmpty())
-      emit scheduleSelected(id);
-    if(!mode.isEmpty()) {
-      m_showAllSchedules = (mode == QCString("full"));
+//         unsigned idx = mw->actionCollection()->count();
+//         while( idx-- )
+//         {
+//           qDebug("%u: %s\n",idx,mw->actionCollection()->action(idx)->name());
+//         }
+                
+    } else if(view == VIEW_HOME) {
       slotRefreshView();
+  
+    } else {
+      qDebug("Unknown view '%s' in KHomeView::slotOpenURL()", view.latin1());
     }
-
-  } else if(view == VIEW_REPORTS) {
-    emit reportSelected(id);
-
-  } else if(view == VIEW_WELCOME) {
-    KMainWindow* mw = dynamic_cast<KMainWindow*>(qApp->mainWidget());
-    Q_CHECK_PTR(mw);
-    if ( mode == "whatsnew" )
-     m_part->openURL(KGlobal::dirs()->findResource("appdata", "html/whats_new.html"));
-    else if ( mode == "filenew" )
-    {
-      mw->actionCollection()->action( KStdAction::name( KStdAction::New ) )->activate();
-    }
-    else if ( mode == "fileopen" )
-    {
-      mw->actionCollection()->action( KStdAction::name( KStdAction::Open ) )->activate();
-    }
-    else if ( mode == "manual" )
-    {
-      KMessageBox::sorry(qApp->mainWidget(),i18n("There is no user manual yet"),i18n("No manual"));
-    }
-    else if ( mode == "www" )
-    {
-      KApplication::kApplication()->invokeBrowser("http://kmymoney2.sf.net");
-    }
-    else if ( mode == "devlist" )
-    {
-      KApplication::kApplication()->invokeMailer(QString("kmymoney2-developer@lists.sourceforge.net"),"Inquiry about KMyMoney");
-    }
-    else if ( mode == "bugreport" )
-    {
-      mw->actionCollection()->action( KStdAction::name( KStdAction::ReportBug ) )->activate();
-//       unsigned idx = mw->actionCollection()->count();
-//       while( idx-- )
-//       {
-//         qDebug("%u: %s\n",idx,mw->actionCollection()->action(idx)->name());
-//       }
-    }
-    else 
-    m_part->openURL(m_filename);
-
-  } else if(view == VIEW_HOME) {
-    slotRefreshView();
-
-  } else {
-    qDebug("Unknown view '%s' in KHomeView::slotOpenURL()", view.latin1());
   }
 }
 

@@ -2,122 +2,117 @@
 3/23/2005  KMyMoney Welcome Page
 Robert Wadley    rob<at>robntina.fastmail.us
 David Wadley     mail<at>davidwadley.com
-
 ********************************************************************/
 
 body {
-  background-color: Highlight;
-  margin-top:83px;
-  margin-bottom: 65px;
+	background-color: highlight;
+	margin-top:83px;
+	margin-bottom: 65px;
 }
-
 #KMyMoneyLogo {
   position:absolute;
   top:10px;
   right:10px;
   }
-
-#tagline { /*line of text under logo("Personal Finance Software")*/
+/*line of text under logo("Personal Finance Software")*/
+#tagline {
   position:absolute;
   top:50px;
   right:10px;
-  font-family:bitstream vera sans, verdana, sans-serif;
+  font-family:bitstream vera sans, verdana, sans;
   font-size:8px;
-  color: HighlightText;
-}
+  color: highlighttext;
 
-#title { /*("Welcome to KMyMoney","What's New in...")*/
-  font-family:bitstream vera sans, verdana, sans-serif;
+}
+/*("Welcome to KMyMoney","What's New in...")*/
+#title {
+  font-family:bitstream vera sans, verdana, sans;
   line-height:10px;
   font-size: 26px;
   position:absolute;
   top:0px;
   left:10px;
-  color:HighlightText;
+  color:highlighttext;
 }
-
-#summaryLink, #returnLink { /*link under title, "Goto My Financial Summary"etc.*/
+/*link under title, "Goto My Financial Summary"etc.*/
+#summaryLink, #returnLink {
   position:absolute;
   top:45px;
   left:35px;
-  color:HighlightText;
+  color:highlighttext;
 }
-
-#returnLink img { /*positions back-arrow icon in the link to return to welcome page*/
+#returnLink img {
   vertical-align:middle;
   position:relative;
   margin-right: 5px;
   top:-3px;
 }
-
 #summaryLink a, #returnLink a {
-  color:HighlightText;
+  color:highlighttext;
   text-decoration:none;  
 }
-
 #summaryLink a:hover, #returnLink a:hover {
-  color:HighlightText;
+  color:highlighttext;
   text-decoration:underline;  
 }
-
-
 /*start content box frame*/
 #topleft {
-  background: url(../images/topleft.png) no-repeat left top;
+  background: 
+url(./images/topleft.png) no-repeat left top;
   width:87%;
   margin-left:5%;
   margin-right:5%;
   }
-  
 #topright {
-  background: url(../images/topright.png) 
+  background: 
+	url(./images/topright.png) 
   top right no-repeat;
   position: relative;
   right:-22px;
   padding-top: 20px;
+
   }
-  
 #rightborder {
-  background: url(../images/rightborder.png) 
+  background: 
+	url(./images/rightborder.png) 
   top right repeat-y;
   position: relative;
   right:-22px;
   padding-right: 22px;
+ /* margin-top: -1em;*/
   margin-bottom: -20px;
   }
-  
 #bottomleft {
-  background: url(../images/bottomleft.png) 
+  background: 
+	url(./images/bottomleft.png) 
   bottom left no-repeat;
-  position: relative;
-  top: 20px;
+    position: relative;
+	/*padding-top: 20px;*/
+	top: 20px;
   }
-  
 #bottomright {
-  background: url(../images/bottomright.png) 
+	background: 
+	url(./images/bottomright.png) 
   bottom right no-repeat;
-  position: relative;
-  right:-22px;
-  padding-top: 20px;
+    position: relative;
+    right:-22px;
+    padding-top: 20px;
   }
   /* end content box frame */
   
-  
 /* list of links on welcome page */  
 #welcomeMenu ul {
-  list-style-type:none; /*removes default bullets*/
+  list-style-type:none;/*removes default bullets*/
 }
-
 #welcomeMenu li {
-  margin-bottom: 10px; /*adds space between lines*/
+  margin-bottom: 10px;/*adds space between lines*/
   color: black;
 }
-
 #welcomeMenu span:hover {
   text-decoration:underline; /*sets hover attributes*/
 }
-
-#welcomeMenu img { /* replacement bullets */
+/* replacement bullets */
+#welcomeMenu img {
   vertical-align:middle;
   position:relative;
   margin-right: 5px;
