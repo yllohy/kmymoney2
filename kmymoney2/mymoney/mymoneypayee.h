@@ -20,7 +20,7 @@
 #include <qstring.h>
 #include <qcstring.h>
 
-// This class represents a simple payee.  Used in MyMoneySplit
+/// This class represents a simple payee.  Used in MyMoneySplit
 class MyMoneyPayee {
 private:
 	// Simple fields

@@ -40,8 +40,26 @@
   * @author Thomas Baumgart
   */
 
+/**
+  * This class represents a split of a transaction.
+  */
 class MyMoneySplit {
-public: 
+public:
+  /**
+    * This enum defines the possible reconciliation states a split
+    * can be in. Possible values are as follows:
+    *
+    * @li NotReconciled
+    * @li Cleared
+    * @li Reconciled
+    * @li Frozen
+    *
+    * Whenever a new split is created, it has the status NotReconciled. It
+    * can be set to cleared when the transaction has been performed. Once the
+    * account is reconciled, cleared splits will be set to Reconciled. The
+    * state Frozen will be used, when the concept of books is introduced into
+    * the engine and a split must not be changed anymore.
+    */
   enum reconcileFlagE {
     NotReconciled = 0,
     Cleared,
