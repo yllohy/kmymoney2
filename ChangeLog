@@ -1,5 +1,10 @@
 2005-04-01 Ace Jones <acejones@users.sourceforge.net>
   * Fixed #937728: Opening balances sometimes not picked up in QIF files
+  * Set the 'finish' button to be default in the last page of the new account 
+    wizard
+  * Fixed bug in account select dialog.  When using it to create a loan 
+    account, the schedule is not created, which causes the account to need 
+    to be "fixed" when its loaded.
 
 2005-03-31 Ace Jones <acejones@users.sourceforge.net>
   * Added support for utf8-encoded QIF files
