@@ -61,6 +61,8 @@ KReconcileDlg::KReconcileDlg(const MyMoneyMoney previousBal, const MyMoneyMoney 
 	debitListView->addColumn(i18n("C"));
 	debitListView->setMultiSelection(true);
   debitListView->setAllColumnsShowFocus(true);
+  // never show a horizontal scroll bar
+  debitListView->setHScrollBarMode(QScrollView::AlwaysOff);
 	
 	creditListView->setRootIsDecorated(false);
 	creditListView->addColumn(i18n("Date"));
@@ -70,6 +72,8 @@ KReconcileDlg::KReconcileDlg(const MyMoneyMoney previousBal, const MyMoneyMoney 
 	creditListView->addColumn(i18n("C"));
 	creditListView->setMultiSelection(true);
   creditListView->setAllColumnsShowFocus(true);
+  // never show a horizontal scroll bar
+  creditListView->setHScrollBarMode(QScrollView::AlwaysOff);
 
 	endingLabel->setText(KGlobal::locale()->formatMoney(m_clearedBalance.amount(),""));
 	
@@ -142,6 +146,7 @@ void KReconcileDlg::loadLists(void)
       }
     }
   }
+  resizeEvent(NULL);
 }
 
 void KReconcileDlg::insertTransactions(void)
@@ -410,17 +415,17 @@ void KReconcileDlg::editClicked()
 
 void KReconcileDlg::resizeEvent(QResizeEvent* e)
 {
-  debitListView->setColumnWidth( 2, debitListView->width()
+  debitListView->setColumnWidth( 2, debitListView->visibleWidth()
     - debitListView->columnWidth(0)
     - debitListView->columnWidth(1)
     - debitListView->columnWidth(3)
-    - debitListView->columnWidth(4) - 5);
+    - debitListView->columnWidth(4));
 
-  creditListView->setColumnWidth( 2, creditListView->width()
+  creditListView->setColumnWidth( 2, creditListView->visibleWidth()
     - creditListView->columnWidth(0)
     - creditListView->columnWidth(1)
     - creditListView->columnWidth(3)
-    - creditListView->columnWidth(4) - 5);
+    - creditListView->columnWidth(4));
 
   // call base class resizeEvent()
   KReconcileDlgDecl::resizeEvent(e);
