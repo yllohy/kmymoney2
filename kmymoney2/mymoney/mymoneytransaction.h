@@ -36,6 +36,11 @@
 
 class MyMoneyFile;
 
+/**
+  * This class represents a transaction within the MyMoneyEngine. A transaction
+  * contains none, two or more splits of type MyMoneySplit. They are stored in
+  * a QValueList<MyMoneySplit> within this object.
+  */
 class MyMoneyTransaction {
 public:
 	MyMoneyTransaction();
@@ -84,10 +89,6 @@ public:
     */
   const bool accountReferenced(const QCString& id) const;
 
-  /// Returns a pointer to the file this transaction belongs to
-  /// @return pointer to MyMoneyFile
-  MyMoneyFile *file(void) const { return m_file; }
-
   /**
     * This method is used to add a split to the transaction. The split
     * will be assigned an id. The id member must be empty.
@@ -123,11 +124,6 @@ private:
   static const int SPLIT_ID_SIZE = 4;
 
   /**
-    * This member points back to the file that this transaction belongs to
-    */
-  MyMoneyFile *m_file;
-
-  /**
     * This member contains the date when the transaction was entered
     * into the engine
     */
@@ -155,11 +151,15 @@ private:
 
   /**
     * This member keeps the unique numbers of splits within this
-    * transaction
+    * transaction. Upon creation of a MyMoneyTransaction object this
+    * value will be set to 1.
     */
   unsigned int m_nextSplitID;
 
 private:
+  /**
+    * This method returns the next id to be used for a split
+    */
   const QCString nextSplitID(void);
 
   // friend QDataStream &operator<<(QDataStream &, const MyMoneyTransaction &);

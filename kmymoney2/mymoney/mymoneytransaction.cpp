@@ -25,8 +25,7 @@
 
 MyMoneyTransaction::MyMoneyTransaction()
 {
-	m_file = 0;
-  m_nextSplitID = 0;
+  m_nextSplitID = 1;
   m_id =
   m_memo = "";
   m_entryDate = QDate();
@@ -38,7 +37,6 @@ MyMoneyTransaction::MyMoneyTransaction(const QCString id,
                                        const MyMoneyTransaction& transaction)
 {
   *this = transaction;
-//	m_file = file;
   m_id = id;
   m_entryDate = QDate::currentDate();
 }
@@ -50,7 +48,6 @@ MyMoneyTransaction::~MyMoneyTransaction()
 bool MyMoneyTransaction::operator == (const MyMoneyTransaction& right) const
 {
   return ((m_id == right.m_id) &&
-      (file() == right.file()) &&
       (m_memo == right.m_memo) &&
       (m_splits == right.m_splits) &&
       (m_entryDate == right.m_entryDate) &&
@@ -128,7 +125,7 @@ const MyMoneySplit& MyMoneyTransaction::split(const QCString& accountId, const b
 const QCString MyMoneyTransaction::nextSplitID()
 {
   QCString id;
-  id = "S" + id.setNum(++m_nextSplitID).rightJustify(SPLIT_ID_SIZE, '0');
+  id = "S" + id.setNum(m_nextSplitID++).rightJustify(SPLIT_ID_SIZE, '0');
   return id;
 
 }

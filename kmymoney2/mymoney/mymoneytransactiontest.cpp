@@ -31,7 +31,6 @@ void MyMoneyTransactionTest::tearDown () {
 
 void MyMoneyTransactionTest::testEmptyConstructor() {
 	CPPUNIT_ASSERT(m->id() == "");
-	CPPUNIT_ASSERT(m->file() == 0);
 	CPPUNIT_ASSERT(m->entryDate() == QDate());
 	CPPUNIT_ASSERT(m->memo() == "");
 	CPPUNIT_ASSERT(m->splits().count() == 0);
