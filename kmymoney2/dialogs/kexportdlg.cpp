@@ -16,6 +16,17 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+// ----------------------------------------------------------------------------
+// QT Headers
+
+#include <qlineedit.h>
+#include <qlabel.h>
+#include <qpixmap.h>
+
+// ----------------------------------------------------------------------------
+// KDE Headers
+
 #include <kglobal.h>
 #include <klocale.h>
 #if QT_VERSION > 300
@@ -23,110 +34,91 @@
 #else
 #include <kstddirs.h>
 #endif
-
-#include <qpixmap.h>
-
-// ----------------------------------------------------------------------------
-// QT Headers
-#include <qlineedit.h>
-#include <qcheckbox.h>
-#include <qcombobox.h>
-#include <qtextstream.h>
-#include <qmessagebox.h>
-#include <qprogressbar.h>
-#include <qgroupbox.h>
-#include <qlabel.h>
-
-#if QT_VERSION > 300
-#include <qpushbutton.h>
-#endif
-
-// ----------------------------------------------------------------------------
-// KDE Headers
 #include <kmessagebox.h>
 #include <kfiledialog.h>
-#include <klocale.h>
+#include <kpushbutton.h>
 
 // ----------------------------------------------------------------------------
 // Project Headers
-#include "kexportdlg.h"
-#include "../widgets/kmymoneydateinput.h"
-#include "../mymoney/mymoneycategory.h"
 
-/** If the accoun is null we will have an undefined operation. */
-KExportDlg::KExportDlg(MyMoneyAccount *account, QWidget *parent)
-  : KExportDlgDecl(parent,0,TRUE)
+#include "kexportdlg.h"
+#include "../mymoney/mymoneycategory.h"
+#include "../converter/mymoneyqifprofileeditor.h"
+#include "../mymoney/mymoneyfile.h"
+
+KExportDlg::KExportDlg(QWidget *parent)
+  : KExportDlgDecl(parent, 0, true)
 {
-/*
   QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_qif_export.png");
   m_qpixmaplabel->setPixmap(QPixmap(filename));
 
-  m_mymoneyaccount = account;
-
-  // Set the account name that we will be operating on
-  if (m_mymoneyaccount)
-    m_qlabelAccount->setText(m_mymoneyaccount->name());
-  else
-    m_qlabelAccount->setText(i18n("NO ACCOUNT AVAILABLE."));
-  
-  // Typical UK formats, (as well as france etc)
-  m_qcomboboxDateFormat->insertItem("%d/%m/%yy");
-  m_qcomboboxDateFormat->insertItem("%d/%mmm/%yy");
-  m_qcomboboxDateFormat->insertItem("%d/%m/%yyyy");
-  m_qcomboboxDateFormat->insertItem("%d/%mmm/%yyyy");
-  m_qcomboboxDateFormat->insertItem("%d/%m%yy");
-  m_qcomboboxDateFormat->insertItem("%d/%mmm%yy");
-  m_qcomboboxDateFormat->insertItem("%d.%m.%yy");
-  m_qcomboboxDateFormat->insertItem("%d.%m.%yyyy");
-
-  // Typical US formats
-  m_qcomboboxDateFormat->insertItem("%m/%d/%yy");
-  m_qcomboboxDateFormat->insertItem("%mmm/%d/%yy");
-  m_qcomboboxDateFormat->insertItem("%m/%d/%yyyy");
-  m_qcomboboxDateFormat->insertItem("%mmm/%d/%yyyy");
-  m_qcomboboxDateFormat->insertItem("%m%d%yy");
-  m_qcomboboxDateFormat->insertItem("%mmm/%d%yy");
-
-  m_qcomboboxDateFormat->setEditable(true);
-
-  // Set all the last used options
+  // Set (almost) all the last used options
   readConfig();
 
-  int nErrorReturn = 0;
+  loadProfiles(true);
+  loadAccounts();
 
-  if (m_mymoneyaccount->validateQIFDateFormat("", m_qstringLastFormat.latin1(), nErrorReturn, false))
-    m_qcomboboxDateFormat->setEditText(m_qstringLastFormat);
-  else {
-    QString qstringError(i18n("QIF date format invalid: "));
-    qstringError += m_mymoneyaccount->getQIFDateFormatErrorString(nErrorReturn);
-    KMessageBox::error(this, qstringError, i18n("Import QIF"));
-  }
-
-  // Now that we've got the text in the combo box, reset the edit status
-  m_qcomboboxDateFormat->setEditable(false);
-
-  connect(m_qlineeditFile, SIGNAL(textChanged(const QString&)), this,
-    SLOT(slotFileTextChanged(const QString&)));
-
+  // connect the buttons to their functionality
   connect(m_qbuttonBrowse, SIGNAL( clicked() ), this, SLOT( slotBrowse() ) );
-*/
+  connect(m_profileEditorButton, SIGNAL(clicked()), this, SLOT(slotNewProfile()));
   connect(m_qbuttonOk, SIGNAL(clicked()), this, SLOT(slotOkClicked()));
+
+  // connect the change signals to the check slot and perform initial check
+  connect(m_qlineeditFile, SIGNAL(textChanged(const QString&)), this, SLOT(checkData()));
+  connect(m_qcheckboxAccount, SIGNAL(toggled(bool)), this, SLOT(checkData()));
+  connect(m_qcheckboxCategories, SIGNAL(toggled(bool)), this, SLOT(checkData()));
+  connect(m_accountComboBox, SIGNAL(highlighted(int)), this, SLOT(checkData()));
+  connect(m_profileComboBox, SIGNAL(highlighted(int)), this, SLOT(checkData()));
+  connect(m_kmymoneydateStart, SIGNAL(dateChanged(const QDate&)), this, SLOT(checkData()));
+  connect(m_kmymoneydateEnd, SIGNAL(dateChanged(const QDate&)), this, SLOT(checkData()));
+
+  checkData();
 }
 
 KExportDlg::~KExportDlg()
 {
-  // Make sure we save the last used settings for use next time,
-  writeConfig();
 }
 
 void KExportDlg::slotBrowse()
 {
-/*
   QString newName(KFileDialog::getSaveFileName(QString::null,"*.QIF"));
   appendCorrectFileExt(newName, QString("qif"));
   if (!newName.isEmpty())
     m_qlineeditFile->setText(newName);
-*/
+}
+
+void KExportDlg::slotNewProfile(void)
+{
+  MyMoneyQifProfileEditor* editor = new MyMoneyQifProfileEditor(true, this, "QIF Profile Editor");
+  if(editor->exec()) {
+    m_profileComboBox->setCurrentText(editor->selectedProfile());
+    loadProfiles();
+  }
+  delete editor;
+}
+
+void KExportDlg::loadProfiles(const bool selectLast)
+{
+  QString current = m_profileComboBox->currentText();
+
+  m_profileComboBox->clear();
+
+  QStringList list;
+  KConfig* config = KGlobal::config();
+  config->setGroup("Profiles");
+
+  list = config->readListEntry("profiles");
+  list.sort();
+  m_profileComboBox->insertStringList(list);
+
+  if(selectLast == true) {
+    config->setGroup("Last Use Settings");
+    current = config->readEntry("KExportDlg_LastProfile");
+  }
+
+  m_profileComboBox->setCurrentItem(0);
+  if(list.contains(current) > 0)
+    m_profileComboBox->setCurrentText(current);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -177,71 +169,10 @@ bool KExportDlg::appendCorrectFileExt(QString& str, const QString strExtToUse)
 	return true;
 }
 
-
-/** Perform the real processing when OK is clicked */
 void KExportDlg::slotOkClicked()
 {
-/*
-  // Do some validation on the inputs.
-  if (m_qlineeditFile->text().isEmpty()) {
-    KMessageBox::information(this, i18n("Please enter the path to the QIF file"), i18n("Export QIF"));
-    m_qlineeditFile->setFocus();
-    return;
-  }
-
-  QString strFile(m_qlineeditFile->text());
-  if(appendCorrectFileExt(strFile, QString("qif")))
-    m_qlineeditFile->setText(strFile);
-
-  if (!m_qcheckboxAccount->isChecked() && !m_qcheckboxCategories->isChecked()) {
-    KMessageBox::information(this, i18n("Please specify at least one of the content types to export."),
-        i18n("Export QIF"));
-    return;
-  }
-
-  if (m_kmymoneydateEnd->getQDate() < m_kmymoneydateStart->getQDate()) {
-    KMessageBox::information(this, i18n("Please enter a start date lower than the end date."));
-    return;
-  }
-
-  int nErrorReturn = 0;
-
-  if (!m_mymoneyaccount->validateQIFDateFormat("", m_qcomboboxDateFormat->currentText().latin1(), nErrorReturn, false))
-  {
-    QString qstringError(i18n("QIF date format invalid: "));
-    qstringError += m_mymoneyaccount->getQIFDateFormatErrorString(nErrorReturn);
-    KMessageBox::error(this, qstringError, i18n("Import QIF"));
-    m_qcomboboxDateFormat->setFocus();
-    return;
-  }
-
-  // Make sure we have an account to operate on
-  if (m_mymoneyaccount) {
-    // Connect to the provided signals in MyMoneyAccount
-    // These signals will be emitted at appropriate times.
-    connect(m_mymoneyaccount, SIGNAL(signalProgressCount(int)), m_qprogressbar, SLOT(setTotalSteps(int)));
-    connect(m_mymoneyaccount, SIGNAL(signalProgress(int)), this, SLOT(slotSetProgress(int)));
-
-    int nTransCount = 0;
-    int nCatCount = 0;
-
-    // Do the actual write
-    if (!m_mymoneyaccount->writeQIFFile(m_qlineeditFile->text(), m_qcomboboxDateFormat->currentText(),
-          m_qcheckboxAccount->isChecked(), m_qcheckboxCategories->isChecked(), m_kmymoneydateStart->getQDate(),
-          m_kmymoneydateEnd->getQDate(), nTransCount, nCatCount)) {
-      KMessageBox::error(this, i18n("Error occurred whilst exporting to qif file."), i18n("Export QIF"));
-    }
-    else {
-      QString qstringPrompt = i18n("Export finished successfully.\n\n");
-      qstringPrompt += i18n("Number of transactions exported ");
-      qstringPrompt += QString::number(nTransCount);
-      qstringPrompt += i18n(".\nNumber of categories exported ");
-      qstringPrompt += QString::number(nCatCount);
-      qstringPrompt += ".";
-      KMessageBox::information(this, qstringPrompt, i18n("Export QIF"));
-    }
-  }
-*/
+  // Make sure we save the last used settings for use next time,
+  writeConfig();
   accept();
 }
 
@@ -254,19 +185,8 @@ void KExportDlg::readConfig(void)
   m_qcheckboxCategories->setChecked(kconfig->readBoolEntry("KExportDlg_CatOpt", true));
   m_kmymoneydateStart->setDate(kconfig->readDateTimeEntry("KExportDlg_StartDate").date());
   m_kmymoneydateEnd->setDate(kconfig->readDateTimeEntry("KExportDlg_EndDate").date());
-  m_qstringLastFormat = kconfig->readEntry("KExportDlg_LastFormat", "%d/%m/%yyyy");
-
-  if (m_qlineeditFile->text().length()>=1) {
-    m_qgroupboxDates->setEnabled(true);
-    m_qgroupboxContents->setEnabled(true);
-    m_qgroupboxFormats->setEnabled(true);
-    m_qbuttonOk->setEnabled(true);
-  } else {
-    m_qgroupboxDates->setEnabled(false);
-    m_qgroupboxContents->setEnabled(false);
-    m_qgroupboxFormats->setEnabled(false);
-    m_qbuttonOk->setEnabled(false);
-  }
+  // m_profileComboBox is loaded in loadProfiles(), so we don't worry here
+  // m_accountComboBox is loaded in loadAccounts(), so we don't worry here
 }
 
 void KExportDlg::writeConfig(void)
@@ -278,37 +198,79 @@ void KExportDlg::writeConfig(void)
   kconfig->writeEntry("KExportDlg_CatOpt", m_qcheckboxCategories->isChecked());
   kconfig->writeEntry("KExportDlg_StartDate", QDateTime(m_kmymoneydateStart->getQDate()));
   kconfig->writeEntry("KExportDlg_EndDate", QDateTime(m_kmymoneydateEnd->getQDate()));
-  kconfig->writeEntry("KExportDlg_LastFormat", m_qcomboboxDateFormat->currentText());
-
+  kconfig->writeEntry("KExportDlg_LastProfile", m_profileComboBox->currentText());
+  kconfig->writeEntry("KExportDlg_LastAccount", m_accountComboBox->currentText());
   kconfig->sync();
 }
 
-/** Update the progress bar, and update the transaction count indicator. */
-void KExportDlg::slotSetProgress(int progress)
+void KExportDlg::checkData(void)
 {
-  m_qprogressbar->setProgress(progress);
-  QString qstring = QString::number(progress);
-  qstring += i18n(" of ");
-  qstring += QString::number(m_qprogressbar->totalSteps());
-  m_qlabelTransaction->setText(qstring);
-  // force update of modified text on screen every ten iterations
-  if((progress % 10) == 0)
-    m_qlabelTransaction->repaint();
+  bool  okEnabled = false;
+
+  if(!m_qlineeditFile->text().isEmpty()) {
+    QString strFile(m_qlineeditFile->text());
+    if(appendCorrectFileExt(strFile, QString("qif")))
+      m_qlineeditFile->setText(strFile);
+  }
+
+  if(!m_qlineeditFile->text().isEmpty()
+  && !m_accountComboBox->currentText().isEmpty()
+  && !m_profileComboBox->currentText().isEmpty()
+  && m_kmymoneydateStart->getQDate() <= m_kmymoneydateEnd->getQDate()
+  && (m_qcheckboxAccount->isChecked() || m_qcheckboxCategories->isChecked()))
+    okEnabled = true;
+
+  m_qbuttonOk->setEnabled(okEnabled);
 }
 
-/** Make sure the text input is ok */
-void KExportDlg::slotFileTextChanged(const QString& text)
+void KExportDlg::loadAccounts(void)
 {
-  if (!text.isEmpty()) {
-    m_qgroupboxDates->setEnabled(true);
-    m_qgroupboxContents->setEnabled(true);
-    m_qgroupboxFormats->setEnabled(true);
-    m_qbuttonOk->setEnabled(true);
-    m_qlineeditFile->setText(text);
-  } else {
-    m_qgroupboxDates->setEnabled(false);
-    m_qgroupboxContents->setEnabled(false);
-    m_qgroupboxFormats->setEnabled(false);
-    m_qbuttonOk->setEnabled(false);
+  QStringList strList;
+
+  try {
+    MyMoneyFile *file = MyMoneyFile::instance();
+
+    // read all account items from the MyMoneyFile objects and add them to the listbox
+    addCategories(strList, file->liability().id(), "");
+    addCategories(strList, file->asset().id(), "");
+
+  } catch (MyMoneyException *e) {
+    qDebug("Exception '%s' thrown in %s, line %ld caught in KExportDlg::loadAccounts:%d",
+      e->what().latin1(), e->file().latin1(), e->line(), __LINE__);
+    delete e;
+  }
+
+  strList.sort();
+  m_accountComboBox->insertStringList(strList);
+
+  KConfig* config = KGlobal::config();
+  config->setGroup("Last Use Settings");
+  QString current = config->readEntry("KExportDlg_LastAccount");
+
+  m_accountComboBox->setCurrentItem(0);
+  if(strList.contains(current) > 0)
+    m_accountComboBox->setCurrentText(current);
+}
+
+void KExportDlg::addCategories(QStringList& strList, const QCString& id, const QString& leadIn) const
+{
+  MyMoneyFile *file = MyMoneyFile::instance();
+  QString name;
+
+  MyMoneyAccount account = file->account(id);
+
+  QCStringList accList = account.accountList();
+  QCStringList::ConstIterator it_a;
+
+  for(it_a = accList.begin(); it_a != accList.end(); ++it_a) {
+    account = file->account(*it_a);
+    strList << leadIn + account.name();
+    addCategories(strList, *it_a, leadIn + account.name() + ":");
   }
 }
+
+const QCString KExportDlg::accountId() const
+{
+  return MyMoneyFile::instance()->nameToAccount(m_accountComboBox->currentText());
+}
+
