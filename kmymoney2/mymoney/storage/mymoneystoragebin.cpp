@@ -1017,19 +1017,37 @@ void MyMoneyStorageBin::writeScheduledTransactions(QDataStream& s, IMyMoneySeria
 {
   s << (Q_INT32) 1;   // version
 
-  s << (Q_INT32) 0;   // for now there's nothing
+  QValueList<MyMoneySchedule> list;
+  QValueList<MyMoneySchedule>::ConstIterator it;
+
+  list = storage->scheduleList();
+  s << list.count();
+  for(it = list.begin(); it != list.end(); ++it) {
+    writeSchedule(s, *it);
+  }
 }
 
 void MyMoneyStorageBin::readScheduledTransactions(QDataStream& s, IMyMoneySerialize* storage)
 {
   Q_INT32 version;
   Q_INT32 cnt;
+  unsigned long id;
+
+  Q_INT32 t;
+  s >> t; // Eat an extra byte?
 
   s >> version;
 
   s >> cnt;
-
+  signalProgress(0, cnt, QObject::tr("Loading schedules..."));
   for(int i = 0; i < cnt; ++i) {
+    MyMoneySchedule sched = readSchedule(s);
+    storage->loadSchedule(sched);
+
+    id = extractId(sched.id().data());
+    if(id > storage->scheduleId())
+      storage->loadScheduleId(id);
+    signalProgress(i, 0);
   }
 }
 
@@ -1055,4 +1073,55 @@ void MyMoneyStorageBin::signalProgress(int current, int total, const QString& ms
 {
   if(m_progressCallback != 0)
     (*m_progressCallback)(current, total, msg);
+}
+
+void MyMoneyStorageBin::writeSchedule(QDataStream&s, const MyMoneySchedule& sc)
+{
+  Q_INT32 tmp;
+  tmp = 1;    // version
+  s << tmp;
+
+  s << sc.occurence();
+  s << sc.type();
+  s << sc.startDate();
+  s << sc.paymentType();
+  s << sc.isFixed();
+  s << sc.willEnd();
+  s << sc.transactionsRemaining();
+  s << sc.endDate();
+  s << sc.autoEnter();
+  s << sc.id();
+  s << sc.lastPayment();
+  s << sc.name();
+  s << sc.accountId();
+  writeTransaction(s, sc.transaction());
+}
+
+const MyMoneySchedule MyMoneyStorageBin::readSchedule(QDataStream& s)
+{
+  QCString id;
+  MyMoneySchedule  sc;
+  Q_INT32 version;
+  QString tmp_s;
+  Q_INT32 tmp_n;
+  QDate tmp_d;
+
+  s >> version;
+  s >> tmp_n; sc.setOccurence((MyMoneySchedule::occurenceE)tmp_n);
+  s >> tmp_n; sc.setType((MyMoneySchedule::typeE)tmp_n);
+  s >> tmp_d; sc.setStartDate(tmp_d);
+  s >> tmp_n; sc.setPaymentType((MyMoneySchedule::paymentTypeE)tmp_n);
+  s >> tmp_n; sc.setFixed(tmp_n);
+  s >> tmp_n; sc.setWillEnd(tmp_n);
+  s >> tmp_n; sc.setTransactionsRemaining(tmp_n);
+  s >> tmp_d; sc.setEndDate(tmp_d);
+  s >> tmp_n; sc.setAutoEnter(tmp_n);
+  s >> id; sc.setId(id);
+  s >> tmp_d; sc.setLastPayment(tmp_d);
+  s >> tmp_s; sc.setName(tmp_s);
+  s >> id; sc.setAccountId(id);
+  MyMoneyTransaction t = readTransaction(s);
+  sc.setTransaction(t);
+
+  return sc;
 }

@@ -87,35 +87,38 @@ KScheduledView::~KScheduledView()
   writeConfig();
 }
 
-void KScheduledView::refresh(const QCString schedId)
+void KScheduledView::refresh(bool full, const QCString schedId)
 {
   m_qlistviewScheduled->clear();
 
   try
   {
-    try
+    if (full)
     {
-      int accountCount=0;
-
-      m_kaccPopup->clear();
-
-      MyMoneyFile* file = MyMoneyFile::instance();
-      MyMoneyAccount acc;
-      QCStringList::ConstIterator it_s;
-
-      acc = file->asset();
-      for(it_s = acc.accountList().begin(); it_s != acc.accountList().end(); ++it_s)
+      try
       {
-        MyMoneyAccount a = file->account(*it_s);
-        m_kaccPopup->insertItem(a.name(), accountCount);
-        m_kaccPopup->setItemChecked(accountCount, true);
-        accountCount++;
+        int accountCount=0;
+
+        m_kaccPopup->clear();
+
+        MyMoneyFile* file = MyMoneyFile::instance();
+        MyMoneyAccount acc;
+        QCStringList::ConstIterator it_s;
+
+        acc = file->asset();
+        for(it_s = acc.accountList().begin(); it_s != acc.accountList().end(); ++it_s)
+        {
+          MyMoneyAccount a = file->account(*it_s);
+          m_kaccPopup->insertItem(a.name(), accountCount);
+          m_kaccPopup->setItemChecked(accountCount, true);
+          accountCount++;
+        }
       }
-    }
-    catch (MyMoneyException *e)
-    {
-      KMessageBox::detailedError(this, i18n("Unable to load accounts"), e->what());
-      delete e;
+      catch (MyMoneyException *e)
+      {
+        KMessageBox::detailedError(this, i18n("Unable to load accounts"), e->what());
+        delete e;
+      }
     }
 
     // Refresh the calendar view first
@@ -140,6 +143,20 @@ void KScheduledView::refresh(const QCString schedId)
     {
       MyMoneySchedule schedData = (*it);
       KScheduledListItem* item=0;
+
+      bool bContinue=true;
+      QCStringList::iterator accIt;
+      for (accIt=m_filterAccounts.begin(); accIt!=m_filterAccounts.end(); ++accIt)
+      {
+        if (*accIt == schedData.accountId())
+        {
+          bContinue=false; // Filter it out
+          break;
+        }
+      }
+
+      if (!bContinue)
+        continue;
 
       switch (schedData.type())
       {
@@ -485,11 +502,10 @@ void KScheduledView::slotListItemExecuted(QListViewItem* item)
 
 void KScheduledView::slotAccountActivated(int id)
 {
-/*
-  QCStringList list;
-*/
+  m_filterAccounts.clear();
+
   m_kaccPopup->setItemChecked(id, ((m_kaccPopup->isItemChecked(id))?false:true));
-/*  
+  
   try
   {
     int accountCount=0;
@@ -500,19 +516,20 @@ void KScheduledView::slotAccountActivated(int id)
     acc = file->asset();
     for(it_s = acc.accountList().begin(); it_s != acc.accountList().end(); ++it_s)
     {
-      if (m_kaccPopup->isItemChecked(accountCount))
+      if (!m_kaccPopup->isItemChecked(accountCount))
       {
-        list.append(*it_s);
+        m_filterAccounts.append(*it_s);
       }
       accountCount++;
     }
 
-    m_calendar->setFilterAccounts(list);
+    m_calendar->setFilterAccounts(m_filterAccounts);
+
+    refresh(false);
   }
   catch (MyMoneyException *e)
   {
     KMessageBox::detailedError(this, i18n("Unable to filter account"), e->what());
     delete e;
   }
-*/
 }

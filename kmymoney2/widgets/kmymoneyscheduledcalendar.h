@@ -76,7 +76,6 @@ protected slots:
   void slotSetViewDeposits();
   void slotSetViewTransfers();
   void slotHoverSchedules(QValueList<MyMoneySchedule>, QDate date);
-  void slotAccountChecked();
 
 private:
   KPopupMenu* kpopupmenu;

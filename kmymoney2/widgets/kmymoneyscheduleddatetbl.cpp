@@ -183,7 +183,7 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int row, int 
         QValueList<MyMoneySchedule>::Iterator delit;
         for (delit=toDelete.begin(); delit!=toDelete.end(); ++delit)
         {
-          schedules.remove(delit);
+          schedules.remove(*delit);
         }
       }
     }
@@ -261,7 +261,7 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int row, int 
           QValueList<MyMoneySchedule>::Iterator delit;
           for (delit=toDelete.begin(); delit!=toDelete.end(); ++delit)
           {
-            billSchedules.remove(delit);
+            billSchedules.remove((*delit));
           }
         }
         if (billSchedules.count() >= 1)
@@ -299,7 +299,7 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int row, int 
           QValueList<MyMoneySchedule>::Iterator delit;
           for (delit=toDelete.begin(); delit!=toDelete.end(); ++delit)
           {
-            depositSchedules.remove(delit);
+            depositSchedules.remove((*delit));
           }
         }
         if (depositSchedules.count() >= 1)
@@ -338,7 +338,7 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int row, int 
           QValueList<MyMoneySchedule>::Iterator delit;
           for (delit=toDelete.begin(); delit!=toDelete.end(); ++delit)
           {
-            transferSchedules.remove(delit);
+            transferSchedules.remove((*delit));
           }
         }
         
@@ -528,7 +528,7 @@ void kMyMoneyScheduledDateTbl::contentsMouseMoveEvent(QMouseEvent* e)
       QValueList<MyMoneySchedule>::Iterator delit;
       for (delit=toDelete.begin(); delit!=toDelete.end(); ++delit)
       {
-        schedules.remove(delit);
+        schedules.remove((*delit));
       }
     }
   }

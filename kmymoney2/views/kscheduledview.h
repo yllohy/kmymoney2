@@ -48,7 +48,7 @@ class KPopupMenu;
   * Used by the KMyMoneyView class to show the view.
   *
   * @author Michael Edwardes 2000-2002
-  * $Id: kscheduledview.h,v 1.12 2003/07/18 12:16:19 mte Exp $
+  * $Id: kscheduledview.h,v 1.13 2003/07/18 21:16:03 mte Exp $
   *
   * @short A class to encapsulate recurring transaction operations.
   */
@@ -157,7 +157,7 @@ private:
   /**
     * Refresh the view.
     */
-  void refresh(const QCString schedId="");
+  void refresh(bool full=true, const QCString schedId="");
 
   /**
     * Loads the accounts into the combo box.
@@ -165,6 +165,7 @@ private:
 //  void loadAccounts(void);
 
   KPopupMenu *m_kaccPopup;
+  QCStringList m_filterAccounts;
 };
 
 #endif

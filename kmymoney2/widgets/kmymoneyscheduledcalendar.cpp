@@ -102,7 +102,3 @@ void kMyMoneyScheduledCalendar::slotHoverSchedules(QValueList<MyMoneySchedule> l
     briefWidget.hide();
   }
 }
-
-void kMyMoneyScheduledCalendar::slotAccountChecked()
-{
-}

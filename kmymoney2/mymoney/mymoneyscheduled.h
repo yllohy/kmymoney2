@@ -382,7 +382,8 @@ public:
     * @param nm The new name
     * @return none
   **/
-  void setName(const QString& nm) { m_name = nm; }    
+  void setName(const QString& nm)
+ { m_name = nm; }    
 
   /**
     * Helper method to convert the type enum.
@@ -399,6 +400,8 @@ public:
     * @return none
   **/
   void setAccountId(const QCString& accountId) { m_accountId = accountId; }
+
+  bool operator ==(const MyMoneySchedule& right);
 
 private:
   /// Its occurence

@@ -74,7 +74,7 @@ void KEditScheduledDepositDlg::readConfig(void)
 {
   KConfig *config = KGlobal::config();
   config->setGroup("Last Use Settings");
-  m_lastPayee = config->readEntry("LastPayee");
+//  m_lastPayee = config->readEntry("LastPayee");
 }
 
 void KEditScheduledDepositDlg::writeConfig(void)
@@ -427,8 +427,10 @@ void KEditScheduledDepositDlg::loadWidgetsFromSchedule(void)
 {
   try
   {
+    m_accountCombo->setCurrentText(MyMoneyFile::instance()->account(m_schedule.accountId()).name());
     m_kcomboPayTo->loadText(MyMoneyFile::instance()->payee(m_schedule.transaction().split(m_accountCombo->currentAccountId()).payeeId()).name());
     m_kdateinputDue->setDate(m_schedule.startDate());
+    m_scheduleName->setText(m_schedule.name());
 
     switch (m_schedule.paymentType())
     {
@@ -507,7 +509,6 @@ void KEditScheduledDepositDlg::loadWidgetsFromSchedule(void)
       m_kdateinputFinal->setDate(m_schedule.endDate());
     }
 
-    m_scheduleName->setText(m_schedule.name());
   } catch (MyMoneyException *e)
   {
     delete e;

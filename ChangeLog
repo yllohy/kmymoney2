@@ -1,3 +1,8 @@
+2003-07-19 Michael Edwardes <mte@users.sourceforge.net>
+  * Added the equality operator to MyMoneySchedule.
+  * List and calendar view honour the account filter.
+  * Implemented file reading and saving of schedules.
+
 2003-07-18 Michael Edwardes <mte@users.sourceforge.net>
   * Fix MyMoneySchedule::nextPayment()
   * Clear splits when KSplitTransactionDlg sets only one.  (Workaround).

@@ -428,6 +428,7 @@ void KEditScheduledTransferDlg::loadWidgetsFromSchedule(void)
 {
   try
   {
+    m_accountCombo->setCurrentText(MyMoneyFile::instance()->account(m_schedule.accountId()).name());
     m_kcomboPayTo->loadText(MyMoneyFile::instance()->payee(m_schedule.transaction().split(m_accountCombo->currentAccountId()).payeeId()).name());
     m_kdateinputDue->setDate(m_schedule.startDate());
 

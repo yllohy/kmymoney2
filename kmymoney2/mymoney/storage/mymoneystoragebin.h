@@ -112,7 +112,9 @@ private:
   const MyMoneySplit readSplit(QDataStream& s);
 
   void writeScheduledTransactions(QDataStream& s, IMyMoneySerialize* storage);
+  void writeSchedule(QDataStream&s, const MyMoneySchedule& sc);
   void readScheduledTransactions(QDataStream& s, IMyMoneySerialize* storage);
+  const MyMoneySchedule readSchedule(QDataStream& s);
 
   void writeKeyValueContainer(QDataStream& s, QMap<QCString, QString> list) const;
   const QMap<QCString, QString> readKeyValueContainer(QDataStream& s) const;

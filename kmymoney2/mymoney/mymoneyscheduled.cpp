@@ -410,3 +410,23 @@ QString MyMoneySchedule::typeToString(void) const
       return i18n("Unknown");
   }
 }
+
+bool MyMoneySchedule::operator ==(const MyMoneySchedule& right)
+{
+  if (  m_occurence == right.m_occurence &&
+        m_type == right.m_type &&
+        m_startDate == right.m_startDate &&
+        m_paymentType == right.m_paymentType &&
+        m_fixed == right.m_fixed &&
+        m_transaction == right.m_transaction &&
+        m_willEnd == right.m_willEnd &&
+        m_transactionsRemaining == right.m_transactionsRemaining &&
+        m_endDate == right.m_endDate &&
+        m_autoEnter == right.m_autoEnter &&
+        m_id == right.m_id &&
+        m_lastPayment == right.m_lastPayment &&
+        m_name == right.m_name &&
+        m_accountId == right.m_accountId)
+    return true;
+  return false;
+}
