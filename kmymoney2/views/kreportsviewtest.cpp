@@ -2001,7 +2001,16 @@ void KReportsViewTest::testWebQuotes()
 //     kdDebug(2) << "KReportsViewTest::testWebQuotes(): quote is " << qr.m_date.toString() << " | " << qr.m_price.toString() << endl;
         
     CPPUNIT_ASSERT(qr.m_errors.count() == 0);
-    CPPUNIT_ASSERT(qr.m_date <= QDate::currentDate());
+    CPPUNIT_ASSERT(qr.m_date <= QDate::currentDate().addDays(1));
+    CPPUNIT_ASSERT(qr.m_date >= QDate::currentDate().addDays(-7));
+    CPPUNIT_ASSERT(qr.m_price.isPositive());
+    
+    q.launch("EUR > USD","Yahoo Currency");
+
+//      kdDebug(2) << "KReportsViewTest::testWebQuotes(): quote is " << qr.m_date.toString() << " | " << qr.m_price.toString() << endl;
+    
+    CPPUNIT_ASSERT(qr.m_errors.count() == 0);
+    CPPUNIT_ASSERT(qr.m_date <= QDate::currentDate().addDays(1));
     CPPUNIT_ASSERT(qr.m_date >= QDate::currentDate().addDays(-7));
     CPPUNIT_ASSERT(qr.m_price.isPositive());
   }

@@ -1,3 +1,6 @@
+2005-01-05 Ace Jones <acejones@users.sourceforge.net>
+  * Added online quotes for currencies
+
 2005-01-05 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Gnucash import - complete rewrite
     * Uses Qt SAX2 XML Parser; simpler interface, more structured code

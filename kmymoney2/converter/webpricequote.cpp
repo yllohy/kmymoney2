@@ -71,7 +71,27 @@ bool WebPriceQuote::launch( const QString& _symbol, const QString& _sourcename )
       m_source = defaultQuoteSources()[_sourcename];
   }
   
-  KURL url = KURL::fromPathOrURL(m_source.m_url.arg(m_symbol));
+  KURL url;
+  
+  // if the source has room for TWO symbols..
+  if ( m_source.m_url.contains("%2") )
+  {
+    // this is a two-symbol quote.  split the symbol into two.  valid symbol
+    // characters are: 0-9, A-Z and the dot.  anything else is a separator
+    
+    // FIXME: Ideally, we want to support 'anything else' as a separator,
+    // but for now, only " > " is working.
+    QRegExp splitrx("([0-9A-Za-z\\.]+) > ([0-9A-Za-z\\.]+)");
+    
+    // if we've truly found 2 symbols delimited this way...
+    if ( splitrx.search(m_symbol) != -1 )
+      url = KURL::fromPathOrURL(m_source.m_url.arg(splitrx.cap(1),splitrx.cap(2)));
+    else
+      kdDebug(2) << "WebPriceQuote::launch() did not find 2 symbols" << endl;
+  }
+  else
+    // a regular one-symbol quote
+    url = KURL::fromPathOrURL(m_source.m_url.arg(m_symbol));
 
   // If we're running a non-interactive session (with no UI), we can't
   // use KIO::NetAccess, so we have to get our web data the old-fashioned

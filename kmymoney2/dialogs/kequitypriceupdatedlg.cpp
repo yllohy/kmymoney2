@@ -49,6 +49,7 @@
 #include "kequitypriceupdatedlg.h"
 #include "../mymoney/mymoneyfile.h"
 #include "../mymoney/mymoneysecurity.h"
+#include "../mymoney/mymoneyprice.h"
 
 #define SYMBOL_COL      0
 #define NAME_COL        1
@@ -78,11 +79,12 @@ KEquityPriceUpdateDlg::KEquityPriceUpdateDlg(QWidget *parent, const QCString& se
   lvEquityList->setColumnWidthMode(ID_COL, QListView::Manual);
   lvEquityList->setAllColumnsShowFocus(true);
 
-  MyMoneyFile* file = MyMoneyFile::instance();
-  QValueList<MyMoneySecurity> securities = file->securityList();
-
   btnUpdateAll->setEnabled(false);
-
+  
+  MyMoneyFile* file = MyMoneyFile::instance();
+  
+  // First, add each security
+  QValueList<MyMoneySecurity> securities = file->securityList();
   for(QValueList<MyMoneySecurity>::ConstIterator it = securities.begin(); it != securities.end(); ++it)
   {
     // const QString& symbol = (*it).tradingSymbol();
@@ -104,6 +106,31 @@ KEquityPriceUpdateDlg::KEquityPriceUpdateDlg(QWidget *parent, const QCString& se
     }
   }
 
+  // Second, add each price pair that we know about
+  // typedef QMap<MyMoneySecurityPair, MyMoneyPriceEntries> MyMoneyPriceList;
+  MyMoneyPriceList prices = file->priceList();
+  for(MyMoneyPriceList::ConstIterator it_price = prices.begin(); it_price != prices.end(); ++it_price)
+  {
+    // typedef QPair<QCString, QCString> MyMoneySecurityPair;
+    MyMoneySecurityPair pair = it_price.key();
+    
+    if ( file->security( pair.first ).isCurrency() )
+    {
+      KListViewItem* item = new KListViewItem(lvEquityList, 
+        QString("%1 > %2").arg(pair.first,pair.second),
+        i18n("%1 units in %2").arg(pair.first,pair.second));
+      MyMoneyPrice pr = file->price(pair.first,pair.second);
+      if(pr.isValid()) {
+        item->setText(PRICE_COL, pr.rate().formatMoney(file->currency(pair.second).tradingSymbol()));
+        item->setText(DATE_COL, pr.date().toString(Qt::ISODate));
+      }
+      item->setText(ID_COL,QString("%1 %2").arg(pair.first,pair.second));
+      item->setText(SOURCE_COL,i18n("Yahoo Currency"));
+      
+      btnUpdateAll->setEnabled(true);
+    }
+  }
+  
   connect(btnOK, SIGNAL(clicked()), this, SLOT(slotOKClicked()));
   connect(btnCancel, SIGNAL(clicked()), this, SLOT(slotCancelClicked()));
   connect(btnUpdateSelected, SIGNAL(clicked()), this, SLOT(slotUpdateSelectedClicked()));
@@ -163,18 +190,32 @@ void KEquityPriceUpdateDlg::slotOKClicked()
     if ( !rate.isZero() )
     {
       QCString id = item->text(ID_COL).utf8();
-      MyMoneySecurity security = MyMoneyFile::instance()->security(id);
-      try {
-        MyMoneyPrice price(id, security.tradingCurrency(), QDate().fromString(item->text(DATE_COL), Qt::ISODate), rate, security.value("kmm-online-source"));
-
-        // TODO: Better handling of the case where there is already a price
-        // for this date.  Currently, it just overrides the old value.  Really it
-        // should check to see if the price is the same and prompt the user.
-        MyMoneyFile::instance()->addPrice(price);
-
-      } catch(MyMoneyException *e) {
-        qDebug("Unable to add price information for %s", security.name().data());
-        delete e;
+      
+      // if the ID has a space, then this is TWO ID's, so it's a currency quote
+      if ( QString(id).contains(" ") )
+      {
+        QStringList ids = QStringList::split(" ",QString(id));
+        QCString fromid = ids[0].utf8();
+        QCString toid = ids[1].utf8();        
+        MyMoneyPrice price(fromid,toid,QDate().fromString(item->text(DATE_COL), Qt::ISODate),rate,item->text(SOURCE_COL));
+        file->addPrice(price);
+      }
+      else
+      // otherwise, it's a security quote
+      {
+        MyMoneySecurity security = MyMoneyFile::instance()->security(id);
+        try {
+          MyMoneyPrice price(id, security.tradingCurrency(), QDate().fromString(item->text(DATE_COL), Qt::ISODate), rate, item->text(SOURCE_COL));
+  
+          // TODO: Better handling of the case where there is already a price
+          // for this date.  Currently, it just overrides the old value.  Really it
+          // should check to see if the price is the same and prompt the user.
+          MyMoneyFile::instance()->addPrice(price);
+  
+        } catch(MyMoneyException *e) {
+          qDebug("Unable to add price information for %s", security.name().data());
+          delete e;
+        }
       }
     }
     item = item->nextSibling();
@@ -237,22 +278,26 @@ void KEquityPriceUpdateDlg::slotConfigureClicked()
 {
 }
 
-void KEquityPriceUpdateDlg::slotReceivedQuote(const QString& symbol,const QDate& date, const MyMoneyMoney& price)
+void KEquityPriceUpdateDlg::slotReceivedQuote(const QString& _symbol,const QDate& _date, const MyMoneyMoney& _price)
 {
-  QListViewItem* item = lvEquityList->findItem(symbol,SYMBOL_COL,Qt::ExactMatch);
+  QListViewItem* item = lvEquityList->findItem(_symbol,SYMBOL_COL,Qt::ExactMatch);
   QListViewItem* next = NULL;
   
   if ( item )
   {
-    if ( price.isPositive() && date.isValid() )
+    if ( _price.isPositive() && _date.isValid() )
     {
-      item->setText(PRICE_COL, price.formatMoney());
+      QDate date = _date;
+      if ( date > QDate::currentDate() )
+        date = QDate::currentDate();
+      
+      item->setText(PRICE_COL, _price.formatMoney());
       item->setText(DATE_COL, date.toString(Qt::ISODate));
-      logStatusMessage(i18n("Price for %1 updated").arg(symbol));
+      logStatusMessage(i18n("Price for %1 updated").arg(_symbol));
     }
     else
     {
-      logErrorMessage(i18n("Received an invalid price for %1, unable to update.").arg(symbol));
+      logErrorMessage(i18n("Received an invalid price for %1, unable to update.").arg(_symbol));
     }
     
     prgOnlineProgress->advance(1);
@@ -272,7 +317,7 @@ void KEquityPriceUpdateDlg::slotReceivedQuote(const QString& symbol,const QDate&
   }
   else
   {
-    logErrorMessage(i18n("Received a price for %1, but this symbol is not on the list!  Aborting entire update.").arg(symbol));
+    logErrorMessage(i18n("Received a price for %1, but this symbol is not on the list!  Aborting entire update.").arg(_symbol));
   }
 
   if (next)
