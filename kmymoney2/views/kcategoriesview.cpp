@@ -331,10 +331,12 @@ void KCategoriesView::slotEditClicked(MyMoneyAccount& account)
       MyMoneyAccount parent = dlg.parentAccount();
 
       MyMoneyFile* file = MyMoneyFile::instance();
-      file->modifyAccount(account);
+      
+      // we need to reparent first, as modify will check for same type
       if(account.parentAccountId() != parent.id()) {
         file->reparentAccount(account, parent);
       }
+      file->modifyAccount(account);
     }
   }
   catch (MyMoneyException *e)
