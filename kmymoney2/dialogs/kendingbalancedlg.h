@@ -27,9 +27,9 @@
 #include <klocale.h>
 #include <qdialog.h>
 #include <qdatetime.h>
-#include "widgets/kmymoneyedit.h"
-#include "mymoney/mymoneymoney.h"
-#include "widgets/kmymoneydateinput.h"
+#include "../widgets/kmymoneyedit.h"
+#include "../mymoney/mymoneymoney.h"
+#include "../widgets/kmymoneydateinput.h"
 
 #include "kendingbalancedlgdecl.h"
 

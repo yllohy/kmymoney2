@@ -23,13 +23,13 @@
 
 #include <stdio.h>
 
-#include "knewbankdlg.h"
-#include "knewaccountdlg.h"
-#include "kendingbalancedlg.h"
-#include "kcategoriesdlg.h"
-#include "kpayeedlg.h"
-#include "knewfiledlg.h"
-#include "kfileinfodlg.h"
+#include "dialogs/knewbankdlg.h"
+#include "dialogs/knewaccountdlg.h"
+#include "dialogs/kendingbalancedlg.h"
+#include "dialogs/kcategoriesdlg.h"
+#include "dialogs/kpayeedlg.h"
+#include "dialogs/knewfiledlg.h"
+#include "dialogs/kfileinfodlg.h"
 #include "kmymoneyview.h"
 #include "dialogs/kchooseimportexportdlg.h"
 #include "dialogs/kcsvprogressdlg.h"

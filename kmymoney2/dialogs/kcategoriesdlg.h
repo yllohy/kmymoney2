@@ -21,7 +21,7 @@
 #include <qdialog.h>
 #include <klistview.h>
 
-#include <mymoney/mymoneyfile.h>
+#include "../mymoney/mymoneyfile.h"
 #include "kcategorydlgdecl.h"
 
 // This class allows the user to view/edit the categories

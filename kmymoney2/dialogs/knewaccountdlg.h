@@ -20,10 +20,10 @@
 #include <qdialog.h>
 #include <klocale.h>
 
-#include <mymoney/mymoneyaccount.h>
-#include <mymoney/mymoneymoney.h>
-#include "widgets/kmymoneyedit.h"
-#include "widgets/kmymoneydateinput.h"
+#include "../mymoney/mymoneyaccount.h"
+#include "../mymoney/mymoneymoney.h"
+#include "../widgets/kmymoneyedit.h"
+#include "../widgets/kmymoneydateinput.h"
 
 #include "knewaccountdlgdecl.h"
 

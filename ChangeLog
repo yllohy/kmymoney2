@@ -1,7 +1,8 @@
 2002-01-16 Michael Edwardes <mte@users.sourceforge.net>
   * Removed some old 'recurring transactions' code.
-  * Removed the unneded KMainView class and converted KMyMoneyView
+  * Removed the unneeded KMainView class and converted KMyMoneyView
     to use the KBanksView and KTransactionView classes directly.
+  * Moved all the dialogs into the dialogs subdir.
 
 2002-01-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * added setDirty() to MyMoneyTransaction, MyMoneyAccount and MyMoneyBank

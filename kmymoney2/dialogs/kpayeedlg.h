@@ -23,7 +23,7 @@
 #include <qlineedit.h>
 #include <qlabel.h>
 
-#include "mymoney/mymoneyfile.h"
+#include "../mymoney/mymoneyfile.h"
 #include "kpayeedlgdecl.h"
 
 // This dialog lets the user edit payee details.

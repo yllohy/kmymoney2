@@ -47,7 +47,7 @@
   * @see KDialogBase
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: ksettingsdlg.h,v 1.10 2002/01/14 06:50:08 ipwizard Exp $
+  * $Id: ksettingsdlg.h,v 1.1 2002/01/17 00:34:16 mte Exp $
   *
   * @short A class to manipulate the settings needed for running KMyMoney2
 **/

@@ -1,5 +1,5 @@
 /***************************************************************************
-                          knewbankdlg.h
+                          knewcategorydlg.h
                              -------------------
     copyright            : (C) 2000 by Michael Edwardes
     email                : mte@users.sourceforge.net
@@ -14,39 +14,34 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef KNEWBANKDLG_H
-#define KNEWBANKDLG_H
+#ifndef KNEWCATEGORYDLG_H
+#define KNEWCATEGORYDLG_H
 
 #include <klocale.h>
 #include <qdialog.h>
 
-#include <mymoney/mymoneymoney.h>
+#include "../mymoney/mymoneycategory.h"
 
-#include "knewbankdlgdecl.h"
+#include "knewcategorydlgdecl.h"
 
-// This dialog lets the user create or edit
-// a bank.
-// Use the second constructor to edit the bank.
-class KNewBankDlg : public KNewBankDlgDecl  {
+// This dialog lets the user edit or create
+// a category
+class KNewCategoryDlg : public KNewCategoryDlgDecl  {
    Q_OBJECT
-
-public:
-	KNewBankDlg(QWidget *parent=0, const char *name=0);
-  KNewBankDlg(QString b_name, QString b_sortCode, QString b_city,
-    QString b_street, QString b_postcode, QString b_telephone, QString b_manager,
-    QString title, QWidget *parent=0, const char *name=0);
-	~KNewBankDlg();
-
-	QString m_name;
-	QString m_street;
-	QString m_city;
-	QString m_postcode;
-	QString m_telephone;
-	QString m_managerName;
-        QString m_sortCode;
+public: 
+	KNewCategoryDlg(MyMoneyCategory* category, QWidget *parent=0, const char *name=0);
+	~KNewCategoryDlg();
 
 protected slots:
-  void okClicked();
+  void categoryNameChanged(const QString& text);
+  void typeChanged(const QString& text);
+  void minorEditChanged(const QString& text);
+  void minorAddBtnClicked();
+  void minorDeleteBtnClicked();
+  void slotMinorActivated(const QString &text);
+
+private:
+  MyMoneyCategory* m_category;
 };
 
 #endif

@@ -36,8 +36,8 @@
 #include <stream.h>
 // application specific includes
 #include "kmymoney2.h"
-#include "kstartdlg.h"
-#include "ksettingsdlg.h"
+#include "dialogs/kstartdlg.h"
+#include "dialogs/ksettingsdlg.h"
 #include "kstartuplogo.h"
 #include "dialogs/kbackupdlg.h"
 

@@ -21,8 +21,8 @@
 #include <klistview.h>
 #include <qpushbutton.h>
 
-#include <mymoney/mymoneyfile.h>
-#include <mymoney/mymoneymoney.h>
+#include "../mymoney/mymoneyfile.h"
+#include "../mymoney/mymoneymoney.h"
 
 #include "kreconciledlgdecl.h"
 

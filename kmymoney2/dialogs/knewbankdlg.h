@@ -1,5 +1,5 @@
 /***************************************************************************
-                          kreconcilelistitem.h
+                          knewbankdlg.h
                              -------------------
     copyright            : (C) 2000 by Michael Edwardes
     email                : mte@users.sourceforge.net
@@ -14,25 +14,39 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef KRECONCILELISTITEM_H
-#define KRECONCILELISTITEM_H
+#ifndef KNEWBANKDLG_H
+#define KNEWBANKDLG_H
 
-#include <qwidget.h>
-#include <qlistview.h>
-#include "./mymoney/mymoneytransaction.h"
+#include <klocale.h>
+#include <qdialog.h>
 
-/**
-  *@author Michael Edwardes
-  */
+#include "../mymoney/mymoneymoney.h"
 
-class KReconcileListItem : public QListViewItem  {
-//   Q_OBJECT
-  MyMoneyTransaction *m_transaction;
+#include "knewbankdlgdecl.h"
+
+// This dialog lets the user create or edit
+// a bank.
+// Use the second constructor to edit the bank.
+class KNewBankDlg : public KNewBankDlgDecl  {
+   Q_OBJECT
+
 public:
-  KReconcileListItem(QListView *parent, MyMoneyTransaction *transaction );
-	~KReconcileListItem();
-	MyMoneyTransaction* transaction(void);
-  void setReconciled(bool rec);
+	KNewBankDlg(QWidget *parent=0, const char *name=0);
+  KNewBankDlg(QString b_name, QString b_sortCode, QString b_city,
+    QString b_street, QString b_postcode, QString b_telephone, QString b_manager,
+    QString title, QWidget *parent=0, const char *name=0);
+	~KNewBankDlg();
+
+	QString m_name;
+	QString m_street;
+	QString m_city;
+	QString m_postcode;
+	QString m_telephone;
+	QString m_managerName;
+        QString m_sortCode;
+
+protected slots:
+  void okClicked();
 };
 
 #endif

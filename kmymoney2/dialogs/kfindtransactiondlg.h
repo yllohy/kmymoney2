@@ -30,9 +30,9 @@
 #include <klocale.h>
 #include <qdialog.h>
 
-#include "widgets/kmymoneyedit.h"
-#include "widgets/kmymoneydateinput.h"
-#include "mymoney/mymoneyfile.h"
+#include "../widgets/kmymoneyedit.h"
+#include "../widgets/kmymoneydateinput.h"
+#include "../mymoney/mymoneyfile.h"
 
 #include "kfindtransactiondlgdecl.h"
 
