@@ -50,6 +50,7 @@
 #include "../widgets/kmymoneyregistercheckings.h"
 #include "../dialogs/kendingbalancedlg.h"
 #include "../dialogs/ksplittransactiondlg.h"
+#include "../dialogs/knewaccountdlg.h"
 
 KLedgerViewCheckings::KLedgerViewCheckings(QWidget *parent, const char *name )
   : KLedgerView(parent,name)
@@ -340,6 +341,7 @@ void KLedgerViewCheckings::createInfoStack(void)
   buttonLayout->addWidget(m_reconcileButton);
 
   connect(m_reconcileButton, SIGNAL(clicked()), this, SLOT(slotReconciliation()));
+  connect(m_detailsButton, SIGNAL(clicked()), this, SLOT(slotAccountDetail()));
 
   QSpacerItem* spacer = new QSpacerItem( 20, 20,
                    QSizePolicy::Minimum, QSizePolicy::Expanding );
@@ -1347,3 +1349,16 @@ void KLedgerViewCheckings::slotStartEditSplit(void)
   slotOpenSplitDialog();
 }
 
+void KLedgerViewCheckings::slotAccountDetail(void)
+{
+  KNewAccountDlg dlg(m_account, true, false, this, "hi", i18n("Edit an Account"));
+
+  if (dlg.exec()) {
+    try {
+      MyMoneyFile::instance()->modifyAccount(dlg.account());
+    } catch (MyMoneyException *e) {
+      qDebug("Unexpected exception in KLedgerViewCheckings::slotAccountDetail");
+      delete e;
+    }
+  }
+}

@@ -204,6 +204,12 @@ protected:
 
 protected slots:
   /**
+    * Calling this slot opens the account edit dialog for the current
+    * selected account.
+    */
+  virtual void slotAccountDetail(void);
+
+  /**
     * Calling this slot toggles the clear flag of the split of the
     * current selected transaction. The display will be updated.
     */

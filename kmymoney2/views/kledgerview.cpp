@@ -254,7 +254,13 @@ void KLedgerView::setCurrentAccount(const QCString& accountId)
 
 void KLedgerView::reloadAccount(const bool repaint)
 {
-  m_transactionList = MyMoneyFile::instance()->transactionList(m_account.id());
+  // in case someone changed the account info and we are called here
+  // via the observer's update function, we just reload ourselves.
+  MyMoneyFile* file = MyMoneyFile::instance();
+  m_account = file->account(m_account.id());
+
+  // get a current transaction list for the account
+  m_transactionList = file->transactionList(m_account.id());
 
   // filter all unwanted transactions
   updateView();
