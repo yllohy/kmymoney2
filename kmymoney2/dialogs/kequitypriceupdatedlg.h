@@ -28,9 +28,13 @@
 
 #include <qwidget.h>
 #include <qpair.h>
+#include <qdatastream.h>
+class QListViewItem;
 
 // ----------------------------------------------------------------------------
 // KDE Includes
+
+#include <kprocess.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -38,6 +42,24 @@
 #include "kequitypriceupdatedlgdecl.h"
 #include "../mymoney/mymoneyonlinepriceupdate.h"
 
+class KEquityPriceUpdateProcess: public KProcess
+{
+  Q_OBJECT
+public:
+  KEquityPriceUpdateProcess(void);
+  void setItem(QListViewItem* _item) { m_item = _item; m_string.truncate(0); }
+
+public slots:  
+  void slotReceivedDataFromFilter(KProcess*, char*, int);
+  void slotProcessExited(KProcess*);
+  
+signals:
+  void processExited(QListViewItem*,const QString&);
+
+private:
+  QListViewItem* m_item;
+  QString m_string;
+};
 
 /**
   * @author Kevin Tambascio
@@ -50,8 +72,6 @@ public:
   KEquityPriceUpdateDlg(QWidget *parent);
   ~KEquityPriceUpdateDlg();
   void  logStatusMessage(const QString& message);
-  void  logBeginingStatus();
-  void  logSummaryStatus();
   
 public slots:
   void slotOKClicked();
@@ -59,13 +79,16 @@ public slots:
   void slotUpdateSelectedClicked();
   void slotUpdateAllClicked();
   void slotConfigureClicked();
+  void slotReceivedErrorFromFilter(KProcess*, char*, int);
+  void slotInsertUpdate(QListViewItem* _item, const QString& _quotedata );
 
 protected: 
-  bool fetchUpdate(const QString& _symbol, QPair<QDate,MyMoneyMoney>& _result);
-
+  void launchUpdate(QListViewItem* _item);
+  
 private:
-  MyMoneyOnlinePriceUpdate *m_pPriceUpdate;
-
+  KEquityPriceUpdateProcess m_filter;
+  QString m_strdata;
+  bool m_fUpdateAll;
 };
 
 #endif

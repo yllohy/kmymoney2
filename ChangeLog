@@ -1,3 +1,6 @@
+2004-10-29 Ace Jones <acejones@users.sourceforge.net>
+  * Added option to obtain online stock quotes using a local shell script
+  
 2004-10-23 Ace Jones <acejones@users.sourceforge.net>
   * Investment Transactions report
   * Investment Holdings by Account report
