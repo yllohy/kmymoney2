@@ -1,3 +1,9 @@
+2001-04-13
+  * Removed some of the old code in ktransactionview.cpp.
+  * Removed all of the unneeded Table Item classes in
+    ktransactionview.cpp and added a single KTransactionTableItem
+    class.
+
 2001-03-25  Felix Rodriguez <frodriguez@wesleyan.edu>
   * Added Cheque Number KLineEdit box
 

@@ -41,7 +41,6 @@
 class KTransactionView : public KTransactionViewDecl  {
   Q_OBJECT
 private:
-  MyMoneyTransaction::transactionMethod m_focus;
   MyMoneyFile *m_filePointer;
   MyMoneyBank m_bankIndex;
   MyMoneyAccount m_accountIndex;
@@ -59,24 +58,19 @@ private:
 	KPushButton* m_delete;
 
   QList<MyMoneyTransaction> m_transactions;
-  bool m_inEditMode;
-//  MyMoneyTransaction *m_editTransaction;
-  bool m_showingInputBox;
 
-  void setInputData(const MyMoneyTransaction transaction);
-  void clearInputData();
-  void updateInputLists(void);
   void updateTransactionList(int start, int col=-1);
-  void viewMode(void);
-  void editMode(void);
 
   void createInputWidgets();
 	void loadPayees();
+  void clearInputData();
+  void setInputData(const MyMoneyTransaction transaction);
+  void updateInputLists(void);
 
 public:
 	KTransactionView(QWidget *parent=0, const char *name=0);
 	~KTransactionView();
-//	MyMoneyTransaction currentTransaction(bool&);
+
 	void init(MyMoneyFile *file, MyMoneyBank bank, MyMoneyAccount account);
 	void clear(void);
   void showInputBox(bool val);
@@ -85,11 +79,8 @@ public:
 protected slots:
   void enterClicked();
   void slotFocusChange(int row, int col, int button, const QPoint & mousePos);
-  void slotMajorCombo(const QString&);
-  void transactionCellEdited(int row, int col);
-  void editClicked();
+//  void editClicked();
   void cancelClicked();
-  void newClicked();
   void deleteClicked();
   void slotTransactionDelete();
   void slotTransactionUnReconciled();
@@ -97,8 +88,7 @@ protected slots:
 	void slotPayeeCompleted(const QString&);
 
 signals:
-//  void enterBtnClicked(const MyMoneyTransaction& , bool inNew);
-  void transactionListChanged();
+ void transactionListChanged();
 };
 
 #endif

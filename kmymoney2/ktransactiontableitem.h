@@ -1,9 +1,11 @@
 /***************************************************************************
-                          kreconciledtableitem.h  -  description
+                          ktransactiontableitem.h  -  description
                              -------------------
-    begin                : Tue Feb 20 2001
+    begin                : Wed Apr 18 2001
     copyright            : (C) 2001 by Michael Edwardes
     email                : mte@users.sourceforge.net
+                             Javier Campos Morales <javi_c@ctv.es>
+                             Felix Rodriguez <frodriguez@mail.wesleyan.edu>
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,21 +17,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef KRECONCILEDTABLEITEM_H
-#define KRECONCILEDTABLEITEM_H
+#ifndef KTRANSACTIONTABLEITEM_H
+#define KTRANSACTIONTABLEITEM_H
 
+#include <qwidget.h>
 #include <qtable.h>
 
 /**
   *@author Michael Edwardes
   */
 
-class KReconciledTableItem : public QTableItem  {
+class KTransactionTableItem : public QTableItem  {
+//   Q_OBJECT
 public:
-	KReconciledTableItem(QTable *t, EditType et, const QString &txt);
-//  QWidget *createEditor() const;
-//  void setContentFromEditor(QWidget *w);
-  void setText(const QString &s);
+	KTransactionTableItem(QTable *t, EditType et, const QString &txt);
   void paint(QPainter *p, const QColorGroup &cg, const QRect &cr, bool selected);
 };
 

@@ -26,8 +26,22 @@
 #include "mymoneypayee.h"
 #include "mymoneycategory.h"
 
-// This class is the interface to the GUI and contains code to retrieve
-// it's contents.
+/**
+  * This class is used by the GUI to interrogate the transaction engine.  It is not
+  * library independant at the moment and still relies upon QT for many of it's
+  * attributes and method calls.  Eventually this code will be separated from QT
+  * and could be usable from other GUI toolkits such as gtk as used by the GNOME
+  * desktop environment.
+  *
+  * TODO: Remove all QT dependance e.g QString, QList etc.
+  *
+  * @see MyMoneyBank
+  *
+  * @author Michael Edwardes 2000-2001
+  * $Id: mymoneyfile.h,v 1.3 2001/04/18 21:49:35 mte Exp $
+  *
+  * @short A representation of the file format used by KMyMoney2.
+**/
 class MyMoneyFile {
 private:
   // File 'fields'
@@ -43,15 +57,13 @@ private:
   QDate m_lastAccess;
   QDate m_lastModify;
   bool m_dirty;
-  bool m_passwordProtected;
-  bool m_encrypted;
-  QString m_password;
+  bool m_passwordProtected;  // Not used yet
+  bool m_encrypted;  // Not used yet
+  QString m_password;  // Not used yet
 
   // 'Helper' variables and methods
   bool m_initialised;
   bool m_containsBanks, m_containsAccounts, m_containsTransactions;
-
-  // Iterator helper
 
 public:
   void init(void);
@@ -61,7 +73,6 @@ public:
   bool containsTransactions(void);
 
 private:
-
   // A list containing the banks
   QList<MyMoneyBank> m_banks;
 
@@ -79,32 +90,125 @@ private:
   bool findBankPosition(const MyMoneyBank& bank, unsigned int&);
 
 public:
+  /**
+    * Standard constructor.  Just sets up some default values.
+  **/
   MyMoneyFile();
-  MyMoneyFile(const QString& szname, const QString& usern, const QString& userStreet,
+
+  /**
+    * This is the constructor usually used.  The passed parameters are used to
+    * initialise the attributes of this class.
+    *
+    * @param name The name for the file.  It is NOT the filename.
+    * @param username The users name.
+    * @param userStreet Part of the users address.
+    * @param userTown Part of the users address.
+    * @param userCounty Part of the users address.
+    * @param userPostcode Part of the users address.
+    * @param userTelephone The users telephone number.
+    * @param userEmail The users email address.
+    * @param createDate TODO: remove this and use QDate::currentDate() in the constructor.
+  **/
+  MyMoneyFile(const QString& name, const QString& username, const QString& userStreet,
     const QString& userTown, const QString& userCounty, const QString& userPostcode, const QString& userTelephone,
     const QString& userEmail, const QDate& createDate);
-    ~MyMoneyFile();
 
-	// Bank operations
+  /**
+    * Standard destructor.
+  **/
+  ~MyMoneyFile();
+
+  /**
+    * Adds a bank to the underlying data structures.  The parameters passed are used
+    * to create the bank which is then added.
+    *
+    * @param name The banks name.
+    * @param sortCode The banks sort code.
+    * @param city Part of the banks address.
+    * @param street Part of the banks address.
+    * @param postcode Part of the banks address.
+    * @param telephone The banks telephone number.
+    * @param manager The bank managers name.
+    *
+    * @see MyMoneyBank
+  **/
   bool addBank(const QString& name, const QString& sortCode, const QString& city, const QString& street,
     const QString& postcode, const QString& telephone, const QString& manager);
+
+  /**
+    * Finds the bank in the list that matches the supplied argument.
+    *
+    * @param bank The bank to look for.
+    *
+    * @return A pointer to the bank if found, O otherwise.
+    *
+    * @see MyMoneyBank
+  **/
   MyMoneyBank* bank(const MyMoneyBank& bank);
+
+  /**
+    * Returns the first bank stored.  Typically used in for
+    * statements as follows:
+    * <pre> MyMoneyBank *bank;
+    * for (bank=bankFirst(); bank; bank=bankNext()) {
+    *   // Do something with the bank
+    * }</pre>
+    *
+    * @return The first bank in the list or 0 if no banks are present.
+    *
+    * @see MyMoneyBank
+  **/
   MyMoneyBank* bankFirst(void);
+
+  /**
+    * Returns the 'next' bank stored.  Typically used in for
+    * statements as follows:
+    * <pre> MyMoneyBank *bank;
+    * for (bank=bankFirst(); bank; bank=bankNext()) {
+    *   // Do something with the bank
+    * }</pre>
+    *
+    * @return The next bank in the list or 0 if no banks are present or there is no next.
+    *
+    * @see MyMoneyBank
+  **/
   MyMoneyBank* bankNext(void);
+
+  /**
+    * Returns the first bank stored.  Typically used in while
+    * statements as follows:
+    * <pre> MyMoneyBank *bank = bankFirst();
+    * while (bank != bankLast()) {
+    *   // Do something with the bank
+    * }</pre>
+    *
+    * @return The first bank in the list or 0 if no banks are present.
+    *
+    * @see MyMoneyBank
+  **/
   MyMoneyBank* bankLast(void);
+
+  /**
+    * Returns the number of banks held in the file.
+    *
+    * @return The bank count.
+    *
+    * @see MyMoneyBank
+  **/
   unsigned int bankCount(void);
+
+  /**
+    * Removes a bank from the list that matches the parameter.
+    *
+    * @param bank A copy of the bank to remove.
+    *
+    * @return Whether the remove was succesfull.
+    *
+    * @see MyMoneyBank
+  **/
   bool removeBank(const MyMoneyBank& bank);
 
-private:
-//  bool addAccount(const QString& name, const QString& number, MyMoneyAccount::accountTypeE type,
-//    const QString& description, const QDate& lastReconcile, const MyMoneyBank& bank);
-//  bool addTransaction(const long id, MyMoneyTransaction::transactionMethod methodType, const QString& number, const QString& memo,
-//                     const MyMoneyMoney& amount, const QDate& date, const QString& categoryMajor, const QString& categoryMinor, const QString& atmName,
-//                     const QString& fromTo, const QString& bankFrom, const QString& bankTo, MyMoneyTransaction::stateE state,
-//                     const MyMoneyBank& bank, const MyMoneyAccount& account);
 
-public:
-  // Simple get operations
   QString userAddress(void);
   QString name(void) const { return m_moneyName; }
   QString moneyName(void) { return m_moneyName; }

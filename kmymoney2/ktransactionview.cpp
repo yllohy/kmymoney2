@@ -29,13 +29,7 @@
 #include <kmessagebox.h>
 #include "widgets/kmymoneyedit.h"
 #include "widgets/kmymoneydateinput.h"
-#include "kmethodtableitem.h"
-#include "kdatetableitem.h"
-#include "kmemotableitem.h"
-#include "knumbertableitem.h"
-#include "kcategorytableitem.h"
-#include "kmoneytableitem.h"
-#include "kreconciledtableitem.h"
+#include "ktransactiontableitem.h"
 #include "widgets/kmymoneytable.h"
 
 KTransactionView::KTransactionView(QWidget *parent, const char *name)
@@ -55,18 +49,13 @@ KTransactionView::KTransactionView(QWidget *parent, const char *name)
   if (p_settings)
     transactionsTable->horizontalHeader()->setFont(p_settings->lists_headerFont());
 	
-	
-
   m_filePointer=0;
 
   connect(transactionsTable, SIGNAL(clicked(int, int, int, const QPoint&)),
     this, SLOT(slotFocusChange(int, int, int, const QPoint&)));
-//  connect(transactionsTable, SIGNAL(valueChanged(int, int)),
-//    this, SLOT(transactionCellEdited(int, int)));
 
   m_index = -1;
-  m_inEditMode=false;
-  m_showingInputBox=true;
+
   createInputWidgets();
 }
 
@@ -117,7 +106,7 @@ void KTransactionView::createInputWidgets()
   m_withdrawal->setEnableSignals(false);
   m_withdrawal->useGlobalKeyBindings();
   m_withdrawal->setAlignment(Qt::AlignRight);
-	m_method->insertItem("");
+//	m_method->insertItem("");  // We don't need a blank item.  These will be dynamic in the future
   m_method->insertItem("Cheque");
   m_method->insertItem("Deposit");
   m_method->insertItem("Transfer");
@@ -141,15 +130,12 @@ void KTransactionView::createInputWidgets()
 	connect(m_cancel, SIGNAL(clicked()),this,SLOT(cancelClicked()));
 	connect(m_enter, SIGNAL(clicked()),this,SLOT(enterClicked()));
 	connect(m_delete, SIGNAL(clicked()),this,SLOT(deleteClicked()));
-
-
 }
 
 void KTransactionView::loadPayees()
 {
   MyMoneyBank *bank;
   MyMoneyAccount *account;
-
 
   bank = m_filePointer->bank(m_bankIndex);
   if (!bank) {
@@ -196,22 +182,21 @@ void KTransactionView::slotFocusChange(int row, int, int button, const QPoint& /
 		if(button == 1) {
       if(m_transactions.count() > transrow)
       {
-      	m_focus = m_transactions.at(transrow)->method();
-      	switch (m_focus) {
+       	switch (m_transactions.at(transrow)->method()) {
         	case MyMoneyTransaction::Cheque:
-						m_method->setCurrentItem(1);
+						m_method->setCurrentItem(0);
           	break;
         	case MyMoneyTransaction::Deposit:
-						m_method->setCurrentItem(2);
+						m_method->setCurrentItem(1);
           	break;
         	case MyMoneyTransaction::Transfer:
-						m_method->setCurrentItem(3);
+						m_method->setCurrentItem(2);
           	break;
         	case MyMoneyTransaction::Withdrawal:
-						m_method->setCurrentItem(4);
+						m_method->setCurrentItem(3);
           	break;
         	case MyMoneyTransaction::ATM:
-						m_method->setCurrentItem(5);
+						m_method->setCurrentItem(4);
           	break;		
       	}
 			}
@@ -244,15 +229,11 @@ void KTransactionView::slotFocusChange(int row, int, int button, const QPoint& /
 			{
        	clearInputData();
 			}
-     	viewMode();
+//     	viewMode();
 
     }
     m_index = transrow;
-    QTableSelection sel;
-    transactionsTable->clearSelection();
-    sel.init(row, 0);
-    sel.expandTo(row, 8);
-    //transactionsTable->addSelection(sel);
+
     if (button>=2) {
       KPopupMenu setAsMenu(i18n("Set As..."), this);
       setAsMenu.insertItem(i18n("Unreconciled (default)"), this, SLOT(slotTransactionUnReconciled()));
@@ -295,9 +276,9 @@ void KTransactionView::slotTransactionDelete()
     return;
 
   pAccount->removeTransaction(*transaction);
-  //updateTransactionList(-1);
   m_filePointer->setDirty(true);
-	
+
+  updateTransactionList(-1, -1);
   emit transactionListChanged();
 }
 
@@ -322,7 +303,7 @@ void KTransactionView::slotTransactionUnReconciled()
     return;
 
   transaction->setState(MyMoneyTransaction::Unreconciled);
-  //updateTransactionList(m_index, 5);
+  updateTransactionList(m_index, 5);
   m_filePointer->setDirty(true);
 }
 
@@ -347,7 +328,7 @@ void KTransactionView::slotTransactionCleared()
     return;
 
   transaction->setState(MyMoneyTransaction::Cleared);
-  //updateTransactionList(m_index, 5);
+  updateTransactionList(m_index, 5);
   m_filePointer->setDirty(true);
 }
 
@@ -357,8 +338,7 @@ void KTransactionView::init(MyMoneyFile *file, MyMoneyBank bank, MyMoneyAccount 
   m_bankIndex = bank;
   m_accountIndex = account;
 
-  updateInputLists();
-  updateTransactionList(-1);
+ updateTransactionList(-1);
 }
 
 void KTransactionView::clear(void)
@@ -370,10 +350,6 @@ void KTransactionView::clear(void)
 
 void KTransactionView::enterClicked()
 {
-
-
-
-
   m_date->hide();
   m_method->hide();
 	m_number->hide();
@@ -403,8 +379,7 @@ void KTransactionView::enterClicked()
     return;
   }
   MyMoneyMoney balance;
-  MyMoneyTransaction *transaction;
-  int rowCount=0;
+//  MyMoneyTransaction *transaction;
 
 	MyMoneyTransaction::transactionMethod newmethod;
   double dblnewamount;
@@ -442,23 +417,23 @@ void KTransactionView::enterClicked()
   MyMoneyMoney newamount(dblnewamount);
 	MyMoneyTransaction::stateE newstate;
 
-	if(m_method->currentItem() == 1)
+	if(m_method->currentItem() == 0)
 	{
    	 newmethod = MyMoneyTransaction::Cheque;
 	}
-	else if(m_method->currentItem() == 2)
+	else if(m_method->currentItem() == 1)
 	{
    	 newmethod = MyMoneyTransaction::Deposit;
 	}
-	else if(m_method->currentItem() == 3)
+	else if(m_method->currentItem() == 2)
 	{
    	 newmethod = MyMoneyTransaction::Transfer;
 	}
-	else if(m_method->currentItem() == 4)
+	else if(m_method->currentItem() == 3)
 	{
    	 newmethod = MyMoneyTransaction::Withdrawal;
 	}
-	else if(m_method->currentItem() == 5)
+	else if(m_method->currentItem() == 4)
 	{
    	 newmethod = MyMoneyTransaction::ATM;
 	}
@@ -498,11 +473,8 @@ void KTransactionView::enterClicked()
   													"", "", "", newstate);
 	}
 	
-	emit transactionListChanged();
-
   updateTransactionList(-1, -1);
-  //updateInputLists();
-  //viewMode();
+	emit transactionListChanged();
 }
 
 void KTransactionView::clearInputData()
@@ -552,10 +524,6 @@ void KTransactionView::setInputData(const MyMoneyTransaction transaction)
 	}
 }
 
-void KTransactionView::slotMajorCombo(const QString& text)
-{
-}
-
 void KTransactionView::updateInputLists(void)
 {
   QStringList categoryList;
@@ -575,7 +543,6 @@ void KTransactionView::updateInputLists(void)
 	m_category->clear();
   m_category->insertStringList(categoryList);
   loadPayees();
-
 }
 
 void KTransactionView::updateTransactionList(int row, int col)
@@ -655,24 +622,24 @@ void KTransactionView::updateTransactionList(int row, int col)
           colText = "ATM";
           break;
       }
-      KMemoTableItem *item0;
-      item0 = new KMemoTableItem(transactionsTable, QTableItem::Never, KGlobal::locale()->formatDate(transaction->date(), true));
+      KTransactionTableItem *item0;
+      item0 = new KTransactionTableItem(transactionsTable, QTableItem::Never, KGlobal::locale()->formatDate(transaction->date(), true));
       transactionsTable->setItem(rowCount, 0, item0);
 
-    	KMemoTableItem *item00;
-    	item00 = new KMemoTableItem(transactionsTable, QTableItem::Never, transaction->number());
+    	KTransactionTableItem *item00;
+    	item00 = new KTransactionTableItem(transactionsTable, QTableItem::Never, transaction->number());
     	transactionsTable->setItem(rowCount + 1, 1, item00);
 
-      KMemoTableItem *item1;
-      item1 = new KMemoTableItem(transactionsTable, QTableItem::Never, colText);
+      KTransactionTableItem *item1;
+      item1 = new KTransactionTableItem(transactionsTable, QTableItem::Never, colText);
       transactionsTable->setItem(rowCount, 1, item1);
 
-	    KMemoTableItem *item11;
-	    item11 = new KMemoTableItem(transactionsTable, QTableItem::Never, "");
+	    KTransactionTableItem *item11;
+	    item11 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
 	    transactionsTable->setItem(rowCount + 1, 0, item11);
 
-      KMemoTableItem *item2;
-      item2 = new KMemoTableItem(transactionsTable, QTableItem::Never, transaction->memo());
+      KTransactionTableItem *item2;
+      item2 = new KTransactionTableItem(transactionsTable, QTableItem::Never, transaction->memo());
       transactionsTable->setItem(rowCount, 2, item2);
 
 
@@ -695,8 +662,8 @@ void KTransactionView::updateTransactionList(int row, int col)
 				txt.sprintf("%s:%s", transaction->categoryMajor().latin1(),transaction->categoryMinor().latin1());
 				qDebug("Has Minor Category UpdateTransactionList %s",transaction->categoryMinor().latin1());
 			}
-      KMemoTableItem *item4;
-      item4 = new KMemoTableItem(transactionsTable, QTableItem::Never, txt);
+      KTransactionTableItem *item4;
+      item4 = new KTransactionTableItem(transactionsTable, QTableItem::Never, txt);
       transactionsTable->setItem(rowCount + 1, 2, item4);
 
       QString cLet;
@@ -711,25 +678,25 @@ void KTransactionView::updateTransactionList(int row, int col)
           colText = " ";
           break;
       }
-      KMemoTableItem *item5 = new KMemoTableItem(transactionsTable, QTableItem::Never, colText);
+      KTransactionTableItem *item5 = new KTransactionTableItem(transactionsTable, QTableItem::Never, colText);
       transactionsTable->setItem(rowCount, 3, item5);
 
-	    KMemoTableItem *item55 = new KMemoTableItem(transactionsTable, QTableItem::Never, "");
+	    KTransactionTableItem *item55 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
 	    transactionsTable->setItem(rowCount + 1, 3, item55);
 
-      KMemoTableItem *item6;
-      item6 = new KMemoTableItem(transactionsTable, QTableItem::Never, ((transaction->type()==MyMoneyTransaction::Credit) ? KGlobal::locale()->formatMoney(transaction->amount().amount()) : QString("")));
+      KTransactionTableItem *item6;
+      item6 = new KTransactionTableItem(transactionsTable, QTableItem::Never, ((transaction->type()==MyMoneyTransaction::Credit) ? KGlobal::locale()->formatMoney(transaction->amount().amount()) : QString("")));
       transactionsTable->setItem(rowCount, 5, item6);
 
-      KMemoTableItem *item66 = new KMemoTableItem(transactionsTable, QTableItem::Never, "");
+      KTransactionTableItem *item66 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
     	transactionsTable->setItem(rowCount + 1, 4, item66);
 
-      KMemoTableItem *item7;
-      item7 = new KMemoTableItem(transactionsTable, QTableItem::Never, ((transaction->type()==MyMoneyTransaction::Debit) ? KGlobal::locale()->formatMoney(transaction->amount().amount()) : QString("")));
+      KTransactionTableItem *item7;
+      item7 = new KTransactionTableItem(transactionsTable, QTableItem::Never, ((transaction->type()==MyMoneyTransaction::Debit) ? KGlobal::locale()->formatMoney(transaction->amount().amount()) : QString("")));
       transactionsTable->setItem(rowCount, 4, item7);
 
-	    KMemoTableItem *item77;
-    	item77 = new KMemoTableItem(transactionsTable, QTableItem::Never, "");
+	    KTransactionTableItem *item77;
+    	item77 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
     	transactionsTable->setItem(rowCount + 1, 5, item77);
 
       if (transaction->type()==MyMoneyTransaction::Credit)
@@ -737,30 +704,30 @@ void KTransactionView::updateTransactionList(int row, int col)
       else
         balance -= transaction->amount();
 
-      KMemoTableItem *item8 = new KMemoTableItem(transactionsTable, QTableItem::Never, KGlobal::locale()->formatMoney(balance.amount()));
+      KTransactionTableItem *item8 = new KTransactionTableItem(transactionsTable, QTableItem::Never, KGlobal::locale()->formatMoney(balance.amount()));
       transactionsTable->setItem(rowCount, 6, item8);
 
-    	KMemoTableItem *item88 = new KMemoTableItem(transactionsTable, QTableItem::Never, "");
+    	KTransactionTableItem *item88 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
     	transactionsTable->setItem(rowCount + 1, 6, item88);
       rowCount += 2;
 			currentBalance = KGlobal::locale()->formatMoney(balance.amount());
     }
 
     // Add the last empty row
-    KMemoTableItem *item0;
-    item0 = new KMemoTableItem(transactionsTable, QTableItem::Never, "");
+    KTransactionTableItem *item0;
+    item0 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
     transactionsTable->setItem(rowCount, 1, item0);
 
-    KMemoTableItem *item00;
-    item00 = new KMemoTableItem(transactionsTable, QTableItem::Never, "");
+    KTransactionTableItem *item00;
+    item00 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
     transactionsTable->setItem(rowCount + 1, 1, item00);
 
-    KMemoTableItem *item1;
-    item1 = new KMemoTableItem(transactionsTable, QTableItem::Never, "");
+    KTransactionTableItem *item1;
+    item1 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
     transactionsTable->setItem(rowCount, 0, item1);
 
-    KMemoTableItem *item11;
-    item11 = new KMemoTableItem(transactionsTable, QTableItem::Never, "");
+    KTransactionTableItem *item11;
+    item11 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
     transactionsTable->setItem(rowCount + 1, 0, item11);
 /*
     KNumberTableItem *item2;
@@ -768,38 +735,38 @@ void KTransactionView::updateTransactionList(int row, int col)
     transactionsTable->setItem(rowCount, 2, item2);
 */
 
-    KMemoTableItem *item3;
-    item3 = new KMemoTableItem(transactionsTable, QTableItem::Never, "");
+    KTransactionTableItem *item3;
+    item3 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
     transactionsTable->setItem(rowCount, 2, item3);
 
-    KMemoTableItem *item4;
-    item4 = new KMemoTableItem(transactionsTable, QTableItem::Never, "");
+    KTransactionTableItem *item4;
+    item4 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
     transactionsTable->setItem(rowCount + 1, 2, item4);
 
-    KMemoTableItem *item5 = new KMemoTableItem(transactionsTable, QTableItem::Never, "");
+    KTransactionTableItem *item5 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
     transactionsTable->setItem(rowCount, 3, item5);
 
-    KMemoTableItem *item55 = new KMemoTableItem(transactionsTable, QTableItem::Never, "");
+    KTransactionTableItem *item55 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
     transactionsTable->setItem(rowCount + 1, 3,item55);
 
-    KMemoTableItem *item6 = new KMemoTableItem(transactionsTable, QTableItem::Never, "");
+    KTransactionTableItem *item6 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
     transactionsTable->setItem(rowCount, 4, item6);
 
-    KMemoTableItem *item66 = new KMemoTableItem(transactionsTable, QTableItem::Never, "");
+    KTransactionTableItem *item66 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
     transactionsTable->setItem(rowCount + 1, 4, item66);
 
-    KMemoTableItem *item7;
-    item7 = new KMemoTableItem(transactionsTable, QTableItem::Never, "");
+    KTransactionTableItem *item7;
+    item7 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
     transactionsTable->setItem(rowCount, 5, item7);
 
-    KMemoTableItem *item77;
-    item77 = new KMemoTableItem(transactionsTable, QTableItem::Never, "");
+    KTransactionTableItem *item77;
+    item77 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
     transactionsTable->setItem(rowCount + 1, 5, item77);
 
-    KMemoTableItem *item8 = new KMemoTableItem(transactionsTable, QTableItem::Never, "");
+    KTransactionTableItem *item8 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
     transactionsTable->setItem(rowCount, 6, item8);
 
-    KMemoTableItem *item88 = new KMemoTableItem(transactionsTable, QTableItem::Never, "");
+    KTransactionTableItem *item88 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
     transactionsTable->setItem(rowCount + 1, 6, item88);
 
 		lblBalanceAmt->setText(currentBalance);
@@ -883,29 +850,6 @@ void KTransactionView::updateTransactionList(int row, int col)
   //transactionsTable->ensureCellVisible(rowCount, 0);
 }
 
-void KTransactionView::viewMode(void)
-{
-  m_inEditMode=false;
-}
-
-void KTransactionView::editMode(void)
-{
-  m_inEditMode=true;
-}
-
-void KTransactionView::transactionCellEdited(int row, int col)
-{
-}
-
-void KTransactionView::showInputBox(bool val)
-{
-}
-
-void KTransactionView::editClicked()
-{
-  editMode();
-}
-
 void KTransactionView::cancelClicked()
 {
   m_date->hide();
@@ -933,7 +877,9 @@ void KTransactionView::deleteClicked()
 	m_enter->hide();
 	m_cancel->hide();
 	m_delete->hide();
-
+	
+	slotTransactionDelete();
+/*
   if (!m_filePointer)
     return;
 
@@ -968,16 +914,15 @@ void KTransactionView::deleteClicked()
 
 	qDebug("enterClicked Before update Transaction List");
   updateTransactionList(-1, -1);
-  //updateInputLists();
-  //viewMode();
-
-}
-
-void KTransactionView::newClicked()
-{
+*/
 }
 
 void KTransactionView::refresh(void)
 {
+  qDebug("KTransactionView::refresh()");
   updateTransactionList(-1,-1);
+}
+
+void KTransactionView::showInputBox(bool)
+{
 }

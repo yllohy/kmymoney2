@@ -28,6 +28,21 @@
 
 #include "kmymoneyview.h"
 
+/*! \mainpage KMyMoney2 Main Page for API documentation.
+ * Last update: 20 March 2001.
+ *
+ * \section intro Introduction
+ *
+ * This is the API documentation for KMyMoney2.  It should be used as a reference
+ * for KMyMoney2 developers and users who wish to see how KMyMoney2 works.  This
+ * documentation will be kept up-to-date as development progresses and should be
+ * read for new features that have been developed in KMyMoney2.
+ *
+ * The latest version of this document can be found in the source distribution
+ * available from kmymoney2.sourceforge.net and is generated from doxygen reading
+ * the header files found in the distribution.
+ */
+
 /**
   * The base class for KMyMoney2 application windows. It sets up the main
   * window and reads the config file as well as providing a menubar, toolbar
@@ -36,7 +51,7 @@
   * @see KMyMoneyView
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: kmymoney2.h,v 1.4 2001/03/15 02:22:30 mte Exp $
+  * $Id: kmymoney2.h,v 1.5 2001/04/18 21:49:35 mte Exp $
   *
   * @short Main application class.
 **/
