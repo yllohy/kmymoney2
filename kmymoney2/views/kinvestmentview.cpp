@@ -19,6 +19,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include <kdebug.h>
 #include <kglobal.h>
 #include <kconfig.h>
@@ -57,6 +58,7 @@
 KInvestmentView::KInvestmentView(QWidget *parent, const char *name)
  :  kInvestmentViewDecl(parent,name)
 {
+/*
 	m_pAccount 	= NULL;
 	m_popMenu		= NULL;
 
@@ -97,6 +99,7 @@ KInvestmentView::KInvestmentView(QWidget *parent, const char *name)
 
   //set the summary button to be true.
   btnSummary->setChecked(TRUE);
+*/
 }
 
 KInvestmentView::~KInvestmentView()
@@ -104,7 +107,7 @@ KInvestmentView::~KInvestmentView()
 }
 
 /** No descriptions */
-bool KInvestmentView::init(MyMoneyAccount *pAccount)
+bool KInvestmentView::init(MyMoneyAccount* /*pAccount*/)
 {
 /*
 	if(!pAccount)
@@ -204,7 +207,7 @@ void KInvestmentView::slotNewInvestment()
 */
 }
 
-void KInvestmentView::addEquityEntry(MyMoneyEquity *pEntry)
+void KInvestmentView::addEquityEntry(MyMoneyEquity* /*pEntry*/)
 {
 /*
 	if(m_pAccount)
@@ -222,10 +225,12 @@ void KInvestmentView::addEquityEntry(MyMoneyEquity *pEntry)
 */
 }
 
-void KInvestmentView::displayNewEquity(MyMoneyEquity *pEntry)
+void KInvestmentView::displayNewEquity(MyMoneyEquity* /*pEntry*/)
 {
+/*
 	KInvestmentListItem *pItem = new KInvestmentListItem(investmentTable, pEntry);
 	investmentTable->insertItem(pItem);
+*/
 }
 
 void KInvestmentView::slotEditInvestment()
@@ -235,21 +240,23 @@ void KInvestmentView::slotEditInvestment()
 
 void KInvestmentView::slotUpdatePrice()
 {
+/*
 	KUpdateStockPriceDlg *pDlg = new KUpdateStockPriceDlg;
 	if(pDlg)
 	{
 		pDlg->exec();
 		int nResult = pDlg->result();
 	}
-	
+*/
 }
 
-void KInvestmentView::slotListDoubleClicked(QListViewItem* pItem, const QPoint& pos, int c)
+void KInvestmentView::slotListDoubleClicked(QListViewItem* /*pItem*/, const QPoint& /*pos*/, int /*c*/)
 {
 }
 
-void KInvestmentView::slotListRightMouse(QListViewItem* item, const QPoint& point, int)
+void KInvestmentView::slotListRightMouse(QListViewItem* /*item*/, const QPoint& /*point*/, int)
 {
+/*
   // setup the context menu
   KIconLoader *kiconloader = KGlobal::iconLoader();
   m_popMenu = new KPopupMenu(this);
@@ -264,10 +271,12 @@ void KInvestmentView::slotListRightMouse(QListViewItem* item, const QPoint& poin
   {
   	m_popMenu->exec(QCursor::pos());
   }
+*/
 }
 
-void KInvestmentView::slotViewChanged(int ID)
+void KInvestmentView::slotViewChanged(int /*ID*/)
 {
+/*
 	switch(ID)
 	{
 		case VIEW_SUMMARY:
@@ -287,4 +296,6 @@ void KInvestmentView::slotViewChanged(int ID)
 			break;
 		}
 	}
+*/
 }
+

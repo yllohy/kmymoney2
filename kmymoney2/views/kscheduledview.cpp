@@ -318,7 +318,7 @@ void KScheduledView::slotEditClicked()
     {
       MyMoneySchedule schedule = MyMoneyFile::instance()->schedule(m_selectedSchedule);
       
-      const char *action;
+      const char *action = 0;
       switch (schedule.type())
       {
         case MyMoneySchedule::TYPE_BILL:

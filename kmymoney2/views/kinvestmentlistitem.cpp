@@ -20,6 +20,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#if 0  // currently, this object is unused 
 #include <klistview.h>
 #include "kinvestmentlistitem.h"
 
@@ -48,3 +49,4 @@ KInvestmentListItem::~KInvestmentListItem()
 {
 
 }
+#endif

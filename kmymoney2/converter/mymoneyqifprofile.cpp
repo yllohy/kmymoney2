@@ -399,7 +399,9 @@ const QDate MyMoneyQifProfile::date(const QString& datein) const
     }
   }
 
-  int day, mon, yr;
+  int day = 1,
+      mon = 1,
+      yr = 1900;
   bool ok;
   for(i = 0; i < 2; ++i) {
     if(scannedDelim[i] != formatDelim[i]

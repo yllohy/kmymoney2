@@ -182,7 +182,7 @@ void kMyMoneyHLayout::setFixedSize(const QSize& size)
 }
 
 /** No descriptions */
-void kMyMoneyHLayout::paintEvent(QPaintEvent *p)
+void kMyMoneyHLayout::paintEvent(QPaintEvent * /* p */)
 {
   for(unsigned i = 0; i < m_widgets.count(); i++) {
     m_widgets.at(i)->repaint();

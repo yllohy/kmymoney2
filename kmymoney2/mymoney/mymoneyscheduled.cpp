@@ -182,6 +182,9 @@ void MyMoneySchedule::validate(bool id_check) const
 //        if (m_paymentType == STYPE_DIRECTDEPOSIT || m_paymentType == STYPE_MANUALDEPOSIT)
 //          return false;
       break;
+      
+    case TYPE_LOANPAYMENT:
+      break;
   }
 }
 

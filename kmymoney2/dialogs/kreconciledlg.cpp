@@ -13,6 +13,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include <kmessagebox.h>
 #include <kglobal.h>
 #include <klocale.h>
@@ -26,9 +27,9 @@
 #include "kreconciledlg.h"
 #include "kreconcilelistitem.h"
 
-KReconcileDlg::KReconcileDlg(const MyMoneyMoney previousBal, const MyMoneyMoney endingBal,
-  const QDate endingDate, MyMoneyAccount *accountIndex,
-  const MyMoneyFile* file, QWidget *parent, const char *name)
+KReconcileDlg::KReconcileDlg(const MyMoneyMoney /* previousBal */, const MyMoneyMoney /* endingBal */,
+  const QDate /* endingDate */, MyMoneyAccount* /*accountIndex */,
+  const MyMoneyFile* /* file */, QWidget *parent, const char *name)
  : KReconcileDlgDecl(parent,name,true)
 {
 /*
@@ -177,7 +178,7 @@ void KReconcileDlg::insertTransactions(void)
 */
 }
 
-void KReconcileDlg::slotDebitSelected(QListViewItem* item, const QPoint&/*p*/, int/* col*/)
+void KReconcileDlg::slotDebitSelected(QListViewItem* /* item */, const QPoint&/*p*/, int/* col*/)
 {
 /*
     KReconcileListItem *reconcileItem = (KReconcileListItem*)item;
@@ -214,7 +215,7 @@ void KReconcileDlg::slotDebitSelected(QListViewItem* item, const QPoint&/*p*/, i
 */
 }
 
-void KReconcileDlg::slotCreditSelected(QListViewItem* item, const QPoint&, int)
+void KReconcileDlg::slotCreditSelected(QListViewItem* /* item */, const QPoint&, int)
 {
 /*
     KReconcileListItem *reconcileItem = (KReconcileListItem*)item;
@@ -263,6 +264,7 @@ void KReconcileDlg::doDifference(void)
 
 void KReconcileDlg::finishClicked(void)
 {
+/*
   if (!m_balanced) {
     if ((KMessageBox::questionYesNo(this, i18n("Account did not balance, are you sure ?")))==KMessageBox::No) {
 			clearReconcile();
@@ -273,7 +275,9 @@ void KReconcileDlg::finishClicked(void)
 //  {
 //  }
   emit reconcileFinished(true);
+*/
 }
+
 /*
 void KReconcileDlg::updateData(void)
 {
@@ -290,13 +294,15 @@ void KReconcileDlg::updateData(void)
 */
 void KReconcileDlg::cancelClicked()
 {
+/*
 	clearReconcile();
 	// Stop the transaction view from being refreshed on
 	// cancel by passing false.
   emit reconcileFinished(false);
+*/
 }
 
-void KReconcileDlg::resetData(const MyMoneyMoney previousBal, const MyMoneyMoney endingBal, const QDate endingDate, MyMoneyAccount *accountIndex, const MyMoneyFile* file)
+void KReconcileDlg::resetData(const MyMoneyMoney /* previousBal */, const MyMoneyMoney /* endingBal */, const QDate /* endingDate */, MyMoneyAccount* /* accountIndex */, const MyMoneyFile* /* file */)
 {
 /*
   m_reconciledTransactions.clear();
@@ -340,9 +346,11 @@ void KReconcileDlg::resetData(const MyMoneyMoney previousBal, const MyMoneyMoney
 
 void KReconcileDlg::slotTransactionChanged()
 {
+/*
 	reloadLists();
 	insertTransactions();
 	show();
+*/
 }
 
 /** No descriptions */
@@ -389,7 +397,8 @@ void KReconcileDlg::reloadLists()
 
 
 /** No descriptions */
-bool KReconcileDlg::inTransactions(MyMoneyTransaction *credittrans){
+bool KReconcileDlg::inTransactions(MyMoneyTransaction * /*credittrans */)
+{
 /*
   MyMoneyTransaction *transaction;
   int i = 0;
@@ -431,11 +440,14 @@ bool KReconcileDlg::inDebits(MyMoneyTransaction *transaction)
 
 void KReconcileDlg::editClicked()
 {
+/*
   hide();
+*/
 }
 
-void KReconcileDlg::resizeEvent(QResizeEvent* e)
+void KReconcileDlg::resizeEvent(QResizeEvent* /* e */)
 {
+/*
   debitListView->setColumnWidth( 2, debitListView->visibleWidth()
     - debitListView->columnWidth(0)
     - debitListView->columnWidth(1)
@@ -450,4 +462,5 @@ void KReconcileDlg::resizeEvent(QResizeEvent* e)
 
   // call base class resizeEvent()
   KReconcileDlgDecl::resizeEvent(e);
+*/
 }

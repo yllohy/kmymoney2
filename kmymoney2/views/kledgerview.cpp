@@ -1643,7 +1643,7 @@ void KLedgerView::slotEndEdit(void)
 
 bool KLedgerView::focusNextPrevChild(bool next)
 {
-  bool  rc;
+  bool  rc = false;
 
   if(m_editDate != 0) {
     QWidget *w = 0;

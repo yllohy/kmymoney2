@@ -20,6 +20,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#if 0  // currently, this object is unused
 #ifndef KINVESTMENTLISTITEM_H
 #define KINVESTMENTLISTITEM_H
 
@@ -41,3 +42,4 @@ private:
 };
 
 #endif
+#endif // #if 0
