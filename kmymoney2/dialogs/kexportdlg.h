@@ -1,7 +1,7 @@
 /***************************************************************************
-                          kimportdlg.h  -  description
+                          kexportdlg.h  -  description
                              -------------------
-    begin                : Wed May 16 2001
+    begin                : Tue May 22 2001
     copyright            : (C) 2001 by Michael Edwardes
     email                : mte@users.sourceforge.net
                              Javier Campos Morales <javi_c@ctv.es>
@@ -16,8 +16,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef KIMPORTDLG_H
-#define KIMPORTDLG_H
+#ifndef KEXPORTDLG_H
+#define KEXPORTDLG_H
 
 // ----------------------------------------------------------------------------
 // QT Headers
@@ -28,23 +28,30 @@
 
 // ----------------------------------------------------------------------------
 // Project Headers
-#include "kimportdlgdecl.h"
+#include "kexportdlgdecl.h"
+
+#include "../mymoney/mymoneyfile.h"
+#include "../mymoney/mymoneyaccount.h"
 
 /**
   *@author Michael Edwardes
   */
-
-class KImportDlg : public KImportDlgDecl  {
+class KExportDlg : public KExportDlgDecl  {
 	Q_OBJECT
 private:
   void readConfig(void);
   void writeConfig(void);
 
 	QString m_qstringLastFormat;
+	MyMoneyFile *m_file;
+
+  /** No descriptions */
+  void writeQIFFile(const QString& name, const QString& dateFormat, MyMoneyAccount *account,bool expCat,bool expAcct,
+										QDate startDate, QDate endDate);
 
 public:
-	KImportDlg();
-	~KImportDlg();
+	KExportDlg(MyMoneyFile *file, MyMoneyAccount *account);
+	~KExportDlg();
 protected slots:
   void slotOkClicked();
 

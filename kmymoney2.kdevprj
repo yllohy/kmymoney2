@@ -245,7 +245,7 @@ install_location=
 type=DATA
 
 [kmymoney2/Makefile.am]
-files=kmymoney2/main.cpp,kmymoney2/kmymoney2.cpp,kmymoney2/kmymoney2.h,kmymoney2/kmymoney2ui.rc,kmymoney2/kmymoney2.desktop,kmymoney2/kbanklistitem.cpp,kmymoney2/kbanklistitem.h,kmymoney2/kbanksview.cpp,kmymoney2/kbanksview.h,kmymoney2/kcategoriesdlg.cpp,kmymoney2/kcategoriesdlg.h,kmymoney2/kcategorylistitem.cpp,kmymoney2/kcategorylistitem.h,kmymoney2/kendingbalancedlg.cpp,kmymoney2/kendingbalancedlg.h,kmymoney2/kfileinfodlg.cpp,kmymoney2/kfileinfodlg.h,kmymoney2/kfindtransactiondlg.cpp,kmymoney2/kfindtransactiondlg.h,kmymoney2/kmainview.cpp,kmymoney2/kmainview.h,kmymoney2/kmymoneyview.cpp,kmymoney2/kmymoneyview.h,kmymoney2/knewaccountdlg.cpp,kmymoney2/knewaccountdlg.h,kmymoney2/knewbankdlg.cpp,kmymoney2/knewbankdlg.h,kmymoney2/knewbillwizardimpl.cpp,kmymoney2/knewbillwizardimpl.h,kmymoney2/knewcategorydlg.cpp,kmymoney2/knewcategorydlg.h,kmymoney2/knewfiledlg.cpp,kmymoney2/knewfiledlg.h,kmymoney2/kpayeedlg.cpp,kmymoney2/kreconciledlg.cpp,kmymoney2/kreconciledlg.h,kmymoney2/kreconcilelistitem.cpp,kmymoney2/kreconcilelistitem.h,kmymoney2/kschedulelistitem.cpp,kmymoney2/kschedulelistitem.h,kmymoney2/kscheduleview.cpp,kmymoney2/kscheduleview.h,kmymoney2/ksettingsdlg.cpp,kmymoney2/ksettingsdlg.h,kmymoney2/kstartdlg.cpp,kmymoney2/kstartdlg.h,kmymoney2/kstartuplogo.cpp,kmymoney2/kstartuplogo.h,kmymoney2/ktransactionview.cpp,kmymoney2/ktransactionview.h,kmymoney2/kbankviewdecl.ui,kmymoney2/kcategorydlgdecl.ui,kmymoney2/knewbillwizard.ui,kmymoney2/kpayeedlgdecl.ui,kmymoney2/kreconciledlgdecl.ui,kmymoney2/kscheduleviewdecl.ui,kmymoney2/default_categories.dat,kmymoney2/kendingbalancedlgdecl.ui,kmymoney2/knewcategorydlgdecl.ui,kmymoney2/knewaccountdlgdecl.ui,kmymoney2/knewbankdlgdecl.ui,kmymoney2/knewfiledlgdecl.ui,kmymoney2/kfileinfodlgdecl.ui,kmymoney2/kfindtransactiondlgdecl.ui,kmymoney2/ktransactionviewdecl.ui,kmymoney2/kimportdlgdecl.ui,kmymoney2/kexportdlgdecl.ui,kmymoney2/lo16-app-kmymoney2.png,kmymoney2/lo32-app-kmymoney2.png,kmymoney2/kmymoney_wizard.png,kmymoney2/mimetype_kmy_16x16.png,kmymoney2/mimetype_kmy_32x32.png,kmymoney2/mimetype_kmy_48x48.png,kmymoney2/x-kmymoney2.desktop,kmymoney2/kpayeedlg.h,kmymoney2/ktransactiontableitem.cpp,kmymoney2/ktransactiontableitem.h,kmymoney2/kimportdlg.cpp,kmymoney2/kimportdlg.h,kmymoney2/kexportdlg.cpp,kmymoney2/kexportdlg.h
+files=kmymoney2/main.cpp,kmymoney2/kmymoney2.cpp,kmymoney2/kmymoney2.h,kmymoney2/kmymoney2ui.rc,kmymoney2/kmymoney2.desktop,kmymoney2/kbanklistitem.cpp,kmymoney2/kbanklistitem.h,kmymoney2/kbanksview.cpp,kmymoney2/kbanksview.h,kmymoney2/kcategoriesdlg.cpp,kmymoney2/kcategoriesdlg.h,kmymoney2/kcategorylistitem.cpp,kmymoney2/kcategorylistitem.h,kmymoney2/kendingbalancedlg.cpp,kmymoney2/kendingbalancedlg.h,kmymoney2/kfileinfodlg.cpp,kmymoney2/kfileinfodlg.h,kmymoney2/kfindtransactiondlg.cpp,kmymoney2/kfindtransactiondlg.h,kmymoney2/kmainview.cpp,kmymoney2/kmainview.h,kmymoney2/kmymoneyview.cpp,kmymoney2/kmymoneyview.h,kmymoney2/knewaccountdlg.cpp,kmymoney2/knewaccountdlg.h,kmymoney2/knewbankdlg.cpp,kmymoney2/knewbankdlg.h,kmymoney2/knewbillwizardimpl.cpp,kmymoney2/knewbillwizardimpl.h,kmymoney2/knewcategorydlg.cpp,kmymoney2/knewcategorydlg.h,kmymoney2/knewfiledlg.cpp,kmymoney2/knewfiledlg.h,kmymoney2/kpayeedlg.cpp,kmymoney2/kreconciledlg.cpp,kmymoney2/kreconciledlg.h,kmymoney2/kreconcilelistitem.cpp,kmymoney2/kreconcilelistitem.h,kmymoney2/kschedulelistitem.cpp,kmymoney2/kschedulelistitem.h,kmymoney2/kscheduleview.cpp,kmymoney2/kscheduleview.h,kmymoney2/ksettingsdlg.cpp,kmymoney2/ksettingsdlg.h,kmymoney2/kstartdlg.cpp,kmymoney2/kstartdlg.h,kmymoney2/kstartuplogo.cpp,kmymoney2/kstartuplogo.h,kmymoney2/ktransactionview.cpp,kmymoney2/ktransactionview.h,kmymoney2/kbankviewdecl.ui,kmymoney2/kcategorydlgdecl.ui,kmymoney2/knewbillwizard.ui,kmymoney2/kpayeedlgdecl.ui,kmymoney2/kreconciledlgdecl.ui,kmymoney2/kscheduleviewdecl.ui,kmymoney2/default_categories.dat,kmymoney2/kendingbalancedlgdecl.ui,kmymoney2/knewcategorydlgdecl.ui,kmymoney2/knewaccountdlgdecl.ui,kmymoney2/knewbankdlgdecl.ui,kmymoney2/knewfiledlgdecl.ui,kmymoney2/kfileinfodlgdecl.ui,kmymoney2/kfindtransactiondlgdecl.ui,kmymoney2/ktransactionviewdecl.ui,kmymoney2/lo16-app-kmymoney2.png,kmymoney2/lo32-app-kmymoney2.png,kmymoney2/kmymoney_wizard.png,kmymoney2/mimetype_kmy_16x16.png,kmymoney2/mimetype_kmy_32x32.png,kmymoney2/mimetype_kmy_48x48.png,kmymoney2/x-kmymoney2.desktop,kmymoney2/kpayeedlg.h,kmymoney2/ktransactiontableitem.cpp,kmymoney2/ktransactiontableitem.h
 sub_dirs=widgets,mymoney,pics,dialogs,icons
 type=prog_main
 
@@ -256,7 +256,7 @@ install_location=$$(kde_datadir)/kmymoney2/default_categories.dat
 type=DATA
 
 [kmymoney2/dialogs/Makefile.am]
-files=kmymoney2/dialogs/kbackupdlg.cpp,kmymoney2/dialogs/kbackupdlg.h,kmymoney2/dialogs/kbackupdlgdecl.ui,kmymoney2/dialogs/kchooseimportexportdlg.cpp,kmymoney2/dialogs/kchooseimportexportdlg.h,kmymoney2/dialogs/kchooseimportexportdlgdecl.ui,kmymoney2/dialogs/kcsvprogressdlgdecl.ui,kmymoney2/dialogs/kcsvprogressdlg.cpp,kmymoney2/dialogs/kcsvprogressdlg.h
+files=kmymoney2/dialogs/kbackupdlg.cpp,kmymoney2/dialogs/kbackupdlg.h,kmymoney2/dialogs/kbackupdlgdecl.ui,kmymoney2/dialogs/kchooseimportexportdlg.cpp,kmymoney2/dialogs/kchooseimportexportdlg.h,kmymoney2/dialogs/kchooseimportexportdlgdecl.ui,kmymoney2/dialogs/kcsvprogressdlgdecl.ui,kmymoney2/dialogs/kcsvprogressdlg.cpp,kmymoney2/dialogs/kcsvprogressdlg.h,kmymoney2/dialogs/kexportdlg.cpp,kmymoney2/dialogs/kexportdlg.h,kmymoney2/dialogs/kexportdlgdecl.ui,kmymoney2/dialogs/kimportdlg.cpp,kmymoney2/dialogs/kimportdlg.h,kmymoney2/dialogs/kimportdlgdecl.ui
 sub_dirs=
 type=static_library
 
@@ -309,6 +309,42 @@ install_location=
 type=HEADER
 
 [kmymoney2/dialogs/kcsvprogressdlgdecl.ui]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[kmymoney2/dialogs/kexportdlg.cpp]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[kmymoney2/dialogs/kexportdlg.h]
+dist=true
+install=false
+install_location=
+type=HEADER
+
+[kmymoney2/dialogs/kexportdlgdecl.ui]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[kmymoney2/dialogs/kimportdlg.cpp]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[kmymoney2/dialogs/kimportdlg.h]
+dist=true
+install=false
+install_location=
+type=HEADER
+
+[kmymoney2/dialogs/kimportdlgdecl.ui]
 dist=true
 install=false
 install_location=
@@ -490,24 +526,6 @@ install=false
 install_location=
 type=SOURCE
 
-[kmymoney2/kexportdlg.cpp]
-dist=true
-install=false
-install_location=
-type=SOURCE
-
-[kmymoney2/kexportdlg.h]
-dist=true
-install=false
-install_location=
-type=HEADER
-
-[kmymoney2/kexportdlgdecl.ui]
-dist=true
-install=false
-install_location=
-type=SOURCE
-
 [kmymoney2/kfileinfodlg.cpp]
 dist=true
 install=false
@@ -539,24 +557,6 @@ install_location=
 type=HEADER
 
 [kmymoney2/kfindtransactiondlgdecl.ui]
-dist=true
-install=false
-install_location=
-type=SOURCE
-
-[kmymoney2/kimportdlg.cpp]
-dist=true
-install=false
-install_location=
-type=SOURCE
-
-[kmymoney2/kimportdlg.h]
-dist=true
-install=false
-install_location=
-type=HEADER
-
-[kmymoney2/kimportdlgdecl.ui]
 dist=true
 install=false
 install_location=

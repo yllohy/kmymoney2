@@ -33,6 +33,8 @@
 #include "kmymoneyview.h"
 #include "dialogs/kchooseimportexportdlg.h"
 #include "dialogs/kcsvprogressdlg.h"
+#include "dialogs/kimportdlg.h"
+#include "dialogs/kexportdlg.h"
 
 KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
 //  : KTabCtl(parent,name)
@@ -491,8 +493,11 @@ void KMyMoneyView::slotAccountImportAscii(void)
 {
   KChooseImportExportDlg dlg(0, this);
   if (dlg.exec()) {
-    if (dlg.importExportType()=="QIF")
-      slotAccountImportQIF();
+    if (dlg.importExportType()=="QIF") {
+      KImportDlg importDlg(&m_file, getAccount());
+      importDlg.exec();
+//      slotAccountImportQIF();
+    }
     else {
       KCsvProgressDlg kcsvprogressdlg(0, getAccount(), this);
       kcsvprogressdlg.exec();
@@ -504,8 +509,11 @@ void KMyMoneyView::slotAccountExportAscii(void)
 {
   KChooseImportExportDlg dlg(1, this);
   if (dlg.exec()) {
-    if (dlg.importExportType()=="QIF")
-      slotAccountExportQIF();
+    if (dlg.importExportType()=="QIF") {
+      KExportDlg exportDlg(&m_file, getAccount());
+      exportDlg.exec();
+//      slotAccountExportQIF();
+    }
     else {
       KCsvProgressDlg kcsvprogressdlg(1, getAccount(), this);
       kcsvprogressdlg.exec();
@@ -515,6 +523,7 @@ void KMyMoneyView::slotAccountExportAscii(void)
 
 void KMyMoneyView::slotAccountImportQIF(void)
 {
+/*
   bool bankSuccess=false, accountSuccess=false;
   MyMoneyBank *pBank;
   MyMoneyAccount *pAccount;
@@ -542,10 +551,12 @@ void KMyMoneyView::slotAccountImportQIF(void)
 	}
 
 	delete importDlg;
+*/
 }
 
 void KMyMoneyView::slotAccountExportQIF(void)
 {
+/*
   bool bankSuccess=false, accountSuccess=false;
   MyMoneyBank *pBank;
   MyMoneyAccount *pAccount;
@@ -578,7 +589,7 @@ void KMyMoneyView::slotAccountExportQIF(void)
 	}
 
 	delete exportDlg;
-
+*/
 }
 
 void KMyMoneyView::editCategories(void)
@@ -1142,7 +1153,7 @@ QString KMyMoneyView::currentAccountName(void)
   return "Unknown Account";
 }
 
-/** No descriptions */
+/*
 void KMyMoneyView::readQIFFile(const QString& name, const QString& dateFormat, MyMoneyAccount *account){
 
 	bool catmode = false;
@@ -1445,7 +1456,8 @@ void KMyMoneyView::readQIFFile(const QString& name, const QString& dateFormat, M
     QMessageBox::information(this,"QIF Import",importmsg);
 
 }
-/** No descriptions */
+
+
 void KMyMoneyView::writeQIFFile(const QString& name, const QString& dateFormat, MyMoneyAccount *account,bool expCat,bool expAcct,
 																QDate startDate, QDate endDate){
 	int numcat = 0;
@@ -1547,7 +1559,8 @@ void KMyMoneyView::writeQIFFile(const QString& name, const QString& dateFormat, 
     QMessageBox::information(this,"QIF Export",exportmsg);
 
 }
-/** No descriptions */
+*/
+
 void KMyMoneyView::fileBackup(){
 }
 

@@ -479,7 +479,7 @@ export has completed detailing how many transactions, categories and payees were
 <customwidgets>
     <customwidget>
         <class>kMyMoneyDateInput</class>
-        <header location="global">./widgets/kmymoneydateinput.h</header>
+        <header location="global">../widgets/kmymoneydateinput.h</header>
         <sizehint>
             <width>90</width>
             <height>25</height>

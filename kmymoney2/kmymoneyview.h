@@ -36,8 +36,6 @@
 #include "kreconciledlg.h"
 #include "kfindtransactiondlg.h"
 #include "kscheduleview.h"
-#include "kimportdlg.h"
-#include "kexportdlg.h"
 #include "dialogs/kcsvprogressdlg.h"
 
 /**
@@ -47,7 +45,7 @@
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.19 2001/07/29 20:58:01 mte Exp $
+  * $Id: kmymoneyview.h,v 1.20 2001/08/17 20:07:41 mte Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -62,7 +60,7 @@ private:
   bool m_reconcileInited;  // True if a reconciliation has already been completed this execution
   KReconcileDlg *reconcileDlg;  // These exists during app run time ?
   KFindTransactionDlg *transactionFindDlg;
-	KImportDlg       *importDlg;
+//	KImportDlg       *importDlg;
 
   // The schedule view
   KScheduleView *m_scheduledView;
@@ -201,11 +199,6 @@ public:
   **/
   QString currentAccountName(void);
 
-  /** No descriptions */
-  void readQIFFile(const QString& name, const QString& dateFormat, MyMoneyAccount *account);
-  /** No descriptions */
-  void writeQIFFile(const QString& name, const QString& dateFormat, MyMoneyAccount *account,bool expCat,bool expAcct,
-										QDate startDate, QDate endDate);
 
 public slots:
   /**

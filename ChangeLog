@@ -1,3 +1,6 @@
+2001-08-17 Michael Edwardes <mte@users.sourceforge.net>
+  * Moved import and export dialogs into dialogs dir.
+  
 2001-07-29 Michael Edwardes <mte@users.sourceforge.net>
   * Improved the CSV import/export process.
 
