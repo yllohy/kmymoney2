@@ -102,6 +102,15 @@ KLedgerViewLoan::~KLedgerViewLoan()
 void KLedgerViewLoan::refreshView(void)
 {
   KLedgerView::refreshView();
+  
+  QDate date;
+  if(!m_account.value("lastStatementDate").isEmpty())
+    date = QDate::fromString(m_account.value("lastStatementDate"), Qt::ISODate);
+
+  if(date.isValid())
+    m_lastReconciledLabel->setText(i18n("Reconciled: %1").arg(KGlobal::locale()->formatDate(date, true)));
+  else
+    m_lastReconciledLabel->setText(QString());
 }
 
 void KLedgerViewLoan::enableWidgets(const bool enable)
@@ -202,7 +211,10 @@ void KLedgerViewLoan::createInfoStack(void)
                     i18n("Use this to reconcile your account against the bank statement."));
   m_reconcileButton->setGuiItem(reconcileButtenItem);
   buttonLayout->addWidget(m_reconcileButton);
-  
+
+  m_lastReconciledLabel = new QLabel("", frame);
+  buttonLayout->addWidget(m_lastReconciledLabel);
+
 /*
   // FIXME: This should not be required anymore as this
   //        this type of stuff is handled in the KEditLoanWizard
@@ -232,6 +244,7 @@ void KLedgerViewLoan::createInfoStack(void)
   m_loanDetailsButton->setEnabled(false);
 */      
   connect(m_detailsButton, SIGNAL(clicked()), this, SLOT(slotLoanAccountDetail()));
+  connect(m_reconcileButton, SIGNAL(clicked()), this, SLOT(slotReconciliation()));
   
   QSpacerItem* spacer = new QSpacerItem( 20, 20,
                    QSizePolicy::Minimum, QSizePolicy::Expanding );
@@ -445,18 +458,16 @@ void KLedgerViewLoan::fillForm(void)
     QString category;
     QValueList<MyMoneySplit>::ConstIterator it;
     for(it = m_transaction.splits().begin(); it != m_transaction.splits().end(); ++it) {
-      if((*it).action() == MyMoneySplit::ActionAmortization
-      && (*it).id() != m_split.id()) {
-        try {
+      try {
+        if((*it).action() == MyMoneySplit::ActionAmortization
+        && (*it).id() != m_split.id()) {
           MyMoneyAccount acc = MyMoneyFile::instance()->account((*it).accountId());
           MyMoneySplit s = m_transaction.splitByAccount(acc.id());
           amount = s.value();
-          category = i18n("Transfer %1 %2")
-                      .arg(amortization >= 0 ? i18n("from") : i18n("to"))
-                      .arg(acc.name());
-        } catch(MyMoneyException *e) {
-          delete e;
+          category = i18n("Loan payment");
         }
+      } catch(MyMoneyException *e) {
+        delete e;
       }
     }
     // category
@@ -1163,4 +1174,61 @@ void KLedgerViewLoan::slotLoanAccountDetail(void)
   KEditLoanWizard* wizard = new KEditLoanWizard(m_account);
   wizard->exec();
   delete wizard;
+}
+
+void KLedgerViewLoan::slotReconciliation(void)
+{
+  slotCancelEdit();
+
+  KEndingBalanceLoanDlg dlg(m_account);
+
+  if(dlg.exec()) {
+    MyMoneyTransaction t = dlg.adjustmentTransaction();
+
+    if(t != MyMoneyTransaction()) {
+      try {
+        MyMoneyFile::instance()->addTransaction(t);
+      } catch(MyMoneyException *e) {
+        qWarning("adjustment transaction not stored: '%s'", e->what().data());
+        delete e;
+      }
+    }
+
+    // suppress any modifications on the gui
+    MyMoneyFile::instance()->suspendNotify(true);
+
+    // now go through all transactions and mark them reconciled for
+    // this account.
+    MyMoneyTransactionFilter filter(m_account.id());
+    filter.setDateFilter(dlg.startDate(), dlg.endDate());
+
+    QValueList<MyMoneyTransaction> list = MyMoneyFile::instance()->transactionList(filter);
+    QValueList<MyMoneyTransaction>::Iterator it_t;
+
+    for(it_t = list.begin(); it_t != list.end(); ++it_t) {
+      MyMoneySplit sp = (*it_t).splitByAccount(m_account.id());
+      sp.setReconcileFlag(MyMoneySplit::Reconciled);
+      sp.setReconcileDate(QDate::currentDate());
+      
+      try {
+        (*it_t).modifySplit(sp);
+        MyMoneyFile::instance()->modifyTransaction(*it_t);
+      } catch(MyMoneyException *e) {
+        qDebug("Unable to reconcile split: %s", e->what().data());
+        delete e;
+      }
+    }
+
+    // remember until when this account is reconciled
+    m_account.setValue("lastStatementDate", dlg.endDate().toString(Qt::ISODate));
+    try {
+      MyMoneyFile::instance()->modifyAccount(m_account);
+    } catch(MyMoneyException *e) {
+      qDebug("Unable to update setting for 'lastStatementDate': %s", e->what().data());
+      delete e;
+    }
+    
+    // re-enable modifications on the gui and force an immediate update
+    MyMoneyFile::instance()->suspendNotify(false);
+  }
 }

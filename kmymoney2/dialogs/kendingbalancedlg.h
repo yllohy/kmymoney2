@@ -65,7 +65,6 @@ protected:
   
 protected slots:
   void slotCheckPageFinished(void);
-  void okClicked();
 
 private:
   MyMoneyAccount m_account;
@@ -82,13 +81,39 @@ class KEndingBalanceLoanDlg : public KEndingBalanceDlgDecl
 public:
   KEndingBalanceLoanDlg(const MyMoneyAccount& account, QWidget *parent=0, const char *name=0);
   ~KEndingBalanceLoanDlg();
+
+  /**
+    * This method returns the adjustment transaction if one
+    * has been created. If not, an empty transaction will be returned.
+    */
+  const MyMoneyTransaction adjustmentTransaction(void) const;
+  
+  /**
+    * This method returns the starting date of the statement as provided
+    * by the user. The value returned is only valid if the dialog returned
+    * with QDialog::accept.
+    */
+  const QDate startDate(void) const { return m_startDateEdit->getQDate(); };
+  
+  /**
+    * This method returns the ending date of the statement as provided
+    * by the user. The value returned is only valid if the dialog returned
+    * with QDialog::accept.
+    */
+  const QDate endDate(void) const { return m_endDateEdit->getQDate(); };
   
 protected:
+  const MyMoneyMoney totalInterest(const QDate& start, const QDate& end) const;
+  const MyMoneyMoney totalAmortization(const QDate& start, const QDate& end) const;
 
+public slots:
+  void next();
+  
 protected slots:
-  void okClicked();
+  void slotCheckPageFinished(void);
 
 private:
+  MyMoneyAccountLoan m_account;
 };
 
 #endif

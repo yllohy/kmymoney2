@@ -828,7 +828,8 @@ void KLedgerViewCheckings::reloadEditWidgets(const MyMoneyTransaction& t)
           case MyMoneyAccount::Asset:
           case MyMoneyAccount::Liability:
             if(!m_transaction.isLoanPayment()) {
-              m_editCategory->loadList(static_cast<KMyMoneyUtils::categoryTypeE> (KMyMoneyUtils::asset | KMyMoneyUtils::liability));
+              if(m_editCategory)
+                m_editCategory->loadList(static_cast<KMyMoneyUtils::categoryTypeE> (KMyMoneyUtils::asset | KMyMoneyUtils::liability));
               if(m_split.action() != MyMoneySplit::ActionTransfer) {
                 m_split.setAction(MyMoneySplit::ActionTransfer);
                 m_transaction.modifySplit(m_split);
@@ -1252,7 +1253,7 @@ void KLedgerViewCheckings::slotReconciliation(void)
     // or charge transactions.
     MyMoneyTransaction ti = dlg.interestTransaction();
     MyMoneyTransaction tc = dlg.chargeTransaction();
-    if(!(ti == MyMoneyTransaction())) {
+    if(ti != MyMoneyTransaction()) {
       try {
         MyMoneyFile::instance()->addTransaction(ti);
       } catch(MyMoneyException *e) {
@@ -1260,7 +1261,7 @@ void KLedgerViewCheckings::slotReconciliation(void)
         delete e;
       }
     }
-    if(!(tc == MyMoneyTransaction())) {
+    if(tc != MyMoneyTransaction()) {
       try {
         MyMoneyFile::instance()->addTransaction(tc);
       } catch(MyMoneyException *e) {

@@ -65,10 +65,13 @@ public slots:
   void slotRegisterDoubleClicked(int row, int col, int button, const QPoint &mousePos);
 
   /**
-    * This slot must be provided because it is required by KLedgerView.
-    * So we just implement a dummy here to make everyone happy.
+    * Calling this slot starts the reconciliation of a loan account.
+    * A wizard is used to collect the necessary statement data from the
+    * user and when the user accepts the data, then the matching
+    * transactions of this account will be reconciled.
+    * Any active editing of a transaction is cancelled.
     */
-  virtual void slotReconciliation(void) {};
+  virtual void slotReconciliation(void);
 
 protected:
   void fillSummary(void);
@@ -265,6 +268,8 @@ protected:
   QHBoxLayout*    m_summaryLayout;
 
 private:
+
+  QLabel*         m_lastReconciledLabel;
 };
 
 #endif
