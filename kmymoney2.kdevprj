@@ -33,7 +33,7 @@ ldflags=\s         \s
 path_to_bin_program=kmymoney2
 
 [General]
-AMChanged=true
+AMChanged=false
 author=Michael Edwardes
 configure_args=
 dir_where_make_will_be_called=
@@ -2259,11 +2259,17 @@ install_location=
 type=DATA
 
 [po/Makefile.am]
-files=po/fr.po,po/de.po
+files=po/fr.po,po/de.po,po/en_GB.po
 sub_dirs=
 type=po
 
 [po/de.po]
+dist=false
+install=false
+install_location=
+type=PO
+
+[po/en_GB.po]
 dist=false
 install=false
 install_location=
