@@ -1,7 +1,10 @@
+2005-02-13 Ace Jones <acejones@users.sourceforge.net>
+  * Fixed doxygen warnings
+  
 2005-02-13 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Gnucash import
     - normalize monetary amounts
-    - correct Investn=ment Account description
+    - correct Investment Account description
 
 2005-02-12 Ace Jones <acejones@users.sourceforge.net>
   * Refactored PivotTable::AccountDescriptor into ReportAccount, which is now

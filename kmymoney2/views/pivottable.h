@@ -141,7 +141,7 @@ public:
   /**
     * Regular constructor
     *
-    * @param account Account which this account descriptor should be based off of
+    * @param accountid Account which this account descriptor should be based off of
     */
   ReportAccount( const MyMoneyAccount& accountid );
 
@@ -299,7 +299,7 @@ public:
   /**
     * Create a Pivot table style report
     *
-    * @param MyMoneyReport The configuration parameters for this report
+    * @param _config_f The configuration parameters for this report
     */
     PivotTable( const MyMoneyReport& _config_f );
 
@@ -329,7 +329,7 @@ public:
   /**
     * Dump the report's HTML to a file
     *
-    * @param QString The filename to dump into
+    * @param file The filename to dump into
     */
     void dump( const QString& file ) const;
 
@@ -399,8 +399,6 @@ protected:
     * For accounts opened before the report period, places the balance into the '0' column.
     * For those opened during the report period, places the balance into the appropriate column
     * for the month when it was opened.
-    *
-    * @param accounttypes Which account types to include.  Valid values are major account types: MyMoneyAccount::Asset, Liability, Income, Expense.
     */
     void calculateOpeningBalances( void );
 

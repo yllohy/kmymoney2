@@ -196,7 +196,7 @@ public:
     * This method returns whether the specified account group
     * is allowed by the account groups filter.
     *
-    * @param list list to append account groups into
+    * @param type group to append account groups into
     * @return return true if an account group filter has been set
     */
   const bool includesAccountGroup( MyMoneyAccount::accountTypeE type ) const;
@@ -215,7 +215,7 @@ public:
 
   /**
     * This method writes this report to the DOM element @p e,
-    * within the DOM document @doc.
+    * within the DOM document @p doc.
     *
     * @param e The element which should be populated with info from this report
     * @param doc The document which we can use to create new sub-elements

@@ -328,7 +328,7 @@ public:
     * The account in question is included in the filter set,
     * if it has been set or no account filter is set.
     *
-    * @param cat id of account in question
+    * @param acc id of account in question
     * @return true if account is in filter set, false otherwise
     */
   const bool includesAccount( const QCString& acc ) const;
@@ -405,7 +405,7 @@ public:
     * This method returns whether a type filter has been set,
     * and if so, it returns the first type in the filter.
     *
-    * @param int int to replace with first type filter, untouched otherwise
+    * @param i int to replace with first type filter, untouched otherwise
     * @return return true if a type filter has been set
     */
   const bool firstType(int& i) const;
@@ -458,7 +458,7 @@ private:
     * to MyMoneyTransactionFilter::typeE types
     *
     * @param storage pointer to object of IMyMoneyStorage class
-    * @param transaction reference to transaction
+    * @param t reference to transaction
     * @param split reference to split in question
     *
     * @return converted action of the split passed as parameter
