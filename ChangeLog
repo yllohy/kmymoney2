@@ -1,7 +1,15 @@
+2004-07-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added more logic for investment view
+  * Fixed word wrap in split transaction dialog
+  * Show warning message when a category is created and the unused
+    categories are hidden by user settings
+  * Added investment register framework
+
 2004-07-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Add creation of stock accounts through investment view
   * Added equities to MyMoneyStorageDump
   * Really remove price information from equity history
+  * Added new loadList method to kMyMoneyAccountSelector
 
 2004-07-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added stock account type
