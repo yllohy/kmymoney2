@@ -42,7 +42,7 @@ class MyMoneyBank;
   * @see MyMoneyTransaction
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: mymoneyaccount.h,v 1.19 2001/12/09 18:21:33 mte Exp $
+  * $Id: mymoneyaccount.h,v 1.20 2001/12/09 22:50:46 mte Exp $
   *
   * @short Representation of an account which holds transactions.
 **/
@@ -97,6 +97,9 @@ private:
 //  int str_has_alpha(const char *buffer, int len);
 //  int buffer_contains(const char *buffer, char let);
   int QDateToQIFDate(const QDate date, QString& buffer, const char* format);
+
+  QString getField(const int fieldnum, const char* buffer);
+  QDate stringToDate(const char *string);
 
 public:
   /**
@@ -419,6 +422,15 @@ public:
   **/
   bool writeCSVFile(const char *filename, QDate startDate, QDate endDate, int& transCount);
 
+  /**
+    * Read a .csv file into this account.
+    *
+    * @param filename The file to read.
+    * @param transCount The number of transactions imported.
+    *
+    * @return true if all went ok.
+  **/
+  bool readCSVFile(const char *filename, int& transCount);
 
 signals:
   void signalProgressCount(int);

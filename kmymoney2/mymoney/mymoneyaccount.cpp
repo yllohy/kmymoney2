@@ -1208,10 +1208,6 @@ bool MyMoneyAccount::writeCSVFile(const char *filename, QDate startDate, QDate e
         }
 
         qstringBuffer =
-            /*
-            QString::number(nCount)
-            + ","
-            */
             KGlobal::locale()->formatDate(mymoneytransaction->date(), true)
             + ","
             + qstringTmpBuf1
@@ -1228,14 +1224,14 @@ bool MyMoneyAccount::writeCSVFile(const char *filename, QDate startDate, QDate e
               QString("") :
               QString::number(mymoneytransaction->amount().amount()))
             + ","
-            + "\n"
-            + ",,"
+//            + "\n"
+//            + ",,"
             + mymoneytransaction->number()
             + ","
             + (mymoneytransaction->categoryMajor() + ":" + mymoneytransaction->categoryMinor())
             + ","
             + mymoneytransaction->memo()
-            + ",,\n";
+            + "\n";
         qtextstream << qstringBuffer;
         numtrans++;
         emit signalProgress(numtrans);
@@ -1245,4 +1241,126 @@ bool MyMoneyAccount::writeCSVFile(const char *filename, QDate startDate, QDate e
     transCount = numtrans;
   }
   return true;
+}
+
+bool MyMoneyAccount::readCSVFile(const char *filename, int& transCount)
+{
+  QString qstringBuffer, qstringTmpBuf1, qstringTmpBuf2;
+  int numtrans = 0;
+
+  // Find out how many transactions are in the file first
+  int nTransactionGuess = 0;
+  QFile qfileGuess(filename);
+  if (qfileGuess.open(IO_ReadOnly)) {
+    QTextStream qtextstreamGuess(&qfileGuess);
+    while (!qtextstreamGuess.eof()) {
+      qtextstreamGuess.readLine();
+      nTransactionGuess++;
+    }
+    qfileGuess.close();
+  }
+
+  emit signalProgressCount(nTransactionGuess);
+
+  QFile qfile(filename);
+  if ( qfile.open(IO_ReadOnly) ) {    // file opened successfully
+    QTextStream qtextstream( &qfile );        // use a text stream
+
+    for (int i=0; i<nTransactionGuess; i++)
+    {
+      MyMoneyTransaction *mymoneytransaction = new MyMoneyTransaction;
+      QString qstringLine, qstringField;
+      qstringLine = qtextstream.readLine();
+      mymoneytransaction->setDate( stringToDate(getField(1, qstringLine)));
+
+      mymoneytransaction->setMethod(MyMoneyTransaction::stringToMethod(getField(2, qstringLine)));
+
+      mymoneytransaction->setPayee(getField(3, qstringLine));
+
+      QString qstringStatus = getField(4, qstringLine);
+      if (qstringStatus == i18n("Reconciled"))
+        mymoneytransaction->setState(MyMoneyTransaction::Reconciled);
+      else if (qstringStatus == i18n("Cleared"))
+        mymoneytransaction->setState(MyMoneyTransaction::Cleared);
+      else
+        mymoneytransaction->setState(MyMoneyTransaction::Unreconciled);
+
+      QString qstringAmount = getField(5, qstringLine);
+      if (qstringAmount!="")
+      {
+        mymoneytransaction->setAmount(qstringAmount.toLong());
+      }
+      else
+      {
+        mymoneytransaction->setAmount(getField(6, qstringLine).toLong());
+      }
+
+      mymoneytransaction->setNumber(getField(7, qstringLine));
+
+      QString qstringCategory = getField(8, qstringLine);
+      QString qstringMajor, qstringMinor;
+      if (qstringCategory.contains(':'))
+      {
+        qstringMajor = qstringCategory.left(qstringCategory.find(':'));
+        qstringMinor = qstringCategory.right(qstringCategory.length()-qstringCategory.find(':'));
+      }
+      else
+        qstringMajor = qstringCategory;
+      mymoneytransaction->setCategoryMajor(qstringMajor);
+      mymoneytransaction->setCategoryMinor(qstringMinor);
+
+      mymoneytransaction->setMemo(getField(9, qstringLine));
+
+      bank()->file()->addPayee(mymoneytransaction->payee());
+      bank()->file()->addMinorCategory(
+        ((mymoneytransaction->type()==MyMoneyTransaction::Credit)?true:false), qstringMajor, qstringMinor);
+
+      addTransaction(mymoneytransaction->method(), mymoneytransaction->number(), mymoneytransaction->memo(),
+        mymoneytransaction->amount(), mymoneytransaction->date(), mymoneytransaction->categoryMajor(),
+        mymoneytransaction->categoryMinor(), mymoneytransaction->atmBankName(), mymoneytransaction->payee(),
+        mymoneytransaction->accountFrom(), mymoneytransaction->accountTo(), mymoneytransaction->state());
+
+      delete mymoneytransaction;
+      numtrans++;
+      emit signalProgress(numtrans);
+    }
+
+    qfile.close();
+    transCount = numtrans;
+  }
+
+  return true;
+}
+
+QString MyMoneyAccount::getField(const int fieldnum, const char* buffer)
+{
+  QString qstringReturn="";
+  int n=0, nFieldCount=0;
+  bool bContinue=true;
+
+  while (buffer[n] && bContinue)
+  {
+    switch (buffer[n])
+    {
+      case '\n':
+        bContinue=false;
+        break;
+      case ',':
+        if (nFieldCount==fieldnum)
+          bContinue=false;
+        nFieldCount++;
+        break;
+      default:
+        if (nFieldCount == (fieldnum-1))
+          qstringReturn += buffer[n];
+    }
+    n++;
+  }
+
+  return qstringReturn;
+}
+
+QDate MyMoneyAccount::stringToDate(const char *string)
+{
+  return KGlobal::locale()->readDate(string);
 }

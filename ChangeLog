@@ -1,3 +1,8 @@
+2001-12-09 Michael Edwardes <mte@users.sourceforge.net>
+  * Changed the csv export format so each record is on one line.
+  * Created the csv file import method in mymoneyaccount.
+  * Added a static helper method to mymoneytransaction.
+
 2001-12-09 Kevin Tambascio <ktambascio@yahoo.com>
   * Fixed the save as dialog to append the .kmy file extension more intelligently.
 

@@ -200,3 +200,17 @@ void MyMoneyTransaction::setAccountFrom(const QString& bankFrom) { m_accountFrom
 void MyMoneyTransaction::setAccountTo(const QString& bankTo) { m_accountTo = bankTo; if (m_parent) m_parent->bank()->file()->setDirty(true); }
 void MyMoneyTransaction::setState(const stateE state) { m_state = state; if (m_parent) m_parent->bank()->file()->setDirty(true); }
 void MyMoneyTransaction::setIndex(const unsigned int index) { m_index = index; if (m_parent) m_parent->bank()->file()->setDirty(true); }
+
+MyMoneyTransaction::transactionMethod MyMoneyTransaction::stringToMethod(const char *method)
+{
+  if ((strcmp(method, "Deposit"))==0)
+    return Deposit;
+  else if ((strcmp(method, "Cheque"))==0)
+    return Cheque;
+  else if ((strcmp(method, "Transfer"))==0)
+    return Transfer;
+  else if ((strcmp(method, "Withdrawal"))==0)
+    return Withdrawal;
+  else if ((strcmp(method, "ATM"))==0)
+    return ATM;
+}

@@ -100,6 +100,8 @@ public:
   bool readAllData(int version, QDataStream& stream);
 
   MyMoneyAccount *account(void) { return m_parent; }
+
+  static transactionMethod stringToMethod(const char *method);
 };
 
 #endif
