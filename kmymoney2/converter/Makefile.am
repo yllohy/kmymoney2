@@ -7,7 +7,7 @@ libconverter_a_METASOURCES = AUTO
 
 libconverter_a_SOURCES = mymoneyqifreader.cpp mymoneyqifwriter.cpp mymoneyqifprofile.cpp mymoneytemplate.cpp mymoneystatementreader.cpp mymoneyofxstatement.cpp webpricequote.cpp mymoneygncreader.cpp
 
-EXTRA_DIST = mymoneyqifprofile.h mymoneyqifprofile.cpp mymoneyqifwriter.cpp mymoneyqifwriter.h mymoneyqifreader.cpp mymoneyqifreader.h mymoneytemplate.cpp mymoneytemplate.h webpricequote.h
+EXTRA_DIST = 
 
 noinst_HEADERS = convertertest.h imymoneyreader.h mymoneyofxstatement.h mymoneyqifprofile.h mymoneyqifreader.h mymoneyqifwriter.h mymoneystatementreader.h mymoneytemplate.h webpricequote.h mymoneygncreader.cpp
 
