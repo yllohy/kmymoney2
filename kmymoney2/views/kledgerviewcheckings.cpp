@@ -860,8 +860,8 @@ void KLedgerViewCheckings::reloadEditWidgets(const MyMoneyTransaction& t)
           category = i18n("Splitted transaction");
     }
   } catch(MyMoneyException *e) {
-    qDebug("Exception '%s' thrown in %s, line %ld caught in KLedgerViewCheckings::showWidgets():%d",
-      e->what().latin1(), e->file().latin1(), e->line(), __LINE__);
+    qDebug("Exception '%s' thrown in %s, line %ld caught in KLedgerViewCheckings::reloadEditWidgets():%d",
+      e->what().latin1(), e->file().latin1(), e->line(), __LINE__-2);
     delete e;
   }
 

@@ -381,7 +381,6 @@ void KLedgerView::refreshView(const bool transactionFormVisible)
       k.setSplitId((*it).splitByAccount(accountId()).id());
       m_transactionList.append(k);
     }
-    //m_transactionList = file->transactionList(filter);
     
   } catch(MyMoneyException *e) {
     delete e;
@@ -879,51 +878,60 @@ void KLedgerView::slotCategoryChanged(const QString& category)
   // remove it later on anyway.
 
   try {
-    // First, we check if the category exists
-    QCString id = MyMoneyFile::instance()->categoryToAccount(category);
-    if(id.isEmpty() && !category.isEmpty()) {
-      // FIXME:
-      /// Todo: Add account (hierarchy) upon new category
-      if(KMessageBox::questionYesNo(0,
-            i18n("The category \"%1\" currently does not exist. "
-                 "Do you want to create it?").arg(category)) == KMessageBox::Yes) {
-        MyMoneyAccount acc;
-        int rc;
-        acc.setName(category);
-        
-        KNewAccountDlg dlg(acc, false, true);
-        rc = dlg.exec();
-        if(rc == QDialog::Accepted) {
-          try {
-            MyMoneyAccount parentAccount;
-            acc = dlg.account();
-            parentAccount = dlg.parentAccount();
-            MyMoneyFile::instance()->addAccount(acc, parentAccount);
-            id = acc.id();
-            cat = MyMoneyFile::instance()->accountToCategory(id);
-          } catch(MyMoneyException *e) {
-            KMessageBox::detailedSorry(0, i18n("Unable to add category"),
-                (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
-            delete e;
-            rc = QDialog::Rejected;
-          }
-        }
-        
-        if(rc != QDialog::Accepted) {
-          m_editCategory->resetText();
-          m_editCategory->setFocus();
+    // First, we check if the category/account exists
+    QCString id;
+    switch(transactionType(m_split)) {
+      case Transfer:
+        id = MyMoneyFile::instance()->nameToAccount(category);
+        if(id.isEmpty() && !category.isEmpty()) {
+          KMessageBox::sorry(0, i18n("The account \"%1\" does not exist and direct creation of new account not yet implemented").arg(cat));
           return;
         }
-        
-      } else {
-        m_editCategory->resetText();
-        m_editCategory->setFocus();
-        return;
+        break;
+       
+      default:
+        id = MyMoneyFile::instance()->categoryToAccount(category);
+        if(id.isEmpty() && !category.isEmpty()) {
+          // FIXME:
+          /// Todo: Add account (hierarchy) upon new category
+          if(KMessageBox::questionYesNo(0,
+                i18n("The category \"%1\" currently does not exist. "
+                     "Do you want to create it?").arg(category)) == KMessageBox::Yes) {
+            MyMoneyAccount acc;
+            int rc;
+            acc.setName(category);
+
+            KNewAccountDlg dlg(acc, false, true);
+            rc = dlg.exec();
+            if(rc == QDialog::Accepted) {
+              try {
+                MyMoneyAccount parentAccount;
+                acc = dlg.account();
+                parentAccount = dlg.parentAccount();
+                MyMoneyFile::instance()->addAccount(acc, parentAccount);
+                id = acc.id();
+                cat = MyMoneyFile::instance()->accountToCategory(id);
+              } catch(MyMoneyException *e) {
+                KMessageBox::detailedSorry(0, i18n("Unable to add category"),
+                    (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+                delete e;
+                rc = QDialog::Rejected;
+              }
+            }
+
+            if(rc != QDialog::Accepted) {
+              m_editCategory->resetText();
+              m_editCategory->setFocus();
+              return;
+            }
+
+          } else {
+            m_editCategory->resetText();
+            m_editCategory->setFocus();
+            return;
+          }
+          break;
       }
-/*      
-      KMessageBox::sorry(0, i18n("Direct creation of new account not yet implemented"));
-      return;
-*/
     }
 
     if(cat.isEmpty()) {
@@ -1600,8 +1608,15 @@ void KLedgerView::slotEndEdit(void)
           m_transaction.setPostDate(QDate::currentDate());
         // remember date for next new transaction
         m_lastPostDate = m_transaction.postDate();
-        file->addTransaction(m_transaction);
-        id = m_transaction.id();
+
+        // From here on, we need to use a local copy of the transaction
+        // because m_transaction will be reassigned during the update
+        // once the transaction has been entered into the engine. If this
+        // happens, we have no idea about the id of the new transaction.
+        MyMoneyTransaction t = m_transaction;
+        file->addTransaction(t);
+        id = t.id();
+        
       } else {
         // in the modify case, we have to keep the id. The call to
         // modifyTransaction might change m_transaction due to some

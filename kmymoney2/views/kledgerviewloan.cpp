@@ -446,12 +446,16 @@ void KLedgerViewLoan::fillForm(void)
     for(it = m_transaction.splits().begin(); it != m_transaction.splits().end(); ++it) {
       if((*it).action() == MyMoneySplit::ActionAmortization
       && (*it).id() != m_split.id()) {
-        MyMoneyAccount acc = MyMoneyFile::instance()->account((*it).accountId());
-        MyMoneySplit s = m_transaction.splitByAccount(acc.id());
-        amount = s.value();
-        category = i18n("Transfer %1 %2")
-                    .arg(amortization >= 0 ? i18n("from") : i18n("to"))
-                    .arg(acc.name());
+        try {
+          MyMoneyAccount acc = MyMoneyFile::instance()->account((*it).accountId());
+          MyMoneySplit s = m_transaction.splitByAccount(acc.id());
+          amount = s.value();
+          category = i18n("Transfer %1 %2")
+                      .arg(amortization >= 0 ? i18n("from") : i18n("to"))
+                      .arg(acc.name());
+        } catch(MyMoneyException *e) {
+          delete e;
+        }
       }
     }
     // category
