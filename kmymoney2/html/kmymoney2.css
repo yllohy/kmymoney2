@@ -1,6 +1,53 @@
+A.el { text-decoration: none; }
+A.elRef { font-weight: bold }
+A.code { text-decoration: none; font-weight: normal; color: #4444ee }
+A.codeRef { font-weight: normal; color: #4444ee }
+A:hover { text-decoration: none; font-weight: bold; background-color: #f2f2ff }
+
 td.highlighted {
   background-color: #32A49E;
   color: #FFFFFF;
+}
+
+.itemheader {
+  background-color: blue;
+  color: white;
+  font-weight: bold;
+  padding-top: 2px;
+  padding-left: 20px;
+  padding-bottom: 2px;
+}
+
+.row-even {
+  background-color: #E0FDB6;
+  color: black;
+  padding-top: 2px;
+  padding-left: 20px;
+}
+
+.row-odd {
+  background-color: #DBEDED;
+  color: black;
+  padding-top: 2px;
+  padding-left: 20px;
+}
+
+.item {
+  background-color: white;
+  color: black;
+  padding-top: 2px;
+}
+
+.gap {
+  background-color: white;
+  padding-top: 1px;
+}
+
+.warning {
+  background-color: white;
+  color: red;
+  font-weight: bold;
+  padding-bottom: 2px;
 }
 
 h2.highlighted {
@@ -29,7 +76,7 @@ th.highlighted {
 }
 
 body  {
-  background-color: #3679ad;
+  background-color: #FFFFFF;
 }
 
 body.highlighted  {
