@@ -468,6 +468,7 @@ void KMyMoney2App::slotFileOpenRecent(const KURL& url)
   fileName = url;
   fileOpenRecent->addURL( url );
 
+
   slotStatusMsg(prevMsg);
 
 }
@@ -1076,6 +1077,7 @@ void KMyMoney2App::slotProcessExited()
           }
         }
 
+
         if(m_backupResult == 0) {
           proc << "cp" << "-f" << fileName.path(0) << backupfile;
           m_backupState = BACKUP_COPYING;
@@ -1226,6 +1228,8 @@ void KMyMoney2App::updateCaption(void)
   caption = kapp->makeStdCaption(fileName.filename(false), false, MyMoneyFile::instance()->dirty());
   caption += " - KMyMoney";
   setPlainCaption(caption);
+
+  fileSave->setEnabled(MyMoneyFile::instance()->dirty());
 }
 
 void KMyMoney2App::update(const QCString& /* id */)
