@@ -1,3 +1,7 @@
+2001-09-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Update bank view after import
+  * Added apostrophe selection to QIF import
+
 2001-09-27 Michael Edwardes <mte@users.sourceforge.net>
   * Changed the date input class to display either left or right.
   * Fixed a couple of issues of when to show action(s).
