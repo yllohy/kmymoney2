@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>672</width>
-            <height>518</height>
+            <height>520</height>
         </rect>
     </property>
     <property name="caption">
@@ -84,6 +84,14 @@
                                     </property>
                                 </widget>
                             </grid>
+                        </widget>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>m_description</cstring>
+                            </property>
+                            <property name="text">
+                                <string>X</string>
+                            </property>
                         </widget>
                         <widget class="kMyMoneyPriceView">
                             <property name="name">

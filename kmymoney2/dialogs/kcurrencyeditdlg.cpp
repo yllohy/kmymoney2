@@ -197,8 +197,13 @@ void KCurrencyEditDlg::slotSelectCurrency(QListViewItem *item)
       m_idLabel->setText(m_currency.id());
       m_symbolEdit->setText(m_currency.tradingSymbol());
       m_priceList->setHistory(m_currency.priceHistory());
-      m_priceList->setEnabled(!file->baseCurrency().id().isEmpty()
-                              && file->baseCurrency().id() != p->id());
+      if(!file->baseCurrency().id().isEmpty() && file->baseCurrency().id() != p->id()) {
+        m_priceList->setEnabled(true);
+        m_description->setText(i18n("%1 = <i>price</i> * %2").arg(file->baseCurrency().name()).arg(m_currency.name()));
+      } else {
+        m_priceList->setEnabled(false);
+        m_description->setText("");
+      }
     } catch(MyMoneyException *e) {
       delete e;
       m_priceList->setHistory(history);
