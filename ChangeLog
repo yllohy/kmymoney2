@@ -1,3 +1,7 @@
+2005-02-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Use the correct account when selecting 'edit' from within
+    the institution view
+
 2005-02-07 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Gnucash import - anonymizer changes, restore Ace's credit
 
