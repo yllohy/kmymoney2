@@ -1,3 +1,7 @@
+2001-05-15 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
+  * Fixed bug where numeric keypad enter key would not work
+  * Now saving Payee information in transaction's payee field
+
 2001-05-09 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
   * Can now Enter a transaction by pressing enter from a 
     data entry widget

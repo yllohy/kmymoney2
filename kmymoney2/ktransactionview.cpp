@@ -79,7 +79,7 @@ void KTransactionView::slotPayeeCompleted()
 
   	for ( transaction = account->transactionFirst(); transaction; transaction=account->transactionNext() )
 		{
-			if(transaction->memo() == payee)
+			if(transaction->payee() == payee)
 			{
        	lasttransaction = transaction;
 			}			
@@ -246,18 +246,18 @@ void KTransactionView::loadPayees()
 
   for ( transaction = account->transactionFirst(); transaction; transaction=account->transactionNext() )
 	{
-   	QString memo = transaction->memo();
+   	QString payee = transaction->payee();
 		bool inPayee = false;
     for(QStringList::Iterator it = payeelist.begin(); it != payeelist.end(); ++it)
 		{
-			if((*it).latin1() == memo)
+			if((*it).latin1() == payee)
 			{
        	inPayee = true;
 			}     	
 		}
 		if(inPayee == false)
 		{
-    	payeelist.append(memo); 	
+    	payeelist.append(payee); 	
 		}
 	}
 	payeelist.sort();
@@ -362,7 +362,7 @@ void KTransactionView::slotTransactionDelete()
     return;
 
 
-  prompt.sprintf(i18n("Delete this transaction ? :-\n%s"), transaction->memo().latin1());
+  prompt.sprintf(i18n("Delete this transaction ? :-\n%s"), transaction->payee().latin1());
   if ((KMessageBox::questionYesNo(this, prompt))==KMessageBox::No)
     return;
 
@@ -621,14 +621,14 @@ void KTransactionView::enterClicked()
    	account->removeCurrentTransaction(m_index);
   	account->addTransaction(newmethod, m_number->text(), m_payee->currentText(),
                             newamount, newdate, catmajor, catminor, "",
-  													transferAccount, "", "", newstate);
+  													m_payee->currentText(), "", "", newstate);
 	}
 	else
   {
 		newstate = MyMoneyTransaction::Unreconciled;
   	account->addTransaction(newmethod, m_number->text(), m_payee->currentText(),
                             newamount, newdate, catmajor, catminor, "",
-  													transferAccount, "", "", newstate);
+  													m_payee->currentText(), "", "", newstate);
 	}
   qDebug("Transaction Added");
   if((lessindex != -1) && (greatindex != -1) && (m_method->currentItem() == 2))
@@ -647,7 +647,7 @@ void KTransactionView::enterClicked()
 				newstate = MyMoneyTransaction::Unreconciled;
 				currentAccount->addTransaction(transfermethod, m_number->text(), m_payee->currentText(),
 																			 newamount, newdate, theText, "", "",
-																			 account->accountName(),"" ,"",
+																			 m_payee->currentText(),"" ,"",
 																			 newstate);
 			}
 		}		
@@ -668,7 +668,7 @@ void KTransactionView::enterClicked()
 				newstate = MyMoneyTransaction::Unreconciled;
 				currentAccount->addTransaction(transfermethod, m_number->text(), m_payee->currentText(),
 																			 newamount, newdate, theText, "", "",
-																			 account->accountName(),"" ,"",
+																			 m_payee->currentText(),"" ,"",
 																			 newstate);
 			}
 		}		
@@ -700,7 +700,7 @@ void KTransactionView::setInputData(const MyMoneyTransaction transaction)
 {
 
 	m_date->setDate(transaction.date());
-	m_payee->setEditText(transaction.memo());
+	m_payee->setEditText(transaction.payee());
 	m_number->setText(transaction.number());
   m_payment->setText(((transaction.type()==MyMoneyTransaction::Debit) ? KGlobal::locale()->formatNumber(transaction.amount().amount()) : QString("")));
   m_withdrawal->setText(((transaction.type()==MyMoneyTransaction::Credit) ? KGlobal::locale()->formatNumber(transaction.amount().amount()) : QString("")));
@@ -847,7 +847,7 @@ void KTransactionView::updateTransactionList(int row, int col)
 	    transactionsTable->setItem(rowCount + 1, 0, item11);
 
       KTransactionTableItem *item2;
-      item2 = new KTransactionTableItem(transactionsTable, QTableItem::Never, transaction->memo());
+      item2 = new KTransactionTableItem(transactionsTable, QTableItem::Never, transaction->payee());
       transactionsTable->setItem(rowCount, 2, item2);
 
 
@@ -1019,7 +1019,7 @@ void KTransactionView::updateTransactionList(int row, int col)
       case 2:
   	    if((row % 2) == 0)
         {
-          transactionsTable->setText(realrow, col, m_transactions.at(row)->memo());
+          transactionsTable->setText(realrow, col, m_transactions.at(row)->payee());
 				}
         else
 				{

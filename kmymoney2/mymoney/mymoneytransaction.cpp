@@ -128,7 +128,7 @@ QDataStream &operator<<(QDataStream &s, const MyMoneyTransaction &trans)
 {
   return s << (Q_UINT32)trans.m_id
     << trans.m_number
-    << trans.m_memo
+    << trans.m_payee
     << trans.m_amount
     << trans.m_date
     << (Q_UINT32)trans.m_method
@@ -137,7 +137,7 @@ QDataStream &operator<<(QDataStream &s, const MyMoneyTransaction &trans)
     << trans.m_atmBankName
     << trans.m_accountFrom
     << trans.m_accountTo
-    << trans.m_payee
+    << trans.m_memo
     << (Q_INT32)trans.m_state;
   // no need to save m_index as its just an internal counter
 }
@@ -146,7 +146,7 @@ QDataStream &operator>>(QDataStream &s, MyMoneyTransaction &trans)
 {
   s >> (Q_UINT32 &)trans.m_id
     >> trans.m_number
-    >> trans.m_memo
+    >> trans.m_payee
     >> trans.m_amount
     >> trans.m_date
     >> (Q_UINT32 &)trans.m_method
@@ -155,7 +155,7 @@ QDataStream &operator>>(QDataStream &s, MyMoneyTransaction &trans)
     >> trans.m_atmBankName
     >> trans.m_accountFrom
     >> trans.m_accountTo
-    >> trans.m_payee
+    >> trans.m_memo
     >> (Q_INT32 &)trans.m_state;
     return s;
 }
