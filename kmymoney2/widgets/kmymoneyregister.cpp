@@ -179,6 +179,7 @@ bool kMyMoneyRegister::setCurrentTransactionIndex(int idx)
   bool rc = (idx != m_currentTransactionIndex);
 
   m_currentTransactionIndex = idx;
+  setCurrentCell(idx * rpt(), 0);
 
   return rc;
 }
