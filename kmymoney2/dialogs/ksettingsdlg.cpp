@@ -394,7 +394,10 @@ void KSettingsDlg::configRead()
   m_qradiobuttonPerTransaction->setChecked(m_bTempColourPerTransaction);
   m_qradiobuttonOtherRow->setChecked(!m_bTempColourPerTransaction);
 
-  m_qdateTempStart = kconfig->readDateTimeEntry("StartDate").date();
+  QDateTime defaultDate;
+  defaultDate.setTime_t(0);
+
+  m_qdateTempStart = kconfig->readDateTimeEntry("StartDate", &defaultDate).date();
   m_dateinputStart->setDate(m_qdateTempStart);
 
   m_bTempNormalView = kconfig->readBoolEntry("NormalAccountsView", true);
