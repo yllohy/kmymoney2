@@ -2,6 +2,7 @@
   * Adding institution in the account dialog now works.
   * The edit account dialog now loads nearly all the 'fields'
     properly.
+	* Integrated the date input widget changes from the 0-4-kde3-branch.
 
 2002-06-06 Michael Edwardes <mte@users.sourceforge.net>
   * Selecting the four root accounts in the parent account widget

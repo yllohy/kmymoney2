@@ -20,6 +20,7 @@
 #include <qdrawutil.h>
 #include <qpoint.h>
 #include <qvalidator.h>
+#include <qtimer.h>
 
 #include "kmymoneydateinput.h"
 
@@ -28,95 +29,73 @@
 #endif
 
 kMyMoneyDateInput::kMyMoneyDateInput(QWidget *parent, const char *name, Qt::AlignmentFlags flags)
- : QWidget(parent,name)
+ : QHBox(parent,name)
 {
   m_qtalignment = flags;
   m_date = QDate::currentDate();
 
   dateEdit = new QDateEdit(m_date, this, "dateEdit");
+	setFocusProxy(dateEdit);
+	
+  m_dateFrame = new QVBox(0,0,WType_Popup);
+	m_dateFrame->setFrameStyle(QFrame::PopupPanel | QFrame::Raised);
+  m_dateFrame->setFixedSize(200,200);
+  m_dateFrame->setLineWidth(3);
+  m_dateFrame->hide();
+	
+	m_datePicker = new KDatePicker(m_dateFrame, m_date);
+	
+	m_dateButton = new QPushButton(this);
+	
+	connect(m_dateButton,SIGNAL(clicked()),SLOT(toggleDatePicker()));
   connect(dateEdit, SIGNAL(returnPressed()), this, SLOT(slotEnterPressed()));
-
-  // I use KTempDatePicker so I can use the WType_Popup flag in the constructor
-  datePicker = new KDatePicker(parent, m_date, "datePicker"); //, WType_Popup);
-  datePicker->resize(datePicker->sizeHint());
-  datePicker->hide();
-
-  connect(datePicker, SIGNAL(dateSelected(QDate)), this, SLOT(slotDateChosen(QDate)));
-  connect(datePicker, SIGNAL(dateEntered(QDate)), this, SLOT(slotDateChosen(QDate)));
-}
-
-kMyMoneyDateInput::kMyMoneyDateInput(QWidget *parent, const QDate& date, Qt::AlignmentFlags flags)
- : QWidget(parent)
-{
-  m_qtalignment = flags;
-  m_date = date;
-
-  dateEdit = new QDateEdit(m_date, this, "dateEdit");
-  connect(dateEdit, SIGNAL(returnPressed()), this, SLOT(slotEnterPressed()));
-
-  // I use KTempDatePicker so I can use the WType_Popup flag in the constructor
-  datePicker = new KDatePicker(parent, m_date, "datePicker"); //, WType_Popup);
-  datePicker->resize(datePicker->sizeHint());
-  datePicker->hide();
-
-  connect(datePicker, SIGNAL(dateSelected(QDate)), this, SLOT(slotDateChosen(QDate)));
-  connect(datePicker, SIGNAL(dateEntered(QDate)), this, SLOT(slotDateChosen(QDate)));
+	connect(m_datePicker, SIGNAL(dateSelected(QDate)), this, SLOT(slotDateChosen(QDate)));
+  connect(m_datePicker, SIGNAL(dateEntered(QDate)), this, SLOT(slotDateChosen(QDate)));
+	connect(m_datePicker, SIGNAL(dateSelected(QDate)), m_dateFrame, SLOT(hide()));
 }
 
 kMyMoneyDateInput::~kMyMoneyDateInput()
 {
+  delete m_dateFrame;
 }
 
-void kMyMoneyDateInput::paintEvent(QPaintEvent*)
+void kMyMoneyDateInput::toggleDatePicker()
 {
-  // Code mostly borrowed from Calendar-0.13. See header file
-  QPainter paint;
-  paint.begin(this);
-  qDrawShadePanel(&paint,0,0,width(),height(),colorGroup(),FALSE,1,NULL);
+  if(m_dateFrame->isVisible())
+	{
+		m_dateFrame->hide();
+	}
+	else
+	{
+    QPoint tmpPoint = mapToGlobal(m_dateButton->geometry().bottomRight());
+    if (m_qtalignment == Qt::AlignRight)
+		{
+	    m_dateFrame->setGeometry(tmpPoint.x(), tmpPoint.y(), 200, 200);
+		}
+		else
+		{
+			tmpPoint.setX(tmpPoint.x() - m_datePicker->width());
+	    m_dateFrame->setGeometry(tmpPoint.x(), tmpPoint.y(), 200, 200);
+		}
 
-#if QT_VERSION > 300
-  style().drawPrimitive(QStyle::PE_ArrowDown, &paint,
-  	QRect(width()-18,height()-7,width()-7,height()-7),colorGroup());
-#else
-  style().drawArrow(&paint,DownArrow,FALSE,width()-19,5,height()-12,
-    height()-12,colorGroup(), this->isEnabled());
-#endif
-
-  qDrawShadeLine(&paint,width()-18,height()-7,width()-7,height()-7,
-    colorGroup(),FALSE,1,1);
-  paint.end();
-}
-
-void kMyMoneyDateInput::resizeEvent(QResizeEvent*)
-{
-  dateEdit->setGeometry(0,0,width()-23,height());
-}
-
-void kMyMoneyDateInput::mousePressEvent(QMouseEvent* qme)
-{
-  // Code mostly borrowed from Calendar-0.13. See header file
-  int x = qme->x();
-  int y = qme->y();
-  if (x > width()-20 && x < width()-4 && y > 5 && y < height()-5) {
-    if (datePicker->isVisible()) {
-      datePicker->hide();
-    } else {
-      QPoint point = mapToGlobal(rect().bottomRight());
-      if (m_qtalignment == Qt::AlignRight)
-        point.setX(point.x());
-      else
-        point.setX(point.x() - datePicker->width());
-
-      datePicker->move(point);
-      datePicker->show();
+    QDate date = dateEdit->date();
+    if(date.isValid())
+		{
+      m_datePicker->setDate(date);
     }
+		else
+		{
+      m_datePicker->setDate(QDate::currentDate());
+    }
+    
+		m_dateFrame->show();
   }
 }
 
 /** Overriding QWidget::keyPressEvent
   *
   * increments/decrements the date upon +/- key input
-  */
+  * /
 void kMyMoneyDateInput::keyPressEvent(QKeyEvent * k)
 {
   if (k->key()==Key_Plus) {
@@ -128,43 +107,26 @@ void kMyMoneyDateInput::keyPressEvent(QKeyEvent * k)
      if (m_qtalignment == Qt::AlignRight)
       point.setX(point.x());
      else
-      point.setX(point.x() - datePicker->width());
+      point.setX(point.x() - m_datePicker->width());
 
-    datePicker->move(point);
-    datePicker->show();
+    m_datePicker->move(point);
+    m_datePicker->show();
     return;
   }
 }
+*/
 
 void kMyMoneyDateInput::slotDateChosen(QDate date)
 {
   dateEdit->setDate(date);
   m_date=date;
-  datePicker->hide();
+  m_datePicker->setDate(m_date);
 }
 
 void kMyMoneyDateInput::slotEnterPressed()
 {
   dateEdit->setDate(m_date);
-  datePicker->setDate(m_date);
-}
-
-/*
-void kMyMoneyDateInput::hide()
-{
- 	lineEdit->hide();
-  //datePicker->hide();
-}
-
-void kMyMoneyDateInput::show()
-{
- 	lineEdit->show();
-  //datePicker->show();
-}
-*/
-QWidget* kMyMoneyDateInput::getLineEdit()
-{
- 	return dateEdit;
+  m_datePicker->setDate(m_date);
 }
 
 QDate kMyMoneyDateInput::getQDate(void)
@@ -177,18 +139,3 @@ void kMyMoneyDateInput::setDate(QDate date)
   slotDateChosen(date);
 }
 
-QSize kMyMoneyDateInput::sizeHint() const
-{
-  if (dateEdit)
-    return dateEdit->sizeHint();
-
-  return QSize(-1, -1);
-}
-
-QSizePolicy kMyMoneyDateInput::sizePolicy() const
-{
-  if (dateEdit)
-    return dateEdit->sizePolicy();
-
-  return QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-}
