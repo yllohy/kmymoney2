@@ -1,3 +1,37 @@
+2004-08-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed conflicts due to merge with changes made by Ace
+  * Preload the KDE default settings for monetary display
+  * Fixed #1012257 (Calculator does not honor localized settings)
+  * Added flag support to MyMoneyTemplate
+  * Reconverted old default category files to new format (incl. flags)
+  * Added display only mode to kMyMoneyCategory which does not try to
+    create accounts
+
+2004-08-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added idlist as parameter to MyMoneyFile::accountList()
+  * Added testcase for the above
+  * Fixed MyMoneyMoney::formatMoney() to avoid displaying the decimal
+    separator if currency does not have a fractional part (e.g. HUF, IRR)
+  * Added new account template loader
+  * Removed old default category loader
+  * Removed old default account files
+  * Added new i18n based template directories for accounts
+  * Converted old default category files to new format
+  * Rearranged the ledger views to better support 800x600
+  * Added size display in caption
+  * Resized payees view to better support 800x600
+
+2004-08-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added button to kMyMoneyEdit to start the calculator
+  * Fixed icon display on date and money edit fields
+  * Converted button of kMyMoneyDateInput to KPushButton
+  * Fixed account selection button to show the correct
+    account after switch to different account type
+  * Fixed initial header of empty schedule view
+  * Fixed default button in schedule edit dialog
+  * Added KGPGFile::keyAvailable()
+  * Made OK the default button in edit schedule dialog
+
 2004-08-21 Ace Jones <acejones@users.sourceforge.net>
   * Fixed a bug in transaction reports where totals did not work
     with the new parentheses-around money format
@@ -5,12 +39,12 @@
     of this account currently set to %1 with %2?" in QIF reader.
   * Added "Automatically create missing payees" to "Last Use Settings" in
     configuration file.
-            
+
 2004-08-17 Ace Jones <acejones@users.sourceforge.net>
   * Fixed a bug where creating a new category would not properly use the
     currently selected account as the parent, for expense accounts.
   * Implemented double-clicking in accounts and categories views.
-  
+
 2004-08-16 Ace Jones <acejones@users.sourceforge.net>
   * Modified reports to use ()'s for negative values
   * Added Tax notation in GB default accounts
@@ -31,13 +65,13 @@
   * Added stock accounts to kMyMoneyAccountSelector
 
 2004-08-08 Ace Jones <acejones@users.sourceforge.net>
-  * Added the ability to designate some reports as your favorite, and they'll be
-    grouped together.
+  * Added the ability to designate some reports as your favorite, and
+    they'll be grouped together.
   * Altered handling of reports index list, so customized reports are stashed
     in the same heading as their parent reports.
   * Fixed a bug in running sum reports (Net Worth, et al).  When either end
     of the date range was QDate() the opening balance could be calculated wrong.
-    
+
 2004-08-07 Ace Jones <acejones@users.sourceforge.net>
   * Added MS Money date format as an option to QIF importer (%m/%d'%yyyy)  
   * Added some new default reports, which are permutations of the old ones
@@ -48,7 +82,7 @@
     current month.
   * Added rudimentary help to report configuration dialog.
   * Added 'close' button to report configuration dialog.
-  
+
 2004-08-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * More changes to maintain backward compatibility with older Qt versions.
     Application now compiles under KDE 3.0 again.
