@@ -22,6 +22,7 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 #include <qpainter.h>
+#include <qstyle.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -194,4 +195,38 @@ void KScheduledListItem::paintBranches(QPainter* p, const QColorGroup&/* cg*/, i
     p->fillRect( 0, 0, w, h, colour );
   else
     p->fillRect( 0, 0, w, h, bgColour );
+}
+
+void KScheduledListItem::paintFocus(QPainter* p, const QColorGroup& cg, const QRect& r)
+{
+  QColorGroup cg2(cg);
+
+  KConfig *config = KGlobal::config();
+  config->setGroup("List Options");
+
+  QColor textColour = cg2.highlightedText();
+  textColour = config->readColorEntry("listGridColor", &textColour);
+
+  if (m_schedule.isFinished())
+    textColour = Qt::darkGreen;
+  else if (m_schedule.isOverdue())
+    textColour = Qt::red;
+    
+  cg2.setColor(QColorGroup::HighlightedText, textColour);
+  
+  int indent = -20 * (depth()+1);
+
+  QRect r2(r);
+  r2.setLeft(r2.left() + indent);
+  if (isSelected())
+    p->fillRect(  r2.left(),
+                  r2.top(),
+                  -indent,
+                  r2.height(),
+                  cg2.highlight());
+
+  listView()->style().drawPrimitive(
+                QStyle::PE_FocusRect, p, r2, cg2,
+                (isSelected() ? QStyle::Style_FocusAtBorder : QStyle::Style_Default),
+                QStyleOption(isSelected() ? cg2.highlight() : cg2.base()));
 }

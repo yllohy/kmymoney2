@@ -874,10 +874,8 @@ void KEditScheduleDialog::slotDateChanged(const QDate& date)
     m_qcheckboxAuto->blockSignals(false);
   }
 
-  qDebug("checking date");
   if (date != m_schedule.startDate() && m_qcheckboxEnd->isChecked())
   {
-    qDebug("re-setting end");
     // Re-set the end date
     m_schedule.setStartDate(date);
     m_kdateinputFinal->setDate(m_schedule.dateAfter(m_qlineeditRemaining->text().toInt()));

@@ -292,7 +292,23 @@ void KAccountListItem::paintBranches(QPainter* /* p */, const QColorGroup& /* cg
 {
 }
 
-void KAccountListItem::paintFocus(QPainter* /* p */, const QColorGroup& /* cg */, const QRect & /* rect */)
+void KAccountListItem::paintFocus(QPainter* p, const QColorGroup& cg, const QRect& r)
 {
+  int indent = -20 * (depth()+1);
+
+  QRect r2(r);
+  r2.setLeft(r2.left() + indent);
+  
+  if (isSelected())
+    p->fillRect(  r2.left(),
+                  r2.top(),
+                  -indent,
+                  r2.height(),
+                  cg.highlight());
+
+  listView()->style().drawPrimitive(
+                QStyle::PE_FocusRect, p, r2, cg,
+                (isSelected() ? QStyle::Style_FocusAtBorder : QStyle::Style_Default),
+                QStyleOption(isSelected() ? cg.highlight() : cg.base()));
 }
 
