@@ -348,23 +348,11 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int /*row*/, 
 void kMyMoneyScheduledDateTbl::addDayPostfix(QString& text)
 {
   int d = text.toInt();
-  switch (d)
+
+  if (d >= 1 && d <= 31)
   {
-    case 1:
-    case 21:
-    case 31:
-      text += i18n("st");
-      break;
-    case 2:
-    case 22:
-      text += i18n("nd");
-      break;
-    case 3:
-    case 23:
-      text += i18n("rd");
-      break;
-    default:
-      text += i18n("th");
+    QStringList postfixList = QStringList::split("-", i18n("st-nd-rd-th-th-th-th-th-th-th-th-th-th-th-th-th-th-th-th-th-st-nd-rd-th-th-th-th-th-th-th-st"), true);
+    text += postfixList[d-1];
   }
 }
 
