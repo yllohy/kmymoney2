@@ -161,9 +161,19 @@ void kMyMoneyTable::paintCell(QPainter *p, int row, int col, const QRect& r, boo
   p->setFont(config->readFontEntry("listCellFont", &defaultFont));
 	
   QString firsttext = text(row, col);
+  QString qstringCategory;
+  QString qstringMemo;
+
+  int intPos = firsttext.find("|");
+  if(intPos > -1)
+  {
+    qstringCategory = firsttext.left(intPos);
+    qstringMemo = firsttext.mid(intPos + 1);
+  }
 
   QRect rr = r;
   QRect rr2 = r;
+  QRect rr3 = r;
   rr.setX(0);
   rr.setY(0);
   rr.setWidth(columnWidth(col));
@@ -184,9 +194,40 @@ void kMyMoneyTable::paintCell(QPainter *p, int row, int col, const QRect& r, boo
       if (bShowGrid) {
         p->drawLine(rr.x(), 0, rr.x(), rr.height());
         p->drawLine(rr.x(), rr.y(), rr.width(), 0);
-        p->drawText(rr, Qt::AlignLeft,firsttext);
+        if(intPos > -1)
+        {
+          int intMemoStart = rr.width() / 2;
+          rr3.setX(0);
+          rr3.setY(0);
+          rr3.setWidth(intMemoStart);
+          p->drawText(rr3,Qt::AlignLeft,qstringCategory);
+          p->drawLine(intMemoStart,0,intMemoStart,rr.height());
+          rr3.setX(intMemoStart + 1);
+          rr3.setWidth(rr.width());
+          p->drawText(rr3,Qt::AlignLeft,qstringMemo);
+        }
+        else
+        {
+          p->drawText(rr, Qt::AlignLeft,firsttext);
+        }
       } else
-        p->drawText(rr2, Qt::AlignLeft,firsttext);
+      {
+        if(intPos > -1)
+        {
+          int intMemoStart = rr.width() / 2;
+          rr3.setX(0);
+          rr3.setY(0);
+          rr3.setWidth(intMemoStart);
+          p->drawText(rr3,Qt::AlignLeft,qstringCategory);
+          rr3.setX(intMemoStart + 1);
+          rr3.setWidth(rr.width());
+          p->drawText(rr3,Qt::AlignLeft,qstringMemo);
+        }
+        else
+        {
+          p->drawText(rr2, Qt::AlignLeft,firsttext);
+        }
+      }
       break;
     case 3:
       if (bShowGrid) {

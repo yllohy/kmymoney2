@@ -1,3 +1,6 @@
+2001-07-22 Felix Rodriguez<frodriguez@mail.wesleyan.edu>
+  * Placed Category and Memo in the same cell.
+
 2001-07-22 Michael Edwardes <mte@users.sourceforge.net>
   * Added a radio button to KSettingsDlg and made it conform to
     the new coding standards.

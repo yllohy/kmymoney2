@@ -78,7 +78,7 @@ private:
   KPushButton* m_cancel;
 	KPushButton* m_delete;
 	kMyMoneyLineEdit* m_memo;
-//	kMyMoneyHLayout*	m_hlayout;
+    kMyMoneyHLayout*	m_hlayout;
 
   QList<MyMoneyTransaction> *m_transactions;
 
