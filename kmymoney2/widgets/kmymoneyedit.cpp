@@ -233,6 +233,15 @@ bool kMyMoneyEdit::eventFilter(QObject *o , QEvent *e )
           rc = false;
           break;
         }
+        // in case of '-' we do not enter the calculator when
+        // the current position is the beginning and there is
+        // no '-' sign at the first position.
+        if(k->key() == Qt::Key_Minus) {
+          if(cursorPosition() == 0 && text()[0] != '-') {
+            rc = false;
+            break;
+          }
+        }
         // otherwise, tricky fall through here!
 
       case Qt::Key_Slash:
