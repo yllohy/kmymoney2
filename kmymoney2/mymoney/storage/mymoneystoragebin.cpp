@@ -152,6 +152,9 @@ void MyMoneyStorageBin::readStream(QDataStream& s, IMyMoneySerialize* storage)
       readNewFormat(s, storage);
       break;
   }
+
+  // make sure the progress bar is not shown any longer
+  signalProgress(-1, -1);
 }
 
 void MyMoneyStorageBin::addCategory(IMyMoneySerialize* storage,
@@ -336,6 +339,7 @@ void MyMoneyStorageBin::readOldFormat(QDataStream& s, IMyMoneySerialize* storage
       // need to store them away until we have all the account information
       // For now, we store the names of the accounts
       s >> tr_cnt;
+      signalProgress(0, tr_cnt);
       for(int k=0; k < tr_cnt; ++k) {
         MyMoneyTransaction tr;
         MyMoneySplit sp1, sp2;
@@ -435,6 +439,9 @@ void MyMoneyStorageBin::readOldFormat(QDataStream& s, IMyMoneySerialize* storage
         // the one that is marked 'deposit' (1)
         if(method != 2)
           transactionList.append(tr);
+
+        if(!(k % 10))
+          signalProgress(k, 0);
       }
     }
   }
@@ -517,9 +524,6 @@ void MyMoneyStorageBin::readNewFormat(QDataStream&s, IMyMoneySerialize* storage)
     return;
 
   storage->setPairs(readKeyValueContainer(s));
-
-  // make sure the progress bar is not shown any longer
-  signalProgress(-1, -1);
 }
 
 void MyMoneyStorageBin::writeFile(QIODevice* qfile, IMyMoneySerialize* storage)
@@ -912,6 +916,7 @@ void MyMoneyStorageBin::readTransactions(QDataStream& s, IMyMoneySerialize* stor
     if(!(i % update))
       signalProgress(i, 0);
   }
+  signalProgress(cnt, 0);
 }
 
 void MyMoneyStorageBin::writeTransaction(QDataStream& s, const MyMoneyTransaction& t)
