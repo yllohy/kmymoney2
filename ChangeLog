@@ -1,3 +1,6 @@
+2002-03-14 Arni Ingimundarson <arniing@users.sourceforge.net>
+  * Fixed a sorting bug in KReconcileDlg
+
 2002-03-10 Michael Edwardes <mte@users.sourceforge.net>
   * Fix for autoconf 2.5 which KDE 3 now requires.
 
