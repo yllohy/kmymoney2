@@ -111,8 +111,9 @@ void KGPGFile::addRecipient(const QCString& recipient)
 
 bool KGPGFile::open(int mode)
 {
-  m_errmsg.resize(1);
+  bool useOwnPassphrase = (getenv("GPG_AGENT_INFO") == 0);
 
+  m_errmsg.resize(1);
   if(isOpen())
     return false;
 
@@ -151,13 +152,14 @@ bool KGPGFile::open(int mode)
     // so we delete it first
     QFile::remove(m_fn);
   } else {
-    args << "-da"
-         << "--passphrase-fd" << "0"
-         << m_fn;
+    args << "-da";
+    if(useOwnPassphrase)
+      args << "--passphrase-fd" << "0";
+    args << "--no-default-recipient" << m_fn;
   }
 
   QCString pwd;
-  if(isReadable()) {
+  if(isReadable() && useOwnPassphrase) {
     if(KPasswordDialog::getPassword(pwd, i18n("Enter passphrase"), 0) == QDialog::Rejected)
       return false;
   }
@@ -168,7 +170,7 @@ bool KGPGFile::open(int mode)
   if(!m_process)
     return false;
 
-  if(isReadable()) {
+  if(isReadable() && useOwnPassphrase) {
     if(_writeBlock(pwd.data(), pwd.length()) == -1) {
       // qDebug("Sending passphrase failed");
       return false;
