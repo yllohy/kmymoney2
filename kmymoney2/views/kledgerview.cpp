@@ -29,6 +29,7 @@
 // KDE Includes
 
 #include <kmessagebox.h>
+#include <kpushbutton.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -42,6 +43,7 @@ KLedgerView::KLedgerView(QWidget *parent, const char *name )
   m_register = 0;
   m_form = 0;
   m_transactionPtr = 0;
+  m_timer = 0;
 }
 
 KLedgerView::~KLedgerView()
@@ -71,7 +73,10 @@ int KTransactionPtrVector::compareItems(KTransactionPtrVector::Item d1, KTransac
 
 void KLedgerView::setCurrentAccount(const QCString& accountId)
 {
+  slotCancelEdit();
+
   if(accountId != m_account.id()) {
+
     MyMoneyFile* file = MyMoneyFile::instance();
 
     file->detach(m_account.id(), this);
@@ -116,10 +121,12 @@ void KLedgerView::loadAccount(void)
   m_register->setCurrentTransactionIndex(m_transactionList.count()-1);
 
   // make sure, full transaction is visible
-  m_register->ensureCellVisible(m_transactionPtrVector.count() * m_register->rpt(), 0);
+  m_register->ensureTransactionVisible();
+/*
+  m_register->ensureCellVisible((m_transactionPtrVector.count() * m_register->rpt())-1, 0);
   m_register->ensureCellVisible((m_transactionPtrVector.count()-1) * m_register->rpt(), 0);
   m_register->repaintContents();
-
+*/
   // fill in the form with the currently selected transaction
   fillForm();
 }
@@ -451,6 +458,30 @@ void KLedgerView::slotToChanged(const QString& to)
       m_editTo->setFocus();
       return;
     }
+
+    // For transfers we assume, that the first split contains the
+    // from-account and the second split contains the to-account.
+    // Therefor, the following cases can exist:
+    //
+    // a) one split available
+    // b) two splits available
+    //
+    // In the first case, we add a new split, in the second, we
+    // modifiy the existing split.
+
+    MyMoneySplit split;
+    if(m_transaction.splitCount() == 1) {
+      split.setAction(MyMoneySplit::ActionTransfer);
+      m_transaction.addSplit(split);
+    }
+
+    split = m_transaction.splits()[1];
+
+    split.setAccountId(id);
+    m_transaction.modifySplit(split);
+
+    m_editTo->loadText(to);
+
   } catch(MyMoneyException *e) {
     KMessageBox::detailedSorry(0, i18n("Unable to modify account"),
         (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
@@ -521,8 +552,24 @@ void KLedgerView::slotShowTransactionForm(bool visible)
     m_register->setInlineEditingAvailable(!visible);
     // make sure, full transaction is visible
     resizeEvent(NULL);
-    m_register->ensureTransactionVisible();
+
+    // using a timeout is the only way, I got the 'ensureTransactionVisible'
+    // working when coming from hidden form to visible form. I assume, this
+    // has something to do with the delayed update of the display somehow.
+    if(m_timer == 0) {
+    	m_timer = new QTimer();
+      connect( m_timer, SIGNAL(timeout()), this, SLOT(timerDone()) );
+      m_timer->start(50, true);
+    }
   }
+}
+
+void KLedgerView::timerDone(void)
+{
+  m_register->ensureTransactionVisible();
+  m_register->repaintContents();
+  delete m_timer;
+  m_timer = 0;
 }
 
 const QCString KLedgerView::str2action(const QString &action) const
@@ -601,5 +648,121 @@ int KLedgerView::transactionType(const MyMoneySplit& split) const
   if(split.action() == MyMoneySplit::ActionATM)
     return ATM;
   return Check;
+}
+
+void KLedgerView::hideEvent(QHideEvent *ev)
+{
+  slotCancelEdit();
+}
+
+void KLedgerView::slotNew(void)
+{
+  // select the very last line (empty one), and load it into the form
+  m_register->setCurrentTransactionIndex(m_transactionList.count());
+  m_register->ensureTransactionVisible();
+  m_register->repaintContents();
+  fillForm();
+
+  m_form->enterButton()->setEnabled(true);
+  m_form->cancelButton()->setEnabled(true);
+  m_form->moreButton()->setEnabled(true);
+  m_form->editButton()->setEnabled(false);
+  m_form->newButton()->setEnabled(false);
+
+  showWidgets();
+}
+
+void KLedgerView::slotStartEdit(void)
+{
+  m_register->ensureTransactionVisible();
+
+  m_form->newButton()->setEnabled(false);
+  m_form->enterButton()->setEnabled(true);
+  m_form->cancelButton()->setEnabled(true);
+  m_form->moreButton()->setEnabled(true);
+  m_form->editButton()->setEnabled(false);
+
+  showWidgets();
+}
+
+void KLedgerView::slotCancelEdit(void)
+{
+  m_form->newButton()->setEnabled(true);
+  m_form->enterButton()->setEnabled(false);
+  m_form->cancelButton()->setEnabled(false);
+  m_form->moreButton()->setEnabled(false);
+
+  if(transaction(m_register->currentTransactionIndex()) != 0) {
+    m_form->editButton()->setEnabled(true);
+  }
+
+  hideWidgets();
+}
+
+void KLedgerView::slotEndEdit(void)
+{
+  // force focus change to update all data
+  m_form->enterButton()->setFocus();
+
+  MyMoneyTransaction t;
+
+  // so, we now have to save something here.
+  // if an existing transaction has been changed, we take it as the base
+  if(m_transactionPtr != 0) {
+    t = *m_transactionPtr;
+  }
+
+  if(!(t == m_transaction)) {
+    // If there are any differences, we need to update the storage
+    // But first we check for the following things:
+    //
+    // a) transaction must have 2 or more than 2 splits
+    // b) the sum of all split amounts must be zero
+
+    if(m_transaction.splitCount() < 2) {
+      ;
+    }
+    if(m_transaction.splitSum() != 0) {
+      ;
+    }
+    try {
+      // differentiate between add and modify
+      QCString id;
+      if(m_transactionPtr == 0) {
+        // in the add case, we don't have an ID yet. So let's get one
+        // and use it down the line
+        m_transaction.setPostDate(QDate::currentDate());
+        MyMoneyFile::instance()->addTransaction(m_transaction);
+        id = m_transaction.id();
+      } else {
+        // in the modify case, we have to keep the id. The call to
+        // modifyTransaction might change m_transaction due to some
+        // callbacks.
+        id = m_transaction.id();
+        MyMoneyFile::instance()->modifyTransaction(m_transaction);
+      }
+
+      // make sure the transaction stays selected. It's position might
+      // have changed within the register (e.g. date changed)
+      selectTransaction(id);
+
+    } catch(MyMoneyException *e) {
+      KMessageBox::detailedSorry(0, i18n("Unable to add/modify transaction"),
+        (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+      delete e;
+    }
+  }
+
+  // now switch the context
+  m_form->newButton()->setEnabled(true);
+  m_form->enterButton()->setEnabled(false);
+  m_form->cancelButton()->setEnabled(false);
+  m_form->moreButton()->setEnabled(false);
+
+  if(transaction(m_register->currentTransactionIndex()) != 0) {
+    m_form->editButton()->setEnabled(true);
+  }
+
+  hideWidgets();
 }
 

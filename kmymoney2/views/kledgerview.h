@@ -30,6 +30,7 @@
 #include <qtable.h>
 #include <qvaluelist.h>
 #include <qvaluevector.h>
+#include <qtimer.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -55,6 +56,8 @@ class kMyMoneyRegister;
 
 /**
   *@author Thomas Baumgart
+  *
+  * @todo Add account (hierarchy) upon new category
   */
 
 class KTransactionPtrVector : public QPtrVector<MyMoneyTransaction> {
@@ -206,12 +209,36 @@ public slots:
     */
   virtual void slotNewPayee(const QString& payee);
 
+  /**
+    * Called when editing a transaction begins
+    */
+  virtual void slotStartEdit(void);
+
+  /**
+    * Called when editing a transaction is cancelled
+    */
+  virtual void slotCancelEdit(void);
+
+  /**
+    * Called when editing a transaction is done and changes should be stored
+    */
+  virtual void slotEndEdit(void);
+
+  /**
+    * Called when a new transaction should be generated
+    */
+  virtual void slotNew(void);
+
 protected:
   void reloadAccount(const bool repaint = true);
   void loadAccount(void);
   void filterTransactions(void);
   void sortTransactions(void);
   int transactionType(const MyMoneySplit& split) const;
+
+  virtual void hideEvent(QHideEvent *ev);
+  virtual void showWidgets(void) = 0;
+  virtual void hideWidgets(void) = 0;
 
 protected:
   kMyMoneyRegister *m_register;
@@ -247,6 +274,8 @@ protected:
     */
   MyMoneySplit m_split;
 
+  QTimer*      m_timer;
+
   kMyMoneyPayee*        m_editPayee;
   kMyMoneyCategory*     m_editCategory;
   kMyMoneyLineEdit*     m_editMemo;
@@ -255,6 +284,9 @@ protected:
   kMyMoneyDateInput*    m_editDate;
   kMyMoneyCategory*     m_editFrom;
   kMyMoneyCategory*     m_editTo;
+
+private slots:
+  void timerDone(void);
 
 signals:
   void transactionSelected(void);

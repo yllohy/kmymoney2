@@ -40,6 +40,8 @@
 
 /**
   *@author Thomas Baumgart
+  *
+  * @todo in-register editing of transactions in KLedgerViewCheckings
   */
 
 class KLedgerViewCheckings : public KLedgerView  {
@@ -59,11 +61,6 @@ public slots:
   virtual void refreshView(void);
 
   void slotTypeSelected(int transactionType);
-
-  void slotStartEdit(void);
-  void slotCancelEdit(void);
-  void slotEndEdit(void);
-  void slotNew(void);
 
   void slotRegisterDoubleClicked(int row, int col, int button, const QPoint &mousePos);
 
