@@ -112,6 +112,23 @@ private:
     */
   static unsigned int fileVersion(fileVersionDirectionType dir = Reading);
 
+  void writeFileBeginning(QTextStream& s);
+  
+  void writeInstitution(QTextStream&s, const MyMoneyInstitution& i);
+  void writeInstitutions(QTextStream& s, IMyMoneySerialize* storage);
+
+  void writePayees(QTextStream& s, IMyMoneySerialize* storage);
+  void writePayee(QTextStream& s, const MyMoneyPayee& p);
+  
+  void writeAccounts(QTextStream& s, IMyMoneySerialize* storage);
+  void writeAccount(QTextStream& s, const MyMoneyAccount& p);
+
+  void writeTransactions(QTextStream& s, IMyMoneySerialize* storage);
+  void writeTransaction(QTextStream& s, const MyMoneyTransaction& tx);
+
+  void writeSplits(QTextStream& s, const MyMoneyTransaction& tx);
+  void writeSplit(QTextStream& s, const MyMoneySplit& split);
+    
   void readFile(QIODevice* s, IMyMoneySerialize* storage);
   void writeFile(QIODevice* s, IMyMoneySerialize* storage);
   /** No descriptions */

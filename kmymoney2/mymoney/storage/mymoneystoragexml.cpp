@@ -87,6 +87,7 @@ void MyMoneyStorageXML::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
 
 void MyMoneyStorageXML::writeFile(QIODevice* qf, IMyMoneySerialize* storage)
 {
+  QTextStream stream(qf);
   qDebug("XMLWRITER: not implemented yet!");
 }
 
@@ -448,6 +449,84 @@ void MyMoneyStorageXML::getAddress(const AttributeMap& p)
     strTemp = getPropertyValue(std::string("zip"), p);
     m_pCurrentPayee->setPostcode(QString(strTemp.data()));
   }
+}
+
+void MyMoneyStorageXML::writeInstitution(QTextStream&s, const MyMoneyInstitution& i)
+{
+  /*Q_INT32 tmp;
+  tmp = 1;    // version
+  s << tmp;
+
+  s << i.id();
+  s << i.name();
+  s << i.city();
+  s << i.street();
+  s << i.postcode();
+  s << i.telephone();
+  s << i.manager();
+  s << i.sortcode();
+  s << i.accountList();   */
+}
+
+void MyMoneyStorageXML::writeInstitutions(QTextStream& s, IMyMoneySerialize* storage)
+{
+  Q_INT32 tmp;
+  QValueList<MyMoneyInstitution> list;
+  QValueList<MyMoneyInstitution>::ConstIterator it;
+
+  //tmp = 1;      // version
+  //s << tmp;
+
+  /*list = storage->institutionList();
+  s << list.count();
+  for(it = list.begin(); it != list.end(); ++it) {
+    writeInstitution(s, *it);
+  }     */
+}
+
+void writeFileBeginning(QTextStream& s)
+{
+  
+}
+
+void writePayees(QTextStream& s, IMyMoneySerialize* storage)
+{
+
+}
+
+void writePayee(QTextStream& s, const MyMoneyPayee& p)
+{
+
+}
+
+void writeAccounts(QTextStream& s, IMyMoneySerialize* storage)
+{
+
+}
+
+void writeAccount(QTextStream& s, const MyMoneyAccount& p)
+{
+
+}
+
+void writeTransactions(QTextStream& s, IMyMoneySerialize* storage)
+{
+              
+}
+
+void writeTransaction(QTextStream& s, const MyMoneyTransaction& tx)
+{
+
+}
+
+void writeSplits(QTextStream& s, const MyMoneyTransaction& tx)
+{                 
+
+}
+
+void writeSplit(QTextStream& s, const MyMoneySplit& split)
+{
+
 }
 
 #endif // HAVE_LIBXMLPP
