@@ -11,7 +11,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>525</width>
+            <width>533</width>
             <height>440</height>
         </rect>
     </property>
@@ -337,7 +337,37 @@ My Current Account</string>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>Current</string>
+                                        <string>Checking Account</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>Savings Account</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>Credit Cards</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>CD</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>Investment</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>Money Market</string>
                                     </property>
                                 </item>
                                 <property stdset="1">
@@ -346,14 +376,14 @@ My Current Account</string>
                                 </property>
                                 <property stdset="1">
                                     <name>enabled</name>
-                                    <bool>false</bool>
+                                    <bool>true</bool>
                                 </property>
                                 <property stdset="1">
                                     <name>geometry</name>
                                     <rect>
                                         <x>10</x>
                                         <y>20</y>
-                                        <width>110</width>
+                                        <width>150</width>
                                         <height>22</height>
                                     </rect>
                                 </property>
