@@ -46,6 +46,7 @@
 #include "../mymoney/mymoneycategory.h"
 #include "../dialogs/mymoneyqifprofileeditor.h"
 #include "../mymoney/mymoneyfile.h"
+#include "../widgets/kmymoneyaccountcombo.h"
 #include "../kmymoneyutils.h"
 
 KExportDlg::KExportDlg(QWidget *parent)
@@ -67,26 +68,26 @@ KExportDlg::KExportDlg(QWidget *parent)
                       i18n("Abort operation"),
                       i18n("Use this to abort the export operation"));
   m_qbuttonCancel->setGuiItem(cancelButtenItem);
-  
+
   KGuiItem okButtenItem( i18n( "&Export" ),
                       QIconSet(il->loadIcon("fileexport", KIcon::Small, KIcon::SizeSmall)),
                       i18n("Start operation"),
                       i18n("Use this to start the export operation"));
   m_qbuttonOk->setGuiItem(okButtenItem);
-  
+
   KGuiItem browseButtenItem( i18n( "&Browse..." ),
                       QIconSet(il->loadIcon("fileopen", KIcon::Small, KIcon::SizeSmall)),
                       i18n("Select filename"),
                       i18n("Use this to select a filename to export to"));
   m_qbuttonBrowse->setGuiItem(browseButtenItem);
-  
+
   KGuiItem newButtenItem( i18n( "&New..." ),
                       QIconSet(il->loadIcon("filenew", KIcon::Small, KIcon::SizeSmall)),
                       i18n("Create a new profile"),
                       i18n("Use this to open the profile editor"));
   m_profileEditorButton->setGuiItem(newButtenItem);
 
-    
+
   // connect the buttons to their functionality
   connect(m_qbuttonBrowse, SIGNAL( clicked() ), this, SLOT( slotBrowse() ) );
   connect(m_profileEditorButton, SIGNAL(clicked()), this, SLOT(slotNewProfile()));
@@ -97,12 +98,12 @@ KExportDlg::KExportDlg(QWidget *parent)
   connect(m_qlineeditFile, SIGNAL(textChanged(const QString&)), this, SLOT(checkData()));
   connect(m_qcheckboxAccount, SIGNAL(toggled(bool)), this, SLOT(checkData()));
   connect(m_qcheckboxCategories, SIGNAL(toggled(bool)), this, SLOT(checkData()));
-  connect(m_accountComboBox, SIGNAL(highlighted(const QString&)), this, SLOT(checkData(const QString&)));
+  connect(m_accountComboBox, SIGNAL(accountSelected(const QCString&)), this, SLOT(checkData(const QCString&)));
   connect(m_profileComboBox, SIGNAL(highlighted(int)), this, SLOT(checkData()));
   connect(m_kmymoneydateStart, SIGNAL(dateChanged(const QDate&)), this, SLOT(checkData()));
   connect(m_kmymoneydateEnd, SIGNAL(dateChanged(const QDate&)), this, SLOT(checkData()));
 
-  checkData(m_accountComboBox->currentText());
+  checkData(QCString());
 }
 
 KExportDlg::~KExportDlg()
@@ -187,11 +188,10 @@ void KExportDlg::writeConfig(void)
   kconfig->writeEntry("KExportDlg_StartDate", QDateTime(m_kmymoneydateStart->getQDate()));
   kconfig->writeEntry("KExportDlg_EndDate", QDateTime(m_kmymoneydateEnd->getQDate()));
   kconfig->writeEntry("KExportDlg_LastProfile", m_profileComboBox->currentText());
-  kconfig->writeEntry("KExportDlg_LastAccount", m_accountComboBox->currentText());
   kconfig->sync();
 }
 
-void KExportDlg::checkData(const QString& account)
+void KExportDlg::checkData(const QCString& accountId)
 {
   bool  okEnabled = false;
 
@@ -201,24 +201,29 @@ void KExportDlg::checkData(const QString& account)
       m_qlineeditFile->setText(strFile);
   }
 
-  if(m_lastAccount != account) {
+  MyMoneyAccount account;
+  if(!accountId.isEmpty()) {
     MyMoneyFile* file = MyMoneyFile::instance();
-    MyMoneyTransactionFilter filter(accountId(account));
-    QValueList<MyMoneyTransaction> list = file->transactionList(filter);
-    QValueList<MyMoneyTransaction>::Iterator it;
-    
-    if(!list.isEmpty()) {
-      it = list.begin();
-      m_kmymoneydateStart->loadDate((*it).postDate());
-      it = list.end();
-      --it;
-      m_kmymoneydateEnd->loadDate((*it).postDate());
+    account = file->account(accountId);
+    if(m_lastAccount != accountId) {
+      MyMoneyTransactionFilter filter(accountId);
+      QValueList<MyMoneyTransaction> list = file->transactionList(filter);
+      QValueList<MyMoneyTransaction>::Iterator it;
+
+      if(!list.isEmpty()) {
+        it = list.begin();
+        m_kmymoneydateStart->loadDate((*it).postDate());
+        it = list.end();
+        --it;
+        m_kmymoneydateEnd->loadDate((*it).postDate());
+      }
+      m_lastAccount = accountId;
+      m_accountComboBox->setText(account.name());
     }
-    m_lastAccount = account;
   }
-  
+
   if(!m_qlineeditFile->text().isEmpty()
-  && !m_accountComboBox->currentText().isEmpty()
+  && m_accountComboBox->selectedAccounts().count() != 0
   && !m_profileComboBox->currentText().isEmpty()
   && m_kmymoneydateStart->getQDate() <= m_kmymoneydateEnd->getQDate()
   && (m_qcheckboxAccount->isChecked() || m_qcheckboxCategories->isChecked()))
@@ -229,6 +234,7 @@ void KExportDlg::checkData(const QString& account)
 
 void KExportDlg::loadAccounts(void)
 {
+/*
   QStringList strList;
 
   try {
@@ -243,19 +249,22 @@ void KExportDlg::loadAccounts(void)
       e->what().latin1(), e->file().latin1(), e->line(), __LINE__);
     delete e;
   }
+*/
+  m_accountComboBox->loadList((KMyMoneyUtils::categoryTypeE)(KMyMoneyUtils::asset | KMyMoneyUtils::liability));
 
-  strList.sort();
-  m_accountComboBox->insertStringList(strList);
-
-  KConfig* config = KGlobal::config();
-  config->setGroup("Last Use Settings");
-  QString current = config->readEntry("KExportDlg_LastAccount");
-
+/*
   m_accountComboBox->setCurrentItem(0);
   if(strList.contains(current) > 0)
     m_accountComboBox->setCurrentText(current);
+*/
 }
 
+const QCString KExportDlg::accountId() const
+{
+  return m_lastAccount;
+}
+
+/*
 void KExportDlg::addCategories(QStringList& strList, const QCString& id, const QString& leadIn) const
 {
   MyMoneyFile *file = MyMoneyFile::instance();
@@ -273,12 +282,8 @@ void KExportDlg::addCategories(QStringList& strList, const QCString& id, const Q
   }
 }
 
-const QCString KExportDlg::accountId() const
-{
-  return accountId(m_accountComboBox->currentText());
-}
-
 const QCString KExportDlg::accountId(const QString& account) const
 {
   return MyMoneyFile::instance()->nameToAccount(account);
 }
+*/

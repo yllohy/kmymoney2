@@ -128,9 +128,9 @@ protected slots:
     * with the date of the first and last transaction within this
     * account.
     *
-    * @param account The name of the selected account.
+    * @param account The id of the selected account.
     */
-  void checkData(const QString& account = QString());
+  void checkData(const QCString& account = QCString());
 
 private:
   void readConfig(void);
@@ -140,7 +140,7 @@ private:
     * This method loads the available profiles into
     * the combo box. The parameter @p selectLast controls if
     * the last profile used is preset or not. If preset is not
-    * selected, the current selection remains. If the currently selected 
+    * selected, the current selection remains. If the currently selected
     * text is not present in the list anymore, the first item will be
     * selected.
     *
@@ -162,7 +162,7 @@ private:
     * @param id Account id to add
     * @param leadIn constant leadin to be added in front of the account name
     */
-  void addCategories(QStringList& strList, const QCString& id, const QString& leadIn) const;
+  // void addCategories(QStringList& strList, const QCString& id, const QString& leadIn) const;
 
   /**
     * This method is used to return the account id of a given account name
@@ -171,10 +171,10 @@ private:
     * @return the ID of the account will be returned.
     *         See MyMoneyFile::nameToAccount() for details.
     */
-  const QCString accountId(const QString& account) const;
-  
+  // const QCString accountId(const QString& account) const;
+
 private:
-  QString   m_lastAccount;
+  QCString   m_lastAccount;
 };
 
 #endif
