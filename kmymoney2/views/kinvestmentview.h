@@ -45,8 +45,6 @@ class MyMoneyTransaction;
 class MyMoneyInvestTransaction;
 class KLedgerView;
 
-typedef QMap<QWidget*, int>::Iterator tabmap_iterator;
-
 /**
   * @author Kevin Tambascio
   */
