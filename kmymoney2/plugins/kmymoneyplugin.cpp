@@ -59,11 +59,11 @@ KMyMoneyPlugin::ImporterPlugin::~ImporterPlugin()
 }
 
 QString KMyMoneyPlugin::ImporterPlugin::formatName(void) const /*= 0*/
-{}
-bool KMyMoneyPlugin::ImporterPlugin::isMyFormat( const QString& filename ) const /*= 0*/
-{}
-bool KMyMoneyPlugin::ImporterPlugin::import( const QString& filename, QValueList<MyMoneyStatement>& result ) /*= 0*/
-{}
+{ return QString(); }
+bool KMyMoneyPlugin::ImporterPlugin::isMyFormat( const QString& /*filename*/ ) const /*= 0*/
+{ return false; }
+bool KMyMoneyPlugin::ImporterPlugin::import( const QString& /*filename*/, QValueList<MyMoneyStatement>& /*result*/ ) /*= 0*/
+{ return false; }
 QString KMyMoneyPlugin::ImporterPlugin::lastError(void) const /*= 0*/
-{}
+{ return QString(); }
 

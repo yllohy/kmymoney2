@@ -5,7 +5,11 @@
   * Infrastructure for QIF investment imports.  Doesn't actually handle them
     yet, but the parsing is in place to do so.  Also warns the user that
     investments are not supported.
-    
+  * Terminology changes to US-english-ize the base text 
+    (Submitted by Robert Wadley <rob@robntina.fastmail.us>)
+  * Fixed all warnings
+  * Removed old online quotes system
+        
 2005-03-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Allow payment of stock transactions to be in different currency
     than the stock's security

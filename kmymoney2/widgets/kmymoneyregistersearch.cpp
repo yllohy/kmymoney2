@@ -39,7 +39,7 @@ kMyMoneyRegisterSearch::kMyMoneyRegisterSearch(QWidget *parent, const char *name
   setNumCols(6);
   setCurrentCell(0, 1);
   horizontalHeader()->setClickEnabled(true);
-  horizontalHeader()->setLabel(0, i18n("Nr."));
+  horizontalHeader()->setLabel(0, i18n("No."));
   horizontalHeader()->setLabel(1, i18n("Date"));
   horizontalHeader()->setLabel(2, i18n("Account"));
   horizontalHeader()->setLabel(3, i18n("Payee"));
@@ -215,7 +215,7 @@ void kMyMoneyRegisterSearch::adjustColumn(int col)
           default:
             break;
 
-          case 0: // nr
+          case 0: // nr(No.)
             txt = t->splitById(t->splitId()).number() + " ";
             nw = fontMetrics.width(txt);
             w = QMAX( w, nw );

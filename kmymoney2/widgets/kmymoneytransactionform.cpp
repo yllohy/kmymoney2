@@ -205,7 +205,6 @@ kMyMoneyTransactionForm::kMyMoneyTransactionForm( KLedgerView* parent,  const ch
 {
   m_view = parent;
   formLayout = new QVBoxLayout( this, 0, 0, "formLayout");
-  int buttonWidth = 0;
 
   m_tabBar = new QTabBar( this, "tabBar" );
   m_tabBar->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)5, (QSizePolicy::SizeType)0, 0, 0, m_tabBar->sizePolicy().hasHeightForWidth() ) );

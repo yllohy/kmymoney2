@@ -484,7 +484,7 @@ const QString MyMoneyStorageDump::paymentMethodToString(MyMoneySchedule::payment
       text = i18n("Other");
       break;
     case MyMoneySchedule::STYPE_WRITECHEQUE:
-      text = i18n("Write cheque");
+      text = i18n("Write check");
       break;
     case MyMoneySchedule::STYPE_ANY:
       text = i18n("Any (Error)");

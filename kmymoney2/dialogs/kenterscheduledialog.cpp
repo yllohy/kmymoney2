@@ -426,11 +426,11 @@ bool KEnterScheduleDialog::checkData(void)
 
     MyMoneyMoney amount = m_schedule.transaction().splitByAccount(m_schedule.account().id()).value();
     amount = amount.abs();
-    if (amount != m_amount->getMoneyValue())
+    if (amount != m_amount->value())
     {
       noItemsChanged++;
       messageDetail += QString(i18n("Amount changed.  Old: \"%1\", New: \"%2\""))
-        .arg(amount.formatMoney()).arg(m_amount->getMoneyValue().formatMoney()) + QString("\n");
+        .arg(amount.formatMoney()).arg(m_amount->value().formatMoney()) + QString("\n");
     }
 
     if (noItemsChanged > 0)
@@ -739,12 +739,12 @@ void KEnterScheduleDialog::setAmount()
 
     MyMoneySplit s = m_transaction.splits()[0];
     MyMoneyMoney amount = s.value();
-    if (m_amount->getMoneyValue() != amount)
+    if (m_amount->value() != amount)
     {
       if (m_schedule.type() == MyMoneySchedule::TYPE_DEPOSIT)
-        s.setValue(m_amount->getMoneyValue());
+        s.setValue(m_amount->value());
       else if(m_schedule.type() != MyMoneySchedule::TYPE_LOANPAYMENT)
-        s.setValue(-m_amount->getMoneyValue());
+        s.setValue(-m_amount->value());
 
       m_transaction.modifySplit(s);
 
@@ -797,9 +797,9 @@ void KEnterScheduleDialog::createSplits()
     split1.setMemo(m_memo->text());
 
     if (m_schedule.type() == MyMoneySchedule::TYPE_DEPOSIT)
-      split1.setValue(m_amount->getMoneyValue());
+      split1.setValue(m_amount->value());
     else
-      split1.setValue(-m_amount->getMoneyValue());
+      split1.setValue(-m_amount->value());
 
     m_transaction.addSplit(split1);
 

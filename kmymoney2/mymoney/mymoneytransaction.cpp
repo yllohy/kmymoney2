@@ -252,9 +252,9 @@ const unsigned long MyMoneyTransaction::hash(const QString& txt) const
   unsigned long   h = 0,
                   g;
 
-  for(int i=0; i < txt.length(); ++i) {
+  for(unsigned i=0; i < txt.length(); ++i) {
     h = (h << 4) + txt[i].latin1();
-    if(g = (h & 0xf0000000)) {
+    if( (g = (h & 0xf0000000)) ) {
       h = h ^ (g >> 24);
       h = h ^ g;
     }

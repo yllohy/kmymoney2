@@ -85,7 +85,7 @@ void kMyMoneyRegisterLoan::paintCell(QPainter *p, int row, int col, const QRect&
         }
         break;
 
-      case 1:                         // Nr
+      case 1:                         // Nr(No.)
         align |= Qt::AlignRight;
         switch(m_transactionRow) {
           case 0:

@@ -40,7 +40,7 @@
 #include "../widgets/kmymoneyaccountcompletion.h"
 #include "../dialogs/knewaccountdlg.h"
 
-kMyMoneyCategory::kMyMoneyCategory(QWidget *parent, const char *name, const KMyMoneyUtils::categoryTypeE categoryType)
+kMyMoneyCategory::kMyMoneyCategory(QWidget *parent, const char *name, const KMyMoneyUtils::categoryTypeE /*categoryType*/)
   : KLineEdit(parent,name)
 {
   m_inCreation = false;

@@ -59,7 +59,6 @@ class KUpdateStockPriceDlg : public kUpdateStockPriceDecl
 
 public:
   KUpdateStockPriceDlg(QWidget* parent = NULL,  const char* name = NULL);
-  KUpdateStockPriceDlg(const QDate& date, const MyMoneyPrice& price, QWidget* parent = NULL,  const char* name = NULL);
   ~KUpdateStockPriceDlg();
 
   const QDate date() const { return m_date->getQDate(); };

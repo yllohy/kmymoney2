@@ -755,7 +755,7 @@ bool KMyMoneyView::readFile(const KURL& url)
     filename = url.path();
 
   } else {
-    if(!KIO::NetAccess::download(url, filename)) {
+    if(!KIO::NetAccess::download(url, filename, NULL)) {
       KMessageBox::detailedError(this,
              i18n("Error while loading file '%1'!").arg(url.url()),
              KIO::NetAccess::lastErrorString(),
@@ -1099,7 +1099,7 @@ const bool KMyMoneyView::saveFile(const KURL& url)
   // but for now, this would involve too many changes
   bool rc = true;
   try {
-    if(url.isMalformed()) {
+    if(url.isValid()) {
       throw new MYMONEYEXCEPTION(i18n("Malformed URL '%1'").arg(url.url()));
     }
 
@@ -1117,7 +1117,7 @@ const bool KMyMoneyView::saveFile(const KURL& url)
     } else {
       KTempFile tmpfile;
       saveToLocalFile(tmpfile.file(), pWriter,plaintext);
-      if(!KIO::NetAccess::upload(tmpfile.name(), url))
+      if(!KIO::NetAccess::upload(tmpfile.name(), url, NULL))
         throw new MYMONEYEXCEPTION(i18n("Unable to upload to '%1'").arg(url.url()));
       tmpfile.unlink();
     }

@@ -154,7 +154,7 @@ KPayeesView::~KPayeesView()
   writeConfig();
 }
 
-void KPayeesView::update(const QCString & id)
+void KPayeesView::update(const QCString & /*id*/)
 {
   if(m_suspendUpdate == false)
     slotRefreshView();

@@ -342,7 +342,7 @@ void KEditLoanWizard::next()
       // if there's an amortization going on, we can evaluate
       // the new term. If the amortization is 0 (interest only
       // payments) then we keep the term as entered by the user.
-      if(m_loanAmountEdit->getMoneyValue() != m_finalPaymentEdit->getMoneyValue()) {
+      if(m_loanAmountEdit->value() != m_finalPaymentEdit->value()) {
         m_durationValueEdit->setValue(0);
       }
       if(m_fullyRepayLoan)
@@ -483,8 +483,8 @@ const MyMoneyAccount KEditLoanWizard::account(void) const
   acc.setFixedInterestRate(m_fixedInterestButton->isChecked());
   acc.setFinalPayment(MyMoneyMoney(m_finalPaymentEdit->text()));
   acc.setTerm(term());
-  acc.setPeriodicPayment(m_paymentEdit->getMoneyValue());
-  acc.setInterestRate(m_effectiveChangeDateEdit->getQDate(), m_interestRateEdit->getMoneyValue());
+  acc.setPeriodicPayment(m_paymentEdit->value());
+  acc.setInterestRate(m_effectiveChangeDateEdit->getQDate(), m_interestRateEdit->value());
 
   if(!m_payeeEdit->text().isEmpty()) {
     try {

@@ -166,10 +166,10 @@ void KLedgerViewInvestments::createContextMenu(void)
   // get the basic entries for all ledger views
   KLedgerView::createContextMenu();
 
+#if 0
   // and now the specific entries for checkings/savings etc.
   KIconLoader *kiconloader = KGlobal::iconLoader();
-
-#if 0
+  
   m_contextMenu->insertItem(i18n("Edit splits ..."), this, SLOT(slotStartEditSplit()),
       QKeySequence(), -1, 2);
   m_contextMenu->insertItem(kiconloader->loadIcon("goto", KIcon::Small),
@@ -376,6 +376,10 @@ void KLedgerViewInvestments::fillForm()
         formTable->setItem(QUANTITY_ROW, QUANTITY_DATA_COL, item);
 
         break;
+        
+      case UnknownTransactionType:
+        qWarning("%s","Unknown transaction type!");
+        break;
     }
 
     m_form->newButton()->setEnabled(true);
@@ -449,6 +453,10 @@ void KLedgerViewInvestments::fillFormStatics(void)
     case AddShares:
     case RemoveShares:
       formTable->setText(QUANTITY_ROW, QUANTITY_TXT_COL, i18n("Shares"));
+      break;
+  
+    case UnknownTransactionType:
+      qWarning("%s","Unknown transaction type!");
       break;
   }
 }
@@ -1047,7 +1055,7 @@ void KLedgerViewInvestments::createInfoStack(void)
 }
 #endif
 
-void KLedgerViewInvestments::slotTypeSelected(int type)
+void KLedgerViewInvestments::slotTypeSelected(int)
 {
   if(!m_form->tabBar()->signalsBlocked())
     slotCancelEdit();
@@ -1097,7 +1105,7 @@ void KLedgerViewInvestments::slotTypeSelected(int type)
       break;
 
     case 4:   // ATM
-      formTable->setText(0, 3, i18n("Nr"));
+      formTable->setText(0, 3, i18n("No."));
       formTable->setText(1, 0, i18n("Receiver"));
       formTable->setText(2, 0, i18n("Category"));
       break;     */
@@ -1106,7 +1114,7 @@ void KLedgerViewInvestments::slotTypeSelected(int type)
   KConfig *config = KGlobal::config();
   config->setGroup("General Options");
   if(config->readBoolEntry("AlwaysShowNrField", false) == true)
-    formTable->setText(0, 3, i18n("Nr"));
+    formTable->setText(0, 3, i18n("No."));
 #endif
 
   if(!m_form->tabBar()->signalsBlocked())
@@ -1153,7 +1161,7 @@ void KLedgerViewInvestments::slotAccountDetail(void)
   }
 }
 
-const KLedgerView::investTransactionTypeE KLedgerViewInvestments::transactionType(const MyMoneyTransaction& t, const MyMoneySplit& split) const
+const KLedgerView::investTransactionTypeE KLedgerViewInvestments::transactionType(const MyMoneyTransaction& /*t*/, const MyMoneySplit& split) const
 {
   if(split.action() == MyMoneySplit::ActionAddShares) {
     if(!split.shares().isNegative())

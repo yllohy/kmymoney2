@@ -207,7 +207,7 @@ void KEditScheduleDialog::reloadFromFile(void)
     m_kcomboMethod->insertItem(i18n("Direct Debit"));
     m_kcomboMethod->insertItem(i18n("Direct Deposit"));
     m_kcomboMethod->insertItem(i18n("Manual Deposit"));
-    m_kcomboMethod->insertItem(i18n("Write Cheque"));
+    m_kcomboMethod->insertItem(i18n("Write Check"));
     m_kcomboMethod->insertItem(i18n("Other"));
 
     if (m_actionType == MyMoneySplit::ActionAmortization)
@@ -225,17 +225,17 @@ void KEditScheduleDialog::reloadFromFile(void)
     m_kcomboMethod->insertItem(i18n("Manual Deposit"));
     m_kcomboMethod->insertItem(i18n("Other"));
 
-    m_paymentMethod->insertItem(i18n("Cheque"));
+    m_paymentMethod->insertItem(i18n("Check"));
     m_paymentMethod->insertItem(i18n("Deposit"));
     m_paymentMethod->insertItem(i18n("Transfer"));
   }
   else // Withdrawal
   {
     m_kcomboMethod->insertItem(i18n("Direct Debit"));
-    m_kcomboMethod->insertItem(i18n("Write Cheque"));
+    m_kcomboMethod->insertItem(i18n("Write Check"));
     m_kcomboMethod->insertItem(i18n("Other"));
 
-    m_paymentMethod->insertItem(i18n("Cheque"));
+    m_paymentMethod->insertItem(i18n("Check"));
     m_paymentMethod->insertItem(i18n("Transfer"));
     m_paymentMethod->insertItem(i18n("Withdrawal"));
     m_paymentMethod->insertItem(i18n("ATM"));
@@ -485,11 +485,11 @@ void KEditScheduleDialog::okClicked()
   // Change the transaction action if one is specified
   if (m_paymentMethod->currentText().length()>0)
   {
-    for (int i=0; i<m_transaction.splitCount(); i++)
+    for (unsigned i=0; i<m_transaction.splitCount(); i++)
     {
       MyMoneySplit split = m_transaction.splits()[i];
       QString s = m_paymentMethod->currentText();
-      if (s == i18n("Cheque"))
+      if (s == i18n("Check"))
         split.setAction(MyMoneySplit::ActionCheck);
       else if (s == i18n("Deposit"))
         split.setAction(MyMoneySplit::ActionDeposit);
@@ -774,7 +774,7 @@ void KEditScheduleDialog::slotAmountChanged(const QString&)
 
     MyMoneySplit s = m_transaction.splits()[0];
     MyMoneyMoney amount = s.value();
-    if (m_kmoneyeditAmount->getMoneyValue() != amount)
+    if (m_kmoneyeditAmount->value() != amount)
     {
       // Cribbed from KLedgerView::slotAmountChanged
 

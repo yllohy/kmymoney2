@@ -1175,7 +1175,7 @@ const QString KLedgerView::action2str(const QCString &action, const bool showHot
   QString rc;
 
   if(action == MyMoneySplit::ActionCheck)
-    rc = i18n("&Cheque");
+    rc = i18n("&Check");
   else if(action == MyMoneySplit::ActionDeposit)
     rc = i18n("&Deposit");
   else if(action == MyMoneySplit::ActionTransfer)
@@ -1193,7 +1193,7 @@ const QString KLedgerView::action2str(const QCString &action, const bool showHot
 
   if(rc.isEmpty()) {
     qDebug("Unsupported action string %s, set to check", static_cast<const char *>(action));
-    rc = i18n("&Cheque");
+    rc = i18n("&Check");
   }
 
   if(showHotkey == false) {

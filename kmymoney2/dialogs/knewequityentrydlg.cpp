@@ -79,7 +79,7 @@ void KNewEquityEntryDlg::onOKClicked()
 {
   m_strSymbolName = edtMarketSymbol->text();
   m_strName = edtEquityName->text();
-  m_fraction = edtFraction->getMoneyValue().abs();
+  m_fraction = edtFraction->value().abs();
   accept();
 }
 
@@ -99,7 +99,7 @@ void KNewEquityEntryDlg::slotDataChanged(void)
 {
   bool okEnabled = true;
 
-  if(!edtFraction->getMoneyValue().isPositive()
+  if(!edtFraction->value().isPositive()
   || edtMarketSymbol->text().isEmpty()
   || edtEquityName->text().isEmpty())
     okEnabled = false;

@@ -308,7 +308,7 @@ void KNewLoanWizard::updateLoanAmount(void)
   if(m_loanAmountEdit->text().isEmpty()) {
     txt = QString("<") + i18n("calculate") + QString(">");
   } else {
-    txt = m_loanAmountEdit->getMoneyValue().formatMoney();
+    txt = m_loanAmountEdit->value().formatMoney();
   }
   m_loanAmount1->setText(txt);
   m_loanAmount2->setText(txt);
@@ -323,7 +323,7 @@ void KNewLoanWizard::updateInterestRate(void)
   if(m_interestRateEdit->text().isEmpty()) {
     txt = QString("<") + i18n("calculate") + QString(">");
   } else {
-    txt = m_interestRateEdit->getMoneyValue().formatMoney("", 3) + QString("%");
+    txt = m_interestRateEdit->value().formatMoney("", 3) + QString("%");
   }
   m_interestRate1->setText(txt);
   m_interestRate2->setText(txt);
@@ -354,7 +354,7 @@ void KNewLoanWizard::updatePayment(void)
   if(m_paymentEdit->text().isEmpty()) {
     txt = QString("<") + i18n("calculate") + QString(">");
   } else {
-    txt = m_paymentEdit->getMoneyValue().formatMoney();
+    txt = m_paymentEdit->value().formatMoney();
   }
   m_payment1->setText(txt);
   m_payment2->setText(txt);
@@ -370,7 +370,7 @@ void KNewLoanWizard::updateFinalPayment(void)
   if(m_finalPaymentEdit->text().isEmpty()) {
     txt = QString("<") + i18n("calculate") + QString(">");
   } else {
-    txt = m_finalPaymentEdit->getMoneyValue().formatMoney();
+    txt = m_finalPaymentEdit->value().formatMoney();
   }
   m_balloon1->setText(txt);
   m_balloon2->setText(txt);
@@ -390,13 +390,13 @@ void KNewLoanWizard::updateLoanInfo(void)
 
   QString txt;
 
-  m_loanAmount6->setText(m_loanAmountEdit->getMoneyValue().formatMoney());
-  m_interestRate6->setText(m_interestRateEdit->getMoneyValue().formatMoney("", 3) + QString("%"));
+  m_loanAmount6->setText(m_loanAmountEdit->value().formatMoney());
+  m_interestRate6->setText(m_interestRateEdit->value().formatMoney("", 3) + QString("%"));
   txt = QString().sprintf("%d ", m_durationValueEdit->value())
         + m_durationUnitEdit->currentText();
   m_duration6->setText(txt);
-  m_payment6->setText(m_paymentEdit->getMoneyValue().formatMoney());
-  m_balloon6->setText(m_finalPaymentEdit->getMoneyValue().formatMoney());
+  m_payment6->setText(m_paymentEdit->value().formatMoney());
+  m_balloon6->setText(m_finalPaymentEdit->value().formatMoney());
 }
 
 void KNewLoanWizard::updatePeriodicPayment(void)
@@ -753,26 +753,26 @@ int KNewLoanWizard::calculateLoan(void)
 
 
   if(!m_loanAmountEdit->text().isEmpty()) {
-    val = static_cast<long double> (m_loanAmountEdit->getMoneyValue().abs().toDouble());
+    val = static_cast<long double> (m_loanAmountEdit->value().abs().toDouble());
     if(m_borrowButton->isChecked())
       val = -val;
     calc.setPv(val);
   }
 
   if(!m_interestRateEdit->text().isEmpty()) {
-    val = static_cast<long double> (m_interestRateEdit->getMoneyValue().abs().toDouble());
+    val = static_cast<long double> (m_interestRateEdit->value().abs().toDouble());
     calc.setIr(val);
   }
 
   if(!m_paymentEdit->text().isEmpty()) {
-    val = static_cast<long double> (m_paymentEdit->getMoneyValue().abs().toDouble());
+    val = static_cast<long double> (m_paymentEdit->value().abs().toDouble());
     if(m_lendButton->isChecked())
       val = -val;
     calc.setPmt(val);
   }
 
   if(!m_finalPaymentEdit->text().isEmpty()) {
-    val = static_cast<long double> (m_finalPaymentEdit->getMoneyValue().abs().toDouble());
+    val = static_cast<long double> (m_finalPaymentEdit->value().abs().toDouble());
     if(m_lendButton->isChecked())
       val = -val;
     calc.setFv(val);
@@ -803,7 +803,7 @@ int KNewLoanWizard::calculateLoan(void)
       val = calc.payment();
       m_paymentEdit->setText(MyMoneyMoney(static_cast<double>(val)).abs().formatMoney());
       // reset payment as it might have changed due to rounding
-      val = static_cast<long double> (m_paymentEdit->getMoneyValue().abs().toDouble());
+      val = static_cast<long double> (m_paymentEdit->value().abs().toDouble());
       if(m_lendButton->isChecked())
         val = -val;
       calc.setPmt(val);
@@ -869,7 +869,7 @@ int KNewLoanWizard::calculateLoan(void)
       if((m_borrowButton->isChecked() && val < 0 && fabsl(val) > fabsl(calc.payment()))
       || (m_lendButton->isChecked() && val > 0 && fabs(val) > fabs(calc.payment()))) {
         // case a)
-        qDebug("Future Value is %f", val);
+        qDebug("Future Value is %Lf", val);
         throw new MYMONEYEXCEPTION("incorrect fincancial calculation");
 
       } else if((m_borrowButton->isChecked() && val < 0 && fabsl(val) <= fabsl(calc.payment()))
@@ -883,7 +883,7 @@ int KNewLoanWizard::calculateLoan(void)
                         .arg(refVal.abs().formatMoney());
 
       if(!m_finalPaymentEdit->text().isEmpty()) {
-        if((m_finalPaymentEdit->getMoneyValue().abs() - refVal.abs()).abs().toDouble() > 1) {
+        if((m_finalPaymentEdit->value().abs() - refVal.abs()).abs().toDouble() > 1) {
           throw new MYMONEYEXCEPTION("incorrect fincancial calculation");
         }
         result = i18n("KMyMoney has successfully verified your loan information.");
@@ -1027,9 +1027,9 @@ const MyMoneyTransaction KNewLoanWizard::transaction() const
 
   // values
   if(m_borrowButton->isChecked()) {
-    sPayment.setValue(-m_paymentEdit->getMoneyValue());
+    sPayment.setValue(-m_paymentEdit->value());
   } else {
-    sPayment.setValue(m_paymentEdit->getMoneyValue());
+    sPayment.setValue(m_paymentEdit->value());
   }
   sInterest.setValue(MyMoneyMoney::autoCalc);
   sAmortization.setValue(MyMoneyMoney::autoCalc);
@@ -1097,7 +1097,7 @@ const MyMoneyAccount KNewLoanWizard::account(void) const
   if(m_allPaymentsButton->isChecked()) {
     acc.setOpeningBalance(0);
   } else {
-    acc.setOpeningBalance(m_loanAmountEdit->getMoneyValue());
+    acc.setOpeningBalance(m_loanAmountEdit->value());
   }
   if(m_borrowButton->isChecked()) {
     acc.setAccountType(MyMoneyAccount::Loan);
@@ -1105,8 +1105,8 @@ const MyMoneyAccount KNewLoanWizard::account(void) const
   } else {
     acc.setAccountType(MyMoneyAccount::AssetLoan);
   }
-  acc.setLoanAmount(m_loanAmountEdit->getMoneyValue());
-  acc.setInterestRate(m_firstDueDateEdit->getQDate(), m_interestRateEdit->getMoneyValue());
+  acc.setLoanAmount(m_loanAmountEdit->value());
+  acc.setInterestRate(m_firstDueDateEdit->getQDate(), m_interestRateEdit->value());
   if(m_interestOnReceptionButton->isChecked())
     acc.setInterestCalculation(MyMoneyAccountLoan::paymentReceived);
   else
@@ -1115,7 +1115,7 @@ const MyMoneyAccount KNewLoanWizard::account(void) const
   acc.setFixedInterestRate(m_fixedInterestButton->isChecked());
   acc.setFinalPayment(MyMoneyMoney(m_finalPaymentEdit->text()));
   acc.setTerm(term());
-  acc.setPeriodicPayment(m_paymentEdit->getMoneyValue());
+  acc.setPeriodicPayment(m_paymentEdit->value());
 
   if(!m_payeeEdit->text().isEmpty()) {
     try {

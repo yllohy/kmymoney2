@@ -135,7 +135,7 @@ void KCurrencyCalculator::slotSetExchangeRate(void)
   m_conversionRate->setEnabled(true);
 }
 
-void KCurrencyCalculator::slotUpdateResult(const QString& txt)
+void KCurrencyCalculator::slotUpdateResult(const QString& /*txt*/)
 {
   MyMoneyMoney result = m_toAmount->value();
   MyMoneyMoney price(0, 1);
@@ -156,7 +156,7 @@ void KCurrencyCalculator::slotUpdateResult(const QString& txt)
   updateExample(price);
 }
 
-void KCurrencyCalculator::slotUpdateRate(const QString& txt)
+void KCurrencyCalculator::slotUpdateRate(const QString& /*txt*/)
 {
   MyMoneyMoney price = m_conversionRate->value();
 

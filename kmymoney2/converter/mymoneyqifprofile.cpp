@@ -495,7 +495,7 @@ const QDate MyMoneyQifProfile::date(const QString& datein) const
         break;
     }
     if(!msg.isEmpty()) {
-      qWarning(QString("MyMoneyQifProfile::date(const QString& datein) ") + msg.latin1());
+      qWarning("MyMoneyQifProfile::date(const QString& datein) %s",msg.latin1());
       return QDate();
     }
   }

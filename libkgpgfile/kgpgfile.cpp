@@ -364,7 +364,7 @@ Q_LONG KGPGFile::readBlock(char *data, Q_ULONG maxlen)
   Q_ULONG nread = 0;
   if(!m_ungetchBuffer.isEmpty()) {
     // m_ungetMutex.lock();
-    int l = m_ungetchBuffer.length();
+    unsigned l = m_ungetchBuffer.length();
     if(maxlen < l)
       l = maxlen;
     memcpy(data, m_ungetchBuffer, l);

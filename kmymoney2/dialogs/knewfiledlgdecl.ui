@@ -49,7 +49,7 @@
                     <property name="text">
                         <string>Use this dialog to enter personal information about yourself.
 
-All information is optional and is provided to personalise
+All information is optional and is provided to personalize
 your KMyMoney file.</string>
                     </property>
                 </widget>
@@ -194,7 +194,7 @@ your KMyMoney file.</string>
                         </size>
                     </property>
                     <property name="text">
-                        <string>Postcode:</string>
+                        <string>Postal Code:</string>
                     </property>
                 </widget>
                 <widget class="QLineEdit" row="5" column="1">

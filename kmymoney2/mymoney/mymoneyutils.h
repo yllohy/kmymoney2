@@ -75,7 +75,7 @@ public:
 
   MyMoneyTracer(const QString& className, const QString& methodName);
   ~MyMoneyTracer();
-  void printf(const char *format, ...) const;
+  void printf(const char *format, ...) const __attribute__ ((format (__printf__, 2, 3)));
 
   static void off(void);
   static void on(void);
@@ -129,7 +129,7 @@ class _CheckMemory {
   int TableCount(void);
 
  private:
-  void Output(const char *fmt,...);
+  void Output(const char *fmt,...) __attribute__ ((format (__printf__, 2, 3)));
 
   CheckMemoryTable table;
   _CheckMemoryOutFunc *outfunc;

@@ -194,10 +194,9 @@ void kMyMoneySplitTable::columnWidthChanged(int col)
 }
 
 /** Override the QTable member function to avoid confusion with our own functionality */
-void kMyMoneySplitTable::endEdit(int row, int col, bool accept, bool replace )
+void kMyMoneySplitTable::endEdit(int /*row*/, int /*col*/, bool /*accept*/, bool /*replace*/ )
 {
 }
-
 
 bool kMyMoneySplitTable::eventFilter(QObject *o, QEvent *e)
 {
@@ -423,7 +422,7 @@ void kMyMoneySplitTable::setCurrentCell(int row, int /* col */)
   m_currentRow = row;
   QTable::setCurrentCell(row, 0);
   QValueList<MyMoneySplit> list = getSplits(m_transaction);
-  if(row < list.count())
+  if(row < static_cast<int>(list.count()))
     m_split = list[row];
   else
     m_split = MyMoneySplit();
@@ -590,7 +589,7 @@ void kMyMoneySplitTable::slotDeleteSplit(void)
       try {
         m_transaction.removeSplit(list[m_currentRow]);
         // if we removed the last split, select the previous
-        if(m_currentRow && m_currentRow == list.count()-1)
+        if(m_currentRow && m_currentRow == static_cast<int>(list.count())-1)
           setCurrentCell(m_currentRow-1, 0);
         emit transactionChanged(m_transaction);
       } catch(MyMoneyException *e) {

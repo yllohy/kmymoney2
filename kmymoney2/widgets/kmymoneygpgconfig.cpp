@@ -81,7 +81,7 @@ void kMyMoneyGPGConfig::writeConfig(void)
   config->writeEntry("GPG-Recipient", m_userId->text());
 }
 
-void kMyMoneyGPGConfig::slotIdChanged(const QString& txt)
+void kMyMoneyGPGConfig::slotIdChanged(const QString& /*txt*/)
 {
   // this looks a bit awkward. Here's why: KGPGFile::keyAvailable() starts
   // an external task and processes UI events while it waits for the external

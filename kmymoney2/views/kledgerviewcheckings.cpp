@@ -812,7 +812,7 @@ void KLedgerViewCheckings::fillFormStatics(void)
   }
 
   if(showNrField(m_transaction, m_split))
-    formTable->setText(NR_ROW, NR_TXT_COL, i18n("Nr"));
+    formTable->setText(NR_ROW, NR_TXT_COL, i18n("No."));
 }
 
 void KLedgerViewCheckings::fillForm(void)

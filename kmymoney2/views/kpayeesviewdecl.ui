@@ -202,7 +202,7 @@
                                                         </size>
                                                     </property>
                                                     <property name="text">
-                                                        <string>Postcode:</string>
+                                                        <string>Postal Code:</string>
                                                     </property>
                                                 </widget>
                                                 <spacer>
@@ -371,7 +371,7 @@
                                         <widget class="KListView">
                                             <column>
                                                 <property name="text">
-                                                    <string>Nr.</string>
+                                                    <string>No.</string>
                                                 </property>
                                                 <property name="clickable">
                                                     <bool>true</bool>

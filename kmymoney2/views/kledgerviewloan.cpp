@@ -348,7 +348,7 @@ void KLedgerViewLoan::fillFormStatics(void)
   }
 
   // common elements
-  formTable->setText(NR_ROW, NR_TXT_COL, i18n("Nr"));
+  formTable->setText(NR_ROW, NR_TXT_COL, i18n("No."));
 
   formTable->setText(DATE_ROW, DATE_TXT_COL, i18n("Date"));
 
@@ -650,7 +650,7 @@ void KLedgerViewLoan::loadEditWidgets(void)
     try {
       if(m_editNr != 0) {
         // if the CopyTypeToNr switch is set, we copy the m_action string
-        // into the nr field of this transaction.
+        // into the nr (No.) field of this transaction.
         KConfig *config = KGlobal::config();
         config->setGroup("General Options");
         if(config->readBoolEntry("CopyTypeToNr", false) == true) {

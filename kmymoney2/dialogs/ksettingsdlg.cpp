@@ -374,16 +374,16 @@ void KSettingsDlg::setPageList()
   m_qcheckboxTransactionForm = new QCheckBox(i18n("Show transaction form"), qwidgetPage);
   qvboxlayoutPage->addWidget(m_qcheckboxTransactionForm);
 
-  // In some transaction forms, no Nr. field is shown. This
+  // In some transaction forms, no Nr.(No.) field is shown. This
   // switch allows to override this feature.
-  m_qcheckboxShowNrField = new QCheckBox(i18n("Always show a Nr. field in transaction form"), qwidgetPage);
+  m_qcheckboxShowNrField = new QCheckBox(i18n("Always show a No. field in transaction form"), qwidgetPage);
   qvboxlayoutPage->addWidget(m_qcheckboxShowNrField);
   connect(m_qcheckboxShowNrField, SIGNAL(toggled(bool)),
     this, SLOT(slotNrFieldToggled(bool)));
 
-  // Setting for switch to copy transaction type into Nr. field upon
+  // Setting for switch to copy transaction type into Nr.(No.) field upon
   // new transactions
-  m_qcheckboxTypeToNr = new QCheckBox(i18n("Insert transaction type into Nr. field for new transactions"), qwidgetPage);
+  m_qcheckboxTypeToNr = new QCheckBox(i18n("Insert transaction type into No. field for new transactions"), qwidgetPage);
   qvboxlayoutPage->addWidget(m_qcheckboxTypeToNr);
 
   // Setting for the behaviour how changes should be treated when editing

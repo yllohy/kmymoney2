@@ -418,7 +418,7 @@ const int kMyMoneyAccountSelector::loadList(const QString& baseName, const QValu
   for(it = accountIdList.begin(); it != accountIdList.end(); ++it)   {
     ++count;
     MyMoneyAccount acc = file->account(*it);
-    QListViewItem* subItem = newEntryFactory(item, acc.name(), acc.id());
+    newEntryFactory(item, acc.name(), acc.id());
   }
 
   if(m_listView->firstChild()) {

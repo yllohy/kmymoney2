@@ -481,7 +481,7 @@ void KNewAccountWizard::slotAccountType(const QString& sel)
   if(sel == KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Checkings)) {
     txt += i18n(
       "Use the checking account type to manage "
-      "activities on your checkings account e.g. payments, cheques and cash card "
+      "activities on your checking account e.g. payments, checks and cash card "
       "purchases."
     );
     m_accountType = MyMoneyAccount::Checkings;
@@ -584,7 +584,7 @@ void KNewAccountWizard::loadPaymentMethods()
   m_method->insertItem(i18n("Direct Debit"));
   m_method->insertItem(i18n("Direct Deposit"));
   m_method->insertItem(i18n("Manual Deposit"));
-  m_method->insertItem(i18n("Write Cheque"));
+  m_method->insertItem(i18n("Write Check"));
   m_method->insertItem(i18n("Other"));
 }
 

@@ -41,7 +41,7 @@ kMyMoneyRegisterCheckings::kMyMoneyRegisterCheckings(QWidget *parent, const char
   setNumCols(7);
   setCurrentCell(0, 1);
   horizontalHeader()->setClickEnabled(true);
-  horizontalHeader()->setLabel(0, i18n("Nr."));
+  horizontalHeader()->setLabel(0, i18n("No."));
   horizontalHeader()->setLabel(1, i18n("Date"));
   horizontalHeader()->setLabel(2, i18n("Payee"));
   horizontalHeader()->setLabel(3, i18n("C"));

@@ -42,14 +42,6 @@ KUpdateStockPriceDlg::KUpdateStockPriceDlg(QWidget* parent,  const char* name) :
   init();
 }
 
-KUpdateStockPriceDlg::KUpdateStockPriceDlg(const QDate& date, const MyMoneyPrice& price, QWidget* parent,  const char* name) :
-  kUpdateStockPriceDecl(parent, name, true)
-{
-  m_date->setDate(date);
-
-  init();
-}
-
 KUpdateStockPriceDlg::~KUpdateStockPriceDlg()
 {
 }
