@@ -622,6 +622,14 @@ bool KMyMoneyView::readFile(const KURL& url)
   // stays untouched on the local filesystem
   KIO::NetAccess::removeTempFile(filename);
 
+  // since the new account wizard contains the payees list, we have
+  // to create the wizard completely new to get the latest list
+  // into the payees widget
+  if(m_newAccountWizard != 0)
+    delete m_newAccountWizard;
+  m_newAccountWizard = new KNewAccountWizard(this, "NewAccountWizard");
+  connect(m_newAccountWizard, SIGNAL(newInstitutionClicked()), this, SLOT(slotBankNew()));
+  
   KConfig *config = KGlobal::config();
   int page;
   config->setGroup("General Options");
