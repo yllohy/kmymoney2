@@ -11,8 +11,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>706</width>
-            <height>551</height>
+            <width>635</width>
+            <height>319</height>
         </rect>
     </property>
     <property stdset="1">
@@ -368,10 +368,6 @@
             <property stdset="1">
                 <name>text</name>
                 <string>&amp;Finish</string>
-            </property>
-            <property stdset="1">
-                <name>default</name>
-                <bool>true</bool>
             </property>
         </widget>
     </grid>
