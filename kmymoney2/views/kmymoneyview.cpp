@@ -84,6 +84,7 @@
 #include "../mymoney/mymoneyexception.h"
 #include "../mymoney/storage/mymoneystoragedump.h"
 #include "../mymoney/storage/mymoneystoragexml.h"
+//#include "../mymoney/storage/mymoneystoragegnc.h"
 
 #include "kmymoneyview.h"
 #include "kbanksview.h"
@@ -526,7 +527,7 @@ void KMyMoneyView::closeFile(void)
 bool KMyMoneyView::readFile(const KURL& url)
 {
   QString filename;
-
+  
   newStorage();
   m_fileOpen = false;
 
@@ -554,6 +555,7 @@ bool KMyMoneyView::readFile(const KURL& url)
   // of the old (uncompressed) or new (compressed) files.
   QFile file(filename);
   QIODevice *qfile = 0;
+  bool rc = true;
 
   if(file.open(IO_ReadOnly)) {
     QByteArray hdr(2);
@@ -594,13 +596,34 @@ bool KMyMoneyView::readFile(const KURL& url)
             if((magic0 == MAGIC_0_50 && magic1 == MAGIC_0_51)
             || magic0 < 30)
               pReader = new MyMoneyStorageBin;
-            else
-              pReader = new MyMoneyStorageXML;
-
-            // rewind the file to give the reader a chance              
-            qfile->at(0);            
-            pReader->setProgressCallback(&KMyMoneyView::progressCallback);
-            pReader->readFile(qfile, dynamic_cast<IMyMoneySerialize*> (MyMoneyFile::instance()->storage()));
+              
+            else {
+              // Scan the first 70 bytes to see if we find something
+              // we know. For now, we support our own XML format and
+              // GNUCash XML format. If the file is smaller, then it
+              // contains no valid data and we reject it anyway.
+              qfile->at(0);
+              hdr.resize(70);
+              if(qfile->readBlock(hdr.data(), 70) == 70) {
+                QRegExp kmyexp("<!DOCTYPE KMYMONEY-FILE>");
+                QRegExp gncexp("<gnc-v(\\d+)>");
+                QCString txt(hdr);
+                if(kmyexp.search(txt) != -1) {
+                  pReader = new MyMoneyStorageXML;
+                //} else if(gncexp.search(txt) != -1) {
+                //  pReader = new MyMoneyStorageGNC;
+                }
+              }
+            }
+            if(pReader) {
+              // rewind the file to give the reader a chance
+              qfile->at(0);
+              pReader->setProgressCallback(&KMyMoneyView::progressCallback);
+              pReader->readFile(qfile, dynamic_cast<IMyMoneySerialize*> (MyMoneyFile::instance()->storage()));
+            } else {
+              KMessageBox::sorry(this, i18n("File '%1' contains an unknown file format!").arg(filename));
+              rc = false;
+            }
           }
         } catch (MyMoneyException *e) {
           QString msg = e->what();
@@ -614,16 +637,17 @@ bool KMyMoneyView::readFile(const KURL& url)
         qfile->close();
       } else {
         KMessageBox::sorry(this, i18n("File '%1' not found!").arg(filename));
-        delete qfile;
-        return false;
+        rc = false;
       }
       delete qfile;
     }
   } else {
     KMessageBox::sorry(this, i18n("File '%1' not found!").arg(filename));
-    return false;
+    rc = false;
   }
 
+  if(rc == false)
+    return rc;
 
   // if a temporary file was constructed by NetAccess::download,
   // then it will be removed with the next call. Otherwise, it
