@@ -22,7 +22,7 @@
 
 #include "mymoneyexception.h"
 
-MyMoneyException::MyMoneyException(const QString& msg, const QString& file, const long line)
+MyMoneyException::MyMoneyException(const QString& msg, const QString& file, const unsigned long line)
 {
   m_msg = msg;
   m_file = file;

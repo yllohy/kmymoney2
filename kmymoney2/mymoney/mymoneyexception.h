@@ -29,25 +29,83 @@
 #include <qstring.h>
 
 /**
-  *@author Thomas Baumgart
+  * @file
+  * @author Thomas Baumgart
   */
 
+/**
+  * This class describes an exception that is thrown by the engine
+  * in case of a failure.
+  */
 class MyMoneyException {
 public:
 
+/**
+  * @def MYMONEYEXCEPTION(text)
+  * This is the preferred constructor to create a new exception
+  * object. It automatically inserts the filename and the source
+  * code line into the object upon creation.
+  *
+  * It is equivilant to MyMoneyException(text, __FILE__, __LINE__)
+  */
 #define MYMONEYEXCEPTION(a) MyMoneyException(a, __FILE__, __LINE__)
 
-	MyMoneyException(const QString& msg, const QString& file, const long line);
+  /**
+    * The constructor to create a new MyMoneyException object.
+    *
+    * @param msg reference to QString containing the message
+    * @param file reference to QString containing the name of the sourcefile where
+    *             the exception was thrown
+    * @param line unsigned long containing the line number of the line where
+    *             the exception was thrown in the file.
+    *
+    * An easier way to use this constructor is to use the macro
+    * MYMONEYEXCEPTION(text) instead. It automatically assigns the file
+    * and line parameter to the correct values.
+    */
+	MyMoneyException(const QString& msg, const QString& file, const unsigned long line);
+
 	~MyMoneyException();
 
+  /**
+    * This method is used to return the message that was passed
+    * during the creation of the exception object.
+    *
+    * @return reference to QString containing the message
+    */
   const QString& what(void) const { return m_msg; };
+
+  /**
+    * This method is used to return the filename that was passed
+    * during the creation of the exception object.
+    *
+    * @return reference to QString containing the filename
+    */
   const QString& file(void) const { return m_file; };
-  const long line(void) const { return m_line; };
+
+  /**
+    * This method is used to return the linenumber that was passed
+    * during the creation of the exception object.
+    *
+    * @return long integer containing the line number
+    */
+  const unsigned long line(void) const { return m_line; };
 
 private:
+  /**
+    * This member variable holds the message
+    */
   QString m_msg;
+
+  /**
+    * This member variable holds the filename
+    */
   QString m_file;
-  long m_line;
+
+  /**
+    * This member variable holds the line number
+    */
+  unsigned long m_line;
 };
 
 #endif
