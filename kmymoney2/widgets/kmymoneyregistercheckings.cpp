@@ -107,6 +107,11 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
             break;
 
           case 1:
+          txt = m_split.action();
+          if(txt.isEmpty())
+            txt = " ";
+          break;
+
           case 2:
             txt = " ";
             break;
