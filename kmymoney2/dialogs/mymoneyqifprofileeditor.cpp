@@ -175,6 +175,7 @@ void MyMoneyQifProfileEditor::loadWidgets(void)
   m_editDateFormat->insertItem( "%mmm/%d/%yyyy" );
   m_editDateFormat->insertItem( "%m%d%yy" );
   m_editDateFormat->insertItem( "%mmm/%d%yy" );
+  m_editDateFormat->insertItem( "%yyyy-%mm-%dd" );
 
   m_editApostrophe->clear();
   m_editApostrophe->insertItem( "1900-1949" );

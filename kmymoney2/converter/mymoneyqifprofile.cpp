@@ -354,6 +354,7 @@ const QDate MyMoneyQifProfile::date(const QString& datein) const
         formatParts[part] += m_dateFormat[i];
         break;
       case '/':
+      case '-':
       case '.':
         if(delim == 2) {
           qWarning("MyMoneyQifProfile::date(const QString& datein) Too many delimiters in date format");
@@ -376,6 +377,7 @@ const QDate MyMoneyQifProfile::date(const QString& datein) const
    switch(datein[i].latin1()) {
       case '/':
       case '.':
+      case '-':
       case '\'':
         if(delim == 2) {
           qWarning("MyMoneyQifProfile::date(const QString& datein) Too many delimiters in date field");

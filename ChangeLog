@@ -1,4 +1,7 @@
 2004-08-03 Ace Jones <acejones@users.sourceforge.net>
+  * Added ISO date format as an option to QIF importer (%yyyy-%mm%-dd)
+
+2004-08-03 Ace Jones <acejones@users.sourceforge.net>
   * Added CSV export for Transaction Reports
   * Added Currency conversion for Transaction Reports
 
