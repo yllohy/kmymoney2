@@ -1,3 +1,7 @@
+2005-03-04 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Gnucash import
+    - Fix #1151541 handle invalid value in splits causing crash
+    - Fix #1078850 remove dailym_f schedule which we can't currently handle
 2005-03-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added logic to update color settings for CSS
 

@@ -1193,9 +1193,9 @@ void MyMoneyStorageGNC::convertSplit (const GncSplit *gsp) {
   splitAccount = m_storage->account (kmmAccountId);
   // print some data so we can maybe identify this split later
   // TODO : prints personal data
-  if (gncdebug) qDebug ("Split data - gncid %s, kmmid %s, memo %s, value %s, recon state %s",
-                          gsp->acct().latin1(), kmmAccountId.data(), gsp->memo().latin1(), gsp->value().latin1(),
-                          gsp->recon().latin1());
+  //if (gncdebug) qDebug ("Split data - gncid %s, kmmid %s, memo %s, value %s, recon state %s",
+  //                        gsp->acct().latin1(), kmmAccountId.data(), gsp->memo().latin1(), gsp->value().latin1(),
+  //                        gsp->recon().latin1());
   // payee id
   split.setPayeeId (m_txPayeeId.utf8());
   // reconciled state and date
@@ -1213,7 +1213,13 @@ void MyMoneyStorageGNC::convertSplit (const GncSplit *gsp) {
   // accountId
   split.setAccountId (kmmAccountId);
   // value and quantity
-  MyMoneyMoney splitValue(gsp->value());
+  MyMoneyMoney splitValue (0);
+  if (gsp->value() != QString("-1/0")) { // treat gnc invalid value as zero
+   splitValue = gsp->value();
+ } else {
+   // it's not quite a consistency check, but easier to treat it as such
+   postMessage ("CC", 4, splitAccount.name().latin1(), m_txDatePosted.toString(Qt::ISODate).latin1());
+ }
   MyMoneyMoney splitQuantity(gsp->qty());
   split.setValue (splitValue);
   split.setShares (splitQuantity);
@@ -1505,7 +1511,7 @@ void MyMoneyStorageGNC::convertSchedule (const GncSchedule *gsc) {
   };
   static convIntvl vi [] = {
                              {"daily" , 'd', 1, MyMoneySchedule::OCCUR_DAILY, MyMoneySchedule::MoveNothing },
-                             {"daily_mf", 'd', 1, MyMoneySchedule::OCCUR_DAILY, MyMoneySchedule::MoveMonday },
+                             //{"daily_mf", 'd', 1, MyMoneySchedule::OCCUR_DAILY, MyMoneySchedule::MoveMonday }, doesn't work, need new freq in kmm
                              {"weekly", 'w', 1, MyMoneySchedule::OCCUR_WEEKLY, MyMoneySchedule::MoveNothing },
                              {"bi_weekly", 'w', 2, MyMoneySchedule::OCCUR_EVERYOTHERWEEK, MyMoneySchedule::MoveNothing },
                              {"monthly", 'm', 1, MyMoneySchedule::OCCUR_MONTHLY, MyMoneySchedule::MoveNothing },
@@ -2014,6 +2020,7 @@ GncMessages::messText GncMessages::texts [] = {
       {"SC", 5, QObject::tr("Schedule %1 contains no valid splits")},
       {"SC", 6, QObject::tr("Schedule %1 appears to contain a formula. GnuCash formulae are not convertible")},
       {"SC", 7, QObject::tr("Schedule %1 contains a composite interval specification; please check for correct operation")},
+      {"CC", 4, QObject::tr("Account or Category %1, transaction date %2; split contains invalid value; please check")},
       {"ZZ", 0, ""} // stopper
     };
 //
