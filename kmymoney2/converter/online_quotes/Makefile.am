@@ -5,7 +5,7 @@ INCLUDES = $(all_includes)
 
 libonline_quotes_a_METASOURCES = AUTO
 
-libonline_quotes_a_SOURCES = stdsoap2.cpp xmethod/soapClientLib.c
+libonline_quotes_a_SOURCES = stdsoap2.cpp xmethod/soapClientLib.c xmethod/soapC.c
 
 EXTRA_DIST = stdsoap2.cpp stdsoap2.h 
 
