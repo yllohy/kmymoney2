@@ -2,6 +2,8 @@
   * Improved the 'file open' logic.
   * Fixed the infinite loop on exit.  Can't believe we didn't spot this
     before!
+  * Use MyMoneyFile::totalBalance() instead of MyMoneyAccount::balance() when
+    displaying accounts in the accounts & categories view.
 
 2002-06-13 Michael Edwardes <mte@users.sourceforge.net>
   * Right click on accounts view now works.

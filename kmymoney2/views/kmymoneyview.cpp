@@ -348,6 +348,7 @@ void KMyMoneyView::saveFile(QString filename)
 
   m_file.saveAllData(filename);
 */
+  KMessageBox::error(this, i18n("WARNING: This has not been implemented yet."));
 }
 
 bool KMyMoneyView::dirty(void)
@@ -522,6 +523,7 @@ void KMyMoneyView::slotAccountExportAscii(void)
 
 void KMyMoneyView::slotReconcileFinished(bool success)
 {
+
   if (success)
   {
     transactionView->refresh();
@@ -1135,6 +1137,7 @@ bool KMyMoneyView::checkTransactionCategory(const MyMoneyTransaction *transactio
 
   if (transaction->categoryMajor() == category)
     return true;
+
 */
   return false;
 }

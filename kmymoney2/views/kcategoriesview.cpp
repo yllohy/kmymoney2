@@ -98,7 +98,7 @@ void KCategoriesView::refresh(void)
     KAccountListItem *incomeTopLevelAccount = new KAccountListItem(categoryListView,
               incomeAccount.name(), incomeAccount.id(),
               KMyMoneyFile::accountTypeToString(incomeAccount.accountType()),
-              incomeAccount.balance().formatMoney());
+              file->totalBalance(incomeAccount.id()).formatMoney());
 
     for ( QCStringList::ConstIterator it = file->income().accountList().begin();
           it != file->income().accountList().end();
@@ -107,7 +107,7 @@ void KCategoriesView::refresh(void)
       KAccountListItem *accountItem = new KAccountListItem(incomeTopLevelAccount,
             file->account(*it).name(), file->account(*it).id(),
             KMyMoneyFile::accountTypeToString(file->account(*it).accountType()),
-            file->account(*it).balance().formatMoney());
+            file->totalBalance(*it).formatMoney());
 
       QCStringList subAccounts = file->account(*it).accountList();
       if (subAccounts.count() >= 1)
@@ -120,7 +120,7 @@ void KCategoriesView::refresh(void)
     KAccountListItem *expenseTopLevelAccount = new KAccountListItem(categoryListView,
               expenseAccount.name(), expenseAccount.id(),
               KMyMoneyFile::accountTypeToString(expenseAccount.accountType()),
-              expenseAccount.balance().formatMoney());
+              file->totalBalance(expenseAccount.id()).formatMoney());
 
     for ( QCStringList::ConstIterator it = file->expense().accountList().begin();
           it != file->expense().accountList().end();
@@ -129,7 +129,7 @@ void KCategoriesView::refresh(void)
       KAccountListItem *accountItem = new KAccountListItem(expenseTopLevelAccount,
           file->account(*it).name(), file->account(*it).id(),
           KMyMoneyFile::accountTypeToString(file->account(*it).accountType()),
-          file->account(*it).balance().formatMoney());
+          file->totalBalance(*it).formatMoney());
 
       QCStringList subAccounts = file->account(*it).accountList();
       if (subAccounts.count() >= 1)
@@ -156,7 +156,7 @@ void KCategoriesView::showSubAccounts(QCStringList accounts, KAccountListItem *p
     KAccountListItem *accountItem  = new KAccountListItem(parentItem,
           file->account(*it).name(), file->account(*it).id(),
           KMyMoneyFile::accountTypeToString(file->account(*it).accountType()),
-          file->account(*it).balance().formatMoney());
+          file->totalBalance(*it).formatMoney());
 
     QCStringList subAccounts = file->account(*it).accountList();
     if (subAccounts.count() >= 1)
