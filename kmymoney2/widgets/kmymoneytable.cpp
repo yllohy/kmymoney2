@@ -35,6 +35,8 @@ kMyMoneyTable::kMyMoneyTable(QWidget *parent, const char *name )
   setPalette(pal);
 
 	setFocusPolicy(QWidget::NoFocus);
+  setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred));
+
 	m_nLastRow = 0;
   m_rowOffset = 0;
 
@@ -350,4 +352,9 @@ void kMyMoneyTable::setRowOffset(int row)
 /** Override the QTable member function to avoid display of focus */
 void kMyMoneyTable::paintFocus(QPainter *p, const QRect &cr)
 {
+}
+
+QSize kMyMoneyTable::sizeHint(void) const
+{
+  return QSize(760, 320);
 }

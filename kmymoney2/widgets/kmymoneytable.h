@@ -72,6 +72,8 @@ public:
 	
 	void setItem2(const QString& text) { m_qstringSecondItem=text; }
 
+  QSize sizeHint(void) const;
+
 public slots:
   /** No descriptions */
   virtual void setCurrentCell(int row, int col);
