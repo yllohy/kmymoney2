@@ -275,22 +275,27 @@ void KLedgerView::setCurrentAccount(const QCString& accountId, const bool force)
 {
   slotCancelEdit();
 
-  if(accountId != m_account.id() || force == true) {
+  if(!accountId.isEmpty()) {
+    if(accountId != m_account.id() || force == true) {
 
-    MyMoneyFile* file = MyMoneyFile::instance();
+      MyMoneyFile* file = MyMoneyFile::instance();
 
-    file->detach(m_account.id(), this);
+      file->detach(m_account.id(), this);
 
-    try {
-      m_account = file->account(accountId);
-      file->attach(m_account.id(), this);
-      // force initial load
-      loadAccount();
-      // refreshView();
-    } catch(MyMoneyException *e) {
-      qDebug("Unexpected exception in KLedgerView::setCurrentAccount");
-      delete e;
+      try {
+        m_account = file->account(accountId);
+        file->attach(m_account.id(), this);
+        // force initial load
+        loadAccount();
+        enableWidgets(true);
+        // refreshView();
+      } catch(MyMoneyException *e) {
+        qDebug("Unexpected exception in KLedgerView::setCurrentAccount");
+        delete e;
+      }
     }
+  } else {
+    enableWidgets(false);
   }
 }
 
@@ -326,6 +331,7 @@ void KLedgerView::reloadAccount(const bool repaint)
     if(selectFlag == true)
       emit transactionSelected();
   }
+
 }
 
 void KLedgerView::loadAccount(void)
@@ -373,6 +379,11 @@ void KLedgerView::updateView(void)
 
   m_register->setTransactionCount(m_transactionPtrVector.count()+1);
   resizeEvent(NULL);
+}
+
+void KLedgerView::enableWidgets(const bool enable)
+{
+  m_form->setEnabled(enable);
 }
 
 void KLedgerView::filterTransactions(void)
@@ -494,31 +505,33 @@ const MyMoneyMoney KLedgerView::balance(const int idx) const
 
 void KLedgerView::slotRegisterClicked(int row, int col, int button, const QPoint &mousePos)
 {
-  // only redraw the register and form, when a different
-  // transaction has been selected with this click.
-  if(m_register->setCurrentTransactionRow(row) == true) {
-    m_register->ensureTransactionVisible();
-    m_register->repaintContents(false);
+  if(!(m_account.id().isEmpty())) {
+    // only redraw the register and form, when a different
+    // transaction has been selected with this click.
+    if(m_register->setCurrentTransactionRow(row) == true) {
+      m_register->ensureTransactionVisible();
+      m_register->repaintContents(false);
 
-    slotCancelEdit();
+      slotCancelEdit();
 
-    // if the very last entry has been selected, it means, that
-    // a new transaction should be created.
-    if(static_cast<unsigned> (m_register->currentTransactionIndex()) == m_transactionList.count()) {
-      slotNew();
-    } else {
-      fillForm();
-      fillSummary();
+      // if the very last entry has been selected, it means, that
+      // a new transaction should be created.
+      if(static_cast<unsigned> (m_register->currentTransactionIndex()) == m_transactionList.count()) {
+        slotNew();
+      } else {
+        fillForm();
+        fillSummary();
+      }
+
+      emit transactionSelected();
+
     }
 
-    emit transactionSelected();
-
-  }
-
-  if(button == Qt::RightButton) {
-    if(static_cast<unsigned> (m_register->currentTransactionIndex()) != m_transactionList.count()) {
-      slotCancelEdit();
-      m_contextMenu->exec(QCursor::pos());
+    if(button == Qt::RightButton) {
+      if(static_cast<unsigned> (m_register->currentTransactionIndex()) != m_transactionList.count()) {
+        slotCancelEdit();
+        m_contextMenu->exec(QCursor::pos());
+      }
     }
   }
 }
@@ -1320,6 +1333,10 @@ const QCString KLedgerView::transactionType(int type) const
 
 void KLedgerView::slotNew(void)
 {
+  // this is not available when we have no account
+  if(m_account.id().isEmpty())
+    return;
+
   // select the very last line (empty one), and load it into the form
   m_register->setCurrentTransactionIndex(m_transactionList.count());
   m_register->ensureTransactionVisible();
@@ -1342,6 +1359,10 @@ void KLedgerView::slotNew(void)
 
 void KLedgerView::slotStartEdit(void)
 {
+  // this is not available when we have no account
+  if(m_account.id().isEmpty())
+    return;
+    
   // we use the warnlevel to keep track, if we have to warn the
   // user that some or all splits have been reconciled or if the
   // user cannot modify the transaction if at least one split

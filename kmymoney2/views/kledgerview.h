@@ -477,6 +477,9 @@ public slots:
     * This will ensure, that the transaction is visible in the
     * register, the state of the buttons is updated and that
     * the edit widgets will be shown (see showWidgets()).
+    *
+    * @note If no account is loaded into the ledger view, this
+    *       method does nothing.
     */
   virtual void slotStartEdit(void);
 
@@ -506,6 +509,9 @@ public slots:
     * This will select the 'new' transaction (last line of the register)
     * fill the form, update button states and show the edit widgets
     * (see showWidgets()).
+    *
+    * @note If no account is loaded into the ledger view, this
+    *       method does nothing.
     */
   virtual void slotNew(void);
 
@@ -591,6 +597,19 @@ protected:
     * the view then does not have a summary line :-(
     */
   virtual void fillSummary(void) = 0;
+
+  /**
+    * This method enables or disables widgets who's availability depends
+    * on a selected account. These are:
+    *
+    * - the transaction form
+    *
+    * More widgets can be controlled if you override this method
+    * in a derived class.
+    *
+    * @param enable true enables the widgets, false disables them
+    */
+  virtual void enableWidgets(const bool enable);
 
   /**
     * This method reloads the account data from the engine, refreshes

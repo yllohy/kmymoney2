@@ -207,6 +207,21 @@ protected:
     */
   virtual void createMoreMenu(void);
 
+    /**
+    * This method enables or disables widgets who's availability depends
+    * on a selected account. These are:
+    *
+    * - the account details button
+    * - the account reconcile button
+    * - and the one's controlled by KLedgerView::enableWidgets()
+    *
+    * More widgets can be controlled if you override this method
+    * in a derived class.
+    *
+    * @param enable true enables the widgets, false disables them
+    */
+  virtual void enableWidgets(const bool enable);
+
 protected slots:
   /**
     * Calling this slot opens the account edit dialog for the current

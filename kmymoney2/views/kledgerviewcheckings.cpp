@@ -170,6 +170,13 @@ void KLedgerViewCheckings::show()
   resizeEvent(NULL);
 }
 
+void KLedgerViewCheckings::enableWidgets(const bool enable)
+{
+  m_detailsButton->setEnabled(enable);
+  m_reconcileButton->setEnabled(enable);
+  KLedgerView::enableWidgets(enable);
+}
+
 void KLedgerViewCheckings::slotTypeSelected(int type)
 {
   if(!m_form->tabBar()->signalsBlocked())
@@ -1233,11 +1240,13 @@ void KLedgerViewCheckings::fillReconcileData(void)
 
 void KLedgerViewCheckings::slotRegisterClicked(int row, int col, int button, const QPoint &mousePos)
 {
-  KLedgerView::slotRegisterClicked(row, col, button, mousePos);
+  if(!m_account.id().isEmpty()) {
+    KLedgerView::slotRegisterClicked(row, col, button, mousePos);
 
-  if(m_inReconciliation == true
-  && col == 3) {    // reconcileFlag column
-    slotToggleClearFlag();
+    if(m_inReconciliation == true
+    && col == 3) {    // reconcileFlag column
+      slotToggleClearFlag();
+    }
   }
 }
 
