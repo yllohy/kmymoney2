@@ -164,7 +164,7 @@ void KScheduledView::refresh(bool full, const QCString schedId)
 
     KScheduledListItem *openItem=0;
 
-    int i1=0, i2=0, i3=0;
+    int i1=1, i2=1, i3=1;
     for (it = scheduledItems.begin(); it != scheduledItems.end(); ++it)
     {
       MyMoneySchedule schedData = (*it);
