@@ -120,9 +120,17 @@ KNewAccountDlg::KNewAccountDlg(MyMoneyAccount& account, MyMoneyFile* file, bool 
       institutionName = m_file->institution(account.institutionId()).name();
     else
       institutionName = "";
+  }
+  catch (MyMoneyException *e)
+  {
+    qDebug("excpetion in init for accoutn dialog: %s", e->what().latin1());
+    delete e;
+  }
 
+  try
+  {
     if (isEditing)
-      accountName = m_file->institution(account.institutionId()).name();
+      accountName = m_file->account(account.parentAccountId()).name();
     else
       accountName = "";
   }
@@ -154,10 +162,6 @@ KNewAccountDlg::~KNewAccountDlg()
 
 void KNewAccountDlg::okClicked()
 {
-  // KMyMoneyView will check that the parent exists
-  // when adding the account.
-  //m_parentAccount = parentAccountWidget->parentAccount();
-
   QString accountNameText = accountNameEdit->text();
   if (accountNameText.isEmpty())
   {
@@ -289,6 +293,12 @@ void KNewAccountDlg::initParentWidget(const QString& name)
     KAccountListItem *assetTopLevelAccount = new KAccountListItem(m_qlistviewParentAccounts,
                       assetAccount.name(), STD_ACC_ASSET, false);
 
+    if (name.length()>=1 && name == assetAccount.name())
+    {
+      m_bFoundItem = true;
+      m_foundItem = assetTopLevelAccount;
+    }
+
     for ( QCStringList::ConstIterator it = m_file->asset().accountList().begin();
           it != m_file->asset().accountList().end();
           ++it )
@@ -296,7 +306,7 @@ void KNewAccountDlg::initParentWidget(const QString& name)
       KAccountListItem *accountItem = new KAccountListItem(assetTopLevelAccount,
           m_file->account(*it).name(), m_file->account(*it).id(), false);
 
-      if (name == m_file->account(*it).name())
+      if (name.length()>=1 && name == m_file->account(*it).name())
       {
         m_bFoundItem = true;
         m_foundItem = accountItem;
@@ -313,6 +323,12 @@ void KNewAccountDlg::initParentWidget(const QString& name)
     KAccountListItem *liabilityTopLevelAccount = new KAccountListItem(m_qlistviewParentAccounts,
                       liabilityAccount.name(), STD_ACC_LIABILITY, false);
 
+    if (name.length()>=1 && name == liabilityAccount.name())
+    {
+      m_bFoundItem = true;
+      m_foundItem = liabilityTopLevelAccount;
+    }
+
     for ( QCStringList::ConstIterator it = m_file->liability().accountList().begin();
           it != m_file->liability().accountList().end();
           ++it )
@@ -320,7 +336,7 @@ void KNewAccountDlg::initParentWidget(const QString& name)
       KAccountListItem *accountItem = new KAccountListItem(liabilityTopLevelAccount,
           m_file->account(*it).name(), m_file->account(*it).id(), false);
 
-      if (name == m_file->account(*it).name())
+      if (name.length()>=1 && name == m_file->account(*it).name())
       {
         m_bFoundItem = true;
         m_foundItem = accountItem;
@@ -337,6 +353,12 @@ void KNewAccountDlg::initParentWidget(const QString& name)
     KAccountListItem *incomeTopLevelAccount = new KAccountListItem(m_qlistviewParentAccounts,
                       incomeAccount.name(), STD_ACC_INCOME, false);
 
+    if (name.length()>=1 && name == incomeAccount.name())
+    {
+      m_bFoundItem = true;
+      m_foundItem = incomeTopLevelAccount;
+    }
+
     for ( QCStringList::ConstIterator it = m_file->income().accountList().begin();
           it != m_file->income().accountList().end();
           ++it )
@@ -344,7 +366,7 @@ void KNewAccountDlg::initParentWidget(const QString& name)
       KAccountListItem *accountItem = new KAccountListItem(incomeTopLevelAccount,
           m_file->account(*it).name(), m_file->account(*it).id(), false);
 
-      if (name == m_file->account(*it).name())
+      if (name.length()>=1 && name == m_file->account(*it).name())
       {
         m_bFoundItem = true;
         m_foundItem = accountItem;
@@ -361,6 +383,12 @@ void KNewAccountDlg::initParentWidget(const QString& name)
     KAccountListItem *expenseTopLevelAccount = new KAccountListItem(m_qlistviewParentAccounts,
                       expenseAccount.name(), STD_ACC_EXPENSE, false);
 
+    if (name.length()>=1 && name == expenseAccount.name())
+    {
+      m_bFoundItem = true;
+      m_foundItem = expenseTopLevelAccount;
+    }
+
     for ( QCStringList::ConstIterator it = m_file->expense().accountList().begin();
           it != m_file->expense().accountList().end();
           ++it )
@@ -368,7 +396,7 @@ void KNewAccountDlg::initParentWidget(const QString& name)
       KAccountListItem *accountItem = new KAccountListItem(expenseTopLevelAccount,
           m_file->account(*it).name(), m_file->account(*it).id(), false);
 
-      if (name == m_file->account(*it).name())
+      if (name.length()>=1 && name == m_file->account(*it).name())
       {
         m_bFoundItem = true;
         m_foundItem = accountItem;
@@ -391,6 +419,26 @@ void KNewAccountDlg::initParentWidget(const QString& name)
 
   if (m_bFoundItem)
   {
+    QString parentAccount;
+
+    try
+    {
+      parentAccount = m_file->account(m_foundItem->accountID()).name();
+    }
+    catch (MyMoneyException *e)
+    {
+      qDebug("Exception in select account item in the new account dialog: %s", e->what().latin1());
+      delete e;
+    }
+
+    QString theText(i18n("Is a sub account of "));
+    theText += parentAccount;
+    m_qcheckboxSubAccount->setText(theText);
+    m_qcheckboxSubAccount->setChecked(true);
+
+    m_qlistviewParentAccounts->setEnabled(true);
+
+    m_qlistviewParentAccounts->setOpen(m_foundItem, true);
     m_qlistviewParentAccounts->setSelected(m_foundItem, true);
   }
 }
@@ -403,7 +451,7 @@ void KNewAccountDlg::showSubAccounts(QCStringList accounts, KAccountListItem *pa
     KAccountListItem *accountItem  = new KAccountListItem(parentItem,
           m_file->account(*it).name(), file->account(*it).id(), false);
 
-      if (name == m_file->account(*it).name())
+      if (name.length()>=1 && name == m_file->account(*it).name())
       {
         m_bFoundItem = true;
         m_foundItem = accountItem;

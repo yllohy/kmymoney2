@@ -1,3 +1,7 @@
+2002-06-09 Michael Edwardes <mte@users.sourceforge.net>
+  * Fixed the date input widget.
+  * New account dialog is now fully functional.
+
 2002-06-07 Michael Edwardes <mte@users.sourceforge.net>
   * Adding institution in the account dialog now works.
   * The edit account dialog now loads nearly all the 'fields'

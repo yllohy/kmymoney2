@@ -131,7 +131,7 @@ void kMyMoneyDateInput::slotEnterPressed()
 
 QDate kMyMoneyDateInput::getQDate(void)
 {
-  return m_date;
+  return dateEdit->date();
 }
 
 void kMyMoneyDateInput::setDate(QDate date)
