@@ -385,7 +385,7 @@ void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
   }
 
 
-  if(account.openingDate() == QDate()) {
+  if(!account.openingDate().isValid()) {
     account.setOpeningDate(QDate::currentDate());
   }
 
