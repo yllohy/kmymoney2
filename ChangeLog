@@ -1,3 +1,6 @@
+2002-05-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added initial MyMoneyPayee support
+
 2002-05-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added setAccountName() method to engine
   * Preparations for payee handling (not yet finished)
