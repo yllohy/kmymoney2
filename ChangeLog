@@ -1,3 +1,8 @@
+2004-11-28 Tony Bloomfield <email address to follow>
+  * Partial correction of share price import
+  * Fix bug 1067499 - crash om import
+  * Create orphan accounts for unknown account ids
+  
 2004-11-28 Ace Jones <acejones@users.sourceforge.net>
   * Replaced 'splitted' with 'split', which is more gramatically correct
   * Added support for cash dividends in OFX importing.  (Cash dividends are
