@@ -5,7 +5,7 @@ INCLUDES = $(all_includes)
 
 libmymoney_a_METASOURCES = AUTO
 
-libmymoney_a_SOURCES = mymoneycurrency.cpp mymoneyfinancialcalculator.cpp mymoneytransactionfilter.cpp mymoneykeyvaluecontainer.cpp mymoneyobserver.cpp mymoneysubject.cpp mymoneysplit.cpp mymoneyinstitution.cpp mymoneyexception.cpp mymoneyinvesttransaction.cpp mymoneyutils.cpp mymoneyequity.cpp mymoneytransaction.cpp mymoneyscheduled.cpp mymoneypayee.cpp mymoneymoney.cpp mymoneyfile.cpp mymoneycategory.cpp mymoneyaccount.cpp mymoneyonlinepriceupdate.cpp mymoneyreport.cpp
+libmymoney_a_SOURCES = mymoneycurrency.cpp mymoneyfinancialcalculator.cpp mymoneytransactionfilter.cpp mymoneykeyvaluecontainer.cpp mymoneyobserver.cpp mymoneysubject.cpp mymoneysplit.cpp mymoneyinstitution.cpp mymoneyexception.cpp mymoneyinvesttransaction.cpp mymoneyutils.cpp mymoneyequity.cpp mymoneytransaction.cpp mymoneyscheduled.cpp mymoneypayee.cpp mymoneymoney.cpp mymoneyfile.cpp mymoneycategory.cpp mymoneyaccount.cpp mymoneyonlinepriceupdate.cpp mymoneyreport.cpp mymoneystatement.cpp
 
 SUBDIRS = storage 
 

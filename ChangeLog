@@ -1,4 +1,10 @@
 2004-08-31 Ace Jones <acejones@users.sourceforge.net>
+  * Added importing of OFX files
+  * Added libofx to the project
+  * Added AC_CHECK_LIB_WPROLOGUE to check for libofx
+  * Added MyMoneyStatement.  This class represents a paper bank statement,
+    and acts as an interface between providers of such data (OFX, HBCI)
+    and the program.
   * Fixed crash in QIF import when filter was set to %d/%mmm/%yyyy and
     data was actually %d/%m/%yyyy
 

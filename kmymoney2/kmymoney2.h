@@ -51,6 +51,8 @@ class KProgress;
 class KStartupLogo;
 class KMyMoneyView;
 class MyMoneyQifReader;
+class MyMoneyStatementReader;
+class MyMoneyStatement;
 class IMyMoneyStorage;
 
 /*! \mainpage KMyMoney Main Page for API documentation.
@@ -115,6 +117,9 @@ protected slots:
 
   void slotGncImport(void);
 
+  void slotStatementImport(void);
+  void slotStatementImportFinished(void);
+  
   void slotLoadAccountTemplates(void);
   void loadAccountTemplates(const QStringList& filelist);
 
@@ -338,8 +343,14 @@ public slots:
   /** Called to update stock and currency prices from the user menu */
   void slotEquityPriceUpdate();
 
+  /** Imports a statement into the engine, triggering the appropriate
+    * UI to handle account matching, payee creation, and someday
+    * payee and transaction matching.
+    */
+  bool slotStatementImport(const MyMoneyStatement&);
+
 private:
-  bool verifyImportedData(void);
+  bool verifyImportedData(const MyMoneyAccount& account);
   void slotCommitTransaction(const MyMoneySchedule& schedule, const QDate&);
 
 signals:
@@ -433,6 +444,7 @@ private:
 
   IMyMoneyStorage*  m_engineBackup;
   MyMoneyQifReader* m_reader;
+  MyMoneyStatementReader* m_smtReader;
 
   bool m_bCheckSchedules;
 

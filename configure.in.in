@@ -31,6 +31,15 @@ AM_PATH_XML2(2.0.0,
 	AM_CONDITIONAL(LIBXML2, test "x$no_xml" = x)
 	AC_SUBST(XML2_LIBS)
 	)
+dnl
+dnl check for libofx
+dnl 
+dnl DO THIS CHECK LAST!!!  After -lofx is on LIBS, no other checks will work!
+dnl
+dnl This is all required because libofx expects certain global symbols to
+dnl be defined as part of its interface
+dnl
+AC_CHECK_LIB_WPROLOGUE(ofx, ofx_proc_file, [], [], [], [[void ofx_proc_security_cb() {} void ofx_proc_transaction_cb() {} void ofx_proc_statement_cb() {} void ofx_proc_status_cb() {} void ofx_proc_account_cb() {}]])
 
 dnl
 dnl check for kbanking
