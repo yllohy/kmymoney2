@@ -41,13 +41,14 @@ class MyMoneyFile;
   * contains none, two or more splits of type MyMoneySplit. They are stored in
   * a QValueList<MyMoneySplit> within this object.
   */
-class MyMoneyTransaction {
+class MyMoneyTransaction : public MyMoneyKeyValueContainer
+{
 public:
-	MyMoneyTransaction();
+  MyMoneyTransaction();
   // MyMoneyTransaction(MyMoneyFile *file, const QString id,
   MyMoneyTransaction(const QCString id,
                              const MyMoneyTransaction& transaction);
-	~MyMoneyTransaction();
+  ~MyMoneyTransaction();
 
 public:
   friend QDataStream &operator<<(QDataStream &, MyMoneyTransaction &);
