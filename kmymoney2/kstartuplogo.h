@@ -17,24 +17,25 @@
 #ifndef KSTARTUPLOGO_H
 #define KSTARTUPLOGO_H
 
-#include <qwidget.h>
-#include <qframe.h>
-#if QT_VERSION > 300
-#include <kapplication.h>
-#else
-#include <kapp.h>
-#endif
+// ----------------------------------------------------------------------------
+// QT Includes
 
+#include <qwidget.h>
+#include <qguardedptr.h>
+
+// ----------------------------------------------------------------------------
+// Project Includes
 
 // Simple class that just shows a picture
-class KStartupLogo : public QFrame  {
-   Q_OBJECT
-public: 
-  KStartupLogo(QWidget *parent=0, const char *name=0);
+class KStartupLogo : public QObject
+{
+  Q_OBJECT
+public:
+  KStartupLogo();
   ~KStartupLogo();
-private slots: // Private slots
-  /** Time 0.5 second */
-  void timerDone();
+
+private:
+  QGuardedPtr<QWidget>  m_splash;
 };
 
 #endif

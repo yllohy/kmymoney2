@@ -96,14 +96,8 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name)
 {
   updateCaption(true);
 
+  // splash screen
   m_startLogo = new KStartupLogo;
-  config=kapp->config();
-  config->setGroup("General Options");
-
-  // splash screen setting
-  bool bViewSplash = config->readBoolEntry("Show Splash", true);
-  if(bViewSplash)
-    m_startLogo->show();
 
   // initial setup of settings
   KMyMoneyUtils::updateSettings();
@@ -115,6 +109,8 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name)
 
   myMoneyView = new KMyMoneyView(frame, "/KMyMoneyView");
   layout->addWidget(myMoneyView, 10);
+
+  config = kapp->config();
 
   ///////////////////////////////////////////////////////////////////
   // call inits to invoke all other construction parts
@@ -142,7 +138,8 @@ KMyMoney2App::~KMyMoney2App()
 {
   MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassAnyChange, this);
 
-  delete m_startLogo;
+  if(m_startLogo)
+    delete m_startLogo;
   if(m_reader != 0)
     delete m_reader;
   if(m_engineBackup != 0)
@@ -158,7 +155,9 @@ const KURL KMyMoney2App::lastOpenedURL(void)
     url = readLastUsedFile();
   }
 
-  m_startLogo->close();
+  if(m_startLogo)
+    delete m_startLogo;
+
   slotStatusMsg(i18n("Ready."));
   return url;
 }
@@ -395,6 +394,9 @@ void KMyMoney2App::slotFileOpenRecent(const KURL& url)
     }
     delete remoteApp;
   }
+
+  if(m_startLogo)
+    delete m_startLogo;
 
   if(!duplicate) {
 

@@ -20,21 +20,16 @@
 #include <config.h>
 #endif
 
-
 // ----------------------------------------------------------------------------
 // QT Includes
 
 #include <qapplication.h>
+#include <qguardedptr.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
 
-#if QT_VERSION > 300
 #include <kapplication.h>
-#else
-#include <kapp.h>
-#endif
-
 #include <kmainwindow.h>
 #include <kaccel.h>
 #include <kaction.h>
@@ -466,7 +461,7 @@ private:
 
   QString m_statusMsg;
 
-  KStartupLogo* m_startLogo;
+  QGuardedPtr<KStartupLogo> m_startLogo;
 
   int m_progressUpdate;
   int m_nextUpdate;

@@ -14,39 +14,68 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "kstartuplogo.h"
+#include <kdecompat.h>
 
-#include <kglobal.h>
-#if QT_VERSION > 300
-#include <kstandarddirs.h>
-#else
-#include <kstddirs.h>
-#endif
+// ----------------------------------------------------------------------------
+// QT Includes
 
+#include <qapplication.h>
 #include <qpixmap.h>
 #include <qtimer.h>
+#include <qframe.h>
 
-KStartupLogo::KStartupLogo(QWidget *parent, const char *name )
-  : QFrame(parent, name,
-    WStyle_NoBorder | WStyle_StaysOnTop | WStyle_Tool | WWinOwnDC // WStyle_Splash
-    | WStyle_Customize)
-{ 	
+// ----------------------------------------------------------------------------
+// KDE Includes
+
+#include <kglobal.h>
+#include <kstandarddirs.h>
+#include <kapplication.h>
+#include <kconfig.h>
+
+#if KDE_IS_VERSION(3,2,0)
+#include <ksplashscreen.h>
+#endif
+
+// ----------------------------------------------------------------------------
+// Project Includes
+
+#include "kstartuplogo.h"
+
+KStartupLogo::KStartupLogo() :
+  QObject(0, 0),
+  m_splash(0)
+{
+  KConfig* config = kapp->config();
+  config->setGroup("General Options");
+
+  // splash screen setting
+  if(config->readBoolEntry("Show Splash", true) == false)
+    return;
+
   QString filename = KGlobal::dirs()->findResource("appdata", "pics/startlogo.png");
-  QPixmap *pm = new QPixmap(filename);
-  setBackgroundPixmap(*pm);
-  setFrameShape( QFrame::StyledPanel );
-  setFrameShadow( QFrame::Raised );
-	setLineWidth( 2 );
-  setGeometry( QRect( (QApplication::desktop()->width()/2)-(pm->width()/2), (QApplication::desktop()->height()/2)-(pm->height()/2), pm->width(), pm->height() ) );
+  QPixmap pm(filename);
 
-  QTimer::singleShot(1000, this, SLOT(timerDone()));
+#if KDE_IS_VERSION(3,2,0)
+  KSplashScreen* splash = new KSplashScreen(pm);
+  splash->setFixedSize(pm.size());
+
+#else
+  QFrame* splash = new QFrame(0, 0, QFrame::WStyle_NoBorder | QFrame::WStyle_StaysOnTop | QFrame::WStyle_Tool | QFrame::WWinOwnDC | QFrame::WStyle_Customize);
+  splash->setBackgroundPixmap(pm);
+  splash->setFrameShape( QFrame::StyledPanel );
+  splash->setFrameShadow( QFrame::Raised );
+  splash->setLineWidth( 2 );
+  splash->setGeometry( QRect( (QApplication::desktop()->width()/2)-(pm->width()/2), (QApplication::desktop()->height()/2)-(pm->height()/2), pm->width(), pm->height() ) );
+
+  // QTimer::singleShot(1000, m_splash, SLOT(close()));
+#endif
+
+  splash->show();
+  m_splash = splash;
 }
 
 KStartupLogo::~KStartupLogo()
 {
-}
-
-void KStartupLogo::timerDone()
-{
-  this->close();
+  if(m_splash)
+    delete m_splash;
 }
