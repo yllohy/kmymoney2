@@ -43,7 +43,7 @@ void MyMoneyStorageXMLCallback::end_document(void)
 
 }
 
-void MyMoneyStorageXMLCallback::start_element(const string &n, const XMLPropertyHash &p)
+void MyMoneyStorageXMLCallback::start_element(const string &n, const XMLPropertyMap &p)
 {
   if(m_parseState == PARSE_STATE_UNKNOWN)
   {
@@ -57,7 +57,7 @@ void MyMoneyStorageXMLCallback::start_element(const string &n, const XMLProperty
 
   if(m_parseState != PARSE_STATE_UNKNOWN)
   {
-    for(XMLPropertyHash::const_iterator i = p.begin(); i != p.end(); ++i)
+    for(XMLPropertyMap::const_iterator i = p.begin(); i != p.end(); ++i)
     {
 
     }
