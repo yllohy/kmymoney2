@@ -555,7 +555,7 @@ public:
     * concatenation of multiple accounts representing a hierarchy of
     * accounts. They have to be seperated by MyMoneyAccount::AccountSeperator.
     *
-    * @param category const reference to QString containing the account name
+    * @param name const reference to QString containing the account name
     *
     * @return QCString of the corresponding account. If account was not found
     *         the return value will be an empty string.
