@@ -138,7 +138,7 @@ private:
 
   MyMoneySplit readSplit(MyMoneyTransaction& t, QDomElement& splitElement);
   void readSplits(MyMoneyTransaction& t, QDomElement& splits);
-  void saveSplits (MyMoneySplit);
+  void saveSplits (MyMoneyTransaction&, MyMoneySplit);
   QString createPayee(QString gncDescription);
 
   void readSchedule(QDomElement& schedule);
@@ -151,7 +151,6 @@ private:
   void readFreqSpec (gncFreqSpec&, QDomElement& fs, bool isComposite);
   QDate incrDate (QDate lastDate, unsigned char interval, unsigned int intervalCount);
   
-private:
   void (*m_progressCallback)(int, int, const QString&);
   /**
     * This member is used to store the file version information
@@ -192,15 +191,14 @@ private:
   const QString QStringEmpty(const QString& val) const;
   const uint getChildCount(const QDomElement& element) const;
   QDomElement findChildElement(const QString& name, const QDomElement& root);
-  
+  MyMoneyAccount checkConsistency (MyMoneyAccount& parent, MyMoneyAccount& child);
   /**
-    * Standard Id strings
+    * Standard Id strings, and an Investment Account
     */
-  QString m_mainAssetId;
-  QString m_mainLiabilityId;
-  QString m_mainIncomeId;
-  QString m_mainExpenseId;
-  QString m_mainEquityId;
+  enum mainIdsE {m_mainAssetId, m_mainLiabilityId, m_mainIncomeId, m_mainExpenseId,
+    //m_mainInvestmentId ,
+     m_mainIdCount};
+  QString m_mainName[m_mainIdCount];
   
   /**
     * Map gnucash vs. Kmm ids for accounts, equities, schedules
@@ -214,6 +212,7 @@ private:
     * Temporary storage areas for transaction processing
     */
   QString m_txChequeNumber; // gnc holds at tx level, we need it in split
+  QDate m_txDatePosted;     // ditto
   QString m_txCommodity;    // pretty much the same
   QString m_txPayeeId;      // and again
   QString m_txMemo;         // pretty much the opposite
@@ -236,6 +235,15 @@ private:
     * To maintain a count of currency usage
     */
   QMap<QString, unsigned long> m_currencyCounter;
+  /**
+    * To advise the user if consistency checks fail 
+    */
+  unsigned long m_inconsistentInput;
+  /**
+    * If a single investment account is required, flag here when created
+    */
+  bool m_invAcctStored;
+  QCString m_invAcctId;
 };
 
 #endif
