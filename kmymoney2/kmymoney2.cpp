@@ -353,11 +353,12 @@ void KMyMoney2App::slotFileNew()
     return;
 
   fileName = KURL();
-  myMoneyView->newFile();
-  KMessageBox::information(this, QString("<p>") +
-                i18n("The next dialog allows you to add predefined account/category templates to the new file. Different languages are available to select from. You can skip loading any template  now by selecting <b>Cancel</b> from the next dialog. If you wish to add more templates later, you can restart this operation by selecting <b>File/Import/Account Templates</b>."),
-                i18n("Load predefined accounts/categories"));
-  slotLoadAccountTemplates();
+  if(myMoneyView->newFile()) {
+    KMessageBox::information(this, QString("<p>") +
+                  i18n("The next dialog allows you to add predefined account/category templates to the new file. Different languages are available to select from. You can skip loading any template  now by selecting <b>Cancel</b> from the next dialog. If you wish to add more templates later, you can restart this operation by selecting <b>File/Import/Account Templates</b>."),
+                  i18n("Load predefined accounts/categories"));
+    slotLoadAccountTemplates();
+  }
 
   slotStatusMsg(prevMsg);
   updateCaption();
@@ -744,10 +745,12 @@ void KMyMoney2App::slotLoadAccountTemplates(void)
   QString prevMsg = slotStatusMsg(i18n("Importing account templates."));
 
   // create a dialog that drops the user in the base directory for templates
+  QLabel* label = new QLabel(i18n("Change into one of the directories and select the desired file."), 0);
   KFileDialog* dialog = new KFileDialog(KGlobal::dirs()->findResourceDir("appdata", "templates/README")+"templates",
                                         i18n("*.kmt|Account templates"),
                                         this, "defaultaccounts",
-                                        true);
+                                        true,
+                                        label);
   dialog->setMode(KFile::Files | KFile::ExistingOnly);
   dialog->setCaption(i18n("Select account template(s)"));
 

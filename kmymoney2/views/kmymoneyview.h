@@ -265,10 +265,12 @@ public:
     *                        information and will be offered to load default income
     *                        and expense accounts. If true, a completely empty file
     *                        will be created without user interaction.
+    * @retval false User pressed Cancel button
+    * @retval true User pressed Ok
     *
     * @see MyMoneyFile
     */
-  void newFile(const bool createEmtpyFile = false);
+  bool newFile(const bool createEmtpyFile = false);
 
   /**
     * Brings up a dialog that displays information about the user who created

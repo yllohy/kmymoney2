@@ -203,8 +203,6 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(m_reportsView, SIGNAL(signalViewActivated()), signalMap, SLOT(map()));
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_reportsView, SLOT(slotReloadView()));
 
-  m_reportsView->setEnabled(false);
-
   // connect the view activation signal mapper
   connect(signalMap, SIGNAL(mapped(int)), this, SIGNAL(viewActivated(int)));
 
@@ -1434,7 +1432,7 @@ void KMyMoneyView::slotAccountExportAscii(void)
 */
 }
 
-void KMyMoneyView::newFile(const bool createEmtpyFile)
+bool KMyMoneyView::newFile(const bool createEmtpyFile)
 {
   closeFile();
 
@@ -1442,11 +1440,11 @@ void KMyMoneyView::newFile(const bool createEmtpyFile)
 
   if(!createEmtpyFile) {
     KNewFileDlg newFileDlg(this, "NewFileDlg", i18n("Create new KMyMoney file"));
-    newFileDlg.cancelButton()->hide();
+    // newFileDlg.cancelButton()->hide();
 
     // still have to work on the cancellation of a new file
     if(newFileDlg.exec() == QDialog::Rejected)
-      return;
+      return false;
 
     if(newFileDlg.userNameText.length() != 0)
       file->setUserName(newFileDlg.userNameText);
@@ -1472,6 +1470,7 @@ void KMyMoneyView::newFile(const bool createEmtpyFile)
 
     m_fileOpen = true;
   }
+  return true;
 }
 
 void KMyMoneyView::viewPersonal(void)
