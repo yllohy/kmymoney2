@@ -52,6 +52,7 @@ KEditEquityEntryDlg::KEditEquityEntryDlg(const MyMoneyEquity& selectedEquity, QW
   lvPriceHistory->setResizeMode(QListView::AllColumns);
   lvPriceHistory->setSorting(0, FALSE);
   lvPriceHistory->setShowSortIndicator(true);
+  lvPriceHistory->setAllColumnsShowFocus(true);
 
   connect(btnOK, SIGNAL(clicked()), this, SLOT(slotOKClicked()));
   connect(btnCancel, SIGNAL(clicked()), this, SLOT(reject()));
@@ -82,7 +83,7 @@ KEditEquityEntryDlg::KEditEquityEntryDlg(const MyMoneyEquity& selectedEquity, QW
   }
 
 
-  //disable controls that can't be used until the user selects a price history item.
+  // disable controls that can't be used until the user selects a price history item.
   btnEditEntry->setEnabled(false);
   btnRemoveEntry->setEnabled(false);
 
@@ -100,6 +101,24 @@ KEditEquityEntryDlg::KEditEquityEntryDlg(const MyMoneyEquity& selectedEquity, QW
                     i18n("Use this to dismiss all the changes made in this dialog."));
   btnCancel->setGuiItem(cancelButtenItem);
 
+  KGuiItem removeButtenItem( i18n( "&Delete" ),
+                    QIconSet(il->loadIcon("delete", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Delete this entry"),
+                    i18n("Remove this price information from the price history"));
+  btnRemoveEntry->setGuiItem(removeButtenItem);
+
+  KGuiItem addButtenItem( i18n( "&Add" ),
+                    QIconSet(il->loadIcon("file_new", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Add a new entry"),
+                    i18n("Create a new price information entry."));
+  btnAddEntry->setGuiItem(addButtenItem);
+
+  KGuiItem editButtenItem( i18n( "&Edit" ),
+                    QIconSet(il->loadIcon("edit", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Modify the selected entry"),
+                    i18n("Change the price information of the selected entry."));
+  btnEditEntry->setGuiItem(editButtenItem);
+
   slotDataChanged();
   m_changes = false;
 }
@@ -115,7 +134,7 @@ void KEditEquityEntryDlg::slotOKClicked()
   {
     m_selectedEquity.setName(edtEquityName->text());
     m_selectedEquity.setTradingSymbol(edtMarketSymbol->text());
-    m_selectedEquity.setSmallestAccountFraction(edtFraction->getMoneyValue().abs());
+    m_selectedEquity.setSmallestAccountFraction(edtFraction->value().abs());
     //m_selectedEquity.setEquityType((int)cmbInvestmentType->currentItem());
 
     m_selectedEquity.setPriceHistory(equity_price_history());
@@ -132,21 +151,21 @@ void KEditEquityEntryDlg::slotOKClicked()
   accept();
 }
 
-void KEditEquityEntryDlg::slotPriceHistoryDoubleClicked(QListViewItem *item, const QPoint &point, int c)
+void KEditEquityEntryDlg::slotPriceHistoryDoubleClicked(QListViewItem* /* item */, const QPoint& /* point */, int /* c */)
 {
 }
 
-void KEditEquityEntryDlg::slotPriceHistoryClicked(QListViewItem* item, const QPoint& point, int c)
+void KEditEquityEntryDlg::slotPriceHistoryClicked(QListViewItem* item, const QPoint& /* point */, int /* c */)
 {
-  btnEditEntry->setEnabled(true);
-  btnRemoveEntry->setEnabled(true);
+  btnEditEntry->setEnabled(item != 0);
+  btnRemoveEntry->setEnabled(item != 0);
 }
 
 void KEditEquityEntryDlg::slotDataChanged(void)
 {
   bool okEnabled = true;
 
-  if(edtFraction->getMoneyValue() <= 0
+  if(edtFraction->value() <= 0
   || edtMarketSymbol->text().isEmpty()
   || edtEquityName->text().isEmpty())
     okEnabled = false;
@@ -195,7 +214,13 @@ void KEditEquityEntryDlg::slotRemovePriceClicked()
   if(pItem)
   {
     lvPriceHistory->takeItem(pItem);
+    delete pItem;
     lvPriceHistory->sort();
+    if(!lvPriceHistory->childCount()) {
+      // disable controls that can't be used until the user selects a price history item.
+      btnEditEntry->setEnabled(false);
+      btnRemoveEntry->setEnabled(false);
+    }
     m_changes = true;
   }
 }
