@@ -1,7 +1,7 @@
 /***************************************************************************
-                          mymoneyequitylist.h  -  description
+                          mymoneysplit.cpp  -  description
                              -------------------
-    begin                : Tue Jan 29 2002
+    begin                : Sun Apr 28 2002
     copyright            : (C) 2000-2002 by Michael Edwardes
     email                : mte@users.sourceforge.net
                            Javier Campos Morales <javi_c@users.sourceforge.net>
@@ -20,40 +20,60 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef MYMONEYEQUITYLIST_H
-#define MYMONEYEQUITYLIST_H
+#include "mymoneysplit.h"
 
-#include <qptrvector.h>
+MyMoneySplit::MyMoneySplit()
+{
+  m_reconcileFlag = NotReconciled;
+}
 
-/**
-	* Class that holds the database of Equity that the user has entered, as well as
-	* equities read from a persisted configuration file.
-	*
-  *@author Kevin Tambascio
-  */
+MyMoneySplit::~MyMoneySplit()
+{
+}
 
-class MyMoneyEquity;
+bool MyMoneySplit::operator == (const MyMoneySplit& right) const
+{
+  return
+    m_id == right.m_id &&
+    m_account == right.m_account &&
+    m_memo == right.m_memo &&
+    m_reconcileDate == right.m_reconcileDate &&
+    m_reconcileFlag == right.m_reconcileFlag &&
+    m_shares == right.m_shares &&
+    m_value == right.m_value;
+}
 
-typedef QPtrVector<MyMoneyEquity*> EquityList;
+void MyMoneySplit::setAccount(const QString& account)
+{
+  m_account = account;
+}
 
-class MyMoneyEquityList {
-public: 
-	MyMoneyEquityList();
-	~MyMoneyEquityList();
+void MyMoneySplit::setMemo(const QString& memo)
+{
+  m_memo = memo;
+}
 
-#if 0
-  /** Removes an entry from the list. */
-  bool removeEquity(const MyMoneyEquity* pEquity);
+void MyMoneySplit::setReconcileDate(const QDate date)
+{
+  m_reconcileDate = date;
+}
 
-	/** Adds a new equity entry into the master list. */
-  bool addEquity(MyMoneyEquity* pEquity);
+void MyMoneySplit::setReconcileFlag(const reconcileFlagE flag)
+{
+  m_reconcileFlag = flag;
+}
 
-  /** Returns an iterator if the item exist. */
-  EquityList::Iterator doesItemExist(const MyMoneyEquity* pEquity);
+void MyMoneySplit::setShares(const MyMoneyMoney& shares)
+{
+  m_shares = shares;
+}
 
-private:
-	EquityList m_equityList;
-#endif
-};
+void MyMoneySplit::setValue(const MyMoneyMoney& value)
+{
+  m_value = value;
+}
 
-#endif
+void MyMoneySplit::setID(const QString& id)
+{
+  m_id = id;
+}

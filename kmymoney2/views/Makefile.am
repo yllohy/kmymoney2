@@ -1,10 +1,9 @@
 ####### kdevelop will overwrite this part!!! (begin)##########
+noinst_LIBRARIES = libviews.a
 
 INCLUDES = $(all_includes)
 
 libviews_a_METASOURCES = AUTO
-
-noinst_LIBRARIES = libviews.a
 
 libviews_a_SOURCES = kinvestmentlistitem.cpp kinvestmentviewdecl.ui kinvestmentview.cpp kstocktransactionviewdecl.ui kstocktransactionview.cpp kscheduledlistitem.cpp kscheduledviewdecl.ui kscheduledview.cpp kpayeesview.cpp kpayeesviewdecl.ui khomeview.cpp kcategoriesviewdecl.ui kcategoriesview.cpp kmymoneyview.cpp kbanklistitem.cpp kbankviewdecl.ui kbanksview.cpp ktransactionviewdecl.ui ktransactionview.cpp 
 

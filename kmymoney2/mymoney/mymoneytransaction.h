@@ -2,7 +2,9 @@
                           mymoneytransaction.h
                              -------------------
     copyright            : (C) 2000 by Michael Edwardes
+                           (C) 2002 by Thomas Baumgart
     email                : mte@users.sourceforge.net
+                           ipwizard@users.sourceforge.net
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,122 +19,121 @@
 #ifndef MYMONEYTRANSACTION_H
 #define MYMONEYTRANSACTION_H
 
+// ----------------------------------------------------------------------------
+// QT Includes
+
 #include <qstring.h>
 #include <qdatetime.h>
 #include <qlist.h>
-#include "mymoneytransactionbase.h"
-#include "mymoneysplittransaction.h"
+
+// ----------------------------------------------------------------------------
+// Project Includes
+
+#include "mymoneyutils.h"
 #include "mymoneymoney.h"
+#include "mymoneyfile.h"
+#include "mymoneysplit.h"
 
-class MyMoneyAccount;
+class MyMoneyFile;
 
-/// This class represents a Transaction in an Account
-class MyMoneyTransaction : public MyMoneyTransactionBase {
+class MyMoneyTransaction {
 public:
-  enum transactionType { Debit, Credit };
-  enum transactionMethod { Cheque, Deposit, Transfer, Withdrawal, ATM };
-  enum stateE { Cleared, Reconciled, Unreconciled };
+	MyMoneyTransaction();
+  // MyMoneyTransaction(MyMoneyFile *file, const QString id,
+  MyMoneyTransaction(const QString id,
+                             const MyMoneyTransaction& transaction);
+	~MyMoneyTransaction();
 
-private:
-	MyMoneyAccount *m_parent;
-
-  // The 'fields'
-  unsigned long m_id;
-  QString m_number;
-  QDate m_date;
-  transactionMethod m_method;
-  QString m_atmBankName;
-  QString m_payee;
-  QString m_accountFrom;
-  QString m_accountTo;
-  stateE m_state;
-  unsigned int m_index;
-
-private:
-  /// common initialization for copy and assignment constructor
-  /// @param right reference to the right side of the assignment
-  void init(MyMoneyTransaction& right);
-
-  friend QDataStream &operator<<(QDataStream &, const MyMoneyTransaction &);
+public:
+  friend QDataStream &operator<<(QDataStream &, MyMoneyTransaction &);
   friend QDataStream &operator>>(QDataStream &, MyMoneyTransaction &);
 
-public:   // FIXME: for testing I made this public, must be private.
-  /// List of splits
-  QList<MyMoneySplitTransaction> m_splitList;
-
-
-public:
-  MyMoneyTransaction();
-  MyMoneyTransaction(MyMoneyAccount *parent, const long id, transactionMethod methodType, const QString& number, const QString& memo,
-                     const MyMoneyMoney& amount, const QDate& date, const QString& categoryMajor, const QString& categoryMinor, const QString& atmName,
-                     const QString& fromTo, const QString& bankFrom, const QString& bankTo, stateE state);
-  ~MyMoneyTransaction();
-
   // Simple get operations
-  QString number(void) const { return m_number; }
-  QDate date(void) const { return m_date; }
-  long id(void) const { return m_id; }
-  transactionType type(void) const;
-  transactionMethod method(void) const { return m_method; }
-  QString atmBankName(void) const { return m_atmBankName; }
-  QString payee(void) const { return m_payee; }
-  QString accountFrom(void) const { return m_accountFrom; }
-  QString accountTo(void) const { return m_accountTo; }
-  stateE state(void) const { return m_state; }
-  //const QList<MyMoneySplitTransaction> splitList(void) { return m_splitList; }
-
-  /// retrieve a pointer to the first split transaction
-  /// @return pointer to first MyMoneySplitTransaction
-  MyMoneySplitTransaction* const firstSplit(void);
-
-  /// retrieve a pointer to the next split transaction
-  /// @return pointer to next MyMoneySplitTransaction
-  MyMoneySplitTransaction* const nextSplit(void);
+  const QDate entryDate(void) const { return m_entryDate; };
+  const QDate postDate(void) const { return m_postDate; };
+  const QString id(void) const { return m_id; };
+  const QString memo(void) const { return m_memo; };
+  const QValueList<MyMoneySplit> splits(void) const { return m_splits; };
+  const unsigned int splitCount(void) const { return m_splits.count(); };
 
   // Simple set operations
-  void setNumber(const QString& val);
-  void setDate(const QDate& date);
-  void setMethod(const transactionMethod method);
-  void setAtmBankName(const QString& val);
-  void setPayee(const QString& fromTo);
-  void setAccountFrom(const QString& bankFrom);
-  void setAccountTo(const QString& bankTo);
-  void setState(const stateE state);
+  void setPostDate(const QDate& date);
+  void setMemo(const QString& memo);
 
-  /// Set the parent's dirty flag
-  /// @param flag Set the parent's dirty flag to this value. Can be true or false.
-  /// @see MyMoneyTransaction
-  /// @see MyMoneySplitTransaction
-  void setDirty(const bool flag);
+  bool operator == (const MyMoneyTransaction&) const;
 
-  /// clear the split transaction list
-  void clearSplitList(void);
+  /**
+    * This method is used to check if the given account is used
+    * in any of the splits of this transation
+    *
+    * @param id reference to id
+    */
+  const bool accountReferenced(const QString& id) const;
 
-  /// add a split transaction to the list
-  void addSplit(MyMoneySplitTransaction* const split);
+  /// Returns a pointer to the file this transaction belongs to
+  /// @return pointer to MyMoneyFile
+  MyMoneyFile *file(void) const { return m_file; }
 
-  void setIndex(const unsigned int index);
-  unsigned int index(void) { return m_index; }
+  /**
+    * This method is used to add a split to the transaction
+    */
+  void addSplit(MyMoneySplit split);
 
-  bool operator == (const MyMoneyTransaction&);
+  /**
+    * This method is used to modify a split in a transaction
+    */
+  void modifySplit(MyMoneySplit& split);
 
-  // Copy constructors
-  MyMoneyTransaction(const MyMoneyTransaction&);
-  MyMoneyTransaction& operator = (const MyMoneyTransaction&);
+  /**
+    * This method is used to remove a split from a transaction
+    */
+  void removeSplit(const MyMoneySplit& split);
 
-  bool readAllData(int version, QDataStream& stream);
+private:
+  static const int SPLIT_ID_SIZE = 4;
 
-  /// Returns false for MyMoneyTransactions
-  ///
-  /// @return always false
-  virtual bool isSplit(void) { return false; };
+  /**
+    * This member points back to the file that this transaction belongs to
+    */
+  MyMoneyFile *m_file;
 
-  /// Returns a pointer to the account this transaction belongs to
-  /// @return pointer to account
-  MyMoneyAccount *account(void) { return m_parent; }
+  /**
+    * This member contains the date when the transaction was entered
+    * into the engine
+    */
+  QDate m_entryDate;
 
-  static transactionMethod stringToMethod(const char *method);
+  /**
+    * This member contains the date the transaction was posted
+    */
+  QDate m_postDate;
+
+  /**
+    * This member contains the transaction id
+    */
+  QString m_id;
+
+  /**
+    * This member keeps the memo text associated with this transaction
+    */
+  QString m_memo;
+
+  /**
+    * This member contains the splits for this transaction
+    */
+  QValueList<MyMoneySplit> m_splits;
+
+  /**
+    * This member keeps the unique numbers of splits within this
+    * transaction
+    */
+  unsigned int m_nextSplitID;
+
+private:
+  const QString nextSplitID(void);
+
+  // friend QDataStream &operator<<(QDataStream &, const MyMoneyTransaction &);
+  // friend QDataStream &operator>>(QDataStream &, MyMoneyTransaction &);
 
 };
-
 #endif

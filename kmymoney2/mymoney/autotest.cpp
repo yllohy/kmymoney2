@@ -16,38 +16,96 @@
 
 #include "config.h"
 
+#include <iostream>
+
 #ifdef HAVE_LIBCPPUNIT
 #include "cppunit/TextTestRunner.h"
 #include "cppunit/TextTestResult.h"
 #include "cppunit/TestSuite.h"
+#include "cppunit/extensions/HelperMacros.h"
 
-#include "qdatastream.h"
+#include "mymoneyutils.h"
+
+#define private public
+// #include "qdatastream.h"
+#include "mymoneyexception.h"
 #include "mymoneymoney.h"
+#include "mymoneysplit.h"
+#include "mymoneyinstitution.h"
+#include "mymoneyaccount.h"
+#include "mymoneytransaction.h"
+#include "mymoneyfile.h"
+#include "storage/mymoneyseqaccessmgr.h"
+#include "storage/mymoneystoragebin.h"
+#undef private
 
+#include "mymoneyexceptiontest.h"
 #include "mymoneymoneytest.h"
+#include "mymoneyinstitutiontest.h"
+#include "mymoneysplittest.h"
+#include "mymoneyaccounttest.h"
+#include "mymoneytransactiontest.h"
+#include "storage/mymoneyseqaccessmgrtest.h"
+#include "storage/mymoneystoragebintest.h"
+#include "mymoneyfiletest.h"
+
+#include "cppunit/TextTestProgressListener.h"
+
+class MyProgressListener : public CppUnit::TextTestProgressListener
+{
+	void startTest(CppUnit::Test *test) {
+		QString name = test->getName().c_str();
+		name = name.mid(2);		// cut off first 2 chars
+		name = name.left(name.find('.'));
+		if(m_name != name) {
+			if(m_name != "")
+				cout << endl;
+			cout << "Running: " << name << endl;
+			m_name = name;
+		}
+	}
+private:
+	QString m_name;
+};
 
 #endif
 
-#include <vector>
-#include <iostream>
 
 int
 main(int argc, char** argv)
 {
 #ifdef HAVE_LIBCPPUNIT
-  CppUnit::TestSuite suite;
-  MyMoneyMoneyTest<MyMoneyMoney> myt("MyMoneyMoneyTest<MyMoneyMoney>");
+#define THB CPPUNIT_TEST_SUITE_REGISTRATION( fixture )
+  _CheckMemory_Init(0);
 
-  myt.registerTests(&suite);
+  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyExceptionTest); 
+  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyMoneyTest); 
+  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyInstitutionTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneySplitTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyTransactionTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyAccountTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneySeqAccessMgrTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyStorageBinTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyFileTest);
 
-  CppUnit::TextTestResult res;
+  CppUnit::TestFactoryRegistry &registry =
+    CppUnit::TestFactoryRegistry::getRegistry();
+  CppUnit::Test *suite = registry.makeTest();
 
-  suite.run( &res );
-  std::cout << res << std::endl;
+  CppUnit::TextTestRunner* runner = new CppUnit::TextTestRunner();
+  runner->addTest(suite);
+
+  MyProgressListener progress;
+  runner->eventManager().addListener(&progress);
+  runner->run();
+
+  delete runner;
+
+  chkmem.CheckMemoryLeak( true );
+  _CheckMemory_End();
 #else
   std::cout << "libcppunit not installed. no automatic tests available."
 		 << std::endl;
 #endif
   return 0;
 }
-

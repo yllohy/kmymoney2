@@ -1,3 +1,7 @@
+2002-05-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * merged new engine branch
+  * *** THE PROJECT WILL NOT COMPILE FOR AWHILE ***
+
 2002-04-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed compile and link order problem
   * Updated developer list in About window

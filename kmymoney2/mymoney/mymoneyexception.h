@@ -1,7 +1,7 @@
 /***************************************************************************
-                          mymoneyequitylist.h  -  description
+                          mymoneyexception.h  -  description
                              -------------------
-    begin                : Tue Jan 29 2002
+    begin                : Sun Apr 28 2002
     copyright            : (C) 2000-2002 by Michael Edwardes
     email                : mte@users.sourceforge.net
                            Javier Campos Morales <javi_c@users.sourceforge.net>
@@ -20,40 +20,34 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef MYMONEYEQUITYLIST_H
-#define MYMONEYEQUITYLIST_H
+#ifndef MYMONEYEXCEPTION_H
+#define MYMONEYEXCEPTION_H
 
-#include <qptrvector.h>
+// ----------------------------------------------------------------------------
+// QT Includes
+
+#include <qstring.h>
 
 /**
-	* Class that holds the database of Equity that the user has entered, as well as
-	* equities read from a persisted configuration file.
-	*
-  *@author Kevin Tambascio
+  *@author Thomas Baumgart
   */
 
-class MyMoneyEquity;
+class MyMoneyException {
+public:
 
-typedef QPtrVector<MyMoneyEquity*> EquityList;
+#define MYMONEYEXCEPTION(a) MyMoneyException(a, __FILE__, __LINE__)
 
-class MyMoneyEquityList {
-public: 
-	MyMoneyEquityList();
-	~MyMoneyEquityList();
+	MyMoneyException(const QString& msg, const QString& file, const long line);
+	~MyMoneyException();
 
-#if 0
-  /** Removes an entry from the list. */
-  bool removeEquity(const MyMoneyEquity* pEquity);
-
-	/** Adds a new equity entry into the master list. */
-  bool addEquity(MyMoneyEquity* pEquity);
-
-  /** Returns an iterator if the item exist. */
-  EquityList::Iterator doesItemExist(const MyMoneyEquity* pEquity);
+  const QString& what(void) const { return m_msg; };
+  const QString& file(void) const { return m_file; };
+  const long line(void) const { return m_line; };
 
 private:
-	EquityList m_equityList;
-#endif
+  QString m_msg;
+  QString m_file;
+  long m_line;
 };
 
 #endif

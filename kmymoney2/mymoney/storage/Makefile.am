@@ -1,0 +1,13 @@
+####### kdevelop will overwrite this part!!! (begin)##########
+noinst_LIBRARIES = libstorage.a
+
+INCLUDES = $(all_includes)
+
+libstorage_a_METASOURCES = AUTO
+
+libstorage_a_SOURCES = mymoneystoragedump.cpp mymoneystoragebin.cpp mymoneyseqaccessmgr.cpp imymoneystorage.cpp imymoneyserialize.cpp 
+
+
+EXTRA_DIST = imymoneyserialize.cpp imymoneyserialize.h imymoneystorage.cpp imymoneystorage.h mymoneyseqaccessmgr.cpp mymoneyseqaccessmgr.h mymoneystoragebin.cpp mymoneystoragebin.h mymoneystoragedump.cpp mymoneystoragedump.h 
+
+####### kdevelop will overwrite this part!!! (end)############

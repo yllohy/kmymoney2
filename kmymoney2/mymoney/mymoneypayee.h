@@ -38,11 +38,11 @@ public:
 	~MyMoneyPayee();
 	
 	// Simple get operations
-	QString name(void) { return m_name; }
-	QString address(void) { return m_address; }
-	QString postcode(void) { return m_postcode; }
-	QString telephone(void) { return m_telephone; }
-	QString email(void) { return m_email; }
+	QString name(void) const { return m_name; }
+	QString address(void) const { return m_address; }
+	QString postcode(void) const { return m_postcode; }
+	QString telephone(void) const { return m_telephone; }
+	QString email(void) const { return m_email; }
 	
 	// Simple set operations
 	void setName(const QString& val) { m_name = val; }

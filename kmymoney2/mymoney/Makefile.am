@@ -1,31 +1,35 @@
 ####### kdevelop will overwrite this part!!! (begin)##########
+noinst_LIBRARIES = libmymoney.a
 
 INCLUDES = $(all_includes)
 
 libmymoney_a_METASOURCES = AUTO
 
-noinst_LIBRARIES = libmymoney.a
+libmymoney_a_SOURCES = mymoneysplit.cpp mymoneyinstitution.cpp mymoneyexception.cpp mymoneyinvesttransaction.cpp mymoneyequitylist.cpp mymoneyutils.cpp mymoneyequity.cpp mymoneytransaction.cpp mymoneyscheduled.cpp mymoneypayee.cpp mymoneymoney.cpp mymoneyfile.cpp mymoneycategory.cpp mymoneyaccount.cpp 
 
-libmymoney_a_SOURCES = mymoneyinvesttransaction.cpp mymoneyequitylist.cpp mymoneyutils.cpp mymoneyequity.cpp mymoneytransactionbase.cpp mymoneysplittransaction.cpp mymoneytransaction.cpp mymoneyscheduled.cpp mymoneypayee.cpp mymoneymoney.cpp mymoneyfile.cpp mymoneycategory.cpp mymoneybank.cpp mymoneyaccount.cpp 
+SUBDIRS = storage 
 
-
-EXTRA_DIST = mymoneyaccount.cpp mymoneyaccount.h mymoneybank.cpp mymoneybank.h mymoneycategory.cpp mymoneycategory.h mymoneyfile.cpp mymoneyfile.h mymoneymoney.cpp mymoneymoney.h mymoneypayee.cpp mymoneypayee.h mymoneyscheduled.cpp mymoneyscheduled.h mymoneytransaction.cpp mymoneytransaction.h readme-mymoney.txt mymoney_config.h mymoneysplittransaction.cpp mymoneysplittransaction.h mymoneytransactionbase.cpp mymoneytransactionbase.h mymoneyequity.cpp mymoneyequity.h mymoneyutils.h mymoneyutils.cpp mymoneyequitylist.cpp mymoneyequitylist.h mymoneyinvesttransaction.cpp mymoneyinvesttransaction.h 
+EXTRA_DIST = mymoneyaccount.cpp mymoneyaccount.h mymoneycategory.cpp mymoneycategory.h mymoneyfile.cpp mymoneyfile.h mymoneymoney.cpp mymoneymoney.h mymoneypayee.cpp mymoneypayee.h mymoneyscheduled.cpp mymoneyscheduled.h mymoneytransaction.cpp mymoneytransaction.h readme-mymoney.txt mymoney_config.h mymoneyequity.cpp mymoneyequity.h mymoneyutils.h mymoneyutils.cpp mymoneyequitylist.cpp mymoneyequitylist.h mymoneyinvesttransaction.cpp mymoneyinvesttransaction.h mymoneyexception.cpp mymoneyexception.h mymoneyinstitution.cpp mymoneyinstitution.h mymoneysplit.cpp mymoneysplit.h 
 
 ####### kdevelop will overwrite this part!!! (end)############
-
-CXXFLAGS = -fexceptions
-
 TESTS = autotest
 check_PROGRAMS = $(TESTS)
 
-# INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include
+INCLUDES += -Istorage
 
-autotest_SOURCES= mymoneymoney.cpp \
-                   autotest.cpp \
-                   mymoneymoney.h \
-                   mymoneymoneytest.h
+autotest_SOURCES= autotest.cpp \
+                mymoneytransactiontest.h \
+                mymoneysplittest.h \
+                mymoneyaccounttest.h \
+                mymoneyinstitutiontest.h \
+                mymoneyfiletest.h \
+                mymoneymoneytest.h \
+                mymoneyexceptiontest.h \
+                storage/mymoneytseqaccessmgrtest.h \
+                storage/mymoneystoragebintest.h
 
-autotest_LDADD = $(LIB_KDECORE) $(LIB_QT) $(LIB_CPPUNIT)
+autotest_DEPENDENCIES = all-recursive
+
+autotest_LDADD = $(LIB_KDECORE) $(LIB_QT) $(LIB_CPPUNIT) storage/libstorage.a libmymoney.a
 autotest_LDFLAGS = $(all_libraries) $(kde_RPATH)
-
 

@@ -25,6 +25,7 @@
 
 #include "mymoneytransaction.h"
 
+#if 0
 /**
   *@author Kevin Tambascio
   */
@@ -37,5 +38,6 @@ public:
                      const QString& fromTo, const QString& bankFrom, const QString& bankTo, stateE state);
 	~MyMoneyInvestTransaction();
 };
+#endif
 
 #endif

@@ -13,6 +13,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #ifndef MYMONEYSCHEDULED_H
 #define MYMONEYSCHEDULED_H
 
@@ -20,68 +21,44 @@
 #include <qdatetime.h>
 
 #include "mymoneytransaction.h"
-
 /**
   *@author Michael Edwardes
-  *
-  * For now these two can stay in here but i'll separate them out at some point.
   */
-class MyMoneyScheduledTransaction : public MyMoneyTransaction {
+
+class MyMoneyScheduled {
 public:
-  enum occurenceE {
-    OCCUR_ONCE, OCCUR_DAILY, OCCUR_WEEKLY, OCCUR_OTHERWEEK, OCCUR_TWICEMONTHLY, OCCUR_FOURWEEKLY,
-    OCCUR_MONTHLY, OCCUR_OTHERMONTH, OCCUR_THREEMONTH, OCCUR_FOURMONTH, OCCUR_TWICEYEAR,
-    OCCUR_YEARLY, OCCUR_OTHERYEAR, OCCUR_ANY };
-
+  enum occurenceE { OCCUR_DAILY, OCCUR_WEEKLY, OCCUR_FORTNIGHTLY, OCCUR_MONTHLY, OCCUR_QUARTER, OCCUR_FOURMONTH, OCCUR_YEARLY, OCCUR_ANY };
   enum typeE { TYPE_BILL, TYPE_DEPOSIT, TYPE_TRANSFER, TYPE_ANY };
+  enum paymentTypeE { PAYMENT_DIRECTDEBIT, PAYMENT_DIRECTDEPOSIT, PAYMENT_MANUALDEPOSIT, PAYMENT_OTHER,
+    PAYMENT_STANDINGORDER, PAYMENT_WRITECHEQUE, PAYMENT_ANY };
 
-  enum paymentTypeE { PAYMENT_CHEQUE, PAYMENT_DEPOSIT, PAYMENT_TRANSFER, PAYMENT_WITHDRAWAL, PAYMENT_ATM,
-    PAYMENT_ANY };
-
-private:
-    int m_nYear, m_nMonth, m_nDay;
+  struct s_scheduleData {
+    int m_year, m_month, m_day;
     QDate m_lastCheck;
     occurenceE m_occurence;
     typeE m_type;
     QDate m_startDate;
     paymentTypeE m_paymentType;
-    bool m_fixed, m_bAuto, m_bEnd;
-    long m_lNoLeft;
-    QDate m_qdateFinal;
+    bool m_fixed;
+    MyMoneyTransaction m_transaction;
+  };
 
-public:
-  MyMoneyScheduledTransaction();
-  MyMoneyScheduledTransaction(MyMoneyAccount *parent, const long id, transactionMethod methodType, const QString& number, const QString& memo,
-                     const MyMoneyMoney& amount, const QDate& date, const QString& categoryMajor, const QString& categoryMinor, const QString& atmName,
-                     const QString& fromTo, const QString& bankFrom, const QString& bankTo, stateE state);
-  ~MyMoneyScheduledTransaction();
-};
-
-class MyMoneyScheduledList {
 private:
-  QList<MyMoneyScheduledTransaction> scheduledList;
+  QList<MyMoneyScheduled::s_scheduleData> scheduledList;
 
 public: 
-  MyMoneyScheduledList();
-  ~MyMoneyScheduledList();
-
-  bool operator == (const MyMoneyScheduledList&);
-
-  bool addScheduled(const MyMoneyScheduledTransaction& transaction);
-
-  QList<MyMoneyScheduledTransaction> getScheduled(const MyMoneyScheduledTransaction::typeE type=MyMoneyScheduledTransaction::TYPE_ANY,
-    const MyMoneyScheduledTransaction::paymentTypeE paymentType=MyMoneyScheduledTransaction::PAYMENT_ANY,
-    const MyMoneyScheduledTransaction::occurenceE ocurrence=MyMoneyScheduledTransaction::OCCUR_ANY);
-
-  QList<MyMoneyScheduledTransaction> getOverdue(const MyMoneyScheduledTransaction::typeE type=MyMoneyScheduledTransaction::TYPE_ANY,
-    const MyMoneyScheduledTransaction::paymentTypeE paymentType=MyMoneyScheduledTransaction::PAYMENT_ANY,
-    const MyMoneyScheduledTransaction::occurenceE ocurrence=MyMoneyScheduledTransaction::OCCUR_ANY);
-
-  bool anyOverdue(const MyMoneyScheduledTransaction::paymentTypeE paymentType=MyMoneyScheduledTransaction::PAYMENT_ANY,
-    const MyMoneyScheduledTransaction::typeE type=MyMoneyScheduledTransaction::TYPE_ANY);
-
-  bool anyScheduled(const MyMoneyScheduledTransaction::paymentTypeE paymentType=MyMoneyScheduledTransaction::PAYMENT_ANY,
-    const MyMoneyScheduledTransaction::typeE type=MyMoneyScheduledTransaction::TYPE_ANY);
+	MyMoneyScheduled();
+	~MyMoneyScheduled();
+	
+	bool operator == (const MyMoneyScheduled&);
+	
+	bool addScheduled(const paymentTypeE paymentType, bool fixed, const occurenceE occurence, const typeE type, const int year, const int month, const int day, const MyMoneyTransaction transaction);
+  QList<MyMoneyScheduled::s_scheduleData> getScheduled(const typeE type=TYPE_ANY, const paymentTypeE paymentType=PAYMENT_ANY, const occurenceE ocurrence=OCCUR_ANY);
+  QList<MyMoneyScheduled::s_scheduleData> getOverdue(const typeE type, const paymentTypeE paymentType, const occurenceE ocurrence=OCCUR_ANY);
+  QList<MyMoneyScheduled::s_scheduleData> getScheduledDates(const typeE type, const QDate start, const QDate end, const paymentTypeE paymentType, const occurenceE ocurrence=OCCUR_ANY);
+  bool anyOverdue(const paymentTypeE paymentType, const MyMoneyScheduled::typeE type=TYPE_ANY);
+  bool anyScheduled(const paymentTypeE paymentType, const MyMoneyScheduled::typeE type=TYPE_ANY);
+  bool anyScheduledDates(const paymentTypeE paymentType, const MyMoneyScheduled::typeE type, const QDate start, const QDate end);
 };
 
 #endif

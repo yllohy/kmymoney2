@@ -1,8 +1,8 @@
 /***************************************************************************
                           mymoneyfile.h
                              -------------------
-    copyright            : (C) 2000 by Michael Edwardes
-    email                : mte@users.sourceforge.net
+    copyright            : (C) 2002 by Thomas Baumgart
+    email                : ipwizard@users.sourceforge.net
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,260 +17,386 @@
 #ifndef MYMONEYFILE_H
 #define MYMONEYFILE_H
 
+// ----------------------------------------------------------------------------
+// QT Includes
+
 #include <qstring.h>
-#include <qlist.h>
-#include <qdatetime.h>
-#include <stdio.h>
-#include <qstringlist.h>
-#include "mymoneybank.h"
+#include <qmap.h>
+#include <qvaluelist.h>
+
+// ----------------------------------------------------------------------------
+// Project Includes
+
+#include "storage/imymoneystorage.h"
+#include "mymoneyexception.h"
+#include "mymoneyutils.h"
+#include "mymoneyinstitution.h"
+#include "mymoneyaccount.h"
+#include "mymoneytransaction.h"
 #include "mymoneypayee.h"
-#include "mymoneycategory.h"
-#include "mymoneyequity.h"
-#include "mymoneyequitylist.h"
 
 /**
-  * This class is used by the GUI to interrogate the transaction engine.  It is not
-  * library independant at the moment and still relies upon QT for many of it's
-  * attributes and method calls.  Eventually this code will be separated from QT
-  * and could be usable from other GUI toolkits such as gtk as used by the GNOME
-  * desktop environment.
-  *
-  * TODO: Remove all QT dependance e.g QString, QList etc.
-  *
-  * @see MyMoneyBank
-  *
-  * @author Michael Edwardes 2000-2001
-  * $Id: mymoneyfile.h,v 1.12 2002/02/09 10:11:48 ktambascio Exp $
-  *
-  * @short A representation of the file format used by KMyMoney2.
-**/
-class MyMoneyFile {
-private:
-  // File 'fields'
-  QString m_userName;
-  QString m_userStreet;
-  QString m_userTown;
-  QString m_userCounty;
-  QString m_userPostcode;
-  QString m_userTelephone;
-  QString m_userEmail;
-  QDate m_createdDate;
-  QDate m_lastAccess;
-  QDate m_lastModify;
-  bool m_dirty;
-  bool m_passwordProtected;  // Not used yet
-  bool m_encrypted;  // Not used yet
-  QString m_password;  // Not used yet
+  *@author Thomas Baumgart
+  */
 
-  // 'Helper' variables and methods
-  bool m_initialised;
-  bool m_containsBanks, m_containsAccounts, m_containsTransactions;
+class IMyMoneyStorage;
 
-public:
-  void init(void);
-  bool isInitialised(void);
-  bool containsBanks(void);
-  bool containsAccounts(void);
-  bool containsTransactions(void);
-
-private:
-  // A list containing the banks
-  QList<MyMoneyBank> m_banks;
-
-  // A list containing the list of banks that ATM knows about
-  // Not used yet.
-  QStringList m_bankNames;
-
-  // A list containing all the payees that have been used
-  QList<MyMoneyPayee> m_payeeList;
-
-  // A list containing all the categories that have been used.
-  // When a new file is created the list is read in from
-  // <kde2dir>/share/apps/kmymoney2/default_categories.dat
-  QList<MyMoneyCategory> m_categoryList;
-  bool findBankPosition(const MyMoneyBank& bank, unsigned int&);
-
-	MyMoneyEquityList m_equityList;
-	
+/// This class represents the interface to all data kept in a KMyMoney file
+class MyMoneyFile
+{
 public:
   /**
-    * Standard constructor.  Just sets up some default values.
-  **/
-  MyMoneyFile();
+    * This is the constructor for a new empty file description
+    */
+  MyMoneyFile(IMyMoneyStorage *storage);
 
   /**
-    * This is the constructor usually used.  The passed parameters are used to
-    * initialise the attributes of this class.
-    *
-    * @param username The users name.
-    * @param userStreet Part of the users address.
-    * @param userTown Part of the users address.
-    * @param userCounty Part of the users address.
-    * @param userPostcode Part of the users address.
-    * @param userTelephone The users telephone number.
-    * @param userEmail The users email address.
-    * @param createDate TODO: remove this and use QDate::currentDate() in the constructor.
-  **/
-  MyMoneyFile(const QString& username, const QString& userStreet,
-    const QString& userTown, const QString& userCounty, const QString& userPostcode, const QString& userTelephone,
-    const QString& userEmail, const QDate& createDate);
-
-  /**
-    * Standard destructor.
-  **/
+    * This is the destructor for any MyMoneyFile object
+    */
   ~MyMoneyFile();
 
-  /**
-    * Adds a bank to the underlying data structures.  The parameters passed are used
-    * to create the bank which is then added.
-    *
-    * @param name The banks name.
-    * @param sortCode The banks sort code.
-    * @param city Part of the banks address.
-    * @param street Part of the banks address.
-    * @param postcode Part of the banks address.
-    * @param telephone The banks telephone number.
-    * @param manager The bank managers name.
-    *
-    * @see MyMoneyBank
-  **/
-  MyMoneyBank *addBank(const QString& name, const QString& sortCode, const QString& city, const QString& street,
-    const QString& postcode, const QString& telephone, const QString& manager);
+  // general get functions
+  const QString userName(void) const;
+  const QString userStreet(void) const;
+  const QString userTown(void) const;
+  const QString userCounty(void) const;
+  const QString userPostcode(void) const;
+  const QString userTelephone(void) const;
+  const QString userEmail(void) const;
+
+  // general set functions
+  void setUserName(const QString& val);
+  void setUserStreet(const QString& val);
+  void setUserTown(const QString& val);
+  void setUserCounty(const QString& val);
+  void setUserPostcode(const QString& val);
+  void setUserTelephone(const QString& val);
+  void setUserEmail(const QString& val);
 
   /**
-    * Finds the bank in the list that matches the supplied argument.
-    *
-    * @param bank The bank to look for.
-    *
-    * @return A pointer to the bank if found, O otherwise.
-    *
-    * @see MyMoneyBank
-  **/
-  MyMoneyBank* bank(const MyMoneyBank& bank);
+    * This method is used to return the standard liability account
+    * @return MyMoneyAccount liability account(group)
+    */
+  const MyMoneyAccount liability(void) const;
 
   /**
-    * Returns the first bank stored.  Typically used in for
-    * statements as follows:
-    * <pre> MyMoneyBank *bank;
-    * for (bank=bankFirst(); bank; bank=bankNext()) {
-    *   // Do something with the bank
-    * }</pre>
-    *
-    * @return The first bank in the list or 0 if no banks are present.
-    *
-    * @see MyMoneyBank
-  **/
-  MyMoneyBank* bankFirst(void);
+    * This method is used to return the standard asset account
+    * @return MyMoneyAccount asset account(group)
+    */
+  const MyMoneyAccount asset(void) const;
 
   /**
-    * Returns the 'next' bank stored.  Typically used in for
-    * statements as follows:
-    * <pre> MyMoneyBank *bank;
-    * for (bank=bankFirst(); bank; bank=bankNext()) {
-    *   // Do something with the bank
-    * }</pre>
-    *
-    * @return The next bank in the list or 0 if no banks are present or there is no next.
-    *
-    * @see MyMoneyBank
-  **/
-  MyMoneyBank* bankNext(void);
+    * This method is used to return the standard expense account
+    * @return MyMoneyAccount expense account(group)
+    */
+  const MyMoneyAccount expense(void) const;
 
   /**
-    * Returns the first bank stored.  Typically used in while
-    * statements as follows:
-    * <pre> MyMoneyBank *bank = bankFirst();
-    * while (bank != bankLast()) {
-    *   // Do something with the bank
-    * }</pre>
-    *
-    * @return The first bank in the list or 0 if no banks are present.
-    *
-    * @see MyMoneyBank
-  **/
-  MyMoneyBank* bankLast(void);
+    * This method is used to return the standard income account
+    * @return MyMoneyAccount income account(group)
+    */
+  const MyMoneyAccount income(void) const;
 
   /**
-    * Returns the number of banks held in the file.
+    * This method returns an indicator if the MyMoneyFile object has been
+    * changed after it has last been saved to permanent storage.
     *
-    * @return The bank count.
-    *
-    * @see MyMoneyBank
-  **/
-  unsigned int bankCount(void);
+    * @return true if changed, false if not
+    */
+  bool dirty(void) const;
 
   /**
-    * Removes a bank from the list that matches the parameter.
+    * Adds an institution to the file-global institution pool. A
+    * respective institution-ID will be generated for this object.
+    * The ID is stored as QString in the object passed as argument.
     *
-    * @param bank A copy of the bank to remove.
+    * An exception will be thrown upon error conditions.
     *
-    * @return Whether the remove was succesfull.
+    * @param institution The complete institution information in a
+    *        MyMoneyInstitution object
+    */
+  void addInstitution(MyMoneyInstitution& institution);
+
+  /**
+    * Modifies an already existing institution in the file global
+    * institution pool.
     *
-    * @see MyMoneyBank
-  **/
-  bool removeBank(const MyMoneyBank& bank);
+    * An exception will be thrown upon error conditions.
+    *
+    * @param institution The complete new institution information
+    */
+  void modifyInstitution(const MyMoneyInstitution& institution);
 
+  /**
+    * Deletes an existing institution from the file global institution pool
+    * Also modifies the accounts that reference this institution as
+    * their institution.
+    *
+    * An exception will be thrown upon error conditions.
+    *
+    * @param institution institution to be deleted.
+    */
+  void removeInstitution(const MyMoneyInstitution& institution);
 
-  QString userAddress(void);
-  QString userName(void) { return m_userName; }
-  QString userStreet(void) { return m_userStreet; }
-  QString userTown(void) { return m_userTown; }
-  QString userCounty(void) { return m_userCounty; }
-  QString userPostcode(void) { return m_userPostcode; }
-  QString userTelephone(void) { return m_userTelephone; }
-  QString userEmail(void) { return m_userEmail; }
-  QDate createdDate(void) { return m_createdDate; }
-  QDate lastAccessDate(void) { return m_lastAccess; }
-  QDate lastModifyDate(void) { return m_lastModify; }
+  /**
+    * Adds an account to the file-global institution pool. A respective
+    * account-ID will be generated within this record. The modified
+    * members of account will be updated.
+    *
+    * A few parameters of the account to be added are checked against
+    * the following conditions. If they do not match, an exception is
+    * thrown.
+    *
+    * An account must match the following conditions:
+    *
+    *   a) the account must have a name with length > 0
+    *   b) the account must not have an id assigned
+    *   c) the transaction list must be empty
+    *   d) the account must not have any sub-ordinate accounts
+    *   e) the account must have no parent account
+    *   f) the account must not have reference to a MyMoneyFile object
+    *
+    * An exception will be thrown upon error conditions.
+    *
+    * @param account The complete account information in a MyMoneyAccount object
+    * @param parent  The complete account information of the parent account
+    */
+  void addAccount(MyMoneyAccount& account, MyMoneyAccount& parent);
 
-  // Simple set operations
-  void set_userName(const QString& val) { m_userName = val; m_dirty=true; }
-  void set_userStreet(const QString& val) { m_userStreet = val; m_dirty=true; }
-  void set_userTown(const QString& val) { m_userTown = val;  m_dirty=true; }
-  void set_userCounty(const QString& val) { m_userCounty = val;  m_dirty=true; }
-  void set_userPostcode(const QString& val) { m_userPostcode = val;  m_dirty=true; }
-  void set_userTelephone(const QString& val) { m_userTelephone = val;  m_dirty=true; }
-  void set_userEmail(const QString& val) { m_userEmail = val;  m_dirty=true; }
-  void setCreateDate(const QDate& val) { m_createdDate = val;  m_dirty=true; }
+  /**
+    * Modifies an already existing account in the file global account pool.
+    *
+    * An exception will be thrown upon error conditions.
+    *
+    * @param account reference to the new account information
+    */
+  void modifyAccount(const MyMoneyAccount& account);
 
-  // File reading/saving code
-  int saveAllData(const QString& fileName);
-  int readAllData(const QString& fileName);
-  void resetAllData(void);
+  /**
+    * This method re-parents an existing account
+    *
+    * An exception will be thrown upon error conditions.
+    *
+    * @param account MyMoneyAccount reference to account to be re-parented
+    * @param parent  MyMoneyAccount reference to new parent account
+    */
+  void reparentAccount(MyMoneyAccount &account, MyMoneyAccount& parent);
 
-  void addBankName(const QString& val);
+  /**
+    * This converts the account type into one of the four
+    * major account types liability, asset, expense or income
+    * @param type actual account type
+    * @return accountTypeE of major account type
+    */
+  const MyMoneyAccount::accountTypeE accountGroup(MyMoneyAccount::accountTypeE type) const;
 
-  // Category operations
-  void addMajorCategory(const bool income, const QString& val);
-  void addMinorCategory(const bool income, const QString& major, const QString& minor);
-  void addCategory(const bool income, const QString& major, QStringList& minors);
-  void addCategory(const bool income, const QString& major, const QString& minor);
-  QList<MyMoneyCategory> categoryList(void) { return m_categoryList; }
-  QListIterator<MyMoneyCategory> categoryIterator(void);
-  void removeMajorCategory(const QString& major);
-  void removeMinorCategory(const QString& major, const QString& minor);
-  void renameMajor(const QString& oldName, const QString& newName);
-  void renameMinor(const QString& major, const QString& oldName, const QString& newName);
+  /**
+    * moves splits from one account to another
+    *
+    * @param oldAccount id of the current account
+    * @param newAccount if of the new account
+    *
+    * @return the number of modified splits
+    */
+  const unsigned int moveSplits(const QString& oldAccount, const QString& newAccount);
 
-  // Internal modified flag
-  bool dirty(void) { return m_dirty; }
-  void setDirty(const bool dirty) { m_dirty = dirty; }
+  /**
+    * This method is used to determince, if the account with the
+    * given ID is referenced by any split in m_transactionList.
+    *
+    * @param id id of the account to be checked for
+    * @return true if account is referenced, false otherwise
+    */
+  const bool hasActiveSplits(const QString& id) const;
+
+  /**
+    * This method is used to check whether a given
+    * account id references one of the standard accounts or not.
+    *
+    * An exception will be thrown upon error conditions.
+    *
+    * @param id account id
+    * @return true if account-id is one of the standards, false otherwise
+    */
+  const bool isStandardAccount(const QString& id) const;
+
+  /**
+    * Deletes an existing account from the file global account pool
+    * This method only allows to remove accounts that are not
+    * referenced by any split. Use moveSplits() to move splits
+    * to another account. An exception is thrown in case of a
+    * problem.
+    *
+    * @param account reference to the account to be deleted.
+    */
+  void removeAccount(const MyMoneyAccount& account);
+
+  /**
+    * Adds a transaction to the file-global transaction pool. A respective
+    * transaction-ID will be generated for this object. The ID is stored
+    * as QString in the object passed as argument.
+    *
+    * An exception will be thrown upon error conditions.
+    *
+    * @param transaction reference to the transaction
+    */
+  void addTransaction(MyMoneyTransaction& transaction);
+
+  /**
+    * This method is used to update a specific transaction in the
+    * transaction pool of the MyMoneyFile object
+    *
+    * An exception will be thrown upon error conditions.
+    *
+    * @param transaction reference to transaction to be changed
+    */
+  void modifyTransaction(const MyMoneyTransaction& transaction);
+
+  /**
+    * This method is used to extract a transaction from the file global
+    * transaction pool through an id. In case of an invalid id, an
+    * exception will be thrown.
+    *
+    * @param id id of transaction as QString.
+    * @return reference to the requested transaction
+    */
+  const MyMoneyTransaction& transaction(const QString& id) const;
+
+  /**
+    * This method is used to extract a transaction from the file global
+    * transaction pool through an index into an account.
+    *
+    * @param account id of the account as QString
+    * @param idx number of transaction in this account
+    * @return reference to MyMoneyTransaction object
+    */
+  const MyMoneyTransaction& transaction(const QString& account, const int idx) const;
+
+  /**
+    * This method is used to remove a transaction from the transaction
+    * pool (journal).
+    *
+    * @param transaction const reference to transaction to be deleted
+    */
+  void removeTransaction(const MyMoneyTransaction& transaction);
+
+  /**
+    * This method is used to return the actual balance of an account
+    * without it's sub-ordinate accounts
+    *
+    * @param account id of the account in question
+    * @return balance of the account as MyMoneyMoney object
+    */
+  const MyMoneyMoney balance(const QString& id) const;
+
+  /**
+    * This method is used to return the actual balance of an account
+    * including it's sub-ordinate accounts
+    *
+    * @param account id of the account in question
+    * @return balance of the account as MyMoneyMoney object
+    */
+  const MyMoneyMoney totalBalance(const QString& id) const;
+
+  /**
+    * This method returns the number of transactions currently known to file
+    * in the range 0..MAXUINT
+    *
+    * @return number of transactions in journal
+    */
+  const unsigned int transactionCount(void) const;
+
+  /**
+    * This method returns the number of institutions currently known to file
+    * in the range 0..MAXUINT
+    *
+    * @return number of institutions known to file
+    */
+  const unsigned int institutionCount(void) const;
+
+  /**
+    * This method returns the number of accounts currently known to file
+    * in the range 0..MAXUINT
+    *
+    * @return number of accounts currently known inside a MyMoneyFile object
+    */
+  const unsigned int accountCount(void) const;
+
+  /**
+    * Returns the institution of a given ID
+    *
+    * @param id id of the institution to locate
+    * @return MyMoneyInstitution object filled with data. If the institution
+    *         could not be found, an exception will be thrown
+    */
+  const MyMoneyInstitution& institution(const QString& id) const;
+
+  /**
+    * This method returns a list of the institutions
+    * inside a MyMoneyFile object
+    *
+    * @return QValueList containing the institution information
+    */
+  const QValueList<MyMoneyInstitution> institutionList(void) const;
+
+  /**
+    * Returns the account addressed by it's id.
+    *
+    * @param id id of the account to locate.
+    * @return reference to MyMoneyAccount object. An exception is thrown
+    *         if the id is unknown
+    */
+  const MyMoneyAccount& account(const QString& id) const;
+
+  /**
+    * This method returns a list of the accounts
+    * inside a MyMoneyFile object
+    *
+    * @return QMap<QString,MyMoneyAccount> with accounts
+    */
+  const QValueList<MyMoneyAccount> accountList(void) const;
+
+  /**
+    * The following error codes are defined during reading
+    * a MyMoneyFile from a QDataStream.
+    */
+  enum readStreamErrorType {
+    OK = 0,
+    UNKNOWN_FILE_TYPE,
+    UNKNOWN_FILE_FORMAT
+  };
+
+  /**
+    * This method is used to read the data from a QDataStream.
+    * It is the responsability of the caller to open and close
+    * the stream. Different versions of the file layout are
+    * handled by this routine.
+    *
+    * @param s QDataStream to read from
+    * @return return code
+    */
+  const int readStream(QDataStream& s);
+
+  /**
+    * This method is used to write all data found in the MyMoneyFile
+    * object to a QDataStream.
+    * It is the responsability of the caller to open and close
+    * the stream.
+    *
+    * @param s QDataStream to read from
+    * @return return code
+    */
+  const int writeStream(QDataStream& s);
 
   // Payee operations
-  void addPayee(const QString& newPayee, const QString address=QString::null, const QString postcode=QString::null, const QString telephone=QString::null, const QString email=QString::null);
+  void addPayee(const QString& newPayee, const QString& address=QString::null, const QString& postcode=QString::null, const QString& telephone=QString::null, const QString& email=QString::null);
   void removePayee(const QString name);
-  QListIterator<MyMoneyPayee> payeeIterator(void);
 
-  // Copy constructors
-  MyMoneyFile(const MyMoneyFile&);
-  MyMoneyFile& operator = (const MyMoneyFile&);
+private:
+  IMyMoneyStorage *m_storage;
 
-  int categoryCount(void);
 
-  /** No descriptions */
-  void addEquityEntry(MyMoneyEquity *pEntry);
 
-  MyMoneyEquityList* getEquityList() 	{ return &m_equityList; }
 };
-
 #endif
+

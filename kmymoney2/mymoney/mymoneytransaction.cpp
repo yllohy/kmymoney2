@@ -1,8 +1,10 @@
 /***************************************************************************
                           mymoneytransaction.cpp
                              -------------------
-    copyright            : (C) 2000 by Michael Edwardes
-    email                : mte@users.sourceforge.net
+    copyright            : (C) 2000 by Michael Edwardes,
+                               2002 by Thomas Baumgart
+    email                : mte@users.sourceforge.net,
+                           ipwizard@users.sourceforge.net
  ***************************************************************************/
 
 /***************************************************************************
@@ -13,132 +15,104 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "mymoneytransaction.h"
-#include "mymoney_config.h"
 
-#include "mymoneyfile.h"
-#include "mymoneybank.h"
-#include "mymoneyaccount.h"
+// ----------------------------------------------------------------------------
+// QT Includes
+
+// ----------------------------------------------------------------------------
+// Project Includes
+#include "mymoneytransaction.h"
 
 MyMoneyTransaction::MyMoneyTransaction()
 {
-	m_parent=0;
+	m_file = 0;
+  m_nextSplitID = 0;
+  m_id =
+  m_memo = "";
+  m_entryDate = QDate();
+  m_postDate = QDate();
 }
 
-MyMoneyTransaction::MyMoneyTransaction(MyMoneyAccount *parent, const long id, transactionMethod method, const QString& number, const QString& memo,
-                     const MyMoneyMoney& amount, const QDate& date, const QString& categoryMajor, const QString& categoryMinor, const QString& atmName,
-                     const QString& fromTo, const QString& bankFrom, const QString& bankTo, stateE state)
-  : MyMoneyTransactionBase(memo, amount, categoryMajor, categoryMinor)
+// MyMoneyTransaction::MyMoneyTransaction(MyMoneyFile *file,
+MyMoneyTransaction::MyMoneyTransaction(const QString id,
+                                       const MyMoneyTransaction& transaction)
 {
-	m_parent = parent;
-  m_id=id;
-  m_number = number;
-  m_method = method;
-  m_date = date;
-  m_atmBankName = atmName;
-  m_payee = fromTo;
-  m_accountFrom = bankFrom;
-  m_accountTo = bankTo;
-  m_state = state;
-  m_index=0;
-  m_splitList.setAutoDelete(true);
+  *this = transaction;
+//	m_file = file;
+  m_id = id;
+  m_entryDate = QDate::currentDate();
 }
 
 MyMoneyTransaction::~MyMoneyTransaction()
 {
 }
 
-MyMoneyTransaction::transactionType MyMoneyTransaction::type(void) const
+bool MyMoneyTransaction::operator == (const MyMoneyTransaction& right) const
 {
-  transactionType ltype=Debit;
-  switch (m_method) {
-    case MyMoneyTransaction::Cheque:
-      ltype = Debit;
-      break;
-    case MyMoneyTransaction::Deposit:
-      ltype = Credit;
-      break;
-    case MyMoneyTransaction::Transfer:
-      ltype = Debit;
-      break;
-    case MyMoneyTransaction::Withdrawal:
-      ltype = Debit;
-      break;
-    case MyMoneyTransaction::ATM:
-      ltype = Debit;
-      break;
+  return ((m_id == right.m_id) &&
+      (file() == right.file()) &&
+      (m_memo == right.m_memo) &&
+      (m_splits == right.m_splits) &&
+      (m_entryDate == right.m_entryDate) &&
+      (m_postDate == right.m_postDate) );
+}
+
+const bool MyMoneyTransaction::accountReferenced(const QString& id) const
+{
+  QValueList<MyMoneySplit>::ConstIterator it;
+
+  for(it = m_splits.begin(); it != m_splits.end(); ++it) {
+    if((*it).account() == id)
+      return true;
   }
-  return ltype;
+  return false;
 }
 
-MyMoneyTransaction::MyMoneyTransaction(const MyMoneyTransaction& right)
+void MyMoneyTransaction::addSplit(MyMoneySplit split)
 {
-  init(const_cast<MyMoneyTransaction&> (right));
+  split.setID(nextSplitID());
+  m_splits.append(split);
 }
 
-MyMoneyTransaction& MyMoneyTransaction::operator = (const MyMoneyTransaction& right)
+void MyMoneyTransaction::modifySplit(MyMoneySplit& split)
 {
-  init(const_cast<MyMoneyTransaction&> (right));
-  return *this;
-}
+  QValueList<MyMoneySplit>::Iterator it;
 
-void MyMoneyTransaction::init(MyMoneyTransaction& right)
-{
-  // set list to auto delete mode
-  m_splitList.setAutoDelete(true);
-  m_splitList.clear();
-
-  // copy base class members
-  MyMoneyTransactionBase::init(right);
-
-  // copy class members
-  m_id = right.m_id;
-  m_number = right.m_number;
-  m_date = right.m_date;
-  m_method = right.m_method;
-  m_atmBankName = right.m_atmBankName;
-  m_payee = right.m_payee;
-  m_accountFrom = right.m_accountFrom;
-  m_accountTo = right.m_accountTo;
-  m_state = right.m_state;
-  m_index = right.m_index;
-	m_parent = right.m_parent;
-
-  // copy the split list
-  MyMoneySplitTransaction* split, *tmp;
-  int current;
-
-  current = right.m_splitList.at();
-  split = right.firstSplit();
-  while(split) {
-    tmp = new MyMoneySplitTransaction(*split);
-    addSplit(tmp);
-    split = right.nextSplit();
+  for(it = m_splits.begin(); it != m_splits.end(); ++it) {
+    if(split.id() == (*it).id()) {
+      *it = split;
+      break;
+    }
   }
-  if(current != -1)
-    right.m_splitList.at(current);
+  if(it == m_splits.end())
+    throw new MYMONEYEXCEPTION("Invalid split id");
+
+  split = *it;
 }
 
-bool MyMoneyTransaction::operator == (const MyMoneyTransaction& right)
+void MyMoneyTransaction::removeSplit(const MyMoneySplit& split)
 {
-  if ( (m_id == right.m_id) &&
-      (m_number == right.m_number) &&
-      (memo() == right.memo()) &&
-      (amount() == right.amount()) &&
-      (m_date == right.m_date) &&
-      (m_method == right.m_method) &&
-      (categoryMajor() == right.categoryMajor()) &&
-      (categoryMinor() == right.categoryMinor()) &&
-      (m_atmBankName == right.m_atmBankName) &&
-      (m_payee == right.m_payee) &&
-      (m_accountFrom == right.m_accountFrom) &&
-      (m_accountTo == right.m_accountTo) &&
-      (m_state == right.m_state) ) {
-    return true;
-  } else
-    return false;
+  QValueList<MyMoneySplit>::Iterator it;
+
+  for(it = m_splits.begin(); it != m_splits.end(); ++it) {
+    if(split.id() == (*it).id()) {
+      m_splits.remove(it);
+      break;
+    }
+  }
+  if(it == m_splits.end())
+    throw new MYMONEYEXCEPTION("Invalid split id");
 }
 
+const QString MyMoneyTransaction::nextSplitID()
+{
+  QString id = "S";
+  id += QString::number(++m_nextSplitID).rightJustify(SPLIT_ID_SIZE, '0');
+  return id;
+
+}
+
+#if 0
 QDataStream &operator<<(QDataStream &s, const MyMoneyTransaction &trans)
 {
   return s << (Q_UINT32)trans.m_id
@@ -193,17 +167,12 @@ bool MyMoneyTransaction::readAllData(int version, QDataStream& stream)
     >> (Q_INT32 &)m_state;
     return true;
 }
+#endif
 
-void MyMoneyTransaction::setNumber(const QString& val) { m_number = val; setDirty(true); }
-void MyMoneyTransaction::setDate(const QDate& date) { m_date = date; setDirty(true); }
-void MyMoneyTransaction::setMethod(const transactionMethod method) { m_method = method; setDirty(true); }
-void MyMoneyTransaction::setAtmBankName(const QString& val) { m_atmBankName = val; setDirty(true); }
-void MyMoneyTransaction::setPayee(const QString& fromTo) { m_payee = fromTo; setDirty(true); }
-void MyMoneyTransaction::setAccountFrom(const QString& bankFrom) { m_accountFrom = bankFrom; setDirty(true); }
-void MyMoneyTransaction::setAccountTo(const QString& bankTo) { m_accountTo = bankTo; setDirty(true); }
-void MyMoneyTransaction::setState(const stateE state) { m_state = state; setDirty(true); }
-void MyMoneyTransaction::setIndex(const unsigned int index) { m_index = index; setDirty(true); }
+void MyMoneyTransaction::setPostDate(const QDate& date) { m_postDate = date; }
+void MyMoneyTransaction::setMemo(const QString& memo) { m_memo = memo; }
 
+#if 0
 MyMoneyTransaction::transactionMethod MyMoneyTransaction::stringToMethod(const char *method)
 {
   if ((strcmp(method, "Deposit"))==0)
@@ -220,31 +189,4 @@ MyMoneyTransaction::transactionMethod MyMoneyTransaction::stringToMethod(const c
   return ATM;
 }
 
-void MyMoneyTransaction::setDirty(const bool flag)
-{
-  if (m_parent)
-    m_parent->setDirty(flag);
-}
-
-MyMoneySplitTransaction* const MyMoneyTransaction::firstSplit(void)
-{
-  return m_splitList.first();
-}
-
-MyMoneySplitTransaction* const MyMoneyTransaction::nextSplit(void)
-{
-  return m_splitList.next();
-}
-
-void MyMoneyTransaction::clearSplitList(void)
-{
-  m_splitList.clear();
-}
-
-void MyMoneyTransaction::addSplit(MyMoneySplitTransaction* const split)
-{
-  m_splitList.append(split);
-  setCategoryMajor("Split");
-  setCategoryMinor("");
-}
-
+#endif

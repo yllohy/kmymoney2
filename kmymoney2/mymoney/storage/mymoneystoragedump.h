@@ -1,7 +1,7 @@
 /***************************************************************************
-                          mymoneyequitylist.h  -  description
+                          imymoneystoragedump.h  -  description
                              -------------------
-    begin                : Tue Jan 29 2002
+    begin                : Sun May 5 2002
     copyright            : (C) 2000-2002 by Michael Edwardes
     email                : mte@users.sourceforge.net
                            Javier Campos Morales <javi_c@users.sourceforge.net>
@@ -20,40 +20,32 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef MYMONEYEQUITYLIST_H
-#define MYMONEYEQUITYLIST_H
+#ifndef MYMONEYSTORAGEDUMP_H
+#define MYMONEYSTORAGEDUMP_H
 
-#include <qptrvector.h>
+// ----------------------------------------------------------------------------
+// QT Includes
+
+#include <qdatastream.h>
+
+// ----------------------------------------------------------------------------
+// Project Includes
+
+#include "imymoneyserialize.h"
 
 /**
-	* Class that holds the database of Equity that the user has entered, as well as
-	* equities read from a persisted configuration file.
-	*
-  *@author Kevin Tambascio
+  *@author Thomas Baumgart
   */
 
-class MyMoneyEquity;
-
-typedef QPtrVector<MyMoneyEquity*> EquityList;
-
-class MyMoneyEquityList {
+class MyMoneyStorageDump {
 public: 
-	MyMoneyEquityList();
-	~MyMoneyEquityList();
+	MyMoneyStorageDump();
+	~MyMoneyStorageDump();
 
-#if 0
-  /** Removes an entry from the list. */
-  bool removeEquity(const MyMoneyEquity* pEquity);
-
-	/** Adds a new equity entry into the master list. */
-  bool addEquity(MyMoneyEquity* pEquity);
-
-  /** Returns an iterator if the item exist. */
-  EquityList::Iterator doesItemExist(const MyMoneyEquity* pEquity);
+  void readStream(QDataStream& s, IMyMoneySerialize* storage);
+  void writeStream(QDataStream& s, IMyMoneySerialize* storage);
 
 private:
-	EquityList m_equityList;
-#endif
 };
 
 #endif

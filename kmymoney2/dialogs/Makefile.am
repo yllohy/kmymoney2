@@ -1,10 +1,9 @@
 ####### kdevelop will overwrite this part!!! (begin)##########
+noinst_LIBRARIES = libdialogs.a
 
 INCLUDES = $(all_includes)
 
 libdialogs_a_METASOURCES = AUTO
-
-noinst_LIBRARIES = libdialogs.a
 
 libdialogs_a_SOURCES = keditscheduledtransferdlg.cpp keditscheduleddepositdlg.cpp keditschedtransdlgdecl.ui keditscheddepdlgdecl.ui keditschedbilldlgdecl.ui keditscheduledbilldlg.cpp kupdatestockpricedlg.cpp kupdatestockpricedlgdecl.ui knewequityentrydlg.cpp knewequityentrydecl.ui ksplitcorrectiondlg.ui kreconcilelistitem.cpp kfileinfodlgdecl.ui kfileinfodlg.cpp kcategorylistitem.cpp kstartdlg.cpp ksettingsdlg.cpp kreconciledlgdecl.ui kreconciledlg.cpp kpayeedlgdecl.ui kpayeedlg.cpp knewfiledlgdecl.ui knewfiledlg.cpp knewcategorydlgdecl.ui knewcategorydlg.cpp knewbankdlgdecl.ui knewbankdlg.cpp knewaccountdlgdecl.ui knewaccountdlg.cpp kfindtransactiondlgdecl.ui kfindtransactiondlg.cpp kendingbalancedlgdecl.ui kendingbalancedlg.cpp kcategorydlgdecl.ui kcategoriesdlg.cpp ksplittransactiondlg.cpp ksplittransactiondlgdecl.ui kimportdlgdecl.ui kimportdlg.cpp kexportdlgdecl.ui kexportdlg.cpp kcsvprogressdlg.cpp kcsvprogressdlgdecl.ui kchooseimportexportdlgdecl.ui kchooseimportexportdlg.cpp kbackupdlgdecl.ui kbackupdlg.cpp 
 

@@ -1,0 +1,221 @@
+
+/***************************************************************************
+                          mymoneyinstitutiontest.h
+                          -------------------
+    copyright            : (C) 2002 by Thomas Baumgart
+    email                : ipwizard@users.sourceforge.net
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#ifndef __MYMONEYINSTITUTIONTEST_H__
+#define __MYMONEYINSTITUTIONTEST_H__
+
+#include <cppunit/TestCaller.h>
+#include <cppunit/TestCase.h>
+#include <cppunit/TestSuite.h>
+
+class MyMoneyInstitutionTest : public CppUnit::TestFixture  {
+	CPPUNIT_TEST_SUITE(MyMoneyInstitutionTest);
+	CPPUNIT_TEST(testEmptyConstructor);
+	CPPUNIT_TEST(testSetFunctions);
+	CPPUNIT_TEST(testNonemptyConstructor);
+	CPPUNIT_TEST(testCopyConstructor);
+	CPPUNIT_TEST(testMyMoneyFileConstructor);
+	CPPUNIT_TEST(testEquality);
+	CPPUNIT_TEST(testInequality);
+	CPPUNIT_TEST(testAccountIDList);
+	CPPUNIT_TEST_SUITE_END();
+
+protected:
+	MyMoneyInstitution	*m, *n;
+
+public:
+	MyMoneyInstitutionTest() {};
+
+
+void setUp () {
+	m = new MyMoneyInstitution();
+	n = new MyMoneyInstitution("name", "town", "street", "postcode",
+			    "telephone", "manager", "sortcode");
+}
+
+void tearDown () {
+	delete m;
+	delete n;
+}
+
+void testEmptyConstructor() {
+	CPPUNIT_ASSERT(m->id() == "");
+	CPPUNIT_ASSERT(m->street() == "");
+	CPPUNIT_ASSERT(m->town() == "");
+	CPPUNIT_ASSERT(m->postcode() == "");
+	CPPUNIT_ASSERT(m->telephone() == "");
+	CPPUNIT_ASSERT(m->manager() == "");
+
+	CPPUNIT_ASSERT(m->accountCount() == 0);
+}
+
+void testSetFunctions() {
+	m->setStreet("street");
+	m->setTown("town");
+	m->setPostcode("postcode");
+	m->setTelephone("telephone");
+	m->setManager("manager");
+	m->setName("name");
+
+	CPPUNIT_ASSERT(m->id() == "");
+	CPPUNIT_ASSERT(m->file() == 0);
+	CPPUNIT_ASSERT(m->street() == "street");
+	CPPUNIT_ASSERT(m->town() == "town");
+	CPPUNIT_ASSERT(m->postcode() == "postcode");
+	CPPUNIT_ASSERT(m->telephone() == "telephone");
+	CPPUNIT_ASSERT(m->manager() == "manager");
+	CPPUNIT_ASSERT(m->name() == "name");
+}
+
+void testNonemptyConstructor() {
+	CPPUNIT_ASSERT(n->id() == "");
+	CPPUNIT_ASSERT(n->file() == 0);
+	CPPUNIT_ASSERT(n->street() == "street");
+	CPPUNIT_ASSERT(n->town() == "town");
+	CPPUNIT_ASSERT(n->postcode() == "postcode");
+	CPPUNIT_ASSERT(n->telephone() == "telephone");
+	CPPUNIT_ASSERT(n->manager() == "manager");
+	CPPUNIT_ASSERT(n->name() == "name");
+	CPPUNIT_ASSERT(n->sortcode() == "sortcode");
+}
+
+void testCopyConstructor() {
+	MyMoneyInstitution* n1 = new MyMoneyInstitution("GUID1", *n);
+	MyMoneyInstitution n2(*n1);
+
+	CPPUNIT_ASSERT(*n1 == n2);
+
+	delete n1;
+}
+
+void testMyMoneyFileConstructor() {
+	MyMoneyInstitution *t = new MyMoneyInstitution("GUID", *n);
+
+	CPPUNIT_ASSERT(t->id() == "GUID");
+
+	CPPUNIT_ASSERT(t->street() == "street");
+	CPPUNIT_ASSERT(t->town() == "town");
+	CPPUNIT_ASSERT(t->postcode() == "postcode");
+	CPPUNIT_ASSERT(t->telephone() == "telephone");
+	CPPUNIT_ASSERT(t->manager() == "manager");
+	CPPUNIT_ASSERT(t->name() == "name");
+	CPPUNIT_ASSERT(t->sortcode() == "sortcode");
+	
+	delete t;
+}
+
+void testEquality () {
+	MyMoneyInstitution t("name", "town", "street", "postcode",
+			"telephone", "manager", "sortcode");
+
+	CPPUNIT_ASSERT(t == *n);
+	t.setStreet("x");
+	CPPUNIT_ASSERT(!(t == *n));
+	t.setStreet("street");
+	CPPUNIT_ASSERT(t == *n);
+	t.setName("x");
+	CPPUNIT_ASSERT(!(t == *n));
+	t.setName("name");
+	CPPUNIT_ASSERT(t == *n);
+	t.setTown("x");
+	CPPUNIT_ASSERT(!(t == *n));
+	t.setTown("town");
+	CPPUNIT_ASSERT(t == *n);
+	t.setPostcode("x");
+	CPPUNIT_ASSERT(!(t == *n));
+	t.setPostcode("postcode");
+	CPPUNIT_ASSERT(t == *n);
+	t.setTelephone("x");
+	CPPUNIT_ASSERT(!(t == *n));
+	t.setTelephone("telephone");
+	CPPUNIT_ASSERT(t == *n);
+	t.setManager("x");
+	CPPUNIT_ASSERT(!(t == *n));
+	t.setManager("manager");
+	CPPUNIT_ASSERT(t == *n);
+
+	MyMoneyInstitution* n1 = new MyMoneyInstitution("GUID1", *n);
+	MyMoneyInstitution* n2 = new MyMoneyInstitution("GUID1", *n);
+
+	n1->addAccount("A000001");
+	n2->addAccount("A000001");
+
+	CPPUNIT_ASSERT(*n1 == *n2);
+
+	delete n1;
+	delete n2;
+}
+
+void testInequality () {
+	MyMoneyInstitution* n1 = new MyMoneyInstitution("GUID0", *n);
+	MyMoneyInstitution* n2 = new MyMoneyInstitution("GUID1", *n);
+	MyMoneyInstitution* n3 = new MyMoneyInstitution("GUID2", *n);
+	MyMoneyInstitution* n4 = new MyMoneyInstitution("GUID2", *n);
+
+	CPPUNIT_ASSERT(!(*n1 == *n2));
+	CPPUNIT_ASSERT(!(*n1 == *n3));
+	CPPUNIT_ASSERT(*n3 == *n4);
+
+	n3->addAccount("A000001");
+	n4->addAccount("A000002");
+	CPPUNIT_ASSERT(!(*n3 == *n4));
+
+	delete n1;
+	delete n2;
+	delete n3;
+	delete n4;
+}
+
+void testAccountIDList () {
+	MyMoneyInstitution institution;
+	QStringList list;
+	QString id;
+
+	// list must be empty
+	list = institution.accountList();
+	CPPUNIT_ASSERT(list.count() == 0);
+
+	// add one account
+	institution.addAccount("A000002");
+	list = institution.accountList();
+	CPPUNIT_ASSERT(list.count() == 1);
+	CPPUNIT_ASSERT(list.contains("A000002") == 1);
+
+	// adding same account shouldn't make a difference
+	institution.addAccount("A000002");
+	list = institution.accountList();
+	CPPUNIT_ASSERT(list.count() == 1);
+	CPPUNIT_ASSERT(list.contains("A000002") == 1);
+
+	// now add another account
+	institution.addAccount("A000001");
+	list = institution.accountList();
+	CPPUNIT_ASSERT(list.count() == 2);
+	CPPUNIT_ASSERT(list.contains("A000002") == 1);
+	CPPUNIT_ASSERT(list.contains("A000001") == 1);
+
+	id = institution.removeAccount("A000001");
+	CPPUNIT_ASSERT(id == "A000001");
+	list = institution.accountList();
+	CPPUNIT_ASSERT(list.count() == 1);
+	CPPUNIT_ASSERT(list.contains("A000002") == 1);
+	
+}
+
+};
+
+#endif

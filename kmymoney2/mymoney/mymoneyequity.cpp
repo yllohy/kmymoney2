@@ -25,17 +25,20 @@
 
 MyMoneyEquity::MyMoneyEquity()
 {
-	m_equityType = ETYPE_NONE;
+	//m_equityType = ETYPE_NONE;
 	//m_lCurrentPrice = 0;
 }
 
 MyMoneyEquity::~MyMoneyEquity()
 {
 }
+
+
+#if 0
 /** No descriptions */
-void MyMoneyEquity::setEquityType(const QString& str)
+void MyMoneyEquity::setEquityType(const String& str)
 {
-	if(str.length())
+	if(str.size())
 	{
 		if(!str.find(i18n("Stock")))
 		{
@@ -55,11 +58,4 @@ void MyMoneyEquity::setEquityType(const QString& str)
 		}
 	}
 }
-
-void	 MyMoneyEquity::setCurrentPrice(const QDate date, const MyMoneyMoney *m)
-{
-	sPriceUpdate *priceUpdate = new sPriceUpdate;
-	priceUpdate->price = *m;
-	priceUpdate->date = date;
-	m_priceUpdates.push_back(priceUpdate);
-}
+#endif

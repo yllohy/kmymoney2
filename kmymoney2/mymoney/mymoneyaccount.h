@@ -1,8 +1,8 @@
 /***************************************************************************
                           mymoneyaccount.h
-                             -------------------
-    copyright            : (C) 2000-2001 by Michael Edwardes
-    email                : mte@users.sourceforge.net
+                          -------------------
+    copyright            : (C) 2002 by Thomas Baumgart
+    email                : ipwizard@users.sourceforge.net
  ***************************************************************************/
 
 /***************************************************************************
@@ -18,443 +18,416 @@
 #define MYMONEYACCOUNT_H
 
 // ----------------------------------------------------------------------------
-// QT Headers
+// QT Includes
+
 #include <qstring.h>
-#include <qlist.h>
-#include <qobject.h>
+#include <qdatetime.h>
+#include <qvaluelist.h>
+#include <qstringlist.h>
 
 // ----------------------------------------------------------------------------
-// KDE Headers
+// Project Includes
 
-// ----------------------------------------------------------------------------
-// Project Headers
-#include "mymoneytransaction.h"
+#include "mymoneyexception.h"
+#include "mymoneyutils.h"
 #include "mymoneymoney.h"
-#include "mymoneyscheduled.h"
 
-class MyMoneyBank;
+class MyMoneyTransaction;
+class MyMoneyInstitution;
+class MyMoneyFile;
 
 /**
-  * A representation of an account typically held at a bank.  This class currently
-  * only supports two types of account - current & savings.
+  * A representation of an account.
+  * This object represents any type of account, those held at an
+  * institution as well as the accounts used for double entry
+  * accounting.
   *
-  * @see MyMoneyBank
-  * @see MyMoneyTransaction
+  * @see MyMoneyInstitution
+  * @see MyMoneyFile
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: mymoneyaccount.h,v 1.25 2002/02/18 00:32:53 mte Exp $
+  * @author Thomas Baumgart 2002
   *
-  * @short Representation of an account which holds transactions.
 **/
-class MyMoneyAccount : public QObject {
-  Q_OBJECT
+class MyMoneyAccount
+{
+public:
 
-public:  // I know this breaks the coding standards but it needs to be declared
-        // first
-  /**
-    Account types currently supported.
-  **/
-  enum accountTypeE {
-		Checkings = 0, 				/**< standart checking account */
-    Savings = 1, 					/**< Typical savings account */
-		CreditCard = 2, 				/**< Credit card accounts */
-		Loan = 3,							/**< Loan and mortgage accounts */
-		CertificateDep = 4,		/**< Certificates of Deposit */
-		Investment = 5,				/**< Investment account */
-		MoneyMarket = 6,			/**< Money Market Account */
-    Unknown_Account = 7 	/**< For error handling */
+  class Transaction
+  {
+  public:
+    Transaction() {};
+    Transaction(const QString& transaction, const MyMoneyMoney& balance) {
+      m_transaction = transaction;
+      m_balance = balance;
+    };
+    const QString& transactionID(void) const { return m_transaction; };
+    const MyMoneyMoney& balance(void) const { return m_balance; };
+
+  private:
+    QString m_transaction;
+    MyMoneyMoney m_balance;
   };
 
-private:
-  // Pointer to the bank this account is for
-  MyMoneyBank *m_parent;
-
-  // Account details
-  QString m_qstringName;
-  QString m_qstringNumber;
-  accountTypeE m_accountType;
-  unsigned long m_ulLastId;
-  QString m_qstringDescription;
-  QDate m_qdateLastReconcile;
-  MyMoneyMoney m_mymoneymoneyBalance;  // Recalculated by balance()
-  MyMoneyScheduledList m_mymoneyscheduledlist;
-  QDate m_qdateOpening;
-  MyMoneyMoney m_mymoneymoneyOpeningBalance;
-
-  // A list of all the transactions
-  QList<MyMoneyTransaction> m_qlistTransactions;
-
-  // Object reading/saving code to help in saving/reading of files
-  friend QDataStream &operator<<(QDataStream &, const MyMoneyAccount &);
-  friend QDataStream &operator>>(QDataStream &, MyMoneyAccount &);
-
-  // Looks through the transaction list for a transaction !
-  bool findTransactionPosition(const MyMoneyTransaction& transaction, unsigned int&);
-
-  // QIF date formatter methods
-  int convertQIFDate(const QString buffer, const QString format, const int apostrophe, int *da, int *mo, int *ye);
-  int to_days(const QString buffer, int dcount);
-  int to_months(const QString buffer, int mcount);
-  int month_to_no(const QString s_number);
-//  void strupper(char *buffer);
-  int to_year(const QString buffer, int ycount, char delimiter, int apostrophe);
-//  char *itoa(int num, char *buffer);
-//  int str_has_alpha(const char *buffer, int len);
-//  int buffer_contains(const char *buffer, char let);
-  int QDateToQIFDate(const QDate date, QString& buffer, const char* format);
-
-  QString getField(const int fieldnum, const char* buffer);
-  QDate stringToDate(const char *string);
-
-public:
   /**
-    * The default constructor which loads default values into the attributes.
-  **/
-  MyMoneyAccount();
+    * Account types currently supported.
+    */
+  enum accountTypeE {
+    UnknownAccountType=0, /**< For error handling */
+    Checkings,            /**< Standard checking account */
+    Savings,              /**< Typical savings account */
+    Cash,                 /**< Denotes a shoe-box or pillowcase stuffed
+                               with cash */
+    CreditCard,           /**< Credit card accounts */
+    Loan,                 /**< Loan and mortgage accounts */
+    CertificateDep,       /**< Certificates of Deposit */
+    Investment,           /**< Investment account */
+    MoneyMarket,          /**< Money Market Account */
+    Asset,                /**< Denotes a generic asset account.*/
+    Liability,            /**< Denotes a generic liability account.*/
+    Currency,             /**< Denotes a currency trading account. */
+    Income,               /**< Denotes an income account*/
+    Expense,              /**< Denotes an expense account*/
+  };
 
   /**
-    * The most commonly used constructor.  Initialises all the attributes to the
-    * supplied arguments.
-    *
-    * @param name The account name.
-    * @param number The account number.
-    * @param type The account type either savings or current at the moment
-    * @param description A description of the account. Unlimited in length.
-    * @param lastReconcile TODO: remove this param, *why* is it here ?
-  **/
-  MyMoneyAccount(MyMoneyBank *parent, const QString& name, const QString& number, accountTypeE type,
-    const QString& description, const QDate openingDate, const MyMoneyMoney openingBal,
-    const QDate& lastReconcile);
+    * This is the constructor for a new empty account
+    * @param accountType type of account to be created
+    */
+  //MyMoneyAccount(const accountTypeE accountType = UnknownAccountType);
+  MyMoneyAccount(const int accountType = UnknownAccountType);
 
   /**
-    * Standard destructor.
-  **/
+    * This is the constructor for a new account known to the current file
+    * This is the only constructor that will set the attribute m_openingDate
+    * to a correct value.
+    * @param file pointer to current MyMoneyFile object
+    * @param ID id assigned to the account
+    * @param right account definition
+    */
+  // MyMoneyAccount(MyMoneyFile* file, const QString& ID, const QString& parent, const MyMoneyAccount& right);
+  MyMoneyAccount(const QString& id, const MyMoneyAccount& right);
+  /**
+    * This is the destructor for any MyMoneyAccount object
+    */
   ~MyMoneyAccount();
 
   /**
-    * Simple get operation.
+    * This method returns the ID of the account under which it is known
+    * inside the MyMoneyFile.
     *
-    * @return The name of the account.
-  **/
-  QString name(void) const { return m_qstringName; }
+    * @return ID as QString. If the ID is unknown, an empty QString is returned.
+    * @see setID()
+    */
+  const QString id(void) const { return m_id; }
 
   /**
-    * Simple get operation.
-    *
-    * @return The account number.
-  **/
-  QString accountNumber(void) { return m_qstringNumber; }
+    * This method returns the pointer to MyMoneyFile object this account
+    * belongs to.
+    * @return pointer to MyMoneyFile object
+    * @see m_file, setFile()
+    */
+  MyMoneyFile* file(void) const { return m_file; }
 
   /**
-    * Simple get operation.
-    *
-    * @see accountTypeE
-    *
-    * @return The account type.
-  **/
-  accountTypeE accountType(void) { return m_accountType; }
+    * This method returns the id of the MyMoneyInstitution object this account
+    * belongs to.
+    * @return id of MyMoneyInstitution object. QString("") if it is
+    *         an internal account
+    * @see setInstitution
+    */
+  const QString institution(void) const { return m_institution; }
 
   /**
-    * Simple get operation.
-    *
-    * @return A description of the account.
-  **/
-  QString description(void) { return m_qstringDescription; }
+    * This method returns the name of the account
+    * @return name of account
+    * @see setName()
+    */
+  const QString name(void) const { return m_name; }
 
   /**
-    * Simple get operation.
-    *
-    * @return The date of the last reconciliaton.
-  **/
-  QDate lastReconcile(void) { return m_qdateLastReconcile; }
+    * This method returns the number of the account at the institution
+    * @return number of account at the institution
+    * @see setNumber
+    */
+  const QString number(void) const { return m_number; }
 
   /**
-    * Simple get operation.
-    *
-    * @see MyMoneyScheduled
-    *
-    * @return All the scheduled transactions for this account.
-  **/
-  MyMoneyScheduledList *scheduledList(void) { return &m_mymoneyscheduledlist; }
+    * This method returns the descriptive text of the account.
+    * @return description of account
+    * @see setDescription
+    */
+  const QString description(void) const { return m_description; }
 
   /**
-    * Gets the opening date of this account.
-    *
-    * @return The opening date.
-  */
-  QDate openingDate(void) { return m_qdateOpening; }
+    * This method returns the opening date of this account
+    * @return date of opening of this account as const QDate value
+    * @see setOpeningDate()
+    */
+  const QDate openingDate(void) const { return m_openingDate; }
 
   /**
-    * Gets the opening balance.
+    * This method is used to return the opening balance of an account
     *
-    * @return The opening balance.
-  */
-  MyMoneyMoney openingBalance(void) { return m_mymoneymoneyOpeningBalance; }
-
-  /** */
-  void setOpeningDate(QDate date);
-
-  /** */
-  void setOpeningBalance(MyMoneyMoney money);
+    * @return MyMoneyMoney value of opening balance
+    */
+  const MyMoneyMoney openingBalance(void) const { return m_openingBalance; };
 
   /**
-    * Calculates the balance of the account and returns it in a MyMoneyMoney
-    * object.
-    *
-    * @see MyMoneyMoney
-    *
-    * @return The balance of the account.
-  **/
-  MyMoneyMoney balance(void) const;
+    * This method returns the date of the last reconciliation of this account
+    * @return date of last reconciliation as const QDate value
+    * @see setLastReconciliationDate
+    */
+  const QDate lastReconciliationDate(void) const { return m_lastReconciliationDate; }
 
   /**
-    * Simple set operation.
+    * This method returns the date the account was last modified
+    * @return date of last modification as const QDate value
+    * @see setLastModified
+    */
+  const QDate lastModified(void) const { return m_lastModified; }
+
+  /**
+    * This method is used to get the number of transactions
+    * in this account.
     *
-    * @param name The new name for the account.
-  **/
+    * @return number of transactions in the account
+    */
+  const unsigned int transactionCount(void) const { return m_transactionList.count(); }
+
+  /**
+    * This method returns the current total balance of this account's
+    * transactions. Sub-Accounts are not included.
+    * @return const reference to MyMoneyMoney balance of split values
+    * @see balanceTotal()
+    */
+  const MyMoneyMoney balance(void) const;
+
+  /**
+    * This method is used to return the ID of the parent account
+    * @return QString with the ID of the parent of this account
+    */
+  const QString parentAccount(void) const { return m_parentAccount; };
+
+  /**
+    * This method is used to return the transaction id and balance
+    * at the given index. If the index is invalid or larger than
+    * the count of transactions in the list, an exception will be
+    * thrown.
+    *
+    * @param idx index of transaction in list
+    * @return id and balance of transaction
+    */
+  const MyMoneyAccount::Transaction& transaction(const int idx) const;
+
+  /**
+    * This method returns the list of transactions and balances
+    * @return const QValueList<MyMoneyAccount::Transaction>& transactionList
+    */
+  const QValueList<MyMoneyAccount::Transaction>& transactionList(void) const;
+
+  /**
+    * This method is used by the mymoney engine to add a transaction
+    * of the journal to this account
+    * @param transaction reference to MyMoneyAccount::Transaction
+    */
+  void addTransaction(const MyMoneyAccount::Transaction& val);
+
+  /**
+    * This method is used to clear the list of transactions
+    */
+  void clearTransactions(void);
+
+  /**
+    * This method returns the list of the account id's of
+    * subordinate accounts
+    * @return QStringList account ids
+    */
+  const QStringList accountList(void) const { return m_accountList; };
+
+  /**
+    * This method returns the number of entries in the m_accountList
+    * @return number of entries in the accountList
+    */
+  const unsigned int accountCount(void) const { return m_accountList.count(); };
+
+  /**
+    * This method is used to add an account id as sub-ordinate account
+    * @param account const QString reference to account ID
+    */
+  void addAccount(const QString& account);
+
+  /**
+    * This method is used to remove an account from the list of
+    * sub-ordinate accounts.
+    * @param account const QString reference to account ID to be removed
+    */
+  void removeAccount(const QString& account);
+
+  /**
+    * This method is used to modify the date of the last
+    * modification access.
+    * @param date date of last modification
+    * @see lastModified
+    */
+  void setLastModified(const QDate& date);
+
+  /**
+    * This method is used to set the name of the account
+    * @param name name of the account
+    * @see name
+    */
   void setName(const QString& name);
 
   /**
-    * Simple set operation.
-    *
-    * @param number The new account number for the account.
-  **/
-  void setAccountNumber(const QString& number);
+    * This method is used to set the number of the account at the institution
+    * @param number number of the account
+    * @see number
+    */
+  void setNumber(const QString& number);
 
   /**
-    * Simple set operation.
-    * TODO: remove this operation.  Shouldn't be needed because we update m_lastId
-    * internally now (in addTransaction).
-    *
-    * @param id The new last id for the account.
-  **/
-  void setLastId(const long id);
+    * This method is used to set the descriptive text of the account
+    * @param desc text that serves as description
+    * @see setDescription
+    */
+  void setDescription(const QString& desc);
 
   /**
-    * Simple set operation.
-    *
-    * @param type The new account type.
-    *
-    * @see accountTypeE
-  **/
-  void setAccountType(MyMoneyAccount::accountTypeE type);
+    * This method is used to set the id of the institution this account
+    * belongs to.
+    * @param id id of the institution this account belongs to
+    * @see institution
+    */
+  void setInstitution(const QString& id);
 
   /**
-    * Simple set operation.
-    *
-    * @param description The new description for the account.
-  **/
-  void setDescription(const QString& description);
+    * This method is used to set the opening date information of an
+    * account.
+    * @param date QDate of opening date
+    * @see openingDate
+    */
+  void setOpeningDate(const QDate& date);
 
   /**
-    * Simple set operation.
+    * This method is used to set the opening balance information of an
+    * account.
     *
-    * TODO: maybe do this automatically somehow ??
+    * @param balance MyMoneyMoney value of opening balance
     *
-    * @param date The last time this account was reconciled.
-  **/
-  void setLastReconcile(const QDate& date);
+    * @see openingBalance
+    */
+  void setOpeningBalance(const MyMoneyMoney& balance);
 
   /**
-    * Finds a transaction in the list that matches the argument.
-    *
-    * @param transaction The transaction to look for.
-    *
-    * @return The found transaction or 0 if not found.
-  **/
-  MyMoneyTransaction* transaction(const MyMoneyTransaction& transaction);
-  
-  /**
-    * Gets the first transaction in the list.
-    * Typically used in for statements such as:
-    * for (transaction=transactionFirst(); transaction; transaction=transactionNext()) {
-    *  ...
-    * }
-    *
-    * @return The first transaction in the list or 0 if no transactions exist.
-    *
-    * @see transactionNext
-    * @see transactionLast
-  **/
-  MyMoneyTransaction* transactionFirst(void);
-  
-  /**
-    * Gets the next transaction in the list.  You must have called transactionFirst to get the
-    * next !
-    * Typically used in for statements such as:
-    * for (transaction=transactionFirst(); transaction; transaction=transactionNext()) {
-    *  ...
-    * }
-    *
-    * @return The next transaction in the list or 0 if at end or no transactions.
-    *
-    * @see transactionFirst
-    * @see transactionLast
-  **/
-  MyMoneyTransaction* transactionNext(void);
-  
-  /**
-    * Gets the last transaction in the list.
-    *
-    * @return The last transaction in the list or 0 if no transactions.
-    *
-    * @see transactionFirst
-    * @see transactionNext
-  **/
-  MyMoneyTransaction* transactionLast(void);
-  
-  /**
-    * Get a transaction from a specific index in the list.
-    * TODO: Why do we have this, I can't remember putting it in ??  Isn't it
-    * a bit error prone.  It doesn't even use the argument it just gets
-    * the last indexed transaction ?? - Michael 15-March-2001.
-    *
-    * @param index The index into the list (Not Used??)
-    *
-    * @return The current transaction
-  **/
-//  MyMoneyTransaction* transactionAt(int index);
-  
-  /**
-    * Retrieve the number of transactions held in this account.
-    *
-    * @return The total number of transactions.
-  **/
-  unsigned int transactionCount(void) const;
+    * This method is used to set the date of the last reconciliation
+    * of an account.
+    * @param date QDate of last reconciliation
+    * @see lastReconciliationDate
+    */
+  void setLastReconciliationDate(const QDate& date);
 
   /**
-    * Retrieve the number of transactions held in this account between the
-    * specified dates.
-    *
-    * @return The total number of transactions between the two dates.
-  **/
-  unsigned int transactionCount(const QDate start, const QDate end);
+    * This method is used to set a new parent account id
+    * @param parent QString reference to new parent account
+    */
+  void setParentAccount(const QString& parent);
 
   /**
-    * Removes a specific transaction from the list.
-    *
-    * @param transaction The transaction to remove.
-    *
-    * @return Whether the remove was successful.
-  **/
-  bool removeTransaction(const MyMoneyTransaction& transaction);
-
-  /** I don't want any indexed methods */
-//  bool removeCurrentTransaction(unsigned int index);
+    * This method is used to update m_lastModified to the current date
+    */
+  void touch(void) { setLastModified(QDate::currentDate()); }
 
   /**
-    * Adds a transaction to the list.
-    *
-    * @param methodType The transaction method.
-    * @param number The transaction number.
-    * @param memo A memo for the transaction.
-    * @param amount A MyMoneyMoney object containing the transaction amount.
-    * @param date The date on which the transaction occurred.
-    * @param categoryMajor The major category string.  TODO: use an index instead.
-    * @param categoryMinor The minor category string.  TODO: use an index instead.
-    * @param atmName Future expansion.
-    * @param payee The payees name.
-    * @param accountFrom  For a transfer transaction this is the account where the money come from.
-    * TODO: remove this and accountTo and only use method calls from elsewhere e.g transferFunds(Account1, Account2).
-    * @param accountTo For a transfer transaction this is the account where the money goes to.
-    * TODO: see above.
-    * @param state Whether or not the transaction has been reconciled.  TODO: remove this it's not needed because
-    * the default of UnReconciled is always used.
-    *
-    * @return TRUE if the transaction has been added.
-    *
-    * @see MyMoneyTransaction
-  **/
-  bool addTransaction(MyMoneyTransaction::transactionMethod methodType, const QString& number, const QString& memo,
-    const MyMoneyMoney& amount, const QDate& date, const QString& categoryMajor, const QString& categoryMinor,
-    const QString& atmName, const QString& payee, const QString& accountFrom, const QString& accountTo,
-    MyMoneyTransaction::stateE state);
+    * This method returns the type of the account.
+    */
+  const accountTypeE accountType(void) const {return m_accountType; };
+
+private:
+  /**
+    * This member variable identifies the type of account
+    */
+  accountTypeE m_accountType;
 
   /**
-    * Remove all the transaction from the list.
-  **/
-  void clear(void);
+    * This member variable keeps a pointer to the MyMoneyFile object
+    * that this object belongs to.
+    */
+  MyMoneyFile* m_file;
 
   /**
-    * Equality operator.
-    *
-    * @param right The account to compare to.
-    *
-    * @return TRUE if the accounts are the same.
-  **/
-  bool operator == (const MyMoneyAccount& right);
+    * This member variable keeps the ID of the MyMoneyInstitution object
+    * that this object belongs to.
+    */
+  QString m_institution;
 
   /**
-    * Copy constructor.
-    *
-    * @param right The account to copy.
-  **/
-
-  MyMoneyAccount(const MyMoneyAccount& right);
-  /**
-    * Assignment operator.
-    *
-    * @param right The account to copy.
-  **/
-  MyMoneyAccount& operator = (const MyMoneyAccount& right);
-
-  /** */
-  bool readAllData(int version, QDataStream& stream);
-  /** No descriptions */
-  QList<MyMoneyTransaction> * getTransactionList();
-
-  MyMoneyBank *bank(void) { return m_parent; }
-
-  /** No descriptions */
-  bool readQIFFile(const QString& name, const QString& dateFormat, const int apostrophe, const QString &decimalSymbol, int& transCount, int& catCount);
-
-  /** No descriptions */
-  bool writeQIFFile(const QString& name, const QString& dateFormat, bool expCat,bool expAcct,
-                    QDate startDate, QDate endDate, int& transCount, int& catCount);
-
-  bool validateQIFDateFormat(const char *buffer, const char *format, int& result, bool checkBuffer=true);
-  const QString getQIFDateFormatErrorString(int res);
+    * This member variable keeps the ID of the institution under which it
+    * is known inside the MyMoneyFile.
+    */
+  QString  m_id;
 
   /**
-    * Create a .csv file representing this account.
-    *
-    * @param filename The file to create.  Blindly creates it.
-    * @param startDate Start exporting at this date.
-    * @param endDate Stop exporting at this date.
-    * @param transCount The number of transactions exported.
-    *
-    * @return true if all went ok.
-  **/
-  bool writeCSVFile(const char *filename, QDate startDate, QDate endDate, int& transCount);
+    * This member variable keeps the name of the account
+    * It is solely for documentation purposes and it's contents is not
+    * used otherwise by the mymoney-engine.
+    */
+  QString m_name;
 
   /**
-    * Read a .csv file into this account.
-    *
-    * @param filename The file to read.
-    * @param transCount The number of transactions imported.
-    *
-    * @return true if all went ok.
-  **/
-  bool readCSVFile(const char *filename, int& transCount);
+    * This member variable keeps the account number at the institution
+    * It is solely for documentation purposes and it's contents is not
+    * used otherwise by the mymoney-engine.
+    */
+  QString m_number;
 
   /**
-    * Set the parent's dirty flag, if a parent is available
-    *
-    * @param flag The value to which the dirty flag should be set
-    *
-    * @return none
-  **/
-  void setDirty(const bool flag);
+    * This member variable is a description of the account.
+    * It is solely for documentation purposes and it's contents is not
+    * used otherwise by the mymoney-engine.
+    */
+  QString m_description;
 
-	/**
-	* Returns a string that determines what type of account this is.
- 	**/
-  QString getTypeName() const;
+  /**
+    * This member variable keeps the date when the account
+    * was last modified.
+    */
+  QDate m_lastModified;
 
-signals:
-  void signalProgressCount(int);
-  void signalProgress(int);
+  /**
+    * This member variable keeps the date when the
+    * account was created as an object in a MyMoneyFile
+    */
+  QDate m_openingDate;
 
+  /**
+    * This member holds the opening balance of this account
+    */
+  MyMoneyMoney m_openingBalance;
+
+  /**
+    * This member variable keeps the date of the last
+    * reconciliation of this account
+    */
+  QDate m_lastReconciliationDate;
+
+  /**
+    * This member variable keeps a sorted list of transactions keys
+    * of those transactions that have a split that references
+    * this account and the balance of the account after processing of
+    * the corresponding split.
+    */
+  QValueList<MyMoneyAccount::Transaction> m_transactionList;
+
+  /**
+    * This member holds the ID's of all sub-ordinate accounts
+    */
+  QStringList m_accountList;
+
+  /**
+    * This member contains the ID of the parent account
+    */
+  QString m_parentAccount;
 };
 
 #endif

@@ -16,5 +16,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#define MAGIC 0x00000007  // File revision number
-#define VERSION_0_3_3 0x00000006
+
+#define MAGIC_0_3_3 0x00000006    // MAGIC1 for version 0.33 files
+
+#define MAGIC_0_4_0 0x00000007    // MAGIC1 for version 0.4 files
+
+#define MAGIC_0_50  0x4B4D794D    // "KMyM" MAGIC1 for version 0.5 files
+
+#define MAGIC_0_51  0x6F6E6579    // "oney" second part of MAGIC
+
+#define VERSION_0_5_0 0x00000001    // Version 0.5 file version info

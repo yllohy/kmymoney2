@@ -30,6 +30,7 @@ MyMoneyEquityList::MyMoneyEquityList()
 
 MyMoneyEquityList::~MyMoneyEquityList()
 {
+#if 0
 	while(m_equityList.begin() != m_equityList.end())
 	{
 		EquityList::iterator i = m_equityList.begin();
@@ -39,8 +40,11 @@ MyMoneyEquityList::~MyMoneyEquityList()
 		}
 		m_equityList.erase(i);
 	}
+#endif
 }
 
+
+#if 0
 /** Adds a new equity entry into the master list. */
 bool MyMoneyEquityList::addEquity(MyMoneyEquity* pEquity)
 {
@@ -88,3 +92,5 @@ EquityList::iterator MyMoneyEquityList::doesItemExist(const MyMoneyEquity* pEqui
 	
 	return m_equityList.end();
 }
+
+#endif

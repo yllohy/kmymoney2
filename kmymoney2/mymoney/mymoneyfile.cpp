@@ -2,7 +2,9 @@
                           mymoneyfile.cpp
                              -------------------
     copyright            : (C) 2000 by Michael Edwardes
+                           (C) 2002 by Thomas Baumgart
     email                : mte@users.sourceforge.net
+                           ipwizard@users.sourceforge.net
  ***************************************************************************/
 
 /***************************************************************************
@@ -14,6 +16,20 @@
  *                                                                         *
  ***************************************************************************/
 
+// ----------------------------------------------------------------------------
+// QT Includes
+
+#include <qstring.h>
+#include <qdatetime.h>
+
+// ----------------------------------------------------------------------------
+// KDE Includes
+
+#include <kdebug.h>
+
+// ----------------------------------------------------------------------------
+// Project Includes
+
 #include "mymoneyfile.h"
 #ifndef HAVE_CONFIG_H
 #define VERSION "UNKNOWN"
@@ -21,173 +37,305 @@
 #include "config.h"
 #endif
 
-#include <string.h>
-#include <stdio.h>
-#include <ctype.h>
-#include <stdlib.h>
-#include <qfile.h>
-#include <qdatastream.h>
+// include the following line to get a 'cout' for debug purposes
+// #include <iostream>
 
-#include "mymoneyaccount.h"
-#include "mymoney_config.h"
-#include "mymoneyequity.h"
-#include "mymoneyequitylist.h"
+// unsigned int MyMoneyFile::fileVersionRead;
+// unsigned int MyMoneyFile::fileVersionWrite;
 
-
-MyMoneyFile::MyMoneyFile(void)
+MyMoneyFile::MyMoneyFile(IMyMoneyStorage *storage)
 {
-  m_createdDate = QDate::currentDate();
-  m_lastAccess = QDate::currentDate();
-  m_lastModify = QDate::currentDate();
-  m_dirty = false;
-  m_initialised = m_containsBanks = m_containsAccounts = m_containsTransactions = false;
-}
-
-MyMoneyFile::MyMoneyFile(const QString& usern, const QString& userStreet,
- const QString& userTown, const QString& userCounty, const QString& userPostcode, const QString& userTelephone,
- const QString& userEmail, const QDate& createDate)
-{
-  m_userName = usern;
-  m_userStreet = userStreet;
-  m_userTown = userTown;
-  m_userCounty = userCounty;
-  m_userPostcode = userPostcode;
-  m_userTelephone = userTelephone;
-  m_userEmail = userEmail;
-  m_createdDate = createDate;
-  m_lastAccess = createDate;
-  m_lastModify = createDate;
-  m_dirty = false;
-  m_passwordProtected=false;
-  m_encrypted=false;
-  m_initialised = m_containsBanks = m_containsAccounts = m_containsTransactions = false;
+  m_storage = storage;
 }
 
 MyMoneyFile::~MyMoneyFile()
 {
 }
 
-QString MyMoneyFile::userAddress(void)
+void MyMoneyFile::addInstitution(MyMoneyInstitution& institution)
 {
-  // Return an address containing concatenated strings
-  QString m_userAddress;
-  m_userAddress = m_userStreet + "\n";
-  m_userAddress += m_userTown + "\n";
-  m_userAddress += m_userCounty + "\n";
-  m_userAddress += m_userPostcode + "\n";
-  m_userAddress += m_userTelephone + "\n";
-  m_userAddress += m_userEmail + "\n";
-  return m_userAddress;
+  // perform some checks to see that the institution stuff is OK. For
+  // now we assume that the institution must have a name, the ID is not set
+  // and it does not have a parent (MyMoneyFile).
+
+  if(institution.name().length() == 0
+  || institution.id().length() != 0
+  || institution.file() != 0)
+    throw new MYMONEYEXCEPTION("Not a new institution");
+
+  m_storage->addInstitution(institution);
 }
 
-int MyMoneyFile::saveAllData(const QString& fileName)
+void MyMoneyFile::modifyInstitution(const MyMoneyInstitution& institution)
 {
-  QFile f( fileName );
-  f.open( IO_WriteOnly );
-  QDataStream s( &f );
+  m_storage->modifyInstitution(institution);
+}
 
-  // Write a header with a "magic number" and a version
-  QString ver(VERSION);
-  s << ver;
-  s << (Q_INT32)MAGIC;
-  if (m_passwordProtected)
-    s << (Q_INT32)1;
-  else
-    s << (Q_INT32)0;
-  if (m_encrypted)
-    s << (Q_INT32)1;
-  else
-    s << (Q_INT32)0;
-  s << m_password;
+void MyMoneyFile::modifyTransaction(const MyMoneyTransaction& transaction)
+{
+  m_storage->modifyTransaction(transaction);
+}
 
-  // Is updated if the user chooses to save the file
-  m_lastModify = QDate::currentDate();
+void MyMoneyFile::modifyAccount(const MyMoneyAccount& account)
+{
+  // check that it's not one of the standard account groups
+  if(isStandardAccount(account.id()))
+    throw new MYMONEYEXCEPTION("Unable to modify the standard account groups");
 
-  // Simple Data
-  s << m_userName
-    << m_userStreet
-    << m_userTown
-    << m_userCounty
-    << m_userPostcode
-    << m_userTelephone
-    << m_userEmail
-    << m_createdDate
-    << m_lastAccess
-    << m_lastModify;
+  m_storage->modifyAccount(account);
+}
 
-  // Read through the three lists writing the count and then the objects
-  // in turn
-  s << m_bankNames.count();
-  for (QStringList::Iterator it = m_bankNames.begin(); it != m_bankNames.end(); ++it)
-    s << (*it);
+const MyMoneyAccount::accountTypeE MyMoneyFile::accountGroup(MyMoneyAccount::accountTypeE type) const
+{
+  switch(type) {
+    case MyMoneyAccount::Checkings:
+    case MyMoneyAccount::Savings:
+    case MyMoneyAccount::Cash:
+    case MyMoneyAccount::Currency:
+    case MyMoneyAccount::Investment:
+    case MyMoneyAccount::MoneyMarket:
+    case MyMoneyAccount::CertificateDep:
+      return MyMoneyAccount::Asset;
 
-  s << m_categoryList.count();
-  MyMoneyCategory *data;
-  for (data=m_categoryList.first(); data != 0; data = m_categoryList.next()) {
-    s << *data;
+    case MyMoneyAccount::CreditCard:
+    case MyMoneyAccount::Loan:
+      return MyMoneyAccount::Liability;
+
+    default:
+      return type;
+  }
+}
+
+void MyMoneyFile::reparentAccount(MyMoneyAccount &account, MyMoneyAccount& parent)
+{
+  // check that it's not one of the standard account groups
+  if(isStandardAccount(account.id()))
+    throw new MYMONEYEXCEPTION("Unable to reparent the standard account groups");
+
+  if(accountGroup(account.accountType()) == accountGroup(parent.accountType())) {
+    m_storage->reparentAccount(account, parent);
+
+  } else
+    throw new MYMONEYEXCEPTION("Unable to reparent to different account type");
+}
+
+const MyMoneyInstitution& MyMoneyFile::institution(const QString& id) const
+{
+  return m_storage->institution(id);
+}
+
+const MyMoneyAccount& MyMoneyFile::account(const QString& id) const
+{
+  return m_storage->account(id);
+}
+
+void MyMoneyFile::removeTransaction(const MyMoneyTransaction& transaction)
+{
+  m_storage->removeTransaction(transaction);
+}
+
+
+const bool MyMoneyFile::hasActiveSplits(const QString& id) const
+{
+  return m_storage->hasActiveSplits(id);
+}
+
+const bool MyMoneyFile::isStandardAccount(const QString& id) const
+{
+  return m_storage->isStandardAccount(id);
+}
+
+void MyMoneyFile::removeAccount(const MyMoneyAccount& account)
+{
+  MyMoneyAccount parent;
+
+  // check that the account and it's parent exist
+  // this will throw an exception if the id is unknown
+  MyMoneyFile::account(account.id());
+  parent = MyMoneyFile::account(account.parentAccount());
+
+  // check that it's not one of the standard account groups
+  if(isStandardAccount(account.id()))
+    throw new MYMONEYEXCEPTION("Unable to remove the standard account groups");
+
+  if(hasActiveSplits(account.id())) {
+    throw new MYMONEYEXCEPTION("Unable to remove account with active splits");
   }
 
-  s << m_payeeList.count();
+  m_storage->removeAccount(account);
+}
+
+void MyMoneyFile::removeInstitution(const MyMoneyInstitution& institution)
+{
+  m_storage->removeInstitution(institution);
+}
+
+void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
+{
+  MyMoneyInstitution institution;
+
+  // perform some checks to see that the account stuff is OK. For
+  // now we assume that the account must have a name, has no
+  // transaction and sub-accounts and parent account
+  // it's own ID is not set and it does not have a pointer to (MyMoneyFile)
+
+  if(account.name().length() == 0
+  || account.id().length() != 0
+  || account.transactionList().count() != 0
+  || account.accountList().count() != 0
+  || account.parentAccount() != ""
+  || account.file() != 0)
+    throw new MYMONEYEXCEPTION("Adding invalid account");
+
+  // make sure, that the parent account exists
+  // if not, an exception is thrown. If it exists,
+  // get a copy of the current data
+  MyMoneyFile::account(parent.id());
+
+  // FIXME: make sure, that the parent has the same type
+  // I left it out here because I don't know, if there is
+  // a tight coupling between e.g. checking accounts and the
+  // class asset. It certainly does not make sense to create an
+  // expense account under an income account.
+
+  // if an institution is set, verify that it exists
+  if(account.institution().length() != 0) {
+    // check the presence of the institution. if it
+    // does not exist, an exception is thrown
+    institution = MyMoneyFile::institution(account.institution());
+  }
+
+
+  if(account.openingDate() == QDate()) {
+    account.setOpeningDate(QDate::currentDate());
+  }
+
+  account.setParentAccount(parent.id());
+
+  m_storage->newAccount(account);
+  m_storage->addAccount(parent, account);
+
+  if(account.institution().length() != 0)
+    m_storage->addAccount(institution, account);
+}
+
+void MyMoneyFile::addTransaction(MyMoneyTransaction& transaction)
+{
+  // perform some checks to see that the transaction stuff is OK. For
+  // now we assume that
+  // * no ids are assigned
+  // * the pointer to the MyMoneyFile object is 0
+  // * the date valid (must not be empty)
+  // * the referenced accounts in the splits exist
+
+  // first perform all the checks
+  if(transaction.id() != ""
+  || transaction.file() != 0
+  || !transaction.postDate().isValid())
+    throw new MYMONEYEXCEPTION("invalid transaction to be added");
+
+  // now check the splits
+  QValueList<MyMoneySplit>::ConstIterator it_s;
+  for(it_s = transaction.splits().begin(); it_s != transaction.splits().end(); ++it_s) {
+    // the following line will throw an exception if the
+    // account does not exist
+    MyMoneyFile::account((*it_s).account());
+  }
+
+  // then add the transaction to the file global pool
+  m_storage->addTransaction(transaction);
+}
+
+const MyMoneyTransaction& MyMoneyFile::transaction(const QString& id) const
+{
+  return m_storage->transaction(id);
+}
+
+const MyMoneyTransaction& MyMoneyFile::transaction(const QString& account, const int idx) const
+{
+  return m_storage->transaction(account, idx);
+}
+
+void MyMoneyFile::addPayee(const QString& newPayee, const QString& address, const QString& postcode, const QString& telephone, const QString& email)
+{
+/*
+  if (newPayee.isEmpty() || newPayee==QString::null)
+    return;
+
+  bool found=false;
   MyMoneyPayee *payee;
   for ( payee=m_payeeList.first(); payee!=0; payee=m_payeeList.next()) {
-    s << *payee;
+    if (payee->name() == newPayee)
+      found = true;
   }
 
-  s << (Q_INT32)bankCount();
-  MyMoneyBank *bank;
-  for (bank=bankFirst(); bank!=0; bank=bankNext()) {
-    s << *bank;
-
-    s << (Q_INT32)bank->accountCount();
-    MyMoneyAccount *account;
-    for (account=bank->accountFirst(); account!=0; account=bank->accountNext()) {
-      s << *account;
-
-      s << (Q_INT32)account->transactionCount();
-      MyMoneyTransaction *transaction;
-      for (transaction=account->transactionFirst(); transaction!=0; transaction=account->transactionNext()) {
-        s << *transaction;
-      }
-    }
-  }
-
-  f.close();
-  m_dirty = false;
-  return 0;
-}
-
-int MyMoneyFile::readAllData(const QString& fileName)
-{
-  // Returns an error code in the form of an int.
-  // TODO: add descriptive error returns.
-  QFile f( fileName );
-  f.open( IO_ReadOnly );
-  if (!f.isOpen())
-    return 3;
-
-  QDataStream s( &f );
-
-  QString version;
-  s >> version;
-/* In the future I'll have a check for compatible versions, for now rely on the MAGIC...
-  if (version != VERSION) {
-    // error code
-    return 1;
+  if (!found) {
+    MyMoneyPayee *np = new MyMoneyPayee(newPayee, address, postcode, telephone, email);
+    m_payeeList.append(np);
+    m_dirty=true;
   }
 */
-  Q_INT32 magic;
-  s >> magic;
-  bool foundOldVersion=false;
-  int foundVersionID=0;
+}
 
-  if (magic==VERSION_0_3_3) { // Version(s) 0.3.3 and below
-    qDebug("Found a money file belonging to versions 0.3.3 and below.");
-    foundOldVersion = true;
-    foundVersionID = VERSION_0_3_3;
+void MyMoneyFile::removePayee(const QString name)
+{
+/*
+  MyMoneyPayee *payee;
+  for ( payee=m_payeeList.first(); payee!=0; payee=m_payeeList.next()) {
+    if (payee->name() == name) {
+      m_payeeList.remove();
+      m_dirty=true;
+    }
   }
-  else if (magic != MAGIC) {
-    return 2;
+*/
+}
+
+/*
+const int MyMoneyFile::readStream(QDataStream& s)
+{
+  // process version and magic number to get the version information
+  // files written by previous versions had the following layout:
+  //
+  //   QString with program version info
+  //   Q_INT32 with magic code
+  //
+  // Newer files will use a sligthly different layout as follows:
+  //
+  //   QByteArray with the magic eight byte contents 'KMyMoney'
+  //   Q_INT32 with file version information
+  //
+
+  // first read a four byte Q_INT32
+  Q_INT32 len;
+  QString prog_version("");
+
+  s >> len;
+  if(len < 30) {            // this seems to be a valid maximum length
+    Q_UINT8 c, r;           // for a program version
+    while(len) {
+      s >> r;
+      s >> c;
+      prog_version += QChar(c, r);
+      len -= 2;
+    }
+  } else {                  // check if it's the magic sequence
+    // we've already read half of the magic code in, so we just
+    // read the second half as well and see if it matches the new
+    // magic code 'KMyMoney'
+    Q_INT32 len1;
+    s >> len1;
+    if(len != MAGIC_0_50
+    || len1 != MAGIC_0_51)
+      return UNKNOWN_FILE_TYPE;
   }
+
+  // next we read a Q_INT32 file version code
+  fileVersionRead = 0;
+  s >> fileVersionRead;
+  if(fileVersionRead != VERSION_0_3_3
+  && fileVersionRead != VERSION_0_4_0
+  && fileVersionRead != VERSION_0_5_0)
+    return UNKNOWN_FILE_FORMAT;
 
   Q_INT32 tmp;
   s >> tmp;
@@ -207,13 +355,12 @@ int MyMoneyFile::readAllData(const QString& fileName)
   s >> m_password;
 
   // Simple Data
-  if (foundOldVersion) { // We need to change how we read in the data
-    if (foundVersionID==VERSION_0_3_3) {
-      qDebug("Converting from old 0.3.3 release...\n\tRemoving old file::name field");
-      QString temp_delete;
-      s >> temp_delete;
-    }
+  if(fileVersionRead == VERSION_0_3_3) {
+    qDebug("\nConverting from old 0.3.3 release\n\tRemoving old file::name field");
+    QString temp_delete;
+    s >> temp_delete;
   }
+
   s >> m_userName
     >> m_userStreet
     >> m_userTown
@@ -221,468 +368,247 @@ int MyMoneyFile::readAllData(const QString& fileName)
     >> m_userPostcode
     >> m_userTelephone
     >> m_userEmail
-    >> m_createdDate
-    >> m_lastAccess
-    >> m_lastModify;
+    >> m_creationDate
+    >> m_lastAccessDate
+    >> m_lastModificationDate;
 
-  m_lastAccess = QDate::currentDate();
-
-  Q_UINT32 bankNames_count=0, categoryList_count=0, payTo_count=0, bank_count=0, account_count=0, transaction_count=0;
-
-  QString buffer;
-  QString buffer2;
-
-  // Reading is quite simple as each object 'knows' how to read into itself
-  s >> bankNames_count;
-  for (unsigned int i=0; i<bankNames_count; i++) {
-    s >> buffer;
-    addBankName(buffer);
+  // process list of institutions (only version prior to 0.5.0)
+  if(fileVersionRead == VERSION_0_3_3
+  || fileVersionRead == VERSION_0_4_0) {
+    // we don't need that list here, so we just skip it
+    Q_INT32 bankCount;
+    QString buffer;
+    s >> bankCount;
+    while(bankCount--)
+      s >> buffer;
   }
 
+  // read list of categories
   MyMoneyCategory category;
-  s >> categoryList_count;
-  for (unsigned int i=0; i<categoryList_count; i++) {
+  s >> tmp;
+  for (unsigned int i=0; i < tmp; i++) {
     s >> category;
     addCategory(category.isIncome(), category.name(), category.minorCategories());
   }
 
-  MyMoneyPayee *payee=0;
-  s >> payTo_count;
-  for (unsigned int i=0; i<payTo_count; i++) {
-    if (payee==0) {
-      payee = new MyMoneyPayee;
-    }
-    s >> (*payee);
-    addPayee(payee->name(), payee->address(), payee->postcode(), payee->telephone(), payee->email());
-    delete payee;
-    payee=0;
+  // read list of payees
+  MyMoneyPayee payee;
+  s >> tmp;
+  for (unsigned int i=0; i < tmp; i++) {
+    s >> payee;
+    addPayee(payee.name(), payee.address(), payee.postcode(), payee.telephone(), payee.email());
   }
 
-  MyMoneyBank bankl;
-  MyMoneyBank *bankWrite;
-  MyMoneyAccount account;
-  MyMoneyAccount *accountWrite;
-  MyMoneyTransaction transaction;
+  switch(fileVersionRead) {
+    case VERSION_0_3_3:
+    case VERSION_0_4_0:
+      readOldFormat(s);
+      break;
+    case VERSION_0_5_0:
+      // readNewFormat(s);
+      break;
+  }
 
-  s >> bank_count;
-  for ( unsigned int j=0; j<bank_count; j++ ) {
-    m_containsBanks = true;
-    bankl.readAllData(foundVersionID, s);
-//    s >> bankl;
-    addBank(bankl.name(), bankl.sortCode(), bankl.city(), bankl.street(), bankl.postcode(), bankl.telephone(), bankl.manager());
+  // file is yet unchanged
+  clearDirty();
+  // we're done
+  return OK;
+}
 
-    bankWrite = bank(bankl);
-    if (!bankWrite) {
-      qDebug("Unable to get bankWrite");
-      return -9;
-    }
+void MyMoneyFile::readOldFormat(QDataStream& s)
+{
+  Q_UINT32 institutionCount;
+  Q_UINT32 accountCount;
+  Q_UINT32 transactionCount;
 
-    s >> account_count;
-    for ( unsigned int k=0; k<account_count; k++ ) {
-      m_containsAccounts=true;
-      account.readAllData(foundVersionID, s);
-//      s >> account;
-      bankWrite->newAccount(account.name(), account.accountNumber(), account.accountType(), account.description(), account.openingDate(), account.openingBalance(), account.lastReconcile());
+  MyMoneyCheckingAccount checkingAccount;
 
-      accountWrite = bankWrite->account(account);
-      if (!accountWrite) {
-        qDebug("Unabel to get accountWrite");
-        return -9;
+  s >> institutionCount;
+  for(unsigned int i=0; i < institutionCount; ++i) {
+    MyMoneyInstitution institution;
+    QString institutionID;
+
+    // read institution data from file
+    s >> institution;
+    // since we don't have an id yet, we use the standard procedure
+    institutionID = addInstitution(institution);
+
+    s >> accountCount;
+    for(unsigned j=0; j < accountCount; ++j) {
+      // in old file versions, there are only checking accounts
+      QString name, number, desc;
+      MyMoneyAccount::accountTypeE accType;
+      MyMoneyAccount *acc;
+
+      // read the next three values here, because the type
+      // is the fourth that we need to distinguish the type
+      // of account
+      s >> name >> desc >> number;
+      s >> (Q_INT32 &) accType;
+
+      switch(accType) {
+        case MyMoneyAccount::Checkings:
+          s >> checkingAccount;
+          acc = &checkingAccount;
+          break;
+
+        default:
+          qDebug("Unknown account type %d in MyMoneyFile", accType);
+          acc = &checkingAccount;
+          break;
       }
 
-      s >> transaction_count;
-      for ( unsigned int l=0; l<transaction_count; l++) {
-        m_containsTransactions=true;
-        transaction.readAllData(foundVersionID, s);
-//        s >> transaction;
-        accountWrite->addTransaction(transaction.method(), transaction.number(), transaction.memo(),
-            transaction.amount(), transaction.date(), transaction.categoryMajor(), transaction.categoryMinor(),
-            transaction.atmBankName(), transaction.payee(), transaction.accountFrom(), transaction.accountTo(),
-            transaction.state());
+      // now load the account with the info already read in
+      acc->setName(name);
+      acc->setNumber(number);
+      acc->setDescription(desc);
+
+      // and don't forget other stuff
+      acc->setInstitution(institutionID);
+
+      // the account info is completely read, now add the
+      // account to the global file pool
+
+      QString accountID;
+      accountID = addAccount(acc);
+
+      s >> transactionCount;
+      for ( unsigned int k = 0; k < transactionCount; k++) {
+        // the old file storage only knows about checking transactions
+        MyMoneyCheckingTransaction t;
+        QList<MyMoneyTransaction> list;
+
+        // read the data from file
+        s >> t;
+
+        // Only add those transactions that are the tied to
+        // the account. The right side of a transfer transaction
+        // is skipped here. It will be kept as a single transaction
+        // in the new engine and reconstructed later on, when all
+        // account information is available.
+        if(t.method() != MyMoneyCheckingTransaction::Deposit
+        || t.categoryMajor()[0] != '<') {
+          QString tid;
+
+          t.setSrcAccount(accountID);
+          list.append(&t);
+          tid = addTransaction(list);
+          if(tid == "")
+            qDebug("Unable to add transaction in MyMoneyFile::readOldFormat");
+        }
       }
     }
   }
 
-  m_dirty = false;
-  f.close();
-  return 0;
-}
+  // All relevant information is read from the file. Now we
+  // need to adjust a few things:
+  //
+  // 1 - change all account references from names to ids
+  //     This is the case for all transfers, where the categoryMajor
+  //     still has the form '<' account-name '>'
 
-void MyMoneyFile::resetAllData(void)
-{
-  // Just empty out all data
-  QListIterator<MyMoneyBank> it(m_banks);
-  for ( ; it.current(); ++it ) {
-    MyMoneyBank *bank = it.current();
-    bank->clear();
+  QMap<QString, MyMoneyTransaction *>::Iterator tit;
+  QMap<QString, MyMoneyAccount*>::Iterator ait;
+
+  cout << "TransactionList" << endl;
+  for(tit = m_transactionList.begin(); tit != m_transactionList.end(); ++tit) {
+    MyMoneyCheckingTransaction *p;
+    p = static_cast<MyMoneyCheckingTransaction *> (*tit);
+    cout << "  key: " << (*tit)->key() << endl;
+    if(p->method() == MyMoneyCheckingTransaction::Transfer) {
+      QString name = (*tit)->categoryMajor();
+      name = name.remove(0,1);
+      name = name.remove(name.length()-1,1);
+      for(ait = m_accountList.begin(); ait != m_accountList.end(); ++ait) {
+        if((*ait)->name() == name) {
+          (*tit)->setDstAccount((*ait)->id());
+          cout << "    setting dst to " << (*ait)->id() << endl;
+        }
+      }
+    }
   }
-  m_banks.clear();
 
-  m_userName = QString::null;
-  m_userStreet = QString::null;
-  m_userTown = QString::null;
-  m_userCounty = QString::null;
-  m_userPostcode = QString::null;
-  m_userTelephone = QString::null;
-  m_userEmail = QString::null;
-  m_bankNames.clear();
-  m_createdDate = QDate::currentDate();
-  m_lastAccess = QDate::currentDate();
-  m_lastModify = QDate::currentDate();
-
-  QListIterator<MyMoneyCategory> it2(m_categoryList);
-  for ( ; it2.current(); ++it2 ) {
-    MyMoneyCategory *cat = it2.current();
-    cat->clear();
+  // Update all accounts
+  for(ait = m_accountList.begin(); ait != m_accountList.end(); ++ait) {
+    (*ait)->refreshTransactionList();
   }
-  m_categoryList.clear();
-
-	m_payeeList.clear();
-  m_initialised = m_containsBanks = m_containsAccounts = m_containsTransactions = false;
-	m_dirty = false;
 }
-
-MyMoneyBank* MyMoneyFile::bank(const MyMoneyBank& bank)
-{
-  unsigned int pos;
-
-  if (findBankPosition(bank, pos)) {
-    return m_banks.at(pos);
-  }
-  return 0;
-}
-
-MyMoneyBank* MyMoneyFile::bankFirst(void)
-{
-  return m_banks.first();
-}
-
-MyMoneyBank* MyMoneyFile::bankNext(void)
-{
-  return m_banks.next();
-}
-
-MyMoneyBank* MyMoneyFile::bankLast(void)
-{
-  return m_banks.last();
-}
-
-unsigned int MyMoneyFile::bankCount(void)
-{
-  return m_banks.count();
-}
-
-bool MyMoneyFile::removeBank(const MyMoneyBank& bank)
-{
-  if (m_banks.count()<=1)
-    m_containsBanks=false;
-
-  unsigned int pos;
-  if (findBankPosition(bank, pos)) {
-		m_dirty=true;
-    return m_banks.remove(pos);
-	}
-	
-  return false;
-}
-
-void MyMoneyFile::addBankName(const QString& val)
-{
-	m_dirty=true;
-  m_bankNames.append(val);
-}
-
-void MyMoneyFile::addMajorCategory(const bool income, const QString& val)
-{
-  if (val.isEmpty() || val == QString::null)
-    return;
-
-  QStringList list;
-  addCategory(income, val, list);
-}
-
-/**
-  * This is the real workhorse of the add cateogry stuff.  Everthing else
-  * just calls it.
 */
-void MyMoneyFile::addMinorCategory(const bool income, const QString& major, const QString& minor)
-{
-  if (major.isEmpty())
-    return;
 
-  QStringList list;
-  list.append(minor);
-  addCategory(income, major, list);
+const QValueList<MyMoneyAccount> MyMoneyFile::accountList(void) const
+{
+  return m_storage->accountList();
 }
 
-void MyMoneyFile::addCategory(const bool income, const QString& major, QStringList& minors)
+const QValueList<MyMoneyInstitution> MyMoneyFile::institutionList(void) const
 {
-  MyMoneyCategory *data;
-  for (data=m_categoryList.first(); data!=0; data=m_categoryList.next()) {
-    if (data->name() == major) {
-      data->addMinorCategory(minors);
-      if (data->isIncome() != income)
-        data->setIncome(income);
-      m_dirty=true;
-      return;
-    }
-  }
+  return m_storage->institutionList();
+};
 
-  MyMoneyCategory *newData = new MyMoneyCategory(income, major, minors);
-  int i = 0;
+// general get functions
+const QString MyMoneyFile::userName(void) const { return m_storage->userName(); }
+const QString MyMoneyFile::userStreet(void) const { return m_storage->userStreet(); }
+const QString MyMoneyFile::userTown(void) const { return m_storage->userTown(); }
+const QString MyMoneyFile::userCounty(void) const { return m_storage->userCounty(); }
+const QString MyMoneyFile::userPostcode(void) const { return m_storage->userPostcode(); }
+const QString MyMoneyFile::userTelephone(void) const { return m_storage->userTelephone(); }
+const QString MyMoneyFile::userEmail(void) const { return m_storage->userEmail(); }
 
-  // Go through the income first
-  if (income == true) {
-    for (i=0, data=m_categoryList.first(); data!=0; data=m_categoryList.next(),i++) {
-      if (data->name() >= major && data->isIncome()==income) {
-        m_categoryList.insert(i, newData);
-        m_dirty = true;
-        return;
-      }
-    }
-    m_categoryList.insert(i, newData);
-    m_dirty=true;
-  }
+// general set functions
+void MyMoneyFile::setUserName(const QString& val) { m_storage->setUserName(val); }
+void MyMoneyFile::setUserStreet(const QString& val) { m_storage->setUserStreet(val); }
+void MyMoneyFile::setUserTown(const QString& val) { m_storage->setUserTown(val); }
+void MyMoneyFile::setUserCounty(const QString& val) { m_storage->setUserCounty(val); }
+void MyMoneyFile::setUserPostcode(const QString& val) { m_storage->setUserPostcode(val); }
+void MyMoneyFile::setUserTelephone(const QString& val) { m_storage->setUserTelephone(val); }
+void MyMoneyFile::setUserEmail(const QString& val) { m_storage->setUserEmail(val); }
 
-  // then expense
-  else if (income == false) {
-    for (i=0, data=m_categoryList.first(); data!=0; data=m_categoryList.next(),i++) {
-      if (data->name() >= major && data->isIncome()==income) {
-        m_categoryList.insert(i, newData);
-        m_dirty = true;
-        return;
-      }
-    }
-    m_categoryList.insert(i, newData);
-    m_dirty=true;
-  }
+bool MyMoneyFile::dirty(void) const
+{
+  return m_storage->dirty();
 }
 
-void MyMoneyFile::addCategory(const bool income, const QString& major, const QString& minor)
+const unsigned int MyMoneyFile::accountCount(void) const
 {
-  if (major.isEmpty() || minor.isEmpty())
-    return;
-
-  QStringList list;
-  list.append(minor);
-  addCategory(income, major, list);
+  return m_storage->accountCount();
 }
 
-QListIterator<MyMoneyCategory> MyMoneyFile::categoryIterator(void)
+const MyMoneyAccount MyMoneyFile::liability(void) const
 {
-  QListIterator<MyMoneyCategory> it(m_categoryList);
-  return it;
+  return m_storage->liability();
 }
 
-void MyMoneyFile::removeMajorCategory(const QString& major)
+const MyMoneyAccount MyMoneyFile::asset(void) const
 {
-  MyMoneyCategory *data;
-  for (data=m_categoryList.first(); data!=0; data=m_categoryList.next()) {
-    if (data->name() == major) {
-      data->removeAllMinors();
-      m_categoryList.remove(m_categoryList.at());
-      m_dirty=true;
-    }
-  }
+  return m_storage->asset();
 }
 
-void MyMoneyFile::removeMinorCategory(const QString& major, const QString& minor)
+const MyMoneyAccount MyMoneyFile::expense(void) const
 {
-  MyMoneyCategory *data;
-  for (data=m_categoryList.first(); data!=0; data=m_categoryList.next()) {
-    if (data->name() == major) {
-      data->removeMinorCategory(minor);
-      m_dirty=true;
-    }
-  }
+  return m_storage->expense();
 }
 
-void MyMoneyFile::renameMajor(const QString& oldName, const QString& newName)
+const MyMoneyAccount MyMoneyFile::income(void) const
 {
-  if (newName.isEmpty())
-    return;
-
-  MyMoneyCategory *data;
-  for (data=m_categoryList.first(); data!=0; data=m_categoryList.next()) {
-    if (data->name() == oldName) {
-      data->setName(newName);
-      m_dirty = true;
-    }
-  }
+  return m_storage->income();
 }
 
-void MyMoneyFile::renameMinor(const QString& major, const QString& oldName, const QString& newName)
+const unsigned int MyMoneyFile::transactionCount(void) const
 {
-  if (newName.isEmpty())
-    return;
-
-  MyMoneyCategory *data;
-  for (data=m_categoryList.first(); data!=0; data=m_categoryList.next()) {
-    if (data->name() == major) {
-      if (data->renameMinorCategory(oldName, newName))
-        m_dirty=true;
-    }
-  }
+  return m_storage->transactionCount();
 }
 
-void MyMoneyFile::addPayee(const QString& newPayee, const QString address, const QString postcode, const QString telephone, const QString email)
+const unsigned int MyMoneyFile::institutionCount(void) const
 {
-  if (newPayee.isEmpty() || newPayee==QString::null)
-    return;
-
-  bool found=false;
-  MyMoneyPayee *payee;
-  for ( payee=m_payeeList.first(); payee!=0; payee=m_payeeList.next()) {
-    if (payee->name() == newPayee)
-      found = true;
-  }
-
-  if (!found) {
-    MyMoneyPayee *np = new MyMoneyPayee(newPayee, address, postcode, telephone, email);
-    m_payeeList.append(np);
-    m_dirty=true;
-  }
+  return m_storage->institutionCount();
 }
 
-QListIterator<MyMoneyPayee> MyMoneyFile::payeeIterator(void)
+const MyMoneyMoney MyMoneyFile::balance(const QString& id) const
 {
-  QListIterator<MyMoneyPayee> it(m_payeeList);
-  return it;
+  return m_storage->balance(id);
 }
 
-MyMoneyBank *MyMoneyFile::addBank(const QString& name, const QString& sortCode, const QString& city,
-  const QString& street, const QString& postcode, const QString& telephone, const QString& manager)
+const MyMoneyMoney MyMoneyFile::totalBalance(const QString& id) const
 {
-  MyMoneyBank *bank = new MyMoneyBank(this, name, sortCode, city, street, postcode, telephone, manager);
-  m_banks.append(bank);
-	m_dirty=true;
-  if (m_containsBanks==false)
-    m_containsBanks=true;
-  return bank;
-}
-
-MyMoneyFile::MyMoneyFile(const MyMoneyFile& right)
-{
-  m_userName = right.m_userName;
-  m_userStreet = right.m_userStreet;
-  m_userTown = right.m_userTown;
-  m_userCounty = right.m_userCounty;
-  m_userPostcode = right.m_userPostcode;
-  m_userTelephone = right.m_userTelephone;
-  m_userEmail = right.m_userEmail;
-  m_createdDate = right.m_createdDate;
-  m_lastAccess = right.m_lastAccess;
-  m_lastModify = right.m_lastModify;
-  m_dirty = right.m_dirty;
-  m_passwordProtected = right.m_passwordProtected;
-  m_encrypted = right.m_encrypted;
-  m_password = right.m_password;
-  m_banks.clear();
-  m_banks = right.m_banks;
-  m_bankNames.clear();
-  m_bankNames = right.m_bankNames;
-  m_payeeList.clear();
-  m_payeeList = right.m_payeeList;
-  m_categoryList.clear();
-  m_categoryList = right.m_categoryList;
-  m_initialised = right.m_initialised;
-  m_containsBanks = right.m_containsBanks;
-  m_containsAccounts = right.m_containsAccounts;
-  m_containsTransactions = right.m_containsTransactions;
-}
-
-MyMoneyFile& MyMoneyFile::operator = (const MyMoneyFile& right)
-{
-  m_userName = right.m_userName;
-  m_userStreet = right.m_userStreet;
-  m_userTown = right.m_userTown;
-  m_userCounty = right.m_userCounty;
-  m_userPostcode = right.m_userPostcode;
-  m_userTelephone = right.m_userTelephone;
-  m_userEmail = right.m_userEmail;
-  m_createdDate = right.m_createdDate;
-  m_lastAccess = right.m_lastAccess;
-  m_lastModify = right.m_lastModify;
-  m_dirty = right.m_dirty;
-  m_passwordProtected = right.m_passwordProtected;
-  m_encrypted = right.m_encrypted;
-  m_password = right.m_password;
-  m_banks.clear();
-  m_banks = right.m_banks;
-  m_bankNames.clear();
-  m_bankNames = right.m_bankNames;
-  m_payeeList.clear();
-  m_payeeList = right.m_payeeList;
-  m_categoryList.clear();
-  m_categoryList = right.m_categoryList;
-  m_initialised = right.m_initialised;
-  m_containsBanks = right.m_containsBanks;
-  m_containsAccounts = right.m_containsAccounts;
-  m_containsTransactions = right.m_containsTransactions;
-  return *this;
-}
-
-bool MyMoneyFile::findBankPosition(const MyMoneyBank& bank, unsigned int& pos)
-{
-  int k=0;
-
-  QListIterator<MyMoneyBank> it(m_banks);
-  for ( k=0; it.current(); ++it, k++) {
-    if (*it.current()==bank) {
-      pos=k;
-      return true;
-    }
-  }
-  pos=k;
-  return false;
-}
-
-void MyMoneyFile::init(void)
-{
-  m_initialised=true;
-	m_dirty=false;
-}
-
-bool MyMoneyFile::isInitialised(void)
-{
-  return m_initialised;
-}
-
-bool MyMoneyFile::containsBanks(void)
-{
-  qDebug("STUB: in MyMoneyFile::containsBanks");
-  return m_containsBanks;
-}
-
-bool MyMoneyFile::containsAccounts(void)
-{
-  qDebug("STUB: in MyMoneyFile::containsAccounts");
-  return m_containsAccounts;
-}
-
-bool MyMoneyFile::containsTransactions(void)
-{
-  qDebug("STUB: in MyMoneyFile::containsTransactions");
-  return m_containsTransactions;
-}
-
-void MyMoneyFile::removePayee(const QString name)
-{
-  MyMoneyPayee *payee;
-  for ( payee=m_payeeList.first(); payee!=0; payee=m_payeeList.next()) {
-    if (payee->name() == name) {
-      m_payeeList.remove();
-      m_dirty=true;
-    }
-  }
-}
-
-int MyMoneyFile::categoryCount(void)
-{
-  return m_categoryList.count();
-}
-
-void MyMoneyFile::addEquityEntry(MyMoneyEquity *pEntry)
-{
-	m_equityList.addEquity(pEntry);
+  return m_storage->totalBalance(id);
 }
