@@ -40,10 +40,10 @@
  
 //ReportContainer gContainer;
 
-const QStringList MyMoneyReport::kRowTypeText = QStringList::split(",","none,assetliability,expenseincome,category,topcategory,account,payee,month,week,topaccount,investmentholdings",true);
+const QStringList MyMoneyReport::kRowTypeText = QStringList::split(",","none,assetliability,expenseincome,category,topcategory,account,payee,month,week,topaccount,topaccount-account,equitytype,accounttype,institution",true);
 const QStringList MyMoneyReport::kColumnTypeText = QStringList::split(",","none,months,bimonths,quarters,,,,,,,,,years",true);
 const QStringList MyMoneyReport::kQueryColumnsText = QStringList::split(",","none,number,payee,category,memo,account,reconcileflag,action,shares,price",true);
-const MyMoneyReport::EReportType MyMoneyReport::kTypeArray[] = { eNoReport, ePivotTable, ePivotTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eNoReport };
+const MyMoneyReport::EReportType MyMoneyReport::kTypeArray[] = { eNoReport, ePivotTable, ePivotTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eNoReport };
 
 // This should live in mymoney/mymoneytransactionfilter.h
 static const QStringList kTypeText = QStringList::split(",","all,payments,deposits,transfers,none");
@@ -65,7 +65,7 @@ MyMoneyReport::MyMoneyReport(ERowType _rt, EColumnType _ct, const QDate& _db, co
   {
     setDateFilter(_db,_de);
     
-    if ( _rt > sizeof(kTypeArray)/sizeof(EReportType) || m_reportType == eNoReport )
+    if ( static_cast<size_t>(_rt) > sizeof(kTypeArray)/sizeof(EReportType) || m_reportType == eNoReport )
       throw new MYMONEYEXCEPTION("Invalid report type");
   }
   
@@ -87,7 +87,7 @@ MyMoneyReport::MyMoneyReport(ERowType _rt, unsigned _ct, unsigned _dl, bool _ss,
       m_queryColumns = static_cast<EQueryColumns>(_ct);
     setDateFilter(_dl);
 
-    if ( _rt > sizeof(kTypeArray)/sizeof(EReportType) || m_reportType == eNoReport )
+    if ( static_cast<size_t>(_rt) > sizeof(kTypeArray)/sizeof(EReportType) || m_reportType == eNoReport )
       throw new MYMONEYEXCEPTION("Invalid report type");
       
   }

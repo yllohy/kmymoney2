@@ -111,7 +111,7 @@ KReportConfigurationFilterDlg::KReportConfigurationFilterDlg(
     {
       // eInvestmentHoldings is a special-case report, and you cannot configure the
       // rows & columns of that report.
-      if ( m_initialState.rowType() != MyMoneyReport::eInvestmentHoldings )
+      if ( m_initialState.rowType() < MyMoneyReport::eAccountByTopAccount )
       {
         m_tab3 = new kMyMoneyReportConfigTab3Decl( m_criteriaTab, "kMyMoneyReportConfigTab3" );
         m_criteriaTab->insertTab( m_tab3, QString("Rows/Columns"), 1 );
@@ -262,7 +262,10 @@ void KReportConfigurationFilterDlg::slotReset(void)
     case MyMoneyReport::eWeek:
       m_tab3->m_comboOrganizeBy->setCurrentItem(6);
       break;
-    case MyMoneyReport::eInvestmentHoldings:
+    case MyMoneyReport::eAccountByTopAccount:
+    case MyMoneyReport::eEquityType:
+    case MyMoneyReport::eAccountType:
+    case MyMoneyReport::eInstitution:
     case MyMoneyReport::eAssetLiability:
     case MyMoneyReport::eExpenseIncome:
       throw new MYMONEYEXCEPTION("KReportConfigurationFilterDlg::slotReset(): QueryTable report has invalid rowtype");

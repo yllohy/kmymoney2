@@ -1,6 +1,9 @@
 2004-10-23 Ace Jones <acejones@users.sourceforge.net>
-  * Investment Holdings report
   * Investment Transactions report
+  * Investment Holdings by Account report
+  * Investment Holdings by Type report
+  * Account Balances by Institution report
+  * Account Balances by Type report
   * Added grand total row to all transaction reports
   * Added underlying support for account reports, which builds on 
     transaction reports

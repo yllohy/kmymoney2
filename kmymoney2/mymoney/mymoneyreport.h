@@ -59,11 +59,11 @@ class MyMoneyReport: public MyMoneyTransactionFilter
 {
 public:
   // When adding a new row type, be sure to add a corresponding entry in kTypeArray
-  enum ERowType { eNoRows = 0, eAssetLiability, eExpenseIncome, eCategory, eTopCategory, eAccount, ePayee, eMonth, eWeek, eTopAccount, eInvestmentHoldings };
+  enum ERowType { eNoRows = 0, eAssetLiability, eExpenseIncome, eCategory, eTopCategory, eAccount, ePayee, eMonth, eWeek, eTopAccount, eAccountByTopAccount, eEquityType, eAccountType, eInstitution };
   enum EReportType { eNoReport = 0, ePivotTable, eQueryTable };
   enum EColumnType { eNoColumns = 0, eMonths = 1, eBiMonths = 2, eQuarters = 3, eYears = 12 };
   enum EQueryColumns { eQCnone = 0x0, eQCbegin = 0x1, eQCnumber = 0x1, eQCpayee = 0x2, eQCcategory = 0x4, eQCmemo = 0x8, eQCaccount = 0x10, eQCreconciled=0x20, eQCaction=0x40, eQCshares=0x80, eQCprice=0x100, eQCend=0x200 };
-  
+
   static const QStringList kRowTypeText;
   static const QStringList kColumnTypeText;
   static const QStringList kQueryColumnsText;

@@ -183,15 +183,18 @@ const QString accountTypeToString(const MyMoneyAccount::accountTypeE accountType
 
 QueryTable::QueryTable(const MyMoneyReport& _report): m_config(_report)
 {
-  if ( m_config.rowType() == MyMoneyReport::eInvestmentHoldings )
+  switch ( m_config.rowType() )
   {
-    constructAccountTable();
-    m_columns="account";
-  }
-  else
-  {
-    constructTransactionTable();
-    m_columns="postdate";
+    case MyMoneyReport::eAccountByTopAccount: 
+    case MyMoneyReport::eEquityType:
+    case MyMoneyReport::eAccountType:
+    case MyMoneyReport::eInstitution:
+      constructAccountTable();
+      m_columns="account";
+      break;
+    default:
+      constructTransactionTable();
+      m_columns="postdate";
   }
 
   // Sort the data to match the report definition
@@ -220,8 +223,17 @@ QueryTable::QueryTable(const MyMoneyReport& _report): m_config(_report)
   case MyMoneyReport::eWeek:
     m_group = "week";
     break;
-  case MyMoneyReport::eInvestmentHoldings:
+  case MyMoneyReport::eAccountByTopAccount: 
     m_group = "topaccount";
+    break;
+  case MyMoneyReport::eEquityType:
+    m_group = "equitytype";
+    break;
+  case MyMoneyReport::eAccountType:
+    m_group = "type";
+    break;
+  case MyMoneyReport::eInstitution:
+    m_group = "institution";
     break;
   default:
     throw new MYMONEYEXCEPTION("QueryTable::QueryTable(): unhandled row type");
@@ -508,7 +520,7 @@ void QueryTable::constructAccountTable(void)
 
       QCString iid = (*it_account).institutionId();
       if ( iid.isEmpty() )
-        qaccountrow["institution"] = QString();
+        qaccountrow["institution"] = "None";
       else
         qaccountrow["institution"] = file->institution(iid).name();
       
@@ -838,5 +850,6 @@ void QueryTable::dump( const QString& file, const QString& context ) const
   g.close();
 }
 
-// vim: noci noai nosi
 }
+// vim:cin:si:ai:et:ts=2:sw=2:
+
