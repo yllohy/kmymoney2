@@ -5,6 +5,7 @@
   * Differentiate accounts and categories with the same name during import
   * added consistency check tool
   * allow to move accounts between expense/income group
+  * Fixed close window function, again
 
 2003-08-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * backup file name is now constructed using international date format
