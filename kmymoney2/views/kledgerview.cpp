@@ -1508,8 +1508,10 @@ void KLedgerView::slotCancelEdit(void)
     m_form->editButton()->setEnabled(true);
   }
 
-  hideWidgets();
-  fillForm();
+  if(m_editDate && m_editDate->isVisible()) {
+    hideWidgets();
+    fillForm();
+  }
 
   connect(m_register, SIGNAL(signalEnter()), this, SLOT(slotStartEdit()));
   m_register->setInlineEditingMode(false);
