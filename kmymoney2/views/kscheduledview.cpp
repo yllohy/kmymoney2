@@ -26,6 +26,7 @@
 #include <qcombobox.h>
 #include <qtabwidget.h>
 #include <qlayout.h>
+#include <qtimer.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -219,8 +220,11 @@ void KScheduledView::refresh(bool full, const QCString schedId)
 
     if (openItem)
     {
-      m_qlistviewScheduled->ensureItemVisible(openItem);
       m_qlistviewScheduled->setSelected(openItem, true);
+      // using a timeout is the only way, I got the 'ensureTransactionVisible'
+      // working when coming from hidden form to visible form. I assume, this
+      // has something to do with the delayed update of the display somehow.
+      QTimer::singleShot(10, this, SLOT(slotTimerDone()));
     }
 
     if (m_openBills)
@@ -240,6 +244,13 @@ void KScheduledView::refresh(bool full, const QCString schedId)
     KMessageBox::error(this, e->what());
     delete e;
   }
+}
+
+void KScheduledView::slotTimerDone(void)
+{
+  QListViewItem* item = m_qlistviewScheduled->selectedItem();
+  if(item)
+    m_qlistviewScheduled->ensureItemVisible(item);
 }
 
 void KScheduledView::slotReloadView(void)
