@@ -63,6 +63,8 @@ public:
   void setEditable(int row, int col, bool editable = true);
   void clearEditable(void);
 
+  bool eventFilter( QObject * o, QEvent * );
+
 public slots:
   virtual void setNumCols(int c);
   virtual void setNumRows(int r);

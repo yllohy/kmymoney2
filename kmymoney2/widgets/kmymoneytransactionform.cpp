@@ -99,6 +99,16 @@ void kMyMoneyTransactionFormTable::clearEditable(void)
   m_editable.fill(false);
 }
 
+bool kMyMoneyTransactionFormTable::eventFilter( QObject * o, QEvent * e)
+{
+  if(e->type() == QEvent::KeyPress
+  || e->type() == QEvent::KeyRelease)
+    return false;
+  else
+    return QTable::eventFilter(o ,e);
+
+}
+
 kMyMoneyTransactionFormTableItem::kMyMoneyTransactionFormTableItem(QTable* table, EditType ed, const QString& str)
   : QTableItem(table, ed, str)
 {
