@@ -49,6 +49,7 @@ class kMyMoneyCategory;
 class kMyMoneyEdit;
 class kMyMoneyLineEdit;
 class kMyMoneyDateInput;
+class KPushButton;
 
 #include "../mymoney/mymoneyaccount.h"
 #include "../mymoney/mymoneytransaction.h"
@@ -468,6 +469,11 @@ protected:
   kMyMoneyTransactionForm *m_form;
 
   /**
+    * This member keeps the visibility status of the transaction form.
+    */
+  bool m_transactionFormActive;
+
+  /**
     * This member holds the date from which on transactions should be shown
     * in the ledger view. See KSettingsDlg where this value can be changed.
     */
@@ -526,14 +532,20 @@ protected:
   kMyMoneyDateInput*    m_editDate;       ///< pointer to date edit widget
   kMyMoneyCategory*     m_editFrom;       ///< pointer to 'from account' edit widget
   kMyMoneyCategory*     m_editTo;         ///< pointer to 'to account' edit widget
+  KPushButton*          m_editSplit;      ///< pointer to split button
 
   /*
-   * The following member keeps the tab order for the above widgets
+   * This member keeps the tab order for the above widgets
    */
   QWidgetList   m_tabOrderWidgets;
 
+  /**
+    * This member contains the current setting of the ledger lens
+    */
+  bool          m_ledgerLens;
+
 private:
-  QTimer*      m_timer;
+  QTimer*       m_timer;
 
 private slots:
   void timerDone(void);

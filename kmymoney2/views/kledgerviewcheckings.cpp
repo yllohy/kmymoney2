@@ -117,9 +117,8 @@ KLedgerViewCheckings::KLedgerViewCheckings(QWidget *parent, const char *name )
   // adjust size of form table
   m_form->table()->setMaximumHeight(m_form->table()->rowHeight(0)*m_form->table()->numRows());
 
-  // for now, show the form upon program start. We should
-  // make this a config setting and keep it in the rc file
-  slotShowTransactionForm(true);
+  // FIXME: make this a config setting and keep it in the rc file
+  slotShowTransactionForm(m_transactionFormActive);
 
   // and the register has the focus
   m_register->setFocus();
@@ -133,8 +132,6 @@ KLedgerViewCheckings::KLedgerViewCheckings(QWidget *parent, const char *name )
   connect(m_register, SIGNAL(signalEnter()), this, SLOT(slotStartEdit()));
   connect(m_register, SIGNAL(signalNextTransaction()), this, SLOT(slotNextTransaction()));
   connect(m_register, SIGNAL(signalPreviousTransaction()), this, SLOT(slotPreviousTransaction()));
-
-  connect(this, SIGNAL(transactionSelected()), this, SLOT(slotCancelEdit()));
 
   connect(m_form->editButton(), SIGNAL(clicked()), this, SLOT(slotStartEdit()));
   connect(m_form->cancelButton(), SIGNAL(clicked()), this, SLOT(slotCancelEdit()));
@@ -456,6 +453,10 @@ void KLedgerViewCheckings::showWidgets(void)
   m_editNr = new kMyMoneyLineEdit(0, "editNr");
   m_editFrom = new kMyMoneyCategory(0, "editFrom", static_cast<kMyMoneyCategory::categoryTypeE> (kMyMoneyCategory::asset | kMyMoneyCategory::liability));
   m_editTo = new kMyMoneyCategory(0, "editTo", static_cast<kMyMoneyCategory::categoryTypeE> (kMyMoneyCategory::asset | kMyMoneyCategory::liability));
+  m_editSplit = new KPushButton("Split", 0, "editSplit");
+
+  // for now, the split button is not usable
+  m_editSplit->setEnabled(false);
 
   connect(m_editPayee, SIGNAL(newPayee(const QString&)), this, SLOT(slotNewPayee(const QString&)));
   connect(m_editPayee, SIGNAL(payeeChanged(const QString&)), this, SLOT(slotPayeeChanged(const QString&)));
@@ -657,9 +658,12 @@ void KLedgerViewCheckings::showWidgets(void)
 
     if(categoryRow != -1) {
       m_form->table()->setCellWidget(categoryRow, 1, m_editCategory);
+      m_form->table()->setCellWidget(categoryRow, 2, m_editSplit);
     } else {
       delete m_editCategory;
+      delete m_editSplit;
       m_editCategory = 0;
+      m_editSplit = 0;
     }
 
     if(nrRow != -1) {
@@ -680,6 +684,7 @@ void KLedgerViewCheckings::showWidgets(void)
       case ATM: // ATM
         m_tabOrderWidgets.append(m_editPayee);
         m_tabOrderWidgets.append(m_editCategory);
+        m_tabOrderWidgets.append(m_editSplit);
         m_tabOrderWidgets.append(m_editMemo);
         m_tabOrderWidgets.append(m_editNr);
         break;
@@ -688,6 +693,7 @@ void KLedgerViewCheckings::showWidgets(void)
       case Withdrawal: // Withdrawal
         m_tabOrderWidgets.append(m_editPayee);
         m_tabOrderWidgets.append(m_editCategory);
+        m_tabOrderWidgets.append(m_editSplit);
         m_tabOrderWidgets.append(m_editMemo);
         break;
 
@@ -713,6 +719,7 @@ void KLedgerViewCheckings::hideWidgets(void)
 {
   for(int i=0; i < m_form->table()->numRows(); ++i) {
     m_form->table()->clearCellWidget(i, 1);
+    m_form->table()->clearCellWidget(i, 2);
     m_form->table()->clearCellWidget(i, 4);
   }
 
@@ -724,6 +731,7 @@ void KLedgerViewCheckings::hideWidgets(void)
   m_editDate = 0;
   m_editFrom = 0;
   m_editTo = 0;
+  m_editSplit = 0;
 
   m_form->table()->clearEditable();
   m_form->tabBar()->setEnabled(true);
@@ -731,6 +739,6 @@ void KLedgerViewCheckings::hideWidgets(void)
 
 bool KLedgerViewCheckings::focusNextPrevChild(bool next)
 {
-  KLedgerView::focusNextPrevChild(next);
+  return KLedgerView::focusNextPrevChild(next);
 }
 

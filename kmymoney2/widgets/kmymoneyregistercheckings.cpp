@@ -50,7 +50,10 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
   // do general stuff
   kMyMoneyRegister::paintCell(p, row, col, r, selected, cg);
 
-  const bool lastLine = m_transactionRow == m_rpt-1;
+  const bool lastLine = m_ledgerLens && m_transactionIndex == m_currentTransactionIndex
+                         ? m_transactionRow == maxRpt() - 1
+                         : m_transactionRow == m_rpt-1;
+
   int align = Qt::AlignVCenter;
 
   // if a grid is selected, we paint it right away

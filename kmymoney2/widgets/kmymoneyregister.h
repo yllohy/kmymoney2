@@ -72,6 +72,19 @@ public:
     */
   void readConfig(void);
 
+  /**
+    * This method allows a view to turn on or off the ledger lens feature.
+    * Per default, the transaction lens is enabled in the constructor of this
+    * class.
+    *
+    * @param enabled If true, the transaction lens feature is turned on, if
+    *                false, the transaction lens feature is turned off.
+    *
+    * @note The widget is not redrawn when the setting is changed. This is left
+    *       to the user of this widget.
+    */
+  void setLedgerLens(const bool enabled);
+
   void clearCell(int row, int col) {};
   void setItem(int row, int col, QTableItem *) {};
   QTableItem* item(int row, int col) const  { return NULL; };
@@ -104,6 +117,18 @@ public:
     *         false otherwise.
     */
   bool setCurrentTransactionIndex(int idx);
+
+  /**
+    * This method is used to move the selection bar to a specific
+    * transaction defined by @p row. Unlike setCurrentTransactionIndex
+    * it respects the setting of the transaction lens to select
+    * the transaction.
+    *
+    * @param row The row of the table that should be selected
+    * @return true if a different transaction is selected,
+    *         false otherwise.
+    */
+  bool setCurrentTransactionRow(const int row);
 
   /**
     * This method is used to set the inline editing availability
@@ -152,8 +177,20 @@ protected:
   void keyPressEvent(QKeyEvent *k);
 */
 
+  /**
+    * This method returns the maximum number a register can provide
+    * for a specific register. It has to be provided by the derived
+    * classes.
+    *
+    * @return integer containing the maximum number of lines the
+    *         register provides for a single transaction
+    */
+  virtual const int maxRpt(void) const = 0;
+
 protected:
   int    m_rpt;     // rows per transaction
+  bool   m_ledgerLens;
+
   KLedgerView*  m_view;
 
   QFont  m_font;

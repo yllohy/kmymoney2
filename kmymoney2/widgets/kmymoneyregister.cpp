@@ -33,7 +33,8 @@
 #include "../views/kledgerview.h"
 
 kMyMoneyRegister::kMyMoneyRegister(QWidget *parent, const char *name )
-  : QTable(parent, name)
+  : QTable(parent, name),
+    m_ledgerLens(true)
 {
   readConfig();
   m_currentDateRow = -1;
@@ -56,6 +57,9 @@ void kMyMoneyRegister::setTransactionCount(int r)
 
   int irows = r * m_rpt;
 
+  if(m_ledgerLens == true) {
+    irows = (r-1)*m_rpt + maxRpt();
+  }
   QTable::setNumRows(irows);
 
 /*
@@ -107,10 +111,22 @@ void kMyMoneyRegister::readConfig(void)
 void kMyMoneyRegister::paintCell(QPainter *p, int row, int col, const QRect& r,
                                  bool selected, const QColorGroup& cg)
 {
+  int firstRow,       // first row occupied by current transaction
+      lastRow;        // last row occupied by current transaction
+  firstRow = m_currentTransactionIndex * m_rpt;
+  if(m_ledgerLens)
+    lastRow = (m_currentTransactionIndex * m_rpt) + maxRpt() - 1;
+  else
+    lastRow = (m_currentTransactionIndex * m_rpt) + m_rpt - 1;
+
   m_cg = cg;
 
   if (m_colorPerTransaction) {
-    if((row/m_rpt)%2)
+    int adj = 0;
+    if(row > lastRow && m_ledgerLens) {
+      adj = m_rpt - maxRpt();
+    }
+    if(((row + adj)/m_rpt)%2)
       m_cg.setColor(QColorGroup::Base, m_color);
     else
       m_cg.setColor(QColorGroup::Base, m_bgColor);
@@ -138,6 +154,17 @@ void kMyMoneyRegister::paintCell(QPainter *p, int row, int col, const QRect& r,
 
   m_transactionIndex = row/m_rpt;
   m_transactionRow = row%m_rpt;
+
+  if(m_ledgerLens) {
+    if(row >= firstRow && row <= lastRow) {
+      m_transactionIndex = m_currentTransactionIndex;
+      m_transactionRow = row - firstRow;
+    } else if(row > lastRow && m_ledgerLens) {
+      m_transactionIndex = (row - maxRpt() + m_rpt) / m_rpt;
+      m_transactionRow = (row - maxRpt() + m_rpt) % m_rpt;
+    }
+  }
+
   if(m_transactionIndex != m_lastTransactionIndex) {
     m_transaction = m_view->transaction(m_transactionIndex);
     if(m_transaction != NULL) {
@@ -171,6 +198,30 @@ void kMyMoneyRegister::contentsMouseReleaseEvent( QMouseEvent* e )
 */
 }
 
+bool kMyMoneyRegister::setCurrentTransactionRow(const int row)
+{
+  int firstRow,       // first row occupied by current transaction
+      lastRow;        // last row occupied by current transaction
+  int idx;
+  firstRow = m_currentTransactionIndex * m_rpt;
+  if(m_ledgerLens)
+    lastRow = (m_currentTransactionIndex * m_rpt) + maxRpt() - 1;
+  else
+    lastRow = (m_currentTransactionIndex * m_rpt) + m_rpt - 1;
+
+  idx = row/m_rpt;
+
+  if(m_ledgerLens) {
+    if(row >= firstRow && row <= lastRow) {
+      idx = m_currentTransactionIndex;
+    } else if(row > lastRow && m_ledgerLens) {
+      idx = (row - maxRpt() + m_rpt) / m_rpt;
+    }
+  }
+  return setCurrentTransactionIndex(idx);
+}
+
+
 bool kMyMoneyRegister::setCurrentTransactionIndex(int idx)
 {
   if(idx < 0)
@@ -196,10 +247,27 @@ void kMyMoneyRegister::setInlineEditingAvailable(const bool editing)
 
 void kMyMoneyRegister::ensureTransactionVisible(void)
 {
-  // ensure the current and the previous transaction are visible
-  ensureCellVisible((currentTransactionIndex()-1) * rpt(), 0);
-  ensureCellVisible((currentTransactionIndex()) * rpt(), 0);
-  ensureCellVisible((currentTransactionIndex() * rpt()) + rpt()-1, 0);
+  int prev, curr, next;
+
+  // first row of current transaction
+  curr = currentTransactionIndex() * rpt();
+
+  // first row of previous transaction
+  prev = curr - rpt();
+
+  // last row of next transaction
+  if(m_ledgerLens == true)
+    next = curr + rpt() + maxRpt() - 1;
+  else
+    next = curr + rpt()*2 - 1;
+
+  if(prev >= 0)
+    ensureCellVisible(prev, 0);
+
+  ensureCellVisible(curr, 0);
+
+  if(next < numRows())
+    ensureCellVisible(next, 0);
 }
 
 bool kMyMoneyRegister::eventFilter(QObject* o, QEvent* e)
@@ -239,4 +307,9 @@ bool kMyMoneyRegister::eventFilter(QObject* o, QEvent* e)
     rc = QTable::eventFilter(o, e);
 
   return rc;
+}
+
+void kMyMoneyRegister::setLedgerLens(const bool enabled)
+{
+  m_ledgerLens = enabled;
 }

@@ -46,6 +46,32 @@ class kMyMoneyTransactionFormTable;
   * @todo in-register editing of transactions in KLedgerViewCheckings
   */
 
+/**
+  * This class represents the ledger view for checkings accounts.
+  * As described with the base class KLedgerView, it consists out
+  * of a register, a button line and a form.
+  * The register is provided by kMyMoneyRegisterCheckings. The form
+  * is maintained within this class, even though most of the members
+  * required are provided by KLedgerView.
+  *
+  * The tabbar on top of the form shows the possible transaction types. It
+  * is also loaded in the constructor of this class.
+  *
+  * The form is QTable-based and will be created with 4 rows and 5 columns
+  * in the constructor of this class. Except for
+  * the category input field, fields in col 1 also span col 2. The
+  * category field provides a button in col 2 to enter the splits dialog.
+  *
+  * The edit widgets are created within showWidgets(). This method also
+  * attaches the widgets to the table's cells using QTable::setCellWidget().
+  * It also maintains the tab order.
+  *
+  * hideWidgets() removes all edit widgets from the form table and returns
+  * to the read-only form view.
+  *
+  * fillForm() fills the data provided by the current selected transaction
+  * into the read-only form. The layout depends on the type of transaction.
+  */
 class KLedgerViewCheckings : public KLedgerView  {
    Q_OBJECT
 

@@ -31,6 +31,7 @@
 
 #include <kmessagebox.h>
 #include <kpushbutton.h>
+#include <kconfig.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -73,6 +74,11 @@ void KTransactionPtrVector::setSortType(const TransactionSortE type)
 KLedgerView::KLedgerView(QWidget *parent, const char *name )
   : QWidget(parent,name)
 {
+  KConfig *config = KGlobal::config();
+  config->setGroup("General Options");
+  m_ledgerLens = config->readBoolEntry("LedgerLens", true);
+  m_transactionFormActive = config->readBoolEntry("TransactionForm", true);
+
   m_editPayee = 0;
   m_register = 0;
   m_form = 0;
@@ -160,7 +166,13 @@ void KLedgerView::refreshView(void)
 
   m_dateStart = config->readDateTimeEntry("StartDate", &defaultDate).date();
 
+  config->setGroup("General Options");
+  m_ledgerLens = config->readBoolEntry("LedgerLens", true);
+  m_transactionFormActive = config->readBoolEntry("TransactionForm", true);
+
   filterTransactions();
+
+  slotShowTransactionForm(m_transactionFormActive);
 
   m_register->readConfig();
   m_register->setTransactionCount(m_transactionPtrVector.count()+1);
@@ -196,11 +208,17 @@ void KLedgerView::filterTransactions(void)
   MyMoneyMoney balance(0);
   m_balance.resize(i, balance);
 
-  balance = MyMoneyFile::instance()->balance(accountId());
-  // the trick is to go backwards ;-)
-  while(--i >= 0) {
-    m_balance[i] = balance;
-    balance -= m_transactionPtrVector[i]->split(accountId()).value();
+  try {
+    balance = MyMoneyFile::instance()->balance(accountId());
+    // the trick is to go backwards ;-)
+    while(--i >= 0) {
+      m_balance[i] = balance;
+      balance -= m_transactionPtrVector[i]->split(accountId()).value();
+    }
+  } catch(MyMoneyException *e) {
+    if(accountId() != "")
+      qDebug("Unexpected exception in KLedgerView::filterTransactions");
+    delete e;
   }
 }
 
@@ -234,11 +252,21 @@ void KLedgerView::slotRegisterClicked(int row, int col, int button, const QPoint
 {
   // only redraw the register and form, when a different
   // transaction has been selected with this click.
-  if(m_register->setCurrentTransactionIndex(row / m_register->rpt()) == true) {
+  if(m_register->setCurrentTransactionRow(row) == true) {
     m_register->ensureTransactionVisible();
     m_register->repaintContents();
-    fillForm();
+
+    slotCancelEdit();
+
+    // if the very last entry has been selected, it means, that
+    // a new transaction should be created.
+    if(m_register->currentTransactionIndex() == m_transactionList.count()) {
+      slotNew();
+    } else
+      fillForm();
+
     emit transactionSelected();
+
   }
 }
 
@@ -603,6 +631,16 @@ void KLedgerView::slotDateChanged(const QDate& date)
 
 void KLedgerView::slotShowTransactionForm(bool visible)
 {
+  // if the setting is different, don't forget to update
+  // the configuration
+  if(m_transactionFormActive != visible) {
+    KConfig *config = KGlobal::config();
+    config->setGroup("General Options");
+    config->writeEntry("TransactionForm", visible);
+  }
+
+  m_transactionFormActive = visible;
+
   if(m_form != 0) {
     if(visible) {
       // block signals here to avoid running into the NEW case
@@ -615,7 +653,18 @@ void KLedgerView::slotShowTransactionForm(bool visible)
   }
 
   if(m_register != 0) {
+    if(visible) {
+      m_register->setLedgerLens(m_ledgerLens);
+    } else {
+      m_register->setLedgerLens(true);
+    }
+
+    // force update of row count because the lens setting might have changed
+    m_register->setTransactionCount(m_transactionPtrVector.size()+1);
+
+    // inform widget, if inline editing should be available or not
     m_register->setInlineEditingAvailable(!visible);
+
     // make sure, full transaction is visible
     resizeEvent(NULL);
 
@@ -842,21 +891,25 @@ bool KLedgerView::focusNextPrevChild(bool next)
 
   if(m_editDate != 0) {
     QWidget *w = 0;
+    QWidget *currentWidget;
 
     m_tabOrderWidgets.find(qApp->focusWidget());
+    currentWidget = m_tabOrderWidgets.current();
+    w = next ? m_tabOrderWidgets.next() : m_tabOrderWidgets.prev();
 
-    if(next == true) {
-      w = m_tabOrderWidgets.next();
+    do {
       if(!w)
-        w = m_tabOrderWidgets.first();
-    } else {
-      w = m_tabOrderWidgets.prev();
-      if(!w)
-        w = m_tabOrderWidgets.last();
-    }
+        w = next ? m_tabOrderWidgets.first() : m_tabOrderWidgets.last();
 
-    w->setFocus();
-    rc = true;
+      if(w != currentWidget
+      && ((w->focusPolicy() & TabFocus) == TabFocus)
+      && !w->focusProxy() && w->isVisible() && w->isEnabled()) {
+        w->setFocus();
+        rc = true;
+        break;
+      }
+      w = next ? m_tabOrderWidgets.next() : m_tabOrderWidgets.prev();
+    } while(w != currentWidget);
 
   } else
     rc = QWidget::focusNextPrevChild(next);

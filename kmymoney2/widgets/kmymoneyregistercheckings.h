@@ -56,6 +56,8 @@ public slots:
 
 protected:
   void paintCell(QPainter *p, int row, int col, const QRect& r, bool selected, const QColorGroup& cg);
+
+  virtual const int maxRpt(void) const { return 3; };
 };
 
 #endif
