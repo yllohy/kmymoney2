@@ -523,7 +523,7 @@ void MyMoneyFile::renameMinor(const QString& major, const QString& oldName, cons
   }
 }
 
-void MyMoneyFile::addPayee(const QString& newPayee, QString address, QString postcode, QString telephone, QString email)
+void MyMoneyFile::addPayee(const QString& newPayee, const QString address, const QString postcode, const QString telephone, const QString email)
 {
   if (newPayee.isEmpty() || newPayee==QString::null)
     return;

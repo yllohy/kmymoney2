@@ -86,6 +86,7 @@ void MyMoneyTransaction::init(MyMoneyTransaction& right)
 {
   // set list to auto delete mode
   m_splitList.setAutoDelete(true);
+  m_splitList.clear();
 
   // copy base class members
   MyMoneyTransactionBase::init(right);
@@ -219,7 +220,7 @@ MyMoneyTransaction::transactionMethod MyMoneyTransaction::stringToMethod(const c
   return ATM;
 }
 
-void MyMoneyTransaction::setDirty(bool flag)
+void MyMoneyTransaction::setDirty(const bool flag)
 {
   if (m_parent)
     m_parent->setDirty(flag);
