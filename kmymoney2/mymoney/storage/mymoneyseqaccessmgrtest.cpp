@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "mymoneyseqaccessmgrtest.h"
+#include <iostream>
 
 MyMoneySeqAccessMgrTest::MyMoneySeqAccessMgrTest()
 {
@@ -394,7 +395,7 @@ void MyMoneySeqAccessMgrTest::testReparentAccount() {
 		CPPUNIT_ASSERT(m->account(ex1.id()).accountCount() == 2);
 		CPPUNIT_ASSERT(ex3.parentAccountId() == ex1.id());
 	} catch (MyMoneyException *e) {
-		cout << endl << e->what() << endl;
+		std::cout << std::endl << e->what() << std::endl;
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception");
 	}

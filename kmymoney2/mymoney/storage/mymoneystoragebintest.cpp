@@ -18,6 +18,7 @@
 
 #include <unistd.h>
 #include <qfile.h>
+#include <iostream>
 
 #define private public
 #include <mymoneyseqaccessmgr.h>
@@ -257,7 +258,7 @@ void MyMoneyStorageBinTest::testReadOldMyMoneyFile(const QString version, unsign
     a1 = storage.account("A000003");
     a2 = storage.account("A000004");
   } catch(MyMoneyException *e) {
-    cout << e->what() << endl;
+    std::cout << e->what() << std::endl;
     delete e;
   }
 
@@ -301,7 +302,7 @@ void MyMoneyStorageBinTest::testReadOldMyMoneyFile(const QString version, unsign
   try {
     t = storage.transaction("A000003", 0);
   } catch(MyMoneyException *e) {
-    cout << e->what() << endl;
+    std::cout << e->what() << std::endl;
     delete e;
   }
   CPPUNIT_ASSERT(t.splitCount() == 2);
@@ -335,7 +336,7 @@ void MyMoneyStorageBinTest::testReadOldMyMoneyFile(const QString version, unsign
   try {
     t = storage.transaction("A000003", 1);
   } catch(MyMoneyException *e) {
-    cout << e->what() << endl;
+    std::cout << e->what() << std::endl;
     delete e;
   }
   CPPUNIT_ASSERT(t.splitCount() == 2);
@@ -364,7 +365,7 @@ void MyMoneyStorageBinTest::testReadOldMyMoneyFile(const QString version, unsign
   try {
     t = storage.transaction("A000003", 2);
   } catch(MyMoneyException *e) {
-    cout << e->what() << endl;
+    std::cout << e->what() << std::endl;
     delete e;
   }
   CPPUNIT_ASSERT(t.splitCount() == 2);

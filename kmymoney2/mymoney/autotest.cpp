@@ -17,6 +17,7 @@
 #include "config.h"
 
 #include <iostream>
+#include <string>
 
 #ifdef HAVE_LIBCPPUNIT
 
@@ -54,8 +55,8 @@ class MyProgressListener : public CppUnit::TextTestProgressListener
 		name = name.left(name.find('.'));
 		if(m_name != name) {
 			if(m_name != "")
-				cout << endl;
-			cout << "Running: " << name << endl;
+				std::cout << std::endl;
+			std::cout << "Running: " << name << std::endl;
 			m_name = name;
 		}
 	}
@@ -65,7 +66,7 @@ private:
 
 void unexpectedException(MyMoneyException *e)
 {
-	string msg = "Unexpected exception: ";
+	std::string msg = "Unexpected exception: ";
 	msg += e->what();
 	msg += " thrown in ";
 	msg += e->file().latin1();
