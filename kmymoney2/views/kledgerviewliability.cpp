@@ -86,6 +86,7 @@ void KLedgerViewLiability::createEditWidgets(void)
   connect(m_editMemo, SIGNAL(lineChanged(const QString&)), this, SLOT(slotMemoChanged(const QString&)));
   connect(m_editCategory, SIGNAL(categoryChanged(const QString&)), this, SLOT(slotCategoryChanged(const QString&)));
   connect(m_editAmount, SIGNAL(valueChanged(const QString&)), this, SLOT(slotAmountChanged(const QString&)));
+  connect(m_editNr, SIGNAL(lineChanged(const QString&)), this, SLOT(slotNrChanged(const QString&)));
   connect(m_editDate, SIGNAL(dateChanged(const QDate&)), this, SLOT(slotDateChanged(const QDate&)));
   connect(m_editFrom, SIGNAL(categoryChanged(const QString&)), this, SLOT(slotFromChanged(const QString&)));
   connect(m_editTo, SIGNAL(categoryChanged(const QString&)), this, SLOT(slotToChanged(const QString&)));
@@ -96,6 +97,7 @@ void KLedgerViewLiability::createEditWidgets(void)
   connect(m_editPayee, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
   connect(m_editMemo, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
   connect(m_editCategory, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
+  connect(m_editNr, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
   connect(m_editDate, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
   connect(m_editFrom, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
   connect(m_editTo, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
@@ -107,6 +109,7 @@ void KLedgerViewLiability::createEditWidgets(void)
   connect(m_editPayee, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   connect(m_editMemo, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   connect(m_editCategory, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
+  connect(m_editNr, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   connect(m_editDate, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   connect(m_editFrom, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   connect(m_editTo, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
