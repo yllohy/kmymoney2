@@ -18,8 +18,9 @@
 #define MYMONEYPAYEE_H
 
 #include <qstring.h>
+#include <qcstring.h>
 
-// This class represents a simple payee.  Used in MyMoneyTransaction
+// This class represents a simple payee.  Used in MyMoneySplit
 class MyMoneyPayee {
 private:
 	// Simple fields
@@ -28,8 +29,23 @@ private:
 	QString m_postcode;
 	QString m_telephone;
 	QString m_email;
+
+  /**
+    * This member keeps the MyMoney id
+    */
   QCString m_id;
-	
+
+  /**
+    * This member keeps a reference to an external database
+    * (e.g. kaddressbook). It is the responsability of the
+    * application to format the reference string
+    * (e.g. encoding the name of the external database into the
+    * reference string).
+    * If no external database is available it should be kept
+    * emtpy by the application.
+    */
+	QString m_reference;
+
   friend QDataStream &operator<<(QDataStream &, const MyMoneyPayee &);
   friend QDataStream &operator>>(QDataStream &, MyMoneyPayee &);
 
@@ -45,17 +61,19 @@ public:
 	QString postcode(void) const { return m_postcode; }
 	QString telephone(void) const { return m_telephone; }
 	QString email(void) const { return m_email; }
-  QCString id(void) const { return m_id; };	
+  const QCString id(void) const { return m_id; };
+  const QString reference(void) const { return m_reference; };
+  	
 	// Simple set operations
 	void setName(const QString& val) { m_name = val; }
 	void setAddress(const QString& val) { m_address = val; }
 	void setPostcode(const QString& val) { m_postcode = val; }
 	void setTelephone(const QString& val) { m_telephone = val; }
 	void setEmail(const QString& val) { m_email = val; }
+  void setReference(const QString& ref) { m_reference = ref; }
 	
   // Copy constructors
   MyMoneyPayee(const MyMoneyPayee&);
-  MyMoneyPayee& operator = (const MyMoneyPayee&);
 };
 
 #endif

@@ -160,6 +160,15 @@ public:
   virtual void addAccount(MyMoneyAccount& parent, MyMoneyAccount& account) = 0;
 
   /**
+    * This method is used to create a new payee
+    *
+    * An exception will be thrown upon error conditions
+    *
+    * @param payee MyMoneyPayee reference to payee information
+    */
+  virtual void addPayee(MyMoneyPayee& payee) = 0;
+
+  /**
     * This method is used to add an account to an institution. The account
     * data will be updated to contain the correct id of the referenced institution
     * and the account will be added to the list of accounts held at the

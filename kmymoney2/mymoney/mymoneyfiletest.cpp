@@ -934,3 +934,76 @@ void MyMoneyFileTest::testBalanceTotal() {
 	}
 }
 
+void MyMoneyFileTest::testSetAccountName() {
+	try {
+		m->setAccountName(STD_ACC_LIABILITY, "Verbindlichkeiten");
+	} catch (MyMoneyException *e) {
+		delete e;
+		CPPUNIT_FAIL("Unexpected exception");
+	}
+	try {
+		m->setAccountName(STD_ACC_ASSET, "Vermögen");
+	} catch (MyMoneyException *e) {
+		delete e;
+		CPPUNIT_FAIL("Unexpected exception");
+	}
+	try {
+		m->setAccountName(STD_ACC_EXPENSE, "Ausgaben");
+	} catch (MyMoneyException *e) {
+		delete e;
+		CPPUNIT_FAIL("Unexpected exception");
+	}
+	try {
+		m->setAccountName(STD_ACC_INCOME, "Einnahmen");
+	} catch (MyMoneyException *e) {
+		delete e;
+		CPPUNIT_FAIL("Unexpected exception");
+	}
+
+	CPPUNIT_ASSERT(m->liability().name() == "Verbindlichkeiten");
+	CPPUNIT_ASSERT(m->asset().name() == "Vermögen");
+	CPPUNIT_ASSERT(m->expense().name() == "Ausgaben");
+	CPPUNIT_ASSERT(m->income().name() == "Einnahmen");
+
+	try {
+		m->setAccountName("A000001", "New account name");
+		CPPUNIT_FAIL("Exception expected");
+	} catch (MyMoneyException *e) {
+		delete e;
+	}
+}
+
+void MyMoneyFileTest::testAddPayee() {
+	MyMoneyPayee p;
+
+	p.setName("THB");
+	CPPUNIT_ASSERT(m->dirty() == false);
+	try {
+		m->addPayee(p);
+		CPPUNIT_ASSERT(m->dirty() == true);
+		CPPUNIT_ASSERT(p.id() == "P000001");
+	} catch (MyMoneyException *e) {
+		delete e;
+		CPPUNIT_FAIL("Unexpected exception");
+	}
+}
+
+void MyMoneyFileTest::testModifyPayee() {
+	MyMoneyPayee p;
+
+	testAddPayee();
+
+	p = m->payee("P000001");
+	p.setName("New name");
+	try {
+		m->modifyPayee(p);
+		p = m->payee("P000001");
+		CPPUNIT_ASSERT(p.name() == "New name");
+	} catch (MyMoneyException *e) {
+		delete e;
+		CPPUNIT_FAIL("Unexpected exception");
+	}
+}
+
+void MyMoneyFileTest::testRemovePayee() {
+}

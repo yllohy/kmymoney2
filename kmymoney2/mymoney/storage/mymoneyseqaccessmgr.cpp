@@ -136,6 +136,52 @@ void MyMoneySeqAccessMgr::addPayee(MyMoneyPayee& payee)
   payee = newPayee;
 }
 
+const MyMoneyPayee MyMoneySeqAccessMgr::payee(const QCString& id) const
+{
+  QMap<QCString, MyMoneyPayee>::ConstIterator it;
+
+  it = m_payeeList.find(id);
+  if(it == m_payeeList.end())
+    throw new MYMONEYEXCEPTION("Unknown payee");
+
+  return *it;
+}
+
+void MyMoneySeqAccessMgr::modifyPayee(const MyMoneyPayee& payee)
+{
+  QMap<QCString, MyMoneyPayee>::Iterator it;
+
+  it = m_payeeList.find(payee.id());
+  if(it == m_payeeList.end())
+    throw new MYMONEYEXCEPTION("Unknown payee");
+
+  touch();
+  *it = payee;
+}
+
+void MyMoneySeqAccessMgr::removePayee(const MyMoneyPayee& payee)
+{
+  QMap<QCString, MyMoneyTransaction>::ConstIterator it_t;
+  QValueList<MyMoneySplit>::ConstIterator it_s;
+  QMap<QCString, MyMoneyPayee>::Iterator it_p;
+
+  it_p = m_payeeList.find(payee.id());
+  if(it_p == m_payeeList.end())
+    throw new MYMONEYEXCEPTION("Unknown payee");
+
+  // scan all transactions to check if the payee is still referenced
+  for(it_t = m_transactionList.begin(); it_t != m_transactionList.end(); ++it_t) {
+    // scan all splits of this transaction
+    for(it_s = (*it_t).splits().begin(); it_s != (*it_t).splits().end(); ++it_s) {
+      if((*it_s).payeeId() == payee.id())
+        throw new MYMONEYEXCEPTION("Cannot remove payee that is referenced");
+    }
+  }
+
+  m_payeeList.remove(it_p);
+  touch();
+}
+
 void MyMoneySeqAccessMgr::addAccount(MyMoneyAccount& parent, MyMoneyAccount& account)
 {
   QMap<QCString, MyMoneyAccount>::Iterator theParent;
@@ -261,6 +307,16 @@ void MyMoneySeqAccessMgr::addTransaction(MyMoneyTransaction& transaction, const 
   || transaction.file() != 0
   || !transaction.postDate().isValid())
     throw new MYMONEYEXCEPTION("invalid transaction to be added");
+
+  // now check the splits
+  QValueList<MyMoneySplit>::ConstIterator it_s;
+  for(it_s = transaction.splits().begin(); it_s != transaction.splits().end(); ++it_s) {
+    // the following lines will throw an exception if the
+    // account or payee do not exist
+    account((*it_s).accountId());
+    if((*it_s).payeeId() != "")
+      payee((*it_s).payeeId());
+  }
 
   MyMoneyTransaction newTransaction(nextTransactionID(), transaction);
   QCString key = transactionKey(newTransaction);
@@ -455,9 +511,11 @@ void MyMoneySeqAccessMgr::modifyTransaction(const MyMoneyTransaction& transactio
   // now check the splits
   QValueList<MyMoneySplit>::ConstIterator it_s;
   for(it_s = transaction.splits().begin(); it_s != transaction.splits().end(); ++it_s) {
-    // the following line will throw an exception if the
-    // account does not exist
+    // the following lines will throw an exception if the
+    // account or payee do not exist
     account((*it_s).accountId());
+    if((*it_s).payeeId() != "")
+      payee((*it_s).payeeId());
   }
 
   // new data seems to be ok. find old version of transaction

@@ -775,3 +775,80 @@ void MyMoneySeqAccessMgrTest::testSetAccountName() {
 		delete e;
 	}
 }
+
+void MyMoneySeqAccessMgrTest::testModifyPayee() {
+	MyMoneyPayee p;
+
+	testAddPayee();
+
+	p = m->payee("P000001");
+	p.setName("New name");
+	m->m_dirty = false;
+	try {
+		m->modifyPayee(p);
+		p = m->payee("P000001");
+		CPPUNIT_ASSERT(p.name() == "New name");
+		CPPUNIT_ASSERT(m->dirty() == true);
+	} catch (MyMoneyException *e) {
+		delete e;
+		CPPUNIT_FAIL("Unexpected exception");
+	}
+}
+
+void MyMoneySeqAccessMgrTest::testRemovePayee() {
+	testAddPayee();
+	m->m_dirty = false;
+
+	// check that we can remove an unreferenced payee
+	MyMoneyPayee p = m->payee("P000001");
+	try {
+		CPPUNIT_ASSERT(m->m_payeeList.count() == 1);
+		m->removePayee(p);
+		CPPUNIT_ASSERT(m->m_payeeList.count() == 0);
+		CPPUNIT_ASSERT(m->dirty() == true);
+	} catch (MyMoneyException *e) {
+		delete e;
+		CPPUNIT_FAIL("Unexpected exception");
+	}
+
+	// add transaction
+	testAddTransactions();
+
+	MyMoneyTransaction tr = m->transaction("T000000000000000001");
+	MyMoneySplit sp;
+	sp = tr.splits()[0];
+	sp.setPayeeId("P000001");
+	tr.modifySplit(sp);
+
+	// check that we cannot add a transaction referencing
+	// an unknown payee
+	try {
+		m->modifyTransaction(tr);
+		CPPUNIT_FAIL("Expected exception");
+	} catch (MyMoneyException *e) {
+		delete e;
+	} 
+
+	m->m_nextPayeeID = 0;		// reset here, so that the
+					// testAddPayee will not fail
+	testAddPayee();
+
+	// check that it works when the payee exists
+	try {
+		m->modifyTransaction(tr);
+	} catch (MyMoneyException *e) {
+		delete e;
+		CPPUNIT_FAIL("Unexpected exception");
+	}
+
+	m->m_dirty = false;
+
+	// now check, that we cannot remove the payee
+	try {
+		m->removePayee(p);
+		CPPUNIT_FAIL("Expected exception");
+	} catch (MyMoneyException *e) {
+		delete e;
+	} 
+	CPPUNIT_ASSERT(m->m_payeeList.count() == 1);
+}

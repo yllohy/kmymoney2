@@ -127,6 +127,34 @@ public:
   void addPayee(MyMoneyPayee& payee);
 
   /**
+    * This method is used to retrieve information about a payee
+    * An exception will be thrown upon error conditions.
+    *
+    * @param id QCString reference to id of payee
+    *
+    * @return MyMoneyPayee object of payee
+    */
+  const MyMoneyPayee payee(const QCString& id) const;
+
+  /**
+    * This method is used to modify an existing payee
+    *
+    * An exception will be thrown upon error conditions
+    *
+    * @param payee MyMoneyPayee reference to payee information
+    */
+  void modifyPayee(const MyMoneyPayee& payee);
+
+  /**
+    * This method is used to remove an existing payee
+    *
+    * An exception will be thrown upon error conditions
+    *
+    * @param payee MyMoneyPayee reference to payee information
+    */
+  void removePayee(const MyMoneyPayee& payee);
+
+  /**
     * This method is used to add one account as sub-ordinate to another
     * (parent) account. The objects passed as arguments will be modified
     * accordingly.
@@ -397,7 +425,7 @@ private:
   static const int INSTITUTION_ID_SIZE = 6;
   static const int ACCOUNT_ID_SIZE = 6;
   static const int TRANSACTION_ID_SIZE = 18;
-  static const int PAYEE_ID_SIZE = 4;
+  static const int PAYEE_ID_SIZE = 6;
 
   static const int YEAR_SIZE = 4;
   static const int MONTH_SIZE = 2;

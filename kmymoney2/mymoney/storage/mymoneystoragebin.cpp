@@ -249,7 +249,6 @@ void MyMoneyStorageBin::readOldFormat(QDataStream& s, IMyMoneySerialize* storage
     s >> tmp; // telephone
     s >> tmp; // email
 
-    // payee.setReference("");
     // storage->addPayee(payee);
     // payeeConversion[payee.name()] = payee.id();
   }

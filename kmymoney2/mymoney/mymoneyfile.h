@@ -271,7 +271,9 @@ public:
   /**
     * Adds a transaction to the file-global transaction pool. A respective
     * transaction-ID will be generated for this object. The ID is stored
-    * as QString in the object passed as argument.
+    * as QCString in the object passed as argument.
+    * Splits must reference valid accounts and valid payees. The payee
+    * id can be empty.
     *
     * An exception will be thrown upon error conditions.
     *
@@ -281,7 +283,9 @@ public:
 
   /**
     * This method is used to update a specific transaction in the
-    * transaction pool of the MyMoneyFile object
+    * transaction pool of the MyMoneyFile object.
+    * Splits must reference valid accounts and valid payees. The payee
+    * id can be empty.
     *
     * An exception will be thrown upon error conditions.
     *
@@ -441,9 +445,44 @@ public:
     */
   void detach(const QCString& id, MyMoneyObserver* observer);
 
-  // Payee operations
-  void addPayee(const QString& newPayee, const QString& address=QString::null, const QString& postcode=QString::null, const QString& telephone=QString::null, const QString& email=QString::null);
-  void removePayee(const QString name);
+  /**
+    * This method is used to create a new payee
+    *
+    * An exception will be thrown upon error conditions
+    *
+    * @param payee MyMoneyPayee reference to payee information
+    */
+  void addPayee(MyMoneyPayee& payee) const;
+
+  /**
+    * This method is used to retrieve information about a payee
+    * An exception will be thrown upon error conditions.
+    *
+    * @param id QCString reference to id of payee
+    *
+    * @return MyMoneyPayee object of payee
+    */
+  const MyMoneyPayee payee(const QCString& id) const;
+
+  /**
+    * This method is used to modify an existing payee
+    *
+    * An exception will be thrown upon error conditions
+    *
+    * @param payee MyMoneyPayee reference to payee information
+    */
+  void modifyPayee(const MyMoneyPayee& payee) const;
+
+  /**
+    * This method is used to remove an existing payee.
+    * An error condition occurs, if the payee is still referenced
+    * by a split.
+    *
+    * An exception will be thrown upon error conditions
+    *
+    * @param payee MyMoneyPayee reference to payee information
+    */
+  void removePayee(const MyMoneyPayee& payee) const;
 
 private:
   /**

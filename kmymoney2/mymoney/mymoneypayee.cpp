@@ -41,21 +41,7 @@ MyMoneyPayee::~MyMoneyPayee()
 
 MyMoneyPayee::MyMoneyPayee(const MyMoneyPayee& right)
 {
-	m_name = right.m_name;
-	m_address = right.m_address;
-	m_postcode = right.m_postcode;
-	m_telephone = right.m_telephone;
-	m_email = right.m_email;
-}
-
-MyMoneyPayee& MyMoneyPayee::operator = (const MyMoneyPayee& right)
-{
-	m_name = right.m_name;
-	m_address = right.m_address;
-	m_postcode = right.m_postcode;
-	m_telephone = right.m_telephone;
-	m_email = right.m_email;
-	return *this;
+  *this = right;
 }
 
 QDataStream &operator<<(QDataStream &s, const MyMoneyPayee &payee)
