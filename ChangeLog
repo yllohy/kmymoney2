@@ -1,3 +1,6 @@
+2002-02-06 Michael Edwardes <mte@users.sourceforge.net>
+  * Fixed deletion of transaction bug where it diddn't refrsh list properly.
+
 2002-02-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added framework for automated regression testing to mymoney modules
 

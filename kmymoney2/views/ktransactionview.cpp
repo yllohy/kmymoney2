@@ -559,8 +559,8 @@ void KTransactionView::slotTransactionDelete()
   pAccount->removeTransaction(*transaction);
   m_filePointer->setDirty(true);
 
-  useall = false;
-  usedate = true;
+  useall = true;
+  usedate = false;
   userow = false;
   updateTransactionList(-1, -1);
   emit transactionListChanged();
