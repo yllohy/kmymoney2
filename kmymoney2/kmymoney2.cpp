@@ -65,7 +65,7 @@
 
 #define ID_STATUS_MSG 1
 
-KMyMoney2App::KMyMoney2App(QWidget *parent , const char* name)
+KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name)
  : KMainWindow(0, name)
 {
   m_startLogo = new KStartupLogo;
@@ -326,11 +326,14 @@ void KMyMoney2App::readOptions()
   KToolBar::BarPosition toolBarPos;
   toolBarPos=(KToolBar::BarPosition) config->readNumEntry("ToolBarPos", KToolBar::Top);
   toolBar("mainToolBar")->setBarPos(toolBarPos);
-	
+
   // initialize the recent file list
   fileOpenRecent->loadEntries(config,"Recent Files");
 
   QSize size=config->readSizeEntry("Geometry");
+
+
+
 
 
   if(!size.isEmpty())
@@ -401,14 +404,14 @@ void KMyMoney2App::slotFileOpen()
 #else
     int answer = KMessageBox::warningContinueCancel(this, i18n("KMyMoney file already open.  Close it ?"), "Close File", "Close", "dont_ask_again");
 #endif
-		if (answer==KMessageBox::Cancel) {
+    if (answer==KMessageBox::Cancel) {
       slotStatusMsg(prevMsg);
       return;
     }
     slotFileClose();
   }
   fileName = KURL();
-	initWizard();
+  initWizard();
   slotStatusMsg(prevMsg);
 }
 
@@ -422,7 +425,7 @@ void KMyMoney2App::slotFileOpenRecent(const KURL& url)
 #else
     int answer = KMessageBox::warningContinueCancel(this, i18n("KMyMoney file already open.  Close it ?"), "Close File", "Close", "dont_ask_again");
 #endif
-		if (answer==KMessageBox::Cancel) {
+    if (answer==KMessageBox::Cancel) {
       slotStatusMsg(prevMsg);
       return;
     }
@@ -431,7 +434,7 @@ void KMyMoney2App::slotFileOpenRecent(const KURL& url)
 
   myMoneyView->readFile( url );
   fileName = url;
-	fileOpenRecent->addURL( url );
+  fileOpenRecent->addURL( url );
 
   slotStatusMsg(prevMsg);
 }
@@ -449,7 +452,7 @@ void KMyMoney2App::slotFileSave()
   }
 
   myMoneyView->saveFile(fileName);
-	
+
   slotStatusMsg(prevMsg);
 }
 
@@ -463,32 +466,32 @@ void KMyMoney2App::slotFileSaveAs()
                                                "*.*|All files"), this, i18n("Save as..."));
 
 
-	//
-	//If there is no file extension, then append a .kmy at the end of the file name.
-	//If there is a file extension, make sure it is .kmy, delete any others.
-	//
+  //
+  // If there is no file extension, then append a .kmy at the end of the file name.
+  // If there is a file extension, make sure it is .kmy, delete any others.
+  //
   if(!newName.isEmpty())
   {
 
-		//find last . delminator
-		int nLoc = newName.findRev('.');
+    // find last . delminator
+    int nLoc = newName.findRev('.');
     if(nLoc != -1)
-		{
-			QString strExt, strTemp;
+    {
+      QString strExt, strTemp;
       strTemp = newName.left(nLoc + 1);
-			strExt = newName.right(newName.length() - (nLoc + 1));
-			if(strExt.find("kmy", 0, FALSE) == -1)
-			{
-				strTemp.append("kmy");
+      strExt = newName.right(newName.length() - (nLoc + 1));
+      if(strExt.find("kmy", 0, FALSE) == -1)
+      {
+        strTemp.append("kmy");
 
-				//append to make complete file name
-				newName = strTemp;
-			}
-		}
-		else
-		{
-			newName.append(".kmy");
-		}
+        //append to make complete file name
+        newName = strTemp;
+      }
+    }
+    else
+    {
+      newName.append(".kmy");
+    }
 
     QFileInfo saveAsInfo(newName);
 //    addRecentFile(newName);
@@ -506,9 +509,9 @@ void KMyMoney2App::slotFileCloseWindow()
 
   if (myMoneyView->dirty()) {
     int answer = KMessageBox::warningYesNoCancel(this, i18n("The file has been changed, save it ?"));
-		if (answer == KMessageBox::Cancel)
-			return;
-		else if (answer == KMessageBox::Yes)
+    if (answer == KMessageBox::Cancel)
+      return;
+    else if (answer == KMessageBox::Yes)
       slotFileSave();
   }
 
@@ -607,7 +610,7 @@ void KMyMoney2App::slotViewToolBar()
   else
   {
     toolBar("mainToolBar")->show();
-  }		
+  }
 
   slotStatusMsg(prevMsg);
 }
@@ -622,6 +625,7 @@ void KMyMoney2App::slotViewStatusBar()
     statusBar()->hide();
   }
   else
+
   {
     statusBar()->show();
   }
@@ -693,8 +697,8 @@ void KMyMoney2App::slotFileFileInfo()
   }
 
   int answer = KMessageBox::warningYesNoCancel(this, i18n("This function no longer exists and is used by the developers.\n\nPerform a dump of the data in memory?."));
-	if (answer == KMessageBox::Cancel || answer == KMessageBox::No)
-		return;
+  if (answer == KMessageBox::Cancel || answer == KMessageBox::No)
+    return;
 
   myMoneyView->memoryDump();
 }
@@ -718,22 +722,20 @@ void KMyMoney2App::slotQifImport()
 {
   QString prevMsg = slotStatusMsg(i18n("Importing file..."));
 
-  IMyMoneyStorage* newData = new MyMoneySeqAccessMgr;
-  IMyMoneyStorage* oldData = MyMoneyFile::instance()->storage();
-  *newData = *oldData;
-  MyMoneyFile::instance()->detachStorage(oldData);
-  MyMoneyFile::instance()->attachStorage(newData);
+  MyMoneySeqAccessMgr* backup = new MyMoneySeqAccessMgr;
+  MyMoneySeqAccessMgr* data = static_cast<MyMoneySeqAccessMgr *> (MyMoneyFile::instance()->storage());
+  *backup = *data;
 
   KImportDlg* dlg = new KImportDlg(0);
   if(dlg->exec()) {
     // keep the new data set, destroy the backup copy
-    delete oldData;
+    delete backup;
 
   } else {
-    // user cancelled, destroy the new set and keep the backup copy
-    MyMoneyFile::instance()->detachStorage(newData);
-    MyMoneyFile::instance()->attachStorage(oldData);
-    delete newData;
+    // user cancelled, destroy the updated set and keep the backup copy
+    MyMoneyFile::instance()->detachStorage(data);
+    MyMoneyFile::instance()->attachStorage(backup);
+    delete data;
 
     // update the views as they might still contain invalid data
     // from the import session
