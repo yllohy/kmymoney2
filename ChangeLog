@@ -1,3 +1,9 @@
+2004-02-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed bug in 'create schedule' to include all splits of the originating
+    transaction
+  * Make a selected schedule visible when coming from the 'home' page
+    through a link on the schedule
+
 2004-01-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed #887044 (cannot rename categories)
   * Fixed #887048 (account icons not updated after rename)
