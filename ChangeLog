@@ -1,3 +1,18 @@
+2003-06-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * updated 'home' page for next release
+  * differentiate between new account and new category
+  * cleanup of slot interface between KMyMoney2App and KMyMoneyView
+  * removed debug output messages in various classes
+  * added function to create new institution during QIF import
+  * fixed bugs while importing splitted transactions
+  * set opening date on accounts only if date passed is invalid
+  * fixed KNewAccountWizard to set opening date correct
+  * added filter location entry to QIF profile
+  * disable ledger view if no account is available
+  * added external filter support for QIF import
+  * prepared external filter support for QIF export
+  * added duplicate method to IMyMoneyStorage objects and testcase
+
 2003-06-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * show liability and asset accounts when no account info is found
     in the QIF source file for account selection
