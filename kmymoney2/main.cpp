@@ -39,9 +39,31 @@ QTime timer;
 
 int main(int argc, char *argv[])
 {
+  QString feature;
+
+#if HAVE_LIBXMLPP
+  feature += "\t- XML support\n";
+#else
+  feature += "\t- no XML support\n";
+#endif
+#if HAVE_LIBCPPUNIT
+  feature += "\t- Automatic regression testing\n";
+#else
+  feature += "\t- Automatic regression testing disabled\n";
+#endif
+#ifdef _CHECK_MEMORY
+  feature += "\t- Memory leakage detection\n";
+#else
+  feature += "\t- No memory leakage detection\n";
+#endif
+
+  if(feature.length() != 0)
+    feature = I18N_NOOP("Compiled with the following settings:\n") + feature;
+
 	KAboutData aboutData( "kmymoney2", I18N_NOOP("KMyMoney2"),
 		VERSION, description, KAboutData::License_GPL,
-		"(c) 2000-2002, Michael Edwardes", 0, "http://kmymoney2.sourceforge.net");
+		"(c) 2000-2002, Michael Edwardes", feature,
+    "http://kmymoney2.sourceforge.net/");
 	aboutData.addAuthor("Michael Edwardes", I18N_NOOP("Project Manager"), "mte@users.sourceforge.net");
 	aboutData.addAuthor("Felix Rodriguez", I18N_NOOP("Project Admin"), "frodriguez@users.sourceforge.net");
 	aboutData.addCredit("Javier Campos Morales", I18N_NOOP("Developer & Artist"), "javi_c@users.sourceforge.net");
