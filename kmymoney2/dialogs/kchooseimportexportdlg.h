@@ -30,6 +30,10 @@
 
 class KChooseImportExportDlg : public KChooseImportExportDlgDecl  {
    Q_OBJECT
+private:
+  void readConfig(void);
+  void writeConfig(void);
+  QString m_lastType;
 
 protected slots:
   void slotTypeActivated(const QString& text);

@@ -27,23 +27,35 @@
 KBackupDlg::KBackupDlg( QWidget* parent,  const char* name/*, bool modal*/)
   : kbackupdlgdecl( parent,  name , true)
 {
-  KConfig *config = KGlobal::config();
-  config->setGroup("Last Use Settings");
-  mountCheckBox->setChecked(config->readBoolEntry("KBackupDlg_mountDevice", false));
-
+  readConfig();
   connect(chooseButton, SIGNAL(clicked()), this, SLOT(chooseButtonClicked()));
+  connect(btnOK,SIGNAL(clicked()),this,SLOT(accept()));
+  connect(btnCancel,SIGNAL(clicked()),this,SLOT(reject()));
 }
 
 KBackupDlg::~KBackupDlg()
 {
-  KConfig *config = KGlobal::config();
-  config->setGroup("Last Use Settings");
-  config->writeEntry("KBackupDlg_mountDevice", mountCheckBox->isChecked());
-  config->sync();
-  qDebug("saved backup settings");
+  writeConfig();
 }
 
 void KBackupDlg::chooseButtonClicked()
 {
   txtMountPoint->setText(KFileDialog::getExistingDirectory());
+}
+
+void KBackupDlg::readConfig(void)
+{
+  KConfig *config = KGlobal::config();
+  config->setGroup("Last Use Settings");
+  mountCheckBox->setChecked(config->readBoolEntry("KBackupDlg_mountDevice", false));
+  txtMountPoint->setText(config->readEntry("KBackupDlg_BackupMountPoint", "/mnt/floppy"));
+}
+
+void KBackupDlg::writeConfig(void)
+{
+  KConfig *config = KGlobal::config();
+  config->setGroup("Last Use Settings");
+  config->writeEntry("KBackupDlg_mountDevice", mountCheckBox->isChecked());
+  config->writeEntry("KBackupDlg_BackupMountPoint", txtMountPoint->text());
+  config->sync();
 }

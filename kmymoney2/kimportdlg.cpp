@@ -16,21 +16,27 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <qpushbutton.h>
 #include <kmessagebox.h>
 #include "kimportdlg.h"
 #include <qlineedit.h>
 #include <kfiledialog.h>
 
-KImportDlg::KImportDlg():KImportDlgDecl(0,0,TRUE){
+KImportDlg::KImportDlg():KImportDlgDecl(0,0,TRUE)
+{
+  readConfig();
 
- // connect( &btnBrowse, SIGNAL( clicked() ), this, SLOT( slotBrowse() ) );
+  connect( btnBrowse, SIGNAL( clicked() ), this, SLOT( slotBrowse() ) );
   connect(buttonOk, SIGNAL(clicked()), this, SLOT(slotOkClicked()));
 }
-KImportDlg::~KImportDlg(){
+
+KImportDlg::~KImportDlg()
+{
+  writeConfig();
 }
 /** No descriptions */
-void KImportDlg::slotBrowse(){
-
+void KImportDlg::slotBrowse()
+{
 	//KFileDialog *browseFile = new KFileDialog();
 	QString s(KFileDialog::getOpenFileName(QString::null,"*.QIF"));
   //delete browseFile;
@@ -46,4 +52,19 @@ void KImportDlg::slotOkClicked()
     return;
   }
   accept();
+}
+
+void KImportDlg::readConfig(void)
+{
+  KConfig *config = KGlobal::config();
+  config->setGroup("Last Use Settings");
+  txtFileImport->setText(config->readEntry("KImportDlg_LastFile"));
+}
+
+void KImportDlg::writeConfig(void)
+{
+  KConfig *config = KGlobal::config();
+  config->setGroup("Last Use Settings");
+  config->writeEntry("KImportDlg_LastFile", txtFileImport->text());
+  config->sync();
 }

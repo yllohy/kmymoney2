@@ -28,7 +28,11 @@
 
 class KExportDlg : public KExportDlgDecl  {
 	Q_OBJECT
-public: 
+private:
+  void readConfig(void);
+  void writeConfig(void);
+
+public:
 	KExportDlg();
 	~KExportDlg();
 protected slots:

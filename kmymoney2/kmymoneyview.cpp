@@ -526,7 +526,7 @@ void KMyMoneyView::slotAccountImportQIF(void)
   }
 
   KImportDlg *importDlg = new KImportDlg();
-  connect( importDlg->btnBrowse, SIGNAL( clicked() ), importDlg, SLOT( slotBrowse() ) );
+//  connect( importDlg->btnBrowse, SIGNAL( clicked() ), importDlg, SLOT( slotBrowse() ) );
 
 	int returncode = importDlg->exec();
 
@@ -557,7 +557,6 @@ void KMyMoneyView::slotAccountExportQIF(void)
   }
 
   KExportDlg *exportDlg = new KExportDlg();
-  connect( exportDlg->btnBrowse, SIGNAL( clicked() ), exportDlg, SLOT( slotBrowse() ) );
 
 	int returncode = exportDlg->exec();
 

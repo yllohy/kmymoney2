@@ -52,20 +52,13 @@
   * @see KMyMoneyView
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: kmymoney2.h,v 1.11 2001/07/07 22:43:08 mte Exp $
+  * $Id: kmymoney2.h,v 1.12 2001/07/13 22:43:34 mte Exp $
   *
   * @short Main application class.
 **/
 class KMyMoney2App : public KMainWindow
 {
   Q_OBJECT
-private:
-   KProcess proc;
-  // A pointer to the view holding the tabs.
-	KMyMoneyView *myMoneyView;
-	// The filename currently being edited when open.
-	QString fileName;
-	bool m_startDialog;
 
 protected slots:
   void slotKeySettings();
@@ -395,7 +388,14 @@ protected slots:
   bool copybackup;
   /**  */
   bool unmountbackup;
-  /**  */
+
+  KProcess proc;
+  // A pointer to the view holding the tabs.
+  KMyMoneyView *myMoneyView;
+  // The filename currently being edited when open.
+  QString fileName;
+
+  bool m_startDialog;
   QString mountpoint;
 };
  

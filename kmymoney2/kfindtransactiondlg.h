@@ -42,7 +42,11 @@
 
 class KFindTransactionDlg : public KFindTransactionDlgDecl  {
    Q_OBJECT
-public: 
+private:
+  void readConfig(void);
+  void writeConfig(void);
+
+public:
 	KFindTransactionDlg(MyMoneyFile *file, QWidget *parent=0, const char *name=0);
 	~KFindTransactionDlg();
   void data(

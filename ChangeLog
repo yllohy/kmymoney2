@@ -1,3 +1,8 @@
+2001-07-13 Michael Edwardes <mte@users.sourceforge.net>
+  * Improved 'autoremember' for most dialogs relevant e.g
+    KCategoriesDlg remembers the last selected category.
+  * Updated README.
+
 2001-07-12 Michael Edwardes <mte@users.sourceforge.net>
   * Implemented CSV export.  Import may be disabled for CSV in the
     future (will anybody use it ?).

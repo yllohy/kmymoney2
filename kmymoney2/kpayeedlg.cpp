@@ -13,6 +13,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <kglobal.h>
+#include <kconfig.h>
 #include <kmessagebox.h>
 #include <qpushbutton.h>
 #include "kpayeedlg.h"
@@ -21,9 +23,17 @@ KPayeeDlg::KPayeeDlg(MyMoneyFile *file, QWidget *parent, const char *name)
  : KPayeeDlgDecl(parent,name,true)
 {
 	m_file = file;
+
+  readConfig();
+
+  int pos=0, k=0;
   QListIterator<MyMoneyPayee> it = m_file->payeeIterator();
-  for ( ; it.current(); ++it)
-    payeeCombo->insertItem(it.current()->name());    	
+  for ( ; it.current(); ++it, k++) {
+    payeeCombo->insertItem(it.current()->name());
+    if (it.current()->name()==m_lastPayee)
+      pos = k;
+  }
+  payeeCombo->setCurrentItem(pos);
 
   payeeHighlighted(payeeCombo->currentText());
 
@@ -36,6 +46,7 @@ KPayeeDlg::KPayeeDlg(MyMoneyFile *file, QWidget *parent, const char *name)
 
 KPayeeDlg::~KPayeeDlg()
 {
+  writeConfig();
 }
 
 void KPayeeDlg::payeeHighlighted(const QString& text)
@@ -112,6 +123,21 @@ void KPayeeDlg::slotDeleteClicked()
   QListIterator<MyMoneyPayee> it = m_file->payeeIterator();
   payeeCombo->clear();
   for ( ; it.current(); ++it)
-    payeeCombo->insertItem(it.current()->name());    	
+    payeeCombo->insertItem(it.current()->name());
   payeeHighlighted(payeeCombo->currentText());
+}
+
+void KPayeeDlg::readConfig(void)
+{
+  KConfig *config = KGlobal::config();
+  config->setGroup("Last Use Settings");
+  m_lastPayee = config->readEntry("KPayeeDlg_LastPayee");
+}
+
+void KPayeeDlg::writeConfig(void)
+{
+  KConfig *config = KGlobal::config();
+  config->setGroup("Last Use Settings");
+  config->writeEntry("KPayeeDlg_LastPayee", payeeCombo->currentText());
+  config->sync();
 }

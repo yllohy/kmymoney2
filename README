@@ -19,6 +19,10 @@ To compile use this general sequence:
   make install
   exit # to revert to normal user
 
+  If you got the sources from CVS you will need to type:
+    make -f Makefile.dist
+  before running configure.
+
   Please read INSTALL for generic instructions on how to use configure.
 
 AND/OR

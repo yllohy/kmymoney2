@@ -20,6 +20,9 @@
 #include <qlabel.h>
 #include <qcombobox.h>
 #include <qpushbutton.h>
+
+#include <kglobal.h>
+#include <kconfig.h>
 #include "kchooseimportexportdlg.h"
 
 KChooseImportExportDlg::KChooseImportExportDlg(int type, QWidget *parent, const char *name )
@@ -41,7 +44,8 @@ KChooseImportExportDlg::KChooseImportExportDlg(int type, QWidget *parent, const 
     setCaption("Choose Export Type Dialog");
   }
 
-  slotTypeActivated("QIF");
+  readConfig();
+  slotTypeActivated(m_lastType);
 
   connect(typeCombo, SIGNAL(activated(const QString&)), this, SLOT(slotTypeActivated(const QString&)));
   connect(okButton, SIGNAL(clicked()), this, SLOT(accept()));
@@ -50,6 +54,7 @@ KChooseImportExportDlg::KChooseImportExportDlg(int type, QWidget *parent, const 
 
 KChooseImportExportDlg::~KChooseImportExportDlg()
 {
+  writeConfig();
 }
 
 void KChooseImportExportDlg::slotTypeActivated(const QString& text)
@@ -68,4 +73,19 @@ void KChooseImportExportDlg::slotTypeActivated(const QString& text)
 QString KChooseImportExportDlg::importExportType(void)
 {
   return typeCombo->currentText();
+}
+
+void KChooseImportExportDlg::readConfig(void)
+{
+  KConfig *config = KGlobal::config();
+  config->setGroup("Last Use Settings");
+  m_lastType = config->readEntry("KChooseImportExportDlg_LastType");
+}
+
+void KChooseImportExportDlg::writeConfig(void)
+{
+  KConfig *config = KGlobal::config();
+  config->setGroup("Last Use Settings");
+  config->writeEntry("KChooseImportExportDlg_LastType", typeCombo->currentText());
+  config->sync();
 }

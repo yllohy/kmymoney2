@@ -45,6 +45,10 @@ protected slots:
 
 private:
 	MyMoneyFile *m_file;
+	QString m_lastCat;
+	
+  void readConfig(void);
+  void writeConfig(void);
 };
 
 #endif

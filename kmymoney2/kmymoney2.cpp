@@ -214,9 +214,6 @@ void KMyMoney2App::saveOptions()
   config->writeEntry("ToolBarPos", (int) toolBar("mainToolBar")->barPos());
   fileOpenRecent->saveEntries(config,"Recent Files");
   config->writeEntry("LastFile", fileName);
-
-	config->writeEntry("BackupMountPoint",mountpoint);
-
 }
 
 
@@ -248,12 +245,11 @@ void KMyMoney2App::readOptions()
     resize(size);
   }
 
-
+  // Startdialog is written in the settings dialog
   m_startDialog = config->readBoolEntry("StartDialog", true);
   if (!m_startDialog)
     fileName = config->readEntry("LastFile");
 
-  mountpoint = config->readEntry("BackupMountPoint");
 }
 
 bool KMyMoney2App::queryClose()
@@ -720,9 +716,9 @@ void KMyMoney2App::slotFileBackup()
   }
 
   KBackupDlg *backupDlg = new KBackupDlg(this,0/*,true*/);
-  connect(backupDlg->btnOK,SIGNAL(clicked()),backupDlg,SLOT(accept()));
-  connect(backupDlg->btnCancel,SIGNAL(clicked()),backupDlg,SLOT(reject()));
-  backupDlg->txtMountPoint->setText(mountpoint);
+//  connect(backupDlg->btnOK,SIGNAL(clicked()),backupDlg,SLOT(accept()));
+//  connect(backupDlg->btnCancel,SIGNAL(clicked()),backupDlg,SLOT(reject()));
+//  backupDlg->txtMountPoint->setText(mountpoint);
   int returncode = backupDlg->exec();
 
   if(returncode)

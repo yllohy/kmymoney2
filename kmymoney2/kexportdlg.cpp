@@ -19,12 +19,20 @@
 #include <kmessagebox.h>
 #include "kexportdlg.h"
 #include <qlineedit.h>
+#include <qcheckbox.h>
+#include "widgets/kmymoneydateinput.h"
 #include <kfiledialog.h>
 
-KExportDlg::KExportDlg():KExportDlgDecl(0,0,TRUE){
+KExportDlg::KExportDlg():KExportDlgDecl(0,0,TRUE)
+{
+  readConfig();
+
+  connect( btnBrowse, SIGNAL( clicked() ), this, SLOT( slotBrowse() ) );
   connect(buttonOk, SIGNAL(clicked()), this, SLOT(slotOkClicked()));
 }
-KExportDlg::~KExportDlg(){
+KExportDlg::~KExportDlg()
+{
+  writeConfig();
 }
 /** No descriptions */
 void KExportDlg::slotBrowse(){
@@ -41,4 +49,28 @@ void KExportDlg::slotOkClicked()
     return;
   }
   accept();
+}
+
+void KExportDlg::readConfig(void)
+{
+  KConfig *config = KGlobal::config();
+  config->setGroup("Last Use Settings");
+  txtFileExport->setText(config->readEntry("KExportDlg_LastFile"));
+  cbxAccount->setChecked(config->readBoolEntry("KExportDlg_AccountOpt", true));
+  cbxCategories->setChecked(config->readBoolEntry("KExportDlg_CatOpt", true));
+  dateStartDate->setDate(config->readDateTimeEntry("KExportDlg_StartDate").date());
+  dateEndDate->setDate(config->readDateTimeEntry("KExportDlg_EndDate").date());
+}
+
+void KExportDlg::writeConfig(void)
+{
+  KConfig *config = KGlobal::config();
+  config->setGroup("Last Use Settings");
+  config->writeEntry("KExportDlg_LastFile", txtFileExport->text());
+  config->writeEntry("KExportDlg_AccountOpt", cbxAccount->isChecked());
+  config->writeEntry("KExportDlg_CatOpt", cbxCategories->isChecked());
+  config->writeEntry("KExportDlg_StartDate", QDateTime(dateStartDate->getQDate()));
+  config->writeEntry("KExportDlg_EndDate", QDateTime(dateEndDate->getQDate()));
+
+  config->sync();
 }

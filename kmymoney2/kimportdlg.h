@@ -28,7 +28,11 @@
 
 class KImportDlg : public KImportDlgDecl  {
 	Q_OBJECT
-public: 
+private:
+  void readConfig(void);
+  void writeConfig(void);
+
+public:
 	KImportDlg();
 	~KImportDlg();
 protected slots:

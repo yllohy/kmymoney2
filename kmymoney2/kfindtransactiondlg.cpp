@@ -22,6 +22,8 @@ KFindTransactionDlg::KFindTransactionDlg(MyMoneyFile *file, QWidget *parent, con
 {
   m_filePointer = file;
 	
+	readConfig();
+
 	connect(dateRadio, SIGNAL(toggled(bool)), this, SLOT(dateToggled(bool)));
 	connect(amountRadio, SIGNAL(toggled(bool)), this, SLOT(amountToggled(bool)));
 	connect(creditRadio, SIGNAL(toggled(bool)), this, SLOT(creditToggled(bool)));
@@ -37,6 +39,7 @@ KFindTransactionDlg::KFindTransactionDlg(MyMoneyFile *file, QWidget *parent, con
 
 KFindTransactionDlg::~KFindTransactionDlg()
 {
+  writeConfig();
 }
 
 void KFindTransactionDlg::closeClicked()
@@ -154,4 +157,31 @@ void KFindTransactionDlg::data(
   descriptionRegExp = descriptionRegExpCheck->isChecked();
   numberRegExp = numberRegExpCheck->isChecked();
   payeeRegExp = payeeRegExpCheck->isChecked();
+}
+
+void KFindTransactionDlg::readConfig(void)
+{
+/*
+  config->setGroup("Last Use Settings");
+  txtFileExport->setText(config->readEntry("KExportDlg_LastFile"));
+  cbxAccount->setChecked(config->readBoolEntry("KExportDlg_AccountOpt", true));
+  cbxCategories->setChecked(config->readBoolEntry("KExportDlg_CatOpt", true));
+  dateStartDate->setDate(config->readDateTimeEntry("KExportDlg_StartDate"));
+  dateEndDate->setDate(config->readDateTimeEntry("KExportDlg_EndDate"));
+*/
+}
+
+void KFindTransactionDlg::writeConfig(void)
+{
+/*
+  KConfig *config = KGlobal::config();
+  config->setGroup("Last Use Settings");
+  config->writeEntry("KExportDlg_LastFile", txtFileExport->text()));
+  config->writeEntry("KExportDlg_AccountOpt", cbxAccount->isChecked());
+  config->writeEntry("KExportDlg_CatOpt", cbxCategories->isChecked());
+  config->writeEntry("KExportDlg_StartDate", QDateTime(dateStartDate->getQDate()));
+  config->writeEntry("KExportDlg_EndDate", QDateTime(dateEndDate->getQDate()));
+
+  config->sync();
+*/
 }
