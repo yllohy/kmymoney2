@@ -1,3 +1,6 @@
+2005-04-01 Ace Jones <acejones@users.sourceforge.net>
+  * Fixed #937728: Opening balances sometimes not picked up in QIF files
+
 2005-03-31 Ace Jones <acejones@users.sourceforge.net>
   * Added support for utf8-encoded QIF files
   * Cleaned up some character-based string handling in QIF imports
