@@ -33,19 +33,9 @@ class QLabel;
 
 // ----------------------------------------------------------------------------
 // KDE Includes
-#include <ktextbrowser.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
-
-#if 0
-#include "../widgets/kmymoneydateinput.h"
-#include "../widgets/kmymoneyedit.h"
-#include "../widgets/kmymoneylineedit.h"
-#include "../widgets/kmymoneycombo.h"
-#include "../widgets/kmymoneycategory.h"
-#include "../widgets/kmymoneypayee.h"
-#endif
 
 #include "../widgets/kmymoneyaccountcombo.h"
 #include "kledgerview.h"
@@ -65,7 +55,7 @@ public:
   KLedgerViewInvestments(QWidget *parent = NULL, const char *name = NULL);
   ~KLedgerViewInvestments();
 
-  int transactionType(const MyMoneyTransaction& t, const MyMoneySplit& split) const;
+  const investTransactionTypeE transactionType(const MyMoneyTransaction& t, const MyMoneySplit& split) const;
 
 public slots:
   void slotRegisterDoubleClicked(int row, int col, int button, const QPoint &mousePos);
@@ -84,7 +74,7 @@ protected slots:
   virtual void slotStartEdit();
   virtual void slotEndEdit();
   virtual void slotEquityChanged(const QCString& id);
-  virtual void slotUpdateTotalAmount();
+  const bool slotDataChanged(void);
 
 protected:
   virtual void createEditWidgets();
@@ -104,6 +94,8 @@ protected:
 
   QWidget* arrangeEditWidgetsInForm(void);
   QWidget* arrangeEditWidgetsInRegister(void);
+
+  void updateTotalAmount(void);
 
 private:
   /**
@@ -159,8 +151,9 @@ private:
 
   QCString        m_action;
 
+  investTransactionTypeE   m_transactionType;
+
   kMyMoneyEdit *m_editShares, *m_editPPS, *m_editTotalAmount, *m_editFees;
-  // kMyMoneyEquity *m_editSymbolName;
 
   // The stock split is kept in m_split which comes with KLedgerView
   MyMoneySplit    m_accountSplit;
@@ -170,14 +163,6 @@ private:
   kMyMoneyAccountCombo* m_editStockAccount;
   kMyMoneyAccountCombo* m_editCashAccount;
   kMyMoneyCategory *m_editFeeCategory;
-
-/*
-  KTextBrowser *textBrowser;
-  QGridLayout *mainGrid;
-  QTabWidget *m_InvestmentTabs;
-  QWidget *m_SummaryTab,
-       *m_TransactionTab;
-*/
 };
 
 #endif

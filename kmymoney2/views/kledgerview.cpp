@@ -1826,3 +1826,21 @@ const bool KLedgerView::transfersPossible(void) const
   }
   return (cnt >= 2) ? true : false;
 }
+
+void KLedgerView::setRegisterCellWidget(const int r, const int c, QWidget *w)
+{
+  setCellWidget(m_register, r, c, w);
+}
+
+void KLedgerView::setFormCellWidget(const int r, const int c, QWidget* w)
+{
+  setCellWidget(m_form->table(), r, c, w);
+};
+
+void KLedgerView::setCellWidget(QTable* table, const int row, const int col, QWidget* w)
+{
+  Q_CHECK_PTR(table != 0);
+
+  if(table->cellWidget(row, col) != w)
+    table->setCellWidget(row, col, w);
+}

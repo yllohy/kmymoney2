@@ -763,6 +763,10 @@ protected:
   virtual QWidget* arrangeEditWidgetsInForm(void) = 0;
   virtual QWidget* arrangeEditWidgetsInRegister(void) = 0;
 
+  void setFormCellWidget(const int r, const int c, QWidget* w);
+  void setRegisterCellWidget(const int r, const int c, QWidget* w);
+  void setCellWidget(QTable* t, const int r, const int c, QWidget* w);
+
   /**
     * This method is called when the edit widgets for the transaction
     * should be hidden and editing a transaction ends. Since it's pure
