@@ -50,6 +50,7 @@
 
 #include "kstartdlg.h"
 #include "krecentfileitem.h"
+#include "../kmymoney2.h"
 
 #include <qtooltip.h>
 
@@ -91,7 +92,7 @@ void KStartDlg::setPage_Documents()
   //allow user to select either a .kmy file, or any generic file.
   kurlrequest->fileDialog()->setFilter( i18n("%1|KMyMoney files (*.kmy)\n" "%2|All files (*.*)").arg("*.kmy").arg("*.*") );
   kurlrequest->fileDialog()->setMode(KFile::File || KFile::ExistingOnly);
-  kurlrequest->fileDialog()->setURL(KURL(KGlobalSettings::documentPath()));
+  kurlrequest->fileDialog()->setURL(KURL(kmymoney2->readLastUsedDir()));//kurlrequest->fileDialog()->setURL(KURL(KGlobalSettings::documentPath()));
   mainLayout->addWidget( kurlrequest );
 
   QLabel *label1 = new QLabel( recentMainFrame, "label1" );

@@ -436,7 +436,7 @@ void KMyMoney2App::slotFileSaveAs()
 {
   QString prevMsg = slotStatusMsg(i18n("Saving file with a new filename..."));
 
-  QString newName=KFileDialog::getSaveFileName(KGlobalSettings::documentPath(),
+  QString newName=KFileDialog::getSaveFileName(readLastUsedDir(),//KGlobalSettings::documentPath(),
                                                i18n("*.kmy|KMyMoney files\n""*.xml|XML Files\n"
 
                                                "*.*|All files"), this, i18n("Save as..."));
@@ -471,6 +471,9 @@ void KMyMoney2App::slotFileSaveAs()
 
     fileName = newName;
     myMoneyView->saveFile(newName);
+
+    //write the directory used for this file as the default one for next time.
+    writeLastUsedDir(newName);
   }
 
   slotStatusMsg(prevMsg);
@@ -784,13 +787,17 @@ bool KMyMoney2App::initWizard()
     if (start.isNewFile()) {
       slotFileNew();
     } else if (start.isOpenFile()) {
-      KURL url;
+      KURL url; 
       url = start.getURL();
       fileName = url.url();
       slotFileOpenRecent(url);
     } else { // Wizard / Template
       fileName = start.getURL();
     }
+
+    //save off directory as the last one used.
+    writeLastUsedDir(start.getURL());
+    
     return true;
 
   } else {
@@ -1145,4 +1152,34 @@ void KMyMoney2App::slotCommitTransaction(const MyMoneySchedule& sched, const QDa
 
     delete e;
   }
+}
+
+void KMyMoney2App::writeLastUsedDir(const QString& directory)
+{
+  //get global config object for our app.
+  KConfig *kconfig = KGlobal::config();
+  if(kconfig)
+  {
+    kconfig->setGroup("General Options");
+
+    //write path entry, no error handling since its void.
+    kconfig->writePathEntry("LastUsedDirectory", directory);
+  }
+}
+
+QString KMyMoney2App::readLastUsedDir()
+{
+  QString str;
+  
+  //get global config object for our app.
+  KConfig *kconfig = KGlobal::config();
+  if(kconfig)
+  {
+    kconfig->setGroup("General Options");
+
+    //read path entry.  Second parameter is the default if the setting is not found, which will be the default document path.
+    str = kconfig->readPathEntry("LastUsedDirectory", KGlobalSettings::documentPath());
+  }
+
+  return str;
 }

@@ -75,7 +75,7 @@ class IMyMoneyStorage;
   * @see KMyMoneyView
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: kmymoney2.h,v 1.37 2003/09/17 12:01:51 mte Exp $
+  * $Id: kmymoney2.h,v 1.38 2003/12/17 01:27:46 ktambascio Exp $
   *
   * @short Main application class.
 **/
@@ -91,6 +91,7 @@ protected slots:
     * Called when the user asks for file information.
   **/
   void slotFileFileInfo();
+
 
   /**
     * Called when the user asks for the personal information.
@@ -162,6 +163,10 @@ public:
   bool initWizard();
 
   static void progressCallback(int current, int total, const QString&);
+
+  void writeLastUsedDir(const QString& directory);
+  QString readLastUsedDir();
+ 
 
   /**
     * This function will be called by the engine when the engine data changed
@@ -314,6 +319,7 @@ private:
   KAction *actionQifImport;
   KAction *actionQifExport;
   KAction *actionFindTransaction;
+
 
   enum backupStateE {
     BACKUP_IDLE = 0,
