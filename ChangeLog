@@ -1,3 +1,28 @@
+2003-06-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * show liability and asset accounts when no account info is found
+    in the QIF source file for account selection
+  * KMyMoneyUtils::stringToAccountType() now works case insensitive
+  * Fixed the account selection dialog to allow creation of categories
+  * Added method to extract the parent name of a colon-seperated
+    hierarchical category name to MyMoneyFile
+  * Fixed some problems of the KNewAccountDlg with respect to categories
+  * Don't allow to create accounts of type income and expense in
+    KNewAccountDlg when not called as category editor
+  * Use KMyMoneyUtils to convert from textual form of account type
+    to numeric representation
+  * Cleanup of account and category editing
+  * Removed MyMoneyAccount::setAccountTypeByString in favor of
+    usage of KMyMoneyUtils::stringToAccountType
+  * Make sure, one cannot select an account as it's own parent account
+  * Show selected parent account when opening KNewAccountDlg
+  * Added support to suppress updates during lengthy operations to
+    more views
+  * Fixed uninitalized variable in KAccountSelectDlg
+  * Added date import conversion to MyMoneyQifProfile
+  * Added coloring for imported transactions to kMyMoneyRegister
+  * Added parameter 'name' to kMyMoneyCombo constructor(s)
+  * Cleanup of KGlobalLedgerView member variables
+
 2003-03-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Moved categoryTypeE to KMyMoneyUtils
   * Updated template files to contain standard text
