@@ -414,14 +414,17 @@ void KLedgerViewLoan::fillForm(void)
     // receiver
     formTable->setText(PAYEE_ROW, PAYEE_DATA_COL, payee);
 
-    QString category;
+    MyMoneySplit s = m_transaction.splitByAccount(accountId(), false);
+    MyMoneyAccount acc = MyMoneyFile::instance()->account(s.accountId());
+    QString category = acc.name();
+
     QValueList<MyMoneySplit>::ConstIterator it;
     for(it = m_transaction.splits().begin(); it != m_transaction.splits().end(); ++it) {
       try {
         if((*it).action() == MyMoneySplit::ActionAmortization
         && (*it).id() != m_split.id()) {
-          MyMoneyAccount acc = MyMoneyFile::instance()->account((*it).accountId());
-          MyMoneySplit s = m_transaction.splitByAccount(acc.id());
+          acc = MyMoneyFile::instance()->account((*it).accountId());
+          s = m_transaction.splitByAccount(acc.id());
           amount = s.value();
           category = i18n("Loan payment");
         }
@@ -565,6 +568,7 @@ void KLedgerViewLoan::reloadEditWidgets(const MyMoneyTransaction& t)
         switch(MyMoneyFile::instance()->accountGroup(acc.accountType())) {
           case MyMoneyAccount::Expense:
           case MyMoneyAccount::Income:
+          case MyMoneyAccount::Equity:
             if(m_editCategory)
               m_editCategory->loadAccount(s.accountId());
             break;
