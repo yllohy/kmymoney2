@@ -101,7 +101,7 @@ KInvestmentView::KInvestmentView(QWidget *parent, const char *name)
  // btnSummary->setChecked(TRUE);
 
   connect(m_accountComboBox, SIGNAL(accountSelected(const QCString&)),
-    this, SIGNAL(accountSelected(const QCString&)));
+    this, SLOT(slotSelectAccount(const QCString&)));
 
   connect(m_tab, SIGNAL(currentChanged(QWidget*)), this, SLOT(slotTabSelected(QWidget*)));
  //const bool KInvestmentView::slotSelectAccount(const QCString& id, const bool reconciliation)
@@ -488,7 +488,10 @@ const bool KInvestmentView::slotSelectAccount(const QCString& id, const bool rec
         m_ledgerView->slotSelectAccount(acc.id());
         rc = true;
       } else {
-        // let's see, if someone else can handle this request
+        // keep the current selection ...
+        acc = MyMoneyFile::instance()->account(m_accountId);
+        m_accountComboBox->setSelected(acc);
+        // ... and let's see, if someone else can handle this request
         emit accountSelected(id);
       }
     } else {
