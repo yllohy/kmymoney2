@@ -214,4 +214,6 @@ QCString kMyMoneyCombo::currentAccountId(void)
   {
     delete e;
   }
+
+  return "";
 }

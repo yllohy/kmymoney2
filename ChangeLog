@@ -1,3 +1,9 @@
+2003-07-23 Michael Edwardes <mte@users.sourceforge.net>
+  * Removed unnecessary schedule edit classes.
+  * Removed old unnecessary classes.
+  * Changing transactions remaining also changes end date in edit dialog.
+  * Changing end date also changes transactions remaining in edit dialog.
+
 2003-07-22 Michael Edwardes <mte@users.sourceforge.net>
   * Removed unnecessary atributes from MyMoneySchedule.
 

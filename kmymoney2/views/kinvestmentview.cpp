@@ -48,7 +48,6 @@
 #include "../mymoney/mymoneyequity.h"
 #include "../mymoney/mymoneytransaction.h"
 #include "../mymoney/mymoneyinvesttransaction.h"
-#include "../widgets/kmymoneytable.h"
 #include "../mymoney/mymoneyaccount.h"
 #include "kinvestmentlistitem.h"
 #include "../dialogs/knewequityentrydlg.h"

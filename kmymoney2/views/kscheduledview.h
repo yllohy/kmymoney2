@@ -33,9 +33,9 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 #include "kscheduledviewdecl.h"
-#include "../dialogs/keditscheduledbilldlg.h"
-#include "../dialogs/keditscheduleddepositdlg.h"
-#include "../dialogs/keditscheduledtransferdlg.h"
+//#include "../dialogs/keditscheduledbilldlg.h"
+//#include "../dialogs/keditscheduleddepositdlg.h"
+//#include "../dialogs/keditscheduledtransferdlg.h"
 #include "../mymoney/mymoneyfile.h"
 #include "../mymoney/mymoneyaccount.h"
 #include "../widgets/kmymoneyscheduledcalendar.h"
@@ -48,7 +48,7 @@ class KPopupMenu;
   * Used by the KMyMoneyView class to show the view.
   *
   * @author Michael Edwardes 2000-2002
-  * $Id: kscheduledview.h,v 1.13 2003/07/18 21:16:03 mte Exp $
+  * $Id: kscheduledview.h,v 1.14 2003/07/23 14:09:32 mte Exp $
   *
   * @short A class to encapsulate recurring transaction operations.
   */

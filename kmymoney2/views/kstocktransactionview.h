@@ -42,7 +42,6 @@
 #include "../widgets/kmymoneylineedit.h"
 #include "../widgets/kmymoneycombo.h"
 #include "../widgets/kmymoneyedit.h"
-#include "../widgets/kmymoneytable.h"
 
 #include "kstocktransactionviewdecl.h"
 #include "../widgets/kmymoneyhlayout.h"

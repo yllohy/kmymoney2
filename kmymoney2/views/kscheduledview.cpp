@@ -43,6 +43,7 @@
 #include "kscheduledview.h"
 #include "kscheduledlistitem.h"
 #include "../widgets/kmymoneyscheduleddatetbl.h"
+#include "../dialogs/ieditscheduledialog.h"
 
 KScheduledView::KScheduledView(QWidget *parent, const char *name )
  : kScheduledViewDecl(parent,name, false)
@@ -265,7 +266,7 @@ void KScheduledView::slotEditClicked()
       {
         case MyMoneySchedule::TYPE_BILL:
         {
-          KEditScheduledBillDlg *m_keditschedbilldlg = new KEditScheduledBillDlg(schedule, this);
+          KEditScheduleDialog *m_keditschedbilldlg = new KEditScheduleDialog(MyMoneySplit::ActionWithdrawal, schedule, this);
           if (m_keditschedbilldlg->exec() == QDialog::Accepted)
           {
             MyMoneySchedule sched = m_keditschedbilldlg->schedule();
@@ -277,7 +278,7 @@ void KScheduledView::slotEditClicked()
         }
         case MyMoneySchedule::TYPE_DEPOSIT:
         {
-          KEditScheduledDepositDlg *m_keditscheddepdlg = new KEditScheduledDepositDlg(schedule, this);
+          KEditScheduleDialog *m_keditscheddepdlg = new KEditScheduleDialog(MyMoneySplit::ActionDeposit, schedule, this);
           if (m_keditscheddepdlg->exec() == QDialog::Accepted)
           {
             MyMoneySchedule sched = m_keditscheddepdlg->schedule();
@@ -289,7 +290,7 @@ void KScheduledView::slotEditClicked()
         }
         case MyMoneySchedule::TYPE_TRANSFER:
         {
-          KEditScheduledTransferDlg *m_keditschedtransdlg = new KEditScheduledTransferDlg(schedule, this);
+          KEditScheduleDialog *m_keditschedtransdlg = new KEditScheduleDialog(MyMoneySplit::ActionTransfer, schedule, this);
           if (m_keditschedtransdlg->exec() == QDialog::Accepted)
           {
             MyMoneySchedule sched = m_keditschedtransdlg->schedule();
@@ -326,11 +327,9 @@ void KScheduledView::writeConfig(void)
 
 void KScheduledView::slotNewBill()
 {
-  KMessageBox::information(this, "WARNING:\n\n\tALL SCHEDULE DATA WILL BE LOST ONCE KMYMONEY HAS BEEN CLOSED");
-  
   MyMoneySchedule schedule;
   
-  KEditScheduledBillDlg *m_keditschedbilldlg = new KEditScheduledBillDlg(schedule, this);
+  KEditScheduleDialog *m_keditschedbilldlg = new KEditScheduleDialog(MyMoneySplit::ActionWithdrawal, schedule, this);
   if (m_keditschedbilldlg->exec() == QDialog::Accepted)
   {
     MyMoneySchedule sched = m_keditschedbilldlg->schedule();
@@ -350,11 +349,9 @@ void KScheduledView::slotNewBill()
 
 void KScheduledView::slotNewDeposit()
 {
-  KMessageBox::information(this, "WARNING:\n\n\tALL SCHEDULE DATA WILL BE LOST ONCE KMYMONEY HAS BEEN CLOSED");
-
   MyMoneySchedule schedule;
 
-  KEditScheduledDepositDlg *m_keditscheddepdlg = new KEditScheduledDepositDlg(schedule, this);
+  KEditScheduleDialog *m_keditscheddepdlg = new KEditScheduleDialog(MyMoneySplit::ActionDeposit, schedule, this);
   if (m_keditscheddepdlg->exec() == QDialog::Accepted)
   {
     MyMoneySchedule sched = m_keditscheddepdlg->schedule();
@@ -375,11 +372,9 @@ void KScheduledView::slotNewDeposit()
 
 void KScheduledView::slotNewTransfer()
 {
-  KMessageBox::information(this, "WARNING:\n\n\tALL SCHEDULE DATA WILL BE LOST ONCE KMYMONEY HAS BEEN CLOSED");
-
   MyMoneySchedule schedule;
 
-  KEditScheduledTransferDlg *m_keditschedtransdlg = new KEditScheduledTransferDlg(schedule, this);
+  KEditScheduleDialog *m_keditschedtransdlg = new KEditScheduleDialog(MyMoneySplit::ActionTransfer, schedule, this);
   if (m_keditschedtransdlg->exec() == QDialog::Accepted)
   {
     MyMoneySchedule sched = m_keditschedtransdlg->schedule();

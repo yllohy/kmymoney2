@@ -434,7 +434,8 @@ int MyMoneySchedule::transactionsRemaining(void) const
   if (m_willEnd && m_endDate.isValid())
   {
     QValueList<QDate> dates = paymentDates(m_lastPayment, m_endDate);
-    counter = dates.count();
+    // Dont include the last payment so -1
+    counter = dates.count()-1;
   }
   return counter;
 }
@@ -464,11 +465,10 @@ QCString MyMoneySchedule::transferAccountId(void) const
 QDate MyMoneySchedule::dateAfter(int transactions) const
 {
   int counter=0;
-  QDate theDate(1900, 1, 1);
   QDate paymentDate(m_startDate);
 
   if (transactions<=0)
-    return theDate;
+    return paymentDate;
 
   switch (m_occurence)
   {
@@ -476,64 +476,64 @@ QDate MyMoneySchedule::dateAfter(int transactions) const
       break;
 
     case OCCUR_DAILY:
-      while (counter < transactions)
-        theDate = paymentDate.addDays(1);
+      while (counter++ < transactions)
+        paymentDate = paymentDate.addDays(1);
       break;
 
     case OCCUR_WEEKLY:
-      while (counter < transactions)
-        theDate = paymentDate.addDays(7);
+      while (counter++ < transactions)
+        paymentDate = paymentDate.addDays(7);
       break;
 
     case OCCUR_FORTNIGHTLY:
     case OCCUR_EVERYOTHERWEEK:
-      while (counter < transactions)
-        theDate = paymentDate.addDays(14);
+      while (counter++ < transactions)
+        paymentDate = paymentDate.addDays(14);
       break;
 
     case OCCUR_EVERYFOURWEEKS:
-      while (counter < transactions)
-        theDate = paymentDate.addDays(28);
+      while (counter++ < transactions)
+        paymentDate = paymentDate.addDays(28);
       break;
 
     case OCCUR_MONTHLY:
-      while (counter < transactions)
-        theDate = paymentDate.addMonths(1);
+      while (counter++ < transactions)
+        paymentDate = paymentDate.addMonths(1);
       break;
 
     case OCCUR_EVERYOTHERMONTH:
-      while (counter < transactions)
-        theDate = paymentDate.addMonths(2);
+      while (counter++ < transactions)
+        paymentDate = paymentDate.addMonths(2);
       break;
 
     case OCCUR_EVERYTHREEMONTHS:
-      while (counter < transactions)
-        theDate = paymentDate.addMonths(3);
+      while (counter++ < transactions)
+        paymentDate = paymentDate.addMonths(3);
       break;
 
     case OCCUR_QUARTERLY:
     case OCCUR_EVERYFOURMONTHS:
-      while (counter < transactions)
-        theDate = paymentDate.addMonths(4);
+      while (counter++ < transactions)
+        paymentDate = paymentDate.addMonths(4);
       break;
 
     case OCCUR_TWICEYEARLY:
-      while (counter < transactions)
-        theDate = paymentDate.addMonths(6);
+      while (counter++ < transactions)
+        paymentDate = paymentDate.addMonths(6);
       break;
 
     case OCCUR_YEARLY:
-      while (counter < transactions)
-        theDate = paymentDate.addYears(1);
+      while (counter++ < transactions)
+        paymentDate = paymentDate.addYears(1);
       break;
 
     case OCCUR_EVERYOTHERYEAR:
-      while (counter < transactions)
-        theDate = paymentDate.addYears(2);
+      while (counter++ < transactions)
+        paymentDate = paymentDate.addYears(2);
       break;
     case OCCUR_ANY:
       break;
   }
 
-  return theDate;
+  return paymentDate;
 }
