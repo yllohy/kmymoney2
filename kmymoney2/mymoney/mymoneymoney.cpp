@@ -21,8 +21,9 @@
  ***************************************************************************/
 #include "mymoneymoney.h"
 
-static unsigned char _thousandSeparator = ',';
-static unsigned char _decimalSeparator = '.';
+unsigned char MyMoneyMoney::_thousandSeparator = ',';
+unsigned char MyMoneyMoney::_decimalSeparator = '.';
+MyMoneyMoney::fileVersionE MyMoneyMoney::_fileVersion = MyMoneyMoney::FILE_4_BYTE_VALUE;
 
 void MyMoneyMoney::setThousandSeparator(const unsigned char separator)
 {
@@ -42,6 +43,11 @@ void MyMoneyMoney::setDecimalSeparator(const unsigned char separator)
 unsigned char MyMoneyMoney::decimalSeparator(void)
 {
   return _decimalSeparator;
+}
+
+void MyMoneyMoney::setFileVersion(fileVersionE version)
+{
+  _fileVersion = version;
 }
 
 MyMoneyMoney::MyMoneyMoney(const QString& pszAmountInPence)
@@ -70,9 +76,11 @@ const QString MyMoneyMoney::formatMoney(/*QString locale="C", bool addPrefixPost
     bool bNegative=false;
     signed64 left = (signed64)m_64Value/100;
     short right = (short)m_64Value-(left*100);
-    if (right<0)
-    {
+    if (right < 0){
       right = -right;
+      bNegative=true;
+    }
+    if (left < 0) {
       left = -left;
       bNegative=true;
     }
@@ -118,19 +126,46 @@ QDataStream &operator<<(QDataStream &s, const MyMoneyMoney &money)
   // QT defined it here as long:
   // qglobal.h:typedef long          Q_INT64;
 
-  return s << (Q_INT64)money.m_64Value;
+  switch(MyMoneyMoney::_fileVersion) {
+    case MyMoneyMoney::FILE_4_BYTE_VALUE:
+      if(money.m_64Value & 0xffffffff00000000)
+        qWarning("Lost data while writing out MyMoneyMoney object using deprecated 4 byte writer");
+
+      s << static_cast<Q_INT32> (money.m_64Value & 0xffffffff);
+      break;
+
+    default:
+      qDebug("Unknown file version while writing MyMoneyMoney object! Use FILE_8_BYTE_VALUE");
+      // tricky fall through here
+
+    case MyMoneyMoney::FILE_8_BYTE_VALUE:
+      s << static_cast<Q_INT32> (money.m_64Value >> 32);
+      s << static_cast<Q_INT32> (money.m_64Value & 0xffffffff);
+      break;
+  }
+  return s;
 }
 
 QDataStream &operator>>(QDataStream &s, MyMoneyMoney &money)
 {
-//  Uncomment to read in a kmymoney2 <= 0.5.0 file.
-//  double d_amount;
-//  s >> d_amount;
-//  money.m_64Value = static_cast<signed64>(100*static_cast<double>(d_amount));
-//  return s;
+  Q_INT32 tmp;
+  switch(MyMoneyMoney::_fileVersion) {
+    case MyMoneyMoney::FILE_4_BYTE_VALUE:
+      s >> tmp;
+      money.m_64Value = static_cast<signed64> (tmp);
+      break;
 
-  Q_INT64 amount;
-  s >> amount;
-  money = static_cast<Q_INT64>(amount);
+    default:
+      qDebug("Unknown file version while writing MyMoneyMoney object! FILE_8_BYTE_VALUE assumed");
+      // tricky fall through here
+
+    case MyMoneyMoney::FILE_8_BYTE_VALUE:
+      s >> tmp;
+      money.m_64Value = static_cast<signed64> (tmp);
+      money.m_64Value <<= 32;
+      s >> tmp;
+      money.m_64Value |= static_cast<signed64> (tmp);
+      break;
+  }
   return s;
 }

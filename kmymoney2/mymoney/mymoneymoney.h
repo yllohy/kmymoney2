@@ -33,13 +33,12 @@ typedef unsigned long long unsigned64;
 
 class MyMoneyMoney
 {
-private:
-  signed64 m_64Value;
-
-  friend QDataStream &operator<<(QDataStream &, const MyMoneyMoney &);
-  friend QDataStream &operator>>(QDataStream &, MyMoneyMoney &);
-
 public:
+  enum fileVersionE {
+    FILE_4_BYTE_VALUE = 0,
+    FILE_8_BYTE_VALUE
+  };
+
   // construction
   MyMoneyMoney();
   MyMoneyMoney( const QString& pszAmountInPence );
@@ -58,6 +57,7 @@ public:
   static void setDecimalSeparator(const unsigned char);
   static unsigned char thousandSeparator(void);
   static unsigned char decimalSeparator(void);
+  static void setFileVersion(const fileVersionE version);
 
   // assignment
   const MyMoneyMoney& operator=( const MyMoneyMoney& AmountInPence );
@@ -139,6 +139,17 @@ public:
   MyMoneyMoney  operator++( int );
   MyMoneyMoney& operator--();
   MyMoneyMoney  operator--( int );
+
+private:
+  signed64 m_64Value;
+
+  friend QDataStream &operator<<(QDataStream &, const MyMoneyMoney &);
+  friend QDataStream &operator>>(QDataStream &, MyMoneyMoney &);
+
+  static unsigned char _thousandSeparator;
+  static unsigned char _decimalSeparator;
+  static MyMoneyMoney::fileVersionE _fileVersion;
+
 };
 
 //=============================================================================
