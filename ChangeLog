@@ -1,3 +1,9 @@
+2002-08-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Do not allow in-register editing if the form is visible
+  * Added payee widget with auto completion feature
+  * Fixed some problems showing up with GCC 3.x, thanks to Jim Blomo
+    for reporting them
+
 2002-08-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added option to show/hide the transaction form in a ledger view in the
     settings menu and through shortcut (Ctrl-T)
