@@ -1,3 +1,8 @@
+2004-06-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added patch supplied by Ace Jones
+  * Show preferred account after startup
+  * Fixed logic for KDE 3.2
+
 2004-06-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Replaced KLineEditDlg with KInputDialog for KDE >= 3.2.0
   * Replaced some deprecated methods in KDE >= 3.2.0
