@@ -354,14 +354,30 @@ void KReportsViewTest::testNetWorthOpeningPrior()
   // the period of the report.
 
   MyMoneyReport filter( MyMoneyReport::eAssetLiability );
-  filter.setDateFilter(QDate(2004,8,1),QDate(2005,9,1).addDays(-1));
+  filter.setDateFilter(QDate(2005,8,1),QDate(2005,12,31));
+  filter.setName("Net Worth Opening Prior 1");
   XMLandback(filter);
   PivotTable networth_f( filter );
+  writeTabletoCSV(networth_f);
 
   CPPUNIT_ASSERT(networth_f.m_grid["Liability"]["Credit Card"].m_total[0]==moCreditOpen);
   CPPUNIT_ASSERT(networth_f.m_grid["Asset"]["Checking Account"].m_total[0]==moCheckingOpen);
   CPPUNIT_ASSERT(networth_f.m_grid.m_total[0]==moCheckingOpen+moCreditOpen);
   CPPUNIT_ASSERT(networth_f.m_grid.m_total[1]==moCheckingOpen+moCreditOpen);
+
+  // Test the net worth report to make sure that transactions prior to the report
+  // period are included in the opening balance
+ 
+  TransactionHelper t1( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moParent1, acCredit, acParent );
+  TransactionHelper t2( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moParent2, acCredit, acParent );
+  TransactionHelper t3( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moChild, acChecking, acChild );
+
+  filter.setName("Net Worth Opening Prior 2");
+  PivotTable networth_f2( filter );
+  writeTabletoCSV(networth_f2);
+  CPPUNIT_ASSERT(networth_f2.m_grid["Liability"]["Credit Card"].m_total[0]==moCreditOpen-moParent);
+  CPPUNIT_ASSERT(networth_f2.m_grid["Asset"]["Checking Account"].m_total[0]==moCheckingOpen-moChild);
+  CPPUNIT_ASSERT(networth_f.m_grid.m_total[0]==moCheckingOpen+moCreditOpen-moChild-moParent);
 }
 
 void KReportsViewTest::testNetWorthDateFilter()

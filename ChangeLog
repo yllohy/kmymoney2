@@ -1,3 +1,8 @@
+2004-07-27 Ace Jones <acejones@users.sourceforge.net>
+  * Fixed CSV report export so no commas are contained in values.  Values are 
+    now saved as double's instead of formatted strings.
+  * Fixed spelling error in reports exception dialog.
+
 2004-07-26 Ace Jones <acejones@users.sourceforge.net>
   * Added numerous exceptions for overflow conditions in reports
   

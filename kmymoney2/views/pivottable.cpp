@@ -958,10 +958,10 @@ QString PivotTable::renderCSV( void ) const
         QString rowdata;
         unsigned column = 1;
         while ( column < m_numColumns )
-          rowdata += QString(",%1").arg(it_row.data()[column++].formatMoney());
+          rowdata += QString(",%1").arg(it_row.data()[column++].toDouble());
 
         if ( m_config_f.isShowingRowTotals() )
-          rowdata += QString(",%1").arg((*it_row).m_total.formatMoney());
+          rowdata += QString(",%1").arg((*it_row).m_total.toDouble());
 
         //
         // Row Header
@@ -1009,10 +1009,10 @@ QString PivotTable::renderCSV( void ) const
       {
         unsigned column = 1;
         while ( column < m_numColumns )
-          result += QString(",%1").arg((*it_innergroup).m_total[column++].formatMoney());
+          result += QString(",%1").arg((*it_innergroup).m_total[column++].toDouble());
   
         if (  m_config_f.isShowingRowTotals() )
-          result += QString(",%1").arg((*it_innergroup).m_total.m_total.formatMoney());
+          result += QString(",%1").arg((*it_innergroup).m_total.m_total.toDouble());
   
         result += "\n";
       }
@@ -1030,10 +1030,10 @@ QString PivotTable::renderCSV( void ) const
       result += QString("%1 %2").arg(i18n("Total")).arg(it_outergroup.key());
       unsigned column = 1;
       while ( column < m_numColumns )
-        result += QString(",%1").arg((*it_outergroup).m_total[column++].formatMoney());
+        result += QString(",%1").arg((*it_outergroup).m_total[column++].toDouble());
   
       if (  m_config_f.isShowingRowTotals() )
-        result += QString(",%1").arg((*it_outergroup).m_total.m_total.formatMoney());
+        result += QString(",%1").arg((*it_outergroup).m_total.m_total.toDouble());
   
       result += "\n";
     }
@@ -1049,10 +1049,10 @@ QString PivotTable::renderCSV( void ) const
     result += i18n("Grand Total");
     unsigned totalcolumn = 1;
     while ( totalcolumn < m_numColumns )
-      result += QString(",%1").arg(m_grid.m_total[totalcolumn++].formatMoney());
+      result += QString(",%1").arg(m_grid.m_total[totalcolumn++].toDouble());
   
     if (  m_config_f.isShowingRowTotals() )
-      result += QString(",%1").arg(m_grid.m_total.m_total.formatMoney());
+      result += QString(",%1").arg(m_grid.m_total.m_total.toDouble());
   
     result += "\n";
   }
