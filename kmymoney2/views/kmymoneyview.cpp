@@ -725,6 +725,10 @@ const bool KMyMoneyView::saveFile(const KURL& url)
 
   QString strFileExtension = MyMoneyUtils::getFileExtension(filename);
 
+  // only use XML writer. The binary format will be depreacated sometime
+  pWriter = new MyMoneyStorageXML;
+  
+/* // FIXME: remove this when we do not support the binary writer anymore
   if(strFileExtension.find("XML") != -1)
   {
     pWriter = new MyMoneyStorageXML;
@@ -734,6 +738,7 @@ const bool KMyMoneyView::saveFile(const KURL& url)
     // Use the binary reader 
     pWriter = new MyMoneyStorageBin;
   }
+*/
 
   // actually, url should be the parameter to this function
   // but for now, this would involve too many changes
