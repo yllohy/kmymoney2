@@ -25,8 +25,10 @@
 
 // ----------------------------------------------------------------------------
 // QT Includes
+#include <qvaluevector.h>
 #include <qwidget.h>
 class QVBoxLayout;
+class QTabWidget;
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -37,6 +39,7 @@ class QVBoxLayout;
 
 #include "../mymoney/mymoneyscheduled.h"
 #include "../mymoney/mymoneyaccount.h"
+#include "pivottable.h"
 
 /**
   * Displays a page where reports can be placed.  For now only contains
@@ -50,9 +53,14 @@ class KReportsView : public QWidget  {
    Q_OBJECT
 
 private:
-  KHTMLPart *m_part;
+  QValueVector<QWidget*> m_tab;
+  QValueVector<KHTMLPart*> m_part;
+  QValueVector<QVBoxLayout*> m_tabLayout;
   QVBoxLayout *m_qvboxlayoutPage;
+  QTabWidget* m_reportTabWidget;
   bool m_boolShowSubAccounts;
+
+  QValueVector<reports::ReportConfiguration> m_reports;
     
 public:
   /**
@@ -85,7 +93,7 @@ public:
 
 protected:
   static const QString linkfull(const QString& view, const QString& query, const QString& label);
-  const QString createTable(const QString& links = QString()) const;
+  const QString createTable(const reports::ReportConfiguration& report, const QString& links = QString()) const;
   
 public slots:
   void slotOpenURL(const KURL &url, const KParts::URLArgs& args);
@@ -95,6 +103,7 @@ public slots:
   void slotCopyView(void);
   void slotSaveView(void);
   void slotReloadView(void) { slotRefreshView(); };
+  void slotConfigure(void);
 
 signals:
   /**

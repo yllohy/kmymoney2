@@ -43,17 +43,17 @@ void MyMoneyEquity::setPriceHistory(const equity_price_history& history)
   m_priceHistory = history;  
 }
 
-void MyMoneyEquity::editPriceHistory(QDate& date,MyMoneyMoney& money)
+void MyMoneyEquity::editPriceHistory(const QDate& date, const MyMoneyMoney& money)
 {
   m_priceHistory[date] = money;
 }
 
-void MyMoneyEquity::addPriceHistory(QDate& date, MyMoneyMoney& money)
+void MyMoneyEquity::addPriceHistory(const QDate& date, const MyMoneyMoney& money)
 {
   m_priceHistory[date] = money;
 }
 
-void MyMoneyEquity::removePriceHistory(QDate& date)
+void MyMoneyEquity::removePriceHistory(const QDate& date)
 {
   equity_price_history::Iterator i = m_priceHistory.find(date);
   if(i != m_priceHistory.end())

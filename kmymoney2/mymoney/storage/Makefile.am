@@ -13,6 +13,7 @@ EXTRA_DIST = imymoneyserialize.cpp imymoneyserialize.h imymoneystorage.cpp imymo
 ####### kdevelop will overwrite this part!!! (end)############
 
 if CPPUNIT
-EXTRA_libstorage_a_SOURCES = mymoneyseqaccessmgrtest.cpp mymoneystoragebintest.cpp
-libstorage_a_LIBADD = mymoneyseqaccessmgrtest.o mymoneystoragebintest.o
+check_LIBRARIES = libstoragetest.a
+
+libstoragetest_a_SOURCES = mymoneyseqaccessmgrtest.cpp mymoneystoragebintest.cpp
 endif

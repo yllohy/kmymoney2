@@ -435,5 +435,12 @@ void MyMoneyStorageDump::dumpPriceHistory(QTextStream& s, const equity_price_his
 {
   if(history.count() != 0) {
     s << "    Price History:\n";
+
+    equity_price_history::const_iterator it_price = history.begin();
+    while ( it_price != history.end() )
+    {
+      s << "      " << it_price.key().toString() << ": " << it_price.data().toDouble() << "\n";
+      it_price++;
+    }
   }
 }

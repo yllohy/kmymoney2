@@ -73,9 +73,9 @@ public:
   const equity_price_history& priceHistory() const { return m_priceHistory; }
   void setPriceHistory(const equity_price_history& history);
 
-  void  editPriceHistory(QDate& date,MyMoneyMoney& money);
-  void  addPriceHistory(QDate& date, MyMoneyMoney& money);
-  void  removePriceHistory(QDate& date);
+  void  editPriceHistory(const QDate& date,const MyMoneyMoney& money);
+  void  addPriceHistory(const QDate& date, const MyMoneyMoney& money);
+  void  removePriceHistory(const QDate& date);
 
   /**
     * This method is used to retrieve a price for a specific date
