@@ -23,6 +23,8 @@
 #ifndef MYMONEYSTORAGEXMLCALLBACK_H
 #define MYMONEYSTORAGEXMLCALLBACK_H
 
+#include "config.h"
+
 #if HAVE_LIBXMLPP
 
 //include libxml++, using the SAX parser
@@ -46,7 +48,7 @@ public:
 
   void start_document(void);
   void end_document(void);
-  void start_element(const string &n, const XMLPropertyHash &p);
+  void start_element(const string &n, const XMLPropertyMap &p);
   void end_element(const string &n);
   void characters(const string &s);
   void comment(const string &s);
