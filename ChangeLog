@@ -1,3 +1,7 @@
+2004-08-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed some logic errors in KAccountComboBox and completion object
+  * More work on the investment view
+
 2004-08-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed conflicts due to merge with changes made by Ace
   * Preload the KDE default settings for monetary display
