@@ -21,6 +21,10 @@
 #include <qfile.h>
 #include <qtextstream.h>
 
+#if QT_VERSION > 300
+#include <qcursor.h>
+#endif
+
 #include <stdio.h>
 
 #include "../dialogs/knewbankdlg.h"

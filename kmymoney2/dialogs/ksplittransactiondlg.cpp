@@ -34,6 +34,10 @@
 #include <qbuttongroup.h>
 #include <qradiobutton.h>
 
+#if QT_VERSION > 300
+#include <qcursor.h>
+#endif
+
 #include "ksplittransactiondlg.h"
 #include "../mymoney/mymoneysplittransaction.h"
 #include "../widgets/kmymoneysplittable.h"

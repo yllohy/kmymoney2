@@ -11,8 +11,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>323</width>
-            <height>330</height>
+            <width>477</width>
+            <height>420</height>
         </rect>
     </property>
     <property stdset="1">
@@ -79,22 +79,6 @@
             </property>
         </widget>
         <widget>
-            <class>KDoubleNumInput</class>
-            <property stdset="1">
-                <name>name</name>
-                <cstring>dblPrice</cstring>
-            </property>
-            <property stdset="1">
-                <name>geometry</name>
-                <rect>
-                    <x>90</x>
-                    <y>60</y>
-                    <width>80</width>
-                    <height>24</height>
-                </rect>
-            </property>
-        </widget>
-        <widget>
             <class>QPushButton</class>
             <property stdset="1">
                 <name>name</name>
@@ -127,6 +111,22 @@
                     <y>30</y>
                     <width>81</width>
                     <height>21</height>
+                </rect>
+            </property>
+        </widget>
+        <widget>
+            <class>QLineEdit</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>dblPrice</cstring>
+            </property>
+            <property stdset="1">
+                <name>geometry</name>
+                <rect>
+                    <x>90</x>
+                    <y>60</y>
+                    <width>80</width>
+                    <height>22</height>
                 </rect>
             </property>
         </widget>
@@ -188,31 +188,7 @@
         </property>
     </widget>
     <widget>
-        <class>KListView</class>
-        <column>
-            <property>
-                <name>text</name>
-                <string>Column 1</string>
-            </property>
-            <property>
-                <name>clickable</name>
-                <bool>true</bool>
-            </property>
-            <property>
-                <name>resizeable</name>
-                <bool>true</bool>
-            </property>
-        </column>
-    <item>
-        <property>
-            <name>text</name>
-            <string>New Item</string>
-        </property>
-        <property>
-            <name>pixmap</name>
-            <pixmap></pixmap>
-        </property>
-    </item>
+        <class>QListView</class>
         <property stdset="1">
             <name>name</name>
             <cstring>lvPriceHistory</cstring>
@@ -221,9 +197,9 @@
             <name>geometry</name>
             <rect>
                 <x>10</x>
-                <y>161</y>
-                <width>301</width>
-                <height>160</height>
+                <y>160</y>
+                <width>300</width>
+                <height>205</height>
             </rect>
         </property>
     </widget>

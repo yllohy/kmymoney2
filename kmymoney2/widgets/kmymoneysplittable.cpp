@@ -22,6 +22,10 @@
 
 #include <qapplication.h>
 
+#if QT_VERSION > 300
+#include <qpainter.h>
+#endif
+
 #include <kconfig.h>
 #include <kglobal.h>
 

@@ -25,15 +25,17 @@ type=DATA
 [Config for BinMakefileAm]
 addcxxflags=
 bin_program=kmymoney2
+cflags=
+cppflags=
 cxxflags=\s-O0 -g3 -Wall
 ldadd=\s$(LIB_KFILE) $(LIB_KHTML) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT)
-ldflags=
+ldflags=\s
 path_to_bin_program=kmymoney2
 
 [General]
-AMChanged=false
+AMChanged=true
 author=Michael Edwardes
-configure_args=--prefix=/opt/kde2
+configure_args=\s--build=i386-linux --host=i386-linux --target=i386-linux --prefix=/opt/kde2\s
 dir_where_make_will_be_called=
 email=mte@users.sourceforge.net
 kdevprj_version=1.3

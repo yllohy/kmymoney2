@@ -330,7 +330,11 @@ void KSettingsDlg::configWrite()
   kconfig->writeEntry("ShowGrid", m_qcheckboxShowGrid->isChecked());
   kconfig->writeEntry("ColourPerTransaction", m_qradiobuttonPerTransaction->isChecked());
   kconfig->writeEntry("TextPrompt", m_qcheckboxTextPrompt->isChecked());
+#if QT_VERSION > 300
+  kconfig->writeEntry("StartDate", QDateTime(m_dateinputStart->getQDate()));
+#else
   kconfig->writeEntry("StartDate", m_dateinputStart->getQDate());
+#endif
 
   kconfig->setGroup("General Options");
   kconfig->writeEntry("StartDialog", m_qradiobuttonStartPrompt->isChecked());
@@ -381,7 +385,11 @@ void KSettingsDlg::slotCancel()
   kconfig->writeEntry("ShowGrid", m_bTempShowGrid);
   kconfig->writeEntry("ColourPerTransaction", m_bTempColourPerTransaction);
   kconfig->writeEntry("TextPrompt", m_bTempTextPrompt);
+#if QT_VERSION > 300
+  kconfig->writeEntry("StartDate", QDateTime(m_qdateTempStart));
+#else
   kconfig->writeEntry("StartDate", m_qdateTempStart);
+#endif
 
   kconfig->setGroup("General Options");
   kconfig->writeEntry("StartDialog", m_bTempStartPrompt);

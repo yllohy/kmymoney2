@@ -291,8 +291,12 @@ void KMyMoney2App::slotFileNew()
   slotStatusMsg(i18n("Creating new document..."));
 
   if (myMoneyView->fileOpen()) {
+#if QT_VERSION > 300
+    int answer = KMessageBox::warningContinueCancel(this, i18n("KMyMoney file already open.  Close it ?"), "Close File"/*, "Close", "dont_ask_again"*/);
+#else
     int answer = KMessageBox::warningContinueCancel(this, i18n("KMyMoney file already open.  Close it ?"), "Close File", "Close", "dont_ask_again");
-		if (answer==KMessageBox::Cancel) {
+#endif
+    if (answer==KMessageBox::Cancel) {
       slotStatusMsg(i18n("Ready"));
       return;
     }
@@ -309,7 +313,11 @@ void KMyMoney2App::slotFileOpen()
   slotStatusMsg(i18n("Open a document."));
 
   if (myMoneyView->fileOpen()) {
+#if QT_VERSION > 300
+    int answer = KMessageBox::warningContinueCancel(this, i18n("KMyMoney file already open.  Close it ?"), "Close File"/*, "Close", "dont_ask_again"*/);
+#else
     int answer = KMessageBox::warningContinueCancel(this, i18n("KMyMoney file already open.  Close it ?"), "Close File", "Close", "dont_ask_again");
+#endif
 		if (answer==KMessageBox::Cancel) {
       slotStatusMsg(i18n("Ready"));
       return;
@@ -326,7 +334,11 @@ void KMyMoney2App::slotFileOpenRecent(const KURL& url)
   slotStatusMsg(i18n("Opening file..."));
 
   if (myMoneyView->fileOpen()) {
+#if QT_VERSION > 300
+    int answer = KMessageBox::warningContinueCancel(this, i18n("KMyMoney file already open.  Close it ?"), "Close File"/*, "Close", "dont_ask_again"*/);
+#else
     int answer = KMessageBox::warningContinueCancel(this, i18n("KMyMoney file already open.  Close it ?"), "Close File", "Close", "dont_ask_again");
+#endif
 		if (answer==KMessageBox::Cancel) {
       slotStatusMsg(i18n("Ready"));
       return;

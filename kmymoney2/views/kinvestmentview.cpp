@@ -39,6 +39,10 @@
 #include <qbuttongroup.h>
 #include <qradiobutton.h>
 
+#if QT_VERSION > 300
+#include <qcursor.h>
+#endif
+
 #include "../mymoney/mymoneyfile.h"
 #include "../mymoney/mymoneyutils.h"
 #include "../mymoney/mymoneyequity.h"

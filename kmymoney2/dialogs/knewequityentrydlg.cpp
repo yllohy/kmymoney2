@@ -69,5 +69,5 @@ void KNewEquityEntryDlg::onCancelClicked()
 /** No descriptions */
 double KNewEquityEntryDlg::getStockPrice()
 {
-  return dblCurrentPrice->value();
+  return dblCurrentPrice->text().toDouble();
 }

@@ -11,7 +11,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>258</width>
+            <width>254</width>
             <height>252</height>
         </rect>
     </property>
@@ -57,22 +57,6 @@
         <property stdset="1">
             <name>text</name>
             <string>Investment Type:</string>
-        </property>
-    </widget>
-    <widget>
-        <class>KDoubleNumInput</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>dblCurrentPrice</cstring>
-        </property>
-        <property stdset="1">
-            <name>geometry</name>
-            <rect>
-                <x>100</x>
-                <y>130</y>
-                <width>151</width>
-                <height>24</height>
-            </rect>
         </property>
     </widget>
     <widget>
@@ -297,12 +281,27 @@
             <string>Trading Symbol of the stock or mutual fund, not required.</string>
         </property>
     </widget>
+    <widget>
+        <class>QLineEdit</class>
+        <property stdset="1">
+            <name>name</name>
+            <cstring>dblCurrentPrice</cstring>
+        </property>
+        <property stdset="1">
+            <name>geometry</name>
+            <rect>
+                <x>100</x>
+                <y>130</y>
+                <width>110</width>
+                <height>22</height>
+            </rect>
+        </property>
+    </widget>
 </widget>
 <tabstops>
     <tabstop>edtEquityName</tabstop>
     <tabstop>edtMarketSymbol</tabstop>
     <tabstop>cmbInvestmentType</tabstop>
-    <tabstop>dblCurrentPrice</tabstop>
     <tabstop>cmbMarket</tabstop>
     <tabstop>btnOK</tabstop>
     <tabstop>btnCancel</tabstop>
