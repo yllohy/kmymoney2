@@ -43,7 +43,7 @@
 class kMyMoneyRegisterInvestment : public kMyMoneyRegister
 {
    Q_OBJECT
-public: 
+public:
   kMyMoneyRegisterInvestment(QWidget *parent=0, const char *name=0);
   ~kMyMoneyRegisterInvestment();
 
@@ -56,6 +56,16 @@ public slots:
 
 protected:
   void paintCell(QPainter *p, int row, int col, const QRect& r, bool selected, const QColorGroup& cg);
+
+private:
+  /**
+    * This member variable holds the id of the last transaction processed.
+    */
+  QCString        m_lastTransactionId;
+  MyMoneySplit    m_accountSplit;
+  MyMoneySplit    m_feeSplit;
+  MyMoneySplit    m_interestSplit;
+
 };
 
 #endif

@@ -34,6 +34,7 @@
 #include "kmymoneyregisterinvestment.h"
 #include "../mymoney/mymoneyfile.h"
 #include "../views/kledgerview.h"
+#include "../views/kledgerviewinvestments.h"
 
 kMyMoneyRegisterInvestment::kMyMoneyRegisterInvestment(QWidget *parent, const char *name )
   : kMyMoneyRegister(4, parent, name)
@@ -73,132 +74,177 @@ void kMyMoneyRegisterInvestment::paintCell(QPainter *p, int row, int col, const 
                                  bool selected, const QColorGroup& cg)
 {
   QCString splitCurrency;
+  MyMoneyAccount acc;
+  MyMoneyEquity equity;
+  MyMoneyFile* file = MyMoneyFile::instance();
+  KLedgerViewInvestments* myParent = dynamic_cast<KLedgerViewInvestments*> (m_parent);
+  if(myParent == 0) {
+    qDebug("Internal failure at %s(%d)", __FILE__, __LINE__);
+    return;
+  }
 
   setTransactionRow(row);
 
   int align = Qt::AlignVCenter;
   QString txt;
   if(m_transaction != 0) {
-    switch (col) {
-      case 0:
-        align |= Qt::AlignLeft;
-        switch(m_transactionRow) {
-          case 0:
-            txt = KGlobal::locale()->formatDate(m_transaction->postDate(), true);
-            break;
-/*
-          case 1:
-            txt = m_action[MyMoneySplit::ActionWithdrawal];
-            if(KLedgerView::transactionType(*m_transaction) == KLedgerView::Transfer) {
-              txt = m_action[MyMoneySplit::ActionTransfer];
-            } else if(KLedgerView::transactionDirection(m_split) == KLedgerView::Credit) {
-              txt = m_action[MyMoneySplit::ActionDeposit];
-            } else if( m_split.action() == MyMoneySplit::ActionCheck){
-              txt = m_action[MyMoneySplit::ActionCheck];
-            } else if(m_split.action() == MyMoneySplit::ActionATM) {
-              txt = m_action[MyMoneySplit::ActionATM];
-            }
-
-            break;
-*/
+    try {
+      // find the split that references the stock account
+      QValueList<MyMoneySplit>::ConstIterator it_s;
+      for(it_s = m_transaction->splits().begin(); it_s != m_transaction->splits().end(); ++it_s) {
+        acc = file->account((*it_s).accountId());
+        if(acc.accountType() == MyMoneyAccount::Stock) {
+          m_split = *it_s;
+        } else if(acc.accountGroup() == MyMoneyAccount::Expense) {
+          m_feeSplit = *it_s;
+        } else if(acc.accountGroup() == MyMoneyAccount::Income) {
+          m_interestSplit = *it_s;
+        } else if(acc.accountGroup() == MyMoneyAccount::Asset
+                || acc.accountGroup() == MyMoneyAccount::Liability) {
+          m_accountSplit = *it_s;
         }
-        break;
+      }
 
-      case 2:
-        align |= Qt::AlignLeft;
-/*
-        switch(m_transactionRow) {
-          case 0:
-            try {
-              txt = MyMoneyFile::instance()->payee(m_split.payeeId()).name();
-            } catch(MyMoneyException *e) {
-              delete e;
-            }
-            break;
+      switch (col) {
+        case 0:
+          align |= Qt::AlignLeft;
+          switch(m_transactionRow) {
+            case 0:
+              txt = KGlobal::locale()->formatDate(m_transaction->postDate(), true);
+              break;
+          }
+          break;
 
-          case 1:
-            try {
-              if(m_transaction->isLoanPayment()) {
-                txt = QString(i18n("Loan payment"));
-              } else if(m_transaction->splitCount() > 2)
-                txt = QString(i18n("Split transaction"));
-              else {
-                MyMoneySplit split = m_transaction->splitByAccount(m_split.accountId(), false);
-                txt = MyMoneyFile::instance()->accountToCategory(split.accountId());
+        case 1:
+          align |= Qt::AlignLeft;
+          switch(m_transactionRow) {
+            case 0:
+              try {
+                acc = file->account(m_split.accountId());
+                equity = file->equity(acc.currencyId());
+                txt = equity.tradingSymbol();
+              } catch(MyMoneyException *e) {
+                delete e;
               }
-            } catch(MyMoneyException *e) {
-              delete e;
-            }
-            break;
+              break;
+          }
+          break;
 
-          case 2:
-            txt = m_split.memo();
-            break;
-        }
-*/
-        break;
+        case 2:
+          align |= Qt::AlignLeft;
+          switch(m_transactionRow) {
+            case 0:
+              switch(myParent->transactionType(*m_transaction, m_split)) {
+                case KLedgerView::BuyShares:
+                  txt = i18n("Buy Shares");
+                  break;
+                case KLedgerView::SellShares:
+                  txt = i18n("Sell Shares");
+                  break;
+                case KLedgerView::ReinvestDividend:
+                  txt = i18n("Reinvest Dividend");
+                  break;
+                case KLedgerView::Dividend:
+                  txt = i18n("Dividend");
+                  break;
+                case KLedgerView::Yield:
+                  txt = i18n("Yield");
+                  break;
+                case KLedgerView::AddShares:
+                  txt = i18n("Add Shares");
+                  break;
+                case KLedgerView::RemoveShares:
+                  txt = i18n("Remove Shares");
+                  break;
+              }
+              break;
 
-      case 3:
-/*
-        switch(m_transactionRow) {
-          case 0:
-            align |= Qt::AlignHCenter;
-            switch(m_split.reconcileFlag()) {
-              case MyMoneySplit::Cleared:
-                txt = i18n("C");
-                break;
-              case MyMoneySplit::Reconciled:
-              case MyMoneySplit::Frozen:
-                txt = i18n("R");
-                break;
-              case MyMoneySplit::NotReconciled:
-                break;
-            }
-            break;
-        }
-*/
-        break;
+  /*
 
-      case 4:
-/*
-        switch(m_transactionRow) {
-          case 0:
-            align |= Qt::AlignRight;
-            if(m_split.value() < 0) {
-              splitCurrency = MyMoneyFile::instance()->account(m_split.accountId()).currencyId();
-              txt = (-m_split.value(m_transaction->commodity(), splitCurrency)).formatMoney();
-            }
-            break;
-        }
-*/
-        break;
+            case 1:
+              try {
+                if(m_transaction->isLoanPayment()) {
+                  txt = QString(i18n("Loan payment"));
+                } else if(m_transaction->splitCount() > 2)
+                  txt = QString(i18n("Split transaction"));
+                else {
+                  MyMoneySplit split = m_transaction->splitByAccount(m_split.accountId(), false);
+                  txt = MyMoneyFile::instance()->accountToCategory(split.accountId());
+                }
+              } catch(MyMoneyException *e) {
+                delete e;
+              }
+              break;
 
-      case 5:
-/*
-        switch(m_transactionRow) {
-          case 0:
-            align |= Qt::AlignRight;
-            if(m_split.value() >= 0) {
-              splitCurrency = MyMoneyFile::instance()->account(m_split.accountId()).currencyId();
-              txt = m_split.value(m_transaction->commodity(), splitCurrency).formatMoney();
-            }
-            break;
-        }
-*/
-        break;
+            case 2:
+              txt = m_split.memo();
+              break;
+  */
+          }
+          break;
 
-      case 6:
-/*
-        switch(m_transactionRow) {
-          case 0:
-            align |= Qt::AlignRight;
-            txt = m_balance.formatMoney();
-            if(m_balance < 0)
-              p->setPen(QColor(255, 0, 0));
-            break;
-        }
-*/
-        break;
+        case 3:
+          switch(m_transactionRow) {
+            case 0:
+              align |= Qt::AlignHCenter;
+              switch(m_split.reconcileFlag()) {
+                case MyMoneySplit::Cleared:
+                  txt = i18n("C");
+                  break;
+                case MyMoneySplit::Reconciled:
+                case MyMoneySplit::Frozen:
+                  txt = i18n("R");
+                  break;
+                case MyMoneySplit::NotReconciled:
+                  break;
+              }
+              break;
+          }
+          break;
+
+        case 4:
+  /*
+          switch(m_transactionRow) {
+            case 0:
+              align |= Qt::AlignRight;
+              if(m_split.value() < 0) {
+                splitCurrency = MyMoneyFile::instance()->account(m_split.accountId()).currencyId();
+                txt = (-m_split.value(m_transaction->commodity(), splitCurrency)).formatMoney();
+              }
+              break;
+          }
+  */
+          break;
+
+        case 5:
+  /*
+          switch(m_transactionRow) {
+            case 0:
+              align |= Qt::AlignRight;
+              if(m_split.value() >= 0) {
+                splitCurrency = MyMoneyFile::instance()->account(m_split.accountId()).currencyId();
+                txt = m_split.value(m_transaction->commodity(), splitCurrency).formatMoney();
+              }
+              break;
+          }
+  */
+          break;
+
+        case 6:
+  /*
+          switch(m_transactionRow) {
+            case 0:
+              align |= Qt::AlignRight;
+              txt = m_balance.formatMoney();
+              if(m_balance < 0)
+                p->setPen(QColor(255, 0, 0));
+              break;
+          }
+  */
+          break;
+      }
+    } catch(MyMoneyException *e) {
+      delete e;
     }
   }
 

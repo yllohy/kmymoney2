@@ -268,6 +268,17 @@ public:
     InvestmentTransaction
   };
 
+  enum investTransactionTypeE {
+    UnknownTransactionType = 0,
+    BuyShares,
+    SellShares,
+    Dividend,
+    ReinvestDividend,
+    Yield,
+    AddShares,
+    RemoveShares
+  };
+
   enum editModeE {
     TransactionEdit = 0,
     Reconciliation

@@ -61,19 +61,10 @@ class KLedgerViewInvestments : public KLedgerView
   Q_OBJECT
 public:
 
-  enum investTransactionTypeE {
-    UnknownTransactionType = 0,
-    BuyShares,
-    SellShares,
-    Dividend,
-    ReinvestDividend,
-    Yield,
-    AddShares,
-    RemoveShares
-  };
-
   KLedgerViewInvestments(QWidget *parent = NULL, const char *name = NULL);
   ~KLedgerViewInvestments();
+
+  int transactionType(const MyMoneyTransaction& t, const MyMoneySplit& split) const;
 
 public slots:
   void slotRegisterDoubleClicked(int row, int col, int button, const QPoint &mousePos);
@@ -140,7 +131,6 @@ private:
 
 protected:
   int actionTab(const MyMoneyTransaction& t, const MyMoneySplit& split) const;
-  int transactionType(const MyMoneyTransaction& t, const MyMoneySplit& split) const;
 
 protected:
   KPushButton*  m_detailsButton;
