@@ -192,3 +192,11 @@ void kMyMoneyRegister::setInlineEditingAvailable(const bool editing)
 {
   m_inlineEditAvailable = editing;
 }
+
+void kMyMoneyRegister::ensureTransactionVisible(void)
+{
+  // ensure the current and the previous transaction are visible
+  ensureCellVisible((currentTransactionIndex()-1) * rpt(), 0);
+  ensureCellVisible((currentTransactionIndex()) * rpt(), 0);
+  ensureCellVisible((currentTransactionIndex() * rpt()) + rpt()-1, 0);
+}

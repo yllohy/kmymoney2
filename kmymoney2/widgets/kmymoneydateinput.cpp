@@ -120,6 +120,7 @@ void kMyMoneyDateInput::slotDateChosen(QDate date)
   dateEdit->setDate(date);
   m_date=date;
   m_datePicker->setDate(m_date);
+  emit dateChanged(date);
 }
 
 void kMyMoneyDateInput::slotEnterPressed()
@@ -136,5 +137,16 @@ QDate kMyMoneyDateInput::getQDate(void)
 void kMyMoneyDateInput::setDate(QDate date)
 {
   slotDateChosen(date);
+}
+
+void kMyMoneyDateInput::loadDate(const QDate& date)
+{
+  m_date = m_prevDate = date;
+  slotEnterPressed();
+}
+
+void kMyMoneyDateInput::resetDate(void)
+{
+  setDate(m_prevDate);
 }
 

@@ -43,14 +43,35 @@ public:
   void loadList(void);
 
   /**
+    * This method is used to set the value of the widget back to
+    * the one passed using loadText().
     */
   void resetText(void);
 
 public slots:
-  void setText(const QString& text);
+  /**
+    * This slot is used to load the local text copy and the widget with
+    * the value passed as argument. One can use resetText() to load the
+    * widget again with the value passed here at a later time.
+    *
+    * @param text reference to the text to be loaded and remembered
+    */
+  void loadText(const QString& text);
 
 signals:
+  /**
+    * This signal is emitted, when a new payee/receiver name has been
+    * entered by the user and this name is not known by the MyMoneyFile
+    * object.
+    */
   void newPayee(const QString& payee);
+
+  /**
+    * This signal is emitted when the user entered a different name. This
+    * signal is emitted after the newPayee(const QString& payee) signal and
+    * the new payee is possibly available in the MyMoneyFile object.
+    */
+  void payeeChanged(const QString& payee);
 
 protected:
   void focusOutEvent(QFocusEvent *ev);
@@ -61,8 +82,6 @@ private:
     * resetText() to set the widgets text back to this initial value
     */
   QString m_text;
-
-  QMap<QString, QCString>  m_payeeConversionList;
 };
 
 #endif

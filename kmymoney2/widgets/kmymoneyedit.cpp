@@ -36,9 +36,20 @@ kMyMoneyEdit::~kMyMoneyEdit()
 
 MyMoneyMoney kMyMoneyEdit::getMoneyValue(void)
 {
-#warning "FIXME:"
-  MyMoneyMoney money((long)(text().toDouble()*100));
+#warning "FIXME: I hope, I fixed it (Thomas)"
+  MyMoneyMoney money(text().toDouble());
   return money;
+}
+
+void kMyMoneyEdit::loadText(const QString& text)
+{
+  m_text = text;
+  setText(text);
+}
+
+void kMyMoneyEdit::resetText(void)
+{
+  setText(m_text);
 }
 
 void kMyMoneyEdit::theTextChanged(const QString & theText)
@@ -66,6 +77,9 @@ void kMyMoneyEdit::focusOutEvent(QFocusEvent *e)
       setText(s);
     }
   }
+  if(text().toDouble() != m_text.toDouble())
+    emit valueChanged(text());
+
   QLineEdit::focusOutEvent(e);
 }
 

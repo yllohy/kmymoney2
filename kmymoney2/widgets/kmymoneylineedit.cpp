@@ -52,3 +52,25 @@ bool kMyMoneyLineEdit::eventFilter(QObject *o , QEvent *e )
   }
   return KLineEdit::eventFilter(o,e);
 }
+
+void kMyMoneyLineEdit::resetText(void)
+{
+  setText(m_text);
+}
+
+void kMyMoneyLineEdit::loadText(const QString& text)
+{
+  m_text = text;
+  setText(text);
+}
+
+void kMyMoneyLineEdit::focusOutEvent(QFocusEvent *ev)
+{
+  // if the current text is not in the list of
+  // possible completions, we have a new payee
+  // and signal that to the outside world.
+  if(text() != m_text) {
+    emit lineChanged(text());
+  }
+  KLineEdit::focusOutEvent(ev);
+}

@@ -40,6 +40,11 @@ public:
 	// Use this to get the selected date
 	QDate getQDate(void);
 	void setDate(QDate date);
+  void loadDate(const QDate& date);
+  void resetDate(void);
+
+signals:
+  void dateChanged(const QDate& date);
 
 protected:
   /** Overriding QWidget::keyPressEvent */
@@ -54,6 +59,7 @@ private:
   QDateEdit *dateEdit;
   KDatePicker *m_datePicker;
   QDate m_date;  // The date !
+  QDate m_prevDate;
   Qt::AlignmentFlags m_qtalignment;
 	QVBox *m_dateFrame;
 	QPushButton *m_dateButton;

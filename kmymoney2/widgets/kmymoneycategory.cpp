@@ -55,15 +55,15 @@ void kMyMoneyCategory::keyPressEvent( QKeyEvent * ev)
   }
 }
 
-void kMyMoneyCategory::setText(const QString& text)
+void kMyMoneyCategory::loadText(const QString& text)
 {
   m_text = text;
-  KLineEdit::setText(text);
+  setText(text);
 }
 
 void kMyMoneyCategory::resetText(void)
 {
-  KLineEdit::setText(m_text);
+  setText(m_text);
 }
 
 
@@ -117,3 +117,15 @@ void kMyMoneyCategory::loadList(const categoryTypeE type)
   compObj()->setIgnoreCase(true);
 }
 
+void kMyMoneyCategory::focusOutEvent(QFocusEvent *ev)
+{
+  // if the current text is not in the list of
+  // possible completions, we have a new category
+  // and signal that to the outside world.
+  if(text() != "" && compObj()->items().contains(text()) == 0)
+    emit newCategory(text());
+
+  if(text() != m_text) {
+    emit categoryChanged(text());
+  }
+}

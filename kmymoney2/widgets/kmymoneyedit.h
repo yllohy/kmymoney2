@@ -29,6 +29,7 @@ class kMyMoneyEdit : public KLineEdit  {
 
 private:
   QString previousText; // keep track of what has been typed
+  QString m_text;       // keep track of what was the original value
 
 protected:
   void focusOutEvent(QFocusEvent *e);
@@ -41,7 +42,12 @@ public:
   ~kMyMoneyEdit();
   MyMoneyMoney getMoneyValue(void);
 
+  void resetText(void);
+
   virtual bool eventFilter(QObject * , QEvent * );
+
+public slots:
+  void loadText(const QString& text);
 
 signals: // Signals
   /** No descriptions */
@@ -52,7 +58,8 @@ signals: // Signals
   void signalTab();
   /** signal is sent, when the Back-tab (Shift-Tab) key is pressed */
   void signalBackTab();
-
+  /** signal is sent, when amount has been changed by user */
+  void valueChanged(const QString& text);
 };
 
 #endif

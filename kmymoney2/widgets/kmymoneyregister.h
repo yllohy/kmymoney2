@@ -83,7 +83,7 @@ public:
     *
     * @return int number of rows per transaction
     */
-  int rpt(void) { return m_rpt; };
+  int rpt(void) const { return m_rpt; };
 
   /**
     * This method is used to return the index of the currently selected
@@ -111,6 +111,12 @@ public:
     *                read-only.
     */
   void setInlineEditingAvailable(const bool editing);
+
+  /**
+    * This method is used to make sure that the current selected
+    * transaction is completely visible in the register.
+    */
+  void ensureTransactionVisible(void);
 
 public slots:
   /**

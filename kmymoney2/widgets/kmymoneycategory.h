@@ -51,8 +51,24 @@ public:
     */
   void resetText(void);
 
+signals:
+  /**
+    * This signal is emitted, when a new category name has been
+    * entered by the user and this name is not known as account
+    * by the MyMoneyFile object.
+    */
+  void newCategory(const QString& category);
+
+  /**
+    * This signal is emitted when the user selected a different category.
+    */
+  void categoryChanged(const QString& category);
+
+protected:
+  void focusOutEvent(QFocusEvent *ev);
+
 public slots:
-  void setText(const QString& text);
+  void loadText(const QString& text);
 
 protected:
   virtual void keyPressEvent( QKeyEvent * );

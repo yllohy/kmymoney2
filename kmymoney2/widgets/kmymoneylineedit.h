@@ -33,7 +33,19 @@ public:
 	~kMyMoneyLineEdit();
   /** No descriptions */
   virtual bool eventFilter(QObject * , QEvent * );
+
+  /**
+    * This method is used to set the value of the widget back to
+    * the one passed using loadText().
+    */
+  void resetText(void);
+
+public slots:
+  void loadText(const QString& text);
+
 signals: // Signals
+  void lineChanged(const QString& str);
+
   /** No descriptions */
   void signalEnter();
   /** No descriptions */
@@ -42,6 +54,16 @@ signals: // Signals
   void signalTab();
   /** signal is sent, when the Back-tab (Shift-Tab) key is pressed */
   void signalBackTab();
+
+protected:
+  void focusOutEvent(QFocusEvent *ev);
+
+private:
+  /**
+    * This member keeps the initial value. It is used during
+    * resetText() to set the widgets text back to this initial value
+    */
+  QString m_text;
 };
 
 #endif

@@ -41,15 +41,15 @@ kMyMoneyPayee::~kMyMoneyPayee()
 {
 }
 
-void kMyMoneyPayee::setText(const QString& text)
+void kMyMoneyPayee::loadText(const QString& text)
 {
   m_text = text;
-  KLineEdit::setText(text);
+  setText(text);
 }
 
 void kMyMoneyPayee::resetText(void)
 {
-  KLineEdit::setText(m_text);
+  setText(m_text);
 }
 
 void kMyMoneyPayee::loadList(void)
@@ -62,7 +62,6 @@ void kMyMoneyPayee::loadList(void)
   QStringList strList;
 
   for(it_p = list.begin(); it_p != list.end(); ++it_p) {
-    m_payeeConversionList[(*it_p).name().upper()] = (*it_p).id();
     strList << (*it_p).name();
   }
 
@@ -78,4 +77,9 @@ void kMyMoneyPayee::focusOutEvent(QFocusEvent *ev)
   // and signal that to the outside world.
   if(text() != "" && compObj()->items().contains(text()) == 0)
     emit newPayee(text());
+
+  if(text() != m_text) {
+    emit payeeChanged(text());
+  }
+  KLineEdit::focusOutEvent(ev);
 }
