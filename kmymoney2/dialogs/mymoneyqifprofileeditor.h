@@ -63,10 +63,12 @@ public:
     */
   const QString selectedProfile() const;
 
+public slots:
+  void slotOk(void);
+
 protected slots:
   void slotLoadProfileFromConfig(const QString& name);
   void slotReset(void);
-  void slotOk(void);
   void slotRename(void);
   void slotDelete(void);
   void slotNew(void);

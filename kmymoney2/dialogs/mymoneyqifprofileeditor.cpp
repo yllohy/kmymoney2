@@ -155,6 +155,27 @@ void MyMoneyQifProfileEditor::loadWidgets(void)
   else
     setCaption(i18n("QIF Profile Selector"));
 
+  m_editDateFormat->clear();
+  m_editDateFormat->insertItem( "%d/%m/%yy" );
+  m_editDateFormat->insertItem( "%d/%mmm/%yy" );
+  m_editDateFormat->insertItem( "%d/%m/%yyyy" );
+  m_editDateFormat->insertItem( "%d/%mmm/%yyyy" );
+  m_editDateFormat->insertItem( "%d/%m%yy" );
+  m_editDateFormat->insertItem( "%d/%mmm%yy" );
+  m_editDateFormat->insertItem( "%d.%m.%yy" );
+  m_editDateFormat->insertItem( "%d.%m.%yyyy" );
+  m_editDateFormat->insertItem( "%m/%d/%yy" );
+  m_editDateFormat->insertItem( "%mmm/%d/%yy" );
+  m_editDateFormat->insertItem( "%m/%d/%yyyy" );
+  m_editDateFormat->insertItem( "%mmm/%d/%yyyy" );
+  m_editDateFormat->insertItem( "%m%d%yy" );
+  m_editDateFormat->insertItem( "%mmm/%d%yy" );
+
+  m_editApostrophe->clear();
+  m_editApostrophe->insertItem( "1900-1949" );
+  m_editApostrophe->insertItem( "1900-1999" );
+  m_editApostrophe->insertItem( "2000-2099" );
+  
   m_editAmounts->setColumnAlignment(1, Qt::AlignCenter);
   m_editAmounts->setColumnAlignment(2, Qt::AlignCenter);
   m_editAmounts->setColumnAlignment(3, Qt::AlignCenter);

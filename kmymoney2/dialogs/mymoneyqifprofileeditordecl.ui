@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
 <class>MyMoneyQifProfileEditorDecl</class>
 <widget class="QDialog">
     <property name="name">
@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>639</width>
-            <height>315</height>
+            <width>650</width>
+            <height>317</height>
         </rect>
     </property>
     <property name="caption">
@@ -324,76 +324,6 @@
                                         </property>
                                     </widget>
                                     <widget class="KComboBox">
-                                        <item>
-                                            <property name="text">
-                                                <string>%d/%m/%yy</string>
-                                            </property>
-                                        </item>
-                                        <item>
-                                            <property name="text">
-                                                <string>%d/%mmm/%yy</string>
-                                            </property>
-                                        </item>
-                                        <item>
-                                            <property name="text">
-                                                <string>%d/%m/%yyyy</string>
-                                            </property>
-                                        </item>
-                                        <item>
-                                            <property name="text">
-                                                <string>%d/%mmm/%yyyy</string>
-                                            </property>
-                                        </item>
-                                        <item>
-                                            <property name="text">
-                                                <string>%d/%m%yy</string>
-                                            </property>
-                                        </item>
-                                        <item>
-                                            <property name="text">
-                                                <string>%d/%mmm%yy</string>
-                                            </property>
-                                        </item>
-                                        <item>
-                                            <property name="text">
-                                                <string>%d.%m.%yy</string>
-                                            </property>
-                                        </item>
-                                        <item>
-                                            <property name="text">
-                                                <string>%d.%m.%yyyy</string>
-                                            </property>
-                                        </item>
-                                        <item>
-                                            <property name="text">
-                                                <string>%m/%d/%yy</string>
-                                            </property>
-                                        </item>
-                                        <item>
-                                            <property name="text">
-                                                <string>%mmm/%d/%yy</string>
-                                            </property>
-                                        </item>
-                                        <item>
-                                            <property name="text">
-                                                <string>%m/%d/%yyyy</string>
-                                            </property>
-                                        </item>
-                                        <item>
-                                            <property name="text">
-                                                <string>%mmm/%d/%yyyy</string>
-                                            </property>
-                                        </item>
-                                        <item>
-                                            <property name="text">
-                                                <string>%m%d%yy</string>
-                                            </property>
-                                        </item>
-                                        <item>
-                                            <property name="text">
-                                                <string>%mmm/%d%yy</string>
-                                            </property>
-                                        </item>
                                         <property name="name">
                                             <cstring>m_editDateFormat</cstring>
                                         </property>
@@ -446,21 +376,6 @@
                                         </property>
                                     </widget>
                                     <widget class="KComboBox">
-                                        <item>
-                                            <property name="text">
-                                                <string>1900-1949</string>
-                                            </property>
-                                        </item>
-                                        <item>
-                                            <property name="text">
-                                                <string>1900-1999</string>
-                                            </property>
-                                        </item>
-                                        <item>
-                                            <property name="text">
-                                                <string>2000-2099</string>
-                                            </property>
-                                        </item>
                                         <property name="name">
                                             <cstring>m_editApostrophe</cstring>
                                         </property>
@@ -528,7 +443,7 @@
                                     <property name="clickable">
                                         <bool>false</bool>
                                     </property>
-                                    <property name="resizeable">
+                                    <property name="resizable">
                                         <bool>false</bool>
                                     </property>
                                 </column>
@@ -539,7 +454,7 @@
                                     <property name="clickable">
                                         <bool>false</bool>
                                     </property>
-                                    <property name="resizeable">
+                                    <property name="resizable">
                                         <bool>false</bool>
                                     </property>
                                 </column>
@@ -550,7 +465,7 @@
                                     <property name="clickable">
                                         <bool>false</bool>
                                     </property>
-                                    <property name="resizeable">
+                                    <property name="resizable">
                                         <bool>false</bool>
                                     </property>
                                 </column>
@@ -561,7 +476,7 @@
                                     <property name="clickable">
                                         <bool>false</bool>
                                     </property>
-                                    <property name="resizeable">
+                                    <property name="resizable">
                                         <bool>false</bool>
                                     </property>
                                 </column>
@@ -572,7 +487,7 @@
                                     <property name="clickable">
                                         <bool>true</bool>
                                     </property>
-                                    <property name="resizeable">
+                                    <property name="resizable">
                                         <bool>true</bool>
                                     </property>
                                 </column>
@@ -1063,7 +978,7 @@
                         <string>&amp;Ok</string>
                     </property>
                     <property name="accel">
-                        <number>0</number>
+                        <string></string>
                     </property>
                     <property name="autoDefault">
                         <bool>true</bool>
@@ -1080,7 +995,7 @@
                         <string>Cancel</string>
                     </property>
                     <property name="accel">
-                        <number>0</number>
+                        <string></string>
                     </property>
                     <property name="autoDefault">
                         <bool>true</bool>
@@ -1091,4 +1006,28 @@
     </vbox>
 </widget>
 <layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>klineedit.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>kcombobox.h</includehint>
+    <includehint>kcombobox.h</includehint>
+    <includehint>kcombobox.h</includehint>
+    <includehint>kcombobox.h</includehint>
+    <includehint>kurlrequester.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kurlrequester.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+</includehints>
 </UI>
