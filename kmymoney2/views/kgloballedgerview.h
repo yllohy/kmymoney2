@@ -67,10 +67,14 @@ public:
     * This method is used to open the account with the specified id
     * in the ledger view. The respective view for this account type
     * will be selected and the account data loaded.
+    * The parameter @p reconciliation determines, if the reconciliation
+    * mode is started or not.
     *
     * @param id id of the account in the MyMoneyFile object
+    * @param reconciliation if false (default), the standard ledger is
+    *                       opened, if true, the reconciliation mode is entered
     */
-  void selectAccount(const QCString& id);
+  void selectAccount(const QCString& id, const bool reconciliation = false);
 
 public slots:
   /**
@@ -96,7 +100,13 @@ protected:
   void loadAccounts(void);
 
 protected slots:
-  void slotAccountSelected(const QString&);
+
+  /**
+    * This slot is used to select an account by it's @p id.
+    *
+    * @param id const QCString reference to the account's id
+    */
+  void slotAccountSelected(const QString& id);
 
   /**
     * This slot can be used to popup a specific transaction for a

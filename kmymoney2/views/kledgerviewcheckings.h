@@ -146,6 +146,14 @@ public slots:
 
   void slotRegisterDoubleClicked(int row, int col, int button, const QPoint &mousePos);
 
+  /**
+    * Calling this slot enters reconciliation mode. For checkings accounts
+    * this means, that a dialog is opened where the previous endinge balance, the
+    * current ending balance and the issue date of the statement are collected
+    * from the user. Any active editing of a transaction is cancelled.
+    */
+  virtual void slotReconciliation(void);
+
 protected:
   void fillSummary(void);
 
@@ -195,14 +203,6 @@ protected:
   virtual void createContextMenu(void);
 
 protected slots:
-  /**
-    * Calling this slot enters reconciliation mode. For checkings accounts
-    * this means, that a dialog is opened where the previous endinge balance, the
-    * current ending balance and the issue date of the statement are collected
-    * from the user. Any active editing of a transaction is cancelled.
-    */
-  virtual void slotReconciliation(void);
-
   /**
     * Calling this slot toggles the clear flag of the split of the
     * current selected transaction. The display will be updated.

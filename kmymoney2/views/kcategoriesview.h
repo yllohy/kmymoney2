@@ -67,9 +67,11 @@ protected slots:
   void slotNewClicked();
   void slotDeleteClicked();
   void slotSelectionChanged(QListViewItem*);
+  void slotListRightMouse(QListViewItem* item, const QPoint& , int col);
 
 signals:
   void signalViewActivated();
+  void categoryRightMouseClick();
 
 public:
 	KCategoriesView(QWidget *parent=0, const char *name=0);
@@ -95,6 +97,17 @@ public:
     * refresh() will be invoked once automatically.
     */
   void suspendUpdate(const bool suspend);
+
+  /**
+    * This method returns the id of the current selected account. If
+    * no account is selected, then an empty QCString will be returned.
+    * The flag referenced by the parameter @p success will be set
+    * to true if an account was found, false in all other cases.
+    *
+    * @param success Reference to boolean flag for success
+    */
+  const QCString currentAccount(bool& success) const;
+
 };
 
 #endif

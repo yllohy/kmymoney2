@@ -84,6 +84,8 @@ KCategoriesView::KCategoriesView(QWidget *parent, const char *name )
 	
 	connect(categoryListView, SIGNAL(selectionChanged(QListViewItem*)),
 	  this, SLOT(slotSelectionChanged(QListViewItem*)));
+  connect(categoryListView, SIGNAL(rightButtonPressed(QListViewItem* , const QPoint&, int)),
+    this, SLOT(slotListRightMouse(QListViewItem*, const QPoint&, int)));
 	connect(buttonEdit, SIGNAL(clicked()), this, SLOT(slotEditClicked()));
 	connect(buttonNew, SIGNAL(clicked()), this, SLOT(slotNewClicked()));
   connect(buttonDelete, SIGNAL(clicked()), this, SLOT(slotDeleteClicked()));
@@ -349,4 +351,24 @@ void KCategoriesView::suspendUpdate(const bool suspend)
     refresh();
 
   m_suspendUpdate = suspend;
+}
+
+const QCString KCategoriesView::currentAccount(bool& success) const
+{
+  KAccountListItem *item = (KAccountListItem *)categoryListView->selectedItem();
+  if (!item) {
+    success = false;
+    return QCString("");
+  }
+
+  success=true;
+  return item->accountID();
+}
+
+void KCategoriesView::slotListRightMouse(QListViewItem* item, const QPoint& , int col)
+{
+  if (item != 0 && col != -1) {
+    categoryListView->setSelected(item, true);
+    emit categoryRightMouseClick();
+  }
 }

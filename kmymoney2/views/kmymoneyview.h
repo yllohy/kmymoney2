@@ -53,6 +53,7 @@ class QFile;
 #include "kmymoneyfile.h"
 #include "kgloballedgerview.h"
 
+
 #include "../mymoney/storage/mymoneyseqaccessmgr.h"
 class IMyMoneyStorageFormat;
 
@@ -63,7 +64,7 @@ class IMyMoneyStorageFormat;
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.24 2002/11/25 14:47:31 ipwizard Exp $
+  * $Id: kmymoneyview.h,v 1.25 2002/12/04 20:34:00 ipwizard Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -78,13 +79,18 @@ public:
 private:
   KHomeView *m_homeView;
   KAccountsView *accountsView;
-  // KTransactionView *transactionView;
   KCategoriesView *m_categoriesView;
   KPayeesView *m_payeesView;
   KScheduledView *m_scheduledView;
-  // KInvestmentView *m_investmentView;
   KNewAccountWizard *m_newAccountWizard;
   KGlobalLedgerView *m_ledgerView;
+
+  QVBox* m_homeViewFrame;
+  QVBox* m_accountsViewFrame;
+  QVBox* m_categoriesViewFrame;
+  QVBox* m_payeesViewFrame;
+  QVBox* m_scheduleViewFrame;
+  QVBox* m_ledgerViewFrame;
 
   viewType m_showing;
   viewShowing m_realShowing;
@@ -354,6 +360,7 @@ protected slots:
   void doTransactionSearch();
 
   /**
+
     * Called when the user clicks on the homepage button.
     *
     * @see KHomeView
@@ -443,6 +450,7 @@ signals:
   //void transactionOperations(bool);
 
   void signalEnableKMyMoneyOperations(bool);
+
 
 
   void signalHomeView();

@@ -187,7 +187,7 @@ void KGlobalLedgerView::slotSelectAccountAndTransaction(const QCString& accountI
   m_currentView->selectTransaction(transactionId);
 }
 
-void KGlobalLedgerView::selectAccount(const QCString& accountId)
+void KGlobalLedgerView::selectAccount(const QCString& accountId, const bool reconciliation)
 {
   slotCancelEdit();
   if(accountId != "") {
@@ -209,6 +209,8 @@ void KGlobalLedgerView::selectAccount(const QCString& accountId)
       m_currentView = m_specificView[MyMoneyAccount::Checkings];
     }
   }
+  if(reconciliation == true && m_currentView)
+    m_currentView->slotReconciliation();
 }
 
 void KGlobalLedgerView::slotAccountSelected(const QString& account)
