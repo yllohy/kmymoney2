@@ -225,12 +225,10 @@ public:
     */
   virtual void refreshAllAccountTransactionLists(void) = 0;
 
-/*
   virtual void loadAccount(const MyMoneyAccount& acc) = 0;
   virtual void loadTransaction(const MyMoneyTransaction& tr) = 0;
   virtual void loadInstitution(const MyMoneyInstitution& inst) = 0;
   virtual void loadPayee(const MyMoneyPayee& payee) = 0;
-*/
 };
 
 #endif

@@ -453,6 +453,11 @@ public:
     */
   void refreshAllAccountTransactionLists(void);
 
+  virtual void loadAccount(const MyMoneyAccount& acc);
+  virtual void loadTransaction(const MyMoneyTransaction& tr);
+  virtual void loadInstitution(const MyMoneyInstitution& inst);
+  virtual void loadPayee(const MyMoneyPayee& payee);
+
 private:
 
   static const int INSTITUTION_ID_SIZE = 6;

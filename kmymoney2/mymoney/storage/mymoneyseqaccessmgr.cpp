@@ -1028,3 +1028,67 @@ void MyMoneySeqAccessMgr::invalidateBalanceCache(const QCString& id)
     delete e;
   }
 }
+
+void MyMoneySeqAccessMgr::loadAccount(const MyMoneyAccount& acc)
+{
+  if(acc.id() == asset().id()
+  || acc.id() == liability().id()
+  || acc.id() == expense().id()
+  || acc.id() == income().id()) {
+    m_accountList[acc.id()] = acc;
+    return;
+  }
+
+  QMap<QCString, MyMoneyAccount>::ConstIterator it;
+
+  it = m_accountList.find(acc.id());
+  if(it != m_accountList.end()) {
+    QString msg = "Duplicate account  '";
+    msg += acc.id() + "' during loadAccount()";
+    throw new MYMONEYEXCEPTION(msg);
+  }
+  m_accountList[acc.id()] = acc;
+}
+
+void MyMoneySeqAccessMgr::loadTransaction(const MyMoneyTransaction& tr)
+{
+  QMap<QCString, MyMoneyTransaction>::ConstIterator it;
+  QCString key = transactionKey(tr);
+
+  it = m_transactionList.find(key);
+  if(it != m_transactionList.end()) {
+    QString msg = "Duplicate transaction  '";
+    msg += tr.id() + "' during loadTransaction()";
+    throw new MYMONEYEXCEPTION(msg);
+  }
+  m_transactionList[key] = tr;
+  m_transactionKeys[tr.id()] = key;
+}
+
+void MyMoneySeqAccessMgr::loadInstitution(const MyMoneyInstitution& inst)
+{
+  QMap<QCString, MyMoneyInstitution>::ConstIterator it;
+
+  it = m_institutionList.find(inst.id());
+  if(it != m_institutionList.end()) {
+    QString msg = "Duplicate institution  '";
+    msg += inst.id() + "' during loadInsitution()";
+    throw new MYMONEYEXCEPTION(msg);
+  }
+  m_institutionList[inst.id()] = inst;
+}
+
+void MyMoneySeqAccessMgr::loadPayee(const MyMoneyPayee& payee)
+{
+  QMap<QCString, MyMoneyPayee>::ConstIterator it;
+
+  it = m_payeeList.find(payee.id());
+  if(it != m_payeeList.end()) {
+    QString msg = "Duplicate payee  '";
+    msg += payee.id() + "' during loadPayee()";
+    throw new MYMONEYEXCEPTION(msg);
+  }
+  m_payeeList[payee.id()] = payee;
+}
+
+
