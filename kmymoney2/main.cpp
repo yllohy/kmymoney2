@@ -15,6 +15,8 @@
  ***************************************************************************/
 #include <stdio.h>
 
+#include <qwidgetlist.h>
+
 #include <kcmdlineargs.h>
 #include <kaboutdata.h>
 #include <klocale.h>
@@ -53,11 +55,20 @@ int main(int argc, char *argv[])
 	if (kmymoney2->startWithDialog()) {
 	  if (kmymoney2->initWizard()) {
   		args->clear();
-	    return a.exec();
+	    a.exec();
 	  }
 	} else {
 		args->clear();
-	  return a.exec();
+	   a.exec();
 	}
-  return false;
+  QWidgetList *list = QApplication::topLevelWidgets();
+  QWidgetListIt it(*list);
+  QWidget * w;
+  while( (w=it.current()) != 0 ) {
+     ++it;
+     if ( w->testWFlags( Qt::WDestructiveClose ) )
+          delete w;
+  }
+
+  return 0;
 }

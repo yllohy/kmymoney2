@@ -1,3 +1,6 @@
+2001-07-15 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
+  * I think I fixed Crash on Exit Bug
+
 2001-07-13 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
   * Added Date format option for QIF import and export
 
