@@ -215,7 +215,7 @@ QueryTable::QueryTable(const MyMoneyReport& _report): m_config(_report)
             // fully-qualified category hierarchy, e.g. "Computers: Hardware: CPUs"
             // the 'topparent' field contains just the top-most parent, in this
             // example "Computers"
-      
+
             PivotTable::AccountDescriptor acd = (*it_split2).accountId();
 
             // This final screening level includes the check to exclude non-tax categories
@@ -226,9 +226,9 @@ QueryTable::QueryTable(const MyMoneyReport& _report): m_config(_report)
             // 'date lock'.  Until we do that, the current way will work.
             //
             // TODO: Do this!
-            
+
             // if this is a transfer
-            if ( 
+            if (
               ( file->account((*it_split2).accountId()).accountGroup() == MyMoneyAccount::Asset || file->account((*it_split2).accountId()).accountGroup() == MyMoneyAccount::Liability  )
               &&
               ! m_config.isTax()
@@ -238,7 +238,7 @@ QueryTable::QueryTable(const MyMoneyReport& _report): m_config(_report)
               if ( m_config.includesAccount( (*it_split2).accountId() ) )
               {
                 QString fromto = ((*it_split2).value()<0)?"from":"to";
-                qsplitrow["category"] = QString(i18n("Transfer %1 %2")).arg(fromto,acd.fullName());
+                qsplitrow["category"] = i18n("Transfer %1 %2").arg(fromto).arg(acd.fullName());
                 qsplitrow["topcategory"] = acd.getTopLevel();
                 qsplitrow["categorytype"] = i18n("Transfer");
                 m_transactions += qsplitrow;
@@ -246,8 +246,8 @@ QueryTable::QueryTable(const MyMoneyReport& _report): m_config(_report)
             }
             else
             {
-              if ( 
-                m_config.includesCategory( (*it_split2).accountId() ) 
+              if (
+                m_config.includesCategory( (*it_split2).accountId() )
                 &&
                 (
                   ! m_config.isTax() || (file->account((*it_split2).accountId()).value("Tax") == "Yes")
@@ -324,7 +324,7 @@ QueryTable::QueryTable(const MyMoneyReport& _report): m_config(_report)
 
   TableRow::setSortCriteria(sort);
   qHeapSort(m_transactions);
-  
+
 }
 
 class GroupIterator
@@ -363,7 +363,7 @@ void QueryTable::render( QString& result, QString& csv ) const
 {
   MyMoneyMoney::signPosition savesignpos = MyMoneyMoney::negativeMonetarySignPosition();
   unsigned char savethsep = MyMoneyMoney::thousandSeparator();
-      
+
   result="";
   csv="";
   result += QString("<h2 class=\"report\">%1</h2>\n").arg(m_config.name());
@@ -480,7 +480,7 @@ void QueryTable::render( QString& result, QString& csv ) const
           QString subtotal_csv = (*it_group).subtotal().formatMoney();
           MyMoneyMoney::setNegativeMonetarySignPosition(savesignpos);
           MyMoneyMoney::setThousandSeparator(savethsep);
-          
+
           result += "<tr class=\"sectionfooter\">"
             "<td class=\"left"+ QString::number(((*it_group).depth()-1)) + "\" "
             "colspan=\"" + QString::number(columns.count()-1) + "\">"+
@@ -518,18 +518,18 @@ void QueryTable::render( QString& result, QString& csv ) const
       if ( *it_column=="value" )
       {
         MyMoneyMoney::setNegativeMonetarySignPosition(MyMoneyMoney::ParensAround);
-        
+
         result += QString("<td>%1&nbsp;%2</td>")
           .arg((*it_row)["currency"])
           .arg(MyMoneyMoney(data).formatMoney());
-        
+
         MyMoneyMoney::setThousandSeparator('\0');
-        
+
         csv += (*it_row)["currency"] + " " + MyMoneyMoney(data).formatMoney() + ",";
-        
+
         MyMoneyMoney::setNegativeMonetarySignPosition(savesignpos);
         MyMoneyMoney::setThousandSeparator(savethsep);
-      
+
       }
       else
       {
@@ -564,7 +564,7 @@ void QueryTable::render( QString& result, QString& csv ) const
       QString subtotal_csv = (*it_group).subtotal().formatMoney();
       MyMoneyMoney::setNegativeMonetarySignPosition(savesignpos);
       MyMoneyMoney::setThousandSeparator(savethsep);
-      
+
       result += "<tr class=\"sectionfooter\">"
         "<td class=\"left"+ QString::number((*it_group).depth()-1) + "\" "
         "colspan=\"" + QString::number(columns.count()-1) + "\">"+
