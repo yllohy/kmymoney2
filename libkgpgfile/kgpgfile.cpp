@@ -110,15 +110,18 @@ void KGPGFile::flush(void)
   // no functionality
 }
 
-bool KGPGFile::atEnd(void)
+bool KGPGFile::atEnd(void) const
 {
   if(!isOpen())
     return false;
 
   if(isReadable()) {
-    int ch = getch();
+    // If you wonder about 'this' and 'that': 'this' is const
+    // but we need a non-const to call getch(). So we use 'that'.
+    QIODevice* that = (QIODevice*) this;
+    int ch = that->getch();
     bool result = ch == EOF;
-    ungetch(ch);
+    that->ungetch(ch);
     return result;
   }
   return false;
@@ -390,7 +393,6 @@ Q_LONG KGPGFile::readBlock(char *data, Q_ULONG maxlen)
     // qDebug("EOF");
     return EOF;
   }
-  // qDebug("read %d bytes", maxlen - m_readRemain);
   return maxlen - m_readRemain;
 }
 

@@ -52,7 +52,7 @@ public:
   virtual Offset size(void) const { return 0; };
   virtual Offset at(void) { return 0; };
   virtual bool at(Offset) { return false; };
-  virtual bool atEnd(void);
+  virtual bool atEnd(void) const;
 
   virtual Q_LONG readBlock(char *data, Q_ULONG maxlen);
   virtual Q_LONG writeBlock(const char *data, Q_ULONG maxlen);
