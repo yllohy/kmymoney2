@@ -26,6 +26,7 @@
 #include <qlayout.h>
 #include <qfocusdata.h>
 #include <qwidgetstack.h>
+#include <qcheckbox.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -46,6 +47,7 @@
 #include "../widgets/kmymoneylineedit.h"
 #include "../widgets/kmymoneyregistercheckings.h"
 #include "../dialogs/kendingbalancedlg.h"
+#include "../dialogs/ksplittransactiondlg.h"
 
 KLedgerViewCheckings::KLedgerViewCheckings(QWidget *parent, const char *name )
   : KLedgerView(parent,name)
@@ -119,8 +121,9 @@ void KLedgerViewCheckings::resizeEvent(QResizeEvent* ev)
   // now resize the form
   QTable* table = m_form->table();
   table->setColumnWidth(0, 80);
-  table->setColumnWidth(2, 80);
-  table->setColumnWidth(3, m_balanceWidth);
+  table->setColumnWidth(3, 80);
+  table->setColumnWidth(2, 40);
+  table->setColumnWidth(4, 120);
 
   w = table->visibleWidth();
   for(int i = 0; i < table->numCols(); ++i) {
@@ -349,7 +352,7 @@ void KLedgerViewCheckings::createInfoStack(void)
   innerFrame->setMaximumWidth(125);
   innerFrame->setLineWidth(1);
 
-  QVBoxLayout* innerLayout = new QVBoxLayout( innerFrame, 6, 6, "InnerLayout");
+  QVBoxLayout* innerLayout = new QVBoxLayout( innerFrame, 6, 0, "InnerLayout");
 
   QLabel* txt;
   QFont defaultFont = QFont("helvetica", 10);
@@ -363,7 +366,7 @@ void KLedgerViewCheckings::createInfoStack(void)
 
   txt = new QLabel(i18n("<b>2.</b> Match the cleared "
                         "transactions with the amount "
-                        "noted on your bank statement."), innerFrame);
+                        "noted on your bank statement.<br>"), innerFrame);
   txt->setFont(defaultFont);
   innerLayout->addWidget(txt);
 
@@ -375,10 +378,10 @@ void KLedgerViewCheckings::createInfoStack(void)
   boxLayout->addWidget(txt);
 
   spacer = new QSpacerItem( 1, 1,
-                   QSizePolicy::Minimum, QSizePolicy::Expanding );
+                   QSizePolicy::Expanding, QSizePolicy::Minimum );
   boxLayout->addItem( spacer );
 
-  m_clearedLabel = new QLabel("2.400,00", innerFrame);
+  m_clearedLabel = new QLabel("", innerFrame);
   m_clearedLabel->setFont(defaultFont);
   m_clearedLabel->setAlignment(Right);
   boxLayout->addWidget(m_clearedLabel);
@@ -390,18 +393,45 @@ void KLedgerViewCheckings::createInfoStack(void)
   boxLayout->addWidget(txt);
 
   spacer = new QSpacerItem( 1, 1,
-                   QSizePolicy::Minimum, QSizePolicy::Expanding );
+                   QSizePolicy::Expanding, QSizePolicy::Minimum );
   boxLayout->addItem( spacer );
 
-  m_statementLabel = new QLabel("1.200,00", innerFrame);
+  m_statementLabel = new QLabel("", innerFrame);
   m_statementLabel->setFont(defaultFont);
   m_statementLabel->setAlignment(Right);
   boxLayout->addWidget(m_statementLabel);
 
-  txt = new QLabel(i18n("<b>3.</b> Hit the Finish "
-                        "button below when you're done."), innerFrame);
+  txt = new QLabel("<hr>", innerFrame);
+  txt->setFont(defaultFont);
+  txt->setAlignment(Top);
+  txt->setMaximumHeight(10);
+  innerLayout->addWidget(txt);
+
+
+  boxLayout = new QHBoxLayout(innerLayout, 0, "DiffLayout");
+
+  txt = new QLabel(i18n("Difference:"), innerFrame);
+  txt->setFont(defaultFont);
+  boxLayout->addWidget(txt);
+
+  spacer = new QSpacerItem( 1, 1,
+                   QSizePolicy::Expanding, QSizePolicy::Minimum );
+  boxLayout->addItem( spacer );
+
+  m_differenceLabel = new QLabel("", innerFrame);
+  m_differenceLabel->setFont(defaultFont);
+  m_differenceLabel->setAlignment(Right);
+  boxLayout->addWidget(m_differenceLabel);
+
+
+  txt = new QLabel(i18n("<p><b>3.</b> Hit the Finish "
+                        "button when you're done."), innerFrame);
   txt->setFont(defaultFont);
   innerLayout->addWidget(txt);
+
+  m_transactionCheckBox = new QCheckBox(i18n("Show\ntransactionform"), innerFrame, "showBox");
+  m_transactionCheckBox->setFont(defaultFont);
+  innerLayout->addWidget(m_transactionCheckBox);
 
 
   reconcileLayout->addWidget(innerFrame);
@@ -612,7 +642,8 @@ void KLedgerViewCheckings::createEditWidgets(void)
   m_editDeposit = new kMyMoneyEdit(0, "editDeposit");
 
   // for now, the split button is not usable
-  m_editSplit->setEnabled(false);
+  // m_editSplit->setEnabled(false);
+  connect(m_editSplit, SIGNAL(clicked()), this, SLOT(slotOpenSplitDialog()));
 
   connect(m_editPayee, SIGNAL(newPayee(const QString&)), this, SLOT(slotNewPayee(const QString&)));
   connect(m_editPayee, SIGNAL(payeeChanged(const QString&)), this, SLOT(slotPayeeChanged(const QString&)));
@@ -649,11 +680,105 @@ void KLedgerViewCheckings::createEditWidgets(void)
   connect(m_editDeposit, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
 }
 
-void KLedgerViewCheckings::loadEditWidgets(int& transType)
+void KLedgerViewCheckings::reloadEditWidgets(const MyMoneyTransaction& t)
 {
   MyMoneyMoney amount;
+  QString category, payee;
 
+  m_transaction = t;
+  m_split = m_transaction.split(accountId());
+  amount = m_split.value();
+
+  try {
+    if(m_split.payeeId() != "")
+      payee = MyMoneyFile::instance()->payee(m_split.payeeId()).name();
+
+    if(t.splitCount() == 2) {
+      MyMoneySplit s = t.split(accountId(), false);
+      MyMoneyAccount acc = MyMoneyFile::instance()->account(s.accountId());
+
+      // if the second account is also an asset or liability account
+      // then this is a transfer type transaction and handled a little different
+      switch(MyMoneyFile::instance()->accountGroup(acc.accountType())) {
+        case MyMoneyAccount::Expense:
+        case MyMoneyAccount::Income:
+          category = MyMoneyFile::instance()->accountToCategory(s.accountId());
+          break;
+
+        case MyMoneyAccount::Asset:
+        case MyMoneyAccount::Liability:
+          if(m_split.action() != MyMoneySplit::ActionTransfer) {
+            m_split.setAction(MyMoneySplit::ActionTransfer);
+            m_transaction.modifySplit(m_split);
+          }
+          if(s.action() != MyMoneySplit::ActionTransfer) {
+            s.setAction(MyMoneySplit::ActionTransfer);
+            m_transaction.modifySplit(s);
+          }
+          if(m_split.value() > 0) {
+            m_editFrom->loadText(MyMoneyFile::instance()->accountToCategory(s.accountId()));
+            m_editTo->loadText(MyMoneyFile::instance()->accountToCategory(m_account.id()));
+          } else {
+            m_editTo->loadText(MyMoneyFile::instance()->accountToCategory(s.accountId()));
+            m_editFrom->loadText(MyMoneyFile::instance()->accountToCategory(m_account.id()));
+            amount = -amount;       // make it positive
+          }
+          break;
+
+        default:
+          qDebug("Unknown account group in KLedgerCheckingsView::showWidgets()");
+          break;
+      }
+    } else {
+      connect(m_editCategory, SIGNAL(signalFocusIn()), this, SLOT(slotOpenSplitDialog()));
+      category = i18n("Splitted transaction");
+    }
+
+
+  } catch(MyMoneyException *e) {
+    qDebug("Exception '%s' thrown in %s, line %ld caught in KLedgerViewCheckings::showWidgets():%d",
+      e->what().latin1(), e->file().latin1(), e->line(), __LINE__);
+    delete e;
+  }
+
+  // for almost all transaction types we have to negate the value
+  // exceptions are: deposits and transfers (which are always positive)
+  if(transactionType(m_split) != Deposit)
+    amount = -amount;
+  if(m_split.action() == MyMoneySplit::ActionTransfer && amount < 0) {
+    amount = -amount;
+  }
+
+  if(m_editPayee != 0)
+    m_editPayee->loadText(payee);
+  if(m_editCategory != 0)
+    m_editCategory->loadText(category);
+  if(m_editMemo != 0)
+    m_editMemo->loadText(m_split.memo());
+  if(m_editAmount != 0)
+    m_editAmount->loadText(amount.formatMoney());
+  if(m_editDate != 0)
+    m_editDate->loadDate(m_transactionPtr->postDate());
+  if(m_editNr != 0)
+    m_editNr->loadText(m_split.number());
+
+  if(m_editPayment != 0 && m_editDeposit != 0) {
+    if(m_split.value() < 0) {
+      m_editPayment->loadText((-m_split.value()).formatMoney());
+      m_editDeposit->loadText("");
+    } else {
+      m_editPayment->loadText("");
+      m_editDeposit->loadText((m_split.value()).formatMoney());
+    }
+  }
+}
+
+void KLedgerViewCheckings::loadEditWidgets(int& transType)
+{
   if(m_transactionPtr != 0) {
+    reloadEditWidgets(*m_transactionPtr);
+    transType = transactionType(m_split);
+#if 0
     QString category, payee;
 
     // get my local copy of the selected transaction
@@ -702,6 +827,7 @@ void KLedgerViewCheckings::loadEditWidgets(int& transType)
             break;
         }
       } else {
+        connect(m_editCategory, SIGNAL(signalFocusIn()), this, SLOT(slotOpenSplitDialog()));
         category = i18n("Splitted transaction");
       }
 
@@ -736,7 +862,7 @@ void KLedgerViewCheckings::loadEditWidgets(int& transType)
       m_editDeposit->loadText((m_split.value()).formatMoney());
     }
     transType = transactionType(m_split);
-
+#endif
   } else {
     m_editDate->setDate(QDate::currentDate());
     transType = m_form->tabBar()->currentTab();
@@ -1038,6 +1164,9 @@ void KLedgerViewCheckings::slotReconciliation(void)
 
     // allow SPACE to be used to toggle the clear state
     connect(m_register, SIGNAL(signalSpace()), this, SLOT(slotToggleClearFlag()));
+    m_transactionCheckBox->setChecked(false);
+    connect(m_transactionCheckBox, SIGNAL(toggled(bool)), this, SLOT(slotShowTransactionForm(bool)));
+
   }
 }
 
@@ -1054,6 +1183,7 @@ void KLedgerViewCheckings::fillReconcileData(void)
 
   m_clearedLabel->setText(cleared.formatMoney());
   m_statementLabel->setText(m_endingBalance.formatMoney());
+  m_differenceLabel->setText((cleared - m_endingBalance).formatMoney());
 }
 
 void KLedgerViewCheckings::slotRegisterClicked(int row, int col, int button, const QPoint &mousePos)
@@ -1134,6 +1264,7 @@ void KLedgerViewCheckings::endReconciliation(void)
   }
 
   disconnect(m_register, SIGNAL(signalSpace()), this, SLOT(slotToggleClearFlag()));
+  disconnect(m_transactionCheckBox, SIGNAL(toggled(bool)), this, SLOT(slotShowTransactionForm(bool)));
 }
 
 void KLedgerViewCheckings::slotEndReconciliation(void)
@@ -1166,4 +1297,27 @@ void KLedgerViewCheckings::slotEndReconciliation(void)
     }
     endReconciliation();
   }
+}
+
+void KLedgerViewCheckings::slotOpenSplitDialog(void)
+{
+  MyMoneyMoney amount;
+  bool dir = true;
+
+  KSplitTransactionDlg* dlg = new KSplitTransactionDlg(m_transaction,
+                                                       m_account,
+                                                       amount,
+                                                       m_editAmount->text().length() != 0,
+                                                       transactionType(m_split) == Deposit,
+                                                       this);
+
+  if(dlg->exec()) {
+    reloadEditWidgets(dlg->transaction());
+    m_editSplit->setFocus();
+  } else {
+    m_editCategory->setFocus();
+    dir = false;
+  }
+  delete dlg;
+  focusNextPrevChild(dir);
 }

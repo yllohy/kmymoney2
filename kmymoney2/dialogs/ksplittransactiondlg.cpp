@@ -20,11 +20,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <kglobal.h>
-#include <kconfig.h>
-#include <klocale.h>
-#include <kiconloader.h>
-#include <kmessagebox.h>
+// ----------------------------------------------------------------------------
+// QT Includes
 
 #include <qpushbutton.h>
 #include <qlabel.h>
@@ -38,29 +35,44 @@
 #include <qcursor.h>
 #endif
 
-#include "ksplittransactiondlg.h"
-//#include "../mymoney/mymoneysplittransaction.h"
-#include "../widgets/kmymoneysplittable.h"
-#include "../mymoney/mymoneycategory.h"
-#include "../dialogs/ksplitcorrectiondlg.h"
+// ----------------------------------------------------------------------------
+// KDE Includes
 
-KSplitTransactionDlg::KSplitTransactionDlg(QWidget* parent,  const char* name,
-                                           MyMoneyFile* const filePointer,
-                                           MyMoneyInstitution* const bankPointer,
-                                           MyMoneyAccount* const accountPointer,
-                                           MyMoneyMoney* amount, const bool amountValid) :
-  kSplitTransactionDlgDecl(parent, name, true),
-  m_filePointer(filePointer),
-  m_bankPointer(bankPointer),
-  m_accountPointer(accountPointer),
-  m_amountTransaction(amount),
+#include <kglobal.h>
+#include <kconfig.h>
+#include <klocale.h>
+#include <kiconloader.h>
+#include <kmessagebox.h>
+
+// ----------------------------------------------------------------------------
+// Project Includes
+
+#include "ksplittransactiondlg.h"
+#include "../widgets/kmymoneysplittable.h"
+#include "../dialogs/ksplitcorrectiondlg.h"
+#include "../widgets/kmymoneycategory.h"
+#include "../widgets/kmymoneyedit.h"
+#include "../widgets/kmymoneylineedit.h"
+
+KSplitTransactionDlg::KSplitTransactionDlg(const MyMoneyTransaction& t,
+                                           const MyMoneyAccount& acc,
+                                           MyMoneyMoney& amount,
+                                           const bool amountValid,
+                                           const bool deposit,
+                                           QWidget* parent, const char* name)
+  : kSplitTransactionDlgDecl(parent, name, true),
+  m_transaction(t),
+  m_account(acc),
+  m_amountWidth(80),
   m_amountValid(amountValid),
   m_numExtraLines(0),
+  m_editRow(-1),
   m_createdNewSplit(false),
-  m_skipStartEdit(false)
+  m_skipStartEdit(false),
+  m_isDeposit(deposit)
 {
-/*
   // setup the transactions table
+  transactionsTable->setInlineEditingMode(false);
   transactionsTable->setNumRows(1);
   transactionsTable->setNumCols(3);
   transactionsTable->horizontalHeader()->setLabel(0, i18n("Category"));
@@ -75,6 +87,16 @@ KSplitTransactionDlg::KSplitTransactionDlg(QWidget* parent,  const char* name,
 	transactionsTable->horizontalHeader()->setResizeEnabled(false);
 	transactionsTable->horizontalHeader()->setMovingEnabled(false);
 
+  // for deposits, we invert the sign of all splits.
+  // don't forget to revert when we're done ;-)
+  if(m_isDeposit) {
+    for(unsigned i = 0; i < m_transaction.splits().count(); ++i) {
+      MyMoneySplit split = m_transaction.splits()[i];
+      split.setValue(-split.value());
+      m_transaction.modifySplit(split);
+    }
+  }
+
   // setup the focus
   cancelBtn->setFocusPolicy(QWidget::NoFocus);
   finishBtn->setFocusPolicy(QWidget::NoFocus);
@@ -85,24 +107,11 @@ KSplitTransactionDlg::KSplitTransactionDlg(QWidget* parent,  const char* name,
   QFont defaultFont = QFont("helvetica", 12);
   transactionsTable->horizontalHeader()->setFont(config->readFontEntry("listHeaderFont", &defaultFont));
 
-#if 0
-  // copy the split list
-  QListIterator<MyMoneySplitTransaction> it(splitList);
-  for(; it.current(); ++it) {
-    MyMoneySplitTransaction *tmp = new MyMoneySplitTransaction(*it.current());
-    m_splitList.append(tmp);
-  }
-#endif
-  m_splitList.setAutoDelete(true);
-
-  // create required input widgets
-  createInputWidgets();
-
   // initialize the display
-  updateTransactionList();
+  updateSplit();
 
   // setup current selection
-  transactionsTable->setCurrentRow(m_splitList.count());
+  transactionsTable->setCurrentRow(m_transaction.splits().count()-1);
 
   // connect signals with slots
 	connect(cancelBtn, SIGNAL(clicked()), this, SLOT(slotCancelClicked()));
@@ -118,15 +127,8 @@ KSplitTransactionDlg::KSplitTransactionDlg(QWidget* parent,  const char* name,
     this, SLOT(slotNavigationKey(int)));
   connect(transactionsTable, SIGNAL(signalTab(void)),
     this, SLOT(slotStartEdit(void)));
-  connect(transactionsTable, SIGNAL(signalEscape(void)),
+  connect(transactionsTable, SIGNAL(signalEsc(void)),
     this, SLOT(slotQuitEdit(void)));
-
-  connect(m_amount, SIGNAL(signalTab(void)),
-    this, SLOT(slotEndEditTab(void)));
-  connect(m_memo, SIGNAL(signalEnter(void)),
-    this, SLOT(slotEndEdit(void)));
-  connect(m_amount, SIGNAL(signalEnter(void)),
-    this, SLOT(slotEndEdit(void)));
 
   connect(transactionsTable, SIGNAL(signalDelete(int)),
     this, SLOT(slotDeleteSplitTransaction(int)));
@@ -147,22 +149,68 @@ KSplitTransactionDlg::KSplitTransactionDlg(QWidget* parent,  const char* name,
   // So, we let the dialog show up and resize it then. It's not really
   // clean, but the only way I got the damned thing working.
   QTimer::singleShot( 10, this, SLOT(initSize()) );
-*/
 }
 
-void KSplitTransactionDlg::createInputWidgets(void)
+void KSplitTransactionDlg::createInputWidgets(const int row)
 {
-  // create the widgets
-  m_amount = new kMyMoneyEdit(0);
-  m_category = new kMyMoneyCombo(false, 0);
-  m_memo = new kMyMoneyLineEdit(0);
+  KConfig *config = KGlobal::config();
+  config->setGroup("List Options");
+  QFont cellFont = QFont("helvetica", 12);
+  cellFont = config->readFontEntry("listCellFont", &cellFont);
+  
 
-  // don't need to see them right away ;-)
-  hideWidgets();
+  // create the widgets
+  m_editAmount = new kMyMoneyEdit(0);
+  m_editAmount->setFont(cellFont);
+  m_editCategory = new kMyMoneyCategory(0);
+  m_editCategory->setFont(cellFont);
+  m_editMemo = new kMyMoneyLineEdit(0);
+  m_editMemo->setFont(cellFont);
+
+  m_editCategory->loadText(transactionsTable->text(row, 0));
+  m_editMemo->loadText(transactionsTable->text(row, 1));
+  m_editAmount->loadText(transactionsTable->text(row, 2));
+
+  transactionsTable->setCellWidget(row, 0, m_editCategory);
+  transactionsTable->setCellWidget(row, 1, m_editMemo);
+  transactionsTable->setCellWidget(row, 2, m_editAmount);
+
+  connect(m_editAmount, SIGNAL(signalTab(void)),
+    this, SLOT(slotEndEditTab(void)));
+  connect(m_editMemo, SIGNAL(signalEnter(void)),
+    this, SLOT(slotEndEdit(void)));
+  connect(m_editAmount, SIGNAL(signalEnter(void)),
+    this, SLOT(slotEndEdit(void)));
+  connect(m_editCategory, SIGNAL(signalEnter(void)),
+    this, SLOT(slotEndEdit(void)));
+
+  connect(m_editCategory, SIGNAL(signalEsc()),
+    this, SLOT(slotQuitEdit()));
+  connect(m_editMemo, SIGNAL(signalEsc()),
+    this, SLOT(slotQuitEdit()));
+  connect(m_editAmount, SIGNAL(signalEsc()),
+    this, SLOT(slotQuitEdit()));
+
+  connect(m_editMemo, SIGNAL(lineChanged(const QString&)),
+    this, SLOT(slotMemoChanged(const QString&)));
+  connect(m_editCategory, SIGNAL(categoryChanged(const QString&)),
+    this, SLOT(slotCategoryChanged(const QString&)));
+  connect(m_editAmount, SIGNAL(valueChanged(const QString&)),
+    this, SLOT(slotAmountChanged(const QString&)));                                                            
+}
+
+void KSplitTransactionDlg::destroyInputWidgets(void)
+{
+  for(int i=0; i < transactionsTable->numRows(); ++i) {
+    transactionsTable->clearCellWidget(i, 0);
+    transactionsTable->clearCellWidget(i, 1);
+    transactionsTable->clearCellWidget(i, 2);
+  }
 }
 
 KSplitTransactionDlg::~KSplitTransactionDlg()
 {
+  destroyInputWidgets();
 }
 
 void KSplitTransactionDlg::initSize(void)
@@ -189,17 +237,17 @@ void KSplitTransactionDlg::initAmountWidth(void)
 
 void KSplitTransactionDlg::slotFinishClicked()
 {
-/*
-  if(m_category->isVisible()) {         // still in edit mode?
+  if(transactionsTable->inlineEditingMode()) {         // still in edit mode?
     // we need to end edit mode first
     endEdit(false);
   }
 
-  if(diffAmount().amount() != 0.0) {
+  if(diffAmount() != 0) {
+    MyMoneySplit split = m_transaction.split(m_account.id());
     kSplitCorrectionDlgDecl* dlg = new kSplitCorrectionDlgDecl(0, 0, true);
-    QString total = KGlobal::locale()->formatMoney(m_amountTransaction->amount(), "");
-    QString sums = KGlobal::locale()->formatMoney(splitsAmount().amount(), "");
-    QString diff = KGlobal::locale()->formatMoney(diffAmount().amount(), "");
+    QString total = (-split.value()).formatMoney();
+    QString sums = splitsValue().formatMoney();
+    QString diff = diffAmount().formatMoney();
 
     // now modify the text items of the dialog to contain the correct values
     QString q = QString(i18n("The total amount of this transaction is %1 while "
@@ -232,15 +280,17 @@ void KSplitTransactionDlg::slotFinishClicked()
           case 0:       // continue to edit
             break;
           case 1:       // modify total
-            m_amountTransaction->setAmount(splitsAmount().amount());
+            split.setValue(-splitsValue());
+            m_transaction.modifySplit(split);
             accept();
             break;
           case 2:       // distribute difference
             qDebug("distribution of difference not yet supported in KSplitTransactionDlg::slotFinishClicked()");
-            accept();
+            // accept();
             break;
           case 3:       // leave unassigned
-            accept();
+            qDebug("leave unassigned should be changed to assign to standard account");
+            // accept();
             break;
         }
       }
@@ -248,18 +298,29 @@ void KSplitTransactionDlg::slotFinishClicked()
     delete dlg;
 
   } else
-*/
     accept();
+
+  if(result() == Accepted) {
+    // for deposits, we inverted the sign of all splits.
+    // now we revert it back, so that things are left correct
+    if(m_isDeposit) {
+      for(unsigned i = 0; i < m_transaction.splits().count(); ++i) {
+        MyMoneySplit split = m_transaction.splits()[i];
+        split.setValue(-split.value());
+        m_transaction.modifySplit(split);
+      }
+    }
+  }
 }
 
 void KSplitTransactionDlg::slotCancelClicked()
 {
+  hideWidgets();
   reject();
 }
 
 void KSplitTransactionDlg::slotClearAllClicked()
 {
-/*
   int answer;
 #if QT_VERSION > 300
   answer = KMessageBox::warningContinueCancel (NULL,
@@ -277,84 +338,102 @@ void KSplitTransactionDlg::slotClearAllClicked()
      false);
 #endif
   if(answer == KMessageBox::Continue) {
-    while(m_splitList.count()) {
-      deleteSplitTransaction(0);
+    QValueList<MyMoneySplit> list = getSplits();
+    QValueList<MyMoneySplit>::ConstIterator it;
+
+    // clear all but the one referencing the account
+    for(it = list.begin(); it != list.end(); ++it) {
+      m_transaction.removeSplit(*it);
     }
+
     transactionsTable->setCurrentRow(0);
     updateTransactionTableSize();
-    updateTransactionList();
+    updateSplit();
   }
-*/
 }
 
 void KSplitTransactionDlg::updateSums(void)
 {
-/*
-  MyMoneyMoney splits(splitsAmount());
-
-  if(m_amountTransaction == NULL) {
-    qDebug("pointer to transaction amount is NULL in KSplitTransactionDlg::updateSums");
-    return;
-  }
+  MyMoneyMoney splits(splitsValue());
+  MyMoneySplit split = m_transaction.split(m_account.id());
 
   if(m_amountValid == false) {
-    *m_amountTransaction = splits;
+    split.setValue(splits);
+    m_transaction.modifySplit(split);
   }
 
-  splitSum->setText("<b>" + KGlobal::locale()->formatMoney(splits.amount(), "") + " ");
-  splitUnassigned->setText("<b>" + KGlobal::locale()->formatMoney(diffAmount().amount(), "") + " ");
-  transactionAmount->setText("<b>" + KGlobal::locale()->formatMoney(m_amountTransaction->amount(), "") + " ");
-*/
+  splitSum->setText("<b>" + splits.formatMoney() + " ");
+  splitUnassigned->setText("<b>" + diffAmount().formatMoney() + " ");
+  transactionAmount->setText("<b>" + (-split.value()).formatMoney() + " ");
 }
 
-MyMoneyMoney KSplitTransactionDlg::splitsAmount(void)
+MyMoneyMoney KSplitTransactionDlg::splitsValue(void)
 {
-/*
-  MyMoneySplitTransaction* transaction;
-  MyMoneyMoney splits(0.0);
+  MyMoneyMoney splitsValue(0);
+  QValueList<MyMoneySplit> list = getSplits();
+  QValueList<MyMoneySplit>::ConstIterator it;
 
   // calculate the current sum of all split parts
-  for (transaction = m_splitList.first(); transaction; transaction = m_splitList.next()) {
-    splits += transaction->amount();
+  for(it = list.begin(); it != list.end(); ++it) {
+    splitsValue += (*it).value();
   }
-  return splits;
-*/
+
+  return splitsValue;
 }
 
 MyMoneyMoney KSplitTransactionDlg::diffAmount(void)
 {
-/*
-  MyMoneyMoney diff(0.0);
+  MyMoneyMoney diff(0);
+
   // if there is an amount specified in the transaction, we need to calculate the
   // difference, otherwise we display the difference as 0 and display the same sum.
-  if(m_amountValid)
-    diff = *m_amountTransaction - splitsAmount();
+  if(m_amountValid) {
+    MyMoneySplit split = m_transaction.split(m_account.id());
+
+    diff = -(splitsValue() + split.value());
+  }
   return diff;
-*/
 }
 
 void KSplitTransactionDlg::updateTransactionTableSize(void)
 {
-/*
   // get current size of transactions table
   int rowHeight = transactionsTable->cellGeometry(0, 0).height();
   int tableHeight = transactionsTable->height();
+  int splitCount = m_transaction.splits().count()-1;
 
   // see if we need some extra lines to fill the current size with the grid
-  m_numExtraLines = (tableHeight / rowHeight) - m_splitList.count();
+  m_numExtraLines = (tableHeight / rowHeight) - splitCount;
   if(m_numExtraLines < 0)
     m_numExtraLines = 0;
 
-  transactionsTable->setNumRows(m_splitList.count() + m_numExtraLines);
-  transactionsTable->setMaxRows(m_splitList.count());
-*/
+  transactionsTable->setNumRows(splitCount + m_numExtraLines);
+  transactionsTable->setMaxRows(splitCount);
 }
-/*
-void KSplitTransactionDlg::updateTransactionList(int row, int col)
-{
 
+const QValueList<MyMoneySplit> KSplitTransactionDlg::getSplits(void) const
+{
+  QValueList<MyMoneySplit> list;
+  QValueList<MyMoneySplit>::Iterator it;
+
+  // get list of splits
+  list = m_transaction.splits();
+
+  // and remove the one for this account
+  for(it = list.begin(); it != list.end(); ++it) {
+    if((*it).accountId() == m_account.id()) {
+      list.remove(it);
+      break;
+    }
+  }
+  return list;
+}
+
+void KSplitTransactionDlg::updateSplit(int row, int col)
+{
   unsigned long rowCount=0;
-  MyMoneySplitTransaction *transaction;
+
+  QValueList<MyMoneySplit> list = getSplits();
 
   KConfig *config = KGlobal::config();
   config->setGroup("List Options");
@@ -367,23 +446,28 @@ void KSplitTransactionDlg::updateTransactionList(int row, int col)
     initAmountWidth();
 
     // fill the part that is used by transactions
-    for (transaction = m_splitList.first(); transaction; transaction = m_splitList.next()) {
+    QValueList<MyMoneySplit>::Iterator it;
+    for(it = list.begin(); it != list.end(); ++it) {
       QString colText;
-      if(transaction->categoryMinor() == "") {
-        colText = transaction->categoryMajor();
-      } else {
-        colText = transaction->categoryMajor()
-                  + ":"
-                  + transaction->categoryMinor();
+      MyMoneyMoney value = (*it).value();
+      if((*it).accountId() != "") {
+        try {
+          colText = MyMoneyFile::instance()->accountToCategory((*it).accountId());
+        } catch(MyMoneyException *e) {
+          qDebug("Unexpected exception in KSplitTransactionDlg::updateSplit()");
+          delete e;
+        }
       }
+      QString amountTxt = value.formatMoney();
+      if(colText.isEmpty() && (*it).memo().isEmpty() && value == 0)
+        amountTxt = "";
 
-      QString amountTxt = KGlobal::locale()->formatMoney(transaction->amount().amount(), "");
       unsigned width = transactionsTable->fontMetrics().width(amountTxt);
       if(width > m_amountWidth)
         m_amountWidth = width;
 
       transactionsTable->setText(rowCount, 0, colText);
-      transactionsTable->setText(rowCount, 1, transaction->memo());
+      transactionsTable->setText(rowCount, 1, (*it).memo());
       transactionsTable->setText(rowCount, 2, amountTxt);
 
       rowCount++;
@@ -399,23 +483,29 @@ void KSplitTransactionDlg::updateTransactionList(int row, int col)
 
   } else {
     rowCount = row;
-    if(row < static_cast<int> (m_splitList.count())) {
-      transaction = m_splitList.at(row);
+    if(row < static_cast<int> (list.count())) {
+      MyMoneySplit s = list[row];
+      MyMoneyMoney value = s.value();
       QString colText;
-      if(transaction->categoryMinor() == "") {
-        colText = transaction->categoryMajor();
-      } else {
-        colText = transaction->categoryMajor()
-                  + ":"
-                  + transaction->categoryMinor();
-      }
 
-      QString amountTxt = KGlobal::locale()->formatMoney(transaction->amount().amount(), "");
+      if(s.accountId() != "") {
+        try {
+          colText = MyMoneyFile::instance()->accountToCategory(s.accountId());
+        } catch(MyMoneyException *e) {
+          qDebug("Unexpected exception in KSplitTransactionDlg::updateSplit()");
+          delete e;
+        }
+      }
+      QString amountTxt = value.formatMoney();
+      if(colText.isEmpty() && s.memo().isEmpty() && value == 0)
+        amountTxt = "";
+
       unsigned width = transactionsTable->fontMetrics().width(amountTxt);
       if(width > m_amountWidth)
         m_amountWidth = width;
+
       transactionsTable->setText(rowCount, 0, colText);
-      transactionsTable->setText(rowCount, 1, transaction->memo());
+      transactionsTable->setText(rowCount, 1, s.memo());
       transactionsTable->setText(rowCount, 2, amountTxt);
 
     } else {
@@ -424,29 +514,21 @@ void KSplitTransactionDlg::updateTransactionList(int row, int col)
       transactionsTable->setText(rowCount, 2, "");
     }
   }
+
   updateSums();
 
   // setup new size values
   resizeEvent(NULL);
-
 }
-*/
-void KSplitTransactionDlg::createSplitTransaction(int row)
+
+void KSplitTransactionDlg::createSplit(int row)
 {
-/*
-  MyMoneySplitTransaction* transaction = new MyMoneySplitTransaction;
-  transaction->setAmount(diffAmount());
-  m_splitList.append(transaction);
-
+  MyMoneySplit sp;
   m_createdNewSplit = true;
-
-  // if the amount is different from zero, we set it in the table
-  if(!transaction->amount().isZero()) {
-    transactionsTable->setText(row, 2,
-       KGlobal::locale()->formatMoney(transaction->amount().amount(), ""));
-  }
+  sp.setValue(diffAmount());
+  m_transaction.addSplit(sp);
   updateTransactionTableSize();
-*/
+  updateSplit(row);
 }
 
 void KSplitTransactionDlg::slotDeleteSplitTransaction(void)
@@ -456,10 +538,9 @@ void KSplitTransactionDlg::slotDeleteSplitTransaction(void)
 
 void KSplitTransactionDlg::slotDeleteSplitTransaction(int row)
 {
-/*
   int answer;
 
-  if(row < static_cast<int> (m_splitList.count())) {
+  if(row < static_cast<int> (m_transaction.splits().count()-1)) {
 #if QT_VERSION > 300
     answer = KMessageBox::warningContinueCancel (NULL,
        i18n("You are about to delete this part of the transaction. "
@@ -477,17 +558,15 @@ void KSplitTransactionDlg::slotDeleteSplitTransaction(int row)
 #endif
     if(answer == KMessageBox::Continue) {
       deleteSplitTransaction(row);
-      updateTransactionList();
+      updateSplit();
     }
   }
-*/
 }
 
 void KSplitTransactionDlg::deleteSplitTransaction(int row)
 {
-  //m_splitList.remove(row);
-
-  // FIXME: handle transfers (see updateTransaction() for an example)
+  QValueList<MyMoneySplit> list = getSplits();
+  m_transaction.removeSplit(list[row]);
 
   updateTransactionTableSize();
 }
@@ -504,45 +583,46 @@ void KSplitTransactionDlg::slotStartEdit(void)
 
 void KSplitTransactionDlg::slotStartEdit(int row, int col, int button, const QPoint&  point)
 {
-/*
   // only start editing if inside used area
-  if(row <= static_cast<int> (m_splitList.count())) {
+  if(row <= static_cast<int> (m_transaction.splits().count()-1)) {
     // make sure the row will be on the screen
     transactionsTable->ensureCellVisible(row, col);
 
     if(button == Qt::LeftButton             // left button?
-    && !m_category->isVisible()) {          // and not in edit mode?
-      if(row == static_cast<int> (m_splitList.count())) {            // need a new entry?
-        createSplitTransaction(row);
+    && !transactionsTable->inlineEditingMode()) {          // and not in edit mode?
+      if(row == static_cast<int> (m_transaction.splits().count()-1)) {
+        // need a new entry?
+        createSplit(row);
       }
       showWidgets(row);
-      m_category->setFocus();
+      m_editCategory->setFocus();
     }
   }
-*/
 }
 
 void KSplitTransactionDlg::endEdit(bool skipNextStart)
 {
+  // we must move the focus first as this might update some
+  // date of the split we just edited
+  transactionsTable->setFocus();
+
   int row = transactionsTable->currentRow() + 1;
   slotFocusChange(row, 0, Qt::LeftButton, QPoint(0, 0));
-  transactionsTable->setFocus();
   m_skipStartEdit = skipNextStart;
 }
 
 void KSplitTransactionDlg::slotQuitEdit(void)
 {
-/*
   int   row = transactionsTable->currentRow();
 
-  if(m_category->isVisible()) {         // in edit mode?
+  if(transactionsTable->inlineEditingMode()) {         // in edit mode?
     if(m_createdNewSplit == true) {
       // it was created when we started editing, so we discard it
-      deleteSplitTransaction(m_splitList.count()-1);
-      updateTransactionList();
+      deleteSplitTransaction(m_transaction.splits().count()-1);
+      updateSplit();
 
-      if(row > static_cast<int> (m_splitList.count()))
-        row = m_splitList.count();
+      if(row > static_cast<int> (m_transaction.splits().count()))
+        row = m_transaction.splits().count();
     }
     m_createdNewSplit = false;
     hideWidgets();
@@ -550,14 +630,12 @@ void KSplitTransactionDlg::slotQuitEdit(void)
   int prev = transactionsTable->currentRow();
   // setup new current row and update visible selection
   transactionsTable->setCurrentRow(row);
-  updateTransactionList(prev);
-  updateTransactionList(row);
-*/
+  updateSplit(prev);
+  updateSplit(row);
 }
 
 void KSplitTransactionDlg::slotNavigationKey(int key)
 {
-/*
   int row = transactionsTable->currentRow();
 
   switch(key) {
@@ -565,49 +643,49 @@ void KSplitTransactionDlg::slotNavigationKey(int key)
       row = 0;
       break;
     case Key_End:
-      row = m_splitList.count();
+      row = m_transaction.splits().count()-1;
       break;
     case Key_Up:
       if(row)
         --row;
       break;
     case Key_Down:
-      if(row < static_cast<int> (m_splitList.count()))
+      if(row < static_cast<int> (m_transaction.splits().count()-1))
         ++row;
       break;
   }
   slotFocusChange(row, 0, Qt::LeftButton, QPoint(0, 0));
-*/
 }
 
 void KSplitTransactionDlg::slotFocusChange(int realrow, int col, int button, const QPoint&  point)
 {
-/*
   int   row = realrow;
 
   // adjust row to used area
-  if(row > static_cast<int> (m_splitList.count()))
-    row = m_splitList.count();
+  if(row > static_cast<int> (m_transaction.splits().count()-1))
+    row = m_transaction.splits().count()-1;
 
   // make sure the row will be on the screen
   transactionsTable->ensureCellVisible(row, col);
 
   if(button == Qt::LeftButton) {          // left mouse button
     if(row != static_cast<int> (transactionsTable->currentRow())) {
-      if(m_category->isVisible()) {         // in edit mode?
-        if(!m_amount->text().isEmpty()
-        || !m_memo->text().isEmpty()
-        || !m_category->text(m_category->currentItem()).isEmpty()) {
+      if(transactionsTable->inlineEditingMode()) {         // in edit mode?
+        if(!m_editAmount->text().isEmpty()
+        || !m_editMemo->text().isEmpty()
+        || !m_editCategory->text().isEmpty()) {
+          qDebug("split will be updated");
           // there's data in the split -> update it
-          updateTransaction(m_splitList.at(transactionsTable->currentRow()));
+          updateSplit(transactionsTable->currentRow());
 
         } else if(m_createdNewSplit == true) {
+          qDebug("Newly created split will be destroyed");
           // it's empty and if it was created we discard it
-          deleteSplitTransaction(m_splitList.count()-1);
-          updateTransactionList();
+          deleteSplitTransaction(m_transaction.splits().count()-1);
+          updateSplit();
 
-          if(row > static_cast<int> (m_splitList.count()))
-            row = m_splitList.count();
+          if(row > static_cast<int> (m_transaction.splits().count()-1))
+            row = m_transaction.splits().count()-1;
         }
         m_createdNewSplit = false;
         hideWidgets();
@@ -615,8 +693,8 @@ void KSplitTransactionDlg::slotFocusChange(int realrow, int col, int button, con
       int prev = transactionsTable->currentRow();
       // setup new current row and update visible selection
       transactionsTable->setCurrentRow(row);
-      updateTransactionList(prev);
-      updateTransactionList(row);
+      updateSplit(prev);
+      updateSplit(row);
     }
   } else if(button == Qt::RightButton) {
     // context menu is only available when cursor is on
@@ -625,35 +703,35 @@ void KSplitTransactionDlg::slotFocusChange(int realrow, int col, int button, con
       int prev = transactionsTable->currentRow();
       // setup new current row and update visible selection
       transactionsTable->setCurrentRow(row);
-      updateTransactionList(prev);
-      updateTransactionList(row);
+      updateSplit(prev);
+      updateSplit(row);
 
       // if the very last entry is selected, the delete
       // operation is not available otherwise it is
       m_contextMenu->setItemEnabled(m_contextMenuDelete,
-            row < static_cast<int> (m_splitList.count()));
+            row < static_cast<int> (m_transaction.splits().count()-1));
 
       m_contextMenu->exec(QCursor::pos());
     }
   }
-*/
 }
+
 /*
 void KSplitTransactionDlg::updateTransaction(MyMoneySplitTransaction *transaction)
 {
 
-  transaction->setMemo(m_memo->text());
-  transaction->setAmount(m_amount->getMoneyValue());
+  transaction->setMemo(m_editMemo->text());
+  transaction->setAmount(m_editAmount->getMoneyValue());
 
- 	int colonindex = m_category->currentText().find(":");
+ 	int colonindex = m_editCategory->currentText().find(":");
   if(colonindex == -1) {
-    transaction->setCategoryMajor(m_category->currentText());
+    transaction->setCategoryMajor(m_editCategory->currentText());
     transaction->setCategoryMinor("");
 	} else {
-    int len = m_category->currentText().length();
+    int len = m_editCategory->currentText().length();
     len--;
-    transaction->setCategoryMajor(m_category->currentText().left(colonindex));
-    transaction->setCategoryMinor(m_category->currentText().right(len - colonindex));
+    transaction->setCategoryMajor(m_editCategory->currentText().left(colonindex));
+    transaction->setCategoryMinor(m_editCategory->currentText().right(len - colonindex));
 	}
 
 // FIXME: Remove if completely empty
@@ -664,8 +742,8 @@ void KSplitTransactionDlg::updateTransaction(MyMoneySplitTransaction *transactio
 // the following code is just copied from KTransactionView and
 // needs to be adapted
 
-  int lessindex = m_category->currentText().find("<");
-  int greatindex = m_category->currentText().find(">");
+  int lessindex = m_editCategory->currentText().find("<");
+  int greatindex = m_editCategory->currentText().find(">");
   QString transferAccount = "";
 
 	if(m_index < static_cast<long> (m_transactions->count())) {
@@ -709,145 +787,24 @@ void KSplitTransactionDlg::updateTransaction(MyMoneySplitTransaction *transactio
 	  }
 }
 */
+
 void KSplitTransactionDlg::showWidgets(int row, bool show)
 {
   if(show == true) {
-    updateInputLists();
+    createInputWidgets(row);
 
-    transactionsTable->setCellWidget(row, 0, m_category);
-    transactionsTable->setCellWidget(row, 1, m_memo);
-    transactionsTable->setCellWidget(row, 2, m_amount);
+    m_editCategory->show();
+    m_editMemo->show();
+    m_editAmount->show();
 
-    m_category->setCurrentItem(transactionsTable->text(row, 0));
-    m_memo->setText(transactionsTable->text(row, 1));
-    m_amount->setText(transactionsTable->text(row, 2));
+    transactionsTable->setInlineEditingMode(true);
+    m_editRow = row;
 
-    m_category->show();
-    m_memo->show();
-    m_amount->show();
   } else {
-    m_category->hide();
-    m_memo->hide();
-    m_amount->hide();
+    m_editRow = -1;
+    transactionsTable->setInlineEditingMode(false);
+    destroyInputWidgets();
   }
-}
-
-void KSplitTransactionDlg::updateInputLists(void)
-{
-/*
-  QStringList categoryList;
-  QStringList qstringlistIncome;
-  QStringList qstringlistExpense;
-  QStringList qstringlistAccount;
-  bool bDoneInsert = false;
-
-  QString theText;
-  if (m_filePointer) {
-    QListIterator<MyMoneyCategory> categoryIterator = m_filePointer->categoryIterator();
-    for ( ; categoryIterator.current(); ++categoryIterator) {
-      MyMoneyCategory *category = categoryIterator.current();
-
-      theText = category->name();
-
-      if (category->isIncome()) {
-        // Add it alpabetically
-        if (qstringlistIncome.count()<=0)
-          qstringlistIncome.append(theText);
-        else {
-          for (QStringList::Iterator it3 = qstringlistIncome.begin(); it3 != qstringlistIncome.end(); ++it3 ) {
-            if ((*it3) >= theText && !bDoneInsert) {
-              qstringlistIncome.insert(it3, theText);
-              bDoneInsert = true;
-            }
-          }
-          if (!bDoneInsert)
-            qstringlistIncome.append(theText);
-        }
-      } else { // is expense
-        // Add it alpabetically
-        if (qstringlistExpense.count()<=0)
-          qstringlistExpense.append(theText);
-        else {
-          for (QStringList::Iterator it4 = qstringlistExpense.begin(); it4 != qstringlistExpense.end(); ++it4 ) {
-            if ((*it4) >= theText && !bDoneInsert) {
-              qstringlistExpense.insert(it4, theText);
-              bDoneInsert = true;
-            }
-          }
-          if (!bDoneInsert)
-            qstringlistExpense.append(theText);
-        }
-      }
-
-      // Now add all the minor categories
-      for ( QStringList::Iterator it = category->minorCategories().begin(); it != category->minorCategories().end(); ++it ) {
-        theText = category->name();
-				theText += ":";
-				theText += (*it);
-				
-				bDoneInsert = false;
-				
-        if (category->isIncome()) {
-          // Add it alpabetically
-          if (qstringlistIncome.count()<=0)
-            qstringlistIncome.append(theText);
-          else {
-            for (QStringList::Iterator it3 = qstringlistIncome.begin(); it3 != qstringlistIncome.end(); ++it3 ) {
-              if ((*it3) >= theText && !bDoneInsert) {
-                qstringlistIncome.insert(it3, theText);
-                bDoneInsert = true;
-              }
-            }
-            if (!bDoneInsert)
-              qstringlistIncome.append(theText);
-          }
-        } else { // is expense
-          // Add it alpabetically
-          if (qstringlistExpense.count()<=0)
-            qstringlistExpense.append(theText);
-          else {
-            for (QStringList::Iterator it4 = qstringlistExpense.begin(); it4 != qstringlistExpense.end(); ++it4 ) {
-              if ((*it4) >= theText && !bDoneInsert) {
-                qstringlistExpense.insert(it4, theText);
-                bDoneInsert = true;
-              }
-            }
-            if (!bDoneInsert)
-              qstringlistExpense.append(theText);
-          }
-        }
-      }  // End minor iterator
-    }
-
-    if (m_bankPointer) {
-      MyMoneyAccount *currentAccount;
-
-      for(currentAccount = m_bankPointer->accountFirst(); currentAccount != 0; currentAccount = m_bankPointer->accountNext())
-      {
-        if(currentAccount != m_accountPointer) {
-         	theText = "<";
-          theText = theText + currentAccount->name();
-          theText = theText + ">";
-			    qstringlistAccount.append(theText);
-        }
-  		}
-    }
-  }
-
-	m_category->clear();
-
-	qstringlistIncome.prepend(i18n("--- Income ---"));
-  qstringlistIncome.prepend("");
-	categoryList = qstringlistIncome;
-	
-	qstringlistExpense.prepend(i18n("--- Expense ---"));
-	categoryList += qstringlistExpense;
-	
-	qstringlistAccount.prepend(i18n("--- Special ---"));
-	categoryList += qstringlistAccount;
-
-  m_category->insertStringList(categoryList);
-*/
 }
 
 /*
@@ -864,6 +821,179 @@ MyMoneySplitTransaction* KSplitTransactionDlg::nextTransaction(void)
 void KSplitTransactionDlg::addTransaction(MyMoneySplitTransaction* const split)
 {
   m_splitList.append(split);
-  updateTransactionList(m_splitList.count()-1);
+  updateSplit(m_splitList.count()-1);
 }
 */
+
+void KSplitTransactionDlg::slotCategoryChanged(const QString& category)
+{
+  if(!m_editCategory || m_editRow == -1)
+    return;
+
+  MyMoneyTransaction t = m_transaction;
+  QValueList<MyMoneySplit> list = getSplits();
+  MyMoneySplit s = list[m_editRow];
+
+  try {
+    // First, we check if the category exists
+    QCString id = MyMoneyFile::instance()->categoryToAccount(category);
+    if(id == "") {
+      // FIXME:
+      KMessageBox::sorry(0, i18n("Direct creation of new account not yet implemented"));
+      m_editCategory->resetText();
+      m_editCategory->setFocus();
+      return;
+    }
+
+    if(id == m_account.id()) {
+      KMessageBox::error(0, i18n("You cannot use this category here"));
+      m_editCategory->resetText();
+      m_editCategory->setFocus();
+      return;
+    }
+
+    s.setAccountId(id);
+
+    // Now we check, if a split referencing this account already exists
+    // within this transaction. If so, we join them.
+    QValueList<MyMoneySplit>::Iterator it;
+
+    for(it = list.begin(); it != list.end(); ++it) {
+      // don't check against myself ;-)
+      if((*it).id() == s.id())
+        continue;
+
+      if((*it).accountId() == s.accountId()) {
+        (*it).setValue((*it).value() + s.value());
+        m_transaction.modifySplit(*it);
+        m_transaction.removeSplit(s);
+        hideWidgets();
+        updateSplit();
+        break;
+      }
+    }
+
+    if(it == list.end()) {
+      m_transaction.modifySplit(s);
+      m_editCategory->loadText(category);
+    }
+/*
+    // We have to distinguish between the following cases
+    //
+    // a) transaction contains just a single split
+    // b) transaction contains exactly two splits
+    // c) transaction contains more than two splits
+    //
+    // Here's how we react
+    //
+    // a) add a split with the account set to the new category
+    // b) modify the split and modify the account to the new category
+    // c) ask the user that all data about the splits are lost. Upon
+    //    positive response remove all splits except the one that
+    //    references accountId() then continue with a)
+
+    QValueList<MyMoneySplit> list = m_transaction.splits();
+    QValueList<MyMoneySplit>::Iterator it;
+    MyMoneySplit split;
+
+    switch(m_transaction.splitCount()) {
+      default:
+        if(KMessageBox::warningContinueCancel(0,
+            i18n("If you press continue, information about all other splits will be lost"),
+            i18n("Splitted Transaction")) == KMessageBox::Cancel) {
+          m_editCategory->resetText();
+          m_editCategory->setFocus();
+        }
+        for(it = list.begin(); it != list.end(); ++it) {
+          if((*it) == m_split)
+            continue;
+          m_transaction.removeSplit((*it));
+        }
+        // tricky fall through here
+      case 1:
+        split.setAccountId(id);
+        split.setValue(-m_split.value());
+        m_transaction.addSplit(split);
+        break;
+
+      case 2:
+        // find the 'other' split
+        split = m_transaction.split(accountId(), false);
+        split.setAccountId(id);
+        m_transaction.modifySplit(split);
+        break;
+    }
+*/
+
+  } catch(MyMoneyException *e) {
+    KMessageBox::detailedSorry(0, i18n("Unable to modify category"),
+        (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+    delete e;
+    m_editCategory->resetText();
+
+    m_transaction = t;
+  }
+}
+
+void KSplitTransactionDlg::slotAmountChanged(const QString& value)
+{
+  if(!m_editAmount || m_editRow == -1)
+    return;
+
+  MyMoneyTransaction t = m_transaction;
+  QValueList<MyMoneySplit> list = getSplits();
+  MyMoneySplit s = list[m_editRow];
+
+  try {
+    s.setValue(MyMoneyMoney(value));
+    m_editAmount->loadText(value);
+/*
+    switch(transactionType(s)) {
+      case Deposit:
+        break;
+      default:
+        // make it negative in case of !deposit
+        m_split.setValue(-m_split.value());
+        break;
+    }
+*/
+    m_transaction.modifySplit(s);
+/* do we need this here?
+    if(m_transaction.splitCount() == 2) {
+      MyMoneySplit split = m_transaction.split(accountId(), false);
+      split.setValue(-m_split.value());
+      m_transaction.modifySplit(split);
+    }
+*/
+  } catch(MyMoneyException *e) {
+    KMessageBox::detailedSorry(0, i18n("Unable to modify amount"),
+        (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+    delete e;
+    m_editAmount->resetText();
+    m_transaction = t;
+  }
+}
+
+void KSplitTransactionDlg::slotMemoChanged(const QString& memo)
+{
+  if(!m_editMemo || m_editRow == -1)
+    return;
+
+  MyMoneyTransaction t = m_transaction;
+  QValueList<MyMoneySplit> list = getSplits();
+  MyMoneySplit s = list[m_editRow];
+
+  s.setMemo(memo);
+
+  try {
+    m_transaction.modifySplit(s);
+    m_editMemo->loadText(memo);
+
+  } catch(MyMoneyException *e) {
+    KMessageBox::detailedSorry(0, i18n("Unable to modify split"),
+        (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+    delete e;
+    m_editMemo->resetText();
+    m_transaction = t;
+  }
+}

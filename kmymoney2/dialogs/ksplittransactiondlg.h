@@ -23,34 +23,46 @@
 #ifndef KSPLITTRANSACTIONDLG_H
 #define KSPLITTRANSACTIONDLG_H
 
+// ----------------------------------------------------------------------------
+// QT Includes
+
+// ----------------------------------------------------------------------------
+// KDE Includes
+
 #include <kpopupmenu.h>
 #include <kiconloader.h>
 
+// ----------------------------------------------------------------------------
+// Project Includes
+
 #include "../mymoney/mymoneymoney.h"
-//#include "../mymoney/mymoneysplittransaction.h"
-#include "../mymoney/mymoneyfile.h"
-#include "../mymoney/mymoneyinstitution.h"
 #include "../mymoney/mymoneyaccount.h"
-#include "../widgets/kmymoneycombo.h"
-#include "../widgets/kmymoneyedit.h"
-#include "../widgets/kmymoneylineedit.h"
+#include "../mymoney/mymoneytransaction.h"
+class kMyMoneyCategory;
+class kMyMoneyEdit;
+class kMyMoneyLineEdit;
 
 #include "ksplittransactiondlgdecl.h"
 
 /**
-  *@author Thomas Baumgart
+  * @author Thomas Baumgart
+  * @todo Add account (hierarchy) upon new category
   */
 
 class KSplitTransactionDlg : public kSplitTransactionDlgDecl  {
   Q_OBJECT
 
 public: 
-	KSplitTransactionDlg( QWidget* parent,  const char* name,
-                        MyMoneyFile* const filePointer,
-                        MyMoneyInstitution* const bankPointer,
-                        MyMoneyAccount* const accountPointer,
-                        MyMoneyMoney* amount, const bool amountValid = false);
-	~KSplitTransactionDlg();
+  KSplitTransactionDlg(const MyMoneyTransaction& t,
+                       const MyMoneyAccount& acc,
+                       MyMoneyMoney& amount,
+                       const bool amountValid,
+                       const bool deposit,
+                       QWidget* parent = 0, const char* name = 0);
+
+  virtual ~KSplitTransactionDlg();
+
+  const MyMoneyTransaction& transaction(void) const { return m_transaction; };
 
   /// get a pointer to the first split transaction
   /// @return pointer to the first MyMoneySplitTransaction in the list
@@ -74,18 +86,29 @@ private:
   /// Update the display of the sums
   void updateSums(void);
 
-  /// create input widgets
-  void createInputWidgets(void);
+  /**
+    * This method creates the necessary input widgets in a specific row
+    * of the register.
+    *
+    * @param row row of the register to place the widgets
+    */
+  void createInputWidgets(const int row);
+
+  /// destroy the input widgets
+  void destroyInputWidgets(void);
 
   /// resize the transaction table depending on the visual size
   /// and the number of entries. Updates m_numExtraLines.
   void updateTransactionTableSize(void);
 
-  /// called when the transaction table needs to be updated
-  ///
-  /// @param start row to be updated. -1 (default) will update all rows
-  /// @param col the column to be updated. -1 (default) will update all cols
-  //void updateTransactionList(int start = -1, int col = -1);
+  /**
+    * This method updates parts or all of the register. The area is controlled
+    * via the parameters @p start and @p col.
+    *
+    * @param start row to be updated. -1 will update all rows. -1 is the default
+    * @param col column to be updated. -1 will update all columns. -1 is the default
+    */
+  void updateSplit(int start = -1, int col = -1);
 
   /// updates a single transaction with the values of the input widgets
   //void updateTransaction(MyMoneySplitTransaction *);
@@ -103,15 +126,12 @@ private:
 
   /// calculate the sum of the splits
   /// @return the sum of all split transactions
-  MyMoneyMoney splitsAmount(void);
-
-  /// loads the lists required for input
-  void updateInputLists(void);
+  MyMoneyMoney splitsValue(void);
 
   /// creates a new split transaction at the end of the list. The
   /// amount is updated to current difference value.
   /// @param row the row in the table that will hold the transaction
-  void createSplitTransaction(int row);
+  void createSplit(int row);
 
   /// stop editing a transaction, enter it and skip the next startEdit event
   /// if the parameter is true. Do not skip that, if the parameter is false.
@@ -164,20 +184,52 @@ protected slots:
   /// function for slotDeleteSplitTransaction(int row).
   void slotDeleteSplitTransaction(void);
 
+  /**
+    * Called when the category field has been changed.
+    * m_transaction and m_split will be updated accordingly.
+    *
+    * @param name const reference to the name of the category
+    */
+  virtual void slotCategoryChanged(const QString& name);
+
+  /**
+    * Called when the amount field has been changed by the user.
+    * m_transaction and m_split will be updated accordingly.
+    *
+    * @param amount const reference to the amount value
+    */
+  virtual void slotAmountChanged(const QString& amount);
+
+  /**
+    * Called when the memo field has been changed.
+    * m_transaction and m_split will be updated accordingly.
+    *
+    * @param memo const reference to the new memo text
+    */
+  virtual void slotMemoChanged(const QString &memo);
+
 private slots:
   /// used internally to setup the initial size of all widgets
   void initSize(void);
 
 private:
+  /**
+    * This method returns a list of all splits not referencing the
+    * current account (the one's that need to be displayed in the register
+    * of the dialog).
+    *
+    * @return const QValueList<MyMoneySplit> containing all splits except the
+    *               one that references the current account
+    */
+  const QValueList<MyMoneySplit> getSplits(void) const;
 
-  /// keeps a pointer to the file for global data retrieval
-  MyMoneyFile*  const m_filePointer;
+private:
 
-  /// keeps a pointer to the currently selected bank
-  MyMoneyInstitution* const m_bankPointer;
+  /// keeps a copy of the current selected transaction
+  MyMoneyTransaction m_transaction;
 
-  /// keeps a pointer to the currently selected account
-  MyMoneyAccount* const m_accountPointer;
+  /// keeps a copy of the currently selected account
+  MyMoneyAccount m_account;
 
   /// keeps the actual width required for the amount field
   unsigned      m_amountWidth;
@@ -195,15 +247,20 @@ private:
 
   /// pointer input widget for category. the widget will be
   /// created in createInputWidgets()
-  kMyMoneyCombo* m_category;
+  kMyMoneyCategory* m_editCategory;
 
   /// pointer to input widget for memo. the widget will be
   /// created in createInputWidgets()
-  kMyMoneyLineEdit* m_memo;
+  kMyMoneyLineEdit* m_editMemo;
 
   /// pointer to input widget for amount. the widget will be
   /// created in createInputWidgets()
-  kMyMoneyEdit*  m_amount;
+  kMyMoneyEdit*  m_editAmount;
+
+  /**
+    * The row that is currently edited. If -1, no row is selected
+    */
+  long m_editRow;
 
   /// the dialog local list of splits
   //QList<MyMoneySplitTransaction> m_splitList;
@@ -222,6 +279,12 @@ private:
 
   /// keeps the id of the delete entry in the context menu
   int   m_contextMenuDelete;
+
+  /**
+    * This member keeps track if the current transaction is of type
+    * deposit (true) or withdrawal (false).
+    */
+  bool  m_isDeposit;
 };
 
 #endif

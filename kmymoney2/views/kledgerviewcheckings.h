@@ -30,6 +30,7 @@
 #include <qtabbar.h>
 class QLabel;
 class QHBoxLayout;
+class QCheckBox;
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -88,7 +89,11 @@ class kMyMoneyTransactionFormTable;
   * The register is provided by kMyMoneyRegisterCheckings. The form
   * is based on a kMyMoneyTransactionForm object. The various parts
   * are created in createRegister(), createSummary() and createForm().
-  * The layouts and the KPushButtons are created directly in the constructor.
+  * The above diagram shows the standard layout. The buttonLayout is
+  * actually contained as one page in the QWidgetStack m_infoStack.
+  * The widgets therein are created in the createInfoStack() method which
+  * is called by the constructor. A second page exists, which is used by
+  * the reconciliation code.
   *
   * The tabbar on top of the actual form is part of the kMyMoneyTransactionForm
   * widget and shows the possible transaction types. It
@@ -212,6 +217,12 @@ protected slots:
     */
   virtual void slotEndReconciliation(void);
 
+  /**
+    * Calling this slot opens the split dialog with the current transaction
+    * loaded.
+    */
+  virtual void slotOpenSplitDialog(void);
+
 private:
   /**
     * This method loads the data of the current transaction into the
@@ -225,6 +236,8 @@ private:
     * @return The return value is passed in the variable referenced by @p transType
     */
   void loadEditWidgets(int& transType);
+
+  void reloadEditWidgets(const MyMoneyTransaction& t);
 
   /**
     * This method arranges the widgets required for in-form editing in the
@@ -316,12 +329,17 @@ protected:
   QHBoxLayout*    m_summaryLayout;
 
 private:
+
+  // The following attributes are exclusively used for reconciliation
   MyMoneyMoney    m_prevBalance;
   MyMoneyMoney    m_endingBalance;
   QDate           m_endingDate;
 
   QLabel*         m_clearedLabel;
   QLabel*         m_statementLabel;
+  QLabel*         m_differenceLabel;
+
+  QCheckBox*      m_transactionCheckBox;
 };
 
 #endif
