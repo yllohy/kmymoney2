@@ -38,8 +38,6 @@
 
 /**
   * @author Thomas Baumgart
-  *
-  * @todo add a type field (e.g. transfer etc)
   */
 
 class MyMoneySplit {
