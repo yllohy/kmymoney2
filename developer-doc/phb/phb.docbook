@@ -10,6 +10,7 @@
   <!ENTITY error-management SYSTEM "error-mgmt.docbook">
   <!ENTITY cvs-examples SYSTEM "cvs-examples.docbook">
   <!ENTITY src-examples SYSTEM "src-examples.docbook">
+  <!ENTITY unit-test SYSTEM "unit-test.docbook">
   <!ENTITY licence SYSTEM "licence.docbook">
   <!ENTITY fdl-licence SYSTEM "fdl-licence">
 ]>
@@ -117,6 +118,7 @@ The dedication will show up here!
 &config-management;
 &release-management;
 &coding-standards;
+&unit-test;
 &error-management;
 &cvs-examples;
 &src-examples;
