@@ -402,26 +402,22 @@ bool MyMoneyAccount::readQIFFile(const QString& name, const QString& dateFormat,
 
             if(transmode && writetrans)
             {
-//              int slash = -1;
-//              int apost = -1;
               int checknum = 0;
               bool isnumber = false;
-//              int intyear = 0;
-//              int intmonth = 0;
-//              int intday = 0;
               QString checknumber = "";
-              qDebug("Date: %s, dateFormat: %s", date.latin1(), dateFormat.latin1());
-
-
               MyMoneyTransaction::transactionMethod transmethod;
-
               int day=0, month=0, year=0;
               char *buffer = (char*)date.latin1();
               char *format = (char*)dateFormat.latin1();
-              int res = convertQIFDate(buffer, format, apostrophe, &day, &month, &year);
-              qDebug("day: %d, month: %d, year %d", day, month, year);
-              qDebug("res = %s", getQIFDateFormatErrorString(res));
+
+              // qDebug("Date: %s, dateFormat: %s", buffer, format);
+
+              int res = 0;
+              res = convertQIFDate(buffer, format, apostrophe, &day, &month, &year);
               QDate transdate(year, month, day);
+
+              // qDebug("day: %d, month: %d, year %d", day, month, year);
+              // qDebug("res = %s", (const char *)getQIFDateFormatErrorString(res));
 
               checknum = type.toInt(&isnumber);
               if(isnumber == false)
@@ -644,21 +640,8 @@ bool MyMoneyAccount::writeQIFFile(const QString& name, const QString& dateFormat
           {
             QString qstringBuffer;
             QDateToQIFDate(transaction->date(), qstringBuffer, dateFormat);
-            qDebug("QDate: %s, QIF Date: %s", transaction->date().toString().latin1(), qstringBuffer.latin1());
+            // qDebug("QDate: %s, QIF Date: %s", transaction->date().toString().latin1(), qstringBuffer.latin1());
             t << "D" << qstringBuffer << endl;
-
-            /*
-            int year = transaction->date().year();
-            if(dateFormat == "MM/DD'YY")
-            {
-              if(year >=2000)
-                      year -= 2000;
-              else
-                year -= 1900;
-            }
-            int month = transaction->date().month();
-            int day = transaction->date().day();
-            */
 
             double amount = transaction->amount().amount();
             if(transaction->type() == MyMoneyTransaction::Debit)
@@ -680,20 +663,13 @@ bool MyMoneyAccount::writeQIFFile(const QString& name, const QString& dateFormat
               Category = transaction->categoryMajor();
             else
               Category = transaction->categoryMajor() + ":" + transaction->categoryMinor();
-            /*
-            if(dateFormat == "MM/DD'YY")
-            {
-              t << "D" << month << "/" << day << "'" << year << endl;
-            }
-            if(dateFormat == "MM/DD/YYYY")
-            {
-              t << "D" << month << "/" << day << "/" << year << endl;
-            }
-            */
+
             t << "U" << amount << endl;
             t << "T" << amount << endl;
             if(transaction->state() == MyMoneyTransaction::Reconciled)
               t << "CX" << endl;
+            if(transaction->memo().length() > 0)
+              t << "M" << transaction->memo() << endl;
             t << "N" << transmethod << endl;
             t << "P" << Payee << endl;
             t << "L" << Category << endl;
@@ -1025,13 +1001,16 @@ int MyMoneyAccount::to_year(const QString buffer, int ycount, char delimiter, in
   return result;
 }
 
-const char *MyMoneyAccount::getQIFDateFormatErrorString(int res)
+const QString MyMoneyAccount::getQIFDateFormatErrorString(int res)
 {
+
   switch (res) {
     case 0:
       return i18n("No error");
+      break;
     case 1:
       return i18n("Cannot convert number to Days");
+      break;
     case 2:
       return i18n("Cannot convert number to Months");
     case 3:
