@@ -31,10 +31,7 @@ MyMoneyTransactionBase::~MyMoneyTransactionBase()
 
 MyMoneyTransactionBase::MyMoneyTransactionBase(const MyMoneyTransactionBase& right)
 {
-  m_memo = right.m_memo;
-  m_amount = right.m_amount;
-  m_categoryMajor = right.m_categoryMajor;
-  m_categoryMinor = right.m_categoryMinor;
+  init(right);
 }
 
 MyMoneyTransactionBase::MyMoneyTransactionBase(const QString& memo, const MyMoneyMoney& amount, const QString& categoryMajor, const QString& categoryMinor)
@@ -47,12 +44,16 @@ MyMoneyTransactionBase::MyMoneyTransactionBase(const QString& memo, const MyMone
 
 MyMoneyTransactionBase& MyMoneyTransactionBase::operator = (const MyMoneyTransactionBase& right)
 {
-  qDebug("MyMoneyTransactionBase = operator");
+  init(right);
+  return *this;
+}
+
+void MyMoneyTransactionBase::init(const MyMoneyTransactionBase& right)
+{
   m_memo = right.m_memo;
   m_amount = right.m_amount;
   m_categoryMajor = right.m_categoryMajor;
   m_categoryMinor = right.m_categoryMinor;
-  return *this;
 }
 
 void MyMoneyTransactionBase::setMemo(const QString& val)

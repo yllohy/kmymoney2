@@ -41,6 +41,7 @@ MyMoneyTransaction::MyMoneyTransaction(MyMoneyAccount *parent, const long id, tr
   m_accountTo = bankTo;
   m_state = state;
   m_index=0;
+  m_splitList.setAutoDelete(true);
 }
 
 MyMoneyTransaction::~MyMoneyTransaction()
@@ -71,26 +72,25 @@ MyMoneyTransaction::transactionType MyMoneyTransaction::type(void) const
 }
 
 MyMoneyTransaction::MyMoneyTransaction(const MyMoneyTransaction& right)
-  : MyMoneyTransactionBase(right)
 {
-  m_id = right.m_id;
-  m_number = right.m_number;
-  m_date = right.m_date;
-  m_method = right.m_method;
-  m_atmBankName = right.m_atmBankName;
-  m_payee = right.m_payee;
-  m_accountFrom = right.m_accountFrom;
-  m_accountTo = right.m_accountTo;
-  m_state = right.m_state;
-  m_index = right.m_index;
-	m_parent = right.m_parent;
-
-  // FIXME: copy the m_splitList as well
+  init(const_cast<MyMoneyTransaction&> (right));
 }
 
 MyMoneyTransaction& MyMoneyTransaction::operator = (const MyMoneyTransaction& right)
 {
-  qDebug("MyMoneyTransaction = operator");
+  init(const_cast<MyMoneyTransaction&> (right));
+  return *this;
+}
+
+void MyMoneyTransaction::init(MyMoneyTransaction& right)
+{
+  // set list to auto delete mode
+  m_splitList.setAutoDelete(true);
+
+  // copy base class members
+  MyMoneyTransactionBase::init(right);
+
+  // copy class members
   m_id = right.m_id;
   m_number = right.m_number;
   m_date = right.m_date;
@@ -103,15 +103,19 @@ MyMoneyTransaction& MyMoneyTransaction::operator = (const MyMoneyTransaction& ri
   m_index = right.m_index;
 	m_parent = right.m_parent;
 
-  // FIXME: copy the m_splitList as well
+  // copy the split list
+  MyMoneySplitTransaction* split, *tmp;
+  int current;
 
-  // don't forget to copy base class members
-  m_memo = right.m_memo;
-  m_amount = right.m_amount;
-  m_categoryMajor = right.m_categoryMajor;
-  m_categoryMinor = right.m_categoryMinor;
-
-  return *this;
+  current = right.m_splitList.at();
+  split = right.firstSplit();
+  while(split) {
+    tmp = new MyMoneySplitTransaction(*split);
+    addSplit(tmp);
+    split = right.nextSplit();
+  }
+  if(current != -1)
+    right.m_splitList.at(current);
 }
 
 bool MyMoneyTransaction::operator == (const MyMoneyTransaction& right)
@@ -220,3 +224,26 @@ void MyMoneyTransaction::setDirty(bool flag)
   if (m_parent)
     m_parent->setDirty(flag);
 }
+
+MyMoneySplitTransaction* const MyMoneyTransaction::firstSplit(void)
+{
+  return m_splitList.first();
+}
+
+MyMoneySplitTransaction* const MyMoneyTransaction::nextSplit(void)
+{
+  return m_splitList.next();
+}
+
+void MyMoneyTransaction::clearSplitList(void)
+{
+  m_splitList.clear();
+}
+
+void MyMoneyTransaction::addSplit(MyMoneySplitTransaction* const split)
+{
+  m_splitList.append(split);
+  setCategoryMajor("Split");
+  setCategoryMinor("");
+}
+

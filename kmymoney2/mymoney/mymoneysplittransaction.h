@@ -39,23 +39,21 @@ public:
   MyMoneySplitTransaction(const MyMoneySplitTransaction& right);
 	~MyMoneySplitTransaction();
 
-  /**
-    * Returns true for MyMoneySplitTransactions
-    *
-    * @return always true
-    */
+  /// Returns true for MyMoneySplitTransactions
+  ///
+  /// @return always true
   virtual bool isSplit(void) { return true; };
 
-  // modify the parent
-  void setParent(MyMoneyTransaction&);
+  /// modify the parent
+  void setParent(MyMoneyTransaction *);
 
 protected:
-  // set the dirty flag of the parent
+  /// set the dirty flag of the parent
   void setDirty(const bool flag);
 
 
 private:
-  // backward pointer to master transaction
+  /// backward pointer to master transaction
   MyMoneyTransaction* m_parent;
 
 };

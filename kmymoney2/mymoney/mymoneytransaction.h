@@ -26,7 +26,7 @@
 
 class MyMoneyAccount;
 
-// This class represents a Transaction in an Account
+/// This class represents a Transaction in an Account
 class MyMoneyTransaction : public MyMoneyTransactionBase {
 public:
   enum transactionType { Debit, Credit };
@@ -48,12 +48,16 @@ private:
   stateE m_state;
   unsigned int m_index;
 
+private:
+  /// common initialization for copy and assignment constructor
+  /// @param right reference to the right side of the assignment
+  void init(MyMoneyTransaction& right);
 
   friend QDataStream &operator<<(QDataStream &, const MyMoneyTransaction &);
   friend QDataStream &operator>>(QDataStream &, MyMoneyTransaction &);
 
 public:   // FIXME: for testing I made this public, must be private.
-  // List of splits
+  /// List of splits
   QList<MyMoneySplitTransaction> m_splitList;
 
 
@@ -75,7 +79,15 @@ public:
   QString accountFrom(void) const { return m_accountFrom; }
   QString accountTo(void) const { return m_accountTo; }
   stateE state(void) const { return m_state; }
-  const QList<MyMoneySplitTransaction> splitList(void) { return m_splitList; }
+  //const QList<MyMoneySplitTransaction> splitList(void) { return m_splitList; }
+
+  /// retrieve a pointer to the first split transaction
+  /// @return pointer to first MyMoneySplitTransaction
+  MyMoneySplitTransaction* const firstSplit(void);
+
+  /// retrieve a pointer to the next split transaction
+  /// @return pointer to next MyMoneySplitTransaction
+  MyMoneySplitTransaction* const nextSplit(void);
 
   // Simple set operations
   void setNumber(const QString& val);
@@ -87,15 +99,17 @@ public:
   void setAccountTo(const QString& bankTo);
   void setState(const stateE state);
 
-  /**
-    * Set the parent's dirty flag
-    *
-    * @param flag Set the parent's dirty flag to this value. Can be true or false.
-    *
-    * @see MyMoneyTransaction
-    * @see MyMoneySplitTransaction
-    */
+  /// Set the parent's dirty flag
+  /// @param flag Set the parent's dirty flag to this value. Can be true or false.
+  /// @see MyMoneyTransaction
+  /// @see MyMoneySplitTransaction
   void setDirty(const bool flag);
+
+  /// clear the split transaction list
+  void clearSplitList(void);
+
+  /// add a split transaction to the list
+  void addSplit(MyMoneySplitTransaction* const split);
 
   void setIndex(const unsigned int index);
   unsigned int index(void) { return m_index; }
@@ -108,13 +122,13 @@ public:
 
   bool readAllData(int version, QDataStream& stream);
 
-  /**
-    * Returns false for MyMoneyTransactions
-    *
-    * @return always false
-    */
+  /// Returns false for MyMoneyTransactions
+  ///
+  /// @return always false
   virtual bool isSplit(void) { return false; };
 
+  /// Returns a pointer to the account this transaction belongs to
+  /// @return pointer to account
   MyMoneyAccount *account(void) { return m_parent; }
 
   static transactionMethod stringToMethod(const char *method);

@@ -42,6 +42,11 @@ MyMoneySplitTransaction::~MyMoneySplitTransaction()
 {
 }
 
+void MyMoneySplitTransaction::setParent(MyMoneyTransaction* parent)
+{
+  m_parent = parent;
+}
+
 void MyMoneySplitTransaction::setDirty(const bool flag)
 {
   if (m_parent)
