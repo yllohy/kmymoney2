@@ -291,7 +291,7 @@ void MyMoneyStorageBin::readOldFormat(QDataStream& s, IMyMoneySerialize* storage
       if(fileVersionRead == VERSION_0_4_0) {
         s >> date; acc.setOpeningDate(date);
         s >> tmp_d; // opening balance
-        acc.setOpeningBalance(MyMoneyMoney(static_cast<signed64>(tmp_d*100)));
+        acc.setOpeningBalance(tmp_d);
       } else
         acc.setOpeningDate(QDate(1970,1,1));
 
@@ -325,7 +325,7 @@ void MyMoneyStorageBin::readOldFormat(QDataStream& s, IMyMoneySerialize* storage
         // trivial. I tried 1.23 to convert and ended up with 122.
         // I added a conversion to it. Does it need to be negative for
         // negative values? I am not sure.
-        s >> tmp_d; amount = MyMoneyMoney(static_cast<signed64>(tmp_d*100+0.5));
+        s >> tmp_d; amount = MyMoneyMoney(tmp_d);
         s >> date; tr.setPostDate(date);
         s >> method;      // method
         s >> category;    // major category
