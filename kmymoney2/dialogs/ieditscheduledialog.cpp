@@ -88,7 +88,8 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
     TextLabel1_3->setEnabled(true);
     m_kcomboTo->setEnabled(true);
     m_category->setEnabled(false);
-    m_qbuttonSplit->setEnabled(false);
+    //  transfers now allow splits
+    // m_qbuttonSplit->setEnabled(false);
     setCaption(i18n("Edit Transfer Schedule"));
   }
   else if (m_actionType == MyMoneySplit::ActionAmortization)
@@ -395,6 +396,9 @@ void KEditScheduleDialog::slotWillEndToggled(bool on)
   m_qlineeditRemaining->setEnabled(on);
   m_endLabel2->setEnabled(on);
   m_kdateinputFinal->setEnabled(on);
+  if(!on) {
+    m_schedule.setEndDate(QDate());
+  }
 }
 
 MyMoneySchedule KEditScheduleDialog::schedule(void)
@@ -530,7 +534,8 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
     m_kdateinputDue->setEnabled(false);
     m_kdateinputFinal->setEnabled(false);
     m_qlineeditRemaining->setEnabled(false);
-    m_qcheckboxEnd->setEnabled(false);
+    // FIXME we allow to modify the end of a schedule at any time
+    // m_qcheckboxEnd->setEnabled(false);
 
     // for (int i = 0; i < m_transaction.splitCount(); i++) dumpSplit (i, m_transaction.splits()[i]);
     if (m_actionType == MyMoneySplit::ActionTransfer)

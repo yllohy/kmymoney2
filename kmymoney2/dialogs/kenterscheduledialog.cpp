@@ -166,7 +166,8 @@ void KEnterScheduleDialog::initWidgets()
     else
     {
       m_category->setEnabled(false);
-      m_splitButton->setEnabled(false);
+      // FIXME splits now allows in transfers
+      // m_splitButton->setEnabled(false);
     }
 
     m_to->setEnabled(true);
@@ -192,7 +193,7 @@ void KEnterScheduleDialog::initWidgets()
     else if (m_schedule.type() == MyMoneySchedule::TYPE_LOANPAYMENT)
     {
       loanAccount->setCurrentText(m_schedule.account().name());
-      loanAccount == m_to ? 
+      loanAccount == m_to ?
           m_toAccountId = m_schedule.account().id() : m_fromAccountId = m_schedule.account().id();
     }
     else
@@ -213,14 +214,13 @@ void KEnterScheduleDialog::initWidgets()
       amount = -amount;
     m_amount->setText(amount.formatMoney());
 
-    if (m_schedule.type() != MyMoneySchedule::TYPE_TRANSFER)
+    if (m_transaction.splitCount() >= 3)
     {
-      if (m_transaction.splitCount() >= 3)
-      {
-        m_category->setText(i18n("Split Transaction"));
-        connect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
-      }
-      else
+      m_category->setText(i18n("Split Transaction"));
+      connect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
+    }
+    else if (m_schedule.type() != MyMoneySchedule::TYPE_TRANSFER)
+    {
         m_category->setText(MyMoneyFile::instance()->accountToCategory(m_transaction.splitByAccount(m_schedule.account().id(), false).accountId()));
     }
 
