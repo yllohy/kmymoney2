@@ -74,7 +74,7 @@ class IMyMoneyStorage;
   * @see KMyMoneyView
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: kmymoney2.h,v 1.34 2003/08/11 05:37:52 ipwizard Exp $
+  * $Id: kmymoney2.h,v 1.35 2003/08/21 05:31:23 ipwizard Exp $
   *
   * @short Main application class.
 **/
@@ -238,6 +238,8 @@ public slots:
    */
   void slotFileQuit();
 
+  void slotFileConsitencyCheck(void);
+  
   /** toggles the toolbar
    */
   void slotViewToolBar();
@@ -315,6 +317,7 @@ private:
     * - IDLE: the default value if not performing a backup
     * - MOUNTING: when a mount command has been issued
     * - COPYING:  when a copy command has been issued
+
     * - UNMOUNTING: when an unmount command has been issued
     */
   backupStateE   m_backupState;

@@ -27,15 +27,16 @@
   </Menu>
 
   <Menu name="account"><text>&amp;Account</text>
+    <Action name="account_open"/>
     <Action name="account_add"/>
-<!--    <Action name="category_add"/>
+    <Action name="category_add"/>
     <Action name="account_reconcile"/>
     <Action name="account_find"/>
--->
   </Menu>
 
   <Menu name="tools">
     <Action name="qif_editor"/>
+    <Action name="file_consistency_check"/>
   </Menu>
 
   <Menu name="help">
@@ -61,16 +62,12 @@
   <Action name="bank_add"/>
   <Action name="account_add"/>
 	<Separator/>
-<!--
   <Action name="account_open"/>
   <Action name="account_reconcile"/>
--->
   <Action name="account_import"/>
   <Action name="account_export"/>
 	<Separator/>
-<!--
   <Action name="account_find"/>
   <Action name="go_back"/>
--->
 </ToolBar>
 </kpartgui>

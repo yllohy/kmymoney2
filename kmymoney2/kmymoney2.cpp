@@ -179,7 +179,8 @@ void KMyMoney2App::initActions()
   fileBackup = new KAction(i18n("Backup..."), "backup",0,this,SLOT(slotFileBackup()),actionCollection(),"file_backup");
   actionQifImport = new KAction(i18n("QIF ..."), "", 0, this, SLOT(slotQifImport()), actionCollection(), "file_import_qif");
   actionQifExport = new KAction(i18n("QIF ..."), "", 0, this, SLOT(slotQifExport()), actionCollection(), "file_export_qif");
-
+  new KAction(i18n("Consistency Check"), "", 0, this, SLOT(slotFileConsitencyCheck()), actionCollection(), "file_consistency_check");
+  
   // The Settings Menu
   settingsKey = KStdAction::keyBindings(this, SLOT(slotKeySettings()), actionCollection());
   settings = KStdAction::preferences(this, SLOT( slotSettings() ), actionCollection());
@@ -218,6 +219,8 @@ void KMyMoney2App::initActions()
   actionQifImport->setStatusText(i18n("Import transactions using QIF format"));
   actionQifExport->setStatusText(i18n("Export transactions using QIF format"));
 #endif
+
+
 
 
   // use the absolute path to your kmymoney2ui.rc file for testing purpose in createGUI();
@@ -279,6 +282,7 @@ void KMyMoney2App::readOptions()
   fileOpenRecent->loadEntries(config,"Recent Files");
 
   QSize size=config->readSizeEntry("Geometry");
+
 
   if(!size.isEmpty())
   {
@@ -359,6 +363,7 @@ void KMyMoney2App::slotFileOpen()
   initWizard();
   slotStatusMsg(prevMsg);
   updateCaption();
+
 }
 
 void KMyMoney2App::slotFileOpenRecent(const KURL& url)
@@ -428,6 +433,7 @@ void KMyMoney2App::slotFileSaveAs()
       if(strExt.find("kmy", 0, FALSE) == -1)
 
       {
+
         strTemp.append("kmy");
         //append to make complete file name
         newName = strTemp;
@@ -633,6 +639,7 @@ void KMyMoney2App::slotQifImport()
       m_reader = new MyMoneyQifReader;
       connect(m_reader, SIGNAL(importFinished()), this, SLOT(slotQifImportFinished()));
       
+
       myMoneyView->suspendUpdate(true);
 
       // construct a copy of the current engine
@@ -697,6 +704,7 @@ void KMyMoney2App::slotQifExport()
   KExportDlg* dlg = new KExportDlg(0);
 
   if(dlg->exec()) {
+
     MyMoneyQifWriter writer;
     connect(&writer, SIGNAL(signalProgress(const int, const int)), this, SLOT(slotStatusProgressBar(const int, const int)));
 
@@ -983,5 +991,17 @@ void KMyMoney2App::updateCaption(void)
 
 void KMyMoney2App::update(const QCString& /* id */)
 {
+  updateCaption();
+}
+
+void KMyMoney2App::slotFileConsitencyCheck(void)
+{
+  QString prevMsg = slotStatusMsg(i18n("Running consitency check..."));
+
+  QStringList msg = MyMoneyFile::instance()->consistencyCheck();
+  
+  KMessageBox::warningContinueCancelList(0, "Result", msg, i18n("Consitency check result"));
+  
+  slotStatusMsg(prevMsg);
   updateCaption();
 }
