@@ -683,7 +683,7 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter)
       // we need to reopen the file to set the mode inside the filter stuff
       dev = new KFilterDev(base, true);
       if(!dev || !dev->open(IO_WriteOnly))
-        throw new MYMONEYEXCEPTION(i18n("Unable to open file for writing."));
+        throw new MYMONEYEXCEPTION(i18n("Unable to open file '%1' for writing.").arg(qfile->name()));
     }
   }
 
@@ -691,7 +691,7 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter)
   dev->resetStatus();
   pWriter->writeFile(dev, dynamic_cast<IMyMoneySerialize*> (MyMoneyFile::instance()->storage()));
   if(dev->status() != IO_Ok) {
-    throw new MYMONEYEXCEPTION(i18n("Failure while writing to %1").arg(qfile->name()));
+    throw new MYMONEYEXCEPTION(i18n("Failure while writing to '%1'").arg(qfile->name()));
   }
   pWriter->setProgressCallback(0);
 
@@ -749,16 +749,16 @@ const bool KMyMoneyView::saveFile(const KURL& url)
       if(qfile.status() == 0) {
         saveToLocalFile(qfile.file(), pWriter);
         if(!qfile.close()) {
-          throw new MYMONEYEXCEPTION(i18n("Unable to write changes to %1").arg(filename));
+          throw new MYMONEYEXCEPTION(i18n("Unable to write changes to '%1'").arg(filename));
         }
       } else {
-        throw new MYMONEYEXCEPTION(i18n("Unable to write changes to %1").arg(filename));
+        throw new MYMONEYEXCEPTION(i18n("Unable to write changes to '%1'").arg(filename));
       }
     } else {
       KTempFile tmpfile;
       saveToLocalFile(tmpfile.file(), pWriter);
       if(!KIO::NetAccess::upload(tmpfile.name(), url))
-        throw new MYMONEYEXCEPTION(i18n("Unable to upload to %1").arg(url.url()));
+        throw new MYMONEYEXCEPTION(i18n("Unable to upload to '%1'").arg(url.url()));
       tmpfile.unlink();
     }
   } catch (MyMoneyException *e) {
