@@ -52,10 +52,10 @@
 #include "knewequityentrydlg.h"
 
 KNewEquityEntryDlg::KNewEquityEntryDlg(QWidget *parent, const char *name)
-	: kNewEquityEntryDecl(parent, name, TRUE)
+  : kNewEquityEntryDecl(parent, name, TRUE)
 {
-	connect(btnOK, SIGNAL(clicked()), this, SLOT(onOKClicked()));
-	connect(btnCancel, SIGNAL(clicked()), this, SLOT(onCancelClicked()));
+  connect(btnOK, SIGNAL(clicked()), this, SLOT(onOKClicked()));
+  connect(btnCancel, SIGNAL(clicked()), this, SLOT(onCancelClicked()));
 }
 
 KNewEquityEntryDlg::~KNewEquityEntryDlg()
@@ -64,15 +64,21 @@ KNewEquityEntryDlg::~KNewEquityEntryDlg()
 /** No descriptions */
 void KNewEquityEntryDlg::onOKClicked()
 {
-	accept();
+  accept();
 }
 
 void KNewEquityEntryDlg::onCancelClicked()
 {
-	reject();
+  reject();
 }
 /** No descriptions */
 double KNewEquityEntryDlg::getStockPrice()
 {
   return dblCurrentPrice->text().toDouble();
+}
+
+void KNewEquityEntryDlg::setSymbolName(const QString& str)
+{
+  m_strSymbolName = str;
+  edtMarketSymbol->setText(m_strSymbolName); 
 }

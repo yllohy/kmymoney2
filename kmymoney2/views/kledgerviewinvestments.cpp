@@ -56,6 +56,7 @@
 #include "../mymoney/mymoneyfile.h"
 
 #include "../dialogs/knewaccountdlg.h"
+#include "../dialogs/knewequityentrydlg.h"
 
 #include "../widgets/kmymoneyregistercheckings.h"
 #include "../widgets/kmymoneytransactionform.h"
@@ -104,8 +105,10 @@ KLedgerViewInvestments::KLedgerViewInvestments(QWidget *parent, const char *name
   formLayout->addLayout( ledgerLayout, 0, 0);
 
   m_editPPS = 0;
-  m_editQuantity = 0;
+  m_editShares = 0;
   m_editSymbolName = 0;
+  m_editTotalAmount = 0;
+  m_editFees = 0;
 }
 
 KLedgerViewInvestments::~KLedgerViewInvestments()
@@ -218,7 +221,33 @@ void KLedgerViewInvestments::showWidgets()
     table->setCellWidget(DATE_ROW, DATE_DATA_COL, m_editDate);
     table->setCellWidget(PRICE_ROW, PRICE_DATA_COL, m_editPPS);
     table->setCellWidget(SYMBOL_ROW, SYMBOL_DATA_COL, m_editSymbolName);
+    table->setCellWidget(QUANTITY_ROW, QUANTITY_DATA_COL, m_editShares);
+    table->setCellWidget(AMOUNT_ROW, AMOUNT_DATA_COL, m_editTotalAmount);
+    table->setCellWidget(FEES_ROW, FEES_DATA_COL, m_editFees);
+    
+    table->setEditable(MEMO_ROW, MEMO_DATA_COL);
+    table->setEditable(DATE_ROW, DATE_DATA_COL);
+    table->setEditable(PRICE_ROW, PRICE_DATA_COL);
+    table->setEditable(SYMBOL_ROW, SYMBOL_DATA_COL);
+    table->setEditable(QUANTITY_ROW, QUANTITY_DATA_COL);
+    table->setEditable(AMOUNT_ROW, AMOUNT_DATA_COL, false);
+    table->setEditable(FEES_ROW, FEES_DATA_COL);
   }
+  
+  
+  
+  // now setup the tab order
+  m_tabOrderWidgets.clear();
+  m_tabOrderWidgets.append(m_form->enterButton());
+  m_tabOrderWidgets.append(m_form->cancelButton());
+  m_tabOrderWidgets.append(m_form->moreButton());
+  m_tabOrderWidgets.append(m_editSymbolName);
+  m_tabOrderWidgets.append(m_editDate);
+  m_tabOrderWidgets.append(m_editShares);
+  m_tabOrderWidgets.append(m_editTotalAmount);
+  m_tabOrderWidgets.append(m_editMemo);
+  m_tabOrderWidgets.append(m_editFees);
+  m_tabOrderWidgets.append(m_editPPS);
 }
 
 void KLedgerViewInvestments::hideWidgets()
@@ -248,8 +277,10 @@ void KLedgerViewInvestments::hideWidgets()
   m_editDeposit = 0;
 
   m_editPPS = 0;
-  m_editQuantity = 0;
+  m_editShares = 0;
   m_editSymbolName = 0;
+  m_editTotalAmount = 0;
+  m_editFees = 0;
 
   m_form->table()->clearEditable();
   m_form->tabBar()->setEnabled(true);
@@ -286,8 +317,8 @@ void KLedgerViewInvestments::createEditWidgets()
   if(!m_editDate) {
     m_editDate = new kMyMoneyDateInput(0, "editDate");
   }
-  if(!m_editQuantity) {
-    m_editQuantity = new kMyMoneyLineEdit(0, "editQuanity", AlignLeft|AlignVCenter);
+  if(!m_editShares) {
+    m_editShares = new kMyMoneyEdit(0, "editShares");
   }
   if(!m_editPPS) {
     m_editPPS = new kMyMoneyEdit(0, "editPPS");
@@ -295,7 +326,12 @@ void KLedgerViewInvestments::createEditWidgets()
   if(!m_editSymbolName) {
     m_editSymbolName = new kMyMoneyLineEdit(0, "editSymbolName", AlignLeft|AlignVCenter);
   }
-
+  if(!m_editTotalAmount) {
+    m_editTotalAmount = new kMyMoneyEdit(0, "editTotalAmount");
+  }
+  if(!m_editFees) {
+    m_editFees = new kMyMoneyEdit(0, "editFees");
+  }
 
   if(!m_editType) {
     m_editType = new kMyMoneyCombo(0, "editType");
@@ -652,4 +688,22 @@ void KLedgerViewInvestments::resizeEvent(QResizeEvent* /* ev */)
     }
   }
   table->setColumnWidth(1, w);
+}
+
+void KLedgerViewInvestments::slotStartEdit()
+{
+
+}
+
+void KLedgerViewInvestments::slotEndEdit()
+{
+  QString name = m_editSymbolName->text();
+  qDebug("Symbol name is %s", name.data());
+  
+  KNewEquityEntryDlg *pDlg = new KNewEquityEntryDlg(this, name.data());
+  pDlg->setSymbolName(name);
+  if(pDlg->exec())
+  {
+  
+  }
 }

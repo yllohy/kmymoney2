@@ -29,8 +29,8 @@
 #include "knewequityentrydecl.h"
 
 /**
-	*
-	* Dialog to allow user to enter all data for a stock or mutual fund investment type.
+  *
+  * Dialog to allow user to enter all data for a stock or mutual fund investment type.
   *
   * @author Kevin Tambascio
   *
@@ -38,17 +38,23 @@
 
 class KNewEquityEntryDlg : public kNewEquityEntryDecl
 {
-	Q_OBJECT
+  Q_OBJECT
 public:
-	KNewEquityEntryDlg(QWidget *parent = NULL, const char *name = NULL);
-	~KNewEquityEntryDlg();
+  KNewEquityEntryDlg(QWidget *parent = NULL, const char *name = NULL);
+  ~KNewEquityEntryDlg();
   /** No descriptions */
   double getStockPrice();
 
+  void setSymbolName(const QString& str);
+  QString symbolName() const  { return m_strSymbolName; }
+  
 protected slots:
   void onOKClicked();
-	void onCancelClicked();	
-	
+  void onCancelClicked(); 
+  
+private:
+  QString m_strSymbolName;
+  
 };
 
 #endif

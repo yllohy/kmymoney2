@@ -77,6 +77,8 @@ protected slots:
   virtual void slotTypeSelected(int type);
   virtual void slotReconciliation(void);
   virtual void slotNew();
+  virtual void slotStartEdit();
+  virtual void slotEndEdit();
 
 protected:
   virtual void createEditWidgets();
@@ -146,9 +148,8 @@ private:
 
   QCString m_action;
 
-  kMyMoneyLineEdit *m_editQuantity;
-	kMyMoneyEdit *m_editPPS;
-	kMyMoneyLineEdit *m_editSymbolName;
+  kMyMoneyEdit *m_editShares, *m_editPPS, *m_editTotalAmount, *m_editFees;
+  kMyMoneyLineEdit *m_editSymbolName;
 /*
   KTextBrowser *textBrowser;
   QGridLayout *mainGrid;
