@@ -120,7 +120,10 @@ void kMyMoneyRegister::readConfig(void)
     m_rpt = 1;
 
   m_showGrid = config->readBoolEntry("ShowGrid", true);
-  m_colorPerTransaction = config->readBoolEntry("ColourPerTransaction", true);
+  // we decided to remove this feature - but I left it in the source for now
+  // also the settings dialog is only commented out.
+  // m_colorPerTransaction = config->readBoolEntry("ColourPerTransaction", true);
+  m_colorPerTransaction = true;
 }
 
 void kMyMoneyRegister::paintCell(QPainter *p, int row, int col, const QRect& r,
