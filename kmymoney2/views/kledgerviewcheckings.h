@@ -60,8 +60,15 @@ public slots:
 
   void slotTypeSelected(int transactionType);
 
+  void slotStartEdit(void);
+  void slotCancelEdit(void);
+  void slotEndEdit(void);
+
 protected:
   void resizeEvent(QResizeEvent*);
+
+  void showWidgets(void);
+  void hideWidgets(void);
 
 private:
   int transactionType(const MyMoneySplit& split) const;

@@ -28,6 +28,8 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 
+#include <kmessagebox.h>
+
 // ----------------------------------------------------------------------------
 // Project Includes
 
@@ -36,6 +38,9 @@
 KLedgerView::KLedgerView(QWidget *parent, const char *name )
   : QWidget(parent,name)
 {
+  m_editPayee = 0;
+  m_register = 0;
+  m_form = 0;
 }
 
 KLedgerView::~KLedgerView()
@@ -147,9 +152,6 @@ void KLedgerView::filterTransactions(void)
   MyMoneyMoney balance(0);
   m_balance.resize(i, balance);
 
-  // always keep one empty transaction at the end
-  // m_transactionPtr.insert(i, &m_newTransaction);
-
   balance = MyMoneyFile::instance()->balance(accountId());
   // the trick is to go backwards ;-)
   while(--i >= 0) {
@@ -186,18 +188,26 @@ const MyMoneyMoney& KLedgerView::balance(const int idx) const
 
 void KLedgerView::slotRegisterClicked(int row, int col, int button, const QPoint &mousePos)
 {
-  m_register->setCurrentTransactionIndex(row / m_register->rpt());
-  m_register->repaintContents();
-  fillForm();
+  // only redraw the register and form, when a different
+  // transaction has been selected with this click.
+  if(m_register->setCurrentTransactionIndex(row / m_register->rpt()) == true) {
+    m_register->repaintContents();
+    fillForm();
+  }
 }
 
 void KLedgerView::slotShowTransactionForm(bool visible)
 {
-  if(m_form != 0)
+  if(m_form != 0) {
     if(visible)
       m_form->show();
     else
       m_form->hide();
+  }
+
+  if(m_register != 0) {
+    m_register->setInlineEditingAvailable(!visible);
+  }
 }
 
 const QCString KLedgerView::str2action(const QString &action) const
@@ -234,3 +244,31 @@ const QString KLedgerView::action2str(const QCString &action) const
   return i18n("Check");
 }
 
+void KLedgerView::slotNewPayee(const QString& payeeName)
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
+  MyMoneyPayee payee;
+
+  // Ask the user if that is what he intended to do?
+  QString msg = i18n("Do you want to add '%1' as payee/receiver ?").arg(payeeName);
+
+  if(KMessageBox::questionYesNo(this, msg, i18n("New payee/receiver")) == KMessageBox::Yes) {
+    // for now, we just add the payee to the pool. In the future,
+    // we could open a dialog and ask for all the other attributes
+    // of the payee.
+    payee.setName(payeeName);
+
+    try {
+      file->addPayee(payee);
+      m_editPayee->loadList();
+
+    } catch(MyMoneyException *e) {
+      KMessageBox::detailedSorry(0, i18n("Unable to add payee/receiver"),
+        e->what());
+      delete e;
+
+      m_editPayee->resetText();
+    }
+  } else
+    m_editPayee->resetText();
+}

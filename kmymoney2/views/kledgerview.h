@@ -41,6 +41,12 @@
 
 #include "../widgets/kmymoneyregister.h"
 #include "../widgets/kmymoneytransactionform.h"
+#include "../widgets/kmymoneypayee.h"
+#include "../widgets/kmymoneycategory.h"
+#include "../widgets/kmymoneyedit.h"
+#include "../widgets/kmymoneylineedit.h"
+#include "../widgets/kmymoneydateinput.h"
+
 #include "../mymoney/mymoneyaccount.h"
 #include "../mymoney/mymoneytransaction.h"
 #include "../mymoney/mymoneyobserver.h"
@@ -121,6 +127,13 @@ public slots:
     */
   void slotShowTransactionForm(bool show);
 
+  /**
+    * Called when a new payee entry has been edited
+    * This routine will call the payee dialog and possibly add
+    * the payee to the MyMoneyFile object
+    */
+  void slotNewPayee(const QString& payee);
+
 protected:
   void loadAccount(void);
   void filterTransactions(void);
@@ -137,7 +150,15 @@ protected:
   QValueVector<MyMoneyMoney> m_balance;
 
   KTransactionPtrVector m_transactionPtr;
-  MyMoneyTransaction m_newTransaction;
+  MyMoneyTransaction *m_transaction;
+  MyMoneySplit m_split;
+
+  kMyMoneyPayee*        m_editPayee;
+  kMyMoneyCategory*     m_editCategory;
+  kMyMoneyLineEdit*     m_editMemo;
+  kMyMoneyEdit*         m_editAmount;
+  kMyMoneyLineEdit*     m_editNr;
+  kMyMoneyDateInput*    m_editDate;
 };
 
 #endif
