@@ -1320,3 +1320,131 @@ void MyMoneyFileTest::testHasAccount() {
 		unexpectedException(e);
 	}
 }
+
+void MyMoneyFileTest::testAddEquityAccount() {
+	MyMoneyAccount i;
+	i.setName("Investment");
+	i.setAccountType(MyMoneyAccount::Investment);
+
+	try {
+		MyMoneyAccount parent = m->asset();
+		observer->reset();
+		hierarchyObserver->reset();
+		m->addAccount(i, parent);
+	} catch(MyMoneyException *e) {
+		unexpectedException(e);
+	}
+
+	// make sure, that only equity accounts can be children to it
+	MyMoneyAccount a;
+	a.setName("Testaccount");
+	QValueList<MyMoneyAccount::accountTypeE> list;
+	list << MyMoneyAccount::Checkings;
+	list << MyMoneyAccount::Savings;
+	list << MyMoneyAccount::Cash;
+	list << MyMoneyAccount::CreditCard;
+	list << MyMoneyAccount::Loan;
+	list << MyMoneyAccount::CertificateDep;
+	list << MyMoneyAccount::Investment;
+	list << MyMoneyAccount::MoneyMarket;
+	list << MyMoneyAccount::Asset;
+	list << MyMoneyAccount::Liability;
+	list << MyMoneyAccount::Currency;
+	list << MyMoneyAccount::Income;
+	list << MyMoneyAccount::Expense;
+	list << MyMoneyAccount::AssetLoan;
+
+	QValueList<MyMoneyAccount::accountTypeE>::Iterator it;
+	for(it = list.begin(); it != list.end(); ++it) {
+		a.setAccountType(*it);
+		try {
+			char	msg[100];
+			observer->reset();
+			hierarchyObserver->reset();
+			m->addAccount(a, i);
+			sprintf(msg, "Can add non-equity type %d to investment", *it);
+			CPPUNIT_FAIL(msg);
+		} catch(MyMoneyException *e) {
+			delete e;
+		}
+	}
+	try {
+		observer->reset();
+		hierarchyObserver->reset();
+		a.setAccountType(MyMoneyAccount::Stock);
+		m->addAccount(a,i);
+	} catch(MyMoneyException *e) {
+		unexpectedException(e);
+	}
+}
+
+void MyMoneyFileTest::testReparentEquity() {
+	testAddEquityAccount();
+	testAddEquityAccount();
+	MyMoneyAccount parent;
+
+	// check the bad cases
+	QValueList<MyMoneyAccount::accountTypeE> list;
+	list << MyMoneyAccount::Checkings;
+	list << MyMoneyAccount::Savings;
+	list << MyMoneyAccount::Cash;
+	list << MyMoneyAccount::CertificateDep;
+	list << MyMoneyAccount::MoneyMarket;
+	list << MyMoneyAccount::Asset;
+	list << MyMoneyAccount::AssetLoan;
+	list << MyMoneyAccount::Currency;
+	parent = m->asset();
+	testReparentEquity(list, parent);
+
+	list.clear();
+	list << MyMoneyAccount::CreditCard;
+	list << MyMoneyAccount::Loan;
+	list << MyMoneyAccount::Liability;
+	parent = m->liability();
+	testReparentEquity(list, parent);
+
+	list.clear();
+	list << MyMoneyAccount::Income;
+	parent = m->income();
+	testReparentEquity(list, parent);
+
+	list.clear();
+	list << MyMoneyAccount::Expense;
+	parent = m->expense();
+	testReparentEquity(list, parent);
+
+	// now check the good case
+	MyMoneyAccount stock = m->account("A000002");
+	MyMoneyAccount inv = m->account("A000003");
+	try {
+		observer->reset();
+		hierarchyObserver->reset();
+		m->reparentAccount(stock, inv);
+	} catch(MyMoneyException *e) {
+		unexpectedException(e);
+	}
+}
+
+void MyMoneyFileTest::testReparentEquity(QValueList<MyMoneyAccount::accountTypeE>& list, MyMoneyAccount& parent)
+{
+	MyMoneyAccount a;
+	a.setName("Testaccount");
+	MyMoneyAccount stock = m->account("A000002");
+
+	QValueList<MyMoneyAccount::accountTypeE>::Iterator it;
+	for(it = list.begin(); it != list.end(); ++it) {
+		a.setAccountType(*it);
+		try {
+			m->addAccount(a, parent);
+			char	msg[100];
+			observer->reset();
+			hierarchyObserver->reset();
+			m->reparentAccount(stock, a);
+			sprintf(msg, "Can reparent stock to non-investment type %d account", *it);
+			CPPUNIT_FAIL(msg);
+		} catch(MyMoneyException *e) {
+			delete e;
+		}
+	}
+}
+

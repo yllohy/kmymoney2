@@ -111,7 +111,8 @@ public:
     Income,               /**< Denotes an income account */
     Expense,              /**< Denotes an expense account */
     AssetLoan,            /**< Denotes a loan (asset of the owner of this object) */
-    
+    Stock,                /**< Denotes an stock account as sub-account for an investment */
+
     /* insert new account types above this line */
     MaxAccountTypes       /**< Denotes the number of different account types */
   }accountTypeE;
@@ -174,7 +175,7 @@ public:
   static const MyMoneyAccount::accountTypeE accountGroup(MyMoneyAccount::accountTypeE type);
 
   const MyMoneyAccount::accountTypeE accountGroup(void) const;
-  
+
   /**
     * This method returns the ID of the account under which it is known
     * inside the MyMoneyFile.
@@ -565,7 +566,7 @@ public:
     paymentDue = 0,
     paymentReceived
   };
-  
+
   MyMoneyAccountLoan() {};
   MyMoneyAccountLoan(const MyMoneyAccount&);
   ~MyMoneyAccountLoan() {};

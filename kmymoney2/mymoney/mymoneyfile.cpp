@@ -258,7 +258,8 @@ void MyMoneyFile::reparentAccount(MyMoneyAccount &account, MyMoneyAccount& paren
 
   if(accountGroup(account.accountType()) == accountGroup(parent.accountType())
   || (account.accountType() == MyMoneyAccount::Income && parent.accountType() == MyMoneyAccount::Expense)
-  || (account.accountType() == MyMoneyAccount::Expense && parent.accountType() == MyMoneyAccount::Income)) {
+  || (account.accountType() == MyMoneyAccount::Expense && parent.accountType() == MyMoneyAccount::Income)
+  || (account.accountType() == MyMoneyAccount::Stock && parent.accountType() == MyMoneyAccount::Investment)) {
     // automatically notify all observers once this routine is done
     MyMoneyNotifier notifier(this);
 
@@ -463,6 +464,20 @@ void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
   // a tight coupling between e.g. checking accounts and the
   // class asset. It certainly does not make sense to create an
   // expense account under an income account. Maybe it does, I don't know.
+
+  // We enforce, that a stock account can never be a parent and
+  // that the parent for a stock account must be an investment. Also,
+  // an investment cannot have another investment account as it's parent
+  if(parent.accountType() == MyMoneyAccount::Stock)
+    throw new MYMONEYEXCEPTION("Stock account cannot be parent account");
+
+  if(account.accountType() == MyMoneyAccount::Stock
+  && parent.accountType() != MyMoneyAccount::Investment)
+    throw new MYMONEYEXCEPTION("Stock account must have investment account as parent ");
+
+  if(account.accountType() != MyMoneyAccount::Stock
+  && parent.accountType() == MyMoneyAccount::Investment)
+    throw new MYMONEYEXCEPTION("Investment account can only have stock accounts as children");
 
   // automatically notify all observers once this routine is done
   MyMoneyNotifier notifier(this);
