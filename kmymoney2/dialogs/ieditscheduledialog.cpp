@@ -323,6 +323,13 @@ void KEditScheduleDialog::okClicked()
     return;
   }
 
+  if (m_qcheckboxEnd->isChecked() && !m_kdateinputFinal->getQDate().isValid())
+  {
+    KMessageBox::information(this, i18n("Please fill in ending date"));
+    m_kdateinputFinal->setFocus();
+    return;
+  }
+  
   if (m_actionType == MyMoneySplit::ActionTransfer)
   {
     if (m_accountCombo->currentText() == m_kcomboTo->currentText())
@@ -405,7 +412,13 @@ void KEditScheduleDialog::okClicked()
     }
 
     m_schedule.setStartDate(m_kdateinputDue->getQDate());
-    m_schedule.setLastPayment(m_kdateinputDue->getQDate());
+    
+    // Michael, if I enter a new schedule, that does not mean
+    // that it ever was executed, right? That's why I commented
+    // the next line. If you agree, please remove this whole thing.
+    // I think, the lastpayment attribute should only be modified,
+    // if the scheduled transaction has been entered (auto or not).
+    // m_schedule.setLastPayment(m_kdateinputDue->getQDate());
 
     m_schedule.setAutoEnter(m_qcheckboxAuto->isChecked());
 
@@ -422,7 +435,7 @@ void KEditScheduleDialog::okClicked()
     {
       MyMoneyPayee payee(m_kcomboPayTo->text());
       file->addPayee(payee);
-      payeeId = file->payeeByName(m_kcomboPayTo->text()).id();
+      payeeId = payee.id();
       delete e;
     }
 
@@ -483,13 +496,13 @@ void KEditScheduleDialog::okClicked()
 
     m_schedule.setTransaction(m_transaction);
 
-    m_schedule.setWillEnd(m_qcheckboxEnd->isChecked());
-
-    if (m_schedule.willEnd())
-    {
+    if (!m_qcheckboxEnd->isChecked())
+      m_schedule.setEndDate(QDate());
+    else 
       m_schedule.setEndDate(m_kdateinputFinal->getQDate());
-    }
+      
     m_schedule.setName(m_scheduleName->text());
+    
   } catch (MyMoneyException *e)
   {
     KMessageBox::detailedError(this, i18n("Unable to add transfer"), e->what());
@@ -503,9 +516,9 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
 {
   try
   {
-    m_accountCombo->setCurrentText(MyMoneyFile::instance()->account(m_schedule.accountId()).name());
+    m_accountCombo->setCurrentText(m_schedule.account().name());
     if (m_actionType == MyMoneySplit::ActionTransfer)
-      m_kcomboTo->setCurrentText(MyMoneyFile::instance()->account(m_schedule.transferAccountId()).name());
+      m_kcomboTo->setCurrentText(m_schedule.transferAccount().name());
     m_kcomboPayTo->loadText(MyMoneyFile::instance()->payee(m_schedule.transaction().split(m_accountCombo->currentAccountId()).payeeId()).name());
     m_kdateinputDue->setDate(m_schedule.startDate());
 
@@ -633,7 +646,6 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
 void KEditScheduleDialog::slotRemainingChanged(const QString& text)
 {
   // Make sure the required fields are set
-  m_schedule.setWillEnd(true);
   m_schedule.setStartDate(m_kdateinputDue->getQDate());
   m_schedule.setLastPayment(m_kdateinputDue->getQDate());
   m_schedule.setOccurence(comboToOccurence());
@@ -647,7 +659,6 @@ void KEditScheduleDialog::slotRemainingChanged(const QString& text)
 void KEditScheduleDialog::slotEndDateChanged(const QDate& date)
 {
   // Make sure the required fields are set
-  m_schedule.setWillEnd(true);
   m_schedule.setStartDate(m_kdateinputDue->getQDate());
   m_schedule.setLastPayment(m_kdateinputDue->getQDate());
   m_schedule.setOccurence(comboToOccurence());
