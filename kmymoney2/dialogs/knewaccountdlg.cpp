@@ -218,6 +218,9 @@ KNewAccountDlg::KNewAccountDlg(MyMoneyAccount& account, bool isEditing, bool cat
     this, SLOT(slotSelectionChanged(QListViewItem*)));
   connect(m_qbuttonNew, SIGNAL(clicked()), this, SLOT(slotNewClicked()));
 
+  // make sure our account does not have an id
+  m_account.setAccountId("");
+  
   // using a timeout is the only way, I got the 'ensureItemVisible'
   // working when creating the dialog. I assume, this
   // has something to do with the delayed update of the display somehow.
