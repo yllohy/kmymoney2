@@ -1,3 +1,13 @@
+2003-02-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added some methods to KNewAccountWizard to be capable to preset values
+  * Added opening date to account wizard
+  * Added method to set account type to new account wizard
+  * Added KMyMoneyUtils as container for utility functions requiring KDE
+  * Moved accountTypeToString and stringToAccountType to KMyMoneyUtils
+  * Removed some warnings
+  * Added some more values to the data dumper
+  * Added more teststeps to MyMoneySeqAccessMgrTest
+
 2003-01-30 Michael Edwardes <mte@users.sourceforge.net>
   * More work on the scheduled view and dialogs.
   * Fixed combo box selection bug in okClicked for all dialogs.
