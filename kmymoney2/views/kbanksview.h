@@ -89,25 +89,54 @@ protected:
 protected slots:
   
   /**
-  * This slot receives the signal from the listview control that an item was double-clicked,
-  * if this item was a bank account, try to show the list of transactions for that bank.
-  */
+    * This slot receives the signal from the listview control that an item was double-clicked,
+    * if this item was a bank account, try to show the list of transactions for that account.
+    */
   void slotListDoubleClicked(QListViewItem* pItem, const QPoint& pos, int c);
 
   /**
-  * This slot receives the signal from the listview control that an item was right-clicked,
-  * Pass this signal along to the main view to display the RMB menu.
-  */
+    * This slot receives the signal from the iconview control that an item was double-clicked,
+    * if this item was a bank account, try to show the list of transactions for that account.
+    */
+  void slotIconDoubleClicked(QIconViewItem* pItem);
+
+  /**
+    * This slot receives the signal from the listview control that an item was right-clicked,
+    * Pass this signal along to the main view to display the RMB menu.
+    */
   void slotListRightMouse(QListViewItem* item, const QPoint& point, int);
+
+  /**
+    * This slot receives the signal from the iconview control that an item was right-clicked,
+    * Pass this signal along to the main view to display the RMB menu.
+    */
+  void slotIconRightMouse(QIconViewItem* item, const QPoint& point);
 
   void slotSelectionChanged(QListViewItem *item);
 
+private:
+  /**
+    * This method returns an icon according to the account type
+    * passed in the argument @p type.
+    *
+    * @param type account type as defined in MyMoneyAccount::accountTypeE
+    */
+  const QPixmap accountImage(const MyMoneyAccount::accountTypeE type) const;
+
 signals:
-  void accountRightMouseClick();
+  /**
+    * This signal will be emitted when the left mouse button is double
+    * clicked on an asset or liability account. It is not emitted for
+    * expense, income and any of the standard accounts.
+    */
   void accountDoubleClick();
-  //void accountSelected();
+
   void signalViewActivated();
+
+  void accountRightMouseClick();
+
   void bankRightMouseClick();
+
   void rightMouseClick();
 
 };
