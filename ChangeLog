@@ -1,3 +1,9 @@
+2003-09-18 Michael Edwardes <mte@users.sourceforge.net>
+  * MyMoneySchedule::isFinished() now works for occurences of 'Once'.
+  * Added 'Todays payments' to the home view to make it easier to spot them.
+  * If the schedule has finished use the word Finished instead of the next payment
+    date in the schedule list view.
+  
 2003-09-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * added new fr.po supplied by Laurent
   * fixed loading new account wizard widgets after loading of file
