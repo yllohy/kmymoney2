@@ -93,6 +93,9 @@ private:
   /** No descriptions */
   void hideWidgets();
 
+  /** Need descriptions !*/
+  MyMoneyBank *getBank(void);
+
 public:
 	KTransactionView(QWidget *parent=0, const char *name=0);
 	~KTransactionView();
@@ -116,6 +119,7 @@ protected slots:
 	void slotPayeeCompleted();
 	void slotMethodCompleted();
   void viewTypeActivated(int num);
+  void slotCategoryActivated(int pos);
 
 signals:
  void transactionListChanged();

@@ -36,6 +36,8 @@ KCategoriesDlg::KCategoriesDlg(MyMoneyFile *file, QWidget *parent, const char *n
 	categoryListView->header()->setResizeEnabled(false);
 	
   readConfig();
+
+  categoryListView->setSorting(-1);
   refresh();
 
 	connect(categoryListView, SIGNAL(selectionChanged(QListViewItem*)),

@@ -395,81 +395,65 @@ void MyMoneyFile::addMajorCategory(const bool income, const QString& val)
   if (val.isEmpty() || val == QString::null)
     return;
 
-  MyMoneyCategory *tst;
-  for (tst=m_categoryList.first(); tst!=0; tst=m_categoryList.next()) {
-    if (tst->name() == val) { // Already in, return true
-      if (tst->isIncome() != income)
-        tst->setIncome(income);
-      return;
-    }
-  }
-
-  MyMoneyCategory *data = new MyMoneyCategory(income, val);
-  int i = 0;
-  for (data=m_categoryList.first(); data!=0; data=m_categoryList.next(),i++) {
-    if (data->name() >= val) {
-			m_categoryList.insert(i,data);
-      return;
-    }
-  }
-  m_categoryList.append(data);
-  m_dirty=true;
+  QStringList list;
+  addCategory(income, val, list);
 }
 
+/**
+  * This is the real workhorse of the add cateogry stuff.  Everthing else
+  * just calls it.
+*/
 void MyMoneyFile::addMinorCategory(const bool income, const QString& major, const QString& minor)
 {
-  if (major.isEmpty() || minor.isEmpty())
+  if (major.isEmpty())
     return;
 
-  MyMoneyCategory *data;
-  for (data=m_categoryList.first(); data!=0; data=m_categoryList.next()) {
-    if (data->name() == major) {
-      data->addMinorCategory(minor);
-      if (data->isIncome() != income)
-        data->setIncome(income);
-      m_dirty=true;
-      return;
-    }
-  }
-
-  MyMoneyCategory *newData = new MyMoneyCategory(income, major, minor);
-  int i = 0;
-  for (data=m_categoryList.first(); data!=0; data=m_categoryList.next(),i++) {
-    if (data->name() >= major) {
-			m_categoryList.insert(i,newData);
-      return;
-    }
-  }
-  m_categoryList.append(newData);
-  m_dirty=true;
+  QStringList list;
+  list.append(minor);
+  addCategory(income, major, list);
 }
 
 void MyMoneyFile::addCategory(const bool income, const QString& major, QStringList& minors)
 {
-  if (major.isEmpty() || major == QString::null)
-    return;
-
   MyMoneyCategory *data;
   for (data=m_categoryList.first(); data!=0; data=m_categoryList.next()) {
     if (data->name() == major) {
-      data->setMinorCategories(minors);
-      m_dirty=true;
+      data->addMinorCategory(minors);
       if (data->isIncome() != income)
         data->setIncome(income);
+      m_dirty=true;
       return;
     }
   }
 
   MyMoneyCategory *newData = new MyMoneyCategory(income, major, minors);
   int i = 0;
-  for (data=m_categoryList.first(); data!=0; data=m_categoryList.next(),i++) {
-    if (data->name() >= major) {
-			m_categoryList.insert(i,newData);
-			return;
+
+  // Go through the income first
+  if (income == true) {
+    for (i=0, data=m_categoryList.first(); data!=0; data=m_categoryList.next(),i++) {
+      if (data->name() >= major && data->isIncome()==income) {
+        m_categoryList.insert(i, newData);
+        m_dirty = true;
+        return;
+      }
     }
+    m_categoryList.insert(i, newData);
+    m_dirty=true;
   }
-  m_categoryList.append(newData);
-  m_dirty=true;
+
+  // then expense
+  else if (income == false) {
+    for (i=0, data=m_categoryList.first(); data!=0; data=m_categoryList.next(),i++) {
+      if (data->name() >= major && data->isIncome()==income) {
+        m_categoryList.insert(i, newData);
+        m_dirty = true;
+        return;
+      }
+    }
+    m_categoryList.insert(i, newData);
+    m_dirty=true;
+  }
 }
 
 void MyMoneyFile::addCategory(const bool income, const QString& major, const QString& minor)
@@ -477,7 +461,9 @@ void MyMoneyFile::addCategory(const bool income, const QString& major, const QSt
   if (major.isEmpty() || minor.isEmpty())
     return;
 
-  addMinorCategory(income, major, minor);
+  QStringList list;
+  list.append(minor);
+  addCategory(income, major, list);
 }
 
 QListIterator<MyMoneyCategory> MyMoneyFile::categoryIterator(void)
@@ -687,4 +673,9 @@ void MyMoneyFile::removePayee(const QString name)
       m_dirty=true;
     }
   }
+}
+
+int MyMoneyFile::categoryCount(void)
+{
+  return m_categoryList.count();
 }

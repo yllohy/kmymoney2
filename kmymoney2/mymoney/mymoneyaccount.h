@@ -42,7 +42,7 @@ class MyMoneyBank;
   * @see MyMoneyTransaction
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: mymoneyaccount.h,v 1.16 2001/08/23 17:07:16 mte Exp $
+  * $Id: mymoneyaccount.h,v 1.17 2001/08/29 22:57:16 mte Exp $
   *
   * @short Representation of an account which holds transactions.
 **/
@@ -320,7 +320,7 @@ public:
     *
     * @return The total number of transactions between the two dates.
   **/
-  unsigned int MyMoneyAccount::transactionCount(const QDate start, const QDate end);
+  unsigned int transactionCount(const QDate start, const QDate end);
 
   /**
     * Removes a specific transaction from the list.

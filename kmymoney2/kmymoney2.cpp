@@ -258,7 +258,7 @@ bool KMyMoney2App::queryClose()
     if (ans==KMessageBox::Cancel)
       return false;
     else if (ans==KMessageBox::Yes)
-      myMoneyView->saveFile(fileName);
+      slotFileSave();
   }
   return true;
 }

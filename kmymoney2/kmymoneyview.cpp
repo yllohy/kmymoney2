@@ -825,7 +825,6 @@ void KMyMoneyView::viewBankList(void)
 
   m_mainView->refreshBankView(m_file);
   m_mainView->viewBankList();
-  qDebug("viewBankList called in kmymoneyview");
   emit bankOperations(true);
 }
 

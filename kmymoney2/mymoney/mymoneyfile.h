@@ -38,7 +38,7 @@
   * @see MyMoneyBank
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: mymoneyfile.h,v 1.7 2001/07/08 17:45:02 mte Exp $
+  * $Id: mymoneyfile.h,v 1.8 2001/08/29 22:57:16 mte Exp $
   *
   * @short A representation of the file format used by KMyMoney2.
 **/
@@ -261,6 +261,8 @@ public:
   // Copy constructors
   MyMoneyFile(const MyMoneyFile&);
   MyMoneyFile& operator = (const MyMoneyFile&);
+
+  int categoryCount(void);
 };
 
 #endif

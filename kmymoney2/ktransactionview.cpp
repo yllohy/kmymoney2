@@ -198,7 +198,7 @@ void KTransactionView::createInputWidgets()
     m_withdrawal = new kMyMoneyEdit(0);
     m_number = new kMyMoneyLineEdit(0);
     m_hlayout = new kMyMoneyHLayout(0);
-    m_category = new kMyMoneyCombo(0);
+    m_category = new kMyMoneyCombo(false, 0);
     m_memo = new kMyMoneyLineEdit(0);
     m_hlayout->addWidget(m_category);
     m_hlayout->addWidget(m_memo);
@@ -259,7 +259,8 @@ void KTransactionView::createInputWidgets()
 	connect(m_cancel, SIGNAL(clicked()),this,SLOT(cancelClicked()));
 	connect(m_enter, SIGNAL(clicked()),this,SLOT(enterClicked()));
 	connect(m_delete, SIGNAL(clicked()),this,SLOT(deleteClicked()));
-
+	
+	connect(m_category, SIGNAL(activated(int)), this, SLOT(slotCategoryActivated(int)));
 }
 
 void KTransactionView::loadPayees()
@@ -585,6 +586,16 @@ void KTransactionView::enterClicked()
 
   QDate newdate = m_date->getQDate();
 	QString newcategory = m_category->currentText();
+
+  if ( newcategory == i18n("--- Income ---") ||
+      newcategory == i18n("--- Expense ---") ||
+      newcategory == i18n("--- Special ---") ) {
+    KMessageBox::error(this, i18n("Please do not choose the type options (--- ??? ---)\nCancelling "
+      "transaction update."));
+    m_category->setFocus(); // Don't think this will work anyway
+    return;
+  }
+
 //  int commaindex;
  	MyMoneyMoney newamount;
 
@@ -648,6 +659,7 @@ void KTransactionView::enterClicked()
 	}
     // Add payee to Payee List
 	m_filePointer->addPayee(m_payee->currentText());
+	
  	int colonindex = m_category->currentText().find(":");
  	QString catmajor;
 	QString catminor;
@@ -861,31 +873,117 @@ void KTransactionView::setInputData(const MyMoneyTransaction transaction)
 void KTransactionView::updateInputLists(void)
 {
   QStringList categoryList;
+  QStringList qstringlistIncome;
+  QStringList qstringlistExpense;
+  QStringList qstringlistAccount;
+  bool bDoneInsert = false;
+
   QString theText;
   if (m_filePointer) {
     QListIterator<MyMoneyCategory> categoryIterator = m_filePointer->categoryIterator();
     for ( ; categoryIterator.current(); ++categoryIterator) {
       MyMoneyCategory *category = categoryIterator.current();
+
       theText = category->name();
-      categoryList.append(theText);
+
+      if (category->isIncome()) {
+        // Add it alpabetically
+        if (qstringlistIncome.count()<=0)
+          qstringlistIncome.append(theText);
+        else {
+          for (QStringList::Iterator it3 = qstringlistIncome.begin(); it3 != qstringlistIncome.end(); ++it3 ) {
+            if ((*it3) >= theText && !bDoneInsert) {
+              qstringlistIncome.insert(it3, theText);
+              bDoneInsert = true;
+            }
+          }
+          if (!bDoneInsert)
+            qstringlistIncome.append(theText);
+        }
+      } else { // is expense
+        // Add it alpabetically
+        if (qstringlistExpense.count()<=0)
+          qstringlistExpense.append(theText);
+        else {
+          for (QStringList::Iterator it4 = qstringlistExpense.begin(); it4 != qstringlistExpense.end(); ++it4 ) {
+            if ((*it4) >= theText && !bDoneInsert) {
+              qstringlistExpense.insert(it4, theText);
+              bDoneInsert = true;
+            }
+          }
+          if (!bDoneInsert)
+            qstringlistExpense.append(theText);
+        }
+      }
+
+      // Now add all the minor categories
       for ( QStringList::Iterator it = category->minorCategories().begin(); it != category->minorCategories().end(); ++it ) {
         theText = category->name();
 				theText += ":";
 				theText += (*it);
-        categoryList.append(theText);
-      }
+				
+				bDoneInsert = false;
+				
+        if (category->isIncome()) {
+          // Add it alpabetically
+          if (qstringlistIncome.count()<=0)
+            qstringlistIncome.append(theText);
+          else {
+            for (QStringList::Iterator it3 = qstringlistIncome.begin(); it3 != qstringlistIncome.end(); ++it3 ) {
+              if ((*it3) >= theText && !bDoneInsert) {
+                qstringlistIncome.insert(it3, theText);
+                bDoneInsert = true;
+              }
+            }
+            if (!bDoneInsert)
+              qstringlistIncome.append(theText);
+          }
+        } else { // is expense
+          // Add it alpabetically
+          if (qstringlistExpense.count()<=0)
+            qstringlistExpense.append(theText);
+          else {
+            for (QStringList::Iterator it4 = qstringlistExpense.begin(); it4 != qstringlistExpense.end(); ++it4 ) {
+              if ((*it4) >= theText && !bDoneInsert) {
+                qstringlistExpense.insert(it4, theText);
+                bDoneInsert = true;
+              }
+            }
+            if (!bDoneInsert)
+              qstringlistExpense.append(theText);
+          }
+        }
+      }  // End minor iterator
     }
-    MyMoneyAccount *currentAccount;
-    for(currentAccount = m_bankIndex.accountFirst(); currentAccount != 0; currentAccount = m_bankIndex.accountNext())
-    {
-     	theText = "<";
+
+    MyMoneyBank *mymoneybank = getBank();
+
+    if (mymoneybank) {
+      MyMoneyAccount *currentAccount;
+
+      for(currentAccount = mymoneybank->accountFirst(); currentAccount != 0; currentAccount = mymoneybank->accountNext())
+      {
+       	theText = "<";
         theText = theText + currentAccount->name();
         theText = theText + ">";
-			categoryList.append(theText);
-		}
+			  qstringlistAccount.append(theText);
+  		}
+    }
   }
+
 	m_category->clear();
+	
+	qstringlistIncome.prepend(i18n("--- Income ---"));
+	categoryList = qstringlistIncome;
+	
+	qstringlistExpense.prepend(i18n("--- Expense ---"));
+	categoryList += qstringlistExpense;
+	
+	qstringlistAccount.prepend(i18n("--- Special ---"));
+	categoryList += qstringlistAccount;
+
   m_category->insertStringList(categoryList);
+
   loadPayees();
 }
 
@@ -1172,6 +1270,7 @@ MyMoneyAccount* KTransactionView::getAccount(){
 	return account;
 
 }
+
 /** No descriptions */
 void KTransactionView::slotNextTransaction(){
 
@@ -1229,4 +1328,31 @@ void KTransactionView::hideWidgets(){
     m_delete->hide();
 
 
+}
+
+/**
+  * Damned ugly code and i hope to put this sort of validation somewhere
+  * else, maybe in a specialised kmymoneycategorycombo type class.
+*/
+void KTransactionView::slotCategoryActivated(int pos)
+{
+  QString qstringText = m_category->text(pos);
+  if ( qstringText == i18n("--- Income ---") ||
+      qstringText == i18n("--- Expense ---") ||
+      qstringText == i18n("--- Special ---") ) {
+    KMessageBox::error(this, i18n("Please do not choose the type options (--- ??? ---)"));
+    m_category->setFocus(); // Don't think this will work anyway
+  }
+}
+
+/** gets a pointer to the current Account */
+MyMoneyBank* KTransactionView::getBank(void){
+
+  MyMoneyBank *bank;
+
+  bank = m_filePointer->bank(m_bankIndex);
+  if (!bank)
+    qDebug("unable to find bank in updateData");
+
+  return bank;
 }

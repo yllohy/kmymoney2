@@ -1,3 +1,9 @@
+2001-08-29 Michael Edwardes <mte@users.sourceforge.net>
+  * Made the category list be alphabetical in the two different groups.
+  * KTransactionView now loads an alphabetical category list.
+  * Removed an unnecessary class. (KTransactionTableItem).
+  * Fixed error in file modification logic error in app class.
+
 2001-08-27 Michael Edwardes <mte@users.sourceforge.net>
   * Added some better default categories and slightly improved reading process
     to deal with empty minor category lists.

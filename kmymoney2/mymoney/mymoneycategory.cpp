@@ -69,10 +69,11 @@ bool MyMoneyCategory::renameMinorCategory(const QString oldVal, const QString ne
   if (oldVal.isEmpty() || oldVal.isNull() || newVal.isEmpty() || newVal.isNull())
     return false;
 
-  if (m_minorCategories.find(oldVal) != m_minorCategories.end()) {
+  if (m_minorCategories.find(oldVal) != m_minorCategories.end() &&
+    m_minorCategories.find(newVal) == m_minorCategories.end() ) {
+
     m_minorCategories.remove(oldVal);
-    m_minorCategories.append(newVal);
-    return true;
+    return addMinorCategory(newVal);
   }
 
   return false;
@@ -81,14 +82,10 @@ bool MyMoneyCategory::renameMinorCategory(const QString oldVal, const QString ne
 bool MyMoneyCategory::addMinorCategory(QStringList values)
 {
   for (QStringList::Iterator it = values.begin(); it!=values.end(); ++it) {
-    if (m_minorCategories.find(*it) == m_minorCategories.end())
-      if (!(*it).isEmpty() && !(*it).isNull()) {
-        m_minorCategories.append(*it);
-        return true;
-      } else
-        return false;
+    addMinorCategory(*it);
   }
-  return false;
+
+  return true;
 }
 
 bool MyMoneyCategory::setMinorCategories(QStringList values)
