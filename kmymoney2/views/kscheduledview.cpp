@@ -219,6 +219,7 @@ void KScheduledView::refresh(bool full, const QCString schedId)
     if (openItem)
     {
       m_qlistviewScheduled->ensureItemVisible(openItem);
+      m_qlistviewScheduled->setSelected(openItem, true);
     }
   } catch (MyMoneyException *e)
   {
@@ -227,7 +228,7 @@ void KScheduledView::refresh(bool full, const QCString schedId)
   }
 }
 
-void KScheduledView::refreshView(void)
+void KScheduledView::slotReloadView(void)
 {
   m_qbuttonNew->setEnabled(true);
   m_tabWidget->setEnabled(true);
@@ -248,7 +249,7 @@ void KScheduledView::refreshView(void)
 
 void KScheduledView::show()
 {
-  refreshView();
+  slotReloadView();
   
   emit signalViewActivated();
 }
@@ -598,4 +599,8 @@ void KScheduledView::slotListViewCollapsed(QListViewItem* item)
     else if (scheduleItem->text(0) == i18n("Transfers"))
       m_openTransfers = false;
   }
+}
+void KScheduledView::slotSelectSchedule(const QCString& schedule)
+{
+  refresh(true, schedule);
 }
