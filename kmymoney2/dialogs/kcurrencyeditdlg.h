@@ -36,7 +36,7 @@ class KPopupMenu;
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "kcurrencyeditdlgdecl.h"
+#include "../dialogs/kcurrencyeditdlgdecl.h"
 #include "../mymoney/mymoneysecurity.h"
 
 /**

@@ -40,7 +40,7 @@
 class KOnlineQuoteConfigurationDlg : public kOnlineQuoteConfigurationDecl
 {
   Q_OBJECT
-public: 
+public:
   KOnlineQuoteConfigurationDlg(QWidget *parent);
   ~KOnlineQuoteConfigurationDlg();
 

@@ -35,7 +35,7 @@
 // ----------------------------------------------------------------------------
 // Project Headers
 
-#include "kimportdlgdecl.h"
+#include "../dialogs/kimportdlgdecl.h"
 
 /**
   * This class is used to import a qif file to an account.

@@ -28,7 +28,7 @@
 
 // ----------------------------------------------------------------------------
 // Project Includes
-#include "kgncimportoptionsdlgdecl.h"
+#include "../dialogs/kgncimportoptionsdlgdecl.h"
 
 class KGncImportOptionsDlg : public KGncImportOptionsDlgDecl
 {

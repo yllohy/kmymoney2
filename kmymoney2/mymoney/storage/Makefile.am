@@ -1,6 +1,6 @@
 KDE_OPTIONS = noautodist
 
-INCLUDES = $(all_includes)
+INCLUDES = $(all_includes) -I$(top_srcdir) -I. -I$(top_builddir)/kmymoney2/dialogs
 
 noinst_LIBRARIES = libstorage.a
 libstorage_a_METASOURCES = AUTO

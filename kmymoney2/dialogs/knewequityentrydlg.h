@@ -26,7 +26,7 @@
 #include <qdialog.h>
 #include <klocale.h>
 
-#include "knewequityentrydecl.h"
+#include "../dialogs/knewequityentrydecl.h"
 
 /**
   *

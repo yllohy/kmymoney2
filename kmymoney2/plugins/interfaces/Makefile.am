@@ -1,7 +1,7 @@
 KDE_OPTIONS = noautodist
 
 METASOURCES = AUTO
-INCLUDES = -I$(top_srcdir)/src $(all_includes)
+INCLUDES = $(all_includes)  -I$(top_srcdir) -I.
 SUBDIRS = 
 
 noinst_LIBRARIES = libinterfaces.a

@@ -20,6 +20,9 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef KMYMONEYPRICEDLG_H
+#define KMYMONEYPRICEDLG_H
+
 // ----------------------------------------------------------------------------
 // QT Includes
 
@@ -32,7 +35,7 @@ class QListViewItem;
 // Project Includes
 
 #include "kmymoneypricedlgdecl.h"
-#include "../mymoney/mymoneyprice.h"
+#include "kmymoney/mymoneyprice.h"
 
 class KMyMoneyPriceDlg : public KMyMoneyPriceDlgDecl
 {
@@ -51,3 +54,5 @@ protected:
 private:
   QListViewItem*    m_currentItem;
 };
+
+#endif // KMYMONEYPRICEDLG_H

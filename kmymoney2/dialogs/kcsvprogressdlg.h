@@ -30,7 +30,7 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 #include "../mymoney/mymoneyaccount.h"
-#include "kcsvprogressdlgdecl.h"
+#include "../dialogs/kcsvprogressdlgdecl.h"
 
 /**
   * This class is used to show the progress of an import or export of type
@@ -38,7 +38,7 @@
   * types which would reimplement performImport/performExport.
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: kcsvprogressdlg.h,v 1.4 2003/08/06 18:42:25 ipwizard Exp $
+  * $Id: kcsvprogressdlg.h,v 1.5 2005/03/23 20:42:31 ipwizard Exp $
   *
   * @short A class to show the progress of a CSV import or export.
 **/

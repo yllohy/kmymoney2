@@ -43,7 +43,7 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "kupdatestockpricedlgdecl.h"
+#include "../dialogs/kupdatestockpricedlgdecl.h"
 
 #include "../mymoney/mymoneyprice.h"
 #include "../widgets/kmymoneydateinput.h"

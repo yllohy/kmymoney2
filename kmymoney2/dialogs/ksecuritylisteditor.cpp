@@ -197,3 +197,17 @@ void KSecurityListEditor::slotDeleteSecurity(void)
     }
   }
 }
+
+// Make sure, that these definitions are only used within this file
+// this does not seem to be necessary, but when building RPMs the
+// build option 'final' is used and all CPP files are concatenated.
+// So it could well be, that in another CPP file these definitions
+// are also used.
+#undef ID_COL
+#undef TYPE_COL
+#undef NAME_COL
+#undef SYMBOL_COL
+#undef MARKET_COL
+#undef CURR_COL
+#undef ACCFRACT_COL
+#undef CASHFRACT_COL

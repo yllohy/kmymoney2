@@ -31,7 +31,7 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "keditschedtransdlgdecl.h"
+#include "../dialogs/keditschedtransdlgdecl.h"
 #include "../mymoney/mymoneyfile.h"
 #include "../mymoney/mymoneyscheduled.h"
 

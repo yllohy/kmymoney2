@@ -1,6 +1,6 @@
 KDE_OPTIONS = noautodist
 
-INCLUDES = $(all_includes) -I..
+INCLUDES = -I$(top_srcdir) $(all_includes) 
 
 noinst_LIBRARIES = libviews.a
 libviews_a_METASOURCES = AUTO

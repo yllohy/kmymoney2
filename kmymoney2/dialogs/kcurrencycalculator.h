@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "kcurrencycalculatordecl.h"
+#include "../dialogs/kcurrencycalculatordecl.h"
 #include "../mymoney/mymoneyfile.h"
 
 /**

@@ -31,7 +31,7 @@
 #include "../mymoney/mymoneyaccount.h"
 #include "../mymoney/mymoneymoney.h"
 
-#include "knewaccountdlgdecl.h"
+#include "../dialogs/knewaccountdlgdecl.h"
 #include "../views/kbanklistitem.h"
 
 /**

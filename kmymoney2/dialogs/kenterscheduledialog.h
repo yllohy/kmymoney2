@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "kenterscheduledialogdecl.h"
+#include "../dialogs/kenterscheduledialogdecl.h"
 #include "../mymoney/mymoneyscheduled.h"
 
 

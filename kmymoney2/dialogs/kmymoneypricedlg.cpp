@@ -80,7 +80,7 @@ KMyMoneyPriceDlg::KMyMoneyPriceDlg(QWidget* parent, const char *name) :
   connect(m_editButton, SIGNAL(clicked()), m_priceList, SLOT(slotEditPrice()));
   connect(m_deleteButton, SIGNAL(clicked()), m_priceList, SLOT(slotDeletePrice()));
   connect(m_newButton, SIGNAL(clicked()), m_priceList, SLOT(slotNewPrice()));
-  connect(m_priceList, SIGNAL(selectionChanged(QListViewItem*)), this, SLOT(slotSelectPrice(QListViewItem*)));  
+  connect(m_priceList, SIGNAL(selectionChanged(QListViewItem*)), this, SLOT(slotSelectPrice(QListViewItem*)));
   connect(m_onlineQuoteButton, SIGNAL(clicked()), this, SLOT(slotEquityPriceUpdate()));
 
   connect(m_showAllPrices, SIGNAL(toggled(bool)), m_priceList, SLOT(slotShowAllPrices(bool)));
@@ -119,3 +119,15 @@ void KEditEquityEntryDlg_useless(void)
 {
   delete new KUpdateStockPriceDlg();
 }
+
+// Make sure, that these definitions are only used within this file
+// this does not seem to be necessary, but when building RPMs the
+// build option 'final' is used and all CPP files are concatenated.
+// So it could well be, that in another CPP file these definitions
+// are also used.
+#undef COMMODITY_COL
+#undef CURRENCY_COL
+#undef DATE_COL
+#undef PRICE_COL
+#undef SOURCE_COL
+

@@ -38,7 +38,7 @@
 #include "../widgets/kmymoneyedit.h"
 #include "../mymoney/mymoneyaccount.h"
 #include "../widgets/kmymoneydateinput.h"
-#include "kendingbalancedlgdecl.h"
+#include "../dialogs/kendingbalancedlgdecl.h"
 
 /**
   * This dialog is wizard based and used to enter additional

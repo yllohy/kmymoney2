@@ -37,7 +37,7 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "keditequityentrydecl.h"
+#include "../dialogs/keditequityentrydecl.h"
 #include "../mymoney/mymoneysecurity.h"
 
 /**

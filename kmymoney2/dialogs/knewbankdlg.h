@@ -23,7 +23,7 @@
 #include "../mymoney/mymoneyinstitution.h"
 #include "../mymoney/mymoneykeyvaluecontainer.h"
 
-#include "knewbankdlgdecl.h"
+#include "../dialogs/knewbankdlgdecl.h"
 
 // This dialog lets the user create or edit
 // a bank.

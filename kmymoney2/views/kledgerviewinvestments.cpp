@@ -169,7 +169,7 @@ void KLedgerViewInvestments::createContextMenu(void)
 #if 0
   // and now the specific entries for checkings/savings etc.
   KIconLoader *kiconloader = KGlobal::iconLoader();
-  
+
   m_contextMenu->insertItem(i18n("Edit splits ..."), this, SLOT(slotStartEditSplit()),
       QKeySequence(), -1, 2);
   m_contextMenu->insertItem(kiconloader->loadIcon("goto", KIcon::Small),
@@ -376,7 +376,7 @@ void KLedgerViewInvestments::fillForm()
         formTable->setItem(QUANTITY_ROW, QUANTITY_DATA_COL, item);
 
         break;
-        
+
       case UnknownTransactionType:
         qWarning("%s","Unknown transaction type!");
         break;
@@ -454,7 +454,7 @@ void KLedgerViewInvestments::fillFormStatics(void)
     case RemoveShares:
       formTable->setText(QUANTITY_ROW, QUANTITY_TXT_COL, i18n("Shares"));
       break;
-  
+
     case UnknownTransactionType:
       qWarning("%s","Unknown transaction type!");
       break;
@@ -1974,3 +1974,40 @@ bool KLedgerViewInvestments::setupPrice(MyMoneySplit& split)
   }
   return true;
 }
+
+// Make sure, that these definitions are only used within this file
+// this does not seem to be necessary, but when building RPMs the
+// build option 'final' is used and all CPP files are concatenated.
+// So it could well be, that in another CPP file these definitions
+// are also used.
+#undef ACTIVITY_ROW
+#undef DATE_ROW
+#undef SYMBOL_ROW
+#undef QUANTITY_ROW
+#undef MEMO_ROW
+#undef PRICE_ROW
+#undef FEES_ROW
+#undef CATEGORY_ROW
+#undef ACCOUNT_ROW
+#undef VALUE_ROW
+
+#undef ACTIVITY_TXT_COL
+#undef ACTIVITY_DATA_COL
+#undef DATE_TXT_COL
+#undef DATE_DATA_COL
+#undef SYMBOL_TXT_COL
+#undef SYMBOL_DATA_COL
+#undef QUANTITY_TXT_COL
+#undef QUANTITY_DATA_COL
+#undef MEMO_TXT_COL
+#undef MEMO_DATA_COL
+#undef PRICE_TXT_COL
+#undef PRICE_DATA_COL
+#undef CATEGORY_TXT_COL
+#undef CATEGORY_DATA_COL
+#undef FEES_TXT_COL
+#undef FEES_DATA_COL
+#undef ACCOUNT_TXT_COL
+#undef ACCOUNT_DATA_COL
+#undef VALUE_TXT_COL
+#undef VALUE_DATA_COL

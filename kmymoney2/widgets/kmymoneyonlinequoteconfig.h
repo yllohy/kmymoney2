@@ -27,7 +27,7 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "kmymoneyonlinequoteconfigdecl.h"
+#include "../widgets/kmymoneyonlinequoteconfigdecl.h"
 #include "../converter/webpricequote.h"
 
 class kMyMoneyOnlineQuoteConfig : public kMyMoneyOnlineQuoteConfigDecl

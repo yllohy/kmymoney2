@@ -518,3 +518,14 @@ void KHomeView::slotOpenURL(const KURL &url, const KParts::URLArgs& /* args */)
   }
 }
 
+// Make sure, that these definitions are only used within this file
+// this does not seem to be necessary, but when building RPMs the
+// build option 'final' is used and all CPP files are concatenated.
+// So it could well be, that in another CPP file these definitions
+// are also used.
+#undef VIEW_LEDGER
+#undef VIEW_SCHEDULE
+#undef VIEW_WELCOME
+#undef VIEW_HOME
+#undef VIEW_REPORTS
+

@@ -82,47 +82,47 @@ KEquityPriceUpdateDlg::KEquityPriceUpdateDlg(QWidget *parent, const QCString& se
   lvEquityList->setAllColumnsShowFocus(true);
 
   btnUpdateAll->setEnabled(false);
-  
+
   MyMoneyFile* file = MyMoneyFile::instance();
 
-  // Get the price precision from the configuration  
+  // Get the price precision from the configuration
   KConfig *kconfig = KGlobal::config();
   kconfig->setGroup("General Options");
   m_pricePrecision = kconfig->readNumEntry("PricePrecision", 4);
-  
+
   //
   // Add each price pair that we know about
   //
-  
+
   // send in securityId == "XXX YYY" to get a single-shot update for XXX to YYY.
   // for consistency reasons, this accepts the same delimiters as WebPriceQuote::launch()
-  QRegExp splitrx("([0-9a-z\\.]+)[^a-z0-9]+([0-9a-z\\.]+)",false /*case sensitive*/);    
+  QRegExp splitrx("([0-9a-z\\.]+)[^a-z0-9]+([0-9a-z\\.]+)",false /*case sensitive*/);
   MyMoneySecurityPair currencyIds;
   if ( splitrx.search(securityId) != -1 )
     currencyIds = MyMoneySecurityPair(splitrx.cap(1).utf8(),splitrx.cap(2).utf8());
-  
+
   MyMoneyPriceList prices = file->priceList();
   for(MyMoneyPriceList::ConstIterator it_price = prices.begin(); it_price != prices.end(); ++it_price)
   {
     MyMoneySecurityPair pair = it_price.key();
-    
+
     if ( file->security( pair.first ).isCurrency() && ( securityId.isEmpty() || ( pair == currencyIds ) ) )
     {
       addPricePair(pair);
       btnUpdateAll->setEnabled(true);
     }
   }
-  
+
   //
   // Add each investment
   //
-  
+
   QValueList<MyMoneySecurity> securities = file->securityList();
   for(QValueList<MyMoneySecurity>::ConstIterator it = securities.begin(); it != securities.end(); ++it)
   {
-    if (  !(*it).isCurrency() 
-          && ( securityId.isEmpty() || ( (*it).id() == securityId ) ) 
-          && !(*it).value("kmm-online-source").isEmpty() 
+    if (  !(*it).isCurrency()
+          && ( securityId.isEmpty() || ( (*it).id() == securityId ) )
+          && !(*it).value("kmm-online-source").isEmpty()
        )
     {
       addInvestment(*it);
@@ -141,7 +141,7 @@ KEquityPriceUpdateDlg::KEquityPriceUpdateDlg(QWidget *parent, const QCString& se
     this,SLOT(logStatusMessage(const QString&)));
   connect(&m_webQuote,SIGNAL(error(const QString&)),
     this,SLOT(logErrorMessage(const QString&)));
-  
+
   connect(lvEquityList, SIGNAL(selectionChanged()), this, SLOT(slotUpdateSelection()));
 
   // Not implemented yet.
@@ -168,11 +168,11 @@ KEquityPriceUpdateDlg::~KEquityPriceUpdateDlg()
 void KEquityPriceUpdateDlg::addPricePair(const MyMoneySecurityPair& pair)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
-  
+
   QString symbol = QString("%1 > %2").arg(pair.first,pair.second);
   if ( ! lvEquityList->findItem(symbol,SYMBOL_COL,Qt::ExactMatch) )
   {
-    KListViewItem* item = new KListViewItem(lvEquityList, 
+    KListViewItem* item = new KListViewItem(lvEquityList,
       symbol,
       i18n("%1 units in %2").arg(pair.first,pair.second));
     MyMoneyPrice pr = file->price(pair.first,pair.second);
@@ -188,7 +188,7 @@ void KEquityPriceUpdateDlg::addPricePair(const MyMoneySecurityPair& pair)
 void KEquityPriceUpdateDlg::addInvestment(const MyMoneySecurity& inv)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
-  
+
   QString symbol = inv.tradingSymbol();
   if ( ! lvEquityList->findItem(symbol,SYMBOL_COL,Qt::ExactMatch) )
   {
@@ -201,10 +201,10 @@ void KEquityPriceUpdateDlg::addInvestment(const MyMoneySecurity& inv)
     }
     item->setText(ID_COL,inv.id());
     item->setText(SOURCE_COL, inv.value("kmm-online-source"));
-  
+
     // If this investment is denominated in a foreign currency, ensure that
     // the appropriate price pair is also on the list
-    
+
     if ( currency.id() != file->baseCurrency().id() )
     {
       QString symbol = QString("%1 > %2").arg(currency.id(),file->baseCurrency().id());
@@ -215,7 +215,7 @@ void KEquityPriceUpdateDlg::addInvestment(const MyMoneySecurity& inv)
     }
   }
 }
-       
+
 void KEquityPriceUpdateDlg::logErrorMessage(const QString& message)
 {
   logStatusMessage(QString("<font color=\"red\"><b>") + message + QString("</b></font>"));
@@ -240,13 +240,13 @@ void KEquityPriceUpdateDlg::slotOKClicked()
     if ( !rate.isZero() )
     {
       QCString id = item->text(ID_COL).utf8();
-      
+
       // if the ID has a space, then this is TWO ID's, so it's a currency quote
       if ( QString(id).contains(" ") )
       {
         QStringList ids = QStringList::split(" ",QString(id));
         QCString fromid = ids[0].utf8();
-        QCString toid = ids[1].utf8();        
+        QCString toid = ids[1].utf8();
         MyMoneyPrice price(fromid,toid,QDate().fromString(item->text(DATE_COL), Qt::ISODate),rate,item->text(SOURCE_COL));
         file->addPrice(price);
       }
@@ -256,12 +256,12 @@ void KEquityPriceUpdateDlg::slotOKClicked()
         MyMoneySecurity security = MyMoneyFile::instance()->security(id);
         try {
           MyMoneyPrice price(id, security.tradingCurrency(), QDate().fromString(item->text(DATE_COL), Qt::ISODate), rate, item->text(SOURCE_COL));
-  
+
           // TODO: Better handling of the case where there is already a price
           // for this date.  Currently, it just overrides the old value.  Really it
           // should check to see if the price is the same and prompt the user.
           MyMoneyFile::instance()->addPrice(price);
-  
+
         } catch(MyMoneyException *e) {
           qDebug("Unable to add price information for %s", security.name().data());
           delete e;
@@ -332,7 +332,7 @@ void KEquityPriceUpdateDlg::slotReceivedQuote(const QString& _symbol,const QDate
 {
   QListViewItem* item = lvEquityList->findItem(_symbol,SYMBOL_COL,Qt::ExactMatch);
   QListViewItem* next = NULL;
-  
+
   if ( item )
   {
     if ( _price > 0.0f && _date.isValid() )
@@ -340,7 +340,7 @@ void KEquityPriceUpdateDlg::slotReceivedQuote(const QString& _symbol,const QDate
       QDate date = _date;
       if ( date > QDate::currentDate() )
         date = QDate::currentDate();
-      
+
       item->setText(PRICE_COL, QString::number(_price,'f',m_pricePrecision));
       item->setText(DATE_COL, date.toString(Qt::ISODate));
       logStatusMessage(i18n("Price for %1 updated").arg(_symbol));
@@ -349,16 +349,16 @@ void KEquityPriceUpdateDlg::slotReceivedQuote(const QString& _symbol,const QDate
     {
       logErrorMessage(i18n("Received an invalid price for %1, unable to update.").arg(_symbol));
     }
-    
+
     prgOnlineProgress->advance(1);
     item->listView()->setSelected(item, false);
-  
+
     // launch the NEXT one ... in case of m_fUpdateAll == false, we
     // need to parse the list to find the next selected one
     next = item->nextSibling();
     if ( !m_fUpdateAll )
     {
-      while(next && !next->isSelected()) 
+      while(next && !next->isSelected())
       {
         prgOnlineProgress->advance(1);
         next = next->nextSibling();
@@ -374,7 +374,7 @@ void KEquityPriceUpdateDlg::slotReceivedQuote(const QString& _symbol,const QDate
   {
     m_webQuote.launch(next->text(SYMBOL_COL),next->text(SOURCE_COL));
   }
-  else 
+  else
   {
     // we've run past the end, reset to the default value.
     m_fUpdateAll = false;
@@ -382,3 +382,15 @@ void KEquityPriceUpdateDlg::slotReceivedQuote(const QString& _symbol,const QDate
     prgOnlineProgress->setProgress(prgOnlineProgress->totalSteps());
   }
 }
+
+// Make sure, that these definitions are only used within this file
+// this does not seem to be necessary, but when building RPMs the
+// build option 'final' is used and all CPP files are concatenated.
+// So it could well be, that in another CPP file these definitions
+// are also used.
+#undef SYMBOL_COL
+#undef NAME_COL
+#undef PRICE_COL
+#undef DATE_COL
+#undef ID_COL
+#undef SOURCE_COL

@@ -22,7 +22,7 @@
 #define KCHOOSEIMPORTEXPORTDLG_H
 
 #include <qwidget.h>
-#include "kchooseimportexportdlgdecl.h"
+#include "../dialogs/kchooseimportexportdlgdecl.h"
 
 /**
   *@author Michael Edwardes

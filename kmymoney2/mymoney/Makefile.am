@@ -1,6 +1,6 @@
 KDE_OPTIONS = noautodist
 
-INCLUDES = $(all_includes)
+INCLUDES = $(all_includes)  -I$(top_srcdir) -I.
 lib_LTLIBRARIES = libkmm_mymoney.la
 
 libkmm_mymoney_la_METASOURCES = AUTO

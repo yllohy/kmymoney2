@@ -27,7 +27,7 @@
 
 // ----------------------------------------------------------------------------
 // Project Includes
-#include "knewfiledlgdecl.h"
+#include "../dialogs/knewfiledlgdecl.h"
 
 // This dialog lets the user create/edit a file.
 // Use the second constructor to edit a file.

@@ -32,7 +32,7 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "knewinvestmentwizarddecl.h"
+#include "../dialogs/knewinvestmentwizarddecl.h"
 #include "../mymoney/mymoneyaccount.h"
 #include "../mymoney/mymoneysecurity.h"
 

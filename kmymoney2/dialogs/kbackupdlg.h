@@ -21,7 +21,7 @@
 #define KBACKUPDIALOG_H
 
 #include <qwidget.h>
-#include "kbackupdlgdecl.h"
+#include "../dialogs/kbackupdlgdecl.h"
 
 /**
   *@author Michael Edwardes

@@ -34,8 +34,8 @@ class TransferJob;
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "mymoneyofxconnector.h"
-#include "kofxdirectconnectdlgdecl.h"
+#include "../dialogs/mymoneyofxconnector.h"
+#include "../dialogs/kofxdirectconnectdlgdecl.h"
 
 class MyMoneyOfxStatement;
 

@@ -42,7 +42,7 @@ class QListViewItem;
 #include "../converter/webpricequote.h"
 #include "../mymoney/mymoneysecurity.h"
 #include "../mymoney/mymoneyprice.h"
-#include "kequitypriceupdatedlgdecl.h"
+#include "../dialogs/kequitypriceupdatedlgdecl.h"
 
 /**
   * @author Kevin Tambascio & Ace Jones

@@ -1,6 +1,6 @@
 KDE_OPTIONS = noautodist
 
-INCLUDES = $(all_includes)
+INCLUDES = $(all_includes) -I$(top_srcdir)
 METASOURCES = AUTO
 
 noinst_LTLIBRARIES =  libkgpgfile.la

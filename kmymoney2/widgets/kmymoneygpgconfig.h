@@ -27,7 +27,7 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "kmymoneygpgconfigdecl.h"
+#include "../widgets/kmymoneygpgconfigdecl.h"
 
 /**
   * @author Thomas Baumgart

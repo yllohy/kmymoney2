@@ -1,6 +1,6 @@
 KDE_OPTIONS = noautodist
 
-INCLUDES = $(all_includes)
+INCLUDES = $(all_includes) -I$(top_srcdir) -I.
 
 noinst_LIBRARIES = libconverter.a
 libconverter_a_METASOURCES = AUTO

@@ -1612,3 +1612,28 @@ bool KLedgerViewCheckings::eventFilter( QObject *o, QEvent *e )
 {
   return KLedgerView::eventFilter(o, e);
 }
+
+// Make sure, that these definitions are only used within this file
+// this does not seem to be necessary, but when building RPMs the
+// build option 'final' is used and all CPP files are concatenated.
+// So it could well be, that in another CPP file these definitions
+// are also used.
+#undef PAYEE_ROW
+#undef CATEGORY_ROW
+#undef MEMO_ROW
+#undef NR_ROW
+#undef DATE_ROW
+#undef AMOUNT_ROW
+
+#undef PAYEE_TXT_COL
+#undef PAYEE_DATA_COL
+#undef CATEGORY_TXT_COL
+#undef CATEGORY_DATA_COL
+#undef MEMO_TXT_COL
+#undef MEMO_DATA_COL
+#undef NR_TXT_COL
+#undef NR_DATA_COL
+#undef DATE_TXT_COL
+#undef DATE_DATA_COL
+#undef AMOUNT_TXT_COL
+#undef AMOUNT_DATA_COL

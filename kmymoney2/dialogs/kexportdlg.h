@@ -35,7 +35,7 @@
 // Project Headers
 
 #include "../widgets/kmymoneydateinput.h"
-#include "kexportdlgdecl.h"
+#include "../dialogs/kexportdlgdecl.h"
 
 /**
   * This class is used to select the required user input to export

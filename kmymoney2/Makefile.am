@@ -8,7 +8,7 @@ kmymoney2_LDADD = $(top_builddir)/kmymoney2/views/libviews.a $(top_builddir)/kmy
 
 SUBDIRS = widgets dialogs views converter mymoney pics icons html templates plugins reports
 
-EXTRA_DIST = kmymoney2ui.rc kmymoney2.desktop lo16-app-kmymoney2.png lo32-app-kmymoney2.png kmymoney_wizard.png mimetype_kmy_16x16.png mimetype_kmy_32x32.png mimetype_kmy_48x48.png x-kmymoney2.desktop hi16-app-kmymoney2.png hi32-app-kmymoney2.png tips
+EXTRA_DIST = kmymoney2ui.rc kmymoney2.desktop lo16-app-kmymoney2.png lo32-app-kmymoney2.png kmymoney_wizard.png mimetype_kmy_16x16.png mimetype_kmy_32x32.png mimetype_kmy_48x48.png mimetype_kmy_64x64.png mimetype_kmy_128x128.png x-kmymoney2.desktop hi16-app-kmymoney2.png hi32-app-kmymoney2.png hi64-app-kmymoney2.png hi128-app-kmymoney2.png tips
 
 noinst_HEADERS = kmymoney2.h kmymoneyutils.h kstartuplogo.h
 
@@ -80,7 +80,7 @@ uninstall-local:
 DISTCLEANFILES=kmymoney2
 
 # set the include path for X, qt and KDE
-INCLUDES= $(all_includes)
+INCLUDES= $(all_includes) -I$(top_srcdir) -I. -I$(top_builddir)/kmymoney2/dialogs
 
 METASOURCES = AUTO
 

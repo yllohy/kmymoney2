@@ -6,12 +6,12 @@ FILES = bank.png categories.png pay_edit.png transaction_export.png transaction_
 install-data-local:
 	$(mkinstalldirs) $(kde_datadir)/$(LOCAL_DIR)
 	for file in $(FILES); do \
-	  $(INSTALL_DATA) $(srcdir)/$$file $(kde_datadir)/$(LOCAL_DIR); \
+	  $(INSTALL_DATA) $(srcdir)/$$file $(DESTDIR)$(kde_datadir)/$(LOCAL_DIR); \
 	done
 
 
 uninstall-local:
 	for file in $(FILES); do \
-	  rm -f $(kde_datadir)/$(LOCAL_DIR)/$$file; \
+	  rm -f $(DESTDIR)$(kde_datadir)/$(LOCAL_DIR)/$$file; \
 	done
 

@@ -37,8 +37,8 @@ class QListViewItem;
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "kmymoneypriceviewdecl.h"
-#include "kmymoneyaccountselector.h"
+#include "../widgets/kmymoneypriceviewdecl.h"
+#include "../widgets/kmymoneyaccountselector.h"
 #include "../mymoney/mymoneyfile.h"
 #include "../mymoney/mymoneymoney.h"
 #include "../mymoney/mymoneyprice.h"

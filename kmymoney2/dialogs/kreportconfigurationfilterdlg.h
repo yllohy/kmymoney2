@@ -24,7 +24,7 @@
 #ifndef KREPORTCONFIGURATIONFILTERDLG_H
 #define KREPORTCONFIGURATIONFILTERDLG_H
 
-#include "kfindtransactiondlg.h"
+#include "../dialogs/kfindtransactiondlg.h"
 #include "../mymoney/mymoneyreport.h"
 class kMyMoneyReportConfigTab1Decl;
 class kMyMoneyReportConfigTab2Decl;

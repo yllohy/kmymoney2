@@ -33,7 +33,7 @@
 
 // ----------------------------------------------------------------------------
 // Project Includes
-#include "kschedulebriefwidget.h"
+#include "../widgets/kschedulebriefwidget.h"
 #include "../mymoney/mymoneyfile.h"
 
 /**

@@ -8,6 +8,9 @@ AC_ARG_WITH(cppunit-prefix,[  --with-cppunit-prefix=PFX   Prefix where CppUnit i
             cppunit_config_prefix="$withval", cppunit_config_prefix="")
 AC_ARG_WITH(cppunit-exec-prefix,[  --with-cppunit-exec-prefix=PFX  Exec prefix where CppUnit is installed (optional)],
             cppunit_config_exec_prefix="$withval", cppunit_config_exec_prefix="")
+AC_ARG_ENABLE(cppunit,
+              [  --disable-cppunit       Do not try to build with CPPUNIT tests],,
+              enable_cppunit=yes)
 
   if test x$cppunit_config_exec_prefix != x ; then
      cppunit_config_args="$cppunit_config_args --exec-prefix=$cppunit_config_exec_prefix"
@@ -27,7 +30,9 @@ AC_ARG_WITH(cppunit-exec-prefix,[  --with-cppunit-exec-prefix=PFX  Exec prefix w
 
   AC_MSG_CHECKING(for Cppunit - version >= $cppunit_version_min)
   no_cppunit=""
-  if test "$CPPUNIT_CONFIG" = "no" ; then
+  if test "x$enable_cppunit" != "xyes"; then
+    no_cppunit=user
+  elif test "$CPPUNIT_CONFIG" = "no" ; then
     no_cppunit=yes
   else
     CPPUNIT_CFLAGS=`$CPPUNIT_CONFIG --cflags`
