@@ -1196,8 +1196,9 @@ QValueList<MyMoneySchedule> MyMoneyFile::scheduleListEx( int scheduleTypes,
 
 void MyMoneyFile::suspendNotify(const bool state)
 {
-  if(state == false && m_suspendNotify == true)
-    notify();
-    
+  bool prevState = m_suspendNotify;
   m_suspendNotify = state;
+  
+  if(state == false && prevState == true)
+    notify();
 }
