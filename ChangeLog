@@ -1,3 +1,9 @@
+2005-04-06 Robert Wadley <robntina@users.sourceforge.net>
+  * Changed the size of the title text in welcome.html and whats_new.html to allow
+    for languages that require more space.
+  * Added the capability of using a background image for the welcome and whats_new
+    pages.
+
 2005-04-06 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Fix spurious re-display of split editor window
 
