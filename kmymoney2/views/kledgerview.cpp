@@ -54,6 +54,7 @@
 #include "../widgets/kmymoneydateinput.h"
 #include "../widgets/kmymoneycombo.h"
 #include "../mymoney/mymoneyfile.h"
+#include "../dialogs/ieditscheduledialog.h"
 
 int KTransactionPtrVector::compareItems(const QCString& s1, const QCString& s2) const
 {
@@ -1782,5 +1783,31 @@ void KLedgerView::show()
 
 void KLedgerView::slotCreateSchedule(void)
 {
-  
+  // Should the next statement be
+  // if (m_transactionPtr != 0)
+  // or
+  if (!m_transaction.id().isEmpty())
+  {
+    MyMoneySchedule schedule;
+    schedule.setTransaction(m_transaction);
+
+    KEditScheduleDialog *m_keditscheddlg = new KEditScheduleDialog(
+      m_transaction.splitByAccount(m_account.id()).action(),
+      schedule, this);
+      
+    if (m_keditscheddlg->exec() == QDialog::Accepted)
+    {
+      MyMoneySchedule sched = m_keditscheddlg->schedule();
+      try
+      {
+        MyMoneyFile::instance()->addSchedule(sched);
+      } catch (MyMoneyException *e)
+      {
+        KMessageBox::information(this, i18n("Unable to add schedule: "), e->what());
+        delete e;
+      }
+    }
+
+    delete m_keditscheddlg;
+  }
 }
