@@ -146,7 +146,6 @@ void KAccountSelectDlg::addCategories(QStringList& strList, const QCString& id, 
 
   QCStringList accList = account.accountList();
   QCStringList::ConstIterator it_a;
-
   for(it_a = accList.begin(); it_a != accList.end(); ++it_a) {
     account = file->account(*it_a);
     strList << leadIn + account.name();
@@ -231,9 +230,7 @@ void KAccountSelectDlg::slotCreateAccount(void)
       
       file->addAccount(newAccount, parentAccount);
 
-      // reload widget with new accounts
-      loadAccounts();
-      
+      // widgets are updated in update() by engine's notification
       if(isCategory)
         m_accountComboBox->setCurrentItem(file->accountToCategory(newAccount.id()));
       else
@@ -248,36 +245,6 @@ void KAccountSelectDlg::slotCreateAccount(void)
       delete e;
     }
   }
-
-/*  
-  KNewAccountWizard wizard(0);
-  
-  wizard.setAccountName(m_account.name());
-  wizard.setAccountType(m_account.accountType());
-  wizard.setOpeningBalance(m_account.openingBalance());
-  wizard.setOpeningDate(m_account.openingDate());
-  if(wizard.exec()) {
-    MyMoneyAccount newAccount = wizard.account();
-    MyMoneyAccount parentAccount = wizard.parentAccount();
-
-    // The dialog/wizard doesn't check the parent.
-    // An exception will be thrown on the next line instead.
-    try
-    {
-      MyMoneyFile::instance()->addAccount(newAccount, parentAccount);
-
-      m_accountComboBox->setCurrentText(wizard.account().name());
-      accept();
-    }
-    catch (MyMoneyException *e)
-    {
-      QString message("Unable to add account: ");
-      message += e->what();
-      KMessageBox::information(this, message);
-      delete e;
-    }
-  }
-*/
 }
 
 void KAccountSelectDlg::abort(void)
