@@ -41,8 +41,10 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "../mymoney/mymoneytransaction.h"
-#include "../views/kledgerview.h"
+class MyMoneyTransaction;
+class KLedgerView;
+#include "../mymoney/mymoneymoney.h"
+#include "../mymoney/mymoneysplit.h"
 
 /**
   *@author Thomas Baumgart

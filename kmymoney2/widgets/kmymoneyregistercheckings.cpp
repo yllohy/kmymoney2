@@ -33,6 +33,7 @@
 
 #include "kmymoneyregistercheckings.h"
 #include "../mymoney/mymoneyfile.h"
+#include "../views/kledgerview.h"
 
 kMyMoneyRegisterCheckings::kMyMoneyRegisterCheckings(QWidget *parent, const char *name )
   : kMyMoneyRegister(parent,name)

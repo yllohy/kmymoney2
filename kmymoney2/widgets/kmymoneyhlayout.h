@@ -21,6 +21,9 @@
 #ifndef KMYMONEYHLAYOUT_H
 #define KMYMONEYHLAYOUT_H
 
+// ----------------------------------------------------------------------------
+// QT Includes
+
 #include <qwidget.h>
 #include <qlayout.h>
 #include <qlist.h>

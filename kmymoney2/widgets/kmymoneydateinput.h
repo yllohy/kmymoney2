@@ -17,7 +17,8 @@
 #ifndef KMYMONEYDATEINPUT_H
 #define KMYMONEYDATEINPUT_H
 
-#include <kdatepicker.h>
+// ----------------------------------------------------------------------------
+// QT Includes
 
 #include <qwidget.h>
 #include <qlineedit.h>
@@ -25,6 +26,14 @@
 #include <qdatetimeedit.h>
 #include <qvbox.h>
 #include <qpushbutton.h>
+
+// ----------------------------------------------------------------------------
+// KDE Includes
+
+#include <kdatepicker.h>
+
+// ----------------------------------------------------------------------------
+// Project Includes
 
 // Ideas neatly taken from korganizer
 // Respective authors are credited.

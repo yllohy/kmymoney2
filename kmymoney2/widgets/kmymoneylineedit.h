@@ -20,7 +20,16 @@
 #ifndef KMYMONEYLINEEDIT_H
 #define KMYMONEYLINEEDIT_H
 
+// ----------------------------------------------------------------------------
+// QT Includes
+
+// ----------------------------------------------------------------------------
+// KDE Includes
+
 #include <klineedit.h>
+
+// ----------------------------------------------------------------------------
+// Project Includes
 
 /**
   *@author Michael Edwardes

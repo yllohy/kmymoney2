@@ -23,8 +23,19 @@
 #ifndef KMYMONEYPAYEE_H
 #define KMYMONEYPAYEE_H
 
+// ----------------------------------------------------------------------------
+// QT Includes
+
 #include <qstring.h>
+
+// ----------------------------------------------------------------------------
+// KDE Includes
+
 #include <klineedit.h>
+
+// ----------------------------------------------------------------------------
+// Project Includes
+
 
 /**
   *@author Thomas Baumgart

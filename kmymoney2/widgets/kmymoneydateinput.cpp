@@ -13,20 +13,29 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <kglobal.h>
-#include <klocale.h>
+
+// ----------------------------------------------------------------------------
+// QT Includes
 
 #include <qpainter.h>
 #include <qdrawutil.h>
 #include <qpoint.h>
 #include <qvalidator.h>
 #include <qtimer.h>
-
-#include "kmymoneydateinput.h"
-
 #if QT_VERSION > 300
 #include <qstyle.h>
 #endif
+
+// ----------------------------------------------------------------------------
+// KDE Includes
+
+#include <kglobal.h>
+#include <klocale.h>
+
+// ----------------------------------------------------------------------------
+// Project Includes
+
+#include "kmymoneydateinput.h"
 
 kMyMoneyDateInput::kMyMoneyDateInput(QWidget *parent, const char *name, Qt::AlignmentFlags flags)
  : QHBox(parent,name)
