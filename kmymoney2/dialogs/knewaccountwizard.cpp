@@ -170,8 +170,8 @@ void KNewAccountWizard::loadSubAccountList(KListView* parent, const QCString& ac
   QValueList<MyMoneyAccount>::ConstIterator it;
 
   it = findAccount(accountId);
-  KAccountListItem *topLevelAccount = new KAccountListItem(parent,
-                (*it).name(), (*it).id(), "", "");
+  KAccountListItem *topLevelAccount = new KAccountListItem(parent, *it);
+//                (*it).name(), (*it).id(), "", "");
 
   QCStringList::ConstIterator it_s;
   for(it_s = (*it).accountList().begin(); it_s != (*it).accountList().end(); ++it_s) {
@@ -184,8 +184,8 @@ void KNewAccountWizard::loadSubAccountList(KAccountListItem* parent, const QCStr
   QValueList<MyMoneyAccount>::ConstIterator it;
 
   it = findAccount(accountId);
-  KAccountListItem *topLevelAccount = new KAccountListItem(parent,
-                (*it).name(), (*it).id(), "", "");
+  KAccountListItem *topLevelAccount = new KAccountListItem(parent, *it);
+//                (*it).name(), (*it).id(), "", "");
 
   QCStringList::ConstIterator it_s;
   for(it_s = (*it).accountList().begin(); it_s != (*it).accountList().end(); ++it_s) {
