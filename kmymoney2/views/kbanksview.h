@@ -64,6 +64,7 @@ private:
   void showSubAccounts(const QCStringList& accounts, KAccountListItem *parentItem, const QString& group);
 
   QMap<QCString, MyMoneyAccount> m_accountMap;
+  QMap<QCString, int> m_transactionCountMap;
 
 public: 
   KAccountsView(QWidget *parent=0, const char *name=0);
@@ -85,6 +86,9 @@ public:
 
 protected:
   void resizeEvent(QResizeEvent*);
+
+  void fillTransactionCountMap(void);
+  void fillAccountMap(void);
 
 protected slots:
   

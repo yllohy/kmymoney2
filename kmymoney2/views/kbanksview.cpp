@@ -301,18 +301,19 @@ KAccountsView::KAccountsView(QWidget *parent, const char *name)
   accountListView->setAllColumnsShowFocus(true);
 
   accountListView->addColumn(i18n("Account"));
-  accountListView->addColumn(i18n("Type"));
+  accountListView->addColumn(i18n("Entries"));
   accountListView->addColumn(i18n("Balance"));
-
-
+  accountListView->addColumn(i18n("Type"));
 
   accountListView->setMultiSelection(false);
 
   accountListView->setColumnWidthMode(0, QListView::Maximum);
   accountListView->setColumnWidthMode(1, QListView::Maximum);
   accountListView->setColumnWidthMode(2, QListView::Maximum);
+  accountListView->setColumnWidthMode(2, QListView::Maximum);
 
   accountListView->setColumnAlignment(2, Qt::AlignRight);
+  accountListView->setColumnAlignment(1, Qt::AlignRight);
 
   accountListView->setResizeMode(QListView::AllColumns);
 
@@ -453,6 +454,7 @@ void KAccountsView::slotListRightMouse(QListViewItem* item, const QPoint& , int 
       try {
         MyMoneyFile *file = MyMoneyFile::instance();
         MyMoneyAccount account = file->account(accountItem->accountID());
+
         
         m_bSelectedAccount=true;
         m_bSelectedInstitution=false;
@@ -545,6 +547,38 @@ const QPixmap KAccountsView::accountImage(const MyMoneyAccount::accountTypeE typ
   return rc;
 }
 
+void KAccountsView::fillTransactionCountMap(void)
+{
+  QValueList<MyMoneyTransaction> list;
+  QValueList<MyMoneyTransaction>::ConstIterator it_t;
+  QValueList<MyMoneySplit>::ConstIterator it_s;
+
+  list = MyMoneyFile::instance()->transactionList();
+  m_transactionCountMap.clear();
+
+  // scan all transactions
+  for(it_t = list.begin(); it_t != list.end(); ++it_t) {
+    // scan all splits of this transaction
+    for(it_s = (*it_t).splits().begin(); it_s != (*it_t).splits().end(); ++it_s) {
+      m_transactionCountMap[(*it_s).accountId()]++;
+    }
+  }
+}
+
+void KAccountsView::fillAccountMap(void)
+{
+  QValueList<MyMoneyAccount> accountList;
+  accountList = MyMoneyFile::instance()->accountList();
+
+  m_accountMap.clear();
+
+  QValueList<MyMoneyAccount>::ConstIterator it_a;
+  for(it_a = accountList.begin(); it_a != accountList.end(); ++it_a)
+    m_accountMap[(*it_a).id()] = *it_a;
+
+}
+
+
 void KAccountsView::refresh(const QCString& selectAccount)
 {
   KConfig *config = KGlobal::config();
@@ -557,15 +591,10 @@ void KAccountsView::refresh(const QCString& selectAccount)
 
   m_selectedAccount = selectAccount;
 
+  fillAccountMap();
+  fillTransactionCountMap();
+
   MyMoneyFile *file = MyMoneyFile::instance();
-
-  QValueList<MyMoneyAccount> accountList;
-  accountList = file->accountList();
-  m_accountMap.clear();
-
-  QValueList<MyMoneyAccount>::ConstIterator it_a;
-  for(it_a = accountList.begin(); it_a != accountList.end(); ++it_a)
-    m_accountMap[(*it_a).id()] = *it_a;
 
   if (m_bViewNormalAccountsView) {
     accountListView->header()->setLabel(0, i18n("Institution"));
@@ -587,6 +616,8 @@ void KAccountsView::refresh(const QCString& selectAccount)
               ++it ) {
           KAccountListItem *accountItem = new KAccountListItem(topLevelInstitution,
               m_accountMap[*it]);
+          accountItem->setText(1, QString("%1").arg(m_transactionCountMap[*it]));
+
           KAccountIconItem* accountIcon = new KAccountIconItem(accountIconView,
               m_accountMap[*it],
               accountImage(m_accountMap[*it].accountType()));
@@ -617,6 +648,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
             ++it ) {
         KAccountListItem *accountItem = new KAccountListItem(assetTopLevelAccount,
             m_accountMap[*it]);
+        accountItem->setText(1, QString("%1").arg(m_transactionCountMap[*it]));
 
         KAccountIconItem* accountIcon = new KAccountIconItem(accountIconView,
             m_accountMap[*it],
@@ -638,6 +670,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
             ++it ) {
         KAccountListItem *accountItem = new KAccountListItem(liabilityTopLevelAccount,
             m_accountMap[*it]);
+        accountItem->setText(1, QString("%1").arg(m_transactionCountMap[*it]));
 
         KAccountIconItem* accountIcon = new KAccountIconItem(accountIconView,
             m_accountMap[*it],
@@ -659,6 +692,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
             ++it ) {
         KAccountListItem *accountItem = new KAccountListItem(incomeTopLevelAccount,
             m_accountMap[*it]);
+        accountItem->setText(1, QString("%1").arg(m_transactionCountMap[*it]));
 
         QCStringList subAccounts = m_accountMap[*it].accountList();
         if (subAccounts.count() >= 1) {
@@ -676,6 +710,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
             ++it ) {
         KAccountListItem *accountItem = new KAccountListItem(expenseTopLevelAccount,
             m_accountMap[*it]);
+        accountItem->setText(1, QString("%1").arg(m_transactionCountMap[*it]));
 
         QCStringList subAccounts = m_accountMap[*it].accountList();
 
@@ -691,6 +726,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
   }
 
   m_accountMap.clear();
+  m_transactionCountMap.clear();
 
   refreshTotalProfit();
 
@@ -705,6 +741,7 @@ void KAccountsView::showSubAccounts(const QCStringList& accounts, KAccountListIt
   for ( QCStringList::ConstIterator it = accounts.begin(); it != accounts.end(); ++it ) {
     KAccountListItem *accountItem  = new KAccountListItem(parentItem,
           m_accountMap[*it]);
+    accountItem->setText(1, QString("%1").arg(m_transactionCountMap[*it]));
 
     QCStringList subAccounts = m_accountMap[*it].accountList();
     if (subAccounts.count() >= 1) {
@@ -723,6 +760,7 @@ void KAccountsView::clear(void)
 
 void KAccountsView::resizeEvent(QResizeEvent* e)
 {
+
   //accountListView->setColumnWidth(0, 400);
   //accountListView->setColumnWidth(1,150);
   //int totalWidth=accountListView->width();
