@@ -137,17 +137,13 @@ void KMyMoney2App::initActions()
   viewStatusBar = KStdAction::showStatusbar(this, SLOT(slotViewStatusBar()), actionCollection());
 
   // Additions to the file menu
-  fileViewInfo = new KAction(i18n("View Info..."), "view_info", 0, this, SLOT(slotFileFileInfo()), actionCollection(), "file_view_info");
+  fileViewInfo = new KAction(i18n("Dump Memory..."), "view_info", 0, this, SLOT(slotFileFileInfo()), actionCollection(), "file_view_info");
   filePersonalData = new KAction(i18n("Personal Data..."), "personal_data", 0, this, SLOT(slotFileViewPersonal()), actionCollection(), "file_personal_data");
   fileBackup = new KAction(i18n("Backup..."), "backup",0,this,SLOT(slotFileBackup()),actionCollection(),"file_backup");
 
   // The Settings Menu
 	settingsKey = KStdAction::keyBindings(this, SLOT(slotKeySettings()), actionCollection());
 	settings 	= KStdAction::preferences(this, SLOT( slotSettings() ), actionCollection());
-
-  // The Categories Menu
-  categoriesEdit = new KAction(i18n("Edit Categories..."), "categories", 0, this, SLOT(slotCategoriesEdit()), actionCollection(), "categories_edit");
-  categoriesPayees = new KAction(i18n("Edit Payees..."), "pay_edit", 0, this, SLOT(slotCategoriesPayees()), actionCollection(), "categories_payees");
 
   // The Bank Menu
   bankAdd = new KAction(i18n("Add new institution..."), "bank", 0, this, SLOT(slotBankAdd()), actionCollection(), "bank_add");
@@ -205,8 +201,6 @@ void KMyMoney2App::initActions()
   fileViewInfo->setStatusText(i18n("View information about the file"));
   filePersonalData->setStatusText(i18n("Lets you view/edit your personal data"));
   fileBackup->setStatusText(i18n("Lets you backup your file to a removeable drive"));
-  categoriesEdit->setStatusText(i18n("Edit and create categories or sub-categories"));
-  categoriesPayees->setStatusText(i18n("View and edit Payees"));
   bankAdd->setStatusText(i18n("Lets you create a new institution"));
   accountOpen->setStatusText(i18n("View the account register"));
   accountAdd->setStatusText(i18n("Lets you create a new account"));
@@ -638,15 +632,6 @@ void KMyMoney2App::slotPluginList()
   KMessageBox::information(this, "Placement holder for future addition...\nPlease wait, I'm on it.\nMichael (mte@users.sourceforge.net.");
 }
 
-void KMyMoney2App::slotCategoriesEdit()
-{
-  myMoneyView->editCategories();
-}
-
-void KMyMoney2App::slotCategoriesPayees()
-{
-  myMoneyView->editPayees();
-}
 /*
 void KMyMoney2App::enableFileOperations(bool enable)
 {

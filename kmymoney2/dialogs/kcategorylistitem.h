@@ -18,27 +18,21 @@
 #define KCATEGORYLISTITEM_H
 
 #include <qwidget.h>
-#include <qlistview.h>
-#include <qstringlist.h>
+#include <klistview.h>
+#include <qstring.h>
+#include <qcstring.h>
 
 // This class represents a List item that is used in KCategoriesDlg.
 // It holds information on whether it is a major category and the
 // values.
 class KCategoryListItem : public QListViewItem  {
-public:
-  KCategoryListItem( QListView *parent, QString text, QStringList minors, bool income, bool major, QString majorName=QString::null );
-  KCategoryListItem( KCategoryListItem *parent, QString text, bool income, bool major, QString majorName=QString::null );
-	~KCategoryListItem();
-	bool isMajor(void);
-  QString majorName(void);
-  bool income(void);
-  QStringList minors(void);
+  QCString m_accountID;
 
-protected:
-  bool m_major;
-  QString m_majorName;
-  bool m_income;
-  QStringList m_minors;
+public:
+  KCategoryListItem(KListView *parent, const QString& accountName, const QCString& accountID, const QString&);
+  KCategoryListItem(KCategoryListItem *parent, const QString& accountName, const QCString& accountID, const QString&);
+	~KCategoryListItem();
+	QCString accountID(void);
 };
 
 #endif

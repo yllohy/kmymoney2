@@ -38,15 +38,11 @@
 #include "kcategoriesview.h"
 #include "../dialogs/kcategorylistitem.h"
 #include "../dialogs/knewcategorydlg.h"
+#include "../views/kmymoneyfile.h"
 
 KCategoriesView::KCategoriesView(QWidget *parent, const char *name )
   : kCategoriesViewDecl(parent,name)
 {
-//  QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_edit_categories.png");
-//  QPixmap *pm = new QPixmap(filename);
-//  m_qpixmaplabel->setPixmap(*pm);
-
-  m_file = 0L;
   categoryListView->setRootIsDecorated(true);
   categoryListView->addColumn(i18n("Category"));
   categoryListView->addColumn(i18n("Type"));
@@ -76,27 +72,80 @@ KCategoriesView::~KCategoriesView()
 
 void KCategoriesView::refresh(void)
 {
-/*
+  KConfig *config = KGlobal::config();
+  config->setGroup("List Options");
+  QFont defaultFont = QFont("helvetica", 12);
+  categoryListView->header()->setFont(config->readFontEntry("listHeaderFont", &defaultFont));
+
   categoryListView->clear();
 
-  KCategoryListItem *saveptr=0;
+  MyMoneyFile *file = KMyMoneyFile::instance()->file();
 
-  QListIterator<MyMoneyCategory> it = m_file->categoryIterator();
-  for ( ; it.current(); ++it ) {
-    MyMoneyCategory *data = it.current();
-    // Construct a new list item using appropriate arguments.
-    // See KCategoryListItem
-    KCategoryListItem *item0 = new KCategoryListItem(categoryListView, data->name(), data->minorCategories(), data->isIncome(), true);
-    if (data->name()==m_lastCat)
-      saveptr = item0;
-    for ( QStringList::Iterator it2 = data->minorCategories().begin(); it2 != data->minorCategories().end(); ++it2 ) {
-      (void) new KCategoryListItem(item0, (*it2), data->isIncome(), false, item0->text(0));
+  try
+  {
+    MyMoneyAccount expenseAccount = file->expense();
+    MyMoneyAccount incomeAccount = file->income();
+
+    // Income
+    KCategoryListItem *incomeTopLevelAccount = new KCategoryListItem(categoryListView,
+                      incomeAccount.name(), incomeAccount.id(), i18n("Income"));
+
+    for ( QCStringList::ConstIterator it = file->income().accountList().begin();
+          it != file->income().accountList().end();
+          ++it )
+    {
+      KCategoryListItem *accountItem = new KCategoryListItem(incomeTopLevelAccount,
+          file->account(*it).name(), file->account(*it).id(), i18n("Income"));
+
+      QCStringList subAccounts = file->account(*it).accountList();
+      if (subAccounts.count() >= 1)
+      {
+        showSubAccounts(subAccounts, accountItem, file, i18n("Income"));
+      }
     }
-    categoryListView->setOpen(item0, true);
+
+    // Expense
+    KCategoryListItem *expenseTopLevelAccount = new KCategoryListItem(categoryListView,
+                      expenseAccount.name(), expenseAccount.id(), i18n("Expense"));
+
+    for ( QCStringList::ConstIterator it = file->expense().accountList().begin();
+          it != file->expense().accountList().end();
+          ++it )
+    {
+      KCategoryListItem *accountItem = new KCategoryListItem(expenseTopLevelAccount,
+          file->account(*it).name(), file->account(*it).id(), i18n("Expense"));
+
+      QCStringList subAccounts = file->account(*it).accountList();
+      if (subAccounts.count() >= 1)
+      {
+        showSubAccounts(subAccounts, accountItem, file, i18n("Expense"));
+      }
+    }
+
+    categoryListView->setOpen(incomeTopLevelAccount, true);
+    categoryListView->setOpen(expenseTopLevelAccount, true);
   }
-  if (saveptr)
-    categoryListView->setCurrentItem(saveptr);
-*/
+  catch (MyMoneyException *e)
+  {
+    qDebug("Exception in assets account refresh: %s", e->what().latin1());
+    delete e;
+  }
+}
+
+void KCategoriesView::showSubAccounts(QCStringList accounts, KCategoryListItem *parentItem, MyMoneyFile *file,
+  const QString& typeName)
+{
+  for ( QCStringList::ConstIterator it = accounts.begin(); it != accounts.end(); ++it )
+  {
+    KCategoryListItem *accountItem  = new KCategoryListItem(parentItem,
+          file->account(*it).name(), file->account(*it).id(), typeName);
+
+    QCStringList subAccounts = file->account(*it).accountList();
+    if (subAccounts.count() >= 1)
+    {
+      showSubAccounts(subAccounts, accountItem, file, typeName);
+    }
+  }
 }
 
 void KCategoriesView::show()
@@ -161,6 +210,7 @@ void KCategoriesView::slotDeleteClicked()
 
 void KCategoriesView::slotSelectionChanged(QListViewItem* item)
 {
+/*
   KCategoryListItem *kitem = (KCategoryListItem *)item;
   if (!kitem) {
     buttonEdit->setEnabled(false);
@@ -173,6 +223,7 @@ void KCategoriesView::slotSelectionChanged(QListViewItem* item)
     buttonEdit->setEnabled(false);
     buttonDelete->setEnabled(true);
   }
+*/
 }
 
 void KCategoriesView::slotEditClicked()
@@ -208,7 +259,7 @@ void KCategoriesView::readConfig(void)
 void KCategoriesView::writeConfig(void)
 {
   KCategoryListItem *item = (KCategoryListItem *)categoryListView->selectedItem();
-  if (!item || !item->isMajor())
+  if (!item)
     return;
 
   KConfig *config = KGlobal::config();

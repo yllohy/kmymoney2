@@ -55,7 +55,7 @@
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.11 2002/06/10 21:28:04 mte Exp $
+  * $Id: kmymoneyview.h,v 1.12 2002/06/10 22:29:05 mte Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -177,22 +177,6 @@ public:
     * indicate the file needs saving.
   **/
   void setDirty(bool dirty);
-
-  /**
-    * Brings up the category dialog and saves any new categories to MyMoneyFile.
-    *
-    * @see MyMoneyCategory
-    * @see KCategoriesDlg
-  **/
-  void editCategories(void);
-
-  /**
-    * Brings up the payees dialog and saves any new payees to MyMoneyFile.
-    *
-    * @see MyMoneyPayee
-    * @see KPayeeDlg
-  **/
-  void editPayees(void);
 
   /**
     * Creates a new file first making sure that one isn't open already.  Opens

@@ -14,55 +14,28 @@
  *                                                                         *
  ***************************************************************************/
 #include <klocale.h>
+#include <klistview.h>
 #include "kcategorylistitem.h"
 
-KCategoryListItem::KCategoryListItem( QListView *parent, QString text, QStringList minors, bool income, bool major, QString majorName)
-  : QListViewItem(parent)
+KCategoryListItem::KCategoryListItem(KListView *parent, const QString& accountName, const QCString& accountID, const QString& typeName)
+  : QListViewItem(parent), m_accountID(accountID)
 {
-  m_major = major;
-  if (!m_major)
-    m_majorName = majorName;
-
-  m_income = income;
-  m_minors = minors;
-
-  setText(0, text);
-  setText(1, ((m_income) ? i18n("Income") : i18n("Expense") ));
+  setText(0, accountName);
+  setText(1, typeName);
 }
 
-KCategoryListItem::KCategoryListItem( KCategoryListItem *parent, QString text, bool income, bool major, QString majorName)
-  : QListViewItem(parent)
+KCategoryListItem::KCategoryListItem(KCategoryListItem *parent, const QString& accountName, const QCString& accountID, const QString& typeName)
+  : QListViewItem(parent), m_accountID(accountID)
 {
-  m_major = major;
-  if (!m_major)
-    m_majorName = majorName;
-
-  m_income = income;
-
-  setText(0, text);
-  setText(1, ((m_income) ? i18n("Income") : i18n("Expense") ));
+  setText(0, accountName);
+  setText(1, typeName);
 }
 
 KCategoryListItem::~KCategoryListItem()
 {
 }
 
-bool KCategoryListItem::isMajor(void)
+QCString KCategoryListItem::accountID(void)
 {
-  return m_major;
-}
-
-QString KCategoryListItem::majorName(void)
-{
-  return m_majorName;
-}
-
-bool KCategoryListItem::income(void)
-{
-  return m_income;
-}
-
-QStringList KCategoryListItem::minors(void)
-{
-  return m_minors;
+  return m_accountID;
 }

@@ -1,6 +1,8 @@
 2002-06-10 Michael Edwardes <mte@users.sourceforge.net>
   * Converted KMyMoneyView to use a singleton pattern for access
     to the MyMoneyFile.
+  * Cleaned up the menu entries a bit.
+  * You can now view the categories, (its just the income and expense accounts).
 
 2002-06-09 Michael Edwardes <mte@users.sourceforge.net>
   * Fixed the date input widget.

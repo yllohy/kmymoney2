@@ -24,6 +24,8 @@
 #define KCATEGORIESVIEW_H
 
 #include <qwidget.h>
+#include <qcstring.h>
+#include "../dialogs/kcategorylistitem.h"
 #include "kcategoriesviewdecl.h"
 
 #include "../mymoney/mymoneyfile.h"
@@ -35,12 +37,12 @@
 class KCategoriesView : public kCategoriesViewDecl  {
    Q_OBJECT
 private:
-  MyMoneyFile *m_file;
 	QString m_lastCat;
 	
   void readConfig(void);
   void writeConfig(void);
   void refresh(void);
+  void showSubAccounts(QCStringList accounts, KCategoryListItem *parentItem, MyMoneyFile *file, const QString&);
 
 protected:
   void resizeEvent(QResizeEvent *);

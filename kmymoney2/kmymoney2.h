@@ -57,7 +57,7 @@
   * @see KMyMoneyView
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: kmymoney2.h,v 1.18 2002/06/05 19:29:51 mte Exp $
+  * $Id: kmymoney2.h,v 1.19 2002/06/10 22:29:05 mte Exp $
   *
   * @short Main application class.
 **/
@@ -134,16 +134,6 @@ protected slots:
   void slotPluginLoad();
   void slotPluginUnload();
   void slotPluginList();
-
-  /**
-    * Open up the category edit dialog.  Calls KMyMoneyView::editCategories.
-  **/
-  void slotCategoriesEdit();
-
-  /**
-    * Open up the payees dialog.  Calls KMyMoneyView::editPayees.
-  **/
-  void slotCategoriesPayees();
 
   /**
     * A slot that is connected to the
@@ -357,7 +347,7 @@ protected slots:
     KRecentFilesAction* fileOpenRecent;
     KAction* fileSave;
     KAction* fileSaveAs;
-	KAction* fileBackup;
+    KAction* fileBackup;
     KAction* fileClose;
     KAction* fileCloseWindow;
     KAction* filePrint;
@@ -373,9 +363,6 @@ protected slots:
 
 		KAction *settings;
 		KAction *settingsKey;
-
-    KAction *categoriesEdit;
-    KAction *categoriesPayees;
 
     KAction *bankAdd;
 

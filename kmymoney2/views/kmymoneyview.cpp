@@ -518,16 +518,6 @@ void KMyMoneyView::slotAccountExportAscii(void)
 */
 }
 
-void KMyMoneyView::editCategories(void)
-{
-    KMessageBox::error(this, i18n("REMOVED"));
-}
-
-void KMyMoneyView::editPayees(void)
-{
-    KMessageBox::error(this, i18n("REMOVED"));
-}
-
 void KMyMoneyView::slotReconcileFinished(bool success)
 {
   if (success)

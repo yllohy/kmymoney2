@@ -13,11 +13,6 @@
   <Menu name="settings"><text>&amp;Settings</text>
   </Menu>
 
-  <Menu name="categories"><text>&amp;Categories</text>
-    <Action name="categories_edit"/>
-    <Action name="categories_payees"/>
-  </Menu>
-
   <Menu name="bank"><text>&amp;Institution</text>
     <Action name="bank_add"/>
   </Menu>
@@ -47,9 +42,6 @@
 -->
 </MenuBar>
 <ToolBar name="mainToolBar" >
-  <Action name="categories_edit"/>
-  <Action name="categories_payees"/>
-	<Separator/>
   <Action name="bank_add"/>
   <Action name="account_add"/>
 	<Separator/>
