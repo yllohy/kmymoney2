@@ -3,6 +3,9 @@
   * use last used post date for new transactions
   * fix view update after loading a file
   * force memo field in transaction form to be left aligned
+  * fixed bugs in settings dialog (grid setting was not written)
+  * removed color settings for transactions
+  * some speed improvements after loading a file
 
 2003-08-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * set date fields in export QIF dialog to the posting dates of the
