@@ -34,7 +34,6 @@
 KGncImportOptionsDlg::KGncImportOptionsDlg(QWidget *parent, const char *name)
  : KGncImportOptionsDlgDecl(parent, name)
 {
-  connect(buttonHelp, SIGNAL(pressed()), this, SLOT(slotHelp())); 
   buttonInvestGroup->setRadioButtonExclusive (true);
   buttonInvestGroup->setButton (0);
   checkSchedules->setChecked (false);
@@ -85,5 +84,3 @@ void KGncImportOptionsDlg::slotHelp(void)
   layout.setResizeMode(QLayout::Minimum);
   dlg.exec();  
 }
-
-#include "kgncimportoptionsdlg.moc"

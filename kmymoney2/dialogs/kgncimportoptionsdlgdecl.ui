@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>KGncImportOptionsDlgDecl</class>
 <widget class="QDialog">
     <property name="name">
@@ -9,289 +9,52 @@
             <x>0</x>
             <y>0</y>
             <width>526</width>
-            <height>448</height>
+            <height>450</height>
         </rect>
     </property>
     <property name="caption">
         <string>GnuCash Import Options</string>
     </property>
-    <widget class="QLabel">
+    <vbox>
         <property name="name">
-            <cstring>textLabel1</cstring>
+            <cstring>unnamed</cstring>
         </property>
-        <property name="geometry">
-            <rect>
-                <x>10</x>
-                <y>0</y>
-                <width>489</width>
-                <height>42</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Use 'Help' for more information on these options</string>
-        </property>
-        <property name="alignment">
-            <set>AlignCenter</set>
-        </property>
-    </widget>
-    <widget class="QLayoutWidget">
-        <property name="name">
-            <cstring>layout12</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>10</x>
-                <y>390</y>
-                <width>460</width>
-                <height>32</height>
-            </rect>
-        </property>
-        <hbox>
+        <widget class="QLabel">
             <property name="name">
-                <cstring>unnamed</cstring>
+                <cstring>textLabel1</cstring>
             </property>
-            <property name="margin">
-                <number>0</number>
+            <property name="text">
+                <string>Use 'Help' for more information on these options</string>
             </property>
-            <property name="spacing">
-                <number>6</number>
+            <property name="alignment">
+                <set>AlignCenter</set>
             </property>
-            <widget class="QPushButton">
-                <property name="name">
-                    <cstring>buttonHelp</cstring>
-                </property>
-                <property name="text">
-                    <string>&amp;Help</string>
-                </property>
-                <property name="accel">
-                    <string>F1</string>
-                </property>
-                <property name="autoDefault">
-                    <bool>true</bool>
-                </property>
-            </widget>
-            <spacer>
-                <property name="name">
-                    <cstring>Horizontal Spacing2</cstring>
-                </property>
-                <property name="orientation">
-                    <enum>Horizontal</enum>
-                </property>
-                <property name="sizeType">
-                    <enum>Expanding</enum>
-                </property>
-                <property name="sizeHint">
-                    <size>
-                        <width>200</width>
-                        <height>20</height>
-                    </size>
-                </property>
-            </spacer>
-            <widget class="QPushButton">
-                <property name="name">
-                    <cstring>buttonOk</cstring>
-                </property>
-                <property name="text">
-                    <string>&amp;OK</string>
-                </property>
-                <property name="accel">
-                    <string></string>
-                </property>
-                <property name="autoDefault">
-                    <bool>true</bool>
-                </property>
-                <property name="default">
-                    <bool>true</bool>
-                </property>
-            </widget>
-            <widget class="QPushButton">
-                <property name="name">
-                    <cstring>buttonCancel</cstring>
-                </property>
-                <property name="text">
-                    <string>&amp;Cancel</string>
-                </property>
-                <property name="accel">
-                    <string></string>
-                </property>
-                <property name="autoDefault">
-                    <bool>true</bool>
-                </property>
-            </widget>
-        </hbox>
-    </widget>
-    <widget class="QLayoutWidget">
-        <property name="name">
-            <cstring>layout6</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>10</x>
-                <y>260</y>
-                <width>380</width>
-                <height>109</height>
-            </rect>
-        </property>
-        <vbox>
+        </widget>
+        <widget class="QButtonGroup">
             <property name="name">
-                <cstring>unnamed</cstring>
+                <cstring>buttonInvestGroup</cstring>
             </property>
-            <property name="margin">
-                <number>0</number>
+            <property name="title">
+                <string>Investment Handling</string>
             </property>
-            <property name="spacing">
-                <number>5</number>
-            </property>
-            <widget class="QLabel">
+            <vbox>
                 <property name="name">
-                    <cstring>textLabel4</cstring>
-                </property>
-                <property name="font">
-                    <font>
-                        <bold>1</bold>
-                    </font>
-                </property>
-                <property name="text">
-                    <string>Debug Options</string>
-                </property>
-            </widget>
-            <widget class="QCheckBox">
-                <property name="name">
-                    <cstring>checkDebugGeneral</cstring>
-                </property>
-                <property name="text">
-                    <string>General debug data</string>
-                </property>
-            </widget>
-            <widget class="QCheckBox">
-                <property name="name">
-                    <cstring>checkDebugXML</cstring>
-                </property>
-                <property name="text">
-                    <string>Display XML data</string>
-                </property>
-            </widget>
-            <widget class="QCheckBox">
-                <property name="name">
-                    <cstring>checkAnonymize</cstring>
-                </property>
-                <property name="text">
-                    <string>Anonymize data</string>
-                </property>
-            </widget>
-        </vbox>
-    </widget>
-    <widget class="QLayoutWidget">
-        <property name="name">
-            <cstring>layout5</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>10</x>
-                <y>180</y>
-                <width>380</width>
-                <height>60</height>
-            </rect>
-        </property>
-        <vbox>
-            <property name="name">
-                <cstring>unnamed</cstring>
-            </property>
-            <property name="margin">
-                <number>0</number>
-            </property>
-            <property name="spacing">
-                <number>6</number>
-            </property>
-            <widget class="QLabel">
-                <property name="name">
-                    <cstring>textLabel3</cstring>
-                </property>
-                <property name="font">
-                    <font>
-                        <bold>1</bold>
-                    </font>
-                </property>
-                <property name="text">
-                    <string>Scheduled Transactions</string>
-                </property>
-            </widget>
-            <widget class="QCheckBox">
-                <property name="name">
-                    <cstring>checkSchedules</cstring>
-                </property>
-                <property name="text">
-                    <string>Drop suspect scheduled transactions</string>
-                </property>
-            </widget>
-        </vbox>
-    </widget>
-    <widget class="QLayoutWidget">
-        <property name="name">
-            <cstring>layout9</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>11</x>
-                <y>41</y>
-                <width>383</width>
-                <height>122</height>
-            </rect>
-        </property>
-        <vbox>
-            <property name="name">
-                <cstring>unnamed</cstring>
-            </property>
-            <property name="spacing">
-                <number>6</number>
-            </property>
-            <widget class="QLabel">
-                <property name="name">
-                    <cstring>textLabel2</cstring>
-                </property>
-                <property name="font">
-                    <font>
-                        <bold>1</bold>
-                    </font>
-                </property>
-                <property name="text">
-                    <string>Investment Handling</string>
-                </property>
-            </widget>
-            <widget class="QButtonGroup">
-                <property name="name">
-                    <cstring>buttonInvestGroup</cstring>
-                </property>
-                <property name="title">
-                    <string></string>
+                    <cstring>unnamed</cstring>
                 </property>
                 <widget class="QRadioButton">
                     <property name="name">
                         <cstring>radioInvest1</cstring>
                     </property>
-                    <property name="geometry">
-                        <rect>
-                            <x>20</x>
-                            <y>10</y>
-                            <width>320</width>
-                            <height>21</height>
-                        </rect>
-                    </property>
                     <property name="text">
                         <string>One investment account for each stock</string>
+                    </property>
+                    <property name="checked">
+                        <bool>true</bool>
                     </property>
                 </widget>
                 <widget class="QRadioButton">
                     <property name="name">
                         <cstring>radioInvest2</cstring>
-                    </property>
-                    <property name="geometry">
-                        <rect>
-                            <x>20</x>
-                            <y>30</y>
-                            <width>321</width>
-                            <height>21</height>
-                        </rect>
                     </property>
                     <property name="text">
                         <string>One investment account for all stocks</string>
@@ -301,21 +64,166 @@
                     <property name="name">
                         <cstring>radioInvest3</cstring>
                     </property>
-                    <property name="geometry">
-                        <rect>
-                            <x>20</x>
-                            <y>50</y>
-                            <width>300</width>
-                            <height>21</height>
-                        </rect>
-                    </property>
                     <property name="text">
                         <string>Prompt for an investment account for each stock</string>
                     </property>
                 </widget>
-            </widget>
-        </vbox>
-    </widget>
+            </vbox>
+        </widget>
+        <widget class="QButtonGroup">
+            <property name="name">
+                <cstring>buttonGroup2</cstring>
+            </property>
+            <property name="title">
+                <string>Scheduled Transactions</string>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QCheckBox">
+                    <property name="name">
+                        <cstring>checkSchedules</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Drop suspect scheduled transactions</string>
+                    </property>
+                </widget>
+            </vbox>
+        </widget>
+        <widget class="QButtonGroup">
+            <property name="name">
+                <cstring>buttonGroup3</cstring>
+            </property>
+            <property name="title">
+                <string>Debug Options</string>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QCheckBox">
+                    <property name="name">
+                        <cstring>checkDebugGeneral</cstring>
+                    </property>
+                    <property name="text">
+                        <string>General debug data</string>
+                    </property>
+                </widget>
+                <widget class="QCheckBox">
+                    <property name="name">
+                        <cstring>checkDebugXML</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Display XML data</string>
+                    </property>
+                </widget>
+                <widget class="QCheckBox">
+                    <property name="name">
+                        <cstring>checkAnonymize</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Anonymize data</string>
+                    </property>
+                </widget>
+            </vbox>
+        </widget>
+        <spacer>
+            <property name="name">
+                <cstring>spacer2</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>20</width>
+                    <height>51</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout12</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>buttonHelp</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Help</string>
+                    </property>
+                    <property name="accel">
+                        <string>F1</string>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>Horizontal Spacing2</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>200</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>buttonOk</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;OK</string>
+                    </property>
+                    <property name="accel">
+                        <string></string>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>true</bool>
+                    </property>
+                    <property name="default">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>buttonCancel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Cancel</string>
+                    </property>
+                    <property name="accel">
+                        <string></string>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+    </vbox>
 </widget>
 <connections>
     <connection>
