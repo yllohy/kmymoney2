@@ -111,7 +111,9 @@ protected slots:
     */
   void slotQifImportFinished(void);
 
-  void slotOfxImport();
+  void slotOfxImport(void);
+
+  void slotGncImport(void);
 
   /**
     * Called when the user wishes to export some transaction to a
@@ -370,7 +372,7 @@ private:
   KAction *actionQifExport;
   KAction *actionFindTransaction;
   KAction *actionOfxImport;
-
+  KAction *actionGncImport;
 
   enum backupStateE {
     BACKUP_IDLE = 0,

@@ -186,6 +186,7 @@ void KMyMoney2App::initActions()
   fileBackup = new KAction(i18n("Backup..."), "backup",0,this,SLOT(slotFileBackup()),actionCollection(),"file_backup");
   actionQifImport = new KAction(i18n("QIF ..."), "", 0, this, SLOT(slotQifImport()), actionCollection(), "file_import_qif");
   actionOfxImport = new KAction(i18n("OFX ..."), "", 0, this, SLOT(slotOfxImport()), actionCollection(), "file_import_ofx");
+  actionGncImport = new KAction(i18n("Gnucash ..."), "", 0, this, SLOT(slotGncImport()), actionCollection(), "file_import_gnc");
   actionQifExport = new KAction(i18n("QIF ..."), "", 0, this, SLOT(slotQifExport()), actionCollection(), "file_export_qif");
   new KAction(i18n("Consistency Check"), "", 0, this, SLOT(slotFileConsitencyCheck()), actionCollection(), "file_consistency_check");
   new KAction(i18n("Currencies ..."), "", 0, this, SLOT(slotCurrencyDialog()), actionCollection(), "tool_currency_dialog");
@@ -743,9 +744,35 @@ void KMyMoney2App::slotQifImportFinished(void)
   setEnabled(true);
 }
 
-void KMyMoney2App::slotOfxImport()
+void KMyMoney2App::slotOfxImport(void)
 {
+}
 
+void KMyMoney2App::slotGncImport(void)
+{
+  QString prevMsg = slotStatusMsg(i18n("Importing a Gnucash file."));
+
+  KFileDialog* dialog = new KFileDialog(KGlobalSettings::documentPath(),
+                            i18n("%1|Gnucash files\n%2|All files (*.*)").arg("*.xac").arg("*.*"),
+                            this, i18n("Import Gnucash file..."), true);
+  dialog->setMode(KFile::File | KFile::ExistingOnly);
+
+  if(dialog->exec() == QDialog::Accepted) {
+    slotFileClose();
+    if(myMoneyView->fileOpen())
+      return;
+
+    // call the importer
+    myMoneyView->readFile(dialog->selectedURL());
+    // imported files don't have a name
+    fileName = KURL();
+
+    updateCaption();
+    emit fileLoaded(fileName);
+  }
+  delete dialog;
+
+  slotStatusMsg(prevMsg);
 }
 
 void KMyMoney2App::slotQifExport()
