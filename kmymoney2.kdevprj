@@ -244,11 +244,12 @@ install_location=
 type=DATA
 
 [doc/Makefile.am]
+files=
 sub_dirs=en,images
 type=normal
 
 [doc/en/Makefile.am]
-files=doc/en/index.docbook,doc/en/blank_icon.png,doc/en/mainwindow.png,doc/en/newaccount.png,doc/en/newaccount_icon.png,doc/en/newbank.png,doc/en/newbank_icon.png,doc/en/startdialog.png,doc/en/transwindow.png
+files=doc/en/index.docbook,doc/en/blank_icon.png,doc/en/mainwindow.png,doc/en/newaccount.png,doc/en/newaccount_icon.png,doc/en/newbank.png,doc/en/newbank_icon.png,doc/en/startdialog.png,doc/en/transwindow.png,doc/en/kmymoney2.1
 sub_dirs=
 type=normal
 
@@ -262,6 +263,12 @@ type=DATA
 dist=true
 install=false
 install_location=$$(kde_icondir)/small/locolor/apps/kmymoney2.xpm
+type=DATA
+
+[doc/en/kmymoney2.1]
+dist=true
+install=false
+install_location=
 type=DATA
 
 [doc/en/mainwindow.png]
