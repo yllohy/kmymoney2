@@ -31,7 +31,7 @@
 #include "mymoneyexception.h"
 #include "mymoneyfile.h"
 
-bool MyMoneySchedule::validate(bool id_check) const
+void MyMoneySchedule::validate(bool id_check) const
 {
   /* Check the supplied instance is valid...
    *
@@ -49,46 +49,45 @@ bool MyMoneySchedule::validate(bool id_check) const
         m_type == TYPE_ANY ||
         m_startDate.year() == 1900 ||
         m_paymentType == STYPE_ANY ||
-        m_transaction.splitCount() == 0 ||
-        m_lastPayment.year() == 1900 ||
+        (m_willEnd && m_lastPayment.year() == 1900) ||
         m_accountId == "")
-  {
-    return false;
-  }
-  else
-  {
-    // Check the dates
-    if (!m_startDate.isValid() || !m_lastPayment.isValid())
-      return false;
+    throw new MYMONEYEXCEPTION("Default values not allowed");
 
-    // Check the payment types
-    switch (m_type)
-    {
-      case TYPE_BILL:
-        if (m_paymentType == STYPE_DIRECTDEPOSIT || m_paymentType == STYPE_MANUALDEPOSIT)
-          return false;
-        break;
-      case TYPE_DEPOSIT:
-        if (m_paymentType == STYPE_DIRECTDEBIT || m_paymentType == STYPE_WRITECHEQUE)
-          return false;
-        break;
-      case TYPE_ANY:
-        return false;
-        break;
-      case TYPE_TRANSFER:
+  if(m_transaction.splitCount() == 0)
+    throw new MYMONEYEXCEPTION("Scheduled transaction does not contain splits");
+  
+  // Check the dates
+  if (!m_startDate.isValid() || (m_willEnd && !m_lastPayment.isValid()))
+    throw new MYMONEYEXCEPTION("Invalid start date or lastPayment date");
+
+  // Check the payment types
+  switch (m_type)
+  {
+    case TYPE_BILL:
+      if (m_paymentType == STYPE_DIRECTDEPOSIT || m_paymentType == STYPE_MANUALDEPOSIT)
+        throw new MYMONEYEXCEPTION("Invalid payment type for bills");
+      break;
+
+    case TYPE_DEPOSIT:
+      if (m_paymentType == STYPE_DIRECTDEBIT || m_paymentType == STYPE_WRITECHEQUE)
+        throw new MYMONEYEXCEPTION("Invalid payment type for deposits");
+      break;
+
+    case TYPE_ANY:
+      throw new MYMONEYEXCEPTION("Invalid type ANY");
+      break;
+
+    case TYPE_TRANSFER:
 //        if (m_paymentType == STYPE_DIRECTDEPOSIT || m_paymentType == STYPE_MANUALDEPOSIT)
 //          return false;
-        break;
-    }
+      break;
+  }
 
-    // Check the transactions remaining
-    if (m_willEnd)
-    {
-      if (!m_endDate.isValid() || (m_transactionsRemaining == 0))
-        return false;
-    }
-
-    return true;
+  // Check the transactions remaining
+  if (m_willEnd)
+  {
+    if (!m_endDate.isValid() && (m_transactionsRemaining == 0))
+      throw new MYMONEYEXCEPTION(QString("m_endDate invalid or m_transactionsRemaining not set in %1").arg(m_name));
   }
 }
 

@@ -1071,19 +1071,27 @@ void MyMoneySeqAccessMgrTest::testAddSchedule() {
 	 * tests currently fail because no splits are defined
 	 * for the schedules transaction.
 	*/
-	CPPUNIT_ASSERT(m->m_scheduleList.count() == 0);
 
+
+	try {
+	CPPUNIT_ASSERT(m->m_scheduleList.count() == 0);
+	MyMoneyTransaction t1;
+	MyMoneySplit s1, s2;
+	s1.setAccountId("A000001");
+	t1.addSplit(s1);
+	s2.setAccountId("A000002");
+	t1.addSplit(s2);
 	MyMoneySchedule schedule("Sched-Name",
 				 MyMoneySchedule::TYPE_DEPOSIT,
 				 MyMoneySchedule::OCCUR_DAILY,
 				 MyMoneySchedule::STYPE_MANUALDEPOSIT,
 				 QDate(2003,7,10),
-				 true,
+				 false,
 				 true,
 				 false,
 				 "invalid_wont_work_later");
+	schedule.setTransaction(t1);
 
-	try {
 		m->addSchedule(schedule);
 
 		CPPUNIT_ASSERT(m->m_scheduleList.count() == 1);
@@ -1096,6 +1104,15 @@ void MyMoneySeqAccessMgrTest::testAddSchedule() {
 	}
 
 	try {
+		MyMoneySchedule schedule("Sched-Name",
+					 MyMoneySchedule::TYPE_DEPOSIT,
+					 MyMoneySchedule::OCCUR_DAILY,
+					 MyMoneySchedule::STYPE_MANUALDEPOSIT,
+					 QDate(2003,7,10),
+					 false,
+					 true,
+					 false,
+					 "invalid_wont_work_later");
 		m->addSchedule(schedule);
 		CPPUNIT_FAIL("Exception expected");
 	} catch(MyMoneyException *e) {
@@ -1174,14 +1191,12 @@ void MyMoneySeqAccessMgrTest::testScheduleList() {
 	QDate	notOverdue = QDate::currentDate().addDays(2);
 	QDate	overdue = QDate::currentDate().addDays(-2);
 
-	MyMoneyTransaction t;
+	MyMoneyTransaction t1;
 	MyMoneySplit s1, s2;
-
 	s1.setAccountId("A000001");
-	t.addSplit(s1);
+	t1.addSplit(s1);
 	s2.setAccountId("A000002");
-	t.addSplit(s2);
-
+	t1.addSplit(s2);
 	MyMoneySchedule schedule1("Schedule 1",
 				 MyMoneySchedule::TYPE_BILL,
 				 MyMoneySchedule::OCCUR_ONCE,
@@ -1191,8 +1206,14 @@ void MyMoneySeqAccessMgrTest::testScheduleList() {
 				 false,
 				 false,
 				 "invalid_wont_work_later");
-	schedule1.setTransaction(t);
+	schedule1.setTransaction(t1);
 
+	MyMoneyTransaction t2;
+	MyMoneySplit s3, s4;
+	s3.setAccountId("A000001");
+	t2.addSplit(s3);
+	s4.setAccountId("A000003");
+	t2.addSplit(s4);
 	MyMoneySchedule schedule2("Schedule 2",
 				 MyMoneySchedule::TYPE_DEPOSIT,
 				 MyMoneySchedule::OCCUR_DAILY,
@@ -1202,6 +1223,14 @@ void MyMoneySeqAccessMgrTest::testScheduleList() {
 				 false,
 				 false,
 				 "invalid_wont_work_later");
+	schedule2.setTransaction(t2);
+
+	MyMoneyTransaction t3;
+	MyMoneySplit s5, s6;
+	s5.setAccountId("A000005");
+	t3.addSplit(s5);
+	s6.setAccountId("A000006");
+	t3.addSplit(s6);
 	MyMoneySchedule schedule3("Schedule 3",
 				 MyMoneySchedule::TYPE_TRANSFER,
 				 MyMoneySchedule::OCCUR_WEEKLY,
@@ -1211,6 +1240,14 @@ void MyMoneySeqAccessMgrTest::testScheduleList() {
 				 false,
 				 false,
 				 "invalid_wont_work_later");
+	schedule3.setTransaction(t3);
+
+	MyMoneyTransaction t4;
+	MyMoneySplit s7, s8;
+	s7.setAccountId("A000005");
+	t4.addSplit(s7);
+	s8.setAccountId("A000006");
+	t4.addSplit(s8);
 	MyMoneySchedule schedule4("Schedule 4",
 				 MyMoneySchedule::TYPE_BILL,
 				 MyMoneySchedule::OCCUR_WEEKLY,
@@ -1220,12 +1257,19 @@ void MyMoneySeqAccessMgrTest::testScheduleList() {
 				 false,
 				 false,
 				 "invalid_wont_work_later");
+	schedule4.setTransaction(t4);
 	schedule4.setEndDate(notOverdue.addMonths(1));
 
-	m->addSchedule(schedule1);
-	m->addSchedule(schedule2);
-	m->addSchedule(schedule3);
-	m->addSchedule(schedule4);
+	try {
+		m->addSchedule(schedule1);
+		m->addSchedule(schedule2);
+		m->addSchedule(schedule3);
+		m->addSchedule(schedule4);
+	} catch(MyMoneyException *e) {
+		qDebug("Error: %s", e->what().latin1());
+		delete e;
+		CPPUNIT_FAIL("Unexpected exception");
+	}
 
 	QValueList<MyMoneySchedule> list;
 
@@ -1256,7 +1300,7 @@ void MyMoneySeqAccessMgrTest::testScheduleList() {
 	list = m->scheduleList("A01");
 	CPPUNIT_ASSERT(list.count() == 0);
 	list = m->scheduleList("A000001");
-	CPPUNIT_ASSERT(list.count() == 1);
+	CPPUNIT_ASSERT(list.count() == 2);
 	list = m->scheduleList("A000002");
 	CPPUNIT_ASSERT(list.count() == 1);
 

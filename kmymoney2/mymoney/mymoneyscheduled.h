@@ -326,11 +326,19 @@ public:
   /**
     * Validates the schedule instance.
     *
-    * Makes sure the paymentType matches the type and that the required fields have been set.
+    * Makes sure the paymentType matches the type and that the required
+    * fields have been set.
     *
-    * @return Boolean True if the instance is ok.
+    * @param id_check if @p true, the method will check for an empty id.
+    *                 if @p false, this check is skipped. Default is @p true.
+    *
+    * @return If this method returns, all checks are passed. Otherwise,
+    *         it will throw a MyMoneyException object.
+    *
+    * @exceptions MyMoneyException with detailed error information is thrown
+    *             in case of failure of any check.
     */
-  bool validate(bool id_check=true) const;
+  void validate(bool id_check=true) const;
 
   /**
     * Calculates the date of the next payment.

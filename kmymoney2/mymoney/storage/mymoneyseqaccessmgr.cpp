@@ -1144,8 +1144,8 @@ void MyMoneySeqAccessMgr::addSchedule(MyMoneySchedule& sched)
   if(sched.id() != "")
     throw new MYMONEYEXCEPTION("schedule already contains an id");
 
-  if (!sched.validate(true))
-    throw new MYMONEYEXCEPTION("schedule invalid");
+  // The following will throw an exception when it fails
+  sched.validate(true);
 
   sched.setId(nextScheduleID());
 
