@@ -98,7 +98,7 @@ public:
     * MUST be set before it can be used.
     */
   MyMoneySchedule(const QString& name, typeE type, occurenceE occurence, paymentTypeE paymentType,
-        QDate startDate, bool willEnd, bool fixed, bool autoEnter) {
+        QDate startDate, bool willEnd, bool fixed, bool autoEnter, const QCString& accountId) {
     // Set up the default values
     m_name = name;
     m_occurence = occurence;
@@ -111,7 +111,7 @@ public:
     m_startDate = startDate;
     m_lastPayment = m_startDate;
     m_id = "";
-    m_accountId = "";
+    m_accountId = accountId;
   }
 
   /**
