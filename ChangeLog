@@ -1,3 +1,15 @@
+2003-01-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added new method MyMoneyFile::storage() and tests
+  * Added equality operators for MyMoneyPayee, MyMoneyAccount,
+    MyMoneyBalanceCacheItem
+  * Added test for them
+  * Removed necessity for KMyMoneyFile object
+  * Added feature to hide unused categories in lists
+  * Added method transactionCountMap to MyMoneyFile
+  * Started working of QIF import
+  * Removed duplicates from tips, fixed HTML code in tips
+  * Added missing converter directory to CVS
+
 2003-01-23 Michael Edwardes <mte@users.sourceforge.net>
   * Started work on UI for schedules.
   * Started work on the 'New Bill' schedule interface dialog.
