@@ -213,4 +213,6 @@ MyMoneyTransaction::transactionMethod MyMoneyTransaction::stringToMethod(const c
     return Withdrawal;
   else if ((strcmp(method, "ATM"))==0)
     return ATM;
+  qDebug("Invalid transaction method '%s'. Use ATM instead.", method);
+  return ATM;
 }
