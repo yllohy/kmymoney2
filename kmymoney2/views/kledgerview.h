@@ -94,7 +94,9 @@ public:
     SortValue,              /**< Sort the vector so that the transactions appear sorted
                               *     according to their value
                               */
-
+    SortNr,                 /**< Sort the vector so that the transactions appear sorted
+                              *     according to nr field contents
+                              */
 
   };
 

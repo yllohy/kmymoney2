@@ -100,6 +100,14 @@ int KTransactionPtrVector::compareItems(KTransactionPtrVector::Item d1, KTransac
 
       case SortEntryDate:
         rc = t2->entryDate().daysTo(t1->entryDate());
+        if(rc == 0) {
+          // same date? Sort by value
+          rc = static_cast<int> ((s2.value() - s1.value()).value());
+          if(rc == 0) {
+            // same value? sort by id
+            rc = compareItems(t1->id(), t2->id());
+          }
+        }
         break;
 
       case SortTypeNr:
@@ -135,6 +143,22 @@ int KTransactionPtrVector::compareItems(KTransactionPtrVector::Item d1, KTransac
 
         if(rc == 0) {
           // same payee? Sort by date
+          rc = t2->postDate().daysTo(t1->postDate());
+          if(rc == 0) {
+            // same date? Sort by value
+            rc = static_cast<int> ((s2.value() - s1.value()).value());
+            if(rc == 0) {
+              // same value? sort by id
+              rc = compareItems(t1->id(), t2->id());
+            }
+          }
+        }
+        break;
+
+      case SortNr:
+        rc = compareItems(s1.number(), s2.number());
+        if(rc == 0) {
+          // same number? Sort by date
           rc = t2->postDate().daysTo(t1->postDate());
           if(rc == 0) {
             // same date? Sort by value
@@ -239,15 +263,21 @@ void KLedgerView::setCurrentAccount(const QCString& accountId)
 
     file->detach(m_account.id(), this);
 
-    try {
-      m_account = file->account(accountId);
-      file->attach(m_account.id(), this);
-      // force initial load
-      loadAccount();
-      // refreshView();
-    } catch(MyMoneyException *e) {
-      qDebug("Unexpected exception in KLedgerView::setCurrentAccount");
-      delete e;
+    if(accountId != "") {
+      try {
+        m_account = file->account(accountId);
+        file->attach(m_account.id(), this);
+        // force initial load
+        loadAccount();
+        // refreshView();
+      } catch(MyMoneyException *e) {
+        qDebug("Unexpected exception in KLedgerView::setCurrentAccount");
+        delete e;
+      }
+    } else {
+      m_account = MyMoneyAccount();
+      m_transactionPtrVector.clear();
+      m_transactionPtr = 0;
     }
   }
 }
@@ -270,7 +300,7 @@ void KLedgerView::reloadAccount(const bool repaint)
     // if the very last transaction was deleted, we need to update
     // the index to the current transaction
     bool selectFlag = false;
-    if(m_register->currentTransactionIndex() >= m_transactionList.count()) {
+    if(static_cast<unsigned>(m_register->currentTransactionIndex()) >= m_transactionList.count()) {
       m_register->setCurrentTransactionIndex(m_transactionList.count()-1);
       selectFlag = true;
     }
@@ -373,9 +403,15 @@ void KLedgerView::filterTransactions(void)
   // sort the transactions
   m_transactionPtrVector.sort();
 
-  // calculate the balance for each item
+  // calculate the balance for each item. At the same time
+  // we figure out the row where the current date mark should
+  // be shown if it's sorted by post date.
+
   MyMoneyMoney balance(0);
   m_balance.resize(i, balance);
+
+  bool dateMarkPlaced = false;
+  m_register->setCurrentDateIndex();    // turn off date mark
 
   try {
     balance = MyMoneyFile::instance()->balance(accountId());
@@ -383,6 +419,15 @@ void KLedgerView::filterTransactions(void)
     while(--i >= 0) {
       m_balance[i] = balance;
       balance -= m_transactionPtrVector[i]->split(accountId()).value();
+      if(m_transactionPtrVector.sortType() == KTransactionPtrVector::SortPostDate) {
+        if(m_transactionPtrVector[i]->postDate() > QDate::currentDate()) {
+          m_register->setCurrentDateIndex(i+1);
+
+        } else if(dateMarkPlaced == false) {
+          m_register->setCurrentDateIndex(i+1);
+          dateMarkPlaced = true;
+        }
+      }
     }
   } catch(MyMoneyException *e) {
     if(accountId() != "")
@@ -403,7 +448,7 @@ void KLedgerView::update(const QCString& accountId)
 
 MyMoneyTransaction* const KLedgerView::transaction(const int idx) const
 {
-  if(idx >= 0 && idx < m_transactionPtrVector.count())
+  if(idx >= 0 && static_cast<unsigned> (idx) < m_transactionPtrVector.count())
     return m_transactionPtrVector[idx];
   return 0;
 }
@@ -412,7 +457,7 @@ const MyMoneyMoney KLedgerView::balance(const int idx) const
 {
   MyMoneyMoney bal(0);
 
-  if(idx >= 0 && idx < m_balance.size())
+  if(idx >= 0 && static_cast<unsigned> (idx) < m_balance.size())
     bal = m_balance[idx];
 
   if(MyMoneyFile::instance()->accountGroup(m_account.accountType()) == MyMoneyAccount::Liability)
@@ -432,7 +477,7 @@ void KLedgerView::slotRegisterClicked(int row, int col, int button, const QPoint
 
     // if the very last entry has been selected, it means, that
     // a new transaction should be created.
-    if(m_register->currentTransactionIndex() == m_transactionList.count()) {
+    if(static_cast<unsigned> (m_register->currentTransactionIndex()) == m_transactionList.count()) {
       slotNew();
     } else {
       fillForm();
@@ -444,7 +489,7 @@ void KLedgerView::slotRegisterClicked(int row, int col, int button, const QPoint
   }
 
   if(button == Qt::RightButton) {
-    if(m_register->currentTransactionIndex() != m_transactionList.count()) {
+    if(static_cast<unsigned> (m_register->currentTransactionIndex()) != m_transactionList.count()) {
       slotCancelEdit();
       m_contextMenu->exec(QCursor::pos());
     }
@@ -457,7 +502,7 @@ void KLedgerView::slotNextTransaction(void)
   if(!m_transactionFormActive && m_editDate && m_editDate->isVisible())
     return;
 
-  if(m_register->currentTransactionIndex() + 1 <= m_transactionPtrVector.count()) {
+  if(static_cast<unsigned> (m_register->currentTransactionIndex() + 1) <= m_transactionPtrVector.count()) {
     slotCancelEdit();
     m_register->setCurrentTransactionIndex(m_register->currentTransactionIndex()+1);
     m_register->ensureTransactionVisible();
@@ -1365,11 +1410,23 @@ void KLedgerView::slotEndEdit(void)
   }
 
   if(!(t == m_transaction)) {
-    // If there are any differences, we need to update the storage
-    // But first we check for the following things:
+    // If there are any differences, we need to update the storage.
+    // All splits with no account id will be removed here. These splits
+    // are refused by the engine, so it's better to discard them before.
+    // Then we check for the following things and warn the user if we
+    // find a mismatch:
     //
-    // a) transaction must have 2 or more than 2 splits
-    // b) the sum of all split amounts must be zero
+    // a) transaction should have 2 or more splits
+    // b) the sum of all split amounts should be zero
+
+    QValueList<MyMoneySplit> list = m_transaction.splits();
+    QValueList<MyMoneySplit>::ConstIterator it;
+
+    for(it = list.begin(); it != list.end(); ++it) {
+      if((*it).accountId() == "") {
+        m_transaction.removeSplit(*it);
+      }
+    }
 
     if(m_transaction.splitCount() < 2) {
       qDebug("Transaction has less than 2 splits");
@@ -1495,6 +1552,7 @@ void KLedgerView::createContextMenu(void)
   m_sortMenu->insertItem(i18n("Entry date"), KTransactionPtrVector::SortEntryDate);
   m_sortMenu->insertSeparator();
   m_sortMenu->insertItem(i18n("Type, number"), KTransactionPtrVector::SortTypeNr);
+  m_sortMenu->insertItem(i18n("Number"), KTransactionPtrVector::SortNr);
   m_sortMenu->insertItem(i18n("Receiver"), KTransactionPtrVector::SortReceiver);
   m_sortMenu->insertItem(i18n("Value"), KTransactionPtrVector::SortValue);
 
@@ -1584,14 +1642,16 @@ void KLedgerView::slotRegisterHeaderClicked(int col)
 
 void KLedgerView::slotSortOrderChanged(int order)
 {
-  // turn off marker in context menu
+  slotCancelEdit();
+
+  QCString id = m_transaction.id();
+
   m_sortMenu->setItemChecked(m_transactionPtrVector.sortType(), false);
-
-  // setup new algo and resort
   m_transactionPtrVector.setSortType(static_cast<KTransactionPtrVector::TransactionSortE> (order));
-
-  // turn on marker in context menu
   m_sortMenu->setItemChecked(m_transactionPtrVector.sortType(), true);
 
+  // make sure the transaction stays selected. It's position might
+  // have changed within the register while re-sorting
+  selectTransaction(id);
   updateView();
 }
