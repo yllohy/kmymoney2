@@ -1,3 +1,13 @@
+2002-12-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added list of transactions to payee view
+  * Added fixup for splits in KLedgerView and MyMoneyStorageBin
+  * Added method to extract a split from a transaction by payee-Id
+  * Added class KTransactionListItem()
+  * Double click on transaction in payee view opens ledger view
+    with this transaction selected
+  * Added function to move from selected transaction in ledger view
+    to the assigned payee
+
 2002-12-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added functionality to 'More' button in transaction form
 
