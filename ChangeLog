@@ -1,3 +1,6 @@
+2005-03-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added logic to update color settings for CSS
+
 2005-02-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Pulled titlelabel_background.png out of the attic
   * Allow plugins to access the new title label object
