@@ -118,6 +118,8 @@ KNewAccountDlg::KNewAccountDlg(MyMoneyAccount& account, bool isEditing, bool cat
     typeCombo->insertItem(i18n("Currency"));
     typeCombo->insertItem(i18n("Income"));
     typeCombo->insertItem(i18n("Expense"));
+    typeCombo->insertItem(i18n("Asset"));
+    typeCombo->insertItem(i18n("Liability"));
 
     if (isEditing)
     {
@@ -161,6 +163,12 @@ KNewAccountDlg::KNewAccountDlg(MyMoneyAccount& account, bool isEditing, bool cat
         case MyMoneyAccount::Expense:
           typeCombo->setCurrentItem(10);
           break;
+        case MyMoneyAccount::Asset:
+          typeCombo->setCurrentItem(11);
+          break;
+        case MyMoneyAccount::Liability:
+          typeCombo->setCurrentItem(12);
+          break;
         default:
           typeCombo->setCurrentItem(0);
       }
@@ -183,7 +191,7 @@ KNewAccountDlg::KNewAccountDlg(MyMoneyAccount& account, bool isEditing, bool cat
   }
   catch (MyMoneyException *e)
   {
-    qDebug("excpetion in init for accoutn dialog: %s", e->what().latin1());
+    qDebug("exception in init for account dialog: %s", e->what().latin1());
     delete e;
   }
 
@@ -196,7 +204,7 @@ KNewAccountDlg::KNewAccountDlg(MyMoneyAccount& account, bool isEditing, bool cat
   }
   catch (MyMoneyException *e)
   {
-    qDebug("excpetion in init for accoutn dialog: %s", e->what().latin1());
+    qDebug("exception in init for account dialog: %s", e->what().latin1());
     delete e;
   }
 
@@ -313,6 +321,12 @@ void KNewAccountDlg::okClicked()
         break;
       case 11:
         accType = MyMoneyAccount::Expense;
+        break;
+      case 12:
+        accType = MyMoneyAccount::Asset;
+        break;
+      case 13:
+        accType = MyMoneyAccount::Liability;
         break;
       default:
         accType = MyMoneyAccount::UnknownAccountType;
