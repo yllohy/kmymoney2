@@ -1,4 +1,7 @@
 2005-04-05 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Remove old GNC reader
+
+2005-04-05 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Tidy up converter Makefile
 
 2005-04-03 Ace Jones <acejones@users.sourceforge.net>

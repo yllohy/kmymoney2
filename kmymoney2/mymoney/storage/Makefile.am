@@ -5,12 +5,12 @@ INCLUDES = $(all_includes) -I$(top_srcdir) -I. -I$(top_builddir)/kmymoney2/dialo
 noinst_LIBRARIES = libstorage.a
 libstorage_a_METASOURCES = AUTO
 
-libstorage_a_SOURCES = mymoneystoragegnc.cpp imymoneystorageformat.cpp mymoneystoragexml.cpp mymoneystoragedump.cpp mymoneystoragebin.cpp mymoneyseqaccessmgr.cpp imymoneystorage.cpp imymoneyserialize.cpp mymoneystorageanon.cpp
+libstorage_a_SOURCES = imymoneystorageformat.cpp mymoneystoragexml.cpp mymoneystoragedump.cpp mymoneystoragebin.cpp mymoneyseqaccessmgr.cpp imymoneystorage.cpp imymoneyserialize.cpp mymoneystorageanon.cpp
 
 instdir=$(includedir)/kmymoney
 inst_HEADERS = imymoneystorage.h imymoneyserialize.h imymoneystorageformat.h
 
-noinst_HEADERS = mymoneyseqaccessmgr.h mymoneystorageanon.h mymoneystoragebin.h mymoneystoragedump.h mymoneystoragegnc.h mymoneystoragexml.h mymoneyseqaccessmgrtest.h mymoneystoragebintest.h
+noinst_HEADERS = mymoneyseqaccessmgr.h mymoneystorageanon.h mymoneystoragebin.h mymoneystoragedump.h mymoneystoragexml.h mymoneyseqaccessmgrtest.h mymoneystoragebintest.h
 
 if CPPUNIT
 check_LIBRARIES = libstoragetest.a
