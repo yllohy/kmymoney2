@@ -255,11 +255,11 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   if(KMyMoneyBanking::instance()->isAvailable()) {
     m_accountMenu->insertSeparator();
     m_accountMenu->insertItem(kiconloader->loadIcon("account", KIcon::Small),
-                              i18n("Map to online account..."),
+                              i18n("Map to HBCI account..."),
                               this, SLOT(slotAccountOnlineMap()), 0,
                               AccountOnlineMap);
     m_accountMenu->insertItem(kiconloader->loadIcon("account", KIcon::Small),
-                              i18n("Online update..."),
+                              i18n("Online update using HBCI..."),
                               this, SLOT(slotAccountOnlineUpdate()), 0,
                               AccountOnlineUpdate);
   }
@@ -668,12 +668,14 @@ void KMyMoneyView::slotAccountOnlineMap()
 
             if (bankCode.isEmpty()) {
               KMessageBox::information(this,
-                                       "This account has no institution id");
+                "In order to map this account to an HBCI account, the account's institution "
+                "must have a 'sort code' assigned.  Please assign one before continuing.");
               return;
             }
             if (accountNumber.isEmpty()) {
               KMessageBox::information(this,
-                                       "This account has no account number");
+                "In order to map this account to an HBCI account, this account "
+                "must have an account number assigned.");
               return;
             }
 
