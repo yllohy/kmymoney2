@@ -26,7 +26,7 @@
 // QT Includes
 #include <qwidget.h>
 class QVBoxLayout;
-class kMyMoneyTitleLabel;
+class QFrame;
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -37,6 +37,7 @@ class kMyMoneyTitleLabel;
 
 #include "../mymoney/mymoneyscheduled.h"
 #include "../mymoney/mymoneyaccount.h"
+class kMyMoneyTitleLabel;
 
 /**
   * Displays a 'home page' for the user.  Similar to concepts used in
