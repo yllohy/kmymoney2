@@ -7,6 +7,8 @@
    (Only occurs if you never click on the checkbox).
  * Fixed #880052 (Adjustment of payment date when scheduled for weekend).
    (I think its a bug...)
+ * Call refresh properly in KScheduleView::slotNewXX.
+ * Set the icons for the new file dialog in both constructors.
 
 2004-01-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed #881136 (No warning when filesave fails)
