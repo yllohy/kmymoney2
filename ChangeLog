@@ -1,3 +1,9 @@
+2004-09-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Update investment summary when different account is selected
+  * Update ledger register when account with no transactions is selected
+  * Set the default smallest fraction for new equities to 100
+  * Check all equity parameters before accepting them
+
 2004-09-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Moved m_smallestAccountFraction from MyMoneyCurrency to MyMoneyEquity
   * Added fraction field to equity object
