@@ -143,14 +143,14 @@ const QString MyMoneyMoney::formatMoney(const QString currency, const int prec) 
   // be much better than using KGlobal::locale()->formatMoney.
   bool bNegative = false;
   signed64 left = (signed64)(m_64Value / denom);
-  short right = (short)(m_64Value % denom);
+  long right = (long)(m_64Value % denom);
   if (right < 0){
     right = -right;
-    bNegative=true;
+    bNegative = true;
   }
   if (left < 0) {
     left = -left;
-    bNegative=true;
+    bNegative = true;
   }
   
   if(left & 0xFFFFFFFF00000000LL) {
@@ -681,4 +681,14 @@ const signed64 MyMoneyMoney::precToDenom(const int prec)
 const double MyMoneyMoney::toDouble(void) const
 {
   return static_cast<double>(m_num) / static_cast<double>(m_denom);
+}
+
+const int MyMoneyMoney::denomToPrec(int fract)
+{
+  int rc = 0;
+  while(fract > 1) {
+    rc++;
+    fract /= 10;
+  }
+  return rc;
 }

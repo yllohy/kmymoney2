@@ -23,6 +23,8 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
+#include <qapplication.h>
+
 // ----------------------------------------------------------------------------
 // KDE Includes
 
@@ -31,6 +33,7 @@
 
 #include "kmymoneycategory.h"
 #include "../mymoney/mymoneyfile.h"
+#include "../widgets/kmymoneyaccountselector.h"
 
 kMyMoneyCategory::kMyMoneyCategory(QWidget *parent, const char *name, const KMyMoneyUtils::categoryTypeE categoryType)
   : KLineEdit(parent,name)
@@ -140,7 +143,7 @@ void kMyMoneyCategory::focusOutEvent(QFocusEvent *ev)
   if(!text().isEmpty() && compObj()->items().contains(text()) == 0) {
     emit newCategory(text());
   }
-  
+
   if(!(text().isEmpty() && m_text.isEmpty())
   && text() != m_text) {
     emit categoryChanged(text());

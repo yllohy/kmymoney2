@@ -56,6 +56,7 @@
 #include "../mymoney/mymoneyfile.h"
 #include "../dialogs/ieditscheduledialog.h"
 #include "../dialogs/knewaccountdlg.h"
+#include "../dialogs/kcurrencycalculator.h"
 
 int KTransactionPtrVector::compareItems(const QCString& s1, const QCString& s2) const
 {
@@ -766,13 +767,38 @@ void KLedgerView::slotAmountChanged(const QString& value)
         break;
     }
 
-    m_split.setValue(val);
-    
+    // if we edit a transaction, the previous price is of interest as
+    // we need it to recalculate shares/values.
+    MyMoneyMoney price = m_split.shares() / m_split.value();
+
+    // set either shares or value depending on the currencies
+    m_split.setValue(val, m_transaction.commodity(), m_account.currencyId());
+
+    // if we use a different currency, then re-calculate the 'value' in
+    // the transactions commodity based on the previous price but only
+    // if we had a previous price.
+    if(m_transaction.commodity() != m_account.currencyId() && price != 0)
+      m_split.setValue(val / price);
+
     m_editAmount->loadText(value);
     m_transaction.modifySplit(m_split);
+
+    // let's take care of the other half of the transaction
     if(m_transaction.splitCount() == 2) {
       MyMoneySplit split = m_transaction.splitByAccount(accountId(), false);
+      MyMoneyAccount acc = MyMoneyFile::instance()->account(split.accountId());
+      // also keep track of a possible previous price
+      price = (split.shares() != 0) ? split.value() / split.shares() : 0;
+
+      // in any case, we need to set the value to the negative value of
+      // the first split to balance the transaction.
       split.setValue(-m_split.value());
+
+      // if we use a different currency, then re-calculate the shares
+      // in the accounts commodity/currency based on the previous price
+      if(m_transaction.commodity() != acc.currencyId() && price != 0) {
+        split.setShares(split.value() / price);
+      }
       m_transaction.modifySplit(split);
     }
     reloadEditWidgets(m_transaction);
@@ -1044,7 +1070,7 @@ void KLedgerView::fromToChanged(const bool fromChanged, const QString& accountNa
 
   try {
     createSecondSplit();
-
+    
     // First, we check if the account exists
     QCString id = MyMoneyFile::instance()->nameToAccount(accountName);
     if(id.isEmpty()) {
@@ -1056,47 +1082,17 @@ void KLedgerView::fromToChanged(const bool fromChanged, const QString& accountNa
       return;
     }
 
-    // see, which split is the from and which is the to part
-    // keep the indeces and work with indeces in the following
-    MyMoneySplit split;
-    int fromIdx, toIdx;
-    
-    if(m_transaction.splits()[0].value() < 0) {
-      fromIdx = 0;
-      toIdx = 1;
+    // we don't allow to change our currently visible account
+    if((m_split.value() > 0 && fromChanged)
+    || (m_split.value() <= 0 && !fromChanged)) {
+      MyMoneySplit split = m_transaction.splitByAccount(s.accountId(), false);
+      split.setAccountId(id);
+      m_transaction.modifySplit(split);
     } else {
-      fromIdx = 1;
-      toIdx = 0;
-    }
-
-    if(fromChanged == true)
-      split = m_transaction.splits()[fromIdx];
-    else
-      split = m_transaction.splits()[toIdx];
-    split.setAccountId(id);
-    m_transaction.modifySplit(split);
-
-    // if the 'from account' is not this account, then the 'to account'
-    // must be the current account. We force it to be this way ;-)
-    // The same applies if the 'to account' is not this account, then the
-    // 'from account' will be forced to be this one.
-    if(id != m_account.id()) {
-      switch(m_transaction.splitCount()) {
-        case 2:
-          if(fromChanged == true)
-            split = m_transaction.splits()[toIdx];
-          else
-            split = m_transaction.splits()[fromIdx];
-          split.setAccountId(m_account.id());
-          m_transaction.modifySplit(split);
-          break;
-        default:
-          qWarning("Transfer transaction with more than two splits detected!!!");
-          break;
-      }
+      qDebug("The current selected account cannot be changed!");
     }
     reloadEditWidgets(m_transaction);
-
+    
   } catch(MyMoneyException *e) {
     KMessageBox::detailedSorry(0, i18n("Unable to modify transaction"),
         (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
@@ -1534,6 +1530,155 @@ void KLedgerView::slotEndEdit(void)
   // force focus change to update all data
   m_form->enterButton()->setFocus();
 
+  MyMoneyFile* file = MyMoneyFile::instance();
+  
+  try {
+
+    // make sure, the post date is valid
+    if(!m_transaction.postDate().isValid())
+      m_transaction.setPostDate(QDate::currentDate());
+    // remember date for next new transaction
+    m_lastPostDate = m_transaction.postDate();
+
+    // If there are any differences, we need to update the storage.
+    // All splits with no account id will be removed here. These splits
+    // are refused by the engine, so it's better to discard them before.
+    // Then we check for the following things and warn the user if we
+    // find a mismatch:
+    //
+    // a) transaction should have 2 or more splits
+    // b) the sum of all split amounts should be zero
+
+    QValueList<MyMoneySplit> list = m_transaction.splits();
+    QValueList<MyMoneySplit>::Iterator it;
+
+    // Fix the payeeId. For non-asset and non-liability accounts,
+    // the payeeId will be cleared. If a transfer has one split
+    // with an empty payeeId the other one will be copied.
+    //
+    // Splits not referencing any account will be removed.
+    // Price information for other currencies will be collected
+
+    QCString payeeId;
+    QMap<QCString, MyMoneyMoney> priceInfo;
+    for(it = list.begin(); it != list.end(); ++it) {
+      if((*it).accountId().isEmpty()) {
+        m_transaction.removeSplit(*it);
+        continue;
+      }
+      MyMoneyAccount acc = file->account((*it).accountId());
+      MyMoneyCurrency currency(file->currency(m_account.currencyId()));
+      int fract = currency.smallestAccountFraction();
+      if(acc.accountType() == MyMoneyAccount::Cash)
+        fract = currency.smallestCashFraction();
+
+      MyMoneyAccount::accountTypeE accType = file->accountGroup(acc.accountType());
+      switch(accType) {
+        case MyMoneyAccount::Asset:
+        case MyMoneyAccount::Liability:
+          break;
+
+        default:
+          (*it).setPayeeId(QCString());
+          m_transaction.modifySplit(*it);
+          break;
+      }
+      if((*it).action() == MyMoneySplit::ActionTransfer
+      && payeeId.isEmpty() && !(*it).payeeId().isEmpty())
+        payeeId = (*it).payeeId();
+
+      if(m_transaction.commodity() != acc.currencyId()) {
+        // different currencies, try to find recent price info
+        QMap<QCString, MyMoneyMoney>::Iterator it_p;
+        QCString key = m_transaction.commodity() + "-" + acc.currencyId();
+        it_p = priceInfo.find(key);
+
+        // if it's not found, then collect it from the user first
+        MyMoneyMoney price;
+        if(it_p == priceInfo.end()) {
+          MyMoneyCurrency fromCurrency, toCurrency;
+          MyMoneyMoney fromValue, toValue;
+          if(m_transaction.commodity() != m_account.currencyId()) {
+            toCurrency = file->currency(m_transaction.commodity());
+            fromCurrency = file->currency(acc.currencyId());
+            toValue = (*it).value();
+            fromValue = (*it).shares();
+          } else {
+            fromCurrency = file->currency(m_transaction.commodity());
+            toCurrency = file->currency(acc.currencyId());
+            fromValue = (*it).value();
+            toValue = (*it).shares();
+          }
+          KCurrencyCalculator calc(fromCurrency,
+                                   toCurrency,
+                                   fromValue,
+                                   toValue,
+                                   m_transaction.postDate(),
+                                   fract,
+                                   this, "currencyCalculator");
+          if(calc.exec() == QDialog::Rejected) {
+            return;
+          }
+          price = calc.price();
+          priceInfo[key] = price;
+        } else {
+          price = (*it_p);
+        }
+
+        // update shares if the transaction commodity is the currency
+        // of the current selected account
+        if(m_transaction.commodity() == m_account.currencyId()) {
+          (*it).setShares(((*it).value() / price).convert(fract));
+        }
+        
+        // now update the split
+        m_transaction.modifySplit(*it);
+      } else {
+        if((*it).shares() != (*it).value()) {
+          (*it).setShares((*it).value());
+          m_transaction.modifySplit(*it);
+        }
+      }
+    }
+
+    if(m_transaction.splitCount() == 2 && !payeeId.isEmpty()) {
+      for(it = list.begin(); it != list.end(); ++it) {
+        if((*it).action() == MyMoneySplit::ActionTransfer
+        && (*it).payeeId().isEmpty()) {
+          (*it).setPayeeId(payeeId);
+          m_transaction.modifySplit(*it);
+        }
+      }
+    }
+
+    // check if this is a transfer to/from loan account and
+    // mark it as amortization in this case
+    if(m_transaction.splitCount() == 2) {
+      bool isAmortization = false;
+      for(it = list.begin(); !isAmortization && it != list.end(); ++it) {
+        if((*it).action() == MyMoneySplit::ActionTransfer) {
+          MyMoneyAccount acc = file->account((*it).accountId());
+          if(acc.accountType() == MyMoneyAccount::Loan
+          || acc.accountType() == MyMoneyAccount::AssetLoan)
+            isAmortization = true;
+        }
+      }
+
+      if(isAmortization) {
+        for(it = list.begin(); it != list.end(); ++it) {
+          (*it).setAction(MyMoneySplit::ActionAmortization);
+          m_transaction.modifySplit(*it);
+        }
+      }
+    }
+  } catch(MyMoneyException *e) {
+    KMessageBox::detailedSorry(0, i18n("Unable to add/modify transaction"),
+      (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+    delete e;
+    return;
+  }
+
+      
   // switch the context to enable refreshView() to work
   m_form->newButton()->setEnabled(true);
   m_form->enterButton()->setEnabled(false);
@@ -1556,89 +1701,11 @@ void KLedgerView::slotEndEdit(void)
 
   if(!(t == m_transaction)) {
     try {
-      MyMoneyFile* file = MyMoneyFile::instance();
-
-      // If there are any differences, we need to update the storage.
-      // All splits with no account id will be removed here. These splits
-      // are refused by the engine, so it's better to discard them before.
-      // Then we check for the following things and warn the user if we
-      // find a mismatch:
-      //
-      // a) transaction should have 2 or more splits
-      // b) the sum of all split amounts should be zero
-
-      QValueList<MyMoneySplit> list = m_transaction.splits();
-      QValueList<MyMoneySplit>::Iterator it;
-
-      // Fix the payeeId. For non-asset and non-liability accounts,
-      // the payeeId will be cleared. If a transfer has one split
-      // with an empty payeeId the other one will be copied.
-      //
-      // Splits not referencing any account will be removed.
-
-      QCString payeeId;
-      for(it = list.begin(); it != list.end(); ++it) {
-        if((*it).accountId().isEmpty()) {
-          m_transaction.removeSplit(*it);
-          continue;
-        }
-        MyMoneyAccount acc = file->account((*it).accountId());
-        MyMoneyAccount::accountTypeE accType = file->accountGroup(acc.accountType());
-        switch(accType) {
-          case MyMoneyAccount::Asset:
-          case MyMoneyAccount::Liability:
-            break;
-
-          default:
-            (*it).setPayeeId(QCString());
-            m_transaction.modifySplit(*it);
-            break;
-        }
-        if((*it).action() == MyMoneySplit::ActionTransfer
-        && payeeId.isEmpty() && !(*it).payeeId().isEmpty())
-          payeeId = (*it).payeeId();
-      }
-
-      if(m_transaction.splitCount() == 2 && !payeeId.isEmpty()) {
-        for(it = list.begin(); it != list.end(); ++it) {
-          if((*it).action() == MyMoneySplit::ActionTransfer
-          && (*it).payeeId().isEmpty()) {
-            (*it).setPayeeId(payeeId);
-            m_transaction.modifySplit(*it);
-          }
-        }
-      }
-
-      // check if this is a transfer to/from loan account and
-      // mark it as amortization in this case
-      if(m_transaction.splitCount() == 2) {
-        bool isAmortization = false;
-        for(it = list.begin(); !isAmortization && it != list.end(); ++it) {
-          if((*it).action() == MyMoneySplit::ActionTransfer) {
-            MyMoneyAccount acc = file->account((*it).accountId());
-            if(acc.accountType() == MyMoneyAccount::Loan
-            || acc.accountType() == MyMoneyAccount::AssetLoan)
-              isAmortization = true;
-          }
-        }
-
-        if(isAmortization) {
-          for(it = list.begin(); it != list.end(); ++it) {
-            (*it).setAction(MyMoneySplit::ActionAmortization);
-            m_transaction.modifySplit(*it);
-          }          
-        }
-      }
-            
       // differentiate between add and modify
       QCString id;
       if(m_transactionPtr == 0) {
         // in the add case, we don't have an ID yet. So let's get one
         // and use it down the line
-        if(!m_transaction.postDate().isValid())
-          m_transaction.setPostDate(QDate::currentDate());
-        // remember date for next new transaction
-        m_lastPostDate = m_transaction.postDate();
 
         // From here on, we need to use a local copy of the transaction
         // because m_transaction will be reassigned during the update

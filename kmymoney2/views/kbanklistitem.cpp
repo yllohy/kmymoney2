@@ -48,6 +48,72 @@
 
 QPixmap* KAccountListItem::accountPixmap = 0;
 
+void KCategoryListItem::update(const QCString& accountId)
+{
+  if(m_suspendUpdate == true)
+    return;
+
+  MyMoneyFile*  file = MyMoneyFile::instance();
+  MyMoneyCurrency baseCurrency = file->baseCurrency();
+
+  try {
+    MyMoneyAccount acc = file->account(accountId);
+    MyMoneyCurrency currency = file->currency(acc.currencyId());
+    int prec = MyMoneyMoney::denomToPrec((acc.accountType() == MyMoneyAccount::Cash)
+                 ? currency.smallestCashFraction()
+                 : currency.smallestAccountFraction());
+
+    try {
+      MyMoneyMoney balance = file->balance(accountId);
+      MyMoneyMoney value = file->totalValue(accountId);
+      m_valueValid = file->totalValueValid(accountId);
+
+      // make sure, we translate the standard account names
+      if(file->isStandardAccount(acc.id())) {
+        if(acc.id() == file->asset().id()) {
+          setText(0, i18n("Asset"));
+        } else if(acc.id() == file->liability().id()) {
+          setText(0, i18n("Liability"));
+        } else if(acc.id() == file->income().id()) {
+          setText(0, i18n("Income"));
+        } else if(acc.id() == file->expense().id()) {
+          setText(0, i18n("Expense"));
+        }
+      } else
+        setText(0, acc.name());
+
+      if(!acc.parentAccountId().isEmpty())
+        setText(1, QString::number(file->transactionCount(accountId)));
+      else
+        setText(1, QString(" "));
+
+      // since income and liabilities are usually negative,
+      // we reverse the sign for display purposes
+      switch(acc.accountGroup()) {
+        case MyMoneyAccount::Income:
+        case MyMoneyAccount::Liability:
+          balance = -balance;
+          value = -value;
+          break;
+
+        default:
+          break;
+      }
+      setText(2, value.formatMoney(baseCurrency.tradingSymbol(), prec));
+
+    } catch(MyMoneyException *e) {
+      KMessageBox::detailedSorry(0, i18n("Unable to retrieve account information"),
+          (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+      delete e;
+    }
+
+  } catch(MyMoneyException *e) {
+    qDebug("Trying to get account info that does not exist anymore");
+    // try to get account info that does not exist anymore
+    delete e;
+  }
+}
+
 KAccountListItem::KAccountListItem(KListView *parent, const MyMoneyAccount& account)
   : KListViewItem(parent)
 {
@@ -78,6 +144,7 @@ void KAccountListItem::cleanCache(void)
 void KAccountListItem::newAccount(const MyMoneyAccount& account)
 {
   m_suspendUpdate = false;
+  m_valueValid = true;
   
   loadCache();
   MyMoneyFile*  file = MyMoneyFile::instance();
@@ -85,46 +152,20 @@ void KAccountListItem::newAccount(const MyMoneyAccount& account)
   setAccountID(account.id());
 
   file->attach(account.id(), this);
-
   setPixmap(0, *accountPixmap);
-  
-  // make sure, we translate the standard account names
-  if(file->isStandardAccount(account.id())) {
-    if(account.id() == file->asset().id()) {
-      setText(0, i18n("Asset"));
-    } else if(account.id() == file->liability().id()) {
-      setText(0, i18n("Liability"));
-    } else if(account.id() == file->income().id()) {
-      setText(0, i18n("Income"));
-    } else if(account.id() == file->expense().id()) {
-      setText(0, i18n("Expense"));
-    }
-  } else
-    setText(0, account.name());
 
-  MyMoneyMoney balance = file->totalBalance(account.id());
-  
-  // since income and liabilities are usually negative,
-  // we reverse the sign for display purposes
-  switch(account.accountGroup()) {
-    case MyMoneyAccount::Income:
-    case MyMoneyAccount::Liability:
-      balance = -balance;
-      break;
-    default:
-      break;
-  }
-  setText(2, balance.formatMoney());
+  // fill the columns with inital data
+  update(account.id());  
 }
 
 KAccountListItem::KAccountListItem(KListView *parent, const QString& txt)
-  : KListViewItem(parent), m_bViewNormal(true), m_suspendUpdate(false)
+  : KListViewItem(parent), m_suspendUpdate(false), m_bViewNormal(true)
 {
   setText(0, txt);  
 }
 
 KAccountListItem::KAccountListItem(KListView *parent, const MyMoneyInstitution& institution)
-  : KListViewItem(parent), m_bViewNormal(true), m_suspendUpdate(false)
+  : KListViewItem(parent), m_suspendUpdate(false), m_bViewNormal(true)
 {
   setAccountID(institution.id());
   setText(0, institution.name());
@@ -141,31 +182,66 @@ void KAccountListItem::update(const QCString& accountId)
     return;
     
   MyMoneyFile*  file = MyMoneyFile::instance();
-    
+  MyMoneyCurrency baseCurrency = file->baseCurrency();
+
   try {
     MyMoneyAccount acc = file->account(accountId);
+    MyMoneyCurrency currency = file->currency(acc.currencyId());
+    int prec = MyMoneyMoney::denomToPrec((acc.accountType() == MyMoneyAccount::Cash)
+                 ? currency.smallestCashFraction()
+                 : currency.smallestAccountFraction());
 
     try {
-      MyMoneyMoney balance = file->totalBalance(accountId);
+      MyMoneyMoney balance = file->balance(accountId);
+      MyMoneyMoney value = file->accountValue(accountId);
+      m_valueValid = file->accountValueValid(accountId);
 
-      setText(0, acc.name());
+      // make sure, we translate the standard account names
+      if(file->isStandardAccount(acc.id())) {
+        if(acc.id() == file->asset().id()) {
+          setText(0, i18n("Asset"));
+        } else if(acc.id() == file->liability().id()) {
+          setText(0, i18n("Liability"));
+        } else if(acc.id() == file->income().id()) {
+          setText(0, i18n("Income"));
+        } else if(acc.id() == file->expense().id()) {
+          setText(0, i18n("Expense"));
+        }
+        value = file->totalValue(accountId);
+        m_valueValid = file->totalValueValid(accountId);
+      } else
+        setText(0, acc.name());
+
       if(!acc.parentAccountId().isEmpty())
         setText(1, QString::number(file->transactionCount(accountId)));
       else
         setText(1, QString(" "));
       
+      setText(2, " ");
       // since income and liabilities are usually negative,
       // we reverse the sign for display purposes
       switch(acc.accountGroup()) {
         case MyMoneyAccount::Income:
+          setText(2, (-value).formatMoney(baseCurrency.tradingSymbol(), prec));
+          // tricky fall through here
+          
         case MyMoneyAccount::Liability:
           balance = -balance;
+          value = -value;
           break;
+          
+        case MyMoneyAccount::Expense:
+          setText(2, value.formatMoney(baseCurrency.tradingSymbol(), prec));
+          break;
+
         default:
           break;
       }
-      setText(2, balance.formatMoney());
+      if(currency.id() != baseCurrency.id())
+        setText(2, balance.formatMoney(currency.tradingSymbol(), prec));
 
+      setText(3, value.formatMoney(baseCurrency.tradingSymbol(), prec));
+      
     } catch(MyMoneyException *e) {
       KMessageBox::detailedSorry(0, i18n("Unable to retrieve account information"),
           (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
@@ -192,6 +268,11 @@ void KAccountListItem::paintCell(QPainter *p, const QColorGroup & cg, int column
     cg2.setColor(QColorGroup::Base, colour);
   else
     cg2.setColor(QColorGroup::Base, bgColour);
+
+  // show values with missing currency conversion rates in red
+  if(column == 3 && !m_valueValid) {
+    cg2.setColor(QColorGroup::Text, QColor(255, 0, 0));
+  }
 
   QListViewItem::paintCell(p, cg2, column, width, align);
   

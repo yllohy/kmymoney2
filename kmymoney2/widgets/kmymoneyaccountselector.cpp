@@ -139,8 +139,8 @@ bool kMyMoneyCheckListItem::isAlternate(void)
   return m_odd;
 }
 
-kMyMoneyAccountSelector::kMyMoneyAccountSelector(QWidget *parent, const char *name ) :
-  QWidget(parent, name)
+kMyMoneyAccountSelector::kMyMoneyAccountSelector(QWidget *parent, const char *name, QWidget::WFlags flags) :
+  QWidget(parent, name, flags)
 {
   QHBoxLayout*   layout;
   QVBoxLayout*   buttonLayout;

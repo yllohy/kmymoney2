@@ -135,7 +135,7 @@ class kMyMoneyAccountSelector : public QWidget, public MyMoneyObserver
 {
   Q_OBJECT
 public: 
-  kMyMoneyAccountSelector(QWidget *parent=0, const char *name=0);
+  kMyMoneyAccountSelector(QWidget *parent=0, const char *name=0, QWidget::WFlags flags = 0);
   ~kMyMoneyAccountSelector();
 
   /**

@@ -120,7 +120,7 @@ protected:
 
   /**
     * Pre-filter showPage so we can select the account type
-  **/
+    */
   void showPage(QWidget* page);
 
 public slots:

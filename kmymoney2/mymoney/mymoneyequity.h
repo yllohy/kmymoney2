@@ -76,7 +76,30 @@ public:
   void  editPriceHistory(QDate& date,MyMoneyMoney& money);
   void  addPriceHistory(QDate& date, MyMoneyMoney& money);
   void  removePriceHistory(QDate& date);
-	
+
+  /**
+    * This method is used to retrieve a price for a specific date
+    * from the history. If there is no price for this date, the last
+    * known price is used. If no price information
+    * is available, 1.0 will be returned as price.
+    *
+    * @param date the date for which the price should be returned (default = today)
+    *
+    * @return price found as MyMoneyMoney object
+    */
+  const MyMoneyMoney price(const QDate& date = QDate::currentDate()) const;
+
+  /**
+    * This method returns, if a price information for this currency
+    * is available for a specific date.
+    *
+    * @param date The date for which a price info is needed (default today)
+    *
+    * @retval false no price info available
+    * @retval true price info is available
+    */
+  const bool hasPrice(const QDate& date = QDate::currentDate()) const;
+
 protected:
   QCString m_id;
   QString m_name;

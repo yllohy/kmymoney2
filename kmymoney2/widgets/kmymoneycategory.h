@@ -41,7 +41,7 @@
 #include "../kmymoneyutils.h"
 
 /**
-  *@author Thomas Baumgart
+  * @author Thomas Baumgart
   */
 
 class kMyMoneyCategory : public KLineEdit
@@ -96,7 +96,7 @@ protected:
 
 private:
   void addCategories(QStringList& strList, const QCString& id, const QString& leadIn);
-
+  
 private:
   /**
     * This member keeps the initial value. It is used during
@@ -105,8 +105,7 @@ private:
   QString m_text;
 
   QValueList<MyMoneyAccount> m_accountList;
-  QMap<QString, QCString>  m_categoryConversionList;
-
+  QMap<QString, QCString>    m_categoryConversionList;
 };
 
 #endif

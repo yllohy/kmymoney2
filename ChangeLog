@@ -1,3 +1,22 @@
+2004-04-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Revised view activation signalling
+  * Added print button and file print option which is active for reports
+    view only
+  * Revised handling of cross-directory dependency to support older versions
+    of automake
+  * Removed m_file member from ReportsView::PivotTable
+  * Added kMyMoneyCurrencySelector widget
+  * Moved styles for report generation from code to kmymoney2.css
+  * Added support for shares to XML storage object
+  * Fixed a problem in MyMoneyMoney::formatMoney if precision is larger than 4
+  * Added KCategoryListItem to differentiate between accounts and category
+    view
+  * Added observer functionality to KInvestmentView
+
+2004-04-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added improvement for reporting
+  * Added icon for reporting
+
 2004-04-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added basic multiple currency work (currencies can be managed but
     they are not used for accounts and transactions yet)

@@ -85,27 +85,25 @@ private:
     typedef QMap<QString,TGridLine> TGrid;
 
     QMap<QString,TGrid> m_grid;
-    const MyMoneyFile* m_file;
 
 public:
     PivotTable( const MyMoneyFile* );
     QString renderHTML( void ) const;
-    static QString getStyles( void );
 
 protected:
     QString getType( const QCString&, QCString& ) const;
 
 };
 
-PivotTable::PivotTable( const MyMoneyFile* file ): m_file( file )
+PivotTable::PivotTable( const MyMoneyFile* file )
 {
-  QMap<QCString,bool> transactiondupes;
   int currentyear = QDate::currentDate().year();
   MyMoneyTransactionFilter filter;
   filter.setDateFilter(QDate(currentyear,1,1),QDate(currentyear,12,31));
   filter.setReportAllSplits(false);
   QValueList<MyMoneyTransaction> transactions = file->transactionList(filter);
   QValueList<MyMoneyTransaction>::const_iterator it_transaction = transactions.begin();
+  
   while ( it_transaction != transactions.end() )
   {
     int column = (*it_transaction).postDate().month() - 1;
@@ -114,14 +112,15 @@ PivotTable::PivotTable( const MyMoneyFile* file ): m_file( file )
     QValueList<MyMoneySplit>::const_iterator it_split = splits.begin();
     while ( it_split != splits.end() )
     {
-      // reverse sign to match common notation for cash flow direction
-      MyMoneyMoney value = - (*it_split).value();
-
       // determine the type of transaction, which will become the row group
       QCString accountid = (*it_split).accountId();
       QCString parentid;
+      MyMoneyAccount account = file->account(accountid);
+      
+      // reverse sign to match common notation for cash flow direction
+      MyMoneyMoney value = - (*it_split).value((*it_transaction).commodity(), account.currencyId());
+      
       QString rowgroup = getType( accountid, parentid );
-
       // roll up subcategories into top level categories
       while ( rowgroup == "Subcategory" )
       {
@@ -130,7 +129,7 @@ PivotTable::PivotTable( const MyMoneyFile* file ): m_file( file )
       }
 
       // the row itself is the account name
-      QString row = file->account(accountid).name();
+      QString row = account.name();
 
       // filter out undesirable row groups
       if ( rowgroup == "Income" || rowgroup == "Expense" )
@@ -150,21 +149,17 @@ PivotTable::PivotTable( const MyMoneyFile* file ): m_file( file )
 QString PivotTable::getType( const QCString& accountid, QCString& parentid ) const
 {
   QString result;
+  MyMoneyFile* file = MyMoneyFile::instance();
 
-  static QCString assetid = m_file->asset().id();
-  static QCString liabilityid = m_file->liability().id();
-  static QCString incomeid = m_file->income().id();
-  static QCString expenseid = m_file->expense().id();
+  parentid = file->account(accountid).parentAccountId();
 
-  parentid = m_file->account(accountid).parentAccountId();
-
-  if ( parentid == assetid )
+  if ( parentid == file->asset().id() )
     result = "Asset";
-  else if ( parentid == liabilityid )
+  else if ( parentid == file->liability().id() )
     result = "Liability";
-  else if ( parentid == incomeid )
+  else if ( parentid == file->income().id() )
     result = "Income";
-  else if ( parentid == expenseid )
+  else if ( parentid == file->expense().id() )
     result = "Expense";
   else
     result = "Subcategory";
@@ -191,7 +186,7 @@ QString PivotTable::renderHTML( void ) const
 
   // calculate the column grand totals along the way
   QValueList<MyMoneyMoney> columngrandtotal;
-  columngrandtotal.insert( columngrandtotal.end(), 12, 0.0 );
+  columngrandtotal.insert( columngrandtotal.end(), 12, MyMoneyMoney() );
 
   //
   // Row groups
@@ -208,7 +203,7 @@ QString PivotTable::renderHTML( void ) const
     result += QString("<tr class=\"sectionheader\"><td class=\"left\" colspan=\"0\">%1</td></tr>").arg(it_rowgroup.key());
 
     QValueList<MyMoneyMoney> columntotal;
-    columntotal.insert( columntotal.end(), 12, 0.0 );
+    columntotal.insert( columntotal.end(), 12, MyMoneyMoney() );
 
     //
     // Rows
@@ -233,7 +228,7 @@ QString PivotTable::renderHTML( void ) const
       //
 
       int column = 0;
-      MyMoneyMoney rowtotal = 0.0;
+      MyMoneyMoney rowtotal;
       while ( column < 12 )
       {
         MyMoneyMoney value = it_row.data()[column];
@@ -258,7 +253,7 @@ QString PivotTable::renderHTML( void ) const
 
     result += QString("<tr class=\"sectionfooter\"><td class=\"left\">%1&nbsp;%1</td>").arg(i18n("Total")).arg(it_rowgroup.key());
     int column = 0;
-    MyMoneyMoney rowgrouptotal = 0.0;
+    MyMoneyMoney rowgrouptotal;
     while ( column < 12 )
     {
       MyMoneyMoney value = columntotal[column];
@@ -280,7 +275,7 @@ QString PivotTable::renderHTML( void ) const
   result += QString("<tr class=\"spacer\"><td></td></tr>");
   result += QString("<tr class=\"reportfooter\"><td class=\"left\">%1</td>").arg(i18n("Grand Total"));
   int totalcolumn = 0;
-  MyMoneyMoney grandtotal = 0.0;
+  MyMoneyMoney grandtotal;
   while ( totalcolumn < 12 )
   {
     MyMoneyMoney value = columngrandtotal[totalcolumn];
@@ -298,23 +293,8 @@ QString PivotTable::renderHTML( void ) const
   result += "</table>";
 
   return result;
-
 }
 
-QString PivotTable::getStyles( void )
-{
-  return QString("<style>"
-    "table.report th { padding: 0.5em 0; }"
-    "table.report td { font-size: 9pt; padding: 0 0.5em; text-align: right; }"
-    "table.report td.left { text-align: left; }"
-    "table.report tr.sectionheader td { font-weight: bold; padding: 0.5em 0.5em 0 0.5em; }"
-    "table.report tr.sectionfooter td { border-top: 1px solid black; padding: 0 0.5em 0.5em 0.5em; }"
-    "table.report tr.reportfooter td { border-bottom: 1px solid black; border-top: 1px solid black; padding: 0 0.5em 0 0.5em; }"
-    "table.report tr.reportfooter td.left { font-weight: bold; }"
-    "table.report tr.spacer td { font-size: 4pt; padding: 1em 0; }"
-  "</style>");
-}
- 
 KReportsView::KReportsView(QWidget *parent, const char *name )
  : QWidget(parent,name)
 {
@@ -338,8 +318,8 @@ KReportsView::~KReportsView()
 void KReportsView::show()
 {
   slotRefreshView();
-  emit signalViewActivated();
   QWidget::show();
+  emit signalViewActivated();
 }
 
 /* TODO:
@@ -354,13 +334,16 @@ const QString KReportsView::createTable(const QString& links) const
     QString("<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"%1\"></head>\n").arg(filename);
   QString footer = "</body></html>\n";
 
+  PivotTable pivot( MyMoneyFile::instance() );
+
   QString html;
   html += header;
+  html += QString("<h2 class=\"report\">%1</h2>").arg(i18n("Monthly Income & Expenses"));
+  html += QString("<center>") + i18n("All currencies converted to %1")
+                                .arg(MyMoneyFile::instance()->baseCurrency().name())
+       + QString("</center>");
+  html += QString("<div class=\"gap\">&nbsp;</div>\n");
 
-  html += QString("<h2>%1</h2>").arg(i18n("Monthly Income & Expenses"));
-
-  PivotTable pivot( MyMoneyFile::instance() );
-  html += pivot.getStyles();
   html += pivot.renderHTML();
   html += links;
   html += footer;
@@ -371,8 +354,6 @@ const QString KReportsView::createTable(const QString& links) const
 void KReportsView::slotRefreshView(void)
 {
   QString links;
-  links = linkfull(VIEW_REPORTS, QString("?command=print"),i18n("Print"));
-  links += "<br>";
   links += linkfull(VIEW_REPORTS, QString("?command=copy"),i18n("Copy to Clipboard"));
   
   m_part->begin();
@@ -395,9 +376,7 @@ void KReportsView::slotCopyView(void)
 {
   QTextDrag* pdrag =  new QTextDrag( createTable() );
   pdrag->setSubtype("html");
-  QClipboard* cb = QApplication::clipboard();
-  cb->setData(pdrag);
- 
+  QApplication::clipboard()->setData(pdrag);
 }
 
 const QString KReportsView::linkfull(const QString& view, const QString& query, const QString& label)

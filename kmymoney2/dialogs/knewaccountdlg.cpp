@@ -51,6 +51,8 @@
 #include "knewaccountdlg.h"
 #include "../widgets/kmymoneyedit.h"
 #include "../widgets/kmymoneydateinput.h"
+#include "../widgets/kmymoneycurrencyselector.h"
+
 #include "../mymoney/mymoneyexception.h"
 #include "../mymoney/mymoneyfile.h"
 #include "../dialogs/knewbankdlg.h"
@@ -90,7 +92,8 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
   descriptionEdit->setText(account.description());
 
   typeCombo->setEnabled(true);
-  
+  MyMoneyFile *file = MyMoneyFile::instance();
+
   if (categoryEditor)
   {
     m_qlistviewParentAccounts->setEnabled(true);
@@ -123,6 +126,7 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
       typeCombo->setEnabled(false);
     }
     m_qcheckboxPreferred->hide();
+    m_currency->setEnabled(false);
   }
   else
   {
@@ -131,6 +135,7 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
     typeCombo->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Cash));
     typeCombo->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::CreditCard));
     typeCombo->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Loan));
+    typeCombo->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Investment));
 /*
     typeCombo->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::CertificateDep));
     typeCombo->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Investment));
@@ -159,12 +164,12 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
       case MyMoneyAccount::Loan:
         typeCombo->setCurrentItem(4);
         break;
+      case MyMoneyAccount::Investment:
+        typeCombo->setCurrentItem(5);
+        break;
 /*
       case MyMoneyAccount::CertificateDep:
         typeCombo->setCurrentItem(5);
-        break;
-      case MyMoneyAccount::Investment:
-        typeCombo->setCurrentItem(6);
         break;
       case MyMoneyAccount::MoneyMarket:
         typeCombo->setCurrentItem(7);
@@ -174,10 +179,10 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
         break;
 */
       case MyMoneyAccount::Asset:
-        typeCombo->setCurrentItem(5);
+        typeCombo->setCurrentItem(6);
         break;
       case MyMoneyAccount::Liability:
-        typeCombo->setCurrentItem(6);
+        typeCombo->setCurrentItem(7);
         break;
     }
 
@@ -189,19 +194,20 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
     accountNoEdit->setText(account.number());
     m_qcheckboxPreferred->setChecked(account.value("PreferredAccount") == "Yes");
 
+    m_currency->setCurrency(file->currency(account.currencyId()));
+
     // we do not allow to change the account type once an account
-    // was created    
+    // was created. Same applies to currency.    
     if (m_isEditing)
     {
       typeCombo->setEnabled(false);
+      m_currency->setEnabled(false);
     }
   }
 
   // Load the institutions
   // then the accounts
   QString institutionName;
-
-  MyMoneyFile *file = MyMoneyFile::instance();
 
   try
   {

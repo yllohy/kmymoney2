@@ -129,12 +129,13 @@ protected slots:
 
   /** No descriptions */
   void slotFileBackup();
-  void slotHomeView();
-  void slotAccountsView();
-  void slotScheduledView();
-  void slotCategoryView();
-  void slotPayeeView();
 
+  /**
+    * This slot modifies the actions according to the specific view passed
+    * as argument @p view.
+    */
+  void slotSetViewSpecificActions(int view);
+  
   void slotShowTipOfTheDay(void);
   void slotQifProfileEditor(void);
 
@@ -347,6 +348,7 @@ private:
   KAction* fileClose;
   KAction* fileCloseWindow;
   KAction* fileQuit;
+  KAction* filePrint;
   KToggleAction* viewToolBar;
   KToggleAction* viewStatusBar;
   KToggleAction* viewTransactionForm;

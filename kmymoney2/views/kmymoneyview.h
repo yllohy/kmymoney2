@@ -63,17 +63,24 @@ class KReportsView;
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.52 2004/04/03 15:46:38 ipwizard Exp $
   *
   * @short Handles the view of the MyMoneyFile.
-**/
+  **/
 class KMyMoneyView : public KJanusWidget {
    Q_OBJECT
 
 
 public:
-  enum viewType { None=0, BankList=1, TransactionList=2, InvestmentList=3 };
-  enum viewShowing { AccountsView, HomeView, PayeeView, CategoryView, ScheduledView, AccountView };
+  enum viewID {
+    HomeView = 0,
+    AccountsView,
+    SchedulesView,
+    CategoriesView,
+    PayeesView,
+    LedgersView,
+    InvestmentsView,
+    ReportsView
+  };
 
 private:
   enum menuID {
@@ -107,12 +114,6 @@ private:
 
   bool m_fileOpen;
 
-/*
-  bool m_inReconciliation;  // True if the reconciliaton dialog needs updating when the user adds/deletes transactions
-  bool m_reconcileInited;  // True if a reconciliation has already been completed this execution
-  KReconcileDlg *reconcileDlg;  // These exists during app run time ?
-*/
-//  KFindTransactionDlg *transactionFindDlg;
 //  KImportDlg       *importDlg;
 
   KPopupMenu* m_accountMenu;
@@ -366,7 +367,7 @@ public slots:
     * @see KBanksView
     * @see KNewBankDlg
     * @see MyMoneyFile
-    * @see MyMoneyBank
+    * @see MyMoneyInstitution
   **/
   void slotBankNew(void);
 
@@ -439,6 +440,11 @@ public slots:
     */
   void slotCancelEdit(void) const;
 
+  /**
+    * This slot prints the current view.
+    */
+  void slotPrintView(void);
+
 protected slots:
   /**
     * This slot is called whenever the transaction list is changed and is used
@@ -498,39 +504,6 @@ protected slots:
   void slotCloseSearchDialog(void);
 
   /**
-
-    * Called when the user clicks on the homepage button.
-    *
-    * @see KHomeView
-  **/
-  void slotActivatedHomePage();
-
-
-  /**
-    * Called when the user clicks on the accounts button
-    *
-    * @see KBanksView
-  **/
-  void slotActivatedAccountsView();
-
-  void slotActivatedScheduledView();
-
-  void slotActivatedCategoriesView();
-
-  void slotActivatedPayeeView();
-
-  void slotActivatedAccountView();
-
-  /**
-    * Called when the user changes the visibility
-    * setting of the transaction form
-    *
-    * @param show if true, the transaction form is shown
-    */
-  // void slotShowTransactionForm(bool show);
-
-
-  /**
     * Called when the user changes the detail
     * setting of the transaction register
     *
@@ -561,12 +534,11 @@ private:
   void accountNew(const bool createCategory);
   
 signals:
-  void signalHomeView();
-  void signalAccountsView();
-  void signalScheduledView();
-  void signalCategoryView();
-  void signalPayeeView();
-  void signalAccountView();
+  /**
+    * This signal is emitted whenever a view is selected.
+    * The parameter @p view is identified as one of KMyMoneyView::viewID.
+    */
+  void viewActivated(int view);
 };
 
 #endif

@@ -84,6 +84,14 @@ void MyMoneySplit::setValue(const MyMoneyMoney& value)
   m_value = value;
 }
 
+void MyMoneySplit::setValue(const MyMoneyMoney& value, const QCString& transactionCurrencyId, const QCString& splitCurrencyId)
+{
+  if(transactionCurrencyId == splitCurrencyId)
+    setValue(value);
+  else
+    setShares(value);
+}
+
 void MyMoneySplit::setId(const QCString& id)
 {
   m_id = id;
@@ -102,4 +110,9 @@ void MyMoneySplit::setAction(const QCString& action)
 void MyMoneySplit::setNumber(const QString& number)
 {
   m_number = number;
+}
+
+const MyMoneyMoney MyMoneySplit::value(const QCString& transactionCurrencyId, const QCString& splitCurrencyId) const
+{
+  return (transactionCurrencyId == splitCurrencyId) ? m_value : m_shares;
 }

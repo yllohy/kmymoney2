@@ -255,6 +255,7 @@ void MyMoneyStorageDump::dumpTransaction(QTextStream& s, IMyMoneyStorage* storag
   s << "  ID = " << it_t.id() << "\n";
   s << "  Postdate  = " << it_t.postDate().toString(Qt::ISODate) << "\n";
   s << "  EntryDate = " << it_t.entryDate().toString(Qt::ISODate) << "\n";
+  s << "  Commodity = [" << it_t.commodity() << "]\n";
   s << "  Memo = " << it_t.memo() << "\n";
   s << "  KVP: " << "\n";
   QMap<QCString, QString>kvp = it_t.pairs();
@@ -275,7 +276,7 @@ void MyMoneyStorageDump::dumpTransaction(QTextStream& s, IMyMoneyStorage* storag
       s << " ()\n";
     s << "    Account = " << (*it_s).accountId();
     MyMoneyAccount acc = storage->account((*it_s).accountId());
-    s << " (" << acc.name() << ")" << "\n";
+    s << " (" << acc.name() << ") [" << acc.currencyId() << "]\n";
     s << "    Memo = " << (*it_s).memo() << "\n";
     if((*it_s).value() == MyMoneyMoney::minValue + 1)
       s << "    Value = will be calculated" << "\n";

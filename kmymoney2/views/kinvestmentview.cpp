@@ -112,11 +112,14 @@ KInvestmentView::KInvestmentView(QWidget *parent, const char *name)
   //set the summary button to be true.
  // btnSummary->setChecked(TRUE);
 
+  MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAccount, this);
+
   connect(investmentTable, SIGNAL(doubleClicked(QListViewItem*,const QPoint&, int)), this, SLOT(slotItemDoubleClicked(QListViewItem*,const QPoint&, int)));
 }
 
 KInvestmentView::~KInvestmentView()
 {
+  MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassAccount, this);
 }
 
 void KInvestmentView::initSummaryTab(void)
@@ -418,6 +421,7 @@ void KInvestmentView::loadAccounts(void)
       m_accountComboBox->insertItem(subAcc.name());
       if(m_account == MyMoneyAccount()) {
         currentName = subAcc.name();
+        m_account = acc;
       }
     }
   }
@@ -495,4 +499,17 @@ const bool KInvestmentView::slotSelectAccount(const QString& accountName)
   return rc;
 }
 
+void KInvestmentView::show(void)
+{
+  kInvestmentViewDecl::show();
+  emit signalViewActivated();
+}
 
+void KInvestmentView::update(const QCString& /* id */)
+{
+  QCString lastUsed = m_account.id();
+  loadAccounts();
+  if(m_account.id() != lastUsed) {
+    slotRefreshView();
+  }
+}

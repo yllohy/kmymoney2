@@ -48,6 +48,7 @@ MyMoneyTransaction::~MyMoneyTransaction()
 bool MyMoneyTransaction::operator == (const MyMoneyTransaction& right) const
 {
   return ((m_id == right.m_id) &&
+      (m_commodity == right.m_commodity) &&
       (m_memo == right.m_memo) &&
       (m_splits == right.m_splits) &&
       (m_entryDate == right.m_entryDate) &&
@@ -194,7 +195,13 @@ const QCString MyMoneyTransaction::nextSplitID()
   QCString id;
   id = "S" + id.setNum(m_nextSplitID++).rightJustify(SPLIT_ID_SIZE, '0');
   return id;
+}
 
+const QCString MyMoneyTransaction::firstSplitID()
+{
+  QCString id;
+  id = "S" + id.setNum(1).rightJustify(SPLIT_ID_SIZE, '0');
+  return id;
 }
 
 const MyMoneyMoney MyMoneyTransaction::splitSum(void) const

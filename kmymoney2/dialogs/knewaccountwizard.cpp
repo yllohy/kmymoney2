@@ -38,6 +38,7 @@
 #include <klineedit.h>
 #include <kconfig.h>
 #include <kmessagebox.h>
+#include <kstandarddirs.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -47,9 +48,13 @@
 #include "../widgets/kmymoneycombo.h"
 #include "../widgets/kmymoneycategory.h"
 #include "../widgets/kmymoneypayee.h"
+#include "../widgets/kmymoneycurrencyselector.h"
+
 #include "../mymoney/mymoneyinstitution.h"
 #include "../mymoney/mymoneyfile.h"
+
 #include "../kmymoneyutils.h"
+
 #include "ieditscheduledialog.h"
 #include "knewaccountwizard.h"
 #include "knewloanwizard.h"
@@ -85,11 +90,6 @@ KNewAccountWizard::KNewAccountWizard(QWidget *parent, const char *name )
   accountTypeListBox->setCurrentItem(0);
 
   m_name->setFocus();
-
-  // FIXME: we don't have currency support, so we hide the two widgets
-  // that have been prepared for this support
-  m_currencyLabel->hide();
-  m_currencyComboBox->hide();
 }
 
 KNewAccountWizard::~KNewAccountWizard()
@@ -171,6 +171,7 @@ void KNewAccountWizard::accept()
   m_account.setAccountType(m_accountType);
   m_account.setName(accountName->text());
   m_account.setNumber(accountNumber->text());
+  m_account.setCurrencyId(m_currencyComboBox->currency().id());
 
   if(!institutionComboBox->currentText().isEmpty()) {
     QValueList<MyMoneyInstitution> list;

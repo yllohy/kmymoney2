@@ -26,6 +26,7 @@
 #include <qtextstream.h>
 #include <qprogressdialog.h>
 #include <qtextcodec.h>
+#include <qsignalmapper.h>
 
 #if QT_VERSION > 300
 #include <qcursor.h>
@@ -115,39 +116,45 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   // m_file = new KMyMoneyFile;
   newStorage();
 
+  QSignalMapper* signalMap = new QSignalMapper(this);
   // Page 0
   m_homeViewFrame = addVBoxPage( i18n("Home"), i18n("Home"),
     DesktopIcon("home"));
   m_homeView = new KHomeView(m_homeViewFrame);
-  connect(m_homeView, SIGNAL(signalViewActivated()), this, SLOT(slotActivatedHomePage()));
+  signalMap->setMapping(m_homeView, HomeView);
+  connect(m_homeView, SIGNAL(signalViewActivated()), signalMap, SLOT(map()));
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_homeView, SLOT(slotReloadView()));
 
   // Page 1
   m_accountsViewFrame = addVBoxPage( i18n("Accounts"), i18n("Insitutions/Accounts"),
     DesktopIcon("kmy"));
   m_accountsView = new KAccountsView(m_accountsViewFrame, "accountsView");
-  connect(m_accountsView, SIGNAL(signalViewActivated()), this, SLOT(slotActivatedAccountsView()));
+  signalMap->setMapping(m_accountsView, AccountsView);
+  connect(m_accountsView, SIGNAL(signalViewActivated()), signalMap, SLOT(map()));
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_accountsView, SLOT(slotReloadView()));
 
   // Page 2
   m_scheduleViewFrame = addVBoxPage( i18n("Schedule"), i18n("Bills & Reminders"),
     DesktopIcon("schedule"));
   m_scheduledView = new KScheduledView(m_scheduleViewFrame, "scheduledView");
-  connect(m_scheduledView, SIGNAL(signalViewActivated()), this, SLOT(slotActivatedScheduledView()));
+  signalMap->setMapping(m_scheduledView, SchedulesView);
+  connect(m_scheduledView, SIGNAL(signalViewActivated()), signalMap, SLOT(map()));
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_scheduledView, SLOT(slotReloadView()));
 
   // Page 3
   m_categoriesViewFrame = addVBoxPage( i18n("Categories"), i18n("Categories"),
     DesktopIcon("categories"));
   m_categoriesView = new KCategoriesView(m_categoriesViewFrame, "categoriesView");
-  connect(m_categoriesView, SIGNAL(signalViewActivated()), this, SLOT(slotActivatedCategoriesView()));
+  signalMap->setMapping(m_categoriesView, CategoriesView);
+  connect(m_categoriesView, SIGNAL(signalViewActivated()), signalMap, SLOT(map()));
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_categoriesView, SLOT(slotReloadView()));
 
   // Page 4
   m_payeesViewFrame = addVBoxPage( i18n("Payees"), i18n("Payees"),
     DesktopIcon("payee"));
   m_payeesView = new KPayeesView(m_payeesViewFrame, "payeesView");
-  connect(m_payeesView, SIGNAL(signalViewActivated()), this, SLOT(slotActivatedPayeeView()));
+  signalMap->setMapping(m_payeesView, PayeesView);
+  connect(m_payeesView, SIGNAL(signalViewActivated()), signalMap, SLOT(map()));
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_payeesView, SLOT(slotReloadView()));
 
   // Page 5
@@ -157,22 +164,29 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   // the next line causes the ledgers to get a hide() signal to be able
   // to end any pending edit activities
   connect(this, SIGNAL(aboutToShowPage(QWidget*)), m_ledgerView, SLOT(hide()));
-  connect(m_ledgerView, SIGNAL(signalViewActivated()), this, SLOT(slotActivatedAccountView()));
+  signalMap->setMapping(m_ledgerView, LedgersView);
+  connect(m_ledgerView, SIGNAL(signalViewActivated()), signalMap, SLOT(map()));
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_ledgerView, SLOT(slotReloadView()));
 
   // Page 6
   m_investmentViewFrame = addVBoxPage( i18n("Investments"), i18n("Investments"),
     DesktopIcon("categories"));
   m_investmentView = new KInvestmentView(m_investmentViewFrame, "investmentView");
-  // connect(m_investmentView, SIGNAL(signalViewActivated()), this, SLOT(slotActivatedInvestmentView()));
+  signalMap->setMapping(m_investmentView, InvestmentsView);
+  connect(m_investmentView, SIGNAL(signalViewActivated()), signalMap, SLOT(map()));
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_investmentView, SLOT(slotReloadView()));
 
   // Page 7
   m_reportsViewFrame = addVBoxPage(i18n("Reports"), i18n("Reports"),
     DesktopIcon("report"));
   m_reportsView = new KReportsView(m_reportsViewFrame, "reportsView");
+  signalMap->setMapping(m_reportsView, ReportsView);
+  connect(m_reportsView, SIGNAL(signalViewActivated()), signalMap, SLOT(map()));
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_reportsView, SLOT(slotReloadView()));
 
+  // connect the view activation signal mapper
+	connect(signalMap, SIGNAL(mapped(int)), this, SIGNAL(viewActivated(int)));
+  
   connect(m_accountsView, SIGNAL(accountRightMouseClick()),
     this, SLOT(slotAccountRightMouse()));
   connect(m_accountsView, SIGNAL(accountDoubleClick()), this, SLOT(slotAccountDoubleClick()));
@@ -669,6 +683,12 @@ bool KMyMoneyView::readFile(const KURL& url)
   if(MyMoneyFile::instance()->currencyList().count() == 0)
     loadDefaultCurrencies();
 
+  // make sure, we have a base currency
+  MyMoneyFile::instance()->suspendNotify(true);
+  while(MyMoneyFile::instance()->baseCurrency().id().isEmpty())
+    selectBaseCurrency();
+  MyMoneyFile::instance()->suspendNotify(false);
+
   // since the new account wizard contains the payees list, we have
   // to create the wizard completely new to get the latest list
   // into the payees widget
@@ -710,8 +730,6 @@ bool KMyMoneyView::readFile(const KURL& url)
   // if there's no asset account, then automatically start the
   // new account wizard
   // kmymoney2->createInitialAccount();
-
-  selectBaseCurrency();
 
   // if we currently see a different page, then select the right one
   if(page != activePageIndex()) {
@@ -1144,10 +1162,23 @@ void KMyMoneyView::viewPersonal(void)
 
 void KMyMoneyView::selectBaseCurrency(void)
 {
+  MyMoneyFile* file = MyMoneyFile::instance();
+
   // check if we have a base currency. If not, we need to select one
-  if(MyMoneyFile::instance()->baseCurrency().id().isEmpty()) {
+  if(file->baseCurrency().id().isEmpty()) {
     KCurrencyEditDlg dlg;
     dlg.exec();
+  }
+
+  // check that all accounts have a currency
+  QValueList<MyMoneyAccount> list = file->accountList();
+  QValueList<MyMoneyAccount>::Iterator it;
+
+  for(it = list.begin(); it != list.end(); ++it) {
+    if((*it).currencyId().isEmpty()) {
+      (*it).setCurrencyId(file->baseCurrency().id());
+      file->modifyAccount(*it);
+    }
   }
 }
 
@@ -1616,7 +1647,7 @@ QString KMyMoneyView::currentAccountName(void)
     }
     catch (MyMoneyException *e)
     {
-      // Try an instiution
+      // Try an institution
 
       try
       {
@@ -1633,36 +1664,6 @@ QString KMyMoneyView::currentAccountName(void)
 
 
   return i18n("Unknown Account");
-}
-
-void KMyMoneyView::slotActivatedHomePage()
-{
-  emit signalHomeView();
-}
-
-void KMyMoneyView::slotActivatedAccountsView()
-{
-  emit signalAccountsView();
-}
-
-void KMyMoneyView::slotActivatedAccountView()
-{
-  emit signalAccountView();
-}
-
-void KMyMoneyView::slotActivatedScheduledView()
-{
-  emit signalScheduledView();
-}
-
-void KMyMoneyView::slotActivatedCategoriesView()
-{
-  emit signalCategoryView();
-}
-
-void KMyMoneyView::slotActivatedPayeeView()
-{
-  emit signalPayeeView();
 }
 
 void KMyMoneyView::slotShowTransactionDetail(bool detailed)
@@ -1920,6 +1921,12 @@ void KMyMoneyView::fixTransactions(void)
     QValueList<MyMoneySplit> splits = (*it_t).splits();
     QValueList<MyMoneySplit>::Iterator it_s;
     QCStringList accounts;
+
+    // check if base commodity is set. if not, set baseCurrency
+    if((*it_t).commodity().isEmpty()) {
+      (*it_t).setCommodity(file->baseCurrency().id());
+      file->modifyTransaction(*it_t);
+    }
     
     bool isLoan = false;
     // Determine default action
@@ -1991,6 +1998,7 @@ void KMyMoneyView::fixTransactions(void)
     // Check for correct assignment of ActionInterest in all splits
     // and check if there are any duplicates in this transactions
     for(it_s = splits.begin(); it_s != splits.end(); ++it_s) {
+      MyMoneyAccount splitAccount = file->account((*it_s).accountId());
       if(accounts.contains((*it_s).accountId())) {
         hasDuplicateAccounts = true;
       } else {
@@ -2015,6 +2023,16 @@ void KMyMoneyView::fixTransactions(void)
           qDebug("Fixed interest action in %s", (*it_t).id().data());
         }
       }
+
+      // check that for splits referencing an account that has
+      // the same currency as the transactions commodity the value
+      // and shares field are the same.
+      if((*it_t).commodity() == splitAccount.currencyId()
+      && (*it_s).value() != (*it_s).shares()) {
+        (*it_s).setShares((*it_s).value());
+        (*it_t).modifySplit(*it_s);
+        file->modifyTransaction(*it_t);
+      }
     }
 
 /*
@@ -2036,4 +2054,10 @@ void KMyMoneyView::fixTransactions(void)
 void KMyMoneyView::fixDuplicateAccounts(MyMoneyTransaction& t)
 {
   qDebug("Duplicate account in transaction %s", t.id().data());  
+}
+
+void KMyMoneyView::slotPrintView(void)
+{
+  if(pageIndex(m_reportsViewFrame) == activePageIndex())
+    m_reportsView->slotPrintView();
 }

@@ -83,8 +83,8 @@ KHomeView::~KHomeView()
 void KHomeView::show()
 {
   slotRefreshView();
-  emit signalViewActivated();
   QWidget::show();
+  emit signalViewActivated();
 }
 
 void KHomeView::slotRefreshView(void)
@@ -386,11 +386,12 @@ void KHomeView::showAccounts(KHomeView::paymentTypeE type, const QString& header
 void KHomeView::showAccountEntry(const MyMoneyAccount& acc)
 {
   QString tmp;
+  MyMoneyCurrency currency = MyMoneyFile::instance()->currency(acc.currencyId());
   
   tmp = QString("<td width=\"70%\">") +
       link(VIEW_LEDGER, QString("?id=%1").arg(acc.id())) + acc.name() + linkend() + "</td>";
   tmp += QString("<td width=\"30%\" align=\"right\">") +
-      MyMoneyFile::instance()->balance(acc.id()).formatMoney() +
+      MyMoneyFile::instance()->balance(acc.id()).formatMoney(currency.tradingSymbol()) +
       "</td>";
   // qDebug("accountEntry = '%s'", tmp.latin1());
   m_part->write(tmp);

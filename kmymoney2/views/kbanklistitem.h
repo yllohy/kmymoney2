@@ -84,8 +84,7 @@ private:
 
 /**
   * This class represents an item in the account list view. It is used
-  * by the KAccountsView, the KCategoriesView and the KNewAccountWizard
-  * to select between the accounts.
+  * by the KAccountsView to select between the accounts.
   */
 class KAccountListItem : public KListViewItem, public KAccountItem, MyMoneyObserver
 {
@@ -110,7 +109,7 @@ public:
     *
     * @param parent pointer to the KListView object this entry should be
     *               added to.
-    * @param institution const reference to MyMoneyAccount for which
+    * @param account const reference to MyMoneyAccount for which
     *               the KListView entry is constructed
     */
   KAccountListItem(KListView *parent, const MyMoneyAccount& account);
@@ -121,7 +120,7 @@ public:
     *
     * @param parent pointer to the parent KAccountListView object this entry should be
     *               added to.
-    * @param institution const reference to MyMoneyAccount for which
+    * @param account const reference to MyMoneyAccount for which
     *               the KListView entry is constructed
     */
   KAccountListItem(KAccountListItem *parent, const MyMoneyAccount& account);
@@ -177,15 +176,59 @@ private:
     */
   void loadCache(void);
 
+protected:
+  bool m_suspendUpdate;
+  bool m_valueValid;
+
 private:
   bool m_bViewNormal;
-  bool m_suspendUpdate;
   int m_nAccountColumn;
   int m_nInstitutionColumn;
 
   static  QPixmap* accountPixmap;
 };
 
+
+/**
+  * This class represents an item in the category list view. It is used
+  * by the KCategoriesView to select between the accounts.
+  */
+class KCategoryListItem : public KAccountListItem
+{
+public:
+  /**
+    * Constructor to be used to construct an account entry
+    * object.
+    *
+    * @param parent pointer to the KListView object this entry should be
+    *               added to.
+    * @param account const reference to MyMoneyAccount for which
+    *               the KListView entry is constructed
+    */
+  KCategoryListItem(KListView *parent, const MyMoneyAccount& account) : KAccountListItem(parent, account) {};
+
+  /**
+    * Constructor to be used to construct an account entry
+    * object.
+    *
+    * @param parent pointer to the parent KAccountListView object this entry should be
+    *               added to.
+    * @param account const reference to MyMoneyAccount for which
+    *               the KListView entry is constructed
+    */
+  KCategoryListItem(KCategoryListItem *parent, const MyMoneyAccount& account) : KAccountListItem(parent, account) {};
+
+  ~KCategoryListItem() {};
+
+  /**
+    * This method is called by the MyMoneyFile object, whenever the
+    * account that is represented by this object changes within the
+    * MyMoneyFile engine.
+    *
+    * @param id reference to QCString of the account's id
+    */
+  void update(const QCString& id);
+};
 
 /**
   * This class represents an item in the account icon view. It is used

@@ -31,6 +31,7 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 #include "storage/mymoneyseqaccessmgr.h"
+#include "mymoneycurrency.h"
 #include "mymoneyfile.h"
 #ifndef HAVE_CONFIG_H
 #define VERSION "UNKNOWN"
@@ -535,7 +536,12 @@ void MyMoneyFile::addTransaction(MyMoneyTransaction& transaction)
       }
     }
   }
-  
+
+  // check that we have a commodity
+  if(transaction.commodity().isEmpty()) {
+    transaction.setCommodity(baseCurrency().id());
+  }
+
   // then add the transaction to the file global pool
   m_storage->addTransaction(transaction);
 
@@ -674,28 +680,36 @@ const MyMoneyAccount MyMoneyFile::liability(void) const
 {
   checkStorage();
 
-  return m_storage->liability();
+  MyMoneyAccount acc = m_storage->liability();
+  acc.setCurrencyId(baseCurrency().id());
+  return acc;
 }
 
 const MyMoneyAccount MyMoneyFile::asset(void) const
 {
   checkStorage();
 
-  return m_storage->asset();
+  MyMoneyAccount acc = m_storage->asset();
+  acc.setCurrencyId(baseCurrency().id());
+  return acc;
 }
 
 const MyMoneyAccount MyMoneyFile::expense(void) const
 {
   checkStorage();
 
-  return m_storage->expense();
+  MyMoneyAccount acc = m_storage->expense();
+  acc.setCurrencyId(baseCurrency().id());
+  return acc;
 }
 
 const MyMoneyAccount MyMoneyFile::income(void) const
 {
   checkStorage();
 
-  return m_storage->income();
+  MyMoneyAccount acc = m_storage->income();
+  acc.setCurrencyId(baseCurrency().id());
+  return acc;
 }
 
 const unsigned int MyMoneyFile::transactionCount(const QCString& account) const
@@ -731,6 +745,90 @@ const MyMoneyMoney MyMoneyFile::totalBalance(const QCString& id) const
   checkStorage();
 
   return m_storage->totalBalance(id);
+}
+
+const bool MyMoneyFile::accountValueValid(const QCString& id) const
+{
+  bool result = true;
+  try {
+    MyMoneyAccount acc;
+
+    acc = account(id);
+    MyMoneyCurrency currency = instance()->currency(acc.currencyId());
+    if(currency.id() != baseCurrency().id()) {
+      result = currency.hasPrice();
+    }
+  } catch(MyMoneyException *e) {
+    qDebug("MyMoneyFile::totalValueValid: %s thrown in %s line %ld",
+      e->what().data(), e->file().data(), e->line());
+    delete e;
+  }
+  return result;
+}
+
+const bool MyMoneyFile::totalValueValid(const QCString& id) const
+{
+  QCStringList accounts;
+  QCStringList::ConstIterator it_a;
+
+  bool result = accountValueValid(id);
+  try {
+    MyMoneyAccount acc;
+
+    acc = account(id);
+    accounts = acc.accountList();
+
+    for(it_a = accounts.begin(); result == true && it_a != accounts.end(); ++it_a) {
+      result = totalValueValid(*it_a);
+    }
+  } catch(MyMoneyException *e) {
+    qDebug("MyMoneyFile::totalValueValid: %s thrown in %s line %ld",
+      e->what().data(), e->file().data(), e->line());
+    delete e;
+  }
+  return result;
+}
+
+const MyMoneyMoney MyMoneyFile::accountValue(const QCString& id) const
+{
+  MyMoneyMoney result(balance(id));
+  try {
+    MyMoneyAccount acc;
+
+    acc = account(id);
+    MyMoneyCurrency currency = instance()->currency(acc.currencyId());
+    if(currency.id() != baseCurrency().id()) {
+      result = result / currency.price();
+    }
+  } catch(MyMoneyException *e) {
+    qDebug("MyMoneyFile::accountValue: %s thrown in %s line %ld",
+      e->what().data(), e->file().data(), e->line());
+    delete e;
+  }
+  return result;
+}
+
+const MyMoneyMoney MyMoneyFile::totalValue(const QCString& id) const
+{
+  QCStringList accounts;
+  QCStringList::ConstIterator it_a;
+
+  MyMoneyMoney result(accountValue(id));
+  try {
+    MyMoneyAccount acc;
+
+    acc = account(id);
+    accounts = acc.accountList();
+
+    for(it_a = accounts.begin(); it_a != accounts.end(); ++it_a) {
+      result += totalValue(*it_a);
+    }
+  } catch(MyMoneyException *e) {
+    qDebug("MyMoneyFile::totalValue: %s thrown in %s line %ld",
+      e->what().data(), e->file().data(), e->line());
+    delete e;
+  }
+  return result;
 }
 
 void MyMoneyFile::attach(const QCString& id, MyMoneyObserver* observer)
@@ -1342,3 +1440,21 @@ void MyMoneyFile::setBaseCurrency(const MyMoneyCurrency& curr)
   addNotification(NotifyClassCurrency);
 }
 
+const MyMoneyMoney MyMoneyFile::currencyPrice(const QCString& currencyId, const QDate date) const
+{
+  MyMoneyMoney price(1);
+
+  try {
+    MyMoneyCurrency currency = instance()->currency(currencyId);
+    QMap<QDate, MyMoneyMoney>::ConstIterator it;
+    for(it = currency.priceHistory().begin(); it != currency.priceHistory().end(); ++it) {
+      if(it.key() <= date)
+        price = *it;
+      else if(it.key() > date)
+        break;
+    }
+  } catch(MyMoneyException *e) {
+    delete e;
+  }
+  return price;
+}

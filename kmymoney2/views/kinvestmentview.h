@@ -38,6 +38,7 @@
 #include "kinvestmentlistitem.h"
 #include "../mymoney/mymoneyequity.h"
 #include "../mymoney/mymoneyaccount.h"
+#include "../mymoney/mymoneyobserver.h"
 #include "kinvestmentviewdecl.h"
 
 class MyMoneyTransaction;
@@ -48,7 +49,7 @@ class KLedgerView;
   * @author Kevin Tambascio
   */
 
-class KInvestmentView : public kInvestmentViewDecl
+class KInvestmentView : public kInvestmentViewDecl, MyMoneyObserver
 {
   Q_OBJECT
   
@@ -72,6 +73,8 @@ public:
 
   /** No description */
   void addEquityEntry(MyMoneyEquity *pEntry);
+
+  void update(const QCString& id);
 
 public slots:
   /**
@@ -116,6 +119,8 @@ public slots:
     */
   const bool slotSelectAccount(const QString& accountName);
 
+  void show(void);
+
 protected:
   /**
     * This method reloads the account selection combo box of the
@@ -141,6 +146,9 @@ protected slots:
   void slotEditInvestment();
   void slotUpdatePrice();
   void slotViewChanged(int);
+
+signals:
+  void signalViewActivated(void);
 
 private:
   void initSummaryTab(void);

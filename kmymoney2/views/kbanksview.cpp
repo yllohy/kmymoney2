@@ -305,19 +305,20 @@ KAccountsView::KAccountsView(QWidget *parent, const char *name)
   accountListView->setAllColumnsShowFocus(true);
 
   accountListView->addColumn(i18n("Account"));
-  accountListView->addColumn(i18n("Entries"));
+  accountListView->addColumn(i18n("Transactions"));
   accountListView->addColumn(i18n("Balance"));
-  // accountListView->addColumn(i18n("Type"));
+  accountListView->addColumn(i18n("Value"));
 
   accountListView->setMultiSelection(false);
 
   accountListView->setColumnWidthMode(0, QListView::Maximum);
   accountListView->setColumnWidthMode(1, QListView::Maximum);
   accountListView->setColumnWidthMode(2, QListView::Maximum);
-  // accountListView->setColumnWidthMode(3, QListView::Maximum);
+  accountListView->setColumnWidthMode(3, QListView::Maximum);
 
-  accountListView->setColumnAlignment(2, Qt::AlignRight);
   accountListView->setColumnAlignment(1, Qt::AlignRight);
+  accountListView->setColumnAlignment(2, Qt::AlignRight);
+  accountListView->setColumnAlignment(3, Qt::AlignRight);
 
   accountListView->setResizeMode(QListView::AllColumns);
 
@@ -547,12 +548,19 @@ void KAccountsView::refreshNetWorth(void)
   MyMoneyAccount liabilityAccount = file->liability();
   MyMoneyAccount assetAccount = file->asset();
 
-  netWorth = file->totalBalance(assetAccount.id()) +
-             file->totalBalance(liabilityAccount.id());
+  netWorth = file->totalValue(assetAccount.id()) +
+             file->totalValue(liabilityAccount.id());
 
   QString s(i18n("Net Worth: "));
-  s += netWorth.formatMoney();
-
+  if(!(file->totalValueValid(assetAccount.id()) & file->totalValueValid(liabilityAccount.id())))
+    s += "~ ";
+  if(netWorth < 0) {
+    s += "<b><font color=\"red\">";
+  }
+  s += netWorth.formatMoney(file->baseCurrency().tradingSymbol());
+  if(netWorth < 0) {
+    s += "</font></b>";
+  }
 
   totalProfitsLabel->setFont(KMyMoneyUtils::cellFont());
   totalProfitsLabel->setText(s);

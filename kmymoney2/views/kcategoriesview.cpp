@@ -58,20 +58,25 @@ KCategoriesView::KCategoriesView(QWidget *parent, const char *name )
 {
   categoryListView->setRootIsDecorated(true);
   categoryListView->addColumn(i18n("Category"));
-  categoryListView->addColumn(i18n("Type"));
+  categoryListView->addColumn(i18n("Transactions"));
 
   // FIXME: We could make this configurable
   categoryListView->addColumn(i18n("Balance"));
+  // categoryListView->addColumn(i18n("Value"));
 
   categoryListView->setMultiSelection(false);
   categoryListView->setColumnWidthMode(0, QListView::Maximum);
   categoryListView->setColumnWidthMode(1, QListView::Maximum);
   categoryListView->setColumnWidthMode(2, QListView::Maximum);
+  // categoryListView->setColumnWidthMode(3, QListView::Maximum);
   categoryListView->header()->setResizeEnabled(true);
 
   categoryListView->setAllColumnsShowFocus(true);
 
+  categoryListView->setColumnAlignment(1, Qt::AlignRight);
   categoryListView->setColumnAlignment(2, Qt::AlignRight);
+  // categoryListView->setColumnAlignment(3, Qt::AlignRight);
+
   categoryListView->setResizeMode(QListView::AllColumns);
 
   // never show a horizontal scroll bar
@@ -117,7 +122,7 @@ void KCategoriesView::slotRefreshView(void)
     MyMoneyAccount incomeAccount = file->income();
 
     // Income
-    KAccountListItem *incomeTopLevelAccount = new KAccountListItem(categoryListView,
+    KCategoryListItem *incomeTopLevelAccount = new KCategoryListItem(categoryListView,
               incomeAccount);
 
     QValueList<MyMoneyAccount> list = file->accountList();
@@ -130,7 +135,7 @@ void KCategoriesView::slotRefreshView(void)
           it != incomeAccount.accountList().end();
           ++it )
     {
-      KAccountListItem *accountItem = new KAccountListItem(incomeTopLevelAccount,
+      KCategoryListItem *accountItem = new KCategoryListItem(incomeTopLevelAccount,
             m_accountMap[*it]);
 
       accountUsed = m_transactionCountMap[*it] > 0;
@@ -149,14 +154,14 @@ void KCategoriesView::slotRefreshView(void)
     }
 
     // Expense
-    KAccountListItem *expenseTopLevelAccount = new KAccountListItem(categoryListView,
+    KCategoryListItem *expenseTopLevelAccount = new KCategoryListItem(categoryListView,
               expenseAccount);
 
     for ( QCStringList::ConstIterator it = expenseAccount.accountList().begin();
           it != expenseAccount.accountList().end();
           ++it )
     {
-      KAccountListItem *accountItem = new KAccountListItem(expenseTopLevelAccount,
+      KCategoryListItem *accountItem = new KCategoryListItem(expenseTopLevelAccount,
             m_accountMap[*it]);
 
       accountUsed = m_transactionCountMap[*it] > 0;
@@ -222,7 +227,6 @@ void KCategoriesView::resizeEvent(QResizeEvent* e)
   // categoryListView->setColumnWidth(2, 70);
 
   // call base class resizeEvent()
-
   kCategoriesViewDecl::resizeEvent(e);
 }
 
@@ -401,8 +405,8 @@ void KCategoriesView::refreshProfits(void)
 
   totalProfitsLabel->setFont(KMyMoneyUtils::cellFont());
   if(profit < 0)
-    totalProfitsLabel->setText(i18n("Loss: %1").arg((-profit).formatMoney()));
+    totalProfitsLabel->setText(i18n("Loss: %1").arg((-profit).formatMoney(file->baseCurrency().tradingSymbol())));
   else
-    totalProfitsLabel->setText(i18n("Profit: %1").arg(profit.formatMoney()));
+    totalProfitsLabel->setText(i18n("Profit: %1").arg(profit.formatMoney(file->baseCurrency().tradingSymbol())));
 
 }

@@ -32,6 +32,8 @@ class MyMoneySplitTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST(testEquality);
 	CPPUNIT_TEST(testInequality);
 	CPPUNIT_TEST(testAmortization);
+	CPPUNIT_TEST(testValue);
+	CPPUNIT_TEST(testSetValue);
         CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -49,6 +51,8 @@ public:
 	void testEquality();
 	void testInequality();
 	void testAmortization();
+	void testValue();
+	void testSetValue();
 };
 
 #endif

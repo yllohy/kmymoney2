@@ -61,7 +61,33 @@ void MyMoneyEquity::removePriceHistory(QDate& date)
     m_priceHistory.erase(i);
   }
 }
+
+const bool MyMoneyEquity::hasPrice(const QDate& date) const
+{
+  bool result = false;
+  QMap<QDate, MyMoneyMoney>::ConstIterator it;
   
+  it = m_priceHistory.begin();
+  if(it != m_priceHistory.end()) {
+    if(it.key() <= date)
+      result = true;
+  }
+  return result;
+}
+
+const MyMoneyMoney MyMoneyEquity::price(const QDate& date) const
+{
+  MyMoneyMoney price(1,1);
+
+  QMap<QDate, MyMoneyMoney>::ConstIterator it;
+  for(it = m_priceHistory.begin(); it != m_priceHistory.end(); ++it) {
+    if(it.key() <= date)
+      price = *it;
+    else if(it.key() > date)
+      break;
+  }
+  return price;
+}
 
 #if 0
 /** No descriptions */

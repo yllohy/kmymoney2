@@ -580,7 +580,7 @@ void KLedgerViewCheckings::fillForm(void)
     m_transaction = *m_transactionPtr;
     m_split = m_transaction.splitByAccount(accountId());
 
-    MyMoneyMoney amount = m_split.value();
+    MyMoneyMoney amount = m_split.value(m_transaction.commodity(), m_account.currencyId());
 
     kMyMoneyTransactionFormTableItem* item;
 
@@ -724,6 +724,7 @@ void KLedgerViewCheckings::fillForm(void)
     m_split.setAction(m_action);
 
     m_transaction.addSplit(m_split);
+    m_transaction.setCommodity(m_account.currencyId());
 
     // transaction empty, clean out space
     for(int i = 0; i < formTable->numRows(); ++i) {
@@ -802,7 +803,7 @@ void KLedgerViewCheckings::reloadEditWidgets(const MyMoneyTransaction& t)
 
   m_transaction = t;
   m_split = m_transaction.splitByAccount(accountId());
-  amount = m_split.value();
+  amount = m_split.value(m_transaction.commodity(), m_account.currencyId());
 
   if(m_editCategory != 0)
     disconnect(m_editCategory, SIGNAL(signalFocusIn()), this, SLOT(slotOpenSplitDialog()));
@@ -1050,8 +1051,8 @@ void KLedgerViewCheckings::arrangeEditWidgetsInForm(QWidget*& focusWidget, const
     case Transfer: // Transfer
       item = m_form->table()->item(2,1);
       item->setSpan(1, 2);
-  item = m_form->table()->item(1,1);
-  item->setSpan(1, 1);
+      item = m_form->table()->item(1,1);
+      item->setSpan(1, 1);
 
       payeeRow = 2;
       categoryRow = -1;
@@ -1074,7 +1075,8 @@ void KLedgerViewCheckings::arrangeEditWidgetsInForm(QWidget*& focusWidget, const
 
   if(toRow != -1) {
     m_form->table()->setCellWidget(toRow, 1, m_editTo);
-    m_form->table()->setCellWidget(toRow, 2, m_editSplit);
+    if(m_split.id() == MyMoneyTransaction::firstSplitID())
+      m_form->table()->setCellWidget(toRow, 2, m_editSplit);
   } else {
     delete m_editTo;
     m_editTo = 0;
@@ -1082,7 +1084,8 @@ void KLedgerViewCheckings::arrangeEditWidgetsInForm(QWidget*& focusWidget, const
 
   if(categoryRow != -1) {
     m_form->table()->setCellWidget(categoryRow, 1, m_editCategory);
-    m_form->table()->setCellWidget(categoryRow, 2, m_editSplit);
+    if(m_split.id() == MyMoneyTransaction::firstSplitID())
+      m_form->table()->setCellWidget(categoryRow, 2, m_editSplit);
   } else {
     delete m_editCategory;
     // delete m_editSplit;

@@ -226,7 +226,10 @@ private:
   QVBoxLayout* m_formLayout;
   
 signals:
-  void signalViewActivated();
+  /**
+    * This signal is emitted whenever this view is activated.
+    */
+  void signalViewActivated(void);
 
   /**
     * This signal is emitted whenever the ledger views are required to

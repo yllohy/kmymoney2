@@ -1,7 +1,7 @@
 /***************************************************************************
-                          kreportsview.h  -  description
+                          kcurrencycalculator.h  -  description
                              -------------------
-    begin                : Sat Mar 27 2004
+    begin                : Thu Apr 8 2004
     copyright            : (C) 2000-2004 by Michael Edwardes
     email                : mte@users.sourceforge.net
                            Javier Campos Morales <javi_c@users.sourceforge.net>
@@ -9,7 +9,6 @@
                            John C <thetacoturtle@users.sourceforge.net>
                            Thomas Baumgart <ipwizard@users.sourceforge.net>
                            Kevin Tambascio <ktambascio@users.sourceforge.net>
-                           Ace Jones <ace.jones@hotpop.com>
  ***************************************************************************/
 
 /***************************************************************************
@@ -20,85 +19,64 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef KREPORTSVIEW_H
-#define KREPORTSVIEW_H
+
+#ifndef KCURRENCYCALCULATOR_H
+#define KCURRENCYCALCULATOR_H
 
 // ----------------------------------------------------------------------------
 // QT Includes
+
 #include <qwidget.h>
-class QVBoxLayout;
 
 // ----------------------------------------------------------------------------
 // KDE Includes
-#include <khtml_part.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "../mymoney/mymoneyscheduled.h"
-#include "../mymoney/mymoneyaccount.h"
+#include "kcurrencycalculatordecl.h"
+#include "../mymoney/mymoneyfile.h"
 
 /**
-  * Displays a page where reports can be placed.  For now only contains
-  * one simple report, but can easily be extended.
-  *
-  * @author Ace Jones
-  *
-  * @short A view for reports.
-**/
-class KReportsView : public QWidget  {
-   Q_OBJECT
+  * @author Thomas Baumgart
+  */
 
-private:
-  KHTMLPart *m_part;
-  QVBoxLayout *m_qvboxlayoutPage;
-    
+class KCurrencyCalculator : public KCurrencyCalculatorDecl
+{
+  Q_OBJECT
+  
 public:
   /**
-    * Standard constructor.
+    * @param from the @p from currency
+    * @param to   the @p to currency
+    * @param value the value to be converted
+    * @param shares the number of foreign currency units
+    * @param date the date when the conversion took place
+    * @param resultFraction the smallest fraction of the result (default 100)
     *
-    * @param parent The QWidget this is used in.
-    * @param name The QT name.
-    *
-    * @return An object of type KReportsView
-    *
-    * @see ~KReportsView
-    */
-  KReportsView(QWidget *parent=0, const char *name=0);
+    * @note @p value must not be 0!
+    */ 
+  KCurrencyCalculator(const MyMoneyCurrency& from, const MyMoneyCurrency& to, const MyMoneyMoney& value, const MyMoneyMoney& shares, const QDate& date, const int resultFraction = 100, QWidget *parent=0, const char *name=0);
+  ~KCurrencyCalculator();
 
-  /**
-    * Standard destructor.
-    *
-    * @return Nothing.
-    *
-    * @see KReportsView
-    */
-  ~KReportsView();
+  const MyMoneyMoney price(void) const;
 
-  /**
-    * Overridden so we can emit the activated signal.
-    *
-    * @return Nothing.
-    */
-  void show();
+protected slots:
+  void slotSetFromTo(void);
+  void slotSetToFrom(void);
+  void slotUpdateResult(const QString& txt);
+  void slotUpdateRate(const QString& txt);
+  virtual void accept();
 
-protected:
-  static const QString linkfull(const QString& view, const QString& query, const QString& label);
-  const QString createTable(const QString& links = QString()) const;
-  
-public slots:
-  void slotOpenURL(const KURL &url, const KParts::URLArgs& args);
-
-  void slotRefreshView(void);
-  void slotPrintView(void);
-  void slotCopyView(void);
-  void slotReloadView(void) { slotRefreshView(); };
-
-signals:
-  /**
-    * This signal is emitted whenever this view is activated.
-    */
-  void signalViewActivated(void);
+private:
+  MyMoneyCurrency     m_fromCurrency;
+  MyMoneyCurrency     m_toCurrency;
+  MyMoneyCurrency*    m_updateCurrency;
+  MyMoneyMoney        m_result;
+  MyMoneyMoney        m_value;
+  QDate               m_date;
+  int                 m_sign;
+  int                 m_resultFraction;
 };
 
 #endif

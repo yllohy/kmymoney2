@@ -737,6 +737,7 @@ MyMoneyTransaction MyMoneyStorageXML::readTransaction(QDomElement& transaction, 
   t.setEntryDate(getDate(QStringEmpty(transaction.attribute(QString("entrydate")))));
   t.setPostDate(getDate(QStringEmpty(transaction.attribute(QString("postdate")))));
   t.setMemo(QStringEmpty(transaction.attribute(QString("memo"))));
+  t.setCommodity(QCStringEmpty(transaction.attribute(QString("commodity"))));
 
   id = QCStringEmpty(transaction.attribute(QString("id")));
   if(!withinSchedule)
@@ -768,6 +769,7 @@ void MyMoneyStorageXML::writeTransaction(QDomElement& transaction, const MyMoney
   transaction.setAttribute(QString("postdate"), getString(tx.postDate()));
   transaction.setAttribute(QString("memo"), tx.memo());
   transaction.setAttribute(QString("entrydate"), getString(tx.entryDate()));
+  transaction.setAttribute(QString("commodity"), tx.commodity());
 
   QDomElement splits = m_doc->createElement("SPLITS");
   QValueList<MyMoneySplit> splitList = tx.splits();
@@ -938,6 +940,7 @@ MyMoneySplit MyMoneyStorageXML::readSplit(QDomElement& splitElement)
   split.setReconcileFlag(static_cast<MyMoneySplit::reconcileFlagE>(splitElement.attribute(QString("reconcileflag")).toInt()));
   split.setMemo(QStringEmpty(splitElement.attribute(QString("memo"))));
   split.setValue(MyMoneyMoney(QStringEmpty(splitElement.attribute(QString("value")))));
+  split.setShares(MyMoneyMoney(QStringEmpty(splitElement.attribute(QString("shares")))));
   split.setAccountId(QCStringEmpty(splitElement.attribute(QString("account"))));
   split.setNumber(QStringEmpty(splitElement.attribute(QString("number"))));
  
@@ -951,6 +954,7 @@ void MyMoneyStorageXML::writeSplit(QDomElement& splitElement, const MyMoneySplit
   splitElement.setAttribute(QString("action"), split.action());
   splitElement.setAttribute(QString("reconcileflag"), split.reconcileFlag());
   splitElement.setAttribute(QString("value"), split.value().toString());
+  splitElement.setAttribute(QString("shares"), split.shares().toString());
   splitElement.setAttribute(QString("memo"), split.memo());
   splitElement.setAttribute(QString("id"), split.id());
   splitElement.setAttribute(QString("account"), split.accountId());

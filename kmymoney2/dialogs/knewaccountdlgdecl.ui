@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>KNewAccountDlgDecl</class>
 <widget class="QDialog">
     <property name="name">
@@ -8,12 +8,15 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>592</width>
-            <height>591</height>
+            <width>683</width>
+            <height>720</height>
         </rect>
     </property>
     <property name="caption">
         <string>New Account Dialog</string>
+    </property>
+    <property name="sizeGripEnabled">
+        <bool>true</bool>
     </property>
     <vbox>
         <property name="name">
@@ -108,19 +111,51 @@ My Current Account</string>
                 </property>
                 <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>Layout5</cstring>
+                        <cstring>layout30</cstring>
                     </property>
-                    <hbox>
+                    <grid>
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
-                        <property name="margin">
-                            <number>0</number>
-                        </property>
-                        <property name="spacing">
-                            <number>6</number>
-                        </property>
-                        <widget class="QLabel">
+                        <widget class="QLabel" row="1" column="0">
+                            <property name="name">
+                                <cstring>TextLabel2</cstring>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>60</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                            <property name="maximumSize">
+                                <size>
+                                    <width>60</width>
+                                    <height>32767</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string>Number:</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="2" column="0">
+                            <property name="name">
+                                <cstring>TextLabel5</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Notes:</string>
+                            </property>
+                        </widget>
+                        <widget class="QLineEdit" row="0" column="1">
+                            <property name="name">
+                                <cstring>accountNameEdit</cstring>
+                            </property>
+                        </widget>
+                        <widget class="QLineEdit" row="2" column="1">
+                            <property name="name">
+                                <cstring>descriptionEdit</cstring>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="0" column="0">
                             <property name="name">
                                 <cstring>TextLabel1</cstring>
                             </property>
@@ -146,67 +181,20 @@ My Current Account</string>
                                 <string>Name:</string>
                             </property>
                         </widget>
-                        <widget class="QLineEdit">
-                            <property name="name">
-                                <cstring>accountNameEdit</cstring>
-                            </property>
-                        </widget>
-                    </hbox>
-                </widget>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>Layout6</cstring>
-                    </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <property name="margin">
-                            <number>0</number>
-                        </property>
-                        <property name="spacing">
-                            <number>6</number>
-                        </property>
-                        <widget class="QLabel">
-                            <property name="name">
-                                <cstring>TextLabel2</cstring>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>60</width>
-                                    <height>0</height>
-                                </size>
-                            </property>
-                            <property name="maximumSize">
-                                <size>
-                                    <width>60</width>
-                                    <height>32767</height>
-                                </size>
-                            </property>
-                            <property name="text">
-                                <string>Number:</string>
-                            </property>
-                        </widget>
-                        <widget class="QLineEdit">
+                        <widget class="QLineEdit" row="1" column="1">
                             <property name="name">
                                 <cstring>accountNoEdit</cstring>
                             </property>
                         </widget>
-                    </hbox>
+                    </grid>
                 </widget>
                 <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>Layout8</cstring>
+                        <cstring>layout35</cstring>
                     </property>
                     <hbox>
                         <property name="name">
                             <cstring>unnamed</cstring>
-                        </property>
-                        <property name="margin">
-                            <number>0</number>
-                        </property>
-                        <property name="spacing">
-                            <number>6</number>
                         </property>
                         <widget class="QButtonGroup">
                             <property name="name">
@@ -215,38 +203,27 @@ My Current Account</string>
                             <property name="title">
                                 <string>Account type</string>
                             </property>
-                            <widget class="QComboBox">
+                            <vbox>
                                 <property name="name">
-                                    <cstring>typeCombo</cstring>
+                                    <cstring>unnamed</cstring>
                                 </property>
-                                <property name="enabled">
-                                    <bool>true</bool>
-                                </property>
-                                <property name="geometry">
-                                    <rect>
-                                        <x>11</x>
-                                        <y>18</y>
-                                        <width>248</width>
-                                        <height>27</height>
-                                    </rect>
-                                </property>
-                            </widget>
-                            <widget class="QCheckBox">
-                                <property name="name">
-                                    <cstring>m_qcheckboxPreferred</cstring>
-                                </property>
-                                <property name="geometry">
-                                    <rect>
-                                        <x>14</x>
-                                        <y>54</y>
-                                        <width>147</width>
-                                        <height>20</height>
-                                    </rect>
-                                </property>
-                                <property name="text">
-                                    <string>Preferred Account</string>
-                                </property>
-                            </widget>
+                                <widget class="QComboBox">
+                                    <property name="name">
+                                        <cstring>typeCombo</cstring>
+                                    </property>
+                                    <property name="enabled">
+                                        <bool>true</bool>
+                                    </property>
+                                </widget>
+                                <widget class="QCheckBox">
+                                    <property name="name">
+                                        <cstring>m_qcheckboxPreferred</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Preferred Account</string>
+                                    </property>
+                                </widget>
+                            </vbox>
                         </widget>
                         <widget class="QGroupBox">
                             <property name="name">
@@ -267,19 +244,44 @@ My Current Account</string>
                                 </property>
                                 <widget class="QLayoutWidget">
                                     <property name="name">
-                                        <cstring>Layout1</cstring>
+                                        <cstring>layout34</cstring>
                                     </property>
-                                    <hbox>
+                                    <grid>
                                         <property name="name">
                                             <cstring>unnamed</cstring>
                                         </property>
-                                        <property name="margin">
-                                            <number>0</number>
-                                        </property>
-                                        <property name="spacing">
-                                            <number>6</number>
-                                        </property>
-                                        <widget class="QLabel">
+                                        <widget class="QLabel" row="1" column="0">
+                                            <property name="name">
+                                                <cstring>TextLabel4</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>Balance:</string>
+                                            </property>
+                                        </widget>
+                                        <widget class="kMyMoneyCurrencySelector" row="2" column="1">
+                                            <property name="name">
+                                                <cstring>m_currency</cstring>
+                                            </property>
+                                        </widget>
+                                        <widget class="kMyMoneyEdit" row="1" column="1">
+                                            <property name="name">
+                                                <cstring>startBalanceEdit</cstring>
+                                            </property>
+                                        </widget>
+                                        <widget class="kMyMoneyDateInput" row="0" column="1">
+                                            <property name="name">
+                                                <cstring>startDateEdit</cstring>
+                                            </property>
+                                        </widget>
+                                        <widget class="QLabel" row="2" column="0">
+                                            <property name="name">
+                                                <cstring>textLabel1</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>Currency:</string>
+                                            </property>
+                                        </widget>
+                                        <widget class="QLabel" row="0" column="0">
                                             <property name="name">
                                                 <cstring>TextLabel3</cstring>
                                             </property>
@@ -291,100 +293,13 @@ My Current Account</string>
                                                     <verstretch>0</verstretch>
                                                 </sizepolicy>
                                             </property>
-                                            <property name="minimumSize">
-                                                <size>
-                                                    <width>50</width>
-                                                    <height>0</height>
-                                                </size>
-                                            </property>
-                                            <property name="maximumSize">
-                                                <size>
-                                                    <width>50</width>
-                                                    <height>32767</height>
-                                                </size>
-                                            </property>
                                             <property name="text">
                                                 <string>Date:</string>
                                             </property>
                                         </widget>
-                                        <widget class="kMyMoneyDateInput">
-                                            <property name="name">
-                                                <cstring>startDateEdit</cstring>
-                                            </property>
-                                        </widget>
-                                    </hbox>
-                                </widget>
-                                <widget class="QLayoutWidget">
-                                    <property name="name">
-                                        <cstring>Layout2</cstring>
-                                    </property>
-                                    <hbox>
-                                        <property name="name">
-                                            <cstring>unnamed</cstring>
-                                        </property>
-                                        <property name="margin">
-                                            <number>0</number>
-                                        </property>
-                                        <property name="spacing">
-                                            <number>6</number>
-                                        </property>
-                                        <widget class="QLabel">
-                                            <property name="name">
-                                                <cstring>TextLabel4</cstring>
-                                            </property>
-                                            <property name="minimumSize">
-                                                <size>
-                                                    <width>50</width>
-                                                    <height>0</height>
-                                                </size>
-                                            </property>
-                                            <property name="maximumSize">
-                                                <size>
-                                                    <width>50</width>
-                                                    <height>32767</height>
-                                                </size>
-                                            </property>
-                                            <property name="text">
-                                                <string>Balance:</string>
-                                            </property>
-                                        </widget>
-                                        <widget class="kMyMoneyEdit">
-                                            <property name="name">
-                                                <cstring>startBalanceEdit</cstring>
-                                            </property>
-                                        </widget>
-                                    </hbox>
+                                    </grid>
                                 </widget>
                             </vbox>
-                        </widget>
-                    </hbox>
-                </widget>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>Layout3</cstring>
-                    </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <property name="margin">
-                            <number>0</number>
-                        </property>
-                        <property name="spacing">
-                            <number>6</number>
-                        </property>
-                        <widget class="QLabel">
-                            <property name="name">
-                                <cstring>TextLabel5</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Notes:</string>
-                            </property>
-                        </widget>
-                        <widget class="QLineEdit">
-                            <property name="name">
-                                <cstring>descriptionEdit</cstring>
-                            </property>
                         </widget>
                     </hbox>
                 </widget>
@@ -537,11 +452,38 @@ My Current Account</string>
         </sizepolicy>
         <pixmap>image0</pixmap>
     </customwidget>
+    <customwidget>
+        <class>kMyMoneyCurrencySelector</class>
+        <header location="local">../widgets/kmymoneycurrencyselector.h</header>
+        <sizehint>
+            <width>-1</width>
+            <height>25</height>
+        </sizehint>
+        <container>0</container>
+        <sizepolicy>
+            <hordata>5</hordata>
+            <verdata>5</verdata>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+        <pixmap>image1</pixmap>
+    </customwidget>
 </customwidgets>
 <images>
     <image name="image0">
         <data format="XPM.GZ" length="646">789c6dd2c10ac2300c00d07bbf2234b7229d1be245fc04c5a3201e4615f430059d0711ff5ddb2e6bb236ec90eed134cb5a19d8ef36602af5ecdbfeeac05dda0798d3abebde87e3faa374d3807fa0d633a52d38d8de6f679fe33fc776e196f53cd010188256a3600a292882096246517815ca99884606e18044a3a40d91824820924265a7923a2e8bcd05f33db1173e002913175f2a6be6d3294871a2d95fa00e8a94ee017b69d339d90df1e77c57ea072ede6758</data>
     </image>
+    <image name="image1">
+        <data format="XPM.GZ" length="3326">789c959549532b470cc7ef7c0a17ba51293dcfea994ae580591e186c30c60ba472e859bcb0d8e0153b95ef1e4db7340f777c09a2303feb2fb5a4ee9ef9715219dc372b273f8e164bb59ca49574ace695936cf5febefdf3af3ffe3e3a76dd0afd3a5e5c718f7f3b3a6e2f2b69a5359be60520104055ff689e59ac2c4e2c4e2dce2cce2d1e165c4b6a712dd1dcb1fc67164ff719ac7ae0cde28d15ff60b16be9adfee1d5e2f53eab89956f54b0f295a37ccdefecf7d95fb7e2c756bce6d88f9dd8c4eb7ebcd88bbc5873db8ab7e73db0b85f72a4ebafeed703e3928d3fd01c95fcc81c19469f39754cfc57c14eb530cd5d66893f13367e35628e78fd8530c747cc29c7df08b3ff5673247aac318bbf69d8957ad8eff2faa0e7e75685f18959d6d7fbe5c62ee75389614fe63d2cd9cca327ccf1bb928d3f60f69943bd9f8e17319f1af6657fee78bf53e307bdbeeff8cc78af590531af1f09b35eef4fe00aab8c39e3fc17c29ccf311c3ac6af7261eee7b364137f2dec1aff8a39e0fc922f307ed4f72750411628edaf1b0eb97eb814e6fdf04a36fe9130afd763967e1ac25caf9e6fe8d6a4fe8930d7d3600eb8ff1b61f63f33f37af8a299f287a6febee152df65ce0c2bfdfca87951e09afb7acd2cf5df976cfc93fde71f740c977a7dbfa324e6fcf86858717f7859b2e9e74298e39f853d47fbaf98b97ff810667d4bd8e8e1a7791e29e96727cccf23f12baee7b664937f2bccf9e39275bc52cc39d7df329cb81c3f14e6f5f5fd88d3d29f0973fe65c9467f2eec9b7ea6cc21d7db2cd9e49b31733f90976ceaab0af37a0f25ebf5c033cfff24643f324b7c2cccfe79c926fe9439e7faf5f351a5491eea97b532f9d254fa7d610e397ec02cf9cf99733e3f7a3e892ff97065387599e7c2354ff3a77064decf5be6d0dc675c0b73fc17b3320c4f863399ef9530d7a3cf5f922539bf2f3786cb78d770c6f5b7978521a0c20453cc30b72ca36f13f2427b297a1ce208c738c19703f68a6ff88e538a9a193de51ee1077ee21c17b8c415aec93664c5e7176e7187a758c7334c59af28f7279ee3055ee24fbcc26b6ce00dfdbdc526b6c8eef01edbf8801dd62754c99cd48fa4e8620ffb3820ebe3133e6395629ae810bb38657d4a552eb4da23551f7d0c30c49afe3fc218b0d00380627d46fa2555d22d324302296490c3104630269ec08bd6bfc21beb73d2aff00adeb53a8329cce0033e610e13ecc30296b022cf1a36dff46beaaf0f5f94bb506f614794c0699103afa17e40dfa0ef76949dd445cf7046ba73b820bd0797ffd16f6882030c21c78b2237fd5f839f7005d7a41c41e380bea8e786ba3475dd92a2092db8a3cffb03fa35de429b942378a0ba3b94bb499a2f78842e4db47740df049a374df086ba1cc0133cc382545570c03da86f8107beded71ef834cd3b08485d8536cd33dcd3677406b7744e9ab4f284f675600cba94bb0611c4d67ea5746277851e723ae64b9ae308460a28daa5fe63a554a2d26fe721a1f37d4a67d051193ab0823a5c42435b8f5e5cb91aaa911a7f3b6f8a6e439d4eece0b0a9548dd5e4db7906aae88cd8a5355fa9af7d7b05a0dc0fbfee0b45cc28a2835350f0061bcbdea058bff3eb3efe8ffbfecfef47ff02c914d57c</data>
+    </image>
 </images>
 <layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>kmymoneycurrencyselector.h</includehint>
+    <includehint>kmymoneyedit.h</includehint>
+    <includehint>kmymoneydateinput.h</includehint>
+    <includehint>klistview.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+</includehints>
 </UI>

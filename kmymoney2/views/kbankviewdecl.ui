@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>KBankViewDecl</class>
 <widget class="QWidget">
     <property name="name">
@@ -9,13 +9,13 @@
             <x>0</x>
             <y>0</y>
             <width>641</width>
-            <height>420</height>
+            <height>422</height>
         </rect>
     </property>
     <property name="caption">
         <string>Form1</string>
     </property>
-    <grid>
+    <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
@@ -25,59 +25,7 @@
         <property name="spacing">
             <number>6</number>
         </property>
-        <widget class="QLayoutWidget" row="1" column="0">
-            <property name="name">
-                <cstring>Layout1</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <property name="margin">
-                    <number>0</number>
-                </property>
-                <property name="spacing">
-                    <number>6</number>
-                </property>
-                <spacer>
-                    <property name="name">
-                        <cstring>Spacer1</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>20</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>totalProfitsLabel</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>150</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string>Total Profits:</string>
-                    </property>
-                    <property name="alignment">
-                        <set>AlignVCenter|AlignRight</set>
-                    </property>
-                    <property name="hAlign" stdset="0">
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QTabWidget" row="0" column="0">
+        <widget class="QTabWidget">
             <property name="name">
                 <cstring>accountTabWidget</cstring>
             </property>
@@ -130,7 +78,53 @@
                 </vbox>
             </widget>
         </widget>
-    </grid>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout2</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <spacer>
+                    <property name="name">
+                        <cstring>Spacer1</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>totalProfitsLabel</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>150</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>Total Profits:</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                    <property name="hAlign" stdset="0">
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+    </vbox>
 </widget>
 <customwidgets>
     <customwidget>
@@ -156,4 +150,8 @@
     </image>
 </images>
 <layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>klistview.h</includehint>
+    <includehint>kiconview.h</includehint>
+</includehints>
 </UI>

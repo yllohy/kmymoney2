@@ -82,6 +82,7 @@ MyMoneySeqAccessMgr::MyMoneySeqAccessMgr()
 
   MyMoneyBalanceCacheItem balance;
 
+  m_balanceCache.clear();
   m_balanceCache[STD_ACC_LIABILITY] = balance;
   m_balanceCache[STD_ACC_ASSET] = balance;
   m_balanceCache[STD_ACC_EXPENSE] = balance;
@@ -948,7 +949,7 @@ const MyMoneyMoney MyMoneySeqAccessMgr::balance(const QCString& id)
     for(it = list.begin(); it != list.end(); ++it) {
       try {
         split = (*it).splitByAccount(id);
-        result += split.value();
+        result += split.value((*it).commodity(), acc.currencyId());
 
       } catch(MyMoneyException *e) {
         // account is not referenced within this transaction
@@ -1087,7 +1088,8 @@ void MyMoneySeqAccessMgr::loadTransaction(const MyMoneyTransaction& tr)
 
   for(it_s = list.begin(); it_s != list.end(); ++it_s) {
     QCString id = (*it_s).accountId();
-    m_balanceCache[id] = MyMoneyBalanceCacheItem(balance(id) + (*it_s).value());
+    MyMoneyAccount acc = account(id);
+    m_balanceCache[id] = MyMoneyBalanceCacheItem(balance(id) + (*it_s).value(tr.commodity(), acc.currencyId()));
   }
 }
 
@@ -1129,7 +1131,7 @@ void MyMoneySeqAccessMgr::loadEquity(const MyMoneyEquity& equity)
     throw new MYMONEYEXCEPTION(msg);
   }
   m_equitiesList[equity.id()] = equity;
-  qDebug("loadEquity: Equity list size is %d, this=0x%08X", m_equitiesList.size(), this);
+  qDebug("loadEquity: Equity list size is %d, this=%8p", m_equitiesList.size(), (void*)this);
 }
 
 void MyMoneySeqAccessMgr::loadCurrency(const MyMoneyCurrency& currency)
@@ -1435,7 +1437,7 @@ const MyMoneyEquity MyMoneySeqAccessMgr::equity(const QCString& id) const
 
 const QValueList<MyMoneyEquity> MyMoneySeqAccessMgr::equityList(void) const
 {
-  qDebug("equityList: Equity list size is %d, this=0x%08X", m_equitiesList.size(), this);
+  qDebug("equityList: Equity list size is %d, this=%8p", m_equitiesList.size(), (void*)this);
   QValueList<MyMoneyEquity> list;
   QMap<QCString, MyMoneyEquity>::ConstIterator it;
   for(it = m_equitiesList.begin(); it != m_equitiesList.end(); ++it)

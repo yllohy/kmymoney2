@@ -506,6 +506,66 @@ public:
   const MyMoneyMoney totalBalance(const QCString& id) const;
 
   /**
+    * This method is used to return the actual value of an account
+    * including it's sub-ordinate accounts. A value of an account
+    * is calculated by multiplying the balance with the currencies
+    * price for today. The price for accounts held in the baseCurrency()
+    * is 1. The same applies for prices that are not available (no entry
+    * in MyMoneyEquity::priceHistory() for the current date).
+    *
+    * See totalValueValid(const QCString&) for information about the
+    * validity of the returned value.
+    *
+    * @param id account id of the account in question
+    * @return value of the account as MyMoneyMoney object
+    */
+  const MyMoneyMoney totalValue(const QCString& id) const;
+
+  /**
+    * This method is used to return the actual value of an account
+    * excluding it's sub-ordinate accounts. A value of an account
+    * is calculated by multiplying the balance with the currencies
+    * price for today. The price for accounts held in the baseCurrency()
+    * is 1. The same applies for prices that are not available (no entry
+    * in MyMoneyEquity::priceHistory() for the current date).
+    *
+    * See accountValueValid(const QCString&) for information about the
+    * validity of the returned value.
+    *
+    * @param id account id of the account in question
+    * @return value of the account as MyMoneyMoney object
+    */
+  const MyMoneyMoney accountValue(const QCString& id) const;
+
+  /**
+    * This method returns if the value returned by totalValue(const QCString&)
+    * is valid or not. The value is considered valid, if a conversion rate (price)
+    * is available for the currency used for the account referenced by @p id.
+    * The same applies for any of the subaccounts of @p id.
+    *
+    * If for any of the accounts a conversion rate for the current date cannot
+    * be found, false is returned. If for all such currencies a conversion rate
+    * is available, true is returned.
+    *
+    * @param id account id of the account in question
+    * @retval false value returned by totalValue(const QCString&) is not
+    *               completely correct
+    * @retval true value returned by totalValue(const QCString&) is correct
+    */
+  const bool totalValueValid(const QCString& id) const;
+
+  /**
+    * This method returns if the value returned by accountValue(const QCString&)
+    * is valid or not. The value is considered valid, if a conversion rate (price)
+    * is available for the currency used for the account referenced by @p id.
+    *
+    * @param id account id of the account in question
+    * @retval false value returned by accountValue(const QCString&) is not correct
+    * @retval true value returned by accountValue(const QCString&) is correct
+    */
+  const bool accountValueValid(const QCString& id) const;
+  
+  /**
     * This method returns the number of transactions currently known to file
     * in the range 0..MAXUINT
     *
@@ -1041,6 +1101,19 @@ public:
     */
   void setBaseCurrency(const MyMoneyCurrency& currency);
 
+  /**
+    * This method is used to retrieve a price for a specific currency
+    * on a specific date. If there is no price for this date, the last
+    * known price for this currency is used. If no price information
+    * is available, 1.0 will be returned as price.
+    *
+    * @param currencyId the id of the currency in question
+    * @param date the date for which the price should be returned (default = today)
+    *
+    * @return price found as MyMoneyMoney object
+    */
+  const MyMoneyMoney currencyPrice(const QCString& currencyId, const QDate date = QDate::currentDate()) const;
+  
 protected:
   /**
     * This is the constructor for a new empty file description

@@ -72,6 +72,8 @@ kMyMoneyRegisterCheckings::~kMyMoneyRegisterCheckings()
 void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const QRect& r,
                                  bool selected, const QColorGroup& cg)
 {
+  QCString splitCurrency;
+
   setTransactionRow(row);
   
   int align = Qt::AlignVCenter;
@@ -155,8 +157,10 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
         switch(m_transactionRow) {
           case 0:
             align |= Qt::AlignRight;
-            if(m_split.value() < 0)
-              txt = (-m_split.value()).formatMoney();
+            if(m_split.value() < 0) {
+              splitCurrency = MyMoneyFile::instance()->account(m_split.accountId()).currencyId();
+              txt = (-m_split.value(m_transaction->commodity(), splitCurrency)).formatMoney();
+            }
             break;
         }
         break;
@@ -165,8 +169,10 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
         switch(m_transactionRow) {
           case 0:
             align |= Qt::AlignRight;
-            if(m_split.value() >= 0)
-              txt = (m_split.value()).formatMoney();
+            if(m_split.value() >= 0) {
+              splitCurrency = MyMoneyFile::instance()->account(m_split.accountId()).currencyId();
+              txt = m_split.value(m_transaction->commodity(), splitCurrency).formatMoney();
+            }
             break;
         }
         break;

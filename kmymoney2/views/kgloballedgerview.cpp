@@ -366,11 +366,10 @@ void KGlobalLedgerView::slotCancelEdit(void)
 
 void KGlobalLedgerView::show()
 {
-  QWidget::show();
-  
   // only show selection box if filled with at least one account
   m_accountComboBox->setEnabled(m_accountComboBox->count() > 0);
 
+  QWidget::show();
   emit signalViewActivated();
 }
 

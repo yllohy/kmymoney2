@@ -74,6 +74,7 @@ public:
 
   const MyMoneyMoney shares(void) const { return m_shares; };
   const MyMoneyMoney value(void) const { return m_value; };
+  const MyMoneyMoney value(const QCString& transactionCurrencyId, const QCString& splitCurrencyId) const;
   const QCString accountId(void) const { return m_account; };
   const QString memo(void) const { return m_memo; };
   const reconcileFlagE reconcileFlag(void) const { return m_reconcileFlag; };
@@ -86,6 +87,22 @@ public:
   
   void setShares(const MyMoneyMoney& shares);
   void setValue(const MyMoneyMoney& value);
+
+  /**
+    * This method is used to set either the shares or the value depending on
+    * the currencies assigned to the split/account and the transaction.
+    *
+    * If @p transactionCurrencyId equals @p splitCurrencyId this method
+    * calls setValue(MyMoneyMoney) otherwise setShares(MyMoneyMoney).
+    *
+    * @param value the value to be assiged
+    * @param transactionCurrencyId the id of the currency assigned to the transaction
+    * @param splitCurrencyId the id of the currency assigned to the split (i.e. the
+    *                        the id of the currency assigned to the account that is
+    *                        referenced by the split)
+    */
+  void setValue(const MyMoneyMoney& value, const QCString& transactionCurrencyId, const QCString& splitCurrenceId);
+
   void setAccountId(const QCString& account);
   void setMemo(const QString& memo);
   void setReconcileFlag(const reconcileFlagE flag);

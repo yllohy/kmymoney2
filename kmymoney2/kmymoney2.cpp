@@ -113,12 +113,8 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name)
   // setCentralWidget(myMoneyView);
   setCentralWidget(frame);
 
-  connect(myMoneyView, SIGNAL(signalHomeView()), this, SLOT(slotHomeView()));
-  connect(myMoneyView, SIGNAL(signalAccountsView()), this, SLOT(slotAccountsView()));
-  connect(myMoneyView, SIGNAL(signalScheduledView()), this, SLOT(slotScheduledView()));
-  connect(myMoneyView, SIGNAL(signalCategoryView()), this, SLOT(slotCategoryView()));
-  connect(myMoneyView, SIGNAL(signalPayeeView()), this, SLOT(slotPayeeView()));
-
+  connect(myMoneyView, SIGNAL(viewActivated(int)), this, SLOT(slotSetViewSpecificActions(int)));
+  
   connect(&proc,SIGNAL(processExited(KProcess *)),this,SLOT(slotProcessExited()));
 
   m_backupState = BACKUP_IDLE;
@@ -167,6 +163,8 @@ void KMyMoney2App::initActions()
   fileSaveAs = KStdAction::saveAs(this, SLOT(slotFileSaveAs()), actionCollection());
   fileClose = KStdAction::close(this, SLOT(slotFileClose()), actionCollection());
   fileQuit = KStdAction::quit(this, SLOT(slotFileQuit()), actionCollection());
+  filePrint = KStdAction::print(myMoneyView, SLOT(slotPrintView()), actionCollection());
+  
   viewToolBar = KStdAction::showToolbar(this, SLOT(slotViewToolBar()), actionCollection());
   viewStatusBar = KStdAction::showStatusbar(this, SLOT(slotViewStatusBar()), actionCollection());
   
@@ -815,6 +813,7 @@ bool KMyMoney2App::initWizard()
     return false;
   }
 }
+
 /** No descriptions */
 void KMyMoney2App::slotFileBackup()
 {
@@ -1011,25 +1010,16 @@ void KMyMoney2App::slotKeySettings()
 }
 
 
-void KMyMoney2App::slotHomeView()
+void KMyMoney2App::slotSetViewSpecificActions(int view)
 {
-}
-
-void KMyMoney2App::slotAccountsView()
-{
-}
-
-
-void KMyMoney2App::slotScheduledView()
-{
-}
-
-void KMyMoney2App::slotCategoryView()
-{
-}
-
-void KMyMoney2App::slotPayeeView()
-{
+  filePrint->setEnabled(false);
+  switch(view) {
+    case KMyMoneyView::ReportsView:
+      filePrint->setEnabled(true);
+      break;
+    default:
+      break;
+  }
 }
 
 void KMyMoney2App::slotShowTipOfTheDay(void)
@@ -1107,7 +1097,9 @@ void KMyMoney2App::slotCurrencyDialog(void)
 {
   KCurrencyEditDlg dlg;
 
-  dlg.exec();  
+  dlg.exec();
+
+  myMoneyView->slotRefreshViews();
 }
 
 void KMyMoney2App::slotFileConsitencyCheck(void)

@@ -107,6 +107,15 @@ public:
     */
   const QString formatMoney(const QString currency = QString(), const int prec = 2) const;
 
+  /**
+    * This method is used to convert the smallest fraction information into
+    * the corresponding number of digits used for precision.
+    *
+    * @param fract smallest fractional part (e.g. 100 for cents)
+    * @return number of precision digits (e.g. 2 for cents)
+    */
+  static const int denomToPrec(int fract);
+
   const QString toString(void) const;
   void fromString(const QString& str);
   const MyMoneyMoney convert(const signed64 denom = 100, const roundingMethod how = RndRound) const;

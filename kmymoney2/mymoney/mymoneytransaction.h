@@ -61,13 +61,15 @@ public:
   const QString memo(void) const { return m_memo; };
   const QValueList<MyMoneySplit> splits(void) const { return m_splits; };
   const unsigned int splitCount(void) const { return m_splits.count(); };
+  const QCString commodity(void) const { return m_commodity; };
 
   // Simple set operations
   void setPostDate(const QDate& date);
   void setEntryDate(const QDate& date);
   void setMemo(const QString& memo);
   void setId(const QString& id) { m_id = id; };
-
+  void setCommodity(const QCString& commodityId) { m_commodity = commodityId; };
+  
   bool operator == (const MyMoneyTransaction&) const;
   inline bool operator != (const MyMoneyTransaction& r) const { return !(*this == r); };
   
@@ -156,6 +158,16 @@ public:
     * @note Upon internal failures, the return value @p false will be used.
     */
   const bool isLoanPayment(void) const;
+
+  /**
+    * This static method returns the id which will be assigned to the
+    * first split added to a transaction. This ID can be used to figure
+    * out the split that references the account through which a transaction
+    * was entered.
+    *
+    * @return QCString with ID of the first split of transactions
+    */
+  static const QCString firstSplitID(void);
   
 private:
   static const int SPLIT_ID_SIZE = 4;
@@ -192,6 +204,11 @@ private:
     * value will be set to 1.
     */
   unsigned int m_nextSplitID;
+
+  /**
+    * This member keeps the base commodity (e.g. currency) for this transaction
+    */
+  QCString  m_commodity;
 
 private:
   /**

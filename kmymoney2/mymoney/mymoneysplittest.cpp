@@ -162,3 +162,21 @@ void MyMoneySplitTest::testAmortization() {
 	m->setAction(MyMoneySplit::ActionAmortization);
 	CPPUNIT_ASSERT(m->isAmortizationSplit() == true);
 }
+
+void MyMoneySplitTest::testValue() {
+	m->setValue(1);
+	m->setShares(2);
+	CPPUNIT_ASSERT(m->value("EUR", "EUR") == 1);
+	CPPUNIT_ASSERT(m->value("EUR", "USD") == 2);
+}
+
+void MyMoneySplitTest::testSetValue() {
+	CPPUNIT_ASSERT(m->value() == 0);
+	CPPUNIT_ASSERT(m->shares() == 0);
+	m->setValue(1, "EUR", "EUR");
+	CPPUNIT_ASSERT(m->value() == 1);
+	CPPUNIT_ASSERT(m->shares() == 0);
+	m->setValue(3, "EUR", "USD");
+	CPPUNIT_ASSERT(m->value() == 1);
+	CPPUNIT_ASSERT(m->shares() == 3);
+}
