@@ -1,3 +1,8 @@
+2002-07-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added logic to support selection bar in kMyMoneyRegister
+  * Added payee data loading from old file format
+  * Catch exceptions when reading data from file
+
 2002-07-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added balance cache to MyMoneySeqAccessMgr for better performance
   * Added balance display to ledger view and register widget  
