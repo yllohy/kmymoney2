@@ -226,11 +226,11 @@ const bool MyMoneyAccount::operator == (const MyMoneyAccount& right) const
       (m_id == right.m_id) &&
       (m_accountList == right.m_accountList) &&
       (m_accountType == right.m_accountType) &&
-      (m_description == right.m_description) &&
       (m_lastModified == right.m_lastModified) &&
       (m_lastReconciliationDate == right.m_lastReconciliationDate) &&
-      (m_name == right.m_name) &&
-      (m_number == right.m_number) &&
+      ((m_name.length() == 0 && right.m_name.length() == 0) || (m_name == right.m_name)) &&
+      ((m_number.length() == 0 && right.m_number.length() == 0) || (m_number == right.m_number)) &&
+      ((m_description.length() == 0 && right.m_description.length() == 0) || (m_description == right.m_description)) &&
       (m_openingBalance == right.m_openingBalance) &&
       (m_openingDate == right.m_openingDate) &&
       (m_parentAccount == right.m_parentAccount) &&

@@ -45,10 +45,15 @@ class kMyMoneyCalculator;
   #define KDoubleValidator QDoubleValidator
 #endif
 
-// This class is derived from KDoubleValidator and uses
-// the monetary symbols instead of the numeric symbols.
-// Also, it always accepts localized input.
-class kMyMoneyMoneyValidator : public QDoubleValidator {
+/**
+  * This class is derived from KDoubleValidator and uses
+  * the monetary symbols instead of the numeric symbols.
+  * Also, it always accepts localized input.
+  *
+  * @author Thomas Baumgart
+  */
+class kMyMoneyMoneyValidator : public QDoubleValidator
+{
   Q_OBJECT
 
 public:
@@ -80,9 +85,12 @@ public:
   * It has an edit field and a button to select a popup
   * calculator. The result of the calculator (if used) is
   * stored in the edit field.
+  *
+  * @author Michael Edwardes, Thomas Baumgart
   */
-class kMyMoneyEdit : public QHBox {
-   Q_OBJECT
+class kMyMoneyEdit : public QHBox
+{
+  Q_OBJECT
 
 private:
   QString previousText; // keep track of what has been typed
@@ -92,6 +100,12 @@ private:
   KLineEdit*          m_edit;
   KPushButton*        m_calcButton;
   int                 m_prec;
+
+private:
+  /**
+    * Internal helper function for value() and ensureFractionalPart(void).
+    */
+  void ensureFractionalPart(QString& txt) const;
 
 protected:
   /**
@@ -123,7 +137,15 @@ public:
   kMyMoneyEdit(QWidget *parent=0, const char *name=0, const int prec = -1);
   kMyMoneyEdit(const MyMoneyEquity& eq, QWidget *parent=0, const char *name=0);
   ~kMyMoneyEdit();
-  MyMoneyMoney getMoneyValue(void);
+
+  /**
+    * @deprecated Use value() instead
+    */
+  MyMoneyMoney getMoneyValue(void) KDE_DEPRECATED;
+
+  MyMoneyMoney value(void) const;
+
+  void setValue(const MyMoneyMoney& value);
 
   void resetText(void);
 

@@ -32,6 +32,7 @@
 #include <kdebug.h>
 #include <klineedit.h>
 #include <kiconloader.h>
+#include <kconfig.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -137,6 +138,11 @@ void kMyMoneyEdit::init(void)
 
   m_calcButton = new KPushButton(QIconSet(QPixmap(KGlobal::iconLoader()->iconPath("kcalc", -KIcon::SizeSmall))), QString(""), this);
 
+  KConfig *kconfig = KGlobal::config();
+  kconfig->setGroup("General Options");
+  if(kconfig->readBoolEntry("DontShowCalculatorButton", false) == true)
+    showCalculatorButton(false);
+
   connect(m_edit, SIGNAL(textChanged(const QString&)), this, SLOT(theTextChanged(const QString&)));
   connect(m_calculator, SIGNAL(signalResultAvailable()), this, SLOT(slotCalculatorResult()));
   connect(m_calcButton, SIGNAL(clicked()), this, SLOT(slotCalculatorOpen()));
@@ -159,11 +165,24 @@ const bool kMyMoneyEdit::isValid(void) const
   return !(m_edit->text().isEmpty());
 }
 
+// KDE_DEPRECATED
 MyMoneyMoney kMyMoneyEdit::getMoneyValue(void)
 {
-  ensureFractionalPart();
-  MyMoneyMoney money(m_edit->text());
+  return value();
+}
+
+MyMoneyMoney kMyMoneyEdit::value(void) const
+{
+  QString txt = m_edit->text();
+  ensureFractionalPart(txt);
+  MyMoneyMoney money(txt);
   return money;
+}
+
+void kMyMoneyEdit::setValue(const MyMoneyMoney& value)
+{
+  QString txt = value.formatMoney("", m_prec);
+  loadText(txt);
 }
 
 void kMyMoneyEdit::loadText(const QString& txt)
@@ -204,24 +223,28 @@ void kMyMoneyEdit::theTextChanged(const QString & theText)
 
 void kMyMoneyEdit::ensureFractionalPart(void)
 {
+  QString s(m_edit->text());
+  ensureFractionalPart(s);
+  m_edit->setText(s);
+}
+
+void kMyMoneyEdit::ensureFractionalPart(QString& s) const
+{
   KLocale* locale = KGlobal::locale();
   // If text contains no 'monetaryDecimalSymbol' then add it
   // followed by the required number of 0s
-  QString s(m_edit->text());
   if (!s.isEmpty()) {
     if(m_prec > 0) {
       if (!s.contains(locale->monetaryDecimalSymbol())) {
         s += locale->monetaryDecimalSymbol();
         for (int i=0; i < m_prec; i++)
           s += "0";
-        m_edit->setText(s);
       }
     } else {
       while(s.contains(locale->monetaryDecimalSymbol())) {
         int pos = s.findRev(locale->monetaryDecimalSymbol());
         if(pos != -1) {
           s = s.left(pos);
-          m_edit->setText(s);
         }
       }
     }

@@ -200,7 +200,6 @@ void MyMoneyMoneyTest::testInequality()
 	MyMoneyMoney m1(999666555444LL);
 	MyMoneyMoney m2(-999666555444LL);
 	CPPUNIT_ASSERT(m1 != m2);
-	CPPUNIT_ASSERT(m1 != (int)97);
 
 	MyMoneyMoney m3(-999666555444LL);
 	MyMoneyMoney m4(999666555444LL);
@@ -268,7 +267,7 @@ void MyMoneyMoneyTest::testMultiplication()
 
 	CPPUNIT_ASSERT((m1 * MyMoneyMoney(50,1)) == MyMoneyMoney(5000,1));
 	CPPUNIT_ASSERT((m1 * MyMoneyMoney(10000000,1)) == MyMoneyMoney(1000000000,1));
-	CPPUNIT_ASSERT((m1 * (*m_0)) == 1200);
+	CPPUNIT_ASSERT((m1 * (*m_0)) == MyMoneyMoney(1200));
 
 	MyMoneyMoney m2 = QString("-73010.28");
 	m1 = QString("1.95583");
@@ -286,7 +285,7 @@ void MyMoneyMoneyTest::testDivision()
 
 	MyMoneyMoney m3 = MyMoneyMoney(0) / MyMoneyMoney(100);
 	CPPUNIT_ASSERT(m3.m_num == 0);
-	CPPUNIT_ASSERT(m3.m_denom == 1);
+	CPPUNIT_ASSERT(m3.m_denom != 0);
 }
 
 void MyMoneyMoneyTest::testSetDecimalSeparator()
@@ -383,8 +382,8 @@ void MyMoneyMoneyTest::testUnaryMinus()
 
 	m2 = -m1;
 
-	CPPUNIT_ASSERT(m1 == 100);
-	CPPUNIT_ASSERT(m2 == -100);
+	CPPUNIT_ASSERT(m1 == MyMoneyMoney(100));
+	CPPUNIT_ASSERT(m2 == MyMoneyMoney(-100));
 }
 
 void MyMoneyMoneyTest::testDoubleConstructor()
@@ -403,8 +402,8 @@ void MyMoneyMoneyTest::testAbsoluteFunction()
 	MyMoneyMoney m1(-100);
 	MyMoneyMoney m2(100);
 
-	CPPUNIT_ASSERT(m2.abs() == 100);
-	CPPUNIT_ASSERT(m1.abs() == 100);
+	CPPUNIT_ASSERT(m2.abs() == MyMoneyMoney(100));
+	CPPUNIT_ASSERT(m1.abs() == MyMoneyMoney(100));
 }
 
 void MyMoneyMoneyTest::testToString()

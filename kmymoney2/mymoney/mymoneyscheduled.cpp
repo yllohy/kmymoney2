@@ -476,7 +476,7 @@ bool MyMoneySchedule::operator ==(const MyMoneySchedule& right)
         m_autoEnter == right.m_autoEnter &&
         m_id == right.m_id &&
         m_lastPayment == right.m_lastPayment &&
-        m_name == right.m_name)
+        ((m_name.length() == 0 && right.m_name.length() == 0) || (m_name == right.m_name)))
     return true;
   return false;
 }

@@ -80,24 +80,30 @@ class IMyMoneyStorage;
   * @author Michael Edwardes 2000-2001
   *
   * @short Main application class.
-**/
+  */
 class KMyMoney2App : public KMainWindow, MyMoneyObserver, public DCOPObject
 {
   Q_OBJECT
   K_DCOP
 
 protected slots:
+  /**
+    * This slot re-enables all message for which the "Don't show again"
+    * option had been selected.
+    */
+  void slotEnableMessages(void);
+
   void slotKeySettings();
 
   /**
     * Called when the user asks for file information.
-  **/
+    */
   void slotFileFileInfo();
 
 
   /**
     * Called when the user asks for the personal information.
-  **/
+    */
   void slotFileViewPersonal();
 
   /**
@@ -106,7 +112,7 @@ protected slots:
     * work.  Calls KMyMoneyView::slotAccountImportAscii.
     *
     * @see MyMoneyAccount
-    **/
+    */
   void slotQifImport();
 
   /**
@@ -128,14 +134,14 @@ protected slots:
     * Called when the user wishes to export some transaction to a
     * QIF formatted file. An account must be open for this to work.
     * Uses MyMoneyQifWriter() for the actual output.
-    **/
+    */
   void slotQifExport();
 
   /**
     * Open up the application wide settings dialog.
     *
     * @see KSettingsDlg
-  **/
+    */
   void slotSettings();
 
   /** No descriptions */
@@ -190,7 +196,7 @@ public:
 
   /**
     * Destructor
-    **/
+    */
   ~KMyMoney2App();
 
   /** Init wizard dialog */
@@ -307,9 +313,12 @@ public slots:
   /** asks for saving if the file is modified, then closes the actual file */
   void slotFileClose();
 
-  /** closes all open windows by calling close() on each memberList item until the list is empty, then quits the application.
-   * If queryClose() returns false because the user canceled the saveModified() dialog, the closing breaks.
-   */
+  /**
+    * closes all open windows by calling close() on each memberList item
+    * until the list is empty, then quits the application.
+    * If queryClose() returns false because the user canceled the
+    * saveModified() dialog, the closing breaks.
+    */
   void slotFileQuit();
 
   void slotAccountNew(void);
@@ -318,21 +327,23 @@ public slots:
 
   void slotCurrencyDialog(void);
 
-  /** toggles the toolbar
-   */
+  /**
+    * toggles the toolbar
+    */
   void slotViewToolBar();
 
-  /** toggles the statusbar
-   */
+  /**
+    * toggles the statusbar
+    */
   void slotViewStatusBar();
 
   /**
     * changes the statusbar contents for the standard label permanently,
     * used to indicate current actions. Returns the previous value for
     * 'stacked' usage.
-
-   * @param text the text that is displayed in the statusbar
-   */
+    *
+    * @param text the text that is displayed in the statusbar
+    */
   const QString slotStatusMsg(const QString &text);
 
   /**
@@ -347,16 +358,19 @@ public slots:
     * @param current the current value with respect to the initialised
     *                 100% mark
     * @param total the total value (100%)
-  */
+    */
   void slotStatusProgressBar(const int current, const int total = 0);
 
   /** No descriptions */
   void slotProcessExited();
 
-  /** Called to update stock and currency prices from the user menu */
+  /**
+    * Called to update stock and currency prices from the user menu
+    */
   void slotEquityPriceUpdate();
 
-  /** Imports a statement into the engine, triggering the appropriate
+  /**
+    * Imports a statement into the engine, triggering the appropriate
     * UI to handle account matching, payee creation, and someday
     * payee and transaction matching.
     */
@@ -439,10 +453,10 @@ private:
 
   KProcess proc;
 
-  // A pointer to the view holding the tabs.
+  /// A pointer to the view holding the tabs.
   KMyMoneyView *myMoneyView;
 
-  // The URL of the file currently being edited when open.
+  /// The URL of the file currently being edited when open.
   KURL  fileName;
 
   bool m_startDialog;

@@ -30,6 +30,8 @@
 #include <qwidgetstack.h>
 #include <qcursor.h>
 #include <qtimer.h>
+#include <qlayout.h>
+#include <qpalette.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -882,7 +884,7 @@ void KLedgerView::slotCategoryChanged(const QCString& categoryId)
   }
 }
 
-void KLedgerView::slotCategoryChanged(const QString& category)
+void KLedgerView::slotCategoryChanged(const QString& /* category */)
 {
   qDebug("usage of KLedgerView::slotCategoryChanged(const QString& category) is deprecated");
 }
@@ -1161,6 +1163,9 @@ void KLedgerView::showWidgets(void)
   QWidget* focusWidget;
 
   createEditWidgets();
+  if(!m_transactionFormActive) {
+    createRegisterButtons();
+  }
   loadEditWidgets();
 
   if(m_transactionFormActive) {
@@ -1190,11 +1195,11 @@ void KLedgerView::slotNew(void)
   fillForm();
   fillSummary();
 
-  m_form->enterButton()->setEnabled(true);
-  m_form->cancelButton()->setEnabled(true);
-  m_form->moreButton()->setEnabled(true);
   m_form->editButton()->setEnabled(false);
   m_form->newButton()->setEnabled(false);
+  enableOkButton(true);
+  enableCancelButton(true);
+  enableMoreButton(true);
 
   showWidgets();
 
@@ -1253,7 +1258,8 @@ void KLedgerView::slotStartEdit(void)
           "At least one split of this transaction has been reconciled. "
           "Do you wish to continue to edit the transaction anyway?"
         ),
-        i18n("Transaction already reconciled")) == KMessageBox::Cancel) {
+        i18n("Transaction already reconciled"), KStdGuiItem::cont(),
+        "EditReconciledTransaction") == KMessageBox::Cancel) {
 
         warnLevel = 2;
       }
@@ -1273,10 +1279,10 @@ void KLedgerView::slotStartEdit(void)
   m_register->ensureTransactionVisible();
 
   m_form->newButton()->setEnabled(false);
-  m_form->enterButton()->setEnabled(true);
-  m_form->cancelButton()->setEnabled(true);
-  m_form->moreButton()->setEnabled(true);
   m_form->editButton()->setEnabled(false);
+  enableOkButton(true);
+  enableCancelButton(true);
+  enableMoreButton(true);
 
   showWidgets();
 
@@ -1291,9 +1297,9 @@ void KLedgerView::slotCancelEdit(void)
   m_register->setFocus();
 
   m_form->newButton()->setEnabled(true);
-  m_form->enterButton()->setEnabled(false);
-  m_form->cancelButton()->setEnabled(false);
-  m_form->moreButton()->setEnabled(false);
+  enableOkButton(false);
+  enableCancelButton(false);
+  enableMoreButton(false);
 
   if(transaction(m_register->currentTransactionIndex()) != 0) {
     m_form->editButton()->setEnabled(true);
@@ -1464,9 +1470,9 @@ void KLedgerView::slotEndEdit(void)
 
   // switch the context to enable refreshView() to work
   m_form->newButton()->setEnabled(true);
-  m_form->enterButton()->setEnabled(false);
-  m_form->cancelButton()->setEnabled(false);
-  m_form->moreButton()->setEnabled(false);
+  enableOkButton(false);
+  enableCancelButton(false);
+  enableMoreButton(false);
 
   if(transaction(m_register->currentTransactionIndex()) != 0) {
     m_form->editButton()->setEnabled(true);
@@ -1544,7 +1550,7 @@ bool KLedgerView::focusNextPrevChild(bool next)
     QWidget *w = 0;
     QWidget *currentWidget;
 
-    int _rc = m_tabOrderWidgets.find(qApp->focusWidget());
+    m_tabOrderWidgets.find(qApp->focusWidget());
     currentWidget = m_tabOrderWidgets.current();
     w = next ? m_tabOrderWidgets.next() : m_tabOrderWidgets.prev();
 
@@ -1567,6 +1573,70 @@ bool KLedgerView::focusNextPrevChild(bool next)
     rc = QWidget::focusNextPrevChild(next);
 
   return rc;
+}
+
+void KLedgerView::enableWidgets(QPtrList<QWidget> list, const bool enabled)
+{
+  QWidget* it;
+  for(it = list.first(); it; it = list.next())
+    it->setEnabled(enabled);
+}
+
+void KLedgerView::enableOkButton(const bool enabled)
+{
+  QPtrList<QWidget> list;
+  if(m_registerEnterButton)
+    list.append(m_registerEnterButton);
+  if(m_form && m_form->enterButton())
+    list.append(m_form->enterButton());
+  enableWidgets(list, enabled);
+}
+
+void KLedgerView::enableCancelButton(const bool enabled)
+{
+  QPtrList<QWidget> list;
+  if(m_registerCancelButton)
+    list.append(m_registerCancelButton);
+  if(m_form && m_form->cancelButton())
+    list.append(m_form->cancelButton());
+  enableWidgets(list, enabled);
+}
+
+void KLedgerView::enableMoreButton(const bool enabled)
+{
+  QPtrList<QWidget> list;
+  if(m_registerMoreButton)
+    list.append(m_registerMoreButton);
+  if(m_form && m_form->moreButton())
+    list.append(m_form->moreButton());
+  enableWidgets(list, enabled);
+}
+
+void KLedgerView::createRegisterButtons(void)
+{
+  if(!m_registerButtonFrame) {
+    KIconLoader *il = KGlobal::iconLoader();
+    m_registerButtonFrame = new QFrame(this, "buttonFrame");
+    QPalette palette = m_registerButtonFrame->palette();
+    palette.setColor(QColorGroup::Background, m_registerButtonFrame->colorGroup().highlight() );
+    m_registerButtonFrame->setPalette(palette);
+
+    QHBoxLayout* l = new QHBoxLayout(m_registerButtonFrame);
+    m_registerEnterButton = new KPushButton(il->loadIcon("button_ok", KIcon::Small, KIcon::SizeSmall), QString(), m_registerButtonFrame, "EnterButton");
+    m_registerCancelButton = new KPushButton(il->loadIcon("button_cancel", KIcon::Small, KIcon::SizeSmall), QString(), m_registerButtonFrame, "CancelButton");
+    m_registerMoreButton = new KPushButton(il->loadIcon("configure", KIcon::Small, KIcon::SizeSmall), QString(), m_registerButtonFrame, "MoreButton");
+    if(m_form->moreButton()->popup()) {
+      m_registerMoreButton->setPopup(m_form->moreButton()->popup());
+    }
+    l->addWidget(m_registerEnterButton);
+    l->addWidget(m_registerCancelButton);
+    l->addWidget(m_registerMoreButton);
+    l->addStretch(2);
+
+    connect(m_registerEnterButton, SIGNAL(clicked()), this, SLOT(slotEndEdit()));
+    connect(m_registerCancelButton, SIGNAL(clicked()), this, SLOT(slotCancelEdit()));
+
+  }
 }
 
 void KLedgerView::createAccountMenu(void)

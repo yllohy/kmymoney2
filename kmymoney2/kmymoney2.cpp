@@ -216,6 +216,7 @@ void KMyMoney2App::initActions()
   settingsKey = KStdAction::keyBindings(this, SLOT(slotKeySettings()), actionCollection());
   settings = KStdAction::preferences(this, SLOT( slotSettings() ), actionCollection());
   new KAction(i18n("Configure Online &Banking..."), "configure", 0, this, SLOT(slotBankingSettings()), actionCollection(), "banking_settings");
+  new KAction(i18n("Enable all messages"), "", 0, this, SLOT(slotEnableMessages()), actionCollection(), "enable_messages");
 
   // The Bank Menu
   bankAdd = new KAction(i18n("Add new institution..."), "bank", 0, myMoneyView, SLOT(slotBankNew()), actionCollection(), "bank_add");
@@ -1664,3 +1665,8 @@ void KMyMoney2App::slotBankingImport()
   }
 }
 
+void KMyMoney2App::slotEnableMessages(void)
+{
+  KMessageBox::enableAllMessages();
+  KMessageBox::information(this, i18n("All messages have been enabled."), i18n("All messages"));
+}

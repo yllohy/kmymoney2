@@ -388,9 +388,9 @@ void KLedgerViewInvestments::fillForm()
 
     m_form->newButton()->setEnabled(true);
     m_form->editButton()->setEnabled(true);
-    m_form->enterButton()->setEnabled(false);
-    m_form->cancelButton()->setEnabled(false);
-    m_form->moreButton()->setEnabled(true);
+    enableOkButton(false);
+    enableCancelButton(false);
+    enableMoreButton(true);
 
   } else {
     m_transaction = MyMoneyTransaction();
@@ -403,9 +403,9 @@ void KLedgerViewInvestments::fillForm()
 
     m_form->newButton()->setEnabled(true);
     m_form->editButton()->setEnabled(false);
-    m_form->enterButton()->setEnabled(false);
-    m_form->cancelButton()->setEnabled(false);
-    m_form->moreButton()->setEnabled(false);
+    enableOkButton(false);
+    enableCancelButton(false);
+    enableMoreButton(false);
   }
 }
 
@@ -485,6 +485,9 @@ QWidget* KLedgerViewInvestments::arrangeEditWidgetsInRegister(void)
   setRegisterCellWidget(firstRow+2, 2, m_editCashAccount);
   setRegisterCellWidget(firstRow, 6, m_editAmount);
 
+  // place buttons
+  setRegisterCellWidget(firstRow+3, 0, m_registerButtonFrame);
+
   // show all variable widgets, we hide the ones we
   // don't need for the current case later on again
   m_editPPS->show();
@@ -531,6 +534,9 @@ QWidget* KLedgerViewInvestments::arrangeEditWidgetsInRegister(void)
   addToTabOrder(m_editFees);
   addToTabOrder(m_editPPS);
   addToTabOrder(m_editAmount);
+  addToTabOrder(m_registerEnterButton);
+  addToTabOrder(m_registerCancelButton);
+  addToTabOrder(m_registerMoreButton);
 
   return m_editDate;
 }
@@ -1457,13 +1463,13 @@ void KLedgerViewInvestments::slotEndEdit()
 
   // switch the context to enable refreshView() to work
   m_form->newButton()->setEnabled(true);
-  m_form->enterButton()->setEnabled(false);
-  m_form->cancelButton()->setEnabled(false);
-  m_form->moreButton()->setEnabled(false);
+  enableOkButton(false);
+  enableCancelButton(false);
+  enableMoreButton(false);
 
   if(KLedgerView::transaction(m_register->currentTransactionIndex()) != 0) {
     m_form->editButton()->setEnabled(true);
-    m_form->moreButton()->setEnabled(true);
+    enableMoreButton(true);
   }
 
   hideWidgets();
@@ -1857,7 +1863,7 @@ const bool KLedgerViewInvestments::slotDataChanged(int field)
         ok = false;
       break;
   }
-  m_form->enterButton()->setEnabled(ok);
+  enableOkButton(ok);
 
   updateValues(field);
 

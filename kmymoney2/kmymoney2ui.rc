@@ -27,6 +27,7 @@
   <Menu name="settings">
     <Action name="show_transaction_detail" append="show_merge"/>
     <Action name="banking_settings" append="configure_merge"/>
+    <Action name="enable_messages" append="show_merge"/>
   </Menu>
 
   <Menu name="bank"><text>&amp;Institution</text>

@@ -33,6 +33,7 @@
 #include <qvaluevector.h>
 #include <qtimer.h>
 #include <qwidgetlist.h>
+#include <qguardedptr.h>
 class QWidgetStack;
 
 // ----------------------------------------------------------------------------
@@ -778,6 +779,12 @@ protected:
 
   virtual void createMoreMenu(void);
 
+  /**
+    * This method creates a frame with three buttons that
+    * can be used for enter/cancel/more during register editing.
+    */
+  virtual void createRegisterButtons(void);
+
   virtual void reloadEditWidgets(const MyMoneyTransaction& t) = 0;
 
   /**
@@ -815,6 +822,10 @@ protected:
     * @param w pointer to input widget
     */
   void addToTabOrder(QWidget* w);
+
+  void enableOkButton(const bool enabled);
+  void enableCancelButton(const bool enabled);
+  void enableMoreButton(const bool enabled);
 
 protected:
   /**
@@ -939,6 +950,11 @@ protected:
     */
   KPopupMenu*   m_moreMenu;
 
+  QGuardedPtr<QFrame>       m_registerButtonFrame;
+  QGuardedPtr<KPushButton>  m_registerEnterButton;
+  QGuardedPtr<KPushButton>  m_registerCancelButton;
+  QGuardedPtr<KPushButton>  m_registerMoreButton;
+
 private:
   /**
     * This method creates a second split if the current @p m_transaction
@@ -953,6 +969,15 @@ private:
     * direction of m_split.
     */
   void amountChanged(const QString& value, const int dir = UnknownDirection);
+
+  /**
+    * Enables the widgets in the list to the state passed by
+    * the parameter @p enabled.
+    *
+    * @param list QPtrList of widgets
+    * @param enabled enable (true) or disable (false) the widgets in the list
+    */
+  void enableWidgets(QPtrList<QWidget> list, const bool enabled);
 
 private:
    /**

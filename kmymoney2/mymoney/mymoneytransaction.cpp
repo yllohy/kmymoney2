@@ -49,7 +49,7 @@ bool MyMoneyTransaction::operator == (const MyMoneyTransaction& right) const
 {
   return ((m_id == right.m_id) &&
       (m_commodity == right.m_commodity) &&
-      (m_memo == right.m_memo) &&
+      ((m_memo.length() == 0 && right.m_memo.length() == 0) || (m_memo == right.m_memo)) &&
       (m_splits == right.m_splits) &&
       (m_entryDate == right.m_entryDate) &&
       (m_postDate == right.m_postDate) );

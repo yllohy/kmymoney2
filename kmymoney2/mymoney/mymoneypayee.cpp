@@ -67,9 +67,9 @@ QDataStream &operator>>(QDataStream &s, MyMoneyPayee &payee)
 const bool MyMoneyPayee::operator == (const MyMoneyPayee& right) const
 {
   return ((m_id == right.m_id) &&
-      (m_address == right.m_address) &&
-      (m_email == right.m_email) &&
-      (m_name == right.m_name) &&
-      (m_postcode == right.m_postcode) &&
-      (m_reference == right.m_reference) );
+      ((m_address.length() == 0 && right.m_address.length() == 0) || (m_address == right.m_address)) &&
+      ((m_email.length() == 0 && right.m_email.length() == 0) || (m_email == right.m_email)) &&
+      ((m_name.length() == 0 && right.m_name.length() == 0) || (m_name == right.m_name)) &&
+      ((m_postcode.length() == 0 && right.m_postcode.length() == 0) || (m_postcode == right.m_postcode)) &&
+      ((m_reference.length() == 0 && right.m_reference.length() == 0) || (m_reference == right.m_reference)) );
 }

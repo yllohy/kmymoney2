@@ -66,14 +66,14 @@ const bool MyMoneyKeyValueContainer::operator == (const MyMoneyKeyValueContainer
 
   it_a = m_kvp.begin();
   it_b = right.m_kvp.begin();
-  
+
   while(it_a != m_kvp.end() && it_b != right.m_kvp.end()) {
     if(it_a.key() != it_b.key()
-    || *it_a != *it_b)
+    || (((*it_a).length() != 0 || (*it_b).length() != 0) && *it_a != *it_b))
       return false;
     ++it_a;
     ++it_b;
   }
 
-  return (it_a == m_kvp.end() && it_b == right.m_kvp.end());  
+  return (it_a == m_kvp.end() && it_b == right.m_kvp.end());
 }

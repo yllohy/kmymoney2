@@ -160,7 +160,7 @@ void KSettingsDlg::setPageGeneral()
 
   // Create a group to hold the price precision
   QButtonGroup *qbuttongroupPrice = new QButtonGroup(qvboxMainFrame, "ButtonGroup1");
-  qbuttongroupPrice->setTitle(i18n("Equity/Currency options"));
+  qbuttongroupPrice->setTitle(i18n("Equity/Currency/Value options"));
   qbuttongroupPrice->setColumnLayout(0, Qt::Vertical );
   qbuttongroupPrice->layout()->setSpacing( 0 );
   qbuttongroupPrice->layout()->setMargin( 0 );
@@ -176,9 +176,7 @@ void KSettingsDlg::setPageGeneral()
   qhboxlayout2->addWidget(new QLabel(i18n("Price Precision: "), qbuttongroupPrice));
   qhboxlayout2->addWidget(m_qIntPricePrecision);
   qhboxlayout2->addWidget(new QLabel(i18n("digits"), qbuttongroupPrice));
-  QSpacerItem* spacer = new QSpacerItem( 20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding );
-  qhboxlayout2->addItem(spacer);
-  qhboxlayout2->setStretchFactor(spacer->widget(), 5);
+  qhboxlayout2->addStretch(20);
 }
 
 void KSettingsDlg::setPageAccountsView()

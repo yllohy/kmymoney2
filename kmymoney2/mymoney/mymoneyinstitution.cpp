@@ -80,13 +80,13 @@ QCString MyMoneyInstitution::removeAccountId(const QCString& account)
 bool MyMoneyInstitution::operator == (const MyMoneyInstitution& right) const
 {
   if ((m_id == right.m_id) &&
-      (m_name == right.m_name) &&
-      (m_town == right.m_town) &&
-      (m_street == right.m_street) &&
-      (m_postcode == right.m_postcode) &&
-      (m_telephone == right.m_telephone) &&
-      (m_sortcode == right.m_sortcode) &&
-      (m_manager == right.m_manager) &&
+      ((m_name.length() == 0 && right.m_name.length() == 0) || (m_name == right.m_name)) &&
+      ((m_town.length() == 0 && right.m_town.length() == 0) || (m_town == right.m_town)) &&
+      ((m_street.length() == 0 && right.m_street.length() == 0) || (m_street == right.m_street)) &&
+      ((m_postcode.length() == 0 && right.m_postcode.length() == 0) || (m_postcode == right.m_postcode)) &&
+      ((m_telephone.length() == 0 && right.m_telephone.length() == 0) || (m_telephone == right.m_telephone)) &&
+      ((m_sortcode.length() == 0 && right.m_sortcode.length() == 0) || (m_sortcode == right.m_sortcode)) &&
+      ((m_manager.length() == 0 && right.m_manager.length() == 0) || (m_manager == right.m_manager)) &&
       (m_accountList == right.m_accountList) ) {
     return true;
   } else

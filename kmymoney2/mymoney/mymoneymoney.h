@@ -1064,7 +1064,7 @@ inline MyMoneyMoney MyMoneyMoney::operator-(long ldAmountInPence) const
 ////////////////////////////////////////////////////////////////////////////////
 inline MyMoneyMoney MyMoneyMoney::operator-(int iAmountInPence) const
 {
-  return *this + MyMoneyMoney(iAmountInPence, 1);
+  return *this - MyMoneyMoney(iAmountInPence, 1);
 }
 
 /*

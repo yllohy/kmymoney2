@@ -469,9 +469,9 @@ void KLedgerViewLoan::fillForm(void)
 
     m_form->newButton()->setEnabled(true);
     m_form->editButton()->setEnabled(true);
-    m_form->enterButton()->setEnabled(false);
-    m_form->cancelButton()->setEnabled(false);
-    m_form->moreButton()->setEnabled(true);
+    enableOkButton(false);
+    enableCancelButton(false);
+    enableMoreButton(true);
   } else {
     m_transaction = MyMoneyTransaction();
     m_split = MyMoneySplit();
@@ -488,9 +488,9 @@ void KLedgerViewLoan::fillForm(void)
 
     m_form->newButton()->setEnabled(true);
     m_form->editButton()->setEnabled(false);
-    m_form->enterButton()->setEnabled(false);
-    m_form->cancelButton()->setEnabled(false);
-    m_form->moreButton()->setEnabled(false);
+    enableOkButton(false);
+    enableCancelButton(false);
+    enableMoreButton(false);
   }
 
   // make sure, fields can use all available space
@@ -758,12 +758,16 @@ QWidget* KLedgerViewLoan::arrangeEditWidgetsInRegister(void)
 {
   int   firstRow = m_register->currentTransactionIndex() * m_register->rpt();
 
+  // place edit widgets in the register
   setRegisterCellWidget(firstRow, 0, m_editDate);
   setRegisterCellWidget(firstRow, 1, m_editNr);
   setRegisterCellWidget(firstRow, 2, m_editPayee);
   setRegisterCellWidget(firstRow+1, 2, m_editCategory);
   setRegisterCellWidget(firstRow+2, 2, m_editMemo);
   setRegisterCellWidget(firstRow, 4, m_editAmount);
+
+  // place buttons
+  setRegisterCellWidget(firstRow+2, 0, m_registerButtonFrame);
 
   // now setup the tab order
   m_tabOrderWidgets.clear();
@@ -773,6 +777,9 @@ QWidget* KLedgerViewLoan::arrangeEditWidgetsInRegister(void)
   addToTabOrder(m_editCategory);
   addToTabOrder(m_editMemo);
   addToTabOrder(m_editAmount);
+  addToTabOrder(m_registerEnterButton);
+  addToTabOrder(m_registerCancelButton);
+  addToTabOrder(m_registerMoreButton);
 
   if(m_editSplit) {
     delete m_editSplit;

@@ -83,7 +83,7 @@ kMyMoneyDateInput::kMyMoneyDateInput(QWidget *parent, const char *name, Qt::Alig
   dateEdit->setSeparator(separator);
 
   m_datePicker = new KDatePicker(m_dateFrame, m_date);
-#if KDE_VERSION >= 310
+#if KDE_IS_VERSION(3,1,0)
   // Let the date picker have a close button (Added in 3.1)
   m_datePicker->setCloseButton(true);
 #endif
