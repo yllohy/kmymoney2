@@ -1,3 +1,6 @@
+2001-03-24  Felix Rodriguez <frodriguez@wesleyan.edu>
+  * Added Payees as selections to Payee ComboBox
+
 2001-03-23  Felix Rodriguez <frodriguez@wesleyan.edu>
   * Fixed Category Combo Box to include Minor Categories
   * Fixed Category Dialog Box ListView WidthMode to Maximum

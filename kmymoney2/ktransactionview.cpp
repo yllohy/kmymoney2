@@ -90,10 +90,12 @@ void KTransactionView::createInputWidgets()
   m_method->setAutoCompletion(true);
   KCompletion *methodcomp = m_method->completionObject();
   connect(m_method,SIGNAL(returnPressed(const QString&)),methodcomp,SLOT(addItem(const QString&)));
-  KCompletion *payeecomp = m_payee->completionObject();
-  connect(m_payee,SIGNAL(returnPressed(const QString&)),payeecomp,SLOT(addItem(const QString&)));
   m_payee->setEditable(true);
   m_payee->setAutoCompletion(true);
+ // KCompletion *payeecomp = m_payee->completionObject();
+	m_payee->setCompletionMode(KGlobalSettings::CompletionAuto);
+	m_payee->setHandleSignals(true);
+ // connect(m_payee,SIGNAL(returnPressed(const QString&)),payeecomp,SLOT(addItem(const QString&)));
   m_payment->setHandleSignals(false);
   m_payment->setKeyBinding(KCompletionBase::TextCompletion, Qt::Key_End );
   m_payment->setContextMenuEnabled(false);
@@ -129,6 +131,49 @@ void KTransactionView::createInputWidgets()
 	connect(m_cancel, SIGNAL(clicked()),this,SLOT(cancelClicked()));
 	connect(m_enter, SIGNAL(clicked()),this,SLOT(enterClicked()));
 	connect(m_delete, SIGNAL(clicked()),this,SLOT(deleteClicked()));
+
+
+}
+
+void KTransactionView::loadPayees()
+{
+  MyMoneyBank *bank;
+  MyMoneyAccount *account;
+
+
+  bank = m_filePointer->bank(m_bankIndex);
+  if (!bank) {
+    qDebug("unable to find bank in updateData");
+    return;
+  }
+
+  account = bank->account(m_accountIndex);
+  if (!account) {
+    qDebug("Unable to find account in updateData");
+    return;
+  }
+  MyMoneyMoney balance;
+  MyMoneyTransaction *transaction;
+	QStringList payeelist;
+
+  for ( transaction = account->transactionFirst(); transaction; transaction=account->transactionNext() )
+	{
+   	QString memo = transaction->memo();
+		bool inPayee = false;
+    for(QStringList::Iterator it = payeelist.begin(); it != payeelist.end(); ++it)
+		{
+			if((*it).latin1() == memo)
+			{
+       	inPayee = true;
+			}     	
+		}
+		if(inPayee == false)
+		{
+    	payeelist.append(memo); 	
+		}
+	}
+	payeelist.sort();
+  m_payee->insertStringList(payeelist);
 
 }
 
@@ -517,7 +562,10 @@ void KTransactionView::updateInputLists(void)
   }
 	m_category->clear();
   m_category->insertStringList(categoryList);
-
+  if(m_payee->count() < 2)
+	{
+   	loadPayees();
+	}
 
 }
 
