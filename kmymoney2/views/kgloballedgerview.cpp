@@ -140,8 +140,10 @@ void KGlobalLedgerView::refreshView(void)
 {
   // FIXME: this should actually call all views on the stack not
   //        only the current selected view
-  if(m_currentView != 0)
-    m_currentView->refreshView();
+  for(int i = 0; i < MyMoneyAccount::MaxAccountTypes; ++i) {
+    if(m_specificView[i] != 0)
+      m_specificView[i]->refreshView();
+  }
 }
 
 void KGlobalLedgerView::selectAccount(const QCString& accountId)
