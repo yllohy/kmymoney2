@@ -19,8 +19,8 @@
 
 #include "kmymoneycombo.h"
 
-kMyMoneyCombo::kMyMoneyCombo(QWidget *w)
-  : KComboBox(w)
+kMyMoneyCombo::kMyMoneyCombo(QWidget *w, const char *name)
+  : KComboBox(w, name)
 {
   init();
 }

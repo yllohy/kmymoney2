@@ -1,3 +1,7 @@
+2002-01-31 Michael Edwardes <mte@users.sourceforge.net>
+  * Added scheduled transaction addition dialog.
+  * Fixed constructor of kmymoneycombo.  Didn't fix the rest though.
+
 2002-01-30 Kevin Tambascio <ktambascio@users.sourceforge.net>
   * Fixed problem with showing the kinvestmentview and kstocktransactionview class as widgets, instead of dialogs.
 

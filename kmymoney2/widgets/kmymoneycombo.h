@@ -29,7 +29,7 @@
 class kMyMoneyCombo : public KComboBox  {
 	Q_OBJECT
 public:
-	kMyMoneyCombo(QWidget *w);
+	kMyMoneyCombo(QWidget *w, const char *name=0);
     kMyMoneyCombo(bool rw, QWidget *w);
 	~kMyMoneyCombo();
   /** No descriptions */
