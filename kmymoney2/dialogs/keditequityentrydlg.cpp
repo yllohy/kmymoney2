@@ -53,7 +53,7 @@ KEditEquityEntryDlg::KEditEquityEntryDlg(const MyMoneyEquity& selectedEquity, QW
   lvPriceHistory->setShowSortIndicator(true);
   
   connect(btnOK, SIGNAL(clicked()), this, SLOT(slotOKClicked()));
-	connect(btnCancel, SIGNAL(clicked()), this, SLOT(slotCancelClicked()));
+  connect(btnCancel, SIGNAL(clicked()), this, SLOT(slotCancelClicked()));
   connect(lvPriceHistory, SIGNAL(doubleClicked(QListViewItem*, const QPoint&, int)), this, SLOT(slotPriceHistoryDoubleClicked(QListViewItem *, const QPoint&, int)));
   connect(edtEquityName, SIGNAL(textChanged(const QString &)), this, SLOT(slotEquityNameChanged(const QString&)));
   connect(edtMarketSymbol, SIGNAL(textChanged(const QString &)), this, SLOT(slotEquitySymbolChanged(const QString&)));
@@ -92,12 +92,28 @@ KEditEquityEntryDlg::~KEditEquityEntryDlg()
 /** No descriptions */
 void KEditEquityEntryDlg::slotOKClicked()
 {
-	accept();
+  if(m_changes)
+  {
+    m_selectedEquity.setName(edtEquityName->text());
+    m_selectedEquity.setTradingSymbol(edtMarketSymbol->text());
+    //m_selectedEquity.setEquityType((int)cmbInvestmentType->currentItem());
+    
+    QListViewItemIterator it(lvPriceHistory);
+    while(it.current())
+    {
+      QDate date = QDate::fromString(it.current()->text(0));
+      MyMoneyMoney money(it.current()->text(1));
+      m_selectedEquity.addPriceHistory(date, money);
+      ++it;
+    }
+  }
+  
+  accept();
 }
 
 void KEditEquityEntryDlg::slotCancelClicked()
 {
-	reject();
+  reject();
 }
 
 void KEditEquityEntryDlg::slotPriceHistoryDoubleClicked(QListViewItem *item, const QPoint &point, int c)
@@ -130,6 +146,8 @@ void KEditEquityEntryDlg::slotAddPriceClicked()
     KListViewItem *pItem = new KListViewItem(lvPriceHistory, pDlg->getDate().toString(), pDlg->getPrice().formatMoney());
     lvPriceHistory->insertItem(pItem);
     lvPriceHistory->sort();
+    
+    m_changes = true;
   }
 }
 
@@ -146,6 +164,8 @@ void KEditEquityEntryDlg::slotEditPriceClicked()
       pItem->setText(0, pDlg->getDate().toString());
       pItem->setText(1, pDlg->getPrice().formatMoney());
       lvPriceHistory->sort();
+      
+      m_changes = true;
     }
   }
 }
@@ -158,5 +178,6 @@ void KEditEquityEntryDlg::slotRemovePriceClicked()
   {
     lvPriceHistory->takeItem(pItem);
     lvPriceHistory->sort();
+    m_changes = true;
   }
 }

@@ -231,7 +231,16 @@ void KInvestmentView::slotItemDoubleClicked(QListViewItem* pItem, const QPoint& 
       QCString id = pInvestListItem->equityId();
       MyMoneyEquity equity = currentFile->equity(id);
       KEditEquityEntryDlg *pDlg = new KEditEquityEntryDlg(equity, this);
-      pDlg->exec();
+      if(pDlg->exec())
+      {
+        //copies all of the modified object's data into our local copy.
+        pDlg->updatedEquity(equity);
+        
+        //puts this in the storage container.
+        currentFile->modifyEquity(equity); 
+        
+        currentFile->setDirty();     
+      }
     }
   }
 }

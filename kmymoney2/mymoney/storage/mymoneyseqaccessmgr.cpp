@@ -1416,7 +1416,13 @@ void MyMoneySeqAccessMgr::newEquity(MyMoneyEquity& equity)
 {
   // create the account
   MyMoneyEquity newEquity(nextEquityID(), equity);
+  
+  qDebug("New Equity object ID is %s\n", newEquity.id().data());
+  
   m_equitiesList[newEquity.id()] = newEquity;
+  
+  qDebug("Size of equity list is now %d\n", m_equitiesList.size());
+  
   touch();
   equity = newEquity;
 }
@@ -1429,11 +1435,13 @@ void MyMoneySeqAccessMgr::addEquity(MyMoneyEquity& equity)
 void MyMoneySeqAccessMgr::modifyEquity(const MyMoneyEquity& equity)
 {
   m_equitiesList[equity.id()] = equity;
+  touch();
 }
 
 void MyMoneySeqAccessMgr::removeEquity(const MyMoneyEquity& equity)
 {
   m_equitiesList.erase(equity.id());
+  touch();
 }
 
 const MyMoneyEquity MyMoneySeqAccessMgr::equity(const QCString& id) const

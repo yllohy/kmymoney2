@@ -32,6 +32,7 @@
 // KDE Includes
 #include <klistview.h>
 #include <klocale.h>
+#include <klineedit.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -47,12 +48,14 @@ class KEditEquityEntryDlg : public kEditEquityEntryDecl
 {
   Q_OBJECT
 public: 
-	KEditEquityEntryDlg(const MyMoneyEquity& selectedEquity, QWidget *parent = NULL, const char *name = NULL);
-	~KEditEquityEntryDlg();
+  KEditEquityEntryDlg(const MyMoneyEquity& selectedEquity, QWidget *parent = NULL, const char *name = NULL);
+  ~KEditEquityEntryDlg();
                           
+  void updatedEquity(MyMoneyEquity& equity) { equity = m_selectedEquity; }
+  
 protected slots:
   void slotOKClicked();
-	void slotCancelClicked();
+  void slotCancelClicked();
   void slotPriceHistoryDoubleClicked(QListViewItem *item, const QPoint &point, int c);
   void slotPriceHistoryClicked(QListViewItem* item, const QPoint& point, int c);
   void slotEquityNameChanged(const QString& str);
@@ -63,7 +66,7 @@ protected slots:
   
 private:
   MyMoneyEquity m_selectedEquity;
-  bool m_changes;	
+  bool m_changes; 
 };
 
 #endif

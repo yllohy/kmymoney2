@@ -747,43 +747,48 @@ void KLedgerViewInvestments::slotStartEdit()
 
 void KLedgerViewInvestments::slotEndEdit()
 {
-  QString name = m_editSymbolName->text();
-  qDebug("Symbol name is %s", name.data());
-
-  MyMoneyFile* file = MyMoneyFile::instance();
-  if(file)
+  if(m_editSymbolName)
   {
-    const QValueList<MyMoneyEquity> list = file->equityList();
-    bool bKnownEquity = false;
-    for(QValueList<MyMoneyEquity>::ConstIterator it = list.begin(); it != list.end(); ++it)
+    QString name = m_editSymbolName->text();
+    qDebug("Symbol name is %s", name.data());
+  
+    MyMoneyFile* file = MyMoneyFile::instance();
+    if(file)
     {
-      if((*it).name() == name)
+      const QValueList<MyMoneyEquity> list = file->equityList();
+      bool bKnownEquity = false;
+      for(QValueList<MyMoneyEquity>::ConstIterator it = list.begin(); it != list.end(); ++it)
       {
-        bKnownEquity = true;
-        break;
-      }
-    }
-
-    //if we don't know about this equity, throw up a dialog box to collect the basic information about it.
-    if(!bKnownEquity)
-    {
-      KNewEquityEntryDlg *pDlg = new KNewEquityEntryDlg(this, name.data());
-      pDlg->setSymbolName(name);
-      if(pDlg->exec())
-      {
-        //create the new Equity object, and give it its ID.
-        MyMoneyEquity newEquity;
-        IMyMoneyStorage *storage = file->storage();
-        if(storage)
+        if((*it).name() == name)
         {
-          storage->newEquity(newEquity);
-
-          //fill in the fields.
-          newEquity.setTradingSymbol(pDlg->symbolName());
-          newEquity.setName(pDlg->name());
-
-          //add it to the list of equity objects.
-          storage->addEquity(newEquity);
+          bKnownEquity = true;
+          break;
+        }
+      }
+  
+      //if we don't know about this equity, throw up a dialog box to collect the basic information about it.
+      if(!bKnownEquity)
+      {
+        KNewEquityEntryDlg *pDlg = new KNewEquityEntryDlg(this, name.data());
+        pDlg->setSymbolName(name);
+        if(pDlg->exec())
+        {
+          //create the new Equity object, and give it its ID.
+          MyMoneyEquity newEquity;
+          IMyMoneyStorage *storage = file->storage();
+          if(storage)
+          {
+            qDebug("Adding equity %s to the our storage object\n", name.data());
+              
+            //fill in the fields.
+            newEquity.setTradingSymbol(pDlg->symbolName());
+            newEquity.setName(pDlg->name());
+  
+            storage->newEquity(newEquity);
+            
+            //mark the file as needing to be saved.
+            storage->setDirty();
+          }
         }
       }
     }
