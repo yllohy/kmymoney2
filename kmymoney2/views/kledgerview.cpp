@@ -26,7 +26,7 @@
 // QT Includes
 
 #include <qdatetime.h>
-#include <qapp.h>
+#include <qapplication.h>
 #include <qwidgetstack.h>
 #include <qcursor.h>
 #include <qtimer.h>

@@ -23,8 +23,19 @@
 #ifndef KINVESTMENTVIEW_H
 #define KINVESTMENTVIEW_H
 
-#include <qlist.h>
+// ----------------------------------------------------------------------------
+// QT Includes
+
+#include <qptrlist.h>
+
+// ----------------------------------------------------------------------------
+// KDE Includes
+
 #include <kpopupmenu.h>
+
+// ----------------------------------------------------------------------------
+// Project Includes
+
 #include "../mymoney/mymoneyequity.h"
 #include "kinvestmentviewdecl.h"
 

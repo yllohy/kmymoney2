@@ -20,7 +20,7 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
-#include <qapp.h>
+#include <qapplication.h>
 #include <qdir.h>
 #include <qprinter.h>
 #include <qpainter.h>
@@ -631,6 +631,7 @@ void KMyMoney2App::progressCallback(int current, int total, const QString& msg)
 {
   if(!msg.isEmpty())
     kmymoney2->slotStatusMsg(msg);
+
 
 
 

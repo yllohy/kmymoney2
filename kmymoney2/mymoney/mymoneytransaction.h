@@ -24,7 +24,7 @@
 
 #include <qstring.h>
 #include <qdatetime.h>
-#include <qlist.h>
+#include <qptrlist.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes

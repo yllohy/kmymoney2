@@ -27,7 +27,7 @@
 #include <qlabel.h>
 #include <qtable.h>
 #include <qtimer.h>
-#include <qlist.h>
+#include <qptrlist.h>
 #include <qbuttongroup.h>
 #include <qradiobutton.h>
 

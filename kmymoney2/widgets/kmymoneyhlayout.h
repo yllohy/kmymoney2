@@ -26,12 +26,13 @@
 
 #include <qwidget.h>
 #include <qlayout.h>
-#include <qlist.h>
+#include <qptrlist.h>
 
-/**//*******************************
-// Class     : kMyMoneyHLayout
-// Purpose  : Horizontal Layout Widget
-// *******************************
+/**
+  *******************************
+   Class     : kMyMoneyHLayout
+   Purpose  : Horizontal Layout Widget
+  *******************************
   *@author Michael Edwardes
   */
 

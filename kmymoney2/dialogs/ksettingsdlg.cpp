@@ -16,7 +16,7 @@
 
 // ----------------------------------------------------------------------------
 // QT Includes
-#include <qapp.h>
+#include <qapplication.h>
 #include <qlayout.h>
 #include <qvbox.h>
 #include <qlabel.h>
