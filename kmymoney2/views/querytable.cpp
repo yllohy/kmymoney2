@@ -76,10 +76,8 @@ bool QueryTable::TableRow::operator<( const TableRow& _compare ) const
   * TODO
   *
   * - Collapse 2- & 3- groups when they are identical
-  * - Convert currency
   * - Way more test cases (especially splits & transfers)
   * - Option to collapse splits
-  * - CSV output
   *
   */
 
@@ -118,6 +116,28 @@ QueryTable::QueryTable(const MyMoneyReport& _report): m_config(_report)
     
     QDate week = postdate.addDays( 1 - postdate.dayOfWeek() );
     qtransactionrow["week"] = i18n("Week of %1").arg(week.toString(Qt::ISODate));
+    
+    // There is a subtle difference between the way this report deals with 
+    // foreign currencies and the way pivot tables do.  In this transaction
+    // report, if you choose not to convert to base currency, all values
+    // are reported in the TRANSACTION currency, because it's a transaction-
+    // based report.  With pivots, values are reported in the ACCOUNT's
+    // currency, because it's an account-based report.
+    
+    MyMoneyMoney currencyfactor(1.0);
+    if ( report.isConvertCurrency() )
+    {
+      if((*it_transaction).commodity() != file->baseCurrency().id()) 
+      {
+        // I have no idea how to deal with stock accounts quite yet (acejones)
+        MyMoneyCurrency currency = file->currency((*it_transaction).commodity());
+        currencyfactor = currency.price(postdate);
+        
+      }
+    }  
+    else
+      if((*it_transaction).commodity() != file->baseCurrency().id()) 
+        qtransactionrow["currency"] = (*it_transaction).commodity();
         
     // A table row ALWAYS has one asset/liability account.  A transaction 
     // will generate one table row for each A/L account.
@@ -169,7 +189,10 @@ QueryTable::QueryTable(const MyMoneyReport& _report): m_config(_report)
             TableRow qsplitrow = qaccountrow;
             qsplitrow["account"] = file->account((*it_split).accountId()).name();
             qsplitrow["action"] = (*it_split2).action();
-            qsplitrow["value"] = (*it_split2).value().formatMoney();
+            
+            // retrieve the value in the transaction's currency, and convert 
+            // to the base currency if needed
+            qsplitrow["value"] = ((*it_split2).value()*currencyfactor).formatMoney();
             qsplitrow["memo"] = (*it_split2).memo();
             qsplitrow["id"] = (*it_split2).id();
  
@@ -300,18 +323,23 @@ class GroupIterator
     QString m_subtotalField;
   }; 
 
-QString QueryTable::renderHTML( void ) const
+void QueryTable::render( QString& result, QString& csv ) const
 {
-  QString result;
-  
+  result="";
+  csv="";
   result += QString("<h2 class=\"report\">%1</h2>\n").arg(m_config.name());
+  csv += "\"Report: " + m_config.name() + "\"\n";
   result += QString("<div class=\"subtitle\">");
   if ( m_config.isConvertCurrency() )
-    //result += i18n("All currencies converted to %1").arg(MyMoneyFile::instance()->baseCurrency().name());
-    result += i18n("All currencies will be converted to %1 when this report is finished.  For now, they are still in their specific currency.").arg(MyMoneyFile::instance()->baseCurrency().name());
+  {
+    result += i18n("All currencies converted to %1").arg(MyMoneyFile::instance()->baseCurrency().name());
+    csv += i18n("All currencies converted to %1\n").arg(MyMoneyFile::instance()->baseCurrency().name());
+  }
   else
-    //result += i18n("All values shown in %1 unless otherwise noted").arg(MyMoneyFile::instance()->baseCurrency().name());
-    result += i18n("All values shown in their specific currency.  When this report is done, this fact will be noted by each item.").arg(MyMoneyFile::instance()->baseCurrency().name());
+  {
+    result += i18n("All values shown in %1 unless otherwise noted").arg(MyMoneyFile::instance()->baseCurrency().name());
+    csv += i18n("All values shown in %1 unless otherwise noted\n").arg(MyMoneyFile::instance()->baseCurrency().name());
+  }
   result += QString("</div>\n");
   result += QString("<div class=\"gap\">&nbsp;</div>\n");
   
@@ -350,11 +378,14 @@ QString QueryTable::renderHTML( void ) const
     if ( i18nName.isEmpty() )
       i18nName = *it_column;
     result += "<th>" + i18nName + "</th>";
+    csv += i18nName + ",";
     ++it_column;
   }
   
   result += "</tr>\n";
-
+  csv = csv.left( csv.length() - 1 );
+  csv += "\n";
+  
   //
   // Set up group iterators
   //
@@ -397,16 +428,23 @@ QString QueryTable::renderHTML( void ) const
       ++it_group;      
     }
     // Do subtotals backwards
-    it_group = groupIteratorList.fromLast();
-    while ( it_group != groupIteratorList.end() )
-    {	    
-      if ((*it_group).isSubtotal())
-        result += "<tr class=\"sectionfooter\">"
-	  "<td class=\"left"+ QString::number(((*it_group).depth()-1)) + "\" " 
-	  "colspan=\"" + QString::number(columns.count()-1) + "\">"+
-	  i18n("Total")+" " + (*it_group).oldName() + "</td>"
-	  "<td>" + (*it_group).subtotal().formatMoney() + "</td></tr>\n"; 
-      --it_group;      
+    if ( m_config.isConvertCurrency() )
+    {
+      it_group = groupIteratorList.fromLast();
+      while ( it_group != groupIteratorList.end() )
+      {	    
+        if ((*it_group).isSubtotal())
+        {
+          QString subtotal = (*it_group).subtotal().formatMoney();
+          result += "<tr class=\"sectionfooter\">"
+            "<td class=\"left"+ QString::number(((*it_group).depth()-1)) + "\" " 
+            "colspan=\"" + QString::number(columns.count()-1) + "\">"+
+            i18n("Total")+" " + (*it_group).oldName() + "</td>"
+            "<td>" + subtotal + "</td></tr>\n"; 
+          csv += "\"" + i18n("Total") + " " + (*it_group).oldName() + "\"," + subtotal.remove(',') + "\n"; 
+        }
+        --it_group;
+      }
     }
     // And headers forwards
     it_group = groupIteratorList.begin();
@@ -415,10 +453,11 @@ QString QueryTable::renderHTML( void ) const
       if ((*it_group).isNewHeader())
       {
         row_odd = true;
-	result += "<tr class=\"sectionheader\">" 
-	  "<td class=\"left"+ QString::number(((*it_group).depth()-1)) + "\" " 
-	  "colspan=\"" + QString::number(columns.count()) + "\">" + 
-	  (*it_group).name() + "</td></tr>\n"; 
+        result += "<tr class=\"sectionheader\">" 
+          "<td class=\"left"+ QString::number(((*it_group).depth()-1)) + "\" " 
+          "colspan=\"" + QString::number(columns.count()) + "\">" + 
+          (*it_group).name() + "</td></tr>\n";
+        csv += "\"" + (*it_group).name() + "\"\n";	
       }
       ++it_group;      
     }
@@ -430,40 +469,65 @@ QString QueryTable::renderHTML( void ) const
     QStringList::const_iterator it_column = columns.begin();
     while ( it_column != columns.end() )
     {
-      result += QString("<td%1>%2</td>")
-        .arg((*it_column=="value")?"":" class=\"left\"")
-        .arg((*it_row)[(*it_column)]);
+      QString data = (*it_row)[(*it_column)];
+      if ( *it_column=="value" )
+      {
+        result += QString("<td>%1&nbsp;%2</td>")
+          .arg((*it_row)["currency"])
+          .arg(data);
+        csv += (*it_row)["currency"] + " " + data.remove(',') + ",";
+      }
+      else
+      {
+        result += QString("<td class=\"left\">%1</td>")
+          .arg(data);
+        csv += "\""+ data + "\",";
+      }
       ++it_column;
     }
     
     result += "</tr>\n";
+    csv = csv.left( csv.length() - 1 );
+    csv += "\n";
     row_odd = ! row_odd;
     ++it_row;
   }
   //
   // Final group totals
   // 
-    // Do subtotals backwards
+  
+  // Do subtotals backwards
+  if ( m_config.isConvertCurrency() )
+  {
     QValueList<GroupIterator>::iterator it_group = groupIteratorList.fromLast();
     while ( it_group != groupIteratorList.end() )
     {
       (*it_group).update(TableRow());
+      QString subtotal = (*it_group).subtotal().formatMoney();
       result += "<tr class=\"sectionfooter\">"
         "<td class=\"left"+ QString::number((*it_group).depth()-1) + "\" " 
-	"colspan=\"" + QString::number(columns.count()-1) + "\">"+
-	i18n("Total")+" " + (*it_group).oldName() + "</td>"
-	"<td>" + (*it_group).subtotal().formatMoney() + "</td></tr>\n"; 
+        "colspan=\"" + QString::number(columns.count()-1) + "\">"+
+        i18n("Total")+" " + (*it_group).oldName() + "</td>"
+        "<td>" + subtotal + "</td></tr>\n"; 
+      csv += "\"" + i18n("Total") + " " + (*it_group).oldName() + "\"," + subtotal.remove(',') + "\n";  
       --it_group;      
     }
-  
+  }  
   result += "</table>\n";
-  
-  return result;
+}
+
+QString QueryTable::renderHTML( void ) const
+{
+  QString html, csv;
+  render( html,csv );
+  return html;
 }
 
 QString QueryTable::renderCSV( void ) const
 {
-  return "CSV output not yet implemented for query reports";
+  QString html, csv;
+  render( html,csv );
+  return csv; 
 }
 
 void QueryTable::dump( const QString& file, const QString& context ) const

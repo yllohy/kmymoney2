@@ -147,7 +147,13 @@ void KReportsView::KReportTab::saveAs( const QString& filename )
   if ( file.open( IO_WriteOnly ) ) 
   {
     if ( QFileInfo(filename).extension(false).lower() == "csv")
-      QTextStream(&file) << PivotTable( MyMoneyFile::instance()->report(m_reportId) ).renderCSV();
+    {
+      MyMoneyReport report = MyMoneyFile::instance()->report(m_reportId);
+      if ( report.reportType() == MyMoneyReport::ePivotTable )
+        QTextStream(&file) << PivotTable( report ).renderCSV();
+      else if ( report.reportType() == MyMoneyReport::eQueryTable )
+        QTextStream(&file) << QueryTable( report ).renderCSV();
+    }
     else
       QTextStream(&file) <<  createTable();
     file.close();

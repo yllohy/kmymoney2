@@ -144,10 +144,13 @@ void writeRCFtoXMLDoc( const MyMoneyReport& filter, QDomDocument* doc )
 
 void writeTabletoCSV( const PivotTable& table, const QString& _filename = QString() )
 {
-  static unsigned filenum = 1;
+  static unsigned filenumber = 1;
   QString filename = _filename;
   if ( filename.isEmpty() )
-    filename = QString("report-%1%2.csv").arg((filenum<10)?"0":"").arg(filenum++);
+  {
+    filename = QString("report-%1%2.csv").arg((filenumber<10)?"0":"").arg(filenumber);
+    ++filenumber;
+  }
     
   QFile g( filename );
   g.open( IO_WriteOnly );
@@ -155,6 +158,24 @@ void writeTabletoCSV( const PivotTable& table, const QString& _filename = QStrin
   g.close();
     
 }
+
+void writeTabletoCSV( const QueryTable& table, const QString& _filename = QString() )
+{
+  static unsigned filenumber = 1;
+  QString filename = _filename;
+  if ( filename.isEmpty() )
+  {
+    filename = QString("qreport-%1%2.csv").arg((filenumber<10)?"0":"").arg(filenumber);
+    ++filenumber;
+  }
+    
+  QFile g( filename );
+  g.open( IO_WriteOnly );
+  QTextStream(&g) << table.renderCSV();
+  g.close();
+    
+}
+
 void writeRCFtoXML( const MyMoneyReport& filter, const QString& _filename = QString() )
 {
   static unsigned filenum = 1;
@@ -637,8 +658,10 @@ void KReportsViewTest::testMultipleCurrencies()
   // Test the report type where we DO NOT convert the currency
   filter.setConvertCurrency(false);
   filter.setShowSubAccounts(true);
+  filter.setName("Spending WITHOUT currency conversion");
   XMLandback(filter);
   PivotTable spending_fnc( filter );
+  writeTabletoCSV(spending_fnc);
 #if 1
   CPPUNIT_ASSERT(spending_fnc.m_grid["Expense"]["Foreign"][acCanCash][2]==(-moCanTransaction));
   CPPUNIT_ASSERT(spending_fnc.m_grid["Expense"]["Foreign"][acCanCash][3]==(-moCanTransaction));
@@ -649,6 +672,7 @@ void KReportsViewTest::testMultipleCurrencies()
 #endif
   filter.setConvertCurrency(true);
   filter.clear();
+  filter.setName("Multiple currency net worth");
   filter.setRowType(MyMoneyReport::eAssetLiability);
   filter.setDateFilter(QDate(2004,1,1),QDate(2005,1,1).addDays(-1));
   XMLandback(filter);
@@ -1062,6 +1086,7 @@ void KReportsViewTest::testQueryBasics()
     filter.setName("Transactions by Category");
     QueryTable qtbl_1(filter);
     qtbl_1.dump( "qreport-01.html", htmlcontext );
+    writeTabletoCSV(qtbl_1);
     
     CPPUNIT_ASSERT(qtbl_1.m_transactions.count() == 12);
     CPPUNIT_ASSERT(qtbl_1.m_transactions[0]["categorytype"]="Expense");
@@ -1077,6 +1102,7 @@ void KReportsViewTest::testQueryBasics()
     filter.setQueryColumns( static_cast<MyMoneyReport::EQueryColumns>(cols) ); // 
     QueryTable qtbl_2(filter);
     qtbl_2.dump( "qreport-02.html", htmlcontext );
+    writeTabletoCSV(qtbl_2);
   
     filter.setRowType( MyMoneyReport::eAccount );
     filter.setName("Transactions by Account");
@@ -1084,6 +1110,7 @@ void KReportsViewTest::testQueryBasics()
     filter.setQueryColumns( static_cast<MyMoneyReport::EQueryColumns>(cols) ); // 
     QueryTable qtbl_3(filter);
     qtbl_3.dump( "qreport-03.html", htmlcontext );
+    writeTabletoCSV(qtbl_3);
   
     filter.setRowType( MyMoneyReport::ePayee );
     filter.setName("Transactions by Payee");
@@ -1091,6 +1118,7 @@ void KReportsViewTest::testQueryBasics()
     filter.setQueryColumns( static_cast<MyMoneyReport::EQueryColumns>(cols) ); // 
     QueryTable qtbl_4(filter);
     qtbl_4.dump( "qreport-04.html", htmlcontext );
+    writeTabletoCSV(qtbl_4);
         
     filter.setRowType( MyMoneyReport::eMonth );
     filter.setName("Transactions by Month");
@@ -1098,6 +1126,7 @@ void KReportsViewTest::testQueryBasics()
     filter.setQueryColumns( static_cast<MyMoneyReport::EQueryColumns>(cols) ); // 
     QueryTable qtbl_5(filter);
     qtbl_5.dump( "qreport-05.html", htmlcontext );
+    writeTabletoCSV(qtbl_5);
         
     filter.setRowType( MyMoneyReport::eWeek );
     filter.setName("Transactions by Week");
@@ -1105,6 +1134,7 @@ void KReportsViewTest::testQueryBasics()
     filter.setQueryColumns( static_cast<MyMoneyReport::EQueryColumns>(cols) ); // 
     QueryTable qtbl_6(filter);
     qtbl_6.dump( "qreport-06.html", htmlcontext );
+    writeTabletoCSV(qtbl_6);
   }
   catch(MyMoneyException *e) 
   {

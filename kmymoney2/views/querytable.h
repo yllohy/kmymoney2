@@ -57,7 +57,8 @@ public:
   QString renderHTML( void ) const;
   QString renderCSV( void ) const;
   void dump( const QString& file, const QString& context=QString() ) const;
-//private:
+protected:
+  void render( QString&, QString& ) const;
 public:
   class TableRow: public QMap<QString,QString>
   {
@@ -68,6 +69,7 @@ public:
     static QStringList m_sortCriteria;
   };
 
+private:
   QValueList<TableRow> m_transactions;
   const MyMoneyReport& m_config;
   QString m_group;

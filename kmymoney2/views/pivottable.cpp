@@ -189,6 +189,18 @@ void PivotTable::AccountDescriptor::calculateAccountHierarchy( void )
 
 MyMoneyMoney PivotTable::AccountDescriptor::currencyPrice(const QDate& date) const
 {
+  // Note that whether or not the user chooses to convert to base currency, all the values
+  // for a given account/category are converted to the currency for THAT account/category
+  // The "Convert to base currency" tells the report to convert from the account/category
+  // currency to the file's base currency.
+  //
+  // An example where this matters is if Category 'C' and account 'U' are in USD, but
+  // Account 'J' is in JPY.  Say there are two transactions, one is US$100 from U to C,
+  // the other is JPY10,000 from J to C.  Given a JPY price of USD$0.01, this means
+  // C will show a balance of $200 NO MATTER WHAT the user chooses for 'convert to base
+  // currency.  This confused me for a while, which is why I wrote this comment.  
+  //    --acejones
+  
   DEBUG_ENTER("AccountDescriptor::currencyPrice");
 
   MyMoneyMoney value(1.0);
@@ -434,6 +446,8 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
         // reverse sign to match common notation for cash flow direction, only for expense/income splits
         MyMoneyMoney reverse((splitAccount.accountGroup() == MyMoneyAccount::Income) |
                           (splitAccount.accountGroup() == MyMoneyAccount::Expense) ? -1 : 1, 1);
+                          
+        // retrieve the value in the account's currency
         MyMoneyMoney value = (*it_split).value((*it_transaction).commodity(), splitAccount.currencyId())*reverse;
 
         // the outer group is the account class (major account type)
