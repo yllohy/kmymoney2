@@ -50,7 +50,9 @@ typedef struct {
 
 //******************************************************************************************
 // This class runs the quoter process
-class MMQProcess : public QProcess {
+class MMQProcess : public QProcess
+{
+  Q_OBJECT          // for signal/slots
 public:
     MMQProcess ();        // constructor
     ~MMQProcess();        // destructor
@@ -77,7 +79,7 @@ private:
     // buffers
     QString m_stdoutBuffer;
     QString m_stderrBuffer;
-    Q_OBJECT          // for signal/slots
+    
 public slots:
     void readFromStdout() { m_stdoutBuffer += readStdout(); };
     void readFromStderr() { m_stderrBuffer += readStderr(); };
@@ -152,8 +154,8 @@ private:
     
     MMQProcess m_p;     // quoter process 
     // a couple of static variables, so we do check_script once only
-    static bool m_scriptOK;   // checkScript() worked okay
-    static QString m_scriptPath;    // path to quoter script
+    bool m_scriptOK;   // checkScript() worked okay
+    QString m_scriptPath;    // path to quoter script
     
     QString m_perlBinary;// ("/usr/bin/perl");
     QString m_perlScript;// ("/home/tonyb/devkmm/FQuote/bin/mymoneyquoter.pl");

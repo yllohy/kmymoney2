@@ -25,9 +25,9 @@
 
 
 /**
-	* Class that holds all the required information about an equity that the user
-	* has entered information about.
-	*
+  * Class that holds all the required information about an equity that the user
+  * has entered information about.
+  *
   *@author Kevin Tambascio
   */
 
@@ -44,7 +44,7 @@ class MyMoneyEquity
 public: 
   MyMoneyEquity();
   MyMoneyEquity(const QCString& id, const MyMoneyEquity& equity);
-  ~MyMoneyEquity();
+  virtual ~MyMoneyEquity();
 
 public:
   typedef enum {
@@ -60,22 +60,35 @@ public:
   QString   name() const                 { return m_name; }
   void      setName(const String& str)      { m_name = str; }
 
-	QString   tradingSymbol() const               { return m_symbol; }
-	void      setTradingSymbol(const String& str)    { m_symbol = str; }
+  QString   tradingSymbol() const               { return m_symbol; }
+  void      setTradingSymbol(const String& str)    { m_symbol = str; }
 
-	eEQUITYTYPE   equityType() const                 { return m_equityType; }
-	void          setEquityType(const eEQUITYTYPE& e)   { m_equityType = e; }
+  eEQUITYTYPE   equityType() const                 { return m_equityType; }
+  void          setEquityType(const eEQUITYTYPE& e)   { m_equityType = e; }
+  
+  QString    tradingMarket() const  { return m_tradingMarket; }
+  void       setTradingMarket(const QString& str) { m_tradingMarket = str; }
 
   
   /** No descriptions */
-  void setEquityType(const String& str);
+  //virtual void setEquityType(const String& str);
 
-  const equity_price_history& priceHistory() const { return m_priceHistory; }
-  void setPriceHistory(const equity_price_history& history);
+  virtual const equity_price_history& priceHistory() const { return m_priceHistory; }
+  virtual void setPriceHistory(const equity_price_history& history);
 
-  void  editPriceHistory(const QDate& date,const MyMoneyMoney& money);
-  void  addPriceHistory(const QDate& date, const MyMoneyMoney& money);
-  void  removePriceHistory(const QDate& date);
+  virtual void  editPriceHistory(const QDate& date,const MyMoneyMoney& money);
+  virtual void  addPriceHistory(const QDate& date, const MyMoneyMoney& money);
+  virtual void  removePriceHistory(const QDate& date);
+  
+  /**
+    * This method takes an equity object that has some price data, and inserts it
+    * into 'this' object.
+    * @param equity The object to extract price data from.
+    *
+    * @return void
+    *
+    */
+  virtual void  appendNewPriceData(const MyMoneyEquity& equity);
 
   /**
     * This method is used to retrieve a price for a specific date
@@ -103,8 +116,9 @@ public:
 protected:
   QCString m_id;
   QString m_name;
-	QString m_symbol;
-	eEQUITYTYPE m_equityType;
+  QString m_symbol;
+  QString m_tradingMarket;
+  eEQUITYTYPE m_equityType;
   equity_price_history m_priceHistory;
 };
 

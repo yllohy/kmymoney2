@@ -27,6 +27,7 @@
 // Project Includes
 #include "mymoneyonlinepriceupdate.h"
 #include "mymoneyexception.h"
+#include "mymoneyfile.h"
 
 // to control sequence of input to quoter
 enum inputStateE {XMLHDR, DOCTYPE, FILESTART, BASECURR, BEGINV, INVEST, ENDINV,
@@ -189,7 +190,7 @@ void MyMoneyOnlinePriceUpdate::inputSource () {
     
     //qDebug ("providing input at state %d", inputState);
     
-  /*  //FIXME - it is probably neither efficient nor required to write separate lines for each statement
+    //FIXME - it is probably neither efficient nor required to write separate lines for each statement
     // however, it may make life easier if we convert this code to use qdom or something
     switch (m_inputState) {
     case XMLHDR:
@@ -221,7 +222,7 @@ void MyMoneyOnlinePriceUpdate::inputSource () {
     case INVEST:
         // write equity details
         m_p.writeToStdin (QString("<EQUITY source = \"%1\" id = \"%2\"/>")
-                        .arg((*m_qit).exchange()).arg((*m_qit).symbol()));
+                        .arg((*m_qit).tradingMarket()).arg((*m_qit).tradingSymbol()));
         if (++m_qit == m_ql->end()) m_inputState = ENDINV;
         break;
     case ENDINV:
@@ -235,7 +236,7 @@ void MyMoneyOnlinePriceUpdate::inputSource () {
     case CURRCY:
         // write currency details
         m_p.writeToStdin (QString("<CURRENCY id = \"%1\"/>")
-                        .arg((*m_qit).symbol())); 
+                        .arg((*m_qit).tradingSymbol())); 
         if (++m_qit == m_ql->end()) m_inputState = ENDCURR;
         break;
     case ENDCURR:
@@ -250,7 +251,7 @@ void MyMoneyOnlinePriceUpdate::inputSource () {
         m_p.closeStdin();
     }
     
-    qApp->processEvents();*/
+    qApp->processEvents();
 }
 
 //*********************************************************************************
@@ -258,7 +259,7 @@ void MyMoneyOnlinePriceUpdate::inputSource () {
 
 void MyMoneyOnlinePriceUpdate::parseOutput (const QString& xmlBuffer) {
     
-   /* QDomDocument doc;
+    QDomDocument doc;
     // do some sanity checks
     if (!doc.setContent (xmlBuffer, FALSE)) {
         QString e = QString (QObject::tr("Could not parse XML output from script %1")).arg(m_scriptPath);
@@ -292,13 +293,13 @@ void MyMoneyOnlinePriceUpdate::parseOutput (const QString& xmlBuffer) {
     
         child = child.nextSibling();
     }
-    return;*/
+    return;
 }
 
 //
 void MyMoneyOnlinePriceUpdate::readInvestments (const QDomElement& elem) {
 
-  /*  QDomNodeList nodeList = elem.childNodes();
+    QDomNodeList nodeList = elem.childNodes();
     for (unsigned int x = 0; x < nodeList.count(); x++) {
         
         QString source, id, errcode, pdate, eqcurr, eqrate, price;
@@ -309,7 +310,8 @@ void MyMoneyOnlinePriceUpdate::readInvestments (const QDomElement& elem) {
         
         QDomElement priceData = temp.firstChild().toElement();
         errcode = priceData.attributes().namedItem(QString("error")).nodeValue();
-        if (errcode == "0" ) {
+        if (errcode == "0" )
+        {
             pdate = priceData.attributes().namedItem(QString("date")).nodeValue();
             eqcurr = priceData.attributes().namedItem(QString("currency")).nodeValue();
             eqrate = priceData.attributes().namedItem(QString("rate")).nodeValue();
@@ -317,26 +319,31 @@ void MyMoneyOnlinePriceUpdate::readInvestments (const QDomElement& elem) {
         }
         // match against next in list, update data
         // items should be returned in same order as requested
-        if (((*m_qit).exchange() != source) || ((*m_qit).symbol() != id))
-            qFatal ("%s != %s or %s != %s",
-                    (*m_qit).exchange().latin1(), source.latin1(), (*m_qit).symbol().latin1(), id.latin1());
-        (*m_qit).m_errorCode = (MMQItem::quoterErrorsE)errcode.toInt();
-        if (errcode == "0") {
-            (*m_qit).m_quoteDate = QDate::fromString(pdate, Qt::ISODate);
+        if (((*m_qit).tradingMarket() != source) || ((*m_qit).tradingSymbol() != id))
+        {
+            qFatal ("%s != %s or %s != %s",  (*m_qit).tradingMarket().latin1(), source.latin1(), (*m_qit).tradingSymbol().latin1(), id.latin1());
+        }
+        
+        //(*m_qit).m_errorCode = (MMQItem::quoterErrorsE)errcode.toInt();
+        if (errcode == "0")
+        {
+            /*(*m_qit).m_quoteDate = QDate::fromString(pdate, Qt::ISODate);
             (*m_qit).m_quoteCurrency = eqcurr;
             (*m_qit).m_quoteRate = eqrate;
-            (*m_qit).m_value= price;
+            (*m_qit).m_value= price;*/
+            MyMoneyMoney value;
+            (*m_qit).addPriceHistory(QDate::fromString(pdate, Qt::ISODate), value);
         }
         // FIXME - convert curr/rate to MyMoneyMoney, MyMopneyCurrency or whatever
         m_qit++;
     }    
-    return;  */  
+    return;  
 }
 
 //
-void MyMoneyOnlinePriceUpdate::readCurrencies (const QDomElement& elem) {
-    
- /*   QDomNodeList nodeList = elem.childNodes();
+void MyMoneyOnlinePriceUpdate::readCurrencies (const QDomElement& elem)
+{
+    QDomNodeList nodeList = elem.childNodes();
     for (unsigned int x = 0; x < nodeList.count(); x++) {
         
         QString source, id, errcode, pdate, rate;
@@ -354,17 +361,21 @@ void MyMoneyOnlinePriceUpdate::readCurrencies (const QDomElement& elem) {
         
         // match against next in list, update data
         // items should be returned in same order as requested
-        if ((*m_qit).symbol() != id)
-            qFatal ("%s != %s", (*m_qit).symbol().latin1(), id.latin1());
-        (*m_qit).m_errorCode = (MyMoneyEquity::quoterErrorsE)errcode.toInt();
-        if (errcode == "0") {
-            (*m_qit).m_quoteDate = QDate::fromString(pdate, Qt::ISODate);
+        if ((*m_qit).tradingSymbol() != id)
+            qFatal ("%s != %s", (*m_qit).tradingSymbol().latin1(), id.latin1());
+        //(*m_qit).m_errorCode = (MyMoneyEquity::quoterErrorsE)errcode.toInt();
+        if (errcode == "0")
+        {
+            MyMoneyMoney value;
+            (*m_qit).addPriceHistory(QDate::fromString(pdate, Qt::ISODate), value);
+            
+            //(*m_qit).m_quoteDate = QDate::fromString(pdate, Qt::ISODate);
             // FIXME - convert rate to MyMoneyMoney
-            (*m_qit).m_value= rate;
+            //(*m_qit).m_value= rate;
         }
         m_qit++;
     }
-    return;  */  
+    return;  
 }
 
 //**********************************************************************************
@@ -407,6 +418,26 @@ void MyMoneyOnlinePriceUpdate::setPerlLocation(const QString& strLoc)
 
 int MyMoneyOnlinePriceUpdate::getQuotes(const QStringList& symbolNames)
 {
+  MyMoneyFile* file = MyMoneyFile::instance();
+  QValueList<MyMoneyEquity> equities = file->equityList();
+  QValueList<MyMoneyEquity> equitiesToUpdate;
+  qDebug("MyMoneyOnlinePriceUpdate::getQuotes: Number of equity objects: %d", equities.size());
+
+  for(QStringList::ConstIterator it = symbolNames.begin(); it != symbolNames.end(); ++it)
+  {
+    for(QValueList<MyMoneyEquity>::Iterator theEquity = equities.begin(); theEquity != equities.end(); ++theEquity)
+    {  
+      if((*theEquity).name() == (*it))
+      {
+        equitiesToUpdate.push_back(*theEquity);
+      }
+    }
+  }
+    
+    //qDebug("MyMoneyOnlinePriceUpdate::getQuotes: Adding equity %s, symbol = %s", (*it).name().data(), (*it).tradingSymbol().data());
+   // KListViewItem* item = new KListViewItem(lvEquityList, (*it).name(), (*it).tradingSymbol());
+   // lvEquityList->insertItem(item);
+  
   return 0;
 }
 

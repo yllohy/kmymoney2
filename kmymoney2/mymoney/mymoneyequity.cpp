@@ -25,7 +25,7 @@
 
 MyMoneyEquity::MyMoneyEquity()
 {
-	m_equityType = ETYPE_NONE;
+  m_equityType = ETYPE_NONE;
 }
 
 MyMoneyEquity::MyMoneyEquity(const QCString& id, const MyMoneyEquity& equity)
@@ -89,28 +89,33 @@ const MyMoneyMoney MyMoneyEquity::price(const QDate& date) const
   return price;
 }
 
+void MyMoneyEquity::appendNewPriceData(const MyMoneyEquity& equity)
+{
+
+}
+
 #if 0
 /** No descriptions */
 void MyMoneyEquity::setEquityType(const String& str)
 {
-	if(str.size())
-	{
-		if(!str.find(i18n("Stock")))
-		{
-			setEquityType(ETYPE_STOCK);
-		}
-		else if(!str.find(i18n("Mutual Fund")))
-		{
-			setEquityType(ETYPE_MUTUALFUND);
-		}
-		else if(!str.find(i18n("Bond")))
-		{
-			setEquityType(ETYPE_BOND);
-		}
-		else
-		{
-			setEquityType(ETYPE_NONE);
-		}
-	}
+  if(str.size())
+  {
+    if(!str.find(i18n("Stock")))
+    {
+      setEquityType(ETYPE_STOCK);
+    }
+    else if(!str.find(i18n("Mutual Fund")))
+    {
+      setEquityType(ETYPE_MUTUALFUND);
+    }
+    else if(!str.find(i18n("Bond")))
+    {
+      setEquityType(ETYPE_BOND);
+    }
+    else
+    {
+      setEquityType(ETYPE_NONE);
+    }
+  }
 }
 #endif
