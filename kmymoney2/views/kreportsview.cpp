@@ -160,6 +160,16 @@ QString KReportsView::KReportTab::createTable(const QString& links)
   catch(MyMoneyException *e) 
   {
     kdDebug(2) << "KReportsView::KReportTab::createTable(): ERROR " << e->what() << endl;
+    
+    QString error = QString("There was an error creating your report: \"%1\".\nPlease report this error to the developer's list: kmymoney2-developer@lists.sourceforge.net").arg(e->what());
+    
+    QMessageBox::critical(this,"Critial Error", error, QMessageBox::Ok, QMessageBox::NoButton );
+
+    html += header;
+    html += links;
+    html += "<h1>Unable to generate report</h1><p>"+error+"</p>";
+    html += footer;
+        
     delete e;
   }
   return html;

@@ -310,19 +310,27 @@ void KReportsViewTest::tearDown ()
 void KReportsViewTest::testNetWorthSingle()
 {
 
-  MyMoneyReport filter( MyMoneyReport::eAssetLiability );
-  filter.setDateFilter(QDate(2004,1,1),QDate(2004,7,1).addDays(-1));
-  XMLandback(filter);
-  PivotTable networth_f(filter);
-  writeTabletoCSV(networth_f);
-
-  CPPUNIT_ASSERT(networth_f.m_grid["Asset"]["Checking Account"][acChecking][5]==moCheckingOpen);
-  CPPUNIT_ASSERT(networth_f.m_grid["Asset"]["Checking Account"][acChecking][6]==moCheckingOpen);
-  CPPUNIT_ASSERT(networth_f.m_grid["Asset"]["Checking Account"].m_total[5]==moCheckingOpen);
-  CPPUNIT_ASSERT(networth_f.m_grid.m_total[0]==moZero);
-  CPPUNIT_ASSERT(networth_f.m_grid.m_total[4]==moZero);
-  CPPUNIT_ASSERT(networth_f.m_grid.m_total[5]==moCheckingOpen);
-  CPPUNIT_ASSERT(networth_f.m_grid.m_total[6]==moCheckingOpen);
+  try 
+  {
+    MyMoneyReport filter( MyMoneyReport::eAssetLiability );
+    filter.setDateFilter(QDate(2004,1,1),QDate(2004,7,1).addDays(-1));
+    XMLandback(filter);
+    PivotTable networth_f(filter);
+    writeTabletoCSV(networth_f);
+    
+    CPPUNIT_ASSERT(networth_f.m_grid["Asset"]["Checking Account"][acChecking][5]==moCheckingOpen);
+    CPPUNIT_ASSERT(networth_f.m_grid["Asset"]["Checking Account"][acChecking][6]==moCheckingOpen);
+    CPPUNIT_ASSERT(networth_f.m_grid["Asset"]["Checking Account"].m_total[5]==moCheckingOpen);
+    CPPUNIT_ASSERT(networth_f.m_grid.m_total[0]==moZero);
+    CPPUNIT_ASSERT(networth_f.m_grid.m_total[4]==moZero);
+    CPPUNIT_ASSERT(networth_f.m_grid.m_total[5]==moCheckingOpen);
+    CPPUNIT_ASSERT(networth_f.m_grid.m_total[6]==moCheckingOpen);
+  }
+  catch(MyMoneyException *e) 
+  {
+    CPPUNIT_FAIL(e->what());
+    delete e;
+  }
 }
 
 void KReportsViewTest::testNetWorthOfsetting()

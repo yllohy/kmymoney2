@@ -1,4 +1,7 @@
 2004-07-26 Ace Jones <acejones@users.sourceforge.net>
+  * Added numerous exceptions for overflow conditions in reports
+  
+2004-07-26 Ace Jones <acejones@users.sourceforge.net>
   * Standardized formatting of headers for scheduled payments on home page
 
 2004-07-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
