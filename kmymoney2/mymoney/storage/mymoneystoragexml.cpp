@@ -109,9 +109,54 @@ void MyMoneyStorageXML::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
   }
 }
 
+QDomElement MyMoneyStorageXML::findChildElement(const QString& name, const QDomElement& root)
+{
+  QDomNode child = root.firstChild();
+  while(!child.isNull())
+  {
+    if(child.isElement())
+    {
+      QDomElement childElement = child.toElement();
+      if(name == childElement.tagName())
+      {
+        return childElement;
+      }
+    }
+
+    child = child.nextSibling();
+  }
+  return QDomElement();
+}
+
+void MyMoneyStorageXML::writeUserInformation(QDomDocument *pDoc, QDomElement& userInfo, IMyMoneySerialize* storage)
+{
+  userInfo.setAttribute(QString("name"), storage->userName());
+  userInfo.setAttribute(QString("email"), storage->userEmail());
+
+  QDomElement address = pDoc->createElement("ADDRESS");
+  address.setAttribute(QString("street"), storage->userStreet());
+  address.setAttribute(QString("city"), storage->userTown());
+  address.setAttribute(QString("county"), storage->userCounty());
+  address.setAttribute(QString("zipcode"), storage->userPostcode());
+  address.setAttribute(QString("telephone"), storage->userTelephone());
+
+  userInfo.appendChild(address);
+}
+
 void MyMoneyStorageXML::readUserInformation(QDomDocument* pDoc, QDomElement userElement, IMyMoneySerialize* storage)
 {
   storage->setUserName(userElement.attribute(QString("name")));
+  storage->setUserEmail(userElement.attribute(QString("email")));
+
+  QDomElement addressNode = findChildElement(QString("ADDRESS"), userElement);
+  if(!addressNode.isNull())
+  {
+    storage->setUserStreet(addressNode.attribute(QString("street")));
+    storage->setUserTown(addressNode.attribute(QString("city")));
+    storage->setUserCounty(addressNode.attribute(QString("county")));
+    storage->setUserPostcode(addressNode.attribute(QString("zipcode")));
+    storage->setUserTelephone(addressNode.attribute(QString("telephone")));
+  }
 }
 
 void MyMoneyStorageXML::writeFile(QIODevice* qf, IMyMoneySerialize* storage)
@@ -163,19 +208,15 @@ void MyMoneyStorageXML::writeFile(QIODevice* qf, IMyMoneySerialize* storage)
   pDoc = NULL;
 }
 
-void MyMoneyStorageXML::writeUserInformation(QDomDocument *pDoc, QDomElement& userInfo, IMyMoneySerialize* storage)
+void MyMoneyStorageXML::readInstitutions(QDomDocument *pDoc, QDomElement& childElement, const IMyMoneySerialize* storage)
 {
-  userInfo.setAttribute(QString("name"), storage->userName());
-  userInfo.setAttribute(QString("email"), storage->userEmail());
 
-  QDomElement address = pDoc->createElement("ADDRESS");
-  address.setAttribute(QString("street"), storage->userStreet());
-  address.setAttribute(QString("city"), storage->userTown());
-  address.setAttribute(QString("county"), storage->userCounty());
-  address.setAttribute(QString("zipcode"), storage->userPostcode());
-  address.setAttribute(QString("telephone"), storage->userTelephone());
+}
 
-  userInfo.appendChild(address);
+MyMoneyInstitution MyMoneyStorageXML::readInstitution(const QDomElement& institution)
+{
+  MyMoneyInstitution i;
+  
 }
 
 void MyMoneyStorageXML::writeInstitution(QDomDocument *pDoc, QDomElement& institution, const MyMoneyInstitution& i)

@@ -100,7 +100,7 @@ private:
   void readUserInformation(QDomDocument* pDoc, QDomElement userElement, IMyMoneySerialize* storage);
   /** No descriptions */
 
-
+  QDomElement findChildElement(const QString& name, const QDomElement& root);
 private:
   /**
     * This member is used to store the file version information
