@@ -10,13 +10,6 @@ make sure to have the development relevant parts (include files, link
 libraries) of these two projects.  KMyMoney2 is based on min QT 3.0
 and KDE 3.0
 
-We also rely on some other libs that are listed here:
-
-- libxml2 : this should be installed with KDE as KDE requires it
-- libxml++: Make sure, you have version 0.14pre2 installed on your system
-            Newer version are known to fail compiling with the current
-            version of KMyMoney2
-
 ----------------------------------
 Compiling and installing KMyMoney2
 ----------------------------------
