@@ -4,6 +4,8 @@
   * Cancel any edit activity during reconciliation when pressing finish
     or postpone button
   * Removed unused member variables of split widget
+  * Fixed abnormal termination during read of encrypted files
+  * Improved performance of KGPGFile::atEnd()
 
 2005-02-16 Ace Jones <acejones@users.sourceforge.net>
   * Changed the title bar to draw the text in at runtime.  Thanks to THB.
