@@ -994,7 +994,6 @@ void MyMoneyQifReader::selectOrCreateAccount(const SelectCreateMode mode, MyMone
   if(it != m_accountTranslation.end()) {
     try {
       account = file->account(*it);
-      m_account = account;
       return;
 
     } catch (MyMoneyException *e) {
