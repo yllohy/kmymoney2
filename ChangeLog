@@ -4,6 +4,7 @@
   * More comprehensive scheduled transaction processing
   
 2004-12-05 Ace Jones <acejones@users.sourceforge.net>
+  * Added unit tests for OFX import of bank statements
   * Maintain libofx 0.6.6 compatability
   * Separated "From/To (account)" and "From/To (date)" for translation purposes  
   
@@ -13,7 +14,7 @@
   
 2004-11-28 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Partial correction of share price import
-  * Fix bug 1067499 - crash om import
+  * Fix bug 1067499 - crash on import
   * Create orphan accounts for unknown account ids
   
 2004-11-28 Ace Jones <acejones@users.sourceforge.net>

@@ -118,8 +118,12 @@ QString MyMoneyOfxConnector::uuid(void)
   
   return QString(buffer).upper();
 #else
-  kdDebug(2) << "MyMoneyOfxConnector::uuid(): Warning: Program has been compiled without libuuid.  Unable to generate UUID's for this connection.  Some banks will accept OFX connectios without UUID's, others will not." << endl;
-  return "000";
+  // Don't have libuuid?  We'll create an ID based on the date & time.  This should be good
+  // enough.  In fact, with some more testing, we can probably remove libuuid and just use
+  // these date-based uuid's.
+  static int id = 1;
+  kdDebug(2) << "MyMoneyOfxConnector::uuid(): Warning: Program has been compiled without libuuid.  Unable to generate good UUID's for this connection.  Some banks will accept OFX connections without good UUID's, others will not." << endl;
+  return QDateTime::currentDateTime().toString(Qt::ISODate).remove(QRegExp("[^0-9]")) + QString::number(id++);
 #endif
 }
 
@@ -195,4 +199,129 @@ MyMoneyOfxConnector::Tag MyMoneyOfxConnector::signOn(void) const
       .subtag(fi)
       .element("APPID","QWIN")
       .element("APPVER","1100"));
+}
+
+//
+// Methods to provide RESPONSES to OFX requests.  This has no real use in 
+// KMyMoney, but it's included for the purposes of unit testing.  This way, I 
+// can create a MyMoneyAccount, write it to an OFX file, import that OFX file, 
+// and check that everything made it through the importer.
+//
+// It's also a far-off dream to write an OFX server using KMyMoney as a 
+// backend.  It really should not be that hard, and it would fill a void in
+// the open source software community.
+//
+
+const QByteArray MyMoneyOfxConnector::statementResponse(const QDate& _dtstart) const
+{
+  QString request;
+  
+  if ( accounttype()=="CC" )
+    throw new MYMONEYEXCEPTION("OFX reponse for credit card statements not yet supported.");
+  else if ( accounttype()=="INV" )
+    throw new MYMONEYEXCEPTION("OFX reponse for investment statements not yet supported.");
+  else
+    request = header() + Tag("OFX").subtag(signOnResponse()).subtag(bankStatementResponse(_dtstart));
+ 
+  // remove the trailing zero
+  QByteArray result = request.utf8();
+  result.truncate(result.size()-1);
+  
+  return result; 
+}
+
+MyMoneyOfxConnector::Tag MyMoneyOfxConnector::signOnResponse(void) const
+{
+  QString dtnow_string = QDateTime::currentDateTime().toString(Qt::ISODate).remove(QRegExp("[^0-9]"));
+
+  Tag sonrs("SONRS");
+  sonrs
+    .subtag(Tag("STATUS")
+      .element("CODE","0")
+      .element("SEVERITY","INFO")
+      .element("MESSAGE","The operation succeeded.")
+    )
+    .element("DTSERVER",dtnow_string)
+    .element("LANGUAGE","ENG");
+
+  Tag fi("FI");
+  if ( !fiorg().isEmpty() )
+    fi.element("ORG",fiorg());
+  if ( !fiid().isEmpty() )
+    fi.element("FID",fiid());
+      
+  if ( !fi.isEmpty() )
+    sonrs.subtag(fi);
+
+  return Tag("SIGNONMSGSRSV1").subtag(sonrs);
+}
+
+MyMoneyOfxConnector::Tag MyMoneyOfxConnector::messageResponse(const QString& _msgType, const QString& _trnType, const Tag& _response)
+{
+  return Tag(_msgType+"MSGSRSV1")
+    .subtag(Tag(_trnType+"TRNRS")
+      .element("TRNUID",uuid())
+      .subtag(Tag("STATUS").element("CODE","0").element("SEVERITY","INFO"))
+      .element("CLTCOOKIE","1")
+      .subtag(_response));
+}
+
+MyMoneyOfxConnector::Tag MyMoneyOfxConnector::bankStatementResponse(const QDate& _dtstart) const
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
+  
+  QString dtstart_string = _dtstart.toString(Qt::ISODate).remove(QRegExp("[^0-9]"));
+  QString dtnow_string = QDateTime::currentDateTime().toString(Qt::ISODate).remove(QRegExp("[^0-9]"));
+
+  QString transactionlist;
+  
+  MyMoneyTransactionFilter filter;
+  filter.setDateFilter(_dtstart,QDate::currentDate());
+  filter.addAccount(m_account.id());
+  QValueList<MyMoneyTransaction> transactions = file->transactionList(filter);
+  QValueList<MyMoneyTransaction>::const_iterator it_transaction = transactions.begin();
+  while ( it_transaction != transactions.end() )
+  {
+    transactionlist += transaction( *it_transaction );
+    ++it_transaction;
+  }
+      
+  return messageResponse("BANK","STMT",Tag("STMTRS")
+    .element("CURDEF","USD")
+    .subtag(Tag("BANKACCTFROM").element("BANKID", iban()).element("ACCTID", accountnum()).element("ACCTTYPE", "CHECKING"))
+    .subtag(Tag("BANKTRANLIST").element("DTSTART",dtstart_string).element("DTEND",dtnow_string).data(transactionlist))  
+    .subtag(Tag("LEDGERBAL").element("BALAMT",file->balance(m_account.id()).formatMoney(QString(),2)).element("DTASOF",dtnow_string )));
+}
+
+MyMoneyOfxConnector::Tag MyMoneyOfxConnector::transaction(const MyMoneyTransaction& _t) const
+{
+  // This method creates a transaction tag using ONLY the elements that importer uses
+
+  MyMoneyFile* file = MyMoneyFile::instance();
+  MyMoneySplit s = _t.splitByAccount( m_account.id(), true );
+  
+  Tag result ("STMTTRN");
+  
+  result
+    // This is a temporary hack.  I don't use the trntype field in importing at all,
+    // but libofx requires it to be there in order to import the file.  
+    .element("TRNTYPE","DEBIT")
+    .element("DTPOSTED",_t.postDate().toString(Qt::ISODate).remove(QRegExp("[^0-9]")))
+    .element("TRNAMT",s.value().formatMoney(QString(),2));
+  
+  if ( ! _t.bankID().isEmpty() )
+    result.element("FITID",_t.bankID());
+  else
+    result.element("FITID",_t.id());
+  
+  if ( ! s.number().isEmpty() )
+    result.element("CHECKNUM",s.number());
+  
+  if ( ! s.payeeId().isEmpty() )
+    result.element("NAME",file->payee(s.payeeId()).name());
+    
+  if ( ! _t.memo().isEmpty() )
+    result.element("MEMO",_t.memo());
+
+  return result;
 }

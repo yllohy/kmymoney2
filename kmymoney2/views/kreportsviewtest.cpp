@@ -321,6 +321,7 @@ QCString acCanChecking;
 QCString acJpyChecking;
 QCString acCanCash;
 QCString acJpyCash;
+QCString inBank;
 
 void KReportsViewTest::setUp () {
 
@@ -349,6 +350,12 @@ void KReportsViewTest::setUp () {
   acChild = makeAccount(QString("Child"),MyMoneyAccount::Expense,0,QDate(2004,2,11),acParent);
   acForeign = makeAccount(QString("Foreign"),MyMoneyAccount::Expense,0,QDate(2004,1,11),acExpense);
   
+  MyMoneyInstitution i("Bank of the World","","","","","","");
+  MyMoneyKeyValueContainer ofxsettings;
+  ofxsettings.setValue("iban","123456789");
+  i.setOfxConnectionSettings(ofxsettings);
+  file->addInstitution(i);
+  inBank = i.id();
 }
 
 void KReportsViewTest::tearDown ()
@@ -1424,4 +1431,77 @@ void KReportsViewTest::testAccountQuery()
     delete e;
   }
 }
+
+//
+// testOfxImport: Needs to be moved to converter/something.cpp.  But this
+// requires a bunch of AM changes I don't want to make right now.  Will
+// move it when done.
+//
+
+#include "../dialogs/mymoneyofxconnector.h"
+#include "../converter/mymoneyofxstatement.h"
+
+void KReportsViewTest::testOfxImport(void)
+{
+  try
+  {
+    MyMoneyFile* file = MyMoneyFile::instance();
+    
+    TransactionHelper t1q1( QDate(2004,1,1), MyMoneySplit::ActionWithdrawal, moSolo, acChecking, acSolo );
+    TransactionHelper t2q1( QDate(2004,2,1), MyMoneySplit::ActionWithdrawal, moParent1, acChecking, acParent );
+    TransactionHelper t3q1( QDate(2004,3,1), MyMoneySplit::ActionWithdrawal, moParent2, acChecking, acParent );
+    TransactionHelper t4y1( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moChild, acChecking, acChild, QCString(), "Thomas Baumgart" );
+  
+    MyMoneyAccount a = file->account(acChecking);
+    a.setNumber(a.id());
+    a.setInstitutionId(inBank);
+  
+    QByteArray ofxResponse = MyMoneyOfxConnector(a).statementResponse(QDate(2004,1,1));
+    
+    QFile ofxfile("tmp.ofx");
+    if ( ofxfile.open( IO_WriteOnly) )
+    {
+      QTextStream(&ofxfile) << QString(ofxResponse);
+      ofxfile.close();
+    }
+    else
+      CPPUNIT_FAIL("Could not open tmp.ofx for writing");    
+      
+    MyMoneyOfxStatement os("tmp.ofx");
+  
+    CPPUNIT_ASSERT(os.isValid());
+    CPPUNIT_ASSERT(os.count() == 1);
+    
+    MyMoneyStatement& s = os.back();
+    
+    CPPUNIT_ASSERT(s.m_strAccountNumber == "123456789  A000001");
+    CPPUNIT_ASSERT(s.m_strAccountName == "Bank account A000001");
+    CPPUNIT_ASSERT(s.m_dateBegin == QDate(2004,1,1) );
+    CPPUNIT_ASSERT(s.m_dateEnd == QDate::currentDate() );
+    CPPUNIT_ASSERT(s.m_eType == MyMoneyStatement::etCheckings );
+    CPPUNIT_ASSERT(s.m_strCurrency == "USD" );
+    CPPUNIT_ASSERT(s.m_listTransactions.count() == 4);
+    
+    MyMoneyStatement::Transaction& t1 = s.m_listTransactions.front();
+    MyMoneyStatement::Transaction& t4 = s.m_listTransactions.back();
+    
+    CPPUNIT_ASSERT(t1.m_strPayee == "Test Payee" );
+    CPPUNIT_ASSERT(t1.m_strMemo == "Test Payee" );
+    CPPUNIT_ASSERT(MyMoneyMoney(t1.m_moneyAmount) == -moSolo );
+    CPPUNIT_ASSERT(t1.m_datePosted == t1q1.postDate() );
+    CPPUNIT_ASSERT(t1.m_strBankID == QString("ID %1").arg(t1q1.id()) );
+    
+    CPPUNIT_ASSERT(t4.m_strPayee == "Thomas Baumgart" );
+    CPPUNIT_ASSERT(t4.m_strMemo == "Thomas Baumgart" );
+    CPPUNIT_ASSERT(MyMoneyMoney(t4.m_moneyAmount) == -moChild );
+    CPPUNIT_ASSERT(t4.m_datePosted == t4y1.postDate() );
+    CPPUNIT_ASSERT(t4.m_strBankID == QString("ID %1").arg(t4y1.id()) );
+  }
+  catch(MyMoneyException *e) 
+  {
+    CPPUNIT_FAIL(e->what());
+    delete e;
+  }
+}
+
 // vim:cin:si:ai:et:ts=2:sw=2:
