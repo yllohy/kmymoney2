@@ -1201,4 +1201,5 @@ void MyMoneyFile::suspendNotify(const bool state)
   
   if(state == false && prevState == true)
     notify();
+  // qDebug("Notification turned %s", state ? "off" : "on");
 }
