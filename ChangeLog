@@ -1,7 +1,16 @@
+2003-07-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added concept of preferred account
+  * remove KDE specifics from MyMoneySchedule
+  * MyMoneySchedule now uses QDate::isValid() to determine validity of dates
+  * align values to the right in the schedule list view
+  * re-arranged inclusion of header files to speed up compilation
+  * MyMoneySchedule::account() now returns MyMoneyAccount object
+  * Added 'dynamic home page'
+
 2003-07-23 Michael Edwardes <mte@users.sourceforge.net>
   * Fix handling of split dialog.
   * Save open state of top level items in schedule list view.
-    
+  
 2003-07-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Show filename and modification mark in caption of main window
   * Avoid some compiler warnings
