@@ -59,7 +59,7 @@ class KStartupLogo;
   * @see KMyMoneyView
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: kmymoney2.h,v 1.25 2002/12/13 14:00:27 ipwizard Exp $
+  * $Id: kmymoney2.h,v 1.26 2003/01/06 20:10:44 ipwizard Exp $
   *
   * @short Main application class.
 **/
@@ -111,17 +111,15 @@ protected slots:
     * work.  Calls KMyMoneyView::slotAccountImportAscii.
     *
     * @see MyMoneyAccount
-  **/
-  void slotAccountImport();
+    **/
+  void slotQifImport();
 
   /**
     * Called when the user wishes to export some transaction to a
-    * tab delimeted text file.  An account must be open for this
-    * to work.  Calls KMyMoneyView::slotAccountExportAscii.
-    *
-    * @see MyMoneyAccount
-  **/
-  void slotAccountExport();
+    * QIF formatted file. An account must be open for this to work.
+    * Uses MyMoneyQifWriter() for the actual output.
+    **/
+  void slotQifExport();
 
   /**
     * Called when the user wishes to add a recurring transaction/bill/deposit.
@@ -224,6 +222,7 @@ protected slots:
   void slotEnableKMyMoneyOperations(bool enable=true);
 
   void slotShowTipOfTheDay(void);
+  void slotQifProfileEditor(void);
 
 public:
   /**
@@ -407,8 +406,8 @@ private:
   KAction *accountAdd;
   KAction *accountReconcile;
   KAction *accountFind;
-  KAction *accountImport;
-  KAction *accountExport;
+  KAction *actionQifImport;
+  KAction *actionQifExport;
 
   KAction *billsAdd;
 
@@ -440,6 +439,8 @@ private:
   QString m_statusMsg;
 
   KStartupLogo* m_startLogo;
+
+  int m_progressUpdate;
 
 private:
   //void disableAllAccountActions(bool enable=true);
