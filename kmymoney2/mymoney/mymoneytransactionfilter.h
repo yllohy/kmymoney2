@@ -65,20 +65,31 @@ public:
   // used by the GUI (for KMyMoney in kfindtransactiondlgdecl.ui)
   enum stateOptionE {
     allStates = 0,
-    reconciled,
     notReconciled,
     cleared,
+    reconciled,
     frozen,
     // insert new constants above of this line
     stateOptionCount
   };
+
+  // Make sure to keep the following enum valus in sync with the values
+  // used by the GUI (for KMyMoney in kfindtransactiondlgdecl.ui)
+  enum validityOptionE {
+    anyValidity = 0,
+    valid,
+    invalid,
+    // insert new constants above of this line
+    validityOptionCount
+  };
+
 
   /**
     * This is the standard constructor for a transaction filter.
     * It creates the object and calls setReportAllSplits() to
     * report all matching splits as separate entries. Use
     * setReportAllSplits() to override this behaviour.
-    */ 
+    */
   MyMoneyTransactionFilter();
 
   /**
@@ -97,7 +108,7 @@ public:
     * @param id reference to account id
     */
   MyMoneyTransactionFilter(const QCString& id);
-  
+
   ~MyMoneyTransactionFilter();
 
   /**
@@ -132,11 +143,11 @@ public:
     * method but for a list of id's.
     */
   void addAccount(const QCStringList& ids);
-  
+
   /**
     * This method will add the category with id @p id to the list of matching categories.
     * If the list is empty, only transaction with a single asset/liability account will match.
-    *  
+    *
     * @param id internal ID of the account
     */
   void addCategory(const QCString& id);
@@ -184,8 +195,12 @@ public:
 
   /**
     */
+  void addValidity(const int type);
+
+  /**
+    */
   void addState(const int state);
-  
+
   /**
     * This method sets the number filter to match only transactions with
     * a number in the range specified by @p from and @p to.
@@ -225,7 +240,7 @@ public:
     * @param report controls the behaviour of matchingsSplits() as explained above.
     */
   void setReportAllSplits(const bool report = true);
-  
+
   /**
     * This method returns the id of the matching splits for the filter.
     * If m_reportAllSplits is set to false, then only the very first
@@ -245,7 +260,7 @@ public:
     *       and MyMoneyTransactionFilter(const QCString&) for details.
     */
   const QValueList<MyMoneySplit> matchingSplits(void) const;
-  
+
 private:
   /**
     * This is a conversion tool from MyMoneySplit::reconcileFlagE
@@ -261,11 +276,23 @@ private:
     * This is a conversion tool from MyMoneySplit::action
     * to MyMoneyTransactionFilter::typeE types
     *
+    * @param storage pointer to object of IMyMoneyStorage class
+    * @param transaction reference to transaction
     * @param split reference to split in question
     *
     * @return converted action of the split passed as parameter
     */
-  const int splitType(const MyMoneySplit& split) const;
+  const int splitType(const IMyMoneyStorage* const storage, const MyMoneyTransaction& t, const MyMoneySplit& split) const;
+
+  /**
+    * This method checks if a transaction is valid or not. A transaction
+    * is considered valid, if the sum of all splits is zero, invalid otherwise.
+    *
+    * @param transaction reference to transaction to be checked
+    * @retval valid transaction is valid
+    * @retval invalid transaction is invalid
+    */
+  const validityOptionE validTransaction(const MyMoneyTransaction& transaction) const;
 
 private:
   union FilterSet {
@@ -280,16 +307,18 @@ private:
       unsigned amountFilter     : 1;
       unsigned typeFilter       : 1;
       unsigned stateFilter      : 1;
+      unsigned validityFilter   : 1;
     } singleFilter;
   }                   m_filterSet;
   bool                m_reportAllSplits;
-  
+
   QRegExp             m_text;
   QAsciiDict<char>    m_accounts;
   QAsciiDict<char>    m_payees;
   QAsciiDict<char>    m_categories;
   QIntDict<char>      m_states;
   QIntDict<char>      m_types;
+  QIntDict<char>      m_validity;
   QString             m_fromNr, m_toNr;
   QDate               m_fromDate, m_toDate;
   MyMoneyMoney        m_fromAmount, m_toAmount;

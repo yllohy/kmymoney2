@@ -13,7 +13,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- 
+
 // ----------------------------------------------------------------------------
 // QT Includes
 
@@ -86,7 +86,7 @@ KFindTransactionDlg::KFindTransactionDlg(QWidget *parent, const char *name)
                     i18n("Close the dialog"),
                     i18n("Leave the dialog and return to where you came from."));
   m_closeButton->setGuiItem(closeButtonItem);
-        
+
   KGuiItem searchButtonItem( i18n( "&Search" ),
                     QIconSet(il->loadIcon("find", KIcon::Small, KIcon::SizeSmall)),
                     i18n("Start the search"),
@@ -95,18 +95,18 @@ KFindTransactionDlg::KFindTransactionDlg(QWidget *parent, const char *name)
 
   // readConfig();
   slotUpdateSelections();
-  
+
   QTimer::singleShot(0, this, SLOT(slotRightSize()));
 
   // setup the connections
   connect(m_searchButton, SIGNAL(clicked()), this, SLOT(slotSearch()));
-  
+
   connect(m_resetButton, SIGNAL(clicked()), this, SLOT(slotReset()));
   connect(m_resetButton, SIGNAL(clicked()), m_accountsView, SLOT(slotSelectAllAccounts()));
   connect(m_resetButton, SIGNAL(clicked()), m_categoriesView, SLOT(slotSelectAllAccounts()));
-  
+
   connect(m_closeButton, SIGNAL(clicked()), this, SLOT(deleteLater()));
-  
+
   connect(m_textEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotUpdateSelections()));
 
   connect(m_register, SIGNAL(clicked(int, int, int, const QPoint&)), this, SLOT(slotRegisterClicked(int, int, int, const QPoint&)));
@@ -119,7 +119,7 @@ KFindTransactionDlg::KFindTransactionDlg(QWidget *parent, const char *name)
 
   // FIXME: Once we have the online help going, we can show the help button
   m_helpButton->hide();
-  
+
   m_textEdit->setFocus();
 
   // make sure, we get a note when the engine changes state
@@ -152,6 +152,8 @@ void KFindTransactionDlg::slotReset(void)
 
   m_typeBox->setCurrentItem(MyMoneyTransactionFilter::allTypes);
   m_stateBox->setCurrentItem(MyMoneyTransactionFilter::allStates);
+  m_validityBox->setCurrentItem(MyMoneyTransactionFilter::anyValidity);
+
   m_nrEdit->setEnabled(true);
   m_nrFromEdit->setEnabled(false);
   m_nrToEdit->setEnabled(false);
@@ -160,12 +162,12 @@ void KFindTransactionDlg::slotReset(void)
   m_nrToEdit->setText(QString());
   m_nrButton->setChecked(true);
   m_nrRangeButton->setChecked(false);
-      
+
   m_registerFrame->hide();
-  
+
   // the following call implies a call to slotUpdateSelections,
   // that's why we call it last
-  m_dateRange->setCurrentItem(allDates);        
+  m_dateRange->setCurrentItem(allDates);
   slotDateRangeChanged(allDates);
 
   QTimer::singleShot(0, this, SLOT(slotRightSize()));
@@ -188,9 +190,9 @@ void KFindTransactionDlg::slotUpdateSelections(void)
     m_regExp->setEnabled(QRegExp(m_textEdit->text()).isValid());
   } else
     m_regExp->setEnabled(false);
-    
+
   m_caseSensitive->setEnabled(!m_textEdit->text().isEmpty());
-    
+
   // Account tab
   if(!m_accountsView->allAccountsSelected()) {
     if(!txt.isEmpty())
@@ -229,10 +231,11 @@ void KFindTransactionDlg::slotUpdateSelections(void)
     txt += i18n("Payees");
   }
   m_payeesView->setEnabled(!m_emptyPayeesButton->isChecked());
-  
+
   // Details tab
   if(m_typeBox->currentItem() != 0
   || m_stateBox->currentItem() != 0
+  || m_validityBox->currentItem() != 0
   || (m_nrButton->isChecked() && m_nrEdit->text().length() != 0)
   || (m_nrRangeButton->isChecked()
      && (m_nrFromEdit->text().length() != 0 || m_nrToEdit->text().length() != 0))) {
@@ -240,7 +243,7 @@ void KFindTransactionDlg::slotUpdateSelections(void)
       txt += ", ";
     txt += i18n("Details");
   }
-  
+
   if(txt.isEmpty()) {
     txt = i18n("(None)");
   }
@@ -250,7 +253,7 @@ void KFindTransactionDlg::slotUpdateSelections(void)
 const bool KFindTransactionDlg::allItemsSelected(const QListViewItem *item) const
 {
   QListViewItem* it_v;
-  
+
   for(it_v = item->firstChild(); it_v != 0; it_v = it_v->nextSibling()) {
     if(it_v->rtti() == 1) {
       QCheckListItem* it_c = static_cast<QCheckListItem*>(it_v);
@@ -264,7 +267,7 @@ const bool KFindTransactionDlg::allItemsSelected(const QListViewItem *item) cons
 const bool KFindTransactionDlg::allItemsSelected(const QListView* view) const
 {
   QListViewItem* it_v;
-  
+
   for(it_v = view->firstChild(); it_v != 0; it_v = it_v->nextSibling()) {
     if(it_v->rtti() == 1) {
       QCheckListItem* it_c = static_cast<QCheckListItem*>(it_v);
@@ -298,7 +301,7 @@ void KFindTransactionDlg::selectAllItems(QListView* view, const bool state)
       it_c->setOn(state);
     }
     selectAllSubItems(it_v, state);
-  }  
+  }
 
   slotUpdateSelections();
 }
@@ -345,8 +348,8 @@ void KFindTransactionDlg::setupDatePage(void)
   m_startDates[next6Months] = QDate::currentDate();
   m_startDates[next12Months] = QDate::currentDate();
   m_startDates[userDefined] = QDate();
-  
-  m_endDates[allDates] = QDate();  
+
+  m_endDates[allDates] = QDate();
   m_endDates[untilToday] = QDate::currentDate();
   m_endDates[currentMonth] = QDate(yr,mon,1).addMonths(1).addDays(-1);
   m_endDates[currentYear] = QDate(yr,12,31);
@@ -367,7 +370,7 @@ void KFindTransactionDlg::setupDatePage(void)
   connect(m_dateRange, SIGNAL(activated(int)), this, SLOT(slotDateRangeChanged(int)));
   connect(m_fromDate, SIGNAL(dateChanged(const QDate&)), this, SLOT(slotDateChanged()));
   connect(m_toDate, SIGNAL(dateChanged(const QDate&)), this, SLOT(slotDateChanged()));
-  
+
   slotDateRangeChanged(allDates);
 }
 
@@ -404,13 +407,13 @@ void KFindTransactionDlg::setupAmountPage(void)
 {
   connect(m_amountButton, SIGNAL(clicked()), this, SLOT(slotAmountSelected()));
   connect(m_amountRangeButton, SIGNAL(clicked()), this, SLOT(slotAmountRangeSelected()));
-  
+
   connect(m_amountEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotUpdateSelections()));
   connect(m_amountFromEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotUpdateSelections()));
   connect(m_amountToEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotUpdateSelections()));
 
   m_amountButton->setChecked(true);
-  slotAmountSelected();  
+  slotAmountSelected();
 }
 
 void KFindTransactionDlg::slotAmountSelected(void)
@@ -434,9 +437,9 @@ void KFindTransactionDlg::setupPayeesPage(void)
   m_payeesView->setSelectionMode(QListView::Single);
   m_payeesView->header()->hide();
 
-  loadPayees();  
+  loadPayees();
   m_emptyPayeesButton->setChecked(false);
-  
+
   connect(m_allPayeesButton, SIGNAL(clicked()), this, SLOT(slotSelectAllPayees()));
   connect(m_clearPayeesButton, SIGNAL(clicked()), this, SLOT(slotDeselectAllPayees()));
   connect(m_emptyPayeesButton, SIGNAL(stateChanged(int)), this, SLOT(slotUpdateSelections()));
@@ -470,7 +473,8 @@ void KFindTransactionDlg::setupDetailsPage(void)
 {
   connect(m_typeBox, SIGNAL(activated(int)), this, SLOT(slotUpdateSelections()));
   connect(m_stateBox, SIGNAL(activated(int)), this, SLOT(slotUpdateSelections()));
-  
+  connect(m_validityBox, SIGNAL(activated(int)), this, SLOT(slotUpdateSelections()));
+
   connect(m_nrButton, SIGNAL(clicked()), this, SLOT(slotNrSelected()));
   connect(m_nrRangeButton, SIGNAL(clicked()), this, SLOT(slotNrRangeSelected()));
   connect(m_nrEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotUpdateSelections()));
@@ -548,13 +552,13 @@ void KFindTransactionDlg::slotSearch(void)
 {
   // setup the filter from the dialog widgets
   m_filter.clear();
-  
+
   // Text tab
   if(!m_textEdit->text().isEmpty()) {
     QRegExp exp(m_textEdit->text(), m_caseSensitive->isChecked(), !m_regExp->isChecked());
     m_filter.setTextFilter(exp);
   }
-  
+
   // Account tab
   // if(!m_accountsView->allAccountsSelected()) {
     m_filter.addAccount(m_accountsView->selectedAccounts());
@@ -564,41 +568,46 @@ void KFindTransactionDlg::slotSearch(void)
   if(m_dateRange->currentItem() != 0) {
     m_filter.setDateFilter(m_fromDate->getQDate(), m_toDate->getQDate());
   }
-  
+
   // Amount tab
   if((m_amountButton->isChecked() && m_amountEdit->isValid())) {
     m_filter.setAmountFilter(m_amountEdit->getMoneyValue(), m_amountEdit->getMoneyValue());
-    
+
   } else if((m_amountRangeButton->isChecked()
       && (m_amountFromEdit->isValid() || m_amountToEdit->isValid()))) {
-    
+
     MyMoneyMoney from(MyMoneyMoney::minValue), to(MyMoneyMoney::maxValue);
     if(m_amountFromEdit->isValid())
       from = m_amountFromEdit->getMoneyValue();
     if(m_amountToEdit->isValid())
       to = m_amountToEdit->getMoneyValue();
-      
+
     m_filter.setAmountFilter(from, to);
   }
-  
+
   // Categories tab
 
-  m_filter.addCategory(m_categoriesView->selectedAccounts());
-  
+  if(!m_categoriesView->allAccountsSelected()) {
+    m_filter.addCategory(m_categoriesView->selectedAccounts());
+  }
+
   // Payees tab
   if(m_emptyPayeesButton->isChecked()) {
     m_filter.addPayee(QCString());
-    
+
   } else if(!allItemsSelected(m_payeesView)) {
     scanCheckListItems(m_payeesView, addPayeeToFilter);
   }
-  
+
   // Details tab
   if(m_typeBox->currentItem() != 0)
     m_filter.addType(m_typeBox->currentItem());
 
   if(m_stateBox->currentItem() != 0)
     m_filter.addState(m_stateBox->currentItem());
+
+  if(m_validityBox->currentItem() != 0)
+    m_filter.addValidity(m_validityBox->currentItem());
 
   if(m_nrButton->isChecked() && !m_nrEdit->text().isEmpty())
     m_filter.setNumberFilter(m_nrEdit->text(), m_nrEdit->text());
@@ -619,11 +628,11 @@ void KFindTransactionDlg::slotRefreshView(void)
   try {
     QValueList<MyMoneyTransaction> list = MyMoneyFile::instance()->transactionList(m_filter);
     QValueList<MyMoneyTransaction>::ConstIterator it;
-    
+
     m_transactionList.clear();
     QCString lastId;
     int ofs = 0;
-    
+
     for(it = list.begin(); it != list.end(); ++it) {
       KMyMoneyTransaction k(*it);
       m_filter.match(*it, MyMoneyFile::instance()->storage());
@@ -632,13 +641,13 @@ void KFindTransactionDlg::slotRefreshView(void)
         lastId = (*it).id();
       } else
         ofs++;
-        
+
       k.setSplitId(m_filter.matchingSplits()[ofs].id());
       MyMoneyAccount acc = MyMoneyFile::instance()->account(m_filter.matchingSplits()[ofs].accountId());
       if(acc.accountGroup() == MyMoneyAccount::Asset
       || acc.accountGroup() == MyMoneyAccount::Liability)
         m_transactionList.append(k);
-        
+
     }
   } catch(MyMoneyException *e) {
     delete e;
@@ -701,7 +710,7 @@ const QCString KFindTransactionDlg::accountId(const MyMoneyTransaction * const t
   QValueList<MyMoneySplit>::ConstIterator it;
   MyMoneyFile* file = MyMoneyFile::instance();
   MyMoneyTransactionFilter filter = m_filter;
-  
+
   if(filter.match(*transaction, file->storage())) {
     for(it = filter.matchingSplits().begin(); it != filter.matchingSplits().end(); ++it) {
       MyMoneyAccount acc = file->account((*it).accountId());
@@ -717,17 +726,17 @@ const QCString KFindTransactionDlg::accountId(const MyMoneyTransaction * const t
     }
   }
   qFatal("KFindTransactionDlg::accountId(): No asset/liability account for transaction. This usually crashes");
-  return QCString();  
+  return QCString();
 }
 
 void KFindTransactionDlg::resizeEvent(QResizeEvent* ev)
 {
   // don't forget the resizer
   KFindTransactionDlgDecl::resizeEvent(ev);
-  
+
   if(!m_register->isVisible())
     return;
-    
+
   // resize the register
   int w = m_register->visibleWidth();
 
@@ -804,7 +813,7 @@ void KFindTransactionDlg::slotPreviousTransaction(void)
 void KFindTransactionDlg::slotSelectTransaction(const QCString& transactionId)
 {
   int   idx = -1;
-  
+
   if(!transactionId.isEmpty()) {
     for(unsigned i = 0; i < m_transactionPtrVector.count(); ++i) {
       if(m_transactionPtrVector[i]->id() == transactionId) {
