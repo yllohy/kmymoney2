@@ -61,9 +61,13 @@ void kMyMoneyAccountCompletion::adjustSize(const int count)
   QListViewItem* item = m_accountSelector->listView()->firstChild();
   int h = item->height() * (count > MAX_ITEMS ? MAX_ITEMS : count);
 
-  resize(w, h);
+  // the offset of 4 in the next statement avoids the
+  // display of a scroll bar if count < MAX_ITEMS.
+  resize(w, h+4);
+
   if(m_parent) {
     // the code of this basic block is taken from KCompletionBox::show()
+    // and modified to our local needs
 
     // this is probably better, once kde switches to requiring qt3.1
     // QRect screenSize = QApplication::desktop()->availableGeometry(d->m_parent);
@@ -73,10 +77,15 @@ void kMyMoneyAccountCompletion::adjustSize(const int count)
     QPoint orig = m_parent->mapToGlobal( QPoint(0, m_parent->height()) );
     int x = orig.x();
     int y = orig.y();
-
+    
     if ( x + width() > screenSize.right() )
         x = screenSize.right() - width();
-    if (y + height() > screenSize.bottom() )
+
+    // check for the maximum height here to avoid flipping
+    // of the completion box from top to bottom of the
+    // edit widget. The offset (y) is certainly based
+    // on the actual height.
+    if ((y + item->height()*MAX_ITEMS) > screenSize.bottom() )
         y = y - height() - m_parent->height();
 
     move( x, y);
