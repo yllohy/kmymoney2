@@ -125,14 +125,6 @@ private:
   void ungetString(QIODevice *qfile, char * buf, int len);
 
   /**
-    * This method gets a filename from the user for the template
-    * of accounts to be used when the file is created. The directory
-    * where the dialog is positioned first is $KDEDIR/share/apps/kmymoney2
-    * It uses readDefaultCategories() to actually process the file.
-    */
-  void loadDefaultCategories(void);
-
-  /**
     * This method preloads all known currencies into the engine.
     */
   void loadDefaultCurrencies(void);
@@ -141,14 +133,6 @@ private:
     * if no base currency is defined, start the dialog and force it to be set
     */
   void selectBaseCurrency(void);
-
-  /**
-    * This method loads the accounts specified in the file @p filename
-    * into the KMyMoney engine.
-    *
-    * @param filename absolute filename of the file to be loaded
-    */
-  void readDefaultCategories(const QString& filename);
 
   /**
     * This method attaches an empty storage object to the MyMoneyFile
@@ -163,8 +147,6 @@ private:
     */
   void removeStorage(void);
 
-  // Parses a line in the default categories file
-  bool parseDefaultCategory(QString& line, bool& income, QString& name, QStringList& minors);
   void viewAccountList(const QCString& selectAccount); // Show the accounts view
 
   static void progressCallback(int current, int total, const QString&);

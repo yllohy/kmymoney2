@@ -179,6 +179,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   // Page 6
   m_investmentViewFrame = addVBoxPage( i18n("Investments"), i18n("Investments"),
     DesktopIcon("categories"));
+
   m_investmentView = new KInvestmentView(m_investmentViewFrame, KAppTest::widgetName(this, "KInvestmentView"));
   signalMap->setMapping(m_investmentView, InvestmentsView);
   connect(m_investmentView, SIGNAL(signalViewActivated()), signalMap, SLOT(map()));
@@ -835,16 +836,50 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter)
   KConfig *config = KGlobal::config();
   config->setGroup("General Options");
 
-  QString msg = i18n("Do you want to store your data encrypted by GPG? Please be aware, that this is a brand new feature which is yet untested. Make sure, you have the necessary understanding that you might loose all your data if you store it encrypted and cannot decrypt it later on! If unsure, answer 'No'.");
+  // FIXME: we should generate this address dynamically to harden
+  //        the process of simple patching of this address
+  //        For now we leave it this way.
+  static char recoverUserId[] = "kmymoney-recover@users.sourceforge.net";
 
-  if(KGPGFile::GPGAvailable()
-  && !config->readEntry("GPG-Recipient").isEmpty()
-  && KMessageBox::questionYesNo(this, msg, i18n("Store GPG encrypted"), KStdGuiItem::yes(), KStdGuiItem::no(), "StoreEncrypted") == KMessageBox::Yes) {
+  bool encryptedOk = true;
+  bool encryptRecover = false;
+  if(config->readEntry("WriteDataEncrypted", false) != false) {
+    if(!KGPGFile::GPGAvailable()) {
+      KMessageBox::sorry(this, i18n("GPG does not seem to be installed on your system. Please make sure, that GPG can be found using the standard search path. This time, encryption is disabled."), i18n("GPG not found"));
+      encryptedOk = false;
+    }
+
+    if(config->readEntry("EncryptRecover", false) != false) {
+      encryptRecover = true;
+      if(!KGPGFile::keyAvailable(QString(recoverUserId))) {
+        KMessageBox::sorry(this, i18n("<p>You have selected to encrypt your data for backup purposes also with the KMyMoney recover key, but the key for the user-id</p><p><center><b>%1</b></center></p>has not been found in your keyring. Please make sure to import the key for this user-id. You can find it on the <a href=\"http://kmymoney2.sourceforge.net/\">KMyMoney web-site</a>. This time your data will not be encrypted with the KMyMoney recover key.").arg(recoverUserId), i18n("GPG-Key not found"));
+        encryptRecover = false;
+      }
+    }
+    if(!KGPGFile::keyAvailable(config->readEntry("GPG-Recipient"))) {
+      KMessageBox::sorry(this, i18n("<p>You have specified to encrypt your data for the user-id</p><p><center><b>%1</b>.</center></p>Unfortunately, a valid key for this user-id was not found in your keyring. Please make sure to import a valid key for this user-id. This time, encryption is disabled.").arg(config->readEntry("GPG-Recipient")), i18n("GPG-Key not found"));
+      encryptedOk = false;
+    }
+
+    if(encryptedOk == true) {
+      QString msg = i18n("Do you want to store your data encrypted by GPG? Please be aware, that this is a brand new feature which is yet untested. Make sure, you have the necessary understanding that you might loose all your data if you store it encrypted and cannot decrypt it later on! If unsure, answer 'No'.");
+
+      if(KMessageBox::questionYesNo(this, msg, i18n("Store GPG encrypted"), KStdGuiItem::yes(), KStdGuiItem::no(), "StoreEncrypted") == KMessageBox::No) {
+        encryptedOk = false;
+      }
+    }
+  }
+
+  if(config->readEntry("WriteDataEncrypted", false) != false
+  && encryptedOk == true) {
     qfile->close();
     base++;
     KGPGFile *kgpg = new KGPGFile(qfile->name());
     if(kgpg) {
       kgpg->addRecipient(config->readEntry("GPG-Recipient").latin1());
+      if(encryptRecover) {
+        kgpg->addRecipient(recoverUserId);
+      }
     }
     dev = kgpg;
     if(!dev || !dev->open(IO_WriteOnly))
@@ -1208,34 +1243,40 @@ void KMyMoneyView::newFile(const bool createEmtpyFile)
   MyMoneyFile *file = MyMoneyFile::instance();
 
   if(!createEmtpyFile) {
-    KNewFileDlg newFileDlg(this, KAppTest::widgetName(this, "KNewFileDlg"), i18n("Create new KMyMoneyFile"));
+    KNewFileDlg newFileDlg(this, KAppTest::widgetName(this, "KNewFileDlg"), i18n("Create new KMyMoney file"));
     newFileDlg.cancelButton()->hide();
 
-    if (newFileDlg.exec() == QDialog::Accepted)
-    {
-      if(newFileDlg.userNameText.length() != 0)
-        file->setUserName(newFileDlg.userNameText);
-      if(newFileDlg.userStreetText.length() != 0)
-        file->setUserStreet(newFileDlg.userStreetText);
-      if(newFileDlg.userTownText.length() != 0)
-        file->setUserTown(newFileDlg.userTownText);
-      if(newFileDlg.userCountyText.length() != 0)
-        file->setUserCounty(newFileDlg.userCountyText);
-      if(newFileDlg.userPostcodeText.length() != 0)
-        file->setUserPostcode(newFileDlg.userPostcodeText);
-      if(newFileDlg.userTelephoneText.length() != 0)
-        file->setUserTelephone(newFileDlg.userTelephoneText);
-      if(newFileDlg.userEmailText.length() != 0)
-        file->setUserEmail(newFileDlg.userEmailText);
+    newFileDlg.exec();
 
-      KMessageBox::information(this,
-                    i18n("The next dialog allows you to add a set of predefined categories to the new file. Different languages are available to select from. You can skip loading any predefined categories by selecting \"Cancel\" from the next dialog."),
-                    i18n("Load standard categories"));
+    if(newFileDlg.userNameText.length() != 0)
+      file->setUserName(newFileDlg.userNameText);
+    if(newFileDlg.userStreetText.length() != 0)
+      file->setUserStreet(newFileDlg.userStreetText);
+    if(newFileDlg.userTownText.length() != 0)
+      file->setUserTown(newFileDlg.userTownText);
+    if(newFileDlg.userCountyText.length() != 0)
+      file->setUserCounty(newFileDlg.userCountyText);
+    if(newFileDlg.userPostcodeText.length() != 0)
+      file->setUserPostcode(newFileDlg.userPostcodeText);
+    if(newFileDlg.userTelephoneText.length() != 0)
+      file->setUserTelephone(newFileDlg.userTelephoneText);
+    if(newFileDlg.userEmailText.length() != 0)
+      file->setUserEmail(newFileDlg.userEmailText);
 
-      loadDefaultCategories();
-      loadDefaultCurrencies();
+#if 0
+    KMessageBox::information(this,
+                  i18n("The next dialog allows you to add a set of predefined accounts and categories to the new file. Different languages are available to select from. You can skip loading any predefined categories by selecting \"Cancel\" from the next dialog."),
+                  i18n("Load predefined accounts/categories"));
+
+    loadDefaultCategories();
+#endif
+
+    loadDefaultCurrencies();
+
+    // Stay in this endless loop until we have a base currency,
+    // as without it the application does not work anymore.
+    while(MyMoneyFile::instance()->baseCurrency().id().isEmpty())
       selectBaseCurrency();
-    }
   }
   m_fileOpen = true;
 }
@@ -1463,6 +1504,9 @@ void KMyMoneyView::loadDefaultCurrencies(void)
   }
 }
 
+# if 0
+// I leave that in here for now to be able to see what
+// the tax specific code looks like as I did not have that in yet
 void KMyMoneyView::loadDefaultCategories(void)
 {
   KFileDialog* dialog = new KFileDialog(KGlobal::dirs()->findResourceDir("appdata", "default_accounts_enC.dat"),
@@ -1703,9 +1747,9 @@ bool KMyMoneyView::parseDefaultCategory(QString& line, bool& income, QString& na
     return true;
   return false;
 }
+#endif
 
 void KMyMoneyView::viewUp(void)
-
 {
   if (!fileOpen())
     return;
