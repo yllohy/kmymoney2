@@ -34,44 +34,47 @@
 #include "mymoneymoney.h"
 #include "mymoneyutils.h"
 
+#include <qdatetime.h>
+#include <qmap.h>
+
 class MyMoneyEquity
 {
 public: 
-	MyMoneyEquity();
-	~MyMoneyEquity();
+  MyMoneyEquity();
+  ~MyMoneyEquity();
 
 public:
-	typedef enum {
-		ETYPE_NONE,
-		ETYPE_STOCK,
-		ETYPE_MUTUALFUND,
-		ETYPE_BOND
-	} eEQUITYTYPE;
-#if 0	
-	String 	getEquityName() 												{ return m_strEquityName; }
-	void			setEquityName(const String& str)			{ m_strEquityName = str; }
+  typedef enum {
+    ETYPE_NONE,
+    ETYPE_STOCK,
+    ETYPE_MUTUALFUND,
+    ETYPE_BOND
+  } eEQUITYTYPE;
 
-	String 	getEquitySymbol() 											{ return m_strEquitySymbol; }
-	void			setEquitySymbol(const String& str)		{ m_strEquitySymbol = str; }
+  QString   getEquityName()                       { return m_name; }
+  void      setEquityName(const String& str)      { m_name = str; }
 
-	eEQUITYTYPE 	getEquityType() 													{ return m_equityType; }
-	void					setEquityType(const eEQUITYTYPE& e)			{ m_equityType = e; }
+	QString   getEquitySymbol()                     { return m_symbol; }
+	void      setEquitySymbol(const String& str)    { m_symbol = str; }
 
-	String 	getEquityMarket() 											{ return m_strEquityMarket; }
-	void			setEquityMarket(const String& str)		{ m_strEquityMarket = str; }
+	eEQUITYTYPE   getEquityType()                       { return m_equityType; }
+	void          setEquityType(const eEQUITYTYPE& e)   { m_equityType = e; }
 
-	MyMoneyMoney		getCurrentPrice()								{ return m_CurrentPrice; }
-	void						setCurrentPrice(const MyMoneyMoney *m)	{ m_CurrentPrice = *m; }
+	QString   getEquityMarket()                     { return m_market; }
+	void      setEquityMarket(const String& str)    { m_market = str; }
+
+	MyMoneyMoney    getCurrentPrice()                       { return m_currentPrice; }
+	void            setCurrentPrice(const MyMoneyMoney& m)  { m_currentPrice = m; }
   /** No descriptions */
   void setEquityType(const String& str);
 	
 private:
-	String m_strEquityName;
-	String m_strEquitySymbol;
-	String m_strEquityMarket;
+	QString m_name;
+	QString m_symbol;
+	QString m_market;
 	eEQUITYTYPE m_equityType;
-	MyMoneyMoney m_CurrentPrice;
-#endif
+	MyMoneyMoney m_currentPrice;
+  QMap<QDate,MyMoneyMoney> m_priceHistory;
 };
 
 #endif
