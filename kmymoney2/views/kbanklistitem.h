@@ -35,10 +35,8 @@
 class MyMoneyAccount;
 class MyMoneyInstitution;
 
-// #include "../mymoney/mymoneyfile.h"
-
 /**
-  *@author Michael Edwardes, Thomas Baumgart
+  * @author Michael Edwardes, Thomas Baumgart
   */
 
 /**
@@ -175,4 +173,24 @@ public:
 private:
   QCString m_accountID;
 };
+
+/**
+  * This class represents an item in the transaction list view. It is used
+  * by the KPayeesView to select between transactions.
+  */
+class KTransactionListItem : public KListViewItem
+{
+public:
+  KTransactionListItem(KListView* view, KTransactionListItem* parent, const QCString& accountId, const QCString& transaction);
+  ~KTransactionListItem();
+
+  const QCString& accountId(void) const { return m_accountId; };
+  const QCString& transactionId(void) const { return m_transactionId; };
+
+private:
+  QCString m_accountId;
+  QCString m_transactionId;
+};
+
+
 #endif

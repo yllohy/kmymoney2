@@ -179,3 +179,14 @@ KAccountIconItem::~KAccountIconItem()
 void KAccountIconItem::update(const QCString& id)
 {
 }
+
+KTransactionListItem::KTransactionListItem(KListView* view, KTransactionListItem* parent, const QCString& accountId, const QCString& transactionId)
+  : KListViewItem(view, parent)
+{
+  m_accountId = accountId;
+  m_transactionId = transactionId;
+}
+
+KTransactionListItem::~KTransactionListItem()
+{
+}
