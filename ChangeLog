@@ -1,3 +1,15 @@
+2002-12-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added possibility to change from transfer to non-transfer and vice
+    versa in in-register edit mode
+  * Added cash and asset account types
+  * Added missing Nr label during entry of ATM transactions in the form
+  * Cancel any transaction edit session if an account is selected with
+    the ComboBox in the ledger view
+  * Added new sort types for ledger sorting (Type, Nr, Receiver).
+    See KTransactionPtrVector for details  
+  * Added context menu to change sort order
+  * Fixed functionality of context menu in accounts view
+
 2002-12-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Show transaction action also in register underneath the date
   * Changes to payment/deposit and transaction type are reflected
