@@ -32,7 +32,8 @@ autotest_SOURCES = autotest.cpp \
                 mymoneyinstitutiontest.cpp \
 		mymoneykeyvaluecontainertest.cpp \
 		mymoneyscheduletest.cpp \
-		mymoneyfinancialcalculatortest.cpp
+		mymoneyfinancialcalculatortest.cpp \
+		mymoneyequitytest.cpp
 
 autotest_DEPENDENCIES = all-recursive
 autotest_LDADD = $(LIB_KDECORE) $(LIB_QT) $(CPPUNIT_LIBS) storage/libstorage.a libmymoney.a
