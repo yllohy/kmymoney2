@@ -66,6 +66,8 @@ public:
 
   virtual bool eventFilter(QObject * , QEvent * );
 
+  const QCString id(void) const { return m_id; };
+
 signals:
   /**
     * This signal is emitted when the user selected a different equity.
