@@ -1,4 +1,24 @@
-2002-08-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
+2002-10-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added notification classes for payees, institutions, accounts
+    and account-hierarchy to MyMoneyFile
+  * updated test cases
+  * Added logic to support transfer transactions
+  * Updated KPayeesView to interface to new MyMoneyFile object
+  * Moved general logic from KLedgerViewCheckings to KLedgerView
+  * If an account is opened, the ledger view is selected instead of
+    the 'old' transactionview.
+  * Fixed handling of Finish-Button in Account-Wizard
+  * Added descriptive error messages to MyMoneyFile::addAccount()
+  * Fixed documentation of MyMoneyFile::attach()
+  * Fixed MyMoneySeqAccessMgr::totalBalance() to use totalBalance() of
+    subordinate accounts instead of balance().
+  * Delete objects in KMyMoneyFile::close()
+  * Added eventFilter to class kMyMoneyTransactionFormTable
+  * Added framework for iconlist to account view
+  * Allow a maximum of three rows per transaction in the settings dialog
+  * Fixed names of standard account names to have only two colons max
+
+2002-09-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added MyMoneySeqAccessMgr::payeeByName() and MyMoneyFile::payeeByName()
   * Added MyMoneyTransaction::splitSum()
   * Added MyMoneyFile::categoryToAccount() and MyMoneyFile::nameToAccount()
