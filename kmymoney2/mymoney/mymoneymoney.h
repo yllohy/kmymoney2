@@ -18,6 +18,10 @@
 
 #include <stdlib.h>
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #ifndef HAVE_ATOLL
 #  ifdef HAVE_STRTOLL
 #    define atoll(a) strtoll(a, 0, 10)
