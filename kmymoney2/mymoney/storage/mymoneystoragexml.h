@@ -109,6 +109,15 @@ private:
 
   void readAccounts(QDomDocument* pDoc, QDomElement& accounts, IMyMoneySerialize* storage);
   MyMoneyAccount readAccount(const QDomElement& account);
+
+  MyMoneySplit readSplit(QDomElement& splitElement);
+  void readSplits(MyMoneyTransaction& t, QDomElement& splits);
+
+  void readTransactions(QDomDocument *pDoc, QDomElement& transactions, IMyMoneySerialize* storage);
+  MyMoneyTransaction readTransaction(QDomElement& transaction);
+
+  void readSchedules(QDomDocument *pDoc, QDomElement& schedules, IMyMoneySerialize* storage);
+  MyMoneySchedule readSchedule(QDomElement& schedule);
   
   QDomElement findChildElement(const QString& name, const QDomElement& root);
 private:
@@ -143,6 +152,8 @@ private:
   bool m_encrypted;
 
   const unsigned long extractId(const QCString& txt) const;
+  QDate getDate(const QString& strText) const;
+  QString getString(const QDate& date) const;
 };
 
 #endif

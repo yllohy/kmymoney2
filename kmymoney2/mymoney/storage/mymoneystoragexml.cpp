@@ -88,7 +88,7 @@ void MyMoneyStorageXML::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
           }
           else if(QString("TRANSACTIONS") == childElement.tagName())
           {
-            //readTransactions(pDoc, childElement, storage);
+            readTransactions(pDoc, childElement, storage);
           }
           else if(QString("KEYVALPAIRS") == childElement.tagName())
           {
@@ -96,7 +96,7 @@ void MyMoneyStorageXML::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
           }
           else if(QString("SCHEDULES") == childElement.tagName())
           {
-            //readSchedules(pDoc, childElement, storage);
+            readSchedules(pDoc, childElement, storage);
           }
         }
         child = child.nextSibling();
@@ -302,11 +302,11 @@ MyMoneyAccount MyMoneyStorageXML::readAccount(const QDomElement& account)
   qDebug("Reading information for account %s", acc.name().data());
   
   acc.setParentAccountId(QCString(account.attribute(QString("parentaccount"))));
-  acc.setLastModified(QDate::fromString(account.attribute(QString("lastmodified")), Qt::ISODate));
-  acc.setLastReconciliationDate(QDate::fromString(account.attribute(QString("lastreconciled")), Qt::ISODate));
+  acc.setLastModified(getDate(account.attribute(QString("lastmodified"))));
+  acc.setLastReconciliationDate(getDate(account.attribute(QString("lastreconciled"))));
   acc.setInstitutionId(QCString(account.attribute(QString("institution"))));
   acc.setNumber(account.attribute(QString("number")));
-  acc.setOpeningDate(QDate::fromString(account.attribute(QString("opened")), Qt::ISODate));
+  acc.setOpeningDate(getDate(account.attribute(QString("opened"))));
 
   tmp = account.attribute(QString("type"));
   bool bOK = false;
@@ -515,10 +515,10 @@ void MyMoneyStorageXML::writeAccounts(QDomDocument *pDoc, QDomElement& accounts,
 void MyMoneyStorageXML::writeAccount(QDomDocument *pDoc, QDomElement& account, const MyMoneyAccount& p)
 {   
   account.setAttribute(QString("parentaccount"), p.parentAccountId());
-  account.setAttribute(QString("lastreconciled"), p.lastReconciliationDate().toString(Qt::ISODate));
-  account.setAttribute(QString("lastmodified"), p.lastModified().toString(Qt::ISODate));
+  account.setAttribute(QString("lastreconciled"), getString(p.lastReconciliationDate()));
+  account.setAttribute(QString("lastmodified"), getString(p.lastModified()));
   account.setAttribute(QString("institution"), p.institutionId());
-  account.setAttribute(QString("opened"), p.openingDate().toString(Qt::ISODate));
+  account.setAttribute(QString("opened"), getString(p.openingDate()));
   account.setAttribute(QString("number"), p.number());
   account.setAttribute(QString("openingbalance"), p.openingBalance().toString());
   account.setAttribute(QString("type"), p.accountType());  
@@ -604,11 +604,66 @@ void MyMoneyStorageXML::writeTransactions(QDomDocument *pDoc, QDomElement& trans
   }
 }
 
+void MyMoneyStorageXML::readTransactions(QDomDocument *pDoc, QDomElement& transactions, IMyMoneySerialize* storage)
+{
+  unsigned long id = 0;
+  QDomNode child = transactions.firstChild();
+  while(!child.isNull())
+  {
+    if(child.isElement())
+    {
+      QDomElement childElement = child.toElement();
+      if(QString("TRANSACTION") == childElement.tagName())
+      {
+        MyMoneyTransaction transaction = readTransaction(childElement);
+
+        //tell the storage objects we have a new institution.
+        storage->loadTransaction(transaction);
+
+        id = extractId(transaction.id().data());
+        if(id > storage->transactionId())
+        {
+          storage->loadTransactionId(id);
+        }
+      }
+    }
+    child = child.nextSibling();
+  }
+}
+
+void MyMoneyStorageXML::readSchedules(QDomDocument *pDoc, QDomElement& schedules, IMyMoneySerialize* storage)
+{
+  unsigned long id = 0;
+  QDomNode child = schedules.firstChild();
+  while(!child.isNull())
+  {
+    if(child.isElement())
+    {
+      QDomElement childElement = child.toElement();
+      if(QString("SCHEDULED_TX") == childElement.tagName())
+      {
+        MyMoneySchedule schedule = readSchedule(childElement);
+
+        //tell the storage objects we have a new institution.
+        storage->loadSchedule(schedule);
+        
+        id = extractId(schedule.id().data());
+        if(id > storage->scheduleId())
+        {
+          storage->loadScheduleId(id);
+        }
+      }
+    }
+    child = child.nextSibling();
+  }
+}
+
 void MyMoneyStorageXML::writeTransaction(QDomDocument *pDoc, QDomElement& transaction, const MyMoneyTransaction& tx)
 {
-  transaction.setAttribute(QString("postdate"), tx.postDate().toString(Qt::ISODate));
+  transaction.setAttribute(QString("id"), tx.id());
+  transaction.setAttribute(QString("postdate"), getString(tx.postDate()));
   transaction.setAttribute(QString("memo"), tx.memo());
-  transaction.setAttribute(QString("entrydate"), tx.entryDate().toString(Qt::ISODate));
+  transaction.setAttribute(QString("entrydate"), getString(tx.entryDate()));
 
   QDomElement splits = pDoc->createElement("SPLITS");
   QValueList<MyMoneySplit> splitList = tx.splits();
@@ -617,6 +672,72 @@ void MyMoneyStorageXML::writeTransaction(QDomDocument *pDoc, QDomElement& transa
   writeSplits(pDoc, splits, splitList);
 
   transaction.appendChild(splits);
+}
+
+MyMoneyTransaction MyMoneyStorageXML::readTransaction(QDomElement& transaction)
+{
+  QCString id;
+  MyMoneyTransaction t;
+
+  t.setEntryDate(getDate(transaction.attribute(QString("entrydate"))));
+  t.setPostDate(getDate(transaction.attribute(QString("postdate"))));
+  t.setMemo(transaction.attribute(QString("memo")));
+  
+  id = transaction.attribute(QString("id"));
+
+  qDebug("Transaction has id of %s", id.data());
+
+
+  QDomElement splits = findChildElement(QString("SPLITS"), transaction);
+  if(!splits.isNull() && splits.isElement())
+  {
+    readSplits(t, splits);
+  }
+ 
+  return MyMoneyTransaction(id, t);
+}
+
+MyMoneySchedule MyMoneyStorageXML::readSchedule(QDomElement& schedule)
+{
+  MyMoneySchedule sc;
+  sc.setStartDate(getDate(schedule.attribute(QString("startDate"))));
+  sc.setAutoEnter(static_cast<bool>(schedule.attribute(QString("autoEnter")).toInt()));
+  sc.setLastPayment(getDate(schedule.attribute(QString("lastPayment"))));
+  sc.setPaymentType(static_cast<MyMoneySchedule::paymentTypeE>(schedule.attribute(QString("paymentType")).toInt()));
+  sc.setEndDate(getDate(schedule.attribute(QString("endDate"))));
+  sc.setType(static_cast<MyMoneySchedule::typeE>(schedule.attribute(QString("type")).toInt()));
+  sc.setId(QCString(schedule.attribute(QString("id"))));
+  sc.setName(schedule.attribute(QString("name")));
+  sc.setFixed(static_cast<bool>(schedule.attribute(QString("fixed")).toInt()));
+  sc.setOccurence(static_cast<MyMoneySchedule::occurenceE>(schedule.attribute(QString("occurence")).toInt()));
+
+  QDomElement payments = findChildElement(QString("PAYMENTS"), schedule);
+  if(!payments.isNull() && payments.isElement())
+  {
+    QDomNode child = payments.firstChild();
+    while(!child.isNull())
+    {
+      if(child.isElement())
+      {
+        QDomElement childElement = child.toElement();
+        if(QString("PAYMENT") == childElement.tagName())
+        {
+          QDate date = getDate(childElement.attribute(QString("date")));
+          sc.recordPayment(date);
+        }
+      }
+      child = child.nextSibling();
+    }
+  }
+
+  QDomElement transaction = findChildElement(QString("TRANSACTION"), schedule);
+  if(!transaction.isNull() && transaction.isElement())
+  {
+    MyMoneyTransaction t = readTransaction(transaction);
+    sc.setTransaction(t);
+  }
+
+  return sc;  
 }
 
 void MyMoneyStorageXML::writeSplits(QDomDocument *pDoc, QDomElement& splits, const QValueList<MyMoneySplit> splitList)
@@ -630,10 +751,45 @@ void MyMoneyStorageXML::writeSplits(QDomDocument *pDoc, QDomElement& splits, con
   }
 }
 
+MyMoneySplit MyMoneyStorageXML::readSplit(QDomElement& splitElement)
+{
+  MyMoneySplit split;
+  QString strTmp;
+  
+  split.setPayeeId(QCString(splitElement.attribute(QString("payee"))));
+  split.setReconcileDate(getDate(splitElement.attribute(QString("reconciledate"))));
+  split.setAction(QCString(splitElement.attribute(QString("action"))));
+  split.setReconcileFlag(static_cast<MyMoneySplit::reconcileFlagE>(splitElement.attribute(QString("reconcileflag")).toInt()));
+  split.setMemo(splitElement.attribute(QString("memo")));
+  split.setValue(MyMoneyMoney(splitElement.attribute(QString("value"))));
+  split.setAccountId(QCString(splitElement.attribute(QString("account"))));
+ 
+  return split;
+}
+
+void MyMoneyStorageXML::readSplits(MyMoneyTransaction& t, QDomElement& splits)
+{
+  unsigned long id = 0;
+  QDomNode child = splits.firstChild();
+  while(!child.isNull())
+  {
+    if(child.isElement())
+    {
+      QDomElement childElement = child.toElement();
+      if(QString("SPLIT") == childElement.tagName())
+      {
+        MyMoneySplit split = readSplit(childElement);
+        t.addSplit(split);
+      }
+    }
+    child = child.nextSibling();
+  }
+}
+
 void MyMoneyStorageXML::writeSplit(QDomDocument *pDoc, QDomElement& splitElement, const MyMoneySplit& split)
 {
   splitElement.setAttribute(QString("payee"), split.payeeId());
-  splitElement.setAttribute(QString("reconciledate"), split.reconcileDate().toString(Qt::ISODate));
+  splitElement.setAttribute(QString("reconciledate"), getString(split.reconcileDate()));
   splitElement.setAttribute(QString("action"), split.action());
   splitElement.setAttribute(QString("reconcileflag"), split.reconcileFlag());
   splitElement.setAttribute(QString("value"), split.value().toString());
@@ -664,12 +820,12 @@ void MyMoneyStorageXML::writeSchedule(QDomDocument *pDoc, QDomElement& scheduled
   scheduledTx.setAttribute(QString("type"), tx.type());
   scheduledTx.setAttribute(QString("occurence"), tx.occurence());
   scheduledTx.setAttribute(QString("paymentType"), tx.paymentType());
-  scheduledTx.setAttribute(QString("startDate"), tx.startDate().toString(Qt::ISODate));
-  scheduledTx.setAttribute(QString("endDate"), tx.endDate().toString(Qt::ISODate));
+  scheduledTx.setAttribute(QString("startDate"), getString(tx.startDate()));
+  scheduledTx.setAttribute(QString("endDate"), getString(tx.endDate()));
   scheduledTx.setAttribute(QString("fixed"), tx.isFixed());
   scheduledTx.setAttribute(QString("autoEnter"), tx.autoEnter());
   scheduledTx.setAttribute(QString("id"), tx.id());
-  scheduledTx.setAttribute(QString("lastPayment"), tx.lastPayment().toString(Qt::ISODate));
+  scheduledTx.setAttribute(QString("lastPayment"), getString(tx.lastPayment()));
 
   //store the payment history for this scheduled task.
   QValueList<QDate> payments = tx.recordedPayments();
@@ -679,7 +835,7 @@ void MyMoneyStorageXML::writeSchedule(QDomDocument *pDoc, QDomElement& scheduled
   for (it=payments.begin(); it!=payments.end(); ++it)
   {
     QDomElement paymentEntry = pDoc->createElement("PAYMENT");
-    paymentEntry.setAttribute(QString("date"), (*it).toString(Qt::ISODate));
+    paymentEntry.setAttribute(QString("date"), getString(*it));
     paymentsElement.appendChild(paymentEntry);
   }
   scheduledTx.appendChild(paymentsElement);
@@ -789,5 +945,35 @@ const unsigned long MyMoneyStorageXML::extractId(const QCString& txt) const
     rc = atol(txt.mid(pos));
   }
   return rc;
+}
+
+QDate MyMoneyStorageXML::getDate(const QString& strText) const
+{
+  QDate date;
+  if(strText.length())
+  {
+    QDate date = QDate::fromString(strText, Qt::ISODate);
+    if(!date.isNull() && date.isValid())
+    {
+      return date;
+    }
+    else
+    {
+      return QDate();
+    }
+  }
+
+  return date;
+}
+
+QString MyMoneyStorageXML::getString(const QDate& date) const
+{
+  QString str("");
+  if(!date.isNull() && date.isValid())
+  {
+    str = date.toString(Qt::ISODate);
+  }
+
+  return str;
 }
 
