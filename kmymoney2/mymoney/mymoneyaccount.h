@@ -31,6 +31,7 @@
 
 #include "mymoneymoney.h"
 #include "mymoneyutils.h"
+#include "mymoneykeyvaluecontainer.h"
 
 class MyMoneyTransaction;
 class MyMoneyInstitution;
@@ -67,7 +68,7 @@ class MyMoneyFile;
   * @author Thomas Baumgart 2002
   *
 **/
-class MyMoneyAccount
+class MyMoneyAccount : public MyMoneyKeyValueContainer
 {
 public:
 
