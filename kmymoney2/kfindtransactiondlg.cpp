@@ -95,7 +95,7 @@ void KFindTransactionDlg::categoryToggled(bool on)
   QListIterator<MyMoneyCategory> categoryIterator = m_filePointer->categoryIterator();
   for ( ; categoryIterator.current(); ++categoryIterator) {
     MyMoneyCategory *category = categoryIterator.current();
-    theText = category->name().latin1();
+    theText = category->name();
     categoryCombo->insertItem(theText);
     for ( QStringList::Iterator it = category->minorCategories().begin(); it != category->minorCategories().end(); ++it ) {
       theText = category->name();

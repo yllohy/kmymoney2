@@ -19,6 +19,10 @@
 #include <qtextstream.h>
 
 // ----------------------------------------------------------------------------
+// KDE Includes
+#include <klocale.h>
+
+// ----------------------------------------------------------------------------
 // Project Includes
 #include <stdio.h>
 #include <string.h>
@@ -32,10 +36,10 @@
 
 MyMoneyAccount::MyMoneyAccount()
 {
-  m_openingDate = QDate::currentDate();
-  m_lastId = 0L;
+  m_qdateOpening = QDate::currentDate();
+  m_ulLastId = 0L;
   m_accountType = MyMoneyAccount::Current;
-  m_lastReconcile = QDate::currentDate();
+  m_qdateLastReconcile = QDate::currentDate();
   m_parent=0;
 }
 
@@ -44,14 +48,14 @@ MyMoneyAccount::MyMoneyAccount(MyMoneyBank *parent, const QString& name, const Q
     const QDate& lastReconcile)
 {
   m_parent = parent;
-  m_accountName = name;
-  m_accountNumber = number;
-  m_lastId=0L;
+  m_qstringName = name;
+  m_qstringNumber = number;
+  m_ulLastId=0L;
   m_accountType = type;
-  m_description = description;
-  m_openingDate = openingDate;
-  m_openingBalance = openingBal;
-  m_lastReconcile = lastReconcile;
+  m_qstringDescription = description;
+  m_qdateOpening = openingDate;
+  m_mymoneymoneyOpeningBalance = openingBal;
+  m_qdateLastReconcile = lastReconcile;
 }
 
 MyMoneyAccount::~MyMoneyAccount()
@@ -63,7 +67,7 @@ MyMoneyMoney MyMoneyAccount::balance(void) const
   // Recalculate the balance each time it is requested
   MyMoneyMoney balance;
 
-  QListIterator<MyMoneyTransaction> it(m_transactions);
+  QListIterator<MyMoneyTransaction> it(m_qlistTransactions);
   for ( ; it.current(); ++it )
  {
     MyMoneyTransaction *trans = it.current();
@@ -80,39 +84,39 @@ MyMoneyTransaction* MyMoneyAccount::transaction(const MyMoneyTransaction& transa
 {
   unsigned int pos;
   if (findTransactionPosition(transaction, pos)) {
-    return m_transactions.at(pos);
+    return m_qlistTransactions.at(pos);
   }
   return 0;
 }
 
 void MyMoneyAccount::clear(void)
 {
-  m_transactions.clear();
+  m_qlistTransactions.clear();
 }
 
 MyMoneyTransaction* MyMoneyAccount::transactionFirst(void)
 {
-  return m_transactions.first();
+  return m_qlistTransactions.first();
 }
 
 MyMoneyTransaction* MyMoneyAccount::transactionNext(void)
 {
-  return m_transactions.next();
+  return m_qlistTransactions.next();
 }
 
 MyMoneyTransaction* MyMoneyAccount::transactionLast(void)
 {
-  return m_transactions.last();
+  return m_qlistTransactions.last();
 }
 /*
 MyMoneyTransaction* MyMoneyAccount::transactionAt(int index)
 {
-  return m_transactions.at(index);
+  return m_qlistTransactions.at(index);
 }
 */
 unsigned int MyMoneyAccount::transactionCount(void) const
 {
-  return m_transactions.count();
+  return m_qlistTransactions.count();
 }
 
 unsigned int MyMoneyAccount::transactionCount(const QDate start, const QDate end)
@@ -120,8 +124,8 @@ unsigned int MyMoneyAccount::transactionCount(const QDate start, const QDate end
   unsigned int nCount = 0;
   MyMoneyTransaction *mymoneytransaction = 0;
 
-  for (mymoneytransaction = m_transactions.first(); mymoneytransaction;
-        mymoneytransaction = m_transactions.next()) {
+  for (mymoneytransaction = m_qlistTransactions.first(); mymoneytransaction;
+        mymoneytransaction = m_qlistTransactions.next()) {
     if (mymoneytransaction->date()>=start && mymoneytransaction->date()<=end)
       nCount++;
   }
@@ -132,7 +136,7 @@ unsigned int MyMoneyAccount::transactionCount(const QDate start, const QDate end
 /*
 bool MyMoneyAccount::removeCurrentTransaction(unsigned int pos)
 {
-  return m_transactions.remove(pos);
+  return m_qlistTransactions.remove(pos);
 }
 */
 bool MyMoneyAccount::removeTransaction(const MyMoneyTransaction& transaction)
@@ -141,7 +145,7 @@ bool MyMoneyAccount::removeTransaction(const MyMoneyTransaction& transaction)
   if (findTransactionPosition(transaction, pos)) {
     if (m_parent)
       m_parent->file()->setDirty(true);
-    return m_transactions.remove(pos);
+    return m_qlistTransactions.remove(pos);
   }
   return false;
 }
@@ -150,13 +154,13 @@ bool MyMoneyAccount::addTransaction(MyMoneyTransaction::transactionMethod method
   const MyMoneyMoney& amount, const QDate& date, const QString& categoryMajor, const QString& categoryMinor, const QString& atmName,
   const QString& fromTo, const QString& bankFrom, const QString& bankTo, MyMoneyTransaction::stateE state)
 {
-  MyMoneyTransaction *transaction = new MyMoneyTransaction(this, m_lastId++, methodType, number,
+  MyMoneyTransaction *transaction = new MyMoneyTransaction(this, m_ulLastId++, methodType, number,
     memo, amount, date, categoryMajor, categoryMinor, atmName,
     fromTo, bankFrom, bankTo, state);
 
 
-  if (m_transactions.isEmpty()) {
-    m_transactions.append(transaction);
+  if (m_qlistTransactions.isEmpty()) {
+    m_qlistTransactions.append(transaction);
     if (m_parent)
       m_parent->file()->setDirty(true);
     return true;
@@ -164,7 +168,7 @@ bool MyMoneyAccount::addTransaction(MyMoneyTransaction::transactionMethod method
   int idx=0;
 
   // Sort on date
-  QListIterator<MyMoneyTransaction> it(m_transactions);
+  QListIterator<MyMoneyTransaction> it(m_qlistTransactions);
   for ( ; it.current(); ++it, idx++ ) {
     MyMoneyTransaction *trans = it.current();
     if (trans->date() < date)
@@ -175,8 +179,8 @@ bool MyMoneyAccount::addTransaction(MyMoneyTransaction::transactionMethod method
       break;
   }
 
-  m_transactions.insert(idx,transaction);
-  if (m_parent) 
+  m_qlistTransactions.insert(idx,transaction);
+  if (m_parent)
     m_parent->file()->setDirty(true);
 
   return true;
@@ -186,7 +190,7 @@ bool MyMoneyAccount::findTransactionPosition(const MyMoneyTransaction& transacti
 {
   int k=0;
 
-  QListIterator<MyMoneyTransaction> it(m_transactions);
+  QListIterator<MyMoneyTransaction> it(m_qlistTransactions);
   for (k=0; it.current(); ++it, k++) {
     if (*it.current() == transaction) {
       pos=k;
@@ -199,11 +203,11 @@ bool MyMoneyAccount::findTransactionPosition(const MyMoneyTransaction& transacti
 
 bool MyMoneyAccount::operator == (const MyMoneyAccount& right)
 {
-  if ( (m_accountName == right.m_accountName) ) {
-    if (m_accountNumber == right.m_accountNumber) {
+  if ( (m_qstringName == right.m_qstringName) ) {
+    if (m_qstringNumber == right.m_qstringNumber) {
       if (m_accountType == right.m_accountType) {
-        if (m_description == right.m_description) {
-          if (m_lastReconcile == right.m_lastReconcile) {
+        if (m_qstringDescription == right.m_qstringDescription) {
+          if (m_qdateLastReconcile == right.m_qdateLastReconcile) {
             return true;
           }
         }
@@ -215,68 +219,68 @@ bool MyMoneyAccount::operator == (const MyMoneyAccount& right)
 
 MyMoneyAccount::MyMoneyAccount(const MyMoneyAccount& right)
 {
-  m_accountName = right.m_accountName;
-  m_accountNumber = right.m_accountNumber;
+  m_qstringName = right.m_qstringName;
+  m_qstringNumber = right.m_qstringNumber;
   m_accountType = right.m_accountType;
-  m_lastId = right.m_lastId;
-  m_description = right.m_description;
-  m_lastReconcile = right.m_lastReconcile;
-  m_balance = right.m_balance;
-  m_transactions.clear();
-  m_transactions = right.m_transactions;
+  m_ulLastId = right.m_ulLastId;
+  m_qstringDescription = right.m_qstringDescription;
+  m_qdateLastReconcile = right.m_qdateLastReconcile;
+  m_mymoneymoneyBalance = right.m_mymoneymoneyBalance;
+  m_qlistTransactions.clear();
+  m_qlistTransactions = right.m_qlistTransactions;
   m_parent = right.m_parent;
 }
 
 MyMoneyAccount& MyMoneyAccount::operator = (const MyMoneyAccount& right)
 {
-  m_accountName = right.m_accountName;
-  m_accountNumber = right.m_accountNumber;
+  m_qstringName = right.m_qstringName;
+  m_qstringNumber = right.m_qstringNumber;
   m_accountType = right.m_accountType;
-  m_lastId = right.m_lastId;
-  m_description = right.m_description;
-  m_openingDate = right.m_openingDate;
-  m_openingBalance = right.m_openingBalance;
-  m_lastReconcile = right.m_lastReconcile;
-  m_balance = right.m_balance;
-  m_transactions.clear();
-  m_transactions = right.m_transactions;
+  m_ulLastId = right.m_ulLastId;
+  m_qstringDescription = right.m_qstringDescription;
+  m_qdateOpening = right.m_qdateOpening;
+  m_mymoneymoneyOpeningBalance = right.m_mymoneymoneyOpeningBalance;
+  m_qdateLastReconcile = right.m_qdateLastReconcile;
+  m_mymoneymoneyBalance = right.m_mymoneymoneyBalance;
+  m_qlistTransactions.clear();
+  m_qlistTransactions = right.m_qlistTransactions;
   m_parent = right.m_parent;
   return *this;
 }
 
 QDataStream &operator<<(QDataStream &s, const MyMoneyAccount &account)
 {
-  return s << account.m_accountName
-    << account.m_description
-    << account.m_accountNumber
+  return s << account.m_qstringName
+    << account.m_qstringDescription
+    << account.m_qstringNumber
     << (Q_INT32)account.m_accountType
-    << account.m_openingDate
-    << account.m_openingBalance
-    << account.m_lastReconcile;
+    << account.m_qdateOpening
+    << account.m_mymoneymoneyOpeningBalance
+    << account.m_qdateLastReconcile;
 }
 
 QDataStream &operator>>(QDataStream &s, MyMoneyAccount &account)
 {
-  return s >> account.m_accountName
-    >> account.m_description
-    >> account.m_accountNumber
+  return s >> account.m_qstringName
+    >> account.m_qstringDescription
+    >> account.m_qstringNumber
     >> (Q_INT32 &)account.m_accountType
-    >> account.m_lastReconcile;
+    >> account.m_qdateLastReconcile;
 }
 
 bool MyMoneyAccount::readAllData(int version, QDataStream& stream)
 {
-  stream >> m_accountName
-    >> m_description
-    >> m_accountNumber
+  stream >> m_qstringName
+    >> m_qstringDescription
+    >> m_qstringNumber
     >> (Q_INT32 &)m_accountType;
   if (version==VERSION_0_3_3) {
     qDebug("\tIn MyMoneyAccount::readAllData:\n\t\tFound version 0.3.3 skipping opening account fields");
-    stream >> m_lastReconcile;
+    stream >> m_qdateLastReconcile;
   } else {
-    stream >> m_openingDate
-      >> m_openingBalance
-      >> m_lastReconcile;
+    stream >> m_qdateOpening
+      >> m_mymoneymoneyOpeningBalance
+      >> m_qdateLastReconcile;
   }
 
   return true;
@@ -284,18 +288,18 @@ bool MyMoneyAccount::readAllData(int version, QDataStream& stream)
 /** No descriptions */
 QList<MyMoneyTransaction> * MyMoneyAccount::getTransactionList(){
 
-  return &m_transactions;
+  return &m_qlistTransactions;
 
 }
 
-void MyMoneyAccount::setOpeningDate(QDate date) { m_openingDate = date; if (m_parent) m_parent->file()->setDirty(true); }
-void MyMoneyAccount::setOpeningBalance(MyMoneyMoney money) { m_openingBalance = money; if (m_parent) m_parent->file()->setDirty(true); }
-void MyMoneyAccount::setName(const QString& name) { m_accountName = name; if (m_parent) m_parent->file()->setDirty(true); }
-void MyMoneyAccount::setAccountNumber(const QString& number) { m_accountNumber = number; if (m_parent) m_parent->file()->setDirty(true); }
-void MyMoneyAccount::setLastId(const long id) { m_lastId = id; if (m_parent) m_parent->file()->setDirty(true); }
+void MyMoneyAccount::setOpeningDate(QDate date) { m_qdateOpening = date; if (m_parent) m_parent->file()->setDirty(true); }
+void MyMoneyAccount::setOpeningBalance(MyMoneyMoney money) { m_mymoneymoneyOpeningBalance = money; if (m_parent) m_parent->file()->setDirty(true); }
+void MyMoneyAccount::setName(const QString& name) { m_qstringName = name; if (m_parent) m_parent->file()->setDirty(true); }
+void MyMoneyAccount::setAccountNumber(const QString& number) { m_qstringNumber = number; if (m_parent) m_parent->file()->setDirty(true); }
+void MyMoneyAccount::setLastId(const long id) { m_ulLastId = id; if (m_parent) m_parent->file()->setDirty(true); }
 void MyMoneyAccount::setAccountType(MyMoneyAccount::accountTypeE type) { m_accountType = type; if (m_parent) m_parent->file()->setDirty(true); }
-void MyMoneyAccount::setDescription(const QString& description) { m_description = description; if (m_parent) m_parent->file()->setDirty(true); }
-void MyMoneyAccount::setLastReconcile(const QDate& date) { m_lastReconcile = date; if (m_parent) m_parent->file()->setDirty(true); }
+void MyMoneyAccount::setDescription(const QString& description) { m_qstringDescription = description; if (m_parent) m_parent->file()->setDirty(true); }
+void MyMoneyAccount::setLastReconcile(const QDate& date) { m_qdateLastReconcile = date; if (m_parent) m_parent->file()->setDirty(true); }
 
 /** No descriptions */
 bool MyMoneyAccount::readQIFFile(const QString& name, const QString& dateFormat, int& transCount, int& catCount)
@@ -408,8 +412,8 @@ bool MyMoneyAccount::readQIFFile(const QString& name, const QString& dateFormat,
 
             if(transmode && writetrans)
             {
-              int slash = -1;
-              int apost = -1;
+//              int slash = -1;
+//              int apost = -1;
               int checknum = 0;
               bool isnumber = false;
 //              int intyear = 0;
@@ -739,38 +743,39 @@ bool MyMoneyAccount::writeQIFFile(const QString& name, const QString& dateFormat
 // Doesn't do any sanity checks on the days, months or years e.g
 // days could be 7 or 78.  Months could be 3 or 83.  Both can't be
 // > 99 e.g only 2 digits.
-int MyMoneyAccount::convertQIFDate(char* buffer, char* format, int *da, int *mo, int *ye)
+int MyMoneyAccount::convertQIFDate(const QString buffer, const QString format, int *da, int *mo, int *ye)
 {
   int result=0;
-  
+
   *da = *mo = *ye = 0;
   
   // result gets sets to the error in validate
   if (validateQIFDateFormat(buffer, format, result, true)) {
     int d_count=0, m_count=0, y_count=0;
     int buf_count=0;
+    unsigned int nFormatCount=0;
   
-    while (*format && result==0) {
-      switch (*format) {
+    while ((nFormatCount!=format.length()) && (result==0)) {
+      switch (format[nFormatCount]) {
         case '%':
-          ++format;
-          switch (*format) {
+          nFormatCount++;
+          switch (format[nFormatCount]) {
             case 'd':
-              while (*format=='d') { format++; d_count++; }
+              while (format[nFormatCount]=='d') { nFormatCount++; d_count++; }
               // See if the next char is a digit so we can use %d
               // and still pick up 10 etc after 9
               if (d_count==1 && isdigit(buffer[buf_count+d_count])) {
                 d_count++;
               }
                 
-              *da = to_days(buffer+buf_count, d_count);
+              *da = to_days(buffer.mid(buf_count, d_count), d_count);
               if (*da>0) {
                 buf_count += d_count;
               } else
                 result = 1;
               break;
             case 'm':
-              while (*format=='m') { format++; m_count++; }
+              while (format[nFormatCount]=='m') { nFormatCount++; m_count++; }
               // See if the next char is a digit so we can use %m
               // and still pick up 10 etc after 9.  WILL BREAK WHEN
               // USING %d%m%y for instance.  Could use a flag to indicate
@@ -779,19 +784,19 @@ int MyMoneyAccount::convertQIFDate(char* buffer, char* format, int *da, int *mo,
               if (m_count==1 && isdigit(buffer[buf_count+m_count])) {
                 m_count++;
               }
-              *mo = to_months(buffer+buf_count, m_count);
+              *mo = to_months(buffer.mid(buf_count, m_count), m_count);
               if (*mo>0) {
                 buf_count += m_count;
               } else
                 result = 2;
               break;
             case 'y':
-              while (*format=='y') { format++; y_count++; }
+              while (format[nFormatCount]=='y') { nFormatCount++; y_count++; }
               if (isdigit(buffer[buf_count+y_count]) &&
-                !buffer_contains(buffer, '\''))
+                !buffer.contains('\''))
                 result = 14;
               else {
-                *ye = to_year(buffer+buf_count, y_count);
+                *ye = to_year(buffer.mid(buf_count, y_count), y_count);
                 if (*ye>0)
                   buf_count += y_count;
                 else
@@ -801,9 +806,9 @@ int MyMoneyAccount::convertQIFDate(char* buffer, char* format, int *da, int *mo,
           }
           break;
         default:
-          if (*format==buffer[buf_count]) {
+          if (format[nFormatCount]==buffer[buf_count]) {
             buf_count++;
-            format++;
+            nFormatCount++;
           } else {
             result = 4;
           }
@@ -898,98 +903,96 @@ bool MyMoneyAccount::validateQIFDateFormat(const char *buffer, const char *forma
   return true;
 }
 
-int MyMoneyAccount::to_days(char *buffer, int dcount)
+int MyMoneyAccount::to_days(const QString buffer, int dcount)
 {
-  char s_number[10];
+  bool ok = false;
+  int nResult=-1;
 
-  if (str_has_alpha(buffer, dcount))
-    return -1;
-    
-  for (int i=0; i<dcount; i++)
-    s_number[i]=buffer[i];
-  s_number[dcount]=NULL;
-  
-  if (strlen(s_number)>=1) {
-    switch (dcount) {
-      case 1:
+  switch (dcount) {
+    case 1:
+      nResult = buffer.toInt(&ok);
+      if (ok)
+        return nResult;
+      break;
+    case 2:
+      nResult = buffer.toInt(&ok);
+      if (ok)
+        return nResult;
+/*
+      if (s_number[0]=='0') {
+        return atoi(s_number+1);
+      }
+      else
         return atoi(s_number);
-      case 2:
-        if (s_number[0]=='0') {
-          return atoi(s_number+1);
-        }
-        else
-          return atoi(s_number);
-        break;
-    }
+*/
+      break;
   }
   
   return -1;
 }
 
-int MyMoneyAccount::to_months(char *buffer, int mcount)
+int MyMoneyAccount::to_months(const QString buffer, int mcount)
 {
-  char s_number[10];
+  bool ok = false;
+  int nResult = -1;
 
-  if (mcount!=3) {
-    if (str_has_alpha(buffer, mcount))
-      return -1;
-  }
-    
-  for (int i=0; i<mcount; i++)
-    s_number[i]=buffer[i];
-  s_number[mcount]=NULL;
-  
-  if (strlen(s_number)>=1) {
-    switch (mcount) {
-      case 1:
+  switch (mcount) {
+    case 1:
+      nResult = buffer.toInt(&ok);
+      if (ok)
+        return nResult;
+//      return atoi(s_number);
+    case 2:
+      nResult = buffer.toInt(&ok);
+      if (ok)
+        return nResult;
+/*
+      if (s_number[0]=='0') {
+        return atoi(s_number+1);
+      }
+      else
         return atoi(s_number);
-      case 2:
-        if (s_number[0]=='0') {
-          return atoi(s_number+1);
-        }
-        else
-          return atoi(s_number);
-        break;
-      case 3:
-        return month_to_no(s_number);
-    }
+*/
+      break;
+    case 3:
+      return month_to_no(buffer);
   }
-  
+
   return -1;
 }
 
-int MyMoneyAccount::month_to_no(char *s_number)
+int MyMoneyAccount::month_to_no(const QString s_number)
 {
-  strupper(s_number);
+  QString qstringBuffer = s_number.upper();
 
-  if ((strcmp("JAN", s_number))==0)
+  if (i18n("JAN") == qstringBuffer)
     return 1;
-  else if ((strcmp("FEB", s_number))==0)
+  else if (i18n("FEB") == qstringBuffer)
     return 2;
-  else if ((strcmp("MAR", s_number))==0)
+  else if (i18n("MAR") == qstringBuffer)
     return 3;
-  else if ((strcmp("APR", s_number))==0)
+  else if (i18n("APR") == qstringBuffer)
     return 4;
-  else if ((strcmp("MAY", s_number))==0)
+  else if (i18n("MAY") == qstringBuffer)
     return 5;
-  else if ((strcmp("JUN", s_number))==0)
+  else if (i18n("JUN") == qstringBuffer)
     return 6;
-  else if ((strcmp("JUL", s_number))==0)
+  else if (i18n("JUL") == qstringBuffer)
     return 7;
-  else if ((strcmp("AUG", s_number))==0)
+  else if (i18n("AUG") == qstringBuffer)
     return 8;
-  else if ((strcmp("SEP", s_number))==0)
+  else if (i18n("SEP") == qstringBuffer)
     return 9;
-  else if ((strcmp("OCT", s_number))==0)
+  else if (i18n("OCT") == qstringBuffer)
     return 10;
-  else if ((strcmp("NOV", s_number))==0)
+  else if (i18n("NOV") == qstringBuffer)
     return 11;
-  else if ((strcmp("DEC", s_number))==0)
+  else if (i18n("DEC") == qstringBuffer)
     return 12;
 
   return -1;
 }
-
+/*
 void MyMoneyAccount::strupper(char *buffer)
 {
   while (*buffer) {
@@ -997,18 +1000,14 @@ void MyMoneyAccount::strupper(char *buffer)
     buffer++;
   }
 }
-
-int MyMoneyAccount::to_year(char *buffer, int ycount)
+*/
+int MyMoneyAccount::to_year(const QString buffer, int ycount)
 {
-  char s_number[10];
   int i=0;
-  int k=0;
+//  int k=0;
   int use_current=0;
   int l_count=0;
 
-  if (str_has_alpha(buffer, ycount))
-    return -1;
-    
   if (buffer[0]=='\'') {
     use_current=1;
     i=1;
@@ -1019,98 +1018,79 @@ int MyMoneyAccount::to_year(char *buffer, int ycount)
   }
     
   int current = 20; // CHANGE CHANGE CHANGE !
-  for (k=0; i<l_count; i++, k++)
-    s_number[k]=buffer[i];
-  s_number[ycount]=NULL;
-  
-  if (strlen(s_number)>=1) {
-    switch (ycount) {
-      case 1:
-        return -1;
-      case 2:
-        char conv[5];
-        if (use_current)
-          strcpy(conv, itoa(current, buffer));
-        else
-          strcpy(conv, itoa(current-1, buffer));
-        strcat(conv, s_number);
-        return atoi(conv);
-      case 3:
-        return -1;
-      case 4:
-        return atoi(s_number);
-    }
-  }
-  
-  return -1;
-}
 
-char *MyMoneyAccount::itoa(int num, char *buffer)
-{
-  snprintf(buffer, strlen(buffer), "%d", num);
-  return buffer;
+  QString qstringNumber;
+  bool ok=false;
+  int result=-1;
+
+  if (use_current)
+    qstringNumber = buffer.mid(1);
+  else
+    qstringNumber = buffer;
+  
+  QString qstringConv;
+
+  switch (ycount) {
+    case 1:
+      result = -1;
+    case 2:
+      if (use_current)
+        qstringConv = QString::number(current);
+      else
+        qstringConv = QString::number(current-1);
+
+      qstringConv += qstringNumber;
+      result = qstringNumber.toInt(&ok);
+      if (!ok)
+        result = -1;
+      break;
+    case 3:
+      return -1;
+    case 4:
+      result = qstringNumber.toInt(&ok);
+      if (!ok)
+        result = -1;
+      break;
+  }
+
+  return result;
 }
 
 const char *MyMoneyAccount::getQIFDateFormatErrorString(int res)
 {
   switch (res) {
     case 0:
-      return "No error";
+      return i18n("No error");
     case 1:
-      return "Cannot convert number to Days";
+      return i18n("Cannot convert number to Days");
     case 2:
-      return "Cannot convert number to Months";
+      return i18n("Cannot convert number to Months");
     case 3:
-      return "Cannot convert number to Years";
+      return i18n("Cannot convert number to Years");
     case 4:
-      return "Character literal in format does not match in buffer";
+      return i18n("Character literal in format does not match in buffer");
     case 5:
-      return "Arguments have not been allocated memory";
+      return i18n("Arguments have not been allocated memory");
     case 6:
-      return "Arguments aren't long enough";
+      return i18n("Arguments aren't long enough");
     case 7:
     case 8:
-      return "Format and Buffer types do not match";
+      return i18n("Format and Buffer types do not match");
     case 9:
-      return "Number of format specifiers invalid (%)";
+      return i18n("Number of format specifiers invalid (%)");
     case 10:
-      return "Number of day format options invalid (d)";
+      return i18n("Number of day format options invalid (d)");
     case 11:
-      return "Number of month format options invalid (m)";
+      return i18n("Number of month format options invalid (m)");
     case 12:
-      return "Number of year format options invalid (y)";
+      return i18n("Number of year format options invalid (y)");
     case 13:
-      return "Too many literal characters. (Just use them as separators)";
+      return i18n("Too many literal characters. (Just use them as separators)");
     case 14:
-      return "Too many characters for a format specifier found in buffer";
+      return i18n("Too many characters for a format specifier found in buffer");
     default:
-      return "Unknown error.  Please mail mte@users.sourceforge.net with error number. Sorry.";
+      return i18n("Unknown error.  Please mail mte@users.sourceforge.net with error number. Sorry.");
   }
-}
-
-int MyMoneyAccount::str_has_alpha(const char *buffer, int len)
-{
-  int count=0;
-  while (*buffer && (count<len)) {
-    if (isalpha(*buffer))
-      return 1;
-    buffer++;
-    count ++;
-  }
-  
-  return 0;
-}
-
-int MyMoneyAccount::buffer_contains(const char *buffer, char let)
-{
-  char *pbuf = (char*)buffer;
-  while (*pbuf) {
-    if (*pbuf == let)
-      return 1;
-    pbuf++;
-  }
-  
-  return 0;
 }
 
 int MyMoneyAccount::QDateToQIFDate(const QDate date, QString& buffer, const char* format)

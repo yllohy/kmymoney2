@@ -15,6 +15,7 @@
  ***************************************************************************/
 #include <kglobal.h>
 #include <kconfig.h>
+#include <klocale.h>
 #include <kmessagebox.h>
 #include <qpushbutton.h>
 #include "kpayeedlg.h"
@@ -113,10 +114,10 @@ void KPayeeDlg::slotUpdateClicked()
 
 void KPayeeDlg::slotDeleteClicked()
 {
-  QString prompt("Remove this payee: ");
+  QString prompt(i18n("Remove this payee: "));
   prompt += nameLabel->text();
 
-  if (KMessageBox::questionYesNo(this, prompt, "Remove Payee")==KMessageBox::No)
+  if (KMessageBox::questionYesNo(this, prompt, i18n("Remove Payee"))==KMessageBox::No)
     return;
 
   m_file->removePayee(nameLabel->text());

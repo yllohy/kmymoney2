@@ -40,8 +40,8 @@
 #include "../mymoney/mymoneycategory.h"
 
 /** If the accoun is null we will have an undefined operation. */
-KExportDlg::KExportDlg(MyMoneyAccount *account)
-  : KExportDlgDecl(0,0,TRUE)
+KExportDlg::KExportDlg(MyMoneyAccount *account, QWidget *parent)
+  : KExportDlgDecl(parent,0,TRUE)
 {
   m_mymoneyaccount = account;
 
@@ -69,11 +69,24 @@ KExportDlg::KExportDlg(MyMoneyAccount *account)
 
   m_qcomboboxDateFormat->setEditable(true);
 
-  // Load up the last used settings
+  // Set all the last used options
   readConfig();
 
-//  if (m_mymoneyaccount->validateQIFDateFormat(m_qstringLastFormat))
+  int nErrorReturn = 0;
+
+  if (m_mymoneyaccount->validateQIFDateFormat("", m_qstringLastFormat.latin1(), nErrorReturn, false))
     m_qcomboboxDateFormat->setEditText(m_qstringLastFormat);
+  else {
+    QString qstringError(i18n("QIF date format invalid: "));
+    qstringError += m_mymoneyaccount->getQIFDateFormatErrorString(nErrorReturn);
+    KMessageBox::error(this, qstringError, i18n("Import QIF"));
+  }
+
+  // Now that we've got the text in the combo box, reset the edit status
+  m_qcomboboxDateFormat->setEditable(false);
+
+  connect(m_qlineeditFile, SIGNAL(textChanged(const QString&)), this,
+    SLOT(slotFileTextChanged(const QString&)));
 
   connect(m_qbuttonBrowse, SIGNAL( clicked() ), this, SLOT( slotBrowse() ) );
   connect(m_qbuttonOk, SIGNAL(clicked()), this, SLOT(slotOkClicked()));
@@ -109,6 +122,17 @@ void KExportDlg::slotOkClicked()
 
   if (m_kmymoneydateEnd->getQDate() < m_kmymoneydateStart->getQDate()) {
     KMessageBox::information(this, i18n("Please enter a start date lower than the end date."));
+    return;
+  }
+
+  int nErrorReturn = 0;
+
+  if (!m_mymoneyaccount->validateQIFDateFormat("", m_qcomboboxDateFormat->currentText().latin1(), nErrorReturn, false))
+  {
+    QString qstringError(i18n("QIF date format invalid: "));
+    qstringError += m_mymoneyaccount->getQIFDateFormatErrorString(nErrorReturn);
+    KMessageBox::error(this, qstringError, i18n("Import QIF"));
+    m_qcomboboxDateFormat->setFocus();
     return;
   }
 
@@ -151,6 +175,18 @@ void KExportDlg::readConfig(void)
   m_kmymoneydateStart->setDate(kconfig->readDateTimeEntry("KExportDlg_StartDate").date());
   m_kmymoneydateEnd->setDate(kconfig->readDateTimeEntry("KExportDlg_EndDate").date());
   m_qstringLastFormat = kconfig->readEntry("KExportDlg_LastFormat");
+
+  if (m_qlineeditFile->text().length()>=1) {
+    m_qgroupboxDates->setEnabled(true);
+    m_qgroupboxContents->setEnabled(true);
+    m_qgroupboxFormats->setEnabled(true);
+    m_qbuttonOk->setEnabled(true);
+  } else {
+    m_qgroupboxDates->setEnabled(false);
+    m_qgroupboxContents->setEnabled(false);
+    m_qgroupboxFormats->setEnabled(false);
+    m_qbuttonOk->setEnabled(false);
+  }
 }
 
 void KExportDlg::writeConfig(void)
@@ -175,4 +211,21 @@ void KExportDlg::slotSetProgress(int progress)
   qstring += i18n(" of ");
   qstring += QString::number(m_qprogressbar->totalSteps());
   m_qlabelTransaction->setText(qstring);
+}
+
+/** Make sure the text input is ok */
+void KExportDlg::slotFileTextChanged(const QString& text)
+{
+  if (!text.isEmpty()) {
+    m_qgroupboxDates->setEnabled(true);
+    m_qgroupboxContents->setEnabled(true);
+    m_qgroupboxFormats->setEnabled(true);
+    m_qbuttonOk->setEnabled(true);
+    m_qlineeditFile->setText(text);
+  } else {
+    m_qgroupboxDates->setEnabled(false);
+    m_qgroupboxContents->setEnabled(false);
+    m_qgroupboxFormats->setEnabled(false);
+    m_qbuttonOk->setEnabled(false);
+  }
 }

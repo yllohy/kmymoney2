@@ -13,7 +13,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
+#include <klocale.h>
 #include "kcategorylistitem.h"
 
 KCategoryListItem::KCategoryListItem( QListView *parent, QString text, QStringList minors, bool income, bool major, QString majorName)
@@ -27,7 +27,7 @@ KCategoryListItem::KCategoryListItem( QListView *parent, QString text, QStringLi
   m_minors = minors;
 
   setText(0, text);
-  setText(1, ((m_income) ? "Income" : "Expense" ));
+  setText(1, ((m_income) ? i18n("Income") : i18n("Expense") ));
 }
 
 KCategoryListItem::KCategoryListItem( KCategoryListItem *parent, QString text, bool income, bool major, QString majorName)
@@ -40,7 +40,7 @@ KCategoryListItem::KCategoryListItem( KCategoryListItem *parent, QString text, b
   m_income = income;
 
   setText(0, text);
-  setText(1, ((m_income) ? "Income" : "Expense" ));
+  setText(1, ((m_income) ? i18n("Income") : i18n("Expense") ));
 }
 
 KCategoryListItem::~KCategoryListItem()

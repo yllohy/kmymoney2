@@ -49,7 +49,7 @@ KCsvProgressDlg::KCsvProgressDlg(int type, MyMoneyAccount *account, QWidget *par
   m_bStopFlag = false;
   m_bProcessStarted = false;
 
-  m_qbuttonOk->setText("C&lose");
+  m_qbuttonOk->setText(i18n("C&lose"));
   m_qbuttonOk->setEnabled(false);
 
   readConfig();
@@ -81,7 +81,7 @@ void KCsvProgressDlg::performExport(void)
   QString qstringBuffer;
 
   m_qlabelAccount->setText(m_mymoneyaccount->name());
-  m_qlabelTransaction->setText(QString("0 of ") + QString::number(m_mymoneyaccount->transactionCount()));
+  m_qlabelTransaction->setText(QString("0") + i18n(" of ") + QString::number(m_mymoneyaccount->transactionCount()));
   m_qprogressbar->setTotalSteps(m_mymoneyaccount->transactionCount());
 
   m_bProcessStarted = true;
@@ -102,41 +102,41 @@ void KCsvProgressDlg::performExport(void)
       if (m_bStopFlag)
         break;
 
-      m_qlabelTransaction->setText(QString::number(nCount) + " of " + QString::number(m_mymoneyaccount->transactionCount()));
+      m_qlabelTransaction->setText(QString::number(nCount) + i18n(" of ") + QString::number(m_mymoneyaccount->transactionCount()));
 
       switch (mymoneytransaction->type()) {
         case MyMoneyTransaction::Cheque:
-          qstringTmpBuf1 = "Cheque";
+          qstringTmpBuf1 = i18n("Cheque");
           break;
         case MyMoneyTransaction::Deposit:
-          qstringTmpBuf1 = "Deposit";
+          qstringTmpBuf1 = i18n("Deposit");
           break;
         case MyMoneyTransaction::ATM:
-          qstringTmpBuf1 = "ATM";
+          qstringTmpBuf1 = i18n("ATM");
           break;
         case MyMoneyTransaction::Withdrawal:
-          qstringTmpBuf1 = "Withdrawal";
+          qstringTmpBuf1 = i18n("Withdrawal");
           break;
         case MyMoneyTransaction::Transfer:
-          qstringTmpBuf1 = "Transfer";
+          qstringTmpBuf1 = i18n("Transfer");
           break;
         default:
-          qstringTmpBuf1 = "Unknown";
+          qstringTmpBuf1 = i18n("Unknown");
           break;
       }
 
       switch (mymoneytransaction->state()) {
         case MyMoneyTransaction::Reconciled:
-          qstringTmpBuf2 = "Reconciled";
+          qstringTmpBuf2 = i18n("Reconciled");
           break;
         case MyMoneyTransaction::Cleared:
-          qstringTmpBuf2 = "Cleared";
+          qstringTmpBuf2 = i18n("Cleared");
           break;
         case MyMoneyTransaction::Unreconciled:
-          qstringTmpBuf2 = "Unreconciled";
+          qstringTmpBuf2 = i18n("Unreconciled");
           break;
         default:
-          qstringTmpBuf2 = "Unknown";
+          qstringTmpBuf2 = i18n("Unknown");
           break;
       }
 
@@ -174,7 +174,7 @@ void KCsvProgressDlg::performExport(void)
     m_qbuttonOk->setEnabled(true);
     m_qbuttonCancel->setEnabled(false);
   } else {
-    KMessageBox::error(this, "Unable to open export file for writing.");
+    KMessageBox::error(this, i18n("Unable to open export file for writing."));
   }
 }
 
@@ -190,7 +190,7 @@ void KCsvProgressDlg::slotCancelClicked()
 /** perform the import process */
 void KCsvProgressDlg::performImport(void)
 {
-  KMessageBox::sorry(this, "Sorry, Import for CSV files has not been implemented.");
+  KMessageBox::sorry(this, i18n("Sorry, Import for CSV files has not been implemented."));
   m_qprogressbar->setTotalSteps(m_mymoneyaccount->transactionCount());
   m_qprogressbar->setProgress(m_mymoneyaccount->transactionCount());
   m_qbuttonOk->setEnabled(true);
@@ -233,6 +233,10 @@ void KCsvProgressDlg::readConfig(void)
   KConfig *kconfig = KGlobal::config();
   kconfig->setGroup("Last Use Settings");
   m_qlineeditFile->setText(kconfig->readEntry("KCsvProgressDlg_LastFile", ""));
+  if (m_qlineeditFile->text().length()>=1)
+    m_qbuttonRun->setEnabled(true);
+  else
+    m_qbuttonRun->setEnabled(false);
 }
 
 void KCsvProgressDlg::writeConfig(void)

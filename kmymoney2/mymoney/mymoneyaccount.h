@@ -17,9 +17,17 @@
 #ifndef MYMONEYACCOUNT_H
 #define MYMONEYACCOUNT_H
 
+// ----------------------------------------------------------------------------
+// QT Headers
 #include <qstring.h>
 #include <qlist.h>
 #include <qobject.h>
+
+// ----------------------------------------------------------------------------
+// KDE Headers
+
+// ----------------------------------------------------------------------------
+// Project Headers
 #include "mymoneytransaction.h"
 #include "mymoneymoney.h"
 #include "mymoneyscheduled.h"
@@ -34,14 +42,15 @@ class MyMoneyBank;
   * @see MyMoneyTransaction
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: mymoneyaccount.h,v 1.15 2001/08/20 00:21:51 mte Exp $
+  * $Id: mymoneyaccount.h,v 1.16 2001/08/23 17:07:16 mte Exp $
   *
   * @short Representation of an account which holds transactions.
 **/
 class MyMoneyAccount : public QObject {
   Q_OBJECT
 
-public:
+public:  // I know this breaks the coding standards but it needs to be declared
+        // first
   /**
     Account types currently supported.
   **/
@@ -52,21 +61,23 @@ public:
   };
 
 private:
+  // Pointer to the bank this account is for
   MyMoneyBank *m_parent;
+
   // Account details
-  QString m_accountName;
-  QString m_accountNumber;
+  QString m_qstringName;
+  QString m_qstringNumber;
   accountTypeE m_accountType;
-  unsigned long m_lastId;
-  QString m_description;
-  QDate m_lastReconcile;
-  MyMoneyMoney m_balance;  // Recalculated by balance()
-  MyMoneyScheduled m_scheduled;
-  QDate m_openingDate;
-  MyMoneyMoney m_openingBalance;
+  unsigned long m_ulLastId;
+  QString m_qstringDescription;
+  QDate m_qdateLastReconcile;
+  MyMoneyMoney m_mymoneymoneyBalance;  // Recalculated by balance()
+  MyMoneyScheduled m_mymoneyscheduled;
+  QDate m_qdateOpening;
+  MyMoneyMoney m_mymoneymoneyOpeningBalance;
 
   // A list of all the transactions
-  QList<MyMoneyTransaction> m_transactions;
+  QList<MyMoneyTransaction> m_qlistTransactions;
 
   // Object reading/saving code to help in saving/reading of files
   friend QDataStream &operator<<(QDataStream &, const MyMoneyAccount &);
@@ -75,15 +86,16 @@ private:
   // Looks through the transaction list for a transaction !
   bool findTransactionPosition(const MyMoneyTransaction& transaction, unsigned int&);
 
-  int convertQIFDate(char* buffer, char* format, int *da, int *mo, int *ye);
-  int to_days(char *buffer, int dcount);
-  int to_months(char *buffer, int mcount);
-  int month_to_no(char *s_number);
-  void strupper(char *buffer);
-  int to_year(char *buffer, int ycount);
-  char *itoa(int num, char *buffer);
-  int str_has_alpha(const char *buffer, int len);
-  int buffer_contains(const char *buffer, char let);
+  // QIF date formatter methods
+  int convertQIFDate(const QString buffer, const QString format, int *da, int *mo, int *ye);
+  int to_days(const QString buffer, int dcount);
+  int to_months(const QString buffer, int mcount);
+  int month_to_no(const QString s_number);
+//  void strupper(char *buffer);
+  int to_year(const QString buffer, int ycount);
+//  char *itoa(int num, char *buffer);
+//  int str_has_alpha(const char *buffer, int len);
+//  int buffer_contains(const char *buffer, char let);
   int QDateToQIFDate(const QDate date, QString& buffer, const char* format);
 
 public:
@@ -116,21 +128,14 @@ public:
     *
     * @return The name of the account.
   **/
-  QString name(void) const { return m_accountName; }
+  QString name(void) const { return m_qstringName; }
 
   /**
     * Simple get operation.
     *
     * @return The account number.
   **/
-  QString accountNumber(void) { return m_accountNumber; }
-
-  /**
-    * Simple get operation.
-    *
-    * @return The name of the account.
-  **/
-  QString accountName(void) { return m_accountName; }
+  QString accountNumber(void) { return m_qstringNumber; }
 
   /**
     * Simple get operation.
@@ -146,14 +151,14 @@ public:
     *
     * @return A description of the account.
   **/
-  QString description(void) { return m_description; }
+  QString description(void) { return m_qstringDescription; }
 
   /**
     * Simple get operation.
     *
     * @return The date of the last reconciliaton.
   **/
-  QDate lastReconcile(void) { return m_lastReconcile; }
+  QDate lastReconcile(void) { return m_qdateLastReconcile; }
 
   /**
     * Simple get operation.
@@ -162,13 +167,21 @@ public:
     *
     * @return All the scheduled transactions for this account.
   **/
-  MyMoneyScheduled scheduled(void) { return m_scheduled; }
+  MyMoneyScheduled scheduled(void) { return m_mymoneyscheduled; }
 
-  /** */
-  QDate openingDate(void) { return m_openingDate; }
+  /**
+    * Gets the opening date of this account.
+    *
+    * @return The opening date.
+  */
+  QDate openingDate(void) { return m_qdateOpening; }
 
-  /** */
-  MyMoneyMoney openingBalance(void) { return m_openingBalance; }
+  /**
+    * Gets the opening balance.
+    *
+    * @return The opening balance.
+  */
+  MyMoneyMoney openingBalance(void) { return m_mymoneymoneyOpeningBalance; }
 
   /** */
   void setOpeningDate(QDate date);

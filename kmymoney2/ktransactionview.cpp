@@ -125,11 +125,13 @@ void KTransactionView::slotPayeeCompleted()
 				QString theText;
 				if(lasttransaction->categoryMinor() == "")
 				{
-					theText.sprintf("%s", lasttransaction->categoryMajor().latin1());
+					theText = lasttransaction->categoryMajor();
 				}
 				else
 				{
-					theText.sprintf("%s:%s",lasttransaction->categoryMajor().latin1(),lasttransaction->categoryMinor().latin1());
+				  theText = lasttransaction->categoryMajor();
+				  theText += ":";
+				  theText += lasttransaction->categoryMinor();
 				}
    			if(m_category->text(i) == theText)
 				{
@@ -148,7 +150,7 @@ void KTransactionView::slotPayeeCompleted()
 
 void KTransactionView::slotMethodCompleted()
 {
-	if(m_method->currentText() == "Cheque")
+	if(m_method->currentText() == i18n("Cheque"))
 	{
 
    MyMoneyAccount *account;
@@ -200,9 +202,9 @@ void KTransactionView::createInputWidgets()
     m_memo = new kMyMoneyLineEdit(0);
     m_hlayout->addWidget(m_category);
     m_hlayout->addWidget(m_memo);
-    m_enter = new KPushButton("Enter",0);
-    m_cancel = new KPushButton("Cancel",0);
-    m_delete = new KPushButton("Delete",0);
+    m_enter = new KPushButton(i18n("Enter"),0);
+    m_cancel = new KPushButton(i18n("Cancel"),0);
+    m_delete = new KPushButton(i18n("Delete"),0);
     m_method->setEditable(false);
     m_method->setAutoCompletion(true);
     KCompletion *methodcomp = m_method->completionObject();
@@ -228,11 +230,11 @@ void KTransactionView::createInputWidgets()
     m_withdrawal->useGlobalKeyBindings();
     m_withdrawal->setAlignment(Qt::AlignRight);
 //	m_method->insertItem("");  // We don't need a blank item.  These will be dynamic in the future
-  m_method->insertItem("Cheque");
-  m_method->insertItem("Deposit");
-  m_method->insertItem("Transfer");
-  m_method->insertItem("Withdrawal");
-  m_method->insertItem("ATM");
+  m_method->insertItem(i18n("Cheque"));
+  m_method->insertItem(i18n("Deposit"));
+  m_method->insertItem(i18n("Transfer"));
+  m_method->insertItem(i18n("Withdrawal"));
+  m_method->insertItem(i18n("ATM"));
   m_method->setEditable(true);
   m_category->setAutoCompletion(true);
   KCompletion *categorycomp = m_category->completionObject();
@@ -278,7 +280,7 @@ void KTransactionView::loadPayees()
 		bool inPayee = false;
     for(QStringList::Iterator it = payeelist.begin(); it != payeelist.end(); ++it)
 		{
-			if((*it).latin1() == payee)
+			if((*it) == payee)
 			{
        			inPayee = true;
 			}     	
@@ -295,7 +297,7 @@ void KTransactionView::loadPayees()
 		bool inPayee = false;
     	for(QStringList::Iterator it = payeelist.begin(); it != payeelist.end(); ++it)
 		{
-			if((*it).latin1() == payee)
+			if((*it) == payee)
 			{
        			inPayee = true;
 			}     	
@@ -423,8 +425,9 @@ void KTransactionView::slotTransactionDelete()
   if (!transaction)
     return;
 
+  prompt = i18n("Delete this transaction ? :- ");
+  prompt += transaction->payee();
 
-  prompt.sprintf(i18n("Delete this transaction ? :-\n%s"), transaction->payee().latin1());
   if ((KMessageBox::questionYesNo(this, prompt))==KMessageBox::No)
     return;
 
@@ -443,13 +446,14 @@ void KTransactionView::slotTransactionDelete()
     MyMoneyAccount *currentAccount;
     for(currentAccount = m_bankIndex.accountFirst(); currentAccount != 0; currentAccount = m_bankIndex.accountNext())
     {
-			if(currentAccount->accountName() == transferAccount)
+			if(currentAccount->name() == transferAccount)
       {
 				MyMoneyTransaction *currentTransaction;
 				for(currentTransaction = currentAccount->transactionFirst(); currentTransaction != 0; currentTransaction = currentAccount->transactionNext())
 				{
-					QString matchCategory = "";
-					matchCategory.sprintf("<%s>",pAccount->accountName().latin1());
+					QString matchCategory = "<";
+					matchCategory += pAccount->name();
+					matchCategory += ">";
 					if(currentTransaction->date().toString() == transdate.toString() &&
              currentTransaction->amount().amount() == transamount.amount() &&
 						 currentTransaction->categoryMajor() == matchCategory)
@@ -687,13 +691,14 @@ void KTransactionView::enterClicked()
       MyMoneyAccount *currentAccount;
       for(currentAccount = m_bankIndex.accountFirst(); currentAccount != 0; currentAccount = m_bankIndex.accountNext())
       {
-			  if(currentAccount->accountName() == transferAccount)
+			  if(currentAccount->name() == transferAccount)
         {
 				  MyMoneyTransaction *currentTransaction;
 				  for(currentTransaction = currentAccount->transactionFirst(); currentTransaction != 0; currentTransaction = currentAccount->transactionNext())
 				  {
-					  QString matchCategory = "";
-					  matchCategory.sprintf("<%s>",account->accountName().latin1());
+					  QString matchCategory = "<";
+					  matchCategory += account->name();
+					  matchCategory += ">";
 					  if(currentTransaction->date().toString() == transdate.toString() &&
              currentTransaction->amount().amount() == transamount.amount() &&
 						 currentTransaction->categoryMajor() == matchCategory)
@@ -760,11 +765,12 @@ void KTransactionView::enterClicked()
     MyMoneyAccount *currentAccount;
     for(currentAccount = m_bankIndex.accountFirst(); currentAccount != 0; currentAccount = m_bankIndex.accountNext())
     {
-			if(currentAccount->accountName() == transferAccount)
+			if(currentAccount->name() == transferAccount)
       {
 				MyMoneyTransaction::transactionMethod transfermethod = MyMoneyTransaction::Deposit;
-				QString theText;
-	     	theText.sprintf("<%s>",account->accountName().latin1());
+			  QString theText = "<";
+			  theText += account->name();
+			  theText += ">";
 				newstate = MyMoneyTransaction::Unreconciled;
 				currentAccount->addTransaction(transfermethod, m_number->text(), m_memo->text(),
 																			 newamount, newdate, theText, "", "",
@@ -781,11 +787,12 @@ void KTransactionView::enterClicked()
     MyMoneyAccount *currentAccount;
     for(currentAccount = m_bankIndex.accountFirst(); currentAccount != 0; currentAccount = m_bankIndex.accountNext())
     {
-			if(currentAccount->accountName() == transferAccount)
+			if(currentAccount->name() == transferAccount)
       {
 				MyMoneyTransaction::transactionMethod transfermethod = MyMoneyTransaction::Transfer;
-				QString theText;
-	     	theText.sprintf("<%s>",account->accountName().latin1());
+			  QString theText = "<";
+			  theText += account->name();
+			  theText += ">";
 				newstate = MyMoneyTransaction::Unreconciled;
 				currentAccount->addTransaction(transfermethod, m_number->text(), m_memo->text(),
 																			 newamount, newdate, theText, "", "",
@@ -831,11 +838,13 @@ void KTransactionView::setInputData(const MyMoneyTransaction transaction)
 		QString theText;
 		if(transaction.categoryMinor() == "")
 		{
-			theText.sprintf("%s", transaction.categoryMajor().latin1());
+			theText = transaction.categoryMajor();
 		}
 		else
 		{
-			theText.sprintf("%s:%s",transaction.categoryMajor().latin1(),transaction.categoryMinor().latin1());
+		  theText = transaction.categoryMajor();
+		  theText += ":";
+		  theText += transaction.categoryMinor();
 		}
    	if(m_category->text(i) == theText)
 		{
@@ -857,12 +866,12 @@ void KTransactionView::updateInputLists(void)
     QListIterator<MyMoneyCategory> categoryIterator = m_filePointer->categoryIterator();
     for ( ; categoryIterator.current(); ++categoryIterator) {
       MyMoneyCategory *category = categoryIterator.current();
-      theText = category->name().latin1();
+      theText = category->name();
       categoryList.append(theText);
       for ( QStringList::Iterator it = category->minorCategories().begin(); it != category->minorCategories().end(); ++it ) {
-        theText = category->name().latin1();
+        theText = category->name();
 				theText += ":";
-				theText += (*it).latin1();
+				theText += (*it);
         categoryList.append(theText);
       }
     }
@@ -870,7 +879,7 @@ void KTransactionView::updateInputLists(void)
     for(currentAccount = m_bankIndex.accountFirst(); currentAccount != 0; currentAccount = m_bankIndex.accountNext())
     {
      	theText = "<";
-        theText = theText + currentAccount->accountName().latin1();
+        theText = theText + currentAccount->name();
         theText = theText + ">";
 			categoryList.append(theText);
 		}
@@ -921,19 +930,19 @@ void KTransactionView::updateTransactionList(int row, int col)
 
       switch (transaction->method()) {
         case MyMoneyTransaction::Cheque:
-          colText = "Cheque";
+          colText = i18n("Cheque");
           break;
         case MyMoneyTransaction::Deposit:
-          colText = "Deposit";
+          colText = i18n("Deposit");
           break;
         case MyMoneyTransaction::Transfer:
-          colText = "Transfer";
+          colText = i18n("Transfer");
           break;
         case MyMoneyTransaction::Withdrawal:
-          colText = "Withdrawal";
+          colText = i18n("Withdrawal");
           break;
         case MyMoneyTransaction::ATM:
-          colText = "ATM";
+          colText = i18n("ATM");
           break;
       }
 
@@ -948,11 +957,13 @@ void KTransactionView::updateTransactionList(int row, int col)
 
 			if(transaction->categoryMinor() == "")
 			{
-      	colText.sprintf("%s", transaction->categoryMajor().latin1());
+      	colText = transaction->categoryMajor();
 			}
 			else
 			{
-				colText.sprintf("%s:%s", transaction->categoryMajor().latin1(),transaction->categoryMinor().latin1());
+				colText = transaction->categoryMajor();
+				colText += ":";
+				colText += transaction->categoryMinor();
 			}
       colText = colText + "|" + transaction->memo();
 
@@ -962,10 +973,10 @@ void KTransactionView::updateTransactionList(int row, int col)
       QString cLet;
       switch (transaction->state()) {
         case MyMoneyTransaction::Cleared:
-          colText = "C";
+          colText = i18n("C");
           break;
         case MyMoneyTransaction::Reconciled:
-          colText = "R";
+          colText = i18n("R");
           break;
         default:
           colText = " ";
@@ -993,15 +1004,15 @@ void KTransactionView::updateTransactionList(int row, int col)
       transactionsTable->ensureCellVisible(rowCount+1, 0);
 
       if (config->readBoolEntry("TextPrompt", true)) {
-        transactionsTable->setText(rowCount, 0, "Date");
-        transactionsTable->setText(rowCount, 1, "Method");
-        transactionsTable->setText(rowCount, 2, "Click on a field to enter a transaction");
-        transactionsTable->setText(rowCount, 3, "?");
-        transactionsTable->setText(rowCount, 4, "Amount");
-        transactionsTable->setText(rowCount, 5, "Amount");
+        transactionsTable->setText(rowCount, 0, i18n("Date"));
+        transactionsTable->setText(rowCount, 1, i18n("Method"));
+        transactionsTable->setText(rowCount, 2, i18n("Click on a field to enter a transaction"));
+        transactionsTable->setText(rowCount, 3, i18n("?"));
+        transactionsTable->setText(rowCount, 4, i18n("Amount"));
+        transactionsTable->setText(rowCount, 5, i18n("Amount"));
         transactionsTable->setText(rowCount, 6, "");
-        transactionsTable->setText(rowCount+1, 1, "Number");
-        transactionsTable->setText(rowCount+1, 2, "Category|Description");
+        transactionsTable->setText(rowCount+1, 1, i18n("Number"));
+        transactionsTable->setText(rowCount+1, 2, i18n("Category|Description"));
       }
 
   		lblBalanceAmt->setText(currentBalance);
@@ -1051,7 +1062,9 @@ void KTransactionView::updateTransactionList(int row, int col)
 				}
         else
 				{
-        	txt.sprintf("%s:%s", m_transactions->at(row)->categoryMajor().latin1(), m_transactions->at(transrow)->categoryMinor().latin1());
+        	txt = m_transactions->at(row)->categoryMajor();
+        	txt += ":";
+        	txt += m_transactions->at(transrow)->categoryMinor();
           txt = txt + "|" + m_transactions->at(m_index)->memo();
         	transactionsTable->setText(row + 1, col, txt);
 				}
@@ -1062,10 +1075,10 @@ void KTransactionView::updateTransactionList(int row, int col)
             transactionsTable->setText(row, col, "");
             break;
           case MyMoneyTransaction::Cleared:
-            transactionsTable->setText(row, col, "C");
+            transactionsTable->setText(row, col, i18n("C"));
             break;
           case MyMoneyTransaction::Reconciled:
-            transactionsTable->setText(row, col, "R");
+            transactionsTable->setText(row, col, i18n("R"));
             break;
         }
         break;

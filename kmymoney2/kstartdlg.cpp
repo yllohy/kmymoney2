@@ -150,13 +150,15 @@ void KStartDlg::slotOk()
 
 bool KStartDlg::fileExists(KURL url)
 {
-	if (url.isLocalFile()) {
-		// Lets make sure it exists first
-		QFile f(url.directory(false,true)+url.fileName());
-		return f.exists();
-	}
-	// We don't bother checking URL's or showing them
-	// because at the moment MyMoneyFile can't read them
-	// anyway
-	return false;
+  if (url.isLocalFile()) {
+    // Lets make sure it exists first
+    if (url.fileName().length()>=1) {
+      QFile f(url.directory(false,true)+url.fileName());
+      return f.exists();
+    }
+  }
+  // We don't bother checking URL's or showing them
+  // because at the moment MyMoneyFile can't read them
+  // anyway
+  return false;
 }

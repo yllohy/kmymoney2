@@ -14,7 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qvalidator.h>
+#include <knumvalidator.h>
 #include <locale.h>
 #include "kmymoneyedit.h"
 
@@ -22,7 +22,8 @@ kMyMoneyEdit::kMyMoneyEdit(QWidget *parent, const char *name )
  : KLineEdit(parent,name)
 {
 	// Yes, just a simple double validator !
-	QDoubleValidator *validator = new QDoubleValidator(-999999999,999999999, int(localeconv()->frac_digits), this);
+	KFloatValidator *validator = new KFloatValidator(this);
+	validator->setAcceptLocalizedNumbers(true);
 	setValidator(validator);
 	setAlignment(AlignRight);
   connect(this, SIGNAL(textChanged(const QString&)), this, SLOT(theTextChanged(const QString&)));

@@ -56,7 +56,7 @@ KNewBankDlg::~KNewBankDlg()
 void KNewBankDlg::okClicked()
 {
   if (nameEdit->text().isEmpty()) {
-    KMessageBox::information(this, "The institution name field is empty.  Please enter the name.", "Adding New Institution");
+    KMessageBox::information(this, i18n("The institution name field is empty.  Please enter the name."), i18n("Adding New Institution"));
     nameEdit->setFocus();
     return;
   }

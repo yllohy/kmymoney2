@@ -206,7 +206,6 @@ void KMyMoney2App::initStatusBar()
 
 void KMyMoney2App::saveOptions()
 {	
-  qDebug("in saveOptions");
   config->setGroup("General Options");
   config->writeEntry("Geometry", size());
   config->writeEntry("Show Toolbar", viewToolBar->isChecked());
@@ -523,8 +522,8 @@ void KMyMoney2App::slotBankAdd()
 
 void KMyMoney2App::slotAccountAdd()
 {
-  if (myMoneyView->currentBankName()=="Unknown Institution") {
-    KMessageBox::information(this, "Please select an institution first.", "Create New Account");
+  if (myMoneyView->currentBankName()==i18n("Unknown Institution")) {
+    KMessageBox::information(this, i18n("Please select an institution first."), i18n("Create New Account"));
     return;
   }
   myMoneyView->slotAccountNew();
@@ -619,7 +618,7 @@ void KMyMoney2App::enableBankOperations(bool enable)
 
   // Make sure there is a bank selected before enabling
   // accountAdd
-  if (myMoneyView->currentBankName()=="Unknown Institution")
+  if (myMoneyView->currentBankName()==i18n("Unknown Institution"))
     accountAdd->setEnabled(false);
   else
     accountAdd->setEnabled(enable);
@@ -641,8 +640,9 @@ void KMyMoney2App::enableAccountOperations(bool enable)
   accountImport->setEnabled(enable);
   accountExport->setEnabled(enable);
 
-  QString caption;
-  caption.sprintf("%s : %s", myMoneyView->currentBankName().latin1(), myMoneyView->currentAccountName().latin1());
+  QString caption = myMoneyView->currentBankName();
+  caption += " : ";
+  caption += myMoneyView->currentAccountName();
   setCaption(caption);
 }
 
@@ -662,8 +662,9 @@ void KMyMoney2App::enableTransactionOperations(bool enable)
   accountFind->setEnabled(enable);
   viewUp->setEnabled(enable);
 
-  QString caption;
-  caption.sprintf("%s : %s", myMoneyView->currentBankName().latin1(), myMoneyView->currentAccountName().latin1());
+  QString caption = myMoneyView->currentBankName();
+  caption += " : ";
+  caption += myMoneyView->currentAccountName();
   setCaption(caption);
 }
 
@@ -688,7 +689,6 @@ bool KMyMoney2App::initWizard()
     KStartDlg start;
     if (start.exec()) {
       if (start.isNewFile()) {
-        fprintf(stderr, "isNewFile\n");
         slotFileNew();
       } else if (start.isOpenFile()) {
         fileName = start.getFileName();
@@ -701,7 +701,6 @@ bool KMyMoney2App::initWizard()
 			return true;
     } else {
       // cancel clicked so post an exit call
-      fprintf(stderr, "cancelling the application\n");
 			return false;
     }
 }
@@ -729,7 +728,7 @@ void KMyMoney2App::slotFileBackup()
     today.sprintf("-%d-%d-%d.kmy",QDate::currentDate().day(), QDate::currentDate().month(), QDate::currentDate().year());
     QFile f(mountpoint + fileName.mid(fileName.findRev("/")) + today);
     if (f.exists()) {
-      int answer = KMessageBox::warningContinueCancel(this, "Backup file for today exists on that device.  Replace ?", "Backup", "&Replace");
+      int answer = KMessageBox::warningContinueCancel(this, i18n("Backup file for today exists on that device.  Replace ?"), i18n("Backup"), i18n("&Replace"));
       if (answer==KMessageBox::Cancel)
         return;
     }
@@ -780,7 +779,7 @@ void KMyMoney2App::slotProcessExited(){
 			}
 			else
 			{
-    			QMessageBox::information(this,"Backup","Error Mounting Device");
+    			QMessageBox::information(this, i18n("Backup"), i18n("Error Mounting Device"));
 				mountbackup = false;
        			copybackup = false;
 				unmountbackup = false;
@@ -801,7 +800,7 @@ void KMyMoney2App::slotProcessExited(){
 			}
 			else
 			{
-    			QMessageBox::information(this,"Backup","Error Copying File to Device");
+    			QMessageBox::information(this, i18n("Backup"), i18n("Error Copying File to Device"));
 				mountbackup = false;
        			copybackup = false;
 				unmountbackup = false;
@@ -811,24 +810,24 @@ void KMyMoney2App::slotProcessExited(){
 	{
 			if(proc.exitStatus() == 0)
 			{
-    			QMessageBox::information(this,"Backup","File Successfully Backed up");
+    			QMessageBox::information(this, i18n("Backup"), i18n("File Successfully Backed up"));
 				mountbackup = false;
        			copybackup = false;
 				unmountbackup = false;
 			}
 			else
 			{
-    			QMessageBox::information(this,"Backup","Error  unmounting device");
+    			QMessageBox::information(this, i18n("Backup"), i18n("Error unmounting device"));
 				mountbackup = false;
        			copybackup = false;
 				unmountbackup = false;
 			}
   } else {
     if(proc.exitStatus() == 0) {
-      KMessageBox::information(this, "File Successfully Backed Up", "Backup");
+      KMessageBox::information(this, i18n("File Successfully Backed Up"), i18n("Backup"));
     }
     else {
-      KMessageBox::information(this, "Error copying file", "Backup");
+      KMessageBox::information(this, i18n("Error copying file"), i18n("Backup"));
     }
   }
 }

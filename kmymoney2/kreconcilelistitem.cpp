@@ -32,11 +32,11 @@ KReconcileListItem::KReconcileListItem(QListView *parent, MyMoneyTransaction *tr
   QString tmp;
   switch (m_transaction->state()) {
     case MyMoneyTransaction::Reconciled:
-      tmp = "R";
+      tmp = i18n("R");
       setSelected(true);
       break;
     case MyMoneyTransaction::Cleared:
-      tmp = "C";
+      tmp = i18n("C");
       break;
     default:
       tmp = " ";
@@ -56,7 +56,7 @@ void KReconcileListItem::setReconciled(bool rec)
   if(rec == true)
   {
    	m_transaction->setState(MyMoneyTransaction::Reconciled);
-    temp = "R";
+    temp = i18n("R");
   }
   else
   {

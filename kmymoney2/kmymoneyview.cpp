@@ -173,8 +173,8 @@ void KMyMoneyView::slotBankDelete()
   bool bankSuccess=false;
   MyMoneyBank bank = m_mainView->currentBank(bankSuccess);
   if (bankSuccess) {
-    QString msg;
-    msg.sprintf(i18n("Delete this bank: %s ?"), bank.name().latin1());
+    QString msg = i18n("Delete this bank: ");
+    msg += bank.name();
     if ((KMessageBox::questionYesNo(this, msg))==KMessageBox::No)
       return;
 
@@ -258,9 +258,8 @@ void KMyMoneyView::slotAccountDelete()
     return;
   }
 
-  QString prompt;
-  prompt.sprintf(i18n("Delete this account ? :-\n%s"),
-    pAccount->name().latin1());
+  QString prompt = i18n("Delete this account ? :-\n");
+  prompt += pAccount->name();
 
   if ((KMessageBox::questionYesNo(this, prompt))==KMessageBox::No)
     return;
@@ -301,19 +300,21 @@ bool KMyMoneyView::readFile(QString filename)
   if ((ret=m_file.readAllData(filename))!=0) {
     switch (ret) {
       case 1: // bad version  number
-        error.sprintf(i18n("Error while reading file: Bad version number"));
+        error = i18n("Error while reading file: Bad version number");
         KMessageBox::information(this, error);
         break;
       case 2: // bad magic number
-        error.sprintf(i18n("Error while reading file: Bad magic number"));
+        error = i18n("Error while reading file: Bad magic number");
         KMessageBox::information(this, error);
         break;
       case 3: // File doesn't exist
-        error.sprintf(i18n("Error while reading file: File doesn't exist"));
+        error = i18n("Error while reading file: File doesn't exist");
         KMessageBox::information(this, error);
         break;
       default:
-        error.sprintf(i18n("Error while reading file %d"), ret);
+        error = i18n("Error while reading file, (");
+        error += QString::number(ret);
+        error += ").";
         KMessageBox::information(this, error);
         break;
     }
@@ -494,7 +495,7 @@ void KMyMoneyView::slotAccountImportAscii(void)
   KChooseImportExportDlg dlg(0, this);
   if (dlg.exec()) {
     if (dlg.importExportType()=="QIF") {
-      KImportDlg importDlg(getAccount());
+      KImportDlg importDlg(getAccount(), this);
       if (importDlg.exec())
         m_mainView->refreshTransactionView();
 //      slotAccountImportQIF();
@@ -512,7 +513,7 @@ void KMyMoneyView::slotAccountExportAscii(void)
   KChooseImportExportDlg dlg(1, this);
   if (dlg.exec()) {
     if (dlg.importExportType()=="QIF") {
-      KExportDlg exportDlg(getAccount());
+      KExportDlg exportDlg(getAccount(), this);
       exportDlg.exec();
 //      slotAccountExportQIF();
     }
@@ -994,7 +995,6 @@ bool KMyMoneyView::checkTransactionAmount(const MyMoneyTransaction *transaction,
   if (!enabled)
     return true;
 
-  qDebug("id = %s", id.latin1());
   if (id==i18n("At least")) {
     if (transaction->amount() >= amount)
       return true;
@@ -1141,7 +1141,7 @@ QString KMyMoneyView::currentBankName(void)
     if (bankSuccess)
       return bank.name();
   }
-  return "Unknown Institution";
+  return i18n("Unknown Institution");
 }
 
 QString KMyMoneyView::currentAccountName(void)
@@ -1152,7 +1152,7 @@ QString KMyMoneyView::currentAccountName(void)
     if (accountSuccess)
       return account.name();
   }
-  return "Unknown Account";
+  return i18n("Unknown Account");
 }
 
 /*

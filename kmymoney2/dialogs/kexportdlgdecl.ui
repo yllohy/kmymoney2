@@ -12,7 +12,7 @@
             <x>0</x>
             <y>0</y>
             <width>794</width>
-            <height>491</height>
+            <height>492</height>
         </rect>
     </property>
     <property stdset="1">
@@ -151,7 +151,7 @@ categories and payees were exported.</string>
                     <class>QGroupBox</class>
                     <property stdset="1">
                         <name>name</name>
-                        <cstring>GroupBox2</cstring>
+                        <cstring>m_qgroupboxDates</cstring>
                     </property>
                     <property stdset="1">
                         <name>title</name>
@@ -284,7 +284,7 @@ categories and payees were exported.</string>
                     <class>QGroupBox</class>
                     <property stdset="1">
                         <name>name</name>
-                        <cstring>gbxFileExport</cstring>
+                        <cstring>m_qgroupboxContents</cstring>
                     </property>
                     <property stdset="1">
                         <name>title</name>
@@ -327,7 +327,7 @@ categories and payees were exported.</string>
                     <class>QGroupBox</class>
                     <property stdset="1">
                         <name>name</name>
-                        <cstring>GroupBox6</cstring>
+                        <cstring>m_qgroupboxFormats</cstring>
                     </property>
                     <property stdset="1">
                         <name>title</name>
@@ -427,7 +427,7 @@ To use the awful 'yy use a format like %d/%m%yy e.g for  1/2'01.</string>
                     <class>QLayoutWidget</class>
                     <property stdset="1">
                         <name>name</name>
-                        <cstring>Layout2</cstring>
+                        <cstring>Layout8</cstring>
                     </property>
                     <hbox>
                         <property stdset="1">
@@ -520,10 +520,6 @@ To use the awful 'yy use a format like %d/%m%yy e.g for  1/2'01.</string>
                     <property stdset="1">
                         <name>name</name>
                         <cstring>m_qprogressbar</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>enabled</name>
-                        <bool>false</bool>
                     </property>
                 </widget>
             </vbox>

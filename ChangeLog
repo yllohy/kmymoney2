@@ -1,3 +1,15 @@
+2001-08-23 Michael Edwardes <mte@users.sourceforge.net>
+  * Slight improvement to the qif date formatter code by utilising qt.
+  * Check whether import file exists.
+  * Import & Export dialog logic improved, e.g buttons only available when text
+    is input.
+  * Changed mymoneyedit to use the better kfloatvalidator to accept localised numbers.
+  * Wrapped all user visible text in i18n.
+  * Removed all sprintfs to aid internationalisation.
+  * Removed all latin1() calls to aid in internationaliastion.  latin1 calls
+    now only exist in qDebug calls which should be changed to kdDebug calls anyway.
+  * Updated kmymoney2.pot file.
+
 2001-08-20 Michael Edwardes <mte@users.sourceforge.net>
   * Added the new *unstable* qif date formatter code to the qif read and write
     methods.

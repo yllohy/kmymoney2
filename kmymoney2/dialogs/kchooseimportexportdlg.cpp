@@ -23,25 +23,27 @@
 
 #include <kglobal.h>
 #include <kconfig.h>
+#include <klocale.h>
+
 #include "kchooseimportexportdlg.h"
 
 KChooseImportExportDlg::KChooseImportExportDlg(int type, QWidget *parent, const char *name )
  : KChooseImportExportDlgDecl(parent,name, true)
 {
   if (type==0) { // import
-    topLabel->setText("Please choose the type of import you wish to perform.   A simple explanation\n"
+    topLabel->setText(i18n("Please choose the type of import you wish to perform.   A simple explanation\n"
         "of the import type is available at the bottom of the screen and is updated when\n"
         "you select an item from the choice box."
-        "\n\nOnce you have chosen an import type please press the OK button." );
-    promptLabel->setText("Choose import type:");
-    setCaption("Choose Import Type Dialog");
+        "\n\nOnce you have chosen an import type please press the OK button." ));
+    promptLabel->setText(i18n("Choose import type:"));
+    setCaption(i18n("Choose Import Type Dialog"));
   } else { // export
-    topLabel->setText("Please choose the type of export you wish to perform.   A simple explanation\n"
+    topLabel->setText(i18n("Please choose the type of export you wish to perform.   A simple explanation\n"
         "of the export type is available at the bottom of the screen and is updated when\n"
         "you select an item from the choice box."
-        "\n\nOnce you have chosen an export type please press the OK button." );
-    promptLabel->setText("Choose export type:");
-    setCaption("Choose Export Type Dialog");
+        "\n\nOnce you have chosen an export type please press the OK button." ));
+    promptLabel->setText(i18n("Choose export type:"));
+    setCaption(i18n("Choose Export Type Dialog"));
   }
 
   readConfig();
@@ -61,13 +63,13 @@ KChooseImportExportDlg::~KChooseImportExportDlg()
 void KChooseImportExportDlg::slotTypeActivated(const QString& text)
 {
   if (text=="QIF") {
-    descriptionLabel->setText("QIF files are created by the popular accounting program Quicken.\n"
+    descriptionLabel->setText(i18n("QIF files are created by the popular accounting program Quicken.\n"
       "Another dialog will appear, if you choose this type, asking for further\n"
-      "information relevant to the Quicken format.");
+      "information relevant to the Quicken format."));
   } else {
-    descriptionLabel->setText("The CSV type uses a comma delimeted text file that can be used by\n"
+    descriptionLabel->setText(i18n("The CSV type uses a comma delimeted text file that can be used by\n"
       "most popular spreadsheet programs available for Linux and other operating\n"
-      "systems.");
+      "systems."));
   }
 }
 

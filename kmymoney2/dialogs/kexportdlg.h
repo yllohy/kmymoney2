@@ -42,7 +42,7 @@
   * @see MyMoneyAccount
   *
   * @author Felix Rodriguez, Michael Edwardes 2000-2001
-  * $Id: kexportdlg.h,v 1.4 2001/08/19 15:44:12 mte Exp $
+  * $Id: kexportdlg.h,v 1.5 2001/08/23 17:07:16 mte Exp $
   *
   * @short A class to export a specified account to the popular QIF format.
 **/
@@ -73,13 +73,16 @@ protected slots:
   /** Called when the user needs to browse the filesystem for a QIF file */
   void slotBrowse();
 
+  /** Test whether to enable the buttons */
+  void slotFileTextChanged(const QString& text);
+
 public:
   /**
     * Standard constructor
     *
     * @param account The account to export from.
    */
-  KExportDlg(MyMoneyAccount *account);
+  KExportDlg(MyMoneyAccount *account, QWidget *parent);
 
   /** Standard destructor */
   ~KExportDlg();

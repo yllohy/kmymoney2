@@ -25,6 +25,7 @@
 
 // ----------------------------------------------------------------------------
 // KDE Headers
+#include <kurl.h>
 
 // ----------------------------------------------------------------------------
 // Project Headers
@@ -42,7 +43,7 @@
   * @see MyMoneyAccount
   *
   * @author Felix Rodriguez, Michael Edwardes 2000-2001
-  * $Id: kimportdlg.h,v 1.3 2001/08/19 18:59:20 mte Exp $
+  * $Id: kimportdlg.h,v 1.4 2001/08/23 17:07:16 mte Exp $
   *
   * @short A class to import a qif file to an account.
 **/
@@ -55,6 +56,8 @@ private:
 
   QString m_qstringLastFormat;
   MyMoneyAccount *m_mymoneyaccount;
+
+  bool fileExists(KURL url);
 
 protected slots:
   /** Performs the import process */
@@ -70,13 +73,16 @@ protected slots:
   */
   void slotSetProgress(int progress);
 
+  /** Test whether to enable the buttons */
+  void slotFileTextChanged(const QString& text);
+
 public:
   /**
     * Standard constructor
     *
     * @param account The account to import to.
   */
-  KImportDlg(MyMoneyAccount *account);
+  KImportDlg(MyMoneyAccount *account, QWidget *parent);
 
   /** Standard destructor */
   ~KImportDlg();

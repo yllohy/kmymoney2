@@ -63,7 +63,7 @@ void KCategoriesDlg::refresh(void)
     if (data->name()==m_lastCat)
       saveptr = item0;
     for ( QStringList::Iterator it2 = data->minorCategories().begin(); it2 != data->minorCategories().end(); ++it2 ) {
-      (void) new KCategoryListItem(item0, (*it2).latin1(), data->isIncome(), false, item0->text(0));
+      (void) new KCategoryListItem(item0, (*it2), data->isIncome(), false, item0->text(0));
     }
     categoryListView->setOpen(item0, true);
   }

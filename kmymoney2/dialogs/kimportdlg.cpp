@@ -35,8 +35,8 @@
 // Project Headers
 #include "kimportdlg.h"
 
-KImportDlg::KImportDlg(MyMoneyAccount *account)
-  : KImportDlgDecl(0,0,TRUE)
+KImportDlg::KImportDlg(MyMoneyAccount *account, QWidget *parent)
+  : KImportDlgDecl(parent,0,TRUE)
 {
   // We have to be careful of nulls though
   m_mymoneyaccount = account;
@@ -73,13 +73,16 @@ KImportDlg::KImportDlg(MyMoneyAccount *account)
   if (m_mymoneyaccount->validateQIFDateFormat("", m_qstringLastFormat.latin1(), nErrorReturn, false))
     m_qcomboboxDateFormat->setEditText(m_qstringLastFormat);
   else {
-    QString qstringError("QIF date format invalid: ");
+    QString qstringError(i18n("QIF date format invalid: "));
     qstringError += m_mymoneyaccount->getQIFDateFormatErrorString(nErrorReturn);
     KMessageBox::error(this, qstringError, i18n("Import QIF"));
   }
 
   // Now that we've got the text in the combo box, reset the edit status
   m_qcomboboxDateFormat->setEditable(false);
+
+  connect(m_qlineeditFile, SIGNAL(textChanged(const QString&)), this,
+    SLOT(slotFileTextChanged(const QString&)));
 
   connect(m_qbuttonBrowse, SIGNAL( clicked() ), this, SLOT( slotBrowse() ) );
   connect(m_qbuttonOk, SIGNAL(clicked()), this, SLOT(slotOkClicked()));
@@ -109,9 +112,9 @@ void KImportDlg::slotOkClicked()
 
   int nErrorReturn = 0;
 
-  if (!m_mymoneyaccount->validateQIFDateFormat("", m_qstringLastFormat.latin1(), nErrorReturn, false))
+  if (!m_mymoneyaccount->validateQIFDateFormat("", m_qcomboboxDateFormat->currentText().latin1(), nErrorReturn, false))
   {
-    QString qstringError("QIF date format invalid: ");
+    QString qstringError(i18n("QIF date format invalid: "));
     qstringError += m_mymoneyaccount->getQIFDateFormatErrorString(nErrorReturn);
     KMessageBox::error(this, qstringError, i18n("Import QIF"));
     m_qcomboboxDateFormat->setFocus();
@@ -151,6 +154,13 @@ void KImportDlg::readConfig(void)
   kconfig->setGroup("Last Use Settings");
   m_qlineeditFile->setText(kconfig->readEntry("KImportDlg_LastFile"));
   m_qstringLastFormat = kconfig->readEntry("KImportDlg_LastFormat");
+  if (m_qlineeditFile->text().length()>=1  && fileExists(m_qlineeditFile->text())) {
+    m_qcomboboxDateFormat->setEnabled(true);
+    m_qbuttonOk->setEnabled(true);
+  } else {
+    m_qcomboboxDateFormat->setEnabled(false);
+    m_qbuttonOk->setEnabled(false);
+  }
 }
 
 void KImportDlg::writeConfig(void)
@@ -170,4 +180,32 @@ void KImportDlg::slotSetProgress(int progress)
   qstring += i18n(" of ");
   qstring += QString::number(m_qprogressbar->totalSteps());
   m_qlabelTransaction->setText(qstring);
+}
+
+/** Make sure the text input is ok */
+void KImportDlg::slotFileTextChanged(const QString& text)
+{
+  if (!text.isEmpty() && fileExists(text)) {
+    m_qcomboboxDateFormat->setEnabled(true);
+    m_qbuttonOk->setEnabled(true);
+    m_qlineeditFile->setText(text);
+  } else {
+    m_qcomboboxDateFormat->setEnabled(false);
+    m_qbuttonOk->setEnabled(false);
+  }
+}
+
+bool KImportDlg::fileExists(KURL url)
+{
+  if (url.isLocalFile()) {
+    // Lets make sure it exists first
+    if (url.fileName().length()>=1) {
+      QFile f(url.directory(false,true)+url.fileName());
+      return f.exists();
+    }
+  }
+  // We don't bother checking URL's or showing them
+  // because at the moment MyMoneyFile can't read them
+  // anyway
+  return false;
 }
