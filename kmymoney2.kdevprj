@@ -33,7 +33,7 @@ ldflags=\s         \s
 path_to_bin_program=kmymoney2
 
 [General]
-AMChanged=false
+AMChanged=true
 author=Michael Edwardes
 configure_args=--prefix=/opt/kde3\s
 dir_where_make_will_be_called=
@@ -161,7 +161,7 @@ install_location=
 type=DATA
 
 [developer-doc/phb/Makefile.am]
-files=developer-doc/phb/cfg-mgmt.docbook,developer-doc/phb/coding.docbook,developer-doc/phb/cvs-examples.docbook,developer-doc/phb/error-mgmt.docbook,developer-doc/phb/fdl-licence,developer-doc/phb/licence.docbook,developer-doc/phb/phb.docbook,developer-doc/phb/src-examples.docbook,developer-doc/phb/unit-test.docbook,developer-doc/phb/rel-mgmt.docbook,developer-doc/phb/test-examples.docbook
+files=developer-doc/phb/cfg-mgmt.docbook,developer-doc/phb/coding.docbook,developer-doc/phb/cvs-examples.docbook,developer-doc/phb/error-mgmt.docbook,developer-doc/phb/fdl-licence,developer-doc/phb/licence.docbook,developer-doc/phb/phb.docbook,developer-doc/phb/src-examples.docbook,developer-doc/phb/unit-test.docbook,developer-doc/phb/rel-mgmt.docbook,developer-doc/phb/test-examples.docbook,developer-doc/phb/rpm-example.docbook
 sub_dirs=
 type=normal
 
@@ -208,6 +208,12 @@ install_location=
 type=DATA
 
 [developer-doc/phb/rel-mgmt.docbook]
+dist=true
+install=false
+install_location=
+type=DATA
+
+[developer-doc/phb/rpm-example.docbook]
 dist=true
 install=false
 install_location=

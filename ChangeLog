@@ -1,3 +1,6 @@
+2002-12-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Updated PHB to contain information about building RPMs
+
 2002-12-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Removed unknown file references from the KDevelop project file
   * Removed some debug output that is not needed anymore
