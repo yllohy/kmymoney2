@@ -42,18 +42,17 @@ class QFile;
 #include "../dialogs/kreconciledlg.h"
 #include "../dialogs/kfindtransactiondlg.h"
 #include "../dialogs/knewaccountwizard.h"
-//#include "kscheduleview.h"
 #include "../dialogs/kcsvprogressdlg.h"
 
-#include "kbanksview.h"
-#include "khomeview.h"
-#include "kcategoriesview.h"
-#include "kpayeesview.h"
-#include "kscheduledview.h"
-#include "kgloballedgerview.h"
-#include "../mymoney/storage/mymoneyseqaccessmgr.h"
-
+class KHomeView;
+class KAccountsView;
+class KCategoriesView;
+class KPayeesView;
+class KScheduledView;
+class KNewAccountWizard;
+class KGlobalLedgerView;
 class IMyMoneyStorageFormat;
+class MyMoneyTransaction;
 
 /**
   * This class represents the view of the MyMoneyFile which contains
@@ -62,7 +61,7 @@ class IMyMoneyStorageFormat;
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.34 2003/06/30 19:43:02 ipwizard Exp $
+  * $Id: kmymoneyview.h,v 1.35 2003/07/26 12:31:59 ipwizard Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -277,6 +276,7 @@ public:
 
 public slots:
   /**
+
     * Brings up a dialog to change the list(s) settings and saves them into the
     * class KMyMoneySettings (a singleton).
     *
@@ -390,6 +390,7 @@ protected slots:
     * in the reconciliation process to update the view.
     *
     * @see slotAccountReconcile.
+
   **/
 //  void slotTransactionListChanged();
 

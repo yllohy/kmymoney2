@@ -72,6 +72,7 @@
 #include "../dialogs/kimportdlg.h"
 #include "../dialogs/kexportdlg.h"
 
+#include "../mymoney/storage/mymoneyseqaccessmgr.h"
 #include "../mymoney/storage/imymoneystorageformat.h"
 #include "../mymoney/storage/mymoneystoragebin.h"
 #include "../mymoney/mymoneyexception.h"
@@ -79,6 +80,12 @@
 #include "../mymoney/storage/mymoneystoragexml.h"
 
 #include "kmymoneyview.h"
+#include "kbanksview.h"
+#include "khomeview.h"
+#include "kcategoriesview.h"
+#include "kpayeesview.h"
+#include "kscheduledview.h"
+#include "kgloballedgerview.h"
 
 #include "../kmymoney2.h"
 
@@ -161,6 +168,9 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(m_ledgerView, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
           this, SLOT(slotPayeeSelected(const QCString&, const QCString&, const QCString&)));
 
+  connect(m_homeView, SIGNAL(ledgerSelected(const QCString&, const QCString&)),
+          this, SLOT(slotLedgerSelected(const QCString&, const QCString&)));
+  
 /*
   connect(transactionView, SIGNAL(viewTypeSearchActivated()),
     this, SLOT(accountFind()));
@@ -263,6 +273,8 @@ void KMyMoneyView::slotAccountRightMouse()
           if(!file->isStandardAccount(acc)) {
             m_accountMenu->setItemEnabled(AccountOpen, true);
             m_accountMenu->setItemEnabled(AccountReconcile, true);
+            m_accountMenu->setItemEnabled(AccountEdit, true);
+            m_accountMenu->setItemEnabled(AccountDelete, true);
           }
           m_accountMenu->changeItem(AccountNew, i18n("New account..."));
           m_accountMenu->connectItem(AccountNew, this, SLOT(slotAccountNew()));
@@ -641,6 +653,7 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter)
     delete e;
   }
   if(base != 0) {
+    dev->flush();
     dev->close();
     delete dev;
   } else
