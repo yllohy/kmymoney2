@@ -126,7 +126,7 @@ protected slots:
   void checkData(void);
 
 private:
-	bool appendCorrectFileExt(QString& str, const QString strExtToUse);
+  bool appendCorrectFileExt(QString& str, const QString strExtToUse);
 
   void readConfig(void);
   void writeConfig(void);
