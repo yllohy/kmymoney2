@@ -1143,7 +1143,7 @@ void MyMoneySeqAccessMgr::loadEquity(const MyMoneyEquity& equity)
     throw new MYMONEYEXCEPTION(msg);
   }
   m_equitiesList[equity.id()] = equity;
-  qDebug("loadEquity: Equity list size is %d, this=%8p", m_equitiesList.size(), (void*)this);
+  //qDebug("loadEquity: Equity list size is %d, this=%8p", m_equitiesList.size(), (void*)this);
 }
 
 void MyMoneySeqAccessMgr::loadCurrency(const MyMoneyCurrency& currency)
@@ -1490,7 +1490,7 @@ const MyMoneyEquity MyMoneySeqAccessMgr::equity(const QCString& id) const
 
 const QValueList<MyMoneyEquity> MyMoneySeqAccessMgr::equityList(void) const
 {
-  qDebug("equityList: Equity list size is %d, this=%8p", m_equitiesList.size(), (void*)this);
+  //qDebug("equityList: Equity list size is %d, this=%8p", m_equitiesList.size(), (void*)this);
   QValueList<MyMoneyEquity> list;
   QMap<QCString, MyMoneyEquity>::ConstIterator it;
   for(it = m_equitiesList.begin(); it != m_equitiesList.end(); ++it)
