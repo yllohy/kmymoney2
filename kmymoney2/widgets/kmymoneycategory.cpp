@@ -47,7 +47,7 @@ kMyMoneyCategory::kMyMoneyCategory(QWidget *parent, const char *name, const KMyM
   m_accountSelector = new kMyMoneyAccountCompletion(this, 0);
   m_accountSelector->hide();
   connect(this, SIGNAL(textChanged(const QString&)), m_accountSelector, SLOT(slotMakeCompletion(const QString&)));
-  connect(m_accountSelector, SIGNAL(accountSelected(const QCString&)), this, SLOT(slotSelectAccount(const QCString&)));
+  connect(m_accountSelector, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotSelectAccount(const QCString&)));
 }
 
 kMyMoneyCategory::~kMyMoneyCategory()
@@ -204,7 +204,6 @@ void kMyMoneyCategory::slotSelectAccount(const QCString& id)
 {
   setText(MyMoneyFile::instance()->accountToCategory(id));
   if(m_id != id) {
-    qDebug("emit categoryChanged(%s)", id.data());
     emit categoryChanged(id);
     m_id = id;
   }

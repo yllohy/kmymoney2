@@ -42,7 +42,7 @@ kMyMoneyAccountCombo::kMyMoneyAccountCombo( QWidget* parent, const char* name ) 
 {
   m_selector = new kMyMoneyAccountCompletion(this, "selector");
   connect(this, SIGNAL(clicked()), this, SLOT(slotButtonPressed()));
-  connect(m_selector, SIGNAL(accountSelected(const QCString&)), this, SIGNAL(accountSelected(const QCString&)));
+  connect(m_selector, SIGNAL(itemSelected(const QCString&)), this, SIGNAL(accountSelected(const QCString&)));
 
   // make sure that we can display a minimum of characters
   QFontMetrics fm(font());

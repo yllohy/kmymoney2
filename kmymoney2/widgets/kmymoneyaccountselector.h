@@ -138,7 +138,7 @@ class kMyMoneyAccountSelector : public QWidget, public MyMoneyObserver
   Q_OBJECT
 public:
   kMyMoneyAccountSelector(QWidget *parent=0, const char *name=0, QWidget::WFlags flags = 0, const bool createButtons = true);
-  ~kMyMoneyAccountSelector();
+  virtual ~kMyMoneyAccountSelector();
 
   /**
     * This method sets the mode of operation of this widget.
@@ -335,16 +335,18 @@ protected slots:
     */
   void slotShowSelected(void);
 
-private:
-  QListView::SelectionMode  m_selMode;
+protected:
   KListView*                m_listView;
-  const QListViewItem*      m_visibleItem;
   KMyMoneyUtils::categoryTypeE m_typeMask;
-
   KPushButton*              m_allAccountsButton;
   KPushButton*              m_noAccountButton;
   KPushButton*              m_incomeCategoriesButton;
   KPushButton*              m_expenseCategoriesButton;
+  QListView::SelectionMode  m_selMode;
+
+private:
+  const QListViewItem*      m_visibleItem;
+
 };
 
 #endif

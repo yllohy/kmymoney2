@@ -27,7 +27,6 @@
 // QT Includes
 
 #include <qwidget.h>
-#include <qvbox.h>
 class QListViewItem;
 
 // ----------------------------------------------------------------------------
@@ -37,28 +36,24 @@ class QListViewItem;
 // Project Includes
 
 #include "kmymoneyaccountselector.h"
+#include "../widgets/kmymoneycompletion.h"
 
 /**
   * @author Thomas Baumgart
   */
 
-class kMyMoneyAccountCompletion : public QVBox
+class kMyMoneyAccountCompletion : public kMyMoneyCompletion
 {
   Q_OBJECT
 public:
 
   kMyMoneyAccountCompletion(QWidget *parent=0, const char *name=0);
-  ~kMyMoneyAccountCompletion();
+  virtual ~kMyMoneyAccountCompletion();
 
   /**
     * Re-implemented for internal reasons.  API is unaffected.
     */
   virtual void show();
-
-  /**
-    * Re-implemented for internal reasons.  API is unaffected.
-    */
-  virtual void hide();
 
   /**
     * This method loads the set of accounts into the widget
@@ -98,27 +93,8 @@ public:
 public slots:
   void slotMakeCompletion(const QString& txt);
 
-  void slotItemSelected(QListViewItem *item, const QPoint& pos, int col);
-
-protected:
-  /**
-    * Reimplemented from kMyMoneyAccountSelector to get events from the viewport (to hide
-    * this widget on mouse-click, Escape-presses, etc.
-    */
-  virtual bool eventFilter( QObject *, QEvent * );
-
-  /**
-    * This method resizes the widget to show a maximum of @p count lines
-    */
-  void adjustSize(const int count);
-
-signals:
-  void accountSelected(const QCString& id);
-
 private:
-  QWidget*                    m_parent;
-  kMyMoneyAccountSelector*    m_accountSelector;
-  QCString                    m_id;
+  kMyMoneyAccountSelector*      m_accountSelector;
   KMyMoneyUtils::categoryTypeE  m_accountType;
 };
 
