@@ -29,32 +29,60 @@
 // ----------------------------------------------------------------------------
 // Project Headers
 #include "kexportdlgdecl.h"
-
-#include "../mymoney/mymoneyfile.h"
 #include "../mymoney/mymoneyaccount.h"
 
 /**
-  *@author Michael Edwardes
-  */
+  * This class is used to export a specified account to the popular QIF format.
+  * It relies upon the QIF file handling routines in MyMoneyAccount to do
+  * the actual writing of QIF files.
+  *
+  * It uses the global KConfig object to read and write the application
+  * settings.
+  *
+  * @see MyMoneyAccount
+  *
+  * @author Felix Rodriguez, Michael Edwardes 2000-2001
+  * $Id: kexportdlg.h,v 1.4 2001/08/19 15:44:12 mte Exp $
+  *
+  * @short A class to export a specified account to the popular QIF format.
+**/
 class KExportDlg : public KExportDlgDecl  {
-	Q_OBJECT
+  Q_OBJECT
+
 private:
   void readConfig(void);
   void writeConfig(void);
 
-	QString m_qstringLastFormat;
-	MyMoneyAccount *m_mymoneyaccount;
+  QString m_qstringLastFormat;
+  MyMoneyAccount *m_mymoneyaccount;
 
-public:
-	KExportDlg(MyMoneyAccount *account);
-	~KExportDlg();
 protected slots:
+  /**
+    * Called when the user clicked on the OK button
+    *
+  */
   void slotOkClicked();
 
+  /**
+    * Called when the progress bar needs updating.
+    *
+    * @param progress An integer representing the new progress.
+  */
   void slotSetProgress(int progress);
 
-  /** No descriptions */
+  /** Called when the user needs to browse the filesystem for a QIF file */
   void slotBrowse();
+
+public:
+  /**
+    * Standard constructor
+    *
+    * @param account The account to export from.
+   */
+  KExportDlg(MyMoneyAccount *account);
+
+  /** Standard destructor */
+  ~KExportDlg();
 };
 
 #endif
