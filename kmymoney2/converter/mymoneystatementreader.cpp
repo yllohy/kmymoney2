@@ -91,8 +91,10 @@ const bool MyMoneyStatementReader::startImport(const MyMoneyStatement& s)
       m_account.setAccountType(MyMoneyAccount::Savings);
       break;
     case MyMoneyStatement::etInvestment:
-      m_userAbort = true;
-      KMessageBox::error(kmymoney2, i18n("This is an investment statement.  These are not supported currently."), i18n("Critical Error"));
+      //testing support for investment statements!      
+      //m_userAbort = true;
+      //KMessageBox::error(kmymoney2, i18n("This is an investment statement.  These are not supported currently."), i18n("Critical Error"));
+      m_account.setAccountType(MyMoneyAccount::Investment);
       break;
     case MyMoneyStatement::etCreditCard:
       m_account.setAccountType(MyMoneyAccount::CreditCard);
@@ -154,7 +156,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
   t.setValue("Imported", "true");
   
   // TODO: We can get the commodity from the statement!!
-  // Although then we would need UI to 
+  // Although then we would need UI to verify
   t.setCommodity(m_account.currencyId());
 
   t.setPostDate(t_in.m_datePosted);
@@ -168,13 +170,80 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
   s1.setMemo(t_in.m_strMemo);
   s1.setValue(t_in.m_moneyAmount);
   s1.setNumber(t_in.m_strNumber);
-  s1.setAccountId(m_account.id());
   
-  if(s1.value() >= 0)
-    s1.setAction(MyMoneySplit::ActionDeposit);
-  else
-    s1.setAction(MyMoneySplit::ActionWithdrawal);
+  // If the user has chosent to import into an investment account, determine the correct account to use
+  MyMoneyAccount thisaccount = m_account; //file->account( m_account.id() );
+  if ( thisaccount.accountType() == MyMoneyAccount::Investment )
+  {
+    // the correct account is the stock account which matches two criteria:
+    // (1) it is a sub-account of the selected investment account, and
+    // (2) the symbol of the underlying equity matches the security of the 
+    // transaction
+    
+    // search through each subordinate account
+    bool found = false;
+    QCStringList accounts = thisaccount.accountList();
+    QCStringList::const_iterator it_account = accounts.begin();
+    while( !found && it_account != accounts.end() )
+    {
+      QCString currencyid = file->account(*it_account).currencyId();
+      MyMoneyEquity equity = file->equity( currencyid );
+      QString symbol = equity.tradingSymbol();
 
+      if ( t_in.m_strSecurity.startsWith(symbol+" ",false) )
+      {
+        s1.setAccountId(*it_account);
+        thisaccount = file->account(*it_account);
+        found = true;
+        
+        // update the price, while we're here.  in the future, this should be
+        // an option
+        if ( ! equity.hasPrice( t_in.m_datePosted,true ) )
+        {
+          equity.addPriceHistory( t_in.m_datePosted, t_in.m_moneyAmount / t_in.m_dShares );
+          file->modifyEquity(equity);
+        }
+        
+      }
+      
+      ++it_account;
+    }
+    
+    if (!found)
+    {
+      KMessageBox::information(0, i18n("This investment account does not contain the '%1' security.  "
+                                        "Transactions involving this security will be ignored.").arg(t_in.m_strSecurity),
+                                  i18n("Security not found"),
+                                  QString("MissingEquity%1").arg(t_in.m_strSecurity.stripWhiteSpace()));
+      return;  
+    }
+    
+    if (t_in.m_eAction==MyMoneyStatement::Transaction::eaReinvestDividend)
+    {
+      s1.setShares(MyMoneyMoney(t_in.m_dShares,1000));
+      s1.setAction(MyMoneySplit::ActionReinvestDividend);
+    }
+    else if (t_in.m_eAction==MyMoneyStatement::Transaction::eaBuy || t_in.m_eAction==MyMoneyStatement::Transaction::eaSell)
+    {
+      s1.setShares(MyMoneyMoney(t_in.m_dShares,1000));
+      s1.setAction(MyMoneySplit::ActionBuyShares);
+    }
+    
+  }
+  else
+  {
+    // For non-investment accounts, just use the selected account
+    // Note that it is perfectly reasonable to import an investment statement into a non-investment account
+    // if you really want.  The investment-specific information, such as number of shares and action will
+    // be disacarded in that case.
+    s1.setAccountId(m_account.id());
+  
+    if(s1.value() >= 0)
+      s1.setAction(MyMoneySplit::ActionDeposit);
+    else
+      s1.setAction(MyMoneySplit::ActionWithdrawal);
+  }
+  
   QString payeename = t_in.m_strPayee;
   if(!payeename.isEmpty()) 
   {
@@ -236,15 +305,17 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
   
   // Add the transaction
   try {
-    // check for duplicates ONLY by Bank ID.  We know Bank ID will definitly
+    // check for duplicates ONLY by Bank ID in this account.  
+    // We know Bank ID will definitely
     // find duplicates.  For "softer" duplicates, we'll wait for the full
     // matching interface.
     MyMoneyTransactionFilter filter;
     filter.setDateFilter(t.postDate().addDays(-4), t.postDate().addDays(4));
+    filter.addAccount(thisaccount.id());
     QValueList<MyMoneyTransaction> list = file->transactionList(filter);
     QValueList<MyMoneyTransaction>::Iterator it;
     for(it = list.begin(); it != list.end(); ++it) {
-      if(t.bankID() == (*it).bankID())
+      if(t.bankID() == (*it).bankID() && !t.bankID().isNull() && !(*it).bankID().isNull())
         break;
     }
     if(it == list.end()) {

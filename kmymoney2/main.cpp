@@ -135,7 +135,7 @@ int main(int argc, char *argv[])
 
       if(args->count() > 0) {
         KURL url = args->url(0);
-        if ( MyMoneyOfxStatement::isOfxFile( url.path() ) )
+        if ( MyMoneyOfxStatement::isOfxFile( url.path() ) || MyMoneyStatement::isStatementFile( url.path() ) )
         {
           // if there are multiple instances, we'll send this to the first one
           QCString primary = instances[0];
@@ -185,7 +185,7 @@ int main(int argc, char *argv[])
     // implements a "web connect" session where there is not already an
     // instance of the program running.
 
-    if ( MyMoneyOfxStatement::isOfxFile( url.path() ) )
+    if ( MyMoneyOfxStatement::isOfxFile( url.path() ) || MyMoneyStatement::isStatementFile( url.path() ))
     {
       importfile = url.path();
       url = kmymoney2->readLastUsedFile();

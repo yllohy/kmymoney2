@@ -1,3 +1,9 @@
+2004-10-04 Ace Jones <acejones@users.sourceforge.net>
+  * Added importing of investment statements via OFX files.  This is highly
+    experimental, and should not be used with any real data!!
+  * Added MyMoneyStatement XML files as an acceptable file format for 
+    web connect.  This is just for debugging.
+
 2004-10-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added patch supplied by Alexander Novitsky
   * Fixed logic so that register is updated when a transaction is

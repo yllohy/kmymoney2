@@ -48,6 +48,19 @@ struct MyMoneyStatement
     QString m_strNumber;
     QString m_strBankID;
     double m_moneyAmount;
+    
+    // the following members are only used when m_eType==etInvestment
+    enum EAction { eaNone = 0, eaBuy, eaSell, eaReinvestDividend, eaEnd };
+    EAction m_eAction;
+    double m_dShares;
+    QString m_strSecurity;  // should be security ID followed by name, e.g. "DIS The Disney Corporation"
+  };
+  
+  struct Price
+  {
+    QDate m_date;
+    QString m_strSecurity;
+    double m_moneyAmount;
   };
   
   QString m_strAccountName;
@@ -59,10 +72,14 @@ struct MyMoneyStatement
   EType m_eType;
   
   QValueList<Transaction> m_listTransactions;
+  QValueList<Price> m_listPrices;
   
   void write(QDomElement&,QDomDocument*) const;
   bool read(const QDomElement&);
-
+  
+  static bool isStatementFile(const QString&);
+  static bool readXMLFile( MyMoneyStatement&, const QString& );
+  static void writeXMLFile( const MyMoneyStatement&, const QString& );
 };
 
 #endif

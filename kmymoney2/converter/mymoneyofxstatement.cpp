@@ -107,6 +107,58 @@ int ofxTransactionCallback(struct OfxTransactionData data, void * pv)
     if ( t.m_strMemo.isEmpty() )
       t.m_strMemo = t.m_strPayee;
   }
+  
+  if(data.security_data_valid==true)
+  {
+    struct OfxSecurityData* secdata = data.security_data_ptr;
+  
+    if(secdata->ticker_valid==true){
+      t.m_strSecurity += secdata->ticker;
+    }
+    
+    if(secdata->secname_valid==true){
+      t.m_strSecurity += QString(" ") + secdata->secname;
+    }
+  }
+
+  if(data.units_valid==true)
+  {
+    t.m_dShares = data.units;
+  }
+ 
+  if(data.invtransactiontype_valid==true)
+  {
+    switch (data.invtransactiontype)
+    {
+    case OFX_BUYDEBT:
+    case OFX_BUYMF:
+    case OFX_BUYOPT:
+    case OFX_BUYOTHER:
+    case OFX_BUYSTOCK:
+      t.m_eAction = MyMoneyStatement::Transaction::eaBuy;
+      break;
+    case OFX_REINVEST:
+      t.m_eAction = MyMoneyStatement::Transaction::eaReinvestDividend;
+      break;
+    case OFX_SELLDEBT:
+    case OFX_SELLMF:
+    case OFX_SELLOPT:
+    case OFX_SELLOTHER:
+    case OFX_SELLSTOCK:
+      t.m_eAction = MyMoneyStatement::Transaction::eaSell;
+      break;
+    case OFX_CLOSUREOPT:
+    case OFX_INCOME:
+    case OFX_INVEXPENSE:
+    case OFX_JRNLFUND:
+    case OFX_MARGININTEREST:
+    case OFX_RETOFCAP:
+    case OFX_SPLIT:
+    default:
+      // the importer does not support this kind of action
+      break;
+    }
+  }
 
   ps->m_listTransactions += t;
 
@@ -163,6 +215,27 @@ int ofxAccountCallback(struct OfxAccountData data, void * pv)
     ps->m_strCurrency = data.currency;
   }
 
+  if(data.account_type_valid==true)
+  {
+    switch(data.account_type)
+    {
+    case OfxAccountData::OFX_CHECKING : ps->m_eType = MyMoneyStatement::etCheckings;
+      break;
+    case OfxAccountData::OFX_SAVINGS : ps->m_eType = MyMoneyStatement::etSavings;
+      break;
+    case OfxAccountData::OFX_MONEYMRKT : ps->m_eType = MyMoneyStatement::etInvestment;
+      break;
+    case OfxAccountData::OFX_CREDITLINE : ps->m_eType = MyMoneyStatement::etCreditCard;
+      break;
+    case OfxAccountData::OFX_CMA : ps->m_eType = MyMoneyStatement::etCreditCard;
+      break;
+    case OfxAccountData::OFX_CREDITCARD : ps->m_eType = MyMoneyStatement::etCreditCard;
+      break;
+    case OfxAccountData::OFX_INVESTMENT : ps->m_eType = MyMoneyStatement::etInvestment;
+      break;
+    }
+  }
+  
   return 0;
 }
 

@@ -1638,14 +1638,29 @@ void KMyMoney2App::ofxWebConnect(const QString& url, const QCString& asn_id)
   {
     QString prevMsg = slotStatusMsg(i18n("Importing a statement from OFX"));
 
-    MyMoneyOfxStatement s( url );
-    if ( s.isValid() )
-      slotStatementImport(s);
-    else
+    if ( MyMoneyOfxStatement::isOfxFile( url ) )
     {
-      QMessageBox::critical( this, i18n("Invalid OFX"), i18n("Error importing %1: This file is not a valid OFX file.").arg(url), QMessageBox::Ok, 0 );
-      slotStatusMsg(prevMsg);
+      MyMoneyOfxStatement s( url );
+      if ( s.isValid() )
+        slotStatementImport(s);
+      else
+      {
+        QMessageBox::critical( this, i18n("Invalid OFX"), i18n("Error importing %1: This file is not a valid OFX file.").arg(url), QMessageBox::Ok, 0 );
+        slotStatusMsg(prevMsg);
+      }
     }
+    else if ( MyMoneyStatement::isStatementFile( url ) )
+    {
+      MyMoneyStatement s;
+      if ( MyMoneyStatement::readXMLFile( s, url ) )
+        slotStatementImport(s);
+      else
+      {
+        QMessageBox::critical( this, i18n("Invalid Statement"), i18n("Error importing %1: This file is not a valid KMM statement file.").arg(url), QMessageBox::Ok, 0 );
+        slotStatusMsg(prevMsg);
+      }
+    }
+    
   }
 
 #else
