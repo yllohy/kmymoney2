@@ -1214,6 +1214,21 @@ void KLedgerView::showWidgets(void)
   focusWidget->setFocus();
 }
 
+void KLedgerView::destroyWidgets(void)
+{
+  for(int i=0; i < m_form->table()->numRows(); ++i) {
+    m_form->table()->clearCellWidget(i, 1);
+    m_form->table()->clearCellWidget(i, 2);
+    m_form->table()->clearCellWidget(i, 4);
+  }
+
+  int   firstRow = m_register->currentTransactionIndex() * m_register->rpt();
+  for(int i = 0; i < m_register->maxRpt(); ++i) {
+    for(int j = 0; j < m_register->numCols(); ++j) {
+      m_register->clearCellWidget(firstRow+i, j);
+    }
+  }
+}
 
 void KLedgerView::slotNew(void)
 {
@@ -1339,7 +1354,7 @@ void KLedgerView::slotCancelEdit(void)
   }
 
   if(m_editDate && m_editDate->isVisible()) {
-    hideWidgets();
+    destroyWidgets();
     fillForm();
   }
 
@@ -1511,7 +1526,7 @@ void KLedgerView::slotEndEdit(void)
     m_form->editButton()->setEnabled(true);
   }
 
-  hideWidgets();
+  destroyWidgets();
 
   MyMoneyTransaction t;
 
@@ -1579,7 +1594,7 @@ bool KLedgerView::focusNextPrevChild(bool next)
 {
   bool  rc = false;
 
-  if(m_editDate != 0) {
+  if(m_editDate) {
     QWidget *w = 0;
     QWidget *currentWidget;
 
@@ -1858,7 +1873,7 @@ void KLedgerView::slotSortOrderChanged(int order)
 
 const bool KLedgerView::isEditMode(void) const
 {
-  return m_editDate != 0 && m_editDate->isVisible();
+  return m_editDate && m_editDate->isVisible();
 }
 
 void KLedgerView::show()
@@ -1973,3 +1988,5 @@ void KLedgerView::setCellWidget(QTable* table, const int row, const int col, QWi
   if(table->cellWidget(row, col) != w)
     table->setCellWidget(row, col, w);
 }
+
+#include "/home/thb/qt3/src/widgets/qscrollview.cpp"

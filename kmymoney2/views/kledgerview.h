@@ -768,10 +768,9 @@ protected:
 
   /**
     * This method is called when the edit widgets for the transaction
-    * should be hidden and editing a transaction ends. Since it's pure
-    * virtual, it must be provided by the derived classes.
+    * should be destroyed and editing of a transaction ends.
     */
-  virtual void hideWidgets(void) = 0;
+  virtual void destroyWidgets(void);
 
   virtual void createContextMenu(void);
 
@@ -909,16 +908,16 @@ protected:
   /*
    * The following members are pointers to the edit widgets
    */
-  kMyMoneyPayee*        m_editPayee;      ///< pointer to payee edit widget
-  kMyMoneyCategory*     m_editCategory;   ///< pointer to category edit widget
-  kMyMoneyLineEdit*     m_editMemo;       ///< pointer to memo edit widget
-  kMyMoneyEdit*         m_editAmount;     ///< pointer to amount edit widget
-  kMyMoneyEdit*         m_editPayment;    ///< pointer to payment edit widget
-  kMyMoneyEdit*         m_editDeposit;    ///< pointer to deposit edit widget
-  kMyMoneyLineEdit*     m_editNr;         ///< pointer to number edit widget
-  kMyMoneyDateInput*    m_editDate;       ///< pointer to date edit widget
-  KPushButton*          m_editSplit;      ///< pointer to split button
-  kMyMoneyCombo*        m_editType;       ///< pointer to transaction type
+  QGuardedPtr<kMyMoneyPayee>        m_editPayee;      ///< pointer to payee edit widget
+  QGuardedPtr<kMyMoneyCategory>     m_editCategory;   ///< pointer to category edit widget
+  QGuardedPtr<kMyMoneyLineEdit>     m_editMemo;       ///< pointer to memo edit widget
+  QGuardedPtr<kMyMoneyEdit>         m_editAmount;     ///< pointer to amount edit widget
+  QGuardedPtr<kMyMoneyEdit>         m_editPayment;    ///< pointer to payment edit widget
+  QGuardedPtr<kMyMoneyEdit>         m_editDeposit;    ///< pointer to deposit edit widget
+  QGuardedPtr<kMyMoneyLineEdit>     m_editNr;         ///< pointer to number edit widget
+  QGuardedPtr<kMyMoneyDateInput>    m_editDate;       ///< pointer to date edit widget
+  QGuardedPtr<KPushButton>          m_editSplit;      ///< pointer to split button
+  QGuardedPtr<kMyMoneyCombo>        m_editType;       ///< pointer to transaction type
 
   /**
     * This member keeps the tab order for the above widgets

@@ -1041,7 +1041,7 @@ void KLedgerViewCheckings::reloadEditWidgets(const MyMoneyTransaction& t)
   m_split = m_transaction.splitByAccount(accountId());
   amount = m_split.value();
 
-  if(m_editCategory != 0)
+  if(m_editCategory)
     disconnect(m_editCategory, SIGNAL(signalFocusIn()), this, SLOT(slotOpenSplitDialog()));
 
   if(m_editType) {
@@ -1057,7 +1057,7 @@ void KLedgerViewCheckings::reloadEditWidgets(const MyMoneyTransaction& t)
     if(m_transaction.isLoanPayment()) {
       // Make sure that we do not allow the user to modify the category
       // directly, but only through the split edit dialog
-      if(m_editCategory != 0) {
+      if(m_editCategory) {
         connect(m_editCategory, SIGNAL(signalFocusIn()), this, SLOT(slotOpenSplitDialog()));
         m_editCategory->loadText(i18n("Loan payment"));
       }
@@ -1065,19 +1065,19 @@ void KLedgerViewCheckings::reloadEditWidgets(const MyMoneyTransaction& t)
       switch(t.splitCount()) {
         case 2:
           s = t.splitByAccount(accountId(), false);
-          if(m_editCategory != 0)
+          if(m_editCategory)
             m_editCategory->loadAccount(s.accountId());
           break;
 
         case 1:
-          if(m_editCategory != 0)
+          if(m_editCategory)
             m_editCategory->loadText("");
           break;
 
         default:
           // Make sure that we do not allow the user to modify the category
           // directly, but only through the split edit dialog
-          if(m_editCategory != 0) {
+          if(m_editCategory) {
             connect(m_editCategory, SIGNAL(signalFocusIn()), this, SLOT(slotOpenSplitDialog()));
             m_editCategory->loadText(i18n("Split transaction"));
           }
@@ -1090,18 +1090,18 @@ void KLedgerViewCheckings::reloadEditWidgets(const MyMoneyTransaction& t)
     delete e;
   }
 
-  if(m_editPayee != 0)
+  if(m_editPayee)
     m_editPayee->loadText(payee);
-  if(m_editMemo != 0)
+  if(m_editMemo)
     m_editMemo->loadText(m_split.memo());
-  if(m_editAmount != 0)
+  if(m_editAmount)
     m_editAmount->loadText(amount.abs().formatMoney());
-  if(m_editDate != 0 && m_transactionPtr)
+  if(m_editDate && m_transactionPtr)
     m_editDate->loadDate(m_transactionPtr->postDate());
-  if(m_editNr != 0)
+  if(m_editNr)
     m_editNr->loadText(m_split.number());
 
-  if(m_editPayment != 0 && m_editDeposit != 0) {
+  if(m_editPayment && m_editDeposit) {
     if(m_split.value() < 0) {
       m_editPayment->loadText((-m_split.value()).formatMoney());
       m_editDeposit->loadText(QString());
@@ -1132,7 +1132,7 @@ void KLedgerViewCheckings::loadEditWidgets(void)
     // transType = m_form->tabBar()->currentTab();
 
     try {
-      if(m_editNr != 0) {
+      if(m_editNr) {
         // if the CopyTypeToNr switch is set, we copy the m_action string
         // into the nr field of this transaction.
         KConfig *config = KGlobal::config();
@@ -1179,13 +1179,13 @@ QWidget* KLedgerViewCheckings::arrangeEditWidgetsInForm(void)
   m_editMemo->setPalette(palette);
   m_editAmount->setPalette(palette);
   m_editDate->setPalette(palette);
-  if(m_editNr != 0)
+  if(m_editNr)
     m_editNr->setPalette(palette);
 
   // delete widgets that are used for the register edit mode only
-  delete m_editPayment; m_editPayment = 0;
-  delete m_editDeposit; m_editDeposit = 0;
-  delete m_editType; m_editType = 0;
+  delete m_editPayment;
+  delete m_editDeposit;
+  delete m_editType;
 
   table->clearEditable();
 
@@ -1203,10 +1203,9 @@ QWidget* KLedgerViewCheckings::arrangeEditWidgetsInForm(void)
     table->setEditable(NR_ROW, NR_DATA_COL);
     setFormCellWidget(NR_ROW, NR_DATA_COL, m_editNr);
   } else {
-    if(m_editNr != 0) {
+    if(m_editNr) {
       table->clearCellWidget(NR_ROW, NR_DATA_COL);
       delete m_editNr;
-      m_editNr = 0;
     }
   }
 
@@ -1235,10 +1234,10 @@ QWidget* KLedgerViewCheckings::arrangeEditWidgetsInRegister(void)
   QWidget* focusWidget = m_editDate;
   int firstRow = m_register->currentTransactionIndex() * m_register->rpt();
 
-  delete m_editAmount; m_editAmount = 0;
+  delete m_editAmount;
 
   // place edit widgets in the register
-  if(m_editNr != 0)
+  if(m_editNr)
     setRegisterCellWidget(firstRow, 0, m_editNr);
   setRegisterCellWidget(firstRow, 1, m_editDate);
   setRegisterCellWidget(firstRow+1, 1, m_editType);
@@ -1254,7 +1253,7 @@ QWidget* KLedgerViewCheckings::arrangeEditWidgetsInRegister(void)
   // now setup the tab order
   m_tabOrderWidgets.clear();
 
-  if(m_editNr != 0) {
+  if(m_editNr) {
     addToTabOrder(m_editNr);
     focusWidget = m_editNr;
   }
@@ -1272,36 +1271,13 @@ QWidget* KLedgerViewCheckings::arrangeEditWidgetsInRegister(void)
 
   if(m_editSplit) {
     delete m_editSplit;
-    m_editSplit = 0;
   }
   return focusWidget;
 }
 
-void KLedgerViewCheckings::hideWidgets(void)
+void KLedgerViewCheckings::destroyWidgets(void)
 {
-  for(int i=0; i < m_form->table()->numRows(); ++i) {
-    m_form->table()->clearCellWidget(i, 1);
-    m_form->table()->clearCellWidget(i, 2);
-    m_form->table()->clearCellWidget(i, 4);
-  }
-
-  int   firstRow = m_register->currentTransactionIndex() * m_register->rpt();
-  for(int i = 0; i < m_register->maxRpt(); ++i) {
-    for(int j = 0; j < m_register->numCols(); ++j) {
-      m_register->clearCellWidget(firstRow+i, j);
-    }
-  }
-
-  m_editPayee = 0;
-  m_editCategory = 0;
-  m_editMemo = 0;
-  m_editAmount = 0;
-  m_editNr = 0;
-  m_editDate = 0;
-  m_editSplit = 0;
-  m_editType = 0;
-  m_editPayment = 0;
-  m_editDeposit = 0;
+  KLedgerView::destroyWidgets();
 
   m_form->table()->clearEditable();
   m_form->tabBar()->setEnabled(true);

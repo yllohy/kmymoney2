@@ -161,7 +161,7 @@ protected:
   /**
     * This destroys and hides the widgets used to edit a transaction.
     */
-  virtual void hideWidgets();
+  virtual void destroyWidgets();
 
   virtual void reloadEditWidgets(const MyMoneyTransaction& t);
   virtual void updateTabBar(const MyMoneyTransaction& t, const MyMoneySplit& s);
@@ -247,17 +247,20 @@ private:
 
   investTransactionTypeE   m_transactionType;
 
-  kMyMoneyEdit *m_editShares, *m_editPPS, *m_editTotalAmount, *m_editFees;
+  // the edit widgets
+  QGuardedPtr<kMyMoneyEdit>         m_editShares;
+  QGuardedPtr<kMyMoneyEdit>         m_editPPS;
+  QGuardedPtr<kMyMoneyEdit>         m_editTotalAmount;
+  QGuardedPtr<kMyMoneyEdit>         m_editFees;
+  QGuardedPtr<kMyMoneyAccountCombo> m_editStockAccount;
+  QGuardedPtr<kMyMoneyAccountCombo> m_editCashAccount;
+  QGuardedPtr<kMyMoneyCategory>     m_editFeeCategory;
 
   // The stock split is kept in m_split which comes with KLedgerView
   MyMoneySplit    m_accountSplit;
   MyMoneySplit    m_feeSplit;
   MyMoneySplit    m_interestSplit;
   MyMoneyEquity   m_equity;
-
-  kMyMoneyAccountCombo* m_editStockAccount;
-  kMyMoneyAccountCombo* m_editCashAccount;
-  kMyMoneyCategory *m_editFeeCategory;
 
   QSignalMapper      m_editMapper;
 };

@@ -85,7 +85,7 @@ protected:
   /**
     * This destroys and hides the widgets used to edit a transaction.
     */
-  void hideWidgets(void);
+  void destroyWidgets(void);
 
   virtual void updateTabBar(const MyMoneyTransaction& t, const MyMoneySplit& s);
 

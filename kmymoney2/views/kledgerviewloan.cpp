@@ -570,7 +570,7 @@ void KLedgerViewLoan::reloadEditWidgets(const MyMoneyTransaction& t)
   m_split = m_transaction.splitByAccount(accountId());
   amount = m_split.value();
 
-  if(m_editCategory != 0)
+  if(m_editCategory)
     disconnect(m_editCategory, SIGNAL(signalFocusIn()), this, SLOT(slotOpenSplitDialog()));
 
   try {
@@ -590,7 +590,7 @@ void KLedgerViewLoan::reloadEditWidgets(const MyMoneyTransaction& t)
         switch(MyMoneyFile::instance()->accountGroup(acc.accountType())) {
           case MyMoneyAccount::Expense:
           case MyMoneyAccount::Income:
-            if(m_editCategory != 0)
+            if(m_editCategory)
               m_editCategory->loadAccount(s.accountId());
             break;
 
@@ -615,7 +615,7 @@ void KLedgerViewLoan::reloadEditWidgets(const MyMoneyTransaction& t)
             }
 */
             connect(m_editCategory, SIGNAL(signalFocusIn()), this, SLOT(slotOpenSplitDialog()));
-            if(m_editCategory != 0)
+            if(m_editCategory)
               m_editCategory->loadText(i18n("Loan payment"));
             break;
 
@@ -626,13 +626,13 @@ void KLedgerViewLoan::reloadEditWidgets(const MyMoneyTransaction& t)
         break;
 
       case 1:
-        if(m_editCategory != 0)
+        if(m_editCategory)
           m_editCategory->loadText("");
         break;
 
       default:
         connect(m_editCategory, SIGNAL(signalFocusIn()), this, SLOT(slotOpenSplitDialog()));
-        if(m_editCategory != 0)
+        if(m_editCategory)
           m_editCategory->loadText(i18n("Loan payment"));
     }
   } catch(MyMoneyException *e) {
@@ -649,15 +649,15 @@ void KLedgerViewLoan::reloadEditWidgets(const MyMoneyTransaction& t)
     amount = -amount;
   }
 
-  if(m_editPayee != 0)
+  if(m_editPayee)
     m_editPayee->loadText(payee);
-  if(m_editMemo != 0)
+  if(m_editMemo)
     m_editMemo->loadText(m_split.memo());
-  if(m_editAmount != 0)
+  if(m_editAmount)
     m_editAmount->loadText(amount.formatMoney());
-  if(m_editDate != 0 && m_transactionPtr)
+  if(m_editDate && m_transactionPtr)
     m_editDate->loadDate(m_transactionPtr->postDate());
-  if(m_editNr != 0)
+  if(m_editNr)
     m_editNr->loadText(m_split.number());
 }
 
@@ -788,31 +788,9 @@ QWidget* KLedgerViewLoan::arrangeEditWidgetsInRegister(void)
   return m_editDate;
 }
 
-void KLedgerViewLoan::hideWidgets(void)
+void KLedgerViewLoan::destroyWidgets(void)
 {
-  for(int i=0; i < m_form->table()->numRows(); ++i) {
-    m_form->table()->clearCellWidget(i, 1);
-    m_form->table()->clearCellWidget(i, 2);
-    m_form->table()->clearCellWidget(i, 4);
-  }
-
-  int   firstRow = m_register->currentTransactionIndex() * m_register->rpt();
-  for(int i = 0; i < m_register->maxRpt(); ++i) {
-    for(int j = 0; j < m_register->numCols(); ++j) {
-      m_register->clearCellWidget(firstRow+i, j);
-    }
-  }
-
-  m_editPayee = 0;
-  m_editCategory = 0;
-  m_editMemo = 0;
-  m_editAmount = 0;
-  m_editNr = 0;
-  m_editDate = 0;
-  m_editSplit = 0;
-  m_editType = 0;
-  m_editPayment = 0;
-  m_editDeposit = 0;
+  KLedgerView::destroyWidgets();
 
   m_form->table()->clearEditable();
   m_form->tabBar()->setEnabled(true);

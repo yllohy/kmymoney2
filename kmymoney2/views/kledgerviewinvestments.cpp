@@ -120,13 +120,6 @@ KLedgerViewInvestments::KLedgerViewInvestments(QWidget *parent, const char *name
   // connect(m_contextMenu, SIGNAL(aboutToShow()), SLOT(slotConfigureContextMenu()));
   // connect(m_moreMenu, SIGNAL(aboutToShow()), SLOT(slotConfigureMoreMenu()));
 
-  m_editPPS = 0;
-  m_editShares = 0;
-  m_editStockAccount = 0;
-  m_editFees = 0;
-  m_editCashAccount = 0;
-  m_editFeeCategory = 0;
-
   // setup the form to be visible or not
   slotShowTransactionForm(m_transactionFormActive);
 
@@ -495,6 +488,7 @@ QWidget* KLedgerViewInvestments::arrangeEditWidgetsInRegister(void)
   m_editFees->show();
   m_editCashAccount->show();
   m_editFeeCategory->show();
+  m_editAmount->show();
 
   switch(m_editType->currentItem()) {
     case ReinvestDividend:
@@ -587,6 +581,7 @@ QWidget* KLedgerViewInvestments::arrangeEditWidgetsInForm(void)
   m_editFees->show();
   m_editCashAccount->show();
   m_editFeeCategory->show();
+  m_editAmount->show();
 
   switch(m_editType->currentItem()) {
     case ReinvestDividend:
@@ -652,38 +647,9 @@ bool KLedgerViewInvestments::focusNextPrevChild(bool next)
   return KLedgerView::focusNextPrevChild(next);
 }
 
-void KLedgerViewInvestments::hideWidgets()
+void KLedgerViewInvestments::destroyWidgets()
 {
-  for(int i=0; i < m_form->table()->numRows(); ++i) {
-    m_form->table()->clearCellWidget(i, 1);
-    m_form->table()->clearCellWidget(i, 2);
-    m_form->table()->clearCellWidget(i, 4);
-  }
-
-  int   firstRow = m_register->currentTransactionIndex() * m_register->rpt();
-  for(int i = 0; i < m_register->maxRpt(); ++i) {
-    for(int j = 0; j < m_register->numCols(); ++j) {
-      m_register->clearCellWidget(firstRow+i, j);
-    }
-  }
-
-  m_editPayee = 0;
-  m_editCategory = 0;
-  m_editMemo = 0;
-  m_editAmount = 0;
-  m_editNr = 0;
-  m_editDate = 0;
-  m_editSplit = 0;
-  m_editType = 0;
-  m_editPayment = 0;
-  m_editDeposit = 0;
-
-  m_editPPS = 0;
-  m_editShares = 0;
-  m_editStockAccount = 0;
-  m_editFees = 0;
-  m_editCashAccount = 0;
-  m_editFeeCategory = 0;
+  KLedgerView::destroyWidgets();
 
   m_form->table()->clearEditable();
   m_form->tabBar()->setEnabled(true);
@@ -716,7 +682,7 @@ void KLedgerViewInvestments::preloadInvestmentSplits(const MyMoneyTransaction& t
 
 void KLedgerViewInvestments::preloadEditType(void)
 {
-  Q_CHECK_PTR(m_editType);
+  Q_CHECK_PTR(static_cast<void *>(m_editType));
 
   // Determine the actual action
   if(m_split.action() == MyMoneySplit::ActionBuyShares) {
@@ -765,7 +731,7 @@ void KLedgerViewInvestments::loadEditWidgets(void)
 
 void KLedgerViewInvestments::reloadEditWidgets(const MyMoneyTransaction& /*t*/ )
 {
-  Q_CHECK_PTR(m_editType);
+  Q_CHECK_PTR(static_cast<void *>(m_editType));
 
   // Fill the fields - first the ones that are in any transaction
   if(m_editStockAccount)
@@ -865,18 +831,29 @@ void KLedgerViewInvestments::slotNew()
 
 void KLedgerViewInvestments::createEditWidgets()
 {
+  if(!m_editDate) {
+    QTable* formTable = m_form->table();
+
+    // clear columns containing edit widgets (1 and 4)
+    for(int c = 1; c < formTable->numCols(); ++c) {
+      for(int r = 0; r < formTable->numRows(); ++r) {
+        formTable->setText(r, c, " ");
+      }
+      if(c == 1)
+        c += 2;
+    }
+
+    m_editDate = new kMyMoneyDateInput(0, "editDate");
+    connect(m_editDate, SIGNAL(dateChanged(const QDate&)), this, SLOT(slotDateChanged(const QDate&)));
+    connect(m_editDate, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
+    connect(m_editDate, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
+  }
   if(!m_editMemo) {
     m_editMemo = new kMyMoneyLineEdit(0, "editMemo", AlignLeft|AlignVCenter);
     m_editMapper.setMapping(m_editMemo, None);
     connect(m_editMemo, SIGNAL(lineChanged(const QString&)), &m_editMapper, SLOT(map()));
     connect(m_editMemo, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
     connect(m_editMemo, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
-  }
-  if(!m_editDate) {
-    m_editDate = new kMyMoneyDateInput(0, "editDate");
-    connect(m_editDate, SIGNAL(dateChanged(const QDate&)), this, SLOT(slotDateChanged(const QDate&)));
-    connect(m_editDate, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
-    connect(m_editDate, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   }
   if(!m_editShares) {
     m_editShares = new kMyMoneyEdit(0, "editShares");
@@ -1472,7 +1449,7 @@ void KLedgerViewInvestments::slotEndEdit()
     enableMoreButton(true);
   }
 
-  hideWidgets();
+  destroyWidgets();
 
   MyMoneyTransaction t;
 
@@ -1781,9 +1758,7 @@ void KLedgerViewInvestments::updateEditWidgets(void)
 {
   QWidget* focusWidget;
 
-  createEditWidgets();
-
-  Q_CHECK_PTR(m_editType);
+  Q_CHECK_PTR(static_cast<void*>(m_editType));
 
   m_editType->setCurrentItem(m_transactionType);
   reloadEditWidgets(m_transaction);
@@ -1803,12 +1778,12 @@ void KLedgerViewInvestments::updateEditWidgets(void)
 
 const bool KLedgerViewInvestments::slotDataChanged(int field)
 {
-  Q_CHECK_PTR(m_editType);
+  Q_CHECK_PTR(static_cast<void*>(m_editType));
 
   // check if a change in widget presentation is required
   if(m_transactionType != m_editType->currentItem()) {
     m_transactionType = static_cast<investTransactionTypeE> (m_editType->currentItem());
-    hideWidgets();
+    // hideWidgets();
     fillFormStatics();
     updateEditWidgets();
   }
