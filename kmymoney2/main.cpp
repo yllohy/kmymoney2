@@ -92,8 +92,8 @@ int main(int argc, char *argv[])
   KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
   
   // setup the MyMoneyMoney locale settings according to the KDE settings
-  MyMoneyMoney::setThousandSeparator(*(KGlobal::locale()->thousandsSeparator().latin1()));
-  MyMoneyMoney::setDecimalSeparator(*(KGlobal::locale()->decimalSymbol().latin1()));
+  MyMoneyMoney::setThousandSeparator(*(KGlobal::locale()->monetaryThousandsSeparator().latin1()));
+  MyMoneyMoney::setDecimalSeparator(*(KGlobal::locale()->monetaryDecimalSymbol().latin1()));
 
   QCString language = args->getOption("lang");
   if(!language.isEmpty()) {
