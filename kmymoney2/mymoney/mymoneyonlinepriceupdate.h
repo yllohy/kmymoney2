@@ -117,6 +117,8 @@ public:
     
     ///Retrieves the price returned from the quote engine.  
     int getLastValue(const QString& symbolName, MyMoneyMoney& value);
+    
+    int getWebServiceQuote(const QString& symbolName);
 
 private:    
     // get a single currency quote

@@ -96,6 +96,25 @@ MyMoneyOnlinePriceUpdate::~MyMoneyOnlinePriceUpdate()
 {
 }
 
+#include "../converter/online_quotes/xmethod/soapXMethodQuotesProxy.h" // get proxy
+#include "../converter/online_quotes/xmethod/XMethodQuotes.nsmap" // get namespace bindings 
+
+int MyMoneyOnlinePriceUpdate::getWebServiceQuote(const QString& symbolName)
+{
+  XMethodQuotes q;
+  //float r;
+  struct ns1__getQuoteResponse response;
+  memset(reinterpret_cast<void*>(&response), 0, sizeof(struct ns1__getQuoteResponse));
+  char* name = "RHAT";
+  if (q.ns1__getQuote(const_cast<char *>(symbolName.data()), &response) == SOAP_OK)
+  {
+     std::cout << response._Result << std::endl;
+  }
+  else
+     //soap_print_fault(q.soap, stderr);
+  return 0;
+}
+
 // get a single currency quote
 void MyMoneyOnlinePriceUpdate::getQuote(MyMoneyCurrency *pQuoteItem)
 {
