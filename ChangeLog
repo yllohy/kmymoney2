@@ -1,3 +1,8 @@
+2005-02-13 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Gnucash import
+    - normalize monetary amounts
+    - correct Investn=ment Account description
+
 2005-02-12 Ace Jones <acejones@users.sourceforge.net>
   * Refactored PivotTable::AccountDescriptor into ReportAccount, which is now
     a subclass of MyMoneyAccount, with hierarchy, currency, and other convenience

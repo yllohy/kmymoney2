@@ -216,14 +216,14 @@ QString GncObject::hide (QString data, unsigned int anonClass) {
     in = MyMoneyMoney(data);
     if (data == "-1/0") in = MyMoneyMoney (0); // spurious gnucash data - causes a crash sometimes
     mresult = MyMoneyMoney(m_moneyHideFactor) * in;
-    mresult.convert();
+    mresult.convert(10000);
     result = mresult.toString();
     break;
   case MONEY2:
     in = MyMoneyMoney(data);
     if (data == "-1/0") in = MyMoneyMoney (0);
     mresult  = MyMoneyMoney(m_moneyHideFactor) * in;
-    mresult.convert();
+    mresult.convert(10000);
     mresult.setThousandSeparator (' ');
     result = mresult.formatMoney();
     break;
