@@ -107,7 +107,7 @@ void MyMoneyStorageGNC::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
               }
               if(QString("gnc:transaction") == temp.tagName())
               {
-                MyMoneyTransaction transaction = readTransaction(temp);
+                readTransaction(temp);
 
                 //tell the storage objects we have a new institution.
                 //m_storage->loadTransaction(transaction);
@@ -196,7 +196,7 @@ void MyMoneyStorageGNC::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
       }    
     }
 
-    m_mapIds.clear();
+    //m_mapIds.clear();
     
     // this seems to be nonsense, but it clears the dirty flag
     // as a side-effect.
@@ -212,7 +212,7 @@ void MyMoneyStorageGNC::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
   }
 }
 
-MyMoneyAccount MyMoneyStorageGNC::readAccount(const QDomElement& account)
+void MyMoneyStorageGNC::readAccount(const QDomElement& account)
 {
   MyMoneyAccount acc;
   QCString id;
@@ -352,30 +352,7 @@ MyMoneyAccount MyMoneyStorageGNC::readAccount(const QDomElement& account)
   return acc;//MyMoneyAccount(id, acc);
 }
 
-QCString MyMoneyStorageGNC::findGNCParentAccount(QCString gnuCashParentAccountId)
-{
-  QValueList<MyMoneyAccount> list;
-  QValueList<MyMoneyAccount>::ConstIterator it;
-
-  list = m_storage->accountList();
-
-  for(it = list.begin(); it != list.end(); ++it)
-  {
-    Q_ASSERT((*it).pairs().count());
-    QString temp = (*it).value("GNUCASH_ID");
-    Q_ASSERT(!temp.isEmpty());
-    qDebug("GNUCASH id = %s, passed in id = %s, object address=0x%08X\n", temp.data(), gnuCashParentAccountId.data(), &(*it));
-    if(QCString(temp) == gnuCashParentAccountId)
-    {
-      return (*it).id();
-    }
-  }
-
-  return QCStringEmpty("");
-}
-
-
-void MyMoneyStorageGNC::readTransactions(QDomElement& transactions)
+/*void MyMoneyStorageGNC::readTransactions(QDomElement& transactions)
 {
   unsigned long id = 0;
   QDomNode child = transactions.firstChild();
@@ -387,54 +364,141 @@ void MyMoneyStorageGNC::readTransactions(QDomElement& transactions)
     QDomElement childElement = child.toElement();
     if(QString("TRANSACTION") == childElement.tagName())
     {
-      MyMoneyTransaction transaction = readTransaction(childElement);
+      readTransaction(childElement);
 
       //tell the storage objects we have a new institution.
-      m_storage->loadTransaction(transaction);
+      //m_storage->loadTransaction(transaction);
 
-      id = extractId(transaction.id().data());
-      if(id > m_storage->transactionId())
-      {
-        m_storage->loadTransactionId(id);
-      }
+      //id = extractId(transaction.id().data());
+      //if(id > m_storage->transactionId())
+      //{
+      //  m_storage->loadTransactionId(id);
+      //}
     }
     child = child.nextSibling();
     signalProgress(x++, 0);
   }
-}
+}  */
 
 
-MyMoneyTransaction MyMoneyStorageGNC::readTransaction(QDomElement& transaction, const bool withinSchedule)
+void MyMoneyStorageGNC::readTransaction(QDomElement& transaction, const bool withinSchedule)
 {
+  /*
+  <gnc:transaction version="2.0.0">
+  <trn:id type="guid">5d572b538b2fe48ccdfa082585c02b49</trn:id>
+  <trn:currency>
+    <cmdty:space>ISO4217</cmdty:space>
+    <cmdty:id>USD</cmdty:id>
+  </trn:currency>
+  <trn:num>1</trn:num>
+  <trn:date-posted>
+    <ts:date>2004-03-06 00:00:00 -0500</ts:date>
+  </trn:date-posted>
+  <trn:date-entered>
+    <ts:date>2004-03-06 09:01:56 -0500</ts:date>
+  </trn:date-entered>
+  <trn:description>gas</trn:description>
+  <trn:splits>
+    <trn:split>
+      <split:id type="guid">9a200b66bcb2b11f9da9ea87544a8296</split:id>
+      <split:reconciled-state>n</split:reconciled-state>
+      <split:value>3200/100</split:value>
+      <split:quantity>3200/100</split:quantity>
+      <split:account type="guid">ce7bc9b6e58abf56c17be5fef32c6cd9</split:account>
+    </trn:split>
+    <trn:split>
+      <split:id type="guid">b2d7bf93bdcf2f3165b25d622b7f0bce</split:id>
+      <split:reconciled-state>n</split:reconciled-state>
+      <split:value>-3200/100</split:value>
+      <split:quantity>-3200/100</split:quantity>
+      <split:account type="guid">708265b881486aa4d0ce285d97e4175f</split:account>
+    </trn:split>
+  </trn:splits>
+</gnc:transaction>
+*/
+  MyMoneyTransaction tx;
   QCString id;
-  MyMoneyTransaction t;
+  QString tmp;
+  QString gncTxId, gncCurrency, gncNum, gncDatePosted, gncDateEntered, gncDescription;
+  bool bHasParent = false;
 
-  t.setEntryDate(getDate(QStringEmpty(transaction.attribute(QString("entrydate")))));
-  t.setPostDate(getDate(QStringEmpty(transaction.attribute(QString("postdate")))));
-  t.setMemo(QStringEmpty(transaction.attribute(QString("memo"))));
+  QString gncVersion = transaction.attributes().namedItem(QString("version")).nodeValue();
+  qDebug("Version of this transaction object is %s\n", gncVersion.data());
 
-  id = QCStringEmpty(transaction.attribute(QString("id")));
-  if(!withinSchedule)
-    Q_ASSERT(id.size());
-  else
-    Q_ASSERT(id.size() == 0);
-  // qDebug("Transaction has id of %s", id.data());
-
-
-  QDomElement splits = findChildElement(QString("SPLITS"), transaction);
-  if(!splits.isNull() && splits.isElement())
+  if(QString("2.0.0") == gncVersion)
   {
-    readSplits(t, splits);
-  }
+    QDomNodeList nodeList = transaction.childNodes();
+    qDebug("Transaction has %d children\n", nodeList.count());
+    for(unsigned int x = 0; x < nodeList.count(); x++)
+    {
+      QDomElement temp = nodeList.item(x).toElement();
 
-  //Process any KeyValue pairs information found inside the transaction entry.
-  QDomElement keyValPairs = findChildElement(QString("KEYVALUEPAIRS"), transaction);
-  if(!keyValPairs.isNull() && keyValPairs.isElement())
-  {
-    t.setPairs(readKeyValuePairs(keyValPairs));
-  }
+      if(getChildCount(temp))
+      {
+        QDomText text = temp.firstChild().toText();
 
-  return MyMoneyTransaction(id, t);
+        if(QString("trn:id") == temp.tagName())
+        {
+          gncTxId = QStringEmpty(text.nodeValue());
+          qDebug("gnucash transaction id = %s\n", gncTxId.data());
+        }
+        else if(QString("trn:num") == temp.tagName())
+        {
+          gncNum = QStringEmpty(text.nodeValue());
+        }
+        else if(QString("trn:date-posted") == temp.tagName())
+        {
+          if(temp.hasChildNodes() && temp.firstChild().isElement())
+          {
+            QDomElement date = temp.firstChild().toElement();
+            qDebug("element is %s", date.tagName().data());
+            QDomText dateText = date.firstChild().toText();
+            gncDatePosted = QStringEmpty(dateText.nodeValue());
+          }
+        }
+        else if(QString("trn:date-entered") == temp.tagName())
+        {
+          if(temp.hasChildNodes() && temp.firstChild().isElement())
+          {
+            QDomElement date = temp.firstChild().toElement();
+            qDebug("element is %s", date.tagName().data());
+            QDomText dateText = date.firstChild().toText();
+            gncDateEntered = QStringEmpty(dateText.nodeValue());
+          }
+        }
+        else if(QString("trn:splits") == temp.tagName())
+        {
+          readSplits(tx, temp);  
+        }
+      }
+    }
+   }
+
+   QStringList fields = QStringList::split(" ", gncDatePosted);
+   if(fields.count())
+   {
+     QString firstField = fields.first();
+     QDate postedDate = getDate(firstField);
+     tx.setPostDate(postedDate);
+     qDebug("Date is %s", postedDate.toString().data());
+   }
+
+   fields = QStringList::split(" ", gncDateEntered);
+   if(fields.count())
+   {
+     QString firstField = fields.first();
+     QDate enteredDate = getDate(firstField);
+     tx.setEntryDate(enteredDate);
+     qDebug("Date is %s", enteredDate.toString().data());
+   }
+   
+//  qDebug("Account %s has id of %s, type of %d, parent is %s, this=0x%08X.", acc.name().data(), id.data(), acc.accountType(), acc.parentAccountId().data(),&acc);
+  
+  //tx.setPostDate(getDate(QStringEmpty(transaction.attribute(QString("postdate")))));
+  tx.setMemo("");
+  
+  m_storage->addTransaction(tx, true);
+  
 }
 
 void MyMoneyStorageGNC::readSchedules(QDomElement& schedules)
@@ -504,8 +568,8 @@ MyMoneySchedule MyMoneyStorageGNC::readSchedule(QDomElement& schedule)
   QDomElement transaction = findChildElement(QString("TRANSACTION"), schedule);
   if(!transaction.isNull() && transaction.isElement())
   {
-    MyMoneyTransaction t = readTransaction(transaction, true);
-    sc.setTransaction(t);
+//    MyMoneyTransaction t = readTransaction(transaction, true);
+//    sc.setTransaction(t);
   }
 
   return sc;  
@@ -513,11 +577,30 @@ MyMoneySchedule MyMoneyStorageGNC::readSchedule(QDomElement& schedule)
 
 void MyMoneyStorageGNC::readSplits(MyMoneyTransaction& t, QDomElement& splits)
 {
+  /*
+  <trn:splits>
+    <trn:split>
+      <split:id type="guid">9a200b66bcb2b11f9da9ea87544a8296</split:id>
+      <split:reconciled-state>n</split:reconciled-state>
+      <split:value>3200/100</split:value>
+      <split:quantity>3200/100</split:quantity>
+      <split:account type="guid">ce7bc9b6e58abf56c17be5fef32c6cd9</split:account>
+    </trn:split>
+    <trn:split>
+      <split:id type="guid">b2d7bf93bdcf2f3165b25d622b7f0bce</split:id>
+      <split:reconciled-state>n</split:reconciled-state>
+      <split:value>-3200/100</split:value>
+      <split:quantity>-3200/100</split:quantity>
+      <split:account type="guid">708265b881486aa4d0ce285d97e4175f</split:account>
+    </trn:split>
+  </trn:splits>
+  */
+  
   QDomNode child = splits.firstChild();
   while(!child.isNull() && child.isElement())
   {
     QDomElement childElement = child.toElement();
-    if(QString("SPLIT") == childElement.tagName())
+    if(QString("trn:split") == childElement.tagName())
     {
       MyMoneySplit split = readSplit(childElement);
       t.addSplit(split);
@@ -528,16 +611,98 @@ void MyMoneyStorageGNC::readSplits(MyMoneyTransaction& t, QDomElement& splits)
 
 MyMoneySplit MyMoneyStorageGNC::readSplit(QDomElement& splitElement)
 {
+  /*
+  <trn:splits>
+    <trn:split>
+      <split:id type="guid">9a200b66bcb2b11f9da9ea87544a8296</split:id>
+      <split:reconciled-state>n</split:reconciled-state>
+      <split:value>3200/100</split:value>
+      <split:quantity>3200/100</split:quantity>
+      <split:account type="guid">ce7bc9b6e58abf56c17be5fef32c6cd9</split:account>
+    </trn:split>
+    <trn:split>
+      <split:id type="guid">b2d7bf93bdcf2f3165b25d622b7f0bce</split:id>
+      <split:reconciled-state>n</split:reconciled-state>
+      <split:value>-3200/100</split:value>
+      <split:quantity>-3200/100</split:quantity>
+      <split:account type="guid">708265b881486aa4d0ce285d97e4175f</split:account>
+    </trn:split>
+  </trn:splits>
+  */
+  
   MyMoneySplit split;
   QString strTmp;
+  QString gncSplitId, gncSplitReconciledState, gncSplitValue, gncSplitQuantity, gncSplitAccount;
+
+  if(splitElement.hasChildNodes())
+  {
+    QDomNodeList nodeList = splitElement.childNodes();
+    qDebug("Split has %d children\n", nodeList.count());
+    for(unsigned int x = 0; x < nodeList.count(); x++)
+    {
+      QDomElement temp = nodeList.item(x).toElement();
+
+      if(temp.hasChildNodes())
+      {
+        QDomText text = temp.firstChild().toText();
+        if(QString("split:id") == temp.tagName())
+        {
+          gncSplitId = QStringEmpty(text.nodeValue());
+          qDebug("gnucash split id = %s\n", gncSplitId.data());
+        }
+        else if(QString("split:reconciled-state") == temp.tagName())
+        {
+          gncSplitReconciledState = QStringEmpty(text.nodeValue());
+        }
+        else if(QString("split:value") == temp.tagName())
+        {
+          gncSplitValue = QStringEmpty(text.nodeValue());
+        }
+        else if(QString("split:quantity") == temp.tagName())
+        {
+          gncSplitQuantity = QStringEmpty(text.nodeValue());
+        }
+        else if(QString("split:account") == temp.tagName())
+        {
+          gncSplitAccount = QStringEmpty(text.nodeValue());
+           
+          map_accountIds::Iterator id = m_mapIds.find(QCString(gncSplitAccount));
+          if(id != m_mapIds.end())
+          {
+            qDebug("Split:  Swapping account id %s's with our account id %s", gncSplitAccount.data(), id.data().data());
+            gncSplitAccount = id.data();
+          }
+        }
+      }
+    }
+  }
   
-  split.setPayeeId(QCStringEmpty(splitElement.attribute(QString("payee"))));
-  split.setReconcileDate(getDate(QStringEmpty(splitElement.attribute(QString("reconciledate")))));
-  split.setAction(QCStringEmpty(splitElement.attribute(QString("action"))));
-  split.setReconcileFlag(static_cast<MyMoneySplit::reconcileFlagE>(splitElement.attribute(QString("reconcileflag")).toInt()));
-  split.setMemo(QStringEmpty(splitElement.attribute(QString("memo"))));
-  split.setValue(MyMoneyMoney(QStringEmpty(splitElement.attribute(QString("value")))));
-  split.setAccountId(QCStringEmpty(splitElement.attribute(QString("account"))));
+  split.setPayeeId("");
+
+  if(QString("n") == gncSplitReconciledState)
+  {
+    split.setReconcileFlag(MyMoneySplit::NotReconciled);
+  }
+  else if(QString("c") == gncSplitReconciledState)
+  {
+    split.setReconcileFlag(MyMoneySplit::Cleared);
+  }
+
+  //if the money amount is negative, mark it as a withdrawal, other wise it's a deposit.
+  MyMoneyMoney splitValue(gncSplitValue);
+  if(splitValue.isNegative())
+  {
+    split.setAction("Withdrawal");
+  }
+  else
+  {
+    split.setAction("Deposit");
+  }
+
+  split.setValue(splitValue);
+  //split.setReconcileDate(getDate(QStringEmpty(splitElement.attribute(QString("reconciledate")))));
+  split.setMemo("");//QStringEmpty(splitElement.attribute(QString("memo"))));
+  split.setAccountId(QCString(gncSplitAccount));
  
   return split;
 }

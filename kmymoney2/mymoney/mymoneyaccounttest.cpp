@@ -56,6 +56,9 @@ void MyMoneyAccountTest::testConstructor() {
 	r.setNumber("465500");
 	r.setParentAccountId(parent);
 	r.setOpeningBalance(1);
+  r.setValue(QCString("key"), QString("value"));
+  CPPUNIT_ASSERT(r.m_kvp.count() == 1);
+  CPPUNIT_ASSERT(r.value("key") == "value");
 
 	MyMoneyAccount a(id, r);
 
@@ -72,6 +75,11 @@ void MyMoneyAccountTest::testConstructor() {
 	CPPUNIT_ASSERT(a.accountList().count() == 0);
 	CPPUNIT_ASSERT(a.parentAccountId() == "Parent");
 	CPPUNIT_ASSERT(a.openingBalance() == MyMoneyMoney(1));
+
+  QMap<QCString, QString> copy;
+  copy = m->pairs();
+  CPPUNIT_ASSERT(copy.count() == 1);
+  CPPUNIT_ASSERT(copy.value("key") == "value");
 }
 
 void MyMoneyAccountTest::testSetFunctions() {

@@ -206,6 +206,9 @@ public:
 
   static signed64 maxValue;
   static signed64 minValue;
+
+  bool isNegative() const { return (m_num < 0) ? true : false; }
+  bool isPositive() const { return !isNegative(); }
   
 private:
   signed64 m_num;

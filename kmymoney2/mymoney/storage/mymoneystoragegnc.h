@@ -103,13 +103,12 @@ private:
   void readUserInformation(QDomElement userElement);
   /** No descriptions */
 
-  MyMoneyAccount readAccount(const QDomElement& account);
+  void readAccount(const QDomElement& account);
 
   MyMoneySplit readSplit(QDomElement& splitElement);
   void readSplits(MyMoneyTransaction& t, QDomElement& splits);
 
-  void readTransactions(QDomElement& transactions);
-  MyMoneyTransaction readTransaction(QDomElement& transaction, const bool withinSchedule = false);
+  void readTransaction(QDomElement& transaction, const bool withinSchedule = false);
 
   void readSchedules(QDomElement& schedules);
   MyMoneySchedule readSchedule(QDomElement& schedule);
@@ -154,7 +153,6 @@ private:
   const QCString QCStringEmpty(const QString& val) const;
   const QString QStringEmpty(const QString& val) const;
   const uint getChildCount(const QDomElement& element) const;
-	QCString findGNCParentAccount(QCString gnuCashParentAccountId);
 	QString m_mainAssetId;
   QString m_mainLiabilityId;
   QString m_mainIncomeId;
