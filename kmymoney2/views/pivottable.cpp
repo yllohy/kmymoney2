@@ -198,9 +198,9 @@ MyMoneyMoney PivotTable::AccountDescriptor::currencyPrice(const QDate& date) con
   // Account 'J' is in JPY.  Say there are two transactions, one is US$100 from U to C,
   // the other is JPY10,000 from J to C.  Given a JPY price of USD$0.01, this means
   // C will show a balance of $200 NO MATTER WHAT the user chooses for 'convert to base
-  // currency.  This confused me for a while, which is why I wrote this comment.  
+  // currency.  This confused me for a while, which is why I wrote this comment.
   //    --acejones
-  
+
   DEBUG_ENTER("AccountDescriptor::currencyPrice");
 
   MyMoneyMoney value(1.0);
@@ -278,12 +278,12 @@ QString PivotTable::AccountDescriptor::currency( void ) const
   QString result;
   MyMoneyAccount account = m_file->account(m_account);
   if(account.accountType() == MyMoneyAccount::Stock)
-    result = account.currencyId(); 
+    result = account.currencyId();
   else
-    result = account.currencyId(); 
+    result = account.currencyId();
   return result;
 }
-  
+
 /**
   * Determine if this account is in a different currency than the file's
   * base currency
@@ -295,7 +295,7 @@ bool PivotTable::AccountDescriptor::isForiegnCurrency( void ) const
   MyMoneyAccount account = m_file->account(m_account);
   return ( account.currencyId() != m_file->baseCurrency().id() );
 }
-  
+
 /**
   * The name of only this account.  No matter how deep the hierarchy, this
   * method only returns the last name in the list, which is the engine name]
@@ -385,7 +385,7 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
   if ( !m_beginDate.isValid() || !m_endDate.isValid()) {
     QValueList<MyMoneyTransaction> list = file->transactionList(m_config_f);
     QDate tmpBegin, tmpEnd;
-    
+
     if(!list.isEmpty()) {
       qHeapSort(list);
       tmpBegin = list.front().postDate();
@@ -446,7 +446,7 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
         // reverse sign to match common notation for cash flow direction, only for expense/income splits
         MyMoneyMoney reverse((splitAccount.accountGroup() == MyMoneyAccount::Income) |
                           (splitAccount.accountGroup() == MyMoneyAccount::Expense) ? -1 : 1, 1);
-                          
+
         // retrieve the value in the account's currency
         MyMoneyMoney value = (*it_split).value((*it_transaction).commodity(), splitAccount.currencyId())*reverse;
 
@@ -491,21 +491,21 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
   //
   // Determine column headings
   //
-  
+
   calculateColumnHeadings();
-  
+
   //
   // Calculate row and column totals
   //
 
   calculateTotals();
-    
+
 }
 
 void PivotTable::collapseColumns(void)
-{      
+{
   DEBUG_ENTER("PivotTable::collapseColumns");
-  
+
   unsigned columnpitch = m_config_f.columnPitch();
   if ( columnpitch != 1 )
   {
@@ -521,10 +521,10 @@ void PivotTable::collapseColumns(void)
         // allowing us to clear and accumulate only ONCE per destcolumn
         if ( m_config_f.isRunningSum() )
           clearColumn(destcolumn);
-          
+
         accumulateColumn(destcolumn,sourcecolumn);
       }
-      
+
       ++sourcecolumn;
 
       // increment the source month, and test if it crosses a segment boundary AND it's still a valid column
@@ -560,7 +560,7 @@ void PivotTable::accumulateColumn(unsigned destcolumn, unsigned sourcecolumn)
           throw new MYMONEYEXCEPTION(QString("Sourcecolumn %1 out of grid range (%2) in PivotTable::accumulateColumn").arg(sourcecolumn).arg((*it_row).count()));
         if ( (*it_row).count() <= destcolumn )
           throw new MYMONEYEXCEPTION(QString("Destcolumn %1 out of grid range (%2) in PivotTable::accumulateColumn").arg(sourcecolumn).arg((*it_row).count()));
-        
+
         (*it_row)[destcolumn] += (*it_row)[sourcecolumn];
         ++it_row;
       }
@@ -590,7 +590,7 @@ void PivotTable::clearColumn(unsigned column)
       {
         if ( (*it_row).count() <= column )
           throw new MYMONEYEXCEPTION(QString("Column %1 out of grid range (%2) in PivotTable::accumulateColumn").arg(column).arg((*it_row).count()));
-      
+
         (*it_row++)[column] = 0;
       }
 
@@ -600,13 +600,13 @@ void PivotTable::clearColumn(unsigned column)
   }
 }
 
-void PivotTable::calculateColumnHeadings(void)  
-{ 
+void PivotTable::calculateColumnHeadings(void)
+{
   DEBUG_ENTER("PivotTable::calculateColumnHeadings");
 
   // one column for the opening balance
   m_columnHeadings.append( "Opening" );
-  
+
   unsigned columnpitch = m_config_f.columnPitch();
   if ( columnpitch == 12 )
   {
@@ -636,7 +636,7 @@ void PivotTable::calculateColumnHeadings(void)
       }
     }
   }
-}  
+}
 
 void PivotTable::calculateOpeningBalances( void )
 {
@@ -664,15 +664,15 @@ void PivotTable::calculateOpeningBalances( void )
       // the opening balance plus the sum of all transactions prior to the begin
       // date
       MyMoneyMoney value = file->balance((*it_account).id(), m_config_f.fromDate().addDays(-1));
-      
+
       // remove the opening balance from the figure, if necessary
       QDate opendate = (*it_account).openingDate();
       if ( opendate >= m_config_f.fromDate() )
         value -= (*it_account).openingBalance();
-        
+
       // place into the 'opening' column...
       assignCell( outergroup, row, 0, value );
-      
+
       if ( ( opendate >= m_config_f.fromDate() ) && ( opendate <= m_config_f.toDate() ) )
       {
         // get the opening value
@@ -680,7 +680,7 @@ void PivotTable::calculateOpeningBalances( void )
         // place in the correct column
         unsigned column = opendate.year() * 12 + opendate.month() - m_beginDate.year() * 12 - m_beginDate.month() + 1;
         assignCell( outergroup, row, column, value );
-      } 
+      }
 
     }
     ++it_account;
@@ -706,7 +706,7 @@ void PivotTable::calculateRunningSums( void )
         {
           if ( it_row.data().count() <= column )
             throw new MYMONEYEXCEPTION(QString("Column %1 out of grid range (%2) in PivotTable::calculateRunningSums").arg(column).arg(it_row.data().count()));
-        
+
           runningsum = ( it_row.data()[column] += runningsum );
 
           ++column;
@@ -738,7 +738,7 @@ void PivotTable::convertToBaseCurrency( void )
         {
           if ( it_row.data().count() <= column )
             throw new MYMONEYEXCEPTION(QString("Column %1 out of grid range (%2) in PivotTable::convertToBaseCurrency").arg(column).arg(it_row.data().count()));
-        
+
           // (acejones) Would be nice to have
           // MyMoneyMoney& MyMoneyMoney::operator*=(const MyMoneyMoney&)
           // because then we could just do the following:
@@ -804,7 +804,7 @@ void PivotTable::calculateTotals( void )
             throw new MYMONEYEXCEPTION(QString("Column %1 out of grid range (%2) in PivotTable::calculateTotals, row columns").arg(column).arg(it_row.data().count()));
           if ( (*it_innergroup).m_total.count() <= column )
             throw new MYMONEYEXCEPTION(QString("Column %1 out of grid range (%2) in PivotTable::calculateTotals, inner group totals").arg(column).arg((*it_innergroup).m_total.count()));
-        
+
           MyMoneyMoney value = it_row.data()[column];
           (*it_innergroup).m_total[column] += value;
           (*it_row).m_total += value;
@@ -825,7 +825,7 @@ void PivotTable::calculateTotals( void )
           throw new MYMONEYEXCEPTION(QString("Column %1 out of grid range (%2) in PivotTable::calculateTotals, inner group totals").arg(column).arg((*it_innergroup).m_total.count()));
         if ( (*it_outergroup).m_total.count() <= column )
           throw new MYMONEYEXCEPTION(QString("Column %1 out of grid range (%2) in PivotTable::calculateTotals, outer group totals").arg(column).arg((*it_innergroup).m_total.count()));
-      
+
         MyMoneyMoney value = (*it_innergroup).m_total[column];
         (*it_outergroup).m_total[column] += value;
         (*it_innergroup).m_total.m_total += value;
@@ -845,7 +845,7 @@ void PivotTable::calculateTotals( void )
     {
       if ( m_grid.m_total.count() <= column )
         throw new MYMONEYEXCEPTION(QString("Column %1 out of grid range (%2) in PivotTable::calculateTotals, grid totals").arg(column).arg((*it_innergroup).m_total.count()));
-    
+
       MyMoneyMoney value = (*it_outergroup).m_total[column];
       m_grid.m_total[column] += value;
       (*it_outergroup).m_total.m_total += value;
@@ -865,7 +865,7 @@ void PivotTable::calculateTotals( void )
   {
     if ( m_grid.m_total.count() <= totalcolumn )
       throw new MYMONEYEXCEPTION(QString("Total column %1 out of grid range (%2) in PivotTable::calculateTotals, grid totals").arg(totalcolumn).arg(m_grid.m_total.count()));
-  
+
     MyMoneyMoney value = m_grid.m_total[totalcolumn];
     m_grid.m_total.m_total += value;
 
@@ -889,7 +889,7 @@ void PivotTable::assignCell( const QString& outergroup, const PivotTable::Accoun
     throw new MYMONEYEXCEPTION(QString("Column %1 out of m_numColumns range (%2) in PivotTable::assignCell").arg(column).arg(m_numColumns));
   if ( m_grid[outergroup][innergroup][row].count() <= column )
     throw new MYMONEYEXCEPTION(QString("Column %1 out of grid range (%2) in PivotTable::assignCell").arg(column).arg(m_grid[outergroup][innergroup][row].count()));
-  
+
   // Add the value to the grid cell
   m_grid[outergroup][innergroup][row][column] += value;
 
@@ -921,7 +921,7 @@ void PivotTable::createRow( const QString& outergroup, const PivotTable::Account
 bool PivotTable::isCategory(const MyMoneyAccount& account)
 {
   return ( (account.accountGroup() == MyMoneyAccount::Income) || (account.accountGroup() == MyMoneyAccount::Expense) );
-  
+
 }
 
 bool PivotTable::includesAccount( const MyMoneyAccount& account ) const
@@ -949,7 +949,7 @@ QString PivotTable::renderCSV( void ) const
 
   char saveseparator = MyMoneyMoney::thousandSeparator();
   MyMoneyMoney::setThousandSeparator('\0');
-  
+
   //
   // Report Title
   //
@@ -1013,7 +1013,7 @@ QString PivotTable::renderCSV( void ) const
         unsigned column = 1;
         while ( column < m_numColumns )
           rowdata += QString(",%1").arg(it_row.data()[column++].formatMoney());
-        
+
         if ( m_config_f.isShowingRowTotals() )
           rowdata += QString(",%1").arg((*it_row).m_total.formatMoney());
 
@@ -1024,12 +1024,12 @@ QString PivotTable::renderCSV( void ) const
         AccountDescriptor rowname = it_row.key();
 
         innergroupdata += "\"" + QString().fill(' ',rowname.hierarchyDepth() - 1) + rowname.name();
-        
+
         if (m_config_f.isConvertCurrency() || !rowname.isForiegnCurrency() )
           innergroupdata += QString(" (%1)").arg(rowname.currency());
 
         innergroupdata += "\"";
-          
+
         if ( (*it_row).m_total != 0 )
           innergroupdata += rowdata;
 
@@ -1060,12 +1060,12 @@ QString PivotTable::renderCSV( void ) const
       {
         // Start the single INDIVIDUAL ACCOUNT row
         AccountDescriptor rowname = (*it_innergroup).begin().key();
-        
+
         result += "\"" + QString().fill(' ',rowname.hierarchyDepth() - 1) + rowname.name();
         if (m_config_f.isConvertCurrency() || !rowname.isForiegnCurrency() )
           result += QString(" (%1)").arg(rowname.currency());
         result += "\"";
-        
+
       }
 
       // Finish the row started above, unless told not to
@@ -1074,13 +1074,13 @@ QString PivotTable::renderCSV( void ) const
         unsigned column = 1;
         while ( column < m_numColumns )
           result += QString(",%1").arg((*it_innergroup).m_total[column++].formatMoney());
-  
+
         if (  m_config_f.isShowingRowTotals() )
           result += QString(",%1").arg((*it_innergroup).m_total.m_total.formatMoney());
-  
+
         result += "\n";
       }
-      
+
       ++rownum;
       ++it_innergroup;
     }
@@ -1095,10 +1095,10 @@ QString PivotTable::renderCSV( void ) const
       unsigned column = 1;
       while ( column < m_numColumns )
         result += QString(",%1").arg((*it_outergroup).m_total[column++].formatMoney());
-  
+
       if (  m_config_f.isShowingRowTotals() )
         result += QString(",%1").arg((*it_outergroup).m_total.m_total.formatMoney());
-  
+
       result += "\n";
     }
     ++it_outergroup;
@@ -1114,15 +1114,15 @@ QString PivotTable::renderCSV( void ) const
     unsigned totalcolumn = 1;
     while ( totalcolumn < m_numColumns )
       result += QString(",%1").arg(m_grid.m_total[totalcolumn++].formatMoney());
-  
+
     if (  m_config_f.isShowingRowTotals() )
       result += QString(",%1").arg(m_grid.m_total.m_total.formatMoney());
-  
+
     result += "\n";
   }
 
   MyMoneyMoney::setThousandSeparator(saveseparator);
-    
+
   return result;
 }
 
@@ -1214,7 +1214,7 @@ QString PivotTable::renderHTML( void ) const
           .arg(rowname.isTopLevel() ? " id=\"topparent\"" : "")
           .arg((*it_row).m_total == 0 ? colspan : "")
           .arg(rowname.hierarchyDepth() - 1)
-          .arg(rowname.name().replace(" ","&nbsp;"))
+          .arg(rowname.name().replace(QRegExp(" "), "&nbsp;"))
           .arg((m_config_f.isConvertCurrency() || !rowname.isForiegnCurrency() )?QString():QString(" (%1)").arg(rowname.currency()));
 
         if ( (*it_row).m_total != 0 )
@@ -1257,7 +1257,7 @@ QString PivotTable::renderHTML( void ) const
           .arg(rownum & 0x01 ? "even" : "odd")
           .arg( m_config_f.isShowingSubAccounts() ? "id=\"solo\"" : "" )
           .arg(rowname.hierarchyDepth() - 1)
-          .arg(rowname.name().replace(" ","&nbsp;"))
+          .arg(rowname.name().replace(QRegExp(" "), "&nbsp;"))
           .arg((m_config_f.isConvertCurrency() || !rowname.isForiegnCurrency() )?QString():QString(" (%1)").arg(rowname.currency()));
       }
 
@@ -1267,13 +1267,13 @@ QString PivotTable::renderHTML( void ) const
         unsigned column = 1;
         while ( column < m_numColumns )
           result += QString("<td>%1</td>").arg((*it_innergroup).m_total[column++].formatMoney());
-  
+
         if (  m_config_f.isShowingRowTotals() )
           result += QString("<td>%1</td>").arg((*it_innergroup).m_total.m_total.formatMoney());
-  
+
         result += "</tr>\n";
       }
-      
+
       ++rownum;
       ++it_innergroup;
     }
@@ -1288,10 +1288,10 @@ QString PivotTable::renderHTML( void ) const
       unsigned column = 1;
       while ( column < m_numColumns )
         result += QString("<td>%1</td>").arg((*it_outergroup).m_total[column++].formatMoney());
-  
+
       if (  m_config_f.isShowingRowTotals() )
         result += QString("<td>%1</td>").arg((*it_outergroup).m_total.m_total.formatMoney());
-  
+
       result += "</tr>\n";
     }
     ++it_outergroup;
@@ -1308,13 +1308,13 @@ QString PivotTable::renderHTML( void ) const
     unsigned totalcolumn = 1;
     while ( totalcolumn < m_numColumns )
       result += QString("<td>%1</td>").arg(m_grid.m_total[totalcolumn++].formatMoney());
-  
+
     if (  m_config_f.isShowingRowTotals() )
       result += QString("<td>%1</td>").arg(m_grid.m_total.m_total.formatMoney());
-  
+
     result += "</tr>\n";
   }
-  
+
   result += QString("<tr class=\"spacer\"><td>&nbsp;</td></tr>\n");
   result += QString("<tr class=\"spacer\"><td>&nbsp;</td></tr>\n");
   result += "</table>\n";
@@ -1347,10 +1347,10 @@ void PivotTable::dump( const QString& file ) const
 void PivotTable::drawChart( KReportChartView& _view ) const
 {
   _view.canvas()->setBackgroundColor(QColor("gray"));
- 
+
   // create a sanple graph, just to get the point across.
-  // bonus points if you figure out what these data are 
-  QPoint points[] = {  
+  // bonus points if you figure out what these data are
+  QPoint points[] = {
   QPoint(600,21),  QPoint(595,148),  QPoint(590,141),  QPoint(585,151),  QPoint(580,141),  QPoint(575,174),
   QPoint(570,153),  QPoint(565,200),  QPoint(560,197),  QPoint(555,155),  QPoint(550,228),  QPoint(545,166),
   QPoint(540,256),  QPoint(535,297),  QPoint(530,337),  QPoint(525,327),  QPoint(520,362),  QPoint(515,327),
@@ -1373,21 +1373,21 @@ void PivotTable::drawChart( KReportChartView& _view ) const
   QPoint(30,589),  QPoint(25,589),  QPoint(20,592),  QPoint(15,592),  QPoint(10,593),  QPoint(5,593),
   QPoint(0,593),  QPoint(600,593),
   };
-  
+
   QPointArray qpa(122);
   qpa.duplicate( points, 122 );
-  
+
   QCanvasPolygon* poly = new QCanvasPolygon( _view.canvas() );
   poly->setBrush(QColor(255,0,0));
   poly->setPoints( qpa );
   poly->show();
- 
+
   QCanvasText* i = new QCanvasText(_view.canvas());
   i->setText("This is where a chart would go if there were a chart!");
   i->move(10,50);
   i->setZ(2);
   i->show();
-  
+
   _view.canvas()->update();
 }
 
