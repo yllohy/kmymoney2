@@ -76,6 +76,7 @@ void MyMoneyAccount::setOpeningDate(const QDate& date)
 
 void MyMoneyAccount::setOpeningBalance(const MyMoneyMoney& balance)
 {
+/* removed with MyMoneyAccount::Transaction
   MyMoneyMoney diff;
 
   diff = balance - m_openingBalance;
@@ -87,6 +88,7 @@ void MyMoneyAccount::setOpeningBalance(const MyMoneyMoney& balance)
       *it_t = t;
     }
   }
+*/
   m_openingBalance = balance;
 }
 
@@ -105,12 +107,12 @@ void MyMoneyAccount::setAccountType(const accountTypeE type)
   m_accountType = type;
 }
 
+/* removed with MyMoneyAccount::Transaction
 const QValueList<MyMoneyAccount::Transaction>& MyMoneyAccount::transactionList(void) const
 {
   return m_transactionList;
 }
 
-/*
 const MyMoneyAccount::Transaction& MyMoneyAccount::transaction(const QString id) const
 {
   QValueList<MyMoneyAccount::Transaction>::ConstIterator it;
@@ -123,6 +125,7 @@ const MyMoneyAccount::Transaction& MyMoneyAccount::transaction(const QString id)
 }
 */
 
+/*
 const MyMoneyAccount::Transaction& MyMoneyAccount::transaction(const int idx) const
 {
   if(idx >= 0 && idx < static_cast<int> (m_transactionList.count()))
@@ -149,6 +152,7 @@ const MyMoneyMoney MyMoneyAccount::balance(void) const
     result = m_transactionList.back().balance();
   return result;
 }
+*/
 
 void MyMoneyAccount::addAccountId(const QCString& account)
 {

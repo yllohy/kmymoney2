@@ -72,6 +72,7 @@ class MyMoneyAccount
 {
 public:
 
+/*
   class Transaction
   {
   public:
@@ -87,6 +88,7 @@ public:
     QCString m_transaction;
     MyMoneyMoney m_balance;
   };
+*/
 
   /**
     * Account types currently supported.
@@ -210,7 +212,9 @@ public:
     *
     * @return number of transactions in the account
     */
+/*
   const int transactionCount(void) const { return m_transactionList.count(); }
+*/
 
   /**
     * This method returns the current total balance of this account's
@@ -218,7 +222,9 @@ public:
     * @return const reference to MyMoneyMoney balance of split values
     * @see balanceTotal()
     */
+/*
   const MyMoneyMoney balance(void) const;
+*/
 
   /**
     * This method is used to return the ID of the parent account
@@ -235,25 +241,32 @@ public:
     * @param idx index of transaction in list
     * @return id and balance of transaction
     */
+/*
   const MyMoneyAccount::Transaction& transaction(const int idx) const;
-
+*/
   /**
     * This method returns the list of transactions and balances
     * @return const QValueList<MyMoneyAccount::Transaction>& transactionList
     */
+/*
   const QValueList<MyMoneyAccount::Transaction>& transactionList(void) const;
+*/
 
   /**
     * This method is used by the mymoney engine to add a transaction
     * of the journal to this account
     * @param transaction reference to MyMoneyAccount::Transaction
     */
+/*
   void addTransaction(const MyMoneyAccount::Transaction& val);
+*/
 
   /**
     * This method is used to clear the list of transactions
     */
+/*
   void clearTransactions(void);
+*/
 
   /**
     * This method returns the list of the account id's of
@@ -446,7 +459,9 @@ private:
     * this account and the balance of the account after processing of
     * the corresponding split.
     */
+/*
   QValueList<MyMoneyAccount::Transaction> m_transactionList;
+*/
 
   /**
     * This member holds the ID's of all sub-ordinate accounts
