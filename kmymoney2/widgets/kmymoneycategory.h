@@ -95,7 +95,6 @@ protected:
   virtual void keyPressEvent( QKeyEvent * );
   void focusOutEvent(QFocusEvent *ev);
   void focusInEvent(QFocusEvent *ev);
-  void toggleAccountSelector(void);
 
 protected slots:
   void slotSelectAccount(const QCString& id);

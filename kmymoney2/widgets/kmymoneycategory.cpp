@@ -53,13 +53,6 @@ kMyMoneyCategory::kMyMoneyCategory(QWidget *parent, const char *name, const KMyM
 
   loadList(categoryType);
 #else
-/*
-  m_accountFrame = new QVBox(0,0,WType_Popup);
-  m_accountFrame->setFrameStyle(QFrame::Box | QFrame::Plain);
-  m_accountFrame->setLineWidth(1);
-  m_accountFrame->hide();
-  m_accountSelector = new kMyMoneyAccountCompletion(m_accountFrame, 0);
-*/
   m_accountSelector = new kMyMoneyAccountCompletion(this, 0);
   m_accountSelector->hide();
   connect(this, SIGNAL(textChanged(const QString&)), m_accountSelector, SLOT(slotMakeCompletion(const QString&)));
@@ -70,72 +63,6 @@ kMyMoneyCategory::kMyMoneyCategory(QWidget *parent, const char *name, const KMyM
 
 kMyMoneyCategory::~kMyMoneyCategory()
 {
-}
-
-void kMyMoneyCategory::toggleAccountSelector(void)
-{
-#if 0
-  int w = m_accountFrame->sizeHint().width();
-  int h = m_accountFrame->sizeHint().height();
-  if(w < width())
-    w = width();
-
-  if(m_accountFrame->isVisible()) {
-    qDebug("account selector hide");
-    m_accountFrame->hide();
-  } else {
-    qDebug("account selector show");
-    
-    QPoint tmpPoint = mapToGlobal(QPoint(width(),height()));
-
-    // usually, the datepicker widget is shown underneath the dateEdit widget
-    // if it does not fit on the screen, we show it above this widget
-
-    if(tmpPoint.y() + h > QApplication::desktop()->height()) {
-      tmpPoint.setY(tmpPoint.y() - h - height());
-    }
-
-#if 0
-    if (m_qtalignment == Qt::AlignRight) {
-      m_accountFrame->setGeometry(tmpPoint.x(), tmpPoint.y(), w, h);
-    } else {
-      tmpPoint.setX(tmpPoint.x() - w);
-      m_accountFrame->setGeometry(tmpPoint.x(), tmpPoint.y(), w, h);
-    }
-#else
-    tmpPoint.setX(tmpPoint.x() - w);
-    m_accountFrame->setGeometry(tmpPoint.x(), tmpPoint.y(), w, h);
-#endif
-    QSize hint = m_accountFrame->sizeHint();
-    qDebug("selector size hint is (%d,%d)", hint.width(), hint.height());
-    m_accountSelector->loadList((KMyMoneyUtils::categoryTypeE) 0x0f);
-    m_accountFrame->show();
-  }
-#endif
-
-  if(m_accountSelector->isVisible()) {
-    qDebug("account selector hide");
-    m_accountSelector->hide();
-  } else {
-    qDebug("account selector show");
-#if 0
-    QPoint tmpPoint = mapToGlobal(QPoint(width(),height()));
-
-    // usually, the datepicker widget is shown underneath the dateEdit widget
-    // if it does not fit on the screen, we show it above this widget
-
-    if(tmpPoint.y() + h > QApplication::desktop()->height()) {
-      tmpPoint.setY(tmpPoint.y() - h - height());
-    }
-
-    tmpPoint.setX(tmpPoint.x() - w);
-    m_accountSelector->setGeometry(tmpPoint.x(), tmpPoint.y(), w, h);
-    QSize hint = m_accountSelector->sizeHint();
-    qDebug("selector size hint is (%d,%d)", hint.width(), hint.height());
-#endif
-    m_accountSelector->show();
-  }
-
 }
 
 void kMyMoneyCategory::keyPressEvent( QKeyEvent * ev)
