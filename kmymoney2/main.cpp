@@ -37,6 +37,7 @@
 #include "mymoney/mymoneyfile.h"
 #include "views/kbanklistitem.h"
 #include "kapptest.h"
+#include "kmymoneyutils.h"
 
 static const char *description =
   I18N_NOOP("KMyMoney, the Personal Finance Manager for KDE.\n\nPlease consider contributing to this project with code and or suggestions.");
@@ -89,6 +90,8 @@ int main(int argc, char *argv[])
   _CheckMemory_Init(0);
 #endif
 
+  KMyMoneyUtils::checkConstants();
+
   timer.start();
 
   KApplication* a = new KApplication();
@@ -97,6 +100,10 @@ int main(int argc, char *argv[])
   // setup the MyMoneyMoney locale settings according to the KDE settings
   MyMoneyMoney::setThousandSeparator(*(KGlobal::locale()->monetaryThousandsSeparator().latin1()));
   MyMoneyMoney::setDecimalSeparator(*(KGlobal::locale()->monetaryDecimalSymbol().latin1()));
+  MyMoneyMoney::setNegativeMonetarySignPosition(static_cast<MyMoneyMoney::signPosition>(KGlobal::locale()->negativeMonetarySignPosition()));
+  MyMoneyMoney::setPositiveMonetarySignPosition(static_cast<MyMoneyMoney::signPosition>(KGlobal::locale()->positiveMonetarySignPosition()));
+  MyMoneyMoney::setNegativePrefixCurrencySymbol(KGlobal::locale()->negativePrefixCurrencySymbol());
+  MyMoneyMoney::setPositivePrefixCurrencySymbol(KGlobal::locale()->positivePrefixCurrencySymbol());
 
   QCString language = args->getOption("lang");
   if(!language.isEmpty()) {

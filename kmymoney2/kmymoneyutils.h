@@ -64,7 +64,7 @@ public:
   };
 
   static const int maxHomePageItems = 3;
-  
+
   KMyMoneyUtils();
   ~KMyMoneyUtils();
 
@@ -107,7 +107,7 @@ public:
     * @return numerical representation of the occurence
     */
   static const MyMoneySchedule::occurenceE stringToOccurence(const QString& text);
-  
+
   /**
     * This method is used to convert the payment type from it's
     * internal representation into a human readable format.
@@ -180,7 +180,7 @@ public:
     *   :
     * xxx::slotNewPayee(const QString& payeeName)
     * {
-    *   KMyMoneyUtils::newPayee(this, m_payeeEdit, payeeName); 
+    *   KMyMoneyUtils::newPayee(this, m_payeeEdit, payeeName);
     * }
     *
     * @endcode
@@ -268,13 +268,19 @@ public:
   static const QColor listColour(void) {
     return _listColour;
   }
-    
+
   static const QColor gridColour(void) {
     return _gridColour;
   }
-  
+
   static const QFont& cellFont(void) { return _cellFont; };
   static const QFont& headerFont(void) { return _headerFont; };
+
+  /**
+    * Check that internal MyMoney engine constants use the same
+    * values as the KDE constants.
+    */
+  static void checkConstants(void);
 
 private:
   static QColor _backgroundColour;

@@ -542,3 +542,11 @@ void KMyMoneyUtils::updateSettings(void)
   _headerFont = config->readFontEntry("listHeaderFont", &f);
 }
 
+void KMyMoneyUtils::checkConstants(void)
+{
+  Q_ASSERT(KLocale::ParensAround == MyMoneyMoney::ParensAround);
+  Q_ASSERT(KLocale::BeforeQuantityMoney == MyMoneyMoney::BeforeQuantityMoney);
+  Q_ASSERT(KLocale::AfterQuantityMoney == MyMoneyMoney::AfterQuantityMoney);
+  Q_ASSERT(KLocale::BeforeMoney == MyMoneyMoney::BeforeMoney);
+  Q_ASSERT(KLocale::AfterMoney == MyMoneyMoney::AfterMoney);
+}
