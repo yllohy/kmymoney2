@@ -53,6 +53,7 @@ bool MyMoneySplit::operator == (const MyMoneySplit& right) const
     m_action == right.m_action &&
     m_reconcileDate == right.m_reconcileDate &&
     m_reconcileFlag == right.m_reconcileFlag &&
+    m_number == right.m_number &&
     m_shares == right.m_shares &&
     m_value == right.m_value;
 }

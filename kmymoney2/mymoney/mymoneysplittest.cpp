@@ -124,5 +124,33 @@ void MyMoneySplitTest::testInequality() {
 	n = *m;
 	n.setAction("No action");
 	CPPUNIT_ASSERT(!(n == *m));
+
+	n = *m;
+	n.setNumber("No number");
+	CPPUNIT_ASSERT(!(n == *m));
+
+	n = *m;
+	n.setAccountId("No account");
+	CPPUNIT_ASSERT(!(n == *m));
+
+	n = *m;
+	n.setMemo("No memo");
+	CPPUNIT_ASSERT(!(n == *m));
+
+	n = *m;
+	n.setReconcileDate(QDate(3,4,5));
+	CPPUNIT_ASSERT(!(n == *m));
+
+	n = *m;
+	n.setReconcileFlag(MyMoneySplit::Frozen);
+	CPPUNIT_ASSERT(!(n == *m));
+
+	n = *m;
+	n.setShares(4567);
+	CPPUNIT_ASSERT(!(n == *m));
+
+	n = *m;
+	n.setValue(9876);
+	CPPUNIT_ASSERT(!(n == *m));
 }
 
