@@ -1,3 +1,22 @@
+2002-12-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added mark of current date in ledger view if it's sorted by posting date
+  * Removed a few unused member variables from kMyMoneyRegister
+  * Added sorttype 'Number' to ledger views
+  * Don't override the entry date of transactions when loading a file
+  * Added option to show a nr field in any transaction form
+  * Added option to insert the transaction type into the nr field upon
+    creation of a new transaction
+  * Terminate any edit session before starting the settings dialog
+  * Cancel edit session before re-sorting
+  * Keep the transaction selected after re-sorting
+  * Removed old categories file from project
+  * Added a german account template file
+  * Added a file dialog to select the initial account/category set
+    for a new file
+  * Added progress bar when reading the initial account/category set
+  * Update ledger view after loading a different file
+  * Allow to edit the number field in credit card view
+
 2002-12-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added 'tip of the day' feature
   * Added different images to account icon view
