@@ -70,7 +70,7 @@ void kMyMoneyListViewItem::paintCell(QPainter *p, const QColorGroup &cg, int col
   QListViewItem::paintCell(p, _cg, column, width, alignment);
 }
 
-const QColor& kMyMoneyListViewItem::backgroundColor()
+const QColor kMyMoneyListViewItem::backgroundColor()
 {
   return isAlternate() ? KMyMoneyUtils::backgroundColour() : KMyMoneyUtils::listColour();
 }
@@ -107,7 +107,7 @@ void kMyMoneyCheckListItem::paintCell(QPainter *p, const QColorGroup &cg, int co
   QCheckListItem::paintCell(p, _cg, column, width, alignment);
 }
 
-const QColor& kMyMoneyCheckListItem::backgroundColor()
+const QColor kMyMoneyCheckListItem::backgroundColor()
 {
   return isAlternate() ? KMyMoneyUtils::backgroundColour() : KMyMoneyUtils::listColour();
 }

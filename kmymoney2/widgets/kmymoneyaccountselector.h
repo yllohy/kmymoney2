@@ -67,7 +67,7 @@ public:
   /**
     * use my own backgroundColor method
     */
-  const QColor& backgroundColor();
+  const QColor backgroundColor();
 
   /**
     * see KListViewItem::isAlternate()
@@ -109,7 +109,7 @@ public:
   /**
     * use my own backgroundColor method
     */
-  const QColor& backgroundColor();
+  const QColor backgroundColor();
 
 private:
   QCString             m_id;
