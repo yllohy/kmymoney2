@@ -519,6 +519,14 @@ void KNewLoanWizard::next()
     }
 
   } else if(currentPage() == m_additionalFeesPage) {
+    m_nextDueDateEdit->setEnabled(true);
+    if(m_allPaymentsButton->isChecked() || m_noPreviousPaymentButton->isChecked()) {
+      m_nextDueDateEdit->setDate(m_firstDueDateEdit->getQDate());
+      m_nextDueDateEdit->setEnabled(false);
+    } else {
+      QDate nextPayment(QDate::currentDate().year(), 1, m_firstDueDateEdit->getQDate().day());
+      m_nextDueDateEdit->setDate(nextPayment);
+    }
     if(m_nextDueDateEdit->getQDate() < m_firstDueDateEdit->getQDate()) {
       m_nextDueDateEdit->setDate(m_firstDueDateEdit->getQDate());
     }
