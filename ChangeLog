@@ -1,5 +1,10 @@
+2002-01-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed generation of PHB
+  * Fixed sizing problems with kMyMoneyTable widget
+  * Allow empty category (default)
+
 2002-01-25 Michael Edwardes <mte@users.sourceforge.net>
-`* Removed the pics and text from the payees/categories view.
+  * Removed the pics and text from the payees/categories view.
 
 2002-01-25 Kevin Tambascio <ktambascio@users.sourceforge.net>
   * Added account types in mymoneyaccount class.
