@@ -93,16 +93,16 @@ void MyMoneyStorageGNC::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
               qDebug("GNCREADER: Dealing with %s\n", temp.tagName().data());
               if(QString("gnc:account") == temp.tagName())
               {
-                MyMoneyAccount account = readAccount(temp);
+                /*MyMoneyAccount account = */readAccount(temp);
 
                 //tell the storage objects we have a new institution.
                 //m_storage->loadAccount(account);
 
-                unsigned long id = extractId(account.id().data());
-                if(id > m_storage->accountId())
-                {
-                  m_storage->loadAccountId(id);
-                }
+                //unsigned long id = extractId(account.id().data());
+                //if(id > m_storage->accountId())
+                //{
+                //  m_storage->loadAccountId(id);
+                //}
               }
               if(QString("gnc:transaction") == temp.tagName())
               {
@@ -129,6 +129,74 @@ void MyMoneyStorageGNC::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
     delete m_doc;
     m_doc = NULL;
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    // Next step is to walk the list and assign the parent/child relationship between the objects.
+
+
+    //this code is just temporary to show us what is in the file.
+    qDebug("%d accounts found in the GNU Cash file", m_mapIds.count());
+    for(map_accountIds::Iterator it = m_mapIds.begin(); it != m_mapIds.end(); ++it)
+    {
+      qDebug("key = %s, value = %s", it.key().data(), it.data().data());
+    }
+
+    QValueList<MyMoneyAccount> list;
+    QValueList<MyMoneyAccount>::Iterator theAccount;
+    list = m_storage->accountList();
+    for(theAccount = list.begin(); theAccount != list.end(); ++theAccount)
+    {
+      if((*theAccount).parentAccountId() == QCString(m_mainAssetId))
+      {
+        QCString assets = m_storage->asset().id();
+        Q_ASSERT(!assets.isEmpty());
+        (*theAccount).setParentAccountId(assets);
+        qDebug("The account id %s is a child of the main asset account", (*theAccount).id().data());
+      }
+      else if((*theAccount).parentAccountId() == QCString(m_mainLiabilityId))
+      {
+        QCString liability = m_storage->liability().id();
+        Q_ASSERT(!liability.isEmpty());
+        (*theAccount).setParentAccountId(liability);
+        qDebug("The account id %s is a child of the main liability account", (*theAccount).id().data());
+      }
+      else if((*theAccount).parentAccountId() == QCString(m_mainIncomeId))
+      {
+        QCString income = m_storage->income().id();
+        Q_ASSERT(!income.isEmpty());
+        (*theAccount).setParentAccountId(income);
+        qDebug("The account id %s is a child of the main income account", (*theAccount).id().data());
+      }
+      else if((*theAccount).parentAccountId() == QCString(m_mainExpenseId))
+      {
+        QCString expense = m_storage->expense().id();
+        Q_ASSERT(!expense.isEmpty());
+        (*theAccount).setParentAccountId(expense);
+        qDebug("The account id %s is a child of the main expense account", (*theAccount).id().data());
+      }
+      else if((*theAccount).parentAccountId() == QCString(m_mainEquityId))
+      {
+        QCString equity = m_storage->asset().id();
+        Q_ASSERT(!equity.isEmpty());
+        (*theAccount).setParentAccountId(equity);
+      }
+      else
+      {
+        QCString parentKey = (*theAccount).parentAccountId();
+        map_accountIds::Iterator id = m_mapIds.find(parentKey);
+        if(id != m_mapIds.end())
+        {
+          qDebug("Setting account id %s's parent account id to %s", (*theAccount).id().data(), id.data().data());
+          (*theAccount).setParentAccountId(id.data());
+        }
+        else
+        {
+          Q_ASSERT(FALSE);
+        }
+      }    
+    }
+
+    m_mapIds.clear();
+    
     // this seems to be nonsense, but it clears the dirty flag
     // as a side-effect.
     m_storage->setLastModificationDate(m_storage->lastModificationDate());
@@ -140,36 +208,6 @@ void MyMoneyStorageGNC::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
   else
   {
     throw new MYMONEYEXCEPTION("File was not parsable!");
-  }
-}
-
-void MyMoneyStorageGNC::readAccounts(QDomElement& accounts)
-{
-  unsigned long id = 0;
-  QDomNode child = accounts.firstChild();
-  int x = 0;
-  signalProgress(0, getChildCount(accounts), QObject::tr("Loading accounts..."));
-  
-  while(!child.isNull() && child.isElement())
-  {
-    QDomElement childElement = child.toElement();
-    if(QString("ACCOUNT") == childElement.tagName())
-    {
-      MyMoneyAccount account = readAccount(childElement);
-
-      //tell the storage objects we have a new account.
-      m_storage->loadAccount(account);
-
-      id = extractId(account.id().data());
-      if(id > m_storage->accountId())
-      {
-        m_storage->loadAccountId(id);
-      }
-    }
-
-    signalProgress(x++, 0);
-
-    child = child.nextSibling();
   }
 }
 
@@ -234,12 +272,24 @@ MyMoneyAccount MyMoneyStorageGNC::readAccount(const QDomElement& account)
     {
       m_mainAssetId = gncAccountId;
     }
+    else if(QString("LIABILITIES") == gncType && !bHasParent)
+    {
+      m_mainLiabilityId = gncAccountId;
+    }
+    else if(QString("INCOME") == gncType && !bHasParent)
+    {
+      m_mainIncomeId = gncAccountId;
+    }
+    else if(QString("EXPENSE") == gncType && !bHasParent)
+    {
+      m_mainExpenseId = gncAccountId;
+    }
+    else if(QString("EQUITY") == gncType && !bHasParent)
+    {
+      m_mainEquityId = gncAccountId;
+    }
     else
     {
-    
-      //all the details from the file about the account should be known by now.
-      //calling new account should automatically fill in the account ID.
-      m_storage->newAccount(acc);
       acc.setName(gncName);
       acc.setDescription(gncDescription);
       acc.setOpeningDate(getDate(QStringEmpty(account.attribute(QString("opened")))));
@@ -247,33 +297,50 @@ MyMoneyAccount MyMoneyStorageGNC::readAccount(const QDomElement& account)
       acc.setLastReconciliationDate(getDate(QStringEmpty(account.attribute(QString("lastreconciled")))));
       //acc.setInstitutionId(QCStringEmpty(account.attribute(QString("institution"))));
       //acc.setOpeningBalance(MyMoneyMoney(account.attribute(QString("openingbalance"))));
+      acc.setParentAccountId(QCString(gncParent));
 
-      acc.setValue("GNUCASH_ID", gncAccountId);
-      
-      id = acc.id();
-  
       if(QString("BANK") == gncType)
       {
         acc.setAccountType(MyMoneyAccount::Checkings);
-        acc.setParentAccountId(findGNCParentAccount(QCString(gncParent)));
-        //acc.setValue(QCString(GNUCASH_ID_KEY), gncAccountId);
       }
       else if(QString("ASSET") == gncType)
       {
-        //if this is a second-level asset account, set the parent id to be the asset account's id.
-        if(gncParent == m_mainAssetId)
-    		{
-  			  acc.setParentAccountId(m_storage->asset().id());
-          //acc.setValue(QCString(GNUCASH_ID_KEY), gncAccountId);
-  			}
-        else
-        {
-          acc.setParentAccountId(findGNCParentAccount(QCString(gncParent)));
-          //acc.setValue(QCString(GNUCASH_ID_KEY), gncAccountId);
-        }
+        acc.setAccountType(MyMoneyAccount::Asset);
       }
+      else if(QString("CASH") == gncType)
+      {
+        acc.setAccountType(MyMoneyAccount::Cash);
+      }
+      else if(QString("STOCK") == gncType || QString("MUTUAL") == gncType)
+      {
+        acc.setAccountType(MyMoneyAccount::Investment);
+      }
+      else if(QString("LIABILITY") == gncType)
+      {
+        acc.setAccountType(MyMoneyAccount::Liability);
+      }
+      else if(QString("INCOME") == gncType)
+      {
+        acc.setAccountType(MyMoneyAccount::Income);
+      }
+      else if(QString("EXPENSE") == gncType)
+      {
+        acc.setAccountType(MyMoneyAccount::Expense);
+      }
+      else if(QString("EQUITY") == gncType)
+      {
+        acc.setAccountType(MyMoneyAccount::Asset);
+      }
+
+      //all the details from the file about the account should be known by now.
+      //calling new account should automatically fill in the account ID.
+      m_storage->newAccount(acc);
+      id = acc.id();
     }   
   }
+
+  //assign the gnucash id as the key into the map to find the
+  m_mapIds[QCString(gncAccountId)] = QCString(id);
   
   qDebug("Account %s has id of %s, type of %d, parent is %s, this=0x%08X.", acc.name().data(), id.data(), acc.accountType(), acc.parentAccountId().data(),&acc);
 

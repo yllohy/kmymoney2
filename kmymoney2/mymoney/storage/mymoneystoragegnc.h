@@ -37,6 +37,10 @@ class QIODevice;
 #include "imymoneyserialize.h"
 #include "imymoneystorageformat.h"
 
+typedef QMap<QCString, QCString> map_accountIds;
+typedef map_accountIds::iterator map_accountIds_iter;
+typedef map_accountIds::const_iterator map_accountIds_citer;
+
 /**
   *@author Kevin Tambascio (ktambascio@users.sourceforge.net)
   */
@@ -99,7 +103,6 @@ private:
   void readUserInformation(QDomElement userElement);
   /** No descriptions */
 
-  void readAccounts(QDomElement& accounts);
   MyMoneyAccount readAccount(const QDomElement& account);
 
   MyMoneySplit readSplit(QDomElement& splitElement);
@@ -153,6 +156,12 @@ private:
   const uint getChildCount(const QDomElement& element) const;
 	QCString findGNCParentAccount(QCString gnuCashParentAccountId);
 	QString m_mainAssetId;
+  QString m_mainLiabilityId;
+  QString m_mainIncomeId;
+  QString m_mainExpenseId;
+  QString m_mainEquityId;
+
+  QMap<QCString, QCString> m_mapIds;
 };
 
 #endif
