@@ -1,4 +1,8 @@
-2005-03-19 Ace Jones <acejones@users.sourceforge.net>
+2005-03-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Allow payment of stock transactions to be in different currency
+    than the stock's security
+
+2005-03-18 Ace Jones <acejones@users.sourceforge.net>
   * Fixed Makefile.am mkinstalldirs for kmymoney.desktop
 
 2005-03-17 Tony Bloomfield <tonybloom@users.sourceforge.net>
@@ -7,6 +11,7 @@
 
 2005-03-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed splash screen handling
+  * Fixed handling to delete investment accounts
 
 2005-03-15 Ace Jones <acejones@users.sourceforge.net>
   * Added new titlebar background 
