@@ -61,3 +61,13 @@ QDataStream &operator>>(QDataStream &s, MyMoneyPayee &payee)
     >> payee.m_telephone
     >> payee.m_email;
 }
+
+const bool MyMoneyPayee::operator == (const MyMoneyPayee& right) const
+{
+  return ((m_id == right.m_id) &&
+      (m_address == right.m_address) &&
+      (m_email == right.m_email) &&
+      (m_name == right.m_name) &&
+      (m_postcode == right.m_postcode) &&
+      (m_reference == right.m_reference) );
+}

@@ -77,6 +77,7 @@ class MyMoneyFileTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST(testAttachStorage);
 	CPPUNIT_TEST(testAccount2Category);
 	CPPUNIT_TEST(testCategory2Account);
+	CPPUNIT_TEST(testAttachedStorage);
 #if 0
 	CPPUNIT_TEST(testMoveSplits);
 #endif
@@ -122,6 +123,7 @@ public:
 	void testAttachStorage();
 	void testAccount2Category();
 	void testCategory2Account();
+	void testAttachedStorage();
 
 private:
 	void testRemoveStdAccount(const MyMoneyAccount& acc);

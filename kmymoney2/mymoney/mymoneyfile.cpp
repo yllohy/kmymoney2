@@ -586,6 +586,13 @@ const unsigned int MyMoneyFile::transactionCount(const QCString& account) const
   return m_storage->transactionCount(account);
 }
 
+const QMap<QCString, unsigned long> MyMoneyFile::transactionCountMap(void) const
+{
+  checkStorage();
+
+  return m_storage->transactionCountMap();
+}
+
 const unsigned int MyMoneyFile::institutionCount(void) const
 {
   checkStorage();

@@ -1283,3 +1283,16 @@ void MyMoneyFileTest::testCategory2Account() {
 		unexpectedException(e);
 	}
 }
+
+void MyMoneyFileTest::testAttachedStorage() {
+	CPPUNIT_ASSERT(m->storageAttached() == true);
+	CPPUNIT_ASSERT(m->storage() != 0);
+	IMyMoneyStorage *p = m->storage();
+	m->detachStorage(p);
+	CPPUNIT_ASSERT(m->storageAttached() == false);
+	CPPUNIT_ASSERT(m->storage() == 0);
+	m->attachStorage(p);
+	CPPUNIT_ASSERT(m->storageAttached() == true);
+	CPPUNIT_ASSERT(m->storage() != 0);
+}
+

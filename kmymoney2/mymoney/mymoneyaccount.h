@@ -135,6 +135,11 @@ public:
   ~MyMoneyAccount();
 
   /**
+    * This operator tests for equality of two MyMoneyAccount objects
+    */
+  const bool operator == (const MyMoneyAccount &) const;
+
+  /**
     * This converts the account type into one of the four
     * major account types liability, asset, expense or income.
     *

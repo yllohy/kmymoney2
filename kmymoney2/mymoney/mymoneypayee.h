@@ -78,6 +78,9 @@ public:
 	
   // Copy constructors
   MyMoneyPayee(const MyMoneyPayee&);
+
+  // Equality operator
+  const bool operator == (const MyMoneyPayee &) const;
 };
 
 #endif

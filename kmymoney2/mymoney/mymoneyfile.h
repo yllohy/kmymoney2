@@ -207,6 +207,14 @@ public:
   bool storageAttached(void) const { return m_storage != 0; };
 
   /**
+    * This method returns a pointer to the storage object
+    *
+    * @return const pointer to the current attached storage object.
+    *         If no object is attached, returns 0.
+    */
+  IMyMoneyStorage* const storage(void) const { return m_storage; };
+
+  /**
     * This method is used to return the standard liability account
     * @return MyMoneyAccount liability account(group)
     */
@@ -473,6 +481,17 @@ public:
     * @return number of transactions in journal/account
     */
   const unsigned int transactionCount(const QCString& account = "") const;
+
+  /**
+    * This method returns a QMap filled with the number of transactions
+    * per account. The account id serves as index into the map. If one
+    * needs to have all transactionCounts() for many accounts, this method
+    * is faster than calling transactionCount(const QCString& account) many
+    * times.
+    *
+    * @return QMap with numbers of transactions per account
+    */
+  const QMap<QCString, unsigned long> transactionCountMap(void) const;
 
   /**
     * This method returns the number of institutions currently known to file
