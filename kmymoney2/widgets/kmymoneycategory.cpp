@@ -151,8 +151,9 @@ void kMyMoneyCategory::checkForNewCategory(void)
     m_inCreation = true;
 
     if(KMessageBox::questionYesNo(this,
-          i18n("The category \"%1\" currently does not exist. "
-                "Do you want to create it?").arg(text())) == KMessageBox::Yes) {
+          QString("<p>")+i18n("The category <b>%1</b> currently does not exist. "
+                "Do you want to create it?").arg(text()), i18n("Create category"),
+                KStdGuiItem::yes(), KStdGuiItem::no(), "CreateNewCategories") == KMessageBox::Yes) {
       MyMoneyAccount acc;
       int rc;
       acc.setName(text());
