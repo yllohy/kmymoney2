@@ -1,3 +1,7 @@
+2002-07-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed account creation with through standard dialog
+  * Added more logic to the Account Creation Wizard
+
 2002-07-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added Account Creation Wizard
   * Added configuration setting to select between wizard and dialog
