@@ -55,14 +55,13 @@
 #include "../widgets/kmymoneyaccountselector.h"
 #include "../mymoney/mymoneyfile.h"
 #include "../mymoney/storage/imymoneystorage.h"
-#include "../views/pivottable.h"
-using namespace reports;
+#include "../mymoney/mymoneyreport.h"
 
 KReportConfigurationFilterDlg::KReportConfigurationFilterDlg(
-  ReportConfigurationFilter config, QWidget *parent, const char *name)
+  MyMoneyReport report, QWidget *parent, const char *name)
  : KFindTransactionDlg(parent, name),
- m_initialState(config),
- m_currentState(config)
+ m_initialState(report),
+ m_currentState(report)
 {
 
     setCaption( tr2i18n( "Report Configuration" ) );
@@ -230,17 +229,17 @@ void KReportConfigurationFilterDlg::slotSearch()
   // Then extract the report properties
   m_currentState.setShowSubAccounts( radioCategoriesAll->isChecked() );
   m_currentState.setName( editReportname->text() );
-  m_currentState.setRowType( radioRowsAL->isChecked() ? ReportConfigurationFilter::eAssetLiability : ReportConfigurationFilter::eExpenseIncome );
+  m_currentState.setRowType( radioRowsAL->isChecked() ? MyMoneyReport::eAssetLiability : MyMoneyReport::eExpenseIncome );
   m_currentState.setConvertCurrency( checkConvertCurrency->isChecked() );
 
   if ( radioMonthCols->isChecked() )
-    m_currentState.setColumnType( ReportConfigurationFilter::eMonths );
+    m_currentState.setColumnType( MyMoneyReport::eMonths );
   else if ( radioBimonthCols->isChecked() )
-    m_currentState.setColumnType( ReportConfigurationFilter::eBiMonths );
+    m_currentState.setColumnType( MyMoneyReport::eBiMonths );
   else if ( radioQuarterCols->isChecked() )
-    m_currentState.setColumnType( ReportConfigurationFilter::eQuarters );
+    m_currentState.setColumnType( MyMoneyReport::eQuarters );
   else if ( radioYearCols->isChecked() )
-    m_currentState.setColumnType( ReportConfigurationFilter::eYears );
+    m_currentState.setColumnType( MyMoneyReport::eYears );
 
   done(true);
 }
@@ -255,15 +254,15 @@ void KReportConfigurationFilterDlg::slotReset(void)
   // Report Properties
   //
 
-  editReportname->setText( m_initialState.getName() );
-  radioCategoriesAll->setChecked( m_initialState.getShowSubAccounts() );
-  checkConvertCurrency->setChecked( m_initialState.getConvertCurrency() );
-  radioRowsAL->setChecked( m_initialState.getRowType() == ReportConfigurationFilter::eAssetLiability );
-  radioRowsIE->setChecked( m_initialState.getRowType() == ReportConfigurationFilter::eExpenseIncome );
-  radioMonthCols->setChecked( m_initialState.getColumnType() == ReportConfigurationFilter::eMonths );
-  radioBimonthCols->setChecked( m_initialState.getColumnType() == ReportConfigurationFilter::eBiMonths );
-  radioQuarterCols->setChecked( m_initialState.getColumnType() == ReportConfigurationFilter::eQuarters );
-  radioYearCols->setChecked( m_initialState.getColumnType() == ReportConfigurationFilter::eYears );
+  editReportname->setText( m_initialState.name() );
+  radioCategoriesAll->setChecked( m_initialState.isShowingSubAccounts() );
+  checkConvertCurrency->setChecked( m_initialState.isConvertCurrency() );
+  radioRowsAL->setChecked( m_initialState.rowType() == MyMoneyReport::eAssetLiability );
+  radioRowsIE->setChecked( m_initialState.rowType() == MyMoneyReport::eExpenseIncome );
+  radioMonthCols->setChecked( m_initialState.columnType() == MyMoneyReport::eMonths );
+  radioBimonthCols->setChecked( m_initialState.columnType() == MyMoneyReport::eBiMonths );
+  radioQuarterCols->setChecked( m_initialState.columnType() == MyMoneyReport::eQuarters );
+  radioYearCols->setChecked( m_initialState.columnType() == MyMoneyReport::eYears );
 
   //
   // Text Filter

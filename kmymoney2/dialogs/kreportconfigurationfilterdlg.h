@@ -26,7 +26,7 @@
 
 #include "kfindtransactiondlg.h"
 #include "../views/pivottable.h"
-// for reportconfigurationfilter class
+#include "../mymoney/mymoneyreport.h"
 
 /**
 @author Ace Jones
@@ -35,11 +35,11 @@ class KReportConfigurationFilterDlg : public KFindTransactionDlg
 {
 Q_OBJECT
 public:
-    KReportConfigurationFilterDlg(reports::ReportConfigurationFilter config, QWidget *parent = 0, const char *name = 0);
+    KReportConfigurationFilterDlg(MyMoneyReport report, QWidget *parent = 0, const char *name = 0);
 
     ~KReportConfigurationFilterDlg();
     
-    const reports::ReportConfigurationFilter& getConfig(void) const { return m_currentState; }
+    const MyMoneyReport& getConfig(void) const { return m_currentState; }
 
     QFrame* m_reportFrame;
     QButtonGroup* bgrpShow;
@@ -67,8 +67,8 @@ protected:
     QHBoxLayout* bgrpColumnsLayout;
     QVBoxLayout* reportLayout12;
 
-    reports::ReportConfigurationFilter m_initialState;
-    reports::ReportConfigurationFilter m_currentState;
+    MyMoneyReport m_initialState;
+    MyMoneyReport m_currentState;
 
 protected slots:
   void slotReset(void);
