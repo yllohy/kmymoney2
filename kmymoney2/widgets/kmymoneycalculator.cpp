@@ -173,7 +173,12 @@ void kMyMoneyCalculator::plusminusClicked(void)
 
 void kMyMoneyCalculator::calculationClicked(int button)
 {
-	if(operand.length() > 0 && op != 0) {
+  if(operand.length() == 0 && op != 0 && button == EQUAL) {
+    op = 0;
+    m_result.setNum(op1);
+    changeDisplay(m_result);
+
+	} else if(operand.length() > 0 && op != 0) {
 		// perform operation
 		double op2 = operand.toDouble();
 		bool error = false;
@@ -206,6 +211,7 @@ void kMyMoneyCalculator::calculationClicked(int button)
 	} else if(operand.length() > 0 && op == 0) {
 		op1 = operand.toDouble();
 	}
+
 	if(button != EQUAL) {
 		op = button;
 	} else {
