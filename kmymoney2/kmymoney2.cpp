@@ -30,6 +30,8 @@
 #include <qprinter.h>
 #include <qlayout.h>
 #include <qsignalmapper.h>
+#include <qclipboard.h> // temp for problem 1105503
+#include <qmessagebox.h> // ditto
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -1544,7 +1546,8 @@ void KMyMoney2App::slotCheckSchedules(void)
           {
             //qDebug("Auto Entering schedule: %s", schedule.name().latin1());
             //qDebug("\tAuto enter date: %s", schedule.nextPayment(schedule.lastPayment()).toString().latin1());
-            slotCommitTransaction(schedule, schedule.nextPayment(schedule.lastPayment()));
+            if (!slotCommitTransaction(schedule, schedule.nextPayment(schedule.lastPayment())))
+	    	        break; // abandon processing of schedule if error found
           }
           else
           {
@@ -1569,10 +1572,23 @@ void KMyMoney2App::slotCheckSchedules(void)
   }
 }
 
-void KMyMoney2App::slotCommitTransaction(const MyMoneySchedule& sched, const QDate& date)
+bool KMyMoney2App::slotCommitTransaction(const MyMoneySchedule& sched, const QDate& date)
 {
   MyMoneySchedule schedule = sched;
   QDate schedDate;
+  // gather data for debug - problem 1105503
+  QString d = "To:- kmymoney2-developer@lists.sourceforge.net\n";
+  d += QString ("Subject:- autoEnter schedule post date problem (bug 1105503)\n");
+  d += QString ("kmymoney2.cpp - slotCommitTransaction entered with:\n");
+  d += QString ("Date %1\n").arg (QDate::currentDate().toString());
+  d += QString ("Req date %1\n").arg (date.toString());
+  d += QString ("Start date %1\n").arg (schedule.startDate().toString());
+  d += QString ("End date %1\n").arg (schedule.endDate().toString());
+  d += QString ("Last payment %1\n").arg (schedule.lastPayment().toString());
+  d += QString ("Next payment %1\n").arg (schedule.nextPayment(schedule.lastPayment()).toString());
+  d += QString ("Freq %1\n").arg ((int)schedule.occurence());
+  d += QString ("W/e option %1").arg ((int)schedule.weekendOption());
+  //
 
   if (date.isValid())
     schedDate = date;
@@ -1609,6 +1625,15 @@ void KMyMoney2App::slotCommitTransaction(const MyMoneySchedule& sched, const QDa
         }
       }
     }
+    if (!schedDate.isValid()) {
+      QClipboard *cb = QApplication::clipboard();
+      cb->setText(d, QClipboard::Clipboard);
+      QMessageBox::information( 0, PACKAGE,
+        QObject::tr("Unable to autoEnter schedule %1. Please check manually\n"
+	"Debug data has been copied to clipboard; please paste into an\n"
+	"email and send to kmymoney2-developer@lists.sourceforge.net").arg (schedule.name()));
+      return (false);
+    }
 
     transaction.setEntryDate(QDate::currentDate());
     transaction.setPostDate(schedDate);
@@ -1632,6 +1657,7 @@ void KMyMoney2App::slotCommitTransaction(const MyMoneySchedule& sched, const QDa
 
     delete e;
   }
+  return (true);
 }
 
 void KMyMoney2App::writeLastUsedDir(const QString& directory)

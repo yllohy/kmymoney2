@@ -420,7 +420,7 @@ public slots:
 
 private:
   bool verifyImportedData(const MyMoneyAccount& account);
-  void slotCommitTransaction(const MyMoneySchedule& schedule, const QDate&);
+  bool slotCommitTransaction(const MyMoneySchedule& schedule, const QDate&);
 
 signals:
   /**

@@ -1,3 +1,6 @@
+2005-03-11 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * AutoEnter Schedules
+    - 1105503 - avoid lockup, produce debug data
 2005-03-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Improved future payment display in financial overview page
   * Revised KDE menu integration
