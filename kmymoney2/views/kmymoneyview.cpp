@@ -79,6 +79,7 @@
 #include "../dialogs/knewloanwizard.h"
 #include "../dialogs/kcurrencyeditdlg.h"
 #include "../dialogs/kofxdirectconnectdlg.h"
+#include "../dialogs/kfindtransactiondlg.h"
 
 #include "../mymoney/storage/mymoneyseqaccessmgr.h"
 #include "../mymoney/storage/imymoneystorageformat.h"

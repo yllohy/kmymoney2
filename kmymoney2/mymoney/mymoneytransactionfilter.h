@@ -41,7 +41,7 @@
 // Project Includes
 
 class IMyMoneyStorage;
-#include "../mymoney/mymoneytransaction.h"
+#include <kmymoney/mymoneytransaction.h>
 
 /**
   * @author Thomas Baumgart

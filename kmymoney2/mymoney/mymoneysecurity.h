@@ -35,9 +35,9 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "../mymoney/mymoneymoney.h"
-#include "../mymoney/mymoneyutils.h"
-#include "../mymoney/mymoneykeyvaluecontainer.h"
+#include <kmymoney/mymoneymoney.h>
+#include <kmymoney/mymoneyutils.h>
+#include <kmymoney/mymoneykeyvaluecontainer.h>
 
 /**
   * Class that holds all the required information about a security that the user

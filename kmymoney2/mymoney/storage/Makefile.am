@@ -1,4 +1,3 @@
-####### kdevelop will overwrite this part!!! (begin)##########
 noinst_LIBRARIES = libstorage.a
 
 INCLUDES = $(all_includes)
@@ -7,14 +6,13 @@ libstorage_a_METASOURCES = AUTO
 
 libstorage_a_SOURCES = mymoneystoragegnc.cpp imymoneystorageformat.cpp mymoneystoragexml.cpp mymoneystoragedump.cpp mymoneystoragebin.cpp mymoneyseqaccessmgr.cpp imymoneystorage.cpp imymoneyserialize.cpp mymoneystorageanon.cpp
 
+instdir=$(includedir)/kmymoney
+inst_HEADERS = imymoneystorage.h imymoneyserialize.h imymoneystorageformat.h
 
-EXTRA_DIST = imymoneyserialize.cpp imymoneyserialize.h imymoneystorage.cpp imymoneystorage.h mymoneyseqaccessmgr.cpp mymoneyseqaccessmgr.h mymoneystoragebin.cpp mymoneystoragebin.h mymoneystoragedump.cpp mymoneystoragedump.h mymoneystoragexml.h mymoneystoragexml.cpp imymoneystorageformat.cpp imymoneystorageformat.h mymoneystoragegnc.cpp mymoneystoragegnc.h 
-
-####### kdevelop will overwrite this part!!! (end)############
+noinst_HEADERS = mymoneyseqaccessmgr.h mymoneystorageanon.h mymoneystoragebin.h mymoneystoragedump.h mymoneystoragegnc.h mymoneystoragexml.h mymoneyseqaccessmgrtest.h mymoneystoragebintest.h
 
 if CPPUNIT
 check_LIBRARIES = libstoragetest.a
 
 libstoragetest_a_SOURCES = mymoneyseqaccessmgrtest.cpp mymoneystoragebintest.cpp
 endif
-noinst_HEADERS =  mymoneystorageanon.h

@@ -27,6 +27,7 @@
 #include <qmessagebox.h>
 #include <qvbox.h>
 class QFile;
+class QVBoxLayout;
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -38,11 +39,10 @@ class QFile;
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "../mymoney/mymoneyaccount.h"
-#include "../dialogs/kreconciledlg.h"
-#include "../dialogs/kfindtransactiondlg.h"
-#include "../dialogs/knewaccountwizard.h"
-#include "../dialogs/kcsvprogressdlg.h"
+#include <kmymoney/mymoneyaccount.h>
+#include <kmymoney/mymoneyinstitution.h>
+#include <kmymoney/mymoneytransaction.h>
+#include <kmymoney/mymoneyscheduled.h>
 
 class KHomeView;
 class KAccountsView;
@@ -56,6 +56,7 @@ class MyMoneyTransaction;
 class KInvestmentView;
 class KReportsView;
 class KMyMoneyViewBase;
+class KFindTransactionDlg;
 
 /**
   * This class represents the view of the MyMoneyFile which contains

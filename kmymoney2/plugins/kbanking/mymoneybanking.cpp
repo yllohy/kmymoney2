@@ -50,8 +50,8 @@
 // Project Includes
 
 #include "mymoneybanking.h"
-#include "../mymoney/mymoneyfile.h"
-#include "../views/kmymoneyview.h"
+#include <kmymoney/mymoneyfile.h>
+#include <kmymoney/kmymoneyview.h>
 
 K_EXPORT_COMPONENT_FACTORY( kmm_kbanking,
                             KGenericFactory<KBankingPlugin>( "kmm_kbanking" ) )
@@ -95,7 +95,7 @@ KBankingPlugin::~KBankingPlugin()
 
 void KBankingPlugin::createJobView(void)
 {
-  KMyMoneyViewBase* view = viewInterface()->addPage(i18n("Outbox"), DesktopIcon("outbox"));
+  KMyMoneyViewBase* view = viewInterface()->addPage(i18n("Outbox"), DesktopIcon("onlinebanking"));
   QWidget* frm = dynamic_cast<QWidget*>(view->parent());
   QWidget* w = new JobView(m_kbanking, view, "JobView");
   viewInterface()->addWidget(view, w);

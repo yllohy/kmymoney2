@@ -37,8 +37,8 @@ class KInstance;
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "viewinterface.h"
-#include "statementinterface.h"
+#include "kmymoney/viewinterface.h"
+#include "kmymoney/statementinterface.h"
 
 namespace KMyMoneyPlugin {
 

@@ -1,5 +1,3 @@
-####### kdevelop will overwrite this part!!! (begin)##########
-
 INCLUDES = $(all_includes)
 lib_LTLIBRARIES = libkmm_mymoney.la
 
@@ -10,9 +8,10 @@ libkmm_mymoney_la_LDFLAGS = $(all_libraries) -version-info 0:0:0
 
 SUBDIRS = storage 
 
-EXTRA_DIST = mymoneyaccount.cpp mymoneyaccount.h mymoneycategory.cpp mymoneycategory.h mymoneyfile.cpp mymoneyfile.h mymoneymoney.cpp mymoneymoney.h mymoneypayee.cpp mymoneypayee.h mymoneyscheduled.cpp mymoneyscheduled.h mymoneytransaction.cpp mymoneytransaction.h mymoneysecurity.cpp mymoneysecurity.h mymoneyutils.h mymoneyutils.cpp mymoneyinvesttransaction.cpp mymoneyinvesttransaction.h mymoneyexception.cpp mymoneyexception.h mymoneyinstitution.cpp mymoneyinstitution.h mymoneysplit.cpp mymoneysplit.h mymoneysubject.cpp mymoneysubject.h mymoneyobserver.cpp mymoneyobserver.h mymoneykeyvaluecontainer.cpp mymoneykeyvaluecontainer.h mymoneytransactionfilter.cpp mymoneytransactionfilter.h mymoneyfinancialcalculator.cpp mymoneyfinancialcalculator.h mymoneycurrency.cpp mymoneycurrency.h mymoneyprice.cpp mymoneyprice.h
+instdir=$(includedir)/kmymoney
+inst_HEADERS = mymoneyaccount.h mymoneycategory.h mymoneycurrency.h mymoneyexception.h mymoneyfile.h mymoneyfinancialcalculator.h mymoneyinstitution.h mymoneyinvesttransaction.h mymoneykeyvaluecontainer.h mymoneymoney.h mymoneyobserver.h mymoneyonlinepriceupdate.h mymoneypayee.h mymoneyprice.h mymoneyreport.h mymoneyscheduled.h mymoneysecurity.h mymoneysplit.h mymoneystatement.h mymoneysubject.h mymoneytransactionfilter.h mymoneytransaction.h mymoneyutils.h
 
-####### kdevelop will overwrite this part!!! (end)############
+noinst_HEADERS = autotest.h mymoneyaccounttest.h mymoneyfinancialcalculatortest.h mymoneykeyvaluecontainertest.h mymoneyexceptiontest.h mymoneyfiletest.h mymoneyinstitutiontest.h mymoneymoneytest.h mymoneyobservertest.h mymoneyscheduletest.h mymoneysplittest.h mymoneysecuritytest.h mymoneytransactiontest.h
 
 if CPPUNIT
 check_LIBRARIES = libmymoneytest.a

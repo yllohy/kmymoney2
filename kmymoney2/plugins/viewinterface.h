@@ -38,7 +38,7 @@ class KPopupMenu;
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "../mymoney/mymoneyaccount.h"
+#include <kmymoney/mymoneyaccount.h>
 class KMyMoneyViewBase;
 
 namespace KMyMoneyPlugin {

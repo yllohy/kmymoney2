@@ -33,8 +33,8 @@ class KBanking;
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "../kmymoneyplugin.h"
-#include "../../mymoney/mymoneyaccount.h"
+#include <kmymoney/kmymoneyplugin.h>
+#include <kmymoney/mymoneyaccount.h>
 #include <kbanking/kbanking.h>
 
 /**

@@ -60,3 +60,25 @@ CXXFLAGS="$CXXFLAGS $USE_EXCEPTIONS" dnl __kdevelop[exc]__
 dnl KDE_NEED_FLEX dnl __kdevelop__
 dnl AC_PROG_YACC dnl __kdevelop__
 
+#
+# create header directory, make symlinks
+#
+
+rm -Rf kmymoney
+mkdir kmymoney
+
+MFILES=$(find $(pwd) -name Makefile.am);
+for mfile in $MFILES; do
+  DIR=$(dirname $mfile)
+  HFILES=$(grep -v noinst_HEADERS $mfile | grep _HEADERS)
+  for HFILE in $HFILES; do
+    case $HFILE in
+      =|*_HEADERS)
+        ;;
+      *)
+        ln -s $DIR/$HFILE kmymoney/$HFILE
+        ;;
+    esac
+  done
+done
+

@@ -33,7 +33,7 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "../mymoney/mymoneystatement.h"
+#include <kmymoney/mymoneystatement.h>
 
 namespace KMyMoneyPlugin {
 
