@@ -100,6 +100,8 @@ KScheduledView::KScheduledView(QWidget *parent, const char *name )
     this, SLOT(slotListViewExpanded(QListViewItem*)));
   connect(m_qlistviewScheduled, SIGNAL(collapsed(QListViewItem*)),
     this, SLOT(slotListViewCollapsed(QListViewItem*)));
+  connect(m_qlistviewScheduled, SIGNAL(selectionChanged(QListViewItem*)),
+    this, SLOT(slotSetSelectedItem(QListViewItem*)));
 
   connect(m_calendar, SIGNAL(enterClicked(const MyMoneySchedule&, const QDate&)), this, SLOT(slotBriefEnterClicked(const MyMoneySchedule&, const QDate&)));
 }
@@ -221,13 +223,12 @@ void KScheduledView::refresh(bool full, const QCString schedId)
     if (openItem)
     {
       m_qlistviewScheduled->setSelected(openItem, true);
-      // using a timeout is the only way, I got the 'ensureTransactionVisible'
-      // working when coming from hidden form to visible form. I assume, this
-      // has something to do with the delayed update of the display somehow.
-      QTimer::singleShot(10, this, SLOT(slotTimerDone()));
     }
-
-/* QUICK fix for #886979
+    // using a timeout is the only way, I got the 'ensureTransactionVisible'
+    // working when coming from hidden form to visible form. I assume, this
+    // has something to do with the delayed update of the display somehow.
+    QTimer::singleShot(10, this, SLOT(slotTimerDone()));
+    m_qlistviewScheduled->update();
 
     if (m_openBills)
       itemBills->setOpen(true);
@@ -240,7 +241,7 @@ void KScheduledView::refresh(bool full, const QCString schedId)
 
     if (m_openLoans)
       itemLoans->setOpen(true);
-*/            
+
   } catch (MyMoneyException *e)
   {
     KMessageBox::error(this, e->what());
@@ -250,28 +251,28 @@ void KScheduledView::refresh(bool full, const QCString schedId)
 
 void KScheduledView::slotTimerDone(void)
 {
-  QListViewItem* item = m_qlistviewScheduled->selectedItem();
-  if(item)
+  QListViewItem* item;
+  
+  item = m_qlistviewScheduled->selectedItem();
+  if(item) {
     m_qlistviewScheduled->ensureItemVisible(item);
+  }
+  
+  // force a repaint of all items to update the branches
+  for(item = m_qlistviewScheduled->firstChild(); item != 0; item = item->itemBelow()) {
+    m_qlistviewScheduled->repaintItem(item);
+  }
+  resize(width(), height()+1);
 }
 
 void KScheduledView::slotReloadView(void)
 {
   m_qbuttonNew->setEnabled(true);
   m_tabWidget->setEnabled(true);
-  
-  refresh();
+
+  refresh(true, m_selectedSchedule);
 
   QWidget::show();
-
-  m_qlistviewScheduled->setColumnWidth(0, 100);
-  m_qlistviewScheduled->setColumnWidth(1, 100);
-  m_qlistviewScheduled->setColumnWidth(2, 100);
-  m_qlistviewScheduled->setColumnWidth(3, 80);
-  m_qlistviewScheduled->setColumnWidth(4, 120);
-  m_qlistviewScheduled->setColumnWidth(5, 100);
-  m_qlistviewScheduled->setColumnWidth(6, 120);
-  m_qlistviewScheduled->setColumnWidth(0, m_qlistviewScheduled->width()-620);
 }
 
 void KScheduledView::show()
@@ -283,14 +284,13 @@ void KScheduledView::show()
 
 void KScheduledView::resizeEvent(QResizeEvent* e)
 {
-  m_qlistviewScheduled->setColumnWidth(0, 100);
   m_qlistviewScheduled->setColumnWidth(1, 100);
   m_qlistviewScheduled->setColumnWidth(2, 100);
   m_qlistviewScheduled->setColumnWidth(3, 80);
   m_qlistviewScheduled->setColumnWidth(4, 120);
   m_qlistviewScheduled->setColumnWidth(5, 100);
   m_qlistviewScheduled->setColumnWidth(6, 120);
-  m_qlistviewScheduled->setColumnWidth(0, m_qlistviewScheduled->width()-620);
+  m_qlistviewScheduled->setColumnWidth(0, m_qlistviewScheduled->visibleWidth()-620);
 
   // call base class resizeEvent()
   kScheduledViewDecl::resizeEvent(e);
@@ -365,7 +365,7 @@ void KScheduledView::slotEditClicked()
           {
             MyMoneySchedule sched = sched_dlg->schedule();
             MyMoneyFile::instance()->modifySchedule(sched);
-            refresh(m_selectedSchedule);
+            refresh(false, m_selectedSchedule);
           }
           delete sched_dlg;
           break;
@@ -376,7 +376,7 @@ void KScheduledView::slotEditClicked()
           {
             MyMoneyFile::instance()->modifySchedule(loan_wiz->schedule());
             MyMoneyFile::instance()->modifyAccount(loan_wiz->account());
-            refresh(m_selectedSchedule);
+            refresh(false, m_selectedSchedule);
           }
           delete loan_wiz;
           break;
@@ -615,7 +615,7 @@ void KScheduledView::slotAccountActivated(int id)
 
     m_calendar->setFilterAccounts(m_filterAccounts);
 
-    refresh(false);
+    refresh(false, m_selectedSchedule);
   }
   catch (MyMoneyException *e)
   {
@@ -687,4 +687,11 @@ void KScheduledView::slotBriefEnterClicked(const MyMoneySchedule& schedule, cons
   {
     refresh(false);
   }
+}
+
+void KScheduledView::slotSetSelectedItem(QListViewItem* item)
+{
+  KScheduledListItem* schedItem = static_cast<KScheduledListItem*>(item);
+  if(item)
+    m_selectedSchedule = schedItem->scheduleId();  
 }
