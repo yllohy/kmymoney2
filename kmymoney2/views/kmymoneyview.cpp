@@ -169,12 +169,13 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
 
   m_accountMenu = new KPopupMenu(this);
   m_accountMenu->insertTitle(kiconloader->loadIcon("account", KIcon::MainToolbar), i18n("Account Options"));
-  m_accountMenu->insertItem(kiconloader->loadIcon("account_open", KIcon::Small), i18n("Open..."), this, SLOT(slotAccountDoubleClick()));
+  m_accountMenu->insertItem(kiconloader->loadIcon("account", KIcon::Small), i18n("New..."), this, SLOT(slotAccountNew()), 0, AccountNew);
+  m_accountMenu->insertItem(kiconloader->loadIcon("account_open", KIcon::Small), i18n("Open..."), this, SLOT(slotAccountDoubleClick()), 0, AccountOpen);
   m_accountMenu->insertSeparator();
-  m_accountMenu->insertItem(kiconloader->loadIcon("reconcile", KIcon::Small), i18n("Reconcile..."), this, SLOT(slotAccountReconcile()));
+  m_accountMenu->insertItem(kiconloader->loadIcon("reconcile", KIcon::Small), i18n("Reconcile..."), this, SLOT(slotAccountReconcile()), 0, AccountReconcile);
   m_accountMenu->insertSeparator();
-  m_accountMenu->insertItem(kiconloader->loadIcon("account", KIcon::Small), i18n("Edit..."), this, SLOT(slotAccountEdit()));
-  m_accountMenu->insertItem(kiconloader->loadIcon("delete", KIcon::Small), i18n("Delete..."), this, SLOT(slotAccountDelete()));
+  m_accountMenu->insertItem(kiconloader->loadIcon("account", KIcon::Small), i18n("Edit..."), this, SLOT(slotAccountEdit()), 0, AccountEdit);
+  m_accountMenu->insertItem(kiconloader->loadIcon("delete", KIcon::Small), i18n("Delete..."), this, SLOT(slotAccountDelete()), 0, AccountDelete);
 
   m_bankMenu = new KPopupMenu(this);
   m_bankMenu->insertTitle(kiconloader->loadIcon("bank", KIcon::MainToolbar), i18n("Institution Options"));
@@ -201,6 +202,43 @@ void KMyMoneyView::slotRightMouse()
 
 void KMyMoneyView::slotAccountRightMouse()
 {
+  bool  ok = false;
+  QCString acc;
+
+  if(pageIndex(m_accountsViewFrame) == activePageIndex())
+    acc = accountsView->currentAccount(ok);
+  else
+    acc = m_categoriesView->currentAccount(ok);
+
+  // turn off all available options in the menu except New
+  m_accountMenu->setItemEnabled(AccountNew, true);
+  m_accountMenu->setItemEnabled(AccountOpen, false);
+  m_accountMenu->setItemEnabled(AccountEdit, false);
+  m_accountMenu->setItemEnabled(AccountReconcile, false);
+  m_accountMenu->setItemEnabled(AccountDelete, false);
+
+  if(ok == true) {
+    try {
+      MyMoneyFile* file = MyMoneyFile::instance();
+      MyMoneyAccount account = file->account(acc);
+      if(!file->isStandardAccount(acc)) {
+        m_accountMenu->setItemEnabled(AccountEdit, true);
+        m_accountMenu->setItemEnabled(AccountDelete, true);
+        switch(file->accountGroup(account.accountType())) {
+          case MyMoneyAccount::Asset:
+          case MyMoneyAccount::Liability:
+            m_accountMenu->setItemEnabled(AccountOpen, true);
+            m_accountMenu->setItemEnabled(AccountReconcile, true);
+            break;
+          default:
+            break;
+        }
+      }
+    } catch(MyMoneyException *e) {
+      qDebug("Unexpected exception in KMyMoneyView::slotAccountRightMouse");
+      delete e;
+    }
+  }
   m_accountMenu->exec(QCursor::pos());
 }
 
@@ -652,11 +690,34 @@ void KMyMoneyView::slotAccountReconcile(void)
 {
   bool  ok = false;
   QCString acc;
+  MyMoneyFile* file = MyMoneyFile::instance();
 
   if(pageIndex(m_accountsViewFrame) == activePageIndex())
     acc = accountsView->currentAccount(ok);
   else
     acc = m_categoriesView->currentAccount(ok);
+
+  // we cannot reconcile standard accounts
+  if(file->isStandardAccount(acc))
+    ok = false;
+
+  // check if we can reconcile this account
+  // it make's sense for asset and liability accounts
+  if(ok == true) {
+    try {
+      MyMoneyAccount account = file->account(acc);
+      switch(file->accountGroup(account.accountType())) {
+        case MyMoneyAccount::Asset:
+        case MyMoneyAccount::Liability:
+          break;
+        default:
+          ok = false;
+      }
+    } catch(MyMoneyException *e) {
+      delete e;
+      ok = false;
+    }
+  }
 
   if(ok == true) {
     showPage(pageIndex(m_ledgerViewFrame));

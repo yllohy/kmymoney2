@@ -54,6 +54,7 @@ class QFile;
 #include "kgloballedgerview.h"
 
 
+
 #include "../mymoney/storage/mymoneyseqaccessmgr.h"
 class IMyMoneyStorageFormat;
 
@@ -64,7 +65,7 @@ class IMyMoneyStorageFormat;
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.25 2002/12/04 20:34:00 ipwizard Exp $
+  * $Id: kmymoneyview.h,v 1.26 2002/12/06 20:30:50 ipwizard Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -77,6 +78,14 @@ public:
   enum viewShowing { AccountsView, HomeView, PayeeView, CategoryView, ScheduledView, AccountView };
 
 private:
+  enum menuID {
+    AccountNew = 1,
+    AccountOpen,
+    AccountReconcile,
+    AccountEdit,
+    AccountDelete
+  };
+
   KHomeView *m_homeView;
   KAccountsView *accountsView;
   KCategoriesView *m_categoriesView;
@@ -239,6 +248,7 @@ public slots:
   void accountFind();
 
   /**
+
     * Called whenever the user 'executes' an account. This operation opens the account
     * and shows the register view.
     *
