@@ -58,6 +58,10 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
     DesktopIcon("categories"));
   m_categoriesView = new KCategoriesView(&m_file, qvboxMainFrame3, "categoriesView");
 
+  QVBox *qvboxMainFrame4 = addVBoxPage( i18n("Payees"), i18n("Payees"),
+    DesktopIcon("pay_edit"));
+  m_payeesView = new KPayeesView(/*&m_file, */qvboxMainFrame4, "payeesView");
+
   banksView->hide();
   transactionView->hide();
 

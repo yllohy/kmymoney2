@@ -1,4 +1,4 @@
-# KDE tags expanded automatically by am_edit - $Revision: 1.2 $ 
+# KDE tags expanded automatically by am_edit - $Revision: 1.3 $ 
 # Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
@@ -327,26 +327,26 @@ maintainer-clean: maintainer-clean-am
 
 
 install-data-local:
-#>- 	$(mkinstalldirs) $(datadir)/kmymoney2/html/
+#>- 	$(mkinstalldirs) $(kde_datadir)/kmymoney2/html/
 #>+ 1
-	$(mkinstalldirs) $(DESTDIR)$(datadir)/kmymoney2/html/
-#>- 	$(INSTALL_DATA) $(srcdir)/home.html $(datadir)/kmymoney2/html/home.html
+	$(mkinstalldirs) $(DESTDIR)$(kde_datadir)/kmymoney2/html/
+#>- 	$(INSTALL_DATA) $(srcdir)/home.html $(kde_datadir)/kmymoney2/html/home.html
 #>+ 1
-	$(INSTALL_DATA) $(srcdir)/home.html $(DESTDIR)$(datadir)/kmymoney2/html/home.html
-#>- 	$(mkinstalldirs) $(datadir)/kmymoney2/html/
+	$(INSTALL_DATA) $(srcdir)/home.html $(DESTDIR)$(kde_datadir)/kmymoney2/html/home.html
+#>- 	$(mkinstalldirs) $(kde_datadir)/kmymoney2/html/
 #>+ 1
-	$(mkinstalldirs) $(DESTDIR)$(datadir)/kmymoney2/html/
-#>- 	$(INSTALL_DATA) $(srcdir)/kmymoney2.css $(datadir)/kmymoney2/html/kmymoney2.css
+	$(mkinstalldirs) $(DESTDIR)$(kde_datadir)/kmymoney2/html/
+#>- 	$(INSTALL_DATA) $(srcdir)/kmymoney2.css $(kde_datadir)/kmymoney2/html/kmymoney2.css
 #>+ 1
-	$(INSTALL_DATA) $(srcdir)/kmymoney2.css $(DESTDIR)$(datadir)/kmymoney2/html/kmymoney2.css
+	$(INSTALL_DATA) $(srcdir)/kmymoney2.css $(DESTDIR)$(kde_datadir)/kmymoney2/html/kmymoney2.css
 
 uninstall-local:
-#>- 	-rm -f $(datadir)/kmymoney2/html/home.html
+#>- 	-rm -f $(kde_datadir)/kmymoney2/html/home.html
 #>+ 1
-	-rm -f $(DESTDIR)$(datadir)/kmymoney2/html/home.html
-#>- 	-rm -f $(datadir)/kmymoney2/html/kmymoney2.css
+	-rm -f $(DESTDIR)$(kde_datadir)/kmymoney2/html/home.html
+#>- 	-rm -f $(kde_datadir)/kmymoney2/html/kmymoney2.css
 #>+ 1
-	-rm -f $(DESTDIR)$(datadir)/kmymoney2/html/kmymoney2.css
+	-rm -f $(DESTDIR)$(kde_datadir)/kmymoney2/html/kmymoney2.css
 
 ####### kdevelop will overwrite this part!!! (end)############
 

@@ -42,6 +42,7 @@
 #include "ktransactionview.h"
 #include "khomeview.h"
 #include "kcategoriesview.h"
+#include "kpayeesview.h"
 
 /**
   * This class represents the view of the MyMoneyFile which contains
@@ -50,7 +51,7 @@
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.2 2002/01/22 21:54:41 mte Exp $
+  * $Id: kmymoneyview.h,v 1.3 2002/01/24 22:03:24 mte Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -65,6 +66,7 @@ private:
   KBanksView *banksView;
   KTransactionView *transactionView;
   KCategoriesView *m_categoriesView;
+  KPayeesView *m_payeesView;
 
   viewType m_showing;
 

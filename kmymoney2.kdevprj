@@ -31,13 +31,13 @@ ldflags=
 path_to_bin_program=kmymoney2
 
 [General]
-AMChanged=true
+AMChanged=false
 author=Michael Edwardes
 configure_args=--prefix=/opt/kde2
 dir_where_make_will_be_called=
 email=mte@users.sourceforge.net
 kdevprj_version=1.3
-lfv_open_groups=
+lfv_open_groups=GNU
 make_options=\s-j1
 makefiles=Makefile.am,kmymoney2/Makefile.am,doc/Makefile.am,doc/en/Makefile.am,po/Makefile.am,kmymoney2/mymoney/Makefile.am,kmymoney2/pics/Makefile.am,kmymoney2/dialogs/Makefile.am,kmymoney2/widgets/Makefile.am,kmymoney2/icons/hicolor/22x22/actions/Makefile.am,kmymoney2/icons/hicolor/22x22/Makefile.am,kmymoney2/icons/hicolor/Makefile.am,kmymoney2/icons/Makefile.am,kmymoney2/icons/hicolor/16x16/actions/Makefile.am,kmymoney2/icons/hicolor/16x16/Makefile.am,doc/images/Makefile.am,developer-doc/Makefile.am,developer-doc/phb/Makefile.am,kmymoney2/views/Makefile.am,kmymoney2/html/Makefile.am
 modifyMakefiles=true
@@ -1207,7 +1207,7 @@ install_location=$$(kde_datadir)/kmymoney2/pics/view_info.png
 type=DATA
 
 [kmymoney2/views/Makefile.am]
-files=kmymoney2/views/ktransactionview.cpp,kmymoney2/views/ktransactionview.h,kmymoney2/views/ktransactionviewdecl.ui,kmymoney2/views/kbanksview.cpp,kmymoney2/views/kbanksview.h,kmymoney2/views/kbankviewdecl.ui,kmymoney2/views/kbanklistitem.cpp,kmymoney2/views/kbanklistitem.h,kmymoney2/views/kmymoneyview.cpp,kmymoney2/views/kmymoneyview.h,kmymoney2/views/kcategoriesview.cpp,kmymoney2/views/kcategoriesview.h,kmymoney2/views/kcategoriesviewdecl.ui,kmymoney2/views/khomeview.cpp,kmymoney2/views/khomeview.h
+files=kmymoney2/views/ktransactionview.cpp,kmymoney2/views/ktransactionview.h,kmymoney2/views/ktransactionviewdecl.ui,kmymoney2/views/kbanksview.cpp,kmymoney2/views/kbanksview.h,kmymoney2/views/kbankviewdecl.ui,kmymoney2/views/kbanklistitem.cpp,kmymoney2/views/kbanklistitem.h,kmymoney2/views/kmymoneyview.cpp,kmymoney2/views/kmymoneyview.h,kmymoney2/views/kcategoriesview.cpp,kmymoney2/views/kcategoriesview.h,kmymoney2/views/kcategoriesviewdecl.ui,kmymoney2/views/khomeview.cpp,kmymoney2/views/khomeview.h,kmymoney2/views/kpayeesviewdecl.ui,kmymoney2/views/kpayeesview.cpp,kmymoney2/views/kpayeesview.h
 sharedlib_LDFLAGS=-version-info 0:0:1
 sharedlib_rootname=views
 sub_dirs=
@@ -1284,6 +1284,24 @@ dist=true
 install=false
 install_location=
 type=HEADER
+
+[kmymoney2/views/kpayeesview.cpp]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[kmymoney2/views/kpayeesview.h]
+dist=true
+install=false
+install_location=
+type=HEADER
+
+[kmymoney2/views/kpayeesviewdecl.ui]
+dist=true
+install=false
+install_location=
+type=SOURCE
 
 [kmymoney2/views/ktransactionview.cpp]
 dist=true
