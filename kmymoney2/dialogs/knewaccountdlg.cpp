@@ -48,7 +48,7 @@
 #include "../widgets/kmymoneyedit.h"
 #include "../widgets/kmymoneydateinput.h"
 #include "../mymoney/mymoneyexception.h"
-#include "../mymoney/storage/mymoneyseqaccessmgr.h"
+#include "../mymoney/mymoneyfile.h"
 #include "../dialogs/knewbankdlg.h"
 #include "../views/kbanklistitem.h"
 #include "../views/kmymoneyfile.h"

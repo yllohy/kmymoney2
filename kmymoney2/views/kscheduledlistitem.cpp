@@ -27,7 +27,9 @@
 
 // ----------------------------------------------------------------------------
 // Project Includes
+
 #include "kscheduledlistitem.h"
+#include "../mymoney/mymoneyfile.h"
 
 KScheduledListItem::KScheduledListItem(QListView *parent, const char *name )
  : QListViewItem(parent,name)
@@ -38,7 +40,7 @@ KScheduledListItem::KScheduledListItem(QListView *parent, const char *name )
 KScheduledListItem::KScheduledListItem(KScheduledListItem *parent, const QCString accountId, const MyMoneySchedule& schedule)
  : QListViewItem(parent)
 {
-//  type, payee, amount, due date, freq, payment methof.
+//  type, payee, amount, due date, freq, payment method.
   try
   {
     m_id = schedule.id();

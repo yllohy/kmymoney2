@@ -37,10 +37,10 @@
 #include "../mymoneyaccount.h"
 #include "../mymoneytransaction.h"
 #include "../mymoneypayee.h"
-
+#include "../mymoneyscheduled.h"
 
 /**
-  *@author Thomas Baumgart
+  * @author Thomas Baumgart
   */
 
 /**

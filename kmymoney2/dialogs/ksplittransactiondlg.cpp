@@ -53,6 +53,7 @@
 #include "../widgets/kmymoneycategory.h"
 #include "../widgets/kmymoneyedit.h"
 #include "../widgets/kmymoneylineedit.h"
+#include "../mymoney/mymoneyfile.h"
 
 KSplitTransactionDlg::KSplitTransactionDlg(const MyMoneyTransaction& t,
                                            const MyMoneyAccount& acc,
@@ -73,16 +74,16 @@ KSplitTransactionDlg::KSplitTransactionDlg(const MyMoneyTransaction& t,
   transactionsTable->setNumRows(1);
   transactionsTable->setNumCols(3);
   transactionsTable->horizontalHeader()->setLabel(0, i18n("Category"));
-	transactionsTable->horizontalHeader()->setLabel(1, i18n("Memo"));
-	transactionsTable->horizontalHeader()->setLabel(2, i18n("Amount"));
-	transactionsTable->setSelectionMode(QTable::NoSelection);
- 	transactionsTable->setLeftMargin(0);
-	transactionsTable->verticalHeader()->hide();
+  transactionsTable->horizontalHeader()->setLabel(1, i18n("Memo"));
+  transactionsTable->horizontalHeader()->setLabel(2, i18n("Amount"));
+  transactionsTable->setSelectionMode(QTable::NoSelection);
+  transactionsTable->setLeftMargin(0);
+  transactionsTable->verticalHeader()->hide();
   transactionsTable->setColumnStretchable(0, false);
   transactionsTable->setColumnStretchable(1, false);
-	transactionsTable->setColumnStretchable(2, false);
-	transactionsTable->horizontalHeader()->setResizeEnabled(false);
-	transactionsTable->horizontalHeader()->setMovingEnabled(false);
+  transactionsTable->setColumnStretchable(2, false);
+  transactionsTable->horizontalHeader()->setResizeEnabled(false);
+  transactionsTable->horizontalHeader()->setMovingEnabled(false);
 
   // for deposits, we invert the sign of all splits.
   // don't forget to revert when we're done ;-)
@@ -103,7 +104,7 @@ KSplitTransactionDlg::KSplitTransactionDlg(const MyMoneyTransaction& t,
   clearAllBtn->setFocusPolicy(QWidget::NoFocus);
   transactionsTable->setFocus();
 
-	KConfig *config = KGlobal::config();
+  KConfig *config = KGlobal::config();
   QFont defaultFont = QFont("helvetica", 12);
   transactionsTable->horizontalHeader()->setFont(config->readFontEntry("listHeaderFont", &defaultFont));
 
@@ -114,8 +115,8 @@ KSplitTransactionDlg::KSplitTransactionDlg(const MyMoneyTransaction& t,
   transactionsTable->setCurrentRow(m_transaction.splits().count()-1);
 
   // connect signals with slots
-	connect(cancelBtn, SIGNAL(clicked()), this, SLOT(slotCancelClicked()));
-	connect(finishBtn, SIGNAL(clicked()), this, SLOT(slotFinishClicked()));
+  connect(cancelBtn, SIGNAL(clicked()), this, SLOT(slotCancelClicked()));
+  connect(finishBtn, SIGNAL(clicked()), this, SLOT(slotFinishClicked()));
   connect(clearAllBtn, SIGNAL(clicked()), this, SLOT(slotClearAllClicked()));
 
   connect(transactionsTable, SIGNAL(clicked(int, int, int, const QPoint&)),

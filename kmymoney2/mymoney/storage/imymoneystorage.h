@@ -36,12 +36,13 @@
 #include "../mymoneyaccount.h"
 #include "../mymoneytransaction.h"
 #include "../mymoneypayee.h"
+#include "../mymoneyscheduled.h"
 #include "../mymoneyobserver.h"
 
 class MyMoneyTransactionFilter;
 
 /**
-  *@author Thomas Baumgart
+  * @author Thomas Baumgart
   */
 
 /**
