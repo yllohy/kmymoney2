@@ -1,3 +1,6 @@
+2002-01-29 Kevin Tambascio <ktambascio@users.sourceforge.net>
+  * Added stock transaction view files, no new functionality yet.
+
 2002-01-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added section in the PHB about files to be checked in and
     files that should not be checked in
