@@ -1,3 +1,7 @@
+2001-06-22 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
+  * Fixed Payee List Bug
+  * Added Edit Transaction Button to Reconcile Dialog
+
 2001-06-21 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
   * Fixed Transaction Deletion Bug
 

@@ -94,6 +94,7 @@ KReconcileDlg::KReconcileDlg(const MyMoneyMoney previousBal, const MyMoneyMoney 
   connect(creditListView, SIGNAL(clicked(QListViewItem*, const QPoint&, int)), this, SLOT(slotCreditSelected(QListViewItem*, const QPoint&, int)));
 	connect(buttonCancel, SIGNAL(clicked()), this, SLOT(cancelClicked()));
   connect(buttonOk, SIGNAL(clicked()), this, SLOT(finishClicked()));
+  connect(buttonEdit, SIGNAL(clicked()), this, SLOT(editClicked()));
 
   doDifference();
 }
@@ -368,6 +369,7 @@ void KReconcileDlg::slotTransactionChanged(){
 
 	reloadLists();
 	insertTransactions();
+	show();
 
 
 }
@@ -457,4 +459,9 @@ bool KReconcileDlg::inDebits(MyMoneyTransaction *transaction){
 
 	return false;
 
+}
+/** No descriptions */
+void KReconcileDlg::editClicked(){
+
+	hide();
 }

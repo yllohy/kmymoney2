@@ -526,7 +526,7 @@ void KTransactionView::enterClicked()
 	QString newcategory = m_category->currentText();
   int commaindex;
 
-
+    // Get amount from payment or withdrawal Line Edit
 	if(m_payment->text() == "")
 	{
     commaindex = m_withdrawal->text().find(",");
@@ -551,9 +551,10 @@ void KTransactionView::enterClicked()
    	dblnewamount = 0;
 	}
 
-  MyMoneyMoney newamount(dblnewamount);
+  	MyMoneyMoney newamount(dblnewamount);
 	MyMoneyTransaction::stateE newstate;
-
+	
+	// Set the transaction type
 	if(m_method->currentItem() == 0)
 	{
    	 newmethod = MyMoneyTransaction::Cheque;
@@ -578,8 +579,10 @@ void KTransactionView::enterClicked()
 	{
    	 newmethod = MyMoneyTransaction::Cheque;
 	}
-  int colonindex = m_category->currentText().find(":");
-  QString catmajor;
+    // Add payee to Payee List
+	m_filePointer->addPayee(m_payee->currentText());
+  	int colonindex = m_category->currentText().find(":");
+  	QString catmajor;
 	QString catminor;
   if(colonindex == -1)
 	{

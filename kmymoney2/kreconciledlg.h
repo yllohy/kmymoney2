@@ -43,6 +43,8 @@ protected slots:
   void slotCreditSelected(QListViewItem*, const QPoint&, int);
   void finishClicked();
   void cancelClicked();
+  /** No descriptions */
+  void editClicked();
 
 signals:
   void reconcileFinished(bool);
