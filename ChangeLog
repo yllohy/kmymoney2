@@ -1,3 +1,17 @@
+2002-12-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added 'tip of the day' feature
+  * Added different images to account icon view
+  * Added key value container to MyMoneySeqAccessMgr, it's interface
+    IMyMoneyStorage and MyMoneyFile.
+  * Store and load the key value container with the (binary) file
+  * Moved account icons from kbankviewdecl.ui to kbanksview.cpp
+  * Converted account icon view from QIconView to KIconView
+  * Added KAccountIconItem class
+  * Reset values in new account wizard when starting
+  * Added account types asset and liability to account dialog
+  * Suppress a few options in the account context menu
+  * Added functionality to the Account detail button in the ledger view
+
 2002-12-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added possibility to change from transfer to non-transfer and vice
     versa in in-register edit mode
