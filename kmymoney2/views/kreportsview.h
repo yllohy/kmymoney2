@@ -31,6 +31,7 @@
 #include <qwidget.h>
 class QVBoxLayout;
 class QListViewItem;
+class kMyMoneyTitleLabel;
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -154,6 +155,8 @@ private:
   KListView* m_reportListView;
   QWidget* m_listTab;
   QVBoxLayout* m_listTabLayout;
+  kMyMoneyTitleLabel* titleLabel;
+  QFrame* titleLine;
 
 public:
   /**

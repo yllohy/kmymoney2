@@ -55,6 +55,7 @@
 #include "../mymoney/mymoneyaccount.h"
 #include "../mymoney/mymoneyfile.h"
 #include "../widgets/kmymoneyaccountcombo.h"
+#include "../widgets/kmymoneytitlelabel.h"
 #include "../kapptest.h"
 
 KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
@@ -70,8 +71,20 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
     setName( "Account register" );
 
   setCaption( i18n( "Account register" ) );
-  m_formLayout = new QVBoxLayout( this, 0, 6, "Form1Layout");
+  m_formLayout = new QVBoxLayout( this, 11, 6, "Form1Layout");
 
+  kMyMoneyTitleLabel* titleLabel = new kMyMoneyTitleLabel( this, "titleLabel" );
+  titleLabel->setMinimumSize( QSize( 100, 30 ) );
+  titleLabel->setProperty( "leftImageFile", "pics/titlelabel_ledgers.png" );
+  titleLabel->setProperty( "rightImageFile", "pics/titlelabel_background.png" );
+  m_formLayout->addWidget( titleLabel );
+
+  QFrame* titleLine = new QFrame( this, "titleLine" );
+  titleLine->setFrameShape( QFrame::HLine );
+  titleLine->setFrameShadow( QFrame::Sunken );
+  titleLine->setFrameShape( QFrame::HLine );
+  m_formLayout->addWidget( titleLine );
+  
   QHBoxLayout* Layout2 = new QHBoxLayout( 0, 0, 6, "Layout2");
 
   m_accountComboBox = new kMyMoneyAccountCombo(this, KAppTest::widgetName(this, "kMyMoneyAccountCombo"));

@@ -26,6 +26,7 @@
 // QT Includes
 #include <qwidget.h>
 class QVBoxLayout;
+class kMyMoneyTitleLabel;
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -52,6 +53,8 @@ private:
   KHTMLPart *m_part;
   QVBoxLayout *m_qvboxlayoutPage;
   QString m_filename;
+  kMyMoneyTitleLabel* titleLabel;
+  QFrame* titleLine;
   
 signals:
   /**

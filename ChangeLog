@@ -1,3 +1,7 @@
+2005-02-05 Ace Jones <acejones@users.sourceforge.net>
+  * Added more colorful title labels for the views in MyMoneyView using
+    artwork and conceptual design supplied by Robert Wadley
+
 2005-02-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed name of #define to make memory leak check feature work
   * Added MyMoneyTracer trace logic

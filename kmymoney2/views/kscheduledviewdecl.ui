@@ -19,6 +19,37 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
+        <widget class="kMyMoneyTitleLabel">
+            <property name="name">
+                <cstring>titleLabel</cstring>
+            </property>
+            <property name="minimumSize">
+                <size>
+                    <width>100</width>
+                    <height>30</height>
+                </size>
+            </property>
+            <property name="leftImageFile" stdset="0">
+                <cstring>pics/titlelabel_schedule.png</cstring>
+            </property>
+            <property name="rightImageFile" stdset="0">
+                <cstring>pics/titlelabel_background.png</cstring>
+            </property>
+        </widget>
+        <widget class="Line">
+            <property name="name">
+                <cstring>titleLine</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
         <widget class="QLayoutWidget">
             <property name="name">
                 <cstring>layout2</cstring>
@@ -136,6 +167,24 @@
         </sizepolicy>
         <pixmap>image0</pixmap>
     </customwidget>
+    <customwidget>
+        <class>kMyMoneyTitleLabel</class>
+        <header location="local">../widgets/kmymoneytitlelabel.h</header>
+        <sizehint>
+            <width>-1</width>
+            <height>-1</height>
+        </sizehint>
+        <container>0</container>
+        <sizepolicy>
+            <hordata>5</hordata>
+            <verdata>5</verdata>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+        <pixmap>image0</pixmap>
+        <property type="CString">leftImageFile</property>
+        <property type="CString">rightImageFile</property>
+    </customwidget>
 </customwidgets>
 <images>
     <image name="image0">
@@ -149,5 +198,6 @@
     <includehint>kpushbutton.h</includehint>
     <includehint>klistview.h</includehint>
     <includehint>kmymoneyscheduledcalendar.h</includehint>
+    <includehint>kmymoneytitlelabel.h</includehint>
 </includehints>
 </UI>

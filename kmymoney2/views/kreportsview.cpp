@@ -62,11 +62,12 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 #include "kreportsview.h"
+#include "pivottable.h"
+#include "querytable.h"
 #include "../mymoney/mymoneyfile.h"
 #include "../mymoney/mymoneyreport.h"
 #include "../dialogs/kreportconfigurationfilterdlg.h"
-#include "pivottable.h"
-#include "querytable.h"
+#include "../widgets/kmymoneytitlelabel.h"
 using namespace reports;
 
 #define VIEW_LEDGER         "ledger"
@@ -225,6 +226,18 @@ KReportsView::KReportsView(QWidget *parent, const char *name )
   m_qvboxlayoutPage->setSpacing( 6 );
   m_qvboxlayoutPage->setMargin( 11 );
 
+  titleLabel = new kMyMoneyTitleLabel( this, "titleLabel" );
+  titleLabel->setMinimumSize( QSize( 100, 30 ) );
+  titleLabel->setProperty( "leftImageFile", "pics/titlelabel_reports.png" );
+  titleLabel->setProperty( "rightImageFile", "pics/titlelabel_background.png" );
+  m_qvboxlayoutPage->addWidget( titleLabel );
+
+  titleLine = new QFrame( this, "titleLine" );
+  titleLine->setFrameShape( QFrame::HLine );
+  titleLine->setFrameShadow( QFrame::Sunken );
+  titleLine->setFrameShape( QFrame::HLine );
+  m_qvboxlayoutPage->addWidget( titleLine );
+  
   m_reportTabWidget = new KTabWidget( this, "m_reportTabWidget" );
   m_qvboxlayoutPage->addWidget( m_reportTabWidget );
 #if KDE_IS_VERSION(3,2,0)

@@ -303,6 +303,9 @@ KAccountsView::KAccountsView(QWidget *parent, const char *name, bool bInstitutio
    m_suspendUpdate(false),
    m_bViewNormalAccountsView(bInstitutionView)
 {
+  if ( bInstitutionView )
+    titleLabel->setProperty( "leftImageFile", "pics/titlelabel_institutions.png" );
+
   accountListView->setRootIsDecorated(true);
   accountListView->setAllColumnsShowFocus(true);
 

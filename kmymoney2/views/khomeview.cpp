@@ -41,8 +41,9 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 #include "khomeview.h"
-#include "../mymoney/mymoneyfile.h"
 #include "../kmymoneyutils.h"
+#include "../mymoney/mymoneyfile.h"
+#include "../widgets/kmymoneytitlelabel.h"
 
 #define VIEW_LEDGER         "ledger"
 #define VIEW_SCHEDULE       "schedule"
@@ -57,6 +58,18 @@ KHomeView::KHomeView(QWidget *parent, const char *name )
   m_qvboxlayoutPage->setSpacing( 6 );
   m_qvboxlayoutPage->setMargin( 11 );
 
+  titleLabel = new kMyMoneyTitleLabel( this, "titleLabel" );
+  titleLabel->setMinimumSize( QSize( 100, 30 ) );
+  titleLabel->setProperty( "leftImageFile", "pics/titlelabel_home.png" );
+  titleLabel->setProperty( "rightImageFile", "pics/titlelabel_background.png" );
+  m_qvboxlayoutPage->addWidget( titleLabel );
+
+  titleLine = new QFrame( this, "titleLine" );
+  titleLine->setFrameShape( QFrame::HLine );
+  titleLine->setFrameShadow( QFrame::Sunken );
+  titleLine->setFrameShape( QFrame::HLine );
+  m_qvboxlayoutPage->addWidget( titleLine );
+  
   m_part = new KHTMLPart(this, "htmlpart_km2");
   m_qvboxlayoutPage->addWidget(m_part->view());
   QString language = KGlobal::locale()->language();
