@@ -1639,10 +1639,10 @@ void KMyMoneyView::accountExportCSV(void)
           + ","
           + ((transaction->type()==MyMoneyTransaction::Credit) ?
             QString::number(transaction->amount().amount()) :
-            "")
+            QString(""))
           + ","
           + ((transaction->type()==MyMoneyTransaction::Credit) ?
-            "" :
+            QString("") :
             QString::number(transaction->amount().amount()))
           + ","
           + "\n"

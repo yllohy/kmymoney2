@@ -1,3 +1,6 @@
+2001-07-28 Michael Edwardes <mte@users.sourceforge.net>
+  * Quick fix to the kmymoneyview class for Mandrake 7.2.
+
 2001-07-27 Michael Edwardes <mte@users.sourceforge.net>
   * Fixed bug i introduced.  I tried to stop the seg faults on exit by using
     references, but forgot that the account needs to be accessed.
