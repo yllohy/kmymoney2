@@ -1,3 +1,9 @@
+2002-07-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added global function timetrace() for simple time measurement
+  * Added ledger view (base class and checkings implementation)
+  * Added function to return matching and non-matching split
+    for a given account from a transaction to MyMoneyTransaction::split()
+
 2002-07-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed account creation with through standard dialog
   * Added more logic to the Account Creation Wizard
