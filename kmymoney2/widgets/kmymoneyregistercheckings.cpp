@@ -198,36 +198,41 @@ void kMyMoneyRegisterCheckings::adjustColumn(int col)
     w += topHeader->iconSet( col )->pixmap().width();
   w = QMAX( w, 20 );
 
+  // check for date column
+  if(col == 1) {
+    QString txt = KGlobal::locale()->formatDate(QDate(6999,12,29), true);
+    int nw = cellFontMetrics.width(txt+"  ");
+    w = QMAX( w, nw );
+  }
+
   // scan through the transactions
   for ( int i = (numRows()/m_rpt)-1; i >= 0; --i ) {
     QString txt;
     KMyMoneyTransaction *t = m_parent->transaction(i);
     MyMoneyMoney amount;
-    int nw;
+    int nw = 0;
     
     if(t != NULL) {
+      MyMoneySplit split = t->splitById(t->splitId());
       switch(col) {
         default:
           break;
 
         case 0:
           txt = t->splitById(t->splitId()).number();
-          nw = cellFontMetrics.width(txt);
-          w = QMAX( w, nw );
+          nw = cellFontMetrics.width(txt+"  ");
           break;
         
         case 1:
-          txt = KGlobal::locale()->formatDate(t->postDate(), true)+"  ";
-          nw = cellFontMetrics.width(txt);
-          w = QMAX( w, nw );
+          txt = m_action[split.action()];
+          nw = cellFontMetrics.width(txt+"  ");
           break;
         
         case 4:
           amount = t->splitById(t->splitId()).value();
           if(amount < 0) {
             txt = amount.formatMoney();
-            nw = cellFontMetrics.width(txt);
-            w = QMAX( w, nw );
+            nw = cellFontMetrics.width(txt+"  ");
           }
           break;
           
@@ -235,12 +240,17 @@ void kMyMoneyRegisterCheckings::adjustColumn(int col)
           amount = t->splitById(t->splitId()).value();
           if(amount >= 0) {
             txt = amount.formatMoney();
-            nw = cellFontMetrics.width(txt);
-            w = QMAX( w, nw );
+            nw = cellFontMetrics.width(txt+"  ");
           }
           break;
-          
+
+        case 6:
+          amount = m_parent->balance(i);
+          txt = amount.formatMoney();
+          nw = cellFontMetrics.width(txt+"  ");
+          break;
       }
+      w = QMAX( w, nw );
     }
   }
   setColumnWidth( col, w );

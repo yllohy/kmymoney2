@@ -127,39 +127,36 @@ void KLedgerViewCheckings::resizeEvent(QResizeEvent* /* ev */)
   // resize the register
   int w = m_register->visibleWidth();
 
+  // check which space we need
   m_register->adjustColumn(0);
-  m_register->adjustColumn(3);
   m_register->adjustColumn(4);
   m_register->adjustColumn(5);
+  m_register->adjustColumn(6);
 
-  int width = m_register->columnWidth(3);
-  if(width < m_register->columnWidth(4))
-    width = m_register->columnWidth(4);
+  // make amount columns all the same size
+  int width = m_register->columnWidth(4);
   if(width < m_register->columnWidth(5))
     width = m_register->columnWidth(5);
+  if(width < m_register->columnWidth(6))
+    width = m_register->columnWidth(6);
 
   m_register->setColumnWidth(4, width);
   m_register->setColumnWidth(5, width);
   m_register->setColumnWidth(6, width);
-/*
-  int m_debitWidth = 80;
-  int m_creditWidth = 80;
-  int m_balanceWidth = 100;
-  m_register->setColumnWidth(0, 80);
-*/
-
-  // Resize the date field to the size required by the input widget
-  kMyMoneyDateInput* datefield = new kMyMoneyDateInput();
-  datefield->setFont(m_register->cellFont());
-  m_register->setColumnWidth(1, datefield->minimumSizeHint().width());
-  delete datefield;
-
+  
+  // Resize the date field to either
+  // a) the size required by the input widget if no transaction form is shown
+  // b) the adjusted value for the date if the transaction form is visible
+  if(!m_transactionFormActive) {
+    kMyMoneyDateInput* datefield = new kMyMoneyDateInput();
+    datefield->setFont(m_register->cellFont());
+    m_register->setColumnWidth(1, datefield->minimumSizeHint().width());
+    delete datefield;
+  } else {
+    m_register->adjustColumn(1);
+  }
+  
   m_register->setColumnWidth(3, 20);
-/*  
-  m_register->setColumnWidth(4, m_debitWidth);
-  m_register->setColumnWidth(5, m_creditWidth);
-  m_register->setColumnWidth(6, m_balanceWidth);
-*/
 
   for(int i = 0; i < m_register->numCols(); ++i) {
     switch(i) {

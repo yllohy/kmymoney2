@@ -181,7 +181,7 @@ void kMyMoneyRegisterLoan::paintCell(QPainter *p, int row, int col, const QRect&
 void kMyMoneyRegisterLoan::adjustColumn(int col)
 {
   QHeader *topHeader = horizontalHeader();
-  QFontMetrics fontMetrics(m_headerFont);
+  QFontMetrics cellFontMetrics(m_cellFont);
 
   int w = topHeader->fontMetrics().width( topHeader->label( col ) ) + 10;
   if ( topHeader->iconSet( col ) )
@@ -190,19 +190,43 @@ void kMyMoneyRegisterLoan::adjustColumn(int col)
 
   // scan through the transactions
   for ( int i = (numRows()/m_rpt)-1; i >= 0; --i ) {
-    switch(col) {
-      default:
-        break;
+    KMyMoneyTransaction *t = m_parent->transaction(i);
+    MyMoneyMoney amount;
+    int nw = 0;
+    
+    QString txt;
+    if(t != NULL) {
+      switch(col) {
+        case 0:
+          txt = KGlobal::locale()->formatDate(QDate(6999,12,29), true)+"  ";
+          nw = cellFontMetrics.width(txt);
+          i = 0; // save some time
+          break;
 
-      case 1:
-        QString txt;
-        MyMoneyTransaction *t = m_parent->transaction(i);
-        if(t != NULL) {
-          txt = KGlobal::locale()->formatDate(t->postDate(), true)+"  ";
-          int nw = fontMetrics.width(txt);
-          w = QMAX( w, nw );
-        }
-        break;
+        case 1:
+          txt = t->splitById(t->splitId()).number();
+          nw = cellFontMetrics.width(txt+"  ");
+          break;
+
+        case 3:
+          amount = t->splitById(t->splitId()).value();
+          txt = amount.formatMoney();
+          nw = cellFontMetrics.width(txt+"  ");
+          break;
+
+        case 4:
+          amount = t->splitById(t->splitId()).value();
+          txt = amount.formatMoney();
+          nw = cellFontMetrics.width(txt+"  ");
+          break;
+
+        case 5:
+          amount = m_parent->balance(i);
+          txt = amount.formatMoney();
+          nw = cellFontMetrics.width(txt+"  ");
+          break;
+      }
+      w = QMAX( w, nw );
     }
   }
   setColumnWidth( col, w );

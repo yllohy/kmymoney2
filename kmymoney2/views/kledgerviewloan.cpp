@@ -142,11 +142,17 @@ void KLedgerViewLoan::resizeEvent(QResizeEvent* /* ev */)
   m_register->setColumnWidth(4, width);
   m_register->setColumnWidth(5, width);
   
-  // Resize the date field to the size required by the input widget
-  kMyMoneyDateInput* datefield = new kMyMoneyDateInput();
-  datefield->setFont(m_register->cellFont());
-  m_register->setColumnWidth(0, datefield->minimumSizeHint().width());
-  delete datefield;
+  // Resize the date field to either
+  // a) the size required by the input widget if no transaction form is shown
+  // b) the adjusted value for the date if the transaction form is visible
+  if(!m_transactionFormActive) {
+    kMyMoneyDateInput* datefield = new kMyMoneyDateInput();
+    datefield->setFont(m_register->cellFont());
+    m_register->setColumnWidth(0, datefield->minimumSizeHint().width());
+    delete datefield;
+  } else {
+    m_register->adjustColumn(0);
+  }
 
   for(int i = 0; i < m_register->numCols(); ++i) {
     switch(i) {
