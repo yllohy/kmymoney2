@@ -4,89 +4,108 @@ A.code { text-decoration: none; font-weight: normal; color: #4C59A6 }
 A.codeRef { font-weight: normal; color: #4C59A6 }
 A:hover { text-decoration: none; font-weight: normal; color: #4C59A6 }
 
-td
-{
-/*  font-size: 11px; */
-  font-family: verdana, arial;
+body { /* background color for all pages */
+  background-color: Window; 
+ }
+
+ .gap { /* used for spacing in financial summary and reports -match background color of body*/
+  background-color: Window;
+  padding-top: 1px;
 }
 
-td.highlighted {
-  background-color: #32A49E;
+body.highlighted {
+  background-color: #308169;
   color: #FFFFFF;
 }
 
-h2
-{
+p { 
+color:WindowText; 
+}
+
+h1 { 
+color:WindowText; 
+}
+
+h2 { /* "your financial summary" title on summary page */
   font-size: 18px;
-  font-family: verdana, arial;
+  font-family: verdana, arial, sans-serif;
   margin-right: 10px;
   margin-left: 10px;
   margin-top: 10px;
   margin-bottom: 10px;
   text-align: right;
+  color:WindowText;
 }
 
-h2.report {
+h2.highlighted {
+  background-color: #308169;
+  color: #FFFFFF;
+}
+
+h2.report { /* header -title on report pages */
   font-size: 18px;
-  font-family: verdana, arial;
+  font-family: verdana, arial, sans-serif;
   margin-right: 10px;
   margin-left: 10px;
   margin-top: 10px;
   margin-bottom: 10px;
   text-align: center;
-}
+  color:WindowText;
+  }
 
-.itemheader
-{
-  color: white;
-  font-family: verdana, arial, helvetica;
-  background-color: #4C59A6;
+.itemheader { /*section labels in the financial summary and column labels in reports */
+  color: ButtonText;
+  font-family: verdana, arial, helvetica, sans-serif;
+  background-color: ButtonFace;
   padding-top: 5px;
   padding-left: 20px;
   padding-bottom: 5px;
 }
 
-.row-even {
+li {
+color:WindowText; 
+}
+
+td {
 /*  font-size: 11px; */
-  font-family: verdana, arial, helvetica;
+  font-family: verdana, arial, sans-serif;
+}
+
+td.highlighted 
+{
+  background-color: #32A49E;
+  color: #FFFFFF;
+}
+
+.row-even { 
+  font-family: verdana, arial, helvetica, sans-serif; /*  font-size: 11px; */
   background-color: #FFFFEE;
   color: black;
   padding-top: 2px;
   padding-left: 20px;
 }
 
-.row-odd {
-  font-family: verdana, arial, helvetica;
-/*  font-size: 11px; */
+.row-odd { 
+  font-family: verdana, arial, helvetica, sans-serif; /*  font-size: 11px; */
   background-color: #FFFFCC;
   color: black;
   padding-top: 2px;
   padding-left: 20px;
 }
 
-.item {
+.item { /*item labels (sub-titles) for sections in the financial summary */
 /*  font-size: 11px; */
-  background-color: white;
-  color: black;
+  background-color: Window;
+  color: WindowText;
   padding-top: 2px;
 }
 
-.gap {
-  background-color: white;
-  padding-top: 1px;
-}
-
-.warning {
-  background-color: white;
+.warning { /* "overdue payments" */
+  background-color: #FFFFE0;
   color: red;
   font-weight: bold;
   padding-bottom: 2px;
   text-align: left;
-}
-
-h2.highlighted {
-  background-color: #308169;
-  color: #FFFFFF;
 }
 
 table.highlighted {
@@ -117,17 +136,12 @@ th.right {
   text-align: right;
 }
 
-body  {
-  background-color: #FFFFFF;
-}
 
-body.highlighted  {
-  background-color: #308169;
-  color: #FFFFFF;
-}
+/* These affect only the reports found in the reports view */
 
-div.subtitle {
+div.subtitle { /*subtitle of each report page*/
   text-align: center;
+  color:WindowText;
 }
 
 table.report {
@@ -181,24 +195,28 @@ table.report tr#solo td.left {
   font-weight: bold;
 }
 
-table.report tr.sectionheader td {
+table.report tr.sectionheader td { /* label (title) of each section -subtotals */
   font-weight: bold;
   padding: 0.5em 0.5em 0 0.5em;
+  color:WindowText;
 }
 
-table.report tr.sectionfooter td {
+table.report tr.sectionfooter td { /* totals for each section -subtotals */
   border-top: 1px solid black;
   padding: 0 0.5em 0.5em 0.5em;
+  color:WindowText;
 }
 
-table.report tr.reportfooter td {
+table.report tr.reportfooter td { /* "Grand Total" totals" */
   border-bottom: 1px solid black;
   border-top: 1px solid black;
   padding: 0 0.5em 0 0.5em;
+  color:WindowText;
 }
 
-table.report tr.reportfooter td.left {
+table.report tr.reportfooter td.left { /* "Grand Total" */
   font-weight: bold;
+  color:WindowText;
 }
 
 table.report tr.spacer td {

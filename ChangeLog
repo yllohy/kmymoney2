@@ -1,3 +1,8 @@
+2005-03-29 Ace Jones <acejones@users.sourceforge.net>
+  * Added new welcome and whats new screens
+    (Submitted by Robert Wadley <rob@robntina.fastmail.us>)
+  * Hooked up logic for all the links and added a bunch of whats new text 
+
 2005-03-28 Ace Jones <acejones@users.sourceforge.net>
   * Handle QIF-imported opening balances the new way
   * Terminology changes to US-english-ize the base text

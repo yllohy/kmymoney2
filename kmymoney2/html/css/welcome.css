@@ -1,0 +1,125 @@
+/*******************************************************************
+3/23/2005  KMyMoney Welcome Page
+Robert Wadley    rob<at>robntina.fastmail.us
+David Wadley     mail<at>davidwadley.com
+
+********************************************************************/
+
+body {
+  background-color: Highlight;
+  margin-top:83px;
+  margin-bottom: 65px;
+}
+
+#KMyMoneyLogo {
+  position:absolute;
+  top:10px;
+  right:10px;
+  }
+
+#tagline { /*line of text under logo("Personal Finance Software")*/
+  position:absolute;
+  top:50px;
+  right:10px;
+  font-family:bitstream vera sans, verdana, sans-serif;
+  font-size:8px;
+  color: HighlightText;
+}
+
+#title { /*("Welcome to KMyMoney","What's New in...")*/
+  font-family:bitstream vera sans, verdana, sans-serif;
+  line-height:10px;
+  font-size: 26px;
+  position:absolute;
+  top:0px;
+  left:10px;
+  color:HighlightText;
+}
+
+#summaryLink, #returnLink { /*link under title, "Goto My Financial Summary"etc.*/
+  position:absolute;
+  top:45px;
+  left:35px;
+  color:HighlightText;
+}
+
+#returnLink img { /*positions back-arrow icon in the link to return to welcome page*/
+  vertical-align:middle;
+  position:relative;
+  margin-right: 5px;
+  top:-3px;
+}
+
+#summaryLink a, #returnLink a {
+  color:HighlightText;
+  text-decoration:none;  
+}
+
+#summaryLink a:hover, #returnLink a:hover {
+  color:HighlightText;
+  text-decoration:underline;  
+}
+
+
+/*start content box frame*/
+#topleft {
+  background: url(../images/topleft.png) no-repeat left top;
+  width:87%;
+  margin-left:5%;
+  margin-right:5%;
+  }
+  
+#topright {
+  background: url(../images/topright.png) 
+  top right no-repeat;
+  position: relative;
+  right:-22px;
+  padding-top: 20px;
+  }
+  
+#rightborder {
+  background: url(../images/rightborder.png) 
+  top right repeat-y;
+  position: relative;
+  right:-22px;
+  padding-right: 22px;
+  margin-bottom: -20px;
+  }
+  
+#bottomleft {
+  background: url(../images/bottomleft.png) 
+  bottom left no-repeat;
+  position: relative;
+  top: 20px;
+  }
+  
+#bottomright {
+  background: url(../images/bottomright.png) 
+  bottom right no-repeat;
+  position: relative;
+  right:-22px;
+  padding-top: 20px;
+  }
+  /* end content box frame */
+  
+  
+/* list of links on welcome page */  
+#welcomeMenu ul {
+  list-style-type:none; /*removes default bullets*/
+}
+
+#welcomeMenu li {
+  margin-bottom: 10px; /*adds space between lines*/
+  color: black;
+}
+
+#welcomeMenu span:hover {
+  text-decoration:underline; /*sets hover attributes*/
+}
+
+#welcomeMenu img { /* replacement bullets */
+  vertical-align:middle;
+  position:relative;
+  margin-right: 5px;
+  top: -2px;
+}

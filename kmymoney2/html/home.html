@@ -1,53 +1,51 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<!--
+***************************************************************************************
+3/23/2005  KMyMoney Welcome Page
+Robert Wadley    rob<at>robntina.fastmail.us
+David Wadley     mail<at>davidwadley.com
+
+***************************************************************************************
+-->
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-  <link rel="stylesheet" type="text/css" href="kmymoney2.css">
+  <title>Untitled Document</title>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+  <link href="css/welcome.css" rel="stylesheet" type="text/css">
 </head>
-
 <body>
-  <center><h1>Hello and welcome to KMyMoney version 0.6rc1</h1></center>
-<hr>
-The development team is proud to present the first candidate for
-the next stable release of<p>
-
-  <center><h1>KMyMoney, the Personal Finance Manager for KDE</h1></center>
-<p>
-Many new features have been added to this version,
-containing the following highlights:
-<br>
-<ul>
-<li>Form based transaction entry
-<li>Updated ledger view
-<li>Support for more account types
-<li>Support for scheduled transactions
-<li>Enhanced search functionality
-<li>Wizards which support you in creating and reconciling your accounts
-<li>Language support for French, German, Russian, and Brazilian Portuguese.
-</ul>
-Please try the many features of KMyMoney yourself.  
-Even though we have done our very best to eliminate any
-errors in this version, it is still possible that we did not catch
-them all.
-Please let us know about any abnormal behaviour of the program by
-sending e-mails to
-<font color="blue"><b>kmymoney2-developer@lists.sourceforge.net</b></font>,
-the developers mailing list.
-<p>
-<b>Warning: Since this version of KMyMoney only writes data files in it's new
-format, files written with this version cannot be read by old versions
-(e.g. 0.4 and prior). If
-you still want to use these versions of KMyMoney with your data files,
-please make sure you keep a backup-file of your finance data.
-Unfortunately, there's no way back.</b><p>
-Also, we are still looking for translators and people who could work on the
-handbook for this application. If you feel, you could help us out on this
-or have any other talents you want to contribute to this application, please
-feel free to contact us using the developers mailing list
-at
-<font color="blue"><b>kmymoney2-developer@lists.sourceforge.net</b></font>
-.
-<p>
-<a href="/home">Goto Your Financial Summary</a> (only available if
-you have created at least one account)<p>
+<img id="KMyMoneyLogo" src="images/trans_logo.png">
+<h3 id="title">Welcome to KMyMoney</h3>
+<p id="tagline">Personal Finance Software</p>
+<div id="summaryLink"><a href="/home">Go to My Financial Summary</a></div>
+<div id="topleft">
+<div id="topright"><img src="images/spacer.png"></div>
+<div id="rightborder">
+<table style="width: 100%;">
+  <tbody>
+    <tr>
+      <td></td>
+      <td style="height: 150px; width: 380px;">
+      <div id="welcomeMenu">
+      <ul>
+        <li><img src="images/filenew.png"><a href="/welcome?mode=filenew">Set up a new KMyMoney data file</a></li>
+        <li><img src="images/kmymoneydata.png"><a href="/welcome?mode=fileopen">Use an existing KMyMoney data file</a></li>
+        <li><img src="images/manual.png"><a href="/welcome?mode=manual">Learn how to use KMyMoney</a></li>
+        <li><img src="images/konqueror.png"><a href="/welcome?mode=www">Visit the KMyMoney website</a></li>
+        <li><img src="images/messagebox_info.png"><a href="/welcome?mode=whatsnew">See what's new in this version</a></li>
+      </ul>
+      </div>
+      </td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<div id="bottomleft">
+<div id="bottomright"></div>
+</div>
+</div>
 </body>
 </html>
