@@ -52,14 +52,13 @@
 #include "../mymoney/storage/mymoneyseqaccessmgr.h"
 
 /**
-
   * This class represents the view of the MyMoneyFile which contains
   * Banks/Accounts/Transactions, Recurring transactions (or Bills & Deposits)
   * and scripts (yet to be implemented).  Each different aspect of the file
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.18 2002/10/15 09:31:00 ipwizard Exp $
+  * $Id: kmymoneyview.h,v 1.19 2002/11/05 20:52:34 ipwizard Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -250,6 +249,7 @@ public slots:
     *
     * @see KBanksView
     * @see KNewAccountDlg
+
     * @see MyMoneyFile
     * @see MyMoneyAccount
   **/
@@ -367,8 +367,18 @@ protected slots:
   /**
     * Called when the user changes the visibility
     * setting of the transaction form
+    *
+    * @param show if true, the transaction form is shown
     */
   void slotShowTransactionForm(bool show);
+
+  /**
+    * Called when the user changes the detail
+    * setting of the transaction register
+    *
+    * @param detailed if true, the register is shown with all details
+    */
+  void slotShowTransactionDetail(bool detailed);
 
 signals:
   /**

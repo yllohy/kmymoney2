@@ -133,7 +133,6 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   //connect(accountsView, SIGNAL(accountSelected()), this, SLOT(slotAccountSelected()));
   connect(accountsView, SIGNAL(bankRightMouseClick()),
     this, SLOT(slotBankRightMouse()));
-
   connect(accountsView, SIGNAL(rightMouseClick()),
     this, SLOT(slotRightMouse()));
 
@@ -197,6 +196,7 @@ void KMyMoneyView::slotAccountRightMouse()
 void KMyMoneyView::slotAccountDoubleClick(void)
 {
   bool  ok = false;
+
   QCString acc;
 
   acc = accountsView->currentAccount(ok);
@@ -377,7 +377,7 @@ bool KMyMoneyView::readFile(QString filename)
   IMyMoneyStorageFormat* pReader = NULL;    
 
   QString strFileExtension = MyMoneyUtils::getFileExtension(filename);
-  if(strFileExtension.find("XML"))
+  if(strFileExtension.find("XML") != -1)
   {
     pReader = new MyMoneyStorageXML;
   }
@@ -676,6 +676,7 @@ void KMyMoneyView::viewPersonal(void)
 
   if (newFileDlg.exec())
   {
+
     file->setUserName(newFileDlg.userNameText);
     file->setUserStreet(newFileDlg.userStreetText);
     file->setUserTown(newFileDlg.userTownText);
@@ -994,7 +995,6 @@ void KMyMoneyView::settingsLists()
 
       qdateStart = config->readDateTimeEntry("StartDate", &defaultDate).date();
 
-
       if (qdateStart != defaultDate.date())
       {
 
@@ -1306,6 +1306,7 @@ bool KMyMoneyView::checkTransactionCategory(const MyMoneyTransaction *transactio
 }
 /*
 QString KMyMoneyView::currentBankName(void)
+
 {
   bool bankSuccess=false;
   if (m_file) {
@@ -1394,6 +1395,16 @@ void KMyMoneyView::slotShowTransactionForm(bool show)
 {
   if(m_ledgerView != 0)
     m_ledgerView->slotShowTransactionForm(show);
+}
+
+void KMyMoneyView::slotShowTransactionDetail(bool detailed)
+{
+  KConfig *config = KGlobal::config();
+  config->setGroup("List Options");
+  config->writeEntry("ShowRegisterDetailed", detailed);
+  config->sync();
+
+  settingsLists();
 }
 
 
