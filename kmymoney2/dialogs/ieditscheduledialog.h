@@ -108,7 +108,8 @@ private:
 
   /// the action
   QCString m_actionType;
-
+  // occurrences in order
+  static MyMoneySchedule::occurenceE occurMasks[];
   /**
     * Sets up the widgets based on whats in MyMoneyFile.
     */

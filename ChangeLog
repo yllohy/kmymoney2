@@ -1,3 +1,6 @@
+2005-02-07 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Fix editing of some frequencies (e.g. Quarterly)
+
 2005-02-05 Ace Jones <acejones@users.sourceforge.net>
   * Fixed account query reports to handle foreign stocks
   * Minor clean-ups in query reports

@@ -57,6 +57,25 @@ void dumpSplit (int i, MyMoneySplit s) {
   qDebug ("Value: %s", s.value().toString().latin1());
 } */
 
+// list of schedule occurrences in ascending order of period
+#define END_OCCURS 99999
+MyMoneySchedule::occurenceE KEditScheduleDialog::occurMasks[] = {
+  MyMoneySchedule::OCCUR_ONCE,
+  MyMoneySchedule::OCCUR_DAILY,
+  MyMoneySchedule::OCCUR_WEEKLY,
+  MyMoneySchedule::OCCUR_FORTNIGHTLY,
+  MyMoneySchedule::OCCUR_EVERYOTHERWEEK,
+  MyMoneySchedule::OCCUR_MONTHLY,
+  MyMoneySchedule::OCCUR_EVERYFOURWEEKS,
+  MyMoneySchedule::OCCUR_EVERYOTHERMONTH,
+  MyMoneySchedule::OCCUR_EVERYTHREEMONTHS,
+  MyMoneySchedule::OCCUR_QUARTERLY,
+  MyMoneySchedule::OCCUR_EVERYFOURMONTHS,
+  MyMoneySchedule::OCCUR_TWICEYEARLY,
+  MyMoneySchedule::OCCUR_YEARLY,
+  MyMoneySchedule::OCCUR_EVERYOTHERYEAR,
+  (MyMoneySchedule::occurenceE) END_OCCURS };
+
 KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySchedule& schedule, QWidget *parent, const char *name)
  : kEditScheduledTransferDlgDecl(parent,name, true)
 {
@@ -221,20 +240,7 @@ void KEditScheduleDialog::reloadFromFile(void)
     m_paymentMethod->insertItem(i18n("Withdrawal"));
     m_paymentMethod->insertItem(i18n("ATM"));
   }
-
-  m_kcomboFreq->insertItem(i18n("Once"));
-  m_kcomboFreq->insertItem(i18n("Daily"));
-  m_kcomboFreq->insertItem(i18n("Weekly"));
-  m_kcomboFreq->insertItem(i18n("Every two weeks"));
-  m_kcomboFreq->insertItem(i18n("Every four weeks"));
-  m_kcomboFreq->insertItem(i18n("Monthly"));
-  m_kcomboFreq->insertItem(i18n("Every two months"));
-  m_kcomboFreq->insertItem(i18n("Every three months"));
-  m_kcomboFreq->insertItem(i18n("Every four months"));
-  m_kcomboFreq->insertItem(i18n("Twice a year"));
-  m_kcomboFreq->insertItem(i18n("Yearly"));
-  m_kcomboFreq->insertItem(i18n("Every other year"));
-
+  for (int i = 0; occurMasks[i] != END_OCCURS; i++) m_kcomboFreq->insertItem (KMyMoneyUtils::occurenceToString (occurMasks[i]));
   m_accountCombo->blockSignals(true);
   m_kcomboTo->blockSignals(true);
   if (m_actionType == MyMoneySplit::ActionTransfer
@@ -654,59 +660,9 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
     }
 
     int frequency=0;
-    switch (m_schedule.occurence())
-    {
-      case MyMoneySchedule::OCCUR_ONCE:
-        frequency=0;
-        m_kcomboFreq->setCurrentItem(0);
-        break;
-      case MyMoneySchedule::OCCUR_DAILY:
-        frequency=1;
-        m_kcomboFreq->setCurrentItem(1);
-        break;
-      case MyMoneySchedule::OCCUR_WEEKLY:
-        frequency=2;
-        m_kcomboFreq->setCurrentItem(2);
-        break;
-      case MyMoneySchedule::OCCUR_FORTNIGHTLY:
-        frequency=3;
-        m_kcomboFreq->setCurrentItem(3);
-        break;
-      case MyMoneySchedule::OCCUR_EVERYFOURWEEKS:
-        frequency=4;
-        m_kcomboFreq->setCurrentItem(4);
-        break;
-      case MyMoneySchedule::OCCUR_MONTHLY:
-        frequency=5;
-        m_kcomboFreq->setCurrentItem(5);
-        break;
-      case MyMoneySchedule::OCCUR_EVERYOTHERMONTH:
-        frequency=6;
-        m_kcomboFreq->setCurrentItem(6);
-        break;
-      case MyMoneySchedule::OCCUR_EVERYTHREEMONTHS:
-        frequency=7;
-        m_kcomboFreq->setCurrentItem(7);
-        break;
-      case MyMoneySchedule::OCCUR_EVERYFOURMONTHS:
-        frequency=8;
-        m_kcomboFreq->setCurrentItem(8);
-        break;
-      case MyMoneySchedule::OCCUR_TWICEYEARLY:
-        frequency=9;
-        m_kcomboFreq->setCurrentItem(9);
-        break;
-      case MyMoneySchedule::OCCUR_YEARLY:
-        frequency=10;
-        m_kcomboFreq->setCurrentItem(10);
-        break;
-      case MyMoneySchedule::OCCUR_EVERYOTHERYEAR:
-        frequency=11;
-        m_kcomboFreq->setCurrentItem(11);
-        break;
-      default:
-        break;
-    }
+    for (frequency = 0; occurMasks[frequency] != END_OCCURS; frequency++) if (occurMasks[frequency] == m_schedule.occurence()) break;
+    if (occurMasks[frequency] == END_OCCURS) frequency = 0;
+    m_kcomboFreq->setCurrentItem(frequency);
 
     MyMoneyMoney amount = m_schedule.transaction().splitByAccount(theAccountId()).value();
     amount = amount.abs();
@@ -803,52 +759,7 @@ void KEditScheduleDialog::slotEndDateChanged(const QDate& date)
 
 MyMoneySchedule::occurenceE KEditScheduleDialog::comboToOccurence()
 {
-  MyMoneySchedule::occurenceE occur;
-
-  switch (m_kcomboFreq->currentItem())
-  {
-    case 0:
-      occur = MyMoneySchedule::OCCUR_ONCE;
-      break;
-    case 1:
-      occur = MyMoneySchedule::OCCUR_DAILY;
-      break;
-    case 2:
-      occur = MyMoneySchedule::OCCUR_WEEKLY;
-      break;
-    case 3:
-      occur = MyMoneySchedule::OCCUR_FORTNIGHTLY;
-      break;
-    case 4:
-      occur = MyMoneySchedule::OCCUR_EVERYFOURWEEKS;
-      break;
-    case 5:
-      occur = MyMoneySchedule::OCCUR_MONTHLY;
-      break;
-    case 6:
-      occur = MyMoneySchedule::OCCUR_EVERYOTHERMONTH;
-      break;
-    case 7:
-      occur = MyMoneySchedule::OCCUR_EVERYTHREEMONTHS;
-      break;
-    case 8:
-      occur = MyMoneySchedule::OCCUR_EVERYFOURMONTHS;
-      break;
-    case 9:
-      occur = MyMoneySchedule::OCCUR_TWICEYEARLY;
-      break;
-    case 10:
-      occur = MyMoneySchedule::OCCUR_YEARLY;
-      break;
-    case 11:
-      occur = MyMoneySchedule::OCCUR_EVERYOTHERYEAR;
-      break;
-    default:
-      occur = MyMoneySchedule::OCCUR_ANY;
-      break;
-  }
-
-  return occur;
+  return (occurMasks [m_kcomboFreq->currentItem()]);
 }
 
 void KEditScheduleDialog::slotAmountChanged(const QString&)
