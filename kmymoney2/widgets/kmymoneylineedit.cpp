@@ -24,23 +24,31 @@ kMyMoneyLineEdit::kMyMoneyLineEdit(QWidget *w):KLineEdit(w)
 	setAlignment(AlignRight | AlignVCenter);
 }
 
-kMyMoneyLineEdit::~kMyMoneyLineEdit(){
+kMyMoneyLineEdit::~kMyMoneyLineEdit()
+{
 }
+
 /** No descriptions */
-bool kMyMoneyLineEdit::eventFilter(QObject *o , QEvent *e ){
-
-	if(e->type() == QEvent::KeyRelease)
-	{
-		QKeyEvent *k = (QKeyEvent *) e;
+bool kMyMoneyLineEdit::eventFilter(QObject *o , QEvent *e )
+{
+  if(e->type() == QEvent::KeyRelease) {
+    QKeyEvent *k = static_cast<QKeyEvent *> (e);
     if((k->key() == Qt::Key_Return) ||
-       (k->key() == Qt::Key_Enter))
-    {
-    	emit signalEnter();
-		emit signalNextTransaction();
-		}
-	}
-	return KLineEdit::eventFilter(o,e);
+       (k->key() == Qt::Key_Enter)) {
+      emit signalEnter();
+      emit signalNextTransaction();
+    }
 
+  } else if(e->type() == QEvent::KeyPress) {
+    QKeyEvent *k = static_cast<QKeyEvent *> (e);
+    if(k->key() == Qt::Key_Backtab ||
+       (k->key() == Qt::Key_Tab &&
+       (k->state() & Qt::ShiftButton)) ) {
+      emit signalBackTab();
 
-
+    } else if(k->key() == Qt::Key_Tab) {
+      emit signalTab();
+    }
+  }
+  return KLineEdit::eventFilter(o,e);
 }

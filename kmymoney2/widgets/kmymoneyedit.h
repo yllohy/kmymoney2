@@ -48,6 +48,11 @@ signals: // Signals
   void signalEnter();
   /** No descriptions */
   void signalNextTransaction();
+  /** signal is sent, when the tab key is pressed */
+  void signalTab();
+  /** signal is sent, when the Back-tab (Shift-Tab) key is pressed */
+  void signalBackTab();
+
 };
 
 #endif
