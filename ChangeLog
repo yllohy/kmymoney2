@@ -1,3 +1,8 @@
+2005-03-13 Ace Jones <acejones@users.sourceforge.net>
+  * Online quotes will now only fetch quotes for the first security using a
+    given trading symbol.  It's assumed that multiple securities using the
+    same symbol is an error condition.
+    
 2005-03-12 Ace Jones <acejones@users.sourceforge.net>
   * Removed most OFX dependencies in the main program--all that's left is the
     OFX Direct Connect and the OFX importer test cases
