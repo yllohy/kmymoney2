@@ -521,9 +521,11 @@ void KInvestmentView::show(void)
 
 void KInvestmentView::update(const QCString& /* id */)
 {
-  QCString lastUsed = m_account.id();
-  loadAccounts();
-  if(m_account.id() != lastUsed) {
-    slotRefreshView();
+  if(m_tab->isEnabled()) {
+    QCString lastUsed = m_account.id();
+    loadAccounts();
+    if(m_account.id() != lastUsed) {
+      slotRefreshView();
+    }
   }
 }
