@@ -375,6 +375,9 @@ MyMoneySchedule KEditScheduleDialog::schedule(void)
 
 void KEditScheduleDialog::okClicked()
 {
+  // force focus change to update all data
+  m_qbuttonOK->setFocus();
+
   if (m_scheduleName->text().isEmpty())
   {
     KMessageBox::information(this, i18n("Please fill in the name field."));
