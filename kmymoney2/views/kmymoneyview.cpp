@@ -585,7 +585,14 @@ void KMyMoneyView::saveFile(const KURL& url)
     return;
   }
 
-  KMessageBox::sorry(this, i18n("WARNING: This has not been tested yet. Use at your own risk!!!"));
+  if(KMessageBox::warningContinueCancel(this, i18n(
+      "Since this version of KMyMoney2 only writes data files in it's new "
+      "format, files written with this version cannot be read by older versions "
+      "of KMyMoney2. If "
+      "you still want to use prior versions of KMyMoney2 with your data files, "
+      "please make sure you keep a backup-file of your finance data. "
+      "If you want to abort this operation, please press Cancel now")) == KMessageBox::Cancel)
+    return;
 
   IMyMoneyStorageFormat* pWriter = NULL;
 
