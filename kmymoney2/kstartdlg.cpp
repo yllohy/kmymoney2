@@ -13,6 +13,9 @@
 
 
 #include "kstartdlg.h"
+#include "kstartdlg.moc"
+
+#include <stream.h>
 
 #include <qvbox.h>
 #include <qlayout.h>
@@ -26,6 +29,7 @@
 #include <kconfig.h>
 #include <kglobalsettings.h>
 #include <kfiledialog.h>
+#include <kurl.h>
 #include <kurlrequester.h>
 #include <kfile.h>
 
@@ -33,7 +37,11 @@ KStartDlg::KStartDlg(QString &obsolete, QWidget *parent, const char *name, bool 
 {
 	setPage_Template();
   setPage_Documents();
-  /*NOTE: Need to change to kconfig read setting */  this->resize( QSize(400,300) );
+
+	isnewfile = false;
+	isopenfile = false;
+
+	readConfig();
 }
 
 KStartDlg::~KStartDlg()
@@ -53,7 +61,6 @@ void KStartDlg::setPage_Template()
 void KStartDlg::setPage_Documents()
 {
 	QFrame *mainFrame = addPage( i18n("Open"), i18n("Open a KMyMoney document"), DesktopIcon("fileopen"));
-
   QVBoxLayout *mainLayout = new QVBoxLayout( mainFrame );
 
   kurlrequest = new KURLRequester( mainFrame, "kurlrequest" );
@@ -70,6 +77,7 @@ void KStartDlg::setPage_Documents()
   GroupBox1Layout->setSpacing( 6 );
   GroupBox1Layout->setMargin( 11 );
   view_recent = new KIconView( GroupBox1, "view_recent" );
+  connect( view_recent, SIGNAL( executed(QIconViewItem *) ), this, SLOT( slotRecentClicked(QIconViewItem *) ) );
   GroupBox1Layout->addWidget( view_recent );
   mainLayout->addWidget( GroupBox1 );
 }
@@ -86,5 +94,63 @@ void KStartDlg::slotTemplateClicked(QIconViewItem *item)
 
   isopenfile = false;
   // Close the window if the user press an icon
-  this->accept();
+	slotOk();
+}
+
+/** Read config window */
+void KStartDlg::readConfig()
+{
+	QString key;
+	QString value = "";
+
+	KConfig *config = KGlobal::config();
+
+	config->setGroup("Recent Files");
+
+	// read file list
+	uint i=1;
+	while( !value.isNull() )
+	{
+		key = QString( "File%1" ).arg( i );
+		value = config->readEntry( key, QString::null );
+		if( !value.isNull() )
+			(void)new QIconViewItem( view_recent, value, QPixmap( locate("icon","hicolor/48x48/mimetypes/kmymoney2.png") ) );
+		i++;
+	}
+
+	config->setGroup("Start Dialog");
+	QSize *defaultSize = new QSize(400,300);
+	this->resize( config->readSizeEntry("Geometry", defaultSize ) );
+
+}
+
+/** Write config window */
+void KStartDlg::writeConfig()
+{
+  KConfig *config = KGlobal::config();
+
+  config->setGroup("Start Dialog");
+  config->writeEntry("Geometry", this->size() );
+  config->sync();
+}
+
+/** slot to recent view */
+void KStartDlg::slotRecentClicked(QIconViewItem *item)
+{
+  if(!item) return;
+
+	KURL fileNAME;
+  // If the item is the blank document turn isnewfile variable true, else is template or wizard
+  isopenfile = true;
+	fileNAME = item->text();
+	kurlrequest->setURL( fileNAME.directory(false,true)+fileNAME.fileName() );
+  // Close the window if the user press an icon
+	slotOk();
+}
+
+/** No descriptions */
+void KStartDlg::slotOk()
+{
+	writeConfig();
+	this->accept();	
 }

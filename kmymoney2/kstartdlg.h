@@ -39,7 +39,7 @@ public:
 	~KStartDlg();
   //NOTE: filename argument in KStarDlg is not necessary. This can be set in recent documents.
   bool isNewFile(void)          { return isnewfile;           }
-  bool isOpenFile(void)         { return isopenfile;          }
+  bool isOpenFile(void)         { return !kurlrequest->url().isEmpty();          }
   QString getFileName(void)     { return kurlrequest->url();  }
   QString getTemplateName(void) { return templatename;    }
 public:
@@ -48,6 +48,10 @@ private: // Private methods
   void setPage_Template();
   void setPage_Documents();
   /** misc widgets */
+  /** Write config window */
+  void writeConfig();
+  /** Read config window */
+  void readConfig();
   KIconView *view_wizard;
   KIconView *view_recent;
   KURLRequester *kurlrequest;
@@ -55,8 +59,13 @@ private: // Private methods
   bool isnewfile;
   bool isopenfile;
   QString templatename;
+protected slots:
+  /** No descriptions */
+  void slotOk();
 private slots:
   void slotTemplateClicked(QIconViewItem *item);
+  /** slot to recent view */
+  void slotRecentClicked(QIconViewItem *item);
 };
 
 #endif
