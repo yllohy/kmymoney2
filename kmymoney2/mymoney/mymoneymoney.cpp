@@ -87,7 +87,7 @@ bool MyMoneyMoney::operator != (const MyMoneyMoney& right)
 
 bool MyMoneyMoney::isZero(void)
 {
-  return (m_amount==0.0)?true:false;
+  return (m_amount<0.009999999999999)?true:false;
 }
 
 bool MyMoneyMoney::operator < (const MyMoneyMoney& right)

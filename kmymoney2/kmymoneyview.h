@@ -26,6 +26,7 @@
 #include "kfindtransactiondlg.h"
 #include "ktfindresultsdlg.h"
 #include "kscheduleview.h"
+#include "kimportdlg.h"
 
 /**
   * This class represents the view of the MyMoneyFile which contains
@@ -34,7 +35,7 @@
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.3 2001/03/15 02:23:07 mte Exp $
+  * $Id: kmymoneyview.h,v 1.4 2001/05/21 01:33:31 frodriguez Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -49,6 +50,7 @@ private:
   KReconcileDlg *reconcileDlg;  // These exists during app run time ?
   KFindTransactionDlg *transactionFindDlg;
   KTFindResultsDlg *transactionResultsDlg;
+	KImportDlg       *importDlg;
 
   // The schedule view
   KScheduleView *m_scheduledView;
@@ -203,6 +205,8 @@ public:
     * @param show Whether to show the box or not.
   **/
   void showTransactionInputBox(bool show);
+  /** No descriptions */
+  void readQIFFile(const QString& name, MyMoneyAccount *account);
 
 public slots:
   /**

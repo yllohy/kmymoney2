@@ -1,3 +1,8 @@
+2001-05-20 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
+  * Added QIF import of categories and transactions
+  * Fixed bugs in ReconcileDialogBox
+  * Fixed bug in MyMoneyMoney class in determining whether amount is zero.
+
 2001-05-15 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
   * Fixed bug where numeric keypad enter key would not work
   * Now saving Payee information in transaction's payee field

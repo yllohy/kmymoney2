@@ -41,6 +41,7 @@ class KEndingBalanceDlg : public KEndingBalanceDlgDecl  {
 public:
   // Read from these to get the value when the dialog has finished.
   MyMoneyMoney endingBalance;
+  MyMoneyMoney previousBalance;
   QDate endingDate;
 
 public:

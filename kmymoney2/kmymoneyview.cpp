@@ -458,13 +458,13 @@ void KMyMoneyView::slotAccountReconcile(void)
   KEndingBalanceDlg dlg(l_previousBal, l_endingBalGuess, this);
 	if (dlg.exec()) {
     if (!m_reconcileInited) {
-      reconcileDlg = new KReconcileDlg(l_previousBal, dlg.endingBalance, dlg.endingDate, *pBank, *pAccount, m_file, 0);
+      reconcileDlg = new KReconcileDlg(dlg.previousBalance, dlg.endingBalance, dlg.endingDate, *pBank, *pAccount, m_file, 0);
       connect(reconcileDlg, SIGNAL(reconcileFinished(bool)), this, SLOT(slotReconcileFinished(bool)));
     	reconcileDlg->show();
     	m_inReconciliation = true;
   	  m_reconcileInited=true;
     } else {
-      reconcileDlg->resetData(l_previousBal, dlg.endingBalance, dlg.endingDate, *pBank, *pAccount, m_file);
+      reconcileDlg->resetData(dlg.previousBalance, dlg.endingBalance, dlg.endingDate, *pBank, *pAccount, m_file);
       reconcileDlg->show();
   	  m_inReconciliation = true;
     }
@@ -473,7 +473,38 @@ void KMyMoneyView::slotAccountReconcile(void)
 
 void KMyMoneyView::slotAccountImportAscii(void)
 {
-  KMessageBox::information(this, "slotAccountImportAscii: Placement holder for future addition...\nPlease wait, I'm on it.\nMichael (mte@users.sourceforge.net.");
+  bool bankSuccess=false, accountSuccess=false;
+  MyMoneyBank *pBank;
+  MyMoneyAccount *pAccount;
+
+	pBank = m_file.bank(m_mainView->currentBank(bankSuccess));
+	if (!pBank || !bankSuccess) {
+    qDebug("KMyMoneyView::slotAccountReconcile: Unable to get the current bank");
+    return;
+  }
+  pAccount = pBank->account(m_mainView->currentAccount(accountSuccess));
+  if (!pAccount || !accountSuccess) {
+    qDebug("KMyMoneyView::slotAccountReconcile: Unable to grab the current account");
+    return;
+  }
+
+  KImportDlg *importDlg = new KImportDlg();
+  connect( importDlg->btnBrowse, SIGNAL( clicked() ), importDlg, SLOT( slotBrowse() ) );
+
+	int returncode = importDlg->exec();
+
+	if(returncode)
+	{
+		readQIFFile(importDlg->txtFileImport->text(),pAccount);
+    m_mainView->refreshTransactionView();
+    qDebug("OK Pressed");
+	}
+	else
+	{
+   	qDebug("Cancel Pressed");
+	}
+
+	delete importDlg;
 }
 
 void KMyMoneyView::slotAccountExportAscii(void)
@@ -1038,4 +1069,276 @@ QString KMyMoneyView::currentAccountName(void)
 void KMyMoneyView::showTransactionInputBox(bool val)
 {
   m_mainView->showInputBox(val);
+}
+/** No descriptions */
+void KMyMoneyView::readQIFFile(const QString& name, MyMoneyAccount *account){
+
+	bool catmode = false;
+  bool transmode = false;
+	bool writecat = false;
+	bool writetrans = false;
+  bool cleared = false;
+  QString catname = "";
+	QString expense = "";
+	QString date = "";
+	QString amount = "";
+	QString type = "";
+	QString payee = "";
+	QString category = "";
+  MyMoneyCategory *oldcategory = 0;
+
+    QFile f(name);
+    if ( f.open(IO_ReadOnly) ) {    // file opened successfully
+        QTextStream t( &f );        // use a text stream
+        QString s;
+        //int n = 1;
+        while ( !t.eof() ) {        // until end of file...
+            s = t.readLine();       // line of text excluding '\n'
+						if(s.left(9) == "!Type:Cat")
+						{
+							catmode = true;
+							transmode = false;
+						}
+						else if(s.left(10) == "!Type:Bank")
+						{
+							qDebug("Found Bank Type");
+             	transmode = true;
+						  catmode = false;
+						}
+						else if(s.left(5) == "!Type")
+						{
+							qDebug("Found Just Type");
+             	catmode = false;
+							transmode = false;
+						}
+						else if(catmode)
+						{
+							if(s.left(1) == "N")
+							{
+             		catname = s.mid(1);
+							}
+							else if(s.left(1) == "E")
+							{
+             		expense = "E";
+							}
+							else if(s.left(1) == "I")
+							{
+								expense = "I";
+							}
+            	else if(s.left(1) == "^")
+							{
+								writecat = true;
+							}
+						}
+					  else if(transmode)
+						{
+             	if(s.left(1) == "^")
+							{
+               	writetrans = true;
+							}
+							if(s.left(1) == "D")
+							{
+			         	date = s.mid(1);
+							}
+							if(s.left(1) == "T")
+							{
+               	amount = s.mid(1);
+							}
+							if(s.left(1) == "N")
+							{
+								type = s.mid(1);
+							}
+							if(s.left(1) == "P")
+							{
+		           	payee = s.mid(1);
+							}
+							if(s.left(1) == "L")
+							{
+               	category = s.mid(1);
+							}
+							if(s.left(1) == "C")
+							{
+               	cleared = true;
+							}
+						}
+						
+
+						if(transmode && writetrans)
+						{
+							int slash = -1;
+							int apost = -1;
+							int checknum = 0;
+							bool isnumber = false;
+							QString checknumber = "";
+							MyMoneyTransaction::transactionMethod transmethod;
+							slash = date.find("/");							
+							apost = date.find("'");
+							QString month = date.left(slash);
+							QString day = date.mid(slash + 1,2);
+							day = day.stripWhiteSpace();
+							QString year = date.mid(apost + 1,2);
+							year = year.stripWhiteSpace();
+							int intyear = 2000 + year.toInt();
+							int intmonth = month.toInt();
+							int intday = day.toInt();
+							checknum = type.toInt(&isnumber);
+							if(isnumber == false)
+							{
+               	if(type == "ATM")
+								{
+								  if(amount.find("-") > -1)
+                 		transmethod = MyMoneyTransaction::ATM;
+									else
+										transmethod = MyMoneyTransaction::Deposit;
+								}
+								else if(type == "DEP")
+								{
+									if(amount.find("-") == -1)
+                 		transmethod = MyMoneyTransaction::Deposit;
+									else
+										transmethod = MyMoneyTransaction::Withdrawal;
+								}
+								else if(type == "TXFR")
+								{
+									if(amount.find("-") > -1)
+                 		transmethod = MyMoneyTransaction::Transfer;
+									else
+										transmethod = MyMoneyTransaction::Deposit;
+								}
+								else if(type == "WTHD")
+								{
+									if(amount.find("-") > -1)
+                 		transmethod = MyMoneyTransaction::Withdrawal;
+									else
+										transmethod = MyMoneyTransaction::Deposit;
+								}
+								else
+								{
+									if(amount.find("-") > -1)
+                 		transmethod = MyMoneyTransaction::Withdrawal;
+									else
+										transmethod = MyMoneyTransaction::Deposit;
+								}
+								
+							}
+							else
+							{
+									if(amount.find("-") > -1)
+               			transmethod = MyMoneyTransaction::Cheque;
+									else
+										transmethod = MyMoneyTransaction::Deposit;
+									checknumber=type;
+							}
+							QDate transdate(intyear,intmonth,intday);
+              int commaindex = amount.find(",");
+							double dblamount = 0;
+		          if(commaindex != -1)
+			          dblamount = amount.remove(commaindex,1).toDouble();
+		          else
+			          dblamount = amount.toDouble();
+							if(dblamount < 0)
+								dblamount = dblamount * -1;
+							MyMoneyMoney moneyamount(dblamount);
+							QString majorcat = "";
+							QString minorcat = "";
+							int catindex = category.find(":");
+							if(catindex == -1)
+								majorcat = category;
+							else
+							{
+               	majorcat = category.left(catindex);
+								minorcat = category.mid(catindex + 1);
+							}
+							
+							MyMoneyTransaction::stateE transcleared;
+
+							if(cleared == true)
+								transcleared = MyMoneyTransaction::Reconciled;
+							else
+								transcleared = MyMoneyTransaction::Unreconciled;
+
+              account->addTransaction(transmethod, checknumber, payee,
+                                      moneyamount, transdate, majorcat, minorcat, "",payee,
+                                      "", "", transcleared);
+							qDebug("Date:%s",date.latin1());
+							qDebug("Amount:%s",amount.latin1());
+							qDebug("Type:%s",type.latin1());
+							qDebug("Payee:%s",payee.latin1());
+							qDebug("Category:%s",category.latin1());
+
+			        date = "";
+              amount = "";
+							type = "";
+		          payee = "";
+              category = "";
+              cleared = false;
+							writetrans = false;
+						}
+						if(catmode && writecat)
+						{
+							QString majorcat = "";
+							QString minorcat = "";
+							bool minorcatexists = false;
+							bool majorcatexists = false;
+							int catindex = catname.find(":");
+							if(catindex == -1)
+								majorcat = catname;
+							else
+							{
+               	majorcat = catname.left(catindex);
+								minorcat = catname.mid(catindex + 1);
+							}
+  						QListIterator<MyMoneyCategory> it = m_file.categoryIterator();
+  						for ( ; it.current(); ++it ) {
+    						MyMoneyCategory *data = it.current();
+								if((majorcat == data->name()) && (minorcat == ""))
+								{
+									majorcatexists = true;
+                  minorcatexists = true;
+								}
+								else if(majorcat == data->name())
+								{
+									oldcategory = it.current();
+									majorcatexists = true;
+    							for ( QStringList::Iterator it2 = data->minorCategories().begin(); it2 != data->minorCategories().end(); ++it2 ) {
+                   if((*it2) == minorcat)
+									 {
+									  minorcatexists = true;
+									 }
+									}
+
+    						}
+  						}
+
+  						MyMoneyCategory category;
+							category.setName(majorcat);
+							if(expense == "E")
+								category.setIncome(false);
+							if(expense == "I")
+								category.setIncome(true);
+							if(majorcatexists == true)
+							{
+								if((minorcatexists == false) && (minorcat != ""))
+								{
+									category.addMinorCategory(minorcat);
+									oldcategory->addMinorCategory(minorcat);
+								}
+							}
+							else
+							{
+								if(minorcat != "")
+									category.addMinorCategory(minorcat);
+								m_file.addCategory(category.isIncome(), category.name(), category.minorCategories());
+               	
+							}
+							catname = "";
+							expense = "";
+							writecat = false;
+						}	
+						//qDebug("%s",s.latin1());
+        }
+        f.close();
+    }
+
+
 }

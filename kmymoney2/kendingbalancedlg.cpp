@@ -23,12 +23,11 @@ KEndingBalanceDlg::KEndingBalanceDlg(MyMoneyMoney& prevBal, MyMoneyMoney& ending
 {
 //	initDialog();
 	
-	previousEdit->setAlignment(AlignRight | AlignVCenter | ExpandTabs);
-	previousEdit->setText(KGlobal::locale()->formatMoney(prevBal.amount()));
+	previousbalEdit->setText(KGlobal::locale()->formatMoney(prevBal.amount()));
+	previousbalEdit->setFocus();
+	previousbalEdit->setSelection(0, KGlobal::locale()->formatNumber(prevBal.amount()).length());	
 	
 	endingEdit->setText(KGlobal::locale()->formatNumber(endingGuess.amount()));
-	endingEdit->setFocus();
-	endingEdit->setSelection(0, KGlobal::locale()->formatNumber(endingGuess.amount()).length());
 	
 	connect(cancelBtn, SIGNAL(clicked()), SLOT(reject()));
 	connect(okBtn, SIGNAL(clicked()), SLOT(okClicked()));
@@ -41,6 +40,7 @@ KEndingBalanceDlg::~KEndingBalanceDlg()
 void KEndingBalanceDlg::okClicked()
 {
   endingBalance = endingEdit->getMoneyValue();
+	previousBalance = previousbalEdit->getMoneyValue();
   endingDate = endingDateEdit->getQDate();
 
   if (!endingDate.isValid()) {

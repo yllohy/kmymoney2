@@ -25,8 +25,9 @@ KReconcileListItem::KReconcileListItem(QListView *parent, MyMoneyTransaction *tr
   m_transaction = transaction;
 
   setText(0, KGlobal::locale()->formatDate(m_transaction->date(), true));
-  setText(1, m_transaction->memo());
-  setText(2, KGlobal::locale()->formatMoney(m_transaction->amount().amount()));
+	setText(1, m_transaction->number());
+  setText(2, m_transaction->memo());
+  setText(3, KGlobal::locale()->formatMoney(m_transaction->amount().amount()));
 
   QString tmp;
   switch (m_transaction->state()) {
@@ -41,7 +42,7 @@ KReconcileListItem::KReconcileListItem(QListView *parent, MyMoneyTransaction *tr
       break;
   }
 
-  setText(3, tmp);
+  setText(4, tmp);
 }
 
 KReconcileListItem::~KReconcileListItem()
@@ -61,7 +62,7 @@ void KReconcileListItem::setReconciled(bool rec)
     m_transaction->setState(MyMoneyTransaction::Unreconciled);
     temp = " ";
   }
-  setText(3,temp);
+  setText(4,temp);
 
 }
 
