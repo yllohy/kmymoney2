@@ -508,5 +508,6 @@ void KInvestmentView::update(const QCString& id)
     } else if(id == MyMoneyFile::NotifyClassAccountHierarchy) {
       updateDisplay();
     }
-  }
+  } else
+    slotRefreshView();
 }
