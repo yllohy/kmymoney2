@@ -87,7 +87,7 @@ void kMyMoneyRegisterInvestment::paintCell(QPainter *p, int row, int col, const 
   setTransactionRow(row);
 
   int align = Qt::AlignVCenter;
-  QString txt;
+  QString txt(" ");
   if(m_transaction != 0) {
     try {
       m_feeSplit = MyMoneySplit();

@@ -352,7 +352,7 @@ void KFindTransactionDlg::selectSubItems(QListViewItem* item, const QCStringList
 }
 
 void KFindTransactionDlg::setupDatePage(void)
-{   
+{
   MyMoneyTransactionFilter::translateDateRange(allDates,m_startDates[allDates],m_endDates[allDates]);
   MyMoneyTransactionFilter::translateDateRange(untilToday,m_startDates[untilToday],m_endDates[untilToday]);
   MyMoneyTransactionFilter::translateDateRange(currentMonth,m_startDates[currentMonth],m_endDates[currentMonth]);
@@ -370,7 +370,7 @@ void KFindTransactionDlg::setupDatePage(void)
   MyMoneyTransactionFilter::translateDateRange(next6Months,m_startDates[next6Months],m_endDates[next6Months]);
   MyMoneyTransactionFilter::translateDateRange(next12Months,m_startDates[next12Months],m_endDates[next12Months]);
   MyMoneyTransactionFilter::translateDateRange(userDefined,m_startDates[userDefined],m_endDates[userDefined]);
-  
+
   connect(m_dateRange, SIGNAL(activated(int)), this, SLOT(slotDateRangeChanged(int)));
   connect(m_fromDate, SIGNAL(dateChanged(const QDate&)), this, SLOT(slotDateChanged()));
   connect(m_toDate, SIGNAL(dateChanged(const QDate&)), this, SLOT(slotDateChanged()));
@@ -737,6 +737,11 @@ const QCString KFindTransactionDlg::accountId(const MyMoneyTransaction * const t
   }
   qFatal("KFindTransactionDlg::accountId(): No asset/liability account for transaction. This usually crashes");
   return QCString();
+}
+
+bool KFindTransactionDlg::focusNextPrevChild(bool next)
+{
+  return KFindTransactionDlgDecl::focusNextPrevChild(next);
 }
 
 void KFindTransactionDlg::resizeEvent(QResizeEvent* ev)

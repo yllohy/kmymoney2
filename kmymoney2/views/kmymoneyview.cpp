@@ -172,7 +172,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   m_ledgerView = new KGlobalLedgerView(m_ledgerViewFrame, KAppTest::widgetName(this, "KGlobalLedgerView"));
   // the next line causes the ledgers to get a hide() signal to be able
   // to end any pending edit activities
-  connect(this, SIGNAL(aboutToShowPage(QWidget*)), m_ledgerView, SLOT(hide()));
+  connect(this, SIGNAL(aboutToShowPage(QWidget*)), m_ledgerView, SLOT(slotCancelEdit()));
   signalMap->setMapping(m_ledgerView, LedgersView);
   connect(m_ledgerView, SIGNAL(signalViewActivated()), signalMap, SLOT(map()));
   connect(m_ledgerView, SIGNAL(accountSelected(const QCString&)),
@@ -184,6 +184,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
     DesktopIcon("categories"));
 
   m_investmentView = new KInvestmentView(m_investmentViewFrame, KAppTest::widgetName(this, "KInvestmentView"));
+  connect(this, SIGNAL(aboutToShowPage(QWidget*)), m_investmentView, SLOT(slotCancelEdit()));
   signalMap->setMapping(m_investmentView, InvestmentsView);
   connect(m_investmentView, SIGNAL(signalViewActivated()), signalMap, SLOT(map()));
   connect(m_investmentView, SIGNAL(accountSelected(const QCString&)),
@@ -2046,6 +2047,8 @@ void KMyMoneyView::slotCancelEdit(void) const
 {
   if(m_ledgerView != 0)
     m_ledgerView->slotCancelEdit();
+  if(m_investmentView != 0)
+    m_investmentView->slotCancelEdit();
 }
 
 void KMyMoneyView::progressCallback(int current, int total, const QString& msg)

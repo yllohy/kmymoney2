@@ -30,6 +30,7 @@
 // KDE Includes
 
 #include <kpushbutton.h>
+#include <kcombobox.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -40,7 +41,7 @@
 /**
   * @author Thomas Baumgart
   */
-class kMyMoneyAccountCombo : public KPushButton
+class kMyMoneyAccountCombo : public KComboBox
 {
   Q_OBJECT
 public:
@@ -102,13 +103,19 @@ signals:
     */
   void signalEsc();
 
+  void pressed();
+  void released();
+  void clicked();
 
 protected:
-  void drawButton(QPainter *p);
-  void drawButtonLabel( QPainter *p ) { drawButton(p); };
+  void mousePressEvent(QMouseEvent *e);
+  void mouseReleaseEvent(QMouseEvent *e);
+
+  void setText(const QString& txt);
 
 private:
   kMyMoneyAccountCompletion*    m_selector;
+  bool                          m_mlbDown;
 };
 
 #endif

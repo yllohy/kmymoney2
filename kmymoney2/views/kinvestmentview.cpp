@@ -384,6 +384,7 @@ void KInvestmentView::slotRefreshView(void)
     slotSelectAccount(m_account.id());
   } else if(m_account.id().isEmpty()) {
     slotSelectAccount(QCString());
+    m_ledgerView->refreshView();
   } else {
     m_ledgerView->refreshView();
   }
@@ -443,11 +444,10 @@ void KInvestmentView::loadAccounts(void)
 
 const bool KInvestmentView::slotSelectAccount(const QCString& id, const bool reconciliation)
 {
-
   bool    rc = false;
 
   // cancel any pending edit operation in the ledger views
-  // emit cancelEdit();
+  slotCancelEdit();
 
   if(!id.isEmpty()) {
     // if the account id differs, then we have to do something
@@ -461,8 +461,11 @@ const bool KInvestmentView::slotSelectAccount(const QCString& id, const bool rec
         rc = true;
       } else {
         // keep the current selection ...
-        acc = MyMoneyFile::instance()->account(m_accountId);
-        m_accountComboBox->setSelected(acc);
+        if(!m_accountId.isEmpty()) {
+          acc = MyMoneyFile::instance()->account(m_accountId);
+          m_accountComboBox->setSelected(acc);
+        } else
+          m_accountComboBox->setSelected(QCString());
         // ... and let's see, if someone else can handle this request
         emit accountSelected(id);
       }
@@ -474,11 +477,12 @@ const bool KInvestmentView::slotSelectAccount(const QCString& id, const bool rec
       rc = true;
     }
   } else {
-    m_accountComboBox->setText("");
+    m_accountComboBox->setSelected(QCString());
   }
 
-  // keep this as the current account
-  m_accountId = id;
+  // keep this as the current account if we loaded a different one
+  if(rc == true)
+    m_accountId = id;
 
   return rc;
 }
@@ -489,14 +493,17 @@ void KInvestmentView::slotSelectAccountAndTransaction(const QCString& accountId,
   // if the selection of the account succeeded then select the desired transaction
   if(slotSelectAccount(accountId)) {
     // FIXME: select ledger tab and then call the selectTransaction method
-    // m_ledgerView->selectTransaction(transactionId);
+    m_ledgerView->selectTransaction(transactionId);
   }
 }
 
 
 void KInvestmentView::show(void)
 {
-  kInvestmentViewDecl::show();
+  // only show selection box if filled with at least one account
+  m_accountComboBox->setEnabled(m_accountComboBox->count() > 0);
+
+  QWidget::show();
   emit signalViewActivated();
 }
 
@@ -512,4 +519,9 @@ void KInvestmentView::update(const QCString& id)
     }
   } else
     slotRefreshView();
+}
+
+void KInvestmentView::slotCancelEdit(void)
+{
+  m_ledgerView->slotCancelEdit();
 }

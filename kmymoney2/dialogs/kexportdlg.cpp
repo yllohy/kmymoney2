@@ -215,7 +215,7 @@ void KExportDlg::checkData(const QCString& accountId)
         m_kmymoneydateEnd->loadDate((*it).postDate());
       }
       m_lastAccount = accountId;
-      m_accountComboBox->setText(account.name());
+      m_accountComboBox->setSelected(account);
     }
   }
 

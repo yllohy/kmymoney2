@@ -638,6 +638,13 @@ void kMyMoneyAccountSelector::setSelected(const QCString& id, const bool state)
 {
   QListViewItem* it_v;
 
+  if(id.isEmpty() && m_selMode == QListView::Single) {
+    QListViewItem* item = m_listView->selectedItem();
+    if(item)
+      m_listView->setSelected(item, false);
+    return;
+  }
+
   for(it_v = m_listView->firstChild(); it_v != 0; it_v = it_v->nextSibling()) {
     if(it_v->rtti() == 1) {
       kMyMoneyCheckListItem* it_c = dynamic_cast<kMyMoneyCheckListItem*>(it_v);

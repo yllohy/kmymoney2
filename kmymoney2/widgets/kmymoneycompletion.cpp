@@ -193,7 +193,7 @@ void kMyMoneyCompletion::slotItemSelected(QListViewItem *item, const QPoint&, in
     // hide the widget, so we can debug the slots that are connect
     // to the signal we emit very soon
     hide();
-    emit itemSelected(id);
     m_id = id;
+    emit itemSelected(id);
   }
 }

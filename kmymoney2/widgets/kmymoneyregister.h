@@ -97,6 +97,11 @@ public:
     *         accounts, the sign will be inverted for display purposes.
     */
   virtual const MyMoneyMoney balance(const int idx) const = 0;
+
+  /**
+    */
+  virtual bool focusNextPrevChild(bool next) = 0;
+
 };
 
 class kMyMoneyRegister : public QTable
@@ -319,6 +324,8 @@ protected:
   void contentsMouseReleaseEvent( QMouseEvent* e );
 
   virtual const bool isEditable(void) const { return true; };
+
+  bool focusNextPrevChild(bool next);
 
 protected:
   int    m_rpt;     // current rows per transaction

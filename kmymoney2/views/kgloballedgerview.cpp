@@ -92,7 +92,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
     this, SLOT(slotSelectAccountAndTransaction(const QCString&, const QCString&)));
   connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
     SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
-  connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
+  // connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
 
   // Savings account
   view = m_specificView[MyMoneyAccount::Savings] = new KLedgerViewSavings(this, KAppTest::widgetName(this, "KLedgerViewSavings"));
@@ -101,7 +101,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
     this, SLOT(slotSelectAccountAndTransaction(const QCString&, const QCString&)));
   connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
     SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
-  connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
+  // connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
 
   // Credit card account
   view = m_specificView[MyMoneyAccount::CreditCard] = new KLedgerViewCreditCard(this, KAppTest::widgetName(this, "KLedgerViewCreditCard"));
@@ -110,7 +110,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
     this, SLOT(slotSelectAccountAndTransaction(const QCString&, const QCString&)));
   connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
     SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
-  connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
+  // connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
 
   // Cash account
   view = m_specificView[MyMoneyAccount::Cash] = new KLedgerViewCash(this, KAppTest::widgetName(this, "KLedgerViewCash"));
@@ -119,7 +119,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
     this, SLOT(slotSelectAccountAndTransaction(const QCString&, const QCString&)));
   connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
     SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
-  connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
+  // connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
 
   // Asset account
   view = m_specificView[MyMoneyAccount::Asset] = new KLedgerViewAsset(this, KAppTest::widgetName(this, "KLedgerViewAsset"));
@@ -128,7 +128,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
     this, SLOT(slotSelectAccountAndTransaction(const QCString&, const QCString&)));
   connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
     SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
-  connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
+  // connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
 
   // Loan account
   view = m_specificView[MyMoneyAccount::Loan] = m_specificView[MyMoneyAccount::AssetLoan] = new KLedgerViewLoan(this, KAppTest::widgetName(this, "KLedgerViewLoan"));
@@ -137,7 +137,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
     this, SLOT(slotSelectAccountAndTransaction(const QCString&, const QCString&)));
   connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
     SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
-  connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
+  // connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
 
   // Liability account
   view = m_specificView[MyMoneyAccount::Liability] = new KLedgerViewLiability(this, KAppTest::widgetName(this, "KLedgerViewLiability"));
@@ -146,7 +146,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
     this, SLOT(slotSelectAccountAndTransaction(const QCString&, const QCString&)));
   connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
     SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
-  connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
+  // connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
 
   m_formLayout->addWidget(m_accountStack);
   setMinimumHeight(m_accountComboBox->minimumHeight() + m_accountStack->sizeHint().height());
@@ -268,7 +268,7 @@ const bool KGlobalLedgerView::slotSelectAccount(const QCString& id, const bool r
   bool    rc = false;
 
   // cancel any pending edit operation in the ledger views
-  emit cancelEdit();
+  slotCancelEdit();
 
   if(!id.isEmpty()) {
     // if the account id differs, then we have to do something
@@ -292,8 +292,11 @@ const bool KGlobalLedgerView::slotSelectAccount(const QCString& id, const bool r
         rc = true;
       } else {
         // keep the current selection ...
-        acc = MyMoneyFile::instance()->account(m_accountId);
-        m_accountComboBox->setSelected(acc);
+        if(!m_accountId.isEmpty()) {
+          acc = MyMoneyFile::instance()->account(m_accountId);
+          m_accountComboBox->setSelected(acc);
+        } else
+          m_accountComboBox->setSelected(QCString());
         // ... and let's see, if someone else can handle this request
         emit accountSelected(id);
       }
@@ -316,7 +319,7 @@ const bool KGlobalLedgerView::slotSelectAccount(const QCString& id, const bool r
       m_accountStack->raiseWidget(MyMoneyAccount::Checkings);
       m_currentView = m_specificView[MyMoneyAccount::Checkings];
       m_currentView->slotSelectAccount(id);
-      m_accountComboBox->setText("");
+      m_accountComboBox->setSelected(QCString());
 
       // keep this as the current account
       m_accountId = QCString();
@@ -353,7 +356,11 @@ void KGlobalLedgerView::suspendUpdate(const bool suspend)
 void KGlobalLedgerView::slotCancelEdit(void)
 {
   // cancel any pending edit operation in the ledger views
-  emit cancelEdit();
+  if(m_accountStack->isVisible()) {
+    KLedgerView* view = dynamic_cast<KLedgerView*>(m_accountStack->visibleWidget());
+    Q_CHECK_PTR(view);
+    view->slotCancelEdit();
+  }
 }
 
 void KGlobalLedgerView::show()
@@ -363,14 +370,6 @@ void KGlobalLedgerView::show()
 
   QWidget::show();
   emit signalViewActivated();
-}
-
-void KGlobalLedgerView::hide()
-{
-  for(int i = 0; i < MyMoneyAccount::MaxAccountTypes; ++i) {
-    if(m_specificView[i] != 0)
-      m_specificView[i]->hide();
-  }
 }
 
 void KGlobalLedgerView::update(const QCString& /* id */)

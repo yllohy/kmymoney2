@@ -595,3 +595,9 @@ void kMyMoneyRegister::setAction(const QCString& action, const QString& txt)
 {
   m_action[action] = txt;
 }
+
+bool kMyMoneyRegister::focusNextPrevChild(bool next)
+{
+  return m_parent->focusNextPrevChild(next);
+}
+

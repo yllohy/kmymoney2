@@ -802,6 +802,20 @@ protected:
     */
   static const MyMoneySplit stockSplit(const MyMoneyTransaction& t);
 
+  /**
+    * Resets the tab order for input mode to contain no widgets. New
+    * widgets can be added using addToTabOrder().
+    */
+  void clearTabOrder(void);
+
+  /**
+    * Adds the widget pointed to by @p w to the tab order during edit mode.
+    * The tab order can be cleared using clearTabOrder().
+    *
+    * @param w pointer to input widget
+    */
+  void addToTabOrder(QWidget* w);
+
 protected:
   /**
     * This member keeps a pointer to the specific register for the account

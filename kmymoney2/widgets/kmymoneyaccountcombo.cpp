@@ -39,18 +39,21 @@
 #include "kmymoneyaccountcompletion.h"
 
 kMyMoneyAccountCombo::kMyMoneyAccountCombo( QWidget* parent, const char* name ) :
-    KPushButton( parent, name )
+  KComboBox( parent, name ),
+  m_mlbDown(false)
 {
   m_selector = new kMyMoneyAccountCompletion(this, "selector");
   connect(this, SIGNAL(clicked()), this, SLOT(slotButtonPressed()));
+  // connect(m_selector, SIGNAL(itemSelected(const QCString&)), this, SIGNAL(accountSelected(const QCString&)));
   connect(m_selector, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotSelected(const QCString&)));
-  connect(m_selector, SIGNAL(itemSelected(const QCString&)), this, SIGNAL(accountSelected(const QCString&)));
 
   // make sure that we can display a minimum of characters
   QFontMetrics fm(font());
   setMinimumWidth(fm.maxWidth()*15);
-
   setMaximumHeight(height());
+
+  // we only use this one item and replace the text as we have our own dropdown box
+  insertItem(QString(""));
 }
 
 kMyMoneyAccountCombo::~kMyMoneyAccountCombo()
@@ -67,6 +70,7 @@ void kMyMoneyAccountCombo::slotSelected(const QCString& id)
   try {
     MyMoneyAccount acc = MyMoneyFile::instance()->account(id);
     setText(acc.name());
+    emit accountSelected(id);
   } catch(MyMoneyException *e) {
     delete e;
   }
@@ -74,12 +78,17 @@ void kMyMoneyAccountCombo::slotSelected(const QCString& id)
 
 void kMyMoneyAccountCombo::setSelected(const QCString& id)
 {
-  try {
-    MyMoneyAccount acc = MyMoneyFile::instance()->account(id);
-    setSelected(acc);
-  } catch(MyMoneyException *e) {
-    qDebug("Account '%s' not found in %s(%d)", id.data(), __FILE__, __LINE__);
-    delete e;
+  if(!id.isEmpty()) {
+    try {
+      MyMoneyAccount acc = MyMoneyFile::instance()->account(id);
+      setSelected(acc);
+    } catch(MyMoneyException *e) {
+      qDebug("Account '%s' not found in %s(%d)", id.data(), __FILE__, __LINE__);
+      delete e;
+    }
+  } else {
+    setText(QString());
+    m_selector->setSelected(id);
   }
 }
 
@@ -89,42 +98,9 @@ void kMyMoneyAccountCombo::setSelected(const MyMoneyAccount& acc)
   setText(acc.name());
 }
 
-
-void kMyMoneyAccountCombo::drawButton( QPainter *paint )
+void kMyMoneyAccountCombo::setText(const QString& txt)
 {
-  QStyle::SFlags flags = QStyle::Style_Default;
-
-  if (isEnabled())
-    flags |= QStyle::Style_Enabled;
-  if (hasFocus())
-    flags |= QStyle::Style_HasFocus;
-  if (isDown())
-    flags |= QStyle::Style_Down;
-  if (isOn())
-    flags |= QStyle::Style_On;
-  if (! isFlat() && ! isDown())
-    flags |= QStyle::Style_Raised;
-  if (isDefault())
-    flags |= QStyle::Style_ButtonDefault;
-
-  const QColorGroup & g = colorGroup();
-  style().drawComplexControl( QStyle::CC_ComboBox, paint, this, rect(), g,
-        flags, QStyle::SC_All & ~QStyle::SC_ComboBoxEditField,
-        (true ?                        // d->arrowDown
-          QStyle::SC_ComboBoxArrow :
-          QStyle::SC_None ));
-
-  QRect re = style().subRect(QStyle::SR_PushButtonContents, this);
-  if (isDown()) {
-    re.moveBy(style().pixelMetric(QStyle::PM_ButtonShiftHorizontal, this),
-              style().pixelMetric(QStyle::PM_ButtonShiftVertical, this));
-  }
-
-  QFontMetrics fm(font());
-  int ofs = (re.height() - fm.height())/2;
-  re.addCoords(8, ofs, 0, ofs);
-
-  style().drawItem(paint, re, QStyle::ShowPrefix, colorGroup(), flags & QStyle::Style_Enabled, 0, text(), text().length(), &(colorGroup().buttonText()));
+  changeItem(txt, currentItem());
 }
 
 const int kMyMoneyAccountCombo::loadList(const QString& baseName, const QValueList<QCString>& accountIdList, const bool clear)
@@ -164,8 +140,6 @@ int kMyMoneyAccountCombo::loadList(KMyMoneyUtils::categoryTypeE typeMask)
 
 void kMyMoneyAccountCombo::keyPressEvent(QKeyEvent* k)
 {
-  KPushButton::keyPressEvent(k);
-
   switch(k->key()) {
     case Qt::Key_Return:
     case Qt::Key_Enter:
@@ -178,6 +152,41 @@ void kMyMoneyAccountCombo::keyPressEvent(QKeyEvent* k)
 
     case Qt::Key_Tab:
       break;
+
+    case Qt::Key_Space:
+      emit clicked();
+      break;
+
+    default:
+      break;
   }
   return;
+}
+
+void kMyMoneyAccountCombo::mousePressEvent(QMouseEvent *e)
+{
+  if ( e->button() != LeftButton ) {
+    e->ignore();
+    return;
+  }
+  bool hit = rect().contains( e->pos() );
+  if ( hit ) {                                // mouse press on button
+    m_mlbDown = TRUE;                         // left mouse button down
+    emit pressed();
+  }
+}
+
+void kMyMoneyAccountCombo::mouseReleaseEvent(QMouseEvent *e)
+{
+  if ( e->button() != LeftButton ) {
+      e->ignore();
+      return;
+  }
+  if ( !m_mlbDown )
+      return;
+  m_mlbDown = FALSE;                            // left mouse button up
+  emit released();
+  if ( rect().contains( e->pos() ) ) {              // mouse release on button
+    emit clicked();
+  }
 }

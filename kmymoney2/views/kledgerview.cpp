@@ -1287,6 +1287,9 @@ void KLedgerView::slotStartEdit(void)
 
 void KLedgerView::slotCancelEdit(void)
 {
+  // force focusOut processing of the widgets
+  m_register->setFocus();
+
   m_form->newButton()->setEnabled(true);
   m_form->enterButton()->setEnabled(false);
   m_form->cancelButton()->setEnabled(false);
@@ -1519,6 +1522,20 @@ void KLedgerView::slotEndEdit(void)
   m_register->setFocus();
 }
 
+void KLedgerView::clearTabOrder(void)
+{
+  m_tabOrderWidgets.clear();
+}
+
+void KLedgerView::addToTabOrder(QWidget* w)
+{
+  if(w) {
+    while(w->focusProxy())
+      w = w->focusProxy();
+    m_tabOrderWidgets.append(w);
+  }
+}
+
 bool KLedgerView::focusNextPrevChild(bool next)
 {
   bool  rc = false;
@@ -1527,17 +1544,18 @@ bool KLedgerView::focusNextPrevChild(bool next)
     QWidget *w = 0;
     QWidget *currentWidget;
 
-    m_tabOrderWidgets.find(qApp->focusWidget());
+    int _rc = m_tabOrderWidgets.find(qApp->focusWidget());
     currentWidget = m_tabOrderWidgets.current();
     w = next ? m_tabOrderWidgets.next() : m_tabOrderWidgets.prev();
 
     do {
-      if(!w)
+      if(!w) {
         w = next ? m_tabOrderWidgets.first() : m_tabOrderWidgets.last();
+      }
 
       if(w != currentWidget
       && ((w->focusPolicy() & TabFocus) == TabFocus)
-      && !w->focusProxy() && w->isVisible() && w->isEnabled()) {
+      && w->isVisible() && w->isEnabled()) {
         w->setFocus();
         rc = true;
         break;

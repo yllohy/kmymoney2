@@ -80,11 +80,6 @@ public:
   void update(const QCString& id);
 
 public slots:
-  /**
-    * This slot calls the hide() slot of all known specific ledger views
-    */
-  void hide(void);
-
   void show(void);
 
   /**
@@ -186,7 +181,7 @@ signals:
     * This signal is emitted whenever the ledger views are required to
     * cancel any pending edit operation.
     */
-  void cancelEdit();
+  // void cancelEdit();
 
   /**
     */

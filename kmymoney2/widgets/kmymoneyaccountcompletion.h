@@ -81,9 +81,9 @@ public:
     *                 should be loaded into the completion list
     * @return This method returns the number of accounts loaded into the list
     */
-  int loadList(QValueList<int> typeList) { m_typeList = typeList; return m_accountSelector->loadList(typeList); };
+  const int loadList(QValueList<int> typeList);
 
-  int loadList(void) { return loadList(m_typeList); };
+  const int loadList(void) { return loadList(m_typeList); };
 
   /**
     * This method sets the current account with id @p id as

@@ -101,14 +101,16 @@ void kMyMoneyCategory::loadAccount(const QCString& id)
 {
   m_id = QCString();
   m_displayOnly = false;
-  try {
-    MyMoneyAccount acc = MyMoneyFile::instance()->account(id);
-    setText(MyMoneyFile::instance()->accountToCategory(id));
-    m_id = id;
-    m_accountSelector->setSelected(id);
-  } catch(MyMoneyException *e) {
-    qDebug("Account with id %s not found anymore", id.data());
-    delete e;
+  if(!id.isEmpty()) {
+    try {
+      MyMoneyAccount acc = MyMoneyFile::instance()->account(id);
+      setText(MyMoneyFile::instance()->accountToCategory(id));
+      m_id = id;
+      m_accountSelector->setSelected(id);
+    } catch(MyMoneyException *e) {
+      qDebug("Account with id %s not found anymore", id.data());
+      delete e;
+    }
   }
 }
 

@@ -59,6 +59,21 @@ public:
 
   const investTransactionTypeE transactionType(const MyMoneyTransaction& t, const MyMoneySplit& split) const;
 
+  /**
+    * This method returns a pointer to the transaction data
+    * in the ledger of this account. The transaction is identified
+    * by the parameter @p idx. If in inline editing mode and idx
+    * points to the current transaction, then 0 is returned.
+    * This functions should only be used by kMyMoneyRegister and
+    * derivatives. Usual code is better off using KLedgerView::transaction().
+    *
+    * @param idx index into ledger starting at 0
+    * @return pointer to MyMoneyTransaction object representing the
+    *         selected transaction. If idx is out of bounds,
+    *         0 will be returned.
+    */
+  KMyMoneyTransaction* transaction(const int idx) const;
+
 protected:
   enum ChangedFieldE {
     None = 0,
@@ -87,6 +102,16 @@ protected slots:
   const bool slotDataChanged(int field);
 
 protected:
+  /**
+    * This method is called to determine the next widget that receives focus
+    * upon a Tab or Back-Tab event.
+    * The parameter @p next defines the search direction.
+    *
+    * @param next if true, searches forward, if false searches backward
+    * @return true if widget could be found, false otherwise.
+    */
+  virtual bool focusNextPrevChild(bool next);
+
   /**
     * This method creates all widgets that allow a view to edit
     * a transaction. All signal/slot connections of the created
@@ -171,6 +196,8 @@ private:
     */
   void loadEditWidgets(void);
 
+  void updateEditWidgets(void);
+
   /**
     * This method scans the splits of the given transaction and copies the
     * splits to m_feeSplit, m_accountSplit, m_interestSplit and m_split.
@@ -178,6 +205,8 @@ private:
     * @param t const reference to MyMoneyTransaction object
     */
   void preloadInvestmentSplits(const MyMoneyTransaction& t);
+
+  void preloadEditType(void);
 
   /**
     * This method is used by the constructor to create the necessary widgets

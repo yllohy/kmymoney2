@@ -1216,17 +1216,16 @@ QWidget* KLedgerViewCheckings::arrangeEditWidgetsInForm(void)
 
   // now setup the tab order
   m_tabOrderWidgets.clear();
-  m_tabOrderWidgets.append(m_form->enterButton());
-  m_tabOrderWidgets.append(m_form->cancelButton());
-  m_tabOrderWidgets.append(m_form->moreButton());
-  m_tabOrderWidgets.append(m_editPayee);
-  m_tabOrderWidgets.append(m_editCategory);
-  m_tabOrderWidgets.append(m_editSplit);
-  m_tabOrderWidgets.append(m_editMemo);
-  if(m_editNr != 0)
-    m_tabOrderWidgets.append(m_editNr);
-  m_tabOrderWidgets.append(m_editDate->focusWidget());
-  m_tabOrderWidgets.append(m_editAmount->focusWidget());
+  addToTabOrder(m_form->enterButton());
+  addToTabOrder(m_form->cancelButton());
+  addToTabOrder(m_form->moreButton());
+  addToTabOrder(m_editPayee);
+  addToTabOrder(m_editCategory);
+  addToTabOrder(m_editSplit);
+  addToTabOrder(m_editMemo);
+  addToTabOrder(m_editNr);
+  addToTabOrder(m_editDate);
+  addToTabOrder(m_editAmount);
 
   return m_editPayee;
 }
@@ -1252,17 +1251,17 @@ QWidget* KLedgerViewCheckings::arrangeEditWidgetsInRegister(void)
   m_tabOrderWidgets.clear();
 
   if(m_editNr != 0) {
-    m_tabOrderWidgets.append(m_editNr);
+    addToTabOrder(m_editNr);
     focusWidget = m_editNr;
   }
 
-  m_tabOrderWidgets.append(m_editDate->focusWidget());
-  m_tabOrderWidgets.append(m_editType);
-  m_tabOrderWidgets.append(m_editPayee);
-  m_tabOrderWidgets.append(m_editCategory);
-  m_tabOrderWidgets.append(m_editMemo);
-  m_tabOrderWidgets.append(m_editPayment);
-  m_tabOrderWidgets.append(m_editDeposit);
+  addToTabOrder(m_editDate);
+  addToTabOrder(m_editType);
+  addToTabOrder(m_editPayee);
+  addToTabOrder(m_editCategory);
+  addToTabOrder(m_editMemo);
+  addToTabOrder(m_editPayment);
+  addToTabOrder(m_editDeposit);
 
   if(m_editSplit) {
     delete m_editSplit;

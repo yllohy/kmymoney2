@@ -61,7 +61,7 @@ public:
     */
   virtual void hide();
 
-  virtual int loadList(void) = 0;
+  virtual const int loadList(void) = 0;
 
   /**
     * This method sets the current account with id @p id as

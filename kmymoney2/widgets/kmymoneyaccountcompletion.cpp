@@ -73,6 +73,12 @@ const int kMyMoneyAccountCompletion::loadList(const QString& baseName, const QVa
   return m_accountSelector->loadList(baseName, accountIdList, clear);
 }
 
+const int kMyMoneyAccountCompletion::loadList(QValueList<int> typeList)
+{
+  m_typeList = typeList;
+  return m_accountSelector->loadList(typeList);
+}
+
 void kMyMoneyAccountCompletion::show(void)
 {
   int  count;

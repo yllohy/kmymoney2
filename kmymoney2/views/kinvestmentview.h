@@ -116,6 +116,12 @@ public slots:
 
   void slotNewInvestment(void);
 
+  /**
+    * This slot cancels any edit activity in any view. It will
+    * be called e.g. before entering the settings dialog.
+    */
+  void slotCancelEdit(void);
+
 protected:
   /**
     * This method reloads the account selection combo box of the

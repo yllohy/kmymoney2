@@ -61,14 +61,17 @@ void kMyMoneyEquity::keyPressEvent( QKeyEvent * ev)
 
 void kMyMoneyEquity::loadEquity(const QCString& id)
 {
-  try {
-    MyMoneyEquity equity = MyMoneyFile::instance()->equity(id);
-    setText(equity.tradingSymbol());
-    m_id = id;
-    m_equitySelector->setSelected(id);
-  } catch(MyMoneyException *e) {
-    qDebug("Equity with id %s not found anymore", id.data());
-    delete e;
+  m_id = QCString();
+  if(!id.isEmpty()) {
+    try {
+      MyMoneyEquity equity = MyMoneyFile::instance()->equity(id);
+      setText(equity.tradingSymbol());
+      m_id = id;
+      m_equitySelector->setSelected(id);
+    } catch(MyMoneyException *e) {
+      qDebug("Equity with id %s not found anymore", id.data());
+      delete e;
+    }
   }
 }
 

@@ -54,7 +54,7 @@ public:
     */
   virtual void show();
 
-  int loadList(void) { return m_equitySelector->loadList(); };
+  const int loadList(void) { return m_equitySelector->loadList(); };
 
   /**
     * This method sets the current account with id @p id as

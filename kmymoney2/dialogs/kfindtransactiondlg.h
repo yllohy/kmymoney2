@@ -126,14 +126,15 @@ public:
     * object.
     */
   void update(const QCString& id);
-  
+
 public slots:
   void slotUpdateSelections(void);
   void slotReset(void);
 
 protected:
   void resizeEvent(QResizeEvent*);
-  
+  bool focusNextPrevChild(bool next);
+
 protected slots:
   void slotDateRangeChanged(int);
   void slotDateChanged(void);
@@ -143,14 +144,14 @@ protected slots:
 
   void slotSelectAllPayees(void);
   void slotDeselectAllPayees(void);
-  
+
   void slotNrSelected(void);
   void slotNrRangeSelected(void);
 
   void slotSearch(void);
 
   void slotRefreshView(void);
-    
+
   /**
     *
     */
@@ -160,13 +161,13 @@ protected slots:
   void slotPreviousTransaction(void);
   void slotSelectTransaction(void);
   void slotSelectTransaction(const QCString& id);
-  
+
 protected slots:
   void slotRightSize(void);
-  
+
 signals:
   void transactionSelected(const QCString& accountId, const QCString& transactionId);
-  
+
 protected:
   enum opTypeE {
     addAccountToFilter = 0,
@@ -180,14 +181,14 @@ protected:
   void setupAmountPage(void);
   void setupPayeesPage(void);
   void setupDetailsPage(void);
-  
+
   void setupFilter(void);
-    
-  void selectAllItems(QListView* view, const bool state);  
+
+  void selectAllItems(QListView* view, const bool state);
   void selectAllSubItems(QListViewItem* item, const bool state);
-  void selectItems(QListView* view, const QCStringList& list, const bool state);  
+  void selectItems(QListView* view, const QCStringList& list, const bool state);
   void selectSubItems(QListViewItem* item, const QCStringList& list, const bool state);
-  
+
   void readConfig(void);
   void writeConfig(void);
 
@@ -196,7 +197,7 @@ protected:
     * found in the engine.
     */
   void loadPayees(void);
-  
+
   /**
     * This method returns information about the selection state
     * of the items in the m_accountsView.
@@ -238,7 +239,7 @@ protected:
   KMyMoneyTransaction*            m_transactionPtr;
 
   MyMoneyTransactionFilter        m_filter;
-  
+
 };
 
 #endif
