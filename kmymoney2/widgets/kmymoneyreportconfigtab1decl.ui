@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>600</width>
-            <height>142</height>
+            <height>172</height>
         </rect>
     </property>
     <property name="caption">
@@ -89,6 +89,17 @@
                 <comment>Convert 'em!!</comment>
             </property>
         </widget>
+        <widget class="QCheckBox">
+            <property name="name">
+                <cstring>m_checkFavorite</cstring>
+            </property>
+            <property name="text">
+                <string>Mark as a favorite report</string>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>&lt;p&gt;Select this option to notate this report as one of your favorites.&lt;/p&gt;&lt;p&gt;All your favorite reports are grouped in one place on the report list for easy access.&lt;/p&gt;</string>
+            </property>
+        </widget>
         <spacer>
             <property name="name">
                 <cstring>spacer15</cstring>
@@ -102,7 +113,7 @@
             <property name="sizeHint">
                 <size>
                     <width>20</width>
-                    <height>41</height>
+                    <height>20</height>
                 </size>
             </property>
         </spacer>

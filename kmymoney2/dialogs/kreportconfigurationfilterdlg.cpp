@@ -139,7 +139,8 @@ void KReportConfigurationFilterDlg::slotSearch()
   m_currentState.setName( m_tab1->m_editName->text() );
   m_currentState.setComment( m_tab1->m_editComment->text() );
   m_currentState.setConvertCurrency( m_tab1->m_checkCurrency->isChecked() );
-  
+  m_currentState.setFavorite( m_tab1->m_checkFavorite->isChecked() );
+
   if ( m_tab2 )
   {
     m_currentState.setShowSubAccounts( ! m_tab2->m_checkShowTop->isChecked() );
@@ -193,6 +194,7 @@ void KReportConfigurationFilterDlg::slotReset(void)
   m_tab1->m_editName->setText( m_initialState.name() );
   m_tab1->m_editComment->setText( m_initialState.comment() );
   m_tab1->m_checkCurrency->setChecked( m_initialState.isConvertCurrency() );
+  m_tab1->m_checkFavorite->setChecked( m_initialState.isFavorite() );
   
   if ( m_tab2 )
   {
@@ -453,6 +455,7 @@ void KReportConfigurationFilterDlg::slotHelp(void)
   text += "<h3>" + m_tab1->textLabel6->text() + "</h3>" + QToolTip::textFor( m_tab1->m_editName );
   text += "<h3>" + m_tab1->textLabel7->text() + "</h3>" + QToolTip::textFor( m_tab1->m_editComment );
   text += "<h3>" + m_tab1->m_checkCurrency->text() + "</h3>" + QToolTip::textFor( m_tab1->m_checkCurrency );
+  text += "<h3>" + m_tab1->m_checkFavorite->text() + "</h3>" + QToolTip::textFor( m_tab1->m_checkFavorite );
   
   if ( m_tab2 )
   {

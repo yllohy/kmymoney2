@@ -276,18 +276,23 @@ void KReportsView::slotRefreshView(void)
 
   // Default Reports
   
+  QMap<QString,KListViewItem*> groupitems;
   QValueList<ReportGroup> defaultreports;
   defaultReports(defaultreports);
   QValueList<ReportGroup>::const_iterator it_group = defaultreports.begin();
   while ( it_group != defaultreports.end() )
   {
-    QString pagename = QString::number(pagenumber++) + ". " + (*it_group).name();
+    QString groupname = (*it_group).name();
+    QString pagename = QString::number(pagenumber++) + ". " + groupname;
     KListViewItem* curnode = new KListViewItem(m_reportListView,pagename);
+    groupitems[groupname] = curnode;
   
     QValueList<MyMoneyReport>::const_iterator it_report = (*it_group).begin();
     while( it_report != (*it_group).end() )
     {
-      new KReportListItem( curnode, *it_report );
+      MyMoneyReport report = *it_report;
+      report.setGroup(groupname);
+      new KReportListItem( curnode, report );
       ++it_report;
     }
     
@@ -295,14 +300,33 @@ void KReportsView::slotRefreshView(void)
   }  
   // Custom reports
   
-  QString pagename = QString::number(pagenumber++) + ". " + i18n("Customized Reports");
-  KListViewItem* customnode = new KListViewItem(m_reportListView,pagename);
+  QString pagename = QString::number(pagenumber++) + ". " + i18n("Favorite Reports");
+  KListViewItem* favoritenode = new KListViewItem(m_reportListView,pagename);
+  KListViewItem* orphannode = NULL;
   
   QValueList<MyMoneyReport> customreports = MyMoneyFile::instance()->reportList();
   QValueList<MyMoneyReport>::const_iterator it_report = customreports.begin();
   while( it_report != customreports.end() )
   {
-    new KReportListItem( customnode, *it_report );
+    // If this report is in a known group, place it there
+    KListViewItem* groupnode = groupitems[(*it_report).group()];
+    if ( groupnode )
+      new KReportListItem( groupnode, *it_report );
+    else
+    // otherwise, place it in the orphanage
+    { 
+      if ( ! orphannode )
+      {
+        QString pagename = QString::number(pagenumber++) + ". " + i18n("Old Customized Reports");
+        orphannode = new KListViewItem(m_reportListView,pagename);
+      }
+      new KReportListItem( orphannode, *it_report );
+    }
+    
+    // ALSO place it into the Favorites list if it's a favorite
+    if ( (*it_report).isFavorite() )
+      new KReportListItem( favoritenode, *it_report );
+    
     ++it_report;
   }
 
@@ -313,7 +337,7 @@ void KReportsView::slotRefreshView(void)
   int index = 1;
   while ( index < m_reportTabWidget->count() )
   {
-    // TODO: Find some of detecting the file is closed and kill these tabs!!
+    // TODO: Find some way of detecting the file is closed and kill these tabs!!
     KReportTab* tab = dynamic_cast<KReportTab*>(m_reportTabWidget->page(index));
     if ( tab->isReadyToDelete() /* || ! reports.count() */ )
     {

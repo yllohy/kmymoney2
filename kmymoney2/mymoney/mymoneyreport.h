@@ -58,6 +58,7 @@ public:
     m_name("Unconfigured Pivot Table Report"),
     m_showSubAccounts(false),
     m_convertCurrency(true),
+    m_favorite(false),
     m_reportType(kTypeArray[_rt]),
     m_rowType(_rt),
     m_columnType(_ct),
@@ -72,6 +73,7 @@ public:
     m_comment(_comment),
     m_showSubAccounts(_ss),
     m_convertCurrency(true),
+    m_favorite(false),
     m_reportType(kTypeArray[_rt]),
     m_rowType(_rt),
     m_dateLock(_dl)
@@ -110,13 +112,19 @@ public:
   void setDateFilter(unsigned _u) { m_dateLock = _u; if (_u != userDefined) MyMoneyTransactionFilter::setDateFilter( _u ); }
   void setDateFilter(const QDate& _db,const QDate& _de) { MyMoneyTransactionFilter::setDateFilter( _db,_de ); }
   void updateDateFilter(void) { if (m_dateLock != userDefined) MyMoneyTransactionFilter::setDateFilter(m_dateLock); }
+  void setGroup( const QString& _group ) { m_group = _group; }
+  const QString& group( void ) const { return m_group; }
+  void setFavorite(bool _f) { m_favorite = _f; }
+  bool isFavorite(void) const { return m_favorite; }
   
 private:
   QCString m_id;
   QString m_name;
   QString m_comment;
+  QString m_group;
   bool m_showSubAccounts;
   bool m_convertCurrency;
+  bool m_favorite;
   enum EReportType m_reportType;
   enum ERowType m_rowType;
   enum EColumnType m_columnType;

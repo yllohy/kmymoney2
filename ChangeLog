@@ -1,3 +1,11 @@
+2004-08-08 Ace Jones <acejones@users.sourceforge.net>
+  * Added the ability to designate some reports as your favorite, and they'll be
+    grouped together.
+  * Altered handling of reports index list, so customized reports are stashed
+    in the same heading as their parent reports.
+  * Fixed a bug in running sum reports (Net Worth, et al).  When either end
+    of the date range was QDate() the opening balance could be calculated wrong.
+    
 2004-08-07 Ace Jones <acejones@users.sourceforge.net>
   * Added MS Money date format as an option to QIF importer (%m/%d'%yyyy)  
   * Added some new default reports, which are permutations of the old ones

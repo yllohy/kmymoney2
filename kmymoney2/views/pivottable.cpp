@@ -117,7 +117,7 @@ Tester::Tester( const QString& _name ): m_methodName( _name ), m_enabled( m_sEna
   if (m_enabled)
   {
     qDebug( "%s%s(): ENTER", m_sTabs.latin1(), m_methodName.latin1() );
-    m_sTabs.append("  ");
+    m_sTabs.append("--");
 
   }
 }
@@ -467,6 +467,13 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
   }
 
   //
+  // Collapse columns to match column type
+  //
+
+  if ( m_config_f.columnType() != MyMoneyReport::eMonths )
+    collapseColumns();
+
+  //
   // Calculate the running sums
   // (for running sum reports only)
   //
@@ -480,13 +487,6 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
 
   if ( m_config_f.isConvertCurrency() )
     convertToBaseCurrency();
-
-  //
-  // Collapse columns to match column type
-  //
-
-  if ( m_config_f.columnType() != MyMoneyReport::eMonths )
-    collapseColumns();
 
   //
   // Determine column headings
@@ -516,12 +516,13 @@ void PivotTable::collapseColumns(void)
     {
       if ( sourcecolumn != destcolumn )
       {
+#if 0
         // TODO: Clean up this rather inefficient kludge. We really should jump by an entire
         // destcolumn at a time on RS reports, and calculate the proper sourcecolumn to use,
         // allowing us to clear and accumulate only ONCE per destcolumn
         if ( m_config_f.isRunningSum() )
           clearColumn(destcolumn);
-
+#endif
         accumulateColumn(destcolumn,sourcecolumn);
       }
 
@@ -642,6 +643,16 @@ void PivotTable::calculateOpeningBalances( void )
 {
   DEBUG_ENTER("PivotTable::calculateOpeningBalances");
 
+  // First, determine the inclusive dates of the report.  Normally, that's just
+  // the begin & end dates of m_config_f.  However, if either of those dates are
+  // blank, we need to use m_beginDate and/or m_endDate instead.
+  QDate from = m_config_f.fromDate();
+  QDate to = m_config_f.toDate();
+  if ( ! from.isValid() )
+    from = m_beginDate;
+  if ( ! to.isValid() )
+    to = m_endDate;
+  
   MyMoneyFile* file = MyMoneyFile::instance();
 
   const QValueList<MyMoneyAccount>& accounts = file->accountList();
@@ -663,17 +674,17 @@ void PivotTable::calculateOpeningBalances( void )
       // extract the balance of the account for the given begin date, which is
       // the opening balance plus the sum of all transactions prior to the begin
       // date
-      MyMoneyMoney value = file->balance((*it_account).id(), m_config_f.fromDate().addDays(-1));
+      MyMoneyMoney value = file->balance((*it_account).id(), from.addDays(-1));
 
       // remove the opening balance from the figure, if necessary
       QDate opendate = (*it_account).openingDate();
-      if ( opendate >= m_config_f.fromDate() )
+      if ( opendate >= from )
         value -= (*it_account).openingBalance();
 
       // place into the 'opening' column...
       assignCell( outergroup, row, 0, value );
 
-      if ( ( opendate >= m_config_f.fromDate() ) && ( opendate <= m_config_f.toDate() ) )
+      if ( ( opendate >= from ) && ( opendate <= to ) )
       {
         // get the opening value
         MyMoneyMoney value = (*it_account).openingBalance();
