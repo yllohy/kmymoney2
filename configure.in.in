@@ -3,6 +3,11 @@
 AM_INIT_AUTOMAKE(kmymoney2,0.7.0)
 
 dnl
+dnl check for a recent autoconf version
+dnl
+AC_PREREQ(2.59)
+
+dnl
 dnl check for atoll and strtoll
 dnl
 AC_FUNC_CHECK(atoll, [AC_DEFINE_UNQUOTED(HAVE_ATOLL, 1, [define if you have atoll])])
@@ -32,6 +37,11 @@ AM_PATH_XML2(2.0.0,
 	AC_SUBST(XML2_LIBS)
 	)
 dnl
+dnl check for kbanking
+dnl
+AC_KBANKING()
+
+dnl
 dnl check for libofx
 dnl 
 dnl DO THIS CHECK LAST!!!  After -lofx is on LIBS, no other checks will work!
@@ -39,12 +49,7 @@ dnl
 dnl This is all required because libofx expects certain global symbols to
 dnl be defined as part of its interface
 dnl
-AC_CHECK_LIB_WPROLOGUE(ofx, ofx_proc_file, [], [], [], [[void ofx_proc_security_cb() {} void ofx_proc_transaction_cb() {} void ofx_proc_statement_cb() {} void ofx_proc_status_cb() {} void ofx_proc_account_cb() {}]])
-
-dnl
-dnl check for kbanking
-dnl
-AC_KBANKING()
+AC_LIBOFX()
 
 dnl CXXFLAGS="$NOOPT_CXXFLAGS" dnl __kdevelop[noopt]__
 CXXFLAGS="$CXXFLAGS $USE_EXCEPTIONS" dnl __kdevelop[exc]__

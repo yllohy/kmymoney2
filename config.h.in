@@ -18,6 +18,9 @@
 /* Define if you have libjpeg */
 #undef HAVE_LIBJPEG
 
+/* Define to 1 if you have the `ofx' library (-lofx). */
+#undef HAVE_LIBOFX
+
 /* Define if you have libpng */
 #undef HAVE_LIBPNG
 
