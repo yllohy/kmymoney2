@@ -1236,6 +1236,7 @@ void KLedgerView::showWidgets(void)
 
   m_tabOrderWidgets.find(focusWidget);
   focusWidget->setFocus();
+  m_editMode = true;
 }
 
 void KLedgerView::destroyWidgets(void)
@@ -1360,7 +1361,6 @@ void KLedgerView::slotStartEdit(void)
   enableMoreButton(true);
 
   showWidgets();
-  m_editMode = true;
 
   if(!m_transactionFormActive)
     m_register->setInlineEditingMode(true);

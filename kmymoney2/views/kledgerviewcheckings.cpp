@@ -352,11 +352,21 @@ void KLedgerViewCheckings::slotActionSelected(int type)
     createEditWidgets();
     reloadEditWidgets(m_transaction);
 
+    QWidget* focusWidget;
     if(m_transactionFormActive) {
-      arrangeEditWidgetsInForm();
+      focusWidget = arrangeEditWidgetsInForm();
     } else {
-      arrangeEditWidgetsInRegister();
+      focusWidget = arrangeEditWidgetsInRegister();
     }
+
+    // setup the keyboard filter for all widgets
+    for(QWidget* w = m_tabOrderWidgets.first(); w; w = m_tabOrderWidgets.next()) {
+      w->installEventFilter(this);
+    }
+
+    // select the focus widget
+    m_tabOrderWidgets.find(focusWidget);
+    focusWidget->setFocus();
   }
 }
 
