@@ -1,3 +1,6 @@
+2001-12-09 Kevin Tambascio <ktambascio@yahoo.com>
+  * Fixed the save as dialog to append the .kmy file extension more intelligently.
+
 2001-12-09 Michael Edwardes <mte@users.sourceforge.net>
   * Removed the transaction number from csv export.
   * Moved csv export into mymoneyaccount.
@@ -5,7 +8,7 @@
   * Added date ranges to csv export/import dialog.
 
 2001-12-08 Kevin Tambascio <ktambascio@yahoo.com>
-	* When you double-click on an account in the bank view, you will see the transaction list.
+  * When you double-click on an account in the bank view, you will see the transaction list.
 
 2001-12-08 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
   * Fixed Pixmap Crash on Exit error.
@@ -459,4 +462,5 @@
 	* Added .cvsignore in all project.
 
  
+
 
