@@ -81,9 +81,6 @@ kMyMoneySplitTable::kMyMoneySplitTable(QWidget *parent, const char *name ) :
   // never show a horizontal scroll bar
   setHScrollBarMode(QScrollView::AlwaysOff);
 
-  for(int i = 0; i < 3; ++i)
-    m_colWidget[i] = 0;
-
   // setup the context menu
   m_contextMenu = new KPopupMenu(this);
   KIconLoader *il = KGlobal::iconLoader();
@@ -315,7 +312,6 @@ bool kMyMoneySplitTable::eventFilter(QObject *o, QEvent *e)
   if(rc == false) {
     if(e->type() == QEvent::KeyPress
     || e->type() == QEvent::KeyRelease) {
-      m_key = (static_cast<QKeyEvent *> (e))->key();
       rc = false;
     } else
       rc = QTable::eventFilter(o, e);
@@ -523,8 +519,8 @@ void kMyMoneySplitTable::updateTransactionTableSize(void)
 
   // see if we need some extra lines to fill the current size with the grid
   int numExtraLines = (tableHeight / rowHeight) - splitCount;
-  if(numExtraLines < 1)
-    numExtraLines = 1;
+  if(numExtraLines < 2)
+    numExtraLines = 2;
 
   setNumRows(splitCount + numExtraLines);
   // setMaxRows(splitCount);
@@ -661,7 +657,8 @@ void kMyMoneySplitTable::createEditWidgets(void)
     QValueList<MyMoneySplit> list = m_transaction.splits();
     QValueList<MyMoneySplit>::ConstIterator it_s;
     for(it_s = list.begin(); it_s != list.end(); ++it_s) {
-      diff += (*it_s).value();
+      if(!(*it_s).accountId().isEmpty())
+        diff += (*it_s).value();
     }
     m_split.setValue(-diff);
   }

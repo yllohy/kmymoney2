@@ -166,19 +166,14 @@ signals:
   void transactionChanged(const MyMoneyTransaction& t);
 
 private:
-  int m_key;
-
-  /// array to be used to access the input widgets
-  QWidget* m_colWidget[3];
-
   /// the currently selected row (will be printed as selected)
-  int m_currentRow;
+  int                 m_currentRow;
 
   /// the number of rows filled with data
-  int m_maxRows;
+  int                 m_maxRows;
 
   /// indication if inline editing mode is on or not
-  bool m_editMode;
+  bool                m_editMode;
 
   MyMoneyTransaction  m_transaction;
   MyMoneyAccount      m_account;
@@ -189,10 +184,10 @@ private:
   /**
     * This member keeps a pointer to the context menu
     */
-  KPopupMenu* m_contextMenu;
+  KPopupMenu*         m_contextMenu;
 
   /// keeps the id of the delete entry in the context menu
-  int   m_contextMenuDelete;
+  int                 m_contextMenuDelete;
 
   /**
     * This member contains a pointer to the input widget for the category.
@@ -218,7 +213,7 @@ private:
   /**
     * This member keeps the tab order for the above widgets
     */
-  QWidgetList   m_tabOrderWidgets;
+  QWidgetList         m_tabOrderWidgets;
 
 };
 
