@@ -5,6 +5,7 @@
   * Fixed schedule validation for transfers.
   * Added a name property to MyMoneySchedule.
   * Updated UI dialogs to handle the schedule name.
+  * Added the initial widget for the calendar view.  (Does nothing yet).
 
 2003-07-01 Michael Edwardes <mte@users.sourceforge.net>
   * Fixed crash in KScheduleView::refresh when no accounts exist.

@@ -5,9 +5,9 @@ INCLUDES = $(all_includes)
 
 libwidgets_a_METASOURCES = AUTO
 
-libwidgets_a_SOURCES = kmymoneycalculator.cpp kmymoneycategory.cpp kmymoneypayee.cpp kmymoneytransactionform.cpp kmymoneyregistercheckings.cpp kmymoneyregister.cpp kmymoneysplittable.cpp kmymoneycombo.cpp kmymoneyhlayout.cpp kmymoneylineedit.cpp kmymoneytable.cpp kmymoneyedit.cpp kmymoneydateinput.cpp 
+libwidgets_a_SOURCES = kmymoneycalendar.cpp kmymoneycalculator.cpp kmymoneycategory.cpp kmymoneypayee.cpp kmymoneytransactionform.cpp kmymoneyregistercheckings.cpp kmymoneyregister.cpp kmymoneysplittable.cpp kmymoneycombo.cpp kmymoneyhlayout.cpp kmymoneylineedit.cpp kmymoneytable.cpp kmymoneyedit.cpp kmymoneydateinput.cpp 
 
 
-EXTRA_DIST = kmymoneydateinput.cpp kmymoneydateinput.h kmymoneyedit.cpp kmymoneyedit.h kmymoneytable.cpp kmymoneytable.h kmymoneylineedit.cpp kmymoneylineedit.h kmymoneyhlayout.cpp kmymoneyhlayout.h kmymoneycombo.cpp kmymoneycombo.h kmymoneysplittable.cpp kmymoneysplittable.h kmymoneyregister.cpp kmymoneyregister.h kmymoneyregistercheckings.cpp kmymoneyregistercheckings.h kmymoneytransactionform.h kmymoneytransactionform.cpp kmymoneypayee.cpp kmymoneypayee.h kmymoneycategory.cpp kmymoneycategory.h kmymoneycalculator.cpp kmymoneycalculator.h 
+EXTRA_DIST = kmymoneydateinput.cpp kmymoneydateinput.h kmymoneyedit.cpp kmymoneyedit.h kmymoneytable.cpp kmymoneytable.h kmymoneylineedit.cpp kmymoneylineedit.h kmymoneyhlayout.cpp kmymoneyhlayout.h kmymoneycombo.cpp kmymoneycombo.h kmymoneysplittable.cpp kmymoneysplittable.h kmymoneyregister.cpp kmymoneyregister.h kmymoneyregistercheckings.cpp kmymoneyregistercheckings.h kmymoneytransactionform.h kmymoneytransactionform.cpp kmymoneypayee.cpp kmymoneypayee.h kmymoneycategory.cpp kmymoneycategory.h kmymoneycalculator.cpp kmymoneycalculator.h kmymoneycalendar.cpp kmymoneycalendar.h 
 
 ####### kdevelop will overwrite this part!!! (end)############
