@@ -22,6 +22,18 @@
 
 // ----------------------------------------------------------------------------
 // QT Includes
+#include <qpushbutton.h>
+#include <qtabwidget.h>
+#include <qlistview.h>
+#include <qlayout.h>
+#include <qwidget.h>
+#include <qlabel.h>
+#include <qpushbutton.h>
+#include <qlineedit.h>
+#include <qlabel.h>
+#include <qcheckbox.h>
+#include <qfile.h>
+#include <qtextstream.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -79,10 +91,54 @@ void KLedgerViewInvestments::slotReconciliation()
 
 void KLedgerViewInvestments::createForm()
 {
-  m_form = new kMyMoneyTransactionForm(this, 0, 0, 4, 5);
+  mainGrid = new QGridLayout( this, 1, 1, 5, 5 );
 
-  m_SummaryTab = new QTab("Tab1");  
-  m_TransactionTab = new QTab("Tab2");               
+  m_InvestmentTabs = new QTabWidget(this);
+
+  m_SummaryTab = new QWidget(m_InvestmentTabs);
+  m_TransactionTab = new QWidget(m_InvestmentTabs);
+
+  
+
+  textBrowser = new KTextBrowser(m_SummaryTab);
+  
+  // QLabel *liFirstName = new QLabel( "First &Name", m_SummaryTab );
+  
+
+  QGridLayout *grid2 = new QGridLayout( m_TransactionTab, 2, 1, 5, 5 );
+
+  m_form = new kMyMoneyTransactionForm(this, NULL, 15, 4, 5);
+  //m_form->hide();
+  m_register = new kMyMoneyRegisterCheckings(this, "Checkings");
+  m_register->setParent(this);
+  //m_register->hide();
+  
+  grid2->addWidget(m_form, 1, 0);
+  grid2->addWidget(m_register, 0, 0);
+
+  //QPoint point(0,0);
+  //m_form->reparent(m_TransactionTab, QPoint(300,0), true);
+  
+  //m_register->reparent(m_TransactionTab, QPoint(0, 100), true);
+  //m_form->show();
+  //m_register->show();
+  
+  m_InvestmentTabs->addTab( m_SummaryTab, "&Account Summary" );
+  m_InvestmentTabs->addTab( m_TransactionTab, "Account &Transactions" );
+
+  mainGrid->addWidget( m_InvestmentTabs, 0, 0 );
+
+
+  //this->addWidget(m_InvestmentTabs);
+    
+  //m_SummaryTab = new QTab("Tab1");
+  //m_TransactionTab = new QTab("Tab2");
+  //m_InvestmentTabs->addTab(m_SummaryTab);
+  //m_InvestmentTabs->addTab(m_TransactionTab);
+  
+  
+
+              
   /*m_tabCheck = new QTab(action2str(MyMoneySplit::ActionCheck, true));
   m_tabDeposit = new QTab(action2str(MyMoneySplit::ActionDeposit, true));
   m_tabTransfer = new QTab(action2str(MyMoneySplit::ActionTransfer, true));
@@ -114,8 +170,7 @@ void KLedgerViewInvestments::createForm()
 
 void KLedgerViewInvestments::createRegister(void)
 {
-  m_register = new kMyMoneyRegisterCheckings(this, "Checkings");
-  m_register->setParent(this);
+ 
 
   /*m_register->setAction(QCString(MyMoneySplit::ActionATM), i18n("ATM"));
   m_register->setAction(QCString(MyMoneySplit::ActionCheck), i18n("Cheque"));
