@@ -1,5 +1,6 @@
 <!doctype book PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
-  <!entity app "KMyMoney2">
+  <!entity app "<command>KMyMoney2</command>">
+  <!entity cvs "<command>CVS</command>">
   <!entity config-management SYSTEM "cfg-mgmt.docbook">
   <!entity coding-standards SYSTEM "coding.docbook">
   <!entity cvs-examples SYSTEM "cvs-examples.docbook">
@@ -54,8 +55,8 @@ found in the source tree and is online here
 
 <para>
 A prerequisite for this document is a basic understanding on the work with
-CVS. Even though this document covers some of the more special topics of
-CVS in more detail it is not intended as an introduction to CVS in general.
+&cvs;. Even though this document covers some of the more special topics of
+&cvs; in more detail it is not intended as an introduction to &cvs; in general.
 </para>
 </abstract>
 

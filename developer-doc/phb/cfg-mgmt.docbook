@@ -60,7 +60,7 @@ to checkout an exact copy of the version of the project.
 <listitem><para>
 The repository is the central database containing all revisions of all
 files of the &app; project. It is located on the SourceForge.net and can
-be accessed via CVS.
+be accessed via &cvs;.
 </para></listitem>
 </varlistentry>
 
@@ -93,7 +93,7 @@ time.
 Since the &app; project is hosted on the <ulink
 url="http://www.sourceforge.net/">SourceForge</ulink> platform, <ulink
 url="http://www.cvshome.org">CVS</ulink> is used as the version control
-tool. CVS is widely accepted as version control tool in the open source
+tool. &cvs; is widely accepted as version control tool in the open source
 community and covers our needs pretty well.
 </para>
 <para>
@@ -107,7 +107,7 @@ back into repository.
 </para>
 
 <para>
-During the checkin process, CVS keeps track of all the changes made. This
+During the checkin process, &cvs; keeps track of all the changes made. This
 allows to review a complete history of all modifications ever made to the
 project.
 As mentioned above, it is very important in certain circumstances to have
@@ -132,7 +132,7 @@ Access to the repository is available in two different forms
 Read-Only access is granted to anybody anonymously to the repository. For
 this type of access you do not need a user account on the SourceForge
 platform. Access is made through the <emphasis>pserver</emphasis>-protocol
-of CVS: See <ulink
+of &cvs;: See <ulink
 url="http://">the description on SourceForge</ulink> for more details.
 </para>
 </sect2>
@@ -290,7 +290,7 @@ called <emphasis>0-4-0</emphasis>.
 
 <note>
 <para>
-Since CVS does not allow periods inside a tag, we always replace periods
+Since &cvs; does not allow periods inside a tag, we always replace periods
 (.) with dashes (-) inside a tag.
 </para>
 </note>
