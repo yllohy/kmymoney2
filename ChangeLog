@@ -1,3 +1,6 @@
+2003-12-13 Kevin Tambascio <ktambascio@users.sourceforge.net>
+  * Changed the khomeview.cpp and css file to brighten up the colors, and use better fonts.
+
 2003-12-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * respect date changes when entering schedule transactions
 
