@@ -125,6 +125,11 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
     s << "  Number = " << (*it_a).number() << "\n";
     s << "  Description = " << (*it_a).description() << "\n";
     s << "  Type = " << (*it_a).accountType() << "\n";
+    if((*it_a).currencyId().isEmpty()) {
+      s << "  Currency = unknown\n";
+    } else {
+      s << "  Currency = " << storage->currency((*it_a).currencyId()).name() << "\n";
+    }
     s << "  Parent = " << (*it_a).parentAccountId();
     if(!(*it_a).parentAccountId().isEmpty()) {
       MyMoneyAccount parent = storage->account((*it_a).parentAccountId());
