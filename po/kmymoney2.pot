@@ -1,1626 +1,99 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Free Software Foundation, Inc.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2001-08-23 17:40+0100\n"
+"POT-Creation-Date: 2003-01-06 21:17+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
-"Content-Transfer-Encoding: ENCODING\n"
-
-#: dialogs/kchooseimportexportdlg.cpp:34
-#: dialogs/kchooseimportexportdlgdecl.cpp:40
-msgid ""
-"Please choose the type of import you wish to perform.   A simple "
-"explanation\n"
-"of the import type is available at the bottom of the screen and is updated "
-"when\n"
-"you select an item from the choice box.\n"
-"\n"
-"Once you have chosen an import type please press the OK button."
-msgstr ""
-
-#: dialogs/kchooseimportexportdlg.cpp:38
-#: dialogs/kchooseimportexportdlgdecl.cpp:55
-msgid "Choose import type:"
-msgstr ""
-
-#: dialogs/kchooseimportexportdlg.cpp:39
-#: dialogs/kchooseimportexportdlgdecl.cpp:34
-msgid "Choose Import Type Dialog"
-msgstr ""
-
-#: dialogs/kchooseimportexportdlg.cpp:41
-msgid ""
-"Please choose the type of export you wish to perform.   A simple "
-"explanation\n"
-"of the export type is available at the bottom of the screen and is updated "
-"when\n"
-"you select an item from the choice box.\n"
-"\n"
-"Once you have chosen an export type please press the OK button."
-msgstr ""
-
-#: dialogs/kchooseimportexportdlg.cpp:45
-msgid "Choose export type:"
-msgstr ""
-
-#: dialogs/kchooseimportexportdlg.cpp:46
-msgid "Choose Export Type Dialog"
-msgstr ""
-
-#: dialogs/kchooseimportexportdlg.cpp:66
-msgid ""
-"QIF files are created by the popular accounting program Quicken.\n"
-"Another dialog will appear, if you choose this type, asking for further\n"
-"information relevant to the Quicken format."
-msgstr ""
-
-#: dialogs/kchooseimportexportdlg.cpp:70
-msgid ""
-"The CSV type uses a comma delimeted text file that can be used by\n"
-"most popular spreadsheet programs available for Linux and other operating\n"
-"systems."
-msgstr ""
-
-#: dialogs/kcsvprogressdlg.cpp:52
-msgid "C&lose"
-msgstr ""
-
-#: dialogs/kcsvprogressdlg.cpp:84 dialogs/kcsvprogressdlg.cpp:105
-#: dialogs/kexportdlg.cpp:211 dialogs/kimportdlg.cpp:180
-msgid " of "
-msgstr ""
-
-#: dialogs/kcsvprogressdlg.cpp:109 kfindtransactiondlgdecl.cpp:128
-#: kmymoneyview.cpp:1023 ktransactionview.cpp:153 ktransactionview.cpp:233
-#: ktransactionview.cpp:933 ktransactionview.cpp:1041
-msgid "Cheque"
-msgstr ""
-
-#: dialogs/kcsvprogressdlg.cpp:112 kfindtransactiondlgdecl.cpp:129
-#: kmymoneyview.cpp:1025 knewbillwizard.cpp:93 kschedulelistitem.cpp:34
-#: ktransactionview.cpp:40 ktransactionview.cpp:234 ktransactionview.cpp:936
-#: ktransactionview.cpp:1044
-msgid "Deposit"
-msgstr ""
-
-#: dialogs/kcsvprogressdlg.cpp:115 kfindtransactiondlgdecl.cpp:132
-#: kmymoneyview.cpp:1031 ktransactionview.cpp:237 ktransactionview.cpp:945
-#: ktransactionview.cpp:1053
-msgid "ATM"
-msgstr ""
-
-#: dialogs/kcsvprogressdlg.cpp:118 kfindtransactiondlgdecl.cpp:131
-#: kmymoneyview.cpp:1029 kschedulelistitem.cpp:31 ktransactionview.cpp:236
-#: ktransactionview.cpp:942 ktransactionview.cpp:1050
-msgid "Withdrawal"
-msgstr ""
-
-#: dialogs/kcsvprogressdlg.cpp:121 kfindtransactiondlgdecl.cpp:130
-#: kmymoneyview.cpp:1027 knewbillwizard.cpp:110 kschedulelistitem.cpp:37
-#: ktransactionview.cpp:235 ktransactionview.cpp:939 ktransactionview.cpp:1047
-msgid "Transfer"
-msgstr ""
-
-#: dialogs/kcsvprogressdlg.cpp:124 dialogs/kcsvprogressdlg.cpp:139
-#: dialogs/kcsvprogressdlgdecl.cpp:97 dialogs/kexportdlgdecl.cpp:183
-#: dialogs/kimportdlgdecl.cpp:110 kschedulelistitem.cpp:40
-#: kschedulelistitem.cpp:68
-msgid "Unknown"
-msgstr ""
-
-#: dialogs/kcsvprogressdlg.cpp:130 kfindtransactiondlgdecl.cpp:198
-#: kmymoneyview.cpp:1044
-msgid "Reconciled"
-msgstr ""
-
-#: dialogs/kcsvprogressdlg.cpp:133 kfindtransactiondlgdecl.cpp:197
-#: kmymoneyview.cpp:1042 ktransactionview.cpp:397
-msgid "Cleared"
-msgstr ""
-
-#: dialogs/kcsvprogressdlg.cpp:136 kfindtransactiondlgdecl.cpp:199
-#: kmymoneyview.cpp:1046
-msgid "Unreconciled"
-msgstr ""
-
-#: dialogs/kcsvprogressdlg.cpp:177
-msgid "Unable to open export file for writing."
-msgstr ""
-
-#: dialogs/kcsvprogressdlg.cpp:193
-msgid "Sorry, Import for CSV files has not been implemented."
-msgstr ""
-
-#: dialogs/kexportdlg.cpp:52 dialogs/kimportdlg.cpp:48
-msgid "NO ACCOUNT AVAILABLE."
-msgstr ""
-
-#: dialogs/kexportdlg.cpp:80 dialogs/kexportdlg.cpp:132
-#: dialogs/kimportdlg.cpp:76 dialogs/kimportdlg.cpp:117
-msgid "QIF date format invalid: "
-msgstr ""
-
-#: dialogs/kexportdlg.cpp:82 dialogs/kexportdlg.cpp:134
-#: dialogs/kimportdlg.cpp:78 dialogs/kimportdlg.cpp:108
-#: dialogs/kimportdlg.cpp:119 dialogs/kimportdlg.cpp:144
-msgid "Import QIF"
-msgstr ""
-
-#: dialogs/kexportdlg.cpp:112 dialogs/kimportdlg.cpp:108
-msgid "Please enter the path to the QIF file"
-msgstr ""
-
-#: dialogs/kexportdlg.cpp:112 dialogs/kexportdlg.cpp:119
-#: dialogs/kexportdlg.cpp:153 dialogs/kexportdlg.cpp:162
-msgid "Export QIF"
-msgstr ""
-
-#: dialogs/kexportdlg.cpp:118
-msgid "Please specify at least one of the content types to export."
-msgstr ""
-
-#: dialogs/kexportdlg.cpp:124
-msgid "Please enter a start date lower than the end date."
-msgstr ""
-
-#: dialogs/kexportdlg.cpp:153
-msgid "Error occurred whilst exporting to qif file."
-msgstr ""
-
-#: dialogs/kexportdlg.cpp:156
-msgid ""
-"Export finished successfully.\n"
-"\n"
-msgstr ""
-
-#: dialogs/kexportdlg.cpp:157
-msgid "Number of transactions exported "
-msgstr ""
-
-#: dialogs/kexportdlg.cpp:159
-msgid ""
-".\n"
-"Number of categories exported "
-msgstr ""
-
-#: dialogs/kimportdlg.cpp:136
-msgid "Import from QIF file failed."
-msgstr ""
-
-#: dialogs/kimportdlg.cpp:138
-msgid ""
-"Import finished successfully.\n"
-"Please remember, all categories that already exist have not been imported\n"
-"\n"
-msgstr ""
-
-#: dialogs/kimportdlg.cpp:139
-msgid "Number of transactions imported "
-msgstr ""
-
-#: dialogs/kimportdlg.cpp:141
-msgid ""
-".\n"
-"Number of categories imported "
-msgstr ""
-
-#: dialogs/kimportdlgdecl.cpp:37
-msgid "QIF Import"
-msgstr ""
-
-#: dialogs/kimportdlgdecl.cpp:44
-msgid ""
-"From this dialog you are able to import transactions from a quicken "
-"compatable file, (known as a QIF file,\n"
-"because of the extension).   Please enter the path to the QIF file or select "
-"it by clicking on the Browse button.\n"
-"\n"
-"Once you have the file's path press the Import button and KMyMoney2 will "
-"import all the transactions, categories\n"
-"and payees it finds."
-msgstr ""
-
-#: dialogs/kimportdlgdecl.cpp:58
-msgid "QIF File to Import:"
-msgstr ""
-
-#: dialogs/kexportdlgdecl.cpp:157 dialogs/kimportdlgdecl.cpp:74
-msgid ""
-"The Date format is represented as follows:\n"
-"\n"
-"d = Day Number\n"
-"m = Month Number\n"
-"mmm = Month Name (abbreviated to three letters)\n"
-"yy = Year Number (last two digits)\n"
-"yyyy = Year Number\n"
-"\n"
-"To use the awful 'yy use a format like %d/%m%yy e.g for  1/2'01."
-msgstr ""
-
-#: dialogs/kimportdlgdecl.cpp:79
-msgid "Date Format:"
-msgstr ""
-
-#: dialogs/kcsvprogressdlgdecl.cpp:79 dialogs/kexportdlgdecl.cpp:165
-#: dialogs/kimportdlgdecl.cpp:92
-msgid "Progress Info"
-msgstr ""
-
-#: dialogs/kcsvprogressdlgdecl.cpp:93 dialogs/kexportdlgdecl.cpp:179
-#: dialogs/kimportdlgdecl.cpp:106
-msgid "Processing Account:"
-msgstr ""
-
-#: dialogs/kcsvprogressdlgdecl.cpp:107 dialogs/kexportdlgdecl.cpp:193
-#: dialogs/kimportdlgdecl.cpp:120
-msgid "Processing Transaction:"
-msgstr ""
-
-#: dialogs/kcsvprogressdlgdecl.cpp:111 dialogs/kexportdlgdecl.cpp:197
-#: dialogs/kimportdlgdecl.cpp:124
-msgid "0 of 0"
-msgstr ""
-
-#: dialogs/kimportdlgdecl.cpp:141
-msgid "&Import"
-msgstr ""
-
-#: dialogs/kexportdlgdecl.cpp:39
-msgid "QIF Export"
-msgstr ""
-
-#: dialogs/kexportdlgdecl.cpp:48
-msgid ""
-"From this dialog you are able to export transactions to a quicken compatable "
-"file, (known as a QIF file, because of the extension).   Please enter the "
-"path to the QIF\n"
-"file or select it by clicking on the Browse button.\n"
-"\n"
-"Once you have the file's path you can choose which transactions to export by "
-"date (start & and end).  Choose Account to export all the transactions "
-"between the\n"
-"specified dates or just categories.  Once you have pressed the Export button "
-"a message box will appear when the export has completed detailing how many "
-"transactions,\n"
-"categories and payees were exported."
-msgstr ""
-
-#: dialogs/kexportdlgdecl.cpp:64
-msgid "QIF file to Export to:"
-msgstr ""
-
-#: dialogs/kexportdlgdecl.cpp:80
-msgid "Between These Dates"
-msgstr ""
-
-#: dialogs/kexportdlgdecl.cpp:96
-msgid "Start on:"
-msgstr ""
-
-#: dialogs/kexportdlgdecl.cpp:111
-msgid "End on:"
-msgstr ""
-
-#: dialogs/kexportdlgdecl.cpp:121
-msgid "Contents to Export"
-msgstr ""
-
-#: dialogs/kexportdlgdecl.cpp:131 kscheduleview.cpp:31
-msgid "Account"
-msgstr ""
-
-#: dialogs/kexportdlgdecl.cpp:135
-msgid "Categories"
-msgstr ""
-
-#: dialogs/kexportdlgdecl.cpp:140
-msgid "Date Format"
-msgstr ""
-
-#: dialogs/kexportdlgdecl.cpp:213
-msgid "&Export"
-msgstr ""
-
-#: dialogs/kcsvprogressdlgdecl.cpp:36
-msgid "CSV Dialog"
-msgstr ""
-
-#: dialogs/kcsvprogressdlgdecl.cpp:42
-msgid ""
-"CSV Dialog.  Choose a file and then click on Run.  You can view your "
-"progress at\n"
-"the bottom of the screen.\n"
-"\n"
-"You can cancel the process at any time by clicking on the Cancel button."
-msgstr ""
-
-#: dialogs/kcsvprogressdlgdecl.cpp:54
-msgid "Choose a file to export to:"
-msgstr ""
+"Content-Transfer-Encoding: 8bit\n"
 
-#: dialogs/kcsvprogressdlgdecl.cpp:61
-msgid "&Browse"
+#: dialogs/keditscheduledbilldlg.moc.cpp:34
+#: dialogs/keditscheduledbilldlg.moc.cpp:42
+msgid "KEditScheduledBillDlg"
 msgstr ""
 
-#: dialogs/kcsvprogressdlgdecl.cpp:73
-msgid "&Run"
+#: dialogs/knewequityentrydecl.cpp:34
+msgid "Add New Investment"
 msgstr ""
 
-#: dialogs/kchooseimportexportdlgdecl.cpp:59
-msgid "QIF"
+#: dialogs/knewequityentrydecl.cpp:38
+msgid "Equity Name:"
 msgstr ""
 
-#: dialogs/kchooseimportexportdlgdecl.cpp:60
-msgid "CSV"
+#: dialogs/knewequityentrydecl.cpp:42
+msgid "Investment Type:"
 msgstr ""
 
-#: dialogs/kchooseimportexportdlgdecl.cpp:68
-msgid "Some descripton"
+#: dialogs/knewequityentrydecl.cpp:45
+msgid "NYSE"
 msgstr ""
 
-#: dialogs/kbackupdlgdecl.cpp:36 kmymoney2.cpp:731 kmymoney2.cpp:782
-#: kmymoney2.cpp:803 kmymoney2.cpp:813 kmymoney2.cpp:820 kmymoney2.cpp:827
-#: kmymoney2.cpp:830
-msgid "Backup"
+#: dialogs/knewequityentrydecl.cpp:46
+msgid "NASDAQ"
 msgstr ""
 
-#: dialogs/kbackupdlgdecl.cpp:42
-msgid ""
-"Use this dialog to backup your data. \n"
-"\n"
-"Please make sure you have a disk inserted and that the drive is ready.\n"
-"Then choose the mount point from either the Choose button or by\n"
-"entering the path in the available box.\n"
-"\n"
-"Click on OK to perform the backup making sure you have ticked the\n"
-"mount checkbox if your system doesn't use automount."
+#: dialogs/knewequityentrydecl.cpp:47
+msgid "AMEX"
 msgstr ""
 
-#: dialogs/kbackupdlgdecl.cpp:51
-msgid "Device options"
+#: dialogs/knewequityentrydecl.cpp:53
+msgid "Current Price:"
 msgstr ""
 
-#: dialogs/kbackupdlgdecl.cpp:65
-msgid "Mount Point:"
+#: dialogs/knewequityentrydecl.cpp:57
+msgid "Trading Market:"
 msgstr ""
 
-#: dialogs/kbackupdlgdecl.cpp:72
-msgid "C&hoose..."
+#: dialogs/knewequityentrydecl.cpp:60 mymoney/mymoneyequity.cpp:43
+msgid "Stock"
 msgstr ""
 
-#: dialogs/kbackupdlgdecl.cpp:77
-msgid "Mount this directory before backing up."
+#: dialogs/knewequityentrydecl.cpp:61 mymoney/mymoneyequity.cpp:47
+msgid "Mutual Fund"
 msgstr ""
 
-#: dialogs/kbackupdlg.moc.cpp:42 dialogs/kbackupdlg.moc.cpp:47
-msgid "KBackupDlg"
+#: dialogs/knewequityentrydecl.cpp:62 mymoney/mymoneyequity.cpp:51
+msgid "Bond"
 msgstr ""
 
-#: dialogs/kexportdlg.moc.cpp:42 dialogs/kexportdlg.moc.cpp:47
-msgid "KExportDlg"
+#: dialogs/knewequityentrydecl.cpp:67
+msgid "Market Symbol:"
 msgstr ""
 
-#: dialogs/kchooseimportexportdlg.moc.cpp:42
-#: dialogs/kchooseimportexportdlg.moc.cpp:47
-msgid "KChooseImportExportDlg"
+#: dialogs/knewequityentrydecl.cpp:79 dialogs/knewequityentrydecl.cpp:80
+msgid "Name of the company, or mutual fund."
 msgstr ""
 
-#: dialogs/kcsvprogressdlg.moc.cpp:42 dialogs/kcsvprogressdlg.moc.cpp:47
-msgid "KCsvProgressDlg"
+#: dialogs/knewequityentrydecl.cpp:84 dialogs/knewequityentrydecl.cpp:85
+msgid "Trading Symbol of the stock or mutual fund, not required."
 msgstr ""
 
-#: dialogs/kimportdlg.moc.cpp:42 dialogs/kimportdlg.moc.cpp:47
+#: dialogs/kimportdlg.moc.cpp:34 dialogs/kimportdlg.moc.cpp:42
 msgid "KImportDlg"
 msgstr ""
 
-#: kbanklistitem.cpp:32 kscheduleview.cpp:30
-msgid "Bank"
-msgstr ""
-
-#: kbanklistitem.cpp:49 knewaccountdlgdecl.cpp:120
-msgid "Current"
-msgstr ""
-
-#: kbanksview.cpp:30
-msgid "Institutions/Accounts"
-msgstr ""
-
-#: kbanksview.cpp:31 kcategoriesdlg.cpp:33 kscheduleview.cpp:32
-msgid "Type"
-msgstr ""
-
-#: kbanksview.cpp:32 kreconciledlgdecl.cpp:114 ktransactionview.cpp:41
-msgid "Balance"
-msgstr ""
-
-#: kbanksview.cpp:111
-msgid "Total Profits: "
-msgstr ""
-
-#: kcategoriesdlg.cpp:32 kfindtransactiondlgdecl.cpp:257
-msgid "Category"
-msgstr ""
-
-#: kcategoriesdlg.cpp:95
-msgid ""
-"By deleting a major category all minor(s) will be lost.\n"
-"Are you sure you want to delete: "
-msgstr ""
-
-#: kcategoriesdlg.cpp:98
-msgid "Delete this minor category item: "
-msgstr ""
-
-#: kcategoriesdlg.cpp:100
-msgid " in major category: "
-msgstr ""
-
-#: kcategorylistitem.cpp:30 kcategorylistitem.cpp:43 knewcategorydlg.cpp:53
-#: knewcategorydlgdecl.cpp:78
-msgid "Income"
-msgstr ""
-
-#: kcategorylistitem.cpp:30 kcategorylistitem.cpp:43
-#: knewcategorydlgdecl.cpp:79
-msgid "Expense"
-msgstr ""
-
-#: kmymoney2.cpp:95
-msgid "New &Window"
-msgstr ""
-
-#: kmymoney2.cpp:104
-msgid "&Close Window"
-msgstr ""
-
-#: kmymoney2.cpp:116
-msgid "Creates a new document"
-msgstr ""
-
-#: kmymoney2.cpp:117
-msgid "Creates a new window"
-msgstr ""
-
-#: kmymoney2.cpp:118
-msgid "Opens an existing document"
-msgstr ""
-
-#: kmymoney2.cpp:119
-msgid "Opens a recently used file"
-msgstr ""
-
-#: kmymoney2.cpp:120
-msgid "Saves the actual document"
-msgstr ""
-
-#: kmymoney2.cpp:121
-msgid "Saves the actual document as..."
-msgstr ""
-
-#: kmymoney2.cpp:122
-msgid "Closes the actual document"
-msgstr ""
-
-#: kmymoney2.cpp:123
-msgid "Closes the actual window"
-msgstr ""
-
-#: kmymoney2.cpp:127
-msgid "Quits the application"
-msgstr ""
-
-#: kmymoney2.cpp:133
-msgid "Enables/disables the toolbar"
-msgstr ""
-
-#: kmymoney2.cpp:134
-msgid "Enables/disables the statusbar"
-msgstr ""
-
-#: kmymoney2.cpp:137
-msgid "View Info..."
-msgstr ""
-
-#: kmymoney2.cpp:138
-msgid "View information about the file"
-msgstr ""
-
-#: kmymoney2.cpp:139
-msgid "Personal Data..."
-msgstr ""
-
-#: kmymoney2.cpp:140
-msgid "Lets you view/edit your personal data"
-msgstr ""
-
-#: kmymoney2.cpp:141
-msgid "Backup..."
-msgstr ""
-
-#: kmymoney2.cpp:142
-msgid "Lets you backup your file to a removeable drive"
-msgstr ""
-
-#: kmymoney2.cpp:150
-msgid "Edit Categories..."
-msgstr ""
-
-#: kmymoney2.cpp:151
-msgid "Edit and create categories or sub-categories"
-msgstr ""
-
-#: kmymoney2.cpp:152
-msgid "Edit Payees..."
-msgstr ""
-
-#: kmymoney2.cpp:153
-msgid "View and edit Payees"
-msgstr ""
-
-#: kmymoney2.cpp:156
-msgid "Add new bank..."
-msgstr ""
-
-#: kmymoney2.cpp:157
-msgid "Lets you create a new bank"
-msgstr ""
-
-#: kmymoney2.cpp:160
-msgid "Open account register..."
-msgstr ""
-
-#: kmymoney2.cpp:161
-msgid "View the account register"
-msgstr ""
-
-#: kmymoney2.cpp:162
-msgid "Add new account..."
-msgstr ""
-
-#: kmymoney2.cpp:163
-msgid "Lets you create a new account"
-msgstr ""
-
-#: kmymoney2.cpp:164
-msgid "Reconcile account..."
-msgstr ""
-
-#: kmymoney2.cpp:165
-msgid "Balance your account"
-msgstr ""
-
-#: kmymoney2.cpp:166
-msgid "Find transaction..."
-msgstr ""
-
-#: kmymoney2.cpp:167
-msgid "Find transactions"
-msgstr ""
-
-#: kmymoney2.cpp:168
-msgid "Import transactions..."
-msgstr ""
-
-#: kmymoney2.cpp:169
-msgid "Import tab delimited text"
-msgstr ""
-
-#: kmymoney2.cpp:170
-msgid "Export transactions..."
-msgstr ""
-
-#: kmymoney2.cpp:171
-msgid "Export to tab delimited text"
-msgstr ""
-
-#: kmymoney2.cpp:204 kmymoney2.cpp:289 kmymoney2.cpp:307 kmymoney2.cpp:328
-#: kmymoney2.cpp:343 kmymoney2.cpp:362 kmymoney2.cpp:379 kmymoney2.cpp:397
-#: kmymoney2.cpp:411 kmymoney2.cpp:427 kmymoney2.cpp:434 kmymoney2.cpp:441
-#: kmymoney2.cpp:448 kmymoney2.cpp:465 kmymoney2.cpp:482
-msgid "Ready."
-msgstr ""
-
-#: kmymoney2.cpp:257
-msgid "KMyMoney file needs saving.  Save ?"
-msgstr ""
-
-#: kmymoney2.cpp:277
-msgid "Creating new document..."
-msgstr ""
-
-#: kmymoney2.cpp:280 kmymoney2.cpp:298 kmymoney2.cpp:315
-msgid "KMyMoney file already open.  Close it ?"
-msgstr ""
-
-#: kmymoney2.cpp:282 kmymoney2.cpp:300 kmymoney2.cpp:317 kmymoney2.cpp:337
-#: kmymoney2.cpp:505
-msgid "Ready"
-msgstr ""
-
-#: kmymoney2.cpp:295
-msgid "Open a document."
-msgstr ""
-
-#: kmymoney2.cpp:312
-msgid "Opening file..."
-msgstr ""
-
-#: kmymoney2.cpp:333
-msgid "Saving file..."
-msgstr ""
-
-#: kmymoney2.cpp:348
-msgid "Saving file with a new filename..."
-msgstr ""
-
-#: kmymoney2.cpp:351
-msgid ""
-"*.kmy|KMyMoney files\n"
-"*.*|All files"
-msgstr ""
-
-#: kmymoney2.cpp:367
-msgid "Closing window..."
-msgstr ""
-
-#: kmymoney2.cpp:370 kmymoney2.cpp:387 kmymoney2.cpp:711
-msgid "The file has been changed, save it ?"
-msgstr ""
-
-#: kmymoney2.cpp:384
-msgid "Closing file..."
-msgstr ""
-
-#: kmymoney2.cpp:402
-msgid "Printing..."
-msgstr ""
-
-#: kmymoney2.cpp:403
-msgid "Sorry, unavailable at this time."
-msgstr ""
-
-#: kmymoney2.cpp:416
-msgid "Exiting..."
-msgstr ""
-
-#: kmymoney2.cpp:432
-msgid "Cutting selection..."
-msgstr ""
-
-#: kmymoney2.cpp:439
-msgid "Copying selection to clipboard..."
-msgstr ""
-
-#: kmymoney2.cpp:446
-msgid "Inserting clipboard contents..."
-msgstr ""
-
-#: kmymoney2.cpp:453
-msgid "Toggling toolbar..."
-msgstr ""
-
-#: kmymoney2.cpp:470
-msgid "Toggle the statusbar..."
-msgstr ""
-
-#: kmymoney2.cpp:497 kmymoney2.cpp:511 kmymoneyview.cpp:136
-msgid "No MyMoneyFile open"
-msgstr ""
-
-#: kmymoney2.cpp:501
-msgid "Viewing personal data..."
-msgstr ""
-
-#: kmymoney2.cpp:525 kmymoney2.cpp:621 kmymoneyview.cpp:1144
-msgid "Unknown Institution"
-msgstr ""
-
-#: kmymoney2.cpp:526
-msgid "Please select an institution first."
-msgstr ""
-
-#: kmymoney2.cpp:526
-msgid "Create New Account"
-msgstr ""
-
-#: kmymoney2.cpp:731
-msgid "Backup file for today exists on that device.  Replace ?"
-msgstr ""
-
-#: kmymoney2.cpp:731
-msgid "&Replace"
-msgstr ""
-
-#: kmymoney2.cpp:782
-msgid "Error Mounting Device"
-msgstr ""
-
-#: kmymoney2.cpp:803
-msgid "Error Copying File to Device"
-msgstr ""
-
-#: kmymoney2.cpp:813
-msgid "File Successfully Backed up"
-msgstr ""
-
-#: kmymoney2.cpp:820
-msgid "Error unmounting device"
-msgstr ""
-
-#: kmymoney2.cpp:827
-msgid "File Successfully Backed Up"
-msgstr ""
-
-#: kmymoney2.cpp:830
-msgid "Error copying file"
-msgstr ""
-
-#: kmymoneyview.cpp:89
-msgid "Account Options"
-msgstr ""
-
-#: kmymoneyview.cpp:92
-msgid "Reconcile..."
-msgstr ""
-
-#: kmymoneyview.cpp:94 kmymoneyview.cpp:122
-msgid "Edit..."
-msgstr ""
-
-#: kmymoneyview.cpp:95 kmymoneyview.cpp:123 ktransactionview.cpp:400
-msgid "Delete..."
-msgstr ""
-
-#: kmymoneyview.cpp:97
-msgid "Import ascii..."
-msgstr ""
-
-#: kmymoneyview.cpp:98
-msgid "Export ascii..."
-msgstr ""
-
-#: kmymoneyview.cpp:119
-msgid "Institution Options"
-msgstr ""
-
-#: kmymoneyview.cpp:120
-msgid "New Institution..."
-msgstr ""
-
-#: kmymoneyview.cpp:121
-msgid "New Account..."
-msgstr ""
-
-#: kmymoneyview.cpp:150
-msgid "Edit Institution"
-msgstr ""
-
-#: kmymoneyview.cpp:164
-msgid "Unable to grab a pointer to a bank"
-msgstr ""
-
-#: kmymoneyview.cpp:176
-msgid "Delete this bank: "
-msgstr ""
-
-#: kmymoneyview.cpp:194 kmymoneyview.cpp:242 kmymoneyview.cpp:338
-#: kmymoneyview.cpp:355 kmymoneyview.cpp:364 kmymoneyview.cpp:382
-#: kmymoneyview.cpp:601 kmymoneyview.cpp:612
-msgid "Tried to access a file when it's not open"
-msgstr ""
-
-#: kmymoneyview.cpp:219
-msgid "Edit an Account"
-msgstr ""
-
-#: kmymoneyview.cpp:261
-msgid "Delete this account ? :-\n"
-msgstr ""
-
-#: kmymoneyview.cpp:303
-msgid "Error while reading file: Bad version number"
-msgstr ""
-
-#: kmymoneyview.cpp:307
-msgid "Error while reading file: Bad magic number"
-msgstr ""
-
-#: kmymoneyview.cpp:311
-msgid "Error while reading file: File doesn't exist"
-msgstr ""
-
-#: kmymoneyview.cpp:315
-msgid "Error while reading file, ("
-msgstr ""
-
-#: kmymoneyview.cpp:399
-msgid "Create a new Account"
-msgstr ""
-
-#: kmymoneyview.cpp:430
-msgid "Initial account balance"
-msgstr ""
-
-#: kmymoneyview.cpp:635
-msgid "Create new KMyMoneyFile"
-msgstr ""
-
-#: kmymoneyview.cpp:658
-msgid "Cannot start wizard on an unopened file"
-msgstr ""
-
-#: kmymoneyview.cpp:664
-msgid "Edit Personal Data"
-msgstr ""
-
-#: kmymoneyview.cpp:682
-msgid "Cannot find the data file containing the default categories"
-msgstr ""
-
-#: kfindtransactiondlgdecl.cpp:159 kmymoneyview.cpp:998
-msgid "At least"
-msgstr ""
-
-#: kfindtransactiondlgdecl.cpp:160 kmymoneyview.cpp:1001
-msgid "At most"
-msgstr ""
-
-#: kfindtransactiondlgdecl.cpp:125 kmymoneyview.cpp:1017
-msgid "Credit or Debit"
-msgstr ""
-
-#: kfindtransactiondlgdecl.cpp:126 kmymoneyview.cpp:1019
-msgid "Credit"
-msgstr ""
-
-#: kfindtransactiondlgdecl.cpp:127 kmymoneyview.cpp:1021
-msgid "Debit"
-msgstr ""
-
-#: kmymoneyview.cpp:1155
-msgid "Unknown Account"
-msgstr ""
-
-#: knewaccountdlg.cpp:72
-msgid ""
-"You have not specified a name.\n"
-"Please fill in this field"
-msgstr ""
-
-#: knewbankdlg.cpp:59
-msgid "The institution name field is empty.  Please enter the name."
-msgstr ""
-
-#: knewbankdlg.cpp:59
-msgid "Adding New Institution"
-msgstr ""
-
-#: knewbillwizardimpl.cpp:29 kschedulelistitem.cpp:47
-msgid "Daily"
-msgstr ""
-
-#: knewbillwizardimpl.cpp:30 kschedulelistitem.cpp:50
-msgid "Weekly"
-msgstr ""
-
-#: knewbillwizardimpl.cpp:31 kschedulelistitem.cpp:53
-msgid "Fortnightly"
-msgstr ""
-
-#: knewbillwizardimpl.cpp:32 kschedulelistitem.cpp:56
-msgid "Monthly"
-msgstr ""
-
-#: knewbillwizardimpl.cpp:33 kschedulelistitem.cpp:59
-msgid "Every 3 Months"
-msgstr ""
-
-#: knewbillwizardimpl.cpp:34 kschedulelistitem.cpp:62
-msgid "Every 4 Months"
-msgstr ""
-
-#: knewbillwizardimpl.cpp:35 kschedulelistitem.cpp:65
-msgid "Yearly"
-msgstr ""
-
-#: knewbillwizardimpl.cpp:37
-msgid "A String to size"
-msgstr ""
-
-#: knewbillwizardimpl.cpp:72
-msgid "Direct Debit"
-msgstr ""
-
-#: knewbillwizardimpl.cpp:73
-msgid "Other"
-msgstr ""
-
-#: knewbillwizardimpl.cpp:76
-msgid "Direct Deposit"
-msgstr ""
-
-#: knewbillwizardimpl.cpp:77
-msgid "Manual Deposit"
-msgstr ""
-
-#: knewbillwizardimpl.cpp:80 knewbillwizardimpl.cpp:84
-msgid "Standing Order"
-msgstr ""
-
-#: knewbillwizardimpl.cpp:81 knewbillwizardimpl.cpp:85
-msgid "Write Cheque"
-msgstr ""
-
-#: kpayeedlg.cpp:117
-msgid "Remove this payee: "
-msgstr ""
-
-#: kpayeedlg.cpp:120
-msgid "Remove Payee"
-msgstr ""
-
-#: kfindtransactiondlgdecl.cpp:138 kreconciledlg.cpp:52 kreconciledlg.cpp:61
-#: kscheduleview.cpp:29 ktransactionview.cpp:35 ktransactionview.cpp:1007
-msgid "Date"
-msgstr ""
-
-#: kfindtransactiondlgdecl.cpp:205 kreconciledlg.cpp:53 kreconciledlg.cpp:62
-#: ktransactionview.cpp:1014
-msgid "Number"
-msgstr ""
-
-#: kfindtransactiondlgdecl.cpp:222 kreconciledlg.cpp:54 kreconciledlg.cpp:63
-msgid "Payee"
-msgstr ""
-
-#: kfindtransactiondlgdecl.cpp:66 kreconciledlg.cpp:55 kreconciledlg.cpp:64
-#: kscheduleview.cpp:34 ktransactionview.cpp:1011 ktransactionview.cpp:1012
-msgid "Amount"
-msgstr ""
-
-#: kreconciledlg.cpp:56 kreconciledlg.cpp:65 kreconcilelistitem.cpp:39
-#: ktransactionview.cpp:976 ktransactionview.cpp:1078
-msgid "C"
-msgstr ""
-
-#: kreconciledlg.cpp:76 kreconciledlg.cpp:236 kreconciledlg.cpp:327
-msgid "Deposits: "
-msgstr ""
-
-#: kreconciledlg.cpp:80 kreconciledlg.cpp:197 kreconciledlg.cpp:331
-msgid "Withdrawals: "
-msgstr ""
-
-#: kreconciledlg.cpp:262
-msgid "Account did not balance, are you sure ?"
-msgstr ""
-
-#: kreconcilelistitem.cpp:35 kreconcilelistitem.cpp:59
-#: ktransactionview.cpp:979 ktransactionview.cpp:1081
-msgid "R"
-msgstr ""
-
-#: kscheduleview.cpp:33
-msgid "Occurence"
-msgstr ""
-
-#: kfindtransactiondlgdecl.cpp:192 kscheduleview.cpp:35
-msgid "Status"
-msgstr ""
-
-#: ksettingsdlg.cpp:45
-msgid "&Reset"
-msgstr ""
-
-#: ksettingsdlg.cpp:65 ksettingsdlg.cpp:166
-msgid "General"
-msgstr ""
-
-#: ksettingsdlg.cpp:65
-msgid "General settings"
-msgstr ""
-
-#: ksettingsdlg.cpp:70
-msgid "Startup options"
-msgstr ""
-
-#: ksettingsdlg.cpp:83
-msgid "Start with dialog prompt (default)"
-msgstr ""
-
-#: ksettingsdlg.cpp:88
-msgid "Start with last file used"
-msgstr ""
-
-#: ksettingsdlg.cpp:97
-msgid "Main List"
-msgstr ""
-
-#: ksettingsdlg.cpp:97
-msgid "List settings"
-msgstr ""
-
-#: ksettingsdlg.cpp:117
-msgid "Number of lines in the register view:"
-msgstr ""
-
-#: ksettingsdlg.cpp:130
-msgid "Show a grid in the register."
-msgstr ""
-
-#: ksettingsdlg.cpp:134
-msgid "Show a textual prompt in the register."
-msgstr ""
-
-#: ksettingsdlg.cpp:139
-msgid "Row Colour options"
-msgstr ""
-
-#: ksettingsdlg.cpp:152
-msgid "Use one colour per transaction"
-msgstr ""
-
-#: ksettingsdlg.cpp:157
-msgid "Change colour every other row"
-msgstr ""
-
-#: ksettingsdlg.cpp:182
-msgid "List view colour :"
-msgstr ""
-
-#: ksettingsdlg.cpp:196
-msgid "List background colour :"
-msgstr ""
-
-#: ksettingsdlg.cpp:209
-msgid "Color"
-msgstr ""
-
-#: ksettingsdlg.cpp:216
-msgid "Header Font"
-msgstr ""
-
-#: ksettingsdlg.cpp:223
-msgid "Cell Font"
-msgstr ""
-
-#: ksettingsdlg.cpp:302 ksettingsdlg.cpp:315
-msgid "The row count has to be between 1 and 2"
-msgstr ""
-
-#: kstartdlg.cpp:34
-msgid "Start Dialog"
-msgstr ""
-
-#: kstartdlg.cpp:52
-msgid "Templates"
-msgstr ""
-
-#: kstartdlg.cpp:52
-msgid "Select templates"
-msgstr ""
-
-#: kstartdlg.cpp:54 kstartdlg.cpp:83
-msgid "Blank Document"
-msgstr ""
-
-#: kstartdlg.cpp:61
-msgid "Open a KMyMoney document"
-msgstr ""
-
-#: kstartdlg.cpp:65
-msgid "%1|KMyMoney files (*.kmy)"
-msgstr ""
-
-#: kstartdlg.cpp:69
-msgid "Recent Files"
-msgstr ""
-
-#: ktransactionview.cpp:36
-msgid "Type/Num"
-msgstr ""
-
-#: ktransactionview.cpp:37
-msgid "Payee/Category/Memo"
-msgstr ""
-
-#: ktransactionview.cpp:38
-msgid "Clr"
-msgstr ""
-
-#: ktransactionview.cpp:39
-msgid "Payment"
-msgstr ""
-
-#: ktransactionview.cpp:205
-msgid "Enter"
-msgstr ""
-
-#: ktransactionview.cpp:395
-msgid "Set As..."
-msgstr ""
-
-#: ktransactionview.cpp:396
-msgid "Unreconciled (default)"
-msgstr ""
-
-#: ktransactionview.cpp:399
-msgid "Transaction Options"
-msgstr ""
-
-#: ktransactionview.cpp:402
-msgid "Set as"
-msgstr ""
-
-#: ktransactionview.cpp:428
-msgid "Delete this transaction ? :- "
-msgstr ""
-
-#: ktransactionview.cpp:996 ktransactionview.cpp:1022
-msgid "N/A"
-msgstr ""
-
-#: ktransactionview.cpp:1008
-msgid "Method"
-msgstr ""
-
-#: ktransactionview.cpp:1009
-msgid "Click on a field to enter a transaction"
-msgstr ""
-
-#: ktransactionview.cpp:1010
-msgid "?"
-msgstr ""
-
-#: ktransactionview.cpp:1015
-msgid "Category|Description"
-msgstr ""
-
-#: main.cpp:28
-msgid ""
-"KMyMoney2 a personal finances application for KDE 2\n"
-"\n"
-"Please consider contributing to this product with code and or suggestions"
-msgstr ""
-
-#: main.cpp:32
-msgid "file to open"
-msgstr ""
-
-#: main.cpp:39
-msgid "KMyMoney2"
-msgstr ""
-
-#: main.cpp:42
-msgid "Project Manager"
-msgstr ""
-
-#: main.cpp:43
-msgid "Project Admin"
-msgstr ""
-
-#: main.cpp:44
-msgid "Developer & Artist"
-msgstr ""
-
-#: main.cpp:45
-msgid "Developer"
-msgstr ""
-
-#: mymoney/mymoneyaccount.cpp:968
-msgid "JAN"
-msgstr ""
-
-#: mymoney/mymoneyaccount.cpp:970
-msgid "FEB"
-msgstr ""
-
-#: mymoney/mymoneyaccount.cpp:972
-msgid "MAR"
-msgstr ""
-
-#: mymoney/mymoneyaccount.cpp:974
-msgid "APR"
-msgstr ""
-
-#: mymoney/mymoneyaccount.cpp:976
-msgid "MAY"
-msgstr ""
-
-#: mymoney/mymoneyaccount.cpp:978
-msgid "JUN"
-msgstr ""
-
-#: mymoney/mymoneyaccount.cpp:980
-msgid "JUL"
-msgstr ""
-
-#: mymoney/mymoneyaccount.cpp:982
-msgid "AUG"
-msgstr ""
-
-#: mymoney/mymoneyaccount.cpp:984
-msgid "SEP"
-msgstr ""
-
-#: mymoney/mymoneyaccount.cpp:986
-msgid "OCT"
-msgstr ""
-
-#: mymoney/mymoneyaccount.cpp:988
-msgid "NOV"
-msgstr ""
-
-#: mymoney/mymoneyaccount.cpp:990
-msgid "DEC"
-msgstr ""
-
-#: mymoney/mymoneyaccount.cpp:1063
-msgid "No error"
-msgstr ""
-
-#: mymoney/mymoneyaccount.cpp:1065
-msgid "Cannot convert number to Days"
-msgstr ""
-
-#: mymoney/mymoneyaccount.cpp:1067
-msgid "Cannot convert number to Months"
-msgstr ""
-
-#: mymoney/mymoneyaccount.cpp:1069
-msgid "Cannot convert number to Years"
-msgstr ""
-
-#: mymoney/mymoneyaccount.cpp:1071
-msgid "Character literal in format does not match in buffer"
-msgstr ""
-
-#: mymoney/mymoneyaccount.cpp:1073
-msgid "Arguments have not been allocated memory"
-msgstr ""
-
-#: mymoney/mymoneyaccount.cpp:1075
-msgid "Arguments aren't long enough"
-msgstr ""
-
-#: mymoney/mymoneyaccount.cpp:1078
-msgid "Format and Buffer types do not match"
-msgstr ""
-
-#: mymoney/mymoneyaccount.cpp:1080
-msgid "Number of format specifiers invalid (%)"
-msgstr ""
-
-#: mymoney/mymoneyaccount.cpp:1082
-msgid "Number of day format options invalid (d)"
-msgstr ""
-
-#: mymoney/mymoneyaccount.cpp:1084
-msgid "Number of month format options invalid (m)"
-msgstr ""
-
-#: mymoney/mymoneyaccount.cpp:1086
-msgid "Number of year format options invalid (y)"
-msgstr ""
-
-#: mymoney/mymoneyaccount.cpp:1088
-msgid "Too many literal characters. (Just use them as separators)"
-msgstr ""
-
-#: mymoney/mymoneyaccount.cpp:1090
-msgid "Too many characters for a format specifier found in buffer"
-msgstr ""
-
-#: mymoney/mymoneyaccount.cpp:1092
-msgid ""
-"Unknown error.  Please mail mte@users.sourceforge.net with error number. "
-"Sorry."
-msgstr ""
-
-#: mymoney/mymoneyaccount.moc.cpp:42 mymoney/mymoneyaccount.moc.cpp:47
-msgid "MyMoneyAccount"
-msgstr ""
-
-#: widgets/kmymoneyhlayout.moc.cpp:42 widgets/kmymoneyhlayout.moc.cpp:47
-msgid "kMyMoneyHLayout"
-msgstr ""
-
-#: widgets/kmymoneycombo.moc.cpp:42 widgets/kmymoneycombo.moc.cpp:47
-msgid "kMyMoneyCombo"
-msgstr ""
-
-#: widgets/kdatepik.moc.cpp:42 widgets/kdatepik.moc.cpp:47
-msgid "KTempDatePicker"
-msgstr ""
-
-#: widgets/kmymoneylineedit.moc.cpp:42 widgets/kmymoneylineedit.moc.cpp:47
-msgid "kMyMoneyLineEdit"
-msgstr ""
-
-#: widgets/kmymoneyedit.moc.cpp:42 widgets/kmymoneyedit.moc.cpp:47
-msgid "kMyMoneyEdit"
-msgstr ""
-
-#: widgets/kmymoneytable.moc.cpp:42 widgets/kmymoneytable.moc.cpp:47
-msgid "kMyMoneyTable"
-msgstr ""
-
-#: widgets/kmymoneydateinput.moc.cpp:42 widgets/kmymoneydateinput.moc.cpp:47
-msgid "kMyMoneyDateInput"
-msgstr ""
-
-#: kbankviewdecl.cpp:32 kscheduleviewdecl.cpp:30 ktransactionviewdecl.cpp:32
-msgid "Form1"
-msgstr ""
-
-#: ktransactionviewdecl.cpp:42
-msgid "All Transactions (default)"
-msgstr ""
-
-#: ktransactionviewdecl.cpp:43
-msgid "Search Results"
-msgstr ""
-
-#: kendingbalancedlgdecl.cpp:87 kreconciledlgdecl.cpp:148
-#: ktransactionviewdecl.cpp:67
-msgid "Ending Balance:"
-msgstr ""
-
-#: ktransactionviewdecl.cpp:74
-msgid "ggg"
-msgstr ""
-
-#: kfindtransactiondlgdecl.cpp:41
-msgid "Find Transaction Dialog"
-msgstr ""
-
-#: kfindtransactiondlgdecl.cpp:47
-msgid ""
-"Enter the details you wish to search on.  Click on the Advanced tab to\n"
-"use some of the more estoric features.\n"
-"\n"
-"Click on Search to perform the search."
-msgstr ""
-
-#: kfindtransactiondlgdecl.cpp:77
-msgid "Between selected dates"
-msgstr ""
-
-#: kfindtransactiondlgdecl.cpp:93
-msgid "Start:"
-msgstr ""
-
-#: kfindtransactiondlgdecl.cpp:108
-msgid "End:"
-msgstr ""
-
-#: kfindtransactiondlgdecl.cpp:120
-msgid "Credit/Debit"
-msgstr ""
-
-#: kfindtransactiondlgdecl.cpp:149
-msgid "Amounts"
-msgstr ""
-
-#: kfindtransactiondlgdecl.cpp:161
-msgid "Exactly"
-msgstr ""
-
-#: kfindtransactiondlgdecl.cpp:184
-msgid "Normal"
-msgstr ""
-
-#: kfindtransactiondlgdecl.cpp:240 kfindtransactiondlgdecl.cpp:250
-#: kfindtransactiondlgdecl.cpp:272
-msgid "Regular expression"
-msgstr ""
-
-#: kfindtransactiondlgdecl.cpp:284
-msgid "Notes"
-msgstr ""
-
-#: kfindtransactiondlgdecl.cpp:289
-msgid "Advanced"
-msgstr ""
-
-#: kfindtransactiondlgdecl.cpp:299
-msgid "&Search"
-msgstr ""
-
-#: kfileinfodlgdecl.cpp:34
-msgid "File Information Dialog"
-msgstr ""
-
-#: kfileinfodlgdecl.cpp:40
-msgid ""
-"This dialog shows some useful information about\n"
-"how the file has been used."
-msgstr ""
-
-#: kfileinfodlgdecl.cpp:57
-msgid "Created date:"
-msgstr ""
-
-#: kfileinfodlgdecl.cpp:72
-msgid "Last access:"
-msgstr ""
-
-#: kfileinfodlgdecl.cpp:86
-msgid "Last modify:"
-msgstr ""
-
-#: knewfiledlgdecl.cpp:35
-msgid "New File Dialog"
-msgstr ""
-
-#: knewfiledlgdecl.cpp:41
-msgid ""
-"Creating user details for future retrieval.\n"
-"\n"
-"There are no required fields in this form, however, in the future this\n"
-"information may expand to cover such details as whether you own a\n"
-"credit card, and will then be used to create forecasts and budgets to\n"
-"suit YOUR needs."
-msgstr ""
-
-#: knewfiledlgdecl.cpp:57
-msgid "Your name:"
-msgstr ""
-
-#: knewfiledlgdecl.cpp:65
-msgid "Your address"
-msgstr ""
-
-#: knewbankdlgdecl.cpp:101 knewfiledlgdecl.cpp:80
-msgid "Street:"
-msgstr ""
-
-#: knewfiledlgdecl.cpp:93
-msgid "Town:"
-msgstr ""
-
-#: knewfiledlgdecl.cpp:106
-msgid "County:"
-msgstr ""
-
-#: knewbankdlgdecl.cpp:114 knewfiledlgdecl.cpp:119 kpayeedlgdecl.cpp:149
-msgid "Postcode:"
-msgstr ""
-
-#: knewfiledlgdecl.cpp:132
-msgid "Telephone:"
-msgstr ""
-
-#: knewfiledlgdecl.cpp:145
-msgid "Email:"
-msgstr ""
-
-#: knewbankdlgdecl.cpp:35
-msgid "New Institution Dialog"
-msgstr ""
-
-#: knewbankdlgdecl.cpp:41
-msgid ""
-"Adding a new institution.\n"
-"\n"
-"The only required field is the name, which can be the name of a bank\n"
-"like Woolwhich, or a descriptive name like Family Cash Accounts."
-msgstr ""
-
-#: knewbankdlgdecl.cpp:51
-msgid "Institution Details"
-msgstr ""
-
-#: knewaccountdlgdecl.cpp:91 knewbankdlgdecl.cpp:65 kpayeedlgdecl.cpp:114
-msgid "Name:"
-msgstr ""
-
-#: knewbankdlgdecl.cpp:73
-msgid "Address"
-msgstr ""
-
-#: knewbankdlgdecl.cpp:88
-msgid "City:"
-msgstr ""
-
-#: knewbankdlgdecl.cpp:127 kpayeedlgdecl.cpp:166
-msgid "Telephone/Fax:"
-msgstr ""
-
-#: knewbankdlgdecl.cpp:141
-msgid "Sort code:"
-msgstr ""
-
-#: knewbankdlgdecl.cpp:154
-msgid "Managers name:"
-msgstr ""
-
-#: knewaccountdlgdecl.cpp:39
-msgid "New Account Dialog"
-msgstr ""
-
-#: knewaccountdlgdecl.cpp:50
-msgid "Creating new account for institution:"
-msgstr ""
-
-#: knewaccountdlgdecl.cpp:56
-msgid "name"
-msgstr ""
-
-#: knewaccountdlgdecl.cpp:63
-msgid ""
-"The only required field is the name which can be descriptive like\n"
-"My Current Account."
-msgstr ""
-
-#: knewaccountdlgdecl.cpp:73
-msgid "Account Details"
-msgstr ""
-
-#: knewaccountdlgdecl.cpp:105 knewbillwizard.cpp:364
-msgid "Number:"
-msgstr ""
-
-#: knewaccountdlgdecl.cpp:117
-msgid "Account type"
-msgstr ""
-
-#: knewaccountdlgdecl.cpp:126
-msgid "Opening details"
-msgstr ""
-
-#: knewaccountdlgdecl.cpp:143 knewbillwizard.cpp:345
-msgid "Date:"
-msgstr ""
-
-#: knewaccountdlgdecl.cpp:157
-msgid "Balance:"
-msgstr ""
-
-#: knewaccountdlgdecl.cpp:171
-msgid "Notes:"
-msgstr ""
-
-#: knewcategorydlgdecl.cpp:36
-msgid "New Category Dialog"
-msgstr ""
-
-#: knewcategorydlgdecl.cpp:42
-msgid ""
-"Editing category details.\n"
-"\n"
-"To add minor categories enter the name and press the Add button."
-msgstr ""
-
-#: knewcategorydlgdecl.cpp:58
-msgid "Category Name:"
-msgstr ""
-
-#: knewcategorydlgdecl.cpp:74
-msgid "Type:"
-msgstr ""
-
-#: knewcategorydlgdecl.cpp:86
-msgid "Minor Categories"
-msgstr ""
-
-#: knewcategorydlgdecl.cpp:116 kpayeedlgdecl.cpp:93
-msgid "&Add"
-msgstr ""
-
-#: kendingbalancedlgdecl.cpp:35
+#: dialogs/kendingbalancedlgdecl.cpp:66
 msgid "Ending Balance Dialog"
 msgstr ""
 
-#: kendingbalancedlgdecl.cpp:41
+#: dialogs/kendingbalancedlgdecl.cpp:74 dialogs/knewaccountdlgdecl.cpp:81
+#: dialogs/kreconciledlgdecl.cpp:49 dialogs/knewbankdlgdecl.cpp:43
+#: dialogs/kimportdlgdecl.cpp:49 dialogs/knewfiledlgdecl.cpp:43
+#: dialogs/kbackupdlgdecl.cpp:44 dialogs/kchooseimportexportdlgdecl.cpp:42
+#: dialogs/kexportdlgdecl.cpp:79 dialogs/kcsvprogressdlgdecl.cpp:76
+#: dialogs/kfindtransactiondlgdecl.cpp:80
+msgid "TextLabel1"
+msgstr ""
+
+#: dialogs/kendingbalancedlgdecl.cpp:78
 msgid ""
 "Please enter the information needed to balance your account.\n"
 "\n"
@@ -1630,23 +103,172 @@ msgid ""
 "To begin the reconciliation process click on the OK button."
 msgstr ""
 
-#: kendingbalancedlgdecl.cpp:56 kreconciledlgdecl.cpp:130
+#: dialogs/kendingbalancedlgdecl.cpp:97 dialogs/kreconciledlgdecl.cpp:136
 msgid "Previous Balance:"
 msgstr ""
 
-#: kendingbalancedlgdecl.cpp:71
+#: dialogs/kendingbalancedlgdecl.cpp:110
 msgid "Ending Date:"
 msgstr ""
 
-#: kscheduleviewdecl.cpp:46
+#: dialogs/kendingbalancedlgdecl.cpp:124 dialogs/kreconciledlgdecl.cpp:152
+#: views/ktransactionviewdecl.cpp:95 views/kstocktransactionviewdecl.cpp:73
+msgid "Ending Balance:"
+msgstr ""
+
+#: dialogs/knewaccountwizard.cpp:57 dialogs/kexportdlgdecl.cpp:162
+#: views/kbanksview.cpp:303 views/kbanksview.cpp:638
+msgid "Account"
+msgstr ""
+
+#: dialogs/knewaccountwizard.cpp:231 dialogs/knewaccountwizard.cpp:252
+#: dialogs/knewaccountwizarddecl.cpp:2623 views/kmymoneyfile.cpp:116
+#: views/kmymoneyfile.cpp:159
+msgid "Checkings"
+msgstr ""
+
+#: dialogs/knewaccountwizard.cpp:232 dialogs/knewaccountwizard.cpp:260
+#: dialogs/knewaccountdlg.cpp:110 dialogs/knewaccountwizarddecl.cpp:2624
+#: views/kmymoneyfile.cpp:119 views/kmymoneyfile.cpp:161
+msgid "Savings"
+msgstr ""
+
+#: dialogs/knewaccountwizard.cpp:233 dialogs/knewaccountwizard.cpp:267
+#: dialogs/knewaccountdlg.cpp:112 dialogs/knewaccountwizarddecl.cpp:2625
+msgid "Credit Card"
+msgstr ""
+
+#: dialogs/knewaccountwizard.cpp:234 dialogs/knewaccountwizard.cpp:274
+#: dialogs/knewaccountdlg.cpp:111 dialogs/knewaccountwizarddecl.cpp:2626
+#: views/kmymoneyfile.cpp:122 views/kmymoneyfile.cpp:163
+msgid "Cash"
+msgstr ""
+
+#: dialogs/knewaccountwizard.cpp:235 dialogs/knewaccountdlg.cpp:113
+#: dialogs/knewaccountwizarddecl.cpp:2627
+msgid "Loan"
+msgstr ""
+
+#: dialogs/knewaccountwizard.cpp:236 dialogs/knewaccountdlg.cpp:115
+#: dialogs/knewaccountwizarddecl.cpp:2628 views/kmymoneyfile.cpp:128
+#: views/kmymoneyfile.cpp:167
+msgid "Investment"
+msgstr ""
+
+#: dialogs/knewaccountwizard.cpp:237 dialogs/knewaccountdlg.cpp:116
+#: views/kmymoneyfile.cpp:131 views/kmymoneyfile.cpp:169
+msgid "Money Market"
+msgstr ""
+
+#: dialogs/knewaccountwizard.cpp:238 dialogs/knewaccountdlg.cpp:117
+#: views/kmymoneyfile.cpp:140 views/kmymoneyfile.cpp:175
+msgid "Currency"
+msgstr ""
+
+#: dialogs/knewaccountwizard.cpp:239 dialogs/knewaccountwizard.cpp:281
+#: dialogs/knewaccountdlg.cpp:120 views/kmymoneyfile.cpp:134
+#: views/kmymoneyfile.cpp:171 views/kbanksview.cpp:659
+msgid "Asset"
+msgstr ""
+
+#: dialogs/knewaccountwizard.cpp:254
+msgid ""
+"Use the checkings account type to manage activities on your checkings "
+"account e.g. payments, cheques and ec-card purchases."
+msgstr ""
+
+#: dialogs/knewaccountwizard.cpp:262
+msgid ""
+"Use the savings account type to manage activities on your savings account."
+msgstr ""
+
+#: dialogs/knewaccountwizard.cpp:269
+msgid ""
+"Use the credit card account type to manage activities on your credit card."
+msgstr ""
+
+#: dialogs/knewaccountwizard.cpp:276
+msgid "Use the cash account type to manage activities in your wallet."
+msgstr ""
+
+#: dialogs/knewaccountwizard.cpp:283
+msgid ""
+"Use the asset account type to manage assets (e.g. your house, car or art "
+"collection)."
+msgstr ""
+
+#: dialogs/knewaccountwizard.cpp:289
+msgid "Explanation is not yet available! UnknownAccountType will be set"
+msgstr ""
+
+#: dialogs/knewaccountdlgdecl.cpp:73
+msgid "New Account Dialog"
+msgstr ""
+
+#: dialogs/knewaccountdlgdecl.cpp:85
+msgid ""
+"The only required field is the name which can be descriptive like\n"
+"My Current Account"
+msgstr ""
+
+#: dialogs/knewaccountdlgdecl.cpp:98 dialogs/knewaccountwizarddecl.cpp:2776
+#: views/kledgerviewcheckings.cpp:367
+msgid "Account Details"
+msgstr ""
+
+#: dialogs/knewaccountdlgdecl.cpp:112 dialogs/knewbankdlgdecl.cpp:71
+#: views/kpayeesviewdecl.cpp:88
+msgid "Name:"
+msgstr ""
+
+#: dialogs/knewaccountdlgdecl.cpp:124
+msgid "Number:"
+msgstr ""
+
+#: dialogs/knewaccountdlgdecl.cpp:134
+msgid "Account type"
+msgstr ""
+
+#: dialogs/knewaccountdlgdecl.cpp:147
+msgid "Opening details"
+msgstr ""
+
+#: dialogs/knewaccountdlgdecl.cpp:160 dialogs/kupdatestockpricedlgdecl.cpp:81
+msgid "Date:"
+msgstr ""
+
+#: dialogs/knewaccountdlgdecl.cpp:172
+msgid "Balance:"
+msgstr ""
+
+#: dialogs/knewaccountdlgdecl.cpp:184
+msgid "Notes:"
+msgstr ""
+
+#: dialogs/knewaccountdlgdecl.cpp:192
+msgid "Sub Account"
+msgstr ""
+
+#: dialogs/knewaccountdlgdecl.cpp:205 views/kmymoneyview.cpp:188
+#: views/kscheduledviewdecl.cpp:77
 msgid "New..."
 msgstr ""
 
-#: kreconciledlgdecl.cpp:36
+#: dialogs/keditscheduleddepositdlg.moc.cpp:34
+#: dialogs/keditscheduleddepositdlg.moc.cpp:42
+msgid "KEditScheduledDepositDlg"
+msgstr ""
+
+#: dialogs/ksplittransactiondlg.moc.cpp:34
+#: dialogs/ksplittransactiondlg.moc.cpp:42
+msgid "KSplitTransactionDlg"
+msgstr ""
+
+#: dialogs/kreconciledlgdecl.cpp:38
 msgid "Reconciliation Dialog"
 msgstr ""
 
-#: kreconciledlgdecl.cpp:44
+#: dialogs/kreconciledlgdecl.cpp:54
 msgid ""
 "This dialog will assist in helping you to balance your account.\n"
 "\n"
@@ -1659,283 +281,2715 @@ msgid ""
 "button to save the reconciled transactions."
 msgstr ""
 
-#: kreconciledlgdecl.cpp:58
+#: dialogs/kreconciledlgdecl.cpp:77
 msgid "Withdrawals"
 msgstr ""
 
-#: kreconciledlgdecl.cpp:73
+#: dialogs/kreconciledlgdecl.cpp:91 views/kscheduledview.cpp:90
 msgid "Deposits"
 msgstr ""
 
-#: kreconciledlgdecl.cpp:101
+#: dialogs/kreconciledlgdecl.cpp:105 dialogs/kreconciledlgdecl.cpp:113
+#: converter/mymoneyqifprofileeditordecl.cpp:193
 msgid "$"
 msgstr ""
 
-#: kreconciledlgdecl.cpp:136 kreconciledlgdecl.cpp:155
-#: kreconciledlgdecl.cpp:174 kreconciledlgdecl.cpp:192
+#: dialogs/kreconciledlgdecl.cpp:124 views/kledgerviewcheckings.cpp:254
+#: views/ktransactionview.cpp:48 views/kbanksview.cpp:305
+#: views/kcategoriesview.cpp:63
+msgid "Balance"
+msgstr ""
+
+#: dialogs/kreconciledlgdecl.cpp:142 dialogs/kreconciledlgdecl.cpp:159
+#: dialogs/kreconciledlgdecl.cpp:176 dialogs/kreconciledlgdecl.cpp:192
+#: converter/mymoneyqifprofileeditordecl.cpp:189
 msgid "0"
 msgstr ""
 
-#: kreconciledlgdecl.cpp:167
+#: dialogs/kreconciledlgdecl.cpp:169
 msgid "Cleared Balance:"
 msgstr ""
 
-#: kreconciledlgdecl.cpp:186
+#: dialogs/kreconciledlgdecl.cpp:186 views/kledgerviewcheckings.cpp:465
 msgid "Difference:"
 msgstr ""
 
-#: kreconciledlgdecl.cpp:204
+#: dialogs/kreconciledlgdecl.cpp:202
 msgid "&Edit Transactions..."
 msgstr ""
 
-#: kreconciledlgdecl.cpp:210
+#: dialogs/kreconciledlgdecl.cpp:208 dialogs/ksplittransactiondlgdecl.cpp:152
+#: views/kledgerviewcheckings.cpp:493
 msgid "&Finish"
 msgstr ""
 
-#: kpayeedlgdecl.cpp:37
-msgid "Payee Dialog"
+#: dialogs/kupdatestockpricedlgdecl.cpp:69
+msgid "Update Stock Price"
 msgstr ""
 
-#: kpayeedlgdecl.cpp:44
+#: dialogs/kupdatestockpricedlgdecl.cpp:73
+msgid "Equity Price Entry"
+msgstr ""
+
+#: dialogs/kupdatestockpricedlgdecl.cpp:77
+msgid "Price ($):"
+msgstr ""
+
+#: dialogs/kupdatestockpricedlgdecl.cpp:85
+msgid "Update Price"
+msgstr ""
+
+#: dialogs/kupdatestockpricedlgdecl.cpp:95
+msgid "Price History:"
+msgstr ""
+
+#: dialogs/kupdatestockpricedlgdecl.cpp:102
+msgid "Investment:"
+msgstr ""
+
+#: dialogs/knewbankdlgdecl.cpp:35
+msgid "New Institution Dialog"
+msgstr ""
+
+#: dialogs/knewbankdlgdecl.cpp:47
 msgid ""
-"Entering payee details.\n"
+"Adding a new institution.\n"
 "\n"
-"Select a payee from the choice box below or type in a new payee\n"
-"name.  The other details are optional and are there to provide useful\n"
-"information when viewing the payee details."
+"The only required field is the name, which can be the name of a bank\n"
+"like Woolwhich, or a descriptive name like Family Cash Accounts."
 msgstr ""
 
-#: kpayeedlgdecl.cpp:63
-msgid "Please choose a payee:"
+#: dialogs/knewbankdlgdecl.cpp:61
+msgid "Institution Details"
 msgstr ""
 
-#: kpayeedlgdecl.cpp:78
-msgid "Or enter a new name:"
+#: dialogs/knewbankdlgdecl.cpp:79
+msgid "Address"
 msgstr ""
 
-#: kpayeedlgdecl.cpp:98
-msgid "Payee Information"
+#: dialogs/knewbankdlgdecl.cpp:90
+msgid "City:"
 msgstr ""
 
-#: kpayeedlgdecl.cpp:121
-msgid "Please select a payee."
+#: dialogs/knewbankdlgdecl.cpp:101 dialogs/knewfiledlgdecl.cpp:85
+msgid "Street:"
 msgstr ""
 
-#: kpayeedlgdecl.cpp:132
-msgid "Address:"
+#: dialogs/knewbankdlgdecl.cpp:112 dialogs/knewfiledlgdecl.cpp:118
+#: views/kpayeesviewdecl.cpp:120
+msgid "Postcode:"
 msgstr ""
 
-#: kpayeedlgdecl.cpp:183
-msgid "E-Mail:"
+#: dialogs/knewbankdlgdecl.cpp:123 views/kpayeesviewdecl.cpp:135
+msgid "Telephone/Fax:"
 msgstr ""
 
-#: kpayeedlgdecl.cpp:201
-msgid "&Delete Payee"
+#: dialogs/knewbankdlgdecl.cpp:135
+msgid "Sort code:"
 msgstr ""
 
-#: kpayeedlgdecl.cpp:206
-msgid "&Update Details"
+#: dialogs/knewbankdlgdecl.cpp:146
+msgid "Managers name:"
 msgstr ""
 
-#: knewbillwizard.cpp:41
-msgid "New Bill/Deposit Wizard"
-msgstr ""
-
-#: knewbillwizard.cpp:52
-msgid "Choose Schedule Type:"
-msgstr ""
-
-#: knewbillwizard.cpp:76
-msgid "Bill"
-msgstr ""
-
-#: knewbillwizard.cpp:86
-msgid "TextLabel1"
-msgstr ""
-
-#: knewbillwizard.cpp:103
-msgid "TextLabel2"
-msgstr ""
-
-#: knewbillwizard.cpp:120
-msgid "TextLabel3"
-msgstr ""
-
-#: knewbillwizard.cpp:126
-msgid "Schedule Type"
-msgstr ""
-
-#: knewbillwizard.cpp:134
-msgid "Choose Occurence:"
-msgstr ""
-
-#: knewbillwizard.cpp:157
-msgid "Payment Occurence"
-msgstr ""
-
-#: knewbillwizard.cpp:165
-msgid "Choose Method:"
-msgstr ""
-
-#: knewbillwizard.cpp:188
-msgid "Payment Method"
-msgstr ""
-
-#: knewbillwizard.cpp:194
-msgid "Select Amount:"
-msgstr ""
-
-#: knewbillwizard.cpp:209 knewbillwizard.cpp:384
-msgid "Amount:"
-msgstr ""
-
-#: knewbillwizard.cpp:219
-msgid "Fixed amount"
-msgstr ""
-
-#: knewbillwizard.cpp:221
-msgid "Payment Amount"
-msgstr ""
-
-#: knewbillwizard.cpp:229
-msgid "Final page"
-msgstr ""
-
-#: knewbillwizard.cpp:245
-msgid "From:"
-msgstr ""
-
-#: knewbillwizard.cpp:264
-msgid "To:"
-msgstr ""
-
-#: knewbillwizard.cpp:283
-msgid "From To:"
-msgstr ""
-
-#: knewbillwizard.cpp:302
-msgid "Category:"
-msgstr ""
-
-#: knewbillwizard.cpp:325
-msgid "Memo:"
-msgstr ""
-
-#: knewbillwizard.cpp:395
-msgid "Finish"
-msgstr ""
-
-#: kcategorydlgdecl.cpp:37
-msgid "Categories Dialog"
-msgstr ""
-
-#: kcategorydlgdecl.cpp:44
-msgid ""
-"Editing categories.\n"
-"\n"
-"To create a new category please click on the new button. \n"
-"To edit a category click on the edit button after selecting an item.\n"
-"\n"
-"Deleting a category is as easy as selecting the category you wish to\n"
-"delete and pressing the delete button."
-msgstr ""
-
-#: kcategorydlgdecl.cpp:64
-msgid "&New"
-msgstr ""
-
-#: kbankviewdecl.cpp:48
-msgid "Total Profits:"
-msgstr ""
-
-#: kstartdlg.moc.cpp:42 kstartdlg.moc.cpp:47
+#: dialogs/kstartdlg.moc.cpp:34 dialogs/kstartdlg.moc.cpp:42
 msgid "KStartDlg"
 msgstr ""
 
-#: kmainview.moc.cpp:42 kmainview.moc.cpp:47
-msgid "KMainView"
+#: dialogs/keditschedbilldlgdecl.cpp:98
+msgid "Edit Scheduled Bills"
 msgstr ""
 
-#: kbanksview.moc.cpp:42 kbanksview.moc.cpp:47
-msgid "KBanksView"
+#: dialogs/keditschedbilldlgdecl.cpp:104
+#: dialogs/keditschedtransdlgdecl.cpp:102 dialogs/keditscheddepdlgdecl.cpp:102
+msgid "Editing Scheduled Transaction"
 msgstr ""
 
-#: kreconciledlg.moc.cpp:42 kreconciledlg.moc.cpp:47
-msgid "KReconcileDlg"
+#: dialogs/keditschedbilldlgdecl.cpp:114 dialogs/keditscheddepdlgdecl.cpp:112
+msgid "Payee Details"
 msgstr ""
 
-#: knewbillwizardimpl.moc.cpp:42 knewbillwizardimpl.moc.cpp:47
-msgid "KNewBillWizardImpl"
+#: dialogs/keditschedbilldlgdecl.cpp:127
+#: dialogs/keditschedtransdlgdecl.cpp:162
+msgid "Pay to:"
 msgstr ""
 
-#: kscheduleview.moc.cpp:42 kscheduleview.moc.cpp:47
-msgid "KScheduleView"
+#: dialogs/keditschedbilldlgdecl.cpp:136
+#: dialogs/keditschedtransdlgdecl.cpp:112 dialogs/keditscheddepdlgdecl.cpp:134
+msgid "Payment Information"
 msgstr ""
 
-#: kcategoriesdlg.moc.cpp:42 kcategoriesdlg.moc.cpp:47
-msgid "KCategoriesDlg"
+#: dialogs/keditschedbilldlgdecl.cpp:157
+#: dialogs/keditschedtransdlgdecl.cpp:148 dialogs/keditscheddepdlgdecl.cpp:125
+msgid "From:"
 msgstr ""
 
-#: kfindtransactiondlg.moc.cpp:42 kfindtransactiondlg.moc.cpp:47
-msgid "KFindTransactionDlg"
+#: dialogs/keditschedbilldlgdecl.cpp:162
+#: dialogs/keditschedtransdlgdecl.cpp:157 dialogs/keditscheddepdlgdecl.cpp:170
+msgid "Frequency:"
 msgstr ""
 
-#: knewfiledlg.moc.cpp:42 knewfiledlg.moc.cpp:47
+#: dialogs/keditschedbilldlgdecl.cpp:167
+#: dialogs/keditschedtransdlgdecl.cpp:140 dialogs/keditscheddepdlgdecl.cpp:144
+msgid "Next due date:"
+msgstr ""
+
+#: dialogs/keditschedbilldlgdecl.cpp:179
+#: dialogs/keditschedtransdlgdecl.cpp:170 dialogs/keditscheddepdlgdecl.cpp:156
+msgid "Method:"
+msgstr ""
+
+#: dialogs/keditschedbilldlgdecl.cpp:195
+#: dialogs/keditschedtransdlgdecl.cpp:189 dialogs/keditscheddepdlgdecl.cpp:193
+msgid "Amount:"
+msgstr ""
+
+#: dialogs/keditschedbilldlgdecl.cpp:202
+#: dialogs/keditschedtransdlgdecl.cpp:196 dialogs/keditscheddepdlgdecl.cpp:200
+msgid "This is an estimate because the amount varies"
+msgstr ""
+
+#: dialogs/keditschedbilldlgdecl.cpp:212
+#: dialogs/keditschedtransdlgdecl.cpp:206 dialogs/keditscheddepdlgdecl.cpp:210
+msgid "Category:"
+msgstr ""
+
+#: dialogs/keditschedbilldlgdecl.cpp:221
+#: dialogs/keditschedtransdlgdecl.cpp:215 dialogs/keditscheddepdlgdecl.cpp:219
+msgid "&Split"
+msgstr ""
+
+#: dialogs/keditschedbilldlgdecl.cpp:231
+#: dialogs/keditschedtransdlgdecl.cpp:225 dialogs/keditscheddepdlgdecl.cpp:229
+msgid "Memo:"
+msgstr ""
+
+#: dialogs/keditschedbilldlgdecl.cpp:240
+#: dialogs/keditschedtransdlgdecl.cpp:234 dialogs/keditscheddepdlgdecl.cpp:238
+msgid "Enter this into the register automatically"
+msgstr ""
+
+#: dialogs/keditschedbilldlgdecl.cpp:244
+#: dialogs/keditschedtransdlgdecl.cpp:238 dialogs/keditscheddepdlgdecl.cpp:242
+msgid "This series will end at some time"
+msgstr ""
+
+#: dialogs/keditschedbilldlgdecl.cpp:252
+#: dialogs/keditschedtransdlgdecl.cpp:246 dialogs/keditscheddepdlgdecl.cpp:250
+msgid "Number of transactions remaining:"
+msgstr ""
+
+#: dialogs/keditschedbilldlgdecl.cpp:259
+#: dialogs/keditschedtransdlgdecl.cpp:253 dialogs/keditscheddepdlgdecl.cpp:257
+msgid "Date of final transaction:"
+msgstr ""
+
+#: dialogs/knewfiledlg.moc.cpp:34 dialogs/knewfiledlg.moc.cpp:42
 msgid "KNewFileDlg"
 msgstr ""
 
-#: knewcategorydlg.moc.cpp:42 knewcategorydlg.moc.cpp:47
-msgid "KNewCategoryDlg"
+#: dialogs/kreconciledlg.cpp:267
+msgid "Account did not balance, are you sure ?"
 msgstr ""
 
-#: ktransactionview.moc.cpp:42 ktransactionview.moc.cpp:47
-msgid "KTransactionView"
-msgstr ""
-
-#: ksettingsdlg.moc.cpp:42 ksettingsdlg.moc.cpp:47
+#: dialogs/ksettingsdlg.moc.cpp:34 dialogs/ksettingsdlg.moc.cpp:42
 msgid "KSettingsDlg"
 msgstr ""
 
-#: kstartuplogo.moc.cpp:42 kstartuplogo.moc.cpp:47
-msgid "KStartupLogo"
+#: dialogs/kbackupdlg.moc.cpp:34 dialogs/kbackupdlg.moc.cpp:42
+msgid "KBackupDlg"
 msgstr ""
 
-#: kfileinfodlg.moc.cpp:42 kfileinfodlg.moc.cpp:47
-msgid "KFileInfoDlg"
+#: dialogs/knewaccountwizard.moc.cpp:34 dialogs/knewaccountwizard.moc.cpp:42
+msgid "KNewAccountWizard"
 msgstr ""
 
-#: kmymoneyview.moc.cpp:42 kmymoneyview.moc.cpp:47
-msgid "KMyMoneyView"
+#: dialogs/keditschedtransdlgdecl.cpp:98
+msgid "Edit Scheduled Transfer"
 msgstr ""
 
-#: kpayeedlg.moc.cpp:42 kpayeedlg.moc.cpp:47
-msgid "KPayeeDlg"
+#: dialogs/keditschedtransdlgdecl.cpp:131
+msgid "To:"
 msgstr ""
 
-#: kmymoney2.moc.cpp:42 kmymoney2.moc.cpp:47
-msgid "KMyMoney2App"
+#: dialogs/keditscheduledtransferdlg.moc.cpp:34
+#: dialogs/keditscheduledtransferdlg.moc.cpp:42
+msgid "KEditScheduledTransferDlg"
 msgstr ""
 
-#: kendingbalancedlg.moc.cpp:42 kendingbalancedlg.moc.cpp:47
+#: dialogs/kchooseimportexportdlg.moc.cpp:34
+#: dialogs/kchooseimportexportdlg.moc.cpp:42
+msgid "KChooseImportExportDlg"
+msgstr ""
+
+#: dialogs/kimportdlgdecl.cpp:39
+msgid "QIF Import"
+msgstr ""
+
+#: dialogs/kimportdlgdecl.cpp:53
+msgid ""
+"From this dialog you are able to import transactions from a quicken "
+"compatable file, (known as a QIF file,\n"
+"because of the extension).   Please enter the path to the QIF file or select "
+"it by clicking on the Browse button.\n"
+"\n"
+"Once you have the file's path press the Import button and KMyMoney2 will "
+"import all the transactions, categories\n"
+"and payees it finds."
+msgstr ""
+
+#: dialogs/kimportdlgdecl.cpp:71
+msgid "QIF File to Import:"
+msgstr ""
+
+#: dialogs/kimportdlgdecl.cpp:88 dialogs/kcsvprogressdlg.cpp:64 rc.cpp:1
+msgid "&Import"
+msgstr ""
+
+#: dialogs/kimportdlgdecl.cpp:98 dialogs/kcsvprogressdlgdecl.cpp:158
+msgid "Progress Info"
+msgstr ""
+
+#: dialogs/kimportdlgdecl.cpp:108 dialogs/kcsvprogressdlgdecl.cpp:168
+msgid "Processing Account:"
+msgstr ""
+
+#: dialogs/kimportdlgdecl.cpp:112 dialogs/kcsvprogressdlgdecl.cpp:172
+#: views/kmymoneyfile.cpp:149
+msgid "Unknown"
+msgstr ""
+
+#: dialogs/kimportdlgdecl.cpp:120 dialogs/kcsvprogressdlgdecl.cpp:180
+msgid "Processing Transaction:"
+msgstr ""
+
+#: dialogs/kimportdlgdecl.cpp:124 dialogs/kcsvprogressdlgdecl.cpp:184
+msgid "0 of 0"
+msgstr ""
+
+#: dialogs/kimportdlgdecl.cpp:142
+msgid "Date Format:"
+msgstr ""
+
+#: dialogs/kimportdlgdecl.cpp:157
+msgid "Apostrophe handling"
+msgstr ""
+
+#: dialogs/kimportdlgdecl.cpp:161
+msgid "2000+"
+msgstr ""
+
+#: dialogs/kimportdlgdecl.cpp:167
+msgid "1901-1999"
+msgstr ""
+
+#: dialogs/kimportdlgdecl.cpp:172
+msgid "1901-1949"
+msgstr ""
+
+#: dialogs/kimportdlgdecl.cpp:180
+msgid ""
+"The Date format is represented as follows:\n"
+"\n"
+"d = Day Number\n"
+"m = Month Number\n"
+"mmm = Month Name (abbreviated to three letters)\n"
+"yy = Year Number (last two digits)\n"
+"yyyy = Year Number\n"
+"\n"
+"To use the awful 'yy use a format like %d/%m/%yy\n"
+"and select the meaning of the apostrophe."
+msgstr ""
+
+#: dialogs/kimportdlgdecl.cpp:200
+msgid "Decimal symbol:"
+msgstr ""
+
+#: dialogs/ksplittransactiondlgdecl.cpp:65 views/kledgerviewcheckings.cpp:584
+#: views/kledgerviewcheckings.cpp:818 views/kpayeesview.cpp:200
+#: widgets/kmymoneyregistercheckings.cpp:144
+msgid "Splitted transaction"
+msgstr ""
+
+#: dialogs/ksplittransactiondlgdecl.cpp:82
+msgid "<b>11,00"
+msgstr ""
+
+#: dialogs/ksplittransactiondlgdecl.cpp:90
+msgid "<b>111,00"
+msgstr ""
+
+#: dialogs/ksplittransactiondlgdecl.cpp:96
+msgid "<b>Unassigned"
+msgstr ""
+
+#: dialogs/ksplittransactiondlgdecl.cpp:103
+msgid "<b>Sum of splits"
+msgstr ""
+
+#: dialogs/ksplittransactiondlgdecl.cpp:111
+msgid "100,00"
+msgstr ""
+
+#: dialogs/ksplittransactiondlgdecl.cpp:118
+msgid "<b>Transaction amount"
+msgstr ""
+
+#: dialogs/ksplittransactiondlgdecl.cpp:145
+msgid "Clear &All"
+msgstr ""
+
+#: dialogs/kchooseimportexportdlg.cpp:48
+#: dialogs/kchooseimportexportdlgdecl.cpp:46
+msgid ""
+"Please choose the type of import you wish to perform.   A simple "
+"explanation\n"
+"of the import type is available at the bottom of the screen and is updated "
+"when\n"
+"you select an item from the choice box.\n"
+"\n"
+"Once you have chosen an import type please press the OK button."
+msgstr ""
+
+#: dialogs/kchooseimportexportdlg.cpp:52
+#: dialogs/kchooseimportexportdlgdecl.cpp:64
+msgid "Choose import type:"
+msgstr ""
+
+#: dialogs/kchooseimportexportdlg.cpp:53
+#: dialogs/kchooseimportexportdlgdecl.cpp:34
+msgid "Choose Import Type Dialog"
+msgstr ""
+
+#: dialogs/kchooseimportexportdlg.cpp:57
+msgid ""
+"Please choose the type of export you wish to perform.   A simple "
+"explanation\n"
+"of the export type is available at the bottom of the screen and is updated "
+"when\n"
+"you select an item from the choice box.\n"
+"\n"
+"Once you have chosen an export type please press the OK button."
+msgstr ""
+
+#: dialogs/kchooseimportexportdlg.cpp:61
+msgid "Choose export type:"
+msgstr ""
+
+#: dialogs/kchooseimportexportdlg.cpp:62
+msgid "Choose Export Type Dialog"
+msgstr ""
+
+#: dialogs/kchooseimportexportdlg.cpp:83
+msgid ""
+"QIF files are created by the popular accounting program Quicken.\n"
+"Another dialog will appear, if you choose this type, asking for further\n"
+"information relevant to the Quicken format."
+msgstr ""
+
+#: dialogs/kchooseimportexportdlg.cpp:87
+msgid ""
+"The CSV type uses a comma delimeted text file that can be used by\n"
+"most popular spreadsheet programs available for Linux and other operating\n"
+"systems."
+msgstr ""
+
+#: dialogs/kexportdlg.moc.cpp:34 dialogs/kexportdlg.moc.cpp:42
+msgid "KExportDlg"
+msgstr ""
+
+#: dialogs/kcsvprogressdlg.moc.cpp:34 dialogs/kcsvprogressdlg.moc.cpp:42
+msgid "KCsvProgressDlg"
+msgstr ""
+
+#: dialogs/knewequityentrydlg.moc.cpp:34 dialogs/knewequityentrydlg.moc.cpp:42
+msgid "KNewEquityEntryDlg"
+msgstr ""
+
+#: dialogs/kfindtransactiondlg.moc.cpp:34
+#: dialogs/kfindtransactiondlg.moc.cpp:42
+msgid "KFindTransactionDlg"
+msgstr ""
+
+#: dialogs/knewfiledlgdecl.cpp:35
+msgid "New File Dialog"
+msgstr ""
+
+#: dialogs/knewfiledlgdecl.cpp:47
+msgid ""
+"Creating user details for future retrieval.\n"
+"\n"
+"There are no required fields in this form, however, in the future this\n"
+"information may expand to cover such details as whether you own a\n"
+"credit card, and will then be used to create forecasts and budgets to\n"
+"suit YOUR needs."
+msgstr ""
+
+#: dialogs/knewfiledlgdecl.cpp:66
+msgid "Your name:"
+msgstr ""
+
+#: dialogs/knewfiledlgdecl.cpp:74
+msgid "Your address"
+msgstr ""
+
+#: dialogs/knewfiledlgdecl.cpp:96
+msgid "Town:"
+msgstr ""
+
+#: dialogs/knewfiledlgdecl.cpp:107
+msgid "County/State:"
+msgstr ""
+
+#: dialogs/knewfiledlgdecl.cpp:129
+msgid "Telephone:"
+msgstr ""
+
+#: dialogs/knewfiledlgdecl.cpp:140
+msgid "Email:"
+msgstr ""
+
+#: dialogs/kbackupdlgdecl.cpp:36 kmymoney2.cpp:927 kmymoney2.cpp:980
+#: kmymoney2.cpp:1001 kmymoney2.cpp:1011 kmymoney2.cpp:1020 kmymoney2.cpp:1027
+#: kmymoney2.cpp:1031
+msgid "Backup"
+msgstr ""
+
+#: dialogs/kbackupdlgdecl.cpp:48
+msgid ""
+"Use this dialog to backup your data. \n"
+"\n"
+"Please make sure you have a disk inserted and that the drive is ready.\n"
+"Then choose the mount point from either the Choose button or by\n"
+"entering the path in the available box.\n"
+"\n"
+"Click on OK to perform the backup making sure you have ticked the\n"
+"mount checkbox if your system doesn't use automount."
+msgstr ""
+
+#: dialogs/kbackupdlgdecl.cpp:65
+msgid "Device options"
+msgstr ""
+
+#: dialogs/kbackupdlgdecl.cpp:75
+msgid "Mount Point:"
+msgstr ""
+
+#: dialogs/kbackupdlgdecl.cpp:82
+msgid "C&hoose..."
+msgstr ""
+
+#: dialogs/kbackupdlgdecl.cpp:87
+msgid "Mount this directory before backing up."
+msgstr ""
+
+#: dialogs/knewaccountdlg.cpp:54 dialogs/kexportdlgdecl.cpp:166
+#: views/kmymoneyview.cpp:115
+msgid "Categories"
+msgstr ""
+
+#: dialogs/knewaccountdlg.cpp:54 views/kmymoneyview.cpp:103
+msgid "Accounts"
+msgstr ""
+
+#: dialogs/knewaccountdlg.cpp:67 dialogs/knewaccountdlg.cpp:622
+msgid "Is a sub account"
+msgstr ""
+
+#: dialogs/knewaccountdlg.cpp:109
+msgid "Checking"
+msgstr ""
+
+#: dialogs/knewaccountdlg.cpp:114 views/kmymoneyfile.cpp:125
+#: views/kmymoneyfile.cpp:165
+msgid "Certificate of Deposit"
+msgstr ""
+
+#: dialogs/knewaccountdlg.cpp:118 views/kmymoneyfile.cpp:143
+#: views/kmymoneyfile.cpp:177 views/kbanksview.cpp:699
+#: views/kcategoriesview.cpp:146
+msgid "Income"
+msgstr ""
+
+#: dialogs/knewaccountdlg.cpp:119 views/kmymoneyfile.cpp:146
+#: views/kmymoneyfile.cpp:179 views/kbanksview.cpp:718
+#: views/kcategoriesview.cpp:164
+msgid "Expense"
+msgstr ""
+
+#: dialogs/knewaccountdlg.cpp:121 views/kmymoneyfile.cpp:137
+#: views/kmymoneyfile.cpp:173 views/kbanksview.cpp:681
+msgid "Liability"
+msgstr ""
+
+#: dialogs/knewaccountdlg.cpp:237
+msgid ""
+"You have not specified a name.\n"
+"Please fill in this field."
+msgstr ""
+
+#: dialogs/knewaccountdlg.cpp:245
+msgid "Please select a parent account."
+msgstr ""
+
+#: dialogs/knewaccountdlg.cpp:252 dialogs/knewaccountdlg.cpp:632
+msgid "<No Institution>"
+msgstr ""
+
+#: dialogs/knewaccountdlg.cpp:255
+msgid "Do we want to force the user to use an institution?"
+msgstr ""
+
+#: dialogs/knewaccountdlg.cpp:548 dialogs/knewaccountdlg.cpp:599
+#: dialogs/knewaccountdlg.cpp:615
+msgid "Is a sub account of "
+msgstr ""
+
+#: dialogs/knewaccountdlg.cpp:676
+msgid "Cannot add institution"
+msgstr ""
+
+#: dialogs/knewaccountwizarddecl.cpp:2544
+msgid "New Account"
+msgstr ""
+
+#: dialogs/knewaccountwizarddecl.cpp:2571
+msgid "Ne&w Institution"
+msgstr ""
+
+#: dialogs/knewaccountwizarddecl.cpp:2582
+msgid "<u>I</u>nstitution"
+msgstr ""
+
+#: dialogs/knewaccountwizarddecl.cpp:2590
+msgid ""
+"If this account is managed by an institution please select the institution "
+"from the list. If the institution does not yet exist, please chosse the "
+"<i>New Institution</i> button to create it.\n"
+"<p>\n"
+"Otherwise, leave this field empty."
+msgstr ""
+
+#: dialogs/knewaccountwizarddecl.cpp:2598
+msgid "Institution Selection"
+msgstr ""
+
+#: dialogs/knewaccountwizarddecl.cpp:2614
+msgid "Which type of account do you want to create?"
+msgstr ""
+
+#: dialogs/knewaccountwizarddecl.cpp:2641
+msgid "Account Type Selection"
+msgstr ""
+
+#: dialogs/knewaccountwizarddecl.cpp:2657
+msgid "What is the name of the account?"
+msgstr ""
+
+#: dialogs/knewaccountwizarddecl.cpp:2672
+msgid "Account Name"
+msgstr ""
+
+#: dialogs/knewaccountwizarddecl.cpp:2691
+msgid "What is the account number?"
+msgstr ""
+
+#: dialogs/knewaccountwizarddecl.cpp:2705
+msgid ""
+"If you do not know the account number, please leave this field empty. You "
+"can add the account number at any later time in the account details dialog. "
+"The account number is not used by KMyMoney but it is sometimes practical to "
+"have this information at your disposition."
+msgstr ""
+
+#: dialogs/knewaccountwizarddecl.cpp:2713
+msgid "Account Number"
+msgstr ""
+
+#: dialogs/knewaccountwizarddecl.cpp:2734
+msgid "What is the opening balance of this account?"
+msgstr ""
+
+#: dialogs/knewaccountwizarddecl.cpp:2752
+msgid "What is the currency of this account?"
+msgstr ""
+
+#: dialogs/knewaccountwizarddecl.cpp:2768
+msgid ""
+"Enter the ending balance of your last statement. In case you want to keep "
+"track of transactions prior to this date, enter the ending balance of a "
+"prior statement and add all following transactions.\n"
+"<p>\n"
+"Note: if you want to maintain this account from the date of opening enter 0. "
+"If you do not know the exact amount, enter an estimate. You can change this "
+"value later before you reconcile this account."
+msgstr ""
+
+#: dialogs/knewaccountwizarddecl.cpp:2801
+msgid "Due date of next payment"
+msgstr ""
+
+#: dialogs/knewaccountwizarddecl.cpp:2814
+msgid "Payment should be made from account"
+msgstr ""
+
+#: dialogs/knewaccountwizarddecl.cpp:2820
+msgid "Estimated monthly payment"
+msgstr ""
+
+#: dialogs/knewaccountwizarddecl.cpp:2829
+msgid ""
+"Do you wish to add a payment for this credit card account to the list of "
+"monthly payments?"
+msgstr ""
+
+#: dialogs/knewaccountwizarddecl.cpp:2835
+msgid "Yes, remind me if the payment is due"
+msgstr ""
+
+#: dialogs/knewaccountwizarddecl.cpp:2838
+msgid "Account Payment"
+msgstr ""
+
+#: dialogs/ksplittransactiondlg.cpp:75 dialogs/kfindtransactiondlgdecl.cpp:276
+#: views/kpayeesviewdecl.cpp:189 views/kledgerviewcheckings.cpp:199
+#: views/kledgerviewcheckings.cpp:205 views/kledgerviewcheckings.cpp:216
+#: views/kledgerviewcheckings.cpp:222 views/kcategoriesview.cpp:59
+msgid "Category"
+msgstr ""
+
+#: dialogs/ksplittransactiondlg.cpp:76 views/kledgerviewcheckings.cpp:188
+msgid "Memo"
+msgstr ""
+
+#: dialogs/ksplittransactiondlg.cpp:77 dialogs/kfindtransactiondlgdecl.cpp:105
+#: views/kscheduledview.cpp:48 views/kpayeesviewdecl.cpp:190
+#: views/kledgerviewcheckings.cpp:191 views/ktransactionview.cpp:1324
+#: views/ktransactionview.cpp:1325
+msgid "Amount"
+msgstr ""
+
+#: dialogs/ksplittransactiondlg.cpp:143 views/kledgerview.cpp:1583
+#: views/kledgerview.cpp:1625 views/kinvestmentview.cpp:257
+#: views/ktransactionview.cpp:90
+msgid "Transaction Options"
+msgstr ""
+
+#: dialogs/ksplittransactiondlg.cpp:144 views/kledgerview.cpp:1584
+msgid "Edit ..."
+msgstr ""
+
+#: dialogs/ksplittransactiondlg.cpp:146
+msgid "Delete ..."
+msgstr ""
+
+#: dialogs/ksplittransactiondlg.cpp:257 dialogs/ksplitcorrectiondlg.cpp:42
+msgid ""
+"The total amount of this transaction is %1 while the sum of the splits is %"
+"2. The remaining %3 are unassigned."
+msgstr ""
+
+#: dialogs/ksplittransactiondlg.cpp:265
+msgid "&Change total amount of transaction to %1."
+msgstr ""
+
+#: dialogs/ksplittransactiondlg.cpp:269
+msgid "&Distribute difference of %1 among all splits."
+msgstr ""
+
+#: dialogs/ksplittransactiondlg.cpp:273
+msgid "&Leave %1 unassigned."
+msgstr ""
+
+#: dialogs/ksplittransactiondlg.cpp:330
+msgid ""
+"You are about to delete all splits of this transaction. Do you really want "
+"to continue?"
+msgstr ""
+
+#: dialogs/ksplittransactiondlg.cpp:332 dialogs/ksplittransactiondlg.cpp:533
+#: main.cpp:73
+msgid "KMyMoney2"
+msgstr ""
+
+#: dialogs/ksplittransactiondlg.cpp:531
+msgid ""
+"You are about to delete this part of the transaction. Do you really want to "
+"continue?"
+msgstr ""
+
+#: dialogs/ksplittransactiondlg.cpp:661
+msgid "Unable to add/modify split"
+msgstr ""
+
+#: dialogs/ksplittransactiondlg.cpp:662 dialogs/ksplittransactiondlg.cpp:768
+#: dialogs/ksplittransactiondlg.cpp:789 views/kledgerview.cpp:586
+#: views/kledgerview.cpp:610 views/kledgerview.cpp:637
+#: views/kledgerview.cpp:707 views/kledgerview.cpp:753
+#: views/kledgerview.cpp:800 views/kledgerview.cpp:895
+#: views/kledgerview.cpp:979 views/kledgerview.cpp:1016
+#: views/kledgerview.cpp:1038 views/kledgerview.cpp:1125
+#: views/kledgerview.cpp:1256 views/kledgerview.cpp:1508
+#: views/kledgerview.cpp:1649 views/kledgerview.cpp:1691
+#: views/kbanklistitem.cpp:125 views/kpayeesview.cpp:242
+#: views/kpayeesview.cpp:269 views/kpayeesview.cpp:290
+msgid "thrown in"
+msgstr ""
+
+#: dialogs/ksplittransactiondlg.cpp:727 views/kledgerview.cpp:826
+#: views/kledgerview.cpp:930
+msgid "Direct creation of new account not yet implemented"
+msgstr ""
+
+#: dialogs/ksplittransactiondlg.cpp:734
+msgid "You cannot use this category here"
+msgstr ""
+
+#: dialogs/ksplittransactiondlg.cpp:767 views/kledgerview.cpp:894
+msgid "Unable to modify category"
+msgstr ""
+
+#: dialogs/ksplittransactiondlg.cpp:788 views/kledgerview.cpp:706
+#: views/kledgerview.cpp:752 views/kledgerview.cpp:799
+msgid "Unable to modify amount"
+msgstr ""
+
+#: dialogs/keditscheddepdlgdecl.cpp:98
+msgid "Edit Scheduled Deposit"
+msgstr ""
+
+#: dialogs/keditscheddepdlgdecl.cpp:182
+msgid "Deposit to:"
+msgstr ""
+
+#: dialogs/kchooseimportexportdlgdecl.cpp:68
+msgid "QIF"
+msgstr ""
+
+#: dialogs/kchooseimportexportdlgdecl.cpp:69
+msgid "CSV"
+msgstr ""
+
+#: dialogs/kchooseimportexportdlgdecl.cpp:77
+msgid "Some descripton"
+msgstr ""
+
+#: dialogs/kendingbalancedlg.moc.cpp:34 dialogs/kendingbalancedlg.moc.cpp:42
 msgid "KEndingBalanceDlg"
 msgstr ""
 
-#: knewaccountdlg.moc.cpp:42 knewaccountdlg.moc.cpp:47
+#: dialogs/ksplitcorrectiondlg.cpp:34
+msgid "Correct splits"
+msgstr ""
+
+#: dialogs/ksplitcorrectiondlg.cpp:48
+msgid "What should happen with the difference?"
+msgstr ""
+
+#: dialogs/ksplitcorrectiondlg.cpp:61
+msgid "Continue to &edit splits"
+msgstr ""
+
+#: dialogs/ksplitcorrectiondlg.cpp:66
+msgid "&Change transaction amount into %2"
+msgstr ""
+
+#: dialogs/ksplitcorrectiondlg.cpp:71
+msgid "&Distribute difference among all splits"
+msgstr ""
+
+#: dialogs/ksplitcorrectiondlg.cpp:75
+msgid "&Leave unassigned"
+msgstr ""
+
+#: dialogs/knewaccountdlg.moc.cpp:34 dialogs/knewaccountdlg.moc.cpp:42
 msgid "KNewAccountDlg"
 msgstr ""
 
-#: knewbankdlg.moc.cpp:42 knewbankdlg.moc.cpp:47
+#: dialogs/kreconciledlg.moc.cpp:34 dialogs/kreconciledlg.moc.cpp:42
+msgid "KReconcileDlg"
+msgstr ""
+
+#: dialogs/ksettingsdlg.cpp:55
+msgid "&Reset"
+msgstr ""
+
+#: dialogs/ksettingsdlg.cpp:76 dialogs/ksettingsdlg.cpp:274
+#: converter/mymoneyqifprofileeditordecl.cpp:118
+msgid "General"
+msgstr ""
+
+#: dialogs/ksettingsdlg.cpp:76
+msgid "General settings"
+msgstr ""
+
+#: dialogs/ksettingsdlg.cpp:81
+msgid "Startup options"
+msgstr ""
+
+#: dialogs/ksettingsdlg.cpp:94
+msgid "Start with dialog prompt (default)"
+msgstr ""
+
+#: dialogs/ksettingsdlg.cpp:99
+msgid "Start with last file used"
+msgstr ""
+
+#: dialogs/ksettingsdlg.cpp:106
+msgid "Accounts View"
+msgstr ""
+
+#: dialogs/ksettingsdlg.cpp:106
+msgid "Accounts view settings"
+msgstr ""
+
+#: dialogs/ksettingsdlg.cpp:111
+msgid "General Settings"
+msgstr ""
+
+#: dialogs/ksettingsdlg.cpp:124
+msgid "Use the normal institution view"
+msgstr ""
+
+#: dialogs/ksettingsdlg.cpp:129
+msgid "Use the new accounts view"
+msgstr ""
+
+#: dialogs/ksettingsdlg.cpp:134
+msgid "New Account Settings"
+msgstr ""
+
+#: dialogs/ksettingsdlg.cpp:147
+msgid "Use the normal account dialog"
+msgstr ""
+
+#: dialogs/ksettingsdlg.cpp:152
+msgid "Use the new account wizard"
+msgstr ""
+
+#: dialogs/ksettingsdlg.cpp:161
+msgid "Register"
+msgstr ""
+
+#: dialogs/ksettingsdlg.cpp:161
+msgid "Register settings"
+msgstr ""
+
+#: dialogs/ksettingsdlg.cpp:197
+msgid "Show a grid in the register."
+msgstr ""
+
+#: dialogs/ksettingsdlg.cpp:207
+msgid "Use the ledger lens"
+msgstr ""
+
+#: dialogs/ksettingsdlg.cpp:211
+msgid "Show transaction form"
+msgstr ""
+
+#: dialogs/ksettingsdlg.cpp:216
+msgid "Always show a Nr. field in transaction form"
+msgstr ""
+
+#: dialogs/ksettingsdlg.cpp:223
+msgid "Insert transaction type into Nr. field for new transactions"
+msgstr ""
+
+#: dialogs/ksettingsdlg.cpp:228
+msgid "Row Colour options"
+msgstr ""
+
+#: dialogs/ksettingsdlg.cpp:241
+msgid "Use one colour per transaction"
+msgstr ""
+
+#: dialogs/ksettingsdlg.cpp:246
+msgid "Change colour every other row"
+msgstr ""
+
+#: dialogs/ksettingsdlg.cpp:252
+msgid "Restrict by date"
+msgstr ""
+
+#: dialogs/ksettingsdlg.cpp:263
+msgid "Start Date: "
+msgstr ""
+
+#: dialogs/ksettingsdlg.cpp:290
+msgid "List view colour :"
+msgstr ""
+
+#: dialogs/ksettingsdlg.cpp:304
+msgid "List background colour :"
+msgstr ""
+
+#: dialogs/ksettingsdlg.cpp:318
+msgid "List grid colour :"
+msgstr ""
+
+#: dialogs/ksettingsdlg.cpp:332
+msgid "Color"
+msgstr ""
+
+#: dialogs/ksettingsdlg.cpp:339
+msgid "Header Font"
+msgstr ""
+
+#: dialogs/ksettingsdlg.cpp:346
+msgid "Cell Font"
+msgstr ""
+
+#: dialogs/kexportdlgdecl.cpp:70
+msgid "QIF Export"
+msgstr ""
+
+#: dialogs/kexportdlgdecl.cpp:86
+msgid ""
+"From this dialog you are able to export transactions to a quicken compatible "
+"file, (known as a QIF file, because of the extension).  Please enter the "
+"path to the QIF file or select it by clicking on the Browse button.\n"
+"\n"
+"You can choose the file's path, the account and the format of the QIF file "
+"(profile).  Choose Account to export all the transactions between the "
+"specified dates or just categories.  You can also limit the transactions "
+"that are exported by start and ending date.  Once you have pressed the "
+"Export button a message box will appear when the export has completed "
+"detailing how many transactions, categories and payees were exported."
+msgstr ""
+
+#: dialogs/kexportdlgdecl.cpp:103
+msgid "File to export to:"
+msgstr ""
+
+#: dialogs/kexportdlgdecl.cpp:121
+msgid "Account to export"
+msgstr ""
+
+#: dialogs/kexportdlgdecl.cpp:133
+msgid "QIF Profile"
+msgstr ""
+
+#: dialogs/kexportdlgdecl.cpp:145
+#: converter/mymoneyqifprofileeditordecl.cpp:256
+msgid "New"
+msgstr ""
+
+#: dialogs/kexportdlgdecl.cpp:154
+msgid "Contents to Export"
+msgstr ""
+
+#: dialogs/kexportdlgdecl.cpp:171
+msgid "Date Range"
+msgstr ""
+
+#: dialogs/kexportdlgdecl.cpp:183 dialogs/kcsvprogressdlgdecl.cpp:123
+msgid "Start on:"
+msgstr ""
+
+#: dialogs/kexportdlgdecl.cpp:195 dialogs/kcsvprogressdlgdecl.cpp:136
+msgid "End on:"
+msgstr ""
+
+#: dialogs/kexportdlgdecl.cpp:218 dialogs/kcsvprogressdlg.cpp:67
+msgid "&Export"
+msgstr ""
+
+#: dialogs/kcsvprogressdlgdecl.cpp:68
+msgid "CSV Dialog"
+msgstr ""
+
+#: dialogs/kcsvprogressdlgdecl.cpp:80
+msgid ""
+"CSV Dialog.  Choose a file and then click on Run.  You can view your "
+"progress at\n"
+"the bottom of the screen.\n"
+"\n"
+"You can cancel the process at any time by clicking on the Cancel button."
+msgstr ""
+
+#: dialogs/kcsvprogressdlgdecl.cpp:96
+msgid "Choose the csv file:"
+msgstr ""
+
+#: dialogs/kcsvprogressdlgdecl.cpp:105
+msgid "&Browse"
+msgstr ""
+
+#: dialogs/kcsvprogressdlgdecl.cpp:111
+msgid "Between These Dates"
+msgstr ""
+
+#: dialogs/kcsvprogressdlgdecl.cpp:152
+msgid "&Run"
+msgstr ""
+
+#: dialogs/kcsvprogressdlg.cpp:71
+msgid "C&lose"
+msgstr ""
+
+#: dialogs/kcsvprogressdlg.cpp:297 dialogs/kimportdlg.cpp:238
+msgid " of "
+msgstr ""
+
+#: dialogs/kfindtransactiondlgdecl.cpp:72
+msgid "Find Transaction Dialog"
+msgstr ""
+
+#: dialogs/kfindtransactiondlgdecl.cpp:84
+msgid ""
+"Enter the details you wish to search on.  Click on the Advanced tab to\n"
+"use some of the more estoric features.\n"
+"\n"
+"Click on Search to perform the search."
+msgstr ""
+
+#: dialogs/kfindtransactiondlgdecl.cpp:114
+msgid "Between selected dates"
+msgstr ""
+
+#: dialogs/kfindtransactiondlgdecl.cpp:126
+msgid "Start:"
+msgstr ""
+
+#: dialogs/kfindtransactiondlgdecl.cpp:139
+msgid "End:"
+msgstr ""
+
+#: dialogs/kfindtransactiondlgdecl.cpp:151
+msgid "Credit/Debit"
+msgstr ""
+
+#: dialogs/kfindtransactiondlgdecl.cpp:156
+msgid "Credit or Debit"
+msgstr ""
+
+#: dialogs/kfindtransactiondlgdecl.cpp:157
+msgid "Credit"
+msgstr ""
+
+#: dialogs/kfindtransactiondlgdecl.cpp:158
+msgid "Debit"
+msgstr ""
+
+#: dialogs/kfindtransactiondlgdecl.cpp:159 views/ktransactionview.cpp:261
+msgid "Cheque"
+msgstr ""
+
+#: dialogs/kfindtransactiondlgdecl.cpp:160 views/kscheduledview.cpp:68
+#: views/kledgerview.cpp:1198 views/kledgerviewcheckings.cpp:253
+#: views/ktransactionview.cpp:47 views/ktransactionview.cpp:262
+msgid "Deposit"
+msgstr ""
+
+#: dialogs/kfindtransactiondlgdecl.cpp:161 views/kscheduledview.cpp:69
+#: views/kledgerview.cpp:1200 views/ktransactionview.cpp:263
+msgid "Transfer"
+msgstr ""
+
+#: dialogs/kfindtransactiondlgdecl.cpp:162 views/kledgerview.cpp:1202
+#: views/ktransactionview.cpp:264
+msgid "Withdrawal"
+msgstr ""
+
+#: dialogs/kfindtransactiondlgdecl.cpp:163 views/kledgerview.cpp:1204
+#: views/ktransactionview.cpp:265
+msgid "ATM"
+msgstr ""
+
+#: dialogs/kfindtransactiondlgdecl.cpp:169 views/kpayeesviewdecl.cpp:188
+#: views/kledgerviewcheckings.cpp:190 views/kledgerviewcheckings.cpp:249
+#: views/ktransactionview.cpp:42 views/ktransactionview.cpp:1320
+#: converter/mymoneyqifprofileeditordecl.cpp:167
+msgid "Date"
+msgstr ""
+
+#: dialogs/kfindtransactiondlgdecl.cpp:178
+#: converter/mymoneyqifprofileeditordecl.cpp:243
+msgid "Amounts"
+msgstr ""
+
+#: dialogs/kfindtransactiondlgdecl.cpp:186
+msgid "At least"
+msgstr ""
+
+#: dialogs/kfindtransactiondlgdecl.cpp:187
+msgid "At most"
+msgstr ""
+
+#: dialogs/kfindtransactiondlgdecl.cpp:188
+msgid "Exactly"
+msgstr ""
+
+#: dialogs/kfindtransactiondlgdecl.cpp:209
+msgid "Normal"
+msgstr ""
+
+#: dialogs/kfindtransactiondlgdecl.cpp:215
+msgid "Status"
+msgstr ""
+
+#: dialogs/kfindtransactiondlgdecl.cpp:220 views/kledgerview.cpp:1579
+#: views/kledgerview.cpp:1621 views/ktransactionview.cpp:87
+msgid "Cleared"
+msgstr ""
+
+#: dialogs/kfindtransactiondlgdecl.cpp:221 views/kledgerview.cpp:1580
+#: views/kledgerview.cpp:1622
+msgid "Reconciled"
+msgstr ""
+
+#: dialogs/kfindtransactiondlgdecl.cpp:222
+msgid "Unreconciled"
+msgstr ""
+
+#: dialogs/kfindtransactiondlgdecl.cpp:228 views/kledgerview.cpp:1601
+#: views/ktransactionview.cpp:1328
+msgid "Number"
+msgstr ""
+
+#: dialogs/kfindtransactiondlgdecl.cpp:243 views/kscheduledview.cpp:47
+#: views/kledgerviewcheckings.cpp:204 views/kledgerviewcheckings.cpp:211
+#: views/kledgerviewcheckings.cpp:250
+msgid "Payee"
+msgstr ""
+
+#: dialogs/kfindtransactiondlgdecl.cpp:259
+#: dialogs/kfindtransactiondlgdecl.cpp:269
+#: dialogs/kfindtransactiondlgdecl.cpp:291
+msgid "Regular expression"
+msgstr ""
+
+#: dialogs/kfindtransactiondlgdecl.cpp:303
+msgid "Notes"
+msgstr ""
+
+#: dialogs/kfindtransactiondlgdecl.cpp:308
+msgid "Advanced"
+msgstr ""
+
+#: dialogs/kfindtransactiondlgdecl.cpp:316
+msgid "&Search"
+msgstr ""
+
+#: dialogs/knewbankdlg.moc.cpp:34 dialogs/knewbankdlg.moc.cpp:42
 msgid "KNewBankDlg"
 msgstr ""
 
-#: _translatorinfo.cpp:1 _translatorinfo.cpp:1
+#: dialogs/knewbankdlg.cpp:61
+msgid "The institution name field is empty.  Please enter the name."
+msgstr ""
+
+#: dialogs/knewbankdlg.cpp:61
+msgid "Adding New Institution"
+msgstr ""
+
+#: dialogs/kstartdlg.cpp:41
+msgid "Start Dialog"
+msgstr ""
+
+#: dialogs/kstartdlg.cpp:59
+msgid "Templates"
+msgstr ""
+
+#: dialogs/kstartdlg.cpp:59
+msgid "Select templates"
+msgstr ""
+
+#: dialogs/kstartdlg.cpp:61 dialogs/kstartdlg.cpp:93
+msgid "Blank Document"
+msgstr ""
+
+#: dialogs/kstartdlg.cpp:68
+msgid "Open a KMyMoney document"
+msgstr ""
+
+#: dialogs/kstartdlg.cpp:74
+msgid ""
+"%1|KMyMoney files (*.kmy)\n"
+"%2|All files (*.*)"
+msgstr ""
+
+#: dialogs/kstartdlg.cpp:79
+msgid "Recent Files"
+msgstr ""
+
+#: views/kledgerviewasset.cpp:45 views/kledgerviewasset.cpp:51
+msgid "Decrease"
+msgstr ""
+
+#: views/kledgerviewasset.cpp:46 views/kledgerviewasset.cpp:50
+msgid "Increase"
+msgstr ""
+
+#: views/kledgerviewsavings.moc.cpp:34 views/kledgerviewsavings.moc.cpp:42
+msgid "KLedgerViewSavings"
+msgstr ""
+
+#: views/kscheduledview.moc.cpp:34 views/kscheduledview.moc.cpp:42
+msgid "KScheduledView"
+msgstr ""
+
+#: views/kmymoneyview.moc.cpp:34 views/kmymoneyview.moc.cpp:42
+msgid "KMyMoneyView"
+msgstr ""
+
+#: views/kinvestmentview.moc.cpp:34 views/kinvestmentview.moc.cpp:42
+msgid "KInvestmentView"
+msgstr ""
+
+#: views/kscheduledview.cpp:46 views/kbanksview.cpp:306
+#: views/kcategoriesview.cpp:60
+msgid "Type"
+msgstr ""
+
+#: views/kscheduledview.cpp:49
+msgid "Next Due Date"
+msgstr ""
+
+#: views/kscheduledview.cpp:50
+msgid "Frequency"
+msgstr ""
+
+#: views/kscheduledview.cpp:51
+msgid "Payment Method"
+msgstr ""
+
+#: views/kscheduledview.cpp:67
+msgid "Bill"
+msgstr ""
+
+#: views/kscheduledview.cpp:89
+msgid "Bills"
+msgstr ""
+
+#: views/khomeview.moc.cpp:34 views/khomeview.moc.cpp:42
+msgid "KHomeView"
+msgstr ""
+
+#: views/kledgerview.cpp:585
+msgid "Unable to setup payee/receiver"
+msgstr ""
+
+#: views/kledgerview.cpp:609 views/kledgerview.cpp:636
+msgid "Unable to modify split"
+msgstr ""
+
+#: views/kledgerview.cpp:864
+msgid "If you press continue, information about all other splits will be lost"
+msgstr ""
+
+#: views/kledgerview.cpp:865
+msgid "Splitted Transaction"
+msgstr ""
+
+#: views/kledgerview.cpp:978
+msgid "Unable to modify transaction"
+msgstr ""
+
+#: views/kledgerview.cpp:1015 views/kledgerview.cpp:1037
+msgid "Unable to modify number"
+msgstr ""
+
+#: views/kledgerview.cpp:1072
+msgid ""
+"Changing the transaction type in the selected direction will delete all "
+"information about categories and accounts. If you press continue, this "
+"information will be lost!"
+msgstr ""
+
+#: views/kledgerview.cpp:1074
+msgid "Transaction Type Change"
+msgstr ""
+
+#: views/kledgerview.cpp:1124
+msgid "Unable to modify type"
+msgstr ""
+
+#: views/kledgerview.cpp:1196
+msgid "Check"
+msgstr ""
+
+#: views/kledgerview.cpp:1216 views/kledgerview.cpp:1228
+msgid "&Check"
+msgstr ""
+
+#: views/kledgerview.cpp:1218
+msgid "&Deposit"
+msgstr ""
+
+#: views/kledgerview.cpp:1220
+msgid "&Transfer"
+msgstr ""
+
+#: views/kledgerview.cpp:1222
+msgid "&Withdrawal"
+msgstr ""
+
+#: views/kledgerview.cpp:1224
+msgid "AT&M"
+msgstr ""
+
+#: views/kledgerview.cpp:1242
+msgid "Do you want to add '%1' as payee/receiver ?"
+msgstr ""
+
+#: views/kledgerview.cpp:1244
+msgid "New payee/receiver"
+msgstr ""
+
+#: views/kledgerview.cpp:1255
+msgid "Unable to add payee/receiver"
+msgstr ""
+
+#: views/kledgerview.cpp:1356
+msgid ""
+"At least one split of this transaction has been reconciled. Do you wish to "
+"continue to edit the transaction anyway?"
+msgstr ""
+
+#: views/kledgerview.cpp:1359
+msgid "Transaction already reconciled"
+msgstr ""
+
+#: views/kledgerview.cpp:1367
+msgid ""
+"At least one split of this transaction has been frozen. Editing this "
+"transaction is therefore prohibited."
+msgstr ""
+
+#: views/kledgerview.cpp:1369
+msgid "Transaction already frozen"
+msgstr ""
+
+#: views/kledgerview.cpp:1507
+msgid "Unable to add/modify transaction"
+msgstr ""
+
+#: views/kledgerview.cpp:1578 views/kledgerview.cpp:1620
+msgid "Not cleared"
+msgstr ""
+
+#: views/kledgerview.cpp:1586 views/kledgerview.cpp:1627
+msgid "Mark as ..."
+msgstr ""
+
+#: views/kledgerview.cpp:1587 views/kledgerview.cpp:1628
+msgid "Move to account ..."
+msgstr ""
+
+#: views/kledgerview.cpp:1591 views/kledgerview.cpp:1632
+msgid "Delete transaction ..."
+msgstr ""
+
+#: views/kledgerview.cpp:1596
+msgid "Select sort order"
+msgstr ""
+
+#: views/kledgerview.cpp:1597
+msgid "Post date"
+msgstr ""
+
+#: views/kledgerview.cpp:1598
+msgid "Entry date"
+msgstr ""
+
+#: views/kledgerview.cpp:1600
+msgid "Type, number"
+msgstr ""
+
+#: views/kledgerview.cpp:1602 views/kledgerviewcheckings.cpp:198
+#: views/kledgerviewcheckings.cpp:215 views/kledgerviewcheckings.cpp:221
+msgid "Receiver"
+msgstr ""
+
+#: views/kledgerview.cpp:1603 converter/mymoneyqifprofileeditordecl.cpp:187
+msgid "Value"
+msgstr ""
+
+#: views/kledgerview.cpp:1648
+msgid "Unable to mark split"
+msgstr ""
+
+#: views/kledgerview.cpp:1672
+msgid "Moving a split to a different account is not yet implemented"
+msgstr ""
+
+#: views/kledgerview.cpp:1680
+msgid ""
+"You are about to delete the selected transaction. Do you really want to "
+"continue?"
+msgstr ""
+
+#: views/kledgerview.cpp:1682
+msgid "Delete transaction"
+msgstr ""
+
+#: views/kledgerview.cpp:1690
+msgid "Unable to remove transaction"
+msgstr ""
+
+#: views/kcategoriesview.moc.cpp:34 views/kcategoriesview.moc.cpp:42
+msgid "KCategoriesView"
+msgstr ""
+
+#: views/kpayeesviewdecl.cpp:35 views/ktransactionviewdecl.cpp:62
+#: views/kscheduledviewdecl.cpp:63 views/kcategoriesviewdecl.cpp:30
+#: views/kstocktransactionviewdecl.cpp:61 views/kbankviewdecl.cpp:265
+msgid "Form1"
+msgstr ""
+
+#: views/kpayeesviewdecl.cpp:43
+msgid "Please choose a payee:"
+msgstr ""
+
+#: views/kpayeesviewdecl.cpp:56
+msgid "Or enter a new name:"
+msgstr ""
+
+#: views/kpayeesviewdecl.cpp:69
+msgid "&Add"
+msgstr ""
+
+#: views/kpayeesviewdecl.cpp:76
+msgid "Payee Information"
+msgstr ""
+
+#: views/kpayeesviewdecl.cpp:95
+msgid "Please select a payee."
+msgstr ""
+
+#: views/kpayeesviewdecl.cpp:104
+msgid "Address:"
+msgstr ""
+
+#: views/kpayeesviewdecl.cpp:150
+msgid "E-Mail:"
+msgstr ""
+
+#: views/kpayeesviewdecl.cpp:166
+msgid "&Delete Payee"
+msgstr ""
+
+#: views/kpayeesviewdecl.cpp:171
+msgid "&Update Details"
+msgstr ""
+
+#: views/kpayeesviewdecl.cpp:177
+msgid "Transactions"
+msgstr ""
+
+#: views/kpayeesviewdecl.cpp:187 views/kledgerviewcheckings.cpp:248
+msgid "Nr."
+msgstr ""
+
+#: views/kpayeesviewdecl.cpp:194
+msgid "Balance: "
+msgstr ""
+
+#: views/kledgerviewasset.moc.cpp:34 views/kledgerviewasset.moc.cpp:42
+msgid "KLedgerViewAsset"
+msgstr ""
+
+#: views/kledgerviewcash.moc.cpp:34 views/kledgerviewcash.moc.cpp:42
+msgid "KLedgerViewCash"
+msgstr ""
+
+#: views/ktransactionviewdecl.cpp:68
+msgid "All Transactions (default)"
+msgstr ""
+
+#: views/ktransactionviewdecl.cpp:69
+msgid "Search Results"
+msgstr ""
+
+#: views/ktransactionviewdecl.cpp:77
+msgid "Opening Balance:"
+msgstr ""
+
+#: views/kmymoneyview.cpp:97
+msgid "Home"
+msgstr ""
+
+#: views/kmymoneyview.cpp:103
+msgid "Insitutions/Accounts"
+msgstr ""
+
+#: views/kmymoneyview.cpp:109
+msgid "Schedule"
+msgstr ""
+
+#: views/kmymoneyview.cpp:109
+msgid "Bills & Reminders"
+msgstr ""
+
+#: views/kmymoneyview.cpp:121
+msgid "Payees"
+msgstr ""
+
+#: views/kmymoneyview.cpp:127
+msgid "Ledgers"
+msgstr ""
+
+#: views/kmymoneyview.cpp:187
+msgid "Account Options"
+msgstr ""
+
+#: views/kmymoneyview.cpp:191
+msgid "Reconcile..."
+msgstr ""
+
+#: views/kmymoneyview.cpp:193 views/kmymoneyview.cpp:199
+msgid "Edit..."
+msgstr ""
+
+#: views/kmymoneyview.cpp:194 views/kmymoneyview.cpp:200
+#: views/ktransactionview.cpp:91
+msgid "Delete..."
+msgstr ""
+
+#: views/kmymoneyview.cpp:197
+msgid "Institution Options"
+msgstr ""
+
+#: views/kmymoneyview.cpp:198
+msgid "New Account..."
+msgstr ""
+
+#: views/kmymoneyview.cpp:203
+msgid "KMyMoney Options"
+msgstr ""
+
+#: views/kmymoneyview.cpp:204
+msgid "New Institution..."
+msgstr ""
+
+#: views/kmymoneyview.cpp:322
+msgid "Unable to edit institution: "
+msgstr ""
+
+#: views/kmymoneyview.cpp:340
+msgid "Really delete this institution: "
+msgstr ""
+
+#: views/kmymoneyview.cpp:351
+msgid "Cannot delete institution: "
+msgstr ""
+
+#: views/kmymoneyview.cpp:376 views/kledgerviewcheckings.cpp:1468
+#: views/kcategoriesview.cpp:298
+msgid "Edit an Account"
+msgstr ""
+
+#: views/kmymoneyview.cpp:387
+msgid "Cannot edit account: "
+msgstr ""
+
+#: views/kmymoneyview.cpp:415
+msgid "Do you really want to delete the account '%1'"
+msgstr ""
+
+#: views/kmymoneyview.cpp:429
+msgid "Cannot delete account: "
+msgstr ""
+
+#: views/kmymoneyview.cpp:477
+msgid "Error while loading file '%1'!"
+msgstr ""
+
+#: views/kmymoneyview.cpp:479
+msgid "File access error"
+msgstr ""
+
+#: views/kmymoneyview.cpp:537 views/kmymoneyview.cpp:542
+msgid "File '%1' not found!"
+msgstr ""
+
+#: views/kmymoneyview.cpp:603
+msgid "Tried to access a file when it's not open"
+msgstr ""
+
+#: views/kmymoneyview.cpp:608
+msgid ""
+"Since this version of KMyMoney2 only writes data files in it's new format, "
+"files written with this version cannot be read by older versions of "
+"KMyMoney2. If you still want to use prior versions of KMyMoney2 with your "
+"data files, please make sure you keep a backup-file of your finance data. If "
+"you want to abort this operation, please press Cancel now"
+msgstr ""
+
+#: views/kmymoneyview.cpp:689
+msgid "Cannot add bank"
+msgstr ""
+
+#: views/kmymoneyview.cpp:717
+msgid "Create a new Account"
+msgstr ""
+
+#: views/kmymoneyview.cpp:907
+msgid "Create new KMyMoneyFile"
+msgstr ""
+
+#: views/kmymoneyview.cpp:927
+msgid "Cannot edit personal data"
+msgstr ""
+
+#: views/kmymoneyview.cpp:935
+msgid "Edit Personal Data"
+msgstr ""
+
+#: views/kmymoneyview.cpp:953
+msgid "*.dat|Account templates"
+msgstr ""
+
+#: views/kmymoneyview.cpp:954
+msgid "Select account template"
+msgstr ""
+
+#: views/kmymoneyview.cpp:968
+msgid "Cannot find the data file containing the default categories"
+msgstr ""
+
+#: views/kmymoneyview.cpp:975
+msgid "Loading default accounts"
+msgstr ""
+
+#: views/kmymoneyview.cpp:1051
+msgid "Ready"
+msgstr ""
+
+#: views/kmymoneyview.cpp:1563
+msgid "Unknown Account"
+msgstr ""
+
+#: views/kledgerviewcreditcard.moc.cpp:34
+#: views/kledgerviewcreditcard.moc.cpp:42
+msgid "KLedgerViewCreditCard"
+msgstr ""
+
+#: views/kgloballedgerview.moc.cpp:34 views/kgloballedgerview.moc.cpp:42
+msgid "KGlobalLedgerView"
+msgstr ""
+
+#: views/kscheduledviewdecl.cpp:83
+msgid "&Edit..."
+msgstr ""
+
+#: views/kscheduledviewdecl.cpp:90
+msgid "&Delete..."
+msgstr ""
+
+#: views/kbanksview.moc.cpp:34 views/kbanksview.moc.cpp:42
+msgid "KAccountsView"
+msgstr ""
+
+#: views/kbanklistitem.cpp:124
+msgid "Unable to retrieve account information"
+msgstr ""
+
+#: views/kinvestmentviewdecl.cpp:64
+msgid "Investment Summary"
+msgstr ""
+
+#: views/kinvestmentviewdecl.cpp:68
+msgid "Select View Type"
+msgstr ""
+
+#: views/kinvestmentviewdecl.cpp:72
+msgid "Investment Transactions"
+msgstr ""
+
+#: views/kinvestmentviewdecl.cpp:77
+msgid "Summary of Account"
+msgstr ""
+
+#: views/kgloballedgerview.cpp:64
+msgid "Account register"
+msgstr ""
+
+#: views/kcategoriesviewdecl.cpp:43 widgets/kmymoneytransactionform.cpp:199
+msgid "&New"
+msgstr ""
+
+#: views/kstocktransactionview.moc.cpp:34
+#: views/kstocktransactionview.moc.cpp:42
+msgid "KStockTransactionView"
+msgstr ""
+
+#: views/kinvestmentview.cpp:67 views/kinvestmentview.cpp:69
+msgid "Symbol"
+msgstr ""
+
+#: views/kinvestmentview.cpp:68
+msgid "Name"
+msgstr ""
+
+#: views/kinvestmentview.cpp:70
+msgid "Number of Shares"
+msgstr ""
+
+#: views/kinvestmentview.cpp:71
+msgid "Current Price"
+msgstr ""
+
+#: views/kinvestmentview.cpp:72
+msgid "Original Price"
+msgstr ""
+
+#: views/kinvestmentview.cpp:73
+msgid "$ Gain"
+msgstr ""
+
+#: views/kinvestmentview.cpp:74
+msgid "1 week %"
+msgstr ""
+
+#: views/kinvestmentview.cpp:75
+msgid "4 weeks %"
+msgstr ""
+
+#: views/kinvestmentview.cpp:76
+msgid "3 Months %"
+msgstr ""
+
+#: views/kinvestmentview.cpp:77
+msgid "YTD %"
+msgstr ""
+
+#: views/kinvestmentview.cpp:258
+msgid "New Investment"
+msgstr ""
+
+#: views/kinvestmentview.cpp:259
+msgid "Edit Investment Properties"
+msgstr ""
+
+#: views/kinvestmentview.cpp:260
+msgid "Update Investment Price"
+msgstr ""
+
+#: views/kledgerviewcheckings.moc.cpp:34 views/kledgerviewcheckings.moc.cpp:42
+msgid "KLedgerViewCheckings"
+msgstr ""
+
+#: views/kledgerview.moc.cpp:34 views/kledgerview.moc.cpp:42
+msgid "KLedgerView"
+msgstr ""
+
+#: views/kledgerviewcheckings.cpp:200 views/kledgerviewcheckings.cpp:220
+#: views/kledgerviewcheckings.cpp:229
+msgid "Nr"
+msgstr ""
+
+#: views/kledgerviewcheckings.cpp:209
+msgid "From"
+msgstr ""
+
+#: views/kledgerviewcheckings.cpp:210
+msgid "To"
+msgstr ""
+
+#: views/kledgerviewcheckings.cpp:251 views/ktransactionview.cpp:1212
+#: views/ktransactionview.cpp:1410 widgets/kmymoneyregistercheckings.cpp:205
+msgid "C"
+msgstr ""
+
+#: views/kledgerviewcheckings.cpp:252 views/kledgerviewcreditcard.cpp:51
+#: views/ktransactionview.cpp:46
+msgid "Payment"
+msgstr ""
+
+#: views/kledgerviewcheckings.cpp:287 views/kledgerviewcheckings.cpp:301
+#: views/kledgerviewcheckings.cpp:1249 views/kledgerviewcheckings.cpp:1291
+msgid "Edit splits ..."
+msgstr ""
+
+#: views/kledgerviewcheckings.cpp:289 views/kledgerviewcheckings.cpp:303
+#: views/kledgerviewcheckings.cpp:1256 views/kledgerviewcheckings.cpp:1298
+msgid "Goto payee/receiver"
+msgstr ""
+
+#: views/kledgerviewcheckings.cpp:371
+msgid "&Reconcile ..."
+msgstr ""
+
+#: views/kledgerviewcheckings.cpp:412
+msgid ""
+"<center><b>Reconcile account</b></center><hr>\n"
+"<b>1.</b> Click on column 'C' to clear the transactions appearing on your "
+"bank statement."
+msgstr ""
+
+#: views/kledgerviewcheckings.cpp:419
+msgid ""
+"<b>2.</b> Match the cleared transactions with the amount noted on your bank "
+"statement.<br>"
+msgstr ""
+
+#: views/kledgerviewcheckings.cpp:428
+msgid "Cleared:"
+msgstr ""
+
+#: views/kledgerviewcheckings.cpp:443
+msgid "Statement:"
+msgstr ""
+
+#: views/kledgerviewcheckings.cpp:479
+msgid "<p><b>3.</b> Hit the Finish button when you're done."
+msgstr ""
+
+#: views/kledgerviewcheckings.cpp:484
+msgid ""
+"Show\n"
+"transactionform"
+msgstr ""
+
+#: views/kledgerviewcheckings.cpp:499
+msgid "&Postpone"
+msgstr ""
+
+#: views/kledgerviewcheckings.cpp:525 views/kledgerviewcreditcard.cpp:138
+msgid "Current balance: "
+msgstr ""
+
+#: views/kledgerviewcheckings.cpp:1253 views/kledgerviewcheckings.cpp:1272
+#: views/kledgerviewcheckings.cpp:1295 views/kledgerviewcheckings.cpp:1313
+msgid "Goto '%1'"
+msgstr ""
+
+#: views/kledgerviewcreditcard.cpp:50
+msgid "Charge"
+msgstr ""
+
+#: views/kledgerviewcreditcard.cpp:55
+msgid "&Payment"
+msgstr ""
+
+#: views/kledgerviewcreditcard.cpp:56
+msgid "C&harge"
+msgstr ""
+
+#: views/kledgerviewcreditcard.cpp:136
+msgid "You currently owe: "
+msgstr ""
+
+#: views/kpayeesview.cpp:195
+msgid "Transfer to %1"
+msgstr ""
+
+#: views/kpayeesview.cpp:197
+msgid "Transfer from %1"
+msgstr ""
+
+#: views/kpayeesview.cpp:210
+msgid "Balance: %1"
+msgstr ""
+
+#: views/kpayeesview.cpp:227
+msgid "Unable to add payee with same name"
+msgstr ""
+
+#: views/kpayeesview.cpp:228
+msgid "Payee already exists"
+msgstr ""
+
+#: views/kpayeesview.cpp:241
+msgid "Unable to add payee"
+msgstr ""
+
+#: views/kpayeesview.cpp:268
+msgid "Unable to modify payee"
+msgstr ""
+
+#: views/kpayeesview.cpp:276
+msgid "Remove this payee: "
+msgstr ""
+
+#: views/kpayeesview.cpp:279
+msgid "Remove Payee"
+msgstr ""
+
+#: views/kpayeesview.cpp:289
+msgid "Unable to remove payee"
+msgstr ""
+
+#: views/kstocktransactionviewdecl.cpp:65
+msgid "YTD:"
+msgstr ""
+
+#: views/kstocktransactionviewdecl.cpp:69
+msgid "TextLabel2"
+msgstr ""
+
+#: views/kstocktransactionviewdecl.cpp:77
+msgid "TextLabel4"
+msgstr ""
+
+#: views/kpayeesview.moc.cpp:34 views/kpayeesview.moc.cpp:42
+msgid "KPayeesView"
+msgstr ""
+
+#: views/ktransactionview.moc.cpp:34 views/ktransactionview.moc.cpp:42
+msgid "KTransactionView"
+msgstr ""
+
+#: views/ktransactionview.cpp:43
+msgid "Type/Num"
+msgstr ""
+
+#: views/ktransactionview.cpp:44
+msgid "Payee/Category/Memo"
+msgstr ""
+
+#: views/ktransactionview.cpp:45
+msgid "Clr"
+msgstr ""
+
+#: views/ktransactionview.cpp:85
+msgid "Set As"
+msgstr ""
+
+#: views/ktransactionview.cpp:86
+msgid "Unreconciled (default)"
+msgstr ""
+
+#: views/ktransactionview.cpp:93
+msgid "Set as"
+msgstr ""
+
+#: views/ktransactionview.cpp:230 widgets/kmymoneytransactionform.cpp:209
+msgid "Enter"
+msgstr ""
+
+#: views/ktransactionview.cpp:233
+msgid "Split"
+msgstr ""
+
+#: views/ktransactionview.cpp:1137
+msgid "Opening Balance: "
+msgstr ""
+
+#: views/ktransactionview.cpp:1215 views/ktransactionview.cpp:1413
+#: widgets/kmymoneyregistercheckings.cpp:209
+msgid "R"
+msgstr ""
+
+#: views/ktransactionview.cpp:1256
+msgid "N/A"
+msgstr ""
+
+#: views/ktransactionview.cpp:1321
+msgid "Method"
+msgstr ""
+
+#: views/ktransactionview.cpp:1322
+msgid "Click on a field to enter a transaction"
+msgstr ""
+
+#: views/ktransactionview.cpp:1323
+msgid "?"
+msgstr ""
+
+#: views/ktransactionview.cpp:1329
+msgid "Category|Description"
+msgstr ""
+
+#: views/ktransactionview.cpp:1335
+msgid "Ending Balance: "
+msgstr ""
+
+#: views/ktransactionview.cpp:1343
+msgid "Ending Balance: 0"
+msgstr ""
+
+#: views/kbanksview.cpp:304
+msgid "Entries"
+msgstr ""
+
+#: views/kbanksview.cpp:516
+msgid "Total Profits: "
+msgstr ""
+
+#: views/kbanksview.cpp:600
+msgid "Institution"
+msgstr ""
+
+#: views/kbankviewdecl.cpp:274
+msgid "Total Profits:"
+msgstr ""
+
+#: views/kbankviewdecl.cpp:287
+msgid "List"
+msgstr ""
+
+#: views/kbankviewdecl.cpp:294
+msgid "Icons"
+msgstr ""
+
+#: views/kcategoriesview.cpp:217
+msgid "Create A New Category"
+msgstr ""
+
+#: views/kcategoriesview.cpp:249
+msgid "Delete this category item: "
+msgstr ""
+
+#: views/kcategoriesview.cpp:264
+msgid "Unable to remove category: "
+msgstr ""
+
+#: views/kcategoriesview.cpp:307
+msgid "Cannot edit category: "
+msgstr ""
+
+#: kmymoney2.cpp:138 kmymoney2.cpp:283
+msgid "Ready."
+msgstr ""
+
+#: kmymoney2.cpp:144 kmymoney2.cpp:413
+msgid "Loading file..."
+msgstr ""
+
+#: kmymoney2.cpp:177
+msgid "Show Transaction Detail"
+msgstr ""
+
+#: kmymoney2.cpp:186
+msgid "Dump Memory..."
+msgstr ""
+
+#: kmymoney2.cpp:187
+msgid "Personal Data..."
+msgstr ""
+
+#: kmymoney2.cpp:188
+msgid "Backup..."
+msgstr ""
+
+#: kmymoney2.cpp:189 kmymoney2.cpp:190
+msgid "QIF ..."
+msgstr ""
+
+#: kmymoney2.cpp:197
+msgid "Add new institution..."
+msgstr ""
+
+#: kmymoney2.cpp:200
+msgid "Open account register..."
+msgstr ""
+
+#: kmymoney2.cpp:201
+msgid "Add new account..."
+msgstr ""
+
+#: kmymoney2.cpp:202
+msgid "Reconcile account..."
+msgstr ""
+
+#: kmymoney2.cpp:203
+msgid "Find transaction..."
+msgstr ""
+
+#: kmymoney2.cpp:226
+msgid "QIF Profile Editor..."
+msgstr ""
+
+#: kmymoney2.cpp:229
+msgid "&Show tip of the day"
+msgstr ""
+
+#: kmymoney2.cpp:236
+msgid "Creates a new document"
+msgstr ""
+
+#: kmymoney2.cpp:237
+msgid "Creates a new window"
+msgstr ""
+
+#: kmymoney2.cpp:238
+msgid "Opens an existing document"
+msgstr ""
+
+#: kmymoney2.cpp:239
+msgid "Opens a recently used file"
+msgstr ""
+
+#: kmymoney2.cpp:240
+msgid "Saves the actual document"
+msgstr ""
+
+#: kmymoney2.cpp:241
+msgid "Saves the actual document as..."
+msgstr ""
+
+#: kmymoney2.cpp:242
+msgid "Closes the actual document"
+msgstr ""
+
+#: kmymoney2.cpp:243
+msgid "Closes the actual window"
+msgstr ""
+
+#: kmymoney2.cpp:247
+msgid "Quits the application"
+msgstr ""
+
+#: kmymoney2.cpp:254
+msgid "Enables/disables the toolbar"
+msgstr ""
+
+#: kmymoney2.cpp:256
+msgid "Enables/disables the statusbar"
+msgstr ""
+
+#: kmymoney2.cpp:258
+msgid "View information about the file"
+msgstr ""
+
+#: kmymoney2.cpp:259
+msgid "Lets you view/edit your personal data"
+msgstr ""
+
+#: kmymoney2.cpp:260
+msgid "Lets you backup your file to a removeable drive"
+msgstr ""
+
+#: kmymoney2.cpp:261
+msgid "Lets you create a new institution"
+msgstr ""
+
+#: kmymoney2.cpp:262
+msgid "View the account register"
+msgstr ""
+
+#: kmymoney2.cpp:265
+msgid "Lets you create a new account"
+msgstr ""
+
+#: kmymoney2.cpp:266
+msgid "Balance your account"
+msgstr ""
+
+#: kmymoney2.cpp:267
+msgid "Find transactions"
+msgstr ""
+
+#: kmymoney2.cpp:268
+msgid "Import transactions using QIF format"
+msgstr ""
+
+#: kmymoney2.cpp:269
+msgid "Export transactions using QIF format"
+msgstr ""
+
+#: kmymoney2.cpp:348
+msgid "KMyMoney file needs saving.  Save ?"
+msgstr ""
+
+#: kmymoney2.cpp:368
+msgid "Creating new document..."
+msgstr ""
+
+#: kmymoney2.cpp:373 kmymoney2.cpp:375 kmymoney2.cpp:396 kmymoney2.cpp:398
+#: kmymoney2.cpp:417 kmymoney2.cpp:419
+msgid "KMyMoney file already open.  Close it ?"
+msgstr ""
+
+#: kmymoney2.cpp:391
+msgid "Open a document."
+msgstr ""
+
+#: kmymoney2.cpp:437
+msgid "Saving file..."
+msgstr ""
+
+#: kmymoney2.cpp:454
+msgid "Saving file with a new filename..."
+msgstr ""
+
+#: kmymoney2.cpp:457
+msgid "*.kmy|KMyMoney files\n"
+msgstr ""
+
+#: kmymoney2.cpp:459
+msgid "*.*|All files"
+msgstr ""
+
+#: kmymoney2.cpp:501
+msgid "Closing window..."
+msgstr ""
+
+#: kmymoney2.cpp:504 kmymoney2.cpp:521 kmymoney2.cpp:905
+msgid "The file has been changed, save it ?"
+msgstr ""
+
+#: kmymoney2.cpp:535
+msgid "Printing..."
+msgstr ""
+
+#: kmymoney2.cpp:536
+msgid "Sorry, unavailable at this time."
+msgstr ""
+
+#: kmymoney2.cpp:549
+msgid "Exiting..."
+msgstr ""
+
+#: kmymoney2.cpp:574
+msgid "Cutting selection..."
+msgstr ""
+
+#: kmymoney2.cpp:581
+msgid "Copying selection to clipboard..."
+msgstr ""
+
+#: kmymoney2.cpp:589
+msgid "Inserting clipboard contents..."
+msgstr ""
+
+#: kmymoney2.cpp:596
+msgid "Toggling toolbar..."
+msgstr ""
+
+#: kmymoney2.cpp:613
+msgid "Toggle the statusbar..."
+msgstr ""
+
+#: kmymoney2.cpp:672
+msgid "Viewing personal data..."
+msgstr ""
+
+#: kmymoney2.cpp:675 kmymoney2.cpp:687
+msgid "No MyMoneyFile open"
+msgstr ""
+
+#: kmymoney2.cpp:691
+msgid ""
+"This function no longer exists and is used by the developers.\n"
+"\n"
+"Perform a dump of the data in memory?."
+msgstr ""
+
+#: kmymoney2.cpp:720
+msgid "Exporting file..."
+msgstr ""
+
+#: kmymoney2.cpp:897
+msgid "The current immplementation of the backup functionality "
+msgstr ""
+
+#: kmymoney2.cpp:898
+msgid "only supports local files as source files! "
+msgstr ""
+
+#: kmymoney2.cpp:899
+msgid "Your current source file is '%1'.)"
+msgstr ""
+
+#: kmymoney2.cpp:900
+msgid "Local files only"
+msgstr ""
+
+#: kmymoney2.cpp:927
+msgid "Backup file for today exists on that device.  Replace ?"
+msgstr ""
+
+#: kmymoney2.cpp:927
+msgid "&Replace"
+msgstr ""
+
+#: kmymoney2.cpp:980
+msgid "Error Mounting Device"
+msgstr ""
+
+#: kmymoney2.cpp:1001
+msgid "Error Copying File to Device"
+msgstr ""
+
+#: kmymoney2.cpp:1011
+msgid "File Successfully Backed up"
+msgstr ""
+
+#: kmymoney2.cpp:1020
+msgid "Error unmounting device"
+msgstr ""
+
+#: kmymoney2.cpp:1027
+msgid "File Successfully Backed Up"
+msgstr ""
+
+#: kmymoney2.cpp:1031
+msgid "Error copying file"
+msgstr ""
+
+#: _translatorinfo.cpp:1
 msgid ""
 "_: NAME OF TRANSLATORS\n"
 "Your names"
 msgstr ""
 
-#: _translatorinfo.cpp:3 _translatorinfo.cpp:3
+#: _translatorinfo.cpp:3
 msgid ""
 "_: EMAIL OF TRANSLATORS\n"
 "Your emails"
+msgstr ""
+
+#: main.cpp:31
+msgid ""
+"KMyMoney2 a personal finances application for KDE.\n"
+"\n"
+"Please consider contributing to this project with code and or suggestions."
+msgstr ""
+
+#: main.cpp:35
+msgid "file to open"
+msgstr ""
+
+#: main.cpp:71
+msgid "Compiled with the following settings:\n"
+msgstr ""
+
+#: main.cpp:77
+msgid "Project Manager"
+msgstr ""
+
+#: main.cpp:78
+msgid "Project Admin"
+msgstr ""
+
+#: main.cpp:79
+msgid "Developer & Artist"
+msgstr ""
+
+#: main.cpp:80 main.cpp:82 main.cpp:83
+msgid "Developer"
+msgstr ""
+
+#: main.cpp:81
+msgid "Developer & Release Manager"
+msgstr ""
+
+#: converter/mymoneyqifwriter.moc.cpp:34 converter/mymoneyqifwriter.moc.cpp:42
+msgid "MyMoneyQifWriter"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:42
+#: converter/mymoneyqifprofileeditor.cpp:112
+msgid "QIF Profile Editor"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:65
+msgid "Description"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:76
+msgid "Type field text"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:87
+msgid "Opening Balance text"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:98
+msgid "Account delimiter"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:109
+msgid "Void mark"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:127
+msgid "Date Format"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:131
+msgid "%d/%m/%yy"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:132
+msgid "%d/%mmm/%yy"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:133
+msgid "%d/%m/%yyyy"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:134
+msgid "%d/%mmm/%yyyy"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:135
+msgid "%d/%m%yy"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:136
+msgid "%d/%mmm%yy"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:137
+msgid "%d.%m.%yy"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:138
+msgid "%d.%m.%yyyy"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:139
+msgid "%m/%d/%yy"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:140
+msgid "%mmm/%d/%yy"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:141
+msgid "%m/%d/%yyyy"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:142
+msgid "%mmm/%d/%yyyy"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:143
+msgid "%m%d%yy"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:144
+msgid "%mmm/%d%yy"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:154
+msgid "Apostrophe Handling"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:158
+msgid "1900-1949"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:159
+msgid "1900-1999"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:160
+msgid "2000-2099"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:173
+msgid "Field"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:176
+msgid "QIF-Record"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:179
+#: converter/mymoneyqifprofileeditordecl.cpp:220
+msgid "Decimal Symbol"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:182
+msgid "Thousand Delimiter"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:185
+msgid "SortColumnInvisible"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:188
+msgid "T"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:192
+msgid "Split-Value"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:194
+msgid "1"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:197
+msgid "Commission"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:198
+msgid "O"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:199
+msgid "2"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:202
+msgid "Price"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:203
+msgid "I"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:204
+msgid "3"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:207
+msgid "Quantity"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:208
+msgid "Q"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:209
+msgid "4"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:233
+msgid "Thousands Separator"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:268
+msgid "Rename"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:276
+msgid "Reset"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditordecl.cpp:282
+msgid "Ok"
+msgstr ""
+
+#: converter/mymoneyqifprofile.moc.cpp:34
+#: converter/mymoneyqifprofile.moc.cpp:42
+msgid "MyMoneyQifProfile"
+msgstr ""
+
+#: converter/mymoneyqifwriter.cpp:70
+msgid ""
+"Unexpected exception '%1' thrown in %2, line %3 caught in MyMoneyQifWriter::"
+"write()"
+msgstr ""
+
+#: converter/mymoneyqifwriter.cpp:80
+msgid "Unable to open file '%1' for writing"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditor.moc.cpp:34
+#: converter/mymoneyqifprofileeditor.moc.cpp:42
+msgid "MyMoneyQifProfileNameValidator"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditor.moc.cpp:104
+#: converter/mymoneyqifprofileeditor.moc.cpp:112
+msgid "MyMoneyQifProfileEditor"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditor.cpp:114
+msgid "QIF Profile Selector"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditor.cpp:174
+msgid "The default QIF profile"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditor.cpp:336
+msgid "Enter new profile name"
+msgstr ""
+
+#: converter/mymoneyqifprofileeditor.cpp:354
+msgid "Do you really want to delete profile '%1'?"
+msgstr ""
+
+#: kstartuplogo.moc.cpp:34 kstartuplogo.moc.cpp:42
+msgid "KStartupLogo"
+msgstr ""
+
+#: rc.cpp:2
+msgid "E&xport"
+msgstr ""
+
+#: rc.cpp:3
+msgid "&Institution"
+msgstr ""
+
+#: rc.cpp:4
+msgid "&Account"
+msgstr ""
+
+#: rc.cpp:5
+msgid "&Bills/Deposits"
+msgstr ""
+
+#: rc.cpp:6
+msgid "&Reports"
+msgstr ""
+
+#: rc.cpp:7
+msgid "&Plugins"
+msgstr ""
+
+#: widgets/kmymoneylineedit.moc.cpp:34 widgets/kmymoneylineedit.moc.cpp:42
+msgid "kMyMoneyLineEdit"
+msgstr ""
+
+#: widgets/kmymoneytransactionform.moc.cpp:34
+#: widgets/kmymoneytransactionform.moc.cpp:42
+msgid "kMyMoneyTransactionFormTable"
+msgstr ""
+
+#: widgets/kmymoneytransactionform.moc.cpp:122
+#: widgets/kmymoneytransactionform.moc.cpp:130
+msgid "kMyMoneyTransactionForm"
+msgstr ""
+
+#: widgets/kmymoneycombo.moc.cpp:34 widgets/kmymoneycombo.moc.cpp:42
+msgid "kMyMoneyCombo"
+msgstr ""
+
+#: widgets/kmymoneyedit.moc.cpp:34 widgets/kmymoneyedit.moc.cpp:42
+msgid "kMyMoneyEdit"
+msgstr ""
+
+#: widgets/kmymoneyregistercheckings.moc.cpp:34
+#: widgets/kmymoneyregistercheckings.moc.cpp:42
+msgid "kMyMoneyRegisterCheckings"
+msgstr ""
+
+#: widgets/kmymoneytable.moc.cpp:34 widgets/kmymoneytable.moc.cpp:42
+msgid "kMyMoneyTable"
+msgstr ""
+
+#: widgets/kmymoneycalculator.moc.cpp:34 widgets/kmymoneycalculator.moc.cpp:42
+msgid "kMyMoneyCalculator"
+msgstr ""
+
+#: widgets/kmymoneypayee.moc.cpp:34 widgets/kmymoneypayee.moc.cpp:42
+msgid "kMyMoneyPayee"
+msgstr ""
+
+#: widgets/kmymoneyregister.moc.cpp:34 widgets/kmymoneyregister.moc.cpp:42
+msgid "kMyMoneyRegister"
+msgstr ""
+
+#: widgets/kmymoneycategory.moc.cpp:34 widgets/kmymoneycategory.moc.cpp:42
+msgid "kMyMoneyCategory"
+msgstr ""
+
+#: widgets/kmymoneytransactionform.cpp:219
+msgid "&More"
+msgstr ""
+
+#: widgets/kmymoneyhlayout.moc.cpp:34 widgets/kmymoneyhlayout.moc.cpp:42
+msgid "kMyMoneyHLayout"
+msgstr ""
+
+#: widgets/kmymoneysplittable.moc.cpp:34 widgets/kmymoneysplittable.moc.cpp:42
+msgid "kMyMoneySplitTable"
+msgstr ""
+
+#: widgets/kmymoneydateinput.moc.cpp:34 widgets/kmymoneydateinput.moc.cpp:42
+msgid "kMyMoneyDateInput"
+msgstr ""
+
+#: kmymoney2.moc.cpp:34 kmymoney2.moc.cpp:42
+msgid "KMyMoney2App"
 msgstr ""
