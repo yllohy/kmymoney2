@@ -53,6 +53,7 @@
 
 // ----------------------------------------------------------------------------
 // KDE Includes
+#include "kdecompat.h"
 #include <kdatetbl.h> // Use the classes available for maximum re-use
 #include <kglobal.h>
 #include <kglobalsettings.h>
@@ -60,7 +61,6 @@
 #include <klocale.h>
 #include <kdebug.h>
 #include <knotifyclient.h>
-#include <kdeversion.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -71,7 +71,7 @@ kMyMoneyDateTbl::kMyMoneyDateTbl(QWidget *parent, QDate date_, const char* name,
 {
   // call this first to make sure that member variables are initialized
   setType(MONTHLY);
-  
+
   setFontSize(10);
 
   if(!date_.isValid())
@@ -83,7 +83,7 @@ kMyMoneyDateTbl::kMyMoneyDateTbl(QWidget *parent, QDate date_, const char* name,
 
 
   viewport()->setEraseColor(KGlobalSettings::baseColor());
-  
+
   setDate(date_); // this initializes firstday, numdays, numDaysPrevMonth
 
   // So we can emit hoverDate
@@ -102,10 +102,10 @@ kMyMoneyDateTbl::paintCell(QPainter *painter, int row, int col)
   QBrush brushBlue(KGlobalSettings::activeTitleColor());
   QBrush brushLightblue(KGlobalSettings::baseColor());
   QFont font=KGlobalSettings::generalFont();
-  
+
   // -----
   font.setPointSize(fontsize);
-  
+
 #if KDE_VERSION < 310
   int firstWeekDay = KGlobal::locale()->weekStartsMonday() ? 1 : 0;
 #else
@@ -175,7 +175,7 @@ kMyMoneyDateTbl::paintCell(QPainter *painter, int row, int col)
       headerText = i18n("Week %1 for year %2.")
         .arg(weekStr)
         .arg(yearStr);
-#endif        
+#endif
 
       painter->drawText(0, 0, w, h-1, AlignCenter, headerText, -1, &rect);
 
@@ -221,8 +221,8 @@ kMyMoneyDateTbl::paintCell(QPainter *painter, int row, int col)
 
       if (pos<firstday || (firstday+numdays<=pos))
       { // we are either
-        // ° painting a day of the previous month or
-        // ° painting a day of the following month
+        //  painting a day of the previous month or
+        //  painting a day of the following month
 
         if (pos<firstday)
         { // previous month
@@ -343,7 +343,7 @@ kMyMoneyDateTbl::setFontSize(int size)
   // ----- find largest day name:
   maxCell.setWidth(0);
   maxCell.setHeight(0);
-  
+
   for(count=0; count<m_colCount; ++count)
   {
     rect=metrics.boundingRect(KGlobal::locale()->weekDayName(count+1, true));
@@ -437,7 +437,7 @@ kMyMoneyDateTbl::contentsMouseReleaseEvent(QMouseEvent *e)
   {
     int dayOfWeek = date.dayOfWeek();
     int diff;
-    
+
     if (row < dayOfWeek)
     {
       diff = -(dayOfWeek - row);
@@ -555,7 +555,7 @@ void kMyMoneyDateTbl::setType(calendarType type)
     m_rowCount = m_colCount = 7;
     m_type = MONTHLY;
   }
-  
+
   setNumRows(m_rowCount);
   setNumCols(m_colCount);
   setHScrollBarMode(AlwaysOff);
@@ -596,8 +596,8 @@ void kMyMoneyDateTbl::contentsMouseMoveEvent(QMouseEvent* e)
 
     if (pos<firstday || (firstday+numdays<=pos))
     { // we are either
-      // ° painting a day of the previous month or
-      // ° painting a day of the following month
+      //  painting a day of the previous month or
+      //  painting a day of the following month
 
       if (pos<firstday)
       { // previous month
@@ -643,7 +643,7 @@ void kMyMoneyDateTbl::contentsMouseMoveEvent(QMouseEvent* e)
     m_drawDateOrig = drawDate;
     emit hoverDate(drawDate);
   }
-  
+
   QGridView::contentsMouseMoveEvent(e);
 }
 
@@ -688,6 +688,6 @@ int kMyMoneyDateTbl::weekNumber(const QDate& date, int *yearNumber) const
     if ( yearNumber )
         *yearNumber = yearNum;
     return weekNum;
- 
+
 }
 #endif

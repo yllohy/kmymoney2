@@ -32,11 +32,7 @@ class QVBox;
 // ----------------------------------------------------------------------------
 // KDE Includes
 
-#include <kdeversion.h>
-#if KDE_VERSION < KDE_MAKE_VERSION(3,2,0)
-#define KDE_DEPRECATED
-#endif
-
+#include "kdecompat.h"
 #include <klineedit.h>
 
 // ----------------------------------------------------------------------------

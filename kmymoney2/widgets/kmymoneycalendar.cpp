@@ -59,6 +59,7 @@
 
 // ----------------------------------------------------------------------------
 // KDE Includes
+#include "kdecompat.h"
 #include <kglobal.h>
 #include <kapplication.h>
 #include <klocale.h>
@@ -68,7 +69,6 @@
 #include <knotifyclient.h>
 #include <kdatetbl.h> // for maximum re-use
 #include <kpopupmenu.h>
-#include <kdeversion.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -178,13 +178,13 @@ kMyMoneyCalendar::resizeEvent(QResizeEvent*)
       styleControl,
       d->userButton1,
       d->userButton2,
-    	yearBackward,
-	    monthBackward,
-	    selectMonth,
-	    selectYear,
-	    monthForward,
-	    yearForward,
-	    d->closeButton
+      yearBackward,
+      monthBackward,
+      selectMonth,
+      selectYear,
+      monthForward,
+      yearForward,
+      d->closeButton
     };
     const int NoOfButtons=sizeof(buttons)/sizeof(buttons[0]);
     QSize sizes[NoOfButtons];
@@ -204,10 +204,10 @@ kMyMoneyCalendar::resizeEvent(QResizeEvent*)
 
     // ----- calculate size of the month button:
     for(count=0; count<NoOfButtons; ++count) {
-	if(buttons[count]==selectMonth) {
-	    QSize metricBound = style().sizeFromContents(QStyle::CT_ToolButton, selectMonth, maxMonthRect);
-	    sizes[count].setWidth(QMAX(metricBound.width(), maxMonthRect.width()+2*QApplication::style().pixelMetric(QStyle::PM_ButtonMargin)));
-	}
+  if(buttons[count]==selectMonth) {
+      QSize metricBound = style().sizeFromContents(QStyle::CT_ToolButton, selectMonth, maxMonthRect);
+      sizes[count].setWidth(QMAX(metricBound.width(), maxMonthRect.width()+2*QApplication::style().pixelMetric(QStyle::PM_ButtonMargin)));
+  }
     }
     // ----- place the buttons:
     // Put the style button and user buttons to the left and the rest to the right
@@ -223,7 +223,7 @@ kMyMoneyCalendar::resizeEvent(QResizeEvent*)
         x += sizes[count].width();
       }
     }
-    
+
     x = width();
     for(count=(1+noUserButtons); count<NoOfButtons; ++count)
     {
@@ -238,7 +238,7 @@ kMyMoneyCalendar::resizeEvent(QResizeEvent*)
         buttons[count]->setGeometry(x, 0, w, buttonHeight);
       x+=w;
     }
-    
+
     // ----- place the line edit for direct input:
     sizes[0]=line->sizeHint();
     int week_width=d->selectWeek->fontMetrics().width(i18n("Week XX"))+((d->closeButton != 0L) ? 50 : 20);
@@ -287,20 +287,20 @@ kMyMoneyCalendar::setDate(const QDate& date)
 {
   if (!table)
     return true;  // hack
-    
+
     if(date.isValid()) {
-	QString temp;
-	// -----
-	table->setDate(date);
-	d->selectWeek->setText(i18n("Week %1").arg(weekOfYear(date)));
-	selectMonth->setText(KGlobal::locale()->monthName(date.month(), false));
-	temp.setNum(date.year());
-	selectYear->setText(temp);
-	line->setText(KGlobal::locale()->formatDate(date, true));
-	return true;
+  QString temp;
+  // -----
+  table->setDate(date);
+  d->selectWeek->setText(i18n("Week %1").arg(weekOfYear(date)));
+  selectMonth->setText(KGlobal::locale()->monthName(date.month(), false));
+  temp.setNum(date.year());
+  selectYear->setText(temp);
+  line->setText(KGlobal::locale()->formatDate(date, true));
+  return true;
     } else {
-	kdDebug() << "kMyMoneyCalendar::setDate: refusing to set invalid date." << endl;
-	return false;
+  kdDebug() << "kMyMoneyCalendar::setDate: refusing to set invalid date." << endl;
+  return false;
     }
 }
 
@@ -455,9 +455,9 @@ kMyMoneyCalendar::lineEnterPressed()
   // -----
   if(val->date(line->text(), temp)==QValidator::Acceptable)
     {
-	kdDebug() << "kMyMoneyCalendar::lineEnterPressed: valid date entered." << endl;
-	emit(dateEntered(temp));
-	setDate(temp);
+  kdDebug() << "kMyMoneyCalendar::lineEnterPressed: valid date entered." << endl;
+  emit(dateEntered(temp));
+  setDate(temp);
     } else {
       KNotifyClient::beep();
       kdDebug() << "kMyMoneyCalendar::lineEnterPressed: invalid date entered." << endl;
@@ -492,12 +492,12 @@ kMyMoneyCalendar::sizeHint() const
           sizes[count] = QSize(0,0);
 
       if(buttons[count]==selectMonth)
-	{
-	  QSize metricBound = style().sizeFromContents(QStyle::CT_ToolButton, selectMonth, maxMonthRect);
-	  cx+=QMAX(metricBound.width(), maxMonthRect.width()+2*QApplication::style().pixelMetric(QStyle::PM_ButtonMargin));
-	} else {
-	  cx+=sizes[count].width();
-	}
+  {
+    QSize metricBound = style().sizeFromContents(QStyle::CT_ToolButton, selectMonth, maxMonthRect);
+    cx+=QMAX(metricBound.width(), maxMonthRect.width()+2*QApplication::style().pixelMetric(QStyle::PM_ButtonMargin));
+  } else {
+    cx+=sizes[count].width();
+  }
       cy=QMAX(sizes[count].height(), cy);
     }
   // ----- calculate width hint:

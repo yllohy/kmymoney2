@@ -50,13 +50,10 @@
 
 // ----------------------------------------------------------------------------
 // KDE Includes
+#include "kdecompat.h"
 #include <kglobal.h>
 #include <kglobalsettings.h>
-//#include <kapplication.h>
 #include <klocale.h>
-//#include <kdebug.h>
-//#include <knotifyclient.h>
-#include <kdeversion.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -91,7 +88,7 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int /*row*/, 
   QFont fontSmall(font);
   fontLarge.setPointSize(fontsize*2);
   fontSmall.setPointSize(fontsize-1);
-  
+
   painter->setFont(font);
 
 
@@ -170,7 +167,7 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int /*row*/, 
 
     if (schedules.count() >= 1)
     {
-      QValueList<MyMoneySchedule>::Iterator iter;          
+      QValueList<MyMoneySchedule>::Iterator iter;
       bool anyOverdue=false;
       for (iter=schedules.begin(); iter!=schedules.end(); ++iter)
       {
@@ -184,12 +181,12 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int /*row*/, 
           }
         }
       }
-      
+
       if (anyOverdue)
         painter->setPen(red);
       else
         painter->setPen(darkGray);
-        
+
       painter->setFont(fontLarge);
       painter->drawText(0, 0, w, h, AlignCenter, QString::number(schedules.count()),
           -1, &rect);
@@ -211,7 +208,7 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int /*row*/, 
       painter->setBrush(KGlobalSettings::baseColor());
       painter->setPen(KGlobalSettings::baseColor());
     }
-    
+
     painter->setPen(lightGray);
     painter->drawRect(0, 0, w, h);
 
@@ -234,7 +231,7 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int /*row*/, 
                                           MyMoneySchedule::STYPE_ANY,
                                           theDate,
                                           m_filterAccounts);
-                                     
+
         if (billSchedules.count() >= 1)
         {
           text += i18n("%1 Bills.").arg(QString::number(billSchedules.count()));
@@ -264,7 +261,7 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int /*row*/, 
                                           MyMoneySchedule::STYPE_ANY,
                                           theDate,
                                           m_filterAccounts);
-        
+
         if (transferSchedules.count() >= 1)
         {
           if(!text.isEmpty())
@@ -294,7 +291,7 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int /*row*/, 
         }
       }
     }
-    
+
     if (!anyOverdue)
     {
       for (iter=depositSchedules.begin(); iter!=depositSchedules.end(); ++iter)
@@ -309,7 +306,7 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int /*row*/, 
           }
         }
       }
-      
+
       if (!anyOverdue)
       {
         for (iter=billSchedules.begin(); iter!=billSchedules.end(); ++iter)
@@ -393,8 +390,8 @@ void kMyMoneyScheduledDateTbl::contentsMouseMoveEvent(QMouseEvent* e)
 
     if (pos<firstday || (firstday+numdays<=pos))
     { // we are either
-      // ° painting a day of the previous month or
-      // ° painting a day of the following month
+      //  painting a day of the previous month or
+      //  painting a day of the following month
 
       if (pos<firstday)
       { // previous month
@@ -442,7 +439,7 @@ void kMyMoneyScheduledDateTbl::contentsMouseMoveEvent(QMouseEvent* e)
   try
   {
     int types=0;
-    
+
     if (!m_filterBills)
     {
       types |= MyMoneySchedule::TYPE_BILL;
