@@ -1,7 +1,7 @@
 ####### kdevelop will overwrite this part!!! (begin)##########
 
 
-EXTRA_DIST = kmymoney_accfind.xpm kmymoney_editPay.xpm kmymoney_editcat.xpm kmymoney_newacc.xpm kmymoney_newbank.xpm kmymoney_recon.xpm kmymoney_up.xpm 
+EXTRA_DIST = kmymoney_accfind.xpm kmymoney_editPay.xpm kmymoney_editcat.xpm kmymoney_newacc.xpm kmymoney_newbank.xpm kmymoney_recon.xpm kmymoney_up.xpm
 
 install-data-local:
 	$(mkinstalldirs) $(kde_datadir)/kmymoney2/toolbar/

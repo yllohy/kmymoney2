@@ -1,7 +1,7 @@
 ####### kdevelop will overwrite this part!!! (begin)##########
 bin_PROGRAMS = kmymoney2
 kmymoney2_SOURCES = kreconciledtableitem.cpp kmoneytableitem.cpp kcategorytableitem.cpp kmemotableitem.cpp knumbertableitem.cpp kdatetableitem.cpp kmethodtableitem.cpp ktransactionviewdecl.ui kfindtransactiondlgdecl.ui kfileinfodlgdecl.ui knewfiledlgdecl.ui knewbankdlgdecl.ui knewaccountdlgdecl.ui knewcategorydlgdecl.ui kendingbalancedlgdecl.ui ksettingsdlgdecl.ui klistsettingsdlgdecl.ui kscheduleviewdecl.ui kreconciledlgdecl.ui kpayeedlgdecl.ui knewbillwizard.ui kcategorydlgdecl.ui kbankviewdecl.ui ktransactionview.cpp ktfindresultsdlgdecl.ui ktfindresultsdlg.cpp kstartuplogo.cpp kstartdlg.cpp ksettingsdlg.cpp kscheduleview.cpp kschedulelistitem.cpp kreconcilelistitem.cpp kreconciledlg.cpp kpayeedlg.cpp knewfiledlg.cpp knewcategorydlg.cpp knewbillwizardimpl.cpp knewbankdlg.cpp knewaccountdlg.cpp kmymoneyview.cpp kmymoneysettings.cpp kmainview.cpp klistsettingsdlg.cpp kfindtransactiondlg.cpp kfileinfodlg.cpp kendingbalancedlg.cpp kcategorylistitem.cpp kcategoriesdlg.cpp kbanksview.cpp kbanklistitem.cpp kmymoney2.cpp main.cpp 
-kmymoney2_LDADD   = ./widgets/libwidgets.a ./mymoney/libmymoney.a  -lkfile -lkdeui -lkdecore $(LIB_QT) $(LIBSOCKET)
+kmymoney2_LDADD   = ./widgets/libwidgets.a ./mymoney/libmymoney.a -lkfile -lkdeui -lkdecore $(LIB_QT) $(LIBSOCKET)
 
 SUBDIRS = widgets mymoney pics 
 
