@@ -1,3 +1,25 @@
+2003-01-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Honor start date setting in ledger view was broken after startup
+  * Added QifProfile and QifProfileEditor classes
+  * Fixed memory leaks when editing in-register is selected
+  * Calculate the size required for the datepicker according to it's sizeHint()
+  * Fixed documentation bug in MyMoneyFile
+  * Allow empty separators for decimal and thousands in MyMoneyMoney
+  * Added QIF export functionality
+  * Use standard menu icons where available
+  * Added method to refresh the payees view after loading a file
+  * Moved logic to drop some progress bar updates to KMyMoney2
+  * Allow empty separators in MyMoneyMoney
+  * Added method to return current cell font to kMyMoneyRegister
+  * Added display of number of transactions in accounts view
+  * Updated menu structure
+  * Updated message file (POT)
+
+2003-01-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added display of number of transactions in accounts list view
+  * Added configure.in.in to project for inclusion in source distribution
+  * Created Source package for version 0.5.1
+
 2003-01-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added section about signing an RPM to the project handbook
   * Added some more documentation to source at various places
