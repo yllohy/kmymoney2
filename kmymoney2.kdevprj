@@ -48,7 +48,7 @@ project_type=normal_kde2
 sgml_file=/home/thb/kmymoney2/doc/en/index.docbook
 short_info=
 sub_dir=kmymoney2/
-version=0.6rc1
+version=0.7.0
 version_control=CVS
 workspace=0
 

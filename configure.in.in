@@ -1,6 +1,6 @@
 #MIN_CONFIG(3.0)
 
-AM_INIT_AUTOMAKE(kmymoney2,0.6rc1)
+AM_INIT_AUTOMAKE(kmymoney2,0.7.0)
 
 dnl
 dnl check for atoll and strtoll
