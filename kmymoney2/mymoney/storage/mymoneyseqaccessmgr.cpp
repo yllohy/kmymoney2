@@ -167,7 +167,7 @@ const MyMoneyPayee MyMoneySeqAccessMgr::payee(const QCString& id) const
 
   it = m_payeeList.find(id);
   if(it == m_payeeList.end())
-    throw new MYMONEYEXCEPTION("Unknown payee");
+    throw new MYMONEYEXCEPTION("Unknown payee '" + id + "'");
 
   return *it;
 }

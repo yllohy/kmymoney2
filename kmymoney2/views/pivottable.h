@@ -136,7 +136,10 @@ public:
     
     void dump( const QString& file ) const;
 
-protected:
+// should be protected, but I need this class in QueryReport too.  Either this
+// class needs to go back out in the root of the namespace, or become part of
+// a shared base class.  time will tell
+public:
   /**
     * Holds a description of a MyMoneyAccount suitable for use in the PivotTable
     * class.
@@ -146,6 +149,8 @@ protected:
     * grid needs to store and sort by the full account hierarchy, while still
     * having access to the account itself for currency conversion.
     *
+    * TODO: Consider moving all this functionality into MyMoneyAccount
+    * 
     * @author Ace Jones
     *
     * @short
@@ -181,7 +186,8 @@ protected:
   
     /**
       * @param right The object to compare against
-      * @return bool True if this object is less than the given object
+      * @return bool True if this account's fully-qualified hierarchy name
+      * is less than that of the given qccount
       */
     bool operator<( const AccountDescriptor& right ) const;
   
@@ -195,21 +201,39 @@ protected:
     MyMoneyMoney currencyPrice( const QDate& date ) const;
   
     /**
-      * The bottom-most sub-account of this account descriptor, prefaced with
-      * one tab for each parent.  'Tab' is currently implemented as 2 nbsp's.
+      * Fetch the trading symbol of this account's currency
       *
-      * This is suitable for printing in the PivotTable report's HTML
-      *
-      * Note that this is a fairly specialized function for reporting.  If we
-      * need a more general-case display of the full hierarchy, a different
-      * method will be needed.
-      *
-      * @param showcurrency True if the currency of this account should be included. Note this flag is only considered if the account is not in the file's base currency.
-      * @param htmlformat True if the spaces should be replaced with &nbsp;'s
-      * @return QString The account's full hierarchy (suitable for printing)
+      * @return QString The account's currency trading symbol
       */
-    QString htmlTabbedName( bool showcurrency, bool htmlformat=true ) const;
-  
+    QString currency( void ) const;
+      
+    /**
+      * Determine if this account is in a different currency than the file's
+      * base currency
+      *
+      * @return bool True if this account is in a foreign currency
+      */
+    bool isForiegnCurrency( void ) const;
+      
+    /**
+      * The name of only this account.  No matter how deep the hierarchy, this
+      * method only returns the last name in the list, which is the engine name]
+      * of this account.
+      *
+      * @return QString The account's name
+      */
+    QString name( void ) const;
+
+    /**
+      * The entire hierarchy of this account descriptor
+      * This is similiar to debugName(), however debugName() is not guaranteed
+      * to always look pretty, while fullName() is.  So if the user is ever
+      * going to see the results, use fullName().
+      *
+      * @return QString The account's full hierarchy
+      */
+    QString fullName( void ) const;
+
     /**
       * The entire hierarchy of this account descriptor, suitable for displaying
       * in debugging output
@@ -224,7 +248,7 @@ protected:
       *
       * @return bool True if this account is a top level parent account
       */
-    inline bool isTopLevel( void ) const;
+    /*inline*/ bool isTopLevel( void ) const;
   
     /**
       * Returns the name of the top level parent account
@@ -233,7 +257,7 @@ protected:
       *
       * @return QString The name of the top level parent account
       */
-    inline QString getTopLevel( void ) const;
+    /*inline*/ QString getTopLevel( void ) const;
   
     /**
       * Returns the account descriptor of the immediate parent account
@@ -241,6 +265,15 @@ protected:
       * @return AccountDescriptor The account descriptor of the immediate parent
       */
     AccountDescriptor getParent( void ) const;
+    
+    /**
+      * Returns the number of accounts in this account's hierarchy.  If this is a
+      * Top Category, it returns 1.  If it's parent is a Top Category, returns 2,
+      * etc.
+      *
+      * @return unsigned Hierarchy depth
+      */
+    unsigned hierarchyDepth( void ) const;
   
   protected:
     /**

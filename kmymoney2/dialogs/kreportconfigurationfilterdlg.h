@@ -25,8 +25,10 @@
 #define KREPORTCONFIGURATIONFILTERDLG_H
 
 #include "kfindtransactiondlg.h"
-#include "../views/pivottable.h"
 #include "../mymoney/mymoneyreport.h"
+class kMyMoneyReportConfigTab1Decl;
+class kMyMoneyReportConfigTab2Decl;
+class kMyMoneyReportConfigTab3Decl;
 
 /**
 @author Ace Jones
@@ -36,40 +38,15 @@ class KReportConfigurationFilterDlg : public KFindTransactionDlg
 Q_OBJECT
 public:
     KReportConfigurationFilterDlg(MyMoneyReport report, QWidget *parent = 0, const char *name = 0);
-
     ~KReportConfigurationFilterDlg();
-    
+  
     const MyMoneyReport& getConfig(void) const { return m_currentState; }
 
-    QFrame* m_reportFrame;
-    QButtonGroup* bgrpShow;
-    QRadioButton* radioCategoriesTop;
-    QRadioButton* radioCategoriesAll;
-    QLabel* labelReportName;
-    QLineEdit* editReportname;
-    QLabel* labelReportComment;
-    QLineEdit* editReportComment;
-    QButtonGroup* bgrpRows;
-    QRadioButton* radioRowsIE;
-    QRadioButton* radioRowsAL;
-    QButtonGroup* bgrpCurrency;
-    QCheckBox* checkConvertCurrency;
-    QButtonGroup* bgrpColumns;
-    QRadioButton* radioMonthCols;
-    QRadioButton* radioBimonthCols;
-    QRadioButton* radioQuarterCols;
-    QRadioButton* radioYearCols;
-
 protected:
-    QGridLayout* m_reportLayout;
-    QVBoxLayout* reportLayout74;
-    QHBoxLayout* reportLayout67;
-    QHBoxLayout* reportLayout68;
-    QVBoxLayout* reportLayout75;
-    QVBoxLayout* reportLayout76;
-    QHBoxLayout* bgrpColumnsLayout;
-    QVBoxLayout* reportLayout12;
-
+    kMyMoneyReportConfigTab1Decl* m_tab1;
+    kMyMoneyReportConfigTab2Decl* m_tab2;
+    kMyMoneyReportConfigTab3Decl* m_tab3;
+    
     MyMoneyReport m_initialState;
     MyMoneyReport m_currentState;
 

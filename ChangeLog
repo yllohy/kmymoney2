@@ -1,3 +1,13 @@
+2004-07-31 Ace Jones <acejones@users.sourceforge.net>
+  * First draft of transaction reports.  Doesn't yet convert currency or export
+    to CSV, and definitely needs more testing.
+  * Changed the currency identifier for "don't convert to base currency" reports
+    from the trading symbol (e.g. $ which could mean USD, or AUD, or CAD) to the
+    ID (e.g. USD, AUD, CAD, etc) which is more specific
+  * Reworked the report configuration dialog.  Now instead of bolting on an
+    additional frame, the report configs are additional tabs inserted at the 
+    beginning.  Looks a bit cleaner.  Also brought them into QT Designer.
+
 2004-07-29 Ace Jones <acejones@users.sourceforge.net>
   * Removed KTabWidget for KDE < 3.2 in the report tabs
   * Fixed CSV report export so larger (>10,000) values are not rounded

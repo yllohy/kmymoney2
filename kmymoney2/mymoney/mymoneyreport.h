@@ -43,34 +43,42 @@ class QDomDocument;
 class MyMoneyReport: public MyMoneyTransactionFilter
 {
 public:
-  enum ERowType { eNoRows = 0x0, eAsset = 0x1, eLiability = 0x2, eAssetLiability = 0x3, eExpense = 0x4, eIncome = 0x8, eExpenseIncome = 0xc };
+  enum EReportType { eNoReport = 0, ePivotTable, eQueryTable };
+  enum ERowType { eNoRows = 0, eAssetLiability, eExpenseIncome, eCategory, eTopCategory, eAccount, ePayee, eMonth, eWeek };
   enum EColumnType { eNoColumns = 0, eMonths = 1, eBiMonths = 2, eQuarters = 3, eYears = 12 };
+  enum EQueryColumns { eQCnone = 0x0, eQCbegin = 0x1, eQCnumber = 0x1, eQCpayee = 0x2, eQCcategory = 0x4, eQCmemo = 0x8, eQCaccount = 0x10, eQCreconciled=0x20, eQCend=0x40 };
   
   static const QStringList kRowTypeText;
   static const QStringList kColumnTypeText;
+  static const QStringList kQueryColumnsText;
+  static const EReportType kTypeArray[];
   
 public:
   MyMoneyReport(ERowType _rt = eExpenseIncome, EColumnType _ct = eMonths, const QDate& _db = QDate(), const QDate& _de = QDate()):
-    m_name("Unconfigured Report"),
+    m_name("Unconfigured Pivot Table Report"),
     m_showSubAccounts(false),
     m_convertCurrency(true),
+    m_reportType(kTypeArray[_rt]),
     m_rowType(_rt),
-    m_columnType(_ct)
+    m_columnType(_ct),
+    m_queryColumns(eQCnone)
   {
     setDateFilter(_db,_de);
   }
+  
   void setName(const QString& _s) { m_name = _s; }
   void setShowSubAccounts(bool _f) { m_showSubAccounts = _f; }
   void setConvertCurrency(bool _f) { m_convertCurrency = _f; }
-  void setRowType(ERowType _rt) { m_rowType = _rt; }
+  void setRowType(ERowType _rt) { m_rowType = _rt; m_reportType = kTypeArray[_rt]; }
   void setColumnType(EColumnType _ct) { m_columnType = _ct; }
   void assignFilter(const MyMoneyTransactionFilter& _filter) { MyMoneyTransactionFilter::operator=(_filter); }
   const QString& name(void) const { return m_name; }
   bool isShowingSubAccounts(void) const { return m_showSubAccounts; }
-  bool isShowingRowTotals(void) const { return ((m_rowType & eExpense) || (m_rowType & eIncome)); }
+  bool isShowingRowTotals(void) const { return (m_rowType==eExpenseIncome); }
+  EReportType reportType(void) const { return m_reportType; }
   ERowType rowType(void) const { return m_rowType; }
   EColumnType columnType(void) const { return m_columnType; }
-  bool isRunningSum(void) const { return ((m_rowType & eAsset) || (m_rowType & eLiability)); }
+  bool isRunningSum(void) const { return (m_rowType==eAssetLiability); }
   bool isConvertCurrency(void) const { return m_convertCurrency; }
   unsigned columnPitch(void) const { return static_cast<unsigned>(m_columnType); }
   bool isShowingColumnTotals(void) const { return m_convertCurrency; }
@@ -80,6 +88,8 @@ public:
   bool read(const QDomElement& e);
   void setComment( const QString& _comment ) { m_comment = _comment; }
   const QString& comment( void ) const { return m_comment; }
+  void setQueryColumns( EQueryColumns _qc ) { m_queryColumns = _qc; }
+  EQueryColumns queryColumns(void) const { return m_queryColumns; }
   
 private:
   QCString m_id;
@@ -87,9 +97,10 @@ private:
   QString m_comment;
   bool m_showSubAccounts;
   bool m_convertCurrency;
+  enum EReportType m_reportType;
   enum ERowType m_rowType;
   enum EColumnType m_columnType;
-
+  enum EQueryColumns m_queryColumns;
 };
 
 #endif // MYMONEYREPORT_H  

@@ -1,0 +1,96 @@
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<class>kMyMoneyReportConfigTab1Decl</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>kMyMoneyReportConfigTab1Decl</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>600</width>
+            <height>138</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Form4</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout35</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel6</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Report Name</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit">
+                    <property name="name">
+                        <cstring>m_editName</cstring>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout36</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel7</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Comment</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit">
+                    <property name="name">
+                        <cstring>m_editComment</cstring>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QCheckBox">
+            <property name="name">
+                <cstring>m_checkCurrency</cstring>
+            </property>
+            <property name="text">
+                <string>Convert values to base currency</string>
+            </property>
+        </widget>
+        <spacer>
+            <property name="name">
+                <cstring>spacer15</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>20</width>
+                    <height>41</height>
+                </size>
+            </property>
+        </spacer>
+    </vbox>
+</widget>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

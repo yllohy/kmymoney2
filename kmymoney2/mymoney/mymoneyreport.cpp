@@ -40,8 +40,10 @@
  
 //ReportContainer gContainer;
 
-const QStringList MyMoneyReport::kRowTypeText = QStringList::split(",","none,asset,liability,assetliability,expense,,,,income,,,,expenseincome",true);
+const QStringList MyMoneyReport::kRowTypeText = QStringList::split(",","none,assetliability,expenseincome,category,topcategory,account,payee,month,week",true);
 const QStringList MyMoneyReport::kColumnTypeText = QStringList::split(",","none,months,bimonths,quarters,,,,,,,,,years",true);
+const QStringList MyMoneyReport::kQueryColumnsText = QStringList::split(",","none,number,payee,,category,,,,memo,,,,,,,,account,,,,,,,,,,,,,,,,reconcileflag",true);
+const MyMoneyReport::EReportType MyMoneyReport::kTypeArray[] = { eNoReport, ePivotTable, ePivotTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable };
 
 // This should live in mymoney/mymoneytransactionfilter.h
 static const QStringList kTypeText = QStringList::split(",","all,payments,deposits,transfers,none");
@@ -53,15 +55,39 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc) const
   // the major type if it becomes impossible to maintain compatability with 
   // older versions of the program as new features are added to the reports.
   // Feel free to change the minor type every time a change is made here.
-  e.setAttribute("type","pivottable 1.1");
-  e.setAttribute("name", m_name);
-  e.setAttribute("comment", m_comment);
-  e.setAttribute("showsubaccounts", m_showSubAccounts);
-  e.setAttribute("convertcurrency", m_convertCurrency);
-  e.setAttribute("rowtype", kRowTypeText[m_rowType]);
-  e.setAttribute("columntype", kColumnTypeText[m_columnType]);
-  e.setAttribute("id", m_id);
 
+  if ( m_reportType == ePivotTable )
+  {
+    e.setAttribute("type","pivottable 1.1");
+    e.setAttribute("name", m_name);
+    e.setAttribute("comment", m_comment);
+    e.setAttribute("showsubaccounts", m_showSubAccounts);
+    e.setAttribute("convertcurrency", m_convertCurrency);
+    e.setAttribute("rowtype", kRowTypeText[m_rowType]);
+    e.setAttribute("columntype", kColumnTypeText[m_columnType]);
+    e.setAttribute("id", m_id);
+  }
+  else if ( m_reportType == eQueryTable )
+  {
+    e.setAttribute("type","querytable 1.0");
+    e.setAttribute("name", m_name);
+    e.setAttribute("comment", m_comment);
+    e.setAttribute("convertcurrency", m_convertCurrency);
+    e.setAttribute("rowtype", kRowTypeText[m_rowType]);
+    e.setAttribute("id", m_id);
+    
+    QStringList columns;
+    unsigned qc = m_queryColumns;
+    unsigned it_qc = eQCbegin;
+    while ( it_qc != eQCend )
+    {
+      if ( qc & it_qc )
+        columns += kQueryColumnsText[it_qc];
+      it_qc *= 2;
+    }
+    e.setAttribute("querycolumns", columns.join(","));
+  }
+   
   //
   // Text Filter
   //
@@ -224,7 +250,15 @@ bool MyMoneyReport::read(const QDomElement& e)
         
   bool result = false;
   
-  if(QString("REPORT") == e.tagName() && e.attribute("type").find(QString("pivottable 1.")) == 0 )
+  if ( 
+    QString("REPORT") == e.tagName() 
+    && 
+    (
+      (  e.attribute("type").find(QString("pivottable 1.")) == 0 )
+      ||
+      (  e.attribute("type").find(QString("querytable 1.")) == 0 )
+    )
+  )      
   {
     result = true;
 
@@ -234,12 +268,29 @@ bool MyMoneyReport::read(const QDomElement& e)
     m_id = e.attribute("id");
     m_showSubAccounts = e.attribute("showsubaccounts","0").toUInt();
     m_convertCurrency = e.attribute("convertcurrency","1").toUInt();
+    
     i = kRowTypeText.findIndex(e.attribute("rowtype","expenseincome"));
     if ( i != -1 )
-      m_rowType = static_cast<ERowType>(i);
+    {
+      setRowType( static_cast<ERowType>(i) );
+    }
+    
     i = kColumnTypeText.findIndex(e.attribute("columntype","months"));      
     if ( i != -1 )
-      m_columnType = static_cast<EColumnType>(i);
+      setColumnType( static_cast<EColumnType>(i) );
+    
+    unsigned qc = 0;
+    QStringList columns = QStringList::split(",",e.attribute("querycolumns","none"));
+    QStringList::const_iterator it_column = columns.begin();
+    while (it_column != columns.end())
+    {
+      i = kQueryColumnsText.findIndex(*it_column);
+      if ( i != -1 )
+        qc |= i;
+    
+      ++it_column;
+    }
+    setQueryColumns( static_cast<EQueryColumns>(qc) );
 
     QDomNode child = e.firstChild();
     while(!child.isNull() && child.isElement())

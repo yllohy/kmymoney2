@@ -161,7 +161,7 @@ protected slots:
   void slotSelectTransaction(void);
   void slotSelectTransaction(const QCString& id);
   
-private slots:
+protected slots:
   void slotRightSize(void);
   
 signals:

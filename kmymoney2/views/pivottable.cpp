@@ -256,36 +256,68 @@ bool PivotTable::AccountDescriptor::operator<(const AccountDescriptor& second) c
   return result;
 }
 
-QString PivotTable::AccountDescriptor::htmlTabbedName( bool showcurrency, bool htmlformat ) const
+/**
+  * Fetch the trading symbol of this account's currency
+  *
+  * @return QString The account's currency trading symbol
+  */
+QString PivotTable::AccountDescriptor::currency( void ) const
 {
-  QString result = m_names.back();
-  unsigned tabs = m_names.size() - 1;
-  while ( tabs-- )
-    result.prepend("  ");
-
-  if ( showcurrency )
-  {
-    MyMoneyAccount account = m_file->account(m_account);
-    if ( account.currencyId() != m_file->baseCurrency().id() )
-      if(account.accountType() == MyMoneyAccount::Stock)
-        result.append(QString(" (%1)").arg(m_file->equity(account.currencyId()).tradingSymbol()));
-      else
-        result.append(QString(" (%1)").arg(m_file->currency(account.currencyId()).tradingSymbol()));
-  }
-  if ( htmlformat )
-    result.replace(QRegExp(" "),QString("&nbsp;"));
-
+  QString result;
+  MyMoneyAccount account = m_file->account(m_account);
+  if(account.accountType() == MyMoneyAccount::Stock)
+    result = account.currencyId(); 
+  else
+    result = account.currencyId(); 
   return result;
 }
+  
+/**
+  * Determine if this account is in a different currency than the file's
+  * base currency
+  *
+  * @return bool True if this account is in a foreign currency
+  */
+bool PivotTable::AccountDescriptor::isForiegnCurrency( void ) const
+{
+  MyMoneyAccount account = m_file->account(m_account);
+  return ( account.currencyId() != m_file->baseCurrency().id() );
+}
+  
+/**
+  * The name of only this account.  No matter how deep the hierarchy, this
+  * method only returns the last name in the list, which is the engine name]
+  * of this account.
+  *
+  * @return QString The account's name
+  */
+QString PivotTable::AccountDescriptor::name( void ) const
+{
+  return m_names.back();
+}
 
+// MyMoneyAccount:fullHierarchyDebug()
 QString PivotTable::AccountDescriptor::debugName( void ) const
 {
   return m_names.join("|");
 }
 
+// MyMoneyAccount:fullHierarchy()
+QString PivotTable::AccountDescriptor::fullName( void ) const
+{
+  return m_names.join(": ");
+}
+
+// MyMoneyAccount:isTopCategory()
 bool PivotTable::AccountDescriptor::isTopLevel( void ) const
 {
   return ( m_names.size() == 1 );
+}
+
+// MyMoneyAccount:hierarchyDepth()
+unsigned PivotTable::AccountDescriptor::hierarchyDepth( void ) const
+{
+  return ( m_names.size() );
 }
 
 PivotTable::AccountDescriptor PivotTable::AccountDescriptor::getParent( void ) const
@@ -977,8 +1009,13 @@ QString PivotTable::renderCSV( void ) const
 
         AccountDescriptor rowname = it_row.key();
 
-        innergroupdata += "\"" + rowname.htmlTabbedName(!m_config_f.isConvertCurrency(),false) + "\"";
+        innergroupdata += "\"" + QString().fill(' ',rowname.hierarchyDepth() - 1) + rowname.name();
+        
+        if (m_config_f.isConvertCurrency() || !rowname.isForiegnCurrency() )
+          innergroupdata += QString(" (%1)").arg(rowname.currency());
 
+        innergroupdata += "\"";
+          
         if ( (*it_row).m_total != 0 )
           innergroupdata += rowdata;
 
@@ -1009,7 +1046,12 @@ QString PivotTable::renderCSV( void ) const
       {
         // Start the single INDIVIDUAL ACCOUNT row
         AccountDescriptor rowname = (*it_innergroup).begin().key();
-        result += "\"" + rowname.htmlTabbedName(!m_config_f.isConvertCurrency(),false) + "\"";
+        
+        result += "\"" + QString().fill(' ',rowname.hierarchyDepth() - 1) + rowname.name();
+        if (m_config_f.isConvertCurrency() || !rowname.isForiegnCurrency() )
+          result += QString(" (%1)").arg(rowname.currency());
+        result += "\"";
+        
       }
 
       // Finish the row started above, unless told not to
@@ -1153,11 +1195,13 @@ QString PivotTable::renderHTML( void ) const
 
         AccountDescriptor rowname = it_row.key();
 
-        innergroupdata += QString("<tr class=\"row-%1\"%2><td class=\"left\"%3>%4</td>")
+        innergroupdata += QString("<tr class=\"row-%1\"%2><td%3 class=\"left%4\">%5%6</td>")
           .arg(rownum & 0x01 ? "even" : "odd")
           .arg(rowname.isTopLevel() ? " id=\"topparent\"" : "")
           .arg((*it_row).m_total == 0 ? colspan : "")
-          .arg(rowname.htmlTabbedName(!m_config_f.isConvertCurrency()));
+          .arg(rowname.hierarchyDepth() - 1)
+          .arg(rowname.name().replace(" ","&nbsp;"))
+          .arg((m_config_f.isConvertCurrency() || !rowname.isForiegnCurrency() )?QString():QString(" (%1)").arg(rowname.currency()));
 
         if ( (*it_row).m_total != 0 )
           innergroupdata += rowdata;
@@ -1190,11 +1234,17 @@ QString PivotTable::renderHTML( void ) const
       else
       {
         // Start the single INDIVIDUAL ACCOUNT row
+        // FIXME: There is a bit of a bug here with class=leftX.  There's only a finite number
+        // of classes I can define in the .CSS file, and the user can theoretically nest deeper.
+        // The right solution is to use style=Xem, and calculate X.  Let's see if anyone complains
+        // first :)  Also applies to the row header case above.
         AccountDescriptor rowname = (*it_innergroup).begin().key();
-        result += QString("<tr class=\"row-%1\"%2><td class=\"left\">%3</td>")
+        result += QString("<tr class=\"row-%1\"%2><td class=\"left%3\">%4%5</td>")
           .arg(rownum & 0x01 ? "even" : "odd")
           .arg( m_config_f.isShowingSubAccounts() ? "id=\"solo\"" : "" )
-          .arg(rowname.htmlTabbedName(!m_config_f.isConvertCurrency()));
+          .arg(rowname.hierarchyDepth() - 1)
+          .arg(rowname.name().replace(" ","&nbsp;"))
+          .arg((m_config_f.isConvertCurrency() || !rowname.isForiegnCurrency() )?QString():QString(" (%1)").arg(rowname.currency()));
       }
 
       // Finish the row started above, unless told not to

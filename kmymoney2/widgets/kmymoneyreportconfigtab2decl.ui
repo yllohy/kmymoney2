@@ -1,0 +1,160 @@
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<class>kMyMoneyReportConfigTab2Decl</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>kMyMoneyReportConfigTab2Decl</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>600</width>
+            <height>158</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Form3</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout33</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel4</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Columns</string>
+                    </property>
+                </widget>
+                <widget class="QComboBox">
+                    <item>
+                        <property name="text">
+                            <string>Monthly</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Bi-Monthly</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Quarterly</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Yearly</string>
+                        </property>
+                    </item>
+                    <property name="name">
+                        <cstring>m_comboColumns</cstring>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer12</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>201</width>
+                            <height>21</height>
+                        </size>
+                    </property>
+                </spacer>
+            </hbox>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout34</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel5</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Rows</string>
+                    </property>
+                </widget>
+                <widget class="QComboBox">
+                    <item>
+                        <property name="text">
+                            <string>Income &amp; Expenses</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Assets &amp; Liabilities</string>
+                        </property>
+                    </item>
+                    <property name="name">
+                        <cstring>m_comboRows</cstring>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer12_2</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>370</width>
+                            <height>21</height>
+                        </size>
+                    </property>
+                </spacer>
+            </hbox>
+        </widget>
+        <widget class="QCheckBox">
+            <property name="name">
+                <cstring>m_checkShowTop</cstring>
+            </property>
+            <property name="text">
+                <string>Show Top Categories Only</string>
+            </property>
+        </widget>
+        <spacer>
+            <property name="name">
+                <cstring>spacer13</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>20</width>
+                    <height>119</height>
+                </size>
+            </property>
+        </spacer>
+    </vbox>
+</widget>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

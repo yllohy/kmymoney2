@@ -34,6 +34,7 @@
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
+#include <qtabwidget.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -53,6 +54,9 @@
 #include "../widgets/kmymoneyedit.h"
 #include "../widgets/kmymoneylineedit.h"
 #include "../widgets/kmymoneyaccountselector.h"
+#include "../widgets/kmymoneyreportconfigtab1decl.h"
+#include "../widgets/kmymoneyreportconfigtab2decl.h"
+#include "../widgets/kmymoneyreportconfigtab3decl.h"
 #include "../mymoney/mymoneyfile.h"
 #include "../mymoney/storage/imymoneystorage.h"
 #include "../mymoney/mymoneyreport.h"
@@ -60,181 +64,60 @@
 KReportConfigurationFilterDlg::KReportConfigurationFilterDlg(
   MyMoneyReport report, QWidget *parent, const char *name)
  : KFindTransactionDlg(parent, name),
+ m_tab2(0),
+ m_tab3(0),
  m_initialState(report),
  m_currentState(report)
 {
-
+    //
+    // Rework labelling
+    //
+    
     setCaption( tr2i18n( "Report Configuration" ) );
-    TextLabel1->setText( tr2i18n( "Choose which transactions to display" ) );
+    delete TextLabel1;
 
-    m_reportFrame = new QFrame( this, "m_reportFrame" );
-    m_reportFrame->setFrameShape( QFrame::StyledPanel );
-    m_reportFrame->setFrameShadow( QFrame::Raised );
-
-    m_reportLayout = new QGridLayout( m_reportFrame, 1, 1, 10, 6, "m_reportLayout");
-
-    m_searchButton->setText( tr2i18n( "OK" ) );
-
+    //
+    // Rework the buttons
+    //
+    
     delete m_closeButton;
-
-    //
-    // bgrpShow
-    //
-
-    bgrpShow = new QButtonGroup( m_reportFrame, "bgrpShow" );
-    bgrpShow->setTitle( tr2i18n( "Show" ) );
-
-    reportLayout74 = new QVBoxLayout( bgrpShow, 20, 6, "reportLayout74");
-
-    radioCategoriesTop = new QRadioButton( bgrpShow, "radioCategoriesTop" );
-    radioCategoriesTop->setText( tr2i18n( "&Top-Level Categories Only" ) );
-    radioCategoriesTop->setChecked( TRUE );
-    QWhatsThis::add( radioCategoriesTop, tr2i18n( "<b>Show: Top-Level Categories Only</b><br>Select this option to roll up sub-categories into their top-most category.  This will show one line for each top-level expense or income category, containing a subtotal of all its subcategories." ) );
-    reportLayout74->addWidget( radioCategoriesTop );
-
-    radioCategoriesAll = new QRadioButton( bgrpShow, "radioCategoriesAll" );
-    radioCategoriesAll->setText( tr2i18n( "&All Categories" ) );
-    QWhatsThis::add( radioCategoriesAll, tr2i18n( "<b>Show: All Categories</b>\n""<br>\n""Select this option to display one line in the report for each category.  For top-level categories with sub-categories, a subtotal line will also be displayed." ) );
-    reportLayout74->addWidget( radioCategoriesAll );
-
-    m_reportLayout->addWidget( bgrpShow, 2, 2 );
-
-    //
-    // labelREportName
-    //
-
-    reportLayout67 = new QHBoxLayout( 0, 0, 6, "reportLayout67");
-
-    labelReportName = new QLabel( m_reportFrame, "labelReportName" );
-    labelReportName->setText( tr2i18n( "Report Name" ) );
-    QWhatsThis::add( labelReportName, tr2i18n( "<b>Report Name</b>\n""<br>\n""Change the name of this report to anything you like." ) );
-    reportLayout67->addWidget( labelReportName );
-
-    editReportname = new QLineEdit( m_reportFrame, "editReportname" );
-    editReportname->setFocus();
-    QWhatsThis::add( editReportname, tr2i18n( "<b>Report Name</b>\n""<br>\n""Change the name of this report to anything you like." ) );
-    reportLayout67->addWidget( editReportname );
-
-    m_reportLayout->addMultiCellLayout( reportLayout67, 0, 0, 0, 2 );
-
-    //
-    // labelREportName
-    //
-
-    reportLayout68 = new QHBoxLayout( 0, 0, 6, "reportLayout68");
-
-    labelReportComment = new QLabel( m_reportFrame, "labelReportComment" );
-    labelReportComment->setText( tr2i18n( "Comment" ) );
-    QWhatsThis::add( labelReportComment, tr2i18n( "<b>Comment</b>\n""<br>\n""Information about the report to help you remember it." ) );
-    reportLayout68->addWidget( labelReportComment );
-
-    editReportComment = new QLineEdit( m_reportFrame, "editReportComment" );
-    editReportComment->setFocus();
-    QWhatsThis::add( editReportname, tr2i18n( "<b>Comment</b>\n""<br>\n""Information about the report to help you remember it." ) );
-    reportLayout68->addWidget( editReportComment );
-
-    m_reportLayout->addMultiCellLayout( reportLayout68, 1, 1, 0, 2 );
-
-    //
-    // bgrpRows
-    //
-
-    bgrpRows = new QButtonGroup( m_reportFrame, "bgrpRows" );
-    bgrpRows->setTitle( tr2i18n( "Rows" ) );
-    QWhatsThis::add( bgrpRows, tr2i18n( "<b>Rows</b>\n""<br>\n""Choose what is displayed in the rows of this report." ) );
-
-    reportLayout75 = new QVBoxLayout( bgrpRows, 20, 6, "reportLayout75");
-
-    radioRowsIE = new QRadioButton( bgrpRows, "radioRowsIE" );
-    radioRowsIE->setText( tr2i18n( "&Income/Expenses" ) );
-    radioRowsIE->setChecked( TRUE );
-    QWhatsThis::add( radioRowsIE, tr2i18n( "<b>Income/Expenses</b>\n""<br>\n""Show only income and expense categories in this report." ) );
-    reportLayout75->addWidget( radioRowsIE );
-
-    radioRowsAL = new QRadioButton( bgrpRows, "radioRowsAL" );
-    radioRowsAL->setText( tr2i18n( "Assets/&Liabilities" ) );
-    QWhatsThis::add( radioRowsAL, tr2i18n( "<b>Assets/Liabilities</b>\n""<br>\n""Show only asset and liability accounts in this report." ) );
-    reportLayout75->addWidget( radioRowsAL );
-
-    m_reportLayout->addWidget( bgrpRows, 2, 1 );
-
-    //
-    // bgrpCurrency
-    //
-
-    bgrpCurrency = new QButtonGroup( m_reportFrame, "bgrpCurrency" );
-    bgrpCurrency->setTitle( tr2i18n( "Currency" ) );
-
-    reportLayout76 = new QVBoxLayout( bgrpCurrency, 20, 6, "reportLayout76");
-
-    checkConvertCurrency = new QCheckBox( bgrpCurrency, "checkConvertCurrency" );
-    // checkConvertCurrency->setEnabled( FALSE );
-    // checkConvertCurrency->setGeometry( QRect( 10, 20, 190, 21 ) );
-    checkConvertCurrency->setText( tr2i18n( "Convert to &Base Currency" ) );
-    checkConvertCurrency->setChecked( TRUE );
-    QWhatsThis::add( checkConvertCurrency, tr2i18n( "<b>Convert to Base Currency</b>\n""<br>\n""Choose whether all values should be converted to the file's base currency.  Column totals will only be shown if this option is checked.\n""<br><br>\n""This option is not yet implemented." ) );
-    reportLayout76->addWidget( checkConvertCurrency );
-
-    m_reportLayout->addMultiCellWidget( bgrpCurrency, 3, 3, 1, 2 );
-
-    //
-    // bgrpColumns
-    //
-
-    bgrpColumns = new QButtonGroup( m_reportFrame, "bgrpColumns" );
-    bgrpColumns->setTitle( tr2i18n( "Columns" ) );
-    QWhatsThis::add( bgrpColumns, tr2i18n( "<b>Columns</b>\n""<br>\n""Choose what range of data should be included in each column of this report." ) );
-    bgrpColumns->setColumnLayout(0, Qt::Vertical );
-    bgrpColumns->layout()->setSpacing( 6 );
-    bgrpColumns->layout()->setMargin( 11 );
-    bgrpColumnsLayout = new QHBoxLayout( bgrpColumns->layout() );
-    bgrpColumnsLayout->setAlignment( Qt::AlignTop );
-
-    reportLayout12 = new QVBoxLayout( 0, 0, 6, "reportLayout12");
-
-    radioMonthCols = new QRadioButton( bgrpColumns, "radioMonthCols" );
-    // radioMonthCols->setEnabled( FALSE );
-    radioMonthCols->setText( tr2i18n( "&Monthly" ) );
-    radioMonthCols->setChecked( TRUE );
-    QToolTip::add( radioMonthCols, QString::null );
-    QWhatsThis::add( radioMonthCols, tr2i18n( "<b>Monthly</b>\n""<br>\n""Sets the report to display one column for each month in the date range.\n""<br>\n""This option is not yet implemented." ) );
-    reportLayout12->addWidget( radioMonthCols );
-
-    radioBimonthCols = new QRadioButton( bgrpColumns, "radioBimonthCols" );
-    // radioBimonthCols->setEnabled( FALSE );
-    radioBimonthCols->setText( tr2i18n( "&Bi-Monthly" ) );
-    QWhatsThis::add( radioBimonthCols, tr2i18n( "<b>Bi-Monthly</b>\n""<br>\n""Sets the report to display one column for every 2 months in the date range.\n""<br><br>\n""This option is not yet implemented." ) );
-    reportLayout12->addWidget( radioBimonthCols );
-
-    radioQuarterCols = new QRadioButton( bgrpColumns, "radioQuarterCols" );
-    // radioQuarterCols->setEnabled( FALSE );
-    radioQuarterCols->setText( tr2i18n( "&Quarterly" ) );
-    QWhatsThis::add( radioQuarterCols, tr2i18n( "<b>Quarterly</b>\n""<br>\n""Sets the report to display one column for each quarter in the date range.\n""<br><br>\n""This option is not yet implemented." ) );
-    reportLayout12->addWidget( radioQuarterCols );
-
-    radioYearCols = new QRadioButton( bgrpColumns, "radioYearCols" );
-    // radioYearCols->setEnabled( FALSE );
-    radioYearCols->setText( tr2i18n( "&Yearly" ) );
-    QWhatsThis::add( radioYearCols, tr2i18n( "<b>Yearly</b>\n""<br>\n""Sets the report to display one column for each year in the date range.\n""<br><br>\n""This option is not yet implemented." ) );
-    reportLayout12->addWidget( radioYearCols );
-    bgrpColumnsLayout->addLayout( reportLayout12 );
-
-    m_reportLayout->addMultiCellWidget( bgrpColumns, 2, 3, 0, 0 );
-
-    KFindTransactionDlgDeclLayout->insertWidget( 0, m_reportFrame );
-
+    m_searchButton->setText( tr2i18n( "OK" ) );
     m_searchButton->disconnect();
     m_resetButton->disconnect();
     connect(m_searchButton, SIGNAL(clicked()), this, SLOT(slotSearch()));
     connect(m_resetButton, SIGNAL(clicked()), this, SLOT(slotReset()));
+
+    //
+    // Add new tabs
+    //
+
+    m_tab1 = new kMyMoneyReportConfigTab1Decl( m_criteriaTab, "kMyMoneyReportConfigTab1" );
+    m_criteriaTab->insertTab( m_tab1, QString("Report"), 0 );
+    
+    if ( m_initialState.reportType() == MyMoneyReport::ePivotTable )
+    {
+      m_tab2 = new kMyMoneyReportConfigTab2Decl( m_criteriaTab, "kMyMoneyReportConfigTab2" );
+      m_criteriaTab->insertTab( m_tab2, QString("Rows/Columns"), 1 );
+    }    
+    else if ( m_initialState.reportType() == MyMoneyReport::eQueryTable )
+    {
+      m_tab3 = new kMyMoneyReportConfigTab3Decl( m_criteriaTab, "kMyMoneyReportConfigTab3" );
+      m_criteriaTab->insertTab( m_tab3, QString("Rows/Columns"), 1 );
+    }
+    
+    m_criteriaTab->showPage( m_tab1 );
+    m_criteriaTab->setMinimumSize( 500,200 );
+    
+    //
+    // Now set up the widgets with proper values
+    //
+        
     slotReset();
 }
-
 
 KReportConfigurationFilterDlg::~KReportConfigurationFilterDlg()
 {
 }
-
 
 void KReportConfigurationFilterDlg::slotSearch()
 {
@@ -245,21 +128,43 @@ void KReportConfigurationFilterDlg::slotSearch()
   m_currentState.assignFilter(m_filter);
 
   // Then extract the report properties
-  m_currentState.setShowSubAccounts( radioCategoriesAll->isChecked() );
-  m_currentState.setName( editReportname->text() );
-  m_currentState.setComment( editReportComment->text() );
-  m_currentState.setRowType( radioRowsAL->isChecked() ? MyMoneyReport::eAssetLiability : MyMoneyReport::eExpenseIncome );
-  m_currentState.setConvertCurrency( checkConvertCurrency->isChecked() );
-
-  if ( radioMonthCols->isChecked() )
-    m_currentState.setColumnType( MyMoneyReport::eMonths );
-  else if ( radioBimonthCols->isChecked() )
-    m_currentState.setColumnType( MyMoneyReport::eBiMonths );
-  else if ( radioQuarterCols->isChecked() )
-    m_currentState.setColumnType( MyMoneyReport::eQuarters );
-  else if ( radioYearCols->isChecked() )
-    m_currentState.setColumnType( MyMoneyReport::eYears );
-
+  m_currentState.setName( m_tab1->m_editName->text() );
+  m_currentState.setComment( m_tab1->m_editComment->text() );
+  m_currentState.setConvertCurrency( m_tab1->m_checkCurrency->isChecked() );
+  
+  if ( m_tab2 )
+  {
+    m_currentState.setShowSubAccounts( ! m_tab2->m_checkShowTop->isChecked() );
+  
+    MyMoneyReport::ERowType rt[2] = { MyMoneyReport::eExpenseIncome, MyMoneyReport::eAssetLiability };
+    m_currentState.setRowType( rt[m_tab2->m_comboRows->currentItem()] );
+    
+    MyMoneyReport::EColumnType ct[4] = { MyMoneyReport::eMonths, MyMoneyReport::eBiMonths, MyMoneyReport::eQuarters, MyMoneyReport::eYears };
+    m_currentState.setColumnType( ct[m_tab2->m_comboColumns->currentItem()] );
+  }
+  else if ( m_tab3 )
+  {
+    MyMoneyReport::ERowType rtq[6] = { MyMoneyReport::eCategory, MyMoneyReport::eTopCategory, MyMoneyReport::ePayee, MyMoneyReport::eAccount, MyMoneyReport::eMonth, MyMoneyReport::eWeek };
+    m_currentState.setRowType( rtq[m_tab3->m_comboOrganizeBy->currentItem()] );
+    
+    unsigned qc = MyMoneyReport::eQCnone;
+    
+    if ( m_tab3->m_checkNumber->isChecked() )
+      qc |= MyMoneyReport::eQCnumber;
+    if ( m_tab3->m_checkPayee->isChecked() )
+      qc |= MyMoneyReport::eQCpayee;
+    if ( m_tab3->m_checkCategory->isChecked() )
+      qc |= MyMoneyReport::eQCcategory;
+    if ( m_tab3->m_checkMemo->isChecked() )
+      qc |= MyMoneyReport::eQCmemo;
+    if ( m_tab3->m_checkAccount->isChecked() )
+      qc |= MyMoneyReport::eQCaccount;
+    if ( m_tab3->m_checkReconciled->isChecked() )
+      qc |= MyMoneyReport::eQCreconciled;
+      
+    m_currentState.setQueryColumns(static_cast<MyMoneyReport::EQueryColumns>(qc));
+  }
+  
   done(true);
 }
 
@@ -272,18 +177,74 @@ void KReportConfigurationFilterDlg::slotReset(void)
   //
   // Report Properties
   //
-
-  editReportname->setText( m_initialState.name() );
-  editReportComment->setText( m_initialState.comment() );
-  radioCategoriesAll->setChecked( m_initialState.isShowingSubAccounts() );
-  checkConvertCurrency->setChecked( m_initialState.isConvertCurrency() );
-  radioRowsAL->setChecked( m_initialState.rowType() == MyMoneyReport::eAssetLiability );
-  radioRowsIE->setChecked( m_initialState.rowType() == MyMoneyReport::eExpenseIncome );
-  radioMonthCols->setChecked( m_initialState.columnType() == MyMoneyReport::eMonths );
-  radioBimonthCols->setChecked( m_initialState.columnType() == MyMoneyReport::eBiMonths );
-  radioQuarterCols->setChecked( m_initialState.columnType() == MyMoneyReport::eQuarters );
-  radioYearCols->setChecked( m_initialState.columnType() == MyMoneyReport::eYears );
-
+  
+  m_tab1->m_editName->setText( m_initialState.name() );
+  m_tab1->m_editComment->setText( m_initialState.comment() );
+  m_tab1->m_checkCurrency->setChecked( m_initialState.isConvertCurrency() );
+  
+  if ( m_tab2 )
+  {
+    m_tab2->m_checkShowTop->setChecked( ! m_initialState.isShowingSubAccounts() );
+    
+    if ( m_initialState.rowType() == MyMoneyReport::eExpenseIncome )
+      m_tab2->m_comboRows->setCurrentItem(0);
+    else
+      m_tab2->m_comboRows->setCurrentItem(1);
+    
+    switch ( m_initialState.columnType() )
+    {
+    case MyMoneyReport::eNoColumns:
+    case MyMoneyReport::eMonths:
+      m_tab2->m_comboColumns->setCurrentItem(0);
+      break;
+    case MyMoneyReport::eBiMonths:
+      m_tab2->m_comboColumns->setCurrentItem(1);
+      break;
+    case MyMoneyReport::eQuarters:
+      m_tab2->m_comboColumns->setCurrentItem(2);
+      break;
+    case MyMoneyReport::eYears:
+      m_tab2->m_comboColumns->setCurrentItem(3);
+      break;
+    }
+  }
+  else if ( tab_3 )
+  {  
+    switch ( m_initialState.rowType() )
+    {
+    case MyMoneyReport::eNoColumns:
+    case MyMoneyReport::eCategory:
+      m_tab3->m_comboOrganizeBy->setCurrentItem(0);
+      break;
+    case MyMoneyReport::eTopCategory:
+      m_tab3->m_comboOrganizeBy->setCurrentItem(1);
+      break;
+    case MyMoneyReport::ePayee:
+      m_tab3->m_comboOrganizeBy->setCurrentItem(2);
+      break;
+    case MyMoneyReport::eAccount:
+      m_tab3->m_comboOrganizeBy->setCurrentItem(3);
+      break;
+    case MyMoneyReport::eMonth:
+      m_tab3->m_comboOrganizeBy->setCurrentItem(4);
+      break;
+    case MyMoneyReport::eWeek:
+      m_tab3->m_comboOrganizeBy->setCurrentItem(5);
+      break;
+    case MyMoneyReport::eAssetLiability:
+    case MyMoneyReport::eExpenseIncome:
+      throw new MYMONEYEXCEPTION("KReportConfigurationFilterDlg::slotReset(): QueryTable report has invalid rowtype");
+    }  
+    
+    unsigned qc = m_initialState.queryColumns();
+    m_tab3->m_checkNumber->setChecked(qc & MyMoneyReport::eQCnumber);
+    m_tab3->m_checkPayee->setChecked(qc & MyMoneyReport::eQCpayee);
+    m_tab3->m_checkCategory->setChecked(qc & MyMoneyReport::eQCcategory);
+    m_tab3->m_checkMemo->setChecked(qc & MyMoneyReport::eQCmemo);
+    m_tab3->m_checkAccount->setChecked(qc & MyMoneyReport::eQCaccount);
+    m_tab3->m_checkReconciled->setChecked(qc & MyMoneyReport::eQCreconciled);
+  }
+      
   //
   // Text Filter
   //
@@ -460,7 +421,9 @@ void KReportConfigurationFilterDlg::slotReset(void)
     slotDateRangeChanged(allDates);
   }
 
-  QTimer::singleShot(0, this, SLOT(slotRightSize()));
+  //QTimer::singleShot(0, this, SLOT(slotRightSize()));
+  
+  slotRightSize();
 }
 
 #include "kreportconfigurationfilterdlg.moc"

@@ -40,6 +40,8 @@
 #include "../mymoney/mymoneyfile.h"
 #include "../mymoney/mymoneytransaction.h"
 #include "../mymoney/mymoneyreport.h"
+#include "../mymoney/mymoneyexception.h"
+#include "pivottable.h"
 #include "querytable.h"
 
 namespace reports {
@@ -73,11 +75,11 @@ bool QueryTable::TableRow::operator<( const TableRow& _compare ) const
 /**
   * TODO
   *
-  * - Handle sub-accounts
-  * - Subtotals
+  * - Collapse 2- & 3- groups when they are identical
   * - Convert currency
-  * - Link into UI
-  * - Customization
+  * - Way more test cases (especially splits & transfers)
+  * - Option to collapse splits
+  * - CSV output
   *
   */
 
@@ -85,7 +87,7 @@ bool QueryTable::TableRow::operator<( const TableRow& _compare ) const
 // we do need a better solution, but it'll do 'for now'.
 const QString accountTypeToString(const MyMoneyAccount::accountTypeE accountType);
 
-QueryTable::QueryTable(const MyMoneyReport& _report)
+QueryTable::QueryTable(const MyMoneyReport& _report): m_config(_report)
 {
   //
   // The main job of this constructor is to translate the transaction & split list
@@ -95,6 +97,8 @@ QueryTable::QueryTable(const MyMoneyReport& _report)
   MyMoneyFile* file = MyMoneyFile::instance();
   
   MyMoneyReport report(_report);
+  report.setReportAllSplits(false);
+  report.setConsiderCategory(true);
   QValueList<MyMoneyTransaction> transactions = file->transactionList( report );
   QValueList<MyMoneyTransaction>::const_iterator it_transaction = transactions.begin();
   while ( it_transaction != transactions.end() )
@@ -102,11 +106,19 @@ QueryTable::QueryTable(const MyMoneyReport& _report)
     TableRow qtransactionrow;
     
     qtransactionrow["id"] = (*it_transaction).id();
-    qtransactionrow["postdate"] = (*it_transaction).postDate().toString(Qt::ISODate);
     qtransactionrow["memo"] = (*it_transaction).memo();
     qtransactionrow["entrydate"] = (*it_transaction).entryDate().toString(Qt::ISODate);
     qtransactionrow["commodity"] = (*it_transaction).commodity();
     
+    QDate postdate = (*it_transaction).postDate();
+    qtransactionrow["postdate"] = postdate.toString(Qt::ISODate);
+    
+    QDate month = QDate( postdate.year(), postdate.month(), 1);
+    qtransactionrow["month"] = i18n("Month of %1").arg(month.toString(Qt::ISODate));
+    
+    QDate week = postdate.addDays( 1 - postdate.dayOfWeek() );
+    qtransactionrow["week"] = i18n("Week of %1").arg(week.toString(Qt::ISODate));
+        
     // A table row ALWAYS has one asset/liability account.  A transaction 
     // will generate one table row for each A/L account.
     //
@@ -127,15 +139,21 @@ QueryTable::QueryTable(const MyMoneyReport& _report)
     {
       // Loop through the splits once for every asset/liability account.  
       // Create one table row for each such account
-      if ( file->account((*it_split).accountId()).accountGroup() == MyMoneyAccount::Asset || file->account((*it_split).accountId()).accountGroup() == MyMoneyAccount::Liability )
+      // But skip the account if it is not present in the filter.
+      if ( ( file->account((*it_split).accountId()).accountGroup() == MyMoneyAccount::Asset || file->account((*it_split).accountId()).accountGroup() == MyMoneyAccount::Liability ) && m_config.includesAccount( (*it_split).accountId() ) )
       {
         TableRow qaccountrow = qtransactionrow;
       
         // These items are relevant for each A/L split
-        qaccountrow["payee"] = file->payee(splits.front().payeeId()).name();
-        qaccountrow["reconciledate"] = splits.front().reconcileDate().toString(Qt::ISODate);
-        qaccountrow["reconcileflag"] = kReconcileTextChar[splits.front().reconcileFlag()];
-        qaccountrow["number"] = splits.front().number();
+        QCString payeeid = (*it_split).payeeId();
+        if ( payeeid.isEmpty() )    
+          qaccountrow["payee"] = "[Empty Payee]";
+        else
+          qaccountrow["payee"] = file->payee(payeeid).name().simplifyWhiteSpace();
+          
+        qaccountrow["reconciledate"] = (*it_split).reconcileDate().toString(Qt::ISODate);
+        qaccountrow["reconcileflag"] = kReconcileTextChar[(*it_split).reconcileFlag()];
+        qaccountrow["number"] = (*it_split).number();
       
         QValueList<MyMoneySplit>::const_iterator it_split2 = splits.begin();
         while ( it_split2 != splits.end() )
@@ -147,19 +165,43 @@ QueryTable::QueryTable(const MyMoneyReport& _report)
             // (This is the 'expand categories' behaviour.  
             // 'collapse categories' would entail cramming them all into one 
             // line and calling it "Split Categories").
-            
+        
             TableRow qsplitrow = qaccountrow;
-            
             qsplitrow["account"] = file->account((*it_split).accountId()).name();
-            qsplitrow["category"] = file->account((*it_split2).accountId()).name();
-            qsplitrow["categorytype"] = accountTypeToString(file->account((*it_split2).accountId()).accountGroup());
             qsplitrow["action"] = (*it_split2).action();
             qsplitrow["value"] = (*it_split2).value().formatMoney();
             qsplitrow["memo"] = (*it_split2).memo();
             qsplitrow["id"] = (*it_split2).id();
-      
-            m_transactions += qsplitrow;
-                        
+ 
+	    // handle sub-categories.  the 'category' field contains the
+	    // fully-qualified category hierarchy, e.g. "Computers: Hardware: CPUs"
+	    // the 'topparent' field contains just the top-most parent, in this
+	    // example "Computers"
+
+	    PivotTable::AccountDescriptor acd = (*it_split2).accountId();
+
+            // if this is a transfer
+            if ( file->account((*it_split2).accountId()).accountGroup() == MyMoneyAccount::Asset || file->account((*it_split2).accountId()).accountGroup() == MyMoneyAccount::Liability )            
+            {
+              // skip this split if we have removed the target of the transfer
+	      if ( m_config.includesAccount( (*it_split2).accountId() ) )
+	      {	     
+                qsplitrow["category"] = QString(i18n("Transfer to %1")).arg(acd.fullName());
+                qsplitrow["topcategory"] = QString(i18n("Transfer to %1")).arg(acd.getTopLevel());
+                qsplitrow["categorytype"] = i18n("Transfer");
+                m_transactions += qsplitrow;
+	      }
+            }
+            else
+            {
+	      if ( m_config.includesCategory( (*it_split2).accountId() ) )
+	      {
+	        qsplitrow["category"] = acd.fullName(); 
+                qsplitrow["topcategory"] = acd.getTopLevel(); 
+                qsplitrow["categorytype"] = accountTypeToString(file->account((*it_split2).accountId()).accountGroup());
+                m_transactions += qsplitrow;
+	      }
+            }	      
           }
           ++it_split2;
         }
@@ -170,59 +212,251 @@ QueryTable::QueryTable(const MyMoneyReport& _report)
   }
 
   // Sort the transactions to match the report definition
-  // ...or just category,date for now!
+ 
+  m_columns="postdate";
+  m_subtotal="value";
   
-  // SELECT number,date,payee,account,amount FROM m_transactions ORDER BY category type, category, subcategory, date
-  // subtotal by category type, category, subcategory
+  unsigned qc = m_config.queryColumns();
   
-  TableRow::setSortCriteria("categorytype,category,postdate");
+  // eQCnumber = 0x1, eQCpayee = 0x2, eQCcategory = 0x4, eQCmemo
+  if ( qc & MyMoneyReport::eQCnumber )
+    m_columns += ",number";
+  if ( qc & MyMoneyReport::eQCpayee )
+    m_columns += ",payee";
+  if ( qc & MyMoneyReport::eQCcategory )
+    m_columns += ",category";
+  if ( qc & MyMoneyReport::eQCaccount )
+    m_columns += ",account";
+  if ( qc & MyMoneyReport::eQCreconciled )
+    m_columns += ",reconcileflag";
+  if ( qc & MyMoneyReport::eQCmemo )
+    m_columns += ",memo";
+
+  // eCategory, eTopCategory, eAccount, ePayee, eMonth, eWeek
+  switch ( m_config.rowType() )
+  {
+  case MyMoneyReport::eCategory:
+    m_group = "categorytype,topcategory,category";
+    break;
+  case MyMoneyReport::eTopCategory:
+    m_group = "categorytype,topcategory";
+    break;
+  case MyMoneyReport::eAccount:
+    m_group = "account";
+    break;
+  case MyMoneyReport::ePayee:
+    m_group = "payee";
+    break;
+  case MyMoneyReport::eMonth:
+    m_group = "month";
+    break;
+  case MyMoneyReport::eWeek:
+    m_group = "week";
+    break;
+  default:
+    throw new MYMONEYEXCEPTION("QueryTable::QueryTable(): unhandled row type");
+  }
+      
+  QString sort;
+  if ( ! m_group.isEmpty() )
+    sort += m_group + ",";
+  sort += m_columns;
+  if ( ! m_subtotal.isEmpty() )
+    sort += "," + m_subtotal;
+
+  TableRow::setSortCriteria(sort);
   qHeapSort(m_transactions);
 }
+
+class GroupIterator
+  {
+  public:
+    GroupIterator(const QString& _group, const QString& _subtotal, unsigned _depth): m_depth(_depth), m_groupField(_group), m_subtotalField(_subtotal) {}
+    GroupIterator(void) {}
+    void update(const QueryTable::TableRow& _row) 
+    { 
+      m_previousGroup = m_currentGroup; 
+      m_currentGroup = _row[m_groupField]; 
+      if ( isSubtotal() )
+      {
+        m_previousSubtotal = m_currentSubtotal;
+        m_currentSubtotal = MyMoneyMoney();
+      }
+      m_currentSubtotal += _row[m_subtotalField]; 
+    }
+    bool isNewHeader(void) const { return (m_currentGroup != m_previousGroup); }
+    bool isSubtotal(void) const { return (m_currentGroup != m_previousGroup) && (!m_previousGroup.isEmpty()); }
+    const MyMoneyMoney& subtotal(void) const { return m_previousSubtotal; }
+    const unsigned depth(void) const { return m_depth; }
+    const QString& name(void) const { return m_currentGroup; }
+    const QString& oldName(void) const { return m_previousGroup; }
+  private:
+    MyMoneyMoney m_currentSubtotal;
+    MyMoneyMoney m_previousSubtotal;
+    unsigned m_depth;
+    QString m_currentGroup;
+    QString m_previousGroup;
+    QString m_groupField;
+    QString m_subtotalField;
+  }; 
 
 QString QueryTable::renderHTML( void ) const
 {
   QString result;
-  QStringList columns = QStringList::split(",","categorytype,category,number,postdate,payee,account,value");
+  
+  result += QString("<h2 class=\"report\">%1</h2>\n").arg(m_config.name());
+  result += QString("<div class=\"subtitle\">");
+  if ( m_config.isConvertCurrency() )
+    //result += i18n("All currencies converted to %1").arg(MyMoneyFile::instance()->baseCurrency().name());
+    result += i18n("All currencies will be converted to %1 when this report is finished.  For now, they are still in their specific currency.").arg(MyMoneyFile::instance()->baseCurrency().name());
+  else
+    //result += i18n("All values shown in %1 unless otherwise noted").arg(MyMoneyFile::instance()->baseCurrency().name());
+    result += i18n("All values shown in their specific currency.  When this report is done, this fact will be noted by each item.").arg(MyMoneyFile::instance()->baseCurrency().name());
+  result += QString("</div>\n");
+  result += QString("<div class=\"gap\">&nbsp;</div>\n");
+  
+  // retrieve the configuration parameters from the report definition.
+  // the things that we care about for query reports are:
+  // how to group the rows, what columns to display, and what field
+  // to subtotal on
+  QStringList groups = QStringList::split(",",m_group);
+  QStringList columns = QStringList::split(",",m_columns);
+  columns += m_subtotal;
 
   //
   // Table header
   //
   
-  result += "<table><tr>";
+  QMap<QString,QString> i18nHeaders;
+  i18nHeaders["postdate"] = i18n("Date");
+  i18nHeaders["value"] = i18n("Amount");
+  i18nHeaders["number"] = i18n("Num");
+  i18nHeaders["payee"] = i18n("Payee");
+  i18nHeaders["category"] = i18n("Category");
+  i18nHeaders["account"] = i18n("Account");
+  i18nHeaders["memo"] = i18n("Memo");
+  i18nHeaders["topcategory"] = i18n("Top Category");
+  i18nHeaders["categorytype"] = i18n("Category Type");
+  i18nHeaders["month"] = i18n("Month");
+  i18nHeaders["week"] = i18n("Week");
+  i18nHeaders["reconcileflag"] = i18n("R");
+  
+  result += "<table class=\"report\">\n<tr class=\"itemheader\">";
   
   QStringList::const_iterator it_column = columns.begin();
   while ( it_column != columns.end() )
   {
-    result += "<th>" + (*it_column) + "</th>";
+    QString i18nName = i18nHeaders[*it_column];
+    if ( i18nName.isEmpty() )
+      i18nName = *it_column;
+    result += "<th>" + i18nName + "</th>";
     ++it_column;
   }
   
   result += "</tr>\n";
 
   //
+  // Set up group iterators
+  //
+  // There is one active iterator for each level of grouping. 
+  // As we step through the rows
+  // we update the group iterators each time based on the row data.  If
+  // the group iterator changes and it had a previous value, we print a
+  // subtotal.  Whether or not it had a previous value, we print a group
+  // header.  The group iterator keeps track of a subtotal also. 
+ 
+  int depth = 1;
+  QValueList<GroupIterator> groupIteratorList;
+  QStringList::const_iterator it_grouplevel = groups.begin();
+  while ( it_grouplevel != groups.end() )
+  {
+    groupIteratorList += GroupIterator((*it_grouplevel),m_subtotal,depth++); 
+    ++it_grouplevel;
+  }
+  
+  //
   // Rows
   //
     
+  bool row_odd = true;
   QValueList<TableRow>::const_iterator it_row = m_transactions.begin();
   while ( it_row != m_transactions.end() )
   {
-    result += "<tr>";
+    //
+    // Process Groups
+    //  
     
+    // There's a subtle bug here.  If an earlier group gets a new group,
+    // then we need to force all the downstream groups to get one too.
+    
+    // Update the group iterators with the current row value
+    QValueList<GroupIterator>::iterator it_group = groupIteratorList.begin();
+    while ( it_group != groupIteratorList.end() )
+    {
+      (*it_group).update(*it_row);
+      ++it_group;      
+    }
+    // Do subtotals backwards
+    it_group = groupIteratorList.fromLast();
+    while ( it_group != groupIteratorList.end() )
+    {	    
+      if ((*it_group).isSubtotal())
+        result += "<tr class=\"sectionfooter\">"
+	  "<td class=\"left"+ QString::number(((*it_group).depth()-1)) + "\" " 
+	  "colspan=\"" + QString::number(columns.count()-1) + "\">"+
+	  i18n("Total")+" " + (*it_group).oldName() + "</td>"
+	  "<td>" + (*it_group).subtotal().formatMoney() + "</td></tr>\n"; 
+      --it_group;      
+    }
+    // And headers forwards
+    it_group = groupIteratorList.begin();
+    while ( it_group != groupIteratorList.end() )
+    {
+      if ((*it_group).isNewHeader())
+      {
+        row_odd = true;
+	result += "<tr class=\"sectionheader\">" 
+	  "<td class=\"left"+ QString::number(((*it_group).depth()-1)) + "\" " 
+	  "colspan=\"" + QString::number(columns.count()) + "\">" + 
+	  (*it_group).name() + "</td></tr>\n"; 
+      }
+      ++it_group;      
+    }
     //
     // Columns
     //
     
+    result += QString("<tr class=\"%1\">").arg(row_odd?"row-odd ":"row-even");
     QStringList::const_iterator it_column = columns.begin();
     while ( it_column != columns.end() )
     {
-      result += "<td>" + (*it_row)[(*it_column)] + "</td>";
+      result += QString("<td%1>%2</td>")
+        .arg((*it_column=="value")?"":" class=\"left\"")
+        .arg((*it_row)[(*it_column)]);
       ++it_column;
     }
     
     result += "</tr>\n";
+    row_odd = ! row_odd;
     ++it_row;
   }
-  result += "</table>";
+  //
+  // Final group totals
+  // 
+    // Do subtotals backwards
+    QValueList<GroupIterator>::iterator it_group = groupIteratorList.fromLast();
+    while ( it_group != groupIteratorList.end() )
+    {
+      (*it_group).update(TableRow());
+      result += "<tr class=\"sectionfooter\">"
+        "<td class=\"left"+ QString::number((*it_group).depth()-1) + "\" " 
+	"colspan=\"" + QString::number(columns.count()-1) + "\">"+
+	i18n("Total")+" " + (*it_group).oldName() + "</td>"
+	"<td>" + (*it_group).subtotal().formatMoney() + "</td></tr>\n"; 
+      --it_group;      
+    }
+  
+  result += "</table>\n";
   
   return result;
 }
@@ -232,12 +466,16 @@ QString QueryTable::renderCSV( void ) const
   return "CSV output not yet implemented for query reports";
 }
 
-void QueryTable::dump( const QString& file ) const
+void QueryTable::dump( const QString& file, const QString& context ) const
 {
   QFile g( file );
   g.open( IO_WriteOnly );
-  QTextStream(&g) << renderHTML();
+  
+  if ( ! context.isEmpty() )
+    QTextStream(&g) << context.arg(renderHTML());
+  else
+    QTextStream(&g) << renderHTML();
   g.close();
 }
-
+// vim: noci noai nosi
 }

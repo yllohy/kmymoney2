@@ -70,6 +70,7 @@
 #include "../mymoney/mymoneyreport.h"
 #include "../dialogs/kreportconfigurationfilterdlg.h"
 #include "pivottable.h"
+#include "querytable.h"
 using namespace reports;
 
 #define VIEW_LEDGER         "ledger"
@@ -173,13 +174,19 @@ QString KReportsView::KReportTab::createTable(const QString& links)
   try {
     html += header;
     html += links;
-    html += PivotTable( MyMoneyFile::instance()->report(m_reportId) ).renderHTML();
+    
+    MyMoneyReport report = MyMoneyFile::instance()->report(m_reportId);
+    if ( report.reportType() == MyMoneyReport::ePivotTable )
+      html += PivotTable( report ).renderHTML();
+    else if ( report.reportType() == MyMoneyReport::eQueryTable )
+      html += QueryTable( report ).renderHTML();
+    
     html += footer;
   }
   catch(MyMoneyException *e) 
   {
     kdDebug(2) << "KReportsView::KReportTab::createTable(): ERROR " << e->what() << endl;
-    
+   
     QString error = QString(i18n("There was an error creating your report: \"%1\".\nPlease report this error to the developer's list: kmymoney2-developer@lists.sourceforge.net")).arg(e->what());
     
     QMessageBox::critical(this,i18n("Critical Error"), error, QMessageBox::Ok, QMessageBox::NoButton );
@@ -209,6 +216,7 @@ void KReportsView::KReportTab::toggleChart(void)
   }
   else
   {
+    //FIXME: Check the type of report and call the correct report type.
     PivotTable t( MyMoneyFile::instance()->report(m_reportId) );
     t.drawChart( *m_chartView );
     m_part->hide();

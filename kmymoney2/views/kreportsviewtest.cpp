@@ -20,8 +20,16 @@
 #include <qdom.h>
 #include <qfile.h>
 
-#include <kdeversion.h>
 #include <kdebug.h>
+#include <kdeversion.h>
+#include <kglobal.h>
+#include <kglobalsettings.h>
+#include <klocale.h>
+#if QT_VERSION > 300
+#include <kstandarddirs.h>
+#else
+#include <kstddirs.h>
+#endif
 
 #include "kreportsviewtest.h"
 
@@ -1024,30 +1032,83 @@ void KReportsViewTest::testXMLWrite()
 
 void KReportsViewTest::testQueryBasics()
 {
-  TransactionHelper t1q1( QDate(2004,1,1), MyMoneySplit::ActionWithdrawal, moSolo, acChecking, acSolo );
-  TransactionHelper t2q1( QDate(2004,2,1), MyMoneySplit::ActionWithdrawal, moParent1, acCredit, acParent );
-  TransactionHelper t3q1( QDate(2004,3,1), MyMoneySplit::ActionWithdrawal, moParent2, acCredit, acParent );
-  TransactionHelper t4y1( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moChild, acCredit, acChild );
-
-  TransactionHelper t1q2( QDate(2004,4,1), MyMoneySplit::ActionWithdrawal, moSolo, acChecking, acSolo );
-  TransactionHelper t2q2( QDate(2004,5,1), MyMoneySplit::ActionWithdrawal, moParent1, acCredit, acParent );
-  TransactionHelper t3q2( QDate(2004,6,1), MyMoneySplit::ActionWithdrawal, moParent2, acCredit, acParent );
-  TransactionHelper t4q2( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moChild, acCredit, acChild );
-
-  TransactionHelper t1y2( QDate(2005,1,1), MyMoneySplit::ActionWithdrawal, moSolo, acChecking, acSolo );
-  TransactionHelper t2y2( QDate(2005,5,1), MyMoneySplit::ActionWithdrawal, moParent1, acCredit, acParent );
-  TransactionHelper t3y2( QDate(2005,9,1), MyMoneySplit::ActionWithdrawal, moParent2, acCredit, acParent );
-  TransactionHelper t4y2( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moChild, acCredit, acChild );
+  try
+  {
+    TransactionHelper t1q1( QDate(2004,1,1), MyMoneySplit::ActionWithdrawal, moSolo, acChecking, acSolo );
+    TransactionHelper t2q1( QDate(2004,2,1), MyMoneySplit::ActionWithdrawal, moParent1, acCredit, acParent );
+    TransactionHelper t3q1( QDate(2004,3,1), MyMoneySplit::ActionWithdrawal, moParent2, acCredit, acParent );
+    TransactionHelper t4y1( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moChild, acCredit, acChild );
   
-  MyMoneyReport filter;
-  QueryTable qtbl(filter);
-  qtbl.dump( "qreport-01.html" );
+    TransactionHelper t1q2( QDate(2004,4,1), MyMoneySplit::ActionWithdrawal, moSolo, acChecking, acSolo );
+    TransactionHelper t2q2( QDate(2004,5,1), MyMoneySplit::ActionWithdrawal, moParent1, acCredit, acParent );
+    TransactionHelper t3q2( QDate(2004,6,1), MyMoneySplit::ActionWithdrawal, moParent2, acCredit, acParent );
+    TransactionHelper t4q2( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moChild, acCredit, acChild );
   
-  CPPUNIT_ASSERT(qtbl.m_transactions.count() == 12);
-  CPPUNIT_ASSERT(qtbl.m_transactions[0]["categorytype"]="Expense");
-  CPPUNIT_ASSERT(qtbl.m_transactions[0]["category"]="Child");
-  CPPUNIT_ASSERT(qtbl.m_transactions[0]["postdate"]="2004-11-07");
-  CPPUNIT_ASSERT(qtbl.m_transactions[11]["categorytype"]="Expense");
-  CPPUNIT_ASSERT(qtbl.m_transactions[11]["category"]="Solo");
-  CPPUNIT_ASSERT(qtbl.m_transactions[11]["postdate"]="2005-01-01");
+    TransactionHelper t1y2( QDate(2005,1,1), MyMoneySplit::ActionWithdrawal, moSolo, acChecking, acSolo );
+    TransactionHelper t2y2( QDate(2005,5,1), MyMoneySplit::ActionWithdrawal, moParent1, acCredit, acParent );
+    TransactionHelper t3y2( QDate(2005,9,1), MyMoneySplit::ActionWithdrawal, moParent2, acCredit, acParent );
+    TransactionHelper t4y2( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moChild, acCredit, acChild );
+  
+    QString htmlcontext = QString("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\">\n") +
+    QString("<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"%1\">").arg("html/kmymoney2.css");
+    htmlcontext += "</head><body>\n%1\n</body></html>\n";
+    
+    unsigned cols;
+    
+    MyMoneyReport filter;
+    filter.setRowType( MyMoneyReport::eCategory );
+    cols = MyMoneyReport::eQCnumber | MyMoneyReport::eQCpayee | MyMoneyReport::eQCaccount;
+    filter.setQueryColumns( static_cast<MyMoneyReport::EQueryColumns>(cols) ); // 
+    filter.setName("Transactions by Category");
+    QueryTable qtbl_1(filter);
+    qtbl_1.dump( "qreport-01.html", htmlcontext );
+    
+    CPPUNIT_ASSERT(qtbl_1.m_transactions.count() == 12);
+    CPPUNIT_ASSERT(qtbl_1.m_transactions[0]["categorytype"]="Expense");
+    CPPUNIT_ASSERT(qtbl_1.m_transactions[0]["category"]="Parent: Child");
+    CPPUNIT_ASSERT(qtbl_1.m_transactions[0]["postdate"]="2004-11-07");
+    CPPUNIT_ASSERT(qtbl_1.m_transactions[11]["categorytype"]="Expense");
+    CPPUNIT_ASSERT(qtbl_1.m_transactions[11]["category"]="Solo");
+    CPPUNIT_ASSERT(qtbl_1.m_transactions[11]["postdate"]="2005-01-01");
+  
+    // TODO: Write some CPPUNIT_ASSERTS!
+    filter.setRowType( MyMoneyReport::eTopCategory );
+    cols = MyMoneyReport::eQCnumber | MyMoneyReport::eQCpayee | MyMoneyReport::eQCaccount;
+    filter.setQueryColumns( static_cast<MyMoneyReport::EQueryColumns>(cols) ); // 
+    QueryTable qtbl_2(filter);
+    qtbl_2.dump( "qreport-02.html", htmlcontext );
+  
+    filter.setRowType( MyMoneyReport::eAccount );
+    filter.setName("Transactions by Account");
+    cols = MyMoneyReport::eQCnumber | MyMoneyReport::eQCpayee | MyMoneyReport::eQCcategory;
+    filter.setQueryColumns( static_cast<MyMoneyReport::EQueryColumns>(cols) ); // 
+    QueryTable qtbl_3(filter);
+    qtbl_3.dump( "qreport-03.html", htmlcontext );
+  
+    filter.setRowType( MyMoneyReport::ePayee );
+    filter.setName("Transactions by Payee");
+    cols = MyMoneyReport::eQCnumber | MyMoneyReport::eQCmemo | MyMoneyReport::eQCcategory;
+    filter.setQueryColumns( static_cast<MyMoneyReport::EQueryColumns>(cols) ); // 
+    QueryTable qtbl_4(filter);
+    qtbl_4.dump( "qreport-04.html", htmlcontext );
+        
+    filter.setRowType( MyMoneyReport::eMonth );
+    filter.setName("Transactions by Month");
+    cols = MyMoneyReport::eQCnumber | MyMoneyReport::eQCpayee | MyMoneyReport::eQCcategory;
+    filter.setQueryColumns( static_cast<MyMoneyReport::EQueryColumns>(cols) ); // 
+    QueryTable qtbl_5(filter);
+    qtbl_5.dump( "qreport-05.html", htmlcontext );
+        
+    filter.setRowType( MyMoneyReport::eWeek );
+    filter.setName("Transactions by Week");
+    cols = MyMoneyReport::eQCnumber | MyMoneyReport::eQCpayee | MyMoneyReport::eQCcategory;
+    filter.setQueryColumns( static_cast<MyMoneyReport::EQueryColumns>(cols) ); // 
+    QueryTable qtbl_6(filter);
+    qtbl_6.dump( "qreport-06.html", htmlcontext );
+  }
+  catch(MyMoneyException *e) 
+  {
+    CPPUNIT_FAIL(e->what());
+    delete e;
+  }
 }

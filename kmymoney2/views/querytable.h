@@ -56,9 +56,9 @@ public:
   QueryTable(const MyMoneyReport&);
   QString renderHTML( void ) const;
   QString renderCSV( void ) const;
-  void dump( const QString& file ) const;
-private:
-
+  void dump( const QString& file, const QString& context=QString() ) const;
+//private:
+public:
   class TableRow: public QMap<QString,QString>
   {
   public:
@@ -69,8 +69,11 @@ private:
   };
 
   QValueList<TableRow> m_transactions;
-  
-  QString m_html;
+  const MyMoneyReport& m_config;
+  QString m_group;
+  QString m_columns;
+  QString m_subtotal;
+
 };
 
 }

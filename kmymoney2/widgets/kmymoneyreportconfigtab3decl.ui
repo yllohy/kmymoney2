@@ -1,0 +1,224 @@
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<class>kMyMoneyReportConfigTab3Decl</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>kMyMoneyReportConfigTab3Decl</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>600</width>
+            <height>192</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Form2</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout40</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel3</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Organize by:</string>
+                    </property>
+                </widget>
+                <widget class="QComboBox">
+                    <item>
+                        <property name="text">
+                            <string>Categories</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Top Categories</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Payees</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Accounts</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Month</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Week</string>
+                        </property>
+                    </item>
+                    <property name="name">
+                        <cstring>m_comboOrganizeBy</cstring>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer10_2</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>283</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+            </hbox>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout41</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QButtonGroup">
+                    <property name="name">
+                        <cstring>buttonGroup1</cstring>
+                    </property>
+                    <property name="title">
+                        <string>Show Columns</string>
+                    </property>
+                    <grid>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QCheckBox" row="1" column="1">
+                            <property name="name">
+                                <cstring>m_checkMemo</cstring>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>0</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string>Memo</string>
+                            </property>
+                        </widget>
+                        <widget class="QCheckBox" row="1" column="0">
+                            <property name="name">
+                                <cstring>m_checkPayee</cstring>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>0</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string>Payee</string>
+                            </property>
+                        </widget>
+                        <widget class="QCheckBox" row="0" column="0">
+                            <property name="name">
+                                <cstring>m_checkNumber</cstring>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>0</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string>Number</string>
+                            </property>
+                        </widget>
+                        <widget class="QCheckBox" row="0" column="1">
+                            <property name="name">
+                                <cstring>m_checkCategory</cstring>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>0</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string>Category</string>
+                            </property>
+                        </widget>
+                        <widget class="QCheckBox" row="1" column="2">
+                            <property name="name">
+                                <cstring>m_checkReconciled</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Reconciled</string>
+                            </property>
+                        </widget>
+                        <widget class="QCheckBox" row="0" column="2">
+                            <property name="name">
+                                <cstring>m_checkAccount</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Account</string>
+                            </property>
+                        </widget>
+                    </grid>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer10</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>283</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+            </hbox>
+        </widget>
+        <spacer>
+            <property name="name">
+                <cstring>spacer11</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>21</width>
+                    <height>46</height>
+                </size>
+            </property>
+        </spacer>
+    </vbox>
+</widget>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
