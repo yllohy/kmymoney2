@@ -129,6 +129,12 @@ void KExportDlg::slotNewProfile(void)
 
 void KExportDlg::loadProfiles(const bool selectLast)
 {
+  // Creating an editor object here makes sure that
+  // we have at least the default profile available
+  MyMoneyQifProfileEditor* edit = new MyMoneyQifProfileEditor(true, 0, 0);
+  edit->slotOk();
+  delete edit;
+
   QString current = m_profileComboBox->currentText();
 
   m_profileComboBox->clear();

@@ -29,6 +29,7 @@
 
 // ----------------------------------------------------------------------------
 // KDE Headers
+#include <kglobalsettings.h>
 #include <kpushbutton.h>
 #include <kcombobox.h>
 #include <kmessagebox.h>
@@ -112,7 +113,7 @@ KImportDlg::~KImportDlg()
 
 void KImportDlg::slotBrowse()
 {
-  QString qstring(KFileDialog::getOpenFileName(QString::null,"*.QIF"));
+  QString qstring(KFileDialog::getOpenFileName(KGlobalSettings::documentPath(), "*.qif"));
   if (!qstring.isEmpty())
     m_qlineeditFile->setText(qstring);
 }
@@ -191,6 +192,12 @@ void KImportDlg::slotSelectProfile(const QString& profile)
 
 void KImportDlg::loadProfiles(const bool selectLast)
 {
+  // Creating an editor object here makes sure that
+  // we have at least the default profile available
+  MyMoneyQifProfileEditor* edit = new MyMoneyQifProfileEditor(true, 0, 0);
+  edit->slotOk();
+  delete edit;
+  
   QString current = m_profileComboBox->currentText();
 
   m_profileComboBox->clear();
