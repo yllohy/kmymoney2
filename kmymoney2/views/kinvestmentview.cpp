@@ -444,13 +444,14 @@ const bool KInvestmentView::slotSelectAccount(const QCString& id, const QCString
 {
   bool    rc = false;
 
-  // cancel any pending edit operation in the ledger views
-  slotCancelEdit();
-
   if(!id.isEmpty()) {
     // if the account id differs, then we have to do something
     MyMoneyAccount acc = MyMoneyFile::instance()->account(id);
     if(m_accountId != id) {
+      // cancel any pending edit operation in the ledger views
+      // when switching to a different account
+      slotCancelEdit();
+
       // if we have a stock account here, we need to get it's parent
       if(acc.accountType() == MyMoneyAccount::Stock) {
         acc = MyMoneyFile::instance()->account(acc.parentAccountId());
@@ -483,6 +484,9 @@ const bool KInvestmentView::slotSelectAccount(const QCString& id, const QCString
       rc = true;
     }
   } else {
+    // cancel any pending edit operation in the ledger views
+    // when switching to a non existing account
+    slotCancelEdit();
     m_accountComboBox->setSelected(QCString());
   }
 

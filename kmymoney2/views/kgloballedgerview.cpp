@@ -271,13 +271,14 @@ const bool KGlobalLedgerView::slotSelectAccount(const QCString& id, const QCStri
 {
   bool    rc = false;
 
-  // cancel any pending edit operation in the ledger views
-  slotCancelEdit();
-
   if(!id.isEmpty()) {
     // if the account id differs, then we have to do something
     MyMoneyAccount acc = MyMoneyFile::instance()->account(id);
     if(m_accountId != id) {
+      // cancel any pending edit operation in the ledger views
+      // when switching to a different account
+      slotCancelEdit();
+
       if(m_specificView[acc.accountType()] != 0) {
         // loan and asset-loan share a view. So there's
         // only one widget on the widget stack. Make sure
@@ -318,12 +319,20 @@ const bool KGlobalLedgerView::slotSelectAccount(const QCString& id, const QCStri
 
       if(reconciliation == true && m_currentView)
         m_currentView->slotReconciliation();
-      if(!transactionId.isEmpty())
+      if(!transactionId.isEmpty()) {
+        // cancel any pending edit operation in the ledger views
+        // when switching to a specific transaction
+        slotCancelEdit();
         m_currentView->selectTransaction(transactionId);
+      }
     }
 
   } else {
     if(m_specificView[MyMoneyAccount::Checkings] != 0) {
+      // cancel any pending edit operation in the ledger views
+      // when switching to a non existing account
+      slotCancelEdit();
+
       m_accountStack->raiseWidget(MyMoneyAccount::Checkings);
       m_currentView = m_specificView[MyMoneyAccount::Checkings];
       m_currentView->slotSelectAccount(id);
