@@ -110,7 +110,15 @@ int main(int argc, char *argv[])
 
   int rc = 0;
 
-  KURL url = kmymoney2->lastOpenedURL();
+
+  KURL url;
+  // make sure, we take the file provided on the command
+  // line before we go and open the last one used
+  if(args->count() > 0) {
+    url = args->url(0);
+  } else {
+    url = kmymoney2->lastOpenedURL();
+  }
   
   if (url.url().isEmpty()) {
     if (kmymoney2->initWizard()) {
