@@ -1,5 +1,8 @@
+Makefile
+Makefile.in
 .deps
 .libs
 *.moc
 *.moc.cpp
 *.o
+*_meta_unload.cpp
