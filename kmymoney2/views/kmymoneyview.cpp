@@ -682,9 +682,30 @@ bool KMyMoneyView::readFile(const KURL& url)
   if(MyMoneyFile::instance()->currencyList().count() == 0)
     loadDefaultCurrencies();
 
-  // make sure, we have a base currency
-  while(MyMoneyFile::instance()->baseCurrency().id().isEmpty())
+  // make sure, we have a base currency and all accounts are
+  // also assigned to a currency.
+  if(MyMoneyFile::instance()->baseCurrency().id().isEmpty()) {
+    // Stay in this endless loop until we have a base currency,
+    // as without it the application does not work anymore.
+    while(MyMoneyFile::instance()->baseCurrency().id().isEmpty())
+      selectBaseCurrency();
+      
+  } else {
+    // in some odd intermediate cases there could be files out there
+    // that have a base currency set, but still have accounts that
+    // do not have a base currency assigned. This call will take
+    // care of it. We can safely remove it later.
+    //
+    // Another work-around for this scenario is to remove the base
+    // currency setting from the XML file by removing the line
+    //
+    //   <PAIR key="kmm-baseCurrency" value="xxx" />
+    //
+    // and restart the appication with this file. This will for to
+    // run the above loop.
     selectBaseCurrency();
+  }
+
   MyMoneyFile::instance()->suspendNotify(false);
 
   KConfig *config = KGlobal::config();
