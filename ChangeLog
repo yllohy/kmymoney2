@@ -2,6 +2,7 @@
   * Only one settings dialog is needed so added new general settings dialog -> ksettingsdlg.
   * Remove klistsettings and old settings variables.
   * Modify to find correct kmy icon in startup dialog.
+  * Changes some toolbar icons.
 
 2001-06-15 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
   * Fixed Year bug in QIF import
