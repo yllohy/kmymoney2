@@ -481,7 +481,7 @@ void KLedgerView::setupPointerAndBalanceArrays(void)
         // for KLedgerViewInvestments this will fail, because there's no split with accountId()
         // in the transaction, only with the stock child
         if(!accountId().isEmpty() && !inherits("KLedgerViewInvestments"))
-          qDebug("%s","Unexpected exception in KLedgerView::setupPointerAndBalanceArrays: " + e->what());
+          qDebug("Unexpected exception in KLedgerView::setupPointerAndBalanceArrays: %s",e->what().latin1());
         delete e;
       }
       if(m_transactionPtrVector.sortType() == KTransactionPtrVector::SortPostDate) {
