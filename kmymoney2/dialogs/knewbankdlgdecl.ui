@@ -1,81 +1,74 @@
-<!DOCTYPE UI><UI>
+<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
 <class>KNewBankDlgDecl</class>
-<widget>
-    <class>QDialog</class>
-    <property stdset="1">
-        <name>name</name>
+<widget class="QDialog">
+    <property name="name">
         <cstring>kNewBankDlgDecl</cstring>
     </property>
-    <property stdset="1">
-        <name>geometry</name>
+    <property name="geometry">
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>606</width>
-            <height>482</height>
+            <width>619</width>
+            <height>488</height>
         </rect>
     </property>
-    <property stdset="1">
-        <name>caption</name>
+    <property name="caption">
         <string>New Institution Dialog</string>
     </property>
+    <property name="sizeGripEnabled">
+        <bool>true</bool>
+    </property>
     <vbox>
-        <property stdset="1">
-            <name>margin</name>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
             <number>11</number>
         </property>
-        <property stdset="1">
-            <name>spacing</name>
+        <property name="spacing">
             <number>6</number>
         </property>
-        <widget>
-            <class>QLayoutWidget</class>
-            <property stdset="1">
-                <name>name</name>
+        <widget class="QLayoutWidget">
+            <property name="name">
                 <cstring>Layout10</cstring>
             </property>
             <hbox>
-                <property stdset="1">
-                    <name>margin</name>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
                     <number>0</number>
                 </property>
-                <property stdset="1">
-                    <name>spacing</name>
+                <property name="spacing">
                     <number>6</number>
                 </property>
-                <widget>
-                    <class>QLabel</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QLabel">
+                    <property name="name">
                         <cstring>m_qpixmaplabel</cstring>
                     </property>
-                    <property stdset="1">
-                        <name>sizePolicy</name>
+                    <property name="sizePolicy">
                         <sizepolicy>
                             <hsizetype>0</hsizetype>
                             <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
                         </sizepolicy>
                     </property>
-                    <property stdset="1">
-                        <name>minimumSize</name>
+                    <property name="minimumSize">
                         <size>
                             <width>200</width>
                             <height>150</height>
                         </size>
                     </property>
-                    <property stdset="1">
-                        <name>text</name>
+                    <property name="text">
                         <string>TextLabel1</string>
                     </property>
                 </widget>
-                <widget>
-                    <class>QLabel</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QLabel">
+                    <property name="name">
                         <cstring>TextLabel1_2</cstring>
                     </property>
-                    <property stdset="1">
-                        <name>text</name>
+                    <property name="text">
                         <string>Adding a new institution.
 
 The only required field is the name, which can be the name of a bank
@@ -84,261 +77,221 @@ like Woolwhich, or a descriptive name like Family Cash Accounts.</string>
                 </widget>
             </hbox>
         </widget>
-        <widget>
-            <class>Line</class>
-            <property stdset="1">
-                <name>name</name>
+        <widget class="Line">
+            <property name="name">
                 <cstring>Line1</cstring>
             </property>
-            <property stdset="1">
-                <name>frameShadow</name>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
                 <enum>Raised</enum>
             </property>
-            <property stdset="1">
-                <name>lineWidth</name>
+            <property name="lineWidth">
                 <number>1</number>
             </property>
-            <property stdset="1">
-                <name>orientation</name>
+            <property name="orientation">
                 <enum>Horizontal</enum>
             </property>
         </widget>
-        <widget>
-            <class>QGroupBox</class>
-            <property stdset="1">
-                <name>name</name>
+        <widget class="QGroupBox">
+            <property name="name">
                 <cstring>GroupBox1</cstring>
             </property>
-            <property stdset="1">
-                <name>title</name>
+            <property name="title">
                 <string>Institution Details</string>
             </property>
             <vbox>
-                <property stdset="1">
-                    <name>margin</name>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
                     <number>11</number>
                 </property>
-                <property stdset="1">
-                    <name>spacing</name>
+                <property name="spacing">
                     <number>6</number>
                 </property>
-                <widget>
-                    <class>QLayoutWidget</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QLayoutWidget">
+                    <property name="name">
                         <cstring>Layout6</cstring>
                     </property>
                     <hbox>
-                        <property stdset="1">
-                            <name>margin</name>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <property name="margin">
                             <number>0</number>
                         </property>
-                        <property stdset="1">
-                            <name>spacing</name>
+                        <property name="spacing">
                             <number>6</number>
                         </property>
-                        <widget>
-                            <class>QLabel</class>
-                            <property stdset="1">
-                                <name>name</name>
+                        <widget class="QLabel">
+                            <property name="name">
                                 <cstring>TextLabel1</cstring>
                             </property>
-                            <property stdset="1">
-                                <name>text</name>
+                            <property name="text">
                                 <string>Name:</string>
                             </property>
                         </widget>
-                        <widget>
-                            <class>QLineEdit</class>
-                            <property stdset="1">
-                                <name>name</name>
+                        <widget class="QLineEdit">
+                            <property name="name">
                                 <cstring>nameEdit</cstring>
                             </property>
                         </widget>
                     </hbox>
                 </widget>
-                <widget>
-                    <class>QGroupBox</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QGroupBox">
+                    <property name="name">
                         <cstring>GroupBox2</cstring>
                     </property>
-                    <property stdset="1">
-                        <name>title</name>
+                    <property name="title">
                         <string>Address</string>
                     </property>
                     <vbox>
-                        <property stdset="1">
-                            <name>margin</name>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <property name="margin">
                             <number>11</number>
                         </property>
-                        <property stdset="1">
-                            <name>spacing</name>
+                        <property name="spacing">
                             <number>6</number>
                         </property>
-                        <widget>
-                            <class>QLayoutWidget</class>
-                            <property stdset="1">
-                                <name>name</name>
+                        <widget class="QLayoutWidget">
+                            <property name="name">
                                 <cstring>Layout5</cstring>
                             </property>
                             <hbox>
-                                <property stdset="1">
-                                    <name>margin</name>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <property name="margin">
                                     <number>0</number>
                                 </property>
-                                <property stdset="1">
-                                    <name>spacing</name>
+                                <property name="spacing">
                                     <number>6</number>
                                 </property>
-                                <widget>
-                                    <class>QLabel</class>
-                                    <property stdset="1">
-                                        <name>name</name>
+                                <widget class="QLabel">
+                                    <property name="name">
                                         <cstring>TextLabel2</cstring>
                                     </property>
-                                    <property stdset="1">
-                                        <name>minimumSize</name>
+                                    <property name="minimumSize">
                                         <size>
                                             <width>100</width>
                                             <height>0</height>
                                         </size>
                                     </property>
-                                    <property stdset="1">
-                                        <name>text</name>
+                                    <property name="text">
                                         <string>City:</string>
                                     </property>
                                 </widget>
-                                <widget>
-                                    <class>QLineEdit</class>
-                                    <property stdset="1">
-                                        <name>name</name>
+                                <widget class="QLineEdit">
+                                    <property name="name">
                                         <cstring>cityEdit</cstring>
                                     </property>
                                 </widget>
                             </hbox>
                         </widget>
-                        <widget>
-                            <class>QLayoutWidget</class>
-                            <property stdset="1">
-                                <name>name</name>
+                        <widget class="QLayoutWidget">
+                            <property name="name">
                                 <cstring>Layout4</cstring>
                             </property>
                             <hbox>
-                                <property stdset="1">
-                                    <name>margin</name>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <property name="margin">
                                     <number>0</number>
                                 </property>
-                                <property stdset="1">
-                                    <name>spacing</name>
+                                <property name="spacing">
                                     <number>6</number>
                                 </property>
-                                <widget>
-                                    <class>QLabel</class>
-                                    <property stdset="1">
-                                        <name>name</name>
+                                <widget class="QLabel">
+                                    <property name="name">
                                         <cstring>TextLabel3</cstring>
                                     </property>
-                                    <property stdset="1">
-                                        <name>minimumSize</name>
+                                    <property name="minimumSize">
                                         <size>
                                             <width>100</width>
                                             <height>0</height>
                                         </size>
                                     </property>
-                                    <property stdset="1">
-                                        <name>text</name>
+                                    <property name="text">
                                         <string>Street:</string>
                                     </property>
                                 </widget>
-                                <widget>
-                                    <class>QLineEdit</class>
-                                    <property stdset="1">
-                                        <name>name</name>
+                                <widget class="QLineEdit">
+                                    <property name="name">
                                         <cstring>streetEdit</cstring>
                                     </property>
                                 </widget>
                             </hbox>
                         </widget>
-                        <widget>
-                            <class>QLayoutWidget</class>
-                            <property stdset="1">
-                                <name>name</name>
+                        <widget class="QLayoutWidget">
+                            <property name="name">
                                 <cstring>Layout3</cstring>
                             </property>
                             <hbox>
-                                <property stdset="1">
-                                    <name>margin</name>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <property name="margin">
                                     <number>0</number>
                                 </property>
-                                <property stdset="1">
-                                    <name>spacing</name>
+                                <property name="spacing">
                                     <number>6</number>
                                 </property>
-                                <widget>
-                                    <class>QLabel</class>
-                                    <property stdset="1">
-                                        <name>name</name>
+                                <widget class="QLabel">
+                                    <property name="name">
                                         <cstring>TextLabel4</cstring>
                                     </property>
-                                    <property stdset="1">
-                                        <name>minimumSize</name>
+                                    <property name="minimumSize">
                                         <size>
                                             <width>100</width>
                                             <height>0</height>
                                         </size>
                                     </property>
-                                    <property stdset="1">
-                                        <name>text</name>
+                                    <property name="text">
                                         <string>Postcode:</string>
                                     </property>
                                 </widget>
-                                <widget>
-                                    <class>QLineEdit</class>
-                                    <property stdset="1">
-                                        <name>name</name>
+                                <widget class="QLineEdit">
+                                    <property name="name">
                                         <cstring>postcodeEdit</cstring>
                                     </property>
                                 </widget>
                             </hbox>
                         </widget>
-                        <widget>
-                            <class>QLayoutWidget</class>
-                            <property stdset="1">
-                                <name>name</name>
+                        <widget class="QLayoutWidget">
+                            <property name="name">
                                 <cstring>Layout2</cstring>
                             </property>
                             <hbox>
-                                <property stdset="1">
-                                    <name>margin</name>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <property name="margin">
                                     <number>0</number>
                                 </property>
-                                <property stdset="1">
-                                    <name>spacing</name>
+                                <property name="spacing">
                                     <number>6</number>
                                 </property>
-                                <widget>
-                                    <class>QLabel</class>
-                                    <property stdset="1">
-                                        <name>name</name>
+                                <widget class="QLabel">
+                                    <property name="name">
                                         <cstring>TextLabel5</cstring>
                                     </property>
-                                    <property stdset="1">
-                                        <name>minimumSize</name>
+                                    <property name="minimumSize">
                                         <size>
                                             <width>100</width>
                                             <height>0</height>
                                         </size>
                                     </property>
-                                    <property stdset="1">
-                                        <name>text</name>
+                                    <property name="text">
                                         <string>Telephone/Fax:</string>
                                     </property>
                                 </widget>
-                                <widget>
-                                    <class>QLineEdit</class>
-                                    <property stdset="1">
-                                        <name>name</name>
+                                <widget class="QLineEdit">
+                                    <property name="name">
                                         <cstring>telephoneEdit</cstring>
                                     </property>
                                 </widget>
@@ -346,85 +299,71 @@ like Woolwhich, or a descriptive name like Family Cash Accounts.</string>
                         </widget>
                     </vbox>
                 </widget>
-                <widget>
-                    <class>QLayoutWidget</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QLayoutWidget">
+                    <property name="name">
                         <cstring>Layout7</cstring>
                     </property>
                     <hbox>
-                        <property stdset="1">
-                            <name>margin</name>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <property name="margin">
                             <number>0</number>
                         </property>
-                        <property stdset="1">
-                            <name>spacing</name>
+                        <property name="spacing">
                             <number>6</number>
                         </property>
-                        <widget>
-                            <class>QLabel</class>
-                            <property stdset="1">
-                                <name>name</name>
+                        <widget class="QLabel">
+                            <property name="name">
                                 <cstring>TextLabel6</cstring>
                             </property>
-                            <property stdset="1">
-                                <name>minimumSize</name>
+                            <property name="minimumSize">
                                 <size>
                                     <width>100</width>
                                     <height>0</height>
                                 </size>
                             </property>
-                            <property stdset="1">
-                                <name>text</name>
+                            <property name="text">
                                 <string>Sort code:</string>
                             </property>
                         </widget>
-                        <widget>
-                            <class>QLineEdit</class>
-                            <property stdset="1">
-                                <name>name</name>
+                        <widget class="QLineEdit">
+                            <property name="name">
                                 <cstring>sortCodeEdit</cstring>
                             </property>
                         </widget>
                     </hbox>
                 </widget>
-                <widget>
-                    <class>QLayoutWidget</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QLayoutWidget">
+                    <property name="name">
                         <cstring>Layout8</cstring>
                     </property>
                     <hbox>
-                        <property stdset="1">
-                            <name>margin</name>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <property name="margin">
                             <number>0</number>
                         </property>
-                        <property stdset="1">
-                            <name>spacing</name>
+                        <property name="spacing">
                             <number>6</number>
                         </property>
-                        <widget>
-                            <class>QLabel</class>
-                            <property stdset="1">
-                                <name>name</name>
+                        <widget class="QLabel">
+                            <property name="name">
                                 <cstring>TextLabel7</cstring>
                             </property>
-                            <property stdset="1">
-                                <name>minimumSize</name>
+                            <property name="minimumSize">
                                 <size>
                                     <width>100</width>
                                     <height>0</height>
                                 </size>
                             </property>
-                            <property stdset="1">
-                                <name>text</name>
+                            <property name="text">
                                 <string>Managers name:</string>
                             </property>
                         </widget>
-                        <widget>
-                            <class>QLineEdit</class>
-                            <property stdset="1">
-                                <name>name</name>
+                        <widget class="QLineEdit">
+                            <property name="name">
                                 <cstring>managerEdit</cstring>
                             </property>
                         </widget>
@@ -432,65 +371,87 @@ like Woolwhich, or a descriptive name like Family Cash Accounts.</string>
                 </widget>
             </vbox>
         </widget>
-        <widget>
-            <class>QLayoutWidget</class>
-            <property stdset="1">
-                <name>name</name>
-                <cstring>Layout9</cstring>
+        <widget class="Line">
+            <property name="name">
+                <cstring>Line1_2</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Raised</enum>
+            </property>
+            <property name="lineWidth">
+                <number>1</number>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+        <spacer>
+            <property name="name">
+                <cstring>Spacer30</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>0</width>
+                    <height>13</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>Layout51</cstring>
             </property>
             <hbox>
-                <property stdset="1">
-                    <name>margin</name>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
                     <number>0</number>
                 </property>
-                <property stdset="1">
-                    <name>spacing</name>
+                <property name="spacing">
                     <number>6</number>
                 </property>
                 <spacer>
-                    <property>
-                        <name>name</name>
+                    <property name="name">
                         <cstring>Spacer1</cstring>
                     </property>
-                    <property stdset="1">
-                        <name>orientation</name>
+                    <property name="orientation">
                         <enum>Horizontal</enum>
                     </property>
-                    <property stdset="1">
-                        <name>sizeType</name>
+                    <property name="sizeType">
                         <enum>Expanding</enum>
                     </property>
-                    <property>
-                        <name>sizeHint</name>
+                    <property name="sizeHint">
                         <size>
-                            <width>20</width>
-                            <height>20</height>
+                            <width>449</width>
+                            <height>0</height>
                         </size>
                     </property>
                 </spacer>
-                <widget>
-                    <class>QPushButton</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="KPushButton">
+                    <property name="name">
                         <cstring>okBtn</cstring>
                     </property>
-                    <property stdset="1">
-                        <name>text</name>
-                        <string>&amp;OK</string>
+                    <property name="text">
+                        <string>&amp;Ok</string>
                     </property>
-                    <property stdset="1">
-                        <name>default</name>
+                    <property name="default">
                         <bool>true</bool>
                     </property>
                 </widget>
-                <widget>
-                    <class>QPushButton</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="KPushButton">
+                    <property name="name">
                         <cstring>cancelBtn</cstring>
                     </property>
-                    <property stdset="1">
-                        <name>text</name>
+                    <property name="text">
                         <string>&amp;Cancel</string>
                     </property>
                 </widget>
@@ -506,7 +467,6 @@ like Woolwhich, or a descriptive name like Family Cash Accounts.</string>
     <tabstop>telephoneEdit</tabstop>
     <tabstop>sortCodeEdit</tabstop>
     <tabstop>managerEdit</tabstop>
-    <tabstop>okBtn</tabstop>
-    <tabstop>cancelBtn</tabstop>
 </tabstops>
+<layoutdefaults spacing="6" margin="11"/>
 </UI>

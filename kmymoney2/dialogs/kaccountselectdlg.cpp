@@ -33,6 +33,8 @@
 #include <kglobal.h>
 #include <kpushbutton.h>
 #include <kmessagebox.h>
+#include <kiconloader.h>
+#include <kguiitem.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -43,6 +45,7 @@
 #include "knewbankdlg.h"
 #include "../mymoney/mymoneyinstitution.h"
 #include "../mymoney/mymoneyfile.h"
+#include "../widgets/kmymoneyaccountselector.h"
 
 KAccountSelectDlg::KAccountSelectDlg(const KMyMoneyUtils::categoryTypeE accountType, const QString& purpose, QWidget *parent, const char *name )
  : KAccountSelectDlgDecl(parent, name),
@@ -53,7 +56,34 @@ KAccountSelectDlg::KAccountSelectDlg(const KMyMoneyUtils::categoryTypeE accountT
   // Hide the abort button. It needs to be shown on request by the caller
   // using showAbortButton()
   m_kButtonAbort->hide();
-  loadAccounts();
+  m_accountSelector->loadList(accountType);
+  
+  KIconLoader* il = KGlobal::iconLoader();
+  KGuiItem skipButtonItem( i18n( "&Skip" ),
+                    QIconSet(il->loadIcon("redo", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Skip this transaction"),
+                    i18n("Use this to skip importing this transaction and proceed with the next one."));
+  m_qbuttonCancel->setGuiItem(skipButtonItem);
+
+  KGuiItem createButtenItem( i18n( "&Create..." ),
+                      QIconSet(il->loadIcon("filenew", KIcon::Small, KIcon::SizeSmall)),
+                      i18n("Create a new account/category"),
+                      i18n("Use this to add a new account/category to the file"));
+  m_createButton->setGuiItem(createButtenItem);
+
+  KGuiItem okButtenItem( i18n("&Ok" ),
+                    QIconSet(il->loadIcon("button_ok", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Accepts the selected action and continues"),
+                    i18n("Use this to accept accept the selection and continue processing the transaction"));
+  m_qbuttonOk->setGuiItem(okButtenItem);
+  
+  KGuiItem abortButtenItem( i18n("&Abort" ),
+                    QIconSet(il->loadIcon("stop", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Abort the import operation and dismiss all changes"),
+                    i18n("Use this to abort the import. Your financial data will be in the state before you started the QIF import."));
+  m_kButtonAbort->setGuiItem(abortButtenItem);
+
+    
   MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAccount, this);
   
   connect(m_createButton, SIGNAL(clicked()), this, SLOT(slotCreateAccount()));
@@ -69,7 +99,7 @@ KAccountSelectDlg::~KAccountSelectDlg()
 
 void KAccountSelectDlg::update(const QCString& /*id */)
 {
-  loadAccounts();
+  m_accountSelector->loadList(m_accountType);
 }
 
 void KAccountSelectDlg::setDescription(const QString& msg)
@@ -84,73 +114,8 @@ void KAccountSelectDlg::setHeader(const QString& msg)
 
 void KAccountSelectDlg::setAccount(const MyMoneyAccount& account)
 {
-  int   i;
-  
   m_account = account;
-  if(!m_account.name().isEmpty()) {
-    for(i = 0; i < m_accountComboBox->count(); ++i) {
-      if(m_accountComboBox->text(i) == m_account.name()) {
-        m_accountComboBox->setCurrentText(m_account.name());
-        break;
-      }
-    }
-  } else
-    m_accountComboBox->setCurrentText(m_accountComboBox->text(0));
-}
-
-void KAccountSelectDlg::loadAccounts(void)
-{
-  QStringList strList;
-
-  try {
-    MyMoneyFile *file = MyMoneyFile::instance();
-
-    // read all account items from the MyMoneyFile objects and add them to the listbox
-    if(m_accountType & KMyMoneyUtils::liability)
-      addCategories(strList, file->liability().id(), "");
-
-    if(m_accountType & KMyMoneyUtils::asset)
-      addCategories(strList, file->asset().id(), "");
-
-    if(m_accountType & KMyMoneyUtils::expense)
-      addCategories(strList, file->expense().id(), "");
-
-    if(m_accountType & KMyMoneyUtils::income)
-      addCategories(strList, file->income().id(), "");
-
-  } catch (MyMoneyException *e) {
-    qDebug("Exception '%s' thrown in %s, line %ld caught in KAccountSelectDlg::loadAccounts:%d",
-      e->what().latin1(), e->file().latin1(), e->line(), __LINE__);
-    delete e;
-  }
-
-  strList.sort();
-  m_accountComboBox->clear();
-  m_accountComboBox->insertStringList(strList);
-
-  KConfig* config = KGlobal::config();
-  config->setGroup("Last Use Settings");
-  QString current = config->readEntry("LastAccountSelected_"+m_purpose);
-
-  m_accountComboBox->setCurrentItem(0);
-  if(strList.contains(current) > 0)
-    m_accountComboBox->setCurrentText(current);
-}
-
-void KAccountSelectDlg::addCategories(QStringList& strList, const QCString& id, const QString& leadIn) const
-{
-  MyMoneyFile *file = MyMoneyFile::instance();
-  QString name;
-
-  MyMoneyAccount account = file->account(id);
-
-  QCStringList accList = account.accountList();
-  QCStringList::ConstIterator it_a;
-  for(it_a = accList.begin(); it_a != accList.end(); ++it_a) {
-    account = file->account(*it_a);
-    strList << leadIn + account.name();
-    addCategories(strList, *it_a, leadIn + account.name() + ":");
-  }
+  m_accountSelector->setSelected(account.id());
 }
 
 void KAccountSelectDlg::slotCreateInstitution(void)
@@ -230,12 +195,15 @@ void KAccountSelectDlg::slotCreateAccount(void)
       }
       
       file->addAccount(newAccount, parentAccount);
-      
+      m_accountSelector->loadList(m_accountType);
+      m_accountSelector->setSelected(newAccount.id());
+/*      
       // widgets are updated in update() by engine's notification
       if(isCategory)
         m_accountComboBox->setCurrentItem(file->accountToCategory(newAccount.id()));
       else
         m_accountComboBox->setCurrentItem(newAccount.name());
+*/
       accept();
     }
     catch (MyMoneyException *e)
@@ -279,5 +247,13 @@ int KAccountSelectDlg::exec(void)
     m_createButton->setFocus();
     rc = KAccountSelectDlgDecl::exec();
   }    
+  return rc;
+}
+
+const QCString KAccountSelectDlg::selectedAccount(void) const
+{
+  QCString rc;
+  if(!m_accountSelector->selectedAccounts().isEmpty())
+    rc = m_accountSelector->selectedAccounts().first();
   return rc;
 }

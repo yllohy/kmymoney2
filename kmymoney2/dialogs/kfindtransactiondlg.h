@@ -42,23 +42,6 @@ class QListViewItem;
   * @author Thomas Baumgart
   */
 
-class KFindTransactionDlg;
-
-class KMyMoneyCheckListItem : public QCheckListItem {
-public:
-  KMyMoneyCheckListItem(QListView *parent, const QString& txt, Type type, const QCString& id, KFindTransactionDlg* dlg);
-  KMyMoneyCheckListItem(QListViewItem *parent, const QString& txt, Type type, const QCString& id, KFindTransactionDlg* dlg);
-  ~KMyMoneyCheckListItem();
-  const QCString& accountId(void) const { return m_id; };
-
-protected:
-  virtual void stateChange(bool);
-  
-private:
-  QCString             m_id;
-  KFindTransactionDlg* m_dlg;
-};
-
 class KFindTransactionDlg : public KFindTransactionDlgDecl, public IMyMoneyRegisterParent {
   Q_OBJECT
 public:
@@ -142,15 +125,7 @@ protected:
 protected slots:
   void slotDateRangeChanged(int);
   void slotDateChanged(void);
-  
-  void slotSelectAllAccounts(void);
-  void slotDeselectAllAccounts(void);
-  
-  void slotSelectAllCategories(void);
-  void slotDeselectAllCategories(void);
-  void slotSelectIncomeCategories(void);
-  void slotSelectExpenseCategories(void);
-      
+
   void slotAmountSelected(void);
   void slotAmountRangeSelected(void);
 
@@ -194,25 +169,16 @@ private:
   void setupDetailsPage(void);
     
   void selectAllItems(QListView* view, const bool state);  
-  void selectAllCategories(const bool income, const bool expense);
   void selectAllSubItems(QListViewItem* item, const bool state);
   
   void readConfig(void);
   void writeConfig(void);
 
   /**
-    * This method loads the m_accountsView with the asset and liability
-    * accounts found in the engine. Accounts that are in the engine,
-    * but not in the view will be added to the view and marked selected.
-    * Accounts that are in the view but not in the engine will be removed
-    * from the view.
+    * This method loads the m_payeesView with the payees name
+    * found in the engine.
     */
-  void loadAccounts(void);
-  void loadCategories(void);
-
   void loadPayees(void);
-  
-  void loadSubAccounts(QListViewItem* parent, const QCStringList& list);
   
   /**
     * This method returns information about the selection state

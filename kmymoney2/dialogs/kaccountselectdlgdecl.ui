@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>399</width>
-            <height>298</height>
+            <width>477</width>
+            <height>423</height>
         </rect>
     </property>
     <property name="caption">
@@ -137,7 +137,7 @@
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>Layout16</cstring>
+                <cstring>Layout7</cstring>
             </property>
             <hbox>
                 <property name="name">
@@ -149,26 +149,59 @@
                 <property name="spacing">
                     <number>6</number>
                 </property>
-                <widget class="kMyMoneyCombo">
+                <widget class="kMyMoneyAccountSelector">
                     <property name="name">
-                        <cstring>m_accountComboBox</cstring>
+                        <cstring>m_accountSelector</cstring>
                     </property>
                     <property name="sizePolicy">
                         <sizepolicy>
-                            <hsizetype>5</hsizetype>
+                            <hsizetype>3</hsizetype>
                             <vsizetype>5</vsizetype>
                             <horstretch>5</horstretch>
                             <verstretch>0</verstretch>
                         </sizepolicy>
                     </property>
                 </widget>
-                <widget class="KPushButton">
+                <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>m_createButton</cstring>
+                        <cstring>Layout5</cstring>
                     </property>
-                    <property name="text">
-                        <string>&amp;Create</string>
-                    </property>
+                    <vbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <property name="margin">
+                            <number>0</number>
+                        </property>
+                        <property name="spacing">
+                            <number>6</number>
+                        </property>
+                        <widget class="KPushButton">
+                            <property name="name">
+                                <cstring>m_createButton</cstring>
+                            </property>
+                            <property name="text">
+                                <string>&amp;Create</string>
+                            </property>
+                        </widget>
+                        <spacer>
+                            <property name="name">
+                                <cstring>Spacer3</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Vertical</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>0</width>
+                                    <height>82</height>
+                                </size>
+                            </property>
+                        </spacer>
+                    </vbox>
                 </widget>
             </hbox>
         </widget>
@@ -247,11 +280,11 @@
 </widget>
 <customwidgets>
     <customwidget>
-        <class>kMyMoneyCombo</class>
-        <header location="local">../widgets/kmymoneycombo.h</header>
+        <class>kMyMoneyAccountSelector</class>
+        <header location="global">../widgets/kmymoneyaccountselector.h</header>
         <sizehint>
-            <width>-1</width>
-            <height>25</height>
+            <width>80</width>
+            <height>80</height>
         </sizehint>
         <container>0</container>
         <sizepolicy>

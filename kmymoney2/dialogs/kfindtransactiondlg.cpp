@@ -48,31 +48,9 @@
 #include "../widgets/kmymoneydateinput.h"
 #include "../widgets/kmymoneyedit.h"
 #include "../widgets/kmymoneylineedit.h"
+#include "../widgets/kmymoneyaccountselector.h"
 #include "../mymoney/mymoneyfile.h"
 #include "../mymoney/storage/imymoneystorage.h"
-
-KMyMoneyCheckListItem::KMyMoneyCheckListItem(QListView* parent, const QString& txt, Type type, const QCString& id, KFindTransactionDlg* dlg) :
-  QCheckListItem(parent, txt, type),
-  m_id(id),
-  m_dlg(dlg)
-{
-}
-
-KMyMoneyCheckListItem::KMyMoneyCheckListItem(QListViewItem* parent, const QString& txt, Type type, const QCString& id, KFindTransactionDlg* dlg) :
-  QCheckListItem(parent, txt, type),
-  m_id(id),
-  m_dlg(dlg)
-{
-}
-
-KMyMoneyCheckListItem::~KMyMoneyCheckListItem()
-{
-}
-
-void KMyMoneyCheckListItem::stateChange(bool)
-{
-  m_dlg->slotUpdateSelections();
-}
 
 KFindTransactionDlg::KFindTransactionDlg(QWidget *parent, const char *name)
  : KFindTransactionDlgDecl(parent, name, false),
@@ -86,7 +64,7 @@ KFindTransactionDlg::KFindTransactionDlg(QWidget *parent, const char *name)
   m_registerFrame->hide();
   update();
   resize(minimumSizeHint());
-  
+
   move(x()-45, y()-45);
 
   setupAccountsPage();
@@ -122,8 +100,13 @@ KFindTransactionDlg::KFindTransactionDlg(QWidget *parent, const char *name)
 
   // setup the connections
   connect(m_searchButton, SIGNAL(clicked()), this, SLOT(slotSearch()));
+  
   connect(m_resetButton, SIGNAL(clicked()), this, SLOT(slotReset()));
+  connect(m_resetButton, SIGNAL(clicked()), m_accountsView, SLOT(slotSelectAllAccounts()));
+  connect(m_resetButton, SIGNAL(clicked()), m_categoriesView, SLOT(slotSelectAllAccounts()));
+  
   connect(m_closeButton, SIGNAL(clicked()), this, SLOT(deleteLater()));
+  
   connect(m_textEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotUpdateSelections()));
 
   connect(m_register, SIGNAL(clicked(int, int, int, const QPoint&)), this, SLOT(slotRegisterClicked(int, int, int, const QPoint&)));
@@ -149,8 +132,6 @@ void KFindTransactionDlg::slotReset(void)
   m_textEdit->setText("");
   m_regExp->setChecked(false);
   m_caseSensitive->setChecked(false);
-  
-  selectAllItems(m_accountsView, true);
 
   m_amountEdit->setEnabled(true);
   m_amountFromEdit->setEnabled(false);
@@ -160,8 +141,6 @@ void KFindTransactionDlg::slotReset(void)
   m_amountToEdit->loadText("");
   m_amountButton->setChecked(true);
   m_amountRangeButton->setChecked(false);
-
-  selectAllItems(m_categoriesView, true);
 
   m_emptyPayeesButton->setChecked(false);
   selectAllItems(m_payeesView, true);
@@ -208,7 +187,7 @@ void KFindTransactionDlg::slotUpdateSelections(void)
   m_caseSensitive->setEnabled(!m_textEdit->text().isEmpty());
     
   // Account tab
-  if(!allItemsSelected(m_accountsView)) {
+  if(!m_accountsView->allAccountsSelected()) {
     if(!txt.isEmpty())
       txt += ", ";
     txt += i18n("Account");
@@ -231,7 +210,7 @@ void KFindTransactionDlg::slotUpdateSelections(void)
   }
 
   // Categories tab
-  if(!allItemsSelected(m_categoriesView)) {
+  if(!m_categoriesView->allAccountsSelected()) {
     if(!txt.isEmpty())
       txt += ", ";
     txt += i18n("Category");
@@ -296,82 +275,12 @@ const bool KFindTransactionDlg::allItemsSelected(const QListView* view) const
   return true;
 }
 
-void KFindTransactionDlg::loadAccounts(void)
-{
-  QValueList<MyMoneyAccount> list;
-  QValueList<MyMoneyAccount>::Iterator it_l;
-    
-  KMyMoneyCheckListItem* asset = new KMyMoneyCheckListItem(m_accountsView, i18n("Asset accounts"), QCheckListItem::Controller, "", this);
-  asset->setSelectable(false);
-  asset->setOpen(true);
-  
-  KMyMoneyCheckListItem* liability = new KMyMoneyCheckListItem(m_accountsView, i18n("Liability accounts"), QCheckListItem::Controller, "", this);
-  liability->setSelectable(false);
-  liability->setOpen(true);
-  
-  list = MyMoneyFile::instance()->accountList();
-  // scan all accounts found in the engine
-  for(it_l = list.begin(); it_l != list.end(); ++it_l) {
-    KMyMoneyCheckListItem* parent;
-    
-    // don't include expense and income records here
-    switch((*it_l).accountType()) {
-      case MyMoneyAccount::Expense:
-      case MyMoneyAccount::Income:
-        break;
-        
-      default:
-        // determine parent
-        if(MyMoneyFile::instance()->accountGroup((*it_l).accountType()) == MyMoneyAccount::Asset)
-          parent = asset;
-        else
-          parent = liability;
-
-        KMyMoneyCheckListItem* item = new KMyMoneyCheckListItem(parent, (*it_l).name(), QCheckListItem::CheckBox, (*it_l).id(), this);
-        item->setOn(true);
-        if((*it_l).accountList().count() > 0) {
-          item->setOpen(true);
-          loadSubAccounts(item, (*it_l).accountList());
-        }
-        break;
-    }
-  }
-/*  This code might become important once we reload the lists  
-  // check if there are accounts in the listview that are no longer
-  // in the engine. When found, erase from view.
-  QListViewItem* it_v;
-  for(it_v = m_accountsView->firstChild(); it_v != 0; ) {
-    try {
-      MyMoneyFile::instance()->account(static_cast<KMyMoneyCheckListItem*>(it_v)->accountId());
-      it_v = it_v->nextSibling();
-    } catch(MyMoneyException *e) {
-      delete e;
-      QListViewItem* it_d = it_v;
-      it_v = it_v->nextSibling();
-      delete it_d;
-    }
-  }
-*/  
-}
-
 void KFindTransactionDlg::setupAccountsPage(void)
 {
-  m_accountsView->setSelectionMode(QListView::Single);
-  m_accountsView->header()->hide();
-  loadAccounts();
-
-  connect(m_allAccountsButton, SIGNAL(clicked()), this, SLOT(slotSelectAllAccounts()));
-  connect(m_noAccountButton, SIGNAL(clicked()), this, SLOT(slotDeselectAllAccounts()));
-}
-
-void KFindTransactionDlg::slotSelectAllAccounts(void)
-{
-  selectAllItems(m_accountsView, true);  
-}
-
-void KFindTransactionDlg::slotDeselectAllAccounts(void)
-{
-  selectAllItems(m_accountsView, false);
+  m_accountsView->setSelectionMode(QListView::Multi);
+  m_accountsView->loadList(static_cast<KMyMoneyUtils::categoryTypeE>
+                           (KMyMoneyUtils::asset | KMyMoneyUtils::liability));
+  connect(m_accountsView, SIGNAL(stateChanged()), this, SLOT(slotUpdateSelections()));
 }
 
 void KFindTransactionDlg::selectAllItems(QListView* view, const bool state)
@@ -391,90 +300,10 @@ void KFindTransactionDlg::selectAllItems(QListView* view, const bool state)
 
 void KFindTransactionDlg::setupCategoriesPage(void)
 {
-  m_categoriesView->setSelectionMode(QListView::Single);
-  m_categoriesView->header()->hide();
-  
-  loadCategories();
-
-  connect(m_allCategoriesButton, SIGNAL(clicked()), this, SLOT(slotSelectAllCategories()));
-  connect(m_noCategoryButton, SIGNAL(clicked()), this, SLOT(slotDeselectAllCategories()));
-  connect(m_expenseCategoriesButton, SIGNAL(clicked()), this, SLOT(slotSelectExpenseCategories()));
-  connect(m_incomeCategoriesButton, SIGNAL(clicked()), this, SLOT(slotSelectIncomeCategories()));
-}
-
-void KFindTransactionDlg::loadSubAccounts(QListViewItem* parent, const QCStringList& list)
-{
-  QCStringList::ConstIterator it_l;
-  MyMoneyFile* file = MyMoneyFile::instance();
-  
-  for(it_l = list.begin(); it_l != list.end(); ++it_l) {
-    MyMoneyAccount acc = file->account(*it_l);
-    KMyMoneyCheckListItem* item = new KMyMoneyCheckListItem(parent, acc.name(), QCheckListItem::CheckBox, acc.id(), this);
-    item->setOn(true);
-    if(acc.accountList().count() > 0) {
-      item->setOpen(true);
-      loadSubAccounts(item, acc.accountList());
-    }
-  }
-}
-
-void KFindTransactionDlg::loadCategories(void)
-{
-  QCStringList list;
-  QCStringList::ConstIterator it_l;
-  MyMoneyFile* file = MyMoneyFile::instance();
-  
-  KMyMoneyCheckListItem* expenses = new KMyMoneyCheckListItem(m_categoriesView, i18n("Expense categories"), QCheckListItem::Controller, "", this);
-  expenses->setSelectable(false);
-  expenses->setOpen(true);
-  
-  list = file->expense().accountList();
-  // scan all expense accounts found in the engine
-  for(it_l = list.begin(); it_l != list.end(); ++it_l) {
-    MyMoneyAccount acc = file->account(*it_l);
-    KMyMoneyCheckListItem* item = new KMyMoneyCheckListItem(expenses, acc.name(), QCheckListItem::CheckBox, acc.id(), this);
-    item->setOn(true);
-    if(acc.accountList().count() > 0) {
-      item->setOpen(true);
-      loadSubAccounts(item, acc.accountList());
-    }
-  }
-
-  KMyMoneyCheckListItem* income = new KMyMoneyCheckListItem(m_categoriesView, i18n("Income categories"), QCheckListItem::Controller, "", this);
-  income->setSelectable(false);
-  income->setOpen(true);
-  
-  list = file->income().accountList();
-  // scan all income accounts found in the engine
-  for(it_l = list.begin(); it_l != list.end(); ++it_l) {
-    MyMoneyAccount acc = file->account(*it_l);
-    KMyMoneyCheckListItem* item = new KMyMoneyCheckListItem(income, acc.name(), QCheckListItem::CheckBox, acc.id(), this);
-    item->setOn(true);
-    if(acc.accountList().count() > 0) {
-      item->setOpen(true);
-      loadSubAccounts(item, acc.accountList());
-    }
-  }
-}
-
-void KFindTransactionDlg::slotSelectAllCategories(void)
-{
-  selectAllCategories(true, true);
-}
-
-void KFindTransactionDlg::slotDeselectAllCategories(void)
-{
-  selectAllCategories(false, false);
-}
-
-void KFindTransactionDlg::slotSelectIncomeCategories(void)
-{
-  selectAllCategories(true, false);
-}
-
-void KFindTransactionDlg::slotSelectExpenseCategories(void)
-{
-  selectAllCategories(false, true);
+  m_categoriesView->setSelectionMode(QListView::Multi);
+  m_categoriesView->loadList(static_cast<KMyMoneyUtils::categoryTypeE>
+                           (KMyMoneyUtils::income | KMyMoneyUtils::expense));
+  connect(m_categoriesView, SIGNAL(stateChanged()), this, SLOT(slotUpdateSelections()));
 }
 
 void KFindTransactionDlg::selectAllSubItems(QListViewItem* item, const bool state)
@@ -485,20 +314,6 @@ void KFindTransactionDlg::selectAllSubItems(QListViewItem* item, const bool stat
     static_cast<QCheckListItem*>(it_v)->setOn(state);
     selectAllSubItems(it_v, state);
   }
-}
-
-void KFindTransactionDlg::selectAllCategories(const bool income, const bool expense)
-{
-  QListViewItem* it_v;
-  
-  for(it_v = m_categoriesView->firstChild(); it_v != 0; it_v = it_v->nextSibling()) {
-    if(static_cast<QCheckListItem*>(it_v)->text() == i18n("Income categories"))
-      selectAllSubItems(it_v, income);
-    else
-      selectAllSubItems(it_v, expense);
-  }
-  
-  slotUpdateSelections();
 }
 
 void KFindTransactionDlg::setupDatePage(void)
@@ -611,7 +426,7 @@ void KFindTransactionDlg::slotAmountRangeSelected(void)
 
 void KFindTransactionDlg::setupPayeesPage(void)
 {
-  m_accountsView->setSelectionMode(QListView::Single);
+  m_payeesView->setSelectionMode(QListView::Single);
   m_payeesView->header()->hide();
 
   loadPayees();  
@@ -631,7 +446,8 @@ void KFindTransactionDlg::loadPayees(void)
   list = file->payeeList();
   // load view
   for(it_l = list.begin(); it_l != list.end(); ++it_l) {
-    KMyMoneyCheckListItem* item = new KMyMoneyCheckListItem(m_payeesView, (*it_l).name(), QCheckListItem::CheckBox, (*it_l).id(), this);
+    kMyMoneyCheckListItem* item = new kMyMoneyCheckListItem(m_payeesView, (*it_l).name(), (*it_l).id());
+    connect(item, SIGNAL(stateChanged(bool)), this, SLOT(slotUpdateSelections()));
     item->setOn(true);
   }
 }
@@ -697,7 +513,7 @@ void KFindTransactionDlg::scanCheckListItems(QListViewItem* item, const opTypeE 
 
   for(it_v = item->firstChild(); it_v != 0; it_v = it_v->nextSibling()) {
     if(it_v->rtti() == 1) {
-      KMyMoneyCheckListItem* it_c = static_cast<KMyMoneyCheckListItem*>(it_v);
+      kMyMoneyCheckListItem* it_c = static_cast<kMyMoneyCheckListItem*>(it_v);
       if(it_c->type() == QCheckListItem::CheckBox) {
         if(it_c->isOn())
           addItemToFilter(op, (*it_c).accountId());
@@ -713,7 +529,7 @@ void KFindTransactionDlg::scanCheckListItems(QListView* view, const opTypeE op)
 
   for(it_v = view->firstChild(); it_v != 0; it_v = it_v->nextSibling()) {
     if(it_v->rtti() == 1) {
-      KMyMoneyCheckListItem* it_c = static_cast<KMyMoneyCheckListItem*>(it_v);
+      kMyMoneyCheckListItem* it_c = static_cast<kMyMoneyCheckListItem*>(it_v);
       if(it_c->type() == QCheckListItem::CheckBox) {
         if(it_c->isOn())
           addItemToFilter(op, (*it_c).accountId());
@@ -735,8 +551,8 @@ void KFindTransactionDlg::slotSearch(void)
   }
   
   // Account tab
-  if(!allItemsSelected(m_accountsView)) {
-    scanCheckListItems(m_accountsView, addAccountToFilter);
+  if(!m_accountsView->allAccountsSelected()) {
+    m_filter.addAccount(m_accountsView->selectedAccounts());
   }
 
   // Date tab
@@ -761,7 +577,8 @@ void KFindTransactionDlg::slotSearch(void)
   }
   
   // Categories tab
-  scanCheckListItems(m_accountsView, addCategoryToFilter);
+
+  m_filter.addCategory(m_categoriesView->selectedAccounts());
   
   // Payees tab
   if(m_emptyPayeesButton->isChecked()) {
@@ -785,7 +602,6 @@ void KFindTransactionDlg::slotSearch(void)
      && (!m_nrFromEdit->text().isEmpty() || !m_nrToEdit->text().isEmpty())) {
     m_filter.setNumberFilter(m_nrFromEdit->text(), m_nrToEdit->text());
   }
-
 
   // filter is setup, now fill the register
   slotRefreshView();
@@ -813,7 +629,11 @@ void KFindTransactionDlg::slotRefreshView(void)
         ofs++;
         
       k.setSplitId(m_filter.matchingSplits()[ofs].id());
-      m_transactionList.append(k);
+      MyMoneyAccount acc = MyMoneyFile::instance()->account(m_filter.matchingSplits()[ofs].accountId());
+      if(acc.accountGroup() == MyMoneyAccount::Asset
+      || acc.accountGroup() == MyMoneyAccount::Liability)
+        m_transactionList.append(k);
+        
     }
   } catch(MyMoneyException *e) {
     delete e;

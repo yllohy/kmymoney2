@@ -84,9 +84,9 @@ public:
   /**
     * This method returns the name of the selected account in the combo box.
     *
-    * @return QString containing the account name
+    * @return QCString containing the id of the selected account
     */
-  const QString selectedAccount(void) const { return m_accountComboBox->currentText(); };
+  const QCString selectedAccount(void) const;
 
   /**
     * This method is used to set the mode of the dialog. Two modes
@@ -148,21 +148,6 @@ private:
     * @param acc reference to const QCString containing an account id
     */
   void update(const QCString& acc);
-
-  /**
-    * This method is used to load the available accounts into the
-    * combo box for selection.
-    */
-  void loadAccounts(void);
-
-  /**
-    * This method is used to load an account hierarchy into a string list
-    *
-    * @param strList Reference to the string list to setup
-    * @param id Account id to add
-    * @param leadIn constant leadin to be added in front of the account name
-    */
-  void addCategories(QStringList& strList, const QCString& id, const QString& leadIn) const;
 
 private:
   QString         m_purpose;
