@@ -74,7 +74,7 @@ class IMyMoneyStorage;
   * @see KMyMoneyView
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: kmymoney2.h,v 1.35 2003/08/21 05:31:23 ipwizard Exp $
+  * $Id: kmymoney2.h,v 1.36 2003/08/31 19:36:26 ipwizard Exp $
   *
   * @short Main application class.
 **/
@@ -137,13 +137,15 @@ protected slots:
 
 public:
   /**
-    * This method is used to select the setting for the startup with
-    * dialog. As a side effect, it closes the splash screen that is
-    * shown during program start.
+    * This method returns the last URL used or an empty URL
+    * depending on the option setting if the last file should
+    * be opened during startup or the open file dialog should
+    * be displayed.
     *
-    * @return true if dialog request, false if start with last file requested
+    * @return URL of last opened file or empty if the program
+    *         should start with the open file dialog
     */
-  bool startWithDialog(void);
+  const KURL lastOpenedURL(void);
 
   /**
     * construtor of KMyMoney2App, calls all init functions to create the application.
@@ -157,9 +159,6 @@ public:
 
   /** Init wizard dialog */
   bool initWizard();
-
-  /** initial file loader */
-  void readFile(void);
 
   static void progressCallback(int current, int total, const QString&);
 
@@ -276,9 +275,17 @@ public slots:
 
 private:
   bool verifyImportedData(void);
-    
+
+signals:
+  /**
+    * This signal is emitted when a new file is loaded. In the case file
+    * is closed, this signal is also emitted with an empty url.
+    */
+  void fileLoaded(const KURL& url);
+      
 private:
   /** the configuration object of the application */
+
   KConfig *config;
 
   // KAction pointers to enable/disable actions

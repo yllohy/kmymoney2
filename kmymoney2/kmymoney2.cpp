@@ -130,21 +130,13 @@ KMyMoney2App::~KMyMoney2App()
     delete m_engineBackup;
 }
 
-bool KMyMoney2App::startWithDialog(void)
+const KURL KMyMoney2App::lastOpenedURL(void)
 {
+  KURL url = m_startDialog ? KURL() : fileName;
+  
   m_startLogo->close();
   slotStatusMsg(i18n("Ready."));
-  return m_startDialog;
-}
-
-void KMyMoney2App::readFile(void)
-{
-  QString prevMsg = slotStatusMsg(i18n("Loading file..."));
-
-  myMoneyView->readFile(fileName);
-
-  slotStatusMsg(prevMsg);
-  updateCaption();
+  return url;
 }
 
 void KMyMoney2App::initActions()
@@ -219,6 +211,7 @@ void KMyMoney2App::initActions()
   actionQifImport->setStatusText(i18n("Import transactions using QIF format"));
   actionQifExport->setStatusText(i18n("Export transactions using QIF format"));
 #endif
+
 
 
 
@@ -339,6 +332,8 @@ void KMyMoney2App::slotFileNew()
   fileName = KURL();
   myMoneyView->newFile();
   slotStatusMsg(prevMsg);
+  
+  emit fileLoaded(fileName);
 }
 
 // General open
@@ -361,11 +356,13 @@ void KMyMoney2App::slotFileOpen()
     }
     slotFileClose();
   }
+  
   fileName = KURL();
   initWizard();
   slotStatusMsg(prevMsg);
   updateCaption();
 
+  emit fileLoaded(fileName);
 }
 
 void KMyMoney2App::slotFileOpenRecent(const KURL& url)
@@ -388,9 +385,13 @@ void KMyMoney2App::slotFileOpenRecent(const KURL& url)
 
   fileName = url;
   fileOpenRecent->addURL( url );
-  readFile();
-  
+
+  myMoneyView->readFile(fileName);
+
   slotStatusMsg(prevMsg);
+  updateCaption();
+  
+  emit fileLoaded(fileName);
 }
 
 void KMyMoney2App::slotFileSave()
@@ -447,7 +448,6 @@ void KMyMoney2App::slotFileSaveAs()
     }
 
     QFileInfo saveAsInfo(newName);
-//    addRecentFile(newName);
 
     fileName = newName;
     myMoneyView->saveFile(newName);
@@ -490,6 +490,8 @@ void KMyMoney2App::slotFileClose()
   myMoneyView->closeFile();
   fileName = KURL();
   updateCaption();
+  
+  emit fileLoaded(fileName);
 }
 
 void KMyMoney2App::slotFileQuit()
@@ -503,11 +505,11 @@ void KMyMoney2App::slotFileQuit()
       // only close the window if the closeEvent is accepted. If the user presses Cancel on the saveModified() dialog,
       // the window and the application stay open.
       if(!w->close())
-      	break;
+        break;
     }
     // We will only quit if all windows were processed and not cancelled
     if(w == 0)
-  	  kapp->quit();
+      kapp->quit();
 
   } else
       kapp->quit();
@@ -605,6 +607,7 @@ void KMyMoney2App::slotFileViewPersonal()
   QString prevMsg = slotStatusMsg(i18n("Viewing personal data..."));
 
   if ( !myMoneyView->fileOpen() ) {
+
     KMessageBox::information(this, i18n("No MyMoneyFile open"));
     return;
   }
@@ -640,8 +643,6 @@ void KMyMoney2App::slotQifImport()
       slotStatusMsg(i18n("Importing file..."));
       m_reader = new MyMoneyQifReader;
       connect(m_reader, SIGNAL(importFinished()), this, SLOT(slotQifImportFinished()));
-
-      
 
       myMoneyView->suspendUpdate(true);
 
@@ -685,7 +686,6 @@ void KMyMoney2App::slotQifImportFinished(void)
       m_engineBackup = 0;
     }
     
-
     myMoneyView->suspendUpdate(false);
     // update the views as they might still contain invalid data
     // from the import session
@@ -729,7 +729,6 @@ void KMyMoney2App::slotSettings()
   if( dlg.exec() )
   {
     myMoneyView->slotRefreshViews();
-
   }
 
 }
@@ -737,24 +736,24 @@ void KMyMoney2App::slotSettings()
 /** Init wizard dialog */
 bool KMyMoney2App::initWizard()
 {
-    KStartDlg start;
-    if (start.exec()) {
-      if (start.isNewFile()) {
-        slotFileNew();
-      } else if (start.isOpenFile()) {
-        KURL url;
-        url = start.getURL();
-        fileName = url.url();
-        slotFileOpenRecent(url);
-      } else { // Wizard / Template
-        fileName = start.getURL();
-      }
-      return true;
-
-    } else {
-      // cancel clicked so post an exit call
-      return false;
+  KStartDlg start;
+  if (start.exec()) {
+    if (start.isNewFile()) {
+      slotFileNew();
+    } else if (start.isOpenFile()) {
+      KURL url;
+      url = start.getURL();
+      fileName = url.url();
+      slotFileOpenRecent(url);
+    } else { // Wizard / Template
+      fileName = start.getURL();
     }
+    return true;
+
+  } else {
+    // cancel clicked so post an exit call
+    return false;
+  }
 }
 /** No descriptions */
 void KMyMoney2App::slotFileBackup()
@@ -937,6 +936,7 @@ void KMyMoney2App::slotKeySettings()
   QString path = KGlobal::dirs()->findResource("appdata", "kmymoney2ui.rc");
   KKeyDialog::configureKeys(actionCollection(), path);
 }
+
 
 void KMyMoney2App::slotHomeView()
 {

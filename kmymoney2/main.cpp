@@ -123,7 +123,9 @@ int main(int argc, char *argv[])
 
   int rc = 0;
 
-  if (kmymoney2->startWithDialog()) {
+  KURL url = kmymoney2->lastOpenedURL();
+  
+  if (url.url().isEmpty()) {
     if (kmymoney2->initWizard()) {
       KTipDialog::showTip(kmymoney2, "", false);
       args->clear();
@@ -133,7 +135,7 @@ int main(int argc, char *argv[])
     }
   } else {
     KTipDialog::showTip(kmymoney2, "", false);
-    kmymoney2->readFile();
+    kmymoney2->slotFileOpenRecent(url);
     args->clear();
     rc = a->exec();
   }
