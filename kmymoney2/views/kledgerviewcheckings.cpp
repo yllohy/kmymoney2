@@ -977,10 +977,10 @@ void KLedgerViewCheckings::createEditWidgets(void)
     connect(m_editCategory, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   }
   if(!m_editMemo) {
-      m_editMemo = new kMyMoneyLineEdit(0, KAppTest::widgetName(this, "kMyMoneyLineEdit/Memo"), AlignLeft|AlignVCenter);
-      connect(m_editMemo, SIGNAL(lineChanged(const QString&)), this, SLOT(slotMemoChanged(const QString&)));
-      connect(m_editMemo, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
-      connect(m_editMemo, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
+    m_editMemo = new kMyMoneyLineEdit(0, KAppTest::widgetName(this, "kMyMoneyLineEdit/Memo"), AlignLeft|AlignVCenter);
+    connect(m_editMemo, SIGNAL(lineChanged(const QString&)), this, SLOT(slotMemoChanged(const QString&)));
+    connect(m_editMemo, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
+    connect(m_editMemo, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   }
 
   if(!m_editAmount) {
