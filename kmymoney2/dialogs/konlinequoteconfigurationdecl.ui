@@ -1,8 +1,8 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
-<class>konlinequoteconfigurationdecl</class>
+<class>kOnlineQuoteConfigurationDecl</class>
 <widget class="QDialog">
     <property name="name">
-        <cstring>konlinequoteconfigurationdecl</cstring>
+        <cstring>kOnlineQuoteConfigurationDecl</cstring>
     </property>
     <property name="geometry">
         <rect>
@@ -120,15 +120,31 @@
             <string>Perl Location:</string>
         </property>
     </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabel2_2</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>40</y>
+                <width>90</width>
+                <height>21</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Script:</string>
+        </property>
+    </widget>
     <widget class="KHistoryCombo">
         <property name="name">
-            <cstring>kHistoryCombo1</cstring>
+            <cstring>cmbScriptName</cstring>
         </property>
         <property name="geometry">
             <rect>
                 <x>110</x>
                 <y>40</y>
-                <width>381</width>
+                <width>310</width>
                 <height>21</height>
             </rect>
         </property>
@@ -146,6 +162,25 @@
             </rect>
         </property>
     </widget>
+    <widget class="KPushButton">
+        <property name="name">
+            <cstring>btnBrowse</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>430</x>
+                <y>40</y>
+                <width>61</width>
+                <height>21</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>&amp;Browse...</string>
+        </property>
+        <property name="accel">
+            <string>Alt+B</string>
+        </property>
+    </widget>
 </widget>
 <customwidgets>
 </customwidgets>
@@ -153,13 +188,13 @@
     <connection>
         <sender>buttonOk</sender>
         <signal>clicked()</signal>
-        <receiver>konlinequoteconfigurationdecl</receiver>
+        <receiver>kOnlineQuoteConfigurationDecl</receiver>
         <slot>accept()</slot>
     </connection>
     <connection>
         <sender>buttonCancel</sender>
         <signal>clicked()</signal>
-        <receiver>konlinequoteconfigurationdecl</receiver>
+        <receiver>kOnlineQuoteConfigurationDecl</receiver>
         <slot>reject()</slot>
     </connection>
 </connections>
@@ -168,5 +203,6 @@
     <includehint>kcombobox.h</includehint>
     <includehint>klineedit.h</includehint>
     <includehint>klineedit.h</includehint>
+    <includehint>kpushbutton.h</includehint>
 </includehints>
 </UI>

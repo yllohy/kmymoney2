@@ -51,6 +51,16 @@ public:
   void  logStatusMessage(const QString& message);
   void  logBeginingStatus();
   void  logSummaryStatus();
+  
+public slots:
+  void slotOKClicked();
+  void slotCancelClicked();
+  void slotUpdateSelectedClicked();
+  void slotUpdateAllClicked();
+  void slotConfigureClicked();
+  
+private:
+  MyMoneyOnlinePriceUpdate *m_pPriceUpdate;
 
 };
 

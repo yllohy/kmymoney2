@@ -34,15 +34,44 @@
 #include <kmessagebox.h>
 #include <kpushbutton.h>
 #include <klistbox.h>
+#include <klistview.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
 
 #include "kequitypriceupdatedlg.h"
+#include "../mymoney/mymoneyfile.h"
+#include "../mymoney/mymoneyequity.h"
+#include "../mymoney/mymoneyonlinepriceupdate.h"
 
 KEquityPriceUpdateDlg::KEquityPriceUpdateDlg(QWidget *parent) : KEquityPriceUpdateDlgDecl(parent)
 {
+  lvEquityList->setRootIsDecorated(true);
+  lvEquityList->setColumnText(0, QString(i18n("Symbol")));
+  lvEquityList->addColumn(i18n("Name"));
+  lvEquityList->addColumn(i18n("Symbol"));
 
+  lvEquityList->setMultiSelection(false);
+  lvEquityList->setColumnWidthMode(0, QListView::Maximum);
+  //lvEquityList->header()->setResizeEnabled(true);
+  lvEquityList->setAllColumnsShowFocus(true);
+  
+  MyMoneyFile* file = MyMoneyFile::instance();
+  QValueList<MyMoneyEquity> equities = file->equityList();
+  qDebug("KEquityPriceUpdateDlg: Number of equity objects: %d", equities.size());
+
+  for(QValueList<MyMoneyEquity>::ConstIterator it = equities.begin(); it != equities.end(); ++it)
+  {
+    qDebug("KEquityPriceUpdateDlg: Adding equity %s, symbol = %s", (*it).name().data(), (*it).tradingSymbol().data());
+    KListViewItem* item = new KListViewItem(lvEquityList, (*it).name(), (*it).tradingSymbol());
+    lvEquityList->insertItem(item);
+  }
+  
+  connect(btnOK, SIGNAL(clicked()), this, SLOT(slotOKClicked()));
+  connect(btnCancel, SIGNAL(clicked()), this, SLOT(slotCancelClicked()));
+  connect(btnUpdateSelected, SIGNAL(clicked()), this, SLOT(slotUpdateSelectedClicked()));
+  connect(btnUpdateAll, SIGNAL(clicked()), this, SLOT(slotUpdateAllClicked()));
+  connect(btnConfigure, SIGNAL(clicked()), this, SLOT(slotConfigureClicked()));
 }
 
 KEquityPriceUpdateDlg::~KEquityPriceUpdateDlg()
@@ -62,10 +91,56 @@ void  KEquityPriceUpdateDlg::logStatusMessage(const QString& message)
 
 void KEquityPriceUpdateDlg::logBeginingStatus()
 {
-
+  logStatusMessage(QString("Beginning Online Stock Update"));
 }
 
 void KEquityPriceUpdateDlg::logSummaryStatus()
+{
+
+}
+
+void KEquityPriceUpdateDlg::slotOKClicked()
+{
+  accept();
+}
+
+void KEquityPriceUpdateDlg::slotCancelClicked()
+{
+  reject();
+}
+
+void KEquityPriceUpdateDlg::slotUpdateSelectedClicked()
+{
+  if(!m_pPriceUpdate)
+  {
+    m_pPriceUpdate = new MyMoneyOnlinePriceUpdate();
+  }
+  
+  //m_pPriceUpdate->
+}
+
+void KEquityPriceUpdateDlg::slotUpdateAllClicked()
+{
+  qDebug("KEquityPriceUpdateDlg: Updating All");
+  
+  if(!m_pPriceUpdate)
+  {
+    m_pPriceUpdate = new MyMoneyOnlinePriceUpdate();
+  }
+  
+  QStringList list;
+  QPtrList<QListViewItem> selectedItems = lvEquityList->selectedItems();
+  for(QPtrList<QListViewItem>::ConstIterator it = selectedItems.begin(); it != selectedItems.end(); ++it)
+  {
+    qDebug("KEquityPriceUpdateDlg: Updating %s", (*it)->text(0).data());
+    QListViewItem* item = (*it);
+    list.push_back(item->text(0));
+  }
+  
+  int result = m_pPriceUpdate->getQuotes(list);
+}
+
+void KEquityPriceUpdateDlg::slotConfigureClicked()
 {
 
 }
