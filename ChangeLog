@@ -1,3 +1,10 @@
+2003-07-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * added button icons to the ledger view
+  * added button icons to split dialog
+  * removed warnings in ksplittransactiondlg.cpp
+  * added button icons to split correction dialog
+  * added french home page
+
 2003-07-30 Michael Edwardes <mte@users.sourceforge.net>
   * Use the IconGroup User to load icons.
   * Add icons to the schedule list view items.
@@ -8,7 +15,7 @@
   * Added icons to the schedule dialog.
   * Added icons to the new file dialog, schedule view.
   * Use colours in the schedule list.
- 
+
 2003-07-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * disable save button and menu entry if data in engine is unchanged
   * fix memory leak in KLedgerView
@@ -39,7 +46,7 @@
 2003-07-23 Michael Edwardes <mte@users.sourceforge.net>
   * Fix handling of split dialog.
   * Save open state of top level items in schedule list view.
-  
+
 2003-07-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Show filename and modification mark in caption of main window
   * Avoid some compiler warnings
