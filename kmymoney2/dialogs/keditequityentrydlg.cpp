@@ -20,38 +20,24 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <kglobal.h>
-#include <klocale.h>
-#if QT_VERSION > 300
-#include <kstandarddirs.h>
-#else
-#include <kstddirs.h>
-#endif
-
-#include <qpixmap.h>
-
 // ----------------------------------------------------------------------------
 // QT Includes
-#include <qfile.h>
-#include <qtextstream.h>
-#include <qlabel.h>
-#include <qpushbutton.h>
-#include <qprogressbar.h>
-#include <qlineedit.h>
-#include <qgroupbox.h>
-#include <qlistview.h>
-#include <qcombobox.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
-#include <kfiledialog.h>
+
 #include <kglobal.h>
 #include <klocale.h>
-#include <kmessagebox.h>
 #include <kconfig.h>
 #include <knuminput.h>
 #include <klistview.h>
+#include <kpushbutton.h>
+#include <klineedit.h>
+#include <kcombobox.h>
                           
+// ----------------------------------------------------------------------------
+// Project Includes
+
 #include "keditequityentrydlg.h"
 #include "kupdatestockpricedlg.h"
 
