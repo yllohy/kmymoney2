@@ -53,7 +53,7 @@
   * @see KDialogBase
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: ksettingsdlg.h,v 1.9 2002/12/08 16:12:19 ipwizard Exp $
+  * $Id: ksettingsdlg.h,v 1.10 2003/01/26 17:35:10 ipwizard Exp $
   *
   * @short A class to manipulate the settings needed for running KMyMoney2
 **/
@@ -93,6 +93,9 @@ private:
 
   /* copy type to nr field */
   QCheckBox* m_qcheckboxTypeToNr;
+
+  /* hide unused categories */
+  QCheckBox* m_qcheckboxHideCategory;
 
   /* always show a nr field in the transaction form */
   QCheckBox* m_qcheckboxShowNrField;
@@ -136,7 +139,7 @@ private:
   bool m_bTempColourPerTransaction;
   bool m_bTempStartPrompt;
   bool m_bDoneApply;
-  bool m_bTempTextPrompt;
+  bool m_bTempHideCategory;
   QDate m_qdateTempStart;
   bool m_bTempNormalView;
   bool m_bTempAccountWizard;

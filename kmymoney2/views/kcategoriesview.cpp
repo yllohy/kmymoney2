@@ -81,13 +81,13 @@ KCategoriesView::KCategoriesView(QWidget *parent, const char *name )
   readConfig();
 
   refresh();
-	
-	connect(categoryListView, SIGNAL(selectionChanged(QListViewItem*)),
-	  this, SLOT(slotSelectionChanged(QListViewItem*)));
+
+  connect(categoryListView, SIGNAL(selectionChanged(QListViewItem*)),
+    this, SLOT(slotSelectionChanged(QListViewItem*)));
   connect(categoryListView, SIGNAL(rightButtonPressed(QListViewItem* , const QPoint&, int)),
     this, SLOT(slotListRightMouse(QListViewItem*, const QPoint&, int)));
-	connect(buttonEdit, SIGNAL(clicked()), this, SLOT(slotEditClicked()));
-	connect(buttonNew, SIGNAL(clicked()), this, SLOT(slotNewClicked()));
+  connect(buttonEdit, SIGNAL(clicked()), this, SLOT(slotEditClicked()));
+  connect(buttonNew, SIGNAL(clicked()), this, SLOT(slotNewClicked()));
   connect(buttonDelete, SIGNAL(clicked()), this, SLOT(slotDeleteClicked()));
 
   m_suspendUpdate = false;
@@ -112,9 +112,12 @@ void KCategoriesView::refresh(void)
   config->setGroup("List Options");
   QFont defaultFont = QFont("helvetica", 12);
   categoryListView->header()->setFont(config->readFontEntry("listHeaderFont", &defaultFont));
+  m_hideCategory = config->readBoolEntry("HideUnusedCategory", false);
+  bool accountUsed;
 
   categoryListView->clear();
   m_accountMap.clear();
+  m_transactionCountMap = MyMoneyFile::instance()->transactionCountMap();
 
   MyMoneyFile *file = MyMoneyFile::instance();
 
@@ -140,10 +143,18 @@ void KCategoriesView::refresh(void)
       KAccountListItem *accountItem = new KAccountListItem(incomeTopLevelAccount,
             m_accountMap[*it]);
 
+      accountUsed = m_transactionCountMap[*it] > 0;
+
       QCStringList subAccounts = m_accountMap[*it].accountList();
       if (subAccounts.count() >= 1)
       {
-        showSubAccounts(subAccounts, accountItem, i18n("Income"));
+        accountUsed |= showSubAccounts(subAccounts, accountItem, i18n("Income"));
+      }
+      if(accountUsed == false && m_hideCategory == true) {
+        // in case hide category is on and the account or any of it's
+        // subaccounts has no split, we can safely remove it and all
+        // it's sub-ordinate accounts from the list
+        delete accountItem;
       }
     }
 
@@ -158,10 +169,18 @@ void KCategoriesView::refresh(void)
       KAccountListItem *accountItem = new KAccountListItem(expenseTopLevelAccount,
             m_accountMap[*it]);
 
+      accountUsed = m_transactionCountMap[*it] > 0;
+
       QCStringList subAccounts = m_accountMap[*it].accountList();
       if (subAccounts.count() >= 1)
       {
-        showSubAccounts(subAccounts, accountItem, i18n("Expense"));
+        accountUsed |= showSubAccounts(subAccounts, accountItem, i18n("Expense"));
+      }
+      if(accountUsed == false && m_hideCategory == true) {
+        // in case hide category is on and the account or any of it's
+        // subaccounts has no split, we can safely remove it and all
+        // it's sub-ordinate accounts from the list
+        delete accountItem;
       }
     }
 
@@ -178,19 +197,24 @@ void KCategoriesView::refresh(void)
   m_accountMap.clear();
 }
 
-void KCategoriesView::showSubAccounts(const QCStringList& accounts, KAccountListItem *parentItem,
+const bool KCategoriesView::showSubAccounts(const QCStringList& accounts, KAccountListItem *parentItem,
   const QString& typeName)
 {
+  bool accountUsed = false;
+
   for ( QCStringList::ConstIterator it = accounts.begin(); it != accounts.end(); ++it )
   {
     KAccountListItem *accountItem  = new KAccountListItem(parentItem,
                                                           m_accountMap[*it]);
+    accountUsed = m_transactionCountMap[*it] > 0;
+
     QCStringList subAccounts = m_accountMap[*it].accountList();
     if (subAccounts.count() >= 1)
     {
-      showSubAccounts(subAccounts, accountItem, typeName);
+      accountUsed |= showSubAccounts(subAccounts, accountItem, typeName);
     }
   }
+  return accountUsed;
 }
 
 void KCategoriesView::show()

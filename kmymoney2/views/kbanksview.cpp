@@ -450,6 +450,8 @@ void KAccountsView::slotListRightMouse(QListViewItem* item, const QPoint& , int 
 
   } else {
     KAccountListItem* accountItem = static_cast<KAccountListItem*> (item);
+
+
     if (accountItem) {
       try {
         MyMoneyFile *file = MyMoneyFile::instance();
@@ -547,6 +549,7 @@ const QPixmap KAccountsView::accountImage(const MyMoneyAccount::accountTypeE typ
   return rc;
 }
 
+/*
 void KAccountsView::fillTransactionCountMap(void)
 {
   QValueList<MyMoneyTransaction> list;
@@ -564,6 +567,7 @@ void KAccountsView::fillTransactionCountMap(void)
     }
   }
 }
+*/
 
 void KAccountsView::fillAccountMap(void)
 {
@@ -586,13 +590,15 @@ void KAccountsView::refresh(const QCString& selectAccount)
   QFont defaultFont = QFont("helvetica", 12);
   accountListView->header()->setFont(config->readFontEntry("listHeaderFont", &defaultFont));
   m_bViewNormalAccountsView = config->readBoolEntry("NormalAccountsView", true);
+  m_hideCategory = config->readBoolEntry("HideUnusedCategory", false);
+  bool accountUsed;
 
   clear();
 
   m_selectedAccount = selectAccount;
 
   fillAccountMap();
-  fillTransactionCountMap();
+  m_transactionCountMap = MyMoneyFile::instance()->transactionCountMap();
 
   MyMoneyFile *file = MyMoneyFile::instance();
 
@@ -694,9 +700,17 @@ void KAccountsView::refresh(const QCString& selectAccount)
             m_accountMap[*it]);
         accountItem->setText(1, QString("%1").arg(m_transactionCountMap[*it]));
 
+        accountUsed = m_transactionCountMap[*it] > 0;
+
         QCStringList subAccounts = m_accountMap[*it].accountList();
         if (subAccounts.count() >= 1) {
-          showSubAccounts(subAccounts, accountItem, i18n("Income"));
+          accountUsed |= showSubAccounts(subAccounts, accountItem, i18n("Income"));
+        }
+        if(accountUsed == false && m_hideCategory == true) {
+          // in case hide category is on and the account or any of it's
+          // subaccounts has no split, we can safely remove it and all
+          // it's sub-ordinate accounts from the list
+          delete accountItem;
         }
       }
 
@@ -712,10 +726,18 @@ void KAccountsView::refresh(const QCString& selectAccount)
             m_accountMap[*it]);
         accountItem->setText(1, QString("%1").arg(m_transactionCountMap[*it]));
 
+        accountUsed = m_transactionCountMap[*it] > 0;
+
         QCStringList subAccounts = m_accountMap[*it].accountList();
 
         if (subAccounts.count() >= 1) {
-          showSubAccounts(subAccounts, accountItem, i18n("Expense"));
+          accountUsed |= showSubAccounts(subAccounts, accountItem, i18n("Expense"));
+        }
+        if(accountUsed == false && m_hideCategory == true) {
+          // in case hide category is on and the account or any of it's
+          // subaccounts has no split, we can safely remove it and all
+          // it's sub-ordinate accounts from the list
+          delete accountItem;
         }
       }
 
@@ -736,24 +758,37 @@ void KAccountsView::refresh(const QCString& selectAccount)
 */
 }
 
-void KAccountsView::showSubAccounts(const QCStringList& accounts, KAccountListItem *parentItem, const QString& group)
+const bool KAccountsView::showSubAccounts(const QCStringList& accounts, KAccountListItem *parentItem, const QString& group)
 {
+  bool  accountUsed = false;
+
   for ( QCStringList::ConstIterator it = accounts.begin(); it != accounts.end(); ++it ) {
     KAccountListItem *accountItem  = new KAccountListItem(parentItem,
           m_accountMap[*it]);
     accountItem->setText(1, QString("%1").arg(m_transactionCountMap[*it]));
 
+    accountUsed = m_transactionCountMap[*it] > 0;
+
     QCStringList subAccounts = m_accountMap[*it].accountList();
     if (subAccounts.count() >= 1) {
-      showSubAccounts(subAccounts, accountItem, group);
+      accountUsed |= showSubAccounts(subAccounts, accountItem, group) || m_transactionCountMap[*it] > 0;
+    }
+
+    if(accountUsed == false && m_hideCategory == true) {
+      // in case hide category is on and the account or any of it's
+      // subaccounts has no split, we can safely remove it and all
+      // it's sub-ordinate accounts from the list
+      delete accountItem;
     }
   }
+  return accountUsed;
 }
 
 void KAccountsView::clear(void)
 {
   accountListView->clear();
   accountIconView->clear();
+
   m_bSelectedAccount = false;
   m_bSelectedInstitution=false;
 }

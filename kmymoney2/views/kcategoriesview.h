@@ -48,16 +48,18 @@
 class KCategoriesView : public kCategoriesViewDecl, MyMoneyObserver  {
    Q_OBJECT
 private:
-	QString m_lastCat;
-	bool m_suspendUpdate;
+  QString m_lastCat;
+  bool m_suspendUpdate;
+  bool m_hideCategory;
 
   QMap<QCString, MyMoneyAccount> m_accountMap;
+  QMap<QCString, unsigned long> m_transactionCountMap;
 
   void readConfig(void);
   void writeConfig(void);
   void refresh(void);
   void update(const QCString& id);
-  void showSubAccounts(const QCStringList& accounts, KAccountListItem *parentItem, const QString&);
+  const bool showSubAccounts(const QCStringList& accounts, KAccountListItem *parentItem, const QString&);
 
 protected:
   void resizeEvent(QResizeEvent *);

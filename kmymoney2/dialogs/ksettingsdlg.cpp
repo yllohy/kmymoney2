@@ -151,6 +151,10 @@ void KSettingsDlg::setPageAccountsView()
   m_qradiobuttonAccountWizard = new QRadioButton("account_view", qwizardbuttongroup);
   m_qradiobuttonAccountWizard->setText( i18n( "Use the new account wizard" ) );
   qwizardvboxlayout->addWidget(m_qradiobuttonAccountWizard);
+
+  // Create a check box for the hide category feature
+  m_qcheckboxHideCategory = new QCheckBox("hide_categories", qvboxMainFrame);
+  m_qcheckboxHideCategory->setText( i18n( "Don't show unused categories" ) );
 }
 
 /** Called to create the Main List page shown in the dialog.
@@ -247,8 +251,29 @@ void KSettingsDlg::setPageList()
   qvboxlayout->addWidget(m_qradiobuttonOtherRow);
   qvboxlayoutPage->addWidget(qbuttongroup);
 
+
+  // Add a vertical spacer to take up the remaining available space
+  QSpacerItem* spacer = new QSpacerItem( 20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding );
+  qvboxlayoutPage->addItem( spacer );
+
+  // Add the page to the tab
+  qtabwidget->insertTab(qwidgetPage, i18n("General"));
+
+
+
+
+
+
+  // Create a new tab for the filter options
+  QWidget *qwidgetFilter = new QWidget(qtabwidget, "filterTab");
+
+  // Create a vertical layout
+  QVBoxLayout *qvboxlayoutFilter = new QVBoxLayout(qwidgetFilter);
+  qvboxlayoutFilter->setSpacing( 6 );
+  qvboxlayoutFilter->setMargin( 11 );
+
   // Create a group to hold two radio buttons
-  QButtonGroup *qbuttongroupDates = new QButtonGroup(qwidgetPage, "ButtonGroup1");
+  QButtonGroup *qbuttongroupDates = new QButtonGroup(qwidgetFilter, "ButtonGroup1");
   qbuttongroupDates->setTitle(i18n("Restrict by date"));
   qbuttongroupDates->setColumnLayout(0, Qt::Vertical );
   qbuttongroupDates->layout()->setSpacing( 0 );
@@ -263,18 +288,25 @@ void KSettingsDlg::setPageList()
   QLabel *m_qlabelStartDate = new QLabel(i18n("Start Date: "), qbuttongroupDates);
   qhboxlayout2->addWidget(m_qlabelStartDate);
   qhboxlayout2->addWidget(m_dateinputStart);
-  qvboxlayoutPage->addWidget(qbuttongroupDates);
-
+  qvboxlayoutFilter->addWidget(qbuttongroupDates);
 
   // Add a vertical spacer to take up the remaining available space
-  QSpacerItem* spacer = new QSpacerItem( 20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding );
-  qvboxlayoutPage->addItem( spacer );
+  spacer = new QSpacerItem( 20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding );
+  qvboxlayoutFilter->addItem( spacer );
 
   // Add the page to the tab
-  qtabwidget->insertTab(qwidgetPage, i18n("General"));
+  qtabwidget->insertTab(qwidgetFilter, i18n("Filter"));
+
+
+
+
+
+
+
+
 
   // Create a new tab for the colour options
-  QWidget *qwidgetColour = new QWidget(qtabwidget, "tab");
+  QWidget *qwidgetColour = new QWidget(qtabwidget, "colorTab");
 
   // Create a vertical layout
   QVBoxLayout *qvboxlayoutColour = new QVBoxLayout(qwidgetColour);
@@ -414,10 +446,8 @@ void KSettingsDlg::configRead()
   m_bTempShowGrid = kconfig->readBoolEntry("ShowGrid", true);
   m_qcheckboxShowGrid->setChecked(m_bTempShowGrid);
 
-/*
-  m_bTempTextPrompt = kconfig->readBoolEntry("TextPrompt", true);
-  m_qcheckboxTextPrompt->setChecked(m_bTempTextPrompt);
-*/
+  m_bTempHideCategory = kconfig->readBoolEntry("HideUnusedCategory", false);
+  m_qcheckboxHideCategory->setChecked(m_bTempHideCategory);
 
   m_bTempColourPerTransaction = kconfig->readBoolEntry("ColourPerTransaction", true);
   m_qradiobuttonPerTransaction->setChecked(m_bTempColourPerTransaction);
@@ -451,7 +481,7 @@ void KSettingsDlg::configWrite()
   // kconfig->writeEntry("RowCount", m_klineeditRowCount->text());
   // kconfig->writeEntry("ShowGrid", m_qcheckboxShowGrid->isChecked());
   kconfig->writeEntry("ColourPerTransaction", m_qradiobuttonPerTransaction->isChecked());
-  // kconfig->writeEntry("TextPrompt", m_qcheckboxTextPrompt->isChecked());
+  kconfig->writeEntry("HideUnusedCategory", m_qcheckboxHideCategory->isChecked());
 #if QT_VERSION > 300
   kconfig->writeEntry("StartDate", QDateTime(m_dateinputStart->getQDate()));
 #else
@@ -516,7 +546,7 @@ void KSettingsDlg::slotCancel()
   // kconfig->writeEntry("RowCount", m_qstringTempRowCount);
   kconfig->writeEntry("ShowGrid", m_bTempShowGrid);
   kconfig->writeEntry("ColourPerTransaction", m_bTempColourPerTransaction);
-  kconfig->writeEntry("TextPrompt", m_bTempTextPrompt);
+  kconfig->writeEntry("HideUnusedCategory", m_bTempHideCategory);
 #if QT_VERSION > 300
   kconfig->writeEntry("StartDate", QDateTime(m_qdateTempStart));
 #else
@@ -557,7 +587,7 @@ void KSettingsDlg::slotUser1()
   m_qcheckboxShowGrid->setChecked(m_bTempShowGrid);
   m_qradiobuttonPerTransaction->setChecked(m_bTempColourPerTransaction);
   m_qradiobuttonOtherRow->setChecked(!m_bTempColourPerTransaction);
-  // m_qcheckboxTextPrompt->setChecked(m_bTempTextPrompt);
+  m_qcheckboxHideCategory->setChecked(m_bTempHideCategory);
   m_dateinputStart->setDate(m_qdateTempStart);
   m_qradiobuttonNormalView->setChecked(m_bTempNormalView);
   m_qradiobuttonAccountView->setChecked(!m_bTempNormalView);

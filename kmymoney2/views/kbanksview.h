@@ -56,15 +56,16 @@ private:
   QCString m_selectedAccount;
   // bool m_bSignals;
   bool m_bViewNormalAccountsView;
+  bool m_hideCategory;
   QCString m_selectedInstitution;
   bool m_bSelectedInstitution;
 
   void refresh(const QCString& selectAccount);
   void refreshTotalProfit(void);
-  void showSubAccounts(const QCStringList& accounts, KAccountListItem *parentItem, const QString& group);
+  const bool showSubAccounts(const QCStringList& accounts, KAccountListItem *parentItem, const QString& group);
 
   QMap<QCString, MyMoneyAccount> m_accountMap;
-  QMap<QCString, int> m_transactionCountMap;
+  QMap<QCString, unsigned long> m_transactionCountMap;
 
 public: 
   KAccountsView(QWidget *parent=0, const char *name=0);
