@@ -115,6 +115,9 @@ protected slots:
 
   void slotGncImport(void);
 
+  void slotLoadAccountTemplates(void);
+  void loadAccountTemplates(const QStringList& filelist);
+
   /**
     * Called when the user wishes to export some transaction to a
     * QIF formatted file. An account must be open for this to work.
@@ -247,6 +250,8 @@ protected:
 
   void slotCheckSchedules(void);
 
+  virtual void resizeEvent(QResizeEvent*);
+
 public slots:
   /** */
   void slotFileNew();
@@ -373,6 +378,7 @@ private:
   KAction *actionFindTransaction;
   KAction *actionOfxImport;
   KAction *actionGncImport;
+  KAction *actionLoadTemplate;
 
   enum backupStateE {
     BACKUP_IDLE = 0,

@@ -74,6 +74,7 @@
 
 #include "converter/mymoneyqifwriter.h"
 #include "converter/mymoneyqifreader.h"
+#include "converter/mymoneytemplate.h"
 
 #include "kmymoneyutils.h"
 
@@ -187,6 +188,7 @@ void KMyMoney2App::initActions()
   actionQifImport = new KAction(i18n("QIF ..."), "", 0, this, SLOT(slotQifImport()), actionCollection(), "file_import_qif");
   actionOfxImport = new KAction(i18n("OFX ..."), "", 0, this, SLOT(slotOfxImport()), actionCollection(), "file_import_ofx");
   actionGncImport = new KAction(i18n("Gnucash ..."), "", 0, this, SLOT(slotGncImport()), actionCollection(), "file_import_gnc");
+  actionLoadTemplate = new KAction(i18n("Account Template ..."), "", 0, this, SLOT(slotLoadAccountTemplates()), actionCollection(), "file_import_template");
   actionQifExport = new KAction(i18n("QIF ..."), "", 0, this, SLOT(slotQifExport()), actionCollection(), "file_export_qif");
   new KAction(i18n("Consistency Check"), "", 0, this, SLOT(slotFileConsitencyCheck()), actionCollection(), "file_consistency_check");
   new KAction(i18n("Currencies ..."), "", 0, this, SLOT(slotCurrencyDialog()), actionCollection(), "tool_currency_dialog");
@@ -306,6 +308,12 @@ void KMyMoney2App::readOptions()
   m_bCheckSchedules = config->readBoolEntry("CheckSchedules", true);
 }
 
+void KMyMoney2App::resizeEvent(QResizeEvent* ev)
+{
+  KMainWindow::resizeEvent(ev);
+  updateCaption(true);
+}
+
 bool KMyMoney2App::queryClose()
 {
   if (myMoneyView->dirty()) {
@@ -338,6 +346,11 @@ void KMyMoney2App::slotFileNew()
 
   fileName = KURL();
   myMoneyView->newFile();
+  KMessageBox::information(this, QString("<p>") +
+                i18n("The next dialog allows you to add predefined account/category templates to the new file. Different languages are available to select from. You can skip loading any template  now by selecting <b>Cancel</b> from the next dialog. If you wish to add more templates later, you can restart this operation by selecting <b>File/Import/Account Templates</b>."),
+                i18n("Load predefined accounts/categories"));
+  slotLoadAccountTemplates();
+
   slotStatusMsg(prevMsg);
   updateCaption();
 
@@ -663,6 +676,36 @@ void KMyMoney2App::slotFileFileInfo()
 
 
   myMoneyView->memoryDump();
+}
+
+void KMyMoney2App::slotLoadAccountTemplates(void)
+{
+  // create a dialog that drops the user in the base directory for templates
+  KFileDialog* dialog = new KFileDialog(KGlobal::dirs()->findResourceDir("appdata", "templates/README")+"templates",
+                                        i18n("*.kmt|Account templates"),
+                                        this, "defaultaccounts",
+                                        true);
+  dialog->setMode(KFile::Files | KFile::ExistingOnly);
+  dialog->setCaption(i18n("Select account template(s)"));
+
+  if(dialog->exec() == QDialog::Accepted) {
+    MyMoneyFile::instance()->suspendNotify(true);
+    loadAccountTemplates(dialog->selectedFiles());
+    MyMoneyFile::instance()->suspendNotify(false);
+    myMoneyView->slotRefreshViews();
+  }
+  delete dialog;
+}
+
+void KMyMoney2App::loadAccountTemplates(const QStringList& filelist)
+{
+  QStringList::ConstIterator it;
+  for(it = filelist.begin(); it != filelist.end(); ++it) {
+    MyMoneyTemplate templ;
+    if(templ.loadTemplate(*it)) {
+      templ.import();
+    }
+  }
 }
 
 void KMyMoney2App::slotQifImport()
@@ -1109,6 +1152,10 @@ void KMyMoney2App::updateCaption(const bool skipActions)
     modified = false;
   }
 
+  QString sizeMsg;
+  sizeMsg.sprintf(" (%d x %d)", width(), height());
+  caption += sizeMsg;
+
   caption = kapp->makeStdCaption(caption, false, modified);
   caption += " - KMyMoney";
   setPlainCaption(caption);
@@ -1123,6 +1170,8 @@ void KMyMoney2App::updateCaption(const bool skipActions)
     actionQifExport->setEnabled(myMoneyView->fileOpen());
     actionQifImport->setEnabled(myMoneyView->fileOpen());
     actionOfxImport->setEnabled(myMoneyView->fileOpen());
+    actionGncImport->setEnabled(myMoneyView->fileOpen());
+    actionLoadTemplate->setEnabled(myMoneyView->fileOpen());
     bankAdd->setEnabled(myMoneyView->fileOpen());
     accountAdd->setEnabled(myMoneyView->fileOpen());
   }
