@@ -47,9 +47,14 @@
 KMyMoney2App::KMyMoney2App(QWidget* , const char* name):KMainWindow(0, name)
 {
   KStartupLogo *start_logo = new KStartupLogo;
-  start_logo->show();
-
   config=kapp->config();
+  config->setGroup("General Options");
+
+  // splash screen setting
+  bool bViewSplash = config->readBoolEntry("Show Splash", true);
+  if(bViewSplash)
+    start_logo->show();
+
   myMoneyView = new KMyMoneyView(this);
 
   ///////////////////////////////////////////////////////////////////
