@@ -781,9 +781,6 @@ bool KMyMoneyView::readFile(const KURL& url)
     selectBaseCurrency();
   }
 
-  // See whether we have any reports, and if not, load the defaults.
-  loadDefaultReports();
-
   MyMoneyFile::instance()->suspendNotify(false);
 
   KConfig *config = KGlobal::config();
@@ -1236,7 +1233,6 @@ void KMyMoneyView::newFile(const bool createEmtpyFile)
       loadDefaultCategories();
       loadDefaultCurrencies();
       selectBaseCurrency();
-      loadDefaultReports();
     }
   }
   m_fileOpen = true;
@@ -1286,86 +1282,6 @@ void KMyMoneyView::selectBaseCurrency(void)
       (*it).setCurrencyId(file->baseCurrency().id());
       file->modifyAccount(*it);
     }
-  }
-}
-
-void KMyMoneyView::loadDefaultReports(void)
-{
-  bool haspivots = false, hasqueries = false;
-  QValueList<MyMoneyReport> reports = MyMoneyFile::instance()->reportList();
-  QValueList<MyMoneyReport>::const_iterator it_report = reports.begin();
-  while ( it_report != reports.end() )
-  {
-    if ( (*it_report).reportType() == MyMoneyReport::ePivotTable )
-      haspivots = true;
-    if ( (*it_report).reportType() == MyMoneyReport::eQueryTable )
-      hasqueries = true;
-    ++it_report;
-  }
-  if ( ! haspivots )
-  {
-  MyMoneyReport spending_f;
-  spending_f.setName(i18n("Monthly Income and Expenses"));
-  spending_f.setComment(i18n("Default Report"));
-  spending_f.setDateFilter(QDate(QDate::currentDate().year(),1,1),QDate(QDate::currentDate().year(),12,31));
-  spending_f.setShowSubAccounts(true);
-  spending_f.setRowType( MyMoneyReport::eExpenseIncome );
-  MyMoneyFile::instance()->addReport(spending_f);
-
-  MyMoneyReport networth_f;
-  networth_f.setName(i18n("Net Worth Over Time"));
-  networth_f.setComment(i18n("Default Report"));
-  networth_f.setDateFilter(QDate(QDate::currentDate().year(),1,1),QDate(QDate::currentDate().year(),12,31));
-  networth_f.setShowSubAccounts(false);
-  networth_f.setRowType( MyMoneyReport::eAssetLiability );
-  MyMoneyFile::instance()->addReport(networth_f);
-  }
-  if ( ! hasqueries )
-  {
-  MyMoneyReport transaction_account;
-  transaction_account.setName(i18n("Transactions by Account"));
-  transaction_account.setComment(i18n("Default Report"));
-  transaction_account.setDateFilter(QDate(QDate::currentDate().year(),1,1),QDate(QDate::currentDate().year(),12,31));
-  transaction_account.setRowType( MyMoneyReport::eAccount );
-  unsigned cols = MyMoneyReport::eQCnumber | MyMoneyReport::eQCpayee | MyMoneyReport::eQCcategory;
-  transaction_account.setQueryColumns( static_cast<MyMoneyReport::EQueryColumns>(cols) ); //
-  MyMoneyFile::instance()->addReport(transaction_account);
-
-  MyMoneyReport transaction_category;
-  transaction_category.setName(i18n("Transactions by Category"));
-  transaction_category.setComment(i18n("Default Report"));
-  transaction_category.setDateFilter(QDate(QDate::currentDate().year(),1,1),QDate(QDate::currentDate().year(),12,31));
-  transaction_category.setRowType( MyMoneyReport::eCategory );
-  cols = MyMoneyReport::eQCnumber | MyMoneyReport::eQCpayee | MyMoneyReport::eQCaccount;
-  transaction_category.setQueryColumns( static_cast<MyMoneyReport::EQueryColumns>(cols) ); //
-  MyMoneyFile::instance()->addReport(transaction_category);
-
-  MyMoneyReport transaction_payee;
-  transaction_payee.setName(i18n("Transactions by Payee"));
-  transaction_payee.setComment(i18n("Default Report"));
-  transaction_payee.setDateFilter(QDate(QDate::currentDate().year(),1,1),QDate(QDate::currentDate().year(),12,31));
-  transaction_payee.setRowType( MyMoneyReport::ePayee );
-  cols = MyMoneyReport::eQCnumber | MyMoneyReport::eQCcategory;
-  transaction_payee.setQueryColumns( static_cast<MyMoneyReport::EQueryColumns>(cols) ); //
-  MyMoneyFile::instance()->addReport(transaction_payee);
-
-  MyMoneyReport transaction_month;
-  transaction_month.setName(i18n("Transactions by Month"));
-  transaction_month.setComment(i18n("Default Report"));
-  transaction_month.setDateFilter(QDate(QDate::currentDate().year(),1,1),QDate(QDate::currentDate().year(),12,31));
-  transaction_month.setRowType( MyMoneyReport::eMonth );
-  cols = MyMoneyReport::eQCnumber | MyMoneyReport::eQCpayee | MyMoneyReport::eQCcategory;
-  transaction_month.setQueryColumns( static_cast<MyMoneyReport::EQueryColumns>(cols) ); //
-  MyMoneyFile::instance()->addReport(transaction_month);
-
-  MyMoneyReport transaction_week;
-  transaction_week.setName(i18n("Transactions by Week"));
-  transaction_week.setComment(i18n("Default Report"));
-  transaction_week.setDateFilter(QDate(QDate::currentDate().year(),1,1),QDate(QDate::currentDate().year(),12,31));
-  transaction_week.setRowType( MyMoneyReport::eWeek );
-  cols = MyMoneyReport::eQCnumber | MyMoneyReport::eQCpayee | MyMoneyReport::eQCcategory;
-  transaction_week.setQueryColumns( static_cast<MyMoneyReport::EQueryColumns>(cols) ); //
-  MyMoneyFile::instance()->addReport(transaction_week);
   }
 }
 

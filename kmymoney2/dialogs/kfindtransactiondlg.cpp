@@ -352,48 +352,25 @@ void KFindTransactionDlg::selectSubItems(QListViewItem* item, const QCStringList
 }
 
 void KFindTransactionDlg::setupDatePage(void)
-{
-  int yr, mon, day;
-  yr = QDate::currentDate().year();
-  mon = QDate::currentDate().month();
-  day = QDate::currentDate().day();
-
-  m_startDates[allDates] = QDate();
-  m_startDates[untilToday] = QDate();  // earliest date representable with Qt
-  m_startDates[currentMonth] = QDate(yr,mon,1);
-  m_startDates[currentYear] = QDate(yr,1,1);
-  m_startDates[monthToDate] = QDate(yr,mon,1);
-  m_startDates[yearToDate] = QDate(yr,1,1);
-  m_startDates[lastMonth] = QDate(yr,mon,1).addMonths(-1);
-  m_startDates[lastYear] = QDate(yr,1,1).addYears(-1);
-  m_startDates[last30Days] = QDate::currentDate().addDays(-30);
-  m_startDates[last3Months] = QDate::currentDate().addMonths(-3);
-  m_startDates[last6Months] = QDate::currentDate().addMonths(-6);
-  m_startDates[last12Months] = QDate::currentDate().addMonths(-12);
-  m_startDates[next30Days] = QDate::currentDate();
-  m_startDates[next3Months] = QDate::currentDate();
-  m_startDates[next6Months] = QDate::currentDate();
-  m_startDates[next12Months] = QDate::currentDate();
-  m_startDates[userDefined] = QDate();
-
-  m_endDates[allDates] = QDate();
-  m_endDates[untilToday] = QDate::currentDate();
-  m_endDates[currentMonth] = QDate(yr,mon,1).addMonths(1).addDays(-1);
-  m_endDates[currentYear] = QDate(yr,12,31);
-  m_endDates[monthToDate] = QDate::currentDate();
-  m_endDates[yearToDate] = QDate::currentDate();
-  m_endDates[lastMonth] = QDate(yr,mon,1).addDays(-1);
-  m_endDates[lastYear] = QDate(yr,12,31).addYears(-1);
-  m_endDates[last30Days] = QDate::currentDate();
-  m_endDates[last3Months] = QDate::currentDate();
-  m_endDates[last6Months] = QDate::currentDate();
-  m_endDates[last12Months] = QDate::currentDate();
-  m_endDates[next30Days] = QDate::currentDate().addDays(30);
-  m_endDates[next3Months] = QDate::currentDate().addMonths(3);
-  m_endDates[next6Months] = QDate::currentDate().addMonths(6);
-  m_endDates[next12Months] = QDate::currentDate().addMonths(12);
-  m_endDates[userDefined] = QDate();
-
+{   
+  MyMoneyTransactionFilter::translateDateRange(allDates,m_startDates[allDates],m_endDates[allDates]);
+  MyMoneyTransactionFilter::translateDateRange(untilToday,m_startDates[untilToday],m_endDates[untilToday]);
+  MyMoneyTransactionFilter::translateDateRange(currentMonth,m_startDates[currentMonth],m_endDates[currentMonth]);
+  MyMoneyTransactionFilter::translateDateRange(currentYear,m_startDates[currentYear],m_endDates[currentYear]);
+  MyMoneyTransactionFilter::translateDateRange(monthToDate,m_startDates[monthToDate],m_endDates[monthToDate]);
+  MyMoneyTransactionFilter::translateDateRange(yearToDate,m_startDates[yearToDate],m_endDates[yearToDate]);
+  MyMoneyTransactionFilter::translateDateRange(lastMonth,m_startDates[lastMonth],m_endDates[lastMonth]);
+  MyMoneyTransactionFilter::translateDateRange(lastYear,m_startDates[lastYear],m_endDates[lastYear]);
+  MyMoneyTransactionFilter::translateDateRange(last30Days,m_startDates[last30Days],m_endDates[last30Days]);
+  MyMoneyTransactionFilter::translateDateRange(last3Months,m_startDates[last3Months],m_endDates[last3Months]);
+  MyMoneyTransactionFilter::translateDateRange(last6Months,m_startDates[last6Months],m_endDates[last6Months]);
+  MyMoneyTransactionFilter::translateDateRange(last12Months,m_startDates[last12Months],m_endDates[last12Months]);
+  MyMoneyTransactionFilter::translateDateRange(next30Days,m_startDates[next30Days],m_endDates[next30Days]);
+  MyMoneyTransactionFilter::translateDateRange(next3Months,m_startDates[next3Months],m_endDates[next3Months]);
+  MyMoneyTransactionFilter::translateDateRange(next6Months,m_startDates[next6Months],m_endDates[next6Months]);
+  MyMoneyTransactionFilter::translateDateRange(next12Months,m_startDates[next12Months],m_endDates[next12Months]);
+  MyMoneyTransactionFilter::translateDateRange(userDefined,m_startDates[userDefined],m_endDates[userDefined]);
+  
   connect(m_dateRange, SIGNAL(activated(int)), this, SLOT(slotDateRangeChanged(int)));
   connect(m_fromDate, SIGNAL(dateChanged(const QDate&)), this, SLOT(slotDateChanged()));
   connect(m_toDate, SIGNAL(dateChanged(const QDate&)), this, SLOT(slotDateChanged()));
@@ -881,3 +858,4 @@ void KFindTransactionDlg::update(const QCString& /* id */)
     slotSelectTransaction(id);
   }
 }
+// vim:cin:si:ai:et:ts=2:sw=2:

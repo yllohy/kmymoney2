@@ -48,6 +48,7 @@ const MyMoneyReport::EReportType MyMoneyReport::kTypeArray[] = { eNoReport, ePiv
 // This should live in mymoney/mymoneytransactionfilter.h
 static const QStringList kTypeText = QStringList::split(",","all,payments,deposits,transfers,none");
 static const QStringList kStateText = QStringList::split(",","all,notreconciled,cleared,reconciled,frozen,none");
+static const QStringList kDateLockText = QStringList::split(",", "alldates,untiltoday,currentmonth,currentyear,monthtodate,yeartodate,lastmonth,lastyear,last30days,last3months,last6months,last12months,next30days,next3months,next6months,next12months,userdefined");
 
 void MyMoneyReport::write(QDomElement& e, QDomDocument *doc) const
 {
@@ -58,7 +59,7 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc) const
 
   if ( m_reportType == ePivotTable )
   {
-    e.setAttribute("type","pivottable 1.1");
+    e.setAttribute("type","pivottable 1.3");
     e.setAttribute("name", m_name);
     e.setAttribute("comment", m_comment);
     e.setAttribute("showsubaccounts", m_showSubAccounts);
@@ -66,15 +67,17 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc) const
     e.setAttribute("rowtype", kRowTypeText[m_rowType]);
     e.setAttribute("columntype", kColumnTypeText[m_columnType]);
     e.setAttribute("id", m_id);
+    e.setAttribute("datelock", kDateLockText[m_dateLock]);
   }
   else if ( m_reportType == eQueryTable )
   {
-    e.setAttribute("type","querytable 1.0");
+    e.setAttribute("type","querytable 1.2");
     e.setAttribute("name", m_name);
     e.setAttribute("comment", m_comment);
     e.setAttribute("convertcurrency", m_convertCurrency);
     e.setAttribute("rowtype", kRowTypeText[m_rowType]);
     e.setAttribute("id", m_id);
+    e.setAttribute("datelock", kDateLockText[m_dateLock]);
     
     QStringList columns;
     unsigned qc = m_queryColumns;
@@ -229,15 +232,18 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc) const
   // Date Filter
   //
     
-  QDate dateFrom, dateTo;
-  if ( dateFilter( dateFrom, dateTo ) )
+  if ( m_dateLock == userDefined )
   {
-    QDomElement f = doc->createElement("DATES");
-    if ( dateFrom.isValid() )
-      f.setAttribute("from", dateFrom.toString(Qt::ISODate));
-    if ( dateTo.isValid() )
-      f.setAttribute("to", dateTo.toString(Qt::ISODate));
-    e.appendChild(f);
+    QDate dateFrom, dateTo;
+    if ( dateFilter( dateFrom, dateTo ) )
+    {
+      QDomElement f = doc->createElement("DATES");
+      if ( dateFrom.isValid() )
+        f.setAttribute("from", dateFrom.toString(Qt::ISODate));
+      if ( dateTo.isValid() )
+        f.setAttribute("to", dateTo.toString(Qt::ISODate));
+      e.appendChild(f);
+    }
   }
 }
 
@@ -264,10 +270,30 @@ bool MyMoneyReport::read(const QDomElement& e)
 
     int i;
     m_name = e.attribute("name");
-    m_comment = e.attribute("comment");
+    m_comment = e.attribute("comment","Extremely old report");
+    
+    // Do not load saved versions of the default reports.  In older versions
+    // of the file format (pivot 1.2 & query 1.1), we saved the default reports.
+    // Now default reports are generated every time, so there's no need to load them.   
+    if ( m_comment == "Default Report" )
+      result = false;
+    
     m_id = e.attribute("id");
     m_showSubAccounts = e.attribute("showsubaccounts","0").toUInt();
     m_convertCurrency = e.attribute("convertcurrency","1").toUInt();
+    
+    QString datelockstr = e.attribute("datelock","userdefined");
+    // Handle the pivot 1.2/query 1.1 case where the values were saved as
+    // numbers
+    bool ok = false;
+    i = datelockstr.toUInt(&ok);
+    if ( !ok )
+    {
+      i = kDateLockText.findIndex(datelockstr);
+      if ( i == -1 )
+        i = userDefined;
+    }
+    setDateFilter( i );
     
     i = kRowTypeText.findIndex(e.attribute("rowtype","expenseincome"));
     if ( i != -1 )
@@ -327,7 +353,7 @@ bool MyMoneyReport::read(const QDomElement& e)
           from = QDate::fromString(c.attribute("from"),Qt::ISODate);
 	if ( c.hasAttribute("to") )
           to = QDate::fromString(c.attribute("to"),Qt::ISODate);
-        setDateFilter(from,to);
+        MyMoneyTransactionFilter::setDateFilter(from,to);
       }
       if(QString("PAYEE") == c.tagName() )
       {
@@ -346,3 +372,5 @@ bool MyMoneyReport::read(const QDomElement& e)
   }
   return result;  
 }
+
+// vim:cin:si:ai:et:ts=2:sw=2:

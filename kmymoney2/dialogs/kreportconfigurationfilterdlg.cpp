@@ -35,6 +35,9 @@
 #include <qtooltip.h>
 #include <qwhatsthis.h>
 #include <qtabwidget.h>
+#include <qtextedit.h>
+#include <qlayout.h>
+#include <qapp.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -80,12 +83,17 @@ KReportConfigurationFilterDlg::KReportConfigurationFilterDlg(
     // Rework the buttons
     //
     
-    delete m_closeButton;
+    
     m_searchButton->setText( tr2i18n( "OK" ) );
     m_searchButton->disconnect();
     m_resetButton->disconnect();
+    m_closeButton->disconnect();
+    m_helpButton->disconnect();
+    m_helpButton->show();
     connect(m_searchButton, SIGNAL(clicked()), this, SLOT(slotSearch()));
     connect(m_resetButton, SIGNAL(clicked()), this, SLOT(slotReset()));
+    connect(m_closeButton, SIGNAL(clicked()), this, SLOT(reject()));
+    connect(m_helpButton, SIGNAL(clicked()), this, SLOT(slotHelp()));
 
     //
     // Add new tabs
@@ -164,6 +172,10 @@ void KReportConfigurationFilterDlg::slotSearch()
       
     m_currentState.setQueryColumns(static_cast<MyMoneyReport::EQueryColumns>(qc));
   }
+  
+  // setup the date lock
+  unsigned range = m_dateRange->currentItem();
+  m_currentState.setDateFilter(range);
   
   done(true);
 }
@@ -407,6 +419,7 @@ void KReportConfigurationFilterDlg::slotReset(void)
   // the following call implies a call to slotUpdateSelections,
   // that's why we call it last
 
+  m_initialState.updateDateFilter();
   QDate dateFrom, dateTo;
   if ( m_initialState.dateFilter( dateFrom, dateTo ) )
   {
@@ -424,6 +437,47 @@ void KReportConfigurationFilterDlg::slotReset(void)
   //QTimer::singleShot(0, this, SLOT(slotRightSize()));
   
   slotRightSize();
+}
+
+void KReportConfigurationFilterDlg::slotHelp(void)
+{
+  QDialog dlg;
+  QVBoxLayout layout( &dlg, 11, 6, "Layout17");
+  QTextEdit te(&dlg,"Help");
+  layout.addWidget(&te);
+  te.setReadOnly(true);
+  te.setTextFormat(Qt::RichText);
+  QString text;
+  
+  text += "<h1>" + m_tab1->caption() + "</h1>" + QWhatsThis::textFor( m_tab1 );  
+  text += "<h3>" + m_tab1->textLabel6->text() + "</h3>" + QToolTip::textFor( m_tab1->m_editName );
+  text += "<h3>" + m_tab1->textLabel7->text() + "</h3>" + QToolTip::textFor( m_tab1->m_editComment );
+  text += "<h3>" + m_tab1->m_checkCurrency->text() + "</h3>" + QToolTip::textFor( m_tab1->m_checkCurrency );
+  
+  if ( m_tab2 )
+  {
+    text += "<h1>" + m_tab2->caption() + "</h1>" + QWhatsThis::textFor( m_tab2 );  
+    text += "<h3>" + m_tab2->textLabel4->text() + "</h3>" + QToolTip::textFor( m_tab2->m_comboColumns );
+    text += "<h3>" + m_tab2->textLabel5->text() + "</h3>" + QToolTip::textFor( m_tab2->m_comboRows );
+    text += "<h3>" + m_tab2->m_checkShowTop->text() + "</h3>" + QToolTip::textFor( m_tab2->m_checkShowTop );
+  }
+
+  if ( m_tab3 )
+  {
+    text += "<h1>" + m_tab3->caption() + "</h1>" + QWhatsThis::textFor( m_tab3 );  
+    text += "<h3>" + m_tab3->textLabel3->text() + "</h3>" + QToolTip::textFor( m_tab3->m_comboOrganizeBy );
+    text += "<h3>" + m_tab3->buttonGroup1->title() + "</h3>" + QToolTip::textFor( m_tab3->buttonGroup1 );
+  }
+      
+  te.setText(text);
+  dlg.setCaption(i18n("Report Configuration Help"));
+  unsigned width = QApplication::desktop()->width();
+  unsigned height = QApplication::desktop()->height();
+
+  te.setMinimumSize(width/2,height/2);  
+  layout.setResizeMode(QLayout::Minimum);
+  
+  dlg.exec();
 }
 
 #include "kreportconfigurationfilterdlg.moc"

@@ -53,6 +53,7 @@ protected:
 protected slots:
   void slotReset(void);
   void slotSearch(void);
+  void slotHelp(void);
         
 };
 

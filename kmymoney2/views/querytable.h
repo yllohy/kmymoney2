@@ -60,6 +60,13 @@ public:
 protected:
   void render( QString&, QString& ) const;
 public:
+  /**
+    * Contains a single row in the table.  
+    *
+    * Each column is a key/value pair, both strings.  This class is just
+    * a QMap with the added ability to specify which columns you'd like to
+    * use as a sort key when you qHeapSort a list of these TableRows
+    */
   class TableRow: public QMap<QString,QString>
   {
   public:

@@ -9,11 +9,17 @@
             <x>0</x>
             <y>0</y>
             <width>600</width>
-            <height>158</height>
+            <height>162</height>
         </rect>
     </property>
     <property name="caption">
-        <string>Form3</string>
+        <string>Rows/Columns Tab</string>
+    </property>
+    <property name="toolTip" stdset="0">
+        <string></string>
+    </property>
+    <property name="whatsThis" stdset="0">
+        <string>&lt;p&gt;On this tab, you configure how you'd like the rows and columns to be selected and organized.&lt;/p&gt;</string>
     </property>
     <vbox>
         <property name="name">
@@ -58,6 +64,9 @@
                     </item>
                     <property name="name">
                         <cstring>m_comboColumns</cstring>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>&lt;p&gt;Choose how large of a time period each column should encompass&lt;/p&gt;</string>
                     </property>
                 </widget>
                 <spacer>
@@ -109,6 +118,9 @@
                     <property name="name">
                         <cstring>m_comboRows</cstring>
                     </property>
+                    <property name="toolTip" stdset="0">
+                        <string>&lt;p&gt;Choose what kind of accounts to display as the rows of this report.&lt;/p&gt;</string>
+                    </property>
                 </widget>
                 <spacer>
                     <property name="name">
@@ -135,6 +147,9 @@
             </property>
             <property name="text">
                 <string>Show Top Categories Only</string>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>&lt;p&gt;Select this option to summarize all sub-categories into a single line for each Top Category.&lt;/p&gt;&lt;p&gt;(e.g. Values for Computers:Hardware and Computers:Software will all be shown on the Computers line)&lt;/p&gt;</string>
             </property>
         </widget>
         <spacer>

@@ -9,11 +9,17 @@
             <x>0</x>
             <y>0</y>
             <width>600</width>
-            <height>138</height>
+            <height>142</height>
         </rect>
     </property>
     <property name="caption">
-        <string>Form4</string>
+        <string>Report Tab</string>
+    </property>
+    <property name="toolTip" stdset="0">
+        <string></string>
+    </property>
+    <property name="whatsThis" stdset="0">
+        <string>&lt;p&gt;On this tab, you set the basic properties of this report.&lt;/p&gt;</string>
     </property>
     <vbox>
         <property name="name">
@@ -39,6 +45,9 @@
                     <property name="name">
                         <cstring>m_editName</cstring>
                     </property>
+                    <property name="toolTip" stdset="0">
+                        <string>&lt;p&gt;Choose a name for this report.&lt;/p&gt;</string>
+                    </property>
                 </widget>
             </hbox>
         </widget>
@@ -62,6 +71,9 @@
                     <property name="name">
                         <cstring>m_editComment</cstring>
                     </property>
+                    <property name="toolTip" stdset="0">
+                        <string>&lt;p&gt;Enter a comment to help you remember the details of this report.&lt;/p&gt;</string>
+                    </property>
                 </widget>
             </hbox>
         </widget>
@@ -71,6 +83,10 @@
             </property>
             <property name="text">
                 <string>Convert values to base currency</string>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>&lt;p&gt;Select this option to convert all values in the report to your base currency.&lt;/p&gt;&lt;p&gt;Leave it unchecked if you'd like to see values in their original currency.&lt;/p&gt;&lt;p&gt;If currencies are not converted, then subtotals will not be shown.&lt;/p&gt;</string>
+                <comment>Convert 'em!!</comment>
             </property>
         </widget>
         <spacer>

@@ -61,9 +61,26 @@ public:
     m_reportType(kTypeArray[_rt]),
     m_rowType(_rt),
     m_columnType(_ct),
-    m_queryColumns(eQCnone)
+    m_queryColumns(eQCnone),
+    m_dateLock(userDefined)
   {
     setDateFilter(_db,_de);
+  }
+  
+  MyMoneyReport(ERowType _rt, unsigned _ct, unsigned _dl, bool _ss, const QString& _name, const QString& _comment ):
+    m_name(_name),
+    m_comment(_comment),
+    m_showSubAccounts(_ss),
+    m_convertCurrency(true),
+    m_reportType(kTypeArray[_rt]),
+    m_rowType(_rt),
+    m_dateLock(_dl)
+  {
+    if ( m_reportType == ePivotTable )
+      m_columnType = static_cast<EColumnType>(_ct);
+    if ( m_reportType == eQueryTable )
+      m_queryColumns = static_cast<EQueryColumns>(_ct);
+    setDateFilter(_dl);
   }
   
   void setName(const QString& _s) { m_name = _s; }
@@ -90,6 +107,9 @@ public:
   const QString& comment( void ) const { return m_comment; }
   void setQueryColumns( EQueryColumns _qc ) { m_queryColumns = _qc; }
   EQueryColumns queryColumns(void) const { return m_queryColumns; }
+  void setDateFilter(unsigned _u) { m_dateLock = _u; if (_u != userDefined) MyMoneyTransactionFilter::setDateFilter( _u ); }
+  void setDateFilter(const QDate& _db,const QDate& _de) { MyMoneyTransactionFilter::setDateFilter( _db,_de ); }
+  void updateDateFilter(void) { if (m_dateLock != userDefined) MyMoneyTransactionFilter::setDateFilter(m_dateLock); }
   
 private:
   QCString m_id;
@@ -101,6 +121,7 @@ private:
   enum ERowType m_rowType;
   enum EColumnType m_columnType;
   enum EQueryColumns m_queryColumns;
+  unsigned m_dateLock;
 };
 
 #endif // MYMONEYREPORT_H  

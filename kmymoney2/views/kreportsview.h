@@ -79,13 +79,21 @@ public:
   {
   private:
     QCString m_id;
+    MyMoneyReport m_report;
 
   public:
     KReportListItem( KListView* parent, const MyMoneyReport& report ):
       KListViewItem( parent, report.name(), report.comment() ),
-      m_id( report.id() )
+      m_id( report.id() ),
+      m_report( report )
     {}
-    const QCString& id(void) const { return m_id; }
+    KReportListItem( KListViewItem* parent, const MyMoneyReport& report ):
+      KListViewItem( parent, report.name(), report.comment() ),
+      m_id( report.id() ),
+      m_report( report )
+    {}
+    //const QCString& id(void) const { return m_id; }
+    const MyMoneyReport& report(void) const { return m_report; }
   };
 
   /**
@@ -103,13 +111,13 @@ public:
     reports::KReportChartView* m_chartView;
     kMyMoneyReportControlDecl* m_control;
     QVBoxLayout* m_layout;
-    QCString m_reportId;
+    MyMoneyReport m_report;
     bool m_deleteMe;
     bool m_showingChart;
 
   public:
     KReportTab(KTabWidget* parent, const MyMoneyReport& report );
-    const QCString& id(void) const { return m_reportId; }
+    const MyMoneyReport& report(void) const { return m_report; }
     void print(void);
     void toggleChart(void);
     void copyToClipboard(void);
@@ -119,8 +127,27 @@ public:
     const kMyMoneyReportControlDecl* control(void) const { return m_control; }
     bool isReadyToDelete(void) const { return m_deleteMe; }
     void setReadyToDelete(bool f) { m_deleteMe = f; }
+    void modifyReport( const MyMoneyReport& report ) { m_report = report; }
   };
 
+  /**
+    * Helper class for KReportView.
+    *
+    * This is a named list of reports, which will be one section 
+    * in the list of default reports
+    *
+    * @author Ace Jones
+    */
+  class ReportGroup: public QValueList<MyMoneyReport>
+  {
+  private:
+    QString m_name;
+  public:
+    ReportGroup( void ) {}
+    ReportGroup( const QString& name ): m_name( name ) {};
+    const QString& name( void ) const { return m_name; };
+  };
+  
 private:
   QVBoxLayout *m_qvboxlayoutPage;
   KTabWidget* m_reportTabWidget;
@@ -159,6 +186,7 @@ public:
 
 protected:
   void addReportTab(const MyMoneyReport&);
+  static void defaultReports(QValueList<ReportGroup>&);
 
 public slots:
   void slotOpenURL(const KURL &url, const KParts::URLArgs& args);

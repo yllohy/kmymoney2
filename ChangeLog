@@ -1,3 +1,13 @@
+2004-08-07 Ace Jones <acejones@users.sourceforge.net>
+  * Added some new default reports, which are permutations of the old ones
+  * Modified the reports index list to show a tree view, organized by type of
+    report.
+  * Modified reports to remember the plain language date range setting,
+    so if you set a report to "Current Month", it will ALWAYS show the
+    current month.
+  * Added rudimentary help to report configuration dialog.
+  * Added 'close' button to report configuration dialog.
+  
 2004-08-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * More changes to maintain backward compatibility with older Qt versions.
     Application now compiles under KDE 3.0 again.

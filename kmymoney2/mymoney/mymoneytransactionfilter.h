@@ -83,6 +83,29 @@ public:
     validityOptionCount
   };
 
+  // Make sure to keep the following enum valus in sync with the values
+  // used by the GUI (for KMyMoney in kfindtransactiondlgdecl.ui)
+  enum dateOptionE {
+    allDates = 0,
+    untilToday,
+    currentMonth,
+    currentYear,
+    monthToDate,
+    yearToDate,
+    lastMonth,
+    lastYear,
+    last30Days,
+    last3Months,
+    last6Months,
+    last12Months,
+    next30Days,
+    next3Months,
+    next6Months,
+    next12Months,
+    userDefined,
+    // insert new constants above of this line
+    dateOptionCount
+  };
 
   /**
     * This is the standard constructor for a transaction filter.
@@ -170,6 +193,8 @@ public:
     */
   void setDateFilter(const QDate& from, const QDate& to);
 
+  void setDateFilter(unsigned range);
+  
   /**
     * This method sets the amount filter to match only transactions with
     * an amount in the range specified by @p from and @p to.
@@ -400,6 +425,17 @@ public:
     * @return return true if a text filter has been set
     */
   const bool textFilter(QRegExp& text) const;
+  
+  /**
+    * This method translates a plain-language date range into QDate
+    * start & end
+    *
+    * @param range Plain-language range of dates, e.g. 'CurrentYear'
+    * @param start QDate will be set to corresponding to the first date in @p range
+    * @param end QDate will be set to corresponding to the last date in @p range
+    * @return return true if a range was successfully set, or false if @p range was invalid
+    */
+  static const bool translateDateRange(int range, QDate& start, QDate& end);
   
 private:
   /**
