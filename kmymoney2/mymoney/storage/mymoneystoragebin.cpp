@@ -584,10 +584,11 @@ void MyMoneyStorageBin::writeStream(QDataStream& s, IMyMoneySerialize* storage)
   s << storage->lastModificationDate();
 
   // leave an estimate on the number of items that follow
+  MyMoneyTransactionFilter filter;
   s << storage->institutionList().count() +
        storage->payeeList().count() +
        storage->accountList().count() +
-       storage->transactionList().count() +
+       storage->transactionList(filter).count() +
        storage->pairs().count() +
        storage->scheduleList().count();
 
@@ -872,11 +873,12 @@ void MyMoneyStorageBin::writeTransactions(QDataStream& s, IMyMoneySerialize* sto
   Q_INT32 tmp;
   QValueList<MyMoneyTransaction> list;
   QValueList<MyMoneyTransaction>::ConstIterator it;
-
+  MyMoneyTransactionFilter filter;
+  
   tmp = 1;      // version
   s << tmp;
 
-  list = storage->transactionList();
+  list = storage->transactionList(filter);
 
   s << list.count();
 

@@ -121,7 +121,8 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
   s << "Transactions" << "\n";
   s << "------------" << "\n";
 
-  QValueList<MyMoneyTransaction> list_t = storage->transactionList();
+  MyMoneyTransactionFilter filter;
+  QValueList<MyMoneyTransaction> list_t = storage->transactionList(filter);
   QValueList<MyMoneyTransaction>::ConstIterator it_t;
   for(it_t = list_t.begin(); it_t != list_t.end(); ++it_t) {
     s << "  ID = " << (*it_t).id() << "\n";

@@ -21,6 +21,7 @@
  ***************************************************************************/
 
 #include "mymoneyseqaccessmgr.h"
+#include "../mymoneytransactionfilter.h"
 
 const bool MyMoneyBalanceCacheItem::operator ==(const MyMoneyBalanceCacheItem & right) const
 {
@@ -829,33 +830,25 @@ void MyMoneySeqAccessMgr::removeInstitution(const MyMoneyInstitution& institutio
     throw new MYMONEYEXCEPTION("invalid institution");
 }
 
+#if 0
 const QValueList<MyMoneyTransaction> MyMoneySeqAccessMgr::transactionList(const QCString& account) const
+{
+  MyMoneyTransactionFilter filter;
+
+  if(!account.isEmpty())
+    filter.addAccount(account);
+
+  return transactionList(filter);    
+}
+#endif
+
+const QValueList<MyMoneyTransaction> MyMoneySeqAccessMgr::transactionList(MyMoneyTransactionFilter& filter) const
 {
   QValueList<MyMoneyTransaction> list;
   QMap<QCString, MyMoneyTransaction>::ConstIterator it_t;
-  QValueList<MyMoneySplit>::ConstIterator it_s;
 
-  // scan all transactions
   for(it_t = m_transactionList.begin(); it_t != m_transactionList.end(); ++it_t) {
-    bool append = true;
-
-    if(account.length() != 0) {
-      // scan all splits of this transaction
-      for(it_s = (*it_t).splits().begin(); it_s != (*it_t).splits().end(); ++it_s) {
-        // is it a split in our account?
-        if((*it_s).accountId() == account) {
-          // since a transaction can only have one split referencing
-          // each account, we're done with the splits here!
-          break;
-        }
-      }
-      // reset flag, if no split contains the account id
-      if(it_s == (*it_t).splits().end())
-        append = false;
-
-    }
-
-    if(append == true)
+    if(filter.match(*it_t))
       list.append(*it_t);
   }
   return list;
@@ -895,7 +888,8 @@ const MyMoneyTransaction& MyMoneySeqAccessMgr::transaction(const QCString& accou
 
   // new implementation if the above code does not work anymore
   QValueList<MyMoneyTransaction> list;
-  list = transactionList(account);
+  MyMoneyTransactionFilter filter(account);
+  list = transactionList(filter);
   if(idx < 0 || idx >= static_cast<int> (list.count()))
     throw new MYMONEYEXCEPTION("Unknown idx for transaction");
 
@@ -923,7 +917,8 @@ const MyMoneyMoney MyMoneySeqAccessMgr::balance(const QCString& id)
     QValueList<MyMoneyTransaction> list;
     QValueList<MyMoneyTransaction>::ConstIterator it;
     MyMoneySplit split;
-    list = transactionList(id);
+    MyMoneyTransactionFilter filter(id);
+    list = transactionList(filter);
 
     for(it = list.begin(); it != list.end(); ++it) {
       try {
@@ -1217,19 +1212,24 @@ const QValueList<MyMoneySchedule> MyMoneySeqAccessMgr::scheduleList(
   // qDebug("scheduleList()");
   
   for(pos = m_scheduleList.begin(); pos != m_scheduleList.end(); ++pos) {
+    // qDebug("  '%s'", (*pos).id().data());
+    
     if(type != MyMoneySchedule::TYPE_ANY) {
-      if(type != (*pos).type())
+      if(type != (*pos).type()) {
         continue;
+      }
     }
     
     if(occurence != MyMoneySchedule::OCCUR_ANY) {
-      if(occurence != (*pos).occurence())
+      if(occurence != (*pos).occurence()) {
         continue;
+      }
     }
     
     if(paymentType != MyMoneySchedule::STYPE_ANY) {
-      if(paymentType != (*pos).paymentType())
+      if(paymentType != (*pos).paymentType()) {
         continue;
+      }
     }
     
     if(!accountId.isEmpty()) {
@@ -1241,23 +1241,27 @@ const QValueList<MyMoneySchedule> MyMoneySeqAccessMgr::scheduleList(
         if((*it).accountId() == accountId)
           break;
       }
-      if(it == splits.end())
+      if(it == splits.end()) {
         continue;
+      }
     }
 
     if(startDate.isValid() && endDate.isValid()) {
-      if((*pos).paymentDates(startDate, endDate).count() == 0)
+      if((*pos).paymentDates(startDate, endDate).count() == 0) {
         continue;
+      }
     }
     
     if(startDate.isValid() && !endDate.isValid()) {
-      if(!(*pos).nextPayment(startDate.addDays(-1)).isValid())
+      if(!(*pos).nextPayment(startDate.addDays(-1)).isValid()) {
         continue;
+      }
     }
     
     if(!startDate.isValid() && endDate.isValid()) {
-      if((*pos).startDate() > endDate)
+      if((*pos).startDate() > endDate) {
         continue;
+      }
     }
 
     if(overdue) {

@@ -38,6 +38,7 @@
 #include "../mymoneytransaction.h"
 #include "../mymoneypayee.h"
 #include "../mymoneyscheduled.h"
+#include "../mymoneytransactionfilter.h"
 
 /**
   * @author Thomas Baumgart
@@ -100,6 +101,18 @@ public:
 
   /**
     * This method is used to pull a list of transactions from the file
+    * global transaction pool. It returns all those transactions
+    * that match the filter passed as argument. If the filter is empty,
+    * the whole journal will be returned.
+    *
+    * @param filter MyMoneyTransactionFilter object with the match criteria
+    *
+    * @return set of transactions in form of a QValueList<MyMoneyTransaction>
+    */
+  virtual const QValueList<MyMoneyTransaction> transactionList(MyMoneyTransactionFilter& filter) const = 0;
+
+  /**
+    * This method is used to pull a list of transactions from the file
     * global transaction pool. It returns either the whole journal or
     * the set of transaction referenced by a specific account depending
     * on the argument given.
@@ -111,7 +124,7 @@ public:
     *
     * @return set of transactions in form of a QValueList<MyMoneyTransaction>
     */
-  virtual const QValueList<MyMoneyTransaction> transactionList(const QCString& account = "") const = 0;
+  // virtual const QValueList<MyMoneyTransaction> transactionList(const QCString& account = "") const = 0;
 
   /**
     * This method returns a list of the payees

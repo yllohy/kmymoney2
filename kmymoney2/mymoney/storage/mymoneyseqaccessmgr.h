@@ -36,8 +36,6 @@
   *@author Thomas Baumgart
   */
 
-class MyMoneyTransactionFilter;
-
 /**
   * This member represents an item in the balance cache. The balance cache
   * is used for fast processing of the balance of an account. Several
@@ -422,6 +420,18 @@ public:
 
   /**
     * This method is used to pull a list of transactions from the file
+    * global transaction pool. It returns all those transactions
+    * that match the filter passed as argument. If the filter is empty,
+    * the whole journal will be returned.
+    *
+    * @param filter MyMoneyTransactionFilter object with the match criteria
+    *
+    * @return set of transactions in form of a QValueList<MyMoneyTransaction>
+    */
+  const QValueList<MyMoneyTransaction> transactionList(MyMoneyTransactionFilter& filter) const;
+    
+  /**
+    * This method is used to pull a list of transactions from the file
     * global transaction pool. It returns either the whole journal or
     * the set of transaction referenced by a specific account depending
     * on the argument given.
@@ -432,8 +442,11 @@ public:
     *                that have splits in this account.
     *
     * @return set of transactions in form of a QValueList<MyMoneyTransaction>
+    *
+    * @note This function is provided for convenience and historic reasons. It
+    *       makes use of the above mentioned method.
     */
-  const QValueList<MyMoneyTransaction> transactionList(const QCString& account = "") const;
+  // const QValueList<MyMoneyTransaction> transactionList(const QCString& account = "") const;
 
   /**
     * This method returns the number of transactions currently known to file

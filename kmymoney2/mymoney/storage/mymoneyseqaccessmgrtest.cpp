@@ -520,7 +520,8 @@ void MyMoneySeqAccessMgrTest::testAddTransactions() {
 
 		// check that the account's transaction list is updated
 		QValueList<MyMoneyTransaction> list;
-		list = m->transactionList("A000006");
+		MyMoneyTransactionFilter filter("A000006");
+		list = m->transactionList(filter);
 		CPPUNIT_ASSERT(list.size() == 2);
 
 		QValueList<MyMoneyTransaction>::ConstIterator it;
@@ -632,7 +633,8 @@ void MyMoneySeqAccessMgrTest::testModifyTransaction() {
 
 		// check that the account's transaction list is updated
 		QValueList<MyMoneyTransaction> list;
-		list = m->transactionList("A000006");
+		MyMoneyTransactionFilter filter("A000006");
+		list = m->transactionList(filter);
 		CPPUNIT_ASSERT(list.size() == 2);
 
 		QValueList<MyMoneyTransaction>::ConstIterator it;
@@ -785,17 +787,20 @@ void MyMoneySeqAccessMgrTest::testTransactionList() {
 	testAddTransactions();
 
 	QValueList<MyMoneyTransaction> list;
-
-	list = m->transactionList("A000006");
+	MyMoneyTransactionFilter filter("A000006");
+	list = m->transactionList(filter);
 	CPPUNIT_ASSERT(list.count() == 2);
 	CPPUNIT_ASSERT((*(list.at(0))).id() == "T000000000000000002");
 	CPPUNIT_ASSERT((*(list.at(1))).id() == "T000000000000000001");
 
-	list = m->transactionList("A000003");
+	filter.clear();
+	filter.addAccount("A000003");
+	list = m->transactionList(filter);
 	CPPUNIT_ASSERT(list.count() == 1);
 	CPPUNIT_ASSERT((*(list.at(0))).id() == "T000000000000000002");
 
-	list = m->transactionList("");
+	filter.clear();
+	list = m->transactionList(filter);
 	CPPUNIT_ASSERT(list.count() == 2);
 	CPPUNIT_ASSERT((*(list.at(0))).id() == "T000000000000000002");
 	CPPUNIT_ASSERT((*(list.at(1))).id() == "T000000000000000001");
@@ -1185,8 +1190,10 @@ void MyMoneySeqAccessMgrTest::testRemoveSchedule() {
 }
 
 void MyMoneySeqAccessMgrTest::testScheduleList() {
-	QDate	notOverdue = QDate::currentDate().addDays(2);
-	QDate	overdue = QDate::currentDate().addDays(-2);
+	QDate	testDate = QDate::currentDate();
+	QDate	notOverdue = testDate.addDays(2);
+	QDate	overdue = testDate.addDays(-2);
+
 
 	MyMoneyTransaction t1;
 	MyMoneySplit s1, s2;
@@ -1203,6 +1210,7 @@ void MyMoneySeqAccessMgrTest::testScheduleList() {
 				 false,
 				 false);
 	schedule1.setTransaction(t1);
+	schedule1.setLastPayment(notOverdue);
 
 	MyMoneyTransaction t2;
 	MyMoneySplit s3, s4;
@@ -1219,6 +1227,7 @@ void MyMoneySeqAccessMgrTest::testScheduleList() {
 				 false,
 				 false);
 	schedule2.setTransaction(t2);
+	schedule2.setLastPayment(notOverdue.addDays(1));
 
 	MyMoneyTransaction t3;
 	MyMoneySplit s5, s6;
@@ -1235,6 +1244,7 @@ void MyMoneySeqAccessMgrTest::testScheduleList() {
 				 false,
 				 false);
 	schedule3.setTransaction(t3);
+	schedule3.setLastPayment(notOverdue.addDays(2));
 
 	MyMoneyTransaction t4;
 	MyMoneySplit s7, s8;
@@ -1247,7 +1257,7 @@ void MyMoneySeqAccessMgrTest::testScheduleList() {
 				 MyMoneySchedule::OCCUR_WEEKLY,
 				 MyMoneySchedule::STYPE_WRITECHEQUE,
 				 overdue.addDays(-7),
-				 notOverdue.addMonths(1),
+				 notOverdue.addDays(31),
 				 false,
 				 false);
 	schedule4.setTransaction(t4);
@@ -1300,7 +1310,7 @@ void MyMoneySeqAccessMgrTest::testScheduleList() {
 	list = m->scheduleList("", MyMoneySchedule::TYPE_ANY,
 				MyMoneySchedule::OCCUR_ANY,
 				MyMoneySchedule::STYPE_ANY,
-				notOverdue.addMonths(1));
+				notOverdue.addDays(31));
 	CPPUNIT_ASSERT(list.count() == 3);
 	CPPUNIT_ASSERT(list[0].name() == "Schedule 2");
 	CPPUNIT_ASSERT(list[1].name() == "Schedule 3");
