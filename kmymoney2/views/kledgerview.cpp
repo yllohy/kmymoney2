@@ -1886,27 +1886,38 @@ void KLedgerView::show()
 
 void KLedgerView::slotCreateSchedule(void)
 {
-  // Should the next statement be
-  // if (m_transactionPtr != 0)
-  // or
-  if (!m_transaction.id().isEmpty())
-  {
+  if (!m_transaction.id().isEmpty()) {
     MyMoneySchedule schedule;
+    MyMoneySchedule::typeE scheduleType = MyMoneySchedule::TYPE_ANY;
+    
+    if(m_account.accountGroup() == MyMoneyAccount::Asset) {
+      if(m_split.value() >= 0)
+        scheduleType = MyMoneySchedule::TYPE_DEPOSIT;
+      else
+        scheduleType = MyMoneySchedule::TYPE_BILL;
+    } else {
+      if(m_split.value() >= 0)
+        scheduleType = MyMoneySchedule::TYPE_BILL;
+      else
+        scheduleType = MyMoneySchedule::TYPE_DEPOSIT;
+    }
+    if(m_transaction.splitCount() == 2
+    && m_split.action() == MyMoneySplit::ActionTransfer)
+      scheduleType = MyMoneySchedule::TYPE_TRANSFER;
+      
     schedule.setTransaction(m_transaction);
 
     KEditScheduleDialog *m_keditscheddlg = new KEditScheduleDialog(
       m_transaction.splitByAccount(m_account.id()).action(),
       schedule, this);
       
-    if (m_keditscheddlg->exec() == QDialog::Accepted)
-    {
-      MyMoneySchedule sched = m_keditscheddlg->schedule();
-      try
-      {
-        MyMoneyFile::instance()->addSchedule(sched);
-      } catch (MyMoneyException *e)
-      {
-        KMessageBox::information(this, i18n("Unable to add schedule: "), e->what());
+    if (m_keditscheddlg->exec() == QDialog::Accepted) {
+      schedule = m_keditscheddlg->schedule();
+      try {
+        MyMoneyFile::instance()->addSchedule(schedule);
+        
+      } catch (MyMoneyException *e) {
+        KMessageBox::detailedError(this, i18n("Unable to add schedule: "), e->what());
         delete e;
       }
     }
