@@ -1,6 +1,8 @@
 2003-09-27 Michael Edwardes <mte@users.sourceforge.net>
   * Change the end date when the start date changes while editing schedules.
   * Re-implement paintFocus in KAccountListItem and KScheduledListItem.
+  * Use the doubleClicked() signal instead of executed() in the schedule list
+    view.
 
 2003-09-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * smarter detection of filetype to be read (looks at file contents

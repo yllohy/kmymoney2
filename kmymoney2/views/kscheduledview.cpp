@@ -91,8 +91,8 @@ KScheduledView::KScheduledView(QWidget *parent, const char *name )
 
   connect(m_qlistviewScheduled, SIGNAL(contextMenuRequested(QListViewItem*, const QPoint&, int)),
     this, SLOT(slotListViewContextMenu(QListViewItem*, const QPoint&, int)));
-  connect(m_qlistviewScheduled, SIGNAL(executed(QListViewItem*)),
-    this, SLOT(slotListItemExecuted(QListViewItem*)));
+  connect(m_qlistviewScheduled, SIGNAL(doubleClicked(QListViewItem*, const QPoint&, int)),
+    this, SLOT(slotListItemExecuted(QListViewItem*, const QPoint&, int)));
   connect(m_qlistviewScheduled, SIGNAL(expanded(QListViewItem*)),
     this, SLOT(slotListViewExpanded(QListViewItem*)));
   connect(m_qlistviewScheduled, SIGNAL(collapsed(QListViewItem*)),
@@ -514,7 +514,7 @@ void KScheduledView::slotListViewContextMenu(QListViewItem *item, const QPoint& 
   }
 }
 
-void KScheduledView::slotListItemExecuted(QListViewItem* item)
+void KScheduledView::slotListItemExecuted(QListViewItem* item, const QPoint&, int)
 {
   KScheduledListItem* scheduleItem = (KScheduledListItem*)item;
   if (!scheduleItem)

@@ -48,7 +48,7 @@ class KPopupMenu;
   * Used by the KMyMoneyView class to show the view.
   *
   * @author Michael Edwardes 2000-2002
-  * $Id: kscheduledview.h,v 1.18 2003/09/10 22:29:53 mte Exp $
+  * $Id: kscheduledview.h,v 1.19 2003/09/27 16:40:31 mte Exp $
   *
   * @short A class to encapsulate recurring transaction operations.
   */
@@ -139,7 +139,7 @@ protected slots:
   **/
   void slotListViewContextMenu(QListViewItem *item, const QPoint& pos, int col);
 
-  void slotListItemExecuted(QListViewItem*);
+  void slotListItemExecuted(QListViewItem*, const QPoint&, int);
 
   void slotAccountActivated(int);
 
