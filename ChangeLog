@@ -1,3 +1,9 @@
+2004-06-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Renamed newAccount() to addAccount() in the engine code to
+    maintain consistency
+  * Adapted testcases to reflect above change
+  * Adapted kmymoneytest.cpp to work with CPPUNIT 1.9.14
+
 2004-06-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Setup minimum size of kMyMoneyAccountCombo
   * Clear out text on account combo if no account present
