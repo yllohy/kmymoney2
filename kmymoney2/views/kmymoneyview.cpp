@@ -54,13 +54,18 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   banksView = new KBanksView(qvboxMainFrame2, "banksView");
   transactionView = new KTransactionView(qvboxMainFrame2, "transactionsView");
 
-  QVBox *qvboxMainFrame3 = addVBoxPage( i18n("Categories"), i18n("Categories"),
-    DesktopIcon("categories"));
-  m_categoriesView = new KCategoriesView(&m_file, qvboxMainFrame3, "categoriesView");
+  QVBox *qvboxMainFrame3 = addVBoxPage( i18n("Bills & Reminders"), i18n("Bills & Reminders"),
+    DesktopIcon("scheduled"));
+  m_scheduledView = new KScheduledView(&m_file, qvboxMainFrame3, "scheduledView");
 
-  QVBox *qvboxMainFrame4 = addVBoxPage( i18n("Payees"), i18n("Payees"),
+  QVBox *qvboxMainFrame4 = addVBoxPage( i18n("Categories"), i18n("Categories"),
+    DesktopIcon("categories"));
+  m_categoriesView = new KCategoriesView(&m_file, qvboxMainFrame4, "categoriesView");
+
+  QVBox *qvboxMainFrame5 = addVBoxPage( i18n("Payees"), i18n("Payees"),
     DesktopIcon("pay_edit"));
-  m_payeesView = new KPayeesView(&m_file, qvboxMainFrame4, "payeesView");
+  m_payeesView = new KPayeesView(&m_file, qvboxMainFrame5, "payeesView");
+
 
   banksView->hide();
   transactionView->hide();

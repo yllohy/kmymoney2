@@ -1207,7 +1207,7 @@ install_location=$$(kde_datadir)/kmymoney2/pics/view_info.png
 type=DATA
 
 [kmymoney2/views/Makefile.am]
-files=kmymoney2/views/ktransactionview.cpp,kmymoney2/views/ktransactionview.h,kmymoney2/views/ktransactionviewdecl.ui,kmymoney2/views/kbanksview.cpp,kmymoney2/views/kbanksview.h,kmymoney2/views/kbankviewdecl.ui,kmymoney2/views/kbanklistitem.cpp,kmymoney2/views/kbanklistitem.h,kmymoney2/views/kmymoneyview.cpp,kmymoney2/views/kmymoneyview.h,kmymoney2/views/kcategoriesview.cpp,kmymoney2/views/kcategoriesview.h,kmymoney2/views/kcategoriesviewdecl.ui,kmymoney2/views/khomeview.cpp,kmymoney2/views/khomeview.h,kmymoney2/views/kpayeesviewdecl.ui,kmymoney2/views/kpayeesview.cpp,kmymoney2/views/kpayeesview.h
+files=kmymoney2/views/ktransactionview.cpp,kmymoney2/views/ktransactionview.h,kmymoney2/views/ktransactionviewdecl.ui,kmymoney2/views/kbanksview.cpp,kmymoney2/views/kbanksview.h,kmymoney2/views/kbankviewdecl.ui,kmymoney2/views/kbanklistitem.cpp,kmymoney2/views/kbanklistitem.h,kmymoney2/views/kmymoneyview.cpp,kmymoney2/views/kmymoneyview.h,kmymoney2/views/kcategoriesview.cpp,kmymoney2/views/kcategoriesview.h,kmymoney2/views/kcategoriesviewdecl.ui,kmymoney2/views/khomeview.cpp,kmymoney2/views/khomeview.h,kmymoney2/views/kpayeesviewdecl.ui,kmymoney2/views/kpayeesview.cpp,kmymoney2/views/kpayeesview.h,kmymoney2/views/kscheduledview.cpp,kmymoney2/views/kscheduledview.h,kmymoney2/views/kscheduledviewdecl.ui,kmymoney2/views/kscheduledlistitem.cpp,kmymoney2/views/kscheduledlistitem.h
 sharedlib_LDFLAGS=-version-info 0:0:1
 sharedlib_rootname=views
 sub_dirs=
@@ -1298,6 +1298,36 @@ install_location=
 type=HEADER
 
 [kmymoney2/views/kpayeesviewdecl.ui]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[kmymoney2/views/kscheduledlistitem.cpp]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[kmymoney2/views/kscheduledlistitem.h]
+dist=true
+install=false
+install_location=
+type=HEADER
+
+[kmymoney2/views/kscheduledview.cpp]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[kmymoney2/views/kscheduledview.h]
+dist=true
+install=false
+install_location=
+type=HEADER
+
+[kmymoney2/views/kscheduledviewdecl.ui]
 dist=true
 install=false
 install_location=

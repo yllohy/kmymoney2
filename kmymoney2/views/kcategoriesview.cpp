@@ -42,12 +42,13 @@ KCategoriesView::KCategoriesView(MyMoneyFile *file, QWidget *parent, const char 
 //  m_qpixmaplabel->setPixmap(*pm);
 
   m_file = file;
-	categoryListView->setRootIsDecorated(true);
-	categoryListView->addColumn(i18n("Category"));
-	categoryListView->addColumn(i18n("Type"));
-	categoryListView->setMultiSelection(false);
-	categoryListView->setColumnWidthMode(0, QListView::Manual);
-	categoryListView->header()->setResizeEnabled(false);
+  categoryListView->setRootIsDecorated(true);
+  categoryListView->addColumn(i18n("Category"));
+  categoryListView->addColumn(i18n("Type"));
+  categoryListView->setMultiSelection(false);
+  categoryListView->setColumnWidthMode(0, QListView::Manual);
+  categoryListView->header()->setResizeEnabled(false);
+  categoryListView->setAllColumnsShowFocus(true);
 
   // never show a horizontal scroll bar
   categoryListView->setHScrollBarMode(QScrollView::AlwaysOff);

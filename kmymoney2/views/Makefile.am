@@ -6,9 +6,9 @@ libviews_a_METASOURCES = AUTO
 
 noinst_LIBRARIES = libviews.a
 
-libviews_a_SOURCES = kpayeesview.cpp kpayeesviewdecl.ui khomeview.cpp kcategoriesviewdecl.ui kcategoriesview.cpp kmymoneyview.cpp kbanklistitem.cpp kbankviewdecl.ui kbanksview.cpp ktransactionviewdecl.ui ktransactionview.cpp 
+libviews_a_SOURCES = kscheduledlistitem.cpp kscheduledviewdecl.ui kscheduledview.cpp kpayeesview.cpp kpayeesviewdecl.ui khomeview.cpp kcategoriesviewdecl.ui kcategoriesview.cpp kmymoneyview.cpp kbanklistitem.cpp kbankviewdecl.ui kbanksview.cpp ktransactionviewdecl.ui ktransactionview.cpp 
 
 
-EXTRA_DIST = ktransactionview.cpp ktransactionview.h ktransactionviewdecl.ui kbanksview.cpp kbanksview.h kbankviewdecl.ui kbanklistitem.cpp kbanklistitem.h kmymoneyview.cpp kmymoneyview.h kcategoriesview.cpp kcategoriesview.h kcategoriesviewdecl.ui khomeview.cpp khomeview.h kpayeesviewdecl.ui kpayeesview.cpp kpayeesview.h 
+EXTRA_DIST = ktransactionview.cpp ktransactionview.h ktransactionviewdecl.ui kbanksview.cpp kbanksview.h kbankviewdecl.ui kbanklistitem.cpp kbanklistitem.h kmymoneyview.cpp kmymoneyview.h kcategoriesview.cpp kcategoriesview.h kcategoriesviewdecl.ui khomeview.cpp khomeview.h kpayeesviewdecl.ui kpayeesview.cpp kpayeesview.h kscheduledview.cpp kscheduledview.h kscheduledviewdecl.ui kscheduledlistitem.cpp kscheduledlistitem.h 
 
 ####### kdevelop will overwrite this part!!! (end)############
