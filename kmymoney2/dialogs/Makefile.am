@@ -12,4 +12,4 @@ EXTRA_DIST = kbackupdlg.cpp kbackupdlg.h kbackupdlgdecl.ui kchooseimportexportdl
 
 ####### kdevelop will overwrite this part!!! (end)############
 
-BUILT_SOURCES=knewloanwizarddecl.h ksplittransactiondlgdecl.h kconfirmmanualenterdialog.h kaccountselectdlgdecl.h ksplitcorrectiondlg.h kreportconfigurationdecl.h
+BUILT_SOURCES=knewloanwizarddecl.h ksplittransactiondlgdecl.h kconfirmmanualenterdialog.h kaccountselectdlgdecl.h ksplitcorrectiondlg.h
