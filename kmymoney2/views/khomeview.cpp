@@ -293,6 +293,7 @@ void KHomeView::showPayments(void)
       // show all or the first 6 entries
       int cnt;
       cnt = (m_showAllSchedules) ? -1 : 6;
+      bool needMoreLess = m_showAllSchedules;
 
       QDate lastDate = QDate::currentDate().addMonths(1);
       qBubbleSort(schedule);
@@ -310,8 +311,10 @@ void KHomeView::showPayments(void)
         if (nextDate > lastDate)
           break;
 
-        if(cnt == 0)
+        if(cnt == 0) {
+          needMoreLess = true;
           break;
+        }
         if(cnt > 0)
           --cnt;
 
@@ -325,10 +328,12 @@ void KHomeView::showPayments(void)
       while(1);
 
       m_part->write("</table>");
-      if(m_showAllSchedules) {
-        m_part->write(link(VIEW_SCHEDULE,  QString("?mode=%1").arg("reduced")) + i18n("Less ...") + linkend());
-      } else {
-        m_part->write(link(VIEW_SCHEDULE,  QString("?mode=%1").arg("full")) + i18n("More ...") + linkend());
+      if (needMoreLess) {
+        if(m_showAllSchedules) {
+          m_part->write(link(VIEW_SCHEDULE,  QString("?mode=%1").arg("reduced")) + i18n("Less ...") + linkend());
+        } else {
+          m_part->write(link(VIEW_SCHEDULE,  QString("?mode=%1").arg("full")) + i18n("More ...") + linkend());
+        }
       }
     }
   }
