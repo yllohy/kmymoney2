@@ -800,7 +800,7 @@ const MyMoneyMoney MyMoneyFile::accountValue(const QCString& id) const
     acc = account(id);
     MyMoneyCurrency currency = instance()->currency(acc.currencyId());
     if(currency.id() != baseCurrency().id()) {
-      result = result / currency.price();
+      result = result * currency.price();
     }
   } catch(MyMoneyException *e) {
     qDebug("MyMoneyFile::accountValue: %s thrown in %s line %ld",
