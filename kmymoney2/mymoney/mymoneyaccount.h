@@ -42,7 +42,7 @@ class MyMoneyBank;
   * @see MyMoneyTransaction
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: mymoneyaccount.h,v 1.21 2001/12/12 20:42:35 ipwizard Exp $
+  * $Id: mymoneyaccount.h,v 1.22 2001/12/14 08:27:52 ipwizard Exp $
   *
   * @short Representation of an account which holds transactions.
 **/
@@ -408,7 +408,7 @@ public:
                     QDate startDate, QDate endDate, int& transCount, int& catCount);
 
   bool validateQIFDateFormat(const char *buffer, const char *format, int& result, bool checkBuffer=true);
-  const char *getQIFDateFormatErrorString(int res);
+  const QString getQIFDateFormatErrorString(int res);
 
   /**
     * Create a .csv file representing this account.
