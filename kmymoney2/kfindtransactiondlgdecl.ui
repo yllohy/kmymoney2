@@ -11,7 +11,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>458</width>
+            <width>464</width>
             <height>429</height>
         </rect>
     </property>
@@ -206,6 +206,10 @@ Click on Search to perform the search.</string>
                                                     <name>name</name>
                                                     <cstring>startDateInput</cstring>
                                                 </property>
+                                                <property stdset="1">
+                                                    <name>enabled</name>
+                                                    <bool>false</bool>
+                                                </property>
                                             </widget>
                                         </hbox>
                                     </widget>
@@ -254,6 +258,10 @@ Click on Search to perform the search.</string>
                                                 <property stdset="1">
                                                     <name>name</name>
                                                     <cstring>endDateInput</cstring>
+                                                </property>
+                                                <property stdset="1">
+                                                    <name>enabled</name>
+                                                    <bool>false</bool>
                                                 </property>
                                             </widget>
                                         </hbox>
@@ -326,6 +334,10 @@ Click on Search to perform the search.</string>
                         <property stdset="1">
                             <name>name</name>
                             <cstring>creditCombo</cstring>
+                        </property>
+                        <property stdset="1">
+                            <name>enabled</name>
+                            <bool>false</bool>
                         </property>
                     </widget>
                     <widget row="0"  column="0"  rowspan="1"  colspan="2" >
@@ -418,6 +430,10 @@ Click on Search to perform the search.</string>
                                             <name>name</name>
                                             <cstring>amountCombo</cstring>
                                         </property>
+                                        <property stdset="1">
+                                            <name>enabled</name>
+                                            <bool>false</bool>
+                                        </property>
                                     </widget>
                                     <widget>
                                         <class>QLayoutWidget</class>
@@ -460,6 +476,10 @@ Click on Search to perform the search.</string>
                                                 <property stdset="1">
                                                     <name>name</name>
                                                     <cstring>moneyEdit</cstring>
+                                                </property>
+                                                <property stdset="1">
+                                                    <name>enabled</name>
+                                                    <bool>false</bool>
                                                 </property>
                                             </widget>
                                         </hbox>
@@ -587,19 +607,12 @@ Click on Search to perform the search.</string>
                             <name>name</name>
                             <cstring>statusCombo</cstring>
                         </property>
-                    </widget>
-                    <widget row="2"  column="0"  rowspan="1"  colspan="2" >
-                        <class>QCheckBox</class>
                         <property stdset="1">
-                            <name>name</name>
-                            <cstring>descriptionRadio</cstring>
-                        </property>
-                        <property stdset="1">
-                            <name>text</name>
-                            <string>Description</string>
+                            <name>enabled</name>
+                            <bool>false</bool>
                         </property>
                     </widget>
-                    <widget row="0"  column="2"  rowspan="1"  colspan="3" >
+                    <widget row="0"  column="2"  rowspan="1"  colspan="2" >
                         <class>QCheckBox</class>
                         <property stdset="1">
                             <name>name</name>
@@ -610,7 +623,7 @@ Click on Search to perform the search.</string>
                             <string>Number</string>
                         </property>
                     </widget>
-                    <widget row="1"  column="2"  rowspan="1"  colspan="3" >
+                    <widget row="1"  column="2"  rowspan="1"  colspan="2" >
                         <class>QLayoutWidget</class>
                         <property stdset="1">
                             <name>name</name>
@@ -652,10 +665,14 @@ Click on Search to perform the search.</string>
                                     <name>name</name>
                                     <cstring>numberEdit</cstring>
                                 </property>
+                                <property stdset="1">
+                                    <name>enabled</name>
+                                    <bool>false</bool>
+                                </property>
                             </widget>
                         </hbox>
                     </widget>
-                    <widget row="3"  column="2"  rowspan="1"  colspan="3" >
+                    <widget row="3"  column="2"  rowspan="1"  colspan="2" >
                         <class>QCheckBox</class>
                         <property stdset="1">
                             <name>name</name>
@@ -666,39 +683,7 @@ Click on Search to perform the search.</string>
                             <string>Payee</string>
                         </property>
                     </widget>
-                    <widget row="4"  column="1" >
-                        <class>QCheckBox</class>
-                        <property stdset="1">
-                            <name>name</name>
-                            <cstring>descriptionRegExpCheck</cstring>
-                        </property>
-                        <property stdset="1">
-                            <name>text</name>
-                            <string>Regular expression</string>
-                        </property>
-                    </widget>
-                    <spacer row="5"  column="1" >
-                        <property>
-                            <name>name</name>
-                            <cstring>Spacer67</cstring>
-                        </property>
-                        <property stdset="1">
-                            <name>orientation</name>
-                            <enum>Vertical</enum>
-                        </property>
-                        <property stdset="1">
-                            <name>sizeType</name>
-                            <enum>Expanding</enum>
-                        </property>
-                        <property>
-                            <name>sizeHint</name>
-                            <size>
-                                <width>20</width>
-                                <height>20</height>
-                            </size>
-                        </property>
-                    </spacer>
-                    <widget row="4"  column="2"  rowspan="1"  colspan="3" >
+                    <widget row="4"  column="2"  rowspan="1"  colspan="2" >
                         <class>QLayoutWidget</class>
                         <property stdset="1">
                             <name>name</name>
@@ -740,14 +725,22 @@ Click on Search to perform the search.</string>
                                     <name>name</name>
                                     <cstring>payeeEdit</cstring>
                                 </property>
+                                <property stdset="1">
+                                    <name>enabled</name>
+                                    <bool>false</bool>
+                                </property>
                             </widget>
                         </hbox>
                     </widget>
-                    <widget row="2"  column="3"  rowspan="1"  colspan="2" >
+                    <widget row="2"  column="3" >
                         <class>QCheckBox</class>
                         <property stdset="1">
                             <name>name</name>
                             <cstring>numberRegExpCheck</cstring>
+                        </property>
+                        <property stdset="1">
+                            <name>enabled</name>
+                            <bool>false</bool>
                         </property>
                         <property stdset="1">
                             <name>text</name>
@@ -796,11 +789,15 @@ Click on Search to perform the search.</string>
                             </size>
                         </property>
                     </spacer>
-                    <widget row="5"  column="3"  rowspan="1"  colspan="2" >
+                    <widget row="5"  column="3" >
                         <class>QCheckBox</class>
                         <property stdset="1">
                             <name>name</name>
                             <cstring>payeeRegExpCheck</cstring>
+                        </property>
+                        <property stdset="1">
+                            <name>enabled</name>
+                            <bool>false</bool>
                         </property>
                         <property stdset="1">
                             <name>text</name>
@@ -828,13 +825,6 @@ Click on Search to perform the search.</string>
                             </size>
                         </property>
                     </spacer>
-                    <widget row="3"  column="1" >
-                        <class>QLineEdit</class>
-                        <property stdset="1">
-                            <name>name</name>
-                            <cstring>descriptionEdit</cstring>
-                        </property>
-                    </widget>
                     <widget row="6"  column="0"  rowspan="1"  colspan="2" >
                         <class>QCheckBox</class>
                         <property stdset="1">
@@ -851,6 +841,10 @@ Click on Search to perform the search.</string>
                         <property stdset="1">
                             <name>name</name>
                             <cstring>categoryCombo</cstring>
+                        </property>
+                        <property stdset="1">
+                            <name>enabled</name>
+                            <bool>false</bool>
                         </property>
                     </widget>
                     <spacer row="7"  column="3" >
@@ -874,7 +868,54 @@ Click on Search to perform the search.</string>
                             </size>
                         </property>
                     </spacer>
-                    <spacer row="3"  column="0" >
+                    <spacer row="7"  column="0" >
+                        <property>
+                            <name>name</name>
+                            <cstring>Spacer6_3_3_2_2</cstring>
+                        </property>
+                        <property stdset="1">
+                            <name>orientation</name>
+                            <enum>Horizontal</enum>
+                        </property>
+                        <property stdset="1">
+                            <name>sizeType</name>
+                            <enum>Fixed</enum>
+                        </property>
+                        <property>
+                            <name>sizeHint</name>
+                            <size>
+                                <width>20</width>
+                                <height>20</height>
+                            </size>
+                        </property>
+                    </spacer>
+                    <widget row="5"  column="1" >
+                        <class>QCheckBox</class>
+                        <property stdset="1">
+                            <name>name</name>
+                            <cstring>descriptionRegExpCheck</cstring>
+                        </property>
+                        <property stdset="1">
+                            <name>enabled</name>
+                            <bool>false</bool>
+                        </property>
+                        <property stdset="1">
+                            <name>text</name>
+                            <string>Regular expression</string>
+                        </property>
+                    </widget>
+                    <widget row="4"  column="1" >
+                        <class>QLineEdit</class>
+                        <property stdset="1">
+                            <name>name</name>
+                            <cstring>descriptionEdit</cstring>
+                        </property>
+                        <property stdset="1">
+                            <name>enabled</name>
+                            <bool>false</bool>
+                        </property>
+                    </widget>
+                    <spacer row="4"  column="0" >
                         <property>
                             <name>name</name>
                             <cstring>Spacer6_3_3_2</cstring>
@@ -895,18 +936,29 @@ Click on Search to perform the search.</string>
                             </size>
                         </property>
                     </spacer>
-                    <spacer row="7"  column="0" >
+                    <widget row="3"  column="0"  rowspan="1"  colspan="2" >
+                        <class>QCheckBox</class>
+                        <property stdset="1">
+                            <name>name</name>
+                            <cstring>descriptionRadio</cstring>
+                        </property>
+                        <property stdset="1">
+                            <name>text</name>
+                            <string>Notes</string>
+                        </property>
+                    </widget>
+                    <spacer row="2"  column="1" >
                         <property>
                             <name>name</name>
-                            <cstring>Spacer6_3_3_2_2</cstring>
+                            <cstring>Spacer18</cstring>
                         </property>
                         <property stdset="1">
                             <name>orientation</name>
-                            <enum>Horizontal</enum>
+                            <enum>Vertical</enum>
                         </property>
                         <property stdset="1">
                             <name>sizeType</name>
-                            <enum>Fixed</enum>
+                            <enum>Expanding</enum>
                         </property>
                         <property>
                             <name>sizeHint</name>
@@ -1040,7 +1092,7 @@ Click on Search to perform the search.</string>
     </customwidget>
     <customwidget>
         <class>kMyMoneyDateInput</class>
-        <header location="local">./widgets/kmymoneydateinput.h</header>
+        <header location="global">./widgets/kmymoneydateinput.h</header>
         <sizehint>
             <width>90</width>
             <height>25</height>
@@ -1059,6 +1111,4 @@ Click on Search to perform the search.</string>
         <data format="XPM.GZ" length="646">789c6dd2c10ac2300c00d07bbf2234b7229d1be245fc04c5a3201e4615f430059d0711ff5ddb2e6bb236ec90eed134cb5a19d8ef36602af5ecdbfeeac05dda0798d3abebde87e3faa374d3807fa0d633a52d38d8de6f679fe33fc776e196f53cd010188256a3600a292882096246517815ca99884606e18044a3a40d91824820924265a7923a2e8bcd05f33db1173e002913175f2a6be6d3294871a2d95fa00e8a94ee017b69d339d90df1e77c57ea072ede6758</data>
     </image>
 </images>
-<tabstops>
-</tabstops>
 </UI>
