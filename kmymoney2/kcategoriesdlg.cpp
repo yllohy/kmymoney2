@@ -80,7 +80,7 @@ void KCategoriesDlg::slotDeleteClicked()
     return;
 
   QString prompt;
-  if (item->major()) {
+  if (item->isMajor()) {
     prompt = i18n("By deleting a major category all minor(s) will be lost.\nAre you sure you want to delete: ");
     prompt += item->text(0);
   } else {
@@ -91,7 +91,7 @@ void KCategoriesDlg::slotDeleteClicked()
   }
 
   if ((KMessageBox::questionYesNo(this, prompt))==KMessageBox::Yes) {
-    if (item->major())
+    if (item->isMajor())
       m_file->removeMajorCategory(item->text(0));
     else
       m_file->removeMinorCategory(item->majorName(), item->text(0));
@@ -113,7 +113,7 @@ void KCategoriesDlg::slotSelectionChanged(QListViewItem* item)
     buttonEdit->setEnabled(false);
     buttonDelete->setEnabled(false);
   }
-  else if (kitem->major()) {
+  else if(kitem->isMajor()) {
     buttonEdit->setEnabled(true);
     buttonDelete->setEnabled(true);
   } else {
@@ -129,7 +129,7 @@ void KCategoriesDlg::slotEditClicked()
     return;
 
   QString prompt;
-  if (item->major()) {
+  if(item->isMajor()) {
     MyMoneyCategory category(item->income(), item->text(0), item->minors());
 
     KNewCategoryDlg dlg(&category, this);
