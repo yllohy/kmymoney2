@@ -34,7 +34,7 @@
 #include <kpushbutton.h>
 #include <klineedit.h>
 #include <kcombobox.h>
-                          
+
 // ----------------------------------------------------------------------------
 // Project Includes
 
@@ -51,7 +51,7 @@ KEditEquityEntryDlg::KEditEquityEntryDlg(const MyMoneyEquity& selectedEquity, QW
   lvPriceHistory->setResizeMode(QListView::AllColumns);
   lvPriceHistory->setSorting(0, FALSE);
   lvPriceHistory->setShowSortIndicator(true);
-  
+
   connect(btnOK, SIGNAL(clicked()), this, SLOT(slotOKClicked()));
   connect(btnCancel, SIGNAL(clicked()), this, SLOT(slotCancelClicked()));
   connect(lvPriceHistory, SIGNAL(doubleClicked(QListViewItem*, const QPoint&, int)), this, SLOT(slotPriceHistoryDoubleClicked(QListViewItem *, const QPoint&, int)));
@@ -61,7 +61,7 @@ KEditEquityEntryDlg::KEditEquityEntryDlg(const MyMoneyEquity& selectedEquity, QW
   connect(btnEditEntry, SIGNAL(clicked()), this, SLOT(slotEditPriceClicked()));
   connect(btnRemoveEntry, SIGNAL(clicked()), this, SLOT(slotRemovePriceClicked()));
   connect(lvPriceHistory, SIGNAL(clicked(QListViewItem *, const QPoint&, int)), this, SLOT(slotPriceHistoryClicked(QListViewItem*, const QPoint&, int)));
-  
+
   //fill in the fields for what we know.
   edtEquityName->setText(m_selectedEquity.name());
   edtMarketSymbol->setText(m_selectedEquity.tradingSymbol());
@@ -80,13 +80,13 @@ KEditEquityEntryDlg::KEditEquityEntryDlg(const MyMoneyEquity& selectedEquity, QW
   //disable controls that can't be used until the user selects a price history item.
   btnEditEntry->setEnabled(false);
   btnRemoveEntry->setEnabled(false);
-  
+
   m_changes = false;
 }
 
 KEditEquityEntryDlg::~KEditEquityEntryDlg()
 {
-  
+
 }
 
 /** No descriptions */
@@ -97,7 +97,8 @@ void KEditEquityEntryDlg::slotOKClicked()
     m_selectedEquity.setName(edtEquityName->text());
     m_selectedEquity.setTradingSymbol(edtMarketSymbol->text());
     //m_selectedEquity.setEquityType((int)cmbInvestmentType->currentItem());
-    
+
+    m_selectedEquity.setPriceHistory(equity_price_history());
     QListViewItemIterator it(lvPriceHistory);
     while(it.current())
     {
@@ -107,7 +108,7 @@ void KEditEquityEntryDlg::slotOKClicked()
       ++it;
     }
   }
-  
+
   accept();
 }
 
@@ -146,7 +147,7 @@ void KEditEquityEntryDlg::slotAddPriceClicked()
     KListViewItem *pItem = new KListViewItem(lvPriceHistory, pDlg->getDate().toString(), pDlg->getPrice().formatMoney());
     lvPriceHistory->insertItem(pItem);
     lvPriceHistory->sort();
-    
+
     m_changes = true;
   }
 }
@@ -164,7 +165,7 @@ void KEditEquityEntryDlg::slotEditPriceClicked()
       pItem->setText(0, pDlg->getDate().toString());
       pItem->setText(1, pDlg->getPrice().formatMoney());
       lvPriceHistory->sort();
-      
+
       m_changes = true;
     }
   }
