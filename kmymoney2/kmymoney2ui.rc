@@ -1,5 +1,5 @@
 <!DOCTYPE kpartgui>
-<kpartgui name="kmymoney2" version="0.3.8">
+<kpartgui name="kmymoney2" version="0.5.1">
 <MenuBar>
   <Menu name="file"><text>&amp;File</text>
     <Action name="file_view_info"/>
@@ -11,7 +11,7 @@
   </Menu>
 
   <Menu name="settings"><text>&amp;Settings</text>
-    <Action name="show_transaction_form"/>
+    <Action name="show_transaction_detail"/>
   </Menu>
 
   <Menu name="bank"><text>&amp;Institution</text>
