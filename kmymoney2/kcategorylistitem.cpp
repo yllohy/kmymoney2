@@ -47,7 +47,7 @@ KCategoryListItem::~KCategoryListItem()
 {
 }
 
-bool KCategoryListItem::major(void)
+bool KCategoryListItem::isMajor(void)
 {
   return m_major;
 }
