@@ -35,7 +35,6 @@
 #include "views/kmymoneyview.h"
 
 /*! \mainpage KMyMoney2 Main Page for API documentation.
- * Last update: 20 March 2001.
  *
  * \section intro Introduction
  *
@@ -44,9 +43,9 @@
  * documentation will be kept up-to-date as development progresses and should be
  * read for new features that have been developed in KMyMoney2.
  *
- * The latest version of this document can be found in the source distribution
- * available from kmymoney2.sourceforge.net and is generated from doxygen reading
- * the header files found in the distribution.
+ * The latest version of this document is available from the project's web-site
+ * at http://kmymoney2.sourceforge.net/ and is generated daily by doxygen reading
+ * the header files found in the CVS main branch.
  */
 
 /**
@@ -57,7 +56,7 @@
   * @see KMyMoneyView
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: kmymoney2.h,v 1.21 2002/08/07 12:07:56 ipwizard Exp $
+  * $Id: kmymoney2.h,v 1.22 2002/10/30 19:18:41 ipwizard Exp $
   *
   * @short Main application class.
 **/
@@ -96,7 +95,8 @@ protected slots:
 
   /**
     * Called when the user wishes to reconcile an account. An
-    * account must be 'open' for this to work. Calls KMyMoneyView::slotAccountReconcile
+    * account must be 'open' for this to work.
+    * Calls KMyMoneyView::slotAccountReconcile
     *
     * @see MyMoneyAccount
   **/
