@@ -1,3 +1,9 @@
+2004-01-29 Michael Edwardes <mte@users.sourceforge.net>
+ * Fixed #884364 (Support for variable amounts in startup code).
+ * Fixed config read/write in settings dialog.
+ * Fixed 883085 (Options for schedules stored in wrong group)
+ * Fixed 883260 (The schedule 'engine' doesnt honour the days in advance option)
+
 2004-01-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed #881136 (No warning when filesave fails)
   * Fixed #878380 (initial font setting)
