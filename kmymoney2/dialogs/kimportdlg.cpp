@@ -45,8 +45,8 @@
 // Project Headers
 #include "kimportdlg.h"
 #include "../mymoney/mymoneyfile.h"
-#include "../converter/mymoneyqifprofileeditor.h"
-#include "knewaccountwizard.h"
+#include "mymoneyqifprofileeditor.h"
+// #include "knewaccountwizard.h"
 
 KImportDlg::KImportDlg(QWidget *parent, const char * name)
   : KImportDlgDecl(parent, name, TRUE)
@@ -116,12 +116,17 @@ KImportDlg::KImportDlg(QWidget *parent, const char * name)
     SLOT(slotFileTextChanged(const QString&)));
 
   connect(m_qbuttonBrowse, SIGNAL( clicked() ), this, SLOT( slotBrowse() ) );
-  connect(m_scanButton, SIGNAL(clicked()), this, SLOT(slotScanClicked()));
   connect(m_qbuttonOk, SIGNAL(clicked()), this, SLOT(slotOkClicked()));
   connect(m_qbuttonCancel, SIGNAL(clicked()), this, SLOT(reject()));
   connect(m_profileEditorButton, SIGNAL(clicked()), this, SLOT(slotNewProfile()));
-  connect(m_profileComboBox, SIGNAL(highlighted(const QString&)), this, SLOT(slotProfileSelected(const QString&)));
+  // connect(m_scanButton, SIGNAL(clicked()), this, SLOT(slotScanClicked()));
+  // connect(m_profileComboBox, SIGNAL(highlighted(const QString&)), this, SLOT(slotProfileSelected(const QString&)));
 
+  // Don't show them for now.
+  m_scanButton->hide();
+  m_accountComboBox->hide();
+  m_textLabel->hide();
+  
   // setup button enable status
   slotFileTextChanged(m_qlineeditFile->text());
 /*
@@ -144,6 +149,7 @@ void KImportDlg::slotBrowse()
 
 void KImportDlg::slotScanClicked(void)
 {
+/*
   QString accountName = m_reader.scanFileForAccount();
   if(accountName.length() != 0) {
     if(!m_accountComboBox->listBox()->findItem(accountName, Qt::ExactMatch | Qt::CaseSensitive)) {
@@ -175,6 +181,7 @@ void KImportDlg::slotScanClicked(void)
                                      "Please select the account using the selection box in the dialog"),
                                 i18n("No account info available"));
   }
+*/
 }
 
 void KImportDlg::slotDateFormatChanged(const QString& selectedDateFormat)
@@ -298,11 +305,6 @@ void KImportDlg::slotSetProgress(int progress)
 */
 }
 
-void KImportDlg::slotProfileSelected(const QString& text)
-{
-  m_reader.setProfile(text);
-}
-
 /** Make sure the text input is ok */
 void KImportDlg::slotFileTextChanged(const QString& text)
 {
@@ -311,7 +313,6 @@ void KImportDlg::slotFileTextChanged(const QString& text)
     m_qbuttonOk->setEnabled(true);
     m_scanButton->setEnabled(true);
     m_qlineeditFile->setText(text);
-    m_reader.setFilename(text);
   } else {
     // m_qcomboboxDateFormat->setEnabled(false);
     m_qbuttonOk->setEnabled(false);
@@ -337,12 +338,19 @@ bool KImportDlg::fileExists(KURL url)
 void KImportDlg::slotNewProfile(void)
 {
   MyMoneyQifProfileEditor* editor = new MyMoneyQifProfileEditor(true, this, "QIF Profile Editor");
+
   if(editor->exec()) {
     m_profileComboBox->setCurrentText(editor->selectedProfile());
-    m_reader.setProfile(editor->selectedProfile());
     loadProfiles();
   }
+
   delete editor;
+}
+
+void KImportDlg::slotSelectProfile(const QString& profile)
+{
+  m_profileComboBox->setCurrentText(profile);
+  loadProfiles();
 }
 
 void KImportDlg::loadProfiles(const bool selectLast)
@@ -367,7 +375,6 @@ void KImportDlg::loadProfiles(const bool selectLast)
   m_profileComboBox->setCurrentItem(0);
   if(list.contains(current) > 0) {
     m_profileComboBox->setCurrentText(current);
-    m_reader.setProfile(current);
   }
 }
 

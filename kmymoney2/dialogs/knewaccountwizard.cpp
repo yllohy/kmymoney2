@@ -227,14 +227,14 @@ void KNewAccountWizard::loadAccountTypes(void)
   accountTypeListBox->clear();
 
   accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Checkings));
-  accountTypeListBox->insertItem(i18n("Savings"));
-  accountTypeListBox->insertItem(i18n("Credit Card"));
-  accountTypeListBox->insertItem(i18n("Cash"));
-  accountTypeListBox->insertItem(i18n("Loan"));
-  accountTypeListBox->insertItem(i18n("Investment"));
-  accountTypeListBox->insertItem(i18n("Money Market"));
-  accountTypeListBox->insertItem(i18n("Currency"));
-  accountTypeListBox->insertItem(i18n("Asset"));
+  accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Savings));
+  accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::CreditCard));
+  accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Cash));
+  accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Loan));
+  accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Investment));
+  accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::MoneyMarket));
+  accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Currency));
+  accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Asset));
 }
 
 void KNewAccountWizard::slotNewInstitution(void)

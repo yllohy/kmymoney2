@@ -21,17 +21,23 @@
 
 // ----------------------------------------------------------------------------
 // QT Headers
+
 #include <qstring.h>
+#include <qlineedit.h>
 
 // ----------------------------------------------------------------------------
 // KDE Headers
+
 #include <kurl.h>
+#include <kcombobox.h>
 
 // ----------------------------------------------------------------------------
 // Project Headers
+
 #include "kimportdlgdecl.h"
-#include "../mymoney/mymoneyaccount.h"
-#include "../converter/mymoneyqifreader.h"
+
+// #include "../mymoney/mymoneyaccount.h"
+// #include "../converter/mymoneyqifreader.h"
 
 /**
   * This class is used to import a qif file to an account.
@@ -44,7 +50,6 @@
   * @see MyMoneyAccount
   *
   * @author Felix Rodriguez, Michael Edwardes 2000-2001
-  * $Id: kimportdlg.h,v 1.8 2003/02/05 20:44:09 ipwizard Exp $
   *
   * @short A class to import a qif file to an account.
 **/
@@ -61,6 +66,14 @@ public:
   /** Standard destructor */
   ~KImportDlg();
 
+  /**
+    */
+  const QString filename(void) const { return m_qlineeditFile->text(); };
+
+  /**
+    */
+  const QString profile(void) const { return m_profileComboBox->currentText(); };
+  
 protected slots:
   /** Performs the import process */
   /** Performs de-/activation of apostrophe handling */
@@ -88,7 +101,7 @@ protected slots:
 
   void slotScanClicked(void);
 
-  void slotProfileSelected(const QString& text);
+  void slotSelectProfile(const QString& text);
 
 private:
   /**
@@ -124,10 +137,11 @@ private:
 
   bool fileExists(KURL url);
 
-  QString m_qstringLastFormat;
-  QString m_qstringLastDecimalSymbol;
-  MyMoneyAccount *m_mymoneyaccount;
-  MyMoneyQifReader  m_reader;
+private:  
+  // QString m_qstringLastFormat;
+  // QString m_qstringLastDecimalSymbol;
+  // MyMoneyAccount *m_mymoneyaccount;
+  // MyMoneyQifReader  m_reader;
 };
 
 #endif

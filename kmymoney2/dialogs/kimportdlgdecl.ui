@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>589</width>
+            <width>596</width>
             <height>321</height>
         </rect>
     </property>
@@ -148,7 +148,7 @@ Please enter the path to the QIF file or select it by clicking on the Browse but
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>Layout27</cstring>
+                <cstring>Layout9</cstring>
             </property>
             <hbox>
                 <property name="name">
@@ -160,6 +160,23 @@ Please enter the path to the QIF file or select it by clicking on the Browse but
                 <property name="spacing">
                     <number>6</number>
                 </property>
+                <spacer>
+                    <property name="name">
+                        <cstring>Spacer2</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>21</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                </spacer>
                 <widget class="QLayoutWidget">
                     <property name="name">
                         <cstring>Layout25</cstring>
@@ -176,7 +193,7 @@ Please enter the path to the QIF file or select it by clicking on the Browse but
                         </property>
                         <widget class="QLabel">
                             <property name="name">
-                                <cstring>TextLabel2_2</cstring>
+                                <cstring>m_textLabel</cstring>
                             </property>
                             <property name="text">
                                 <string>Account to import to</string>
