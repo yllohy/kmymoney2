@@ -206,28 +206,25 @@ void KInvestmentView::updateDisplay()
 
 void KInvestmentView::slotItemDoubleClicked(QListViewItem* pItem, const QPoint& pos, int c)
 {
-  if(COLUMN_NAME_INDEX == c || COLUMN_SYMBOL_INDEX == c)
+  KInvestmentListItem *pInvestListItem = dynamic_cast<KInvestmentListItem*>(pItem);
+  if(pInvestListItem)
   {
-    KInvestmentListItem *pInvestListItem = dynamic_cast<KInvestmentListItem*>(pItem);
-    if(pInvestListItem)
+    MyMoneyFile* file = MyMoneyFile::instance();
+
+    //get the ID of the equity that was double-clicked, to look up to pass to the dialog.
+    QCString id = pInvestListItem->equityId();
+    MyMoneyEquity equity = file->equity(id);
+    KEditEquityEntryDlg *pDlg = new KEditEquityEntryDlg(equity, this);
+    if(pDlg->exec())
     {
-      MyMoneyFile* file = MyMoneyFile::instance();
+      //copies all of the modified object's data into our local copy.
+      pDlg->updatedEquity(equity);
 
-      //get the ID of the equity that was double-clicked, to look up to pass to the dialog.
-      QCString id = pInvestListItem->equityId();
-      MyMoneyEquity equity = file->equity(id);
-      KEditEquityEntryDlg *pDlg = new KEditEquityEntryDlg(equity, this);
-      if(pDlg->exec())
-      {
-        //copies all of the modified object's data into our local copy.
-        pDlg->updatedEquity(equity);
+      //puts this in the storage container.
+      file->modifyEquity(equity);
 
-        //puts this in the storage container.
-        file->modifyEquity(equity);
-
-        //update the summary display to show the new data.
-        updateDisplay();
-      }
+      //update the summary display to show the new data.
+      updateDisplay();
     }
   }
 }
