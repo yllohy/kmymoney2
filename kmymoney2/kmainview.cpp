@@ -122,3 +122,9 @@ void KMainView::initTransactionView(MyMoneyFile *file, const MyMoneyBank bank, c
 {
   transactionView->init(file, bank, account);
 }
+/** No descriptions */
+KTransactionView* KMainView::getTransactionView(){
+	
+	return transactionView;
+
+}

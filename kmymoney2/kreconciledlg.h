@@ -30,11 +30,13 @@
 class KReconcileDlg : public KReconcileDlgDecl  {
    Q_OBJECT
 public: 
-	KReconcileDlg(const MyMoneyMoney previousBal, const MyMoneyMoney endingBal, const QDate endingDate, const MyMoneyBank bankIndex, const MyMoneyAccount accountIndex, const MyMoneyFile file, QWidget *parent=0, const char *name=0);
+	KReconcileDlg(const MyMoneyMoney previousBal, const MyMoneyMoney endingBal, const QDate endingDate, const MyMoneyBank bankIndex, MyMoneyAccount *accountIndex, const MyMoneyFile file, QWidget *parent=0, const char *name=0);
 	~KReconcileDlg();
   void updateData(void);
   void clearReconcile();
-  void resetData(const MyMoneyMoney previousBal, const MyMoneyMoney endingBal, const QDate endingDate, const MyMoneyBank bankIndex, const MyMoneyAccount accountIndex, const MyMoneyFile file);
+  void resetData(const MyMoneyMoney previousBal, const MyMoneyMoney endingBal, const QDate endingDate, const MyMoneyBank bankIndex, MyMoneyAccount *accountIndex, const MyMoneyFile file);
+  /** No descriptions */
+  void reloadLists();
 
 protected slots:
   void slotDebitSelected(QListViewItem*, const QPoint&, int);
@@ -54,7 +56,7 @@ private:
 	
 	MyMoneyFile m_file;
 	MyMoneyBank m_bankIndex;
-	MyMoneyAccount m_accountIndex;
+	MyMoneyAccount *m_accountIndex;
 
   QList<MyMoneyTransaction> m_debitsQList;
   QList<MyMoneyTransaction> m_creditsQList;
@@ -71,6 +73,9 @@ private:
   void loadLists(void);
   void insertTransactions(void);
   void doDifference(void);
+public slots: // Public slots
+  /** No descriptions */
+  void slotTransactionChanged();
 };
 
 #endif

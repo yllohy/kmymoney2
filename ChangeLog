@@ -1,3 +1,7 @@
+2001-06-15 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
+  * Fixed Year bug in QIF import
+  * Can now edit transactions during reconciliation
+
 2001-06-07 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
   * QIF import and export now provide feedback
   * Added backup function to File menu

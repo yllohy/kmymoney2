@@ -21,7 +21,7 @@
 #include "kmymoneysettings.h"
 #include "kreconcilelistitem.h"
 
-KReconcileDlg::KReconcileDlg(const MyMoneyMoney previousBal, const MyMoneyMoney endingBal, const QDate endingDate, const MyMoneyBank bankIndex, const MyMoneyAccount accountIndex, const MyMoneyFile file, QWidget *parent, const char *name)
+KReconcileDlg::KReconcileDlg(const MyMoneyMoney previousBal, const MyMoneyMoney endingBal, const QDate endingDate, const MyMoneyBank bankIndex, MyMoneyAccount *accountIndex, const MyMoneyFile file, QWidget *parent, const char *name)
  : KReconcileDlgDecl(parent,name,false)
 {
   descriptionLabel->setText(i18n("Click on a transaction to mark it as Reconciled.\nYou can add/delete transactions from the main register window."));
@@ -135,7 +135,7 @@ void KReconcileDlg::loadLists(void)
 //  QListIterator<MyMoneyTransaction> it = m_file.transactionIterator(m_bankIndex, m_accountIndex);
   unsigned int i=0;
   MyMoneyTransaction *transaction;
-  for (i=0, transaction=m_accountIndex.transactionFirst(); transaction; transaction=m_accountIndex.transactionNext(), i++) {
+  for (i=0, transaction=m_accountIndex->transactionFirst(); transaction; transaction=m_accountIndex->transactionNext(), i++) {
 //    MyMoneyTransaction *transaction = it.current();
     if (transaction->date()>m_endingDate)
       break;
@@ -442,7 +442,7 @@ void KReconcileDlg::cancelClicked()
   emit reconcileFinished(true);
 }
 
-void KReconcileDlg::resetData(const MyMoneyMoney previousBal, const MyMoneyMoney endingBal, const QDate endingDate, const MyMoneyBank bankIndex, const MyMoneyAccount accountIndex, const MyMoneyFile file)
+void KReconcileDlg::resetData(const MyMoneyMoney previousBal, const MyMoneyMoney endingBal, const QDate endingDate, const MyMoneyBank bankIndex, MyMoneyAccount *accountIndex, const MyMoneyFile file)
 {
 
   m_reconciledTransactions.clear();
@@ -548,3 +548,70 @@ void KReconcileDlg::resetData(const MyMoneyMoney previousBal, const MyMoneyMoney
   doDifference();
 */
 }
+/** No descriptions */
+/** No descriptions */
+void KReconcileDlg::slotTransactionChanged(){
+
+	reloadLists();
+	insertTransactions();
+ 	 creditListView->triggerUpdate();
+ 	 debitListView->triggerUpdate();
+
+
+}
+/** No descriptions */
+void KReconcileDlg::reloadLists(){
+  // Load the internal transaaction lists
+  if (m_file.isInitialised())
+    return;
+
+
+//  QListIterator<MyMoneyTransaction> it = m_file.transactionIterator(m_bankIndex, m_accountIndex);
+  unsigned int i=0;
+  MyMoneyTransaction *transaction;
+  for (i=0, transaction=m_accountIndex->transactionFirst(); transaction; transaction=m_accountIndex->transactionNext(), i++) {
+//    MyMoneyTransaction *transaction = it.current();
+
+    if (transaction->state()!=MyMoneyTransaction::Reconciled) {
+      if (transaction->type() == MyMoneyTransaction::Debit) {
+        transaction->setIndex(i);
+		if(m_debitsQList.find(transaction) <  0)
+    	{
+        	m_debitsQList.append(transaction);
+		}
+      }
+      else {
+        transaction->setIndex(i);
+		if(m_creditsQList.find(transaction) <  0)
+		{
+        	m_creditsQList.append(transaction);
+		}
+      }
+    }
+  }
+
+  QListIterator<MyMoneyTransaction> it(m_debitsQList);
+  for ( ; it.current(); ++it) {
+	bool transactionFound = false;
+ 	 for (i=0, transaction=m_accountIndex->transactionFirst(); transaction; transaction=m_accountIndex->transactionNext(), i++) {
+    	if(it.current() == transaction)
+			transactionFound = true;  	
+	}
+	if(transactionFound == false)
+		m_debitsQList.remove(it.current());
+  }
+
+  QListIterator<MyMoneyTransaction> it2(m_creditsQList);
+  for ( ; it2.current(); ++it2) {
+	bool transactionFound = false;
+ 	 for (i=0, transaction=m_accountIndex->transactionFirst(); transaction; transaction=m_accountIndex->transactionNext(), i++) {
+    	if(it2.current() == transaction)
+			transactionFound = true;  	
+	}
+	if(transactionFound == false)
+		m_debitsQList.remove(it2.current());
+  }
+
+}
+
+

@@ -1133,11 +1133,11 @@ void KTransactionView::deleteClicked()
    	account->removeCurrentTransaction(m_index);
 	}
 	
-	emit transactionListChanged();
 
 	qDebug("enterClicked Before update Transaction List");
   updateTransactionList(-1, -1);
 */
+
 }
 
 void KTransactionView::refresh(void)

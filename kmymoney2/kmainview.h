@@ -52,6 +52,8 @@ public:
   viewType viewing(void) { return m_showing; }
   void showInputBox(bool val);
   void initTransactionView(MyMoneyFile *file, const MyMoneyBank bank, const MyMoneyAccount account);
+  /** No descriptions */
+  KTransactionView* getTransactionView();
 	
 protected:
   void resizeEvent(QResizeEvent *e);

@@ -458,13 +458,14 @@ void KMyMoneyView::slotAccountReconcile(void)
   KEndingBalanceDlg dlg(l_previousBal, l_endingBalGuess, this);
 	if (dlg.exec()) {
     if (!m_reconcileInited) {
-      reconcileDlg = new KReconcileDlg(dlg.previousBalance, dlg.endingBalance, dlg.endingDate, *pBank, *pAccount, m_file, 0);
+      reconcileDlg = new KReconcileDlg(dlg.previousBalance, dlg.endingBalance, dlg.endingDate, *pBank, pAccount, m_file, 0);
       connect(reconcileDlg, SIGNAL(reconcileFinished(bool)), this, SLOT(slotReconcileFinished(bool)));
+      connect(m_mainView->getTransactionView(),SIGNAL(transactionListChanged()),reconcileDlg,SLOT(slotTransactionChanged()));
     	reconcileDlg->show();
     	m_inReconciliation = true;
   	  m_reconcileInited=true;
     } else {
-      reconcileDlg->resetData(dlg.previousBalance, dlg.endingBalance, dlg.endingDate, *pBank, *pAccount, m_file);
+      reconcileDlg->resetData(dlg.previousBalance, dlg.endingBalance, dlg.endingDate, *pBank, pAccount, m_file);
       reconcileDlg->show();
   	  m_inReconciliation = true;
     }
@@ -1218,7 +1219,11 @@ void KMyMoneyView::readQIFFile(const QString& name, MyMoneyAccount *account){
 							day = day.stripWhiteSpace();
 							QString year = date.mid(apost + 1,2);
 							year = year.stripWhiteSpace();
-							int intyear = 2000 + year.toInt();
+							int intyear = year.toInt();
+							if(intyear > 80)
+								intyear = 1900 + year.toInt();
+							else
+								intyear = 2000 + year.toInt();
 							int intmonth = month.toInt();
 							int intday = day.toInt();
 							checknum = type.toInt(&isnumber);
@@ -1429,7 +1434,10 @@ void KMyMoneyView::writeQIFFile(const QString& name, MyMoneyAccount *account,boo
         	if((transaction->date() >= startDate) && (transaction->date() <= endDate))
 					{
           	int year = transaction->date().year();
-            year -= 2000;
+			if(year >=2000)
+            	year -= 2000;
+			else
+				year -= 1900;
 						int month = transaction->date().month();
 						int day = transaction->date().day();
 						double amount = transaction->amount().amount();
