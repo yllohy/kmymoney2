@@ -482,6 +482,33 @@ void KReportsView::slotDelete(void)
     QMessageBox::warning(this,i18n("Delete Report?"),QString(i18n("Sorry, %1 is a default report.  You may not delete it.")).arg(report.name()), QMessageBox::Ok, 0);
 }
 
+void KReportsView::slotOpenReport(const QCString& id)
+{
+  if ( ! id.isEmpty() )
+  {
+    KReportTab* page = NULL;
+    int index = 1;
+    while ( index < m_reportTabWidget->count() )
+    {
+      KReportTab* current = dynamic_cast<KReportTab*>(m_reportTabWidget->page(index));
+      
+      if ( current->report().id() == id )
+      {
+        page = current;
+        break;
+      }
+      
+      ++index;
+    }
+  
+    // Show the tab, or create a new one, as needed
+    if ( page )
+      m_reportTabWidget->showPage( page );
+    else
+      addReportTab(MyMoneyFile::instance()->report(id));
+  }
+}
+
 void KReportsView::slotOpenReport(QListViewItem* item)
 {
   KReportListItem *reportItem = dynamic_cast<KReportListItem*> (item);

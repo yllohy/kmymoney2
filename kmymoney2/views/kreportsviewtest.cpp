@@ -42,6 +42,9 @@ using namespace reports;
 #include "../mymoney/mymoneyequity.h"
 #include "../mymoney/storage/mymoneystoragedump.h"
 #include "../mymoney/mymoneyreport.h"
+#include "../mymoney/mymoneystatement.h"
+
+namespace reports {
 
 class TransactionHelper: public MyMoneyTransaction
 {
@@ -97,6 +100,8 @@ TransactionHelper::~TransactionHelper()
 void TransactionHelper::update(void)
 {
   MyMoneyFile::instance()->modifyTransaction(*this);
+}
+
 }
 
 QCString makeAccount( const QString& _name, MyMoneyAccount::accountTypeE _type, MyMoneyMoney _balance, const QDate& _open, const QCString& _parent, QCString _currency="" )
@@ -659,7 +664,7 @@ void KReportsViewTest::testMultipleCurrencies()
   XMLandback(filter);
   PivotTable spending_f( filter );
   writeTabletoCSV(spending_f);
-#if 1
+
   // test single foreign currency
   CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Foreign"][acCanCash][2]==(-moCanTransaction*moCanPrice));
   CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Foreign"][acCanCash][3]==(-moCanTransaction*moCanPrice));
@@ -671,7 +676,7 @@ void KReportsViewTest::testMultipleCurrencies()
   CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Foreign"][acJpyCash][4]==(-moJpyTransaction*moJpyPrice));
   CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Foreign"].m_total[2]==(-moJpyTransaction*moJpyPrice-moCanTransaction*moCanPrice));
   CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Foreign"].m_total.m_total==(-moJpyTransaction*moJpyPrice-moCanTransaction*moCanPrice-moJpyTransaction*moJpyPrice-moCanTransaction*moCanPrice-moJpyTransaction*moJpyPrice-moCanTransaction*moCanPrice));
-#endif
+
   // Test the report type where we DO NOT convert the currency
   filter.setConvertCurrency(false);
   filter.setShowSubAccounts(true);
@@ -679,14 +684,14 @@ void KReportsViewTest::testMultipleCurrencies()
   XMLandback(filter);
   PivotTable spending_fnc( filter );
   writeTabletoCSV(spending_fnc);
-#if 1
+
   CPPUNIT_ASSERT(spending_fnc.m_grid["Expense"]["Foreign"][acCanCash][2]==(-moCanTransaction));
   CPPUNIT_ASSERT(spending_fnc.m_grid["Expense"]["Foreign"][acCanCash][3]==(-moCanTransaction));
   CPPUNIT_ASSERT(spending_fnc.m_grid["Expense"]["Foreign"][acCanCash][4]==(-moCanTransaction));
   CPPUNIT_ASSERT(spending_fnc.m_grid["Expense"]["Foreign"][acJpyCash][2]==(-moJpyTransaction));
   CPPUNIT_ASSERT(spending_fnc.m_grid["Expense"]["Foreign"][acJpyCash][3]==(-moJpyTransaction));
   CPPUNIT_ASSERT(spending_fnc.m_grid["Expense"]["Foreign"][acJpyCash][4]==(-moJpyTransaction));
-#endif
+
   filter.setConvertCurrency(true);
   filter.clear();
   filter.setName("Multiple currency net worth");
@@ -695,7 +700,7 @@ void KReportsViewTest::testMultipleCurrencies()
   XMLandback(filter);
   PivotTable networth_f( filter );
   writeTabletoCSV(networth_f);
-#if 1
+  
   // test single foreign currency
   CPPUNIT_ASSERT(networth_f.m_grid["Asset"]["Canadian Checking"][acCanChecking][1]==(moCanOpening*moCanPrice));
   CPPUNIT_ASSERT(networth_f.m_grid["Asset"]["Canadian Checking"][acCanChecking][2]==((moCanOpening-moCanTransaction)*moCanPrice));
@@ -717,14 +722,7 @@ void KReportsViewTest::testMultipleCurrencies()
   // test multiple currencies totalled up
   CPPUNIT_ASSERT(networth_f.m_grid["Asset"].m_total[4]==((moCanOpening-moCanTransaction-moCanTransaction-moCanTransaction)*moCanPrice)+((moJpyOpening-moJpyTransaction-moJpyTransaction-moJpyTransaction)*moJpyPrice));
   CPPUNIT_ASSERT(networth_f.m_grid["Asset"].m_total[5]==((moCanOpening-moCanTransaction-moCanTransaction-moCanTransaction)*moCanPrice)+((moJpyOpening-moJpyTransaction-moJpyTransaction-moJpyTransaction)*moJpyPrice2)+moCheckingOpen);
-#endif
   
-#if 0  
-  // Test out Stuart Bailey's CSV writer
-  MyMoneyCsvWriter csvw;
-
-  csvw.write("test.csv", "",acCanChecking, true,true,QDate(), QDate());
-#endif
 }
 
 void KReportsViewTest::testAdvancedFilter()
@@ -1039,8 +1037,6 @@ inline double RANDOM( double lo, double hi )
   return ( lo + (hi-lo)*rand()/RAND_MAX );
 }
 
-#include "../mymoney/mymoneystatement.h"
-
 void KReportsViewTest::testXMLWrite()
 {
   // test writing a report configuration object to XML.
@@ -1093,7 +1089,7 @@ void KReportsViewTest::testXMLWrite()
   actions.push_back( MyMoneyStatement::Transaction::eaBuy );
   actions.push_back( MyMoneyStatement::Transaction::eaSell );
   actions.push_back( MyMoneyStatement::Transaction::eaReinvestDividend );
-  QStringList wordlist = QStringList::split(" ","during the last weeks I was thinking about the requirements for the budget support. I like to wrap them up here and throw them out for further discussion. I am by far not a financial expert and look at the issues as a personal user. If I am missing something, you have more requirements or have other ideas, please feel free to send them to the mailing list. Now's the time to discuss all this. Requirements: What is a budget? In my eyes, a budget is the plan for a certain amount of time (usually one year or one quarter) about your earnings and spendings. So we deal with expense and income accounts exclusively. There are three thinks we can do with a budget: a) setup/modify the budget. Obviously, we have to get some plan at some time. b) constantly check if we are still in bounds of our own budget over time c) generate reports how the real life compares to the budget I think, a) can be based on different sources: a1) manual entry 2) take scheduled transactions as the base a3) income and expense of the previous budget period (e.g. last year) a4) use a previous budget Certainly, a3) and a4) are only available after some time of usage of the program or with imported historical data.  Nevertheless, a1) should be available once a budget has been setup using any other method to modify and adapt it. a1) therefore should provide mechanisms to enter a value based on  individual months (12 separate values), a quarter (4 separate values) and a year (1 value). If quarters or year is selected, the value should be evenly distributed among the months. b) can be started automatically in the background after a transaction has been entered/modified. A warning should pop up, if you reach a certain user definable threshold in any expense category. It pops up after a transaction has been entered. The values for this comparison should be based on the YTD values. This allows to re-use unused budgets of previous months.");
+  QStringList wordlist = QStringList::split(" ","during the last weeks I was thinking about the requirements for the budget support. I like to wrap them up here and throw them out for further discussion. I am by far not a financial expert and look at the issues as a personal user. If I am missing something, you have more requirements or have other ideas, please feel free to send them to the mailing list. Now's the time to discuss all this. Requirements: What is a budget? In my eyes, a budget is the plan for a certain amount of time (usually one year or one quarter) about your earnings and spendings. So we deal with expense and income accounts exclusively.");
 
   srand(time(0));
   MyMoneyStatement s;
@@ -1101,27 +1097,29 @@ void KReportsViewTest::testXMLWrite()
   
   while ( transactions-- )
   {
+    static int nextnumber = 1;
     MyMoneyStatement::Transaction t;
     
     t.m_strSecurity = equities[RANDOM(0,equities.count())];
+    t.m_eAction = actions[RANDOM(0,actions.count())];
     t.m_dShares = RANDOM(1000.0,1000000.0)/1000.0;
+    if ( t.m_eAction == MyMoneyStatement::Transaction::eaSell )
+      t.m_dShares = -t.m_dShares;
     t.m_moneyAmount = price * t.m_dShares;
-    price = price * RANDOM(90.0,110.0)/100.0;
+    price = price * RANDOM(80.0,120.0)/100.0;
     t.m_strBankID = QString::number(RANDOM(0,INT_MAX));
     t.m_datePosted = date;
-    date = date.addDays( - RANDOM(0,60) );
-    t.m_eAction = actions[RANDOM(0,actions.count())];
-    t.m_strNumber = QString::number(RANDOM(0,10000));
+    date = date.addDays( - RANDOM(0,7) );
+    t.m_strNumber = QString::number(nextnumber++);
     
     int words = RANDOM(1,50);
     while ( words-- )
-      t.m_strMemo += wordlist[RANDOM(1,wordlist.count())] + " ";
+      t.m_strMemo += wordlist[RANDOM(0,wordlist.count())] + " ";
     
     s.m_listTransactions += t;
   }
   
   MyMoneyStatement::writeXMLFile( s, "investments.xml" );
- 
 }
 
 void KReportsViewTest::testQueryBasics()
@@ -1230,5 +1228,35 @@ void KReportsViewTest::testQueryBasics()
   CPPUNIT_ASSERT( high > low );
   CPPUNIT_ASSERT( high <= high );
   CPPUNIT_ASSERT( high == high );
+}
+
+void KReportsViewTest::testCashFlowAnalysis()
+{
+  //
+  // Test IRR calculations
+  //
   
+  CashFlowList list;
+  
+  list += CashFlowListItem( QDate(2004,5,3),1000.0 );
+  list += CashFlowListItem( QDate(2004,5,20),59.0 );
+  list += CashFlowListItem( QDate(2004,6,3),14.0 );
+  list += CashFlowListItem( QDate(2004,6,24),92.0 );
+  list += CashFlowListItem( QDate(2004,7,6),63.0 );
+  list += CashFlowListItem( QDate(2004,7,25),15.0 );
+  list += CashFlowListItem( QDate(2004,8,5),92.0 );
+  list += CashFlowListItem( QDate(2004,9,2),18.0 );
+  list += CashFlowListItem( QDate(2004,9,21),5.0 );
+  list += CashFlowListItem( QDate(2004,10,16),-2037.0 );
+  
+  MyMoneyMoney IRR(list.IRR(),1000);
+
+  CPPUNIT_ASSERT( IRR == MyMoneyMoney(1676,1000) );
+  
+  list.pop_back();
+  list += CashFlowListItem( QDate(2004,10,16),-1358.0 );
+  
+  IRR = MyMoneyMoney( list.IRR(), 1000 );
+
+  CPPUNIT_ASSERT( IRR.isZero() );
 }

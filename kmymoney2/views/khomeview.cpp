@@ -48,6 +48,7 @@
 #define VIEW_SCHEDULE       "schedule"
 #define VIEW_WELCOME        "welcome"
 #define VIEW_HOME           "home"
+#define VIEW_REPORTS        "reports"
 
 KHomeView::KHomeView(QWidget *parent, const char *name )
  : QWidget(parent,name)
@@ -131,6 +132,9 @@ void KHomeView::slotRefreshView(void)
             } else {
               showAccounts(Payment, i18n("Payment Accounts"));
             }
+            break;
+          case 4:         // favorite reports
+            showFavoriteReports();
             break;
         }
         m_part->write("<div class=\"gap\">&nbsp;</div>\n");
@@ -400,6 +404,39 @@ void KHomeView::showAccountEntry(const MyMoneyAccount& acc)
   m_part->write(tmp);
 }
 
+void KHomeView::showFavoriteReports(void)
+{
+  QValueList<MyMoneyReport> reports = MyMoneyFile::instance()->reportList();
+  
+  if ( reports.count() > 0 ) 
+  {
+    m_part->write(QString("<div class=\"itemheader\">%1</div>\n<div class=\"gap\">&nbsp;</div>\n").arg(i18n("Favorite Reports")));
+    m_part->write("<table width=\"75%\" cellspacing=\"0\" cellpadding=\"2\">");
+    m_part->write("<tr class=\"item\"><th class=\"left\" width=\"50%\">");
+    m_part->write(i18n("Report"));
+    m_part->write("</th><th width=\"50%\" class=\"right\">");
+    m_part->write(i18n("Comment"));
+    m_part->write("</th></tr>");
+
+    int row = 0;  
+    QValueList<MyMoneyReport>::const_iterator it_report = reports.begin();
+    while( it_report != reports.end() )
+    {
+      if ( (*it_report).isFavorite() )
+        m_part->write(QString("<tr class=\"row-%1\"><td>%2%3%4</td><td align=\"right\">%5</td></tr>")
+          .arg(row++ & 0x01 ? "even" : "odd")
+          .arg(link(VIEW_REPORTS, QString("?id=%1").arg((*it_report).id())))
+          .arg((*it_report).name())
+          .arg(linkend())
+          .arg((*it_report).comment())
+        );
+      
+      ++it_report;
+    }
+    m_part->write("</table>");
+  }
+}
+
 const QString KHomeView::link(const QString& view, const QString& query) const
 {
   return QString("<a href=\"/") + view + query + "\">";
@@ -423,6 +460,9 @@ void KHomeView::slotOpenURL(const KURL &url, const KParts::URLArgs& /* args */)
 
   } else if(view == VIEW_SCHEDULE) {
     emit scheduleSelected(id);
+
+  } else if(view == VIEW_REPORTS) {
+    emit reportSelected(id);
 
   } else if(view == VIEW_WELCOME) {
     m_part->openURL(m_filename);

@@ -369,6 +369,9 @@ const QString KMyMoneyUtils::homePageItemToString(const int idx)
     case 3:
       rc = i18n("Payment accounts");
       break;
+    case 4:
+      rc = i18n("Favorite reports");
+      break;
     default:
       rc = "";
       break;
@@ -385,6 +388,8 @@ const int KMyMoneyUtils::stringToHomePageItem(const QString& txt)
     idx = 2;
   else if(txt == i18n("Payment accounts"))
     idx = 3;
+  else if(txt == i18n("Favorite reports"))
+    idx = 4;
   return idx;
 }
 

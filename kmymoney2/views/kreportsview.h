@@ -200,6 +200,7 @@ public slots:
   void slotDuplicate(void);
   void slotToggleChart(void);
   void slotOpenReport(QListViewItem*);
+  void slotOpenReport(const QCString&);
   void slotCloseCurrent(void);
   void slotClose(QWidget*);
   void slotDelete(void);

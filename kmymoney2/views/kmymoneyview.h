@@ -344,6 +344,14 @@ public slots:
     * @param schedule The ID of the schedule to be shown
     */
   void slotScheduleSelected(const QCString& schedule);
+  
+  /**
+    * Called, whenever the report view should pop up and a specific
+    * report should be shown.
+    *
+    * @param reportid The ID of the report to be shown
+    */
+  void slotReportSelected(const QCString& reportid);
 
   /**
     * Called whenever the user wishes to create a new bank.  Brings up the input

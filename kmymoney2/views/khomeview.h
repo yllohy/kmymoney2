@@ -61,6 +61,7 @@ signals:
 
   void ledgerSelected(const QCString& id, const QCString& transaction);
   void scheduleSelected(const QCString& id);
+  void reportSelected(const QCString& id);
 
 public:
   /**
@@ -104,6 +105,8 @@ protected:
   void showPaymentEntry(const MyMoneySchedule&);
   void showAccounts(paymentTypeE type, const QString& hdr);
   void showAccountEntry(const MyMoneyAccount&);
+  void showFavoriteReports();
+
   const QString link(const QString& view, const QString& query) const;
   const QString linkend(void) const;
   

@@ -236,6 +236,9 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(m_homeView, SIGNAL(scheduleSelected(const QCString&)),
     this, SLOT(slotScheduleSelected(const QCString&)));
 
+  connect(m_homeView, SIGNAL(reportSelected(const QCString&)),
+    this, SLOT(slotReportSelected(const QCString&)));
+    
   // construct account context menu
   KIconLoader *kiconloader = KGlobal::iconLoader();
 
@@ -443,6 +446,12 @@ void KMyMoneyView::slotScheduleSelected(const QCString& schedule)
 {
   showPage(pageIndex(m_scheduleViewFrame));
   m_scheduledView->slotSelectSchedule(schedule);
+}
+
+void KMyMoneyView::slotReportSelected(const QCString& reportid)
+{
+  showPage(pageIndex(m_reportsViewFrame));
+  m_reportsView->slotOpenReport(reportid);
 }
 
 void KMyMoneyView::slotAccountDoubleClick(void)

@@ -63,7 +63,7 @@ public:
     last =       0x10           ///< the leftmost bit in the mask
   };
 
-  static const int maxHomePageItems = 3;
+  static const int maxHomePageItems = 4;
 
   KMyMoneyUtils();
   ~KMyMoneyUtils();

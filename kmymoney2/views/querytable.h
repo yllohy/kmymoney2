@@ -88,6 +88,37 @@ private:
 
 };
 
+//
+// Cash Flow analysis tools for investment reports
+//
+
+class CashFlowListItem
+{
+public:
+  CashFlowListItem(void) {}
+  CashFlowListItem( const QDate& _date, const MyMoneyMoney& _value ): m_date(_date), m_value(_value) {}
+  bool operator<( const CashFlowListItem _second ) const { return m_date < _second.m_date; }
+  const QDate& date( void ) const { return m_date; }
+  MyMoneyMoney NPV( double _rate ) const;
+  
+  static void setToday( const QDate& _today ) { m_sToday = _today; }
+
+private:
+  QDate m_date;
+  MyMoneyMoney m_value;
+  
+  static QDate m_sToday;  
+};
+
+class CashFlowList: public QValueList<CashFlowListItem>
+{
+public:
+  MyMoneyMoney NPV(double rate);
+  double IRR(void);
+protected:
+  const CashFlowListItem& mostRecent(void) const;  
+};
+
 }
 
 #endif // QUERYREPORT_H

@@ -52,6 +52,87 @@ static const QStringList kReconcileTextChar = QStringList::split(",","N,C,R,F,no
 
 QStringList QueryTable::TableRow::m_sortCriteria;
 
+//
+// Cash Flow analysis tools for investment reports
+//
+
+QDate CashFlowListItem::m_sToday = QDate::currentDate();
+
+MyMoneyMoney CashFlowListItem::NPV( double _rate ) const
+{
+  double T = static_cast<double>(m_sToday.daysTo(m_date)) / 365.0;
+  MyMoneyMoney result = m_value.toDouble() / pow(1+_rate,T);
+  
+  //kdDebug(2)<<"Item{"<<m_date<<","<<m_value.formatMoney("",5)<<"}::NPV("<<_rate<<")="<<result<<endl;
+  
+  return result;
+}
+
+const CashFlowListItem& CashFlowList::mostRecent(void) const
+{
+  CashFlowList dupe( *this );
+  qHeapSort( dupe );
+  
+  return dupe.back();
+}
+
+MyMoneyMoney CashFlowList::NPV( double _rate )
+{
+  MyMoneyMoney result = 0.0;
+  
+  const_iterator it_cash = begin();
+  while ( it_cash != end() )
+  {
+    result += (*it_cash).NPV( _rate );
+    ++it_cash;
+  }
+  
+  return result;
+}
+
+double CashFlowList::IRR( void )
+{
+  double result = 0.0;
+  
+  // set 'today', which is the most recent of all dates in the list
+  CashFlowListItem::setToday( mostRecent().date() );
+  
+  double lobound = -0.999; // this is as low as we support
+  double hibound = 0.01;
+  double precision = 0.00001; // how precise do we want the answer?
+  
+  // is IRR so low we can't calculate it?
+  if ( NPV( lobound ) > 0 )
+  {
+    throw QString("IRR is < -100%, not supported");
+  }
+  
+  // shift the range upward as much as needed
+  while ( NPV( hibound ) < 0 )
+  {
+    //kdDebug(2) << "CashFlowList::IRR(): Readusting hibound from "<<hibound<<", npv was"<< NPV( hibound ) << endl;
+    lobound = hibound;
+    hibound *= 10;
+  }
+  
+  while ( (hibound-lobound) > precision )
+  {
+    result = (lobound + hibound) / 2;
+    MyMoneyMoney npv = NPV( result );
+    //kdDebug(2) << "CashFlowList::IRR(): Trying range ("<<lobound<<","<<hibound<<")... npv("<<result<<")="<<npv<<endl;
+    if ( npv >= 0 )
+      hibound = result;
+    if ( npv <= 0 )
+      lobound = result;
+  }
+  
+  return result;
+}
+
+//
+// QueryTable implementation
+//
+
 bool QueryTable::TableRow::operator<( const TableRow& _compare ) const
 {
   bool result = false;
@@ -158,7 +239,8 @@ QueryTable::QueryTable(const MyMoneyReport& _report): m_config(_report)
     //
     // Likewise, a table row ALWAYS has one E/I category.  In the case of complex
     // multi-split transactions, another table, the 'splits table' will be used to
-    // hold the extra info in case the user wants to see it.
+    // hold the extra info in case the user wants to see it.  (Someday when this is
+    // written)
     //
     // Splits table handling differs depending on what the user has asked for.
     // If the user wants transactions BY CATEGORY, then multiple table row
@@ -193,8 +275,12 @@ QueryTable::QueryTable(const MyMoneyReport& _report): m_config(_report)
         // handle investments
         if ( file->account((*it_split).accountId()).accountType() == MyMoneyAccount::Stock )
         {
-          qaccountrow["shares"] = (*it_split).shares().toString();
-          qaccountrow["price"] = ((-(*it_split).value())*currencyfactor / (*it_split).shares()).toString();
+          MyMoneyMoney shares = (*it_split).shares();
+          qaccountrow["shares"] = shares.toString();
+          qaccountrow["price"] = ((-(*it_split).value())*currencyfactor / shares).toString();
+          if ( (*it_split).action() == MyMoneySplit::ActionBuyShares && shares < 0 )
+            // note this is not localized because neither is MyMoneySplit::action()
+            qaccountrow["action"] = "Sell";
         }
         
         QValueList<MyMoneySplit>::const_iterator it_split2 = splits.begin();
@@ -242,7 +328,9 @@ QueryTable::QueryTable(const MyMoneyReport& _report): m_config(_report)
             )
             {
               // skip this split if we have removed the target of the transfer
-              if ( m_config.includesAccount( (*it_split2).accountId() ) )
+              // *** Or not *** Lately, I've been thinking that the A/L filter should
+              // only remove transactions at the *it_split level.
+              //if ( m_config.includesAccount( (*it_split2).accountId() ) )
               {
                 QString fromto = ((*it_split2).value()<0)?"from":"to";
                 qsplitrow["category"] = i18n("Transfer %1 %2").arg(fromto).arg(acd.fullName());

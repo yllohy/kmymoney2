@@ -1,3 +1,13 @@
+2004-10-16 Ace Jones <acejones@users.sourceforge.net>
+  * Added "Favorite Reports" to the home page.
+  * Fixed handling of "Sell" transactions in transaction reports.  They were 
+    still being reported as "Buy" transactions.
+  * Tweaked the logic for handling account filters with transfer transactions 
+    in transaction reports.  Now the transaction will be included once
+    if only one of the accounts is included in the filter.
+  * Added cash flow analysis tools for future investment reports
+  * Cleaned up random investment data generator (in KReportsViewTest)
+  
 2004-10-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added VAT handling
   * Added MyMoneyMoney::isZero()
