@@ -64,7 +64,7 @@ dnl AC_PROG_YACC dnl __kdevelop__
 # create header directory, make symlinks
 #
 
-rm -Rf kmymoney
+rm -rf kmymoney
 mkdir kmymoney
 
 MFILES=$(find $(pwd) -name Makefile.am);
