@@ -16,6 +16,11 @@ AC_CHECK_LIB(m, round, [AC_DEFINE_UNQUOTED(HAVE_ROUND, 1, [define if you have ro
 )
 
 dnl
+dnl add check for project's memory leak checker
+dnl
+AC_MEMORY_LEAK_CHECK()
+
+dnl
 dnl add checks for cppunit
 dnl
 AM_PATH_CPPUNIT(1.8.0,

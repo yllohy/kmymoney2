@@ -2,6 +2,14 @@ echo ""
 echo ""
 echo "Configure results:"
 echo "------------------------------------------"
+if test "x$use_memory_leak_check" != "xno"; then
+	echo "Memory leak check support:             yes"
+else
+	echo "Memory leak check support:             no"
+fi
+
+echo ""
+
 if test x$have_kbanking = xyes; then
 	echo "KBanking support:                      yes"
 else

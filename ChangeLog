@@ -4,6 +4,7 @@
   * Added tip on anonymous save
   * Fixed creation of securities - do not override information of existing
     securities for new stock accounts
+  * Added setting for memory leak checker to configure scripts
 
 2004-12-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed ChangeLog entry to show the correct author
