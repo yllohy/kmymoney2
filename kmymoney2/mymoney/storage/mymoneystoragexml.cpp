@@ -76,7 +76,7 @@ void MyMoneyStorageXML::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
           }
           else if(QString("INSTITUTIONS") == childElement.tagName())
           {
-            //readInstitutions(pDoc, childElement, storage);
+            readInstitutions(pDoc, childElement, storage);
           }
           else if(QString("PAYEES") == childElement.tagName())
           {
@@ -208,14 +208,63 @@ void MyMoneyStorageXML::writeFile(QIODevice* qf, IMyMoneySerialize* storage)
   pDoc = NULL;
 }
 
-void MyMoneyStorageXML::readInstitutions(QDomDocument *pDoc, QDomElement& childElement, const IMyMoneySerialize* storage)
+void MyMoneyStorageXML::readInstitutions(QDomDocument *pDoc, QDomElement& institutions, IMyMoneySerialize* storage)
 {
+  unsigned long id = 0;
+  QDomNode child = institutions.firstChild();
+  while(!child.isNull())
+  {
+    if(child.isElement())
+    {
+      QDomElement childElement = child.toElement();
+      if(QString("INSTITUTION") == childElement.tagName())
+      {
+        MyMoneyInstitution inst = readInstitution(childElement);
 
+        //tell the storage objects we have a new institution.
+        storage->loadInstitution(inst);
+
+        id = extractId(inst.id().data());
+        if(id > storage->institutionId())
+        {
+          storage->loadInstitutionId(id);
+        }
+        
+        //return childElement;
+      }
+    }
+    child = child.nextSibling();
+  }
 }
 
 MyMoneyInstitution MyMoneyStorageXML::readInstitution(const QDomElement& institution)
 {
   MyMoneyInstitution i;
+  QCString id;
+  Q_INT32 version;
+  QString tmp_s;
+
+  i.setName(institution.attribute(QString("name")));
+  i.setManager(institution.attribute(QString("manager")));
+  i.setSortcode(institution.attribute(QString("sortcode")));
+  id = institution.attribute(QString("id"));
+
+  QDomElement address = findChildElement(QString("ADDRESS"), institution);
+  if(!address.isNull() && address.isElement())
+  {
+    i.setStreet(address.attribute(QString("street")));
+    i.setCity(address.attribute(QString("city")));
+    i.setPostcode(address.attribute(QString("zip")));
+    i.setTelephone(address.attribute(QString("telephone")));
+  }    
+
+  /*QCStringList list;
+  s >> list;
+  QCStringList::ConstIterator it;
+  for(it = list.begin(); it != list.end(); ++it)
+    i.addAccountId(*it);
+                                        */
+  return MyMoneyInstitution(id, i);
   
 }
 
@@ -568,4 +617,16 @@ void MyMoneyStorageXML::getInstitutionDetails(MyMoneyInstitution* pInstitution, 
   m_pCurrentInstitution->setSortcode(QString(strTemp.data()));
 }
       */
+
+const unsigned long MyMoneyStorageXML::extractId(const QCString& txt) const
+{
+  int pos;
+  unsigned long rc = 0;
+
+  pos = txt.find(QRegExp("\\d+"), 0);
+  if(pos != -1) {
+    rc = atol(txt.mid(pos));
+  }
+  return rc;
+}
 

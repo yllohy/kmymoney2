@@ -100,7 +100,7 @@ private:
   void readUserInformation(QDomDocument* pDoc, QDomElement userElement, IMyMoneySerialize* storage);
   /** No descriptions */
 
-  void readInstitutions(QDomDocument *pDoc, QDomElement& childElement, const IMyMoneySerialize* storage);
+  void readInstitutions(QDomDocument *pDoc, QDomElement& childElement, IMyMoneySerialize* storage);
   MyMoneyInstitution readInstitution(const QDomElement& institution);
 
   QDomElement findChildElement(const QString& name, const QDomElement& root);
@@ -134,6 +134,8 @@ private:
     * encrypted on the permanent storage device
     */
   bool m_encrypted;
+
+  const unsigned long extractId(const QCString& txt) const;
 };
 
 #endif
