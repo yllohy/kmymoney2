@@ -1064,6 +1064,10 @@ void KMyMoneyView::newFile(const bool createEmtpyFile)
       if(newFileDlg.userEmailText.length() != 0)
         file->setUserEmail(newFileDlg.userEmailText);
 
+      KMessageBox::information(this,
+                    i18n("The next dialog allows you to add a set of predefined categories to the new file. Different languages are available to select from. You can skip loading any predefined categories by selecting \"Cancel\" from the next dialog."),
+                    i18n("Load standard categories"));
+
       loadDefaultCategories();
     }
   }
