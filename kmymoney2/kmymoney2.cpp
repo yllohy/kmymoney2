@@ -76,6 +76,9 @@
 KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name)
  : KMainWindow(0, name)
 {
+  fileSave = 0;
+  updateCaption();
+
   m_startLogo = new KStartupLogo;
   config=kapp->config();
   config->setGroup("General Options");
@@ -727,6 +730,7 @@ void KMyMoney2App::slotQifImportFinished(void)
       // user cancelled, destroy the updated set and keep the backup copy
       IMyMoneyStorage* data = file->storage();
 
+
       if(data != 0) {
         file->detachStorage(data);
         delete data;      
@@ -975,6 +979,7 @@ void KMyMoney2App::slotProcessExited()
 
     case BACKUP_UNMOUNTING:
       if(proc.normalExit() && proc.exitStatus() == 0) {
+
         progressCallback(300, 0, i18n("Done"));
         if(m_backupResult == 0)
           KMessageBox::information(this, i18n("File successfully backed up"), i18n("Backup"));
@@ -1062,11 +1067,24 @@ void KMyMoney2App::updateCaption(void)
   if(caption.isEmpty())
     caption = i18n("Untitled");
     
-  caption = kapp->makeStdCaption(caption, false, MyMoneyFile::instance()->dirty());
+  // MyMoneyFile::instance()->dirty() throws an exception, if
+  // there's no storage object available. In this case, we
+  // assume that the storage object is not changed. Actually,
+  // this can only happen if we are newly created early on.
+  bool modified;
+  try {
+    modified = MyMoneyFile::instance()->dirty();
+  } catch(MyMoneyException *e) {
+    delete e;
+    modified = false;
+  }
+
+  caption = kapp->makeStdCaption(caption, false, modified);
   caption += " - KMyMoney";
   setPlainCaption(caption);
 
-  fileSave->setEnabled(MyMoneyFile::instance()->dirty());
+  if(fileSave)
+    fileSave->setEnabled(modified);
 }
 
 void KMyMoney2App::update(const QCString& /* id */)
@@ -1171,6 +1189,7 @@ void KMyMoney2App::writeLastUsedDir(const QString& directory)
   {
 
     kconfig->setGroup("General Options");
+
 
     //write path entry, no error handling since its void.
     kconfig->writePathEntry("LastUsedDirectory", directory);
