@@ -121,10 +121,8 @@ The sandbox is the local work area for the developer. Initially, a sandbox
 is filled by checking out a specific stage of the repository. Changes made
 to the sandbox are moved to the repository by the checkin process. Changes
 made by other developers are transferred to one's own sandbox by the update
-process.
+process.  
 
-<footnote>
-<para>
 A developer can maintain different sandboxes of the same project in
 different directories on the same machine. This requires thorough attention
 of the developer which sandbox he is modifying. Using several sandboxes is
@@ -132,8 +130,6 @@ usually meaningful if a developer works on changes on a release branch
 (stable release) and on the main-branch (development release) at the same
 time. See <link linkend="multiple-branches">the appendix</link> for an
 example.
-</para>
-</footnote>
 </entry>
 </row>
 
@@ -220,8 +216,7 @@ creates a version of the project.
 <sect2>
 <title>Layout of the version numbers</title>
 <para>
-The name used as tag is organized in a specific way. It consists of 3
-numeric values.
+The version number is made out of three numeric fields. These are:
 
 <orderedlist>
 <listitem><para>The major release number</para></listitem>
@@ -229,6 +224,12 @@ numeric values.
 <listitem><para>The micro release number</para></listitem>
 </orderedlist>
 
+In order to serve as a tag for &cvs;, the text <command>rel-</command> is
+prepended to the version numbers and the three fields are seperated with a
+dash (e.g. rel-0-3-7).
+</para>
+
+<para>
 The major release number will be changed when all the proposed features
 mentioned in the release plan (available on the 
 <ulink url="http://kmymoney2.sourceforge.net/">project web-site</ulink>)
@@ -281,7 +282,7 @@ have to be performed.
 <emphasis>root-name</emphasis> of the stable version. The root-name is
 identified by appending the text pre1 to the version number.
  For example, the root tag for versions 0.4 is
-<emphasis>0-4-pre1</emphasis>.
+<emphasis>rel-0-4-pre1</emphasis>.
 </para>
 </listitem>
 
@@ -290,7 +291,7 @@ identified by appending the text pre1 to the version number.
 Tag the same version with the base-name of the next unstable release. The
 base name is constructed using the appendix <emphasis>-base</emphasis> to
 the major and minor release number of the next unstable version. In our
-example this will be <emphasis>0-5-base</emphasis>.
+example this will be <emphasis>rel-0-5-base</emphasis>.
 </para>
 </listitem>
 
@@ -300,7 +301,7 @@ the text <emphasis>-branch</emphasis> to the major- and
 minor-release number of the version.
 
 For our example, the branch tag for versions 0.4 is
-<emphasis>0-4-branch</emphasis>. 
+<emphasis>rel-0-4-branch</emphasis>. 
 A complete example with all &cvs; commands can be found
 <link linkend="create-stable-example">in the appendix</link>.
 </para></listitem>
@@ -308,11 +309,12 @@ A complete example with all &cvs; commands can be found
 <listitem>
 <para>
 From this moment on, the developers working on versions 0.4.x must make
-sure, that they checkout or update their copy sandbox using the
-tag <emphasis>0-4-branch</emphasis>. This gives them the head revisions of
+sure, that they checkout or update their sandbox using the
+tag <emphasis>rel-0-4-branch</emphasis>. This gives them the head revisions of
 the files on the 0.4 branch. Omitting this tag information will leave
 them on the main branch. The main branch is reserved for the unstable
-versions.
+versions. An example how to keep multiple branches on the same machine is
+presented in the <link linkend="multiple-branches">appendix</link>,
 
 <caution>
 <para>
@@ -327,7 +329,7 @@ that bug-fixes are also implemented on the main-branch.
 
 <para>
 When fixes are applied to the branch, new versions can be created by
-incrementing the micro-release thus 0-4-pre2, 0-4-pre3 are the next
+incrementing the micro-release thus rel-0-4-pre2, rel-0-4-pre3 are the next
 tags on the branch.
 
 </para>
@@ -339,7 +341,7 @@ tags on the branch.
 When the configuration manager is confident with the development effort, he
 creates the first stable tag for the version. It is identified by a
 micro-release number of 0. For our example, the branch now contains a tag
-called <emphasis>0-4-0</emphasis>.
+called <emphasis>rel-0-4-0</emphasis>.
 </para>
 </listitem>
 </orderedlist>
@@ -367,47 +369,51 @@ The first file is changed rather often between the version tags. All tags
 are on different revision, except the ones required when the branch for the
 stable version is created on revision 1.14.
 </para>
+
 <screen>
 
 
-     *     (1.12) [0-3-7]
+     *     (1.12) [rel-0-3-8]
      |
      *     (1.13)
      |
-     *     (1.14) [0-3-8] [0-4-pre1] [0-5-base]
+     *     (1.14) [rel-0-4-pre1] [rel-0-5-base]
      |\__________________________
      |                           \
      |                            |
-     *     (1.15)                 * (1.14.2.1)    [0-4-pre2]
+     *     (1.15)                 * (1.14.2.1)  [rel-0-4-pre2]
      |                            |
-     *     (1.16) [0-5-0]         * (1.14.2.2)    [0-4-0]
+     *     (1.16) [rel-0-5-0]     * (1.14.2.2)  [rel-0-4-0]
 
-   [HEAD]                      [0-4-branch]
+   [HEAD]                  [rel-0-4-branch]
 
 
 </screen>
+
 <para>
 The second file is not changed at all between the version
 tags. Nevertheless, all tags are available even though now they are on
 the same revision 1.2.
 </para>
+
 <screen>
 
 
-     *     (1.2) [0-3-7] [0-3-8] [0-4-pre1] [0-5-base] [0-4-pre2] [0-4-0] [0-5-0]
+     *     (1.2) [rel-0-3-8] [rel-0-4-pre1] [rel-0-5-base]
+     |           [rel-0-4-pre2] [rel-0-4-0] [rel-0-5-0]
      |\__________________________
      |                           \
      |                            |
 
-   [HEAD]                      [0-4-branch]
+   [HEAD]                   [rel-0-4-branch]
 
 
 </screen>
+
 </example>
 
 
 <para>
-For
 </para>
 </sect2>
 </sect1>

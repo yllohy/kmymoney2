@@ -531,7 +531,7 @@ the repository.
 The back-slash is inserted here to break the line for readability. For real usage, the command has to be entered on a single line. 
 </para>
 </footnote>
-                -r <emphasis>0-4-branch</emphasis> co kmymoney2</userinput>
+                -r <emphasis>rel-0-4-branch</emphasis> co kmymoney2</userinput>
   <prompt>thb:~/stable&gt; </prompt>
 
 
@@ -663,9 +663,9 @@ between development and release directories.
 <screen>
 
   <prompt>thb:~&gt; </prompt><userinput>cd devel/kmymoney2</userinput>
-  <prompt>thb:~/devel/kmymoney2&gt; </prompt><userinput>cvs tag 0-4-pre1</userinput>
-  <prompt>thb:~/devel/kmymoney2&gt; </prompt><userinput>cvs tag 0-5-base</userinput>
-  <prompt>thb:~/devel/kmymoney2&gt; </prompt><userinput>cvs tag -b 0-4-branch</userinput>
+  <prompt>thb:~/devel/kmymoney2&gt; </prompt><userinput>cvs tag rel-0-4-pre1</userinput>
+  <prompt>thb:~/devel/kmymoney2&gt; </prompt><userinput>cvs tag rel-0-5-base</userinput>
+  <prompt>thb:~/devel/kmymoney2&gt; </prompt><userinput>cvs tag -b rel-0-4-branch</userinput>
   <prompt>thb:~/devel/kmymoney2&gt; </prompt>
 
 
