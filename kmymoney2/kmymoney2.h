@@ -57,7 +57,7 @@
   * @see KMyMoneyView
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: kmymoney2.h,v 1.17 2002/02/14 02:00:49 mte Exp $
+  * $Id: kmymoney2.h,v 1.18 2002/06/05 19:29:51 mte Exp $
   *
   * @short Main application class.
 **/
@@ -155,7 +155,7 @@ protected slots:
     *
     * @see KMyMoneyView
   **/
-  void enableFileOperations(bool enable=true);
+  //void enableFileOperations(bool enable=true);
 
   /**
     * A slot that is connected to the
@@ -167,7 +167,7 @@ protected slots:
     *
     * @see KMyMoneyView
   **/
-  void enableBankOperations(bool enable=true);
+  //void enableBankOperations(bool enable=true);
 
   /**
     * A slot that is connected to the
@@ -179,7 +179,7 @@ protected slots:
     *
     * @see KMyMoneyView
   **/
-  void enableAccountOperations(bool enable=true);
+  //void enableAccountOperations(bool enable=true);
 
   /**
     * A slot that is connected to the
@@ -191,7 +191,7 @@ protected slots:
     *
     * @see KMyMoneyView
   **/
-  void enableTransactionOperations(bool enable=true);
+  //void enableTransactionOperations(bool enable=true);
 
   /**
     * Open up the application wide settings dialog.
@@ -227,6 +227,8 @@ protected slots:
   void slotScheduledView();
   void slotCategoryView();
   void slotPayeeView();
+
+  void slotEnableKMyMoneyOperations(bool enable=true);
 
   public:
     bool startWithDialog(void) { return m_startDialog; }
@@ -410,7 +412,7 @@ protected slots:
   QString mountpoint;
 
 private:
-  void disableAllAccountActions(bool enable=true);
+  //void disableAllAccountActions(bool enable=true);
 
 };
  

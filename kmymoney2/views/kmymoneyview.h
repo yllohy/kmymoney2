@@ -55,7 +55,7 @@
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.9 2002/06/04 19:05:16 mte Exp $
+  * $Id: kmymoneyview.h,v 1.10 2002/06/05 19:29:51 mte Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -235,6 +235,8 @@ public:
   QString currentAccountName(void);
 
 
+  void memoryDump();
+
 public slots:
   /**
     * Brings up a dialog to change the list(s) settings and saves them into the
@@ -251,7 +253,7 @@ public slots:
   void accountFind();
 
   /** */
-  void slotAccountSelected();
+  //void slotAccountSelected();
 
   /**
     * Called whenever the user 'executes' an account. This operation opens the account
@@ -272,7 +274,7 @@ public slots:
     * @see MyMoneyFile
     * @see MyMoneyBank
   **/
-  //void slotBankNew(void);
+  void slotBankNew(void);
 
   /**
     * Called whenever the user wishes to create a new account.  Brings up the input
@@ -401,7 +403,7 @@ signals:
     *
     * @param enable Whether to enable to actions.
   **/
-  void bankOperations(bool);
+  //void bankOperations(bool);
 
   /**
     * This signal is emitted whenever the account actions needs enabling or disabling.
@@ -409,7 +411,7 @@ signals:
     *
     * @param enable Whether to enable to actions.
   **/
-  void accountOperations(bool);
+  //void accountOperations(bool);
 
   /**
     * This signal is emitted whenever the file actions needs enabling or disabling.
@@ -417,7 +419,7 @@ signals:
     *
     * @param enable Whether to enable to actions.
   **/
-  void fileOperations(bool);
+  //void fileOperations(bool);
 
   /**
     * This signal is emitted whenever the transaction actions needs enabling or disabling.
@@ -425,7 +427,9 @@ signals:
     *
     * @param enable Whether to enable to actions.
   **/
-  void transactionOperations(bool);
+  //void transactionOperations(bool);
+
+  void signalEnableKMyMoneyOperations(bool);
 
   void signalHomeView();
   void signalAccountsView();

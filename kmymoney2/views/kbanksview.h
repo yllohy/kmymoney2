@@ -78,7 +78,7 @@ protected slots:
 signals:
   void accountRightMouseClick(const QCString&, bool inList);
   void accountDoubleClick();
-  void accountSelected();
+  //void accountSelected();
   void signalViewActivated();
 };
 

@@ -305,7 +305,7 @@ void KAccountsView::slotSelectionChanged(QListViewItem *item)
   KAccountListItem *accountItem = (KAccountListItem*)item;
   m_bSelectedAccount = true;
   m_selectedAccount = accountItem->accountID();
-  emit accountSelected();
+  //emit accountSelected();
 }
 
 void KAccountsView::show()

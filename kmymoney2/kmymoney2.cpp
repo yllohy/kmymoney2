@@ -80,10 +80,13 @@ KMyMoney2App::KMyMoney2App(QWidget* , const char* name):KMainWindow(0, name)
 */
 
   setCentralWidget(myMoneyView);
+/*
   connect(myMoneyView, SIGNAL(fileOperations(bool)), this, SLOT(enableFileOperations(bool)));
   connect(myMoneyView, SIGNAL(bankOperations(bool)), this, SLOT(enableBankOperations(bool)));
   connect(myMoneyView, SIGNAL(accountOperations(bool)), this, SLOT(enableAccountOperations(bool)));
   connect(myMoneyView, SIGNAL(transactionOperations(bool)), this, SLOT(enableTransactionOperations(bool)));
+*/
+  connect(myMoneyView, SIGNAL(signalEnableKMyMoneyOperations(bool)), this, SLOT(slotEnableKMyMoneyOperations(bool)));
 
   connect(myMoneyView, SIGNAL(signalHomeView()), this, SLOT(slotHomeView()));
   connect(myMoneyView, SIGNAL(signalAccountsView()), this, SLOT(slotAccountsView()));
@@ -91,10 +94,11 @@ KMyMoney2App::KMyMoney2App(QWidget* , const char* name):KMainWindow(0, name)
   connect(myMoneyView, SIGNAL(signalCategoryView()), this, SLOT(slotCategoryView()));
   connect(myMoneyView, SIGNAL(signalPayeeView()), this, SLOT(slotPayeeView()));
 
-  enableFileOperations(false);
-  enableBankOperations(false);
-  enableAccountOperations(false);
-  enableTransactionOperations(false);
+  //enableFileOperations(false);
+  //enableBankOperations(false);
+  //enableAccountOperations(false);
+  //enableTransactionOperations(false);
+  slotEnableKMyMoneyOperations(false);
   connect(&proc,SIGNAL(processExited(KProcess *)),this,SLOT(slotProcessExited()));
   mountbackup = false;
   copybackup = false;
@@ -577,14 +581,16 @@ void KMyMoney2App::slotFileFileInfo()
     return;
   }
 
-//  myMoneyView->fileInfo();
-  KMessageBox::information(this, i18n("This is going to be removed."));
+  int answer = KMessageBox::warningYesNoCancel(this, i18n("This function no longer exists and is used by the developers.\n\nPerform a dump of the data in memory?."));
+	if (answer == KMessageBox::Cancel || answer == KMessageBox::No)
+		return;
+
+  myMoneyView->memoryDump();
 }
 
 void KMyMoney2App::slotBankAdd()
 {
-  //myMoneyView->slotBankNew();
-  KMessageBox::information(this, i18n("Temporarily disabled."));
+  myMoneyView->slotBankNew();
 }
 
 void KMyMoney2App::slotAccountAdd()
@@ -641,7 +647,7 @@ void KMyMoney2App::slotCategoriesPayees()
 {
   myMoneyView->editPayees();
 }
-
+/*
 void KMyMoney2App::enableFileOperations(bool enable)
 {
   enableBankOperations(false);
@@ -653,13 +659,13 @@ void KMyMoney2App::enableFileOperations(bool enable)
   fileSaveAs->setEnabled(enable);
 /* Future
   filePrint->setEnabled(enable);
-*/
+* /
   fileViewInfo->setEnabled(enable);
   filePersonalData->setEnabled(enable);
 /* Future
   billsAdd->setEnabled(enable);
   reportBasic->setEnabled(enable);
-*/
+* /
   categoriesEdit->setEnabled(enable);
   categoriesPayees->setEnabled(enable);
   settings->setEnabled(enable);
@@ -707,12 +713,12 @@ void KMyMoney2App::enableAccountOperations(bool enable)
   QString caption = myMoneyView->currentAccountName();
   setCaption(caption);
 }
-
+*/
 void KMyMoney2App::slotViewUp()
 {
   myMoneyView->viewUp();
 }
-
+/*
 void KMyMoney2App::enableTransactionOperations(bool enable)
 {
   if (enable) {
@@ -730,7 +736,7 @@ void KMyMoney2App::enableTransactionOperations(bool enable)
   QString caption = myMoneyView->currentAccountName();
   setCaption(caption);
 }
-
+*/
 void KMyMoney2App::slotSettings()
 {
   KSettingsDlg dlg( this, "Settings");
@@ -914,31 +920,35 @@ void KMyMoney2App::slotKeySettings()
 
 void KMyMoney2App::slotHomeView()
 {
-  disableAllAccountActions();
+  //disableAllAccountActions();
 }
 
 void KMyMoney2App::slotAccountsView()
 {
 }
-
+/*
 void KMyMoney2App::disableAllAccountActions(bool enable)
 {
   enableBankOperations(false);
   enableAccountOperations(false);
   enableTransactionOperations(false);
 }
-
+*/
 void KMyMoney2App::slotScheduledView()
 {
-  disableAllAccountActions();
+  //disableAllAccountActions();
 }
 
 void KMyMoney2App::slotCategoryView()
 {
-  disableAllAccountActions();
+  //disableAllAccountActions();
 }
 
 void KMyMoney2App::slotPayeeView()
 {
-  disableAllAccountActions();
+  //disableAllAccountActions();
+}
+
+void KMyMoney2App::slotEnableKMyMoneyOperations(bool enable)
+{
 }

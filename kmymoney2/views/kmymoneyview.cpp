@@ -47,6 +47,7 @@
 
 #include "../mymoney/storage/mymoneystoragebin.h"
 #include "../mymoney/mymoneyexception.h"
+#include "../mymoney/storage/mymoneystoragedump.h"
 
 #if QT_VERSION > 300
 #include <kicontheme.h>
@@ -99,7 +100,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(accountsView, SIGNAL(accountRightMouseClick(const QCString&, bool)),
     this, SLOT(slotAccountRightMouse(const QCString&, bool)));
   connect(accountsView, SIGNAL(accountDoubleClick()), this, SLOT(slotAccountDoubleClick()));
-  connect(accountsView, SIGNAL(accountSelected()), this, SLOT(slotAccountSelected()));
+  //connect(accountsView, SIGNAL(accountSelected()), this, SLOT(slotAccountSelected()));
 
   connect(transactionView, SIGNAL(viewTypeSearchActivated()),
     this, SLOT(accountFind()));
@@ -277,9 +278,6 @@ void KMyMoneyView::slotAccountDelete()
 
     m_file->removeAccount(account);
   
-    if (m_file->accountCount()==0) // If no more accounts exist
-      emit accountOperations(false);
-
     accountsView->refresh(m_file, "");
   }
   catch (MyMoneyException *e)
@@ -308,13 +306,20 @@ void KMyMoneyView::closeFile(void)
 
   accountsView->clear();
   transactionView->clear();
-  emit fileOperations(false);
+  emit signalEnableKMyMoneyOperations(false);
 }
 
 bool KMyMoneyView::readFile(QString filename)
 {
-  if (!fileOpen()) {
-    newFile();
+  if (!fileOpen())
+  {
+    m_storage = new MyMoneySeqAccessMgr;
+    m_file = new MyMoneyFile(m_storage);
+  }
+  else
+  {
+    qDebug("Trying to read into an already open file.");
+    return false;
   }
 
   // Use the old reader for now
@@ -360,34 +365,30 @@ void KMyMoneyView::setDirty(bool dirty)
 }
 */
 
-/* Keep here for now
 void KMyMoneyView::slotBankNew(void)
 {
-  if (!m_file)
+  if (!fileOpen())
     return;
 
   MyMoneyInstitution institution;
   
-  KNewBankDlg dlg(institution, this);
+  KNewBankDlg dlg(institution, this, "newbankdlg");
   if (dlg.exec())
   {
     try
     {
       institution = dlg.institution();
       m_file->addInstitution(institution);
-      banksView->refresh(m_file);
-      viewBankList(NULL, institution);
-      emit bankOperations(true);
+      accountsView->refresh(m_file, "");
     }
     catch (MyMoneyException *e)
     {
-      delete *e;
+      delete e;
       KMessageBox::information(this, i18n("Cannot add bank"));
       return;
     }
   }
 }
-*/
 
 void KMyMoneyView::slotAccountNew(void)
 {
@@ -409,7 +410,6 @@ void KMyMoneyView::slotAccountNew(void)
       m_file->addAccount(newAccount, parentAccount);
       accountsView->refresh(m_file, "");
       viewAccountList(newAccount.id());
-      emit accountOperations(true);
     }
   }
   catch (MyMoneyException *e)
@@ -971,7 +971,6 @@ void KMyMoneyView::viewAccountList(const QCString& selectAccount)
   if (fileOpen())
   {
     accountsView->refresh(m_file, selectAccount);
-    emit bankOperations(true);
   }
 }
 
@@ -1416,12 +1415,13 @@ void KMyMoneyView::slotBankSelected()
 {
   emit bankOperations(true);
 }
-*/
+
 void KMyMoneyView::slotAccountSelected()
 {
   emit accountOperations(true);
 }
-/*
+
+
 MyMoneyAccount* KMyMoneyView::getAccount(void)
 {
   bool bBankSuccess=false, bAccountSuccess=false;
@@ -1470,8 +1470,6 @@ transactionView->setSignals(false);
       transactionView->hide();
     else
       m_investmentView->hide();
-
-    emit transactionOperations(true);
   }
  else
   {
@@ -1481,7 +1479,6 @@ transactionView->setSignals(false);
     if (fileOpen())
     {
       accountsView->refresh(m_file, "");
-      emit bankOperations(true);
     }
     m_showing = BankList;
   }
@@ -1513,3 +1510,13 @@ void KMyMoneyView::slotActivatedPayeeView()
   emit signalPayeeView();
 }
 
+
+void KMyMoneyView::memoryDump()
+{
+  QFile g( "kmymoney2.dump" );
+  g.open( IO_WriteOnly );
+  QDataStream st(&g);
+  MyMoneyStorageDump dumper;
+  dumper.writeStream(st, m_storage);
+  g.close();
+}
