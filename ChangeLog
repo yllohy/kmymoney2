@@ -1,3 +1,6 @@
+2001-12-26 Michael Edwardes <mte@users.sourceforge.net>
+  * Fixed bug #490019 - Toolbar icon out of sync.
+
 2001-12-23 Michael Edwardes <mte@users.sourceforge.net>
   * Added ability to compile for KDE 3 or KDE 2.
   

@@ -126,7 +126,7 @@ void KMyMoneyView::slotAccountDoubleClick(void)
 
 void KMyMoneyView::slotBankRightMouse(const MyMoneyBank, bool inList)
 {
-  emit bankOperations(false);
+//  emit bankOperations(false);
 
   // enable and disable items according to position of right-click
   m_bankMenu->setItemEnabled(m_bankId, !inList);
