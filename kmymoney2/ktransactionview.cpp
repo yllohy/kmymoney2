@@ -635,9 +635,6 @@ void KTransactionView::init(MyMoneyFile *file, MyMoneyBank bank, MyMoneyAccount 
 
 void KTransactionView::clear(void)
 {
-  for (int i=0; i<transactionsTable->numRows(); i++)
-    for (int j=0; j<=6; j++)
-      transactionsTable->setText(i, j, "");
   transactionsTable->setNumRows(0);
 }
 
@@ -714,33 +711,6 @@ void KTransactionView::enterClicked()
       m_method->setFocus(); // Don't think this will work anyway
       return;
   }
-
-#if 0
-	if(m_method->currentItem() == 0)
-	{
-   	 newmethod = MyMoneyTransaction::Cheque;
-	}
-	else if(m_method->currentItem() == 1)
-	{
-   	 newmethod = MyMoneyTransaction::Deposit;
-	}
-	else if(m_method->currentItem() == 2)
-	{
-   	 newmethod = MyMoneyTransaction::Transfer;
-	}
-	else if(m_method->currentItem() == 3)
-	{
-   	 newmethod = MyMoneyTransaction::Withdrawal;
-	}
-	else if(m_method->currentItem() == 4)
-	{
-   	 newmethod = MyMoneyTransaction::ATM;
-	}
-	else
-	{
-   	 newmethod = MyMoneyTransaction::Cheque;
-	}
-#endif
 
   // Add payee to Payee List
 	m_filePointer->addPayee(m_payee->currentText());
@@ -1133,29 +1103,10 @@ void KTransactionView::updateTransactionList(int row, int col)
 
       transactionsTable->setText(rowCount, 0, KGlobal::locale()->formatDate(transaction->date(), true));
 
-      if (NO_ROWS==2)
-        transactionsTable->setText(rowCount + 1, 1, transaction->number());
-
       transactionsTable->setText(rowCount, 1, colText);
 
       transactionsTable->setText(rowCount, 2, transaction->payee());
 
-			if(transaction->categoryMinor() == "")
-			{
-      	colText = transaction->categoryMajor();
-			}
-			else
-			{
-				colText = transaction->categoryMajor();
-				colText += ":";
-				colText += transaction->categoryMinor();
-			}
-      colText = colText + "|" + transaction->memo();
-
-      if (NO_ROWS==2)
-        transactionsTable->setText(rowCount + 1, 2, colText);
-
-      QString cLet;
       switch (transaction->state()) {
         case MyMoneyTransaction::Cleared:
           colText = i18n("C");
@@ -1191,6 +1142,42 @@ void KTransactionView::updateTransactionList(int row, int col)
           m_balanceWidth = width;
       } else
         transactionsTable->setText(rowCount, 6, i18n("N/A"));
+
+      // initializing the table like I've done below speeds up operations
+      // when using 1700 transactions at 2 row display. At 1 row
+      // display performance was OK, but with 2 row display it was
+      // odd. Measurements on my system:
+      //
+      // 1758 transactions, 1 row display    ~2 sec
+      // 1758 transactions, 2 row display   ~23 sec
+      //
+      // for the display to show up. Adding the code below helped
+      // a lot!! I now get
+      //
+      // 1758 transactions, 1 row display    ~3 sec
+      // 1758 transactions, 2 row display    ~3 sec
+      //
+      // Please don't ask me why!!
+
+      if (NO_ROWS==2) {
+        transactionsTable->setText(rowCount + 1, 0, "");
+        transactionsTable->setText(rowCount + 1, 1, transaction->number());
+
+  			if(transaction->categoryMinor() == "") {
+          colText = transaction->categoryMajor();
+        } else {
+          colText = transaction->categoryMajor()
+                    + ":"
+                    + transaction->categoryMinor();
+        }
+        colText = colText + "|" + transaction->memo();
+
+        transactionsTable->setText(rowCount + 1, 2, colText);
+        transactionsTable->setText(rowCount + 1, 3, "");
+        transactionsTable->setText(rowCount + 1, 4, "");
+        transactionsTable->setText(rowCount + 1, 5, "");
+        transactionsTable->setText(rowCount + 1, 6, "");
+      } // NO_ROWS == 2
 
     }  // useall etc check
       rowCount += NO_ROWS;
