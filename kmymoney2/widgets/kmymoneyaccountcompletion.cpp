@@ -39,7 +39,22 @@
 kMyMoneyAccountCompletion::kMyMoneyAccountCompletion(QWidget *parent, const char *name ) :
   kMyMoneyCompletion(parent, name)
 {
-  m_accountType = (KMyMoneyUtils::categoryTypeE) 0x0f;
+  // Default is to show all accounts
+  m_typeList << MyMoneyAccount::Checkings;
+  m_typeList << MyMoneyAccount::Savings;
+  m_typeList << MyMoneyAccount::Cash;
+  m_typeList << MyMoneyAccount::AssetLoan;
+  m_typeList << MyMoneyAccount::CertificateDep;
+  m_typeList << MyMoneyAccount::Investment;
+  m_typeList << MyMoneyAccount::MoneyMarket;
+  m_typeList << MyMoneyAccount::Asset;
+  m_typeList << MyMoneyAccount::Currency;
+  m_typeList << MyMoneyAccount::CreditCard;
+  m_typeList << MyMoneyAccount::Loan;
+  m_typeList << MyMoneyAccount::Liability;
+  m_typeList << MyMoneyAccount::Income;
+  m_typeList << MyMoneyAccount::Expense;
+
   m_accountSelector = new kMyMoneyAccountSelector(this, 0, 0, false);
 
   connectSignals(static_cast<QWidget*> (m_accountSelector), m_accountSelector->listView());
@@ -53,15 +68,33 @@ void kMyMoneyAccountCompletion::show(void)
 {
   int  count;
 
-  count = loadList(m_accountType);
+  count = loadList(m_typeList);
   if(!m_id.isEmpty())
     m_accountSelector->setSelected(m_id);
 
   // make sure we increase the count by the account groups
-  for(int mask = 0x01; mask != KMyMoneyUtils::last; mask <<= 1) {
-    if(m_accountType & mask)
-      ++count;
-  }
+  if((m_typeList.contains(MyMoneyAccount::Checkings)
+    + m_typeList.contains(MyMoneyAccount::Savings)
+    + m_typeList.contains(MyMoneyAccount::Cash)
+    + m_typeList.contains(MyMoneyAccount::AssetLoan)
+    + m_typeList.contains(MyMoneyAccount::CertificateDep)
+    + m_typeList.contains(MyMoneyAccount::Investment)
+    + m_typeList.contains(MyMoneyAccount::MoneyMarket)
+    + m_typeList.contains(MyMoneyAccount::Asset)
+    + m_typeList.contains(MyMoneyAccount::Currency)) > 0)
+    ++count;
+
+  if((m_typeList.contains(MyMoneyAccount::CreditCard)
+    + m_typeList.contains(MyMoneyAccount::Loan)
+    + m_typeList.contains(MyMoneyAccount::Liability)) > 0)
+    ++count;
+
+  if((m_typeList.contains(MyMoneyAccount::Income)) > 0)
+    ++count;
+
+  if((m_typeList.contains(MyMoneyAccount::Expense)) > 0)
+    ++count;
+
   adjustSize(count);
 
   kMyMoneyCompletion::show();
@@ -69,8 +102,8 @@ void kMyMoneyAccountCompletion::show(void)
 
 void kMyMoneyAccountCompletion::slotMakeCompletion(const QString& txt)
 {
-  if(txt.isEmpty() || txt.length() == 0)
-    return;
+  // if(txt.isEmpty() || txt.length() == 0)
+  //  return;
 
   QString account(txt);
   int pos = txt.findRev(':');

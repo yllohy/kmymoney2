@@ -46,6 +46,25 @@ kMyMoneyCategory::kMyMoneyCategory(QWidget *parent, const char *name, const KMyM
   m_inCreation = false;
   m_accountSelector = new kMyMoneyAccountCompletion(this, 0);
   m_accountSelector->hide();
+
+  // show all but investment accounts
+  QValueList<int> typeList;
+  typeList << MyMoneyAccount::Checkings;
+  typeList << MyMoneyAccount::Savings;
+  typeList << MyMoneyAccount::Cash;
+  typeList << MyMoneyAccount::AssetLoan;
+  typeList << MyMoneyAccount::CertificateDep;
+  // typeList << MyMoneyAccount::Investment;
+  typeList << MyMoneyAccount::MoneyMarket;
+  typeList << MyMoneyAccount::Asset;
+  typeList << MyMoneyAccount::Currency;
+  typeList << MyMoneyAccount::CreditCard;
+  typeList << MyMoneyAccount::Loan;
+  typeList << MyMoneyAccount::Liability;
+  typeList << MyMoneyAccount::Income;
+  typeList << MyMoneyAccount::Expense;
+  m_accountSelector->loadList(typeList);
+
   connect(this, SIGNAL(textChanged(const QString&)), m_accountSelector, SLOT(slotMakeCompletion(const QString&)));
   connect(m_accountSelector, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotSelectAccount(const QCString&)));
 }

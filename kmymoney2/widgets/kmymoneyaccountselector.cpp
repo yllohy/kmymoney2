@@ -268,12 +268,65 @@ QListViewItem* kMyMoneyAccountSelector::newEntryFactory(QListViewItem* parent, c
 
 const int kMyMoneyAccountSelector::loadList(KMyMoneyUtils::categoryTypeE typeMask)
 {
+  QValueList<int> typeList;
+
+  if(typeMask & KMyMoneyUtils::asset) {
+    typeList << MyMoneyAccount::Checkings;
+    typeList << MyMoneyAccount::Savings;
+    typeList << MyMoneyAccount::Cash;
+    typeList << MyMoneyAccount::AssetLoan;
+    typeList << MyMoneyAccount::CertificateDep;
+    typeList << MyMoneyAccount::Investment;
+    typeList << MyMoneyAccount::MoneyMarket;
+    typeList << MyMoneyAccount::Asset;
+    typeList << MyMoneyAccount::Currency;
+  }
+  if(typeMask & KMyMoneyUtils::liability) {
+    typeList << MyMoneyAccount::CreditCard;
+    typeList << MyMoneyAccount::Loan;
+    typeList << MyMoneyAccount::Liability;
+  }
+  if(typeMask & KMyMoneyUtils::income) {
+    typeList << MyMoneyAccount::Income;
+  }
+  if(typeMask & KMyMoneyUtils::expense) {
+    typeList << MyMoneyAccount::Expense;
+  }
+
+  return loadList(typeList);
+}
+
+const int kMyMoneyAccountSelector::loadList(QValueList<int> typeList)
+{
   QCStringList list;
   QCStringList::ConstIterator it_l;
   MyMoneyFile* file = MyMoneyFile::instance();
   int count = 0;
+  int typeMask;
 
-  m_typeMask = typeMask;
+  if((typeList.contains(MyMoneyAccount::Checkings)
+    + typeList.contains(MyMoneyAccount::Savings)
+    + typeList.contains(MyMoneyAccount::Cash)
+    + typeList.contains(MyMoneyAccount::AssetLoan)
+    + typeList.contains(MyMoneyAccount::CertificateDep)
+    + typeList.contains(MyMoneyAccount::Investment)
+    + typeList.contains(MyMoneyAccount::MoneyMarket)
+    + typeList.contains(MyMoneyAccount::Asset)
+    + typeList.contains(MyMoneyAccount::Currency)) > 0)
+    typeMask |= KMyMoneyUtils::asset;
+
+  if((typeList.contains(MyMoneyAccount::CreditCard)
+    + typeList.contains(MyMoneyAccount::Loan)
+    + typeList.contains(MyMoneyAccount::Liability)) > 0)
+    typeMask |= KMyMoneyUtils::liability;
+
+  if((typeList.contains(MyMoneyAccount::Income)) > 0)
+    typeMask |= KMyMoneyUtils::income;
+
+  if((typeList.contains(MyMoneyAccount::Expense)) > 0)
+    typeMask |= KMyMoneyUtils::expense;
+
+  m_typeList = typeList;
   m_listView->clear();
 
   if(m_selMode == QListView::Multi) {
@@ -316,10 +369,12 @@ const int kMyMoneyAccountSelector::loadList(KMyMoneyUtils::categoryTypeE typeMas
       for(it_l = list.begin(); it_l != list.end(); ++it_l) {
         ++count;
         MyMoneyAccount acc = file->account(*it_l);
-        QListViewItem* subItem = newEntryFactory(item, acc.name(), acc.id());
-        if(acc.accountList().count() > 0) {
-          subItem->setOpen(true);
-          count += loadSubAccounts(subItem, acc.accountList());
+        if(m_typeList.contains(acc.accountType())) {
+          QListViewItem* subItem = newEntryFactory(item, acc.name(), acc.id());
+          if(acc.accountList().count() > 0) {
+            subItem->setOpen(true);
+            count += loadSubAccounts(subItem, acc.accountList());
+          }
         }
       }
     }
@@ -341,10 +396,12 @@ const int kMyMoneyAccountSelector::loadSubAccounts(QListViewItem* parent, const 
   for(it_l = list.begin(); it_l != list.end(); ++it_l) {
     ++count;
     MyMoneyAccount acc = file->account(*it_l);
-    QListViewItem* item = newEntryFactory(parent, acc.name(), acc.id());
-    if(acc.accountList().count() > 0) {
-      item->setOpen(true);
-      count += loadSubAccounts(item, acc.accountList());
+    if(m_typeList.contains(acc.accountType())) {
+      QListViewItem* item = newEntryFactory(parent, acc.name(), acc.id());
+      if(acc.accountList().count() > 0) {
+        item->setOpen(true);
+        count += loadSubAccounts(item, acc.accountList());
+      }
     }
   }
   return count;
@@ -598,7 +655,7 @@ void kMyMoneyAccountSelector::update(const QCString& /* id */)
   QCStringList list = selectedAccounts();
   QCStringList::Iterator it;
 
-  loadList(m_typeMask);
+  loadList(m_typeList);
 
   // because loadList() sets all accounts selected, we have to
   // clear the selection and only turn on those, that were on

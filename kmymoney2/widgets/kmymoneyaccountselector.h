@@ -173,6 +173,17 @@ public:
   const int loadList(KMyMoneyUtils::categoryTypeE typeMask);
 
   /**
+    * This method loads the set of accounts into the widget
+    * as defined by the parameter @p typeList. @p typeList is
+    * a QValueList of MyMoneyAccount::accountTypeE:
+    *
+    * @param typeList QValueList of MyMoneyAccount::accountTypeE account types
+    *                 which should be loaded into the widget
+    * @return This method returns the number of accounts loaded into the list
+    */
+  const int loadList(QValueList<int> typeList);
+
+  /**
     * This method returns the list of selected account id's. If
     * no account is selected, the list is empty.
     *
@@ -337,7 +348,8 @@ protected slots:
 
 protected:
   KListView*                m_listView;
-  KMyMoneyUtils::categoryTypeE m_typeMask;
+  QValueList<int>           m_typeList;
+  // KMyMoneyUtils::categoryTypeE m_typeMask;
   KPushButton*              m_allAccountsButton;
   KPushButton*              m_noAccountButton;
   KPushButton*              m_incomeCategoriesButton;

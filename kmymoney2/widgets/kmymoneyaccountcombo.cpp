@@ -160,3 +160,34 @@ void kMyMoneyAccountCombo::paintEvent( QPaintEvent * )
     }
   }
 }
+
+int kMyMoneyAccountCombo::loadList(KMyMoneyUtils::categoryTypeE typeMask)
+{
+  QValueList<int> typeList;
+
+  if(typeMask & KMyMoneyUtils::asset) {
+    typeList << MyMoneyAccount::Checkings;
+    typeList << MyMoneyAccount::Savings;
+    typeList << MyMoneyAccount::Cash;
+    typeList << MyMoneyAccount::AssetLoan;
+    typeList << MyMoneyAccount::CertificateDep;
+    typeList << MyMoneyAccount::Investment;
+    typeList << MyMoneyAccount::MoneyMarket;
+    typeList << MyMoneyAccount::Asset;
+    typeList << MyMoneyAccount::Currency;
+  }
+  if(typeMask & KMyMoneyUtils::liability) {
+    typeList << MyMoneyAccount::CreditCard;
+    typeList << MyMoneyAccount::Loan;
+    typeList << MyMoneyAccount::Liability;
+  }
+  if(typeMask & KMyMoneyUtils::income) {
+    typeList << MyMoneyAccount::Income;
+  }
+  if(typeMask & KMyMoneyUtils::expense) {
+    typeList << MyMoneyAccount::Expense;
+  }
+
+  return m_selector->loadList(typeList);
+}
+

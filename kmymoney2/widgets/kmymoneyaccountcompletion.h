@@ -68,9 +68,9 @@ public:
     *                 should be loaded into the completion list
     * @return This method returns the number of accounts loaded into the list
     */
-  int loadList(KMyMoneyUtils::categoryTypeE typeMask) { m_accountType = typeMask; return m_accountSelector->loadList(typeMask); };
+  int loadList(QValueList<int> typeList) { m_typeList = typeList; return m_accountSelector->loadList(typeList); };
 
-  int loadList(void) { return loadList(m_accountType); };
+  int loadList(void) { return loadList(m_typeList); };
 
   /**
     * This method sets the current account with id @p id as
@@ -95,7 +95,7 @@ public slots:
 
 private:
   kMyMoneyAccountSelector*      m_accountSelector;
-  KMyMoneyUtils::categoryTypeE  m_accountType;
+  QValueList<int>               m_typeList;
 };
 
 #endif

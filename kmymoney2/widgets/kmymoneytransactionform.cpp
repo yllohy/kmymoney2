@@ -47,6 +47,8 @@
 
 #include "kmymoneytransactionform.h"
 #include "../views/kledgerview.h"
+#include "../kmymoneyutils.h"
+#include "../kapptest.h"
 
 /* -------------------------------------------------------------------------------*/
 /*                           kMyMoneyTransactionFormTable                         */
@@ -227,7 +229,7 @@ kMyMoneyTransactionForm::kMyMoneyTransactionForm( KLedgerView* parent,  const ch
                     QIconSet(il->loadIcon("filenew", KIcon::Small, KIcon::SizeSmall)),
                     i18n("Create a new transaction"),
                     i18n("Use this to create a new transaction in the ledger"));
-  buttonNew = new KPushButton( newButtItem, formFrame, "buttonNew" );
+  buttonNew = new KPushButton( newButtItem, formFrame, KAppTest::widgetName(this, "KPushButton/New") );
   buttonNew->setSizePolicy( QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed, 0, 0, buttonNew->sizePolicy().hasHeightForWidth() ) );
   buttonLayout->addWidget( buttonNew );
 
@@ -235,7 +237,7 @@ kMyMoneyTransactionForm::kMyMoneyTransactionForm( KLedgerView* parent,  const ch
                     QIconSet(il->loadIcon("edit", KIcon::Small, KIcon::SizeSmall)),
                     i18n("Modify a transaction"),
                     i18n("Use this to modify the current selected transaction in the ledger"));
-  buttonEdit = new KPushButton( editButtItem, formFrame, "buttonEdit" );
+  buttonEdit = new KPushButton( editButtItem, formFrame, KAppTest::widgetName(this, "KPushButton/Edit" ));
   buttonNew->setSizePolicy( QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed, 0, 0, buttonNew->sizePolicy().hasHeightForWidth() ) );
   buttonLayout->addWidget( buttonEdit );
 
@@ -243,7 +245,7 @@ kMyMoneyTransactionForm::kMyMoneyTransactionForm( KLedgerView* parent,  const ch
                     QIconSet(il->loadIcon("button_ok", KIcon::Small, KIcon::SizeSmall)),
                     i18n("Enter transaction into ledger"),
                     i18n("Use this to enter the current transaction into the ledger"));
-  buttonEnter = new KPushButton( enterButtItem, formFrame, "buttonEnter" );
+  buttonEnter = new KPushButton( enterButtItem, formFrame, KAppTest::widgetName(this, "KPushButton/Enter" ));
   buttonNew->setSizePolicy( QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed, 0, 0, buttonNew->sizePolicy().hasHeightForWidth() ) );
   buttonLayout->addWidget( buttonEnter );
 
@@ -251,7 +253,7 @@ kMyMoneyTransactionForm::kMyMoneyTransactionForm( KLedgerView* parent,  const ch
                     QIconSet(il->loadIcon("button_cancel", KIcon::Small, KIcon::SizeSmall)),
                     i18n("Forget changes made to this transaction"),
                     i18n("Use this to abort the changes to the current transaction"));
-  buttonCancel = new KPushButton( cancelButtItem, formFrame, "buttonCancel" );
+  buttonCancel = new KPushButton( cancelButtItem, formFrame, KAppTest::widgetName(this , "KPushButton/Cancel" ));
   buttonNew->setSizePolicy( QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed, 0, 0, buttonNew->sizePolicy().hasHeightForWidth() ) );
   buttonLayout->addWidget( buttonCancel );
 
@@ -259,7 +261,7 @@ kMyMoneyTransactionForm::kMyMoneyTransactionForm( KLedgerView* parent,  const ch
                     QIconSet(il->loadIcon("configure", KIcon::Small, KIcon::SizeSmall)),
                     i18n("Access more functions"),
                     i18n("Use this to access special functions"));
-  buttonMore = new KPushButton( moreButtItem, formFrame, "buttonMore" );
+  buttonMore = new KPushButton( moreButtItem, formFrame, KAppTest::widgetName(this, "KPushButton/More" ));
   buttonNew->setSizePolicy( QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed, 0, 0, buttonNew->sizePolicy().hasHeightForWidth() ) );
   buttonLayout->addWidget( buttonMore );
 
@@ -282,7 +284,7 @@ kMyMoneyTransactionForm::kMyMoneyTransactionForm( KLedgerView* parent,  const ch
   formFrameLayout->addLayout( buttonLayout, 0, 0 );
 
 
-  formTable = new kMyMoneyTransactionFormTable( m_view, formFrame, "formTable" );
+  formTable = new kMyMoneyTransactionFormTable( m_view, formFrame, KAppTest::widgetName(this, "kMyMoneyTransactionFormTable") );
   formTable->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding, 0, 0, formTable->sizePolicy().hasHeightForWidth() ) );
   formTable->setBackgroundOrigin(QTable::WindowOrigin);
   formTable->setFrameShape( QTable::NoFrame );

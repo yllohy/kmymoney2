@@ -54,7 +54,7 @@ public:
 
   const QCStringList accountList(const QValueList<MyMoneyAccount::accountTypeE>& list = QValueList<MyMoneyAccount::accountTypeE>()) const { return m_selector->accountList(list); };
 
-  int loadList(KMyMoneyUtils::categoryTypeE typeMask) { return m_selector->loadList(typeMask); };
+  int loadList(KMyMoneyUtils::categoryTypeE typeMask);
 
   void setSelected(const MyMoneyAccount& acc);
 
