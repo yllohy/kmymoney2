@@ -48,11 +48,6 @@ fi
 dnl
 dnl check for libofx
 dnl 
-dnl DO THIS CHECK LAST!!!  After -lofx is on LIBS, no other checks will work!
-dnl
-dnl This is all required because libofx expects certain global symbols to
-dnl be defined as part of its interface
-dnl
 AC_LIBOFX()
 
 dnl CXXFLAGS="$NOOPT_CXXFLAGS" dnl __kdevelop[noopt]__
