@@ -840,6 +840,7 @@ bool KMyMoneyView::readFile(const KURL& url)
                 if(kmyexp.search(txt) != -1) {
                   pReader = new MyMoneyStorageXML;
                 } else if(gncexp.search(txt) != -1) {
+                  loadDefaultCurrencies(); // currency list required for gnc
                   pReader = new MyMoneyStorageGNC;
                 }
               }

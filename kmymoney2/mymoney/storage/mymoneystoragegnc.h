@@ -705,6 +705,8 @@ private:
   int m_scheduleCount;
   // counters for error reporting
   int m_ccCount, m_orCount, m_scCount;
+  // currency counter
+  QMap<QString, unsigned int> m_currencyCount;
   /**
     * Map gnucash vs. Kmm ids for accounts, equities, schedules
     */

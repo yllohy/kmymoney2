@@ -1,3 +1,8 @@
+2005-01-20 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Gnucash import
+    * Scheduled transactions default to Bills rather than Deposits
+    * Reinstated default currency calculation
+
 2005-01-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Allow modification of end date for scheduled transactions at any time
   * Allow to add splits to scheduled transfers

@@ -910,8 +910,10 @@ void MyMoneyStorageGNC::convertAccount (const GncAccount* gac) {
   acc.setOpeningDate(currentDate);
   acc.setLastModified(currentDate);
   acc.setLastReconciliationDate(currentDate);
-  if (gac->commodity()->isCurrency())
+  if (gac->commodity()->isCurrency()) {
     acc.setCurrencyId (QCString(gac->commodity()->id()));
+    m_currencyCount[gac->commodity()->id()]++;
+  }
 
   acc.setParentAccountId (QCString(gac->parent()));
   // now determine the account type and its parent id
@@ -1189,7 +1191,7 @@ MyMoneyTransaction MyMoneyStorageGNC::convertTemplateTransaction (const QString 
     if (m_potentialTransfer) {
       split.setAction(MyMoneySplit::ActionTransfer);
     } else {
-      if (split.value().isNegative()) {
+      if (split.value() <= MyMoneyMoney (0)) {
         split.setAction (QCString(negativeActionType));
       } else {
         split.setAction (QCString(positiveActionType));
@@ -1498,7 +1500,25 @@ void MyMoneyStorageGNC::terminate () {
     }
     signalProgress (++i, 0);
   } // end for account
-
+  // offer the most common account currency as a default
+  QString mainCurrency = "";
+  unsigned int maxCount = 0;
+  QMap<QString, unsigned int>::ConstIterator it;
+  for (it = m_currencyCount.begin(); it != m_currencyCount.end(); ++it) {
+    if (it.data() > maxCount) {
+      maxCount = it.data();
+      mainCurrency = it.key();
+      }
+  }
+  if (mainCurrency != "") {
+    switch (QMessageBox::question (0, PACKAGE,
+        QObject::tr("Your main currency seems to be %1 (%2); do you want to set this as your base currency?")
+            .arg(mainCurrency).arg(m_storage->currency(QCString(mainCurrency)).name()),
+                    QMessageBox::Yes | QMessageBox::Default, QMessageBox::No)) {
+        case QMessageBox::Yes:
+          m_storage->setValue ("kmm-baseCurrency", mainCurrency);
+    }
+  }
   // now produce the end of job reports - first, work out which ones are required
   m_ccCount = 0, m_orCount = 0, m_scCount = 0;
   for (i = 0; i < m_messageList.count(); i++) {
