@@ -506,10 +506,11 @@ private:
     *
     * @param qf pointer to QFile representing the opened file
     * @param writer pointer to the formatter
+    * @param plaintext whether to override any compression & encryption settings
     *
     * @note This method will close the file when it is written.
     */
-  void saveToLocalFile(QFile* qf, IMyMoneyStorageFormat* writer);
+  void saveToLocalFile(QFile* qf, IMyMoneyStorageFormat* writer, bool plaintext=false);
 
   /**
     * Internal method used by slotAccountNew() and slotAccountCategory().

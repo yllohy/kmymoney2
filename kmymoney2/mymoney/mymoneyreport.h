@@ -161,8 +161,10 @@ public:
     * @param e The element which should be populated with info from this report
     * @param doc The document which we can use to create new sub-elements
     *              if needed
+    * @param anonymous Whether the sensitive parts of the report should be
+    *              masked
     */
-  void write(QDomElement& e, QDomDocument *doc) const;
+  void write(QDomElement& e, QDomDocument *doc, bool anonymous=false) const;
   
   /**
     * This method reads a report from the DOM element @p e, and

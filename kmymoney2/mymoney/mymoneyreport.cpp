@@ -92,7 +92,7 @@ MyMoneyReport::MyMoneyReport(ERowType _rt, unsigned _ct, unsigned _dl, bool _ss,
       
   }
 
-void MyMoneyReport::write(QDomElement& e, QDomDocument *doc) const
+void MyMoneyReport::write(QDomElement& e, QDomDocument *doc, bool anonymous) const
 {
   // No matter what changes, be sure to have a 'type' attribute.  Only change
   // the major type if it becomes impossible to maintain compatability with 
@@ -102,8 +102,17 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc) const
   if ( m_reportType == ePivotTable )
   {
     e.setAttribute("type","pivottable 1.6");
-    e.setAttribute("name", m_name);
-    e.setAttribute("comment", m_comment);
+    
+    if ( anonymous )
+    {
+      e.setAttribute("name", m_id);
+      e.setAttribute("comment", QString(m_comment).fill('x'));
+    }
+    else
+    {
+      e.setAttribute("name", m_name);
+      e.setAttribute("comment", m_comment);
+    }
     e.setAttribute("group", m_group);
     e.setAttribute("showsubaccounts", m_showSubAccounts);
     e.setAttribute("convertcurrency", m_convertCurrency);
@@ -118,8 +127,16 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc) const
   else if ( m_reportType == eQueryTable )
   {
     e.setAttribute("type","querytable 1.6");
-    e.setAttribute("name", m_name);
-    e.setAttribute("comment", m_comment);
+    if ( anonymous )
+    {
+      e.setAttribute("name", m_id);
+      e.setAttribute("comment", QString(m_comment).fill('x'));
+    }
+    else
+    {
+      e.setAttribute("name", m_name);
+      e.setAttribute("comment", m_comment);
+    }
     e.setAttribute("group", m_group);
     e.setAttribute("convertcurrency", m_convertCurrency);
     e.setAttribute("favorite", m_favorite);
