@@ -148,6 +148,10 @@ void KGlobalLedgerView::loadAccounts(void)
   acc = file->liability();
   for(it_s = acc.accountList().begin(); it_s != acc.accountList().end(); ++it_s) {
     accountComboBox->insertItem(file->account(*it_s).name());
+    if(m_accountId == "") {
+      selectAccount(*it_s, "", false, true);
+      accountComboBox->setCurrentText(file->account(*it_s).name());
+    }
   }
 
   if(m_accountId == "") {       // no accounts available?
