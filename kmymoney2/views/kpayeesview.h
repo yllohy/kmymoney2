@@ -32,12 +32,13 @@
   *@author Michael Edwardes
   */
 
-class KPayeesView : public kPayeesViewDecl  {
+class KPayeesView : public kPayeesViewDecl, MyMoneyObserver  {
    Q_OBJECT
 public: 
 	KPayeesView(QWidget *parent=0, const char *name=0);
 	~KPayeesView();
   void show();
+  void update(const QCString &id);
 
 protected slots:
   void payeeHighlighted(const QString&);
@@ -47,7 +48,7 @@ protected slots:
   void slotDeleteClicked();
 
 private:
-  MyMoneyFile *m_file;
+  MyMoneyPayee m_payee;
   QString m_lastPayee;
 
   void readConfig(void);

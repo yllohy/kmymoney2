@@ -47,7 +47,6 @@ KPayeesView::KPayeesView(QWidget *parent, const char *name )
 //  QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_payees.png");
 //  QPixmap *pm = new QPixmap(filename);
 //  m_qpixmaplabel->setPixmap(*pm);
-	m_file = 0L;
 
   readConfig();
 
@@ -56,54 +55,75 @@ KPayeesView::KPayeesView(QWidget *parent, const char *name )
   connect(payeeEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotPayeeTextChanged(const QString&)));
   connect(updateButton, SIGNAL(clicked()), this, SLOT(slotUpdateClicked()));
   connect(deleteButton, SIGNAL(clicked()), this, SLOT(slotDeleteClicked()));
+
+  MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassPayee, this);
+
+  refresh();
 }
 
 KPayeesView::~KPayeesView()
 {
+  MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassPayee, this);
+
   writeConfig();
+}
+
+void KPayeesView::update(const QCString &id)
+{
+  refresh();
 }
 
 void KPayeesView::payeeHighlighted(const QString& text)
 {
-/*
-  MyMoneyPayee *payee=0;
-  QListIterator<MyMoneyPayee> it = m_file->payeeIterator();
-  for ( ; it.current(); ++it) {
-    payee = it.current();
-    if (payee->name() == text) {
-      nameLabel->setText(payee->name());
-      addressEdit->setEnabled(true);
-      addressEdit->setText(payee->address());
-      postcodeEdit->setEnabled(true);
-      postcodeEdit->setText(payee->postcode());
-      telephoneEdit->setEnabled(true);
-      telephoneEdit->setText(payee->telephone());
-      emailEdit->setEnabled(true);
-      emailEdit->setText(payee->email());
-      updateButton->setEnabled(true);
-      deleteButton->setEnabled(true);
-    }
+  try {
+    m_payee = MyMoneyFile::instance()->payeeByName(text);
+    m_lastPayee = m_payee.name();
+
+    nameLabel->setText(m_payee.name());
+    addressEdit->setEnabled(true);
+    addressEdit->setText(m_payee.address());
+    postcodeEdit->setEnabled(true);
+    postcodeEdit->setText(m_payee.postcode());
+    telephoneEdit->setEnabled(true);
+    telephoneEdit->setText(m_payee.telephone());
+    emailEdit->setEnabled(true);
+    emailEdit->setText(m_payee.email());
+    updateButton->setEnabled(true);
+    deleteButton->setEnabled(true);
+
+  } catch(MyMoneyException *e) {
+    m_payee = MyMoneyPayee();
+    updateButton->setEnabled(false);
+    deleteButton->setEnabled(false);
+    delete e;
   }
-*/
 }
 
 void KPayeesView::slotAddClicked()
 {
-/*
-  m_file->addPayee(payeeEdit->text());
-  QListIterator<MyMoneyPayee> it = m_file->payeeIterator();
-  payeeCombo->clear();
-  int pos=0;
-  for (int k=0; it.current(); ++it, k++) {
-    payeeCombo->insertItem(it.current()->name());
-    if (it.current()->name()==payeeEdit->text())
-      pos=k;
-  }
+  try {
+    MyMoneyPayee p;
 
-  payeeEdit->setText("");
-  payeeCombo->setCurrentItem(pos);
-  payeeHighlighted(payeeCombo->currentText());
-*/
+    p = MyMoneyFile::instance()->payeeByName(payeeEdit->text());
+    KMessageBox::detailedSorry(0, i18n("Unable to add payee with same name"),
+      i18n("Payee already exists"));
+
+  } catch (MyMoneyException *e) {
+    m_payee = MyMoneyPayee();
+
+    try {
+      m_payee.setName(payeeEdit->text());
+      MyMoneyFile::instance()->addPayee(m_payee);
+
+      payeeEdit->setText("");
+      m_lastPayee = m_payee.name();
+
+    } catch(MyMoneyException *e) {
+      KMessageBox::detailedSorry(0, i18n("Unable to add payee"),
+        (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+      delete e;
+    }
+  }
 }
 
 void KPayeesView::slotPayeeTextChanged(const QString& text)
@@ -116,37 +136,41 @@ void KPayeesView::slotPayeeTextChanged(const QString& text)
 
 void KPayeesView::slotUpdateClicked()
 {
-/*
-  MyMoneyPayee *payee;
-  QListIterator<MyMoneyPayee> it = m_file->payeeIterator();
-  for ( ; it.current(); ++it) {
-    payee = it.current();
-    if (payee->name() == nameLabel->text()) {
-      payee->setAddress(addressEdit->text());
-      payee->setPostcode(postcodeEdit->text());
-      payee->setTelephone(telephoneEdit->text());
-      payee->setEmail(emailEdit->text());
-    }
+  try {
+    m_payee.setName(nameLabel->text());
+    m_payee.setAddress(addressEdit->text());
+    m_payee.setPostcode(postcodeEdit->text());
+    m_payee.setTelephone(telephoneEdit->text());
+    m_payee.setEmail(emailEdit->text());
+
+    MyMoneyFile::instance()->modifyPayee(m_payee);
+
+  } catch(MyMoneyException *e) {
+    KMessageBox::detailedSorry(0, i18n("Unable to modify payee"),
+      (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+    delete e;
   }
-*/
 }
 
 void KPayeesView::slotDeleteClicked()
 {
-/*
   QString prompt(i18n("Remove this payee: "));
   prompt += nameLabel->text();
 
   if (KMessageBox::questionYesNo(this, prompt, i18n("Remove Payee"))==KMessageBox::No)
     return;
 
-  m_file->removePayee(nameLabel->text());
-  QListIterator<MyMoneyPayee> it = m_file->payeeIterator();
-  payeeCombo->clear();
-  for ( ; it.current(); ++it)
-    payeeCombo->insertItem(it.current()->name());
-  payeeHighlighted(payeeCombo->currentText());
-*/
+  try {
+    MyMoneyPayee payee = m_payee;
+    m_payee = MyMoneyPayee();
+    m_lastPayee = "";
+    MyMoneyFile::instance()->removePayee(payee);
+
+  } catch(MyMoneyException *e) {
+    KMessageBox::detailedSorry(0, i18n("Unable to remove payee"),
+      (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+    delete e;
+  }
 }
 
 void KPayeesView::readConfig(void)
@@ -173,18 +197,30 @@ void KPayeesView::show()
 
 void KPayeesView::refresh(void)
 {
-/*
+  bool found = false;
+
   payeeCombo->clear();
 
-  int pos=0, k=0;
-  QListIterator<MyMoneyPayee> it = m_file->payeeIterator();
-  for ( ; it.current(); ++it, k++) {
-    payeeCombo->insertItem(it.current()->name());
-    if (it.current()->name()==m_lastPayee)
-      pos = k;
-  }
-  payeeCombo->setCurrentItem(pos);
+  QValueList<MyMoneyPayee>list = MyMoneyFile::instance()->payeeList();
+  QValueList<MyMoneyPayee>::ConstIterator it;
+  QStringList payees;
 
-  payeeHighlighted(payeeCombo->currentText());
-*/
+  for (it = list.begin(); it != list.end(); ++it) {
+    payees += (*it).name();
+    if(m_lastPayee.length() == 0)
+      m_lastPayee = (*it).name();
+    if((*it).name() == m_lastPayee) {
+      m_payee = *it;
+      found = true;
+    }
+  }
+  payees.sort();
+
+  payeeCombo->insertStringList(payees);
+
+
+  if(found == true) {
+    payeeCombo->setCurrentText(m_lastPayee);
+    payeeHighlighted(payeeCombo->currentText());
+  }
 }
