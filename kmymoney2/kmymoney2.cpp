@@ -896,7 +896,7 @@ void KMyMoney2App::slotStatementImport()
 
     if ( !result )
     {
-      QMessageBox::critical( this, i18n("Critical Error"), i18n("Unable to read file %1: %2").arg( dialog->selectedURL().path(),error), QMessageBox::Ok, 0 );
+      QMessageBox::critical( this, i18n("Critical Error"), i18n("Unable to read file %1: %2").arg( dialog->selectedURL().path()).arg(error), QMessageBox::Ok, 0 );
 
       slotStatusMsg(prevMsg);
     }
@@ -1618,7 +1618,7 @@ void KMyMoney2App::slotAccountNew(void)
 
 void KMyMoney2App::ofxWebConnect(const QString& url, const QCString& asn_id)
 {
-  // Bring this window to the forefront.  This method was suggested by 
+  // Bring this window to the forefront.  This method was suggested by
   // Lubos Lunak <l.lunak@suse.cz> of the KDE core development team.
   // Still have to figure out how to do it on earlier versions of KDE
 
