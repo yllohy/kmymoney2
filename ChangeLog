@@ -1,3 +1,6 @@
+2005-03-22 Ace Jones <acejones@users.sourceforge.net>
+  * Added "Are you sure you wish to cancel?" to import verify dialog.
+
 2005-03-21 Ace Jones <acejones@users.sourceforge.net>
   * Modified MMTransaction::isDuplicate to consider split numbers
   * Added an option to MMQifProfile to turn off the check for duplicate 
@@ -5,7 +8,7 @@
   * Made QIF import account type check less brittle by ignoring case and
     white space.  Also added "Credit Card" as a type instead of just
     "CCard".
-    
+
 2005-03-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Reworked build logic (Makefile.am)
 

@@ -67,7 +67,7 @@ KImportVerifyDlg::KImportVerifyDlg(const MyMoneyAccount& account, QWidget *paren
   buttonHelp->hide();
   
   connect(buttonOk, SIGNAL(clicked()), this, SLOT(slotOkClicked()));
-  connect(buttonCancel, SIGNAL(clicked()), this, SLOT(reject()));
+  connect(buttonCancel, SIGNAL(clicked()), this, SLOT(slotCancelClicked()));
 }
 
 KImportVerifyDlg::~KImportVerifyDlg()
@@ -96,6 +96,12 @@ void KImportVerifyDlg::slotOkClicked(void)
   file->suspendNotify(false);
   
   accept();  
+}
+
+void KImportVerifyDlg::slotCancelClicked(void)
+{
+  if ( KMessageBox::warningYesNo(this, i18n("You are about to cancel the entire import.  Any changes you have made in this dialog will be lost.  Are you sure you want to cancel?"),i18n("Verify cancel"),KStdGuiItem::yes(),KStdGuiItem::no(),"CancelImportVerify") == KMessageBox::Yes )
+    reject();
 }
 
 void KImportVerifyDlg::setProgressCallback(void(*callback)(int, int, const QString&))

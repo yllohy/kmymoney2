@@ -74,6 +74,7 @@ public slots:
     
 protected slots:
   void slotOkClicked(void);
+  void slotCancelClicked(void);
   void slotShowIntroduction(void) const;
     
 private:
