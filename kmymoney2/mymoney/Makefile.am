@@ -11,7 +11,7 @@ libkmm_mymoney_la_LDFLAGS = $(all_libraries) -version-info 0:0:0
 SUBDIRS = storage 
 
 instdir=$(includedir)/kmymoney
-inst_HEADERS = mymoneyaccount.h mymoneycategory.h mymoneycurrency.h mymoneyexception.h mymoneyfile.h mymoneyfinancialcalculator.h mymoneyinstitution.h mymoneyinvesttransaction.h mymoneykeyvaluecontainer.h mymoneymoney.h mymoneyobserver.h mymoneypayee.h mymoneyprice.h mymoneyreport.h mymoneyscheduled.h mymoneysecurity.h mymoneysplit.h mymoneystatement.h mymoneysubject.h mymoneytransactionfilter.h mymoneytransaction.h mymoneyutils.h
+inst_HEADERS = mymoneyaccount.h mymoneycategory.h mymoneyexception.h mymoneyfile.h mymoneyfinancialcalculator.h mymoneyinstitution.h mymoneyinvesttransaction.h mymoneykeyvaluecontainer.h mymoneymoney.h mymoneyobserver.h mymoneypayee.h mymoneyprice.h mymoneyreport.h mymoneyscheduled.h mymoneysecurity.h mymoneysplit.h mymoneystatement.h mymoneysubject.h mymoneytransactionfilter.h mymoneytransaction.h mymoneyutils.h
 
 noinst_HEADERS = autotest.h mymoneyaccounttest.h mymoneyfinancialcalculatortest.h mymoneykeyvaluecontainertest.h mymoneyexceptiontest.h mymoneyfiletest.h mymoneyinstitutiontest.h mymoneymoneytest.h mymoneyobservertest.h mymoneyscheduletest.h mymoneysplittest.h mymoneysecuritytest.h mymoneytransactiontest.h
 
