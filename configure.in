@@ -48,6 +48,8 @@ kmymoney2/Makefile \
 kmymoney2/dialogs/Makefile \
 kmymoney2/icons/Makefile \
 kmymoney2/icons/hicolor/Makefile \
+kmymoney2/icons/hicolor/16x16/Makefile \
+kmymoney2/icons/hicolor/16x16/actions/Makefile \
 kmymoney2/icons/hicolor/22x22/Makefile \
 kmymoney2/icons/hicolor/22x22/actions/Makefile \
 kmymoney2/mymoney/Makefile \

@@ -87,14 +87,14 @@ KMyMoney2App::~KMyMoney2App()
 void KMyMoney2App::initActions()
 {
 //  fileNew = KStdAction::openNew(this, SLOT(slotFileNewWindow()), actionCollection());
-  fileNew = new KAction(i18n("New &Window"), 0, 0, this, SLOT(slotFileNewWindow()), actionCollection(), "file_new_window");
+  fileNew = new KAction(i18n("New &Window"), "filenew", 0, this, SLOT(slotFileNewWindow()), actionCollection(), "file_new_window");
   fileOpen = KStdAction::open(this, SLOT(slotFileOpen()), actionCollection());
   fileOpenRecent = KStdAction::openRecent(this, SLOT(slotFileOpenRecent(const KURL&)), actionCollection());
   fileSave = KStdAction::save(this, SLOT(slotFileSave()), actionCollection());
   fileSaveAs = KStdAction::saveAs(this, SLOT(slotFileSaveAs()), actionCollection());
   filePrint = KStdAction::print(this, SLOT(slotFilePrint()), actionCollection());
 //  fileClose = KStdAction::close(this, SLOT(slotFileClose()), actionCollection());
-  fileClose = new KAction(i18n("&Close Window"), 0, 0, this, SLOT(slotFileClose()), actionCollection(), "file_close_window");
+  fileClose = new KAction(i18n("&Close Window"), "fileclose", 0, this, SLOT(slotFileClose()), actionCollection(), "file_close_window");
 
   fileQuit = KStdAction::quit(this, SLOT(slotFileQuit()), actionCollection());
 
@@ -146,11 +146,11 @@ void KMyMoney2App::initActions()
 //  accountAdd->setStatusText(i18n("Lets you create a new account"));
   accountReconcile = new KAction(i18n("Reconcile account..."), QIconSet(QPixmap(KGlobal::dirs()->findResource("appdata", "toolbar/kmymoney_recon.xpm"))), 0, this, SLOT(slotAccountReconcile()), actionCollection(), "account_reconcile");
   accountReconcile->setStatusText(i18n("Balance your account"));
-  accountFind = new KAction(i18n("Find transaction..."), QIconSet(QPixmap(KGlobal::dirs()->findResource("appdata", "toolbar/kmymoney_accfind.xpm"))), 0, this, SLOT(slotAccountFind()), actionCollection(), "account_find");
+  accountFind = new KAction(i18n("Find transaction..."), "transaction_find", 0, this, SLOT(slotAccountFind()), actionCollection(), "account_find");
   accountFind->setStatusText(i18n("Find transactions"));
-  accountImport = new KAction(i18n("Import transactions..."), 0, 0, this, SLOT(slotAccountImport()), actionCollection(), "account_import");
+  accountImport = new KAction(i18n("Import transactions..."), "transaction_import", 0, this, SLOT(slotAccountImport()), actionCollection(), "account_import");
   accountImport->setStatusText(i18n("Import tab delimited text"));
-  accountExport = new KAction(i18n("Export transactions..."), 0, 0, this, SLOT(slotAccountExport()), actionCollection(), "account_export");
+  accountExport = new KAction(i18n("Export transactions..."), "transaction_export", 0, this, SLOT(slotAccountExport()), actionCollection(), "account_export");
   accountExport->setStatusText(i18n("Export to tab delimited text"));
 
   // The Bill Menu
