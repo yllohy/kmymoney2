@@ -156,7 +156,31 @@ void KHomeView::showPayments(void)
 
   if(schedule.empty() && overdues.empty())
     return;
-                                     
+
+  // HACK
+  // Remove the finished schedules
+
+  QValueList<MyMoneySchedule>::Iterator d_it;
+  for (d_it=schedule.begin(); d_it!=schedule.end();)
+  {
+    if ((*d_it).isFinished())
+    {
+      d_it = schedule.remove(d_it);
+      continue;
+    }
+    ++d_it;
+  }
+
+  for (d_it=overdues.begin(); d_it!=overdues.end();)
+  {
+    if ((*d_it).isFinished())
+    {
+      d_it = overdues.remove(d_it);
+      continue;
+    }
+    ++d_it;
+  }
+
   QString tmp;
   tmp = "<div class=\"itemheader\">" + i18n("Payments") +
         "</div>\n<div class=\"gap\">&nbsp;</div>\n";
@@ -189,19 +213,51 @@ void KHomeView::showPayments(void)
   if(schedule.count() > 0) {
     qBubbleSort(schedule);
 
-    m_part->write("<div class=\"gap\">&nbsp;</div>\n");
-
-    QValueList<MyMoneySchedule>::Iterator it;
-    tmp = "<div class=\"item\">" + i18n("Future payments") + "</div>\n";
-    m_part->write(tmp);
-    
-    m_part->write("<table cellspacing=\"0\" cellpadding=\"1\">");
-    for(it = schedule.begin(); it != schedule.end(); ++it) {
-      m_part->write(QString("<tr class=\"row-%1\">").arg(i++ & 0x01 ? "even" : "odd"));
-      showPaymentEntry(*it);
-      m_part->write("</tr>");
+    // Extract todays payments if any
+    QValueList<MyMoneySchedule> todays;
+    QValueList<MyMoneySchedule>::Iterator t_it;
+    for (t_it=schedule.begin(); t_it!=schedule.end();)
+    {
+      if ((*t_it).nextPayment((*t_it).lastPayment()) == QDate::currentDate())
+      {
+        todays.append(*t_it);
+        t_it = schedule.remove(t_it);
+        continue;
+      }
+      ++t_it;
     }
-    m_part->write("</table>");
+
+    if (todays.count() > 0)
+    {
+      m_part->write("<div class=\"gap\">&nbsp;</div>\n");
+      tmp = "<div class=\"item\">" + i18n("Todays payments") + "</div>\n";
+      m_part->write(tmp);
+      m_part->write("<table cellspacing=\"0\" cellpadding=\"1\">");
+
+      for(t_it = todays.begin(); t_it != todays.end(); ++t_it) {
+        m_part->write(QString("<tr class=\"row-%1\">").arg(i++ & 0x01 ? "even" : "odd"));
+        showPaymentEntry(*t_it);
+        m_part->write("</tr>");
+      }
+      m_part->write("</table>");
+    }      
+
+    if (schedule.count() > 0)
+    {
+      m_part->write("<div class=\"gap\">&nbsp;</div>\n");
+
+      QValueList<MyMoneySchedule>::Iterator it;
+      tmp = "<div class=\"item\">" + i18n("Future payments") + "</div>\n";
+      m_part->write(tmp);
+
+      m_part->write("<table cellspacing=\"0\" cellpadding=\"1\">");
+      for(it = schedule.begin(); it != schedule.end(); ++it) {
+        m_part->write(QString("<tr class=\"row-%1\">").arg(i++ & 0x01 ? "even" : "odd"));
+        showPaymentEntry(*it);
+        m_part->write("</tr>");
+      }
+      m_part->write("</table>");
+    }
   }
 }
 
