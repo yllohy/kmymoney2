@@ -10,6 +10,10 @@
   * Added MyMoneyTransaction::setEntryDate (no testcase yet)
   * Added new binary writer/reader pair (alpha state, you have been warned)
   * Removed unnecessary methods from MyMoneyStorageXML
+  * Modified interface to IMyMoneyStorageFormat to pass a QFile* instead
+    of a QDataStream&
+  * Prepared file operations in KMyMoneyView to support network access
+    via e.g. HTTP / FTP.
 
 2002-11-08 Kevin Tambascio <ktambascio@yahoo.com>
   * Made changes in MyMoneyStorageXML to begin the support of reading
