@@ -42,7 +42,7 @@ class MyMoneyBank;
   * @see MyMoneyTransaction
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: mymoneyaccount.h,v 1.20 2001/12/09 22:50:46 mte Exp $
+  * $Id: mymoneyaccount.h,v 1.21 2001/12/12 20:42:35 ipwizard Exp $
   *
   * @short Representation of an account which holds transactions.
 **/
@@ -401,7 +401,7 @@ public:
   MyMoneyBank *bank(void) { return m_parent; }
 
   /** No descriptions */
-  bool readQIFFile(const QString& name, const QString& dateFormat, const int apostrophe, int& transCount, int& catCount);
+  bool readQIFFile(const QString& name, const QString& dateFormat, const int apostrophe, const QString &decimalSymbol, int& transCount, int& catCount);
 
   /** No descriptions */
   bool writeQIFFile(const QString& name, const QString& dateFormat, bool expCat,bool expAcct,
