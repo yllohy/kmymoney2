@@ -648,8 +648,6 @@ void KLedgerView::slotPayeeChanged(const QString& name)
   if(!m_editPayee)
     return;
 
-  // FIXME: add #929127 (new transaction default spits based on payee) here
-
   createSecondSplit();
 
   MyMoneySplit sp;
@@ -663,6 +661,42 @@ void KLedgerView::slotPayeeChanged(const QString& name)
 
       payee = MyMoneyFile::instance()->payeeByName(name);
       m_split.setPayeeId(payee.id());
+
+      // we have a new payee assigned to this transaction.
+      // in case there is no category assigned, no value entered and no
+      // memo available, we search for the last transaction of this payee
+      // in the account.
+      if(m_transaction.splitCount() == 2) {
+        if(sp.accountId().isEmpty()
+        && m_split.memo().isEmpty()
+        && m_split.value() == 0) {
+          MyMoneyTransactionFilter filter(m_account.id());
+          filter.addPayee(payee.id());
+          QValueList<MyMoneyTransaction> list = MyMoneyFile::instance()->transactionList(filter);
+          if(!list.empty()) {
+            // ok, we found a previous transaction. now we clear out
+            // what we have collected so far and add those splits from
+            // the previous transaction
+            MyMoneyTransaction t = list.last();
+            m_transaction.removeSplits();
+            QValueList<MyMoneySplit>::ConstIterator it;
+            for(it = t.splits().begin(); it != t.splits().end(); ++it) {
+              MyMoneySplit s(*it);
+              s.setId(QCString());
+              m_transaction.addSplit(s);
+            }
+            if(m_transaction.splitCount() == 2) {
+              sp = m_transaction.splitByAccount(m_account.id(), false);
+            }
+
+            // update the UI
+            reloadEditWidgets(m_transaction);
+
+            m_editPayee->setFocus();
+          }
+        }
+      }
+
       // for tranfers, we always modify the other side as well
       if(m_split.action() == MyMoneySplit::ActionTransfer) {
         sp.setPayeeId(payee.id());
@@ -698,7 +732,6 @@ void KLedgerView::slotPayeeChanged(const QString& name)
     delete e;
     m_editPayee->resetText();
   }
-
 }
 
 void KLedgerView::slotMemoChanged(const QString& memo)
