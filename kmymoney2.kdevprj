@@ -31,7 +31,7 @@ ldflags=
 path_to_bin_program=kmymoney2
 
 [General]
-AMChanged=true
+AMChanged=false
 author=Michael Edwardes
 configure_args=
 dir_where_make_will_be_called=

@@ -1,3 +1,6 @@
+2001-07-19 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
+  * Fixed Payee display in Reconcile dialog
+
 2001-07-19 Michael Edwardes <mte@users.sourceforge.net>
   * Added 'autoremember' for the date format in the qif dialogs.
   * Changed the transaction view to speed it up.

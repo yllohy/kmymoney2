@@ -26,7 +26,7 @@ KReconcileListItem::KReconcileListItem(QListView *parent, MyMoneyTransaction *tr
 
   setText(0, KGlobal::locale()->formatDate(m_transaction->date(), true));
 	setText(1, m_transaction->number());
-  setText(2, m_transaction->memo());
+  setText(2, m_transaction->payee());
   setText(3, KGlobal::locale()->formatMoney(m_transaction->amount().amount()));
 
   QString tmp;
