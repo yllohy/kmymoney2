@@ -185,17 +185,18 @@ void KAccountSelectDlg::slotCreateAccount(void)
   if(config->readBoolEntry("NewAccountWizard", true) == true
   && !isCategory) {
     // wizard selected
-    KNewAccountWizard wizard(0);
-    connect(&wizard, SIGNAL(newInstitutionClicked()), this, SLOT(slotCreateInstitution()));
+    KNewAccountWizard* wizard = new KNewAccountWizard(this);
+    connect(wizard, SIGNAL(newInstitutionClicked()), this, SLOT(slotCreateInstitution()));
     
-    wizard.setAccountName(m_account.name());
-    wizard.setAccountType(m_account.accountType());
-    wizard.setOpeningBalance(m_account.openingBalance());
-    wizard.setOpeningDate(m_account.openingDate());
-    if((dialogResult = wizard.exec()) == QDialog::Accepted) {
-      newAccount = wizard.account();
-      parentAccount = wizard.parentAccount();
+    wizard->setAccountName(m_account.name());
+    wizard->setAccountType(m_account.accountType());
+    wizard->setOpeningBalance(m_account.openingBalance());
+    wizard->setOpeningDate(m_account.openingDate());
+    if((dialogResult = wizard->exec()) == QDialog::Accepted) {
+      newAccount = wizard->account();
+      parentAccount = wizard->parentAccount();
     }
+    delete wizard;
   } else {
     // regular dialog selected
     MyMoneyAccount account(m_account);

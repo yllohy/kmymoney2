@@ -25,6 +25,7 @@
 
 #include <qcheckbox.h>
 #include <qheader.h>
+#include <qlabel.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -68,6 +69,11 @@ KNewAccountWizard::KNewAccountWizard(QWidget *parent, const char *name )
 
   // always select the first item and show the appropriate note
   accountTypeListBox->setCurrentItem(0);
+
+  // FIXME: we don't have currency support, so we hide the two widgets
+  // that have been prepared for this support
+  m_currencyLabel->hide();
+  m_currencyComboBox->hide();
 }
 
 KNewAccountWizard::~KNewAccountWizard()
@@ -347,7 +353,10 @@ void KNewAccountWizard::setOpeningBalance(const MyMoneyMoney& balance)
 
 void KNewAccountWizard::setOpeningDate(const QDate& date)
 {
-  openingDate->setDate(date);
+  if(date.isValid())
+    openingDate->setDate(date);
+  else
+    openingDate->setDate(QDate::currentDate());
 }
 
 void KNewAccountWizard::setAccountType(const MyMoneyAccount::accountTypeE type)
