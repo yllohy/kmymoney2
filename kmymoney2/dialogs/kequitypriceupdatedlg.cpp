@@ -106,16 +106,22 @@ KEquityPriceUpdateDlg::KEquityPriceUpdateDlg(QWidget *parent, const QCString& se
     }
   }
 
+  // send in securityId == "XXX YYY" to get a single-shot update for XXX to YYY.
+  // for consistency reasons, this accepts the same delimiters as WebPriceQuote::launch()
+  QRegExp splitrx("([0-9a-z\\.]+)[^a-z0-9]+([0-9a-z\\.]+)",false /*case sensitive*/);    
+  MyMoneySecurityPair currencyIds;
+  if ( splitrx.search(securityId) != -1 )
+    currencyIds = MyMoneySecurityPair(splitrx.cap(1).utf8(),splitrx.cap(2).utf8());
+  
   // Second, add each price pair that we know about
   MyMoneyPriceList prices = file->priceList();
   for(MyMoneyPriceList::ConstIterator it_price = prices.begin(); it_price != prices.end(); ++it_price)
   {
     MyMoneySecurityPair pair = it_price.key();
     
-    // send in securityId == "XXXYYY" to get a single-shot update for XXX to YYY.
     if ( 
           file->security( pair.first ).isCurrency() 
-          && ( securityId.isEmpty() || ( pair.first + pair.second == securityId ) )
+          && ( securityId.isEmpty() || ( pair == currencyIds ) )
        )
     {
       KListViewItem* item = new KListViewItem(lvEquityList, 

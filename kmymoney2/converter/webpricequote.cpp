@@ -78,10 +78,7 @@ bool WebPriceQuote::launch( const QString& _symbol, const QString& _sourcename )
   {
     // this is a two-symbol quote.  split the symbol into two.  valid symbol
     // characters are: 0-9, A-Z and the dot.  anything else is a separator
-    
-    // FIXME: Ideally, we want to support 'anything else' as a separator,
-    // but for now, only " > " is working.
-    QRegExp splitrx("([0-9A-Za-z\\.]+) > ([0-9A-Za-z\\.]+)");
+    QRegExp splitrx("([0-9a-z\\.]+)[^a-z0-9]+([0-9a-z\\.]+)",false /*case sensitive*/);    
     
     // if we've truly found 2 symbols delimited this way...
     if ( splitrx.search(m_symbol) != -1 )

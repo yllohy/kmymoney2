@@ -46,6 +46,7 @@
 #include "../widgets/kmymoneycurrencyselector.h"
 #include "../dialogs/kupdatestockpricedlg.h"
 #include "../dialogs/kcurrencycalculator.h"
+#include "../dialogs/kequitypriceupdatedlg.h"
 #include "../kmymoneyutils.h"
 #include "../mymoney/mymoneyfile.h"
 
@@ -143,6 +144,10 @@ kMyMoneyPriceView::kMyMoneyPriceView(QWidget *parent, const char *name ) :
                         i18n("Edit ..."),
                         this, SLOT(slotEditPrice()));
 
+  m_contextMenu->insertItem(kiconloader->loadIcon("connect_creating", KIcon::Small),
+                        i18n("Online Price Update ..."),
+                        this, SLOT(slotOnlinePriceUpdate()));
+
   m_contextMenu->insertItem(kiconloader->loadIcon("delete", KIcon::Small),
                         i18n("Delete ..."),
                         this, SLOT(slotDeletePrice()));
@@ -218,10 +223,21 @@ void kMyMoneyPriceView::resizeEvent(QResizeEvent* e)
 void kMyMoneyPriceView::slotListClicked(QListViewItem* item, const QPoint&, int)
 {
   int editId = m_contextMenu->idAt(2);
-  int delId = m_contextMenu->idAt(3);
+  int updateId = m_contextMenu->idAt(3);
+  int delId = m_contextMenu->idAt(4);
 
   m_contextMenu->setItemEnabled(editId, item != 0);
   m_contextMenu->setItemEnabled(delId, item != 0);
+
+  kMyMoneyPriceItem* priceitem = dynamic_cast<kMyMoneyPriceItem*>(m_priceHistory->selectedItem());
+  if(priceitem) {
+    MyMoneySecurity security;
+    security = MyMoneyFile::instance()->security(priceitem->price().from());
+    m_contextMenu->setItemEnabled(updateId, security.isCurrency() );
+  }
+  else
+    m_contextMenu->setItemEnabled(updateId, false );
+  
   m_contextMenu->exec(QCursor::pos());
 }
 
@@ -291,3 +307,14 @@ void kMyMoneyPriceView::slotShowAllPrices(bool enabled)
     update(QCString());
   }
 }
+
+void kMyMoneyPriceView::slotOnlinePriceUpdate(void)
+{
+  kMyMoneyPriceItem* item = dynamic_cast<kMyMoneyPriceItem*>(m_priceHistory->selectedItem());
+  if(item)
+  {
+    KEquityPriceUpdateDlg dlg(this, (item->text(COMMODITY_COL)+" "+item->text(CURRENCY_COL)).utf8());
+    dlg.exec();
+  }
+}
+

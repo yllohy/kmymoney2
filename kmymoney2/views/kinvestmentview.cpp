@@ -194,11 +194,6 @@ void KInvestmentView::slotEditInvestment()
 
 void KInvestmentView::slotUpdatePrice()
 {
-  // TODO: When initiated from here, the price update dialog should only show
-  // the stock you picked, and it should AUTOMATICALLY launch the update. (???)
-  //
-  // Isn't that done already? (ipwizard)
-
   KInvestmentListItem *pItem = dynamic_cast<KInvestmentListItem*>(investmentTable->selectedItem());
   if(pItem)
   {

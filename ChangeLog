@@ -2,6 +2,10 @@
   * Fixed single-shot price updates
   * Added functionality to retrieve single-shot currency price updates,
     although this is not hooked up to the UI.
+  * Added right-click option in price editor to do an online price update
+    for a single currency pair
+  * Cleaned up parsing of multiple currencies passed around as a single
+    string in online price updating pipeline
 
 2005-01-05 Ace Jones <acejones@users.sourceforge.net>
   * Added online quotes for currencies

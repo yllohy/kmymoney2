@@ -88,6 +88,7 @@ protected slots:
   void slotDeletePrice(void);
   int slotEditPrice(void);
   void slotShowAllPrices(bool enabled);
+  void slotOnlinePriceUpdate(void);
 
 private slots:
   void slotTimerDone(void);
