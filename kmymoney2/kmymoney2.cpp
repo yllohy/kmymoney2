@@ -726,6 +726,7 @@ void KMyMoney2App::slotQifImportFinished(void)
     if(m_engineBackup != 0) {
       // user cancelled, destroy the updated set and keep the backup copy
       IMyMoneyStorage* data = file->storage();
+
       if(data != 0) {
         file->detachStorage(data);
         delete data;      
@@ -955,6 +956,7 @@ void KMyMoney2App::slotProcessExited()
         qDebug("cp exit status is %d", proc.exitStatus());
         m_backupResult = 1;
         KMessageBox::information(this, i18n("Error copying file to device"), i18n("Backup"));
+
         if (m_backupMount) {
           progressCallback(250, 0, i18n("Unmounting %1").arg(mountpoint));
           proc.clearArguments();
@@ -1099,24 +1101,18 @@ void KMyMoney2App::slotCheckSchedules(void)
 
     for (it=scheduleList.begin(); it!=scheduleList.end(); ++it)
     {
-      MyMoneySchedule schedule = *it;
+      // Get the copy in the file because it might be modified by commitTransaction
+      MyMoneySchedule schedule = file->schedule((*it).id());
 
-      if (schedule.nextPayment(schedule.lastPayment()) <= QDate::currentDate() &&
-            schedule.autoEnter())
+      if (schedule.autoEnter() && !schedule.isFixed())
       {
-        //qDebug("Auto Entering schedule: %s", schedule.name().latin1());
-        //qDebug("\tAuto enter date: %s",
-
-        //  schedule.nextPayment(schedule.lastPayment()).toString().latin1());
-        slotCommitTransaction(schedule, QDate());
-      }
-      else if (m_bCheckSchedules && (schedule.isOverdue() ||
-          schedule.nextPayment(schedule.lastPayment()) <= checkDate))
-      {
-        // Do nothing.  The user can see overdue and todays payments in
-        // the home view.
-        //
-        // TODO: Maybe we should force the user to view the home page/
+        while ((schedule.nextPayment(schedule.lastPayment()) < checkDate) && !schedule.isFinished())
+        {
+          //qDebug("Auto Entering schedule: %s", schedule.name().latin1());
+          //qDebug("\tAuto enter date: %s", schedule.nextPayment(schedule.lastPayment()).toString().latin1());
+          slotCommitTransaction(schedule, schedule.nextPayment(schedule.lastPayment()));
+          schedule = file->schedule((*it).id()); // get a copy of the modified schedule
+        }
       }
     }
     slotStatusMsg(prevMsg);
@@ -1173,6 +1169,7 @@ void KMyMoney2App::writeLastUsedDir(const QString& directory)
   KConfig *kconfig = KGlobal::config();
   if(kconfig)
   {
+
     kconfig->setGroup("General Options");
 
     //write path entry, no error handling since its void.
