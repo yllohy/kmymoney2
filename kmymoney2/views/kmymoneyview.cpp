@@ -1099,7 +1099,7 @@ const bool KMyMoneyView::saveFile(const KURL& url)
   // but for now, this would involve too many changes
   bool rc = true;
   try {
-    if(url.isValid()) {
+    if(! url.isValid()) {
       throw new MYMONEYEXCEPTION(i18n("Malformed URL '%1'").arg(url.url()));
     }
 
