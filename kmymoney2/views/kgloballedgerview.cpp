@@ -157,16 +157,6 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
     SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
   connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
 
-  //Investment View
-  // view = m_specificView[MyMoneyAccount::Investment] = new KLedgerViewInvestments(this);
-  // m_accountStack->addWidget(view, MyMoneyAccount::Investment);
-  //connect(view, SIGNAL(accountAndTransactionSelected(const QCString&, const QCString&)),
-  //  this, SLOT(slotSelectAccountAndTransaction(const QCString&, const QCString&)));
-  //connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
-  //  SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
-  //connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
-
-
   m_formLayout->addWidget(m_accountStack);
   setMinimumHeight(m_accountComboBox->minimumHeight() + m_accountStack->sizeHint().height());
 
@@ -176,7 +166,8 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
 
   // setup connections
   connect(m_accountComboBox, SIGNAL(accountSelected(const QCString&)),
-          this, SLOT(slotSelectAccount(const QCString&)));
+          this, SIGNAL(accountSelected(const QCString&)));
+
 }
 
 KGlobalLedgerView::~KGlobalLedgerView()
@@ -259,21 +250,21 @@ void KGlobalLedgerView::loadAccounts(void)
     QCStringList list = m_accountComboBox->accountList();
     if(list.count()) {
       QCStringList::Iterator it;
-      for(it = list.begin(); it != list.end() && acc.id().isEmpty(); ++it) {
+      for(it = list.begin(); it != list.end(); ++it) {
         MyMoneyAccount a = file->account(*it);
-        if(a.value("PreferredAccount") == "Yes") {
-          acc = a;
+        if(a.accountType() != MyMoneyAccount::Investment) {
+          if(a.value("PreferredAccount") == "Yes") {
+            acc = a;
+            break;
+          } else if(acc.id().isEmpty()) {
+            acc = a;
+          }
         }
       }
-      if(acc.id().isEmpty())
-        acc = file->account(*(list.begin()));
     }
   }
 
-//  if(!acc.id().isEmpty()) {
-    slotSelectAccount(acc.id());
-//  } else {
-//  }
+  slotSelectAccount(acc.id());
 }
 
 const bool KGlobalLedgerView::slotSelectAccount(const QCString& id)
@@ -304,7 +295,7 @@ const bool KGlobalLedgerView::slotSelectAccount(const QCString& id, const bool r
         rc = true;
       } else {
         // let's see, if someone else can handle this request
-        emit accountSelected(id, QCString());
+        emit accountSelected(id);
       }
     } else {
 #if KDE_VERSION < 310

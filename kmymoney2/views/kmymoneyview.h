@@ -65,7 +65,7 @@ class KReportsView;
   * @author Michael Edwardes 2001 Copyright 2000-2001
   *
   * @short Handles the view of the MyMoneyFile.
-  **/
+  */
 class KMyMoneyView : public KJanusWidget {
    Q_OBJECT
 
@@ -102,7 +102,7 @@ private:
   KInvestmentView *m_investmentView;
   KReportsView* m_reportsView;
   KFindTransactionDlg* m_searchDlg;
-  
+
   QVBox* m_homeViewFrame;
   QVBox* m_accountsViewFrame;
   QVBox* m_categoriesViewFrame;
@@ -114,17 +114,13 @@ private:
 
   bool m_fileOpen;
 
-//  KImportDlg       *importDlg;
-
   KPopupMenu* m_accountMenu;
   KPopupMenu* m_bankMenu;
   KPopupMenu* m_rightMenu;
-  
-  
-  // The schedule view
-  // KScheduleView *m_scheduledView;
+
   bool m_bankRightClick;
   MyMoneyInstitution m_accountsInstitution;
+
 private:
   /**
     * This method gets a filename from the user for the template
@@ -143,7 +139,7 @@ private:
     * if no base currency is defined, start the dialog and force it to be set
     */
   void selectBaseCurrency(void);
-  
+
   /**
     * This method loads the accounts specified in the file @p filename
     * into the KMyMoney engine.
@@ -174,7 +170,7 @@ private:
   /**
     */
   void fixFile(void);
-  
+
   /**
     */
   void fixLoanAccount(MyMoneyAccount acc);
@@ -186,29 +182,29 @@ private:
   void fixDuplicateAccounts(MyMoneyTransaction& t);
 
   void createSchedule(MyMoneySchedule s, MyMoneyAccount& a);
-    
+
 public:
   /**
     * The constructor for KMyMoneyView. Just creates all the tabs for the
     * different aspects of the MyMoneyFile.
-  **/
+    */
   KMyMoneyView(QWidget *parent=0, const char *name=0);
-  
+
   /**
     * Destructor
-  **/
+    */
   ~KMyMoneyView();
 
   /**
     * Makes sure that a MyMoneyFile is open and has been created succesfully.
     *
     * @return Whether the file is open and initialised
-  **/
+    */
   bool fileOpen(void);
 
   /**
     * Closes the open MyMoneyFile and frees all the allocated memory, I hope !
-  **/
+    */
   void closeFile(void);
 
 
@@ -221,7 +217,7 @@ public:
     *            If no protocol is specified, file:// is assumed.
     *
     * @return Whether the read was successfull.
-  **/
+    */
   bool readFile(const KURL& url);
 
   /**
@@ -266,21 +262,14 @@ public:
 
   /**
     * Moves the view up from transaction to Bank/Account view.
-  **/
+    */
   void viewUp(void);
-
-  /**
-    * Utility method to retrieve the currently selected bank name.
-    *
-    * @return The currently selected bank name.
-  **/
-  //QString currentBankName(void);
 
   /**
     * Utility method to retrieve the currently selected account name.
     *
     * @return The currently selected account name.
-  **/
+    */
   QString currentAccountName(void);
 
   /**
@@ -295,7 +284,7 @@ public:
     * @li false updates will be performed immediately
     */
   void suspendUpdate(const bool suspend);
-  
+
   void memoryDump();
 
 public slots:
@@ -342,7 +331,7 @@ public slots:
 
   /**
     * Called, whenever the payees view should pop up and a specific
-    * transaction in an account should be shown. 
+    * transaction in an account should be shown.
     *
     * @param payeeId The ID of the payee to be shown
     * @param accountId The ID of the account to be shown
@@ -366,7 +355,7 @@ public slots:
     * @see KNewBankDlg
     * @see MyMoneyFile
     * @see MyMoneyInstitution
-  **/
+    */
   void slotBankNew(void);
 
   /**
@@ -375,11 +364,9 @@ public slots:
     *
     * @see KBanksView
     * @see KNewAccountDlg
-
-
     * @see MyMoneyFile
     * @see MyMoneyAccount
-  **/
+    */
   void slotAccountNew(void);
 
   /**
@@ -390,11 +377,9 @@ public slots:
     *
     * @see KBanksView
     * @see KNewAccountDlg
-
-
     * @see MyMoneyFile
     * @see MyMoneyAccount
-  **/
+    */
   void slotBankAccountNew(void);
 
   /**
@@ -403,11 +388,9 @@ public slots:
     *
     * @see KBanksView
     * @see KNewAccountDlg
-
     * @see MyMoneyFile
-
     * @see MyMoneyAccount
-  **/
+    */
   void slotCategoryNew(void);
 
   /**
@@ -420,7 +403,7 @@ public slots:
     * @see KReconcileDlg
     * @see KMyMoneyFile
     * @see MyMoneyAccount
-  **/
+    */
   void slotAccountReconcile(void);
 
   // Not implemented, not documented!
@@ -428,13 +411,9 @@ public slots:
   void slotAccountImportAscii(void);
   void slotAccountExportAscii(void);
 
-//  void slotAccountImportQIF(void);
-//  void slotAccountExportQIF(void);
-
   /**
     * This slot cancels any edit activity in any view. It will
     * be called e.g. before entering the settings dialog.
-
     */
   void slotCancelEdit(void) const;
 
@@ -445,54 +424,43 @@ public slots:
 
 protected slots:
   /**
-    * This slot is called whenever the transaction list is changed and is used
-    * in the reconciliation process to update the view.
-    *
-    * @see slotAccountReconcile.
-
-  **/
-//  void slotTransactionListChanged();
-
-  /**
     * Called whenever the user right clicks on an account.  It brings up
     * a context menu.  TODO: move the context menu into kmymoney2ui.rc, move
     * this method into KBanksView, remove the param inList.
-    **/
+    */
   void slotAccountRightMouse();
   void slotBankRightMouse();
   void slotRightMouse();
-
-
 
   /**
     * Called by the context menu created in slotAccountRightMouse.  Brings up
     * a dialog which allows the user to edit the account details.  TODO: move this
     * method into KBanksView.
-    **/
+    */
   void slotAccountEdit();
 
   /**
     * Called by the context menu created in slotAccountRightMouse.  Deletes the currently
     * selected account. TODO: move this method into KBanksView.
-    **/
+    */
   void slotAccountDelete();
 
   /**
     * Called by the context menu created in slotBankRightMouse.  Brings up
     * a dialog which allows the user to edit the bank details.  TODO: move this
     * method into KBanksView.
-    **/
+    */
   void slotBankEdit();
 
   /**
     * Called by the context menu created in slotBankRightMouse.  Deletes the currently
     * selected bank. TODO: move this method into KBanksView.
-    **/
+    */
   void slotBankDelete();
 
   /**
     * Destroys the search dialog
-    **/
+    */
   void slotCloseSearchDialog(void);
 
   /**
@@ -509,13 +477,11 @@ private:
     * either directly in the destination file if it is on
     * the local file system or in a temporary file when
     * the final destination is reached over a network
-
     * protocol (e.g. FTP)
     *
     * @param qf pointer to QFile representing the opened file
     * @param writer pointer to the formatter
     *
-
     * @note This method will close the file when it is written.
     */
   void saveToLocalFile(QFile* qf, IMyMoneyStorageFormat* writer);
@@ -524,7 +490,7 @@ private:
     * Internal method used by slotAccountNew() and slotAccountCategory().
     */
   void accountNew(const bool createCategory);
-  
+
 signals:
   /**
     * This signal is emitted whenever a view is selected.

@@ -70,7 +70,7 @@ KHomeView::KHomeView(QWidget *parent, const char *name )
     // qDebug(QString("html/home_%1.html not found").arg(country).latin1());
     m_filename = KGlobal::dirs()->findResource("appdata", "html/home.html");
   }
-    
+
   m_part->openURL(m_filename);
   connect(m_part->browserExtension(), SIGNAL(openURLRequest(const KURL&, const KParts::URLArgs&)),
           this, SLOT(slotOpenURL(const KURL&, const KParts::URLArgs&)));
@@ -108,7 +108,7 @@ void KHomeView::slotRefreshView(void)
     kconfig->setGroup("Homepage Options");
     QStringList settings = kconfig->readListEntry("Itemlist");
     KMyMoneyUtils::addDefaultHomePageItems(settings);
-    
+
     QStringList::ConstIterator it;
 
     for(it = settings.begin(); it != settings.end(); ++it) {
@@ -118,11 +118,11 @@ void KHomeView::slotRefreshView(void)
           case 1:         // payments
             showPayments();
             break;
-            
+
           case 2:         // preferred accounts
             showAccounts(Preferred, i18n("Preferred Accounts"));
             break;
-            
+
           case 3:         // payment accounts
             // Check if preferred accounts are shown separately
             if(settings.find("2") == settings.end()) {
@@ -138,7 +138,7 @@ void KHomeView::slotRefreshView(void)
     }
 
     m_part->write(link(VIEW_WELCOME, QString()) + i18n("Show KMyMoney welcome page") + linkend());
-    
+
     m_part->write(footer);
     m_part->end();
 
@@ -151,7 +151,7 @@ void KHomeView::showPayments(void)
   QValueList<MyMoneySchedule> overdues;
   QValueList<MyMoneySchedule> schedule;
   int i = 0;
-  
+
   schedule = file->scheduleList("", MyMoneySchedule::TYPE_ANY,
                                  MyMoneySchedule::OCCUR_ANY,
                                  MyMoneySchedule::STYPE_ANY,
@@ -192,7 +192,7 @@ void KHomeView::showPayments(void)
   QString tmp;
   tmp = "<div class=\"itemheader\">" + i18n("Payments") + "</div>\n";
   m_part->write(tmp);
-  
+
   if(overdues.count() > 0) {
     tmp = "<div class=\"gap\">&nbsp;</div>\n";
     m_part->write(tmp);
@@ -202,7 +202,7 @@ void KHomeView::showPayments(void)
     QValueList<MyMoneySchedule>::Iterator it_f;
     tmp = "<div class=\"warning\">" + i18n("Overdue payments") + "</div>\n";
     m_part->write(tmp);
-    
+
     m_part->write("<table width=\"75%\" cellspacing=\"0\" cellpadding=\"1\">");
     for(it = overdues.begin(); it != overdues.end(); ++it) {
       m_part->write(QString("<tr class=\"row-%1\">").arg(i++ & 0x01 ? "even" : "odd"));
@@ -250,7 +250,7 @@ void KHomeView::showPayments(void)
         m_part->write("</tr>");
       }
       m_part->write("</table>");
-    }      
+    }
 
     if (schedule.count() > 0)
     {
@@ -277,19 +277,22 @@ void KHomeView::showPaymentEntry(const MyMoneySchedule& sched)
   MyMoneyAccount acc = sched.account();
   if(acc.id()) {
     MyMoneyTransaction t = sched.transaction();
-    MyMoneySplit sp = t.splitByAccount(acc.id(), true);
+    // only show the entry, if it is still active
+    if(!sched.isFinished() && sched.nextPayment(sched.lastPayment()) != QDate()) {
+      MyMoneySplit sp = t.splitByAccount(acc.id(), true);
 
-    tmp = QString("<td width=\"20%\">") +
-      KGlobal::locale()->formatDate(sched.nextPayment(sched.lastPayment()), true) +
-      "</td><td width=\"70%\">" +
-      link(VIEW_SCHEDULE, QString("?id=%1").arg(sched.id())) + sched.name() + linkend() +
-      "</td>" +
-      "<td width=\"10%\" align=\"right\">";
-    tmp += sp.value().formatMoney();
-    tmp += "</td>";
-    // qDebug("paymentEntry = '%s'", tmp.latin1());
-    m_part->write(tmp);
-  }  
+      tmp = QString("<td width=\"20%\">") +
+        KGlobal::locale()->formatDate(sched.nextPayment(sched.lastPayment()), true) +
+        "</td><td width=\"70%\">" +
+        link(VIEW_SCHEDULE, QString("?id=%1").arg(sched.id())) + sched.name() + linkend() +
+        "</td>" +
+        "<td width=\"10%\" align=\"right\">";
+      tmp += sp.value().formatMoney();
+      tmp += "</td>";
+      // qDebug("paymentEntry = '%s'", tmp.latin1());
+      m_part->write(tmp);
+    }
+  }
 }
 
 void KHomeView::showAccounts(KHomeView::paymentTypeE type, const QString& header)
@@ -322,7 +325,7 @@ void KHomeView::showAccounts(KHomeView::paymentTypeE type, const QString& header
           it = accounts.remove(it);
         }
         break;
-        
+
       // Check payment accounts. If payment and preferred is selected,
       // then always show them. If only payment is selected, then
       // show only if preferred flag is not set.
@@ -340,16 +343,16 @@ void KHomeView::showAccounts(KHomeView::paymentTypeE type, const QString& header
             if((*it).value("PreferredAccount") != "Yes")
               it = accounts.remove(it);
             break;
-                      
+
           case Payment | Preferred:
             break;
-            
+
           default:
             it = accounts.remove(it);
             break;
         }
         break;
-        
+
       // filter all accounts that are not used on homepage views
       default:
         it = accounts.remove(it);
@@ -373,7 +376,7 @@ void KHomeView::showAccounts(KHomeView::paymentTypeE type, const QString& header
     m_part->write("</td><td width=\"30%\" align=\"right\">");
     m_part->write(i18n("Balance"));
     m_part->write("</td></tr>");
-    
+
     for(it = accounts.begin(); it != accounts.end(); ++it) {
       m_part->write(QString("<tr class=\"row-%1\">").arg(i++ & 0x01 ? "even" : "odd"));
       showAccountEntry(*it);
@@ -387,7 +390,7 @@ void KHomeView::showAccountEntry(const MyMoneyAccount& acc)
 {
   QString tmp;
   MyMoneyCurrency currency = MyMoneyFile::instance()->currency(acc.currencyId());
-  
+
   tmp = QString("<td width=\"70%\">") +
       link(VIEW_LEDGER, QString("?id=%1").arg(acc.id())) + acc.name() + linkend() + "</td>";
   tmp += QString("<td width=\"30%\" align=\"right\">") +
@@ -411,22 +414,22 @@ void KHomeView::slotOpenURL(const KURL &url, const KParts::URLArgs& /* args */)
 {
   QString view = url.fileName(false);
   QCString id = url.queryItem("id").data();
-  
+
   // qDebug("view = '%s'", url.fileName(false).latin1());
   // qDebug("id = '%s'", url.queryItem("id").latin1());
-  
+
   if(view == VIEW_LEDGER) {
     emit ledgerSelected(id, QCString());
-    
+
   } else if(view == VIEW_SCHEDULE) {
     emit scheduleSelected(id);
-    
+
   } else if(view == VIEW_WELCOME) {
     m_part->openURL(m_filename);
-    
+
   } else if(view == VIEW_HOME) {
     slotRefreshView();
-    
+
   } else {
     qDebug("Unknown view '%s' in KHomeView::slotOpenURL()", view.latin1());
   }

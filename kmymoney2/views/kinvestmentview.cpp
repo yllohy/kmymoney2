@@ -28,19 +28,6 @@
 #include <qheader.h>
 #include <qlistbox.h>
 
-/*
-#if QT_VERSION > 300
-// #include <qcursor.h>
-#endif
-
-#include <qpushbutton.h>
-#include <qtable.h>
-#include <qinputdialog.h>
-#include <qlineedit.h>
-#include <qbuttongroup.h>
-#include <qradiobutton.h>
-*/
-
 // ----------------------------------------------------------------------------
 // KDE Includes
 
@@ -109,7 +96,9 @@ KInvestmentView::KInvestmentView(QWidget *parent, const char *name)
   //set the summary button to be true.
  // btnSummary->setChecked(TRUE);
 
-   connect(m_accountComboBox, SIGNAL(accountSelected(const QCString&)), this, SLOT(slotSelectAccount(const QCString&)));
+   connect(m_accountComboBox, SIGNAL(accountSelected(const QCString&)),
+     this, SIGNAL(accountSelected(const QCString&)));
+
    connect(m_tab, SIGNAL(currentChanged(QWidget*)), this, SLOT(slotTabSelected(QWidget*)));
  //const bool KInvestmentView::slotSelectAccount(const QCString& id, const bool reconciliation)
 
@@ -379,8 +368,6 @@ void KInvestmentView::slotReloadView(void)
 {
   updateDisplay();
 
-  qDebug("KInvestmentView::slotReloadView()");
-
   // make sure to determine the current account from scratch
   m_account = MyMoneyAccount();
 
@@ -423,8 +410,6 @@ void KInvestmentView::loadAccounts(void)
   MyMoneyFile* file = MyMoneyFile::instance();
   MyMoneyAccount acc;
 
-  // qDebug("KGlobalLedgerView::loadAccounts()");
-
   // check if the current account still exists and make it the
   // current account
   if(!m_accountId.isEmpty()) {
@@ -444,20 +429,21 @@ void KInvestmentView::loadAccounts(void)
     QCStringList list = m_accountComboBox->accountList();
     if(list.count()) {
       QCStringList::Iterator it;
-      for(it = list.begin(); it != list.end() && acc.id().isEmpty(); ++it) {
+      for(it = list.begin(); it != list.end(); ++it) {
         MyMoneyAccount a = file->account(*it);
-        if(a.value("PreferredAccount") == "Yes") {
-          acc = a;
+        if(a.accountType() == MyMoneyAccount::Investment) {
+          if(a.value("PreferredAccount") == "Yes") {
+            acc = a;
+            break;
+          } else if(acc.id().isEmpty()) {
+            acc = a;
+          }
         }
       }
-      if(acc.id().isEmpty())
-        acc = file->account(*(list.begin()));
     }
   }
 
-  if(!acc.id().isEmpty()) {
-    slotSelectAccount(acc.id());
-  }
+  slotSelectAccount(acc.id());
 }
 
 const bool KInvestmentView::slotSelectAccount(const QCString& id, const bool reconciliation)
@@ -479,7 +465,7 @@ const bool KInvestmentView::slotSelectAccount(const QCString& id, const bool rec
         rc = true;
       } else {
         // let's see, if someone else can handle this request
-        emit accountSelected(id, QCString());
+        emit accountSelected(id);
       }
     } else {
 #if KDE_VERSION < 310
@@ -495,18 +481,6 @@ const bool KInvestmentView::slotSelectAccount(const QCString& id, const bool rec
   // keep this as the current account
   m_accountId = id;
 
-  return rc;
-}
-
-const bool KInvestmentView::slotSelectAccount(const QString& accountName)
-{
-  // qDebug("KGlobalLedgerView::slotSelectAccount(const QString& accountName)");
-
-  QCString id = MyMoneyFile::instance()->nameToAccount(accountName);
-  bool     rc = false;
-  if(!id.isEmpty()) {
-    rc = slotSelectAccount(id);
-  }
   return rc;
 }
 

@@ -52,7 +52,7 @@ class kMyMoneyAccountCombo;
 class KLedgerView;
 
 /**
-  *@author Thomas Baumgart
+  * @author Thomas Baumgart
   */
 
 class KGlobalLedgerView : public QWidget, MyMoneyObserver
@@ -61,8 +61,6 @@ class KGlobalLedgerView : public QWidget, MyMoneyObserver
 public:
   KGlobalLedgerView(QWidget *parent=0, const char *name=0);
   ~KGlobalLedgerView();
-
-  // void refreshView(void);
 
   /**
     * utility method to suspend/activate updates of the MyMoney engine on
@@ -82,22 +80,12 @@ public:
   void update(const QCString& id);
 
 public slots:
-  // void reloadView(void);
-
   /**
     * This slot calls the hide() slot of all known specific ledger views
     */
   void hide(void);
 
   void show(void);
-
-  /**
-    * Called when the user changes the visibility
-    * setting of the transaction form
-    *
-    * @param show if true, the transaction form will be shown
-    */
-  // void slotShowTransactionForm(bool show);
 
   /**
     * This slot cancels any edit session in the ledger views when called.
@@ -112,24 +100,6 @@ public slots:
     * @param transactionId const QCString reference to the transaction id
     */
   void slotSelectAccountAndTransaction(const QCString& accountId, const QCString& transactionId);
-
-  /**
-    * This slot is used to select an account by it's @p id.
-    *
-    * @param id const QCString reference to the account's id
-    *
-    * @note The account will be selected in standard mode (not in reconciliation mode)
-    */
-  // void slotAccountSelected(const QString& id);
-
-  /**
-    * This slot is used to select an account by it's @p id.
-    *
-    * @param id const QCString reference to the account's id
-    * @param reconciliation if false (default), the standard ledger is
-    *                       opened, if true, the reconciliation mode is entered
-    */
-  // void slotAccountSelected(const QString& id, const bool reconciliation);
 
   /**
     * This slot is used to reload all data from the MyMoneyFile engine.
@@ -182,24 +152,6 @@ protected:
     */
   void loadAccounts(void);
 
-  /**
-    * This method is used to open the account with the specified id
-    * in the ledger view. The respective view for this account type
-    * will be selected and the account data loaded.
-    * If a transaction ID is given in @p transaction, the specified
-    * transaction will be selected and shown. If transaction is empty,
-    * then the last transaction will be selected.
-    * The parameter @p reconciliation determines, if the reconciliation
-    * mode is started or not.
-    *
-    * @param id id of the account in the MyMoneyFile object
-    * @param transaction ID of the transaction to be selected
-    * @param reconciliation if false (default), the standard ledger is
-    *                       opened, if true, the reconciliation mode is entered
-    * @param forceLoad if set to true, the account is reloaded into the view in any case
-    */
-  // void selectAccount(const QCString& id, const QCString& transaction = "", const bool reconciliation = false, const bool forceLoad = false);
-
 protected slots:
 
 protected:
@@ -244,7 +196,7 @@ signals:
     * This signal is emitted, if an account has been selected
     * which cannot handled by this view.
     */
-  void accountSelected(const QCString& accountId, const QCString& transactionId);
+  void accountSelected(const QCString& accountId);
 
 };
 

@@ -1260,6 +1260,7 @@ void KLedgerView::slotEndEdit(void)
 
   MyMoneyFile* file = MyMoneyFile::instance();
 
+  qDebug("KLedgerView::slotEndEdit()");
   try {
 
     // make sure, the post date is valid

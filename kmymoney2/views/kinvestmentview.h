@@ -109,19 +109,6 @@ public slots:
   const bool slotSelectAccount(const QCString& id, const bool reconciliation = false);
 
   /**
-    * This is an overloaded version of the above method.
-    *
-    * Using this method one can select an account by it's name. The name
-    * must match an asset or liability account name.
-    *
-    * @param accountName name of an existing account
-    *
-    * @retval true selection of account referenced by @p id succeeded
-    * @retval false selection of account failed
-    */
-  const bool slotSelectAccount(const QString& accountName);
-
-  /**
     * This slot can be used to popup a specific transaction for a
     * specific account. Both entities are defined by the corresponding Id's.
     *
@@ -167,7 +154,7 @@ signals:
     * This signal is emitted, if an account has been selected
     * which cannot handled by this view.
     */
-  void accountSelected(const QCString& accountId, const QCString& transactionId);
+  void accountSelected(const QCString& accountId);
 
 private:
   void initSummaryTab(void);
