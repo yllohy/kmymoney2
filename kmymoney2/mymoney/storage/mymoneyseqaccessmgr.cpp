@@ -392,9 +392,10 @@ void MyMoneySeqAccessMgr::addTransaction(MyMoneyTransaction& transaction, const 
   // * the referenced accounts in the splits exist
 
   // first perform all the checks
-  if(transaction.id() != ""
-  || !transaction.postDate().isValid())
-    throw new MYMONEYEXCEPTION("invalid transaction to be added");
+  if(transaction.id() != "")
+    throw new MYMONEYEXCEPTION("transaction already contains an id");
+  if(!transaction.postDate().isValid())
+    throw new MYMONEYEXCEPTION("invalid post date");
 
   // now check the splits
   QValueList<MyMoneySplit>::ConstIterator it_s;
