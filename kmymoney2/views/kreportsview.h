@@ -23,6 +23,8 @@
 #ifndef KREPORTSVIEW_H
 #define KREPORTSVIEW_H
 
+#include "kdecompat.h"
+
 // ----------------------------------------------------------------------------
 // QT Includes
 #include <qvaluevector.h>
@@ -34,7 +36,14 @@ class QListViewItem;
 // KDE Includes
 #include <khtml_part.h>
 #include <klistview.h>
-class KTabWidget;
+
+#if KDE_IS_VERSION(3,2,0)
+  #include <ktabwidget.h>
+#else
+  #include <qtabwidget.h>
+  // In the case of KDE < 3.2, we only have the basic QTabWidget.
+  #define KTabWidget QTabWidget
+#endif
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -53,9 +62,10 @@ class MyMoneyReport;
   *
   * @short A view for reports.
 **/
-class KReportsView : public QWidget  {
-   Q_OBJECT
-  
+class KReportsView : public QWidget
+{
+  Q_OBJECT
+
 public:
   /**
     * Helper class for KReportView.
@@ -64,20 +74,20 @@ public:
     *
     * @author Ace Jones
     */
-  
+
   class KReportListItem: public KListViewItem
   {
   private:
     QCString m_id;
-    
+
   public:
-    KReportListItem( KListView* parent, const MyMoneyReport& report ): 
-      KListViewItem( parent, report.name(), report.comment() ), 
+    KReportListItem( KListView* parent, const MyMoneyReport& report ):
+      KListViewItem( parent, report.name(), report.comment() ),
       m_id( report.id() )
     {}
     const QCString& id(void) const { return m_id; }
   };
-  
+
   /**
     * Helper class for KReportView.
     *
@@ -85,7 +95,7 @@ public:
     *
     * @author Ace Jones
     */
-  
+
   class KReportTab: public QWidget
   {
   private:
@@ -96,7 +106,7 @@ public:
     QCString m_reportId;
     bool m_deleteMe;
     bool m_showingChart;
-    
+
   public:
     KReportTab(KTabWidget* parent, const MyMoneyReport& report );
     const QCString& id(void) const { return m_reportId; }
@@ -149,7 +159,7 @@ public:
 
 protected:
   void addReportTab(const MyMoneyReport&);
-  
+
 public slots:
   void slotOpenURL(const KURL &url, const KParts::URLArgs& args);
 
