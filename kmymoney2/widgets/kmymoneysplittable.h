@@ -73,6 +73,8 @@ public slots:
   /** No descriptions */
   virtual void setCurrentCell(int row, int col);
 
+  virtual void setNumRows(int r);
+
 private:
   int m_key;
 

@@ -297,6 +297,19 @@ void KPayeesView::readConfig(void)
   KConfig *config = KGlobal::config();
   config->setGroup("Last Use Settings");
   m_lastPayee = config->readEntry("KPayeesView_LastPayee");
+
+  QFont font = QFont("helvetica", 10);
+  config->setGroup("List Options");
+  font = config->readFontEntry("listCellFont", &font);
+  m_transactionView->setFont(font);
+
+  font = config->readFontEntry("listHeaderFont", &font);
+  QFontMetrics fm( font );
+  int height = fm.lineSpacing()+6;
+
+  m_transactionView->header()->setMinimumHeight(height);
+  m_transactionView->header()->setMaximumHeight(height);
+  m_transactionView->header()->setFont(font);
 }
 
 void KPayeesView::writeConfig(void)

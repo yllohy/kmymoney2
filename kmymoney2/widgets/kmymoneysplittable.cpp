@@ -240,3 +240,25 @@ void kMyMoneySplitTable::setInlineEditingMode(const bool editing)
   m_inlineEditMode = editing;
 }
 
+void kMyMoneySplitTable::setNumRows(int irows)
+{
+  QTable::setNumRows(irows);
+
+  KConfig *config = KGlobal::config();
+  config->setGroup("List Options");
+  QFont font = QFont("helvetica", 12);
+  font = config->readFontEntry("listCellFont", &font);
+  QFontMetrics fm( font );
+  int height = fm.lineSpacing()+2;
+
+  verticalHeader()->setUpdatesEnabled(false);
+
+  for(int i = 0; i < irows; ++i)
+    verticalHeader()->resizeSection(i, height);
+
+  verticalHeader()->setUpdatesEnabled(true);
+
+  // add or remove scrollbars as required
+  updateScrollBars();
+}
+
