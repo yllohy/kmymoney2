@@ -63,7 +63,7 @@ kMyMoneyEdit::~kMyMoneyEdit()
 
 const bool kMyMoneyEdit::isValid(void) const
 {
-  return !m_text.isEmpty();
+  return !text().isEmpty();
 }
 
 MyMoneyMoney kMyMoneyEdit::getMoneyValue(void)
