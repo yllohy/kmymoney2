@@ -53,8 +53,14 @@ const QString KMyMoneyUtils::accountTypeToString(const MyMoneyAccount::accountTy
     case MyMoneyAccount::Savings:
       returnString = i18n("Savings");
       break;
+    case MyMoneyAccount::CreditCard:
+      returnString = i18n("Credit Card");
+      break;
     case MyMoneyAccount::Cash:
       returnString = i18n("Cash");
+      break;
+    case MyMoneyAccount::Loan:
+      returnString = i18n("Loan");
       break;
     case MyMoneyAccount::CertificateDep:
       returnString = i18n("Certificate of Deposit");
@@ -95,8 +101,12 @@ const MyMoneyAccount::accountTypeE KMyMoneyUtils::stringToAccountType(const QStr
     rc = MyMoneyAccount::Checkings;
   else if(type == i18n("Savings"))
     rc = MyMoneyAccount::Savings;
+  else if(type == i18n("Credit Card"))
+    rc = MyMoneyAccount::CreditCard;
   else if(type == i18n("Cash"))
     rc = MyMoneyAccount::Cash;
+  else if(type == i18n("Loan"))
+    rc = MyMoneyAccount::Loan;
   else if(type == i18n("Certificate of Deposit"))
     rc = MyMoneyAccount::CertificateDep;
   else if(type == i18n("Investment"))
