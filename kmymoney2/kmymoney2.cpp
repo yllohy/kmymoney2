@@ -350,8 +350,15 @@ void KMyMoney2App::slotFileSaveAs()
   QString newName=KFileDialog::getSaveFileName(QDir::currentDirPath(),
                                                i18n("*.kmy|KMyMoney files\n"
                                                "*.*|All files"), this, i18n("Save as..."));
+
   if(!newName.isEmpty())
   {
+    //always add a .kmy onto the end of the file name.
+    if(newName.find(".kmy", 0, FALSE) == -1)
+    {
+      newName.append(".kmy");
+    }
+
     QFileInfo saveAsInfo(newName);
 //    addRecentFile(newName);
 
@@ -853,3 +860,4 @@ void KMyMoney2App::slotKeySettings()
   QString path = KGlobal::dirs()->findResource("appdata", "kmymoney2ui.rc");
   KKeyDialog::configureKeys(actionCollection(), path);
 }
+

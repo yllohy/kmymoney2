@@ -1,3 +1,6 @@
+2001-11-26 Kevin Tambascio <ktambascio@yahoo.com>
+  * New files will always have .kmy extension to them.
+
 2001-11-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Incorporated Coding Rules into Project Handbook
   * Added CVS examples to Project Handbook
@@ -437,3 +440,4 @@
 	* Added .cvsignore in all project.
 
  
+
