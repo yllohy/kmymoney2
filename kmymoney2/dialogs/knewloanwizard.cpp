@@ -536,15 +536,15 @@ void KNewLoanWizard::next()
     || m_durationValueEdit->value() == 0
     || m_paymentEdit->text().isEmpty())
     && m_finalPaymentEdit->text().isEmpty()) {
-      dontLeavePage = true;
-      KMessageBox::error(0, errMsg.arg(i18n("final amortization payment")), i18n("Calculation error"));
-    } else {
-      updateFinalPayment();
-      if(!calculateLoan()) {
-        dontLeavePage = true;
-      } else
-        updateLoanInfo();
+      // if two fields are empty and one of them is the final payment
+      // we assume the final payment to be 0 instead of presenting a
+      m_finalPaymentEdit->setValue(MyMoneyMoney(0, 1));
     }
+    updateFinalPayment();
+    if(!calculateLoan()) {
+      dontLeavePage = true;
+    } else
+      updateLoanInfo();
 
   } else if(currentPage() == m_additionalFeesPage) {
     m_nextDueDateEdit->setEnabled(true);
@@ -802,13 +802,18 @@ int KNewLoanWizard::calculateLoan(void)
       // calculate the periodical amount of the payment out of the other information
       val = calc.payment();
       m_paymentEdit->setText(MyMoneyMoney(static_cast<double>(val)).abs().formatMoney());
+      // reset payment as it might have changed due to rounding
+      val = static_cast<long double> (m_paymentEdit->getMoneyValue().abs().toDouble());
+      if(m_lendButton->isChecked())
+        val = -val;
+      calc.setPmt(val);
 
       result = i18n("KMyMoney has calculated a periodic payment of %1 to cover amortization and interest.")
                       .arg(m_paymentEdit->text());
 
       val = calc.futureValue();
-      if((m_borrowButton->isChecked() && val < 0)
-      || (m_lendButton->isChecked() && val > 0)) {
+      if((m_borrowButton->isChecked() && val < 0 && fabsl(val) >= fabsl(calc.payment()))
+      || (m_lendButton->isChecked() && val > 0 && fabs(val) >= fabs(calc.payment()))) {
         calc.setNpp(calc.npp()-1);
         updateTermWidgets(calc.npp());
         val = calc.futureValue();
@@ -816,6 +821,14 @@ int KNewLoanWizard::calculateLoan(void)
         m_finalPaymentEdit->loadText(refVal.abs().formatMoney());
         result += QString(" ");
         result += i18n("The number of payments has been decremented and the final payment has been modified to %1.")
+                      .arg(m_finalPaymentEdit->text());
+      } else if((m_borrowButton->isChecked() && val < 0 && fabsl(val) < fabsl(calc.payment()))
+             || (m_lendButton->isChecked() && val > 0 && fabs(val) < fabs(calc.payment()))) {
+        m_finalPaymentEdit->loadText(MyMoneyMoney(0,1).formatMoney());
+      } else {
+        MyMoneyMoney refVal(static_cast<double>(val));
+        m_finalPaymentEdit->loadText(refVal.abs().formatMoney());
+        result += i18n("The final payment has been modified to %1.")
                       .arg(m_finalPaymentEdit->text());
       }
 
@@ -845,7 +858,7 @@ int KNewLoanWizard::calculateLoan(void)
 
       // we differentiate between the following cases:
       // a) the future value is greater than a payment
-      // b) the future payment is less than a payment
+      // b) the future value is less than a payment or the loan is overpaid
       // c) all other cases
       //
       // a) means, we have paid more than we owed. This can't be

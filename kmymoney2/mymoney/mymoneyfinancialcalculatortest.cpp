@@ -16,6 +16,7 @@
 #include <iostream>
 
 #include <math.h>
+#include "mymoneymoney.h"
 #include "mymoneyfinancialcalculatortest.h"
 
 MyMoneyFinancialCalculatorTest::MyMoneyFinancialCalculatorTest () {};
@@ -159,4 +160,30 @@ void MyMoneyFinancialCalculatorTest::testNumPayments() {
 	}
 
 	CPPUNIT_ASSERT(roundl(m->m_npp) == 12);
+}
+
+void MyMoneyFinancialCalculatorTest::testUseCase1() {
+	m->setPv(-300000.0);
+	m->setIr(5.0);
+	m->setNpp(360);
+	m->setFv(0.0);
+	m->setPF(12);
+	MyMoneyMoney res(m->payment());
+	CPPUNIT_ASSERT(res == MyMoneyMoney(161046,100));
+
+	res = MyMoneyMoney(m->futureValue());
+	CPPUNIT_ASSERT(res == MyMoneyMoney(405,100));
+}
+
+void MyMoneyFinancialCalculatorTest::testUseCase2() {
+	m->setPv(-320000.0);
+	m->setIr(5.0);
+	m->setNpp(360);
+	m->setFv(0.0);
+	m->setPF(12);
+	MyMoneyMoney res(m->payment());
+	CPPUNIT_ASSERT(res == MyMoneyMoney(171783,100));
+
+	res = MyMoneyMoney(m->futureValue());
+	CPPUNIT_ASSERT(res == MyMoneyMoney(-67,100));
 }

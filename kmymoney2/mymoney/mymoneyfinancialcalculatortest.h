@@ -41,6 +41,8 @@ class MyMoneyFinancialCalculatorTest : public CppUnit::TestFixture  {
         CPPUNIT_TEST(testSetFv);
         CPPUNIT_TEST(testCombinedSet);
 	CPPUNIT_TEST(testNumPayments);
+	CPPUNIT_TEST(testUseCase1);
+	CPPUNIT_TEST(testUseCase2);
 	CPPUNIT_TEST_SUITE_END();
 protected:
 	MyMoneyFinancialCalculator	*m;
@@ -63,6 +65,8 @@ public:
 	void testSetFv();
 	void testCombinedSet();
 	void testNumPayments();
+	void testUseCase1();
+	void testUseCase2();
 };
 
 #endif

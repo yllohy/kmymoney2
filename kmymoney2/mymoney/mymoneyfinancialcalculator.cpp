@@ -39,16 +39,20 @@
 #include "mymoneyfinancialcalculator.h"
 #include "mymoneyexception.h"
 
-#ifndef HAVE_ROUND
-#undef roundl
-#define roundl(a)  rnd(a)
+// #ifndef HAVE_ROUND
+// #undef roundl
+// #define roundl(a)  rnd(a)
 
 const FCALC_DOUBLE MyMoneyFinancialCalculator::rnd(const FCALC_DOUBLE x) const
 {
-  FCALC_DOUBLE r;
-  char  buf[50];
+  FCALC_DOUBLE r,f;
 
   if(m_prec > 0) {
+#ifdef HAVE_ROUND
+    f = powl(10.0, m_prec);
+    r = roundl(x * f)/f;
+#else
+    char  buf[50];
 #if HAVE_LONG_DOUBLE
     sprintf (buf, "%.*Lf", m_prec, x);
     sscanf (buf, "%Lf", &r);
@@ -56,11 +60,12 @@ const FCALC_DOUBLE MyMoneyFinancialCalculator::rnd(const FCALC_DOUBLE x) const
     sprintf (buf, "%.*f", m_prec, x);
     sscanf (buf, "%lf", &r);
 #endif
+#endif
   } else
-    r = x;
+    r = roundl(x);
   return r;
 }
-#endif
+// #endif
 
 static inline FCALC_DOUBLE dabs(const FCALC_DOUBLE x)
 {
@@ -172,7 +177,8 @@ const FCALC_DOUBLE MyMoneyFinancialCalculator::payment(void)
   FCALC_DOUBLE AA = _Ax(eint);
   FCALC_DOUBLE BB = _Bx(eint);
 
-  m_pmt = -floorl((m_fv + m_pv * (AA + 1.0)) / (AA * BB));
+  m_pmt = -rnd((m_fv + m_pv * (AA + 1.0)) / (AA * BB));
+  //m_pmt = -floorl((m_fv + m_pv * (AA + 1.0)) / (AA * BB));
 
   m_mask |= PMT_SET;
   return m_pmt;
@@ -189,7 +195,7 @@ const FCALC_DOUBLE MyMoneyFinancialCalculator::presentValue(void)
   FCALC_DOUBLE AA = _Ax(eint);
   FCALC_DOUBLE CC = _Cx(eint);
 
-  m_pv = roundl(-(m_fv + (AA * CC)) / (AA + 1.0));
+  m_pv = rnd(-(m_fv + (AA * CC)) / (AA + 1.0));
 
   m_mask |= PV_SET;
   return m_pv;
@@ -205,7 +211,7 @@ const FCALC_DOUBLE MyMoneyFinancialCalculator::futureValue(void)
   FCALC_DOUBLE eint = eff_int();
   FCALC_DOUBLE AA = _Ax(eint);
   FCALC_DOUBLE CC = _Cx(eint);
-  m_fv = roundl(-(m_pv + AA * (m_pv + CC)));
+  m_fv = rnd(-(m_pv + AA * (m_pv + CC)));
 
   m_mask |= FV_SET;
   return m_fv;
@@ -248,7 +254,7 @@ const FCALC_DOUBLE MyMoneyFinancialCalculator::interestRate(void)
     while (ri);
   }
   m_mask |= IR_SET;
-  m_ir = roundl(nom_int(eint) * 100.0);
+  m_ir = rnd(nom_int(eint) * 100.0);
   return m_ir;
 }
 
