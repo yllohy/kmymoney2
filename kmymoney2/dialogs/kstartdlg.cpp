@@ -29,6 +29,8 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 
+#include "kdecompat.h"
+
 #if QT_VERSION > 300
 #include <kstandarddirs.h>
 #else
@@ -191,12 +193,16 @@ void KStartDlg::slotRecentClicked(QIconViewItem *item)
 void KStartDlg::slotOk()
 {
   writeConfig();
-  this->accept();	
+  this->accept();
 }
 
 bool KStartDlg::fileExists(KURL url)
 {
+#if KDE_IS_VERSION(3,2,0)
+  return KIO::NetAccess::exists(url, true, this);
+#else
   return KIO::NetAccess::exists(url);
+#endif
 }
 
 void KStartDlg::slotTemplateSelectionChanged(QIconViewItem* item)
@@ -215,7 +221,7 @@ void KStartDlg::slotTemplateSelectionChanged(QIconViewItem* item)
 
   isopenfile = false;
 }
-  
+
 void KStartDlg::slotRecentSelectionChanged(QIconViewItem* item)
 {
   KRecentFileItem *kitem = (KRecentFileItem*)item;

@@ -36,6 +36,8 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 
+#include "kdecompat.h"
+
 #include <kfiledialog.h>
 #include <kglobal.h>
 #if QT_VERSION > 300
@@ -588,7 +590,11 @@ bool KMyMoneyView::readFile(const KURL& url)
 
   IMyMoneyStorageFormat* pReader = NULL;
 
+#if KDE_IS_VERSION(3,2,0)
+  if(!url.isValid()) {
+#else
   if(url.isMalformed()) {
+#endif
     qDebug("Invalid URL '%s'", url.url().latin1());
     return false;
   }
