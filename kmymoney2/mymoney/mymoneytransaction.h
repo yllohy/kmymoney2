@@ -83,6 +83,16 @@ public:
   const MyMoneySplit& split(const QCString& accountId, const bool match = true) const;
 
   /**
+    * This method is used to extract a split for a given payeeId
+    * from a transaction.
+    *
+    * @param payeeId the payee to look for
+    *
+    * @return reference to split within the transaction is returned
+    */
+  const MyMoneySplit& splitByPayee(const QCString& payeeId) const;
+
+  /**
     * This method is used to check if the given account is used
     * in any of the splits of this transation
     *

@@ -110,6 +110,17 @@ void MyMoneyTransaction::removeSplits(void)
   m_splits.clear();
 }
 
+const MyMoneySplit& MyMoneyTransaction::splitByPayee(const QCString& payeeId) const
+{
+  QValueList<MyMoneySplit>::ConstIterator it;
+
+  for(it = m_splits.begin(); it != m_splits.end(); ++it) {
+    if((*it).payeeId() == payeeId)
+      return *it;
+  }
+  throw new MYMONEYEXCEPTION(QString("Split not found for payee") + QString(payeeId));
+}
+
 const MyMoneySplit& MyMoneyTransaction::split(const QCString& accountId, const bool match) const
 {
   QValueList<MyMoneySplit>::ConstIterator it;
