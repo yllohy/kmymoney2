@@ -28,6 +28,10 @@
 #include "knewcategorydlg.h"
 #include <kmessagebox.h>
 
+#if QT_VERSION > 300
+#include <qcursor.h>
+#endif
+
 KTransactionView::KTransactionView(QWidget *parent, const char *name)
  : KTransactionViewDecl(parent,name)
 {

@@ -19,6 +19,7 @@
 
 #include <qwidget.h>
 #include <qlistview.h>
+#include <qstringlist.h>
 
 // This class represents a List item that is used in KCategoriesDlg.
 // It holds information on whether it is a major category and the

@@ -36,6 +36,12 @@
 #include "dialogs/kimportdlg.h"
 #include "dialogs/kexportdlg.h"
 
+#if QT_VERSION > 300
+#include <kicontheme.h>
+#include <kiconloader.h>
+#include <qregexp.h>
+#endif
+
 KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
 //  : KTabCtl(parent,name)
   : QVBox(parent, name)

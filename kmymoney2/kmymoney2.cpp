@@ -41,6 +41,9 @@
 #include "kstartuplogo.h"
 #include "dialogs/kbackupdlg.h"
 
+#if QT_VERSION > 300
+#include <kstatusbar.h>
+#endif
 
 #define ID_STATUS_MSG 1
 

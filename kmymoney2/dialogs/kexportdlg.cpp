@@ -32,6 +32,10 @@
 #include <qgroupbox.h>
 #include <qlabel.h>
 
+#if QT_VERSION > 300
+#include <qpushbutton.h>
+#endif
+
 // ----------------------------------------------------------------------------
 // KDE Headers
 #include <kmessagebox.h>

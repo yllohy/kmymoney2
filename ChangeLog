@@ -1,3 +1,6 @@
+2001-12-23 Michael Edwardes <mte@users.sourceforge.net>
+  * Added ability to compile for KDE 3 or KDE 2.
+  
 2001-12-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Corrected transaction view to display correctly when resizing horizontaly
   * Use visibleWidth() when resizing the transaction view. This will

@@ -24,6 +24,10 @@
 
 #include "kmymoneydateinput.h"
 
+#if QT_VERSION > 300
+#include <qstyle.h>
+#endif
+
 kMyMoneyDateInput::kMyMoneyDateInput(QWidget *parent, const char *name, Qt::AlignmentFlags flags)
  : QWidget(parent,name)
 {
@@ -74,8 +78,15 @@ void kMyMoneyDateInput::paintEvent(QPaintEvent*)
   QPainter paint;
   paint.begin(this);
   qDrawShadePanel(&paint,0,0,width(),height(),colorGroup(),FALSE,1,NULL);
+
+#if QT_VERSION > 300
+  style().drawPrimitive(QStyle::PE_ArrowDown, &paint,
+  	QRect(width()-18,height()-7,width()-7,height()-7),colorGroup());
+#else
   style().drawArrow(&paint,DownArrow,FALSE,width()-19,5,height()-12,
     height()-12,colorGroup(), this->isEnabled());
+#endif
+
   qDrawShadeLine(&paint,width()-18,height()-7,width()-7,height()-7,
     colorGroup(),FALSE,1,1);
   paint.end();

@@ -19,6 +19,10 @@
 #include <qpalette.h>
 #include "kmymoneytable.h"
 
+#if QT_VERSION > 300
+#include <qpainter.h>
+#endif
+
 kMyMoneyTable::kMyMoneyTable(QWidget *parent, const char *name )
  : QTable(parent,name)
 {

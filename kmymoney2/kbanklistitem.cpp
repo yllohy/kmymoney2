@@ -22,6 +22,10 @@
 
 #include "kbanklistitem.h"
 
+#if QT_VERSION > 300
+#include <qpainter.h>
+#endif
+
 KBankListItem::KBankListItem(QListView *parent, MyMoneyBank bank )
  : QListViewItem(parent)
 {
