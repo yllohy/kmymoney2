@@ -1,7 +1,7 @@
 ####### kdevelop will overwrite this part!!! (begin)##########
 
 
-EXTRA_DIST = pay_edit.png bank.png categories.png transaction_find.png reconcile.png transaction_export.png transaction_import.png account.png account_open.png backup.png delete.png personal_data.png view_info.png close_window.png 
+EXTRA_DIST = pay_edit.png bank.png categories.png transaction_find.png reconcile.png transaction_export.png transaction_import.png account.png account_open.png backup.png delete.png personal_data.png view_info.png close_window.png cleared.png set_as.png unreconciled.png transaction.png 
 
 install-data-local:
 	$(mkinstalldirs) $(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/
@@ -32,6 +32,14 @@ install-data-local:
 	$(INSTALL_DATA) $(srcdir)/view_info.png $(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/view_info.png
 	$(mkinstalldirs) $(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/
 	$(INSTALL_DATA) $(srcdir)/close_window.png $(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/close_window.png
+	$(mkinstalldirs) $(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/
+	$(INSTALL_DATA) $(srcdir)/cleared.png $(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/cleared.png
+	$(mkinstalldirs) $(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/
+	$(INSTALL_DATA) $(srcdir)/set_as.png $(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/set_as.png
+	$(mkinstalldirs) $(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/
+	$(INSTALL_DATA) $(srcdir)/unreconciled.png $(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/unreconciled.png
+	$(mkinstalldirs) $(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/
+	$(INSTALL_DATA) $(srcdir)/transaction.png $(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/transaction.png
 
 uninstall-local:
 	-rm -f $(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/pay_edit.png
@@ -48,5 +56,9 @@ uninstall-local:
 	-rm -f $(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/personal_data.png
 	-rm -f $(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/view_info.png
 	-rm -f $(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/close_window.png
+	-rm -f $(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/cleared.png
+	-rm -f $(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/set_as.png
+	-rm -f $(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/unreconciled.png
+	-rm -f $(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/transaction.png
 
 ####### kdevelop will overwrite this part!!! (end)############

@@ -31,7 +31,7 @@ ldflags=
 path_to_bin_program=kmymoney2
 
 [General]
-AMChanged=true
+AMChanged=false
 author=Michael Edwardes
 configure_args=
 dir_where_make_will_be_called=
@@ -422,7 +422,7 @@ sub_dirs=actions
 type=normal
 
 [kmymoney2/icons/hicolor/22x22/actions/Makefile.am]
-files=kmymoney2/icons/hicolor/22x22/actions/pay_edit.png,kmymoney2/icons/hicolor/22x22/actions/bank.png,kmymoney2/icons/hicolor/22x22/actions/categories.png,kmymoney2/icons/hicolor/22x22/actions/transaction_find.png,kmymoney2/icons/hicolor/22x22/actions/reconcile.png,kmymoney2/icons/hicolor/22x22/actions/transaction_export.png,kmymoney2/icons/hicolor/22x22/actions/transaction_import.png,kmymoney2/icons/hicolor/22x22/actions/account.png,kmymoney2/icons/hicolor/22x22/actions/account_open.png,kmymoney2/icons/hicolor/22x22/actions/backup.png,kmymoney2/icons/hicolor/22x22/actions/delete.png,kmymoney2/icons/hicolor/22x22/actions/personal_data.png,kmymoney2/icons/hicolor/22x22/actions/view_info.png,kmymoney2/icons/hicolor/22x22/actions/close_window.png
+files=kmymoney2/icons/hicolor/22x22/actions/pay_edit.png,kmymoney2/icons/hicolor/22x22/actions/bank.png,kmymoney2/icons/hicolor/22x22/actions/categories.png,kmymoney2/icons/hicolor/22x22/actions/transaction_find.png,kmymoney2/icons/hicolor/22x22/actions/reconcile.png,kmymoney2/icons/hicolor/22x22/actions/transaction_export.png,kmymoney2/icons/hicolor/22x22/actions/transaction_import.png,kmymoney2/icons/hicolor/22x22/actions/account.png,kmymoney2/icons/hicolor/22x22/actions/account_open.png,kmymoney2/icons/hicolor/22x22/actions/backup.png,kmymoney2/icons/hicolor/22x22/actions/delete.png,kmymoney2/icons/hicolor/22x22/actions/personal_data.png,kmymoney2/icons/hicolor/22x22/actions/view_info.png,kmymoney2/icons/hicolor/22x22/actions/close_window.png,kmymoney2/icons/hicolor/22x22/actions/cleared.png,kmymoney2/icons/hicolor/22x22/actions/set_as.png,kmymoney2/icons/hicolor/22x22/actions/unreconciled.png,kmymoney2/icons/hicolor/22x22/actions/transaction.png
 sub_dirs=
 type=normal
 
@@ -456,6 +456,12 @@ install=true
 install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/categories.png
 type=DATA
 
+[kmymoney2/icons/hicolor/22x22/actions/cleared.png]
+dist=true
+install=true
+install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/cleared.png
+type=DATA
+
 [kmymoney2/icons/hicolor/22x22/actions/close_window.png]
 dist=true
 install=true
@@ -486,6 +492,18 @@ install=true
 install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/reconcile.png
 type=DATA
 
+[kmymoney2/icons/hicolor/22x22/actions/set_as.png]
+dist=true
+install=true
+install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/set_as.png
+type=DATA
+
+[kmymoney2/icons/hicolor/22x22/actions/transaction.png]
+dist=true
+install=true
+install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/transaction.png
+type=DATA
+
 [kmymoney2/icons/hicolor/22x22/actions/transaction_export.png]
 dist=true
 install=true
@@ -502,6 +520,12 @@ type=DATA
 dist=true
 install=true
 install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/transaction_import.png
+type=DATA
+
+[kmymoney2/icons/hicolor/22x22/actions/unreconciled.png]
+dist=true
+install=true
+install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/unreconciled.png
 type=DATA
 
 [kmymoney2/icons/hicolor/22x22/actions/view_info.png]

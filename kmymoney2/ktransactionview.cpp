@@ -16,6 +16,7 @@
 #include <kglobal.h>
 #include <kconfig.h>
 #include <klocale.h>
+#include <kiconloader.h>
 
 #include <qpushbutton.h>
 #include <kcombobox.h>
@@ -393,14 +394,18 @@ void KTransactionView::slotFocusChange(int row, int col, int button, const QPoin
     m_index = transrow;
 
     if (button>=2) {
-      KPopupMenu setAsMenu(i18n("Set As..."), this);
-      setAsMenu.insertItem(i18n("Unreconciled (default)"), this, SLOT(slotTransactionUnReconciled()));
-      setAsMenu.insertItem(i18n("Cleared"), this, SLOT(slotTransactionCleared()));
+      KIconLoader *kiconloader = KGlobal::iconLoader();
 
-      KPopupMenu menu(i18n("Transaction Options"), this);
-      menu.insertItem(i18n("Delete..."), this, SLOT(slotTransactionDelete()));
+      KPopupMenu setAsMenu(this);
+      setAsMenu.insertTitle(kiconloader->loadIcon("set_as", KIcon::MainToolbar), i18n("Set As"));
+      setAsMenu.insertItem(kiconloader->loadIcon("unreconciled", KIcon::Small), i18n("Unreconciled (default)"), this, SLOT(slotTransactionUnReconciled()));
+      setAsMenu.insertItem(kiconloader->loadIcon("cleared", KIcon::Small), i18n("Cleared"), this, SLOT(slotTransactionCleared()));
+
+      KPopupMenu menu(this);
+      menu.insertTitle(kiconloader->loadIcon("transaction", KIcon::MainToolbar), i18n("Transaction Options"));
+      menu.insertItem(kiconloader->loadIcon("delete", KIcon::Small), i18n("Delete..."), this, SLOT(slotTransactionDelete()));
       menu.insertSeparator();
-      menu.insertItem(i18n("Set as"), &setAsMenu);
+      menu.insertItem(kiconloader->loadIcon("set_as", KIcon::Small), i18n("Set as"), &setAsMenu);
       menu.exec(QCursor::pos());
     }
   } else
