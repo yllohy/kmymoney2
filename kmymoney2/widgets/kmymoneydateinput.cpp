@@ -36,7 +36,7 @@ kMyMoneyDateInput::kMyMoneyDateInput(QWidget *parent, const char *name, Qt::Alig
 
   // I use KTempDatePicker so I can use the WType_Popup flag in the constructor
   datePicker = new KTempDatePicker(parent, QDate::currentDate(), "datePicker", WType_Popup);
-  datePicker->resize(190, 130);
+  datePicker->resize(datePicker->sizeHint());
   datePicker->hide();
 
   connect(datePicker, SIGNAL(dateSelected(QDate)), this, SLOT(slotDateChosen(QDate)));
@@ -55,7 +55,7 @@ kMyMoneyDateInput::kMyMoneyDateInput(QWidget *parent, const QDate& date, Qt::Ali
 
   // I use KTempDatePicker so I can use the WType_Popup flag in the constructor
   datePicker = new KTempDatePicker(parent, date, "datePicker", WType_Popup);
-  datePicker->resize(190, 130);
+  datePicker->resize(datePicker->sizeHint());
   datePicker->hide();
 
   connect(datePicker, SIGNAL(dateSelected(QDate)), this, SLOT(slotDateChosen(QDate)));

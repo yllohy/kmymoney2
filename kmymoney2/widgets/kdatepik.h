@@ -23,8 +23,8 @@
     the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
     Boston, MA 02111-1307, USA.
 */
-#ifndef KDATEPICKER_H
-#define KDATEPICKER_H
+#ifndef KTEMPDATEPICKER_H
+#define KTEMPDATEPICKER_H
 #include <qdatetime.h>
 #include <qrect.h>
 #include <qframe.h>
@@ -48,7 +48,7 @@ class KDateTable;
  *
  * @image kdatepicker.png KDatePicker
  *
- *     @version $Id: kdatepik.h,v 1.1 2001/03/07 19:53:27 mte Exp $
+ *     @version $Id: kdatepik.h,v 1.2 2001/12/20 03:01:43 ktambascio Exp $
  *     @author Tim Gilman, Mirko Sucker
  *
  * @short A date selection widget.
@@ -166,4 +166,4 @@ private:
   KDatePickerPrivate *d;
 };
 
-#endif //  KDATEPICKER_H
+#endif //  KTEMPDATEPICKER_H

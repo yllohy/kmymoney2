@@ -1,3 +1,6 @@
+2001-12-19 Kevin Tambascio <ktambascio@yahoo.com>
+  * Fixed Bug #494908 Date/Calender control is too small
+
 2001-12-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * added logic to suppress display of splash screen through config setting
 
