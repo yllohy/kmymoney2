@@ -59,7 +59,7 @@ K_EXPORT_COMPONENT_FACTORY( kmm_kbanking,
 KBankingPlugin::KBankingPlugin(QObject *parent, const char* name, const QStringList&) :
   KMyMoneyPlugin::Plugin(parent, name )
 {
-  m_kbanking = new KMyMoneyBanking(this, "kmymoney");
+  m_kbanking = new KMyMoneyBanking(this, "KMyMoney");
   if(m_kbanking) {
     GWEN_Logger_SetLevel(0, GWEN_LoggerLevelInfo);
     GWEN_Logger_SetLevel(AQBANKING_LOGDOMAIN, GWEN_LoggerLevelInfo);
@@ -126,10 +126,10 @@ void KBankingPlugin::createContextMenu(void)
   if(m_accountMenu) {
     KIconLoader *il = KGlobal::iconLoader();
     m_accountMenu->insertSeparator();
-    m_menuMapId = m_accountMenu->insertItem(il->loadIcon("account", KIcon::Small),
+    m_menuMapId = m_accountMenu->insertItem(il->loadIcon("news_subscribe", KIcon::Small),
                           i18n("Map to HBCI account..."),
                           this, SLOT(slotAccountOnlineMap()), 0);
-    m_menuUpdateId = m_accountMenu->insertItem(il->loadIcon("account", KIcon::Small),
+    m_menuUpdateId = m_accountMenu->insertItem(il->loadIcon("reload", KIcon::Small),
                           i18n("Online update using HBCI..."),
                           this, SLOT(slotAccountOnlineUpdate()), 0);
 
@@ -181,6 +181,13 @@ void KBankingPlugin::slotAccountOnlineMap(void)
   }
 }
 
+const bool KBankingPlugin::accountIsMapped(const QCString& id)
+{
+  AB_ACCOUNT* ab_acc;
+  ab_acc = AB_Banking_GetAccountByAlias(m_kbanking->getCInterface(), id);
+  return ab_acc != 0;
+}
+
 void KBankingPlugin::slotAccountOnlineUpdate(void)
 {
   if(!m_account.id().isEmpty()) {
@@ -196,23 +203,44 @@ void KBankingPlugin::slotAccountOnlineUpdate(void)
 
 void KBankingPlugin::slotAccountSelected(const MyMoneyAccount& acc)
 {
+  MyMoneyInstitution institution;
   bool state = false;
   m_account = acc;
+
+  m_accountMenu->setItemEnabled(m_menuMapId, false);
+  m_accountMenu->setItemEnabled(m_menuUpdateId, false);
 
   if(!MyMoneyFile::instance()->isStandardAccount(acc.id())) {
     switch(m_account.accountGroup()) {
       case MyMoneyAccount::Asset:
       case MyMoneyAccount::Liability:
-        if(!acc.institutionId().isEmpty())
-          state = true;
+        state = true;
+        if(acc.number().isEmpty() || acc.institutionId().isEmpty())
+          state = false;
+        else {
+          try {
+            institution = MyMoneyFile::instance()->institution(acc.institutionId());
+            if(institution.sortcode().isEmpty())
+              state = false;
+          } catch(MyMoneyException* e) {
+            state = false;
+            delete e;
+          }
+        }
         break;
 
       default:
         break;
     }
   }
-  m_accountMenu->setItemEnabled(m_menuMapId, state);
-  m_accountMenu->setItemEnabled(m_menuUpdateId, state);
+
+  if(state == true) {
+    if(accountIsMapped(acc.id())) {
+      m_accountMenu->setItemEnabled(m_menuUpdateId, true);
+    } else {
+      m_accountMenu->setItemEnabled(m_menuMapId, true);
+    }
+  }
 }
 
 void KBankingPlugin::slotImport(void)

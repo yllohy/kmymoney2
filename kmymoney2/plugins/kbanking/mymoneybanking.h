@@ -51,9 +51,30 @@ public:
   bool importStatement(MyMoneyStatement& s);
 
 protected:
+  /**
+    * creates the job view and hooks it into the main view
+    */
   void createJobView(void);
+
+  /**
+    * creates the action objects available through the application menus
+    */
   void createActions(void);
+
+  /**
+    * creates the context menu
+    */
   void createContextMenu(void);
+
+  /**
+    * checks whether a given KMyMoney account with id @p id is
+    * already mapped or not.
+    *
+    * @param id KMyMoney internal id of the account
+    * @retval false account is not mapped to an AqBanking account
+    * @retval true account is mapped to an AqBanking account
+    */
+  const bool accountIsMapped(const QCString& id);
 
 protected slots:
   void slotSettings(void);
