@@ -225,7 +225,7 @@ MyMoneyMoney PivotTable::AccountDescriptor::currencyPrice(const QDate& date) con
     MyMoneyPrice price = m_file->price(account.currencyId(), m_file->baseCurrency().id(), date);
 
     if(price.isValid()) {
-      value = price.rate(m_file->baseCurrency().id());
+      value = price.rate();
     } else {
       // FIXME: ace, we should report, that the conversion rate has been set to 1
       //        because no price info is available for the accounts currency on
