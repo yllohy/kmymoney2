@@ -59,8 +59,8 @@
 class kMyMoneyCalculator : public QFrame  {
    Q_OBJECT
 public:
-	kMyMoneyCalculator(QWidget* parent = 0, const char *name = 0);
-	~kMyMoneyCalculator();
+  kMyMoneyCalculator(QWidget* parent = 0, const char *name = 0);
+  ~kMyMoneyCalculator();
 
   /**
     * This methods is used to extract the result of the last
@@ -70,7 +70,7 @@ public:
     * @return QString representing the result of the
     *         last operation
     */
-	const QString result(void) const;
+  const QString result(void) const;
 
   /**
     * This method is used to set the character to be used
@@ -80,29 +80,27 @@ public:
     *
     * @param ch QChar representing the character to be used
     */
-	void setComma(const QChar ch) { m_comma = ch; };
+  void setComma(const QChar ch) { m_comma = ch; };
 
   /**
     * This method is used to preset the first operand and start
     * execution of an operation. This method is currently used
-    * by kMyMoneyEdit.
+    * by kMyMoneyEdit. If @p ev is 0, then no operation will be
+    * started.
     *
     * @param value reference to QString representing the operands value
     * @param ev    pointer to QKeyEvent representing the operation's key
     */
   void setInitialValues(const QString& value, QKeyEvent* ev);
 
-	// QSize sizeHint();
-	// QSizePolicy sizePolicy();
-
 signals:
   /**
     * This signal is emitted, when a new result is available
     */
-	void signalResultAvailable();
+  void signalResultAvailable();
 
 protected:
-	void keyPressEvent(QKeyEvent* ev);
+  void keyPressEvent(QKeyEvent* ev);
 
 protected slots:
   /**
@@ -112,40 +110,40 @@ protected slots:
     * @param button integer value of the digit to be added in the
     *               range [0..9]
     */
-	void digitClicked(int button);
+  void digitClicked(int button);
 
   /**
     * This methods starts the operation contained in the parameter
     *
     * @param button The Qt::Keycode for the button pressed or clicked
     */
-	void calculationClicked(int button);
+  void calculationClicked(int button);
 
   /**
     * This method appends a period (comma) to initialize the fractional
     * part of an operand. The period is only appended once.
     */
-	void commaClicked(void);
+  void commaClicked(void);
 
   /**
     * This method reverses the sign of the current operand
     */
-	void plusminusClicked(void);
+  void plusminusClicked(void);
 
   /**
     * This method clears the current operand
     */
-	void clearClicked(void);
+  void clearClicked(void);
 
   /**
     * This method clears all registers
     */
-	void clearAllClicked(void);
+  void clearAllClicked(void);
 
   /**
     * This method executes the percent operation
     */
-	void percentClicked(void);
+  void percentClicked(void);
 
   /**
     * This method updates the display of the calculator with
@@ -153,73 +151,73 @@ protected slots:
     *
     * @param str reference to QString containing the new display contents
     */
-	void changeDisplay(const QString& str);
+  void changeDisplay(const QString& str);
 
 private:
   /**
     * This member variable stores the current (second) operand
     */
-	QString operand;
+  QString operand;
 
   /**
     * This member variable stores the last result
     */
-	QString m_result;
+  QString m_result;
 
   /**
     * This member variable stores the representation of the
     * character to be used to separate the integer and fractional
     * part of numbers. The internal representation is always a period.
     */
-	QChar m_comma;
+  QChar m_comma;
 
   /**
     * The numeric representation of the first operand
     */
-	double op1;
+  double op1;
 
   /**
     * This member stores the operation to be performed between
     * the first and the second operand.
     */
-	int op;
+  int op;
 
   /**
     * This member stores a pointer to the display area
     */
-	QLabel *display;
+  QLabel *display;
 
   /**
     * This member array stores the pointers to the various
     * buttons of the calculator. It is setup during the
     * constructor of this object
     */
-	KPushButton *buttons[20];
+  KPushButton *buttons[20];
 
   /**
     * This enumeration type stores the values used for the
     * various keys internally
     */
-	enum {
-		/* 0-9 are used by digits */
-		COMMA = 10,
-		/*
-		 * make sure, that PLUS through EQUAL remain in
-		 * the order they are. Otherwise, check the calculation
-		 * signal mapper
-		 */
-		PLUS,
-		MINUS,
-		SLASH,
-		STAR,
-		EQUAL,
-		PLUSMINUS,
-		PERCENT,
-		CLEAR,
-		CLEARALL,
+  enum {
+    /* 0-9 are used by digits */
+    COMMA = 10,
+    /*
+     * make sure, that PLUS through EQUAL remain in
+     * the order they are. Otherwise, check the calculation
+     * signal mapper
+     */
+    PLUS,
+    MINUS,
+    SLASH,
+    STAR,
+    EQUAL,
+    PLUSMINUS,
+    PERCENT,
+    CLEAR,
+    CLEARALL,
     /* insert new buttons before this line */
     MAX_BUTTONS
-	};
+  };
 };
 
 #endif

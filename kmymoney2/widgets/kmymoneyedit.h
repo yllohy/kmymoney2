@@ -22,14 +22,17 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
-#include <qwidget.h>
-#include <qvbox.h>
+#include <qhbox.h>
 #include <qvalidator.h>
+
+class QVBox;
+class QWidget;
 
 // ----------------------------------------------------------------------------
 // KDE Includes
 
 #include <klineedit.h>
+class KPushButton;
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -71,10 +74,13 @@ public:
 
 };
 
-// This class replaces OE Hansens kdbMoneyEdit I used
-// to use.  It has simpler interface and fixes some
-// issues I had with the original widget.
-class kMyMoneyEdit : public KLineEdit  {
+/**
+  * This class represents a widget to enter monetary values.
+  * It has an edit field and a button to select a popup
+  * calculator. The result of the calculator (if used) is
+  * stored in the edit field.
+  */
+class kMyMoneyEdit : public QHBox {
    Q_OBJECT
 
 private:
@@ -82,19 +88,30 @@ private:
   QString m_text;       // keep track of what was the original value
   kMyMoneyCalculator* m_calculator;
   QVBox*              m_calculatorFrame;
+  KLineEdit*          m_edit;
+  KPushButton*        m_calcButton;
   int                 m_prec;
 
 protected:
-  void focusOutEvent(QFocusEvent *e);
   /**
     * This method ensures that the text version contains a
     * fractional part.
     */
   void ensureFractionalPart(void);
-  
+
+  /**
+    * This method opens the calculator and replays the key
+    * event pointed to by @p ev. If @p ev is 0, then no key
+    * event is replayed.
+    *
+    * @param ev pointer to QKeyEvent that started the calculator.
+    */
+  void calculatorOpen(QKeyEvent* ev);
+
 protected slots:
   void theTextChanged(const QString & text);
-  void slotCalculatorResult();
+  void slotCalculatorResult(void);
+  void slotCalculatorOpen(void);
 
 public:
   kMyMoneyEdit(QWidget *parent=0, const char *name=0);
@@ -102,13 +119,21 @@ public:
   MyMoneyMoney getMoneyValue(void);
 
   void resetText(void);
-  
+
   const bool isValid(void) const;
-  
+
   virtual bool eventFilter(QObject * , QEvent * );
+
+  QString text(void) const { return m_edit->text(); };
+
+  void setMinimumWidth(int w) { m_edit->setMinimumWidth(w); };
+
+  QWidget* focusWidget(void) const;
 
 public slots:
   void loadText(const QString& text);
+  void setReadOnly(bool ro) { m_edit->setReadOnly(ro); };
+  void setText(const QString& txt) { m_edit->setText(txt); };
 
 signals: // Signals
   /**
@@ -129,6 +154,8 @@ signals: // Signals
   void signalBackTab();
   /** signal is sent, when amount has been changed by user */
   void valueChanged(const QString& text);
+
+  void textChanged(const QString& text);
 };
 
 #endif
