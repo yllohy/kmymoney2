@@ -83,29 +83,10 @@ KEquityPriceUpdateDlg::KEquityPriceUpdateDlg(QWidget *parent, const QCString& se
   
   MyMoneyFile* file = MyMoneyFile::instance();
   
-  // First, add each security
-  QValueList<MyMoneySecurity> securities = file->securityList();
-  for(QValueList<MyMoneySecurity>::ConstIterator it = securities.begin(); it != securities.end(); ++it)
-  {
-    // const QString& symbol = (*it).tradingSymbol();
-    if ( securityId.isEmpty() || ( (*it).id() == securityId ) )
-    {
-      // only add those securities that have a valid source set
-      if(!(*it).value("kmm-online-source").isEmpty()) {
-        KListViewItem* item = new KListViewItem(lvEquityList, (*it).tradingSymbol(), (*it).name());
-        MyMoneySecurity currency = MyMoneyFile::instance()->currency((*it).tradingCurrency());
-        MyMoneyPrice pr = MyMoneyFile::instance()->price((*it).id(), (*it).tradingCurrency());
-        if(pr.isValid()) {
-          item->setText(PRICE_COL, pr.rate().formatMoney(currency.tradingSymbol()));
-          item->setText(DATE_COL, pr.date().toString(Qt::ISODate));
-        }
-        item->setText(ID_COL,(*it).id());
-        item->setText(SOURCE_COL, (*it).value("kmm-online-source"));
-        btnUpdateAll->setEnabled(true);
-      }
-    }
-  }
-
+  //
+  // Add each price pair that we know about
+  //
+  
   // send in securityId == "XXX YYY" to get a single-shot update for XXX to YYY.
   // for consistency reasons, this accepts the same delimiters as WebPriceQuote::launch()
   QRegExp splitrx("([0-9a-z\\.]+)[^a-z0-9]+([0-9a-z\\.]+)",false /*case sensitive*/);    
@@ -113,32 +94,34 @@ KEquityPriceUpdateDlg::KEquityPriceUpdateDlg(QWidget *parent, const QCString& se
   if ( splitrx.search(securityId) != -1 )
     currencyIds = MyMoneySecurityPair(splitrx.cap(1).utf8(),splitrx.cap(2).utf8());
   
-  // Second, add each price pair that we know about
   MyMoneyPriceList prices = file->priceList();
   for(MyMoneyPriceList::ConstIterator it_price = prices.begin(); it_price != prices.end(); ++it_price)
   {
     MyMoneySecurityPair pair = it_price.key();
     
-    if ( 
-          file->security( pair.first ).isCurrency() 
-          && ( securityId.isEmpty() || ( pair == currencyIds ) )
-       )
+    if ( file->security( pair.first ).isCurrency() && ( securityId.isEmpty() || ( pair == currencyIds ) ) )
     {
-      KListViewItem* item = new KListViewItem(lvEquityList, 
-        QString("%1 > %2").arg(pair.first,pair.second),
-        i18n("%1 units in %2").arg(pair.first,pair.second));
-      MyMoneyPrice pr = file->price(pair.first,pair.second);
-      if(pr.isValid()) {
-        item->setText(PRICE_COL, pr.rate().formatMoney(file->currency(pair.second).tradingSymbol()));
-        item->setText(DATE_COL, pr.date().toString(Qt::ISODate));
-      }
-      item->setText(ID_COL,QString("%1 %2").arg(pair.first,pair.second));
-      item->setText(SOURCE_COL,i18n("Yahoo Currency"));
-      
+      addPricePair(pair);
       btnUpdateAll->setEnabled(true);
     }
   }
   
+  //
+  // Add each investment
+  //
+  
+  QValueList<MyMoneySecurity> securities = file->securityList();
+  for(QValueList<MyMoneySecurity>::ConstIterator it = securities.begin(); it != securities.end(); ++it)
+  {
+    if (  !(*it).isCurrency() 
+          && ( securityId.isEmpty() || ( (*it).id() == securityId ) ) 
+          && !(*it).value("kmm-online-source").isEmpty() )
+    {
+      addInvestment(*it);
+      btnUpdateAll->setEnabled(true);
+    }
+  }
+
   connect(btnOK, SIGNAL(clicked()), this, SLOT(slotOKClicked()));
   connect(btnCancel, SIGNAL(clicked()), this, SLOT(slotCancelClicked()));
   connect(btnUpdateSelected, SIGNAL(clicked()), this, SLOT(slotUpdateSelectedClicked()));
@@ -174,6 +157,49 @@ KEquityPriceUpdateDlg::~KEquityPriceUpdateDlg()
 
 }
 
+void KEquityPriceUpdateDlg::addPricePair(const MyMoneySecurityPair& pair)
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
+  
+  KListViewItem* item = new KListViewItem(lvEquityList, 
+    QString("%1 > %2").arg(pair.first,pair.second),
+    i18n("%1 units in %2").arg(pair.first,pair.second));
+  MyMoneyPrice pr = file->price(pair.first,pair.second);
+  if(pr.isValid()) {
+    item->setText(PRICE_COL, pr.rate().formatMoney(file->currency(pair.second).tradingSymbol()));
+    item->setText(DATE_COL, pr.date().toString(Qt::ISODate));
+  }
+  item->setText(ID_COL,QString("%1 %2").arg(pair.first,pair.second));
+  item->setText(SOURCE_COL,i18n("Yahoo Currency"));
+}
+
+void KEquityPriceUpdateDlg::addInvestment(const MyMoneySecurity& inv)
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
+  
+  KListViewItem* item = new KListViewItem(lvEquityList, inv.tradingSymbol(), inv.name());
+  MyMoneySecurity currency = file->currency(inv.tradingCurrency());
+  MyMoneyPrice pr = file->price(inv.id(), inv.tradingCurrency());
+  if(pr.isValid()) {
+    item->setText(PRICE_COL, pr.rate().formatMoney(currency.tradingSymbol()));
+    item->setText(DATE_COL, pr.date().toString(Qt::ISODate));
+  }
+  item->setText(ID_COL,inv.id());
+  item->setText(SOURCE_COL, inv.value("kmm-online-source"));
+
+  // If this investment is denominated in a foreign currency, ensure that
+  // the appropriate price pair is also on the list
+  
+  if ( currency.id() != file->baseCurrency().id() )
+  {
+    QString symbol = QString("%1 > %2").arg(currency.id(),file->baseCurrency().id());
+    if ( ! lvEquityList->findItem(symbol,SYMBOL_COL,Qt::ExactMatch) )
+    {
+      addPricePair(MyMoneySecurityPair(currency.id(),file->baseCurrency().id()));
+    }
+  }
+}
+       
 void KEquityPriceUpdateDlg::logErrorMessage(const QString& message)
 {
   logStatusMessage(QString("<font color=\"red\"><b>") + message + QString("</b></font>"));

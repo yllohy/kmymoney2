@@ -40,6 +40,8 @@ class QListViewItem;
 // Project Includes
 
 #include "../converter/webpricequote.h"
+#include "../mymoney/mymoneysecurity.h"
+#include "../mymoney/mymoneyprice.h"
 #include "kequitypriceupdatedlgdecl.h"
 
 /**
@@ -64,6 +66,10 @@ protected slots:
   void logStatusMessage(const QString&);
   void logErrorMessage(const QString&);
   void slotReceivedQuote(const QString&,const QDate&, const MyMoneyMoney&);
+
+protected:
+  void addPricePair(const MyMoneySecurityPair& pair);
+  void addInvestment(const MyMoneySecurity& inv);
   
 private:
   bool m_fUpdateAll;
