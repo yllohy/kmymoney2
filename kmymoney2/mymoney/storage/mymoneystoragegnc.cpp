@@ -810,8 +810,8 @@ void MyMoneyStorageGNC::saveSplits (MyMoneyTransaction& tx, MyMoneySplit s) {
     }
     // backdate the account opening date if necessary
     if (m_txDatePosted < m_splitAccount.openingDate()) {
-        //if (gncdebug) qDebug ("changing opening date for %s from %s to %s",
-          //m_splitAccount.name().latin1(), m_splitAccount.openingDate().toString(Qt::ISODate).latin1(), m_txDatePosted.toString(Qt::ISODate).latin1());
+        if (gncdebug) qDebug ("changing opening date for %s from %s to %s",
+          m_splitAccount.name().latin1(), m_splitAccount.openingDate().toString(Qt::ISODate).latin1(), m_txDatePosted.toString(Qt::ISODate).latin1());
         m_splitAccount.setOpeningDate(m_txDatePosted);
         // we need a IMyMoneyStorage pointer, since m_storage is IMyMoneySerialize.
         IMyMoneyStorage* pStoragePtr = dynamic_cast<IMyMoneyStorage*>(m_storage);
@@ -978,6 +978,7 @@ gncTemplateTx MyMoneyStorageGNC::readTemplate(QDomElement& templatetx) {
     m_potentialTransfer = true;
     m_assetFound = false;
     m_splitList.clear(); m_liabilitySplitList.clear(); m_otherSplitList.clear();
+    QStringList fields;
     
     QString gncVersion = templatetx.attributes().namedItem(QString("version")).nodeValue();
     if (gncdebug) qDebug("Version of this template object is %s\n", gncVersion.data());
@@ -1003,6 +1004,14 @@ gncTemplateTx MyMoneyStorageGNC::readTemplate(QDomElement& templatetx) {
                         if (gncdebug) qDebug("element is %s", date.tagName().data());
                         QDomText dateText = date.firstChild().toText();
                         gncDatePosted = QStringEmpty(dateText.nodeValue());
+                    }
+                    // datePosted - save for splits
+                    fields = QStringList::split(" ", gncDatePosted);
+                    if(fields.count()) {
+                      QString firstField = fields.first();
+                      QDate postedDate = getDate(firstField);
+	              m_txDatePosted = postedDate;
+                    if (gncdebug) qDebug("Date is %s", postedDate.toString().data());
                     }
                 } else if(QString("trn:date-entered") == temp.tagName()) {
                     if(temp.hasChildNodes() && temp.firstChild().isElement()) {
@@ -1036,14 +1045,6 @@ gncTemplateTx MyMoneyStorageGNC::readTemplate(QDomElement& templatetx) {
     // since this is just a template tx, we can use the gnucash id
     // this will be referenced by the schedxaction and not used after
     tx.t.setId(QCString(m_templateId));
-    // datePosted
-    QStringList fields = QStringList::split(" ", gncDatePosted);
-    if(fields.count()) {
-        QString firstField = fields.first();
-        QDate postedDate = getDate(firstField);
-        tx.t.setPostDate(postedDate);
-        if (gncdebug) qDebug("Date is %s", postedDate.toString().data());
-    }
     // dateEntered
     fields = QStringList::split(" ", gncDateEntered);
     if(fields.count()) {
@@ -1052,8 +1053,9 @@ gncTemplateTx MyMoneyStorageGNC::readTemplate(QDomElement& templatetx) {
         tx.t.setEntryDate(enteredDate);
         if (gncdebug) qDebug("Date is %s", enteredDate.toString().data());
     }
-    // memo - set by readSplit
+    // memo and post date - set by readSplit
     tx.t.setMemo(m_txMemo);
+    tx.t.setPostDate(m_txDatePosted);
     // commodity, saved earlier
     tx.t.setCommodity(QCString(m_txCommodity));
     return (tx);
@@ -1125,6 +1127,8 @@ MyMoneySplit MyMoneyStorageGNC::readTemplateSplit(gncTemplateTx& tx, QDomElement
                 QDomText text = temp.firstChild().toText();
                 if(QString("split:account") == temp.tagName())  {
                     m_templateId = QStringEmpty(text.nodeValue());
+		} else if (QString("split:memo") == temp.tagName()) {
+		    gncSplitMemo = QStringEmpty(text.nodeValue());
                 }  else if(QString("split:slots") == temp.tagName())  {
                     if (!readSplitSlots(split, temp)) {
                         tx.suspectFlag = true;
@@ -1792,3 +1796,4 @@ const unsigned int MyMoneyStorageGNC::getChildCount(const QDomElement& element) 
     QDomNodeList tempList = element.childNodes();
     return tempList.count();
 }
+
