@@ -31,21 +31,21 @@
 
 #include "mymoneyutils.h"
 #include "mymoneymoney.h"
-#include "mymoneyfile.h"
+#include "mymoneykeyvaluecontainer.h"
 #include "mymoneysplit.h"
-
-class MyMoneyFile;
 
 /**
   * This class represents a transaction within the MyMoneyEngine. A transaction
-  * contains none, two or more splits of type MyMoneySplit. They are stored in
-  * a QValueList<MyMoneySplit> within this object.
+  * contains none, one or more splits of type MyMoneySplit. They are stored in
+  * a QValueList<MyMoneySplit> within this object. A transaction containing only
+  * a single split with an amount not equal to 0 is an unbalanced transaction. It
+  * is tolerated by the engine, but in general not a good idea as it is financially
+  * wrong.
   */
 class MyMoneyTransaction : public MyMoneyKeyValueContainer
 {
 public:
   MyMoneyTransaction();
-  // MyMoneyTransaction(MyMoneyFile *file, const QString id,
   MyMoneyTransaction(const QCString id,
                              const MyMoneyTransaction& transaction);
   ~MyMoneyTransaction();
