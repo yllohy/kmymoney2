@@ -47,6 +47,7 @@
 #include <klistview.h>
 #include <kpushbutton.h>
 #include <kguiitem.h>
+#include <kglobalsettings.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -780,8 +781,7 @@ void KSettingsDlg::fillHomePageItems(QStringList& list)
   m_upButton->setEnabled(false);
   m_downButton->setEnabled(false);
 
-  // FIXME: use KDE setting for this font here
-  QFontMetrics fm( QFont("helvetica", 10) );
+  QFontMetrics fm( KGlobalSettings::generalFont());
   QCheckListItem* last = 0;
 
   for(it = list.begin(); it != list.end(); ++it) {
