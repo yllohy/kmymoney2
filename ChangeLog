@@ -1,3 +1,7 @@
+2003-09-15 Michael Edwardes <mte@users.sourceforge.net>
+  * Fix memory leak in new account wizard when checking if a payee exists.
+  * Individual occurences for a schedule can now be entered
+
 2003-09-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * added MyMoneySplit::ActionAmortization
   * added MyMoneySplit::isAmoritizationSplit
