@@ -29,6 +29,7 @@
 // QT Includes
 
 #include <qdatastream.h>
+#include <qfile.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -69,9 +70,8 @@ public:
     */
   static unsigned int fileVersion(fileVersionDirectionType dir = Reading);
 
-  void readStream(QDataStream& s, IMyMoneySerialize* storage);
-
-  void writeStream(QDataStream& s, IMyMoneySerialize* storage);
+  void readFile(QFile* s, IMyMoneySerialize* storage);
+  void writeFile(QFile* s, IMyMoneySerialize* storage);
 
 private:
   xmlpp::XMLParser<MyMoneyStorageXMLCallback> *m_parser;

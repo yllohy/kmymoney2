@@ -43,6 +43,10 @@
 #endif
 
 #include <kmessagebox.h>
+#include <kurl.h>
+#include <kio/netaccess.h>
+#include <ktempfile.h>
+#include <ksavefile.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -363,7 +367,6 @@ void KMyMoneyView::closeFile(void)
 }
 
 bool KMyMoneyView::readFile(QString filename)
-
 {
   KMyMoneyFile *kfile = m_file;
   if (fileOpen())
@@ -386,12 +389,31 @@ bool KMyMoneyView::readFile(QString filename)
     // Use the old reader for now
     pReader = new MyMoneyStorageBin;
   }
+
+  // actually, url should be the parameter to this function
+  // but for now, this would involve too many changes
+  KURL url;
+  url.setPath(filename);
+  url.setProtocol("file");
+
+  if(url.isMalformed()) {
+    qDebug("Invalid URL '%s'", url.url().latin1());
+    return false;
+  }
+
+  if(url.isLocalFile()) {
+    filename = url.path();
+
+  } else {
+    if(!KIO::NetAccess::download(url, filename))
+      return false;
+  }
+
   QFile qfile(filename);
 
   if(qfile.open(IO_ReadOnly)) {
-    QDataStream s(&qfile);
     try {
-      pReader->readStream(s, kfile->storage());
+      pReader->readFile(&qfile, kfile->storage());
     } catch (MyMoneyException *e) {
       QString msg = e->what();
       qDebug("%s", msg.latin1());
@@ -403,6 +425,11 @@ bool KMyMoneyView::readFile(QString filename)
   }
   delete pReader;
 
+  // if a temporary file was constructed by NetAccess::download,
+  // then it will be removed with the next call. Otherwise, it
+  // stays untouched on the local filesystem
+  KIO::NetAccess::removeTempFile(filename);
+
   // update all views
   m_categoriesView->refreshView();
   accountsView->refreshView();
@@ -410,7 +437,17 @@ bool KMyMoneyView::readFile(QString filename)
   return true;
 }
 
-
+void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter)
+{
+  try {
+    pWriter->writeFile(qfile, m_file->storage());
+  } catch (MyMoneyException *e) {
+    QString msg = e->what();
+    qDebug("%s", msg.latin1());
+    delete e;
+  }
+  qfile->close();
+}
 
 void KMyMoneyView::saveFile(QString filename)
 {
@@ -433,21 +470,31 @@ void KMyMoneyView::saveFile(QString filename)
     // Use the old reader for now
     pWriter = new MyMoneyStorageBin;
   }
-  QFile qfile(filename);
 
-  if(qfile.open(IO_WriteOnly)) {
-    QDataStream s(&qfile);
-    try {
-      pWriter->writeStream(s, m_file->storage());
-    } catch (MyMoneyException *e) {
-      QString msg = e->what();
-      qDebug("%s", msg.latin1());
-      delete e;
-    }
-    qfile.close();
-  } else {
-    KMessageBox::sorry(this, i18n("File not found!"));
+  // actually, url should be the parameter to this function
+  // but for now, this would involve too many changes
+  KURL url;
+  url.setPath(filename);
+  url.setProtocol("file");
+
+  if(url.isMalformed()) {
+    qDebug("Invalid URL '%s'", url.url().latin1());
+    return;
   }
+
+  if(url.isLocalFile()) {
+    filename = url.path();
+    KSaveFile qfile(filename);
+    if(qfile.status() == 0) {
+      saveToLocalFile(qfile.file(), pWriter);
+    }
+  } else {
+    KTempFile tmpfile;
+    saveToLocalFile(tmpfile.file(), pWriter);
+    KIO::NetAccess::upload(tmpfile.name(), url);
+    tmpfile.unlink();
+  }
+
   delete pWriter;
 }
 

@@ -29,6 +29,11 @@
   */
 
 // ----------------------------------------------------------------------------
+// QT Includes
+
+#include <qfile.h>
+
+// ----------------------------------------------------------------------------
 // Project Includes
 
 #include "imymoneyserialize.h"
@@ -45,9 +50,11 @@ public:
     Writing = 1           /**< version to be used when writing a file */
   };
 
-  virtual void readStream(QDataStream& s, IMyMoneySerialize* storage) = 0;
+  virtual void readFile(QFile* qf, IMyMoneySerialize* storage) = 0;
+  // virtual void readStream(QDataStream& s, IMyMoneySerialize* storage) = 0;
 
-  virtual void writeStream(QDataStream& s, IMyMoneySerialize* storage) = 0;
+  virtual void writeFile(QFile* qf, IMyMoneySerialize* storage) = 0;
+  //virtual void writeStream(QDataStream& s, IMyMoneySerialize* storage) = 0;
 
   /**
     * This member is used to store the file version information

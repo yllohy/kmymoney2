@@ -66,11 +66,13 @@ public:
     */
   static unsigned int fileVersion(fileVersionDirectionType dir = Reading);
 
-  void readStream(QDataStream& s, IMyMoneySerialize* storage);
-
-  void writeStream(QDataStream& s, IMyMoneySerialize* storage);
+  void readFile(QFile* qfile, IMyMoneySerialize* storage);
+  void writeFile(QFile* qfile, IMyMoneySerialize* storage);
 
 private:
+  void readStream(QDataStream& s, IMyMoneySerialize* storage);
+  void writeStream(QDataStream& s, IMyMoneySerialize* storage);
+
   void readOldFormat(QDataStream& s, IMyMoneySerialize* storage);
   void readNewFormat(QDataStream& s, IMyMoneySerialize* storage);
   void addCategory(IMyMoneySerialize* storage,

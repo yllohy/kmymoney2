@@ -22,6 +22,7 @@
 #include <qwidget.h>
 #include <qmessagebox.h>
 #include <qvbox.h>
+class QFile;
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -50,16 +51,16 @@
 #include "kgloballedgerview.h"
 
 #include "../mymoney/storage/mymoneyseqaccessmgr.h"
+class IMyMoneyStorageFormat;
 
 /**
-
   * This class represents the view of the MyMoneyFile which contains
   * Banks/Accounts/Transactions, Recurring transactions (or Bills & Deposits)
   * and scripts (yet to be implemented).  Each different aspect of the file
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.20 2002/11/08 07:38:08 ipwizard Exp $
+  * $Id: kmymoneyview.h,v 1.21 2002/11/08 20:18:58 ipwizard Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -117,6 +118,7 @@ private:
   bool checkTransactionDescription(const MyMoneyTransaction *transaction, const bool enabled, const QString description, const bool isRegExp);
   bool checkTransactionNumber(const MyMoneyTransaction *transaction, const bool enabled, const QString number, const bool isRegExp);
   bool checkTransactionPayee(const MyMoneyTransaction *transaction, const bool enabled, const QString payee, const bool isRegExp);
+
   bool checkTransactionCategory(const MyMoneyTransaction *transaction, const bool enabled, const QString category);
 
 public:
@@ -275,7 +277,7 @@ public slots:
 
 //  void slotAccountImportQIF(void);
 //  void slotAccountExportQIF(void);
-  
+
 protected slots:
   void viewTransactionList(void);  // Show the transaction view
 
@@ -381,6 +383,21 @@ protected slots:
     */
   void slotShowTransactionDetail(bool detailed);
 
+private:
+  /**
+    * This method is used by saveFile() to store the data
+    * either directly in the destination file if it is on
+    * the local file system or in a temporary file when
+    * the final destination is reached over a network
+    * protocol (e.g. FTP)
+    *
+    * @param qf pointer to QFile representing the opened file
+    * @param writer pointer to the formatter
+    *
+    * @note This method will close the file when it is written.
+    */
+  void saveToLocalFile(QFile* qf, IMyMoneyStorageFormat* writer);
+
 signals:
   /**
     * This signal is emitted whenever the bank actions needs enabling or disabling.
@@ -405,6 +422,7 @@ signals:
     * @param enable Whether to enable to actions.
   **/
   //void fileOperations(bool);
+
 
   /**
     * This signal is emitted whenever the transaction actions needs enabling or disabling.

@@ -24,7 +24,19 @@
 
 #if HAVE_LIBXMLPP
 
+// ----------------------------------------------------------------------------
+// QT Includes
+
+#include <qfile.h>
+
+// ----------------------------------------------------------------------------
+// Third party Includes
+
 #include <xml++.h>
+
+// ----------------------------------------------------------------------------
+// Project Includes
+
 #include "mymoneystoragexmlcallback.h"
 #include "mymoneystoragexml.h"
 
@@ -39,13 +51,14 @@ MyMoneyStorageXML::~MyMoneyStorageXML()
 }
 
 //Function to read in the file, send to XML parser.
-void MyMoneyStorageXML::readStream(QDataStream& s, IMyMoneySerialize* storage)
+void MyMoneyStorageXML::readFile(QFile* qf, IMyMoneySerialize* storage)
 {
   if(!CreateXMLParser())
   {
     return;
   }
 
+  QDataStream s(qf);
   //
   //  QDataStream is a wrapper around a real file object.  QDataStream provides a nice interface,
   //  but we need raw access to the file, to read it at 1000 bytes at a time.  We need to send the
@@ -86,7 +99,7 @@ void MyMoneyStorageXML::readStream(QDataStream& s, IMyMoneySerialize* storage)
   }
 }
 
-void MyMoneyStorageXML::writeStream(QDataStream& s, IMyMoneySerialize* storage)
+void MyMoneyStorageXML::writeFile(QFile* qf, IMyMoneySerialize* storage)
 {
   qDebug("XMLWRITER: not implemented yet!");
 }

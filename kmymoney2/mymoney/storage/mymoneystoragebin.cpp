@@ -27,6 +27,7 @@
 #include <qdatetime.h>
 #include <qvaluelist.h>
 #include <qstringlist.h>
+#include <qfile.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -59,6 +60,12 @@ unsigned int MyMoneyStorageBin::fileVersion(fileVersionDirectionType dir)
   return 0;
 }
 
+void MyMoneyStorageBin::readFile(QFile* qfile, IMyMoneySerialize* storage)
+{
+  QDataStream s(qfile);
+  readStream(s, storage);
+}
+
 void MyMoneyStorageBin::readStream(QDataStream& s, IMyMoneySerialize* storage)
 {
   // process version and magic number to get the version information
@@ -76,6 +83,7 @@ void MyMoneyStorageBin::readStream(QDataStream& s, IMyMoneySerialize* storage)
   // first read a four byte Q_INT32
   Q_INT32 len;
   QString prog_version("");
+
 
   s >> len;
   if(len < 30) {            // this seems to be a valid maximum length
@@ -470,6 +478,12 @@ void MyMoneyStorageBin::readNewFormat(QDataStream&s, IMyMoneySerialize* storage)
   readPayees(s, storage);
   readAccounts(s, storage);
   readTransactions(s, storage);
+}
+
+void MyMoneyStorageBin::writeFile(QFile* qfile, IMyMoneySerialize* storage)
+{
+  QDataStream s(qfile);
+  writeStream(s, storage);
 }
 
 void MyMoneyStorageBin::writeStream(QDataStream& s, IMyMoneySerialize* storage)
