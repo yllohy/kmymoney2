@@ -574,7 +574,7 @@ QCString MyMoneyFile::openingBalanceTransaction(const MyMoneyAccount& acc) const
       ++it_t;
     }
   }
- 
+
   return result;
 }
 
@@ -589,8 +589,9 @@ const MyMoneyAccount MyMoneyFile::openingBalanceAccount(const MyMoneySecurity& s
   }
   catch(MyMoneyException *e)
   {
+    delete e;
     return createOpeningBalanceAccount(security);
-  }    
+  }
 }
 
 const MyMoneyAccount MyMoneyFile::openingBalanceAccount(const MyMoneySecurity& security) const
