@@ -221,7 +221,7 @@ void operator delete [] (void *p) throw()
 *						in the library files, because it appears in numerous places.
 */
 ///////////////////////////////////////////////////////////////////////////////////////////////
-bool MyMoneyUtils::appendCorrectFileExt(String& str, const String strExtToUse)
+bool MyMoneyUtils::appendCorrectFileExt(String& /* str */, const String /* strExtToUse */)
 {
 	/*if(!str.isEmpty())
   {
