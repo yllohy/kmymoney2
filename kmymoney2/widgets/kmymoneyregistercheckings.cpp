@@ -67,8 +67,15 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
   // if we paint something, that we don't know (yet), we're done
   // this applies to the very last line of the ledger which always
   // shows an empty line for new transactions to be added.
-  if(m_transaction == NULL)
+  // In case this is the current date row, we still draw the marker
+  if(m_transaction == NULL) {
+    if(m_transactionIndex == m_currentDateIndex && m_transactionRow == 0) {
+      p->setPen(m_gridColor);
+      p->drawLine(m_cellRect.x(), 0, m_cellRect.width(), 0);
+      p->drawLine(m_cellRect.x(), 1, m_cellRect.width(), 1);
+    }
     return;
+  }
 
   QColor textColor(m_textColor);
   // if it's an erronous transaction, set it to error color (which toggles ;-)  )
@@ -181,8 +188,9 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
 */
         p->drawText(m_textRect, align, txt);
 //      }
-      if(row == m_currentDateRow) {
+      if(m_transactionIndex == m_currentDateIndex && m_transactionRow == 0) {
         p->setPen(m_gridColor);
+        p->drawLine(m_cellRect.x(), 0, m_cellRect.width(), 0);
         p->drawLine(m_cellRect.x(), 1, m_cellRect.width(), 1);
         p->setPen(textColor);
       }
@@ -207,8 +215,9 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
         }
       }
       p->drawText(m_textRect, Qt::AlignCenter | Qt::AlignVCenter, txt);
-      if(row == m_currentDateRow) {
+      if(m_transactionIndex == m_currentDateIndex && m_transactionRow == 0) {
         p->setPen(m_gridColor);
+        p->drawLine(m_cellRect.x(), 0, m_cellRect.width(), 0);
         p->drawLine(m_cellRect.x(), 1, m_cellRect.width(), 1);
         p->setPen(textColor);
       }
@@ -273,8 +282,9 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
       }
 */
       p->drawText(m_textRect, Qt::AlignRight | Qt::AlignVCenter, txt);
-      if(row == m_currentDateRow) {
+      if(m_transactionIndex == m_currentDateIndex && m_transactionRow == 0) {
         p->setPen(m_gridColor);
+        p->drawLine(m_cellRect.x(), 0, m_cellRect.width(), 0);
         p->drawLine(m_cellRect.x(), 1, m_cellRect.width(), 1);
         p->setPen(textColor);
       }

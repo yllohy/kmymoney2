@@ -47,7 +47,7 @@ class KLedgerView;
 #include "../mymoney/mymoneysplit.h"
 
 /**
-  *@author Thomas Baumgart
+  * @author Thomas Baumgart
   */
 
 class KLedgerView;
@@ -63,12 +63,19 @@ public:
 	kMyMoneyRegister(int maxRpt, QWidget *parent=0, const char *name=0);
 	virtual ~kMyMoneyRegister();
 
+  /**
+    * Override the QTable member function to avoid display of focus
+    */
   void paintFocus(QPainter* p, const QRect& cr );
 
+  /**
+    * Set the pointer back to the connected view. This pointer is used
+    * to access transaction data during painting operations.
+    */
   void setView(KLedgerView *view) { m_view = view; };
 
   /**
-    * read setting of configuration from config file
+    * read configuration settings from config file
     */
   void readConfig(void);
 
@@ -131,6 +138,20 @@ public:
   bool setCurrentTransactionRow(const int row);
 
   /**
+    * This method is used to mark the transaction that is the first
+    * past the current date. Above the transaction referenced
+    * by the parameter @p idx the widget will draw a thicker line
+    * than the grid line as a mark for the current date. Passing
+    * a value of -1 (the default) no mark will be drawn. This
+    * is useful, when the contents of the register is not sorted by a
+    * date.
+    *
+    * @param idx const int containing the index of the transaction that
+    *            should be marked
+    */
+  void setCurrentDateIndex(const int idx = -1);
+
+  /**
     * This method is used to set the inline editing mode
     *
     * @param editing bool flag. if set, inline editing in the register
@@ -172,6 +193,21 @@ public slots:
     */
   void setTransactionCount(const int transactions, const bool setCurrentTransaction = true);
 
+  /**
+    * This method allows to modify the color for erronous transactions.
+    * Calling it repetetively with inverted values for the parameter @p on
+    * toggles the color for erronous transactions
+    * between the configured text color and red.
+    *
+    * @param on if true, erronous transaction will be shown in red. If false,
+    *           erronous transactions will be shown in the configured text
+    *           color as all other transactions.
+    *
+    * @note Erronous transactions are those, that have less than 1 split
+    *       or where the sum of all splits does not equal 0. This definition
+    *       is checked in e.g. kMyMoneyRegisterCheckings::paintCell(). The
+    *       check must be implemented by any class derived from this class.
+    */
   void slotSetErrorColor(const bool on);
 
   virtual void setNumRows(int r);
@@ -225,15 +261,50 @@ protected:
   QRect  m_cellRect;
   QRect  m_textRect;
 
+  /**
+    * This member holds the index of the transaction that is currently painted
+    * It is updated whenever paintCell() is invoked.
+    */
   int    m_transactionIndex;
+
+  /**
+    * This member holds the index of the transaction that is currently selected.
+    * It is modified by the method setCurrentTransactionIndex().
+    */
   int    m_currentTransactionIndex;
-  int    m_lastTransactionIndex;
 
+  /**
+    * This member holds the index of the transaction that is the first after
+    * the current date. It is >= 0 only if the register is sorted by the
+    * posting date of the transactions. Otherwise, it should be set to -1 using
+    * the setCurrentDateIndex() method.
+    */
+  int    m_currentDateIndex;
+
+  /**
+    * This member holds the offset of rows inside a transaction during paintCell().
+    * For the first row of a transaction it will be 0, 1 for the second and so on.
+    * It is updated whenever paintCell() is invoked.
+    */
   int    m_transactionRow;
-  int    m_currentDateRow;
 
+  /**
+    * This member points to the transaction data.
+    * It is updated whenever paintCell() is invoked.
+    */
   MyMoneyTransaction const * m_transaction;
+
+  /**
+    *
+    * It is updated whenever paintCell() is invoked.
+    */
   MyMoneyMoney m_balance;
+
+  /**
+    * This member holds the split that references the current account for
+    * the transaction pointed to by m_transaction.
+    * It is updated whenever paintCell() is invoked.
+    */
   MyMoneySplit m_split;
 
   /**

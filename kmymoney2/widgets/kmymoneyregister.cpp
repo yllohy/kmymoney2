@@ -38,8 +38,6 @@ kMyMoneyRegister::kMyMoneyRegister(int maxRpt, QWidget *parent, const char *name
     m_maxRpt(maxRpt)
 {
   readConfig();
-  m_currentDateRow = -1;
-  m_lastTransactionIndex = -1;
   m_currentTransactionIndex = 0;
   m_inlineEditMode = false;
   setSelectionMode(QTable::SingleRow);
@@ -79,11 +77,8 @@ void kMyMoneyRegister::setTransactionCount(const int r, const bool setTransactio
 
   // add or remove scrollbars as required
   updateScrollBars();
-
-  m_lastTransactionIndex = -1;
 }
 
-/** Override the QTable member function to avoid display of focus */
 void kMyMoneyRegister::paintFocus(QPainter *p, const QRect &cr)
 {
 }
@@ -185,7 +180,6 @@ void kMyMoneyRegister::paintCell(QPainter *p, int row, int col, const QRect& r,
     m_split = m_transaction->split(m_view->accountId());
     m_balance = m_view->balance(m_transactionIndex);
   }
-  m_lastTransactionIndex = m_transactionIndex;
 
   if(m_transactionIndex == m_currentTransactionIndex) {
     QBrush backgroundBrush(m_cg.highlight());
@@ -452,4 +446,9 @@ void kMyMoneyRegister::slotSetErrorColor(const bool state)
     m_errorColor = m_textColor;
   else
     m_errorColor = QColor(255, 0, 0);
+}
+
+void kMyMoneyRegister::setCurrentDateIndex(const int idx)
+{
+  m_currentDateIndex = idx;
 }
