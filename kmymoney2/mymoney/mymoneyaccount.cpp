@@ -208,6 +208,7 @@ const MyMoneyAccount::accountTypeE MyMoneyAccount::accountGroup(MyMoneyAccount::
     case MyMoneyAccount::MoneyMarket:
     case MyMoneyAccount::CertificateDep:
     case MyMoneyAccount::AssetLoan:
+    case MyMoneyAccount::Stock:
       return MyMoneyAccount::Asset;
 
     case MyMoneyAccount::CreditCard:
@@ -239,7 +240,7 @@ const bool MyMoneyAccount::operator == (const MyMoneyAccount& right) const
 
 const MyMoneyAccount::accountTypeE MyMoneyAccount::accountGroup(void) const
 {
-  return accountGroup(m_accountType);  
+  return accountGroup(m_accountType);
 }
 
 void MyMoneyAccount::setCurrencyId(const QCString& id)
@@ -270,11 +271,11 @@ const MyMoneyMoney MyMoneyAccountLoan::interestRate(const QDate& date) const
 
   if(!date.isValid())
     return rate;
-      
+
   key.sprintf("ir-%04d-%02d-%02d", date.year(), date.month(), date.day());
-  
+
   QRegExp regExp("ir-(\\d{4})-(\\d{2})-(\\d{2})");
-  
+
   QMap<QCString, QString>::ConstIterator it;
 
   for(it = pairs().begin(); it != pairs().end(); ++it) {
@@ -283,7 +284,7 @@ const MyMoneyMoney MyMoneyAccountLoan::interestRate(const QDate& date) const
         val = *it;
       else
         break;
-        
+
     } else if(!val.isEmpty())
       break;
   }
@@ -291,7 +292,7 @@ const MyMoneyMoney MyMoneyAccountLoan::interestRate(const QDate& date) const
   if(!val.isEmpty()) {
     rate = MyMoneyMoney(val);
   }
-    
+
   return rate;
 }
 
@@ -299,7 +300,7 @@ void MyMoneyAccountLoan::setInterestRate(const QDate& date, const MyMoneyMoney& 
 {
   if(!date.isValid())
     return;
-    
+
   QCString key;
   key.sprintf("ir-%04d-%02d-%02d", date.year(), date.month(), date.day());
   setValue(key, value.toString());
@@ -324,7 +325,7 @@ void MyMoneyAccountLoan::setInterestCalculation(const MyMoneyAccountLoan::intere
 const QDate MyMoneyAccountLoan::nextInterestChange(void) const
 {
   QDate rc;
-  
+
   QRegExp regExp("(\\d{4})-(\\d{2})-(\\d{2})");
   if(regExp.search(value("interest-nextchange")) != -1) {
     rc.setYMD(regExp.cap(1).toInt(), regExp.cap(2).toInt(), regExp.cap(3).toInt());
@@ -340,10 +341,10 @@ void MyMoneyAccountLoan::setNextInterestChange(const QDate& date)
 const int MyMoneyAccountLoan::interestChangeFrequency(int* unit) const
 {
   int rc = -1;
-  
+
   if(unit)
     *unit = 1;
-  
+
   QRegExp regExp("(\\d+)/(\\d{1})");
   if(regExp.search(value("interest-changefrequency")) != -1) {
     rc = regExp.cap(1).toInt();
@@ -398,7 +399,7 @@ void MyMoneyAccountLoan::setFinalPayment(const MyMoneyMoney& finalPayment)
 
 const unsigned int MyMoneyAccountLoan::term(void) const
 {
-  return value("term").toUInt();  
+  return value("term").toUInt();
 }
 
 void MyMoneyAccountLoan::setTerm(const unsigned int payments)
@@ -428,10 +429,10 @@ void MyMoneyAccountLoan::setPayee(const QCString& payee)
 
 const QCString MyMoneyAccountLoan::interestAccountId(void) const
 {
-  return QCString();  
+  return QCString();
 }
 
 void MyMoneyAccountLoan::setInterestAccountId(const QCString& /* id */)
 {
-  
+
 }
