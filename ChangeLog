@@ -1,5 +1,7 @@
 2002-06-14 Michael Edwardes <mte@users.sourceforge.net>
   * Improved the 'file open' logic.
+  * Fixed the infinite loop on exit.  Can't believe we didn't spot this
+    before!
 
 2002-06-13 Michael Edwardes <mte@users.sourceforge.net>
   * Right click on accounts view now works.

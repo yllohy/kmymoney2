@@ -439,6 +439,7 @@ void KMyMoney2App::slotFileClose()
 {
   slotStatusMsg(i18n("Closing file..."));
 
+
   if (myMoneyView->dirty()) {
     int answer = KMessageBox::warningYesNoCancel(this, i18n("The file has been changed, save it ?"));
 		if (answer == KMessageBox::Cancel)
@@ -474,7 +475,7 @@ void KMyMoney2App::slotFileQuit()
   KMainWindow* w = 0;
 
   if(memberList) {
-    for(w=memberList->first(); w!=0; w=memberList->first()) {
+    for(w=memberList->first(); w!=0; w=memberList->next()) {
       // only close the window if the closeEvent is accepted. If the user presses Cancel on the saveModified() dialog,
       // the window and the application stay open.
       if(!w->close())
