@@ -32,6 +32,9 @@
 #include <kaction.h>
 #include <kprocess.h>
 
+class KProgress;
+class KStartupLogo;
+
 #include "views/kmymoneyview.h"
 
 /*! \mainpage KMyMoney2 Main Page for API documentation.
@@ -56,7 +59,7 @@
   * @see KMyMoneyView
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: kmymoney2.h,v 1.24 2002/12/06 20:33:37 ipwizard Exp $
+  * $Id: kmymoney2.h,v 1.25 2002/12/13 14:00:27 ipwizard Exp $
   *
   * @short Main application class.
 **/
@@ -222,169 +225,200 @@ protected slots:
 
   void slotShowTipOfTheDay(void);
 
-  public:
-    bool startWithDialog(void) { return m_startDialog; }
+public:
+  /**
+    * This method is used to select the setting for the startup with
+    * dialog. As a side effect, it closes the splash screen that is
+    * shown during program start.
+    *
+    * @return true if dialog request, false if start with last file requested
+    */
+  bool startWithDialog(void);
 
-    /** construtor of KMyMoney2App, calls all init functions to create the application.
-     */
-    KMyMoney2App(QWidget* parent=0, const char* name=0);
+  /**
+    * construtor of KMyMoney2App, calls all init functions to create the application.
+    */
+  KMyMoney2App(QWidget* parent=0, const char* name=0);
 
-    /** Desructor
+  /**
+    * Destructor
     **/
-    ~KMyMoney2App();
+  ~KMyMoney2App();
 
-    /** Init wizard dialog */
-    bool initWizard();
+  /** Init wizard dialog */
+  bool initWizard();
 
-  protected:
-    /** save general Options like all bar positions and status as well as the geometry and the recent file list to the configuration
-     * file
-     */
-    void saveOptions();
+  /** initial file loader */
+  void readFile(void);
 
-    /** read general Options again and initialize all variables like the recent file list
-     */
-    void readOptions();
+protected:
+  /** save general Options like all bar positions and status as well as the geometry and the recent file list to the configuration
+   * file
+   */
+  void saveOptions();
 
-    /** initializes the KActions of the application */
-    void initActions();
+  /** read general Options again and initialize all variables like the recent file list
+   */
+  void readOptions();
 
-    /** sets up the statusbar for the main window by initialzing a statuslabel.
-     */
-    void initStatusBar();
+  /** initializes the KActions of the application */
+  void initActions();
 
-    /** queryClose is called by KTMainWindow on each closeEvent of a window. Against the
-     * default implementation (only returns true), this calles saveModified() on the document object to ask if the document shall
-     * be saved if Modified; on cancel the closeEvent is rejected.
-     * @see KTMainWindow#queryClose
-     * @see KTMainWindow#closeEvent
-     */
-    virtual bool queryClose();
+  /** sets up the statusbar for the main window by initialzing a statuslabel.
+   */
+  void initStatusBar();
 
-    /** queryExit is called by KTMainWindow when the last window of the application is going to be closed during the closeEvent().
-     * Against the default implementation that just returns true, this calls saveOptions() to save the settings of the last window's	
-     * properties.
-     * @see KTMainWindow#queryExit
-     * @see KTMainWindow#closeEvent
-     */
-    virtual bool queryExit();
+  /** queryClose is called by KTMainWindow on each closeEvent of a window. Against the
+   * default implementation (only returns true), this calles saveModified() on the document object to ask if the document shall
+   * be saved if Modified; on cancel the closeEvent is rejected.
+   * @see KTMainWindow#queryClose
+   * @see KTMainWindow#closeEvent
+   */
+  virtual bool queryClose();
 
-  public slots:
-    /** */
-    void slotAccountOpen();
+  /** queryExit is called by KTMainWindow when the last window of the application is going to be closed during the closeEvent().
+   * Against the default implementation that just returns true, this calls saveOptions() to save the settings of the last window's
+   * properties.
+   * @see KTMainWindow#queryExit
+   * @see KTMainWindow#closeEvent
+   */
+  virtual bool queryExit();
 
-    /** Open a new window */
-    void slotFileNewWindow();
+public slots:
+  /** */
+  void slotAccountOpen();
 
-    /** clears the document in the actual view to reuse it as the new document */
-    void slotFileNew();
+  /** Open a new window */
+  void slotFileNewWindow();
 
-    /** open a file and load it into the document*/
-    void slotFileOpen();
+  /** clears the document in the actual view to reuse it as the new document */
+  void slotFileNew();
 
-    /** opens a file from the recent files menu */
-    void slotFileOpenRecent(const KURL& url);
+  /** open a file and load it into the document*/
+  void slotFileOpen();
 
-    /** save a document */
-    void slotFileSave();
+  /** opens a file from the recent files menu */
+  void slotFileOpenRecent(const KURL& url);
 
-    /** save a document by a new filename*/
-    void slotFileSaveAs();
+  /** save a document */
+  void slotFileSave();
 
-    /** asks for saving if the file is modified, then closes the actual file and window */
-    void slotFileCloseWindow();
+  /** save a document by a new filename*/
+  void slotFileSaveAs();
 
-    /** asks for saving if the file is modified, then closes the actual file */
-    void slotFileClose();
+  /** asks for saving if the file is modified, then closes the actual file and window */
+  void slotFileCloseWindow();
 
-    /** print the actual file
-      * TODO
-    **/
-    void slotFilePrint();
+  /** asks for saving if the file is modified, then closes the actual file */
+  void slotFileClose();
 
-    /** closes all open windows by calling close() on each memberList item until the list is empty, then quits the application.
-     * If queryClose() returns false because the user canceled the saveModified() dialog, the closing breaks.
-     */
-    void slotFileQuit();
+  /** print the actual file
+    * TODO
+  **/
+  void slotFilePrint();
 
-    /** put the marked text/object into the clipboard and remove
-     *	it from the document
-     * TODO
-    **/
-    void slotEditCut();
+  /** closes all open windows by calling close() on each memberList item until the list is empty, then quits the application.
+   * If queryClose() returns false because the user canceled the saveModified() dialog, the closing breaks.
+   */
+  void slotFileQuit();
 
-    /** put the marked text/object into the clipboard
-      * TODO
-    **/
-    void slotEditCopy();
+  /** put the marked text/object into the clipboard and remove
+   *	it from the document
+   * TODO
+  **/
+  void slotEditCut();
 
-    /** paste the clipboard into the document
-      * TODO
-    **/
-    void slotEditPaste();
+  /** put the marked text/object into the clipboard
+    * TODO
+  **/
+  void slotEditCopy();
 
-    /** toggles the toolbar
-     */
-    void slotViewToolBar();
+  /** paste the clipboard into the document
+    * TODO
+  **/
+  void slotEditPaste();
 
-    /** toggles the statusbar
-     */
-    void slotViewStatusBar();
+  /** toggles the toolbar
+   */
+  void slotViewToolBar();
 
-    /** changes the statusbar contents for the standard label permanently, used to indicate current actions.
-     * @param text the text that is displayed in the statusbar
-     */
-    void slotStatusMsg(const QString &text);
-  /** No descriptions */
-  void slotProcessExited();
+  /** toggles the statusbar
+   */
+  void slotViewStatusBar();
 
-  private:
-    /** the configuration object of the application */
-    KConfig *config;
+  /**
+    * changes the statusbar contents for the standard label permanently,
+    * used to indicate current actions. Returns the previous value for
+    * 'stacked' usage.
+   * @param text the text that is displayed in the statusbar
+   */
+  const QString slotStatusMsg(const QString &text);
 
-    // KAction pointers to enable/disable actions
-    KAction *fileNewWindow;
-    KAction* fileNew;
-    KAction* fileOpen;
-    KRecentFilesAction* fileOpenRecent;
-    KAction* fileSave;
-    KAction* fileSaveAs;
-    KAction* fileBackup;
-    KAction* fileClose;
-    KAction* fileCloseWindow;
-    KAction* filePrint;
-    KAction* fileQuit;
-    KAction* editCut;
-    KAction* editCopy;
-    KAction* editPaste;
-    KToggleAction* viewToolBar;
-    KToggleAction* viewStatusBar;
-    KToggleAction* viewTransactionForm;
+/**
+  * This method changes the progress bar in the status line according
+  * to the parameters @p current and @p total. The following special
+  * cases exist:
+  *
+  * - current = -1 and total = -1  will reset the progress bar
+  * - current = ?? and total != 0  will setup the 100% mark to @p total
+  * - current = xx and total == 0  will set the percentage
+  *
+  * @param current the current value with respect to the initialised
+  *                 100% mark
+  * @param total the total value (100%)
+  */
+void slotStatusProgressBar(const int current, const int total = 0);
 
-    KAction *fileViewInfo;
-    KAction *filePersonalData;
+/** No descriptions */
+void slotProcessExited();
 
-		KAction *settings;
-		KAction *settingsKey;
+private:
+  /** the configuration object of the application */
+  KConfig *config;
 
-    KAction *bankAdd;
+  // KAction pointers to enable/disable actions
+  KAction *fileNewWindow;
+  KAction* fileNew;
+  KAction* fileOpen;
+  KRecentFilesAction* fileOpenRecent;
+  KAction* fileSave;
+  KAction* fileSaveAs;
+  KAction* fileBackup;
+  KAction* fileClose;
+  KAction* fileCloseWindow;
+  KAction* filePrint;
+  KAction* fileQuit;
+  KAction* editCut;
+  KAction* editCopy;
+  KAction* editPaste;
+  KToggleAction* viewToolBar;
+  KToggleAction* viewStatusBar;
+  KToggleAction* viewTransactionForm;
 
-    KAction *accountOpen;
-    KAction *accountAdd;
-    KAction *accountReconcile;
-    KAction *accountFind;
-    KAction *accountImport;
-    KAction *accountExport;
+  KAction *fileViewInfo;
+  KAction *filePersonalData;
 
-    KAction *billsAdd;
+	KAction *settings;
+	KAction *settingsKey;
 
-    KAction *reportBasic;
+  KAction *bankAdd;
 
-    KAction *pluginLoad;
-    KAction *pluginUnload;
-    KAction *pluginList;
+  KAction *accountOpen;
+  KAction *accountAdd;
+  KAction *accountReconcile;
+  KAction *accountFind;
+  KAction *accountImport;
+  KAction *accountExport;
 
-    KAction *viewUp;
+  KAction *billsAdd;
+
+  KAction *reportBasic;
+
+  KAction *pluginLoad;
+  KAction *pluginUnload;
+  KAction *pluginList;
+
+  KAction *viewUp;
   /**  */
   bool mountbackup;
   /**  */
@@ -401,9 +435,17 @@ protected slots:
   bool m_startDialog;
   QString mountpoint;
 
+  KProgress* progressBar;
+
+  QString m_statusMsg;
+
+  KStartupLogo* m_startLogo;
+
 private:
   //void disableAllAccountActions(bool enable=true);
 
 };
- 
+
+extern  KMyMoney2App *kmymoney2;
+
 #endif // KMYMONEY2_H

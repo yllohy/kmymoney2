@@ -36,9 +36,11 @@ KStartupLogo::KStartupLogo(QWidget *parent, const char *name )
   setFrameShadow( QFrame::Raised );
 	setLineWidth( 2 );
   setGeometry( QRect( (QApplication::desktop()->width()/2)-(pm->width()/2), (QApplication::desktop()->height()/2)-(pm->height()/2), pm->width(), pm->height() ) );
+/*
 	QTimer *timer = new QTimer( this );
   connect( timer, SIGNAL(timeout()), this, SLOT(timerDone()) );
 	timer->start( 500, TRUE );
+*/
 }
 
 KStartupLogo::~KStartupLogo()

@@ -14,14 +14,21 @@
  *                                                                         *
  ***************************************************************************/
 
-// include files for QT
+#include <stdio.h>
+#include <iostream>
+
+// ----------------------------------------------------------------------------
+// QT Includes
+
 #include <qapp.h>
 #include <qdir.h>
 #include <qprinter.h>
 #include <qpainter.h>
 #include <qlayout.h>
 
-// include files for KDE
+// ----------------------------------------------------------------------------
+// KDE Includes
+
 #include <kshortcut.h>
 #include <kiconloader.h>
 #include <kmessagebox.h>
@@ -33,39 +40,36 @@
 #include <kglobal.h>
 #if QT_VERSION > 300
 #include <kstandarddirs.h>
+#include <kstatusbar.h>
 #else
 #include <kstddirs.h>
 #endif
 #include <ktip.h>
-
 #include <kkeydialog.h>
+#include <kprogress.h>
 
-#include <stdio.h>
-#include <iostream>
-// application specific includes
+// ----------------------------------------------------------------------------
+// Project Includes
+
 #include "kmymoney2.h"
 #include "dialogs/kstartdlg.h"
 #include "dialogs/ksettingsdlg.h"
 #include "kstartuplogo.h"
 #include "dialogs/kbackupdlg.h"
 
-#if QT_VERSION > 300
-#include <kstatusbar.h>
-#endif
-
 #define ID_STATUS_MSG 1
 
 KMyMoney2App::KMyMoney2App(QWidget *parent , const char* name)
  : KMainWindow(0, name)
 {
-  KStartupLogo *start_logo = new KStartupLogo;
+  m_startLogo = new KStartupLogo;
   config=kapp->config();
   config->setGroup("General Options");
 
   // splash screen setting
   bool bViewSplash = config->readBoolEntry("Show Splash", true);
   if(bViewSplash)
-    start_logo->show();
+    m_startLogo->show();
 
   QFrame* frame = new QFrame(this);
   frame->setFrameStyle(QFrame::NoFrame);
@@ -105,6 +109,7 @@ KMyMoney2App::KMyMoney2App(QWidget *parent , const char* name)
   connect(myMoneyView, SIGNAL(signalCategoryView()), this, SLOT(slotCategoryView()));
   connect(myMoneyView, SIGNAL(signalPayeeView()), this, SLOT(slotPayeeView()));
 
+
   //enableFileOperations(false);
   //enableBankOperations(false);
   //enableAccountOperations(false);
@@ -114,15 +119,26 @@ KMyMoney2App::KMyMoney2App(QWidget *parent , const char* name)
   mountbackup = false;
   copybackup = false;
   unmountbackup = false;
-
-  KTipDialog::showTip(myMoneyView, "", false);
-
-  if (!m_startDialog)
-    myMoneyView->readFile(fileName);
 }
 
 KMyMoney2App::~KMyMoney2App()
 {
+}
+
+bool KMyMoney2App::startWithDialog(void)
+{
+  m_startLogo->close();
+  slotStatusMsg(i18n("Ready."));
+  return m_startDialog;
+}
+
+void KMyMoney2App::readFile(void)
+{
+  QString prevMsg = slotStatusMsg(i18n("Loading file..."));
+
+  myMoneyView->readFile(fileName);
+
+  slotStatusMsg(prevMsg);
 }
 
 void KMyMoney2App::initActions()
@@ -231,6 +247,7 @@ void KMyMoney2App::initActions()
   bankAdd->setStatusText(i18n("Lets you create a new institution"));
   accountOpen->setStatusText(i18n("View the account register"));
 
+
   accountAdd->setStatusText(i18n("Lets you create a new account"));
   accountReconcile->setStatusText(i18n("Balance your account"));
   accountFind->setStatusText(i18n("Find transactions"));
@@ -242,13 +259,24 @@ void KMyMoney2App::initActions()
   createGUI();
 }
 
-
 void KMyMoney2App::initStatusBar()
 {
   ///////////////////////////////////////////////////////////////////
   // STATUSBAR
   // TODO: add your own items you need for displaying current application status.
   statusBar()->insertItem(i18n("Ready."), ID_STATUS_MSG);
+
+  // Initialization of progress bar taken from KDevelop ;-)
+  progressBar = new KProgress(statusBar());
+  progressBar->setFrameStyle(QFrame::NoFrame | QFrame::Plain);
+  progressBar->setMargin(0);
+  progressBar->setLineWidth(0);
+  progressBar->setBackgroundMode(QWidget::PaletteBackground);
+  statusBar()->addWidget(progressBar);
+  progressBar->setFixedHeight(progressBar->sizeHint().height() - 8);
+
+  // hide the progress bar for now
+  slotStatusProgressBar(-1, -1);
 }
 
 void KMyMoney2App::saveOptions()
@@ -321,7 +349,7 @@ bool KMyMoney2App::queryExit()
 /////////////////////////////////////////////////////////////////////
 void KMyMoney2App::slotFileNew()
 {
-  slotStatusMsg(i18n("Creating new document..."));
+  QString prevMsg = slotStatusMsg(i18n("Creating new document..."));
 
   if (myMoneyView->fileOpen()) {
 #if QT_VERSION > 300
@@ -331,20 +359,20 @@ void KMyMoney2App::slotFileNew()
     int answer = KMessageBox::warningContinueCancel(this, i18n("KMyMoney file already open.  Close it ?"), "Close File", "Close", "dont_ask_again");
 #endif
     if (answer==KMessageBox::Cancel) {
-      slotStatusMsg(i18n("Ready"));
+      slotStatusMsg(prevMsg);
       return;
     }
     slotFileClose();
   }
   fileName = KURL();
   myMoneyView->newFile();
-  slotStatusMsg(i18n("Ready."));
+  slotStatusMsg(prevMsg);
 }
 
 // General open
 void KMyMoney2App::slotFileOpen()
 {
-  slotStatusMsg(i18n("Open a document."));
+  QString prevMsg = slotStatusMsg(i18n("Open a document."));
 
   if (myMoneyView->fileOpen()) {
 #if QT_VERSION > 300
@@ -354,19 +382,19 @@ void KMyMoney2App::slotFileOpen()
     int answer = KMessageBox::warningContinueCancel(this, i18n("KMyMoney file already open.  Close it ?"), "Close File", "Close", "dont_ask_again");
 #endif
 		if (answer==KMessageBox::Cancel) {
-      slotStatusMsg(i18n("Ready"));
+      slotStatusMsg(prevMsg);
       return;
     }
     slotFileClose();
   }
   fileName = KURL();
 	initWizard();
-  slotStatusMsg(i18n("Ready."));
+  slotStatusMsg(prevMsg);
 }
 
 void KMyMoney2App::slotFileOpenRecent(const KURL& url)
 {
-  slotStatusMsg(i18n("Opening file..."));
+  QString prevMsg = slotStatusMsg(i18n("Loading file..."));
 
   if (myMoneyView->fileOpen()) {
 #if QT_VERSION > 300
@@ -375,7 +403,7 @@ void KMyMoney2App::slotFileOpenRecent(const KURL& url)
     int answer = KMessageBox::warningContinueCancel(this, i18n("KMyMoney file already open.  Close it ?"), "Close File", "Close", "dont_ask_again");
 #endif
 		if (answer==KMessageBox::Cancel) {
-      slotStatusMsg(i18n("Ready"));
+      slotStatusMsg(prevMsg);
       return;
     }
     slotFileClose();
@@ -385,27 +413,27 @@ void KMyMoney2App::slotFileOpenRecent(const KURL& url)
   fileName = url;
 	fileOpenRecent->addURL( url );
 
-  slotStatusMsg(i18n("Ready."));
+  slotStatusMsg(prevMsg);
 }
 
 void KMyMoney2App::slotFileSave()
 {
-  slotStatusMsg(i18n("Saving file..."));
+  QString prevMsg = slotStatusMsg(i18n("Saving file..."));
 
   if (fileName.isEmpty()) {
     slotFileSaveAs();
-    slotStatusMsg(i18n("Ready"));
+    slotStatusMsg(prevMsg);
     return;
   }
 
   myMoneyView->saveFile(fileName);
 	
-  slotStatusMsg(i18n("Ready."));
+  slotStatusMsg(prevMsg);
 }
 
 void KMyMoney2App::slotFileSaveAs()
 {
-  slotStatusMsg(i18n("Saving file with a new filename..."));
+  QString prevMsg = slotStatusMsg(i18n("Saving file with a new filename..."));
 
   QString newName=KFileDialog::getSaveFileName(QDir::currentDirPath(),
                                                i18n("*.kmy|KMyMoney files\n"
@@ -417,6 +445,7 @@ void KMyMoney2App::slotFileSaveAs()
 	//
   if(!newName.isEmpty())
   {
+
 		//find last . delminator
 		int nLoc = newName.findRev('.');
     if(nLoc != -1)
@@ -444,12 +473,12 @@ void KMyMoney2App::slotFileSaveAs()
     myMoneyView->saveFile(newName);
   }
 
-  slotStatusMsg(i18n("Ready."));
+  slotStatusMsg(prevMsg);
 }
 
 void KMyMoney2App::slotFileCloseWindow()
 {
-  slotStatusMsg(i18n("Closing window..."));
+  QString prevMsg = slotStatusMsg(i18n("Closing window..."));
 
   if (myMoneyView->dirty()) {
     int answer = KMessageBox::warningYesNoCancel(this, i18n("The file has been changed, save it ?"));
@@ -461,14 +490,12 @@ void KMyMoney2App::slotFileCloseWindow()
 
   close();
 
-  slotStatusMsg(i18n("Ready."));
+  slotStatusMsg(prevMsg);
 }
 
 void KMyMoney2App::slotFileClose()
 {
-  slotStatusMsg(i18n("Closing file..."));
-
-
+  // no update status here, as we might delete the status too early.
   if (myMoneyView->dirty()) {
     int answer = KMessageBox::warningYesNoCancel(this, i18n("The file has been changed, save it ?"));
 		if (answer == KMessageBox::Cancel)
@@ -479,13 +506,11 @@ void KMyMoney2App::slotFileClose()
 
   myMoneyView->closeFile();
   fileName = KURL();
-
-  slotStatusMsg(i18n("Ready."));
 }
 
 void KMyMoney2App::slotFilePrint()
 {
-  slotStatusMsg(i18n("Printing..."));
+  QString prevMsg = slotStatusMsg(i18n("Printing..."));
   KMessageBox::information(this, i18n("Sorry, unavailable at this time."));
 /*
   QPrinter printer;
@@ -494,12 +519,12 @@ void KMyMoney2App::slotFilePrint()
     view->print(&printer);
   }
 */
-  slotStatusMsg(i18n("Ready."));
+  slotStatusMsg(prevMsg);
 }
 
 void KMyMoney2App::slotFileQuit()
 {
-  slotStatusMsg(i18n("Exiting..."));
+  QString prevMsg = slotStatusMsg(i18n("Exiting..."));
 
 
   KMainWindow* w = 0;
@@ -518,35 +543,34 @@ void KMyMoney2App::slotFileQuit()
   } else
       kapp->quit();
 
-//  slotStatusMsg(i18n("Ready."));
 }
 
 
 void KMyMoney2App::slotEditCut()
 {
-  slotStatusMsg(i18n("Cutting selection..."));
+  QString prevMsg = slotStatusMsg(i18n("Cutting selection..."));
 
-  slotStatusMsg(i18n("Ready."));
+  slotStatusMsg(prevMsg);
 }
 
 void KMyMoney2App::slotEditCopy()
 {
-  slotStatusMsg(i18n("Copying selection to clipboard..."));
+  QString prevMsg = slotStatusMsg(i18n("Copying selection to clipboard..."));
 
-  slotStatusMsg(i18n("Ready."));
+  slotStatusMsg(prevMsg);
 }
 
 void KMyMoney2App::slotEditPaste()
 {
 
-  slotStatusMsg(i18n("Inserting clipboard contents..."));
+  QString prevMsg = slotStatusMsg(i18n("Inserting clipboard contents..."));
 
-  slotStatusMsg(i18n("Ready."));
+  slotStatusMsg(prevMsg);
 }
 
 void KMyMoney2App::slotViewToolBar()
 {
-  slotStatusMsg(i18n("Toggling toolbar..."));
+  QString prevMsg = slotStatusMsg(i18n("Toggling toolbar..."));
   ///////////////////////////////////////////////////////////////////
   // turn Toolbar on or off
   if(!viewToolBar->isChecked())
@@ -558,12 +582,12 @@ void KMyMoney2App::slotViewToolBar()
     toolBar("mainToolBar")->show();
   }		
 
-  slotStatusMsg(i18n("Ready."));
+  slotStatusMsg(prevMsg);
 }
 
 void KMyMoney2App::slotViewStatusBar()
 {
-  slotStatusMsg(i18n("Toggle the statusbar..."));
+  QString prevMsg = slotStatusMsg(i18n("Toggle the statusbar..."));
   ///////////////////////////////////////////////////////////////////
   //turn Statusbar on or off
   if(!viewStatusBar->isChecked())
@@ -575,30 +599,49 @@ void KMyMoney2App::slotViewStatusBar()
     statusBar()->show();
   }
 
-  slotStatusMsg(i18n("Ready."));
+  slotStatusMsg(prevMsg);
 }
 
 
-void KMyMoney2App::slotStatusMsg(const QString &text)
+const QString KMyMoney2App::slotStatusMsg(const QString &text)
 {
   ///////////////////////////////////////////////////////////////////
   // change status message permanently
+  QString msg = m_statusMsg;
+
+  m_statusMsg = text;
   statusBar()->clear();
   statusBar()->changeItem(text, ID_STATUS_MSG);
+
+  return msg;
+}
+
+void KMyMoney2App::slotStatusProgressBar(const int current, const int total)
+{
+  if(total == -1 && current == -1) {      // reset
+    progressBar->reset();
+    progressBar->hide();
+  } else if(total != 0) {                 // init
+    progressBar->setTotalSteps(total);
+    progressBar->show();
+  } else {                                // update
+    progressBar->setProgress(current);
+    qApp->processEvents();
+  }
 }
 
 void KMyMoney2App::slotFileViewPersonal()
 {
+  QString prevMsg = slotStatusMsg(i18n("Viewing personal data..."));
+
   if ( !myMoneyView->fileOpen() ) {
     KMessageBox::information(this, i18n("No MyMoneyFile open"));
     return;
   }
 
-  slotStatusMsg(i18n("Viewing personal data..."));
-
   myMoneyView->viewPersonal();
 
-  slotStatusMsg(i18n("Ready"));
+  slotStatusMsg(prevMsg);
 }
 
 void KMyMoney2App::slotFileFileInfo()
@@ -958,6 +1001,7 @@ void KMyMoney2App::slotHomeView()
 
 void KMyMoney2App::slotAccountsView()
 {
+
 }
 /*
 void KMyMoney2App::disableAllAccountActions(bool enable)
@@ -982,6 +1026,7 @@ void KMyMoney2App::slotPayeeView()
 
   //disableAllAccountActions();
 }
+
 
 void KMyMoney2App::slotEnableKMyMoneyOperations(bool enable)
 {

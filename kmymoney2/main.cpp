@@ -17,10 +17,16 @@
 
 #include <qwidgetlist.h>
 #include <qdatetime.h>
+#include <qstringlist.h>
 
 #include <kcmdlineargs.h>
 #include <kaboutdata.h>
 #include <klocale.h>
+#include <ktip.h>
+// ---%<---
+#include <kstandarddirs.h>
+#include <kicontheme.h>
+// ---%<---
 
 #include "kmymoney2.h"
 #include "kstartuplogo.h"
@@ -36,6 +42,8 @@ static KCmdLineOptions options[] =
 };
 
 QTime timer;
+
+KMyMoney2App* kmymoney2;
 
 int main(int argc, char *argv[])
 {
@@ -83,9 +91,29 @@ int main(int argc, char *argv[])
   MyMoneyMoney::setThousandSeparator(*(KGlobal::locale()->thousandsSeparator().latin1()));
   MyMoneyMoney::setDecimalSeparator(*(KGlobal::locale()->decimalSymbol().latin1()));
 
-	KMyMoney2App *kmymoney2 = new KMyMoney2App();
+  // ---%<---
+  QStringList list = KGlobal::dirs()->resourceDirs("icon");
+  QStringList::Iterator it;
+  for(it = list.begin(); it != list.end(); ++it)
+    qDebug("icon resource dir: %s", (*it).latin1());
+
+  list = KIconTheme::list();
+  for(it = list.begin(); it != list.end(); ++it)
+    qDebug("icon theme: %s", (*it).latin1());
+
+  KIconTheme theme = KIconTheme(QString::fromLatin1("hicolor"), KGlobal::instance()->instanceName());
+  qDebug("theme.isValid(%s,%s) = %d",
+    QString::fromLatin1("hicolor").latin1(),
+    KGlobal::instance()->instanceName().data(),
+    theme.isValid());
+  // ---%<---
+
+	kmymoney2 = new KMyMoney2App();
   a.setMainWidget( kmymoney2 );
   kmymoney2->show();
+
+  // force complete paint of widgets
+  qApp->processEvents();
 
   int rc = 0;
 
@@ -95,10 +123,13 @@ int main(int argc, char *argv[])
 
 	if (kmymoney2->startWithDialog()) {
 	  if (kmymoney2->initWizard()) {
+      KTipDialog::showTip(kmymoney2, "", false);
   		args->clear();
       rc = a.exec();
 	  }
 	} else {
+    KTipDialog::showTip(kmymoney2, "", false);
+    kmymoney2->readFile();
 		args->clear();
 	  rc = a.exec();
 	}
@@ -110,6 +141,7 @@ int main(int argc, char *argv[])
 
   return rc;
 }
+
 
 void timetrace(char *txt)
 {
