@@ -69,10 +69,10 @@ public:
   void setMemo(const QString& memo);
   void setId(const QString& id) { m_id = id; };
   void setCommodity(const QCString& commodityId) { m_commodity = commodityId; };
-  
+
   bool operator == (const MyMoneyTransaction&) const;
   inline bool operator != (const MyMoneyTransaction& r) const { return !(*this == r); };
-  
+
   /**
     * This method is used to extract a split for a given accountId
     * from a transaction. A parameter controls, whether the accountId
@@ -146,7 +146,7 @@ public:
   const MyMoneyMoney splitSum(void) const;
 
   /**
-    * This method returns information if the transaction 
+    * This method returns information if the transaction
     * contains information of a loan payment or not.
     * Loan payment transactions have at least one
     * split that is identified with a MyMoneySplit::action() of type
@@ -160,6 +160,22 @@ public:
   const bool isLoanPayment(void) const;
 
   /**
+    * This method is used to check if two transactions are identical.
+    * Identical transactions have:
+    *
+    * - the same number of splits
+    * - reference the same accounts
+    * - have the same values in the splits
+    * - have a postDate wihtin 3 days
+    *
+    * @param transaction reference to the transaction to be checked
+    *                    against this transaction
+    * @retval true transactions are identical
+    * @retval false transactions are not identical
+    */
+  const bool isDuplicate(const MyMoneyTransaction& transaction) const;
+
+  /**
     * This static method returns the id which will be assigned to the
     * first split added to a transaction. This ID can be used to figure
     * out the split that references the account through which a transaction
@@ -168,7 +184,7 @@ public:
     * @return QCString with ID of the first split of transactions
     */
   static const QCString firstSplitID(void);
-  
+
 private:
   static const int SPLIT_ID_SIZE = 4;
 
@@ -215,6 +231,19 @@ private:
     * This method returns the next id to be used for a split
     */
   const QCString nextSplitID(void);
+
+  /**
+    * This module implements an algorithm used by P.J. Weinberger
+    * for fast hashing. Source: COMPILERS by Alfred V. Aho,
+    * pages 435-437.
+    *
+    * It converts the string passed in @p txt into a non-unique
+    * unsigned long integer value.
+    *
+    * @param txt the text to be hashed
+    * @return non-unique hash value of the text @p txt
+    */
+  const unsigned long hash(const QString& txt) const;
 
   // friend QDataStream &operator<<(QDataStream &, const MyMoneyTransaction &);
   // friend QDataStream &operator>>(QDataStream &, MyMoneyTransaction &);

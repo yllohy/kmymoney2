@@ -103,7 +103,7 @@ void MyMoneyTransaction::modifySplit(MyMoneySplit& split)
   QValueList<MyMoneySplit>::Iterator self = m_splits.end();
   QValueList<MyMoneySplit>::Iterator dup = self;
   bool duplicateAccount = false;
-  
+
   for(it = m_splits.begin(); it != m_splits.end(); ++it) {
     if(split.id() == (*it).id()) {
       self = it;
@@ -233,3 +233,53 @@ const bool MyMoneyTransaction::isLoanPayment(void) const
   }
   return false;
 }
+
+const unsigned long MyMoneyTransaction::hash(const QString& txt) const
+{
+  unsigned long   h = 0,
+                  g;
+
+  for(int i=0; i < txt.length(); ++i) {
+    h = (h << 4) + txt[i].latin1();
+    if(g = (h & 0xf0000000)) {
+      h = h ^ (g >> 24);
+      h = h ^ g;
+    }
+  }
+  return h;
+}
+
+const bool MyMoneyTransaction::isDuplicate(const MyMoneyTransaction& r) const
+{
+  bool rc = true;
+  if(splitCount() != r.splitCount()) {
+    rc = false;
+  } else {
+    if(abs(m_postDate.daysTo(r.postDate())) > 3) {
+      rc = false;
+    } else {
+      unsigned long accHash[2];
+      unsigned long valHash[2];
+      for(int i = 0; i < 2; ++i)
+        accHash[i] = valHash[i] = 0;
+
+      QValueList<MyMoneySplit>::ConstIterator it;
+      for(it = splits().begin(); it != splits().end(); ++it) {
+        accHash[0] += hash((*it).accountId());
+        valHash[0] += hash((*it).value().formatMoney("", 4));
+      }
+      for(it = r.splits().begin(); it != r.splits().end(); ++it) {
+        accHash[1] += hash((*it).accountId());
+        valHash[1] += hash((*it).value().formatMoney("", 4));
+      }
+
+      if(accHash[0] != accHash[1]
+      || valHash[0] != valHash[1]) {
+        rc = false;
+      }
+    }
+  }
+
+  return rc;
+}
+
