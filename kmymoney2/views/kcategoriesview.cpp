@@ -103,6 +103,8 @@ KCategoriesView::~KCategoriesView()
 
 void KCategoriesView::slotRefreshView(void)
 {
+  MyMoneyTracer tracer("KCategoriesView", "slotRefreshView");
+
   KConfig *config = KGlobal::config();
   config->setGroup("List Options");
   m_hideCategory = config->readBoolEntry("HideUnusedCategory", false);
@@ -126,6 +128,10 @@ void KCategoriesView::slotRefreshView(void)
     // Income
     KCategoryListItem *incomeTopLevelAccount = new KCategoryListItem(categoryListView,
               incomeAccount);
+    // Expense
+    KCategoryListItem *expenseTopLevelAccount = new KCategoryListItem(categoryListView,
+              expenseAccount);
+
 
     QValueList<MyMoneyAccount> list = file->accountList();
     QValueList<MyMoneyAccount>::ConstIterator it_a;
@@ -137,6 +143,7 @@ void KCategoriesView::slotRefreshView(void)
           it != incomeAccount.accountList().end();
           ++it )
     {
+      tracer.printf("Adding category '%s' to income tree", m_accountMap[*it].name().ascii());
       KCategoryListItem *accountItem = new KCategoryListItem(incomeTopLevelAccount,
             m_accountMap[*it]);
 
@@ -156,14 +163,11 @@ void KCategoriesView::slotRefreshView(void)
       }
     }
 
-    // Expense
-    KCategoryListItem *expenseTopLevelAccount = new KCategoryListItem(categoryListView,
-              expenseAccount);
-
     for ( QCStringList::ConstIterator it = expenseAccount.accountList().begin();
           it != expenseAccount.accountList().end();
           ++it )
     {
+      tracer.printf("Adding category '%s' to expense tree", m_accountMap[*it].name().ascii());
       KCategoryListItem *accountItem = new KCategoryListItem(expenseTopLevelAccount,
             m_accountMap[*it]);
 
@@ -183,8 +187,8 @@ void KCategoriesView::slotRefreshView(void)
       }
     }
 
-    categoryListView->setOpen(incomeTopLevelAccount, true);
-    categoryListView->setOpen(expenseTopLevelAccount, true);
+    incomeTopLevelAccount->setOpen(true);
+    expenseTopLevelAccount->setOpen(true);
   }
   catch (MyMoneyException *e)
   {
@@ -347,6 +351,9 @@ void KCategoriesView::writeConfig(void)
 
 void KCategoriesView::update(const QCString& id)
 {
+  MyMoneyTracer tracer("KCategoriesView", "update");
+  tracer.printf("id = '%s'", id.data());
+
   // to avoid constant update when a lot of accounts are added
   // (e.g. during creation of a new MyMoneyFile object when the
   // default accounts are loaded) a switch is supported to suppress
