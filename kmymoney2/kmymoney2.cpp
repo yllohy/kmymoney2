@@ -680,6 +680,8 @@ void KMyMoney2App::slotFileFileInfo()
 
 void KMyMoney2App::slotLoadAccountTemplates(void)
 {
+  QString prevMsg = slotStatusMsg(i18n("Importing account templates."));
+
   // create a dialog that drops the user in the base directory for templates
   KFileDialog* dialog = new KFileDialog(KGlobal::dirs()->findResourceDir("appdata", "templates/README")+"templates",
                                         i18n("*.kmt|Account templates"),
@@ -695,6 +697,8 @@ void KMyMoney2App::slotLoadAccountTemplates(void)
     myMoneyView->slotRefreshViews();
   }
   delete dialog;
+
+  slotStatusMsg(prevMsg);
 }
 
 void KMyMoney2App::loadAccountTemplates(const QStringList& filelist)
@@ -703,7 +707,7 @@ void KMyMoney2App::loadAccountTemplates(const QStringList& filelist)
   for(it = filelist.begin(); it != filelist.end(); ++it) {
     MyMoneyTemplate templ;
     if(templ.loadTemplate(*it)) {
-      templ.import();
+      templ.import(&progressCallback);
     }
   }
 }

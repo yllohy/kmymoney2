@@ -35,11 +35,13 @@
 
 #include "mymoneytemplate.h"
 
-MyMoneyTemplate::MyMoneyTemplate()
+MyMoneyTemplate::MyMoneyTemplate() :
+  m_progressCallback(0)
 {
 }
 
-MyMoneyTemplate::MyMoneyTemplate(const KURL& url)
+MyMoneyTemplate::MyMoneyTemplate(const KURL& url) :
+  m_progressCallback(0)
 {
   loadTemplate(url);
 }
@@ -145,15 +147,19 @@ const bool MyMoneyTemplate::loadDescription(void)
   return validMask == validHeader;
 }
 
-const bool MyMoneyTemplate::import(void)
+const bool MyMoneyTemplate::import(void(*callback)(int, int, const QString&))
 {
+  m_progressCallback = callback;
   bool rc = !m_accounts.isNull();
   MyMoneyFile* file = MyMoneyFile::instance();
+  signalProgress(0, m_doc.elementsByTagName("account").count(), i18n("Loading template %1").arg(m_source.url()));
+  m_accountsRead = 0;
 
   while(rc == true && !m_accounts.isNull() && m_accounts.isElement()) {
     QDomElement childElement = m_accounts.toElement();
     if(childElement.tagName() == "account"
     && childElement.attribute("name") == "") {
+      ++m_accountsRead;
       MyMoneyAccount parent;
       switch(childElement.attribute("type").toUInt()) {
         case MyMoneyAccount::Asset:
@@ -186,6 +192,7 @@ const bool MyMoneyTemplate::import(void)
     }
     m_accounts = m_accounts.nextSibling();
   }
+  signalProgress(-1, -1);
   return rc;
 }
 
@@ -197,6 +204,7 @@ const bool MyMoneyTemplate::createAccounts(MyMoneyAccount& parent, QDomNode acco
     if(account.isElement()) {
       QDomElement accountElement = account.toElement();
       if(accountElement.tagName() == "account") {
+        signalProgress(++m_accountsRead, 0);
         QValueList<MyMoneyAccount> subAccountList;
         QValueList<MyMoneyAccount>::ConstIterator it;
         it = subAccountList.end();
@@ -249,3 +257,10 @@ const bool MyMoneyTemplate::setFlags(MyMoneyAccount& acc, QDomNode flags)
   }
   return rc;
 }
+
+void MyMoneyTemplate::signalProgress(int current, int total, const QString& msg)
+{
+  if(m_progressCallback != 0)
+    (*m_progressCallback)(current, total, msg);
+}
+

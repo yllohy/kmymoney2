@@ -51,12 +51,20 @@ public:
   ~MyMoneyTemplate();
 
   const bool loadTemplate(const KURL& url);
-  const bool import(void);
+  const bool import(void(*callback)(int, int, const QString&));
 
 protected:
   const bool loadDescription(void);
   const bool createAccounts(MyMoneyAccount& parent, QDomNode account);
   const bool setFlags(MyMoneyAccount& acc, QDomNode flags);
+
+  /**
+    * This method is used to update the progress information. It
+    * checks if an appropriate function is known and calls it.
+    *
+    * For a parameter description see KMyMoneyView::progressCallback().
+    */
+  void signalProgress(int current, int total, const QString& = "");
 
 private:
   QDomDocument    m_doc;
@@ -65,6 +73,8 @@ private:
   QString         m_shortDesc;
   QString         m_longDesc;
   KURL            m_source;
+  void            (*m_progressCallback)(int, int, const QString&);
+  int             m_accountsRead;
 };
 
 #endif
