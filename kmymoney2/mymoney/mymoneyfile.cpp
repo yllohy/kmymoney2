@@ -752,4 +752,24 @@ const QCString MyMoneyFile::locateSubAccount(const MyMoneyAccount& base, const Q
   return "";
 }
 
+const QString MyMoneyFile::value(const QCString& key) const
+{
+  checkStorage();
+
+  return m_storage->value(key);
+}
+
+void MyMoneyFile::setValue(const QCString& key, const QString& val)
+{
+  checkStorage();
+
+  m_storage->setValue(key, val);
+}
+
+void MyMoneyFile::deletePair(const QCString& key)
+{
+  checkStorage();
+
+  m_storage->deletePair(key);
+}
 

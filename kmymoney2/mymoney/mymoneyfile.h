@@ -36,6 +36,7 @@
 #include "mymoneypayee.h"
 #include "mymoneyobserver.h"
 #include "mymoneysubject.h"
+#include "mymoneykeyvaluecontainer.h"
 
 /**
   * @author Thomas Baumgart, Michael Edwardes
@@ -109,6 +110,11 @@ class MyMoneyTransactionFilter;
   * @exceptions MyMoneyException is thrown whenever an error occurs
   * while the engine code is running. The MyMoneyException:: object
   * describes the problem.
+  *
+  * For abritrary values that have to be stored with the storage object
+  * but are of importance to the application only, the object is derived
+  * for MyMoneyKeyValueContainer which provides a container to store
+  * these values indexed by an alphanumeric key.
   */
 class MyMoneyFile
 {
@@ -646,6 +652,33 @@ public:
     * @return QValueList<MyMoneyPayee> containing the payee information
     */
   const QValueList<MyMoneyPayee> payeeList(void) const;
+
+  /**
+    * This method is used to extract a value from the storage's
+    * KeyValueContainer. For details see MyMoneyKeyValueContainer::value().
+    *
+    * @param key const reference to QCString containing the key
+    * @return QString containing the value
+    */
+  const QString value(const QCString& key) const;
+
+  /**
+    * This method is used to set a value in the storage's
+    * KeyValueContainer. For details see MyMoneyKeyValueContainer::setValue().
+    *
+    * @param key const reference to QCString containing the key
+    * @param val const reference to QString containing the value
+    */
+  void setValue(const QCString& key, const QString& val);
+
+  /**
+    * This method is used to delete a key-value-pair from the
+    * storage's KeyValueContainer identified by the parameter
+    * @p key. For details see MyMoneyKeyValueContainer::deletePair().
+    *
+    * @param key const reference to QCString containing the key
+    */
+  void deletePair(const QCString& key);
 
 public:
   /**
