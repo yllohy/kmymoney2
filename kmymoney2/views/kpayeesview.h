@@ -51,7 +51,6 @@ public:
   ~KPayeesView();
   void show();
   void update(const QCString &id);
-  void refreshView(void) { refresh(); };
 
   /**
     * This method is used to suppress updates for specific times
@@ -72,7 +71,9 @@ public:
 
 public slots:
   void slotSelectPayeeAndTransaction(const QCString& payeeId, const QCString& accountId, const QCString& transactionId);
-
+  void slotRefreshView(void);
+  void slotReloadView(void);
+  
 protected:
   void resizeEvent(QResizeEvent*);
 
@@ -99,8 +100,6 @@ private slots:
 private:
   void readConfig(void);
   void writeConfig(void);
-
-  void refresh(void);
 
 signals:
   void signalViewActivated();

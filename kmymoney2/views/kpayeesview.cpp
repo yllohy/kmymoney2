@@ -79,8 +79,6 @@ KPayeesView::KPayeesView(QWidget *parent, const char *name )
           this, SLOT(slotTransactionDoubleClicked(QListViewItem*)));
 
   MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassPayee, this);
-
-  refresh();
 }
 
 KPayeesView::~KPayeesView()
@@ -93,7 +91,7 @@ KPayeesView::~KPayeesView()
 void KPayeesView::update(const QCString & /* id */)
 {
   if(m_suspendUpdate == false)
-    refresh();
+    slotRefreshView();
 }
 
 void KPayeesView::suspendUpdate(const bool suspend)
@@ -101,7 +99,7 @@ void KPayeesView::suspendUpdate(const bool suspend)
   // force a refresh, if update was off
   if(m_suspendUpdate == true
   && suspend == false)
-    refresh();
+    slotRefreshView();
 
   m_suspendUpdate = suspend;
 }
@@ -128,7 +126,9 @@ void KPayeesView::payeeHighlighted(const QString& text)
     deleteButton->setEnabled(true);
 
     showTransactions();
+    writeConfig();
   } catch(MyMoneyException *e) {
+    m_transactionView->clear();
     m_payee = MyMoneyPayee();
     updateButton->setEnabled(false);
     deleteButton->setEnabled(false);
@@ -147,7 +147,12 @@ void KPayeesView::showTransactions(void)
   QDate dateStart = config->readDateTimeEntry("StartDate", &defaultDate).date();
 
   // setup the list and the pointer vector
-  m_transactionList = file->transactionList();
+  MyMoneyTransactionFilter filter;
+  filter.addPayee(m_payee.id());
+  filter.setDateFilter(dateStart, QDate());
+  
+  m_transactionList = file->transactionList(filter);
+
   m_transactionPtrVector.clear();
   m_transactionPtrVector.resize(m_transactionList.size());
   m_transactionPtrVector.setPayeeId(m_payee.id());
@@ -157,31 +162,16 @@ void KPayeesView::showTransactions(void)
 
   QValueList<MyMoneyTransaction>::ConstIterator it_t;
   for(i = 0, it_t = m_transactionList.begin(); it_t != m_transactionList.end(); ++it_t) {
-    // only show those transactions, that are posted after the configured start date
-    if((*it_t).postDate() < dateStart)
-      continue;
+    QValueList<MyMoneySplit>::ConstIterator it_s;
 
-    // add more filters before this line ;-)
-    QValueList<MyMoneySplit> list = (*it_t).splits();
-    QValueList<MyMoneySplit>::Iterator it_s;
-
-    int sp_cnt = 0;
-    for(it_s = list.begin(); it_s != list.end(); ++it_s) {
+    for(it_s = (*it_t).splits().begin(); it_s != (*it_t).splits().end(); ++it_s) {
       if((*it_s).payeeId() == m_payee.id()) {
         balance += (*it_s).value();
-        ++sp_cnt;
       }
     }
-    if(sp_cnt == 0)
-      continue;
-
-    // Wow, we made it through all the filters. Guess we have to show this one
     m_transactionPtrVector.insert(i, &(*it_t));
     ++i;
-
-    // Now check the amount of this transaction. If it's a transfer,
   }
-  m_transactionPtrVector.resize(i);
 
   // sort the transactions
   m_transactionPtrVector.sort();
@@ -307,9 +297,6 @@ void KPayeesView::slotDeleteClicked()
 void KPayeesView::readConfig(void)
 {
   KConfig *config = KGlobal::config();
-  config->setGroup("Last Use Settings");
-  m_lastPayee = config->readEntry("KPayeesView_LastPayee");
-
   QFont font = QFont("helvetica", 10);
   config->setGroup("List Options");
   font = config->readFontEntry("listCellFont", &font);
@@ -334,15 +321,26 @@ void KPayeesView::writeConfig(void)
 
 void KPayeesView::show()
 {
-  refresh();
+  slotRefreshView();
   emit signalViewActivated();
   QWidget::show();
 }
 
-void KPayeesView::refresh(void)
+void KPayeesView::slotReloadView(void)
+{
+  KConfig *config = KGlobal::config();
+  config->setGroup("Last Use Settings");
+  m_lastPayee = config->readEntry("KPayeesView_LastPayee");
+
+  slotRefreshView();
+}
+
+void KPayeesView::slotRefreshView(void)
 {
   bool found = false;
 
+  readConfig();
+  
   payeeCombo->clear();
 
   QValueList<MyMoneyPayee>list = MyMoneyFile::instance()->payeeList();
@@ -365,7 +363,8 @@ void KPayeesView::refresh(void)
   if(found == true) {
     payeeCombo->setCurrentText(m_lastPayee);
     payeeHighlighted(payeeCombo->currentText());
-  }
+  } else
+    payeeHighlighted("");
 }
 
 void KPayeesView::rearrange(void)
@@ -399,7 +398,7 @@ void KPayeesView::slotSelectPayeeAndTransaction(const QCString& payeeId, const Q
   try {
     payee = file->payee(payeeId);
     m_lastPayee = payee.name();
-    refresh();
+    slotRefreshView();
 
     KTransactionListItem* item = static_cast<KTransactionListItem*> (m_transactionView->firstChild());
     while(item != 0) {

@@ -80,8 +80,6 @@ KCategoriesView::KCategoriesView(QWidget *parent, const char *name )
 
   readConfig();
 
-  refresh();
-
   connect(categoryListView, SIGNAL(selectionChanged(QListViewItem*)),
     this, SLOT(slotSelectionChanged(QListViewItem*)));
   connect(categoryListView, SIGNAL(rightButtonPressed(QListViewItem* , const QPoint&, int)),
@@ -101,12 +99,7 @@ KCategoriesView::~KCategoriesView()
   writeConfig();
 }
 
-void KCategoriesView::refreshView(void)
-{
-  refresh();
-}
-
-void KCategoriesView::refresh(void)
+void KCategoriesView::slotRefreshView(void)
 {
   KConfig *config = KGlobal::config();
   config->setGroup("List Options");
@@ -396,7 +389,7 @@ void KCategoriesView::update(const QCString& /* id */)
   // default accounts are loaded) a switch is supported to suppress
   // updates in this phase. The switch is controlled with suspendUpdate().
   if(m_suspendUpdate == false) {
-    refresh();
+    slotRefreshView();
   }
 }
 
@@ -405,7 +398,7 @@ void KCategoriesView::suspendUpdate(const bool suspend)
   // force a refresh, if update was off
   if(m_suspendUpdate == true
   && suspend == false)
-    refresh();
+    slotRefreshView();
 
   m_suspendUpdate = suspend;
 }

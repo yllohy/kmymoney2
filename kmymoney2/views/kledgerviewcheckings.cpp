@@ -237,7 +237,7 @@ void KLedgerViewCheckings::slotRegisterDoubleClicked(int /* row */,
 
 void KLedgerViewCheckings::createRegister(void)
 {
-  m_register = new kMyMoneyRegisterCheckings(this);
+  m_register = new kMyMoneyRegisterCheckings(this, "Checkings");
   m_register->setParent(this);
 
   connect(m_register, SIGNAL(clicked(int, int, int, const QPoint&)), this, SLOT(slotRegisterClicked(int, int, int, const QPoint&)));
@@ -1164,23 +1164,14 @@ void KLedgerViewCheckings::slotReconciliation(void)
     m_endingBalance = dlg.endingBalance();
     m_endingDate = dlg.endingDate();
 
-    if(m_transactionPtr != 0)
-      transactionId = m_transactionPtr->id();
-
-    // do not show frozen or reconciled transactions
-    updateView();
+    refreshView();
     fillReconcileData();
-
-    if(transactionId != "")
-      if(selectTransaction(transactionId) == false
-      && m_transactionPtrVector.size() > 0)
-        selectTransaction(m_transactionPtrVector[0]->id());
 
     // allow SPACE to be used to toggle the clear state
     connect(m_register, SIGNAL(signalSpace()), this, SLOT(slotToggleClearFlag()));
     m_transactionCheckBox->setChecked(false);
+    slotShowTransactionForm(false);
     connect(m_transactionCheckBox, SIGNAL(toggled(bool)), this, SLOT(slotShowTransactionForm(bool)));
-
   }
 }
 
@@ -1266,7 +1257,9 @@ void KLedgerViewCheckings::slotConfigureContextMenu(void)
   if(m_transactionPtr != 0) {
     if(m_split.payeeId() != "" && m_split.accountId() != "" && m_transaction.id() != "") {
       MyMoneyPayee payee = file->payee(m_split.payeeId());
-      m_contextMenu->changeItem(gotoPayeeId, i18n("Goto '%1'").arg(payee.name()));
+      QString name = payee.name();
+      name.replace(QRegExp("&(?!&)"), "&&");
+      m_contextMenu->changeItem(gotoPayeeId, i18n("Goto '%1'").arg(name));
       m_contextMenu->setItemEnabled(gotoPayeeId, true);
     } else {
       m_contextMenu->changeItem(gotoPayeeId, i18n("Goto payee/receiver"));
@@ -1351,6 +1344,8 @@ void KLedgerViewCheckings::endReconciliation(void)
   m_summaryLine->show();
   m_transactionFormActive = config->readBoolEntry("TransactionForm", true);
 
+#if 0
+  // FIXME  
   if(m_transactionPtr != 0)
     transactionId = m_transactionPtr->id();
 
@@ -1361,7 +1356,9 @@ void KLedgerViewCheckings::endReconciliation(void)
     && m_transactionPtrVector.size() > 0)
       selectTransaction(m_transactionPtrVector[m_transactionPtrVector.size()-1]->id());
   }
-
+#endif
+  refreshView();
+  
   disconnect(m_register, SIGNAL(signalSpace()), this, SLOT(slotToggleClearFlag()));
   disconnect(m_transactionCheckBox, SIGNAL(toggled(bool)), this, SLOT(slotShowTransactionForm(bool)));
 }
@@ -1378,7 +1375,8 @@ void KLedgerViewCheckings::slotEndReconciliation(void)
 
     try {
       MyMoneyFile::instance()->modifyAccount(m_account);
-      QValueList<MyMoneyTransaction> list = MyMoneyFile::instance()->transactionList(m_account.id());
+      MyMoneyTransactionFilter filter(m_account.id());
+      QValueList<MyMoneyTransaction> list = MyMoneyFile::instance()->transactionList(filter);
       QValueList<MyMoneyTransaction>::Iterator it;
 
       for(it = list.begin(); it != list.end(); ++it) {

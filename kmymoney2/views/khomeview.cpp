@@ -80,12 +80,12 @@ KHomeView::~KHomeView()
 
 void KHomeView::show()
 {
-  refreshView();
+  slotRefreshView();
   emit signalViewActivated();
   QWidget::show();
 }
 
-void KHomeView::refreshView(void)
+void KHomeView::slotRefreshView(void)
 {
   if(MyMoneyFile::instance()->accountList().count() == 0) {
     m_part->openURL(m_filename);

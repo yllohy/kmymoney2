@@ -57,7 +57,6 @@ private:
 
   void readConfig(void);
   void writeConfig(void);
-  void refresh(void);
   void update(const QCString& id);
   const bool showSubAccounts(const QCStringList& accounts, KAccountListItem *parentItem, const QString&);
 
@@ -69,7 +68,9 @@ public slots:
   void slotEditClicked(MyMoneyAccount& account);
   void slotDeleteClicked(void);
   void slotDeleteClicked(MyMoneyAccount& account);
-  
+  void slotRefreshView(void);
+  void slotReloadView(void) { slotRefreshView(); };
+    
 protected slots:
   void slotNewClicked();
   void slotSelectionChanged(QListViewItem*);
@@ -84,8 +85,6 @@ public:
   ~KCategoriesView();
   void show();
 
-
-  void refreshView(void);
 
   /**
     * This method is used to suppress updates for specific times

@@ -76,8 +76,6 @@ public:
   void clear(void);
   void show();
 
-  void refreshView(void);
-
   /**
     * This method is called by the MyMoneyFile object, whenever the
     * account hierarchy changes within the MyMoneyFile engine.
@@ -106,6 +104,8 @@ public:
 public slots:
   void slotEditClicked(void);
   void slotDeleteClicked(void);
+  void slotRefreshView(void);
+  void slotReloadView(void) { slotRefreshView(); };
       
 protected:
   void resizeEvent(QResizeEvent*);

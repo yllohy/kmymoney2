@@ -32,6 +32,7 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 
+#include <kdeversion.h>
 #include <klocale.h>
 #include <kcombobox.h>
 #include <kpushbutton.h>
@@ -79,6 +80,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   m_formLayout->addLayout( Layout2 );
 
   m_accountStack = new QWidgetStack(this, "Stack");
+  
   // Checkings account
   view = m_specificView[MyMoneyAccount::Checkings] = new KLedgerViewCheckings(this);
   m_accountStack->addWidget(view, MyMoneyAccount::Checkings);
@@ -86,7 +88,8 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
     this, SLOT(slotSelectAccountAndTransaction(const QCString&, const QCString&)));
   connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
     SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
-
+  connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
+  
   // Savings account
   view = m_specificView[MyMoneyAccount::Savings] = new KLedgerViewSavings(this);
   m_accountStack->addWidget(view, MyMoneyAccount::Savings);
@@ -94,6 +97,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
     this, SLOT(slotSelectAccountAndTransaction(const QCString&, const QCString&)));
   connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
     SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
+  connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
 
   // Credit card account
   view = m_specificView[MyMoneyAccount::CreditCard] = new KLedgerViewCreditCard(this);
@@ -102,6 +106,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
     this, SLOT(slotSelectAccountAndTransaction(const QCString&, const QCString&)));
   connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
     SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
+  connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
 
   // Cash account
   view = m_specificView[MyMoneyAccount::Cash] = new KLedgerViewCash(this);
@@ -110,6 +115,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
     this, SLOT(slotSelectAccountAndTransaction(const QCString&, const QCString&)));
   connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
     SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
+  connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
 
   // Asset account
   view = m_specificView[MyMoneyAccount::Asset] = new KLedgerViewAsset(this);
@@ -118,31 +124,81 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
     this, SLOT(slotSelectAccountAndTransaction(const QCString&, const QCString&)));
   connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
     SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
-
+  connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
 
   m_formLayout->addWidget(m_accountStack);
-
-  // read the configuration
-  m_accountId = "";
+  setMinimumHeight(m_accountComboBox->minimumHeight() + m_accountStack->sizeHint().height());
+  
+  m_accountId = QCString();
 
   // setup connections
   connect(m_accountComboBox, SIGNAL(activated(const QString&)),
-          this, SLOT(slotAccountSelected(const QString&)));
+          this, SLOT(slotSelectAccount(const QString&)));
+}
+
+void KGlobalLedgerView::slotReloadView(void)
+{
+  // qDebug("KGlobalLedgerView::slotReloadView()");
+  
+  // make sure to determine the current account from scratch
+  m_accountId = QCString();
+  
+  slotRefreshView();
+}
+
+void KGlobalLedgerView::slotRefreshView(void)
+{
+  QCString id = m_accountId;
+
+  // qDebug("KGlobalLedgerView::slotRefreshView()");
+  
+  // load the combobox from scratch and determine the current account  
+  loadAccounts();
+
+  // if the current account differs from the previous selection
+  // then select the correct ledgerview first and force loading
+  // the newly selected account
+  if(m_accountId != id) {
+    id = m_accountId;
+    m_accountId = QCString();
+    slotSelectAccount(id);
+  } else if(m_accountId.isEmpty()) {
+    m_accountId = QCString();
+    slotSelectAccount(m_accountId);
+  } else if(m_currentView != 0) {
+    m_currentView->refreshView();
+  } else
+    qFatal("Houston: we have a problem in KGlobalLedgerView::slotRefreshView()");
+  
+  m_accountComboBox->setEnabled(m_accountComboBox->count() > 0);
 }
 
 void KGlobalLedgerView::loadAccounts(void)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
 
+  // qDebug("KGlobalLedgerView::loadAccounts()");
   m_accountComboBox->clear();
 
   MyMoneyAccount acc;
-  QCStringList::ConstIterator it_s;
 
+  // check if the current account still exists and make it the
+  // current account
+  if(!m_accountId.isEmpty()) {
+    try {
+      acc = file->account(m_accountId);
+    } catch(MyMoneyException *e) {
+      delete e;
+      m_accountId = QCString();
+    }
+  }
+
+  // load all asset and liability accounts into the combobox  
+  QCStringList::ConstIterator it_s;
   acc = file->asset();
   for(it_s = acc.accountList().begin(); it_s != acc.accountList().end(); ++it_s) {
     m_accountComboBox->insertItem(file->account(*it_s).name());
-    if(m_accountId == "") {
+    if(m_accountId.isEmpty()) {
       m_accountId = *it_s;
     }
   }
@@ -150,7 +206,7 @@ void KGlobalLedgerView::loadAccounts(void)
   acc = file->liability();
   for(it_s = acc.accountList().begin(); it_s != acc.accountList().end(); ++it_s) {
     m_accountComboBox->insertItem(file->account(*it_s).name());
-    if(m_accountId == "") {
+    if(m_accountId.isEmpty()) {
       m_accountId = *it_s;
     }
   }
@@ -161,44 +217,78 @@ KGlobalLedgerView::~KGlobalLedgerView()
   delete m_formLayout;
 }
 
-void KGlobalLedgerView::show()
+const bool KGlobalLedgerView::slotSelectAccount(const QString& accountName)
 {
-  QWidget::show();
+  // qDebug("KGlobalLedgerView::slotSelectAccount(const QString& accountName)");
   
-  if(m_accountId == "")
-    QTimer::singleShot(0, this, SLOT(reloadView()));
-    
-  // only show selection box if filled with at least one account
-  m_accountComboBox->setEnabled(m_accountComboBox->count() > 0);
-  
-  emit signalViewActivated();
-}
-
-void KGlobalLedgerView::hide()
-{
-  for(int i = 0; i < MyMoneyAccount::MaxAccountTypes; ++i) {
-    if(m_specificView[i] != 0)
-      m_specificView[i]->hide();
+  QCString id = MyMoneyFile::instance()->nameToAccount(accountName);
+  bool     rc = false;
+  if(!id.isEmpty()) {
+    rc = slotSelectAccount(id);
   }
+  return rc;
 }
 
-void KGlobalLedgerView::reloadView(void)
+const bool KGlobalLedgerView::slotSelectAccount(const QCString& id, const bool reconciliation)
 {
-  loadAccounts();
-  selectAccount(m_accountId, "", false, true);
+  bool    rc = false;
+
+  // qDebug("KGlobalLedgerView::slotSelectAccount(const QCString& id, const bool reconciliation)");
   
-  // only show selection box if filled with at least one account
-  m_accountComboBox->setEnabled(m_accountComboBox->count() > 0);
+  // cancel any pending edit operation in the ledger views
+  emit cancelEdit();
+
+  if(!id.isEmpty()) {
+    // if the account id differs, then we have to do something
+    MyMoneyAccount acc = MyMoneyFile::instance()->account(id);
+    if(m_accountId != id) {
+      if(m_specificView[acc.accountType()] != 0) {
+        m_accountStack->raiseWidget(acc.accountType());
+        m_currentView = m_specificView[acc.accountType()];
+        m_currentView->slotSelectAccount(id);
+        m_accountComboBox->setCurrentItem(acc.name());
+        rc = true;
+
+      } else {
+        QString msg = "Specific ledger view for account type '" +
+          KMyMoneyUtils::accountTypeToString(acc.accountType()) + "' not yet implemented";
+        KMessageBox::sorry(0, msg, "Implementation problem");
+      }
+    } else {
+#if KDE_VERSION < 310
+      // in KDE 3.1 and above, QWidgetStack::show() takes care of this
+      m_accountStack->raiseWidget(acc.accountType());
+#endif
+      rc = true;
+    }
+    
+  } else {
+    if(m_specificView[MyMoneyAccount::Checkings] != 0) {
+      m_accountStack->raiseWidget(MyMoneyAccount::Checkings);
+      m_currentView = m_specificView[MyMoneyAccount::Checkings];
+      m_currentView->slotSelectAccount(id);
+      
+    } else {
+      qFatal("Houston: we have a serious problem in KGlobalLedgerView");
+    }
+  }
+
+  // keep this as the current account
+  m_accountId = id;
+
+  if(reconciliation == true && m_currentView)
+    m_currentView->slotReconciliation();
+
+  return rc;
 }
 
-void KGlobalLedgerView::refreshView(void)
-{
-  if(m_accountId == "")
-    QTimer::singleShot(0, this, SLOT(reloadView()));
 
-  for(int i = 0; i < MyMoneyAccount::MaxAccountTypes; ++i) {
-    if(m_specificView[i] != 0)
-      m_specificView[i]->refreshView();
+void KGlobalLedgerView::slotSelectAccountAndTransaction(const QCString& accountId,
+                                                const QCString& transactionId)
+{
+  // if the selection of the account succeeded then select the desired transaction
+  if(slotSelectAccount(accountId)) {
+    m_currentView->selectTransaction(transactionId);
   }
 }
 
@@ -210,84 +300,27 @@ void KGlobalLedgerView::suspendUpdate(const bool suspend)
   }
 }
 
-void KGlobalLedgerView::slotSelectAccountAndTransaction(const QCString& accountId, const QCString& transactionId)
-{
-  selectAccount(accountId, transactionId);
-}
-
-void KGlobalLedgerView::selectAccount(const QCString& accountId, const QCString& transaction, const bool reconciliation, const bool forceLoad)
-{
-  slotCancelEdit();
-  if(accountId != "") {
-    MyMoneyAccount acc = MyMoneyFile::instance()->account(accountId);
-    if(m_specificView[acc.accountType()] != 0) {
-      m_accountStack->raiseWidget(acc.accountType());
-      m_currentView = m_specificView[acc.accountType()];
-      m_currentView->setCurrentAccount(accountId, forceLoad);
-      m_accountId = accountId;
-      m_accountComboBox->setCurrentItem(acc.name());
-      m_currentView->selectTransaction(transaction);
-    } else {
-      QString msg = "Specific ledger view for account type '" +
-        KMyMoneyUtils::accountTypeToString(acc.accountType()) + "' not yet implemented";
-      KMessageBox::sorry(0, msg, "Implementation problem");
-    }
-  } else {
-    m_accountId = "";
-    m_accountStack->raiseWidget(MyMoneyAccount::Checkings);
-    if(m_specificView[MyMoneyAccount::Checkings] != 0) {
-      m_currentView = m_specificView[MyMoneyAccount::Checkings];
-      m_currentView->setCurrentAccount(accountId, forceLoad);
-    }
-  }
-  if(reconciliation == true && m_currentView)
-    m_currentView->slotReconciliation();
-}
-
-void KGlobalLedgerView::slotAccountSelected(const QString& account)
-{
-  slotAccountSelected(account, false);
-}
-
-void KGlobalLedgerView::slotAccountSelected(const QString& account, const bool reconciliation)
-{
-  MyMoneyAccount acc;
-  QCStringList::ConstIterator it_s;
-
-  loadAccounts();
-  acc = MyMoneyFile::instance()->asset();
-  for(it_s = acc.accountList().begin(); it_s != acc.accountList().end(); ++it_s) {
-    if(account == MyMoneyFile::instance()->account(*it_s).name())
-      break;
-  }
-
-  if(it_s == acc.accountList().end()) {
-    acc = MyMoneyFile::instance()->liability();
-    for(it_s = acc.accountList().begin(); it_s != acc.accountList().end(); ++it_s) {
-      if(account == MyMoneyFile::instance()->account(*it_s).name())
-        break;
-    }
-  }
-
-  if(it_s != acc.accountList().end()) {
-    selectAccount(*it_s, "", reconciliation);
-  } else
-    selectAccount("", "", false);
-}
-
-void KGlobalLedgerView::slotShowTransactionForm(bool show)
-{
-  for(int i = 0; i < MyMoneyAccount::MaxAccountTypes; ++i) {
-    if(m_specificView[i] != 0)
-      m_specificView[i]->slotShowTransactionForm(show);
-  }
-}
 
 void KGlobalLedgerView::slotCancelEdit(void)
 {
-  for(int i = 0; i < MyMoneyAccount::MaxAccountTypes; ++i) {
-    if(m_specificView[i] != 0)
-      m_specificView[i]->slotCancelEdit();
-  }
+  // cancel any pending edit operation in the ledger views
+  emit cancelEdit();
 }
 
+void KGlobalLedgerView::show()
+{
+  QWidget::show();
+  
+  // only show selection box if filled with at least one account
+  m_accountComboBox->setEnabled(m_accountComboBox->count() > 0);
+
+  emit signalViewActivated();
+}
+
+void KGlobalLedgerView::hide()
+{
+  for(int i = 0; i < MyMoneyAccount::MaxAccountTypes; ++i) {
+    if(m_specificView[i] != 0)
+      m_specificView[i]->hide();
+  }
+}

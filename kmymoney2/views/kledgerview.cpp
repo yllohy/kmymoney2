@@ -20,6 +20,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <unistd.h>
+
 // ----------------------------------------------------------------------------
 // QT Includes
 
@@ -236,7 +238,6 @@ KLedgerView::KLedgerView(QWidget *parent, const char *name )
   m_register = 0;
   m_form = 0;
   m_transactionPtr = 0;
-  m_timer = 0;
 
   m_editPayee = 0;
   m_editCategory = 0;
@@ -258,9 +259,6 @@ KLedgerView::KLedgerView(QWidget *parent, const char *name )
 
 KLedgerView::~KLedgerView()
 {
-  if(m_timer != 0)
-    delete m_timer;
-    
   if(m_infoStack != 0)
     delete m_infoStack;
 
@@ -276,15 +274,14 @@ void KLedgerView::slotBlinkTimeout(void)
   }
 }
 
-void KLedgerView::setCurrentAccount(const QCString& accountId, const bool force)
+void KLedgerView::slotSelectAccount(const QCString& accountId)
 {
   slotCancelEdit();
   
   MyMoneyFile* file = MyMoneyFile::instance();
 
   if(!accountId.isEmpty()) {
-    if(accountId != m_account.id() || force == true) {
-
+    if(accountId != m_account.id()) {
 
       file->detach(m_account.id(), this);
 
@@ -292,7 +289,8 @@ void KLedgerView::setCurrentAccount(const QCString& accountId, const bool force)
         m_account = file->account(accountId);
         file->attach(m_account.id(), this);
         // force initial load
-        loadAccount();
+        m_transactionPtr = 0;
+        // loadAccount();
         enableWidgets(true);
       } catch(MyMoneyException *e) {
         qDebug("Unexpected exception in KLedgerView::setCurrentAccount");
@@ -306,11 +304,135 @@ void KLedgerView::setCurrentAccount(const QCString& accountId, const bool force)
     m_transactionPtr = 0;
     m_account = MyMoneyAccount();
     m_register->setTransactionCount(1);
-    refreshView();
+    fillForm();
+    fillSummary();
     enableWidgets(false);
+  }
+  refreshView();
+}
+
+
+void KLedgerView::refreshView(void)
+{
+  // if a transaction is currently selected, keep the id
+  QCString transactionId;
+  if(m_transactionPtr != 0)
+    transactionId = m_transactionPtr->id();
+  m_transactionPtr = 0;
+  m_transactionPtrVector.clear();
+    
+  // read in the configuration parameters for this view
+  KConfig *config = KGlobal::config();
+  config->setGroup("General Options");
+  m_ledgerLens = config->readBoolEntry("LedgerLens", true);
+  m_transactionFormActive = config->readBoolEntry("TransactionForm", true);
+
+  config->setGroup("List Options");
+  QDateTime defaultDate;
+  m_dateStart = config->readDateTimeEntry("StartDate", &defaultDate).date();
+
+  m_register->readConfig();
+
+  // in case someone changed the account info and we are called here
+  // via the observer's update function, we just reload ourselves.
+  MyMoneyFile* file = MyMoneyFile::instance();
+  try {
+    m_account = file->account(m_account.id());
+    // setup the filter to select the transactions we want to display
+    MyMoneyTransactionFilter filter(m_account.id());
+
+    if(m_inReconciliation == true) {
+      filter.addState(MyMoneyTransactionFilter::notReconciled);
+      filter.addState(MyMoneyTransactionFilter::cleared);
+    } else
+      filter.setDateFilter(m_dateStart, QDate());
+
+    // get the list of transactions
+    m_transactionList = file->transactionList(filter);
+    
+  } catch(MyMoneyException *e) {
+    delete e;
+    m_account = MyMoneyAccount();
+    m_transactionList.clear();
+  }
+
+  updateView(transactionId);
+}
+
+void KLedgerView::updateView(const QCString& transactionId)
+{
+  //qDebug("KLedgerView::updateView()");
+
+  // setup the transaction pointer array and the balance information
+  setupPointerAndBalanceArrays();
+
+  // set the number of transactions plus one for new entries
+  //m_register->setTransactionCount(m_transactionList.count()+1);
+
+  // show transaction form if selected
+  slotShowTransactionForm(m_transactionFormActive);
+
+  // select the last selected transaction or the one beyond the last one
+  selectTransaction(transactionId);
+}
+
+void KLedgerView::setupPointerAndBalanceArrays(void)
+{
+  int   i;
+
+  QValueList<MyMoneyTransaction>::ConstIterator it_t;
+
+  // setup the pointer vector
+  m_transactionPtrVector.clear();
+  m_transactionPtrVector.resize(m_transactionList.size());
+  m_transactionPtrVector.setAccountId(m_account.id());
+
+  for(i = 0, it_t = m_transactionList.begin(); it_t != m_transactionList.end(); ++it_t) {
+    m_transactionPtrVector.insert(i, &(*it_t));
+    ++i;
+  }
+  m_transactionPtrVector.resize(i);
+
+  // sort the transactions
+  m_transactionPtrVector.sort();
+
+  // calculate the balance for each item. At the same time
+  // we figure out the row where the current date mark should
+  // be shown if it's sorted by post date.
+
+  MyMoneyMoney balance(0);
+  m_balance.resize(i, balance);
+
+  bool dateMarkPlaced = false;
+  m_register->setCurrentDateIndex();    // turn off date mark
+
+  try {
+    balance = MyMoneyFile::instance()->balance(accountId());
+    // the trick is to go backwards ;-)
+
+    while(--i >= 0) {
+      m_balance[i] = balance;
+      balance -= m_transactionPtrVector[i]->split(accountId()).value();
+      if(m_transactionPtrVector.sortType() == KTransactionPtrVector::SortPostDate) {
+        if(m_transactionPtrVector[i]->postDate() > QDate::currentDate()) {
+          m_register->setCurrentDateIndex(i+1);
+
+        } else if(dateMarkPlaced == false) {
+          m_register->setCurrentDateIndex(i+1);
+          dateMarkPlaced = true;
+        }
+      }
+    }
+  } catch(MyMoneyException *e) {
+    if(!accountId().isEmpty())
+      qDebug("Unexpected exception in KLedgerView::setupPointerAndBalanceArrays");
+    delete e;
   }
 }
 
+
+
+#if 0
 void KLedgerView::reloadAccount(const bool repaint)
 {
   // in case someone changed the account info and we are called here
@@ -318,8 +440,12 @@ void KLedgerView::reloadAccount(const bool repaint)
   MyMoneyFile* file = MyMoneyFile::instance();
   m_account = file->account(m_account.id());
 
-  // get a current transaction list for the account
-  m_transactionList = file->transactionList(m_account.id());
+  // setup the filter to select the transactions we want to display
+  MyMoneyTransactionFilter filter(m_account.id());
+  filter.setDateFilter(m_dateStart, QDate());
+
+  // get the list of transactions
+  m_transactionList = file->transactionList(filter);
 
   // filter all unwanted transactions
   updateView();
@@ -374,20 +500,30 @@ void KLedgerView::refreshView(void)
   m_transactionFormActive = config->readBoolEntry("TransactionForm", true);
   m_register->readConfig();
 
-  updateView();
-}
-
-void KLedgerView::updateView(void)
-{
-  KConfig *config = KGlobal::config();
   config->setGroup("List Options");
+  QDateTime defaultDate;
+  m_dateStart = config->readDateTimeEntry("StartDate", &defaultDate).date();
+
   QCString id;
   if(m_transactionPtr != 0)
     id = m_transactionPtr->id();
     
-  QDateTime defaultDate;
-  m_dateStart = config->readDateTimeEntry("StartDate", &defaultDate).date();
+  // get a current transaction list for the account
+  MyMoneyTransactionFilter filter(m_account.id());
+  filter.setDateFilter(m_dateStart, QDate());
+  m_transactionList = MyMoneyFile::instance()->transactionList(filter);
 
+  updateView();
+  
+  selectTransaction(id);
+}
+
+void KLedgerView::updateView(void)
+{
+  QCString id;
+  if(m_transactionPtr != 0)
+    id = m_transactionPtr->id();
+    
   filterTransactions();
 
   slotShowTransactionForm(m_transactionFormActive);
@@ -398,11 +534,6 @@ void KLedgerView::updateView(void)
     selectTransaction(id);
     
   resizeEvent(NULL);
-}
-
-void KLedgerView::enableWidgets(const bool enable)
-{
-  m_form->setEnabled(enable);
 }
 
 void KLedgerView::filterTransactions(void)
@@ -426,7 +557,9 @@ void KLedgerView::filterTransactions(void)
       || s.reconcileFlag() == MyMoneySplit::Frozen) {
         continue;
       }
-    } else {
+    }
+#if 0    
+     else {
 
       // only show those transactions, that are posted after the configured start date
       if((*it_t).postDate() < m_dateStart)
@@ -434,6 +567,7 @@ void KLedgerView::filterTransactions(void)
 
       // add more filters before this line ;-)
     }
+#endif
 
     // Wow, we made it through all the filters. Guess we have to show this one
     m_transactionPtrVector.insert(i, &(*it_t));
@@ -476,13 +610,18 @@ void KLedgerView::filterTransactions(void)
     delete e;
   }
 }
+#endif
 
+void KLedgerView::enableWidgets(const bool enable)
+{
+  m_form->setEnabled(enable);
+}
 
 void KLedgerView::update(const QCString& /* accountId */)
 {
   if(m_suspendUpdate == false) {
     try {
-      reloadAccount(true);
+      refreshView();
     } catch(MyMoneyException *e) {
       qDebug("Unexpected exception in KLedgerView::update for '%s'", m_account.id().data());
       delete e;
@@ -496,7 +635,7 @@ void KLedgerView::suspendUpdate(const bool suspend)
   if(m_suspendUpdate == true
   && suspend == false) {
     m_suspendUpdate = false;
-    if(m_account.id() != "")
+    if(!m_account.id().isEmpty())
       update("");
     
   } else
@@ -593,7 +732,8 @@ bool KLedgerView::selectTransaction(const QCString& transactionId)
 {
   bool  rc = false;
   int   idx = -1;
-  
+
+  // qDebug("KLedgerView::selectTransaction(%s)", transactionId.data());
   if(!transactionId.isEmpty()) {
     for(unsigned i = 0; i < m_transactionPtrVector.count(); ++i) {
       if(m_transactionPtrVector[i]->id() == transactionId) {
@@ -608,6 +748,8 @@ bool KLedgerView::selectTransaction(const QCString& transactionId)
   }
 
   if(idx != -1) {
+    // qDebug("KLedgerView::selectTransaction index is %d", idx);
+    m_transactionPtr = m_transactionPtrVector[idx];
     m_register->setCurrentTransactionIndex(idx);
     m_register->ensureTransactionVisible();
     m_register->repaintContents(false);
@@ -616,7 +758,6 @@ bool KLedgerView::selectTransaction(const QCString& transactionId)
     emit transactionSelected();
     rc = true;
   }
-
   return rc;
 }
 
@@ -1236,11 +1377,7 @@ void KLedgerView::slotShowTransactionForm(bool visible)
     // using a timeout is the only way, I got the 'ensureTransactionVisible'
     // working when coming from hidden form to visible form. I assume, this
     // has something to do with the delayed update of the display somehow.
-    if(m_timer == 0) {
-    	m_timer = new QTimer();
-      connect( m_timer, SIGNAL(timeout()), this, SLOT(timerDone()) );
-      m_timer->start(50, true);
-    }
+    QTimer::singleShot(10, this, SLOT(timerDone()));
   }
 }
 
@@ -1248,8 +1385,6 @@ void KLedgerView::timerDone(void)
 {
   m_register->ensureTransactionVisible();
   m_register->repaintContents(false);
-  delete m_timer;
-  m_timer = 0;
 }
 
 const QCString KLedgerView::str2action(const QString &action) const
@@ -1547,10 +1682,7 @@ void KLedgerView::slotEndEdit(void)
       if(m_transaction.splitCount() < 2) {
         qDebug("Transaction has less than 2 splits");
       }
-      if(m_transaction.splitSum() != 0) {
-        qDebug("Splits of transaction do not sum up to 0");
-      }
-  
+      
       // differentiate between add and modify
       QCString id;
       if(m_transactionPtr == 0) {
@@ -1795,8 +1927,7 @@ void KLedgerView::slotSortOrderChanged(int order)
 
   // make sure the transaction stays selected. It's position might
   // have changed within the register while re-sorting
-  selectTransaction(id);
-  updateView();
+  updateView(id);
 }
 
 const bool KLedgerView::isEditMode(void) const

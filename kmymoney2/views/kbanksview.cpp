@@ -521,7 +521,7 @@ void KAccountsView::suspendUpdate(const bool suspend)
   m_suspendUpdate = suspend;
 }
 
-void KAccountsView::refreshView(void)
+void KAccountsView::slotRefreshView(void)
 {
   refresh(m_selectedAccount);
 }
@@ -656,6 +656,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
 
           QCStringList subAccounts = m_accountMap[*it].accountList();
           if (subAccounts.count() >= 1) {
+
             showSubAccounts(subAccounts, accountItem, i18n(""));
           }
         }

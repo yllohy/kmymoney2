@@ -61,7 +61,7 @@ class MyMoneyTransaction;
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.38 2003/08/11 05:36:15 ipwizard Exp $
+  * $Id: kmymoneyview.h,v 1.39 2003/08/31 19:31:49 ipwizard Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -84,7 +84,7 @@ private:
   };
 
   KHomeView *m_homeView;
-  KAccountsView *accountsView;
+  KAccountsView *m_accountsView;
   KCategoriesView *m_categoriesView;
   KPayeesView *m_payeesView;
   KScheduledView *m_scheduledView;

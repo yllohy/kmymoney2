@@ -42,7 +42,7 @@ class QVBoxLayout;
   * quicken and m$-money.
   *
   * @author Michael Edwardes
-  * $Id: khomeview.h,v 1.5 2003/08/03 07:34:21 ipwizard Exp $
+  * $Id: khomeview.h,v 1.6 2003/08/31 19:31:49 ipwizard Exp $
   *
   * @short A view containing the home page for kmymoney2.
 **/
@@ -88,8 +88,6 @@ public:
   **/
   void show();
 
-  void refreshView(void);
-  
 protected:
   /**
     * Definition of bitmap used as argument for showAccounts().
@@ -108,6 +106,9 @@ protected:
   
 public slots:
   void slotOpenURL(const KURL &url, const KParts::URLArgs& args);
+
+  void slotRefreshView(void);
+  void slotReloadView(void) { slotRefreshView(); };
 };
 
 #endif

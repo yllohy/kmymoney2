@@ -227,25 +227,6 @@ public:
   void show();
 
   /**
-    * This method is called by KGlobalLedgerView::selectAccount to set
-    * the current account to @p accountId. It calls
-    * loadAccount() to do the actual loading of data from the engine.
-    * If will also register
-    * this object as an observer with the engine's account represented by
-    * @p accountId which causes update() to be called whenever the engine's
-    * representation of the account changes.
-    *
-    * Any previously registered observer will be detached.
-    *
-    * @param accountId id of the account to be loaded.
-    * @param force if true, the account is loaded independant if the
-    *              account is already loaded or not
-    *
-    * @see update
-    */
-  void setCurrentAccount(const QCString& accountId, const bool force=false);
-
-  /**
     * This is the observer function called by the MyMoneyFile notify
     * method when the account has been changed. It forces a reloadAccount() of the
     * account into the ledger.
@@ -353,6 +334,23 @@ public:
 
 public slots:
   /**
+    * This slot is called by KGlobalLedgerView::selectAccount to set
+    * the current account to @p accountId. It calls
+    * loadAccount() to do the actual loading of data from the engine.
+    * If will also register
+    * this object as an observer with the engine's account represented by
+    * @p accountId which causes update() to be called whenever the engine's
+    * representation of the account changes.
+    *
+    * Any previously registered observer will be detached.
+    *
+    * @param accountId id of the account to be loaded.
+    *
+    * @see update
+    */
+  void slotSelectAccount(const QCString& accountId);
+
+  /**
     * This method refreshes the current view. This includes reading the
     * configuration options for the filters and calling updateView()
     */
@@ -362,7 +360,7 @@ public slots:
     * This method refreshes the current view including rebuild
     * of the filters by calling filterTransactions().
     */
-  virtual void updateView(void);
+  virtual void updateView(const QCString& transactionId);
 
   /**
     *
@@ -637,6 +635,7 @@ protected:
     */
   virtual void enableWidgets(const bool enable);
 
+#if 0  
   /**
     * This method reloads the account data from the engine, refreshes
     * the view using refreshView() and repaints the register if not
@@ -663,6 +662,8 @@ protected:
     * is available, it rebuilds the m_balance vector.
     */
   void filterTransactions(void);
+#endif
+  void setupPointerAndBalanceArrays(void);
 
   /**
     * This method converts the actions strings contained in a split
@@ -848,9 +849,7 @@ private:
   void createSecondSplit(void);
 
 private:
-  QTimer*       m_timer;
-
-  /**
+   /**
     * This is the blink timer used to toggle the color for
     * erronous transactions in the register. The current state (on/off)
     * is kept in m_blinkState.
