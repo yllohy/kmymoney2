@@ -351,13 +351,31 @@ void KMyMoney2App::slotFileSaveAs()
                                                i18n("*.kmy|KMyMoney files\n"
                                                "*.*|All files"), this, i18n("Save as..."));
 
+	//
+	//If there is no file extension, then append a .kmy at the end of the file name.
+	//If there is a file extension, make sure it is .kmy, delete any others.
+	//
   if(!newName.isEmpty())
   {
-    //always add a .kmy onto the end of the file name.
-    if(newName.find(".kmy", 0, FALSE) == -1)
-    {
-      newName.append(".kmy");
-    }
+		//find last . delminator
+		int nLoc = newName.findRev('.');
+    if(nLoc != -1)
+		{
+			QString strExt, strTemp;
+      strTemp = newName.left(nLoc + 1);
+			strExt = newName.right(newName.length() - (nLoc + 1));
+			if(strExt.find("kmy", 0, FALSE) == -1)
+			{
+				strTemp.append("kmy");
+
+				//append to make complete file name
+				newName = strTemp;
+			}
+		}
+		else
+		{
+			newName.append(".kmy");
+		}
 
     QFileInfo saveAsInfo(newName);
 //    addRecentFile(newName);
