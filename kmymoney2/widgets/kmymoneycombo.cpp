@@ -34,8 +34,8 @@ kMyMoneyCombo::kMyMoneyCombo(QWidget *w, const char *name)
   init();
 }
 
-kMyMoneyCombo::kMyMoneyCombo(bool rw, QWidget *w)
-  : KComboBox(rw, w)
+kMyMoneyCombo::kMyMoneyCombo(bool rw, QWidget *w, const char *name)
+  : KComboBox(rw, w, name)
 {
   init();
 }
@@ -137,6 +137,7 @@ void kMyMoneyCombo::setCurrentItem(const QString& str)
 
   // if not found, select the first one
   if(i == count()) {
+    qDebug("kMyMoneyCombo::setCurrentItem: '%s' not found", str.latin1());
     KComboBox::setCurrentItem(0);
   }
 }
