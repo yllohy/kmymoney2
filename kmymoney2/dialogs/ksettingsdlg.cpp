@@ -881,8 +881,6 @@ void KSettingsDlg::setPageFont()
   QVBox *qvboxMainFrame = addVBoxPage( i18n("Fonts"), i18n("Font settings"),
     DesktopIcon("font"));
 
-  QVBoxLayout* Form1Layout = new QVBoxLayout( qvboxMainFrame, 11, 6, "Form1Layout");
-
   QTabWidget* tabWidget2 = new QTabWidget( qvboxMainFrame, "tabWidget2" );
 
   QWidget* tab = new QWidget( tabWidget2, "tab" );
@@ -898,7 +896,6 @@ void KSettingsDlg::setPageFont()
   m_kfontchooserCell = new KFontChooser( tab_2, "m_kfontchooserCell" );
   tabLayout_2->addWidget( m_kfontchooserCell );
   tabWidget2->insertTab( tab_2, QString("") );
-  Form1Layout->addWidget( tabWidget2 );
 
   tabWidget2->changeTab( tab, i18n( "Header Font" ) );
   tabWidget2->changeTab( tab_2, i18n( "Cell Font" ) );
