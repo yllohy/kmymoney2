@@ -43,6 +43,15 @@
 #include "../dialogs/kaccountselectdlg.h"
 #include "../kmymoney2.h"
 
+// define this to debug the code. Using external filters
+// while debugging did not work to good for me, so I added
+// this code.
+// #define DEBUG_IMPORT
+
+#ifdef DEBUG_IMPORT
+#warning "DEBUG_IMPORT defined --> external filter not available!!!!!!!"
+#endif
+
 MyMoneyQifReader::MyMoneyQifReader()
 {
   m_skipAccount = false;
@@ -143,8 +152,10 @@ void MyMoneyQifReader::slotProcessBuffers(void)
     m_data.remove(it);
   }
   m_data.clear();
-  
+
+#ifndef DEBUG_IMPORT
   emit importFinished();
+#endif
 }
 
 void MyMoneyQifReader::processQifLine(void)
@@ -189,7 +200,24 @@ const bool MyMoneyQifReader::startImport(void)
 
   m_file = new QFile(m_filename);
   if(m_file->open(IO_ReadOnly)) {
-    
+
+#ifdef DEBUG_IMPORT
+    Q_LONG len;
+
+    while(!m_file->atEnd()) {
+      len = m_file->readBlock(m_buffer, sizeof(m_buffer));
+      if(len == -1) {
+        qWarning("Failed to read block from QIF import file");
+      } else {
+        QByteArray data;
+        data.duplicate(m_buffer, len);
+        m_data.append(data);
+        slotProcessBuffers();
+      }
+    }
+    emit importFinished();
+
+#else    
     // start filter process, use 'cat -' as the default filter
     m_filter.clearArguments();
     if(m_qifProfile.filterScriptImport().isEmpty()) {
@@ -208,6 +236,7 @@ const bool MyMoneyQifReader::startImport(void)
     } else {
       qDebug("starting filter failed :-(");
     }
+#endif
   }
   return rc;
 }
@@ -216,6 +245,26 @@ const bool MyMoneyQifReader::finishImport(void)
 {
   bool  rc = false;
   
+#ifdef DEBUG_IMPORT
+  delete m_file;
+  m_file = 0;
+
+  // remove the Don't ask again entries
+  KConfig* config = KGlobal::config();
+  config->setGroup(QString::fromLatin1("Notification Messages"));
+  QStringList::ConstIterator it;
+
+  for(it = m_dontAskAgain.begin(); it != m_dontAskAgain.end(); ++it) {
+    config->deleteEntry(*it);
+  }
+  config->sync();
+  m_dontAskAgain.clear();
+  m_accountTranslation.clear();
+
+  signalProgress(-1, -1);
+  rc = !m_userAbort;
+  
+#else  
   if(!m_filter.isRunning()) {
     delete m_file;
     m_file = 0;
@@ -237,13 +286,16 @@ const bool MyMoneyQifReader::finishImport(void)
   } else {
     qWarning("MyMoneyQifReader::finishImport() must not be called while the filter\n\tprocess is still running.");
   }
+#endif
   return rc;
 }
 
 void MyMoneyQifReader::processQifEntry(void)
 {
+  int exclamationCnt = 1;
+
   try {
-    QString category = extractLine('!');
+    QString category = extractLine('!', exclamationCnt++);
     if(!category.isEmpty()) {
 
       while(!category.isEmpty()) {
@@ -277,17 +329,16 @@ void MyMoneyQifReader::processQifEntry(void)
             qWarning("Unknown '!Type:%s' category", category.latin1());
 
         } else if(category == "Account") {
-          m_account = MyMoneyAccount();
           processAccountEntry();
 
         } else if(category == "Option:AutoSwitch") {
           m_entryType = EntryAccount;
-          category = extractLine('!', 2);    // is there another record?
+          category = extractLine('!', exclamationCnt++);    // is there another record?
           continue;
 
         } else if(category == "Clear:AutoSwitch") {
           m_entryType = EntryTransaction;
-          category = extractLine('!', 2);    // is there another record?
+          category = extractLine('!', exclamationCnt++);    // is there another record?
           continue;
 
         } else
@@ -354,8 +405,9 @@ const QString MyMoneyQifReader::extractLine(const QChar id, int cnt)
 
 void MyMoneyQifReader::processMSAccountEntry(const MyMoneyAccount::accountTypeE accountType)
 {
-  m_account = MyMoneyAccount();
   if(extractLine('P') == m_qifProfile.openingBalanceText()) {
+    m_account = MyMoneyAccount();
+    m_account.setAccountType(accountType);
     QString txt = extractLine('T');
     MyMoneyMoney balance = m_qifProfile.value('T', txt);
     m_account.setOpeningBalance(balance);
@@ -368,12 +420,47 @@ void MyMoneyQifReader::processMSAccountEntry(const MyMoneyAccount::accountTypeE 
       name = name.mid(1, name.length()-2);
     }
     m_account.setName(name);
-    m_account.setAccountType(accountType);
     selectOrCreateAccount(Select, m_account);
-    
+
   } else {
-    selectOrCreateAccount(Select, m_account);
-    processTransactionEntry();
+    // for some unknown reason, Quicken 2001 generates the following (somewhat
+    // misleading) sequence of lines:
+    //
+    //  1: !Account
+    //  2: NAT&T Universal
+    //  3: DAT&T Univers(...xxxx) [CLOSED]
+    //  4: TCCard
+    //  5: ^
+    //  6: !Type:CCard
+    //  7: !Account
+    //  8: NCFCU Visa
+    //  9: DRick's CFCU Visa card (...xxxx)
+    // 10: TCCard
+    // 11: ^
+    // 12: !Type:CCard
+    // 13: D1/ 4' 1
+    //
+    // Lines 1-5 are processed via processQifEntry() and processAccountEntry()
+    // Then Quicken issues line 6 but since the account does not carry any
+    // transaction does not write an end delimiter. Arrrgh! So we end up with
+    // a QIF entry comprising of lines 6-11 and end up in this routine. Actually,
+    // lines 7-11 are the leadin for the next account. So we check here if
+    // the !Type:xxx record also contains an !Account line and process the
+    // entry as required.
+    //
+    int exclamationCnt = 1;
+    QString category;
+    do {
+      category = extractLine('!', exclamationCnt++);
+    } while(!category.isEmpty() && category != "Account");
+
+    // we have such a weird empty account
+    if(category == "Account") {
+      processAccountEntry();
+    } else {
+      selectOrCreateAccount(Select, m_account);
+      processTransactionEntry();
+    }
   }
 }
 
@@ -662,30 +749,43 @@ const QCString MyMoneyQifReader::checkCategory(const QString& name, const MyMone
   QCString accountId;
   MyMoneyFile *file = MyMoneyFile::instance();
   MyMoneyAccount account;
+  bool found = true;
   
   if(!name.isEmpty()) {
-    accountId = file->categoryToAccount(name);
-    if(accountId.isEmpty()) {
-      // qDebug("Category '%s' not found", name.latin1());
-      // qDebug("Parent is '%s'", file->parentName(name).latin1());
-      accountId = file->categoryToAccount(file->parentName(name));
+    // The category might be constructed with an arbitraty depth (number of
+    // colon delimited fields). We try to find a parent account within this
+    // hierarchy by searching the following sequence:
+    //
+    //    aaaa:bbbb:cccc:ddddd
+    //
+    // 1. search aaaa:bbbb:cccc:dddd, create nothing
+    // 2. search aaaa:bbbb:cccc     , create dddd
+    // 3. search aaaa:bbbb          , create cccc:dddd
+    // 4. search aaaa               , create bbbb:cccc:dddd
+    // 5. don't search              , create aaaa:bbbb:cccc:dddd
 
-      if(!accountId.isEmpty()) {
+    account.setName(name);
+    QString accName;      // part to be created (right side in above list)
+    QString parent(name); // a possible parent part (left side in above list)
+    do {
+      accountId = file->categoryToAccount(parent);
+      if(accountId.isEmpty()) {
+        found = false;
+        // prepare next step
+        if(!accName.isEmpty())
+          accName.prepend(':');
+        accName.prepend(parent.section(':', -1));
+        account.setName(accName);
+        parent = parent.section(':', 0, -2);
+      } else if(!accName.isEmpty()) {
         account.setParentAccountId(accountId);
+      }
+    }
+    while(!parent.isEmpty() && accountId.isEmpty());
 
-        int pos = name.find(':');
-        if(pos != -1) {
-          account.setName(name.mid(pos+1));
-        } else
-          account.setName(name);
-      } else
-        account.setName(name);
-      
-      if(value >= 0 && value2 < 0)
-        account.setAccountType(MyMoneyAccount::Income);
-      else
-        account.setAccountType(MyMoneyAccount::Expense);
-
+    // if we did not find the category, we create it
+    if(!found) {
+      account.setAccountType((value >= 0 && value2 < 0) ? MyMoneyAccount::Income : MyMoneyAccount::Expense);
       selectOrCreateAccount(Select, account);
       accountId = account.id();
     }
@@ -767,6 +867,7 @@ void MyMoneyQifReader::selectOrCreateAccount(const SelectCreateMode mode, MyMone
   if(it != m_accountTranslation.end()) {
     try {
       account = file->account(*it);
+      m_account = account;
       return;
       
     } catch (MyMoneyException *e) {
