@@ -1,3 +1,10 @@
+2003-07-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * fixed setting of 'startup file options' in settings dialog when
+    the reset button is pressed
+  * added feature to select the last page viewed when starting the application
+  * use QPushButton::setPopup for the MORE button in the transaction form
+  * use the british english spelling Cheque
+
 2003-07-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added concept of preferred account
   * remove KDE specifics from MyMoneySchedule
