@@ -1,3 +1,6 @@
+2001-12-17 Michael Edwardes <mte@users.sourceforge.net>
+  * Fixed bug no 490015.
+
 2001-12-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * fixed Bug #490442
   * removed currency text from reconcile dialog elements

@@ -561,7 +561,12 @@ void KTransactionView::init(MyMoneyFile *file, MyMoneyBank bank, MyMoneyAccount 
  useall = true;
  usedate = false;
  userow = false;
- updateTransactionList(-1);
+
+  // Set the transaction list to have focus to grab it from the bank view
+  // BUG: 490015
+  transactionsTable->setFocus();
+
+  updateTransactionList(-1);
 }
 
 void KTransactionView::clear(void)
