@@ -38,12 +38,6 @@ public:
 
   void paintCell(QPainter *p, int row, int col, const QRect& r, bool /*selected*/);
   void paintFocus(QPainter *p, const QRect &cr);
-
-  QWidget* createEditor(int row, int col, bool initFromCell) const;
-	void clearCellWidget(int row, int col);
-  void insertWidget(int row, int col, QWidget* w);
-  QWidget* cellWidget(int row,int col) const;
-
   void setCurrentRow(int row);
   int currentRow(void) { return m_currentRow; }
   void setMaxRows(int row);
@@ -73,20 +67,17 @@ protected:
   void contentsMouseReleaseEvent( QMouseEvent* e );
   void contentsMouseDoubleClickEvent( QMouseEvent* e );
   bool eventFilter(QObject *o, QEvent *e);
+  void endEdit(int row, int col, bool accept, bool replace );
 
 public slots:
   /** No descriptions */
   virtual void setCurrentCell(int row, int col);
 
 private:
+  int m_key;
+
   /// array to be used to access the input widgets
   QWidget* m_colWidget[3];
-
-  /// point where mouse event happened
-  QPoint m_mousePoint;
-
-  /// button of mouse that caused the event
-  int m_mouseButton;
 
   /// the currently selected row (will be printed as selected)
   int m_currentRow;
@@ -112,7 +103,9 @@ signals: // Signals
   void signalEnter(void);
 
   // signalDelete is sent, when the Del-Key is pressed
-  void signalDelete(int row);
+  void signalDelete(void);
+
+  void signalCancelEdit(int key);
 };
 
 #endif

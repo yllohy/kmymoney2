@@ -139,68 +139,17 @@ void kMyMoneySplitTable::columnWidthChanged(int col)
     updateCell(i, col);
 }
 
-QWidget* kMyMoneySplitTable::createEditor(int row, int col, bool replace) const
+void kMyMoneySplitTable::endEdit(int row, int col, bool accept, bool replace )
 {
-  return QTable::createEditor(row, col, replace);
-/*
-  switch(col) {
-    case 0:   // category
-    case 1:   // memo
-    case 2:   // amount
-      return QTable::createEditor(row, col, replace);
-      break;
-    default:
-      qDebug("Unknown widget for KMyMoneySplitTable::createEditor in row %d and col %d", row, col);
-      break;
+  if(m_inlineEditMode) {
+    QTable::endEdit(row, col, accept, replace);
+    emit signalCancelEdit(m_key);
   }
-  return NULL;
-*/
 }
 
-void kMyMoneySplitTable::clearCellWidget(int row, int col)
-{
-  QTable::clearCellWidget(row, col);
-/*
-  qDebug("KMyMoneySplitTable::clearCellWidget in row %d and col %d", row, col);
-  switch(col) {
-    case 0:   // category
-    case 1:   // memo
-    case 2:   // amount
-      QTable::clearCellWidget(row, col);
-      break;
-
-    default:
-      qDebug("Unknown widget for KMyMoneySplitTable::clearCellWidget in row %d and col %d", row, col);
-      break;
-  }
-*/
-}
-
-QWidget* kMyMoneySplitTable::cellWidget(int row, int col)const
-{
-  return QTable::cellWidget(row, col);
-/*
-  if(col >= 0 && col <= 2)
-    return m_colWidget[col];
-
-  return (QWidget*)0;
-*/
-}
-
-void kMyMoneySplitTable::insertWidget(int row, int col, QWidget* w)
-{
-  QTable::insertWidget(row, col, w);
-/*
-  if(col >= 0 && col <= 2)
-    m_colWidget[col] = w;
-  else
-    qDebug("Unknown widget for KMyMoneySplitTable::insertWidget in row %d and col %d", row, col);
-*/
-}
 
 bool kMyMoneySplitTable::eventFilter(QObject *o, QEvent *e)
 {
-
   bool rc = false;
 
   if(e->type() == QEvent::KeyPress && !m_inlineEditMode) {
@@ -223,56 +172,44 @@ bool kMyMoneySplitTable::eventFilter(QObject *o, QEvent *e)
         emit signalEsc();
         break;
 
+      case Qt::Key_Delete:
+        emit signalDelete();
+        break;
+
+      case Qt::Key_Tab:
+        if((k->state() & Qt::ShiftButton) == 0) {
+          signalTab();
+        }
+        break;
+
       default:
         rc = false;
         break;
     }
   }
 
-  // if the key has not been processed here, forward it to
+  // if the event has not been processed here, forward it to
   // the base class implementation
-  if(rc == false)
-    rc = QTable::eventFilter(o, e);
+  if(rc == false) {
+    if(e->type() == QEvent::KeyPress
+    || e->type() == QEvent::KeyRelease) {
+      m_key = (static_cast<QKeyEvent *> (e))->key();
+      rc = false;
+    } else
+      rc = QTable::eventFilter(o, e);
+  }
 
   return rc;
-
-
-
-
-
-
-#if 0
-
-  return QScrollView::eventFilter(o, e); //QTable::eventFilter(o,e);
-
-  char *txt = 0;
-  if(e->type() == QEvent::MouseButtonPress)
-    txt = "MouseButtonPress";
-  else if(e->type() == QEvent::MouseButtonRelease)
-    txt = "MouseButtonRelease";
-
-  if(txt)
-    qDebug(txt);
-
-  if(e->type() == QEvent::MouseButtonPress) {
-    QMouseEvent *m = static_cast<QMouseEvent *> (e) ;
-    m_mousePoint = m->pos();
-    m_mouseButton = m->button();
-  }
-  return QTable::eventFilter(o,e);
-#endif
 }
 
 
 void kMyMoneySplitTable::contentsMousePressEvent( QMouseEvent* e )
 {
-  m_mousePoint = e->pos();
-  m_mouseButton = e->button();
+  emit clicked( rowAt(e->pos().y()), columnAt(e->pos().x()), e->button(), e->pos() );
 }
 
 void kMyMoneySplitTable::contentsMouseReleaseEvent( QMouseEvent* e )
 {
-  emit clicked( rowAt(e->pos().y()), columnAt(e->pos().x()), e->button(), e->pos() );
 }
 
 void kMyMoneySplitTable::contentsMouseDoubleClickEvent( QMouseEvent *e )
@@ -290,6 +227,7 @@ void kMyMoneySplitTable::setCurrentCell(int row, int col)
 void kMyMoneySplitTable::setCurrentRow(int row)
 {
   m_currentRow = row;
+  setCurrentCell(row, 0);
 }
 
 void kMyMoneySplitTable::setMaxRows(int row)
