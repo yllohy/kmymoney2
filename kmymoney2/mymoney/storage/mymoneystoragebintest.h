@@ -323,13 +323,13 @@ void testReadOldMyMoneyFile(const QString version, unsigned long magic) {
   sp1 = t.splits()[0];
   sp2 = t.splits()[1];
 
-  CPPUNIT_ASSERT(sp1.account() == "A000003");
+  CPPUNIT_ASSERT(sp1.accountId() == "A000003");
   CPPUNIT_ASSERT(sp1.value() == -123);
   CPPUNIT_ASSERT(sp1.memo() == "Memo1");
   CPPUNIT_ASSERT(sp1.reconcileFlag() == MyMoneySplit::Cleared);
   CPPUNIT_ASSERT(sp1.reconcileDate() == QDate());
 
-  CPPUNIT_ASSERT(sp2.account() == "A000002");
+  CPPUNIT_ASSERT(sp2.accountId() == "A000002");
   CPPUNIT_ASSERT(sp2.value() == 123);
   CPPUNIT_ASSERT(sp2.memo() == "Memo1");
   CPPUNIT_ASSERT(sp2.reconcileFlag() == MyMoneySplit::Cleared);
@@ -353,13 +353,13 @@ void testReadOldMyMoneyFile(const QString version, unsigned long magic) {
   sp1 = t.splits()[0];
   sp2 = t.splits()[1];
 
-  CPPUNIT_ASSERT(sp1.account() == "A000003");
+  CPPUNIT_ASSERT(sp1.accountId() == "A000003");
   CPPUNIT_ASSERT(sp1.value() == 356);
   CPPUNIT_ASSERT(sp1.memo() == "Memo2");
   CPPUNIT_ASSERT(sp1.reconcileFlag() == MyMoneySplit::Reconciled);
   CPPUNIT_ASSERT(sp1.reconcileDate() == QDate(4,5,6));
 
-  CPPUNIT_ASSERT(sp2.account() == "A000004");
+  CPPUNIT_ASSERT(sp2.accountId() == "A000004");
   CPPUNIT_ASSERT(sp2.value() == -356);
   CPPUNIT_ASSERT(sp2.memo() == "Memo2");
   CPPUNIT_ASSERT(sp2.reconcileFlag() == MyMoneySplit::Reconciled);
@@ -380,13 +380,13 @@ void testReadOldMyMoneyFile(const QString version, unsigned long magic) {
   sp1 = t.splits()[0];
   sp2 = t.splits()[1];
 
-  CPPUNIT_ASSERT(sp1.account() == "A000004");
+  CPPUNIT_ASSERT(sp1.accountId() == "A000004");
   CPPUNIT_ASSERT(sp1.value() == 356);
   CPPUNIT_ASSERT(sp1.memo() == "Memo5");
   CPPUNIT_ASSERT(sp1.reconcileFlag() == MyMoneySplit::NotReconciled);
   CPPUNIT_ASSERT(sp1.reconcileDate() == QDate());
 
-  CPPUNIT_ASSERT(sp2.account() == "A000003");
+  CPPUNIT_ASSERT(sp2.accountId() == "A000003");
   CPPUNIT_ASSERT(sp2.value() == -356);
   CPPUNIT_ASSERT(sp2.memo() == "Memo5");
   CPPUNIT_ASSERT(sp2.reconcileFlag() == MyMoneySplit::NotReconciled);

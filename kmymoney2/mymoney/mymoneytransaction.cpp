@@ -62,7 +62,7 @@ const bool MyMoneyTransaction::accountReferenced(const QString& id) const
   QValueList<MyMoneySplit>::ConstIterator it;
 
   for(it = m_splits.begin(); it != m_splits.end(); ++it) {
-    if((*it).account() == id)
+    if((*it).accountId() == id)
       return true;
   }
   return false;
@@ -70,7 +70,7 @@ const bool MyMoneyTransaction::accountReferenced(const QString& id) const
 
 void MyMoneyTransaction::addSplit(MyMoneySplit split)
 {
-  split.setID(nextSplitID());
+  split.setId(nextSplitID());
   m_splits.append(split);
 }
 

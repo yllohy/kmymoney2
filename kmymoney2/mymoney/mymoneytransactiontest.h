@@ -122,8 +122,8 @@ void testInequality() {
 
 void testAddSplits() {
 	MyMoneySplit split1, split2;
-	split1.setAccount("A000001");
-	split2.setAccount("A000002");
+	split1.setAccountId("A000001");
+	split2.setAccountId("A000002");
 
 	try {
 		CPPUNIT_ASSERT(m->accountReferenced("A000001") == false);
@@ -131,8 +131,8 @@ void testAddSplits() {
 		m->addSplit(split1);
 		m->addSplit(split2);
 		CPPUNIT_ASSERT(m->splitCount() == 2);
-		CPPUNIT_ASSERT(m->splits()[0].account() == "A000001");
-		CPPUNIT_ASSERT(m->splits()[1].account() == "A000002");
+		CPPUNIT_ASSERT(m->splits()[0].accountId() == "A000001");
+		CPPUNIT_ASSERT(m->splits()[1].accountId() == "A000002");
 		CPPUNIT_ASSERT(m->accountReferenced("A000001") == true);
 		CPPUNIT_ASSERT(m->accountReferenced("A000002") == true);
 		CPPUNIT_ASSERT(m->splits()[0].id() == "S0001");
@@ -149,8 +149,8 @@ void testModifySplits() {
 	MyMoneySplit split;
 
 	split = m->splits()[0];
-	split.setAccount("A000003");
-	split.setID("S00000000");
+	split.setAccountId("A000003");
+	split.setId("S00000000");
 
 	// this one should fail, because the ID is invalid
 	try {
@@ -161,19 +161,19 @@ void testModifySplits() {
 	}
 
 	// set id to correct value, and check that it worked
-	split.setID("S0001");
+	split.setId("S0001");
 	try {
 		m->modifySplit(split);
                 CPPUNIT_ASSERT(m->splitCount() == 2);
-                CPPUNIT_ASSERT(m->splits()[0].account() == "A000003");
-                CPPUNIT_ASSERT(m->splits()[1].account() == "A000002");
+                CPPUNIT_ASSERT(m->splits()[0].accountId() == "A000003");
+                CPPUNIT_ASSERT(m->splits()[1].accountId() == "A000002");
                 CPPUNIT_ASSERT(m->accountReferenced("A000001") == false);
                 CPPUNIT_ASSERT(m->accountReferenced("A000002") == true);
                 CPPUNIT_ASSERT(m->splits()[0].id() == "S0001");
                 CPPUNIT_ASSERT(m->splits()[1].id() == "S0002");
 
 		CPPUNIT_ASSERT(split.id() == "S0001");
-		CPPUNIT_ASSERT(split.account() == "A000003");
+		CPPUNIT_ASSERT(split.accountId() == "A000003");
 
 	} catch(MyMoneyException *e) {
 		CPPUNIT_FAIL("Unexpected exception!");
@@ -185,7 +185,7 @@ void testDeleteSplits() {
 	testAddSplits();
 	MyMoneySplit split;
 
-	split.setID("S00000000");
+	split.setId("S00000000");
 	// this one should fail, because the ID is invalid
 	try {
 		m->modifySplit(split);
@@ -195,11 +195,11 @@ void testDeleteSplits() {
 	}
 
 	// set id to correct value, and check that it worked
-	split.setID("S0001");
+	split.setId("S0001");
 	try {
 		m->removeSplit(split);
                 CPPUNIT_ASSERT(m->splitCount() == 1);
-                CPPUNIT_ASSERT(m->splits()[0].account() == "A000002");
+                CPPUNIT_ASSERT(m->splits()[0].accountId() == "A000002");
                 CPPUNIT_ASSERT(m->accountReferenced("A000001") == false);
                 CPPUNIT_ASSERT(m->accountReferenced("A000002") == true);
                 CPPUNIT_ASSERT(m->splits()[0].id() == "S0002");

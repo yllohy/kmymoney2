@@ -21,7 +21,7 @@
 
 #include <iostream>
 
-MyMoneyAccount::MyMoneyAccount(const int accountType)
+MyMoneyAccount::MyMoneyAccount()
 {
   m_file = 0;
   m_openingBalance = 0;
@@ -31,7 +31,7 @@ MyMoneyAccount::MyMoneyAccount(const int accountType)
   m_description = "";
   m_number = "";
   m_parentAccount = "";
-  m_accountType = static_cast<accountTypeE> (accountType);
+  m_accountType = UnknownAccountType;
 }
 
 MyMoneyAccount::~MyMoneyAccount()
@@ -59,7 +59,7 @@ void MyMoneyAccount::setDescription(const QString& desc)
   m_description = desc;
 }
 
-void MyMoneyAccount::setInstitution(const QString& id)
+void MyMoneyAccount::setInstitutionId(const QString& id)
 {
   m_institution = id;
 }
@@ -95,9 +95,14 @@ void MyMoneyAccount::setLastReconciliationDate(const QDate& date)
   m_lastReconciliationDate = date;
 }
 
-void MyMoneyAccount::setParentAccount(const QString& parent)
+void MyMoneyAccount::setParentAccountId(const QString& parent)
 {
   m_parentAccount = parent;
+}
+
+void MyMoneyAccount::setAccountType(const accountTypeE type)
+{
+  m_accountType = type;
 }
 
 const QValueList<MyMoneyAccount::Transaction>& MyMoneyAccount::transactionList(void) const
@@ -145,13 +150,13 @@ const MyMoneyMoney MyMoneyAccount::balance(void) const
   return result;
 }
 
-void MyMoneyAccount::addAccount(const QString& account)
+void MyMoneyAccount::addAccountId(const QString& account)
 {
   if(!m_accountList.contains(account))
     m_accountList += account;
 }
 
-void MyMoneyAccount::removeAccount(const QString& account)
+void MyMoneyAccount::removeAccountId(const QString& account)
 {
   QStringList::Iterator it;
 

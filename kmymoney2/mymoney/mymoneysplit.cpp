@@ -43,7 +43,7 @@ bool MyMoneySplit::operator == (const MyMoneySplit& right) const
     m_value == right.m_value;
 }
 
-void MyMoneySplit::setAccount(const QString& account)
+void MyMoneySplit::setAccountId(const QString& account)
 {
   m_account = account;
 }
@@ -73,7 +73,7 @@ void MyMoneySplit::setValue(const MyMoneyMoney& value)
   m_value = value;
 }
 
-void MyMoneySplit::setID(const QString& id)
+void MyMoneySplit::setId(const QString& id)
 {
   m_id = id;
 }

@@ -25,7 +25,7 @@ autotest_SOURCES= autotest.cpp \
                 mymoneyfiletest.h \
                 mymoneymoneytest.h \
                 mymoneyexceptiontest.h \
-                storage/mymoneytseqaccessmgrtest.h \
+                storage/mymoneyseqaccessmgrtest.h \
                 storage/mymoneystoragebintest.h
 
 autotest_DEPENDENCIES = all-recursive

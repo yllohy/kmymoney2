@@ -151,8 +151,8 @@ void testEquality () {
 	MyMoneyInstitution* n1 = new MyMoneyInstitution("GUID1", *n);
 	MyMoneyInstitution* n2 = new MyMoneyInstitution("GUID1", *n);
 
-	n1->addAccount("A000001");
-	n2->addAccount("A000001");
+	n1->addAccountId("A000001");
+	n2->addAccountId("A000001");
 
 	CPPUNIT_ASSERT(*n1 == *n2);
 
@@ -170,8 +170,8 @@ void testInequality () {
 	CPPUNIT_ASSERT(!(*n1 == *n3));
 	CPPUNIT_ASSERT(*n3 == *n4);
 
-	n3->addAccount("A000001");
-	n4->addAccount("A000002");
+	n3->addAccountId("A000001");
+	n4->addAccountId("A000002");
 	CPPUNIT_ASSERT(!(*n3 == *n4));
 
 	delete n1;
@@ -190,25 +190,25 @@ void testAccountIDList () {
 	CPPUNIT_ASSERT(list.count() == 0);
 
 	// add one account
-	institution.addAccount("A000002");
+	institution.addAccountId("A000002");
 	list = institution.accountList();
 	CPPUNIT_ASSERT(list.count() == 1);
 	CPPUNIT_ASSERT(list.contains("A000002") == 1);
 
 	// adding same account shouldn't make a difference
-	institution.addAccount("A000002");
+	institution.addAccountId("A000002");
 	list = institution.accountList();
 	CPPUNIT_ASSERT(list.count() == 1);
 	CPPUNIT_ASSERT(list.contains("A000002") == 1);
 
 	// now add another account
-	institution.addAccount("A000001");
+	institution.addAccountId("A000001");
 	list = institution.accountList();
 	CPPUNIT_ASSERT(list.count() == 2);
 	CPPUNIT_ASSERT(list.contains("A000002") == 1);
 	CPPUNIT_ASSERT(list.contains("A000001") == 1);
 
-	id = institution.removeAccount("A000001");
+	id = institution.removeAccountId("A000001");
 	CPPUNIT_ASSERT(id == "A000001");
 	list = institution.accountList();
 	CPPUNIT_ASSERT(list.count() == 1);

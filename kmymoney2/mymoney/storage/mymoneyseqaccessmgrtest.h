@@ -271,9 +271,9 @@ void testAccount2Institution() {
 		CPPUNIT_ASSERT(i.accountList().count() == 0);
 		m->addAccount(i, a);
 		CPPUNIT_ASSERT(m->dirty() == true);
-		CPPUNIT_ASSERT(a.institution() == i.id());
+		CPPUNIT_ASSERT(a.institutionId() == i.id());
 		b = m->account("A000001");
-		CPPUNIT_ASSERT(b.institution() == i.id());
+		CPPUNIT_ASSERT(b.institutionId() == i.id());
 		CPPUNIT_ASSERT(i.accountList().count() == 1);
 	} catch (MyMoneyException *e) {
 		delete e;
@@ -291,7 +291,7 @@ void testModifyAccount() {
 	try {
 		m->modifyAccount(a);
 		MyMoneyAccount b = m->account("A000001");
-		CPPUNIT_ASSERT(b.parentAccount() == a.parentAccount());
+		CPPUNIT_ASSERT(b.parentAccountId() == a.parentAccountId());
 		CPPUNIT_ASSERT(b.name() == "New account name");
 		CPPUNIT_ASSERT(m->dirty() == true);
 	} catch (MyMoneyException *e) {
@@ -310,7 +310,8 @@ void testModifyAccount() {
 	}
 
 	// use different account type
-	MyMoneyAccount d(MyMoneyAccount::CreditCard);
+	MyMoneyAccount d;
+	d.setAccountType(MyMoneyAccount::CreditCard);
 	MyMoneyAccount f("A000001", d);
 	try {
 		m->modifyAccount(f);
@@ -320,7 +321,7 @@ void testModifyAccount() {
 	}
 
 	// use different parent
-	a.setParentAccount("A000002");
+	a.setParentAccountId("A000002");
 	try {
 		m->modifyAccount(c);
 		CPPUNIT_FAIL("Exception expected");
@@ -358,12 +359,18 @@ void testModifyInstitution() {
 
 void testReparentAccount() {
 	// this one adds some accounts to the database
-	MyMoneyAccount ex1(MyMoneyAccount::Expense);
-	MyMoneyAccount ex2(MyMoneyAccount::Expense);
-	MyMoneyAccount ex3(MyMoneyAccount::Expense);
-	MyMoneyAccount ex4(MyMoneyAccount::Expense);
-	MyMoneyAccount in(MyMoneyAccount::Income);
-	MyMoneyAccount ch(MyMoneyAccount::Checkings);
+	MyMoneyAccount ex1;
+	ex1.setAccountType(MyMoneyAccount::Expense);
+	MyMoneyAccount ex2;
+	ex2.setAccountType(MyMoneyAccount::Expense);
+	MyMoneyAccount ex3;
+	ex3.setAccountType(MyMoneyAccount::Expense);
+	MyMoneyAccount ex4;
+	ex4.setAccountType(MyMoneyAccount::Expense);
+	MyMoneyAccount in;
+	in.setAccountType(MyMoneyAccount::Income);
+	MyMoneyAccount ch;
+	ch.setAccountType(MyMoneyAccount::Checkings);
 
 	ex1.setName("Sales Tax");
 	ex2.setName("Sales Tax 16%");
@@ -403,12 +410,12 @@ void testReparentAccount() {
 
 		CPPUNIT_ASSERT(m->expense().accountCount() == 3);
 		CPPUNIT_ASSERT(m->account(ex1.id()).accountCount() == 1);
-		CPPUNIT_ASSERT(ex3.parentAccount() == STD_ACC_EXPENSE);
+		CPPUNIT_ASSERT(ex3.parentAccountId() == STD_ACC_EXPENSE);
 
 		m->reparentAccount(ex3, ex1);
 		CPPUNIT_ASSERT(m->expense().accountCount() == 2);
 		CPPUNIT_ASSERT(m->account(ex1.id()).accountCount() == 2);
-		CPPUNIT_ASSERT(ex3.parentAccount() == ex1.id());
+		CPPUNIT_ASSERT(ex3.parentAccountId() == ex1.id());
 	} catch (MyMoneyException *e) {
 		cout << endl << e->what() << endl;
 		delete e;
@@ -424,12 +431,12 @@ void testAddTransactions() {
 	MyMoneySplit s;
 
 	// I made some money, great
-	s.setAccount("A000006");	// Checkings
+	s.setAccountId("A000006");	// Checkings
 	s.setShares(100000);
 	s.setValue(100000);
 	t1.addSplit(s);
 
-	s.setAccount("A000005");	// Salary
+	s.setAccountId("A000005");	// Salary
 	s.setShares(-100000);
 	s.setValue(-100000);
 	t1.addSplit(s);
@@ -448,22 +455,22 @@ void testAddTransactions() {
 	}
 
 	// I spent some money, not so great
-	s.setAccount("A000004");	// Grosseries
+	s.setAccountId("A000004");	// Grosseries
 	s.setShares(10000);
 	s.setValue(10000);
 	t2.addSplit(s);
 
-	s.setAccount("A000002");	// 16% sales tax
+	s.setAccountId("A000002");	// 16% sales tax
 	s.setShares(1200);
 	s.setValue(1200);
 	t2.addSplit(s);
 
-	s.setAccount("A000003");	// 7% sales tax
+	s.setAccountId("A000003");	// 7% sales tax
 	s.setShares(400);
 	s.setValue(400);
 	t2.addSplit(s);
 
-	s.setAccount("A000006");	// Checkings account
+	s.setAccountId("A000006");	// Checkings account
 	s.setShares(-11600);
 	s.setValue(-11600);
 	t2.addSplit(s);
@@ -689,7 +696,7 @@ void testRemoveInstitution() {
 		m->removeInstitution(i);
 		a = m->account("A000006");
 		CPPUNIT_ASSERT(m->dirty() == true);
-		CPPUNIT_ASSERT(a.institution() == "");
+		CPPUNIT_ASSERT(a.institutionId() == "");
 		CPPUNIT_ASSERT(m->institutionCount() == 0);
 	} catch (MyMoneyException *e) {
 		delete e;

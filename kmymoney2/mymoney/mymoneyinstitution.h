@@ -97,7 +97,7 @@ public:
     *
     * @param account id of the account to be added
     */
-  void addAccount(const QString& account);
+  void addAccountId(const QString& account);
 
   /**
     * This method deletes the id of an account from the account list
@@ -106,7 +106,7 @@ public:
     * @param account id of the account to be deleted
     * @return id of account deleted, otherwise empty string
     */
-  QString removeAccount(const QString& account);
+  QString removeAccountId(const QString& account);
 
   /**
     * This method is used to return the set of accounts known to

@@ -85,14 +85,14 @@ MyMoneyInstitution::~MyMoneyInstitution()
 {
 }
 
-void MyMoneyInstitution::addAccount(const QString& account)
+void MyMoneyInstitution::addAccountId(const QString& account)
 {
   // only add this account if it is not yet presently in the list
   if(m_accountList.contains(account) == 0)
     m_accountList.append(account);
 }
 
-QString MyMoneyInstitution::removeAccount(const QString& account)
+QString MyMoneyInstitution::removeAccountId(const QString& account)
 {
   QStringList::Iterator pos;
   QString rc = "";

@@ -38,6 +38,8 @@
 
 /**
   * @author Thomas Baumgart
+  *
+  * @todo add a type field (e.g. transfer etc)
   */
 
 class MyMoneySplit {
@@ -56,7 +58,7 @@ public:
 
   const MyMoneyMoney shares(void) const { return m_shares; };
   const MyMoneyMoney value(void) const { return m_value; };
-  const QString account(void) const { return m_account; };
+  const QString accountId(void) const { return m_account; };
   const QString memo(void) const { return m_memo; };
   const reconcileFlagE reconcileFlag(void) const { return m_reconcileFlag; };
   const QDate reconcileDate(void) const { return m_reconcileDate; };
@@ -64,11 +66,11 @@ public:
 
   void setShares(const MyMoneyMoney& shares);
   void setValue(const MyMoneyMoney& value);
-  void setAccount(const QString& account);
+  void setAccountId(const QString& account);
   void setMemo(const QString& memo);
   void setReconcileFlag(const reconcileFlagE flag);
   void setReconcileDate(const QDate date);
-  void setID(const QString& id);
+  void setId(const QString& id);
 
 private:
   QString       m_id;

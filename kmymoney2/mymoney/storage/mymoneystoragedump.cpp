@@ -73,8 +73,8 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
   for(it_a = list_a.begin(); it_a != list_a.end(); ++it_a) {
     s << "  ID = " << (*it_a).id() << "\n";
     s << "  Name = " << (*it_a).name() << "\n";
-    s << "  Parent = " << (*it_a).parentAccount();
-    MyMoneyAccount parent = storage->account((*it_a).parentAccount());
+    s << "  Parent = " << (*it_a).parentAccountId();
+    MyMoneyAccount parent = storage->account((*it_a).parentAccountId());
     s << " (" << parent.name() << ")" << "\n";
     s << "  Balance = " << (*it_a).balance().formatMoney() << "\n";
     s << "\n";
@@ -94,8 +94,8 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
     QValueList<MyMoneySplit>::ConstIterator it_s;
     for(it_s = (*it_t).splits().begin(); it_s != (*it_t).splits().end(); ++it_s) {
       s << "   ID = " << (*it_s).id() << "\n";
-      s << "    Account = " << (*it_s).account();
-      MyMoneyAccount acc = storage->account((*it_s).account());
+      s << "    Account = " << (*it_s).accountId();
+      MyMoneyAccount acc = storage->account((*it_s).accountId());
       s << " (" << acc.name() << ")" << "\n";
       s << "    Memo = " << (*it_s).memo() << "\n";
       s << "    Value = " << (*it_s).value().formatMoney() << "\n";

@@ -87,7 +87,7 @@ void MyMoneyFile::modifyTransaction(const MyMoneyTransaction& transaction)
 
   // and mark all accounts that are referenced
   for(it_s = tr.splits().begin(); it_s != tr.splits().end(); ++it_s) {
-    notifyAccountTree((*it_s).account());
+    notifyAccountTree((*it_s).accountId());
   }
 
   // perform modification
@@ -96,22 +96,26 @@ void MyMoneyFile::modifyTransaction(const MyMoneyTransaction& transaction)
   // and mark all accounts that are referenced
   tr = transaction;
   for(it_s = tr.splits().begin(); it_s != tr.splits().end(); ++it_s) {
-    notifyAccountTree((*it_s).account());
+    notifyAccountTree((*it_s).accountId());
   }
 }
 
 void MyMoneyFile::modifyAccount(const MyMoneyAccount& account)
 {
-  // automatically notify all observers once this routine is done
-  MyMoneyNotifier notifier(this);
-
   // check that it's not one of the standard account groups
   if(isStandardAccount(account.id()))
     throw new MYMONEYEXCEPTION("Unable to modify the standard account groups");
 
+  MyMoneyAccount acc = MyMoneyFile::account(account.id());
+  if(account.accountType() != acc.accountType())
+    throw new MYMONEYEXCEPTION("Unable to change account type");
+
+  // automatically notify all observers once this routine is done
+  MyMoneyNotifier notifier(this);
+
   // the account can be moved to another one, so we notify
   // the old one as well
-  addNotification(account.institution());
+  addNotification(account.institutionId());
 
   m_storage->modifyAccount(account);
 
@@ -182,7 +186,7 @@ void MyMoneyFile::removeTransaction(const MyMoneyTransaction& transaction)
 
   // and mark all accounts that are referenced
   for(it_s = tr.splits().begin(); it_s != tr.splits().end(); ++it_s) {
-    notifyAccountTree((*it_s).account());
+    notifyAccountTree((*it_s).accountId());
   }
 
   m_storage->removeTransaction(transaction);
@@ -207,7 +211,7 @@ void MyMoneyFile::removeAccount(const MyMoneyAccount& account)
   // check that the account and it's parent exist
   // this will throw an exception if the id is unknown
   acc = MyMoneyFile::account(account.id());
-  parent = MyMoneyFile::account(account.parentAccount());
+  parent = MyMoneyFile::account(account.parentAccountId());
 
   // check that it's not one of the standard account groups
   if(isStandardAccount(account.id()))
@@ -236,9 +240,6 @@ void MyMoneyFile::removeInstitution(const MyMoneyInstitution& institution)
 
 void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
 {
-  // automatically notify all observers once this routine is done
-  MyMoneyNotifier notifier(this);
-
   MyMoneyInstitution institution;
 
   // perform some checks to see that the account stuff is OK. For
@@ -250,7 +251,8 @@ void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
   || account.id().length() != 0
   || account.transactionList().count() != 0
   || account.accountList().count() != 0
-  || account.parentAccount() != ""
+  || account.parentAccountId() != ""
+  || account.accountType() == MyMoneyAccount::UnknownAccountType
   || account.file() != 0)
     throw new MYMONEYEXCEPTION("Adding invalid account");
 
@@ -263,13 +265,16 @@ void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
   // I left it out here because I don't know, if there is
   // a tight coupling between e.g. checking accounts and the
   // class asset. It certainly does not make sense to create an
-  // expense account under an income account.
+  // expense account under an income account. Maybe it does, I don't know.
+
+  // automatically notify all observers once this routine is done
+  MyMoneyNotifier notifier(this);
 
   // if an institution is set, verify that it exists
-  if(account.institution().length() != 0) {
+  if(account.institutionId().length() != 0) {
     // check the presence of the institution. if it
     // does not exist, an exception is thrown
-    institution = MyMoneyFile::institution(account.institution());
+    institution = MyMoneyFile::institution(account.institutionId());
   }
 
 
@@ -277,12 +282,12 @@ void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
     account.setOpeningDate(QDate::currentDate());
   }
 
-  account.setParentAccount(parent.id());
+  account.setParentAccountId(parent.id());
 
   m_storage->newAccount(account);
   m_storage->addAccount(parent, account);
 
-  if(account.institution().length() != 0)
+  if(account.institutionId().length() != 0)
     m_storage->addAccount(institution, account);
 
   // parse the complete account tree and collect all
@@ -313,7 +318,7 @@ void MyMoneyFile::addTransaction(MyMoneyTransaction& transaction)
   for(it_s = transaction.splits().begin(); it_s != transaction.splits().end(); ++it_s) {
     // the following line will throw an exception if the
     // account does not exist
-    MyMoneyFile::account((*it_s).account());
+    MyMoneyFile::account((*it_s).accountId());
   }
 
   // then add the transaction to the file global pool
@@ -321,7 +326,7 @@ void MyMoneyFile::addTransaction(MyMoneyTransaction& transaction)
 
   // scan the splits again to update notification list
   for(it_s = transaction.splits().begin(); it_s != transaction.splits().end(); ++it_s) {
-    notifyAccountTree((*it_s).account());
+    notifyAccountTree((*it_s).accountId());
   }
 }
 
@@ -738,8 +743,8 @@ void MyMoneyFile::notifyAccountTree(const QString& id)
   do {
     addNotification(accId);
     acc = account(accId);
-    addNotification(acc.institution());
-    accId = acc.parentAccount();
+    addNotification(acc.institutionId());
+    accId = acc.parentAccountId();
   } while(accId != "");
 }
 

@@ -92,10 +92,8 @@ public:
 
   /**
     * This is the constructor for a new empty account
-    * @param accountType type of account to be created
     */
-  //MyMoneyAccount(const accountTypeE accountType = UnknownAccountType);
-  MyMoneyAccount(const int accountType = UnknownAccountType);
+  MyMoneyAccount();
 
   /**
     * This is the constructor for a new account known to the current file
@@ -136,7 +134,7 @@ public:
     *         an internal account
     * @see setInstitution
     */
-  const QString institution(void) const { return m_institution; }
+  const QString institutionId(void) const { return m_institution; }
 
   /**
     * This method returns the name of the account
@@ -207,7 +205,7 @@ public:
     * This method is used to return the ID of the parent account
     * @return QString with the ID of the parent of this account
     */
-  const QString parentAccount(void) const { return m_parentAccount; };
+  const QString parentAccountId(void) const { return m_parentAccount; };
 
   /**
     * This method is used to return the transaction id and balance
@@ -255,14 +253,14 @@ public:
     * This method is used to add an account id as sub-ordinate account
     * @param account const QString reference to account ID
     */
-  void addAccount(const QString& account);
+  void addAccountId(const QString& account);
 
   /**
     * This method is used to remove an account from the list of
     * sub-ordinate accounts.
     * @param account const QString reference to account ID to be removed
     */
-  void removeAccount(const QString& account);
+  void removeAccountId(const QString& account);
 
   /**
     * This method is used to modify the date of the last
@@ -288,6 +286,7 @@ public:
 
   /**
     * This method is used to set the descriptive text of the account
+    *
     * @param desc text that serves as description
     * @see setDescription
     */
@@ -296,14 +295,16 @@ public:
   /**
     * This method is used to set the id of the institution this account
     * belongs to.
+    *
     * @param id id of the institution this account belongs to
     * @see institution
     */
-  void setInstitution(const QString& id);
+  void setInstitutionId(const QString& id);
 
   /**
     * This method is used to set the opening date information of an
     * account.
+    *
     * @param date QDate of opening date
     * @see openingDate
     */
@@ -328,10 +329,17 @@ public:
   void setLastReconciliationDate(const QDate& date);
 
   /**
+    * This method is used to change the account type
+    *
+    * @param type account type
+    */
+  void setAccountType(const accountTypeE type);
+
+  /**
     * This method is used to set a new parent account id
     * @param parent QString reference to new parent account
     */
-  void setParentAccount(const QString& parent);
+  void setParentAccountId(const QString& parent);
 
   /**
     * This method is used to update m_lastModified to the current date
@@ -427,7 +435,7 @@ private:
   /**
     * This member contains the ID of the parent account
     */
-  QString m_parentAccount;
+  QCString m_parentAccount;
 };
 
 #endif

@@ -47,7 +47,7 @@ void tearDown () {
 }
 
 void testEmptyConstructor() {
-	CPPUNIT_ASSERT(m->account() == "");
+	CPPUNIT_ASSERT(m->accountId() == "");
 	CPPUNIT_ASSERT(m->id() == "");
 	CPPUNIT_ASSERT(m->memo() == "");
 	CPPUNIT_ASSERT(m->shares() == 0);
@@ -57,15 +57,15 @@ void testEmptyConstructor() {
 }
 
 void testSetFunctions() {
-	m->setAccount("Account");
+	m->setAccountId("Account");
 	m->setMemo("Memo");
 	m->setReconcileDate(QDate(1,2,3));
 	m->setReconcileFlag(MyMoneySplit::Cleared);
 	m->setShares(1234);
 	m->setValue(3456);
-	m->setID("MyID");
+	m->setId("MyID");
 
-	CPPUNIT_ASSERT(m->account() == "Account");
+	CPPUNIT_ASSERT(m->accountId() == "Account");
 	CPPUNIT_ASSERT(m->memo() == "Memo");
 	CPPUNIT_ASSERT(m->reconcileDate() == QDate(1,2,3));
 	CPPUNIT_ASSERT(m->reconcileFlag() == MyMoneySplit::Cleared);
@@ -80,7 +80,7 @@ void testCopyConstructor() {
 
 	MyMoneySplit n(*m);
 
-	CPPUNIT_ASSERT(n.account() == "Account");
+	CPPUNIT_ASSERT(n.accountId() == "Account");
 	CPPUNIT_ASSERT(n.memo() == "Memo");
 	CPPUNIT_ASSERT(n.reconcileDate() == QDate(1,2,3));
 	CPPUNIT_ASSERT(n.reconcileFlag() == MyMoneySplit::Cleared);
@@ -96,7 +96,7 @@ void testAssignmentConstructor() {
 
 	n = *m;
 
-	CPPUNIT_ASSERT(n.account() == "Account");
+	CPPUNIT_ASSERT(n.accountId() == "Account");
 	CPPUNIT_ASSERT(n.memo() == "Memo");
 	CPPUNIT_ASSERT(n.reconcileDate() == QDate(1,2,3));
 	CPPUNIT_ASSERT(n.reconcileFlag() == MyMoneySplit::Cleared);
@@ -122,7 +122,7 @@ void testInequality() {
 	CPPUNIT_ASSERT(!(n == *m));
 
 	n = *m;
-	n.setID("Not My ID");
+	n.setId("Not My ID");
 	CPPUNIT_ASSERT(!(n == *m));
 }
 

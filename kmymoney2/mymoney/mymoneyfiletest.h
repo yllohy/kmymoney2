@@ -384,9 +384,10 @@ void testSetFunctions() {
 
 void testAddAccounts() {
 	testAddTwoInstitutions();
-	MyMoneyAccount  a(MyMoneyAccount::Checkings),
-			b(MyMoneyAccount::Checkings),
-			c;
+	MyMoneyAccount  a, b, c;
+	a.setAccountType(MyMoneyAccount::Checkings);
+	b.setAccountType(MyMoneyAccount::Checkings);
+
 	MyMoneyInstitution institution;
 
 	storage->m_dirty = false;
@@ -400,16 +401,16 @@ void testAddAccounts() {
 	m->attach("I000002", observer);
 
 	a.setName("Account1");
-	a.setInstitution(institution.id());
+	a.setInstitutionId(institution.id());
 
 	try {
 		MyMoneyAccount parent = m->asset();
 		observer->reset();
 		m->addAccount(a, parent);
 		CPPUNIT_ASSERT(m->accountCount() == 5);
-		CPPUNIT_ASSERT(a.parentAccount() == "AStd::Asset");
+		CPPUNIT_ASSERT(a.parentAccountId() == "AStd::Asset");
 		CPPUNIT_ASSERT(a.id() == "A000001");
-		CPPUNIT_ASSERT(a.institution() == "I000001");
+		CPPUNIT_ASSERT(a.institutionId() == "I000001");
 		CPPUNIT_ASSERT(m->dirty() == true);
 		CPPUNIT_ASSERT(m->asset().accountList().count() == 1);
 		CPPUNIT_ASSERT(m->asset().accountList()[0] == "A000001");
@@ -450,7 +451,7 @@ void testAddAccounts() {
 	CPPUNIT_ASSERT(c.accountType() == MyMoneyAccount::Checkings);
 	CPPUNIT_ASSERT(c.id() == "A000001");
 	CPPUNIT_ASSERT(c.name() == "Account1");
-	CPPUNIT_ASSERT(c.institution() == "I000001");
+	CPPUNIT_ASSERT(c.institutionId() == "I000001");
 
 	CPPUNIT_ASSERT(m->dirty() == false);
 	CPPUNIT_ASSERT(observer->updated().count() == 0);
@@ -458,13 +459,13 @@ void testAddAccounts() {
 	// add a second account
 	institution = m->institution("I000002");
 	b.setName("Account2");
-	b.setInstitution(institution.id());
+	b.setInstitutionId(institution.id());
 	try {
 		MyMoneyAccount parent = m->asset();
 		m->addAccount(b, parent);
 		CPPUNIT_ASSERT(m->dirty() == true);
 		CPPUNIT_ASSERT(b.id() == "A000002");
-		CPPUNIT_ASSERT(b.parentAccount() == "AStd::Asset");
+		CPPUNIT_ASSERT(b.parentAccountId() == "AStd::Asset");
 		CPPUNIT_ASSERT(m->accountCount() == 6);
 
 		institution = m->institution("I000001");
@@ -493,7 +494,7 @@ void testAddAccounts() {
 	CPPUNIT_ASSERT(p.accountType() == MyMoneyAccount::Checkings);
 	CPPUNIT_ASSERT(p.id() == "A000002");
 	CPPUNIT_ASSERT(p.name() == "Account2");
-	CPPUNIT_ASSERT(p.institution() == "I000002");
+	CPPUNIT_ASSERT(p.institutionId() == "I000002");
 }
 
 void testModifyAccount() {
@@ -521,7 +522,7 @@ void testModifyAccount() {
 	storage->m_dirty = false;
 
 	// try to move account to new institution
-	p.setInstitution("I000002");
+	p.setInstitutionId("I000002");
 	try {
 		m->modifyAccount(p);
 
@@ -529,7 +530,7 @@ void testModifyAccount() {
 		CPPUNIT_ASSERT(m->accountCount() == 6);
 		CPPUNIT_ASSERT(p.accountType() == MyMoneyAccount::Checkings);
 		CPPUNIT_ASSERT(p.name() == "New account name");
-		CPPUNIT_ASSERT(p.institution() == "I000002");
+		CPPUNIT_ASSERT(p.institutionId() == "I000002");
 
 		institution = m->institution("I000001");
 		CPPUNIT_ASSERT(institution.accountCount() == 0);
@@ -545,7 +546,7 @@ void testModifyAccount() {
 	storage->m_dirty = false;
 
 	// try to fool engine a bit
-	p.setParentAccount("A000001");
+	p.setParentAccountId("A000001");
 	try {
 		m->modifyAccount(p);
 		CPPUNIT_FAIL("Expecting exception!");
@@ -560,16 +561,16 @@ void testReparentAccount() {
 
 	MyMoneyAccount p = m->account("A000001");
 	MyMoneyAccount q = m->account("A000002");
-	MyMoneyAccount o = m->account(p.parentAccount());
+	MyMoneyAccount o = m->account(p.parentAccountId());
 
 	// make A000001 a child of A000002
 	try {
-		CPPUNIT_ASSERT(p.parentAccount() != q.id());
+		CPPUNIT_ASSERT(p.parentAccountId() != q.id());
 		CPPUNIT_ASSERT(o.accountCount() == 2);
 		CPPUNIT_ASSERT(q.accountCount() == 0);
 		m->reparentAccount(p, q);
 		CPPUNIT_ASSERT(m->dirty() == true);
-		CPPUNIT_ASSERT(p.parentAccount() == q.id());
+		CPPUNIT_ASSERT(p.parentAccountId() == q.id());
 		CPPUNIT_ASSERT(q.accountCount() == 1);
 		CPPUNIT_ASSERT(q.id() == "A000002");
 		CPPUNIT_ASSERT(p.id() == "A000001");
@@ -657,7 +658,7 @@ void testRemoveAccountTree() {
 	// make sure that children are re-parented to parent account
 	try {
 		a = m->account("A000001");
-		CPPUNIT_ASSERT(a.parentAccount() == m->asset().id());
+		CPPUNIT_ASSERT(a.parentAccountId() == m->asset().id());
 	} catch(MyMoneyException *e) {
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception!");
@@ -688,9 +689,11 @@ void testAddTransaction () {
 	testAddAccounts();
 	MyMoneyTransaction t, p;
 
-	MyMoneyAccount exp1(MyMoneyAccount::Expense);
+	MyMoneyAccount exp1;
+	exp1.setAccountType(MyMoneyAccount::Expense);
 	exp1.setName("Expense1");
-	MyMoneyAccount exp2(MyMoneyAccount::Expense);
+	MyMoneyAccount exp2;
+	exp2.setAccountType(MyMoneyAccount::Expense);
 	exp2.setName("Expense2");
 
 	try {
@@ -724,10 +727,10 @@ void testAddTransaction () {
 	MyMoneySplit split1;
 	MyMoneySplit split2;
 
-	split1.setAccount("A000001");
+	split1.setAccountId("A000001");
 	split1.setShares(-1000);
 	split1.setValue(-1000);
-	split2.setAccount("A000003");
+	split2.setAccountId("A000003");
 	split2.setValue(1000);
 	split2.setShares(1000);
 	try {
@@ -779,8 +782,8 @@ void testAddTransaction () {
 		p = m->transaction("T000000000000000001");
 		CPPUNIT_ASSERT(p.splitCount() == 2);
 		CPPUNIT_ASSERT(p.memo() == "Memotext");
-		CPPUNIT_ASSERT(p.splits()[0].account() == "A000001");
-		CPPUNIT_ASSERT(p.splits()[1].account() == "A000003");
+		CPPUNIT_ASSERT(p.splits()[0].accountId() == "A000001");
+		CPPUNIT_ASSERT(p.splits()[1].accountId() == "A000003");
 	} catch(MyMoneyException *e) {
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception!");
@@ -793,8 +796,8 @@ void testAddTransaction () {
 		CPPUNIT_ASSERT(p.id() == "T000000000000000001");
 		CPPUNIT_ASSERT(p.splitCount() == 2);
 		CPPUNIT_ASSERT(p.memo() == "Memotext");
-		CPPUNIT_ASSERT(p.splits()[0].account() == "A000001");
-		CPPUNIT_ASSERT(p.splits()[1].account() == "A000003");
+		CPPUNIT_ASSERT(p.splits()[0].accountId() == "A000001");
+		CPPUNIT_ASSERT(p.splits()[1].accountId() == "A000003");
 	} catch(MyMoneyException *e) {
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception!");
@@ -805,8 +808,8 @@ void testAddTransaction () {
 		CPPUNIT_ASSERT(p.id() == "T000000000000000001");
 		CPPUNIT_ASSERT(p.splitCount() == 2);
 		CPPUNIT_ASSERT(p.memo() == "Memotext");
-		CPPUNIT_ASSERT(p.splits()[0].account() == "A000001");
-		CPPUNIT_ASSERT(p.splits()[1].account() == "A000003");
+		CPPUNIT_ASSERT(p.splits()[0].accountId() == "A000001");
+		CPPUNIT_ASSERT(p.splits()[1].accountId() == "A000003");
 	} catch(MyMoneyException *e) {
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception!");
@@ -878,7 +881,7 @@ void testModifyTransactionNewAccount() {
 	MyMoneyTransaction t = m->transaction("T000000000000000001");
 	MyMoneySplit s;
 	s = t.splits()[0];
-	s.setAccount("A000002");
+	s.setAccountId("A000002");
 	t.modifySplit(s);
 
 	storage->m_dirty = false;
@@ -958,10 +961,10 @@ void testBalanceTotal() {
 	MyMoneySplit split2;
 
 	try {
-		split1.setAccount("A000002");
+		split1.setAccountId("A000002");
 		split1.setShares(-1000);
 		split1.setValue(-1000);
-		split2.setAccount("A000004");
+		split2.setAccountId("A000004");
 		split2.setValue(1000);
 		split2.setShares(1000);
 		t.addSplit(split1);

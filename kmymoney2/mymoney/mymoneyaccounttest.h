@@ -70,18 +70,19 @@ void testConstructor() {
 	QString id = "A000001";
 	QString institutionid = "B000001";
 	QString parent = "Parent";
-	MyMoneyAccount r(MyMoneyAccount::Asset);
+	MyMoneyAccount r;
+	r.setAccountType(MyMoneyAccount::Asset);
 	r.setOpeningDate(QDate::currentDate());
 	r.setLastModified(QDate::currentDate());
 	r.setDescription("Desc");
 	r.setNumber("465500");
-	r.setParentAccount(parent);
+	r.setParentAccountId(parent);
 	r.setOpeningBalance(1);
 
 	MyMoneyAccount a(id, r);
 
 	CPPUNIT_ASSERT(a.id() == id);
-	CPPUNIT_ASSERT(a.institution() == "");
+	CPPUNIT_ASSERT(a.institutionId() == "");
 	CPPUNIT_ASSERT(a.accountType() == MyMoneyAccount::Asset);
 	CPPUNIT_ASSERT(a.openingDate() == QDate::currentDate());
 	CPPUNIT_ASSERT(a.lastModified() == QDate::currentDate());
@@ -89,7 +90,7 @@ void testConstructor() {
 	CPPUNIT_ASSERT(a.description() == "Desc");
 	CPPUNIT_ASSERT(a.transactionList().count() == 0);
 	CPPUNIT_ASSERT(a.accountList().count() == 0);
-	CPPUNIT_ASSERT(a.parentAccount() == "Parent");
+	CPPUNIT_ASSERT(a.parentAccountId() == "Parent");
 	CPPUNIT_ASSERT(a.openingBalance() == 1);
 }
 
@@ -102,19 +103,21 @@ void testSetFunctions() {
 	CPPUNIT_ASSERT(a.description() == "");
 
 	a.setName("Account");
-	a.setInstitution("Institution1");
+	a.setInstitutionId("Institution1");
 	a.setLastModified(today);
 	a.setDescription("Desc");
 	a.setNumber("123456");
 	a.setOpeningBalance(2);
+	a.setAccountType(MyMoneyAccount::MoneyMarket);
 
 	CPPUNIT_ASSERT(a.name() == "Account");
-	CPPUNIT_ASSERT(a.institution() == "Institution1");
+	CPPUNIT_ASSERT(a.institutionId() == "Institution1");
 	CPPUNIT_ASSERT(a.lastModified() == today);
 	CPPUNIT_ASSERT(a.description() == "Desc");
 	CPPUNIT_ASSERT(a.number() == "123456");
 	CPPUNIT_ASSERT(a.openingBalance() == 2);
 	CPPUNIT_ASSERT(a.transactionList().count() == 0);
+	CPPUNIT_ASSERT(a.accountType() == MyMoneyAccount::MoneyMarket);
 }
 
 void testCopyConstructor() {
@@ -122,31 +125,32 @@ void testCopyConstructor() {
 	QString id = "A000001";
 	QString institutionid = "B000001";
 	QString parent = "ParentAccount";
-	MyMoneyAccount r(MyMoneyAccount::Expense);
+	MyMoneyAccount r;
+	r.setAccountType(MyMoneyAccount::Expense);
 	r.setOpeningDate(QDate::currentDate());
 	r.setLastModified(QDate::currentDate());
 	r.setName("Account");
-	r.setInstitution("Inst1");
+	r.setInstitutionId("Inst1");
 	r.setDescription("Desc1");
 	r.setNumber("Number");
-	r.setParentAccount(parent);
+	r.setParentAccountId(parent);
 	r.setOpeningBalance(3);
 
 	MyMoneyAccount a(id, r);
-	a.setInstitution(institutionid);
+	a.setInstitutionId(institutionid);
 	a.addTransaction(ta);
 
 	MyMoneyAccount b(a);
 
 	CPPUNIT_ASSERT(b.name() == "Account");
-	CPPUNIT_ASSERT(b.institution() == institutionid);
+	CPPUNIT_ASSERT(b.institutionId() == institutionid);
 	CPPUNIT_ASSERT(b.accountType() == MyMoneyAccount::Expense);
 	CPPUNIT_ASSERT(b.lastModified() == QDate::currentDate());
 	CPPUNIT_ASSERT(b.openingDate() == QDate::currentDate());
 	CPPUNIT_ASSERT(b.description() == "Desc1");
 	CPPUNIT_ASSERT(b.number() == "Number");
 	CPPUNIT_ASSERT(b.transactionList().count() == 1);
-	CPPUNIT_ASSERT(b.parentAccount() == "ParentAccount");
+	CPPUNIT_ASSERT(b.parentAccountId() == "ParentAccount");
 	CPPUNIT_ASSERT(b.openingBalance() == 3);
 
 	MyMoneyAccount::Transaction tc = b.transaction(0);
@@ -161,9 +165,10 @@ void testCopyConstructor() {
 }
 
 void testAssignmentConstructor() {
-	MyMoneyAccount a(MyMoneyAccount::Checkings);
+	MyMoneyAccount a;
+	a.setAccountType(MyMoneyAccount::Checkings);
 	a.setName("Account");
-	a.setInstitution("Inst1");
+	a.setInstitutionId("Inst1");
 	a.setDescription("Bla");
 	a.setNumber("assigned Number");
 
@@ -174,7 +179,7 @@ void testAssignmentConstructor() {
 	b = a;
 
 	CPPUNIT_ASSERT(b.name() == "Account");
-	CPPUNIT_ASSERT(b.institution() == "Inst1");
+	CPPUNIT_ASSERT(b.institutionId() == "Inst1");
 	CPPUNIT_ASSERT(b.accountType() == MyMoneyAccount::Checkings);
 	CPPUNIT_ASSERT(b.lastModified() == QDate());
 	CPPUNIT_ASSERT(b.openingDate() == a.openingDate());
@@ -190,7 +195,8 @@ void testAssignmentConstructor() {
 }
 
 void testTransactionList() {
-	MyMoneyAccount a(MyMoneyAccount::Checkings);
+	MyMoneyAccount a;
+	a.setAccountType(MyMoneyAccount::Checkings);
 	MyMoneyAccount::Transaction ta("Trans1", 1000);
 	MyMoneyAccount::Transaction tb("Trans2", 2000);
 
@@ -205,7 +211,8 @@ void testTransactionList() {
 }
 
 void testTransactionRetrieval() {
-	MyMoneyAccount a(MyMoneyAccount::Checkings);
+	MyMoneyAccount a;
+	a.setAccountType(MyMoneyAccount::Checkings);
 	MyMoneyAccount::Transaction ta("Trans1", 1000);
 	MyMoneyAccount::Transaction tb("Trans2", 2000);
 	MyMoneyAccount::Transaction tc;
@@ -241,7 +248,8 @@ void testTransactionRetrieval() {
 }
 
 void testBalance() {
-	MyMoneyAccount a(MyMoneyAccount::Checkings);
+	MyMoneyAccount a;
+	a.setAccountType(MyMoneyAccount::Checkings);
 	MyMoneyAccount::Transaction ta("Trans1", 1000);
 	MyMoneyAccount::Transaction tb("Trans2", 2000);
 	MyMoneyAccount::Transaction tc("Trans3", -4000);
@@ -263,13 +271,14 @@ void testBalance() {
 
 void testSubAccounts()
 {
-	MyMoneyAccount a(MyMoneyAccount::Checkings);
+	MyMoneyAccount a;
+	a.setAccountType(MyMoneyAccount::Checkings);
 	
-	a.addAccount("Subaccount1");
+	a.addAccountId("Subaccount1");
 	CPPUNIT_ASSERT(a.accountList().count() == 1);
-	a.addAccount("Subaccount1");
+	a.addAccountId("Subaccount1");
 	CPPUNIT_ASSERT(a.accountList().count() == 1);
-	a.addAccount("Subaccount2");
+	a.addAccountId("Subaccount2");
 	CPPUNIT_ASSERT(a.accountList().count() == 2);
 
 }

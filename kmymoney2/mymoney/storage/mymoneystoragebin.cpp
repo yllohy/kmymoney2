@@ -148,31 +148,29 @@ void MyMoneyStorageBin::addCategory(IMyMoneySerialize* storage,
 {
   MyMoneyAccount account;
 
-  MyMoneyAccount group, *majorCat;
-  MyMoneyAccount expense(MyMoneyAccount::Expense),
-                 income(MyMoneyAccount::Income);
+  MyMoneyAccount group, majorCat;
   QString name;
 
   if (type==MyMoneyAccount::Expense) {
     group = storage->expense();
-    majorCat = &expense;
+    majorCat.setAccountType(MyMoneyAccount::Expense);
   } else {
     group = storage->income();
-    majorCat = &income;
+    majorCat.setAccountType(MyMoneyAccount::Income);
   }
 
   name = majorName;
   if(!categories.contains(name)) {
-    majorCat->setName(name);
-    storage->newAccount(*majorCat);
-    storage->addAccount(group, *majorCat);
-    categories[name] = majorCat->id();
+    majorCat.setName(name);
+    storage->newAccount(majorCat);
+    storage->addAccount(group, majorCat);
+    categories[name] = majorCat.id();
   }
 
   if(minorName != "") {
     name += ":" + minorName;
     if(!categories.contains(name)) {
-      MyMoneyAccount minorCat(majorCat->accountType());
+      MyMoneyAccount minorCat;
       QString id = categories[majorName];
       QValueList<MyMoneyAccount> list = storage->accountList();
       QValueList<MyMoneyAccount>::Iterator it;
@@ -181,6 +179,7 @@ void MyMoneyStorageBin::addCategory(IMyMoneySerialize* storage,
           break;
       }
       minorCat.setName(minorName);
+      minorCat.setAccountType(majorCat.accountType());
       storage->newAccount(minorCat);
       storage->addAccount(*it, minorCat);
       categories[name] = minorCat.id();
@@ -274,7 +273,8 @@ void MyMoneyStorageBin::readOldFormat(QDataStream& s, IMyMoneySerialize* storage
     for(int j=0; j < acc_cnt; j++) {
       double tmp_d;
       MyMoneyAccount parent = storage->asset();
-      MyMoneyAccount acc(MyMoneyAccount::Checkings);
+      MyMoneyAccount acc;
+      acc.setAccountType(MyMoneyAccount::Checkings);
       s >> tmp; acc.setName(tmp);
       s >> tmp; acc.setDescription(tmp);
       s >> tmp; acc.setNumber(tmp);
@@ -309,7 +309,7 @@ void MyMoneyStorageBin::readOldFormat(QDataStream& s, IMyMoneySerialize* storage
         QString category;
         Q_INT32 method;
 
-        sp1.setAccount(acc.id());
+        sp1.setAccountId(acc.id());
         s >> tmp_int32;   // id
         s >> tmp; // FIXME: sp1.setNumber(tmp);
         s >> tmp; // FIXME: payee must be stored
@@ -326,7 +326,7 @@ void MyMoneyStorageBin::readOldFormat(QDataStream& s, IMyMoneySerialize* storage
         if(tmp != "")
           category += ":" + tmp;
         // for now, we keep it as it is and convert sp2.account later on
-        sp2.setAccount(category);
+        sp2.setAccountId(category);
         s >> tmp; // ATM bank name
         s >> tmp; // account from
         s >> tmp; // account to
@@ -379,10 +379,10 @@ void MyMoneyStorageBin::readOldFormat(QDataStream& s, IMyMoneySerialize* storage
   QValueList<MyMoneyTransaction>::Iterator it;
   for(it = transactionList.begin(); it != transactionList.end(); ++it) {
     MyMoneySplit sp = (*it).splits()[1];
-    QString accname = sp.account();
+    QString accname = sp.accountId();
     if(accname.left(1) == "<" && accname.right(1) == ">") {
       accname = accname.mid(1, accname.length()-2);
-      sp.setAccount(accountConversion[accname]);
+      sp.setAccountId(accountConversion[accname]);
     } else {
      	int colonindex = accname.find(":");
      	QString catmajor;
@@ -398,7 +398,7 @@ void MyMoneyStorageBin::readOldFormat(QDataStream& s, IMyMoneySerialize* storage
     	}
       addCategory(storage, categoryConversion, catmajor, catminor,
            sp.value() >= 0 ? MyMoneyAccount::Expense : MyMoneyAccount::Income);
-      sp.setAccount(categoryConversion[accname]);
+      sp.setAccountId(categoryConversion[accname]);
     }
     (*it).modifySplit(sp);
     storage->addTransaction(*it, true);
