@@ -1,26 +1,29 @@
-# Lines like these are comments
-
-# Blank lines like the above are ignored
-# The data starts here and is in the format
-# type:account:account:account:.... separated by colon
-# The parent account must exist
 # 
 
-# Expense categories first
+# 
+# 
+# 
+# 
+
+# 
 expense:Bills
+expense:Bills:Telephone
 expense:Bills:Rent
 expense:Bills:Electricity
 expense:Bills:TV
 expense:Bills:SKY
 expense:Bills:Council Tax
 expense:Bills:Fuel Oil
+expense:Bills:Gas
 expense:Bills:Mortgage Interest
+expense:Bills:Water & Sewage
 expense:Bank Charges
 expense:Bank Charges:Interest Paid
 expense:Bank Charges:Service Charge
 expense:Car
 expense:Car:Car Maintenance
 expense:Car:Petrol
+expense:Cash Withdrawal
 expense:Cash Withdrawal
 expense:Charity
 expense:Charity:Covenants
@@ -73,6 +76,16 @@ expense:Leisure:Theatre & Concerts etc
 expense:Leisure:Toys & Games
 expense:Loan
 expense:Loan:Loan Interest
+expense:Loan
+expense:Loan:Loan Interest
+expense:Motor
+expense:Motor:Fuel
+expense:Motor:Loan
+expense:Motor:Service
+expense:Motor
+expense:Motor:Fuel
+expense:Motor:Loan
+expense:Motor:Service
 expense:Motor
 expense:Motor:Fuel
 expense:Motor:Loan
@@ -96,9 +109,10 @@ expense:Utilities
 expense:Utilities:Electricity
 expense:Utilities:Gas
 expense:Utilities:Telephone
-expense:Utilities:Water & Sewage
+expense:Utilities:Water
 
-# Now do income categories
+
+# 
 income:Other Income
 income:Other Income:Student loan
 income:Other Income:Child Support
@@ -134,11 +148,11 @@ income:Invest. income:Dividend
 income:Invest. income:Foreign
 income:Invest. income:Other savings
 income:Invest. income:Other trusts
-income:Invest. income:Other trusts:Capital
-income:Invest. income:Other trusts:Dist. rec'd
-income:Invest. income:Other trusts:Estate
+income:Invest. income:Other trusts#Capital
+income:Invest. income:Other trusts#Dist. rec'd
+income:Invest. income:Other trusts#Estate
 income:Invest. income:UK other
-income:Invest. income:UK other:Unit trusts
+income:Invest. income:UK other#Unit trusts
 income:Investment Income
 income:Investment Income:Capital Gains
 income:Investment Income:Dividends
