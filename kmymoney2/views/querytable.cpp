@@ -108,6 +108,9 @@ QueryTable::QueryTable(const MyMoneyReport& _report): m_config(_report)
 
   MyMoneyFile* file = MyMoneyFile::instance();
 
+  MyMoneyMoney::signPosition savesignpos = MyMoneyMoney::negativeMonetarySignPosition();
+  MyMoneyMoney::setNegativeMonetarySignPosition(MyMoneyMoney::ParensAround);
+  
   MyMoneyReport report(_report);
   report.setReportAllSplits(false);
   report.setConsiderCategory(true);
@@ -323,6 +326,8 @@ QueryTable::QueryTable(const MyMoneyReport& _report): m_config(_report)
 
   TableRow::setSortCriteria(sort);
   qHeapSort(m_transactions);
+  
+  MyMoneyMoney::setNegativeMonetarySignPosition(savesignpos);
 }
 
 class GroupIterator

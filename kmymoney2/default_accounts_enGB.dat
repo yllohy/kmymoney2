@@ -2,8 +2,11 @@
 
 # Blank lines like the above are ignored
 # The data starts here and is in the format
-# expense|income:accounti[:subaccount]*
+# expense|income:accounti[:subaccount]*[::flag]*
 # the subcategories must be separated by a colon
+# flags are case sensitive & separated by 2 colons
+# only supported flag is "::Tax", which indicates
+# that the category is of interest to tax reports
 
 # expenses first
 expense:Bills
@@ -18,7 +21,7 @@ expense:Bills:Gas
 expense:Bills:Mortgage Interest
 expense:Bills:Water & Sewage
 expense:Bank Charges
-expense:Bank Charges:Interest Paid
+expense:Bank Charges:Interest Paid::Tax
 expense:Bank Charges:Service Charge
 expense:Car
 expense:Car:Car Maintenance
@@ -26,8 +29,8 @@ expense:Car:Petrol
 expense:Cash Withdrawal
 expense:Charity
 expense:Charity:Covenants
-expense:Charity:Donations
-expense:Charity:Settlements
+expense:Charity:Donations::Tax
+expense:Charity:Settlements::Tax
 expense:Child Care
 expense:Christmas
 expense:Clothing
@@ -68,7 +71,7 @@ expense:Leisure:Tapes & CDs
 expense:Leisure:Theatre & Concerts etc
 expense:Leisure:Toys & Games
 expense:Loan
-expense:Loan:Loan Interest
+expense:Loan:Loan Interest::Tax
 expense:Motor
 expense:Motor:Fuel
 expense:Motor:Loan
@@ -80,16 +83,15 @@ expense:Pet Care:Food
 expense:Pet Care:Supplies
 expense:Pet Care:Vet's Bills
 expense:Recreation
-expense:Taxes
-expense:Taxes:1st option
-expense:Taxes:Foreign savings
-expense:Taxes:Income Tax
-expense:Taxes:Interest
-expense:Taxes:Local Tax
-expense:Taxes:Nat Ins
-expense:Taxes:Other Invest
-expense:Taxes:Other Tax
-expense:Taxes:Unit trust
+expense:Taxes::Tax
+expense:Taxes:Foreign savings::Tax
+expense:Taxes:Income Tax::Tax
+expense:Taxes:Interest::Tax
+expense:Taxes:Local Tax::Tax
+expense:Taxes:Nat Ins::Tax
+expense:Taxes:Other Invest::Tax
+expense:Taxes:Other Tax::Tax
+expense:Taxes:Unit trust::Tax
 expense:Utilities
 expense:Utilities:Electricity
 expense:Utilities:Gas
@@ -99,39 +101,38 @@ expense:Utilities:Water
 
 # next income 
 income:Alimony
-income:Bonus
-income:Capital gains
+income:Bonus::Tax
+income:Capital gains::Tax
 income:Child Benefit
-income:Div Income
-income:Div Income:Ord dividend
+income:Div Income::Tax
+income:Div Income:Ord dividend::Tax
 income:Div Income:Stock dividend
-income:Employment
-income:Employment:Benefits
-income:Employment:Foreign
-income:Employment:Lump sums
-income:Employment:Other employ
-income:Employment:Salary & wages
+income:Employment::Tax
+income:Employment:Benefits::Tax
+income:Employment:Foreign::Tax
+income:Employment:Lump sums::Tax
+income:Employment:Other employ::Tax
+income:Employment:Salary & wages::Tax
 income:Gift Received
-income:Int Inc
-income:Int Inc:Bank Interest
-income:Int Inc:Gross
-income:Int Inc:Net
-income:Int Inc:Other savings
-income:Invest. income
-income:Invest. income:1st option
-income:Invest. income:Dividend
-income:Invest. income:Foreign
-income:Invest. income:Other savings
-income:Invest. income:Other trusts
-income:Invest. income:Other trusts#Capital
-income:Invest. income:Other trusts#Dist. rec'd
-income:Invest. income:Other trusts#Estate
-income:Invest. income:UK other
-income:Invest. income:UK other#Unit trusts
-income:Investment Income
-income:Investment Income:Capital Gains
-income:Investment Income:Dividends
-income:Investment Income:Interest
+income:Int Inc::Tax
+income:Int Inc:Bank Interest::Tax
+income:Int Inc:Gross::Tax
+income:Int Inc:Net::Tax
+income:Int Inc:Other savings::Tax
+income:Invest. income::Tax
+income:Invest. income:Dividend::Tax
+income:Invest. income:Foreign::Tax
+income:Invest. income:Other savings::Tax
+income:Invest. income:Other trusts::Tax
+income:Invest. income:Other trusts#Capital::Tax
+income:Invest. income:Other trusts#Dist. rec'd::Tax
+income:Invest. income:Other trusts#Estate::Tax
+income:Invest. income:UK other::Tax
+income:Invest. income:UK other#Unit trusts::Tax
+income:Investment Income::Tax
+income:Investment Income:Capital Gains::Tax
+income:Investment Income:Dividends::Tax
+income:Investment Income:Interest::Tax
 income:Investment Income:Tax-Exempt Interest
 income:Nat. Savings
 income:Nat. Savings:Capital bonds
@@ -139,29 +140,29 @@ income:Nat. Savings:Deposit bonds
 income:Nat. Savings:Income bonds
 income:Nat. Savings:Invest. account
 income:Nat. Savings:Ord. account
-income:Old Age Pension
-income:Old Age Pension:Employer
-income:Old Age Pension:State
+income:Old Age Pension::Tax
+income:Old Age Pension:Employer::Tax
+income:Old Age Pension:State::Tax
 income:Other Income
 income:Other Income:Student loan
 income:Other Income:Child Support
-income:Other Income:Employee Share Option
-income:Other Income:Gifts Received
+income:Other Income:Employee Share Option::Tax
+income:Other Income:Gifts Received::Tax
 income:Other Income:Loan Principal Received
 income:Other Income:Lottery or Premium Bond Prizes
-income:Other Income:Tax Refund
+income:Other Income:Tax Refund::Tax
 income:Other Income:Unemployment Benefit
-income:Retirement Income
-income:Retirement Income:Pensions & Annuities
-income:Retirement Income:State Pension Benefits
+income:Retirement Income::Tax
+income:Retirement Income:Pensions & Annuities::Tax
+income:Retirement Income:State Pension Benefits::Tax
 income:Social security
 income:Social security:Industrial
 income:Social security:Invalid
 income:Social security:Widowed
-income:Wages & Salary
-income:Wages & Salary:Bonus
-income:Wages & Salary:Commission
+income:Wages & Salary::Tax
+income:Wages & Salary:Bonus::Tax
+income:Wages & Salary:Commission::Tax
 income:Wages & Salary:Employer Pension Contributions
-income:Wages & Salary:Gross Pay
-income:Wages & Salary:Net Pay
-income:Wages & Salary:Overtime
+income:Wages & Salary:Gross Pay::Tax
+income:Wages & Salary:Net Pay::Tax
+income:Wages & Salary:Overtime::Tax

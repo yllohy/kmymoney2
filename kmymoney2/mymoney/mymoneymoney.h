@@ -131,6 +131,7 @@ public:
 
   static unsigned char thousandSeparator(void);
   static unsigned char decimalSeparator(void);
+  static signPosition negativeMonetarySignPosition(void);
   static void setFileVersion(const fileVersionE version);
 
   // assignment

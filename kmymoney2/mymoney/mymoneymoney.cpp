@@ -61,6 +61,11 @@ void MyMoneyMoney::setNegativeMonetarySignPosition(const signPosition pos)
   _negativeMonetarySignPosition = pos;
 }
 
+MyMoneyMoney::signPosition MyMoneyMoney::negativeMonetarySignPosition(void)
+{
+  return _negativeMonetarySignPosition;
+}
+
 void MyMoneyMoney::setPositiveMonetarySignPosition(const signPosition pos)
 {
   _positiveMonetarySignPosition = pos;

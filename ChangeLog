@@ -1,8 +1,13 @@
+2004-08-16 Ace Jones <acejones@users.sourceforge.net>
+  * Modified reports to use ()'s for negative values
+  * Added Tax notation in GB default accounts
+    (Thanks to Tony Bloomfield)
+
 2004-08-14 Ace Jones <acejones@users.sourceforge.net>
   * Added an initial Tax Transactions report.  Still more work needed
     to make it fully-featured.
   * Added "Include on Tax Reports" property in category edit dialog
-  * Added Tax notation in default accounts
+  * Added Tax notation in US default accounts
   * Commented MyMoneyReport class
   * More information on "Unexpected exception in KLedgerView::
     setupPointerAndBalanceArrays"
