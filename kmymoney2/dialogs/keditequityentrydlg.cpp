@@ -51,7 +51,7 @@
                           
 #include "keditequityentrydlg.h"
 
-KEditEquityEntryDlg::KEditEquityEntryDlg(QWidget *parent = NULL, const char *name = NULL)
+KEditEquityEntryDlg::KEditEquityEntryDlg(QWidget *parent, const char *name)
   : kEditEquityEntryDecl(parent, name, true)
 {
   
