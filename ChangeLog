@@ -1,8 +1,12 @@
+2004-10-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added VAT handling
+  * Added MyMoneyMoney::isZero()
+
 2004-10-13 Ace Jones <acejones@users.sourceforge.net>
   * Added investment fields to transaction reports (action, shares, price)
   * Added 'value' field to investment summary.  This displays the net value of
     each holding.  Renamed previous 'current value' to 'price'
-    
+
 2004-10-11 Ace Jones <acejones@users.sourceforge.net>
   * Implemented "Edit..." from context menu in investment view summary
 
@@ -350,7 +354,7 @@
 
 2004-07-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed alignment of institution dialog
-  
+
 2004-07-26 Ace Jones <acejones@users.sourceforge.net>
   * Standardized formatting of headers for scheduled payments on home page
 
