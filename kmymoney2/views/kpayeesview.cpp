@@ -162,20 +162,30 @@ void KPayeesView::showTransactions(void)
   MyMoneyMoney balance(0);
 
   QValueList<MyMoneyTransaction>::ConstIterator it_t;
+  QCString lastId;
+  int ofs = 0;
+
   for(i = 0, it_t = list.begin(); it_t != list.end(); ++it_t) {
+    qDebug("adding transaction %s", (*it_t).id().data());
     KMyMoneyTransaction k(*it_t);
-    QValueList<KMyMoneyTransaction>::ConstIterator it_k;
     
-    QValueList<MyMoneySplit>::ConstIterator it_s;
-    
-    for(it_s = (*it_t).splits().begin(); it_s != (*it_t).splits().end(); ++it_s) {
-      if((*it_s).payeeId() == m_payee.id()) {
-        balance += (*it_s).value();
-      }
+    filter.match(*it_t, MyMoneyFile::instance()->storage());
+    if(lastId != (*it_t).id()) {
+      ofs = 0;
+      lastId = (*it_t).id();
+    } else
+      ofs++;
+
+    k.setSplitId(filter.matchingSplits()[ofs].id());
+    MyMoneyAccount acc = MyMoneyFile::instance()->account(filter.matchingSplits()[ofs].accountId());
+    if(acc.accountGroup() == MyMoneyAccount::Asset
+    || acc.accountGroup() == MyMoneyAccount::Liability) {
+      QValueList<KMyMoneyTransaction>::ConstIterator it_k;
+      it_k = m_transactionList.append(k);
+      balance += k.splitById(k.splitId()).value();
+      m_transactionPtrVector.insert(i, &(*it_k));
+      ++i;
     }
-    it_k = m_transactionList.append(k);
-    m_transactionPtrVector.insert(i, &(*it_k));
-    ++i;
   }
 
   // sort the transactions
@@ -185,8 +195,30 @@ void KPayeesView::showTransactions(void)
   m_transactionView->clear();
   KTransactionListItem *item = 0;
   for(i = 0; i < m_transactionPtrVector.size(); ++i) {
-    MyMoneyTransaction* t = m_transactionPtrVector[i];
-
+    KMyMoneyTransaction* t = m_transactionPtrVector[i];
+    MyMoneySplit s = t->splitById(t->splitId());
+    
+    item = new KTransactionListItem(m_transactionView, item, s.accountId(), t->id());
+    item->setText(0, s.number());
+    item->setText(1, KGlobal::locale()->formatDate(t->postDate(), true));
+    
+    QString txt;
+    if(s.action() == MyMoneySplit::ActionTransfer) {
+      MyMoneyAccount acc = file->account(s.accountId());
+      if(s.value() >= 0) {
+        txt = i18n("Transfer to %1").arg(acc.name());
+      } else {
+        txt = i18n("Transfer from %1").arg(acc.name());
+      }
+    } else if(t->splitCount() > 2) {
+      txt = i18n("Splitted transaction");
+    } else {
+      MyMoneySplit s0 = t->splitByAccount(s.accountId(), false);
+      txt = MyMoneyFile::instance()->accountToCategory(s0.accountId());
+    }
+    item->setText(2, txt);
+    item->setText(3, s.value().formatMoney());
+/*
     QValueList<MyMoneySplit> list = t->splits();
     QValueList<MyMoneySplit>::Iterator it_s;
     for(it_s = list.begin(); it_s != list.end(); ++it_s) {
@@ -213,6 +245,7 @@ void KPayeesView::showTransactions(void)
         item->setText(3, (*it_s).value().formatMoney());
       }
     }
+*/
   }
   m_balanceLabel->setText(i18n("Balance: %1").arg(balance.formatMoney()));
 

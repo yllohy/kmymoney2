@@ -363,12 +363,22 @@ void KLedgerViewCheckings::createInfoStack(void)
 
   QVBoxLayout* buttonLayout = new QVBoxLayout( frame, 0, 6, "ButtonLayout");
 
+  KIconLoader* il = KGlobal::iconLoader();
+  
   m_detailsButton = new KPushButton(frame, "detailsButton" );
-  m_detailsButton->setText(i18n("Account Details"));
+  KGuiItem detailsButtenItem( i18n("&Account Details"),
+                    QIconSet(il->loadIcon("viewmag", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Open the account dialog"),
+                    i18n("Use this view and modify the account details."));
+  m_detailsButton->setGuiItem(detailsButtenItem);
   buttonLayout->addWidget(m_detailsButton);
 
   m_reconcileButton = new KPushButton(frame, "reconcileButton");
-  m_reconcileButton->setText(i18n("&Reconcile ..."));
+  KGuiItem reconcileButtenItem( i18n("&Reconcile ..."),
+                    QIconSet(il->loadIcon("reconcile", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Start the account reconciliation"),
+                    i18n("Use this to reconcile your account against the bank statement."));
+  m_reconcileButton->setGuiItem(reconcileButtenItem);
   buttonLayout->addWidget(m_reconcileButton);
 
   connect(m_reconcileButton, SIGNAL(clicked()), this, SLOT(slotReconciliation()));
