@@ -1424,7 +1424,9 @@ void KMyMoneyView::fixFile(void)
   MyMoneyFile* file = MyMoneyFile::instance();
   QValueList<MyMoneyAccount> accountList = file->accountList();
   QValueList<MyMoneyAccount>::Iterator it_a;
-  
+  QValueList<MyMoneySchedule> scheduleList = file->scheduleList();
+  QValueList<MyMoneySchedule>::Iterator it_s;
+    
   for(it_a = accountList.begin(); it_a != accountList.end(); ++it_a) {
     if((*it_a).accountType() == MyMoneyAccount::Loan
     || (*it_a).accountType() == MyMoneyAccount::AssetLoan) {
@@ -1432,7 +1434,43 @@ void KMyMoneyView::fixFile(void)
     }
   }
 
+  for(it_s = scheduleList.begin(); it_s != scheduleList.end(); ++it_s) {
+    fixSchedule(*it_s);
+  }
+
   fixTransactions();
+}
+
+void KMyMoneyView::fixSchedule(MyMoneySchedule sched)
+{
+  MyMoneyTransaction t = sched.transaction();
+  QValueList<MyMoneySplit> splitList = t.splits();
+  QValueList<MyMoneySplit>::ConstIterator it_s;
+  bool updated = false;
+
+  try {
+    // Check if the splits contain valid data and set it to
+    // be valid.
+    for(it_s = splitList.begin(); it_s != splitList.end(); ++it_s) {
+      if((*it_s).reconcileFlag() != MyMoneySplit::NotReconciled) {
+        MyMoneySplit split = *it_s;
+        split.setReconcileDate(QDate());
+        split.setReconcileFlag(MyMoneySplit::NotReconciled);
+        t.modifySplit(split);
+        updated = true;
+      }
+    }
+
+    // If there have been changes, update the schedule and
+    // the engine data.
+    if(updated) {
+      sched.setTransaction(t);
+      MyMoneyFile::instance()->modifySchedule(sched);
+    }
+  } catch(MyMoneyException *e) {
+    qWarning("Unable to update broken schedule: %s", e->what().latin1());
+    delete e;
+  }
 }
 
 void KMyMoneyView::fixLoanAccount(MyMoneyAccount acc)
@@ -1480,7 +1518,7 @@ void KMyMoneyView::createSchedule(MyMoneySchedule newSchedule, MyMoneyAccount& n
 {
   // Add the schedule only if one exists
   //
-  // Remember to modify the first split to to reference the newly created account
+  // Remember to modify the first split to reference the newly created account
   if (!newSchedule.name().isEmpty())
   {
     try

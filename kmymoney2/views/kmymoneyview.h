@@ -61,7 +61,7 @@ class MyMoneyTransaction;
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.44 2003/12/08 21:25:56 ipwizard Exp $
+  * $Id: kmymoneyview.h,v 1.45 2003/12/11 18:44:11 ipwizard Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -165,7 +165,8 @@ private:
   /**
     */
   void fixTransactions(void);
-    
+  void fixSchedule(MyMoneySchedule sched);
+
   void createSchedule(MyMoneySchedule s, MyMoneyAccount& a);
     
 public:
