@@ -1,3 +1,9 @@
+2003-09-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * smarter detection of filetype to be read (looks at file contents
+    not the extension)
+  * fixed edit/delete options in AccountIconView
+  * fixed listview handling with the changes for the background painting
+
 2003-09-26 Michael Edwardes <mte@users.sourceforge.net>
   * Select the new institution in KNewAccountWizard.
   * Pre-select the institution if we right click on an institution and choose
