@@ -1389,7 +1389,7 @@ void KMyMoneyView::loadDefaultCurrencies(void)
     file->addCurrency(MyMoneyCurrency("TMM", i18n("Turkmenistan Manat")));
     file->addCurrency(MyMoneyCurrency("USD", i18n("US Dollar"),              "$"));
     file->addCurrency(MyMoneyCurrency("UGX", i18n("Uganda Shilling")));
-    file->addCurrency(MyMoneyCurrency("UAG", i18n("Ukraine Hryvnia")));
+    file->addCurrency(MyMoneyCurrency("UAH", i18n("Ukraine Hryvnia")));
     file->addCurrency(MyMoneyCurrency("AED", i18n("United Arab Emirates Dirham")));
     file->addCurrency(MyMoneyCurrency("UYU", i18n("Uruguayan Peso")));
     file->addCurrency(MyMoneyCurrency("UZS", i18n("Uzbekistani Sum")));
