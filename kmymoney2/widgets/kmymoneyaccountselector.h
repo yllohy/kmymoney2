@@ -58,6 +58,21 @@ public:
   ~kMyMoneyCheckListItem();
   const QCString& accountId(void) const { return m_id; };
 
+  /**
+    * use my own paint method
+    */
+  void paintCell(QPainter *p, const QColorGroup &cg, int column, int width, int alignment);
+
+  /**
+    * use my own backgroundColor method
+    */
+  const QColor& backgroundColor();
+
+  /**
+    * see KListViewItem::isAlternate()
+    */
+  bool isAlternate(void);
+  
 signals:
   void stateChanged(bool);
   
@@ -66,6 +81,10 @@ protected:
 
 private:
   QCString             m_id;
+  // copied from KListViewItem()
+  unsigned int         m_odd : 1;
+  unsigned int         m_known : 1;
+  unsigned int         m_unused : 30;
 };
 
 /**
@@ -80,6 +99,16 @@ public:
   kMyMoneyListViewItem(QListViewItem *parent, const QString& txt, const QCString& id);
   ~kMyMoneyListViewItem();
   const QCString& accountId(void) const { return m_id; };
+
+  /**
+    * use my own paint method
+    */
+  void paintCell(QPainter *p, const QColorGroup &cg, int column, int width, int alignment);
+
+  /**
+    * use my own backgroundColor method
+    */
+  const QColor& backgroundColor();
 
 private:
   QCString             m_id;
@@ -234,7 +263,18 @@ protected:
     * and selectAllExpenseCategories().
     */
   void selectCategories(const bool income, const bool expense);
-  
+
+  /**
+    * This method delays the call for m_listView->ensureItemVisible(item)
+    * for about 10ms. This seems to be necessary when the widget is not (yet)
+    * visible on the screen after creation.
+    *
+    * @param item pointer to QListViewItem that should be made visible
+    *
+    * @sa slotShowSelected()
+    */
+  void ensureItemVisible(const QListViewItem *item);
+    
 protected slots:
   /**
     * This slot selects all income categories
@@ -245,11 +285,21 @@ protected slots:
     * This slot selects all expense categories
     */
   void slotSelectExpenseCategories(void) { selectCategories(false, true); };
-  
+
+  /**
+    * This slot is usually connected to a timer signal and simply
+    * calls m_listView->ensureItemVisible() for the last selected item
+    * in this widget.
+    *
+    * @sa ensureItemVisible(), setSelected(const QCString&)
+    */
+  void slotShowSelected(void);
+    
 private:
   QListView::SelectionMode  m_selMode;
   KListView*                m_listView;
-  
+  const QListViewItem*      m_visibleItem;
+    
   KPushButton*              m_allAccountsButton;
   KPushButton*              m_noAccountButton;
   KPushButton*              m_incomeCategoriesButton;

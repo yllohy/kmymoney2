@@ -26,6 +26,7 @@
 #include <qlayout.h>
 #include <qheader.h>
 #include <qlabel.h>
+#include <qtimer.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -58,11 +59,28 @@ kMyMoneyListViewItem::~kMyMoneyListViewItem()
 {
 }
 
+void kMyMoneyListViewItem::paintCell(QPainter *p, const QColorGroup &cg, int column, int width, int alignment)
+{
+  QColorGroup _cg = cg;
+  _cg.setColor(QColorGroup::Base, backgroundColor());
+  
+  // make sure to bypass KListViewItem::paintCell() as
+  // we don't like it's logic - that's why we do this
+  // here ;-)    (ipwizard)
+  QListViewItem::paintCell(p, _cg, column, width, alignment);
+}
+
+const QColor& kMyMoneyListViewItem::backgroundColor()
+{
+  return isAlternate() ? KMyMoneyUtils::backgroundColour() : KMyMoneyUtils::listColour();
+}
+
 kMyMoneyCheckListItem::kMyMoneyCheckListItem(QListView* parent, const QString& txt, const QCString& id, Type type) :
   QCheckListItem(parent, txt, type),
   m_id(id)
 {
   setOn(true);
+  m_known = false;
 }
 
 kMyMoneyCheckListItem::kMyMoneyCheckListItem(QListViewItem* parent, const QString& txt, const QCString& id, Type type) :
@@ -70,6 +88,7 @@ kMyMoneyCheckListItem::kMyMoneyCheckListItem(QListViewItem* parent, const QStrin
   m_id(id)
 {
   setOn(true);
+  m_known = false;
 }
 
 kMyMoneyCheckListItem::~kMyMoneyCheckListItem()
@@ -81,6 +100,44 @@ void kMyMoneyCheckListItem::stateChange(bool state)
   emit stateChanged(state);
 }
 
+void kMyMoneyCheckListItem::paintCell(QPainter *p, const QColorGroup &cg, int column, int width, int alignment)
+{
+  QColorGroup _cg = cg;
+  _cg.setColor(QColorGroup::Base, backgroundColor());
+  QCheckListItem::paintCell(p, _cg, column, width, alignment);
+}
+
+const QColor& kMyMoneyCheckListItem::backgroundColor()
+{
+  return isAlternate() ? KMyMoneyUtils::backgroundColour() : KMyMoneyUtils::listColour();
+}
+
+bool kMyMoneyCheckListItem::isAlternate(void)
+{
+// logic taken from KListViewItem::isAlternate()
+  kMyMoneyCheckListItem* above;
+  above = dynamic_cast<kMyMoneyCheckListItem*> (itemAbove());
+  m_known = above ? above->m_known : true;
+  if(m_known) {
+    m_odd = above ? !above->m_odd : false;
+  } else {
+    kMyMoneyCheckListItem* item;
+    bool previous = true;
+    if(QListViewItem::parent()) {
+      item = dynamic_cast<kMyMoneyCheckListItem *>(QListViewItem::parent());
+      previous = item->m_odd;
+      item = dynamic_cast<kMyMoneyCheckListItem *>(QListViewItem::parent()->firstChild());
+    } else {
+      item = dynamic_cast<kMyMoneyCheckListItem *>(listView()->firstChild());
+    }
+    while(item) {
+      item->m_odd = previous = !previous;
+      item->m_known = true;
+      item = dynamic_cast<kMyMoneyCheckListItem *>(item->nextSibling());
+    }
+  }
+  return m_odd;
+}
 
 kMyMoneyAccountSelector::kMyMoneyAccountSelector(QWidget *parent, const char *name ) :
   QWidget(parent, name)
@@ -379,18 +436,18 @@ void kMyMoneyAccountSelector::setSelected(const QCString& id)
   for(it_v = m_listView->firstChild(); it_v != 0; it_v = it_v->nextSibling()) {
     if(it_v->rtti() == 1) {
       kMyMoneyCheckListItem* it_c = static_cast<kMyMoneyCheckListItem*>(it_v);
-      if(it_c->accountId() == id) {
-        m_listView->setSelected(it_v, true);
-        if(m_selMode == QListView::Single)
-          m_listView->ensureItemVisible(it_v);
-        return;
+      if(it_c->type() == QCheckListItem::CheckBox) {
+        if(it_c->accountId() == id) {
+          m_listView->setSelected(it_v, true);
+          ensureItemVisible(it_v);
+          return;
+        }
       }
     } else if(it_v->rtti() == 0) {
       kMyMoneyListViewItem* it_c = static_cast<kMyMoneyListViewItem*>(it_v);
       if(it_c->accountId() == id) {
         m_listView->setSelected(it_v, true);
-        if(m_selMode == QListView::Single)
-          m_listView->ensureItemVisible(it_v);
+        ensureItemVisible(it_v);
         return;
       }
     }
@@ -407,19 +464,35 @@ void kMyMoneyAccountSelector::setSelected(QListViewItem* item, const QCString& i
       kMyMoneyCheckListItem* it_c = static_cast<kMyMoneyCheckListItem*>(it_v);
       if(it_c->accountId() == id) {
         m_listView->setSelected(it_v, true);
-        if(m_selMode == QListView::Single)
-          m_listView->ensureItemVisible(it_v);
+        ensureItemVisible(it_v);
         return;
       }
     } else if(it_v->rtti() == 0) {
       kMyMoneyListViewItem* it_c = static_cast<kMyMoneyListViewItem*>(it_v);
       if(it_c->accountId() == id) {
         m_listView->setSelected(it_v, true);
-        if(m_selMode == QListView::Single)
-          m_listView->ensureItemVisible(it_v);
+        ensureItemVisible(it_v);
         return;
       }
     }
     setSelected(it_v, id);
   }
+}
+
+void kMyMoneyAccountSelector::ensureItemVisible(const QListViewItem *it_v)
+{
+  // for some reason, I could only use the ensureItemVisible() method
+  // of QListView successfully, after the widget was drawn on the screen.
+  // If called before it had no effect (if the item was not visible).
+  //
+  // The solution was to store the item we wanted to see in a local var
+  // and call QListView::ensureItemVisible() about 10ms later in
+  // the slot slotShowSelected.  (ipwizard, 12/29/2003)
+  m_visibleItem = it_v;  
+  QTimer::singleShot(10, this, SLOT(slotShowSelected()));
+}
+
+void kMyMoneyAccountSelector::slotShowSelected(void)
+{
+  m_listView->ensureItemVisible(m_visibleItem);
 }
