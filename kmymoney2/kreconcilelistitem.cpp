@@ -17,19 +17,19 @@
 #include <klocale.h>
 #include "kreconcilelistitem.h"
 
-KReconcileListItem::KReconcileListItem(QListView *parent, MyMoneyTransaction transaction )
+KReconcileListItem::KReconcileListItem(QListView *parent, MyMoneyTransaction *transaction )
  : QListViewItem(parent)
 {
   QString colText;
 
   m_transaction = transaction;
 
-  setText(0, KGlobal::locale()->formatDate(m_transaction.date(), true));
-  setText(1, m_transaction.memo());
-  setText(2, KGlobal::locale()->formatMoney(m_transaction.amount().amount()));
+  setText(0, KGlobal::locale()->formatDate(m_transaction->date(), true));
+  setText(1, m_transaction->memo());
+  setText(2, KGlobal::locale()->formatMoney(m_transaction->amount().amount()));
 
   QString tmp;
-  switch (m_transaction.state()) {
+  switch (m_transaction->state()) {
     case MyMoneyTransaction::Reconciled:
       tmp = "R";
       break;
@@ -48,7 +48,24 @@ KReconcileListItem::~KReconcileListItem()
 {
 }
 
-MyMoneyTransaction KReconcileListItem::transaction(void)
+void KReconcileListItem::setReconciled(bool rec)
+{
+	QString temp;
+  if(rec == true)
+  {
+   	m_transaction->setState(MyMoneyTransaction::Reconciled);
+    temp = "R";
+  }
+  else
+  {
+    m_transaction->setState(MyMoneyTransaction::Unreconciled);
+    temp = " ";
+  }
+  setText(3,temp);
+
+}
+
+MyMoneyTransaction* KReconcileListItem::transaction(void)
 {
   return m_transaction;
 }

@@ -86,6 +86,11 @@ MyMoneyTransaction* MyMoneyAccount::transactionLast(void)
   return m_transactions.last();
 }
 
+MyMoneyTransaction* MyMoneyAccount::transactionAt(int index)
+{
+ 	return m_transactions.at();
+}
+
 unsigned int MyMoneyAccount::transactionCount(void) const
 {
   return m_transactions.count();
@@ -202,6 +207,6 @@ QDataStream &operator>>(QDataStream &s, MyMoneyAccount &account)
   return s >> account.m_accountName
     >> account.m_description
     >> account.m_accountNumber
-    >> (Q_INT32)account.m_accountType
+    >> (Q_INT32 &)account.m_accountType
     >> account.m_lastReconcile;
 }

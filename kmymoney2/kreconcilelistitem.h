@@ -27,11 +27,12 @@
 
 class KReconcileListItem : public QListViewItem  {
 //   Q_OBJECT
-  MyMoneyTransaction m_transaction;
+  MyMoneyTransaction *m_transaction;
 public:
-  KReconcileListItem(QListView *parent, MyMoneyTransaction transaction );
+  KReconcileListItem(QListView *parent, MyMoneyTransaction *transaction );
 	~KReconcileListItem();
-	MyMoneyTransaction transaction(void);
+	MyMoneyTransaction* transaction(void);
+  void setReconciled(bool rec);
 };
 
 #endif

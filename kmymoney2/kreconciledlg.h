@@ -47,6 +47,9 @@ signals:
 private:
 	MyMoneyMoney m_endingBalance;
 	MyMoneyMoney m_previousBalance;
+	MyMoneyMoney m_clearedBalance;
+  MyMoneyMoney m_debitBalance;
+  MyMoneyMoney m_creditBalance;
 	
 	MyMoneyFile m_file;
 	MyMoneyBank m_bankIndex;

@@ -77,6 +77,7 @@ public:
 	MyMoneyTransaction* transactionFirst(void);
 	MyMoneyTransaction* transactionNext(void);
 	MyMoneyTransaction* transactionLast(void);
+	MyMoneyTransaction* transactionAt(int index);
   unsigned int transactionCount(void) const;
   bool removeTransaction(const MyMoneyTransaction& transaction);
   bool addTransaction(MyMoneyTransaction::transactionMethod methodType, const QString& number, const QString& memo,

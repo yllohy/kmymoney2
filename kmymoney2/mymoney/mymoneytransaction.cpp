@@ -144,18 +144,18 @@ QDataStream &operator<<(QDataStream &s, const MyMoneyTransaction &trans)
 
 QDataStream &operator>>(QDataStream &s, MyMoneyTransaction &trans)
 {
-  s >> (Q_UINT32)trans.m_id
+  s >> (Q_UINT32 &)trans.m_id
     >> trans.m_number
     >> trans.m_memo
     >> trans.m_amount
     >> trans.m_date
-    >> (Q_UINT32)trans.m_method
+    >> (Q_UINT32 &)trans.m_method
     >> trans.m_categoryMajor
     >> trans.m_categoryMinor
     >> trans.m_atmBankName
     >> trans.m_accountFrom
     >> trans.m_accountTo
     >> trans.m_payee
-    >> (Q_INT32)trans.m_state;
+    >> (Q_INT32 &)trans.m_state;
     return s;
 }

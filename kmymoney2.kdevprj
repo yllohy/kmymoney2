@@ -28,7 +28,7 @@ path_to_bin_program=kmymoney2
 [General]
 AMChanged=false
 author=Michael Edwardes
-configure_args=--with-qt-dir=/usr/lib/qt --prefix=/opt/kde
+configure_args=
 dir_where_make_will_be_called=
 email=Michael.Edwardes@students.dmu.ac.uk
 kdevprj_version=1.3
