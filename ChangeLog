@@ -1,3 +1,7 @@
+2202-11-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added support for network file access over the protocols
+    provided by KIO (ftp, http, smb etc.)
+
 2202-11-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added support for compressed file I/O. The reader checks if an
     uncompressed or compressed file is read. The writer always adds
