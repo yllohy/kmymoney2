@@ -221,6 +221,9 @@ void KImportDlg::slotSetProgress(int progress)
   qstring += i18n(" of ");
   qstring += QString::number(m_qprogressbar->totalSteps());
   m_qlabelTransaction->setText(qstring);
+  // force update of modified text on screen every ten iterations
+  if((progress % 10) == 0)
+    m_qlabelTransaction->repaint();
 }
 
 /** Make sure the text input is ok */

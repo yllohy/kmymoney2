@@ -1,3 +1,6 @@
+2001-11-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * force update of imported records on screen every ten iterations
+
 2001-11-26 Kevin Tambascio <ktambascio@yahoo.com>
   * New files will always have .kmy extension to them.
 
