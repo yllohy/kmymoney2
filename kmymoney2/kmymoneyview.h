@@ -45,7 +45,7 @@
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.21 2001/12/08 22:02:27 ktambascio Exp $
+  * $Id: kmymoneyview.h,v 1.22 2001/12/15 16:36:33 ipwizard Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -61,6 +61,13 @@ private:
   KReconcileDlg *reconcileDlg;  // These exists during app run time ?
   KFindTransactionDlg *transactionFindDlg;
 //	KImportDlg       *importDlg;
+
+  KPopupMenu* m_accountMenu;
+  KPopupMenu* m_bankMenu;
+  int m_bankId,
+      m_accountId,
+      m_editId,
+      m_deleteId;
 
   // The schedule view
   KScheduleView *m_scheduledView;

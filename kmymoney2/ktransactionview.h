@@ -26,6 +26,7 @@
 #include <kcombobox.h>
 #include <klocale.h>
 #include <klistview.h>
+#include <kpopupmenu.h>
 
 #include "mymoney/mymoneyfile.h"
 #include "mymoney/mymoneybank.h"
@@ -77,7 +78,9 @@ private:
   KPushButton* m_cancel;
 	KPushButton* m_delete;
 	kMyMoneyLineEdit* m_memo;
-    kMyMoneyHLayout*	m_hlayout;
+  kMyMoneyHLayout*	m_hlayout;
+
+  KPopupMenu* m_contextMenu;
 
   QList<MyMoneyTransaction> *m_transactions;
 

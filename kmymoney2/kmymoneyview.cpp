@@ -71,6 +71,25 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   m_reconcileInited=false;
   reconcileDlg=0;
   transactionFindDlg=0;
+
+  // construct account context menu
+  KIconLoader *kiconloader = KGlobal::iconLoader();
+
+  m_accountMenu = new KPopupMenu(this);
+  m_accountMenu->insertTitle(kiconloader->loadIcon("account", KIcon::MainToolbar), i18n("Account Options"));
+  m_accountMenu->insertItem(kiconloader->loadIcon("account_open", KIcon::Small), i18n("Open..."), this, SLOT(slotAccountDoubleClick()));
+  m_accountMenu->insertSeparator();
+  m_accountMenu->insertItem(kiconloader->loadIcon("reconcile", KIcon::Small), i18n("Reconcile..."), this, SLOT(slotAccountReconcile()));
+  m_accountMenu->insertSeparator();
+  m_accountMenu->insertItem(kiconloader->loadIcon("account", KIcon::Small), i18n("Edit..."), this, SLOT(slotAccountEdit()));
+  m_accountMenu->insertItem(kiconloader->loadIcon("delete", KIcon::Small), i18n("Delete..."), this, SLOT(slotAccountDelete()));
+
+  m_bankMenu = new KPopupMenu(this);
+  m_bankMenu->insertTitle(kiconloader->loadIcon("bank", KIcon::MainToolbar), i18n("Institution Options"));
+  m_bankId = m_bankMenu->insertItem(kiconloader->loadIcon("bank", KIcon::Small), i18n("New Institution..."), this, SLOT(slotBankNew()));
+  m_accountId = m_bankMenu->insertItem(kiconloader->loadIcon("account", KIcon::Small), i18n("New Account..."), this, SLOT(slotAccountNew()));
+  m_editId = m_bankMenu->insertItem(kiconloader->loadIcon("bank", KIcon::Small), i18n("Edit..."), this, SLOT(slotBankEdit()));
+  m_deleteId = m_bankMenu->insertItem(kiconloader->loadIcon("delete", KIcon::Small), i18n("Delete..."), this, SLOT(slotBankDelete()));
 }
 
 KMyMoneyView::~KMyMoneyView()
@@ -86,29 +105,7 @@ void KMyMoneyView::slotTransactionListChanged()
 
 void KMyMoneyView::slotAccountRightMouse(const MyMoneyAccount, bool/* inList*/)
 {
-  KIconLoader *kiconloader = KGlobal::iconLoader();
-
-  KPopupMenu *menu = new KPopupMenu(this);
-  menu->insertTitle(kiconloader->loadIcon("account", KIcon::MainToolbar), i18n("Account Options"));
-  menu->insertItem(kiconloader->loadIcon("account_open", KIcon::Small), i18n("Open..."), this, SLOT(slotAccountDoubleClick()));
-  menu->insertSeparator();
-  /*int id1 = */menu->insertItem(kiconloader->loadIcon("reconcile", KIcon::Small), i18n("Reconcile..."), this, SLOT(slotAccountReconcile()));
-  menu->insertSeparator();
-  /*int id3 = */menu->insertItem(kiconloader->loadIcon("account", KIcon::Small), i18n("Edit..."), this, SLOT(slotAccountEdit()));
-  /*int id4 = */menu->insertItem(kiconloader->loadIcon("delete", KIcon::Small), i18n("Delete..."), this, SLOT(slotAccountDelete()));
-  menu->insertSeparator();
-  /*int id5 = */menu->insertItem(kiconloader->loadIcon("transaction_import", KIcon::Small), i18n("Import ascii..."), this, SLOT(slotAccountImportAscii()));
-  /*int id6 = */menu->insertItem(kiconloader->loadIcon("transaction_export", KIcon::Small), i18n("Export ascii..."), this, SLOT(slotAccountExportAscii()));
-/*
-  if (!inList) {
-    menu.setItemEnabled(id1, false);
-    menu.setItemEnabled(id3, false);
-    menu.setItemEnabled(id4, false);
-    menu.setItemEnabled(id5, false);
-    menu.setItemEnabled(id6, false);
-  }
-*/
-  menu->exec(QCursor::pos());
+  m_accountMenu->exec(QCursor::pos());
 }
 
 void KMyMoneyView::slotAccountDoubleClick(void)
@@ -125,21 +122,13 @@ void KMyMoneyView::slotBankRightMouse(const MyMoneyBank, bool inList)
 {
   emit bankOperations(false);
 
-  KIconLoader *kiconloader = KGlobal::iconLoader();
+  // enable and disable items according to position of right-click
+  m_bankMenu->setItemEnabled(m_bankId, !inList);
+  m_bankMenu->setItemEnabled(m_accountId, inList);
+  m_bankMenu->setItemEnabled(m_editId, inList);
+  m_bankMenu->setItemEnabled(m_deleteId, inList);
 
-  KPopupMenu *menu = new KPopupMenu(this);
-  menu->insertTitle(kiconloader->loadIcon("bank", KIcon::MainToolbar), i18n("Institution Options"));
-  int id1 = menu->insertItem(kiconloader->loadIcon("bank", KIcon::Small), i18n("New Institution..."), this, SLOT(slotBankNew()));
-  int id2 = menu->insertItem(kiconloader->loadIcon("account", KIcon::Small), i18n("New Account..."), this, SLOT(slotAccountNew()));
-  int id3 = menu->insertItem(kiconloader->loadIcon("bank", KIcon::Small), i18n("Edit..."), this, SLOT(slotBankEdit()));
-  int id4 = menu->insertItem(kiconloader->loadIcon("delete", KIcon::Small), i18n("Delete..."), this, SLOT(slotBankDelete()));
-  if (!inList) {
-    menu->setItemEnabled(id2, false);
-    menu->setItemEnabled(id3, false);
-    menu->setItemEnabled(id4, false);
-  } else
-    menu->setItemEnabled(id1, false);
-  menu->exec(QCursor::pos());
+  m_bankMenu->exec(QCursor::pos());
 }
 
 void KMyMoneyView::slotBankEdit()
