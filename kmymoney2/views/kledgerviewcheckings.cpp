@@ -233,6 +233,8 @@ void KLedgerViewCheckings::fillForm(void)
 
   if(t != 0) {
     MyMoneySplit split = t->split(accountId());
+    MyMoneyMoney amount = split.value();
+
     QDate date;
     kMyMoneyTransactionFormTableItem* item;
 
@@ -252,8 +254,6 @@ void KLedgerViewCheckings::fillForm(void)
     item->setAlignment(kMyMoneyTransactionFormTableItem::right);
     formTable->setItem(1, 3, item);
 
-    formTable->setText(2, 3, split.value().formatMoney());
-
     // collect values
     QString payee;
     try {
@@ -263,6 +263,19 @@ void KLedgerViewCheckings::fillForm(void)
       payee = " ";
     }
 
+    QString category;
+    try {
+      if(t->splitCount() == 2) {
+        MyMoneySplit s = t->split(accountId(), false);
+        category = MyMoneyFile::instance()->accountToCategory(s.accountId());
+      } else {
+        category = i18n("Splitted transaction");
+      }
+    } catch (MyMoneyException *e) {
+      delete e;
+      category = " ";
+    }
+
     // then fill in the data depending on the transaction type
     switch(transactionType(split)) {
       case 0:   // Check
@@ -270,12 +283,14 @@ void KLedgerViewCheckings::fillForm(void)
         formTable->setText(1, 1, payee);
 
         // category
-        // formTable->setText(2, 0, "Category");
+        formTable->setText(2, 1, category);
 
         // number
         item = new kMyMoneyTransactionFormTableItem(formTable, QTableItem::Never, split.number());
         item->setAlignment(kMyMoneyTransactionFormTableItem::right);
         formTable->setItem(0, 3, item);
+
+        amount = -amount;
         break;
 
       case 1:   // Deposit
@@ -283,7 +298,7 @@ void KLedgerViewCheckings::fillForm(void)
         formTable->setText(1, 1, payee);
 
         // category
-        // formTable->setText(2, 0, "Category");
+        formTable->setText(2, 1, category);
         break;
 
       case 2:   // Transfer
@@ -292,28 +307,50 @@ void KLedgerViewCheckings::fillForm(void)
 
         // receiver
         formTable->setText(2, 1, payee);
+
+        amount = -amount;
         break;
 
       case 3:   // Withdrawal
         // receiver
         formTable->setText(1, 1, payee);
 
-        // formTable->setText(2, 0, "Category");
+        // category
+        formTable->setText(2, 1, category);
+
+        amount = -amount;
         break;
 
       case 4:   // ATM
         // receiver
         formTable->setText(1, 1, payee);
 
-        // formTable->setText(2, 0, "Category");
+        // category
+        formTable->setText(2, 1, category);
+
+        amount = -amount;
         break;
     }
+    formTable->setText(2, 3, amount.formatMoney());
+
+
+    m_form->newButton()->setEnabled(true);
+    m_form->editButton()->setEnabled(true);
+    m_form->enterButton()->setEnabled(false);
+    m_form->cancelButton()->setEnabled(false);
+    m_form->moreButton()->setEnabled(false);
   } else {
     // transaction empty, clean out space
     for(int i = 0; i < formTable->numRows(); ++i) {
       formTable->setText(i, 1, "");
       formTable->setText(i, 3, "");
     }
+
+    m_form->newButton()->setEnabled(true);
+    m_form->editButton()->setEnabled(false);
+    m_form->enterButton()->setEnabled(false);
+    m_form->cancelButton()->setEnabled(false);
+    m_form->moreButton()->setEnabled(false);
   }
 }
 
