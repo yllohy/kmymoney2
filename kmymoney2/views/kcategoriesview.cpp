@@ -80,13 +80,8 @@ KCategoriesView::KCategoriesView(QWidget *parent, const char *name )
 
   readConfig();
 
-  connect(categoryListView, SIGNAL(selectionChanged(QListViewItem*)),
-    this, SLOT(slotSelectionChanged(QListViewItem*)));
   connect(categoryListView, SIGNAL(rightButtonPressed(QListViewItem* , const QPoint&, int)),
     this, SLOT(slotListRightMouse(QListViewItem*, const QPoint&, int)));
-  connect(buttonEdit, SIGNAL(clicked()), this, SLOT(slotEditClicked()));
-  connect(buttonNew, SIGNAL(clicked()), this, SLOT(slotNewClicked()));
-  connect(buttonDelete, SIGNAL(clicked()), this, SLOT(slotDeleteClicked()));
 
   m_suspendUpdate = false;
 
@@ -227,36 +222,6 @@ void KCategoriesView::resizeEvent(QResizeEvent* e)
   kCategoriesViewDecl::resizeEvent(e);
 }
 
-void KCategoriesView::slotNewClicked()
-{
-  MyMoneyAccount account;
-
-  KNewAccountDlg dialog(account, false, true, this, "hi", i18n("Create A New Category"));
-
-  if (dialog.exec())
-  {
-    try
-    {
-      MyMoneyFile* file = MyMoneyFile::instance();
-
-      MyMoneyAccount newAccount = dialog.account();
-      MyMoneyAccount parentAccount = dialog.parentAccount();
-      file->addAccount(newAccount, parentAccount);
-//      categoryListView->clear();
-//      refresh();
-    }
-    catch (MyMoneyException *e)
-    {
-      QString message("Unable to add account: ");
-      message += e->what();
-      KMessageBox::information(this, message);
-      delete e;
-      return;
-    }
-  }
-
-}
-
 void KCategoriesView::slotDeleteClicked(MyMoneyAccount& account)
 {
   QString prompt = i18n("Do you really want to delete the category '%1'")
@@ -295,21 +260,6 @@ void KCategoriesView::slotDeleteClicked(void)
     message += e->what();
     KMessageBox::error(this, message);
     delete e;
-  }
-}
-
-void KCategoriesView::slotSelectionChanged(QListViewItem* item)
-{
-  KAccountListItem *kitem = (KAccountListItem *)item;
-  if (!kitem)
-  {
-    buttonEdit->setEnabled(false);
-    buttonDelete->setEnabled(false);
-  }
-  else
-  {
-    buttonEdit->setEnabled(true);
-    buttonDelete->setEnabled(true);
   }
 }
 
@@ -362,6 +312,7 @@ void KCategoriesView::slotEditClicked(void)
     delete e;
   }
 }
+
 
 void KCategoriesView::readConfig(void)
 {

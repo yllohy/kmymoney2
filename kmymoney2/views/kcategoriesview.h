@@ -72,8 +72,6 @@ public slots:
   void slotReloadView(void) { slotRefreshView(); };
     
 protected slots:
-  void slotNewClicked();
-  void slotSelectionChanged(QListViewItem*);
   void slotListRightMouse(QListViewItem* item, const QPoint& , int col);
 
 signals:
