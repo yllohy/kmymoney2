@@ -264,12 +264,20 @@ QMap<QString,WebPriceQuoteSource> WebPriceQuote::defaultQuoteSources(void)
     "%m %d %y" // dateformat
   );
 
-  result["Canadian Mutuals"] = WebPriceQuoteSource("Canadian Mutuals", 
+  result["Globe & Mail"] = WebPriceQuoteSource("Globe & Mail", 
     "http://globefunddb.theglobeandmail.com/gishome/plsql/gis.price_history?pi_fund_id=%1",
     QString(),  // symbolregexp
-    "Reinvestment Price \\w+ \\d+, \\d+ (\\d+\.\\d+)", // priceregexp
+    "Reinvestment Price \\w+ \\d+, \\d+ (\\d+\\.\\d+)", // priceregexp
     "Reinvestment Price (\\w+ \\d+, \\d+)", // dateregexp
     "%m %d %y" // dateformat
+  );
+
+  result["MSN.CA"] = WebPriceQuoteSource("MSN.CA", 
+    "http://ca.moneycentral.msn.com/investor/quotes/quotes.asp?symbol=%1",
+    QString(),  // symbolregexp
+    "Net Asset Value (\\d+\\.\\d+)", // priceregexp
+    "NAV update (\\d+\\D+\\d+\\D+\\d+)", // dateregexp
+    "%d %m %y" // dateformat
   );
     
   return result;

@@ -37,8 +37,8 @@ public:
   kMyMoneyOnlineQuoteConfig(QWidget* parent, const char *name);
   virtual ~kMyMoneyOnlineQuoteConfig() {};
 
-  void writeConfig(void) {};
-  void readConfig(void) {};
+  void writeConfig(void) {}
+  void readConfig(void) {}
   void resetConfig(void);
 
 protected slots:

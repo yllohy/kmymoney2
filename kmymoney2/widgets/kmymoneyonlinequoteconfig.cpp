@@ -41,7 +41,7 @@
 kMyMoneyOnlineQuoteConfig::kMyMoneyOnlineQuoteConfig(QWidget *parent, const char *name )
   : kMyMoneyOnlineQuoteConfigDecl(parent, name)
 {
-#if 0
+#if 1
   QStringList groups = WebPriceQuote::quoteSources();
 
   loadList(true /*updateResetList*/);

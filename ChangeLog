@@ -1,13 +1,17 @@
-2005-01-14 Ace Jones <acejones@users.sourceforge.net>
+2005-01-18 Ace Jones <acejones@users.sourceforge.net>
+  * Added MSN.CA as another canadian source
+  * Fixed the online quote config dialog that I broke in my last checkin
+
+2005-01-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * add shared library support for external plugins
   * Fixed #1074957 (Create loan accounts)
   * Improved the check for a valid GPG id in the settings dialog
   * Fixed crash when closeing the base currency selection dialog
-  * Allow changing the amount of a transaciton w/o having a categroy assigned
+  * Allow changing the amount of a transaction w/o having a categroy assigned
   * suppress version control of *.lo files
 
 2005-01-12 Ace Jones <acejones@users.sourceforge.net>
-  * Fixed reports test failure caused by fixing byg #1079427 ("Checkings" now 
+  * Fixed reports test failure caused by fixing bug #1079427 ("Checkings" now 
     reads "Checking")
 
 2005-01-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
