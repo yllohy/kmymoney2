@@ -538,6 +538,7 @@ void KEnterScheduleDialog::commitTransaction()
 {
   try
   {
+    m_schedDate = m_date->getQDate();
     if (!m_schedDate.isValid())
       m_schedDate = m_schedule.nextPayment(m_schedule.lastPayment());
 
@@ -551,6 +552,7 @@ void KEnterScheduleDialog::commitTransaction()
     }        
     else if (m_schedDate > QDate::currentDate())
     {
+      // FIXME: we should probably respect the configurable pre-enter period
       QString message = QString(i18n("Are you sure you want to enter this occurence which is %1 days after today?")).arg(QDate::currentDate().daysTo(m_schedDate));
       if (KMessageBox::warningYesNo(this, message) == KMessageBox::No)
         return;
