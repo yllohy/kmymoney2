@@ -1,8 +1,8 @@
-# $Id: kbanking.m4,v 1.2 2004/09/05 18:34:31 ipwizard Exp $
+# $Id: kbanking.m4,v 1.3 2004/12/28 20:08:46 ipwizard Exp $
 # (c) 2004 Martin Preuss<martin@libchipcard.de>
 # This function checks for KBanking
 
-AC_DEFUN(AC_KBANKING, [
+AC_DEFUN([AC_KBANKING], [
 dnl searches for kbanking
 dnl Arguments: 
 dnl   $1: major version minimum
