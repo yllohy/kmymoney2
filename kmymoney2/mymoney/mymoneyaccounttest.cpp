@@ -77,9 +77,9 @@ void MyMoneyAccountTest::testConstructor() {
 	CPPUNIT_ASSERT(a.openingBalance() == MyMoneyMoney(1));
 
   QMap<QCString, QString> copy;
-  copy = m->pairs();
+  copy = r.pairs();
   CPPUNIT_ASSERT(copy.count() == 1);
-  CPPUNIT_ASSERT(copy.value("key") == "value");
+  CPPUNIT_ASSERT(copy[QCString("key")] == "value");
 }
 
 void MyMoneyAccountTest::testSetFunctions() {
