@@ -37,7 +37,7 @@
 #include "views/kbanklistitem.h"
 
 static const char *description =
-  I18N_NOOP("KMyMoney, the personal finances application for KDE.\n\nPlease consider contributing to this project with code and or suggestions.");
+  I18N_NOOP("KMyMoney, the Personal Finance Manager for KDE.\n\nPlease consider contributing to this project with code and or suggestions.");
 
 static KCmdLineOptions options[] =
 {
@@ -64,8 +64,10 @@ int main(int argc, char *argv[])
 
   KAboutData aboutData( "kmymoney2", I18N_NOOP("KMyMoney"),
     VERSION, description, KAboutData::License_GPL,
-    "(c) 2000-2003, Michael Edwardes", feature,
-    "http://kmymoney2.sourceforge.net/");
+    "(c) 2000-2004, Michael Edwardes", feature,
+    "http://kmymoney2.sourceforge.net/",
+    "kmymoney2-developer@lists.sourceforge.net");
+    
   aboutData.addAuthor("Michael Edwardes", I18N_NOOP("Project Manager"), "mte@users.sourceforge.net");
   aboutData.addAuthor("Felix Rodriguez", I18N_NOOP("Project Admin"), "frodriguez@users.sourceforge.net");
   aboutData.addCredit("Javier Campos Morales", I18N_NOOP("Developer & Artist"), "javi_c@users.sourceforge.net");
