@@ -250,16 +250,6 @@ void KNewAccountWizard::accept()
                                    false);
 
     m_schedule.setTransaction(t);
-/*
-    try
-    {
-      MyMoneyFile::instance()->addSchedule(paymentSchedule);
-    } catch (MyMoneyException *e)
-    {
-      KMessageBox::information(this, i18n("Unable to add schedule: "), e->what());
-      delete e;
-    }
-*/
   }
 
   KNewAccountWizardDecl::accept();
@@ -493,4 +483,12 @@ void KNewAccountWizard::loadPaymentMethods()
   m_method->insertItem(i18n("Manual Deposit"));
   m_method->insertItem(i18n("Write Cheque"));
   m_method->insertItem(i18n("Other"));
+}
+
+void KNewAccountWizard::showPage(QWidget* page)
+{
+  if (page == accountTypePage)
+    setAccountType(m_accountType);
+
+  KNewAccountWizardDecl::showPage(page);
 }
