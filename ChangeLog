@@ -1,5 +1,6 @@
 2001-06-16  Javier Campos Morales  <javi_cms@terra.es>
   * New icons added.
+  * Remove sprintf in ktransactionview. "The %s escape sequence expects a utf8() encoded string.". This is not good for internacional support.
 
 2001-06-16 Michael Edwardes <mte@users.sourceforge.net>
   * Removed 'name' input field from KNewFileDlg class.
