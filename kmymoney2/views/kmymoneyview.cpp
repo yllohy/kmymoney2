@@ -112,7 +112,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
 {
   // the global variable kmymoney2 is not yet assigned. So we construct it here
   QObject* kmymoney2 = parent->parent();
-  
+
   // create an empty file
   // m_file = new KMyMoneyFile;
   newStorage();
@@ -167,6 +167,8 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(this, SIGNAL(aboutToShowPage(QWidget*)), m_ledgerView, SLOT(hide()));
   signalMap->setMapping(m_ledgerView, LedgersView);
   connect(m_ledgerView, SIGNAL(signalViewActivated()), signalMap, SLOT(map()));
+  connect(m_ledgerView, SIGNAL(accountSelected(const QCString&, const QCString&)),
+      this, SLOT(slotLedgerSelected(const QCString&, const QCString&)));
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_ledgerView, SLOT(slotReloadView()));
 
   // Page 6
@@ -175,6 +177,8 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   m_investmentView = new KInvestmentView(m_investmentViewFrame, "investmentView");
   signalMap->setMapping(m_investmentView, InvestmentsView);
   connect(m_investmentView, SIGNAL(signalViewActivated()), signalMap, SLOT(map()));
+  connect(m_investmentView, SIGNAL(accountSelected(const QCString&, const QCString&)),
+      this, SLOT(slotLedgerSelected(const QCString&, const QCString&)));
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_investmentView, SLOT(slotReloadView()));
 
   // Page 7
@@ -186,8 +190,8 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_reportsView, SLOT(slotReloadView()));
 
   // connect the view activation signal mapper
-	connect(signalMap, SIGNAL(mapped(int)), this, SIGNAL(viewActivated(int)));
-  
+  connect(signalMap, SIGNAL(mapped(int)), this, SIGNAL(viewActivated(int)));
+
   connect(m_accountsView, SIGNAL(accountRightMouseClick()),
     this, SLOT(slotAccountRightMouse()));
   connect(m_accountsView, SIGNAL(accountDoubleClick()), this, SLOT(slotAccountDoubleClick()));
@@ -212,7 +216,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
 
   connect(m_homeView, SIGNAL(scheduleSelected(const QCString&)),
     this, SLOT(slotScheduleSelected(const QCString&)));
-  
+
   // construct account context menu
   KIconLoader *kiconloader = KGlobal::iconLoader();
 
@@ -232,14 +236,14 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   m_bankMenu->insertItem(kiconloader->loadIcon("account", KIcon::Small), i18n("New Account..."), this, SLOT(slotBankAccountNew()));
   m_bankMenu->insertItem(kiconloader->loadIcon("bank", KIcon::Small), i18n("Edit..."), this, SLOT(slotBankEdit()));
   m_bankMenu->insertItem(kiconloader->loadIcon("delete", KIcon::Small), i18n("Delete..."), this, SLOT(slotBankDelete()));
-  
+
   m_rightMenu = new KPopupMenu(this);
   m_rightMenu->insertTitle(kiconloader->loadIcon("bank", KIcon::MainToolbar), i18n("KMyMoney Options"));
   m_rightMenu->insertItem(kiconloader->loadIcon("bank", KIcon::Small), i18n("New Institution..."), this, SLOT(slotBankNew()));
 
   // construct an empty file
   newFile(true);
-  
+
   // select the page first, before connecting the aboutToShow signal
   // because we don't want to override the information stored in the config file
   showPage(0);
@@ -272,7 +276,7 @@ void KMyMoneyView::removeStorage(void)
 
 void KMyMoneyView::slotRightMouse()
 {
-  m_rightMenu->exec(QCursor::pos()); 
+  m_rightMenu->exec(QCursor::pos());
 }
 
 void KMyMoneyView::slotAccountRightMouse()
@@ -294,7 +298,7 @@ void KMyMoneyView::slotAccountRightMouse()
 
   m_accountMenu->disconnectItem(AccountNew, this, SLOT(slotAccountNew()));
   m_accountMenu->disconnectItem(AccountNew, this, SLOT(slotCategoryNew()));
-  
+
   if(ok == true) {
     try {
       MyMoneyFile* file = MyMoneyFile::instance();
@@ -332,10 +336,39 @@ void KMyMoneyView::slotAccountRightMouse()
   m_accountMenu->exec(QCursor::pos());
 }
 
-void KMyMoneyView::slotLedgerSelected(const QCString& acc, const QCString& transaction)
+void KMyMoneyView::slotLedgerSelected(const QCString& accId, const QCString& transaction)
 {
-  showPage(pageIndex(m_ledgerViewFrame));
-  m_ledgerView->slotSelectAccountAndTransaction(acc, transaction);
+  MyMoneyAccount acc = MyMoneyFile::instance()->account(accId);
+  switch(acc.accountType()) {
+    case MyMoneyAccount::Investment:
+      showPage(pageIndex(m_investmentViewFrame));
+      m_investmentView->slotSelectAccountAndTransaction(accId, transaction);
+      break;
+
+    case MyMoneyAccount::Checkings:
+    case MyMoneyAccount::Savings:
+    case MyMoneyAccount::Cash:
+    case MyMoneyAccount::CreditCard:
+    case MyMoneyAccount::Loan:
+    case MyMoneyAccount::Asset:
+    case MyMoneyAccount::Liability:
+    case MyMoneyAccount::AssetLoan:
+      showPage(pageIndex(m_ledgerViewFrame));
+      m_ledgerView->slotSelectAccountAndTransaction(accId, transaction);
+      break;
+
+    case MyMoneyAccount::CertificateDep:
+    case MyMoneyAccount::MoneyMarket:
+    case MyMoneyAccount::Currency:
+    case MyMoneyAccount::Income:
+    case MyMoneyAccount::Expense:
+      qDebug("No view available for account type %d", acc.accountType());
+      break;
+
+    default:
+      qDebug("Unknown account type %d in KMyMoneyView::slotLedgerSelected", acc.accountType());
+      break;
+  }
 }
 
 void KMyMoneyView::slotPayeeSelected(const QCString& payee, const QCString& account, const QCString& transaction)
@@ -381,7 +414,7 @@ void KMyMoneyView::slotBankRightMouse()
 
   m_bankMenu->setItemEnabled(editId, state);
   m_bankMenu->setItemEnabled(deleteId, state);
-  
+
   m_bankMenu->exec(QCursor::pos());
 }
 
@@ -449,7 +482,7 @@ void KMyMoneyView::slotAccountEdit()
     return;
 
   bool accountSuccess=false;
-  
+
   try
   {
     MyMoneyFile* file = MyMoneyFile::instance();
@@ -523,7 +556,7 @@ void KMyMoneyView::slotAccountDelete()
       }
     } else {
       m_categoriesView->slotDeleteClicked();
-    } 
+    }
   } catch (MyMoneyException *e) {
     if (accountSuccess) {
       QString errorString = i18n("Cannot delete account: ");
@@ -549,11 +582,11 @@ void KMyMoneyView::closeFile(void)
 bool KMyMoneyView::readFile(const KURL& url)
 {
   QString filename;
-  
+
   newStorage();
   m_fileOpen = false;
 
-  IMyMoneyStorageFormat* pReader = NULL;    
+  IMyMoneyStorageFormat* pReader = NULL;
 
   if(url.isMalformed()) {
     qDebug("Invalid URL '%s'", url.url().latin1());
@@ -618,7 +651,7 @@ bool KMyMoneyView::readFile(const KURL& url)
             if((magic0 == MAGIC_0_50 && magic1 == MAGIC_0_51)
             || magic0 < 30)
               pReader = new MyMoneyStorageBin;
-              
+
             else {
               // Scan the first 70 bytes to see if we find something
               // we know. For now, we support our own XML format and
@@ -689,7 +722,7 @@ bool KMyMoneyView::readFile(const KURL& url)
     // as without it the application does not work anymore.
     while(MyMoneyFile::instance()->baseCurrency().id().isEmpty())
       selectBaseCurrency();
-      
+
   } else {
     // in some odd intermediate cases there could be files out there
     // that have a base currency set, but still have accounts that
@@ -811,7 +844,7 @@ const bool KMyMoneyView::saveFile(const KURL& url)
 
   // only use XML writer. The binary format will be depreacated sometime
   pWriter = new MyMoneyStorageXML;
-  
+
 /* // FIXME: remove this when we do not support the binary writer anymore
   if(strFileExtension.find("XML") != -1)
   {
@@ -819,7 +852,7 @@ const bool KMyMoneyView::saveFile(const KURL& url)
   }
   else
   {
-    // Use the binary reader 
+    // Use the binary reader
     pWriter = new MyMoneyStorageBin;
   }
 */
@@ -875,7 +908,7 @@ void KMyMoneyView::slotBankNew(void)
     return;
 
   MyMoneyInstitution institution;
-  
+
   KNewBankDlg dlg(institution, false, this, "newbankdlg");
   if (dlg.exec())
   {
@@ -933,7 +966,7 @@ void KMyMoneyView::accountNew(const bool createCategory)
     // Preselect the institution if we right clicked on a bank
     if (m_bankRightClick)
       m_newAccountWizard->setInstitution(m_accountsInstitution);
-      
+
     if((dialogResult = m_newAccountWizard->exec()) == QDialog::Accepted) {
       newAccount = m_newAccountWizard->account();
       parentAccount = m_newAccountWizard->parentAccount();
@@ -959,7 +992,7 @@ void KMyMoneyView::accountNew(const bool createCategory)
         delete e;
       }
     }
-            
+
     if(createCategory == false)
       title = i18n("Create a new Account");
     else
@@ -991,7 +1024,7 @@ void KMyMoneyView::accountNew(const bool createCategory)
             "Please click Cancel to abort the account creation.")
             .arg(openingBal.formatMoney())
             .arg(newAccount.openingBalance().formatMoney());
-            
+
         int ans = KMessageBox::questionYesNoCancel(this, message);
         if (ans == KMessageBox::Yes)
         {
@@ -1000,14 +1033,14 @@ void KMyMoneyView::accountNew(const bool createCategory)
         else if (ans == KMessageBox::Cancel)
           return;
       }
-            
+
       MyMoneyFile::instance()->addAccount(newAccount, parentAccount);
 
       // We MUST add the schedule AFTER adding the account because
       // otherwise an unknown account will be thrown.
       if(m_newAccountWizard != 0)
         createSchedule(m_newAccountWizard->schedule(), newAccount);
-        
+
       viewAccountList(newAccount.id());
     }
     catch (MyMoneyException *e)
@@ -1030,7 +1063,7 @@ void KMyMoneyView::slotAccountReconcile(void)
   QCString acc;
   MyMoneyFile* file = MyMoneyFile::instance();
   MyMoneyAccount account;
-  
+
   if(pageIndex(m_accountsViewFrame) == activePageIndex())
     acc = m_accountsView->currentAccount(ok);
   else
@@ -1379,7 +1412,7 @@ void KMyMoneyView::loadDefaultCategories(void)
                                         true);
   dialog->setMode(KFile::File | KFile::ExistingOnly | KFile::LocalOnly);
   dialog->setCaption(i18n("Select account template"));
-  
+
   if(dialog->exec() == QDialog::Accepted) {
     readDefaultCategories(dialog->selectedFile());
   }
@@ -1617,7 +1650,7 @@ void KMyMoneyView::slotRefreshViews()
 {
   // force update of settings
   KMyMoneyUtils::updateSettings();
-  
+
   m_accountsView->slotRefreshView();
   m_categoriesView->slotRefreshView();
   m_ledgerView->slotRefreshView();
@@ -1824,7 +1857,7 @@ void KMyMoneyView::fixLoanAccount(MyMoneyAccount acc)
       try {
         MyMoneyFile::instance()->modifyAccount(acc);
         createSchedule(wiz->schedule(), acc);
-        
+
       } catch(MyMoneyException *e) {
         delete e;
         qDebug("Unable to update loan account and/or create schedule");
@@ -1886,7 +1919,7 @@ void KMyMoneyView::createSchedule(MyMoneySchedule newSchedule, MyMoneyAccount& n
 void KMyMoneyView::fixTransactions(void)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
-  
+
   QValueList<MyMoneySchedule> scheduleList = file->scheduleList();
   MyMoneyTransactionFilter filter;
   QValueList<MyMoneyTransaction> transactionList = file->transactionList(filter);
@@ -1897,14 +1930,14 @@ void KMyMoneyView::fixTransactions(void)
   kmymoney2->slotStatusMsg(i18n("Fix transactions"));
   kmymoney2->slotStatusProgressBar(0, scheduleList.count() + transactionList.count());
 
-  int cnt = 0;  
+  int cnt = 0;
   // scan the schedules to find interest accounts
   for(it_x = scheduleList.begin(); it_x != scheduleList.end(); ++it_x) {
     MyMoneyTransaction t = (*it_x).transaction();
     QValueList<MyMoneySplit>::ConstIterator it_s;
     QCStringList accounts;
     bool hasDuplicateAccounts = false;
-    
+
     for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s) {
       if(accounts.contains((*it_s).accountId())) {
         hasDuplicateAccounts = true;
@@ -1939,7 +1972,7 @@ void KMyMoneyView::fixTransactions(void)
       (*it_t).setCommodity(file->baseCurrency().id());
       file->modifyTransaction(*it_t);
     }
-    
+
     bool isLoan = false;
     // Determine default action
     if((*it_t).splitCount() == 2) {
@@ -1971,7 +2004,7 @@ void KMyMoneyView::fixTransactions(void)
       }
     }
 
-    isLoan = false;    
+    isLoan = false;
     for(it_s = splits.begin(); defaultAction == 0 && it_s != splits.end(); ++it_s) {
       MyMoneyAccount acc = file->account((*it_s).accountId());
       MyMoneyMoney val = (*it_s).value();
@@ -2058,14 +2091,14 @@ void KMyMoneyView::fixTransactions(void)
     if(!(cnt % 10))
       kmymoney2->slotStatusProgressBar(cnt);
   }
-  
+
   kmymoney2->slotStatusProgressBar(-1, -1);
   kmymoney2->slotStatusMsg(i18n("Ready"));
 }
 
 void KMyMoneyView::fixDuplicateAccounts(MyMoneyTransaction& t)
 {
-  qDebug("Duplicate account in transaction %s", t.id().data());  
+  qDebug("Duplicate account in transaction %s", t.id().data());
 }
 
 void KMyMoneyView::slotPrintView(void)

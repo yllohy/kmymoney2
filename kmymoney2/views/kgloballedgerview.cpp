@@ -54,7 +54,7 @@
 
 #include "../mymoney/mymoneyaccount.h"
 #include "../mymoney/mymoneyfile.h"
-#include "../widgets/kmymoneycombo.h"
+#include "../widgets/kmymoneyaccountcombo.h"
 #include "../kmymoneyutils.h"
 
 KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
@@ -74,7 +74,8 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
 
   QHBoxLayout* Layout2 = new QHBoxLayout( 0, 0, 6, "Layout2");
 
-  m_accountComboBox = new kMyMoneyCombo(false, this, "accountComboBox" );
+  // m_accountComboBox = new kMyMoneyCombo(false, this, "accountComboBox" );
+  m_accountComboBox = new kMyMoneyAccountCombo(this, "accountComboBox" );
   m_accountComboBox->setMinimumSize( QSize( 240, 0 ) );
   Layout2->addWidget( m_accountComboBox );
   QSpacerItem* spacer = new QSpacerItem( 20, 20,
@@ -175,8 +176,8 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAccount, this);
 
   // setup connections
-  connect(m_accountComboBox, SIGNAL(activated(const QString&)),
-          this, SLOT(slotSelectAccount(const QString&)));
+  connect(m_accountComboBox, SIGNAL(accountSelected(const QCString&)),
+          this, SLOT(slotSelectAccount(const QCString&)));
 }
 
 KGlobalLedgerView::~KGlobalLedgerView()
@@ -225,65 +226,38 @@ void KGlobalLedgerView::slotRefreshView(void)
 void KGlobalLedgerView::loadAccounts(void)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
-  QString currentName;
-
-  // qDebug("KGlobalLedgerView::loadAccounts()");
-  m_accountComboBox->clear();
-
-  MyMoneyAccount acc, subAcc;
+  MyMoneyAccount acc;
 
   // check if the current account still exists and make it the
   // current account
   if(!m_accountId.isEmpty()) {
     try {
       acc = file->account(m_accountId);
-      currentName = acc.name();
+      m_accountId = acc.id();
     } catch(MyMoneyException *e) {
       delete e;
       m_accountId = QCString();
+      acc = MyMoneyAccount();
     }
   }
 
-  // load all asset and liability accounts into the combobox
-  QCStringList::ConstIterator it_s;
-  acc = file->asset();
-  for(it_s = acc.accountList().begin(); it_s != acc.accountList().end(); ++it_s) {
-    subAcc = file->account(*it_s);
-    if(subAcc.accountType() != MyMoneyAccount::Investment) {
-      m_accountComboBox->insertItem(subAcc.name());
-      if(m_accountId.isEmpty()) {
-        m_accountId = *it_s;
-        currentName = subAcc.name();
-      }
+  m_accountComboBox->loadList((KMyMoneyUtils::categoryTypeE)(KMyMoneyUtils::asset | KMyMoneyUtils::liability));
+
+  if(acc.id().isEmpty()) {
+    QCStringList list = m_accountComboBox->accountList();
+    if(list.count()) {
+      acc = file->account(*(list.begin()));
     }
   }
 
-  acc = file->liability();
-  for(it_s = acc.accountList().begin(); it_s != acc.accountList().end(); ++it_s) {
-    subAcc = file->account(*it_s);
-    m_accountComboBox->insertItem(subAcc.name());
-    if(m_accountId.isEmpty()) {
-      m_accountId = *it_s;
-      currentName = subAcc.name();
-    }
+  if(!acc.id().isEmpty()) {
+    slotSelectAccount(acc.id());
   }
-
-  // sort list by name of accounts
-  m_accountComboBox->listBox()->sort();
-  if(!currentName.isEmpty())
-    m_accountComboBox->setCurrentItem(currentName);
 }
 
-const bool KGlobalLedgerView::slotSelectAccount(const QString& accountName)
+const bool KGlobalLedgerView::slotSelectAccount(const QCString& id)
 {
-  // qDebug("KGlobalLedgerView::slotSelectAccount(const QString& accountName)");
-
-  QCString id = MyMoneyFile::instance()->nameToAccount(accountName);
-  bool     rc = false;
-  if(!id.isEmpty()) {
-    rc = slotSelectAccount(id);
-  }
-  return rc;
+  return slotSelectAccount(id, false);
 }
 
 const bool KGlobalLedgerView::slotSelectAccount(const QCString& id, const bool reconciliation)
@@ -303,13 +277,12 @@ const bool KGlobalLedgerView::slotSelectAccount(const QCString& id, const bool r
         m_accountStack->raiseWidget(acc.accountType());
         m_currentView = m_specificView[acc.accountType()];
         m_currentView->slotSelectAccount(id);
-        m_accountComboBox->setCurrentItem(acc.name());
+        m_accountComboBox->setSelected(acc);
         rc = true;
 
       } else {
-        QString msg = "Specific ledger view for account type '" +
-          KMyMoneyUtils::accountTypeToString(acc.accountType()) + "' not yet implemented";
-        KMessageBox::sorry(0, msg, "Implementation problem");
+        // let's see, if someone else can handle this request
+        emit accountSelected(id, QCString());
       }
     } else {
 #if KDE_VERSION < 310
@@ -317,6 +290,12 @@ const bool KGlobalLedgerView::slotSelectAccount(const QCString& id, const bool r
       m_accountStack->raiseWidget(acc.accountType());
 #endif
       rc = true;
+
+      // keep this as the current account
+      m_accountId = id;
+
+      if(reconciliation == true && m_currentView)
+        m_currentView->slotReconciliation();
     }
 
   } else {
@@ -325,17 +304,16 @@ const bool KGlobalLedgerView::slotSelectAccount(const QCString& id, const bool r
       m_currentView = m_specificView[MyMoneyAccount::Checkings];
       m_currentView->slotSelectAccount(id);
 
+      // keep this as the current account
+      m_accountId = id;
+
+      if(reconciliation == true && m_currentView)
+        m_currentView->slotReconciliation();
+
     } else {
       qFatal("Houston: we have a serious problem in KGlobalLedgerView");
     }
   }
-
-  // keep this as the current account
-  m_accountId = id;
-
-  if(reconciliation == true && m_currentView)
-    m_currentView->slotReconciliation();
-
   return rc;
 }
 

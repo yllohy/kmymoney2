@@ -72,6 +72,7 @@
 #include "kinvestmentview.h"
 #include "kinvestmentlistitem.h"
 #include "kledgerviewinvestments.h"
+#include "../widgets/kmymoneyaccountcombo.h"
 
 KInvestmentView::KInvestmentView(QWidget *parent, const char *name)
  :  kInvestmentViewDecl(parent,name)
@@ -113,7 +114,7 @@ KInvestmentView::KInvestmentView(QWidget *parent, const char *name)
   //set the summary button to be true.
  // btnSummary->setChecked(TRUE);
 
-   connect(m_accountComboBox, SIGNAL(activated(const QString&)), this, SLOT(slotSelectAccount(const QString&)));
+   connect(m_accountComboBox, SIGNAL(accountSelected(const QCString&)), this, SLOT(slotSelectAccount(const QCString&)));
  //const bool KInvestmentView::slotSelectAccount(const QCString& id, const bool reconciliation)
 
   MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAccount, this);
@@ -397,43 +398,35 @@ void KInvestmentView::slotRefreshView(void)
 void KInvestmentView::loadAccounts(void)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
-  QString currentName;
+  MyMoneyAccount acc;
 
   // qDebug("KGlobalLedgerView::loadAccounts()");
-  m_accountComboBox->clear();
-
-  MyMoneyAccount acc, subAcc;
 
   // check if the current account still exists and make it the
   // current account
-  if(!m_account.id().isEmpty()) {
+  if(!m_accountId.isEmpty()) {
     try {
-      acc = file->account(m_account.id());
-      currentName = acc.name();
+      acc = file->account(m_accountId);
+      m_accountId = acc.id();
     } catch(MyMoneyException *e) {
       delete e;
-      m_account = MyMoneyAccount();
+      m_accountId = QCString();
+      acc = MyMoneyAccount();
     }
   }
 
-  // load all asset and liability accounts into the combobox
-  QCStringList::ConstIterator it_s;
-  acc = file->asset();
-  for(it_s = acc.accountList().begin(); it_s != acc.accountList().end(); ++it_s) {
-    subAcc = file->account(*it_s);
-    if(subAcc.accountType() == MyMoneyAccount::Investment) {
-      m_accountComboBox->insertItem(subAcc.name());
-      if(m_account == MyMoneyAccount()) {
-        currentName = subAcc.name();
-        m_account = acc;
-      }
+  m_accountComboBox->loadList((KMyMoneyUtils::categoryTypeE)(KMyMoneyUtils::asset | KMyMoneyUtils::liability));
+
+  if(acc.id().isEmpty()) {
+    QCStringList list = m_accountComboBox->accountList();
+    if(list.count()) {
+      acc = file->account(*(list.begin()));
     }
   }
 
-  // sort list by name of accounts
-  m_accountComboBox->listBox()->sort();
-  if(!currentName.isEmpty())
-    m_accountComboBox->setCurrentItem(currentName);
+  if(!acc.id().isEmpty()) {
+    slotSelectAccount(acc.id());
+  }
 }
 
 const bool KInvestmentView::slotSelectAccount(const QCString& id, const bool reconciliation)
@@ -446,37 +439,27 @@ const bool KInvestmentView::slotSelectAccount(const QCString& id, const bool rec
   // cancel any pending edit operation in the ledger views
   //emit cancelEdit();
 
-  if(!id.isEmpty())
-  {
+  if(!id.isEmpty()) {
     // if the account id differs, then we have to do something
     MyMoneyAccount acc = MyMoneyFile::instance()->account(id);
-    if(m_accountId != id)
-    {
-        m_accountComboBox->setCurrentItem(acc.name());
-        rc = true;
-
+    if(m_accountId != id) {
+      if(acc.accountType() == MyMoneyAccount::Investment) {
         m_account = acc;
-
-
+        m_accountComboBox->setSelected(acc);
         m_ledgerView->slotSelectAccount(acc.id());
-      //} else {
-      //  QString msg = "Specific ledger view for account type '" +
-      //    KMyMoneyUtils::accountTypeToString(acc.accountType()) + "' not yet implemented";
-      //  KMessageBox::sorry(0, msg, "Implementation problem");
-      //}
-    }
-    else
-    {
+        rc = true;
+      } else {
+        // let's see, if someone else can handle this request
+        emit accountSelected(id, QCString());
+      }
+    } else {
 #if KDE_VERSION < 310
       // in KDE 3.1 and above, QWidgetStack::show() takes care of this
 //      m_accountStack->raiseWidget(acc.accountType());
 #endif
       rc = true;
     }
-
-  }
-  else
-  {
+  } else {
     //MyMoneyAccount acc = MyMoneyFile::instance()->account(id);
     //m_accountComboBox->setCurrentItem(acc.name());
     //    rc = true;
@@ -501,6 +484,17 @@ const bool KInvestmentView::slotSelectAccount(const QString& accountName)
   }
   return rc;
 }
+
+void KInvestmentView::slotSelectAccountAndTransaction(const QCString& accountId,
+                                                const QCString& transactionId)
+{
+  // if the selection of the account succeeded then select the desired transaction
+  if(slotSelectAccount(accountId)) {
+    // FIXME: select ledger tab and then call the selectTransaction method
+    // m_ledgerView->selectTransaction(transactionId);
+  }
+}
+
 
 void KInvestmentView::show(void)
 {

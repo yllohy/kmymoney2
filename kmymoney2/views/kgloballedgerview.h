@@ -48,7 +48,7 @@ class QHBoxLayout;
 class QGridLayout;
 class QPopupMenu;
 
-class kMyMoneyCombo;
+class kMyMoneyAccountCombo;
 class KLedgerView;
 
 /**
@@ -80,10 +80,10 @@ public:
   /**
     */
   void update(const QCString& id);
-  
+
 public slots:
   // void reloadView(void);
-  
+
   /**
     * This slot calls the hide() slot of all known specific ledger views
     */
@@ -148,7 +148,7 @@ public slots:
 
   /**
     * This slot is used to select the correct ledger view type for
-    * the account specified by @p id.
+    * the account specified by @p id in a specific mode.
     *
     * @param id Internal id used for the account to show
     * @param reconciliation if true, the account will be selected in
@@ -158,21 +158,20 @@ public slots:
     * @retval true selection of account referenced by @p id succeeded
     * @retval false selection of account failed
     */
-  const bool slotSelectAccount(const QCString& id, const bool reconciliation = false);
+  const bool slotSelectAccount(const QCString& id, const bool reconciliation);
 
   /**
-    * This is an overloaded version of the above method.
+    * This slot is used to select the correct ledger view type for
+    * the account specified by @p id. It is essentially the same
+    * as calling slotSelectAccount(id, false);
     *
-    * Using this method one can select an account by it's name. The name
-    * must match an asset or liability account name.
-    *
-    * @param accountName name of an existing account
+    * @param id Internal id used for the account to show
     *
     * @retval true selection of account referenced by @p id succeeded
     * @retval false selection of account failed
     */
-  const bool slotSelectAccount(const QString& accountName);
-      
+  const bool slotSelectAccount(const QCString& id);
+
 protected:
   /**
     * This method reloads the account selection combo box of the
@@ -200,14 +199,15 @@ protected:
     * @param forceLoad if set to true, the account is reloaded into the view in any case
     */
   // void selectAccount(const QCString& id, const QCString& transaction = "", const bool reconciliation = false, const bool forceLoad = false);
-  
+
 protected slots:
 
 protected:
 
 
 private:
-  kMyMoneyCombo* m_accountComboBox;
+  // kMyMoneyCombo* m_accountComboBox;
+  kMyMoneyAccountCombo* m_accountComboBox;
 
   /**
     * This member holds the id of the currently selected account
@@ -224,7 +224,7 @@ private:
   QWidgetStack* m_accountStack;
   KLedgerView* m_currentView;
   QVBoxLayout* m_formLayout;
-  
+
 signals:
   /**
     * This signal is emitted whenever this view is activated.
@@ -236,10 +236,16 @@ signals:
     * cancel any pending edit operation.
     */
   void cancelEdit();
-  
+
   /**
     */
   void payeeSelected(const QCString& payeeId, const QCString& accountId, const QCString& transactionId);
+
+  /**
+    * This signal is emitted, if an account has been selected
+    * which cannot handled by this view.
+    */
+  void accountSelected(const QCString& accountId, const QCString& transactionId);
 
 };
 

@@ -52,7 +52,7 @@ class KLedgerView;
 class KInvestmentView : public kInvestmentViewDecl, MyMoneyObserver
 {
   Q_OBJECT
-  
+
 public:
   typedef enum {
     VIEW_SUMMARY = 0,
@@ -119,6 +119,15 @@ public slots:
     */
   const bool slotSelectAccount(const QString& accountName);
 
+  /**
+    * This slot can be used to popup a specific transaction for a
+    * specific account. Both entities are defined by the corresponding Id's.
+    *
+    * @param accountId const QCString reference to the account id
+    * @param transactionId const QCString reference to the transaction id
+    */
+  void slotSelectAccountAndTransaction(const QCString& accountId, const QCString& transactionId);
+
   void show(void);
 
 protected:
@@ -149,6 +158,12 @@ protected slots:
 
 signals:
   void signalViewActivated(void);
+
+  /**
+    * This signal is emitted, if an account has been selected
+    * which cannot handled by this view.
+    */
+  void accountSelected(const QCString& accountId, const QCString& transactionId);
 
 private:
   void initSummaryTab(void);
