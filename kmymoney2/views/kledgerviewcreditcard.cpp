@@ -36,6 +36,7 @@
 #include "../views/kledgerviewcheckings.h"
 #include "../widgets/kmymoneypayee.h"
 #include "../widgets/kmymoneycategory.h"
+#include "../widgets/kmymoneycombo.h"
 #include "../widgets/kmymoneylineedit.h"
 #include "../widgets/kmymoneyedit.h"
 #include "../widgets/kmymoneydateinput.h"
@@ -73,6 +74,8 @@ void KLedgerViewCreditCard::createEditWidgets(void)
   m_editSplit = new KPushButton("Split", 0, "editSplit");
   m_editPayment = new kMyMoneyEdit(0, "editPayment");
   m_editDeposit = new kMyMoneyEdit(0, "editDeposit");
+  m_editType = new kMyMoneyCombo(0, "editType");
+  m_editType->setFocusPolicy(QWidget::StrongFocus);
 
   connect(m_editSplit, SIGNAL(clicked()), this, SLOT(slotOpenSplitDialog()));
 
@@ -86,6 +89,7 @@ void KLedgerViewCreditCard::createEditWidgets(void)
   connect(m_editTo, SIGNAL(categoryChanged(const QString&)), this, SLOT(slotToChanged(const QString&)));
   connect(m_editPayment, SIGNAL(valueChanged(const QString&)), this, SLOT(slotPaymentChanged(const QString&)));
   connect(m_editDeposit, SIGNAL(valueChanged(const QString&)), this, SLOT(slotDepositChanged(const QString&)));
+  connect(m_editType, SIGNAL(selectionChanged(int)), this, SLOT(slotTypeChanged(int)));
 
   connect(m_editPayee, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
   connect(m_editMemo, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
@@ -96,6 +100,7 @@ void KLedgerViewCreditCard::createEditWidgets(void)
   connect(m_editAmount, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
   connect(m_editPayment, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
   connect(m_editDeposit, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
+  connect(m_editType, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
 
   connect(m_editPayee, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   connect(m_editMemo, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
@@ -106,6 +111,7 @@ void KLedgerViewCreditCard::createEditWidgets(void)
   connect(m_editAmount, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   connect(m_editPayment, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   connect(m_editDeposit, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
+  connect(m_editType, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
 }
 
 void KLedgerViewCreditCard::slotReconciliation(void)

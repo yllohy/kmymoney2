@@ -50,6 +50,7 @@ class kMyMoneyCategory;
 class kMyMoneyEdit;
 class kMyMoneyLineEdit;
 class kMyMoneyDateInput;
+class kMyMoneyCombo;
 class KPushButton;
 class KPopupMenu;
 
@@ -387,6 +388,22 @@ public slots:
   virtual void slotToChanged(const QString& to);
 
   /**
+    * Called when the type field has been changed by the user.
+    * m_transaction and m_split will be updated accordingly.
+    *
+    * @param type index of the selected item in the combo box
+    */
+  virtual void slotTypeChanged(int type);
+
+  /**
+    * Called when the type field has been changed by the user.
+    * m_transaction and m_split will be updated accordingly.
+    *
+    * @param action const QCString reference to the new action value
+    */
+  virtual void slotTypeChanged(const QCString& type);
+
+  /**
     * Called when a new payee entry has been edited
     * This routine will call the payee dialog and possibly add
     * the payee to the MyMoneyFile object.
@@ -531,10 +548,19 @@ protected:
     * This method converts the actions strings contained in a split
     * (e.g. MyMoneySplit::ActionATM) into the internal used numeric values.
     *
-    * @param const reference to the split
+    * @param split const reference to the split
     * @return KLedgerView::transactionTypeE value of the action
     */
   int transactionType(const MyMoneySplit& split) const;
+
+  /**
+    * This method converts the internal used numeric value for actions
+    * into the strings contained in a split (e.g. MyMoneySplit::ActionATM)
+    *
+    * @param type const int representing KLedgerView::transactionTypeE value of the action
+    * @return const action string
+    */
+  const QCString transactionType(const int type) const;
 
   /**
     * This method handles the focus of the keyboard. When in edit mode
@@ -655,6 +681,7 @@ protected:
   kMyMoneyCategory*     m_editFrom;       ///< pointer to 'from account' edit widget
   kMyMoneyCategory*     m_editTo;         ///< pointer to 'to account' edit widget
   KPushButton*          m_editSplit;      ///< pointer to split button
+  kMyMoneyCombo*        m_editType;       ///< pointer to transaction type
 
   /**
     * This member keeps the tab order for the above widgets

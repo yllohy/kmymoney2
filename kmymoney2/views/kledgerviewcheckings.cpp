@@ -27,6 +27,7 @@
 #include <qfocusdata.h>
 #include <qwidgetstack.h>
 #include <qcheckbox.h>
+#include <qregexp.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -45,6 +46,7 @@
 #include "../widgets/kmymoneypayee.h"
 #include "../widgets/kmymoneycategory.h"
 #include "../widgets/kmymoneylineedit.h"
+#include "../widgets/kmymoneycombo.h"
 #include "../widgets/kmymoneyregistercheckings.h"
 #include "../dialogs/kendingbalancedlg.h"
 #include "../dialogs/ksplittransactiondlg.h"
@@ -176,10 +178,11 @@ void KLedgerViewCheckings::slotTypeSelected(int type)
   formTable->setText(1, 3, i18n("Date"));
   formTable->setText(2, 3, i18n("Amount"));
 
+  m_action = transactionType(type);
+
   // specific elements (in the order of the tabs)
   switch(type) {
     case 0:   // Check
-      m_action = MyMoneySplit::ActionCheck;
       formTable->setText(1, 0, i18n("Receiver"));
       formTable->setText(2, 0, i18n("Category"));
 
@@ -187,26 +190,22 @@ void KLedgerViewCheckings::slotTypeSelected(int type)
       break;
 
     case 1:   // Deposit
-      m_action = MyMoneySplit::ActionDeposit;
       formTable->setText(1, 0, i18n("Payee"));
       formTable->setText(2, 0, i18n("Category"));
       break;
 
     case 2:   // Transfer
-      m_action = MyMoneySplit::ActionTransfer;
       formTable->setText(0, 0, i18n("From"));
       formTable->setText(1, 0, i18n("To"));
       formTable->setText(2, 0, i18n("Payee"));
       break;
 
     case 3:   // Withdrawal
-      m_action = MyMoneySplit::ActionWithdrawal;
       formTable->setText(1, 0, i18n("Receiver"));
       formTable->setText(2, 0, i18n("Category"));
       break;
 
     case 4:   // ATM
-      m_action = MyMoneySplit::ActionATM;
       formTable->setText(1, 0, i18n("Receiver"));
       formTable->setText(2, 0, i18n("Category"));
       break;
@@ -669,6 +668,8 @@ void KLedgerViewCheckings::createEditWidgets(void)
   m_editSplit = new KPushButton("Split", 0, "editSplit");
   m_editPayment = new kMyMoneyEdit(0, "editPayment");
   m_editDeposit = new kMyMoneyEdit(0, "editDeposit");
+  m_editType = new kMyMoneyCombo(0, "editType");
+  m_editType->setFocusPolicy(QWidget::StrongFocus);
 
   connect(m_editSplit, SIGNAL(clicked()), this, SLOT(slotOpenSplitDialog()));
 
@@ -683,6 +684,7 @@ void KLedgerViewCheckings::createEditWidgets(void)
   connect(m_editTo, SIGNAL(categoryChanged(const QString&)), this, SLOT(slotToChanged(const QString&)));
   connect(m_editPayment, SIGNAL(valueChanged(const QString&)), this, SLOT(slotPaymentChanged(const QString&)));
   connect(m_editDeposit, SIGNAL(valueChanged(const QString&)), this, SLOT(slotDepositChanged(const QString&)));
+  connect(m_editType, SIGNAL(selectionChanged(int)), this, SLOT(slotTypeChanged(int)));
 
   connect(m_editPayee, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
   connect(m_editMemo, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
@@ -694,6 +696,7 @@ void KLedgerViewCheckings::createEditWidgets(void)
   connect(m_editAmount, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
   connect(m_editPayment, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
   connect(m_editDeposit, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
+  connect(m_editType, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
 
   connect(m_editPayee, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   connect(m_editMemo, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
@@ -705,6 +708,7 @@ void KLedgerViewCheckings::createEditWidgets(void)
   connect(m_editAmount, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   connect(m_editPayment, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   connect(m_editDeposit, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
+  connect(m_editType, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
 }
 
 void KLedgerViewCheckings::reloadEditWidgets(const MyMoneyTransaction& t)
@@ -718,6 +722,9 @@ void KLedgerViewCheckings::reloadEditWidgets(const MyMoneyTransaction& t)
 
   if(m_editCategory != 0)
     disconnect(m_editCategory, SIGNAL(signalFocusIn()), this, SLOT(slotOpenSplitDialog()));
+
+  if(m_editType)
+    m_editType->loadCurrentItem(m_form->tabBar()->indexOf(transactionType(m_split)));
 
   try {
     if(m_split.payeeId() != "")
@@ -812,6 +819,17 @@ void KLedgerViewCheckings::reloadEditWidgets(const MyMoneyTransaction& t)
 
 void KLedgerViewCheckings::loadEditWidgets(int& transType)
 {
+  // need to load the combo box with the required values?
+  if(m_editType) {
+    if(m_editType->count() == 0) {
+      // copy them from the tab's in the transaction form
+      for(int i = 0; i < m_form->tabBar()->count(); ++i) {
+        QString txt = m_form->tabBar()->tabAt(i)->text();
+        txt = txt.replace(QRegExp("&"), "");
+        m_editType->insertItem(txt);
+      }
+    }
+  }
   if(m_transactionPtr != 0) {
     reloadEditWidgets(*m_transactionPtr);
     transType = transactionType(m_split);
@@ -869,6 +887,7 @@ void KLedgerViewCheckings::arrangeEditWidgetsInForm(QWidget*& focusWidget, const
   // delete widgets that are used for the register edit mode only
   delete m_editPayment; m_editPayment = 0;
   delete m_editDeposit; m_editDeposit = 0;
+  delete m_editType; m_editType = 0;
 
   m_form->table()->clearEditable();
   m_form->table()->setCellWidget(3, 1, m_editMemo);
@@ -994,6 +1013,7 @@ void KLedgerViewCheckings::arrangeEditWidgetsInRegister(QWidget*& focusWidget, c
   if(m_editNr != 0)
     m_register->setCellWidget(firstRow, 0, m_editNr);
   m_register->setCellWidget(firstRow, 1, m_editDate);
+  m_register->setCellWidget(firstRow+1, 1, m_editType);
   m_register->setCellWidget(firstRow, 2, m_editPayee);
   m_register->setCellWidget(firstRow+1, 2, m_editCategory);
   m_register->setCellWidget(firstRow+2, 2, m_editMemo);
@@ -1007,12 +1027,12 @@ void KLedgerViewCheckings::arrangeEditWidgetsInRegister(QWidget*& focusWidget, c
     focusWidget = m_editDate;
 
   m_tabOrderWidgets.append(m_editDate->focusWidget());
+  m_tabOrderWidgets.append(m_editType);
   m_tabOrderWidgets.append(m_editPayee);
   m_tabOrderWidgets.append(m_editCategory);
   m_tabOrderWidgets.append(m_editMemo);
   m_tabOrderWidgets.append(m_editPayment);
   m_tabOrderWidgets.append(m_editDeposit);
-
 }
 
 void KLedgerViewCheckings::showWidgets(void)

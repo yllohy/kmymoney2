@@ -49,6 +49,7 @@
 #include "../widgets/kmymoneyedit.h"
 #include "../widgets/kmymoneylineedit.h"
 #include "../widgets/kmymoneydateinput.h"
+#include "../widgets/kmymoneycombo.h"
 
 int KTransactionPtrVector::compareItems(KTransactionPtrVector::Item d1, KTransactionPtrVector::Item d2)
 {
@@ -104,7 +105,6 @@ KLedgerView::KLedgerView(QWidget *parent, const char *name )
   m_ledgerLens = config->readBoolEntry("LedgerLens", true);
   m_transactionFormActive = config->readBoolEntry("TransactionForm", true);
 
-  m_editPayee = 0;
   m_register = 0;
   m_form = 0;
   m_transactionPtr = 0;
@@ -118,6 +118,7 @@ KLedgerView::KLedgerView(QWidget *parent, const char *name )
   m_editDate = 0;
   m_editFrom = 0;
   m_editTo = 0;
+  m_editType = 0;
 
   m_infoStack = 0;
   m_inReconciliation = false;
@@ -568,14 +569,24 @@ void KLedgerView::slotPaymentChanged(const QString& value)
 
   MyMoneyTransaction t;
   MyMoneySplit s;
+  MyMoneyMoney val(value);
 
   t = m_transaction;
   s = m_split;
+
+  if(val < 0) {
+    val = -val;
+    slotDepositChanged(val.formatMoney());
+    return;
+  }
 
   try {
     m_split.setValue(-MyMoneyMoney(value));
     m_editPayment->loadText(value);
     m_editDeposit->loadText("");
+
+    if(m_split.action() == MyMoneySplit::ActionDeposit)
+      m_split.setAction(MyMoneySplit::ActionWithdrawal);
 
     m_transaction.modifySplit(m_split);
     if(m_transaction.splitCount() == 2) {
@@ -583,6 +594,7 @@ void KLedgerView::slotPaymentChanged(const QString& value)
       split.setValue(-m_split.value());
       m_transaction.modifySplit(split);
     }
+    reloadEditWidgets(m_transaction);
 
   } catch(MyMoneyException *e) {
     KMessageBox::detailedSorry(0, i18n("Unable to modify amount"),
@@ -601,6 +613,13 @@ void KLedgerView::slotDepositChanged(const QString& value)
 
   MyMoneyTransaction t;
   MyMoneySplit s;
+  MyMoneyMoney val(value);
+
+  if(val < 0) {
+    val = -val;
+    slotPaymentChanged(val.formatMoney());
+    return;
+  }
 
   t = m_transaction;
   s = m_split;
@@ -610,12 +629,17 @@ void KLedgerView::slotDepositChanged(const QString& value)
     m_editDeposit->loadText(value);
     m_editPayment->loadText("");
 
+    if(m_split.action() != MyMoneySplit::ActionDeposit
+    && m_split.action() != MyMoneySplit::ActionTransfer)
+      m_split.setAction(MyMoneySplit::ActionDeposit);
+
     m_transaction.modifySplit(m_split);
     if(m_transaction.splitCount() == 2) {
       MyMoneySplit split = m_transaction.split(accountId(), false);
       split.setValue(-m_split.value());
       m_transaction.modifySplit(split);
     }
+    reloadEditWidgets(m_transaction);
 
   } catch(MyMoneyException *e) {
     KMessageBox::detailedSorry(0, i18n("Unable to modify amount"),
@@ -683,6 +707,7 @@ void KLedgerView::slotCategoryChanged(const QString& category)
               i18n("Splitted Transaction")) == KMessageBox::Cancel) {
             m_editCategory->resetText();
             m_editCategory->setFocus();
+            return;
           }
           for(it = list.begin(); it != list.end(); ++it) {
             if((*it) == m_split)
@@ -859,6 +884,83 @@ void KLedgerView::slotDateChanged(const QDate& date)
 
 }
 
+void KLedgerView::slotTypeChanged(int sel)
+{
+  if(!m_editType)
+    return;
+
+  QCString action;
+  QTab *tab;
+  tab = m_form->tabBar()->tabAt(sel);
+  if(tab)
+    slotTypeChanged(transactionType(tab->identifier()));
+}
+
+void KLedgerView::slotTypeChanged(const QCString& action)
+{
+  if(!m_editType)
+    return;
+
+  MyMoneyTransaction t = m_transaction;
+  MyMoneySplit s = m_split;
+
+  try {
+    if((action == MyMoneySplit::ActionTransfer && m_split.action() != MyMoneySplit::ActionTransfer)
+    || (action != MyMoneySplit::ActionTransfer && m_split.action() == MyMoneySplit::ActionTransfer)) {
+      // FIXME: KMessage Box would be nice here
+      if(KMessageBox::warningContinueCancel(0,
+          i18n("Changing the transaction type in the selected direction will delete all information about categories and accounts. "
+                "If you press continue, this information will be lost!"),
+          i18n("Transaction Type Change")) == KMessageBox::Continue) {
+        // we have to remove all other splits as they are not valid anymore
+        MyMoneySplit split;
+        try {
+          for(;;) {
+            split = m_transaction.split(m_account.id(), false);
+            m_transaction.removeSplit(split);
+          }
+        } catch(MyMoneyException *e) {
+          delete e;
+        }
+
+      } else {
+        m_editType->resetCurrentItem();
+        m_editType->setFocus();
+        return;
+      }
+    }
+
+    if((action == MyMoneySplit::ActionDeposit && m_split.action() != MyMoneySplit::ActionDeposit)
+    || (action != MyMoneySplit::ActionDeposit && m_split.action() == MyMoneySplit::ActionDeposit)) {
+      // If we change from deposit to withdrawal and vice versa, we change the
+      // sign of all splits
+      QValueList<MyMoneySplit> list = m_transaction.splits();
+      QValueList<MyMoneySplit>::Iterator it;
+
+      for(it = list.begin(); it != list.end(); ++it) {
+        (*it).setValue(-(*it).value());
+        m_transaction.modifySplit(*it);
+      }
+      // don't forget to update our copy of the specific split
+      m_split = m_transaction.split(m_account.id());
+    }
+
+    m_split.setAction(action);
+    m_transaction.modifySplit(m_split);
+    reloadEditWidgets(m_transaction);
+
+  } catch(MyMoneyException *e) {
+    KMessageBox::detailedSorry(0, i18n("Unable to modify type"),
+        (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+    delete e;
+    if(m_editType)
+      m_editType->resetCurrentItem();
+
+    m_transaction = t;
+    m_split = s;
+  }
+}
+
 void KLedgerView::slotShowTransactionForm(bool visible)
 {
 /*
@@ -1004,6 +1106,30 @@ int KLedgerView::transactionType(const MyMoneySplit& split) const
   return Check;
 }
 
+const QCString KLedgerView::transactionType(int type) const
+{
+  switch(type) {
+    default:
+      qWarning("Unknown transaction type used in KLedgerView::transactionType(int)");
+      // Tricky fall through here!
+
+    case 0: // Check
+      return MyMoneySplit::ActionCheck;
+
+    case 1: // Deposit
+      return MyMoneySplit::ActionDeposit;
+
+    case 2: // Transfer
+      return MyMoneySplit::ActionTransfer;
+
+    case 3: // Withdrawal
+      return MyMoneySplit::ActionWithdrawal;
+
+    case 4: // ATM
+      return MyMoneySplit::ActionATM;
+  }
+}
+
 void KLedgerView::slotNew(void)
 {
   // select the very last line (empty one), and load it into the form
@@ -1142,7 +1268,8 @@ void KLedgerView::slotEndEdit(void)
       if(m_transactionPtr == 0) {
         // in the add case, we don't have an ID yet. So let's get one
         // and use it down the line
-        m_transaction.setPostDate(QDate::currentDate());
+        if(!m_transaction.postDate().isValid())
+          m_transaction.setPostDate(QDate::currentDate());
         MyMoneyFile::instance()->addTransaction(m_transaction);
         id = m_transaction.id();
       } else {
