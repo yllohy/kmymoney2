@@ -98,6 +98,24 @@ public:
     */
   void setMode(const int mode);
 
+  /**
+    * This method allows to control the visibilty of the abort button
+    * in this dialog according to the the parameter @p visible.
+    *
+    * @param visible @p true shows the abort button, @p false hides it.
+    */
+  void showAbortButton(const bool visible);
+
+  /**
+    * This method is used to determine if the user pressed the 'Skip' or
+    * the 'Abort' button. The return value is valid only, if the exec()
+    * function of the dialog returns false.
+    *
+    * @retval false Dialog was left using the 'Skip' button
+    * @retval true Dialog was left using the 'Abort' button
+    */
+  const bool aborted(void) const { return m_aborted; };
+  
 public slots:
   /**
     * Reimplemented from QDialog
@@ -111,7 +129,12 @@ protected slots:
     * the wizard, this will be the selected account.
     */
   void slotCreateAccount(void);
-  
+
+  /**
+    * This slot is used to react on the abort button
+    */
+  void abort(void);
+    
 private:
   /**
     * This is the method which will be called by the engine if the accounts are changed.
@@ -141,6 +164,7 @@ private:
   MyMoneyAccount  m_account;
   int             m_mode;       // 0 - select or create, 1 - create only
   KMyMoneyUtils::categoryTypeE   m_accountType;
+  bool            m_aborted;
 };
 
 #endif

@@ -195,7 +195,7 @@
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>Layout3_2</cstring>
+                <cstring>Layout6</cstring>
             </property>
             <hbox>
                 <property name="name">
@@ -207,6 +207,14 @@
                 <property name="spacing">
                     <number>6</number>
                 </property>
+                <widget class="KPushButton">
+                    <property name="name">
+                        <cstring>m_kButtonAbort</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Abort</string>
+                    </property>
+                </widget>
                 <spacer>
                     <property name="name">
                         <cstring>Spacer1</cstring>
@@ -219,7 +227,7 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>20</width>
+                            <width>243</width>
                             <height>0</height>
                         </size>
                     </property>
@@ -247,8 +255,5 @@
         </widget>
     </vbox>
 </widget>
-<includes>
-    <include location="local" impldecl="in implementation">kaccountselectdlgdecl.ui.h</include>
-</includes>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
