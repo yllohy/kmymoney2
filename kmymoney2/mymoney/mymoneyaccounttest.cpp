@@ -158,6 +158,7 @@ void MyMoneyAccountTest::testAssignmentConstructor() {
 	a.setDescription("Bla");
 	a.setNumber("assigned Number");
 	a.setValue("Key", "Value");
+	a.addAccountId("ChildAccount");
 
 	MyMoneyAccount b;
 
@@ -176,6 +177,8 @@ void MyMoneyAccountTest::testAssignmentConstructor() {
 	CPPUNIT_ASSERT(b.transactionList().count() == 0);
 */
 	CPPUNIT_ASSERT(b.value("Key") == "Value");
+	CPPUNIT_ASSERT(b.accountList().count() == 1);
+	CPPUNIT_ASSERT(b.accountList()[0] == "ChildAccount");
 }
 
 void MyMoneyAccountTest::testTransactionList() {
