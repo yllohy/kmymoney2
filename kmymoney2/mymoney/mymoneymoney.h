@@ -60,6 +60,7 @@ public:
   MyMoneyMoney( const MyMoneyMoney& AmountInPence );
 
   signed64 value(void) const { return m_64Value; };
+  const MyMoneyMoney abs(void) const { return *this < 0 ? -(*this) : *this; };
   const QString formatMoney(/*QString locale="C", bool addPrefixPostfix=false*/void) const;
 
   static void setThousandSeparator(const unsigned char);

@@ -257,3 +257,12 @@ void MyMoneyMoneyTest::testDoubleConstructor()
 		CPPUNIT_ASSERT(t == r);
 	}
 }
+
+void MyMoneyMoneyTest::testAbsoluteFunction()
+{
+	MyMoneyMoney m1(-100);
+	MyMoneyMoney m2(100);
+
+	CPPUNIT_ASSERT(m2.abs() == 100);
+	CPPUNIT_ASSERT(m1.abs() == 100);
+}

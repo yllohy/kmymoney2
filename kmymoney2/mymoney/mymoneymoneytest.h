@@ -39,6 +39,7 @@ class MyMoneyMoneyTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST(testRelation);
 	CPPUNIT_TEST(testUnaryMinus);
 	CPPUNIT_TEST(testDoubleConstructor);
+	CPPUNIT_TEST(testAbsoluteFunction);
 	CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -62,6 +63,7 @@ public:
 	void testRelation();
 	void testUnaryMinus();
 	void testDoubleConstructor();
+	void testAbsoluteFunction();
 };
 
 #endif

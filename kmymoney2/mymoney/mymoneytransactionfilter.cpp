@@ -118,8 +118,15 @@ void MyMoneyTransactionFilter::setDateFilter(const QDate& from, const QDate& to)
 void MyMoneyTransactionFilter::setAmountFilter(const MyMoneyMoney& from, const MyMoneyMoney& to)
 {
   m_filterSet.singleFilter.amountFilter = 1;
-  m_fromAmount = from;
-  m_toAmount = to;
+  m_fromAmount = from.abs();
+  m_toAmount = to.abs();
+  
+  // make sure that the user does not try to fool us  ;-)
+  if(from > to) {
+    MyMoneyMoney tmp = m_fromAmount;
+    m_fromAmount = m_toAmount;
+    m_toAmount = tmp;
+  }
 }
 
 void MyMoneyTransactionFilter::addPayee(const QCString& id)
@@ -288,9 +295,9 @@ const bool MyMoneyTransactionFilter::match(const MyMoneyTransaction& transaction
       }
 
       if(!removeSplit && m_filterSet.singleFilter.amountFilter) {
-        if((*it).value() < m_fromAmount)
+        if((*it).value().abs() < m_fromAmount)
           removeSplit = true;
-        if((*it).value() > m_toAmount)
+        if((*it).value().abs() > m_toAmount)
           removeSplit = true;
       }
 
