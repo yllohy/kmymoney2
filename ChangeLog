@@ -1,3 +1,13 @@
+2004-07-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Add creation of stock accounts through investment view
+  * Added equities to MyMoneyStorageDump
+  * Really remove price information from equity history
+
+2004-07-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added stock account type
+  * Added checks to make sure that stock accounts have an investment parent
+  * Added testcases
+
 2004-07-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added possibility to update currency rate for foreign currency accounts
     during account creation
