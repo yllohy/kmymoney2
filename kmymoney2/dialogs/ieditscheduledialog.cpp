@@ -380,7 +380,7 @@ void KEditScheduleDialog::okClicked()
   // Just reset the schedules transaction here.
   m_schedule.setTransaction(m_transaction);
   
-
+/*
   QString message;
   message += "Schedule Name: " + m_schedule.name() + "\n";
   message += "Account1: " + MyMoneyFile::instance()->account(m_schedule.transaction().splits()[0].accountId()).name() + "\n";
@@ -395,7 +395,7 @@ void KEditScheduleDialog::okClicked()
   message += "Memo: " + m_schedule.transaction().splits()[0].memo() + "\n";
   message += "endDate: " + m_schedule.endDate().toString() + "\n";
   KMessageBox::information(this, message);
-
+*/
   
   accept();
 }
