@@ -1,3 +1,7 @@
+2005-03-15 Ace Jones <acejones@users.sourceforge.net>
+  * Added new titlebar background 
+    (Submitted by Robert Wadley <rob@robntina.fastmail.us>)
+  
 2005-03-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Revised install/uninstall instructions in icons subdirectories
   * Improved reparenting of accounts
