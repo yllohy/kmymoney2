@@ -608,33 +608,33 @@ void PivotTable::calculateOpeningBalances( void )
     // and if the report includes this account
     if ( includesAccount( *it_account ) )
     {
-      // extract the balance of the account for the given begin date
-      MyMoneyMoney value = file->balance((*it_account).id(), m_beginDate.addDays(-1));
-
-      // place into the 'opening' column...
-      QDate opendate = (*it_account).openingDate();
-      unsigned column = 0;
-      
-      // unless the account was opened after the start of the report period
-      if ( opendate >= m_beginDate )
-      {
-        if ( opendate <= m_endDate ) {
-          // in which case it should be placed in the correct column
-          column = opendate.year() * 12 + opendate.month() - m_beginDate.year() * 12 - m_beginDate.month() + 1;
-        } else
-          // or disregarded if the account was opened after the end of the
-          // report period
-          value = 0;
-      }
-
       // the row group is the account class (major account type)
       QString outergroup = accountTypeToString((*it_account).accountGroup());
 
       // the row itself is the account
       AccountDescriptor row( (*it_account).id() );
 
-      // add the value to its correct position in the pivot table
-      assignCell( outergroup, row, column, value );
+      // extract the balance of the account for the given begin date, which is
+      // the opening balance plus the sum of all transactions prior to the begin
+      // date
+      MyMoneyMoney value = file->balance((*it_account).id(), m_config_f.fromDate().addDays(-1));
+      
+      // remove the opening balance from the figure, if necessary
+      QDate opendate = (*it_account).openingDate();
+      if ( opendate >= m_config_f.fromDate() )
+        value -= (*it_account).openingBalance();
+        
+      // place into the 'opening' column...
+      assignCell( outergroup, row, 0, value );
+      
+      if ( ( opendate >= m_config_f.fromDate() ) && ( opendate <= m_config_f.toDate() ) )
+      {
+        // get the opening value
+        MyMoneyMoney value = (*it_account).openingBalance();
+        // place in the correct column
+        unsigned column = opendate.year() * 12 + opendate.month() - m_beginDate.year() * 12 - m_beginDate.month() + 1;
+        assignCell( outergroup, row, column, value );
+      } 
 
     }
     ++it_account;
@@ -901,6 +901,9 @@ QString PivotTable::renderCSV( void ) const
 {
   DEBUG_ENTER("PivotTable::renderCSV");
 
+  char saveseparator = MyMoneyMoney::thousandSeparator();
+  MyMoneyMoney::setThousandSeparator('\0');
+  
   //
   // Report Title
   //
@@ -963,10 +966,10 @@ QString PivotTable::renderCSV( void ) const
         QString rowdata;
         unsigned column = 1;
         while ( column < m_numColumns )
-          rowdata += QString(",%1").arg(it_row.data()[column++].toDouble());
-
+          rowdata += QString(",%1").arg(it_row.data()[column++].formatMoney());
+        
         if ( m_config_f.isShowingRowTotals() )
-          rowdata += QString(",%1").arg((*it_row).m_total.toDouble());
+          rowdata += QString(",%1").arg((*it_row).m_total.formatMoney());
 
         //
         // Row Header
@@ -1014,10 +1017,10 @@ QString PivotTable::renderCSV( void ) const
       {
         unsigned column = 1;
         while ( column < m_numColumns )
-          result += QString(",%1").arg((*it_innergroup).m_total[column++].toDouble());
+          result += QString(",%1").arg((*it_innergroup).m_total[column++].formatMoney());
   
         if (  m_config_f.isShowingRowTotals() )
-          result += QString(",%1").arg((*it_innergroup).m_total.m_total.toDouble());
+          result += QString(",%1").arg((*it_innergroup).m_total.m_total.formatMoney());
   
         result += "\n";
       }
@@ -1035,10 +1038,10 @@ QString PivotTable::renderCSV( void ) const
       result += QString("%1 %2").arg(i18n("Total")).arg(it_outergroup.key());
       unsigned column = 1;
       while ( column < m_numColumns )
-        result += QString(",%1").arg((*it_outergroup).m_total[column++].toDouble());
+        result += QString(",%1").arg((*it_outergroup).m_total[column++].formatMoney());
   
       if (  m_config_f.isShowingRowTotals() )
-        result += QString(",%1").arg((*it_outergroup).m_total.m_total.toDouble());
+        result += QString(",%1").arg((*it_outergroup).m_total.m_total.formatMoney());
   
       result += "\n";
     }
@@ -1054,16 +1057,17 @@ QString PivotTable::renderCSV( void ) const
     result += i18n("Grand Total");
     unsigned totalcolumn = 1;
     while ( totalcolumn < m_numColumns )
-      result += QString(",%1").arg(m_grid.m_total[totalcolumn++].toDouble());
+      result += QString(",%1").arg(m_grid.m_total[totalcolumn++].formatMoney());
   
     if (  m_config_f.isShowingRowTotals() )
-      result += QString(",%1").arg(m_grid.m_total.m_total.toDouble());
+      result += QString(",%1").arg(m_grid.m_total.m_total.formatMoney());
   
     result += "\n";
   }
-  
+
+  MyMoneyMoney::setThousandSeparator(saveseparator);
+    
   return result;
-  
 }
 
 QString PivotTable::renderHTML( void ) const

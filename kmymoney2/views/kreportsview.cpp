@@ -42,6 +42,7 @@
 
 // ----------------------------------------------------------------------------
 // KDE Includes
+#include "kdecompat.h"
 #include <kglobal.h>
 #include <kglobalsettings.h>
 #include <klocale.h>
@@ -57,7 +58,10 @@
 #include <kfiledialog.h>
 #include <kmessagebox.h>
 #include <klistview.h>
+
+#if KDE_IS_VERSION(3,2,0)
 #include <ktabwidget.h>
+#endif
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -73,6 +77,21 @@ using namespace reports;
 #define VIEW_WELCOME        "welcome"
 #define VIEW_HOME           "home"
 #define VIEW_REPORTS        "reports"
+
+#if ! KDE_IS_VERSION(3,2,0)
+// In the case of <3.2 KDE, we're providing a 'fake' KTabWidget.
+// This only provides the functionality found in QTabWidget, and
+// includes placebo methods for the other expected functionality
+class KTabWidget: public QTabWidget
+{
+  Q_OBJECT
+public:
+  KTabWidget(QWidget* parent, const char* name): QTabWidget(parent,name) {}
+  void setHoverCloseButton(bool) {}
+signals:
+  void closeRequest(QWidget*);
+};
+#endif
 
 /**
   * KReportsView::KReportTab Implementation

@@ -1,3 +1,9 @@
+2004-07-29 Ace Jones <acejones@users.sourceforge.net>
+  * Removed KTabWidget for KDE < 3.2 in the report tabs
+  * Fixed CSV report export so larger (>10,000) values are not rounded
+  * Fixed the case where the user enters transactions before the
+    opening date of the account and calls for a net worth report.
+
 2004-07-28 Ace Jones <acejones@users.sourceforge.net>
   * Fixed bug in reporting logic.  AccountDescriptor::operator<() was broken,
     missing a case.
