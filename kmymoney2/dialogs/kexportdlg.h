@@ -43,14 +43,10 @@ private:
   void writeConfig(void);
 
 	QString m_qstringLastFormat;
-	MyMoneyFile *m_file;
-
-  /** No descriptions */
-  void writeQIFFile(const QString& name, const QString& dateFormat, MyMoneyAccount *account,bool expCat,bool expAcct,
-										QDate startDate, QDate endDate);
+	MyMoneyAccount *m_mymoneyaccount;
 
 public:
-	KExportDlg(MyMoneyFile *file, MyMoneyAccount *account);
+	KExportDlg(MyMoneyAccount *account);
 	~KExportDlg();
 protected slots:
   void slotOkClicked();

@@ -494,13 +494,15 @@ void KMyMoneyView::slotAccountImportAscii(void)
   KChooseImportExportDlg dlg(0, this);
   if (dlg.exec()) {
     if (dlg.importExportType()=="QIF") {
-      KImportDlg importDlg(&m_file, getAccount());
-      importDlg.exec();
+      KImportDlg importDlg(getAccount());
+      if (importDlg.exec())
+        m_mainView->refreshTransactionView();
 //      slotAccountImportQIF();
     }
     else {
       KCsvProgressDlg kcsvprogressdlg(0, getAccount(), this);
-      kcsvprogressdlg.exec();
+      if (kcsvprogressdlg.exec())
+        m_mainView->refreshTransactionView();
     }
   }
 }
@@ -510,7 +512,7 @@ void KMyMoneyView::slotAccountExportAscii(void)
   KChooseImportExportDlg dlg(1, this);
   if (dlg.exec()) {
     if (dlg.importExportType()=="QIF") {
-      KExportDlg exportDlg(&m_file, getAccount());
+      KExportDlg exportDlg(getAccount());
       exportDlg.exec();
 //      slotAccountExportQIF();
     }

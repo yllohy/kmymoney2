@@ -102,7 +102,7 @@ void KBanksView::refresh(MyMoneyFile file)
     KBankListItem *item0 = new KBankListItem(bankListView, *bank);
     MyMoneyAccount *account;
     for (account=bank->accountFirst(); account; account=bank->accountNext()) {
-      KBankListItem *itemAccount = new KBankListItem(item0, *bank, *account);
+      new KBankListItem(item0, *bank, *account);
       totalProfit += account->balance();
     }
     bankListView->setOpen(item0, true);
@@ -121,7 +121,7 @@ void KBanksView::clear(void)
   m_bSelectedBank = m_bSelectedAccount = false;
 }
 
-void KBanksView::resizeEvent(QResizeEvent* e)
+void KBanksView::resizeEvent(QResizeEvent* /*e*/)
 {
 	bankListView->setColumnWidth(0,400);
 	bankListView->setColumnWidth(1,150);

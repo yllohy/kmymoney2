@@ -12,7 +12,6 @@
      Minor update to "Credits and Licenses" section on August 24, 2000
      Removed "Revision history" section on 22 January 2001   -->
 
-<!--
 
 <book lang="&language;">
 
@@ -22,7 +21,7 @@
 <authorgroup>
 <author>
 <firstname>Michael</firstname>
-<!-- <othername>T.</othername> -->
+<othername>T.</othername>
 <surname>Edwardes</surname>
 <affiliation>
 <address><email>mte@users.sourceforge.net</email></address>
@@ -30,8 +29,10 @@
 </author>
 </authorgroup>
 
+<!-- TRANS:ROLES_OF_TRANSLATORS -->
 
 <copyright>
+<year>2000></year>
 <year>2001</year>
 <holder>Michael Edwardes</holder>
 </copyright>
@@ -122,8 +123,8 @@ revision history. (see installation appendix comment) -->
 </para>
 </chapter>
 
-<chapter id=exploreid><title id=exploreid.title>Accounting principles. (In the eyes of &kappname;).</title>
-<sect1 id=bankid><title id=bankid.title>Explaining Institutions.</title>
+<chapter id="exploreid"><title id="exploreid.title">Accounting principles. (In the eyes of &kappname;).</title>
+<sect1 id="bankid"><title id="bankid.title">Explaining Institutions.</title>
 <para>
   An institution is used to represent a bank or other descriptive container
   that would hold accounts.  Typical banks here in the UK could be Natwest
@@ -157,7 +158,7 @@ revision history. (see installation appendix comment) -->
 </para>
 </sect1>
 
-<sect1 id=accountid><title id=accountid.title>Explaining Accounts.</title>
+<sect1 id="accountid"><title id="accountid.title">Explaining Accounts.</title>
 <para>
   Accounts are used to hold all the data needed to process transactions and
   are analogous to an account held at a typical bank.  &kappname; can currently
@@ -194,11 +195,11 @@ revision history. (see installation appendix comment) -->
   'My Personal Current Account' and 'My Business Current Account'.
   Reconciliation information is stored for when you balance the account and stores
   the date the last reconciliation was performed.  For more information on how to
-  reconcile an account see <link linkend=rectutid endterm="rectutid.title"></link>.
+  reconcile an account see <link linkend="rectutid" endterm="rectutid.title"></link>.
 </para>
 </sect1>
 
-<sect1 id=transid><title id=transid.title>Explaining Transactions.</title>
+<sect1 id="transid"><title id="transid.title">Explaining Transactions.</title>
 <para>
   The transaction is the most integral part of the accounting process and it
   contains information for every withdrawal and payment you make from an
@@ -262,16 +263,16 @@ revision history. (see installation appendix comment) -->
   and minor category, which, when combined, provide useful information.  Typical
   categories are provided for you when &kappname; creates a new file and more
   can be created or edited within the categories dialog.  (See
-  <link linkend=catid endterm="catid.title"></link> and
-  <link linkend=catpayid endterm="catpayid.title"></link> for further information).
+  <link linkend="catid" endterm="catid.title"></link> and
+  <link linkend="catpayid" endterm="catpayid.title"></link> for further information).
   To facilitate in balancing the account, (see
-  <link linkend=rectutid endterm="rectutid.title"></link>) the transaction state
+  <link linkend="rectutid" endterm="rectutid.title"></link>) the transaction state
   is stored to indicate whether it is reconciled, cleared or neither.  A single
   letter is used to represent the state and can be one of 'R', 'C' or ' '.
 </para>
 </sect1>
 
-<sect1 id=catid><title id=catid.title>Explaining Categories.</title>
+<sect1 id="catid"><title id="catid.title">Explaining Categories.</title>
 <para>
   A category as used by &kappname; provides a convenient way for you to group
   your transactions.  There are two top level groups of categories; Income and
@@ -297,12 +298,12 @@ revision history. (see installation appendix comment) -->
   No information is stored about a category other than whether it is an
   expense or income and it's name.  You can edit the category data within
   KMyMoney2 by using the category editor.  Please see
-  <link linkend=catpayid endterm="catpayid.title"></link> for more
+  <link linkend="catpayid" endterm="catpayid.title"></link> for more
   information.
 </para>
 </sect1>
 
-<sect1 id=payid><title id=payid.title>Explaining Payees.</title>
+<sect1 id="payid"><title id="payid.title">Explaining Payees.</title>
 <para>
   A payee is quite simply the person to whom you paid out the money or from
   whom you got the money.  The payee does not necessarily have to be an
@@ -312,7 +313,7 @@ revision history. (see installation appendix comment) -->
 <para>
   &kappname; stores information, other than the name, about each payee you
   enter into the system which can then be altered later.  (See
-  <link linkend=catpayid endterm="catpayid.title"></link>).  This data
+  <link linkend="catpayid" endterm="catpayid.title"></link>).  This data
   provides useful information about each payee you use and can be analysed
   to see where you spend your money and to whom.  (Not currently implemented
   in &kappname;).
@@ -320,8 +321,8 @@ revision history. (see installation appendix comment) -->
 </sect1>
 </chapter>
 
-<chapter id=basicid><title id=basicid.title>KMyMoney2 basics.</title>
-<sect1 id=startid><title id=startid.title>Using &kappname; for the first time.</title>
+<chapter id="basicid"><title id="basicid.title">KMyMoney2 basics.</title>
+<sect1 id="startid"><title id="startid.title">Using &kappname; for the first time.</title>
 <para>
   When you first run &kappname;, either from the start menu or by typing kmymoney2
   in a terminal or even in the 'Run Dialog' (Alt-F2), you will be presented with the
@@ -331,7 +332,7 @@ revision history. (see installation appendix comment) -->
   <screenshot>
   	<mediaobject>
 	    <imageobject>
-	      <imagedata fileref="../../images/startdialog.png" format="PNG">
+	      <imagedata fileref="../../images/startdialog.png" format="PNG"></imagedata>
   	  </imageobject>
 	  </mediaobject>
   </screenshot>
@@ -345,7 +346,7 @@ revision history. (see installation appendix comment) -->
   To create a new file, click on the
   <guiicon><inlinemediaobject>
   <imageobject>
-    <imagedata fileref="../../images/blank_icon.png" format="PNG">
+    <imagedata fileref="../../images/blank_icon.png" format="PNG"></imagedata>
   </imageobject>
   <textobject>
     <phrase>Blank</phrase>
@@ -354,24 +355,24 @@ revision history. (see installation appendix comment) -->
   icon.  This will create a new empty
   file for you to work on.  You will then be prompted to enter some information
   about yourself.  Please enter all fields you feel relevant, but none are
-  required.  Once you have entered the details click on the <guibutton>OK</>
+  required.  Once you have entered the details click on the <guibutton>OK</guibutton>
   button and you are then ready to start creating institutions and accounts.
 </para>
 </sect1>
 
-<sect1 id=mainwndid><title id=mainwndid.title>The Institutions/Accounts View.</title>
+<sect1 id="mainwndid"><title id="mainwndid.title">The Institutions/Accounts View.</title>
 <para>
   <screenshot>
   	<mediaobject>
 	    <imageobject>
-	      <imagedata fileref="../../images/mainwindow.png" format="PNG">
+	      <imagedata fileref="../../images/mainwindow.png" format="PNG"></imagedata>
   	  </imageobject>
 	  </mediaobject>
   </screenshot>
 </para>
 <para>
   The window consists of the menu bar at the top and below that the
-  toolbar. (See <link linkend=kmymoney2-mainwindow>The Menu Bar</link>).
+  toolbar. (See <link linkend="kmymoney2-mainwindow">The Menu Bar</link>).
   These two items are the main entry point to starting the available functions
   in &kappname;.
 </para>
@@ -383,13 +384,13 @@ revision history. (see installation appendix comment) -->
   to one institution.
 </para>
 
-<sect2 id=newbankid><title id=newbankid.title>Creating a new institution.</title>
+<sect2 id="newbankid"><title id="newbankid.title">Creating a new institution.</title>
 <para>
   To create a new institution choose either <guimenu>Insitution</guimenu>
   <guimenuitem>Add new..</guimenuitem> or click on the
   <guiicon><inlinemediaobject>
   <imageobject>
-    <imagedata fileref="../../images/newbank_icon.png" format="PNG">
+    <imagedata fileref="../../images/newbank_icon.png" format="PNG"></imagedata>
   </imageobject>
   <textobject>
     <phrase>New Bank</phrase>
@@ -402,7 +403,7 @@ revision history. (see installation appendix comment) -->
   <screenshot>
   	<mediaobject>
 	    <imageobject>
-	      <imagedata fileref="../../images/newbank.png" format="PNG">
+	      <imagedata fileref="../../images/newbank.png" format="PNG"></imagedata>
   	  </imageobject>
 	  </mediaobject>
   </screenshot>
@@ -415,14 +416,14 @@ revision history. (see installation appendix comment) -->
 </para>
 </sect2>
 
-<sect2 id=newaccountid><title id=newaccountid.title>Creating a new account.</title>
+<sect2 id="newaccountid"><title id="newaccountid.title">Creating a new account.</title>
 <para>
   To create a new account, first select the institution you wish to create the
   account in and the choose either <guimenu>Account</guimenu>
   <guimenuitem>Add new account..</guimenuitem> or click on the
   <guiicon><inlinemediaobject>
   <imageobject>
-    <imagedata fileref="../../images/newaccount_icon.png" format="PNG">
+    <imagedata fileref="../../images/newaccount_icon.png" format="PNG"></imagedata>
   </imageobject>
   <textobject>
     <phrase>New Account</phrase>
@@ -435,7 +436,7 @@ revision history. (see installation appendix comment) -->
   <screenshot>
   	<mediaobject>
 	    <imageobject>
-	      <imagedata fileref="../../images/newaccount.png" format="PNG">
+	      <imagedata fileref="../../images/newaccount.png" format="PNG"></imagedata>
   	  </imageobject>
 	  </mediaobject>
   </screenshot>
@@ -500,7 +501,7 @@ revision history. (see installation appendix comment) -->
   <guimenuitem>Open register...</guimenuitem> or click on the
   <guiicon><inlinemediaobject>
   <imageobject>
-    <imagedata fileref="../../images/openaccount_icon.png" format="PNG">
+    <imagedata fileref="../../images/openaccount_icon.png" format="PNG"></imagedata>
   </imageobject>
   <textobject>
     <phrase>Open Account</phrase>
@@ -511,11 +512,11 @@ revision history. (see installation appendix comment) -->
 </sect2>
 </sect1>
 
-<sect1 id=regwndid><title id=regwndid.title>The Register View.</title>
+<sect1 id="regwndid"><title id="regwndid.title">The Register View.</title>
   <screenshot>
   	<mediaobject>
 	    <imageobject>
-	      <imagedata fileref="../../images/transwindow.png" format="PNG">
+	      <imagedata fileref="../../images/transwindow.png" format="PNG"></imagedata>
   	  </imageobject>
 	  </mediaobject>
   </screenshot>
@@ -583,7 +584,7 @@ revision history. (see installation appendix comment) -->
     drop down choice or type in a new name.  When you enter the transaction
     into the system the new payee's name will be added to the global list.  The
     payee field can be left empty to indicate an unknown payee, (or you forgot)
-    and can be edited later.  See <link linkend=payid endterm="payid.title"></link>
+    and can be edited later.  See <link linkend="payid" endterm="payid.title"></link>
     for more information on payees.
   </para>
   </listitem>
@@ -612,7 +613,7 @@ revision history. (see installation appendix comment) -->
   <listitem>
   <para>
     You can choose a category for the transaction from this drop down choice.
-    See <link linkend=catid endterm="catid.title"></link> for more information
+    See <link linkend="catid" endterm="catid.title"></link> for more information
     on categories.  Each category is represented by one line and can consist
     of two parts. The major and sub category.  These are separated by the colon
     ':' character.  If only one part is specified then it is just the major
@@ -641,24 +642,24 @@ revision history. (see installation appendix comment) -->
 </para>
 </sect1>
 
-<sect1 id=catpayid><title id=catpayid.title>The Category & Payee editors.</title>
+<sect1 id="catpayid"><title id="catpayid.title">The Category and Payee editors.</title>
 <para>
 </para>
 </sect1>
 </chapter>
 
-<chapter id=tutid><title id=tutid.title>How do I do... ?</title>
-<sect1 id=rectutid><title id=rectutid.title>Balancing the account.</title>
+<chapter id="tutid"><title id="tutid.title">How do I do... ?</title>
+<sect1 id="rectutid"><title id="rectutid.title">Balancing the account.</title>
 <para>
 </para>
 </sect1>
 
-<sect1 id=imptutid><title id=imptutid.title>Importing & Exporting.</title>
+<sect1 id="imptutid"><title id="imptutid.title">Importing and Exporting.</title>
 <para>
 </para>
 </sect1>
 
-<sect1 id=findtutid><title id=findtutid.title>Finding transactions.</title>
+<sect1 id="findtutid"><title id="findtutid.title">Finding transactions.</title>
 <para>
 </para>
 </sect1>
@@ -895,5 +896,7 @@ Local Variables:
 mode: sgml
 sgml-minimize-attributes: nil
 sgml-general-insert-case: lower
+sgml-indent-step:0
+sgml-indent-data:nil
 End:
 -->

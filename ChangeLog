@@ -1,5 +1,9 @@
+2001-08-18 Michael Edwardes <mte@users.sourceforge.net>
+  * Moved the QIF read & write methods into MyMoneyAccount.
+
 2001-08-17 Michael Edwardes <mte@users.sourceforge.net>
   * Moved import and export dialogs into dialogs dir.
+  * Updated admin dir for kde2.2.
   
 2001-07-29 Michael Edwardes <mte@users.sourceforge.net>
   * Improved the CSV import/export process.

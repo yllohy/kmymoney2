@@ -52,7 +52,7 @@ KCategoriesDlg::~KCategoriesDlg()
 
 void KCategoriesDlg::refresh(void)
 {
-  KCategoryListItem *saveptr;
+  KCategoryListItem *saveptr=0;
 
   QListIterator<MyMoneyCategory> it = m_file->categoryIterator();
   for ( ; it.current(); ++it ) {

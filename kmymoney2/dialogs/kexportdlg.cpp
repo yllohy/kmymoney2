@@ -28,9 +28,9 @@
 
 #include "../mymoney/mymoneycategory.h"
 
-KExportDlg::KExportDlg(MyMoneyFile *file, MyMoneyAccount *account):KExportDlgDecl(0,0,TRUE)
+KExportDlg::KExportDlg(MyMoneyAccount *account):KExportDlgDecl(0,0,TRUE)
 {
-  m_file = file;
+  m_mymoneyaccount = account;
 
 	comboDateFormat->insertItem("MM/DD\'YY");
 	comboDateFormat->insertItem("MM/DD/YYYY");
@@ -64,6 +64,12 @@ void KExportDlg::slotOkClicked()
     txtFileExport->setFocus();
     return;
   }
+
+  if (!m_mymoneyaccount->writeQIFFile(txtFileExport->text(), comboDateFormat->currentText(),
+        cbxAccount->isChecked(), cbxCategories->isChecked(), dateStartDate->getQDate(),
+        dateEndDate->getQDate()))
+    KMessageBox::error(this, "Error occurred whilst exporting to qif file");
+
   accept();
 }
 
@@ -93,104 +99,3 @@ void KExportDlg::writeConfig(void)
   config->sync();
 }
 
-void KExportDlg::writeQIFFile(const QString& name, const QString& dateFormat, MyMoneyAccount *account,bool expCat,bool expAcct,
-																QDate startDate, QDate endDate){
-	int numcat = 0;
-	int numtrans = 0;
-
-    QFile f(name);
-    if ( f.open(IO_WriteOnly) ) {    // file opened successfully
-      QTextStream t( &f );        // use a text stream
-
-			if(expCat)
-			{
-				t << "!Type:Cat" << endl;
-  			QListIterator<MyMoneyCategory> it = m_file->categoryIterator();
-  			for ( ; it.current(); ++it ) {
-    			MyMoneyCategory *data = it.current();
-						t << "N" + data->name() << endl;
-						if(data->isIncome())
-							t << "I" << endl;
-						else
-							t << "E" << endl;
-						t << "^" << endl;
-						numcat += 1;
-    				for ( QStringList::Iterator it2 = data->minorCategories().begin(); it2 != data->minorCategories().end(); ++it2 ) {
-								t << "N" << data->name() << ":" << *it2 << endl;
-								if(data->isIncome())
-									t << "I" << endl;
-								else
-									t << "E" << endl;
-								t << "^" << endl;
-								numcat += 1;
-						}
-  			}       		
-			}
-			if(expAcct)
-			{
-				t << "!Type:Bank" << endl;
-				MyMoneyTransaction *transaction;
-    		for ( transaction = account->transactionFirst(); transaction; transaction=account->transactionNext())
-        {
-        	if((transaction->date() >= startDate) && (transaction->date() <= endDate))
-					{
-          	int year = transaction->date().year();
-						if(dateFormat == "MM/DD'YY")
-						{
-							if(year >=2000)
-            					year -= 2000;
-							else
-								year -= 1900;
-						}
-						int month = transaction->date().month();
-						int day = transaction->date().day();
-						double amount = transaction->amount().amount();
-						if(transaction->type() == MyMoneyTransaction::Debit)
-						  amount = amount * -1;
-						QString transmethod;
-						if(transaction->method() == MyMoneyTransaction::ATM)
-							transmethod = "ATM";
-						if(transaction->method() == MyMoneyTransaction::Deposit)
-							transmethod = "DEP";
-						if(transaction->method() == MyMoneyTransaction::Transfer)
-							transmethod = "TXFR";
-						if(transaction->method() == MyMoneyTransaction::Withdrawal)
-							transmethod = "WTHD";
-						if(transaction->method() == MyMoneyTransaction::Cheque)
-							transmethod = transaction->number();
-						QString Payee = transaction->payee();
-						QString Category;
-						if(transaction->categoryMinor() == "")
-							Category = transaction->categoryMajor();
-						else
-							Category = transaction->categoryMajor() + ":" + transaction->categoryMinor();
-							
-						if(dateFormat == "MM/DD'YY")
-						{
-							t << "D" << month << "/" << day << "'" << year << endl;
-						}
-						if(dateFormat == "MM/DD/YYYY")
-						{
-							t << "D" << month << "/" << day << "/" << year << endl;
-						}
-						t << "U" << amount << endl;
-						t << "T" << amount << endl;
-						if(transaction->state() == MyMoneyTransaction::Reconciled)
-							t << "CX" << endl;
-						t << "N" << transmethod << endl;
-						t << "P" << Payee << endl;
-						t << "L" << Category << endl;
-						t << "^" << endl;
-						numtrans += 1;
-
-													
-					}
-				}
-			}
-      f.close();
-		}
-	QString exportmsg;
-	exportmsg.sprintf("%d Categories exported.\n%d Transactions exported.",numcat,numtrans);
-    QMessageBox::information(this,"QIF Export",exportmsg);
-
-}

@@ -30,7 +30,6 @@
 // Project Headers
 #include "kimportdlgdecl.h"
 
-#include "../mymoney/mymoneyfile.h"
 #include "../mymoney/mymoneyaccount.h"
 
 /**
@@ -44,13 +43,10 @@ private:
   void writeConfig(void);
 
 	QString m_qstringLastFormat;
-	MyMoneyFile *m_file;
-
-  /** No descriptions */
-  void readQIFFile(const QString& name, const QString& dateFormat, MyMoneyAccount *account);
+  MyMoneyAccount *m_mymoneyaccount;
 
 public:
-	KImportDlg(MyMoneyFile *file, MyMoneyAccount *account);
+	KImportDlg(MyMoneyAccount *account);
 	~KImportDlg();
 protected slots:
   void slotOkClicked();
