@@ -1,3 +1,15 @@
+2005-02-15 Ace Jones <acejones@users.sourceforge.net>
+  Latest Robert Wadley icons
+  * Made the colors more consistent, 
+  * Fixed the contrast to better match icons next to them
+  * Changed the reconcile icons to make it more obvious that it is an account 
+    being reconciled. 
+  * Changed the find_transaction icon to look like its actually magnifying, and
+    added a white row.
+  * Toned down the green in the '+' symbols
+  * Fixed ledger icon (accidentally cut off part of the icon when I exported 
+    the images) which causes the ledger icon to look too big.
+    
 2005-02-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added complete re-work of the split transaction widget and dialog
   * Increased height of transaction form items
