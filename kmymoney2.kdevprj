@@ -391,8 +391,8 @@ type=DATA
 
 [kmymoney2/default_accounts_enUS.dat]
 dist=true
-install=false
-install_location=
+install=true
+install_location=$$(kde_datadir)/kmymoney2/default_accounts_enUS.dat
 type=DATA
 
 [kmymoney2/dialogs/Makefile.am]
