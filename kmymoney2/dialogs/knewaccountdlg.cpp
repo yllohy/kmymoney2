@@ -430,6 +430,7 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
   catch (MyMoneyException *e)
   {
     m_bSelectedParentAccount = false;
+    m_parentAccount = MyMoneyAccount();
     if(m_account.accountType() != MyMoneyAccount::UnknownAccountType) {
       parentAccount();
       parentId = m_parentAccount.id();
@@ -456,13 +457,18 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
         KAccountListItem *assetTopLevelAccount = new KAccountListItem(m_qlistviewParentAccounts,
                           assetAccount);
 
+        if(m_parentAccount.id().isEmpty()) {
+          m_parentAccount = assetAccount;
+          parentId = m_parentAccount.id();
+        }
+
         if (parentId == assetAccount.id())
           m_parentItem = assetTopLevelAccount;
 
         assetTopLevelAccount->setOpen(true);
         
-        for ( QCStringList::ConstIterator it = file->asset().accountList().begin();
-              it != file->asset().accountList().end();
+        for ( QCStringList::ConstIterator it = assetAccount.accountList().begin();
+              it != assetAccount.accountList().end();
               ++it )
         {
           KAccountListItem *accountItem = new KAccountListItem(assetTopLevelAccount,
@@ -490,13 +496,18 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
         KAccountListItem *liabilityTopLevelAccount = new KAccountListItem(m_qlistviewParentAccounts,
                           liabilityAccount);
 
+        if(m_parentAccount.id().isEmpty()) {
+          m_parentAccount = liabilityAccount;
+          parentId = m_parentAccount.id();
+        }
+
         if (parentId == liabilityAccount.id())
           m_parentItem = liabilityTopLevelAccount;
 
         liabilityTopLevelAccount->setOpen(true);
         
-        for ( QCStringList::ConstIterator it = file->liability().accountList().begin();
-              it != file->liability().accountList().end();
+        for ( QCStringList::ConstIterator it = liabilityAccount.accountList().begin();
+              it != liabilityAccount.accountList().end();
               ++it )
         {
           KAccountListItem *accountItem = new KAccountListItem(liabilityTopLevelAccount,
@@ -526,13 +537,18 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
         KAccountListItem *incomeTopLevelAccount = new KAccountListItem(m_qlistviewParentAccounts,
                           incomeAccount);
 
+        if(m_parentAccount.id().isEmpty()) {
+          m_parentAccount = incomeAccount;
+          parentId = m_parentAccount.id();
+        }
+
         if (parentId == incomeAccount.id())
           m_parentItem = incomeTopLevelAccount;
 
         incomeTopLevelAccount->setOpen(true);
         
-        for ( QCStringList::ConstIterator it = file->income().accountList().begin();
-              it != file->income().accountList().end();
+        for ( QCStringList::ConstIterator it = incomeAccount.accountList().begin();
+              it != incomeAccount.accountList().end();
               ++it )
         {
           KAccountListItem *accountItem = new KAccountListItem(incomeTopLevelAccount,
@@ -560,13 +576,18 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
         KAccountListItem *expenseTopLevelAccount = new KAccountListItem(m_qlistviewParentAccounts,
                           expenseAccount);
 
+        if(m_parentAccount.id().isEmpty()) {
+          m_parentAccount = expenseAccount;
+          parentId = m_parentAccount.id();
+        }
+
         if (parentId == expenseAccount.id())
           m_parentItem = expenseTopLevelAccount;
 
         expenseTopLevelAccount->setOpen(true);
         
-        for ( QCStringList::ConstIterator it = file->expense().accountList().begin();
-              it != file->expense().accountList().end();
+        for ( QCStringList::ConstIterator it = expenseAccount.accountList().begin();
+              it != expenseAccount.accountList().end();
               ++it )
         {
           KAccountListItem *accountItem = new KAccountListItem(expenseTopLevelAccount,
