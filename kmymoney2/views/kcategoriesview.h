@@ -36,10 +36,20 @@ class KCategoriesView : public kCategoriesViewDecl  {
    Q_OBJECT
 private:
   MyMoneyFile *m_file;
+	QString m_lastCat;
+	
+  void readConfig(void);
+  void writeConfig(void);
   void refresh(void);
 
 protected:
-  void resizeEvent(QResizeEvent*);
+  void resizeEvent(QResizeEvent *);
+
+protected slots:
+  void slotEditClicked();
+  void slotNewClicked();
+  void slotDeleteClicked();
+  void slotSelectionChanged(QListViewItem*);
 
 public:
 	KCategoriesView(MyMoneyFile *file, QWidget *parent=0, const char *name=0);

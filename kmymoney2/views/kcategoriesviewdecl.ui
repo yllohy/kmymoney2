@@ -11,7 +11,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>618</width>
+            <width>614</width>
             <height>554</height>
         </rect>
     </property>
@@ -76,9 +76,7 @@
                     </property>
                     <property stdset="1">
                         <name>text</name>
-                        <string>Editing categories.
-
-To create a new category please click on the new button. 
+                        <string>To create a new category please click on the new button. 
 To edit a category click on the edit button after selecting an item.
 
 Deleting a category is as easy as selecting the category you wish to
@@ -209,32 +207,6 @@ delete and pressing the delete button.</string>
                     <property stdset="1">
                         <name>text</name>
                         <string>&amp;Delete</string>
-                    </property>
-                </widget>
-                <widget>
-                    <class>QPushButton</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>buttonOk</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>maximumSize</name>
-                        <size>
-                            <width>70</width>
-                            <height>32767</height>
-                        </size>
-                    </property>
-                    <property stdset="1">
-                        <name>text</name>
-                        <string>&amp;Close</string>
-                    </property>
-                    <property stdset="1">
-                        <name>autoDefault</name>
-                        <bool>true</bool>
-                    </property>
-                    <property stdset="1">
-                        <name>default</name>
-                        <bool>true</bool>
                     </property>
                 </widget>
             </hbox>

@@ -1,3 +1,6 @@
+2002-01-24 Michael Edwardes <mte@users.sourceforge.net>
+  * Added functionality to the categories view.
+
 2002-01-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * added tab/back-tab handling to kMyMoneyEdit and kMyMoneyLineEdit
   * added keyboard handling to KSplitTransactionDlg
