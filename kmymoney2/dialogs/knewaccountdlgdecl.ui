@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>683</width>
-            <height>720</height>
+            <width>701</width>
+            <height>577</height>
         </rect>
     </property>
     <property name="caption">
@@ -28,70 +28,6 @@
         <property name="spacing">
             <number>6</number>
         </property>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>Layout10</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <property name="margin">
-                    <number>0</number>
-                </property>
-                <property name="spacing">
-                    <number>6</number>
-                </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>m_qpixmaplabel</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>0</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>200</width>
-                            <height>150</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string>TextLabel1</string>
-                    </property>
-                </widget>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>TextLabel1_3</cstring>
-                    </property>
-                    <property name="text">
-                        <string>The only required field is the name which can be descriptive like
-My Current Account</string>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="Line">
-            <property name="name">
-                <cstring>Line1</cstring>
-            </property>
-            <property name="frameShape">
-                <enum>HLine</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Raised</enum>
-            </property>
-            <property name="lineWidth">
-                <number>1</number>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-        </widget>
         <widget class="QGroupBox">
             <property name="name">
                 <cstring>GroupBox2_2</cstring>
@@ -190,7 +126,7 @@ My Current Account</string>
                 </widget>
                 <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>layout35</cstring>
+                        <cstring>layout8</cstring>
                     </property>
                     <hbox>
                         <property name="name">
@@ -244,18 +180,39 @@ My Current Account</string>
                                 </property>
                                 <widget class="QLayoutWidget">
                                     <property name="name">
-                                        <cstring>layout34</cstring>
+                                        <cstring>layout11</cstring>
                                     </property>
                                     <grid>
                                         <property name="name">
                                             <cstring>unnamed</cstring>
                                         </property>
+                                        <widget class="QLabel" row="2" column="0">
+                                            <property name="name">
+                                                <cstring>m_currencyText</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>Currency:</string>
+                                            </property>
+                                        </widget>
                                         <widget class="QLabel" row="1" column="0">
                                             <property name="name">
                                                 <cstring>TextLabel4</cstring>
                                             </property>
                                             <property name="text">
                                                 <string>Balance:</string>
+                                            </property>
+                                        </widget>
+                                        <widget class="kMyMoneyEquity" row="3" column="1">
+                                            <property name="name">
+                                                <cstring>m_equity</cstring>
+                                            </property>
+                                        </widget>
+                                        <widget class="QLabel" row="3" column="0">
+                                            <property name="name">
+                                                <cstring>m_equityText</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>Equity-Symbol:</string>
                                             </property>
                                         </widget>
                                         <widget class="kMyMoneyCurrencySelector" row="2" column="1">
@@ -271,14 +228,6 @@ My Current Account</string>
                                         <widget class="kMyMoneyDateInput" row="0" column="1">
                                             <property name="name">
                                                 <cstring>startDateEdit</cstring>
-                                            </property>
-                                        </widget>
-                                        <widget class="QLabel" row="2" column="0">
-                                            <property name="name">
-                                                <cstring>textLabel1</cstring>
-                                            </property>
-                                            <property name="text">
-                                                <string>Currency:</string>
                                             </property>
                                         </widget>
                                         <widget class="QLabel" row="0" column="0">
@@ -299,22 +248,49 @@ My Current Account</string>
                                         </widget>
                                     </grid>
                                 </widget>
+                                <spacer>
+                                    <property name="name">
+                                        <cstring>spacer2</cstring>
+                                    </property>
+                                    <property name="orientation">
+                                        <enum>Vertical</enum>
+                                    </property>
+                                    <property name="sizeType">
+                                        <enum>Expanding</enum>
+                                    </property>
+                                    <property name="sizeHint">
+                                        <size>
+                                            <width>20</width>
+                                            <height>0</height>
+                                        </size>
+                                    </property>
+                                </spacer>
                             </vbox>
                         </widget>
                     </hbox>
                 </widget>
-                <widget class="QLabel">
+                <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>m_subAccountLabel</cstring>
+                        <cstring>layout9</cstring>
                     </property>
-                    <property name="text">
-                        <string>Subaccount</string>
-                    </property>
-                </widget>
-                <widget class="KListView">
-                    <property name="name">
-                        <cstring>m_qlistviewParentAccounts</cstring>
-                    </property>
+                    <vbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>m_subAccountLabel</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Subaccount</string>
+                            </property>
+                        </widget>
+                        <widget class="KListView">
+                            <property name="name">
+                                <cstring>m_qlistviewParentAccounts</cstring>
+                            </property>
+                        </widget>
+                    </vbox>
                 </widget>
                 <widget class="QLayoutWidget">
                     <property name="name">
@@ -468,22 +444,51 @@ My Current Account</string>
         </sizepolicy>
         <pixmap>image1</pixmap>
     </customwidget>
+    <customwidget>
+        <class>kMyMoneyEquity</class>
+        <header location="local">../widgets/kmymoneyequity.h</header>
+        <sizehint>
+            <width>-1</width>
+            <height>-1</height>
+        </sizehint>
+        <container>0</container>
+        <sizepolicy>
+            <hordata>5</hordata>
+            <verdata>5</verdata>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+        <pixmap>image2</pixmap>
+    </customwidget>
 </customwidgets>
 <images>
     <image name="image0">
-        <data format="XPM.GZ" length="646">789c6dd2c10ac2300c00d07bbf2234b7229d1be245fc04c5a3201e4615f430059d0711ff5ddb2e6bb236ec90eed134cb5a19d8ef36602af5ecdbfeeac05dda0798d3abebde87e3faa374d3807fa0d633a52d38d8de6f679fe33fc776e196f53cd010188256a3600a292882096246517815ca99884606e18044a3a40d91824820924265a7923a2e8bcd05f33db1173e002913175f2a6be6d3294871a2d95fa00e8a94ee017b69d339d90df1e77c57ea072ede6758</data>
+        <data format="PNG" length="256">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b000000c749444154789cad55db1184200c4c180bb005eab1cd6b8112b40d4bf1bee2486ef3006fbf1c93ece605f07eece4e1a4ed42ff2b35f6e2961132e46309941952ed8f628a761a21f56217cb20b04a45fe276d97f8ffb422431ad96e62a4ee057a83131bcc38431a6d057f8eb5cb36438afcb5cded719614011e9088308374c61aa9adb0e0651b5552b4b29efaacb099312ad5da5b2d50a93124463b2adf516fbb8cbd1354a9b1b667c8a787674144f9f982bcb93635ba8cb3fd1b2616f251013403fee763fabce8bff0aa6c989d7e67440000000049454e44ae426082</data>
     </image>
     <image name="image1">
-        <data format="XPM.GZ" length="3326">789c959549532b470cc7ef7c0a17ba51293dcfea994ae580591e186c30c60ba472e859bcb0d8e0153b95ef1e4db7340f777c09a2303feb2fb5a4ee9ef9715219dc372b273f8e164bb59ca49574ace695936cf5febefdf3af3ffe3e3a76dd0afd3a5e5c718f7f3b3a6e2f2b69a5359be60520104055ff689e59ac2c4e2c4e2dce2cce2d1e165c4b6a712dd1dcb1fc67164ff719ac7ae0cde28d15ff60b16be9adfee1d5e2f53eab89956f54b0f295a37ccdefecf7d95fb7e2c756bce6d88f9dd8c4eb7ebcd88bbc5873db8ab7e73db0b85f72a4ebafeed703e3928d3fd01c95fcc81c19469f39754cfc57c14eb530cd5d66893f13367e35628e78fd8530c747cc29c7df08b3ff5673247aac318bbf69d8957ad8eff2faa0e7e75685f18959d6d7fbe5c62ee75389614fe63d2cd9cca327ccf1bb928d3f60f69943bd9f8e17319f1af6657fee78bf53e307bdbeeff8cc78af590531af1f09b35eef4fe00aab8c39e3fc17c29ccf311c3ac6af7261eee7b364137f2dec1aff8a39e0fc922f307ed4f72750411628edaf1b0eb97eb814e6fdf04a36fe9130afd763967e1ac25caf9e6fe8d6a4fe8930d7d3600eb8ff1b61f63f33f37af8a299f287a6febee152df65ce0c2bfdfca87951e09afb7acd2cf5df976cfc93fde71f740c977a7dbfa324e6fcf86858717f7859b2e9e74298e39f853d47fbaf98b97ff810667d4bd8e8e1a7791e29e96727cccf23f12baee7b664937f2bccf9e39275bc52cc39d7df329cb81c3f14e6f5f5fd88d3d29f0973fe65c9467f2eec9b7ea6cc21d7db2cd9e49b31733f90976ceaab0af37a0f25ebf5c033cfff24643f324b7c2cccfe79c926fe9439e7faf5f351a5491eea97b532f9d254fa7d610e397ec02cf9cf99733e3f7a3e892ff97065387599e7c2354ff3a77064decf5be6d0dc675c0b73fc17b3320c4f863399ef9530d7a3cf5f922539bf2f3786cb78d770c6f5b7978521a0c20453cc30b72ca36f13f2427b297a1ce208c738c19703f68a6ff88e538a9a193de51ee1077ee21c17b8c415aec93664c5e7176e7187a758c7334c59af28f7279ee3055ee24fbcc26b6ce00dfdbdc526b6c8eef01edbf8801dd62754c99cd48fa4e8620ffb3820ebe3133e6395629ae810bb38657d4a552eb4da23551f7d0c30c49afe3fc218b0d00380627d46fa2555d22d324302296490c3104630269ec08bd6bfc21beb73d2aff00adeb53a8329cce0033e610e13ecc30296b022cf1a36dff46beaaf0f5f94bb506f614794c0699103afa17e40dfa0ef76949dd445cf7046ba73b820bd0797ffd16f6882030c21c78b2237fd5f839f7005d7a41c41e380bea8e786ba3475dd92a2092db8a3cffb03fa35de429b942378a0ba3b94bb499a2f78842e4db47740df049a374df086ba1cc0133cc382545570c03da86f8107beded71ef834cd3b08485d8536cd33dcd3677406b7744e9ab4f284f675600cba94bb0611c4d67ea5746277851e723ae64b9ae308460a28daa5fe63a554a2d26fe721a1f37d4a67d051193ab0823a5c42435b8f5e5cb91aaa911a7f3b6f8a6e439d4eece0b0a9548dd5e4db7906aae88cd8a5355fa9af7d7b05a0dc0fbfee0b45cc28a2835350f0061bcbdea058bff3eb3efe8ffbfecfef47ff02c914d57c</data>
+        <data format="PNG" length="826">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b0000030149444154789cb59531681b5718c77f0e377c070e3c810a3a70e0041eac51852e0a19e45134830a1d9a4c69a04bc8928e990a693a640e1d0c8642b08742321894c1507991b484c890902bb8701a047760c3bd21701fe4201dde49b6a41a32b8df72dcbbeffdbefffbbfefbd5b1b0c07cce266ebe667ae2006c3c1dada0cdc3be87d6e6c35b0d692a409d9c7ec8b20d65ae29398d19b1114e7e3de4ce98b3f5e10dc0053cf0951b4506496e1b964bf7ce6c585d9054c62d01d617ca48be0596553cf496d8f2c8b01c5f795fc93904e85ec4c01a152857a5d9175d0b2805c872080f18595ccc1499a10a225d4e2fbc2877786fe81253ab6c04c8d106e09db5d43ab0d146e5c64d1a23938fb98a185cea1c33eecfd9eba49eb427dcb201e245365f2b7b2fb5b4a3a31dcb927178afe07d86901df870fefa4842aed6f6b74ba42e52b4014d580e1eb9cbd9d94de7e4aad16d2f9be02d805f0b5e532f927a1ffcacea1777f122a8105b164a7c25faf323a5d9f1f1fd600e1e5bec59e2d4b5c7ef5209d0ad17b8b31864e57c0b3e0815ac3ee33253ab664a770ff5185d1a1cb8d2267d3e58aa1dc7d2508cbe597d0e74fdd269aaaf0f52d414c4ea3e9762c996869e42560d7a72e41c4799a2586e74f95e8d8151481fa86efbe7b3398ac58b1a2b8527589f15451ad303ac2293542ad6648a796278f13a27185e4c4754310facb98c53a79e19a3fdc1426ff28c3d7399d1f7cb25343eb96106cf83c790ce9c4f2eb831855c55485663327992eb6dc8a6259874ed700b0b793323cccb9ffa842b30d6133e3e75fea989ac15a8b16ca76b746b0b92278d919774c5b6d48a78697fb29bbcf52468742a32120909c24e899ce67beed5be2db01e22d1e9485bb620e47f9ee9e606a21bd3f5d3744c7e7c54d55e87443867d8b554515ac5db4620e8e4f62263170fd1cdee90aad7640141992891b0f367c9adfe4049bb07d3b7022bd8c687c0978f46684ee084150b65ac1fcca94591b7a90a496e4c095164fb016a2b192a497795cc0f84817aebe25f7bf70ccc54a575c555c03f78ffa5fc0570d1f0c076bff0232285a0901e2257b0000000049454e44ae426082</data>
+    </image>
+    <image name="image2">
+        <data format="PNG" length="953">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b0000038049444154789cb5954f681c7514c73fb319eb1b49e53798c20e44d985409393ace025d843725cec610511f5d414a4205eea456c2908b5a2bd09c5433420a4c941680f427a08989e361731814a47487057589d8144e67728ceabdd763cfc667793d4bf071ffc1876f6cde77de7bd37ef7945513030cff32ac018e00315c02bcfdf59519e47401f785814c5236f00bef8fec5a767a667ce596b1792343999ddcbfe81e7cc5a4b67a7b3bbf9ede60a7dbe007e05eefb03a5cb5f2e9f8b9ee56353cfa9a1685f114aedbe8304e535ef9754df69ec7698d245b9b4755b03e053202b5d19b3d62e987a4e6ad7c8b20ea00481923f10d29e90ed2b20841350af2b320e5a0690e31045b005af01d7878a013f49939335b4845a8240b87bc7b0f1b525deb68096ae426d5a986f1966e780bebb2f02c0734078507125bb97a17d1d42db1bb0f259ea1e1a17ead306f121e929dd1f94a58f52d2aee18d337220a8cb18706c00f69c160802b87b474aa832f77295664b084f00a2a846b46fe5ac2ca6acada654ab359aaf86801d80c700af72108c0ff90361e3a61d42df7c4b08230b62c9f6846f6e66345b010bef5401e1c6aac5ee8f0a5cb2bcd1cf129cf684f87b8b3186664bc0b7e0835ac3d25525deb6647b70f67cc8e6baf38d6397a68356e188b9ea2b51ad7cfd127aed8a2ba299105e382588c99969b88a255d2d13f91760d7a7ce41c4e5344b0cd7ae28f1b60b2802f5c9c0fdef0f607230157fae389c708e9d9ea21ab2791ba7d408d5aa21ed592e5f4888b742921dd70d512d388a391c27efbbe6af4d09dd5da57d2ba7f97a40b667983d25449301972f40dab57cf8760755c54c088d464ed23bd4728f2b967168b60c002b8b29edf59cb3e7431a73506b64bcfb411d5335586bd1be32dfaa124d3d26f86866dc673a3b0769cf70633565e96acae6ba3033232090ec24e8be0e9ffc6ec3d2391d21fee10f65002eacb52338ca2b670453adb1f695eb86787b14dc4c08cd568df686c5aaa20ad60ea105500cc19d9dce6eb7c314c747f0664b989d8b886343d275f7a3c980c68b39d114cc9f8e9c483f23de52805f808740e1154581e779013eef355e924b5154b65a9fe1c894411b1e4a9c22be602dc45b4a922a36e53af039f023e5a07f0237993e017e62b415feedf91958065ac0f3c08981e20a6e2a85c033e535a01c28470b7cc48af2f57320c36d906cb89a3ccff3812781a74ae831fedbcefbbd84ff06dcf7feaf65fa072f36954b309390920000000049454e44ae426082</data>
     </image>
 </images>
+<tabstops>
+    <tabstop>accountNameEdit</tabstop>
+    <tabstop>accountNoEdit</tabstop>
+    <tabstop>descriptionEdit</tabstop>
+    <tabstop>typeCombo</tabstop>
+    <tabstop>m_qcheckboxPreferred</tabstop>
+    <tabstop>m_qlistviewParentAccounts</tabstop>
+    <tabstop>m_qcomboboxInstitutions</tabstop>
+    <tabstop>m_qbuttonNew</tabstop>
+    <tabstop>createButton</tabstop>
+    <tabstop>cancelButton</tabstop>
+</tabstops>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
+    <includehint>kmymoneyequity.h</includehint>
     <includehint>kmymoneycurrencyselector.h</includehint>
     <includehint>kmymoneyedit.h</includehint>
     <includehint>kmymoneydateinput.h</includehint>
-    <includehint>klistview.h</includehint>
-    <includehint>kpushbutton.h</includehint>
-    <includehint>kpushbutton.h</includehint>
 </includehints>
 </UI>

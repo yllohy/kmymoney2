@@ -44,16 +44,17 @@ private:
   MyMoneyAccount m_account;
   MyMoneyAccount m_parentAccount;
   bool m_bSelectedParentAccount;
-  
+
   KAccountListItem *m_parentItem;
   KAccountListItem *m_accountItem;
   bool m_categoryEditor;
   bool m_isEditing;
-  
+
   void initParentWidget(QCString parentId, const QCString& accountId);
   void showSubAccounts(QCStringList accounts, KAccountListItem *parentItem, const QCString& parentId, const QCString& accountId);
   void loadInstitutions(const QString&);
-  
+
+
 public:
   /**
     * This is the constructor of the dialog. The parameters define the environment
@@ -73,12 +74,12 @@ public:
     */
   KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bool categoryEditor, QWidget *parent=0, const char *name=0, const char *title=0);
   ~KNewAccountDlg();
-  
+
   /**
     * This method returns the edited account object.
     */
   const MyMoneyAccount& account(void) const;
-  
+
   /**
     * This method returns the parent account of the edited account object.
     */
@@ -92,6 +93,7 @@ protected slots:
   void slotSelectionChanged(QListViewItem *item);
   void slotAccountTypeChanged(const QString& type);
   void slotNewClicked();
+  void slotCheckFinished(void);
 
 private slots:
   void timerDone(void);
