@@ -70,7 +70,6 @@ KPayeesView::KPayeesView(QWidget *parent, const char *name )
   m_transactionView->setHScrollBarMode(QScrollView::AlwaysOff);
 
   connect(payeeCombo, SIGNAL(activated(const QString&)), this, SLOT(payeeHighlighted(const QString&)));
-  connect(payeeCombo, SIGNAL(highlighted(const QString&)), this, SLOT(payeeHighlighted(const QString&)));
   connect(addButton, SIGNAL(clicked()), this, SLOT(slotAddClicked()));
   connect(payeeEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotPayeeTextChanged(const QString&)));
   connect(updateButton, SIGNAL(clicked()), this, SLOT(slotUpdateClicked()));
@@ -130,6 +129,8 @@ void KPayeesView::payeeHighlighted(const QString& text)
     showTransactions();
     writeConfig();
   } catch(MyMoneyException *e) {
+    qDebug("exception during display of payee");
+    qDebug("%s at %s:%d", e->what().latin1(), e->file().latin1(), e->line());
     m_transactionView->clear();
     m_payee = MyMoneyPayee();
     updateButton->setEnabled(false);
@@ -191,24 +192,41 @@ void KPayeesView::showTransactions(void)
       ++i;
     }
   }
-
+  
   // sort the transactions
   m_transactionPtrVector.sort();
 
   // and fill the m_transactionView
   m_transactionView->clear();
   KTransactionListItem *item = 0;
+
   for(i = 0; i < m_transactionPtrVector.size(); ++i) {
     KMyMoneyTransaction* t = m_transactionPtrVector[i];
     MyMoneySplit s = t->splitById(t->splitId());
+    MyMoneyAccount acc = file->account(s.accountId());
     
     item = new KTransactionListItem(m_transactionView, item, s.accountId(), t->id());
     item->setText(0, s.number());
     item->setText(1, KGlobal::locale()->formatDate(t->postDate(), true));
     
     QString txt;
-    if(s.action() == MyMoneySplit::ActionTransfer) {
-      MyMoneyAccount acc = file->account(s.accountId());
+    if(s.action() == MyMoneySplit::ActionAmortization) {
+      if(acc.accountType() == MyMoneyAccount::Loan) {
+        if(s.value() > 0) {
+          txt = i18n("Amortization of %1").arg(acc.name());
+        } else {
+          txt = i18n("Payment to %1").arg(acc.name());
+        }
+      } else if(acc.accountType() == MyMoneyAccount::AssetLoan) {
+        if(s.value() < 0) {
+          txt = i18n("Amortization of %1").arg(acc.name());
+        } else {
+          txt = i18n("Payment to %1").arg(acc.name());
+        }
+      } else {
+        txt = i18n("Loan payment from %1").arg(acc.name());
+      }
+    } else if(s.action() == MyMoneySplit::ActionTransfer) {
       if(s.value() >= 0) {
         txt = i18n("Transfer to %1").arg(acc.name());
       } else {
@@ -216,7 +234,7 @@ void KPayeesView::showTransactions(void)
       }
     } else if(t->splitCount() > 2) {
       txt = i18n("Splitted transaction");
-    } else {
+    } else if(t->splitCount() == 2) {
       MyMoneySplit s0 = t->splitByAccount(s.accountId(), false);
       txt = MyMoneyFile::instance()->accountToCategory(s0.accountId());
     }
