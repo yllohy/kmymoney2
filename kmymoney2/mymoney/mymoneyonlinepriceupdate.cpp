@@ -105,13 +105,14 @@ int MyMoneyOnlinePriceUpdate::getWebServiceQuote(const QString& symbolName)
   //float r;
   struct ns1__getQuoteResponse response;
   memset(reinterpret_cast<void*>(&response), 0, sizeof(struct ns1__getQuoteResponse));
-  char* name = "RHAT";
-  if (q.ns1__getQuote(const_cast<char *>(symbolName.data()), &response) == SOAP_OK)
+  QString newSymbolName("IBM");
+  if (q.ns1__getQuote(const_cast<char *>(newSymbolName.data()), &response) == SOAP_OK)
   {
+     qDebug("Webservice call returned SOAP_OK for quote %s, value = %f!", newSymbolName.data(), response._Result);
      std::cout << response._Result << std::endl;
   }
   else
-     //soap_print_fault(q.soap, stderr);
+     soap_print_fault(q.soap, stderr);
   return 0;
 }
 

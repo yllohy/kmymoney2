@@ -163,8 +163,10 @@ private:
 
   MyMoneySplit    m_accountSplit;
   MyMoneySplit    m_feeSplit;
+  MyMoneySplit    m_equityAssetSplit;
   MyMoneySplit    m_interestSplit;
   kMyMoneyAccountCombo  *m_editCashAccount;
+  kMyMoneyCategory *m_editFeeCategory;
 
 /*
   KTextBrowser *textBrowser;

@@ -69,6 +69,8 @@ public:
   virtual bool eventFilter(QObject * , QEvent * );
 
   kMyMoneyAccountCompletion* selector(void) const { return m_accountSelector; };
+  
+  QCString selectedAccountId() const { return m_id; }
 
 signals:
   /**

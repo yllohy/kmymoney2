@@ -133,6 +133,7 @@ KLedgerViewInvestments::KLedgerViewInvestments(QWidget *parent, const char *name
   m_editTotalAmount = 0;
   m_editFees = 0;
   m_editCashAccount = 0;
+  m_editFeeCategory = 0;
 
   // setup the form to be visible or not
   slotShowTransactionForm(m_transactionFormActive);
@@ -450,7 +451,7 @@ void KLedgerViewInvestments::fillFormStatics(void)
       formTable->setText(PRICE_ROW, PRICE_TXT_COL, i18n("Price per share"));
       formTable->setText(VALUE_ROW, VALUE_TXT_COL, i18n("Total Amount"));
       formTable->setText(FEES_ROW, FEES_TXT_COL, i18n("Fees"));
-      //formTable->setText(CATEGORY_ROW, CATEGORY_TXT_COL, i18n("Commission"));
+      formTable->setText(CATEGORY_ROW, CATEGORY_TXT_COL, i18n("Fee Category"));
       formTable->setText(ACCOUNT_ROW, ACCOUNT_TXT_COL, i18n("Account"));
       break;
 
@@ -459,7 +460,7 @@ void KLedgerViewInvestments::fillFormStatics(void)
       formTable->setText(PRICE_ROW, PRICE_TXT_COL, i18n("Price per share"));
       formTable->setText(VALUE_ROW, VALUE_TXT_COL, i18n("Total Amount"));
       formTable->setText(FEES_ROW, FEES_TXT_COL, i18n("Fees"));
-      //formTable->setText(CATEGORY_ROW, CATEGORY_TXT_COL, i18n("Commission"));
+      formTable->setText(CATEGORY_ROW, CATEGORY_TXT_COL, i18n("Fee Category"));
       formTable->setText(ACCOUNT_ROW, ACCOUNT_TXT_COL, i18n("Interest"));
       break;
 
@@ -515,7 +516,8 @@ QWidget* KLedgerViewInvestments::arrangeEditWidgetsInForm(void)
   table->setCellWidget(FEES_ROW, FEES_DATA_COL, m_editFees);
   table->setCellWidget(ACTIVITY_ROW, ACTIVITY_DATA_COL, m_editType);
   table->setCellWidget(ACCOUNT_ROW, ACCOUNT_DATA_COL, m_editCashAccount);
-
+  table->setCellWidget(CATEGORY_ROW, CATEGORY_DATA_COL, m_editFeeCategory);
+  
   table->clearEditable();
   table->setEditable(MEMO_ROW, MEMO_DATA_COL);
   table->setEditable(DATE_ROW, DATE_DATA_COL);
@@ -526,7 +528,8 @@ QWidget* KLedgerViewInvestments::arrangeEditWidgetsInForm(void)
   table->setEditable(FEES_ROW, FEES_DATA_COL);
   table->setEditable(ACTIVITY_ROW, ACTIVITY_DATA_COL);
   table->setEditable(ACCOUNT_ROW, ACCOUNT_DATA_COL);
-
+  table->setEditable(CATEGORY_ROW, CATEGORY_DATA_COL);
+  
   // now setup the tab order
   m_tabOrderWidgets.clear();
   m_tabOrderWidgets.append(m_form->enterButton());
@@ -541,6 +544,7 @@ QWidget* KLedgerViewInvestments::arrangeEditWidgetsInForm(void)
   m_tabOrderWidgets.append(m_editFees);
   m_tabOrderWidgets.append(m_editPPS);
   m_tabOrderWidgets.append(m_editCashAccount);
+  m_tabOrderWidgets.append(m_editFeeCategory);
 
   return m_editSymbolName;
 }
@@ -577,6 +581,7 @@ void KLedgerViewInvestments::hideWidgets()
   m_editTotalAmount = 0;
   m_editFees = 0;
   m_editCashAccount = 0;
+  m_editFeeCategory = 0;
 
   m_form->table()->clearEditable();
   m_form->tabBar()->setEnabled(true);
@@ -649,6 +654,11 @@ void KLedgerViewInvestments::createEditWidgets()
     m_editCashAccount = new kMyMoneyAccountCombo(0, "editCashAccount");
     m_editCashAccount->loadList(static_cast<KMyMoneyUtils::categoryTypeE>(KMyMoneyUtils::asset | KMyMoneyUtils::liability));
     m_editCashAccount->setFocusPolicy(QWidget::StrongFocus);
+  }
+  
+  if(!m_editFeeCategory) {
+    m_editFeeCategory = new kMyMoneyCategory(0, "editFeeCategory", KMyMoneyUtils::liability);
+    m_editFeeCategory->setFocusPolicy(QWidget::StrongFocus);
   }
 }
 
@@ -1037,16 +1047,25 @@ void KLedgerViewInvestments::slotEndEdit()
 
     //set up the split for the money that is sourcing this transaction
     m_accountSplit.setAccountId(accountId);
-    m_accountSplit.setValue(total);
+    m_accountSplit.setValue(-total);
 
     //set up the fee split now
     m_feeSplit.setValue(m_editFees->getMoneyValue());
+    m_feeSplit.setAccountId(m_editFeeCategory->selectedAccountId());
+    
+    m_equityAssetSplit.setValue((m_editPPS->getMoneyValue() * m_editShares->getMoneyValue()));
+    m_equityAssetSplit.setAccountId(m_account.id());
   }
   else if(currentAction == COMBO_SELL_SHARES)
   {
 
   }
-
+ 
+  m_transaction.addSplit(m_accountSplit);
+  m_transaction.addSplit(m_feeSplit);
+  m_transaction.addSplit(m_equityAssetSplit);
+  
+  
   //the first split item is for the cash account
 
 
@@ -1222,6 +1241,7 @@ void KLedgerViewInvestments::slotEndEdit()
         // happens, we have no idea about the id of the new transaction.
         MyMoneyTransaction t = m_transaction;
         file->addTransaction(t);
+        qDebug("Added the transaction to the file");
         id = t.id();
 
       } else {
@@ -1230,6 +1250,7 @@ void KLedgerViewInvestments::slotEndEdit()
         // callbacks.
         id = m_transaction.id();
         file->modifyTransaction(m_transaction);
+        qDebug("Modified the transaction");
       }
 
       // make sure the transaction stays selected. It's position might
