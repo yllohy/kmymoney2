@@ -1,3 +1,8 @@
+2004-09-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Turned KMyMoneyBanking into a singleton object
+  * Reduced dependency of KBanking down to converter/mymoneybanking
+  * Present reasonable error message when trying to load a directory as template
+
 2004-09-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Do not allow any action that requires a file if no file is open
 
