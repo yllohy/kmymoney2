@@ -57,12 +57,46 @@ void kMyMoneyTransactionFormTable::paintFocus(QPainter *p, const QRect &cr)
 
 QWidget* kMyMoneyTransactionFormTable::createEditor(int row, int col, bool initFromCell) const
 {
-  switch(col) {
-    case 0:
-    case 2:
-      return 0;
-  }
+  if(!m_editable[row * numCols() + col])
+    return 0;
   return QTable::createEditor(row, col, initFromCell);
+}
+
+void kMyMoneyTransactionFormTable::setEditable(int row, int col, bool flag)
+{
+  if(row >= 0 && row < numRows() && col >= 0 && col < numCols())
+    m_editable[row * numCols() + col] = flag;
+}
+
+void kMyMoneyTransactionFormTable::setNumCols(int c)
+{
+  resizeEditable(numRows(), c);
+  QTable::setNumCols(c);
+}
+
+void kMyMoneyTransactionFormTable::setNumRows(int r)
+{
+  resizeEditable(r, numCols());
+  QTable::setNumRows(r);
+}
+
+void kMyMoneyTransactionFormTable::resizeEditable(int r, int c)
+{
+  QBitArray newArray(r * c);
+  int oldc = numCols();
+  newArray.fill(false);
+
+  for(int i = 0; i < numRows() && i < r; ++i) {
+    for(int j = 0; j < oldc && j < c; ++j) {
+      newArray[i*c + j] = m_editable[i*oldc + j];
+    }
+  }
+  m_editable = newArray;
+}
+
+void kMyMoneyTransactionFormTable::clearEditable(void)
+{
+  m_editable.fill(false);
 }
 
 kMyMoneyTransactionFormTableItem::kMyMoneyTransactionFormTableItem(QTable* table, EditType ed, const QString& str)

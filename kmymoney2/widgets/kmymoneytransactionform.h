@@ -30,6 +30,7 @@
 #include <qtabbar.h>
 #include <qlabel.h>
 #include <qtable.h>
+#include <qbitarray.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -58,6 +59,19 @@ public:
 
   void paintFocus(QPainter *p, const QRect &cr);
   QWidget* createEditor(int row, int col, bool initFromCell) const;
+
+  void setEditable(int row, int col, bool editable = true);
+  void clearEditable(void);
+
+public slots:
+  virtual void setNumCols(int c);
+  virtual void setNumRows(int r);
+
+private:
+  void resizeEditable(int r, int c);
+
+private:
+  QBitArray m_editable;
 
 };
 
@@ -88,7 +102,7 @@ public:
   ~kMyMoneyTransactionForm();
 
   void addTab(QTab *tab) { m_tabBar->addTab(tab); };
-  QTable* table(void) { return formTable; };
+  kMyMoneyTransactionFormTable* table(void) { return formTable; };
   QTabBar* tabBar(void) { return m_tabBar; };
   KPushButton* newButton(void) const { return buttonNew; };
   KPushButton* editButton(void) const { return buttonEdit; };
