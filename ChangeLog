@@ -1,3 +1,13 @@
+2002-01-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * bumped version number to 0.5.0
+  * added PHB docbook files to the project (makefile.am is still a problem)
+  * clearing the text in KTransactionView::clear() before doing a
+    transactionsTable->setNumRows(0) is unnecessary. I removed it.
+  * cleaned up unused code in ktransactionview.cpp
+  * restructured filling of transactionsTable to speed up the operation.
+    I still don't know why this is so much faster now.
+  * fixed procedures to create new releases in PHB 
+
 2001-12-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed bug #490440 - extra edit boxes in register
   * display all text in register with centered vertical alignment
@@ -20,7 +30,7 @@
 
 2001-12-23 Michael Edwardes <mte@users.sourceforge.net>
   * Added ability to compile for KDE 3 or KDE 2.
-  
+ 
 2001-12-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Corrected transaction view to display correctly when resizing horizontaly
   * Use visibleWidth() when resizing the transaction view. This will
