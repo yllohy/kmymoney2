@@ -68,6 +68,8 @@ void KAccountListItem::newAccount(const MyMoneyAccount& account)
 
   m_accountID = account.id();
 
+  file->attach(m_accountID, this);
+
   setPixmap(0, *accountPixmap);
   update(m_accountID);
 }
@@ -95,9 +97,11 @@ void KAccountListItem::update(const QCString& accountId)
 
       setText(0, acc.name());
 
-      // since income is negative, we reverse the sign
+      // since income and liabilities are usually negative,
+      // we reverse the sign for display purposes
       switch(file->accountGroup(acc.accountType())) {
         case MyMoneyAccount::Income:
+        case MyMoneyAccount::Liability:
           balance = -balance;
           break;
         default:
