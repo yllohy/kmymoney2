@@ -1989,4 +1989,3 @@ void KLedgerView::setCellWidget(QTable* table, const int row, const int col, QWi
     table->setCellWidget(row, col, w);
 }
 
-#include "/home/thb/qt3/src/widgets/qscrollview.cpp"
