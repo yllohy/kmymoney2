@@ -502,6 +502,11 @@ void KSplitTransactionDlg::updateSplit(int row, int /* col */)
         amountTxt = QString();
 
       unsigned width = transactionsTable->fontMetrics().width(amountTxt);
+      kMyMoneyEdit* valfield = new kMyMoneyEdit();
+      valfield->setMinimumWidth(width);
+      width = valfield->minimumSizeHint().width();
+      delete valfield;
+
       if(width > m_amountWidth)
         m_amountWidth = width;
 
@@ -543,6 +548,12 @@ void KSplitTransactionDlg::updateSplit(int row, int /* col */)
         amountTxt = QString();
 
       unsigned width = transactionsTable->fontMetrics().width(amountTxt);
+
+      kMyMoneyEdit* valfield = new kMyMoneyEdit();
+      valfield->setMinimumWidth(width);
+      width = valfield->minimumSizeHint().width();
+      delete valfield;
+
       if(width > m_amountWidth)
         m_amountWidth = width;
 
@@ -822,3 +833,4 @@ void KSplitTransactionDlg::slotMemoChanged(const QString& memo)
   m_split.setMemo(memo);
   m_editMemo->loadText(memo);
 }
+
