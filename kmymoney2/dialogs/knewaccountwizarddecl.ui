@@ -324,7 +324,7 @@ Otherwise, leave this field empty.</string>
                                     <widget class="QListBox">
                                         <item>
                                             <property name="text">
-                                                <string>Checkings</string>
+                                                <string>Checking</string>
                                             </property>
                                         </item>
                                         <item>
