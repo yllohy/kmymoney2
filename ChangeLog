@@ -1,3 +1,7 @@
+2001-12-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed Bug #490442
+  * removed currency text from reconcile dialog elements
+
 2001-12-16 Kevin Tambascio <ktambascio@yahoo.com>
   * Fixed Bug #490016 File filter in open dialog
 

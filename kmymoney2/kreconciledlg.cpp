@@ -70,21 +70,16 @@ KReconcileDlg::KReconcileDlg(const MyMoneyMoney previousBal, const MyMoneyMoney 
 	creditListView->addColumn(i18n("C"));
 	creditListView->setMultiSelection(true);
   creditListView->setAllColumnsShowFocus(true);
-	
-	endingLabel->setText(KGlobal::locale()->formatMoney(m_clearedBalance.amount()));
-	
-	previousLabel->setText(KGlobal::locale()->formatMoney(m_endingBalance.amount()));
-	
-	broughtForwardLabel->setText(KGlobal::locale()->formatMoney(m_previousBalance.amount()));
 
-  //QString text;
-	//text = i18n("Deposits: ");
-	//text += KGlobal::locale()->formatMoney(m_creditBalance.amount());
-	totalCreditsLabel->setText(i18n("Deposits: ") + KGlobal::locale()->formatMoney(m_creditBalance.amount()));
+	endingLabel->setText(KGlobal::locale()->formatMoney(m_clearedBalance.amount(),""));
 	
-	//text = i18n("Withdrawals: ");
-	//text += KGlobal::locale()->formatMoney(m_debitBalance.amount());
-	totalDebitsLabel->setText(i18n("Withdrawals: ") + KGlobal::locale()->formatMoney(m_debitBalance.amount()));
+	previousLabel->setText(KGlobal::locale()->formatMoney(m_endingBalance.amount(),""));
+	
+	broughtForwardLabel->setText(KGlobal::locale()->formatMoney(m_previousBalance.amount(),""));
+
+	totalCreditsLabel->setText(i18n("Deposits: ") + KGlobal::locale()->formatMoney(m_creditBalance.amount(),""));
+	
+	totalDebitsLabel->setText(i18n("Withdrawals: ") + KGlobal::locale()->formatMoney(m_debitBalance.amount(),""));
 
 
 	loadLists();
@@ -195,16 +190,9 @@ void KReconcileDlg::slotDebitSelected(QListViewItem* item, const QPoint&/*p*/, i
 			reconcileItem->setReconciled(false);
 			m_reconciledTransactions.remove(reconcileItem->transaction());
     }
-//		m_debitBalance.setAmount(dblDebit);
-//		m_clearedBalance.setAmount(dblCleared);
-//  	MyMoneyMoney money;
-//    money.setAmount(dblDebit);
-		//QString text = i18n("Withdrawals: ");
-		//text += KGlobal::locale()->formatMoney(m_debitBalance.amount());
-		totalDebitsLabel->setText(i18n("Withdrawals: ") + KGlobal::locale()->formatMoney(m_debitBalance.amount()));
+		totalDebitsLabel->setText(i18n("Withdrawals: ") + KGlobal::locale()->formatMoney(m_debitBalance.amount(),""));
 
-//    money.setAmount(dblCleared);
-		endingLabel->setText(KGlobal::locale()->formatMoney(m_clearedBalance.amount()));
+		endingLabel->setText(KGlobal::locale()->formatMoney(m_clearedBalance.amount(),""));
 
 		doDifference();
 }
@@ -234,27 +222,18 @@ void KReconcileDlg::slotCreditSelected(QListViewItem* item, const QPoint&, int)
 			m_reconciledTransactions.remove(reconcileItem->transaction());
     }
 		
-//		m_creditBalance.setAmount(dblCredit);
-//    m_clearedBalance.setAmount(dblCleared);
-//  	MyMoneyMoney money;
-//    money.setAmount(dblCredit);
-		//QString text = i18n("Deposits: ");
-		//text += KGlobal::locale()->formatMoney(m_creditBalance.amount());
-		totalCreditsLabel->setText(i18n("Deposits: ") + KGlobal::locale()->formatMoney(m_creditBalance.amount()));
+		totalCreditsLabel->setText(i18n("Deposits: ") + KGlobal::locale()->formatMoney(m_creditBalance.amount(),""));
 
-//    money.setAmount(dblCleared);
-		endingLabel->setText(KGlobal::locale()->formatMoney(m_clearedBalance.amount()));
+		endingLabel->setText(KGlobal::locale()->formatMoney(m_clearedBalance.amount(),""));
 
 		doDifference();
-
-
 }
 
 void KReconcileDlg::doDifference(void)
 {
   MyMoneyMoney difference((m_previousBalance + m_clearedBalance)- m_endingBalance);
 
-  differenceLabel->setText(KGlobal::locale()->formatMoney(difference.amount()));
+  differenceLabel->setText(KGlobal::locale()->formatMoney(difference.amount(),""));
   if (difference.isZero())
     m_balanced = true;
   else
@@ -322,20 +301,15 @@ void KReconcileDlg::resetData(const MyMoneyMoney previousBal, const MyMoneyMoney
 	differenceLabel->setAlignment(AlignRight | AlignVCenter | ExpandTabs | SingleLine);
 */
 	
-	endingLabel->setText(KGlobal::locale()->formatMoney(m_clearedBalance.amount()));
+	endingLabel->setText(KGlobal::locale()->formatMoney(m_clearedBalance.amount(),""));
 	
-	previousLabel->setText(KGlobal::locale()->formatMoney(m_endingBalance.amount()));
+	previousLabel->setText(KGlobal::locale()->formatMoney(m_endingBalance.amount(),""));
 
-	broughtForwardLabel->setText(KGlobal::locale()->formatMoney(m_previousBalance.amount()));
+	broughtForwardLabel->setText(KGlobal::locale()->formatMoney(m_previousBalance.amount(),""));
 
-	//QString text;
-	//text = i18n("Deposits: ");
-	//text += KGlobal::locale()->formatMoney(m_creditBalance.amount());
-	totalCreditsLabel->setText(i18n("Deposits: ") + KGlobal::locale()->formatMoney(m_creditBalance.amount()));
+	totalCreditsLabel->setText(i18n("Deposits: ") + KGlobal::locale()->formatMoney(m_creditBalance.amount(),""));
 	
-	//text = i18n("Withdrawals: ");
-	//text += KGlobal::locale()->formatMoney(m_debitBalance.amount());
-	totalDebitsLabel->setText(i18n("Withdrawals: ") + KGlobal::locale()->formatMoney(m_debitBalance.amount()));
+	totalDebitsLabel->setText(i18n("Withdrawals: ") + KGlobal::locale()->formatMoney(m_debitBalance.amount(),""));
 
 	loadLists();
 	insertTransactions();

@@ -69,7 +69,7 @@ KScheduleListItem::KScheduleListItem(QListView *parent, MyMoneyScheduled::s_sche
       break;
   }
   setText(4, cellText);
-  setText(5, KGlobal::locale()->formatMoney(scheduleData.m_transaction.amount().amount()));
+  setText(5, KGlobal::locale()->formatMoney(scheduleData.m_transaction.amount().amount(),""));
   setText(6, "???");
 }
 

@@ -255,7 +255,8 @@ void KTransactionView::createInputWidgets()
   // as the code has hard-coded references to the above list,
   // we do not allow editing of these values here. This somehow
   // makes autocompletion senseless, but I leave it in for later use.
-  //m_method->setEditable(false);
+  // m_method->setEditable(false);
+  m_method->setFocusPolicy(QWidget::StrongFocus);
 
   m_category->setAutoCompletion(true);
   KCompletion *categorycomp = m_category->completionObject();
@@ -622,6 +623,30 @@ void KTransactionView::enterClicked()
 	MyMoneyTransaction::stateE newstate;
 	
 	// Set the transaction type
+  switch(m_method->currentItem()) {
+    case 0:     // Cheque
+      newmethod = MyMoneyTransaction::Cheque;
+      break;
+    case 1:
+      newmethod = MyMoneyTransaction::Deposit;
+      break;
+    case 2:
+      newmethod = MyMoneyTransaction::Transfer;
+      break;
+    case 3:
+      newmethod = MyMoneyTransaction::Withdrawal;
+      break;
+    case 4:
+      newmethod = MyMoneyTransaction::ATM;
+      break;
+    default:
+      KMessageBox::error(this, i18n("Invalid method selected\nCancelling "
+                                    "transaction update."));
+      m_method->setFocus(); // Don't think this will work anyway
+      return;
+  }
+
+#if 0
 	if(m_method->currentItem() == 0)
 	{
    	 newmethod = MyMoneyTransaction::Cheque;
@@ -646,7 +671,9 @@ void KTransactionView::enterClicked()
 	{
    	 newmethod = MyMoneyTransaction::Cheque;
 	}
-    // Add payee to Payee List
+#endif
+
+  // Add payee to Payee List
 	m_filePointer->addPayee(m_payee->currentText());
 	
  	int colonindex = m_category->currentText().find(":");
@@ -1092,7 +1119,7 @@ void KTransactionView::updateTransactionList(int row, int col)
 
     }  // useall etc check
       rowCount += NO_ROWS;
-			currentBalance = KGlobal::locale()->formatMoney(balance.amount());
+			currentBalance = KGlobal::locale()->formatMoney(balance.amount(),"");
     }
 
 		if (m_viewType==NORMAL) {
