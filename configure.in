@@ -13,7 +13,7 @@ AC_CANONICAL_SYSTEM
 AC_ARG_PROGRAM
 
 dnl Automake doc recommends to do this only here. (Janos)
-AM_INIT_AUTOMAKE(kmymoney2, 0.3.3) dnl searches for some needed programs
+AM_INIT_AUTOMAKE(kmymoney2, 0.3.1) dnl searches for some needed programs
 
 KDE_SET_PREFIX
 
@@ -46,6 +46,10 @@ doc/Makefile \
 doc/en/Makefile \
 kmymoney2/Makefile \
 kmymoney2/dialogs/Makefile \
+kmymoney2/icons/Makefile \
+kmymoney2/icons/hicolor/Makefile \
+kmymoney2/icons/hicolor/22x22/Makefile \
+kmymoney2/icons/hicolor/22x22/actions/Makefile \
 kmymoney2/mymoney/Makefile \
 kmymoney2/pics/Makefile \
 kmymoney2/pics/toolbar/Makefile \
