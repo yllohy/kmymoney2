@@ -17,6 +17,8 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
+#include <qapplication.h>
+#include <qdesktopwidget.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -117,8 +119,6 @@ bool kMyMoneyEdit::eventFilter(QObject *o , QEvent *e )
 
   if(e->type() == QEvent::KeyPress) {
     QKeyEvent *k = static_cast<QKeyEvent *> (e);
-    QPoint p;
-    QRect r;
 
     rc = true;
     switch(k->key()) {
@@ -168,10 +168,19 @@ bool kMyMoneyEdit::eventFilter(QObject *o , QEvent *e )
         }
         m_calculator->setInitialValues(text(), k);
 
-        p = mapToGlobal(QPoint(0,0));
-        r = m_calculator->geometry();
-        r.moveTopLeft(p);
+        int h = m_calculatorFrame->height();
 
+        // usually, the calculator widget is shown underneath the MoneyEdit widget
+        // if it does not fit on the screen, we show it above this widget
+
+        QPoint p = mapToGlobal(QPoint(0,0));
+        if(p.y() + h > QApplication::desktop()->height()) {
+          p.setY(p.y() - h);
+        } else {
+          p.setY(p.y() + height());
+        }
+        QRect r = m_calculator->geometry();
+        r.moveTopLeft(p);
         m_calculatorFrame->setGeometry(r);
         m_calculatorFrame->show();
         break;
