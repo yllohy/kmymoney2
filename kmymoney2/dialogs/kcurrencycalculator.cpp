@@ -63,7 +63,7 @@ KCurrencyCalculator::KCurrencyCalculator(const MyMoneyCurrency& from, const MyMo
   MyMoneyMoney price(1,1);
 
   // setup initial result
-  if(m_result == MyMoneyMoney() && m_value != 0) {
+  if(m_result == MyMoneyMoney() && !m_value.isZero()) {
     if(m_fromCurrency.id() == file->baseCurrency().id()) {
       price = MyMoneyMoney(1,1) / m_toCurrency.price(m_date);
     } else if(m_toCurrency.id() == file->baseCurrency().id()) {
@@ -124,7 +124,7 @@ void KCurrencyCalculator::slotUpdateResult(const QString& txt)
   }
 
   MyMoneyMoney price;
-  if(MyMoneyMoney(txt) != 0) {
+  if(!MyMoneyMoney(txt).isZero()) {
     m_result = MyMoneyMoney(txt).abs();
     m_result.convert(m_resultFraction);
     if(m_fromToButton->isChecked()) {
@@ -148,7 +148,7 @@ void KCurrencyCalculator::slotUpdateRate(const QString& txt)
 
   MyMoneyMoney price(txt);
 
-  if(price != 0) {
+  if(!price.isZero()) {
     if(m_fromToButton->isChecked()) {
       m_result = m_value / price;
     } else {

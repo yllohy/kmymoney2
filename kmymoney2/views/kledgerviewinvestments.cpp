@@ -1330,7 +1330,7 @@ void KLedgerViewInvestments::slotEndEdit()
 
       m_transaction.addSplit(m_accountSplit);
       m_transaction.addSplit(m_split);
-      if(m_feeSplit.value() != 0)
+      if(!m_feeSplit.value().isZero())
         m_transaction.addSplit(m_feeSplit);
       transactionContainsPriceInfo = true;
       break;
@@ -1367,7 +1367,7 @@ void KLedgerViewInvestments::slotEndEdit()
       // because we look at it's action() in preloadInvestmentSplits()
       m_transaction.addSplit(m_split);
       m_transaction.addSplit(m_interestSplit);
-      if(m_feeSplit.value() != 0)
+      if(!m_feeSplit.value().isZero())
         m_transaction.addSplit(m_feeSplit);
       transactionContainsPriceInfo = true;
       break;
@@ -1402,7 +1402,7 @@ void KLedgerViewInvestments::slotEndEdit()
 
       m_transaction.addSplit(m_accountSplit);
       m_transaction.addSplit(m_split);
-      if(m_interestSplit.value() != 0)
+      if(!m_interestSplit.value().isZero())
         m_transaction.addSplit(m_interestSplit);
       break;
 
@@ -1474,7 +1474,7 @@ void KLedgerViewInvestments::slotEndEdit()
       selectTransaction(id);
 
       // check if we have new or updated price info
-      if(transactionContainsPriceInfo == true && m_split.shares() != 0) {
+      if(transactionContainsPriceInfo == true && ! m_split.shares().isZero()) {
         MyMoneyMoney price = m_split.value() / m_split.shares();
         bool equityChanged = false;
         if(m_equity.hasPrice(m_transaction.postDate(), true) == false) {
@@ -1791,10 +1791,10 @@ const bool KLedgerViewInvestments::slotDataChanged(int field)
       if(m_editCashAccount->selectedAccounts().first().isEmpty()) {
         ok = false;
       }
-      if(m_editPPS->value() == 0) {
+      if(m_editPPS->value().isZero()) {
         ok = false;
       }
-      if(m_editShares->value() == 0) {
+      if(m_editShares->value().isZero()) {
         ok = false;
       }
       break;
@@ -1802,12 +1802,12 @@ const bool KLedgerViewInvestments::slotDataChanged(int field)
     case ReinvestDividend:
       if(m_editCashAccount->selectedAccounts().first().isEmpty())
         ok = false;
-      if(m_editPPS->value() == 0)
+      if(m_editPPS->value().isZero())
         ok = false;
-      if(m_editShares->value() == 0)
+      if(m_editShares->value().isZero())
         ok = false;
       if(!m_editFeeCategory->selectedAccountId().isEmpty()
-      && m_editFees->value() == 0)
+      && m_editFees->value().isZero())
         ok = false;
       break;
 

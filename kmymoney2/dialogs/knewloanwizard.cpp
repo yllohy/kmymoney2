@@ -1118,7 +1118,7 @@ void KNewLoanWizard::loadWidgets(const MyMoneyAccount& account)
   } else
     m_lendButton->animateClick();
 
-  if(acc.openingBalance() != 0) {
+  if(!acc.openingBalance().isZero()) {
     if(borrowing)
       m_loanAmountEdit->loadText((-account.openingBalance()).formatMoney());
     else

@@ -1053,7 +1053,7 @@ QString PivotTable::renderCSV( void ) const
 
         innergroupdata += "\"";
 
-        if ( (*it_row).m_total != 0 )
+        if ( ! (*it_row).m_total.isZero() )
           innergroupdata += rowdata;
 
         innergroupdata += "\n";
@@ -1238,12 +1238,12 @@ QString PivotTable::renderHTML( void ) const
         innergroupdata += QString("<tr class=\"row-%1\"%2><td%3 class=\"left%4\">%5%6</td>")
           .arg(rownum & 0x01 ? "even" : "odd")
           .arg(rowname.isTopLevel() ? " id=\"topparent\"" : "")
-          .arg((*it_row).m_total == 0 ? colspan : "")
+          .arg((*it_row).m_total.isZero() ? colspan : "")
           .arg(rowname.hierarchyDepth() - 1)
           .arg(rowname.name().replace(QRegExp(" "), "&nbsp;"))
           .arg((m_config_f.isConvertCurrency() || !rowname.isForiegnCurrency() )?QString():QString(" (%1)").arg(rowname.currency()));
 
-        if ( (*it_row).m_total != 0 )
+        if ( !(*it_row).m_total.isZero() )
           innergroupdata += rowdata;
 
         innergroupdata += "</tr>\n";

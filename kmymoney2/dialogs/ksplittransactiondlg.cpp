@@ -272,7 +272,7 @@ void KSplitTransactionDlg::slotFinishClicked()
     slotEndEdit();
   }
 
-  if(diffAmount() != 0) {
+  if(!diffAmount().isZero()) {
     MyMoneySplit split = m_transaction.splitByAccount(m_account.id());
     kSplitCorrectionDlgDecl* dlg = new kSplitCorrectionDlgDecl(0, 0, true);
 
@@ -498,7 +498,7 @@ void KSplitTransactionDlg::updateSplit(int row, int /* col */)
         amountTxt = i18n("will be calculated");
       }
 
-      if(colText.isEmpty() && (*it).memo().isEmpty() && value == 0)
+      if(colText.isEmpty() && (*it).memo().isEmpty() && value.isZero())
         amountTxt = QString();
 
       unsigned width = transactionsTable->fontMetrics().width(amountTxt);
@@ -539,7 +539,7 @@ void KSplitTransactionDlg::updateSplit(int row, int /* col */)
       if(value == MyMoneyMoney::autoCalc) {
         amountTxt = i18n("will be calculated");
       }
-      if(colText.isEmpty() && s.memo().isEmpty() && value == 0)
+      if(colText.isEmpty() && s.memo().isEmpty() && value.isZero())
         amountTxt = QString();
 
       unsigned width = transactionsTable->fontMetrics().width(amountTxt);

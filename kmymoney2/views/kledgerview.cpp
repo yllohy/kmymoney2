@@ -111,7 +111,7 @@ int KTransactionPtrVector::compareItems(KTransactionPtrVector::Item d1, KTransac
       case SortValue:
         rc = 1;
         tmp = s2.value() - s1.value();
-        if(tmp == 0) {
+        if(tmp.isZero()) {
           // same value? Sort by date
           rc = t2->postDate().daysTo(t1->postDate());
           if(rc == 0) {
@@ -129,7 +129,7 @@ int KTransactionPtrVector::compareItems(KTransactionPtrVector::Item d1, KTransac
           // same date? Sort by value
           rc = 1;
           tmp = s2.value() - s1.value();
-          if(tmp == 0) {
+          if(tmp.isZero()) {
             // same value? sort by id
             rc = compareItems(t1->id(), t2->id());
           } else if(tmp < 0) {
@@ -151,7 +151,7 @@ int KTransactionPtrVector::compareItems(KTransactionPtrVector::Item d1, KTransac
               // same date? Sort by value
               rc = 1;
               tmp = s2.value() - s1.value();
-              if(tmp == 0) {
+              if(tmp.isZero()) {
                 // same value? sort by id
                 rc = compareItems(t1->id(), t2->id());
               } else if(tmp < 0) {
@@ -179,7 +179,7 @@ int KTransactionPtrVector::compareItems(KTransactionPtrVector::Item d1, KTransac
             // same date? Sort by value
             rc = 1;
             tmp = s2.value() - s1.value();
-            if(tmp == 0) {
+            if(tmp.isZero()) {
               // same value? sort by id
               rc = compareItems(t1->id(), t2->id());
             } else if(tmp < 0) {
@@ -198,7 +198,7 @@ int KTransactionPtrVector::compareItems(KTransactionPtrVector::Item d1, KTransac
             // same date? Sort by value
             rc = 1;
             tmp = s2.value() - s1.value();
-            if(tmp == 0) {
+            if(tmp.isZero()) {
               // same value? sort by id
               rc = compareItems(t1->id(), t2->id());
             } else if(tmp < 0) {
@@ -217,7 +217,7 @@ int KTransactionPtrVector::compareItems(KTransactionPtrVector::Item d1, KTransac
           // on same day, larger amounts show up first
           rc = 1;
           tmp = s2.value() - s1.value();
-          if(tmp == 0) {
+          if(tmp.isZero()) {
             // same value? Sort by id
             rc = compareItems(t1->id(), t2->id());
           } else if(tmp < 0) {
@@ -689,7 +689,7 @@ void KLedgerView::slotPayeeChanged(const QString& name)
       if(m_transaction.splitCount() == 2) {
         if(sp.accountId().isEmpty()
         && m_split.memo().isEmpty()
-        && m_split.value() == 0) {
+        && m_split.value().isZero()) {
           MyMoneyTransactionFilter filter(m_account.id());
           filter.addPayee(payee.id());
           QValueList<MyMoneyTransaction> list = MyMoneyFile::instance()->transactionList(filter);
@@ -1209,7 +1209,7 @@ void KLedgerView::slotNewPayee(const QString& payeeName)
 
 int KLedgerView::transactionDirection(const MyMoneySplit& split)
 {
-  return (split.value() == 0) ? UnknownDirection: ((split.value() > 0) ? Credit : Debit);
+  return (split.value().isZero()) ? UnknownDirection: ((split.value() > 0) ? Credit : Debit);
 }
 
 const MyMoneySplit KLedgerView::stockSplit(const MyMoneyTransaction& t)

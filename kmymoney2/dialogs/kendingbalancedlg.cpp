@@ -393,7 +393,7 @@ const MyMoneyTransaction KEndingBalanceLoanDlg::adjustmentTransaction(void) cons
       
       t.addSplit(sAccount);
       t.addSplit(sAmortization);
-      if(sInterest.value() != 0)
+      if(!sInterest.value().isZero())
         t.addSplit(sInterest);
       
       t.setPostDate(m_endDateEdit->getQDate());

@@ -255,7 +255,7 @@ void kMyMoneyRegister::paintCell(QPainter *p, int row, int col, const QRect& r,
 
   // QColor textColor(m_textColor);
   // if it's an erronous transaction, set it to error color (which toggles ;-)  )
-  if(m_transaction->splitSum() != 0) {
+  if(!m_transaction->splitSum().isZero()) {
     m_textColor = m_errorColor;
   }
   p->setPen(m_textColor);

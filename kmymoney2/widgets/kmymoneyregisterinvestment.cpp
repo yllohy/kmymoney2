@@ -447,7 +447,7 @@ void kMyMoneyRegisterInvestment::adjustColumn(int col)
           break;
 
         case 5:
-          if(split.shares() != 0) {
+          if(!split.shares().isZero()) {
             amount = (split.value() / split.shares()).abs();
             txt = amount.formatMoney();
           }
