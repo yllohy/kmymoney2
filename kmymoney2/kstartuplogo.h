@@ -30,8 +30,8 @@
 class KStartupLogo : public QFrame  {
    Q_OBJECT
 public: 
-	KStartupLogo(QWidget *parent=0, const char *name=0);
-	~KStartupLogo();
+  KStartupLogo(QWidget *parent=0, const char *name=0);
+  ~KStartupLogo();
 private slots: // Private slots
   /** Time 0.5 second */
   void timerDone();
