@@ -458,7 +458,7 @@ void KLedgerViewCheckings::createForm(void)
 
   // extract the maximal sizeHint height and subtract 8
   int h = QMAX(dateInput.sizeHint().height(), splitButton.sizeHint().height());
-  h = QMAX(h, category.sizeHint().height())-8;
+  h = QMAX(h, category.sizeHint().height())-4;
 
   m_form = new kMyMoneyTransactionForm(this, KAppTest::widgetName(this, "kMyMoneyTransactionForm"), 0, 3, 5, h);
   m_tabCheck = new QTab(action2str(MyMoneySplit::ActionCheck, true));
