@@ -140,7 +140,7 @@ void KAccountListItem::newAccount(const MyMoneyAccount& account)
 
   setAccountID(account.id());
   setAccountType(account.accountType());
- 
+
   file->attach(account.id(), this);
 
   QString icon;
@@ -178,6 +178,7 @@ KAccountListItem::KAccountListItem(KListView *parent, const MyMoneyInstitution& 
 {
   setAccountID(institution.id());
   setText(0, institution.name());
+  setPixmap(0, QPixmap(KGlobal::dirs()->findResource("appdata",QString( "icons/hicolor/22x22/actions/%1.png").arg("bank"))));
 }
 
 KAccountListItem::~KAccountListItem()

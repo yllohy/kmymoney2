@@ -33,6 +33,7 @@
 #include <kmessagebox.h>
 #include <kiconloader.h>
 #include <kapplication.h>
+#include <kstandarddirs.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -366,7 +367,7 @@ const QPixmap KAccountsView::accountImage(const MyMoneyAccount::accountTypeE typ
     case MyMoneyAccount::Investment:
       rc = DesktopIcon("account-types_investments");
       break;
-    
+
     case MyMoneyAccount::Checkings:
       rc = DesktopIcon("account-types_checking");
       break;
@@ -458,6 +459,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
       // scan for all asset/liability accounts w/o an institution
       KAccountListItem *topLevelInstitution = new KAccountListItem(accountListView,
                        i18n("Accounts with no institution assigned"));
+                       topLevelInstitution->setPixmap(0, QPixmap(KGlobal::dirs()->findResource("appdata",QString( "icons/hicolor/22x22/actions/%1.png").arg("bank"))));
       QValueList<MyMoneyAccount> acclist = file->accountList();
       QValueList<MyMoneyAccount>::ConstIterator accountIterator;
       MyMoneyMoney balance;
