@@ -888,4 +888,10 @@ bool KFindTransactionDlg::eventFilter(QObject* o, QEvent* e)
   }
   return rc;
 }
+
+const MyMoneyMoney KFindTransactionDlg::balance(const int /* idx */) const
+{
+  return 0;
+}
+
 // vim:cin:si:ai:et:ts=2:sw=2:

@@ -34,7 +34,7 @@
 #include "../mymoney/mymoneytransactionfilter.h"
 #include "../mymoney/mymoneyobserver.h"
 
-#include "kfindtransactiondlgdecl.h"
+#include "../dialogs/kfindtransactiondlgdecl.h"
 
 class QListView;
 class QListViewItem;
@@ -117,7 +117,7 @@ public:
     *       is not shown in the find transaction dialog but the method
     *       must be provided as part of the IMyMoneyRegisterParent interface.
     */
-  const MyMoneyMoney balance(const int /*idx*/) const { return 0; };
+  const MyMoneyMoney balance(const int idx) const;
 
   /**
     * This method is called by the engine whenever a required notification
