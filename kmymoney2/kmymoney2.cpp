@@ -125,9 +125,13 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name)
   //enableTransactionOperations(false);
   slotEnableKMyMoneyOperations(false);
   connect(&proc,SIGNAL(processExited(KProcess *)),this,SLOT(slotProcessExited()));
+
+  m_backupState = BACKUP_IDLE;
+/*
   mountbackup = false;
   copybackup = false;
   unmountbackup = false;
+*/  
 }
 
 KMyMoney2App::~KMyMoney2App()
@@ -240,6 +244,7 @@ void KMyMoney2App::initActions()
   fileNewWindow->setStatusText(i18n("Creates a new window"));
   fileOpen->setStatusText(i18n("Opens an existing document"));
   fileOpenRecent->setStatusText(i18n("Opens a recently used file"));
+
 
   fileSave->setStatusText(i18n("Saves the actual document"));
   fileSaveAs->setStatusText(i18n("Saves the actual document as..."));
@@ -395,6 +400,7 @@ void KMyMoney2App::slotFileNew()
 }
 
 
+
 // General open
 void KMyMoney2App::slotFileOpen()
 {
@@ -448,8 +454,6 @@ void KMyMoney2App::slotFileSave()
   QString prevMsg = slotStatusMsg(i18n("Saving file..."));
 
   if (fileName.isEmpty()) {
-
-
     slotFileSaveAs();
     slotStatusMsg(prevMsg);
     return;
@@ -476,8 +480,7 @@ void KMyMoney2App::slotFileSaveAs()
   //
   if(!newName.isEmpty())
   {
-
-    // find last . delminator
+    // find last . delimiter
     int nLoc = newName.findRev('.');
     if(nLoc != -1)
     {
@@ -488,11 +491,6 @@ void KMyMoney2App::slotFileSaveAs()
 
       {
         strTemp.append("kmy");
-
-
-
-
-
         //append to make complete file name
         newName = strTemp;
       }
@@ -517,6 +515,7 @@ void KMyMoney2App::slotFileCloseWindow()
   QString prevMsg = slotStatusMsg(i18n("Closing window..."));
 
   if (myMoneyView->dirty()) {
+
     int answer = KMessageBox::warningYesNoCancel(this, i18n("The file has been changed, save it ?"));
     if (answer == KMessageBox::Cancel)
       return;
@@ -938,11 +937,11 @@ bool KMyMoney2App::initWizard()
       } else { // Wizard / Template
         fileName = start.getURL();
       }
-			return true;
+      return true;
 
     } else {
       // cancel clicked so post an exit call
-			return false;
+      return false;
     }
 }
 /** No descriptions */
@@ -968,127 +967,122 @@ void KMyMoney2App::slotFileBackup()
   }
 
   KBackupDlg *backupDlg = new KBackupDlg(this,0/*,true*/);
-//  connect(backupDlg->btnOK,SIGNAL(clicked()),backupDlg,SLOT(accept()));
-//  connect(backupDlg->btnCancel,SIGNAL(clicked()),backupDlg,SLOT(reject()));
-//  backupDlg->txtMountPoint->setText(mountpoint);
   int returncode = backupDlg->exec();
 
   if(returncode)
   {
-    // make sure the file doesn't exist already
-    QString today;
-    today.sprintf("-%d-%d-%d.kmy",QDate::currentDate().day(), QDate::currentDate().month(), QDate::currentDate().year());
-    QFile f(mountpoint + fileName.url().mid(fileName.url().findRev("/")) + today);
-    if (f.exists()) {
-      int answer = KMessageBox::warningContinueCancel(this, i18n("Backup file for today exists on that device.  Replace ?"), i18n("Backup"), i18n("&Replace"));
-      if (answer==KMessageBox::Cancel)
-
-        return;
-    }
-
+    m_backupMount = backupDlg->mountCheckBox->isChecked();
+    proc.clearArguments();
+    m_backupState = BACKUP_MOUNTING;
     mountpoint = backupDlg->txtMountPoint->text();
-    if (backupDlg->mountCheckBox->isChecked()) {
-      mountbackup = true;
-
-      copybackup = false;
-      unmountbackup = false;
-
-      proc.clearArguments();
+    if (m_backupMount) {
+      
       proc << "mount";
       proc << mountpoint;
+      qDebug("Mounting '%s'", mountpoint.latin1());
       proc.start();
+      
     } else {
-      mountbackup = false;
-      copybackup = false;
-      unmountbackup = false;
-
-      proc.clearArguments();
-      QString backupfile = mountpoint + fileName.url().mid(fileName.url().findRev("/")) + today;
-      proc << "cp" << "-f" << fileName.url() << backupfile;
+      // If we don't have to mount a device, we just issue
+      // a dummy command to start the copy operation
+      proc << "echo";
       proc.start();
     }
   }
-
 
   delete backupDlg;
 }
 
 
 /** No descriptions */
-void KMyMoney2App::slotProcessExited(){
+void KMyMoney2App::slotProcessExited()
+{
+  switch(m_backupState) {
+    case BACKUP_MOUNTING:
+      if(proc.normalExit() && proc.exitStatus() == 0) {
+        proc.clearArguments();
+        QString today;
+        today.sprintf("-%d-%d-%d.kmy",QDate::currentDate().day(), QDate::currentDate().month(), QDate::currentDate().year());
+        QString backupfile = mountpoint + "/" + fileName.fileName(false) + today;
 
-	if(mountbackup)
-   {
-		if(proc.normalExit())
-		{
-			if(proc.exitStatus() == 0)
-			{
-				QString backupfile;
-				proc.clearArguments();
-				backupfile = mountpoint + fileName.url().mid(fileName.url().findRev("/"));
-				proc << "cp";
-  			proc << "-f" << fileName.url() << backupfile;
-				proc.start();
-				mountbackup = false;
-       			copybackup = true;
-				unmountbackup = false;
-			}
-			else
-			{
-    			QMessageBox::information(this, i18n("Backup"), i18n("Error Mounting Device"));
-				mountbackup = false;
-       			copybackup = false;
-				unmountbackup = false;
-			}
-		}
-	}
-	else if(copybackup)
-	{
-			if(proc.exitStatus() == 0)
+        // check if file already exists and ask what to do
+        m_backupResult = 0;
+        QFile f(backupfile);
+        if (f.exists()) {
+          int answer = KMessageBox::warningContinueCancel(this, i18n("Backup file for today exists on that device.  Replace ?"), i18n("Backup"), i18n("&Replace"));
+          if (answer == KMessageBox::Cancel) {
+            m_backupResult = 1;
+            if (m_backupMount) {
+              proc.clearArguments();
+              proc << "umount";
+              proc << mountpoint;
+              m_backupState = BACKUP_UNMOUNTING;
+              proc.start();
+            } else
+              m_backupState = BACKUP_IDLE;
+          }
+        }
+        if(m_backupResult == 0) {
+          proc << "cp" << "-f" << fileName.path(0) << backupfile;
+          m_backupState = BACKUP_COPYING;
+          proc.start();
+        }
+        
+      } else {
+        KMessageBox::information(this, i18n("Error mounting device"), i18n("Backup"));
+        m_backupResult = 1;
+        if (m_backupMount) {
+          proc.clearArguments();
+          proc << "umount";
+          proc << mountpoint;
+          m_backupState = BACKUP_UNMOUNTING;
+          proc.start();
+        } else
+          m_backupState = BACKUP_IDLE;
+      }
+      break;
+        
+    case BACKUP_COPYING:
+      if(proc.normalExit() && proc.exitStatus() == 0) {
+        if (m_backupMount) {
+          proc.clearArguments();
+          proc << "umount";
+          proc << mountpoint;
+          m_backupState = BACKUP_UNMOUNTING;
+          proc.start();
+        } else {
+          KMessageBox::information(this, i18n("File successfully backed up"), i18n("Backup"));
+          m_backupState = BACKUP_IDLE;
+        }
+      } else {
+        qDebug("Exit status is %d", proc.exitStatus());
+        m_backupResult = 1;
+        KMessageBox::information(this, i18n("Error copying file to device"), i18n("Backup"));
+        if (m_backupMount) {
+          proc.clearArguments();
+          proc << "umount";
+          proc << mountpoint;
+          qDebug("Unmounting '%s'", mountpoint.latin1());
+          m_backupState = BACKUP_UNMOUNTING;
+          proc.start();
+        } else
+          m_backupState = BACKUP_IDLE;
+      }
+      break;
 
-			{
-				proc.clearArguments();
-				proc << "umount";
-    			proc << mountpoint;
-				proc.start();
-				mountbackup = false;
-       			copybackup = false;
-				unmountbackup = true;
-			}
-			else
-			{
-    			QMessageBox::information(this, i18n("Backup"), i18n("Error Copying File to Device"));
-				mountbackup = false;
-       			copybackup = false;
-				unmountbackup = false;
-			}
-	}
-	else if(unmountbackup)
-	{
-			if(proc.exitStatus() == 0)
-			{
-    			QMessageBox::information(this, i18n("Backup"), i18n("File Successfully Backed up"));
-
-				mountbackup = false;
-       			copybackup = false;
-				unmountbackup = false;
-			}
-			else
-
-			{
-    			QMessageBox::information(this, i18n("Backup"), i18n("Error unmounting device"));
-				mountbackup = false;
-       			copybackup = false;
-				unmountbackup = false;
-			}
-  } else {
-    if(proc.exitStatus() == 0) {
-      KMessageBox::information(this, i18n("File Successfully Backed Up"), i18n("Backup"));
-    }
-
-    else {
-      KMessageBox::information(this, i18n("Error copying file"), i18n("Backup"));
-    }
+    case BACKUP_UNMOUNTING:
+      if(proc.normalExit() && proc.exitStatus() == 0) {
+        if(m_backupResult == 0)
+          KMessageBox::information(this, i18n("File successfully backed up"), i18n("Backup"));
+      } else {
+        KMessageBox::information(this, i18n("Error unmounting device"), i18n("Backup"));
+      }
+      m_backupState = BACKUP_IDLE;
+      break;
+      
+    default:
+      qWarning("Unknown state for backup operation!");
+      break;
   }
 }
 

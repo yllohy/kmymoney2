@@ -61,7 +61,7 @@ class KStartupLogo;
   * @see KMyMoneyView
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: kmymoney2.h,v 1.27 2003/02/13 20:29:28 ipwizard Exp $
+  * $Id: kmymoney2.h,v 1.28 2003/02/26 19:41:46 ipwizard Exp $
   *
   * @short Main application class.
 **/
@@ -376,6 +376,7 @@ public slots:
 private:
   /** the configuration object of the application */
 
+
   KConfig *config;
 
   // KAction pointers to enable/disable actions
@@ -421,12 +422,41 @@ private:
   KAction *pluginList;
 
   KAction *viewUp;
-  /**  */
+
+  enum backupStateE {
+    BACKUP_IDLE = 0,
+    BACKUP_MOUNTING,
+    BACKUP_COPYING,
+    BACKUP_UNMOUNTING
+  };
+  /**
+    * The following variable represents the state while crafting a backup.
+    * It can have the following values
+    *
+    * - IDLE: the default value if not performing a backup
+    * - MOUNTING: when a mount command has been issued
+    * - COPYING:  when a copy command has been issued
+    * - UNMOUNTING: when an unmount command has been issued
+    */
+  backupStateE   m_backupState;
+
+  /**
+    * This variable keeps the result of the backup operation.
+    */
+  int     m_backupResult;
+
+  /**
+    * This variable is set, when the user selected to mount/unmount
+    * the backup volume.
+    */
+  bool    m_backupMount;
+  
+      
+/*
   bool mountbackup;
-  /**  */
   bool copybackup;
-  /**  */
   bool unmountbackup;
+*/
 
   KProcess proc;
   // A pointer to the view holding the tabs.
