@@ -39,6 +39,7 @@ class KPushButton;
 // Project Includes
 
 #include "../kmymoneyutils.h"
+#include "../mymoney/mymoneyobserver.h"
 
 /**
   * @author Thomas Baumgart
@@ -130,7 +131,7 @@ private:
   *   out of the set of displayed accounts. Selection is performed
   *   by marking the account in the view.
   */
-class kMyMoneyAccountSelector : public QWidget
+class kMyMoneyAccountSelector : public QWidget, public MyMoneyObserver
 {
   Q_OBJECT
 public: 
@@ -190,10 +191,23 @@ public:
   const bool allAccountsSelected(void) const;
 
   /**
-    * This method sets the current selected account.
+    * This method sets the current selected account and marks the
+    * checkbox according to @p state in multi-selection-mode.
+    *
+    * @param id id of account
+    * @param state state of checkbox in multi-selection-mode
+    *              @p true checked
+    *              @p false not checked (default)
     */
-  void setSelected(const QCString& id);
+  void setSelected(const QCString& id, const bool state = false);
 
+  /**
+    * This method has to be provided for the MyMoneyObserver functionality
+    * and is called whenever a registered notification is sent out by the
+    * MyMoney engine (see MyMoneyFile::attach() ).
+    */
+  void update(const QCString& id);
+  
 public slots:
   /**
     * This slot selects all items that are currently in
@@ -214,7 +228,7 @@ protected:
   /**
     * Helper method for setSelected() to traverse the tree.
     */
-  void setSelected(QListViewItem *item, const QCString& id);
+  void setSelected(QListViewItem *item, const QCString& id, const bool state);
   
   /**
     * Helper method for selectedAccounts() to traverse the tree.
@@ -299,7 +313,8 @@ private:
   QListView::SelectionMode  m_selMode;
   KListView*                m_listView;
   const QListViewItem*      m_visibleItem;
-    
+  KMyMoneyUtils::categoryTypeE m_typeMask;
+
   KPushButton*              m_allAccountsButton;
   KPushButton*              m_noAccountButton;
   KPushButton*              m_incomeCategoriesButton;

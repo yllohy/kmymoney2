@@ -191,10 +191,13 @@ kMyMoneyAccountSelector::kMyMoneyAccountSelector(QWidget *parent, const char *na
   connect(m_noAccountButton, SIGNAL(clicked()), this, SLOT(slotDeselectAllAccounts()));
   connect(m_incomeCategoriesButton, SIGNAL(clicked()), this, SLOT(slotSelectIncomeCategories()));
   connect(m_expenseCategoriesButton, SIGNAL(clicked()), this, SLOT(slotSelectExpenseCategories()));
+
+  MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAccountHierarchy, this);
 }
 
 kMyMoneyAccountSelector::~kMyMoneyAccountSelector()
 {
+  MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassAccountHierarchy, this);
 }
 
 void kMyMoneyAccountSelector::setSelectionMode(const QListView::SelectionMode mode)
@@ -247,6 +250,7 @@ void kMyMoneyAccountSelector::loadList(KMyMoneyUtils::categoryTypeE typeMask)
   QCStringList::ConstIterator it_l;
   MyMoneyFile* file = MyMoneyFile::instance();
 
+  m_typeMask = typeMask;
   m_listView->clear();
 
   if(m_selMode == QListView::Multi) {
@@ -296,7 +300,7 @@ void kMyMoneyAccountSelector::loadList(KMyMoneyUtils::categoryTypeE typeMask)
       }
     }
   }
-  update();
+  QWidget::update();
 }
 
 void kMyMoneyAccountSelector::loadSubAccounts(QListViewItem* parent, const QCStringList& list)
@@ -429,7 +433,7 @@ void kMyMoneyAccountSelector::selectedAccounts(QCStringList& list, QListViewItem
   }
 }
 
-void kMyMoneyAccountSelector::setSelected(const QCString& id)
+void kMyMoneyAccountSelector::setSelected(const QCString& id, const bool state)
 {
   QListViewItem* it_v;
 
@@ -438,6 +442,7 @@ void kMyMoneyAccountSelector::setSelected(const QCString& id)
       kMyMoneyCheckListItem* it_c = static_cast<kMyMoneyCheckListItem*>(it_v);
       if(it_c->type() == QCheckListItem::CheckBox) {
         if(it_c->accountId() == id) {
+          it_c->setOn(state);
           m_listView->setSelected(it_v, true);
           ensureItemVisible(it_v);
           return;
@@ -451,11 +456,11 @@ void kMyMoneyAccountSelector::setSelected(const QCString& id)
         return;
       }
     }
-    setSelected(it_v, id);
+    setSelected(it_v, id, state);
   }
 }
 
-void kMyMoneyAccountSelector::setSelected(QListViewItem* item, const QCString& id)
+void kMyMoneyAccountSelector::setSelected(QListViewItem* item, const QCString& id, const bool state)
 {
   QListViewItem* it_v;
   
@@ -463,6 +468,7 @@ void kMyMoneyAccountSelector::setSelected(QListViewItem* item, const QCString& i
     if(it_v->rtti() == 1) {
       kMyMoneyCheckListItem* it_c = static_cast<kMyMoneyCheckListItem*>(it_v);
       if(it_c->accountId() == id) {
+        it_c->setOn(state);
         m_listView->setSelected(it_v, true);
         ensureItemVisible(it_v);
         return;
@@ -475,7 +481,7 @@ void kMyMoneyAccountSelector::setSelected(QListViewItem* item, const QCString& i
         return;
       }
     }
-    setSelected(it_v, id);
+    setSelected(it_v, id, state);
   }
 }
 
@@ -495,4 +501,41 @@ void kMyMoneyAccountSelector::ensureItemVisible(const QListViewItem *it_v)
 void kMyMoneyAccountSelector::slotShowSelected(void)
 {
   m_listView->ensureItemVisible(m_visibleItem);
+}
+
+void kMyMoneyAccountSelector::update(const QCString& /* id */)
+{
+  QListViewItem* it_v = m_listView->currentItem();
+  QCString previousHighlighted;
+  bool state = false;
+  
+  if(m_selMode == QListView::Multi && it_v) {
+    if(it_v->rtti() == 1) {
+      kMyMoneyCheckListItem* it_c = static_cast<kMyMoneyCheckListItem*>(it_v);
+      if(it_c->type() == QCheckListItem::CheckBox) {
+        previousHighlighted = it_c->accountId();
+        state = it_c->isOn();
+      }
+    }
+  }
+    
+  QCStringList list = selectedAccounts();
+  QCStringList::Iterator it;
+
+  loadList(m_typeMask);
+
+  // because loadList() sets all accounts selected, we have to
+  // clear the selection and only turn on those, that were on
+  // before the update.
+  slotDeselectAllAccounts();
+  for(it = list.begin(); it != list.end(); ++it) {
+    setSelected(*it, true);
+  }
+
+  if(m_selMode == QListView::Multi) {
+    // make the previous highlighted item highlighted again
+    if(!previousHighlighted.isEmpty()) {
+      setSelected(previousHighlighted);
+    }
+  }
 }
