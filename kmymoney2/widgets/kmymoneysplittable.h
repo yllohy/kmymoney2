@@ -23,44 +23,65 @@
 #ifndef KMYMONEYSPLITTABLE_H
 #define KMYMONEYSPLITTABLE_H
 
+// ----------------------------------------------------------------------------
+// QT Includes
+
 #include <qwidget.h>
 #include <qtable.h>
+#include <qwidgetlist.h>
+#include <qguardedptr.h>
+
+// ----------------------------------------------------------------------------
+// KDE Includes
+
+#include <kpopupmenu.h>
+
+// ----------------------------------------------------------------------------
+// Project Includes
+
+#include "../mymoney/mymoneytransaction.h"
+#include "../mymoney/mymoneyaccount.h"
+class kMyMoneyCategory;
+class kMyMoneyLineEdit;
+class kMyMoneyEdit;
 
 /**
-  *@author Thomas Baumgart
+  * @author Thomas Baumgart
   */
 
-class kMyMoneySplitTable : public QTable  {
-   Q_OBJECT
-public: 
-	kMyMoneySplitTable(QWidget *parent=0, const char *name=0);
-	virtual ~kMyMoneySplitTable();
+class kMyMoneySplitTable : public QTable
+{
+  Q_OBJECT
+public:
+  kMyMoneySplitTable(QWidget *parent=0, const char *name=0);
+  virtual ~kMyMoneySplitTable();
 
   void paintCell(QPainter *p, int row, int col, const QRect& r, bool /*selected*/);
   void paintFocus(QPainter *p, const QRect &cr);
-  void setCurrentRow(int row);
-  int currentRow(void) { return m_currentRow; }
-  void setMaxRows(int row);
 
   /**
-    * This method is used to set the inline editing mode
+    * This method is used to load the widget with the information about
+    * the transaction @p t. The split referencing the account @p acc is
+    * not shown in the widget.
     *
-    * @param editing bool flag. if set, inline editing in the register
-    *                is performed, if reset, cells of the register are
-    *                read-only. When the object is constructed, the
-    *                value of the setting is false.
-    *
-    * @note If not set, certain events are filtered and not passed
-    *       to child widgets. See the source of eventFilter() for details.
+    * @param t reference to transaction to be shown/modified
+    * @param acc reference to account
     */
-  void setInlineEditingMode(const bool editing);
+  void setTransaction(const MyMoneyTransaction& t, const MyMoneyAccount& acc);
 
   /**
-    * This method returns the inline editing mode
-    *
-    * @return true if inline edit mode is on, false otherwise
+    * This method is used to retrieve the transaction from the widget.
     */
-  const bool inlineEditingMode(void) const { return m_inlineEditMode; };
+  const MyMoneyTransaction& transaction(void) const { return m_transaction; }
+
+  /**
+    * Returns a list of MyMoneySplit objects. It contains all but the one
+    * referencing the account passed in setTransaction().
+    *
+    * @param t reference to transaction
+    * @return list of splits
+    */
+  const QValueList<MyMoneySplit> getSplits(const MyMoneyTransaction& t) const;
 
 protected:
   void contentsMousePressEvent( QMouseEvent* e );
@@ -69,11 +90,80 @@ protected:
   bool eventFilter(QObject *o, QEvent *e);
   void endEdit(int row, int col, bool accept, bool replace );
 
+  void resizeEvent(QResizeEvent*);
+  void createEditWidgets(void);
+  void destroyEditWidgets(void);
+
+  /**
+    * This method handles the focus of the keyboard. When in edit mode
+    * (m_editCategory widget is visible) the keyboard focus is handled
+    * according to the widgets that are referenced in m_tabOrderWidgets.
+    * If not in edit mode, the base class functionality is provided.
+    *
+    * @param next true if forward-tab, false if backward-tab was
+    *             pressed by the user
+    */
+  virtual bool focusNextPrevChild(bool next);
+  void addToTabOrder(QWidget* w);
+
+  /**
+    * convenience function for setCurrentCell(int row, int col)
+    */
+  void setCurrentCell(int row) { setCurrentCell(row, 0); }
+
+  void updateTransactionTableSize(void);
+
+  /**
+    * This method returns the current state of the inline editing mode
+    *
+    * @return true if inline edit mode is on, false otherwise
+    */
+  const bool isEditMode(void) const;
+
 public slots:
   /** No descriptions */
   virtual void setCurrentCell(int row, int col);
 
   virtual void setNumRows(int r);
+
+  void slotStartEdit(void);
+  void slotEndEdit(void);
+  void slotDeleteSplit(void);
+  void slotCancelEdit(void);
+
+protected slots:
+  virtual void columnWidthChanged(int col);
+
+  /// move the focus to the selected @p row.
+  void slotSetFocus(int row, int col = 0, int button = Qt::LeftButton, const QPoint & mousePos = QPoint(0, 0));
+
+  /**
+    * Calling this slot refills the widget with the data
+    * passed in the argument @p t.
+    *
+    * @param t reference to transaction data
+    */
+  void slotUpdateData(const MyMoneyTransaction& t);
+
+signals:
+  /**
+    * This signal is emitted whenever the return key is pressed
+    * and the widget is not in edit mode.
+    */
+  void escapePressed(void);
+
+  /**
+    * This signal is emitted whenever the return key is pressed
+    * and the widget is not in edit mode.
+    */
+  void returnPressed(void);
+
+  /**
+    * This signal is emitted whenever the transaction data has been changed
+    *
+    * @param t modified transaction data
+    */
+  void transactionChanged(const MyMoneyTransaction& t);
 
 private:
   int m_key;
@@ -87,27 +177,49 @@ private:
   /// the number of rows filled with data
   int m_maxRows;
 
-  bool m_inlineEditMode;
+  /// indication if inline editing mode is on or not
+  bool m_editMode;
 
-protected slots:
-	virtual void columnWidthChanged(int col);
+  MyMoneyTransaction  m_transaction;
+  MyMoneyAccount      m_account;
+  MyMoneySplit        m_split;
 
-signals: // Signals
-  /// signalNavigationKey is sent, when the Up- or Down-Key is pressed
-  void signalNavigationKey(int key);
+  unsigned            m_amountWidth;
 
-  // signalTab is sent, when the Tab-Key is pressed
-  void signalTab(void);
+  /**
+    * This member keeps a pointer to the context menu
+    */
+  KPopupMenu* m_contextMenu;
 
-  // signalEsc is sent, when the Esc-Key is pressed
-  void signalEsc(void);
+  /// keeps the id of the delete entry in the context menu
+  int   m_contextMenuDelete;
 
-  void signalEnter(void);
+  /**
+    * This member contains a pointer to the input widget for the category.
+    * The widget will be created and destroyed dynamically in createInputWidgets()
+    * and destroyInputWidgets().
+    */
+  QGuardedPtr<kMyMoneyCategory> m_editCategory;
 
-  // signalDelete is sent, when the Del-Key is pressed
-  void signalDelete(void);
+  /**
+    * This member contains a pointer to the input widget for the memo.
+    * The widget will be created and destroyed dynamically in createInputWidgets()
+    * and destroyInputWidgets().
+    */
+  QGuardedPtr<kMyMoneyLineEdit> m_editMemo;
 
-  void signalCancelEdit(int key);
+  /**
+    * This member contains a pointer to the input widget for the amount.
+    * The widget will be created and destroyed dynamically in createInputWidgets()
+    * and destroyInputWidgets().
+    */
+  QGuardedPtr<kMyMoneyEdit>     m_editAmount;
+
+  /**
+    * This member keeps the tab order for the above widgets
+    */
+  QWidgetList   m_tabOrderWidgets;
+
 };
 
 #endif
