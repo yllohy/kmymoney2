@@ -785,10 +785,21 @@ void KLedgerView::slotAmountChanged(const QString& value)
 
     // let's take care of the other half of the transaction
     if(m_transaction.splitCount() == 2) {
+      // initialize in case we don't find it later on
+      MyMoneyAccount acc;
+      acc.setCurrencyId(m_transaction.commodity());
+      
       MyMoneySplit split = m_transaction.splitByAccount(accountId(), false);
-      MyMoneyAccount acc = MyMoneyFile::instance()->account(split.accountId());
-      // also keep track of a possible previous price
-      price = (split.shares() != 0) ? split.value() / split.shares() : 0;
+      // if the user enters the amount first w/o the category field
+      // being filled, we cannot determine the 'other side' of the
+      // transaction correctly. In this case, we assume a price of 0
+      // slotEndEdit() must handle it then
+      if(!split.accountId().isEmpty()) {
+        acc = MyMoneyFile::instance()->account(split.accountId());
+        // also keep track of a possible previous price
+        price = (split.shares() != 0) ? split.value() / split.shares() : 0;
+      } else
+        price = 0;
 
       // in any case, we need to set the value to the negative value of
       // the first split to balance the transaction.
