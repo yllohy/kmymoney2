@@ -27,6 +27,7 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 #include <kconfig.h>
+#include <kmessagebox.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -275,7 +276,7 @@ void KEditScheduledDepositDlg::slotSplitClicked()
 
   if (!bFoundAll)
   {
-    qDebug("Unable to locate bank or account when getting ready for split dialog.");
+    KMessageBox::information(this, i18n("Unable to locate account when getting ready for split dialog.\nHave you created one?"));
     return;
   }
 

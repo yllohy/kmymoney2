@@ -141,7 +141,14 @@ void KScheduledView::writeConfig(void)
 void KScheduledView::slotNewBill()
 {
   KEditScheduledBillDlg *m_keditschedbilldlg = new KEditScheduledBillDlg(m_file, this);
-  m_keditschedbilldlg->exec();
+  if (m_keditschedbilldlg->exec() == QDialog::Accepted)
+  {
+//    MyMoneyTransaction *scheduledTransaction = m_keditschedbilldlg->transaction();
+//    if (scheduledTransaction)
+//    {
+//   }
+  }
+
   delete m_keditschedbilldlg;
 }
 

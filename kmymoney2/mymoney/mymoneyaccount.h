@@ -42,7 +42,7 @@ class MyMoneyBank;
   * @see MyMoneyTransaction
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: mymoneyaccount.h,v 1.24 2002/01/25 07:15:42 ktambascio Exp $
+  * $Id: mymoneyaccount.h,v 1.25 2002/02/18 00:32:53 mte Exp $
   *
   * @short Representation of an account which holds transactions.
 **/
@@ -77,7 +77,7 @@ private:
   QString m_qstringDescription;
   QDate m_qdateLastReconcile;
   MyMoneyMoney m_mymoneymoneyBalance;  // Recalculated by balance()
-  MyMoneyScheduled m_mymoneyscheduled;
+  MyMoneyScheduledList m_mymoneyscheduledlist;
   QDate m_qdateOpening;
   MyMoneyMoney m_mymoneymoneyOpeningBalance;
 
@@ -175,7 +175,7 @@ public:
     *
     * @return All the scheduled transactions for this account.
   **/
-  MyMoneyScheduled scheduled(void) { return m_mymoneyscheduled; }
+  MyMoneyScheduledList *scheduledList(void) { return &m_mymoneyscheduledlist; }
 
   /**
     * Gets the opening date of this account.
