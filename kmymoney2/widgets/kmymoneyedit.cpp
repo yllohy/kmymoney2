@@ -150,6 +150,9 @@ bool kMyMoneyEdit::eventFilter(QObject *o , QEvent *e )
 
       case Qt::Key_Plus:
       case Qt::Key_Minus:
+        if(hasSelectedText()) {
+          cut();
+        }
         if(text().length() == 0) {
           rc = false;
           break;
@@ -159,6 +162,10 @@ bool kMyMoneyEdit::eventFilter(QObject *o , QEvent *e )
       case Qt::Key_Slash:
       case Qt::Key_Asterisk:
       case Qt::Key_Percent:
+        if(hasSelectedText()) {
+          // remove the selected text
+          cut();
+        }
         m_calculator->setInitialValues(text(), k);
 
         p = mapToGlobal(QPoint(0,0));
