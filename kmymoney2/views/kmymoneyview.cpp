@@ -1143,7 +1143,7 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter,
     }
   }
 
-  if(config->readEntry("WriteDataEncrypted", false) != false
+  if(config->readBoolEntry("WriteDataEncrypted", false) != false
   && encryptedOk == true && !plaintext ) {
     qfile->close();
     base++;
