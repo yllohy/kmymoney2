@@ -76,6 +76,7 @@ void kMyMoneyRegisterInvestment::paintCell(QPainter *p, int row, int col, const 
   QCString splitCurrency;
   MyMoneyAccount acc;
   MyMoneyEquity equity;
+  MyMoneyMoney tmp;
   MyMoneyFile* file = MyMoneyFile::instance();
   KLedgerViewInvestments* myParent = dynamic_cast<KLedgerViewInvestments*> (m_parent);
   if(myParent == 0) {
@@ -105,6 +106,8 @@ void kMyMoneyRegisterInvestment::paintCell(QPainter *p, int row, int col, const 
         }
       }
 
+      KLedgerView::investTransactionTypeE transactionType = myParent->transactionType(*m_transaction, m_split);
+
       switch (col) {
         case 0:
           align |= Qt::AlignLeft;
@@ -127,6 +130,46 @@ void kMyMoneyRegisterInvestment::paintCell(QPainter *p, int row, int col, const 
                 delete e;
               }
               break;
+
+            case 1:
+              align |= Qt::AlignRight;
+              switch(transactionType) {
+                case KLedgerView::BuyShares:
+                case KLedgerView::SellShares:
+                case KLedgerView::ReinvestDividend:
+                  txt = i18n("Fees");
+                  break;
+                case KLedgerView::Dividend:
+                case KLedgerView::Yield:
+                  txt = i18n("Interest");
+                  break;
+                case KLedgerView::AddShares:
+                case KLedgerView::RemoveShares:
+                default:
+                  txt = " ";
+                  break;
+              }
+              break;
+
+            case 2:
+              align |= Qt::AlignRight;
+              switch(transactionType) {
+                case KLedgerView::BuyShares:
+                case KLedgerView::SellShares:
+                case KLedgerView::Dividend:
+                case KLedgerView::Yield:
+                  txt = i18n("Account");
+                  break;
+                case KLedgerView::ReinvestDividend:
+                  txt = i18n("Interest");
+                  break;
+                case KLedgerView::AddShares:
+                case KLedgerView::RemoveShares:
+                default:
+                  txt = " ";
+                  break;
+              }
+              break;
           }
           break;
 
@@ -134,7 +177,7 @@ void kMyMoneyRegisterInvestment::paintCell(QPainter *p, int row, int col, const 
           align |= Qt::AlignLeft;
           switch(m_transactionRow) {
             case 0:
-              switch(myParent->transactionType(*m_transaction, m_split)) {
+              switch(transactionType) {
                 case KLedgerView::BuyShares:
                   txt = i18n("Buy Shares");
                   break;
@@ -156,30 +199,58 @@ void kMyMoneyRegisterInvestment::paintCell(QPainter *p, int row, int col, const 
                 case KLedgerView::RemoveShares:
                   txt = i18n("Remove Shares");
                   break;
+                default:
+                  txt = " ";
+                  break;
               }
               break;
 
-  /*
-
             case 1:
-              try {
-                if(m_transaction->isLoanPayment()) {
-                  txt = QString(i18n("Loan payment"));
-                } else if(m_transaction->splitCount() > 2)
-                  txt = QString(i18n("Split transaction"));
-                else {
-                  MyMoneySplit split = m_transaction->splitByAccount(m_split.accountId(), false);
-                  txt = MyMoneyFile::instance()->accountToCategory(split.accountId());
-                }
-              } catch(MyMoneyException *e) {
-                delete e;
+              switch(transactionType) {
+                case KLedgerView::BuyShares:
+                case KLedgerView::SellShares:
+                case KLedgerView::ReinvestDividend:
+                  acc = file->account(m_feeSplit.accountId());
+                  txt = acc.name();
+                  break;
+                case KLedgerView::Dividend:
+                case KLedgerView::Yield:
+                  acc = file->account(m_interestSplit.accountId());
+                  txt = acc.name();
+                  break;
+                case KLedgerView::AddShares:
+                case KLedgerView::RemoveShares:
+                default:
+                  txt = " ";
+                  break;
               }
               break;
 
             case 2:
+              switch(transactionType) {
+                case KLedgerView::BuyShares:
+                case KLedgerView::SellShares:
+                case KLedgerView::Dividend:
+                case KLedgerView::Yield:
+                  acc = file->account(m_accountSplit.accountId());
+                  txt = acc.name();
+                  break;
+                case KLedgerView::ReinvestDividend:
+                  acc = file->account(m_interestSplit.accountId());
+                  txt = acc.name();
+                  break;
+                case KLedgerView::AddShares:
+                case KLedgerView::RemoveShares:
+                default:
+                  txt = " ";
+                  break;
+              }
+              break;
+
+            case 3:
               txt = m_split.memo();
               break;
-  */
+
           }
           break;
 
@@ -203,44 +274,91 @@ void kMyMoneyRegisterInvestment::paintCell(QPainter *p, int row, int col, const 
           break;
 
         case 4:
-  /*
           switch(m_transactionRow) {
             case 0:
               align |= Qt::AlignRight;
-              if(m_split.value() < 0) {
-                splitCurrency = MyMoneyFile::instance()->account(m_split.accountId()).currencyId();
-                txt = (-m_split.value(m_transaction->commodity(), splitCurrency)).formatMoney();
+              switch(transactionType) {
+                case KLedgerView::BuyShares:
+                case KLedgerView::SellShares:
+                case KLedgerView::ReinvestDividend:
+                case KLedgerView::AddShares:
+                case KLedgerView::RemoveShares:
+                  txt = m_split.shares().abs().formatMoney();
+                  break;
+                case KLedgerView::Dividend:
+                case KLedgerView::Yield:
+                default:
+                  txt = " ";
+                  break;
+              }
+              break;
+
+            case 1:
+              align |= Qt::AlignRight;
+              switch(transactionType) {
+                case KLedgerView::BuyShares:
+                case KLedgerView::SellShares:
+                case KLedgerView::ReinvestDividend:
+                  txt = m_feeSplit.value().abs().formatMoney();
+                  break;
+                case KLedgerView::Dividend:
+                case KLedgerView::Yield:
+                  txt = m_interestSplit.value().abs().formatMoney();
+                  break;
+                case KLedgerView::AddShares:
+                case KLedgerView::RemoveShares:
+                default:
+                  txt = " ";
+                  break;
               }
               break;
           }
-  */
           break;
 
         case 5:
-  /*
           switch(m_transactionRow) {
             case 0:
               align |= Qt::AlignRight;
-              if(m_split.value() >= 0) {
-                splitCurrency = MyMoneyFile::instance()->account(m_split.accountId()).currencyId();
-                txt = m_split.value(m_transaction->commodity(), splitCurrency).formatMoney();
+              switch(transactionType) {
+                case KLedgerView::BuyShares:
+                case KLedgerView::SellShares:
+                  txt = (m_split.value(QCString(), QCString())/m_split.shares()).abs().formatMoney();
+                  break;
+                case KLedgerView::ReinvestDividend:
+                case KLedgerView::AddShares:
+                case KLedgerView::RemoveShares:
+                case KLedgerView::Dividend:
+                case KLedgerView::Yield:
+                default:
+                  txt = " ";
+                  break;
               }
               break;
+
           }
-  */
           break;
 
         case 6:
-  /*
           switch(m_transactionRow) {
             case 0:
               align |= Qt::AlignRight;
-              txt = m_balance.formatMoney();
-              if(m_balance < 0)
-                p->setPen(QColor(255, 0, 0));
+              switch(transactionType) {
+                case KLedgerView::BuyShares:
+                case KLedgerView::SellShares:
+                case KLedgerView::Dividend:
+                case KLedgerView::Yield:
+                  txt = m_accountSplit.value(QCString(), QCString()).abs().formatMoney();
+                  break;
+                case KLedgerView::ReinvestDividend:
+                case KLedgerView::AddShares:
+                case KLedgerView::RemoveShares:
+                default:
+                  txt = " ";
+                  break;
+              }
               break;
+
           }
-  */
           break;
       }
     } catch(MyMoneyException *e) {
@@ -256,6 +374,7 @@ void kMyMoneyRegisterInvestment::adjustColumn(int col)
 {
   QHeader *topHeader = horizontalHeader();
   QFontMetrics cellFontMetrics(m_cellFont);
+  MyMoneyFile* file = MyMoneyFile::instance();
 
   int w = topHeader->fontMetrics().width( topHeader->label( col ) ) + 10;
   if ( topHeader->iconSet( col ) )
@@ -269,48 +388,65 @@ void kMyMoneyRegisterInvestment::adjustColumn(int col)
     w = QMAX( w, nw );
   }
 
-#if 0
   // scan through the transactions
   for ( int i = (numRows()/m_rpt)-1; i >= 0; --i ) {
     QString txt;
     KMyMoneyTransaction *t = m_parent->transaction(i);
     MyMoneyMoney amount;
+    MyMoneyAccount acc;
+    MyMoneyEquity equity;
+    MyMoneySplit split, feeSplit, interestSplit, accountSplit;
     int nw = 0;
 
     if(t != NULL) {
       MyMoneySplit split = t->splitById(t->splitId());
+
+      // find the split that references the stock account
+      QValueList<MyMoneySplit>::ConstIterator it_s;
+      for(it_s = t->splits().begin(); it_s != t->splits().end(); ++it_s) {
+        acc = file->account((*it_s).accountId());
+        if(acc.accountType() == MyMoneyAccount::Stock) {
+          split = *it_s;
+        } else if(acc.accountGroup() == MyMoneyAccount::Expense) {
+          feeSplit = *it_s;
+        } else if(acc.accountGroup() == MyMoneyAccount::Income) {
+          interestSplit = *it_s;
+        } else if(acc.accountGroup() == MyMoneyAccount::Asset
+                || acc.accountGroup() == MyMoneyAccount::Liability) {
+          accountSplit = *it_s;
+        }
+      }
       switch(col) {
         default:
           break;
 
-        case 0:
-          txt = t->splitById(t->splitId()).number();
-          nw = cellFontMetrics.width(txt+"  ");
-          break;
-
         case 1:
-          txt = m_action[split.action()];
+          acc = file->account(split.accountId());
+          equity = file->equity(acc.currencyId());
+          txt = equity.tradingSymbol();
           nw = cellFontMetrics.width(txt+"  ");
+          nw = QMAX(nw, cellFontMetrics.width(i18n("Fees")+"  "));
+          nw = QMAX(nw, cellFontMetrics.width(i18n("Interest")+"  "));
+          nw = QMAX(nw, cellFontMetrics.width(i18n("Account")+"  "));
           break;
 
         case 4:
-          amount = t->splitById(t->splitId()).value();
-          if(amount < 0) {
-            txt = amount.formatMoney();
-            nw = cellFontMetrics.width(txt+"  ");
-          }
+          amount = split.shares().abs() > feeSplit.value().abs() ? split.shares().abs() : feeSplit.value().abs();
+          amount = amount > interestSplit.value().abs() ? amount : interestSplit.value().abs();
+          txt = amount.formatMoney();
+          nw = cellFontMetrics.width(txt+"  ");
           break;
 
         case 5:
-          amount = t->splitById(t->splitId()).value();
-          if(amount >= 0) {
+          if(split.shares() != 0) {
+            amount = (split.value() / split.shares()).abs();
             txt = amount.formatMoney();
-            nw = cellFontMetrics.width(txt+"  ");
           }
+          nw = cellFontMetrics.width(txt+"  ");
           break;
 
         case 6:
-          amount = m_parent->balance(i);
+          amount = accountSplit.value().abs();
           txt = amount.formatMoney();
           nw = cellFontMetrics.width(txt+"  ");
           break;
@@ -319,7 +455,6 @@ void kMyMoneyRegisterInvestment::adjustColumn(int col)
     }
   }
   setColumnWidth( col, w );
-#endif
 }
 
 // This must be implemented here, as QTable::eventFilter is not virtual :-(

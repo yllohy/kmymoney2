@@ -24,20 +24,6 @@
 // QT Includes
 
 #include <qwidgetstack.h>
-/*
-#include <qpushbutton.h>
-#include <qtabwidget.h>
-#include <qlistview.h>
-#include <qlayout.h>
-#include <qwidget.h>
-#include <qlabel.h>
-#include <qpushbutton.h>
-#include <qlineedit.h>
-#include <qlabel.h>
-#include <qcheckbox.h>
-#include <qfile.h>
-#include <qtextstream.h>
-*/
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -314,7 +300,7 @@ void KLedgerViewInvestments::fillForm()
         item = new kMyMoneyTransactionFormTableItem(formTable, QTableItem::Never,
                  amount.formatMoney());
         item->setAlignment(kMyMoneyTransactionFormTableItem::right);
-        formTable->setItem(VALUE_ROW, VALUE_DATA_COL, item);
+        formTable->setItem(FEES_ROW, FEES_DATA_COL, item);
 
         break;
 
