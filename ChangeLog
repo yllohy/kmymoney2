@@ -1,3 +1,6 @@
+2005-01-31 Ace Jones <acejones@users.sourceforge.net>
+  * Updated unit tests to match new handling of opening balances
+
 2005-01-30 Ace Jones <acejones@users.sourceforge.net>
   * Moved OFX import logic to a plugin.
   * Some refinements to GNC import options dialog

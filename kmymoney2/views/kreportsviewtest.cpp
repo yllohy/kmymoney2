@@ -278,6 +278,22 @@ void writeTabletoHTML( const PivotTable& table, const QString& _filename = QStri
 
 }
 
+void writeTabletoHTML( const QueryTable& table, const QString& _filename = QString() )
+{
+  static unsigned filenumber = 1;
+  QString filename = _filename;
+  if ( filename.isEmpty() )
+  {
+    filename = QString("report-%1%2.html").arg((filenumber<10)?"0":"").arg(filenumber);
+    ++filenumber;
+  }
+
+  QFile g( filename );
+  g.open( IO_WriteOnly );
+  QTextStream(&g) << table.renderHTML();
+  g.close();
+}
+
 void writeTabletoCSV( const PivotTable& table, const QString& _filename = QString() )
 {
   static unsigned filenumber = 1;
@@ -1292,7 +1308,8 @@ void KReportsViewTest::testQueryBasics()
     XMLandback(filter);
     QueryTable qtbl_1(filter);
 
-    CPPUNIT_ASSERT(qtbl_1.m_transactions.count() == 12);
+    //writeTabletoHTML(qtbl_1,"Transactions by Category.html");   
+    CPPUNIT_ASSERT(qtbl_1.m_transactions.count() == 14);
     CPPUNIT_ASSERT(qtbl_1.m_transactions[0]["categorytype"]=="Expense");
     CPPUNIT_ASSERT(qtbl_1.m_transactions[0]["category"]=="Parent");
     CPPUNIT_ASSERT(qtbl_1.m_transactions[0]["postdate"]=="2004-02-01");
@@ -1306,14 +1323,14 @@ void KReportsViewTest::testQueryBasics()
     CPPUNIT_ASSERT( searchHTML(html,i18n("Total")+" Solo") == -(moSolo) * 3 );
     CPPUNIT_ASSERT( searchHTML(html,i18n("Total")+" Expense") == -(moParent1 + moParent2 + moSolo + moChild) * 3 );
     CPPUNIT_ASSERT( searchHTML(html,i18n("Grand Total")) == -(moParent1 + moParent2 + moSolo + moChild) * 3 );
-
     filter.setRowType( MyMoneyReport::eTopCategory );
     cols = MyMoneyReport::eQCnumber | MyMoneyReport::eQCpayee | MyMoneyReport::eQCaccount;
     filter.setQueryColumns( static_cast<MyMoneyReport::EQueryColumns>(cols) ); // 
     XMLandback(filter);
     QueryTable qtbl_2(filter);
-
-    CPPUNIT_ASSERT(qtbl_2.m_transactions.count() == 12);
+   
+    //writeTabletoHTML(qtbl_2,"Transactions by Top Category.html");   
+    CPPUNIT_ASSERT(qtbl_2.m_transactions.count() == 14);
     CPPUNIT_ASSERT(qtbl_2.m_transactions[0]["categorytype"]=="Expense");
     CPPUNIT_ASSERT(qtbl_2.m_transactions[0]["topcategory"]=="Parent");
     CPPUNIT_ASSERT(qtbl_2.m_transactions[0]["postdate"]=="2004-02-01");
@@ -1329,15 +1346,16 @@ void KReportsViewTest::testQueryBasics()
     CPPUNIT_ASSERT( searchHTML(html,i18n("Total")+" Solo") == -(moSolo) * 3 );
     CPPUNIT_ASSERT( searchHTML(html,i18n("Total")+" Expense") == -(moParent1 + moParent2 + moSolo + moChild) * 3 );
     CPPUNIT_ASSERT( searchHTML(html,i18n("Grand Total")) == -(moParent1 + moParent2 + moSolo + moChild) * 3 );
-
+    
     filter.setRowType( MyMoneyReport::eAccount );
     filter.setName("Transactions by Account");
     cols = MyMoneyReport::eQCnumber | MyMoneyReport::eQCpayee | MyMoneyReport::eQCcategory;
     filter.setQueryColumns( static_cast<MyMoneyReport::EQueryColumns>(cols) ); // 
     XMLandback(filter);
     QueryTable qtbl_3(filter);
-
-    CPPUNIT_ASSERT(qtbl_3.m_transactions.count() == 12);
+    
+    //writeTabletoHTML(qtbl_3,"Transactions by Account.html");   
+    CPPUNIT_ASSERT(qtbl_3.m_transactions.count() == 14);
     CPPUNIT_ASSERT(qtbl_3.m_transactions[0]["account"]=="Checking Account");
     CPPUNIT_ASSERT(qtbl_3.m_transactions[0]["category"]=="Solo");
     CPPUNIT_ASSERT(qtbl_3.m_transactions[0]["postdate"]=="2004-01-01");
@@ -1349,7 +1367,7 @@ void KReportsViewTest::testQueryBasics()
     CPPUNIT_ASSERT( searchHTML(html,i18n("Total")+" Checking Account") == -(moSolo) * 3 );
     CPPUNIT_ASSERT( searchHTML(html,i18n("Total")+" Credit Card") == -(moParent1 + moParent2 + moChild) * 3 );
     CPPUNIT_ASSERT( searchHTML(html,i18n("Grand Total")) == -(moParent1 + moParent2 + moSolo + moChild) * 3 );
-
+    
     filter.setRowType( MyMoneyReport::ePayee );
     filter.setName("Transactions by Payee");
     cols = MyMoneyReport::eQCnumber | MyMoneyReport::eQCmemo | MyMoneyReport::eQCcategory;
@@ -1357,7 +1375,8 @@ void KReportsViewTest::testQueryBasics()
     XMLandback(filter);
     QueryTable qtbl_4(filter);
 
-    CPPUNIT_ASSERT(qtbl_4.m_transactions.count() == 12);
+    //writeTabletoHTML(qtbl_4,"Transactions by Payee.html");   
+    CPPUNIT_ASSERT(qtbl_4.m_transactions.count() == 14);
     CPPUNIT_ASSERT(qtbl_4.m_transactions[0]["payee"]=="Test Payee");
     CPPUNIT_ASSERT(qtbl_4.m_transactions[0]["category"]=="Solo");
     CPPUNIT_ASSERT(qtbl_4.m_transactions[0]["postdate"]=="2004-01-01");
@@ -1378,8 +1397,9 @@ void KReportsViewTest::testQueryBasics()
     filter.setQueryColumns( static_cast<MyMoneyReport::EQueryColumns>(cols) ); // 
     XMLandback(filter);
     QueryTable qtbl_5(filter);
-
-    CPPUNIT_ASSERT(qtbl_5.m_transactions.count() == 12);
+    
+    //writeTabletoHTML(qtbl_5,"Transactions by Month.html");
+    CPPUNIT_ASSERT(qtbl_5.m_transactions.count() == 14);
     CPPUNIT_ASSERT(qtbl_5.m_transactions[0]["payee"]=="Test Payee");
     CPPUNIT_ASSERT(qtbl_5.m_transactions[0]["category"]=="Solo");
     CPPUNIT_ASSERT(qtbl_5.m_transactions[0]["postdate"]=="2004-01-01");
@@ -1402,8 +1422,9 @@ void KReportsViewTest::testQueryBasics()
     filter.setQueryColumns( static_cast<MyMoneyReport::EQueryColumns>(cols) ); // 
     XMLandback(filter);
     QueryTable qtbl_6(filter);
-
-    CPPUNIT_ASSERT(qtbl_6.m_transactions.count() == 12);
+    
+    //writeTabletoHTML(qtbl_6,"Transactions by Week.html");
+    CPPUNIT_ASSERT(qtbl_6.m_transactions.count() == 14);
     CPPUNIT_ASSERT(qtbl_6.m_transactions[0]["payee"]=="Test Payee");
     CPPUNIT_ASSERT(qtbl_6.m_transactions[0]["category"]=="Solo");
     CPPUNIT_ASSERT(qtbl_6.m_transactions[0]["postdate"]=="2004-01-01");
@@ -2085,4 +2106,4 @@ void KReportsViewTest::testDateFormat()
   }
 }
 
- // vim:cin:si:ai:et:ts=2:sw=2:
+// vim:cin:si:ai:et:ts=2:sw=2:
