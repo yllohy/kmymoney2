@@ -42,7 +42,7 @@
   * @see MyMoneyAccount
   *
   * @author Felix Rodriguez, Michael Edwardes 2000-2001
-  * $Id: kexportdlg.h,v 1.5 2001/08/23 17:07:16 mte Exp $
+  * $Id: kexportdlg.h,v 1.6 2001/12/14 05:04:02 ktambascio Exp $
   *
   * @short A class to export a specified account to the popular QIF format.
 **/
@@ -75,6 +75,8 @@ protected slots:
 
   /** Test whether to enable the buttons */
   void slotFileTextChanged(const QString& text);
+
+	bool appendCorrectFileExt(QString& str, const QString strExtToUse);
 
 public:
   /**
