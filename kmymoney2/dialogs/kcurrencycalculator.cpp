@@ -54,40 +54,47 @@ KCurrencyCalculator::KCurrencyCalculator(const MyMoneyCurrency& from, const MyMo
   m_fromCurrencyName->setText(m_fromCurrency.name());
   m_toCurrencyName->setText(m_toCurrency.name());
 
-  m_fromAmount->loadText(value.formatMoney("", MyMoneyMoney::denomToPrec(m_fromCurrency.smallestAccountFraction())));
+  m_fromAmount->loadText(m_value.formatMoney("", MyMoneyMoney::denomToPrec(m_fromCurrency.smallestAccountFraction())));
   m_fromAmount->setReadOnly(true);
 
-  m_fromToButton->setText(i18n("%1 for %2").arg(m_fromCurrency.name()).arg(m_toCurrency.name()));
-  m_toFromButton->setText(i18n("%1 for %2").arg(m_toCurrency.name()).arg(m_fromCurrency.name()));
+  m_fromToButton->setText(i18n("%1 for 1 %2").arg(m_fromCurrency.name()).arg(m_toCurrency.name()));
+  m_toFromButton->setText(i18n("%1 for 1 %2").arg(m_toCurrency.name()).arg(m_fromCurrency.name()));
 
   MyMoneyMoney price(1,1);
 
-  // setup initial price
-  if(m_result != 0) {
-    price = m_value/m_result;
+  // setup initial result
+  if(m_result == MyMoneyMoney() && m_value != 0) {
+    qDebug("result == 0");
+    if(m_fromCurrency.id() == file->baseCurrency().id()) {
+      price = MyMoneyMoney(1,1) / m_toCurrency.price(m_date);
+    } else if(m_toCurrency.id() == file->baseCurrency().id()) {
+      price = m_fromCurrency.price(m_date);
+    }
+    qDebug("Price is %s", price.formatMoney().data());
+    m_result = m_value * price;
   }
 
   // check if we have a conversion rate for this date  
   m_updateButton->setEnabled(false);
   m_fromToButton->setChecked(true);
-    m_toFromButton->setChecked(true);
 
   if(m_fromCurrency.id() == file->baseCurrency().id()) {
+    qDebug("from == base");
     m_updateCurrency = &m_toCurrency;
     m_updateButton->setEnabled(true);
     m_toFromButton->setChecked(true);
-    price = m_toCurrency.price(date);
   }
 
   if(m_toCurrency.id() == file->baseCurrency().id()) {
+    qDebug("to == base");
     m_updateCurrency = &m_fromCurrency;
     m_updateButton->setEnabled(true);
-    price = MyMoneyMoney(1,1) / m_fromCurrency.price(date);
+    m_fromToButton->setChecked(true);
   }
 
   // fill in initial values
-  m_conversionRate->loadText(price.formatMoney("", 5));
-  slotUpdateRate(m_conversionRate->text());
+  m_toAmount->loadText(m_result.formatMoney("", MyMoneyMoney::denomToPrec(m_toCurrency.smallestAccountFraction())));
+  slotUpdateResult(m_toAmount->text());
 
   connect(m_fromToButton, SIGNAL(clicked()), this, SLOT(slotSetFromTo()));
   connect(m_toFromButton, SIGNAL(clicked()), this, SLOT(slotSetToFrom()));
@@ -103,11 +110,13 @@ KCurrencyCalculator::~KCurrencyCalculator()
 
 void KCurrencyCalculator::slotSetFromTo(void)
 {
+  qDebug("slotSetFromTo");
   slotUpdateResult(m_toAmount->text());
 }
 
 void KCurrencyCalculator::slotSetToFrom(void)
 {
+  qDebug("slotSetToFrom");
   slotUpdateResult(m_toAmount->text());
 }
 
