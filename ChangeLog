@@ -1,9 +1,12 @@
+2004-07-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * More investment view work
+
 2004-07-14 Ace Jones <acejones@users.sourceforge.net>
   * Created MyMoneyReport object, which replaces ReportConfigurationFilter
   * Serialize MyMoneyReport objects to/from XML storage file, so users' changes
     to their reports will be saved/loaded automatically
   * Updated all report test cases to also test serialization
-  
+
 2004-07-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added more logic for investment view
   * Fixed word wrap in split transaction dialog
