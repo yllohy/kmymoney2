@@ -265,6 +265,7 @@ QDate MyMoneySchedule::nextPayment(const QDate& refDate) const
       }
       break;
 
+    case OCCUR_QUARTERLY:
     case OCCUR_EVERYTHREEMONTHS:
       while (paymentDate <= refDate) {
         paymentDate = paymentDate.addMonths(3);
@@ -272,7 +273,6 @@ QDate MyMoneySchedule::nextPayment(const QDate& refDate) const
       }
       break;
 
-    case OCCUR_QUARTERLY:
     case OCCUR_EVERYFOURMONTHS:
       while (paymentDate <= refDate) {
         paymentDate = paymentDate.addMonths(4);
@@ -396,6 +396,7 @@ QValueList<QDate> MyMoneySchedule::paymentDates(const QDate& startDate, const QD
       }
       break;
 
+    case OCCUR_QUARTERLY:
     case OCCUR_EVERYTHREEMONTHS:
       while (paymentDate < startDate)
         paymentDate = paymentDate.addMonths(3);
@@ -407,7 +408,6 @@ QValueList<QDate> MyMoneySchedule::paymentDates(const QDate& startDate, const QD
       }
       break;
 
-    case OCCUR_QUARTERLY:
     case OCCUR_EVERYFOURMONTHS:
       while (paymentDate < startDate)
         paymentDate = paymentDate.addMonths(4);
@@ -564,12 +564,12 @@ QDate MyMoneySchedule::dateAfter(int transactions) const
         paymentDate = paymentDate.addMonths(2);
       break;
 
+    case OCCUR_QUARTERLY:
     case OCCUR_EVERYTHREEMONTHS:
       while (counter++ < transactions)
         paymentDate = paymentDate.addMonths(3);
       break;
 
-    case OCCUR_QUARTERLY:
     case OCCUR_EVERYFOURMONTHS:
       while (counter++ < transactions)
         paymentDate = paymentDate.addMonths(4);
