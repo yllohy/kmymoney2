@@ -109,9 +109,23 @@ void kMyMoneyEdit::focusOutEvent(QFocusEvent *e)
 
 bool kMyMoneyEdit::eventFilter(QObject *o , QEvent *e )
 {
+  bool rc = false;
+
+  // the base class event filter is called later here, because
+  // we want to catch some keys that are usually handled by
+  // the base class (e.g. '+', '-', etc.)
+
   if(e->type() == QEvent::KeyPress) {
     QKeyEvent *k = static_cast<QKeyEvent *> (e);
+    QPoint p;
+    QRect r;
+
+    rc = true;
     switch(k->key()) {
+      default:
+        rc = false;
+        break;
+
       case Qt::Key_Return:
       case Qt::Key_Enter:
         emit signalEnter();
@@ -139,8 +153,8 @@ bool kMyMoneyEdit::eventFilter(QObject *o , QEvent *e )
       case Qt::Key_Percent:
         m_calculator->setInitialValues(text(), k);
 
-        QPoint p = mapToGlobal(QPoint(0,0));
-        QRect r = m_calculator->geometry();
+        p = mapToGlobal(QPoint(0,0));
+        r = m_calculator->geometry();
         r.moveTopLeft(p);
 
         m_calculatorFrame->setGeometry(r);
@@ -148,7 +162,11 @@ bool kMyMoneyEdit::eventFilter(QObject *o , QEvent *e )
         break;
     }
   }
-  return KLineEdit::eventFilter(o,e);
+
+  if(rc == false)
+    rc = KLineEdit::eventFilter(o,e);
+
+  return rc;
 }
 
 void kMyMoneyEdit::slotCalculatorResult()
