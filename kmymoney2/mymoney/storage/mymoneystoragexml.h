@@ -49,6 +49,8 @@ typedef enum {
     PARSE_INSTITUTION,
     PARSE_PAYEES,
     PARSE_PAYEE,
+    PARSE_TRANSACTIONS,
+    PARSE_TRANSACTION,
     PARSE_STATE_UNKNOWN
   }eParseState;
 
@@ -91,6 +93,8 @@ private:
   MyMoneyInstitution* m_pCurrentInstitution;
   MyMoneyPayee*       m_pCurrentPayee;
   MyMoneyAccount*     m_pCurrentAccount;
+  MyMoneyTransaction* m_pCurrentTx;
+  MyMoneySplit*       m_pCurrentSplit;
   
   /**
     * This method returns the version of the underlying file. It
@@ -146,7 +150,9 @@ private:
 
   void getAccountDetails(MyMoneyAccount* pCurrentAccount, const AttributeMap& p);
   void getPayeeDetails(MyMoneyPayee* pCurrentPayee, const AttributeMap& p);
-
+  void getInstitutionDetails(MyMoneyInstitution* pInstitution, const AttributeMap& p);
+  void getAddress(const AttributeMap& p);
+  void getTransactionDetails(const AttributeMap& p);
   
 };
 
