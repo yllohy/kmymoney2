@@ -25,12 +25,13 @@
 
 
 /**
-  *@author Kevin Tambascio (ktambascio@yahoo.com)
+  * @author Kevin Tambascio (ktambascio@yahoo.com)
   */
 
 // ----------------------------------------------------------------------------
 // QT Includes
 
+class QString;
 class QIODevice;
 class QProgressDialog;
 
@@ -57,6 +58,7 @@ public:
   virtual void writeFile(QIODevice* qf, IMyMoneySerialize* storage) = 0;
   //virtual void writeStream(QDataStream& s, IMyMoneySerialize* storage) = 0;
 
+  virtual void setProgressCallback(void(*callback)(int, int, const QString&)) = 0;
   /**
     * This member is used to store the file version information
     * obtained while reading a file.

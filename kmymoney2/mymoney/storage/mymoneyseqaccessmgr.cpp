@@ -1048,6 +1048,8 @@ void MyMoneySeqAccessMgr::loadAccount(const MyMoneyAccount& acc)
     throw new MYMONEYEXCEPTION(msg);
   }
   m_accountList[acc.id()] = acc;
+
+  m_balanceCache[acc.id()] = MyMoneyBalanceCacheItem(acc.openingBalance());
 }
 
 void MyMoneySeqAccessMgr::loadTransaction(const MyMoneyTransaction& tr)
@@ -1063,6 +1065,14 @@ void MyMoneySeqAccessMgr::loadTransaction(const MyMoneyTransaction& tr)
   }
   m_transactionList[key] = tr;
   m_transactionKeys[tr.id()] = key;
+
+  QValueList<MyMoneySplit> list = tr.splits();
+  QValueList<MyMoneySplit>::ConstIterator it_s;
+
+  for(it_s = list.begin(); it_s != list.end(); ++it_s) {
+    QCString id = (*it_s).accountId();
+    m_balanceCache[id] = MyMoneyBalanceCacheItem(balance(id) + (*it_s).value());
+  }
 }
 
 void MyMoneySeqAccessMgr::loadInstitution(const MyMoneyInstitution& inst)

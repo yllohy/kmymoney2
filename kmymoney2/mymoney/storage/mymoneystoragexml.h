@@ -86,6 +86,8 @@ public:
 
   void ChangeParseState(eParseState state);
 
+  void setProgressCallback(void(*callback)(int, int, const QString&)) {};
+
 private:
   IMyMoneySerialize* m_pStorage;
   std::string getPropertyValue(std::string str, XMLPropertyMap p);

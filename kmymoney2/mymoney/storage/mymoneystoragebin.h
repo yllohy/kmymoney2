@@ -26,6 +26,7 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
+#include <qobject.h>
 #include <qdatastream.h>
 class QIODevice;
 
@@ -69,6 +70,8 @@ public:
 
   void readFile(QIODevice* qfile, IMyMoneySerialize* storage);
   void writeFile(QIODevice* qfile, IMyMoneySerialize* storage);
+
+  void setProgressCallback(void(*callback)(int, int, const QString&));
 
 private:
   void readStream(QDataStream& s, IMyMoneySerialize* storage);
@@ -124,6 +127,11 @@ private:
   const unsigned long extractId(const QCString& txt) const;
 
   /**
+    *
+    */
+  void signalProgress(int current, int total, const QString& = "");
+
+  /**
     * This member is used to store the file version information
     * obtained while reading a file.
     */
@@ -166,6 +174,7 @@ private:
     */
   bool m_encrypted;
 
+  void (*m_progressCallback)(int, int, const QString&);
 };
 
 #endif
