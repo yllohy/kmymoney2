@@ -97,7 +97,6 @@ private:
   KCategoriesView *m_categoriesView;
   KPayeesView *m_payeesView;
   KScheduledView *m_scheduledView;
-  KNewAccountWizard *m_newAccountWizard;
   KGlobalLedgerView *m_ledgerView;
   KInvestmentView *m_investmentView;
   KReportsView* m_reportsView;

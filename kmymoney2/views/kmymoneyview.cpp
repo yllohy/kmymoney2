@@ -110,7 +110,6 @@
 
 KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   : KJanusWidget(parent, name, KJanusWidget::IconList),
-  m_newAccountWizard(0),
   m_searchDlg(0),
   m_fileOpen(false),
   m_bankRightClick(false)
@@ -1012,10 +1011,6 @@ void KMyMoneyView::slotBankNew(void)
       institution = dlg.institution();
 
       file->addInstitution(institution);
-
-      // Set the institution member of KNewAccountWizard
-      if (m_newAccountWizard)
-        m_newAccountWizard->setInstitution(institution);
     }
     catch (MyMoneyException *e)
     {
@@ -1046,23 +1041,24 @@ void KMyMoneyView::accountNew(const bool createCategory)
 
   MyMoneyAccount newAccount;
   MyMoneyAccount parentAccount;
+  KNewAccountWizard *newAccountWizard = 0;
   int dialogResult;
 
   if(createCategory == false) {
     // create account, use wizard
-    m_newAccountWizard = new KNewAccountWizard(this, "NewAccountWizard");
-    connect(m_newAccountWizard, SIGNAL(newInstitutionClicked()), this, SLOT(slotBankNew()));
+    newAccountWizard = new KNewAccountWizard(this, "NewAccountWizard");
+    connect(newAccountWizard, SIGNAL(newInstitutionClicked()), this, SLOT(slotBankNew()));
 
-    m_newAccountWizard->setAccountName(QString());
-    m_newAccountWizard->setOpeningBalance(0);
+    newAccountWizard->setAccountName(QString());
+    newAccountWizard->setOpeningBalance(0);
 
     // Preselect the institution if we right clicked on a bank
     if (m_bankRightClick)
-      m_newAccountWizard->setInstitution(m_accountsInstitution);
+      newAccountWizard->setInstitution(m_accountsInstitution);
 
-    if((dialogResult = m_newAccountWizard->exec()) == QDialog::Accepted) {
-      newAccount = m_newAccountWizard->account();
-      parentAccount = m_newAccountWizard->parentAccount();
+    if((dialogResult = newAccountWizard->exec()) == QDialog::Accepted) {
+      newAccount = newAccountWizard->account();
+      parentAccount = newAccountWizard->parentAccount();
     }
   } else {
     // regular dialog selected
@@ -1132,10 +1128,9 @@ void KMyMoneyView::accountNew(const bool createCategory)
 
       // We MUST add the schedule AFTER adding the account because
       // otherwise an unknown account will be thrown.
-      if(m_newAccountWizard != 0)
-        createSchedule(m_newAccountWizard->schedule(), newAccount);
+      if(newAccountWizard != 0)
+        createSchedule(newAccountWizard->schedule(), newAccount);
 
-      viewAccountList(newAccount.id());
     }
     catch (MyMoneyException *e)
     {
@@ -1145,9 +1140,9 @@ void KMyMoneyView::accountNew(const bool createCategory)
       delete e;
     }
   }
-  if(m_newAccountWizard != 0) {
-    delete m_newAccountWizard;
-    m_newAccountWizard = 0;
+  if(newAccountWizard != 0) {
+    delete newAccountWizard;
+    newAccountWizard = 0;
   }
 }
 
@@ -1558,7 +1553,7 @@ void KMyMoneyView::readDefaultCategories(const QString& filename)
         QStringList flags = QStringList::split("::",s);
         s = flags.front();
         flags.pop_front();
-        
+
         MyMoneyAccount account, parentAccount;
         QString type, parent, child;
         QString msg;
@@ -1614,7 +1609,7 @@ void KMyMoneyView::readDefaultCategories(const QString& filename)
 
         child = s.mid(pos2+1);
         account.setName(child);
-        
+
         // process flags
         QStringList::const_iterator it_flag = flags.begin();
         while ( it_flag != flags.end() )
@@ -1622,7 +1617,7 @@ void KMyMoneyView::readDefaultCategories(const QString& filename)
           account.setValue((*it_flag).utf8(),"Yes");
           ++it_flag;
         }
-        
+
         try {
           MyMoneyFile::instance()->addAccount(account, parentAccount);
           accounts[parent + ":" + child] = account;
