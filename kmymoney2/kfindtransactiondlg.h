@@ -32,6 +32,7 @@
 
 #include "widgets/kmymoneyedit.h"
 #include "widgets/kmymoneydateinput.h"
+#include "mymoney/mymoneyfile.h"
 
 #include "kfindtransactiondlgdecl.h"
 
@@ -42,7 +43,7 @@
 class KFindTransactionDlg : public KFindTransactionDlgDecl  {
    Q_OBJECT
 public: 
-	KFindTransactionDlg(QWidget *parent=0, const char *name=0);
+	KFindTransactionDlg(MyMoneyFile *file, QWidget *parent=0, const char *name=0);
 	~KFindTransactionDlg();
   void data(
   	bool& doDate,
@@ -51,6 +52,8 @@ public:
   	bool& doStatus,
   	bool& doDescription,
   	bool& doNumber,
+  	bool& doPayee,
+  	bool& doCategory,
   	QString& amountID,
   	QString& creditID,
   	QString& statusID,
@@ -59,8 +62,11 @@ public:
     MyMoneyMoney& money,
     QDate& startDate,
     QDate& endDate,
+    QString& payee,
+    QString& category,
     bool& descriptionRegExp,
-    bool& numberRegExp );
+    bool& numberRegExp,
+    bool& payeeRegExp );
 
 protected slots:
   void closeClicked();
@@ -71,39 +77,14 @@ protected slots:
   void descriptionToggled(bool on);
   void numberToggled(bool on);
   void searchClicked();
+  void payeeToggled(bool on);
+  void categoryToggled(bool on);
 
 signals:
   void searchReady();
 
-protected:
-/*
-	void initDialog();
-	//Generated area. DO NOT EDIT!!!(begin)
-	QGroupBox *datesGroup;
-	QLabel *QLabel_2;
-	QLabel *QLabel_3;
-	QCheckBox *dateRadio;
-	QCheckBox *amountRadio;
-	QGroupBox *amountGroup;
-	QComboBox *amountCombo;
-	QCheckBox *creditRadio;
-	QComboBox *creditCombo;
-	QCheckBox *statusRadio;
-	QComboBox *statusCombo;
-	QCheckBox *descriptionRadio;
-	QLineEdit *descriptionEdit;
-	QCheckBox *numberRadio;
-	QLineEdit *numberEdit;
-	QPushButton *searchBtn;
-	QPushButton *closeBtn;
-	QCheckBox *descriptionRegExpCheck;
-	QCheckBox *numberRegExpCheck;
-	//Generated area. DO NOT EDIT!!!(end)
-*/
 private:
-//  kMyMoneyEdit *moneyEdit;
-//  kMyMoneyDateInput *startDateInput;
-//  kMyMoneyDateInput *endDateInput;
+  MyMoneyFile *m_filePointer;
 };
 
 #endif

@@ -874,7 +874,7 @@ void KMyMoneyView::settingsLists()
 void KMyMoneyView::accountFind()
 {
   if (!transactionFindDlg) {
-    transactionFindDlg = new KFindTransactionDlg(0);
+    transactionFindDlg = new KFindTransactionDlg(&m_file, 0);
     connect(transactionFindDlg, SIGNAL(searchReady()), this, SLOT(doTransactionSearch()));
   }
 
@@ -898,24 +898,14 @@ void KMyMoneyView::doTransactionSearch()
     return;
   }
 
- 	bool doDate;
- 	bool doAmount;
- 	bool doCredit;
- 	bool doStatus;
- 	bool doDescription;
- 	bool doNumber;
- 	QString amountID;
- 	QString creditID;
- 	QString statusID;
- 	QString description;
- 	QString number;
+ 	bool doDate, doAmount, doCredit, doStatus, doDescription, doNumber, doPayee, doCategory;
+ 	QString amountID, creditID, statusID, description, number, payee, category;
   MyMoneyMoney money;
   QDate startDate;
   QDate endDate;
-  bool descriptionRegExp;
-  bool numberRegExp;
+  bool descriptionRegExp, numberRegExp, payeeRegExp;
 
-  transactionFindDlg->data(doDate, doAmount, doCredit, doStatus, doDescription, doNumber,
+  transactionFindDlg->data(doDate, doAmount, doCredit, doStatus, doDescription, doNumber, doPayee, doCategory,
     amountID,
     creditID,
     statusID,
@@ -924,8 +914,11 @@ void KMyMoneyView::doTransactionSearch()
     money,
     startDate,
     endDate,
+    payee,
+    category,
     descriptionRegExp,
-    numberRegExp );
+    numberRegExp,
+    payeeRegExp );
 
 
   MyMoneyTransaction *transaction;
@@ -936,7 +929,9 @@ void KMyMoneyView::doTransactionSearch()
       checkTransactionCredit(transaction, doCredit, creditID) &&
       checkTransactionStatus(transaction, doStatus, statusID) &&
       checkTransactionDescription(transaction, doDescription, description, descriptionRegExp) &&
-      checkTransactionNumber(transaction, doNumber, number, numberRegExp) ) {
+      checkTransactionNumber(transaction, doNumber, number, numberRegExp) &&
+      checkTransactionPayee(transaction, doPayee, payee, payeeRegExp) &&
+      checkTransactionCategory(transaction, doCategory, category )) {
 
       m_transactionList.append(new MyMoneyTransaction(
         transaction->id(),
@@ -1080,6 +1075,48 @@ bool KMyMoneyView::checkTransactionNumber(const MyMoneyTransaction *transaction,
     else
       return true;
   }
+}
+
+bool KMyMoneyView::checkTransactionPayee(const MyMoneyTransaction *transaction, const bool enabled, const QString payee, const bool isRegExp)
+{
+  if (!enabled)
+    return true;
+
+  if (!isRegExp) {
+    if (transaction->payee().contains(payee))
+      return true;
+    else
+      return false;
+  } else {
+    QRegExp regExp(payee);
+    if (!regExp.isValid())
+      return false;
+    if (regExp.match(transaction->payee())==-1)
+      return false;
+    else
+      return true;
+  }
+}
+
+bool KMyMoneyView::checkTransactionCategory(const MyMoneyTransaction *transaction, const bool enabled, const QString category)
+{
+  if (!enabled)
+    return true;
+
+  QString left, right;
+  if (category.contains(':')) {
+    left = category.left(category.find(':'));
+    right = category.mid(category.find(':')+1, category.length());
+    if (transaction->categoryMajor()==left &&
+        transaction->categoryMinor()==right)
+      return true;
+    else
+      return false;
+  }
+
+  if (transaction->categoryMajor() == category)
+    return true;
+  return false;
 }
 
 QString KMyMoneyView::currentBankName(void)

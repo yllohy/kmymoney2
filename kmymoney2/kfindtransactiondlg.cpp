@@ -17,29 +17,10 @@
 
 #include "kfindtransactiondlg.h"
 
-KFindTransactionDlg::KFindTransactionDlg(QWidget *parent, const char *name)
+KFindTransactionDlg::KFindTransactionDlg(MyMoneyFile *file, QWidget *parent, const char *name)
  : KFindTransactionDlgDecl(parent,name,false)
 {
-//	initDialog();
-	
-//	startDateInput = new kMyMoneyDateInput(datesGroup, QDate::currentDate());
-//	startDateInput->setGeometry(80, 20, 120, 20);
-//	endDateInput = new kMyMoneyDateInput(datesGroup, QDate::currentDate());
-//	endDateInput->setGeometry(80, 50, 120, 20);
-	
-//	moneyEdit = new kMyMoneyEdit(amountGroup);
-//	moneyEdit->setGeometry(80, 50, 120, 20);
-	
-	amountCombo->setEnabled(false);
-	creditCombo->setEnabled(false);
-	statusCombo->setEnabled(false);
-	descriptionEdit->setEnabled(false);
-	numberEdit->setEnabled(false);
-  moneyEdit->setEnabled(false);
-  startDateInput->setEnabled(false);
-  endDateInput->setEnabled(false);
-  descriptionRegExpCheck->setEnabled(false);
-  numberRegExpCheck->setEnabled(false);
+  m_filePointer = file;
 	
 	connect(dateRadio, SIGNAL(toggled(bool)), this, SLOT(dateToggled(bool)));
 	connect(amountRadio, SIGNAL(toggled(bool)), this, SLOT(amountToggled(bool)));
@@ -47,6 +28,8 @@ KFindTransactionDlg::KFindTransactionDlg(QWidget *parent, const char *name)
 	connect(statusRadio, SIGNAL(toggled(bool)), this, SLOT(statusToggled(bool)));
 	connect(descriptionRadio, SIGNAL(toggled(bool)), this, SLOT(descriptionToggled(bool)));
 	connect(numberRadio, SIGNAL(toggled(bool)), this, SLOT(numberToggled(bool)));
+	connect(payeeRadio, SIGNAL(toggled(bool)), this, SLOT(payeeToggled(bool)));
+	connect(categoryRadio, SIGNAL(toggled(bool)), this, SLOT(categoryToggled(bool)));
 	
 	connect(searchBtn, SIGNAL(clicked()), this, SLOT(searchClicked()));
 	connect(closeBtn, SIGNAL(clicked()), this, SLOT(closeClicked()));
@@ -96,28 +79,58 @@ void KFindTransactionDlg::numberToggled(bool on)
   numberRegExpCheck->setEnabled(on);
 }
 
+void KFindTransactionDlg::payeeToggled(bool on)
+{
+  payeeEdit->setEnabled(on);
+  payeeRegExpCheck->setEnabled(on);
+}
+
+void KFindTransactionDlg::categoryToggled(bool on)
+{
+  categoryCombo->clear();
+  QString theText;
+  QListIterator<MyMoneyCategory> categoryIterator = m_filePointer->categoryIterator();
+  for ( ; categoryIterator.current(); ++categoryIterator) {
+    MyMoneyCategory *category = categoryIterator.current();
+    theText = category->name().latin1();
+    categoryCombo->insertItem(theText);
+    for ( QStringList::Iterator it = category->minorCategories().begin(); it != category->minorCategories().end(); ++it ) {
+      theText = category->name();
+  		theText += ":";
+	  	theText += *it;
+      categoryCombo->insertItem(theText);
+    }
+  }
+  categoryCombo->setEnabled(on);
+}
+
 void KFindTransactionDlg::searchClicked()
 {
   emit searchReady();
 }
 
 void KFindTransactionDlg::data(
-	bool& doDate,
-	bool& doAmount,
-	bool& doCredit,
-	bool& doStatus,
-	bool& doDescription,
-	bool& doNumber,
-	QString& amountID,
-	QString& creditID,
-	QString& statusID,
-	QString& description,
-	QString& number,
-  MyMoneyMoney& money,
-  QDate& startDate,
-  QDate& endDate,
-  bool& descriptionRegExp,
-  bool& numberRegExp )
+  	bool& doDate,
+  	bool& doAmount,
+  	bool& doCredit,
+  	bool& doStatus,
+  	bool& doDescription,
+  	bool& doNumber,
+  	bool& doPayee,
+  	bool& doCategory,
+  	QString& amountID,
+  	QString& creditID,
+  	QString& statusID,
+  	QString& description,
+  	QString& number,
+    MyMoneyMoney& money,
+    QDate& startDate,
+    QDate& endDate,
+    QString& payee,
+    QString& category,
+    bool& descriptionRegExp,
+    bool& numberRegExp,
+    bool& payeeRegExp )
 {
   doDate = dateRadio->isChecked();
   doAmount = amountRadio->isChecked();
@@ -125,6 +138,8 @@ void KFindTransactionDlg::data(
   doStatus = statusRadio->isChecked();
   doDescription = descriptionRadio->isChecked();
   doNumber = numberRadio->isChecked();
+  doPayee = payeeRadio->isChecked();
+  doCategory = categoryRadio->isChecked();
   amountID = amountCombo->currentText();
   creditID = creditCombo->currentText();
   statusID = statusCombo->currentText();
@@ -134,6 +149,9 @@ void KFindTransactionDlg::data(
   money = tmp;
   startDate = startDateInput->getQDate();
   endDate = endDateInput->getQDate();
+  payee = payeeEdit->text();
+  category = categoryCombo->currentText();
   descriptionRegExp = descriptionRegExpCheck->isChecked();
   numberRegExp = numberRegExpCheck->isChecked();
+  payeeRegExp = payeeRegExpCheck->isChecked();
 }

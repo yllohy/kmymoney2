@@ -36,7 +36,7 @@
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.11 2001/07/06 02:00:05 frodriguez Exp $
+  * $Id: kmymoneyview.h,v 1.12 2001/07/07 15:28:50 mte Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -69,6 +69,8 @@ private:
   bool checkTransactionStatus(const MyMoneyTransaction *transaction, const bool enabled, const QString id);
   bool checkTransactionDescription(const MyMoneyTransaction *transaction, const bool enabled, const QString description, const bool isRegExp);
   bool checkTransactionNumber(const MyMoneyTransaction *transaction, const bool enabled, const QString number, const bool isRegExp);
+  bool checkTransactionPayee(const MyMoneyTransaction *transaction, const bool enabled, const QString payee, const bool isRegExp);
+  bool checkTransactionCategory(const MyMoneyTransaction *transaction, const bool enabled, const QString category);
 
 public:
   /**
