@@ -1,3 +1,7 @@
+2004-07-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * set id of category before emitting signal in kMyMoneyCategory
+  * added more investment logic (automatic form adaption)
+
 2004-07-23 Ace Jones <acejones@users.sourceforge.net>
   * Replaced report control hyperlinks with a new button bar widget at the
     top of the tab
