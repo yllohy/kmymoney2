@@ -1,3 +1,8 @@
+2003-03-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Moved categoryTypeE to KMyMoneyUtils
+  * Updated template files to contain standard text
+  * Added tips entry
+
 2003-02-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * include config.h in mymoneymoney.h
   * changed the state-engine during backup
