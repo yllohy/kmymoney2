@@ -2,7 +2,7 @@
                           kmymoney2.cpp
                              -------------------
     copyright            : (C) 2000 by Michael Edwardes
-    email                : Michael.Edwardes@students.dmu.ac.uk
+    email                : mte@users.sourceforge.net
  ***************************************************************************/
 
 /***************************************************************************
@@ -241,10 +241,14 @@ void KMyMoney2App::readOptions()
 	QFont l_listCellFont;
 
   config->setGroup("List Options");
-	l_listColor = config->readColorEntry("listColor");
-	l_listBGColor = config->readColorEntry("listBGColor");
-	l_listHeaderFont = config->readFontEntry("listHeaderFont");
-	l_listCellFont = config->readFontEntry("listCellFont");
+  config->setGroup("List Options");
+  QFont defaultFont = QFont("helvetica", 12);
+  QColor defaultColor = Qt::white;
+  QColor defaultBGColor = Qt::gray;
+	l_listColor = config->readColorEntry("listColor", &defaultColor);
+	l_listBGColor = config->readColorEntry("listBGColor", &defaultBGColor);
+	l_listHeaderFont = config->readFontEntry("listHeaderFont", &defaultFont);
+	l_listCellFont = config->readFontEntry("listCellFont", &defaultFont);
 
   KMyMoneySettings *p_settings = KMyMoneySettings::singleton();
 
@@ -500,27 +504,27 @@ void KMyMoney2App::slotAccountExport()
 
 void KMyMoney2App::slotBillsAdd()
 {
-  KMessageBox::information(this, "Placement holder for future addition...\nPlease wait, I'm on it.\nMichael (Michael.Edwardes@students.dmu.ac.uk.");
+  KMessageBox::information(this, "Placement holder for future addition...\nPlease wait, I'm on it.\nMichael (mte@users.sourceforge.net.");
 }
 
 void KMyMoney2App::slotReportBasic()
 {
-  KMessageBox::information(this, "Placement holder for future addition...\nPlease wait, I'm on it.\nMichael (Michael.Edwardes@students.dmu.ac.uk.");
+  KMessageBox::information(this, "Placement holder for future addition...\nPlease wait, I'm on it.\nMichael (mte@users.sourceforge.net.");
 }
 
 void KMyMoney2App::slotPluginLoad()
 {
-  KMessageBox::information(this, "Placement holder for future addition...\nPlease wait, I'm on it.\nMichael (Michael.Edwardes@students.dmu.ac.uk.");
+  KMessageBox::information(this, "Placement holder for future addition...\nPlease wait, I'm on it.\nMichael (mte@users.sourceforge.net.");
 }
 
 void KMyMoney2App::slotPluginUnload()
 {
-  KMessageBox::information(this, "Placement holder for future addition...\nPlease wait, I'm on it.\nMichael (Michael.Edwardes@students.dmu.ac.uk.");
+  KMessageBox::information(this, "Placement holder for future addition...\nPlease wait, I'm on it.\nMichael (mte@users.sourceforge.net.");
 }
 
 void KMyMoney2App::slotPluginList()
 {
-  KMessageBox::information(this, "Placement holder for future addition...\nPlease wait, I'm on it.\nMichael (Michael.Edwardes@students.dmu.ac.uk.");
+  KMessageBox::information(this, "Placement holder for future addition...\nPlease wait, I'm on it.\nMichael (mte@users.sourceforge.net.");
 }
 
 void KMyMoney2App::slotCategoriesEdit()

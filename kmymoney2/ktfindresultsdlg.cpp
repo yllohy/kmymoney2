@@ -2,7 +2,7 @@
                           ktfindresultsdlg.cpp
                              -------------------
     copyright            : (C) 2000 by Michael Edwardes
-    email                : Michael.Edwardes@students.dmu.ac.uk
+    email                : mte@users.sourceforge.net
  ***************************************************************************/
 
 /***************************************************************************
@@ -45,5 +45,3 @@ void KTFindResultsDlg::setList(QList<MyMoneyTransaction> list)
   }
  */
 }
-
-//#include "ktfindresultsdlg.moc"

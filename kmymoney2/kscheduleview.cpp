@@ -2,7 +2,7 @@
                           kscheduleview.cpp
                              -------------------
     copyright            : (C) 2000 by Michael Edwardes
-    email                : Michael.Edwardes@students.dmu.ac.uk
+    email                : mte@users.sourceforge.net
  ***************************************************************************/
 
 /***************************************************************************
@@ -70,5 +70,3 @@ void KScheduleView::newBtnClicked()
   wizard.setCaption(i18n("New Bill Wizard"));
   wizard.exec();
 }
-
-#include "kscheduleview.moc"

@@ -2,7 +2,7 @@
                           kfileinfodlg.cpp
                              -------------------
     copyright            : (C) 2000 by Michael Edwardes
-    email                : Michael.Edwardes@students.dmu.ac.uk
+    email                : mte@users.sourceforge.net
  ***************************************************************************/
 
 /***************************************************************************
@@ -36,5 +36,3 @@ KFileInfoDlg::KFileInfoDlg(QDate created, QDate access, QDate modify, QWidget *p
 KFileInfoDlg::~KFileInfoDlg()
 {
 }
-
-//#include "kfileinfodlg.moc"

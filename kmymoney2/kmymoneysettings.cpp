@@ -2,7 +2,7 @@
                           kmymoneysettings.cpp
                              -------------------
     copyright            : (C) 2000 by Michael Edwardes
-    email                : Michael.Edwardes@students.dmu.ac.uk
+    email                : mte@users.sourceforge.net
  ***************************************************************************/
 
 /***************************************************************************

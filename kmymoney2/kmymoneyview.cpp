@@ -2,7 +2,7 @@
                           kmymoneyview.cpp
                              -------------------
     copyright            : (C) 2000 by Michael Edwardes
-    email                : Michael.Edwardes@students.dmu.ac.uk
+    email                : mte@users.sourceforge.net
  ***************************************************************************/
 
 /***************************************************************************
@@ -473,12 +473,12 @@ void KMyMoneyView::slotAccountReconcile(void)
 
 void KMyMoneyView::slotAccountImportAscii(void)
 {
-  KMessageBox::information(this, "slotAccountImportAscii: Placement holder for future addition...\nPlease wait, I'm on it.\nMichael (Michael.Edwardes@students.dmu.ac.uk.");
+  KMessageBox::information(this, "slotAccountImportAscii: Placement holder for future addition...\nPlease wait, I'm on it.\nMichael (mte@users.sourceforge.net.");
 }
 
 void KMyMoneyView::slotAccountExportAscii(void)
 {
-  KMessageBox::information(this, "slotAccountExportAscii: Placement holder for future addition...\nPlease wait, I'm on it.\nMichael (Michael.Edwardes@students.dmu.ac.uk.");
+  KMessageBox::information(this, "slotAccountExportAscii: Placement holder for future addition...\nPlease wait, I'm on it.\nMichael (mte@users.sourceforge.net.");
 }
 
 void KMyMoneyView::editCategories(void)
@@ -1039,5 +1039,3 @@ void KMyMoneyView::showTransactionInputBox(bool val)
 {
   m_mainView->showInputBox(val);
 }
-
-//#include "kmymoneyview.moc"

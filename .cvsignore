@@ -16,3 +16,5 @@ acinclude.m4
 .libs
 kmymoney2.doxygen
 kmymoney2-api
+make-ui.sh
+*~

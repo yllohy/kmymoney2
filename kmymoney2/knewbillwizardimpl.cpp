@@ -2,7 +2,7 @@
                           knewbillwizardimpl.cpp
                              -------------------
     copyright            : (C) 2000 by Michael Edwardes
-    email                : Michael.Edwardes@students.dmu.ac.uk
+    email                : mte@users.sourceforge.net
  ***************************************************************************/
 
 /***************************************************************************
@@ -200,5 +200,3 @@ void KNewBillWizardImpl::paymentSelected(int index)
 void KNewBillWizardImpl::slotFinishClicked()
 {
 }
-
-#include "knewbillwizardimpl.moc"

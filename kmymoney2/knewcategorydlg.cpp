@@ -2,7 +2,7 @@
                           knewcategorydlg.cpp
                              -------------------
     copyright            : (C) 2000 by Michael Edwardes
-    email                : Michael.Edwardes@students.dmu.ac.uk
+    email                : mte@users.sourceforge.net
  ***************************************************************************/
 
 /***************************************************************************
@@ -70,5 +70,3 @@ void KNewCategoryDlg::minorAddBtnClicked()
 	minorCategoriesCombo->insertStringList(m_category->minorCategories());
 	minorCategoryEdit->setText("");
 }
-
-//#include "knewcategorydlg.moc"

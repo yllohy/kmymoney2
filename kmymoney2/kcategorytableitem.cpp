@@ -3,7 +3,7 @@
                              -------------------
     begin                : Wed Jan 31 2001
     copyright            : (C) 2001 by Michael Edwardes
-    email                : Michael.Edwardes@students.dmu.ac.uk
+    email                : mte@users.sourceforge.net
  ***************************************************************************/
 
 /***************************************************************************

@@ -1,3 +1,18 @@
+/***************************************************************************
+                          main.cpp
+                             -------------------
+    copyright            : (C) 2001 by Michael Edwardes
+    email                : mte@users.sourceforge.net
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 
 #include <kcmdlineargs.h>
 #include <kaboutdata.h>
@@ -20,10 +35,10 @@ int main(int argc, char *argv[])
 {
 	KAboutData aboutData( "kmymoney2", I18N_NOOP("KMyMoney2"),
 		VERSION, description, KAboutData::License_GPL,
-		"(c) 2000, Michael Edwardes", 0, "kmymoney.sourceforge.net");
-	aboutData.addAuthor("Michael Edwardes", I18N_NOOP("Program Creator"), "Michael.Edwardes@students.dmu.ac.uk", "kmymoney2.sourceforge.net");
-	aboutData.addCredit("Javier Campos Morales", I18N_NOOP("Developer & Artist"), "javi_c@ctv.es");
-	aboutData.addCredit("Felix Rodriguez", I18N_NOOP("Developer"), "frodriguez@mail.wesleyan.edu");
+		"(c) 2000, Michael Edwardes", 0, "kmymoney2.sourceforge.net");
+	aboutData.addAuthor("Michael Edwardes", I18N_NOOP("Main Developer"), "mte@users.sourceforge.net");
+	aboutData.addAuthor("Javier Campos Morales", I18N_NOOP("Developer & Artist"), "javi_c@ctv.es");
+	aboutData.addAuthor("Felix Rodriguez", I18N_NOOP("Developer"), "frodriguez@mail.wesleyan.edu");
 	KCmdLineArgs::init( argc, argv, &aboutData );
 	KCmdLineArgs::addCmdLineOptions( options ); // Add our own options.
 

@@ -2,7 +2,7 @@
                           kbanklistitem.h
                              -------------------
     copyright            : (C) 2000 by Michael Edwardes
-    email                : Michael.Edwardes@students.dmu.ac.uk
+    email                : mte@users.sourceforge.net
  ***************************************************************************/
 
 /***************************************************************************
@@ -27,7 +27,6 @@
   */
 
 class KBankListItem : public QListViewItem  {
-//   Q_OBJECT
   MyMoneyBank m_bank;
   MyMoneyAccount m_account;
   bool m_isBank;

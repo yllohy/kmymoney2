@@ -2,7 +2,7 @@
                           kcategorylistitem.h
                              -------------------
     copyright            : (C) 2000 by Michael Edwardes
-    email                : Michael.Edwardes@students.dmu.ac.uk
+    email                : mte@users.sourceforge.net
  ***************************************************************************/
 
 /***************************************************************************
@@ -24,7 +24,6 @@
 // It holds information on whether it is a major category and the
 // values.
 class KCategoryListItem : public QListViewItem  {
-//  Q_OBJECT
 public:
   KCategoryListItem( QListView *parent, QString text, QStringList minors, bool income, bool major, QString majorName=QString::null );
   KCategoryListItem( KCategoryListItem *parent, QString text, bool income, bool major, QString majorName=QString::null );

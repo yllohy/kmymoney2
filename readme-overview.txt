@@ -94,4 +94,4 @@ files which will give a clear idea of how KMyMoney2 works.
 
 
 Michael...
-Michael.Edwardes@students.dmu.ac.uk
+mte@users.sourceforge.net

@@ -191,7 +191,7 @@ directory of the Test1 distribution:
 </para>
 
 <para>Since Test1 uses autoconf and automake you should have not trouble compiling it.
-Should you run into problems please report them to the author at <ulink url="mailto:Michael.Edwardes@students.dmu.ac.uk"> Michael Edwardes</ulink>.</para>
+Should you run into problems please report them to the author at <ulink url="mailto:mte@users.sourceforge.net"> Michael Edwardes</ulink>.</para>
 
 </sect1>
 

@@ -39,7 +39,6 @@
 #include <qvalidator.h>
 #include <kdebug.h>
 #include <kdatetbl.h>
-//#include "kdatepik.moc"
 
 KTempDatePicker::KTempDatePicker(QWidget *parent, QDate dt, const char *name, WFlags f)
   : QFrame(parent,name, f),

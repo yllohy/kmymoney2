@@ -13,7 +13,6 @@
 
 
 #include "kstartdlg.h"
-#include "kstartdlg.moc"
 
 #include <qvbox.h>
 #include <qlayout.h>

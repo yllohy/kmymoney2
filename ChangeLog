@@ -1,3 +1,17 @@
+2001-03-13  Michael Edwardes  <mte@users.sourceforge.net>
+
+  * Ran KFileReplace to change my email address because I won't
+    always be at university.
+  * Remove all #include <x.moc> from the source files.
+  * Updated project to install the ui file in the correct place.
+  * Cleaned up the startup code so the default colour settings aren't black on black.
+  * Changed addCredit to addAuthor in main.cpp.
+  * Project file 16x16 mimetype kmy icon changed to kmy not kmy2 in install options.
+  * Changed web address reference in main.cpp to kmymoney2.sourceforge.net.
+  * Updated README file.
+  * Removed some unused list items from the project.
+  * Added files to .cvsignore (make-ui.sh, *~)
+
 2001-03-11  Javier Campos Morales  <javi@DarkStar>
 
 	* Insert new startuplogo
