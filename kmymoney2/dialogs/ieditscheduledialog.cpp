@@ -869,6 +869,19 @@ void KEditScheduleDialog::slotCategoryChanged(const QString& text)
 
 void KEditScheduleDialog::slotAutoEnterChanged()
 {
+  if (m_kdateinputDue->getQDate() <= QDate::currentDate())
+  {
+    if (m_qcheckboxAuto->isChecked())
+    {
+      KMessageBox::error(this, i18n("The start date must be greater than today, to automatically enter this schedule."));
+      m_qcheckboxAuto->blockSignals(true);
+      m_qcheckboxAuto->setChecked(false);
+      m_qcheckboxAuto->blockSignals(false);
+      m_kdateinputDue->setFocus();
+      return;
+    }
+  }
+
   m_schedule.setAutoEnter(m_qcheckboxAuto->isChecked());
 }
 
