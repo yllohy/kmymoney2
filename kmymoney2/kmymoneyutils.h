@@ -247,6 +247,20 @@ public:
     * none has been setup by the user.
     */
   static const QColor defaultGridColour(void);
+
+  /**
+    *
+    */
+  static void updateSettings(void);
+
+  static const QColor& backgroundColour(void) { return _backgroundColour; };
+  static const QColor& listColour(void) { return _listColour; };
+  static const QColor& gridColour(void) { return _gridColour; };
+  
+private:
+  static QColor _backgroundColour;
+  static QColor _listColour;
+  static QColor _gridColour;
 };
 
 #endif

@@ -30,12 +30,17 @@
 #include <kglobal.h>
 #include <kiconloader.h>
 #include <kmessagebox.h>
+#include <kconfig.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
 
 #include "kmymoneyutils.h"
 #include "mymoney/mymoneyfile.h"
+
+QColor KMyMoneyUtils::_backgroundColour;
+QColor KMyMoneyUtils::_listColour;
+QColor KMyMoneyUtils::_gridColour;
 
 KMyMoneyUtils::KMyMoneyUtils()
 {
@@ -505,3 +510,20 @@ const QColor KMyMoneyUtils::defaultGridColour(void)
 {
   return QColor(154,154,154);
 }
+
+void KMyMoneyUtils::updateSettings(void)
+{
+  QColor c;
+  KConfig *config = KGlobal::config();
+  config->setGroup("List Options");
+
+  c = defaultBackgroundColour();
+  _backgroundColour = config->readColorEntry("listBGColor", &c);
+  
+  c = defaultListColour();
+  _listColour = config->readColorEntry("listColor", &c);
+
+  c = defaultListColour();
+  _gridColour = config->readColorEntry("listGridColor", &c);
+}
+
