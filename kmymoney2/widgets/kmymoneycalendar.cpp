@@ -331,10 +331,10 @@ kMyMoneyCalendar::yearBackwardClicked()
 void
 kMyMoneyCalendar::selectWeekClicked()
 {
-#if KDE_VERSION >= 310
+#if KDE_VERSION == 310
   int week;
   KPopupFrame* popup = new KPopupFrame(this);
-  KDateInternalWeekSelector* picker = new KDateInternalWeekSelector(fontsize, popup);
+  KDateInternalWeekSelector* picker = new KDateInternalWeekSelector(/*fontsize, */popup);
   // -----
   picker->resize(picker->sizeHint());
   popup->setMainWidget(picker);
@@ -370,9 +370,10 @@ kMyMoneyCalendar::selectWeekClicked()
 void
 kMyMoneyCalendar::selectMonthClicked()
 {
+#if KDE_VERSION == 310
   int month;
   KPopupFrame* popup = new KPopupFrame(this);
-  KDateInternalMonthPicker* picker = new KDateInternalMonthPicker(fontsize, popup);
+  KDateInternalMonthPicker* picker = new KDateInternalMonthPicker(/*fontsize, */popup);
   // -----
   picker->resize(picker->sizeHint());
   popup->setMainWidget(picker);
@@ -395,11 +396,13 @@ kMyMoneyCalendar::selectMonthClicked()
       KNotifyClient::beep();
     }
   delete popup;
+#endif
 }
 
 void
 kMyMoneyCalendar::selectYearClicked()
 {
+#if KDE_VERSION == 310
   int year;
   KPopupFrame* popup = new KPopupFrame(this);
   KDateInternalYearSelector* picker = new KDateInternalYearSelector(fontsize, popup);
@@ -425,6 +428,7 @@ kMyMoneyCalendar::selectYearClicked()
       KNotifyClient::beep();
     }
   delete popup;
+#endif
 }
 
 void
