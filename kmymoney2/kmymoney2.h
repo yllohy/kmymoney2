@@ -52,7 +52,7 @@
   * @see KMyMoneyView
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: kmymoney2.h,v 1.13 2002/01/22 20:30:29 mte Exp $
+  * $Id: kmymoney2.h,v 1.14 2002/02/09 18:16:58 mte Exp $
   *
   * @short Main application class.
 **/
@@ -216,6 +216,12 @@ protected slots:
   void slotViewUp();
   /** No descriptions */
   void slotFileBackup();
+
+  void slotHomeView();
+  void slotAccountsView();
+  void slotScheduledView();
+  void slotCategoryView();
+  void slotPayeeView();
 
   public:
     bool startWithDialog(void) { return m_startDialog; }
@@ -397,6 +403,10 @@ protected slots:
 
   bool m_startDialog;
   QString mountpoint;
+
+private:
+  void disableAllAccountActions(bool enable=true);
+
 };
  
 #endif // KMYMONEY2_H

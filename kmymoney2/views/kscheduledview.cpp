@@ -80,6 +80,7 @@ void KScheduledView::refresh(void)
 void KScheduledView::show()
 {
   refresh();
+  emit signalViewActivated();
   QWidget::show();
 }
 

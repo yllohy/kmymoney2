@@ -47,6 +47,7 @@ KBanksView::KBanksView(QWidget *parent, const char *name)
 
   m_bSelectedBank=false;
   m_bSelectedAccount=false;
+  m_bSignals=true;
 
   // never show a horizontal scroll bar
   bankListView->setHScrollBarMode(QScrollView::AlwaysOff);
@@ -207,6 +208,12 @@ void KBanksView::slotSelectionChanged(QListViewItem *item)
 
 void KBanksView::show()
 {
-  emit signalViewActivated();
+  if (m_bSignals)
+    emit signalViewActivated();
   QWidget::show();
+}
+
+void KBanksView::setSignals(bool enable)
+{
+  m_bSignals=enable;
 }

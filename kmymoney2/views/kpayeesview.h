@@ -54,6 +54,10 @@ private:
   void writeConfig(void);
 
   void refresh(void);
+
+signals:
+  void signalViewActivated();
+
 };
 
 #endif

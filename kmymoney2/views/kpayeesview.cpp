@@ -154,6 +154,7 @@ void KPayeesView::writeConfig(void)
 void KPayeesView::show()
 {
   refresh();
+  emit signalViewActivated();
   QWidget::show();
 }
 

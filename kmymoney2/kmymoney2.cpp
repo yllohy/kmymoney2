@@ -80,6 +80,12 @@ KMyMoney2App::KMyMoney2App(QWidget* , const char* name):KMainWindow(0, name)
   connect(myMoneyView, SIGNAL(accountOperations(bool)), this, SLOT(enableAccountOperations(bool)));
   connect(myMoneyView, SIGNAL(transactionOperations(bool)), this, SLOT(enableTransactionOperations(bool)));
 
+  connect(myMoneyView, SIGNAL(signalHomeView()), this, SLOT(slotHomeView()));
+  connect(myMoneyView, SIGNAL(signalAccountsView()), this, SLOT(slotAccountsView()));
+  connect(myMoneyView, SIGNAL(signalScheduledView()), this, SLOT(slotScheduledView()));
+  connect(myMoneyView, SIGNAL(signalCategoryView()), this, SLOT(slotCategoryView()));
+  connect(myMoneyView, SIGNAL(signalPayeeView()), this, SLOT(slotPayeeView()));
+
   enableFileOperations(false);
   enableBankOperations(false);
   enableAccountOperations(false);
@@ -894,3 +900,33 @@ void KMyMoney2App::slotKeySettings()
   KKeyDialog::configureKeys(actionCollection(), path);
 }
 
+void KMyMoney2App::slotHomeView()
+{
+  disableAllAccountActions();
+}
+
+void KMyMoney2App::slotAccountsView()
+{
+}
+
+void KMyMoney2App::disableAllAccountActions(bool enable)
+{
+  enableBankOperations(false);
+  enableAccountOperations(false);
+  enableTransactionOperations(false);
+}
+
+void KMyMoney2App::slotScheduledView()
+{
+  disableAllAccountActions();
+}
+
+void KMyMoney2App::slotCategoryView()
+{
+  disableAllAccountActions();
+}
+
+void KMyMoney2App::slotPayeeView()
+{
+  disableAllAccountActions();
+}

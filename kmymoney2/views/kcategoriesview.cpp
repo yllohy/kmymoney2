@@ -95,6 +95,7 @@ void KCategoriesView::refresh(void)
 void KCategoriesView::show()
 {
   refresh();
+  emit signalViewActivated();
   QWidget::show();
 }
 

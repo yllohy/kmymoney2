@@ -1,3 +1,6 @@
+2002-02-09 Michael Edwardes <mte@users.sourceforge.net>
+  * Improved handling of the views.
+
 2002-02-09 Kevin Tambascio <ktambascio@users.sourceforge.net>
   * More changes for stock transactions.  
   * added dialog to update stock prices.

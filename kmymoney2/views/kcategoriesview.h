@@ -51,6 +51,9 @@ protected slots:
   void slotDeleteClicked();
   void slotSelectionChanged(QListViewItem*);
 
+signals:
+  void signalViewActivated();
+
 public:
 	KCategoriesView(MyMoneyFile *file, QWidget *parent=0, const char *name=0);
 	~KCategoriesView();

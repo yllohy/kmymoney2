@@ -55,18 +55,22 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   banksView = new KBanksView(qvboxMainFrame2, "banksView");
   connect(banksView, SIGNAL(signalViewActivated()), this, SLOT(slotActivatedAccountsView()));
   transactionView = new KTransactionView(qvboxMainFrame2, "transactionsView");
+  connect(transactionView, SIGNAL(signalViewActivated()), this, SLOT(slotActivatedAccountsView()));
 
   QVBox *qvboxMainFrame3 = addVBoxPage( i18n("Bills & Reminders"), i18n("Bills & Reminders"),
     DesktopIcon("scheduled"));
   m_scheduledView = new KScheduledView(&m_file, qvboxMainFrame3, "scheduledView");
+  connect(m_scheduledView, SIGNAL(signalViewActivated()), this, SLOT(slotActivatedScheduledView()));
 
   QVBox *qvboxMainFrame4 = addVBoxPage( i18n("Categories"), i18n("Categories"),
     DesktopIcon("categories"));
   m_categoriesView = new KCategoriesView(&m_file, qvboxMainFrame4, "categoriesView");
+  connect(m_categoriesView, SIGNAL(signalViewActivated()), this, SLOT(slotActivatedCategoriesView()));
 
   QVBox *qvboxMainFrame5 = addVBoxPage( i18n("Payees"), i18n("Payees"),
     DesktopIcon("pay_edit"));
   m_payeesView = new KPayeesView(&m_file, qvboxMainFrame5, "payeesView");
+  connect(m_payeesView, SIGNAL(signalViewActivated()), this, SLOT(slotActivatedPayeeView()));
 
   m_investmentView = new KInvestmentView(qvboxMainFrame2, "investmentView");
 
@@ -127,7 +131,6 @@ void KMyMoneyView::slotAccountRightMouse(const MyMoneyAccount, bool/* inList*/)
 
 void KMyMoneyView::slotAccountDoubleClick(void)
 {
-	
   viewTransactionList();
 }
 
@@ -341,7 +344,7 @@ bool KMyMoneyView::readFile(QString filename)
   else {
 //    viewBankList();  // Might not want to see accounts view straight away.
     banksView->refresh(m_file);
-    emit bankOperations(true);
+//    emit bankOperations(true);
     m_file.init();
   }
   return true;
@@ -596,7 +599,7 @@ void KMyMoneyView::newFile(void)
     loadDefaultCategories();
 
     m_file.init();
-    emit bankOperations(true);
+//    emit bankOperations(true);
     m_file.setDirty(true);
 //    viewBankList();  // They might not want to create an institution/account right away.
   }
@@ -780,6 +783,7 @@ void KMyMoneyView::viewBankList(MyMoneyAccount *selectAccount, MyMoneyBank *sele
   if (m_file.isInitialised())
   {
     banksView->refresh(m_file, selectAccount, selectBank);
+    qDebug("in viewBankList");
     emit bankOperations(true);
   }
 }
@@ -812,10 +816,10 @@ void KMyMoneyView::viewTransactionList(void)
   }
   else
   {
-    m_investmentView->hide();	
-		banksView->hide();
-    transactionView->show();
     m_showing = TransactionList;
+    m_investmentView->hide();	
+    banksView->hide();
+    transactionView->show();
 
     if (!m_file.isInitialised())
       return;
@@ -1239,9 +1243,70 @@ MyMoneyAccount* KMyMoneyView::getAccount(void)
 void KMyMoneyView::slotActivatedHomePage()
 {
   m_realShowing = HomeView;
+  emit signalHomeView();
 }
 
 void KMyMoneyView::slotActivatedAccountsView()
 {
   m_realShowing = AccountsView;
+
+/*******************************************************
+ *  DAMNED AWFUL HACK
+.* If anybody can think of an elegant way round this please
+ * email mte@users.sourceforge.net.  09/02/2002.
+*******************************************************/
+banksView->setSignals(false);
+transactionView->setSignals(false);
+
+  if (m_realShowing != AccountsView)
+    showPage(1);
+
+  if (m_showing == KMyMoneyView::TransactionList || m_showing == KMyMoneyView::InvestmentList)
+  {
+    banksView->hide();
+    if (m_showing == KMyMoneyView::TransactionList)
+      transactionView->hide();
+    else
+      m_investmentView->hide();
+
+    emit transactionOperations(true);
+  }
+ else
+  {
+    transactionView->hide();
+    m_investmentView->hide();
+    banksView->show();
+    if (m_file.isInitialised())
+    {
+      banksView->refresh(m_file);
+      emit bankOperations(true);
+    }
+    m_showing = BankList;
+  }
+
+banksView->setSignals(true);
+transactionView->setSignals(true);
+/******************************************************
+ * END OF AWFUL HACK
+*******************************************************/
+
+  emit signalAccountsView();
+}
+
+void KMyMoneyView::slotActivatedScheduledView()
+{
+  m_realShowing = ScheduledView;
+  emit signalScheduledView();
+}
+
+void KMyMoneyView::slotActivatedCategoriesView()
+{
+  m_realShowing = CategoryView;
+  emit signalCategoryView();
+}
+
+void KMyMoneyView::slotActivatedPayeeView()
+{
+  m_realShowing = PayeeView;
+  emit signalPayeeView();
 }

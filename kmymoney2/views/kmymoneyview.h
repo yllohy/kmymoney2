@@ -53,7 +53,7 @@
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.7 2002/02/07 23:46:41 mte Exp $
+  * $Id: kmymoneyview.h,v 1.8 2002/02/09 18:16:58 mte Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -61,7 +61,7 @@ class KMyMoneyView : public KJanusWidget {
    Q_OBJECT
 
 public:
-  enum viewType { None, BankList, TransactionList, InvestmentList };
+  enum viewType { None=0, BankList=1, TransactionList=2, InvestmentList=3 };
   enum viewShowing { AccountsView, HomeView, PayeeView, CategoryView, ScheduledView };
 
 private:
@@ -390,6 +390,11 @@ protected slots:
   **/
   void slotActivatedAccountsView();
 
+  void slotActivatedScheduledView();
+
+  void slotActivatedCategoriesView();
+
+  void slotActivatedPayeeView();
 
 signals:
   /**
@@ -423,6 +428,12 @@ signals:
     * @param enable Whether to enable to actions.
   **/
   void transactionOperations(bool);
+
+  void signalHomeView();
+  void signalAccountsView();
+  void signalScheduledView();
+  void signalCategoryView();
+  void signalPayeeView();
 };
 
 #endif

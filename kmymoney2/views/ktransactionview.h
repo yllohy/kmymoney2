@@ -96,6 +96,8 @@ private:
   /// used in cancelClicked().
   MyMoneyTransaction m_originalTransaction;
 
+  bool m_bSignals;
+
   void updateTransactionList(int start, int col=-1);
 
   void createInputWidgets();
@@ -120,6 +122,8 @@ public:
 	void init(MyMoneyFile *file, MyMoneyBank bank, MyMoneyAccount account, QList<MyMoneyTransaction> *transList, viewingType type);
 	void clear(void);
   void refresh(void);
+  void show(void);
+  void setSignals(bool enable);
 
 protected:
   void resizeEvent(QResizeEvent*);
@@ -144,6 +148,7 @@ signals:
  void transactionListChanged();
   void viewTypeSearchActivated();
   void viewTypeNormalActivated();
+  void signalViewActivated();
 
 public slots: // Public slots
   /** No descriptions */

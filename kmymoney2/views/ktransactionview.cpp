@@ -103,6 +103,8 @@ KTransactionView::KTransactionView(QWidget *parent, const char *name)
 
   // m_contextMenu->insertItem(kiconloader->loadIcon("split", KIcon::Small), i18n("Split"), this, SLOT(slotEditSplit()));
   createInputWidgets();
+
+  m_bSignals=true;
 }
 
 KTransactionView::~KTransactionView()
@@ -1559,4 +1561,16 @@ MyMoneyBank* KTransactionView::getBank(void){
 void KTransactionView::initAmountWidth(void)
 {
   m_debitWidth = m_creditWidth = m_balanceWidth = 80;
+}
+
+void KTransactionView::show()
+{
+  if (m_bSignals)
+    emit signalViewActivated();
+  QWidget::show();
+}
+
+void KTransactionView::setSignals(bool enable)
+{
+  m_bSignals=enable;
 }

@@ -42,6 +42,7 @@ private:
   bool m_bSelectedBank, m_bSelectedAccount;
   MyMoneyBank m_selectedBank;
   MyMoneyAccount m_selectedAccount;
+  bool m_bSignals;
 
 public: 
 	KBanksView(QWidget *parent=0, const char *name=0);
@@ -51,6 +52,10 @@ public:
 	void refresh(MyMoneyFile file, MyMoneyAccount *selectAccount=NULL, MyMoneyBank *selectBank=NULL);
 	void clear(void);
   void show();
+
+  /* NEVER USE unless you know what you're doing. */
+  /* Contact mte@users.sourceforge.net for more info */
+  void setSignals(bool enable);
 
 protected:
   void resizeEvent(QResizeEvent*);
