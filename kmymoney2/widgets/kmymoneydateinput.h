@@ -68,12 +68,14 @@ signals:
 
 protected:
   /** Overriding QWidget::keyPressEvent */
-  //void keyPressEvent(QKeyEvent * k);
+  void keyPressEvent(QKeyEvent * k);
 
 protected slots:
   void slotDateChosen(QDate date);
-  void slotEnterPressed();
 	void toggleDatePicker();
+
+private slots:
+  void slotDateChosenRef(const QDate& date);
 
 private:
   QDateEdit *dateEdit;
