@@ -1,3 +1,10 @@
+2003-09-24 Kevin Tambascio <ktambascio@yahoo.com>
+  * Made GUI changes to allow the user to save their file as an XML file.
+  * Removed checks for conditionally compiling XML suport.  This is possible because I
+    am now using the QT API's, and everyone has support for those.
+  * Able to now save a basic XML file.  It only currently saves the user information, and 
+    it provides placeholders for the other sections of our file. 
+
 2003-09-24 Michael Edwardes <mte@users.sourceforge.net>
   * Draw the background colour across the _whole_ list view in schedule
     view.
