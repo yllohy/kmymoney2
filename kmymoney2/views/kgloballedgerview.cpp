@@ -28,6 +28,7 @@
 #include <qwhatsthis.h>
 #include <qcstring.h>
 #include <qtimer.h>
+#include <qlistbox.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -247,6 +248,9 @@ void KGlobalLedgerView::loadAccounts(void)
       m_accountId = *it_s;
     }
   }
+
+  // sort list by name of accounts
+  m_accountComboBox->listBox()->sort();
 }
 
 const bool KGlobalLedgerView::slotSelectAccount(const QString& accountName)
