@@ -55,7 +55,7 @@ KTransactionView::KTransactionView(QWidget *parent, const char *name)
   int w=transactionsTable->width();
   transactionsTable->setColumnWidth(0, 100);
   transactionsTable->setColumnWidth(1, 100);
-  transactionsTable->setColumnWidth(2, w-530);
+  transactionsTable->setColumnWidth(2, w-530-20);
   transactionsTable->setColumnWidth(3, 30);
   transactionsTable->setColumnWidth(4, 100);
   transactionsTable->setColumnWidth(5, 100);
@@ -411,7 +411,6 @@ void KTransactionView::slotFocusChange(int row, int col, int button, const QPoin
 
 void KTransactionView::slotTransactionDelete()
 {
-  MyMoneyBank *pBank;
   MyMoneyAccount *pAccount;
 
 	pAccount = getAccount();
@@ -1121,7 +1120,6 @@ void KTransactionView::deleteClicked()
 
 void KTransactionView::refresh(void)
 {
-  qDebug("KTransactionView::refresh()");
   useall = true;
   usedate = false;
   userow = false;
@@ -1179,17 +1177,17 @@ void KTransactionView::viewTypeActivated(int num)
 void KTransactionView::resizeEvent(QResizeEvent*)
 {
 	hideWidgets();
-  clear();
+//  clear();
   int w=transactionsTable->width();
   transactionsTable->setColumnWidth(0, 100);
   transactionsTable->setColumnWidth(1, 100);
-  transactionsTable->setColumnWidth(2, w-530-10);
+  transactionsTable->setColumnWidth(2, w-530-20);
   transactionsTable->setColumnWidth(3, 30);
   transactionsTable->setColumnWidth(4, 100);
   transactionsTable->setColumnWidth(5, 100);
   transactionsTable->setColumnWidth(6, 100);
-//  updateTransactionList(-1);
 }
+
 /** No descriptions */
 void KTransactionView::hideWidgets(){
 

@@ -11,8 +11,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>801</width>
-            <height>511</height>
+            <width>785</width>
+            <height>510</height>
         </rect>
     </property>
     <property stdset="1">
@@ -121,7 +121,7 @@
             <class>QLayoutWidget</class>
             <property stdset="1">
                 <name>name</name>
-                <cstring>Layout1</cstring>
+                <cstring>Layout4</cstring>
             </property>
             <hbox>
                 <property stdset="1">
@@ -200,7 +200,7 @@
                     </property>
                     <property stdset="1">
                         <name>text</name>
-                        <string></string>
+                        <string>ggg</string>
                     </property>
                     <property stdset="1">
                         <name>alignment</name>

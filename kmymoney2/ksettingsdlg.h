@@ -23,6 +23,8 @@
 #include <kfontdialog.h>
 #include <kcolorbutton.h>
 #include <klineedit.h>
+#include <qradiobutton.h>
+#include <qbuttongroup.h>
 
 // This dialog lets the user change the program settings.
 // Doesn't do much at the moment !
@@ -55,6 +57,9 @@ private: // Private attributes
   KLineEdit *m_klineeditRowCount;
 
   QCheckBox *m_qcheckboxShowGrid;
+
+  QRadioButton *m_qradiobuttonPerTransaction;
+  QRadioButton *m_qradiobuttonOtherRow;
 
 private slots: // Private slots
   /** Slot ok */

@@ -1,4 +1,9 @@
 2001-07-21 Michael Edwardes <mte@users.sourceforge.net>
+  * Implemented the colour painting option.
+  * Fixed the bug when resizing the transaction view.
+  * Fixed the alignment bug in the transaction view.
+
+2001-07-21 Michael Edwardes <mte@users.sourceforge.net>
   * Changed payee colunm name in reconcile dialog to payee.
   * Fixed the KMyMoneyCombo class.
   * Fixed bug when updating cleared & unreconciled status.

@@ -73,8 +73,6 @@ void KSettingsDlg::setPageList()
 	QVBoxLayout *tab0 = new QVBoxLayout(theTab);
 	tab0->setSpacing( 6 );
 	tab0->setMargin( 11 );
-	QLabel *label0 = new QLabel("some description text", theTab);
-	tab0->addWidget(label0);
   QHBoxLayout *Layout1 = new QHBoxLayout;
   Layout1->setSpacing( 6 );
   Layout1->setMargin( 0 );
@@ -88,8 +86,31 @@ void KSettingsDlg::setPageList()
 	tab0->addLayout(Layout1);
 	m_qcheckboxShowGrid = new QCheckBox(i18n("Show a grid in the register view"), theTab);
 	tab0->addWidget(m_qcheckboxShowGrid);
+
+  QButtonGroup *qbuttongroup = new QButtonGroup( theTab, "ButtonGroup1" );
+  qbuttongroup->setColumnLayout(0, Qt::Vertical );
+  qbuttongroup->layout()->setSpacing( 0 );
+  qbuttongroup->layout()->setMargin( 0 );
+  QVBoxLayout *qvboxlayout = new QVBoxLayout(qbuttongroup->layout());
+  qvboxlayout->setAlignment( Qt::AlignTop );
+  qvboxlayout->setSpacing( 6 );
+  qvboxlayout->setMargin( 11 );
+  qbuttongroup->setTitle( i18n( "Row Colour options" ) );
+
+  m_qradiobuttonPerTransaction = new QRadioButton(qbuttongroup, "m_per_trans");
+  m_qradiobuttonPerTransaction->setGeometry( QRect( 10, 20, 88, 21 ) );
+  m_qradiobuttonPerTransaction->setText( i18n("Use one colour per transaction") );
+  qvboxlayout->addWidget(m_qradiobuttonPerTransaction);
+
+  m_qradiobuttonOtherRow = new QRadioButton(qbuttongroup, "m_every_other");
+  m_qradiobuttonOtherRow->setGeometry( QRect( 10, 50, 90, 21 ) );
+  m_qradiobuttonOtherRow->setText( i18n( "Change colour every other row" ) );
+  qvboxlayout->addWidget(m_qradiobuttonOtherRow);
+  tab0->addWidget(qbuttongroup);
+
   QSpacerItem* spacer = new QSpacerItem( 20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding );
   tab0->addItem( spacer );
+
   TabWidget2->insertTab(theTab, i18n("General"));
 	
 	QWidget *tab = new QWidget( TabWidget2, "tab" );
@@ -146,6 +167,13 @@ void KSettingsDlg::configRead()
 	font_cell->setFont(config->readFontEntry("listCellFont", &defaultFont));
 	m_klineeditRowCount->setText(config->readEntry("RowCount", "2"));
 	m_qcheckboxShowGrid->setChecked(config->readBoolEntry("ShowGrid", true));
+  if (config->readBoolEntry("ColourPerTransaction", true)) {
+    m_qradiobuttonPerTransaction->setChecked(true);
+    m_qradiobuttonOtherRow->setChecked(false);
+  } else {
+    m_qradiobuttonPerTransaction->setChecked(false);
+    m_qradiobuttonOtherRow->setChecked(true);
+  }
 }
 
 /** Write settings */
@@ -162,6 +190,7 @@ void KSettingsDlg::configWrite()
 	config->writeEntry("listCellFont", font_cell->font());
 	config->writeEntry("RowCount", m_klineeditRowCount->text());
 	config->writeEntry("ShowGrid", m_qcheckboxShowGrid->isChecked());
+	config->writeEntry("ColourPerTransaction", m_qradiobuttonPerTransaction->isChecked());
 	
 	config->setGroup("General Options");
 	config->writeEntry("StartDialog", start_prompt->isChecked());
