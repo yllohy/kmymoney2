@@ -506,7 +506,13 @@ void KMyMoneyView::closeFile(void)
   newStorage();
   m_fileOpen = false;
 
-  accountsView->clear();
+  // update all views
+  m_categoriesView->refreshView();
+  accountsView->refreshView();
+  m_ledgerView->reloadView();
+  m_payeesView->refreshView();
+  m_scheduledView->refreshView();
+
 }
 
 bool KMyMoneyView::readFile(const KURL& url)

@@ -49,14 +49,14 @@ kMyMoneyRegister::~kMyMoneyRegister()
 {
 }
 
-void kMyMoneyRegister::setNumRows(int r)
+void kMyMoneyRegister::setNumRows(int /* r */)
 {
 }
 
 void kMyMoneyRegister::setTransactionCount(const int r, const bool setTransaction)
 {
   //setUpdatesEnabled( false );
-
+  
   int irows = r * m_rpt;
 
   if(m_ledgerLens == true) {
@@ -75,11 +75,15 @@ void kMyMoneyRegister::setTransactionCount(const int r, const bool setTransactio
   verticalHeader()->setUpdatesEnabled(true);
   //setUpdatesEnabled( true );
 
+  if(setTransaction) {
+    setCurrentTransactionIndex(r);
+  }
+  
   // add or remove scrollbars as required
   updateScrollBars();
 }
 
-void kMyMoneyRegister::paintFocus(QPainter *p, const QRect &cr)
+void kMyMoneyRegister::paintFocus(QPainter* /* p */, const QRect& /* cr */)
 {
 }
 
@@ -120,7 +124,7 @@ void kMyMoneyRegister::readConfig(void)
 }
 
 void kMyMoneyRegister::paintCell(QPainter *p, int row, int col, const QRect& r,
-                                 bool selected, const QColorGroup& cg)
+                                 bool /* selected */, const QColorGroup& cg)
 {
   int firstRow,       // first row occupied by current transaction
       lastRow;        // last row occupied by current transaction

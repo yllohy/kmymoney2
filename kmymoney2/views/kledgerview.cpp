@@ -278,11 +278,12 @@ void KLedgerView::slotBlinkTimeout(void)
 void KLedgerView::setCurrentAccount(const QCString& accountId, const bool force)
 {
   slotCancelEdit();
+  
+  MyMoneyFile* file = MyMoneyFile::instance();
 
   if(!accountId.isEmpty()) {
     if(accountId != m_account.id() || force == true) {
 
-      MyMoneyFile* file = MyMoneyFile::instance();
 
       file->detach(m_account.id(), this);
 
@@ -292,13 +293,18 @@ void KLedgerView::setCurrentAccount(const QCString& accountId, const bool force)
         // force initial load
         loadAccount();
         enableWidgets(true);
-        // refreshView();
       } catch(MyMoneyException *e) {
         qDebug("Unexpected exception in KLedgerView::setCurrentAccount");
         delete e;
       }
     }
   } else {
+    file->detach(m_account.id(), this);
+    m_transactionList.clear();
+    m_transactionPtrVector.clear();
+    m_account = MyMoneyAccount();
+    m_register->setTransactionCount(1);
+    refreshView();
     enableWidgets(false);
   }
 }
