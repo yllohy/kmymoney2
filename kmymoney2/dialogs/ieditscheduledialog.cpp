@@ -21,12 +21,13 @@
  ***************************************************************************/
 // ----------------------------------------------------------------------------
 // QT Includes
-#include <qpushbutton.h>
 #include <qcheckbox.h>
 #include <qlabel.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
+#include <kpushbutton.h>
+#include <kstdguiitem.h>
 #include <kconfig.h>
 #include <kmessagebox.h>
 #include <knumvalidator.h>
@@ -49,6 +50,11 @@
 KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySchedule& schedule, QWidget *parent, const char *name)
  : kEditScheduledTransferDlgDecl(parent,name, true)
 {
+  // Set the icon sets for the buttons
+  m_qbuttonOK->setGuiItem(KStdGuiItem::ok());
+  m_qbuttonCancel->setGuiItem(KStdGuiItem::cancel());
+  m_qbuttonSplit->setGuiItem(KMyMoneyUtils::splitGuiItem());
+  
   m_actionType = action;
   m_schedule = schedule;
   m_transaction = schedule.transaction();

@@ -28,6 +28,7 @@
 
 // ----------------------------------------------------------------------------
 // KDE Headers
+#include <kguiitem.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -105,6 +106,30 @@ public:
     * @return QString representing the human readable format
     */
   static const QString scheduleTypeToString(MyMoneySchedule::typeE type);
+
+  /**
+    * Retrieve a KDE KGuiItem for the split button
+    *
+    * @param none
+    * @return The KGuiItem that can be used to display the icon and text for a split button.
+  **/
+  static KGuiItem splitGuiItem(void);
+
+  /**
+    * Retrieve a KDE KGuiItem for the new schedule button.
+    *
+    * @param none
+    * @return The KGuiItem that can be used to display the icon and text
+  **/
+  static KGuiItem scheduleNewGuiItem(void);
+
+  /**
+    * Retrieve a KDE KGuiItem for the account filter button
+    *
+    * @param none
+    * @return The KGuiItem that can be used to display the icon and text
+  **/
+  static KGuiItem accountsFilterGuiItem(void);
 };
 
 #endif

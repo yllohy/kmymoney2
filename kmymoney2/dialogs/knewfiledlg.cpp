@@ -20,10 +20,11 @@
 #else
 #include <kstddirs.h>
 #endif
+#include <kstdguiitem.h>
+#include <kpushbutton.h>
 
 #include <qpixmap.h>
 #include <kmessagebox.h>
-#include <qpushbutton.h>
 #include <qlineedit.h>
 #include <qlabel.h>
 
@@ -32,6 +33,9 @@
 KNewFileDlg::KNewFileDlg(QWidget *parent, const char *name, const char *title)
   : KNewFileDlgDecl(parent,name,true)
 {
+  okBtn->setGuiItem(KStdGuiItem::ok());
+  cancelBtn->setGuiItem(KStdGuiItem::cancel());
+
   QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_edit_file.png");
   QPixmap pm(filename);
   m_qpixmaplabel->setPixmap(pm);

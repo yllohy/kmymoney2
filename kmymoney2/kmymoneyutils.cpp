@@ -25,8 +25,8 @@
 
 // ----------------------------------------------------------------------------
 // KDE Headers
-
 #include "klocale.h"
+#include <kiconloader.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -232,3 +232,40 @@ const QString KMyMoneyUtils::scheduleTypeToString(MyMoneySchedule::typeE type)
   }
   return text;
 }
+
+KGuiItem KMyMoneyUtils::splitGuiItem(void)
+{
+  KIconLoader ic("kmymoney2");
+  
+  KGuiItem splitGuiItem(  i18n("&Split"),
+                          QIconSet(ic.loadIcon("split", KIcon::Small, KIcon::SizeSmall)),
+                          i18n("Split the amount into different categories."),
+                          i18n("Split the amount into different categories."));
+
+  return splitGuiItem;
+}
+
+KGuiItem KMyMoneyUtils::scheduleNewGuiItem(void)
+{
+  KIconLoader ic("kmymoney2");
+
+  KGuiItem splitGuiItem(  i18n("&New Schedule..."),
+                          QIconSet(ic.loadIcon("newschedule", KIcon::Small, KIcon::SizeSmall)),
+                          i18n("Create a new schedule."),
+                          i18n("Use this to create a new schedule."));
+
+  return splitGuiItem;
+}
+
+KGuiItem KMyMoneyUtils::accountsFilterGuiItem(void)
+{
+  KIconLoader ic("kmymoney2");
+
+  KGuiItem splitGuiItem(  i18n("&Filter"),
+                          QIconSet(ic.loadIcon("accountfilter", KIcon::Small, KIcon::SizeSmall)),
+                          i18n("Filter out accounts"),
+                          i18n("Use this to filter out accounts"));
+
+  return splitGuiItem;
+}
+  

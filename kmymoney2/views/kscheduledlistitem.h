@@ -71,7 +71,7 @@ public:
     *
     * @see MyMoneySchedule
   **/
-  KScheduledListItem(KScheduledListItem *parent, const MyMoneySchedule& schedule);
+  KScheduledListItem(KScheduledListItem *parent, const MyMoneySchedule& schedule, bool even);
 
   /**
     * Standard destructor.
@@ -89,9 +89,15 @@ public:
   **/
   QCString scheduleId(void) const { return m_id; }
 
+protected:
+  void paintCell(QPainter* p, const QColorGroup& cg, int column, int width, int align);
+
 private:
   /// The schedule's id.
   QCString m_id;
+  
+  bool m_even;
+  bool m_base;
 };
 
 #endif

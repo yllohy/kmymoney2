@@ -21,32 +21,18 @@
         </property>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>layout3</cstring>
+                <cstring>layout2</cstring>
             </property>
             <hbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QPushButton">
+                <widget class="KPushButton">
                     <property name="name">
                         <cstring>m_qbuttonNew</cstring>
                     </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>0</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="maximumSize">
-                        <size>
-                            <width>32767</width>
-                            <height>32767</height>
-                        </size>
-                    </property>
                     <property name="text">
-                        <string>New Schedule...</string>
+                        <string>New Schedule</string>
                     </property>
                 </widget>
                 <spacer>
@@ -61,12 +47,12 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>355</width>
+                            <width>80</width>
                             <height>20</height>
                         </size>
                     </property>
                 </spacer>
-                <widget class="QPushButton">
+                <widget class="KPushButton">
                     <property name="name">
                         <cstring>m_accountsCombo</cstring>
                     </property>
@@ -159,6 +145,8 @@
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
     <includehint>qwidget.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kpushbutton.h</includehint>
     <includehint>klistview.h</includehint>
     <includehint>kmymoneyscheduledcalendar.h</includehint>
 </includehints>

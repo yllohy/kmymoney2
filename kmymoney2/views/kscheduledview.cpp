@@ -22,7 +22,6 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 #include <qheader.h>
-#include <qpushbutton.h>
 #include <qtoolbutton.h>
 #include <qcombobox.h>
 #include <qtabwidget.h>
@@ -37,6 +36,7 @@
 #include <kiconloader.h>
 #include <kmessagebox.h>
 #include <klistview.h>
+#include <kpushbutton.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -44,6 +44,7 @@
 #include "kscheduledlistitem.h"
 #include "../widgets/kmymoneyscheduleddatetbl.h"
 #include "../dialogs/ieditscheduledialog.h"
+#include "../kmymoneyutils.h"
 
 KScheduledView::KScheduledView(QWidget *parent, const char *name )
  : kScheduledViewDecl(parent,name, false),
@@ -79,6 +80,13 @@ KScheduledView::KScheduledView(QWidget *parent, const char *name )
   m_accountsCombo->setPopup(m_kaccPopup);
   connect(m_kaccPopup, SIGNAL(activated(int)), this, SLOT(slotAccountActivated(int)));
 
+  m_qbuttonNew->setGuiItem(KMyMoneyUtils::scheduleNewGuiItem());
+  m_accountsCombo->setGuiItem(KMyMoneyUtils::accountsFilterGuiItem());
+
+  KIconLoader il("kmymoney");
+  m_tabWidget->setTabIconSet(listTab, QIconSet(il.loadIcon("schedulelisttab", KIcon::Small, KIcon::SizeSmall)));
+  m_tabWidget->setTabIconSet(calendarTab, QIconSet(il.loadIcon("calendartab", KIcon::Small, KIcon::SizeSmall)));
+
   readConfig();
 
   connect(m_qlistviewScheduled, SIGNAL(contextMenuRequested(QListViewItem*, const QPoint&, int)),
@@ -98,6 +106,12 @@ KScheduledView::~KScheduledView()
 
 void KScheduledView::refresh(bool full, const QCString schedId)
 {
+  KConfig *config = KGlobal::config();
+  config->setGroup("List Options");
+  QFont headerFont(m_qlistviewScheduled->font());
+  headerFont = config->readFontEntry("listHeaderFont", &headerFont);
+  m_qlistviewScheduled->header()->setFont(headerFont);
+
   m_qlistviewScheduled->clear();
 
   try
@@ -148,6 +162,7 @@ void KScheduledView::refresh(bool full, const QCString schedId)
 
     KScheduledListItem *openItem=0;
 
+    int i=1;
     for (it = scheduledItems.begin(); it != scheduledItems.end(); ++it)
     {
       MyMoneySchedule schedData = (*it);
@@ -170,23 +185,25 @@ void KScheduledView::refresh(bool full, const QCString schedId)
       switch (schedData.type())
       {
         case MyMoneySchedule::TYPE_BILL:
-          item = new KScheduledListItem(itemBills, schedData);
+          item = new KScheduledListItem(itemBills, schedData, (i%2) == 0);
           if (schedData.id() == schedId)
             openItem = item;
           break;
         case MyMoneySchedule::TYPE_DEPOSIT:
-          item = new KScheduledListItem(itemDeposits, schedData);
+          item = new KScheduledListItem(itemDeposits, schedData, (i%2) == 0);
           if (schedData.id() == schedId)
             openItem = item;
           break;
         case MyMoneySchedule::TYPE_TRANSFER:
-          item = new KScheduledListItem(itemTransfers, schedData);
+          item = new KScheduledListItem(itemTransfers, schedData, (i%2) == 0);
           if (schedData.id() == schedId)
             openItem = item;
           break;
         case MyMoneySchedule::TYPE_ANY:
           break; // Should we display an error ?
       }
+
+      i++;
     }
 
     if (m_openBills)
@@ -333,7 +350,11 @@ void KScheduledView::readConfig(void)
   config->setGroup("Last Use Settings");
   m_openBills = config->readBoolEntry("KScheduleView_openBills", true);
   m_openDeposits = config->readBoolEntry("KScheduleView_openDeposits", true);
-  m_openTransfers = config->readBoolEntry("KScheduleView_openTransfers", true);
+
+  config->setGroup("List Options");
+  QFont headerFont(m_qlistviewScheduled->font());
+  headerFont = config->readFontEntry("listHeaderFont", &headerFont);
+  m_qlistviewScheduled->header()->setFont(headerFont);
 }
 
 void KScheduledView::writeConfig(void)

@@ -21,9 +21,11 @@
  ***************************************************************************/
 // ----------------------------------------------------------------------------
 // QT Includes
+#include <qpainter.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
+#include "kconfig.h"
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -32,16 +34,16 @@
 #include "../mymoney/mymoneyfile.h"
 #include "../kmymoneyutils.h"
 
-KScheduledListItem::KScheduledListItem(QListView *parent, const char *name )
- : QListViewItem(parent,name)
+KScheduledListItem::KScheduledListItem(QListView *parent, const char *name)
+ : QListViewItem(parent,name), m_even(false), m_base(true)
 {
   setText(0, name);
 }
 
-KScheduledListItem::KScheduledListItem(KScheduledListItem *parent, const MyMoneySchedule& schedule)
- : QListViewItem(parent)
+KScheduledListItem::KScheduledListItem(KScheduledListItem *parent, const MyMoneySchedule& schedule, bool even)
+ : QListViewItem(parent), m_base(false)
 {
-//  type, payee, amount, due date, freq, payment method.
+  m_even = even;
   try
   {
     QCString accountId = schedule.account().id();
@@ -68,4 +70,39 @@ KScheduledListItem::KScheduledListItem(KScheduledListItem *parent, const MyMoney
 
 KScheduledListItem::~KScheduledListItem()
 {
+}
+
+void KScheduledListItem::paintCell(QPainter* p, const QColorGroup& cg, int column, int width, int align)
+{
+  QColorGroup cg2(cg);
+  
+  KConfig *config = KGlobal::config();
+  config->setGroup("List Options");
+
+  QColor colour = Qt::white;
+  QColor bgColour = Qt::gray;
+  QColor textColour = Qt::black;
+  QFont cellFont(p->font());
+  QColor baseItemColour = Qt::darkCyan;
+
+  bgColour = config->readColorEntry("listBGColor", &bgColour);
+  colour = config->readColorEntry("listColor", &colour);
+  textColour = config->readColorEntry("listGridColor", &textColour);
+  cellFont = config->readFontEntry("listCellFont", &cellFont);
+  baseItemColour = config->readColorEntry("BaseListItemColor", &baseItemColour);
+
+  p->setFont(cellFont);
+  cg2.setColor(QColorGroup::Text, textColour);
+
+  if (m_base)
+    cg2.setColor(QColorGroup::Base, baseItemColour);
+  else
+  {
+    if (m_even)
+      cg2.setColor(QColorGroup::Base, bgColour);
+    else
+      cg2.setColor(QColorGroup::Base, colour);
+  }
+  
+  QListViewItem::paintCell(p, cg2, column, width, align);
 }

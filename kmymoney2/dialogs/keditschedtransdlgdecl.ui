@@ -341,17 +341,11 @@
                 </widget>
                 <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>Layout30</cstring>
+                        <cstring>layout10</cstring>
                     </property>
                     <hbox>
                         <property name="name">
                             <cstring>unnamed</cstring>
-                        </property>
-                        <property name="margin">
-                            <number>0</number>
-                        </property>
-                        <property name="spacing">
-                            <number>6</number>
                         </property>
                         <widget class="QLabel">
                             <property name="name">
@@ -385,25 +379,21 @@
                             <property name="name">
                                 <cstring>m_category</cstring>
                             </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>3</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
                             <property name="focusPolicy">
                                 <enum>StrongFocus</enum>
                             </property>
                         </widget>
-                        <widget class="QPushButton">
+                        <widget class="KPushButton">
                             <property name="name">
                                 <cstring>m_qbuttonSplit</cstring>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>50</width>
-                                    <height>0</height>
-                                </size>
-                            </property>
-                            <property name="maximumSize">
-                                <size>
-                                    <width>50</width>
-                                    <height>32767</height>
-                                </size>
                             </property>
                             <property name="text">
                                 <string>&amp;Split</string>
@@ -637,17 +627,11 @@
         </spacer>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>Layout2</cstring>
+                <cstring>layout10</cstring>
             </property>
             <hbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
-                </property>
-                <property name="margin">
-                    <number>0</number>
-                </property>
-                <property name="spacing">
-                    <number>6</number>
                 </property>
                 <spacer>
                     <property name="name">
@@ -661,23 +645,20 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>20</width>
-                            <height>0</height>
+                            <width>400</width>
+                            <height>16</height>
                         </size>
                     </property>
                 </spacer>
-                <widget class="QPushButton">
+                <widget class="KPushButton">
                     <property name="name">
                         <cstring>m_qbuttonOK</cstring>
                     </property>
                     <property name="text">
                         <string>&amp;OK</string>
                     </property>
-                    <property name="default">
-                        <bool>true</bool>
-                    </property>
                 </widget>
-                <widget class="QPushButton">
+                <widget class="KPushButton">
                     <property name="name">
                         <cstring>m_qbuttonCancel</cstring>
                     </property>
@@ -791,14 +772,11 @@
     <tabstop>m_kmoneyeditAmount</tabstop>
     <tabstop>m_qcheckboxEstimate</tabstop>
     <tabstop>m_category</tabstop>
-    <tabstop>m_qbuttonSplit</tabstop>
     <tabstop>m_qlineeditMemo</tabstop>
     <tabstop>m_qcheckboxAuto</tabstop>
     <tabstop>m_qcheckboxEnd</tabstop>
     <tabstop>m_qlineeditRemaining</tabstop>
     <tabstop>m_kdateinputFinal</tabstop>
-    <tabstop>m_qbuttonOK</tabstop>
-    <tabstop>m_qbuttonCancel</tabstop>
 </tabstops>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
@@ -810,6 +788,9 @@
     <includehint>kmymoneypayee.h</includehint>
     <includehint>kmymoneyedit.h</includehint>
     <includehint>kmymoneycategory.h</includehint>
+    <includehint>kpushbutton.h</includehint>
     <includehint>kmymoneydateinput.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kpushbutton.h</includehint>
 </includehints>
 </UI>

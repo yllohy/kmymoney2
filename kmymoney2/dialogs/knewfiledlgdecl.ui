@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
 <class>KNewFileDlgDecl</class>
 <widget class="QDialog">
     <property name="name">
@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>560</width>
-            <height>461</height>
+            <width>585</width>
+            <height>464</height>
         </rect>
     </property>
     <property name="caption">
@@ -66,12 +66,10 @@
                         <cstring>TextLabel1_2</cstring>
                     </property>
                     <property name="text">
-                        <string>Creating user details for future retrieval.
+                        <string>Use this dialog to enter personal information about yourself.
 
-There are no required fields in this form, however, in the future this
-information may expand to cover such details as whether you own a
-credit card, and will then be used to create forecasts and budgets to
-suit YOUR needs.</string>
+All information is optional and is provided to personalise
+your KMyMoney file.</string>
                     </property>
                 </widget>
             </hbox>
@@ -351,19 +349,30 @@ suit YOUR needs.</string>
                 </widget>
             </vbox>
         </widget>
+        <spacer>
+            <property name="name">
+                <cstring>spacer2</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>20</width>
+                    <height>40</height>
+                </size>
+            </property>
+        </spacer>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>Layout9</cstring>
+                <cstring>layout10</cstring>
             </property>
             <hbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
-                </property>
-                <property name="margin">
-                    <number>0</number>
-                </property>
-                <property name="spacing">
-                    <number>6</number>
                 </property>
                 <spacer>
                     <property name="name">
@@ -377,28 +386,25 @@ suit YOUR needs.</string>
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>20</width>
-                            <height>0</height>
+                            <width>360</width>
+                            <height>16</height>
                         </size>
                     </property>
                 </spacer>
-                <widget class="QPushButton">
+                <widget class="KPushButton">
                     <property name="name">
                         <cstring>okBtn</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;OK</string>
-                    </property>
-                    <property name="default">
-                        <bool>true</bool>
+                        <string>ok</string>
                     </property>
                 </widget>
-                <widget class="QPushButton">
+                <widget class="KPushButton">
                     <property name="name">
                         <cstring>cancelBtn</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;Cancel</string>
+                        <string>cancel</string>
                     </property>
                 </widget>
             </hbox>
@@ -406,4 +412,8 @@ suit YOUR needs.</string>
     </vbox>
 </widget>
 <layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+</includehints>
 </UI>

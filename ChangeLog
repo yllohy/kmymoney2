@@ -1,3 +1,9 @@
+2003-07-29 Michael Edwardes <mte@users.sourceforge.net>
+  * Add icons to the edit schedule dialog.
+  * Added icons to the schedule dialog.
+  * Added icons to the new file dialog, schedule view.
+  * Use colours in the schedule list.
+ 
 2003-07-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * disable save button and menu entry if data in engine is unchanged
   * fix memory leak in KLedgerView
