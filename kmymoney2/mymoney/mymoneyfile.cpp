@@ -425,6 +425,13 @@ void MyMoneyFile::addMajorCategory(const bool income, const QString& val)
   }
 
   MyMoneyCategory *data = new MyMoneyCategory(income, val);
+  int i = 0;
+  for (data=m_categoryList.first(); data!=0; data=m_categoryList.next(),i++) {
+    if (data->name() >= val) {
+			m_categoryList.insert(i,data);
+      return;
+    }
+  }
   m_categoryList.append(data);
   m_dirty=true;
 }
@@ -443,6 +450,13 @@ void MyMoneyFile::addMinorCategory(const bool income, const QString& major, cons
   }
 
   MyMoneyCategory *newData = new MyMoneyCategory(income, major, minor);
+  int i = 0;
+  for (data=m_categoryList.first(); data!=0; data=m_categoryList.next(),i++) {
+    if (data->name() >= major) {
+			m_categoryList.insert(i,newData);
+      return;
+    }
+  }
   m_categoryList.append(newData);
   m_dirty=true;
 }
@@ -461,6 +475,13 @@ void MyMoneyFile::addCategory(const bool income, const QString& major, QStringLi
   }
 
   MyMoneyCategory *newData = new MyMoneyCategory(income, major, minors);
+  int i = 0;
+  for (data=m_categoryList.first(); data!=0; data=m_categoryList.next(),i++) {
+    if (data->name() >= major) {
+			m_categoryList.insert(i,newData);
+			return;
+    }
+  }
   m_categoryList.append(newData);
   m_dirty=true;
 }
