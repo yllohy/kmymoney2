@@ -30,6 +30,7 @@
 
 class KMyMoney2App;
 class KMyMoneyView;
+class KMyMoneyViewBase;
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -57,7 +58,24 @@ public:
     */
   KPopupMenu*   accountContextMenu();
 
-  QFrame* addPage(const QString& item, const QString& header, const QPixmap& pixmap);
+  /**
+    * This method returns a pointer to a newly created view
+    * with title @p item and icon @p pixmap.
+    *
+    * @param item Name of view
+    * @param pixmap icon of view
+    * @return pointer to KMyMoneyViewBase object
+    */
+  KMyMoneyViewBase* addPage(const QString& item, const QPixmap& pixmap);
+
+  /**
+    * This method allows to add a widget to the view
+    * created with addPage()
+    *
+    * @param view pointer to view object
+    * @param w pointer to widget
+    */
+  void addWidget(KMyMoneyViewBase* view, QWidget* w);
 
 private:
   KMyMoney2App*    m_app;

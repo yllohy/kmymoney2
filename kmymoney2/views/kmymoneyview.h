@@ -55,6 +55,7 @@ class IMyMoneyStorageFormat;
 class MyMoneyTransaction;
 class KInvestmentView;
 class KReportsView;
+class KMyMoneyViewBase;
 
 /**
   * This class represents the view of the MyMoneyFile which contains
@@ -299,6 +300,10 @@ public:
 
   KPopupMenu* accountContextMenu(void) const { return m_accountMenu; };
 
+  KMyMoneyViewBase* addPage(const QString& title, const QPixmap& pixmap = QPixmap());
+
+  void addWidget(QWidget* w);
+
 public slots:
   /**
     * This slot writes information about the page passed as argument @p widget
@@ -530,4 +535,25 @@ signals:
   void viewStateChanged(bool enabled);
 };
 
+class kMyMoneyTitleLabel;
+
+/**
+  * This class is an abstract base class that all specific views
+  * should be based on.
+  */
+class KMyMoneyViewBase : public QWidget
+{
+  Q_OBJECT
+public:
+  KMyMoneyViewBase(QWidget* parent, const char *name, const QString& title);
+  virtual ~KMyMoneyViewBase() {};
+
+  void setTitle(const QString& title);
+  QVBoxLayout* layout(void) const { return m_viewLayout; }
+  void addWidget(QWidget* w);
+
+protected:
+  kMyMoneyTitleLabel*    m_titleLabel;
+  QVBoxLayout*           m_viewLayout;
+};
 #endif

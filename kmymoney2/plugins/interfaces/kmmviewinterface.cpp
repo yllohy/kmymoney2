@@ -42,7 +42,14 @@ KPopupMenu* KMyMoneyPlugin::KMMViewInterface::accountContextMenu(void)
   return m_view->accountContextMenu();
 }
 
-QFrame* KMyMoneyPlugin::KMMViewInterface::addPage(const QString& item, const QString& header, const QPixmap& pixmap)
+KMyMoneyViewBase* KMyMoneyPlugin::KMMViewInterface::addPage(const QString& item, const QPixmap& pixmap)
 {
-  return m_view->addPage(item, header, pixmap);
+  return m_view->addPage(item, pixmap);
 }
+
+void KMyMoneyPlugin::KMMViewInterface::addWidget(KMyMoneyViewBase* view, QWidget* w)
+{
+  if(view && w)
+    view->addWidget(w);
+}
+

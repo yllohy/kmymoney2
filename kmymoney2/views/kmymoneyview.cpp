@@ -2448,3 +2448,56 @@ void KMyMoneyView::slotPrintView(void)
   if(pageIndex(m_reportsViewFrame) == activePageIndex())
     m_reportsView->slotPrintView();
 }
+
+KMyMoneyViewBase* KMyMoneyView::addPage(const QString& title, const QPixmap& pixmap)
+{
+  QFrame* frm = KJanusWidget::addVBoxPage(title, title, pixmap);
+  return new KMyMoneyViewBase(frm, title.latin1(), title);
+}
+
+/* ------------------------------------------------------------------------ */
+/*                 KMyMoneyViewBase                                         */
+/* ------------------------------------------------------------------------ */
+
+// ----------------------------------------------------------------------------
+// QT Includes
+
+#include <qlayout.h>
+
+// ----------------------------------------------------------------------------
+// KDE Includes
+
+// ----------------------------------------------------------------------------
+// Project Includes
+
+#include "../widgets/kmymoneytitlelabel.h"
+
+KMyMoneyViewBase::KMyMoneyViewBase(QWidget* parent, const char* name, const QString& title) :
+  QWidget(parent, name)
+{
+  m_viewLayout = new QVBoxLayout(this);
+  m_viewLayout->setSpacing( 6 );
+  m_viewLayout->setMargin( 11 );
+
+  m_titleLabel = new kMyMoneyTitleLabel( this, "titleLabel" );
+  m_titleLabel->setMinimumSize( QSize( 100, 30 ) );
+  m_titleLabel->setRightImageFile("pics/titlelabel_background.png" );
+  m_titleLabel->setText(title);
+  m_viewLayout->addWidget( m_titleLabel );
+
+  QFrame* titleLine = new QFrame( this, "titleLine" );
+  titleLine->setFrameShape( QFrame::HLine );
+  titleLine->setFrameShadow( QFrame::Sunken );
+  titleLine->setFrameShape( QFrame::HLine );
+  m_viewLayout->addWidget( titleLine );
+}
+
+void KMyMoneyViewBase::setTitle(const QString& title)
+{
+  m_titleLabel->setText(title);
+}
+
+void KMyMoneyViewBase::addWidget(QWidget* w)
+{
+  m_viewLayout->addWidget(w);
+}
