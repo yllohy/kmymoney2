@@ -42,7 +42,7 @@ class MyMoneyBank;
   * @see MyMoneyTransaction
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: mymoneyaccount.h,v 1.17 2001/08/29 22:57:16 mte Exp $
+  * $Id: mymoneyaccount.h,v 1.18 2001/09/30 08:44:15 ipwizard Exp $
   *
   * @short Representation of an account which holds transactions.
 **/
@@ -87,12 +87,12 @@ private:
   bool findTransactionPosition(const MyMoneyTransaction& transaction, unsigned int&);
 
   // QIF date formatter methods
-  int convertQIFDate(const QString buffer, const QString format, int *da, int *mo, int *ye);
+  int convertQIFDate(const QString buffer, const QString format, const int apostrophe, int *da, int *mo, int *ye);
   int to_days(const QString buffer, int dcount);
   int to_months(const QString buffer, int mcount);
   int month_to_no(const QString s_number);
 //  void strupper(char *buffer);
-  int to_year(const QString buffer, int ycount);
+  int to_year(const QString buffer, int ycount, char delimiter, int apostrophe);
 //  char *itoa(int num, char *buffer);
 //  int str_has_alpha(const char *buffer, int len);
 //  int buffer_contains(const char *buffer, char let);
@@ -398,7 +398,7 @@ public:
   MyMoneyBank *bank(void) { return m_parent; }
 
   /** No descriptions */
-  bool readQIFFile(const QString& name, const QString& dateFormat, int& transCount, int& catCount);
+  bool readQIFFile(const QString& name, const QString& dateFormat, const int apostrophe, int& transCount, int& catCount);
 
   /** No descriptions */
   bool writeQIFFile(const QString& name, const QString& dateFormat, bool expCat,bool expAcct,

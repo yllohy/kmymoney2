@@ -302,7 +302,7 @@ void MyMoneyAccount::setDescription(const QString& description) { m_qstringDescr
 void MyMoneyAccount::setLastReconcile(const QDate& date) { m_qdateLastReconcile = date; if (m_parent) m_parent->file()->setDirty(true); }
 
 /** No descriptions */
-bool MyMoneyAccount::readQIFFile(const QString& name, const QString& dateFormat, int& transCount, int& catCount)
+bool MyMoneyAccount::readQIFFile(const QString& name, const QString& dateFormat, const int apostrophe, int& transCount, int& catCount)
 {
   bool catmode = false;
   bool transmode = false;
@@ -428,7 +428,7 @@ bool MyMoneyAccount::readQIFFile(const QString& name, const QString& dateFormat,
               int day=0, month=0, year=0;
               char *buffer = (char*)date.latin1();
               char *format = (char*)dateFormat.latin1();
-              int res = convertQIFDate(buffer, format, &day, &month, &year);
+              int res = convertQIFDate(buffer, format, apostrophe, &day, &month, &year);
               qDebug("day: %d, month: %d, year %d", day, month, year);
               qDebug("res = %s", getQIFDateFormatErrorString(res));
               QDate transdate(year, month, day);
@@ -437,7 +437,8 @@ bool MyMoneyAccount::readQIFFile(const QString& name, const QString& dateFormat,
               if(dateFormat == "MM/DD'YY")
               {
                 slash = date.find("/");             
-                apost = date.find("'");
+                apost = date.find("'");                      use_current=1;
+
                 QString month = date.left(slash);
                 QString day = date.mid(slash + 1,2);
                 day = day.stripWhiteSpace();
@@ -743,9 +744,10 @@ bool MyMoneyAccount::writeQIFFile(const QString& name, const QString& dateFormat
 // Doesn't do any sanity checks on the days, months or years e.g
 // days could be 7 or 78.  Months could be 3 or 83.  Both can't be
 // > 99 e.g only 2 digits.
-int MyMoneyAccount::convertQIFDate(const QString buffer, const QString format, int *da, int *mo, int *ye)
+int MyMoneyAccount::convertQIFDate(const QString buffer, const QString format, const int apostrophe, int *da, int *mo, int *ye)
 {
   int result=0;
+  char delimiter = 0;
 
   *da = *mo = *ye = 0;
   
@@ -792,21 +794,19 @@ int MyMoneyAccount::convertQIFDate(const QString buffer, const QString format, i
               break;
             case 'y':
               while (format[nFormatCount]=='y') { nFormatCount++; y_count++; }
-              if (isdigit(buffer[buf_count+y_count]) &&
-                !buffer.contains('\''))
-                result = 14;
-              else {
-                *ye = to_year(buffer.mid(buf_count, y_count), y_count);
-                if (*ye>0)
-                  buf_count += y_count;
-                else
-                  result = 3;
-              }
+              *ye = to_year(buffer.mid(buf_count, y_count), y_count, delimiter, apostrophe);
+              if (*ye>0)
+                buf_count += y_count;
+              else
+                result = 3;
               break;
           }
           break;
         default:
-          if (format[nFormatCount]==buffer[buf_count]) {
+          // must match exactly or / is required and ' is found
+          if (format[nFormatCount]==buffer[buf_count]
+          || (format[nFormatCount] == '/' && buffer[buf_count] == '\'')) {
+            delimiter = buffer[buf_count];
             buf_count++;
             nFormatCount++;
           } else {
@@ -1001,58 +1001,57 @@ void MyMoneyAccount::strupper(char *buffer)
   }
 }
 */
-int MyMoneyAccount::to_year(const QString buffer, int ycount)
+int MyMoneyAccount::to_year(const QString buffer, int ycount, char delimiter, int apostrophe)
 {
-  int i=0;
-//  int k=0;
-  int use_current=0;
-  int l_count=0;
-
-  if (buffer[0]=='\'') {
-    use_current=1;
-    i=1;
-    l_count = ycount+1;
-  } else {
-    i=0;
-    l_count = ycount;
-  }
-    
-  int current = 20; // CHANGE CHANGE CHANGE !
-
-  QString qstringNumber;
   bool ok=false;
   int result=-1;
-
-  if (use_current)
-    qstringNumber = buffer.mid(1);
-  else
-    qstringNumber = buffer;
-  
   QString qstringConv;
 
-  switch (ycount) {
-    case 1:
-      result = -1;
-    case 2:
-      if (use_current)
-        qstringConv = QString::number(current);
-      else
-        qstringConv = QString::number(current-1);
+  result = buffer.toInt(&ok);
+  if(ok) {
+    switch (ycount) {
+      case 2:
+        if(ok) {
+          switch(apostrophe) {
+            case 0:   // ' is 1901-1949, / is 1950-2026
+              if((result < 50 && delimiter == '\'')
+              || (delimiter == '/' && result > 49))
+                qstringConv = "19";
+              else
+                qstringConv = "20";
+              break;
 
-      qstringConv += qstringNumber;
-      result = qstringNumber.toInt(&ok);
-      if (!ok)
-        result = -1;
-      break;
-    case 3:
-      return -1;
-    case 4:
-      result = qstringNumber.toInt(&ok);
-      if (!ok)
-        result = -1;
-      break;
-  }
+            case 1:   // ' is 1900-1999, / is 2000-2099
+              if(delimiter == '\'')
+                qstringConv = "19";
+              else
+                qstringConv = "20";
+              break;
 
+            case 2:   // ' is 2000-2099, / is 1900-1999
+              if(delimiter == '\'')
+                qstringConv = "20";
+              else
+                qstringConv = "19";
+              break;
+          }
+        }
+
+        qstringConv += buffer;
+        result = qstringConv.toInt(&ok);
+        if (!ok)
+          result = -1;
+        break;
+
+      case 4:     // everything's already done
+        break;
+
+      default:    // and every other length is invalid
+        result = -1;
+        break;
+    }
+  } else
+    result = -1;
   return result;
 }
 
