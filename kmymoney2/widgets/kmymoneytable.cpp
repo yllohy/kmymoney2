@@ -159,6 +159,13 @@ void kMyMoneyTable::paintCell(QPainter *p, int row, int col, const QRect& r, boo
   }
 
   p->setFont(config->readFontEntry("listCellFont", &defaultFont));
+  bool bLastTransaction = (row >= numRows()-2);
+  if (bLastTransaction && config->readBoolEntry("TextPrompt", true)) {
+    QFont qfontItalic = p->font();
+//    qfontItalic.setPointSize(qfontItalic.pointSize()-2);
+    qfontItalic.setItalic(true);
+    p->setFont(qfontItalic);
+  }
 	
   QString firsttext = text(row, col);
   QString qstringCategory;

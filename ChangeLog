@@ -1,3 +1,9 @@
+2001-07-27 Michael Edwardes <mte@users.sourceforge.net>
+  * Added default text to prompt the user in the register view.
+  * Fixed the seg fault i introduced into the register view.
+  * Added an option to the settings dialog to show the textual prompt.
+  * Removed balance display when viewing the searched transactions.
+
 2001-07-26 Michael Edwardes <mte@users.sourceforge.net>
   * Added a qstring operator to the mymoney class.
   * Added support for editing transactions when in search mode.

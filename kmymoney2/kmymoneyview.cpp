@@ -822,7 +822,7 @@ void KMyMoneyView::viewTransactionList(void)
 
 
   qDebug("kmymoneyview::view transactionlist");
-  m_mainView->initTransactionView(&m_file, *pBank, *pAccount, pAccount->getTransactionList(), KTransactionView::NORMAL);
+  m_mainView->getTransactionView()->init(&m_file, *pBank, *pAccount, *pAccount->getTransactionList(), KTransactionView::NORMAL);
   m_mainView->viewTransactionList();
   emit transactionOperations(true);
 }
@@ -955,7 +955,7 @@ void KMyMoneyView::doTransactionSearch()
       t->memo().latin1(),
       t->amount().amount());
 */
-  m_mainView->initTransactionView(&m_file, *pBank, *pAccount, &m_transactionList, KTransactionView::SUBSET);
+  m_mainView->getTransactionView()->init(&m_file, *pBank, *pAccount, m_transactionList, KTransactionView::SUBSET);
   m_mainView->viewTransactionList();
   emit transactionOperations(true);
 }

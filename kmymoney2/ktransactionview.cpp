@@ -312,7 +312,6 @@ void KTransactionView::loadPayees()
   m_payee->insertStringList(payeelist);
   KCompletion *payeecomp = m_payee->completionObject();
   payeecomp->setItems(payeelist);
-
 }
 
 void KTransactionView::slotFocusChange(int row, int col, int button, const QPoint&  point)
@@ -324,7 +323,7 @@ void KTransactionView::slotFocusChange(int row, int col, int button, const QPoin
   int realrow = transrow * NO_ROWS;
 
   // Can't add transactions in search mode
-  if (m_date->isVisible() || (m_viewType!=NORMAL && (transrow >= m_transactions->count())))
+  if (m_date->isVisible() || (m_viewType!=NORMAL && (transrow >= m_transactions.count())))
     return;
 	
 	if (row > (transactionsTable->numRows()-2))  // make sure there is room for the input widgets
@@ -336,9 +335,9 @@ void KTransactionView::slotFocusChange(int row, int col, int button, const QPoin
 	m_currentpos = point;
   if ((transrow != transactionsTable->numRows()-1) && (transactionsTable->numRows()>=1)) {
 		if(button == 1) {
-      if(m_transactions->count() > transrow)
+      if(m_transactions.count() > transrow)
       {
-       	switch (m_transactions->at(transrow)->method()) {
+       	switch (m_transactions.at(transrow)->method()) {
         	case MyMoneyTransaction::Cheque:
 						m_method->setCurrentItem(0);
           	break;
@@ -357,58 +356,40 @@ void KTransactionView::slotFocusChange(int row, int col, int button, const QPoin
       	}
 			}
       transactionsTable->setCellWidget(realrow, 0,m_date);
-	  //m_date->setGeometry(transactionsTable->cellGeometry(realrow,0));
       m_date->show();
       transactionsTable->setCellWidget(realrow ,1,m_method);
-	  //m_method->setGeometry(transactionsTable->cellGeometry(realrow,1));
       m_method->show();
       transactionsTable->setCellWidget(realrow ,2,m_payee);
-	  //m_payee->setGeometry(transactionsTable->cellGeometry(realrow,2));
       m_payee->show();
       transactionsTable->setCellWidget(realrow ,4,m_payment);
-	  //m_payment->setGeometry(transactionsTable->cellGeometry(realrow,4));
       m_payment->show();
       transactionsTable->setCellWidget(realrow ,5,m_withdrawal);
-	  //m_withdrawal->setGeometry(transactionsTable->cellGeometry(realrow,5));
       m_withdrawal->show();
       transactionsTable->setCellWidget(realrow + 1 ,1,m_number);
-	  //m_number->setGeometry(transactionsTable->cellGeometry(realrow + 1,1));
       transactionsTable->setCellWidget(realrow + 1 ,2,m_hlayout);
-      //transactionsTable->setCellWidget(realrow + 1, 2, m_category);
-      //m_category->show();
-      //transactionsTable->setCellWidget(realrow + 2, 2, m_memo);
-      //m_memo->show();
 	
       m_hlayout->setGeometry(transactionsTable->cellGeometry(realrow + 1,2));
       m_number->show();
       m_hlayout->show();
-      //m_category->show();
-	  //m_memo->show();
       transactionsTable->setCellWidget(realrow + 1 ,4,m_enter);
-	  //m_enter->setGeometry(transactionsTable->cellGeometry(realrow + 1,4));
       m_enter->show();
       transactionsTable->setCellWidget(realrow + 1 ,5,m_cancel);
-	  //m_cancel->setGeometry(transactionsTable->cellGeometry(realrow + 1,5));
       m_cancel->show();
       transactionsTable->setCellWidget(realrow + 1 ,6,m_delete);
-	  //m_delete->setGeometry(transactionsTable->cellGeometry(realrow + 1,6));
       m_delete->show();
       updateInputLists();
-      if(m_transactions->count() > transrow)
+      if(m_transactions.count() > transrow)
       {
-	      setInputData(*m_transactions->at(transrow));
+	      setInputData(*m_transactions.at(transrow));
 			}
 			else
 			{
        	clearInputData();
 			}
-//     	viewMode();
-
     }
     m_index = transrow;
 
     if (button>=2) {
-      m_index=transrow;
       KPopupMenu setAsMenu(i18n("Set As..."), this);
       setAsMenu.insertItem(i18n("Unreconciled (default)"), this, SLOT(slotTransactionUnReconciled()));
       setAsMenu.insertItem(i18n("Cleared"), this, SLOT(slotTransactionCleared()));
@@ -438,7 +419,7 @@ void KTransactionView::slotTransactionDelete()
 	
 	
   QString prompt;
-  MyMoneyTransaction *transaction = m_transactions->at(m_index);
+  MyMoneyTransaction *transaction = m_transactions.at(m_index);
   if (!transaction)
     return;
 
@@ -504,7 +485,7 @@ void KTransactionView::slotTransactionUnReconciled()
 	if(pAccount == 0)
 		return;
 
-  MyMoneyTransaction *transaction = m_transactions->at(m_index);
+  MyMoneyTransaction *transaction = m_transactions.at(m_index);
   if (!transaction)
     return;
 
@@ -527,7 +508,7 @@ void KTransactionView::slotTransactionCleared()
 	if(pAccount == 0)
 		return;
 
-  MyMoneyTransaction *transaction = m_transactions->at(m_index);
+  MyMoneyTransaction *transaction = m_transactions.at(m_index);
   if (!transaction)
     return;
 
@@ -537,7 +518,7 @@ void KTransactionView::slotTransactionCleared()
 }
 
 void KTransactionView::init(MyMoneyFile *file, MyMoneyBank bank, MyMoneyAccount account,
-  QList<MyMoneyTransaction> *transList, viewingType type)
+  QList<MyMoneyTransaction>& transList, viewingType type)
 {
   m_filePointer = file;
   m_bankIndex = bank;
@@ -600,7 +581,7 @@ void KTransactionView::enterClicked()
 
   QDate newdate = m_date->getQDate();
 	QString newcategory = m_category->currentText();
-  int commaindex;
+//  int commaindex;
  	MyMoneyMoney newamount;
 
     // Get amount from payment or withdrawal Line Edit
@@ -684,11 +665,10 @@ void KTransactionView::enterClicked()
   int greatindex = m_category->currentText().find(">");
 	QString transferAccount = "";
 
-  MyMoneyTransaction *transaction = m_transactions->at(m_index);
-	
-	if(m_index < m_transactions->count())
+	if(m_index < m_transactions.count())
 	{
-		newstate = m_transactions->at(m_index)->state();
+    MyMoneyTransaction *transaction = m_transactions.at(m_index);
+		newstate = transaction->state();
 
 	  QDate transdate;
 	  MyMoneyMoney transamount;
@@ -724,13 +704,13 @@ void KTransactionView::enterClicked()
 			  }
 		  }		
 	  }
-//   	  account->removeTransaction(*m_transactions->at(m_index));
+//   	  account->removeTransaction(*m_transactions.at(m_index));
 //    	account->addTransaction(newmethod, m_number->text(), m_memo->text(),
 //            newamount, newdate, catmajor, catminor, "",
 //            m_payee->currentText(), "", "", newstate);
 	
     // Look for it, in case we are searching, use the new 'parent' methods
-    MyMoneyAccount *mymoneyaccount = m_transactions->at(m_index)->account();
+    MyMoneyAccount *mymoneyaccount = m_transactions.at(m_index)->account();
     if (!mymoneyaccount) {
       qDebug("Aaaaaaaaaaaaaarrrrrrrrrrrrrggggggggggggghhhhhhhhhhhhhhh!");
       return;
@@ -752,7 +732,7 @@ void KTransactionView::enterClicked()
 	  transaction->setCategoryMinor(catminor);
 	
 	  // update the m_transactions one
-	  transaction = m_transactions->at(m_index);
+	  transaction = m_transactions.at(m_index);
 	  transaction->setDate(newdate);
 	  transaction->setMethod(newmethod);
 	  transaction->setPayee(m_payee->currentText());
@@ -771,7 +751,7 @@ void KTransactionView::enterClicked()
                             newamount, newdate, catmajor, catminor, "",
   													m_payee->currentText(), "", "", newstate);
 	}
-  qDebug("Transaction Added");
+
   if((lessindex != -1) && (greatindex != -1) && (m_method->currentItem() == 2))
   {
   	transferAccount =  m_category->currentText();
@@ -815,14 +795,12 @@ void KTransactionView::enterClicked()
 		}		
 	}
 
-	
 	useall = false;
   usedate = true;
   userow = false;
   m_filePointer->setDirty(true);
   updateTransactionList(-1, -1);
 	emit transactionListChanged();
-
 }
 
 void KTransactionView::clearInputData()
@@ -927,9 +905,9 @@ void KTransactionView::updateTransactionList(int row, int col)
     m_index=-1;
 
   int i = 0;
-    transactionsTable->setNumRows((m_transactions->count() * NO_ROWS) + 2);
-    for (transaction=m_transactions->first(); transaction; transaction=m_transactions->next(), i++) {
-//      transactionsTable->setEnabled(false);
+  transactionsTable->setNumRows((m_transactions.count() * NO_ROWS) + 2);
+
+    for (transaction=m_transactions.first(); transaction; transaction=m_transactions.next(), i++) {
       QString colText;
       if (transaction->type()==MyMoneyTransaction::Credit)
         balance += transaction->amount();
@@ -940,9 +918,6 @@ void KTransactionView::updateTransactionList(int row, int col)
          (usedate == true && transaction->date() >= m_date->getQDate()) ||
          (userow == true && m_index >= i))
       {
-//        qDebug("useall=%d, usedate=%d, userow=%d, m_date=%s, m_index=%d, i=%d",
-//          useall, usedate, userow, m_date->getQDate().toString().latin1(), m_index, i);
-
 
       switch (transaction->method()) {
         case MyMoneyTransaction::Cheque:
@@ -971,7 +946,6 @@ void KTransactionView::updateTransactionList(int row, int col)
 
       transactionsTable->setText(rowCount, 2, transaction->payee());
 
-
 			if(transaction->categoryMinor() == "")
 			{
       	colText.sprintf("%s", transaction->categoryMajor().latin1());
@@ -982,14 +956,8 @@ void KTransactionView::updateTransactionList(int row, int col)
 			}
       colText = colText + "|" + transaction->memo();
 
-// Doesn't work
-//      if (transaction->memo().length()>1)
-//        transactionsTable->setItem2(transaction->memo());
       if (NO_ROWS==2)
         transactionsTable->setText(rowCount + 1, 2, colText);
-
-      //if (NO_ROWS==3)
-      //  transactionsTable->setText(rowCount + 2, 2, transaction->memo());
 
       QString cLet;
       switch (transaction->state()) {
@@ -1011,42 +979,37 @@ void KTransactionView::updateTransactionList(int row, int col)
       transactionsTable->setText(rowCount, 4,
         ((transaction->type()==MyMoneyTransaction::Debit) ? KGlobal::locale()->formatNumber(transaction->amount().amount()) : QString("")));
 
-      transactionsTable->setText(rowCount, 6, KGlobal::locale()->formatNumber(balance.amount()));
+      if (m_viewType==NORMAL)
+        transactionsTable->setText(rowCount, 6, KGlobal::locale()->formatNumber(balance.amount()));
+      else
+        transactionsTable->setText(rowCount, 6, i18n("N/A"));
 
     }  // useall etc check
       rowCount += NO_ROWS;
 			currentBalance = KGlobal::locale()->formatMoney(balance.amount());
     }
 
-/*    // Add the last empty row
-    if (NO_ROWS==1) {
-      transactionsTable->setText(rowCount+2, 0, "hi");
-    }
-    else if (NO_ROWS==2) {
-      transactionsTable->setText(rowCount+1, 0, "");
-    }
-*/
-    transactionsTable->ensureCellVisible(rowCount+1, 0);
+		if (m_viewType==NORMAL) {
+      transactionsTable->ensureCellVisible(rowCount+1, 0);
 
-/*
-    transactionsTable->setText(rowCount, 1, "");
-    transactionsTable->setText(rowCount + 1, 1, "");
-    transactionsTable->setText(rowCount, 0, "");
-    transactionsTable->setText(rowCount + 1, 0, "");
-    transactionsTable->setText(rowCount, 2, "");
-    transactionsTable->setText(rowCount + 1, 2, "");
-    transactionsTable->setText(rowCount, 3, "");
-    transactionsTable->setText(rowCount + 1, 3, "");
-    transactionsTable->setText(rowCount, 4, "");
-    transactionsTable->setText(rowCount + 1, 4, "");
-    transactionsTable->setText(rowCount, 5, "");
-    transactionsTable->setText(rowCount + 1, 5, "");
-    transactionsTable->setText(rowCount, 6, "");
-    transactionsTable->setText(rowCount + 1, 6, "");
-*/
-		lblBalanceAmt->setText(currentBalance);
-    lblBalanceAmt->setFont(config->readFontEntry("listCellFont", &defaultFont));
-//    transactionsTable->setEnabled(true);
+      if (config->readBoolEntry("TextPrompt", true)) {
+        transactionsTable->setText(rowCount, 0, "Date");
+        transactionsTable->setText(rowCount, 1, "Method");
+        transactionsTable->setText(rowCount, 2, "Click on a field to enter a transaction");
+        transactionsTable->setText(rowCount, 3, "?");
+        transactionsTable->setText(rowCount, 4, "Amount");
+        transactionsTable->setText(rowCount, 5, "Amount");
+        transactionsTable->setText(rowCount, 6, "");
+        transactionsTable->setText(rowCount+1, 1, "Number");
+        transactionsTable->setText(rowCount+1, 2, "Category|Description");
+      }
+
+  		lblBalanceAmt->setText(currentBalance);
+      lblBalanceAmt->setFont(config->readFontEntry("listCellFont", &defaultFont));
+    } else {
+      transactionsTable->ensureCellVisible(rowCount, 0);
+      lblBalanceAmt->setText(i18n("N/A"));
+    }
 
   } else { // We are just updating a section of it
     QString txt;
@@ -1058,11 +1021,11 @@ void KTransactionView::updateTransactionList(int row, int col)
 		
     switch (col) {
       case 0:
-        transactionsTable->setText(row, col, KGlobal::locale()->formatDate(m_transactions->at(transrow)->date()));
+        transactionsTable->setText(row, col, KGlobal::locale()->formatDate(m_transactions.at(transrow)->date()));
         break;
 
       case 1:
-        switch (m_transactions->at(transrow)->method()) {
+        switch (m_transactions.at(transrow)->method()) {
           case MyMoneyTransaction::Cheque:
             transactionsTable->setText(row, col, i18n("Cheque"));
             break;
@@ -1081,25 +1044,20 @@ void KTransactionView::updateTransactionList(int row, int col)
         }
         break;
 
-/*      case 2:
-        transactionsTable->setText(row, col, m_transactions.at(row)->number());
-        break;
-*/
       case 2:
-/*
   	    if((row % 2) == 0)
         {
-          transactionsTable->setText(realrow, col, m_transactions->at(row)->payee());
+          transactionsTable->setText(row, col, m_transactions.at(row)->payee());
 				}
         else
 				{
-        	txt.sprintf("%s:%s", m_transactions->at(row)->categoryMajor().latin1(), m_transactions->at(transrow)->categoryMinor().latin1());
-        	transactionsTable->setText(realrow + 1, col, txt);
+        	txt.sprintf("%s:%s", m_transactions.at(row)->categoryMajor().latin1(), m_transactions.at(transrow)->categoryMinor().latin1());
+          txt = txt + "|" + m_transactions.at(m_index)->memo();
+        	transactionsTable->setText(row + 1, col, txt);
 				}
-*/
 				break;
       case 3:
-        switch (m_transactions->at(transrow)->state()) {
+        switch (m_transactions.at(transrow)->state()) {
           case MyMoneyTransaction::Unreconciled:
             transactionsTable->setText(row, col, "");
             break;
@@ -1112,15 +1070,13 @@ void KTransactionView::updateTransactionList(int row, int col)
         }
         break;
       case 4:
-        transactionsTable->setText(row, col, KGlobal::locale()->formatNumber(m_transactions->at(transrow)->amount().amount()));
+        transactionsTable->setText(row, col, KGlobal::locale()->formatNumber(m_transactions.at(transrow)->amount().amount()));
         break;
       case 5:
-        transactionsTable->setText(row, col, KGlobal::locale()->formatNumber(m_transactions->at(transrow)->amount().amount()));
+        transactionsTable->setText(row, col, KGlobal::locale()->formatNumber(m_transactions.at(transrow)->amount().amount()));
         break;
     }
   }
-
-  //transactionsTable->ensureCellVisible(rowCount, 0);
 }
 
 void KTransactionView::cancelClicked()
@@ -1161,9 +1117,9 @@ void KTransactionView::deleteClicked()
     return;
 
 
-	if(m_index < m_transactions->count())
+	if(m_index < m_transactions.count())
 	{
-   		account->removeTransaction(*m_transactions->at(m_index));
+   		account->removeTransaction(*m_transactions.at(m_index));
 	}
 	
 

@@ -43,18 +43,10 @@ public:
 	void refreshTransactionView(void);
 	MyMoneyBank currentBank(bool& success);
 	MyMoneyAccount currentAccount(bool& success);
-//	MyMoneyTransaction currentTransaction(bool& success);
-//  void switchInputFocus(MyMoneyTransaction::transactionMethod method);
-//  void setInputDataRead(const MyMoneyTransaction trans);
-//  void setInputDataWrite(const MyMoneyTransaction trans);
   void viewBankList(void);
   void viewTransactionList(void);
   viewType viewing(void) { return m_showing; }
-  void showInputBox(bool val);
-  void initTransactionView(MyMoneyFile *file, const MyMoneyBank bank, const MyMoneyAccount account,
-    QList<MyMoneyTransaction> *theList,
-    KTransactionView::viewingType type
-    );
+
   /** No descriptions */
   KTransactionView* getTransactionView();
 	

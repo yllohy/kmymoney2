@@ -47,7 +47,7 @@
   * @see KDialogBase
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: ksettingsdlg.h,v 1.8 2001/07/22 18:00:00 mte Exp $
+  * $Id: ksettingsdlg.h,v 1.9 2001/07/27 17:46:01 mte Exp $
   *
   * @short A class to manipulate the settings needed for running KMyMoney2
 **/
@@ -74,6 +74,10 @@ private:
   /** Show grid in register ? */
   QCheckBox *m_qcheckboxShowGrid;
 
+  /** Show text in register ? */
+  QCheckBox *m_qcheckboxTextPrompt;
+
+  /** colour options */
   QRadioButton *m_qradiobuttonPerTransaction;
   QRadioButton *m_qradiobuttonOtherRow;
 
@@ -98,7 +102,7 @@ private:
   bool m_bTempColourPerTransaction;
   bool m_bTempStartPrompt;
   bool m_bDoneApply;
-
+  bool m_bTempTextPrompt;
 
 private slots:
   /** Called when OK pressed */
