@@ -651,9 +651,11 @@ protected:
     * (e.g. MyMoneySplit::ActionATM) into the internal used numeric values.
     *
     * @param split const reference to the split
+    * @param t const reference to the transaction
+    *
     * @return KLedgerView::transactionTypeE value of the action
     */
-  int transactionType(const MyMoneySplit& split) const;
+  int transactionType(const MyMoneyTransaction& t, const MyMoneySplit& split) const;
 
   /**
     * This method converts the internal used numeric value for actions

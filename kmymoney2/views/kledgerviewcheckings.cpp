@@ -70,7 +70,7 @@ KLedgerViewCheckings::KLedgerViewCheckings(QWidget *parent, const char *name )
   ledgerLayout->addLayout(m_summaryLayout);
 
   createForm();
-  // make sure, transfers are disabled if required
+  // make sur, transfers are disabled if required
   m_tabTransfer->setEnabled(transfersPossible());
   ledgerLayout->addWidget(m_form);
 
@@ -584,8 +584,8 @@ void KLedgerViewCheckings::fillForm(void)
 
     // setup the fields first
     m_form->tabBar()->blockSignals(true);
-    m_form->tabBar()->setCurrentTab(transactionType(m_split));
-    slotTypeSelected(transactionType(m_split));
+    m_form->tabBar()->setCurrentTab(transactionType(m_transaction, m_split));
+    slotTypeSelected(transactionType(m_transaction, m_split));
     m_form->tabBar()->blockSignals(false);
 
     // fill in common fields
@@ -643,7 +643,7 @@ void KLedgerViewCheckings::fillForm(void)
     }
 
     // then fill in the data depending on the transaction type
-    switch(transactionType(m_split)) {
+    switch(transactionType(m_transaction, m_split)) {
       case Check:
         // receiver
         formTable->setText(1, 1, payee);
@@ -806,7 +806,7 @@ void KLedgerViewCheckings::reloadEditWidgets(const MyMoneyTransaction& t)
     disconnect(m_editCategory, SIGNAL(signalFocusIn()), this, SLOT(slotOpenSplitDialog()));
 
   if(m_editType)
-    m_editType->loadCurrentItem(m_form->tabBar()->indexOf(transactionType(m_split)));
+    m_editType->loadCurrentItem(m_form->tabBar()->indexOf(transactionType(t, m_split)));
 
   try {
     if(!m_split.payeeId().isEmpty())
@@ -892,7 +892,7 @@ void KLedgerViewCheckings::reloadEditWidgets(const MyMoneyTransaction& t)
 
   // for almost all transaction types we have to negate the value
   // exceptions are: deposits and transfers (which are always positive)
-  if(transactionType(m_split) != Deposit)
+  if(transactionType(t, m_split) != Deposit)
     amount = -amount;
   if(m_split.action() == MyMoneySplit::ActionTransfer && amount < 0) {
     amount = -amount;
@@ -937,7 +937,7 @@ void KLedgerViewCheckings::loadEditWidgets(int& transType)
   }
   if(m_transactionPtr != 0) {
     reloadEditWidgets(*m_transactionPtr);
-    transType = transactionType(m_split);
+    transType = transactionType(*m_transactionPtr, m_split);
   } else {
     m_editDate->setDate(m_lastPostDate);
     transType = m_form->tabBar()->currentTab();
@@ -1048,6 +1048,8 @@ void KLedgerViewCheckings::arrangeEditWidgetsInForm(QWidget*& focusWidget, const
     case Transfer: // Transfer
       item = m_form->table()->item(2,1);
       item->setSpan(1, 2);
+  item = m_form->table()->item(1,1);
+  item->setSpan(1, 1);
 
       payeeRow = 2;
       categoryRow = -1;
@@ -1070,6 +1072,7 @@ void KLedgerViewCheckings::arrangeEditWidgetsInForm(QWidget*& focusWidget, const
 
   if(toRow != -1) {
     m_form->table()->setCellWidget(toRow, 1, m_editTo);
+    m_form->table()->setCellWidget(toRow, 2, m_editSplit);
   } else {
     delete m_editTo;
     m_editTo = 0;
@@ -1080,9 +1083,9 @@ void KLedgerViewCheckings::arrangeEditWidgetsInForm(QWidget*& focusWidget, const
     m_form->table()->setCellWidget(categoryRow, 2, m_editSplit);
   } else {
     delete m_editCategory;
-    delete m_editSplit;
+    // delete m_editSplit;
     m_editCategory = 0;
-    m_editSplit = 0;
+    // m_editSplit = 0;
   }
 
   if(nrRow != -1) {
@@ -1340,7 +1343,7 @@ void KLedgerViewCheckings::slotConfigureMoreMenu(void)
       m_moreMenu->setItemEnabled(gotoPayeeId, false);
     }
 
-    if(transactionType(m_split) != Transfer) {
+    if(transactionType(*m_transactionPtr, m_split) != Transfer) {
       m_moreMenu->connectItem(splitEditId, this, SLOT(slotStartEditSplit()));
     } else {
       QString dest;
@@ -1383,7 +1386,7 @@ void KLedgerViewCheckings::slotConfigureContextMenu(void)
       m_contextMenu->changeItem(gotoPayeeId, i18n("Goto payee/receiver"));
       m_contextMenu->setItemEnabled(gotoPayeeId, false);
     }
-    if(transactionType(m_split) != Transfer) {
+    if(transactionType(*m_transactionPtr, m_split) != Transfer) {
       m_contextMenu->connectItem(splitEditId, this, SLOT(slotStartEditSplit()));
     } else {
       QString dest;
@@ -1509,7 +1512,7 @@ void KLedgerViewCheckings::slotOpenSplitDialog(void)
   bool isValidAmount = false;
 
   if(m_transactionFormActive) {
-    isDeposit = transactionType(m_split) == Deposit;
+    isDeposit = transactionType(m_transaction, m_split) == Deposit;
     isValidAmount = m_editAmount->text().length() != 0;
   } else {
     if(m_editPayment->text().length() != 0) {

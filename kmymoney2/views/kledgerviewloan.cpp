@@ -665,7 +665,7 @@ void KLedgerViewLoan::reloadEditWidgets(const MyMoneyTransaction& t)
 
   // for almost all transaction types we have to negate the value
   // exceptions are: deposits and transfers (which are always positive)
-  if(transactionType(m_split) != Deposit)
+  if(transactionType(t, m_split) != Deposit)
     amount = -amount;
   if(m_split.action() == MyMoneySplit::ActionAmortization && amount < 0) {
     amount = -amount;
@@ -689,7 +689,7 @@ void KLedgerViewLoan::loadEditWidgets(int& transType)
 {
   if(m_transactionPtr != 0) {
     reloadEditWidgets(*m_transactionPtr);
-    transType = transactionType(m_split);
+    transType = transactionType(*m_transactionPtr, m_split);
   } else {
     m_editDate->setDate(m_lastPostDate);
 /*
@@ -1019,7 +1019,7 @@ void KLedgerViewLoan::slotConfigureMoreMenu(void)
       m_moreMenu->setItemEnabled(gotoPayeeId, false);
     }
 
-    if(transactionType(m_split) != Transfer) {
+    if(transactionType(*m_transactionPtr, m_split) != Transfer) {
       m_moreMenu->connectItem(splitEditId, this, SLOT(slotStartEditSplit()));
     } else {
       QString dest;
@@ -1067,7 +1067,7 @@ void KLedgerViewLoan::slotConfigureContextMenu(void)
       m_contextMenu->changeItem(gotoPayeeId, i18n("Goto payee/receiver"));
       m_contextMenu->setItemEnabled(gotoPayeeId, false);
     }
-    if(transactionType(m_split) != Transfer) {
+    if(transactionType(*m_transactionPtr, m_split) != Transfer) {
       m_contextMenu->connectItem(splitEditId, this, SLOT(slotStartEditSplit()));
     } else {
       QString dest;
@@ -1102,7 +1102,7 @@ void KLedgerViewLoan::slotOpenSplitDialog(void)
     isDeposit = true;
   }
   
-    isDeposit = transactionType(m_split) == Deposit;
+    isDeposit = transactionType(m_transaction, m_split) == Deposit;
     isValidAmount = m_editAmount->text().length() != 0;
     
   KSplitTransactionDlg* dlg = new KSplitTransactionDlg(m_transaction,

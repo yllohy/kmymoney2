@@ -736,7 +736,7 @@ void KLedgerView::slotAmountChanged(const QString& value)
     if(MyMoneyMoney(value) < 0) {
       QCString accountId;
       MyMoneySplit split;
-      switch(transactionType(m_split)) {
+      switch(transactionType(t, m_split)) {
         case Transfer:
           break;
         case Deposit:
@@ -750,7 +750,7 @@ void KLedgerView::slotAmountChanged(const QString& value)
       }
     }
 
-    switch(transactionType(m_split)) {
+    switch(transactionType(t, m_split)) {
       case Deposit:
         break;
       case Transfer:
@@ -896,7 +896,7 @@ void KLedgerView::slotCategoryChanged(const QString& category)
   try {
     // First, we check if the category/account exists
     QCString id;
-    switch(transactionType(m_split)) {
+    switch(transactionType(t, m_split)) {
       case Transfer:
         id = MyMoneyFile::instance()->nameToAccount(category);
         if(id.isEmpty() && !category.isEmpty()) {
@@ -1360,14 +1360,19 @@ void KLedgerView::slotNewPayee(const QString& payeeName)
   KMyMoneyUtils::newPayee(this, m_editPayee, payeeName);
 }
 
-int KLedgerView::transactionType(const MyMoneySplit& split) const
+int KLedgerView::transactionType(const MyMoneyTransaction& t, const MyMoneySplit& split) const
 {
   if(split.action() == MyMoneySplit::ActionCheck)
     return Check;
   if(split.action() == MyMoneySplit::ActionDeposit)
     return Deposit;
-  if(split.action() == MyMoneySplit::ActionTransfer)
-    return Transfer;
+  if(split.action() == MyMoneySplit::ActionTransfer) {
+    if(t.splitCount() == 2)
+      return Transfer;
+    if(split.value() > 0)
+      return Deposit;
+    return Withdrawal;
+  }
   if(split.action() == MyMoneySplit::ActionWithdrawal)
     return Withdrawal;
   if(split.action() == MyMoneySplit::ActionATM)
