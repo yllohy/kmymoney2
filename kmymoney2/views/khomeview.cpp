@@ -323,6 +323,7 @@ void KHomeView::showAccounts(KHomeView::paymentTypeE type, const QString& header
       // have the preferred flag set
       case MyMoneyAccount::Asset:
       case MyMoneyAccount::Liability:
+      case MyMoneyAccount::Investment:
         // if preferred accounts are requested, then keep in list
         if((*it).value("PreferredAccount") != "Yes"
         || (type & Preferred) == 0) {

@@ -221,7 +221,7 @@ void KInvestmentListItem::update(const QCString& /*id*/)
     // equity_price_history history = equity.priceHistory();
 
     //column 0 (COLUMN_NAME_INDEX) is the name of the stock
-    setText(COLUMN_NAME_INDEX, security.name());
+    setText(COLUMN_NAME_INDEX, m_account.name());
 
     //column 1 (COLUMN_SYMBOL_INDEX) is the ticker symbol
     setText(COLUMN_SYMBOL_INDEX, security.tradingSymbol());

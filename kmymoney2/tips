@@ -107,3 +107,17 @@ an account? You can also make the transaction form visible.
 </html>
 </tip>
 
+<tip category="KMyMoney|General">
+<html>
+<p>...that you can actively support the KMyMoney development team in
+cases that heavily depend on your data? You can save your data in an
+anonymized way for this support.<p>
+Just open your data file and immediately
+select <b>File/Save as ...</b>. In the <b>Save As...</b> dialog
+select the filter <b>Anonymous Files</b> and make sure your file gets
+the extensions <b>.anon.xml</b>. <p>
+To verify, how the data looks like you are about to send away, you can open
+this file in KMyMoney and see how the developers see your data.
+</html>
+</tip>
+

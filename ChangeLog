@@ -1,3 +1,10 @@
+2005-01-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Happy new year to all KMyMoney developers and users!
+  * Show preferred investment accounts on home page
+  * Added tip on anonymous save
+  * Fixed creation of securities - do not override information of existing
+    securities for new stock accounts
+
 2004-12-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed ChangeLog entry to show the correct author
   * Added more price entry logic (manual add, delete, etc.)

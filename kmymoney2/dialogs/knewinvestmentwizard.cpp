@@ -152,21 +152,24 @@ void KNewInvestmentWizard::createObjects(const QCString& parentId)
     }
   }
 
-  // update all relevant attributes
-  m_security.setName(m_investmentName->text());
-  m_security.setTradingSymbol(m_investmentSymbol->text());
-  m_security.setTradingMarket(m_tradingMarket->currentText());
-  m_security.setTradingCurrency(m_tradingCurrencyEdit->security().id());
-  m_security.setValue("kmm-online-source", m_onlineSourceCombo->currentText());
+  // update all relevant attributes only, if we create a stock
+  // account and the security is unknown or we modifiy the security
+  if(m_security.id().isEmpty() || m_createAccount == false) {
+    m_security.setName(m_investmentName->text());
+    m_security.setTradingSymbol(m_investmentSymbol->text());
+    m_security.setTradingMarket(m_tradingMarket->currentText());
+    m_security.setTradingCurrency(m_tradingCurrencyEdit->security().id());
+    m_security.setValue("kmm-online-source", m_onlineSourceCombo->currentText());
 
-  // if the security was not found, we have to create it while not forgetting
-  // to setup the type
-  if(m_security.id().isEmpty()) {
-    m_security.setSecurityType(type);
-    file->addSecurity(m_security);
+    // if the security was not found, we have to create it while not forgetting
+    // to setup the type
+    if(m_security.id().isEmpty()) {
+      m_security.setSecurityType(type);
+      file->addSecurity(m_security);
 
-  } else {
-    file->modifySecurity(m_security);
+    } else {
+      file->modifySecurity(m_security);
+    }
   }
 
   if(m_createAccount) {
