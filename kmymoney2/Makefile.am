@@ -1,9 +1,11 @@
+# SEE BELOW BECAUSE I OVERRIDE LDADD because of the bug
+
 ####### kdevelop will overwrite this part!!! (begin)##########
 bin_PROGRAMS = kmymoney2
-kmymoney2_SOURCES = kstartuplogo.cpp kmymoney2.cpp main.cpp 
-kmymoney2_LDADD   = ./views/libviews.a ./dialogs/libdialogs.a ./mymoney/libmymoney.a ./widgets/libwidgets.a   $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT) $(LIBSOCKET)
+kmymoney2_SOURCES = kstartuplogo.cpp kmymoney2.cpp main.cpp
+kmymoney2_LDADD   = ./mymoney/libmymoney.a ./dialogs/libdialogs.a ./widgets/libwidgets.a ./views/libviews.a  $(LIB_KFILE) $(LIB_KHTML) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT) $(LIBSOCKET)
 
-SUBDIRS = mymoney pics dialogs icons widgets views 
+SUBDIRS = views dialogs mymoney pics icons widgets 
 
 EXTRA_DIST = main.cpp kmymoney2.cpp kmymoney2.h kmymoney2ui.rc kmymoney2.desktop kstartuplogo.cpp kstartuplogo.h default_categories.dat lo16-app-kmymoney2.png lo32-app-kmymoney2.png kmymoney_wizard.png mimetype_kmy_16x16.png mimetype_kmy_32x32.png mimetype_kmy_48x48.png x-kmymoney2.desktop hi16-app-kmymoney2.png hi32-app-kmymoney2.png 
 
@@ -44,7 +46,7 @@ uninstall-local:
 ####### kdevelop will overwrite this part!!! (end)############
 # this 10 paths are KDE specific. Use them:
 # kde_htmldir       Where your docs should go to. (contains lang subdirs)
-# kde_appsdir       Where your application file (.kdelnk) should go to. 
+# kde_appsdir       Where your application file (.kdelnk) should go to.
 # kde_icondir       Where your icon should go to.
 # kde_minidir       Where your mini icon should go to.
 # kde_datadir       Where you install application data. (Use a subdir)
@@ -58,9 +60,14 @@ uninstall-local:
 # set the include path for X, qt and KDE
 INCLUDES= $(all_includes)
 
+#BUG FIX
+kmymoney2_LDADD   = ./views/libviews.a ./dialogs/libdialogs.a ./mymoney/libmymoney.a  ./widgets/libwidgets.a   $(LIB_KFILE) $(LIB_KHTML) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT) $(LIBSOCKET)
+
+
+
 METASOURCES = AUTO
 
-# the library search path. 
+# the library search path.
 kmymoney2_LDFLAGS = $(all_libraries) $(KDE_RPATH)
 
 # Uncomment the following two lines if you add a ui.rc file for your application to make use of
@@ -72,11 +79,11 @@ kmymoney2_LDFLAGS = $(all_libraries) $(KDE_RPATH)
 
 # messages: rc.cpp
 
-# instead of 
+# instead of
 
 # messages:
 
-messages: 
+messages:
 	LIST=`find . -name \*.h -o -name \*.hh -o -name \*.H -o -name \*.hxx -o -name \*.hpp -o -name \*.cpp -o -name \*.cc -o -name \*.cxx -o -name \*.ecpp -o -name \*.C`; \
 	if test -n "$$LIST"; then \
 	 $(XGETTEXT) $$LIST -o $(podir)/kmymoney2.pot; \

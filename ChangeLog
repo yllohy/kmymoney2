@@ -1,6 +1,7 @@
 2002-01-22 Michael Edwardes <mte@users.sourceforge.net>
   * Created a views directory for the different views of mymoney and
     added the relevant classes to that dir.
+  * Initial view files added.
 
 2002-01-18 Kevin Tambascio <ktambascio@users.sourceforge.net>
   * added newline to mymoneytransactionbase.h, because it was causing compiler

@@ -1,5 +1,5 @@
 # Generated automatically from Makefile.in by config.pl.
-# KDE tags expanded automatically by am_edit - $Revision: 1.7 $ 
+# KDE tags expanded automatically by am_edit - $Revision: 1.1 $ 
 # Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
@@ -214,7 +214,7 @@ qt_libraries =
 x_includes = /usr/X11R6/include
 x_libraries = /usr/X11R6/lib
 
-EXTRA_DIST = cfg-mgmt.docbook coding.docbook cvs-examples.docbook error-mgmt.docbook fdl-licence licence.docbook phb.docbook src-examples.docbook 
+EXTRA_DIST = home.html kmymoney2.css 
 mkinstalldirs = $(SHELL) $(top_srcdir)/admin/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
@@ -230,10 +230,10 @@ GZIP_ENV = --best
 all: docs-am  all-redirect
 .SUFFIXES:
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-#>- 	cd $(top_srcdir) && $(AUTOMAKE) --gnu developer-doc/phb/Makefile
+#>- 	cd $(top_srcdir) && $(AUTOMAKE) --gnu kmymoney2/html/Makefile
 #>+ 2
-	cd $(top_srcdir) && $(AUTOMAKE) --gnu developer-doc/phb/Makefile
-	cd $(top_srcdir) && perl admin/am_edit developer-doc/phb/Makefile.in
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu kmymoney2/html/Makefile
+	cd $(top_srcdir) && perl admin/am_edit kmymoney2/html/Makefile.in
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
@@ -245,14 +245,14 @@ TAGS:
 
 distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 
-subdir = developer-doc/phb
+subdir = kmymoney2/html
 
 distdir: $(DISTFILES)
 	here=`cd $(top_builddir) && pwd`; \
 	top_distdir=`cd $(top_distdir) && pwd`; \
 	distdir=`cd $(distdir) && pwd`; \
 	cd $(top_srcdir) \
-	&& $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu developer-doc/phb/Makefile
+	&& $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu kmymoney2/html/Makefile
 	@for file in $(DISTFILES); do \
 	d=$(srcdir); \
 	if test -d $$d/$$file; then \
@@ -338,8 +338,8 @@ docs-am:
 
 #>+ 5
 force-reedit:
-		cd $(top_srcdir) && $(AUTOMAKE) --gnu developer-doc/phb/Makefile
-	cd $(top_srcdir) && perl admin/am_edit developer-doc/phb/Makefile.in
+		cd $(top_srcdir) && $(AUTOMAKE) --gnu kmymoney2/html/Makefile
+	cd $(top_srcdir) && perl admin/am_edit kmymoney2/html/Makefile.in
 
 
 #>+ 2

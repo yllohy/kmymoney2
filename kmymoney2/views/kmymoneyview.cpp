@@ -43,11 +43,20 @@
 #endif
 
 KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
-//  : KTabCtl(parent,name)
-  : QVBox(parent, name)
+  : KJanusWidget(parent, name, KJanusWidget::IconList)
 {
-  banksView = new KBanksView(this, "banksView");
-  transactionView = new KTransactionView(this, "transactionsView");
+  QVBox *qvboxMainFrame1 = addVBoxPage( i18n("Home"), i18n("Home"),
+    DesktopIcon("home"));
+  m_homeView = new KHomeView(qvboxMainFrame1);
+
+  QVBox *qvboxMainFrame2 = addVBoxPage( i18n("Accounts"), i18n("Insitutions/Accounts"),
+    DesktopIcon("bank"));
+  banksView = new KBanksView(qvboxMainFrame2, "banksView");
+  transactionView = new KTransactionView(qvboxMainFrame2, "transactionsView");
+
+  QVBox *qvboxMainFrame3 = addVBoxPage( i18n("Categories"), i18n("Categories"),
+    DesktopIcon("categories"));
+  m_categoriesView = new KCategoriesView(&m_file, qvboxMainFrame3, "categoriesView");
 
   banksView->hide();
   transactionView->hide();

@@ -1,0 +1,38 @@
+td.highlighted {
+  background-color: #32A49E;
+  color: #FFFFFF;
+}
+
+h2.highlighted {
+  background-color: #308169;
+  color: #FFFFFF;
+}
+
+table.highlighted {
+  background-color: #308169;
+  color: #FFFFFF;
+}
+
+font.kmymoney2 {
+  color: #308169;
+  font-weight: bold;
+}
+
+font.highlighted {
+  background-color: #308169;
+  color: #FFFFFF;
+}
+
+th.highlighted {
+  background-color: #32A49E;
+  color: #547098;
+}
+
+body  {
+  background-color: #3679ad;
+}
+
+body.highlighted  {
+  background-color: #308169;
+  color: #FFFFFF;
+}

@@ -25,8 +25,8 @@
 
 // ----------------------------------------------------------------------------
 // KDE Includes
-//#include <ktabctl.h>
 #include <kpopupmenu.h>
+#include <kjanuswidget.h>
 
 
 // ----------------------------------------------------------------------------
@@ -40,6 +40,8 @@
 
 #include "kbanksview.h"
 #include "ktransactionview.h"
+#include "khomeview.h"
+#include "kcategoriesview.h"
 
 /**
   * This class represents the view of the MyMoneyFile which contains
@@ -48,19 +50,22 @@
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.1 2002/01/22 20:32:14 mte Exp $
+  * $Id: kmymoneyview.h,v 1.2 2002/01/22 21:54:41 mte Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
-class KMyMoneyView : public QVBox {
+class KMyMoneyView : public KJanusWidget {
    Q_OBJECT
 
 public:
   enum viewType { None, BankList, TransactionList };
 
 private:
+  KHomeView *m_homeView;
   KBanksView *banksView;
   KTransactionView *transactionView;
+  KCategoriesView *m_categoriesView;
+
   viewType m_showing;
 
   MyMoneyFile m_file;  // The interface to the transaction code
