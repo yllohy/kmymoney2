@@ -414,7 +414,7 @@ MyMoneyScheduled::~MyMoneyScheduled()
 {
 }
 
-QString MyMoneyScheduled::addSchedule(const QCString& accountId, const MyMoneySchedule& schedule)
+QCString MyMoneyScheduled::addSchedule(const QCString& accountId, const MyMoneySchedule& schedule)
 {
   if (!schedule.validate())
   {

@@ -83,7 +83,7 @@ KScheduledView::~KScheduledView()
   writeConfig();
 }
 
-void KScheduledView::refresh(const QString schedId)
+void KScheduledView::refresh(const QCString schedId)
 {
   m_qlistviewScheduled->clear();
 
@@ -300,7 +300,7 @@ void KScheduledView::slotNewBill()
 
     try
     {
-      QString schedId = scheduled->addSchedule(m_accountId, sched);
+      QCString schedId = scheduled->addSchedule(m_accountId, sched);
       refresh(schedId);
     } catch (MyMoneyException *e)
     {
@@ -327,7 +327,7 @@ void KScheduledView::slotNewDeposit()
 
     try
     {
-      QString schedId = scheduled->addSchedule(m_accountId, sched);
+      QCString schedId = scheduled->addSchedule(m_accountId, sched);
       refresh(schedId);
     } catch (MyMoneyException *e)
     {
@@ -354,7 +354,7 @@ void KScheduledView::slotNewTransfer()
 
     try
     {
-      QString schedId = scheduled->addSchedule(m_accountId, sched);
+      QCString schedId = scheduled->addSchedule(m_accountId, sched);
       refresh(schedId);
     } catch (MyMoneyException *e)
     {

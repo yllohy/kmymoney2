@@ -468,7 +468,7 @@ public:
     * @see MyMoneySchedule
     * @see MyMoneyException
     */
-  QString addSchedule(const QCString& accountId, const MyMoneySchedule& schedule);
+  QCString addSchedule(const QCString& accountId, const MyMoneySchedule& schedule);
 
   /**
     * Remove a schedule from the collection.

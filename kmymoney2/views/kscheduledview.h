@@ -46,7 +46,7 @@
   * Used by the KMyMoneyView class to show the view.
   *
   * @author Michael Edwardes 2000-2002
-  * $Id: kscheduledview.h,v 1.9 2003/07/09 20:27:33 ipwizard Exp $
+  * $Id: kscheduledview.h,v 1.10 2003/07/14 18:17:19 ipwizard Exp $
   *
   * @short A class to encapsulate recurring transaction operations.
   */
@@ -143,7 +143,7 @@ private:
   QCString m_accountId;
 
   /// The selected schedule id in the list view.
-  QString m_selectedSchedule;
+  QCString m_selectedSchedule;
 
   /// Read config file
   void readConfig(void);
@@ -154,7 +154,7 @@ private:
   /**
     * Refresh the view.
     */
-  void refresh(const QString schedId="");
+  void refresh(const QCString schedId="");
 
   /**
     * Loads the accounts into the combo box.
