@@ -262,7 +262,7 @@ void KTransactionView::createInputWidgets()
   // as the code has hard-coded references to the above list,
   // we do not allow editing of these values here. This somehow
   // makes autocompletion senseless, but I leave it in for later use.
-  // m_method->setEditable(false);
+  m_method->setEditable(false);
   m_method->setFocusPolicy(QWidget::StrongFocus);
 
   m_category->setAutoCompletion(true);
