@@ -365,20 +365,3 @@ bool KMyMoneyUtils::appendCorrectFileExt(QString& str, const QString& strExtToUs
   }
   return rc;
 }
-
-const bool KMyMoneyUtils::isCreditPayment(const MyMoneyTransaction& transaction)
-{
-
-  try {
-    QValueList<MyMoneySplit>::ConstIterator it;
-    
-    for(it = transaction.splits().begin(); it != transaction.splits().end(); ++it) {
-      if((*it).isAmortizationSplit())
-        return true;
-    }
-  } catch (MyMoneyException *e) {
-    delete e;
-  }
-  
-  return false;
-}
