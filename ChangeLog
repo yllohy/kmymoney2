@@ -1,3 +1,8 @@
+2004-01-05 Kevin Tambascio <ktambascio@users.sourceforge.net>
+  * added support for the progress bar during read operations.
+	* added QStringEmpty and QCStringEmpty functions to properly handle empty strings from the XML file.
+	* removed the bold when you hover over a link in the HTML view (seemed to look strange when using it).
+	
 2004-01-04 Kevin Tambascio <ktambascio@users.sourceforge.net>
   * removed the "nextid" attribute from some of the top-level XML attributes.
 	* added qWarnings and qError statements when irregularities in the file are found.
