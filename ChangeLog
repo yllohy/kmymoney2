@@ -1,5 +1,19 @@
+2004-05-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Allow arbitrary category/account selection in category field
+  * Reworked the ledger view code to support new features
+  * Investmentview is still broken!!
+  * Fixed spelling in de.po
+  * Fixed an issue with XML writing on KDE 3.2
+  * Added setWeekendOption to MyMoneySchedule
+
+2004-05-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Applied patch supplied by Ace Jones
+  * Fixed #952804 (marking 'cleared' in transaction entry form doesn't work)
+  * Started to implement equity accounts
+
 2004-05-12 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed some issues around multiple currencies / exchange rates
+  * Fixed #952696 (Mis-assigned shortcut Alt-M in transaction form)
 
 2004-05-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed comparison of account objects
