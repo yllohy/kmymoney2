@@ -61,6 +61,7 @@
 #include "dialogs/kimportdlg.h"
 #include "dialogs/mymoneyqifprofileeditor.h"
 #include "dialogs/kimportverifydlg.h"
+#include "dialogs/kenterscheduledialog.h"
 
 #include "views/kmymoneyview.h"
 
@@ -427,6 +428,7 @@ const bool KMyMoney2App::slotFileSave()
   bool rc = false;
   
   QString prevMsg = slotStatusMsg(i18n("Saving file..."));
+
 
   if (fileName.isEmpty()) {
     rc = slotFileSaveAs();
@@ -838,6 +840,7 @@ void KMyMoney2App::slotFileBackup()
 
   
 
+
   if(!fileName.isLocalFile()) {
     KMessageBox::sorry(this,
                        i18n("The current implementation of the backup functionality only supports local files as source files! Your current source file is '%1'.")
@@ -1107,8 +1110,8 @@ void KMyMoney2App::slotFileConsitencyCheck(void)
 void KMyMoney2App::slotCheckSchedules(void)
 {
   KConfig *kconfig = KGlobal::config();
-  kconfig->setGroup("General Options");
-  if(kconfig->readBoolEntry("CheckSchedule", false) == true) {
+  kconfig->setGroup("Schedule Options");
+  if(kconfig->readBoolEntry("CheckSchedules", false) == true) {
 
     QString prevMsg = slotStatusMsg(i18n("Checking for overdue schedules..."));
     MyMoneyFile *file = MyMoneyFile::instance();
@@ -1122,13 +1125,30 @@ void KMyMoney2App::slotCheckSchedules(void)
       // Get the copy in the file because it might be modified by commitTransaction
       MyMoneySchedule schedule = file->schedule((*it).id());
 
-      if (schedule.autoEnter() && schedule.isFixed())
+      if (schedule.autoEnter())
       {
         while ((schedule.nextPayment(schedule.lastPayment()) < checkDate) && !schedule.isFinished())
         {
-          //qDebug("Auto Entering schedule: %s", schedule.name().latin1());
-          //qDebug("\tAuto enter date: %s", schedule.nextPayment(schedule.lastPayment()).toString().latin1());
-          slotCommitTransaction(schedule, schedule.nextPayment(schedule.lastPayment()));
+          if (schedule.isFixed())
+          {
+            //qDebug("Auto Entering schedule: %s", schedule.name().latin1());
+            //qDebug("\tAuto enter date: %s", schedule.nextPayment(schedule.lastPayment()).toString().latin1());
+            slotCommitTransaction(schedule, schedule.nextPayment(schedule.lastPayment()));
+          }
+          else
+          {
+            // 0.8 will feature a list of schedules for a better ui
+            KEnterScheduleDialog *dlg = new KEnterScheduleDialog(this, schedule, schedule.nextPayment(schedule.lastPayment()));
+            if (!dlg->exec())
+            {
+              int r = KMessageBox::warningYesNo(this, i18n("Are you sure you wish to stop this schedule from being entered into the register?\n\nKMyMoney will prompt you again next time it starts unless you manually enter it later."));
+              if (r == KMessageBox::Yes)
+              {
+                break;
+              }
+            }
+          }
+          
           schedule = file->schedule((*it).id()); // get a copy of the modified schedule
         }
       }

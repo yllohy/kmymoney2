@@ -983,7 +983,7 @@ void KEditScheduleDialog::slotEstimateChanged()
 {
   if (m_qcheckboxAuto->isChecked())
   {
-
+/*
     if (m_qcheckboxEstimate->isChecked())
     {
       KMessageBox::error(this, i18n("The amount must not be an estimate to be automatically entered"));
@@ -993,7 +993,8 @@ void KEditScheduleDialog::slotEstimateChanged()
       m_qcheckboxAuto->setFocus();
       return;
     }
-  }
+*/
+}
 
   m_schedule.setFixed(!m_qcheckboxEstimate->isChecked());
 }
@@ -1038,6 +1039,7 @@ void KEditScheduleDialog::slotAutoEnterChanged()
     }
   }
 
+/*
   if (m_qcheckboxEstimate->isChecked())
   {
     if (m_qcheckboxAuto->isChecked())
@@ -1050,7 +1052,7 @@ void KEditScheduleDialog::slotAutoEnterChanged()
       return;
     }
   }
-
+*/
   m_schedule.setAutoEnter(m_qcheckboxAuto->isChecked());
 }
 
