@@ -1,3 +1,6 @@
+2004-07-23 Ace Jones <acejones@users.sourceforge.net>
+  * Preliminary rough implementation of transaction report
+
 2004-07-22 Ace Jones <acejones@users.sourceforge.net>
   * Added ability to save reports as CSV
   * Moved reports::AccountDescriptor into reports::PivotTable

@@ -27,6 +27,7 @@
 
 #define private public
 #include "pivottable.h"
+#include "querytable.h"
 #undef private
 using namespace reports;
 
@@ -994,5 +995,36 @@ void KReportsViewTest::testXMLWrite()
   CPPUNIT_ASSERT(filters[0].rowType() == megafilter.rowType());
   CPPUNIT_ASSERT(filters[0].columnType() == megafilter.columnType());
   // TODO: Add more checks here
+  
+}
+
+void KReportsViewTest::testQueryBasics()
+{
+  TransactionHelper t1q1( QDate(2004,1,1), MyMoneySplit::ActionWithdrawal, moSolo, acChecking, acSolo );
+  TransactionHelper t2q1( QDate(2004,2,1), MyMoneySplit::ActionWithdrawal, moParent1, acCredit, acParent );
+  TransactionHelper t3q1( QDate(2004,3,1), MyMoneySplit::ActionWithdrawal, moParent2, acCredit, acParent );
+  TransactionHelper t4y1( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moChild, acCredit, acChild );
+
+  TransactionHelper t1q2( QDate(2004,4,1), MyMoneySplit::ActionWithdrawal, moSolo, acChecking, acSolo );
+  TransactionHelper t2q2( QDate(2004,5,1), MyMoneySplit::ActionWithdrawal, moParent1, acCredit, acParent );
+  TransactionHelper t3q2( QDate(2004,6,1), MyMoneySplit::ActionWithdrawal, moParent2, acCredit, acParent );
+  TransactionHelper t4q2( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moChild, acCredit, acChild );
+
+  TransactionHelper t1y2( QDate(2005,1,1), MyMoneySplit::ActionWithdrawal, moSolo, acChecking, acSolo );
+  TransactionHelper t2y2( QDate(2005,5,1), MyMoneySplit::ActionWithdrawal, moParent1, acCredit, acParent );
+  TransactionHelper t3y2( QDate(2005,9,1), MyMoneySplit::ActionWithdrawal, moParent2, acCredit, acParent );
+  TransactionHelper t4y2( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moChild, acCredit, acChild );
+  
+  MyMoneyReport filter;
+  QueryTable qtbl(filter);
+  qtbl.dump( "qreport-01.html" );
+  
+  CPPUNIT_ASSERT(qtbl.m_transactions.count() == 12);
+  CPPUNIT_ASSERT(qtbl.m_transactions[0]["categorytype"]="Expense");
+  CPPUNIT_ASSERT(qtbl.m_transactions[0]["category"]="Child");
+  CPPUNIT_ASSERT(qtbl.m_transactions[0]["postdate"]="2004-11-07");
+  CPPUNIT_ASSERT(qtbl.m_transactions[11]["categorytype"]="Expense");
+  CPPUNIT_ASSERT(qtbl.m_transactions[11]["category"]="Solo");
+  CPPUNIT_ASSERT(qtbl.m_transactions[11]["postdate"]="2005-01-01");
   
 }

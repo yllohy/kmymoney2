@@ -1195,7 +1195,7 @@ void PivotTable::dump( const QString& file ) const
 {
   QFile g( file );
   g.open( IO_WriteOnly );
-  QDataStream(&g) << renderHTML();
+  QTextStream(&g) << renderHTML();
   g.close();
 }
 

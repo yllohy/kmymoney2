@@ -37,8 +37,6 @@
 #include "../mymoney/mymoneyfile.h"
 #include "../mymoney/mymoneyreport.h"
 
-class MyMoneyTransactionFilter;
-
 namespace reports {
 
 // define to enable massive debug logging to stderr
@@ -76,10 +74,15 @@ public:
   * Based on pivot tables in MS Excel, and implemented as 'Data Pilot' in
   * OpenOffice.Org Calc.
   *
-  *              | Month
+  *              | Month,etc
   * -------------+------------
   * Expense Type | Sum(Value)
   *   Category   |
+  *
+  * This is a middle-layer class, between the UI and the engine.  The 
+  * MyMoneyReport class holds only the CONFIGURATION parameters.  This 
+  * class actually does the work of retrieving the data from the engine
+  * and formatting it for the user.
   *
   * @author Ace Jones
   *

@@ -40,6 +40,7 @@ class KReportsViewTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST(testAdvancedFilter);
 	CPPUNIT_TEST(testColumnType);
 	CPPUNIT_TEST(testXMLWrite);
+	CPPUNIT_TEST(testQueryBasics);
 	CPPUNIT_TEST_SUITE_END();
 
 private:
@@ -68,6 +69,7 @@ public:
 	void testAdvancedFilter();
 	void testColumnType();
         void testXMLWrite();
+        void testQueryBasics();
 };
 
 #endif
