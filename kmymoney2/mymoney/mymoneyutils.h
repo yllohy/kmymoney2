@@ -27,9 +27,6 @@
 #include <qcstring.h>
 #include <qvaluelist.h>
 
-//#include <kglobal.h>
-//#include <klocale.h>
-
 #if 0
 
 //Includes for STL support below
@@ -47,14 +44,14 @@ typedef std::string String;
 
 #else
 
-typedef QString String;
-#endif // 0
-
 //typedef for data type to store currency with.
 typedef long long DLONG;
 
 // typedef for id lists
 typedef QValueList<QCString> QCStringList;
+
+typedef QString String;
+#endif // 0
 
 void timetrace(char *);
 
@@ -62,12 +59,13 @@ void timetrace(char *);
 class MyMoneyUtils
 {
 public:
-	MyMoneyUtils() {};
-	~MyMoneyUtils() {};
-	
-	//static function to add the correct file extension at the end of the file name
-	static bool appendCorrectFileExt(String& str, const String strExtToUse);
+  MyMoneyUtils() {};
+  ~MyMoneyUtils() {};
+
+  //static function to add the correct file extension at the end of the file name
+  static bool appendCorrectFileExt(String& str, const String strExtToUse);
   static QString getFileExtension(QString strFileName);
+  
 };
 
 #ifdef _CHECK_MEMORY
