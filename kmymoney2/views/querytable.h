@@ -72,18 +72,17 @@ public:
     bool operator<=( const TableRow& ) const;
     bool operator>( const TableRow& ) const;
     bool operator==( const TableRow& ) const;
-    const QString& columnValue(const QString&);
     
     static void setSortCriteria( const QString& _criteria ) { m_sortCriteria = QStringList::split(",",_criteria); }
-    static void setCurrentReport( const MyMoneyReport& _report ) { m_currentReport = _report; }
   private:
     static QStringList m_sortCriteria;
-    static MyMoneyReport m_currentReport;
   };
 
 protected:
   void render( QString&, QString& ) const;
-  QValueList<TableRow> collapseToGroups( void ) const;
+  void constructAccountTable(void);
+  void constructTransactionTable(void);
+
 private:
   QValueList<TableRow> m_transactions;
   const MyMoneyReport& m_config;

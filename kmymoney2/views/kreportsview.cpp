@@ -790,7 +790,7 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
     
     list.push_back(MyMoneyReport(
       MyMoneyReport::eInvestmentHoldings,
-      MyMoneyReport::eQCnone,
+      MyMoneyReport::eQCshares|MyMoneyReport::eQCprice,
       MyMoneyTransactionFilter::yearToDate,
       false,
       i18n("Investment Holdings"),

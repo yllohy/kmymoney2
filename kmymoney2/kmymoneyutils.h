@@ -37,6 +37,7 @@
 // Project Includes
 
 #include "mymoney/mymoneyaccount.h"
+#include "mymoney/mymoneyequity.h"
 #include "mymoney/mymoneyscheduled.h"
 #include "widgets/kmymoneypayee.h"
 
@@ -87,6 +88,16 @@ public:
     *         values see MyMoneyAccount::accountTypeE
     */
   static const MyMoneyAccount::accountTypeE stringToAccountType(const QString& type);
+
+  /**
+    * This method is used to convert the internal representation of
+    * an equity type into a human readable format
+    *
+    * @param equityType enumerated representation of the equity type.
+                         For possible values, see MyMoneyEquity::eEQUITYTYPE
+    * @return QString representing the human readable form
+    */
+  static const QString equityTypeToString(const MyMoneyEquity::eEQUITYTYPE equityType);
 
   /**
     * This method is used to convert the occurence type from it's

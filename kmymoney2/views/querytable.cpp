@@ -41,6 +41,7 @@
 #include "../mymoney/mymoneytransaction.h"
 #include "../mymoney/mymoneyreport.h"
 #include "../mymoney/mymoneyexception.h"
+#include "../kmymoneyutils.h"
 #include "pivottable.h"
 #include "querytable.h"
 
@@ -51,7 +52,6 @@ static const QStringList kReconcileText = QStringList::split(",","notreconciled,
 static const QStringList kReconcileTextChar = QStringList::split(",","N,C,R,F,none");
 
 QStringList QueryTable::TableRow::m_sortCriteria;
-MyMoneyReport QueryTable::TableRow::m_currentReport;
 
 //
 // Cash Flow analysis tools for investment reports
@@ -183,14 +183,93 @@ const QString accountTypeToString(const MyMoneyAccount::accountTypeE accountType
 
 QueryTable::QueryTable(const MyMoneyReport& _report): m_config(_report)
 {
+  if ( m_config.rowType() == MyMoneyReport::eInvestmentHoldings )
+  {
+    constructAccountTable();
+    m_columns="account";
+  }
+  else
+  {
+    constructTransactionTable();
+    m_columns="postdate";
+  }
+
+  // Sort the data to match the report definition
+  m_subtotal="value";
+
+  switch ( m_config.rowType() )
+  {
+  case MyMoneyReport::eCategory:
+    m_group = "categorytype,topcategory,category";
+    break;
+  case MyMoneyReport::eTopCategory:
+    m_group = "categorytype,topcategory";
+    break;
+  case MyMoneyReport::eTopAccount:
+    m_group = "topaccount,account";
+    break;
+  case MyMoneyReport::eAccount:
+    m_group = "account";
+    break;
+  case MyMoneyReport::ePayee:
+    m_group = "payee";
+    break;
+  case MyMoneyReport::eMonth:
+    m_group = "month";
+    break;
+  case MyMoneyReport::eWeek:
+    m_group = "week";
+    break;
+  case MyMoneyReport::eInvestmentHoldings:
+    m_group = "topaccount";
+    break;
+  default:
+    throw new MYMONEYEXCEPTION("QueryTable::QueryTable(): unhandled row type");
+  }
+  
+  unsigned qc = m_config.queryColumns();
+
+  if ( qc & MyMoneyReport::eQCnumber )
+    m_columns += ",number";
+  if ( qc & MyMoneyReport::eQCpayee )
+    m_columns += ",payee";
+  if ( qc & MyMoneyReport::eQCcategory )
+    m_columns += ",category";
+  if ( qc & MyMoneyReport::eQCaccount )
+    m_columns += ",account";
+  if ( qc & MyMoneyReport::eQCreconciled )
+    m_columns += ",reconcileflag";
+  if ( qc & MyMoneyReport::eQCmemo )
+    m_columns += ",memo";
+  if ( qc & MyMoneyReport::eQCaction )
+    m_columns += ",action";
+  if ( qc & MyMoneyReport::eQCshares )
+    m_columns += ",shares";
+  if ( qc & MyMoneyReport::eQCprice )
+    m_columns += ",price";
+
+  QString sort;
+  if ( ! m_group.isEmpty() )
+    sort += m_group + ",";
+  sort += m_columns;
+  if ( ! m_subtotal.isEmpty() )
+    sort += "," + m_subtotal;
+
+  TableRow::setSortCriteria(sort);
+  qHeapSort(m_transactions);
+
+}
+
+void QueryTable::constructTransactionTable(void)
+{
   //
-  // The main job of this constructor is to translate the transaction & split list
+  // Translate the transaction & split list
   // into a database-style table, which we can then query later SQL-style.
   //
 
   MyMoneyFile* file = MyMoneyFile::instance();
 
-  MyMoneyReport report(_report);
+  MyMoneyReport report(m_config);
   report.setReportAllSplits(false);
   report.setConsiderCategory(true);
   QValueList<MyMoneyTransaction> transactions = file->transactionList( report );
@@ -385,78 +464,66 @@ QueryTable::QueryTable(const MyMoneyReport& _report): m_config(_report)
     }
     ++it_transaction;
   }
+}
 
-  // Sort the transactions to match the report definition
+void QueryTable::constructAccountTable(void)
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
 
-  m_columns="postdate";
-  m_subtotal="value";
-
-  unsigned qc = m_config.queryColumns();
-
-  if ( qc & MyMoneyReport::eQCnumber )
-    m_columns += ",number";
-  if ( qc & MyMoneyReport::eQCpayee )
-    m_columns += ",payee";
-  if ( qc & MyMoneyReport::eQCcategory )
-    m_columns += ",category";
-  if ( qc & MyMoneyReport::eQCaccount )
-    m_columns += ",account";
-  if ( qc & MyMoneyReport::eQCreconciled )
-    m_columns += ",reconcileflag";
-  if ( qc & MyMoneyReport::eQCmemo )
-    m_columns += ",memo";
-  if ( qc & MyMoneyReport::eQCaction )
-    m_columns += ",action";
-  if ( qc & MyMoneyReport::eQCshares )
-    m_columns += ",shares";
-  if ( qc & MyMoneyReport::eQCaction )
-    m_columns += ",price";
-
-  switch ( m_config.rowType() )
+  QValueList<MyMoneyAccount> accounts = file->accountList();
+  QValueList<MyMoneyAccount>::const_iterator it_account = accounts.begin();
+  while ( it_account != accounts.end() )
   {
-  case MyMoneyReport::eCategory:
-    m_group = "categorytype,topcategory,category";
-    break;
-  case MyMoneyReport::eTopCategory:
-    m_group = "categorytype,topcategory";
-    break;
-  case MyMoneyReport::eTopAccount:
-    m_group = "topaccount,account";
-    break;
-  case MyMoneyReport::eAccount:
-    m_group = "account";
-    break;
-  case MyMoneyReport::ePayee:
-    m_group = "payee";
-    break;
-  case MyMoneyReport::eMonth:
-    m_group = "month";
-    break;
-  case MyMoneyReport::eWeek:
-    m_group = "week";
-    break;
-  case MyMoneyReport::eInvestmentHoldings:
-    // This is a special case Query table, it overrides all previous settings
-    m_group = "topaccount,account";
-    m_columns = "latestprice";
-    m_summarize = "shares";
-    m_propagate = "accountid";
-    m_subtotal = "netinvvalue";
-    break;
-  default:
-    throw new MYMONEYEXCEPTION("QueryTable::QueryTable(): unhandled row type");
+    if (
+        ( (*it_account).accountGroup() == MyMoneyAccount::Asset || (*it_account).accountGroup() == MyMoneyAccount::Liability ) 
+        && 
+        m_config.includesAccount( (*it_account).id() )
+        &&
+        (!m_config.isInvestmentsOnly() || (*it_account).accountType() == MyMoneyAccount::Stock) 
+        )
+    {
+      TableRow qaccountrow;
+  
+      qaccountrow["account"] = (*it_account).name();
+      qaccountrow["accountid"] = (*it_account).id();
+  
+      // Find the top-most parent account
+      QCString topaccountid = (*it_account).id();
+      QCString parentid = file->account(topaccountid).parentAccountId();
+      while (! file->isStandardAccount(parentid) )
+      {
+        topaccountid = parentid;
+        parentid = file->account(topaccountid).parentAccountId();
+      }
+      qaccountrow["topaccount"] = file->account(topaccountid).name();
+  
+      MyMoneyMoney shares = file->balance((*it_account).id(),m_config.toDate());
+      qaccountrow["shares"] = shares.toString();
+      
+      MyMoneyEquity equity = MyMoneyFile::instance()->equity((*it_account).currencyId());
+      MyMoneyMoney price = equity.price( m_config.toDate() );
+      qaccountrow["price"] = price.toString();
+      
+      qaccountrow["value"] = ( price * shares ).toString();
+
+      QCString iid = (*it_account).institutionId();
+      if ( iid.isEmpty() )
+        qaccountrow["institution"] = QString();
+      else
+        qaccountrow["institution"] = file->institution(iid).name();
+      
+      qaccountrow["type"] = KMyMoneyUtils::accountTypeToString((*it_account).accountType());
+      
+      if ( (*it_account).accountType() == MyMoneyAccount::Stock )
+        qaccountrow["equitytype"] = KMyMoneyUtils::equityTypeToString(equity.equityType());        
+      else
+        qaccountrow["equitytype"] = QString();
+            
+      m_transactions += qaccountrow;
+    }
+           
+    ++it_account;
   }
-
-  QString sort;
-  if ( ! m_group.isEmpty() )
-    sort += m_group + ",";
-  sort += m_columns;
-  if ( ! m_subtotal.isEmpty() )
-    sort += "," + m_subtotal;
-
-  TableRow::setSortCriteria(sort);
-  qHeapSort(m_transactions);
-
 }
 
 class GroupIterator
@@ -499,8 +566,6 @@ void QueryTable::render( QString& result, QString& csv ) const
   MyMoneyMoney::signPosition savesignpos = MyMoneyMoney::negativeMonetarySignPosition();
   unsigned char savethsep = MyMoneyMoney::thousandSeparator();
   
-  TableRow::setCurrentReport( m_config );
-
   MyMoneyMoney grandtotal;
   
   result="";
@@ -529,22 +594,6 @@ void QueryTable::render( QString& result, QString& csv ) const
   QStringList columns = QStringList::split(",",m_columns);
   columns += m_subtotal;
 
-  //
-  // If necessary, collapse the data into summary rows per group  
-  //
-  QValueList<TableRow> transactions;
-  if (!m_summarize.isEmpty())
-  {
-    columns.push_front( m_summarize );
-    transactions = collapseToGroups();
-    
-    // remove the innermost group, because we just collapsed it.
-    columns.push_front( groups.back() );
-    groups.pop_back();
-  }  
-  else 
-    transactions = m_transactions;
-  
   //
   // Table header
   //
@@ -612,13 +661,9 @@ void QueryTable::render( QString& result, QString& csv ) const
   //
 
   bool row_odd = true;
-  QValueList<TableRow>::iterator it_row = transactions.begin();
-  while ( it_row != transactions.end() )
+  QValueList<TableRow>::const_iterator it_row = m_transactions.begin();
+  while ( it_row != m_transactions.end() )
   {
-    // Make sure the subtotal column exists
-    if ( !(*it_row).contains(m_subtotal) )
-      (*it_row).columnValue(m_subtotal);
-
     //
     // Process Groups
     //
@@ -683,7 +728,7 @@ void QueryTable::render( QString& result, QString& csv ) const
     QStringList::const_iterator it_column = columns.begin();
     while ( it_column != columns.end() )
     {
-      QString data = (*it_row).columnValue(*it_column);
+      QString data = (*it_row)[*it_column];
       
       if ( moneyColumns.contains(*it_column) )
       {
@@ -781,102 +826,6 @@ QString QueryTable::renderCSV( void ) const
   return csv;
 }
 
-QValueList<QueryTable::TableRow> QueryTable::collapseToGroups( void ) const
-{
-  QValueList<TableRow> result;
-  
-  // This function collapses all the row within a group into
-  // one row, totalling up all the individual rows
-  
-  int depth = 1;
-  QStringList groups = QStringList::split(",",m_group);
-  QValueList<GroupIterator> groupIteratorList;
-  QStringList::const_iterator it_grouplevel = groups.begin();
-  while ( it_grouplevel != groups.end() )
-  {
-    groupIteratorList += GroupIterator((*it_grouplevel),m_summarize,depth++);
-    ++it_grouplevel;
-  }
-
-  //
-  // Rows
-  //
-
-  QValueList<TableRow>::const_iterator it_row = m_transactions.begin();
-  QValueList<TableRow>::const_iterator it_previous = m_transactions.end();
-  while ( it_row != m_transactions.end() )
-  {
-    //
-    // Process Groups
-    //
-
-    // There's a subtle bug here.  If an earlier group gets a new group,
-    // then we need to force all the downstream groups to get one too.
-
-    // Update the group iterators with the current row value
-    QValueList<GroupIterator>::iterator it_group = groupIteratorList.begin();
-    while ( it_group != groupIteratorList.end() )
-    {
-      (*it_group).update(*it_row);
-      ++it_group;
-    }
-    // Do subtotals only for the last group
-    if ( m_config.isConvertCurrency() )
-    {
-      it_group = groupIteratorList.fromLast();
-      if ( it_group != groupIteratorList.end() )
-      {
-        if ((*it_group).isSubtotal())
-        {
-          // Build out a tablerow
-          TableRow summaryrow;
-          summaryrow[m_summarize] = (*it_group).subtotal().toString();
-          
-          QValueList<GroupIterator>::const_iterator it = groupIteratorList.begin();
-          while ( it != groupIteratorList.end() )
-          {
-            summaryrow[(*it).groupField()] = (*it).oldName();
-            ++it;
-          }
-          summaryrow[m_propagate] = (*it_previous)[m_propagate];
-          
-          result += summaryrow;
-        }
-        //--it_group;
-      }
-    }
-    it_previous = it_row;
-    ++it_row;
-  }
-
-  // Do subtotals backwards
-  if ( m_config.isConvertCurrency() )
-  {
-    QValueList<GroupIterator>::iterator it_group = groupIteratorList.fromLast();
-    if ( it_group != groupIteratorList.end() )
-    {
-      (*it_group).update(TableRow());
-
-      // Build out a tablerow
-      TableRow summaryrow;
-      summaryrow[m_summarize] = (*it_group).subtotal().toString();
-      
-      QValueList<GroupIterator>::const_iterator it = groupIteratorList.begin();
-      while ( it != groupIteratorList.end() )
-      {
-        summaryrow[(*it).groupField()] = (*it).oldName();
-        ++it;
-      }
-      
-      summaryrow[m_propagate] = (*it_previous)[m_propagate];
-      result += summaryrow;
-          
-    }
-  }
-  
-  return result;
-}
-
 void QueryTable::dump( const QString& file, const QString& context ) const
 {
   QFile g( file );
@@ -888,33 +837,6 @@ void QueryTable::dump( const QString& file, const QString& context ) const
     QTextStream(&g) << renderHTML();
   g.close();
 }
-
-const QString& QueryTable::TableRow::columnValue(const QString& _column)
-{
-  if ( ! contains(_column) )
-  {
-    if ( _column == "latestprice" )
-    {
-      // get the price of the underlying equity as of the "end date" in the account
-      // specified in accountid
-      
-      MyMoneyAccount account = MyMoneyFile::instance()->account(columnValue("accountid").utf8());
-      MyMoneyEquity equity = MyMoneyFile::instance()->equity(account.currencyId());
-      MyMoneyMoney price = equity.price( m_currentReport.toDate() );
-      insert(_column,price.toString());
-    }
-    else if ( _column == "netinvvalue" )
-    {
-      MyMoneyMoney price(columnValue("latestprice"));
-      MyMoneyMoney shares(columnValue("shares"));
-      insert(_column,(price * shares).toString());
-    }
-    else
-      throw new MYMONEYEXCEPTION(QString("Request for illegal column <%1>").arg(_column));
-  }
-  return operator[](_column);
-}
-
 
 // vim: noci noai nosi
 }

@@ -150,6 +150,29 @@ const MyMoneyAccount::accountTypeE KMyMoneyUtils::stringToAccountType(const QStr
   return rc;
 }
 
+const QString KMyMoneyUtils::equityTypeToString(const MyMoneyEquity::eEQUITYTYPE equityType)
+{
+  QString returnString;
+  
+  switch (equityType)
+  {
+  case MyMoneyEquity::ETYPE_STOCK:
+    returnString = i18n("Stock");
+  case MyMoneyEquity::ETYPE_MUTUALFUND:
+    returnString = i18n("Mutual Fund");
+  case MyMoneyEquity::ETYPE_BOND:
+    returnString = i18n("Bond");
+  case MyMoneyEquity::ETYPE_CURRENCY:
+    returnString = i18n("Currency");
+  case MyMoneyEquity::ETYPE_NONE:
+    returnString = i18n("None");
+  default:  
+    returnString = i18n("Unknown");
+  }
+  
+  return returnString;
+}
+
 const MyMoneySchedule::occurenceE KMyMoneyUtils::stringToOccurence(const QString& text)
 {
   MyMoneySchedule::occurenceE occurence = MyMoneySchedule::OCCUR_ANY;
