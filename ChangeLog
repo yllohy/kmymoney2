@@ -1,3 +1,8 @@
+2003-12-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Update search result when data in engine is changed
+  * Fixed all (but one) compiler warnings
+  * Regenerated kmymoney2.pot translation source
+
 2003-12-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * select account for QIF import if it already exists
   * fixed visibility of selected account in kMyMoneyAccountSelector
