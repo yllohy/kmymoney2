@@ -52,9 +52,10 @@
 // Project Includes
 
 #include "kmymoney2.h"
+#include "kstartuplogo.h"
+
 #include "dialogs/kstartdlg.h"
 #include "dialogs/ksettingsdlg.h"
-#include "kstartuplogo.h"
 #include "dialogs/kbackupdlg.h"
 #include "dialogs/kexportdlg.h"
 #include "dialogs/kimportdlg.h"
@@ -62,6 +63,7 @@
 #include "mymoney/mymoneyutils.h"
 #include "converter/mymoneyqifprofileeditor.h"
 #include "converter/mymoneyqifwriter.h"
+#include "converter/mymoneyqifreader.h"
 
 #define ID_STATUS_MSG 1
 
@@ -484,6 +486,10 @@ void KMyMoney2App::slotFileSaveAs()
       {
         strTemp.append("kmy");
 
+
+
+
+
         //append to make complete file name
         newName = strTemp;
       }
@@ -700,6 +706,8 @@ void KMyMoney2App::slotFileFileInfo()
   if (answer == KMessageBox::Cancel || answer == KMessageBox::No)
     return;
 
+
+
   myMoneyView->memoryDump();
 }
 
@@ -722,24 +730,33 @@ void KMyMoney2App::slotQifImport()
 {
   QString prevMsg = slotStatusMsg(i18n("Importing file..."));
 
-  MyMoneySeqAccessMgr* backup = new MyMoneySeqAccessMgr;
-  MyMoneySeqAccessMgr* data = static_cast<MyMoneySeqAccessMgr *> (MyMoneyFile::instance()->storage());
-  *backup = *data;
-
   KImportDlg* dlg = new KImportDlg(0);
+
   if(dlg->exec()) {
-    // keep the new data set, destroy the backup copy
-    delete backup;
+    // construct a copy of the current engine
+    MyMoneySeqAccessMgr* backup = new MyMoneySeqAccessMgr;
+    MyMoneySeqAccessMgr* data = static_cast<MyMoneySeqAccessMgr *> (MyMoneyFile::instance()->storage());
+    *backup = *data;
 
-  } else {
-    // user cancelled, destroy the updated set and keep the backup copy
-    MyMoneyFile::instance()->detachStorage(data);
-    MyMoneyFile::instance()->attachStorage(backup);
-    delete data;
+    MyMoneyQifReader reader;
+    reader.setFilename(dlg->filename());
+    reader.setProfile(dlg->profile());
+    reader.import();
+    
+    if(0) {    
+      // keep the new data set, destroy the backup copy
+      delete backup;
 
-    // update the views as they might still contain invalid data
-    // from the import session
-    myMoneyView->slotRefreshViews();
+    } else {
+      // user cancelled, destroy the updated set and keep the backup copy
+      MyMoneyFile::instance()->detachStorage(data);
+      MyMoneyFile::instance()->attachStorage(backup);
+      delete data;
+
+      // update the views as they might still contain invalid data
+      // from the import session
+      myMoneyView->slotRefreshViews();
+    }
   }
   delete dlg;
 
@@ -752,6 +769,10 @@ void KMyMoney2App::slotQifExport()
   QString prevMsg = slotStatusMsg(i18n("Exporting file..."));
 
   KExportDlg* dlg = new KExportDlg(0);
+
+  connect(dlg, SIGNAL(profileEditorSelected(void)), this, SLOT(slotQifProfileEditor(void)));
+  connect(this, SIGNAL(qifProfileSelected(const QString&)), dlg, SLOT(slotSelectProfile(const QString&)));
+  
   if(dlg->exec()) {
     MyMoneyQifWriter writer;
     connect(&writer, SIGNAL(signalProgress(const int, const int)), this, SLOT(slotStatusProgressBar(const int, const int)));
@@ -965,6 +986,7 @@ void KMyMoney2App::slotFileBackup()
     mountpoint = backupDlg->txtMountPoint->text();
     if (backupDlg->mountCheckBox->isChecked()) {
       mountbackup = true;
+
       copybackup = false;
       unmountbackup = false;
 
@@ -987,6 +1009,7 @@ void KMyMoney2App::slotFileBackup()
 
   delete backupDlg;
 }
+
 
 /** No descriptions */
 void KMyMoney2App::slotProcessExited(){
@@ -1019,6 +1042,7 @@ void KMyMoney2App::slotProcessExited(){
 	else if(copybackup)
 	{
 			if(proc.exitStatus() == 0)
+
 			{
 				proc.clearArguments();
 				proc << "umount";
@@ -1100,6 +1124,7 @@ void KMyMoney2App::disableAllAccountActions(bool enable)
 }
 */
 void KMyMoney2App::slotScheduledView()
+
 {
   //disableAllAccountActions();
 }
@@ -1128,6 +1153,7 @@ void KMyMoney2App::slotShowTipOfTheDay(void)
 void KMyMoney2App::slotQifProfileEditor(void)
 {
   MyMoneyQifProfileEditor* editor = new MyMoneyQifProfileEditor(true, this, "QIF Profile Editor");
+
   editor->exec();
 
   delete editor;

@@ -20,6 +20,8 @@
 #include <config.h>
 #endif
 
+#include <qapplication.h>
+
 // include files for KDE
 #if QT_VERSION > 300
 #include <kapplication.h>
@@ -59,7 +61,7 @@ class KStartupLogo;
   * @see KMyMoneyView
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: kmymoney2.h,v 1.26 2003/01/06 20:10:44 ipwizard Exp $
+  * $Id: kmymoney2.h,v 1.27 2003/02/13 20:29:28 ipwizard Exp $
   *
   * @short Main application class.
 **/
@@ -353,26 +355,27 @@ public slots:
    */
   const QString slotStatusMsg(const QString &text);
 
-/**
-  * This method changes the progress bar in the status line according
-  * to the parameters @p current and @p total. The following special
-  * cases exist:
-  *
-  * - current = -1 and total = -1  will reset the progress bar
-  * - current = ?? and total != 0  will setup the 100% mark to @p total
-  * - current = xx and total == 0  will set the percentage
-  *
-  * @param current the current value with respect to the initialised
-  *                 100% mark
-  * @param total the total value (100%)
+  /**
+    * This method changes the progress bar in the status line according
+    * to the parameters @p current and @p total. The following special
+    * cases exist:
+    *
+    * - current = -1 and total = -1  will reset the progress bar
+    * - current = ?? and total != 0  will setup the 100% mark to @p total
+    * - current = xx and total == 0  will set the percentage
+    *
+    * @param current the current value with respect to the initialised
+    *                 100% mark
+    * @param total the total value (100%)
   */
-void slotStatusProgressBar(const int current, const int total = 0);
+  void slotStatusProgressBar(const int current, const int total = 0);
 
-/** No descriptions */
-void slotProcessExited();
+  /** No descriptions */
+  void slotProcessExited();
 
 private:
   /** the configuration object of the application */
+
   KConfig *config;
 
   // KAction pointers to enable/disable actions
@@ -448,5 +451,6 @@ private:
 };
 
 extern  KMyMoney2App *kmymoney2;
+
 
 #endif // KMYMONEY2_H
