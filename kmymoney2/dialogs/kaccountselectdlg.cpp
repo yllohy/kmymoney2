@@ -158,6 +158,8 @@ void KAccountSelectDlg::slotCreateAccount(void)
     wizard->setOpeningDate(m_account.openingDate());
     if((dialogResult = wizard->exec()) == QDialog::Accepted) {
       newAccount = wizard->account();
+      // keep a possible description field
+      newAccount.setDescription(m_account.description());
       parentAccount = wizard->parentAccount();
     }
     delete wizard;
