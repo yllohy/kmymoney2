@@ -87,6 +87,7 @@ KNewAccountWizard::KNewAccountWizard(QWidget *parent, const char *name )
   connect(m_payee, SIGNAL(newPayee(const QString&)), this, SLOT(slotNewPayee(const QString&)));
   
   // always select the first item and show the appropriate note
+  loadAccountTypes();
   accountTypeListBox->setCurrentItem(0);
 
   m_name->setFocus();
@@ -326,7 +327,6 @@ int KNewAccountWizard::exec()
   setBackEnabled(institutionPage, false);
 
   loadInstitutionList();
-  loadAccountTypes();
   loadAccountList();
 
   // always check the payment reminder
@@ -540,9 +540,7 @@ void KNewAccountWizard::setAccountType(const MyMoneyAccount::accountTypeE type)
     if(accountTypeListBox->text(i) == KMyMoneyUtils::accountTypeToString(type))
       break;
   }
-  // FIXME: I have no idea how to get the selection bar back to the window.
   accountTypeListBox->setSelected(i, true);
-  // accountTypeListBox->setCurrentItem(i);
 }
 
 void KNewAccountWizard::loadPaymentMethods()
