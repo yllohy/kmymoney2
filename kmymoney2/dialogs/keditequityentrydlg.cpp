@@ -59,10 +59,10 @@ KEditEquityEntryDlg::KEditEquityEntryDlg(MyMoneyEquity* selectedEquity, QWidget 
   connect(lvPriceHistory, SIGNAL(clicked(QListViewItem *, const QPoint&, int)), this, SLOT(slotPriceHistoryClicked(QListViewItem*, const QPoint&, int)));
   
   //fill in the fields for what we know.
-  edtEquityName->setText(m_selectedEquity->getEquityName());
-  edtMarketSymbol->setText(m_selectedEquity->getEquitySymbol());
-  cmbInvestmentType->setCurrentItem((int)m_selectedEquity->getEquityType());
-  equity_price_history priceHistory = m_selectedEquity->getConstPriceHistory();
+  edtEquityName->setText(m_selectedEquity->name());
+  edtMarketSymbol->setText(m_selectedEquity->tradingSymbol());
+  cmbInvestmentType->setCurrentItem((int)m_selectedEquity->equityType());
+  equity_price_history priceHistory = m_selectedEquity->priceHistory();
   if(priceHistory.size())
   {
     for(equity_price_history::ConstIterator it = priceHistory.begin(); it != priceHistory.end(); ++it)

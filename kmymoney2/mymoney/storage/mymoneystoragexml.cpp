@@ -961,14 +961,14 @@ void MyMoneyStorageXML::writeEquities(QDomElement& equities)
 
 void MyMoneyStorageXML::writeEquity(QDomElement& equityElement, const MyMoneyEquity& equity)
 {
-  equityElement.setAttribute(QString("name"), equity.getEquityName());
-  equityElement.setAttribute(QString("symbol"), equity.getEquitySymbol());
-  equityElement.setAttribute(QString("type"), static_cast<int>(equity.getEquityType()));
+  equityElement.setAttribute(QString("name"), equity.name());
+  equityElement.setAttribute(QString("symbol"), equity.tradingSymbol());
+  equityElement.setAttribute(QString("type"), static_cast<int>(equity.equityType()));
   equityElement.setAttribute(QString("id"), equity.id());
 
   QDomElement history = m_doc->createElement("HISTORY");
   
-  equity_price_history priceHistory = equity.getConstPriceHistory();
+  equity_price_history priceHistory = equity.priceHistory();
   if(priceHistory.size())
   {
     for(equity_price_history::ConstIterator it = priceHistory.begin(); it != priceHistory.end(); ++it)
@@ -1012,8 +1012,8 @@ MyMoneyEquity MyMoneyStorageXML::readEquity(QDomElement& equityElement)
   QCString id;
   MyMoneyEquity e;
 
-  e.setEquityName(QStringEmpty(equityElement.attribute(QString("name"))));
-  e.setEquitySymbol(QStringEmpty(equityElement.attribute(QString("symbol"))));
+  e.setName(QStringEmpty(equityElement.attribute(QString("name"))));
+  e.setTradingSymbol(QStringEmpty(equityElement.attribute(QString("symbol"))));
   e.setEquityType(static_cast<MyMoneyEquity::eEQUITYTYPE>(equityElement.attribute(QString("type")).toInt()));
 
   id = QStringEmpty(equityElement.attribute(QString("id")));

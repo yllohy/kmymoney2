@@ -205,7 +205,7 @@ void KInvestmentView::updateDisplay()
 
   for(QValueList<MyMoneyEquity>::ConstIterator it = equities.begin(); it != equities.end(); ++it)
   {
-    KListViewItem* item = new KListViewItem(investmentTable, (*it).getEquityName(), (*it).getEquitySymbol());
+    KListViewItem* item = new KListViewItem(investmentTable, (*it).name(), (*it).tradingSymbol());
     investmentTable->insertItem(item);
   }
 }
@@ -364,7 +364,7 @@ void KInvestmentView::slotRefreshView(void)
 
   for(QValueList<MyMoneyEquity>::ConstIterator it = equities.begin(); it != equities.end(); ++it)
   {
-    KListViewItem* item = new KListViewItem(investmentTable, (*it).getEquityName(), (*it).getEquitySymbol());
+    KListViewItem* item = new KListViewItem(investmentTable, (*it).name(), (*it).tradingSymbol());
     investmentTable->insertItem(item);
   }
   

@@ -51,25 +51,26 @@ public:
     ETYPE_STOCK,
     ETYPE_MUTUALFUND,
     ETYPE_BOND,
+    ETYPE_CURRENCY,
     ETYPE_NONE
   } eEQUITYTYPE;
 
   QCString  id() const  { return m_id; }
 
-  QString   getEquityName() const                 { return m_name; }
-  void      setEquityName(const String& str)      { m_name = str; }
+  QString   name() const                 { return m_name; }
+  void      setName(const String& str)      { m_name = str; }
 
-	QString   getEquitySymbol() const               { return m_symbol; }
-	void      setEquitySymbol(const String& str)    { m_symbol = str; }
+	QString   tradingSymbol() const               { return m_symbol; }
+	void      setTradingSymbol(const String& str)    { m_symbol = str; }
 
-	eEQUITYTYPE   getEquityType() const                 { return m_equityType; }
+	eEQUITYTYPE   equityType() const                 { return m_equityType; }
 	void          setEquityType(const eEQUITYTYPE& e)   { m_equityType = e; }
 
   
   /** No descriptions */
   void setEquityType(const String& str);
 
-  const equity_price_history& getConstPriceHistory() const { return m_priceHistory; }
+  const equity_price_history& priceHistory() const { return m_priceHistory; }
 
   void  editPriceHistory(QDate& date,MyMoneyMoney& money);
   void  addPriceHistory(QDate& date, MyMoneyMoney& money);
