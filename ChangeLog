@@ -1,3 +1,9 @@
+2003-08-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * backup file name is now constructed using international date format
+  * added progress bar to backup function
+  * added new find transaction dialog (no functionality yet)
+  * revised register class
+
 2003-08-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * avoid more compiler warnings
   * use last used post date for new transactions
