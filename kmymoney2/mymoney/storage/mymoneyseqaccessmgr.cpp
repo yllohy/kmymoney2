@@ -1247,17 +1247,20 @@ const QValueList<MyMoneySchedule> MyMoneySeqAccessMgr::scheduleList(
     }
     
     if(startDate.isValid() && !endDate.isValid()) {
-      if((*pos).paymentDates(startDate, QDate(2150,1,1)).count() == 0)
+      if(!(*pos).nextPayment(startDate.addDays(-1)).isValid())
         continue;
     }
     
     if(!startDate.isValid() && endDate.isValid()) {
-      if((*pos).paymentDates(QDate(1900,1,1), endDate).count() == 0)
+      if((*pos).startDate() > endDate)
         continue;
     }
 
     if(overdue) {
-      if((*pos).nextPayment((*pos).lastPayment()) >= QDate::currentDate())
+      QDate nextPayment = (*pos).nextPayment((*pos).lastPayment());
+      if(!nextPayment.isValid())
+        continue;
+      if(nextPayment >= QDate::currentDate())
         continue;
     }
 

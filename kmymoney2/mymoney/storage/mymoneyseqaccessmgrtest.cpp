@@ -1086,7 +1086,7 @@ void MyMoneySeqAccessMgrTest::testAddSchedule() {
 				 MyMoneySchedule::OCCUR_DAILY,
 				 MyMoneySchedule::STYPE_MANUALDEPOSIT,
 				 QDate(2003,7,10),
-				 false,
+				 QDate(),
 				 true,
 				 false);
 	schedule.setTransaction(t1);
@@ -1107,7 +1107,7 @@ void MyMoneySeqAccessMgrTest::testAddSchedule() {
 					 MyMoneySchedule::OCCUR_DAILY,
 					 MyMoneySchedule::STYPE_MANUALDEPOSIT,
 					 QDate(2003,7,10),
-					 false,
+					 QDate(),
 					 true,
 					 false);
 		m->addSchedule(schedule);
@@ -1199,7 +1199,7 @@ void MyMoneySeqAccessMgrTest::testScheduleList() {
 				 MyMoneySchedule::OCCUR_ONCE,
 				 MyMoneySchedule::STYPE_DIRECTDEBIT,
 				 notOverdue,
-				 false,
+				 QDate(),
 				 false,
 				 false);
 	schedule1.setTransaction(t1);
@@ -1215,7 +1215,7 @@ void MyMoneySeqAccessMgrTest::testScheduleList() {
 				 MyMoneySchedule::OCCUR_DAILY,
 				 MyMoneySchedule::STYPE_DIRECTDEPOSIT,
 				 notOverdue.addDays(1),
-				 false,
+				 QDate(),
 				 false,
 				 false);
 	schedule2.setTransaction(t2);
@@ -1231,7 +1231,7 @@ void MyMoneySeqAccessMgrTest::testScheduleList() {
 				 MyMoneySchedule::OCCUR_WEEKLY,
 				 MyMoneySchedule::STYPE_OTHER,
 				 notOverdue.addDays(2),
-				 false,
+				 QDate(),
 				 false,
 				 false);
 	schedule3.setTransaction(t3);
@@ -1247,11 +1247,10 @@ void MyMoneySeqAccessMgrTest::testScheduleList() {
 				 MyMoneySchedule::OCCUR_WEEKLY,
 				 MyMoneySchedule::STYPE_WRITECHEQUE,
 				 overdue.addDays(-7),
-				 true,
+				 notOverdue.addMonths(1),
 				 false,
 				 false);
 	schedule4.setTransaction(t4);
-	schedule4.setEndDate(notOverdue.addMonths(1));
 
 	try {
 		m->addSchedule(schedule1);
