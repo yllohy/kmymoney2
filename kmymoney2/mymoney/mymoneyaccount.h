@@ -413,7 +413,7 @@ public:
     *
     * @param QCString reference to type from XML file.
     */
-  void setAccountTypeByName(const QCString& strType);
+  // void setAccountTypeByName(const QCString& strType);
 
   /**
     * This method is used to set a new parent account id
