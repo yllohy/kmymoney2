@@ -434,21 +434,30 @@ void KEnterScheduleDialog::commitTransaction()
   {
     if (!m_schedDate.isValid())
       m_schedDate = m_schedule.nextPayment(m_schedule.lastPayment());
-      
-    if (m_schedDate < m_schedule.nextPayment(m_schedule.lastPayment()))
+
+    if (m_schedDate > m_schedule.nextPayment(m_schedule.lastPayment()))
     {
       QString message = QString(i18n("Some occurences that are older than '%1' have not been entered yet.\n\nDelete all occurences that have not been entered before this date?")).arg(m_schedDate.toString());
       if (KMessageBox::warningYesNo(this, message) == KMessageBox::No)
-        return;
-    }
+        m_schedule.recordPayment(m_schedDate);
+      else
+        m_schedule.setLastPayment(m_schedDate);   
+    }        
     else if (m_schedDate > QDate::currentDate())
     {
       QString message = QString(i18n("Are you sure you want to enter this occurence which is %1 days after today?")).arg(QDate::currentDate().daysTo(m_schedDate));
       if (KMessageBox::warningYesNo(this, message) == KMessageBox::No)
         return;
-    }
 
-    m_schedule.setLastPayment(m_schedDate);
+      if (m_schedDate > m_schedule.nextPayment(m_schedule.lastPayment()))
+        m_schedule.recordPayment(m_schedDate);
+      else
+        m_schedule.setLastPayment(m_schedDate);
+    }
+    else
+    {
+      m_schedule.setLastPayment(m_schedDate);
+    }
 
     m_transaction.setEntryDate(QDate::currentDate());
     m_transaction.setPostDate(m_schedDate);

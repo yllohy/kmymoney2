@@ -88,19 +88,6 @@ void KMyMoneyBriefSchedule::loadSchedule()
     {
       MyMoneySchedule sched = m_scheduleList[m_index];
 
-      // TODO
-      // For now hide the enter button.  At some point in the
-      // future we will be able to add any occurence and will
-      // have to remove this code.
-      QDate nextPayment = sched.nextPayment(sched.lastPayment());
-      if (m_date < QDate::currentDate())
-        if (m_date != nextPayment)
-          m_buttonEnter->hide();
-        else
-          m_buttonEnter->show();
-      else
-        m_buttonEnter->hide();
-        
       m_indexLabel->setText(QString::number(m_index+1) + i18n(" of ") + QString::number(m_scheduleList.count()));
       m_name->setText(sched.name());
       m_type->setText(KMyMoneyUtils::scheduleTypeToString(sched.type()));

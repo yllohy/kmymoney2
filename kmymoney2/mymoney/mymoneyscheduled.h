@@ -330,6 +330,8 @@ public:
   bool isOverdue() const;
   bool isFinished() const;
   bool hasRecordedPayment(const QDate&) const;
+  void recordPayment(const QDate&);
+  QValueList<QDate> recordedPayments(void) const { return m_recordedPayments; }
   
 private:
   /// Its occurence
@@ -364,6 +366,9 @@ private:
 
   /// The name
   QString m_name;
+
+  /// The recorded payments
+  QValueList<QDate> m_recordedPayments;
 };
 
 #endif

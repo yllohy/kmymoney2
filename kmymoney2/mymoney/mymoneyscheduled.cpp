@@ -96,6 +96,21 @@ void MyMoneySchedule::setAutoEnter(bool autoenter)
 
 void MyMoneySchedule::setLastPayment(const QDate& date)
 {
+  // Delete all payments older than date
+  QValueList<QDate>::Iterator it;
+  QValueList<QDate> delList;
+  
+  for (it=m_recordedPayments.begin(); it!=m_recordedPayments.end(); ++it)
+  {
+    if (*it < date)
+      delList.append(*it);
+  }
+
+  for (it=delList.begin(); it!=delList.end(); ++it)
+  {
+    m_recordedPayments.remove(*it);
+  }
+
   m_lastPayment = date;
 }
 
@@ -547,28 +562,56 @@ bool MyMoneySchedule::isOverdue() const
   if (isFinished())
     return false;
 
+  bool bOverdue = true;
+
   // Check the payment dates first
-/*
-  QValueList<QDate> datesBeforeToday = paymentDates(m_startDate, QDate::currentDate());
+  QValueList<QDate> datesBeforeToday = paymentDates(m_startDate, QDate::currentDate().addDays(-1));
   if (datesBeforeToday.count() == 0)
-    return false;
+  {
+    bOverdue = false;
+  }
   else if (datesBeforeToday.count() == 1)
   {
-    if ((lastPayment().isValid() && lastPayment() < QDate::currentDate()) ||
-        !lastPayment().isValid())
-      return true;
+    if (nextPayment(m_lastPayment).isValid() &&
+        (nextPayment(m_lastPayment) >= QDate::currentDate()))
+      bOverdue = false;
   }
-          
-  // Check the dates
-*/
+  else
+  {          
+    // Check the dates
+    // Remove all dates before m_lastPayment
+    QValueList<QDate> delList;
+    QValueList<QDate>::ConstIterator it;
 
-  if ((nextPayment(m_lastPayment) < QDate::currentDate()) ||
-      (!m_lastPayment.isValid() && m_startDate < QDate::currentDate()))
-  {
-      return true;
+    for (it=datesBeforeToday.begin(); it!=datesBeforeToday.end(); ++it)
+    {
+      if (*it <= m_lastPayment)
+        delList.append(*it);
+    }
+    for (it=delList.begin(); it!=delList.end(); ++it)
+    {
+      datesBeforeToday.remove(*it);
+    }
+
+    // Remove nextPayment (lastPayments returns it?)
+    if (datesBeforeToday.contains(nextPayment(m_lastPayment)))
+      datesBeforeToday.remove(nextPayment(m_lastPayment));
+    
+    for (it=m_recordedPayments.begin(); it!=m_recordedPayments.end(); ++it)
+    {
+      if (datesBeforeToday.contains(*it))
+        datesBeforeToday.remove(*it);
+    }
+
+    if (datesBeforeToday.contains(m_lastPayment))
+      datesBeforeToday.remove(m_lastPayment);
+
+    // Now finally check
+    if (datesBeforeToday.count() == 0)
+      bOverdue = false;
   }
 
-  return false;  
+  return bOverdue;  
 }
 
 bool MyMoneySchedule::isFinished() const
@@ -585,7 +628,13 @@ bool MyMoneySchedule::hasRecordedPayment(const QDate& date) const
   if (m_lastPayment.isValid() && m_lastPayment >= date)
     return true;
     
-  // if (m_recordedPayments.contains(date))
-  //  return true;
+  if (m_recordedPayments.contains(date))
+    return true;
+    
   return false;
+}
+
+void MyMoneySchedule::recordPayment(const QDate& date)
+{
+  m_recordedPayments.append(date);
 }
