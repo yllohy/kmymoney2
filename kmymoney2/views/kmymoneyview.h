@@ -53,6 +53,7 @@ class KNewAccountWizard;
 class KGlobalLedgerView;
 class IMyMoneyStorageFormat;
 class MyMoneyTransaction;
+class KInvestmentView;
 
 /**
   * This class represents the view of the MyMoneyFile which contains
@@ -61,7 +62,7 @@ class MyMoneyTransaction;
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.49 2004/02/20 06:10:00 ipwizard Exp $
+  * $Id: kmymoneyview.h,v 1.50 2004/03/10 03:32:03 ktambascio Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -90,6 +91,7 @@ private:
   KScheduledView *m_scheduledView;
   KNewAccountWizard *m_newAccountWizard;
   KGlobalLedgerView *m_ledgerView;
+  KInvestmentView *m_investmentView;
   KFindTransactionDlg* m_searchDlg;
   
   QVBox* m_homeViewFrame;
@@ -98,6 +100,7 @@ private:
   QVBox* m_payeesViewFrame;
   QVBox* m_scheduleViewFrame;
   QVBox* m_ledgerViewFrame;
+  QVBox* m_investmentViewFrame;
 
   bool m_fileOpen;
 

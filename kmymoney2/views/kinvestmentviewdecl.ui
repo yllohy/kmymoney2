@@ -15,96 +15,89 @@
     <property name="caption">
         <string>Investment Summary</string>
     </property>
-    <widget class="QButtonGroup">
+    <widget class="QTabWidget">
         <property name="name">
-            <cstring>m_btnGroupView</cstring>
+            <cstring>tabWidget2</cstring>
         </property>
         <property name="geometry">
             <rect>
-                <x>21</x>
-                <y>0</y>
-                <width>770</width>
-                <height>40</height>
+                <x>10</x>
+                <y>51</y>
+                <width>761</width>
+                <height>490</height>
             </rect>
         </property>
-        <property name="title">
-            <string>Select View Type</string>
-        </property>
-        <widget class="QRadioButton">
+        <widget class="QWidget">
             <property name="name">
-                <cstring>btnInvestment</cstring>
+                <cstring>tab</cstring>
             </property>
-            <property name="geometry">
-                <rect>
-                    <x>390</x>
-                    <y>10</y>
-                    <width>180</width>
-                    <height>20</height>
-                </rect>
+            <attribute name="title">
+                <string>Investment Summary</string>
+            </attribute>
+            <widget class="KListView">
+                <property name="name">
+                    <cstring>investmentTable</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>10</x>
+                        <y>10</y>
+                        <width>740</width>
+                        <height>440</height>
+                    </rect>
+                </property>
+                <property name="font">
+                    <font>
+                        <pointsize>9</pointsize>
+                    </font>
+                </property>
+                <property name="toolTip" stdset="0">
+                    <string>Summary of the equities contained in this account, showing price and % gains.</string>
+                </property>
+            </widget>
+        </widget>
+        <widget class="QWidget">
+            <property name="name">
+                <cstring>tab</cstring>
             </property>
-            <property name="text">
+            <attribute name="title">
                 <string>Investment Transactions</string>
-            </property>
-            <property name="buttonGroupId">
-                <number>1</number>
-            </property>
-        </widget>
-        <widget class="QRadioButton">
-            <property name="name">
-                <cstring>btnSummary</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>230</x>
-                    <y>10</y>
-                    <width>140</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>Summary of Account</string>
-            </property>
-            <property name="buttonGroupId">
-                <number>0</number>
-            </property>
+            </attribute>
         </widget>
     </widget>
-    <widget class="QTable">
+    <widget class="QLabel">
         <property name="name">
-            <cstring>transactionTable</cstring>
+            <cstring>textLabel1</cstring>
         </property>
         <property name="geometry">
             <rect>
-                <x>40</x>
-                <y>60</y>
-                <width>335</width>
-                <height>88</height>
+                <x>10</x>
+                <y>10</y>
+                <width>150</width>
+                <height>30</height>
             </rect>
         </property>
-        <property name="numRows">
-            <number>0</number>
-        </property>
-        <property name="numCols">
-            <number>0</number>
+        <property name="text">
+            <string>Select Account:</string>
         </property>
     </widget>
-    <widget class="KListView">
+    <widget class="KComboBox">
         <property name="name">
-            <cstring>investmentTable</cstring>
+            <cstring>kComboBox1</cstring>
         </property>
         <property name="geometry">
             <rect>
-                <x>30</x>
-                <y>160</y>
-                <width>290</width>
-                <height>140</height>
+                <x>160</x>
+                <y>10</y>
+                <width>150</width>
+                <height>29</height>
             </rect>
         </property>
     </widget>
 </widget>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>qwidget.h</includehint>
     <includehint>klistview.h</includehint>
+    <includehint>kcombobox.h</includehint>
 </includehints>
 </UI>

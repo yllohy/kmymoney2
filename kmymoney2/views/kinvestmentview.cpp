@@ -58,7 +58,6 @@
 KInvestmentView::KInvestmentView(QWidget *parent, const char *name)
  :  kInvestmentViewDecl(parent,name)
 {
-/*
 	m_pAccount 	= NULL;
 	m_popMenu		= NULL;
 
@@ -68,7 +67,7 @@ KInvestmentView::KInvestmentView(QWidget *parent, const char *name)
 	investmentTable->setColumnText(0, QString(i18n("Symbol")));
   investmentTable->addColumn(i18n("Name"));
   investmentTable->addColumn(i18n("Symbol"));
-  investmentTable->addColumn(i18n("Number of Shares"));
+  investmentTable->addColumn(i18n("Quantity"));
   investmentTable->addColumn(i18n("Current Price"));
   investmentTable->addColumn(i18n("Original Price"));
   investmentTable->addColumn(i18n("$ Gain"));
@@ -82,24 +81,29 @@ KInvestmentView::KInvestmentView(QWidget *parent, const char *name)
   investmentTable->header()->setResizeEnabled(true);
   investmentTable->setAllColumnsShowFocus(true);
 
+  KListViewItem* item1 = new KListViewItem(investmentTable, QString("Redhat"), QString("RHAT"), QString("24"), QString("$20.00"), QString("$13.43"), QString("$212"), QString("5.43%"), QString("9.43%"));
+  investmentTable->insertItem(item1);
+
+  KListViewItem* item2 = new KListViewItem(investmentTable, QString("Yahoo"), QString("YHOO"), QString("100"), QString("$14.21"), QString("$25.43"), QString("$900"), QString("10.43%"), QString("19.12%"));
+  investmentTable->insertItem(item2);        
+
   // never show a horizontal scroll bar
-  investmentTable->setHScrollBarMode(QScrollView::AlwaysOff);
+ // investmentTable->setHScrollBarMode(QScrollView::AlwaysOff);
 
   //no sorting yet...
-  investmentTable->setSorting(-1);
+ // investmentTable->setSorting(-1);
 
-  connect(investmentTable, SIGNAL(rightButtonClicked(QListViewItem* , const QPoint&, int)),
-    this, SLOT(slotListRightMouse(QListViewItem*, const QPoint&, int)));
+//  connect(investmentTable, SIGNAL(rightButtonClicked(QListViewItem* , const QPoint&, int)),
+//    this, SLOT(slotListRightMouse(QListViewItem*, const QPoint&, int)));
 
   //connects the signal when a radio button is checked.
-  connect(m_btnGroupView, SIGNAL(clicked(int)), this, SLOT(slotViewChanged(int)));
+ // connect(m_btnGroupView, SIGNAL(clicked(int)), this, SLOT(slotViewChanged(int)));
 
   //hide transaction view, since we show the summary view by default.
-  transactionTable->hide();
+//  transactionTable->hide();
 
   //set the summary button to be true.
-  btnSummary->setChecked(TRUE);
-*/
+ // btnSummary->setChecked(TRUE);
 }
 
 KInvestmentView::~KInvestmentView()
@@ -107,9 +111,8 @@ KInvestmentView::~KInvestmentView()
 }
 
 /** No descriptions */
-bool KInvestmentView::init(MyMoneyAccount* /*pAccount*/)
+bool KInvestmentView::init(MyMoneyAccount* pAccount)
 {
-/*
 	if(!pAccount)
 	{
 		return false;
@@ -124,15 +127,15 @@ bool KInvestmentView::init(MyMoneyAccount* /*pAccount*/)
   {
   	MyMoneyInvestTransaction *pInvestTransaction = NULL;
     MyMoneyTransaction *transaction = NULL;
-    m_transactionList.clear();
+//    m_transactionList.clear();
 
-    for(transaction=pAccount->transactionFirst(); transaction; transaction=pAccount->transactionNext())
+//    for(transaction=pAccount->transactionFirst(); transaction; transaction=pAccount->transactionNext())
     {
-      if(transaction->date() >= qdateStart)
+ //     if(transaction->date() >= qdateStart)
       {
-      	if(transaction)
+//      	if(transaction)
       	{
-        	pInvestTransaction = static_cast<MyMoneyInvestTransaction*>(transaction);
+        	/*pInvestTransaction = static_cast<MyMoneyInvestTransaction*>(transaction);
         	m_transactionList.append(new MyMoneyInvestTransaction(
             pAccount,
             transaction->id(),
@@ -147,14 +150,11 @@ bool KInvestmentView::init(MyMoneyAccount* /*pAccount*/)
             transaction->payee(),
             transaction->accountFrom(),
             transaction->accountTo(),
-            transaction->state()));
+            transaction->state()));  */
       	}
       }
     }
 	}
-
-
-*/
 	return true;
 }
 /** No descriptions */
@@ -168,7 +168,6 @@ void KInvestmentView::updateDisplay()
 
 void KInvestmentView::slotNewInvestment()
 {
-/*
 	MyMoneyEquity *pEquity = NULL;
 	KNewEquityEntryDlg *pDlg = new KNewEquityEntryDlg(this);
 	pDlg->exec();
@@ -182,20 +181,20 @@ void KInvestmentView::slotNewInvestment()
 			QString strTemp;
 			strTemp = pDlg->edtEquityName->text();
 			kdDebug(1) << "Equity name is: " << strTemp << endl;
-			pEquity->setEquityName(strTemp);
+//			pEquity->setEquityName(strTemp);
 			
 			strTemp = pDlg->edtMarketSymbol->text();
 			kdDebug(1) << "Equity Symbol is: " << strTemp << endl;
-			pEquity->setEquitySymbol(strTemp);
+//			pEquity->setEquitySymbol(strTemp);
 			
 			strTemp = pDlg->cmbInvestmentType->currentText();
 			kdDebug(1) << "Equity Type is: " << strTemp << endl;
-			pEquity->setEquityType(strTemp);
+//			pEquity->setEquityType(strTemp);
 			
 			const double price = pDlg->getStockPrice();
 			kdDebug(1) << "Current Equity Price is: " << price << endl;
     	MyMoneyMoney money(price);
-    	pEquity->setCurrentPrice(QDate::currentDate(), &money);
+//    	pEquity->setCurrentPrice(QDate::currentDate(), &money);
     	
     	//add to equity database
     	addEquityEntry(pEquity);
@@ -204,12 +203,10 @@ void KInvestmentView::slotNewInvestment()
     	displayNewEquity(pEquity);
     }
 	}
-*/
 }
 
 void KInvestmentView::addEquityEntry(MyMoneyEquity* /*pEntry*/)
-{
-/*
+{/*
 	if(m_pAccount)
 	{
 		MyMoneyBank *pBank = m_pAccount->bank();
@@ -274,21 +271,20 @@ void KInvestmentView::slotListRightMouse(QListViewItem* /*item*/, const QPoint& 
 */
 }
 
-void KInvestmentView::slotViewChanged(int /*ID*/)
+void KInvestmentView::slotViewChanged(int ID)
 {
-/*
 	switch(ID)
 	{
 		case VIEW_SUMMARY:
 		{
-			investmentTable->show();
-			transactionTable->hide();
+//			investmentTable->show();
+//			transactionTable->hide();
 			break;
 		}
 		case VIEW_INVESTMENT:
 		{
-			investmentTable->hide();
-			transactionTable->show();
+//			investmentTable->hide();
+//			transactionTable->show();
 			break;
 		}
 		default:
@@ -296,6 +292,5 @@ void KInvestmentView::slotViewChanged(int /*ID*/)
 			break;
 		}
 	}
-*/
 }
 

@@ -84,7 +84,7 @@
 #include "../mymoney/mymoneyexception.h"
 #include "../mymoney/storage/mymoneystoragedump.h"
 #include "../mymoney/storage/mymoneystoragexml.h"
-//#include "../mymoney/storage/mymoneystoragegnc.h"
+#include "../mymoney/storage/mymoneystoragegnc.h"
 
 #include "kmymoneyview.h"
 #include "kbanksview.h"
@@ -93,6 +93,7 @@
 #include "kpayeesview.h"
 #include "kscheduledview.h"
 #include "kgloballedgerview.h"
+#include "kinvestmentview.h"
 
 #include "../kmymoney2.h"
 #include "../kmymoneyutils.h"
@@ -156,18 +157,15 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(this, SIGNAL(aboutToShowPage(QWidget*)), m_ledgerView, SLOT(hide()));
   connect(m_ledgerView, SIGNAL(signalViewActivated()), this, SLOT(slotActivatedAccountView()));
 
+  // Page 6
+  m_investmentViewFrame = addVBoxPage( i18n("Investments"), i18n("Investments"),
+    DesktopIcon("categories"));
+  m_investmentView = new KInvestmentView(m_investmentViewFrame, "categoriesView");
+  connect(m_investmentView, SIGNAL(signalViewActivated()), this, SLOT(slotActivatedInvestmentView()));
+  connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_investmentView, SLOT(slotReloadView()));
+
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_ledgerView, SLOT(slotReloadView()));
 
-/*
-  m_investmentView = new KInvestmentView(qvboxMainFrame2, "investmentView");
-
-  // Need to show it, although the user wont see it.
-  // At the bottom of this method we choose what to show.
-
-  accountsView->show();
-  transactionView->hide();
-  m_investmentView->hide();
-*/
 
   connect(m_accountsView, SIGNAL(accountRightMouseClick()),
     this, SLOT(slotAccountRightMouse()));
@@ -610,8 +608,8 @@ bool KMyMoneyView::readFile(const KURL& url)
                 QCString txt(hdr);
                 if(kmyexp.search(txt) != -1) {
                   pReader = new MyMoneyStorageXML;
-                //} else if(gncexp.search(txt) != -1) {
-                //  pReader = new MyMoneyStorageGNC;
+                } else if(gncexp.search(txt) != -1) {
+                  pReader = new MyMoneyStorageGNC;
                 }
               }
             }

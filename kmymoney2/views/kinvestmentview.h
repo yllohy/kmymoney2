@@ -90,7 +90,7 @@ protected slots:
 private:
 	KPopupMenu* m_popMenu;
 	MyMoneyAccount *m_pAccount;
-	QList<MyMoneyTransaction> m_transactionList;
+	//QList<MyMoneyTransaction> m_transactionList;
 };
 
 #endif
