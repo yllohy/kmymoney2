@@ -249,8 +249,8 @@ void MyMoneyStorageBin::readOldFormat(QDataStream& s, IMyMoneySerialize* storage
     s >> tmp; // telephone
     s >> tmp; // email
 
-    // storage->addPayee(payee);
-    // payeeConversion[payee.name()] = payee.id();
+    storage->addPayee(payee);
+    payeeConversion[payee.name()] = payee.id();
   }
 
   // read list of institutions and create new objects for them
@@ -366,8 +366,13 @@ void MyMoneyStorageBin::readOldFormat(QDataStream& s, IMyMoneySerialize* storage
         sp1.setValue(amount);
         sp2.setShares(-amount);
         sp2.setValue(-amount);
-        //sp1.setPayeeId(payeeConversion[payee]);
-        //sp2.setPayeeId(payeeConversion[payee]);
+
+        QMap<QString, QCString>::ConstIterator it_p;
+        it_p = payeeConversion.find(payee);
+        if(it_p != payeeConversion.end()) {
+          sp1.setPayeeId(*it_p);
+          sp2.setPayeeId(*it_p);
+        }
 
         tr.addSplit(sp1);
         tr.addSplit(sp2);
