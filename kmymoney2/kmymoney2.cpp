@@ -694,8 +694,9 @@ void KMyMoney2App::slotQifImportFinished(void)
     
     myMoneyView->suspendUpdate(false);
     // update the views as they might still contain invalid data
-    // from the import session
+    // from the import session. The same applies for the window caption
     myMoneyView->slotRefreshViews();
+    updateCaption();
     
     // slotStatusMsg(prevMsg);
     delete m_reader;
