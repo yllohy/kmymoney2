@@ -64,10 +64,14 @@ private:
 protected:
   void resizeEvent(QResizeEvent *);
 
+public slots:
+  void slotEditClicked(void);
+  void slotEditClicked(MyMoneyAccount& account);
+  void slotDeleteClicked(void);
+  void slotDeleteClicked(MyMoneyAccount& account);
+  
 protected slots:
-  void slotEditClicked();
   void slotNewClicked();
-  void slotDeleteClicked();
   void slotSelectionChanged(QListViewItem*);
   void slotListRightMouse(QListViewItem* item, const QPoint& , int col);
 
@@ -76,8 +80,8 @@ signals:
   void categoryRightMouseClick();
 
 public:
-	KCategoriesView(QWidget *parent=0, const char *name=0);
-	~KCategoriesView();
+  KCategoriesView(QWidget *parent=0, const char *name=0);
+  ~KCategoriesView();
   void show();
 
 

@@ -264,24 +264,15 @@ void KCategoriesView::slotNewClicked()
 
 }
 
-void KCategoriesView::slotDeleteClicked()
+void KCategoriesView::slotDeleteClicked(MyMoneyAccount& account)
 {
-  KAccountListItem *item = (KAccountListItem *)categoryListView->selectedItem();
-  if (!item)
-    return;
+  QString prompt = i18n("Do you really want to delete the category '%1'")
+    .arg(account.name());
 
-  QString prompt = i18n("Delete this category item: ");
-  prompt += item->text(0);
-
-  if ((KMessageBox::questionYesNo(this, prompt))==KMessageBox::Yes)
-  {
-    try
-    {
+  if ((KMessageBox::questionYesNo(this, prompt)) == KMessageBox::Yes) {
+    try {
       MyMoneyFile *file = MyMoneyFile::instance();
-
-      file->removeAccount(file->account(item->accountID()));
-//      categoryListView->clear();
-//      refresh();
+      file->removeAccount(account);
     }
     catch (MyMoneyException *e)
     {
@@ -290,6 +281,27 @@ void KCategoriesView::slotDeleteClicked()
       KMessageBox::error(this, message);
       delete e;
     }
+  }  
+}
+
+void KCategoriesView::slotDeleteClicked(void)
+{
+  KAccountListItem *item = (KAccountListItem *)categoryListView->selectedItem();
+  if (!item)
+    return;
+
+  try
+  {
+    MyMoneyFile *file = MyMoneyFile::instance();
+    MyMoneyAccount account = file->account(item->accountID());
+    slotDeleteClicked(account);
+  }
+  catch (MyMoneyException *e)
+  {
+    QString message(i18n("Unable to remove category: "));
+    message += e->what();
+    KMessageBox::error(this, message);
+    delete e;
   }
 }
 
@@ -308,7 +320,33 @@ void KCategoriesView::slotSelectionChanged(QListViewItem* item)
   }
 }
 
-void KCategoriesView::slotEditClicked()
+void KCategoriesView::slotEditClicked(MyMoneyAccount& account)
+{
+  try {
+    KNewAccountDlg dlg(account, true, true, this, "hi", i18n("Edit a category"));
+
+    if (dlg.exec())
+    {
+      account = dlg.account();
+      MyMoneyAccount parent = dlg.parentAccount();
+
+      MyMoneyFile* file = MyMoneyFile::instance();
+      file->modifyAccount(account);
+      if(account.parentAccountId() != parent.id()) {
+        file->reparentAccount(account, parent);
+      }
+    }
+  }
+  catch (MyMoneyException *e)
+  {
+    QString errorString = i18n("Cannot edit category: ");
+    errorString += e->what();
+    KMessageBox::error(this, errorString);
+    delete e;
+  }
+}
+
+void KCategoriesView::slotEditClicked(void)
 {
   KAccountListItem *item = (KAccountListItem *)categoryListView->selectedItem();
   if (!item)
@@ -319,12 +357,7 @@ void KCategoriesView::slotEditClicked()
     MyMoneyFile* file = MyMoneyFile::instance();
     MyMoneyAccount account = file->account(item->accountID());
 
-    KNewAccountDlg dlg(account, true, true, this, "hi", i18n("Edit an Account"));
-
-    if (dlg.exec())
-    {
-      file->modifyAccount(dlg.account());
-    }
+    slotEditClicked(account);
   }
   catch (MyMoneyException *e)
   {
@@ -354,7 +387,7 @@ void KCategoriesView::writeConfig(void)
   config->sync();
 }
 
-void KCategoriesView::update(const QCString& id)
+void KCategoriesView::update(const QCString& /* id */)
 {
   // to avoid constant update when a lot of accounts are added
   // (e.g. during creation of a new MyMoneyFile object when the

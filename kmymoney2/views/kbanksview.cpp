@@ -30,6 +30,7 @@
 #include <klocale.h>
 #include <klistview.h>
 #include <kconfig.h>
+#include <kmessagebox.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -37,6 +38,7 @@
 #include "kbanksview.h"
 #include "kbanklistitem.h"
 #include "../mymoney/mymoneyfile.h"
+#include "../dialogs/knewaccountdlg.h"
 
 static const char* const assetIconImage[] = {
 "32 32 9 1",
@@ -291,7 +293,8 @@ static const char* const loanIconImage[] = {
 
 
 KAccountsView::KAccountsView(QWidget *parent, const char *name)
- : KBankViewDecl(parent,name)
+ : KBankViewDecl(parent,name),
+   m_suspendUpdate(false)
 {
   KConfig *config = KGlobal::config();
   config->setGroup("List Options");
@@ -452,6 +455,7 @@ void KAccountsView::slotListRightMouse(QListViewItem* item, const QPoint& , int 
     KAccountListItem* accountItem = static_cast<KAccountListItem*> (item);
 
 
+
     if (accountItem) {
       try {
         MyMoneyFile *file = MyMoneyFile::instance();
@@ -488,11 +492,31 @@ QCString KAccountsView::currentInstitution(bool& success)
 
 void KAccountsView::update(const QCString& id)
 {
-  if(id == MyMoneyFile::NotifyClassAccountHierarchy
-  || (id == MyMoneyFile::NotifyClassInstitution && m_bViewNormalAccountsView == true))
-    refresh(id);
-  if(id == MyMoneyFile::NotifyClassAccount)
+  // to avoid constant update when a lot of accounts are added
+  // (e.g. during creation of a new MyMoneyFile object when the
+  // default accounts are loaded) a switch is supported to suppress
+  // updates in this phase. The switch is controlled with suspendUpdate().
+  if(m_suspendUpdate == false) {
+    if(id == MyMoneyFile::NotifyClassAccountHierarchy
+    || (id == MyMoneyFile::NotifyClassInstitution && m_bViewNormalAccountsView == true))
+      refresh(id);
+    if(id == MyMoneyFile::NotifyClassAccount)
+      refreshTotalProfit();
+  }
+}
+
+void KAccountsView::suspendUpdate(const bool suspend)
+{
+  // force a refresh, if update was off
+  if(m_suspendUpdate == true
+  && suspend == false) {
+    refresh(MyMoneyFile::NotifyClassAccountHierarchy);
+    if(m_bViewNormalAccountsView == true)
+      refresh(MyMoneyFile::NotifyClassInstitution);
     refreshTotalProfit();
+  }
+  
+  m_suspendUpdate = suspend;
 }
 
 void KAccountsView::refreshView(void)
@@ -565,6 +589,7 @@ void KAccountsView::fillTransactionCountMap(void)
     for(it_s = (*it_t).splits().begin(); it_s != (*it_t).splits().end(); ++it_s) {
       m_transactionCountMap[(*it_s).accountId()]++;
     }
+
   }
 }
 */
@@ -845,4 +870,64 @@ void KAccountsView::slotViewSelected(QWidget* view)
   config->setGroup("Last Use Settings");
   config->writeEntry("KAccountsView_LastType", accountTabWidget->currentPageIndex());
   config->sync();
+}
+
+void KAccountsView::slotEditClicked(void)
+{
+  KAccountListItem *item = (KAccountListItem *)accountListView->selectedItem();
+  if (!item)
+    return;
+
+  try
+  {
+    MyMoneyFile* file = MyMoneyFile::instance();
+    MyMoneyAccount account = file->account(item->accountID());
+
+    KNewAccountDlg dlg(account, true, false, this, "hi", i18n("Edit an account"));
+
+    if (dlg.exec())
+    {
+      MyMoneyAccount account = dlg.account();
+      MyMoneyAccount parent = dlg.parentAccount();
+
+      file->modifyAccount(account);
+      if(account.parentAccountId() != parent.id()) {
+        file->reparentAccount(account, parent);
+      }
+    }
+  }
+  catch (MyMoneyException *e)
+  {
+    QString errorString = i18n("Cannot edit category: ");
+    errorString += e->what();
+    KMessageBox::error(this, errorString);
+    delete e;
+  }
+}
+
+void KAccountsView::slotDeleteClicked(void)
+{
+  KAccountListItem *item = (KAccountListItem *)accountListView->selectedItem();
+  if (!item)
+    return;
+
+  try
+  {
+    MyMoneyFile *file = MyMoneyFile::instance();
+    MyMoneyAccount account = file->account(item->accountID());
+    QString prompt = i18n("Do you really want to delete the account '%1'")
+      .arg(account.name());
+
+    if ((KMessageBox::questionYesNo(this, prompt)) == KMessageBox::Yes) {
+      MyMoneyFile *file = MyMoneyFile::instance();
+      file->removeAccount(account);
+    }
+  }
+  catch (MyMoneyException *e)
+  {
+    QString message(i18n("Unable to remove account: "));
+    message += e->what();
+    KMessageBox::error(this, message);
+    delete e;
+  }
 }

@@ -37,8 +37,8 @@
 
 #include "../mymoney/mymoneyobserver.h"
 #include "../mymoney/mymoneyaccount.h"
-#include "kbankviewdecl.h"
-#include "kbanklistitem.h"
+#include "../views/kbankviewdecl.h"
+#include "../views/kbanklistitem.h"
 
 /**
   *@author Michael Edwardes, Thomas Baumgart
@@ -54,6 +54,7 @@ class KAccountsView : public KBankViewDecl, MyMoneyObserver  {
 private:
   bool m_bSelectedAccount;
   QCString m_selectedAccount;
+  bool m_suspendUpdate;
   // bool m_bSignals;
   bool m_bViewNormalAccountsView;
   bool m_hideCategory;
@@ -85,6 +86,27 @@ public:
     */
   void update(const QCString& id);
 
+  /**
+    * This method is used to suppress updates for specific times
+    * (e.g. during creation of a new MyMoneyFile object when the
+    * default accounts are loaded). The behaviour of update() is
+    * controlled with the parameter @p suspend.
+    *
+    * @param suspend Suspend updates or not. Possible values are
+    *
+    * @li true updates are suspended
+    * @li false updates will be performed immediately
+    *
+    * When a true/false transition of the parameter between
+    * calls to this method is detected,
+    * the view will be refreshed once automatically.
+    */
+  void suspendUpdate(const bool suspend);
+  
+public slots:
+  void slotEditClicked(void);
+  void slotDeleteClicked(void);
+      
 protected:
   void resizeEvent(QResizeEvent*);
 
@@ -133,6 +155,7 @@ private:
 signals:
   /**
     * This signal will be emitted when the left mouse button is double
+
     * clicked on an asset or liability account. It is not emitted for
     * expense, income and any of the standard accounts.
     */
