@@ -1,45 +1,45 @@
 ####### kdevelop will overwrite this part!!! (begin)##########
 bin_PROGRAMS = kmymoney2
-kmymoney2_SOURCES = ktransactionviewdecl.ui kfindtransactiondlgdecl.ui kfileinfodlgdecl.ui knewfiledlgdecl.ui knewbankdlgdecl.ui knewaccountdlgdecl.ui knewcategorydlgdecl.ui kendingbalancedlgdecl.ui kscheduleviewdecl.ui kreconciledlgdecl.ui kpayeedlgdecl.ui knewbillwizard.ui kcategorydlgdecl.ui kbankviewdecl.ui ktransactionview.cpp kstartuplogo.cpp kstartdlg.cpp ksettingsdlg.cpp kscheduleview.cpp kschedulelistitem.cpp kreconcilelistitem.cpp kreconciledlg.cpp kpayeedlg.cpp knewfiledlg.cpp knewcategorydlg.cpp knewbillwizardimpl.cpp knewbankdlg.cpp knewaccountdlg.cpp kmymoneyview.cpp kmainview.cpp kfindtransactiondlg.cpp kfileinfodlg.cpp kendingbalancedlg.cpp kcategorylistitem.cpp kcategoriesdlg.cpp kbanksview.cpp kbanklistitem.cpp kmymoney2.cpp main.cpp 
-kmymoney2_LDADD   = ./dialogs/libdialogs.a ./widgets/libwidgets.a ./mymoney/libmymoney.a $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT) $(LIBSOCKET)
+kmymoney2_SOURCES = ktransactionviewdecl.ui kfindtransactiondlgdecl.ui kfileinfodlgdecl.ui knewfiledlgdecl.ui knewbankdlgdecl.ui knewaccountdlgdecl.ui knewcategorydlgdecl.ui kendingbalancedlgdecl.ui kreconciledlgdecl.ui kpayeedlgdecl.ui kcategorydlgdecl.ui kbankviewdecl.ui ktransactionview.cpp kstartuplogo.cpp kstartdlg.cpp ksettingsdlg.cpp kreconcilelistitem.cpp kreconciledlg.cpp kpayeedlg.cpp knewfiledlg.cpp knewcategorydlg.cpp knewbankdlg.cpp knewaccountdlg.cpp kmymoneyview.cpp kmainview.cpp kfindtransactiondlg.cpp kfileinfodlg.cpp kendingbalancedlg.cpp kcategorylistitem.cpp kcategoriesdlg.cpp kbanksview.cpp kbanklistitem.cpp kmymoney2.cpp main.cpp 
+kmymoney2_LDADD   = ./mymoney/libmymoney.a ./dialogs/libdialogs.a ./widgets/libwidgets.a  $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT) $(LIBSOCKET)
 
-SUBDIRS = widgets mymoney pics dialogs icons 
+SUBDIRS = mymoney pics dialogs icons widgets 
 
-EXTRA_DIST = main.cpp kmymoney2.cpp kmymoney2.h kmymoney2ui.rc kmymoney2.desktop kbanklistitem.cpp kbanklistitem.h kbanksview.cpp kbanksview.h kcategoriesdlg.cpp kcategoriesdlg.h kcategorylistitem.cpp kcategorylistitem.h kendingbalancedlg.cpp kendingbalancedlg.h kfileinfodlg.cpp kfileinfodlg.h kfindtransactiondlg.cpp kfindtransactiondlg.h kmainview.cpp kmainview.h kmymoneyview.cpp kmymoneyview.h knewaccountdlg.cpp knewaccountdlg.h knewbankdlg.cpp knewbankdlg.h knewbillwizardimpl.cpp knewbillwizardimpl.h knewcategorydlg.cpp knewcategorydlg.h knewfiledlg.cpp knewfiledlg.h kpayeedlg.cpp kreconciledlg.cpp kreconciledlg.h kreconcilelistitem.cpp kreconcilelistitem.h kschedulelistitem.cpp kschedulelistitem.h kscheduleview.cpp kscheduleview.h ksettingsdlg.cpp ksettingsdlg.h kstartdlg.cpp kstartdlg.h kstartuplogo.cpp kstartuplogo.h ktransactionview.cpp ktransactionview.h kbankviewdecl.ui kcategorydlgdecl.ui knewbillwizard.ui kpayeedlgdecl.ui kreconciledlgdecl.ui kscheduleviewdecl.ui default_categories.dat kendingbalancedlgdecl.ui knewcategorydlgdecl.ui knewaccountdlgdecl.ui knewbankdlgdecl.ui knewfiledlgdecl.ui kfileinfodlgdecl.ui kfindtransactiondlgdecl.ui ktransactionviewdecl.ui lo16-app-kmymoney2.png lo32-app-kmymoney2.png kmymoney_wizard.png mimetype_kmy_16x16.png mimetype_kmy_32x32.png mimetype_kmy_48x48.png x-kmymoney2.desktop kpayeedlg.h hi16-app-kmymoney2.png hi32-app-kmymoney2.png 
+EXTRA_DIST = main.cpp kmymoney2.cpp kmymoney2.h kmymoney2ui.rc kmymoney2.desktop kbanklistitem.cpp kbanklistitem.h kbanksview.cpp kbanksview.h kcategoriesdlg.cpp kcategoriesdlg.h kcategorylistitem.cpp kcategorylistitem.h kendingbalancedlg.cpp kendingbalancedlg.h kfileinfodlg.cpp kfileinfodlg.h kfindtransactiondlg.cpp kfindtransactiondlg.h kmainview.cpp kmainview.h kmymoneyview.cpp kmymoneyview.h knewaccountdlg.cpp knewaccountdlg.h knewbankdlg.cpp knewbankdlg.h knewcategorydlg.cpp knewcategorydlg.h knewfiledlg.cpp knewfiledlg.h kpayeedlg.cpp kreconciledlg.cpp kreconciledlg.h kreconcilelistitem.cpp kreconcilelistitem.h ksettingsdlg.cpp ksettingsdlg.h kstartdlg.cpp kstartdlg.h kstartuplogo.cpp kstartuplogo.h ktransactionview.cpp ktransactionview.h kbankviewdecl.ui kcategorydlgdecl.ui kpayeedlgdecl.ui kreconciledlgdecl.ui default_categories.dat kendingbalancedlgdecl.ui knewcategorydlgdecl.ui knewaccountdlgdecl.ui knewbankdlgdecl.ui knewfiledlgdecl.ui kfileinfodlgdecl.ui kfindtransactiondlgdecl.ui ktransactionviewdecl.ui lo16-app-kmymoney2.png lo32-app-kmymoney2.png kmymoney_wizard.png mimetype_kmy_16x16.png mimetype_kmy_32x32.png mimetype_kmy_48x48.png x-kmymoney2.desktop kpayeedlg.h hi16-app-kmymoney2.png hi32-app-kmymoney2.png 
 
 install-data-local:
-	$(mkinstalldirs) $(kde_datadir)/kmymoney2/
-	$(INSTALL_DATA) $(srcdir)/kmymoney2ui.rc $(kde_datadir)/kmymoney2/kmymoney2ui.rc
-	$(mkinstalldirs) $(kde_appsdir)/Applications/
-	$(INSTALL_DATA) $(srcdir)/kmymoney2.desktop $(kde_appsdir)/Applications/kmymoney2.desktop
-	$(mkinstalldirs) $(kde_datadir)/kmymoney2/
-	$(INSTALL_DATA) $(srcdir)/default_categories.dat $(kde_datadir)/kmymoney2/default_categories.dat
-	$(mkinstalldirs) $(kde_icondir)/locolor/16x16/apps/
-	$(INSTALL_DATA) $(srcdir)/lo16-app-kmymoney2.png $(kde_icondir)/locolor/16x16/apps/kmymoney2.png
-	$(mkinstalldirs) $(kde_icondir)/locolor/32x32/apps/
-	$(INSTALL_DATA) $(srcdir)/lo32-app-kmymoney2.png $(kde_icondir)/locolor/32x32/apps/kmymoney2.png
-	$(mkinstalldirs) $(kde_icondir)/hicolor/16x16/mimetypes/
-	$(INSTALL_DATA) $(srcdir)/mimetype_kmy_16x16.png $(kde_icondir)/hicolor/16x16/mimetypes/kmy.png
-	$(mkinstalldirs) $(kde_icondir)/hicolor/32x32/mimetypes/
-	$(INSTALL_DATA) $(srcdir)/mimetype_kmy_32x32.png $(kde_icondir)/hicolor/32x32/mimetypes/kmy.png
-	$(mkinstalldirs) $(kde_icondir)/hicolor/48x48/mimetypes/
-	$(INSTALL_DATA) $(srcdir)/mimetype_kmy_48x48.png $(kde_icondir)/hicolor/48x48/mimetypes/kmy.png
-	$(mkinstalldirs) $(kde_icondir)/hicolor/16x16/apps/
-	$(INSTALL_DATA) $(srcdir)/hi16-app-kmymoney2.png $(kde_icondir)/hicolor/16x16/apps/kmymoney2.png
-	$(mkinstalldirs) $(kde_icondir)/hicolor/32x32/apps/
-	$(INSTALL_DATA) $(srcdir)/hi32-app-kmymoney2.png $(kde_icondir)/hicolor/32x32/apps/kmymoney2.png
+	$(mkinstalldirs) (kde_datadir)/kmymoney2/
+	$(INSTALL_DATA) $(srcdir)/kmymoney2ui.rc (kde_datadir)/kmymoney2/kmymoney2ui.rc
+	$(mkinstalldirs) (kde_appsdir)/Applications/
+	$(INSTALL_DATA) $(srcdir)/kmymoney2.desktop (kde_appsdir)/Applications/kmymoney2.desktop
+	$(mkinstalldirs) (kde_datadir)/kmymoney2/
+	$(INSTALL_DATA) $(srcdir)/default_categories.dat (kde_datadir)/kmymoney2/default_categories.dat
+	$(mkinstalldirs) (kde_icondir)/locolor/16x16/apps/
+	$(INSTALL_DATA) $(srcdir)/lo16-app-kmymoney2.png (kde_icondir)/locolor/16x16/apps/kmymoney2.png
+	$(mkinstalldirs) (kde_icondir)/locolor/32x32/apps/
+	$(INSTALL_DATA) $(srcdir)/lo32-app-kmymoney2.png (kde_icondir)/locolor/32x32/apps/kmymoney2.png
+	$(mkinstalldirs) (kde_icondir)/hicolor/16x16/mimetypes/
+	$(INSTALL_DATA) $(srcdir)/mimetype_kmy_16x16.png (kde_icondir)/hicolor/16x16/mimetypes/kmy.png
+	$(mkinstalldirs) (kde_icondir)/hicolor/32x32/mimetypes/
+	$(INSTALL_DATA) $(srcdir)/mimetype_kmy_32x32.png (kde_icondir)/hicolor/32x32/mimetypes/kmy.png
+	$(mkinstalldirs) (kde_icondir)/hicolor/48x48/mimetypes/
+	$(INSTALL_DATA) $(srcdir)/mimetype_kmy_48x48.png (kde_icondir)/hicolor/48x48/mimetypes/kmy.png
+	$(mkinstalldirs) (kde_icondir)/hicolor/16x16/apps/
+	$(INSTALL_DATA) $(srcdir)/hi16-app-kmymoney2.png (kde_icondir)/hicolor/16x16/apps/kmymoney2.png
+	$(mkinstalldirs) (kde_icondir)/hicolor/32x32/apps/
+	$(INSTALL_DATA) $(srcdir)/hi32-app-kmymoney2.png (kde_icondir)/hicolor/32x32/apps/kmymoney2.png
 
 uninstall-local:
-	-rm -f $(kde_datadir)/kmymoney2/kmymoney2ui.rc
-	-rm -f $(kde_appsdir)/Applications/kmymoney2.desktop
-	-rm -f $(kde_datadir)/kmymoney2/default_categories.dat
-	-rm -f $(kde_icondir)/locolor/16x16/apps/kmymoney2.png
-	-rm -f $(kde_icondir)/locolor/32x32/apps/kmymoney2.png
-	-rm -f $(kde_icondir)/hicolor/16x16/mimetypes/kmy.png
-	-rm -f $(kde_icondir)/hicolor/32x32/mimetypes/kmy.png
-	-rm -f $(kde_icondir)/hicolor/48x48/mimetypes/kmy.png
-	-rm -f $(kde_icondir)/hicolor/16x16/apps/kmymoney2.png
-	-rm -f $(kde_icondir)/hicolor/32x32/apps/kmymoney2.png
+	-rm -f (kde_datadir)/kmymoney2/kmymoney2ui.rc
+	-rm -f (kde_appsdir)/Applications/kmymoney2.desktop
+	-rm -f (kde_datadir)/kmymoney2/default_categories.dat
+	-rm -f (kde_icondir)/locolor/16x16/apps/kmymoney2.png
+	-rm -f (kde_icondir)/locolor/32x32/apps/kmymoney2.png
+	-rm -f (kde_icondir)/hicolor/16x16/mimetypes/kmy.png
+	-rm -f (kde_icondir)/hicolor/32x32/mimetypes/kmy.png
+	-rm -f (kde_icondir)/hicolor/48x48/mimetypes/kmy.png
+	-rm -f (kde_icondir)/hicolor/16x16/apps/kmymoney2.png
+	-rm -f (kde_icondir)/hicolor/32x32/apps/kmymoney2.png
 
 ####### kdevelop will overwrite this part!!! (end)############
 # this 10 paths are KDE specific. Use them:

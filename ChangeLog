@@ -1,3 +1,6 @@
+2002-01-16 Michael Edwardes <mte@users.sourceforge.net>
+  * Removed some old 'recurring transactions' code.
+
 2002-01-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * added setDirty() to MyMoneyTransaction, MyMoneyAccount and MyMoneyBank
   * split MyMoneyTransaction into MyMoneyTransactionBase, a virtual base

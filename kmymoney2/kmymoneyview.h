@@ -35,7 +35,7 @@
 #include "kmainview.h"
 #include "kreconciledlg.h"
 #include "kfindtransactiondlg.h"
-#include "kscheduleview.h"
+//#include "kscheduleview.h"
 #include "dialogs/kcsvprogressdlg.h"
 
 /**
@@ -45,7 +45,7 @@
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.23 2001/12/27 01:50:18 mte Exp $
+  * $Id: kmymoneyview.h,v 1.24 2002/01/16 20:40:18 mte Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -70,7 +70,7 @@ private:
       m_deleteId;
 
   // The schedule view
-  KScheduleView *m_scheduledView;
+//  KScheduleView *m_scheduledView;
   /**  */
   QList<MyMoneyTransaction> m_transactionList;
 
