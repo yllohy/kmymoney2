@@ -483,24 +483,8 @@ void KLedgerViewInvestments::fillSummary()
 
 }
 
-void KLedgerViewInvestments::showWidgets()
+QWidget* KLedgerViewInvestments::arrangeEditWidgetsInRegister(void)
 {
-  QWidget* focusWidget = m_editSymbolName;
-
-  createEditWidgets();
-  loadEditWidgets();
-
-  if(m_transactionFormActive) {
-    focusWidget = arrangeEditWidgetsInForm();
-  } else {
-    // focusWidget = arrangeEditWidgetsInRegister();
-  }
-
-  // make sure, size of all form columns are correct
-  resizeEvent(0);
-
-  m_tabOrderWidgets.find(focusWidget);
-  focusWidget->setFocus();
 }
 
 QWidget* KLedgerViewInvestments::arrangeEditWidgetsInForm(void)

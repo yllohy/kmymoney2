@@ -1172,26 +1172,6 @@ QWidget* KLedgerViewCheckings::arrangeEditWidgetsInRegister(void)
   return focusWidget;
 }
 
-void KLedgerViewCheckings::showWidgets(void)
-{
-  QWidget* focusWidget;
-
-  createEditWidgets();
-  loadEditWidgets();
-
-  if(m_transactionFormActive) {
-    focusWidget = arrangeEditWidgetsInForm();
-  } else {
-    focusWidget = arrangeEditWidgetsInRegister();
-  }
-
-  // make sure, size of all form columns are correct
-  resizeEvent(0);
-
-  m_tabOrderWidgets.find(focusWidget);
-  focusWidget->setFocus();
-}
-
 void KLedgerViewCheckings::hideWidgets(void)
 {
   for(int i=0; i < m_form->table()->numRows(); ++i) {

@@ -752,11 +752,16 @@ protected:
   virtual bool focusNextPrevChild(bool next);
 
   /**
-    * This method is called when the edit widgets for the transaction
-    * should be shown and editing a transaction starts. Since it's pure
-    * virtual, it must be provided by the derived classes.
+    * This method creates, loads, arranges and shows the widgets required
+    * to edit a transaction. See createEditWidgets(), loadEditWidgets(),
+    * arrangeEditWidgetsInForm() and arrangeEditWidgetsInRegister() for details.
     */
-  virtual void showWidgets(void) = 0;
+  virtual void showWidgets(void);
+
+  virtual void createEditWidgets(void) = 0;
+  virtual void loadEditWidgets(void) = 0;
+  virtual QWidget* arrangeEditWidgetsInForm(void) = 0;
+  virtual QWidget* arrangeEditWidgetsInRegister(void) = 0;
 
   /**
     * This method is called when the edit widgets for the transaction

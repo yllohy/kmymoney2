@@ -95,7 +95,6 @@ protected:
   virtual void fillFormStatics(void);
 
   virtual void fillSummary();
-  virtual void showWidgets();
   virtual void hideWidgets();
   virtual void reloadEditWidgets(const MyMoneyTransaction& t);
   virtual void updateTabBar(const MyMoneyTransaction& t, const MyMoneySplit& s);
@@ -103,6 +102,7 @@ protected:
   void resizeEvent(QResizeEvent*);
 
   QWidget* arrangeEditWidgetsInForm(void);
+  QWidget* arrangeEditWidgetsInRegister(void);
 
 private:
   /**

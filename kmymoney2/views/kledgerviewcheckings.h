@@ -218,13 +218,6 @@ protected:
   void resizeEvent(QResizeEvent*);
 
   /**
-    * This method creates, loads, arranges and shows the widgets required
-    * to edit a transaction. See createEditWidgets(), loadEditWidgets(),
-    * arrangeEditWidgetsInForm() and arrangeEditWidgetsInRegister() for details.
-    */
-  void showWidgets(void);
-
-  /**
     * This destroys and hides the widgets used to edit a transaction.
     */
   void hideWidgets(void);

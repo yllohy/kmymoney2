@@ -858,23 +858,6 @@ QWidget* KLedgerViewLoan::arrangeEditWidgetsInRegister(void)
   return m_editDate;
 }
 
-void KLedgerViewLoan::showWidgets(void)
-{
-  QWidget* focusWidget;
-
-  createEditWidgets();
-  loadEditWidgets();
-
-  if(m_transactionFormActive) {
-    focusWidget = arrangeEditWidgetsInForm();
-  } else {
-    focusWidget = arrangeEditWidgetsInRegister();
-  }
-
-  m_tabOrderWidgets.find(focusWidget);
-  focusWidget->setFocus();
-}
-
 void KLedgerViewLoan::hideWidgets(void)
 {
   for(int i=0; i < m_form->table()->numRows(); ++i) {

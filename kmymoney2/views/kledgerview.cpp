@@ -1154,6 +1154,27 @@ const QCString KLedgerView::transactionType(int type) const
   }
 }
 
+void KLedgerView::showWidgets(void)
+{
+  QWidget* focusWidget;
+
+  createEditWidgets();
+  loadEditWidgets();
+
+  if(m_transactionFormActive) {
+    focusWidget = arrangeEditWidgetsInForm();
+  } else {
+    focusWidget = arrangeEditWidgetsInRegister();
+  }
+
+  // make sure, size of all form columns are correct
+  resizeEvent(0);
+
+  m_tabOrderWidgets.find(focusWidget);
+  focusWidget->setFocus();
+}
+
+
 void KLedgerView::slotNew(void)
 {
   // this is not available when we have no account
