@@ -51,30 +51,45 @@ public:
 protected:
   void contentsMousePressEvent( QMouseEvent* e );
   void contentsMouseReleaseEvent( QMouseEvent* e );
+  void contentsMouseDoubleClickEvent( QMouseEvent* e );
+  bool eventFilter(QObject *o, QEvent *e);
+  void keyPressEvent(QKeyEvent *k);
 
 public slots:
   /** No descriptions */
   virtual void setCurrentCell(int row, int col);
 
 private:
-  // array to be used to access the input widgets
+  /// array to be used to access the input widgets
   QWidget* m_colWidget[3];
 
-  // point where mouse event happened
+  /// point where mouse event happened
   QPoint m_mousePoint;
 
-  // button of mouse that caused the event
+  /// button of mouse that caused the event
   int m_mouseButton;
 
-  // the currently selected row (will be printed as selected)
+  /// the currently selected row (will be printed as selected)
   int m_currentRow;
 
-  // the number of rows filled with data
+  /// the number of rows filled with data
   int m_maxRows;
 
 protected slots:
 	virtual void columnWidthChanged(int col);
-  bool eventFilter(QObject *o, QEvent *e);
+
+signals: // Signals
+  /// signalNavigationKey is sent, when the Up- or Down-Key is pressed
+  void signalNavigationKey(int key);
+
+  // signalTab is sent, when the Tab-Key is pressed
+  void signalTab(void);
+
+  // signalEscape is sent, when the Esc-Key is pressed
+  void signalEscape(void);
+
+  // signalDelete is sent, when the Del-Key is pressed
+  void signalDelete(int row);
 };
 
 #endif

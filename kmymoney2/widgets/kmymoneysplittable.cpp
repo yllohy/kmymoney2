@@ -177,7 +177,7 @@ void kMyMoneySplitTable::insertWidget(int row, int col, QWidget* w)
 
 bool kMyMoneySplitTable::eventFilter(QObject *o, QEvent *e)
 {
-  return QTable::eventFilter(o,e);
+  return QScrollView::eventFilter(o, e); //QTable::eventFilter(o,e);
 
 #if 0
   char *txt = 0;
@@ -208,6 +208,35 @@ void kMyMoneySplitTable::contentsMousePressEvent( QMouseEvent* e )
 void kMyMoneySplitTable::contentsMouseReleaseEvent( QMouseEvent* e )
 {
   emit clicked( rowAt(e->pos().y()), columnAt(e->pos().x()), e->button(), e->pos() );
+}
+
+void kMyMoneySplitTable::contentsMouseDoubleClickEvent( QMouseEvent *e )
+{
+  emit doubleClicked(rowAt(e->pos().y()), columnAt(e->pos().x()), e->button(), e->pos() );
+}
+
+void kMyMoneySplitTable::keyPressEvent(QKeyEvent *k)
+{
+  switch ( k->key() ) {
+    case Key_Up:
+    case Key_Down:
+    case Key_Home:
+    case Key_End:
+      emit signalNavigationKey(k->key());
+      break;
+
+    case Key_Tab:
+      emit signalTab();
+      break;
+
+    case Key_Escape:
+      emit signalEscape();
+      break;
+
+    case Key_Delete:
+      emit signalDelete(m_currentRow);
+      break;
+  }
 }
 
 void kMyMoneySplitTable::setCurrentCell(int row, int col)
