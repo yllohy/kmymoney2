@@ -149,6 +149,11 @@ int KNewAccountWizard::exec()
   reminderCheckBox->setChecked(true);
   estimateFrame->setEnabled(true);
 
+  // reset everything else
+  accountName->setText("");
+  accountNumber->setText("");
+  openingBalance->setText("");
+
   return KNewAccountWizardDecl::exec();
 }
 
