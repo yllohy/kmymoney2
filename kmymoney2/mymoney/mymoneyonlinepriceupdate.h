@@ -2,10 +2,10 @@
                           mymoneyonlinepriceupdate.h
                           -------------------
     copyright            : (C) 2004 by Kevin Tambascio, 2004 by Thomas Baumgart, 2004 by Tony Bloomfield
-    email                : ktambascio@users.sourceforge.net, 
+    email                : ktambascio@users.sourceforge.net,
                            ipwizard@users.sourceforge.net,
                            tonyb.lx@btinternet.com
-    
+
  ***************************************************************************/
 
 /***************************************************************************
@@ -20,9 +20,8 @@
 #ifndef MYMONEYONLINEPRICEUPDATE_H
 #define MYMONEYONLINEPRICEUPDATE_H
 
-#include "mymoneymoney.h"
-#include "mymoneycurrency.h"
-#include "mymoneyequity.h"
+// include this file first to avoid problems with stl
+#include <vector>
 
 #include <qdatetime.h>
 #include <qmap.h>
@@ -35,7 +34,9 @@
 #include <qprocess.h>
 #include <qdom.h>
 
-#include <vector>
+#include "mymoneymoney.h"
+#include "mymoneycurrency.h"
+#include "mymoneyequity.h"
 
 typedef struct {
   QString symbolName;
@@ -71,22 +72,22 @@ public:
         MissingModules = -2,    // Finance::Quote interface, missing Perl modules
         PerlError = -1        // perl error, shouldn't happen
       } scriptErrorsE;
-    
+
 private:
     QString m_perlBinary;
     bool m_endStatus;
-    
+
     void (* m_is) (void *);     // stdin callback function pointer
     void *m_obj;          // calling object ptr
     // buffers
     QString m_stdoutBuffer;
     QString m_stderrBuffer;
-    
+
 public slots:
     void readFromStdout() { m_stdoutBuffer += readStdout(); };
     void readFromStderr() { m_stderrBuffer += readStderr(); };
     void wroteStdin () { if (m_is) m_is(m_obj); };
-        
+
 };
 
 
@@ -105,55 +106,55 @@ class MyMoneyOnlinePriceUpdate
 public:
     MyMoneyOnlinePriceUpdate();     // constructor
     ~MyMoneyOnlinePriceUpdate();      // destructor
-    
+
     ///Retrieves quotes using
     int getQuotes(const QStringList& symbolNames);
-    
+
     ///Tells this object to update price histories of MyMoneyEquity objects.
     int applyNewQuotes();
-    
+
     ///Retrieves the date of the last update for this symbol name.
     int getLastUpdateDate(const QString& symbolName, QDate& date);
-    
-    ///Retrieves the price returned from the quote engine.  
+
+    ///Retrieves the price returned from the quote engine.
     int getLastValue(const QString& symbolName, MyMoneyMoney& value);
-    
+
     int getWebServiceQuote(const QString& symbolName);
 
-private:    
+private:
     // get a single currency quote
-    void getQuote(MyMoneyCurrency *pQuoteItem); // throw MyMoneyException; 
-    
+    void getQuote(MyMoneyCurrency *pQuoteItem); // throw MyMoneyException;
+
     // get a list of quotes
     void getQuotes(const EquityList&); // throw MyMoneyException;
-    
+
     // get a single stock quote
     void getQuote(MyMoneyEquity *pQuoteItem); // throw MyMoneyException;
-    
+
     // get a list of quotes
     void getQuotes(const CurrencyList&); // throw MyMoneyException; */
-    
+
     // get a list of F::Q price sources (key = name used by f::q, data = sensible name)
     const QMap<QString, QString> getSources();
-    
+
     ///Sets the location of the perl binary for our use.
     void setPerlLocation(const QString& strLoc);
 
     void retrieve (); // throw MyMoneyException
-    
+
     void parseOutput (const QString&);  // throw MyMoneyException
-    
+
     void readInvestments (const QDomElement&); // throw MyMoneyException
-    
+
     void readCurrencies (const QDomElement&); // throw MyMoneyException
-    
+
     void checkScript(); // throw MyMoneyException // to check presence and executability of script
-    
+
     // to provide the XML input to the quoter
-    void inputSource(); 
-    
+    void inputSource();
+
     static void inputWrapper(void*);  // static wrapper for callback
-    
+
     EquityList *m_ql;      // list of items to quote for
     EquityListIter m_qit;
     //QPtrList<MyMoneyEquity>::iterator m_qit;
@@ -162,14 +163,14 @@ private:
         Equity, Currency
       } quoteTypeE;
     int m_quoteType;        //
-    
+
     int m_inputState;       // to control XML input sequence
-    
-    MMQProcess m_p;     // quoter process 
+
+    MMQProcess m_p;     // quoter process
     // a couple of static variables, so we do check_script once only
     bool m_scriptOK;   // checkScript() worked okay
     QString m_scriptPath;    // path to quoter script
-    
+
     QString m_perlBinary;// ("/usr/bin/perl");
     QString m_perlScript;// ("/home/tonyb/devkmm/FQuote/bin/mymoneyquoter.pl");
     QString m_baseCurrency;// ("GBP");
@@ -180,9 +181,9 @@ public:
     MyMoneyOnlinePriceUpdate();
     ~MyMoneyOnlinePriceUpdate();
 
- 
- 
-    
+
+
+
 private:
     QString m_strPerlLocation;
     QMap<QString, OnlineUpdateStruct> m_data;
