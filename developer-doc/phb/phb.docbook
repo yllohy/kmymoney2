@@ -11,6 +11,7 @@
   <!ENTITY cvs-examples SYSTEM "cvs-examples.docbook">
   <!ENTITY src-examples SYSTEM "src-examples.docbook">
   <!ENTITY unit-test SYSTEM "unit-test.docbook">
+  <!ENTITY test-examples SYSTEM "test-examples.docbook">
   <!ENTITY licence SYSTEM "licence.docbook">
   <!ENTITY fdl-licence SYSTEM "fdl-licence">
 ]>
@@ -56,11 +57,13 @@
 
 </authorgroup>
 
+<!--
 <date>28.12.2001</date>
 <releaseinfo>0.1</releaseinfo>
+-->
 
 <copyright>
-<year>2001</year>
+<year>2001, 2002</year>
 <holder>Thomas Baumgart, Michael Edwardes</holder>
 </copyright>
 
@@ -122,5 +125,6 @@ The dedication will show up here!
 &error-management;
 &cvs-examples;
 &src-examples;
+&test-examples;
 &licence;
 </book>

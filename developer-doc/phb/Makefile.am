@@ -10,7 +10,8 @@ CLEAN_FILES = *.html *.pdf *.out *.tex *.log *.aux
 SRC_FILES= phb.docbook cfg-mgmt.docbook coding.docbook \
 	cvs-examples.docbook  src-examples.docbook \
 	licence.docbook error-mgmt.docbook \
-	rel-mgmt.docbook
+	unit-test.docbook rel-mgmt.docbook \
+	test-examples.docbook
 
 phb:	index.html phb.pdf
 

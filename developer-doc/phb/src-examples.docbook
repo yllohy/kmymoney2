@@ -1,5 +1,5 @@
 <appendix id="src-examples">
-<title>Header Example</title>
+<title>Source and Header Examples</title>
 <para>
 This appendix contains an example of a 
 <link linkend="header-example">header file listing</link> and a 
@@ -59,7 +59,7 @@ This appendix contains an example of a
   * @see KDialogBase
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: src-examples.docbook,v 1.1 2001/11/24 20:22:27 ipwizard Exp $
+  * $Id: src-examples.docbook,v 1.2 2002/06/16 16:02:53 ipwizard Exp $
   *
   * @short A class to manipulate the settings needed for running KMyMoney2
 **/
