@@ -1144,7 +1144,7 @@ void KLedgerViewCheckings::loadEditWidgets(void)
         }
       }
     } catch(MyMoneyException *e) {
-      qDebug("Exception '%s' thrown in %s, line %ld caught in KLedgerViewCheckings::showWidgets()",
+      qDebug("Exception '%s' thrown in %s, line %ld caught in KLedgerViewCheckings::loadEditWidgets()",
         e->what().latin1(), e->file().latin1(), e->line());
       delete e;
     }

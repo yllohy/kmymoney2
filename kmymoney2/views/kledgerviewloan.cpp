@@ -620,7 +620,7 @@ void KLedgerViewLoan::reloadEditWidgets(const MyMoneyTransaction& t)
             break;
 
           default:
-            qDebug("Unknown account group in KLedgerViewLoan::showWidgets()");
+            qDebug("Unknown account group in KLedgerViewLoan::reloadEditWidgets()");
             break;
         }
         break;
@@ -636,7 +636,7 @@ void KLedgerViewLoan::reloadEditWidgets(const MyMoneyTransaction& t)
           m_editCategory->loadText(i18n("Loan payment"));
     }
   } catch(MyMoneyException *e) {
-    qDebug("Exception '%s' thrown in %s, line %ld caught in KLedgerViewLoan::showWidgets():%d",
+    qDebug("Exception '%s' thrown in %s, line %ld caught in KLedgerViewLoan::reloadEditWidgets():%d",
       e->what().latin1(), e->file().latin1(), e->line(), __LINE__);
     delete e;
   }
