@@ -1,3 +1,8 @@
+2004-05-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added price precision setting to settings dialog
+  * Use price precision setting in price edit dialog
+  * Maintain backward compatability with Qt 3.1
+
 2004-05-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed #944771 (Transaction form moves down the screen)
   * Fixed #944778 (File/Save As not working properly)
