@@ -88,7 +88,7 @@ const bool KMyMoneyBanking::isAvailable(void) const
   return _available;
 }
 
-void KMyMoneyBanking::settingsDialog(QWidget* parent, char* name, QWidget::WFlags fl)
+void KMyMoneyBanking::settingsDialog(QWidget* parent, const char* name, QWidget::WFlags fl)
 {
 #ifdef HAVE_KBANKING
   KBankingSettings bs(this, parent, name, fl);
@@ -104,7 +104,7 @@ void KMyMoneyBanking::settingsDialog(QWidget* parent, char* name, QWidget::WFlag
 #endif
 }
 
-QWidget* KMyMoneyBanking::createJobView(QWidget* parent, char *name)
+QWidget* KMyMoneyBanking::createJobView(QWidget* parent, const char *name)
 {
 #ifdef HAVE_KBANKING
   m_jobView = new JobView(this, parent, name);

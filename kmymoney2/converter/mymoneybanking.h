@@ -64,13 +64,13 @@ public:
     * This method starts the KBaning settings dialog if KBanking::isAvailable()
     * returns true. Otherwise, it just returns.
     */
-  void settingsDialog(QWidget* parent, char* name = 0, QWidget::WFlags fl = 0);
+  void settingsDialog(QWidget* parent, const char* name = 0, QWidget::WFlags fl = 0);
 
   /**
     * This method creates a KBanking JobView object if KBanking::isAvailable()
     * returns true. Otherwise, it returns a simple QWidget.
     */
-  QWidget* createJobView(QWidget* parent, char* name = 0);
+  QWidget* createJobView(QWidget* parent, const char* name = 0);
 
   /**
     * This method updates the jobview created with createJobView() if KBanking::available()
