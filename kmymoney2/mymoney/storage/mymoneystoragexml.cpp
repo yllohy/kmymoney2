@@ -108,6 +108,10 @@ void MyMoneyStorageXML::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
     
     delete m_doc;
     m_doc = NULL;
+
+    // this seems to be nonsense, but it clears the dirty flag
+    // as a side-effect.
+    m_storage->setLastModificationDate(m_storage->lastModificationDate());
     m_storage = NULL;
   }
   else
@@ -272,6 +276,24 @@ MyMoneyInstitution MyMoneyStorageXML::readInstitution(const QDomElement& institu
     i.setTelephone(address.attribute(QString("telephone")));
   }
 
+  QDomElement accounts = findChildElement(QString("ACCOUNTIDS"), institution);
+  if(!accounts.isNull() && accounts.isElement())
+  {
+    QDomNode child = accounts.firstChild();
+    while(!child.isNull())
+    {
+      if(child.isElement())
+      {
+        QDomElement childElement = child.toElement();
+        if(QString("ACCOUNTID") == childElement.tagName())
+        {
+          i.addAccountId(QCString(childElement.attribute(QString("id"))));
+        }
+      }
+      child = child.nextSibling();
+    }
+  }
+    
   return MyMoneyInstitution(id, i);
 }
 
@@ -290,6 +312,17 @@ void MyMoneyStorageXML::writeInstitution(QDomElement& institution, const MyMoney
   address.setAttribute(QString("telephone"), i.telephone());
 
   institution.appendChild(address);
+
+  QDomElement accounts = m_doc->createElement("ACCOUNTIDS");
+  QCStringList tempAccountList = i.accountList();
+  for(QCStringList::const_iterator it = tempAccountList.begin(); it != tempAccountList.end(); ++it)
+  {
+    QDomElement temp = m_doc->createElement("ACCOUNTID");
+    temp.setAttribute(QString("id"), (*it));
+    accounts.appendChild(temp);
+  }
+
+  institution.appendChild(accounts);
 }
 
 void MyMoneyStorageXML::readPayees(QDomElement& payees)
@@ -351,7 +384,8 @@ MyMoneyPayee MyMoneyStorageXML::readPayee(const QDomElement& payee)
   {
     p.setAddress(address.attribute(QString("street")));
     p.setCity(address.attribute(QString("city")));
-    p.setPostcode(address.attribute(QString("zip")));
+    p.setPostcode(address.attribute(QString("postcode")));
+    p.setState(address.attribute(QString("state")));
     p.setTelephone(address.attribute(QString("telephone")));
   }
 
@@ -367,8 +401,8 @@ void MyMoneyStorageXML::writePayee(QDomElement& payee, const MyMoneyPayee& p)
 
   QDomElement address = m_doc->createElement("ADDRESS");
   address.setAttribute(QString("street"), p.address());
-  address.setAttribute(QString("zipcode"), p.postcode());
   address.setAttribute(QString("city"), p.city());
+  address.setAttribute(QString("postcode"), p.postcode());
   address.setAttribute(QString("state"), p.state());
   address.setAttribute(QString("telephone"), p.telephone());
 
