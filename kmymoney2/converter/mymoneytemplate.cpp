@@ -21,6 +21,7 @@
 // QT Includes
 
 #include <qfile.h>
+#include <qfileinfo.h>
 #include <qapplication.h>
 
 // ----------------------------------------------------------------------------
@@ -85,12 +86,19 @@ const bool MyMoneyTemplate::loadTemplate(const KURL& url)
 
   bool rc = true;
   QFile file(filename);
+  QFileInfo info(file);
+  if(!info.isFile()) {
+    QString msg=i18n("<b>%1</b> is not a template file.").arg(filename);
+    KMessageBox::error(qApp->mainWidget(), QString("<p>")+msg, i18n("Filetype Error"));
+    return false;
+  }
+
   if(file.open(IO_ReadOnly)) {
     QString errMsg;
     int errLine, errColumn;
     if(!m_doc.setContent(&file, &errMsg, &errLine, &errColumn)) {
-      QString msg=i18n("Error while reading template file in line %1, column %2").arg(errLine).arg(errColumn);
-      KMessageBox::detailedError(qApp->mainWidget(), msg, errMsg, i18n("Template Error"));
+      QString msg=i18n("Error while reading template file <b>%1</b> in line %2, column %3").arg(filename).arg(errLine).arg(errColumn);
+      KMessageBox::detailedError(qApp->mainWidget(), QString("<p>")+msg, errMsg, i18n("Template Error"));
       rc = false;
     } else {
       rc = loadDescription();
