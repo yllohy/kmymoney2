@@ -33,6 +33,7 @@
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <knuminput.h>
+#include <kpushbutton.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
