@@ -15,21 +15,30 @@
  ***************************************************************************/
 #include <stdio.h>
 
+// ----------------------------------------------------------------------------
+// QT Includes
 #include <qwidgetlist.h>
 #include <qdatetime.h>
 #include <qstringlist.h>
 
+// ----------------------------------------------------------------------------
+// KDE Includes
 #include <kcmdlineargs.h>
 #include <kaboutdata.h>
 #include <klocale.h>
 #include <ktip.h>
 
+// ----------------------------------------------------------------------------
+// Project Includes
 #include "kmymoney2.h"
 #include "kstartuplogo.h"
 
+#include "mymoney/mymoneyfile.h"
+#include "views/kbanklistitem.h"
+
 static const char *description =
-	I18N_NOOP("KMyMoney2 a personal finances application for KDE.\n\nPlease consider contributing to this project with code and or suggestions.");
-	
+  I18N_NOOP("KMyMoney2 a personal finances application for KDE.\n\nPlease consider contributing to this project with code and or suggestions.");
+
 static KCmdLineOptions options[] =
 {
   { "+[File]", I18N_NOOP("file to open"), 0 },
@@ -45,13 +54,17 @@ int main(int argc, char *argv[])
 {
   QString feature;
 
-#if _COMPILE_XML
-#if HAVE_LIBXMLPP
+#ifdef _COMPILE_XML  
+  #if _COMPILE_XML
+    #if HAVE_LIBXMLPP
   feature += "\t- XML support\n";
-#else
+    #else
   feature += "\t- no XML support\n";
-#endif
-#else // _COMPILE_XML
+    #endif
+  #else // _COMPILE_XML
+  feature += "\t- no XML support\n";
+  #endif
+#else
   feature += "\t- no XML support\n";
 #endif
 
@@ -70,19 +83,19 @@ int main(int argc, char *argv[])
   if(feature.length() != 0)
     feature = I18N_NOOP("Compiled with the following settings:\n") + feature;
 
-	KAboutData aboutData( "kmymoney2", I18N_NOOP("KMyMoney2"),
-		VERSION, description, KAboutData::License_GPL,
-		"(c) 2000-2002, Michael Edwardes", feature,
+  KAboutData aboutData( "kmymoney2", I18N_NOOP("KMyMoney2"),
+    VERSION, description, KAboutData::License_GPL,
+    "(c) 2000-2003, Michael Edwardes", feature,
     "http://kmymoney2.sourceforge.net/");
-	aboutData.addAuthor("Michael Edwardes", I18N_NOOP("Project Manager"), "mte@users.sourceforge.net");
-	aboutData.addAuthor("Felix Rodriguez", I18N_NOOP("Project Admin"), "frodriguez@users.sourceforge.net");
-	aboutData.addCredit("Javier Campos Morales", I18N_NOOP("Developer & Artist"), "javi_c@users.sourceforge.net");
-	aboutData.addAuthor("John C", I18N_NOOP("Developer"), "tacoturtle@users.sourceforge.net");
-	aboutData.addAuthor("Thomas Baumgart", I18N_NOOP("Developer & Release Manager"), "ipwizard@users.sourceforge.net");
-	aboutData.addAuthor("Kevin Tambascio", I18N_NOOP("Developer"), "ktambascio@users.sourceforge.net");
+  aboutData.addAuthor("Michael Edwardes", I18N_NOOP("Project Manager"), "mte@users.sourceforge.net");
+  aboutData.addAuthor("Felix Rodriguez", I18N_NOOP("Project Admin"), "frodriguez@users.sourceforge.net");
+  aboutData.addCredit("Javier Campos Morales", I18N_NOOP("Developer & Artist"), "javi_c@users.sourceforge.net");
+  aboutData.addAuthor("John C", I18N_NOOP("Developer"), "tacoturtle@users.sourceforge.net");
+  aboutData.addAuthor("Thomas Baumgart", I18N_NOOP("Developer & Release Manager"), "ipwizard@users.sourceforge.net");
+  aboutData.addAuthor("Kevin Tambascio", I18N_NOOP("Developer"), "ktambascio@users.sourceforge.net");
   aboutData.addAuthor("Arni Ingimundarson", I18N_NOOP("Developer"), "arniing@users.sourceforge.net");
-	KCmdLineArgs::init( argc, argv, &aboutData );
-	KCmdLineArgs::addCmdLineOptions( options ); // Add our own options.
+  KCmdLineArgs::init( argc, argv, &aboutData );
+  KCmdLineArgs::addCmdLineOptions( options ); // Add our own options.
 
   // create the singletons before we start memory checking
   // to avoid false error reports
@@ -95,13 +108,13 @@ int main(int argc, char *argv[])
   timer.start();
 
   KApplication* a = new KApplication();
-	KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
+  KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
 
   // setup the MyMoneyMoney locale settings according to the KDE settings
   MyMoneyMoney::setThousandSeparator(*(KGlobal::locale()->thousandsSeparator().latin1()));
   MyMoneyMoney::setDecimalSeparator(*(KGlobal::locale()->decimalSymbol().latin1()));
 
-	kmymoney2 = new KMyMoney2App();
+  kmymoney2 = new KMyMoney2App();
   a->setMainWidget( kmymoney2 );
   kmymoney2->show();
 
@@ -110,18 +123,18 @@ int main(int argc, char *argv[])
 
   int rc = 0;
 
-	if (kmymoney2->startWithDialog()) {
-	  if (kmymoney2->initWizard()) {
+  if (kmymoney2->startWithDialog()) {
+    if (kmymoney2->initWizard()) {
       KTipDialog::showTip(kmymoney2, "", false);
-  		args->clear();
+      args->clear();
       rc = a->exec();
-	  }
-	} else {
+    }
+  } else {
     KTipDialog::showTip(kmymoney2, "", false);
     kmymoney2->readFile();
-		args->clear();
+    args->clear();
       rc = a->exec();
-	}
+  }
 
   delete a;
   KAccountListItem::cleanCache();

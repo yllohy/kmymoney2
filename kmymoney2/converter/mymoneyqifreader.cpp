@@ -25,6 +25,7 @@
 
 #include <qfile.h>
 #include <qstringlist.h>
+#include <qtimer.h>
 
 // ----------------------------------------------------------------------------
 // KDE Headers

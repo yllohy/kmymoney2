@@ -20,9 +20,14 @@
 #include <config.h>
 #endif
 
+// ----------------------------------------------------------------------------
+// QT Includes
+
 #include <qapplication.h>
 
-// include files for KDE
+// ----------------------------------------------------------------------------
+// KDE Includes
+
 #if QT_VERSION > 300
 #include <kapplication.h>
 #else
@@ -33,12 +38,18 @@
 #include <kaccel.h>
 #include <kaction.h>
 #include <kprocess.h>
+#include <kurl.h>
+
+// ----------------------------------------------------------------------------
+// Project Includes
+
+#include "mymoney/mymoneyobserver.h"
 
 class KProgress;
 class KStartupLogo;
-
-#include "views/kmymoneyview.h"
-#include "converter/mymoneyqifreader.h"
+class KMyMoneyView;
+class MyMoneyQifReader;
+class IMyMoneyStorage;
 
 /*! \mainpage KMyMoney2 Main Page for API documentation.
  *
@@ -55,6 +66,7 @@ class KStartupLogo;
  */
 
 /**
+
   * The base class for KMyMoney2 application windows. It sets up the main
   * window and reads the config file as well as providing a menubar, toolbar
   * and statusbar.  All functionality is passed down to KMyMoneyView.
@@ -62,13 +74,14 @@ class KStartupLogo;
   * @see KMyMoneyView
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: kmymoney2.h,v 1.31 2003/07/23 18:21:43 ipwizard Exp $
+  * $Id: kmymoney2.h,v 1.32 2003/07/26 12:44:33 ipwizard Exp $
   *
   * @short Main application class.
 **/
 class KMyMoney2App : public KMainWindow, MyMoneyObserver
 {
   Q_OBJECT
+
 
 protected slots:
   void slotKeySettings();
@@ -108,6 +121,7 @@ protected slots:
     * Called when the user wishes to add a recurring transaction/bill/deposit.
     * A bank and account must be specified for this to work.
     *
+
     * @see MyMoneyBank
     * @see MyMoneyAccount
   **/
@@ -130,6 +144,7 @@ protected slots:
     * @see KMyMoneyView
 
   **/
+
   //void enableFileOperations(bool enable=true);
 
   /**
@@ -471,6 +486,7 @@ private:
       
 private:
   //void disableAllAccountActions(bool enable=true);
+
 
 };
 

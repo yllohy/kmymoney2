@@ -62,6 +62,8 @@
 #include "dialogs/mymoneyqifprofileeditor.h"
 #include "dialogs/kimportverifydlg.h"
 
+#include "views/kmymoneyview.h"
+
 #include "mymoney/mymoneyutils.h"
 
 #include "converter/mymoneyqifwriter.h"
@@ -321,6 +323,7 @@ void KMyMoney2App::initStatusBar()
 }
 
 void KMyMoney2App::saveOptions()
+
 {
   config->setGroup("General Options");
   config->writeEntry("Geometry", size());
@@ -801,6 +804,7 @@ void KMyMoney2App::slotQifImportFinished(void)
       m_engineBackup = 0;
     }
     
+
     myMoneyView->suspendUpdate(false);
     // update the views as they might still contain invalid data
     // from the import session
