@@ -1,6 +1,7 @@
 .deps
 .libs
 templates
+*_meta_unload.cpp
 *.moc
 *.moc.cpp
 *.o
