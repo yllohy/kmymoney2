@@ -1,3 +1,6 @@
+2001-04-28
+  * Alphabetized Categories
+
 2001-04-13
   * Removed some of the old code in ktransactionview.cpp.
   * Removed all of the unneeded Table Item classes in
