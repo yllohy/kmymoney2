@@ -87,8 +87,11 @@ void MyMoneyStorageXML::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
 
 void MyMoneyStorageXML::writeFile(QIODevice* qf, IMyMoneySerialize* storage)
 {
+  qDebug("XMLWRITER: Starting file write");
+  
   QTextStream stream(qf);
-  qDebug("XMLWRITER: not implemented yet!");
+  writeFileBeginning(stream);
+    
 }
 
 void MyMoneyStorageXML::on_start_document(void)
@@ -453,40 +456,48 @@ void MyMoneyStorageXML::getAddress(const AttributeMap& p)
 
 void MyMoneyStorageXML::writeInstitution(QTextStream&s, const MyMoneyInstitution& i)
 {
-  /*Q_INT32 tmp;
-  tmp = 1;    // version
-  s << tmp;
-
-  s << i.id();
-  s << i.name();
-  s << i.city();
-  s << i.street();
-  s << i.postcode();
-  s << i.telephone();
-  s << i.manager();
-  s << i.sortcode();
-  s << i.accountList();   */
+  s << "\t\t<INSTITUTION id=\"" << i.id() << "\" name=\"" << i.name() << "\" manager=\"" << i.manager() << "\" sortcode=\"" << i.sortcode() << "\">\n";
+  s << "\t\t\t<ADDRESS street=\"" << i.street() << "\" city=\"" << i.city() << "\" zipcode=\"" << i.postcode() << "\" state=\"" << i.town() << "\" telephone=\"" << i.telephone() << "\"/>\n";
+  s << "\t\t</INSTITUTION>\n";
 }
-
+  
 void MyMoneyStorageXML::writeInstitutions(QTextStream& s, IMyMoneySerialize* storage)
 {
   Q_INT32 tmp;
   QValueList<MyMoneyInstitution> list;
   QValueList<MyMoneyInstitution>::ConstIterator it;
 
-  //tmp = 1;      // version
-  //s << tmp;
-
-  /*list = storage->institutionList();
-  s << list.count();
-  for(it = list.begin(); it != list.end(); ++it) {
+  list = storage->institutionList();
+  s << "\t<INSTITUTIONS nextid=\"" << list.count() << "\">\n";
+  for(it = list.begin(); it != list.end(); ++it)
+  {
     writeInstitution(s, *it);
-  }     */
+  }
+  s << "\t</INSTITUTIONS>\n";
 }
 
 void writeFileBeginning(QTextStream& s)
 {
+  s << "<?xml version=\"1.0\"?>\n";
+  s << "<KMYMONEY-FILE name=\"kmm-modified.xml\" creationdate="">\n";
+}
+
+void writeUserInformation(QTextStream& s, IMyMoneySerialize* storage)
+{
+/*s << storage->userName();
+  s << storage->userStreet();
+  s << storage->userTown();
+  s << storage->userCounty();
+  s << storage->userPostcode();
+  s << storage->userTelephone();
+  s << storage->userEmail();
+  s << storage->creationDate();
+  s << storage->lastModificationDate();*/
   
+  s << "\t<USER name=\"" << storage->userName() << "\" email=\"" << storage->userEmail() << "\">\n";
+	s << "\t\t<ADDRESS street=\"" << storage->userStreet() << "\" city=\"" << storage->userTown() << "\" zipcode=\"" << storage->userPostcode() <<
+       "\" state=\"" << storage->userCounty() << "\" telephone=\"" << storage->userTelephone() << "\"/>\n";
+  s << "\t</USER>\n";
 }
 
 void writePayees(QTextStream& s, IMyMoneySerialize* storage)
