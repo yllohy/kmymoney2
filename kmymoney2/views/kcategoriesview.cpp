@@ -118,22 +118,20 @@ void KCategoriesView::refresh(void)
 
   MyMoneyFile *file = MyMoneyFile::instance();
 
-  QValueList<MyMoneyAccount> list;
-
   try
   {
-    list = file->accountList();
-
-    QValueList<MyMoneyAccount>::ConstIterator it_a;
-    for(it_a = list.begin(); it_a != list.end(); ++it_a)
-      m_accountMap[(*it_a).id()] = *it_a;
-
     MyMoneyAccount expenseAccount = file->expense();
     MyMoneyAccount incomeAccount = file->income();
 
     // Income
     KAccountListItem *incomeTopLevelAccount = new KAccountListItem(categoryListView,
               incomeAccount);
+
+    QValueList<MyMoneyAccount> list = file->accountList();
+    QValueList<MyMoneyAccount>::ConstIterator it_a;
+
+    for(it_a = list.begin(); it_a != list.end(); ++it_a)
+      m_accountMap[(*it_a).id()] = *it_a;
 
     for ( QCStringList::ConstIterator it = incomeAccount.accountList().begin();
           it != incomeAccount.accountList().end();
