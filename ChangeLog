@@ -1,3 +1,8 @@
+2004-05-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added KDE compatability header file. Should be used instead of kdeversion.h
+  * Added global test container that can be built and run using 'make check'
+  * Added patch for report configuration supplied by Ace Jones
+
 2004-05-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Enable more button even if transaction is not edited
   * Keep the payee id for transfer transactions
