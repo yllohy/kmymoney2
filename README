@@ -45,7 +45,7 @@ from.
 
      Distribution      | --with-qt-dir           | --prefix
      ------------------+-------------------------+---------------------------
-     SuSE >= 8.1       |  omit this parameter    | /opt/kde3
+     SuSE >= 8.1       |  omit this parameter    | ommit this parameter
      Mandrake 9.0      |  omit this parameter    | /usr
      Slackware >= 9.0  |  omit this parameter    | /opt/kde
      MEPIS             |  omit this parameter    | /usr
@@ -54,27 +54,26 @@ from.
      
      Distribution      | --man-dir               | --program-prefix
      ------------------+-------------------------+---------------------------
-     SuSE >= 8.1       |  /usr/share/man         | ""
+     SuSE >= 8.1       |  /usr/share/man         | omit this parameter
      Mandrake 9.0      |  ???                    | 
      Slackware >= 9.0  |  /usr/share/man         | 
      MEPIS             |  omit this parameter    | omit this parameter
 
-     so for SuSE 8.1 the command is:
+     so for SuSE 9.1 the command is:
 
-           ./configure --prefix=/opt/kde3 --mandir=/usr/share/man \
-              --program-prefix=""
+           ./configure --mandir=/usr/share/man 
 
      Please tell us the values for other distributions, so we can add
      them to this list. Send an e-mail to the developers mailing list.
      See the address below.
 
-2a)  If you want the memory leak detection code compiled in,
-     run configure the following way
+     Note for 64 bit systems:
 
-           CPPFLAGS=-D_CHECK_MEMORY ./configure <configure-options-as-above>
+     I had to add the following options to configure to get things
+     compiled with my 64 bit system under SuSE 9.2
 
-     If you actively want to develop on this application, please make
-     sure to use the setting as described in 2a.
+           --enable-libsuffix=64 --with-qt-libraries=/usr/lib64/qt3/lib64
+
 
 3)   Build the package by issuing the following command:
 
