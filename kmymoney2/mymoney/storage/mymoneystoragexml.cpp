@@ -37,12 +37,14 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "mymoneystoragexmlcallback.h"
+#include "mymoneyxmlparser.h"
+//#include "mymoneystoragexmlcallback.h"
 #include "mymoneystoragexml.h"
 
 MyMoneyStorageXML::MyMoneyStorageXML()
 {
   m_parser = NULL;
+//  m_callback = NULL;
 }
 
 MyMoneyStorageXML::~MyMoneyStorageXML()
@@ -57,7 +59,12 @@ void MyMoneyStorageXML::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
   {
     return;
   }
-
+         
+  //
+  //  Need to use the file object and read it at 1000 bytes at a time.  We need to send the
+  //  XML file to the SAX interface in chunks not too big to waste memory, but not too small to
+  //  still provide good speed.  The ideal number of bytes read should be determined by profiling.
+  //
   if(pDevice && storage)
   {
     Q_LONG totalSize = 0;
@@ -69,7 +76,7 @@ void MyMoneyStorageXML::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
       totalSize += readSize;
       if(readSize > 0)
       {
-        qDebug("XMLREADER: chars read");
+        qDebug("XMLREADER: %d chars read", readSize);
         std::string parseString(buf);
         m_parser->parse_chunk(parseString);
       }
@@ -86,7 +93,7 @@ void MyMoneyStorageXML::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
       m_parser = NULL;
     }
 
-    //qDebug("XMLREADER: %n total file size", totalSize);
+    qDebug("XMLREADER: %d total file size", totalSize);
     
   }
 }
@@ -105,9 +112,12 @@ bool MyMoneyStorageXML::CreateXMLParser()
   }
   else
   {
-    m_parser = new xmlpp::XMLParser<MyMoneyStorageXMLCallback>;
+    m_parser = new MyMoneyXMLParser;//xmlpp::XMLParser<MyMoneyStorageXMLCallback>;
     if(m_parser)
     {
+      //m_callback = new MyMoneyStorageXMLCallback(this);
+      m_parser->setParserCallback(this);
+      
       qDebug("XMLREADER:  Able to create the XML++ Parser");
       return true;
     }
@@ -117,5 +127,145 @@ bool MyMoneyStorageXML::CreateXMLParser()
   return false;
 }
 
-#endif // HAVE_LIBXMLPP
+/** No descriptions */
+void MyMoneyStorageXML::setUserName(std::string s)
+{
+  
+}
 
+void MyMoneyStorageXML::start_document(void)
+{
+  qDebug("XMLREADER:  start_document() called");
+}
+
+void MyMoneyStorageXML::end_document(void)
+{
+  qDebug("XMLREADER:  end_document() called");
+}
+
+void MyMoneyStorageXML::start_element(const std::string &n, const XMLPropertyMap &p)
+{
+  qDebug("XMLREADER:  start_element called, %s", n.data());
+
+  if(!n.find("USER"))
+  {
+    ChangeParseState(PARSE_USERINFO);
+    if(m_pXMLFile)
+    {
+      std::string strUserName = getPropertyValue(std::string("name"), p);
+      m_pXMLFile->setUserName(strUserName);
+    }
+  }
+
+  if(m_parseState == PARSE_USERINFO)
+  {
+    if(!n.find("ADDRESS"))
+    {
+      ChangeParseState(PARSE_USERINFO_ADDRESS);
+    }
+  }
+  else if(m_parseState == PARSE_USERINFO_ADDRESS)
+  {
+    if(!n.find("STREET"))
+    {
+      ChangeParseState(PARSE_USERINFO_ADDRESS_STREET);
+    }
+    else if(!n.find("CITY"))
+    {
+      ChangeParseState(PARSE_USERINFO_ADDRESS_CITY);
+    }
+    else if(!n.find("STATE"))
+    {
+      ChangeParseState(PARSE_USERINFO_ADDRESS_STATE);
+    }
+    else if(!n.find("ZIPCODE"))
+    {
+      ChangeParseState(PARSE_USERINFO_ADDRESS_ZIPCODE);
+    }
+    else if(!n.find("COUNTY"))
+    {
+      ChangeParseState(PARSE_USERINFO_ADDRESS_COUNTY);
+    }
+    else if(!n.find("COUNTRY"))
+    {
+      ChangeParseState(PARSE_USERINFO_ADDRESS_COUNTRY);
+    }
+    else if(!n.find("TELEPHONE"))
+    {
+      ChangeParseState(PARSE_USERINFO_ADDRESS_TELEPHONE);
+    }
+  }
+
+
+  if(m_parseState == PARSE_USERINFO)
+  {
+    qDebug("Changing state, element name = %s", n.data());
+    qDebug("length = %d", n.size());
+    //if(!n.find("CURRENCY"))
+    //{
+//      m_parseState = PARSE_ACCOUNTS;
+    //}
+  }
+
+  if(m_parseState != PARSE_STATE_UNKNOWN)
+  {
+    for(XMLPropertyMap::const_iterator i = p.begin(); i != p.end(); ++i)
+    {
+
+    }
+  }
+}
+
+std::string MyMoneyStorageXML::getPropertyValue(std::string str, XMLPropertyMap p)
+{
+  //for(XMLPropertyMap::const_iterator i = p.begin(); i != p.end(); ++i)
+  //{
+  //  qDebug("XMLPropertyMap str=%s, first=%s",str.data(), ((*i).first).data());
+  //}
+  XMLPropertyMap::const_iterator i = p.find(str.data());
+  if(i != p.end())
+  {
+    XMLProperty* pProperty = (*i).second;
+    return pProperty->value();
+  }
+
+  return std::string("");
+}
+
+void MyMoneyStorageXML::end_element(const std::string &n)
+{
+  m_parseState = m_previousParseState;
+}
+
+void MyMoneyStorageXML::characters(const std::string &s)
+{
+  qDebug("XMLREADER:  Character data = %s", s.data());
+  qDebug("   length = %d", s.size());
+}
+
+void MyMoneyStorageXML::comment(const std::string &s)
+{
+
+}
+
+void MyMoneyStorageXML::warning(const std::string &s)
+{
+}
+
+void MyMoneyStorageXML::error(const std::string &s)
+{
+
+}
+
+void MyMoneyStorageXML::fatal_error(const std::string &s)
+{
+}
+
+void MyMoneyStorageXML::ChangeParseState(eParseState state)
+{
+  m_previousParseState = m_parseState;
+  m_parseState = state;
+}
+
+
+#endif // HAVE_LIBXMLPP

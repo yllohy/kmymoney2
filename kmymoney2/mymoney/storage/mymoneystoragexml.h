@@ -36,14 +36,34 @@ class QIODevice;
 
 #include "imymoneyserialize.h"
 #include "imymoneystorageformat.h"
-#include "mymoneystoragexmlcallback.h"
+#include "mymoneyxmlparser.h"
+//#include "mymoneystoragexmlcallback.h"
+
+typedef enum {
+    PARSE_NEXTIDS,
+    PARSE_USERINFO,
+    PARSE_USERINFO_ADDRESS,
+    PARSE_USERINFO_ADDRESS_STREET,
+    PARSE_USERINFO_ADDRESS_CITY,
+    PARSE_USERINFO_ADDRESS_STATE,
+    PARSE_USERINFO_ADDRESS_ZIPCODE,
+    PARSE_USERINFO_ADDRESS_COUNTY,
+    PARSE_USERINFO_ADDRESS_COUNTRY,
+    PARSE_USERINFO_ADDRESS_TELEPHONE,
+    PARSE_ACCOUNTS,
+    PARSE_INSTITUTIONS,
+    PARSE_PAYEES,
+    PARSE_STATE_UNKNOWN
+  }eParseState;
+
+using namespace xmlpp;
 
 /**
   *@author Kevin Tambascio (ktambascio@yahoo.com)
   */
 
                             
-class MyMoneyStorageXML : public IMyMoneyStorageFormat
+class MyMoneyStorageXML : public IMyMoneyStorageFormat, public xmlpp::XMLParserCallback
 {
 public: 
 	MyMoneyStorageXML();
@@ -53,6 +73,25 @@ public:
     Reading = 0,          /**< version of file to be read */
     Writing = 1           /**< version to be used when writing a file */
   };
+
+  void start_document(void);
+  void end_document(void);
+  void start_element(const std::string &n, const xmlpp::XMLPropertyMap &p);
+  void end_element(const std::string &n);
+  void characters(const std::string &s);
+  void comment(const std::string &s);
+  void warning(const std::string &s);
+  void error(const std::string &s);
+  void fatal_error(const std::string &s);
+
+  void ChangeParseState(eParseState state);
+
+private:
+  std::string getPropertyValue(std::string str, XMLPropertyMap p);
+  MyMoneyStorageXML *m_pXMLFile;
+  eParseState m_parseState;
+  eParseState m_previousParseState;
+
 
   /**
     * This method returns the version of the underlying file. It
@@ -72,10 +111,12 @@ public:
 
   void readFile(QIODevice* s, IMyMoneySerialize* storage);
   void writeFile(QIODevice* s, IMyMoneySerialize* storage);
+  /** No descriptions */
+  void setUserName(std::string s);
 
 private:
-  xmlpp::XMLParser<MyMoneyStorageXMLCallback> *m_parser;
-
+  MyMoneyXMLParser *m_parser;
+  //MyMoneyStorageXMLCallback* m_callback;
   /**
     * Instantiates the XML parser if it hasn't been created already.
     */
