@@ -4269,7 +4269,7 @@ msgid "Balance: "
 msgstr "Saldo: "
 
 #: views/kmymoneyview.cpp:122
-msgid "Insitutions/Accounts"
+msgid "Institutions/Accounts"
 msgstr "Instituições/Contas"
 
 #: views/kmymoneyview.cpp:129
