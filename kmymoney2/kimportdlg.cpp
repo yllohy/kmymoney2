@@ -24,7 +24,7 @@
 KImportDlg::KImportDlg():KImportDlgDecl(0,0,TRUE){
 
  // connect( &btnBrowse, SIGNAL( clicked() ), this, SLOT( slotBrowse() ) );
-  connect(buttonOk, SIGNAL(clicked()), this, SLOT(okClicked()));
+  connect(buttonOk, SIGNAL(clicked()), this, SLOT(slotOkClicked()));
 }
 KImportDlg::~KImportDlg(){
 }
@@ -35,7 +35,7 @@ void KImportDlg::slotBrowse(){
 	QString s(KFileDialog::getOpenFileName(QString::null,"*.QIF"));
   //delete browseFile;
 	txtFileImport->setText(s);
-		
+
 }
 
 void KImportDlg::slotOkClicked()

@@ -25,8 +25,8 @@ type=DATA
 [Config for BinMakefileAm]
 addcxxflags=
 bin_program=kmymoney2
-cxxflags=-O2 -g3 -Wall
-ldadd=-lkfile -lkdeui -lkdecore $(LIB_QT)
+cxxflags=\s-O2 -g3 -Wall
+ldadd=\s-lkfile -lkdeui -lkdecore $(LIB_QT)
 ldflags=
 path_to_bin_program=kmymoney2
 
@@ -37,8 +37,8 @@ configure_args=
 dir_where_make_will_be_called=
 email=mte@users.sourceforge.net
 kdevprj_version=1.3
-lfv_open_groups=
-make_options=-j1
+lfv_open_groups=GNU
+make_options=\s-j1
 makefiles=Makefile.am,kmymoney2/Makefile.am,doc/Makefile.am,doc/en/Makefile.am,po/Makefile.am,kmymoney2/widgets/Makefile.am,kmymoney2/mymoney/Makefile.am,kmymoney2/pics/Makefile.am,kmymoney2/pics/toolbar/Makefile.am,kmymoney2/dialogs/Makefile.am,kmymoney2/icons/hicolor/22x22/actions/Makefile.am,kmymoney2/icons/hicolor/22x22/Makefile.am,kmymoney2/icons/hicolor/Makefile.am,kmymoney2/icons/Makefile.am,kmymoney2/icons/hicolor/16x16/actions/Makefile.am,kmymoney2/icons/hicolor/16x16/Makefile.am,doc/images/Makefile.am
 modifyMakefiles=true
 project_name=KMyMoney2
@@ -46,7 +46,7 @@ project_type=normal_kde2
 sgml_file=/home/mte/src/kmymoney2/doc/en/index.docbook
 short_info=
 sub_dir=kmymoney2/
-version=0.3.5
+version=0.3.6
 version_control=CVS
 workspace=1
 
