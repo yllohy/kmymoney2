@@ -199,6 +199,7 @@ bool MyMoneyTransaction::readAllData(int version, QDataStream& stream)
 #endif
 
 void MyMoneyTransaction::setPostDate(const QDate& date) { m_postDate = date; }
+void MyMoneyTransaction::setEntryDate(const QDate& date) { m_entryDate = date; }
 void MyMoneyTransaction::setMemo(const QString& memo) { m_memo = memo; }
 
 #if 0

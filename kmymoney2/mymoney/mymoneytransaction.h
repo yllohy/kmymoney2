@@ -63,6 +63,7 @@ public:
 
   // Simple set operations
   void setPostDate(const QDate& date);
+  void setEntryDate(const QDate& date);
   void setMemo(const QString& memo);
 
   bool operator == (const MyMoneyTransaction&) const;
