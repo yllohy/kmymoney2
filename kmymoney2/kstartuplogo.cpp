@@ -65,7 +65,7 @@ KStartupLogo::KStartupLogo() :
   splash->setFrameShape( QFrame::StyledPanel );
   splash->setFrameShadow( QFrame::Raised );
   splash->setLineWidth( 2 );
-  splash->setGeometry( QRect( (QApplication::desktop()->width()/2)-(pm->width()/2), (QApplication::desktop()->height()/2)-(pm->height()/2), pm->width(), pm->height() ) );
+  splash->setGeometry( QRect( (QApplication::desktop()->width()/2)-(pm.width()/2), (QApplication::desktop()->height()/2)-(pm.height()/2), pm.width(), pm.height() ) );
 
   // QTimer::singleShot(1000, m_splash, SLOT(close()));
 #endif
