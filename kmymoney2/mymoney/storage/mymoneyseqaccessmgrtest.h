@@ -22,6 +22,8 @@
 #include <cppunit/TestSuite.h>
 #include <cppunit/extensions/HelperMacros.h>
 
+#include "../autotest.h"
+
 #define private public
 #include "mymoneyseqaccessmgr.h"
 #undef private
@@ -51,6 +53,7 @@ class MyMoneySeqAccessMgrTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST(testAddPayee);
 	CPPUNIT_TEST(testSetAccountName);
 	CPPUNIT_TEST(testModifyPayee);
+	CPPUNIT_TEST(testPayeeName);
 	CPPUNIT_TEST(testRemovePayee);
 	CPPUNIT_TEST(testRemoveAccountFromTree);
 	CPPUNIT_TEST_SUITE_END();
@@ -87,6 +90,7 @@ public:
 	void testAddPayee();
 	void testSetAccountName();
 	void testModifyPayee();
+	void testPayeeName();
 	void testRemovePayee();
 	void testRemoveAccountFromTree();
 };

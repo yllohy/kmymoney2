@@ -154,6 +154,19 @@ const MyMoneyPayee MyMoneySeqAccessMgr::payee(const QCString& id) const
   return *it;
 }
 
+const MyMoneyPayee MyMoneySeqAccessMgr::payeeByName(const QString& payee) const
+{
+  QMap<QCString, MyMoneyPayee>::ConstIterator it_p;
+
+  for(it_p = m_payeeList.begin(); it_p != m_payeeList.end(); ++it_p) {
+    if((*it_p).name() == payee) {
+      return *it_p;
+    }
+  }
+
+  throw new MYMONEYEXCEPTION("Unknown payee '" + payee + "'");
+}
+
 void MyMoneySeqAccessMgr::modifyPayee(const MyMoneyPayee& payee)
 {
   QMap<QCString, MyMoneyPayee>::Iterator it;

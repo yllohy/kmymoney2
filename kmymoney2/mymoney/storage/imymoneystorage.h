@@ -117,6 +117,17 @@ public:
   virtual const MyMoneyPayee payee(const QCString& id) const = 0;
 
   /**
+    * This method is used to retrieve the id to a corresponding
+    * name of a payee/receiver.
+    * An exception will be thrown upon error conditions.
+    *
+    * @param payee QString reference to name of payee
+    *
+    * @return MyMoneyPayee object of payee
+    */
+  virtual const MyMoneyPayee payeeByName(const QString& payee) const = 0;
+
+  /**
     * This method is used to modify an existing payee
     *
     * An exception will be thrown upon error conditions

@@ -407,18 +407,26 @@ void MyMoneySeqAccessMgrTest::testAddTransactions() {
 	MyMoneyTransaction t1, t2;
 	MyMoneySplit s;
 
-	// I made some money, great
-	s.setAccountId("A000006");	// Checkings
-	s.setShares(100000);
-	s.setValue(100000);
-	t1.addSplit(s);
+	try {
+		// I made some money, great
+		s.setAccountId("A000006");	// Checkings
+		s.setShares(100000);
+		s.setValue(100000);
+		CPPUNIT_ASSERT(s.id() == "");
+		t1.addSplit(s);
 
-	s.setAccountId("A000005");	// Salary
-	s.setShares(-100000);
-	s.setValue(-100000);
-	t1.addSplit(s);
+		s.setId("");		// enable re-usage of split variable
+		s.setAccountId("A000005");	// Salary
+		s.setShares(-100000);
+		s.setValue(-100000);
+		CPPUNIT_ASSERT(s.id() == "");
+		t1.addSplit(s);
 
-	t1.setPostDate(QDate(2002,5,10));
+		t1.setPostDate(QDate(2002,5,10));
+	} catch (MyMoneyException *e) {
+		unexpectedException(e);
+	}
+
 	m->m_dirty = false;
 	try {
 		m->addTransaction(t1);
@@ -427,32 +435,43 @@ void MyMoneySeqAccessMgrTest::testAddTransactions() {
 		CPPUNIT_ASSERT(t1.splitCount() == 2);
 		CPPUNIT_ASSERT(m->transactionCount() == 1);
 	} catch (MyMoneyException *e) {
-		delete e;
-		CPPUNIT_FAIL("Unexpected exception");
+		unexpectedException(e);
 	}
 
-	// I spent some money, not so great
-	s.setAccountId("A000004");	// Grosseries
-	s.setShares(10000);
-	s.setValue(10000);
-	t2.addSplit(s);
+	try {
+		// I spent some money, not so great
+		s.setId("");		// enable re-usage of split variable
+		s.setAccountId("A000004");	// Grosseries
+		s.setShares(10000);
+		s.setValue(10000);
+		CPPUNIT_ASSERT(s.id() == "");
+		t2.addSplit(s);
 
-	s.setAccountId("A000002");	// 16% sales tax
-	s.setShares(1200);
-	s.setValue(1200);
-	t2.addSplit(s);
+		s.setId("");		// enable re-usage of split variable
+		s.setAccountId("A000002");	// 16% sales tax
+		s.setShares(1200);
+		s.setValue(1200);
+		CPPUNIT_ASSERT(s.id() == "");
+		t2.addSplit(s);
 
-	s.setAccountId("A000003");	// 7% sales tax
-	s.setShares(400);
-	s.setValue(400);
-	t2.addSplit(s);
+		s.setId("");		// enable re-usage of split variable
+		s.setAccountId("A000003");	// 7% sales tax
+		s.setShares(400);
+		s.setValue(400);
+		CPPUNIT_ASSERT(s.id() == "");
+		t2.addSplit(s);
 
-	s.setAccountId("A000006");	// Checkings account
-	s.setShares(-11600);
-	s.setValue(-11600);
-	t2.addSplit(s);
+		s.setId("");		// enable re-usage of split variable
+		s.setAccountId("A000006");	// Checkings account
+		s.setShares(-11600);
+		s.setValue(-11600);
+		CPPUNIT_ASSERT(s.id() == "");
+		t2.addSplit(s);
 
-	t2.setPostDate(QDate(2002,5,9));
+		t2.setPostDate(QDate(2002,5,9));
+	} catch (MyMoneyException *e) {
+		unexpectedException(e);
+	}
 	m->m_dirty = false;
 	try {
 		m->addTransaction(t2);
@@ -478,6 +497,20 @@ void MyMoneySeqAccessMgrTest::testAddTransactions() {
 		CPPUNIT_ASSERT(it_t == m->m_transactionList.end());
 
 		ch = m->account("A000006");
+
+		// check that the account's transaction list is updated
+		QValueList<MyMoneyTransaction> list;
+		list = m->transactionList("A000006");
+		CPPUNIT_ASSERT(list.size() == 2);
+
+		QValueList<MyMoneyTransaction>::ConstIterator it;
+		it = list.begin();
+		CPPUNIT_ASSERT((*it).id() == "T000000000000000002");
+		++it;
+		CPPUNIT_ASSERT((*it).id() == "T000000000000000001");
+		++it;
+		CPPUNIT_ASSERT(it == list.end());
+
 /* removed with MyMoneyAccount::Transaction
 		CPPUNIT_ASSERT(ch.transactionCount() == 2);
 
@@ -495,8 +528,7 @@ void MyMoneySeqAccessMgrTest::testAddTransactions() {
 */
 			
 	} catch (MyMoneyException *e) {
-		delete e;
-		CPPUNIT_FAIL("Unexpected exception");
+		unexpectedException(e);
 	}
 }
 
@@ -577,8 +609,22 @@ void MyMoneySeqAccessMgrTest::testModifyTransaction() {
 		CPPUNIT_ASSERT(it_t == m->m_transactionList.end());
 
 		ch = m->account("A000006");
+
+		// check that the account's transaction list is updated
+		QValueList<MyMoneyTransaction> list;
+		list = m->transactionList("A000006");
+		CPPUNIT_ASSERT(list.size() == 2);
+
+		QValueList<MyMoneyTransaction>::ConstIterator it;
+		it = list.begin();
+		CPPUNIT_ASSERT((*it).id() == "T000000000000000001");
+		++it;
+		CPPUNIT_ASSERT((*it).id() == "T000000000000000002");
+		++it;
+		CPPUNIT_ASSERT(it == list.end());
+
 /* removed with MyMoneyAccount::Transaction
-		CPPUNIT_ASSERT(ch.transactionCount() == 2);
+		// CPPUNIT_ASSERT(ch.transactionCount() == 2);
 
 		QValueList<MyMoneyAccount::Transaction>::ConstIterator it_l;
 		it_l = ch.transactionList().begin();
@@ -911,15 +957,31 @@ void MyMoneySeqAccessMgrTest::testRemoveAccountFromTree() {
 		CPPUNIT_ASSERT(c.accountList().count() == 0);
 
 	} catch (MyMoneyException *e) {
-		string msg = "Unexpected exception: ";
-		msg += e->what();
-		msg += " thrown in ";
-		msg += e->file().latin1();
-		msg += ":";
-		char line[8];
-		sprintf(line, "%ld", e->line());
-		msg += line;
+		unexpectedException(e);
+	}
+}
+
+void MyMoneySeqAccessMgrTest::testPayeeName() {
+	testAddPayee();
+
+	MyMoneyPayee p;
+	QString name("THB");
+
+	// OK case
+	try {
+		p = m->payeeByName(name);
+		CPPUNIT_ASSERT(p.name() == "THB");
+		CPPUNIT_ASSERT(p.id() == "P000001");
+	} catch (MyMoneyException *e) {
+		unexpectedException(e);
+	}
+
+	// Not OK case
+	name = "Thb";
+	try {
+		p = m->payeeByName(name);
+		CPPUNIT_FAIL("Exception expected");
+	} catch (MyMoneyException *e) {
 		delete e;
-		CPPUNIT_FAIL(msg);
 	}
 }
