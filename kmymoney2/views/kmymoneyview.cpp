@@ -81,16 +81,18 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
 
   // Page 1
   QVBox *qvboxMainFrame2 = addVBoxPage( i18n("Accounts"), i18n("Insitutions/Accounts"),
-    DesktopIcon("bank"));
+    DesktopIcon("kmy"));
   accountsView = new KAccountsView(qvboxMainFrame2, "accountsView");
   connect(accountsView, SIGNAL(signalViewActivated()), this, SLOT(slotActivatedAccountsView()));
 
+/*
   transactionView = new KTransactionView(qvboxMainFrame2, "transactionsView");
   connect(transactionView, SIGNAL(signalViewActivated()), this, SLOT(slotActivatedAccountsView()));
+*/
 
   // Page 2
-  QVBox *qvboxMainFrame3 = addVBoxPage( i18n("Bills & Reminders"), i18n("Bills & Reminders"),
-    DesktopIcon("scheduled"));
+  QVBox *qvboxMainFrame3 = addVBoxPage( i18n("Schedule"), i18n("Bills & Reminders"),
+    DesktopIcon("schedule"));
   m_scheduledView = new KScheduledView(qvboxMainFrame3, "scheduledView");
   connect(m_scheduledView, SIGNAL(signalViewActivated()), this, SLOT(slotActivatedScheduledView()));
 
@@ -102,24 +104,26 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
 
   // Page 4
   QVBox *qvboxMainFrame5 = addVBoxPage( i18n("Payees"), i18n("Payees"),
-    DesktopIcon("pay_edit"));
+    DesktopIcon("payee"));
   m_payeesView = new KPayeesView(qvboxMainFrame5, "payeesView");
   connect(m_payeesView, SIGNAL(signalViewActivated()), this, SLOT(slotActivatedPayeeView()));
 
   // Page 5
   QVBox *qvboxMainFrame6 = addVBoxPage( i18n("Ledgers"), i18n("Ledgers"),
-    DesktopIcon(""));
+    DesktopIcon("ledger"));
   m_ledgerView = new KGlobalLedgerView(qvboxMainFrame6, "ledgerView");
   connect(m_ledgerView, SIGNAL(signalViewActivated()), this, SLOT(slotActivatedAccountView()));
 
-
+/*
   m_investmentView = new KInvestmentView(qvboxMainFrame2, "investmentView");
 
   // Need to show it, although the user wont see it.
   // At the bottom of this method we choose what to show.
+
   accountsView->show();
   transactionView->hide();
   m_investmentView->hide();
+*/
 
   connect(accountsView, SIGNAL(accountRightMouseClick()),
     this, SLOT(slotAccountRightMouse()));
@@ -130,10 +134,12 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(accountsView, SIGNAL(rightMouseClick()),
     this, SLOT(slotRightMouse()));
 
+/*
   connect(transactionView, SIGNAL(viewTypeSearchActivated()),
     this, SLOT(accountFind()));
   connect(transactionView, SIGNAL(viewTypeNormalActivated()),
     this, SLOT(viewTransactionList()));
+*/
 
   m_inReconciliation=false;
   m_reconcileInited=false;
@@ -213,6 +219,7 @@ void KMyMoneyView::slotBankEdit()
   {
     MyMoneyFile* file = MyMoneyFile::instance();
     MyMoneyInstitution institution = file->institution(accountsView->currentInstitution(bankSuccess));
+
 
 
 
@@ -346,6 +353,7 @@ void KMyMoneyView::closeFile(void)
 {
   m_file->close();
 
+
   accountsView->clear();
   transactionView->clear();
   emit signalEnableKMyMoneyOperations(false);
@@ -383,8 +391,8 @@ bool KMyMoneyView::readFile(QString filename)
   delete binaryReader;
 
   // update all views
-  accountsView->refreshView();
   m_categoriesView->refreshView();
+  accountsView->refreshView();
   // FIXME: m_ledgerView->update();
   return true;
 }
@@ -513,6 +521,7 @@ void KMyMoneyView::slotAccountReconcile(void)
     qDebug("KMyMoneyView::slotAccountReconcile: Unable to grab the current account");
 
 
+
     return;
   }
 
@@ -598,6 +607,7 @@ void KMyMoneyView::slotAccountExportAscii(void)
 
 void KMyMoneyView::slotReconcileFinished(bool success)
 {
+
 
   if (success)
   {
@@ -1179,6 +1189,7 @@ bool KMyMoneyView::checkTransactionStatus(const MyMoneyTransaction *transaction,
 
 bool KMyMoneyView::checkTransactionDescription(const MyMoneyTransaction *transaction, const bool enabled, const QString description, const bool isRegExp)
 
+
 {
 /*
   if (!enabled)
@@ -1206,6 +1217,7 @@ bool KMyMoneyView::checkTransactionNumber(const MyMoneyTransaction *transaction,
 
 /*
   if (!enabled)
+
     return true;
 
   if (!isRegExp) {
