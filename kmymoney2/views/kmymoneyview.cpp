@@ -353,6 +353,14 @@ void KMyMoneyView::slotAccountDoubleClick(void)
 
 void KMyMoneyView::slotBankRightMouse()
 {
+  int editId = m_bankMenu->idAt(2);
+  int deleteId = m_bankMenu->idAt(3);
+  bool bankSuccess;
+  bool state = !m_accountsView->currentInstitution(bankSuccess).isEmpty();
+
+  m_bankMenu->setItemEnabled(editId, state);
+  m_bankMenu->setItemEnabled(deleteId, state);
+  
   m_bankMenu->exec(QCursor::pos());
 }
 
@@ -366,9 +374,6 @@ void KMyMoneyView::slotBankEdit()
   {
     MyMoneyFile* file = MyMoneyFile::instance();
     MyMoneyInstitution institution = file->institution(m_accountsView->currentInstitution(bankSuccess));
-
-
-
 
     // bankSuccess is not checked anymore because m_file->institution will throw anyway
     KNewBankDlg dlg(institution, true, this, "edit_bank");
