@@ -41,7 +41,7 @@
 #include "../mymoney/mymoneyequity.h"
 
 /**
-  *@author Kevin Tambascio
+  * @author Kevin Tambascio
   */
 
 class KEditEquityEntryDlg : public kEditEquityEntryDecl
@@ -55,7 +55,6 @@ public:
 
 protected slots:
   void slotOKClicked();
-  void slotCancelClicked();
   void slotPriceHistoryDoubleClicked(QListViewItem *item, const QPoint &point, int c);
   void slotPriceHistoryClicked(QListViewItem* item, const QPoint& point, int c);
   void slotDataChanged(void);

@@ -44,15 +44,16 @@ public:
   virtual ~KNewEquityEntryDlg();
 
   void setSymbolName(const QString& str);
-  QString symbolName() const  { return m_strSymbolName; }
+  QString symbolName(void) const  { return m_strSymbolName; }
 
   void setName(const QString& str);
-  QString name() const  { return m_strName; }
+  QString name(void) const  { return m_strName; }
 
   int fraction(void) const { return m_fraction; }
 
 protected slots:
-  void onOKClicked();
+  void onOKClicked(void);
+  void slotDataChanged(void);
 
 private:
   QString m_strSymbolName;

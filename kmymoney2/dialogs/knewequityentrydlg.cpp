@@ -42,9 +42,14 @@ KNewEquityEntryDlg::KNewEquityEntryDlg(QWidget *parent, const char *name)
 {
   edtFraction->hideCalculatorButton();
   edtFraction->setPrecision(0);
+  edtFraction->loadText("100");
 
   connect(btnOK, SIGNAL(clicked()), this, SLOT(onOKClicked()));
   connect(btnCancel, SIGNAL(clicked()), this, SLOT(reject()));
+
+  connect(edtFraction, SIGNAL(textChanged(const QString&)), this, SLOT(slotDataChanged()));
+  connect(edtMarketSymbol, SIGNAL(textChanged(const QString&)), this, SLOT(slotDataChanged()));
+  connect(edtEquityName, SIGNAL(textChanged(const QString&)), this, SLOT(slotDataChanged()));
 
   // add icons to buttons
   KIconLoader *il = KGlobal::iconLoader();
@@ -60,6 +65,9 @@ KNewEquityEntryDlg::KNewEquityEntryDlg(QWidget *parent, const char *name)
                     i18n("Use this to dismiss all the changes made in this dialog."));
   btnCancel->setGuiItem(cancelButtenItem);
 
+  slotDataChanged();
+
+  edtEquityName->setFocus();
 }
 
 KNewEquityEntryDlg::~KNewEquityEntryDlg()
@@ -85,4 +93,16 @@ void KNewEquityEntryDlg::setName(const QString& str)
 {
   m_strName = str;
   edtEquityName->setText(m_strName);
+}
+
+void KNewEquityEntryDlg::slotDataChanged(void)
+{
+  bool okEnabled = true;
+
+  if(edtFraction->getMoneyValue() <= 0
+  || edtMarketSymbol->text().isEmpty()
+  || edtEquityName->text().isEmpty())
+    okEnabled = false;
+
+  btnOK->setEnabled(okEnabled);
 }

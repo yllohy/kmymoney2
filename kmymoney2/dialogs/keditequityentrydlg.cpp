@@ -54,7 +54,7 @@ KEditEquityEntryDlg::KEditEquityEntryDlg(const MyMoneyEquity& selectedEquity, QW
   lvPriceHistory->setShowSortIndicator(true);
 
   connect(btnOK, SIGNAL(clicked()), this, SLOT(slotOKClicked()));
-  connect(btnCancel, SIGNAL(clicked()), this, SLOT(slotCancelClicked()));
+  connect(btnCancel, SIGNAL(clicked()), this, SLOT(reject()));
   connect(lvPriceHistory, SIGNAL(doubleClicked(QListViewItem*, const QPoint&, int)), this, SLOT(slotPriceHistoryDoubleClicked(QListViewItem *, const QPoint&, int)));
   connect(edtEquityName, SIGNAL(textChanged(const QString &)), this, SLOT(slotDataChanged()));
   connect(edtMarketSymbol, SIGNAL(textChanged(const QString &)), this, SLOT(slotDataChanged()));
@@ -100,12 +100,12 @@ KEditEquityEntryDlg::KEditEquityEntryDlg(const MyMoneyEquity& selectedEquity, QW
                     i18n("Use this to dismiss all the changes made in this dialog."));
   btnCancel->setGuiItem(cancelButtenItem);
 
+  slotDataChanged();
   m_changes = false;
 }
 
 KEditEquityEntryDlg::~KEditEquityEntryDlg()
 {
-
 }
 
 /** No descriptions */
@@ -132,25 +132,27 @@ void KEditEquityEntryDlg::slotOKClicked()
   accept();
 }
 
-void KEditEquityEntryDlg::slotCancelClicked()
-{
-  reject();
-}
-
 void KEditEquityEntryDlg::slotPriceHistoryDoubleClicked(QListViewItem *item, const QPoint &point, int c)
 {
-
 }
 
 void KEditEquityEntryDlg::slotPriceHistoryClicked(QListViewItem* item, const QPoint& point, int c)
 {
-
   btnEditEntry->setEnabled(true);
   btnRemoveEntry->setEnabled(true);
 }
 
 void KEditEquityEntryDlg::slotDataChanged(void)
 {
+  bool okEnabled = true;
+
+  if(edtFraction->getMoneyValue() <= 0
+  || edtMarketSymbol->text().isEmpty()
+  || edtEquityName->text().isEmpty())
+    okEnabled = false;
+
+  btnOK->setEnabled(okEnabled);
+
   m_changes = true;
 }
 
