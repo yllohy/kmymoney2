@@ -38,7 +38,7 @@
 class kMyMoneyLineEdit : public KLineEdit  {
   Q_OBJECT
 public: 
-  kMyMoneyLineEdit(QWidget *w = 0, const char* name = 0, int alignment = (AlignRight | AlignVCenter));
+  kMyMoneyLineEdit(QWidget *w = 0, const char* name = 0, int alignment = (AlignLeft | AlignVCenter));
   ~kMyMoneyLineEdit();
   /** No descriptions */
   virtual bool eventFilter(QObject * , QEvent * );
