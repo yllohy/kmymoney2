@@ -23,6 +23,7 @@
 #include <qfile.h>
 #include <qtextstream.h>
 #include <qprogressdialog.h>
+#include <qtextcodec.h>
 
 #if QT_VERSION > 300
 #include <qcursor.h>
@@ -1090,6 +1091,7 @@ void KMyMoneyView::readDefaultCategories(const QString& filename)
 
   MyMoneyFile::instance()->suspendNotify(true);
   QFile f(filename);
+  QTextCodec* codec = QTextCodec::codecForName("ISO8859-1");
   if (f.open(IO_ReadOnly) ) {
     kmymoney2->slotStatusMsg(i18n("Loading default accounts"));
     kmymoney2->slotStatusProgressBar(0, f.size());
@@ -1100,6 +1102,9 @@ void KMyMoneyView::readDefaultCategories(const QString& filename)
     int line = 0;
     while ( !t.eof() ) {        // until end of file...
       s = t.readLine();       // line of text excluding '\n'
+      if(codec) {
+        s = codec->toUnicode(s);
+      }
       ++line;
 
       // update progress bar every ten lines
@@ -1127,9 +1132,18 @@ void KMyMoneyView::readDefaultCategories(const QString& filename)
         if(type == "income") {
           account.setAccountType(MyMoneyAccount::Income);
           parentAccount = MyMoneyFile::instance()->income();
+
         } else if(type == "expense") {
           account.setAccountType(MyMoneyAccount::Expense);
           parentAccount = MyMoneyFile::instance()->expense();
+
+        } else if(type == "codec") {
+          QTextCodec* newCodec = QTextCodec::codecForName(s.mid(pos2+1));
+          if(newCodec) {
+            codec = newCodec;
+          }
+          continue;
+
         } else {
           QString msg("Unknown type '");
           msg += type + "' in line %d of " + filename;
