@@ -27,7 +27,11 @@ MyMoneyMoney::fileVersionE MyMoneyMoney::_fileVersion = MyMoneyMoney::FILE_4_BYT
 
 void MyMoneyMoney::setThousandSeparator(const unsigned char separator)
 {
-  _thousandSeparator = separator;
+  if(separator != ' ')
+    _thousandSeparator = separator;
+  else
+    _thousandSeparator = 0;
+
 }
 
 unsigned char MyMoneyMoney::thousandSeparator(void)
@@ -37,7 +41,10 @@ unsigned char MyMoneyMoney::thousandSeparator(void)
 
 void MyMoneyMoney::setDecimalSeparator(const unsigned char separator)
 {
-  _decimalSeparator = separator;
+  if(separator != ' ')
+    _decimalSeparator = separator;
+  else
+    _decimalSeparator = 0;
 }
 
 unsigned char MyMoneyMoney::decimalSeparator(void)
@@ -101,11 +108,12 @@ const QString MyMoneyMoney::formatMoney(/*QString locale="C", bool addPrefixPost
 
     res = QString("%1").arg((long)left);
     int pos = res.length();
-    while(0 < (pos -= 3))
+    while(0 < (pos -= 3)  && thousandSeparator())
       res.insert(pos, thousandSeparator());
     QString format;
 
-    res += decimalSeparator();
+    if(decimalSeparator())
+      res += decimalSeparator();
     if (bNegative)
       res.insert(0, '-');
 
@@ -128,8 +136,12 @@ const QString MyMoneyMoney::formatMoney(/*QString locale="C", bool addPrefixPost
     }
 */
   }
-  else
-    res = QString("0")+QChar(decimalSeparator())+"00";
+  else {
+    if(decimalSeparator())
+      res = QString("0")+QChar(decimalSeparator())+"00";
+    else
+      res = "000";
+  }
 
   return res;
 }
