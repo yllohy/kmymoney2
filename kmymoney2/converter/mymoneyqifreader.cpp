@@ -794,31 +794,25 @@ void MyMoneyQifReader::selectOrCreateAccount(const SelectCreateMode mode, MyMone
     accountSelect.m_qifEntry->setColor(QColor("black"));
     ++i;
   }
-    
-  if(accountSelect.exec() == QDialog::Accepted) {
-    if((type & KMyMoneyUtils::asset)
-    || (type & KMyMoneyUtils::liability)) {
-      accountId = file->nameToAccount(accountSelect.selectedAccount());
+
+  for(;;) {
+    if(accountSelect.exec() == QDialog::Accepted) {
+      if(!accountSelect.selectedAccount().isEmpty()) {
+        accountId = accountSelect.selectedAccount();
+
+        m_accountTranslation[(leadIn + ":" + account.name()).lower()] = accountId;
+        account = file->account(accountId);
+        break;
+      }
       
-    } else if((type & KMyMoneyUtils::income)
-           || (type & KMyMoneyUtils::expense)) {
-      accountId = file->categoryToAccount(accountSelect.selectedAccount());
-    } else {
-        qWarning("No account selected!!!!");
-        leadIn = "";
-    }
-    
-    if(!accountId.isEmpty()) {
-      m_accountTranslation[(leadIn + ":" + account.name()).lower()] = accountId;
-      account = file->account(accountId);
-      
-    } else
-      account = MyMoneyAccount();
-    
-  } else {
-    account = MyMoneyAccount();
-    if(accountSelect.aborted())
+    } else if(accountSelect.aborted())
       throw new MYMONEYEXCEPTION("USERABORT");
+
+    if(typeStr == i18n("account")) {
+      KMessageBox::error(0, i18n("You must select or create an account."));
+    } else {
+      KMessageBox::error(0, i18n("You must select or create a category."));
+    }
   }
 }
 
