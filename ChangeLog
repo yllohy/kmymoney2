@@ -1,5 +1,7 @@
 2001-12-12 Thomas Baumgart  <ipwizard@users.sourceforge.net>
   * updated project handbook files in developer-doc/phb
+  * added selection of monetaryDecimalSymbol in QIF import
+  * collect memo during QIF import
 
 2001-12-11 Thomas Baumgart  <ipwizard@users.sourceforge.net>
   * fixed display of transaction view for large amount of transactions
