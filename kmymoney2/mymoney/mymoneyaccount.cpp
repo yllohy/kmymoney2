@@ -412,8 +412,12 @@ bool MyMoneyAccount::readQIFFile(const QString& name, const QString& dateFormat,
               res = convertQIFDate(buffer, format, apostrophe, &day, &month, &year);
               QDate transdate(year, month, day);
 
-              // qDebug("day: %d, month: %d, year %d", day, month, year);
-              // qDebug("res = %s", (const char *)getQIFDateFormatErrorString(res));
+              if(res != 0) {
+                qDebug("date conversion from '%s' with format '%s' failed",
+                  buffer, format);
+                qDebug("  day: %d, month: %d, year %d", day, month, year);
+                qDebug("  res = %s", (const char *)getQIFDateFormatErrorString(res));
+              }
 
               checknum = type.toInt(&isnumber);
               if(isnumber == false)
