@@ -98,7 +98,12 @@ kMyMoneyDateTbl::paintCell(QPainter *painter, int row, int col)
   QFont font=KGlobalSettings::generalFont();
   // -----
   font.setPointSize(fontsize);
+#if KDE_VERSION < 310
+  int firstWeekDay = KGlobal::locale()->weekStartsMonday() ? 1 : 0;
+#else
   int firstWeekDay = KGlobal::locale()->weekStartDay();
+#endif
+
   if(row==0)
     { // we are drawing the headline
       font.setBold(true);
@@ -292,8 +297,12 @@ kMyMoneyDateTbl::contentsMousePressEvent(QMouseEvent *e)
       return;
     }
 
-  //int dayoff = KGlobal::locale()->weekStartsMonday() ? 1 : 0;
+#if KDE_VERSION < 310
+  int dayoff = KGlobal::locale()->weekStartsMonday() ? 1 : 0;
+#else
   int dayoff = KGlobal::locale()->weekStartDay();
+#endif
+  
   // -----
   int row, col, pos, temp;
   QPoint mouseCoord;

@@ -288,6 +288,7 @@ kMyMoneyCalendar::yearBackwardClicked()
 void
 kMyMoneyCalendar::selectWeekClicked()
 {
+#if KDE_VERSION >= 310  
   int week;
   KPopupFrame* popup = new KPopupFrame(this);
   KDateInternalWeekSelector* picker = new KDateInternalWeekSelector(fontsize, popup);
@@ -320,6 +321,7 @@ kMyMoneyCalendar::selectWeekClicked()
          KNotifyClient::beep();
     }
   delete popup;
+#endif
 }
 
 void
