@@ -31,8 +31,7 @@ KFindTransactionDlg::KFindTransactionDlg(MyMoneyFile *file, QWidget *parent, con
  : KFindTransactionDlgDecl(parent,name,false)
 {
   QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_find_transaction.png");
-  QPixmap *pm = new QPixmap(filename);
-  m_qpixmaplabel->setPixmap(*pm);
+  m_qpixmaplabel->setPixmap(QPixmap(filename));
 
   m_filePointer = file;
 	

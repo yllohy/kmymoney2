@@ -51,8 +51,7 @@ KNewFileDlg::KNewFileDlg(QString userName, QString userStreet,
   : KNewFileDlgDecl(parent,name,true)
 {
   QString filename = KGlobal::dirs()->findResource("appdata", "pics/view_info.png");
-  QPixmap *pm = new QPixmap(filename);
-  m_qpixmaplabel->setPixmap(*pm);
+  m_qpixmaplabel->setPixmap(QPixmap(filename));
 
   userNameEdit->setText(userName);
   streetEdit->setText(userStreet);

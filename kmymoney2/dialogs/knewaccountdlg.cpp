@@ -54,8 +54,7 @@ KNewAccountDlg::KNewAccountDlg(MyMoneyAccount& account, bool isEditing, bool cat
   QString columnName = ( (categoryEditor) ? i18n("Categories") : i18n("Accounts") );
 
   QString filename = KGlobal::dirs()->findResource("appdata", pngFile);
-  QPixmap *pm = new QPixmap(filename);
-  m_qpixmaplabel->setPixmap(*pm);
+  m_qpixmaplabel->setPixmap(QPixmap(filename));
 
 	m_qlistviewParentAccounts->setRootIsDecorated(true);
 	m_qlistviewParentAccounts->setAllColumnsShowFocus(true);

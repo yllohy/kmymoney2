@@ -126,6 +126,7 @@ KMyMoney2App::KMyMoney2App(QWidget *parent , const char* name)
 
 KMyMoney2App::~KMyMoney2App()
 {
+  delete m_startLogo;
 }
 
 bool KMyMoney2App::startWithDialog(void)

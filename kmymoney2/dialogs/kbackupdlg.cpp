@@ -49,8 +49,7 @@ KBackupDlg::KBackupDlg( QWidget* parent,  const char* name/*, bool modal*/)
   : kbackupdlgdecl( parent,  name , true)
 {
   QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_backup.png");
-  QPixmap *pm = new QPixmap(filename);
-  m_qpixmaplabel->setPixmap(*pm);
+  m_qpixmaplabel->setPixmap(QPixmap(filename));
 
   readConfig();
   connect(chooseButton, SIGNAL(clicked()), this, SLOT(chooseButtonClicked()));

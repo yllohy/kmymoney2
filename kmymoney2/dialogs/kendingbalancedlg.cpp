@@ -41,8 +41,7 @@ KEndingBalanceDlg::KEndingBalanceDlg(const MyMoneyMoney& prevBal, const MyMoneyM
    m_endingDate(QDate::currentDate())
 {
    //QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_ending_balance.png");
-  QPixmap *pm = new QPixmap(KGlobal::dirs()->findResource("appdata", "pics/dlg_ending_balance.png"));
-  m_qpixmaplabel->setPixmap(*pm);
+  m_qpixmaplabel->setPixmap(QPixmap(KGlobal::dirs()->findResource("appdata", "pics/dlg_ending_balance.png")));
 
 	previousbalEdit->setText(prevBal.formatMoney());
 	previousbalEdit->setFocus();
