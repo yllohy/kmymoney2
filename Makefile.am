@@ -1,6 +1,6 @@
 ####### kdevelop will overwrite this part!!! (begin)##########
 
-SUBDIRS = kmymoney2 po doc 
+SUBDIRS = kmymoney2 po doc developer-doc 
 
 EXTRA_DIST = kmymoney2.kdevprj AUTHORS COPYING ChangeLog INSTALL README TODO kmymoney2.lsm kmymoney2.spec readme-overview.txt ChangeLog.original 
 
