@@ -37,7 +37,7 @@ configure_args=
 dir_where_make_will_be_called=
 email=mte@users.sourceforge.net
 kdevprj_version=1.3
-lfv_open_groups=GNU
+lfv_open_groups=
 make_options=\s-j1
 makefiles=Makefile.am,kmymoney2/Makefile.am,doc/Makefile.am,doc/en/Makefile.am,po/Makefile.am,kmymoney2/widgets/Makefile.am,kmymoney2/mymoney/Makefile.am,kmymoney2/pics/Makefile.am,kmymoney2/pics/toolbar/Makefile.am,kmymoney2/dialogs/Makefile.am,kmymoney2/icons/hicolor/22x22/actions/Makefile.am,kmymoney2/icons/hicolor/22x22/Makefile.am,kmymoney2/icons/hicolor/Makefile.am,kmymoney2/icons/Makefile.am,kmymoney2/icons/hicolor/16x16/actions/Makefile.am,kmymoney2/icons/hicolor/16x16/Makefile.am,doc/images/Makefile.am,developer-doc/Makefile.am
 modifyMakefiles=true
@@ -46,7 +46,7 @@ project_type=normal_kde2
 sgml_file=/home/mte/src/kmymoney2/doc/en/index.docbook
 short_info=
 sub_dir=kmymoney2/
-version=0.3.7
+version=0.3.8
 version_control=CVS
 workspace=1
 
@@ -410,9 +410,21 @@ sub_dirs=actions
 type=normal
 
 [kmymoney2/icons/hicolor/22x22/actions/Makefile.am]
-files=kmymoney2/icons/hicolor/22x22/actions/pay_edit.png,kmymoney2/icons/hicolor/22x22/actions/bank.png,kmymoney2/icons/hicolor/22x22/actions/categories.png,kmymoney2/icons/hicolor/22x22/actions/transaction_find.png,kmymoney2/icons/hicolor/22x22/actions/reconcile.png
+files=kmymoney2/icons/hicolor/22x22/actions/pay_edit.png,kmymoney2/icons/hicolor/22x22/actions/bank.png,kmymoney2/icons/hicolor/22x22/actions/categories.png,kmymoney2/icons/hicolor/22x22/actions/transaction_find.png,kmymoney2/icons/hicolor/22x22/actions/reconcile.png,kmymoney2/icons/hicolor/22x22/actions/transaction_export.png,kmymoney2/icons/hicolor/22x22/actions/transaction_import.png,kmymoney2/icons/hicolor/22x22/actions/account.png,kmymoney2/icons/hicolor/22x22/actions/account_open.png
 sub_dirs=
 type=normal
+
+[kmymoney2/icons/hicolor/22x22/actions/account.png]
+dist=true
+install=true
+install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/account.png
+type=DATA
+
+[kmymoney2/icons/hicolor/22x22/actions/account_open.png]
+dist=true
+install=true
+install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/account_open.png
+type=DATA
 
 [kmymoney2/icons/hicolor/22x22/actions/bank.png]
 dist=true
@@ -438,10 +450,22 @@ install=true
 install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/reconcile.png
 type=DATA
 
+[kmymoney2/icons/hicolor/22x22/actions/transaction_export.png]
+dist=true
+install=true
+install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/transaction_export.png
+type=DATA
+
 [kmymoney2/icons/hicolor/22x22/actions/transaction_find.png]
 dist=true
 install=true
 install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/transaction_find.png
+type=DATA
+
+[kmymoney2/icons/hicolor/22x22/actions/transaction_import.png]
+dist=true
+install=true
+install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/transaction_import.png
 type=DATA
 
 [kmymoney2/icons/hicolor/Makefile.am]
@@ -1017,21 +1041,9 @@ install_location=$$(kde_datadir)/kmymoney2/pics/startlogo.png
 type=DATA
 
 [kmymoney2/pics/toolbar/Makefile.am]
-files=kmymoney2/pics/toolbar/kmymoney_newacc.xpm,kmymoney2/pics/toolbar/kmymoney_up.xpm
+files=
 sub_dirs=
 type=normal
-
-[kmymoney2/pics/toolbar/kmymoney_newacc.xpm]
-dist=true
-install=true
-install_location=$$(kde_datadir)/kmymoney2/toolbar/kmymoney_newacc.xpm
-type=DATA
-
-[kmymoney2/pics/toolbar/kmymoney_up.xpm]
-dist=true
-install=true
-install_location=$$(kde_datadir)/kmymoney2/toolbar/kmymoney_up.xpm
-type=DATA
 
 [kmymoney2/widgets/Makefile.am]
 files=kmymoney2/widgets/kdatepik.cpp,kmymoney2/widgets/kdatepik.h,kmymoney2/widgets/kmymoneydateinput.cpp,kmymoney2/widgets/kmymoneydateinput.h,kmymoney2/widgets/kmymoneyedit.cpp,kmymoney2/widgets/kmymoneyedit.h,kmymoney2/widgets/kmymoneytable.cpp,kmymoney2/widgets/kmymoneytable.h,kmymoney2/widgets/kmymoneylineedit.cpp,kmymoney2/widgets/kmymoneylineedit.h,kmymoney2/widgets/kmymoneyhlayout.cpp,kmymoney2/widgets/kmymoneyhlayout.h,kmymoney2/widgets/kmymoneycombo.cpp,kmymoney2/widgets/kmymoneycombo.h

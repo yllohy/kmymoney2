@@ -1,3 +1,8 @@
+2001-09-25 Michael Edwardes <mte@users.sourceforge.net>
+  * Bumped version up to 0.3.8.
+  * Removed some old icons and added some new ones.  Please be aware that
+    I am a useless artist!
+    
 2001-09-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed two uninitialized variable bugs
 
