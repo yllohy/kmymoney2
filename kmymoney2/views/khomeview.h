@@ -42,7 +42,6 @@ class QVBoxLayout;
   * quicken and m$-money.
   *
   * @author Michael Edwardes
-  * $Id: khomeview.h,v 1.8 2004/04/13 17:46:43 ipwizard Exp $
   *
   * @short A view containing the home page for kmymoney2.
 **/
