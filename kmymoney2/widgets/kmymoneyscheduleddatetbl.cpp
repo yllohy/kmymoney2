@@ -61,7 +61,7 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 #include "kmymoneyscheduleddatetbl.h"
-#include "../mymoney/mymoneyscheduled.h"
+#include "../mymoney/mymoneyfile.h"
 
 kMyMoneyScheduledDateTbl::kMyMoneyScheduledDateTbl(QWidget *parent, QDate date_, const char* name, WFlags f )
   : kMyMoneyDateTbl(parent, date_, name, f),
@@ -83,6 +83,7 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int row, int 
   QBrush brushBlue(KGlobalSettings::activeTitleColor());
   QBrush brushLightblue(KGlobalSettings::baseColor());
   QFont font=KGlobalSettings::generalFont();
+  MyMoneyFile *file = MyMoneyFile::instance();
 
   // -----
   font.setPointSize(fontsize);
@@ -91,8 +92,8 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int row, int 
   fontLarge.setPointSize(fontsize*2);
   fontSmall.setPointSize(fontsize-1);
   
-
   painter->setFont(font);
+
 
   if (m_type == MONTHLY)
   {
@@ -128,42 +129,45 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int row, int 
     addDayPostfix(text);
     painter->drawText(0, 0, w-2, h, AlignRight, text, -1, &rect);
 
-    MyMoneyScheduled *scheduled;
-    QStringList schedules;
+    MyMoneyFile *file = MyMoneyFile::instance();
+    QValueList<MyMoneySchedule> schedules;
     try
     {
-      scheduled = MyMoneyScheduled::instance();
 
       // Honour the filter.
       if (!m_filterBills)
       {
-        schedules += scheduled->getScheduled(
-            m_accountId,
-            theDate,
-            theDate,
-            MyMoneySchedule::TYPE_BILL);
+        schedules += file->scheduleList(m_accountId,
+                                     MyMoneySchedule::TYPE_BILL,
+                                     MyMoneySchedule::OCCUR_ANY,
+                                     MyMoneySchedule::STYPE_ANY,
+                                     theDate,
+                                     theDate);
       }
       if (!m_filterDeposits)
       {
-        schedules += scheduled->getScheduled(
-            m_accountId,
-            theDate,
-            theDate,
-            MyMoneySchedule::TYPE_DEPOSIT);
+        schedules += file->scheduleList(m_accountId,
+                                     MyMoneySchedule::TYPE_DEPOSIT,
+                                     MyMoneySchedule::OCCUR_ANY,
+                                     MyMoneySchedule::STYPE_ANY,
+                                     theDate,
+                                     theDate);
       }
       if (!m_filterTransfers)
       {
-        schedules += scheduled->getScheduled(
-            m_accountId,
-            theDate,
-            theDate,
-            MyMoneySchedule::TYPE_TRANSFER);
+        schedules += file->scheduleList(m_accountId,
+                                     MyMoneySchedule::TYPE_TRANSFER,
+                                     MyMoneySchedule::OCCUR_ANY,
+                                     MyMoneySchedule::STYPE_ANY,
+                                     theDate,
+                                     theDate);
       }
     }
-    catch ( MyMoneyException*)
+    catch ( MyMoneyException* e)
     {
       // SAfe to ignore here, cause no schedules might exist
       // for the selected account
+      delete e;
     }
 
     if (schedules.count() >= 1)
@@ -197,70 +201,67 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int row, int 
     text = QString::number(theDate.day());
     addDayPostfix(text);
 
-    painter->drawText(0, 0, w-2, h, AlignRight, QDate::shortDayName(theDate.month()) + " " + text, -1, &rect);
+    painter->drawText(0, 0, w-2, h, AlignRight, QDate::shortDayName(theDate.dayOfWeek()) + " " + text, -1, &rect);
 
-    MyMoneyScheduled *scheduled;
-    QStringList billSchedules;
-    QStringList depositSchedules;
-    QStringList transferSchedules;
+    QValueList<MyMoneySchedule> billSchedules;
+    QValueList<MyMoneySchedule> depositSchedules;
+    QValueList<MyMoneySchedule> transferSchedules;
     try
     {
-      scheduled = MyMoneyScheduled::instance();
-
-/*
-  QStringList getScheduled(const QCString& accountId, const QDate& startDate, const QDate& endDate,
-    const MyMoneySchedule::typeE type=MyMoneySchedule::TYPE_ANY,
-    const MyMoneySchedule::paymentTypeE paymentType=MyMoneySchedule::STYPE_ANY,
-    const MyMoneySchedule::occurenceE occurence=MyMoneySchedule::OCCUR_ANY);
-*/
       text = "";
 
       if (!m_filterBills)
       {
-        billSchedules = scheduled->getScheduled(
-            m_accountId,
-            theDate,
-            theDate,
-            MyMoneySchedule::TYPE_BILL);
+        billSchedules = file->scheduleList(m_accountId,
+                                     MyMoneySchedule::TYPE_BILL,
+                                     MyMoneySchedule::OCCUR_ANY,
+                                     MyMoneySchedule::STYPE_ANY,
+                                     theDate,
+                                     theDate);
         if (billSchedules.count() >= 1)
         {
           text += QString::number(billSchedules.count());
-          text += " Bills.  ";
+          text += i18n(" Bills.");
         }
       }
 
       if (!m_filterDeposits)
       {
-        depositSchedules = scheduled->getScheduled(
-            m_accountId,
-            theDate,
-            theDate,
-            MyMoneySchedule::TYPE_DEPOSIT);
+        depositSchedules = file->scheduleList(m_accountId,
+                                     MyMoneySchedule::TYPE_DEPOSIT,
+                                     MyMoneySchedule::OCCUR_ANY,
+                                     MyMoneySchedule::STYPE_ANY,
+                                     theDate,
+                                     theDate);
         if (depositSchedules.count() >= 1)
         {
+          text += "  ";
           text += QString::number(depositSchedules.count());
-          text += " Deposits.  ";
+          text += i18n("Deposits.");
         }
       }
 
       if (!m_filterTransfers)
       {
-        transferSchedules = scheduled->getScheduled(
-            m_accountId,
-            theDate,
-            theDate,
-            MyMoneySchedule::TYPE_TRANSFER);
+        transferSchedules = file->scheduleList(m_accountId,
+                                     MyMoneySchedule::TYPE_TRANSFER,
+                                     MyMoneySchedule::OCCUR_ANY,
+                                     MyMoneySchedule::STYPE_ANY,
+                                     theDate,
+                                     theDate);
         if (transferSchedules.count() >= 1)
         {
+          text += "  ";
           text += QString::number(transferSchedules.count());
-          text += " Transfers.";
+          text += i18n("Transfers.");
         }
       }
     }
-    catch (MyMoneyException*)
+    catch (MyMoneyException* e)
     {
       // SAfe to ignore here, cause no schedules might exist
       // for the selected account
+      delete e;
     }
 
     painter->setPen(darkGray);
@@ -381,47 +382,49 @@ void kMyMoneyScheduledDateTbl::contentsMouseMoveEvent(QMouseEvent* e)
   }
 
   m_drawDateOrig = drawDate;
-  MyMoneyScheduled *scheduled;
-  QStringList schedules;
+  MyMoneyFile *file = MyMoneyFile::instance();
+  QValueList<MyMoneySchedule> schedules;
 
   try
   {
-    scheduled = MyMoneyScheduled::instance();
-
     if (!m_filterBills)
     {
-      schedules += scheduled->getScheduled(
-          m_accountId,
-          drawDate,
-          drawDate,
-          MyMoneySchedule::TYPE_BILL);
+        schedules += file->scheduleList(m_accountId,
+                                     MyMoneySchedule::TYPE_BILL,
+                                     MyMoneySchedule::OCCUR_ANY,
+                                     MyMoneySchedule::STYPE_ANY,
+                                     drawDate,
+                                     drawDate);
     }
 
     if (!m_filterDeposits)
     {
-      schedules += scheduled->getScheduled(
-          m_accountId,
-          drawDate,
-          drawDate,
-          MyMoneySchedule::TYPE_DEPOSIT);
+        schedules += file->scheduleList(m_accountId,
+                                     MyMoneySchedule::TYPE_DEPOSIT,
+                                     MyMoneySchedule::OCCUR_ANY,
+                                     MyMoneySchedule::STYPE_ANY,
+                                     drawDate,
+                                     drawDate);
     }
 
     if (!m_filterTransfers)
     {
-      schedules += scheduled->getScheduled(
-          m_accountId,
-          drawDate,
-          drawDate,
-          MyMoneySchedule::TYPE_TRANSFER);
+        schedules += file->scheduleList(m_accountId,
+                                     MyMoneySchedule::TYPE_TRANSFER,
+                                     MyMoneySchedule::OCCUR_ANY,
+                                     MyMoneySchedule::STYPE_ANY,
+                                     drawDate,
+                                     drawDate);
     }
   }
-  catch ( MyMoneyException*)
+  catch ( MyMoneyException* e)
   {
     // SAfe to ignore here, cause no schedules might exist
     // for the selected account
+    delete e;
   }
 
-  emit hoverSchedules(m_accountId, schedules, drawDate);
+  emit hoverSchedules(schedules, drawDate);
 }
 
 void kMyMoneyScheduledDateTbl::filterBills(bool enable)

@@ -58,8 +58,8 @@ kMyMoneyScheduledCalendar::kMyMoneyScheduledCalendar(QWidget *parent, const char
   
   init( QDate::currentDate() );
 
-  connect(m_scheduledDateTable, SIGNAL(hoverSchedules(QCString, QStringList, QDate)),
-    this, SLOT(slotHoverSchedules(QCString, QStringList, QDate)));
+  connect(m_scheduledDateTable, SIGNAL(hoverSchedules(QValueList<MyMoneySchedule>, QDate)),
+    this, SLOT(slotHoverSchedules(QValueList<MyMoneySchedule>, QDate)));
 }
 
 kMyMoneyScheduledCalendar::~kMyMoneyScheduledCalendar()
@@ -84,11 +84,11 @@ void kMyMoneyScheduledCalendar::slotSetViewTransfers()
   m_scheduledDateTable->filterTransfers(!kpopupmenu->isItemChecked(2));
 }
 
-void kMyMoneyScheduledCalendar::slotHoverSchedules(QCString accountId, QStringList list, QDate date)
+void kMyMoneyScheduledCalendar::slotHoverSchedules(QValueList<MyMoneySchedule> list, QDate date)
 {
   if (list.count() >= 1)
   {
-    briefWidget.setSchedules(accountId, list);
+    briefWidget.setSchedules(list);
     briefWidget.move(QCursor::pos());
     briefWidget.show();
   }

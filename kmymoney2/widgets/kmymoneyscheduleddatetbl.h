@@ -32,6 +32,7 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 #include "kmymoneydatetbl.h"
+#include "../mymoney/mymoneyscheduled.h"
 
 /**
   *@author Michael Edwardes
@@ -51,7 +52,7 @@ public:
   void filterTransfers(bool enable);
 
 signals:
-  void hoverSchedules(QCString, QStringList, QDate);
+  void hoverSchedules(QValueList<MyMoneySchedule>, QDate);
 
 protected:
   void drawCellContents(QPainter *painter, int row, int col, const QDate& theDate);

@@ -1,3 +1,6 @@
+2003-07-16 Michael Edwardes <mte@users.sourceforge.net>
+  * Updated the UI to use MyMoneyFile for sheduled transactions.
+
 2003-07-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added support for scheduled transactions to the MyMoney engine code
     GUI code does not use it yet, but testcases do

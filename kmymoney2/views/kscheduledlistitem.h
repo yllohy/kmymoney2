@@ -87,11 +87,11 @@ public:
     * @param none.
     * @return The schedule id.
   **/
-  QString scheduleId(void) const { return m_id; }
+  QCString scheduleId(void) const { return m_id; }
 
 private:
   /// The schedule's id.
-  QString m_id;
+  QCString m_id;
 };
 
 #endif

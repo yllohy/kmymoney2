@@ -163,9 +163,11 @@ kMyMoneyDateTbl::paintCell(QPainter *painter, int row, int col)
       QString headerText;
 #if QT_VERSION > 0x030005
       // FIXME: Shouldn't that be i18n()'ed as well
-      headerText.sprintf("Week %d for year %d.",
-        date.weekNumber(&year),
-        year);
+      QString weekStr = QString::number(date.weekNumber(&year));
+      QString yearStr = QString::number(year);
+      headerText = i18n("Week %1 for year %2.")
+        .arg(weekStr)
+        .arg(yearStr);
 #else
       // FIXME: include code to display the same as for KDE >= 3.0.5
       QString weekStr = QString::number(weekNumber(date, &year));

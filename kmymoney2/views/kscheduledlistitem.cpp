@@ -59,6 +59,7 @@ KScheduledListItem::KScheduledListItem(KScheduledListItem *parent, const QCStrin
   {
     setText(0, "Error:");
     setText(1, e->what());
+    delete e;
   }
 }
 

@@ -51,9 +51,8 @@ KMyMoneyBriefSchedule::~KMyMoneyBriefSchedule()
 {
 }
 
-void KMyMoneyBriefSchedule::setSchedules(const QCString& accountId, QStringList list)
+void KMyMoneyBriefSchedule::setSchedules(QValueList<MyMoneySchedule> list)
 {
-  m_accountId = accountId;
   m_scheduleList = list;
   
   if (list.count() >= 1)
@@ -64,36 +63,45 @@ void KMyMoneyBriefSchedule::setSchedules(const QCString& accountId, QStringList 
 
 void KMyMoneyBriefSchedule::loadSchedule(unsigned int index)
 {
-  if (index < m_scheduleList.count())
+  try
   {
-    m_index = index;
-    MyMoneyScheduled *scheduled = MyMoneyScheduled::instance();
-    MyMoneySchedule sched = scheduled->getSchedule(m_accountId, m_scheduleList[index]);
-    m_indexLabel->setText(QString::number(m_index+1) + i18n(" of ") + QString::number(m_scheduleList.count()));
-    m_name->setText(sched.name());
-    m_type->setText(sched.typeToString());
-    QString text(i18n("Next payment on "));
-    text += sched.nextPayment().toString();
-    text += i18n(" for ");
-    text += sched.transaction().split(m_accountId).value().formatMoney();
-    if (sched.willEnd())
+    if (index < m_scheduleList.count())
     {
-      text += i18n(" with ");
-      text += QString::number(sched.transactionsRemaining());
-      text += i18n(" transactions remaining ");
-    }
-    text += i18n(" occuring ");
-    text += sched.occurenceToString();
-    text += ".";
-    m_details->setText(text);
+      m_index = index;
+      MyMoneySchedule sched = m_scheduleList[index];
+      m_indexLabel->setText(QString::number(m_index+1) + i18n(" of ") + QString::number(m_scheduleList.count()));
+      m_name->setText(sched.name());
+      m_type->setText(sched.typeToString());
+      QString text(i18n("Next payment on "));
+      text += sched.nextPayment().toString();
+      text += i18n(" for ");
+// TODO
+//      text += sched.transaction().split(m_accountId).value().formatMoney();
+// should be
+//      text += sched.transaction().split(sched.accountId).value().formatMoney();
+      if (sched.willEnd())
+      {
+        text += i18n(" with ");
+        text += QString::number(sched.transactionsRemaining());
+        text += i18n(" transactions remaining ");
+      }
+      text += i18n(" occuring ");
+      text += sched.occurenceToString();
+      text += ".";
+      m_details->setText(text);
 
-    m_prevButton->setEnabled(true);
-    m_nextButton->setEnabled(true);
-    
-    if (index == 0)
-      m_prevButton->setEnabled(false);
-    if (index == (m_scheduleList.count()-1))
-      m_nextButton->setEnabled(false);
+      m_prevButton->setEnabled(true);
+      m_nextButton->setEnabled(true);
+
+      if (index == 0)
+        m_prevButton->setEnabled(false);
+      if (index == (m_scheduleList.count()-1))
+        m_nextButton->setEnabled(false);
+    }
+  }
+  catch (MyMoneyException *e)
+  {
+    delete e;
   }
 }
 

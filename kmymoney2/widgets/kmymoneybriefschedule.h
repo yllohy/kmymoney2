@@ -34,6 +34,7 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 #include "kschedulebriefwidget.h"
+#include "../mymoney/mymoneyfile.h"
 
 /**
   *@author Michael Edwardes
@@ -44,15 +45,14 @@ class KMyMoneyBriefSchedule : public kScheduleBriefWidget  {
 public: 
   KMyMoneyBriefSchedule(QWidget *parent=0, const char *name=0);
   ~KMyMoneyBriefSchedule();
-  void setSchedules(const QCString& accountId, QStringList list);
+  void setSchedules(QValueList<MyMoneySchedule> list);
 
 protected slots:
   void slotPrevClicked();
   void slotNextClicked();
 
 private:
-  QCString m_accountId;
-  QStringList m_scheduleList;
+  QValueList<MyMoneySchedule> m_scheduleList;
   unsigned int m_index;
 
   void loadSchedule(unsigned int index);

@@ -73,7 +73,7 @@ protected slots:
   void slotSetViewBills();
   void slotSetViewDeposits();
   void slotSetViewTransfers();
-  void slotHoverSchedules(QCString, QStringList, QDate date);
+  void slotHoverSchedules(QValueList<MyMoneySchedule>, QDate date);
 
 private:
   KPopupMenu* kpopupmenu;
