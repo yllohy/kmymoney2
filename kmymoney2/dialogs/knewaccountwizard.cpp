@@ -52,6 +52,7 @@
 #include "../kmymoneyutils.h"
 #include "ieditscheduledialog.h"
 #include "knewaccountwizard.h"
+#include "knewloanwizard.h"
 
 KNewAccountWizard::KNewAccountWizard(QWidget *parent, const char *name )
   : KNewAccountWizardDecl(parent,name,true),
@@ -116,7 +117,35 @@ void KNewAccountWizard::next()
       break;
   }
 
-  KNewAccountWizardDecl::next();
+  if(currentPage() == accountTypePage && m_accountType == MyMoneyAccount::Loan) {
+    int rc;
+    
+    // we logically never come back to this wizard, so we hide it.
+    hide();
+
+    KMessageBox::information(0,
+        "You are about to start the 'new loan wizard'. "
+        "This wizard is currently under construction. "
+        "Even though the wizard is somewhat functional (please give it a try), "
+        "all data you enter into this wizard, "
+        "will not be stored in your file.",
+        "Development notice");
+        
+    KNewLoanWizard* loanWizard = new KNewLoanWizard();
+    if((rc = loanWizard->exec()) == QDialog::Accepted) {
+      // FIXME: Add logic to setup the account here
+    }
+    delete loanWizard;
+
+    /* FIXME: In the future we also support accept() ;-), but not for now    
+    if(rc == QDialog::Accepted)
+      accept();
+    else
+    */
+      reject();
+      
+  } else
+    KNewAccountWizardDecl::next();
 }
 
 void KNewAccountWizard::accept()
@@ -381,6 +410,8 @@ void KNewAccountWizard::loadAccountTypes(void)
   accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::CreditCard));
   accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Cash));
   accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Loan));
+  accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::AssetLoan));
+  
 /*
   accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Investment));
   accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::MoneyMarket));
@@ -439,9 +470,26 @@ void KNewAccountWizard::slotAccountType(const QString& sel)
   } else if(sel == KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Liability)) {
     txt += i18n(
       "Use the liability account type to manage "
-      "liabilities (e.g. xxxx)."
+      "any type of liability except amortization loans. Use it for "
+      "taxes you owe or money you borrowed from friends. For amortization loans "
+      "like mortgages you should create a loan account."
     );
     m_accountType = MyMoneyAccount::Liability;
+    
+  } else if(sel == KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Loan)) {
+    txt += i18n(
+      "Use the loan account type to manage amortization loans "
+      "(e.g. mortgages, car loan, money you lend, etc.)."
+    );
+    m_accountType = MyMoneyAccount::Loan;
+
+  } else if(sel == KMyMoneyUtils::accountTypeToString(MyMoneyAccount::AssetLoan)) {
+    txt += i18n(
+      "Use the investment loan account type to manage money you lend to people "
+      "and from which you expect an interest payment. (e.g. private loans, etc.)."
+    );
+    m_accountType = MyMoneyAccount::Loan;
+    
   } else {
     txt += i18n("Explanation is not yet available! UnknownAccountType will be set");
     m_accountType = MyMoneyAccount::UnknownAccountType;
