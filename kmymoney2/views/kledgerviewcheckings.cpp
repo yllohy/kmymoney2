@@ -584,14 +584,23 @@ void KLedgerViewCheckings::fillForm(void)
       MyMoneySplit s;
       switch(m_transaction.splitCount()) {
         case 2:
-          s = m_transaction.splitByAccount(accountId(), false);
-          category = MyMoneyFile::instance()->accountToCategory(s.accountId());
+          if(m_transaction.isLoanPayment())
+            category = i18n("Loan Payment");
+          else {
+            s = m_transaction.splitByAccount(accountId(), false);
+            category = MyMoneyFile::instance()->accountToCategory(s.accountId());
+          }
           break;
+          
         case 1:
           category = " ";
           break;
+          
         default:
-          category = i18n("Splitted transaction");
+          if(m_transaction.isLoanPayment())
+            category = i18n("Loan Payment");
+          else
+            category = i18n("Splitted transaction");
           break;
       }
     } catch (MyMoneyException *e) {
@@ -794,23 +803,31 @@ void KLedgerViewCheckings::reloadEditWidgets(const MyMoneyTransaction& t)
 
           case MyMoneyAccount::Asset:
           case MyMoneyAccount::Liability:
-            if(m_split.action() != MyMoneySplit::ActionTransfer) {
-              m_split.setAction(MyMoneySplit::ActionTransfer);
-              m_transaction.modifySplit(m_split);
-            }
-            if(s.action() != MyMoneySplit::ActionTransfer) {
-              s.setAction(MyMoneySplit::ActionTransfer);
-              m_transaction.modifySplit(s);
-            }
-            if(m_split.value() > 0) {
-              m_editFrom->loadText(MyMoneyFile::instance()->accountToCategory(s.accountId()));
-              m_editTo->loadText(MyMoneyFile::instance()->accountToCategory(m_account.id()));
+            if(!m_transaction.isLoanPayment()) {
+              if(m_split.action() != MyMoneySplit::ActionTransfer) {
+                m_split.setAction(MyMoneySplit::ActionTransfer);
+                m_transaction.modifySplit(m_split);
+              }
+              if(s.action() != MyMoneySplit::ActionTransfer) {
+                s.setAction(MyMoneySplit::ActionTransfer);
+                m_transaction.modifySplit(s);
+              }
+              if(m_split.value() > 0) {
+                m_editFrom->loadText(MyMoneyFile::instance()->accountToCategory(s.accountId()));
+                m_editTo->loadText(MyMoneyFile::instance()->accountToCategory(m_account.id()));
+              } else {
+                m_editTo->loadText(MyMoneyFile::instance()->accountToCategory(s.accountId()));
+                m_editFrom->loadText(MyMoneyFile::instance()->accountToCategory(m_account.id()));
+                amount = -amount;       // make it positive
+              }
+              category = m_editTo->text();
+              
             } else {
-              m_editTo->loadText(MyMoneyFile::instance()->accountToCategory(s.accountId()));
-              m_editFrom->loadText(MyMoneyFile::instance()->accountToCategory(m_account.id()));
-              amount = -amount;       // make it positive
+              // Make sure that we do not allow the user to modify the category
+              // directly, but only through the split edit dialog
+              connect(m_editCategory, SIGNAL(signalFocusIn()), this, SLOT(slotOpenSplitDialog()));
+              category = i18n("Loan payment");
             }
-            category = m_editTo->text();
             break;
 
           default:
@@ -824,8 +841,13 @@ void KLedgerViewCheckings::reloadEditWidgets(const MyMoneyTransaction& t)
         break;
 
       default:
+        // Make sure that we do not allow the user to modify the category
+        // directly, but only through the split edit dialog
         connect(m_editCategory, SIGNAL(signalFocusIn()), this, SLOT(slotOpenSplitDialog()));
-        category = i18n("Splitted transaction");
+        if(t.isLoanPayment())
+          category = i18n("Loan payment");
+        else
+          category = i18n("Splitted transaction");
     }
   } catch(MyMoneyException *e) {
     qDebug("Exception '%s' thrown in %s, line %ld caught in KLedgerViewCheckings::showWidgets():%d",

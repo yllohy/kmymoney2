@@ -609,7 +609,13 @@ void KSplitTransactionDlg::slotStartEdit(int row, int col, int button, const QPo
         m_split = getSplits()[row];
 
       showWidgets(row);
-      m_editCategory->setFocus();
+      // if it's a loan payment transfer, we don't allow to modify the category ;-)
+      if(m_split.action() == MyMoneySplit::ActionAmortization) {
+        m_editCategory->setEnabled(false);
+        m_editMemo->setFocus();        
+      } else {
+        m_editCategory->setFocus();
+      }
     }
   }
 }

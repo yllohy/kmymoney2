@@ -1312,6 +1312,9 @@ int KLedgerView::transactionType(const MyMoneySplit& split) const
     return Withdrawal;
   if(split.action() == MyMoneySplit::ActionATM)
     return ATM;
+  if(split.action() == MyMoneySplit::ActionAmortization)
+    return Withdrawal;
+  qDebug("Unknown transaction type in KLedgerView::transactionType, Check assumed");
   return Check;
 }
 
@@ -1510,21 +1513,37 @@ void KLedgerView::slotEndEdit(void)
           payeeId = (*it).payeeId();
       }
 
-      if(m_transaction.splitCount() == 2 && payeeId != "") {
+      if(m_transaction.splitCount() == 2 && !payeeId.isEmpty()) {
         for(it = list.begin(); it != list.end(); ++it) {
           if((*it).action() == MyMoneySplit::ActionTransfer
-          && (*it).payeeId() == "") {
+          && (*it).payeeId().isEmpty()) {
             (*it).setPayeeId(payeeId);
             m_transaction.modifySplit(*it);
           }
         }
       }
 
+      // check if this is a transfer to/from loan account and
+      // mark it as amortization in this case
+      if(m_transaction.splitCount() == 2) {
+        bool isAmortization = false;
+        for(it = list.begin(); !isAmortization && it != list.end(); ++it) {
+          if((*it).action() == MyMoneySplit::ActionTransfer) {
+            MyMoneyAccount acc = file->account((*it).accountId());
+            if(acc.accountType() == MyMoneyAccount::Loan
+            || acc.accountType() == MyMoneyAccount::AssetLoan)
+              isAmortization = true;
+          }
+        }
 
-      if(m_transaction.splitCount() < 2) {
-        qDebug("Transaction has less than 2 splits");
+        if(isAmortization) {
+          for(it = list.begin(); it != list.end(); ++it) {
+            (*it).setAction(MyMoneySplit::ActionAmortization);
+            m_transaction.modifySplit(*it);
+          }          
+        }
       }
-      
+            
       // differentiate between add and modify
       QCString id;
       if(m_transactionPtr == 0) {
