@@ -32,7 +32,6 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "../mymoneyexception.h"
 #include "../mymoneyutils.h"
 #include "../mymoneyinstitution.h"
 #include "../mymoneyaccount.h"

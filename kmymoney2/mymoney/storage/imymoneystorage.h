@@ -31,7 +31,6 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "../mymoneyexception.h"
 #include "../mymoneyutils.h"
 #include "../mymoneyinstitution.h"
 #include "../mymoneyaccount.h"
@@ -357,8 +356,8 @@ public:
     * the set of transaction referenced by a specific account depending
     * on the argument given.
     *
-    * @param account QCString reference to account id. If account equals ""
-    +                all transactions (the journal) is returned. If account
+    * @param account QCString reference to account id. If account equals "" all
+    +                transactions (the journal) is returned. If account
     *                is not equal to "" it returns the set of transactions
     *                that have splits in this account.
     *
