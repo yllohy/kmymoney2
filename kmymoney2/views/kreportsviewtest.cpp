@@ -43,6 +43,7 @@ using namespace reports;
 #include "../mymoney/storage/mymoneystoragedump.h"
 #include "../mymoney/mymoneyreport.h"
 #include "../mymoney/mymoneystatement.h"
+#include "../mymoney/storage/mymoneystoragexml.h"
 
 namespace reports {
 
@@ -54,7 +55,16 @@ public:
   TransactionHelper( const QDate& _date, const QCString& _action, MyMoneyMoney _value, const QCString& _accountid, const QCString& _categoryid, const QCString& _currencyid = QCString(), const QString& _payee="Test Payee" );
   ~TransactionHelper();
   void update(void);
+protected:
+  TransactionHelper(void) {}
 };
+
+class InvTransactionHelper: public TransactionHelper
+{
+public:
+  InvTransactionHelper( const QDate& _date, const QCString& _action, MyMoneyMoney _shares, MyMoneyMoney _value, const QCString& _stockaccountid, const QCString& _transferid, const QCString& _categoryid );
+};
+
 
 TransactionHelper::TransactionHelper( const QDate& _date, const QCString& _action, MyMoneyMoney _value, const QCString& _accountid, const QCString& _categoryid, const QCString& _currencyid, const QString& _payee )
 {
@@ -102,7 +112,82 @@ void TransactionHelper::update(void)
   MyMoneyFile::instance()->modifyTransaction(*this);
 }
 
+InvTransactionHelper::InvTransactionHelper( const QDate& _date, const QCString& _action, MyMoneyMoney _shares, MyMoneyMoney _price, const QCString& _stockaccountid, const QCString& _transferid, const QCString& _categoryid )
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
+  MyMoneyAccount stockaccount = file->account(_stockaccountid);
+  MyMoneyMoney value = _shares * _price;
+  
+  setPostDate(_date);
+
+  setCommodity("USD");
+  MyMoneySplit s1;
+  s1.setValue(value);
+  s1.setAccountId(_stockaccountid);
+
+  if ( _action == MyMoneySplit::ActionReinvestDividend )
+  {
+    s1.setShares(_shares);
+    s1.setAction(MyMoneySplit::ActionReinvestDividend);
+
+    MyMoneySplit s2;
+    s2.setAccountId(_categoryid);
+    s2.setShares(-value);
+    s2.setValue(-value);
+    addSplit(s2);
+  }
+  else if ( _action == MyMoneySplit::ActionDividend )
+  {
+    s1.setAccountId(_categoryid);
+    s1.setShares(-value);
+    s1.setValue(-value);
+    
+    // Split 2 will be the zero-amount investment split that serves to
+    // mark this transaction as a cash dividend and note which stock account
+    // it belongs to.
+    MyMoneySplit s2;
+    s2.setValue(0);
+    s2.setShares(0);
+    s2.setAction(MyMoneySplit::ActionDividend);
+    s2.setAccountId(_stockaccountid);
+    addSplit(s2);
+
+    MyMoneySplit s3;
+    s3.setAccountId(_transferid);
+    s3.setShares(value);
+    s3.setValue(value);
+    addSplit(s3);
+  }
+  else if ( _action == MyMoneySplit::ActionBuyShares )
+  {
+    s1.setShares(_shares);
+    s1.setAction(MyMoneySplit::ActionBuyShares);
+  
+    MyMoneySplit s3;
+    s3.setAccountId(_transferid);
+    s3.setShares(-value);
+    s3.setValue(-value);
+    addSplit(s3);
+  }
+  addSplit(s1);
+
+  //kdDebug(2) << "created transaction, now adding..." << endl;
+  
+  file->addTransaction(*this);
+
+  //kdDebug(2) << "updating price..." << endl;
+    
+  // update the price, while we're here
+  MyMoneyEquity equity = file->equity( stockaccount.currencyId() );
+  if ( ! equity.hasPrice( _date,true ) )
+  {
+    equity.addPriceHistory( _date, _price );
+    file->modifyEquity(equity);
+  }
+  //kdDebug(2) << "successfully added " << id() << endl;
 }
+
+} // end namespace reports
 
 QCString makeAccount( const QString& _name, MyMoneyAccount::accountTypeE _type, MyMoneyMoney _balance, const QDate& _open, const QCString& _parent, QCString _currency="" )
 {
@@ -129,6 +214,27 @@ void makePrice(const QCString& _currency, const QDate& _date, const MyMoneyMoney
   curr.addPriceHistory(_date,_price);
   MyMoneyFile::instance()->modifyCurrency(curr);
 }
+
+QCString makeEquity(const QString& _name, const QString& _symbol )
+{
+  MyMoneyEquity equity;
+
+  equity.setName( _name );
+  equity.setTradingSymbol( _symbol );
+  equity.setSmallestAccountFraction( 1000 );
+  equity.setEquityType( MyMoneyEquity::ETYPE_NONE /*MyMoneyEquity::ETYPE_STOCK*/ );
+  MyMoneyFile::instance()->addEquity( equity );
+ 
+  return equity.id();
+}
+
+void makeEquityPrice(const QCString& _id, const QDate& _date, const MyMoneyMoney& _price )
+{
+  MyMoneyEquity eq = MyMoneyFile::instance()->equity(_id);
+  eq.addPriceHistory(_date,_price);
+  MyMoneyFile::instance()->modifyEquity(eq);
+}
+
 
 void writeRCFtoXMLDoc( const MyMoneyReport& filter, QDomDocument* doc )
 {
@@ -286,8 +392,10 @@ void XMLandback( MyMoneyReport& filter )
  
   writeRCFtoXMLDoc(filter,doc);
   QValueList<MyMoneyReport> list;
-  readRCFfromXMLDoc(list,doc); 
-  filter = list[0];
+  if ( readRCFfromXMLDoc(list,doc) && list.count() > 0 )
+    filter = list[0];
+  else
+    throw new MYMONEYEXCEPTION("Failed to load report from XML");
 
   delete doc;
 
@@ -311,6 +419,7 @@ const MyMoneyMoney moNoPayee(8944.70);
 QCString acAsset; 
 QCString acLiability;
 QCString acExpense;
+QCString acIncome;
 QCString acChecking;
 QCString acCredit;
 QCString acSolo;
@@ -322,6 +431,12 @@ QCString acJpyChecking;
 QCString acCanCash;
 QCString acJpyCash;
 QCString inBank;
+QCString eqStock1;
+QCString eqStock2;
+QCString acInvestment;
+QCString acStock1;
+QCString acStock2;
+QCString acDividends;
 
 void KReportsViewTest::setUp () {
 
@@ -343,6 +458,7 @@ void KReportsViewTest::setUp () {
   acAsset = (MyMoneyFile::instance()->asset().id());
   acLiability = (MyMoneyFile::instance()->liability().id());
   acExpense = (MyMoneyFile::instance()->expense().id());
+  acIncome = (MyMoneyFile::instance()->income().id());
   acChecking = makeAccount(QString("Checking Account"),MyMoneyAccount::Checkings,moCheckingOpen,QDate(2004,5,15),acAsset);
   acCredit = makeAccount(QString("Credit Card"),MyMoneyAccount::CreditCard,moCreditOpen,QDate(2004,7,15),acLiability);
   acSolo = makeAccount(QString("Solo"),MyMoneyAccount::Expense,0,QDate(2004,1,11),acExpense);
@@ -1165,6 +1281,7 @@ void KReportsViewTest::testQueryBasics()
     cols = MyMoneyReport::eQCnumber | MyMoneyReport::eQCpayee | MyMoneyReport::eQCaccount;
     filter.setQueryColumns( static_cast<MyMoneyReport::EQueryColumns>(cols) ); // 
     filter.setName("Transactions by Category");
+    XMLandback(filter);
     QueryTable qtbl_1(filter);
     
     CPPUNIT_ASSERT(qtbl_1.m_transactions.count() == 12);
@@ -1185,6 +1302,7 @@ void KReportsViewTest::testQueryBasics()
     filter.setRowType( MyMoneyReport::eTopCategory );
     cols = MyMoneyReport::eQCnumber | MyMoneyReport::eQCpayee | MyMoneyReport::eQCaccount;
     filter.setQueryColumns( static_cast<MyMoneyReport::EQueryColumns>(cols) ); // 
+    XMLandback(filter);
     QueryTable qtbl_2(filter);
 
     CPPUNIT_ASSERT(qtbl_2.m_transactions.count() == 12);
@@ -1208,6 +1326,7 @@ void KReportsViewTest::testQueryBasics()
     filter.setName("Transactions by Account");
     cols = MyMoneyReport::eQCnumber | MyMoneyReport::eQCpayee | MyMoneyReport::eQCcategory;
     filter.setQueryColumns( static_cast<MyMoneyReport::EQueryColumns>(cols) ); // 
+    XMLandback(filter);
     QueryTable qtbl_3(filter);
 
     CPPUNIT_ASSERT(qtbl_3.m_transactions.count() == 12);
@@ -1227,6 +1346,7 @@ void KReportsViewTest::testQueryBasics()
     filter.setName("Transactions by Payee");
     cols = MyMoneyReport::eQCnumber | MyMoneyReport::eQCmemo | MyMoneyReport::eQCcategory;
     filter.setQueryColumns( static_cast<MyMoneyReport::EQueryColumns>(cols) ); // 
+    XMLandback(filter);
     QueryTable qtbl_4(filter);
 
     CPPUNIT_ASSERT(qtbl_4.m_transactions.count() == 12);
@@ -1248,6 +1368,7 @@ void KReportsViewTest::testQueryBasics()
     filter.setName("Transactions by Month");
     cols = MyMoneyReport::eQCnumber | MyMoneyReport::eQCpayee | MyMoneyReport::eQCcategory;
     filter.setQueryColumns( static_cast<MyMoneyReport::EQueryColumns>(cols) ); // 
+    XMLandback(filter);
     QueryTable qtbl_5(filter);
 
     CPPUNIT_ASSERT(qtbl_5.m_transactions.count() == 12);
@@ -1271,6 +1392,7 @@ void KReportsViewTest::testQueryBasics()
     filter.setName("Transactions by Week");
     cols = MyMoneyReport::eQCnumber | MyMoneyReport::eQCpayee | MyMoneyReport::eQCcategory;
     filter.setQueryColumns( static_cast<MyMoneyReport::EQueryColumns>(cols) ); // 
+    XMLandback(filter);
     QueryTable qtbl_6(filter);
     
     CPPUNIT_ASSERT(qtbl_6.m_transactions.count() == 12);
@@ -1360,6 +1482,7 @@ void KReportsViewTest::testAccountQuery()
     MyMoneyReport filter;
     filter.setRowType( MyMoneyReport::eInstitution );
     filter.setName("Accounts by Institution (No transactions)");
+    XMLandback(filter);
     QueryTable qtbl_1(filter);
       
     CPPUNIT_ASSERT(qtbl_1.m_transactions.count() == 2);
@@ -1395,6 +1518,7 @@ void KReportsViewTest::testAccountQuery()
 
     filter.setRowType( MyMoneyReport::eInstitution );
     filter.setName("Accounts by Institution (With Transactions)");
+    XMLandback(filter);
     QueryTable qtbl_2(filter);
     
     CPPUNIT_ASSERT(qtbl_2.m_transactions.count() == 2);
@@ -1412,6 +1536,7 @@ void KReportsViewTest::testAccountQuery()
     
     filter.setRowType( MyMoneyReport::eAccountType );
     filter.setName("Accounts by Type");
+    XMLandback(filter);
     QueryTable qtbl_3(filter);
     
     CPPUNIT_ASSERT(qtbl_3.m_transactions.count() == 2);
@@ -1432,6 +1557,129 @@ void KReportsViewTest::testAccountQuery()
   }
 }
 
+void KReportsViewTest::testInvestment(void)
+{
+  try 
+  {
+  // Equities
+  eqStock1 = makeEquity("Stock1","STK1");
+  eqStock2 = makeEquity("Stock2","STK2");
+  
+  // Accounts
+  acInvestment = makeAccount("Investment",MyMoneyAccount::Investment,moZero,QDate(2004,1,1),acAsset);
+  acStock1 = makeAccount("Stock 1",MyMoneyAccount::Stock,moZero,QDate(2004,1,1),acInvestment,eqStock1);
+  acStock2 = makeAccount("Stock 2",MyMoneyAccount::Stock,moZero,QDate(2004,1,1),acInvestment,eqStock2);
+  acDividends = makeAccount("Dividends",MyMoneyAccount::Income,moZero,QDate(2004,1,1),acIncome);
+
+  // Transactions
+  //                         Date             Action                              Shares  Price   Stock     Asset       Income
+  InvTransactionHelper s1b1( QDate(2004,2,1), MyMoneySplit::ActionBuyShares,      1000.00, 100.00, acStock1, acChecking, QCString() );
+  InvTransactionHelper s1b2( QDate(2004,3,1), MyMoneySplit::ActionBuyShares,      1000.00, 110.00, acStock1, acChecking, QCString() );
+  InvTransactionHelper s1s1( QDate(2004,4,1), MyMoneySplit::ActionBuyShares,      -200.00, 120.00, acStock1, acChecking, QCString() );
+  InvTransactionHelper s1s2( QDate(2004,5,1), MyMoneySplit::ActionBuyShares,      -200.00, 100.00, acStock1, acChecking, QCString() );
+  InvTransactionHelper s1r1( QDate(2004,6,1), MyMoneySplit::ActionReinvestDividend, 50.00, 100.00, acStock1, QCString(), acDividends );
+  InvTransactionHelper s1r2( QDate(2004,7,1), MyMoneySplit::ActionReinvestDividend, 50.00,  80.00, acStock1, QCString(), acDividends );
+  InvTransactionHelper s1c1( QDate(2004,8,1), MyMoneySplit::ActionDividend,         10.00, 100.00, acStock1, acChecking, acDividends );
+  InvTransactionHelper s1c2( QDate(2004,9,1), MyMoneySplit::ActionDividend,         10.00, 120.00, acStock1, acChecking, acDividends );
+
+  makeEquityPrice( eqStock1, QDate(2004,10,1), 100.00 );
+  
+  //
+  // Investment Transactions Report
+  //
+  
+  MyMoneyReport invtran_r(
+      MyMoneyReport::eTopAccount,
+      MyMoneyReport::eQCaction|MyMoneyReport::eQCshares|MyMoneyReport::eQCprice,
+      MyMoneyTransactionFilter::yearToDate,
+      false,
+      i18n("Investment Transactions"),
+      i18n("Test Report")
+    );
+  invtran_r.setInvestmentsOnly(true);
+  XMLandback(invtran_r);
+  QueryTable invtran(invtran_r);
+
+  CPPUNIT_ASSERT(invtran.m_transactions.count()==8);
+  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[0]["value"])==MyMoneyMoney(100000.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[1]["value"])==MyMoneyMoney(110000.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[2]["value"])==MyMoneyMoney(-24000.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[3]["value"])==MyMoneyMoney(-20000.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[4]["value"])==MyMoneyMoney(  5000.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[5]["value"])==MyMoneyMoney(  4000.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[6]["value"])==MyMoneyMoney( -1000.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[7]["value"])==MyMoneyMoney( -1200.00));
+
+  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[0]["price"])==MyMoneyMoney(100.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[2]["price"])==MyMoneyMoney(120.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[4]["price"])==MyMoneyMoney(100.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[6]["price"])==MyMoneyMoney(  0.00));
+
+  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[1]["shares"])==MyMoneyMoney(1000.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[3]["shares"])==MyMoneyMoney(-200.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[5]["shares"])==MyMoneyMoney(  50.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[7]["shares"])==MyMoneyMoney(   0.00));
+
+  CPPUNIT_ASSERT(invtran.m_transactions[0]["action"]=="Buy");
+  CPPUNIT_ASSERT(invtran.m_transactions[2]["action"]=="Sell");
+  CPPUNIT_ASSERT(invtran.m_transactions[4]["action"]=="Reinvest");
+  CPPUNIT_ASSERT(invtran.m_transactions[6]["action"]=="Dividend");
+        
+  QString html = invtran.renderHTML();
+  CPPUNIT_ASSERT( searchHTML(html,i18n("Total Stock 1")) == MyMoneyMoney(172800.00) );
+  CPPUNIT_ASSERT( searchHTML(html,i18n("Grand Total")) == MyMoneyMoney(172800.00) );
+    
+  //
+  // Investment Performance Report
+  //
+  
+  MyMoneyReport invhold_r(
+    MyMoneyReport::eAccountByTopAccount,
+    MyMoneyReport::eQCperformance,
+    MyMoneyTransactionFilter::userDefined,
+    false,
+    i18n("Investment Performance by Account"),
+    i18n("Test Report")
+  );
+  invhold_r.setDateFilter(QDate(2004,1,1),QDate(2004,10,1));
+  invhold_r.setInvestmentsOnly(true);
+  XMLandback(invhold_r);
+  QueryTable invhold(invhold_r);
+  
+  CPPUNIT_ASSERT(invhold.m_transactions.count()==2);
+  CPPUNIT_ASSERT(MyMoneyMoney(invhold.m_transactions[0]["return"])==MyMoneyMoney("567/10000"));
+  CPPUNIT_ASSERT(MyMoneyMoney(invhold.m_transactions[0]["buys"])==MyMoneyMoney(210000.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(invhold.m_transactions[0]["sells"])==MyMoneyMoney(-44000.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(invhold.m_transactions[0]["reinvestincome"])==MyMoneyMoney(9000.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(invhold.m_transactions[0]["cashincome"])==MyMoneyMoney(2200.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(invhold.m_transactions[0]["shares"])==MyMoneyMoney(1700.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(invhold.m_transactions[0]["price"])==MyMoneyMoney(100.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(invhold.m_transactions[1]["return"]).isZero());
+
+  html = invhold.renderHTML();
+  CPPUNIT_ASSERT( searchHTML(html,i18n("Grand Total")) == MyMoneyMoney(170000.00) );
+
+#if 0
+  // Dump file & reports
+  QFile g( "investmentkmy.xml" );
+  g.open( IO_WriteOnly );
+  MyMoneyStorageXML xml;
+  IMyMoneyStorageFormat& interface = xml;
+  interface.writeFile(&g, dynamic_cast<IMyMoneySerialize*> (MyMoneyFile::instance()->storage()));
+  g.close();
+
+  invtran.dump("invtran.html","<html><head></head><body>%1</body></html>");  
+  invhold.dump("invhold.html","<html><head></head><body>%1</body></html>");
+#endif    
+  
+  }
+  catch(MyMoneyException *e) 
+  {
+    CPPUNIT_FAIL(e->what());
+    delete e;
+  }
+}
+
 //
 // testOfxImport: Needs to be moved to converter/something.cpp.  But this
 // requires a bunch of AM changes I don't want to make right now.  Will
@@ -1443,6 +1691,14 @@ void KReportsViewTest::testAccountQuery()
 
 void KReportsViewTest::testOfxImport(void)
 {
+  // Of course, the TRUE test will be to import these back through 
+  // MyMoneyStatementReader into transactions, HOWEVER, that class currently
+  // has UI dependencies, so it's a task for the future.
+
+  //
+  // Bank Statement
+  //
+
   try
   {
     MyMoneyFile* file = MyMoneyFile::instance();
@@ -1451,6 +1707,9 @@ void KReportsViewTest::testOfxImport(void)
     TransactionHelper t2q1( QDate(2004,2,1), MyMoneySplit::ActionWithdrawal, moParent1, acChecking, acParent );
     TransactionHelper t3q1( QDate(2004,3,1), MyMoneySplit::ActionWithdrawal, moParent2, acChecking, acParent );
     TransactionHelper t4y1( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moChild, acChecking, acChild, QCString(), "Thomas Baumgart" );
+    
+    t1q1.setMemo("Memo");
+    t1q1.update();
   
     MyMoneyAccount a = file->account(acChecking);
     a.setNumber(a.id());
@@ -1458,27 +1717,92 @@ void KReportsViewTest::testOfxImport(void)
   
     QByteArray ofxResponse = MyMoneyOfxConnector(a).statementResponse(QDate(2004,1,1));
     
-    QFile ofxfile("tmp.ofx");
+    QFile ofxfile("bank.ofx");
     if ( ofxfile.open( IO_WriteOnly) )
     {
       QTextStream(&ofxfile) << QString(ofxResponse);
       ofxfile.close();
     }
     else
-      CPPUNIT_FAIL("Could not open tmp.ofx for writing");    
+      CPPUNIT_FAIL("Could not open bank.ofx for writing");    
       
-    MyMoneyOfxStatement os("tmp.ofx");
+    MyMoneyOfxStatement os("bank.ofx");
   
     CPPUNIT_ASSERT(os.isValid());
     CPPUNIT_ASSERT(os.count() == 1);
     
     MyMoneyStatement& s = os.back();
     
-    CPPUNIT_ASSERT(s.m_strAccountNumber == "123456789  A000001");
-    CPPUNIT_ASSERT(s.m_strAccountName == "Bank account A000001");
+    CPPUNIT_ASSERT(s.m_strAccountNumber == QString("123456789  %1").arg(a.id()));
+    CPPUNIT_ASSERT(s.m_strAccountName == QString("Bank account %1").arg(a.id()));
     CPPUNIT_ASSERT(s.m_dateBegin == QDate(2004,1,1) );
     CPPUNIT_ASSERT(s.m_dateEnd == QDate::currentDate() );
     CPPUNIT_ASSERT(s.m_eType == MyMoneyStatement::etCheckings );
+    CPPUNIT_ASSERT(s.m_strCurrency == "USD" );
+    CPPUNIT_ASSERT(s.m_listTransactions.count() == 4);
+    
+    MyMoneyStatement::Transaction& t1 = s.m_listTransactions.front();
+    MyMoneyStatement::Transaction& t4 = s.m_listTransactions.back();
+    
+    CPPUNIT_ASSERT(t1.m_strPayee == "Test Payee" );
+    CPPUNIT_ASSERT(t1.m_strMemo == "Memo" );
+    CPPUNIT_ASSERT(MyMoneyMoney(t1.m_moneyAmount) == -moSolo );
+    CPPUNIT_ASSERT(t1.m_datePosted == t1q1.postDate() );
+    CPPUNIT_ASSERT(t1.m_strBankID == QString("ID %1").arg(t1q1.id()) );
+    
+    CPPUNIT_ASSERT(t4.m_strPayee == "Thomas Baumgart" );
+    CPPUNIT_ASSERT(t4.m_strMemo == "Thomas Baumgart" );
+    CPPUNIT_ASSERT(MyMoneyMoney(t4.m_moneyAmount) == -moChild );
+    CPPUNIT_ASSERT(t4.m_datePosted == t4y1.postDate() );
+    CPPUNIT_ASSERT(t4.m_strBankID == QString("ID %1").arg(t4y1.id()) );
+  }
+  catch(MyMoneyException *e) 
+  {
+    CPPUNIT_FAIL(e->what());
+    delete e;
+  }
+
+  //
+  // Credit Card Statement
+  //
+
+  try
+  {
+    MyMoneyFile* file = MyMoneyFile::instance();
+    
+    TransactionHelper t1q1( QDate(2004,1,1), MyMoneySplit::ActionWithdrawal, moSolo, acCredit, acSolo );
+    TransactionHelper t2q1( QDate(2004,2,1), MyMoneySplit::ActionWithdrawal, moParent1, acCredit, acParent );
+    TransactionHelper t3q1( QDate(2004,3,1), MyMoneySplit::ActionWithdrawal, moParent2, acCredit, acParent );
+    TransactionHelper t4y1( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moChild, acCredit, acChild, QCString(), "Thomas Baumgart" );
+  
+    MyMoneyAccount a = file->account(acCredit);
+    a.setNumber(a.id());
+    a.setInstitutionId(inBank);
+  
+    QByteArray ofxResponse = MyMoneyOfxConnector(a).statementResponse(QDate(2004,1,1));
+    
+    QFile ofxfile("cc.ofx");
+    if ( ofxfile.open( IO_WriteOnly) )
+    {
+      QTextStream(&ofxfile) << QString(ofxResponse);
+      ofxfile.close();
+    }
+    else
+      CPPUNIT_FAIL("Could not open cc.ofx for writing");    
+      
+    MyMoneyOfxStatement os("cc.ofx");
+    MyMoneyStatement::writeXMLFile(os.back(),"cc.xml");
+  
+    CPPUNIT_ASSERT(os.isValid());
+    CPPUNIT_ASSERT(os.count() == 1);
+    
+    MyMoneyStatement& s = os.back();
+    
+    CPPUNIT_ASSERT(s.m_strAccountNumber == QString("%1 ").arg(a.id()));
+    CPPUNIT_ASSERT(s.m_strAccountName == QString("Credit card %1").arg(a.id()));
+    CPPUNIT_ASSERT(s.m_dateBegin == QDate(2004,1,1) );
+    CPPUNIT_ASSERT(s.m_dateEnd == QDate::currentDate() );
+    CPPUNIT_ASSERT(s.m_eType == MyMoneyStatement::etCreditCard );
     CPPUNIT_ASSERT(s.m_strCurrency == "USD" );
     CPPUNIT_ASSERT(s.m_listTransactions.count() == 4);
     
@@ -1502,6 +1826,105 @@ void KReportsViewTest::testOfxImport(void)
     CPPUNIT_FAIL(e->what());
     delete e;
   }
+
+  //
+  // Investment Statement
+  //
+
+  try
+  {
+    // Equities
+    eqStock1 = makeEquity("Stock1","STK1");
+    eqStock2 = makeEquity("Stock2","STK2");
+    
+    // Accounts
+    acInvestment = makeAccount("Investment",MyMoneyAccount::Investment,moZero,QDate(2004,1,1),acAsset);
+    acStock1 = makeAccount("Stock 1",MyMoneyAccount::Stock,moZero,QDate(2004,1,1),acInvestment,eqStock1);
+    acStock2 = makeAccount("Stock 2",MyMoneyAccount::Stock,moZero,QDate(2004,1,1),acInvestment,eqStock2);
+    acDividends = makeAccount("Dividends",MyMoneyAccount::Income,moZero,QDate(2004,1,1),acIncome);
+          
+    // Transactions
+    //                         Date             Action                              Shares    Price   Stock     Asset       Income
+    InvTransactionHelper s1b1( QDate(2004,2,1), MyMoneySplit::ActionBuyShares,      1000.00, 100.00, acStock1, acChecking, QCString() );
+    InvTransactionHelper s1b2( QDate(2004,3,1), MyMoneySplit::ActionBuyShares,      1000.00, 110.00, acStock1, acChecking, QCString() );
+    InvTransactionHelper s1s1( QDate(2004,4,1), MyMoneySplit::ActionBuyShares,      -200.00, 120.00, acStock1, acChecking, QCString() );
+    InvTransactionHelper s1s2( QDate(2004,5,1), MyMoneySplit::ActionBuyShares,      -200.00, 100.00, acStock1, acChecking, QCString() );
+    InvTransactionHelper s1r1( QDate(2004,6,1), MyMoneySplit::ActionReinvestDividend, 50.00, 100.00, acStock1, QCString(), acDividends );
+    InvTransactionHelper s1r2( QDate(2004,7,1), MyMoneySplit::ActionReinvestDividend, 50.00,  80.00, acStock1, QCString(), acDividends );
+    InvTransactionHelper s1c1( QDate(2004,8,1), MyMoneySplit::ActionDividend,         10.00, 100.00, acStock1, acChecking, acDividends );
+    InvTransactionHelper s1c2( QDate(2004,9,1), MyMoneySplit::ActionDividend,         10.00, 120.00, acStock1, acChecking, acDividends );
+
+    MyMoneyAccount a = file->account(acInvestment);
+    a.setNumber(a.id());
+    a.setInstitutionId(inBank);
+  
+    QByteArray ofxResponse = MyMoneyOfxConnector(a).statementResponse(QDate(2004,1,1));
+    
+    QFile ofxfile("inv.ofx");
+    if ( ofxfile.open( IO_WriteOnly) )
+    {
+      QTextStream(&ofxfile) << QString(ofxResponse);
+      ofxfile.close();
+    }
+    else
+      CPPUNIT_FAIL("Could not open inv.ofx for writing");    
+      
+    MyMoneyOfxStatement os("inv.ofx");
+    MyMoneyStatement::writeXMLFile(os.back(),"inv.xml");
+  
+    CPPUNIT_ASSERT(os.isValid());
+    CPPUNIT_ASSERT(os.count() == 1);
+    
+    MyMoneyStatement& s = os.back();
+  
+    // For some reason, libofx doesn't seem to like the dtstart/end parameters
+    // from the OFX file, so they don't come through here.
+//     CPPUNIT_ASSERT(s.m_dateBegin == QDate(2004,1,1) );
+//     CPPUNIT_ASSERT(s.m_dateEnd == QDate::currentDate() );
+    CPPUNIT_ASSERT(s.m_eType == MyMoneyStatement::etInvestment );
+    CPPUNIT_ASSERT(s.m_listTransactions.count() == 8);
+    
+    MyMoneyStatement::Transaction& t1 = s.m_listTransactions[1];
+    MyMoneyStatement::Transaction& t3 = s.m_listTransactions[3];
+    MyMoneyStatement::Transaction& t5 = s.m_listTransactions[5];
+    MyMoneyStatement::Transaction& t7 = s.m_listTransactions[7];
+    
+    CPPUNIT_ASSERT(MyMoneyMoney(t1.m_dShares) == MyMoneyMoney(1000,1) );
+    CPPUNIT_ASSERT(MyMoneyMoney(t1.m_moneyAmount) == MyMoneyMoney(110000,1) );
+    CPPUNIT_ASSERT(t1.m_datePosted == s1b2.postDate() );
+    CPPUNIT_ASSERT(t1.m_strBankID == QString("ID %1").arg(s1b2.id()) );
+    CPPUNIT_ASSERT(t1.m_eAction == MyMoneyStatement::Transaction::eaBuy );
+    
+    CPPUNIT_ASSERT(MyMoneyMoney(t3.m_dShares) == MyMoneyMoney(-200,1) );
+    CPPUNIT_ASSERT(MyMoneyMoney(t3.m_moneyAmount) == MyMoneyMoney(-20000,1) );
+    CPPUNIT_ASSERT(t3.m_datePosted == s1s2.postDate() );
+    CPPUNIT_ASSERT(t3.m_strBankID == QString("ID %1").arg(s1s2.id()) );
+    CPPUNIT_ASSERT(t3.m_eAction == MyMoneyStatement::Transaction::eaSell );
+
+    CPPUNIT_ASSERT(MyMoneyMoney(t5.m_dShares) == MyMoneyMoney(50,1) );
+    CPPUNIT_ASSERT(MyMoneyMoney(t5.m_moneyAmount) == MyMoneyMoney(4000,1) );
+    CPPUNIT_ASSERT(t5.m_datePosted == s1r2.postDate() );
+    CPPUNIT_ASSERT(t5.m_strBankID == QString("ID %1").arg(s1r2.id()) );
+    CPPUNIT_ASSERT(t5.m_eAction == MyMoneyStatement::Transaction::eaReinvestDividend );
+
+    CPPUNIT_ASSERT(MyMoneyMoney(t7.m_dShares).isZero() );
+    CPPUNIT_ASSERT(MyMoneyMoney(t7.m_moneyAmount) == MyMoneyMoney(-1200,1) );
+    CPPUNIT_ASSERT(t7.m_datePosted == s1c2.postDate() );
+    CPPUNIT_ASSERT(t7.m_strBankID == QString("ID %1").arg(s1c2.id()) );
+    CPPUNIT_ASSERT(t7.m_eAction == MyMoneyStatement::Transaction::eaCashDividend );
+  }
+  catch(MyMoneyException *e) 
+  {
+    CPPUNIT_FAIL(e->what());
+    delete e;
+  }
+  
+  //
+  // Multiple Accounts
+  //
+
+  // Unfortunately, I'm not even clear what this LOOKS like :-(
+    
 }
 
 // vim:cin:si:ai:et:ts=2:sw=2:

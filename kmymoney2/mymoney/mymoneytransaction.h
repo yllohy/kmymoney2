@@ -93,6 +93,18 @@ public:
   const MyMoneySplit& splitByAccount(const QCString& accountId, const bool match = true) const;
 
   /**
+    * This method is essentially the same as the previous method, except that
+    * takes a list of accounts instead of just one.
+    *
+    * @param accountIds the list of accounts to look for
+    * @param match if true, the account Id must match
+    *              if false, the account Id must not match
+    *
+    * @return reference to split within the transaction is returned
+    */
+  const MyMoneySplit& splitByAccount(const QCStringList& accountIds, const bool match = true) const;
+  
+  /**
     * This method is used to extract a split from a transaction.
     *
     * @param splitId the split to look for
@@ -100,7 +112,7 @@ public:
     * @return reference to split within the transaction is returned
     */
   const MyMoneySplit& splitById(const QCString& splitId) const;
-
+  
   /**
     * This method is used to extract a split for a given payeeId
     * from a transaction.

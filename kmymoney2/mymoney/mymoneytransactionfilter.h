@@ -141,6 +141,11 @@ public:
   void clear(void);
 
   /**
+    * This method is used to clear the accounts filter only.
+    */
+  void clearAccountFilter(void);  
+  
+  /**
     * This method is used to set the regular expression filter to the value specified
     * as parameter @p exp. The following text based fields are searched:
     *

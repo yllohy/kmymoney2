@@ -81,7 +81,13 @@ int ofxTransactionCallback(struct OfxTransactionData data, void * pv)
     dt.setTime_t(data.date_posted);
     t.m_datePosted = dt.date();
   }
-
+  else if(data.date_initiated_valid==true)
+  {
+    QDateTime dt;
+    dt.setTime_t(data.date_initiated);
+    t.m_datePosted = dt.date();
+  }
+  
   if(data.amount_valid==true)
   {
     // if this is an investment statement, reverse the sign.  not sure
@@ -149,6 +155,10 @@ int ofxTransactionCallback(struct OfxTransactionData data, void * pv)
   if(data.units_valid==true)
   {
     t.m_dShares = data.units;
+  }
+  else
+  {
+    t.m_dShares = 0;
   }
  
   bool unhandledtype = false;

@@ -179,6 +179,19 @@ const MyMoneySplit& MyMoneyTransaction::splitByAccount(const QCString& accountId
   throw new MYMONEYEXCEPTION(QString("Split not found for account") + QString(accountId));
 }
 
+const MyMoneySplit& MyMoneyTransaction::splitByAccount(const QCStringList& accountIds, const bool match) const
+{
+  QValueList<MyMoneySplit>::ConstIterator it;
+
+  for(it = m_splits.begin(); it != m_splits.end(); ++it) {
+    if(match == true && accountIds.contains((*it).accountId()) )
+      return *it;
+    if(match == false && !accountIds.contains((*it).accountId()))
+      return *it;
+  }
+  throw new MYMONEYEXCEPTION(QString("Split not found for account %1...%2").arg(accountIds.front(),accountIds.back()));
+}
+
 const MyMoneySplit& MyMoneyTransaction::splitById(const QCString& splitId) const
 {
   QValueList<MyMoneySplit>::ConstIterator it;

@@ -27,6 +27,7 @@
 // without using this macro directly, I'll be freed of KDE dependency.
 
 #include <klocale.h>
+#include <kdebug.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -56,7 +57,9 @@ MyMoneyMoney CashFlowListItem::NPV( double _rate ) const
 {
   double T = static_cast<double>(m_sToday.daysTo(m_date)) / 365.0;
   MyMoneyMoney result = m_value.toDouble() / pow(1+_rate,T);
-  
+
+  //kdDebug(2) << "CashFlowListItem::NPV( " << _rate << " ) == " << result << endl;
+    
   return result;
 }
 
@@ -64,6 +67,8 @@ const CashFlowListItem& CashFlowList::mostRecent(void) const
 {
   CashFlowList dupe( *this );
   qHeapSort( dupe );
+  
+  //kdDebug(2) << " CashFlowList::mostRecent() == " << dupe.back().date().toString(Qt::ISODate) << endl;
   
   return dupe.back();
 }
@@ -78,7 +83,9 @@ MyMoneyMoney CashFlowList::NPV( double _rate )
     result += (*it_cash).NPV( _rate );
     ++it_cash;
   }
-  
+
+  //kdDebug(2) << "CashFlowList::NPV( " << _rate << " ) == " << result << endl << "------------------------" << endl;
+    
   return result;
 }
 
@@ -89,36 +96,104 @@ double CashFlowList::IRR( void )
   // set 'today', which is the most recent of all dates in the list
   CashFlowListItem::setToday( mostRecent().date() );
   
-  double lobound = -0.999; // this is as low as we support
-  double hibound = 0.01;
+  double lobound = 0.0; // this is as low as we support
+  double hibound = 1.00;
   double precision = 0.00001; // how precise do we want the answer?
   
-  // is IRR so low we can't calculate it?
-  if ( NPV( lobound ) > 0 )
+  // first, see if one of the bounds themselves is the final answer
+  MyMoneyMoney hinpv = NPV( hibound );
+  MyMoneyMoney lonpv = NPV( lobound );
+  
+  if ( lonpv.isZero() )
   {
-    throw QString("IRR is < -100%, not supported");
+    result = lobound;
+    goto done;
+  }
+  else if ( hinpv.isZero() )
+  {
+    result = hibound;
+    goto done;
   }
   
-  // shift the range upward as much as needed
-  while ( NPV( hibound ) < 0 )
+  // our next goal is to ensure that NPV==0 lies somewhere in between lobound & hibound.
+  // this means that NPV(lobound) & NPV(hibound) must be opposite signs.
+  // move the bounds out until this initial condition is satisfied
+  
+  while ( ( hinpv > 0 ) == ( lonpv > 0 ) )
   {
-    lobound = hibound;
     hibound *= 10;
+    if ( lobound == 0.0 )
+      lobound = -0.000999;
+    else
+      lobound *= 10;
+    
+    if ( lobound < -1.0 )
+      throw QString("IRR is < -100%, not supported");
+  
+    hinpv = NPV( hibound );
+    lonpv = NPV( lobound );
   }
+  
+  // now that we have a suitable low and high bound to start with,
+  // figure out which half of the range 0 falls in, and then use
+  // that range.  Continue until the range is suitably small,
+  // and return the midpoint of it.
   
   while ( (hibound-lobound) > precision )
   {
-    result = (lobound + hibound) / 2;
+    double ratio = lonpv.toDouble()/(hinpv.toDouble()-lonpv.toDouble());
+    if ( ratio < 0.0 )
+      ratio = -ratio;
+    result = lobound + (hibound-lobound)*ratio;
+    
     MyMoneyMoney npv = NPV( result );
-    if ( npv >= 0 )
+    
+    // if we've found zero, we're done!
+    if ( npv.isZero() )
+      goto done;
+    
+    // if lobound & result have the opposite sign, then use the range from lobound to result
+    if ( (lonpv>0) != (npv>0) )
+    {
       hibound = result;
-    if ( npv <= 0 )
+      hinpv = npv;
+    }
+      
+    // else hibound & result have the opposite sign, so use the range from result to hibound
+    else
+    {
       lobound = result;
+      lonpv = npv;
+    }
+  }
+  
+done:  
+  return result;
+}
+
+MyMoneyMoney CashFlowList::total(void) const
+{
+  MyMoneyMoney result;
+  
+  const_iterator it_cash = begin();
+  while ( it_cash != end() )
+  {
+    result += (*it_cash).value();
+    ++it_cash;
   }
   
   return result;
 }
 
+void CashFlowList::dumpDebug(void) const
+{
+  const_iterator it_item = begin();
+  while ( it_item != end() )
+  {
+    kdDebug(2) << (*it_item).date().toString(Qt::ISODate) << " " << (*it_item).value().toString() << endl;
+    ++it_item;
+  }
+}
 //
 // QueryTable implementation
 //
@@ -248,6 +323,8 @@ QueryTable::QueryTable(const MyMoneyReport& _report): m_config(_report)
     m_columns += ",shares";
   if ( qc & MyMoneyReport::eQCprice )
     m_columns += ",price";
+  if ( qc & MyMoneyReport::eQCperformance )
+    m_columns += ",startingbal,buys,sells,reinvestincome,cashincome,return";
 
   QString sort;
   if ( ! m_group.isEmpty() )
@@ -367,7 +444,10 @@ void QueryTable::constructTransactionTable(void)
         {
           MyMoneyMoney shares = (*it_split).shares();
           qaccountrow["shares"] = shares.toString();
-          qaccountrow["price"] = (((*it_split).value())*currencyfactor / shares).toString();
+          if ( ! shares.isZero() )
+            qaccountrow["price"] = (((*it_split).value())*currencyfactor / shares).toString();
+          else
+            qaccountrow["price"] = MyMoneyMoney().toString();
           if ( (*it_split).action() == MyMoneySplit::ActionBuyShares && shares < 0 )
             // note this is not localized because neither is MyMoneySplit::action()
             qaccountrow["action"] = "Sell";
@@ -404,6 +484,21 @@ void QueryTable::constructTransactionTable(void)
             //qsplitrow["value"] = ((-(*it_split2).value())*currencyfactor).formatMoney();
             qsplitrow["value"] = ((-(*it_split2).value())*currencyfactor).toString();
             qsplitrow["id"] = (*it_split2).id();
+            
+            // handle cash dividends.  these little fellas require very special handling.
+            // the stock account will produce a qaccountrow with zero value & zero shares.
+            // then there will be 2 qsplitrows, a category and a transfer account.  We are
+            // only concerned with the transfer account, and we will NOT show the income 
+            // account.  (This may have to be changed later if we feel we need it.)
+            
+            if ( ( file->account((*it_split).accountId()).accountType() == MyMoneyAccount::Stock )
+            &&   ( (*it_split).action() == MyMoneySplit::ActionDividend ) )
+            {
+              // if this is the transfer split
+              if ( ( file->account((*it_split2).accountId()).accountGroup() == MyMoneyAccount::Income || file->account((*it_split2).accountId()).accountGroup() == MyMoneyAccount::Expense ) )
+                // skip it
+                goto skip_addsplit;
+            }
             
             // handle sub-categories.  the 'category' field contains the
             // fully-qualified category hierarchy, e.g. "Computers: Hardware: CPUs"
@@ -457,6 +552,7 @@ void QueryTable::constructTransactionTable(void)
               }
             }
           }
+skip_addsplit:
           ++it_split2;
         }
       }
@@ -515,7 +611,132 @@ void QueryTable::constructAccountTable(void)
       qaccountrow["type"] = KMyMoneyUtils::accountTypeToString((*it_account).accountType());
       
       if ( (*it_account).accountType() == MyMoneyAccount::Stock )
+      {
         qaccountrow["equitytype"] = KMyMoneyUtils::equityTypeToString(equity.equityType());        
+       
+        //
+        // Calculate return
+        //
+        // This is done all the time now.  A performance improvement would be to calculate this
+        // only for reports that will actually use it.
+        //
+        
+        //  Columns are Account, Value on <Opening>, Buys, Sells, Income, Value on <Closing>, Return%
+
+        MyMoneyReport report = m_config;
+        QDate startingDate = report.fromDate();
+        QDate endingDate = report.toDate();
+      
+        // if either begin or end date are invalid we have one of the following
+        // possible date filters:
+        //
+        // a) begin date not set - first transaction until given end date
+        // b) end date not set   - from given date until last transaction
+        // c) both not set       - first transaction until last transaction
+        //
+        // If there is no transaction in the engine at all, we use the current
+        // year as the filter criteria.
+      
+        if ( !startingDate.isValid() || !endingDate.isValid()) {
+          QValueList<MyMoneyTransaction> list = file->transactionList(report);
+          QDate tmpBegin, tmpEnd;
+      
+          if(!list.isEmpty()) {
+            qHeapSort(list);
+            tmpBegin = list.front().postDate();
+            tmpEnd = list.back().postDate();
+          } else {
+            tmpBegin = QDate(QDate::currentDate().year(),1,1); // the first date in the file
+            tmpEnd = QDate(QDate::currentDate().year(),12,31);// the last date in the file
+          }
+          if(!startingDate.isValid())
+            startingDate = tmpBegin;
+          if(!endingDate.isValid())
+            endingDate = tmpEnd;
+        }
+        if ( startingDate > endingDate )
+          startingDate = endingDate;
+   
+        MyMoneyEquity equity = file->equity( (*it_account).currencyId() );
+        MyMoneyMoney startingBal = file->balance((*it_account).id(),startingDate) * equity.price(startingDate);
+        MyMoneyMoney endingBal = file->balance((*it_account).id(),endingDate) * equity.price(endingDate);
+        CashFlowList buys;
+        CashFlowList sells;
+        CashFlowList reinvestincome;
+        CashFlowList cashincome;
+        
+        report.setReportAllSplits(false);
+        report.setConsiderCategory(true);
+        report.clearAccountFilter();
+        report.addAccount((*it_account).id());
+        QValueList<MyMoneyTransaction> transactions = file->transactionList( report );
+        QValueList<MyMoneyTransaction>::const_iterator it_transaction = transactions.begin();
+        while ( it_transaction != transactions.end() )
+        {
+          // s is the split for the stock account
+          MyMoneySplit s = (*it_transaction).splitByAccount((*it_account).id());
+          
+          const QCString& action = s.action();
+          if ( action == MyMoneySplit::ActionBuyShares )
+          {
+            if ( s.value() > 0 )
+              buys += CashFlowListItem( (*it_transaction).postDate(), -s.value() );
+            else
+              sells += CashFlowListItem( (*it_transaction).postDate(), -s.value() );
+          }
+          else if ( action == MyMoneySplit::ActionReinvestDividend )
+          {
+            reinvestincome += CashFlowListItem( (*it_transaction).postDate(), s.value() );
+          }
+          else if ( action == MyMoneySplit::ActionDividend )
+          {
+            // find the split with the category, which has the actual amount of the dividend
+            QValueList<MyMoneySplit> splits = (*it_transaction).splits();
+            QValueList<MyMoneySplit>::const_iterator it_split = splits.begin();
+            bool found = false;
+            while( it_split != splits.end() )
+            {
+              QCString accid = (*it_split).accountId();
+              MyMoneyAccount acc = file->account(accid);
+              if ( acc.accountType() == MyMoneyAccount::Income || acc.accountType() == MyMoneyAccount::Expense )
+              {
+                found = true;
+                break;
+              }
+              ++it_split;
+            }
+            
+            if ( found )
+              cashincome += CashFlowListItem( (*it_transaction).postDate(), -(*it_split).value() );
+          }
+          ++it_transaction;
+        }
+        
+        CashFlowList all;
+        all += buys;
+        all += sells;
+        //we do not inclue the reinvested dividends, because these do not represent a cash flow event.
+        //all += reinvestincome;
+        all += cashincome;
+        all += CashFlowListItem(startingDate,-startingBal);
+        all += CashFlowListItem(endingDate,endingBal);
+        
+        try
+        {
+          qaccountrow["return"] = MyMoneyMoney(all.IRR(),10000).toString();
+        }
+        catch (QString e)
+        {
+          kdDebug(2) << e << endl;
+        }
+        
+        qaccountrow["buys"] = (-(buys.total())).toString();
+        qaccountrow["sells"] = (-(sells.total())).toString();
+        qaccountrow["cashincome"] = cashincome.total().toString();
+        qaccountrow["reinvestincome"] = reinvestincome.total().toString();
+        qaccountrow["startingbal"] = startingBal.toString();
+        qaccountrow["endingbal"] = endingBal.toString();
+      }
       else
         qaccountrow["equitytype"] = QString();
             
@@ -616,9 +837,19 @@ void QueryTable::render( QString& result, QString& csv ) const
   i18nHeaders["price"] = i18n("Price");
   i18nHeaders["latestprice"] = i18n("Price");
   i18nHeaders["netinvvalue"] = i18n("Net Value");
-  
+  i18nHeaders["buys"] = i18n("Buys");
+  i18nHeaders["sells"] = i18n("Sells");
+  i18nHeaders["reinvestincome"] = i18n("Dividends Reinvested");
+  i18nHeaders["cashincome"] = i18n("Dividends Paid Out");
+  i18nHeaders["startingbal"] = i18n("Starting Balance");
+  i18nHeaders["endingbal"] = i18n("Ending Balance");
+  i18nHeaders["return"] = i18n("Annualized Return");
+            
   // the list of columns which represent money, so we can display them correctly
-  QStringList moneyColumns = QStringList::split(",","value,shares,price,latestprice,netinvvalue");
+  QStringList moneyColumns = QStringList::split(",","value,shares,price,latestprice,netinvvalue,buys,sells,cashincome,reinvestincome,startingbal");
+  
+  // the list of columns which represent a percentage, so we can display them correctly
+  QStringList percentColumns = QStringList::split(",","return");
 
   result += "<table class=\"report\">\n<tr class=\"itemheader\">";
 
@@ -742,6 +973,13 @@ void QueryTable::render( QString& result, QString& csv ) const
         MyMoneyMoney::setThousandSeparator(savethsep);
 
       }
+      else if ( percentColumns.contains(*it_column) )
+      {
+        result += QString("<td>%1%</td>")
+          .arg((MyMoneyMoney(data) * MyMoneyMoney(100,1)).formatMoney());
+          
+        csv += (MyMoneyMoney(data) * MyMoneyMoney(100,1)).formatMoney() + "%,";
+      }
       else
       {
         result += QString("<td class=\"left\">%1</td>")
@@ -752,7 +990,7 @@ void QueryTable::render( QString& result, QString& csv ) const
     }
 
     result += "</tr>\n";
-    csv = csv.left( csv.length() - 1 );
+    csv = csv.left( csv.length() - 1 ); // remove final comma
     csv += "\n";
     row_odd = ! row_odd;
     ++it_row;

@@ -1,3 +1,15 @@
+2004-12-14 Ace Jones <acejones@users.sourceforge.net>
+  * Added Investment Performance reports (by account & type)
+  * Expanded unit tests for OFX imports
+  * Finished ability to create OFX files from KMyMoney data (currently only used
+    for unit tests, but could be expanded).
+  * Added unit tests for investment reports
+  * Added XMLandBack calls to reports that were missing it
+  * Added MyMoneyTransaction::splitByAccount(QCStringList&,bool) 
+  * Added MyMoneyTransactionFilter::clearAccountFilter()
+  * Removed use of libuuid (OFX uid's don't need to be universally unique,
+    locally unique is good enough.)
+    
 2004-12-10 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Gnucash import - minor bug fixes
   * - preserve memo in scheduled transactions

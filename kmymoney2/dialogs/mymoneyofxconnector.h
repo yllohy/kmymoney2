@@ -66,7 +66,10 @@ protected:
   Tag creditCardRequest(const QDate& _dtstart) const; 
   Tag signOn(void) const;
   Tag transaction(const MyMoneyTransaction& _t) const;
+  Tag investmentTransaction(const MyMoneyTransaction& _t) const;
   Tag bankStatementResponse(const QDate& _dtstart) const;
+  Tag creditCardStatementResponse(const QDate& _dtstart) const;
+  QString investmentStatementResponse(const QDate& _dtstart) const;
   Tag signOnResponse(void) const;
   
   QString iban(void) const;

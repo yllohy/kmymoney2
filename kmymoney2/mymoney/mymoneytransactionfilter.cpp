@@ -67,6 +67,12 @@ void MyMoneyTransactionFilter::clear(void)
   m_toDate = QDate();
 }
 
+void MyMoneyTransactionFilter::clearAccountFilter(void)
+{
+  m_filterSet.singleFilter.accountFilter = 0;
+  m_accounts.clear();
+}
+
 void MyMoneyTransactionFilter::setTextFilter(const QRegExp& text)
 {
   m_filterSet.singleFilter.textFilter = 1;

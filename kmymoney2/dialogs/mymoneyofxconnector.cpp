@@ -15,17 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifdef HAVE_CONFIG_H
-#include "../../config.h"
-#endif
- 
-// ----------------------------------------------------------------------------
-// System Includes
-
-#if HAVE_LIBUUID
-#include <uuid/uuid.h>
-#endif
-
 // ----------------------------------------------------------------------------
 // QT Includes
 
@@ -110,21 +99,8 @@ const QByteArray MyMoneyOfxConnector::statementRequest(const QDate& _dtstart) co
 
 QString MyMoneyOfxConnector::uuid(void)
 {
-#if HAVE_LIBUUID
-  uuid_t uuid;
-  char buffer[37];
-  uuid_generate(uuid);
-  uuid_unparse(uuid,buffer);
-  
-  return QString(buffer).upper();
-#else
-  // Don't have libuuid?  We'll create an ID based on the date & time.  This should be good
-  // enough.  In fact, with some more testing, we can probably remove libuuid and just use
-  // these date-based uuid's.
   static int id = 1;
-  kdDebug(2) << "MyMoneyOfxConnector::uuid(): Warning: Program has been compiled without libuuid.  Unable to generate good UUID's for this connection.  Some banks will accept OFX connections without good UUID's, others will not." << endl;
-  return QDateTime::currentDateTime().toString(Qt::ISODate).remove(QRegExp("[^0-9]")) + QString::number(id++);
-#endif
+  return QDateTime::currentDateTime().toString("yyyyMMdd-hhmmsszzz-") + QString::number(id++);
 }
 
 MyMoneyOfxConnector::Tag MyMoneyOfxConnector::message(const QString& _msgType, const QString& _trnType, const Tag& _request)
@@ -217,9 +193,9 @@ const QByteArray MyMoneyOfxConnector::statementResponse(const QDate& _dtstart) c
   QString request;
   
   if ( accounttype()=="CC" )
-    throw new MYMONEYEXCEPTION("OFX reponse for credit card statements not yet supported.");
+    request = header() + Tag("OFX").subtag(signOnResponse()).subtag(creditCardStatementResponse(_dtstart));
   else if ( accounttype()=="INV" )
-    throw new MYMONEYEXCEPTION("OFX reponse for investment statements not yet supported.");
+    request = header() + Tag("OFX").subtag(signOnResponse()).data(investmentStatementResponse(_dtstart));
   else
     request = header() + Tag("OFX").subtag(signOnResponse()).subtag(bankStatementResponse(_dtstart));
  
@@ -293,13 +269,95 @@ MyMoneyOfxConnector::Tag MyMoneyOfxConnector::bankStatementResponse(const QDate&
     .subtag(Tag("LEDGERBAL").element("BALAMT",file->balance(m_account.id()).formatMoney(QString(),2)).element("DTASOF",dtnow_string )));
 }
 
+MyMoneyOfxConnector::Tag MyMoneyOfxConnector::creditCardStatementResponse(const QDate& _dtstart) const
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
+  
+  QString dtstart_string = _dtstart.toString(Qt::ISODate).remove(QRegExp("[^0-9]"));
+  QString dtnow_string = QDateTime::currentDateTime().toString(Qt::ISODate).remove(QRegExp("[^0-9]"));
+
+  QString transactionlist;
+  
+  MyMoneyTransactionFilter filter;
+  filter.setDateFilter(_dtstart,QDate::currentDate());
+  filter.addAccount(m_account.id());
+  QValueList<MyMoneyTransaction> transactions = file->transactionList(filter);
+  QValueList<MyMoneyTransaction>::const_iterator it_transaction = transactions.begin();
+  while ( it_transaction != transactions.end() )
+  {
+    transactionlist += transaction( *it_transaction );
+    ++it_transaction;
+  }
+      
+  return messageResponse("CREDITCARD","CCSTMT",Tag("CCSTMTRS")
+    .element("CURDEF","USD")
+    .subtag(Tag("CCACCTFROM").element("ACCTID", accountnum()))
+    .subtag(Tag("BANKTRANLIST").element("DTSTART",dtstart_string).element("DTEND",dtnow_string).data(transactionlist))  
+    .subtag(Tag("LEDGERBAL").element("BALAMT",file->balance(m_account.id()).formatMoney(QString(),2)).element("DTASOF",dtnow_string )));
+}
+
+QString MyMoneyOfxConnector::investmentStatementResponse(const QDate& _dtstart) const
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
+  
+  QString dtstart_string = _dtstart.toString(Qt::ISODate).remove(QRegExp("[^0-9]"));
+  QString dtnow_string = QDateTime::currentDateTime().toString(Qt::ISODate).remove(QRegExp("[^0-9]"));
+
+  QString transactionlist;
+  
+  MyMoneyTransactionFilter filter;
+  filter.setDateFilter(_dtstart,QDate::currentDate());
+  filter.addAccount(m_account.id());
+  filter.addAccount(m_account.accountList());
+  QValueList<MyMoneyTransaction> transactions = file->transactionList(filter);
+  QValueList<MyMoneyTransaction>::const_iterator it_transaction = transactions.begin();
+  while ( it_transaction != transactions.end() )
+  {
+    transactionlist += investmentTransaction( *it_transaction );
+    ++it_transaction;
+  }
+
+  Tag securitylist("SECLIST");
+  QCStringList accountids = m_account.accountList();
+  QCStringList::const_iterator it_accountid = accountids.begin();
+  while ( it_accountid != accountids.end() )
+  {
+    MyMoneyEquity equity = file->equity(file->account(*it_accountid).currencyId());
+    
+    securitylist.subtag(Tag("STOCKINFO")
+      .subtag(Tag("SECINFO")
+        .subtag(Tag("SECID")
+          .element("UNIQUEID",equity.id())
+          .element("UNIQUEIDTYPE","KMYMONEY"))
+        .element("SECNAME",equity.name())
+        .element("TICKER",equity.tradingSymbol())
+        .element("FIID",equity.id())));
+  
+    ++it_accountid;
+  }
+  
+  return messageResponse("INVSTMT","INVSTMT",Tag("INVSTMTRS")
+    .element("DTASOF", dtstart_string)
+    .element("CURDEF","USD")
+    .subtag(Tag("INVACCTFROM").element("BROKERID", fiorg()).element("ACCTID", accountnum()))
+    .subtag(Tag("INVTRANLIST").element("DTSTART",dtstart_string).element("DTEND",dtnow_string).data(transactionlist))
+    )
+    + Tag("SECLISTMSGSRSV1").subtag(securitylist);
+}
+
 MyMoneyOfxConnector::Tag MyMoneyOfxConnector::transaction(const MyMoneyTransaction& _t) const
 {
   // This method creates a transaction tag using ONLY the elements that importer uses
 
   MyMoneyFile* file = MyMoneyFile::instance();
-  MyMoneySplit s = _t.splitByAccount( m_account.id(), true );
   
+  //Use this version for bank/cc transactions
+  MyMoneySplit s = _t.splitByAccount( m_account.id(), true );
+
+  //TODO: Write "investmentTransaction()"...
+  //Use this version for inv transactions
+  //MyMoneySplit s = _t.splitByAccount( m_account.accountList(), true );
+    
   Tag result ("STMTTRN");
   
   result
@@ -324,4 +382,95 @@ MyMoneyOfxConnector::Tag MyMoneyOfxConnector::transaction(const MyMoneyTransacti
     result.element("MEMO",_t.memo());
 
   return result;
+}
+
+MyMoneyOfxConnector::Tag MyMoneyOfxConnector::investmentTransaction(const MyMoneyTransaction& _t) const
+{
+ MyMoneyFile* file = MyMoneyFile::instance();
+  
+  //Use this version for inv transactions
+  MyMoneySplit s = _t.splitByAccount( m_account.accountList(), true );
+  
+  QCString stockid = file->account(s.accountId()).currencyId();
+  
+  Tag invtran("INVTRAN");
+  invtran.element("FITID",_t.id()).element("DTTRADE",_t.postDate().toString(Qt::ISODate).remove(QRegExp("[^0-9]")));
+  if ( !_t.memo().isEmpty() )
+    invtran.element("MEMO",_t.memo());  
+
+  if ( s.action() == MyMoneySplit::ActionBuyShares )
+  {
+    if ( s.shares().isNegative() )
+    {
+      return Tag("SELLSTOCK")
+        .subtag(Tag("INVSELL")
+          .subtag(invtran)
+          .subtag(Tag("SECID").element("UNIQUEID",stockid).element("UNIQUEIDTYPE","KMYMONEY"))
+          .element("UNITS",QString(((s.shares())).formatMoney(QString(),2)).remove(QRegExp("[^0-9.\\-]")))
+          .element("UNITPRICE",QString((s.value()/s.shares()).formatMoney(QString(),2)).remove(QRegExp("[^0-9.]")))
+          .element("TOTAL",QString((-s.value()).formatMoney(QString(),2)).remove(QRegExp("[^0-9.\\-]")))
+          .element("SUBACCTSEC","CASH")
+          .element("SUBACCTFUND","CASH"))
+        .element("SELLTYPE","SELL");
+    }
+    else
+    {
+      return Tag("BUYSTOCK")
+        .subtag(Tag("INVBUY")
+          .subtag(invtran)
+          .subtag(Tag("SECID").element("UNIQUEID",stockid).element("UNIQUEIDTYPE","KMYMONEY"))
+          .element("UNITS",QString((s.shares()).formatMoney(QString(),2)).remove(QRegExp("[^0-9.\\-]")))
+          .element("UNITPRICE",QString((s.value()/s.shares()).formatMoney(QString(),2)).remove(QRegExp("[^0-9.]")))
+          .element("TOTAL",QString((-(s.value())).formatMoney(QString(),2)).remove(QRegExp("[^0-9.\\-]")))
+          .element("SUBACCTSEC","CASH")
+          .element("SUBACCTFUND","CASH"))
+        .element("BUYTYPE","BUY");
+    }
+  }
+  else if ( s.action() == MyMoneySplit::ActionReinvestDividend )
+  {
+    // Should the TOTAL tag really be negative for a REINVEST?  That's very strange, but
+    // it's what they look like coming from my bank, and I can't find any information to refute it.
+  
+    return Tag("REINVEST")
+      .subtag(invtran)
+      .subtag(Tag("SECID").element("UNIQUEID",stockid).element("UNIQUEIDTYPE","KMYMONEY"))
+      .element("INCOMETYPE","DIV")
+      .element("TOTAL",QString((-s.value()).formatMoney(QString(),2)).remove(QRegExp("[^0-9.\\-]")))
+      .element("SUBACCTSEC","CASH")
+      .element("UNITS",QString((s.shares()).formatMoney(QString(),2)).remove(QRegExp("[^0-9.\\-]")))
+      .element("UNITPRICE",QString((s.value()/s.shares()).formatMoney(QString(),2)).remove(QRegExp("[^0-9.]")));
+  }
+  else if ( s.action() == MyMoneySplit::ActionDividend )
+  {
+    // find the split with the category, which has the actual amount of the dividend
+    QValueList<MyMoneySplit> splits = _t.splits();
+    QValueList<MyMoneySplit>::const_iterator it_split = splits.begin();
+    bool found = false;
+    while( it_split != splits.end() )
+    {
+      QCString accid = (*it_split).accountId();
+      MyMoneyAccount acc = file->account(accid);
+      if ( acc.accountType() == MyMoneyAccount::Income || acc.accountType() == MyMoneyAccount::Expense )
+      {
+        found = true;
+        break;
+      }
+      ++it_split;
+    }
+    
+    if ( found )
+      return Tag("INCOME")
+        .subtag(invtran)
+        .subtag(Tag("SECID").element("UNIQUEID",stockid).element("UNIQUEIDTYPE","KMYMONEY"))
+        .element("INCOMETYPE","DIV")
+        .element("TOTAL",QString((-(*it_split).value()).formatMoney(QString(),2)).remove(QRegExp("[^0-9\\.\\-]")))
+        .element("SUBACCTSEC","CASH")
+        .element("SUBACCTFUND","CASH");
+    else
+      return Tag("ERROR").element("DETAILS","Unable to determine the amount of this income transaction.");
+  }
+
+  //FIXME: Do something useful with these errors
+  return Tag("ERROR").element("DETAILS","This transaction contains an unsupported action type");
 }

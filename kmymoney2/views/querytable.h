@@ -105,6 +105,7 @@ public:
   CashFlowListItem( const QDate& _date, const MyMoneyMoney& _value ): m_date(_date), m_value(_value) {}
   bool operator<( const CashFlowListItem _second ) const { return m_date < _second.m_date; }
   const QDate& date( void ) const { return m_date; }
+  const MyMoneyMoney& value( void ) const { return m_value; }
   MyMoneyMoney NPV( double _rate ) const;
   
   static void setToday( const QDate& _today ) { m_sToday = _today; }
@@ -119,8 +120,12 @@ private:
 class CashFlowList: public QValueList<CashFlowListItem>
 {
 public:
+  CashFlowList(void) {}
+  CashFlowList(const QValueList<MyMoneyTransaction>&, const CashFlowListItem& _opening, const CashFlowListItem& _current) {}
   MyMoneyMoney NPV(double rate);
   double IRR(void);
+  MyMoneyMoney total(void) const;
+  void dumpDebug(void) const;
 protected:
   const CashFlowListItem& mostRecent(void) const;  
 };
