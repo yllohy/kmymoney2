@@ -358,7 +358,7 @@ void KMyMoneyView::closeFile(void)
 
 
   accountsView->clear();
-  transactionView->clear();
+  // transactionView->clear();
   emit signalEnableKMyMoneyOperations(false);
 }
 
@@ -414,15 +414,41 @@ bool KMyMoneyView::readFile(QString filename)
 
 void KMyMoneyView::saveFile(QString filename)
 {
-/*
   if (!fileOpen()) {
     KMessageBox::error(this, i18n("Tried to access a file when it's not open"));
     return;
   }
 
-  m_file.saveAllData(filename);
-*/
-  KMessageBox::error(this, i18n("WARNING: This has not been implemented yet."));
+  KMessageBox::sorry(this, i18n("WARNING: This has not been tested yet. Use at your own risk!!!"));
+
+  IMyMoneyStorageFormat* pWriter = NULL;
+
+  QString strFileExtension = MyMoneyUtils::getFileExtension(filename);
+  if(strFileExtension.find("XML") != -1)
+  {
+    pWriter = new MyMoneyStorageXML;
+  }
+  else
+  {
+    // Use the old reader for now
+    pWriter = new MyMoneyStorageBin;
+  }
+  QFile qfile(filename);
+
+  if(qfile.open(IO_WriteOnly)) {
+    QDataStream s(&qfile);
+    try {
+      pWriter->writeStream(s, m_file->storage());
+    } catch (MyMoneyException *e) {
+      QString msg = e->what();
+      qDebug("%s", msg.latin1());
+      delete e;
+    }
+    qfile.close();
+  } else {
+    KMessageBox::sorry(this, i18n("File not found!"));
+  }
+  delete pWriter;
 }
 
 bool KMyMoneyView::dirty(void)
@@ -621,14 +647,15 @@ void KMyMoneyView::slotAccountExportAscii(void)
 void KMyMoneyView::slotReconcileFinished(bool success)
 {
 
-
+/*
   if (success)
   {
     transactionView->refresh();
   }
+*/
 
   // Remember to disconnect.
-  disconnect(transactionView,SIGNAL(transactionListChanged()),reconcileDlg,SLOT(slotTransactionChanged()));
+  // disconnect(transactionView,SIGNAL(transactionListChanged()),reconcileDlg,SLOT(slotTransactionChanged()));
   reconcileDlg->hide();
   m_inReconciliation=false;
 }
@@ -903,7 +930,7 @@ void KMyMoneyView::viewAccountList(const QCString& selectAccount)
     showPage(1);
 
   accountsView->show();
-  transactionView->hide();
+  // transactionView->hide();
   m_showing = BankList;
 
   if (fileOpen())

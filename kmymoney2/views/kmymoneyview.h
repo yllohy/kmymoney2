@@ -52,13 +52,14 @@
 #include "../mymoney/storage/mymoneyseqaccessmgr.h"
 
 /**
+
   * This class represents the view of the MyMoneyFile which contains
   * Banks/Accounts/Transactions, Recurring transactions (or Bills & Deposits)
   * and scripts (yet to be implemented).  Each different aspect of the file
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.19 2002/11/05 20:52:34 ipwizard Exp $
+  * $Id: kmymoneyview.h,v 1.20 2002/11/08 07:38:08 ipwizard Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -73,7 +74,7 @@ public:
 private:
   KHomeView *m_homeView;
   KAccountsView *accountsView;
-  KTransactionView *transactionView;
+  // KTransactionView *transactionView;
   KCategoriesView *m_categoriesView;
   KPayeesView *m_payeesView;
   KScheduledView *m_scheduledView;
