@@ -78,7 +78,7 @@ KNewAccountDlg::KNewAccountDlg(MyMoneyAccount& account, bool isEditing, bool cat
   m_qlistviewParentAccounts->setHScrollBarMode(QScrollView::AlwaysOff);
   
   m_qcheckboxSubAccount->setText(i18n("Is a sub account"));
-
+  
   KConfig *config = KGlobal::config();
   QFont defaultFont = QFont("helvetica", 12);
   m_qlistviewParentAccounts->header()->setFont(config->readFontEntry("listHeaderFont", &defaultFont));
@@ -119,6 +119,7 @@ KNewAccountDlg::KNewAccountDlg(MyMoneyAccount& account, bool isEditing, bool cat
     {
       typeCombo->setEnabled(false);
     }
+    m_qcheckboxPreferred->hide();
   }
   else
   {
@@ -178,6 +179,7 @@ KNewAccountDlg::KNewAccountDlg(MyMoneyAccount& account, bool isEditing, bool cat
       startDateEdit->setDate(account.openingDate());
       startBalanceEdit->setText(account.openingBalance().formatMoney());
       accountNoEdit->setText(account.number());
+      m_qcheckboxPreferred->setChecked(account.value("PreferredAccount") == "Yes");
       typeCombo->setEnabled(false);
     }
   }
@@ -219,7 +221,8 @@ KNewAccountDlg::KNewAccountDlg(MyMoneyAccount& account, bool isEditing, bool cat
   connect(m_qbuttonNew, SIGNAL(clicked()), this, SLOT(slotNewClicked()));
 
   // make sure our account does not have an id
-  m_account.setAccountId("");
+  if(!isEditing)
+    m_account.setAccountId("");
   
   // using a timeout is the only way, I got the 'ensureItemVisible'
   // working when creating the dialog. I assume, this
@@ -309,6 +312,10 @@ void KNewAccountDlg::okClicked()
   {
     m_account.setOpeningBalance(startBalanceEdit->getMoneyValue());
     m_account.setOpeningDate(startDateEdit->getQDate());
+    if(m_qcheckboxPreferred->isChecked())
+      m_account.setValue("PreferredAccount", "Yes");
+    else
+      m_account.deletePair("PreferredAccount");
   }
 
   accept();

@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>577</width>
-            <height>599</height>
+            <width>592</width>
+            <height>596</height>
         </rect>
     </property>
     <property name="caption">
@@ -215,25 +215,38 @@ My Current Account</string>
                             <property name="title">
                                 <string>Account type</string>
                             </property>
-                            <vbox>
+                            <widget class="QComboBox">
                                 <property name="name">
-                                    <cstring>unnamed</cstring>
+                                    <cstring>typeCombo</cstring>
                                 </property>
-                                <property name="margin">
-                                    <number>11</number>
+                                <property name="enabled">
+                                    <bool>true</bool>
                                 </property>
-                                <property name="spacing">
-                                    <number>6</number>
+                                <property name="geometry">
+                                    <rect>
+                                        <x>11</x>
+                                        <y>18</y>
+                                        <width>248</width>
+                                        <height>27</height>
+                                    </rect>
                                 </property>
-                                <widget class="QComboBox">
-                                    <property name="name">
-                                        <cstring>typeCombo</cstring>
-                                    </property>
-                                    <property name="enabled">
-                                        <bool>true</bool>
-                                    </property>
-                                </widget>
-                            </vbox>
+                            </widget>
+                            <widget class="QCheckBox">
+                                <property name="name">
+                                    <cstring>m_qcheckboxPreferred</cstring>
+                                </property>
+                                <property name="geometry">
+                                    <rect>
+                                        <x>14</x>
+                                        <y>54</y>
+                                        <width>147</width>
+                                        <height>20</height>
+                                    </rect>
+                                </property>
+                                <property name="text">
+                                    <string>Preferred Account</string>
+                                </property>
+                            </widget>
                         </widget>
                         <widget class="QGroupBox">
                             <property name="name">
@@ -451,6 +464,12 @@ My Current Account</string>
                     <property name="sizeType">
                         <enum>Expanding</enum>
                     </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>20</width>
+                            <height>0</height>
+                        </size>
+                    </property>
                 </spacer>
                 <widget class="QPushButton">
                     <property name="name">
@@ -478,7 +497,7 @@ My Current Account</string>
 <customwidgets>
     <customwidget>
         <class>kMyMoneyDateInput</class>
-        <header location="global">../widgets/kmymoneydateinput.h</header>
+        <header location="local">../widgets/kmymoneydateinput.h</header>
         <sizehint>
             <width>90</width>
             <height>25</height>
@@ -491,6 +510,7 @@ My Current Account</string>
             <verstretch>0</verstretch>
         </sizepolicy>
         <pixmap>image0</pixmap>
+        <slot access="protected" specifier="">slotDateChosen(QDate date)</slot>
     </customwidget>
     <customwidget>
         <class>kMyMoneyEdit</class>
