@@ -47,7 +47,7 @@ public:
 	KLedgerViewSavings(QWidget *parent=0, const char *name=0);
 	~KLedgerViewSavings();
 
-protected:
+protected slots:
   void resizeEvent(QResizeEvent*);
 
   /* documented in base class */
