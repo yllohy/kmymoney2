@@ -40,7 +40,7 @@
   * @see MyMoneyBank
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: mymoneyfile.h,v 1.11 2002/02/07 23:56:58 ktambascio Exp $
+  * $Id: mymoneyfile.h,v 1.12 2002/02/09 10:11:48 ktambascio Exp $
   *
   * @short A representation of the file format used by KMyMoney2.
 **/
@@ -269,6 +269,8 @@ public:
 
   /** No descriptions */
   void addEquityEntry(MyMoneyEquity *pEntry);
+
+  MyMoneyEquityList* getEquityList() 	{ return &m_equityList; }
 };
 
 #endif

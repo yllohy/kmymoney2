@@ -1,3 +1,7 @@
+2002-02-09 Kevin Tambascio <ktambascio@users.sourceforge.net>
+  * More changes for stock transactions.  
+  * added dialog to update stock prices.
+
 2002-02-07 Kevin Tambascio <ktambascio@users.sourceforge.net>
   * More changes for stock transactions.
 
@@ -704,6 +708,7 @@
 	* Added .cvsignore in all project.
 
  
+
 
 
 

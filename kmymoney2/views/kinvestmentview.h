@@ -39,7 +39,13 @@ class MyMoneyInvestTransaction;
 class KInvestmentView : public kInvestmentViewDecl
 {
 	Q_OBJECT
-public: 
+public:
+	typedef enum {
+	  VIEW_SUMMARY = 0,
+	  VIEW_INVESTMENT,
+	  VIEW_CASH
+	} eViewType;
+	
 	KInvestmentView(QWidget *parent=0, const char *name=0);
 	~KInvestmentView();
 
@@ -67,7 +73,9 @@ protected slots:
   void slotListRightMouse(QListViewItem* item, const QPoint& point, int);
   void slotNewInvestment();
 	void slotEditInvestment();
-
+  void slotUpdatePrice();
+	void slotViewChanged(int);
+	
 private:
 	KPopupMenu* m_popMenu;
 	MyMoneyAccount *m_pAccount;

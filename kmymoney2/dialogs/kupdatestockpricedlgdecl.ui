@@ -1,0 +1,253 @@
+<!DOCTYPE UI><UI>
+<class>kUpdateStockPriceDecl</class>
+<widget>
+    <class>QDialog</class>
+    <property stdset="1">
+        <name>name</name>
+        <cstring>kUpdateStockPriceDecl</cstring>
+    </property>
+    <property stdset="1">
+        <name>geometry</name>
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>323</width>
+            <height>330</height>
+        </rect>
+    </property>
+    <property stdset="1">
+        <name>caption</name>
+        <string>Update Stock Price</string>
+    </property>
+    <widget>
+        <class>QGroupBox</class>
+        <property stdset="1">
+            <name>name</name>
+            <cstring>GroupBox1</cstring>
+        </property>
+        <property stdset="1">
+            <name>geometry</name>
+            <rect>
+                <x>10</x>
+                <y>40</y>
+                <width>300</width>
+                <height>91</height>
+            </rect>
+        </property>
+        <property stdset="1">
+            <name>title</name>
+            <string>Equity Price Entry</string>
+        </property>
+        <widget>
+            <class>QLabel</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>lblPrice</cstring>
+            </property>
+            <property stdset="1">
+                <name>geometry</name>
+                <rect>
+                    <x>20</x>
+                    <y>60</y>
+                    <width>50</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property stdset="1">
+                <name>text</name>
+                <string>Price ($):</string>
+            </property>
+        </widget>
+        <widget>
+            <class>QLabel</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>lblDate</cstring>
+            </property>
+            <property stdset="1">
+                <name>geometry</name>
+                <rect>
+                    <x>20</x>
+                    <y>30</y>
+                    <width>30</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property stdset="1">
+                <name>text</name>
+                <string>Date:</string>
+            </property>
+        </widget>
+        <widget>
+            <class>KDoubleNumInput</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>dblPrice</cstring>
+            </property>
+            <property stdset="1">
+                <name>geometry</name>
+                <rect>
+                    <x>90</x>
+                    <y>60</y>
+                    <width>80</width>
+                    <height>24</height>
+                </rect>
+            </property>
+        </widget>
+        <widget>
+            <class>QPushButton</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>btnUpdatePrice</cstring>
+            </property>
+            <property stdset="1">
+                <name>geometry</name>
+                <rect>
+                    <x>190</x>
+                    <y>30</y>
+                    <width>90</width>
+                    <height>40</height>
+                </rect>
+            </property>
+            <property stdset="1">
+                <name>text</name>
+                <string>Update Price</string>
+            </property>
+        </widget>
+        <widget>
+            <class>kMyMoneyDateInput</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>dateEntry</cstring>
+            </property>
+            <property stdset="1">
+                <name>geometry</name>
+                <rect>
+                    <x>90</x>
+                    <y>30</y>
+                    <width>81</width>
+                    <height>21</height>
+                </rect>
+            </property>
+        </widget>
+    </widget>
+    <widget>
+        <class>QLabel</class>
+        <property stdset="1">
+            <name>name</name>
+            <cstring>lblHistory</cstring>
+        </property>
+        <property stdset="1">
+            <name>geometry</name>
+            <rect>
+                <x>10</x>
+                <y>140</y>
+                <width>70</width>
+                <height>21</height>
+            </rect>
+        </property>
+        <property stdset="1">
+            <name>text</name>
+            <string>Price History:</string>
+        </property>
+    </widget>
+    <widget>
+        <class>QComboBox</class>
+        <property stdset="1">
+            <name>name</name>
+            <cstring>cmbInvestment</cstring>
+        </property>
+        <property stdset="1">
+            <name>geometry</name>
+            <rect>
+                <x>120</x>
+                <y>10</y>
+                <width>190</width>
+                <height>21</height>
+            </rect>
+        </property>
+    </widget>
+    <widget>
+        <class>QLabel</class>
+        <property stdset="1">
+            <name>name</name>
+            <cstring>lblInvestment</cstring>
+        </property>
+        <property stdset="1">
+            <name>geometry</name>
+            <rect>
+                <x>20</x>
+                <y>10</y>
+                <width>91</width>
+                <height>16</height>
+            </rect>
+        </property>
+        <property stdset="1">
+            <name>text</name>
+            <string>Investment:</string>
+        </property>
+    </widget>
+    <widget>
+        <class>KListView</class>
+        <column>
+            <property>
+                <name>text</name>
+                <string>Column 1</string>
+            </property>
+            <property>
+                <name>clickable</name>
+                <bool>true</bool>
+            </property>
+            <property>
+                <name>resizeable</name>
+                <bool>true</bool>
+            </property>
+        </column>
+    <item>
+        <property>
+            <name>text</name>
+            <string>New Item</string>
+        </property>
+        <property>
+            <name>pixmap</name>
+            <pixmap></pixmap>
+        </property>
+    </item>
+        <property stdset="1">
+            <name>name</name>
+            <cstring>lvPriceHistory</cstring>
+        </property>
+        <property stdset="1">
+            <name>geometry</name>
+            <rect>
+                <x>10</x>
+                <y>161</y>
+                <width>301</width>
+                <height>160</height>
+            </rect>
+        </property>
+    </widget>
+</widget>
+<customwidgets>
+    <customwidget>
+        <class>kMyMoneyDateInput</class>
+        <header location="global">../widgets/kmymoneydateinput.h</header>
+        <sizehint>
+            <width>90</width>
+            <height>25</height>
+        </sizehint>
+        <container>0</container>
+        <sizepolicy>
+            <hordata>1</hordata>
+            <verdata>1</verdata>
+        </sizepolicy>
+        <pixmap>image0</pixmap>
+    </customwidget>
+</customwidgets>
+<images>
+    <image>
+        <name>image0</name>
+        <data format="XPM.GZ" length="646">789c6dd2c10ac2300c00d07bbf2234b7229d1be245fc04c5a3201e4615f430059d0711ff5ddb2e6bb236ec90eed134cb5a19d8ef36602af5ecdbfeeac05dda0798d3abebde87e3faa374d3807fa0d633a52d38d8de6f679fe33fc776e196f53cd010188256a3600a292882096246517815ca99884606e18044a3a40d91824820924265a7923a2e8bcd05f33db1173e002913175f2a6be6d3294871a2d95fa00e8a94ee017b69d339d90df1e77c57ea072ede6758</data>
+    </image>
+</images>
+</UI>

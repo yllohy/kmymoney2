@@ -11,7 +11,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>805</width>
+            <width>801</width>
             <height>559</height>
         </rect>
     </property>
@@ -20,31 +20,75 @@
         <string>Investment Summary</string>
     </property>
     <widget>
-        <class>KListView</class>
-        <column>
-            <property>
+        <class>QButtonGroup</class>
+        <property stdset="1">
+            <name>name</name>
+            <cstring>m_btnGroupView</cstring>
+        </property>
+        <property stdset="1">
+            <name>geometry</name>
+            <rect>
+                <x>21</x>
+                <y>0</y>
+                <width>770</width>
+                <height>40</height>
+            </rect>
+        </property>
+        <property stdset="1">
+            <name>title</name>
+            <string>Select View Type</string>
+        </property>
+        <widget>
+            <class>QRadioButton</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>btnInvestment</cstring>
+            </property>
+            <property stdset="1">
+                <name>geometry</name>
+                <rect>
+                    <x>390</x>
+                    <y>10</y>
+                    <width>180</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property stdset="1">
                 <name>text</name>
-                <string>Column 1</string>
+                <string>Investment Transactions</string>
             </property>
-            <property>
-                <name>clickable</name>
-                <bool>true</bool>
+            <property stdset="1">
+                <name>buttonGroupId</name>
+                <number>1</number>
             </property>
-            <property>
-                <name>resizeable</name>
-                <bool>true</bool>
+        </widget>
+        <widget>
+            <class>QRadioButton</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>btnSummary</cstring>
             </property>
-        </column>
-    <item>
-        <property>
-            <name>text</name>
-            <string>New Item</string>
-        </property>
-        <property>
-            <name>pixmap</name>
-            <pixmap></pixmap>
-        </property>
-    </item>
+            <property stdset="1">
+                <name>geometry</name>
+                <rect>
+                    <x>230</x>
+                    <y>10</y>
+                    <width>140</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property stdset="1">
+                <name>text</name>
+                <string>Summary of Account</string>
+            </property>
+            <property stdset="1">
+                <name>buttonGroupId</name>
+                <number>0</number>
+            </property>
+        </widget>
+    </widget>
+    <widget>
+        <class>KListView</class>
         <property stdset="1">
             <name>name</name>
             <cstring>investmentTable</cstring>
@@ -53,18 +97,44 @@
             <name>geometry</name>
             <rect>
                 <x>10</x>
-                <y>10</y>
+                <y>50</y>
                 <width>780</width>
-                <height>440</height>
+                <height>430</height>
             </rect>
         </property>
+    </widget>
+    <widget>
+        <class>kMyMoneyTable</class>
         <property stdset="1">
-            <name>frameShadow</name>
-            <enum>Sunken</enum>
+            <name>name</name>
+            <cstring>transactionTable</cstring>
+        </property>
+        <property stdset="1">
+            <name>geometry</name>
+            <rect>
+                <x>11</x>
+                <y>51</y>
+                <width>780</width>
+                <height>430</height>
+            </rect>
         </property>
     </widget>
 </widget>
 <customwidgets>
+    <customwidget>
+        <class>kMyMoneyTable</class>
+        <header location="local">../widgets/kmymoneytable.h</header>
+        <sizehint>
+            <width>330</width>
+            <height>100</height>
+        </sizehint>
+        <container>0</container>
+        <sizepolicy>
+            <hordata>5</hordata>
+            <verdata>5</verdata>
+        </sizepolicy>
+        <pixmap>image0</pixmap>
+    </customwidget>
     <customwidget>
         <class>QWidget</class>
         <header location="global">qwidget.h</header>
@@ -73,6 +143,20 @@
             <height>-1</height>
         </sizehint>
         <container>1</container>
+        <sizepolicy>
+            <hordata>5</hordata>
+            <verdata>5</verdata>
+        </sizepolicy>
+        <pixmap>image0</pixmap>
+    </customwidget>
+    <customwidget>
+        <class>KListView</class>
+        <header location="global">klistview.h</header>
+        <sizehint>
+            <width>-1</width>
+            <height>-1</height>
+        </sizehint>
+        <container>0</container>
         <sizepolicy>
             <hordata>5</hordata>
             <verdata>5</verdata>

@@ -34,6 +34,9 @@
 #include <qtable.h>
 #include <qinputdialog.h>
 #include <qlineedit.h>
+#include <qbuttongroup.h>
+#include <qbuttongroup.h>
+#include <qradiobutton.h>
 
 #include "../mymoney/mymoneyfile.h"
 #include "../mymoney/mymoneyutils.h"
@@ -44,6 +47,7 @@
 #include "../mymoney/mymoneyaccount.h"
 #include "kinvestmentview.h"
 #include "../dialogs/knewequityentrydlg.h"
+#include "../dialogs/kupdatestockpricedlg.h"
 
 KInvestmentView::KInvestmentView(QWidget *parent, const char *name)
  :  kInvestmentViewDecl(parent,name)
@@ -66,17 +70,27 @@ KInvestmentView::KInvestmentView(QWidget *parent, const char *name)
   investmentTable->addColumn(i18n("YTD %"));
 
   investmentTable->setMultiSelection(false);
-//  m_qlistviewScheduled->setColumnWidthMode(0, QListView::Manual);
+	investmentTable->setColumnWidthMode(0, QListView::Manual);
   investmentTable->header()->setResizeEnabled(false);
   investmentTable->setAllColumnsShowFocus(true);
 
   // never show a horizontal scroll bar
   investmentTable->setHScrollBarMode(QScrollView::AlwaysOff);
 
+  //no sorting yet...
   investmentTable->setSorting(-1);
 
   connect(investmentTable, SIGNAL(rightButtonClicked(QListViewItem* , const QPoint&, int)),
     this, SLOT(slotListRightMouse(QListViewItem*, const QPoint&, int)));
+
+  //connects the signal when a radio button is checked.
+  connect(m_btnGroupView, SIGNAL(clicked(int)), this, SLOT(slotViewChanged(int)));
+
+  //hide transaction view, since we show the summary view by default.
+  transactionTable->hide();
+
+  //set the summary button to be true.
+  btnSummary->setChecked(TRUE);
 }
 
 KInvestmentView::~KInvestmentView()
@@ -189,6 +203,17 @@ void KInvestmentView::slotEditInvestment()
 	
 }
 
+void KInvestmentView::slotUpdatePrice()
+{
+	KUpdateStockPriceDlg *pDlg = new KUpdateStockPriceDlg;
+	if(pDlg)
+	{
+		pDlg->exec();
+		int nResult = pDlg->result();
+	}
+	
+}
+
 void KInvestmentView::slotListDoubleClicked(QListViewItem* pItem, const QPoint& pos, int c)
 {
 }
@@ -201,7 +226,7 @@ void KInvestmentView::slotListRightMouse(QListViewItem* item, const QPoint& poin
   m_popMenu->insertTitle(kiconloader->loadIcon("transaction", KIcon::MainToolbar), i18n("Transaction Options"));
   m_popMenu->insertItem(kiconloader->loadIcon("edit", KIcon::Small), i18n("New Investment"), this, SLOT(slotNewInvestment()));
   m_popMenu->insertItem(kiconloader->loadIcon("edit", KIcon::Small), i18n("Edit Investment Properties"), this, SLOT(slotEditInvestment()));
-
+  m_popMenu->insertItem(kiconloader->loadIcon("edit", KIcon::Small), i18n("Update Investment Price"), this, SLOT(slotUpdatePrice()));
 	//m_popMenu = m_contextMenu->insertItem(kiconloader->loadIcon("delete", KIcon::Small),
   //                      i18n("Delete ..."),
   //                      this, SLOT(slotDeleteSplitTransaction()));
@@ -209,4 +234,27 @@ void KInvestmentView::slotListRightMouse(QListViewItem* item, const QPoint& poin
   {
   	m_popMenu->exec(QCursor::pos());
   }
+}
+
+void KInvestmentView::slotViewChanged(int ID)
+{
+	switch(ID)
+	{
+		case VIEW_SUMMARY:
+		{
+			investmentTable->show();
+			transactionTable->hide();
+			break;
+		}
+		case VIEW_INVESTMENT:
+		{
+			investmentTable->hide();
+			transactionTable->show();
+			break;
+		}
+		default:
+		{
+			break;
+		}
+	}
 }
