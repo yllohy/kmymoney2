@@ -1130,6 +1130,7 @@ void KLedgerViewLoan::slotStartEditSplit(void)
 
 void KLedgerViewLoan::slotAccountDetail(void)
 {
+/*
   KNewAccountDlg dlg(m_account, true, false, this, "hi", i18n("Edit an Account"));
 
   if (dlg.exec()) {
@@ -1140,6 +1141,7 @@ void KLedgerViewLoan::slotAccountDetail(void)
       delete e;
     }
   }
+*/
 }
 
 void KLedgerViewLoan::slotPayeeSelected(void)
