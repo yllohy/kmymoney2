@@ -80,6 +80,7 @@ KPayeesView::KPayeesView(QWidget *parent, const char *name )
           this, SLOT(slotTransactionDoubleClicked(QListViewItem*)));
 
   MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassPayee, this);
+  
 }
 
 KPayeesView::~KPayeesView()
@@ -355,7 +356,7 @@ void KPayeesView::writeConfig(void)
 {
   KConfig *config = KGlobal::config();
   config->setGroup("Last Use Settings");
-  config->writeEntry("KPayeesView_LastPayee", payeeCombo->currentText());
+  config->writeEntry("KPayeesView_LastPayee", m_lastPayee);
   config->sync();
 }
 
@@ -371,7 +372,6 @@ void KPayeesView::slotReloadView(void)
   KConfig *config = KGlobal::config();
   config->setGroup("Last Use Settings");
   m_lastPayee = config->readEntry("KPayeesView_LastPayee");
-
   slotRefreshView();
 }
 
@@ -422,7 +422,7 @@ void KPayeesView::resizeEvent(QResizeEvent* ev)
   m_transactionView->setColumnWidth(2, w);
   m_transactionView->resizeContents(
     m_transactionView->visibleWidth(),
-    m_transactionView->visibleHeight());
+    m_transactionView->contentsHeight());
 
   KPayeesViewDecl::resizeEvent(ev);
 }
