@@ -95,7 +95,8 @@ protected slots:
   void slotInterestOnReception(void);
   void slotCreateCategory(void);
   void slotAdditionalFees(void);
-    
+  void slotNewPayee(const QString&);
+      
 protected:
   void loadComboBoxes(void);
   void loadAccountList(void);

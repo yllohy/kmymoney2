@@ -158,12 +158,14 @@ void KEditLoanWizard::loadWidgets(const MyMoneyAccount& /* account */)
       addPayment = (*it_s).value();
       paymentAccountId = (*it_s).accountId();
       MyMoneyPayee payee;
-      try {
-        payee = file->payee((*it_s).payeeId());
-        m_payeeEdit->setText(payee.name());
-      } catch(MyMoneyException *e) {
-        delete e;
-        qWarning("Payee for schedule has been deleted");
+      if(!(*it_s).payeeId().isEmpty()) {
+        try {
+          payee = file->payee((*it_s).payeeId());
+          m_payeeEdit->setText(payee.name());
+        } catch(MyMoneyException *e) {
+          delete e;
+          qWarning("Payee for schedule has been deleted");
+        }
       }
     }
 
@@ -465,13 +467,16 @@ const MyMoneyAccount KEditLoanWizard::account(void) const
   acc.setTerm(term());
   acc.setPeriodicPayment(m_paymentEdit->getMoneyValue());
 
-  try {
-    acc.setPayee(MyMoneyFile::instance()->payeeByName(m_payeeEdit->text()).id());
-  } catch(MyMoneyException *e) {
-    delete e;
-    qWarning("%s(%d): Someone has removed the selected payee", __FILE__, __LINE__);
+  if(!m_payeeEdit->text().isEmpty()) {
+    try {
+      acc.setPayee(MyMoneyFile::instance()->payeeByName(m_payeeEdit->text()).id());
+    } catch(MyMoneyException *e) {
+      delete e;
+      qWarning("%s(%d): Someone has removed the selected payee", __FILE__, __LINE__);
+      acc.setPayee(QCString());
+    }
+  } else
     acc.setPayee(QCString());
-  }
 
   if(m_variableInterestButton->isChecked()) {
     acc.setNextInterestChange(m_interestChangeDateEdit->getQDate());

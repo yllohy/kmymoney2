@@ -239,6 +239,7 @@ void kMyMoneyAccountSelector::loadList(KMyMoneyUtils::categoryTypeE typeMask)
       }
     }
   }
+  update();
 }
 
 void kMyMoneyAccountSelector::loadSubAccounts(QListViewItem* parent, const QCStringList& list)
@@ -380,12 +381,16 @@ void kMyMoneyAccountSelector::setSelected(const QCString& id)
       kMyMoneyCheckListItem* it_c = static_cast<kMyMoneyCheckListItem*>(it_v);
       if(it_c->accountId() == id) {
         m_listView->setSelected(it_v, true);
+        if(m_selMode == QListView::Single)
+          m_listView->ensureItemVisible(it_v);
         return;
       }
     } else if(it_v->rtti() == 0) {
       kMyMoneyListViewItem* it_c = static_cast<kMyMoneyListViewItem*>(it_v);
       if(it_c->accountId() == id) {
         m_listView->setSelected(it_v, true);
+        if(m_selMode == QListView::Single)
+          m_listView->ensureItemVisible(it_v);
         return;
       }
     }
@@ -402,12 +407,16 @@ void kMyMoneyAccountSelector::setSelected(QListViewItem* item, const QCString& i
       kMyMoneyCheckListItem* it_c = static_cast<kMyMoneyCheckListItem*>(it_v);
       if(it_c->accountId() == id) {
         m_listView->setSelected(it_v, true);
+        if(m_selMode == QListView::Single)
+          m_listView->ensureItemVisible(it_v);
         return;
       }
     } else if(it_v->rtti() == 0) {
       kMyMoneyListViewItem* it_c = static_cast<kMyMoneyListViewItem*>(it_v);
       if(it_c->accountId() == id) {
         m_listView->setSelected(it_v, true);
+        if(m_selMode == QListView::Single)
+          m_listView->ensureItemVisible(it_v);
         return;
       }
     }

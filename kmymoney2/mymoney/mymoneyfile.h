@@ -183,6 +183,10 @@ public:
     * of the engine. During bulk-updates it's sometimes useful
     * to turn off notifications for an improved performance.
     *
+    * Engine notifications that are generated while the notifications
+    * are suspended will be postponed until the notifications are
+    * re-enabled.
+    *
     * @param state if @p true, no notifications will be send out,
     *              if @p false, notifications will be send out.
     */

@@ -1254,6 +1254,9 @@ void KLedgerView::slotShowTransactionForm(bool visible)
   }
 
   if(m_register != 0) {
+    // bool lensSetting = m_register->ledgerLens();
+    // unsigned int count = m_register->transactionCount();
+    
     if(visible) {
       m_register->setLedgerLens(m_ledgerLens);
     } else {
@@ -1261,7 +1264,7 @@ void KLedgerView::slotShowTransactionForm(bool visible)
     }
 
     // force update of row count because the lens setting might have changed
-    m_register->setTransactionCount(m_transactionPtrVector.size()+1);
+    m_register->setTransactionCount(m_transactionPtrVector.size()+1, false);
 
     // inform widget, if inline editing should be available or not
     // m_register->setInlineEditingMode(!visible);
@@ -1326,34 +1329,7 @@ const QString KLedgerView::action2str(const QCString &action, const bool showHot
 
 void KLedgerView::slotNewPayee(const QString& payeeName)
 {
-  MyMoneyFile* file = MyMoneyFile::instance();
-  MyMoneyPayee payee;
-
-  if(!m_editPayee)
-    return;
-
-  // Ask the user if that is what he intended to do?
-  QString msg = i18n("Do you want to add '%1' as payee/receiver ?").arg(payeeName);
-
-  if(KMessageBox::questionYesNo(this, msg, i18n("New payee/receiver")) == KMessageBox::Yes) {
-    // for now, we just add the payee to the pool. In the future,
-    // we could open a dialog and ask for all the other attributes
-    // of the payee.
-    payee.setName(payeeName);
-
-    try {
-      file->addPayee(payee);
-      m_editPayee->loadList();
-
-    } catch(MyMoneyException *e) {
-      KMessageBox::detailedSorry(0, i18n("Unable to add payee/receiver"),
-        (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
-      delete e;
-
-      m_editPayee->resetText();
-    }
-  } else
-    m_editPayee->resetText();
+  KMyMoneyUtils::newPayee(this, m_editPayee, payeeName);
 }
 
 int KLedgerView::transactionType(const MyMoneySplit& split) const

@@ -118,7 +118,7 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
               } else if(m_transaction->splitCount() > 2)
                 txt = QString(i18n("Splitted transaction"));
               else {
-                MyMoneySplit split = m_transaction->splitByAccount(m_transaction->splitId(), false);
+                MyMoneySplit split = m_transaction->splitByAccount(m_split.accountId(), false);
                 txt = MyMoneyFile::instance()->accountToCategory(split.accountId());
               }
             } catch(MyMoneyException *e) {

@@ -748,15 +748,13 @@ void MyMoneyFile::notify(void)
 
     if(m_notificationList.count() > 0)
       notify(NotifyClassAnyChange);
+      
+    clearNotification();
   }  
-  clearNotification();
 }
 
 void MyMoneyFile::notifyAccountTree(const QCString& id)
 {
-  if(m_suspendNotify)
-    return;
-    
   checkStorage();
 
   QCString accId = id;
@@ -774,7 +772,7 @@ void MyMoneyFile::notifyAccountTree(const QCString& id)
 
 void MyMoneyFile::addNotification(const QCString& id)
 {
-  if(!m_suspendNotify && !id.isEmpty())
+  if(!id.isEmpty())
     m_notificationList[id] = true;
 }
 
@@ -1198,5 +1196,8 @@ QValueList<MyMoneySchedule> MyMoneyFile::scheduleListEx( int scheduleTypes,
 
 void MyMoneyFile::suspendNotify(const bool state)
 {
+  if(state == false && m_suspendNotify == true)
+    notify();
+    
   m_suspendNotify = state;
 }

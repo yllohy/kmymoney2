@@ -361,14 +361,23 @@ void kMyMoneyRegister::ensureTransactionVisible(void)
     next = curr + rpt() + maxRpt() - 1;
   else
     next = curr + rpt()*2 - 1;
+    
+  int wt = contentsY();           // window top
+  int wh = visibleHeight();       // window height
+  int lt = prev * rowHeight(0);   // top of line above lens
+  int lb = next * rowHeight(0);   // bottom of line below lens
 
-  if(prev >= 0)
-    ensureCellVisible(prev, 0);
+  // only update widget, if the transaction is not fully visible
+  if(lt < wt || lb >= (wt + wh)) {
 
-  ensureCellVisible(curr, 0);
+    if(prev >= 0)
+      ensureCellVisible(prev, 0);
 
-  if(next < numRows())
-    ensureCellVisible(next, 0);
+    ensureCellVisible(curr, 0);
+
+    if(next < numRows())
+      ensureCellVisible(next, 0);
+  }
 }
 
 bool kMyMoneyRegister::eventFilter(QObject* o, QEvent* e)
@@ -376,6 +385,10 @@ bool kMyMoneyRegister::eventFilter(QObject* o, QEvent* e)
   bool rc = false;
 
   if(e->type() == QEvent::KeyPress && !m_inlineEditMode) {
+    int lines = visibleHeight()/rowHeight(0);
+    if(m_ledgerLens)
+      lines += maxRpt()-1;
+      
     QKeyEvent *k = static_cast<QKeyEvent *> (e);
     rc = true;
     switch(k->key()) {
@@ -383,6 +396,21 @@ bool kMyMoneyRegister::eventFilter(QObject* o, QEvent* e)
         emit signalSpace();
         break;
 
+      case Qt::Key_Delete:
+        emit signalDelete();
+        break;
+
+      case Qt::Key_PageUp:
+        while(lines-- > 0)
+          emit signalPreviousTransaction();
+        break;
+        
+      case Qt::Key_PageDown:
+        while(lines-- > 0)
+          emit signalNextTransaction();
+        break;
+        break;
+                
       case Qt::Key_Return:
       case Qt::Key_Enter:
         emit signalEnter();

@@ -52,6 +52,7 @@
 #include "../dialogs/ksplittransactiondlg.h"
 #include "../dialogs/knewaccountdlg.h"
 #include "../mymoney/mymoneyfile.h"
+#include "../views/kmymoneyview.h"
 
 KLedgerViewCheckings::KLedgerViewCheckings(QWidget *parent, const char *name )
   : KLedgerView(parent,name)
@@ -266,7 +267,8 @@ void KLedgerViewCheckings::createRegister(void)
   connect(m_register, SIGNAL(signalEnter()), this, SLOT(slotStartEdit()));
   connect(m_register, SIGNAL(signalNextTransaction()), this, SLOT(slotNextTransaction()));
   connect(m_register, SIGNAL(signalPreviousTransaction()), this, SLOT(slotPreviousTransaction()));
-
+  connect(m_register, SIGNAL(signalDelete()), this, SLOT(slotDeleteTransaction()));
+  
   connect(m_register->horizontalHeader(), SIGNAL(clicked(int)), this, SLOT(slotRegisterHeaderClicked(int)));
 }
 
@@ -420,12 +422,17 @@ void KLedgerViewCheckings::createInfoStack(void)
   QVBoxLayout* innerLayout = new QVBoxLayout( innerFrame, 6, 0, "InnerLayout");
 
   QLabel* txt;
-  QFont defaultFont = QFont("helvetica", 10);
-
   txt = new QLabel(i18n("<center><b>Reconcile account</b></center><hr>\n"
                         "<b>1.</b> Click on column 'C' "
                         "to clear the transactions "
                         "appearing on your bank statement."), innerFrame);
+
+  KConfig *config = KGlobal::config();
+  config->setGroup("List Options");
+
+  QFont defaultFont = QFont("helvetica", 10);
+  defaultFont = config->readFontEntry("listCellFont", &defaultFont);
+
   txt->setFont(defaultFont);
   innerLayout->addWidget(txt);
 
@@ -514,7 +521,7 @@ void KLedgerViewCheckings::createInfoStack(void)
 
   connect(m_postponeButton, SIGNAL(clicked()), this, SLOT(slotPostponeReconciliation()));
 
-  spacer = new QSpacerItem( 20, 20,
+  spacer = new QSpacerItem( 1, 1,
                    QSizePolicy::Minimum, QSizePolicy::Expanding );
   reconcileLayout->addItem( spacer );
 
@@ -1407,19 +1414,6 @@ void KLedgerViewCheckings::endReconciliation(void)
   m_summaryLine->show();
   m_transactionFormActive = config->readBoolEntry("TransactionForm", true);
 
-#if 0
-  // FIXME  
-  if(m_transactionPtr != 0)
-    transactionId = m_transactionPtr->id();
-
-  updateView();
-
-  if(!transactionId.isEmpty()) {
-    if(selectTransaction(transactionId) == false
-    && m_transactionPtrVector.size() > 0)
-      selectTransaction(m_transactionPtrVector[m_transactionPtrVector.size()-1]->id());
-  }
-#endif
   refreshView();
   
   disconnect(m_register, SIGNAL(signalSpace()), this, SLOT(slotToggleClearFlag()));
@@ -1436,6 +1430,7 @@ void KLedgerViewCheckings::slotEndReconciliation(void)
     m_account.deletePair("statementBalance");
     m_account.deletePair("statementDate");
 
+    MyMoneyFile::instance()->suspendNotify(true);
     try {
       MyMoneyFile::instance()->modifyAccount(m_account);
       MyMoneyTransactionFilter filter(m_account.id());
@@ -1455,6 +1450,7 @@ void KLedgerViewCheckings::slotEndReconciliation(void)
       qDebug("Unexpected exception when setting cleared to reconcile");
       delete e;
     }
+    MyMoneyFile::instance()->suspendNotify(false);
     endReconciliation();
   }
 }

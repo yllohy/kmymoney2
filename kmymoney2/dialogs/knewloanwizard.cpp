@@ -63,8 +63,8 @@ KNewLoanWizard::KNewLoanWizard(QWidget *parent, const char *name ) :
   connect(m_lendButton, SIGNAL(clicked()), this, SLOT(slotAssetLoan()));
 
   connect(m_nameEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckPageFinished()));
-  connect(m_payeeEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckPageFinished()));
-
+  connect(m_payeeEdit, SIGNAL(newPayee(const QString&)), this, SLOT(slotNewPayee(const QString&)));
+  
   connect(m_previousPaymentButton, SIGNAL(clicked()), this, SLOT(slotPaymentsMade()));
   connect(m_noPreviousPaymentButton, SIGNAL(clicked()), this, SLOT(slotNoPaymentsMade()));
 
@@ -174,6 +174,11 @@ void KNewLoanWizard::resetCalculator(void)
   m_additionalCost->setText(MyMoneyMoney(0).formatMoney());
 }
 
+void KNewLoanWizard::slotNewPayee(const QString& payeeName)
+{
+  KMyMoneyUtils::newPayee(this, m_payeeEdit, payeeName);
+}
+
 void KNewLoanWizard::slotLiabilityLoan(void)
 {
   m_generalReceiverText->setText(i18n("To whom do you make payments?"));
@@ -231,8 +236,7 @@ void KNewLoanWizard::slotCheckPageFinished(void)
   nextButton()->setEnabled(false);
   
   if(currentPage() == m_namePage) {
-    if(!m_nameEdit->text().isEmpty()
-    && !m_payeeEdit->text().isEmpty()) {
+    if(!m_nameEdit->text().isEmpty()) {
       nextButton()->setEnabled(true);
     }
 
@@ -376,8 +380,12 @@ void KNewLoanWizard::updateSummary(void)
     m_summaryLoanType->setText(i18n("lend"));
 
   m_summaryFirstPayment->setText(KGlobal::locale()->formatDate(m_firstDueDateEdit->getQDate(), true));
-  m_summaryPayee->setText(m_payeeEdit->text());
-
+  if(m_payeeEdit->text().isEmpty()) {
+    m_summaryPayee->setText(i18n("not assigned"));
+  } else {
+    m_summaryPayee->setText(m_payeeEdit->text());
+  }
+  
   // Calculation
   if(m_interestOnReceptionButton->isChecked())
     m_summaryInterestDue->setText(i18n("on reception"));
@@ -932,15 +940,17 @@ const MyMoneySchedule KNewLoanWizard::schedule() const
   sInterest.setAction(MyMoneySplit::ActionInterest);
 
   // payee
-  try {
-    QCString payeeId = MyMoneyFile::instance()->payeeByName(m_payeeEdit->text()).id();
-    sPayment.setPayeeId(payeeId);
-    sAmortization.setPayeeId(payeeId);
-    
-  } catch(MyMoneyException *e) {
-    delete e;
-  }
+  if(!m_payeeEdit->text().isEmpty()) {
+    try {
+      QCString payeeId = MyMoneyFile::instance()->payeeByName(m_payeeEdit->text()).id();
+      sPayment.setPayeeId(payeeId);
+      sAmortization.setPayeeId(payeeId);
 
+    } catch(MyMoneyException *e) {
+      delete e;
+    }
+  }
+  
   // IMPORTANT: Payment split must be the first one, because
   //            the schedule view expects it this way during display
   t.addSplit(sPayment);
@@ -990,14 +1000,17 @@ const MyMoneyAccount KNewLoanWizard::account(void) const
   acc.setFinalPayment(MyMoneyMoney(m_finalPaymentEdit->text()));
   acc.setTerm(term());
   acc.setPeriodicPayment(m_paymentEdit->getMoneyValue());
-  
-  try {
-    acc.setPayee(MyMoneyFile::instance()->payeeByName(m_payeeEdit->text()).id());
-  } catch(MyMoneyException *e) {
-    delete e;
-    qWarning("%s(%d): Someone has removed the selected payee", __FILE__, __LINE__);
+
+  if(!m_payeeEdit->text().isEmpty()) {
+    try {
+      acc.setPayee(MyMoneyFile::instance()->payeeByName(m_payeeEdit->text()).id());
+    } catch(MyMoneyException *e) {
+      delete e;
+      qWarning("%s(%d): Someone has removed the selected payee", __FILE__, __LINE__);
+      acc.setPayee(QCString());
+    }
+  } else
     acc.setPayee(QCString());
-  }
   
   if(m_variableInterestButton->isChecked()) {
     acc.setNextInterestChange(m_interestChangeDateEdit->getQDate());

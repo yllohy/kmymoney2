@@ -412,6 +412,11 @@ signals:
   void signalNextTransaction();
 
   /**
+    * This signal is emitted when the user presses DELETE
+    */
+  void signalDelete();
+  
+  /**
     * This signal is emitted when the user presses RETURN
     */
   void signalEnter();

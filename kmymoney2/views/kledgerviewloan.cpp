@@ -264,6 +264,8 @@ void KLedgerViewLoan::createRegister(void)
 
   connect(m_register, SIGNAL(signalNextTransaction()), this, SLOT(slotNextTransaction()));
   connect(m_register, SIGNAL(signalPreviousTransaction()), this, SLOT(slotPreviousTransaction()));
+  connect(m_register, SIGNAL(signalDelete()), this, SLOT(slotDeleteTransaction()));
+  
   connect(m_register->horizontalHeader(), SIGNAL(clicked(int)), this, SLOT(slotRegisterHeaderClicked(int)));
 }
 
