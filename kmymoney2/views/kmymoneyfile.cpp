@@ -22,33 +22,38 @@
 #include <klocale.h>
 #include "kmymoneyfile.h"
 
-KMyMoneyFile *KMyMoneyFile::m_instance = 0L;
-MyMoneyFile *KMyMoneyFile::m_file = 0L;
-MyMoneySeqAccessMgr *KMyMoneyFile::m_storage = 0L;
-bool KMyMoneyFile::m_open = false;
+KMyMoneyFile *KMyMoneyFile::_instance = 0;
+//MyMoneyFile *KMyMoneyFile::m_file = 0L;
+//MyMoneySeqAccessMgr *KMyMoneyFile::m_storage = 0L;
+//bool KMyMoneyFile::m_open = false;
 
 KMyMoneyFile::KMyMoneyFile()
 {
+  m_storage = new MyMoneySeqAccessMgr;
+  m_file = new MyMoneyFile(m_storage);
 }
 
+/*
 KMyMoneyFile::KMyMoneyFile(const QString&)
 {
 }
+*/
 
 KMyMoneyFile::~KMyMoneyFile()
 {
+  if(m_file)
+    delete m_file;
+  if(m_storage)
+    delete m_storage;
 }
 
 KMyMoneyFile *KMyMoneyFile::instance()
 {
-  if (!m_instance)
-  {
-    m_instance = new KMyMoneyFile;
-    m_instance->m_storage = new MyMoneySeqAccessMgr;
-    m_instance->m_file = new MyMoneyFile(m_storage);
+  if (_instance == 0) {
+    _instance = new KMyMoneyFile;
   }
 
-  return m_instance;
+  return _instance;
 }
 
 MyMoneyFile* KMyMoneyFile::file()
@@ -63,10 +68,10 @@ MyMoneySeqAccessMgr* KMyMoneyFile::storage()
 
 void KMyMoneyFile::reset()
 {
-  delete m_instance->m_storage;
-  delete m_instance->m_file;
-  m_instance->m_storage = new MyMoneySeqAccessMgr;
-  m_instance->m_file = new MyMoneyFile(m_storage);
+  delete m_storage;
+  delete m_file;
+  m_storage = new MyMoneySeqAccessMgr;
+  m_file = new MyMoneyFile(m_storage);
 }
 
 QString KMyMoneyFile::accountTypeToString(MyMoneyAccount::accountTypeE accountType)
@@ -136,3 +141,4 @@ bool KMyMoneyFile::isOpen()
   qDebug("returning open %d", m_open);
   return m_open;
 }
+

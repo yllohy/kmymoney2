@@ -32,23 +32,26 @@
   */
 
 class KMyMoneyFile {
-  static KMyMoneyFile *m_instance;
-  static MyMoneyFile *m_file;
-  static MyMoneySeqAccessMgr *m_storage;
-  static bool m_open;
+private:
+  static KMyMoneyFile *_instance;
+  MyMoneyFile *m_file;
+  MyMoneySeqAccessMgr *m_storage;
+  bool m_open;
 
+protected:
   KMyMoneyFile();
-  KMyMoneyFile(const QString&);
+  // KMyMoneyFile(const QString&);
 
 public:
   ~KMyMoneyFile();
   static KMyMoneyFile *instance();
-  static MyMoneyFile* file();
-  static MyMoneySeqAccessMgr* storage();
-  static void reset();
-  static void open();
-  static void close();
-  static bool isOpen();
+
+  MyMoneyFile* file();
+  MyMoneySeqAccessMgr* storage();
+  void reset();
+  void open();
+  void close();
+  bool isOpen();
 
   /**
     * Helper method for account types
