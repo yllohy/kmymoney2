@@ -1,3 +1,7 @@
+2004-06-23 Kevin Tambascio <ktambascio@users.sourceforge.net>
+  * Added new dialog (doesn't do anythign yet) as a placeholder for the online stock/currency price update features.
+  * Added a menu item under the Tools menu to access this.  It will also be available in the investment view.
+
 2004-06-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Applied patch(es) supplied by Ace Jones
   * Fixed QIF generation errors
