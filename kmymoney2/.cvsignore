@@ -8,4 +8,6 @@ templates
 *.moc
 *.moc.cpp
 *.o
+*decl.cpp
+*decl.h
 kmymoney2
