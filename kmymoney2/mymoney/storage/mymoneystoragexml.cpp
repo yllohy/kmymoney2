@@ -109,7 +109,7 @@ void MyMoneyStorageXML::writeFile(QIODevice* qf, IMyMoneySerialize* storage)
   mainElement.appendChild(institutions);
 
   QDomElement payees = pDoc->createElement("PAYEES");
-  //writePayees(pDoc, payees, storage);
+  writePayees(pDoc, payees, storage);
   mainElement.appendChild(payees);
 
   QDomElement accounts = pDoc->createElement("ACCOUNTS");
@@ -117,7 +117,7 @@ void MyMoneyStorageXML::writeFile(QIODevice* qf, IMyMoneySerialize* storage)
   mainElement.appendChild(accounts);
 
   QDomElement transactions = pDoc->createElement("TRANSACTIONS");
-  //writeTransactions(pDoc, transactions, storage);
+  writeTransactions(pDoc, transactions, storage);
   mainElement.appendChild(transactions);
 
   QDomElement schedules = pDoc->createElement("SCHEDULES");
@@ -187,12 +187,35 @@ void MyMoneyStorageXML::writeInstitutions(QDomDocument *pDoc, QDomElement& insti
 
 void MyMoneyStorageXML::writePayees(QDomDocument *pDoc, QDomElement& payees, IMyMoneySerialize* storage)
 {
+  Q_INT32 tmp;
+  QValueList<MyMoneyPayee> list;
+  QValueList<MyMoneyPayee>::ConstIterator it;
 
+  list = storage->payeeList();
+  payees.setAttribute(QString("nextid"), list.count());
+                      
+  for(it = list.begin(); it != list.end(); ++it)
+  {
+    QDomElement payee = pDoc->createElement("PAYEE");
+    writePayee(pDoc, payee, *it);
+    payees.appendChild(payee);
+  }
 }
 
 void MyMoneyStorageXML::writePayee(QDomDocument *pDoc, QDomElement& payee, const MyMoneyPayee& p)
 {
+  payee.setAttribute(QString("name"), p.name());
+  payee.setAttribute(QString("id"), p.id());
+  payee.setAttribute(QString("reference"), p.reference());
 
+  QDomElement address = pDoc->createElement("ADDRESS");
+  address.setAttribute(QString("street"), p.address());
+  address.setAttribute(QString("zipcode"), p.postcode());
+  address.setAttribute(QString("city"), p.city());
+  address.setAttribute(QString("state"), p.state());
+  address.setAttribute(QString("telephone"), p.telephone());
+
+  payee.appendChild(address);
 }
 
 void MyMoneyStorageXML::writeAccounts(QDomDocument *pDoc, QDomElement& accounts, IMyMoneySerialize* storage)
