@@ -1,0 +1,13 @@
+Makefile
+Makefile.in
+.deps
+.libs
+.pics
+templates
+*_meta_unload.cpp
+*.moc
+*.moc.cpp
+*.o
+*decl.cpp
+*decl.h
+*~
