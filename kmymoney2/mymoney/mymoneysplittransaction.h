@@ -21,6 +21,8 @@
 #ifndef MYMONEYSPLITTRANSACTION_H
 #define MYMONEYSPLITTRANSACTION_H
 
+#include <qlist.h>
+
 #include "mymoneytransactionbase.h"
 
 class MyMoneyTransaction;
@@ -34,6 +36,7 @@ class MyMoneySplitTransaction : public MyMoneyTransactionBase  {
 public: 
 	MyMoneySplitTransaction();
   MyMoneySplitTransaction(MyMoneyTransaction* parent);
+  MyMoneySplitTransaction(const MyMoneySplitTransaction& right);
 	~MyMoneySplitTransaction();
 
   /**

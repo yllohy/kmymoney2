@@ -44,6 +44,14 @@ public:
   void insertWidget(int row, int col, QWidget* w);
   QWidget* cellWidget(int row,int col) const;
 
+  void setCurrentRow(int row);
+  int currentRow(void) { return m_currentRow; }
+  void setMaxRows(int row);
+
+protected:
+  void contentsMousePressEvent( QMouseEvent* e );
+  void contentsMouseReleaseEvent( QMouseEvent* e );
+
 public slots:
   /** No descriptions */
   virtual void setCurrentCell(int row, int col);
@@ -57,6 +65,12 @@ private:
 
   // button of mouse that caused the event
   int m_mouseButton;
+
+  // the currently selected row (will be printed as selected)
+  int m_currentRow;
+
+  // the number of rows filled with data
+  int m_maxRows;
 
 protected slots:
 	virtual void columnWidthChanged(int col);

@@ -26,6 +26,13 @@ MyMoneySplitTransaction::MyMoneySplitTransaction()
   m_parent = 0;
 }
 
+MyMoneySplitTransaction::MyMoneySplitTransaction(const MyMoneySplitTransaction& right)
+  : MyMoneyTransactionBase(right)
+{
+  m_parent = 0;
+}
+
+
 MyMoneySplitTransaction::MyMoneySplitTransaction(MyMoneyTransaction* parent)
 {
   m_parent = parent;

@@ -48,8 +48,14 @@ private:
   stateE m_state;
   unsigned int m_index;
 
+
   friend QDataStream &operator<<(QDataStream &, const MyMoneyTransaction &);
   friend QDataStream &operator>>(QDataStream &, MyMoneyTransaction &);
+
+public:   // FIXME: for testing I made this public, must be private.
+  // List of splits
+  QList<MyMoneySplitTransaction> m_splitList;
+
 
 public:
   MyMoneyTransaction();
@@ -69,6 +75,7 @@ public:
   QString accountFrom(void) const { return m_accountFrom; }
   QString accountTo(void) const { return m_accountTo; }
   stateE state(void) const { return m_state; }
+  const QList<MyMoneySplitTransaction> splitList(void) { return m_splitList; }
 
   // Simple set operations
   void setNumber(const QString& val);
@@ -107,9 +114,6 @@ public:
     * @return always false
     */
   virtual bool isSplit(void) { return false; };
-
-  // List of splits
-  QList<MyMoneySplitTransaction> m_splitList;
 
   MyMoneyAccount *account(void) { return m_parent; }
 

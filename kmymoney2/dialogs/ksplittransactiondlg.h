@@ -23,11 +23,16 @@
 #ifndef KSPLITTRANSACTIONDLG_H
 #define KSPLITTRANSACTIONDLG_H
 
-#include "ksplittransactiondlgdecl.h"
 #include "../mymoney/mymoneymoney.h"
+#include "../mymoney/mymoneysplittransaction.h"
+#include "../mymoney/mymoneyfile.h"
+#include "../mymoney/mymoneybank.h"
+#include "../mymoney/mymoneyaccount.h"
 #include "../widgets/kmymoneycombo.h"
 #include "../widgets/kmymoneyedit.h"
 #include "../widgets/kmymoneylineedit.h"
+
+#include "ksplittransactiondlgdecl.h"
 
 /**
   *@author Thomas Baumgart
@@ -37,7 +42,12 @@ class KSplitTransactionDlg : public kSplitTransactionDlgDecl  {
   Q_OBJECT
 
 public: 
-	KSplitTransactionDlg( QWidget* parent,  const char* name, MyMoneyMoney* amount, const bool amountValid = false);
+	KSplitTransactionDlg( QWidget* parent,  const char* name,
+                        MyMoneyFile* const filePointer,
+                        MyMoneyBank* const bankPointer,
+                        MyMoneyAccount* const accountPointer,
+                        const QList<MyMoneySplitTransaction>& list,
+                        MyMoneyMoney* amount, const bool amountValid = false);
 	~KSplitTransactionDlg();
 
 
@@ -54,13 +64,45 @@ private:
   // create input widgets
   void createInputWidgets(void);
 
-  // called upon mouse click, to see where to set the focus
-  void slotFocusChange(int row, int col, int button, const QPoint & mousePos);
+  // resize the transaction table depending on the visual size
+  // and the number of entries. Updates m_numExtraLines.
+  void updateTransactionTableSize(void);
+
+  // called when the transaction table needs to be updated
+  //
+  // @param start row to be updated. -1 (default) will update all rows
+  // @param col the column to be updated. -1 (default) will update all cols
+  void updateTransactionList(int start = -1, int col = -1);
+
+  // updates a single transaction with the values of the input widgets
+  void updateTransaction(MyMoneySplitTransaction *);
+
+  // enable (default) or disable input widgets
+  // @param show true will enable, false will disable the widgets
+  void showWidgets(int row, bool show = true);
+
+  // disable input widgets (provided for convenience)
+  void hideWidgets() { showWidgets(0, false); }
+
+  // calculate the difference to the given transaction amount (if any)
+  // @return the failing amount to the transactions amount
+  MyMoneyMoney diffAmount(void);
+
+  // calculate the sum of the splits
+  // @return the sum of all split transactions
+  MyMoneyMoney splitsAmount(void);
+
+  // loads the lists required for input
+  void updateInputLists(void);
 
 protected slots:
   void slotFinishClicked();
   void slotCancelClicked();
   void slotClearAllClicked();
+
+  // called upon mouse click, to see where to set the focus
+  void slotFocusChange(int row, int col, int button, const QPoint & mousePos);
+
 
 private slots:
   // used internally to setup the initial size of all widgets
@@ -68,20 +110,23 @@ private slots:
 
 private:
 
-  // keeps the actual width required for the amount field
-  int   m_amountWidth;
+  // keeps a pointer to the file for global data retrieval
+  MyMoneyFile*  const m_filePointer;
 
-  // the sum of all splits
-  MyMoneyMoney  m_amountSplits;
+  // keeps a pointer to the currently selected bank
+  MyMoneyBank* const m_bankPointer;
+
+  // keeps a pointer to the currently selected account
+  MyMoneyAccount* const m_accountPointer;
+
+  // keeps the actual width required for the amount field
+  unsigned      m_amountWidth;
 
   // the initial amount entered into the transaction register
   MyMoneyMoney* m_amountTransaction;
 
   // flag if an amount for the transaction was specified
   bool          m_amountValid;
-
-  // the number of table rows that are filled with real data
-  int   m_numSplits;
 
   // the number of table rows that are required to fill
   // the widget if less splits are entered. This number is adjusted
@@ -99,6 +144,9 @@ private:
   // pointer to input widget for amount. the widget will be
   // created in createInputWidgets()
   kMyMoneyEdit*  m_amount;
+
+  // the dialog local list of splits
+  QList<MyMoneySplitTransaction> m_splitList;
 
 };
 

@@ -20,13 +20,16 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <qapplication.h>
+
 #include <kconfig.h>
 #include <kglobal.h>
 
 #include "kmymoneysplittable.h"
 
-kMyMoneySplitTable::kMyMoneySplitTable(QWidget *parent, const char *name )
- : QTable(parent,name)
+kMyMoneySplitTable::kMyMoneySplitTable(QWidget *parent, const char *name ) :
+  QTable(parent,name),
+  m_currentRow(0)
 {
   setVScrollBarMode(QScrollView::AlwaysOn);
   // never show a horizontal scroll bar
@@ -49,6 +52,8 @@ void kMyMoneySplitTable::paintCell(QPainter *p, int row, int col, const QRect& r
   const bool bShowGrid = config->readBoolEntry("ShowGrid", true);
 
   QColorGroup g = colorGroup();
+  QColor textColor;
+
   if (row%2)
     g.setColor(QColorGroup::Base, config->readColorEntry("listColor", &defaultColor));
   else
@@ -92,15 +97,24 @@ void kMyMoneySplitTable::paintCell(QPainter *p, int row, int col, const QRect& r
   rr2.setWidth(columnWidth(col)-4);
   rr2.setHeight(rowHeight(row));
 
-  QBrush backgroundBrush(g.base());
-  p->setPen(g.foreground());
-  p->fillRect(rr,backgroundBrush);
+
+  if(row == m_currentRow) {
+    QBrush backgroundBrush(g.highlight());
+    textColor = g.highlightedText();
+    p->fillRect(rr,backgroundBrush);
+
+  } else {
+    QBrush backgroundBrush(g.base());
+    textColor = g.text();
+    p->fillRect(rr,backgroundBrush);
+  }
 
   if (bShowGrid) {
     p->setPen(defaultGridColor);
-    p->drawLine(rr.x(), 0, rr.x(), rr.height()-1);    // left frame
-    p->drawLine(rr.x(), rr.y(), rr.width(), 0);       // bottom frame
-    p->setPen(g.foreground());
+    if(col != 0)
+      p->drawLine(rr.x(), 0, rr.x(), rr.height()-1);    // left frame
+    p->drawLine(rr.x(), rr.y(), rr.width(), 0);         // bottom frame
+    p->setPen(textColor);
   }
 
   switch (col) {
@@ -150,7 +164,6 @@ QWidget* kMyMoneySplitTable::cellWidget(int row, int col)const
   if(col >= 0 && col <= 2)
     return m_colWidget[col];
 
-  qDebug("Unknown widget for KMyMoneySplitTable::cellWidget in row %d and col %d", row, col);
   return (QWidget*)0;
 }
 
@@ -164,15 +177,52 @@ void kMyMoneySplitTable::insertWidget(int row, int col, QWidget* w)
 
 bool kMyMoneySplitTable::eventFilter(QObject *o, QEvent *e)
 {
+  return QTable::eventFilter(o,e);
+
+#if 0
+  char *txt = 0;
+  if(e->type() == QEvent::MouseButtonPress)
+    txt = "MouseButtonPress";
+  else if(e->type() == QEvent::MouseButtonRelease)
+    txt = "MouseButtonRelease";
+
+  if(txt)
+    qDebug(txt);
+
   if(e->type() == QEvent::MouseButtonPress) {
-    QMouseEvent *m = (QMouseEvent *) e ;
+    QMouseEvent *m = static_cast<QMouseEvent *> (e) ;
     m_mousePoint = m->pos();
     m_mouseButton = m->button();
   }
   return QTable::eventFilter(o,e);
+#endif
+}
+
+
+void kMyMoneySplitTable::contentsMousePressEvent( QMouseEvent* e )
+{
+  m_mousePoint = e->pos();
+  m_mouseButton = e->button();
+}
+
+void kMyMoneySplitTable::contentsMouseReleaseEvent( QMouseEvent* e )
+{
+  emit clicked( rowAt(e->pos().y()), columnAt(e->pos().x()), e->button(), e->pos() );
 }
 
 void kMyMoneySplitTable::setCurrentCell(int row, int col)
 {
-	clicked(row,col,m_mouseButton,m_mousePoint);
+  if(row > m_maxRows)
+    row = m_maxRows;
+  QTable::setCurrentCell(row, col);
+}
+
+void kMyMoneySplitTable::setCurrentRow(int row)
+{
+  m_currentRow = row;
+}
+
+void kMyMoneySplitTable::setMaxRows(int row)
+{
+  m_maxRows = row;
 }

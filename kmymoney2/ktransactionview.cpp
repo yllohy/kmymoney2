@@ -618,9 +618,22 @@ void KTransactionView::slotEditSplit()
   if (!transaction)
     return;
 
-  MyMoneyMoney amount = 99.99;
+  MyMoneyMoney amount = 9.99;
+  MyMoneySplitTransaction* tmp = new MyMoneySplitTransaction;
 
-  KSplitTransactionDlg* dlg = new KSplitTransactionDlg(0, 0, &amount, true);
+  tmp->setAmount(amount);
+  tmp->setMemo("This is the memo");
+  tmp->setCategoryMajor("major");
+  tmp->setCategoryMinor("minor");
+
+  transaction->m_splitList.append(tmp);
+
+
+  amount = 99.99;
+
+  KSplitTransactionDlg* dlg = new KSplitTransactionDlg(0, 0,
+    m_filePointer, getBank(), pAccount,
+    transaction->splitList(), &amount, true);
   dlg->exec();
   delete dlg;
 }
@@ -1303,7 +1316,6 @@ void KTransactionView::updateTransactionList(int row, int col)
         break;
     }
   }
-  transactionsTable->setCurrentCell(1, 1);
 
   // setup new size values
   resizeEvent(NULL);

@@ -84,6 +84,8 @@ MyMoneyTransaction::MyMoneyTransaction(const MyMoneyTransaction& right)
   m_state = right.m_state;
   m_index = right.m_index;
 	m_parent = right.m_parent;
+
+  // FIXME: copy the m_splitList as well
 }
 
 MyMoneyTransaction& MyMoneyTransaction::operator = (const MyMoneyTransaction& right)
@@ -100,6 +102,8 @@ MyMoneyTransaction& MyMoneyTransaction::operator = (const MyMoneyTransaction& ri
   m_state = right.m_state;
   m_index = right.m_index;
 	m_parent = right.m_parent;
+
+  // FIXME: copy the m_splitList as well
 
   // don't forget to copy base class members
   m_memo = right.m_memo;
