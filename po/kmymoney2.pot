@@ -458,7 +458,7 @@ msgstr ""
 
 #: dialogs/knewaccountwizard.cpp:445
 msgid ""
-"Use the checkings account type to manage activities on your checkings "
+"Use the checking account type to manage activities on your checking "
 "account e.g. payments, cheques and ec-card purchases."
 msgstr ""
 

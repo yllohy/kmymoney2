@@ -495,7 +495,7 @@ msgstr "Bitte wählen Sie ein Konto aus."
 
 #: dialogs/knewaccountwizard.cpp:445
 msgid ""
-"Use the checkings account type to manage activities on your checkings "
+"Use the checking account type to manage activities on your checking "
 "account e.g. payments, cheques and ec-card purchases."
 msgstr ""
 "Benutzen Sie diesen Kontotyp, um die Aktivitäten auf einem Girokonto zu "

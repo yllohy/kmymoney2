@@ -508,7 +508,7 @@ msgstr "Veuillez sélectionner le compte."
 
 #: dialogs/knewaccountwizard.cpp:448
 msgid ""
-"Use the checkings account type to manage activities on your checkings "
+"Use the checking account type to manage activities on your checking "
 "account e.g. payments, cheques and ec-card purchases."
 msgstr ""
 "Utilisez le type Compte chèques pour gérer vos mouvements dans votre compte "

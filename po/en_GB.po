@@ -503,10 +503,10 @@ msgstr "Please select the account."
 
 #: dialogs/knewaccountwizard.cpp:448
 msgid ""
-"Use the checkings account type to manage activities on your checkings "
+"Use the checking account type to manage activities on your checking "
 "account e.g. payments, cheques and ec-card purchases."
 msgstr ""
-"Use the checkings account type to manage activities on your checkings "
+"Use the checking account type to manage activities on your checking "
 "account e.g. payments, cheques and ec-card purchases."
 
 #: dialogs/knewaccountwizard.cpp:456
