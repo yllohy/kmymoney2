@@ -1,14 +1,27 @@
+2003-12-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * don't crash when closing file in ledger view showing loan account
+  * newly entered transaction becomes the current selected transaction
+
+2003-12-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * show correct category underneath the ledger lens
+  * don't update screen while marking splits as reconciled
+  * delete key now enables to delete transactions in the ledger views
+  * optimized screen update for ledger view
+  * page up/page down keys now scroll correctly in ledger view
+
 2003-12-13 Kevin Tambascio <ktambascio@users.sourceforge.net>
-  * Changed the khomeview.cpp and css file to brighten up the colors, and use better fonts.
+  * Changed the khomeview.cpp and css file to brighten up the colors,
+    and use better fonts.
 
 2003-12-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * respect date changes when entering schedule transactions
+  * create new payees during loan account creation (#859079)
 
 2003-12-12 Kevin Tambascio <ktambascio@users.sourceforge.net>
   * Able to read and write all elements of the storage file using XML.
   * Added a US list of account categories.  This file is called 
-  * 'default_accounts_enUS.dat', and it requires the user to select it,
-  * it's not the default list.
+    'default_accounts_enUS.dat', and it requires the user to select it,
+    it's not the default list.
 
 2003-12-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * reset the reconcile flag when creating schedules from existing
