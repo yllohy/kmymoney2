@@ -3,6 +3,8 @@
   * Terminology changes to US-english-ize the base text
     (Submitted by Robert Wadley <rob@robntina.fastmail.us>)
   * Fixed #1171039 (Made spaces in value amounts non-breaking in home view)
+  * Fixed a bug in QIF import.  When a transfer transaction was imported,
+    the remainder of the transactions were imported into that account.
   
 2005-03-25 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Avoid inadvertent overwrite of foreign file types
