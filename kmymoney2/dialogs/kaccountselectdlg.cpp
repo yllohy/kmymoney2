@@ -145,10 +145,9 @@ void KAccountSelectDlg::slotCreateAccount(void)
   int dialogResult;
   const bool isCategory = m_accountType & (KMyMoneyUtils::expense | KMyMoneyUtils::income);
 
-  KConfig *config = KGlobal::config();
-  config->setGroup("General Options");
-  if(config->readBoolEntry("NewAccountWizard", true) == true
-  && !isCategory) {
+  // KConfig *config = KGlobal::config();
+  // config->setGroup("General Options");
+  if(!isCategory /* && config->readBoolEntry("NewAccountWizard", true) == true */) {
     // wizard selected
     KNewAccountWizard* wizard = new KNewAccountWizard(this);
     connect(wizard, SIGNAL(newInstitutionClicked()), this, SLOT(slotCreateInstitution()));

@@ -71,6 +71,7 @@
 #include "../dialogs/kcsvprogressdlg.h"
 #include "../dialogs/kimportdlg.h"
 #include "../dialogs/kexportdlg.h"
+#include "../dialogs/knewloanwizard.h"
 
 #include "../mymoney/storage/mymoneyseqaccessmgr.h"
 #include "../mymoney/storage/imymoneystorageformat.h"
@@ -813,9 +814,9 @@ void KMyMoneyView::accountNew(const bool createCategory)
   MyMoneyAccount parentAccount;
   int dialogResult;
 
-  KConfig *config = KGlobal::config();
-  config->setGroup("General Options");
-  if(config->readBoolEntry("NewAccountWizard", true) == true && createCategory == false) {
+  // KConfig *config = KGlobal::config();
+  // config->setGroup("General Options");
+  if(/* config->readBoolEntry("NewAccountWizard", true) == true && */ createCategory == false) {
     // wizard selected
     m_newAccountWizard->setAccountName(QString());
     m_newAccountWizard->setOpeningBalance(0);

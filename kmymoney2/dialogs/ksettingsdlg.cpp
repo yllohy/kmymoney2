@@ -199,6 +199,7 @@ void KSettingsDlg::setPageAccountsView()
   m_qradiobuttonAccountView->setText( i18n( "Use the new accounts view" ) );
   qvboxlayout->addWidget(m_qradiobuttonAccountView);
 
+/*
   // Create a group box to hold the available options for the wizard
   QButtonGroup *qwizardbuttongroup = new QButtonGroup(qvboxMainFrame, "GroupBox1");
   qwizardbuttongroup->setTitle( i18n( "New Account Settings" ) );
@@ -221,7 +222,7 @@ void KSettingsDlg::setPageAccountsView()
   m_qradiobuttonAccountWizard = new QRadioButton("account_view", qwizardbuttongroup);
   m_qradiobuttonAccountWizard->setText( i18n( "Use the new account wizard" ) );
   qwizardvboxlayout->addWidget(m_qradiobuttonAccountWizard);
-
+*/
   // Create a check box for the hide category feature
   m_qcheckboxHideCategory = new QCheckBox("hide_categories", qvboxMainFrame);
   m_qcheckboxHideCategory->setText( i18n( "Don't show unused categories" ) );
@@ -543,9 +544,9 @@ void KSettingsDlg::configRead()
   m_qradiobuttonStartHome->setChecked(!m_bTempStartPage);
   m_qradiobuttonStartLast->setChecked(m_bTempStartPage);
   
-  m_bTempAccountWizard = kconfig->readBoolEntry("NewAccountWizard", true);
-  m_qradiobuttonAccountWizard->setChecked(m_bTempAccountWizard);
-  m_qradiobuttonAccountDialog->setChecked(!m_bTempAccountWizard);
+  // m_bTempAccountWizard = kconfig->readBoolEntry("NewAccountWizard", true);
+  // m_qradiobuttonAccountWizard->setChecked(m_bTempAccountWizard);
+  // m_qradiobuttonAccountDialog->setChecked(!m_bTempAccountWizard);
 
   m_bTempLedgerLens = kconfig->readBoolEntry("LedgerLens", true);
   m_qcheckboxLedgerLens->setChecked(m_bTempLedgerLens);
@@ -766,8 +767,8 @@ void KSettingsDlg::slotUser1()
   m_dateinputStart->setDate(m_qdateTempStart);
   m_qradiobuttonNormalView->setChecked(m_bTempNormalView);
   m_qradiobuttonAccountView->setChecked(!m_bTempNormalView);
-  m_qradiobuttonAccountWizard->setChecked(m_bTempAccountWizard);
-  m_qradiobuttonAccountDialog->setChecked(!m_bTempAccountWizard);
+  // m_qradiobuttonAccountWizard->setChecked(m_bTempAccountWizard);
+  // m_qradiobuttonAccountDialog->setChecked(!m_bTempAccountWizard);
   m_qcheckboxLedgerLens->setChecked(m_bTempLedgerLens);
   m_qcheckboxTransactionForm->setChecked(m_bTempTransactionForm);
   m_qcheckboxTypeToNr->setChecked(m_bTempTypeToNr);
