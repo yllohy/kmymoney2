@@ -1,7 +1,12 @@
+2001-07-06 Michael Edwardes <mte@users.sourceforge.net>
+  * Improved the transaction search process.
+  * Changed acinclude.m4.in to enable debug by default.  We'll
+    change it back for the stable release.
+
 2001-07-06 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
   * Optimized TransactionView Refresh
 
-2001-07-05
+2001-07-05 Michael Edwardes <mte@users.sourceforge.net>
   * Fixed the category list item class so you can use
     --enable-final in the configure process.
   * Changed the search dialog to be ready for the new features.
