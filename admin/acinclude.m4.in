@@ -2051,7 +2051,7 @@ AC_DEFUN(AC_CHECK_COMPILERS,
   AC_PROVIDE([AC_PROG_CXX])
   AC_PROVIDE([AC_PROG_CXXCPP])
 
-  AC_ARG_ENABLE(debug,[  --enable-debug          enables debug symbols [default=no]],
+  AC_ARG_ENABLE(debug,[  --enable-debug          enables debug symbols [default=yes]],
   [
    if test $enableval = "no"; dnl
      then
@@ -2061,7 +2061,7 @@ AC_DEFUN(AC_CHECK_COMPILERS,
        kde_use_debug_code="yes"
        kde_use_debug_define=no
    fi
-  ], [kde_use_debug_code="no"
+  ], [kde_use_debug_code="yes"
       kde_use_debug_define=no
     ])
   dnl Just for configure --help
