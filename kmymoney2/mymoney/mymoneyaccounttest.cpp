@@ -119,6 +119,7 @@ void MyMoneyAccountTest::testCopyConstructor() {
 	r.setNumber("Number");
 	r.setParentAccountId(parent);
 	r.setOpeningBalance(3);
+	r.setValue("Key", "Value");
 
 	MyMoneyAccount a(id, r);
 	a.setInstitutionId(institutionid);
@@ -146,6 +147,7 @@ void MyMoneyAccountTest::testCopyConstructor() {
 	CPPUNIT_ASSERT(tc.transactionID() == "Trans1");
 	CPPUNIT_ASSERT(tc.balance() == 1000);
 */
+	CPPUNIT_ASSERT(b.value("Key") == "Value");
 }
 
 void MyMoneyAccountTest::testAssignmentConstructor() {
@@ -155,6 +157,7 @@ void MyMoneyAccountTest::testAssignmentConstructor() {
 	a.setInstitutionId("Inst1");
 	a.setDescription("Bla");
 	a.setNumber("assigned Number");
+	a.setValue("Key", "Value");
 
 	MyMoneyAccount b;
 
@@ -172,6 +175,7 @@ void MyMoneyAccountTest::testAssignmentConstructor() {
 /* removed with MyMoneyAccount::Transaction
 	CPPUNIT_ASSERT(b.transactionList().count() == 0);
 */
+	CPPUNIT_ASSERT(b.value("Key") == "Value");
 }
 
 void MyMoneyAccountTest::testTransactionList() {
