@@ -26,6 +26,7 @@
 // QT Includes
 
 #include <qradiobutton.h>
+#include <qcheckbox.h>
 #include <qlabel.h>
 
 // ----------------------------------------------------------------------------
@@ -57,6 +58,8 @@
 #include "../mymoney/mymoneyfinancialcalculator.h"
 #include "../mymoney/mymoneyfile.h"
 
+#include "../kmymoney2.h"
+
 KNewLoanWizard::KNewLoanWizard(QWidget *parent, const char *name ) :
   KNewLoanWizardDecl(parent, name, true)
 {
@@ -84,6 +87,9 @@ KNewLoanWizard::KNewLoanWizard(QWidget *parent, const char *name ) :
   connect(m_nextDueDateEdit, SIGNAL(dateChanged(const QDate&)), this, SLOT(slotCheckPageFinished()));
   connect(m_paymentAccountEdit,  SIGNAL(stateChanged()), this, SLOT(slotCheckPageFinished()));
 
+  connect(m_assetAccountEdit,  SIGNAL(stateChanged()), this, SLOT(slotCheckPageFinished()));
+  connect(m_dontCreatePayoutCheckBox,  SIGNAL(clicked()), this, SLOT(slotCheckPageFinished()));
+
   loadComboBoxes();
 
   resetCalculator();
@@ -91,6 +97,7 @@ KNewLoanWizard::KNewLoanWizard(QWidget *parent, const char *name ) :
   // As default we assume a liability loan, with fixed interest rate,
   // with a first payment due on the 30th of this month. All payments
   // should be recorded and none have been made so far.
+  m_dontCreatePayoutCheckBox->setChecked(false);
   m_borrowButton->animateClick();
   m_fixedInterestButton->animateClick();
   m_noPreviousPaymentButton->animateClick();
@@ -117,6 +124,13 @@ KNewLoanWizard::KNewLoanWizard(QWidget *parent, const char *name ) :
                       i18n("Use this to add any additional fees other than interest and amortization contained in your periodical payments."));
   m_additionalFeeButton->setGuiItem(additionalFeeButtenItem);
   connect(m_additionalFeeButton, SIGNAL(clicked()), this, SLOT(slotAdditionalFees()));
+
+  KGuiItem createAssetButtenItem( i18n( "&Create..." ),
+                      QIconSet(il->loadIcon("filenew", KIcon::Small, KIcon::SizeSmall)),
+                      i18n("Create a new asset account"),
+                      i18n("Use this to create a new account to which the initial payment should be made"));
+  m_createNewAssetButton->setGuiItem(createAssetButtenItem);
+  connect(m_createNewAssetButton, SIGNAL(clicked()), kmymoney2, SLOT(slotAccountNew()));
 
   // enable the finish button on the last page
   setFinishEnabled(m_summaryPage, true);
@@ -270,6 +284,20 @@ void KNewLoanWizard::slotCheckPageFinished(void)
     && m_paymentAccountEdit->selectedAccounts().count() > 0)
       nextButton()->setEnabled(true);
 
+  } else if(currentPage() == m_assetAccountPage) {
+    if(m_dontCreatePayoutCheckBox->isChecked()) {
+      m_assetAccountEdit->setEnabled(false);
+      m_paymentDate->setEnabled(false);
+      m_createNewAssetButton->setEnabled(false);
+      nextButton()->setEnabled(true);
+    } else {
+      m_assetAccountEdit->setEnabled(true);
+      m_paymentDate->setEnabled(true);
+      m_createNewAssetButton->setEnabled(true);
+      if(!m_assetAccountEdit->selectedAccounts().isEmpty()
+      && m_paymentDate->getQDate().isValid())
+        nextButton()->setEnabled(true);
+    }
   } else
     nextButton()->setEnabled(true);
 }
@@ -523,9 +551,12 @@ void KNewLoanWizard::next()
     if(m_allPaymentsButton->isChecked() || m_noPreviousPaymentButton->isChecked()) {
       m_nextDueDateEdit->setDate(m_firstDueDateEdit->getQDate());
       m_nextDueDateEdit->setEnabled(false);
+      setAppropriate(m_assetAccountPage, true);
     } else {
       QDate nextPayment(QDate::currentDate().year(), 1, m_firstDueDateEdit->getQDate().day());
       m_nextDueDateEdit->setDate(nextPayment);
+      setAppropriate(m_assetAccountPage, false);
+      m_assetAccountEdit->slotDeselectAllAccounts();
     }
     if(m_nextDueDateEdit->getQDate() < m_firstDueDateEdit->getQDate()) {
       m_nextDueDateEdit->setDate(m_firstDueDateEdit->getQDate());
@@ -917,13 +948,15 @@ void KNewLoanWizard::slotCreateCategory(void)
 
 void KNewLoanWizard::loadAccountList(void)
 {
-  if(m_borrowButton->isChecked())
+  if(m_borrowButton->isChecked()) {
     m_interestAccountEdit->loadList(KMyMoneyUtils::expense);
-  else
+  } else {
     m_interestAccountEdit->loadList(KMyMoneyUtils::income);
+  }
 
   m_paymentAccountEdit->loadList(static_cast<KMyMoneyUtils::categoryTypeE>
                                  (KMyMoneyUtils::asset | KMyMoneyUtils::liability));
+  m_assetAccountEdit->loadList(KMyMoneyUtils::asset);
 }
 
 void KNewLoanWizard::slotAdditionalFees(void)
@@ -1123,4 +1156,20 @@ int KNewLoanWizard::term(void) const
     }
   }
   return factor;
+}
+
+const QCString KNewLoanWizard::initialPaymentAccount(void) const
+{
+  if(m_dontCreatePayoutCheckBox->isChecked()) {
+    return QCString();
+  }
+  return m_assetAccountEdit->selectedAccounts().first();
+}
+
+const QDate KNewLoanWizard::initialPaymentDate(void) const
+{
+  if(m_dontCreatePayoutCheckBox->isChecked()) {
+    return QDate();
+  }
+  return m_paymentDate->getQDate();
 }

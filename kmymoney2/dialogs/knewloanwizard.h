@@ -36,6 +36,8 @@
 
 #include <../dialogs/knewloanwizarddecl.h>
 #include <../mymoney/mymoneyscheduled.h>
+#include <../widgets/kmymoneyaccountselector.h>
+#include <../widgets/kmymoneydateinput.h>
 
 /**
   * @author Thomas Baumgart
@@ -52,7 +54,7 @@
 class KNewLoanWizard : public KNewLoanWizardDecl
 {
   Q_OBJECT
-public: 
+public:
   KNewLoanWizard(QWidget *parent=0, const char *name=0);
   ~KNewLoanWizard();
 
@@ -64,19 +66,38 @@ public:
     * @return MyMoneyAccount object to be used to create a new account
     */
   const MyMoneyAccount account(void) const;
-  
+
   /**
     * This method returns the schedule for the payments. The account
     * where the amortization should be transferred to is the one
     * we currently try to create with this wizard. The appropriate split
     * will be returned as the first split of the transaction inside
-    * 
+    *
     * as parameter @p accountId as this is the account that was created
     * after this wizard was left via the accept() method.
     *
     * @return MyMoneySchedule object for payments
     */
   const MyMoneySchedule schedule(void) const;
+
+  /**
+    * This method returns the id of the account to/from which
+    * the payout should be created. If the checkbox that allows
+    * to skip the creation of this transaction is checked, this
+    * method returns QCString()
+    *
+    * @return id of account or empty QCString
+    */
+  const QCString initialPaymentAccount(void) const;
+
+  /**
+    * This method returns the date of the payout transaction.
+    * If the checkbox that allows to skip the creation of
+    * this transaction is checked, this method returns QDate()
+    *
+    * @return selected date or invalid QDate if checkbox is selected.
+    */
+  const QDate initialPaymentDate(void) const;
 
   void loadWidgets(const MyMoneyAccount& acc);
 
@@ -88,7 +109,7 @@ protected:
     * @return MyMoneyTransaction object to be used within the schedule
     */
   const MyMoneyTransaction transaction(void) const;
-      
+
 public slots:
   void next();
 
@@ -105,7 +126,7 @@ protected slots:
   void slotCreateCategory(void);
   virtual void slotAdditionalFees(void);
   void slotNewPayee(const QString&);
-      
+
 protected:
   void loadComboBoxes(void);
   void loadAccountList(void);

@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>589</width>
-            <height>415</height>
+            <height>458</height>
         </rect>
     </property>
     <property name="maximumSize">
@@ -4685,6 +4685,153 @@ KMyMoney has calculated the loan as shown below. If you want to accept these val
     </widget>
     <widget class="QWidget">
         <property name="name">
+            <cstring>m_assetAccountPage</cstring>
+        </property>
+        <attribute name="title">
+            <string>Asset Account</string>
+        </attribute>
+        <vbox>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <widget class="QLabel">
+                <property name="name">
+                    <cstring>TextLabel10_4_2</cstring>
+                </property>
+                <property name="text">
+                    <string>
+You have selected to record all payments. This also includes the payout transaction. Please select the asset account, to/from which the money should be transferred.
+In case the account does not exist, create a new account. Only asset accounts should be created for this purpose.</string>
+                </property>
+                <property name="alignment">
+                    <set>WordBreak|AlignTop</set>
+                </property>
+            </widget>
+            <spacer>
+                <property name="name">
+                    <cstring>spacer80</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>20</width>
+                        <height>21</height>
+                    </size>
+                </property>
+            </spacer>
+            <widget class="QCheckBox">
+                <property name="name">
+                    <cstring>m_dontCreatePayoutCheckBox</cstring>
+                </property>
+                <property name="text">
+                    <string>Don't create payout transaction</string>
+                </property>
+            </widget>
+            <widget class="QLayoutWidget">
+                <property name="name">
+                    <cstring>layout124</cstring>
+                </property>
+                <vbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="kMyMoneyAccountSelector">
+                        <property name="name">
+                            <cstring>m_assetAccountEdit</cstring>
+                        </property>
+                    </widget>
+                    <widget class="QLayoutWidget">
+                        <property name="name">
+                            <cstring>layout123</cstring>
+                        </property>
+                        <hbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <spacer>
+                                <property name="name">
+                                    <cstring>spacer244</cstring>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>466</width>
+                                        <height>20</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                            <widget class="KPushButton">
+                                <property name="name">
+                                    <cstring>m_createNewAssetButton</cstring>
+                                </property>
+                                <property name="text">
+                                    <string></string>
+                                </property>
+                                <property name="accel">
+                                    <string></string>
+                                </property>
+                                <property name="toolTip" stdset="0">
+                                    <string>Press this to create a new asset account</string>
+                                </property>
+                            </widget>
+                        </hbox>
+                    </widget>
+                </vbox>
+            </widget>
+            <widget class="QLayoutWidget">
+                <property name="name">
+                    <cstring>layout170</cstring>
+                </property>
+                <hbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QLabel">
+                        <property name="name">
+                            <cstring>textLabel2</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Date of payment</string>
+                        </property>
+                    </widget>
+                    <widget class="kMyMoneyDateInput">
+                        <property name="name">
+                            <cstring>m_paymentDate</cstring>
+                        </property>
+                    </widget>
+                </hbox>
+            </widget>
+            <spacer>
+                <property name="name">
+                    <cstring>spacer328</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>20</width>
+                        <height>16</height>
+                    </size>
+                </property>
+            </spacer>
+        </vbox>
+    </widget>
+    <widget class="QWidget">
+        <property name="name">
             <cstring>m_summaryPage</cstring>
         </property>
         <attribute name="title">
@@ -5416,6 +5563,8 @@ This page summarizes the data you entered. If you need to modify anything, pleas
     <includehint>kmymoneyedit.h</includehint>
     <includehint>kmymoneyedit.h</includehint>
     <includehint>kmymoneyaccountselector.h</includehint>
+    <includehint>kmymoneyaccountselector.h</includehint>
+    <includehint>kmymoneydateinput.h</includehint>
     <includehint>kmymoneyaccountselector.h</includehint>
     <includehint>kmymoneydateinput.h</includehint>
 </includehints>

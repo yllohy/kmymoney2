@@ -153,6 +153,11 @@ void KNewAccountWizard::next()
       preferredAccount->setChecked(false);
 
       m_schedule = loanWizard->schedule();
+      if(loanWizard->initialPaymentDate().isValid()
+      && !loanWizard->initialPaymentAccount().isEmpty()) {
+        m_account.setValue("kmm-loan-payment-date", loanWizard->initialPaymentDate().toString(Qt::ISODate));
+        m_account.setValue("kmm-loan-payment-acc", loanWizard->initialPaymentAccount());
+      }
     }
     delete loanWizard;
 
