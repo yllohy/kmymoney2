@@ -1,9 +1,12 @@
+2004-09-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Do not allow any action that requires a file if no file is open
+
 2004-09-11 Ace Jones <acejones@users.sourceforge.net>
   * Modified OFX Web Connect to deal with the case where the user does not 
     have any file open at all.
   * Modified OFX Web Connect to bring the window to the forefront in KDE < 3.2
   * Moved "Tools | Banking Settings" to "Settings | Configure Online Banking"
-  
+
 2004-09-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed inclusion order of header files
   * Include xmethod generated files prior to any other header file
