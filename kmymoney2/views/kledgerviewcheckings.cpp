@@ -185,7 +185,6 @@ void KLedgerViewCheckings::slotTypeSelected(int type)
     case 0:   // Check
       formTable->setText(1, 0, i18n("Receiver"));
       formTable->setText(2, 0, i18n("Category"));
-
       formTable->setText(0, 3, i18n("Nr"));
       break;
 
@@ -206,6 +205,7 @@ void KLedgerViewCheckings::slotTypeSelected(int type)
       break;
 
     case 4:   // ATM
+      formTable->setText(0, 3, i18n("Nr"));
       formTable->setText(1, 0, i18n("Receiver"));
       formTable->setText(2, 0, i18n("Category"));
       break;
@@ -227,6 +227,7 @@ void KLedgerViewCheckings::createRegister(void)
 
   m_register->setNumCols(7);
   m_register->setCurrentCell(0, 1);
+  m_register->horizontalHeader()->setClickEnabled(true);
   m_register->horizontalHeader()->setLabel(0, i18n("Nr."));
 	m_register->horizontalHeader()->setLabel(1, i18n("Date"));
 	m_register->horizontalHeader()->setLabel(2, i18n("Payee"));
@@ -256,6 +257,8 @@ void KLedgerViewCheckings::createRegister(void)
   connect(m_register, SIGNAL(signalEnter()), this, SLOT(slotStartEdit()));
   connect(m_register, SIGNAL(signalNextTransaction()), this, SLOT(slotNextTransaction()));
   connect(m_register, SIGNAL(signalPreviousTransaction()), this, SLOT(slotPreviousTransaction()));
+
+  connect(m_register->horizontalHeader(), SIGNAL(clicked(int)), this, SLOT(slotRegisterHeaderClicked(int)));
 }
 
 void KLedgerViewCheckings::createContextMenu(void)
@@ -263,7 +266,7 @@ void KLedgerViewCheckings::createContextMenu(void)
   // get the basic entries for all ledger views
   KLedgerView::createContextMenu();
 
-  // and now the specific entries for checkings/savings
+  // and now the specific entries for checkings/savings etc.
   m_contextMenu->insertItem(i18n("Edit splits ..."), this, SLOT(slotStartEditSplit()),
       QKeySequence(), -1, 2);
 
@@ -763,6 +766,7 @@ void KLedgerViewCheckings::reloadEditWidgets(const MyMoneyTransaction& t)
               m_editFrom->loadText(MyMoneyFile::instance()->accountToCategory(m_account.id()));
               amount = -amount;       // make it positive
             }
+            category = m_editTo->text();
             break;
 
           default:
