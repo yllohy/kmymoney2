@@ -37,7 +37,7 @@ class QIODevice;
 #include "imymoneystorageformat.h"
 
 /**
-  *@author Kevin Tambascio (ktambascio@yahoo.com)
+  *@author Kevin Tambascio (ktambascio@users.sourceforge.net)
   */
 class MyMoneyStorageXML : public IMyMoneyStorageFormat
 {
@@ -106,8 +106,8 @@ private:
   void readFile(QIODevice* s, IMyMoneySerialize* storage);
   void writeFile(QIODevice* s, IMyMoneySerialize* storage);
 
-  void writeKeyValuePairs(QDomElement& account, const QMap<QCString, QString> pairs);
-  void readKeyValuePairs(QDomElement& element, QMap<QCString, QString> pairs);
+  void writeKeyValuePairs(QDomElement& keyPair, const QMap<QCString, QString> pairs);
+  QMap<QCString, QString> readKeyValuePairs(QDomElement& element);
 
   void readUserInformation(QDomElement userElement);
   /** No descriptions */
