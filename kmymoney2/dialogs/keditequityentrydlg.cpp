@@ -45,8 +45,12 @@ KEditEquityEntryDlg::KEditEquityEntryDlg(const MyMoneyEquity& selectedEquity, QW
   : kEditEquityEntryDecl(parent, name, true)
 {
   m_selectedEquity = selectedEquity;
+  lvPriceHistory->setSelectionMode(QListView::Single);
   lvPriceHistory->addColumn(QString("Date"));
   lvPriceHistory->addColumn(QString("Price"));
+  lvPriceHistory->setResizeMode(QListView::AllColumns);
+  lvPriceHistory->setSorting(0, FALSE);
+  lvPriceHistory->setShowSortIndicator(true);
   
   connect(btnOK, SIGNAL(clicked()), this, SLOT(slotOKClicked()));
 	connect(btnCancel, SIGNAL(clicked()), this, SLOT(slotCancelClicked()));
@@ -123,17 +127,40 @@ void KEditEquityEntryDlg::slotAddPriceClicked()
   KUpdateStockPriceDlg *pDlg = new KUpdateStockPriceDlg(this);
   if(pDlg->exec() == QDialog::Accepted)
   {
-    KListViewItem *pItem = new KListViewItem(lvPriceHistory, pDlg->getDate(), pDlg->getPrice());
+    QDate date = pDlg->getDate();
+    MyMoneyMoney price(pDlg->getPrice());
+    KListViewItem *pItem = new KListViewItem(lvPriceHistory, date.toString(), price.formatMoney());
     lvPriceHistory->insertItem(pItem);
+    lvPriceHistory->sort();
   }
 }
 
 void KEditEquityEntryDlg::slotEditPriceClicked()
 {
-
+  KListViewItem *pItem = lvPriceHistory->selectedItem();
+  if(pItem)
+  {
+    QString date = pItem->text(0);
+    QString price = pItem->text(1);
+    KUpdateStockPriceDlg *pDlg = new KUpdateStockPriceDlg(QDate::fromString(date), price, this);
+    if(pDlg->exec() == QDialog::Accepted)
+    {
+      QDate newDate = pDlg->getDate();
+      MyMoneyMoney newPrice(pDlg->getPrice());
+      pItem->setText(0, newDate.toString());
+      pItem->setText(1, newPrice.formatMoney());
+      lvPriceHistory->sort();
+    }
+  }
 }
 
 void KEditEquityEntryDlg::slotRemovePriceClicked()
 {
 
+  KListViewItem *pItem = lvPriceHistory->selectedItem();
+  if(pItem)
+  {
+    lvPriceHistory->takeItem(pItem);
+    lvPriceHistory->sort();
+  }
 }

@@ -28,12 +28,11 @@
 #include "config.h"
 #endif
 
-#include <kdialogbase.h>
+#include <qdatetime.h>
 
+#include <kdialogbase.h>
 #include <klocale.h>
 #include <kpushbutton.h>
-
-#include <qstring.h>
 
 #include "kupdatestockpricedlgdecl.h"
 
@@ -47,20 +46,21 @@ class KUpdateStockPriceDlg : public kUpdateStockPriceDecl
   
 public: 
 	KUpdateStockPriceDlg(QWidget* parent = NULL,  const char* name = NULL);
-  KUpdateStockPriceDlg(const QString&, const QString&, QWidget* parent = NULL,  const char* name = NULL);
+  KUpdateStockPriceDlg(const QDate& date, const QString& strPrice, QWidget* parent = NULL,  const char* name = NULL);
 	~KUpdateStockPriceDlg();
 
 protected:
   void init();
   
-  QString m_date, m_price;
+  QString m_price;
+  QDate m_date;
 
 protected slots:
   void slotOkClicked();
   void slotCancelClicked();
 
 public:
-  QString getDate() const { return m_date; }
+  QDate getDate() const { return m_date; }
   QString getPrice() const { return m_price; }    
 };
 

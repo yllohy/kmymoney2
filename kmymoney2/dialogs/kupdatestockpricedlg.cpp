@@ -23,7 +23,9 @@
 #include <qstring.h>
 
 #include <kpushbutton.h>
- 
+
+#include "../widgets/kmymoneydateinput.h"
+#include "../widgets/kmymoneylineedit.h" 
 #include "kupdatestockpricedlg.h"
 
 KUpdateStockPriceDlg::KUpdateStockPriceDlg(QWidget* parent,  const char* name) : kUpdateStockPriceDecl(parent,name,TRUE)
@@ -31,10 +33,12 @@ KUpdateStockPriceDlg::KUpdateStockPriceDlg(QWidget* parent,  const char* name) :
   init();  
 }
 
-KUpdateStockPriceDlg::KUpdateStockPriceDlg(const QString& strDate, const QString& strPrice, QWidget* parent,  const char* name) : kUpdateStockPriceDecl(parent,name,TRUE)
+KUpdateStockPriceDlg::KUpdateStockPriceDlg(const QDate& date, const QString& strPrice, QWidget* parent,  const char* name) : kUpdateStockPriceDecl(parent,name,TRUE)
 {
-  m_date = strDate;
+  m_date = date;
   m_price = strPrice;
+  dateInput->setDate(m_date);
+  priceInput->setText(m_price);
   init();
 }
 
@@ -51,6 +55,8 @@ void KUpdateStockPriceDlg::init()
 
 void KUpdateStockPriceDlg::slotOkClicked()
 {
+  m_date = dateInput->getQDate();
+  m_price = priceInput->text();
   accept();
 }
 
