@@ -188,6 +188,9 @@ void KHomeView::showPayments(void)
 
   if(schedule.count() > 0) {
     qBubbleSort(schedule);
+
+    m_part->write("<div class=\"gap\">&nbsp;</div>\n");
+
     QValueList<MyMoneySchedule>::Iterator it;
     tmp = "<div class=\"item\">" + i18n("Future payments") + "</div>\n";
     m_part->write(tmp);

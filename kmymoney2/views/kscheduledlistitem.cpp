@@ -56,13 +56,32 @@ KScheduledListItem::KScheduledListItem(KScheduledListItem *parent, const MyMoney
   m_even = even;
   try
   {
-    QCString accountId = schedule.account().id();
     m_id = schedule.id();
     MyMoneyTransaction transaction = schedule.transaction();
+    MyMoneySplit s1 = transaction.splits()[0];
+    MyMoneySplit s2 = transaction.splits()[1];
+    MyMoneySplit split;
+
+    if (schedule.type() == MyMoneySchedule::TYPE_DEPOSIT)
+    {
+      if (s1.value() >= 0)
+        split = s1;
+      else
+        split = s2;
+    }
+    else
+    {
+      if (s1.value() < 0)
+        split = s1;
+      else
+        split = s2;
+    }
+    
+    
     setText(0, schedule.name());
-    setText(1, schedule.account().name());
-    setText(2, MyMoneyFile::instance()->payee(transaction.splitByAccount(accountId).payeeId()).name());
-    MyMoneyMoney amount = transaction.splitByAccount(accountId).value();
+    setText(1, MyMoneyFile::instance()->account(split.accountId()).name());
+    setText(2, MyMoneyFile::instance()->payee(split.payeeId()).name());
+    MyMoneyMoney amount = split.value();
     if (amount < 0)
       amount = -amount;
     setText(3, amount.formatMoney());

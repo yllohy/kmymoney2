@@ -66,6 +66,45 @@ KEnterScheduleDialog::~KEnterScheduleDialog(){
 
 void KEnterScheduleDialog::initWidgets()
 {
+  // Work around backwards transfers
+  try
+  {
+    MyMoneyTransaction transaction = m_schedule.transaction();
+    MyMoneySplit s1 = transaction.splits()[0];
+    MyMoneySplit s2 = transaction.splits()[1];
+
+    if (m_schedule.type() == MyMoneySchedule::TYPE_DEPOSIT)
+    {
+      if (s1.value() < 0)
+      {
+        transaction.removeSplits();
+        s2.setId("");
+        s1.setId("");
+        transaction.addSplit(s2);
+        transaction.addSplit(s1);
+        m_schedule.setTransaction(transaction);
+        m_transaction = transaction;
+      }
+    }
+    else
+    {
+      if (s1.value() > 0)
+      {
+        transaction.removeSplits();
+        s2.setId("");
+        s1.setId("");
+        transaction.addSplit(s2);
+        transaction.addSplit(s1);
+        m_schedule.setTransaction(transaction);
+        m_transaction = transaction;
+      }
+    }
+  }
+  catch (MyMoneyException *e)
+  {
+    delete e;
+  }
+
   m_splitButton->setGuiItem(KMyMoneyUtils::splitGuiItem());
 
   if (m_schedule.type() != MyMoneySchedule::TYPE_DEPOSIT)

@@ -859,9 +859,9 @@ void KMyMoneyView::accountNew(const bool createCategory)
         {
           // We can guarantee 2 splits.
           MyMoneyTransaction t = newSchedule.transaction();
-          MyMoneySplit s = t.splits()[0];
-          s.setAccountId(MyMoneyFile::instance()->nameToAccount(newAccount.name()));
-          t.modifySplit(s);
+          MyMoneySplit s1 = t.splits()[0];
+          s1.setAccountId(MyMoneyFile::instance()->nameToAccount(newAccount.name()));
+          t.modifySplit(s1);          
           newSchedule.setTransaction(t);
           
           MyMoneyFile::instance()->addSchedule(newSchedule);

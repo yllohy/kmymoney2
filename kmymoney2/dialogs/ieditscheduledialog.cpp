@@ -185,18 +185,26 @@ void KEditScheduleDialog::reloadFromFile(void)
 
   if (m_actionType == MyMoneySplit::ActionTransfer ||
       m_actionType == MyMoneySplit::ActionWithdrawal)
+  {
+    m_accountCombo->blockSignals(true);
     m_accountCombo->loadAccounts(true, false);
+    m_accountCombo->blockSignals(false);
+  }
 
   if (m_actionType == MyMoneySplit::ActionDeposit ||
       m_actionType == MyMoneySplit::ActionTransfer)
+  {
+    m_kcomboTo->blockSignals(true);
     m_kcomboTo->loadAccounts(true, false);
+    m_kcomboTo->blockSignals(false);
+  }
 
   // Fire off the activated signals.
-  if (m_schedule.name().isEmpty())
+  if (m_schedule.name().isEmpty() && m_transaction.splitCount() == 0)
   {
+    slotDateChanged(QDate::currentDate());
     slotFrequencyChanged(0);
     slotMethodChanged(0);
-    slotDateChanged(QDate::currentDate());
     if (m_actionType == MyMoneySplit::ActionTransfer ||
         m_actionType == MyMoneySplit::ActionWithdrawal)
       slotAccountChanged(0);
@@ -205,6 +213,8 @@ void KEditScheduleDialog::reloadFromFile(void)
         m_actionType == MyMoneySplit::ActionTransfer)
       slotToChanged(0);
   }
+  else if (m_schedule.name().isEmpty() && m_transaction.splitCount() >= 2)
+    slotDateChanged(QDate::currentDate());
 }
 
 /*
@@ -396,14 +406,39 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
     if (m_schedule.account().name() == "")
       return;
       
+    if (m_actionType == MyMoneySplit::ActionTransfer)
+    {
+      // Jiggle the splits to how we want them
+      MyMoneySplit s1 = m_transaction.splits()[0];
+      MyMoneySplit s2 = m_transaction.splits()[1];
+
+      if (s1.value() >= 0)
+      {
+        try {
+        m_transaction.removeSplits();
+        s2.setId("");
+        s1.setId("");
+        m_transaction.addSplit(s2);
+        m_transaction.addSplit(s1);
+        } catch (MyMoneyException *e)
+        {
+          qDebug("e: %s", e->what().latin1());
+          delete e;
+        }
+      }
+    }
+
     if (m_actionType != MyMoneySplit::ActionDeposit)
       m_accountCombo->setCurrentText(MyMoneyFile::instance()->account(m_transaction.splits()[0].accountId()).name());
     else
       m_kcomboTo->setCurrentText(MyMoneyFile::instance()->account(m_transaction.splits()[0].accountId()).name());
 
     if (m_actionType == MyMoneySplit::ActionTransfer)
+    {
       m_kcomboTo->setCurrentText(
         MyMoneyFile::instance()->account(m_transaction.splits()[1].accountId()).name());
+    }
+    
     m_kcomboPayTo->loadText(MyMoneyFile::instance()->payee(m_schedule.transaction().splitByAccount(theAccountId()).payeeId()).name());
     m_kdateinputDue->setDate(m_schedule.startDate());
 
@@ -829,16 +864,44 @@ void KEditScheduleDialog::slotPayeeChanged(const QString& text)
 
 void KEditScheduleDialog::slotDateChanged(const QDate& date)
 {
+  if (m_kdateinputDue->getQDate() <= QDate::currentDate() &&
+      m_qcheckboxAuto->isChecked())
+  {
+    KMessageBox::error(this, i18n("The schedule can not be automatically entered when the start date is on or before todays date."));
+    m_qcheckboxAuto->blockSignals(true);
+    m_qcheckboxAuto->setChecked(false);
+    m_qcheckboxAuto->blockSignals(false);
+  }
+
   m_schedule.setStartDate(date);
 }
 
 void KEditScheduleDialog::slotFrequencyChanged(int)
 {
+  if (m_qcheckboxEnd->isChecked() && m_kcomboFreq->currentItem() == 0)
+  {
+    KMessageBox::error(this, i18n("The end date can not be set for occurences set to Once"));
+    m_qcheckboxEnd->setChecked(false);
+  }
+
   m_schedule.setOccurence(comboToOccurence());
 }
 
 void KEditScheduleDialog::slotEstimateChanged()
 {
+  if (m_qcheckboxAuto->isChecked())
+  {
+    if (m_qcheckboxEstimate->isChecked())
+    {
+      KMessageBox::error(this, i18n("The amount must not be an estimate to be automatically entered"));
+      m_qcheckboxEstimate->blockSignals(true);
+      m_qcheckboxEstimate->setChecked(false);
+      m_qcheckboxEstimate->blockSignals(false);
+      m_qcheckboxAuto->setFocus();
+      return;
+    }
+  }
+
   m_schedule.setFixed(!m_qcheckboxEstimate->isChecked());
 }
 
@@ -878,6 +941,19 @@ void KEditScheduleDialog::slotAutoEnterChanged()
       m_qcheckboxAuto->setChecked(false);
       m_qcheckboxAuto->blockSignals(false);
       m_kdateinputDue->setFocus();
+      return;
+    }
+  }
+
+  if (m_qcheckboxEstimate->isChecked())
+  {
+    if (m_qcheckboxAuto->isChecked())
+    {
+      KMessageBox::error(this, i18n("The amount must not be an estimate to be automatically entered"));
+      m_qcheckboxAuto->blockSignals(true);
+      m_qcheckboxAuto->setChecked(false);
+      m_qcheckboxAuto->blockSignals(false);
+      m_qcheckboxEstimate->setFocus();
       return;
     }
   }

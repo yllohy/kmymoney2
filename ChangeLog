@@ -1,3 +1,10 @@
+2003-09-17 Michael Edwardes <mte@users.sourceforge.net>
+  * More validation on the KEditScheduleDialog user input.
+  * Add a gap to the home page just before 'Future Payments'.
+  * Fix creating a schedule from a transfer transaction.
+  * Set the right schedule type in KNewAccountWizard::accept.
+  * Work around backwards transfers in several places.
+
 2003-09-16 Michael Edwardes <mte@users.sourceforge.net>
   * You can only create schedules with a start date <= today if
     they are not automatically entered.

@@ -241,7 +241,7 @@ void KNewAccountWizard::accept()
     }
 
     m_schedule = MyMoneySchedule(  m_name->text(),
-                                   MyMoneySchedule::TYPE_BILL,
+                                   MyMoneySchedule::TYPE_TRANSFER,
                                    MyMoneySchedule::OCCUR_MONTHLY,
                                    paymentType,
                                    m_date->getQDate(),
