@@ -90,6 +90,17 @@ public:
     */
   static const bool GPGAvailable(void);
 
+  /**
+    * Checks whether a key for a given user-id @p name exists.
+    *
+    * @param name the user-id to be checked. @p name can be
+    *             any reference understood by GPG (e.g. an e-mail
+    *             address or a key-id)
+    * @retval true key for user-id @p name was found
+    * @retval false key for user-id @p not available
+    */
+  static const bool keyAvailable(const QString& name);
+
   void dumpUngetBuffer(void);
 
 protected slots:

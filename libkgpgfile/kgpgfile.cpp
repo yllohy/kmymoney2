@@ -464,6 +464,29 @@ const bool KGPGFile::GPGAvailable(void)
 
   return false;
 }
+
+const bool KGPGFile::keyAvailable(const QString& name)
+{
+  KGPGFile dummy;
+
+  QStringList args;
+  args << "--list-keys" << name;
+  if(!dummy.startProcess(args)) {
+    return false;
+  }
+
+  // wait for the process to finish
+  while(dummy.m_process && dummy.m_process->isRunning()) {
+    kapp->processEvents(100);
+  }
+
+  if(dummy.m_exitStatus == 0) {
+    return true;
+  }
+
+  return false;
+}
+
 /*
 // key generation
   char * gpg_input =
