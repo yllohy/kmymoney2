@@ -1302,3 +1302,21 @@ void MyMoneyFileTest::testAttachedStorage() {
 	CPPUNIT_ASSERT(m->storage() != 0);
 }
 
+void MyMoneyFileTest::testHasAccount() {
+	testAddAccounts();
+
+	MyMoneyAccount a, b;
+	a.setAccountType(MyMoneyAccount::Checkings);
+	a.setName("Account3");
+	b = m->account("A000001");
+	try {
+		m->addAccount(a, b);
+		CPPUNIT_ASSERT(m->accountCount() == 7);
+		CPPUNIT_ASSERT(a.parentAccountId() == "A000001");
+		CPPUNIT_ASSERT(m->hasAccount("A000001", "Account3") == true);
+		CPPUNIT_ASSERT(m->hasAccount("A000001", "Account2") == false);
+		CPPUNIT_ASSERT(m->hasAccount("A000002", "Account3") == false);
+	} catch(MyMoneyException *e) {
+		unexpectedException(e);
+	}
+}

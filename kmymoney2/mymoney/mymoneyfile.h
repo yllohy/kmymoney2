@@ -474,21 +474,6 @@ public:
   const QValueList<MyMoneyTransaction> transactionList(MyMoneyTransactionFilter& filter) const;
 
   /**
-    * This method is used to pull a list of transactions from the file
-    * global transaction pool. It returns either the whole journal or
-    * the set of transaction referenced by a specific account depending
-    * on the argument given.
-    *
-    * @param account QCString reference to account id. If account is empty
-    *                all transactions (the journal) is returned. If account
-    *                is not empty, it returns the set of transactions
-    *                that have splits in this account.
-    *
-    * @return set of transactions in form of a QValueList<MyMoneyTransaction>
-    */
-  // const QValueList<MyMoneyTransaction> transactionList(const QCString& account = "") const;
-
-  /**
     * This method is used to remove a transaction from the transaction
     * pool (journal).
     *
@@ -1136,6 +1121,17 @@ public:
     * @return price found as MyMoneyMoney object
     */
   const MyMoneyMoney currencyPrice(const QCString& currencyId, const QDate date = QDate::currentDate()) const;
+
+  /**
+    * This method allows to interrogate the engine, if a known account
+    * with id @p id has a subaccount with the name @p name.
+    *
+    * @param id id of the account to look at
+    * @param name account name that needs to be searched force
+    * @retval true account with name @p name found as subaccounts
+    * @retval false no subaccount present with that name
+    */
+  const bool hasAccount(const QCString& id, const QString& name) const;
 
 protected:
   /**

@@ -1478,3 +1478,19 @@ const MyMoneyMoney MyMoneyFile::currencyPrice(const QCString& currencyId, const 
   }
   return price;
 }
+
+const bool MyMoneyFile::hasAccount(const QCString& id, const QString& name) const
+{
+  checkStorage();
+
+  MyMoneyAccount acc = m_storage->account(id);
+  QCStringList list = acc.accountList();
+  QCStringList::ConstIterator it;
+  bool rc = false;
+  for(it = list.begin(); rc == false && it != list.end(); ++it) {
+    MyMoneyAccount a = m_storage->account(*it);
+    if(a.name() == name)
+      rc = true;
+  }
+  return rc;
+}
