@@ -57,13 +57,24 @@ KAccountListItem::KAccountListItem(KAccountListItem *parent, const MyMoneyAccoun
   newAccount(account);
 }
 
-void KAccountListItem::newAccount(const MyMoneyAccount& account)
+void KAccountListItem::loadCache(void)
 {
-
   if(accountPixmap == 0) {
     accountPixmap = new QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/22x22/actions/account.png"));
   }
+}
 
+void KAccountListItem::cleanCache(void)
+{
+  if(accountPixmap != 0) {
+    delete accountPixmap;
+    accountPixmap = 0;
+  }
+}
+
+void KAccountListItem::newAccount(const MyMoneyAccount& account)
+{
+  loadCache();
   MyMoneyFile*  file = MyMoneyFile::instance();
 
   m_accountID = account.id();

@@ -106,6 +106,13 @@ public:
     */
   void update(const QCString& id);
 
+  /**
+    * This function can be called to clean the cache at a defined
+    * location during program execution. It will be used by main()
+    * to avoid false error reports by the memory leakage checker.
+    */
+  static void cleanCache(void);
+
 private:
   /**
     * This method is a helper for the constructors that contains
@@ -114,6 +121,12 @@ private:
     * @param account the account data for the object to be created
     */
   void newAccount(const MyMoneyAccount& account);
+
+  /**
+    * This function can be called to preload the cache at a defined
+    * location during program execution. It will be used by newAccount().
+    */
+  void loadCache(void);
 
 private:
   QCString m_accountID;
