@@ -1,5 +1,7 @@
 2004-10-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed #1043892 (crash when changing action in checkings view)
+  * Fixed #1040653 (GNC import doesn't handle equity accounts correctly)
+    as provided by Tony Bloomfield
 
 2004-10-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Reworked keyboard event handler
