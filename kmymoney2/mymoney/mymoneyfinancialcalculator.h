@@ -23,6 +23,8 @@
 #ifndef MYMONEYFINANCIALCALCULATOR_H
 #define MYMONEYFINANCIALCALCULATOR_H
 
+#include <cmath>
+
 // ----------------------------------------------------------------------------
 // QT Includes
 
@@ -31,6 +33,10 @@
 
 // ----------------------------------------------------------------------------
 // Project Includes
+
+#ifdef _GLIBCPP_HAVE_MODFL
+#define HAVE_LONG_DOUBLE  1
+#endif
 
 #ifndef HAVE_LONG_DOUBLE
 #define HAVE_LONG_DOUBLE  0

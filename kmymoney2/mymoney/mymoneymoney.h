@@ -28,6 +28,16 @@
 #  endif
 #endif
 
+#include <cmath>
+
+#ifdef _GLIBCPP_HAVE_MODFL
+#define HAVE_LONG_DOUBLE  1
+#endif
+
+#ifndef HAVE_LONG_DOUBLE
+#define HAVE_LONG_DOUBLE  0
+#endif
+
 // So we can save this object
 #include <qstring.h>
 #include <qdatastream.h>
@@ -55,6 +65,9 @@ public:
   MyMoneyMoney( long ldAmountInPence );
   MyMoneyMoney( int iAmountInPence );
   MyMoneyMoney( double dAmountInPence );
+#if HAVE_LONG_DOUBLE
+  MyMoneyMoney( long double dAmountInPence );
+#endif
 
   // copy constructor
   MyMoneyMoney( const MyMoneyMoney& AmountInPence );
@@ -228,6 +241,22 @@ inline MyMoneyMoney::MyMoneyMoney(const double dAmountInPence)
   double adj = dAmountInPence < 0 ? -0.5 : 0.5;
   m_64Value = static_cast<signed64> (dAmountInPence * 100 + adj);
 }
+
+#if HAVE_LONG_DOUBLE
+////////////////////////////////////////////////////////////////////////////////
+//      Name: MyMoneyMoney
+//   Purpose: Constructor - constructs object from an amount in a long double value
+//   Returns: None
+//    Throws: Nothing.
+// Arguments: dAmountInPence - long double object containing amount in pence
+//
+////////////////////////////////////////////////////////////////////////////////
+inline MyMoneyMoney::MyMoneyMoney(const long double dAmountInPence)
+{
+  long double adj = dAmountInPence < 0 ? -0.5 : 0.5;
+  m_64Value = static_cast<signed64> (dAmountInPence * 100 + adj);
+}
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: MyMoneyMoney
