@@ -74,14 +74,21 @@ KTransactionView::~KTransactionView()
 {
 }
 
+void KTransactionView::slotPayeeCompleted(const QString& complete)
+{
+	qDebug("The completed String is %s",complete.latin1());
+
+}
+
 void KTransactionView::createInputWidgets()
 {
 
 	m_date = new kMyMoneyDateInput(transactionsTable, 0 );
 	m_method = new KComboBox(0,"");
-  m_payee = new KComboBox(true,0);
+  m_payee = new QComboBox(0,"");
   m_payment = new KLineEdit(0);
   m_withdrawal = new KLineEdit(0);
+	m_number = new KLineEdit(0);
 	m_category = new KComboBox(0,"");
   m_enter = new KPushButton("Enter",0);
   m_cancel = new KPushButton("Cancel",0);
@@ -92,10 +99,12 @@ void KTransactionView::createInputWidgets()
   connect(m_method,SIGNAL(returnPressed(const QString&)),methodcomp,SLOT(addItem(const QString&)));
   m_payee->setEditable(true);
   m_payee->setAutoCompletion(true);
- // KCompletion *payeecomp = m_payee->completionObject();
-	m_payee->setCompletionMode(KGlobalSettings::CompletionAuto);
-	m_payee->setHandleSignals(true);
- // connect(m_payee,SIGNAL(returnPressed(const QString&)),payeecomp,SLOT(addItem(const QString&)));
+  m_number->setHandleSignals(false);
+  m_number->setKeyBinding(KCompletionBase::TextCompletion, Qt::Key_End );
+  m_number->setContextMenuEnabled(false);
+  m_number->setEnableSignals(false);
+  m_number->useGlobalKeyBindings();
+  m_number->setAlignment(Qt::AlignLeft);
   m_payment->setHandleSignals(false);
   m_payment->setKeyBinding(KCompletionBase::TextCompletion, Qt::Key_End );
   m_payment->setContextMenuEnabled(false);
@@ -120,6 +129,7 @@ void KTransactionView::createInputWidgets()
   connect(m_category,SIGNAL(returnPressed(const QString&)),categorycomp,SLOT(addItem(const QString&)));
   m_date->hide();
   m_method->hide();
+	m_number->hide();
   m_payee->hide();
   m_payment->hide();
   m_withdrawal->hide();
@@ -173,6 +183,7 @@ void KTransactionView::loadPayees()
 		}
 	}
 	payeelist.sort();
+	m_payee->clear();
   m_payee->insertStringList(payeelist);
 
 }
@@ -214,6 +225,8 @@ void KTransactionView::slotFocusChange(int row, int, int button, const QPoint& /
       m_payment->show();
       transactionsTable->setCellWidget(realrow ,5,m_withdrawal);
       m_withdrawal->show();
+      transactionsTable->setCellWidget(realrow + 1 ,1,m_number);
+      m_number->show();
       transactionsTable->setCellWidget(realrow + 1 ,2,m_category);
       m_category->show();
       transactionsTable->setCellWidget(realrow + 1 ,4,m_enter);
@@ -363,6 +376,7 @@ void KTransactionView::enterClicked()
 
   m_date->hide();
   m_method->hide();
+	m_number->hide();
   m_payee->hide();
   m_payment->hide();
   m_withdrawal->hide();
@@ -470,26 +484,22 @@ void KTransactionView::enterClicked()
 
 	if(m_index < m_transactions.count())
 	{
-		qDebug("m_index == %d",m_index);
 		newstate = m_transactions.at(m_index)->state();
    	account->removeCurrentTransaction(m_index);
-  	account->addTransaction(newmethod, "", m_payee->currentText(),
+  	account->addTransaction(newmethod, m_number->text(), m_payee->currentText(),
                             newamount, newdate, catmajor, catminor, "",
   													"", "", "", newstate);
-    qDebug("Major = %s, Minor = %s",catmajor.latin1(), catminor.latin1());
 	}
 	else
   {
-		qDebug("m_index == -1");
 		newstate = MyMoneyTransaction::Unreconciled;
-  	account->addTransaction(newmethod, "", m_payee->currentText(),
+  	account->addTransaction(newmethod, m_number->text(), m_payee->currentText(),
                             newamount, newdate, catmajor, catminor, "",
   													"", "", "", newstate);
 	}
 	
 	emit transactionListChanged();
 
-	qDebug("enterClicked Before update Transaction List");
   updateTransactionList(-1, -1);
   //updateInputLists();
   //viewMode();
@@ -499,6 +509,7 @@ void KTransactionView::clearInputData()
 {
 	m_date->setDate(QDate::currentDate());
   m_method->setCurrentItem(0);
+	m_number->setText(QString(""));
 	m_payee->setEditText("");
   m_payment->setText(QString(""));
   m_withdrawal->setText(QString(""));
@@ -512,6 +523,7 @@ void KTransactionView::setInputData(const MyMoneyTransaction transaction)
 
 	m_date->setDate(transaction.date());
 	m_payee->setEditText(transaction.memo());
+	m_number->setText(transaction.number());
   m_payment->setText(((transaction.type()==MyMoneyTransaction::Debit) ? KGlobal::locale()->formatNumber(transaction.amount().amount()) : QString("")));
   m_withdrawal->setText(((transaction.type()==MyMoneyTransaction::Credit) ? KGlobal::locale()->formatNumber(transaction.amount().amount()) : QString("")));
   bool categorySet = false;
@@ -562,10 +574,7 @@ void KTransactionView::updateInputLists(void)
   }
 	m_category->clear();
   m_category->insertStringList(categoryList);
-  if(m_payee->count() < 2)
-	{
-   	loadPayees();
-	}
+  loadPayees();
 
 }
 
@@ -651,7 +660,7 @@ void KTransactionView::updateTransactionList(int row, int col)
       transactionsTable->setItem(rowCount, 0, item0);
 
     	KMemoTableItem *item00;
-    	item00 = new KMemoTableItem(transactionsTable, QTableItem::Never, "");
+    	item00 = new KMemoTableItem(transactionsTable, QTableItem::Never, transaction->number());
     	transactionsTable->setItem(rowCount + 1, 1, item00);
 
       KMemoTableItem *item1;
@@ -901,6 +910,7 @@ void KTransactionView::cancelClicked()
 {
   m_date->hide();
   m_method->hide();
+	m_number->hide();
   m_payee->hide();
   m_payment->hide();
   m_withdrawal->hide();
@@ -915,6 +925,7 @@ void KTransactionView::deleteClicked()
 {
   m_date->hide();
   m_method->hide();
+	m_number->hide();
   m_payee->hide();
   m_payment->hide();
   m_withdrawal->hide();

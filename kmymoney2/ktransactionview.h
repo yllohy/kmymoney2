@@ -49,7 +49,8 @@ private:
 
 	kMyMoneyDateInput*  m_date;
 	KComboBox* m_method;
-  KComboBox* m_payee;
+	KLineEdit* m_number;
+  QComboBox* m_payee;
   KLineEdit* m_payment;
 	KLineEdit* m_withdrawal;
   KComboBox* m_category;
@@ -93,6 +94,7 @@ protected slots:
   void slotTransactionDelete();
   void slotTransactionUnReconciled();
   void slotTransactionCleared();
+	void slotPayeeCompleted(const QString&);
 
 signals:
 //  void enterBtnClicked(const MyMoneyTransaction& , bool inNew);

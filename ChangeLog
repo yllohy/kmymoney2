@@ -1,3 +1,6 @@
+2001-03-25  Felix Rodriguez <frodriguez@wesleyan.edu>
+  * Added Cheque Number KLineEdit box
+
 2001-03-24  Felix Rodriguez <frodriguez@wesleyan.edu>
   * Added Payees as selections to Payee ComboBox
 
