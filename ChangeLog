@@ -1,3 +1,11 @@
+2003-08-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * added more logic to the find dialog
+  * added more output to dump
+  * Fixed a bug in KNewAccount Wizard when creating liability accounts
+  * Differentiate accounts and categories with the same name during import
+  * added consistency check tool
+  * allow to move accounts between expense/income group
+
 2003-08-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * backup file name is now constructed using international date format
   * added progress bar to backup function
