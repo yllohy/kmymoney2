@@ -55,8 +55,8 @@
 KLedgerViewCheckings::KLedgerViewCheckings(QWidget *parent, const char *name )
   : KLedgerView(parent,name)
 {
-  QGridLayout* formLayout = new QGridLayout( this, 1, 1, 11, 6, "FormLayout");
-  QVBoxLayout* ledgerLayout = new QVBoxLayout( 0, 0, 6, "LedgerLayout");
+  QGridLayout* formLayout = new QGridLayout( this, 1, 2, 11, 6, "FormLayout");
+  QVBoxLayout* ledgerLayout = new QVBoxLayout( 6, "LedgerLayout");
 
   createInfoStack();
   formLayout->addWidget(m_infoStack, 0, 1 );
@@ -341,7 +341,7 @@ void KLedgerViewCheckings::createForm(void)
 
 void KLedgerViewCheckings::createSummary(void)
 {
-  m_summaryLayout = new QHBoxLayout(0, 0, 6, "SummaryLayout");
+  m_summaryLayout = new QHBoxLayout(6, "SummaryLayout");
 
   QSpacerItem* spacer = new QSpacerItem( 20, 1, QSizePolicy::Expanding, QSizePolicy::Minimum );
   m_summaryLayout->addItem(spacer);
