@@ -88,6 +88,7 @@ void MyMoneyQifWriter::writeAccountEntry(QTextStream &s, const QCString& account
 
   account = file->account(accountId);
   MyMoneyTransactionFilter filter(accountId);
+  filter.setDateFilter(startDate, endDate);
   QValueList<MyMoneyTransaction> list = file->transactionList(filter);
 
   s << "!Type:" << m_qifProfile.profileType() << endl;
@@ -108,9 +109,7 @@ void MyMoneyQifWriter::writeAccountEntry(QTextStream &s, const QCString& account
   signalProgress(0, list.count());
   int count = 0;
   for(it = list.begin(); it != list.end(); ++it) {
-    if((*it).postDate() >= startDate && (*it).postDate() <= endDate) {
-      writeTransactionEntry(s, *it, accountId);
-    }
+    writeTransactionEntry(s, *it, accountId);
     signalProgress(++count, 0);
   }
 }
@@ -186,16 +185,19 @@ void MyMoneyQifWriter::writeTransactionEntry(QTextStream &s, const MyMoneyTransa
     s << "P" << payee.name() << endl;
   }
 
-  MyMoneySplit sp = t.splitByAccount(accountId, false);
-  MyMoneyAccount acc = file->account(sp.accountId());
-  if(split.action() == MyMoneySplit::ActionTransfer) {
-    s << "L" << m_qifProfile.accountDelimiter()[0]
-             << acc.name()
-             << m_qifProfile.accountDelimiter()[1] << endl;
-  } else {
-    s << "L" << file->accountToCategory(sp.accountId()) << endl;
-    if(t.splitCount() > 2) {
-      QValueList<MyMoneySplit> list = t.splits();
+  QValueList<MyMoneySplit> list = t.splits();
+  if(list.count() > 1) {
+    MyMoneySplit sp = t.splitByAccount(accountId, false);
+    MyMoneyAccount acc = file->account(sp.accountId());
+    if(acc.accountGroup() != MyMoneyAccount::Income
+    && acc.accountGroup() != MyMoneyAccount::Expense) {
+      s << "L" << m_qifProfile.accountDelimiter()[0]
+              << MyMoneyFile::instance()->accountToCategory(sp.accountId())
+              << m_qifProfile.accountDelimiter()[1] << endl;
+    } else {
+      s << "L" << file->accountToCategory(sp.accountId()) << endl;
+    }
+    if(list.count() > 2) {
       QValueList<MyMoneySplit>::ConstIterator it;
       for(it = list.begin(); it != list.end(); ++it) {
         if(!((*it) == split)) {
@@ -209,7 +211,20 @@ void MyMoneyQifWriter::writeTransactionEntry(QTextStream &s, const MyMoneyTransa
 
 void MyMoneyQifWriter::writeSplitEntry(QTextStream& s, const MyMoneySplit& split)
 {
-  s << "S" << MyMoneyFile::instance()->accountToCategory(split.accountId()) << endl;
+  MyMoneyFile* file = MyMoneyFile::instance();
+
+  s << "S";
+  MyMoneyAccount acc = file->account(split.accountId());
+  if(acc.accountGroup() != MyMoneyAccount::Income
+  && acc.accountGroup() != MyMoneyAccount::Expense) {
+    s << m_qifProfile.accountDelimiter()[0]
+      << file->accountToCategory(split.accountId())
+      << m_qifProfile.accountDelimiter()[1];
+  } else {
+    s << file->accountToCategory(split.accountId());
+  }
+  s << endl;
+
   if(split.memo().length() > 0)
     s << "E" << split.memo() << endl;
 
