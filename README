@@ -68,6 +68,14 @@ from.
      them to this list. Send an e-mail to the developers mailing list.
      See the address below.
 
+2a)  If you want the memory leak detection code compiled in,
+     run configure the following way
+
+           CPPFLAGS=-D_CHECK_MEMORY ./configure <configure-options-as-above>
+
+     If you actively want to develop on this application, please make
+     sure to use the setting as described in 2a.
+
 3)   Build the package by issuing the following command:
 
           make
