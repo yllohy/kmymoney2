@@ -94,6 +94,9 @@ KSplitTransactionDlg::KSplitTransactionDlg(const MyMoneyTransaction& t,
     }
   }
 
+  // make finish the default
+  finishBtn->setDefault(true);
+
   // setup the focus
   cancelBtn->setFocusPolicy(QWidget::NoFocus);
   finishBtn->setFocusPolicy(QWidget::NoFocus);
