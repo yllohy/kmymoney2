@@ -42,6 +42,7 @@ MyMoneySchedule::MyMoneySchedule()
   m_startDate = QDate();
   m_endDate = QDate();
   m_lastPayment = QDate();
+  m_weekendOption = MoveNothing;
 }
 
 MyMoneySchedule::MyMoneySchedule(const QString& name, typeE type,
@@ -59,6 +60,7 @@ MyMoneySchedule::MyMoneySchedule(const QString& name, typeE type,
   m_startDate = startDate;
   m_endDate = endDate;
   m_lastPayment = QDate();
+  m_weekendOption = MoveNothing;
 }
 
 
@@ -657,4 +659,19 @@ bool MyMoneySchedule::hasRecordedPayment(const QDate& date) const
 void MyMoneySchedule::recordPayment(const QDate& date)
 {
   m_recordedPayments.append(date);
+}
+
+void MyMoneySchedule::setWeekendOption(const weekendOptionE option)
+{
+  // make sure only valid values are used. Invalid defaults to MoveNothing.
+  switch(option) {
+    case MoveFriday:
+    case MoveMonday:
+      m_weekendOption = option;
+      break;
+      
+    default:
+      m_weekendOption = MoveNothing;
+      break;
+  }
 }

@@ -281,11 +281,21 @@ public:
 
   /**
     * Set the weekendOption that determines how the schedule check code
-    * will enter transactions that occur on a weekend.
+    * will enter transactions that occur on a weekend. The following values
+    * are valid:
     *
-    * This not used by MyMoneySchedule but by the support code.
-  **/
-  void setWeekendOption(weekendOptionE option) { m_weekendOption = option; }
+    * - MoveNothing: don't modify date
+    * - MoveFriday: modify the date to the previous friday
+    * - MoveMonday: modify the date to the following monday
+    *
+    * If an invalid option is given, the option is set to MoveNothing.
+    *
+    * @param option See list in description
+    * @return none
+    *
+    * @note This not used by MyMoneySchedule but by the support code.
+    **/
+  void setWeekendOption(const weekendOptionE option);
 
   /**
     * Validates the schedule instance.
