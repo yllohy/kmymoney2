@@ -149,6 +149,9 @@ public:
   MyMoneyMoney& operator--();
   MyMoneyMoney  operator--( int );
 
+  static signed64 maxValue;
+  static signed64 minValue;
+  
 private:
   signed64 m_64Value;
 

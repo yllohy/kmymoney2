@@ -19,11 +19,18 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+#define __STDC_LIMIT_MACROS         // force definition of min and max values 
+#include <stdint.h>
+
 #include "mymoneymoney.h"
 
 unsigned char MyMoneyMoney::_thousandSeparator = ',';
 unsigned char MyMoneyMoney::_decimalSeparator = '.';
 MyMoneyMoney::fileVersionE MyMoneyMoney::_fileVersion = MyMoneyMoney::FILE_4_BYTE_VALUE;
+
+signed64 MyMoneyMoney::maxValue = INT64_MAX;
+signed64 MyMoneyMoney::minValue = INT64_MIN;
 
 void MyMoneyMoney::setThousandSeparator(const unsigned char separator)
 {
