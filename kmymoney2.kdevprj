@@ -33,13 +33,13 @@ ldflags=\s    \s
 path_to_bin_program=kmymoney2
 
 [General]
-AMChanged=false
+AMChanged=true
 author=Michael Edwardes
-configure_args=\s--build=i386-linux --host=i386-linux --target=i386-linux --prefix=/opt/kde3 --enable-debug\s
+configure_args=--prefix=/opt/kde3 --enable-debug\s
 dir_where_make_will_be_called=
 email=mte@users.sourceforge.net
 kdevprj_version=1.3
-lfv_open_groups=
+lfv_open_groups=GNU,Others,Translations,User Interface
 make_options=\s-j1
 makefiles=Makefile.am,kmymoney2/Makefile.am,doc/Makefile.am,doc/en/Makefile.am,po/Makefile.am,kmymoney2/views/Makefile.am,kmymoney2/pics/Makefile.am,kmymoney2/converter/Makefile.am,kmymoney2/dialogs/Makefile.am,kmymoney2/widgets/Makefile.am,kmymoney2/icons/hicolor/22x22/actions/Makefile.am,kmymoney2/icons/hicolor/22x22/Makefile.am,kmymoney2/icons/hicolor/Makefile.am,kmymoney2/icons/Makefile.am,kmymoney2/icons/hicolor/16x16/actions/Makefile.am,kmymoney2/icons/hicolor/16x16/Makefile.am,doc/images/Makefile.am,developer-doc/Makefile.am,developer-doc/phb/Makefile.am,kmymoney2/html/Makefile.am,kmymoney2/mymoney/storage/Makefile.am,kmymoney2/mymoney/Makefile.am,kmymoney2/icons/hicolor/48x48/apps/Makefile.am,kmymoney2/icons/hicolor/48x48/Makefile.am
 modifyMakefiles=true
@@ -318,9 +318,15 @@ install_location=
 type=DATA
 
 [kmymoney2/Makefile.am]
-files=kmymoney2/main.cpp,kmymoney2/kmymoney2.cpp,kmymoney2/kmymoney2.h,kmymoney2/kmymoney2ui.rc,kmymoney2/kmymoney2.desktop,kmymoney2/kstartuplogo.cpp,kmymoney2/kstartuplogo.h,kmymoney2/lo16-app-kmymoney2.png,kmymoney2/lo32-app-kmymoney2.png,kmymoney2/kmymoney_wizard.png,kmymoney2/mimetype_kmy_16x16.png,kmymoney2/mimetype_kmy_32x32.png,kmymoney2/mimetype_kmy_48x48.png,kmymoney2/x-kmymoney2.desktop,kmymoney2/hi16-app-kmymoney2.png,kmymoney2/hi32-app-kmymoney2.png,kmymoney2/tips,kmymoney2/default_accounts_de.dat,kmymoney2/kmymoneyutils.cpp,kmymoney2/kmymoneyutils.h,kmymoney2/default_accounts_enGB.dat
+files=kmymoney2/main.cpp,kmymoney2/kmymoney2.cpp,kmymoney2/kmymoney2.h,kmymoney2/kmymoney2ui.rc,kmymoney2/kmymoney2.desktop,kmymoney2/kstartuplogo.cpp,kmymoney2/kstartuplogo.h,kmymoney2/lo16-app-kmymoney2.png,kmymoney2/lo32-app-kmymoney2.png,kmymoney2/kmymoney_wizard.png,kmymoney2/mimetype_kmy_16x16.png,kmymoney2/mimetype_kmy_32x32.png,kmymoney2/mimetype_kmy_48x48.png,kmymoney2/x-kmymoney2.desktop,kmymoney2/hi16-app-kmymoney2.png,kmymoney2/hi32-app-kmymoney2.png,kmymoney2/tips,kmymoney2/default_accounts_de.dat,kmymoney2/kmymoneyutils.cpp,kmymoney2/kmymoneyutils.h,kmymoney2/default_accounts_enGB.dat,kmymoney2/comptes_par_defaut_fr.dat
 sub_dirs=widgets,dialogs,views,converter,mymoney,pics,icons,html
 type=prog_main
+
+[kmymoney2/comptes_par_defaut_fr.dat]
+dist=true
+install=false
+install_location=
+type=DATA
 
 [kmymoney2/converter/Makefile.am]
 files=kmymoney2/converter/mymoneyqifprofile.h,kmymoney2/converter/mymoneyqifprofile.cpp,kmymoney2/converter/mymoneyqifwriter.cpp,kmymoney2/converter/mymoneyqifwriter.h,kmymoney2/converter/mymoneyqifreader.cpp,kmymoney2/converter/mymoneyqifreader.h
@@ -2090,6 +2096,12 @@ install_location=
 type=DATA
 
 [po/Makefile.am]
-files=
+files=po/fr.po
 sub_dirs=
 type=po
+
+[po/fr.po]
+dist=false
+install=false
+install_location=
+type=PO
