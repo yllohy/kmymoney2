@@ -56,7 +56,7 @@
   * @see KMyMoneyView
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: kmymoney2.h,v 1.23 2002/11/10 08:58:17 ipwizard Exp $
+  * $Id: kmymoney2.h,v 1.24 2002/12/06 20:33:37 ipwizard Exp $
   *
   * @short Main application class.
 **/
@@ -219,6 +219,8 @@ protected slots:
   void slotPayeeView();
 
   void slotEnableKMyMoneyOperations(bool enable=true);
+
+  void slotShowTipOfTheDay(void);
 
   public:
     bool startWithDialog(void) { return m_startDialog; }

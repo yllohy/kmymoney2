@@ -306,7 +306,7 @@ install_location=
 type=DATA
 
 [kmymoney2/Makefile.am]
-files=kmymoney2/main.cpp,kmymoney2/kmymoney2.cpp,kmymoney2/kmymoney2.h,kmymoney2/kmymoney2ui.rc,kmymoney2/kmymoney2.desktop,kmymoney2/kstartuplogo.cpp,kmymoney2/kstartuplogo.h,kmymoney2/default_categories.dat,kmymoney2/lo16-app-kmymoney2.png,kmymoney2/lo32-app-kmymoney2.png,kmymoney2/kmymoney_wizard.png,kmymoney2/mimetype_kmy_16x16.png,kmymoney2/mimetype_kmy_32x32.png,kmymoney2/mimetype_kmy_48x48.png,kmymoney2/x-kmymoney2.desktop,kmymoney2/hi16-app-kmymoney2.png,kmymoney2/hi32-app-kmymoney2.png,kmymoney2/default_accounts.dat
+files=kmymoney2/main.cpp,kmymoney2/kmymoney2.cpp,kmymoney2/kmymoney2.h,kmymoney2/kmymoney2ui.rc,kmymoney2/kmymoney2.desktop,kmymoney2/kstartuplogo.cpp,kmymoney2/kstartuplogo.h,kmymoney2/default_categories.dat,kmymoney2/lo16-app-kmymoney2.png,kmymoney2/lo32-app-kmymoney2.png,kmymoney2/kmymoney_wizard.png,kmymoney2/mimetype_kmy_16x16.png,kmymoney2/mimetype_kmy_32x32.png,kmymoney2/mimetype_kmy_48x48.png,kmymoney2/x-kmymoney2.desktop,kmymoney2/hi16-app-kmymoney2.png,kmymoney2/hi32-app-kmymoney2.png,kmymoney2/default_accounts.dat,kmymoney2/tips
 sub_dirs=dialogs,views,widgets,mymoney,pics,icons,html
 type=prog_main
 
@@ -1492,6 +1492,12 @@ type=DATA
 dist=true
 install=true
 install_location=$$(kde_datadir)/kmymoney2/pics/view_info.png
+type=DATA
+
+[kmymoney2/tips]
+dist=true
+install=true
+install_location=$$(kde_datadir)/kmymoney2/tips
 type=DATA
 
 [kmymoney2/views/Makefile.am]

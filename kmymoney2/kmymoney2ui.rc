@@ -26,6 +26,9 @@
     <Action name="account_import"/>
     <Action name="account_export"/>
   </Menu>
+  <Menu name="help">
+    <Action name="show_tip"/>
+  </Menu>
 <!--
   <Menu name="bills"><text>&amp;Bills/Deposits</text>
     <Action name="bills_add"/>

@@ -36,6 +36,7 @@
 #else
 #include <kstddirs.h>
 #endif
+#include <ktip.h>
 
 #include <kkeydialog.h>
 
@@ -114,6 +115,8 @@ KMyMoney2App::KMyMoney2App(QWidget *parent , const char* name)
   copybackup = false;
   unmountbackup = false;
 
+  KTipDialog::showTip(myMoneyView, "", false);
+
   if (!m_startDialog)
     myMoneyView->readFile(fileName);
 }
@@ -172,6 +175,7 @@ void KMyMoney2App::initActions()
   accountOpen = new KAction(i18n("Open account register..."), "account_open", 0, this, SLOT(slotAccountOpen()), actionCollection(), "account_open");
   accountAdd = new KAction(i18n("Add new account..."), "account"/*QIconSet(QPixmap(KGlobal::dirs()->findResource("appdata", "toolbar/kmymoney_newacc.xpm")))*/, 0, this, SLOT(slotAccountAdd()), actionCollection(), "account_add");
   accountReconcile = new KAction(i18n("Reconcile account..."), "reconcile", 0, this, SLOT(slotAccountReconcile()), actionCollection(), "account_reconcile");
+
   accountFind = new KAction(i18n("Find transaction..."), "transaction_find", 0, this, SLOT(slotAccountFind()), actionCollection(), "account_find");
   accountImport = new KAction(i18n("Import transactions..."), "transaction_import", 0, this, SLOT(slotAccountImport()), actionCollection(), "account_import");
   accountExport = new KAction(i18n("Export transactions..."), "transaction_export", 0, this, SLOT(slotAccountExport()), actionCollection(), "account_export");
@@ -193,6 +197,9 @@ void KMyMoney2App::initActions()
   pluginList = new KAction(i18n("List plugins..."), 0, 0, this, SLOT(slotPluginList()), actionCollection(), "plugin_list");
   pluginList->setStatusText(i18n("View all plugins and/or add new ones"));
 */
+  // The help menu
+  KAction* showTip = new KAction(i18n("&Show tip of the day"), "idea", 0, this, SLOT(slotShowTipOfTheDay()), actionCollection(), "show_tip");
+
   // For the toolbar only
 //  viewUp = new KAction(i18n("Move view up..."), QIconSet(QPixmap(KGlobal::dirs()->findResource("appdata", "toolbar/kmymoney_up.xpm"))), 0, this, SLOT(slotViewUp()), actionCollection(), "view_up");
   viewUp = KStdAction::back(this, SLOT(slotViewUp()), actionCollection());
@@ -836,6 +843,7 @@ void KMyMoney2App::slotFileBackup()
       mountbackup = false;
       copybackup = false;
       unmountbackup = false;
+
       proc.clearArguments();
       QString backupfile = mountpoint + fileName.url().mid(fileName.url().findRev("/")) + today;
       proc << "cp" << "-f" << fileName.url() << backupfile;
@@ -972,4 +980,9 @@ void KMyMoney2App::slotPayeeView()
 
 void KMyMoney2App::slotEnableKMyMoneyOperations(bool enable)
 {
+}
+
+void KMyMoney2App::slotShowTipOfTheDay(void)
+{
+  KTipDialog::showTip(myMoneyView, "", true);
 }
