@@ -20,7 +20,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "mymoneyutils.h"
+// ----------------------------------------------------------------------------
+// QT Includes
+
+// ----------------------------------------------------------------------------
+// KDE Includes
+
+// ----------------------------------------------------------------------------
+// Project Includes
+
 #include "mymoneyequity.h"
 
 MyMoneyEquity::MyMoneyEquity()
@@ -40,7 +48,7 @@ MyMoneyEquity::~MyMoneyEquity()
 
 void MyMoneyEquity::setPriceHistory(const equity_price_history& history)
 {
-  m_priceHistory = history;  
+  m_priceHistory = history;
 }
 
 void MyMoneyEquity::editPriceHistory(const QDate& date, const MyMoneyMoney& money)
@@ -66,7 +74,7 @@ const bool MyMoneyEquity::hasPrice(const QDate& date) const
 {
   bool result = false;
   QMap<QDate, MyMoneyMoney>::ConstIterator it;
-  
+
   it = m_priceHistory.begin();
   if(it != m_priceHistory.end()) {
     if(it.key() <= date)

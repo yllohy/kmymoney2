@@ -23,25 +23,32 @@
 #ifndef MYMONEYEQUITY_H
 #define MYMONEYEQUITY_H
 
+// ----------------------------------------------------------------------------
+// QT Includes
+
+#include <qdatetime.h>
+#include <qmap.h>
+
+// ----------------------------------------------------------------------------
+// KDE Includes
+
+// ----------------------------------------------------------------------------
+// Project Includes
+
+#include "../mymoney/mymoneymoney.h"
+#include "../mymoney/mymoneyutils.h"
+
+typedef QMap<QDate,MyMoneyMoney> equity_price_history;
 
 /**
   * Class that holds all the required information about an equity that the user
   * has entered information about.
   *
-  *@author Kevin Tambascio
+  * @author Kevin Tambascio
   */
-
-#include "mymoneymoney.h"
-#include "mymoneyutils.h"
-
-#include <qdatetime.h>
-#include <qmap.h>
-
-typedef QMap<QDate,MyMoneyMoney> equity_price_history;
-
 class MyMoneyEquity
 {
-public: 
+public:
   MyMoneyEquity();
   MyMoneyEquity(const QCString& id, const MyMoneyEquity& equity);
   virtual ~MyMoneyEquity();
@@ -65,11 +72,11 @@ public:
 
   eEQUITYTYPE   equityType() const                 { return m_equityType; }
   void          setEquityType(const eEQUITYTYPE& e)   { m_equityType = e; }
-  
+
   QString    tradingMarket() const  { return m_tradingMarket; }
   void       setTradingMarket(const QString& str) { m_tradingMarket = str; }
 
-  
+
   /** No descriptions */
   //virtual void setEquityType(const String& str);
 
@@ -79,7 +86,7 @@ public:
   virtual void  editPriceHistory(const QDate& date,const MyMoneyMoney& money);
   virtual void  addPriceHistory(const QDate& date, const MyMoneyMoney& money);
   virtual void  removePriceHistory(const QDate& date);
-  
+
   /**
     * This method takes an equity object that has some price data, and inserts it
     * into 'this' object.
