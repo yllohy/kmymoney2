@@ -32,11 +32,12 @@ class KReconcileDlg : public KReconcileDlgDecl  {
 public: 
 	KReconcileDlg(const MyMoneyMoney previousBal, const MyMoneyMoney endingBal, const QDate endingDate, const MyMoneyBank bankIndex, MyMoneyAccount *accountIndex, const MyMoneyFile file, QWidget *parent=0, const char *name=0);
 	~KReconcileDlg();
-  void updateData(void);
-  void clearReconcile();
+//  void updateData(void);
   void resetData(const MyMoneyMoney previousBal, const MyMoneyMoney endingBal, const QDate endingDate, const MyMoneyBank bankIndex, MyMoneyAccount *accountIndex, const MyMoneyFile file);
   /** No descriptions */
-  void reloadLists();
+
+protected:
+  void resizeEvent(QResizeEvent*);
 
 protected slots:
   void slotDebitSelected(QListViewItem*, const QPoint&, int);
@@ -66,10 +67,6 @@ private:
 
   bool m_balanced;  // true when the account is balanced (determined by doDifference)
 
-//  QColor m_defaultBGColor;
-//  QColor m_defaultListColor;
-//  unsigned int m_lastCount;
-
   QDate m_endingDate;
 
   void loadLists(void);
@@ -81,6 +78,10 @@ private:
   bool inDebits(MyMoneyTransaction *transaction);
   /** No descriptions */
   bool inCredits(MyMoneyTransaction *transaction);
+
+  void reloadLists();
+  void clearReconcile();
+
 public slots: // Public slots
   /** No descriptions */
   void slotTransactionChanged();

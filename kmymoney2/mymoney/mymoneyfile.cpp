@@ -576,6 +576,10 @@ MyMoneyFile::MyMoneyFile(const MyMoneyFile& right)
   m_payeeList = right.m_payeeList;
   m_categoryList.clear();
   m_categoryList = right.m_categoryList;
+  m_initialised = right.m_initialised;
+  m_containsBanks = right.m_containsBanks;
+  m_containsAccounts = right.m_containsAccounts;
+  m_containsTransactions = right.m_containsTransactions;
 }
 
 MyMoneyFile& MyMoneyFile::operator = (const MyMoneyFile& right)
@@ -602,6 +606,10 @@ MyMoneyFile& MyMoneyFile::operator = (const MyMoneyFile& right)
   m_payeeList = right.m_payeeList;
   m_categoryList.clear();
   m_categoryList = right.m_categoryList;
+  m_initialised = right.m_initialised;
+  m_containsBanks = right.m_containsBanks;
+  m_containsAccounts = right.m_containsAccounts;
+  m_containsTransactions = right.m_containsTransactions;
   return *this;
 }
 

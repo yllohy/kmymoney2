@@ -1,3 +1,12 @@
+2001-07-11 Michael Edwardes <mte@users.sourceforge.net>
+  * Improved reconciliation process, mostly GUI improvements.
+  * Backup dialog remembers the state of the mount check box.
+  * Fixed a bug in MyMoneyFile:: assignment operator and the copy constructor.
+  * MyMoneyFile::isInitialised() should work properly now.
+  * Fixed bug in reconcile dlg dealing with editing transactions during the
+    process.  (It opened the window again even if you've cancelled when you
+    next edit/create a transaction).
+
 2001-07-09 Michael Edwardes <mte@users.sourceforge.net>
   * Updated the parent() methods to have descriptive names and added missing
     call in MyMoneyTransaction.

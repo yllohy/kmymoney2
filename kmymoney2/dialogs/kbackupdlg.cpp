@@ -16,19 +16,31 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <kglobal.h>
+#include <kconfig.h>
 #include <qpushbutton.h>
 #include <qlineedit.h>
+#include <qcheckbox.h>
 #include <kfiledialog.h>
 #include "kbackupdlg.h"
 
 KBackupDlg::KBackupDlg( QWidget* parent,  const char* name/*, bool modal*/)
   : kbackupdlgdecl( parent,  name , true)
 {
+  KConfig *config = KGlobal::config();
+  config->setGroup("Last Use Settings");
+  mountCheckBox->setChecked(config->readBoolEntry("KBackupDlg_mountDevice", false));
+
   connect(chooseButton, SIGNAL(clicked()), this, SLOT(chooseButtonClicked()));
 }
 
 KBackupDlg::~KBackupDlg()
 {
+  KConfig *config = KGlobal::config();
+  config->setGroup("Last Use Settings");
+  config->writeEntry("KBackupDlg_mountDevice", mountCheckBox->isChecked());
+  config->sync();
+  qDebug("saved backup settings");
 }
 
 void KBackupDlg::chooseButtonClicked()

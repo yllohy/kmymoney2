@@ -49,7 +49,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   QLabel *pluginsLabel = new QLabel(i18n("Sorry, Plugins not yet available"), this);
   addTab(pluginsLabel, i18n("Plugins"));
 */
-  connect(m_mainView, SIGNAL(transactionListChanged()), this, SLOT(slotTransactionListChanged()));
+//  connect(m_mainView, SIGNAL(transactionListChanged()), this, SLOT(slotTransactionListChanged()));
 
   connect(m_mainView, SIGNAL(accountRightMouseClick(const MyMoneyAccount, bool)), this, SLOT(slotAccountRightMouse(const MyMoneyAccount, bool)));
 //  connect(m_mainView, SIGNAL(accountDoubleClick(const MyMoneyAccount)), this, SLOT(slotAccountDoubleClick(const MyMoneyAccount)));
@@ -72,26 +72,27 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
 KMyMoneyView::~KMyMoneyView()
 {
 }
-
+/*
 void KMyMoneyView::slotTransactionListChanged()
 {
 	//if (m_inReconciliation)
 	  //reconcileDlg->updateData();
 }
-
-void KMyMoneyView::slotAccountRightMouse(const MyMoneyAccount, bool inList)
+*/
+void KMyMoneyView::slotAccountRightMouse(const MyMoneyAccount, bool/* inList*/)
 {
   KPopupMenu menu(this);
   menu.insertTitle(QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/22x22/actions/account.png")), i18n("Account Options"));
-  int id0 = menu.insertItem(i18n("Open..."), this, SLOT(slotAccountDoubleClick()));
+  menu.insertItem(i18n("Open..."), this, SLOT(slotAccountDoubleClick()));
   menu.insertSeparator();
-  int id1 = menu.insertItem(QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/16x16/actions/reconcile.png")), i18n("Reconcile..."), this, SLOT(slotAccountReconcile()));
+  /*int id1 = */menu.insertItem(QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/16x16/actions/reconcile.png")), i18n("Reconcile..."), this, SLOT(slotAccountReconcile()));
   menu.insertSeparator();
-  int id3 = menu.insertItem(QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/16x16/actions/account.png")), i18n("Edit..."), this, SLOT(slotAccountEdit()));
-  int id4 = menu.insertItem(i18n("Delete..."), this, SLOT(slotAccountDelete()));
+  /*int id3 = */menu.insertItem(QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/16x16/actions/account.png")), i18n("Edit..."), this, SLOT(slotAccountEdit()));
+  /*int id4 = */menu.insertItem(i18n("Delete..."), this, SLOT(slotAccountDelete()));
   menu.insertSeparator();
-  int id5 = menu.insertItem(QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/16x16/actions/transaction_import.png")), i18n("Import ascii..."), this, SLOT(slotAccountImportAscii()));
-  int id6 = menu.insertItem(QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/16x16/actions/transaction_export.png")), i18n("Export ascii..."), this, SLOT(slotAccountExportAscii()));
+  /*int id5 = */menu.insertItem(QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/16x16/actions/transaction_import.png")), i18n("Import ascii..."), this, SLOT(slotAccountImportAscii()));
+  /*int id6 = */menu.insertItem(QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/16x16/actions/transaction_export.png")), i18n("Export ascii..."), this, SLOT(slotAccountExportAscii()));
+/*
   if (!inList) {
     menu.setItemEnabled(id1, false);
     menu.setItemEnabled(id3, false);
@@ -99,6 +100,7 @@ void KMyMoneyView::slotAccountRightMouse(const MyMoneyAccount, bool inList)
     menu.setItemEnabled(id5, false);
     menu.setItemEnabled(id6, false);
   }
+*/
   menu.exec(QCursor::pos());
 }
 
@@ -434,14 +436,13 @@ void KMyMoneyView::slotAccountNew(void)
 void KMyMoneyView::slotAccountReconcile(void)
 {
   MyMoneyMoney l_previousBal, l_endingBalGuess;
-//  QListIterator<MyMoneyTransaction> it = m_file.transactionIterator(bankIndex, accountIndex);
-	
+
   bool bankSuccess=false, accountSuccess=false;
   MyMoneyBank *pBank;
   MyMoneyAccount *pAccount;
 
-	pBank = m_file.bank(m_mainView->currentBank(bankSuccess));
-	if (!pBank || !bankSuccess) {
+  pBank = m_file.bank(m_mainView->currentBank(bankSuccess));
+  if (!pBank || !bankSuccess) {
     qDebug("KMyMoneyView::slotAccountReconcile: Unable to get the current bank");
     return;
   }
@@ -465,20 +466,21 @@ void KMyMoneyView::slotAccountReconcile(void)
     else
       l_endingBalGuess -= transaction->amount();
   }
-	
+
   KEndingBalanceDlg dlg(l_previousBal, l_endingBalGuess, this);
-	if (dlg.exec()) {
+  if (dlg.exec()) {
     if (!m_reconcileInited) {
       reconcileDlg = new KReconcileDlg(dlg.previousBalance, dlg.endingBalance, dlg.endingDate, *pBank, pAccount, m_file, 0);
       connect(reconcileDlg, SIGNAL(reconcileFinished(bool)), this, SLOT(slotReconcileFinished(bool)));
       connect(m_mainView->getTransactionView(),SIGNAL(transactionListChanged()),reconcileDlg,SLOT(slotTransactionChanged()));
-    	reconcileDlg->show();
-    	m_inReconciliation = true;
-  	  m_reconcileInited=true;
+      reconcileDlg->show();
+      m_inReconciliation = true;
+      m_reconcileInited=true;
     } else {
       reconcileDlg->resetData(dlg.previousBalance, dlg.endingBalance, dlg.endingDate, *pBank, pAccount, m_file);
+      connect(m_mainView->getTransactionView(),SIGNAL(transactionListChanged()),reconcileDlg,SLOT(slotTransactionChanged()));
       reconcileDlg->show();
-  	  m_inReconciliation = true;
+      m_inReconciliation = true;
     }
   }
 }
@@ -586,26 +588,12 @@ void KMyMoneyView::editPayees(void)
 
 void KMyMoneyView::slotReconcileFinished(bool success)
 {
-  bool bankSuccess=false, accountSuccess=false;
-  MyMoneyBank *pBank;
-  MyMoneyAccount *pAccount;
-
-	pBank = m_file.bank(m_mainView->currentBank(bankSuccess));
-	if (!pBank || !bankSuccess) {
-    qDebug("KMyMoneyView::slotreconcileFinished: Unable to get the current bank");
-    return;
-  }
-  pAccount = pBank->account(m_mainView->currentAccount(accountSuccess));
-  if (!pAccount || !accountSuccess) {
-    qDebug("KMyMoneyView::slotreconcileFinished: Unable to grab the current account");
-    return;
-  }
-
   if (success) {
     m_mainView->refreshTransactionView();
-  } else
-    KMessageBox::information(this, i18n("Reconciliation failed for some reason"));
+  }
 
+  // Remember to disconnect.
+  disconnect(m_mainView->getTransactionView(),SIGNAL(transactionListChanged()),reconcileDlg,SLOT(slotTransactionChanged()));
   reconcileDlg->hide();
   m_inReconciliation=false;
 }

@@ -20,19 +20,19 @@
 #include "kreconciledlg.h"
 #include "kreconcilelistitem.h"
 
-KReconcileDlg::KReconcileDlg(const MyMoneyMoney previousBal, const MyMoneyMoney endingBal, const QDate endingDate, const MyMoneyBank bankIndex, MyMoneyAccount *accountIndex, const MyMoneyFile file, QWidget *parent, const char *name)
- : KReconcileDlgDecl(parent,name,false)
+KReconcileDlg::KReconcileDlg(const MyMoneyMoney previousBal, const MyMoneyMoney endingBal,
+  const QDate endingDate, const MyMoneyBank bankIndex, MyMoneyAccount *accountIndex,
+  const MyMoneyFile file, QWidget *parent, const char *name)
+ : KReconcileDlgDecl(parent,name,true)
 {
-  descriptionLabel->setText(i18n("Click on a transaction to mark it as Reconciled.\nYou can add/delete transactions from the main register window."));
-
   m_balanced = false;
   m_debitsQList.setAutoDelete(false);
   m_creditsQList.setAutoDelete(false);
   m_reconciledTransactions.setAutoDelete(false);
 
-	m_file = file;
+  m_file = file;
   m_bankIndex = bankIndex;
-	m_accountIndex = accountIndex;
+  m_accountIndex = accountIndex;
   m_endingBalance = endingBal;
   m_previousBalance = previousBal;
   m_clearedBalance.setAmount(0.0);
@@ -40,12 +40,13 @@ KReconcileDlg::KReconcileDlg(const MyMoneyMoney previousBal, const MyMoneyMoney 
   m_creditBalance.setAmount(0.0);
   m_endingDate = endingDate;
 	
+/*
 	totalCreditsLabel->setAlignment(AlignRight | AlignVCenter | ExpandTabs | SingleLine);
 	totalDebitsLabel->setAlignment(AlignRight | AlignVCenter | ExpandTabs | SingleLine);
 	previousLabel->setAlignment(AlignRight | AlignVCenter | ExpandTabs | SingleLine);
 	endingLabel->setAlignment(AlignRight | AlignVCenter | ExpandTabs | SingleLine);
 	differenceLabel->setAlignment(AlignRight | AlignVCenter | ExpandTabs | SingleLine);
-
+*/
 	
 	debitListView->setRootIsDecorated(false);
 	debitListView->addColumn(i18n("Date"));
@@ -65,24 +66,19 @@ KReconcileDlg::KReconcileDlg(const MyMoneyMoney previousBal, const MyMoneyMoney 
 	creditListView->setMultiSelection(true);
   creditListView->setAllColumnsShowFocus(true);
 	
-	MyMoneyMoney money(m_clearedBalance);
-	QString text(i18n("Cleared Balance: "));
-	text += KGlobal::locale()->formatMoney(money.amount());
-	endingLabel->setText(text);
+	endingLabel->setText(KGlobal::locale()->formatMoney(m_clearedBalance.amount()));
 	
-  money = m_endingBalance;
-	text = i18n("Ending Balance: ");
-	text += KGlobal::locale()->formatMoney(money.amount());
-	previousLabel->setText(text);
+	previousLabel->setText(KGlobal::locale()->formatMoney(m_endingBalance.amount()));
+	
+	broughtForwardLabel->setText(KGlobal::locale()->formatMoney(m_previousBalance.amount()));
 
-  money = m_creditBalance;
+  QString text;
 	text = i18n("Deposits: ");
-	text += KGlobal::locale()->formatMoney(money.amount());
+	text += KGlobal::locale()->formatMoney(m_creditBalance.amount());
 	totalCreditsLabel->setText(text);
 	
-  money = m_debitBalance;
 	text = i18n("Withdrawals: ");
-	text += KGlobal::locale()->formatMoney(money.amount());
+	text += KGlobal::locale()->formatMoney(m_debitBalance.amount());
 	totalDebitsLabel->setText(text);
 
 
@@ -126,17 +122,12 @@ void KReconcileDlg::clearReconcile()
 void KReconcileDlg::loadLists(void)
 {
   // Load the internal transaaction lists
-  if (m_file.isInitialised())
-    return;
-
   m_creditsQList.clear();
   m_debitsQList.clear();
 
-//  QListIterator<MyMoneyTransaction> it = m_file.transactionIterator(m_bankIndex, m_accountIndex);
   unsigned int i=0;
   MyMoneyTransaction *transaction;
   for (i=0, transaction=m_accountIndex->transactionFirst(); transaction; transaction=m_accountIndex->transactionNext(), i++) {
-//    MyMoneyTransaction *transaction = it.current();
     if (transaction->date()>m_endingDate)
       break;
 
@@ -169,78 +160,79 @@ void KReconcileDlg::insertTransactions(void)
   }
 }
 
-void KReconcileDlg::slotDebitSelected(QListViewItem* item, const QPoint& p, int col)
+void KReconcileDlg::slotDebitSelected(QListViewItem* item, const QPoint&/*p*/, int/* col*/)
 {
     KReconcileListItem *reconcileItem = (KReconcileListItem*)item;
 
-		double dblDebit = m_debitBalance.amount();
-		double dblCleared = m_clearedBalance.amount();
-    double dblItem = reconcileItem->transaction()->amount().amount();
+		// Changed double types to MyMoneyMoney because in the future
+		// we will support mulitple currencies and have our own incompatable
+		// internal format. (one that rounds properly and supports large numbers
+		// e.g unsigned long.int with sign being a boolean).
+//		MyMoneyMoney dblDebit = m_debitBalance;
+//		MyMoneyMoney dblCleared = m_clearedBalance;
+    MyMoneyMoney dblItem = reconcileItem->transaction()->amount();
+
     if(reconcileItem->isSelected())
 		{
-  			dblDebit += dblItem;
-			dblCleared -= dblItem;
+			m_debitBalance += dblItem;
+			m_clearedBalance -= dblItem;
 			reconcileItem->setReconciled(true);
 			m_reconciledTransactions.append(reconcileItem->transaction());
 		}
 		else
 		{
-			dblDebit -= dblItem;
-			dblCleared += dblItem;
+			m_debitBalance -= dblItem;
+			m_clearedBalance += dblItem;
 			reconcileItem->setReconciled(false);
 			m_reconciledTransactions.remove(reconcileItem->transaction());
     }
-		m_debitBalance.setAmount(dblDebit);
-		m_clearedBalance.setAmount(dblCleared);
-  	MyMoneyMoney money;
-    money.setAmount(dblDebit);
+//		m_debitBalance.setAmount(dblDebit);
+//		m_clearedBalance.setAmount(dblCleared);
+//  	MyMoneyMoney money;
+//    money.setAmount(dblDebit);
 		QString text = i18n("Withdrawals: ");
-		text += KGlobal::locale()->formatMoney(money.amount());
+		text += KGlobal::locale()->formatMoney(m_debitBalance.amount());
 		totalDebitsLabel->setText(text);
 
-    money.setAmount(dblCleared);
-		text = i18n("Cleared Balance: ");
-		text += KGlobal::locale()->formatMoney(money.amount());
-		endingLabel->setText(text);
+//    money.setAmount(dblCleared);
+		endingLabel->setText(KGlobal::locale()->formatMoney(m_clearedBalance.amount()));
 
 		doDifference();
-
-
 }
 
 void KReconcileDlg::slotCreditSelected(QListViewItem* item, const QPoint&, int)
 {
     KReconcileListItem *reconcileItem = (KReconcileListItem*)item;
 
-		double dblCredit = m_creditBalance.amount();
-		double dblCleared = m_clearedBalance.amount();
-    double dblItem = reconcileItem->transaction()->amount().amount();
+		// See above func
+//		double dblCredit = m_creditBalance.amount();
+//		double dblCleared = m_clearedBalance.amount();
+    MyMoneyMoney dblItem = reconcileItem->transaction()->amount();
     if(reconcileItem->isSelected())
 		{
-  		dblCredit += dblItem;
-			dblCleared += dblItem;
+  		m_creditBalance += dblItem;
+			m_clearedBalance += dblItem;
 			reconcileItem->setReconciled(true);
 			m_reconciledTransactions.append(reconcileItem->transaction());
 		}
 		else
     {
-			dblCredit -= dblItem;
-			dblCleared -= dblItem;
+  		m_creditBalance -= dblItem;
+			m_clearedBalance -= dblItem;
 			reconcileItem->setReconciled(false);
 			m_reconciledTransactions.remove(reconcileItem->transaction());
     }
-		m_creditBalance.setAmount(dblCredit);
-    m_clearedBalance.setAmount(dblCleared);
-  	MyMoneyMoney money;
-    money.setAmount(dblCredit);
+		
+//		m_creditBalance.setAmount(dblCredit);
+//    m_clearedBalance.setAmount(dblCleared);
+//  	MyMoneyMoney money;
+//    money.setAmount(dblCredit);
 		QString text = i18n("Deposits: ");
-		text += KGlobal::locale()->formatMoney(money.amount());
+		text += KGlobal::locale()->formatMoney(m_creditBalance.amount());
 		totalCreditsLabel->setText(text);
 
-    money.setAmount(dblCleared);
-		text = i18n("Cleared Balance: ");
-		text += KGlobal::locale()->formatMoney(money.amount());
-		endingLabel->setText(text);
+//    money.setAmount(dblCleared);
+		endingLabel->setText(KGlobal::locale()->formatMoney(m_clearedBalance.amount()));
 
 		doDifference();
 
@@ -249,25 +241,9 @@ void KReconcileDlg::slotCreditSelected(QListViewItem* item, const QPoint&, int)
 
 void KReconcileDlg::doDifference(void)
 {
-  MyMoneyMoney previousMoney(m_previousBalance);
-  MyMoneyMoney endingMoney(m_endingBalance);
-
-  MyMoneyMoney l_enteredMoney;
-
-  QListIterator<MyMoneyTransaction> it(m_reconciledTransactions);
-  for ( ; it.current(); ++it) {
-    MyMoneyTransaction *rt = it.current();
-    if (rt->type() == MyMoneyTransaction::Credit)
-      l_enteredMoney += rt->amount();
-    else
-      l_enteredMoney -= rt->amount();
-  }
   MyMoneyMoney difference((m_previousBalance + m_clearedBalance)- m_endingBalance);
 
-  QString text;
-  text = i18n("Difference: ");
-  text += KGlobal::locale()->formatMoney(difference.amount());
-  differenceLabel->setText(text);
+  differenceLabel->setText(KGlobal::locale()->formatMoney(difference.amount()));
   if (difference.isZero())
     m_balanced = true;
   else
@@ -282,13 +258,12 @@ void KReconcileDlg::finishClicked(void)
       return;
     }
   }
-	else
-  {
-   	
-  }
+//	else
+//  {
+//  }
   emit reconcileFinished(true);
 }
-
+/*
 void KReconcileDlg::updateData(void)
 {
   // Simply reload the list clearing the status.
@@ -301,16 +276,17 @@ void KReconcileDlg::updateData(void)
   insertTransactions();
   doDifference();
 }
-
+*/
 void KReconcileDlg::cancelClicked()
 {
 	clearReconcile();
-  emit reconcileFinished(true);
+	// Stop the transaction view from being refreshed on
+	// cancel by passing false.
+  emit reconcileFinished(false);
 }
 
 void KReconcileDlg::resetData(const MyMoneyMoney previousBal, const MyMoneyMoney endingBal, const QDate endingDate, const MyMoneyBank bankIndex, MyMoneyAccount *accountIndex, const MyMoneyFile file)
 {
-
   m_reconciledTransactions.clear();
   m_debitsQList.clear();
   m_creditsQList.clear();
@@ -327,77 +303,60 @@ void KReconcileDlg::resetData(const MyMoneyMoney previousBal, const MyMoneyMoney
   m_creditBalance.setAmount(0.0);
   m_endingDate = endingDate;
 	
+/*
 	totalCreditsLabel->setAlignment(AlignRight | AlignVCenter | ExpandTabs | SingleLine);
 	totalDebitsLabel->setAlignment(AlignRight | AlignVCenter | ExpandTabs | SingleLine);
 	previousLabel->setAlignment(AlignRight | AlignVCenter | ExpandTabs | SingleLine);
 	endingLabel->setAlignment(AlignRight | AlignVCenter | ExpandTabs | SingleLine);
 	differenceLabel->setAlignment(AlignRight | AlignVCenter | ExpandTabs | SingleLine);
-
-
+*/
 	
-	MyMoneyMoney money(m_clearedBalance);
-	QString text(i18n("Cleared Balance: "));
-	text += KGlobal::locale()->formatMoney(money.amount());
-	endingLabel->setText(text);
+	endingLabel->setText(KGlobal::locale()->formatMoney(m_clearedBalance.amount()));
 	
-  money = m_endingBalance;
-	text = i18n("Ending Balance: ");
-	text += KGlobal::locale()->formatMoney(money.amount());
-	previousLabel->setText(text);
+	previousLabel->setText(KGlobal::locale()->formatMoney(m_endingBalance.amount()));
 
-  money = m_creditBalance;
+	broughtForwardLabel->setText(KGlobal::locale()->formatMoney(m_previousBalance.amount()));
+
+	QString text;
 	text = i18n("Deposits: ");
-	text += KGlobal::locale()->formatMoney(money.amount());
+	text += KGlobal::locale()->formatMoney(m_creditBalance.amount());
 	totalCreditsLabel->setText(text);
 	
-  money = m_debitBalance;
 	text = i18n("Withdrawals: ");
-	text += KGlobal::locale()->formatMoney(money.amount());
+	text += KGlobal::locale()->formatMoney(m_debitBalance.amount());
 	totalDebitsLabel->setText(text);
-
 
 	loadLists();
 	insertTransactions();
-
 }
-/** No descriptions */
-/** No descriptions */
-void KReconcileDlg::slotTransactionChanged(){
 
-
+void KReconcileDlg::slotTransactionChanged()
+{
 	reloadLists();
 	insertTransactions();
 	show();
-
-
 }
+
 /** No descriptions */
-void KReconcileDlg::reloadLists(){
-  // Load the internal transaaction lists
-  if (m_file.isInitialised())
-    return;
-
-
-//  QListIterator<MyMoneyTransaction> it = m_file.transactionIterator(m_bankIndex, m_accountIndex);
+void KReconcileDlg::reloadLists()
+{
   unsigned int i=0;
   MyMoneyTransaction *transaction;
   for (i=0, transaction=m_accountIndex->transactionFirst(); transaction; transaction=m_accountIndex->transactionNext(), i++) {
-//    MyMoneyTransaction *transaction = it.current();
-
     if (transaction->state()!=MyMoneyTransaction::Reconciled) {
       if (transaction->type() == MyMoneyTransaction::Debit) {
         transaction->setIndex(i);
-		if(m_debitsQList.find(transaction) <  0)
-    	{
-        	m_debitsQList.append(transaction);
-		}
+        if(m_debitsQList.find(transaction) <  0)
+        {
+          m_debitsQList.append(transaction);
+        }
       }
       else {
         transaction->setIndex(i);
-		if(m_creditsQList.find(transaction) <  0)
-		{
-        	m_creditsQList.append(transaction);
-		}
+        if(m_creditsQList.find(transaction) <  0)
+        {
+          m_creditsQList.append(transaction);
+        }
       }
     }
   }
@@ -416,8 +375,6 @@ void KReconcileDlg::reloadLists(){
 	if(transactionFound == false)
 		m_debitsQList.remove(it2.current());
   }
-
-
 }
 
 
@@ -425,19 +382,18 @@ void KReconcileDlg::reloadLists(){
 bool KReconcileDlg::inTransactions(MyMoneyTransaction *credittrans){
 
   MyMoneyTransaction *transaction;
-     int i = 0;
- 	 for ( i=0, transaction=m_accountIndex->transactionFirst(); transaction; transaction=m_accountIndex->transactionNext(), i++) {
-    	if( credittrans == transaction)
-			return true;  	
-	}
-	return false;
-
+  int i = 0;
+  for ( i=0, transaction=m_accountIndex->transactionFirst(); transaction; transaction=m_accountIndex->transactionNext(), i++) {
+    if( credittrans == transaction)
+      return true;  	
+  }
+  return false;
 }
 
-/** No descriptions */
-bool KReconcileDlg::inCredits(MyMoneyTransaction *transaction){
-
-   QListIterator<MyMoneyTransaction> it(m_creditsQList);
+/*  Not used (yet?)
+bool KReconcileDlg::inCredits(MyMoneyTransaction *transaction)
+{
+  QListIterator<MyMoneyTransaction> it(m_creditsQList);
   for ( ; it.current(); ++it) {
 	if(transaction == it.current())
 		return true;
@@ -446,9 +402,11 @@ bool KReconcileDlg::inCredits(MyMoneyTransaction *transaction){
 	return false;
 
 }
-/** No descriptions */
-bool KReconcileDlg::inDebits(MyMoneyTransaction *transaction){
+*/
 
+/*  Not used (yet?)
+bool KReconcileDlg::inDebits(MyMoneyTransaction *transaction)
+{
   QListIterator<MyMoneyTransaction> it(m_debitsQList);
   for ( ; it.current(); ++it) {
 	if(transaction == it.current())
@@ -458,8 +416,24 @@ bool KReconcileDlg::inDebits(MyMoneyTransaction *transaction){
 	return false;
 
 }
-/** No descriptions */
-void KReconcileDlg::editClicked(){
+*/
 
-	hide();
+void KReconcileDlg::editClicked()
+{
+  hide();
+}
+
+void KReconcileDlg::resizeEvent(QResizeEvent*)
+{
+  debitListView->setColumnWidth( 2, debitListView->width()
+    - debitListView->columnWidth(0)
+    - debitListView->columnWidth(1)
+    - debitListView->columnWidth(3)
+    - debitListView->columnWidth(4) );
+
+  creditListView->setColumnWidth( 2, creditListView->width()
+    - creditListView->columnWidth(0)
+    - creditListView->columnWidth(1)
+    - creditListView->columnWidth(3)
+    - creditListView->columnWidth(4) );
 }

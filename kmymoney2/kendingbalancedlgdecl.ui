@@ -11,8 +11,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>302</width>
-            <height>180</height>
+            <width>358</width>
+            <height>255</height>
         </rect>
     </property>
     <property stdset="1">
@@ -29,151 +29,207 @@
             <number>6</number>
         </property>
         <widget>
-            <class>QGroupBox</class>
+            <class>QLabel</class>
             <property stdset="1">
                 <name>name</name>
-                <cstring>GroupBox1</cstring>
+                <cstring>TextLabel1_2</cstring>
             </property>
             <property stdset="1">
-                <name>title</name>
-                <string>Reconcile Information</string>
+                <name>text</name>
+                <string>Please enter the information needed to balance your account.
+
+If you do not know the information needed, your last bank
+statement should contain all the necessary data.
+
+To begin the reconciliation process click on the OK button.</string>
             </property>
-            <vbox>
+        </widget>
+        <widget>
+            <class>Line</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>Line1</cstring>
+            </property>
+            <property stdset="1">
+                <name>frameShadow</name>
+                <enum>Raised</enum>
+            </property>
+            <property stdset="1">
+                <name>orientation</name>
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+        <widget>
+            <class>QLayoutWidget</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>Layout6</cstring>
+            </property>
+            <hbox>
                 <property stdset="1">
                     <name>margin</name>
-                    <number>11</number>
+                    <number>0</number>
                 </property>
                 <property stdset="1">
                     <name>spacing</name>
                     <number>6</number>
                 </property>
                 <widget>
-                    <class>QLayoutWidget</class>
+                    <class>QLabel</class>
                     <property stdset="1">
                         <name>name</name>
-                        <cstring>Layout6</cstring>
+                        <cstring>TextLabel1</cstring>
                     </property>
-                    <hbox>
-                        <property stdset="1">
-                            <name>margin</name>
-                            <number>0</number>
-                        </property>
-                        <property stdset="1">
-                            <name>spacing</name>
-                            <number>6</number>
-                        </property>
-                        <widget>
-                            <class>QLabel</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>TextLabel1</cstring>
-                            </property>
-                            <property stdset="1">
-                                <name>text</name>
-                                <string>Previous Balance:</string>
-                            </property>
-                            <property stdset="1">
-                                <name>alignment</name>
-                                <set>AlignVCenter|AlignRight</set>
-                            </property>
-                            <property>
-                                <name>hAlign</name>
-                            </property>
-                        </widget>
-                        <widget>
-                            <class>kMyMoneyEdit</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>previousbalEdit</cstring>
-                            </property>
-                        </widget>
-                    </hbox>
+                    <property stdset="1">
+                        <name>sizePolicy</name>
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                        </sizepolicy>
+                    </property>
+                    <property stdset="1">
+                        <name>minimumSize</name>
+                        <size>
+                            <width>100</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>Previous Balance:</string>
+                    </property>
                 </widget>
                 <widget>
-                    <class>QLayoutWidget</class>
+                    <class>kMyMoneyEdit</class>
                     <property stdset="1">
                         <name>name</name>
-                        <cstring>Layout2</cstring>
+                        <cstring>previousbalEdit</cstring>
                     </property>
-                    <hbox>
-                        <property stdset="1">
-                            <name>margin</name>
-                            <number>0</number>
-                        </property>
-                        <property stdset="1">
-                            <name>spacing</name>
-                            <number>6</number>
-                        </property>
-                        <widget>
-                            <class>QLabel</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>TextLabel3</cstring>
-                            </property>
-                            <property stdset="1">
-                                <name>text</name>
-                                <string>Ending Date:</string>
-                            </property>
-                            <property stdset="1">
-                                <name>alignment</name>
-                                <set>AlignVCenter|AlignRight</set>
-                            </property>
-                            <property>
-                                <name>hAlign</name>
-                            </property>
-                        </widget>
-                        <widget>
-                            <class>kMyMoneyDateInput</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>endingDateEdit</cstring>
-                            </property>
-                        </widget>
-                    </hbox>
+                    <property stdset="1">
+                        <name>sizePolicy</name>
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>1</vsizetype>
+                        </sizepolicy>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget>
+            <class>QLayoutWidget</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>Layout2</cstring>
+            </property>
+            <hbox>
+                <property stdset="1">
+                    <name>margin</name>
+                    <number>0</number>
+                </property>
+                <property stdset="1">
+                    <name>spacing</name>
+                    <number>6</number>
+                </property>
+                <widget>
+                    <class>QLabel</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>TextLabel3</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>sizePolicy</name>
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                        </sizepolicy>
+                    </property>
+                    <property stdset="1">
+                        <name>minimumSize</name>
+                        <size>
+                            <width>100</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>Ending Date:</string>
+                    </property>
+                    <property stdset="1">
+                        <name>indent</name>
+                        <number>-1</number>
+                    </property>
                 </widget>
                 <widget>
-                    <class>QLayoutWidget</class>
+                    <class>kMyMoneyDateInput</class>
                     <property stdset="1">
                         <name>name</name>
-                        <cstring>Layout3</cstring>
+                        <cstring>endingDateEdit</cstring>
                     </property>
-                    <hbox>
-                        <property stdset="1">
-                            <name>margin</name>
-                            <number>0</number>
-                        </property>
-                        <property stdset="1">
-                            <name>spacing</name>
-                            <number>6</number>
-                        </property>
-                        <widget>
-                            <class>QLabel</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>TextLabel4</cstring>
-                            </property>
-                            <property stdset="1">
-                                <name>text</name>
-                                <string>Ending Balance:</string>
-                            </property>
-                            <property stdset="1">
-                                <name>alignment</name>
-                                <set>AlignVCenter|AlignRight</set>
-                            </property>
-                            <property>
-                                <name>hAlign</name>
-                            </property>
-                        </widget>
-                        <widget>
-                            <class>kMyMoneyEdit</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>endingEdit</cstring>
-                            </property>
-                        </widget>
-                    </hbox>
+                    <property stdset="1">
+                        <name>sizePolicy</name>
+                        <sizepolicy>
+                            <hsizetype>3</hsizetype>
+                            <vsizetype>1</vsizetype>
+                        </sizepolicy>
+                    </property>
                 </widget>
-            </vbox>
+            </hbox>
+        </widget>
+        <widget>
+            <class>QLayoutWidget</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>Layout3</cstring>
+            </property>
+            <hbox>
+                <property stdset="1">
+                    <name>margin</name>
+                    <number>0</number>
+                </property>
+                <property stdset="1">
+                    <name>spacing</name>
+                    <number>6</number>
+                </property>
+                <widget>
+                    <class>QLabel</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>TextLabel4</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>sizePolicy</name>
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                        </sizepolicy>
+                    </property>
+                    <property stdset="1">
+                        <name>minimumSize</name>
+                        <size>
+                            <width>100</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>Ending Balance:</string>
+                    </property>
+                </widget>
+                <widget>
+                    <class>kMyMoneyEdit</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>endingEdit</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>sizePolicy</name>
+                        <sizepolicy>
+                            <hsizetype>3</hsizetype>
+                            <vsizetype>1</vsizetype>
+                        </sizepolicy>
+                    </property>
+                </widget>
+            </hbox>
         </widget>
         <widget>
             <class>QLayoutWidget</class>

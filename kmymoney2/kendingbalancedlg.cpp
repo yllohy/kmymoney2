@@ -23,7 +23,7 @@ KEndingBalanceDlg::KEndingBalanceDlg(MyMoneyMoney& prevBal, MyMoneyMoney& ending
 {
 //	initDialog();
 	
-	previousbalEdit->setText(KGlobal::locale()->formatMoney(prevBal.amount()));
+	previousbalEdit->setText(KGlobal::locale()->formatNumber(prevBal.amount()));
 	previousbalEdit->setFocus();
 	previousbalEdit->setSelection(0, KGlobal::locale()->formatNumber(prevBal.amount()).length());	
 	
@@ -43,12 +43,6 @@ void KEndingBalanceDlg::okClicked()
 	previousBalance = previousbalEdit->getMoneyValue();
   endingDate = endingDateEdit->getQDate();
 
-  if (!endingDate.isValid()) {
-    KMessageBox::information(this, i18n("Please enter a valid date"));
-    // Return the focus
-    endingDateEdit->setFocus();
-    return;
-  }
-
+  // removed the date check because it can't be invalid !
   accept();
 }

@@ -37,7 +37,7 @@
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.13 2001/07/08 22:23:11 mte Exp $
+  * $Id: kmymoneyview.h,v 1.14 2001/07/11 21:39:32 mte Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -274,7 +274,7 @@ protected slots:
     *
     * @see slotAccountReconcile.
   **/
-  void slotTransactionListChanged();
+//  void slotTransactionListChanged();
 
   /**
     * Called whenever the user right clicks on an account.  It brings up
