@@ -89,6 +89,7 @@ public:
     m_lastPayment = QDate(1900, 1, 1);
     m_id = "";
     m_accountId = "";
+    m_transferAccount = "";
   }
 
   /**
@@ -112,6 +113,7 @@ public:
     m_lastPayment = m_startDate;
     m_id = "";
     m_accountId = accountId;
+    m_transferAccount = "";
   }
 
   /**
@@ -403,6 +405,9 @@ public:
 
   bool operator ==(const MyMoneySchedule& right);
 
+  QCString transferAccount(void) const { return m_transferAccount; }
+  void setTransferAccount(const QCString& accountId) { m_transferAccount = accountId; }
+
 private:
   /// Its occurence
   occurenceE m_occurence;
@@ -445,6 +450,9 @@ private:
 
   /// The account id
   QCString m_accountId;
+
+  /// The transfer account
+  QCString m_transferAccount;
 };
 
 #endif

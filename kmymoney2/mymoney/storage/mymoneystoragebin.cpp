@@ -1094,6 +1094,7 @@ void MyMoneyStorageBin::writeSchedule(QDataStream&s, const MyMoneySchedule& sc)
   s << sc.lastPayment();
   s << sc.name();
   s << sc.accountId();
+  s << sc.transferAccount();
   writeTransaction(s, sc.transaction());
 }
 
@@ -1120,6 +1121,7 @@ const MyMoneySchedule MyMoneyStorageBin::readSchedule(QDataStream& s)
   s >> tmp_d; sc.setLastPayment(tmp_d);
   s >> tmp_s; sc.setName(tmp_s);
   s >> id; sc.setAccountId(id);
+  s >> id; sc.setTransferAccount(id);
   MyMoneyTransaction t = readTransaction(s);
   sc.setTransaction(t);
 

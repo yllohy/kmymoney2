@@ -415,6 +415,7 @@ void KEditScheduledTransferDlg::okClicked()
     m_schedule.setName(m_scheduleName->text());
 
     m_schedule.setAccountId(m_accountCombo->currentAccountId());
+    m_schedule.setTransferAccount(m_kcomboTo->currentAccountId());
   } catch (MyMoneyException *e)
   {
     KMessageBox::detailedError(this, i18n("Unable to add transfer"), e->what());
