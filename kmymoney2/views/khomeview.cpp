@@ -98,6 +98,10 @@ void KHomeView::slotRefreshView(void)
     m_part->begin();
     m_part->write(header);
 
+    QString temp(i18n("Your Financial Summary"));
+    QString financialPic = QString("<h2>%1</h2>").arg(temp);
+    m_part->write(financialPic);
+
     KConfig *kconfig = KGlobal::config();
     kconfig->setGroup("Homepage Options");
     QStringList settings = kconfig->readListEntry("Itemlist");
@@ -271,9 +275,9 @@ void KHomeView::showPaymentEntry(const MyMoneySchedule& sched)
     MyMoneyTransaction t = sched.transaction();
     MyMoneySplit sp = t.splitByAccount(acc.id(), true);
 
-    tmp = QString("<td width=\"10%\">") +
+    tmp = QString("<td width=\"20%\">") +
       KGlobal::locale()->formatDate(sched.nextPayment(sched.lastPayment()), true) +
-      "</td><td width=\"80%\">" +
+      "</td><td width=\"70%\">" +
       link(VIEW_SCHEDULE, QString("?id=%1").arg(sched.id())) + sched.name() + linkend() +
       "</td>" +
       "<td width=\"10%\" align=\"right\">";
