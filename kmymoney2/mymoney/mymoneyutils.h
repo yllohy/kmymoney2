@@ -70,6 +70,9 @@ public:
 class MyMoneyTracer
 {
 public:
+  MyMoneyTracer(const char* prettyName);
+#define MYMONEYTRACER(a) MyMoneyTracer a(__PRETTY_FUNCTION__)
+
   MyMoneyTracer(const QString& className, const QString& methodName);
   ~MyMoneyTracer();
   void printf(const char *format, ...) const;

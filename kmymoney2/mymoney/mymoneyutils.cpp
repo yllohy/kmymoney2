@@ -29,6 +29,8 @@
 #include <cstdarg>
 #include <cstdlib>
 
+#include <qregexp.h>
+
 #ifdef _CHECK_MEMORY
 
 #undef new
@@ -227,6 +229,24 @@ QString MyMoneyUtils::getFileExtension(QString strFileName)
 
 int MyMoneyTracer::m_indentLevel = 0;
 int MyMoneyTracer::m_onoff = 0;
+
+MyMoneyTracer::MyMoneyTracer(const char* name)
+{
+  if(m_onoff) {
+    QRegExp exp("(.*)::(.*)");
+    if(exp.search(name) != -1) {
+      m_className = exp.cap(1);
+      m_memberName = exp.cap(2);
+    } else {
+      m_className = QString(name);
+      m_memberName = QString();
+    }
+    QString indent;
+    indent.fill(' ', m_indentLevel);
+    std::cerr << indent.latin1() << "ENTER: " << m_className.latin1() << "::" << m_memberName.latin1() << std::endl;
+  }
+  m_indentLevel += 2;
+}
 
 MyMoneyTracer::MyMoneyTracer(const QString& className, const QString& memberName) :
   m_className(className),
