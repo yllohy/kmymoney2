@@ -191,7 +191,7 @@ void KSplitTransactionDlg::createInputWidgets(const int row)
   m_editAmount->setFont(cellFont);
   m_editCategory = new kMyMoneyCategory(0);
   m_editCategory->setFont(cellFont);
-  m_editMemo = new kMyMoneyLineEdit(0);
+  m_editMemo = new kMyMoneyLineEdit(0, 0, AlignLeft|AlignVCenter);
   m_editMemo->setFont(cellFont);
 
   m_editCategory->loadText(transactionsTable->text(row, 0));

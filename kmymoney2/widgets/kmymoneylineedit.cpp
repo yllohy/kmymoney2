@@ -28,10 +28,10 @@
 
 #include "kmymoneylineedit.h"
 
-kMyMoneyLineEdit::kMyMoneyLineEdit(QWidget *w, const char* name)
+kMyMoneyLineEdit::kMyMoneyLineEdit(QWidget *w, const char* name, int alignment)
   : KLineEdit(w, name)
 {
-	setAlignment(AlignRight | AlignVCenter);
+  setAlignment(alignment);
 }
 
 kMyMoneyLineEdit::~kMyMoneyLineEdit()
