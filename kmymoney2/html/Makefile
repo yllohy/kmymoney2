@@ -1,5 +1,5 @@
 # Generated automatically from Makefile.in by config.pl.
-# KDE tags expanded automatically by am_edit - $Revision: 1.3 $ 
+# KDE tags expanded automatically by am_edit - $Revision: 1.4 $ 
 # Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
@@ -20,7 +20,7 @@ SHELL = /bin/sh
 srcdir = .
 top_srcdir = ../..
 VPATH = .
-prefix = /usr
+prefix = /home/kevin/src/kmymoney2/devel/kmymoney2/debugbin
 exec_prefix = ${prefix}
 #>- 
 bindir = ${exec_prefix}/bin
@@ -53,7 +53,7 @@ AUTOCONF = autoconf
 AUTOMAKE = automake
 AUTOHEADER = autoheader
 
-INSTALL = /usr/bin/install -c -p
+INSTALL = /usr//bin/install -c -p
 INSTALL_PROGRAM = ${INSTALL} $(INSTALL_STRIP_FLAG) $(AM_INSTALL_PROGRAM_FLAGS)
 INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_SCRIPT = ${INSTALL}
@@ -90,7 +90,7 @@ GCJ = @GCJ@
 GCJFLAGS = @GCJFLAGS@
 GLINC = @GLINC@
 GLLIB = @GLLIB@
-GMSGFMT = /usr/bin/msgfmt
+GMSGFMT = /usr//bin/msgfmt
 IDL = @IDL@
 IDL_DEPENDENCIES = @IDL_DEPENDENCIES@
 JAR = @JAR@
@@ -152,8 +152,8 @@ MEINPROC = /usr/bin/meinproc
 MICO_INCLUDES = @MICO_INCLUDES@
 MICO_LDFLAGS = @MICO_LDFLAGS@
 MOC = /usr/lib/qt2/bin/moc
-MSGFMT = /usr/bin/msgfmt
-NOOPT_CXXFLAGS =  -march=i386 -mcpu=i686 -fno-exceptions -fno-check-new
+MSGFMT = /usr//bin/msgfmt
+NOOPT_CXXFLAGS =  -ansi -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -Wbad-function-cast -Wcast-align -Wundef -Wconversion -fno-builtin -Wnon-virtual-dtor -Wno-long-long -g -Wall -pedantic -W -Wpointer-arith -Wmissing-prototypes -Wwrite-strings -fno-exceptions -fno-check-new
 NOREPO = -fno-repo
 OBJDUMP = @OBJDUMP@
 OBJEXT = o
@@ -178,7 +178,7 @@ USE_EXCEPTIONS = -fexceptions
 USE_RTTI = 
 USE_THREADS = @USE_THREADS@
 VERSION = 0.5.0
-XGETTEXT = /usr/bin/xgettext
+XGETTEXT = /usr//bin/xgettext
 XPMINC = @XPMINC@
 XPMLIB = @XPMLIB@
 X_EXTRA_LIBS =  -lresolv

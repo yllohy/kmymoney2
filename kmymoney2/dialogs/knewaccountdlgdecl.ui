@@ -361,6 +361,12 @@ My Current Account</string>
                                 <item>
                                     <property>
                                         <name>text</name>
+                                        <string>Loan/Mortgage</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
                                         <string>Investment</string>
                                     </property>
                                 </item>

@@ -51,8 +51,9 @@ KBankListItem::KBankListItem(KBankListItem *parent, MyMoneyBank bank, MyMoneyAcc
 
   setText(0, m_account.name());
   setPixmap(0, QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/22x22/actions/account.png")));
-  setText(1, i18n("Current")); // dynamic in future...
-  setText(2, KGlobal::locale()->formatMoney(m_account.balance().amount(), "",
+  //setText(1, i18n("Current")); // dynamic in future...
+  setText(1, m_account.getTypeName());
+	setText(2, KGlobal::locale()->formatMoney(m_account.balance().amount(), "",
                                             KGlobal::locale()->fracDigits()));
 
   m_isBank=false;

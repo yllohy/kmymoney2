@@ -39,7 +39,7 @@ MyMoneyAccount::MyMoneyAccount()
 {
   m_qdateOpening = QDate::currentDate();
   m_ulLastId = 0L;
-  m_accountType = MyMoneyAccount::Current;
+  m_accountType = MyMoneyAccount::Unknown_Account;
   m_qdateLastReconcile = QDate::currentDate();
   m_parent=0;
 }
@@ -1317,4 +1317,38 @@ void MyMoneyAccount::setDirty(const bool flag)
 {
   if (m_parent)
     m_parent->setDirty(flag);
+}
+
+QString MyMoneyAccount::getTypeName() const
+{
+	QString typeName;
+	if(m_accountType == Checkings)
+	{
+		typeName = i18n("Checkings");
+	}
+	else if(m_accountType == Savings)
+	{
+		typeName = i18n("Savings");
+	}
+	else if(m_accountType == CreditCard)
+	{
+		typeName = i18n("Credit Card");
+	}
+	else if(m_accountType == Loan)
+	{
+		typeName = i18n("Loan");
+	}
+	else if(m_accountType == CertificateDep)
+	{
+		typeName = i18n("Certificate of Deposit");
+	}
+	else if(m_accountType == Investment)
+	{
+		typeName = i18n("Investment/Brokerage");
+	}
+	else if(m_accountType == MoneyMarket)
+	{
+		typeName = i18n("Money Market");
+	}
+	return typeName;
 }

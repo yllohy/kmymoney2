@@ -23,7 +23,8 @@
 #include <qlabel.h>
 #include <kglobal.h>
 #include <klocale.h>
-
+#include <qcombobox.h>
+#include <kcombobox.h>
 #include "knewaccountdlg.h"
 
 KNewAccountDlg::KNewAccountDlg(QString institution, QWidget *parent, const char *name, const char *title)
@@ -87,7 +88,12 @@ void KNewAccountDlg::okClicked()
   }
   accountNoText = accountNoEdit->text();
 
-  type = MyMoneyAccount::Current;
+	//set account type based on the combo box setting
+	if(typeCombo)
+	{
+		int currentItem = typeCombo->currentItem();
+		type = static_cast<MyMoneyAccount::accountTypeE>(currentItem);
+	}
 
   descriptionText = descriptionEdit->text();
   startBalance = startBalanceEdit->getMoneyValue();

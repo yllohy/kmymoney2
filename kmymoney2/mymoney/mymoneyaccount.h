@@ -42,7 +42,7 @@ class MyMoneyBank;
   * @see MyMoneyTransaction
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: mymoneyaccount.h,v 1.23 2002/01/14 06:42:30 ipwizard Exp $
+  * $Id: mymoneyaccount.h,v 1.24 2002/01/25 07:15:42 ktambascio Exp $
   *
   * @short Representation of an account which holds transactions.
 **/
@@ -55,9 +55,14 @@ public:  // I know this breaks the coding standards but it needs to be declared
     Account types currently supported.
   **/
   enum accountTypeE {
-    Unknown_Account, /**< For error handling */
-    Savings, /**< Typical savings account */
-    Current /**< Typical current account */
+		Checkings = 0, 				/**< standart checking account */
+    Savings = 1, 					/**< Typical savings account */
+		CreditCard = 2, 				/**< Credit card accounts */
+		Loan = 3,							/**< Loan and mortgage accounts */
+		CertificateDep = 4,		/**< Certificates of Deposit */
+		Investment = 5,				/**< Investment account */
+		MoneyMarket = 6,			/**< Money Market Account */
+    Unknown_Account = 7 	/**< For error handling */
   };
 
 private:
@@ -440,6 +445,11 @@ public:
     * @return none
   **/
   void setDirty(const bool flag);
+
+	/**
+	* Returns a string that determines what type of account this is.
+ 	**/
+  QString getTypeName() const;
 
 signals:
   void signalProgressCount(int);
