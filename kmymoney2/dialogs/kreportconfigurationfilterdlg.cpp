@@ -109,8 +109,13 @@ KReportConfigurationFilterDlg::KReportConfigurationFilterDlg(
     }    
     else if ( m_initialState.reportType() == MyMoneyReport::eQueryTable )
     {
-      m_tab3 = new kMyMoneyReportConfigTab3Decl( m_criteriaTab, "kMyMoneyReportConfigTab3" );
-      m_criteriaTab->insertTab( m_tab3, QString("Rows/Columns"), 1 );
+      // eInvestmentHoldings is a special-case report, and you cannot configure the
+      // rows & columns of that report.
+      if ( m_initialState.rowType() != MyMoneyReport::eInvestmentHoldings )
+      {
+        m_tab3 = new kMyMoneyReportConfigTab3Decl( m_criteriaTab, "kMyMoneyReportConfigTab3" );
+        m_criteriaTab->insertTab( m_tab3, QString("Rows/Columns"), 1 );
+      }
     }
     
     m_criteriaTab->showPage( m_tab1 );
@@ -153,7 +158,7 @@ void KReportConfigurationFilterDlg::slotSearch()
   }
   else if ( m_tab3 )
   {
-    MyMoneyReport::ERowType rtq[6] = { MyMoneyReport::eCategory, MyMoneyReport::eTopCategory, MyMoneyReport::ePayee, MyMoneyReport::eAccount, MyMoneyReport::eMonth, MyMoneyReport::eWeek };
+    MyMoneyReport::ERowType rtq[7] = { MyMoneyReport::eCategory, MyMoneyReport::eTopCategory, MyMoneyReport::ePayee, MyMoneyReport::eAccount, MyMoneyReport::eTopAccount, MyMoneyReport::eMonth, MyMoneyReport::eWeek };
     m_currentState.setRowType( rtq[m_tab3->m_comboOrganizeBy->currentItem()] );
     
     unsigned qc = MyMoneyReport::eQCnone;
@@ -180,7 +185,7 @@ void KReportConfigurationFilterDlg::slotSearch()
     m_currentState.setQueryColumns(static_cast<MyMoneyReport::EQueryColumns>(qc));
     
     m_currentState.setTax( m_tab3->m_checkTax->isChecked() );
-
+    m_currentState.setInvestmentsOnly( m_tab3->m_checkInvestments->isChecked() );
   }
   
   // setup the date lock
@@ -231,7 +236,7 @@ void KReportConfigurationFilterDlg::slotReset(void)
       break;
     }
   }
-  else if ( tab_3 )
+  else if ( m_tab3 )
   {  
     switch ( m_initialState.rowType() )
     {
@@ -248,12 +253,16 @@ void KReportConfigurationFilterDlg::slotReset(void)
     case MyMoneyReport::eAccount:
       m_tab3->m_comboOrganizeBy->setCurrentItem(3);
       break;
-    case MyMoneyReport::eMonth:
+    case MyMoneyReport::eTopAccount:
       m_tab3->m_comboOrganizeBy->setCurrentItem(4);
       break;
-    case MyMoneyReport::eWeek:
+    case MyMoneyReport::eMonth:
       m_tab3->m_comboOrganizeBy->setCurrentItem(5);
       break;
+    case MyMoneyReport::eWeek:
+      m_tab3->m_comboOrganizeBy->setCurrentItem(6);
+      break;
+    case MyMoneyReport::eInvestmentHoldings:
     case MyMoneyReport::eAssetLiability:
     case MyMoneyReport::eExpenseIncome:
       throw new MYMONEYEXCEPTION("KReportConfigurationFilterDlg::slotReset(): QueryTable report has invalid rowtype");
@@ -271,6 +280,7 @@ void KReportConfigurationFilterDlg::slotReset(void)
     m_tab3->m_checkPrice->setChecked(qc & MyMoneyReport::eQCprice);
     
     m_tab3->m_checkTax->setChecked( m_initialState.isTax() );
+    m_tab3->m_checkInvestments->setChecked( m_initialState.isInvestmentsOnly() );
   }
       
   //

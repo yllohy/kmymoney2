@@ -58,8 +58,9 @@ class QDomDocument;
 class MyMoneyReport: public MyMoneyTransactionFilter
 {
 public:
+  // When adding a new row type, be sure to add a corresponding entry in kTypeArray
+  enum ERowType { eNoRows = 0, eAssetLiability, eExpenseIncome, eCategory, eTopCategory, eAccount, ePayee, eMonth, eWeek, eTopAccount, eInvestmentHoldings };
   enum EReportType { eNoReport = 0, ePivotTable, eQueryTable };
-  enum ERowType { eNoRows = 0, eAssetLiability, eExpenseIncome, eCategory, eTopCategory, eAccount, ePayee, eMonth, eWeek };
   enum EColumnType { eNoColumns = 0, eMonths = 1, eBiMonths = 2, eQuarters = 3, eYears = 12 };
   enum EQueryColumns { eQCnone = 0x0, eQCbegin = 0x1, eQCnumber = 0x1, eQCpayee = 0x2, eQCcategory = 0x4, eQCmemo = 0x8, eQCaccount = 0x10, eQCreconciled=0x20, eQCaction=0x40, eQCshares=0x80, eQCprice=0x100, eQCend=0x200 };
   
@@ -69,38 +70,9 @@ public:
   static const EReportType kTypeArray[];
   
 public:
-  MyMoneyReport(ERowType _rt = eExpenseIncome, EColumnType _ct = eMonths, const QDate& _db = QDate(), const QDate& _de = QDate()):
-    m_name("Unconfigured Pivot Table Report"),
-    m_showSubAccounts(false),
-    m_convertCurrency(true),
-    m_favorite(false),
-    m_tax(false),
-    m_reportType(kTypeArray[_rt]),
-    m_rowType(_rt),
-    m_columnType(_ct),
-    m_queryColumns(eQCnone),
-    m_dateLock(userDefined)
-  {
-    setDateFilter(_db,_de);
-  }
+  MyMoneyReport(ERowType _rt = eExpenseIncome, EColumnType _ct = eMonths, const QDate& _db = QDate(), const QDate& _de = QDate());
   
-  MyMoneyReport(ERowType _rt, unsigned _ct, unsigned _dl, bool _ss, const QString& _name, const QString& _comment ):
-    m_name(_name),
-    m_comment(_comment),
-    m_showSubAccounts(_ss),
-    m_convertCurrency(true),
-    m_favorite(false),
-    m_tax(false),
-    m_reportType(kTypeArray[_rt]),
-    m_rowType(_rt),
-    m_dateLock(_dl)
-  {
-    if ( m_reportType == ePivotTable )
-      m_columnType = static_cast<EColumnType>(_ct);
-    if ( m_reportType == eQueryTable )
-      m_queryColumns = static_cast<EQueryColumns>(_ct);
-    setDateFilter(_dl);
-  }
+  MyMoneyReport(ERowType _rt, unsigned _ct, unsigned _dl, bool _ss, const QString& _name, const QString& _comment );
 
   // Simple get operations
   const QString& name(void) const { return m_name; }
@@ -119,6 +91,7 @@ public:
   const QString& group( void ) const { return m_group; }
   bool isFavorite(void) const { return m_favorite; }
   bool isTax(void) const { return m_tax; }
+  bool isInvestmentsOnly(void) const { return m_investments; }
     
   // Simple set operations
   void setName(const QString& _s) { m_name = _s; }
@@ -132,6 +105,7 @@ public:
   void setQueryColumns( EQueryColumns _qc ) { m_queryColumns = _qc; }
   void setId( const QCString& _id ) { m_id = _id; }
   void setTax(bool _f) { m_tax = _f; }
+  void setInvestmentsOnly(bool _f) { m_investments = _f; }
 
   /**
     * This method allows you to set the underlying transaction filter
@@ -238,7 +212,11 @@ private:
   /**
     * Whether this report should only include categories marked as "Tax"="Yes"
     */
-  bool m_tax;
+  bool m_tax;  
+  /**
+    * Whether this report should only include investment accounts
+    */
+  bool m_investments;
   /**
     * What sort of algorithm should be used to run the report
     */

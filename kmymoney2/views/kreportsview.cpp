@@ -776,6 +776,31 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
     groups.push_back(list);
   }    
   {
+    ReportGroup list = i18n("Investments");
+  
+    list.push_back(MyMoneyReport(
+      MyMoneyReport::eTopAccount,
+      MyMoneyReport::eQCaction|MyMoneyReport::eQCshares|MyMoneyReport::eQCprice,
+      MyMoneyTransactionFilter::yearToDate,
+      false,
+      i18n("Investment Transactions"),
+      i18n("Default Report")
+    ));
+    list.back().setInvestmentsOnly(true);
+    
+    list.push_back(MyMoneyReport(
+      MyMoneyReport::eInvestmentHoldings,
+      MyMoneyReport::eQCnone,
+      MyMoneyTransactionFilter::yearToDate,
+      false,
+      i18n("Investment Holdings"),
+      i18n("Default Report")
+    ));
+    list.back().setInvestmentsOnly(true);
+
+    groups.push_back(list);
+  }
+  {
     ReportGroup list = i18n("Taxes");
   
     list.push_back(MyMoneyReport(

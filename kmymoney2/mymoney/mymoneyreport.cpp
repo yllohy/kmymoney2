@@ -40,15 +40,57 @@
  
 //ReportContainer gContainer;
 
-const QStringList MyMoneyReport::kRowTypeText = QStringList::split(",","none,assetliability,expenseincome,category,topcategory,account,payee,month,week",true);
+const QStringList MyMoneyReport::kRowTypeText = QStringList::split(",","none,assetliability,expenseincome,category,topcategory,account,payee,month,week,topaccount,investmentholdings",true);
 const QStringList MyMoneyReport::kColumnTypeText = QStringList::split(",","none,months,bimonths,quarters,,,,,,,,,years",true);
 const QStringList MyMoneyReport::kQueryColumnsText = QStringList::split(",","none,number,payee,category,memo,account,reconcileflag,action,shares,price",true);
-const MyMoneyReport::EReportType MyMoneyReport::kTypeArray[] = { eNoReport, ePivotTable, ePivotTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable };
+const MyMoneyReport::EReportType MyMoneyReport::kTypeArray[] = { eNoReport, ePivotTable, ePivotTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eNoReport };
 
 // This should live in mymoney/mymoneytransactionfilter.h
 static const QStringList kTypeText = QStringList::split(",","all,payments,deposits,transfers,none");
 static const QStringList kStateText = QStringList::split(",","all,notreconciled,cleared,reconciled,frozen,none");
 static const QStringList kDateLockText = QStringList::split(",", "alldates,untiltoday,currentmonth,currentyear,monthtodate,yeartodate,lastmonth,lastyear,last30days,last3months,last6months,last12months,next30days,next3months,next6months,next12months,userdefined");
+
+MyMoneyReport::MyMoneyReport(ERowType _rt, EColumnType _ct, const QDate& _db, const QDate& _de):
+    m_name("Unconfigured Pivot Table Report"),
+    m_showSubAccounts(false),
+    m_convertCurrency(true),
+    m_favorite(false),
+    m_tax(false),
+    m_investments(false),
+    m_reportType(kTypeArray[_rt]),
+    m_rowType(_rt),
+    m_columnType(_ct),
+    m_queryColumns(eQCnone),
+    m_dateLock(userDefined)
+  {
+    setDateFilter(_db,_de);
+    
+    if ( _rt > sizeof(kTypeArray)/sizeof(EReportType) || m_reportType == eNoReport )
+      throw new MYMONEYEXCEPTION("Invalid report type");
+  }
+  
+MyMoneyReport::MyMoneyReport(ERowType _rt, unsigned _ct, unsigned _dl, bool _ss, const QString& _name, const QString& _comment ):
+    m_name(_name),
+    m_comment(_comment),
+    m_showSubAccounts(_ss),
+    m_convertCurrency(true),
+    m_favorite(false),
+    m_tax(false),
+    m_investments(false),
+    m_reportType(kTypeArray[_rt]),
+    m_rowType(_rt),
+    m_dateLock(_dl)
+  {
+    if ( m_reportType == ePivotTable )
+      m_columnType = static_cast<EColumnType>(_ct);
+    if ( m_reportType == eQueryTable )
+      m_queryColumns = static_cast<EQueryColumns>(_ct);
+    setDateFilter(_dl);
+
+    if ( _rt > sizeof(kTypeArray)/sizeof(EReportType) || m_reportType == eNoReport )
+      throw new MYMONEYEXCEPTION("Invalid report type");
+      
+  }
 
 void MyMoneyReport::write(QDomElement& e, QDomDocument *doc) const
 {
@@ -59,7 +101,7 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc) const
 
   if ( m_reportType == ePivotTable )
   {
-    e.setAttribute("type","pivottable 1.5");
+    e.setAttribute("type","pivottable 1.6");
     e.setAttribute("name", m_name);
     e.setAttribute("comment", m_comment);
     e.setAttribute("group", m_group);
@@ -67,6 +109,7 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc) const
     e.setAttribute("convertcurrency", m_convertCurrency);
     e.setAttribute("favorite", m_favorite);
     e.setAttribute("tax", m_tax);
+    e.setAttribute("investments", m_investments);
     e.setAttribute("rowtype", kRowTypeText[m_rowType]);
     e.setAttribute("columntype", kColumnTypeText[m_columnType]);
     e.setAttribute("id", m_id);
@@ -74,13 +117,14 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc) const
   }
   else if ( m_reportType == eQueryTable )
   {
-    e.setAttribute("type","querytable 1.5");
+    e.setAttribute("type","querytable 1.6");
     e.setAttribute("name", m_name);
     e.setAttribute("comment", m_comment);
     e.setAttribute("group", m_group);
     e.setAttribute("convertcurrency", m_convertCurrency);
     e.setAttribute("favorite", m_favorite);
     e.setAttribute("tax", m_tax);
+    e.setAttribute("investments", m_investments);
     e.setAttribute("rowtype", kRowTypeText[m_rowType]);
     e.setAttribute("id", m_id);
     e.setAttribute("datelock", kDateLockText[m_dateLock]);
@@ -98,7 +142,7 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc) const
     }
     e.setAttribute("querycolumns", columns.join(","));
   }
-   
+     
   //
   // Text Filter
   //
@@ -291,7 +335,8 @@ bool MyMoneyReport::read(const QDomElement& e)
     m_showSubAccounts = e.attribute("showsubaccounts","0").toUInt();
     m_convertCurrency = e.attribute("convertcurrency","1").toUInt();
     m_favorite = e.attribute("favorite","0").toUInt();
-    m_tax = e.attribute("tax","0").toUInt();
+    m_tax = e.attribute("tax","0").toUInt();    
+    m_investments = e.attribute("investments","0").toUInt();
     
     QString datelockstr = e.attribute("datelock","userdefined");
     // Handle the pivot 1.2/query 1.1 case where the values were saved as
