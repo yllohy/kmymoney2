@@ -55,6 +55,9 @@ KLedgerViewCreditCard::KLedgerViewCreditCard(QWidget *parent, const char *name )
   m_form->tabBar()->tabAt(0)->setText(i18n("&Payment"));
   m_form->tabBar()->tabAt(2)->setText(i18n("C&harge"));
 
+  m_register->setAction(QCString(MyMoneySplit::ActionDeposit), i18n("Payment"));
+  m_register->setAction(QCString(MyMoneySplit::ActionWithdrawal), i18n("Charge"));
+
   m_register->repaintContents(false);
 }
 

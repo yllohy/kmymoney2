@@ -585,3 +585,8 @@ QSize kMyMoneyRegister::minimumSizeHint() const
 {
   return QSize(650, 200);
 }
+
+void kMyMoneyRegister::setAction(const QCString& action, const QString& txt)
+{
+  m_action[action] = txt;
+}

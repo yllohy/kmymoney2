@@ -238,6 +238,15 @@ public:
   QSize minimumSizeHint() const;
   QSize sizeHint() const;
 
+  /**
+    * This method is used to assign a translatable string
+    * to a given MyMoneySplit::Action.
+    *
+    * @param action reference to action string as returned by MyMoneySplit::action()
+    * @param txt text to be presented in the register
+    */
+  void setAction(const QCString& action, const QString& txt);
+
 public slots:
   /**
     * This method is used to inform the widget about the number
@@ -382,10 +391,16 @@ protected:
 
   /**
     * This vector keeps pointers to the widgets used to edit the data
-    *
     */
   QPtrVector<QWidget>  m_editWidgets;
 
+  /**
+    * This map keeps the assignment of MyMoneySplit::Actions to the
+    * i18n'ed text representation. It is setup/modified by the view using
+    * the setAction() method.
+    */
+  QMap<QCString, QString> m_action;
+  
 private:
   /**
     * This method is used to update all horizontal headers to the

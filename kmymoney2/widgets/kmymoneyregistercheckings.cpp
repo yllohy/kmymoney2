@@ -95,7 +95,7 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
             break;
 
           case 1:
-            txt = m_split.action();
+            txt = m_action[m_split.action()];
             break;
         }
         break;

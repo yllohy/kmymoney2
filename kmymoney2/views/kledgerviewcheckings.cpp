@@ -270,6 +270,12 @@ void KLedgerViewCheckings::createRegister(void)
   m_register = new kMyMoneyRegisterCheckings(this, "Checkings");
   m_register->setParent(this);
 
+  m_register->setAction(QCString(MyMoneySplit::ActionATM), i18n("ATM"));
+  m_register->setAction(QCString(MyMoneySplit::ActionCheck), i18n("Cheque"));
+  m_register->setAction(QCString(MyMoneySplit::ActionDeposit), i18n("Deposit"));
+  m_register->setAction(QCString(MyMoneySplit::ActionWithdrawal), i18n("Withdrawal"));
+  m_register->setAction(QCString(MyMoneySplit::ActionTransfer), i18n("Transfer"));
+    
   connect(m_register, SIGNAL(clicked(int, int, int, const QPoint&)), this, SLOT(slotRegisterClicked(int, int, int, const QPoint&)));
   connect(m_register, SIGNAL(doubleClicked(int, int, int, const QPoint&)), this, SLOT(slotRegisterDoubleClicked(int, int, int, const QPoint&)));
 

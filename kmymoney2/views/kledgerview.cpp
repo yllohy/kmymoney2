@@ -990,6 +990,8 @@ void KLedgerView::slotCategoryChanged(const QString& category)
           // find the 'other' split
           split = m_transaction.splitByAccount(accountId(), false);
           split.setAccountId(id);
+          // make sure the values match
+          split.setValue(-m_split.value());
           m_transaction.modifySplit(split);
           break;
       }

@@ -93,6 +93,18 @@ void kMyMoneyRegisterSearch::paintCell(QPainter *p, int row, int col, const QRec
 
           case 1:
             txt = m_split.action();
+            try {
+              MyMoneyAccount acc;
+              acc = MyMoneyFile::instance()->account(m_split.accountId());
+              if(acc.accountType() == MyMoneyAccount::CreditCard) {
+                if(txt == MyMoneySplit::ActionWithdrawal)
+                  txt = i18n("Charge");
+                else if(txt == MyMoneySplit::ActionDeposit)
+                  txt = i18n("Payment");
+              }
+            } catch(MyMoneyException *e) {
+              delete e;
+            }
             break;
         }
         break;
