@@ -34,6 +34,8 @@ class MyMoneyMoneyTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST(testSubtraction);
 	CPPUNIT_TEST(testMultiplication);
 	CPPUNIT_TEST(testFormatMoney);
+	CPPUNIT_TEST(testSetDecimalSeparator);
+	CPPUNIT_TEST(testSetThousandSeparator);
 	CPPUNIT_TEST(testRelation);
 	CPPUNIT_TEST(testUnaryMinus);
 	CPPUNIT_TEST(testDoubleConstructor);
@@ -55,6 +57,8 @@ public:
 	void testSubtraction();
 	void testMultiplication();
 	void testFormatMoney();
+	void testSetDecimalSeparator();
+	void testSetThousandSeparator();
 	void testRelation();
 	void testUnaryMinus();
 	void testDoubleConstructor();

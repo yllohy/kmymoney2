@@ -21,8 +21,45 @@
  ***************************************************************************/
 #include "mymoneymoney.h"
 
+static unsigned char _thousandSeparator = ',';
+static unsigned char _decimalSeparator = '.';
+
+void MyMoneyMoney::setThousandSeparator(const unsigned char separator)
+{
+  _thousandSeparator = separator;
+}
+
+unsigned char MyMoneyMoney::thousandSeparator(void)
+{
+  return _thousandSeparator;
+}
+
+void MyMoneyMoney::setDecimalSeparator(const unsigned char separator)
+{
+  _decimalSeparator = separator;
+}
+
+unsigned char MyMoneyMoney::decimalSeparator(void)
+{
+  return _decimalSeparator;
+}
+
+MyMoneyMoney::MyMoneyMoney(const QString& pszAmountInPence)
+{
+  QString res = pszAmountInPence;
+  int pos;
+  while((pos = res.find(_thousandSeparator)) != -1)
+    res.remove(pos, 1);
+  if((pos = res.find(_decimalSeparator)) != -1)
+    res.remove(pos, 1);
+
+  m_64Value = atoll( res );
+}
+
 const QString MyMoneyMoney::formatMoney(/*QString locale="C", bool addPrefixPostfix=false*/void) const
 {
+  QString res;
+
   // Once we really support multiple currencies then this method will
   // be much better than using KGlobal::locale()->formatMoney.
   if (m_64Value != 0)
@@ -37,14 +74,23 @@ const QString MyMoneyMoney::formatMoney(/*QString locale="C", bool addPrefixPost
       bNegative=true;
     }
 
+    res = QString("%1").arg((long)left);
+    int pos = res.length();
+    while(0 < (pos -= 3))
+      res.insert(pos, _thousandSeparator);
+    QString format;
+
+    res += _decimalSeparator;
     if (bNegative)
-    {
-      if (right < 10)
-        return QString("-%1.0%2").arg((long)left).arg(right);
-      else if (right == 0)
-        return QString("-%1.00").arg((long)left);
-      else
-        return QString("-%1.%2").arg((long)left).arg(right);
+      res.insert(0, '-');
+
+    if (right < 10)
+      res += QString("0%1").arg(right);
+    else if(right == 0)
+      res += "00";
+    else
+      res += QString("%1").arg(right);
+/*
     }
     else
     {
@@ -55,9 +101,12 @@ const QString MyMoneyMoney::formatMoney(/*QString locale="C", bool addPrefixPost
       else
         return QString("%1.%2").arg((long)left).arg(right);
     }
+*/
   }
   else
-    return QString("0.00");
+    res = QString("0")+_decimalSeparator+"00";
+
+  return res;
 }
 
 QDataStream &operator<<(QDataStream &s, const MyMoneyMoney &money)

@@ -54,6 +54,11 @@ public:
   signed64 value(void) const { return m_64Value; };
   const QString formatMoney(/*QString locale="C", bool addPrefixPostfix=false*/void) const;
 
+  static void setThousandSeparator(const unsigned char);
+  static void setDecimalSeparator(const unsigned char);
+  static unsigned char thousandSeparator(void);
+  static unsigned char decimalSeparator(void);
+
   // assignment
   const MyMoneyMoney& operator=( const MyMoneyMoney& AmountInPence );
   const MyMoneyMoney& operator=( const QString& pszAmountInPence );
@@ -164,10 +169,12 @@ inline MyMoneyMoney::MyMoneyMoney()
 // Arguments: pszAmountInPence - NULL terminated string containing amount in pence
 //
 ////////////////////////////////////////////////////////////////////////////////
+/*
 inline MyMoneyMoney::MyMoneyMoney(const QString& pszAmountInPence)
 {
   m_64Value = atoll( pszAmountInPence );
 }
+*/
 
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: MyMoneyMoney

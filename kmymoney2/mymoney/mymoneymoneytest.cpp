@@ -26,6 +26,8 @@ void MyMoneyMoneyTest::setUp()
 	m_0 = new MyMoneyMoney(12);
 	m_1 = new MyMoneyMoney(-10);
 	m_2 = new MyMoneyMoney(2);
+	MyMoneyMoney::setDecimalSeparator('.');
+	MyMoneyMoney::setThousandSeparator(',');
 }
 
 void MyMoneyMoneyTest::tearDown()
@@ -159,6 +161,36 @@ void MyMoneyMoneyTest::testMultiplication()
 	CPPUNIT_ASSERT((m1 * (*m_0)) == 1200);
 }
 
+void MyMoneyMoneyTest::testSetDecimalSeparator()
+{
+	MyMoneyMoney m1(100000);
+	MyMoneyMoney m2(200000);
+
+	CPPUNIT_ASSERT(m1.formatMoney() == QString("1,000.00"));
+	CPPUNIT_ASSERT(MyMoneyMoney::decimalSeparator() == '.');
+
+	MyMoneyMoney::setDecimalSeparator(':');
+	CPPUNIT_ASSERT(m1.formatMoney() == QString("1,000:00"));
+	CPPUNIT_ASSERT(m2.formatMoney() == QString("2,000:00"));
+
+	CPPUNIT_ASSERT(MyMoneyMoney::decimalSeparator() == ':');
+}
+
+void MyMoneyMoneyTest::testSetThousandSeparator()
+{
+	MyMoneyMoney m1(100000);
+	MyMoneyMoney m2(200000);
+
+	CPPUNIT_ASSERT(m1.formatMoney() == QString("1,000.00"));
+	CPPUNIT_ASSERT(MyMoneyMoney::thousandSeparator() == ',');
+
+	MyMoneyMoney::setThousandSeparator(':');
+	CPPUNIT_ASSERT(m1.formatMoney() == QString("1:000.00"));
+	CPPUNIT_ASSERT(m2.formatMoney() == QString("2:000.00"));
+
+	CPPUNIT_ASSERT(MyMoneyMoney::thousandSeparator() == ':');
+}
+
 void MyMoneyMoneyTest::testFormatMoney()
 {
 	CPPUNIT_ASSERT(m_0->formatMoney() == QString("0.12"));
@@ -169,6 +201,9 @@ void MyMoneyMoneyTest::testFormatMoney()
 
 	m1 = 10000;
 	CPPUNIT_ASSERT(m1.formatMoney() == QString("100.00"));
+
+	m1 = 100000;
+	CPPUNIT_ASSERT(m1.formatMoney() == QString("1,000.00"));
 }
 
 void MyMoneyMoneyTest::testRelation()
