@@ -33,7 +33,7 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 
-#include <kdeversion.h>
+#include "kdecompat.h"
 #include <klocale.h>
 #include <kcombobox.h>
 #include <kpushbutton.h>
@@ -93,7 +93,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
     SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
   connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
-  
+
   // Savings account
   view = m_specificView[MyMoneyAccount::Savings] = new KLedgerViewSavings(this);
   m_accountStack->addWidget(view, MyMoneyAccount::Savings);
@@ -165,15 +165,15 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   //connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
   //  SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
   //connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
-  
-  
+
+
   m_formLayout->addWidget(m_accountStack);
   setMinimumHeight(m_accountComboBox->minimumHeight() + m_accountStack->sizeHint().height());
-  
+
   m_accountId = QCString();
 
   MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAccount, this);
-  
+
   // setup connections
   connect(m_accountComboBox, SIGNAL(activated(const QString&)),
           this, SLOT(slotSelectAccount(const QString&)));
@@ -188,10 +188,10 @@ KGlobalLedgerView::~KGlobalLedgerView()
 void KGlobalLedgerView::slotReloadView(void)
 {
   // qDebug("KGlobalLedgerView::slotReloadView()");
-  
+
   // make sure to determine the current account from scratch
   m_accountId = QCString();
-  
+
   slotRefreshView();
 }
 
@@ -200,8 +200,8 @@ void KGlobalLedgerView::slotRefreshView(void)
   QCString id = m_accountId;
 
   // qDebug("KGlobalLedgerView::slotRefreshView()");
-  
-  // load the combobox from scratch and determine the current account  
+
+  // load the combobox from scratch and determine the current account
   loadAccounts();
 
   // if the current account differs from the previous selection
@@ -218,7 +218,7 @@ void KGlobalLedgerView::slotRefreshView(void)
     m_currentView->refreshView();
   } else
     qFatal("Houston: we have a problem in KGlobalLedgerView::slotRefreshView()");
-  
+
   m_accountComboBox->setEnabled(m_accountComboBox->count() > 0);
 }
 
@@ -226,7 +226,7 @@ void KGlobalLedgerView::loadAccounts(void)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
   QString currentName;
-  
+
   // qDebug("KGlobalLedgerView::loadAccounts()");
   m_accountComboBox->clear();
 
@@ -244,7 +244,7 @@ void KGlobalLedgerView::loadAccounts(void)
     }
   }
 
-  // load all asset and liability accounts into the combobox  
+  // load all asset and liability accounts into the combobox
   QCStringList::ConstIterator it_s;
   acc = file->asset();
   for(it_s = acc.accountList().begin(); it_s != acc.accountList().end(); ++it_s) {
@@ -277,7 +277,7 @@ void KGlobalLedgerView::loadAccounts(void)
 const bool KGlobalLedgerView::slotSelectAccount(const QString& accountName)
 {
   // qDebug("KGlobalLedgerView::slotSelectAccount(const QString& accountName)");
-  
+
   QCString id = MyMoneyFile::instance()->nameToAccount(accountName);
   bool     rc = false;
   if(!id.isEmpty()) {
@@ -291,7 +291,7 @@ const bool KGlobalLedgerView::slotSelectAccount(const QCString& id, const bool r
   bool    rc = false;
 
   // qDebug("KGlobalLedgerView::slotSelectAccount(const QCString& id, const bool reconciliation)");
-  
+
   // cancel any pending edit operation in the ledger views
   emit cancelEdit();
 
@@ -318,13 +318,13 @@ const bool KGlobalLedgerView::slotSelectAccount(const QCString& id, const bool r
 #endif
       rc = true;
     }
-    
+
   } else {
     if(m_specificView[MyMoneyAccount::Checkings] != 0) {
       m_accountStack->raiseWidget(MyMoneyAccount::Checkings);
       m_currentView = m_specificView[MyMoneyAccount::Checkings];
       m_currentView->slotSelectAccount(id);
-      
+
     } else {
       qFatal("Houston: we have a serious problem in KGlobalLedgerView");
     }

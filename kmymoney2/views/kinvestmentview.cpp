@@ -44,7 +44,7 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 
-#include <kdeversion.h>
+#include "kdecompat.h"
 #include <kdebug.h>
 #include <kglobal.h>
 #include <kconfig.h>
@@ -77,7 +77,7 @@ KInvestmentView::KInvestmentView(QWidget *parent, const char *name)
  :  kInvestmentViewDecl(parent,name)
 {
   m_account = MyMoneyAccount();
-  m_popMenu	= NULL;
+  m_popMenu = NULL;
   // FIXME: check if we really want to remove the margin
   // kInvestmentViewDeclLayout->setMargin(0);
 
@@ -86,14 +86,14 @@ KInvestmentView::KInvestmentView(QWidget *parent, const char *name)
   initSummaryTab();
   initTransactionTab();
 
- 
+
 
   // fill in some demo data
   //KListViewItem* item1 = new KListViewItem(investmentTable, QString("Redhat"), QString("RHAT"), QString("24"), QString("$20.00"), QString("$13.43"), QString("$212"), QString("5.43%"), QString("9.43%"));
   //investmentTable->insertItem(item1);
 
   //KListViewItem* item2 = new KListViewItem(investmentTable, QString("Yahoo"), QString("YHOO"), QString("100"), QString("$14.21"), QString("$25.43"), QString("$900"), QString("10.43%"), QString("19.12%"));
-  //investmentTable->insertItem(item2);        
+  //investmentTable->insertItem(item2);
 
   // never show a horizontal scroll bar
  // investmentTable->setHScrollBarMode(QScrollView::AlwaysOff);
@@ -166,7 +166,7 @@ bool KInvestmentView::init(const MyMoneyAccount& account)
 
   if(qdateStart != defaultDate.date())
   {
-  	MyMoneyInvestTransaction *pInvestTransaction = NULL;
+    MyMoneyInvestTransaction *pInvestTransaction = NULL;
     MyMoneyTransaction *transaction = NULL;
 //    m_transactionList.clear();
 
@@ -174,10 +174,10 @@ bool KInvestmentView::init(const MyMoneyAccount& account)
     {
  //     if(transaction->date() >= qdateStart)
       {
-//      	if(transaction)
-      	{
-        	/*pInvestTransaction = static_cast<MyMoneyInvestTransaction*>(transaction);
-        	m_transactionList.append(new MyMoneyInvestTransaction(
+//        if(transaction)
+        {
+          /*pInvestTransaction = static_cast<MyMoneyInvestTransaction*>(transaction);
+          m_transactionList.append(new MyMoneyInvestTransaction(
             pAccount,
             transaction->id(),
             transaction->method(),
@@ -192,18 +192,18 @@ bool KInvestmentView::init(const MyMoneyAccount& account)
             transaction->accountFrom(),
             transaction->accountTo(),
             transaction->state()));  */
-      	}
+        }
       }
     }
-	}
-	return true;
+  }
+  return true;
 }
 /** No descriptions */
 void KInvestmentView::updateDisplay()
 {
   //remove all current items
   investmentTable->clear();
-  
+
   MyMoneyFile* file = MyMoneyFile::instance();
   QValueList<MyMoneyEquity> equities = file->equityList();
   QValueList<MyMoneyTransaction> transactions;
@@ -214,7 +214,7 @@ void KInvestmentView::updateDisplay()
     KInvestmentListItem* item = new KInvestmentListItem(investmentTable, (*it), transactions);
     investmentTable->insertItem(item);
   }
-  
+
 }
 
 void KInvestmentView::slotItemDoubleClicked(QListViewItem* pItem, const QPoint& pos, int c)
@@ -230,7 +230,7 @@ void KInvestmentView::slotItemDoubleClicked(QListViewItem* pItem, const QPoint& 
       QCString id = pInvestListItem->equityId();
       MyMoneyEquity equity = currentFile->equity(id);
       KEditEquityEntryDlg *pDlg = new KEditEquityEntryDlg(equity, this);
-	    pDlg->exec();
+      pDlg->exec();
     }
   }
 }
@@ -239,78 +239,78 @@ void KInvestmentView::slotItemDoubleClicked(QListViewItem* pItem, const QPoint& 
 
 /*void KInvestmentView::slotNewInvestment()
 {
-	MyMoneyEquity equity;
-	KNewEquityEntryDlg *pDlg = new KNewEquityEntryDlg(this);
-	pDlg->exec();
-	int nResult = pDlg->result();
-	if(nResult)
-	{
-		//populate this equity entry with information from the dialog.
-		QString strTemp;
-		strTemp = pDlg->edtEquityName->text();
-		kdDebug(1) << "Equity name is: " << strTemp << endl;
-//		pEquity->setEquityName(strTemp);
-			
-		strTemp = pDlg->edtMarketSymbol->text();
-		kdDebug(1) << "Equity Symbol is: " << strTemp << endl;
-//	pEquity->setEquitySymbol(strTemp);
-			
-	  strTemp = pDlg->cmbInvestmentType->currentText();
-		kdDebug(1) << "Equity Type is: " << strTemp << endl;
-//	pEquity->setEquityType(strTemp);
-			
-		const double price = pDlg->getStockPrice();
-		kdDebug(1) << "Current Equity Price is: " << price << endl;
+  MyMoneyEquity equity;
+  KNewEquityEntryDlg *pDlg = new KNewEquityEntryDlg(this);
+  pDlg->exec();
+  int nResult = pDlg->result();
+  if(nResult)
+  {
+    //populate this equity entry with information from the dialog.
+    QString strTemp;
+    strTemp = pDlg->edtEquityName->text();
+    kdDebug(1) << "Equity name is: " << strTemp << endl;
+//    pEquity->setEquityName(strTemp);
+
+    strTemp = pDlg->edtMarketSymbol->text();
+    kdDebug(1) << "Equity Symbol is: " << strTemp << endl;
+//  pEquity->setEquitySymbol(strTemp);
+
+    strTemp = pDlg->cmbInvestmentType->currentText();
+    kdDebug(1) << "Equity Type is: " << strTemp << endl;
+//  pEquity->setEquityType(strTemp);
+
+    const double price = pDlg->getStockPrice();
+    kdDebug(1) << "Current Equity Price is: " << price << endl;
     MyMoneyMoney money(price);
 //  pEquity->setCurrentPrice(QDate::currentDate(), &money);
-    	
+
     //add to equity database
     addEquityEntry(equity);
-    	
+
     //display new equity in the list view.
     //displayNewEquity(equity);
-	}
+  }
 }   */
 
 void KInvestmentView::addEquityEntry(MyMoneyEquity* /*pEntry*/)
 {/*
-	if(m_pAccount)
-	{
-		MyMoneyBank *pBank = m_pAccount->bank();
-		if(pBank)
-		{
-			MyMoneyFile *pFile = pBank->file();
-			if(pFile)
-			{
-				pFile->addEquityEntry(pEntry);
-			}
-		}
-	}
+  if(m_pAccount)
+  {
+    MyMoneyBank *pBank = m_pAccount->bank();
+    if(pBank)
+    {
+      MyMoneyFile *pFile = pBank->file();
+      if(pFile)
+      {
+        pFile->addEquityEntry(pEntry);
+      }
+    }
+  }
 */
 }
 
 void KInvestmentView::displayNewEquity(MyMoneyEquity* /*pEntry*/)
 {
 /*
-	KInvestmentListItem *pItem = new KInvestmentListItem(investmentTable, pEntry);
-	investmentTable->insertItem(pItem);
+  KInvestmentListItem *pItem = new KInvestmentListItem(investmentTable, pEntry);
+  investmentTable->insertItem(pItem);
 */
 }
 
 void KInvestmentView::slotEditInvestment()
 {
-	
+
 }
 
 void KInvestmentView::slotUpdatePrice()
 {
 /*
-	KUpdateStockPriceDlg *pDlg = new KUpdateStockPriceDlg;
-	if(pDlg)
-	{
-		pDlg->exec();
-		int nResult = pDlg->result();
-	}
+  KUpdateStockPriceDlg *pDlg = new KUpdateStockPriceDlg;
+  if(pDlg)
+  {
+    pDlg->exec();
+    int nResult = pDlg->result();
+  }
 */
 }
 
@@ -324,43 +324,43 @@ void KInvestmentView::slotListRightMouse(QListViewItem* item, const QPoint& poin
   m_popMenu->insertItem(kiconloader->loadIcon("edit", KIcon::Small), i18n("New Investment"), this, SLOT(slotNewInvestment()));
   m_popMenu->insertItem(kiconloader->loadIcon("edit", KIcon::Small), i18n("Edit Investment Properties"), this, SLOT(slotEditInvestment()));
   m_popMenu->insertItem(kiconloader->loadIcon("edit", KIcon::Small), i18n("Update Investment Price"), this, SLOT(slotUpdatePrice()));
-	//m_popMenu = m_contextMenu->insertItem(kiconloader->loadIcon("delete", KIcon::Small),
+  //m_popMenu = m_contextMenu->insertItem(kiconloader->loadIcon("delete", KIcon::Small),
   //                      i18n("Delete ..."),
   //                      this, SLOT(slotDeleteSplitTransaction()));
   if(m_popMenu)
   {
-  	m_popMenu->exec(QCursor::pos());
+    m_popMenu->exec(QCursor::pos());
   }
 */
 }
 
 void KInvestmentView::slotViewChanged(int ID)
 {
-	switch(ID)
-	{
-		case VIEW_SUMMARY:
-		{
-//			investmentTable->show();
-//			transactionTable->hide();
-			break;
-		}
-		case VIEW_INVESTMENT:
-		{
-//			investmentTable->hide();
-//			transactionTable->show();
-			break;
-		}
-		default:
-		{
-			break;
-		}
-	}
+  switch(ID)
+  {
+    case VIEW_SUMMARY:
+    {
+//      investmentTable->show();
+//      transactionTable->hide();
+      break;
+    }
+    case VIEW_INVESTMENT:
+    {
+//      investmentTable->hide();
+//      transactionTable->show();
+      break;
+    }
+    default:
+    {
+      break;
+    }
+  }
 }
 
 void KInvestmentView::slotReloadView(void)
 {
   updateDisplay();
-  
+
   // qDebug("KInvestmentView::slotReloadView()");
 
   // make sure to determine the current account from scratch
@@ -372,7 +372,7 @@ void KInvestmentView::slotReloadView(void)
 void KInvestmentView::slotRefreshView(void)
 {
   updateDisplay();
-  
+
   QCString id = m_account.id();
 
   // qDebug("KGlobalLedgerView::slotRefreshView()");
@@ -483,7 +483,7 @@ const bool KInvestmentView::slotSelectAccount(const QCString& id, const bool rec
 
     //    m_account = acc;
   }
- 
+
   // keep this as the current account
   m_accountId = id;
 

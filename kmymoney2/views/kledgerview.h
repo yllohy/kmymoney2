@@ -38,7 +38,7 @@ class QWidgetStack;
 // ----------------------------------------------------------------------------
 // KDE Includes
 
-#include <kdeversion.h>
+#include "kdecompat.h"
 #if KDE_VERSION < KDE_MAKE_VERSION(3,2,0)
 #define KDE_DEPRECATED
 #endif
