@@ -1,3 +1,7 @@
+2003-01-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added section about signing an RPM to the project handbook
+  * Added some more documentation to source at various places
+
 2002-12-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed some inline documentation
   * Payee's transaction list respects list font settings
