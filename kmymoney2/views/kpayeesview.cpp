@@ -166,7 +166,6 @@ void KPayeesView::showTransactions(void)
   int ofs = 0;
 
   for(i = 0, it_t = list.begin(); it_t != list.end(); ++it_t) {
-    qDebug("adding transaction %s", (*it_t).id().data());
     KMyMoneyTransaction k(*it_t);
     
     filter.match(*it_t, MyMoneyFile::instance()->storage());
