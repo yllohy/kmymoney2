@@ -13,7 +13,8 @@ install-data-local:
 	$(INSTALL_DATA) $(srcdir)/home_ru.ru.html $(kde_datadir)/kmymoney2/html/home_ru.ru.html
 	$(INSTALL_DATA) $(srcdir)/home_br.pt_BR.html $(kde_datadir)/kmymoney2/html/home_br.pt_BR.html
 	$(mkinstalldirs) $(kde_datadir)/kmymoney2/html/images
-	$(INSTALL_DATA) $(srcdir)/images/* $(kde_datadir)/kmymoney2/html/images
+	$(INSTALL_DATA) $(srcdir)/images/*.png $(kde_datadir)/kmymoney2/html/images
+	$(INSTALL_DATA) $(srcdir)/images/*.gif $(kde_datadir)/kmymoney2/html/images
 	$(mkinstalldirs) $(kde_datadir)/kmymoney2/html/css
 	$(INSTALL_DATA) $(srcdir)/css/welcome.css $(kde_datadir)/kmymoney2/html/css
 
