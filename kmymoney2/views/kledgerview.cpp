@@ -37,6 +37,7 @@
 #include <kconfig.h>
 #include <kpopupmenu.h>
 #include <kiconloader.h>
+#include <kcmenumngr.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -51,35 +52,118 @@
 #include "../widgets/kmymoneydateinput.h"
 #include "../widgets/kmymoneycombo.h"
 
+int KTransactionPtrVector::compareItems(const QCString& s1, const QCString& s2) const
+{
+  if(s1 == s2)
+    return 0;
+  if(s1 < s2)
+    return -1;
+  return 1;
+}
+
+int KTransactionPtrVector::compareItems(const QString& s1, const QString& s2) const
+{
+  if(s1 == s2)
+    return 0;
+  if(s1 < s2)
+    return -1;
+  return 1;
+}
+
 int KTransactionPtrVector::compareItems(KTransactionPtrVector::Item d1, KTransactionPtrVector::Item d2)
 {
+  int   rc = 0;
   MyMoneyTransaction* t1 = static_cast<MyMoneyTransaction*>(d1);
   MyMoneyTransaction* t2 = static_cast<MyMoneyTransaction*>(d2);
-  int   rc;
 
-  switch(m_sortType) {
-    case SortEntryDate:
-      rc = t2->entryDate().daysTo(t1->entryDate());
-      break;
+  try {
+    MyMoneySplit s1(t1->split(m_accountId));
+    MyMoneySplit s2(t2->split(m_accountId));
+    QString p1, p2;
 
-    case SortPostDate:
-    // tricky fall through here!
-    default:
-      // sort by post date
-      rc = t2->postDate().daysTo(t1->postDate());
-      if(rc == 0) {
-        // on same day, larger amounts show up first
-        try {
-          MyMoneySplit s1, s2;
-          s1 = t1->split(m_accountId);
-          s2 = t2->split(m_accountId);
-          rc = static_cast<int> ((s2.value() - s1.value()).value());
-        } catch (MyMoneyException *e) {
-          delete e;
-          rc = 0;
+    switch(m_sortType) {
+      case SortValue:
+        rc = static_cast<int> ((s2.value() - s1.value()).value());
+        if(rc == 0) {
+          // same value? Sort by date
+          rc = t2->postDate().daysTo(t1->postDate());
+          if(rc == 0) {
+            // same date? Sort by value
+            rc = static_cast<int> ((s2.value() - s1.value()).value());
+            if(rc == 0) {
+              // same value? sort by id
+              rc = compareItems(t1->id(), t2->id());
+            }
+          }
         }
-      }
-      break;
+        break;
+
+      case SortEntryDate:
+        rc = t2->entryDate().daysTo(t1->entryDate());
+        break;
+
+      case SortTypeNr:
+        rc = compareItems(s1.action(), s2.action());
+
+        if(rc == 0) {
+          // same action? Sort by nr
+          rc = compareItems(s1.number(), s2.number());
+          if(rc == 0) {
+            // same number? Sort by date
+            rc = t2->postDate().daysTo(t1->postDate());
+            if(rc == 0) {
+              // same date? Sort by value
+              rc = static_cast<int> ((s2.value() - s1.value()).value());
+              if(rc == 0) {
+                // same value? sort by id
+                rc = compareItems(t1->id(), t2->id());
+              }
+            }
+          }
+        }
+        break;
+
+      case SortReceiver:
+        if(s2.payeeId() != "") {
+          p2 = MyMoneyFile::instance()->payee(s2.payeeId()).name();
+        }
+        if(s1.payeeId() != "") {
+          p1 = MyMoneyFile::instance()->payee(s1.payeeId()).name();
+        }
+
+        rc = compareItems(p1, p2);
+
+        if(rc == 0) {
+          // same payee? Sort by date
+          rc = t2->postDate().daysTo(t1->postDate());
+          if(rc == 0) {
+            // same date? Sort by value
+            rc = static_cast<int> ((s2.value() - s1.value()).value());
+            if(rc == 0) {
+              // same value? sort by id
+              rc = compareItems(t1->id(), t2->id());
+            }
+          }
+        }
+        break;
+
+      case SortPostDate:
+      // tricky fall through here!
+      default:
+        // sort by post date
+        rc = t2->postDate().daysTo(t1->postDate());
+        if(rc == 0) {
+          // on same day, larger amounts show up first
+          rc = static_cast<int> ((s2.value() - s1.value()).value());
+          if(rc == 0) {
+            // same value? Sort by id
+            rc = compareItems(t1->id(), t2->id());
+          }
+        }
+        break;
+    }
+  } catch (MyMoneyException *e) {
+    delete e;
   }
   return rc;
 }
@@ -427,6 +511,8 @@ void KLedgerView::slotPayeeChanged(const QString& name)
   if(name != "") {
     MyMoneyPayee payee;
     try {
+      createSecondSplit();
+
       payee = MyMoneyFile::instance()->payeeByName(name);
       m_split.setPayeeId(payee.id());
       // for tranfers, we always modify the other side as well
@@ -475,6 +561,7 @@ void KLedgerView::slotMemoChanged(const QString& memo)
   m_split.setMemo(memo);
 
   try {
+    createSecondSplit();
     m_transaction.modifySplit(m_split);
     m_editMemo->loadText(memo);
     // for tranfers, we always modify the other side as well
@@ -504,6 +591,8 @@ void KLedgerView::slotAmountChanged(const QString& value)
   s = m_split;
 
   try {
+    createSecondSplit();
+
     MyMoneyMoney val = MyMoneyMoney(value);
     // if someone enters a negative number, we have to make sure that
     // the action is corrected. For transfers, we don't have to do anything
@@ -581,6 +670,8 @@ void KLedgerView::slotPaymentChanged(const QString& value)
   }
 
   try {
+    createSecondSplit();
+
     m_split.setValue(-MyMoneyMoney(value));
     m_editPayment->loadText(value);
     m_editDeposit->loadText("");
@@ -625,6 +716,8 @@ void KLedgerView::slotDepositChanged(const QString& value)
   s = m_split;
 
   try {
+    createSecondSplit();
+
     m_split.setValue(MyMoneyMoney(value));
     m_editDeposit->loadText(value);
     m_editPayment->loadText("");
@@ -658,6 +751,10 @@ void KLedgerView::slotCategoryChanged(const QString& category)
 
   MyMoneyTransaction t = m_transaction;
   MyMoneySplit s = m_split;
+
+  // usually we call createSecondSplit() here in all the other xxxChanged()
+  // functions, but we don't do it for slotCategoryChanged() because we will
+  // remove it later on anyway.
 
   try {
     // First, we check if the category exists
@@ -762,6 +859,8 @@ void KLedgerView::fromToChanged(const bool fromChanged, const QString& accountNa
   MyMoneySplit s = m_split;
 
   try {
+    createSecondSplit();
+
     // First, we check if the account exists
     QCString id = MyMoneyFile::instance()->nameToAccount(accountName);
     if(id == "") {
@@ -773,22 +872,9 @@ void KLedgerView::fromToChanged(const bool fromChanged, const QString& accountNa
       return;
     }
 
-    // The following cases can exist at this stage:
-    //
-    // a) one split available
-    // b) two splits available
-    //
-    // If only one split is available, we add the second one.
-
-    MyMoneySplit split;
-    if(m_transaction.splitCount() == 1) {
-      split.setAction(MyMoneySplit::ActionTransfer);
-      split.setValue(-split.value());
-      m_transaction.addSplit(split);
-    }
-
     // see, which split is the from and which is the to part
     // keep the indeces and work with indeces in the following
+    MyMoneySplit split;
     int fromIdx, toIdx;
     
     if(m_transaction.splits()[0].value() < 0) {
@@ -837,6 +923,17 @@ void KLedgerView::fromToChanged(const bool fromChanged, const QString& accountNa
   }
 }
 
+void KLedgerView::createSecondSplit(void)
+{
+  MyMoneySplit split;
+  if(m_transaction.splitCount() == 1) {
+    split.setAction(m_split.action());
+    split.setPayeeId(m_split.payeeId());
+    split.setMemo(m_split.memo());
+    split.setValue(-split.value());
+    m_transaction.addSplit(split);
+  }
+}
 
 void KLedgerView::slotNrChanged(const QString& nr)
 {
@@ -845,7 +942,10 @@ void KLedgerView::slotNrChanged(const QString& nr)
 
   MyMoneyTransaction t = m_transaction;
   MyMoneySplit s = m_split;
+
   try {
+    createSecondSplit();
+
     m_split.setNumber(nr);
     m_transaction.modifySplit(m_split);
     m_editNr->loadText(nr);
@@ -907,7 +1007,6 @@ void KLedgerView::slotTypeChanged(const QCString& action)
   try {
     if((action == MyMoneySplit::ActionTransfer && m_split.action() != MyMoneySplit::ActionTransfer)
     || (action != MyMoneySplit::ActionTransfer && m_split.action() == MyMoneySplit::ActionTransfer)) {
-      // FIXME: KMessage Box would be nice here
       if(KMessageBox::warningContinueCancel(0,
           i18n("Changing the transaction type in the selected direction will delete all information about categories and accounts. "
                 "If you press continue, this information will be lost!"),
@@ -948,6 +1047,17 @@ void KLedgerView::slotTypeChanged(const QCString& action)
     m_split.setAction(action);
     m_transaction.modifySplit(m_split);
     reloadEditWidgets(m_transaction);
+
+    // now we refresh the list of accounts available with this setting
+    if(m_transactionFormActive) {
+
+    } else {
+      if(m_split.action() == MyMoneySplit::ActionTransfer) {
+        m_editCategory->loadList(static_cast<kMyMoneyCategory::categoryTypeE> (kMyMoneyCategory::asset | kMyMoneyCategory::liability));
+      } else {
+        m_editCategory->loadList(static_cast<kMyMoneyCategory::categoryTypeE> (kMyMoneyCategory::income | kMyMoneyCategory::expense));
+      }
+    }
 
   } catch(MyMoneyException *e) {
     KMessageBox::detailedSorry(0, i18n("Unable to modify type"),
@@ -1350,6 +1460,9 @@ void KLedgerView::createInfoStack(void)
 
 void KLedgerView::createContextMenu(void)
 {
+  if(m_register == 0)
+    qFatal("KLedgerView::createContextMenu called before register was created!");
+
   KIconLoader *kiconloader = KGlobal::iconLoader();
 
   KPopupMenu* submenu = new KPopupMenu(this);
@@ -1358,7 +1471,7 @@ void KLedgerView::createContextMenu(void)
   submenu->insertItem(i18n("Reconciled"), this, SLOT(slotMarkReconciled()));
 
   m_contextMenu = new KPopupMenu(this);
-  m_contextMenu->insertTitle(kiconloader->loadIcon("transaction", KIcon::MainToolbar), i18n("Transaction Options"));
+  m_contextMenu->insertTitle(i18n("Transaction Options"));
   m_contextMenu->insertItem(kiconloader->loadIcon("edit", KIcon::Small), i18n("Edit ..."), this, SLOT(slotStartEdit()));
   m_contextMenu->insertSeparator();
   m_contextMenu->insertItem(i18n("Mark as ..."), submenu);
@@ -1369,6 +1482,21 @@ void KLedgerView::createContextMenu(void)
                         i18n("Delete transaction ..."),
                         this, SLOT(slotDeleteTransaction()));
 
+  m_sortMenu = new KPopupMenu(this);
+
+  m_sortMenu->insertTitle(i18n("Select sort order"));
+  m_sortMenu->insertItem(i18n("Post date"), KTransactionPtrVector::SortPostDate);
+  m_sortMenu->insertItem(i18n("Entry date"), KTransactionPtrVector::SortEntryDate);
+  m_sortMenu->insertSeparator();
+  m_sortMenu->insertItem(i18n("Type, number"), KTransactionPtrVector::SortTypeNr);
+  m_sortMenu->insertItem(i18n("Receiver"), KTransactionPtrVector::SortReceiver);
+  m_sortMenu->insertItem(i18n("Value"), KTransactionPtrVector::SortValue);
+
+  m_sortMenu->setItemChecked(m_transactionPtrVector.sortType(), true);
+
+  KContextMenuManager::insert(m_register->horizontalHeader(), m_sortMenu);
+
+  connect(m_sortMenu, SIGNAL(activated(int)), this, SLOT(slotSortOrderChanged(int)));
 }
 
 void KLedgerView::markSplit(MyMoneySplit::reconcileFlagE flag)
@@ -1442,4 +1570,22 @@ void KLedgerView::hide(void)
 {
   slotCancelEdit();
   QWidget::hide();
+}
+
+void KLedgerView::slotRegisterHeaderClicked(int col)
+{
+}
+
+void KLedgerView::slotSortOrderChanged(int order)
+{
+  // turn off marker in context menu
+  m_sortMenu->setItemChecked(m_transactionPtrVector.sortType(), false);
+
+  // setup new algo and resort
+  m_transactionPtrVector.setSortType(static_cast<KTransactionPtrVector::TransactionSortE> (order));
+
+  // turn on marker in context menu
+  m_sortMenu->setItemChecked(m_transactionPtrVector.sortType(), true);
+
+  updateView();
 }

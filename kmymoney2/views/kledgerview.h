@@ -85,6 +85,17 @@ public:
     SortPostDate,           /**< Sort the vector so that the transactions appear sorted
                               *     according to their post date
                               */
+    SortTypeNr,             /**< Sort the vector so that the transactions appear sorted
+                              *     according to their action and nr
+                              */
+    SortReceiver,           /**< Sort the vector so that the transactions appear sorted
+                              *     according to their receiver
+                              */
+    SortValue,              /**< Sort the vector so that the transactions appear sorted
+                              *     according to their value
+                              */
+
+
   };
 
   KTransactionPtrVector() { m_sortType = SortPostDate; };
@@ -98,6 +109,14 @@ public:
   void setSortType(const TransactionSortE type);
 
   /**
+    * This method returns the current sort type.
+    *
+    * @return transactionSortE value of sort order. See
+    *         KTransactionPtrVector::TransactionSortE for possible values.
+    */
+  const TransactionSortE sortType(void) const { return m_sortType; };
+
+  /**
     * This method is used to set the account id to have a chance to
     * get information about the split referencing the current account
     * during the sort phase.
@@ -106,6 +125,10 @@ public:
 
 protected:
   int compareItems(KTransactionPtrVector::Item d1, KTransactionPtrVector::Item d2);
+
+private:
+  int compareItems(const QCString& s1, const QCString& s2) const;
+  int compareItems(const QString& s1, const QString& s2) const;
 
 private:
   QCString          m_accountId;
@@ -491,6 +514,21 @@ protected slots:
     */
   void slotGotoOtherSideOfTransfer(void);
 
+  /**
+    * This method will set the sort order depending on the
+    * current sort order and the column that was clicked.
+    */
+  void slotRegisterHeaderClicked(int col);
+
+  /**
+    * This method will set the sort order of the ledger view to
+    * the selected @p orderId (see KTransactionPtrVector::TransactionSortE
+    * for details).
+    *
+    * @param orderId the id for the sort algorithm type
+    */
+  virtual void slotSortOrderChanged(int orderId);
+
 protected:
   /**
     * This method is called to create the widget stack for the
@@ -698,8 +736,19 @@ protected:
     */
   KPopupMenu*   m_contextMenu;
 
+  /**
+    * This member keeps a pointer to the sort-menu
+    */
+  KPopupMenu*   m_sortMenu;
+
 private:
   void fromToChanged(const bool fromChanged, const QString& accountName);
+
+  /**
+    * This method creates a second split if the current @p m_transaction
+    * only contains a single split and adds it to @p m_transaction.
+    */
+  void createSecondSplit(void);
 
 private:
   QTimer*       m_timer;
