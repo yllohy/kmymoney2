@@ -122,7 +122,7 @@ void MyMoneyQifReader::slotReceivedDataFromFilter(KProcess* /* proc */, char *bu
   QByteArray data;
   data.duplicate(buff, len);
 
-  // if the list of received data blocks is empty, start the processor  
+  // if the list of received data blocks is empty, start the processor
   if(m_data.count() == 0)
     QTimer::singleShot(10, this, SLOT(slotProcessBuffers()));
 
@@ -135,9 +135,9 @@ void MyMoneyQifReader::slotProcessBuffers(void)
 
   while(!m_userAbort && !m_data.isEmpty()) {
     unsigned int   i;
-    
+
     it = m_data.begin();
-    
+
     // parse this buffer
     for(i = 0; !m_userAbort && i < (*it).size(); ++i) {
       QChar c((*it).at(i));
@@ -190,7 +190,7 @@ void MyMoneyQifReader::slotImportFinished(void)
 const bool MyMoneyQifReader::startImport(void)
 {
   bool rc = false;
-  
+
   m_dontAskAgain.clear();
   m_accountTranslation.clear();
   m_userAbort = false;
@@ -217,7 +217,7 @@ const bool MyMoneyQifReader::startImport(void)
     }
     emit importFinished();
 
-#else    
+#else
     // start filter process, use 'cat -' as the default filter
     m_filter.clearArguments();
     if(m_qifProfile.filterScriptImport().isEmpty()) {
@@ -227,7 +227,7 @@ const bool MyMoneyQifReader::startImport(void)
       m_filter << QStringList::split(" ", m_qifProfile.filterScriptImport(), true);
     }
     m_entryType = EntryUnknown;
-    
+
     if(m_filter.start(KProcess::NotifyOnExit, KProcess::All)) {
       m_filter.resume();
       signalProgress(0, m_file->size(), "Importing QIF ...");
@@ -244,7 +244,7 @@ const bool MyMoneyQifReader::startImport(void)
 const bool MyMoneyQifReader::finishImport(void)
 {
   bool  rc = false;
-  
+
 #ifdef DEBUG_IMPORT
   delete m_file;
   m_file = 0;
@@ -263,8 +263,8 @@ const bool MyMoneyQifReader::finishImport(void)
 
   signalProgress(-1, -1);
   rc = !m_userAbort;
-  
-#else  
+
+#else
   if(!m_filter.isRunning()) {
     delete m_file;
     m_file = 0;
@@ -468,13 +468,13 @@ void MyMoneyQifReader::processCategoryEntry(void)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
   QString name = extractLine('N');
-  
+
   if(!extractLine('I').isEmpty()) {
     file->createCategory(file->income(), name);
-    
+
   } else if(!extractLine('E').isEmpty()) {
     file->createCategory(file->expense(), name);
-    
+
   } else {
     MyMoneyAccount acc;
     acc.setName(name);
@@ -518,13 +518,13 @@ void MyMoneyQifReader::processTransactionEntry(void)
       case KMessageBox::Continue:
         t.setPostDate(QDate::currentDate());
         break;
-        
+
       case KMessageBox::Cancel:
         throw new MYMONEYEXCEPTION("USERABORT");
         break;
     }
   }
-  
+
   tmp = extractLine('L');
   pos = tmp.findRev("--");
   if(tmp.left(1) == m_qifProfile.accountDelimiter().left(1)) {
@@ -554,7 +554,7 @@ void MyMoneyQifReader::processTransactionEntry(void)
     } catch (MyMoneyException *e) {
       MyMoneyPayee payee;
       int rc = KMessageBox::Yes;
-      
+
       if(m_autoCreatePayee == false) {
         // Ask the user if that is what he intended to do?
         QString msg = i18n("Do you want to add \"%1\" as payee/receiver?\n\n").arg(tmp);
@@ -572,7 +572,7 @@ void MyMoneyQifReader::processTransactionEntry(void)
         rc = KMessageBox::questionYesNoCancel(0, msg, i18n("New payee/receiver"),
                   KStdGuiItem::yes(), KStdGuiItem::no(), askKey);
       }
-      
+
       if(rc == KMessageBox::Yes) {
         // for now, we just add the payee to the pool. In the future,
         // we could open a dialog and ask for all the other attributes
@@ -589,18 +589,18 @@ void MyMoneyQifReader::processTransactionEntry(void)
           delete e;
 
         }
-        
+
       } else if(rc == KMessageBox::No) {
         s1.setPayeeId(QCString());
-        
+
       } else {
         throw new MYMONEYEXCEPTION("USERABORT");
-        
+
       }
       delete e;
     }
   }
-  
+
   tmp = extractLine('C');
   if(tmp == "X") {
     s1.setReconcileFlag(MyMoneySplit::Reconciled);
@@ -613,7 +613,7 @@ void MyMoneyQifReader::processTransactionEntry(void)
   else
     s1.setAction(MyMoneySplit::ActionWithdrawal);
   s1.setMemo(extractLine('M'));
-  
+
   t.addSplit(s1);
 
   if(extractLine('$').isEmpty()) {
@@ -622,7 +622,7 @@ void MyMoneyQifReader::processTransactionEntry(void)
     MyMoneySplit s2 = s1;
     s2.setValue(-s1.value());
     s2.setId(QCString());
-    
+
     // standard transaction
     tmp = extractLine('L');
     if(tmp.left(1) == m_qifProfile.accountDelimiter().left(1)) {
@@ -637,14 +637,14 @@ void MyMoneyQifReader::processTransactionEntry(void)
       s1.setAction(MyMoneySplit::ActionTransfer);
       s2.setAction(MyMoneySplit::ActionTransfer);
       t.modifySplit(s1);
-      
+
     } else {
       pos = tmp.findRev("--");
       if(pos != -1) {
         t.setValue("Dialog", tmp.mid(pos+2));
         tmp = tmp.left(pos);
       }
-      
+
       // it's an expense / income
       accountId = checkCategory(tmp, s1.value(), s2.value());
     }
@@ -673,7 +673,7 @@ void MyMoneyQifReader::processTransactionEntry(void)
   } else {
     // splitted transaction
     int   count;
-    
+
     for(count = 1; !extractLine('$', count).isEmpty(); ++count) {
       MyMoneySplit s2 = s1;
       s2.setId(QCString());
@@ -703,7 +703,7 @@ void MyMoneyQifReader::processTransactionEntry(void)
 
         accountId = checkCategory(tmp, s1.value(), s2.value());
       }
-      
+
       if(!accountId.isEmpty()) {
         try {
           MyMoneyAccount account = file->account(accountId);
@@ -734,14 +734,27 @@ void MyMoneyQifReader::processTransactionEntry(void)
 
   // Add the transaction
   try {
-    file->addTransaction(t);
+    // First, do the duplicate check
+    QValueList<MyMoneyTransaction> list;
+    MyMoneyTransactionFilter filter;
+    filter.setDateFilter(t.postDate().addDays(-4), t.postDate().addDays(4));
+    list = file->transactionList(filter);
+
+    QValueList<MyMoneyTransaction>::Iterator it;
+    for(it = list.begin(); it != list.end(); ++it) {
+      if(t.isDuplicate(*it))
+        break;
+    }
+    if(it == list.end()) {
+      file->addTransaction(t);
+    }
   } catch (MyMoneyException *e) {
     QString message(i18n("Problem adding imported transaction: "));
     message += e->what();
     KMessageBox::information(0, message);
     delete e;
   }
-  
+
 }
 
 const QCString MyMoneyQifReader::checkCategory(const QString& name, const MyMoneyMoney value, const MyMoneyMoney value2)
@@ -750,7 +763,7 @@ const QCString MyMoneyQifReader::checkCategory(const QString& name, const MyMone
   MyMoneyFile *file = MyMoneyFile::instance();
   MyMoneyAccount account;
   bool found = true;
-  
+
   if(!name.isEmpty()) {
     // The category might be constructed with an arbitraty depth (number of
     // colon delimited fields). We try to find a parent account within this
@@ -790,7 +803,7 @@ const QCString MyMoneyQifReader::checkCategory(const QString& name, const MyMone
       accountId = account.id();
     }
   }
-  
+
   return accountId;
 }
 
@@ -798,18 +811,18 @@ void MyMoneyQifReader::processAccountEntry(void)
 {
   m_account = MyMoneyAccount();
   QString tmp;
-  
+
   m_account.setName(extractLine('N'));
   m_account.setDescription(extractLine('D'));
-  
+
   tmp = extractLine('$');
   if(tmp.length() > 0)
     m_account.setValue("lastStatementBalance", tmp);
-    
+
   tmp = extractLine('/');
   if(tmp.length() > 0)
     m_account.setValue("lastStatementDate", m_qifProfile.date(tmp).toString("yyyy-MM-dd"));
-    
+
   QString type = extractLine('T');
   if(type == m_qifProfile.profileType()) {
     m_account.setAccountType(MyMoneyAccount::Checkings);
@@ -831,7 +844,7 @@ void MyMoneyQifReader::processAccountEntry(void)
 void MyMoneyQifReader::selectOrCreateAccount(const SelectCreateMode mode, MyMoneyAccount& account)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
-  
+
   QCString accountId;
   QString msg;
   QString typeStr;
@@ -869,7 +882,7 @@ void MyMoneyQifReader::selectOrCreateAccount(const SelectCreateMode mode, MyMone
       account = file->account(*it);
       m_account = account;
       return;
-      
+
     } catch (MyMoneyException *e) {
       QString message(i18n("Account \"%1\" disappeard: ").arg(account.name()));
       message += e->what();
@@ -884,7 +897,7 @@ void MyMoneyQifReader::selectOrCreateAccount(const SelectCreateMode mode, MyMone
     } else {
       accountId = file->nameToAccount(account.name());
     }
-    
+
     if(mode == Create) {
       if(!accountId.isEmpty()) {
         account = file->account(accountId);
@@ -957,7 +970,7 @@ void MyMoneyQifReader::selectOrCreateAccount(const SelectCreateMode mode, MyMone
         }
         break;
       }
-      
+
     } else if(accountSelect.aborted())
       throw new MYMONEYEXCEPTION("USERABORT");
 
