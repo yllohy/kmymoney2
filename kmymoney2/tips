@@ -36,8 +36,22 @@ register by selecting the 'ledger lens' feature in the settings dialog?
 
 <tip category="KMyMoney|Ledger">
 <html>
-<p>...that you transactions with no category assigned or splitted
+<p>...that transactions with no category assigned or splitted
 transactions with unassigned value blink in red in the register?
+</html>
+
+<tip category="KMyMoney|Ledger">
+<html>
+<p>...that you can show all details of the transactions in the register
+by typeing <Ctrl-T> or selecting the 'Settings/Show Transaction Detail'
+menu entry? You can this feature off the same way.
+</html>
+
+<tip category="KMyMoney|General">
+<html>
+<p>...that you can switch between a listing of all accounts or
+an icon view of all asset and liability accounts with the tabs
+in the accounts view?
 </html>
 </tip>
 
