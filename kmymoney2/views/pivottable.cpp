@@ -215,7 +215,7 @@ MyMoneyMoney PivotTable::AccountDescriptor::currencyPrice(const QDate& date) con
 
 bool PivotTable::AccountDescriptor::operator<(const AccountDescriptor& second) const
 {
-  //DEBUG_ENTER("AccountDescriptor::operator<");
+  DEBUG_ENTER("AccountDescriptor::operator<");
 
   bool result = false;
   bool haveresult = false;
@@ -237,6 +237,12 @@ bool PivotTable::AccountDescriptor::operator<(const AccountDescriptor& second) c
       haveresult = true;
       break;
     }
+    else if ( (*it_first) > (*it_second) )
+    {
+      result = false;
+      haveresult = true;
+      break;
+    }
 
     ++it_first;
     ++it_second;
@@ -246,6 +252,7 @@ bool PivotTable::AccountDescriptor::operator<(const AccountDescriptor& second) c
   if ( !haveresult && ( it_second != second.m_names.end() ) )
     result = true;
 
+  DEBUG_OUTPUT(QString("%1 < %2 is %3").arg(debugName(),second.debugName()).arg(result));
   return result;
 }
 
@@ -294,7 +301,6 @@ QString PivotTable::AccountDescriptor::getTopLevel( void ) const
 PivotTable::PivotTable( const MyMoneyReport& _config_f ):
   m_config_f( _config_f )
 {
-  DEBUG_ENABLE(true);
   DEBUG_ENTER("PivotTable::PivotTable()");
 
   //
@@ -378,7 +384,6 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
   unsigned colofs = m_beginDate.year() * 12 + m_beginDate.month() - 1;
 
   DEBUG_OUTPUT(QString("Found %1 matching transactions").arg(transactions.count()));
-  DEBUG_ENABLE(false);
   while ( it_transaction != transactions.end() )
   {
     QDate postdate = (*it_transaction).postDate();
