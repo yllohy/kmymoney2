@@ -380,7 +380,7 @@ void KEditScheduleDialog::okClicked()
   // Just reset the schedules transaction here.
   m_schedule.setTransaction(m_transaction);
   
-/*
+
   QString message;
   message += "Schedule Name: " + m_schedule.name() + "\n";
   message += "Account1: " + MyMoneyFile::instance()->account(m_schedule.transaction().splits()[0].accountId()).name() + "\n";
@@ -395,7 +395,7 @@ void KEditScheduleDialog::okClicked()
   message += "Memo: " + m_schedule.transaction().splits()[0].memo() + "\n";
   message += "endDate: " + m_schedule.endDate().toString() + "\n";
   KMessageBox::information(this, message);
-*/
+
   
   accept();
 }
@@ -443,23 +443,29 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
     m_kcomboPayTo->loadText(MyMoneyFile::instance()->payee(m_schedule.transaction().splitByAccount(theAccountId()).payeeId()).name());
     m_kdateinputDue->setDate(m_schedule.nextPayment(m_schedule.lastPayment())/*m_schedule.startDate()*/);
 
+    int method=0;
     if (m_actionType == MyMoneySplit::ActionTransfer)
     {
       switch (m_schedule.paymentType())
       {
         case MyMoneySchedule::STYPE_DIRECTDEBIT:
+          method = 0;
           m_kcomboMethod->setCurrentItem(0);
           break;
         case MyMoneySchedule::STYPE_DIRECTDEPOSIT:
+          method = 1;
           m_kcomboMethod->setCurrentItem(1);
           break;
         case MyMoneySchedule::STYPE_MANUALDEPOSIT:
+          method = 2;
           m_kcomboMethod->setCurrentItem(2);
           break;
         case MyMoneySchedule::STYPE_WRITECHEQUE:
+          method = 3;
           m_kcomboMethod->setCurrentItem(3);
           break;
         case MyMoneySchedule::STYPE_OTHER:
+          method = 4;
           m_kcomboMethod->setCurrentItem(4);
           break;
         default:
@@ -471,12 +477,15 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
       switch (m_schedule.paymentType())
       {
         case MyMoneySchedule::STYPE_DIRECTDEPOSIT:
+          method = 0;
           m_kcomboMethod->setCurrentItem(0);
           break;
         case MyMoneySchedule::STYPE_MANUALDEPOSIT:
+          method = 1;
           m_kcomboMethod->setCurrentItem(1);
           break;
         case MyMoneySchedule::STYPE_OTHER:
+          method = 2;
           m_kcomboMethod->setCurrentItem(2);
           break;
         default:
@@ -488,12 +497,15 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
       switch (m_schedule.paymentType())
       {
         case MyMoneySchedule::STYPE_DIRECTDEBIT:
+          method = 0;
           m_kcomboMethod->setCurrentItem(0);
           break;
         case MyMoneySchedule::STYPE_WRITECHEQUE:
+          method = 1;
           m_kcomboMethod->setCurrentItem(1);
           break;
         case MyMoneySchedule::STYPE_OTHER:
+          method = 2;
           m_kcomboMethod->setCurrentItem(2);
           break;
         default:
@@ -501,42 +513,55 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
       }
     }
 
+    int frequency=0;
     switch (m_schedule.occurence())
     {
       case MyMoneySchedule::OCCUR_ONCE:
+        frequency=0;
         m_kcomboFreq->setCurrentItem(0);
         break;
       case MyMoneySchedule::OCCUR_DAILY:
+        frequency=1;
         m_kcomboFreq->setCurrentItem(1);
         break;
       case MyMoneySchedule::OCCUR_WEEKLY:
+        frequency=2;
         m_kcomboFreq->setCurrentItem(2);
         break;
       case MyMoneySchedule::OCCUR_FORTNIGHTLY:
+        frequency=3;
         m_kcomboFreq->setCurrentItem(3);
         break;
       case MyMoneySchedule::OCCUR_EVERYFOURWEEKS:
+        frequency=4;
         m_kcomboFreq->setCurrentItem(4);
         break;
       case MyMoneySchedule::OCCUR_MONTHLY:
+        frequency=5;
         m_kcomboFreq->setCurrentItem(5);
         break;
       case MyMoneySchedule::OCCUR_EVERYOTHERMONTH:
+        frequency=6;
         m_kcomboFreq->setCurrentItem(6);
         break;
       case MyMoneySchedule::OCCUR_EVERYTHREEMONTHS:
+        frequency=7;
         m_kcomboFreq->setCurrentItem(7);
         break;
       case MyMoneySchedule::OCCUR_EVERYFOURMONTHS:
+        frequency=8;
         m_kcomboFreq->setCurrentItem(8);
         break;
       case MyMoneySchedule::OCCUR_TWICEYEARLY:
+        frequency=9;
         m_kcomboFreq->setCurrentItem(9);
         break;
       case MyMoneySchedule::OCCUR_YEARLY:
+        frequency=10;
         m_kcomboFreq->setCurrentItem(10);
         break;
       case MyMoneySchedule::OCCUR_EVERYOTHERYEAR:
+        frequency=11;
         m_kcomboFreq->setCurrentItem(11);
         break;
       default:
@@ -574,6 +599,10 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
     }
 
     m_scheduleName->setText(m_schedule.name());
+
+    // Quick hack
+    slotFrequencyChanged(frequency);
+    slotMethodChanged(method);
   } catch (MyMoneyException *e)
   {
     delete e;
