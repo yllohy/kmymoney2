@@ -20,6 +20,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <kdecompat.h>
+
 // ----------------------------------------------------------------------------
 // QT Includes
 
@@ -30,8 +32,13 @@
 // KDE Headers
 
 #include <kpushbutton.h>
-#include <kactioncollection.h>
 #include <kmainwindow.h>
+
+#if KDE_IS_VERSION(3,2,0)
+  #include <kactioncollection.h>
+#else
+  #include <kaction.h>
+#endif
 
 // ----------------------------------------------------------------------------
 // Project Includes
