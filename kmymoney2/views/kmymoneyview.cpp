@@ -123,6 +123,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   m_newAccountWizard = new KNewAccountWizard(this, "NewAccountWizard");
   connect(m_newAccountWizard, SIGNAL(newInstitutionClicked()), this, SLOT(slotBankNew()));
 
+
   // construct account context menu
   KIconLoader *kiconloader = KGlobal::iconLoader();
 
@@ -419,8 +420,8 @@ void KMyMoneyView::slotAccountNew(void)
     MyMoneyAccount account;
     KNewAccountDlg dialog(account, false, false, this, "hi", i18n("Create a new Account"));
     if((dialogResult = dialog.exec()) == QDialog::Accepted) {
-      MyMoneyAccount newAccount = dialog.account();
-      MyMoneyAccount parentAccount = dialog.parentAccount();
+      newAccount = dialog.account();
+      parentAccount = dialog.parentAccount();
     }
   }
 
@@ -444,37 +445,6 @@ void KMyMoneyView::slotAccountNew(void)
 
     }
   }
-
-/*
-  KNewAccountDlg dialog(account, false, false, this, "hi", i18n("Create a new Account"));
-
-  if (dialog.exec())
-  {
-    // The dialog doesn't check the parent.
-    // An exception will be thrown on the next line instead.
-    try
-    {
-      MyMoneyFile* file = MyMoneyFile::instance();
-
-      MyMoneyAccount newAccount = dialog.account();
-      MyMoneyAccount parentAccount = dialog.parentAccount();
-
-      qDebug("new %s, parent %s, name %s, %s", newAccount.id().data(), parentAccount.id().data(), newAccount.name().latin1(), parentAccount.name().latin1());
-      file->addAccount(newAccount, parentAccount);
-      accountsView->refresh("");
-      viewAccountList(newAccount.id());
-    }
-    catch (MyMoneyException *e)
-    {
-      QString message("Unable to add account: ");
-      message += e->what();
-      KMessageBox::information(this, message);
-      delete e;
-
-      return;
-    }
-  }
-*/
 }
 
 void KMyMoneyView::slotAccountReconcile(void)
@@ -852,6 +822,7 @@ void KMyMoneyView::viewAccountList(const QCString& selectAccount)
   {
     accountsView->refresh(selectAccount);
   }
+
 }
 
 void KMyMoneyView::viewTransactionList(void)
@@ -1088,6 +1059,7 @@ bool KMyMoneyView::checkTransactionAmount(const MyMoneyTransaction *transaction,
 }
 
 bool KMyMoneyView::checkTransactionCredit(const MyMoneyTransaction *transaction, const bool enabled, const QString id)
+
 {
 /*
   if (!enabled)
