@@ -1,3 +1,9 @@
+2003-12-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * reset the reconcile flag when creating schedules from existing
+    transactions
+  * fix existing schedules with reconciliation flag set
+  * added more details to dumper
+
 2003-12-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * emit stateChanged in kMyMoneyAccountSelector in single selection mode
     when selection changed
