@@ -25,11 +25,11 @@
 #include "mymoneyutils.h"
 #include "mymoneyaccount.h"
 
-#ifdef _CHECK_MEMORY
-
 #include <cstdio>
 #include <cstdarg>
 #include <cstdlib>
+
+#ifdef _CHECK_MEMORY
 
 #undef new
 #undef _CheckMemory_Leak
@@ -225,3 +225,52 @@ QString MyMoneyUtils::getFileExtension(QString strFileName)
   return strTemp;
 }
 
+int MyMoneyTracer::m_indentLevel = 0;
+int MyMoneyTracer::m_onoff = 0;
+
+MyMoneyTracer::MyMoneyTracer(const QString& className, const QString& memberName) :
+  m_className(className),
+  m_memberName(memberName)
+{
+  if(m_onoff) {
+    QString indent;
+    indent.fill(' ', m_indentLevel);
+    std::cerr << indent.latin1() << "ENTER: " << m_className.latin1() << "::" << m_memberName.latin1() << std::endl;
+  }
+  m_indentLevel += 2;
+}
+
+MyMoneyTracer::~MyMoneyTracer()
+{
+  m_indentLevel -= 2;
+  if(m_onoff) {
+    QString indent;
+    indent.fill(' ', m_indentLevel);
+    std::cerr << indent.latin1() << "LEAVE: " << m_className.latin1() << "::" << m_memberName.latin1() << std::endl;
+  }
+}
+
+void MyMoneyTracer::printf(const char *format, ...) const
+{
+  if(m_onoff) {
+    va_list args;
+    va_start(args, format);
+    QString indent;
+    indent.fill(' ', m_indentLevel);
+    std::cerr << indent.latin1();
+
+    vfprintf(stderr,format,args);
+    putc('\n', stderr);
+    va_end(args);
+  }
+}
+
+void MyMoneyTracer::on(void)
+{
+  m_onoff = 1;
+}
+
+void MyMoneyTracer::off(void)
+{
+  m_onoff = 0;
+}

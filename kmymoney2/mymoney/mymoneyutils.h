@@ -64,7 +64,25 @@ public:
 
   //static function to add the correct file extension at the end of the file name
   static QString getFileExtension(QString strFileName);
-  
+
+};
+
+class MyMoneyTracer
+{
+public:
+  MyMoneyTracer(const QString& className, const QString& methodName);
+  ~MyMoneyTracer();
+  void printf(const char *format, ...) const;
+
+  static void off(void);
+  static void on(void);
+
+private:
+  QString m_className;
+  QString m_memberName;
+
+  static int m_indentLevel;
+  static int m_onoff;
 };
 
 #ifdef _CHECK_MEMORY
