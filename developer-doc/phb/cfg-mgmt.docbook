@@ -279,22 +279,22 @@ development branch.
 Make sure that the project version is set correct to the
 version to be created (e.g. 0.5.6). If this is not the case, change
 the version in KDevelop. This
-should regenerate a bunch of file automatically. Checkin the changes you
+should regenerate a bunch of files automatically. Checkin the changes you
 have made to the repository before you proceed with the next step.
 </para>
 </listitem>
 
 <listitem>
 <para>
-Tag the version with the applicable tag (e.g. 0.5.6)
+Tag the version with the applicable tag (e.g. rel-0-5-6)
 </para>
 </listitem>
 
 <listitem>
 <para>
 Make sure that you increase the project version to the next version
-(e.g. 0.5.7).  This
-should regenerate a bunch of file automatically. Checkin the changes you
+(e.g. 0.5.7).  This again
+should regenerate a bunch of files automatically. Checkin the changes you
 have made to the repository before you proceed with the next step.
 </para>
 </listitem>
@@ -336,7 +336,7 @@ have to be performed.
 Make sure that the project version is set correct to the
 stable version to be created (e.g. 0.4.pre1). If this is not the case, change
 the version in KDevelop. This
-should regenerate a bunch of file automatically. Checkin the changes you
+should regenerate a bunch of files automatically. Checkin the changes you
 have made to the repository before you proceed with the next step.
 </para>
 </listitem>
@@ -364,7 +364,7 @@ A complete example with all &cvs; commands can be found
 <para>
 Change the project version to the next development version (e.g. 0.5.0).
 Change the version in KDevelop. This
-should regenerate a bunch of file automatically. Checkin the changes you
+should regenerate a bunch of files automatically. Checkin the changes you
 have made to the repository before you proceed with the next step.
 </para>
 </listitem>
