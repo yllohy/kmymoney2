@@ -665,6 +665,8 @@ void PivotTable::calculateOpeningBalances( void )
     // and if the report includes this account
     if ( includesAccount( *it_account ) )
     {
+      DEBUG_OUTPUT(QString("Includes account %1").arg((*it_account).name()));
+    
       // the row group is the account class (major account type)
       QString outergroup = accountTypeToString((*it_account).accountGroup());
 
@@ -692,8 +694,12 @@ void PivotTable::calculateOpeningBalances( void )
         unsigned column = opendate.year() * 12 + opendate.month() - m_beginDate.year() * 12 - m_beginDate.month() + 1;
         assignCell( outergroup, row, column, value );
       }
-
     }
+    else
+    {
+      DEBUG_OUTPUT(QString("DOES NOT INCLUDE account %1").arg((*it_account).name()));
+    }
+    
     ++it_account;
   }
 }

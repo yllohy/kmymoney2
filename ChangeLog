@@ -1,3 +1,6 @@
+2004-08-11 Ace Jones <acejones@users.sourceforge.net>
+  * Added stock accounts to kMyMoneyAccountSelector
+
 2004-08-08 Ace Jones <acejones@users.sourceforge.net>
   * Added the ability to designate some reports as your favorite, and they'll be
     grouped together.

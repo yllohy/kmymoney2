@@ -277,6 +277,7 @@ const int kMyMoneyAccountSelector::loadList(KMyMoneyUtils::categoryTypeE typeMas
     typeList << MyMoneyAccount::AssetLoan;
     typeList << MyMoneyAccount::CertificateDep;
     typeList << MyMoneyAccount::Investment;
+    typeList << MyMoneyAccount::Stock;
     typeList << MyMoneyAccount::MoneyMarket;
     typeList << MyMoneyAccount::Asset;
     typeList << MyMoneyAccount::Currency;
@@ -310,6 +311,7 @@ const int kMyMoneyAccountSelector::loadList(QValueList<int> typeList)
     + typeList.contains(MyMoneyAccount::AssetLoan)
     + typeList.contains(MyMoneyAccount::CertificateDep)
     + typeList.contains(MyMoneyAccount::Investment)
+    + typeList.contains(MyMoneyAccount::Stock)
     + typeList.contains(MyMoneyAccount::MoneyMarket)
     + typeList.contains(MyMoneyAccount::Asset)
     + typeList.contains(MyMoneyAccount::Currency)) > 0)
