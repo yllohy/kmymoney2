@@ -1340,6 +1340,10 @@ const QString KLedgerView::action2str(const QCString &action, const bool showHot
     rc = i18n("&Withdrawal");
   else if(action == MyMoneySplit::ActionATM)
     rc = i18n("AT&M");
+  else if(action == MyMoneySplit::ActionAddShares)
+    rc = i18n("&Add Shares");
+  else if(action == MyMoneySplit::ActionRemoveShares)
+    rc = i18n("&Remove Shares");
 
   if(rc.isEmpty()) {
     qDebug("Unsupported action string %s, set to check", static_cast<const char *>(action));

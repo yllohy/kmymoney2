@@ -34,6 +34,12 @@ class QLabel;
 
 // ----------------------------------------------------------------------------
 // Project Includes
+#include "../widgets/kmymoneydateinput.h"
+#include "../widgets/kmymoneyedit.h"
+#include "../widgets/kmymoneylineedit.h"
+#include "../widgets/kmymoneycombo.h"
+#include "../widgets/kmymoneycategory.h"
+#include "../widgets/kmymoneypayee.h"
 
 #ifndef KLEDGERVIEWINVESTMENTS_H
 #define KLEDGERVIEWINVESTMENTS_H
@@ -46,6 +52,13 @@ class QLabel;
 
 class KLedgerViewInvestments : public KLedgerView
 {
+  enum investTransactionTypeE {
+    AddShares = 100,
+    RemoveShares,
+    Deposit,
+    Withdrawal
+  };
+  
   Q_OBJECT
 public: 
   KLedgerViewInvestments(QWidget *parent = NULL, const char *name = NULL);
@@ -60,10 +73,12 @@ protected slots:
     * selected account.
     */
   virtual void slotAccountDetail(void);
-
+  virtual void slotTypeSelected(int type);
   virtual void slotReconciliation(void);
+  virtual void slotNew();
 
 protected:
+  virtual void createEditWidgets();
   virtual void fillForm();
   virtual void fillSummary();
   virtual void showWidgets();
@@ -96,6 +111,9 @@ private:
     */
   void createInfoStack(void);
 
+  int transactionType(const MyMoneyTransaction& t, const MyMoneySplit& split) const;
+  const QCString transactionType(int type) const;
+
 protected:
   KPushButton*  m_detailsButton;
   KPushButton*  m_reconcileButton;
@@ -112,9 +130,10 @@ private:
 
   QLabel*         m_lastReconciledLabel;
 
-  QTab *m_tabCheck, *m_tabDeposit, *m_tabTransfer,
-       *m_tabWithdrawal, *m_tabAtm;
-  
+  QTab *m_tabAddShares, *m_tabRemoveShares;//, *m_tabTransfer,
+       //*m_tabWithdrawal, *m_tabAtm;
+
+  QCString m_action;
 /*
   KTextBrowser *textBrowser;
   QGridLayout *mainGrid;

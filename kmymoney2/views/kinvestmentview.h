@@ -158,6 +158,7 @@ private:
   KPopupMenu*       m_popMenu;
   KLedgerView*      m_ledgerView;
   MyMoneyAccount    m_account;
+  QCString          m_accountId;
 };
 
 #endif

@@ -79,6 +79,8 @@ KLedgerViewInvestments::KLedgerViewInvestments(QWidget *parent, const char *name
 
   formLayout->addLayout( ledgerLayout, 0, 0);
 
+  qDebug("Creating KLedgerViewInvestments for accound id = %s, name=%s", m_account.id().data(),m_account.name().data());
+
 }
 
 KLedgerViewInvestments::~KLedgerViewInvestments()
@@ -98,12 +100,20 @@ void KLedgerViewInvestments::fillSummary()
 
 void KLedgerViewInvestments::showWidgets()
 {
-
+  createEditWidgets();
 }
 
 void KLedgerViewInvestments::hideWidgets()
 {
-
+  m_editPayee = 0;
+  m_editCategory = 0;
+  m_editMemo = 0;
+  m_editAmount = 0;
+  m_editNr = 0;
+  m_editDate = 0;
+  m_editFrom = 0;
+  m_editTo = 0;
+  m_editSplit = 0;
 }
 
 void KLedgerViewInvestments::reloadEditWidgets(const MyMoneyTransaction& t)
@@ -116,23 +126,48 @@ void KLedgerViewInvestments::slotReconciliation(void)
 
 }
 
+void KLedgerViewInvestments::slotNew()
+{
+  KLedgerView::slotNew();
+
+  
+}
+
+void KLedgerViewInvestments::createEditWidgets()
+{
+  m_editPayee = new kMyMoneyPayee(0, "editPayee");
+  m_editCategory = new kMyMoneyCategory(0, "editCategory");
+  m_editMemo = new kMyMoneyLineEdit(0, "editMemo", AlignLeft|AlignVCenter);
+  m_editAmount = new kMyMoneyEdit(0, "editAmount");
+  m_editDate = new kMyMoneyDateInput(0, "editDate");
+  m_editNr = new kMyMoneyLineEdit(0, "editNr");
+  m_editFrom = new kMyMoneyCategory(0, "editFrom", static_cast<KMyMoneyUtils::categoryTypeE> (KMyMoneyUtils::asset | KMyMoneyUtils::liability));
+  m_editTo = new kMyMoneyCategory(0, "editTo", static_cast<KMyMoneyUtils::categoryTypeE> (KMyMoneyUtils::asset | KMyMoneyUtils::liability));
+  m_editSplit = new KPushButton("Split", 0, "editSplit");
+  m_editPayment = new kMyMoneyEdit(0, "editPayment");
+  m_editDeposit = new kMyMoneyEdit(0, "editDeposit");
+  m_editType = new kMyMoneyCombo(0, "editType");
+  m_editType->setFocusPolicy(QWidget::StrongFocus);
+
+}
+
 void KLedgerViewInvestments::createForm(void)
 {
   m_form = new kMyMoneyTransactionForm(this, NULL, 0, 4, 5);
 
-/*  
-  m_tabCheck = new QTab(action2str(MyMoneySplit::ActionCheck, true));
-  m_tabDeposit = new QTab(action2str(MyMoneySplit::ActionDeposit, true));
-  m_tabTransfer = new QTab(action2str(MyMoneySplit::ActionTransfer, true));
-  m_tabWithdrawal = new QTab(action2str(MyMoneySplit::ActionWithdrawal, true));
-  m_tabAtm = new QTab(action2str(MyMoneySplit::ActionATM, true));
+  
+  m_tabAddShares = new QTab(action2str(MyMoneySplit::ActionAddShares, true));
+  m_tabRemoveShares = new QTab(action2str(MyMoneySplit::ActionRemoveShares, true));
+  //m_tabTransfer = new QTab(action2str(MyMoneySplit::ActionTransfer, true));
+  //m_tabWithdrawal = new QTab(action2str(MyMoneySplit::ActionWithdrawal, true));
+  //m_tabAtm = new QTab(action2str(MyMoneySplit::ActionATM, true));
 
-  m_form->addTab(m_tabCheck);
-  m_form->addTab(m_tabDeposit);
-  m_form->addTab(m_tabTransfer);
-  m_form->addTab(m_tabWithdrawal);
-  m_form->addTab(m_tabAtm); 
-*/
+  m_form->addTab(m_tabAddShares);
+  m_form->addTab(m_tabRemoveShares);
+  //m_form->addTab(m_tabTransfer);
+  //m_form->addTab(m_tabWithdrawal);
+  //m_form->addTab(m_tabAtm);
+
 
   // never show horizontal scroll bars
   m_form->table()->setHScrollBarMode(QScrollView::AlwaysOff);
@@ -141,12 +176,12 @@ void KLedgerViewInvestments::createForm(void)
   m_form->table()->setMaximumHeight(m_form->table()->rowHeight(0)*m_form->table()->numRows());
 
   // connections
-  //connect(m_form->tabBar(), SIGNAL(selected(int)), this, SLOT(slotTypeSelected(int)));
+  connect(m_form->tabBar(), SIGNAL(selected(int)), this, SLOT(slotTypeSelected(int)));
 
-  //connect(m_form->editButton(), SIGNAL(clicked()), this, SLOT(slotStartEdit()));
-  //connect(m_form->cancelButton(), SIGNAL(clicked()), this, SLOT(slotCancelEdit()));
-  //connect(m_form->enterButton(), SIGNAL(clicked()), this, SLOT(slotEndEdit()));
-  //connect(m_form->newButton(), SIGNAL(clicked()), this, SLOT(slotNew()));
+  connect(m_form->editButton(), SIGNAL(clicked()), this, SLOT(slotStartEdit()));
+  connect(m_form->cancelButton(), SIGNAL(clicked()), this, SLOT(slotCancelEdit()));
+  connect(m_form->enterButton(), SIGNAL(clicked()), this, SLOT(slotEndEdit()));
+  connect(m_form->newButton(), SIGNAL(clicked()), this, SLOT(slotNew()));
 
   m_form->enterButton()->setDefault(true);
 }
@@ -228,6 +263,69 @@ void KLedgerViewInvestments::createInfoStack(void)
   m_infoStack->raiseWidget(KLedgerView::TransactionEdit);
 }
 
+void KLedgerViewInvestments::slotTypeSelected(int type)
+{
+  if(!m_form->tabBar()->signalsBlocked())
+    slotCancelEdit();
+
+  QTable* formTable = m_form->table();
+
+  // clear complete table
+  for(int r = 0; r < formTable->numRows(); ++r) {
+    for(int c = 0; c < formTable->numCols(); ++c) {
+      formTable->setText(r, c, " ");
+    }
+  }
+
+  // common elements
+  formTable->setText(1, 0, i18n("Symbol Name"));
+  formTable->setText(3, 0, i18n("Memo"));
+
+  formTable->setText(1, 3, i18n("Date"));
+  formTable->setText(2, 3, i18n("Amount"));
+
+  m_action = transactionType(type);
+
+  // specific elements (in the order of the tabs)
+  switch(type) {
+    case KLedgerViewInvestments::AddShares:
+      //formTable->setText(1, 0, i18n("Symbol Name"));
+      //formTable->setText(2, 0, i18n("Category"));
+      //formTable->setText(0, 3, i18n("Nr"));
+      break;
+
+    case KLedgerViewInvestments::RemoveShares:
+      formTable->setText(1, 0, i18n("Payee"));
+      formTable->setText(2, 0, i18n("Category"));
+      break;
+
+    /*case 2:   // Transfer
+      formTable->setText(0, 0, i18n("From"));
+      formTable->setText(1, 0, i18n("To"));
+      formTable->setText(2, 0, i18n("Payee"));
+      break;
+
+    case 3:   // Withdrawal
+      formTable->setText(1, 0, i18n("Receiver"));
+      formTable->setText(2, 0, i18n("Category"));
+      break;
+
+    case 4:   // ATM
+      formTable->setText(0, 3, i18n("Nr"));
+      formTable->setText(1, 0, i18n("Receiver"));
+      formTable->setText(2, 0, i18n("Category"));
+      break;     */
+  }
+
+  KConfig *config = KGlobal::config();
+  config->setGroup("General Options");
+  if(config->readBoolEntry("AlwaysShowNrField", false) == true)
+    formTable->setText(0, 3, i18n("Nr"));
+
+  if(!m_form->tabBar()->signalsBlocked())
+    slotNew();
+}
+
 void KLedgerViewInvestments::slotRegisterDoubleClicked(int /* row */,
                                                 int /* col */,
                                                 int /* button */,
@@ -239,14 +337,14 @@ void KLedgerViewInvestments::slotRegisterDoubleClicked(int /* row */,
 
 void KLedgerViewInvestments::createRegister(void)
 {
-  m_register = new kMyMoneyRegisterCheckings(this, "Checkings");
+  m_register = new kMyMoneyRegisterCheckings(this, "Investments");
   m_register->setParent(this);
 
-  m_register->setAction(QCString(MyMoneySplit::ActionATM), i18n("ATM"));
-  m_register->setAction(QCString(MyMoneySplit::ActionCheck), i18n("Cheque"));
-  m_register->setAction(QCString(MyMoneySplit::ActionDeposit), i18n("Deposit"));
-  m_register->setAction(QCString(MyMoneySplit::ActionWithdrawal), i18n("Withdrawal"));
-  m_register->setAction(QCString(MyMoneySplit::ActionTransfer), i18n("Transfer"));
+  m_register->setAction(QCString(MyMoneySplit::ActionAddShares), i18n("Add Shares"));
+  m_register->setAction(QCString(MyMoneySplit::ActionRemoveShares), i18n("Remove Shares"));
+  //m_register->setAction(QCString(MyMoneySplit::ActionDeposit), i18n("Deposit"));
+  //m_register->setAction(QCString(MyMoneySplit::ActionWithdrawal), i18n("Withdrawal"));
+  //m_register->setAction(QCString(MyMoneySplit::ActionTransfer), i18n("Transfer"));
 
   connect(m_register, SIGNAL(clicked(int, int, int, const QPoint&)), this, SLOT(slotRegisterClicked(int, int, int, const QPoint&)));
   connect(m_register, SIGNAL(doubleClicked(int, int, int, const QPoint&)), this, SLOT(slotRegisterDoubleClicked(int, int, int, const QPoint&)));
@@ -284,5 +382,35 @@ void KLedgerViewInvestments::slotAccountDetail(void)
       delete e;
     }
   }
+}
+
+int KLedgerViewInvestments::transactionType(const MyMoneyTransaction& t, const MyMoneySplit& split) const
+{
+  if(split.action() == MyMoneySplit::ActionAddShares)
+    return KLedgerViewInvestments::AddShares;
+  else if(split.action() == MyMoneySplit::ActionRemoveShares)
+    return KLedgerViewInvestments::RemoveShares;
+  else
+    return KLedgerView::transactionType(t, split);
+    
+  //qDebug("Unknown transaction type in KLedgerView::transactionType, Check assumed");
+  //return Check;
+}
+
+const QCString KLedgerViewInvestments::transactionType(int type) const
+{
+  switch(type) {
+    default:
+      qWarning("Unknown transaction type used in KLedgerView::transactionType(int)");
+      // Tricky fall through here!
+
+    case KLedgerViewInvestments::AddShares: // Check
+      return MyMoneySplit::ActionAddShares;
+
+    case KLedgerViewInvestments::RemoveShares: // Deposit
+      return MyMoneySplit::ActionRemoveShares;
+  }
+
+  return KLedgerView::transactionType(type);
 }
 

@@ -112,6 +112,9 @@ KInvestmentView::KInvestmentView(QWidget *parent, const char *name)
   //set the summary button to be true.
  // btnSummary->setChecked(TRUE);
 
+   connect(m_accountComboBox, SIGNAL(activated(const QString&)), this, SLOT(slotSelectAccount(const QString&)));
+ //const bool KInvestmentView::slotSelectAccount(const QCString& id, const bool reconciliation)
+
   MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAccount, this);
 
   connect(investmentTable, SIGNAL(doubleClicked(QListViewItem*,const QPoint&, int)), this, SLOT(slotItemDoubleClicked(QListViewItem*,const QPoint&, int)));
@@ -434,57 +437,56 @@ void KInvestmentView::loadAccounts(void)
 
 const bool KInvestmentView::slotSelectAccount(const QCString& id, const bool reconciliation)
 {
-/*
+
   bool    rc = false;
 
-  // qDebug("KInvestmentView::slotSelectAccount(const QCString& id, const bool reconciliation)");
+  qDebug("KInvestmentView::slotSelectAccount id=%s", id.data());
 
   // cancel any pending edit operation in the ledger views
-  emit cancelEdit();
+  //emit cancelEdit();
 
-  if(!id.isEmpty()) {
+  if(!id.isEmpty())
+  {
     // if the account id differs, then we have to do something
     MyMoneyAccount acc = MyMoneyFile::instance()->account(id);
-    if(m_accountId != id) {
-      if(m_specificView[acc.accountType()] != 0) {
-        m_accountStack->raiseWidget(acc.accountType());
-        m_currentView = m_specificView[acc.accountType()];
-        m_currentView->slotSelectAccount(id);
+    if(m_accountId != id)
+    {
         m_accountComboBox->setCurrentItem(acc.name());
         rc = true;
 
-      } else {
-        QString msg = "Specific ledger view for account type '" +
-          KMyMoneyUtils::accountTypeToString(acc.accountType()) + "' not yet implemented";
-        KMessageBox::sorry(0, msg, "Implementation problem");
-      }
-    } else {
+        m_account = acc;
+
+
+        m_ledgerView->slotSelectAccount(acc.id());
+      //} else {
+      //  QString msg = "Specific ledger view for account type '" +
+      //    KMyMoneyUtils::accountTypeToString(acc.accountType()) + "' not yet implemented";
+      //  KMessageBox::sorry(0, msg, "Implementation problem");
+      //}
+    }
+    else
+    {
 #if KDE_VERSION < 310
       // in KDE 3.1 and above, QWidgetStack::show() takes care of this
-      m_accountStack->raiseWidget(acc.accountType());
+//      m_accountStack->raiseWidget(acc.accountType());
 #endif
       rc = true;
     }
 
-  } else {
-    if(m_specificView[MyMoneyAccount::Checkings] != 0) {
-      m_accountStack->raiseWidget(MyMoneyAccount::Checkings);
-      m_currentView = m_specificView[MyMoneyAccount::Checkings];
-      m_currentView->slotSelectAccount(id);
-
-    } else {
-      qFatal("Houston: we have a serious problem in KInvestmentView");
-    }
   }
+  else
+  {
+    //MyMoneyAccount acc = MyMoneyFile::instance()->account(id);
+    //m_accountComboBox->setCurrentItem(acc.name());
+    //    rc = true;
 
+    //    m_account = acc;
+  }
+ 
   // keep this as the current account
   m_accountId = id;
 
-  if(reconciliation == true && m_currentView)
-    m_currentView->slotReconciliation();
-
   return rc;
-*/
 }
 
 const bool KInvestmentView::slotSelectAccount(const QString& accountName)

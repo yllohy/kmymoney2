@@ -655,7 +655,7 @@ protected:
     *
     * @return KLedgerView::transactionTypeE value of the action
     */
-  int transactionType(const MyMoneyTransaction& t, const MyMoneySplit& split) const;
+  virtual int transactionType(const MyMoneyTransaction& t, const MyMoneySplit& split) const;
 
   /**
     * This method converts the internal used numeric value for actions
@@ -664,7 +664,7 @@ protected:
     * @param type const int representing KLedgerView::transactionTypeE value of the action
     * @return const action string
     */
-  const QCString transactionType(const int type) const;
+  virtual const QCString transactionType(const int type) const;
 
   /**
     * This method handles the focus of the keyboard. When in edit mode
