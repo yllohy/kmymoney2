@@ -162,6 +162,30 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int row, int 
                                      theDate,
                                      theDate);
       }
+
+      if (m_filterAccounts.count() > 0)
+      {
+        // Filter out the accounts
+        QValueList<MyMoneySchedule> toDelete;
+        QValueList<MyMoneySchedule>::Iterator schedit;
+        for (schedit=schedules.begin(); schedit!=schedules.end(); ++schedit)
+        {
+          QCStringList::Iterator it;
+          for (it=m_filterAccounts.begin(); it != m_filterAccounts.end(); ++it)
+          {
+            if ((*it) == (*schedit).accountId())
+            {
+              toDelete.append(*schedit);
+              break;
+            }
+          }
+        }
+        QValueList<MyMoneySchedule>::Iterator delit;
+        for (delit=toDelete.begin(); delit!=toDelete.end(); ++delit)
+        {
+          schedules.remove(delit);
+        }
+      }
     }
     catch ( MyMoneyException* e)
     {
@@ -218,6 +242,28 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int row, int 
                                      MyMoneySchedule::STYPE_ANY,
                                      theDate,
                                      theDate);
+        if (m_filterAccounts.count() > 0)
+        {
+          QValueList<MyMoneySchedule> toDelete;
+          QValueList<MyMoneySchedule>::Iterator schedit;
+          for (schedit=billSchedules.begin(); schedit!=billSchedules.end(); ++schedit)
+          {
+            QCStringList::Iterator it;
+            for (it=m_filterAccounts.begin(); it != m_filterAccounts.end(); ++it)
+            {
+              if ((*it) == (*schedit).accountId())
+              {
+                toDelete.append(*schedit);
+                break;
+              }
+            }
+          }
+          QValueList<MyMoneySchedule>::Iterator delit;
+          for (delit=toDelete.begin(); delit!=toDelete.end(); ++delit)
+          {
+            billSchedules.remove(delit);
+          }
+        }
         if (billSchedules.count() >= 1)
         {
           text += QString::number(billSchedules.count());
@@ -233,6 +279,29 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int row, int 
                                      MyMoneySchedule::STYPE_ANY,
                                      theDate,
                                      theDate);
+        if (m_filterAccounts.count() > 0)
+        {
+          // Filter out the accounts
+          QValueList<MyMoneySchedule> toDelete;
+          QValueList<MyMoneySchedule>::Iterator schedit;
+          for (schedit=depositSchedules.begin(); schedit!=depositSchedules.end(); ++schedit)
+          {
+            QCStringList::Iterator it;
+            for (it=m_filterAccounts.begin(); it != m_filterAccounts.end(); ++it)
+            {
+              if ((*it) == (*schedit).accountId())
+              {
+                toDelete.append(*schedit);
+                break;
+              }
+            }
+          }
+          QValueList<MyMoneySchedule>::Iterator delit;
+          for (delit=toDelete.begin(); delit!=toDelete.end(); ++delit)
+          {
+            depositSchedules.remove(delit);
+          }
+        }
         if (depositSchedules.count() >= 1)
         {
           text += "  ";
@@ -249,6 +318,30 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int row, int 
                                      MyMoneySchedule::STYPE_ANY,
                                      theDate,
                                      theDate);
+        if (m_filterAccounts.count() > 0)
+        {
+          // Filter out the accounts
+          QValueList<MyMoneySchedule> toDelete;
+          QValueList<MyMoneySchedule>::Iterator schedit;
+          for (schedit=transferSchedules.begin(); schedit!=transferSchedules.end(); ++schedit)
+          {
+            QCStringList::Iterator it;
+            for (it=m_filterAccounts.begin(); it != m_filterAccounts.end(); ++it)
+            {
+              if ((*it) == (*schedit).accountId())
+              {
+                toDelete.append(*schedit);
+                break;
+              }
+            }
+          }
+          QValueList<MyMoneySchedule>::Iterator delit;
+          for (delit=toDelete.begin(); delit!=toDelete.end(); ++delit)
+          {
+            transferSchedules.remove(delit);
+          }
+        }
+        
         if (transferSchedules.count() >= 1)
         {
           text += "  ";
@@ -414,6 +507,29 @@ void kMyMoneyScheduledDateTbl::contentsMouseMoveEvent(QMouseEvent* e)
                                      MyMoneySchedule::STYPE_ANY,
                                      drawDate,
                                      drawDate);
+    }
+    if (m_filterAccounts.count() > 0)
+    {
+      // Filter out the accounts
+      QValueList<MyMoneySchedule> toDelete;
+      QValueList<MyMoneySchedule>::Iterator schedit;
+      for (schedit=schedules.begin(); schedit!=schedules.end(); ++schedit)
+      {
+        QCStringList::Iterator it;
+        for (it=m_filterAccounts.begin(); it != m_filterAccounts.end(); ++it)
+        {
+          if ((*it) == (*schedit).accountId())
+          {
+            toDelete.append(*schedit);
+            break;
+          }
+        }
+      }
+      QValueList<MyMoneySchedule>::Iterator delit;
+      for (delit=toDelete.begin(); delit!=toDelete.end(); ++delit)
+      {
+        schedules.remove(delit);
+      }
     }
   }
   catch ( MyMoneyException* e)

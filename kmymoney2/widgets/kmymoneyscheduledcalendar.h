@@ -68,6 +68,8 @@ public:
 
   void refresh() { m_scheduledDateTable->refresh(); }
 
+  void setFilterAccounts(const QCStringList& list) { m_scheduledDateTable->setFilterAccounts(list); }
+
 
 protected slots:
   void slotSetViewBills();

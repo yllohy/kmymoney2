@@ -97,11 +97,9 @@ void KEditScheduledTransferDlg::reloadFromFile(void)
   m_kcomboFreq->insertItem(i18n("Once"));
   m_kcomboFreq->insertItem(i18n("Daily"));
   m_kcomboFreq->insertItem(i18n("Weekly"));
-  m_kcomboFreq->insertItem(i18n("Fortnightly"));
-  m_kcomboFreq->insertItem(i18n("Every other week"));
+  m_kcomboFreq->insertItem(i18n("Every two weeks"));
   m_kcomboFreq->insertItem(i18n("Every four weeks"));
   m_kcomboFreq->insertItem(i18n("Monthly"));
-  m_kcomboFreq->insertItem(i18n("Twice a month"));
   m_kcomboFreq->insertItem(i18n("Every other month"));
   m_kcomboFreq->insertItem(i18n("Every three months"));
   m_kcomboFreq->insertItem(i18n("Every four months"));
@@ -193,9 +191,7 @@ void KEditScheduledTransferDlg::slotSplitClicked()
     delete dlg;
   } catch (MyMoneyException *e)
   {
-    QString s;
-    s.sprintf(i18n("Exception in slot split clicked: %s"), e->what().latin1());
-    KMessageBox::information(this, s);
+    KMessageBox::detailedError(this, i18n("Exception in slot split clicked"), e->what());
     delete e;
   }
 
@@ -299,33 +295,27 @@ void KEditScheduledTransferDlg::okClicked()
         m_schedule.setOccurence(MyMoneySchedule::OCCUR_FORTNIGHTLY);
         break;
       case 4:
-        m_schedule.setOccurence(MyMoneySchedule::OCCUR_EVERYOTHERWEEK);
-        break;
-      case 5:
         m_schedule.setOccurence(MyMoneySchedule::OCCUR_EVERYFOURWEEKS);
         break;
-      case 6:
+      case 5:
         m_schedule.setOccurence(MyMoneySchedule::OCCUR_MONTHLY);
         break;
-      case 7:
+      case 6:
         m_schedule.setOccurence(MyMoneySchedule::OCCUR_EVERYOTHERMONTH);
         break;
-      case 8:
+      case 7:
         m_schedule.setOccurence(MyMoneySchedule::OCCUR_EVERYTHREEMONTHS);
         break;
-      case 9:
+      case 8:
         m_schedule.setOccurence(MyMoneySchedule::OCCUR_EVERYFOURMONTHS);
         break;
-      case 10:
+      case 9:
         m_schedule.setOccurence(MyMoneySchedule::OCCUR_TWICEYEARLY);
         break;
-      case 11:
-        m_schedule.setOccurence(MyMoneySchedule::OCCUR_QUARTERLY);
-        break;
-      case 12:
+      case 10:
         m_schedule.setOccurence(MyMoneySchedule::OCCUR_YEARLY);
         break;
-      case 13:
+      case 11:
         m_schedule.setOccurence(MyMoneySchedule::OCCUR_EVERYOTHERYEAR);
         break;
       default:
@@ -380,7 +370,7 @@ void KEditScheduledTransferDlg::okClicked()
 
     if (payeeId.length() == 0)
     {
-      KMessageBox::information(this, "Adding " + m_kcomboPayTo->text() + " as a payee");
+//      KMessageBox::information(this, "Adding " + m_kcomboPayTo->text() + " as a payee");
       MyMoneyPayee payee(m_kcomboPayTo->text());
       file->addPayee(payee);
       payeeId = file->payeeByName(m_kcomboPayTo->text()).id();
@@ -470,35 +460,29 @@ void KEditScheduledTransferDlg::loadWidgetsFromSchedule(void)
       case MyMoneySchedule::OCCUR_FORTNIGHTLY:
         m_kcomboFreq->setCurrentItem(3);
         break;
-      case MyMoneySchedule::OCCUR_EVERYOTHERWEEK:
+      case MyMoneySchedule::OCCUR_EVERYFOURWEEKS:
         m_kcomboFreq->setCurrentItem(4);
         break;
-      case MyMoneySchedule::OCCUR_EVERYFOURWEEKS:
+      case MyMoneySchedule::OCCUR_MONTHLY:
         m_kcomboFreq->setCurrentItem(5);
         break;
-      case MyMoneySchedule::OCCUR_MONTHLY:
+      case MyMoneySchedule::OCCUR_EVERYOTHERMONTH:
         m_kcomboFreq->setCurrentItem(6);
         break;
-      case MyMoneySchedule::OCCUR_EVERYOTHERMONTH:
+      case MyMoneySchedule::OCCUR_EVERYTHREEMONTHS:
         m_kcomboFreq->setCurrentItem(7);
         break;
-      case MyMoneySchedule::OCCUR_EVERYTHREEMONTHS:
+      case MyMoneySchedule::OCCUR_EVERYFOURMONTHS:
         m_kcomboFreq->setCurrentItem(8);
         break;
-      case MyMoneySchedule::OCCUR_QUARTERLY:
+      case MyMoneySchedule::OCCUR_TWICEYEARLY:
         m_kcomboFreq->setCurrentItem(9);
         break;
-      case MyMoneySchedule::OCCUR_EVERYFOURMONTHS:
+      case MyMoneySchedule::OCCUR_YEARLY:
         m_kcomboFreq->setCurrentItem(10);
         break;
-      case MyMoneySchedule::OCCUR_TWICEYEARLY:
-        m_kcomboFreq->setCurrentItem(11);
-        break;
-      case MyMoneySchedule::OCCUR_YEARLY:
-        m_kcomboFreq->setCurrentItem(12);
-        break;
       case MyMoneySchedule::OCCUR_EVERYOTHERYEAR:
-        m_kcomboFreq->setCurrentItem(13);
+        m_kcomboFreq->setCurrentItem(11);
         break;
       default:
         break;

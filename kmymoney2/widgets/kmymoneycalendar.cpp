@@ -117,7 +117,7 @@ void kMyMoneyCalendar::init( const QDate &dt )
   KPopupMenu* kpopupmenuNew = new KPopupMenu(this);
   kpopupmenuNew->insertItem(i18n("Week"), this, SLOT(slotSetStyleWeekly()));
   kpopupmenuNew->insertItem(i18n("Month"), this, SLOT(slotSetStyleMonthly()));
-  kpopupmenuNew->insertItem(i18n("3 Months"), this, SLOT(slotSetStyleQuarterly()));
+/*  kpopupmenuNew->insertItem(i18n("3 Months"), this, SLOT(slotSetStyleQuarterly())); */
   styleControl->setPopup(kpopupmenuNew);
 
   QToolTip::add(styleControl, i18n("Choose Style"));

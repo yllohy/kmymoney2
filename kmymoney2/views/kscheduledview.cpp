@@ -62,8 +62,6 @@ KScheduledView::KScheduledView(QWidget *parent, const char *name )
   m_qlistviewScheduled->setHScrollBarMode(QScrollView::AlwaysOff);
   m_qlistviewScheduled->setSorting(-1);
 
-  readConfig();
-
   KIconLoader *kiconloader = KGlobal::iconLoader();
   KPopupMenu* kpopupmenuNew = new KPopupMenu(this);
   kpopupmenuNew->insertItem(kiconloader->loadIcon("new_bill", KIcon::Small), i18n("Bill"), this, SLOT(slotNewBill()));
@@ -71,33 +69,12 @@ KScheduledView::KScheduledView(QWidget *parent, const char *name )
   kpopupmenuNew->insertItem(kiconloader->loadIcon("new_transfer", KIcon::Small), i18n("Transfer"), this, SLOT(slotNewTransfer()));
   m_qbuttonNew->setPopup(kpopupmenuNew);
 
-  try
-  {
-    int accountCount=0;
-    KPopupMenu *kaccPopup = new KPopupMenu(this);
-    kaccPopup->setCheckable(true);
+  m_kaccPopup = new KPopupMenu(this);
+  m_kaccPopup->setCheckable(true);
+  m_accountsCombo->setPopup(m_kaccPopup);
+  connect(m_kaccPopup, SIGNAL(activated(int)), this, SLOT(slotAccountActivated(int)));
 
-    MyMoneyFile* file = MyMoneyFile::instance();
-    MyMoneyAccount acc;
-    QCStringList::ConstIterator it_s;
-
-    acc = file->asset();
-    for(it_s = acc.accountList().begin(); it_s != acc.accountList().end(); ++it_s)
-    {
-      MyMoneyAccount a = file->account(*it_s);
-      kaccPopup->insertItem(a.name(), accountCount);
-      kaccPopup->connectItem(accountCount, this, SLOT(slotAccountChecked()));
-      kaccPopup->setItemChecked(accountCount, true);
-      accountCount++;
-    }
-
-    m_accountsCombo->setPopup(kaccPopup);
-  }
-  catch (MyMoneyException *e)
-  {
-    KMessageBox::detailedError(this, i18n("Unable to load accounts"), e->what());
-    delete e;
-  }
+  readConfig();
 
   connect(m_qlistviewScheduled, SIGNAL(contextMenuRequested(QListViewItem*, const QPoint&, int)),
     this, SLOT(slotListViewContextMenu(QListViewItem*, const QPoint&, int)));
@@ -116,6 +93,30 @@ void KScheduledView::refresh(const QCString schedId)
 
   try
   {
+    try
+    {
+      int accountCount=0;
+
+      m_kaccPopup->clear();
+
+      MyMoneyFile* file = MyMoneyFile::instance();
+      MyMoneyAccount acc;
+      QCStringList::ConstIterator it_s;
+
+      acc = file->asset();
+      for(it_s = acc.accountList().begin(); it_s != acc.accountList().end(); ++it_s)
+      {
+        MyMoneyAccount a = file->account(*it_s);
+        m_kaccPopup->insertItem(a.name(), accountCount);
+        m_kaccPopup->setItemChecked(accountCount, true);
+        accountCount++;
+      }
+    }
+    catch (MyMoneyException *e)
+    {
+      KMessageBox::detailedError(this, i18n("Unable to load accounts"), e->what());
+      delete e;
+    }
 
     // Refresh the calendar view first
     m_calendar->refresh();
@@ -185,11 +186,11 @@ void KScheduledView::refreshView(void)
   m_qlistviewScheduled->setColumnWidth(0, 100);
   m_qlistviewScheduled->setColumnWidth(1, 100);
   m_qlistviewScheduled->setColumnWidth(2, 100);
-  m_qlistviewScheduled->setColumnWidth(3, 100);
-  m_qlistviewScheduled->setColumnWidth(4, 100);
+  m_qlistviewScheduled->setColumnWidth(3, 80);
+  m_qlistviewScheduled->setColumnWidth(4, 120);
   m_qlistviewScheduled->setColumnWidth(5, 100);
-  m_qlistviewScheduled->setColumnWidth(6, 100);
-  m_qlistviewScheduled->setColumnWidth(0, m_qlistviewScheduled->width()-600);
+  m_qlistviewScheduled->setColumnWidth(6, 120);
+  m_qlistviewScheduled->setColumnWidth(0, m_qlistviewScheduled->width()-620);
 }
 
 void KScheduledView::show()
@@ -204,11 +205,11 @@ void KScheduledView::resizeEvent(QResizeEvent* e)
   m_qlistviewScheduled->setColumnWidth(0, 100);
   m_qlistviewScheduled->setColumnWidth(1, 100);
   m_qlistviewScheduled->setColumnWidth(2, 100);
-  m_qlistviewScheduled->setColumnWidth(3, 100);
-  m_qlistviewScheduled->setColumnWidth(4, 100);
+  m_qlistviewScheduled->setColumnWidth(3, 80);
+  m_qlistviewScheduled->setColumnWidth(4, 120);
   m_qlistviewScheduled->setColumnWidth(5, 100);
-  m_qlistviewScheduled->setColumnWidth(6, 100);
-  m_qlistviewScheduled->setColumnWidth(0, m_qlistviewScheduled->width()-600);
+  m_qlistviewScheduled->setColumnWidth(6, 120);
+  m_qlistviewScheduled->setColumnWidth(0, m_qlistviewScheduled->width()-620);
 
   // call base class resizeEvent()
   kScheduledViewDecl::resizeEvent(e);
@@ -480,4 +481,38 @@ void KScheduledView::slotListItemExecuted(QListViewItem* item)
     KMessageBox::detailedSorry(this, i18n("Error executing item"), e->what());
     delete e;
   }  
+}
+
+void KScheduledView::slotAccountActivated(int id)
+{
+/*
+  QCStringList list;
+*/
+  m_kaccPopup->setItemChecked(id, ((m_kaccPopup->isItemChecked(id))?false:true));
+/*  
+  try
+  {
+    int accountCount=0;
+    MyMoneyFile* file = MyMoneyFile::instance();
+    MyMoneyAccount acc;
+    QCStringList::ConstIterator it_s;
+
+    acc = file->asset();
+    for(it_s = acc.accountList().begin(); it_s != acc.accountList().end(); ++it_s)
+    {
+      if (m_kaccPopup->isItemChecked(accountCount))
+      {
+        list.append(*it_s);
+      }
+      accountCount++;
+    }
+
+    m_calendar->setFilterAccounts(list);
+  }
+  catch (MyMoneyException *e)
+  {
+    KMessageBox::detailedError(this, i18n("Unable to filter account"), e->what());
+    delete e;
+  }
+*/
 }

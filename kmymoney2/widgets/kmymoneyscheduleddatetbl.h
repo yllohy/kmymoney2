@@ -50,6 +50,7 @@ public:
   void filterBills(bool enable);
   void filterDeposits(bool enable);
   void filterTransfers(bool enable);
+  void setFilterAccounts(const QCStringList& list) { m_filterAccounts = list; repaintContents(false); }
 
 signals:
   void hoverSchedules(QValueList<MyMoneySchedule>, QDate);
@@ -61,6 +62,7 @@ protected:
 
 private:
   bool m_filterBills, m_filterDeposits, m_filterTransfers;
+  QCStringList m_filterAccounts;
 };
 
 #endif

@@ -42,6 +42,7 @@ bool MyMoneySchedule::validate(bool id_check) const
    * m_startDate
    * m_paymentType
    * m_transaction
+   * m_accountId
   */
   if (  (id_check && !m_id.isEmpty()) ||
         m_occurence == OCCUR_ANY ||
@@ -99,7 +100,7 @@ QDate MyMoneySchedule::nextPayment(const QDate refDate) const
     paymentDate = m_startDate;
     
   if(m_willEnd && m_endDate < refDate
-  || m_startDate > refDate)
+  /*|| m_startDate > refDate*/)
     return QDate(1900,1,1);
       
   switch (m_occurence)

@@ -40,13 +40,15 @@
 #include "../mymoney/mymoneyaccount.h"
 #include "../widgets/kmymoneyscheduledcalendar.h"
 
+class KPopupMenu;
+
 /**
   * Contains all the scheduled transactions be they bills, deposits or transfers.
   * Encapsulates all the operations including adding, editing and deleting.
   * Used by the KMyMoneyView class to show the view.
   *
   * @author Michael Edwardes 2000-2002
-  * $Id: kscheduledview.h,v 1.11 2003/07/17 11:32:14 mte Exp $
+  * $Id: kscheduledview.h,v 1.12 2003/07/18 12:16:19 mte Exp $
   *
   * @short A class to encapsulate recurring transaction operations.
   */
@@ -89,7 +91,7 @@ protected:
     * It just updates the account list in the combo box.  (We dont need to
     * update anything else.
     */
-//  void update(const QCString& account);
+  void update(const QCString& account);
 
 protected slots:
   /**
@@ -137,6 +139,7 @@ protected slots:
 
   void slotListItemExecuted(QListViewItem*);
 
+  void slotAccountActivated(int);
 
 private:
   /// The account currently selected via the accounts view
@@ -160,6 +163,8 @@ private:
     * Loads the accounts into the combo box.
     */
 //  void loadAccounts(void);
+
+  KPopupMenu *m_kaccPopup;
 };
 
 #endif
