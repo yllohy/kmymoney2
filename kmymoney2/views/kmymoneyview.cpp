@@ -344,7 +344,13 @@ bool KMyMoneyView::readFile(QString filename)
 
   if(qfile.open(IO_ReadOnly)) {
     QDataStream s(&qfile);
-    binaryReader->readStream(s, kfile->storage());
+    try {
+      binaryReader->readStream(s, kfile->storage());
+    } catch (MyMoneyException *e) {
+      QString msg = e->what();
+      qDebug("%s", msg.latin1());
+      delete e;
+    }
     qfile.close();
   } else {
     KMessageBox::sorry(this, i18n("File not found!"));
@@ -578,6 +584,7 @@ void KMyMoneyView::newFile(void)
 {
   m_file->close();
   m_file->open();
+
 
 
 
@@ -1104,6 +1111,7 @@ bool KMyMoneyView::checkTransactionCredit(const MyMoneyTransaction *transaction,
     return true;
   else if (id==i18n("Cheque") && transaction->method()==MyMoneyTransaction::Cheque)
     return true;
+
   else if (id==i18n("Deposit") && transaction->method()==MyMoneyTransaction::Deposit)
     return true;
   else if (id==i18n("Transfer") && transaction->method()==MyMoneyTransaction::Transfer)
