@@ -1,3 +1,8 @@
+2003-11-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * added conversion to l10n free form for MyMoneyMoney objects
+  * removed KDE specific code from engine code
+  * added MyMoneySplit::ActionInterest
+
 2003-10-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * move resize-grip in find transaction dialog
   * fixed minor problems in transaction filter
