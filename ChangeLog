@@ -1,3 +1,11 @@
+2005-03-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Resolved doxygen warnings in kfindtransactiondlg.h
+  * Added missing include stoppers in kmymoneypricedlg.h
+  * Fixed duplicate #defines when building with --enable-final
+  * Revised install/uninstall instructions in icons subdirectories to
+    support $(DESTDIR) setting used in e.g. RPM builds
+  * Revised build system to support 'make distcheck'
+
 2005-03-22 Ace Jones <acejones@users.sourceforge.net>
   * Added "Are you sure you wish to cancel?" to import verify dialog.
 
