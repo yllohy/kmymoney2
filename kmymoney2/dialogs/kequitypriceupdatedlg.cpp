@@ -129,8 +129,10 @@ void KEquityPriceUpdateDlg::slotUpdateAllClicked()
   {
     m_pPriceUpdate = new MyMoneyOnlinePriceUpdate();
   }
-
-  QStringList list;
+  
+  m_pPriceUpdate->getWebServiceQuote(QString("RHAT"));
+  
+  /*QStringList list;
   QPtrList<QListViewItem> selectedItems = lvEquityList->selectedItems();
   for(QPtrList<QListViewItem>::ConstIterator it = selectedItems.begin(); it != selectedItems.end(); ++it)
   {
@@ -138,8 +140,11 @@ void KEquityPriceUpdateDlg::slotUpdateAllClicked()
     QListViewItem* item = (*it);
     list.push_back(item->text(0));
   }
-
+  
   int result = m_pPriceUpdate->getQuotes(list);
+
+
+  int result = m_pPriceUpdate->getQuotes(list);*/
 }
 
 void KEquityPriceUpdateDlg::slotConfigureClicked()
