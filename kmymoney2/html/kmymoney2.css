@@ -134,6 +134,24 @@ table.report td.left {
   text-align: left;
 }
 
+table.report tr#subtotal td {
+  border-bottom: 1px solid black;
+  font-weight: normal;
+}
+
+table.report tr#topparent td.left {
+  font-weight: bold;
+}
+
+table.report tr#solo td {
+  border-bottom: 1px solid black;
+  font-weight: normal;
+}
+
+table.report tr#solo td.left {
+  font-weight: bold;
+}
+
 table.report tr.sectionheader td {
   font-weight: bold;
   padding: 0.5em 0.5em 0 0.5em;

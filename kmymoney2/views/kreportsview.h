@@ -52,6 +52,7 @@ class KReportsView : public QWidget  {
 private:
   KHTMLPart *m_part;
   QVBoxLayout *m_qvboxlayoutPage;
+  bool m_boolShowSubAccounts;
     
 public:
   /**
@@ -92,6 +93,7 @@ public slots:
   void slotRefreshView(void);
   void slotPrintView(void);
   void slotCopyView(void);
+  void slotSaveView(void);
   void slotReloadView(void) { slotRefreshView(); };
 
 signals:
