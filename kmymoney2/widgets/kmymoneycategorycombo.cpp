@@ -29,10 +29,11 @@ bool kMyMoneyCategoryCombo::eventFilter( QObject *o , QEvent *e ){
 	if(e->type() == QEvent::KeyRelease)
 	{
 		QKeyEvent *k = (QKeyEvent *) e;
-    if((k->key() == Qt::Key_Return) ||
+    	if((k->key() == Qt::Key_Return) ||
        (k->key() == Qt::Key_Enter))
-    {
-    	emit signalEnter();
+    	{
+    		emit signalEnter();
+			emit signalNextTransaction();
 		}
 	}
 	return KComboBox::eventFilter(o,e);

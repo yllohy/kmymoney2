@@ -36,6 +36,8 @@ public:
 signals: // Signals
   /** No descriptions */
   void signalEnter();
+  /** No descriptions */
+  void signalNextTransaction();
 };
 
 #endif

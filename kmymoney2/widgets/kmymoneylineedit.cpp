@@ -33,6 +33,7 @@ bool kMyMoneyLineEdit::eventFilter(QObject *o , QEvent *e ){
        (k->key() == Qt::Key_Enter))
     {
     	emit signalEnter();
+		emit signalNextTransaction();
 		}
 	}
 	return KLineEdit::eventFilter(o,e);

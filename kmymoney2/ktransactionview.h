@@ -53,6 +53,10 @@ private:
   bool usedate;
   bool userow;
 	long lastcheck;
+	int m_currentcol;
+	int m_currentrow;
+    int m_currentbutton;
+    QPoint m_currentpos;
 
 
 	kMyMoneyDateInput*  m_date;
@@ -101,6 +105,9 @@ protected slots:
 
 signals:
  void transactionListChanged();
+public slots: // Public slots
+  /** No descriptions */
+  void slotNextTransaction();
 };
 
 #endif

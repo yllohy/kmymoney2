@@ -226,9 +226,13 @@ void KTransactionView::createInputWidgets()
 				  this, SLOT(enterClicked()));
 	connect(m_category,SIGNAL(signalEnter()),
 				  this, SLOT(enterClicked()));
+	connect(m_payment,SIGNAL(signalNextTransaction()),this,SLOT(slotNextTransaction()));
+	connect(m_withdrawal,SIGNAL(signalNextTransaction()),this,SLOT(slotNextTransaction()));
+	connect(m_category,SIGNAL(signalNextTransaction()),this,SLOT(slotNextTransaction()));
 	connect(m_cancel, SIGNAL(clicked()),this,SLOT(cancelClicked()));
 	connect(m_enter, SIGNAL(clicked()),this,SLOT(enterClicked()));
 	connect(m_delete, SIGNAL(clicked()),this,SLOT(deleteClicked()));
+
 }
 
 void KTransactionView::loadPayees()
@@ -266,12 +270,17 @@ void KTransactionView::loadPayees()
 
 }
 
-void KTransactionView::slotFocusChange(int row, int, int button, const QPoint& /*point*/)
+void KTransactionView::slotFocusChange(int row, int col, int button, const QPoint&  point)
 {
    if(m_date->isVisible())
 		return;
+	
 	int transrow = row / 2;
   int realrow = transrow * 2;
+	m_currentrow = realrow;
+	m_currentcol = col;
+	m_currentbutton = button;
+	m_currentpos = point;
   if ((transrow != transactionsTable->numRows()-1) && (transactionsTable->numRows()>=1)) {
 		if(button == 1) {
       if(m_transactions.count() > transrow)
@@ -1162,5 +1171,11 @@ MyMoneyAccount* KTransactionView::getAccount(){
   }
 
 	return account;
+
+}
+/** No descriptions */
+void KTransactionView::slotNextTransaction(){
+
+	slotFocusChange(m_currentrow + 2,m_currentcol,m_currentbutton,m_currentpos);
 
 }

@@ -32,6 +32,7 @@ KBanksView::KBanksView(QWidget *parent, const char *name)
 	bankListView->setAllColumnsShowFocus(true);
 	bankListView->addColumn(i18n("Banks"));
 	bankListView->setMultiSelection(false);
+	bankListView->setColumnWidth(0,200);
 
   KMyMoneySettings *p_settings = KMyMoneySettings::singleton();
   if (p_settings)
