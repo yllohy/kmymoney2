@@ -25,10 +25,10 @@
       <configargs>\s--build=i386-linux --host=i386-linux --target=i386-linux\s</configargs>
     </configure>
     <make>
-      <abortonerror>false</abortonerror>
+      <abortonerror>true</abortonerror>
       <numberofjobs>1</numberofjobs>
       <dontact>false</dontact>
-      <makebin/>
+      <makebin></makebin>
       <envvars>
         <envvar value="1" name="WANT_AUTOCONF_2_5" />
         <envvar value="1" name="WANT_AUTOMAKE_1_6" />
@@ -42,9 +42,9 @@
       <directoryradio>executable</directoryradio>
       <customdirectory>/</customdirectory>
       <mainprogram>kmymoney2/kmymoney2</mainprogram>
-      <programargs/>
+      <programargs></programargs>
       <terminal>false</terminal>
-      <autocompile>true</autocompile>
+      <autocompile>false</autocompile>
       <envvars/>
     </run>
   </kdevautoproject>
