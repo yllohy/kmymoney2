@@ -136,9 +136,16 @@ void KMyMoney2App::initActions()
 */
   viewToolBar = KStdAction::showToolbar(this, SLOT(slotViewToolBar()), actionCollection());
   viewStatusBar = KStdAction::showStatusbar(this, SLOT(slotViewStatusBar()), actionCollection());
-  viewTransactionForm = new KToggleAction(i18n("Show Transaction Form"), KShortcut("Ctrl+T"), actionCollection(), "show_transaction_form");
-  viewTransactionForm->setChecked(true);
-  connect(viewTransactionForm, SIGNAL(toggled(bool)), myMoneyView, SLOT(slotShowTransactionForm(bool)));
+
+  // Setup transaction detail switch
+  viewTransactionForm = new KToggleAction(i18n("Show Transaction Detail"), KShortcut("Ctrl+T"), actionCollection(), "show_transaction_form");
+  config->setGroup("List Options");
+  if(config->readBoolEntry("ShowRegisterDetailed", true) == true)
+    viewTransactionForm->setChecked(true);
+  else
+    viewTransactionForm->setChecked(false);
+
+  connect(viewTransactionForm, SIGNAL(toggled(bool)), myMoneyView, SLOT(slotShowTransactionDetail(bool)));
 
   // Additions to the file menu
   fileViewInfo = new KAction(i18n("Dump Memory..."), "view_info", 0, this, SLOT(slotFileFileInfo()), actionCollection(), "file_view_info");
@@ -301,6 +308,7 @@ void KMyMoney2App::slotFileNew()
 
   if (myMoneyView->fileOpen()) {
 #if QT_VERSION > 300
+
     int answer = KMessageBox::warningContinueCancel(this, i18n("KMyMoney file already open.  Close it ?"), "Close File"/*, "Close", "dont_ask_again"*/);
 #else
     int answer = KMessageBox::warningContinueCancel(this, i18n("KMyMoney file already open.  Close it ?"), "Close File", "Close", "dont_ask_again");
@@ -476,6 +484,7 @@ void KMyMoney2App::slotFileQuit()
 {
   slotStatusMsg(i18n("Exiting..."));
 
+
   KMainWindow* w = 0;
 
   if(memberList) {
@@ -494,6 +503,7 @@ void KMyMoney2App::slotFileQuit()
 
 //  slotStatusMsg(i18n("Ready."));
 }
+
 
 void KMyMoney2App::slotEditCut()
 {
@@ -789,6 +799,7 @@ void KMyMoney2App::slotFileBackup()
     if (f.exists()) {
       int answer = KMessageBox::warningContinueCancel(this, i18n("Backup file for today exists on that device.  Replace ?"), i18n("Backup"), i18n("&Replace"));
       if (answer==KMessageBox::Cancel)
+
         return;
     }
 
@@ -875,6 +886,7 @@ void KMyMoney2App::slotProcessExited(){
 				unmountbackup = false;
 			}
 			else
+
 			{
     			QMessageBox::information(this, i18n("Backup"), i18n("Error unmounting device"));
 				mountbackup = false;
