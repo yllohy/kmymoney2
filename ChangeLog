@@ -1,3 +1,6 @@
+2002-03-10 Michael Edwardes <mte@users.sourceforge.net>
+  * Fix for autoconf 2.5 which KDE 3 now requires.
+
 2002-03-07 Michael Edwardes <mte@users.sourceforge.net>
   * Commited Javi C's new icons.  <javi_c@users.sourceforge.net>
 
