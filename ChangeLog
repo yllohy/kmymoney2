@@ -1,3 +1,16 @@
+2002-11-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed bug in MyMoneyMoney locale handling
+  * Added testcase for that
+  * Removed some more references to the old transaction view
+  * Added a summary line underneath the register in the ledger view
+  * Added the savings view
+  * Added warning when trying to edit a reconciled transaction
+  * Frozen transactions cannot be edited anymore
+  * Cleaned up code of checkings view
+  * Added MyMoneyTransaction::setEntryDate (no testcase yet)
+  * Added new binary writer/reader pair (alpha state, you have been warned)
+  * Removed unnecessary methods from MyMoneyStorageXML
+
 2002-11-08 Kevin Tambascio <ktambascio@yahoo.com>
   * Made changes in MyMoneyStorageXML to begin the support of reading
     XML-based files.  There is no real functionality yet, I just wanted to
