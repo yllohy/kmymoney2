@@ -23,15 +23,13 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
-// #include <qvariant.h>
+#include <qapplication.h>
 #include <qframe.h>
 #include <qtabbar.h>
 #include <qtable.h>
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
-// #include <qimage.h>
-// #include <qpixmap.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -124,7 +122,19 @@ bool kMyMoneyTransactionFormTable::focusNextPrevChild(bool next)
   return m_view->focusNextPrevChild(next);
 }
 
+// needed to duplicate this here, as the QTable::tableSize method is private :-(
+QSize kMyMoneyTransactionFormTable::tableSize(void) const
+{
+  return QSize(columnPos(numCols()-1) + columnWidth(numCols()-1),
+               rowPos(numRows()-1) + rowHeight(numRows()-1));
+}
 
+QSize kMyMoneyTransactionFormTable::sizeHint(void) const
+{
+  // I've taken this from qtable.cpp, QTable::sizeHint()
+  int vmargin = QApplication::reverseLayout() ? rightMargin() : leftMargin();
+  return QSize(tableSize().width() + vmargin + 5, tableSize().height() + topMargin() + 5);
+}
 
 /* -------------------------------------------------------------------------------*/
 /*                         kMyMoneyTransactionFormTableItem                       */
@@ -257,6 +267,9 @@ kMyMoneyTransactionForm::kMyMoneyTransactionForm( KLedgerView* parent,  const ch
   formTable->horizontalHeader()->hide();
   formTable->setLeftMargin(0);
   formTable->setTopMargin(0);
+  
+  setMinimumSize(formTable->sizeHint().width(),
+                 formTable->sizeHint().height()+buttonMore->minimumHeight()+m_tabBar->minimumHeight());
 
   formFrameLayout->addWidget( formTable, 1, 0 );
 

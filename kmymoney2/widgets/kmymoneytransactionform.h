@@ -66,16 +66,19 @@ public:
 
   bool eventFilter( QObject * o, QEvent * );
 
+  QSize sizeHint() const;
+  
 public slots:
   virtual void setNumCols(int c);
   virtual void setNumRows(int r);
-
+  
 protected:
   bool focusNextPrevChild(bool next);
 
 private:
   void resizeEditable(int r, int c);
-
+  QSize tableSize(void) const;
+  
 private:
   QBitArray m_editable;
   KLedgerView*  m_view;

@@ -37,6 +37,8 @@ kMyMoneyRegister::kMyMoneyRegister(int maxRpt, QWidget *parent, const char *name
     m_ledgerLens(true),
     m_maxRpt(maxRpt)
 {
+  m_cellFont = QFont("helvetica", 10);
+  setFont(m_cellFont);
   readConfig();
   m_currentTransactionIndex = 0;
   m_inlineEditMode = false;
@@ -55,7 +57,7 @@ void kMyMoneyRegister::setNumRows(int /* r */)
 
 void kMyMoneyRegister::setTransactionCount(const int r, const bool setTransaction)
 {
-  //setUpdatesEnabled( false );
+  // setUpdatesEnabled( false );
   
   int irows = r * m_rpt;
 
@@ -81,6 +83,8 @@ void kMyMoneyRegister::setTransactionCount(const int r, const bool setTransactio
   
   // add or remove scrollbars as required
   updateScrollBars();
+
+  // setUpdatesEnabled( true );
 }
 
 void kMyMoneyRegister::paintFocus(QPainter* /* p */, const QRect& /* cr */)
@@ -92,7 +96,7 @@ void kMyMoneyRegister::readConfig(void)
   KConfig *config = KGlobal::config();
   config->setGroup("List Options");
 
-  m_cellFont = QFont("helvetica", 10);
+  QFont cellFont = QFont("helvetica", 10);
   m_color = Qt::white;
   m_bgColor = Qt::gray;
   m_gridColor = Qt::black;
@@ -102,15 +106,17 @@ void kMyMoneyRegister::readConfig(void)
   m_color = config->readColorEntry("listColor", &m_color);
   m_gridColor = config->readColorEntry("listGridColor", &m_gridColor);
 
-  m_cellFont = config->readFontEntry("listCellFont", &m_cellFont);
-  setFont(m_cellFont);
+  cellFont = config->readFontEntry("listCellFont", &cellFont);
   m_headerFont = config->readFontEntry("listHeaderFont", &m_headerFont);
   updateHeaders();
 
-  // force loading of new font into all cells
-  int rows = numRows();
-  QTable::setNumRows(0);
-  QTable::setNumRows(rows);
+  if(cellFont != m_cellFont) {
+    setFont(m_cellFont);
+    // force loading of new font into all cells
+    int rows = numRows();
+    QTable::setNumRows(0);
+    QTable::setNumRows(rows);
+  }
 
   // m_rpt = config->readEntry("RowCount", "1").toInt();
   config->deleteEntry("RowCount");
