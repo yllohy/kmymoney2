@@ -1,3 +1,6 @@
+2004-03-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added investment view and started integration of it
+
 2004-02-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Revised payees view
   * Added validator function for kMyMoneyEdit that respects monetary
