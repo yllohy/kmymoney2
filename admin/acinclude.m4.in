@@ -1834,6 +1834,8 @@ if test $kde_qtver = 3; then
    AC_SUBST(LIB_SMB)
    LIB_KAB='-lkab'
    AC_SUBST(LIB_KAB)
+   LIB_KABC='-lkabc'
+   AC_SUBST(LIB_KABC)
    LIB_KHTML='-lkhtml'
    AC_SUBST(LIB_KHTML)
    LIB_KSPELL='-lkspell'
