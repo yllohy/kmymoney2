@@ -280,7 +280,6 @@ void QueryTable::constructTransactionTable(void)
     TableRow qtransactionrow;
 
     qtransactionrow["id"] = (*it_transaction).id();
-    qtransactionrow["memo"] = (*it_transaction).memo();
     qtransactionrow["entrydate"] = (*it_transaction).entryDate().toString(Qt::ISODate);
     qtransactionrow["commodity"] = (*it_transaction).commodity();
 
@@ -361,6 +360,7 @@ void QueryTable::constructTransactionTable(void)
         qaccountrow["reconcileflag"] = kReconcileTextChar[(*it_split).reconcileFlag()];
         qaccountrow["number"] = (*it_split).number();
         qaccountrow["action"] = (*it_split).action();
+        qaccountrow["memo"] = (*it_split).memo();
         
         // handle investments
         if ( file->account((*it_split).accountId()).accountType() == MyMoneyAccount::Stock )
@@ -403,7 +403,6 @@ void QueryTable::constructTransactionTable(void)
             // to the base currency if needed
             //qsplitrow["value"] = ((-(*it_split2).value())*currencyfactor).formatMoney();
             qsplitrow["value"] = ((-(*it_split2).value())*currencyfactor).toString();
-            qsplitrow["memo"] = (*it_split2).memo();
             qsplitrow["id"] = (*it_split2).id();
             
             // handle sub-categories.  the 'category' field contains the

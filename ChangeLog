@@ -1,8 +1,9 @@
 2004-11-27 Ace Jones <acejones@users.sourceforge.net>
   * More test cases for transaction reports
   * Added error-checking in OFX import/download  
-  * Fixed bug where grand total was getting too large when multiple
-    levels of subtotalling were in effect.
+  * Fixed bug in transaction reports where grand total was getting too large 
+    when multiple levels of subtotalling were in effect
+  * Better handling of the memo field on transaction reports    
     
 2004-11-25 Ace Jones <acejones@users.sourceforge.net>
   * Added "Anonymous" as a file saving type, which will save off a
