@@ -1180,6 +1180,11 @@ void MyMoneySeqAccessMgr::loadEquityId(const unsigned long id)
   m_nextEquityID = id;
 }
 
+void MyMoneySeqAccessMgr::loadReportId(const unsigned long id)
+{
+  m_nextReportID = id;
+}
+
 const QString MyMoneySeqAccessMgr::value(const QCString& key) const
 {
   return MyMoneyKeyValueContainer::value(key);

@@ -1135,7 +1135,13 @@ void MyMoneyStorageXML::readReports(QDomElement& reports)
     {
       MyMoneyReport report;
       if ( report.read(child.toElement() ) )
+      {
         m_storage->loadReport(report);
+        
+        unsigned long id = extractId(report.id());
+        if(id > m_storage->reportId())
+          m_storage->loadReportId(id);
+      }
     }
     child = child.nextSibling();
   }

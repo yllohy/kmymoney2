@@ -102,6 +102,7 @@ public slots:
   void slotSaveView(void);
   void slotReloadView(void) { slotRefreshView(); };
   void slotConfigure(void);
+  void slotDuplicate(void);
 
 signals:
   /**

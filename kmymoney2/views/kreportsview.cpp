@@ -129,7 +129,7 @@ void KReportsView::slotRefreshView(void)
     m_tabLayout.push_back( new QVBoxLayout( m_tab.back(), 11, 6, "tabLayout") );
     m_part.push_back(new KHTMLPart( m_tab.back(), "htmlpart_km2") );
     m_tabLayout.back()->addWidget( m_part.back()->view() );
-    m_reportTabWidget->insertTab( m_tab.back(), "Unnamed Tab" );
+    m_reportTabWidget->insertTab( m_tab.back(), "" );
     m_reportTabWidget->setTabEnabled( m_tab.back(),true );
 
     connect( m_part.back()->browserExtension(), SIGNAL(openURLRequest(const KURL&, const KParts::URLArgs&)),
@@ -151,6 +151,8 @@ void KReportsView::slotRefreshView(void)
   QString links;
 
   links += linkfull(VIEW_REPORTS, QString("?command=configure&target=1"),i18n("Configure This Report"));
+  links += "&nbsp;|&nbsp;";
+  links += linkfull(VIEW_REPORTS, QString("?command=duplicate&target=1"),i18n("Create New Report"));
   links += "&nbsp;|&nbsp;";
   links += linkfull(VIEW_REPORTS, QString("?command=copy&target=1"),i18n("Copy to Clipboard"));
   links += "&nbsp;|&nbsp;";
@@ -227,6 +229,25 @@ void KReportsView::slotConfigure(void)
   }
 }
 
+void KReportsView::slotDuplicate(void)
+{
+  int page = m_reportTabWidget->currentPageIndex();
+  
+  MyMoneyReport dupe = MyMoneyFile::instance()->report(m_reportid[page]);
+  dupe.setName( QString("Copy of %1").arg(dupe.name()) );
+  dupe.setId(QCString());
+  MyMoneyFile::instance()->addReport(dupe);
+  
+  kdDebug(2) << "KReportsView::slotDuplicate(): Added report " << dupe.id() << endl;
+  
+  KReportConfigurationFilterDlg dlg(dupe);
+  if (dlg.exec())
+    MyMoneyFile::instance()->modifyReport(dlg.getConfig());
+  
+  slotRefreshView();
+  m_reportTabWidget->setCurrentPage(MyMoneyFile::instance()->countReports()-1);
+}
+
 const QString KReportsView::linkfull(const QString& view, const QString& query, const QString& label)
 {
   return QString("<a href=\"/") + view + query + "\">" + label + "</a>";
@@ -250,6 +271,8 @@ void KReportsView::slotOpenURL(const KURL &url, const KParts::URLArgs& /* args *
       slotSaveView();
     else if ( command == "configure" )
       slotConfigure();
+    else if ( command == "duplicate" )
+      slotDuplicate();
     else
       qDebug("Unknown command '%s' in KReportsView::slotOpenURL()", static_cast<const char*>(command));
 

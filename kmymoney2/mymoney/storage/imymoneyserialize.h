@@ -294,6 +294,7 @@ public:
   virtual const unsigned long institutionId(void) = 0;
   virtual const unsigned long scheduleId(void) = 0;
   virtual const unsigned long equityId(void) = 0;
+  virtual const unsigned long reportId(void) = 0;
 
   virtual void loadAccountId(const unsigned long id) = 0;
   virtual void loadTransactionId(const unsigned long id) = 0;
@@ -301,6 +302,7 @@ public:
   virtual void loadInstitutionId(const unsigned long id) = 0;
   virtual void loadScheduleId(const unsigned long id) = 0;
   virtual void loadEquityId(const unsigned long id) = 0;
+  virtual void loadReportId(const unsigned long id) = 0;
 
   /**
     * This method is used to retrieve the whole set of key/value pairs
