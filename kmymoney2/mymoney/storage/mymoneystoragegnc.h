@@ -580,7 +580,7 @@ private:
 #ifdef _GNCFILEANON
   int lastType; // 0 = start element, 1 = data, 2 = end element
   int indentCount;
-#endif // GNCFILENON
+#endif // _GNCFILEANON
 };
 
 /**
@@ -618,22 +618,21 @@ private:
 class MyMoneyStorageGNC : public IMyMoneyStorageFormat {
 #else
 class MyMoneyStorageGNC {
-#endif // GNCFIELANON
+#endif // _GNCFILEANON
 public:
   MyMoneyStorageGNC();
   virtual ~MyMoneyStorageGNC();
   /**
-    * A parameter is used to determine the direction.
+    * Import a GnuCash XML file
     *
-    * @param pDoc: pointer to the entire DOM document
-    * @param userInfo: DOM Element to write the user information to.  
+    * @param pDevice : pointer to GnuCash file
+    * @param storage : pointer to MyMoneySerialize storage 
     *
     * @return void
     *
-    * @see
     */
 #ifndef _GNCFILEANON
-  void readFile (QIODevice *, IMyMoneySerialize *); // main entry point, IODevice is gnucash file
+  void readFile (QIODevice* pDevice, IMyMoneySerialize* storage); // main entry point, IODevice is gnucash file
   void writeFile (QIODevice*, IMyMoneySerialize*) { return ;}; // dummy entry needed by kmymoneywiew. we will not be writing
 #else
   void readFile (QString, QString);

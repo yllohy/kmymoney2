@@ -996,8 +996,9 @@ void MyMoneyStorageGNC::convertCommodity (const GncCommodity *gcm) {
   if (!gcm->isCurrency()) { // currencies should not be present here but...
     equ.setName (gcm->name());
     equ.setTradingSymbol (gcm->id());
-    equ.setTradingMarket (gcm->space());
-    equ.setTradingCurrency (""); // not available, will set from pricedb or transaction
+    equ.setTradingMarket (gcm->space()); // the 'space' may be market or quote source, dep on what the user did
+    equ.setValue ("kmm-online-source", gcm->space()); // we don't know, so use it as both
+    equ.setTradingCurrency (""); // not available here, will set from pricedb or transaction
     equ.setSecurityType (MyMoneySecurity::SECURITY_STOCK); // default to it being a stock
     //tell the storage objects we have a new equity object.
     m_storage->addSecurity(equ);
