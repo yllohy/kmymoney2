@@ -200,10 +200,10 @@ void KHomeView::showPayments(void)
     qBubbleSort(overdues);
     QValueList<MyMoneySchedule>::Iterator it;
     QValueList<MyMoneySchedule>::Iterator it_f;
-    tmp = "<div class=\"warning\">" + i18n("Overdue payments") + "</div>\n";
-    m_part->write(tmp);
 
-    m_part->write("<table width=\"75%\" cellspacing=\"0\" cellpadding=\"1\">");
+    m_part->write("<table width=\"75%\" cellspacing=\"0\" cellpadding=\"2\">");
+    tmp = "<tr><th class=\"warning\" colspan=\"3\">" + i18n("Overdue payments") + "</th></tr>\n";
+    m_part->write(tmp);
     for(it = overdues.begin(); it != overdues.end(); ++it) {
       m_part->write(QString("<tr class=\"row-%1\">").arg(i++ & 0x01 ? "even" : "odd"));
       showPaymentEntry(*it);
@@ -240,9 +240,9 @@ void KHomeView::showPayments(void)
     if (todays.count() > 0)
     {
       m_part->write("<div class=\"gap\">&nbsp;</div>\n");
-      tmp = "<div class=\"item\">" + i18n("Todays payments") + "</div>\n";
+      m_part->write("<table width=\"75%\" cellspacing=\"0\" cellpadding=\"2\">");
+      tmp = "<tr class=\"item\"><th class=\"left\" colspan=\"3\">" + i18n("Todays payments") + "</th></tr>\n";
       m_part->write(tmp);
-      m_part->write("<table width=\"75%\" cellspacing=\"0\" cellpadding=\"1\">");
 
       for(t_it = todays.begin(); t_it != todays.end(); ++t_it) {
         m_part->write(QString("<tr class=\"row-%1\">").arg(i++ & 0x01 ? "even" : "odd"));
@@ -257,10 +257,10 @@ void KHomeView::showPayments(void)
       m_part->write("<div class=\"gap\">&nbsp;</div>\n");
 
       QValueList<MyMoneySchedule>::Iterator it;
-      tmp = "<div class=\"item\">" + i18n("Future payments") + "</div>\n";
-      m_part->write(tmp);
 
-      m_part->write("<table width=\"75%\" cellspacing=\"0\" cellpadding=\"1\">");
+      m_part->write("<table width=\"75%\" cellspacing=\"0\" cellpadding=\"2\">");
+      tmp = "<tr class=\"item\"><th class=\"left\" colspan=\"3\">" + i18n("Future payments") + "</th></tr>\n";
+      m_part->write(tmp);
       for(it = schedule.begin(); it != schedule.end(); ++it) {
         m_part->write(QString("<tr class=\"row-%1\">").arg(i++ & 0x01 ? "even" : "odd"));
         showPaymentEntry(*it);
@@ -370,12 +370,12 @@ void KHomeView::showAccounts(KHomeView::paymentTypeE type, const QString& header
           "</div>\n<div class=\"gap\">&nbsp;</div>\n";
 
     m_part->write(tmp);
-    m_part->write("<table width=\"75%\" cellspacing=\"0\" cellpadding=\"2\" width=\"60%\">");
-    m_part->write("<tr class=\"item\"><td width=\"70%\">");
+    m_part->write("<table width=\"75%\" cellspacing=\"0\" cellpadding=\"2\">");
+    m_part->write("<tr class=\"item\"><th class=\"left\" width=\"70%\">");
     m_part->write(i18n("Account"));
-    m_part->write("</td><td width=\"30%\" align=\"right\">");
+    m_part->write("</th><th width=\"30%\" class=\"right\">");
     m_part->write(i18n("Balance"));
-    m_part->write("</td></tr>");
+    m_part->write("</th></tr>");
 
     for(it = accounts.begin(); it != accounts.end(); ++it) {
       m_part->write(QString("<tr class=\"row-%1\">").arg(i++ & 0x01 ? "even" : "odd"));

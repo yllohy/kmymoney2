@@ -65,6 +65,7 @@ h2.report {
 }
 
 .item {
+  font-size: 11px;
   background-color: white;
   color: black;
   padding-top: 2px;
@@ -80,6 +81,7 @@ h2.report {
   color: red;
   font-weight: bold;
   padding-bottom: 2px;
+  text-align: left;
 }
 
 h2.highlighted {
@@ -105,6 +107,14 @@ font.highlighted {
 th.highlighted {
   background-color: #32A49E;
   color: #547098;
+}
+
+th.left {
+  text-align: left;
+}
+
+th.right {
+  text-align: right;
 }
 
 body  {
@@ -137,6 +147,20 @@ table.report td {
 
 table.report td.left {
   text-align: left;
+}
+
+table.report td.left0 {
+  text-align: left;
+}
+
+table.report td.left1 {
+  text-align: left;
+  text-indent: 1.0em;
+}
+
+table.report td.left2 {
+  text-align: left;
+  text-indent: 2.0em;
 }
 
 table.report tr#subtotal td {
