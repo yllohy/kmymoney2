@@ -53,7 +53,7 @@
   * @see KDialogBase
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: ksettingsdlg.h,v 1.5 2002/07/08 11:12:53 ipwizard Exp $
+  * $Id: ksettingsdlg.h,v 1.6 2002/11/01 19:24:19 ipwizard Exp $
   *
   * @short A class to manipulate the settings needed for running KMyMoney2
 **/
@@ -85,6 +85,12 @@ private:
   /** Show text in register ? */
   QCheckBox *m_qcheckboxTextPrompt;
 
+  /** Show lens over a transaction in ledger ? */
+  QCheckBox *m_qcheckboxLedgerLens;
+
+  /** Show transaction form */
+  QCheckBox *m_qcheckboxTransactionForm;
+
   /** colour options */
   QRadioButton *m_qradiobuttonPerTransaction;
   QRadioButton *m_qradiobuttonOtherRow;
@@ -97,6 +103,7 @@ private:
 
   QRadioButton *m_qradiobuttonAccountDialog;
   QRadioButton *m_qradiobuttonAccountWizard;
+
 
   /** Set page general */
   void setPageGeneral();
@@ -127,6 +134,8 @@ private:
   QDate m_qdateTempStart;
   bool m_bTempNormalView;
   bool m_bTempAccountWizard;
+  bool m_bTempLedgerLens;
+  bool m_bTempTransactionForm;
 
 private slots:
   /** Called when OK pressed */

@@ -104,7 +104,7 @@ void KSettingsDlg::setPageAccountsView()
 {
   // Create the main frame to hold the widgets
   QVBox *qvboxMainFrame = addVBoxPage( i18n("Accounts View"), i18n("Accounts view settings"),
-    DesktopIcon("accounts_view"));
+    DesktopIcon("kmy"));
 
   // Create a group box to hold the available options
   QButtonGroup *qbuttongroup = new QButtonGroup(qvboxMainFrame, "GroupBox1");
@@ -159,7 +159,8 @@ void KSettingsDlg::setPageList()
 {
   // Create the page.
   QVBox *qvboxMainFrame = addVBoxPage( i18n("Register"), i18n("Register settings"),
-    locate("appdata", "pics/setting_list.png"));
+    DesktopIcon("ledger"));
+//    locate("appdata", "pics/setting_list.png"));
 
   // Create the tab widget
   QTabWidget *qtabwidget = new QTabWidget(qvboxMainFrame, "TabWidget2");
@@ -197,6 +198,14 @@ void KSettingsDlg::setPageList()
   // and another widget
   m_qcheckboxTextPrompt = new QCheckBox(i18n("Show a textual prompt in the register."), qwidgetPage);
   qvboxlayoutPage->addWidget(m_qcheckboxTextPrompt);
+
+  // and one more
+  m_qcheckboxLedgerLens = new QCheckBox(i18n("Use the ledger lens"), qwidgetPage);
+  qvboxlayoutPage->addWidget(m_qcheckboxLedgerLens);
+
+  // Setting for transaction entry form
+  m_qcheckboxTransactionForm = new QCheckBox(i18n("Show transaction form"), qwidgetPage);
+  qvboxlayoutPage->addWidget(m_qcheckboxTransactionForm);
 
   // Create a group to hold two radio buttons
   QButtonGroup *qbuttongroup = new QButtonGroup(qwidgetPage, "ButtonGroup1");
@@ -340,6 +349,12 @@ void KSettingsDlg::configRead()
   m_qradiobuttonAccountWizard->setChecked(m_bTempAccountWizard);
   m_qradiobuttonAccountDialog->setChecked(!m_bTempAccountWizard);
 
+  m_bTempLedgerLens = kconfig->readBoolEntry("LedgerLens", true);
+  m_qcheckboxLedgerLens->setChecked(m_bTempLedgerLens);
+
+  m_bTempTransactionForm = kconfig->readBoolEntry("TransactionForm", true);
+  m_qcheckboxTransactionForm->setChecked(m_bTempTransactionForm);
+
   kconfig->setGroup("List Options");
 
   QFont qfontDefault = QFont("helvetica", 12);
@@ -412,7 +427,8 @@ void KSettingsDlg::configWrite()
   kconfig->setGroup("General Options");
   kconfig->writeEntry("StartDialog", m_qradiobuttonStartPrompt->isChecked());
   kconfig->writeEntry("NewAccountWizard", m_qradiobuttonAccountWizard->isChecked());
-
+  kconfig->writeEntry("LedgerLens", m_qcheckboxLedgerLens->isChecked());
+  kconfig->writeEntry("TransactionForm", m_qcheckboxTransactionForm->isChecked());
   kconfig->sync();
 }
 
@@ -470,6 +486,8 @@ void KSettingsDlg::slotCancel()
   kconfig->setGroup("General Options");
   kconfig->writeEntry("StartDialog", m_bTempStartPrompt);
   kconfig->writeEntry("NewAccountWizard", m_bTempAccountWizard);
+  kconfig->writeEntry("LedgerLens", m_bTempLedgerLens);
+  kconfig->writeEntry("TransactionForm", m_bTempTransactionForm);
 
   kconfig->sync();
 
@@ -501,4 +519,6 @@ void KSettingsDlg::slotUser1()
   m_qradiobuttonAccountView->setChecked(!m_bTempNormalView);
   m_qradiobuttonAccountWizard->setChecked(m_bTempAccountWizard);
   m_qradiobuttonAccountDialog->setChecked(!m_bTempAccountWizard);
+  m_qcheckboxLedgerLens->setChecked(m_bTempLedgerLens);
+  m_qcheckboxTransactionForm->setChecked(m_bTempTransactionForm);
 }
