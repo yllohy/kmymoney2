@@ -38,6 +38,8 @@
 #include "config.h"
 #endif
 
+#define CATEGORY_SEPERATOR ":"
+
 // include the following line to get a 'cout' for debug purposes
 // #include <iostream>
 MyMoneyFile* MyMoneyFile::_instance = 0;
@@ -393,7 +395,7 @@ void MyMoneyFile::addTransaction(MyMoneyTransaction& transaction)
   if(transaction.id() != ""
   || transaction.file() != 0
   || !transaction.postDate().isValid())
-    throw new MYMONEYEXCEPTION("invalid transaction to be added");
+    throw new MYMONEYEXCEPTION("Invalid transaction to be added");
 
   // now check the splits
   QValueList<MyMoneySplit>::ConstIterator it_s;
@@ -438,6 +440,13 @@ const MyMoneyPayee MyMoneyFile::payee(const QCString& id) const
   checkStorage();
 
   return m_storage->payee(id);
+}
+
+const MyMoneyPayee MyMoneyFile::payeeByName(const QString& name) const
+{
+  checkStorage();
+
+  return m_storage->payeeByName(name);
 }
 
 void MyMoneyFile::modifyPayee(const MyMoneyPayee& payee) const
@@ -646,10 +655,58 @@ const QString MyMoneyFile::accountToCategory(const QCString& accountId) const
   acc = account(accountId);
   do {
     if(!rc.isEmpty())
-      rc = QString(":") + rc;
+      rc = QString(CATEGORY_SEPERATOR) + rc;
     rc = acc.name() + rc;
     acc = account(acc.parentAccountId());
   } while(!isStandardAccount(acc.id()));
 
   return rc;
+}
+
+const QCString MyMoneyFile::categoryToAccount(const QString& category) const
+{
+  QCString id;
+
+  // search the category in the expense accounts and if it is not found, try
+  // to locate it in the income accounts
+  id = locateSubAccount(MyMoneyFile::instance()->expense(), category);
+  if(id == "")
+    id = locateSubAccount(MyMoneyFile::instance()->income(), category);
+
+  return id;
+}
+
+const QCString MyMoneyFile::nameToAccount(const QString& name) const
+{
+  QCString id;
+
+  // search the category in the asset accounts and if it is not found, try
+  // to locate it in the liability accounts
+  id = locateSubAccount(MyMoneyFile::instance()->asset(), name);
+  if(id == "")
+    id = locateSubAccount(MyMoneyFile::instance()->liability(), name);
+
+  return id;
+}
+
+const QCString MyMoneyFile::locateSubAccount(const MyMoneyAccount& base, const QString& category) const
+{
+  MyMoneyAccount nextBase;
+  QString level, remainder;
+  level = category.section(CATEGORY_SEPERATOR, 0, 0);
+  remainder = category.section(CATEGORY_SEPERATOR, 1);
+
+  QCStringList list = base.accountList();
+  QCStringList::ConstIterator it_a;
+
+  for(it_a = list.begin(); it_a != list.end(); ++it_a) {
+    nextBase = account(*it_a);
+    if(nextBase.name() == level) {
+      if(remainder == "") {
+        return nextBase.id();
+      }
+      return locateSubAccount(nextBase, remainder);
+    }
+  }
+  return "";
 }

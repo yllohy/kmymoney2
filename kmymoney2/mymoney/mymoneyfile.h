@@ -523,13 +523,39 @@ public:
     * This method is used to convert an account id to a string representation
     * of the names which can be used as a category description. If the account
     * is part of a hierarchy, the category name will be the concatenation of
-    * the single account names seperated by colons.
+    * the single account names seperated by MyMoneyAccount::AccountSeperator.
     *
     * @param id const QCString reference of the account's id
     *
     * @return QString of the constructed name.
     */
   const QString accountToCategory(const QCString& accountId) const;
+
+  /**
+    * This method is used to convert a string representing a category to
+    * an account id. A category can be the concatenation of multiple accounts
+    * representing a hierarchy of accounts. They have to be seperated by
+    * MyMoneyAccount::AccountSeperator.
+    *
+    * @param category const reference to QString containing the category
+    *
+    * @return QCString of the corresponding account. If account was not found
+    *         the return value will be an empty string.
+    */
+  const QCString categoryToAccount(const QString& category) const;
+
+  /**
+    * This method is used to convert a string representing an asset or
+    * liability account to an account id. An account name can be the
+    * concatenation of multiple accounts representing a hierarchy of
+    * accounts. They have to be seperated by MyMoneyAccount::AccountSeperator.
+    *
+    * @param category const reference to QString containing the account name
+    *
+    * @return QCString of the corresponding account. If account was not found
+    *         the return value will be an empty string.
+    */
+  const QCString nameToAccount(const QString& name) const;
 
   /**
     * This method is used to attach an observer to a subject
@@ -584,6 +610,17 @@ public:
   const MyMoneyPayee payee(const QCString& id) const;
 
   /**
+    * This method is used to retrieve the id to a corresponding
+    * name of a payee/receiver.
+    * An exception will be thrown upon error conditions.
+    *
+    * @param payee QString reference to name of payee
+    *
+    * @return MyMoneyPayee object of payee
+    */
+  const MyMoneyPayee payeeByName(const QString& payee) const;
+
+  /**
     * This method is used to modify an existing payee
     *
     * An exception will be thrown upon error conditions
@@ -616,6 +653,10 @@ protected:
     * This is the constructor for a new empty file description
     */
   MyMoneyFile();
+
+private:
+  const QCString locateSubAccount(const MyMoneyAccount& base, const QString& category) const;
+
 
 private:
   /**

@@ -18,7 +18,7 @@
 #define __MYMONEYFILETEST_H__
 
 #include <cppunit/extensions/HelperMacros.h>
-
+#include "autotest.h"
 
 #define private public
 #define protected public
@@ -70,6 +70,7 @@ class MyMoneyFileTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST(testAddTransactionStd);
 	CPPUNIT_TEST(testAttachStorage);
 	CPPUNIT_TEST(testAccount2Category);
+	CPPUNIT_TEST(testCategory2Account);
 #if 0
 	CPPUNIT_TEST(testMoveSplits);
 #endif
@@ -113,6 +114,7 @@ public:
 	void testAddTransactionStd();
 	void testAttachStorage();
 	void testAccount2Category();
+	void testCategory2Account();
 
 private:
 	void testRemoveStdAccount(const MyMoneyAccount& acc);

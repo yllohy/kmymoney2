@@ -1163,3 +1163,18 @@ void MyMoneyFileTest::testAccount2Category() {
 	CPPUNIT_ASSERT(m->accountToCategory("A000001") == "Account2:Account1");
 	CPPUNIT_ASSERT(m->accountToCategory("A000002") == "Account2");
 }
+
+void MyMoneyFileTest::testCategory2Account() {
+	testAddTransaction();
+	MyMoneyAccount a = m->account("A000003");
+	MyMoneyAccount b = m->account("A000004");
+
+	try {
+		m->reparentAccount(b, a);
+		CPPUNIT_ASSERT(m->categoryToAccount("Expense1") == "A000003");
+		CPPUNIT_ASSERT(m->categoryToAccount("Expense1:Expense2") == "A000004");
+		CPPUNIT_ASSERT(m->categoryToAccount("Acc2") == "");
+	} catch(MyMoneyException *e) {
+		unexpectedException(e);
+	}
+}
