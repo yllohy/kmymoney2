@@ -151,6 +151,7 @@ private:
 
   kMyMoneyAccountCompletion* m_accountSelector;
   bool                       m_inCreation;
+  bool                       m_displayOnly;
 };
 
 #endif

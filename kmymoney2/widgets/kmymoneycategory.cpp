@@ -46,6 +46,7 @@ kMyMoneyCategory::kMyMoneyCategory(QWidget *parent, const char *name, const KMyM
   m_inCreation = false;
   m_accountSelector = new kMyMoneyAccountCompletion(this, 0);
   m_accountSelector->hide();
+  m_displayOnly = false;
 
   // show all but investment accounts
   QValueList<int> typeList;
@@ -98,6 +99,8 @@ void kMyMoneyCategory::keyPressEvent( QKeyEvent * ev)
 
 void kMyMoneyCategory::loadAccount(const QCString& id)
 {
+  m_id = QCString();
+  m_displayOnly = false;
   try {
     MyMoneyAccount acc = MyMoneyFile::instance()->account(id);
     setText(MyMoneyFile::instance()->accountToCategory(id));
@@ -111,6 +114,7 @@ void kMyMoneyCategory::loadAccount(const QCString& id)
 
 void kMyMoneyCategory::loadText(const QString& text)
 {
+  m_displayOnly = true;
   m_id = QCString();
   KLineEdit::setText(text);
 }
@@ -141,7 +145,7 @@ void kMyMoneyCategory::checkForNewCategory(void)
     newAccount = false;
   }
 
-  if(newAccount) {
+  if(newAccount && !m_displayOnly) {
     m_inCreation = true;
 
     if(KMessageBox::questionYesNo(this,
