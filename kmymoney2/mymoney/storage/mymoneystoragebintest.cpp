@@ -166,7 +166,7 @@ void MyMoneyStorageBinTest::createOldFile(const QString version, unsigned long m
   s << (Q_INT32)2;    // two accounts
 
   appendV3Account(s, magic, "A-Name1", "A-Desc1", "A-Number1",
-    (Q_INT32)0,     // checkings account
+    (Q_INT32)2,     // checkings account
     QDate(7,8,9),    // opening date
     QDate(4,5,6),    // last reconcile
     MyMoneyMoney(123400));
@@ -192,7 +192,7 @@ void MyMoneyStorageBinTest::createOldFile(const QString version, unsigned long m
     (Q_INT32)2);
 
   appendV3Account(s, magic, "A-Name2", "A-Desc2", "A-Number2",
-    (Q_INT32)0,     // checkings account
+    (Q_INT32)2,     // checkings account
     QDate(1,2,3),    // opening date
     QDate(7,9,7),    // last reconcile
     MyMoneyMoney(-432100));

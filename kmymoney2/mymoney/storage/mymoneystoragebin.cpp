@@ -293,8 +293,19 @@ void MyMoneyStorageBin::readOldFormat(QDataStream& s, IMyMoneySerialize* storage
       s >> tmp; acc.setDescription(tmp);
       s >> tmp; acc.setNumber(tmp);
       s >> tmp_int32; // type
-      if(tmp_int32 != 0)
-        qDebug("I thought, the old format only knew about checking accounts");
+      switch(tmp_int32) {
+        case 1:       // Savings
+          acc.setAccountType(MyMoneyAccount::Savings);
+          break;
+
+        case 2:       // Current/Checkings
+          // is already set as default
+          break;
+
+        default:
+          qDebug("I thought, the old format only knew about savings and checking accounts");
+          break;
+      }
 
       if(fileVersionRead == VERSION_0_4_0) {
         s >> date; acc.setOpeningDate(date);
@@ -704,7 +715,7 @@ void MyMoneyStorageBin::readAccounts(QDataStream& s, IMyMoneySerialize *storage)
 void MyMoneyStorageBin::writeAccount(QDataStream& s, const MyMoneyAccount& acc)
 {
   Q_INT32 tmp;
-  tmp = 1;    // version
+  tmp = 2;    // version
   s << tmp;
 
   s << acc.id();
@@ -719,10 +730,12 @@ void MyMoneyStorageBin::writeAccount(QDataStream& s, const MyMoneyAccount& acc)
   s << acc.openingDate();
   s << acc.parentAccountId();
   s << acc.accountList();
+  s << acc.pairs();
 }
 
 const MyMoneyAccount MyMoneyStorageBin::readAccount(QDataStream& s)
 {
+  Q_INT32 version;
   Q_INT32 tmp;
   QString tmp_s;
   QDate tmp_d;
@@ -732,7 +745,7 @@ const MyMoneyAccount MyMoneyStorageBin::readAccount(QDataStream& s)
 
   MyMoneyAccount acc;
 
-  s >> tmp;
+  s >> version;
   s >> id;
   s >> tmp_s; acc.setName(tmp_s);
   s >> tmp_s; acc.setDescription(tmp_s);
@@ -750,6 +763,12 @@ const MyMoneyAccount MyMoneyStorageBin::readAccount(QDataStream& s)
   QCStringList::ConstIterator it;
   for(it = list.begin(); it != list.end(); ++it)
     acc.addAccountId(*it);
+
+  if(version > 1) {
+    QMap<QCString, QString> keyValuePairs;
+    s >> keyValuePairs;
+    acc.setPairs(keyValuePairs);
+  }
 
   return MyMoneyAccount(id, acc);
 }
