@@ -89,11 +89,11 @@ void KScheduledListItem::paintCell(QPainter* p, const QColorGroup& cg, int colum
   config->setGroup("List Options");
 
   QColor colour = Qt::white;
-  QColor bgColour = Qt::gray;
+  QColor bgColour = QColor(224, 253, 182); // Same as for home view
   QColor textColour = Qt::black;
   QFont cellFont(p->font());
-  QColor baseItemColour = Qt::darkCyan;
-  QColor baseItemTextColour = Qt::white;
+  QColor baseItemColour = QColor(219, 237, 237);  // Same as for home view
+  QColor baseItemTextColour = Qt::black;
 
   bgColour = config->readColorEntry("listBGColor", &bgColour);
   colour = config->readColorEntry("listColor", &colour);
