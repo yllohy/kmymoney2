@@ -68,7 +68,7 @@ void KLedgerViewCreditCard::createEditWidgets(void)
   m_editMemo = new kMyMoneyLineEdit(0, "editMemo");
   m_editAmount = new kMyMoneyEdit(0, "editAmount");
   m_editDate = new kMyMoneyDateInput(0, "editDate");
-  m_editNr = 0;
+  m_editNr = new kMyMoneyLineEdit(0, "editNr");
   m_editFrom = new kMyMoneyCategory(0, "editFrom", static_cast<kMyMoneyCategory::categoryTypeE> (kMyMoneyCategory::asset | kMyMoneyCategory::liability));
   m_editTo = new kMyMoneyCategory(0, "editTo", static_cast<kMyMoneyCategory::categoryTypeE> (kMyMoneyCategory::asset | kMyMoneyCategory::liability));
   m_editSplit = new KPushButton("Split", 0, "editSplit");
