@@ -438,9 +438,11 @@ public:
     *        should be returned. If this list is empty, all accounts
     *        currently known will be returned.
     *
+    * @param recursive if @p true, then recurse in all found accounts. The default is @p false
+    *
     * @return QValueList containing the account objects
     */
-  const QValueList<MyMoneyAccount> accountList(const QCStringList& idlist = QCStringList()) const;
+  const QValueList<MyMoneyAccount> accountList(const QCStringList& idlist = QCStringList(), const bool recursive = false) const;
 
   /**
     * This method is used to pull a list of transactions from the file

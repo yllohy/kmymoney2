@@ -96,9 +96,11 @@ public:
     *        should be returned. If this list is empty, all accounts
     *        currently known will be returned.
     *
+    * @param recursive if @p true, then recurse in all found accounts. The default is @p false
+    *
     * @return QValueList containing the account objects
     */
-  virtual const QValueList<MyMoneyAccount> accountList(const QCStringList& idlist = QCStringList()) const = 0;
+  virtual const QValueList<MyMoneyAccount> accountList(const QCStringList& idlist = QCStringList(), const bool recursive = false) const = 0;
 
   /**
     * This method returns a list of the institutions
