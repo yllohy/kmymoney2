@@ -555,6 +555,7 @@ bool KMyMoneyView::readFile(const KURL& url)
   m_categoriesView->refreshView();
   accountsView->refreshView();
   m_ledgerView->reloadView();
+  m_payeesView->refreshView();
   return true;
 }
 
@@ -1242,6 +1243,7 @@ void KMyMoneyView::settingsLists()
   accountsView->refreshView();
   m_categoriesView->refreshView();
   m_ledgerView->refreshView();
+  m_payeesView->refreshView();
 }
 
 void KMyMoneyView::accountFind()
