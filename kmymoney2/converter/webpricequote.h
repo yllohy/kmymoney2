@@ -120,7 +120,7 @@ public:
   static QStringList quoteSources(void);
     
 signals:
-  void quote(const QString&, const QDate&, const MyMoneyMoney&);
+  void quote(const QString&, const QDate&, const double&);
   void status(const QString&);
   void error(const QString&);
   
@@ -134,7 +134,7 @@ private:
   WebPriceQuoteProcess m_filter;
   QString m_symbol;
   QDate m_date;
-  MyMoneyMoney m_price;
+  double m_price;
   WebPriceQuoteSource m_source;  
 };
 

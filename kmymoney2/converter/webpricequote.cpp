@@ -203,8 +203,8 @@ void WebPriceQuote::slotParseQuote(const QString& _quotedata)
     if(priceRegExp.search(quotedata)> -1)
     {
       gotprice = true;
-      m_price = MyMoneyMoney(priceRegExp.cap(1).toDouble()).toString();
-      emit status(i18n("Price found: %1").arg(m_price.toString()));
+      m_price = priceRegExp.cap(1).toDouble();
+      emit status(i18n("Price found: %1").arg(m_price));
     }
 
     if(dateRegExp.search(quotedata) > -1)

@@ -65,7 +65,7 @@ protected slots:
 
   void logStatusMessage(const QString&);
   void logErrorMessage(const QString&);
-  void slotReceivedQuote(const QString&,const QDate&, const MyMoneyMoney&);
+  void slotReceivedQuote(const QString&,const QDate&, const double&);
 
 protected:
   void addPricePair(const MyMoneySecurityPair& pair);
@@ -74,6 +74,7 @@ protected:
 private:
   bool m_fUpdateAll;
   WebPriceQuote m_webQuote;
+  unsigned m_pricePrecision;
 };
 
 #endif

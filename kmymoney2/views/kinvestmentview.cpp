@@ -129,12 +129,14 @@ void KInvestmentView::initSummaryTab(void)
   investmentTable->addColumn(i18n("Value"));
   investmentTable->addColumn(i18n("Quantity"));
   investmentTable->addColumn(i18n("Price"));
+#if 0
   investmentTable->addColumn(i18n("Cost Basis"));
   investmentTable->addColumn(i18n("$ Gain"));
   investmentTable->addColumn(i18n("1 Week %"));
   investmentTable->addColumn(i18n("4 Weeks %"));
   investmentTable->addColumn(i18n("3 Months %"));
   investmentTable->addColumn(i18n("YTD %"));
+#endif
 
   investmentTable->setMultiSelection(false);
   investmentTable->setColumnWidthMode(0, QListView::Maximum);

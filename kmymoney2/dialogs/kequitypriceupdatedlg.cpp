@@ -42,6 +42,8 @@
 #include <klistview.h>
 #include <kdebug.h>
 #include <kprogress.h>
+#include <kglobal.h>
+#include <kconfig.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -82,6 +84,11 @@ KEquityPriceUpdateDlg::KEquityPriceUpdateDlg(QWidget *parent, const QCString& se
   btnUpdateAll->setEnabled(false);
   
   MyMoneyFile* file = MyMoneyFile::instance();
+
+  // Get the price precision from the configuration  
+  KConfig *kconfig = KGlobal::config();
+  kconfig->setGroup("General Options");
+  m_pricePrecision = kconfig->readNumEntry("PricePrecision", 4);
   
   //
   // Add each price pair that we know about
@@ -127,8 +134,8 @@ KEquityPriceUpdateDlg::KEquityPriceUpdateDlg(QWidget *parent, const QCString& se
   connect(btnUpdateSelected, SIGNAL(clicked()), this, SLOT(slotUpdateSelectedClicked()));
   connect(btnUpdateAll, SIGNAL(clicked()), this, SLOT(slotUpdateAllClicked()));
 
-  connect(&m_webQuote,SIGNAL(quote(const QString&,const QDate&, const MyMoneyMoney&)),
-    this,SLOT(slotReceivedQuote(const QString&,const QDate&, const MyMoneyMoney&)));
+  connect(&m_webQuote,SIGNAL(quote(const QString&,const QDate&, const double&)),
+    this,SLOT(slotReceivedQuote(const QString&,const QDate&, const double&)));
   connect(&m_webQuote,SIGNAL(status(const QString&)),
     this,SLOT(logStatusMessage(const QString&)));
   connect(&m_webQuote,SIGNAL(error(const QString&)),
@@ -312,20 +319,20 @@ void KEquityPriceUpdateDlg::slotConfigureClicked()
 {
 }
 
-void KEquityPriceUpdateDlg::slotReceivedQuote(const QString& _symbol,const QDate& _date, const MyMoneyMoney& _price)
+void KEquityPriceUpdateDlg::slotReceivedQuote(const QString& _symbol,const QDate& _date, const double& _price)
 {
   QListViewItem* item = lvEquityList->findItem(_symbol,SYMBOL_COL,Qt::ExactMatch);
   QListViewItem* next = NULL;
   
   if ( item )
   {
-    if ( _price.isPositive() && _date.isValid() )
+    if ( _price > 0.0f && _date.isValid() )
     {
       QDate date = _date;
       if ( date > QDate::currentDate() )
         date = QDate::currentDate();
       
-      item->setText(PRICE_COL, _price.formatMoney());
+      item->setText(PRICE_COL, QString::number(_price,'f',m_pricePrecision));
       item->setText(DATE_COL, date.toString(Qt::ISODate));
       logStatusMessage(i18n("Price for %1 updated").arg(_symbol));
     }

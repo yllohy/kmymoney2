@@ -25,10 +25,12 @@
 
 // ----------------------------------------------------------------------------
 // KDE Includes
+#include <klistview.h>
+#include <kglobal.h>
+#include <kconfig.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
-#include <klistview.h>
 #include "kinvestmentlistitem.h"
 
 #include "../mymoney/mymoneysecurity.h"
@@ -235,9 +237,16 @@ void KInvestmentListItem::update(const QCString& /*id*/)
     setText(COLUMN_QUANTITY_INDEX, file->balance(m_account.id()).formatMoney("", prec));
 
     //column 4 is the current price
-    prec = MyMoneyMoney::denomToPrec(m_tradingCurrency.smallestAccountFraction());
+    // Get the price precision from the configuration  
+    KConfig *kconfig = KGlobal::config();
+    kconfig->setGroup("General Options");
+    prec = kconfig->readNumEntry("PricePrecision", 4);
+    
+//     prec = MyMoneyMoney::denomToPrec(m_tradingCurrency.smallestAccountFraction());
     setText(COLUMN_PRICE_INDEX, price.rate().formatMoney(m_tradingCurrency.tradingSymbol(), prec));
 
+// FIXME Implement me
+#if 0
     //column 4 (COLUMN_COSTBASIS_INDEX) is the cost basis
     if(transactionList.isEmpty())
     {
@@ -259,6 +268,8 @@ void KInvestmentListItem::update(const QCString& /*id*/)
     {
 
     }
+#endif
+
 // FIXME PRICE
 #if 0
     if(history.isEmpty())
