@@ -1,3 +1,6 @@
+2004-05-12 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed some issues around multiple currencies / exchange rates
+
 2004-05-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed comparison of account objects
   * Added testcases for equality of MyMoneyAccount object
