@@ -1,3 +1,7 @@
+2005-03-17 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Gnucash Importer
+    - Handle A/Payable and A/Receivable account types
+
 2005-03-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed splash screen handling
 

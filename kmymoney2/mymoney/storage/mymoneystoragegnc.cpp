@@ -1082,6 +1082,10 @@ void MyMoneyStorageGNC::convertAccount (const GncAccount* gac) {
     acc.setAccountType(MyMoneyAccount::Income);
   } else if (QString("EXPENSE") == gac->type()) {
     acc.setAccountType(MyMoneyAccount::Expense);
+  } else if (QString("RECEIVABLE") == gac->type()) {
+    acc.setAccountType(MyMoneyAccount::Asset);
+  } else if (QString("PAYABLE") == gac->type()) {
+    acc.setAccountType(MyMoneyAccount::Liability);
   } else { // we have here an account type we can't currently handle
     QString em =
       (QObject::tr(QString().sprintf("Current importer does not recognize GnuCash account type %s", gac->type().latin1())));
