@@ -1,3 +1,7 @@
+2001-11-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Incorporated Coding Rules into Project Handbook
+  * Added CVS examples to Project Handbook
+
 2001-11-21 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
   * Commented out delete of widgets in KTransactionView
 
