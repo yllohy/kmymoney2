@@ -173,6 +173,7 @@ void KSettingsDlg::setPageList()
   qvboxlayoutPage->setSpacing( 6 );
   qvboxlayoutPage->setMargin( 11 );
 
+/*
   // Create a horizontal layout to hold two widgets
   QHBoxLayout *qhboxlayout = new QHBoxLayout;
   qhboxlayout->setSpacing( 6 );
@@ -190,6 +191,7 @@ void KSettingsDlg::setPageList()
 
   // Add the horizontal layout
   qvboxlayoutPage->addLayout(qhboxlayout);
+*/
 
   // Ceate another widget
   m_qcheckboxShowGrid = new QCheckBox(i18n("Show a grid in the register."), qwidgetPage);
@@ -377,8 +379,10 @@ void KSettingsDlg::configRead()
   m_qfontTempCell = kconfig->readFontEntry("listCellFont", &qfontDefault);
   m_kfontchooserCell->setFont(m_qfontTempCell);
 
+/*
   m_qstringTempRowCount = kconfig->readEntry("RowCount", "2");
   m_klineeditRowCount->setText(m_qstringTempRowCount);
+*/
 
   m_bTempShowGrid = kconfig->readBoolEntry("ShowGrid", true);
   m_qcheckboxShowGrid->setChecked(m_bTempShowGrid);
@@ -412,7 +416,7 @@ void KSettingsDlg::configWrite()
   kconfig->writeEntry("listGridColor", m_kcolorbuttonGrid->color());
   kconfig->writeEntry("listHeaderFont", m_kfontchooserHeader->font());
   kconfig->writeEntry("listCellFont", m_kfontchooserCell->font());
-  kconfig->writeEntry("RowCount", m_klineeditRowCount->text());
+  // kconfig->writeEntry("RowCount", m_klineeditRowCount->text());
   kconfig->writeEntry("ShowGrid", m_qcheckboxShowGrid->isChecked());
   kconfig->writeEntry("ColourPerTransaction", m_qradiobuttonPerTransaction->isChecked());
   kconfig->writeEntry("TextPrompt", m_qcheckboxTextPrompt->isChecked());
@@ -435,12 +439,14 @@ void KSettingsDlg::configWrite()
 /** Called on OK being pressed */
 void KSettingsDlg::slotOk()
 {
+/*
   int nCount = m_klineeditRowCount->text().toInt();
   if (nCount <= 0 || nCount >= 4) {
     KMessageBox::information(this, i18n("The row count has to be between 1 and 3"));
     m_klineeditRowCount->setFocus();
     return;
   }
+*/
   configWrite();
   this->accept();
 }
@@ -448,12 +454,14 @@ void KSettingsDlg::slotOk()
 /** Called on Apply being pressed */
 void KSettingsDlg::slotApply()
 {
+/*
   int nCount = m_klineeditRowCount->text().toInt();
   if (nCount <= 0 || nCount >= 4) {
     KMessageBox::information(this, i18n("The row count has to be between 1 and 3"));
     m_klineeditRowCount->setFocus();
     return;
   }
+*/
   m_bDoneApply = true;
   configWrite();
   emit signalApply();
@@ -471,7 +479,7 @@ void KSettingsDlg::slotCancel()
   kconfig->writeEntry("listBGColor", m_qcolorTempListBG);
   kconfig->writeEntry("listHeaderFont", m_qfontTempHeader);
   kconfig->writeEntry("listCellFont", m_qfontTempCell);
-  kconfig->writeEntry("RowCount", m_qstringTempRowCount);
+  // kconfig->writeEntry("RowCount", m_qstringTempRowCount);
   kconfig->writeEntry("ShowGrid", m_bTempShowGrid);
   kconfig->writeEntry("ColourPerTransaction", m_bTempColourPerTransaction);
   kconfig->writeEntry("TextPrompt", m_bTempTextPrompt);
@@ -509,7 +517,7 @@ void KSettingsDlg::slotUser1()
   m_kcolorbuttonBack->setColor(m_qcolorTempListBG);
   m_kfontchooserHeader->setFont(m_qfontTempHeader);
   m_kfontchooserCell->setFont(m_qfontTempCell);
-  m_klineeditRowCount->setText(m_qstringTempRowCount);
+  // m_klineeditRowCount->setText(m_qstringTempRowCount);
   m_qcheckboxShowGrid->setChecked(m_bTempShowGrid);
   m_qradiobuttonPerTransaction->setChecked(m_bTempColourPerTransaction);
   m_qradiobuttonOtherRow->setChecked(!m_bTempColourPerTransaction);

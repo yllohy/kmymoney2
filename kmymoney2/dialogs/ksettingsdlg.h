@@ -53,7 +53,7 @@
   * @see KDialogBase
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: ksettingsdlg.h,v 1.6 2002/11/01 19:24:19 ipwizard Exp $
+  * $Id: ksettingsdlg.h,v 1.7 2002/11/05 20:45:44 ipwizard Exp $
   *
   * @short A class to manipulate the settings needed for running KMyMoney2
 **/
@@ -77,7 +77,7 @@ private:
   KFontChooser *m_kfontchooserCell;
 
   /** No rows to show in register */
-  KLineEdit *m_klineeditRowCount;
+  // KLineEdit *m_klineeditRowCount;
 
   /** Show grid in register ? */
   QCheckBox *m_qcheckboxShowGrid;
@@ -125,7 +125,7 @@ private:
   QColor m_qcolorTempListGrid;
   QFont m_qfontTempHeader;
   QFont m_qfontTempCell;
-  QString m_qstringTempRowCount;
+//  QString m_qstringTempRowCount;
   bool m_bTempShowGrid;
   bool m_bTempColourPerTransaction;
   bool m_bTempStartPrompt;
