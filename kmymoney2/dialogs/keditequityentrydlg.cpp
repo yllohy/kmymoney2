@@ -22,6 +22,7 @@
 
 // ----------------------------------------------------------------------------
 // QT Includes
+#include <qtimer.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -47,8 +48,7 @@ KEditEquityEntryDlg::KEditEquityEntryDlg(const MyMoneyEquity& selectedEquity, QW
   : kEditEquityEntryDecl(parent, name, true)
 {
   m_selectedEquity = selectedEquity;
-  lvPriceHistory->hide();
-  
+
   connect(btnOK, SIGNAL(clicked()), this, SLOT(slotOKClicked()));
   connect(btnCancel, SIGNAL(clicked()), this, SLOT(reject()));
   connect(edtEquityName, SIGNAL(textChanged(const QString &)), this, SLOT(slotDataChanged()));
@@ -57,8 +57,9 @@ KEditEquityEntryDlg::KEditEquityEntryDlg(const MyMoneyEquity& selectedEquity, QW
   connect(btnAddEntry, SIGNAL(clicked()), kpvPriceHistory, SLOT(slotAddPrice()));
   connect(btnEditEntry, SIGNAL(clicked()), kpvPriceHistory, SLOT(slotEditPrice()));
   connect(btnRemoveEntry, SIGNAL(clicked()), kpvPriceHistory, SLOT(slotDeletePrice()));
+  connect(kpvPriceHistory, SIGNAL(selectionChanged(QListViewItem*)), this, SLOT(slotSelectionChanged(QListViewItem*)));
 
-  //fill in the fields for what we know.
+  //fill in the fields with what we know.
   edtEquityName->setText(m_selectedEquity.name());
   edtMarketSymbol->setText(m_selectedEquity.tradingSymbol());
   edtFraction->setPrecision(0);
@@ -99,12 +100,26 @@ KEditEquityEntryDlg::KEditEquityEntryDlg(const MyMoneyEquity& selectedEquity, QW
                     i18n("Change the price information of the selected entry."));
   btnEditEntry->setGuiItem(editButtenItem);
 
+  slotSelectionChanged(0);      // make sure buttons are disabled in the beginning
   slotDataChanged();
   m_changes = false;
+
+  // force a resize to optimize the layout of all widgets
+  resize(width()-1, height()-1);
+  QTimer::singleShot(10, this, SLOT(slotTimerDone()));
 }
 
 KEditEquityEntryDlg::~KEditEquityEntryDlg()
 {
+}
+
+void KEditEquityEntryDlg::slotTimerDone(void)
+{
+  // the resize operation does the trick to adjust
+  // all widgets in the view to the size they should
+  // have and show up correctly. Don't ask me, why
+  // this is, but it cured the problem (ipwizard).
+  resize(width()+1, height()+1);
 }
 
 /** No descriptions */
@@ -114,12 +129,18 @@ void KEditEquityEntryDlg::slotOKClicked()
   {
     m_selectedEquity.setName(edtEquityName->text());
     m_selectedEquity.setTradingSymbol(edtMarketSymbol->text());
-    m_selectedEquity.setSmallestAccountFraction(edtFraction->getMoneyValue().abs());
-    
+    m_selectedEquity.setSmallestAccountFraction(edtFraction->value().abs());
+
     m_selectedEquity.setPriceHistory(kpvPriceHistory->history());
   }
 
   accept();
+}
+
+void KEditEquityEntryDlg::slotSelectionChanged(QListViewItem* item)
+{
+  btnEditEntry->setEnabled(item != 0);
+  btnRemoveEntry->setEnabled(item != 0);
 }
 
 void KEditEquityEntryDlg::slotDataChanged(void)
@@ -144,7 +165,7 @@ void KEditEquityEntryDlg::slotDataChanged(void)
 // kmymoney2/widgets/kmymoneypriceview.cpp:204: undefined reference to
 // `KUpdateStockPriceDlg::KUpdateStockPriceDlg[in-charge](QDate const&, QString const&, QWidget*, char const*)'
 
-void useless(void)
+void KEditEquityEntryDlg_useless(void)
 {
   delete new KUpdateStockPriceDlg(QDate(), QString(), NULL);
 }

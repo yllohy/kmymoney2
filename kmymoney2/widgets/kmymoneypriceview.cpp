@@ -59,7 +59,7 @@ void kMyMoneyPriceItem::setPrice(const MyMoneyMoney& price)
   KConfig *kconfig = KGlobal::config();
   kconfig->setGroup("General Options");
   int prec = kconfig->readNumEntry("PricePrecision", 4);
-  
+
   m_price = price;
   setText(1, price.formatMoney("", prec));
 }
@@ -82,7 +82,7 @@ int kMyMoneyPriceItem::compare(QListViewItem* i, int col, bool /* ascending */) 
       else if(m_date < item->m_date)
         rc = -1;
       break;
-      
+
     case 1:   // value
       if(m_price > item->m_price)
         rc = 1;
@@ -106,27 +106,28 @@ kMyMoneyPriceView::kMyMoneyPriceView(QWidget *parent, const char *name ) :
   m_priceHistory->setColumnWidthMode(1, QListView::Maximum);
   m_priceHistory->setColumnAlignment(0, Qt::AlignRight);
   m_priceHistory->setColumnAlignment(1, Qt::AlignRight);
-  
+
   m_priceHistory->header()->setFont(KMyMoneyUtils::headerFont());
 
   KIconLoader *kiconloader = KGlobal::iconLoader();
-  
+
   m_contextMenu = new KPopupMenu(this);
   m_contextMenu->insertTitle(i18n("Price Options"));
   m_contextMenu->insertItem(kiconloader->loadIcon("filenew", KIcon::Small),
                         i18n("New ..."),
                         this, SLOT(slotAddPrice()));
-                        
+
   m_contextMenu->insertItem(kiconloader->loadIcon("edit", KIcon::Small),
                         i18n("Edit ..."),
                         this, SLOT(slotEditPrice()));
-                        
+
   m_contextMenu->insertItem(kiconloader->loadIcon("delete", KIcon::Small),
                         i18n("Delete ..."),
                         this, SLOT(slotDeletePrice()));
 
   connect(m_priceHistory, SIGNAL(rightButtonPressed(QListViewItem* , const QPoint&, int)),
           this, SLOT(slotListClicked(QListViewItem*, const QPoint&, int)));
+  connect(m_priceHistory, SIGNAL(clicked(QListViewItem*)), this, SIGNAL(selectionChanged(QListViewItem*)));
 }
 
 kMyMoneyPriceView::~kMyMoneyPriceView()
@@ -169,7 +170,7 @@ void kMyMoneyPriceView::slotListClicked(QListViewItem* item, const QPoint&, int)
 {
   int editId = m_contextMenu->idAt(2);
   int delId = m_contextMenu->idAt(3);
-  
+
   m_contextMenu->setItemEnabled(editId, item != 0);
   m_contextMenu->setItemEnabled(delId, item != 0);
   m_contextMenu->exec(QCursor::pos());
@@ -208,7 +209,7 @@ void kMyMoneyPriceView::slotEditPrice(void)
       item->setDate(dlg.getDate());
       item->setPrice(dlg.getPrice());
       m_dirty = true;
-    }    
+    }
   }
 }
 

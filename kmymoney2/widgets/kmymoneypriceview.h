@@ -2,7 +2,7 @@
                           kmymoneypriceview.h  -  description
                              -------------------
     begin                : Wed Mar 24 2004
-    copyright            : (C) 2000-2004 by Michael Edwardes
+    copyright            : (C) 2004 by Thomas Baumgart
     email                : mte@users.sourceforge.net
                            Javier Campos Morales <javi_c@users.sourceforge.net>
                            Felix Rodriguez <frodriguez@users.sourceforge.net>
@@ -66,13 +66,20 @@ private:
 class kMyMoneyPriceView : public kMyMoneyPriceViewDecl
 {
    Q_OBJECT
-public: 
+public:
   kMyMoneyPriceView(QWidget *parent=0, const char *name=0);
   ~kMyMoneyPriceView();
 
   void setHistory(const QMap<QDate,MyMoneyMoney>& history);
   const QMap<QDate, MyMoneyMoney> history(void) const;
   const bool dirty(void) const { return m_dirty; };
+
+signals:
+  /**
+    * This signal is a forward of the listview's clicked() signal.
+    * See QListView::clicked() for details.
+    */
+  void selectionChanged(QListViewItem* item);
 
 protected:
   /// the resize event

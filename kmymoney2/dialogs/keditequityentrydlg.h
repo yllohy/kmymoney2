@@ -56,6 +56,10 @@ public:
 protected slots:
   void slotOKClicked();
   void slotDataChanged(void);
+  void slotSelectionChanged(QListViewItem* item);
+
+private slots:
+  void slotTimerDone(void);
 
 private:
   MyMoneyEquity m_selectedEquity;
