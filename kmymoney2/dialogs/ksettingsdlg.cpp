@@ -55,10 +55,12 @@
 #include "ksettingsdlg.h"
 #include "../kmymoneyutils.h"
 
+#include <libkgpgfile/kgpgfile.h>
+
 /** Standard constructor for the class.
   * The constructor passes some additional parameters to the base class KDialogBase
   * to set the buttons to be showed and the type of dialog to be shown.
-**/
+  **/
 KSettingsDlg::KSettingsDlg(QWidget *parent, const char *name, bool modal)
  : KDialogBase(IconList, i18n("Configure"), Ok|Cancel|Apply|User1, Ok, parent,
     name, modal, true, i18n("&Reset"))
@@ -69,15 +71,16 @@ KSettingsDlg::KSettingsDlg(QWidget *parent, const char *name, bool modal)
   setPageList();
   setHomePage();
   setPageSchedule();
+  setPageSecurity();
   setPageColour();
   setPageFont();
-  
+
   configRead();
-  
+
   m_bDoneApply=false;
-  
+
   KPushButton *reset = static_cast<KPushButton *>(actionButton(User1));
-  
+
   KIconLoader* il = KGlobal::iconLoader();
   KGuiItem resetButtonItem( i18n( "&Reset" ),
                     QIconSet(il->loadIcon("undo", KIcon::Small, KIcon::SizeSmall)),
@@ -104,7 +107,7 @@ void KSettingsDlg::setPageGeneral()
   // Startup page options
   // --------------------
 
-/* These settings are deprecated  
+/* These settings are deprecated
   // Create a group box to hold the available options
   QButtonGroup *qfilebuttongroup = new QButtonGroup(qvboxMainFrame, "GroupBox1");
   qfilebuttongroup->setTitle( i18n( "Startup file options" ) );
@@ -154,7 +157,7 @@ void KSettingsDlg::setPageGeneral()
   m_qradiobuttonStartLast->setText( i18n( "Start with last selected page" ) );
   qvboxpagelayout->addWidget(m_qradiobuttonStartLast);
 
-  
+
   // Create a group to hold the price precision
   QButtonGroup *qbuttongroupPrice = new QButtonGroup(qvboxMainFrame, "ButtonGroup1");
   qbuttongroupPrice->setTitle(i18n("Equity/Currency options"));
@@ -243,7 +246,7 @@ void KSettingsDlg::setHomePage()
     DesktopIcon("home"));
 
   QFrame* frame = new QFrame(qvboxMainFrame, "frame");
-  
+
   QHBoxLayout* Form1Layout = new QHBoxLayout( frame, 11, 6, "Form1Layout");
 
   m_homePageList = new KListView( frame, "KListView1" );
@@ -253,7 +256,7 @@ void KSettingsDlg::setHomePage()
   m_homePageList->header()->hide();
   m_homePageList->setAllColumnsShowFocus(true);
   m_homePageList->setColumnWidth(0, 250);
-  
+
   Form1Layout->addWidget( m_homePageList );
 
   QVBoxLayout*  Layout5 = new QVBoxLayout( 0, 0, 6, "Layout5");
@@ -264,7 +267,7 @@ void KSettingsDlg::setHomePage()
 
   QVBoxLayout* Layout1 = new QVBoxLayout( 0, 0, 6, "Layout1");
 
-  
+
   KIconLoader* il = KGlobal::iconLoader();
   KGuiItem upButtonItem( i18n( "&Up" ),
                     QIconSet(il->loadIcon("up", KIcon::Small, KIcon::SizeSmall)),
@@ -280,7 +283,7 @@ void KSettingsDlg::setHomePage()
   m_downButton = new KPushButton(downButtonItem, frame, "KPushButtonDown" );
   Layout1->addWidget( m_downButton );
   Layout2->addLayout( Layout1 );
-  
+
   QSpacerItem* spacer_2 = new QSpacerItem( 177, 0, QSizePolicy::Expanding, QSizePolicy::Minimum );
   Layout2->addItem( spacer_2 );
   Layout5->addLayout( Layout2 );
@@ -306,7 +309,7 @@ void KSettingsDlg::setHomePage()
   connect(m_homePageList, SIGNAL(selectionChanged(QListViewItem*)),
           this, SLOT(slotSelectHomePageItem(QListViewItem *)));
 
-  connect(m_upButton, SIGNAL(clicked()), this, SLOT(slotMoveUp()));          
+  connect(m_upButton, SIGNAL(clicked()), this, SLOT(slotMoveUp()));
   connect(m_downButton, SIGNAL(clicked()), this, SLOT(slotMoveDown()));
 }
 
@@ -382,7 +385,7 @@ void KSettingsDlg::setPageList()
   qtabwidget->insertTab(qwidgetPage, i18n("General"));
 
 
-  
+
   // Create a new tab for the filter options
   QWidget *qwidgetFilter = new QWidget(qtabwidget, "filterTab");
 
@@ -432,7 +435,7 @@ void KSettingsDlg::configRead()
   m_bTempStartPage = kconfig->readBoolEntry("StartLastViewSelected", false);
   m_qradiobuttonStartHome->setChecked(!m_bTempStartPage);
   m_qradiobuttonStartLast->setChecked(m_bTempStartPage);
-  
+
   m_bTempLedgerLens = kconfig->readBoolEntry("LedgerLens", true);
   m_qcheckboxLedgerLens->setChecked(m_bTempLedgerLens);
 
@@ -644,7 +647,7 @@ void KSettingsDlg::slotUser1()
   m_intSchedulePreview->setEnabled(m_bTempCheckSchedule);
   m_intSchedulePreview->setValue(m_iTempSchedulePreview);
   m_qIntPricePrecision->setText(QString("%1").arg(m_iTempPricePrecision));
-  
+
   QStringList list = m_tempHomePageItems;
   KMyMoneyUtils::addDefaultHomePageItems(list);
   fillHomePageItems(list);
@@ -680,7 +683,7 @@ void KSettingsDlg::fillHomePageItems(QStringList& list)
   int w = 0;
   m_homePageList->clear();
   QCheckListItem *sel = 0;
-    
+
   m_upButton->setEnabled(false);
   m_downButton->setEnabled(false);
 
@@ -699,7 +702,7 @@ void KSettingsDlg::fillHomePageItems(QStringList& list)
     item->setOn(enabled);
     if(item->width(fm, m_homePageList, 0) > w)
       w = item->width(fm, m_homePageList, 0);
-      
+
     if(sel == 0)
       sel = item;
     last = item;
@@ -718,7 +721,7 @@ void KSettingsDlg::fillHomePageItems(QStringList& list)
 void KSettingsDlg::slotSelectHomePageItem(QListViewItem *item)
 {
   m_upButton->setEnabled(m_homePageList->firstChild() != item);
-  m_downButton->setEnabled(item->nextSibling());  
+  m_downButton->setEnabled(item->nextSibling());
 }
 
 void KSettingsDlg::slotMoveUp(void)
@@ -739,6 +742,18 @@ void KSettingsDlg::slotMoveDown(void)
     item->moveItem(next);
     slotSelectHomePageItem(item);
   }
+}
+
+void KSettingsDlg::setPageSecurity(void)
+{
+  // Create the main frame to hold the widgets
+  QVBox *qvboxMainFrame = addVBoxPage( i18n("Security"), i18n("Security settings"),
+    DesktopIcon("kgpg"));
+
+  QGroupBox* groupBox1 = new QGroupBox( qvboxMainFrame, "groupBox1" );
+  groupBox1->setTitle( i18n( "Encryption options" ) );
+
+  groupBox1->setEnabled(KGPGFile::GPGAvailable());
 }
 
 void KSettingsDlg::setPageSchedule()

@@ -104,6 +104,8 @@
 #include "../kmymoneyutils.h"
 #include "../kapptest.h"
 
+#include <libkgpgfile/kgpgfile.h>
+
 #define COMPRESSION_MIME_TYPE "application/x-gzip"
 
 KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
@@ -582,6 +584,14 @@ void KMyMoneyView::closeFile(void)
   m_fileOpen = false;
 }
 
+void KMyMoneyView::ungetString(QIODevice *qfile, char *buf, int len)
+{
+  buf = &buf[len-1];
+  while(len--) {
+    qfile->ungetch(*buf--);
+  }
+}
+
 bool KMyMoneyView::readFile(const KURL& url)
 {
   QString filename;
@@ -628,6 +638,13 @@ bool KMyMoneyView::readFile(const KURL& url)
     if(cnt == 2) {
       if(QString(hdr) == QString("\037\213")) {         // gzipped?
         qfile = KFilterDev::deviceForFile(filename, COMPRESSION_MIME_TYPE);
+      } else if(QString(hdr) == QString("--")){         // PGP ASCII armored?
+        if(KGPGFile::GPGAvailable())
+          qfile = new KGPGFile(filename);
+        else {
+          KMessageBox::sorry(this, i18n("GPG is not available for decryption of file '%1'").arg(filename));
+          qfile = new QFile(file.name());
+        }
       } else {
         // we can't use file directly, as we delete qfile later on
         qfile = new QFile(file.name());
@@ -637,6 +654,7 @@ bool KMyMoneyView::readFile(const KURL& url)
         try {
           hdr.resize(8);
           if(qfile->readBlock(hdr.data(), 8) == 8) {
+            ungetString(qfile, hdr.data(), 8);
             // Ok, we got the first block of 8 bytes. Read in the two
             // unsigned long int's by preserving endianess. This is
             // achieved by reading them through a QDataStream object
@@ -664,9 +682,9 @@ bool KMyMoneyView::readFile(const KURL& url)
               // we know. For now, we support our own XML format and
               // GNUCash XML format. If the file is smaller, then it
               // contains no valid data and we reject it anyway.
-              qfile->at(0);
               hdr.resize(70);
               if(qfile->readBlock(hdr.data(), 70) == 70) {
+                ungetString(qfile, hdr.data(), 70);
                 QRegExp kmyexp("<!DOCTYPE KMYMONEY-FILE>");
                 QRegExp gncexp("<gnc-v(\\d+)>");
                 QCString txt(hdr);
@@ -678,14 +696,15 @@ bool KMyMoneyView::readFile(const KURL& url)
               }
             }
             if(pReader) {
-              // rewind the file to give the reader a chance
-              qfile->at(0);
               pReader->setProgressCallback(&KMyMoneyView::progressCallback);
               pReader->readFile(qfile, dynamic_cast<IMyMoneySerialize*> (MyMoneyFile::instance()->storage()));
             } else {
               KMessageBox::sorry(this, i18n("File '%1' contains an unknown file format!").arg(filename));
               rc = false;
             }
+          } else {
+            KMessageBox::sorry(this, i18n("Cannot read from file '%1'!").arg(filename));
+            rc = false;
           }
         } catch (MyMoneyException *e) {
           QString msg = e->what();
@@ -802,7 +821,22 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter)
   KConfig *config = KGlobal::config();
   config->setGroup("General Options");
 
-  if(config->readBoolEntry("WriteDataUncompressed", false) == false) {
+  QString msg = i18n("Do you want to store your data encrypted by GPG? Please be aware, that this is a brand new feature which is yet untested. Make sure, you have the necessary understanding that you might loose all your data if you store it encrypted and cannot decrypt it later on! If unsure, answer 'No'.");
+
+  if(KGPGFile::GPGAvailable()
+  && !config->readEntry("GPG-Recipient").isEmpty()
+  && KMessageBox::questionYesNo(this, msg, i18n("Store GPG encrypted"), KStdGuiItem::yes(), KStdGuiItem::no(), "StoreEncrypted") == KMessageBox::Yes) {
+    qfile->close();
+    base++;
+    KGPGFile *kgpg = new KGPGFile(qfile->name());
+    if(kgpg) {
+      kgpg->addRecipient(config->readEntry("GPG-Recipient").latin1());
+    }
+    dev = kgpg;
+    if(!dev || !dev->open(IO_WriteOnly))
+      throw new MYMONEYEXCEPTION(i18n("Unable to open file '%1' for writing.").arg(qfile->name()));
+
+  } else if(config->readBoolEntry("WriteDataUncompressed", false) == false) {
     base = KFilterBase::findFilterByMimeType( COMPRESSION_MIME_TYPE );
     if(base) {
       base->setDevice(qfile, false);
@@ -877,7 +911,7 @@ const bool KMyMoneyView::saveFile(const KURL& url)
 
     if(url.isLocalFile()) {
       filename = url.path();
-      KSaveFile qfile(filename);
+      KSaveFile qfile(filename, 0600);
       if(qfile.status() == 0) {
         saveToLocalFile(qfile.file(), pWriter);
         if(!qfile.close()) {
@@ -1278,43 +1312,43 @@ void KMyMoneyView::loadDefaultReports(void)
   transaction_account.setDateFilter(QDate(QDate::currentDate().year(),1,1),QDate(QDate::currentDate().year(),12,31));
   transaction_account.setRowType( MyMoneyReport::eAccount );
   unsigned cols = MyMoneyReport::eQCnumber | MyMoneyReport::eQCpayee | MyMoneyReport::eQCcategory;
-  transaction_account.setQueryColumns( static_cast<MyMoneyReport::EQueryColumns>(cols) ); // 
+  transaction_account.setQueryColumns( static_cast<MyMoneyReport::EQueryColumns>(cols) ); //
   MyMoneyFile::instance()->addReport(transaction_account);
-  
+
   MyMoneyReport transaction_category;
   transaction_category.setName(i18n("Transactions by Category"));
   transaction_category.setComment(i18n("Default Report"));
   transaction_category.setDateFilter(QDate(QDate::currentDate().year(),1,1),QDate(QDate::currentDate().year(),12,31));
   transaction_category.setRowType( MyMoneyReport::eCategory );
   cols = MyMoneyReport::eQCnumber | MyMoneyReport::eQCpayee | MyMoneyReport::eQCaccount;
-  transaction_category.setQueryColumns( static_cast<MyMoneyReport::EQueryColumns>(cols) ); // 
+  transaction_category.setQueryColumns( static_cast<MyMoneyReport::EQueryColumns>(cols) ); //
   MyMoneyFile::instance()->addReport(transaction_category);
-  
+
   MyMoneyReport transaction_payee;
   transaction_payee.setName(i18n("Transactions by Payee"));
   transaction_payee.setComment(i18n("Default Report"));
   transaction_payee.setDateFilter(QDate(QDate::currentDate().year(),1,1),QDate(QDate::currentDate().year(),12,31));
   transaction_payee.setRowType( MyMoneyReport::ePayee );
   cols = MyMoneyReport::eQCnumber | MyMoneyReport::eQCcategory;
-  transaction_payee.setQueryColumns( static_cast<MyMoneyReport::EQueryColumns>(cols) ); // 
+  transaction_payee.setQueryColumns( static_cast<MyMoneyReport::EQueryColumns>(cols) ); //
   MyMoneyFile::instance()->addReport(transaction_payee);
-  
+
   MyMoneyReport transaction_month;
   transaction_month.setName(i18n("Transactions by Month"));
   transaction_month.setComment(i18n("Default Report"));
   transaction_month.setDateFilter(QDate(QDate::currentDate().year(),1,1),QDate(QDate::currentDate().year(),12,31));
   transaction_month.setRowType( MyMoneyReport::eMonth );
   cols = MyMoneyReport::eQCnumber | MyMoneyReport::eQCpayee | MyMoneyReport::eQCcategory;
-  transaction_month.setQueryColumns( static_cast<MyMoneyReport::EQueryColumns>(cols) ); // 
+  transaction_month.setQueryColumns( static_cast<MyMoneyReport::EQueryColumns>(cols) ); //
   MyMoneyFile::instance()->addReport(transaction_month);
-  
+
   MyMoneyReport transaction_week;
   transaction_week.setName(i18n("Transactions by Week"));
   transaction_week.setComment(i18n("Default Report"));
   transaction_week.setDateFilter(QDate(QDate::currentDate().year(),1,1),QDate(QDate::currentDate().year(),12,31));
   transaction_week.setRowType( MyMoneyReport::eWeek );
   cols = MyMoneyReport::eQCnumber | MyMoneyReport::eQCpayee | MyMoneyReport::eQCcategory;
-  transaction_week.setQueryColumns( static_cast<MyMoneyReport::EQueryColumns>(cols) ); // 
+  transaction_week.setQueryColumns( static_cast<MyMoneyReport::EQueryColumns>(cols) ); //
   MyMoneyFile::instance()->addReport(transaction_week);
   }
 }

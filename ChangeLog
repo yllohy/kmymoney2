@@ -1,5 +1,9 @@
+2004-08-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added GPG encryption logic
+
 2004-08-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed asset loan view activation
+  * Fixed new category/equity process
 
 2004-07-31 Ace Jones <acejones@users.sourceforge.net>
   * First draft of transaction reports.  Doesn't yet convert currency or export

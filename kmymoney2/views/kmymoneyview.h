@@ -122,6 +122,8 @@ private:
   MyMoneyInstitution m_accountsInstitution;
 
 private:
+  void ungetString(QIODevice *qfile, char * buf, int len);
+
   /**
     * This method gets a filename from the user for the template
     * of accounts to be used when the file is created. The directory
@@ -139,7 +141,7 @@ private:
     * This method preloads the basic reports into the engine
     */
   void loadDefaultReports(void);
-  
+
   /**
     * if no base currency is defined, start the dialog and force it to be set
     */

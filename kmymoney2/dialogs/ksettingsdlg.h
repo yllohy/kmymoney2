@@ -58,7 +58,7 @@ class KPushButton;
   * @see KDialogBase
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: ksettingsdlg.h,v 1.17 2004/05/03 20:27:15 ipwizard Exp $
+  * $Id: ksettingsdlg.h,v 1.18 2004/08/02 21:12:12 ipwizard Exp $
   *
   * @short A class to manipulate the settings needed for running KMyMoney2
 **/
@@ -74,7 +74,7 @@ private:
   QRadioButton *m_qradiobuttonStartHome;
   /** Start last page */
   QRadioButton *m_qradiobuttonStartLast;
-  
+
   /** Color list */
   KColorButton *m_kcolorbuttonList;
   /** Color background */
@@ -149,6 +149,9 @@ private:
   /** Set schedule options */
   void setPageSchedule();
 
+  /** Set security options */
+  void setPageSecurity(void);
+
   /** Set colour options */
   void setPageColour();
 
@@ -208,7 +211,7 @@ private slots:
   void slotMoveUp(void);
   void slotMoveDown(void);
 
- 
+
 public:
   /**
     * Standard constructor.
