@@ -68,7 +68,7 @@ private:
 void unexpectedException(MyMoneyException *e)
 {
 	std::string msg = "Unexpected exception: ";
-	msg += e->what();
+	msg += e->what().latin1();
 	msg += " thrown in ";
 	msg += e->file().latin1();
 	msg += ":";
