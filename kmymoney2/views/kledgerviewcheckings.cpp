@@ -1039,7 +1039,7 @@ void KLedgerViewCheckings::reloadEditWidgets(const MyMoneyTransaction& t)
 
   m_transaction = t;
   m_split = m_transaction.splitByAccount(accountId());
-  amount = m_split.value(m_transaction.commodity(), m_account.currencyId());
+  amount = m_split.value();
 
   if(m_editCategory != 0)
     disconnect(m_editCategory, SIGNAL(signalFocusIn()), this, SLOT(slotOpenSplitDialog()));

@@ -68,6 +68,7 @@ public:
   const QCStringList accountList(const QValueList<MyMoneyAccount::accountTypeE>& list = QValueList<MyMoneyAccount::accountTypeE>()) const { return m_selector->accountList(list); };
 
   int loadList(KMyMoneyUtils::categoryTypeE typeMask);
+  int loadList(const QValueList<int>& list) { return m_selector->loadList(list); };
 
   void setSelected(const MyMoneyAccount& acc);
 
@@ -83,9 +84,9 @@ public:
 
 public slots:
   void slotButtonPressed(void);
+  void slotSelected(const QCString&);
 
 protected slots:
-  void slotSelected(const QCString&);
 
 signals:
   void accountSelected(const QCString&);

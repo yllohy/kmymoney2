@@ -294,6 +294,8 @@ public slots:
    */
   void slotFileQuit();
 
+  void slotAccountNew(void);
+
   void slotFileConsitencyCheck(void);
 
   void slotCurrencyDialog(void);

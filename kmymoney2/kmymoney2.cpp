@@ -1436,3 +1436,8 @@ void KMyMoney2App::slotEquityPriceUpdate()
   pDlg->exec();
 }
 
+void KMyMoney2App::slotAccountNew(void)
+{
+  Q_CHECK_PTR(myMoneyView);
+  myMoneyView->slotAccountNew();
+}

@@ -322,9 +322,9 @@ void kMyMoneyRegisterInvestment::paintCell(QPainter *p, int row, int col, const 
               switch(transactionType) {
                 case KLedgerView::BuyShares:
                 case KLedgerView::SellShares:
+                case KLedgerView::ReinvestDividend:
                   txt = (m_split.value(QCString(), QCString())/m_split.shares()).abs().formatMoney();
                   break;
-                case KLedgerView::ReinvestDividend:
                 case KLedgerView::AddShares:
                 case KLedgerView::RemoveShares:
                 case KLedgerView::Dividend:
@@ -350,6 +350,8 @@ void kMyMoneyRegisterInvestment::paintCell(QPainter *p, int row, int col, const 
                   txt = m_accountSplit.value(QCString(), QCString()).abs().formatMoney();
                   break;
                 case KLedgerView::ReinvestDividend:
+                  txt = m_interestSplit.value(QCString(), QCString()).abs().formatMoney();
+                  break;
                 case KLedgerView::AddShares:
                 case KLedgerView::RemoveShares:
                 default:

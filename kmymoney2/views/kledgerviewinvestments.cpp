@@ -184,24 +184,8 @@ void KLedgerViewInvestments::fillForm()
   {
     // get my local copy of the selected transaction
     m_transaction = *m_transactionPtr;
-    m_split = MyMoneySplit();
-
-    // find the split that references the stock account
-    QValueList<MyMoneySplit>::ConstIterator it_s;
-    for(it_s = m_transaction.splits().begin(); it_s != m_transaction.splits().end(); ++it_s) {
-      MyMoneyAccount acc = file->account((*it_s).accountId());
-      if(acc.accountType() == MyMoneyAccount::Stock) {
-        m_split = *it_s;
-      } else if(acc.accountGroup() == MyMoneyAccount::Expense) {
-        m_feeSplit = *it_s;
-      } else if(acc.accountGroup() == MyMoneyAccount::Income) {
-        m_interestSplit = *it_s;
-      } else if(acc.accountGroup() == MyMoneyAccount::Asset
-             || acc.accountGroup() == MyMoneyAccount::Liability) {
-        m_accountSplit = *it_s;
-      }
-    }
-
+    // extract specific splits from the transaction
+    preloadInvestmentSplits(m_transaction);
     m_transactionType = transactionType(m_transaction, m_split);
     fillFormStatics();
 
@@ -279,6 +263,34 @@ void KLedgerViewInvestments::fillForm()
 
       case ReinvestDividend:
         formTable->setText(ACTIVITY_ROW, ACTIVITY_DATA_COL, i18n("Reinvest Dividend"));
+        formTable->setText(CATEGORY_ROW, CATEGORY_DATA_COL, fee);
+        formTable->setText(ACCOUNT_ROW, ACCOUNT_DATA_COL, interest);
+
+        // total amount
+        amount = m_interestSplit.value(m_transaction.commodity(), m_account.currencyId()).abs();
+        item = new kMyMoneyTransactionFormTableItem(formTable, QTableItem::Never,
+                 amount.formatMoney());
+        item->setAlignment(kMyMoneyTransactionFormTableItem::right);
+        formTable->setItem(VALUE_ROW, VALUE_DATA_COL, item);
+
+        // shares
+        shares = m_split.shares().abs();
+        item = new kMyMoneyTransactionFormTableItem(formTable, QTableItem::Never,
+                 shares.formatMoney());
+        item->setAlignment(kMyMoneyTransactionFormTableItem::right);
+        formTable->setItem(QUANTITY_ROW, QUANTITY_DATA_COL, item);
+
+        // price
+        item = new kMyMoneyTransactionFormTableItem(formTable, QTableItem::Never,
+                 (m_split.value(m_transaction.commodity(), m_account.currencyId())/m_split.shares()).formatMoney());
+        item->setAlignment(kMyMoneyTransactionFormTableItem::right);
+        formTable->setItem(PRICE_ROW, PRICE_DATA_COL, item);
+
+        // fees
+        item = new kMyMoneyTransactionFormTableItem(formTable, QTableItem::Never,
+                 m_feeSplit.value(m_transaction.commodity(), m_account.currencyId()).abs().formatMoney());
+        item->setAlignment(kMyMoneyTransactionFormTableItem::right);
+        formTable->setItem(FEES_ROW, FEES_DATA_COL, item);
         break;
 
       case Dividend:
@@ -480,7 +492,7 @@ QWidget* KLedgerViewInvestments::arrangeEditWidgetsInForm(void)
 {
   kMyMoneyTransactionFormTable* table = m_form->table();
 
-  Q_CHECK_PTR(table != 0);
+  Q_CHECK_PTR(table);
 
   // make sure, we're using the right palette
   QPalette palette = m_register->palette();
@@ -613,12 +625,170 @@ void KLedgerViewInvestments::hideWidgets()
   m_form->tabBar()->setEnabled(true);
 }
 
+void KLedgerViewInvestments::preloadInvestmentSplits(const MyMoneyTransaction& t)
+{
+  m_split =
+  m_feeSplit =
+  m_interestSplit =
+  m_accountSplit = MyMoneySplit();
+
+  // find the split that references the stock account
+  QValueList<MyMoneySplit>::ConstIterator it_s;
+  for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s) {
+    MyMoneyAccount acc = MyMoneyFile::instance()->account((*it_s).accountId());
+    if(acc.accountType() == MyMoneyAccount::Stock) {
+      m_split = *it_s;
+    } else if(acc.accountGroup() == MyMoneyAccount::Expense) {
+      m_feeSplit = *it_s;
+    } else if(acc.accountGroup() == MyMoneyAccount::Income) {
+      m_interestSplit = *it_s;
+    } else if(acc.accountGroup() == MyMoneyAccount::Asset
+            || acc.accountGroup() == MyMoneyAccount::Liability) {
+      m_accountSplit = *it_s;
+    }
+  }
+}
+
 void KLedgerViewInvestments::reloadEditWidgets(const MyMoneyTransaction& t)
 {
+  Q_CHECK_PTR(m_editType);
+
+  m_transaction = t;
+  preloadInvestmentSplits(t);
+
+  // Determine the actual action
+  if(m_split.action() == MyMoneySplit::ActionBuyShares) {
+    if(m_split.value() < 0)
+      m_editType->setCurrentItem(SellShares);
+    else
+      m_editType->setCurrentItem(BuyShares);
+
+  } else if(m_split.action() == MyMoneySplit::ActionAddShares) {
+    if(m_split.value() < 0)
+      m_editType->setCurrentItem(RemoveShares);
+    else
+      m_editType->setCurrentItem(AddShares);
+
+  } else if(m_split.action() == MyMoneySplit::ActionDividend) {
+      m_editType->setCurrentItem(Dividend);
+
+  } else if(m_split.action() == MyMoneySplit::ActionYield) {
+      m_editType->setCurrentItem(Yield);
+
+  } else if(m_split.action() == MyMoneySplit::ActionReinvestDividend) {
+      m_editType->setCurrentItem(ReinvestDividend);
+
+  } else {
+    qDebug("Unknown MyMoneySplit::Action%s in KLedgerViewInvestments::reloadEditWidgets", m_split.action().data());
+    return;
+  }
+
+  // Fill the fields - first the ones that are in any transaction
+  if(m_editStockAccount)
+    m_editStockAccount->slotSelected(m_split.accountId());
+  if(m_editDate)
+    m_editDate->setDate(m_transaction.postDate());
+  if(m_editMemo)
+    m_editMemo->loadText(m_split.memo());
+
+  // Fill the fields - next the ones that are specific to the transaction
+  MyMoneyMoney shares, price, amount;
+  switch(m_editType->currentItem()) {
+    case BuyShares:
+    case SellShares:
+      shares = m_split.shares();
+      price = m_split.value() / shares;
+      if(m_editType->currentItem() == SellShares)
+        shares = -shares;
+      if(m_editShares)
+        m_editShares->loadText(shares.formatMoney());
+      if(m_editPPS)
+        m_editPPS->loadText(price.formatMoney());
+      if(m_editCashAccount)
+        m_editCashAccount->slotSelected(m_accountSplit.accountId());
+      if(m_editFeeCategory)
+        m_editFeeCategory->loadAccount(m_feeSplit.accountId());
+      if(!m_feeSplit.accountId().isEmpty())
+        m_editFees->loadText(m_feeSplit.value().formatMoney());
+      break;
+
+    case ReinvestDividend:
+      shares = m_split.shares();
+      price = m_split.value() / shares;
+      if(m_editShares)
+        m_editShares->loadText(shares.formatMoney());
+      if(m_editPPS)
+        m_editPPS->loadText(price.formatMoney());
+      if(m_editCashAccount)
+        m_editCashAccount->slotSelected(m_interestSplit.accountId());
+      if(m_editFeeCategory)
+        m_editFeeCategory->loadAccount(m_feeSplit.accountId());
+      if(!m_feeSplit.accountId().isEmpty())
+        m_editFees->loadText(m_feeSplit.value().formatMoney());
+      break;
+
+    case Dividend:
+    case Yield:
+      if(m_editFeeCategory)
+        m_editFeeCategory->loadAccount(m_interestSplit.accountId());
+      if(!m_interestSplit.accountId().isEmpty())
+        m_editFees->loadText((-m_interestSplit.value()).formatMoney());
+      if(m_editCashAccount)
+        m_editCashAccount->slotSelected(m_accountSplit.accountId());
+      break;
+
+    case AddShares:
+    case RemoveShares:
+      shares = m_split.shares();
+      if(m_editType->currentItem() == RemoveShares)
+        shares = -shares;
+      if(m_editShares)
+        m_editShares->loadText(shares.formatMoney());
+      break;
+  }
+#if 0
+  try {
+    if(!m_split.payeeId().isEmpty())
+      payee = MyMoneyFile::instance()->payee(m_split.payeeId()).name();
+
+    MyMoneySplit s;
+    MyMoneyAccount acc;
+
+  } catch(MyMoneyException *e) {
+    qDebug("Exception '%s' thrown in %s, line %ld caught in KLedgerViewCheckings::reloadEditWidgets():%d",
+      e->what().latin1(), e->file().latin1(), e->line(), __LINE__-2);
+    delete e;
+  }
+
+  if(m_editMemo != 0)
+    m_editMemo->loadText(m_split.memo());
+  if(m_editAmount != 0)
+    m_editAmount->loadText(amount.abs().formatMoney());
+  if(m_editDate != 0 && m_transactionPtr)
+    m_editDate->loadDate(m_transactionPtr->postDate());
+  if(m_editNr != 0)
+    m_editNr->loadText(m_split.number());
+
+  if(m_editPayment != 0 && m_editDeposit != 0) {
+    if(m_split.value() < 0) {
+      m_editPayment->loadText((-m_split.value()).formatMoney());
+      m_editDeposit->loadText(QString());
+    } else {
+      m_editPayment->loadText(QString());
+      m_editDeposit->loadText((m_split.value()).formatMoney());
+    }
+  }
+#endif
 }
 
 void KLedgerViewInvestments::loadEditWidgets(void)
 {
+  if(m_transactionPtr != 0) {
+    reloadEditWidgets(*m_transactionPtr);
+  } else {
+    m_editDate->setDate(m_lastPostDate);
+  }
+
   // the next line prevents an endless loop caused in
   // slotDataChanged()
   m_transactionType = static_cast<investTransactionTypeE> (m_editType->currentItem());
@@ -697,11 +867,23 @@ void KLedgerViewInvestments::createEditWidgets()
     m_editCashAccount = new kMyMoneyAccountCombo(0, "editCashAccount");
     m_editCashAccount->setMinimumWidth(0);
     m_editCashAccount->setFocusPolicy(QWidget::StrongFocus);
+
+    QValueList<int> typeList;
+    typeList << MyMoneyAccount::Checkings;
+    typeList << MyMoneyAccount::Savings;
+    typeList << MyMoneyAccount::Cash;
+    typeList << MyMoneyAccount::CreditCard;
+    typeList << MyMoneyAccount::Loan;
+    typeList << MyMoneyAccount::Asset;
+    typeList << MyMoneyAccount::Liability;
+    typeList << MyMoneyAccount::Currency;
+    typeList << MyMoneyAccount::AssetLoan;
+    m_editCashAccount->loadList(typeList);
+
     connect(m_editCashAccount, SIGNAL(accountSelected(const QCString&)), this, SLOT(slotDataChanged()));
     connect(m_editCashAccount, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
     connect(m_editCashAccount, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   }
-  m_editCashAccount->loadList(static_cast<KMyMoneyUtils::categoryTypeE>(KMyMoneyUtils::asset | KMyMoneyUtils::liability));
 
   if(!m_editFeeCategory) {
     m_editFeeCategory = new kMyMoneyCategory(0, "editFeeCategory", KMyMoneyUtils::expense);
@@ -1066,12 +1248,6 @@ void KLedgerViewInvestments::resizeEvent(QResizeEvent* /* ev */)
   table->setColumnWidth(1, w);
 }
 
-void KLedgerViewInvestments::slotStartEdit()
-{
-  //QString name = m_editSymbolName->text();
-  //qDebug("Symbol name is %s", name.data());
-}
-
 void KLedgerViewInvestments::slotEndEdit()
 {
   // check if someone tries to trick us. this works as follows:
@@ -1103,16 +1279,16 @@ void KLedgerViewInvestments::slotEndEdit()
   // the transaction because we will generate new ones.
   m_transaction.removeSplits();
 
-  MyMoneyMoney total, fees, shares, value;
+  MyMoneyMoney total, fees, interest, shares, value;
   switch(currentAction) {
     case BuyShares:
     case SellShares:
+      // setup stock account split
       shares = m_editShares->getMoneyValue();
       m_split.setAction(MyMoneySplit::ActionBuyShares);
       if(currentAction == SellShares) {
         shares = -shares;
       }
-      // setup stock account split
       m_split.setValue((m_editPPS->getMoneyValue() * shares));
       m_split.setShares(shares);
       m_split.setMemo(m_editMemo->text());
@@ -1127,10 +1303,10 @@ void KLedgerViewInvestments::slotEndEdit()
       m_feeSplit.setId(QCString());
 
       //set up the split for the money that is sourcing this transaction
-      total = -(-(shares*m_editPPS->getMoneyValue()) - fees);
+      total = -(shares*m_editPPS->getMoneyValue() + fees);
       m_accountSplit.setAccountId(accountId);
-      m_accountSplit.setValue(-total);
-      m_accountSplit.setShares(-total);
+      m_accountSplit.setValue(total);
+      m_accountSplit.setShares(total);
       m_accountSplit.setMemo(m_editMemo->text());
       m_accountSplit.setId(QCString());
 
@@ -1141,8 +1317,68 @@ void KLedgerViewInvestments::slotEndEdit()
       break;
 
     case ReinvestDividend:
+      // setup stock account split
+      shares = m_editShares->getMoneyValue();
+      m_split.setAction(MyMoneySplit::ActionReinvestDividend);
+      m_split.setValue((m_editPPS->getMoneyValue() * shares));
+      m_split.setShares(shares);
+      m_split.setMemo(m_editMemo->text());
+      m_split.setAccountId(m_editStockAccount->selectedAccounts().first());
+      m_split.setId(QCString());
+
+      //set up the fee split now
+      fees = m_editFees->getMoneyValue();
+      m_feeSplit.setValue(fees);
+      m_feeSplit.setShares(fees);
+      m_feeSplit.setAccountId(m_editFeeCategory->selectedAccountId());
+      m_feeSplit.setId(QCString());
+
+      //set up the split for the money that is sourcing this transaction
+      total = -(shares*m_editPPS->getMoneyValue() + fees);
+      m_interestSplit.setAccountId(accountId);
+      m_interestSplit.setValue(total);
+      m_interestSplit.setShares(total);
+      m_interestSplit.setMemo(m_editMemo->text());
+      m_interestSplit.setId(QCString());
+
+      m_transaction.addSplit(m_interestSplit);
+      m_transaction.addSplit(m_split);
+      if(m_feeSplit.value() != 0)
+        m_transaction.addSplit(m_feeSplit);
+      break;
+
     case Dividend:
     case Yield:
+      // setup stock account split. As each investment transaction
+      // must reference a stock account, we better add it, even though
+      // it does not seem to be necessary here otherwise.
+      m_split.setAction(MyMoneySplit::ActionDividend);
+      if(currentAction == Yield)
+        m_split.setAction(MyMoneySplit::ActionYield);
+      m_split.setValue(0);
+      m_split.setShares(0);
+      m_split.setMemo(m_editMemo->text());
+      m_split.setAccountId(m_editStockAccount->selectedAccounts().first());
+      m_split.setId(QCString());
+
+      //set up the interest split now (attention: uses fee widgets)
+      interest = -m_editFees->getMoneyValue();
+      m_interestSplit.setValue(interest);
+      m_interestSplit.setShares(interest);
+      m_interestSplit.setAccountId(m_editFeeCategory->selectedAccountId());
+      m_interestSplit.setId(QCString());
+
+      //set up the split for the account that receives the payment
+      m_accountSplit.setAccountId(accountId);
+      m_accountSplit.setValue(-interest);
+      m_accountSplit.setShares(-interest);
+      m_accountSplit.setMemo(m_editMemo->text());
+      m_accountSplit.setId(QCString());
+
+      m_transaction.addSplit(m_accountSplit);
+      m_transaction.addSplit(m_split);
+      if(m_interestSplit.value() != 0)
+        m_transaction.addSplit(m_interestSplit);
       break;
 
     case AddShares:
@@ -1327,7 +1563,7 @@ void KLedgerViewInvestments::updateTotalAmount(void)
 
     case ReinvestDividend:
       total = (m_editPPS->getMoneyValue() * m_editShares->getMoneyValue());
-      total -= m_editFees->getMoneyValue();
+      total += m_editFees->getMoneyValue();
       item = new kMyMoneyTransactionFormTableItem(formTable, QTableItem::Never,
                 total.formatMoney("", 2));
       break;
@@ -1349,7 +1585,7 @@ void KLedgerViewInvestments::updateTotalAmount(void)
 
 const bool KLedgerViewInvestments::slotDataChanged(void)
 {
-  Q_CHECK_PTR(m_editType != 0);
+  Q_CHECK_PTR(m_editType);
 
   // check if a change in widget presentation is required
   if(m_transactionType != m_editType->currentItem()) {

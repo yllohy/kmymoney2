@@ -71,7 +71,6 @@ protected slots:
   virtual void slotTypeSelected(int type);
   virtual void slotReconciliation(void);
   virtual void slotNew();
-  virtual void slotStartEdit();
   virtual void slotEndEdit();
   virtual void slotEquityChanged(const QCString& id);
   const bool slotDataChanged(void);
@@ -104,6 +103,14 @@ private:
     * required for in-register and in-form editing, all widgets will be filled.
     */
   void loadEditWidgets(void);
+
+  /**
+    * This method scans the splits of the given transaction and copies the
+    * splits to m_feeSplit, m_accountSplit, m_interestSplit and m_split.
+    *
+    * @param t const reference to MyMoneyTransaction object
+    */
+  void preloadInvestmentSplits(const MyMoneyTransaction& t);
 
   /**
     * This method is used by the constructor to create the necessary widgets

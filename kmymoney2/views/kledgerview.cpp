@@ -455,14 +455,22 @@ void KLedgerView::setupPointerAndBalanceArrays(void)
   bool dateMarkPlaced = false;
   m_register->setCurrentDateIndex();    // turn off date mark
 
-  try {
+  if(!accountId().isEmpty()) {
     balance = MyMoneyFile::instance()->balance(accountId());
     // the trick is to go backwards ;-)
 
     while(--i >= 0) {
       m_balance[i] = balance;
-      MyMoneySplit split = m_transactionPtrVector[i]->splitByAccount(accountId());
-      balance -= split.value(m_transactionPtrVector[i]->commodity(), m_account.currencyId());
+      try {
+        MyMoneySplit split = m_transactionPtrVector[i]->splitByAccount(accountId());
+        balance -= split.value(m_transactionPtrVector[i]->commodity(), m_account.currencyId());
+      } catch(MyMoneyException *e) {
+        // for KLedgerViewInvestments this will fail, because there's no split with accountId()
+        // in the transaction, only with the stock child
+        if(!accountId().isEmpty() && !inherits("KLedgerViewInvestments"))
+          qDebug("Unexpected exception in KLedgerView::setupPointerAndBalanceArrays: " + e->what());
+        delete e;
+      }
       if(m_transactionPtrVector.sortType() == KTransactionPtrVector::SortPostDate) {
         if(m_transactionPtrVector[i]->postDate() > QDate::currentDate()) {
           m_register->setCurrentDateIndex(i+1);
@@ -477,11 +485,6 @@ void KLedgerView::setupPointerAndBalanceArrays(void)
     // future and we can safely set the date mark to the very first slot
     if(dateMarkPlaced == false)
       m_register->setCurrentDateIndex(0);
-
-  } catch(MyMoneyException *e) {
-    if(!accountId().isEmpty())
-      qDebug("Unexpected exception in KLedgerView::setupPointerAndBalanceArrays: " + e->what());
-    delete e;
   }
 }
 
@@ -1206,7 +1209,7 @@ void KLedgerView::slotStartEdit(void)
 {
   // make sure, the view supports the type of transaction
   if(transactionType(m_transaction) == InvestmentTransaction
-  && !inherits("KLedgerViewInvestment")) {
+  && !inherits("KLedgerViewInvestments")) {
     if(KMessageBox::questionYesNo(0, i18n("An investment transaction can only be modified in the transaction view. Do you want to change to the investment view?")) == KMessageBox::Yes) {
 
       emit accountAndTransactionSelected(stockSplit(m_transaction).accountId(), m_transaction.id());
