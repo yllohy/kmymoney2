@@ -141,7 +141,8 @@ void KBanksView::refresh(MyMoneyFile file)
   }
 
   QString s(i18n("Total Profits: "));
-  s += KGlobal::locale()->formatMoney(totalProfit.amount());
+  s += KGlobal::locale()->formatMoney(totalProfit.amount(), "",
+                                      KGlobal::locale()->fracDigits());
 
   totalProfitsLabel->setFont(config->readFontEntry("listCellFont", &defaultFont));
   totalProfitsLabel->setText(s);

@@ -15,7 +15,8 @@
  ***************************************************************************/
 
 #include <knumvalidator.h>
-#include <locale.h>
+#include <kglobal.h>
+#include <klocale.h>
 #include "kmymoneyedit.h"
 
 kMyMoneyEdit::kMyMoneyEdit(QWidget *parent, const char *name )
@@ -35,10 +36,13 @@ kMyMoneyEdit::~kMyMoneyEdit()
 
 MyMoneyMoney kMyMoneyEdit::getMoneyValue(void)
 {
+  KLocale* locale = KGlobal::locale();
+
   // Truncate to frac_digits
   // This will all be user specified in the future.
-  QString convString = QString::number(text().toFloat(), 'f', int(localeconv()->frac_digits));
-  MyMoneyMoney money(convString.toFloat());
+  QString convString = // QString::number(text().toFloat(), 'f', int(localeconv()->frac_digits));
+    locale->formatMoney(text().toFloat(), "", locale->fracDigits());
+  MyMoneyMoney money(locale->readMoney(convString));
   return money;
 }
 
@@ -55,12 +59,14 @@ void kMyMoneyEdit::theTextChanged(const QString & theText)
 
 void kMyMoneyEdit::focusOutEvent(QFocusEvent *e)
 {
-  // If text contains no .?? then make the text read ?.00
+  KLocale* locale = KGlobal::locale();
+  // If text contains no 'monetaryDecimalSymbol' then add it
+  // followed by the required number of 0s
   QString s(text());
   if (!s.isEmpty()) {
-    if (!s.contains('.')) {
-      s += ".";
-      for (int i=0; i<(int(localeconv()->frac_digits)); i++)
+    if (!s.contains(locale->monetaryDecimalSymbol())) {
+      s += locale->monetaryDecimalSymbol();
+      for (int i=0; i < locale->fracDigits(); i++)
         s += "0";
       setText(s);
     }

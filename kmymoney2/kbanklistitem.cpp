@@ -34,7 +34,8 @@ KBankListItem::KBankListItem(QListView *parent, MyMoneyBank bank )
   MyMoneyAccount *account;
   for (account=bank.accountFirst(); account; account=bank.accountNext())
     balance += account->balance();
-  setText(2, KGlobal::locale()->formatNumber(balance.amount()));
+  setText(2, KGlobal::locale()->formatMoney(balance.amount(), "",
+                                            KGlobal::locale()->fracDigits()));
   m_isBank=true;
 }
 
@@ -47,7 +48,8 @@ KBankListItem::KBankListItem(KBankListItem *parent, MyMoneyBank bank, MyMoneyAcc
   setText(0, m_account.name());
   setPixmap(0, QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/22x22/actions/account.png")));
   setText(1, i18n("Current")); // dynamic in future...
-  setText(2, KGlobal::locale()->formatNumber(m_account.balance().amount()));
+  setText(2, KGlobal::locale()->formatMoney(m_account.balance().amount(), "",
+                                            KGlobal::locale()->fracDigits()));
 
   m_isBank=false;
 }

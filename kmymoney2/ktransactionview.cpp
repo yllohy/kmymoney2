@@ -590,11 +590,10 @@ void KTransactionView::enterClicked()
     qDebug("Unable to find account in updateData");
     return;
   }
-  MyMoneyMoney balance;
-//  MyMoneyTransaction *transaction;
 
+  MyMoneyMoney balance;
 	MyMoneyTransaction::transactionMethod newmethod;
-//  double dblnewamount;
+ 	MyMoneyMoney newamount;
 
   QDate newdate = m_date->getQDate();
 	QString newcategory = m_category->currentText();
@@ -608,37 +607,14 @@ void KTransactionView::enterClicked()
     return;
   }
 
-//  int commaindex;
- 	MyMoneyMoney newamount;
-
-    // Get amount from payment or withdrawal Line Edit
-	if(m_payment->text() == "")
-	{
-	  /* Old code
-    commaindex = m_withdrawal->text().find(",");
-		if(commaindex != -1)
-			dblnewamount = m_withdrawal->text().remove(commaindex,1).toDouble();
-		else
-			dblnewamount = m_withdrawal->text().toDouble();
-  	dblnewamount = dblnewamount;
-  	*/
+  // Get amount from payment or withdrawal Line Edit
+	if(m_payment->text() == "")	{
   	newamount = m_withdrawal->text();
-	}
-  else if(m_withdrawal->text() == "")
-	{
-		/* old code
-		commaindex = m_payment->text().find(",");
-		if(commaindex != -1)
-			dblnewamount = m_payment->text().remove(commaindex,1).toDouble();
-		else
-			dblnewamount = m_payment->text().toDouble();
 
-  	dblnewamount = dblnewamount;
-  	*/
+	} else if(m_withdrawal->text() == "")	{
   	newamount = m_payment->text();
-	}
-	else
-	{
+
+  } else {
    	newamount = 0;
 	}
 
@@ -1094,14 +1070,22 @@ void KTransactionView::updateTransactionList(int row, int col)
       }
       transactionsTable->setText(rowCount, 3, colText);
 
-      transactionsTable->setText(rowCount, 5,
-        ((transaction->type()==MyMoneyTransaction::Credit) ? KGlobal::locale()->formatNumber(transaction->amount().amount()) : QString("")));
-
       transactionsTable->setText(rowCount, 4,
-        ((transaction->type()==MyMoneyTransaction::Debit) ? KGlobal::locale()->formatNumber(transaction->amount().amount()) : QString("")));
+        ((transaction->type()==MyMoneyTransaction::Debit) ?
+           KGlobal::locale()->formatMoney(transaction->amount().amount(), "",
+                                          KGlobal::locale()->fracDigits()) :
+           QString("")));
+
+      transactionsTable->setText(rowCount, 5,
+        ((transaction->type()==MyMoneyTransaction::Credit) ?
+           KGlobal::locale()->formatMoney(transaction->amount().amount(), "",
+                                          KGlobal::locale()->fracDigits()) :
+           QString("")));
 
       if (m_viewType==NORMAL)
-        transactionsTable->setText(rowCount, 6, KGlobal::locale()->formatNumber(balance.amount()));
+        transactionsTable->setText(rowCount, 6,
+          KGlobal::locale()->formatMoney(balance.amount(), "",
+                                          KGlobal::locale()->fracDigits()));
       else
         transactionsTable->setText(rowCount, 6, i18n("N/A"));
 
@@ -1204,9 +1188,7 @@ void KTransactionView::updateTransactionList(int row, int col)
 
 void KTransactionView::cancelClicked()
 {
-
 	hideWidgets();
-	
 }
 
 void KTransactionView::deleteClicked()
@@ -1324,8 +1306,8 @@ void KTransactionView::resizeEvent(QResizeEvent*)
 }
 
 /** No descriptions */
-void KTransactionView::hideWidgets(){
-
+void KTransactionView::hideWidgets()
+{
     m_date->hide();
     m_method->hide();
     m_number->hide();
