@@ -104,7 +104,12 @@ void MyMoneyFile::addInstitution(MyMoneyInstitution& institution)
 
   checkStorage();
 
+  // automatically notify all observers once this routine is done
+  MyMoneyNotifier notifier(this);
+  
   m_storage->addInstitution(institution);
+
+  addNotification(NotifyClassInstitution);
 }
 
 void MyMoneyFile::modifyInstitution(const MyMoneyInstitution& institution)
@@ -117,6 +122,7 @@ void MyMoneyFile::modifyInstitution(const MyMoneyInstitution& institution)
   m_storage->modifyInstitution(institution);
 
   addNotification(institution.id());
+  addNotification(NotifyClassInstitution);
 }
 
 void MyMoneyFile::modifyTransaction(const MyMoneyTransaction& transaction)
@@ -333,7 +339,14 @@ void MyMoneyFile::removeInstitution(const MyMoneyInstitution& institution)
 {
   checkStorage();
 
+  // automatically notify all observers once this routine is done
+  MyMoneyNotifier notifier(this);
+
+  addNotification(institution.id());
+  
   m_storage->removeInstitution(institution);
+  
+  addNotification(NotifyClassInstitution);
 }
 
 void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
@@ -358,7 +371,7 @@ void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
   if(account.accountList().count() != 0)
     throw new MYMONEYEXCEPTION("New account must have no sub-accounts");
 
-  if(account.parentAccountId() != "")
+  if(!account.parentAccountId().isEmpty())
     throw new MYMONEYEXCEPTION("New account must have no parent-id");
 
   if(account.accountType() == MyMoneyAccount::UnknownAccountType)
@@ -422,9 +435,10 @@ void MyMoneyFile::addTransaction(MyMoneyTransaction& transaction)
   // * the referenced accounts in the splits exist
 
   // first perform all the checks
-  if(transaction.id() != ""
-  || !transaction.postDate().isValid())
-    throw new MYMONEYEXCEPTION("Invalid transaction to be added");
+  if(!transaction.id().isEmpty())
+    throw new MYMONEYEXCEPTION("Unable to add transaction with id set");
+  if(!transaction.postDate().isValid())
+    throw new MYMONEYEXCEPTION("Unable to add transaction with invalid postdate");
 
   // now check the splits
   QValueList<MyMoneySplit>::ConstIterator it_s;
@@ -680,7 +694,7 @@ void MyMoneyFile::notifyAccountTree(const QCString& id)
 
 void MyMoneyFile::addNotification(const QCString& id)
 {
-  if(id != "")
+  if(!id.isEmpty())
     m_notificationList[id] = true;
 }
 
@@ -764,13 +778,13 @@ const QCString MyMoneyFile::locateSubAccount(const MyMoneyAccount& base, const Q
   for(it_a = list.begin(); it_a != list.end(); ++it_a) {
     nextBase = account(*it_a);
     if(nextBase.name() == level) {
-      if(remainder == "") {
+      if(remainder.isEmpty()) {
         return nextBase.id();
       }
       return locateSubAccount(nextBase, remainder);
     }
   }
-  return "";
+  return QCString();
 }
 
 const QString MyMoneyFile::value(const QCString& key) const

@@ -1284,7 +1284,7 @@ void MyMoneyFileTest::testCategory2Account() {
 		m->reparentAccount(b, a);
 		CPPUNIT_ASSERT(m->categoryToAccount("Expense1") == "A000003");
 		CPPUNIT_ASSERT(m->categoryToAccount("Expense1:Expense2") == "A000004");
-		CPPUNIT_ASSERT(m->categoryToAccount("Acc2") == "");
+		CPPUNIT_ASSERT(m->categoryToAccount("Acc2").isEmpty());
 	} catch(MyMoneyException *e) {
 		unexpectedException(e);
 	}
