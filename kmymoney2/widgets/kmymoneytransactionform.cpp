@@ -41,6 +41,7 @@
 #include <kiconloader.h>
 #include <kguiitem.h>
 #include <kglobalsettings.h>
+#include <ktoolbar.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -212,77 +213,96 @@ kMyMoneyTransactionForm::kMyMoneyTransactionForm( KLedgerView* parent,  const ch
   formLayout->addWidget( m_tabBar );
 
   formFrame = new QFrame( this, "formFrame" );
-  formFrame->setGeometry( QRect( 12, 44, 462, 170 ));
+  // formFrame->setGeometry( QRect( 12, 44, 462, 170 ));
   formFrame->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding,
                                          QSizePolicy::Minimum,
                                          0, 0,
                                          formFrame->sizePolicy().hasHeightForWidth() ) );
   formFrame->setFrameShape( QFrame::Panel );
   formFrame->setFrameShadow( QFrame::Raised );
-  formFrameLayout = new QGridLayout( formFrame, 1, 1, 11, 6, "formFrameLayout");
-
-  buttonLayout = new QHBoxLayout( 0, 0, 10, "buttonLayout");
+  formFrameLayout = new QGridLayout( formFrame, 3, 1, 3, 0, "formFrameLayout");
 
   KIconLoader *il = KGlobal::iconLoader();
 
-  KGuiItem newButtItem( i18n( "&New" ),
-                    QIconSet(il->loadIcon("filenew", KIcon::Small, KIcon::SizeSmall)),
-                    i18n("Create a new transaction"),
-                    i18n("Use this to create a new transaction in the ledger"));
-  buttonNew = new KPushButton( newButtItem, formFrame, KAppTest::widgetName(this, "KPushButton/New") );
-  buttonNew->setSizePolicy( QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed, 0, 0, buttonNew->sizePolicy().hasHeightForWidth() ) );
+  buttonLayout = new QHBoxLayout( 0, 0, 0, "buttonLayout");
+
+  // The following code looks a bit weird. The problem I had was, that when I added
+  // a KToolBar object as child to the formFrame, the frame parameters for the formFrame
+  // where overridden and I could not control them anymore. Creating the KToolBarButtons
+  // w/o a KToolBar parent does not allow to set the KToolBar::IconTextRight attribute
+  // which I wanted.
+  //
+  // The trick is to create a KToolBar w/o parent, add the buttons then reparent the
+  // buttons to the formFrame and throw away the KToolBar object. We cannot throw it
+  // away immediately, because it is still required for some color/theme change. So we
+  // keep it around until this object is destroyed.
+
+  QPoint point(0,0);
+  m_toolbar = new KToolBar(0, "ToolBar", true);
+  m_toolbar->setIconText(KToolBar::IconTextRight);
+  m_toolbar->insertButton(il->loadIcon("filenew", KIcon::Toolbar, KIcon::SizeSmall),
+                        1,true,i18n("New"));
+  buttonNew = m_toolbar->getButton(1);
+
+  m_toolbar->insertButton(il->loadIcon("edit", KIcon::Small, KIcon::SizeSmall),
+                        2,true,i18n("Edit"));
+  buttonEdit = m_toolbar->getButton(2);
+
+  m_toolbar->insertButton(il->loadIcon("button_ok", KIcon::Small, KIcon::SizeSmall),
+                        3,true,i18n("Enter"));
+  buttonEnter = m_toolbar->getButton(3);
+
+  m_toolbar->insertButton(il->loadIcon("button_cancel", KIcon::Small, KIcon::SizeSmall),
+                        4,true,i18n("Cancel"));
+  buttonCancel = m_toolbar->getButton(4);
+
+  m_toolbar->insertButton(il->loadIcon("configure", KIcon::Small, KIcon::SizeSmall),
+                        5,true,i18n("More"));
+  buttonMore = m_toolbar->getButton(5);
+
+  m_toolbar->insertButton(il->loadIcon("document", KIcon::Small, KIcon::SizeSmall),
+                        6,true,i18n("Account"));
+  buttonAccount = m_toolbar->getButton(6);
+
+
+  buttonNew->reparent(formFrame, point);
   buttonLayout->addWidget( buttonNew );
-
-  KGuiItem editButtItem( i18n( "&Edit" ),
-                    QIconSet(il->loadIcon("edit", KIcon::Small, KIcon::SizeSmall)),
-                    i18n("Modify a transaction"),
-                    i18n("Use this to modify the current selected transaction in the ledger"));
-  buttonEdit = new KPushButton( editButtItem, formFrame, KAppTest::widgetName(this, "KPushButton/Edit" ));
-  buttonNew->setSizePolicy( QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed, 0, 0, buttonNew->sizePolicy().hasHeightForWidth() ) );
+  buttonEdit->reparent(formFrame, point);
   buttonLayout->addWidget( buttonEdit );
-
-  KGuiItem enterButtItem( i18n( "Enter" ),
-                    QIconSet(il->loadIcon("button_ok", KIcon::Small, KIcon::SizeSmall)),
-                    i18n("Enter transaction into ledger"),
-                    i18n("Use this to enter the current transaction into the ledger"));
-  buttonEnter = new KPushButton( enterButtItem, formFrame, KAppTest::widgetName(this, "KPushButton/Enter" ));
-  buttonNew->setSizePolicy( QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed, 0, 0, buttonNew->sizePolicy().hasHeightForWidth() ) );
+  buttonEnter->reparent(formFrame, point);
   buttonLayout->addWidget( buttonEnter );
-
-  KGuiItem cancelButtItem( i18n( "&Cancel" ),
-                    QIconSet(il->loadIcon("button_cancel", KIcon::Small, KIcon::SizeSmall)),
-                    i18n("Forget changes made to this transaction"),
-                    i18n("Use this to abort the changes to the current transaction"));
-  buttonCancel = new KPushButton( cancelButtItem, formFrame, KAppTest::widgetName(this , "KPushButton/Cancel" ));
-  buttonNew->setSizePolicy( QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed, 0, 0, buttonNew->sizePolicy().hasHeightForWidth() ) );
+  buttonCancel->reparent(formFrame, point);
   buttonLayout->addWidget( buttonCancel );
-
-  KGuiItem moreButtItem( i18n( "M&ore" ),
-                    QIconSet(il->loadIcon("configure", KIcon::Small, KIcon::SizeSmall)),
-                    i18n("Access more functions"),
-                    i18n("Use this to access special functions"));
-  buttonMore = new KPushButton( moreButtItem, formFrame, KAppTest::widgetName(this, "KPushButton/More" ));
-  buttonNew->setSizePolicy( QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed, 0, 0, buttonNew->sizePolicy().hasHeightForWidth() ) );
+  buttonMore->reparent(formFrame, point);
   buttonLayout->addWidget( buttonMore );
-
-  // make all buttons the same width
-  buttonNew->update();
-  buttonWidth = buttonNew->sizeHint().width();
-  buttonWidth = QMAX(buttonWidth, buttonEdit->sizeHint().width());
-  buttonWidth = QMAX(buttonWidth, buttonEnter->sizeHint().width());
-  buttonWidth = QMAX(buttonWidth, buttonCancel->sizeHint().width());
-  buttonWidth = QMAX(buttonWidth, buttonMore->sizeHint().width());
-  buttonNew->setMinimumWidth(buttonWidth);
-  buttonEdit->setMinimumWidth(buttonWidth);
-  buttonEnter->setMinimumWidth(buttonWidth);
-  buttonCancel->setMinimumWidth(buttonWidth);
-  buttonMore->setMinimumWidth(buttonWidth);
 
   QSpacerItem* spacer = new QSpacerItem( 0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum );
   buttonLayout->addItem( spacer );
 
+  buttonAccount->reparent(formFrame, point);
+  buttonLayout->addWidget( buttonAccount );
+
+  // make sure that the button background is the same as for the frame
+  // we need to do this after all the reparenting, because reparenting
+  // also resets the palettes
+  QPalette palette = formFrame->palette();
+  QColorGroup cg = palette.active();
+  cg.setBrush(QColorGroup::Button, cg.brush(QColorGroup::Background));
+  palette.setActive(cg);
+  palette.setInactive(cg);
+  palette.setDisabled(cg);
+  buttonNew->setPalette(palette);
+  buttonEdit->setPalette(palette);
+  buttonEnter->setPalette(palette);
+  buttonCancel->setPalette(palette);
+  buttonMore->setPalette(palette);
+  buttonAccount->setPalette(palette);
+
   formFrameLayout->addLayout( buttonLayout, 0, 0 );
 
+  QFrame *line = new QFrame(formFrame);
+  line->setFrameShape(QFrame::ToolBarPanel);
+  formFrameLayout->addWidget(line, 1, 0);
 
   formTable = new kMyMoneyTransactionFormTable( m_view, formFrame, KAppTest::widgetName(this, "kMyMoneyTransactionFormTable") );
   formTable->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding, 0, 0, formTable->sizePolicy().hasHeightForWidth() ) );
@@ -298,18 +318,18 @@ kMyMoneyTransactionForm::kMyMoneyTransactionForm( KLedgerView* parent,  const ch
   formTable->setLeftMargin(0);
   formTable->setTopMargin(0);
 
-  setMinimumSize(QMAX(formTable->sizeHint().width(), buttonLayout->sizeHint().width()),
-                 formTable->sizeHint().height()+buttonMore->minimumHeight()+m_tabBar->minimumHeight());
+  //setMinimumSize(QMAX(formTable->sizeHint().width(), buttonLayout->sizeHint().width()),
+  //               formTable->sizeHint().height()+buttonMore->minimumHeight()+m_tabBar->minimumHeight());
 
-  formFrameLayout->addWidget( formTable, 1, 0 );
+  formFrameLayout->addWidget( formTable, 2, 0 );
 
-  // make sure, that the table is 'invisible'
-
-  QPalette palette = formTable->palette();
-  QColorGroup cg = palette.active();
+  // make sure, that the table is 'invisible' by setting up the right background
+  palette = formTable->palette();
+  cg = palette.active();
   cg.setBrush(QColorGroup::Base, cg.brush(QColorGroup::Background));
   palette.setActive(cg);
   palette.setInactive(cg);
+  palette.setDisabled(cg);
   formTable->setPalette(palette);
 
   formLayout->addWidget( formFrame );
@@ -320,5 +340,5 @@ kMyMoneyTransactionForm::kMyMoneyTransactionForm( KLedgerView* parent,  const ch
  */
 kMyMoneyTransactionForm::~kMyMoneyTransactionForm()
 {
-    // no need to delete child widgets, Qt does it all for us
+  delete m_toolbar;
 }

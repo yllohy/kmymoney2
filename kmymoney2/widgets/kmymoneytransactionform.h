@@ -31,9 +31,12 @@
 #include <qlabel.h>
 #include <qtable.h>
 #include <qbitarray.h>
+#include <qtoolbutton.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
+
+#include <ktoolbarbutton.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -137,22 +140,24 @@ public:
   void addTab(QTab *tab) { m_tabBar->addTab(tab); };
   kMyMoneyTransactionFormTable* table(void) { return formTable; };
   QTabBar* tabBar(void) { return m_tabBar; };
-  KPushButton* newButton(void) const { return buttonNew; };
-  KPushButton* editButton(void) const { return buttonEdit; };
-  KPushButton* enterButton(void) const { return buttonEnter; };
-  KPushButton* cancelButton(void) const { return buttonCancel; };
-  KPushButton* moreButton(void) const { return buttonMore; };
+  KToolBarButton* newButton(void) const { return buttonNew; };
+  KToolBarButton* editButton(void) const { return buttonEdit; };
+  KToolBarButton* enterButton(void) const { return buttonEnter; };
+  KToolBarButton* cancelButton(void) const { return buttonCancel; };
+  KToolBarButton* moreButton(void) const { return buttonMore; };
+  KToolBarButton* accountButton(void) const { return buttonAccount; };
 
 protected:
   QTabBar* m_tabBar;
   QFrame* formFrame;
   kMyMoneyTransactionFormTable* formTable;
-
-  KPushButton* buttonNew;
-  KPushButton* buttonEdit;
-  KPushButton* buttonEnter;
-  KPushButton* buttonCancel;
-  KPushButton* buttonMore;
+  KToolBar* m_toolbar;
+  KToolBarButton* buttonNew;
+  KToolBarButton* buttonEdit;
+  KToolBarButton* buttonEnter;
+  KToolBarButton* buttonCancel;
+  KToolBarButton* buttonMore;
+  KToolBarButton* buttonAccount;
 
   KLedgerView*  m_view;
 

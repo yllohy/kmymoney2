@@ -581,12 +581,12 @@ void kMyMoneyRegister::setCurrentDateIndex(const int idx)
 
 QSize kMyMoneyRegister::sizeHint() const
 {
-  return QSize(670, 200);
+  return minimumSizeHint();
 }
 
 QSize kMyMoneyRegister::minimumSizeHint() const
 {
-  return QSize(500, 200);
+  return QSize(500, 100);
 }
 
 void kMyMoneyRegister::setAction(const QCString& action, const QString& txt)
