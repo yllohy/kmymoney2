@@ -334,7 +334,7 @@ const QDate MyMoneyQifProfile::date(const QString& datein) const
   QString formatDelim[2];
   int part;
   int delim;
-  unsigned int i;
+  unsigned int i,j;
 
   part = -1;
   delim = 0;
@@ -406,7 +406,7 @@ const QDate MyMoneyQifProfile::date(const QString& datein) const
   int day = 1,
       mon = 1,
       yr = 1900;
-  bool ok;
+  bool ok = false;
   for(i = 0; i < 2; ++i) {
     if(scannedDelim[i] != formatDelim[i]
     && scannedDelim[i] != QChar('\'')) {
@@ -416,26 +416,28 @@ const QDate MyMoneyQifProfile::date(const QString& datein) const
     }
   }
   
-  QString msg("No warning!");
+  QString msg;
   for(i = 0; i < 3; ++i) {
     switch(formatParts[i][0].latin1()) {
       case 'd':
         day = scannedParts[i].toUInt(&ok);
-        msg = "Invalid numeric character in day string";
+        if (!ok)
+          msg = "Invalid numeric character in day string";
         break;
       case 'm':
         if(formatParts[i].length() != 3) {
           mon = scannedParts[i].toUInt(&ok);
-          msg = "Invalid numeric character in month string";
+          if (!ok)
+            msg = "Invalid numeric character in month string";
         } else {
-          for(i = 1; i <= 12; ++i) {
-            if(QDate::shortMonthName(i).lower() == formatParts[i].lower()) {
-              mon = i;
+          for(j = 1; j <= 12; ++j) {
+            if(QDate::shortMonthName(j).lower() == formatParts[i].lower()) {
+              mon = j;
               ok = true;
               break;
             }
           }
-          if(i == 13) {
+          if(j == 13) {
             msg = "Unknown month '" + scannedParts[i] + "'";
           }
         }
@@ -444,7 +446,8 @@ const QDate MyMoneyQifProfile::date(const QString& datein) const
         ok = false;
         if(scannedParts[i].length() == formatParts[i].length()) {
           yr = scannedParts[i].toUInt(&ok);
-          msg = "Invalid numeric character in month string";
+          if (!ok)
+            msg = "Invalid numeric character in month string";
           if(yr < 100) {      // two digit year info
             if(i > 1) {
               ok = true;
@@ -491,7 +494,7 @@ const QDate MyMoneyQifProfile::date(const QString& datein) const
         }
         break;
     }
-    if(!ok) {
+    if(!msg.isEmpty()) {
       qWarning(QString("MyMoneyQifProfile::date(const QString& datein) ") + msg.latin1());
       return QDate();
     }

@@ -1,3 +1,7 @@
+2004-08-31 Ace Jones <acejones@users.sourceforge.net>
+  * Fixed crash in QIF import when filter was set to %d/%mmm/%yyyy and
+    data was actually %d/%m/%yyyy
+
 2004-08-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Removed "Create Me" files from Makefile.am
   * Better handling of next due date in loan wizard
