@@ -43,7 +43,7 @@
   * @see MyMoneyAccount
   *
   * @author Felix Rodriguez, Michael Edwardes 2000-2001
-  * $Id: kimportdlg.h,v 1.6 2001/12/12 20:41:29 ipwizard Exp $
+  * $Id: kimportdlg.h,v 1.7 2003/01/26 17:36:03 ipwizard Exp $
   *
   * @short A class to import a qif file to an account.
 **/
@@ -83,10 +83,8 @@ protected slots:
 public:
   /**
     * Standard constructor
-    *
-    * @param account The account to import to.
-  */
-  KImportDlg(MyMoneyAccount *account, QWidget *parent);
+    */
+  KImportDlg(QWidget *parent, const char *name = 0);
 
   /** Standard destructor */
   ~KImportDlg();

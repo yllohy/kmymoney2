@@ -57,6 +57,7 @@
 #include "kstartuplogo.h"
 #include "dialogs/kbackupdlg.h"
 #include "dialogs/kexportdlg.h"
+#include "dialogs/kimportdlg.h"
 
 #include "mymoney/mymoneyutils.h"
 #include "converter/mymoneyqifprofileeditor.h"
@@ -330,6 +331,8 @@ void KMyMoney2App::readOptions()
   fileOpenRecent->loadEntries(config,"Recent Files");
 
   QSize size=config->readSizeEntry("Geometry");
+
+
   if(!size.isEmpty())
   {
     resize(size);
@@ -388,6 +391,7 @@ void KMyMoney2App::slotFileNew()
 // General open
 void KMyMoney2App::slotFileOpen()
 {
+
   QString prevMsg = slotStatusMsg(i18n("Open a document."));
 
   if (myMoneyView->fileOpen()) {
@@ -712,7 +716,33 @@ void KMyMoney2App::slotAccountReconcile()
 
 void KMyMoney2App::slotQifImport()
 {
-  myMoneyView->slotAccountImportAscii();
+  QString prevMsg = slotStatusMsg(i18n("Importing file..."));
+
+  IMyMoneyStorage* newData = new MyMoneySeqAccessMgr;
+  IMyMoneyStorage* oldData = MyMoneyFile::instance()->storage();
+  *newData = *oldData;
+  MyMoneyFile::instance()->detachStorage(oldData);
+  MyMoneyFile::instance()->attachStorage(newData);
+
+  KImportDlg* dlg = new KImportDlg(0);
+  if(dlg->exec()) {
+    // keep the new data set, destroy the backup copy
+    delete oldData;
+
+  } else {
+    // user cancelled, destroy the new set and keep the backup copy
+    MyMoneyFile::instance()->detachStorage(newData);
+    MyMoneyFile::instance()->attachStorage(oldData);
+    delete newData;
+
+    // update the views as they might still contain invalid data
+    // from the import session
+    myMoneyView->slotRefreshViews();
+  }
+  delete dlg;
+
+  // myMoneyView->slotAccountImportAscii();
+  slotStatusMsg(prevMsg);
 }
 
 void KMyMoney2App::slotQifExport()
@@ -853,12 +883,12 @@ void KMyMoney2App::enableTransactionOperations(bool enable)
 void KMyMoney2App::slotSettings()
 {
   KSettingsDlg dlg( this, "Settings");
-  connect(&dlg, SIGNAL(signalApply()), myMoneyView, SLOT(settingsLists()));
+  connect(&dlg, SIGNAL(signalApply()), myMoneyView, SLOT(slotRefreshViews()));
   // terminate any edit session
   myMoneyView->slotCancelEdit();
   if( dlg.exec() )
   {
-    myMoneyView->settingsLists();
+    myMoneyView->slotRefreshViews();
   }
 }
 

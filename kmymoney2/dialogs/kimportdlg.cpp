@@ -4,8 +4,9 @@
     begin                : Wed May 16 2001
     copyright            : (C) 2001 by Michael Edwardes
     email                : mte@users.sourceforge.net
-                             Javier Campos Morales <javi_c@ctv.es>
-                             Felix Rodriguez <frodriguez@mail.wesleyan.edu>
+                           Javier Campos Morales <javi_c@ctv.es>
+                           Felix Rodriguez <frodriguez@mail.wesleyan.edu>
+                           Thomas Baumgart <ipwizard@users.sourceforge.net>
  ***************************************************************************/
 
 /***************************************************************************
@@ -16,43 +17,41 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <kglobal.h>
-#include <klocale.h>
-#if QT_VERSION > 300
-#include <kstandarddirs.h>
-#else
-#include <kstddirs.h>
-#endif
-
-#include <qpixmap.h>
 
 // ----------------------------------------------------------------------------
 // QT Headers
-#include <qpushbutton.h>
 #include <qlineedit.h>
 #include <qcombobox.h>
 #include <qtextstream.h>
 #include <qprogressbar.h>
 #include <qlabel.h>
 #include <qbuttongroup.h>
+#include <qpixmap.h>
 
 // ----------------------------------------------------------------------------
 // KDE Headers
+#include <kpushbutton.h>
 #include <kmessagebox.h>
 #include <kfiledialog.h>
 #include <klocale.h>
+#include <kglobal.h>
+#if QT_VERSION > 300
+#include <kstandarddirs.h>
+#else
+#include <kstddirs.h>
+#endif
 
 // ----------------------------------------------------------------------------
 // Project Headers
 #include "kimportdlg.h"
 
-KImportDlg::KImportDlg(MyMoneyAccount *account, QWidget *parent)
-  : KImportDlgDecl(parent,0,TRUE)
+KImportDlg::KImportDlg(QWidget *parent, const char * name)
+  : KImportDlgDecl(parent, name, TRUE)
 {
-/*
   QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_qif_import.png");
   m_qpixmaplabel->setPixmap(QPixmap(filename));
 
+/*
   // We have to be careful of nulls though
   m_mymoneyaccount = account;
   
@@ -107,17 +106,20 @@ KImportDlg::KImportDlg(MyMoneyAccount *account, QWidget *parent)
   // Now that we've got the text in the combo box, reset the edit status
   m_qcomboboxDateFormat->setEditable(false);
 
+*/
   connect(m_qlineeditFile, SIGNAL(textChanged(const QString&)), this,
     SLOT(slotFileTextChanged(const QString&)));
 
   connect(m_qbuttonBrowse, SIGNAL( clicked() ), this, SLOT( slotBrowse() ) );
-*/
   connect(m_qbuttonOk, SIGNAL(clicked()), this, SLOT(slotOkClicked()));
-/*
   connect(m_qbuttonCancel, SIGNAL(clicked()), this, SLOT(reject()));
 
-	connect(m_qcomboboxDateFormat, SIGNAL( activated(const QString &)), this,
-		SLOT(slotDateFormatChanged(const QString&)));
+  m_qbuttonOk->setEnabled(false);
+  m_scanButton->setEnabled(false);
+/*
+
+  connect(m_qcomboboxDateFormat, SIGNAL( activated(const QString &)), this,
+    SLOT(slotDateFormatChanged(const QString&)));
 */
 }
 
@@ -136,6 +138,7 @@ void KImportDlg::slotBrowse()
 
 void KImportDlg::slotDateFormatChanged(const QString& selectedDateFormat)
 {
+/*
 	// activate the apostrophe handling buttons when a
 	// slashed or dotted two digit year format is selected
 	if((selectedDateFormat.find("/%yy") != -1 || selectedDateFormat.find(".%yy") != -1)
@@ -143,6 +146,7 @@ void KImportDlg::slotDateFormatChanged(const QString& selectedDateFormat)
 		m_qApostropheGroup->setEnabled(true);
 	} else
 		m_qApostropheGroup->setDisabled(true);
+*/
 }
 
 /** Main work horse of the dialog. */
@@ -202,6 +206,7 @@ void KImportDlg::readConfig(void)
   KConfig *kconfig = KGlobal::config();
   kconfig->setGroup("Last Use Settings");
   m_qlineeditFile->setText(kconfig->readEntry("KImportDlg_LastFile"));
+/*
   m_qstringLastFormat = kconfig->readEntry("KImportDlg_LastFormat", "%d/%m/%yy");
   m_qstringLastDecimalSymbol = kconfig->readEntry("KImportDlg_LastDecimalSymbol",
                                KGlobal::locale()->monetaryDecimalSymbol());
@@ -216,6 +221,7 @@ void KImportDlg::readConfig(void)
 	int rc = kconfig->readEntry("KImportDlg_LastApostrophe").toUShort()-1;
 	if(rc >= 0 && rc <= 2)
 		m_qApostropheGroup->setButton(rc);
+*/
 }
 
 void KImportDlg::writeConfig(void)
@@ -223,16 +229,19 @@ void KImportDlg::writeConfig(void)
   KConfig *kconfig = KGlobal::config();
   kconfig->setGroup("Last Use Settings");
   kconfig->writeEntry("KImportDlg_LastFile", m_qlineeditFile->text());
+/*
   kconfig->writeEntry("KImportDlg_LastFormat", m_qcomboboxDateFormat->currentText());
 	kconfig->writeEntry("KImportDlg_LastApostrophe",
 											m_qApostropheGroup->id(m_qApostropheGroup->selected())+1);
   kconfig->writeEntry("KImportDlg_LastDecimalSymbol", m_qDecimalSymbol->text());
+*/
   kconfig->sync();
 }
 
 /** Update the progress bar, and update the transaction count indicator. */
 void KImportDlg::slotSetProgress(int progress)
 {
+/*
   m_qprogressbar->setProgress(progress);
   QString qstring = QString::number(progress);
   qstring += i18n(" of ");
@@ -241,18 +250,21 @@ void KImportDlg::slotSetProgress(int progress)
   // force update of modified text on screen every ten iterations
   if((progress % 10) == 0)
     m_qlabelTransaction->repaint();
+*/
 }
 
 /** Make sure the text input is ok */
 void KImportDlg::slotFileTextChanged(const QString& text)
 {
   if (!text.isEmpty() && fileExists(text)) {
-    m_qcomboboxDateFormat->setEnabled(true);
+    // m_qcomboboxDateFormat->setEnabled(true);
     m_qbuttonOk->setEnabled(true);
+    m_scanButton->setEnabled(true);
     m_qlineeditFile->setText(text);
   } else {
-    m_qcomboboxDateFormat->setEnabled(false);
+    // m_qcomboboxDateFormat->setEnabled(false);
     m_qbuttonOk->setEnabled(false);
+    m_scanButton->setEnabled(false);
   }
 }
 

@@ -1,772 +1,371 @@
-<!DOCTYPE UI><UI>
+<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
 <class>KImportDlgDecl</class>
-<widget>
-    <class>QDialog</class>
-    <property stdset="1">
-        <name>name</name>
+<widget class="QDialog">
+    <property name="name">
         <cstring>KImportDlgDecl</cstring>
     </property>
-    <property stdset="1">
-        <name>geometry</name>
+    <property name="geometry">
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>865</width>
-            <height>525</height>
+            <width>589</width>
+            <height>321</height>
         </rect>
     </property>
-    <property stdset="1">
-        <name>caption</name>
+    <property name="caption">
         <string>QIF Import</string>
     </property>
-    <property stdset="1">
-        <name>sizeGripEnabled</name>
+    <property name="sizeGripEnabled">
         <bool>true</bool>
     </property>
-    <widget>
-        <class>QLayoutWidget</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>Layout7</cstring>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
         </property>
-        <property stdset="1">
-            <name>geometry</name>
-            <rect>
-                <x>15</x>
-                <y>11</y>
-                <width>839</width>
-                <height>152</height>
-            </rect>
+        <property name="margin">
+            <number>11</number>
         </property>
-        <hbox>
-            <property stdset="1">
-                <name>margin</name>
-                <number>0</number>
+        <property name="spacing">
+            <number>6</number>
+        </property>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>Layout8</cstring>
             </property>
-            <property stdset="1">
-                <name>spacing</name>
-                <number>6</number>
-            </property>
-            <widget>
-                <class>QLabel</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>m_qpixmaplabel</cstring>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
                 </property>
-                <property stdset="1">
-                    <name>sizePolicy</name>
-                    <sizepolicy>
-                        <hsizetype>0</hsizetype>
-                        <vsizetype>0</vsizetype>
-                    </sizepolicy>
+                <property name="margin">
+                    <number>0</number>
                 </property>
-                <property stdset="1">
-                    <name>minimumSize</name>
-                    <size>
-                        <width>200</width>
-                        <height>150</height>
-                    </size>
+                <property name="spacing">
+                    <number>6</number>
                 </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>TextLabel1</string>
-                </property>
-            </widget>
-            <widget>
-                <class>QLabel</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>TextLabel1</cstring>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>From this dialog you are able to import transactions from a quicken compatable file, (known as a QIF file,
-because of the extension).   Please enter the path to the QIF file or select it by clicking on the Browse button.
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>m_qpixmaplabel</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>200</width>
+                            <height>150</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>TextLabel1</string>
+                    </property>
+                </widget>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>TextLabel1</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>5</hsizetype>
+                            <vsizetype>3</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>From this dialog you are able to import transactions from a Quicken&lt;b&gt;&amp;trade;&lt;/b&gt; compatible file, (known as a QIF file, because of the extension).&lt;p&gt;
 
-Once you have the file's path press the Import button and KMyMoney2 will import all the transactions, categories
-and payees it finds.</string>
-                </property>
-            </widget>
-        </hbox>
-    </widget>
-    <widget>
-        <class>Line</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>Line1</cstring>
-        </property>
-        <property stdset="1">
-            <name>geometry</name>
-            <rect>
-                <x>11</x>
-                <y>169</y>
-                <width>847</width>
-                <height>16</height>
-            </rect>
-        </property>
-        <property stdset="1">
-            <name>frameShadow</name>
-            <enum>Raised</enum>
-        </property>
-        <property stdset="1">
-            <name>orientation</name>
-            <enum>Horizontal</enum>
-        </property>
-    </widget>
-    <widget>
-        <class>QLayoutWidget</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>Layout4</cstring>
-        </property>
-        <property stdset="1">
-            <name>geometry</name>
-            <rect>
-                <x>11</x>
-                <y>178</y>
-                <width>847</width>
-                <height>36</height>
-            </rect>
-        </property>
-        <hbox>
-            <property stdset="1">
-                <name>margin</name>
-                <number>0</number>
-            </property>
-            <property stdset="1">
-                <name>spacing</name>
-                <number>6</number>
-            </property>
-            <widget>
-                <class>QLabel</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>lblImportFile</cstring>
-                </property>
-                <property stdset="1">
-                    <name>sizePolicy</name>
-                    <sizepolicy>
-                        <hsizetype>0</hsizetype>
-                        <vsizetype>1</vsizetype>
-                    </sizepolicy>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>QIF File to Import:</string>
-                </property>
-            </widget>
-            <widget>
-                <class>QLineEdit</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>m_qlineeditFile</cstring>
-                </property>
-            </widget>
-            <widget>
-                <class>QPushButton</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>m_qbuttonBrowse</cstring>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>Browse...</string>
-                </property>
-            </widget>
-        </hbox>
-    </widget>
-    <widget>
-        <class>QLayoutWidget</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>Layout3_2</cstring>
-        </property>
-        <property stdset="1">
-            <name>geometry</name>
-            <rect>
-                <x>11</x>
-                <y>483</y>
-                <width>847</width>
-                <height>36</height>
-            </rect>
-        </property>
-        <hbox>
-            <property stdset="1">
-                <name>margin</name>
-                <number>0</number>
-            </property>
-            <property stdset="1">
-                <name>spacing</name>
-                <number>6</number>
-            </property>
-            <spacer>
-                <property>
-                    <name>name</name>
-                    <cstring>Spacer1</cstring>
-                </property>
-                <property stdset="1">
-                    <name>orientation</name>
-                    <enum>Horizontal</enum>
-                </property>
-                <property stdset="1">
-                    <name>sizeType</name>
-                    <enum>Expanding</enum>
-                </property>
-                <property>
-                    <name>sizeHint</name>
-                    <size>
-                        <width>20</width>
-                        <height>20</height>
-                    </size>
-                </property>
-            </spacer>
-            <widget>
-                <class>QPushButton</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>m_qbuttonOk</cstring>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>&amp;Import</string>
-                </property>
-                <property stdset="1">
-                    <name>default</name>
-                    <bool>true</bool>
-                </property>
-            </widget>
-            <widget>
-                <class>QPushButton</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>m_qbuttonCancel</cstring>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>&amp;Close</string>
-                </property>
-            </widget>
-        </hbox>
-    </widget>
-    <widget>
-        <class>QGroupBox</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>m_qgroupbox</cstring>
-        </property>
-        <property stdset="1">
-            <name>geometry</name>
-            <rect>
-                <x>11</x>
-                <y>378</y>
-                <width>847</width>
-                <height>99</height>
-            </rect>
-        </property>
-        <property stdset="1">
-            <name>title</name>
-            <string>Progress Info</string>
-        </property>
-        <vbox>
-            <property stdset="1">
-                <name>margin</name>
-                <number>11</number>
-            </property>
-            <property stdset="1">
-                <name>spacing</name>
-                <number>6</number>
-            </property>
-            <widget>
-                <class>QLayoutWidget</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>Layout2</cstring>
-                </property>
-                <hbox>
-                    <property stdset="1">
-                        <name>margin</name>
-                        <number>0</number>
+Please enter the path to the QIF file or select it by clicking on the Browse button. Once you have the file's path press the Import button and KMyMoney2 will import all the transactions, categories and payees it finds.</string>
                     </property>
-                    <property stdset="1">
-                        <name>spacing</name>
-                        <number>6</number>
+                    <property name="alignment">
+                        <set>WordBreak|AlignVCenter</set>
                     </property>
-                    <widget>
-                        <class>QLabel</class>
-                        <property stdset="1">
-                            <name>name</name>
-                            <cstring>TextLabel2</cstring>
-                        </property>
-                        <property stdset="1">
-                            <name>text</name>
-                            <string>Processing Account:</string>
-                        </property>
-                    </widget>
-                    <widget>
-                        <class>QLabel</class>
-                        <property stdset="1">
-                            <name>name</name>
-                            <cstring>m_qlabelAccount</cstring>
-                        </property>
-                        <property stdset="1">
-                            <name>text</name>
-                            <string>Unknown</string>
-                        </property>
-                        <property stdset="1">
-                            <name>alignment</name>
-                            <set>AlignVCenter|AlignRight</set>
-                        </property>
-                        <property>
-                            <name>hAlign</name>
-                        </property>
-                    </widget>
-                </hbox>
-            </widget>
-            <widget>
-                <class>QLayoutWidget</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>Layout1</cstring>
-                </property>
-                <hbox>
-                    <property stdset="1">
-                        <name>margin</name>
-                        <number>0</number>
-                    </property>
-                    <property stdset="1">
-                        <name>spacing</name>
-                        <number>6</number>
-                    </property>
-                    <widget>
-                        <class>QLabel</class>
-                        <property stdset="1">
-                            <name>name</name>
-                            <cstring>TextLabel3</cstring>
-                        </property>
-                        <property stdset="1">
-                            <name>text</name>
-                            <string>Processing Transaction:</string>
-                        </property>
-                    </widget>
-                    <widget>
-                        <class>QLabel</class>
-                        <property stdset="1">
-                            <name>name</name>
-                            <cstring>m_qlabelTransaction</cstring>
-                        </property>
-                        <property stdset="1">
-                            <name>text</name>
-                            <string>0 of 0</string>
-                        </property>
-                        <property stdset="1">
-                            <name>alignment</name>
-                            <set>AlignVCenter|AlignRight</set>
-                        </property>
-                        <property>
-                            <name>hAlign</name>
-                        </property>
-                    </widget>
-                </hbox>
-            </widget>
-            <widget>
-                <class>QProgressBar</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>m_qprogressbar</cstring>
-                </property>
-                <property stdset="1">
-                    <name>enabled</name>
-                    <bool>false</bool>
-                </property>
-            </widget>
-        </vbox>
-    </widget>
-    <widget>
-        <class>QLayoutWidget</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>Layout19</cstring>
-        </property>
-        <property stdset="1">
-            <name>geometry</name>
-            <rect>
-                <x>12</x>
-                <y>220</y>
-                <width>840</width>
-                <height>160</height>
-            </rect>
-        </property>
-        <hbox>
-            <property stdset="1">
-                <name>margin</name>
-                <number>0</number>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="Line">
+            <property name="name">
+                <cstring>Line1</cstring>
             </property>
-            <property stdset="1">
-                <name>spacing</name>
-                <number>6</number>
+            <property name="frameShape">
+                <enum>HLine</enum>
             </property>
-            <widget>
-                <class>QLayoutWidget</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>Layout16</cstring>
+            <property name="frameShadow">
+                <enum>Raised</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>Layout4</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
                 </property>
-                <hbox>
-                    <property stdset="1">
-                        <name>margin</name>
-                        <number>0</number>
+                <property name="margin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>lblImportFile</cstring>
                     </property>
-                    <property stdset="1">
-                        <name>spacing</name>
-                        <number>6</number>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>1</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
                     </property>
-                    <widget>
-                        <class>QLayoutWidget</class>
-                        <property stdset="1">
-                            <name>name</name>
-                            <cstring>Layout15</cstring>
+                    <property name="text">
+                        <string>QIF File to Import:</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit">
+                    <property name="name">
+                        <cstring>m_qlineeditFile</cstring>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>m_qbuttonBrowse</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Browse...</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>Layout27</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>Layout25</cstring>
+                    </property>
+                    <vbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
                         </property>
-                        <vbox>
-                            <property stdset="1">
-                                <name>margin</name>
-                                <number>0</number>
+                        <property name="margin">
+                            <number>0</number>
+                        </property>
+                        <property name="spacing">
+                            <number>6</number>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>TextLabel2_2</cstring>
                             </property>
-                            <property stdset="1">
-                                <name>spacing</name>
-                                <number>6</number>
+                            <property name="text">
+                                <string>Account to import</string>
                             </property>
-                            <widget>
-                                <class>QLabel</class>
-                                <property stdset="1">
-                                    <name>name</name>
-                                    <cstring>labelDateFormat</cstring>
-                                </property>
-                                <property stdset="1">
-                                    <name>text</name>
-                                    <string>Date Format:</string>
-                                </property>
-                            </widget>
-                            <spacer>
-                                <property>
-                                    <name>name</name>
-                                    <cstring>Spacer10</cstring>
-                                </property>
-                                <property stdset="1">
-                                    <name>orientation</name>
-                                    <enum>Vertical</enum>
-                                </property>
-                                <property stdset="1">
-                                    <name>sizeType</name>
-                                    <enum>Expanding</enum>
-                                </property>
-                                <property>
-                                    <name>sizeHint</name>
-                                    <size>
-                                        <width>20</width>
-                                        <height>20</height>
-                                    </size>
-                                </property>
-                            </spacer>
-                        </vbox>
-                    </widget>
-                    <widget>
-                        <class>QLayoutWidget</class>
-                        <property stdset="1">
-                            <name>name</name>
-                            <cstring>Layout9</cstring>
-                        </property>
-                        <vbox>
-                            <property stdset="1">
-                                <name>margin</name>
-                                <number>0</number>
+                        </widget>
+                        <widget class="QLayoutWidget">
+                            <property name="name">
+                                <cstring>Layout23</cstring>
                             </property>
-                            <property stdset="1">
-                                <name>spacing</name>
-                                <number>6</number>
-                            </property>
-                            <widget>
-                                <class>QComboBox</class>
-                                <property stdset="1">
-                                    <name>name</name>
-                                    <cstring>m_qcomboboxDateFormat</cstring>
+                            <hbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
                                 </property>
-                                <property stdset="1">
-                                    <name>minimumSize</name>
-                                    <size>
-                                        <width>150</width>
-                                        <height>0</height>
-                                    </size>
+                                <property name="margin">
+                                    <number>0</number>
                                 </property>
-                            </widget>
-                            <spacer>
-                                <property>
-                                    <name>name</name>
-                                    <cstring>Spacer3</cstring>
+                                <property name="spacing">
+                                    <number>6</number>
                                 </property>
-                                <property stdset="1">
-                                    <name>orientation</name>
-                                    <enum>Vertical</enum>
-                                </property>
-                                <property stdset="1">
-                                    <name>sizeType</name>
-                                    <enum>Expanding</enum>
-                                </property>
-                                <property>
-                                    <name>sizeHint</name>
-                                    <size>
-                                        <width>20</width>
-                                        <height>20</height>
-                                    </size>
-                                </property>
-                            </spacer>
-                            <widget>
-                                <class>QButtonGroup</class>
-                                <property stdset="1">
-                                    <name>name</name>
-                                    <cstring>m_qApostropheGroup</cstring>
-                                </property>
-                                <property stdset="1">
-                                    <name>title</name>
-                                    <string>Apostrophe handling</string>
-                                </property>
-                                <widget>
-                                    <class>QRadioButton</class>
-                                    <property stdset="1">
-                                        <name>name</name>
-                                        <cstring>m_qApostrophe2000</cstring>
+                                <widget class="KComboBox">
+                                    <property name="name">
+                                        <cstring>m_accountComboBox</cstring>
                                     </property>
-                                    <property stdset="1">
-                                        <name>geometry</name>
-                                        <rect>
-                                            <x>10</x>
-                                            <y>60</y>
-                                            <width>98</width>
-                                            <height>20</height>
-                                        </rect>
+                                    <property name="sizePolicy">
+                                        <sizepolicy>
+                                            <hsizetype>3</hsizetype>
+                                            <vsizetype>0</vsizetype>
+                                            <horstretch>0</horstretch>
+                                            <verstretch>0</verstretch>
+                                        </sizepolicy>
                                     </property>
-                                    <property stdset="1">
-                                        <name>text</name>
-                                        <string>2000+</string>
-                                    </property>
-                                    <property stdset="1">
-                                        <name>checked</name>
-                                        <bool>true</bool>
-                                    </property>
-                                    <property stdset="1">
-                                        <name>buttonGroupId</name>
-                                        <number>2</number>
+                                    <property name="minimumSize">
+                                        <size>
+                                            <width>200</width>
+                                            <height>0</height>
+                                        </size>
                                     </property>
                                 </widget>
-                                <widget>
-                                    <class>QRadioButton</class>
-                                    <property stdset="1">
-                                        <name>name</name>
-                                        <cstring>m_qApostrophe1999</cstring>
+                                <widget class="KPushButton">
+                                    <property name="name">
+                                        <cstring>m_scanButton</cstring>
                                     </property>
-                                    <property stdset="1">
-                                        <name>geometry</name>
-                                        <rect>
-                                            <x>10</x>
-                                            <y>40</y>
-                                            <width>98</width>
-                                            <height>20</height>
-                                        </rect>
-                                    </property>
-                                    <property stdset="1">
-                                        <name>text</name>
-                                        <string>1901-1999</string>
-                                    </property>
-                                    <property stdset="1">
-                                        <name>buttonGroupId</name>
-                                        <number>1</number>
+                                    <property name="text">
+                                        <string>&amp;Scan</string>
                                     </property>
                                 </widget>
-                                <widget>
-                                    <class>QRadioButton</class>
-                                    <property stdset="1">
-                                        <name>name</name>
-                                        <cstring>m_qApostrophe1949</cstring>
+                            </hbox>
+                        </widget>
+                    </vbox>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>Layout26</cstring>
+                    </property>
+                    <vbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <property name="margin">
+                            <number>0</number>
+                        </property>
+                        <property name="spacing">
+                            <number>6</number>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>TextLabel3_2</cstring>
+                            </property>
+                            <property name="text">
+                                <string>QIF Profile</string>
+                            </property>
+                        </widget>
+                        <widget class="QLayoutWidget">
+                            <property name="name">
+                                <cstring>Layout24</cstring>
+                            </property>
+                            <hbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <property name="margin">
+                                    <number>0</number>
+                                </property>
+                                <property name="spacing">
+                                    <number>6</number>
+                                </property>
+                                <widget class="KComboBox">
+                                    <property name="name">
+                                        <cstring>m_profileComboBox</cstring>
                                     </property>
-                                    <property stdset="1">
-                                        <name>geometry</name>
-                                        <rect>
-                                            <x>10</x>
-                                            <y>20</y>
-                                            <width>98</width>
-                                            <height>20</height>
-                                        </rect>
+                                    <property name="sizePolicy">
+                                        <sizepolicy>
+                                            <hsizetype>3</hsizetype>
+                                            <vsizetype>0</vsizetype>
+                                            <horstretch>0</horstretch>
+                                            <verstretch>0</verstretch>
+                                        </sizepolicy>
                                     </property>
-                                    <property stdset="1">
-                                        <name>text</name>
-                                        <string>1901-1949</string>
+                                    <property name="minimumSize">
+                                        <size>
+                                            <width>200</width>
+                                            <height>0</height>
+                                        </size>
                                     </property>
-                                    <property stdset="1">
-                                        <name>buttonGroupId</name>
-                                        <number>0</number>
+                                    <property name="duplicatesEnabled">
+                                        <bool>false</bool>
                                     </property>
                                 </widget>
-                            </widget>
-                            <spacer>
-                                <property>
-                                    <name>name</name>
-                                    <cstring>Spacer5</cstring>
-                                </property>
-                                <property stdset="1">
-                                    <name>orientation</name>
-                                    <enum>Vertical</enum>
-                                </property>
-                                <property stdset="1">
-                                    <name>sizeType</name>
-                                    <enum>Expanding</enum>
-                                </property>
-                                <property>
-                                    <name>sizeHint</name>
-                                    <size>
-                                        <width>20</width>
-                                        <height>20</height>
-                                    </size>
-                                </property>
-                            </spacer>
-                        </vbox>
-                    </widget>
-                    <widget>
-                        <class>QLabel</class>
-                        <property stdset="1">
-                            <name>name</name>
-                            <cstring>TextLabel1_2</cstring>
-                        </property>
-                        <property stdset="1">
-                            <name>text</name>
-                            <string>The Date format is represented as follows:
-
-d = Day Number
-m = Month Number
-mmm = Month Name (abbreviated to three letters)
-yy = Year Number (last two digits)
-yyyy = Year Number
-
-To use the awful 'yy use a format like %d/%m/%yy
-and select the meaning of the apostrophe.</string>
-                        </property>
-                    </widget>
-                </hbox>
-            </widget>
-            <widget>
-                <class>QLayoutWidget</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>Layout18</cstring>
+                                <widget class="KPushButton">
+                                    <property name="name">
+                                        <cstring>m_profileEditorButton</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>&amp;New...</string>
+                                    </property>
+                                </widget>
+                            </hbox>
+                        </widget>
+                    </vbox>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="Line">
+            <property name="name">
+                <cstring>Line2_2</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>Layout3_2</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
                 </property>
-                <vbox>
-                    <property stdset="1">
-                        <name>margin</name>
-                        <number>0</number>
+                <property name="margin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <spacer>
+                    <property name="name">
+                        <cstring>Spacer1</cstring>
                     </property>
-                    <property stdset="1">
-                        <name>spacing</name>
-                        <number>6</number>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
                     </property>
-                    <widget>
-                        <class>QLayoutWidget</class>
-                        <property stdset="1">
-                            <name>name</name>
-                            <cstring>Layout17</cstring>
-                        </property>
-                        <hbox>
-                            <property stdset="1">
-                                <name>margin</name>
-                                <number>0</number>
-                            </property>
-                            <property stdset="1">
-                                <name>spacing</name>
-                                <number>6</number>
-                            </property>
-                            <widget>
-                                <class>QLayoutWidget</class>
-                                <property stdset="1">
-                                    <name>name</name>
-                                    <cstring>Layout11</cstring>
-                                </property>
-                                <hbox>
-                                    <property stdset="1">
-                                        <name>margin</name>
-                                        <number>0</number>
-                                    </property>
-                                    <property stdset="1">
-                                        <name>spacing</name>
-                                        <number>6</number>
-                                    </property>
-                                    <widget>
-                                        <class>QLabel</class>
-                                        <property stdset="1">
-                                            <name>name</name>
-                                            <cstring>labelDateFormat_2</cstring>
-                                        </property>
-                                        <property stdset="1">
-                                            <name>text</name>
-                                            <string>Decimal symbol:</string>
-                                        </property>
-                                    </widget>
-                                    <widget>
-                                        <class>QLineEdit</class>
-                                        <property stdset="1">
-                                            <name>name</name>
-                                            <cstring>m_qDecimalSymbol</cstring>
-                                        </property>
-                                        <property stdset="1">
-                                            <name>maxLength</name>
-                                            <number>1</number>
-                                        </property>
-                                    </widget>
-                                </hbox>
-                            </widget>
-                            <spacer>
-                                <property>
-                                    <name>name</name>
-                                    <cstring>Spacer12</cstring>
-                                </property>
-                                <property stdset="1">
-                                    <name>orientation</name>
-                                    <enum>Horizontal</enum>
-                                </property>
-                                <property stdset="1">
-                                    <name>sizeType</name>
-                                    <enum>Expanding</enum>
-                                </property>
-                                <property>
-                                    <name>sizeHint</name>
-                                    <size>
-                                        <width>20</width>
-                                        <height>20</height>
-                                    </size>
-                                </property>
-                            </spacer>
-                        </hbox>
-                    </widget>
-                    <spacer>
-                        <property>
-                            <name>name</name>
-                            <cstring>Spacer11</cstring>
-                        </property>
-                        <property stdset="1">
-                            <name>orientation</name>
-                            <enum>Vertical</enum>
-                        </property>
-                        <property stdset="1">
-                            <name>sizeType</name>
-                            <enum>Expanding</enum>
-                        </property>
-                        <property>
-                            <name>sizeHint</name>
-                            <size>
-                                <width>20</width>
-                                <height>20</height>
-                            </size>
-                        </property>
-                    </spacer>
-                </vbox>
-            </widget>
-        </hbox>
-    </widget>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>20</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>m_qbuttonOk</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Import</string>
+                    </property>
+                    <property name="default">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>m_qbuttonCancel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Cancel</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+    </vbox>
 </widget>
+<layoutdefaults spacing="6" margin="11"/>
 </UI>
