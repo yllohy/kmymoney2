@@ -298,6 +298,8 @@ void KLedgerViewCheckings::createForm(void)
   connect(m_form->cancelButton(), SIGNAL(clicked()), this, SLOT(slotCancelEdit()));
   connect(m_form->enterButton(), SIGNAL(clicked()), this, SLOT(slotEndEdit()));
   connect(m_form->newButton(), SIGNAL(clicked()), this, SLOT(slotNew()));
+
+  m_form->enterButton()->setDefault(true);
 }
 
 void KLedgerViewCheckings::createSummary(void)
@@ -482,7 +484,12 @@ void KLedgerViewCheckings::fillSummary(void)
   if(accountId().length() > 0) {
     try {
       balance = MyMoneyFile::instance()->balance(accountId());
-      summary->setText(i18n("Current balance: ") + balance.formatMoney());
+      QString txt = balance.formatMoney();
+      if(balance < 0)
+        txt = "<font color=\"red\"><b>" + txt + "</b></font>";
+      txt = "<nobr>"+ i18n("Current balance: ") + txt + "</nobr>";
+
+      summary->setText(txt);
     } catch(MyMoneyException *e) {
         qDebug("Unexpected exception in KLedgerViewCheckings::fillSummary");
     }
@@ -1305,12 +1312,9 @@ void KLedgerViewCheckings::slotOpenSplitDialog(void)
     reloadEditWidgets(dlg->transaction());
   }
 
-  if(m_transactionFormActive) {
-    m_editSplit->setFocus();
-  } else {
-    m_editMemo->setFocus();
-  }
   delete dlg;
+
+  m_editMemo->setFocus();
 }
 
 void KLedgerViewCheckings::slotStartEditSplit(void)

@@ -234,6 +234,8 @@ protected slots:
     */
   virtual void slotStartEditSplit(void);
 
+  void reloadEditWidgets(const MyMoneyTransaction& t);
+
 private:
   /**
     * This method loads the data of the current transaction into the
@@ -247,8 +249,6 @@ private:
     * @return The return value is passed in the variable referenced by @p transType
     */
   void loadEditWidgets(int& transType);
-
-  void reloadEditWidgets(const MyMoneyTransaction& t);
 
   /**
     * This method arranges the widgets required for in-form editing in the
