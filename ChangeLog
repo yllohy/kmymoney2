@@ -1,3 +1,11 @@
+2004-01-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Updated integration into KDE (desktop files)
+  * Fixed installation location for x-kmymoney2.desktop
+
+2004-01-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Make sure tips are included in pot file
+  * Added tips for German and French translation
+
 2004-01-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * made some editorial changes to dialogs for better i18n support
   * added German translation file (many thanks to Raphael Langerhorst
