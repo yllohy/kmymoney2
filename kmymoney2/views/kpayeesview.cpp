@@ -53,7 +53,8 @@
 #include "../mymoney/mymoneyfile.h"
 
 KPayeesView::KPayeesView(QWidget *parent, const char *name )
-  : KPayeesViewDecl(parent,name)
+  : KPayeesViewDecl(parent,name),
+    m_suspendUpdate(false)
 {
 //  QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_payees.png");
 //  QPixmap *pm = new QPixmap(filename);
@@ -89,9 +90,20 @@ KPayeesView::~KPayeesView()
   writeConfig();
 }
 
-void KPayeesView::update(const QCString &id)
+void KPayeesView::update(const QCString & /* id */)
 {
-  refresh();
+  if(m_suspendUpdate == false)
+    refresh();
+}
+
+void KPayeesView::suspendUpdate(const bool suspend)
+{
+  // force a refresh, if update was off
+  if(m_suspendUpdate == true
+  && suspend == false)
+    refresh();
+
+  m_suspendUpdate = suspend;
 }
 
 void KPayeesView::payeeHighlighted(const QString& text)

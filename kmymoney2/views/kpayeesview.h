@@ -47,11 +47,28 @@ class KPayeesView : public KPayeesViewDecl, MyMoneyObserver
 {
    Q_OBJECT
 public: 
-	KPayeesView(QWidget *parent=0, const char *name=0);
-	~KPayeesView();
+  KPayeesView(QWidget *parent=0, const char *name=0);
+  ~KPayeesView();
   void show();
   void update(const QCString &id);
   void refreshView(void) { refresh(); };
+
+  /**
+    * This method is used to suppress updates for specific times
+    * (e.g. during creation of a new MyMoneyFile object when the
+    * default accounts are loaded). The behaviour of update() is
+    * controlled with the parameter.
+    *
+    * @param suspend Suspend updates or not. Possible values are
+    *
+    * @li true updates are suspended
+    * @li false updates will be performed immediately
+    *
+    * When a true/false transition of the parameter between
+    * calls to this method is detected,
+    * refresh() will be invoked once automatically.
+    */
+  void suspendUpdate(const bool suspend);
 
 public slots:
   void slotSelectPayeeAndTransaction(const QCString& payeeId, const QCString& accountId, const QCString& transactionId);
@@ -104,6 +121,12 @@ private:
     * in KTransactionPtrVector::compareItems
     */
   KTransactionPtrVector m_transactionPtrVector;
+
+  /**
+    * This member holds the state of the toggle switch used
+    * to suppress updates due to MyMoney engine data changes
+    */
+  bool m_suspendUpdate;
 
 };
 
