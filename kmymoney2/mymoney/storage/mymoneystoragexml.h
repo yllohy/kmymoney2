@@ -23,6 +23,7 @@
 #ifndef MYMONEYSTORAGEXML_H
 #define MYMONEYSTORAGEXML_H
 
+#include <xml++.h>
 
 // ----------------------------------------------------------------------------
 // QT Includes
@@ -34,6 +35,7 @@
 
 #include "imymoneyserialize.h"
 #include "imymoneystorageformat.h"
+#include "mymoneystoragexmlcallback.h"
 
 /**
   *@author Kevin Tambascio (ktambascio@yahoo.com)
@@ -70,13 +72,17 @@ public:
   void readStream(QDataStream& s, IMyMoneySerialize* storage);
 
 private:
-  void readOldFormat(QDataStream& s, IMyMoneySerialize* storage);
-  void readNewFormat(QDataStream& s, IMyMoneySerialize* storage);
+  xmlpp::XMLParser<MyMoneyStorageXMLCallback> *m_parser;
   void addCategory(IMyMoneySerialize* storage,
                    QMap<QString, QCString>& categories,
                    const QString& majorName,
                    const QString& minorName,
                    const MyMoneyAccount::accountTypeE type);
+  
+  /**
+    * Instantiates the XML parser if it hasn't been created already.
+    */
+  bool CreateXMLParser();
 
   /**
     * This member is used to store the file version information

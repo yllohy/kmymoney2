@@ -20,6 +20,12 @@
  *                                                                         *
  ***************************************************************************/
 
+// ----------------------------------------------------------------------------
+// QT Includes
+#include <qglobal.h>
+
+// ----------------------------------------------------------------------------
+// Project Includes
 #include "config.h" 
 #include "mymoneystoragexmlcallback.h"
 
@@ -37,12 +43,12 @@ MyMoneyStorageXMLCallback::~MyMoneyStorageXMLCallback()
 
 void MyMoneyStorageXMLCallback::start_document(void)
 {
-//  cout << "Start_document() called" << endl;
+  qDebug("XMLREADER:  start_document() called");
 }
 
 void MyMoneyStorageXMLCallback::end_document(void)
 {
-
+  qDebug("XMLREADER:  end_document() called");
 }
 
 void MyMoneyStorageXMLCallback::start_element(const std::string &n, const XMLPropertyMap &p)
