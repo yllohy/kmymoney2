@@ -1340,12 +1340,12 @@ void KTransactionView::resizeEvent(QResizeEvent*)
 {
 	hideWidgets();
 //  clear();
-  int w=transactionsTable->width() - 200 - 30 -
+  int w=transactionsTable->visibleWidth() - 200 - 30 -
     m_debitWidth - m_creditWidth - m_balanceWidth;
 
   transactionsTable->setColumnWidth(0, 100);
   transactionsTable->setColumnWidth(1, 100);
-  transactionsTable->setColumnWidth(2, w-25);
+  transactionsTable->setColumnWidth(2, w);
   transactionsTable->setColumnWidth(3, 30);
   transactionsTable->setColumnWidth(4, m_debitWidth);
   transactionsTable->setColumnWidth(5, m_creditWidth);
