@@ -1,3 +1,15 @@
+2005-02-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Pulled titlelabel_background.png out of the attic
+  * Allow plugins to access the new title label object
+  * Added new title label to AqBanking plugin
+  * Added icon to institution list
+  * Removed unused icon files
+  * Install title label background image
+  * Added base class for views
+
+2005-02-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added icon to institutions in institution view
+
 2005-02-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added OK and Cancel buttons for the mouse users to the split widget
   * Added .cvsignore to ofx plugin  directory
