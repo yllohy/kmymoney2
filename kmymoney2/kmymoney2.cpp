@@ -144,7 +144,7 @@ void KMyMoney2App::initActions()
   // The Account Menu
 //  accountAdd = new KAction(i18n("Add new account..."), QIconSet(QPixmap(KGlobal::dirs()->findResource("appdata", "toolbar/kmymoney_newacc.xpm"))), 0, this, SLOT(slotAccountAdd()), actionCollection(), "account_add");
 //  accountAdd->setStatusText(i18n("Lets you create a new account"));
-  accountReconcile = new KAction(i18n("Reconcile account..."), QIconSet(QPixmap(KGlobal::dirs()->findResource("appdata", "toolbar/kmymoney_recon.xpm"))), 0, this, SLOT(slotAccountReconcile()), actionCollection(), "account_reconcile");
+  accountReconcile = new KAction(i18n("Reconcile account..."), "reconcile", 0, this, SLOT(slotAccountReconcile()), actionCollection(), "account_reconcile");
   accountReconcile->setStatusText(i18n("Balance your account"));
   accountFind = new KAction(i18n("Find transaction..."), "transaction_find", 0, this, SLOT(slotAccountFind()), actionCollection(), "account_find");
   accountFind->setStatusText(i18n("Find transactions"));
