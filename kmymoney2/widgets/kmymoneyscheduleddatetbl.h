@@ -45,10 +45,14 @@ public:
 	       const char* name=0, WFlags f=0);
 
   ~kMyMoneyScheduledDateTbl();
+  void refresh(const QCString& accountId);
 
 protected:
-  void drawCellContents(QPainter *painter, int row, int col);
+  void drawCellContents(QPainter *painter, int row, int col, const QDate& theDate);
   void addDayPostfix(QString& text);
+
+private:
+  QCString m_accountId;
 };
 
 #endif

@@ -619,8 +619,6 @@ QStringList MyMoneyScheduled::getScheduled(const QCString& accountId, const QDat
             (paymentType==MyMoneySchedule::STYPE_ANY || it.data().paymentType() == paymentType) &&
             (occurence==MyMoneySchedule::OCCUR_ANY || it.data().occurence() == occurence) )
       {
-        QString s;
-        s.sprintf("\nchecking %s, %s", startDate.toString().latin1(), endDate.toString().latin1());
         QValueList<QDate> payments = it.data().paymentDates(startDate, endDate);
         if (payments.size()>=1)
           idList.append(it.key());

@@ -57,6 +57,7 @@
 
 // ----------------------------------------------------------------------------
 // Project Includes
+#include "kmymoneydatetbl.h"
 
 class QLineEdit;
 class QToolButton;
@@ -73,9 +74,6 @@ class QPushButton;
 class kMyMoneyCalendar : public QFrame  {
    Q_OBJECT
 public:
-  enum calendarType { WEEKLY,
-                      MONTHLY,
-                      QUARTERLY };
    
 public:
   /**
@@ -91,12 +89,12 @@ public:
   /**
     * Sets the calendar type.
   **/
-  void setType(calendarType type) { m_type = type; }
+  void setType(kMyMoneyDateTbl::calendarType type) { table->setType(type); }
 
   /**
     * Get the calendar type.
   **/
-  calendarType type(calendarType type) const { return m_type; }
+  kMyMoneyDateTbl::calendarType type(void) const { return table->type(); }
 
   /** The size hint for date pickers. The size hint recommends the
    *   minimum size of the widget so that all elements may be placed
@@ -165,7 +163,6 @@ public:
 
   void setUserButton1(bool enable, QPushButton* pb);
   void setUserButton2(bool enable, QPushButton* pb);
-
 
 protected:
   /// to catch move keyEvents when QLineEdit has keyFocus
@@ -252,12 +249,6 @@ private:
   kMyMoneyCalendarPrivate *d;
   // calculate ISO 8601 week number
   int weekOfYear(QDate);
-
-  /// The type
-  calendarType m_type;
-
-  /// Draw the calendar type
-  void initType();
 };
 
 #endif

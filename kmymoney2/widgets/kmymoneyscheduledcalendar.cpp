@@ -23,9 +23,12 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 #include <qpushbutton.h>
+#include <qkeysequence.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
+#include <klocale.h>
+#include <kpopupmenu.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -35,14 +38,41 @@
 kMyMoneyScheduledCalendar::kMyMoneyScheduledCalendar(QWidget *parent, const char *name )
   : kMyMoneyCalendar(parent,name)
 {
-//  QPushButton *pb1 = new QPushButton("User 1", this);
-//  QPushButton *pb2 = new QPushButton("User 2", this);
-  setDateTable((kMyMoneyDateTbl*)new kMyMoneyScheduledDateTbl(this));
-//  setUserButton1(true, pb1);
-//  setUserButton2(true, pb2);
+  QPushButton *pb1 = new QPushButton(i18n("Select Schedules"), this);
+
+  kpopupmenu = new KPopupMenu(this);
+  kpopupmenu->setCheckable(true);
+  kpopupmenu->insertItem(i18n("Bills"), this, SLOT(slotSetViewBills()), CTRL+Key_B, 0);
+  kpopupmenu->insertItem(i18n("Deposits"), this, SLOT(slotSetViewDeposits()), CTRL+Key_D, 1);
+  kpopupmenu->insertItem(i18n("Transfers"), this, SLOT(slotSetViewTransfers()), CTRL+Key_T, 2);
+  kpopupmenu->setItemChecked(0, true);
+  kpopupmenu->setItemChecked(1, true);
+  kpopupmenu->setItemChecked(2, true);
+  pb1->setPopup(kpopupmenu);
+
+  m_scheduledDateTable = new kMyMoneyScheduledDateTbl(this);
+  setDateTable((kMyMoneyDateTbl*)m_scheduledDateTable);
+  
+  setUserButton1(true, pb1);
+  
   init( QDate::currentDate() );
 }
 
 kMyMoneyScheduledCalendar::~kMyMoneyScheduledCalendar()
 {
+}
+
+void kMyMoneyScheduledCalendar::slotSetViewBills()
+{
+  kpopupmenu->setItemChecked(0, ((kpopupmenu->isItemChecked(0)) ? false : true));
+}
+
+void kMyMoneyScheduledCalendar::slotSetViewDeposits()
+{
+  kpopupmenu->setItemChecked(1, ((kpopupmenu->isItemChecked(1)) ? false : true));
+}
+
+void kMyMoneyScheduledCalendar::slotSetViewTransfers()
+{
+  kpopupmenu->setItemChecked(2, ((kpopupmenu->isItemChecked(2)) ? false : true));
 }

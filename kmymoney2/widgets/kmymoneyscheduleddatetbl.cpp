@@ -60,6 +60,7 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 #include "kmymoneyscheduleddatetbl.h"
+#include "../mymoney/mymoneyscheduled.h"
 
 kMyMoneyScheduledDateTbl::kMyMoneyScheduledDateTbl(QWidget *parent, QDate date_, const char* name, WFlags f )
   : kMyMoneyDateTbl(parent, date_, name, f)
@@ -70,88 +71,120 @@ kMyMoneyScheduledDateTbl::~kMyMoneyScheduledDateTbl()
 {
 }
 
-void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int row, int col)
+void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int row, int col, const QDate& theDate)
 {
   QRect rect;
   QString text;
-  QPen pen;
   int w=cellWidth();
   int h=cellHeight();
-  int pos;
+  QPen pen;
   QBrush brushBlue(KGlobalSettings::activeTitleColor());
   QBrush brushLightblue(KGlobalSettings::baseColor());
   QFont font=KGlobalSettings::generalFont();
+
   // -----
   font.setPointSize(fontsize);
   QFont fontLarge(font);
   fontLarge.setPointSize(fontsize*2);
-  int firstWeekDay = KGlobal::locale()->weekStartDay();
 
   painter->setFont(font);
-  pos=7*(row-1)+col;
-  if ( firstWeekDay < 4 )
-    pos += firstWeekDay;
-  else
-    pos += firstWeekDay - 7;
 
-  if (pos<firstday || (firstday+numdays<=pos))
-  { // we are either
-    // ° painting a day of the previous month or
-    // ° painting a day of the following month
-    
-    if (pos<firstday)
-    { // previous month
-      text.setNum(numDaysPrevMonth+pos-firstday+1);
-    } else { // following month
-      text.setNum(pos-firstday-numdays+1);
-    }
-    painter->setPen(lightGray);
-  } else { // paint a day of the current month
-    text.setNum(pos-firstday+1);
-    painter->setPen(lightGray);
-  }
-
-  pen=painter->pen();
-  if (firstday+date.day()-1==pos)
+  if (m_type == MONTHLY)
   {
-    if (hasFocus())
-    { // draw the currently selected date
-      painter->setPen(KGlobalSettings::highlightColor());
-      painter->setBrush(KGlobalSettings::highlightColor());
-      pen=white;
+    pen=lightGray;
+
+    if (theDate == date)
+    {
+      if (hasFocus())
+      { // draw the currently selected date
+        painter->setPen(KGlobalSettings::highlightColor());
+        painter->setBrush(KGlobalSettings::highlightColor());
+        pen=white;
+      } else {
+        painter->setPen(KGlobalSettings::calculateAlternateBackgroundColor(KGlobalSettings::highlightColor()));
+        painter->setBrush(KGlobalSettings::calculateAlternateBackgroundColor(KGlobalSettings::highlightColor()));
+        pen=white;
+      }
     } else {
-      painter->setPen(KGlobalSettings::calculateAlternateBackgroundColor(KGlobalSettings::highlightColor()));
-      painter->setBrush(KGlobalSettings::calculateAlternateBackgroundColor(KGlobalSettings::highlightColor()));
-      pen=white;
+      painter->setBrush(KGlobalSettings::baseColor());
+      painter->setPen(KGlobalSettings::baseColor());
     }
-  } else {
-    painter->setBrush(KGlobalSettings::baseColor());
-    painter->setPen(KGlobalSettings::baseColor());
-  }
+/*
+    QDate cur_date = QDate::currentDate();
+    if ( (date.year()  == cur_date.year()) &&
+      (date.month() == cur_date.month()) &&
+      (firstday+cur_date.day()-1 == pos) )
+    {
+      painter->setPen(lightGray);
+    }
+*/
+    painter->drawRect(0, 0, w, h);
+    painter->setPen(pen);
+    text = QString::number(theDate.day());
+    addDayPostfix(text);
+    painter->drawText(0, 0, w-2, h, AlignRight, text, -1, &rect);
 
-  QDate cur_date = QDate::currentDate();
-  if ( (date.year()  == cur_date.year()) &&
-    (date.month() == cur_date.month()) &&
-    (firstday+cur_date.day()-1 == pos) )
-  {
+    MyMoneyScheduled *scheduled;
+    QStringList schedules;
+    try
+    {
+      scheduled = MyMoneyScheduled::instance();
+
+      schedules = scheduled->getScheduled(
+          m_accountId,
+          theDate,
+          theDate);
+    }
+    catch ( MyMoneyException*)
+    {
+      // SAfe to ignore here, cause no schedules might exist
+      // for the selected account
+    }
+
+    if (schedules.count() >= 1)
+    {
+      painter->setPen(darkGray);
+      painter->setFont(fontLarge);
+      painter->drawText(0, 0, w, h, AlignCenter, QString::number(schedules.count()),
+          -1, &rect);
+    }
+
     painter->setPen(lightGray);
+    painter->setBrush(Qt::NoBrush);
+    painter->drawRect(0, 0, w, h);
   }
-
-  painter->drawRect(0, 0, w, h);
-  painter->setPen(pen);
-  addDayPostfix(text);
-  painter->drawText(0, 0, w-2, h, AlignRight, text, -1, &rect);
-
-  if (row == 2)
+  else if (m_type == WEEKLY)
   {
+    // TODO: Handle other start weekdays than Monday
+    if (theDate == date)
+    {
+      painter->setBrush(KGlobalSettings::highlightColor());
+    }
+    else
+    {
+      painter->setBrush(KGlobalSettings::baseColor());
+      painter->setPen(KGlobalSettings::baseColor());
+    }
+    
+    painter->setPen(lightGray);
+    painter->drawRect(0, 0, w, h);
+
+    text = QString::number(theDate.day());
+    addDayPostfix(text);
+
+    painter->drawText(0, 0, w-2, h, AlignRight, QDate::shortDayName(theDate.month()) + " " + text, -1, &rect);
+
     painter->setPen(darkGray);
     painter->setFont(fontLarge);
     painter->drawText(0, 0, w, h, AlignCenter, "4", -1, &rect);
   }
+  else if (m_type == QUARTERLY)
+  {
+    painter->setBrush(KGlobalSettings::baseColor());
 
-  painter->setPen(lightGray);
-  painter->setBrush(Qt::NoBrush);
-  painter->drawRect(0, 0, w, h);
+    painter->setPen(lightGray);
+    painter->drawRect(0, 0, w, h);
+  }
 }
 
 void kMyMoneyScheduledDateTbl::addDayPostfix(QString& text)
@@ -171,4 +204,10 @@ void kMyMoneyScheduledDateTbl::addDayPostfix(QString& text)
     default:
       text += i18n("th");
   }
+}
+
+void kMyMoneyScheduledDateTbl::refresh(const QCString& accountId)
+{
+  m_accountId = accountId;
+  repaintContents(false);
 }

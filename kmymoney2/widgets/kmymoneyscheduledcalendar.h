@@ -32,7 +32,9 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 #include "kmymoneycalendar.h"
+#include "kmymoneyscheduleddatetbl.h"
 
+class KPopupMenu;
 class kMyMoneyDateTbl;
 
 /**
@@ -62,7 +64,18 @@ public:
     * Dynamically set the Date Table
   **/
   void setDateTable(kMyMoneyDateTbl* tbl) { table = tbl; }
-  
+
+  void refresh(const QCString& accountId) { m_scheduledDateTable->refresh(accountId); }
+
+
+protected slots:
+  void slotSetViewBills();
+  void slotSetViewDeposits();
+  void slotSetViewTransfers();
+
+private:
+  KPopupMenu* kpopupmenu;
+  kMyMoneyScheduledDateTbl *m_scheduledDateTable;
 };
 
 #endif

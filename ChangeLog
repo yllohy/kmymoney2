@@ -1,3 +1,17 @@
+2003-07-05 Michael Edwardes <mte@users.sourceforge.net>
+  * Fixed bug in KMyMoneyCalendar to create the private objects *before* the
+    initialisation.
+  * Draw the userButtons after the first 'styleControl' button.
+  * Added schedule type selection to the calendar via the new user
+    buttons.
+  * Implemented the weekly view of the calendar.  (Note, always uses Monday
+    as the start of week, (ignores kde settings at the moment)).
+  * Started work on integrating the schedules into the calendar view.
+  * Changes to the account selection are notified to the schedule calendar
+    view.
+  * The date for the current cell to be painted is passed to the
+    drawCellContents method.
+
 2003-07-04 Michael Edwardes <mte@users.sourceforge.net>
   * More work on the calendar view, including deriving a new class from
     kMyMoneyDateTbl as kMyMoneyScheduledDateTbl.

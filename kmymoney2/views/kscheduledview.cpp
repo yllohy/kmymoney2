@@ -93,6 +93,10 @@ void KScheduledView::refresh(const QString schedId)
 
   try
   {
+
+    // Refresh the calendar view first
+    m_calendar->refresh(m_accountId);
+
     if (MyMoneyScheduled::instance()->count(m_accountId) == 0)
       return;
 

@@ -63,6 +63,11 @@
 
 class kMyMoneyDateTbl : public QGridView  {
    Q_OBJECT
+public:
+  enum calendarType { WEEKLY,
+                      MONTHLY,
+                      QUARTERLY };
+
 public: 
     /**
      * The constructor.
@@ -87,6 +92,9 @@ public:
      */
     virtual bool setDate(const QDate&);
     virtual const QDate& getDate() const;
+
+    virtual void setType(calendarType type);
+    virtual calendarType type(void) const { return m_type; }
 
 signals:
     /**
@@ -116,7 +124,7 @@ protected:
     virtual void focusInEvent( QFocusEvent *e );
     virtual void focusOutEvent( QFocusEvent *e );
 
-    virtual void drawCellContents(QPainter *painter, int row, int col) = 0;
+    virtual void drawCellContents(QPainter *painter, int row, int col, const QDate& theDate) = 0;
 
     /**
      * The font size of the displayed text.
@@ -147,6 +155,13 @@ protected:
      * Save the size of the largest used cell content.
      */
     QRect maxCell;
+
+    /**
+      * Type related variables
+    **/
+    calendarType m_type;
+    int m_colCount;
+    int m_rowCount;
 };
 
 #endif
