@@ -1,3 +1,10 @@
+2004-06-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Setup minimum size of kMyMoneyAccountCombo
+  * Clear out text on account combo if no account present
+  * Disable account combo box if no account available
+  * Disable register if no account available
+  * Fixed parameter setup for call of split transaction dialog
+
 2004-05-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Make sure datepicker widget is always shown completely on screen
   * Fixed category/amount assignment problem
