@@ -23,9 +23,18 @@
 #ifndef KNEWACCOUNTWIZARD_H
 #define KNEWACCOUNTWIZARD_H
 
+
+// ----------------------------------------------------------------------------
+// QT Includes
+
 #include <qwidget.h>
+
+// ----------------------------------------------------------------------------
+// Project Includes
+
 #include "knewaccountwizarddecl.h"
 #include "../mymoney/mymoneyaccount.h"
+#include "../views/kbanklistitem.h"
 
 /**
   *@author Thomas Baumgart
@@ -78,7 +87,14 @@ signals:
   void newInstitutionClicked();
 
 private:
+  void loadSubAccountList(KAccountListItem* parent, const QCString& accountId);
+  void loadSubAccountList(KListView* parent, const QCString& accountId);
+  QValueList<MyMoneyAccount>::ConstIterator findAccount(const QCString& accountId) const;
+  void loadAccountList(void);
+
+private:
   MyMoneyAccount::accountTypeE m_accountType;
+  QValueList<MyMoneyAccount> m_accountList;
 };
 
 #endif
