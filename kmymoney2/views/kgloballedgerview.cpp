@@ -50,6 +50,7 @@
 #include "kledgerviewcash.h"
 #include "kledgerviewloan.h"
 #include "kledgerviewliability.h"
+#include "kledgerviewinvestments.h"
 
 #include "../mymoney/mymoneyaccount.h"
 #include "../mymoney/mymoneyfile.h"
@@ -155,6 +156,16 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
     SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
   connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
+
+  //Investment View
+  view = m_specificView[MyMoneyAccount::Investment] = new KLedgerViewInvestments(this);
+  m_accountStack->addWidget(view, MyMoneyAccount::Investment);
+  connect(view, SIGNAL(accountAndTransactionSelected(const QCString&, const QCString&)),
+    this, SLOT(slotSelectAccountAndTransaction(const QCString&, const QCString&)));
+  connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
+    SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
+  connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
+  
   
   m_formLayout->addWidget(m_accountStack);
   setMinimumHeight(m_accountComboBox->minimumHeight() + m_accountStack->sizeHint().height());
