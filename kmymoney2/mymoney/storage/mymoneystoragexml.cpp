@@ -120,6 +120,10 @@ void MyMoneyStorageXML::writeFile(QIODevice* qf, IMyMoneySerialize* storage)
   writeTransactions(pDoc, transactions, storage);
   mainElement.appendChild(transactions);
 
+  QDomElement keyvalpairs = pDoc->createElement("KEYVALPAIRS");
+  //writeGlobalKeyValuePairs(pDoc, keyvalpairs, storage);
+  mainElement.appendChild(keyvalpairs);
+  
   QDomElement schedules = pDoc->createElement("SCHEDULES");
   //writeSchedules(pDoc, schedules, storage);
   mainElement.appendChild(schedules);
@@ -169,7 +173,6 @@ void MyMoneyStorageXML::writeInstitution(QDomDocument *pDoc, QDomElement& instit
 
 void MyMoneyStorageXML::writeInstitutions(QDomDocument *pDoc, QDomElement& institutions, IMyMoneySerialize* storage)
 {
-  Q_INT32 tmp;
   QValueList<MyMoneyInstitution> list;
   QValueList<MyMoneyInstitution>::ConstIterator it;
 
@@ -187,7 +190,6 @@ void MyMoneyStorageXML::writeInstitutions(QDomDocument *pDoc, QDomElement& insti
 
 void MyMoneyStorageXML::writePayees(QDomDocument *pDoc, QDomElement& payees, IMyMoneySerialize* storage)
 {
-  Q_INT32 tmp;
   QValueList<MyMoneyPayee> list;
   QValueList<MyMoneyPayee>::ConstIterator it;
 
@@ -220,7 +222,6 @@ void MyMoneyStorageXML::writePayee(QDomDocument *pDoc, QDomElement& payee, const
 
 void MyMoneyStorageXML::writeAccounts(QDomDocument *pDoc, QDomElement& accounts, IMyMoneySerialize* storage)
 {
-  Q_INT32 tmp;
   QValueList<MyMoneyAccount> list;
   QValueList<MyMoneyAccount>::ConstIterator it;
 
@@ -293,22 +294,61 @@ void MyMoneyStorageXML::writeKeyValuePairs(QDomDocument *pDoc, QDomElement& acco
 
 void MyMoneyStorageXML::writeTransactions(QDomDocument *pDoc, QDomElement& transactions, IMyMoneySerialize* storage)
 {
+  QValueList<MyMoneyTransaction> list;
+  QValueList<MyMoneyTransaction>::ConstIterator it;
+  MyMoneyTransactionFilter filter;
 
+  list = storage->transactionList(filter);
+  transactions.setAttribute(QString("nextid"), list.count());
+  
+  //signalProgress(0, list.count(), QObject::tr("Saving transactions..."));
+
+  int i = 0;
+  for(it = list.begin(); it != list.end(); ++it, ++i)
+  {
+    QDomElement tx = pDoc->createElement("TRANSACTION");
+    writeTransaction(pDoc, tx, *it);
+    transactions.appendChild(tx);
+    //signalProgress(i, 0);
+  }
 }
 
 void MyMoneyStorageXML::writeTransaction(QDomDocument *pDoc, QDomElement& transaction, const MyMoneyTransaction& tx)
 {
+  transaction.setAttribute(QString("postdate"), tx.postDate().toString());
+  transaction.setAttribute(QString("memo"), tx.memo());
+  transaction.setAttribute(QString("entrydate"), tx.entryDate().toString());
 
+  QDomElement splits = pDoc->createElement("SPLITS");
+  QValueList<MyMoneySplit> splitList = tx.splits();
+  splits.setAttribute(QString("nextid"), tx.splitCount());
+
+  writeSplits(pDoc, splits, splitList);
+
+  transaction.appendChild(splits);
 }
 
-void MyMoneyStorageXML::writeSplits(QDomDocument *pDoc, QDomElement& splits, IMyMoneySerialize* storage)
+void MyMoneyStorageXML::writeSplits(QDomDocument *pDoc, QDomElement& splits, const QValueList<MyMoneySplit> splitList)
 {
-
+  QValueList<MyMoneySplit>::const_iterator it;
+  for(it = splitList.begin(); it != splitList.end(); ++it)
+  {
+    QDomElement split = pDoc->createElement("SPLIT");
+    writeSplit(pDoc, split, (*it));
+    splits.appendChild(split);
+  }
 }
 
 void MyMoneyStorageXML::writeSplit(QDomDocument *pDoc, QDomElement& splitElement, const MyMoneySplit& split)
 {
-
+  splitElement.setAttribute(QString("payee"), split.payeeId());
+  splitElement.setAttribute(QString("reconciledate"), split.reconcileDate().toString());
+  splitElement.setAttribute(QString("action"), split.action());
+  splitElement.setAttribute(QString("reconcileflag"), split.reconcileFlag());
+  splitElement.setAttribute(QString("value"), split.value().formatMoney());
+  splitElement.setAttribute(QString("memo"), split.memo());
+  splitElement.setAttribute(QString("id"), split.id());
+  splitElement.setAttribute(QString("account"), split.accountId());
 }
 
 /*void MyMoneyStorageXML::getTransactionDetails(const AttributeMap& p)

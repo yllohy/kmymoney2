@@ -86,7 +86,7 @@ private:
   void writeTransactions(QDomDocument *pDoc, QDomElement& transactions, IMyMoneySerialize* storage);
   void writeTransaction(QDomDocument *pDoc, QDomElement& transactions, const MyMoneyTransaction& tx);
 
-  void writeSplits(QDomDocument *pDoc, QDomElement& splits, IMyMoneySerialize* storage);
+  void writeSplits(QDomDocument *pDoc, QDomElement& splits, const QValueList<MyMoneySplit> splitList);
   void writeSplit(QDomDocument *pDoc, QDomElement& splitElement, const MyMoneySplit& split);
     
   void readFile(QIODevice* s, IMyMoneySerialize* storage);
