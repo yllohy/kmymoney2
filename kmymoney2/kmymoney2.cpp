@@ -133,13 +133,13 @@ void KMyMoney2App::initActions()
 //  settingsLists->setStatusText(i18n("Change the list view behaviour"));
 
   // The Categories Menu
-  categoriesEdit = new KAction(i18n("Edit Categories..."), QIconSet(QPixmap(KGlobal::dirs()->findResource("appdata", "toolbar/kmymoney_editcat.xpm"))), 0, this, SLOT(slotCategoriesEdit()), actionCollection(), "categories_edit");
+  categoriesEdit = new KAction(i18n("Edit Categories..."), "categories", 0, this, SLOT(slotCategoriesEdit()), actionCollection(), "categories_edit");
   categoriesEdit->setStatusText(i18n("Edit and create categories or sub-categories"));
-  categoriesPayees = new KAction(i18n("Edit Payees..."), QIconSet(QPixmap(KGlobal::dirs()->findResource("appdata", "toolbar/kmymoney_editPay.xpm"))), 0, this, SLOT(slotCategoriesPayees()), actionCollection(), "categories_payees");
+  categoriesPayees = new KAction(i18n("Edit Payees..."), "pay_edit", 0, this, SLOT(slotCategoriesPayees()), actionCollection(), "categories_payees");
   categoriesPayees->setStatusText(i18n("View and edit Payees"));
 
   // The Bank Menu
-  bankAdd = new KAction(i18n("Add new bank..."), QIconSet(QPixmap(KGlobal::dirs()->findResource("appdata", "toolbar/kmymoney_newbank.xpm"))), 0, this, SLOT(slotBankAdd()), actionCollection(), "bank_add");
+  bankAdd = new KAction(i18n("Add new bank..."), "bank", 0, this, SLOT(slotBankAdd()), actionCollection(), "bank_add");
   bankAdd->setStatusText(i18n("Lets you create a new bank"));
 
   // The Account Menu
