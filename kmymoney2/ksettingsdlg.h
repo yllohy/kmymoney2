@@ -22,6 +22,7 @@
 #include <qcheckbox.h>
 #include <kfontdialog.h>
 #include <kcolorbutton.h>
+#include <klineedit.h>
 
 // This dialog lets the user change the program settings.
 // Doesn't do much at the moment !
@@ -50,6 +51,11 @@ private: // Private attributes
   KFontChooser *font_header;
   /** Font cell setting */
   KFontChooser *font_cell;
+
+  KLineEdit *m_klineeditRowCount;
+
+  QCheckBox *m_qcheckboxShowGrid;
+
 private slots: // Private slots
   /** Slot ok */
   void slotOk();

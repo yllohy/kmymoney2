@@ -19,7 +19,7 @@
 #include "kmymoneyedit.h"
 
 kMyMoneyEdit::kMyMoneyEdit(QWidget *parent, const char *name )
- : QLineEdit(parent,name)
+ : KLineEdit(parent,name)
 {
 	// Yes, just a simple double validator !
 	QDoubleValidator *validator = new QDoubleValidator(-999999999,999999999, int(localeconv()->frac_digits), this);
@@ -65,4 +65,19 @@ void kMyMoneyEdit::focusOutEvent(QFocusEvent *e)
     }
   }
   QLineEdit::focusOutEvent(e);
+}
+
+bool kMyMoneyEdit::eventFilter(QObject *o , QEvent *e )
+{
+  if(e->type() == QEvent::KeyRelease)
+  {
+    QKeyEvent *k = (QKeyEvent *) e;
+    if((k->key() == Qt::Key_Return) ||
+       (k->key() == Qt::Key_Enter))
+    {
+      emit signalEnter();
+      emit signalNextTransaction();
+    }
+  }
+  return KLineEdit::eventFilter(o,e);
 }

@@ -1,3 +1,11 @@
+2001-07-19 Michael Edwardes <mte@users.sourceforge.net>
+  * Added 'autoremember' for the date format in the qif dialogs.
+  * Changed the transaction view to speed it up.
+  * Added ability to change the number of rows displayed in the register
+    views.
+  * Added ability to turn on or off the grid in the register view.
+  * Removed some redundant classes.
+
 2001-07-15 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
   * I think I fixed Crash on Exit Bug
 

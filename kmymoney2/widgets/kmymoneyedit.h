@@ -18,13 +18,13 @@
 #define KMYMONEYEDIT_H
 
 #include <qwidget.h>
-#include <qlineedit.h>
+#include <klineedit.h>
 #include "../mymoney/mymoneymoney.h"
 
 // This class replaces OE Hansens kdbMoneyEdit I used
 // to use.  It has simpler interface and fixes some
 // issues I had with the original widget.
-class kMyMoneyEdit : public QLineEdit  {
+class kMyMoneyEdit : public KLineEdit  {
    Q_OBJECT
 
 private:
@@ -37,9 +37,17 @@ protected slots:
   void theTextChanged(const QString & text);
 
 public:
-	kMyMoneyEdit(QWidget *parent=0, const char *name=0);
-	~kMyMoneyEdit();
+  kMyMoneyEdit(QWidget *parent=0, const char *name=0);
+  ~kMyMoneyEdit();
   MyMoneyMoney getMoneyValue(void);
+
+  virtual bool eventFilter(QObject * , QEvent * );
+
+signals: // Signals
+  /** No descriptions */
+  void signalEnter();
+  /** No descriptions */
+  void signalNextTransaction();
 };
 
 #endif

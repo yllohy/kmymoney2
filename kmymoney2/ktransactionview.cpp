@@ -29,7 +29,7 @@
 #include <kmessagebox.h>
 #include "widgets/kmymoneyedit.h"
 #include "widgets/kmymoneydateinput.h"
-#include "ktransactiontableitem.h"
+//#include "ktransactiontableitem.h"
 #include "widgets/kmymoneytable.h"
 
 KTransactionView::KTransactionView(QWidget *parent, const char *name)
@@ -37,7 +37,7 @@ KTransactionView::KTransactionView(QWidget *parent, const char *name)
 {
   transactionsTable->setNumCols(7);
   transactionsTable->horizontalHeader()->setLabel(0, i18n("Date"));
-	transactionsTable->horizontalHeader()->setLabel(1, i18n("Num"));
+	transactionsTable->horizontalHeader()->setLabel(1, i18n("Type/Num"));
 	transactionsTable->horizontalHeader()->setLabel(2, i18n("Payee/Category/Memo"));
 	transactionsTable->horizontalHeader()->setLabel(3, i18n("Clr"));
 	transactionsTable->horizontalHeader()->setLabel(4, i18n("Payment"));
@@ -46,6 +46,24 @@ KTransactionView::KTransactionView(QWidget *parent, const char *name)
 	transactionsTable->setSelectionMode(QTable::NoSelection);
  	transactionsTable->setLeftMargin(0);
 	transactionsTable->verticalHeader()->hide();
+  transactionsTable->setColumnStretchable(0, false);
+  transactionsTable->setColumnStretchable(1, false);
+	transactionsTable->setColumnStretchable(2, false);
+  transactionsTable->setColumnStretchable(3, false);
+	transactionsTable->setColumnStretchable(4, false);
+  transactionsTable->setColumnStretchable(5, false);
+	transactionsTable->setColumnStretchable(6, false);
+		
+	transactionsTable->horizontalHeader()->setResizeEnabled(false);
+	transactionsTable->horizontalHeader()->setMovingEnabled(false);
+  int w=transactionsTable->width();
+  transactionsTable->setColumnWidth(0, 100);
+  transactionsTable->setColumnWidth(1, 100);
+  transactionsTable->setColumnWidth(2, w-530);
+  transactionsTable->setColumnWidth(3, 30);
+  transactionsTable->setColumnWidth(4, 100);
+  transactionsTable->setColumnWidth(5, 100);
+  transactionsTable->setColumnWidth(6, 100);
 
 	KConfig *config = KGlobal::config();
   QFont defaultFont = QFont("helvetica", 12);
@@ -164,16 +182,16 @@ void KTransactionView::createInputWidgets()
 {
 
 	m_date = new kMyMoneyDateInput(0,QDate::currentDate());
-	m_method = new kMyMoneyMethodCombo(0);
-  m_payee = new kMyMoneyPayeeCombo(0);
-  m_payment = new kMyMoneyLineEdit(0);
-  m_withdrawal = new kMyMoneyLineEdit(0);
+	m_method = new kMyMoneyCombo(0);
+  m_payee = new kMyMoneyCombo(0);
+  m_payment = new kMyMoneyEdit(0);
+  m_withdrawal = new kMyMoneyEdit(0);
 	m_number = new kMyMoneyLineEdit(0);
-	m_hlayout = new kMyMoneyHLayout(0);
-	m_category = new kMyMoneyCategoryCombo(0);
+//	m_hlayout = new kMyMoneyHLayout(0);
+	m_category = new kMyMoneyCombo(0);
 	m_memo = new kMyMoneyLineEdit(0);
-	m_hlayout->addWidget(m_category);
-	m_hlayout->addWidget(m_memo);
+//	m_hlayout->addWidget(m_category);
+//	m_hlayout->addWidget(m_memo);
   m_enter = new KPushButton("Enter",0);
   m_cancel = new KPushButton("Cancel",0);
   m_delete = new KPushButton("Delete",0);
@@ -293,8 +311,15 @@ void KTransactionView::slotFocusChange(int row, int col, int button, const QPoin
    if(m_date->isVisible() || ( m_viewType != NORMAL))
 		return;
 	
-	int transrow = row / 2;
-  int realrow = transrow * 2;
+	if (row > (transactionsTable->numRows()-3))  // make sure there is room for the input widgets
+	  return;
+	
+  KConfig *config = KGlobal::config();
+  config->setGroup("List Options");
+  const int NO_ROWS = (config->readEntry("RowCount", "2").toInt());
+	
+	int transrow = row / NO_ROWS;
+  int realrow = transrow * NO_ROWS;
 	m_currentrow = realrow;
 	m_currentcol = col;
 	m_currentbutton = button;
@@ -338,12 +363,17 @@ void KTransactionView::slotFocusChange(int row, int col, int button, const QPoin
       m_withdrawal->show();
       transactionsTable->setCellWidget(realrow + 1 ,1,m_number);
 	  //m_number->setGeometry(transactionsTable->cellGeometry(realrow + 1,1));
-      transactionsTable->setCellWidget(realrow + 1 ,2,m_hlayout);
-	   m_hlayout->setGeometry(transactionsTable->cellGeometry(realrow + 1,2));
+    //  transactionsTable->setCellWidget(realrow + 1 ,2,m_hlayout);
+      transactionsTable->setCellWidget(realrow + 1, 2, m_category);
+      m_category->show();
+      transactionsTable->setCellWidget(realrow + 2, 2, m_memo);
+      m_memo->show();
+	
+	   //m_hlayout->setGeometry(transactionsTable->cellGeometry(realrow + 1,2));
       m_number->show();
-		m_hlayout->show();
+//		m_hlayout->show();
       //m_category->show();
-	  //m_memo->show();
+	  m_memo->show();
       transactionsTable->setCellWidget(realrow + 1 ,4,m_enter);
 	  //m_enter->setGeometry(transactionsTable->cellGeometry(realrow + 1,4));
       m_enter->show();
@@ -822,6 +852,7 @@ void KTransactionView::updateTransactionList(int row, int col)
   config->setGroup("List Options");
   QFont defaultFont = QFont("helvetica", 12);
   transactionsTable->horizontalHeader()->setFont(config->readFontEntry("listHeaderFont", &defaultFont));
+  const int NO_ROWS = (config->readEntry("RowCount", "2").toInt());
 
   MyMoneyAccount *account;
 
@@ -830,56 +861,30 @@ void KTransactionView::updateTransactionList(int row, int col)
 		return;
   MyMoneyMoney balance;
   MyMoneyTransaction *transaction;
-  int rowCount=0;
+  unsigned long rowCount=0;
   QString currentBalance;
 
   if (row==-1) { // We are going to refresh the whole list
-    int w=transactionsTable->width();
-    transactionsTable->setColumnWidth(0, 100);
-    transactionsTable->setColumnWidth(1, 100);
-    transactionsTable->setColumnWidth(2, w-530);
-    transactionsTable->setColumnWidth(3, 30);
-    transactionsTable->setColumnWidth(4, 100);
-    transactionsTable->setColumnWidth(5, 100);
-    transactionsTable->setColumnWidth(6, 100);
-
-    transactionsTable->setColumnStretchable(0, false);
-    transactionsTable->setColumnStretchable(1, false);
-		transactionsTable->setColumnStretchable(2, false);
-    transactionsTable->setColumnStretchable(3, false);
-		transactionsTable->setColumnStretchable(4, false);
-    transactionsTable->setColumnStretchable(5, false);
-		transactionsTable->setColumnStretchable(6, false);
-		
-		transactionsTable->horizontalHeader()->setResizeEnabled(false);
-		transactionsTable->horizontalHeader()->setMovingEnabled(false);
-//		transactionsTable->verticalHeader()->setResizeEnabled(false);
-//		transactionsTable->verticalHeader()->setMovingEnabled(false);
-/* Removed me
-		m_transactions.clear();
-*/
     m_index=-1;
-    //clear();
-/* removed me
-		bool isEmpty = m_transactions.isEmpty();
-*/
-    int i = 0;
-    transactionsTable->setNumRows((m_transactions->count() * 2) + 2);
-    for (transaction=m_transactions->first(); transaction; transaction=m_transactions->next(), i++ ) {
-/* Removed me
-      if(isEmpty)
-			  m_transactions.append(transaction);
-*/
+
+  int i = 0;
+    transactionsTable->setNumRows((m_transactions->count() * NO_ROWS) + 3);
+    for (transaction=m_transactions->first(); transaction; transaction=m_transactions->next(), i++) {
+//      transactionsTable->setEnabled(false);
       QString colText;
       if (transaction->type()==MyMoneyTransaction::Credit)
         balance += transaction->amount();
       else
         balance -= transaction->amount();
 
-		if((useall == true) ||
-       (usedate == true && transaction->date() >= m_date->getQDate()) ||
-       (userow == true && m_index >= i))
-    {
+      if((useall == true) ||
+         (usedate == true && transaction->date() >= m_date->getQDate()) ||
+         (userow == true && m_index >= i))
+      {
+//        qDebug("useall=%d, usedate=%d, userow=%d, m_date=%s, m_index=%d, i=%d",
+//          useall, usedate, userow, m_date->getQDate().toString().latin1(), m_index, i);
+
+
       switch (transaction->method()) {
         case MyMoneyTransaction::Cheque:
           colText = "Cheque";
@@ -897,54 +902,34 @@ void KTransactionView::updateTransactionList(int row, int col)
           colText = "ATM";
           break;
       }
-      KTransactionTableItem *item0;
-      item0 = new KTransactionTableItem(transactionsTable, QTableItem::Never, KGlobal::locale()->formatDate(transaction->date(), true));
-      transactionsTable->setItem(rowCount, 0, item0);
 
-    	KTransactionTableItem *item00;
-    	item00 = new KTransactionTableItem(transactionsTable, QTableItem::Never, transaction->number());
-    	transactionsTable->setItem(rowCount + 1, 1, item00);
+      transactionsTable->setText(rowCount, 0, KGlobal::locale()->formatDate(transaction->date(), true));
 
-      KTransactionTableItem *item1;
-      item1 = new KTransactionTableItem(transactionsTable, QTableItem::Never, colText);
-      transactionsTable->setItem(rowCount, 1, item1);
+      if (NO_ROWS==2)
+        transactionsTable->setText(rowCount + 1, 1, transaction->number());
 
-	    KTransactionTableItem *item11;
-	    item11 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
-	    transactionsTable->setItem(rowCount + 1, 0, item11);
+      transactionsTable->setText(rowCount, 1, colText);
 
-      KTransactionTableItem *item2;
-      item2 = new KTransactionTableItem(transactionsTable, QTableItem::Never, transaction->payee());
-      transactionsTable->setItem(rowCount, 2, item2);
+      transactionsTable->setText(rowCount, 2, transaction->payee());
 
 
-/*      KNumberTableItem *item2;
-      if (m_showingInputBox)
-        item2 = new KNumberTableItem(transactionsTable, QTableItem::Never, transaction->number());
-      else
-        item2 = new KNumberTableItem(transactionsTable, QTableItem::OnTyping, transaction->number());
-      transactionsTable->setItem(rowCount, 2, item2);
-*/
-
-      QString txt;
 			if(transaction->categoryMinor() == "")
 			{
-      	txt.sprintf("%s", transaction->categoryMajor().latin1());
+      	colText.sprintf("%s", transaction->categoryMajor().latin1());
 			}
 			else
 			{
-				txt.sprintf("%s:%s", transaction->categoryMajor().latin1(),transaction->categoryMinor().latin1());
+				colText.sprintf("%s:%s", transaction->categoryMajor().latin1(),transaction->categoryMinor().latin1());
 			}
-      KTransactionTableItem *item4;
-      item4 = new KTransactionTableItem(transactionsTable, QTableItem::Never, txt,2);
-		item4->setSpan(1,1);
-		item4->setItem2(transaction->memo());
-      transactionsTable->setItem(rowCount + 1, 2, item4);
 
-    // KTransactionTableItem *item44;
-     // item44 = new KTransactionTableItem(transactionsTable, QTableItem::Never, transaction->memo());
-		//item44->setSpan(1,2);
-      //transactionsTable->setItem(rowCount + 1,3, item44);
+// Doesn't work
+//      if (transaction->memo().length()>1)
+//        transactionsTable->setItem2(transaction->memo());
+      if (NO_ROWS==2)
+        transactionsTable->setText(rowCount + 1, 2, colText);
+
+      if (NO_ROWS==3)
+        transactionsTable->setText(rowCount + 2, 2, transaction->memo());
 
       QString cLet;
       switch (transaction->state()) {
@@ -958,97 +943,50 @@ void KTransactionView::updateTransactionList(int row, int col)
           colText = " ";
           break;
       }
-      KTransactionTableItem *item5 = new KTransactionTableItem(transactionsTable, QTableItem::Never, colText);
-      transactionsTable->setItem(rowCount, 3, item5);
+      transactionsTable->setText(rowCount, 3, colText);
 
-	    KTransactionTableItem *item55 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
-	    transactionsTable->setItem(rowCount + 1, 3, item55);
+      transactionsTable->setText(rowCount, 5,
+        ((transaction->type()==MyMoneyTransaction::Credit) ? KGlobal::locale()->formatNumber(transaction->amount().amount()) : QString("")));
 
-      KTransactionTableItem *item6;
-      item6 = new KTransactionTableItem(transactionsTable, QTableItem::Never, ((transaction->type()==MyMoneyTransaction::Credit) ? KGlobal::locale()->formatNumber(transaction->amount().amount()) : QString("")));
-      transactionsTable->setItem(rowCount, 5, item6);
+      transactionsTable->setText(rowCount, 4,
+        ((transaction->type()==MyMoneyTransaction::Debit) ? KGlobal::locale()->formatNumber(transaction->amount().amount()) : QString("")));
 
-      KTransactionTableItem *item66 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
-    	transactionsTable->setItem(rowCount + 1, 4, item66);
+      transactionsTable->setText(rowCount, 6, KGlobal::locale()->formatNumber(balance.amount()));
 
-      KTransactionTableItem *item7;
-      item7 = new KTransactionTableItem(transactionsTable, QTableItem::Never, ((transaction->type()==MyMoneyTransaction::Debit) ? KGlobal::locale()->formatNumber(transaction->amount().amount()) : QString("")));
-      transactionsTable->setItem(rowCount, 4, item7);
-
-	    KTransactionTableItem *item77;
-    	item77 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
-    	transactionsTable->setItem(rowCount + 1, 5, item77);
-
-
-      KTransactionTableItem *item8 = new KTransactionTableItem(transactionsTable, QTableItem::Never, KGlobal::locale()->formatNumber(balance.amount()));
-      transactionsTable->setItem(rowCount, 6, item8);
-
-    	KTransactionTableItem *item88 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
-    	transactionsTable->setItem(rowCount + 1, 6, item88);
-    }
-      rowCount += 2;
+    }  // useall etc check
+      rowCount += NO_ROWS;
 			currentBalance = KGlobal::locale()->formatMoney(balance.amount());
     }
 
-    // Add the last empty row
-    KTransactionTableItem *item0;
-    item0 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
-    transactionsTable->setItem(rowCount, 1, item0);
-
-    KTransactionTableItem *item00;
-    item00 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
-    transactionsTable->setItem(rowCount + 1, 1, item00);
-
-    KTransactionTableItem *item1;
-    item1 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
-    transactionsTable->setItem(rowCount, 0, item1);
-
-    KTransactionTableItem *item11;
-    item11 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
-    transactionsTable->setItem(rowCount + 1, 0, item11);
-/*
-    KNumberTableItem *item2;
-    item2 = new KNumberTableItem(transactionsTable, QTableItem::Never, "");
-    transactionsTable->setItem(rowCount, 2, item2);
+/*    // Add the last empty row
+    if (NO_ROWS==1) {
+      transactionsTable->setText(rowCount+2, 0, "hi");
+    }
+    else if (NO_ROWS==2) {
+      transactionsTable->setText(rowCount+1, 0, "");
+    }
 */
+    transactionsTable->ensureCellVisible(rowCount+2, 0);
 
-    KTransactionTableItem *item3;
-    item3 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
-    transactionsTable->setItem(rowCount, 2, item3);
-
-    KTransactionTableItem *item4;
-    item4 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
-    transactionsTable->setItem(rowCount + 1, 2, item4);
-
-    KTransactionTableItem *item5 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
-    transactionsTable->setItem(rowCount, 3, item5);
-
-    KTransactionTableItem *item55 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
-    transactionsTable->setItem(rowCount + 1, 3,item55);
-
-    KTransactionTableItem *item6 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
-    transactionsTable->setItem(rowCount, 4, item6);
-
-    KTransactionTableItem *item66 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
-    transactionsTable->setItem(rowCount + 1, 4, item66);
-
-    KTransactionTableItem *item7;
-    item7 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
-    transactionsTable->setItem(rowCount, 5, item7);
-
-    KTransactionTableItem *item77;
-    item77 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
-    transactionsTable->setItem(rowCount + 1, 5, item77);
-
-    KTransactionTableItem *item8 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
-    transactionsTable->setItem(rowCount, 6, item8);
-
-    KTransactionTableItem *item88 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
-    transactionsTable->setItem(rowCount + 1, 6, item88);
-
+/*
+    transactionsTable->setText(rowCount, 1, "");
+    transactionsTable->setText(rowCount + 1, 1, "");
+    transactionsTable->setText(rowCount, 0, "");
+    transactionsTable->setText(rowCount + 1, 0, "");
+    transactionsTable->setText(rowCount, 2, "");
+    transactionsTable->setText(rowCount + 1, 2, "");
+    transactionsTable->setText(rowCount, 3, "");
+    transactionsTable->setText(rowCount + 1, 3, "");
+    transactionsTable->setText(rowCount, 4, "");
+    transactionsTable->setText(rowCount + 1, 4, "");
+    transactionsTable->setText(rowCount, 5, "");
+    transactionsTable->setText(rowCount + 1, 5, "");
+    transactionsTable->setText(rowCount, 6, "");
+    transactionsTable->setText(rowCount + 1, 6, "");
+*/
 		lblBalanceAmt->setText(currentBalance);
     lblBalanceAmt->setFont(config->readFontEntry("listCellFont", &defaultFont));
-		transactionsTable->ensureCellVisible(rowCount + 1,0);
+//    transactionsTable->setEnabled(true);
 
   } else { // We are just updating a section of it
     qDebug("is this ever called ???");
@@ -1058,12 +996,12 @@ void KTransactionView::updateTransactionList(int row, int col)
     if (col<0 || col>transactionsTable->numCols()-1)
       return;
     int realrow;
-    if((row % 2) == 0)
+    if((row % NO_ROWS) == 0)
 			realrow = row;
  		else
 			realrow = row - 1;
 		int transrow;
-		transrow = row / 2;
+		transrow = row / NO_ROWS;
     switch (col) {
       case 1:
         switch (m_transactions->at(transrow)->method()) {
@@ -1093,6 +1031,7 @@ void KTransactionView::updateTransactionList(int row, int col)
         break;
 */
       case 2:
+/*
   	    if((row % 2) == 0)
         {
           transactionsTable->setText(realrow, col, m_transactions->at(row)->payee());
@@ -1102,6 +1041,7 @@ void KTransactionView::updateTransactionList(int row, int col)
         	txt.sprintf("%s:%s", m_transactions->at(row)->categoryMajor().latin1(), m_transactions->at(transrow)->categoryMinor().latin1());
         	transactionsTable->setText(realrow + 1, col, txt);
 				}
+*/
 				break;
       case 4:
         switch (m_transactions->at(transrow)->state()) {
@@ -1184,6 +1124,7 @@ void KTransactionView::refresh(void)
   useall = true;
   usedate = false;
   userow = false;
+  clear();
   updateTransactionList(-1,-1);
 }
 
@@ -1211,7 +1152,10 @@ MyMoneyAccount* KTransactionView::getAccount(){
 /** No descriptions */
 void KTransactionView::slotNextTransaction(){
 
-	slotFocusChange(m_currentrow + 2,m_currentcol,m_currentbutton,m_currentpos);
+  KConfig *config = KGlobal::config();
+  config->setGroup("List Options");
+  const int NO_ROWS = (config->readEntry("RowCount", "2").toInt());
+	slotFocusChange(m_currentrow + NO_ROWS,m_currentcol,m_currentbutton,m_currentpos);
 
 }
 
@@ -1233,10 +1177,17 @@ void KTransactionView::viewTypeActivated(int num)
 
 void KTransactionView::resizeEvent(QResizeEvent*)
 {
-  // Costly, but works for now.
 	hideWidgets();
   clear();
-  updateTransactionList(-1);
+  int w=transactionsTable->width();
+  transactionsTable->setColumnWidth(0, 100);
+  transactionsTable->setColumnWidth(1, 100);
+  transactionsTable->setColumnWidth(2, w-530-10);
+  transactionsTable->setColumnWidth(3, 30);
+  transactionsTable->setColumnWidth(4, 100);
+  transactionsTable->setColumnWidth(5, 100);
+  transactionsTable->setColumnWidth(6, 100);
+//  updateTransactionList(-1);
 }
 /** No descriptions */
 void KTransactionView::hideWidgets(){
@@ -1247,7 +1198,9 @@ void KTransactionView::hideWidgets(){
   m_payee->hide();
   m_payment->hide();
   m_withdrawal->hide();
-	m_hlayout->hide();
+//	m_hlayout->hide();
+  m_category->hide();
+  m_memo->hide();
 	m_enter->hide();
 	m_cancel->hide();
 	m_delete->hide();

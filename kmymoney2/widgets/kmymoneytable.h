@@ -42,8 +42,11 @@ private:
   QWidget* m_col10;
   int m_button;
   QPoint m_point;
+  QString m_qstringSecondItem;
+  int m_nLastRow;
 
 protected:
+  void paintCell(QPainter *p, int row, int col, const QRect& r, bool selected);
   void paintEmptyArea(QPainter *p, int cx, int cy, int cw, int ch);
   QWidget* beginEdit(int row, int col, bool replace);
 
@@ -55,8 +58,10 @@ public:
   QWidget* cellWidget(int row,int col) const;
 	void clearCellWidget(int row, int col);
 
-
 	QString cellEditedOriginalText(void) { return m_orig; }
+	
+	void setItem2(const QString& text) { m_qstringSecondItem=text; }
+	
 public slots:
   /** No descriptions */
   virtual void setCurrentCell(int row, int col);
