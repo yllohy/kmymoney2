@@ -160,6 +160,8 @@ signals:
     * expense, income and any of the standard accounts.
     */
   void accountDoubleClick();
+  
+  void categoryDoubleClick();
 
   void signalViewActivated();
 

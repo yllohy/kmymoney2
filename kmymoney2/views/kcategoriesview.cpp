@@ -88,6 +88,9 @@ KCategoriesView::KCategoriesView(QWidget *parent, const char *name )
 
   connect(categoryListView, SIGNAL(rightButtonPressed(QListViewItem* , const QPoint&, int)),
     this, SLOT(slotListRightMouse(QListViewItem*, const QPoint&, int)));
+    
+  connect(categoryListView, SIGNAL(doubleClicked(QListViewItem* , const QPoint&, int)),
+    this, SLOT(slotListDoubleClicked(QListViewItem*, const QPoint&, int)));
 
   m_suspendUpdate = false;
 
@@ -301,7 +304,7 @@ void KCategoriesView::slotEditClicked(MyMoneyAccount& account)
 
 void KCategoriesView::slotEditClicked(void)
 {
-  KAccountListItem *item = (KAccountListItem *)categoryListView->selectedItem();
+  KAccountListItem *item = dynamic_cast<KAccountListItem*>(categoryListView->selectedItem());
   if (!item)
     return;
 
@@ -389,6 +392,17 @@ void KCategoriesView::slotListRightMouse(QListViewItem* item, const QPoint& , in
   if (item != 0 && col != -1) {
     categoryListView->setSelected(item, true);
     emit categoryRightMouseClick();
+  }
+}
+
+void KCategoriesView::slotListDoubleClicked(QListViewItem* item, const QPoint& , int)
+{
+  if (item)
+  {
+    if ( item->childCount() )
+      item->setOpen( ! item->isOpen() );
+    else
+      slotEditClicked();
   }
 }
 

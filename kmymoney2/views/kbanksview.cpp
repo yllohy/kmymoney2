@@ -384,34 +384,45 @@ void KAccountsView::slotListDoubleClicked(QListViewItem* item, const QPoint& /* 
   KAccountListItem* accountItem = static_cast<KAccountListItem*> (item);
   if(accountItem)
   {
-
-    // Only emit the signal if its an account
-    MyMoneyFile *file = MyMoneyFile::instance();
-
-    try
+    if ( item->childCount() )
+      item->setOpen( ! item->isOpen() );
+    else
     {
-      MyMoneyAccount account = file->account(accountItem->accountID());
-
-      // this signal will only be emitted for asset and liability accounts
-      if(!file->isStandardAccount(account.id())) {
-        switch(file->accountGroup(account.accountType())) {
-          case MyMoneyAccount::Asset:
-          case MyMoneyAccount::Liability:
-            m_bSelectedAccount=true;
-            m_bSelectedInstitution=false;
-            m_selectedAccount = accountItem->accountID();
-            emit accountDoubleClick();
-            break;
-
-          default:
-            break;
+  
+      MyMoneyFile *file = MyMoneyFile::instance();
+      try
+      {
+        MyMoneyAccount account = file->account(accountItem->accountID());
+  
+        if(!file->isStandardAccount(account.id())) {
+          switch(file->accountGroup(account.accountType())) {
+            // the account signal will only be emitted for asset and liability accounts
+            case MyMoneyAccount::Asset:
+            case MyMoneyAccount::Liability:
+              m_bSelectedAccount=true;
+              m_bSelectedInstitution=false;
+              m_selectedAccount = accountItem->accountID();
+              emit accountDoubleClick();
+              break;
+            // the category signal will only be emitted for income & expense accounts
+            case MyMoneyAccount::Income:
+            case MyMoneyAccount::Expense:
+              m_bSelectedAccount=true;
+              m_bSelectedInstitution=false;
+              m_selectedAccount = accountItem->accountID();
+              emit categoryDoubleClick();
+              break;
+  
+            default:
+              break;
+          }
         }
       }
-    }
-    catch (MyMoneyException *e)
-    {
-      // Probably clicked on the institution in normal view
-      delete e;
+      catch (MyMoneyException *e)
+      {
+        // Probably clicked on the institution in normal view
+        delete e;
+      }
     }
   }
 }

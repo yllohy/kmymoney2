@@ -74,6 +74,7 @@ public slots:
     
 protected slots:
   void slotListRightMouse(QListViewItem* item, const QPoint& , int col);
+  void slotListDoubleClicked(QListViewItem* item, const QPoint& , int col);
 
 signals:
   void signalViewActivated();

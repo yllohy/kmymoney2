@@ -200,6 +200,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(m_accountsView, SIGNAL(accountRightMouseClick()),
     this, SLOT(slotAccountRightMouse()));
   connect(m_accountsView, SIGNAL(accountDoubleClick()), this, SLOT(slotAccountDoubleClick()));
+  connect(m_accountsView, SIGNAL(categoryDoubleClick()), this, SLOT(slotAccountEdit()));
   //connect(accountsView, SIGNAL(accountSelected()), this, SLOT(slotAccountSelected()));
   connect(m_accountsView, SIGNAL(bankRightMouseClick()),
     this, SLOT(slotBankRightMouse()));
@@ -1043,8 +1044,9 @@ void KMyMoneyView::accountNew(const bool createCategory)
     if(ok) {
       try {
         MyMoneyFile* file = MyMoneyFile::instance();
-        file->account(accId);
+        MyMoneyAccount parent = file->account(accId);
         account.setParentAccountId(accId);
+        account.setAccountType( parent.accountType() );
       } catch(MyMoneyException *e) {
         delete e;
       }

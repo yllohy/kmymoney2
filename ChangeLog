@@ -1,3 +1,8 @@
+2004-08-17 Ace Jones <acejones@users.sourceforge.net>
+  * Fixed a bug where creating a new category would not properly use the
+    currently selected account as the parent, for expense accounts.
+  * Implemented double-clicking in accounts and categories views.
+  
 2004-08-16 Ace Jones <acejones@users.sourceforge.net>
   * Modified reports to use ()'s for negative values
   * Added Tax notation in GB default accounts
