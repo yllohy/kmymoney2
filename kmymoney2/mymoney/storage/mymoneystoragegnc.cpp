@@ -37,6 +37,7 @@
 
 #include "mymoneystoragegnc.h"
 #include "../../kmymoneyutils.h"
+#include "imymoneystorage.h"
 
 unsigned int MyMoneyStorageGNC::fileVersionRead = 0;
 unsigned int MyMoneyStorageGNC::fileVersionWrite = 0;
@@ -140,6 +141,9 @@ void MyMoneyStorageGNC::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
       qDebug("key = %s, value = %s", it.key().data(), it.data().data());
     }
 
+    //we need a IMyMoneyStorage pointer, since m_storage is IMyMoneySerialize.
+    IMyMoneyStorage* pStoragePtr = dynamic_cast<IMyMoneyStorage*>(m_storage);
+
     QValueList<MyMoneyAccount> list;
     QValueList<MyMoneyAccount>::Iterator theAccount;
     list = m_storage->accountList();
@@ -147,37 +151,33 @@ void MyMoneyStorageGNC::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
     {
       if((*theAccount).parentAccountId() == QCString(m_mainAssetId))
       {
-        QCString assets = m_storage->asset().id();
-        Q_ASSERT(!assets.isEmpty());
-        (*theAccount).setParentAccountId(assets);
+        MyMoneyAccount assets = m_storage->asset();
+        m_storage->addAccount(assets, (*theAccount));
         qDebug("The account id %s is a child of the main asset account", (*theAccount).id().data());
       }
       else if((*theAccount).parentAccountId() == QCString(m_mainLiabilityId))
       {
-        QCString liability = m_storage->liability().id();
-        Q_ASSERT(!liability.isEmpty());
-        (*theAccount).setParentAccountId(liability);
+        MyMoneyAccount liabilities = m_storage->liability();
+        m_storage->addAccount(liabilities, (*theAccount));
         qDebug("The account id %s is a child of the main liability account", (*theAccount).id().data());
       }
       else if((*theAccount).parentAccountId() == QCString(m_mainIncomeId))
       {
-        QCString income = m_storage->income().id();
-        Q_ASSERT(!income.isEmpty());
-        (*theAccount).setParentAccountId(income);
+        MyMoneyAccount incomes = m_storage->income();
+        m_storage->addAccount(incomes, (*theAccount));
         qDebug("The account id %s is a child of the main income account", (*theAccount).id().data());
       }
       else if((*theAccount).parentAccountId() == QCString(m_mainExpenseId))
       {
-        QCString expense = m_storage->expense().id();
-        Q_ASSERT(!expense.isEmpty());
-        (*theAccount).setParentAccountId(expense);
+        MyMoneyAccount expenses = m_storage->expense();
+        m_storage->addAccount(expenses, (*theAccount));
         qDebug("The account id %s is a child of the main expense account", (*theAccount).id().data());
       }
       else if((*theAccount).parentAccountId() == QCString(m_mainEquityId))
       {
-        QCString equity = m_storage->asset().id();
-        Q_ASSERT(!equity.isEmpty());
-        (*theAccount).setParentAccountId(equity);
+        MyMoneyAccount assets = m_storage->asset();
+        m_storage->addAccount(assets, (*theAccount));
+        qDebug("The account id %s is a child of the main asset account", (*theAccount).id().data());
       }
       else
       {
@@ -186,7 +186,8 @@ void MyMoneyStorageGNC::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
         if(id != m_mapIds.end())
         {
           qDebug("Setting account id %s's parent account id to %s", (*theAccount).id().data(), id.data().data());
-          (*theAccount).setParentAccountId(id.data());
+          MyMoneyAccount parent = pStoragePtr->account(id.data());
+          m_storage->addAccount(parent, (*theAccount));
         }
         else
         {
@@ -292,9 +293,12 @@ MyMoneyAccount MyMoneyStorageGNC::readAccount(const QDomElement& account)
     {
       acc.setName(gncName);
       acc.setDescription(gncDescription);
-      acc.setOpeningDate(getDate(QStringEmpty(account.attribute(QString("opened")))));
-      acc.setLastModified(getDate(QStringEmpty(account.attribute(QString("lastmodified")))));
-      acc.setLastReconciliationDate(getDate(QStringEmpty(account.attribute(QString("lastreconciled")))));
+
+      QDate currentDate = QDate::currentDate();
+      
+      acc.setOpeningDate(currentDate);
+      acc.setLastModified(currentDate);
+      acc.setLastReconciliationDate(currentDate);
       //acc.setInstitutionId(QCStringEmpty(account.attribute(QString("institution"))));
       //acc.setOpeningBalance(MyMoneyMoney(account.attribute(QString("openingbalance"))));
       acc.setParentAccountId(QCString(gncParent));
