@@ -64,13 +64,11 @@ KCurrencyCalculator::KCurrencyCalculator(const MyMoneyCurrency& from, const MyMo
 
   // setup initial result
   if(m_result == MyMoneyMoney() && m_value != 0) {
-    qDebug("result == 0");
     if(m_fromCurrency.id() == file->baseCurrency().id()) {
       price = MyMoneyMoney(1,1) / m_toCurrency.price(m_date);
     } else if(m_toCurrency.id() == file->baseCurrency().id()) {
       price = m_fromCurrency.price(m_date);
     }
-    qDebug("Price is %s", price.formatMoney().data());
     m_result = m_value * price;
   }
 
@@ -79,14 +77,12 @@ KCurrencyCalculator::KCurrencyCalculator(const MyMoneyCurrency& from, const MyMo
   m_fromToButton->setChecked(true);
 
   if(m_fromCurrency.id() == file->baseCurrency().id()) {
-    qDebug("from == base");
     m_updateCurrency = &m_toCurrency;
     m_updateButton->setEnabled(true);
     m_toFromButton->setChecked(true);
   }
 
   if(m_toCurrency.id() == file->baseCurrency().id()) {
-    qDebug("to == base");
     m_updateCurrency = &m_fromCurrency;
     m_updateButton->setEnabled(true);
     m_fromToButton->setChecked(true);
@@ -110,13 +106,11 @@ KCurrencyCalculator::~KCurrencyCalculator()
 
 void KCurrencyCalculator::slotSetFromTo(void)
 {
-  qDebug("slotSetFromTo");
   slotUpdateResult(m_toAmount->text());
 }
 
 void KCurrencyCalculator::slotSetToFrom(void)
 {
-  qDebug("slotSetToFrom");
   slotUpdateResult(m_toAmount->text());
 }
 
