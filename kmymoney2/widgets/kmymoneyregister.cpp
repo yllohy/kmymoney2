@@ -106,6 +106,7 @@ void kMyMoneyRegister::readConfig(void)
   updateHeaders();
 
   if(cellFont != m_cellFont) {
+    m_cellFont = cellFont;
     setFont(m_cellFont);
     // force loading of new font into all cells
     int rows = numRows();
