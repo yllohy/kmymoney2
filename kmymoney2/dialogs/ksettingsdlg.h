@@ -56,7 +56,7 @@ class KPushButton;
   * @see KDialogBase
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: ksettingsdlg.h,v 1.12 2003/08/02 16:50:24 ipwizard Exp $
+  * $Id: ksettingsdlg.h,v 1.13 2003/08/09 12:40:44 ipwizard Exp $
   *
   * @short A class to manipulate the settings needed for running KMyMoney2
 **/
@@ -154,7 +154,7 @@ private:
   QFont m_qfontTempCell;
 //  QString m_qstringTempRowCount;
   bool m_bTempShowGrid;
-  bool m_bTempColourPerTransaction;
+//  bool m_bTempColourPerTransaction;
   bool m_bTempStartPrompt;
   bool m_bDoneApply;
   bool m_bTempHideCategory;

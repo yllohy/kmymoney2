@@ -350,6 +350,7 @@ void KSettingsDlg::setPageList()
   m_qcheckboxTypeToNr = new QCheckBox(i18n("Insert transaction type into Nr. field for new transactions"), qwidgetPage);
   qvboxlayoutPage->addWidget(m_qcheckboxTypeToNr);
 
+#if 0
   // Create a group to hold two radio buttons
   QButtonGroup *qbuttongroup = new QButtonGroup(qwidgetPage, "ButtonGroup1");
   qbuttongroup->setTitle(i18n("Row Colour options"));
@@ -372,8 +373,9 @@ void KSettingsDlg::setPageList()
   m_qradiobuttonOtherRow = new QRadioButton(qbuttongroup, "m_every_other");
   m_qradiobuttonOtherRow->setText( i18n( "Change colour every other row" ) );
   qvboxlayout->addWidget(m_qradiobuttonOtherRow);
+  
   qvboxlayoutPage->addWidget(qbuttongroup);
-
+#endif
 
   // Add a vertical spacer to take up the remaining available space
   QSpacerItem* spacer = new QSpacerItem( 20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding );
@@ -576,9 +578,11 @@ void KSettingsDlg::configRead()
   m_bTempHideCategory = kconfig->readBoolEntry("HideUnusedCategory", false);
   m_qcheckboxHideCategory->setChecked(m_bTempHideCategory);
 
+#if 0  
   m_bTempColourPerTransaction = kconfig->readBoolEntry("ColourPerTransaction", true);
   m_qradiobuttonPerTransaction->setChecked(m_bTempColourPerTransaction);
   m_qradiobuttonOtherRow->setChecked(!m_bTempColourPerTransaction);
+#endif
 
   QDateTime defaultDate;
   defaultDate.setTime_t(0);
@@ -612,8 +616,8 @@ void KSettingsDlg::configWrite()
   kconfig->writeEntry("listHeaderFont", m_kfontchooserHeader->font());
   kconfig->writeEntry("listCellFont", m_kfontchooserCell->font());
   // kconfig->writeEntry("RowCount", m_klineeditRowCount->text());
-  // kconfig->writeEntry("ShowGrid", m_qcheckboxShowGrid->isChecked());
-  kconfig->writeEntry("ColourPerTransaction", m_qradiobuttonPerTransaction->isChecked());
+  kconfig->writeEntry("ShowGrid", m_qcheckboxShowGrid->isChecked());
+  // kconfig->writeEntry("ColourPerTransaction", m_qradiobuttonPerTransaction->isChecked());
   kconfig->writeEntry("HideUnusedCategory", m_qcheckboxHideCategory->isChecked());
 #if QT_VERSION > 300
   kconfig->writeEntry("StartDate", QDateTime(m_dateinputStart->getQDate()));
@@ -683,7 +687,7 @@ void KSettingsDlg::slotCancel()
   kconfig->writeEntry("listCellFont", m_qfontTempCell);
   // kconfig->writeEntry("RowCount", m_qstringTempRowCount);
   kconfig->writeEntry("ShowGrid", m_bTempShowGrid);
-  kconfig->writeEntry("ColourPerTransaction", m_bTempColourPerTransaction);
+  // kconfig->writeEntry("ColourPerTransaction", m_bTempColourPerTransaction);
   kconfig->writeEntry("HideUnusedCategory", m_bTempHideCategory);
 #if QT_VERSION > 300
   kconfig->writeEntry("StartDate", QDateTime(m_qdateTempStart));
@@ -727,8 +731,10 @@ void KSettingsDlg::slotUser1()
   m_kfontchooserCell->setFont(m_qfontTempCell);
   // m_klineeditRowCount->setText(m_qstringTempRowCount);
   m_qcheckboxShowGrid->setChecked(m_bTempShowGrid);
+#if 0  
   m_qradiobuttonPerTransaction->setChecked(m_bTempColourPerTransaction);
   m_qradiobuttonOtherRow->setChecked(!m_bTempColourPerTransaction);
+#endif  
   m_qcheckboxHideCategory->setChecked(m_bTempHideCategory);
   m_dateinputStart->setDate(m_qdateTempStart);
   m_qradiobuttonNormalView->setChecked(m_bTempNormalView);
@@ -801,24 +807,6 @@ void KSettingsDlg::fillHomePageItems(QStringList& list)
       sel = item;
     last = item;
   }
-
-#if 0  
-  for(int idx = highest+1; idx <= KMyMoneyUtils::maxHomePageItems; ++idx) {
-    list.append(QString::number(-idx));
-    QCheckListItem* item = new QCheckListItem(m_homePageList, KMyMoneyUtils::homePageItemToString(idx), QCheckListItem::CheckBox);
-    if(last)
-      item->moveItem(last);
-
-    // qDebug("Adding missing %s", item->text(0).latin1());
-    item->setOn(false);
-    if(item->width(fm, m_homePageList, 0) > w)
-      w = item->width(fm, m_homePageList, 0);
-      
-    if(sel == 0)
-      sel = item;
-    last = item;
-  }
-#endif
 
   if(sel) {
     m_homePageList->setSelected(sel, true);
