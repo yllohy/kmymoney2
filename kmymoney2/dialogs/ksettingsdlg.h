@@ -58,7 +58,7 @@ class KPushButton;
   * @see KDialogBase
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: ksettingsdlg.h,v 1.15 2003/12/08 21:25:55 ipwizard Exp $
+  * $Id: ksettingsdlg.h,v 1.16 2004/01/25 20:37:52 mte Exp $
   *
   * @short A class to manipulate the settings needed for running KMyMoney2
 **/
@@ -143,6 +143,16 @@ private:
   void fillHomePageItems(QStringList& list);
   const QStringList homePageItems(void) const;
 
+  /** Set schedule options */
+  void setPageSchedule();
+
+  /** Set colour options */
+  void setPageColour();
+
+  /** Set font options */
+  void setPageFont();
+
+
   /** Write settings */
   void configWrite();
   /** Read settings */
@@ -194,7 +204,8 @@ private slots:
 
   void slotMoveUp(void);
   void slotMoveDown(void);
-  
+
+ 
 public:
   /**
     * Standard constructor.

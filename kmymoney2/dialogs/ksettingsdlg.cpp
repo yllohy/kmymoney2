@@ -68,6 +68,10 @@ KSettingsDlg::KSettingsDlg(QWidget *parent, const char *name, bool modal)
   setPageAccountsView();
   setPageList();
   setHomePage();
+  setPageSchedule();
+  setPageColour();
+  setPageFont();
+  
   configRead();
   
   m_bDoneApply=false;
@@ -148,43 +152,6 @@ void KSettingsDlg::setPageGeneral()
   m_qradiobuttonStartLast = new QRadioButton("start_last", qpagebuttongroup);
   m_qradiobuttonStartLast->setText( i18n( "Start with last selected page" ) );
   qvboxpagelayout->addWidget(m_qradiobuttonStartLast);
-
-  // Startup schedule options
-  // --------------------
-
-  // Create a group box to hold the available options
-  QButtonGroup *qschedulebuttongroup = new QButtonGroup(qvboxMainFrame, "GroupBox3");
-  qschedulebuttongroup->setTitle( i18n( "Schedule startup options" ) );
-  qschedulebuttongroup->setColumnLayout(0, Qt::Vertical );
-  qschedulebuttongroup->layout()->setSpacing( 0 );
-  qschedulebuttongroup->layout()->setMargin( 0 );
-
-  // Create a layout to organize the widgets.
-  QVBoxLayout *qvboxschedulelayout = new QVBoxLayout(qschedulebuttongroup->layout());
-  qvboxschedulelayout->setAlignment( Qt::AlignTop );
-  qvboxschedulelayout->setSpacing( 6 );
-  qvboxschedulelayout->setMargin( 11 );
-
-  // Create a check box to be in the group box
-  m_qradiobuttonCheckSchedules = new QCheckBox("check_schedules", qschedulebuttongroup);
-  m_qradiobuttonCheckSchedules->setText( i18n( "Check schedules upon startup" ) );
-
-  qvboxschedulelayout->addWidget(m_qradiobuttonCheckSchedules);
-
-  // Create a number input field in the group box
-  QHBoxLayout *qhboxschedulelayout = new QHBoxLayout(qvboxschedulelayout, 6);
-  qhboxschedulelayout->setAlignment( Qt::AlignTop );
-  qhboxschedulelayout->setMargin( 1 );
-  
-  m_intSchedulePreview = new KIntNumInput(qschedulebuttongroup);
-  m_intSchedulePreview->setLabel(i18n("Enter transactions this number of days in advance"));
-  m_intSchedulePreview->setRange(0, INT_MAX, 1, false);
-  qhboxschedulelayout->addWidget(m_intSchedulePreview);
-  
-  QSpacerItem* spacer = new QSpacerItem( 0, 80, QSizePolicy::Minimum, QSizePolicy::Expanding );
-  qhboxschedulelayout->addItem(spacer);
-
-  connect(m_qradiobuttonCheckSchedules, SIGNAL(toggled(bool)), m_intSchedulePreview, SLOT(setEnabled(bool)));
 }
 
 void KSettingsDlg::setPageAccountsView()
@@ -460,86 +427,6 @@ void KSettingsDlg::setPageList()
 
   // Add the page to the tab
   qtabwidget->insertTab(qwidgetFilter, i18n("Filter"));
-
-
-
-
-
-
-
-
-
-  // Create a new tab for the colour options
-  QWidget *qwidgetColour = new QWidget(qtabwidget, "colorTab");
-
-  // Create a vertical layout
-  QVBoxLayout *qvboxlayoutColour = new QVBoxLayout(qwidgetColour);
-  qvboxlayoutColour->setSpacing( 6 );
-  qvboxlayoutColour->setMargin( 11 );
-
-  // Create a horizontal layout to include the label and button
-  QHBoxLayout *qhboxlayoutColour = new QHBoxLayout;
-  qhboxlayoutColour->setSpacing( 6 );
-  qhboxlayoutColour->setMargin( 0 );
-
-  // Add the label and button
-  QLabel *qlabelListColour = new QLabel(i18n( "List view colour :" ), qwidgetColour);
-  qhboxlayoutColour->addWidget(qlabelListColour);
-  m_kcolorbuttonList = new KColorButton(qwidgetColour, "colour_list");
-  qhboxlayoutColour->addWidget(m_kcolorbuttonList);
-
-  // Add the horizontal layout
-  qvboxlayoutColour->addLayout(qhboxlayoutColour);
-
-  // Create another horizontal layout to include the label and button
-  QHBoxLayout *qhboxlayoutBGColour = new QHBoxLayout;
-  qhboxlayoutBGColour->setSpacing( 6 );
-  qhboxlayoutBGColour->setMargin( 0 );
-
-  // Add the label and button
-  QLabel *qlabelListBGColour = new QLabel(i18n( "List background colour :" ), qwidgetColour);
-  qhboxlayoutBGColour->addWidget(qlabelListBGColour);
-  m_kcolorbuttonBack = new KColorButton(qwidgetColour, "colour_back");
-  qhboxlayoutBGColour->addWidget(m_kcolorbuttonBack);
-
-  // Add the horizontal layout
-  qvboxlayoutColour->addLayout(qhboxlayoutBGColour);
-
-  // Create another horizontal layout to include the label and button
-  QHBoxLayout *qhboxlayoutGridColour = new QHBoxLayout;
-  qhboxlayoutBGColour->setSpacing( 6 );
-  qhboxlayoutBGColour->setMargin( 0 );
-
-  // Add the label and button
-  QLabel *qlabelListGridColour = new QLabel(i18n( "List grid colour :" ), qwidgetColour);
-  qhboxlayoutGridColour->addWidget(qlabelListGridColour);
-  m_kcolorbuttonGrid = new KColorButton(qwidgetColour, "colour_grid");
-  qhboxlayoutGridColour->addWidget(m_kcolorbuttonGrid);
-
-  // Add the horizontal layout
-  qvboxlayoutColour->addLayout(qhboxlayoutGridColour);
-
-
-  // Add a vertical spacer to take up the remaining available space
-  QSpacerItem* qspaceritemColour = new QSpacerItem( 20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding );
-  qvboxlayoutColour->addItem( qspaceritemColour );
-
-  // Add the page to the tab widget
-  qtabwidget->insertTab(qwidgetColour, i18n( "Color"));
-
-  // Create another tab adding a font chooser widget
-  QVBox *qvboxInsideTab1 = new QVBox( this, "tab1" );
-  qvboxInsideTab1->setSpacing( 6 );
-  qvboxInsideTab1->setMargin( 11 );
-  m_kfontchooserHeader = new KFontChooser(qvboxInsideTab1);
-  qtabwidget->insertTab(qvboxInsideTab1, i18n("Header Font"));
-
-  // Create another tab adding a font chooser widget
-  QVBox *qvboxInsideTab2 = new QVBox( this, "tab2" );
-  qvboxInsideTab2->setSpacing( 6 );
-  qvboxInsideTab2->setMargin( 11 );
-  m_kfontchooserCell = new KFontChooser(qvboxInsideTab2);
-  qtabwidget->addTab(qvboxInsideTab2, i18n("Cell Font"));
 }
 
 /** Read all the settings in from the global KConfig object and set all the
@@ -900,4 +787,121 @@ void KSettingsDlg::slotMoveDown(void)
     item->moveItem(next);
     slotSelectHomePageItem(item);
   }
+}
+
+void KSettingsDlg::setPageSchedule()
+{
+  // Create the main frame to hold the widgets
+  QVBox *qvboxMainFrame = addVBoxPage( i18n("Schedules"), i18n("Schedule settings"),
+    DesktopIcon("schedule"));
+
+  // Startup schedule options
+  // --------------------
+  QGroupBox* groupBox1 = new QGroupBox( qvboxMainFrame, "groupBox1" );
+  groupBox1->setTitle( i18n( "Schedule startup options" ) );
+  groupBox1->setGeometry( QRect( 10, 10, 374, 370 ) );
+  groupBox1->setColumnLayout(0, Qt::Vertical );
+  groupBox1->layout()->setSpacing( 6 );
+  groupBox1->layout()->setMargin( 11 );
+
+  QVBoxLayout* groupBox1Layout = new QVBoxLayout( groupBox1->layout() );
+  groupBox1Layout->setAlignment( Qt::AlignTop );
+
+  m_qradiobuttonCheckSchedules = new QCheckBox( groupBox1, "m_qradiobuttonCheckSchedules" );
+  m_qradiobuttonCheckSchedules->setText( i18n( "Check schedules upon startup" ) );
+  groupBox1Layout->addWidget( m_qradiobuttonCheckSchedules );
+
+  QHBoxLayout* layout1 = new QHBoxLayout( 0, 0, 6, "layout1");
+
+  QLabel* textLabel1 = new QLabel( groupBox1, "textLabel1" );
+  textLabel1->setText( i18n( "Enter transactions this number of days in advance" ) );
+  layout1->addWidget( textLabel1 );
+
+  m_intSchedulePreview = new KIntNumInput( groupBox1, "m_intSchedulePreview" );
+  m_intSchedulePreview->setRange(0, INT_MAX, 1, false);
+  layout1->addWidget( m_intSchedulePreview );
+  groupBox1Layout->addLayout( layout1 );
+  QSpacerItem* spacer = new QSpacerItem( 20, 21, QSizePolicy::Minimum, QSizePolicy::Expanding );
+  groupBox1Layout->addItem( spacer );
+
+  connect(m_qradiobuttonCheckSchedules, SIGNAL(toggled(bool)), m_intSchedulePreview, SLOT(setEnabled(bool)));
+}
+
+void KSettingsDlg::setPageColour()
+{
+  // Create the page.
+  QVBox *qvboxMainFrame = addVBoxPage( i18n("Colours"), i18n("Colour settings"),
+    DesktopIcon("colorscm"));
+
+  QGroupBox* groupBox2 = new QGroupBox( qvboxMainFrame, "groupBox2" );
+  groupBox2->setTitle( i18n( "List Colours" ) );
+  groupBox2->setGeometry( QRect( 20, 10, 430, 340 ) );
+  groupBox2->setColumnLayout(0, Qt::Vertical );
+  groupBox2->layout()->setSpacing( 6 );
+  groupBox2->layout()->setMargin( 11 );
+
+  QVBoxLayout* groupBox2Layout = new QVBoxLayout( groupBox2->layout() );
+  groupBox2Layout->setAlignment( Qt::AlignTop );
+
+  QHBoxLayout* layout2 = new QHBoxLayout( 0, 0, 6, "layout2");
+
+  QLabel* textLabel2 = new QLabel( groupBox2, "textLabel2" );
+  textLabel2->setText( i18n( "List view colour :" ) );
+  layout2->addWidget( textLabel2 );
+
+  m_kcolorbuttonList = new KColorButton( groupBox2, "m_kcolorbuttonList" );
+  layout2->addWidget( m_kcolorbuttonList );
+  groupBox2Layout->addLayout( layout2 );
+
+  QHBoxLayout* layout3 = new QHBoxLayout( 0, 0, 6, "layout3");
+
+  QLabel* textLabel2_2 = new QLabel( groupBox2, "textLabel2_2" );
+  textLabel2_2->setText( i18n( "List background colour :" ) );
+  layout3->addWidget( textLabel2_2 );
+
+  m_kcolorbuttonBack = new KColorButton( groupBox2, "m_kcolorbuttonBack" );
+  layout3->addWidget( m_kcolorbuttonBack );
+  groupBox2Layout->addLayout( layout3 );
+
+  QHBoxLayout* layout4 = new QHBoxLayout( 0, 0, 6, "layout4");
+
+  QLabel* textLabel2_3 = new QLabel( groupBox2, "textLabel2_3" );
+  textLabel2_3->setText( i18n( "List grid colour :" ) );
+  layout4->addWidget( textLabel2_3 );
+
+  m_kcolorbuttonGrid = new KColorButton( groupBox2, "m_kcolorbuttonGrid" );
+  layout4->addWidget( m_kcolorbuttonGrid );
+  groupBox2Layout->addLayout( layout4 );
+
+  QSpacerItem* spacer = new QSpacerItem( 20, 31, QSizePolicy::Minimum, QSizePolicy::Expanding );
+  groupBox2Layout->addItem( spacer );
+}
+
+void KSettingsDlg::setPageFont()
+{
+  // Create the page.
+  QVBox *qvboxMainFrame = addVBoxPage( i18n("Fonts"), i18n("Font settings"),
+    DesktopIcon("font"));
+
+  QVBoxLayout* Form1Layout = new QVBoxLayout( qvboxMainFrame, 11, 6, "Form1Layout");
+
+  QTabWidget* tabWidget2 = new QTabWidget( qvboxMainFrame, "tabWidget2" );
+
+  QWidget* tab = new QWidget( tabWidget2, "tab" );
+  QVBoxLayout* tabLayout = new QVBoxLayout( tab, 11, 6, "tabLayout");
+
+  m_kfontchooserHeader = new KFontChooser(tab, "m_kfontchooserHeader" );
+  tabLayout->addWidget( m_kfontchooserHeader );
+  tabWidget2->insertTab( tab, QString("") );
+
+  QWidget* tab_2 = new QWidget( tabWidget2, "tab_2" );
+  QVBoxLayout* tabLayout_2 = new QVBoxLayout( tab_2, 11, 6, "tabLayout_2");
+
+  m_kfontchooserCell = new KFontChooser( tab_2, "m_kfontchooserCell" );
+  tabLayout_2->addWidget( m_kfontchooserCell );
+  tabWidget2->insertTab( tab_2, QString("") );
+  Form1Layout->addWidget( tabWidget2 );
+
+  tabWidget2->changeTab( tab, i18n( "Header Font" ) );
+  tabWidget2->changeTab( tab_2, i18n( "Cell Font" ) );
 }
