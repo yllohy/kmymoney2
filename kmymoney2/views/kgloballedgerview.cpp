@@ -275,7 +275,13 @@ const bool KGlobalLedgerView::slotSelectAccount(const QCString& id, const bool r
     MyMoneyAccount acc = MyMoneyFile::instance()->account(id);
     if(m_accountId != id) {
       if(m_specificView[acc.accountType()] != 0) {
-        m_accountStack->raiseWidget(acc.accountType());
+        // loan and asset-loan share a view. So there's
+        // only one widget on the widget stack. Make sure
+        // we pick the right one
+        int viewType = acc.accountType();
+        if(viewType == MyMoneyAccount::AssetLoan)
+          viewType = MyMoneyAccount::Loan;
+        m_accountStack->raiseWidget(viewType);
         m_currentView = m_specificView[acc.accountType()];
         m_currentView->slotSelectAccount(id);
         m_accountComboBox->setSelected(acc);
