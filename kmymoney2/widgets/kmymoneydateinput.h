@@ -51,9 +51,20 @@ public:
 	void setDate(QDate date);
   void loadDate(const QDate& date);
   void resetDate(void);
+  QWidget* focusWidget(void) const;
 
 signals:
   void dateChanged(const QDate& date);
+
+  /**
+    * This signal is emitted when the user presses RETURN while editing
+    */
+  void signalEnter();
+
+  /**
+    * This signal is emitted when the user presses ESC while editing
+    */
+  void signalEsc();
 
 protected:
   /** Overriding QWidget::keyPressEvent */

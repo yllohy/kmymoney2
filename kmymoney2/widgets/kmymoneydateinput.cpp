@@ -159,3 +159,10 @@ void kMyMoneyDateInput::resetDate(void)
   setDate(m_prevDate);
 }
 
+QWidget* kMyMoneyDateInput::focusWidget(void) const
+{
+  QWidget* w = dateEdit;
+  while(w->focusProxy())
+    w = w->focusProxy();
+  return w;
+}
