@@ -1059,7 +1059,7 @@ void KMyMoneyView::viewPersonal(void)
 
 void KMyMoneyView::loadDefaultCategories(void)
 {
-  KFileDialog* dialog = new KFileDialog(KGlobal::dirs()->findResourceDir("appdata", "default_accounts.dat"),
+  KFileDialog* dialog = new KFileDialog(KGlobal::dirs()->findResourceDir("appdata", "default_accounts_enC.dat"),
                                         i18n("*.dat|Account templates"),
                                         this, i18n("Select account template"),
                                         true);

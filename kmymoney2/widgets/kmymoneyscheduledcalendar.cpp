@@ -25,6 +25,7 @@
 #include <qpushbutton.h>
 #include <qkeysequence.h>
 #include <qcursor.h>
+#include <qapplication.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -94,7 +95,21 @@ void kMyMoneyScheduledCalendar::slotHoverSchedules(QValueList<MyMoneySchedule> l
   if (list.count() >= 1)
   {
     briefWidget.setSchedules(list);
-    briefWidget.move(QCursor::pos());
+
+    int h = briefWidget.height();
+    int w = briefWidget.width();
+
+    QPoint p = QCursor::pos();
+    if (p.y() + h > QApplication::desktop()->height())
+    {
+      p.setY(p.y() - h);
+    }
+    if (p.x() + w > QApplication::desktop()->width())
+    {
+      p.setX(p.x() - w);
+    }
+  
+    briefWidget.move(p);
     briefWidget.show();
   }
   else

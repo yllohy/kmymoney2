@@ -31,6 +31,7 @@
 // KDE Includes
 #include <klocale.h>
 #include <kiconloader.h>
+#include <kpushbutton.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -39,13 +40,25 @@
 #include "../kmymoneyutils.h"
 
 KMyMoneyBriefSchedule::KMyMoneyBriefSchedule(QWidget *parent, const char *name )
-  : kScheduleBriefWidget(parent,name)
+  : kScheduleBriefWidget(parent,name, WStyle_Customize | WStyle_NoBorder)
 {
   m_nextButton->setPixmap(BarIcon(QString::fromLatin1("1rightarrow")));
   m_prevButton->setPixmap(BarIcon(QString::fromLatin1("1leftarrow")));
 
   connect(m_prevButton, SIGNAL(clicked()), this, SLOT(slotPrevClicked()));
   connect(m_nextButton, SIGNAL(clicked()), this, SLOT(slotNextClicked()));
+  connect(m_closeButton, SIGNAL(clicked()), this, SLOT(hide()));
+
+  KIconLoader *ic = KGlobal::iconLoader();
+  KGuiItem closeGuiItem(  i18n("&Close"),
+                          QIconSet(ic->loadIcon("remove", KIcon::Small, KIcon::SizeSmall)),
+                          i18n("Close this window"),
+                          i18n("Use this button to close the window"));
+
+  m_closeButton->setGuiItem(closeGuiItem);
+
+//  return ic->loadIcon("schedule", KIcon::User, size);
+//        d->closeButton->setPixmap( SmallIcon("remove") );
 }
 
 KMyMoneyBriefSchedule::~KMyMoneyBriefSchedule()

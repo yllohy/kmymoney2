@@ -1,3 +1,13 @@
+2003-08-31 Michael Edwardes <mte@users.sourceforge.net>
+  * Added a default default_accounts_enC.dat file.
+  * Set KDialog to look for the default_accounts_enC.dat file for its
+    initial dir.
+  * Fix the mouse tracking in the calendar table.
+  * Popup the Schedule brief widget 'intelligently'.
+  * Make sure default_accounts_enGB.dat, default_accounts_enC.dat and
+    comptes_par_defaut_fr.dat are installed.
+  * Made the Schedule brief widget borderless and added a close button.
+    
 2003-08-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * added french files provided by Laurent Colognes
 

@@ -87,8 +87,8 @@ kMyMoneyDateTbl::kMyMoneyDateTbl(QWidget *parent, QDate date_, const char* name,
   setDate(date_); // this initializes firstday, numdays, numDaysPrevMonth
 
   // So we can emit hoverDate
-  QApplication::setGlobalMouseTracking(true);
-  setMouseTracking(true);
+//  QApplication::setGlobalMouseTracking(true);
+  viewport()->setMouseTracking(true);
 }
 
 void
