@@ -270,9 +270,9 @@ void MyMoneyStorageBinTest::testReadOldMyMoneyFile(const QString version, unsign
 
     if(magic == 0x07) {
       CPPUNIT_ASSERT(a1.openingDate() == QDate(7,8,9));
-      CPPUNIT_ASSERT(a1.openingBalance() == 123400);
+      CPPUNIT_ASSERT(a1.openingBalance() == MyMoneyMoney(123400));
     } else {
-      CPPUNIT_ASSERT(a1.openingBalance() == 0);
+      CPPUNIT_ASSERT(a1.openingBalance().isZero());
       CPPUNIT_ASSERT(a1.openingDate() == QDate(1970,1,1));
     }
     CPPUNIT_ASSERT(a1.lastReconciliationDate() == QDate(4,5,6));
@@ -284,9 +284,9 @@ void MyMoneyStorageBinTest::testReadOldMyMoneyFile(const QString version, unsign
 
     if(magic == 0x07) {
       CPPUNIT_ASSERT(a2.openingDate() == QDate(1,2,3));
-      CPPUNIT_ASSERT(a2.openingBalance() == -432100);
+      CPPUNIT_ASSERT(a2.openingBalance() == MyMoneyMoney(-432100));
     } else {
-      CPPUNIT_ASSERT(a2.openingBalance() == 0);
+      CPPUNIT_ASSERT(a2.openingBalance().isZero());
       CPPUNIT_ASSERT(a2.openingDate() == QDate(1970,1,1));
     }
     CPPUNIT_ASSERT(a2.lastReconciliationDate() == QDate(7,9,7));
@@ -315,7 +315,7 @@ void MyMoneyStorageBinTest::testReadOldMyMoneyFile(const QString version, unsign
     sp2 = t.splits()[1];
 
     CPPUNIT_ASSERT(sp1.accountId() == "A000003");
-    CPPUNIT_ASSERT(sp1.value() == -123);
+    CPPUNIT_ASSERT(sp1.value() == MyMoneyMoney(-123));
     CPPUNIT_ASSERT(sp1.memo() == "Memo1");
     CPPUNIT_ASSERT(sp1.reconcileFlag() == MyMoneySplit::Cleared);
     CPPUNIT_ASSERT(sp1.reconcileDate() == QDate());
@@ -323,7 +323,7 @@ void MyMoneyStorageBinTest::testReadOldMyMoneyFile(const QString version, unsign
     CPPUNIT_ASSERT(sp1.number() == "Number1");
 
     CPPUNIT_ASSERT(sp2.accountId() == "A000002");
-    CPPUNIT_ASSERT(sp2.value() == 123);
+    CPPUNIT_ASSERT(sp2.value() == MyMoneyMoney(123));
     CPPUNIT_ASSERT(sp2.memo() == "Memo1");
     CPPUNIT_ASSERT(sp2.reconcileFlag() == MyMoneySplit::Cleared);
     CPPUNIT_ASSERT(sp2.reconcileDate() == QDate());
@@ -349,7 +349,7 @@ void MyMoneyStorageBinTest::testReadOldMyMoneyFile(const QString version, unsign
     sp2 = t.splits()[1];
 
     CPPUNIT_ASSERT(sp1.accountId() == "A000003");
-    CPPUNIT_ASSERT(sp1.value() == 356);
+    CPPUNIT_ASSERT(sp1.value() == MyMoneyMoney(356));
     CPPUNIT_ASSERT(sp1.memo() == "Memo2");
     CPPUNIT_ASSERT(sp1.reconcileFlag() == MyMoneySplit::Reconciled);
     CPPUNIT_ASSERT(sp1.reconcileDate() == QDate(4,5,6));
@@ -357,7 +357,7 @@ void MyMoneyStorageBinTest::testReadOldMyMoneyFile(const QString version, unsign
     CPPUNIT_ASSERT(sp1.number() == "Number2");
 
     CPPUNIT_ASSERT(sp2.accountId() == "A000004");
-    CPPUNIT_ASSERT(sp2.value() == -356);
+    CPPUNIT_ASSERT(sp2.value() == MyMoneyMoney(-356));
     CPPUNIT_ASSERT(sp2.memo() == "Memo2");
     CPPUNIT_ASSERT(sp2.reconcileFlag() == MyMoneySplit::Reconciled);
     CPPUNIT_ASSERT(sp2.reconcileDate() == QDate(4,5,6));
@@ -378,13 +378,13 @@ void MyMoneyStorageBinTest::testReadOldMyMoneyFile(const QString version, unsign
     sp2 = t.splits()[1];
 
     CPPUNIT_ASSERT(sp1.accountId() == "A000004");
-    CPPUNIT_ASSERT(sp1.value() == 356);
+    CPPUNIT_ASSERT(sp1.value() == MyMoneyMoney(356));
     CPPUNIT_ASSERT(sp1.memo() == "Memo5");
     CPPUNIT_ASSERT(sp1.reconcileFlag() == MyMoneySplit::NotReconciled);
     CPPUNIT_ASSERT(sp1.reconcileDate() == QDate());
 
     CPPUNIT_ASSERT(sp2.accountId() == "A000003");
-    CPPUNIT_ASSERT(sp2.value() == -356);
+    CPPUNIT_ASSERT(sp2.value() == MyMoneyMoney(-356));
     CPPUNIT_ASSERT(sp2.memo() == "Memo5");
     CPPUNIT_ASSERT(sp2.reconcileFlag() == MyMoneySplit::NotReconciled);
     CPPUNIT_ASSERT(sp2.reconcileDate() == QDate());

@@ -576,11 +576,11 @@ void MyMoneySeqAccessMgrTest::testTransactionCount() {
 void MyMoneySeqAccessMgrTest::testBalance() {
 	testAddTransactions();
 
-	CPPUNIT_ASSERT(m->balance("A000001") == 0);
-	CPPUNIT_ASSERT(m->balance("A000002") == 1200);
-	CPPUNIT_ASSERT(m->balance("A000003") == 400);
-	CPPUNIT_ASSERT(m->totalBalance("A000001") == 1600);
-	CPPUNIT_ASSERT(m->balance("A000006", QDate(2002,5,9)) == -11600);
+	CPPUNIT_ASSERT(m->balance("A000001").isZero());
+	CPPUNIT_ASSERT(m->balance("A000002") == MyMoneyMoney(1200));
+	CPPUNIT_ASSERT(m->balance("A000003") == MyMoneyMoney(400));
+	CPPUNIT_ASSERT(m->totalBalance("A000001") == MyMoneyMoney(1600));
+	CPPUNIT_ASSERT(m->balance("A000006", QDate(2002,5,9)) == MyMoneyMoney(-11600));
 }
 
 void MyMoneySeqAccessMgrTest::testModifyTransaction() {
@@ -605,13 +605,13 @@ void MyMoneySeqAccessMgrTest::testModifyTransaction() {
 	t.modifySplit(s);
 
 	try {
-		CPPUNIT_ASSERT(m->balance("A000004") == 10000);
-		CPPUNIT_ASSERT(m->balance("A000006") == 100000-11600);
-		CPPUNIT_ASSERT(m->totalBalance("A000001") == 1600);
+		CPPUNIT_ASSERT(m->balance("A000004") == MyMoneyMoney(10000));
+		CPPUNIT_ASSERT(m->balance("A000006") == MyMoneyMoney(100000-11600));
+		CPPUNIT_ASSERT(m->totalBalance("A000001") == MyMoneyMoney(1600));
 		m->modifyTransaction(t);
-		CPPUNIT_ASSERT(m->balance("A000004") == 11000);
-		CPPUNIT_ASSERT(m->balance("A000006") == 100000-12600);
-		CPPUNIT_ASSERT(m->totalBalance("A000001") == 1600);
+		CPPUNIT_ASSERT(m->balance("A000004") == MyMoneyMoney(11000));
+		CPPUNIT_ASSERT(m->balance("A000006") == MyMoneyMoney(100000-12600));
+		CPPUNIT_ASSERT(m->totalBalance("A000001") == MyMoneyMoney(1600));
 	} catch (MyMoneyException *e) {
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception");
@@ -621,9 +621,9 @@ void MyMoneySeqAccessMgrTest::testModifyTransaction() {
 	t.setPostDate(QDate(2002,5,11));
 	try {
 		m->modifyTransaction(t);
-		CPPUNIT_ASSERT(m->balance("A000004") == 11000);
-		CPPUNIT_ASSERT(m->balance("A000006") == 100000-12600);
-		CPPUNIT_ASSERT(m->totalBalance("A000001") == 1600);
+		CPPUNIT_ASSERT(m->balance("A000004") == MyMoneyMoney(11000));
+		CPPUNIT_ASSERT(m->balance("A000006") == MyMoneyMoney(100000-12600));
+		CPPUNIT_ASSERT(m->totalBalance("A000001") == MyMoneyMoney(1600));
 
 		QMap<QCString, QCString>::ConstIterator it_k;
 		QMap<QCString, MyMoneyTransaction>::ConstIterator it_t;

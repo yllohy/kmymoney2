@@ -34,8 +34,8 @@ void MyMoneySplitTest::testEmptyConstructor() {
 	CPPUNIT_ASSERT(m->id().isEmpty());
 	CPPUNIT_ASSERT(m->memo().isEmpty());
 	CPPUNIT_ASSERT(m->action().isEmpty());
-	CPPUNIT_ASSERT(m->shares() == 0);
-	CPPUNIT_ASSERT(m->value() == 0);
+	CPPUNIT_ASSERT(m->shares().isZero());
+	CPPUNIT_ASSERT(m->value().isZero());
 	CPPUNIT_ASSERT(m->reconcileFlag() == MyMoneySplit::NotReconciled);
 	CPPUNIT_ASSERT(m->reconcileDate() == QDate());
 }
@@ -55,8 +55,8 @@ void MyMoneySplitTest::testSetFunctions() {
 	CPPUNIT_ASSERT(m->memo() == "Memo");
 	CPPUNIT_ASSERT(m->reconcileDate() == QDate(1,2,3));
 	CPPUNIT_ASSERT(m->reconcileFlag() == MyMoneySplit::Cleared);
-	CPPUNIT_ASSERT(m->shares() == 1234);
-	CPPUNIT_ASSERT(m->value() == 3456);
+	CPPUNIT_ASSERT(m->shares() == MyMoneyMoney(1234));
+	CPPUNIT_ASSERT(m->value() == MyMoneyMoney(3456));
 	CPPUNIT_ASSERT(m->id() == "MyID");
 	CPPUNIT_ASSERT(m->payeeId() == "Payee");
 	CPPUNIT_ASSERT(m->action() == "Action");
@@ -72,8 +72,8 @@ void MyMoneySplitTest::testCopyConstructor() {
 	CPPUNIT_ASSERT(n.memo() == "Memo");
 	CPPUNIT_ASSERT(n.reconcileDate() == QDate(1,2,3));
 	CPPUNIT_ASSERT(n.reconcileFlag() == MyMoneySplit::Cleared);
-	CPPUNIT_ASSERT(n.shares() == 1234);
-	CPPUNIT_ASSERT(n.value() == 3456);
+	CPPUNIT_ASSERT(n.shares() == MyMoneyMoney(1234));
+	CPPUNIT_ASSERT(n.value() == MyMoneyMoney(3456));
 	CPPUNIT_ASSERT(n.id() == "MyID");
 	CPPUNIT_ASSERT(n.payeeId() == "Payee");
 	CPPUNIT_ASSERT(n.action() == "Action");
@@ -90,8 +90,8 @@ void MyMoneySplitTest::testAssignmentConstructor() {
 	CPPUNIT_ASSERT(n.memo() == "Memo");
 	CPPUNIT_ASSERT(n.reconcileDate() == QDate(1,2,3));
 	CPPUNIT_ASSERT(n.reconcileFlag() == MyMoneySplit::Cleared);
-	CPPUNIT_ASSERT(n.shares() == 1234);
-	CPPUNIT_ASSERT(n.value() == 3456);
+	CPPUNIT_ASSERT(n.shares() == MyMoneyMoney(1234));
+	CPPUNIT_ASSERT(n.value() == MyMoneyMoney(3456));
 	CPPUNIT_ASSERT(n.id() == "MyID");
 	CPPUNIT_ASSERT(n.payeeId() == "Payee");
 	CPPUNIT_ASSERT(n.action() == "Action");
@@ -166,17 +166,17 @@ void MyMoneySplitTest::testAmortization() {
 void MyMoneySplitTest::testValue() {
 	m->setValue(1);
 	m->setShares(2);
-	CPPUNIT_ASSERT(m->value("EUR", "EUR") == 1);
-	CPPUNIT_ASSERT(m->value("EUR", "USD") == 2);
+	CPPUNIT_ASSERT(m->value("EUR", "EUR") == MyMoneyMoney(1));
+	CPPUNIT_ASSERT(m->value("EUR", "USD") == MyMoneyMoney(2));
 }
 
 void MyMoneySplitTest::testSetValue() {
-	CPPUNIT_ASSERT(m->value() == 0);
-	CPPUNIT_ASSERT(m->shares() == 0);
+	CPPUNIT_ASSERT(m->value().isZero());
+	CPPUNIT_ASSERT(m->shares().isZero());
 	m->setValue(1, "EUR", "EUR");
-	CPPUNIT_ASSERT(m->value() == 1);
-	CPPUNIT_ASSERT(m->shares() == 0);
+	CPPUNIT_ASSERT(m->value() == MyMoneyMoney(1));
+	CPPUNIT_ASSERT(m->shares().isZero());
 	m->setValue(3, "EUR", "USD");
-	CPPUNIT_ASSERT(m->value() == 1);
-	CPPUNIT_ASSERT(m->shares() == 3);
+	CPPUNIT_ASSERT(m->value() == MyMoneyMoney(1));
+	CPPUNIT_ASSERT(m->shares() == MyMoneyMoney(3));
 }

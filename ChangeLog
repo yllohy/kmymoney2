@@ -1,3 +1,7 @@
+2004-11-25 Ace Jones <acejones@users.sourceforge.net>
+  * Avoid runtime warnings concerning MyMoneyMoney::operator== in unit
+    tests
+    
 2004-11-21 Ace Jones <acejones@users.sourceforge.net>
   * Added support for OFX Direct Connect.  Thus you can download statements
     directly from your bank if they expose an OFX server.  Detailed online help

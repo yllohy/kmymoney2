@@ -253,7 +253,7 @@ void MyMoneyTransactionTest::testExtractSplit() {
 }
 
 void MyMoneyTransactionTest::testSplitSum() {
-	CPPUNIT_ASSERT(m->splitSum() == 0);
+	CPPUNIT_ASSERT(m->splitSum().isZero());
 
 	testAddSplits();
 
@@ -266,19 +266,19 @@ void MyMoneyTransactionTest::testSplitSum() {
 
 	m->modifySplit(s1);
 	m->modifySplit(s2);
-	CPPUNIT_ASSERT(m->splitSum() == 0);
+	CPPUNIT_ASSERT(m->splitSum().isZero());
 
 	s1.setValue(1234);
 	m->modifySplit(s1);
-	CPPUNIT_ASSERT(m->splitSum() == 1234);
+	CPPUNIT_ASSERT(m->splitSum() == MyMoneyMoney(1234));
 
 	s2.setValue(-1234);
 	m->modifySplit(s2);
-	CPPUNIT_ASSERT(m->splitSum() == 0);
+	CPPUNIT_ASSERT(m->splitSum().isZero());
 
 	s1.setValue(5678);
 	m->modifySplit(s1);
-	CPPUNIT_ASSERT(m->splitSum() == 4444);
+	CPPUNIT_ASSERT(m->splitSum() == MyMoneyMoney(4444));
 }
 
 void MyMoneyTransactionTest::testIsLoanPayment() {
@@ -332,8 +332,8 @@ void MyMoneyTransactionTest::testAddDuplicateAccount() {
 		unexpectedException(e);
 	}
 
-	CPPUNIT_ASSERT(m->splits()[0].value() == 200);
-	CPPUNIT_ASSERT(m->splits()[1].value() == 400);
+	CPPUNIT_ASSERT(m->splits()[0].value() == MyMoneyMoney(200));
+	CPPUNIT_ASSERT(m->splits()[1].value() == MyMoneyMoney(400));
 }
 
 void MyMoneyTransactionTest::testModifyDuplicateAccount() {
@@ -346,7 +346,7 @@ void MyMoneyTransactionTest::testModifyDuplicateAccount() {
 		m->modifySplit(split);
 		CPPUNIT_ASSERT(m->splitCount() == 1);
 		CPPUNIT_ASSERT(m->accountReferenced("A000001") == true);
-		CPPUNIT_ASSERT(m->splits()[0].value() == 300);
+		CPPUNIT_ASSERT(m->splits()[0].value() == MyMoneyMoney(300));
 	
 	} catch(MyMoneyException *e) {
 		unexpectedException(e);

@@ -1031,14 +1031,14 @@ void MyMoneyFileTest::testBalanceTotal() {
 		t.addSplit(split2);
 		m->addTransaction(t);
 		CPPUNIT_ASSERT(t.id() == "T000000000000000002");
-		CPPUNIT_ASSERT(m->totalBalance("A000001") == -1000);
-		CPPUNIT_ASSERT(m->totalBalance("A000002") == -1000);
+		CPPUNIT_ASSERT(m->totalBalance("A000001") == MyMoneyMoney(-1000));
+		CPPUNIT_ASSERT(m->totalBalance("A000002") == MyMoneyMoney(-1000));
 
 		MyMoneyAccount p = m->account("A000001");
 		MyMoneyAccount q = m->account("A000002");
 		m->reparentAccount(p, q);
-		CPPUNIT_ASSERT(m->totalBalance("A000001") == -1000);
-		CPPUNIT_ASSERT(m->totalBalance("A000002") == -2000);
+		CPPUNIT_ASSERT(m->totalBalance("A000001") == MyMoneyMoney(-1000));
+		CPPUNIT_ASSERT(m->totalBalance("A000002") == MyMoneyMoney(-2000));
 	} catch(MyMoneyException *e) {
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception!");
