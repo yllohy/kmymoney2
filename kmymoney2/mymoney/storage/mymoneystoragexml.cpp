@@ -231,8 +231,6 @@ void MyMoneyStorageXML::on_start_element(const std::string &n, const AttributeMa
       {
         qDebug("XMLREADER: Filling out information for the new payee");
         getPayeeDetails(m_pCurrentPayee, p);
-        
-        
         qDebug("XMLREADER: Done filling out information for the new payee");
       }
     }
@@ -334,6 +332,7 @@ void MyMoneyStorageXML::ChangeParseState(eParseState state)
 
 void MyMoneyStorageXML::getPayeeDetails(MyMoneyPayee* pCurrentPayee, const AttributeMap& p)
 {
+  std::string strTemp;
   strTemp = getPropertyValue(std::string("name"), p);
   pCurrentPayee->setName(QString(strTemp.data()));
 
@@ -346,6 +345,7 @@ void MyMoneyStorageXML::getPayeeDetails(MyMoneyPayee* pCurrentPayee, const Attri
 
 void MyMoneyStorageXML::getAccountDetails(MyMoneyAccount* pCurrentAccount, const AttributeMap& p)
 {
+  std::string strTemp;
   strTemp = getPropertyValue(std::string("id"), p);
   pCurrentAccount->setAccountId(QCString(strTemp.data()));
 

@@ -145,7 +145,7 @@ private:
   bool m_encrypted;
 
   void getAccountDetails(MyMoneyAccount* pCurrentAccount, const AttributeMap& p);
-  void getPayeeDetails(MyMoneyPayee* pCurrentPayee, const AttributeMap& p)
+  void getPayeeDetails(MyMoneyPayee* pCurrentPayee, const AttributeMap& p);
 
   
 };
