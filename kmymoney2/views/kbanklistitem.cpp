@@ -87,7 +87,20 @@ void KAccountListItem::newAccount(const MyMoneyAccount& account)
   file->attach(account.id(), this);
 
   setPixmap(0, *accountPixmap);
-  setText(0, account.name());
+  
+  // make sure, we translate the standard account names
+  if(file->isStandardAccount(account.id())) {
+    if(account.id() == file->asset().id()) {
+      setText(0, i18n("Asset"));
+    } else if(account.id() == file->liability().id()) {
+      setText(0, i18n("Liability"));
+    } else if(account.id() == file->income().id()) {
+      setText(0, i18n("Income"));
+    } else if(account.id() == file->expense().id()) {
+      setText(0, i18n("Expense"));
+    }
+  } else
+    setText(0, account.name());
 
   MyMoneyMoney balance = file->totalBalance(account.id());
   
