@@ -78,9 +78,17 @@ int main(int argc, char *argv[])
 	KCmdLineArgs::init( argc, argv, &aboutData );
 	KCmdLineArgs::addCmdLineOptions( options ); // Add our own options.
 
+  // create the singletons before we start memory checking
+  // to avoid false error reports
+  MyMoneyFile::instance();
+
+#ifdef _CHECK_MEMORY
+  _CheckMemory_Init(0);
+#endif
+
   timer.start();
 
-  KApplication a;
+  KApplication* a = new KApplication();
 	KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
 
   // setup the MyMoneyMoney locale settings according to the KDE settings
@@ -88,7 +96,7 @@ int main(int argc, char *argv[])
   MyMoneyMoney::setDecimalSeparator(*(KGlobal::locale()->decimalSymbol().latin1()));
 
 	kmymoney2 = new KMyMoney2App();
-  a.setMainWidget( kmymoney2 );
+  a->setMainWidget( kmymoney2 );
   kmymoney2->show();
 
   // force complete paint of widgets
@@ -96,22 +104,21 @@ int main(int argc, char *argv[])
 
   int rc = 0;
 
-#ifdef _CHECK_MEMORY
-  _CheckMemory_Init(0);
-#endif
-
 	if (kmymoney2->startWithDialog()) {
 	  if (kmymoney2->initWizard()) {
       KTipDialog::showTip(kmymoney2, "", false);
   		args->clear();
-      rc = a.exec();
+      rc = a->exec();
 	  }
 	} else {
     KTipDialog::showTip(kmymoney2, "", false);
     kmymoney2->readFile();
 		args->clear();
-	  rc = a.exec();
+      rc = a->exec();
 	}
+
+  delete a;
+  KAccountListItem::cleanCache();
 
 #ifdef _CHECK_MEMORY
   chkmem.CheckMemoryLeak( false );
