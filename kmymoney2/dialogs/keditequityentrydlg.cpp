@@ -41,29 +41,22 @@
 
 #include "keditequityentrydlg.h"
 #include "kupdatestockpricedlg.h"
+#include "../widgets/kmymoneypriceview.h"
 
 KEditEquityEntryDlg::KEditEquityEntryDlg(const MyMoneyEquity& selectedEquity, QWidget *parent, const char *name)
   : kEditEquityEntryDecl(parent, name, true)
 {
   m_selectedEquity = selectedEquity;
-  lvPriceHistory->setSelectionMode(QListView::Single);
-  lvPriceHistory->addColumn(QString("Date"));
-  lvPriceHistory->addColumn(QString("Price"));
-  lvPriceHistory->setResizeMode(QListView::AllColumns);
-  lvPriceHistory->setSorting(0, FALSE);
-  lvPriceHistory->setShowSortIndicator(true);
-  lvPriceHistory->setAllColumnsShowFocus(true);
-
+  lvPriceHistory->hide();
+  
   connect(btnOK, SIGNAL(clicked()), this, SLOT(slotOKClicked()));
   connect(btnCancel, SIGNAL(clicked()), this, SLOT(reject()));
-  connect(lvPriceHistory, SIGNAL(doubleClicked(QListViewItem*, const QPoint&, int)), this, SLOT(slotPriceHistoryDoubleClicked(QListViewItem *, const QPoint&, int)));
   connect(edtEquityName, SIGNAL(textChanged(const QString &)), this, SLOT(slotDataChanged()));
   connect(edtMarketSymbol, SIGNAL(textChanged(const QString &)), this, SLOT(slotDataChanged()));
   connect(edtFraction, SIGNAL(textChanged(const QString&)), this, SLOT(slotDataChanged()));
-  connect(btnAddEntry, SIGNAL(clicked()), this, SLOT(slotAddPriceClicked()));
-  connect(btnEditEntry, SIGNAL(clicked()), this, SLOT(slotEditPriceClicked()));
-  connect(btnRemoveEntry, SIGNAL(clicked()), this, SLOT(slotRemovePriceClicked()));
-  connect(lvPriceHistory, SIGNAL(clicked(QListViewItem *, const QPoint&, int)), this, SLOT(slotPriceHistoryClicked(QListViewItem*, const QPoint&, int)));
+  connect(btnAddEntry, SIGNAL(clicked()), kpvPriceHistory, SLOT(slotAddPrice()));
+  connect(btnEditEntry, SIGNAL(clicked()), kpvPriceHistory, SLOT(slotEditPrice()));
+  connect(btnRemoveEntry, SIGNAL(clicked()), kpvPriceHistory, SLOT(slotDeletePrice()));
 
   //fill in the fields for what we know.
   edtEquityName->setText(m_selectedEquity.name());
@@ -72,20 +65,7 @@ KEditEquityEntryDlg::KEditEquityEntryDlg(const MyMoneyEquity& selectedEquity, QW
   edtFraction->hideCalculatorButton();
   edtFraction->loadText(QString::number(m_selectedEquity.smallestAccountFraction()));
   cmbInvestmentType->setCurrentItem((int)m_selectedEquity.equityType());
-  equity_price_history priceHistory = m_selectedEquity.priceHistory();
-  if(priceHistory.size())
-  {
-    for(equity_price_history::ConstIterator it = priceHistory.begin(); it != priceHistory.end(); ++it)
-    {
-      QListViewItem *item = new QListViewItem(lvPriceHistory, it.key().toString(), it.data().formatMoney());
-      lvPriceHistory->insertItem(item);
-    }
-  }
-
-
-  // disable controls that can't be used until the user selects a price history item.
-  btnEditEntry->setEnabled(false);
-  btnRemoveEntry->setEnabled(false);
+  kpvPriceHistory->setHistory(m_selectedEquity.priceHistory());
 
   // add icons to buttons
   KIconLoader *il = KGlobal::iconLoader();
@@ -130,35 +110,16 @@ KEditEquityEntryDlg::~KEditEquityEntryDlg()
 /** No descriptions */
 void KEditEquityEntryDlg::slotOKClicked()
 {
-  if(m_changes)
+  if(m_changes || kpvPriceHistory->dirty())
   {
     m_selectedEquity.setName(edtEquityName->text());
     m_selectedEquity.setTradingSymbol(edtMarketSymbol->text());
-    m_selectedEquity.setSmallestAccountFraction(edtFraction->value().abs());
-    //m_selectedEquity.setEquityType((int)cmbInvestmentType->currentItem());
-
-    m_selectedEquity.setPriceHistory(equity_price_history());
-    QListViewItemIterator it(lvPriceHistory);
-    while(it.current())
-    {
-      QDate date = QDate::fromString(it.current()->text(0));
-      MyMoneyMoney money(it.current()->text(1));
-      m_selectedEquity.addPriceHistory(date, money);
-      ++it;
-    }
+    m_selectedEquity.setSmallestAccountFraction(edtFraction->getMoneyValue().abs());
+    
+    m_selectedEquity.setPriceHistory(kpvPriceHistory->history());
   }
 
   accept();
-}
-
-void KEditEquityEntryDlg::slotPriceHistoryDoubleClicked(QListViewItem* /* item */, const QPoint& /* point */, int /* c */)
-{
-}
-
-void KEditEquityEntryDlg::slotPriceHistoryClicked(QListViewItem* item, const QPoint& /* point */, int /* c */)
-{
-  btnEditEntry->setEnabled(item != 0);
-  btnRemoveEntry->setEnabled(item != 0);
 }
 
 void KEditEquityEntryDlg::slotDataChanged(void)
@@ -175,52 +136,15 @@ void KEditEquityEntryDlg::slotDataChanged(void)
   m_changes = true;
 }
 
-void KEditEquityEntryDlg::slotAddPriceClicked()
+// This function is not needed.  However, removing the KUpdateStockPriceDlg
+// instantiation below causes link failures:
+//
+// kmymoney2/widgets/kmymoneypriceview.cpp:179: undefined reference to
+// `KUpdateStockPriceDlg::KUpdateStockPriceDlg[in-charge](QWidget*, char const*)'
+// kmymoney2/widgets/kmymoneypriceview.cpp:204: undefined reference to
+// `KUpdateStockPriceDlg::KUpdateStockPriceDlg[in-charge](QDate const&, QString const&, QWidget*, char const*)'
+
+void useless(void)
 {
-  KUpdateStockPriceDlg *pDlg = new KUpdateStockPriceDlg(this);
-  if(pDlg->exec() == QDialog::Accepted)
-  {
-    KListViewItem *pItem = new KListViewItem(lvPriceHistory, pDlg->getDate().toString(), pDlg->getPrice().formatMoney());
-    lvPriceHistory->insertItem(pItem);
-    lvPriceHistory->sort();
-
-    m_changes = true;
-  }
-}
-
-void KEditEquityEntryDlg::slotEditPriceClicked()
-{
-  QListViewItem *pItem = lvPriceHistory->selectedItem();
-  if(pItem)
-  {
-    QString date = pItem->text(0);
-    QString price = pItem->text(1);
-    KUpdateStockPriceDlg *pDlg = new KUpdateStockPriceDlg(QDate::fromString(date), price, this);
-    if(pDlg->exec() == QDialog::Accepted)
-    {
-      pItem->setText(0, pDlg->getDate().toString());
-      pItem->setText(1, pDlg->getPrice().formatMoney());
-      lvPriceHistory->sort();
-
-      m_changes = true;
-    }
-  }
-}
-
-void KEditEquityEntryDlg::slotRemovePriceClicked()
-{
-
-  QListViewItem *pItem = lvPriceHistory->selectedItem();
-  if(pItem)
-  {
-    lvPriceHistory->takeItem(pItem);
-    delete pItem;
-    lvPriceHistory->sort();
-    if(!lvPriceHistory->childCount()) {
-      // disable controls that can't be used until the user selects a price history item.
-      btnEditEntry->setEnabled(false);
-      btnRemoveEntry->setEnabled(false);
-    }
-    m_changes = true;
-  }
+  delete new KUpdateStockPriceDlg(QDate(), QString(), NULL);
 }

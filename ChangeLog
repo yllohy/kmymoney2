@@ -3,6 +3,8 @@
     experimental, and should not be used with any real data!!
   * Added MyMoneyStatement XML files as an acceptable file format for 
     web connect.  This is just for debugging.
+  * Changed equity price edit dialog to use the same widget as the currency
+    price edit dialog.
 
 2004-10-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added patch supplied by Alexander Novitsky
