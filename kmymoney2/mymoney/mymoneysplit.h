@@ -63,6 +63,7 @@ public:
   const reconcileFlagE reconcileFlag(void) const { return m_reconcileFlag; };
   const QDate reconcileDate(void) const { return m_reconcileDate; };
   const QCString id(void) const { return m_id; };
+  const QCString payeeId(void) const { return m_payee; };
 
   void setShares(const MyMoneyMoney& shares);
   void setValue(const MyMoneyMoney& value);
@@ -71,14 +72,49 @@ public:
   void setReconcileFlag(const reconcileFlagE flag);
   void setReconcileDate(const QDate date);
   void setId(const QCString& id);
+  void setPayeeId(const QCString& payee);
 
 private:
+  /**
+    * This member contains the ID of the transaction
+    */
   QCString      m_id;
-  MyMoneyMoney  m_shares;
-  MyMoneyMoney  m_value;
+
+  /**
+    * This member contains the ID of the payee
+    */
+  QCString      m_payee;
+
+  /**
+    * This member contains the ID of the account
+    */
   QCString      m_account;
+
+  /**
+    */
+  MyMoneyMoney  m_shares;
+
+  /**
+    */
+  MyMoneyMoney  m_value;
+
   QString       m_memo;
+
+  /**
+    * This member contains information about the reconciliation
+    * state of the split. Possible values are
+    *
+    * @li NotReconciled
+    * @li Cleared
+    * @li Reconciled
+    *
+    */
   reconcileFlagE m_reconcileFlag;
+
+  /**
+    * In case the reconciliation flag is set to Reconciled
+    * this member contains the date of the reconciliation.
+    */
   QDate         m_reconcileDate;
 };
 

@@ -20,6 +20,12 @@ MyMoneyPayee::MyMoneyPayee()
 {
 }
 
+MyMoneyPayee::MyMoneyPayee(const QCString& id, const MyMoneyPayee& payee)
+{
+  *this = payee;
+  m_id = id;
+}
+
 MyMoneyPayee::MyMoneyPayee(const QString& name, const QString address, const QString postcode, const QString telephone, const QString email)
 {
   m_name = name;

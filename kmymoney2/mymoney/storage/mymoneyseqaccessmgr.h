@@ -91,6 +91,24 @@ public:
   const bool isStandardAccount(const QCString& id) const;
 
   /**
+    * This method is used to set the name for the specified standard account
+    * within the storage area. An exception will be thrown, if an error
+    * occurs
+    *
+    * @param id QCString reference to one of the standard accounts. Possible
+    *           values are:
+    *
+    *           @li STD_ACC_LIABILITY
+    *           @li STD_ACC_ASSET
+    *           @li STD_ACC_EXPENSE
+    *           @li STD_ACC_INCOME
+    *
+    * @param name QString reference to the name to be set
+    *
+    */
+  void setAccountName(const QCString& id, const QString& name);
+
+  /**
     * This method is used to create a new account
     *
     * An exception will be thrown upon error conditions.
@@ -98,6 +116,15 @@ public:
     * @param account MyMoneyAccount filled with data
     */
   void newAccount(MyMoneyAccount& account);
+
+  /**
+    * This method is used to create a new payee
+    *
+    * An exception will be thrown upon error conditions
+    *
+    * @param payee MyMoneyPayee reference to payee information
+    */
+  void addPayee(MyMoneyPayee& payee);
 
   /**
     * This method is used to add one account as sub-ordinate to another
@@ -370,6 +397,7 @@ private:
   static const int INSTITUTION_ID_SIZE = 6;
   static const int ACCOUNT_ID_SIZE = 6;
   static const int TRANSACTION_ID_SIZE = 18;
+  static const int PAYEE_ID_SIZE = 4;
 
   static const int YEAR_SIZE = 4;
   static const int MONTH_SIZE = 2;
@@ -461,6 +489,13 @@ private:
   unsigned long m_nextTransactionID;
 
   /**
+    * The member variable m_nextPayeeID keeps the number that will be
+    * assigned to the next payee created. It is maintained by
+    * nextPayeeID()
+    */
+  unsigned long m_nextPayeeID;
+
+  /**
     * The member variable m_institutionList is the container for the
     * institutions known within this file.
     */
@@ -489,7 +524,7 @@ private:
   /**
     * A list containing all the payees that have been used
     */
-  QList<MyMoneyPayee> m_payeeList;
+  QMap<QCString, MyMoneyPayee> m_payeeList;
 
   /**
     * This member signals if the file has been modified or not
@@ -526,6 +561,12 @@ private:
     * @return id for a transaction
     */
   const QCString nextTransactionID(void);
+
+  /**
+    * This method is used to get the next valid ID for a payee
+    * @return id for a transaction
+    */
+  const QCString nextPayeeID(void);
 
   /**
     * This method re-parents an existing account

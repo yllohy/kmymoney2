@@ -28,12 +28,14 @@ private:
 	QString m_postcode;
 	QString m_telephone;
 	QString m_email;
+  QCString m_id;
 	
   friend QDataStream &operator<<(QDataStream &, const MyMoneyPayee &);
   friend QDataStream &operator>>(QDataStream &, MyMoneyPayee &);
 
 public:
 	MyMoneyPayee();
+  MyMoneyPayee(const QCString& id, const MyMoneyPayee& payee);
 	MyMoneyPayee(const QString& name, const QString address=QString::null, const QString postcode=QString::null, const QString telephone=QString::null, const QString email=QString::null);
 	~MyMoneyPayee();
 	
@@ -43,7 +45,7 @@ public:
 	QString postcode(void) const { return m_postcode; }
 	QString telephone(void) const { return m_telephone; }
 	QString email(void) const { return m_email; }
-	
+  QCString id(void) const { return m_id; };	
 	// Simple set operations
 	void setName(const QString& val) { m_name = val; }
 	void setAddress(const QString& val) { m_address = val; }

@@ -134,6 +134,17 @@ public:
   virtual const bool isStandardAccount(const QCString& id) const = 0;
 
   /**
+    * This method is used to set the name for the specified standard account
+    * within the storage area. An exception will be thrown, if an error
+    * occurs
+    *
+    * @param id QCString reference to one of the standard accounts.
+    * @param name QString reference to the name to be set
+    *
+    */
+  virtual void setAccountName(const QCString& id, const QString& name) = 0;
+
+  /**
     * Adds an institution to the storage. A
     * respective institution-ID will be generated within this record.
     * The ID is stored as QString in the object passed as argument.

@@ -201,6 +201,11 @@ const bool MyMoneyFile::isStandardAccount(const QCString& id) const
   return m_storage->isStandardAccount(id);
 }
 
+void MyMoneyFile::setAccountName(const QCString& id, const QString& name) const
+{
+  m_storage->setAccountName(id, name);
+}
+
 void MyMoneyFile::removeAccount(const MyMoneyAccount& account)
 {
   MyMoneyAccount parent;

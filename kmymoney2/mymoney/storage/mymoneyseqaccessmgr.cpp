@@ -27,6 +27,7 @@ MyMoneySeqAccessMgr::MyMoneySeqAccessMgr()
   m_nextAccountID = 0;
   m_nextInstitutionID = 0;
   m_nextTransactionID = 0;
+  m_nextPayeeID = 0;
   m_userName =
   m_userStreet =
   m_userTown =
@@ -83,6 +84,13 @@ const bool MyMoneySeqAccessMgr::isStandardAccount(const QCString& id) const
       || id == STD_ACC_INCOME;
 }
 
+void MyMoneySeqAccessMgr::setAccountName(const QCString& id, const QString& name)
+{
+  if(!isStandardAccount(id))
+    throw new MYMONEYEXCEPTION("Only standard accounts can be modified using setAccountName()");
+
+  m_accountList[id].setName(name);
+}
 
 const MyMoneyAccount& MyMoneySeqAccessMgr::account(const QCString id) const
 {
@@ -117,6 +125,15 @@ void MyMoneySeqAccessMgr::newAccount(MyMoneyAccount& account)
   m_accountList[newAccount.id()] = newAccount;
   touch();
   account = newAccount;
+}
+
+void MyMoneySeqAccessMgr::addPayee(MyMoneyPayee& payee)
+{
+  // create the payee
+  MyMoneyPayee newPayee(nextPayeeID(), payee);
+  m_payeeList[newPayee.id()] = newPayee;
+  touch();
+  payee = newPayee;
 }
 
 void MyMoneySeqAccessMgr::addAccount(MyMoneyAccount& parent, MyMoneyAccount& account)
@@ -198,6 +215,13 @@ const unsigned int MyMoneySeqAccessMgr::accountCount(void) const
   return m_accountList.count();
 }
 
+const QCString MyMoneySeqAccessMgr::nextPayeeID(void)
+{
+  QCString id;
+  id.setNum(++m_nextPayeeID);
+  id = "P" + id.rightJustify(PAYEE_ID_SIZE, '0');
+  return id;
+}
 
 const QCString MyMoneySeqAccessMgr::nextInstitutionID(void)
 {

@@ -27,6 +27,7 @@ MyMoneySplit::MyMoneySplit()
   m_reconcileFlag = NotReconciled;
   m_account =
   m_memo =
+  m_payee =
   m_id = "";
 }
 
@@ -39,6 +40,7 @@ bool MyMoneySplit::operator == (const MyMoneySplit& right) const
   return
     m_id == right.m_id &&
     m_account == right.m_account &&
+    m_payee == right.m_payee &&
     m_memo == right.m_memo &&
     m_reconcileDate == right.m_reconcileDate &&
     m_reconcileFlag == right.m_reconcileFlag &&
@@ -79,4 +81,9 @@ void MyMoneySplit::setValue(const MyMoneyMoney& value)
 void MyMoneySplit::setId(const QCString& id)
 {
   m_id = id;
+}
+
+void MyMoneySplit::setPayeeId(const QCString& payee)
+{
+  m_payee = payee;
 }

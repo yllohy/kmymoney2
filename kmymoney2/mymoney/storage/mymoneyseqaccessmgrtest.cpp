@@ -49,6 +49,11 @@ void MyMoneySeqAccessMgrTest::testEmptyConstructor()
 	CPPUNIT_ASSERT(m->m_transactionKeys.count() == 0);
 	CPPUNIT_ASSERT(m->m_dirty == false);
 	CPPUNIT_ASSERT(m->m_creationDate == QDate::currentDate());
+
+	CPPUNIT_ASSERT(m->liability().name() == "Liability");
+	CPPUNIT_ASSERT(m->asset().name() == "Asset");
+	CPPUNIT_ASSERT(m->expense().name() == "Expense");
+	CPPUNIT_ASSERT(m->income().name() == "Income");
 }
 
 void MyMoneySeqAccessMgrTest::testSetFunctions() {
@@ -715,3 +720,58 @@ void MyMoneySeqAccessMgrTest::testTransactionList() {
 	CPPUNIT_ASSERT((*(list.at(1))).id() == "T000000000000000001");
 }
 
+void MyMoneySeqAccessMgrTest::testAddPayee() {
+	MyMoneyPayee p;
+
+	p.setName("THB");
+	m->m_dirty = false;
+	try {
+		CPPUNIT_ASSERT(m->m_nextPayeeID == 0);
+		m->addPayee(p);
+		CPPUNIT_ASSERT(m->dirty() == true);
+		CPPUNIT_ASSERT(m->m_nextPayeeID == 1);
+	} catch (MyMoneyException *e) {
+		delete e;
+		CPPUNIT_FAIL("Unexpected exception");
+	}
+
+}
+
+void MyMoneySeqAccessMgrTest::testSetAccountName() {
+	try {
+		m->setAccountName(STD_ACC_LIABILITY, "Verbindlichkeiten");
+	} catch (MyMoneyException *e) {
+		delete e;
+		CPPUNIT_FAIL("Unexpected exception");
+	}
+	try {
+		m->setAccountName(STD_ACC_ASSET, "Vermögen");
+	} catch (MyMoneyException *e) {
+		delete e;
+		CPPUNIT_FAIL("Unexpected exception");
+	}
+	try {
+		m->setAccountName(STD_ACC_EXPENSE, "Ausgaben");
+	} catch (MyMoneyException *e) {
+		delete e;
+		CPPUNIT_FAIL("Unexpected exception");
+	}
+	try {
+		m->setAccountName(STD_ACC_INCOME, "Einnahmen");
+	} catch (MyMoneyException *e) {
+		delete e;
+		CPPUNIT_FAIL("Unexpected exception");
+	}
+
+	CPPUNIT_ASSERT(m->liability().name() == "Verbindlichkeiten");
+	CPPUNIT_ASSERT(m->asset().name() == "Vermögen");
+	CPPUNIT_ASSERT(m->expense().name() == "Ausgaben");
+	CPPUNIT_ASSERT(m->income().name() == "Einnahmen");
+
+	try {
+		m->setAccountName("A000001", "New account name");
+		CPPUNIT_FAIL("Exception expected");
+	} catch (MyMoneyException *e) {
+		delete e;
+	}
+}
