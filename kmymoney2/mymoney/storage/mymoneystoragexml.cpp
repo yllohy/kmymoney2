@@ -928,6 +928,7 @@ MyMoneySplit MyMoneyStorageXML::readSplit(QDomElement& splitElement)
   split.setMemo(QStringEmpty(splitElement.attribute(QString("memo"))));
   split.setValue(MyMoneyMoney(QStringEmpty(splitElement.attribute(QString("value")))));
   split.setAccountId(QCStringEmpty(splitElement.attribute(QString("account"))));
+  split.setNumber(QStringEmpty(splitElement.attribute(QString("number"))));
  
   return split;
 }
@@ -942,6 +943,7 @@ void MyMoneyStorageXML::writeSplit(QDomElement& splitElement, const MyMoneySplit
   splitElement.setAttribute(QString("memo"), split.memo());
   splitElement.setAttribute(QString("id"), split.id());
   splitElement.setAttribute(QString("account"), split.accountId());
+  splitElement.setAttribute(QString("number"), split.number());
 }
 
 void MyMoneyStorageXML::writeEquities(QDomElement& equities)
