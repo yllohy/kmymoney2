@@ -1,3 +1,16 @@
+2002-01-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * added setDirty() to MyMoneyTransaction, MyMoneyAccount and MyMoneyBank
+  * split MyMoneyTransaction into MyMoneyTransactionBase, a virtual base
+    class required for splits
+  * added MyMoneySplitTransaction framework
+  * update template files to include new developers
+  * modified library link orderto "dialog, widgets, mymoney" so that
+    all references can be resolved
+  * override KMyMoneyTable::paintFocus to avoid display of focus
+  * Fixed bug #502804
+  * Fixed bug #502803
+  * added color selector for color of grid in register view
+
 2002-01-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * bumped version number to 0.5.0
   * added PHB docbook files to the project (makefile.am is still a problem)
