@@ -64,6 +64,7 @@ public:
   {
   public:
     bool operator<( const TableRow& ) const;
+    bool operator<=( const TableRow& ) const;
     bool operator>( const TableRow& ) const;
     bool operator==( const TableRow& ) const;
     static void setSortCriteria( const QString& _criteria ) { m_sortCriteria = QStringList::split(",",_criteria); }

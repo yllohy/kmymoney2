@@ -73,6 +73,10 @@ bool QueryTable::TableRow::operator<( const TableRow& _compare ) const
 }
 
 // needed for KDE < 3.2 implementation of qHeapSort
+bool QueryTable::TableRow::operator<=( const TableRow& _compare ) const
+{
+  return ( ! ( _compare < *this ) );
+}
 bool QueryTable::TableRow::operator==( const TableRow& _compare ) const
 {
   return ( !( *this < _compare ) && !( _compare < *this ) );

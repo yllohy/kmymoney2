@@ -1156,7 +1156,9 @@ void KReportsViewTest::testQueryBasics()
 
   reports::QueryTable::TableRow::setSortCriteria("first,second,third");
   CPPUNIT_ASSERT( low < high );
+  CPPUNIT_ASSERT( low <= high );
   CPPUNIT_ASSERT( high > low );
+  CPPUNIT_ASSERT( high <= high );
   CPPUNIT_ASSERT( high == high );
   
 }
