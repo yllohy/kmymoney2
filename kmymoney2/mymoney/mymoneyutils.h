@@ -114,16 +114,16 @@ class _CheckMemory {
   CheckMemoryTable table;
   _CheckMemoryOutFunc *outfunc;
 
-  friend void * operator new(size_t s,const char *file,int line);
-  friend void * operator new [] (size_t,const char *file,int line);
-  friend void operator delete(void *p);
-  friend void operator delete [] (void *p);
+  friend void * operator new(size_t s,const char *file,int line) throw();
+  friend void * operator new [] (size_t,const char *file,int line) throw();
+  friend void operator delete(void *p) throw();
+  friend void operator delete [] (void *p) throw();
 };
 
-void * operator new(size_t s,const char *file,int line); // Normal new operator
-void * operator new [] (size_t s,const char *file,int line); // Array new operator
-void operator delete(void *p);
-void operator delete [] (void *p);
+void * operator new(size_t s,const char *file,int line) throw(); // Normal new operator
+void * operator new [] (size_t s,const char *file,int line) throw(); // Array new operator
+void operator delete(void *p) throw();
+void operator delete [] (void *p) throw();
 
 #define new new(__FILE__,__LINE__)
 

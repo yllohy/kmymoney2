@@ -159,7 +159,7 @@ void _CheckMemory_End()
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
-void *operator new(size_t s,const char *file,int line)
+void *operator new(size_t s,const char *file,int line) throw()
 {
   void *p = malloc(s);
 
@@ -171,7 +171,7 @@ void *operator new(size_t s,const char *file,int line)
   return p;
 }
 
-void * operator new [] (size_t s,const char *file,int line)
+void * operator new [] (size_t s,const char *file,int line) throw()
 {
   void *p = malloc(s);
 
@@ -183,7 +183,7 @@ void * operator new [] (size_t s,const char *file,int line)
   return p;
 }
 
-void operator delete(void *p)
+void operator delete(void *p) throw()
 {
   if(enable==true) {
     CheckMemoryTable::Iterator it;
@@ -195,7 +195,7 @@ void operator delete(void *p)
   free(p);
 }
 
-void operator delete [] (void *p)
+void operator delete [] (void *p) throw()
 {
   if(enable==true) {
     CheckMemoryTable::Iterator it;
