@@ -20,7 +20,6 @@ email                : mte@users.sourceforge.net
  *                                                                         *
  ***************************************************************************/
 
-#include "config.h"
 #include <stdarg.h>
 
 // ----------------------------------------------------------------------------
@@ -31,24 +30,45 @@ email                : mte@users.sourceforge.net
 #include <qmessagebox.h>
 #include <qfiledialog.h>
 #include <qinputdialog.h>
+#include <qdatetime.h>
 
 // ----------------------------------------------------------------------------
 // Third party Includes
 
 // ----------------------------------------------------------------------------
 // Project Includes
-#include "imymoneystorage.h"
-#include "../../kmymoneyutils.h"
+#include "config.h"
 #include "mymoneystoragegnc.h"
-#include "../mymoneyfile.h"
-#include "../mymoneyprice.h"
-#include "../../dialogs/kgncimportoptionsdlg.h"
+#ifndef _GNCFILEANON
+  #include "imymoneystorage.h"
+  #include "../../kmymoneyutils.h"
+  #include "../mymoneyfile.h"
+  #include "../mymoneyprice.h"
+  #include "../../dialogs/kgncimportoptionsdlg.h"
 
-#define TRY try {
-#define PASS } catch (MyMoneyException *e) { throw e; }
+  #define TRY try {
+  #define PASS } catch (MyMoneyException *e) { throw e; }
+#else
+  #include "mymoneymoney.h"
+  #define TRY
+  #define PASS
+  #define MYMONEYEXCEPTION QString
+  #define MyMoneyException QString
+  #define PACKAGE "KMyMoney"
+#endif // _GNCFILEANON
+
+// init static variables
+// to hold gnucash count data (only used for progress bar)
+int GncObject::m_gncCommodityCount = 0;
+int GncObject::m_gncAccountCount = 0;
+int GncObject::m_gncTransactionCount = 0;
+int GncObject::m_gncScheduleCount = 0;
+double MyMoneyStorageGNC::m_fileHideFactor = 0.0;
+double GncObject::m_moneyHideFactor;
 
 // user options
 void MyMoneyStorageGNC::setOptions () {
+#ifndef _GNCFILEANON
   KGncImportOptionsDlg dlg; // display the dialog to allow the user to set own options
   if (dlg.exec()) {
     // set users input options
@@ -72,14 +92,8 @@ void MyMoneyStorageGNC::setOptions () {
   // set your fave currency here to save getting that enormous dialog each time you run a test
   // especially if you have to scroll down to USD...
   if (developerDebug) m_storage->setValue ("kmm-baseCurrency", "GBP");
+#endif // _GNCFILEANON
 }
-
-// init static variables
-// to hold gnucash count data (only used for progress bar)
-int GncObject::m_gncCommodityCount = 0;
-int GncObject::m_gncAccountCount = 0;
-int GncObject::m_gncTransactionCount = 0;
-int GncObject::m_gncScheduleCount = 0;
 
 GncObject::GncObject () {
   m_v.setAutoDelete (true);
@@ -91,6 +105,10 @@ GncObject::GncObject () {
 
 // Check that the current element is of a version we are coded for
 void GncObject::checkVersion (const QString& elName, const QXmlAttributes& elAttrs) {
+#ifdef _GNCFILEANON // suppress all checks
+    static bool validHeaderFound = true;
+    return;
+#else
   // a list of elements to check, and the required version numbers
   static const QString versionList[] = {"gnc:book 2.0.0", "gnc:commodity 2.0.0", "gnc:pricedb 1",
                                         "gnc:account 2.0.0", "gnc:transaction 2.0.0", "gnc:schedxaction 1.0.0",
@@ -114,6 +132,7 @@ void GncObject::checkVersion (const QString& elName, const QXmlAttributes& elAtt
   }
   return ;
   PASS
+#endif // _GNCFILEANON
 }
 
 // Check if this element is in the current object's sub element list
@@ -151,6 +170,10 @@ bool GncObject::isDataElement (const QString &elName, const QXmlAttributes& elAt
   return (false);
   PASS
 }
+void GncObject::adjustHideFactor () {
+  m_moneyHideFactor = pMain->m_fileHideFactor * (1.0 + (int)(200.0 * rand()/(RAND_MAX+1.0))) / 100.0;
+}
+
 // data anonymizer
 QString GncObject::hide (QString data, unsigned int anonClass) {
   TRY
@@ -165,6 +188,7 @@ QString GncObject::hide (QString data, unsigned int anonClass) {
 
   QString result (data);
   QMap<QString, QString>::Iterator it;
+  MyMoneyMoney in, mresult;
   switch (anonClass) {
   case ASIS: break;                  // this is not personal data
   case SUPPRESS: result = ""; break; // this is personal and is not essential
@@ -189,34 +213,25 @@ QString GncObject::hide (QString data, unsigned int anonClass) {
     break;
   case NXTSCHD: result.sprintf ("%s %.6d", QObject::tr("Schedule").latin1(), ++nextSched); break; // generate a schedule name
   case MONEY1:
-    // following code taken from MyMoneyStorageAnon, courtesy of Ace
-    // I haven't a clue how it works
-    MyMoneyMoney in (data);
-    MyMoneyMoney mresult;
-    static MyMoneyMoney counter = MyMoneyMoney(100, 100);
-
-    // preserve sign
-    if ( in.isNegative() )
-      mresult = MyMoneyMoney( -1);
-    else
-      mresult = MyMoneyMoney(1);
-
-    mresult = mresult * counter;
-    counter += MyMoneyMoney("10/100");
-
-    // preserve > 1000
-    if ( in >= MyMoneyMoney(1000) )
-      mresult = mresult * MyMoneyMoney(1000);
-    if ( in <= MyMoneyMoney( -1000) )
-      mresult = mresult * MyMoneyMoney(1000);
-
+    in = MyMoneyMoney(data);
+    if (data == "-1/0") in = MyMoneyMoney (0); // spurious gnucash data - causes a crash sometimes
+    mresult = MyMoneyMoney(m_moneyHideFactor) * in;
     mresult.convert();
     result = mresult.toString();
+    break;
+  case MONEY2:
+    in = MyMoneyMoney(data);
+    if (data == "-1/0") in = MyMoneyMoney (0);
+    mresult  = MyMoneyMoney(m_moneyHideFactor) * in;
+    mresult.convert();
+    mresult.setThousandSeparator (' ');
+    result = mresult.formatMoney();
+    break;
   }
   return (result);
   PASS
 }
-
+ 
 // dump current object data values // only called if gncdebug set
 void GncObject::debugDump () {
   uint i;
@@ -327,6 +342,11 @@ void GncKvp::dataEl (const QXmlAttributes& elAttrs) {
     m_kvpType = elAttrs.value("type");
   }
   m_dataPtr = m_v.at(m_state);
+  if (key().contains ("formula")) {
+    m_anonClass = MONEY2;
+  } else {
+    m_anonClass = ASIS;
+  }
   return ;
 }
 
@@ -499,8 +519,9 @@ GncTransaction::GncTransaction (bool processingTemplates) {
   m_dataElementListCount = END_Transaction_DELS;
   static const QString dataEls[] = {"trn:id", "trn:num", "trn:description"};
   m_dataElementList = dataEls;
-  static const unsigned int anonClasses[] = {ASIS, ASIS, NXTPAY};
+  static const unsigned int anonClasses[] = {ASIS, SUPPRESS, NXTPAY};
   m_anonClassList = anonClasses;
+  adjustHideFactor();
   m_template = processingTemplates;
   m_splitList.setAutoDelete (true);
   for (uint i = 0; i < m_dataElementListCount; i++) m_v.append (new QString (""));
@@ -743,13 +764,35 @@ bool XmlReader::startDocument() {
   m_co = new GncFile; // create initial object, push to stack , pass it the 'main' pointer
   m_os.push (m_co);
   m_co->setPm (pMain);
-  return (true);
+#ifdef _GNCFILEANON
+  pMain->oStream << "<?xml version=\"1.0\"?>";
+  lastType = -1;
+  indentCount = 0;
+#endif // _GNCFILEANON
+   return (true);
 }
 
 bool XmlReader::startElement (const QString&, const QString&, const QString& elName ,
                               const QXmlAttributes& elAttrs) {
   try {
     if (pMain->gncdebug) qDebug ("XML start - %s", elName.latin1());
+#ifdef _GNCFILEANON
+    int i;
+    QString spaces;
+    // anonymizer - write data
+    if (elName == "gnc:book" || elName == "gnc:count-data" || elName == "book:id") lastType = -1;
+    pMain->oStream << endl;
+    switch (lastType) {
+    case 0: indentCount += 2;
+    case 2: spaces.fill (' ', indentCount); pMain->oStream << spaces.latin1(); break;
+    }
+    pMain->oStream << '<' << elName;
+    for (i = 0; i < elAttrs.count(); i++) {
+          pMain->oStream << ' ' << elAttrs.qName(i) << '='  << '"' << elAttrs.value(i) << '"';
+    }
+    pMain->oStream << '>';
+    lastType = 0;
+#endif // _GNCFILEANON
     GncObject::checkVersion (elName, elAttrs);
     // check if this is a sub object element; if so, push stack and initialize
     GncObject *temp = m_co->isSubElement (elName, elAttrs);
@@ -763,10 +806,14 @@ bool XmlReader::startElement (const QString&, const QString&, const QString& elN
     if (m_co->isDataElement (elName, elAttrs)) return (true);
     return (true);
   } catch (MyMoneyException *e) {
+#ifndef _GNCFILEANON
     // we can't pass on exceptions here coz the XML reader won't catch them and we just abort
     QMessageBox::critical (0, PACKAGE, QObject::tr("Import failed\n\n") + e->what(),
                            QMessageBox::Abort, QMessageBox::NoButton , QMessageBox::NoButton);
     qFatal ("%s", e->what().latin1());
+#else
+    qFatal ("%s", e->latin1());
+#endif // _GNCFILEANON
   }
   return (true); // to keep compiler happy
 }
@@ -774,6 +821,15 @@ bool XmlReader::startElement (const QString&, const QString&, const QString& elN
 bool XmlReader::endElement( const QString&, const QString&, const QString&elName ) {
   try {
     if (pMain->xmldebug) qDebug ("XML end - %s", elName.latin1());
+#ifdef _GNCFILEANON
+    QString spaces;
+    switch (lastType) {
+    case 2:
+      indentCount -= 2; spaces.fill (' ', indentCount); pMain->oStream << endl << spaces.latin1(); break;
+    }
+    pMain->oStream << "</" << elName << '>' ;
+    lastType = 2;
+#endif // _GNCFILEANON
     m_co->resetDataPtr(); // so we don't get extraneous data loaded into the variables
     if (elName == m_co->getElName()) { // check if this is the end of the current object
       if (pMain->gncdebug) m_co->debugDump(); // dump the object data (temp)
@@ -786,10 +842,14 @@ bool XmlReader::endElement( const QString&, const QString&, const QString&elName
     }
     return (true);
   } catch (MyMoneyException *e) {
+#ifndef _GNCFILEANON
     // we can't pass on exceptions here coz the XML reader won't catch them and we just abort
     QMessageBox::critical (0, PACKAGE, QObject::tr("Import failed\n\n") + e->what(),
                            QMessageBox::Abort, QMessageBox::NoButton , QMessageBox::NoButton);
     qFatal ("%s", e->what().latin1());
+#else
+    qFatal ("%s", e->latin1());
+#endif // _GNCFILEANON
   }
   return (true); // to keep compiler happy
 }
@@ -797,19 +857,43 @@ bool XmlReader::endElement( const QString&, const QString&, const QString&elName
 bool XmlReader::characters (const QString &data) {
   if (pMain->xmldebug) qDebug ("XML Data received - %d bytes", data.length());
   QString pData = data.stripWhiteSpace(); // data may contain line feeds and indentation spaces
-  if ((pMain->developerDebug) && (!pData.isEmpty())) qDebug ("XML Data - %s", pData.latin1());
-  if (!pData.isEmpty()) m_co->storeData (pData); //go store it
+  if (!pData.isEmpty()) {
+    if (pMain->developerDebug) qDebug ("XML Data - %s", pData.latin1());
+    m_co->storeData (pData); //go store it
+#ifdef _GNCFILEANON
+    QString anonData = m_co->getData ();
+    if (!anonData.isEmpty()) {
+      pMain->oStream << anonData; // write anonymized data
+    } else {
+      pMain->oStream << pData; // write original data
+    }
+    lastType = 1;
+#endif // _GNCFILEANON
+  }
   return (true);
 }
+
+bool XmlReader::endDocument() {
+#ifdef _GNCFILEANON
+  pMain->oStream << endl << endl;
+  pMain->oStream << "<!-- Local variables: -->" << endl;
+  pMain->oStream << "<!-- mode: xml        -->" << endl;
+  pMain->oStream << "<!-- End:             -->" << endl;
+#endif // _GNCFILEANON
+  return (true);
+}
+
 /*******************************************************************************************
                                  Main class for this module
   Controls overall operation of the importer
 ********************************************************************************************/ 
 //***************** Constructor ***********************
 MyMoneyStorageGNC::MyMoneyStorageGNC() {
+#ifndef _GNCFILEANON
   m_storage = NULL;
   m_messageList.setAutoDelete (true);
   m_templateList.setAutoDelete (true);
+#endif // _GNCFILEANON
   m_commodityCount = m_priceCount = m_accountCount = m_transactionCount = m_templateCount = m_scheduleCount = 0;
 }
 
@@ -817,6 +901,7 @@ MyMoneyStorageGNC::MyMoneyStorageGNC() {
 MyMoneyStorageGNC::~MyMoneyStorageGNC() {}
 
 //**************************** Main Entry Point ************************************
+#ifndef _GNCFILEANON
 void MyMoneyStorageGNC::readFile(QIODevice* pDevice, IMyMoneySerialize* storage) {
 
   Q_CHECK_PTR (pDevice);
@@ -825,6 +910,8 @@ void MyMoneyStorageGNC::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
   m_storage = dynamic_cast<IMyMoneyStorage *>(storage);
   qDebug ("Entering gnucash importer");
   setOptions ();
+  // get a file anonymization factor from the user
+  if (bAnonymize) setFileHideFactor ();
   m_defaultPayee = createPayee (QObject::tr("Unknown payee"));
 
   xr = new XmlReader (this);
@@ -841,7 +928,66 @@ void MyMoneyStorageGNC::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
   qDebug ("Exiting gnucash importer");
   return ;
 }
+#else
+// Control code for the file anonymizer
+void MyMoneyStorageGNC::readFile(QString in, QString out) {
+  QFile pDevice (in);
+  if (!pDevice.open (IO_ReadOnly)) qFatal ("Can't open input file");
+  QFile outFile (out);
+  if (!outFile.open (IO_WriteOnly)) qFatal ("Can't open output file");
+  oStream.setDevice (&outFile);
+  bAnonymize = true;
+  // get a file anonymization factor from the user
+  setFileHideFactor ();
+  xr = new XmlReader (this);
+  try {
+    xr->processFile (&pDevice);
+  } catch (MyMoneyException *e) {
+    qFatal ("%s", e->latin1());
+  } // end catch
+  delete xr;
+  pDevice.close();
+  outFile.close();
+  return ;
+}
 
+#include <qapplication.h>
+int main (int argc, char ** argv) {
+    QApplication a (argc, argv);
+    MyMoneyStorageGNC m;
+    QString inFile, outFile;
+    
+    if (argc > 0) inFile = a.argv()[1];
+    if (argc > 1) outFile = a.argv()[2];
+    if (inFile.isEmpty()) {
+        inFile = QFileDialog::getOpenFileName("",
+                    "Gnucash files(*.nc *)",
+                    0);
+    }
+    if (inFile.isEmpty()) qFatal ("Input file required");
+    if (outFile.isEmpty()) outFile = inFile + ".anon";
+    m.readFile (inFile, outFile);
+    qFatal ("finished");
+}
+#endif // _GNCFILEANON
+
+void MyMoneyStorageGNC::setFileHideFactor () {
+#define MINFILEHIDEF 0.01
+#define MAXFILEHIDEF 99.99
+    srand (QTime::currentTime().second()); // seed randomizer for anonymize
+    m_fileHideFactor = 0.0;
+    while (m_fileHideFactor == 0.0) {
+      m_fileHideFactor = QInputDialog::getDouble (
+        QObject::tr ("Disguise your wealth"),
+        QObject::tr (QString ("Each monetary value on your file will be multiplied by a random number between 0.01 and 1.99\n"
+	             "with a different value used for each transaction. In addition, to further disguise the true\n"
+		             "values, you may enter a number between %1 and %2 which will be applied to all values.\n"
+		             "These numbers will not be stored in the file.").arg(MINFILEHIDEF).arg(MAXFILEHIDEF)),
+        	(1.0 + (int)(1000.0 * rand() / (RAND_MAX + 1.0))) / 100.0,
+        MINFILEHIDEF, MAXFILEHIDEF, 2);
+    }
+}
+#ifndef _GNCFILEANON
 //********************************* convertCommodity *******************************************
 void MyMoneyStorageGNC::convertCommodity (const GncCommodity *gcm) {
   Q_CHECK_PTR (gcm);
@@ -1265,6 +1411,7 @@ void MyMoneyStorageGNC::convertTemplateSplit (const QString schedName, const Gnc
       double temp;
       temp = numericTest.toDouble (&isNumeric); // this seems to be the only way to test for valid numeric
       if (!isNumeric) {
+      qDebug ("%s is not numeric", numericTest.latin1());
         nonNumericFormula = true;
         split.setValue(MyMoneyMoney(0));
       }
@@ -1898,3 +2045,4 @@ const unsigned int GncMessages::argCount (const QString source, const unsigned i
   return (argCount);
   PASS
 }
+#endif // _GNCFILEANON

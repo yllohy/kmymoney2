@@ -1,7 +1,8 @@
 /***************************************************************************
                           kgncimportoptions.h
                              -------------------
-    copyright            : (C) 2005 by Tony Bloomfield
+    copyright            : (C) 2005 by Ace Jones
+    author               : Tony Bloomfield
     email                : tonybloom@users.sourceforge.net
  ***************************************************************************/
 

@@ -1,4 +1,7 @@
 2005-02-07 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Gnucash import - anonymizer changes, restore Ace's credit
+
+2005-02-07 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Fix editing of some frequencies (e.g. Quarterly)
 
 2005-02-05 Ace Jones <acejones@users.sourceforge.net>

@@ -138,6 +138,8 @@ allow us to test the structure, if not the data content, of the file.
 
 #ifndef MYMONEYSTORAGEGNC_H
 #define MYMONEYSTORAGEGNC_H
+// system includes
+#include <stdlib.h>
 
 // ----------------------------------------------------------------------------
 // QT Includes
@@ -150,12 +152,14 @@ class QIODevice;
 #include <qptrlist.h>
 #include <qptrstack.h>
 #include <qxml.h>
+#include <qdatetime.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
-
+#ifndef _GNCFILEANON
 #include "imymoneyserialize.h" // not used any more, but call interface requires it
 #include "imymoneystorageformat.h"
+#endif // _GNCFILEANON
 
 // not sure what these are for, but leave them in
 #define VERSION_0_60_XML  0x10000010    // Version 0.5 file version info
@@ -223,20 +227,26 @@ protected:
   virtual const QString var (int i) const { return (*(m_v.at(i)));};
   // anonymize data
   virtual QString hide (QString, unsigned int);
-
-  static bool m_validHeaderFound; // set when gnc-v2 found
+  
   MyMoneyStorageGNC *pMain;    // pointer to 'main' class
+  // used at start of each transaction so same money hide factor is applied to all splits
+  void adjustHideFactor();
+  
   QString m_elementName; // save 'this' element's name
   const QString *m_subElementList; // list of sub object element names for 'this'
   unsigned int m_subElementListCount; // count of above
   const QString *m_dataElementList; // ditto for data elements
   unsigned int m_dataElementListCount;
   QString *m_dataPtr; // pointer to m_v variable for current data item
-  const unsigned int *m_anonClassList;
-  enum anonActions {ASIS, SUPPRESS, NXTACC, NXTEQU, NXTPAY, NXTSCHD, MAYBEQ, MONEY1}; // anonymize actions - see hide()
-  unsigned int m_anonClass; // class of current data item for anonymizer
   mutable QPtrList<QString> m_v; // storage for variable pointers
+  
   unsigned int m_state; // effectively, the index to subElementList or dataElementList, whichever is currently in use
+  
+  const unsigned int *m_anonClassList;
+  enum anonActions {ASIS, SUPPRESS, NXTACC, NXTEQU, NXTPAY, NXTSCHD, MAYBEQ, MONEY1, MONEY2}; // anonymize actions - see hide()
+  unsigned int m_anonClass; // class of current data item for anonymizer
+  static double m_moneyHideFactor; // a per-transaction factor
+  
   static int m_gncCommodityCount; // to hold count data from gnc file
   static int m_gncAccountCount;
   static int m_gncTransactionCount;
@@ -554,18 +564,23 @@ class XmlReader : public QXmlDefaultHandler {
 protected:
   friend class MyMoneyStorageGNC;
   XmlReader (MyMoneyStorageGNC *pM) : pMain(pM) {}; // keep pointer to 'main'
+  void processFile (QIODevice*); // main entry point of reader
   //  define xml content handler functions
   bool startDocument ();
   bool startElement (const QString&, const QString&, const QString&, const QXmlAttributes&);
   bool endElement (const QString&, const QString&, const QString&);
   bool characters (const QString &);
-  void processFile (QIODevice*); // main entry point of reader
+  bool endDocument();
 private:
   QXmlInputSource *m_source;
   QXmlSimpleReader *m_reader;
   QPtrStack<GncObject> m_os; // stack of sub objects
   GncObject *m_co;           // current object, for ease of coding (=== os.top)
   MyMoneyStorageGNC *pMain;  // the 'main' pointer, to pass on to objects
+#ifdef _GNCFILEANON
+  int lastType; // 0 = start element, 1 = data, 2 = end element
+  int indentCount;
+#endif // GNCFILENON
 };
 
 /**
@@ -599,7 +614,11 @@ private:
   Controls overall operation of the importer
   */
 
+#ifndef _GNCFILEANON
 class MyMoneyStorageGNC : public IMyMoneyStorageFormat {
+#else
+class MyMoneyStorageGNC {
+#endif // GNCFIELANON
 public:
   MyMoneyStorageGNC();
   virtual ~MyMoneyStorageGNC();
@@ -613,9 +632,12 @@ public:
     *
     * @see
     */
-
+#ifndef _GNCFILEANON
   void readFile (QIODevice *, IMyMoneySerialize *); // main entry point, IODevice is gnucash file
   void writeFile (QIODevice*, IMyMoneySerialize*) { return ;}; // dummy entry needed by kmymoneywiew. we will not be writing
+#else
+  void readFile (QString, QString);
+#endif // _GNCFILEANON
 
 protected:
   friend class GncObject; // pity we can't just say GncObject. And compiler doesn't like multiple friends on one line...
@@ -633,7 +655,7 @@ protected:
   friend class GncSchedule;
   friend class GncFreqSpec;
   friend class XmlReader;
-
+#ifndef _GNCFILEANON
   /** functions to convert gnc objects to our equivalent */
   void convertCommodity (const GncCommodity *);
   void convertPrice (const GncPrice *);
@@ -643,7 +665,18 @@ protected:
   void saveTemplateTransaction (GncTransaction *t) {m_templateList.append (t);};
   void convertSchedule (const GncSchedule *);
   void convertFreqSpec (const GncFreqSpec *);
-  /** to post messages for final report */
+#else  
+    /** functions to convert gnc objects to our equivalent */
+  void convertCommodity (const GncCommodity *) {return;};
+  void convertPrice (const GncPrice *) {return;};
+  void convertAccount (const GncAccount *) {return;};
+  void convertTransaction (const GncTransaction *) {return;};
+  void convertSplit (const GncSplit *) {return;};
+  void saveTemplateTransaction (GncTransaction *t)  {return;};
+  void convertSchedule (const GncSchedule *) {return;};
+  void convertFreqSpec (const GncFreqSpec *) {return;};
+#endif // _GNCFILEANON
+/** to post messages for final report */
   void postMessage (const QString, const unsigned int, ...); // will have variable number of args
   void setProgressCallback (void(*callback)(int, int, const QString&));
   void signalProgress (int current, int total, const QString& = "");
@@ -681,17 +714,25 @@ protected:
   bool gncdebug; // general debug messages
   bool xmldebug; // xml trace
   bool bAnonymize; // anonymize input
+  static double m_fileHideFactor; // an overall anonymization factor to be applied to all items
   bool developerDebug;
 private:
   void setOptions (); // to set user options, with a dialog eventually
+  void setFileHideFactor ();
+#ifndef _GNCFILEANON
   MyMoneyTransaction convertTemplateTransaction (const QString, const GncTransaction *);
   void convertTemplateSplit (const QString, const GncTemplateSplit *);
+#endif // _GNCFILEANON
   // wind up when all done
   void terminate();
   const QString buildReportSection (const QString);
   bool writeReportToFile (const QValueList<QString>);
   // main storage
+#ifndef _GNCFILEANON
   IMyMoneyStorage *m_storage;
+#else
+  QTextStream oStream;
+#endif // _GNCFILEANON
   XmlReader *xr;
   /** to hold the callback pointer for the progress bar */
   void (*m_progressCallback)(int, int, const QString&);
@@ -702,6 +743,7 @@ private:
   int m_transactionCount;
   int m_templateCount;
   int m_scheduleCount;
+#ifndef _GNCFILEANON
   // counters for error reporting
   int m_ccCount, m_orCount, m_scCount;
   // currency counter
@@ -747,6 +789,7 @@ private:
   QDate incrDate (QDate lastDate, unsigned char interval, unsigned int intervalCount); // for date calculations
   MyMoneyAccount checkConsistency (MyMoneyAccount& parent, MyMoneyAccount& child); // gnucash is sometimes TOO flexible
   void checkInvestmentOption (QString stockId); // implement user investment option
+#endif // _GNCFILEANON
 };
 
 #endif // MYMONEYSTORAGEGNC_H
