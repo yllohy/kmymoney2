@@ -43,7 +43,7 @@
 #include "../mymoneyreport.h"
 #include "../mymoneyinstitution.h"
 
-QStringList MyMoneyStorageANON::zKvpNoModify = QStringList::split(",","kmm-baseCurrency,PreferredAccount,Tax,fixed-interest,interest-calculation,payee,schedule,term");
+QStringList MyMoneyStorageANON::zKvpNoModify = QStringList::split(",","kmm-baseCurrency,PreferredAccount,Tax,fixed-interest,interest-calculation,payee,schedule,term,kmm-online-source");
 QStringList MyMoneyStorageANON::zKvpXNumber = QStringList::split(",","final-payment,loan-amount,periodic-payment");
 
 
@@ -213,10 +213,18 @@ void MyMoneyStorageANON::writeSplit(QDomElement& splitElement, const MyMoneySpli
 void MyMoneyStorageANON::writeSecurity(QDomElement& securityElement, const MyMoneySecurity& security)
 {
   securityElement.setAttribute(QString("name"), security.id());
-  securityElement.setAttribute(QString("symbol"), hideString(security.tradingSymbol()));
+  securityElement.setAttribute(QString("symbol"), security.tradingSymbol());
   securityElement.setAttribute(QString("type"), static_cast<int>(security.securityType()));
   securityElement.setAttribute(QString("id"), security.id());
   securityElement.setAttribute(QString("saf"), security.smallestAccountFraction());
+
+  if(!security.isCurrency())
+    securityElement.setAttribute(QString("trading-currency"), security.tradingCurrency());
+
+  //Add in Key-Value Pairs for security
+  QDomElement keyValPairs = writeKeyValuePairs(security.pairs());
+  securityElement.appendChild(keyValPairs);
+
 }
 
 QDomElement MyMoneyStorageANON::writeKeyValuePairs(const QMap<QCString, QString> pairs)
