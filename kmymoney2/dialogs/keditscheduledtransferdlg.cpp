@@ -386,7 +386,7 @@ void KEditScheduledTransferDlg::okClicked()
 
       MyMoneySplit split1;
       split1.setAccountId(m_accountCombo->currentAccountId());
-      split1.setAction(MyMoneyAccount::ActionTransfer);
+      split1.setAction(MyMoneySplit::ActionTransfer);
       split1.setPayeeId(payeeId);
       split1.setMemo(m_qlineeditMemo->text());
       split1.setValue(m_kmoneyeditAmount->getMoneyValue());
@@ -394,7 +394,7 @@ void KEditScheduledTransferDlg::okClicked()
 
       MyMoneySplit split2;
       split2.setAccountId(m_kcomboTo->currentAccountId());
-      split2.setAction(MyMoneyAccount::ActionTransfer);
+      split2.setAction(MyMoneySplit::ActionTransfer);
       split2.setPayeeId(split1.payeeId());
       split2.setMemo(split1.memo());
       split2.setValue(-split1.value());
