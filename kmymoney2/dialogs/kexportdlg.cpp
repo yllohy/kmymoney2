@@ -67,6 +67,8 @@ KExportDlg::KExportDlg(MyMoneyAccount *account, QWidget *parent)
   m_qcomboboxDateFormat->insertItem("%d/%mmm/%yyyy");
   m_qcomboboxDateFormat->insertItem("%d/%m%yy");
   m_qcomboboxDateFormat->insertItem("%d/%mmm%yy");
+  m_qcomboboxDateFormat->insertItem("%d.%m.%yy");
+  m_qcomboboxDateFormat->insertItem("%d.%m.%yyyy");
 
   // Typical US formats
   m_qcomboboxDateFormat->insertItem("%m/%d/%yy");
@@ -173,12 +175,11 @@ void KExportDlg::slotOkClicked()
     return;
   }
 
-	QString strFile(m_qlineeditFile->text());
-	if(appendCorrectFileExt(strFile, QString("qif")))
-		m_qlineeditFile->setText(strFile);
-	
+  QString strFile(m_qlineeditFile->text());
+  if(appendCorrectFileExt(strFile, QString("qif")))
+    m_qlineeditFile->setText(strFile);
 
-  if (!m_qcheckboxAccount->isChecked() || !m_qcheckboxCategories->isChecked()) {
+  if (!m_qcheckboxAccount->isChecked() && !m_qcheckboxCategories->isChecked()) {
     KMessageBox::information(this, i18n("Please specify at least one of the content types to export."),
         i18n("Export QIF"));
     return;
@@ -226,7 +227,7 @@ void KExportDlg::slotOkClicked()
       KMessageBox::information(this, qstringPrompt, i18n("Export QIF"));
     }
   }
-//  accept();
+  accept();
 }
 
 void KExportDlg::readConfig(void)
@@ -275,6 +276,9 @@ void KExportDlg::slotSetProgress(int progress)
   qstring += i18n(" of ");
   qstring += QString::number(m_qprogressbar->totalSteps());
   m_qlabelTransaction->setText(qstring);
+  // force update of modified text on screen every ten iterations
+  if((progress % 10) == 0)
+    m_qlabelTransaction->repaint();
 }
 
 /** Make sure the text input is ok */
