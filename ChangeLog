@@ -1,3 +1,9 @@
+2005-03-12 Ace Jones <acejones@users.sourceforge.net>
+  * Removed most OFX dependencies in the main program--all that's left is the
+    OFX Direct Connect and the OFX importer test cases
+  * Reworked Web Connect to work on ANY plugin-handled file, not just
+    OFX.
+    
 2005-03-12 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added option to control whether selecting a different transaction/split
     using the mouse should be treated as Enter (saving changes) or Cancel
@@ -8,6 +14,10 @@
 2005-03-11 Ace Jones <acejones@users.sourceforge.net>
   * Honor price precision setting in Online Quotes
   * Honor price precision setting in Investment Summary
+
+2005-03-11 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * AutoEnter Schedules
+    - 1105503 - avoid lockup, produce debug data
 
 2005-03-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Qif Profile Editor

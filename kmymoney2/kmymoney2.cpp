@@ -90,7 +90,6 @@
 #include "converter/mymoneyqifreader.h"
 #include "converter/mymoneystatementreader.h"
 #include "converter/mymoneytemplate.h"
-#include "converter/mymoneyofxstatement.h"
 
 #include "plugins/kmymoneyplugin.h"
 #include "plugins/interfaces/kmmviewinterface.h"
@@ -215,7 +214,6 @@ void KMyMoney2App::initActions()
   filePersonalData = new KAction(i18n("Personal Data..."), "personal_data", 0, this, SLOT(slotFileViewPersonal()), actionCollection(), "file_personal_data");
   fileBackup = new KAction(i18n("Backup..."), "backup",0,this,SLOT(slotFileBackup()),actionCollection(),"file_backup");
   actionQifImport = new KAction(i18n("QIF ..."), "", 0, this, SLOT(slotQifImport()), actionCollection(), "file_import_qif");
-  actionOfxImport = new KAction(i18n("OFX ..."), "", 0, this, SLOT(slotOfxImport()), actionCollection(), "file_import_ofx");
   actionGncImport = new KAction(i18n("Gnucash ..."), "", 0, this, SLOT(slotGncImport()), actionCollection(), "file_import_gnc");
   actionStatementImport = new KAction(i18n("Statement file ..."), "", 0, this, SLOT(slotStatementImport()), actionCollection(), "file_import_statement");
 
@@ -387,6 +385,36 @@ void KMyMoney2App::slotFileOpen()
   delete dialog;
 
   slotStatusMsg(prevMsg);
+}
+
+bool KMyMoney2App::isImportableFile( const KURL& url )
+{
+  bool result = false;
+
+  // Iterate through the plugins and see if there's a loaded plugin who can handle it  
+  QMap<QString,KMyMoneyPlugin::ImporterPlugin*>::const_iterator it_plugin = m_importerPlugins.begin();
+  while ( it_plugin != m_importerPlugins.end() )
+  {
+    if ( (*it_plugin)->isMyFormat(url.path()) )
+    {
+      result = true;
+      break;
+    }
+    ++it_plugin;
+  }
+  
+  // If we did not find a match, try importing it as a KMM statement file,
+  // which is really just for testing.  the statement file is not exposed 
+  // to users.
+  if ( it_plugin == m_importerPlugins.end() )
+    if ( MyMoneyStatement::isStatementFile( url.path() ) )
+      result = true;
+
+  // Place code here to test for QIF and other locally-supported formats
+  // (i.e. not a plugin). If you add them here, be sure to add it to
+  // the webConnect function.
+  
+  return result;
 }
 
 void KMyMoney2App::slotFileOpenRecent(const KURL& url)
@@ -826,26 +854,6 @@ void KMyMoney2App::slotQifImportFinished(void)
   setEnabled(true);
 }
 
-void KMyMoney2App::slotOfxImport(void)
-{
-#if defined(HAVE_LIBOFX) || defined(HAVE_NEW_OFX)
-  QString prevMsg = slotStatusMsg(i18n("Importing a statement from OFX"));
-
-  KFileDialog* dialog = new KFileDialog(KGlobalSettings::documentPath(),
-                            i18n("%1|OFX files\n%2|All files (*.*)").arg("*.ofx").arg("*.*"),
-                            this, i18n("Import OFX Statement..."), true);
-  dialog->setMode(KFile::File | KFile::ExistingOnly);
-
-  if(dialog->exec() == QDialog::Accepted)
-  {
-    slotOfxStatementImport(dialog->selectedURL().path());
-  }
-  slotStatusMsg(prevMsg);
-#else
-  KMessageBox::information( this, QString("<p>")+i18n("<b>OFX</b> import is unavailable.  This version of <b>KMyMoney</b> was built without <b>OFX</b> support."), i18n("Function not available"));
-#endif
-}
-
 void KMyMoney2App::slotGncImport(void)
 {
   QString prevMsg = slotStatusMsg(i18n("Importing a Gnucash file."));
@@ -883,9 +891,17 @@ void KMyMoney2App::slotPluginImport(const QString& format)
     
     QString prevMsg = slotStatusMsg(i18n("Importing a statement using %1 plugin").arg(format));
     
-    KFileDialog* dialog = new KFileDialog(KGlobalSettings::documentPath(),
-                              i18n("%1|OFX files\n%2|All files (*.*)").arg("*.ofx").arg("*.*"),
-                              this, i18n("Import OFX Statement..."), true);
+    KFileDialog* dialog = new KFileDialog
+    (
+      KGlobalSettings::documentPath(),
+      i18n("*.%1|%2 files\n*.*|All files (*.*)")
+        .arg(format.lower())
+        .arg(format),
+      this, 
+      i18n("Import %1 Statement...").arg(format), 
+      true
+    );
+    
     dialog->setMode(KFile::File | KFile::ExistingOnly);
     
     if(dialog->exec() == QDialog::Accepted)
@@ -895,32 +911,7 @@ void KMyMoney2App::slotPluginImport(const QString& format)
         QValueList<MyMoneyStatement> statements;
         if ( plugin->import(dialog->selectedURL().path(),statements) )
         {
-          bool hasstatements = (statements.count() > 0);
-          bool ok = true;
-          bool abort = false;
-        
-  /*        if ( ofx.errors().count() )
-          {
-            if ( KMessageBox::warningContinueCancelList(this,i18n("The following errors were returned from your bank"),ofx.errors(),i18n("OFX Errors")) == KMessageBox::Cancel )
-              abort = true;
-          }
-        
-          if ( ofx.warnings().count() )
-          {
-            if ( KMessageBox::warningContinueCancelList(this,i18n("The following warnings were returned from your bank"),ofx.warnings(),i18n("OFX Warnings"),KStdGuiItem::cont(),"ofxwarnings") == KMessageBox::Cancel )
-              abort = true;
-          }*/
-        
-          QValueList<MyMoneyStatement>::const_iterator it_s = statements.begin();
-          while ( it_s != statements.end() && !abort )
-          {
-            ok = ok && slotStatementImport(*it_s);
-            ++it_s;
-          }
-          if ( hasstatements && !ok )
-          {
-            KMessageBox::error( this, i18n("Importing process terminated unexpectedly.").arg(format), i18n("Failed to import all statements."));
-          }              
+          slotStatementImport(statements);
         }
         else
         {
@@ -1003,46 +994,6 @@ void KMyMoney2App::slotStatementImport()
   }
 }
 
-bool KMyMoney2App::slotOfxStatementImport(const MyMoneyOfxStatement& ofx)
-{
-  bool hasstatements = (ofx.begin() != ofx.end());
-  bool ok = true;
-  bool abort = false;
-
-  if ( ofx.errors().count() )
-  {
-    if ( KMessageBox::warningContinueCancelList(this,i18n("The following errors were returned from your bank"),ofx.errors(),i18n("OFX Errors")) == KMessageBox::Cancel )
-      abort = true;
-  }
-
-  if ( ofx.warnings().count() )
-  {
-    if ( KMessageBox::warningContinueCancelList(this,i18n("The following warnings were returned from your bank"),ofx.warnings(),i18n("OFX Warnings"),KStdGuiItem::cont(),"ofxwarnings") == KMessageBox::Cancel )
-      abort = true;
-  }
-
-  QValueList<MyMoneyStatement>::const_iterator it_s = ofx.begin();
-  while ( it_s != ofx.end() && !abort )
-  {
-    ok = ok && slotStatementImport(*it_s);
-    ++it_s;
-  }
-  return hasstatements && ok && !abort;
-}
-
-bool KMyMoney2App::slotOfxStatementImport(const QString& url)
-{
-  bool result = false;
-  MyMoneyOfxStatement s( url );
-
-  if ( s.isValid() )
-    result = slotOfxStatementImport(s);
-  else
-    QMessageBox::critical( this, i18n("Invalid OFX"), i18n("Error importing %1: This file is not a valid OFX file.").arg(url), QMessageBox::Ok, 0 );
-
-  return result;
-}
-
 bool KMyMoney2App::slotStatementImport(const QString& url)
 {
   bool result = false;
@@ -1080,6 +1031,40 @@ bool KMyMoney2App::slotStatementImport(const MyMoneyStatement& s)
   return result;
 }
 
+bool KMyMoney2App::slotStatementImport(const QValueList<MyMoneyStatement>& statements)
+{
+  bool hasstatements = (statements.count() > 0);
+  bool ok = true;
+  bool abort = false;
+
+  // FIXME Deal with warnings/errors coming back from plugins
+  /*if ( ofx.errors().count() )
+  {
+    if ( KMessageBox::warningContinueCancelList(this,i18n("The following errors were returned from your bank"),ofx.errors(),i18n("OFX Errors")) == KMessageBox::Cancel )
+      abort = true;
+  }
+
+  if ( ofx.warnings().count() )
+  {
+    if ( KMessageBox::warningContinueCancelList(this,i18n("The following warnings were returned from your bank"),ofx.warnings(),i18n("OFX Warnings"),KStdGuiItem::cont(),"ofxwarnings") == KMessageBox::Cancel )
+      abort = true;
+  }*/
+
+  QValueList<MyMoneyStatement>::const_iterator it_s = statements.begin();
+  while ( it_s != statements.end() && !abort )
+  {
+    ok = ok && slotStatementImport(*it_s);
+    ++it_s;
+  }
+  
+  if ( hasstatements && !ok )
+  {
+    KMessageBox::error( this, i18n("Importing process terminated unexpectedly."), i18n("Failed to import all statements."));
+  }              
+  
+  return ( !hasstatements || ok );
+}
+          
 void KMyMoney2App::slotStatementImportFinished(void)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
@@ -1478,7 +1463,6 @@ void KMyMoney2App::updateCaption(const bool skipActions)
     actionFindTransaction->setEnabled(myMoneyView->fileOpen());
     actionQifExport->setEnabled(myMoneyView->fileOpen());
     actionQifImport->setEnabled(myMoneyView->fileOpen());
-    actionOfxImport->setEnabled(myMoneyView->fileOpen());
     actionGncImport->setEnabled(myMoneyView->fileOpen());
     actionLoadTemplate->setEnabled(myMoneyView->fileOpen());
     bankAdd->setEnabled(myMoneyView->fileOpen());
@@ -1779,19 +1763,18 @@ void KMyMoney2App::slotAccountNew(void)
   myMoneyView->slotAccountNew();
 }
 
-void KMyMoney2App::ofxWebConnect(const QString& url, const QCString& asn_id)
+void KMyMoney2App::webConnect(const QString& url, const QCString& asn_id)
 {
+  //
+  // Web connect attempts to go through the known importers and see if the file
+  // can be importing using that method.  If so, it will import it unsing that
+  // plugin
+  //
+  
   // Bring this window to the forefront.  This method was suggested by
   // Lubos Lunak <l.lunak@suse.cz> of the KDE core development team.
-
-#if KDE_IS_VERSION(3,2,0)
   KStartupInfo::setNewStartupId(this,asn_id);
-#else
-  QCString keepCompilerHappy1(asn_id);
-  KWin::setActiveWindow( winId() );
-#endif
 
-#if defined(HAVE_LIBOFX) || defined(HAVE_NEW_OFX)
   // Make sure we have an open file
   if ( ! myMoneyView->fileOpen() &&
     KMessageBox::warningContinueCancel(kmymoney2, i18n("You must first select a KMyMoney file before you can import a statement.")) == KMessageBox::Continue )
@@ -1800,19 +1783,35 @@ void KMyMoney2App::ofxWebConnect(const QString& url, const QCString& asn_id)
   // only continue if the user really did open a file.
   if ( myMoneyView->fileOpen() )
   {
-    QString prevMsg = slotStatusMsg(i18n("Importing a statement from OFX"));
-
-    if ( MyMoneyOfxStatement::isOfxFile( url ) )
-      slotOfxStatementImport(url);
-    else if ( MyMoneyStatement::isStatementFile( url ) )
-      slotStatementImport(url);
+    QString prevMsg = slotStatusMsg(i18n("Importing a statement via Web Connect"));
+      
+    QMap<QString,KMyMoneyPlugin::ImporterPlugin*>::const_iterator it_plugin = m_importerPlugins.begin();
+    while ( it_plugin != m_importerPlugins.end() )
+    {
+      if ( (*it_plugin)->isMyFormat(url) )
+      {
+        QValueList<MyMoneyStatement> statements;
+        if ( (*it_plugin)->import(url,statements) )
+        {
+          slotStatementImport(statements);
+        }
+        else
+        {
+          KMessageBox::error( this, i18n("Unable to import %1 using %2 plugin.  The plugin returned the following error: %3").arg(url,(*it_plugin)->formatName(),(*it_plugin)->lastError()), i18n("Importing error"));
+        }
+        
+        break;
+      }
+      ++it_plugin;
+    }
+    
+    // If we did not find a match, try importing it as a KMM statement file,
+    // which is really just for testing.  the statement file is not exposed 
+    // to users.
+    if ( it_plugin == m_importerPlugins.end() )
+      if ( MyMoneyStatement::isStatementFile( url ) )
+        slotStatementImport(url);
   }
-
-#else
-  KMessageBox::information( this, QString("<p>")+i18n("<b>OFX</b> import is unavailable.  This version of <b>KMyMoney</b> was built without <b>OFX</b> support."), i18n("Function not available"));
-  QString keepCompilerHappy2(url);
-#endif
-
 }
 
 void KMyMoney2App::slotEnableMessages(void)

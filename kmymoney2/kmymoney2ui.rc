@@ -9,7 +9,6 @@
   <Menu name="file">
     <Menu name="import" icon="fileimport" append="save_merge"><text>&amp;Import</text>
       <Action name="file_import_qif"/>
-      <Action name="file_import_ofx"/>
       <Action name="file_import_gnc"/>
       <ActionList name="file_import_plugins"/>
       <Separator/>

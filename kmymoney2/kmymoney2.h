@@ -124,8 +124,6 @@ protected slots:
     * file from the file system to be imported.  This slot is expected to
     * be called from the UI.
     */
-  void slotOfxImport(void);
-
   void slotGncImport(void);
   
   void slotPluginImport(const QString&);
@@ -212,7 +210,11 @@ public:
   QString readLastUsedDir();
   void writeLastUsedFile(const QString& fileName);
   QString readLastUsedFile();
-
+  
+  /**
+    * Returns whether there is an importer available that can handle this file
+    */
+  bool isImportableFile( const KURL& url );
 
   /**
     * This function will be called by the engine when the engine data changed
@@ -241,7 +243,7 @@ public:
 k_dcop:
   const QString filename() const;
 
-  void ofxWebConnect(const QString&, const QCString& asn_id);
+  void webConnect(const QString&, const QCString& asn_id);
 
 protected:
   /** save general Options like all bar positions and status as well as the geometry and the recent file list to the configuration
@@ -407,16 +409,10 @@ public slots:
   bool slotStatementImport(const QString& url);
 
   /**
-    * Essentially similiar to slotStatementImport, except this one will import
-    * each individual account statement contained in the OFX Statement.
+    * Essentially similiar to the above slot, except this imports the whole
+    * list of statements
     */
-  bool slotOfxStatementImport(const MyMoneyOfxStatement& s);
-
-  /**
-    * Essentially similiar to the above slot, except this will load the file
-    * from disk first, given the URL.
-    */
-  bool slotOfxStatementImport(const QString& url);
+  bool slotStatementImport(const QValueList<MyMoneyStatement>& list);
 
 private:
   bool verifyImportedData(const MyMoneyAccount& account);

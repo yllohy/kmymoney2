@@ -37,13 +37,12 @@
 
 // ----------------------------------------------------------------------------
 // Project Includes
-#include "kmymoney2.h"
-#include "kstartuplogo.h"
 #include "mymoney/mymoneyfile.h"
 #include "views/kbanklistitem.h"
+#include "kmymoney2.h"
+#include "kstartuplogo.h"
 #include "kapptest.h"
 #include "kmymoneyutils.h"
-#include "converter/mymoneyofxstatement.h"
 
 static const char *description =
   I18N_NOOP("\nKMyMoney, the Personal Finance Manager for KDE.\n\nPlease consider contributing to this project with code and/or suggestions.");
@@ -135,24 +134,23 @@ int main(int argc, char *argv[])
     if(instances.count() > 0) {
 
       // If the user launches a second copy of the app and includes a file to
-      // open, they may be attempting a "WebConnect" session.  In this case,
-      // we'll check if it's an OFX file that's passed in, and if so, we'll
+      // open, they are probably attempting a "WebConnect" session.  In this case,
+      // we'll check to make sure it's an importable file that's passed in, and if so, we'll
       // notify the primary instance of the file and kill ourselves.
 
       if(args->count() > 0) {
         KURL url = args->url(0);
-        if ( MyMoneyOfxStatement::isOfxFile( url.path() ) || MyMoneyStatement::isStatementFile( url.path() ) )
+        if ( kmymoney2->isImportableFile( url.path() ) )
         {
           // if there are multiple instances, we'll send this to the first one
           QCString primary = instances[0];
 
-          // send a message to the primary client to import this ofx
+          // send a message to the primary client to import this file
           QByteArray data;
           QDataStream arg(data, IO_WriteOnly);
           arg << url.path();
-    arg << kapp->startupId();
-          if (!client->send(primary, "kmymoney2app", "ofxWebConnect(QString,QCString)",
-                        data))
+          arg << kapp->startupId();
+          if (!client->send(primary, "kmymoney2app", "webConnect(QString,QCString)",data))
             qDebug("Unable to launch WebConnect via DCOP.");
 
           // TODO: Figure out why this segfaults!?!
@@ -191,7 +189,7 @@ int main(int argc, char *argv[])
     // implements a "web connect" session where there is not already an
     // instance of the program running.
 
-    if ( MyMoneyOfxStatement::isOfxFile( url.path() ) || MyMoneyStatement::isStatementFile( url.path() ))
+    if ( kmymoney2->isImportableFile( url.path() ) )
     {
       importfile = url.path();
       url = kmymoney2->readLastUsedFile();
@@ -207,7 +205,7 @@ int main(int argc, char *argv[])
   }
 
   if ( ! importfile.isEmpty() )
-    kmymoney2->ofxWebConnect( importfile, kapp->startupId() );
+    kmymoney2->webConnect( importfile, kapp->startupId() );
 
   CREATE_TEST_CONTAINER();
 
