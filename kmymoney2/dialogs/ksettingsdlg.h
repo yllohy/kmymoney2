@@ -58,7 +58,7 @@ class KPushButton;
   * @see KDialogBase
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: ksettingsdlg.h,v 1.16 2004/01/25 20:37:52 mte Exp $
+  * $Id: ksettingsdlg.h,v 1.17 2004/05/03 20:27:15 ipwizard Exp $
   *
   * @short A class to manipulate the settings needed for running KMyMoney2
 **/
@@ -130,7 +130,10 @@ private:
   KPushButton*  m_upButton;
   KPushButton*  m_downButton;
   int           m_currentItem;
-  
+
+  KLineEdit*    m_qIntPricePrecision;
+  int           m_iTempPricePrecision;
+
   /** Set page general */
   void setPageGeneral();
   /** Set page list settings */

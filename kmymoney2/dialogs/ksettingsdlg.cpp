@@ -153,6 +153,29 @@ void KSettingsDlg::setPageGeneral()
   m_qradiobuttonStartLast = new QRadioButton("start_last", qpagebuttongroup);
   m_qradiobuttonStartLast->setText( i18n( "Start with last selected page" ) );
   qvboxpagelayout->addWidget(m_qradiobuttonStartLast);
+
+  
+  // Create a group to hold the price precision
+  QButtonGroup *qbuttongroupPrice = new QButtonGroup(qvboxMainFrame, "ButtonGroup1");
+  qbuttongroupPrice->setTitle(i18n("Equity/Currency options"));
+  qbuttongroupPrice->setColumnLayout(0, Qt::Vertical );
+  qbuttongroupPrice->layout()->setSpacing( 0 );
+  qbuttongroupPrice->layout()->setMargin( 0 );
+
+  QHBoxLayout *qhboxlayout2 = new QHBoxLayout(qbuttongroupPrice->layout());
+  qhboxlayout2->setAlignment( Qt::AlignTop );
+  qhboxlayout2->setSpacing( 6 );
+  qhboxlayout2->setMargin( 11 );
+
+  m_qIntPricePrecision = new KLineEdit(qbuttongroupPrice, "priceprecisioninput");
+  QIntValidator *qintvalidator = new QIntValidator(4, 10, m_qIntPricePrecision);
+  m_qIntPricePrecision->setValidator(qintvalidator);
+  qhboxlayout2->addWidget(new QLabel(i18n("Price Precision: "), qbuttongroupPrice));
+  qhboxlayout2->addWidget(m_qIntPricePrecision);
+  qhboxlayout2->addWidget(new QLabel(i18n("digits"), qbuttongroupPrice));
+  QSpacerItem* spacer = new QSpacerItem( 20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding );
+  qhboxlayout2->addItem(spacer);
+  qhboxlayout2->setStretchFactor(spacer->widget(), 5);
 }
 
 void KSettingsDlg::setPageAccountsView()
@@ -331,12 +354,6 @@ void KSettingsDlg::setPageList()
   m_qcheckboxShowGrid = new QCheckBox(i18n("Show a grid in the register."), qwidgetPage);
   qvboxlayoutPage->addWidget(m_qcheckboxShowGrid);
 
-/*
-  // and another widget
-  m_qcheckboxTextPrompt = new QCheckBox(i18n("Show a textual prompt in the register."), qwidgetPage);
-  qvboxlayoutPage->addWidget(m_qcheckboxTextPrompt);
-*/
-
   // and one more
   m_qcheckboxLedgerLens = new QCheckBox(i18n("Use the ledger lens"), qwidgetPage);
   qvboxlayoutPage->addWidget(m_qcheckboxLedgerLens);
@@ -357,33 +374,6 @@ void KSettingsDlg::setPageList()
   m_qcheckboxTypeToNr = new QCheckBox(i18n("Insert transaction type into Nr. field for new transactions"), qwidgetPage);
   qvboxlayoutPage->addWidget(m_qcheckboxTypeToNr);
 
-#if 0
-  // Create a group to hold two radio buttons
-  QButtonGroup *qbuttongroup = new QButtonGroup(qwidgetPage, "ButtonGroup1");
-  qbuttongroup->setTitle(i18n("Row Colour options"));
-  qbuttongroup->setColumnLayout(0, Qt::Vertical );
-  qbuttongroup->layout()->setSpacing( 0 );
-  qbuttongroup->layout()->setMargin( 0 );
-
-  // Create a layout
-  QVBoxLayout *qvboxlayout = new QVBoxLayout(qbuttongroup->layout());
-  qvboxlayout->setAlignment( Qt::AlignTop );
-  qvboxlayout->setSpacing( 6 );
-  qvboxlayout->setMargin( 11 );
-
-  // Add the first radio button
-  m_qradiobuttonPerTransaction = new QRadioButton(qbuttongroup, "m_per_trans");
-  m_qradiobuttonPerTransaction->setText( i18n("Use one colour per transaction") );
-  qvboxlayout->addWidget(m_qradiobuttonPerTransaction);
-
-  // Add the second radio button
-  m_qradiobuttonOtherRow = new QRadioButton(qbuttongroup, "m_every_other");
-  m_qradiobuttonOtherRow->setText( i18n( "Change colour every other row" ) );
-  qvboxlayout->addWidget(m_qradiobuttonOtherRow);
-  
-  qvboxlayoutPage->addWidget(qbuttongroup);
-#endif
-
   // Add a vertical spacer to take up the remaining available space
   QSpacerItem* spacer = new QSpacerItem( 20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding );
   qvboxlayoutPage->addItem( spacer );
@@ -392,10 +382,7 @@ void KSettingsDlg::setPageList()
   qtabwidget->insertTab(qwidgetPage, i18n("General"));
 
 
-
-
-
-
+  
   // Create a new tab for the filter options
   QWidget *qwidgetFilter = new QWidget(qtabwidget, "filterTab");
 
@@ -441,19 +428,11 @@ void KSettingsDlg::configRead()
   this->resize(kconfig->readSizeEntry("Geometry", &qsizeDefaultSize));
 
   kconfig->setGroup("General Options");
-  // FIXME: to be removed
-  // m_bTempStartPrompt = kconfig->readBoolEntry("StartDialog", true);
-  // m_qradiobuttonStartPrompt->setChecked(m_bTempStartPrompt);
-  // m_qradiobuttonStartFile->setChecked(!m_bTempStartPrompt);
 
   m_bTempStartPage = kconfig->readBoolEntry("StartLastViewSelected", false);
   m_qradiobuttonStartHome->setChecked(!m_bTempStartPage);
   m_qradiobuttonStartLast->setChecked(m_bTempStartPage);
   
-  // m_bTempAccountWizard = kconfig->readBoolEntry("NewAccountWizard", true);
-  // m_qradiobuttonAccountWizard->setChecked(m_bTempAccountWizard);
-  // m_qradiobuttonAccountDialog->setChecked(!m_bTempAccountWizard);
-
   m_bTempLedgerLens = kconfig->readBoolEntry("LedgerLens", true);
   m_qcheckboxLedgerLens->setChecked(m_bTempLedgerLens);
 
@@ -473,7 +452,9 @@ void KSettingsDlg::configRead()
     m_qcheckboxTypeToNr->setEnabled(false);
   }
 
- 
+  m_iTempPricePrecision = kconfig->readNumEntry("PricePrecision", 4);
+  m_qIntPricePrecision->setText(QString("%1").arg(m_iTempPricePrecision));
+
   kconfig->setGroup("List Options");
 
   QFont qfontDefault = QFont("helvetica", 12);
@@ -496,22 +477,11 @@ void KSettingsDlg::configRead()
   m_qfontTempCell = kconfig->readFontEntry("listCellFont", &qfontDefault);
   m_kfontchooserCell->setFont(m_qfontTempCell);
 
-/*
-  m_qstringTempRowCount = kconfig->readEntry("RowCount", "2");
-  m_klineeditRowCount->setText(m_qstringTempRowCount);
-*/
-
   m_bTempShowGrid = kconfig->readBoolEntry("ShowGrid", true);
   m_qcheckboxShowGrid->setChecked(m_bTempShowGrid);
 
   m_bTempHideCategory = kconfig->readBoolEntry("HideUnusedCategory", false);
   m_qcheckboxHideCategory->setChecked(m_bTempHideCategory);
-
-#if 0  
-  m_bTempColourPerTransaction = kconfig->readBoolEntry("ColourPerTransaction", true);
-  m_qradiobuttonPerTransaction->setChecked(m_bTempColourPerTransaction);
-  m_qradiobuttonOtherRow->setChecked(!m_bTempColourPerTransaction);
-#endif
 
   QDateTime defaultDate;
   defaultDate.setTime_t(0);
@@ -571,6 +541,7 @@ void KSettingsDlg::configWrite()
   kconfig->writeEntry("TransactionForm", m_qcheckboxTransactionForm->isChecked());
   kconfig->writeEntry("CopyTypeToNr", m_qcheckboxTypeToNr->isChecked());
   kconfig->writeEntry("AlwaysShowNrField", m_qcheckboxShowNrField->isChecked());
+  kconfig->writeEntry("PricePrecision", m_qIntPricePrecision->text());
 
   kconfig->setGroup("Homepage Options");
   kconfig->writeEntry("Itemlist", homePageItems());
@@ -600,14 +571,6 @@ void KSettingsDlg::slotOk()
 /** Called on Apply being pressed */
 void KSettingsDlg::slotApply()
 {
-/*
-  int nCount = m_klineeditRowCount->text().toInt();
-  if (nCount <= 0 || nCount >= 4) {
-    KMessageBox::information(this, i18n("The row count has to be between 1 and 3"));
-    m_klineeditRowCount->setFocus();
-    return;
-  }
-*/
   m_bDoneApply = true;
   configWrite();
   emit signalApply();
@@ -625,9 +588,7 @@ void KSettingsDlg::slotCancel()
   kconfig->writeEntry("listBGColor", m_qcolorTempListBG);
   kconfig->writeEntry("listHeaderFont", m_qfontTempHeader);
   kconfig->writeEntry("listCellFont", m_qfontTempCell);
-  // kconfig->writeEntry("RowCount", m_qstringTempRowCount);
   kconfig->writeEntry("ShowGrid", m_bTempShowGrid);
-  // kconfig->writeEntry("ColourPerTransaction", m_bTempColourPerTransaction);
   kconfig->writeEntry("HideUnusedCategory", m_bTempHideCategory);
 #if QT_VERSION > 300
   kconfig->writeEntry("StartDate", QDateTime(m_qdateTempStart));
@@ -638,16 +599,15 @@ void KSettingsDlg::slotCancel()
   kconfig->writeEntry("NormalAccountsView", m_bTempNormalView);
 
   kconfig->setGroup("General Options");
-  // kconfig->writeEntry("StartDialog", m_bTempStartPrompt);
   kconfig->writeEntry("StartLastViewSelected", m_bTempStartPage);
-  // kconfig->writeEntry("NewAccountWizard", m_bTempAccountWizard);
   kconfig->writeEntry("LedgerLens", m_bTempLedgerLens);
   kconfig->writeEntry("TransactionForm", m_bTempTransactionForm);
   kconfig->writeEntry("CopyTypeToNr", m_bTempTypeToNr);
   kconfig->writeEntry("AlwaysShowNrField", m_bTempShowNrField);
   kconfig->writeEntry("CheckSchedule", m_bTempCheckSchedule);
   kconfig->writeEntry("CheckSchedulePreview", m_iTempSchedulePreview);
-  
+  kconfig->writeEntry("PricePrecision", m_iTempPricePrecision);
+
   kconfig->setGroup("Homepage Options");
   kconfig->writeEntry("Itemlist", m_tempHomePageItems);
   kconfig->sync();
@@ -665,24 +625,15 @@ void KSettingsDlg::slotCancel()
 **/
 void KSettingsDlg::slotUser1()
 {
-  // m_qradiobuttonStartPrompt->setChecked(m_bTempStartPrompt);
-  // m_qradiobuttonStartFile->setChecked(!m_bTempStartPrompt);
   m_kcolorbuttonList->setColor(m_qcolorTempList);
   m_kcolorbuttonBack->setColor(m_qcolorTempListBG);
   m_kfontchooserHeader->setFont(m_qfontTempHeader);
   m_kfontchooserCell->setFont(m_qfontTempCell);
-  // m_klineeditRowCount->setText(m_qstringTempRowCount);
   m_qcheckboxShowGrid->setChecked(m_bTempShowGrid);
-#if 0  
-  m_qradiobuttonPerTransaction->setChecked(m_bTempColourPerTransaction);
-  m_qradiobuttonOtherRow->setChecked(!m_bTempColourPerTransaction);
-#endif  
   m_qcheckboxHideCategory->setChecked(m_bTempHideCategory);
   m_dateinputStart->setDate(m_qdateTempStart);
   m_qradiobuttonNormalView->setChecked(m_bTempNormalView);
   m_qradiobuttonAccountView->setChecked(!m_bTempNormalView);
-  // m_qradiobuttonAccountWizard->setChecked(m_bTempAccountWizard);
-  // m_qradiobuttonAccountDialog->setChecked(!m_bTempAccountWizard);
   m_qcheckboxLedgerLens->setChecked(m_bTempLedgerLens);
   m_qcheckboxTransactionForm->setChecked(m_bTempTransactionForm);
   m_qcheckboxTypeToNr->setChecked(m_bTempTypeToNr);
@@ -692,6 +643,7 @@ void KSettingsDlg::slotUser1()
   m_qradiobuttonCheckSchedules->setChecked(m_bTempCheckSchedule);
   m_intSchedulePreview->setEnabled(m_bTempCheckSchedule);
   m_intSchedulePreview->setValue(m_iTempSchedulePreview);
+  m_qIntPricePrecision->setText(QString("%1").arg(m_iTempPricePrecision));
   
   QStringList list = m_tempHomePageItems;
   KMyMoneyUtils::addDefaultHomePageItems(list);
