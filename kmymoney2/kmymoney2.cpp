@@ -195,7 +195,9 @@ void KMyMoney2App::initActions()
   filePersonalData = new KAction(i18n("Personal Data..."), "info", 0, this, SLOT(slotFileViewPersonal()), actionCollection(), "file_personal_data");
   fileBackup = new KAction(i18n("Backup..."), "backup",0,this,SLOT(slotFileBackup()),actionCollection(),"file_backup");
   actionQifImport = new KAction(i18n("QIF ..."), "", 0, this, SLOT(slotQifImport()), actionCollection(), "file_import_qif");
+#if HAVE_LIBOFX
   actionOfxImport = new KAction(i18n("OFX ..."), "", 0, this, SLOT(slotOfxImport()), actionCollection(), "file_import_ofx");
+#endif
   actionGncImport = new KAction(i18n("Gnucash ..."), "", 0, this, SLOT(slotGncImport()), actionCollection(), "file_import_gnc");
   actionGncImport = new KAction(i18n("Statement file ..."), "", 0, this, SLOT(slotStatementImport()), actionCollection(), "file_import_statement");
   actionLoadTemplate = new KAction(i18n("Account Template ..."), "", 0, this, SLOT(slotLoadAccountTemplates()), actionCollection(), "file_import_template");
@@ -804,7 +806,7 @@ void KMyMoney2App::slotQifImportFinished(void)
 void KMyMoney2App::slotOfxImport(void)
 {
 #ifdef HAVE_LIBOFX
-  bool result = false; 
+  bool result = false;
   QString prevMsg = slotStatusMsg(i18n("Importing a statement from OFX"));
 
   KFileDialog* dialog = new KFileDialog(KGlobalSettings::documentPath(),
@@ -812,7 +814,7 @@ void KMyMoney2App::slotOfxImport(void)
                             this, i18n("Import OFX Statement..."), true);
   dialog->setMode(KFile::File | KFile::ExistingOnly);
 
-  if(dialog->exec() == QDialog::Accepted) 
+  if(dialog->exec() == QDialog::Accepted)
   {
     MyMoneyOfxStatement s( dialog->selectedURL().path() );
     if ( s.isValid() )
@@ -857,7 +859,7 @@ void KMyMoney2App::slotGncImport(void)
 
 void KMyMoney2App::slotStatementImport()
 {
-  bool result = false; 
+  bool result = false;
   QString prevMsg = slotStatusMsg(i18n("Importing an XML Statement."));
 
   KFileDialog* dialog = new KFileDialog(KGlobalSettings::documentPath(),
@@ -865,9 +867,9 @@ void KMyMoney2App::slotStatementImport()
                             this, i18n("Import XML Statement..."), true);
   dialog->setMode(KFile::File | KFile::ExistingOnly);
 
-  if(dialog->exec() == QDialog::Accepted) 
+  if(dialog->exec() == QDialog::Accepted)
   {
-    QFile f( dialog->selectedURL().path() ); 
+    QFile f( dialog->selectedURL().path() );
     f.open( IO_ReadOnly );
     QString error = "Unable to parse file";
     QDomDocument* doc = new QDomDocument;
@@ -893,10 +895,10 @@ void KMyMoney2App::slotStatementImport()
         error = "File is not a KMyMoney Statement";
     }
     delete doc;
-    
+
     if ( !result )
       QMessageBox::critical( this, i18n("Critical Error"), i18n("Unable to read file %1: %2").arg( dialog->selectedURL().path(),error), QMessageBox::Ok, 0 );
-    
+
   }
   delete dialog;
 
@@ -911,25 +913,25 @@ void KMyMoney2App::slotStatementImport()
 bool KMyMoney2App::slotStatementImport(const MyMoneyStatement& s)
 {
   bool result = false;
-  
+
   m_smtReader = new MyMoneyStatementReader;
   connect(m_smtReader, SIGNAL(importFinished()), this, SLOT(slotStatementImportFinished()));
-  
+
   myMoneyView->suspendUpdate(true);
-  
+
   // construct a copy of the current engine
   if(m_engineBackup)
     delete m_engineBackup;
   m_engineBackup = MyMoneyFile::instance()->storage()->duplicate();
-  
+
   m_smtReader->setAutoCreatePayee(true);
   m_smtReader->setProgressCallback(&progressCallback);
-  
+
   // disable all standard widgets during the import
   setEnabled(false);
-  
+
   result = m_smtReader->startImport(s);
-  
+
   return result;
 }
 
