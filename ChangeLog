@@ -1,6 +1,13 @@
+2005-03-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added cancel button to new file dialog
+  * Hide load button for address data if no data is found for the owner
+    and also shows a message if the logic is started anyway.
+  * Fix enabling reports view
+  * Display currency symbol for payments
+
 2005-03-29 Ace Jones <acejones@users.sourceforge.net>
   * Cleaned up welcome html pages a bit, with some help from Rob.
-  
+
 2005-03-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed INT64_MIN, INT64_MAX definition problem
   * Fixed initial startup behaviour
