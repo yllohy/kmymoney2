@@ -1543,7 +1543,11 @@ void KTransactionView::slotCategoryActivated(int pos)
                             "information about the splits. Do you "
                             "want to continue?")),
             QString(i18n("Delete split information")),
-            QString(i18n("Continue")), false  ) == KMessageBox::Continue) {
+            QString(i18n("Continue"))
+#if QT_VERSION < 300
+, false
+#endif
+  ) == KMessageBox::Continue) {
       transaction->clearSplitList();
       transaction->setDirty(true);
     } else {
