@@ -1,3 +1,7 @@
+2004-12-07 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Fix sloppy coding error in Edit Schedule dialog
+  * Sorry, will try harder next time
+  
 2004-12-05 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Gnucash import changes
   * Improve exception reporting

@@ -511,7 +511,7 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
     if (m_actionType != MyMoneySplit::ActionDeposit) {
       m_fromAccountId = m_transaction.splits()[0].accountId();
       //m_accountCombo->setCurrentText(MyMoneyFile::instance()->account(m_transaction.splits()[0].accountId()).name()); 
-      m_kcomboTo->setSelected (m_fromAccountId);
+      m_accountCombo->setSelected (m_fromAccountId);
     } else{
       m_toAccountId = m_transaction.splits()[0].accountId();
       //m_kcomboTo->setCurrentText(MyMoneyFile::instance()->account(m_transaction.splits()[0].accountId()).name());
