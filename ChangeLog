@@ -1,3 +1,9 @@
+2003-02-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * include config.h in mymoneymoney.h
+  * changed the state-engine during backup
+  * fixed backup procedure (error report #692390)
+  * added "Don't ask again" to warning box about new file layout
+
 2003-02-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added missing account types to utility functions
   * Fixed online documentation in MyMoneyFile
