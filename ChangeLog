@@ -1,3 +1,10 @@
+2005-02-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added complete re-work of the split transaction widget and dialog
+  * Increased height of transaction form items
+  * Another s/Splitted/Split/
+  * Improved MyMoneyMoney::operator ==(const MyMoneyMoney&)
+  * Added new MyMoneyTracer constructor
+
 2005-02-15 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Gnucash import
     - doxygen update
@@ -6,7 +13,7 @@
 2005-02-13 Ace Jones <acejones@users.sourceforge.net>
   * Fixed doxygen warnings
   * Added new icons supplied by Robert Wadley
-  
+
 2005-02-13 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Gnucash import
     - normalize monetary amounts
@@ -14,8 +21,8 @@
 
 2005-02-12 Ace Jones <acejones@users.sourceforge.net>
   * Refactored PivotTable::AccountDescriptor into ReportAccount, which is now
-    a subclass of MyMoneyAccount, with hierarchy, currency, and other convenience
-    methods.
+    a subclass of MyMoneyAccount, with hierarchy, currency, and
+    other convenience methods.
   * Propagated ReportAccount throughout the entire reporting engine.  The
     reporting engine should never ever use a MyMoneyAccount.
   * Numerous object logic cleanups throughout reports.  I moved each method to
