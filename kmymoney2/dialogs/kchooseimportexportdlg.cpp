@@ -43,8 +43,6 @@ KChooseImportExportDlg::KChooseImportExportDlg(int type, QWidget *parent, const 
   QString filename;
 
   if (type==0) { // import
-  	filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_import.png");
-
     topLabel->setText(i18n("Please choose the type of import you wish to perform.   A simple explanation\n"
         "of the import type is available at the bottom of the screen and is updated when\n"
         "you select an item from the choice box."
@@ -52,8 +50,6 @@ KChooseImportExportDlg::KChooseImportExportDlg(int type, QWidget *parent, const 
     promptLabel->setText(i18n("Choose import type:"));
     setCaption(i18n("Choose Import Type Dialog"));
   } else { // export
-  	filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_export.png");
-
     topLabel->setText(i18n("Please choose the type of export you wish to perform.   A simple explanation\n"
         "of the export type is available at the bottom of the screen and is updated when\n"
         "you select an item from the choice box."
@@ -61,7 +57,6 @@ KChooseImportExportDlg::KChooseImportExportDlg(int type, QWidget *parent, const 
     promptLabel->setText(i18n("Choose export type:"));
     setCaption(i18n("Choose Export Type Dialog"));
   }
-	m_qpixmaplabel->setPixmap(QPixmap(filename));
 
   readConfig();
   slotTypeActivated(m_lastType);

@@ -51,9 +51,6 @@
 KBackupDlg::KBackupDlg( QWidget* parent,  const char* name/*, bool modal*/)
   : kbackupdlgdecl( parent,  name , true)
 {
-  QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_backup.png");
-  m_qpixmaplabel->setPixmap(QPixmap(filename));
-
   readConfig();
 
   // add icons to buttons

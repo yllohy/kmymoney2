@@ -4,14 +4,6 @@
     <property name="name">
         <cstring>KExportDlgDecl</cstring>
     </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>705</width>
-            <height>585</height>
-        </rect>
-    </property>
     <property name="caption">
         <string>QIF Export</string>
     </property>
@@ -42,28 +34,6 @@
                 <property name="spacing">
                     <number>6</number>
                 </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>m_qpixmaplabel</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>0</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>200</width>
-                            <height>150</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string>TextLabel1</string>
-                    </property>
-                </widget>
                 <widget class="QLabel">
                     <property name="name">
                         <cstring>TextLabel2</cstring>

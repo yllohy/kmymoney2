@@ -48,20 +48,5 @@ uninstall-local:
 	-rm -f $(kde_datadir)/kmymoney2/pics/bank-folder.xpm
 	-rm -f $(kde_datadir)/kmymoney2/pics/startlogo.png
 	-rm -f $(kde_datadir)/kmymoney2/pics/setting_list.png
-	-rm -f $(kde_datadir)/kmymoney2/pics/view_info.png
-	-rm -f $(kde_datadir)/kmymoney2/pics/dlg_backup.png
-	-rm -f $(kde_datadir)/kmymoney2/pics/dlg_csv_import.png
-	-rm -f $(kde_datadir)/kmymoney2/pics/dlg_edit_categories.png
-	-rm -f $(kde_datadir)/kmymoney2/pics/dlg_edit_category.png
-	-rm -f $(kde_datadir)/kmymoney2/pics/dlg_edit_file.png
-	-rm -f $(kde_datadir)/kmymoney2/pics/dlg_ending_balance.png
-	-rm -f $(kde_datadir)/kmymoney2/pics/dlg_export.png
-	-rm -f $(kde_datadir)/kmymoney2/pics/dlg_find_transaction.png
-	-rm -f $(kde_datadir)/kmymoney2/pics/dlg_import.png
-	-rm -f $(kde_datadir)/kmymoney2/pics/dlg_new_account.png
-	-rm -f $(kde_datadir)/kmymoney2/pics/dlg_new_institution.png
-	-rm -f $(kde_datadir)/kmymoney2/pics/dlg_qif_export.png
-	-rm -f $(kde_datadir)/kmymoney2/pics/dlg_qif_import.png
-	-rm -f $(kde_datadir)/kmymoney2/pics/dlg_reconcile.png
 
 ####### kdevelop will overwrite this part!!! (end)############

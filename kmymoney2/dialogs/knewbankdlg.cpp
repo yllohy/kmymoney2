@@ -45,10 +45,6 @@
 KNewBankDlg::KNewBankDlg(MyMoneyInstitution& institution,  bool /*isEditing*/, QWidget *parent, const char *name)
   : KNewBankDlgDecl(parent,name,true), m_institution(institution)
 {
-  QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_new_institution.png");
-  QPixmap pm(filename);
-  m_qpixmaplabel->setPixmap(pm);
-
   KIconLoader* il = KGlobal::iconLoader();
   KGuiItem okButtenItem( i18n("&Ok" ),
                     QIconSet(il->loadIcon("button_ok", KIcon::Small, KIcon::SizeSmall)),

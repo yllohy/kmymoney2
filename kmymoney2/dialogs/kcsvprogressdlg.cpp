@@ -54,9 +54,6 @@
 KCsvProgressDlg::KCsvProgressDlg(int type, MyMoneyAccount *account, QWidget *parent, const char *name )
  : KCsvProgressDlgDecl(parent,name, true)
 {
-	QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_csv_import.png");
- 	m_qpixmaplabel->setPixmap(QPixmap(filename));
-
   m_nType = type;
   if (m_nType==0)
   {

@@ -47,10 +47,6 @@ KNewFileDlg::KNewFileDlg(QWidget *parent, const char *name, const char *title)
   okBtn->setGuiItem(KStdGuiItem::ok());
   cancelBtn->setGuiItem(KStdGuiItem::cancel());
 
-  QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_edit_file.png");
-  QPixmap pm(filename);
-  m_qpixmaplabel->setPixmap(pm);
-
   okBtn->setName(KAppTest::widgetName(this, "KPushButton/Ok"));
   qDebug("Name is %s", okBtn->name());
 
@@ -70,9 +66,6 @@ KNewFileDlg::KNewFileDlg(QString userName, QString userStreet,
 {
   okBtn->setGuiItem(KStdGuiItem::ok());
   cancelBtn->setGuiItem(KStdGuiItem::cancel());
-
-  QString filename = KGlobal::dirs()->findResource("appdata", "pics/view_info.png");
-  m_qpixmaplabel->setPixmap(QPixmap(filename));
 
   userNameEdit->setText(userName);
   streetEdit->setText(userStreet);

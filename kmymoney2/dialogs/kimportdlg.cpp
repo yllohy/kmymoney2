@@ -53,9 +53,6 @@
 KImportDlg::KImportDlg(QWidget *parent, const char * name)
   : KImportDlgDecl(parent, name, TRUE)
 {
-  QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_qif_import.png");
-  m_qpixmaplabel->setPixmap(QPixmap(filename));
-
   // Set all the last used options
   readConfig();
 

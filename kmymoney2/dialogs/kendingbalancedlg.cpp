@@ -95,9 +95,6 @@ KEndingBalanceDlg::KEndingBalanceDlg(const MyMoneyAccount& account, QWidget *par
   connect(m_chargesEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckPageFinished(void)));
   connect(m_chargesCategoryEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckPageFinished(void)));
 /*
-   //QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_ending_balance.png");
-  m_qpixmaplabel->setPixmap(QPixmap(KGlobal::dirs()->findResource("appdata", "pics/dlg_ending_balance.png")));
-
 	previousbalEdit->setText(prevBal.formatMoney());
 	previousbalEdit->setFocus();
 	previousbalEdit->setSelection(0, previousbalEdit->text().length());	

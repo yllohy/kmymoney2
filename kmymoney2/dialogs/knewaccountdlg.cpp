@@ -73,12 +73,6 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
 {
   QString columnName = ( (categoryEditor) ? i18n("Categories") : i18n("Accounts") );
 
-#if 0
-  QCString pngFile = ( (categoryEditor) ? "pics/dlg_edit_category.png" : "pics/dlg_new_account.png" );
-  QString filename = KGlobal::dirs()->findResource("appdata", pngFile);
-  m_qpixmaplabel->setPixmap(QPixmap(filename));
-#endif
-
   m_qlistviewParentAccounts->setRootIsDecorated(true);
   m_qlistviewParentAccounts->setAllColumnsShowFocus(true);
   m_qlistviewParentAccounts->addColumn(columnName);

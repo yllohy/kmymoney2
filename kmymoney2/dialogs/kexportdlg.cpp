@@ -52,9 +52,6 @@
 KExportDlg::KExportDlg(QWidget *parent)
   : KExportDlgDecl(parent, 0, true)
 {
-  QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_qif_export.png");
-  m_qpixmaplabel->setPixmap(QPixmap(filename));
-
   // Set (almost) all the last used options
   readConfig();
 

@@ -7,15 +7,6 @@
         <cstring>kcsvprogressdlgdecl</cstring>
     </property>
     <property stdset="1">
-        <name>geometry</name>
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>668</width>
-            <height>442</height>
-        </rect>
-    </property>
-    <property stdset="1">
         <name>caption</name>
         <string>CSV Dialog</string>
     </property>
@@ -43,31 +34,6 @@
                     <name>spacing</name>
                     <number>6</number>
                 </property>
-                <widget>
-                    <class>QLabel</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>m_qpixmaplabel</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>sizePolicy</name>
-                        <sizepolicy>
-                            <hsizetype>0</hsizetype>
-                            <vsizetype>0</vsizetype>
-                        </sizepolicy>
-                    </property>
-                    <property stdset="1">
-                        <name>minimumSize</name>
-                        <size>
-                            <width>200</width>
-                            <height>150</height>
-                        </size>
-                    </property>
-                    <property stdset="1">
-                        <name>text</name>
-                        <string>TextLabel1</string>
-                    </property>
-                </widget>
                 <widget>
                     <class>QLabel</class>
                     <property stdset="1">

@@ -1,3 +1,6 @@
+2004-08-24 Ace Jones <acejones@users.sourceforge.net>
+  * Removed "Create Me" graphics from all dialogs 
+
 2004-08-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed some logic errors in KAccountComboBox and completion object
   * More work on the investment view
