@@ -164,11 +164,21 @@ protected slots:
 
   void slotRefreshView(void);
     
+  /**
+    *
+    */
+  void slotRegisterClicked(int row, int col, int button, const QPoint &mousePos);
+  void slotRegisterDoubleClicked(int row, int col, int button, const QPoint &mousePos);
+  void slotNextTransaction(void);
+  void slotPreviousTransaction(void);
+  void slotSelectTransaction(void);
+  
 private slots:
   void slotRightSize(void);
   
 signals:
-
+  void transactionSelected(const QCString& accountId, const QCString& transactionId);
+  
 private:
   enum opTypeE {
     addAccountToFilter = 0,

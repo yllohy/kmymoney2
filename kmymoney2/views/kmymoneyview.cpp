@@ -1294,6 +1294,8 @@ void KMyMoneyView::slotFindTransaction(void)
   if(m_searchDlg == 0) {
     m_searchDlg = new KFindTransactionDlg();
     connect(m_searchDlg, SIGNAL(destroyed()), this, SLOT(slotCloseSearchDialog()));
+    connect(m_searchDlg, SIGNAL(transactionSelected(const QCString&, const QCString&)),
+            this, SLOT(slotLedgerSelected(const QCString&, const QCString&)));
   }
   m_searchDlg->show();
   m_searchDlg->raise();

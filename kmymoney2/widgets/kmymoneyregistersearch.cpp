@@ -49,8 +49,8 @@ kMyMoneyRegisterSearch::kMyMoneyRegisterSearch(QWidget *parent, const char *name
   verticalHeader()->hide();
   setColumnStretchable(0, false);
   setColumnStretchable(1, false);
-  setColumnStretchable(2, true);
-  setColumnStretchable(3, true);
+  setColumnStretchable(2, false);
+  setColumnStretchable(3, false);
   setColumnStretchable(4, false);
   setColumnStretchable(5, false);
 
@@ -166,27 +166,45 @@ void kMyMoneyRegisterSearch::adjustColumn(int col)
 {
   QHeader *topHeader = horizontalHeader();
   QFontMetrics fontMetrics(m_headerFont);
-
+  QString txt;
+  
   int w = topHeader->fontMetrics().width( topHeader->label( col ) ) + 10;
+  int nw;
+  
   if ( topHeader->iconSet( col ) )
     w += topHeader->iconSet( col )->pixmap().width();
   w = QMAX( w, 20 );
 
   // scan through the transactions
   for ( int i = (numRows()/m_rpt)-1; i >= 0; --i ) {
-    switch(col) {
-      default:
-        break;
+    KMyMoneyTransaction *t = m_parent->transaction(i);
+    if(t != NULL) {
+      try {
+        switch(col) {
+          default:
+            break;
 
-      case 1: // date
-        QString txt;
-        MyMoneyTransaction *t = m_parent->transaction(i);
-        if(t != NULL) {
-          txt = KGlobal::locale()->formatDate(t->postDate(), true)+"  ";
-          int nw = fontMetrics.width(txt);
-          w = QMAX( w, nw );
+          case 0: // nr
+            txt = t->splitById(t->splitId()).number();
+            nw = fontMetrics.width(txt);
+            w = QMAX( w, nw );
+            break;
+
+          case 1: // date
+            txt = KGlobal::locale()->formatDate(t->postDate(), true);
+            nw = fontMetrics.width(txt);
+            w = QMAX( w, nw );
+            break;
+
+          case 2: // account
+            txt = MyMoneyFile::instance()->account(t->splitById(t->splitId()).accountId()).name();
+            nw = fontMetrics.width(txt);
+            w = QMAX( w, nw );
+            break;
         }
-        break;
+      } catch (MyMoneyException *e) {
+        delete e;
+      }
     }
   }
   setColumnWidth( col, w );

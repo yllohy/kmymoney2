@@ -37,6 +37,8 @@
 #include <klineedit.h>
 #include <klistview.h>
 #include <kcombobox.h>
+#include <kguiitem.h>
+#include <kiconloader.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -93,7 +95,26 @@ KFindTransactionDlg::KFindTransactionDlg(QWidget *parent, const char *name)
   setupAmountPage();
   setupPayeesPage();
   setupDetailsPage();
-      
+
+  KIconLoader* il = KGlobal::iconLoader();
+  KGuiItem resetButtonItem( i18n( "&Reset" ),
+                    QIconSet(il->loadIcon("undo", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Reset all settings"),
+                    i18n("Use this to reset all settings to the state they were when the dialog was opened."));
+  m_resetButton->setGuiItem(resetButtonItem);
+
+  KGuiItem closeButtonItem( i18n( "&Close" ),
+                    QIconSet(il->loadIcon("fileclose", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Close the dialog"),
+                    i18n("Leave the dialog and return to where you came from."));
+  m_closeButton->setGuiItem(closeButtonItem);
+        
+  KGuiItem searchButtonItem( i18n( "&Search" ),
+                    QIconSet(il->loadIcon("find", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Start the search"),
+                    i18n("Takes the current criteria and searches for matching transactions."));
+  m_searchButton->setGuiItem(searchButtonItem);
+
   // readConfig();
   slotUpdateSelections();
   
@@ -104,6 +125,18 @@ KFindTransactionDlg::KFindTransactionDlg(QWidget *parent, const char *name)
   connect(m_resetButton, SIGNAL(clicked()), this, SLOT(slotReset()));
   connect(m_closeButton, SIGNAL(clicked()), this, SLOT(deleteLater()));
   connect(m_textEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotUpdateSelections()));
+
+  connect(m_register, SIGNAL(clicked(int, int, int, const QPoint&)), this, SLOT(slotRegisterClicked(int, int, int, const QPoint&)));
+  connect(m_register, SIGNAL(doubleClicked(int, int, int, const QPoint&)), this, SLOT(slotRegisterDoubleClicked(int, int, int, const QPoint&)));
+
+  connect(m_register, SIGNAL(signalEnter()), this, SLOT(slotSelectTransaction()));
+  connect(m_register, SIGNAL(signalNextTransaction()), this, SLOT(slotNextTransaction()));
+  connect(m_register, SIGNAL(signalPreviousTransaction()), this, SLOT(slotPreviousTransaction()));
+
+  // FIXME: Once we have the online help going, we can show the help button
+  m_helpButton->hide();
+  
+  m_textEdit->setFocus();
 }
 
 KFindTransactionDlg::~KFindTransactionDlg()
@@ -756,6 +789,8 @@ void KFindTransactionDlg::slotSearch(void)
 
   // filter is setup, now fill the register
   slotRefreshView();
+
+  m_register->setFocus();
 }
 
 void KFindTransactionDlg::slotRefreshView(void)
@@ -871,16 +906,12 @@ void KFindTransactionDlg::resizeEvent(QResizeEvent* /* ev */)
   int m_debitWidth = 80;
   int m_creditWidth = 80;
 
-  m_register->setColumnWidth(0, 80);
+  m_register->adjustColumn(0);
+  m_register->adjustColumn(1);
+  m_register->adjustColumn(2);
 
-  // Resize the date field to the size required by the input widget
-  kMyMoneyDateInput* datefield = new kMyMoneyDateInput();
-  datefield->setFont(m_register->cellFont());
-  m_register->setColumnWidth(1, datefield->minimumSizeHint().width());
-  delete datefield;
-
-  m_register->setColumnWidth(5, m_debitWidth);
-  m_register->setColumnWidth(6, m_creditWidth);
+  m_register->setColumnWidth(4, m_debitWidth);
+  m_register->setColumnWidth(5, m_creditWidth);
 
   for(int i = 0; i < m_register->numCols(); ++i) {
     switch(i) {
@@ -892,4 +923,52 @@ void KFindTransactionDlg::resizeEvent(QResizeEvent* /* ev */)
     }
   }
   m_register->setColumnWidth(3, w);
+}
+
+
+void KFindTransactionDlg::slotRegisterClicked(int row, int /* col */, int /* button */, const QPoint& /* mousePos */)
+{
+  if(m_register->setCurrentTransactionRow(row) == true) {
+    m_register->ensureTransactionVisible();
+    m_register->repaintContents(false);
+  }
+}
+
+void KFindTransactionDlg::slotRegisterDoubleClicked(int row,
+                                                    int /* col */,
+                                                    int /* button */,
+                                                    const QPoint & /* mousePos */)
+{
+  if(m_register->setCurrentTransactionRow(row) == true) {
+    m_register->ensureTransactionVisible();
+    m_register->repaintContents(false);
+  }
+  slotSelectTransaction();
+}
+
+void KFindTransactionDlg::slotSelectTransaction(void)
+{
+  KMyMoneyTransaction *k = transaction(m_register->currentTransactionIndex());
+  if(k != 0) {
+    emit transactionSelected(k->splitById(k->splitId()).accountId(), k->id());
+    hide();
+  }
+}
+
+void KFindTransactionDlg::slotNextTransaction(void)
+{
+  if(static_cast<unsigned> (m_register->currentTransactionIndex() + 1) <= m_transactionPtrVector.count()) {
+    m_register->setCurrentTransactionIndex(m_register->currentTransactionIndex()+1);
+    m_register->ensureTransactionVisible();
+    m_register->repaintContents(false);
+  }
+}
+
+void KFindTransactionDlg::slotPreviousTransaction(void)
+{
+  if(m_register->currentTransactionIndex() > 0) {
+    m_register->setCurrentTransactionIndex(m_register->currentTransactionIndex()-1);
+    m_register->ensureTransactionVisible();
+    m_register->repaintContents(false);
+  }
 }
