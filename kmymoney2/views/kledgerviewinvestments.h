@@ -29,6 +29,7 @@
 #include <qtabbar.h>
 #include <qtabwidget.h>
 #include <qsignalmapper.h>
+#include <qmap.h>
 
 class QLabel;
 
@@ -83,7 +84,9 @@ protected:
     Shares,
     Price,
     Fees,
-    Total
+    Total,
+    FeeCategory,
+    CashAccount
   };
 
 public slots:
@@ -191,6 +194,8 @@ protected:
 
   void updateValues(int field);
 
+  bool setupPrice(MyMoneySplit& split);
+
 private:
   /**
     * This method loads the data of the current transaction into the
@@ -266,6 +271,8 @@ private:
   MyMoneySecurity m_security;
 
   QSignalMapper   m_editMapper;
+
+  QMap<QCString, MyMoneyMoney> m_priceInfo;
 };
 
 #endif

@@ -45,6 +45,7 @@
 
 #include "../dialogs/knewaccountdlg.h"
 #include "../dialogs/knewequityentrydlg.h"
+#include "../dialogs/kcurrencycalculator.h"
 
 #include "../widgets/kmymoneyregisterinvestment.h"
 #include "../widgets/kmymoneytransactionform.h"
@@ -927,13 +928,13 @@ void KLedgerViewInvestments::createEditWidgets()
     typeList << MyMoneyAccount::AssetLoan;
     m_editCashAccount->loadList(typeList);
 
-    m_editMapper.setMapping(m_editCashAccount, None);
+    m_editMapper.setMapping(m_editCashAccount, CashAccount);
     connect(m_editCashAccount, SIGNAL(accountSelected(const QCString&)), &m_editMapper, SLOT(map()));
   }
 
   if(!m_editFeeCategory) {
     m_editFeeCategory = new kMyMoneyCategory(0, "editFeeCategory", KMyMoneyUtils::expense);
-    m_editMapper.setMapping(m_editFeeCategory, None);
+    m_editMapper.setMapping(m_editFeeCategory, FeeCategory);
     connect(m_editFeeCategory, SIGNAL(categoryChanged(const QCString&)), &m_editMapper, SLOT(map()));
   }
 }
@@ -1281,6 +1282,7 @@ void KLedgerViewInvestments::slotEndEdit()
 
   // grab the source account id for this transaction
   QCString accountId = m_editCashAccount->selectedAccounts().first();
+  QCString stockId = m_editStockAccount->selectedAccounts().first();
 
   //determine the transaction type
   int currentAction = m_editType->currentItem();
@@ -1292,6 +1294,13 @@ void KLedgerViewInvestments::slotEndEdit()
   MyMoneyMoney total, fees, interest, shares, value;
   bool transactionContainsPriceInfo = false;
 
+  MyMoneyAccount stockAccount = file->account(stockId);
+  QCString securityId = stockAccount.currencyId();
+  MyMoneySecurity security = file->security(securityId);
+
+  m_transaction.setCommodity(security.tradingCurrency());
+
+  m_priceInfo.clear();
   switch(currentAction) {
     case BuyShares:
     case SellShares:
@@ -1309,7 +1318,7 @@ void KLedgerViewInvestments::slotEndEdit()
       m_split.setValue(value);
       m_split.setShares(shares);
       m_split.setMemo(m_editMemo->text());
-      m_split.setAccountId(m_editStockAccount->selectedAccounts().first());
+      m_split.setAccountId(stockId);
       m_split.setId(QCString());
 
       //set up the fee split now
@@ -1326,10 +1335,20 @@ void KLedgerViewInvestments::slotEndEdit()
       m_accountSplit.setMemo(m_editMemo->text());
       m_accountSplit.setId(QCString());
 
+      // check for possible conversion rate and continue to edit
+      // if user cancelled
+      if(!setupPrice(m_accountSplit))
+        return;
+
       m_transaction.addSplit(m_accountSplit);
       m_transaction.addSplit(m_split);
-      if(!m_feeSplit.value().isZero())
+      if(!m_feeSplit.value().isZero()) {
+        // check for possible conversion rate and continue to edit
+        // if user cancelled
+        if(!setupPrice(m_feeSplit))
+          return;
         m_transaction.addSplit(m_feeSplit);
+      }
       transactionContainsPriceInfo = true;
       break;
 
@@ -1344,7 +1363,7 @@ void KLedgerViewInvestments::slotEndEdit()
       m_split.setValue(value);
       m_split.setShares(shares);
       m_split.setMemo(m_editMemo->text());
-      m_split.setAccountId(m_editStockAccount->selectedAccounts().first());
+      m_split.setAccountId(stockId);
       m_split.setId(QCString());
 
       //set up the fee split now
@@ -1360,13 +1379,22 @@ void KLedgerViewInvestments::slotEndEdit()
       m_interestSplit.setShares(total);
       m_interestSplit.setMemo(m_editMemo->text());
       m_interestSplit.setId(QCString());
+      // check for possible conversion rate and continue to edit
+      // if user cancelled
+      if(!setupPrice(m_interestSplit))
+        return;
 
       // the stock account split should be the first one here
       // because we look at it's action() in preloadInvestmentSplits()
       m_transaction.addSplit(m_split);
       m_transaction.addSplit(m_interestSplit);
-      if(!m_feeSplit.value().isZero())
+      if(!m_feeSplit.value().isZero()) {
+        // check for possible conversion rate and continue to edit
+        // if user cancelled
+        if(!setupPrice(m_feeSplit))
+          return;
         m_transaction.addSplit(m_feeSplit);
+      }
       transactionContainsPriceInfo = true;
       break;
 
@@ -1381,7 +1409,7 @@ void KLedgerViewInvestments::slotEndEdit()
       m_split.setValue(0);
       m_split.setShares(0);
       m_split.setMemo(m_editMemo->text());
-      m_split.setAccountId(m_editStockAccount->selectedAccounts().first());
+      m_split.setAccountId(stockId);
       m_split.setId(QCString());
 
       //set up the interest split now (attention: uses fee widgets)
@@ -1397,11 +1425,20 @@ void KLedgerViewInvestments::slotEndEdit()
       m_accountSplit.setShares(-interest);
       m_accountSplit.setMemo(m_editMemo->text());
       m_accountSplit.setId(QCString());
+      // check for possible conversion rate and continue to edit
+      // if user cancelled
+      if(!setupPrice(m_accountSplit))
+        return;
 
       m_transaction.addSplit(m_accountSplit);
       m_transaction.addSplit(m_split);
-      if(!m_interestSplit.value().isZero())
+      if(!m_interestSplit.value().isZero()) {
+        // check for possible conversion rate and continue to edit
+        // if user cancelled
+        if(!setupPrice(m_interestSplit))
+          return;
         m_transaction.addSplit(m_interestSplit);
+      }
       break;
 
     case AddShares:
@@ -1415,7 +1452,7 @@ void KLedgerViewInvestments::slotEndEdit()
       m_split.setValue(0);
       m_split.setShares(shares);
       m_split.setMemo(m_editMemo->text());
-      m_split.setAccountId(m_editStockAccount->selectedAccounts().first());
+      m_split.setAccountId(stockId);
       m_split.setId(QCString());
 
       m_transaction.addSplit(m_split);
@@ -1704,7 +1741,7 @@ void KLedgerViewInvestments::updateValues(int field)
   }
 
   switch(calcField) {
-    case None:
+    default:
       break;
 
     case Shares:
@@ -1786,6 +1823,33 @@ const bool KLedgerViewInvestments::slotDataChanged(int field)
     ok = false;
   }
 
+  // if there is a difference in securities of the cash account, fee/interest
+  // category and the security of the stock then we tell the user that all
+  // values will be treated in the security of the stock.
+  QCString id;
+  QString fieldName;
+  switch(field) {
+    case CashAccount:
+      id = m_editCashAccount->selectedAccounts().first();
+      fieldName = i18n("account");
+      break;
+    case FeeCategory:
+      id = m_editFeeCategory->selectedAccountId();
+      fieldName = i18n("catgory");
+      break;
+
+    default:
+      break;
+  }
+
+  if(!id.isEmpty()) {
+    MyMoneyAccount acc = MyMoneyFile::instance()->account(id);
+    if(acc.currencyId() != m_security.tradingCurrency()) {
+      MyMoneySecurity currency = MyMoneyFile::instance()->security(m_security.tradingCurrency());
+      KMessageBox::information(this, QString("<p>")+i18n("The %1 <b>%2</b> uses a different security than the selected stock. Please make sure to enter all values in <b>%2</b>. When you later save the transaction you will have the chance to enter the necessary conversion rates.").arg(fieldName).arg(acc.name()).arg(currency.name()), i18n("Stock security"), "StockDifferentSecurityWarning");
+    }
+  }
+
   switch(m_editType->currentItem()) {
     case BuyShares:
     case SellShares:
@@ -1853,4 +1917,52 @@ KMyMoneyTransaction* KLedgerViewInvestments::transaction(const int idx) const
 bool KLedgerViewInvestments::eventFilter( QObject *o, QEvent *e )
 {
   return KLedgerView::eventFilter(o, e);
+}
+
+bool KLedgerViewInvestments::setupPrice(MyMoneySplit& split)
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
+  MyMoneyAccount acc = MyMoneyFile::instance()->account(split.accountId());
+  if(acc.currencyId() != m_security.tradingCurrency()) {
+    MyMoneySecurity toCurrency(file->currency(acc.currencyId()));
+    int fract = toCurrency.smallestAccountFraction();
+    if(acc.accountType() == MyMoneyAccount::Cash)
+      fract = toCurrency.smallestCashFraction();
+
+    QMap<QCString, MyMoneyMoney>::Iterator it_p;
+    QCString key = m_transaction.commodity() + "-" + acc.currencyId();
+    it_p = m_priceInfo.find(key);
+
+    // if it's not found, then collect it from the user first
+    MyMoneyMoney price;
+    if(it_p == m_priceInfo.end()) {
+      MyMoneySecurity fromCurrency = file->security(m_security.tradingCurrency());
+      MyMoneyMoney fromValue, toValue;
+
+      fromValue = split.value();
+      MyMoneyPrice priceInfo = file->price(fromCurrency.id(), toCurrency.id());
+      toValue = split.value() * priceInfo.rate();
+
+      KCurrencyCalculator calc(fromCurrency,
+                                toCurrency,
+                                fromValue,
+                                toValue,
+                                m_transaction.postDate(),
+                                fract,
+                                this, "currencyCalculator");
+
+      if(calc.exec() == QDialog::Rejected) {
+        return false;
+      }
+      price = calc.price();
+      m_priceInfo[key] = price;
+    } else {
+      price = (*it_p);
+    }
+
+    // update shares if the transaction commodity is the currency
+    // of the current selected account
+    split.setShares((split.value() * price).convert(fract));
+  }
+  return true;
 }
