@@ -36,13 +36,16 @@
 MyMoneyTransactionFilter::MyMoneyTransactionFilter()
 {
   m_filterSet.allFilter = 0;
+  m_reportAllSplits = true;
 }
 
 MyMoneyTransactionFilter::MyMoneyTransactionFilter(const QCString& id)
 {
   m_filterSet.allFilter = 0;
+  m_reportAllSplits = false;
+  
   addAccount(id);
-  addCategory(id);
+  // addCategory(id);
 }
 
 MyMoneyTransactionFilter::~MyMoneyTransactionFilter()
@@ -69,6 +72,8 @@ void MyMoneyTransactionFilter::setTextFilter(const QRegExp& text)
 void MyMoneyTransactionFilter::addAccount(const QCStringList& ids)
 {
   QCStringList::ConstIterator it;
+  
+  m_filterSet.singleFilter.accountFilter = 1;
   for(it = ids.begin(); it != ids.end(); ++it)
     addAccount(*it);  
 }
@@ -90,6 +95,8 @@ void MyMoneyTransactionFilter::addAccount(const QCString& id)
 void MyMoneyTransactionFilter::addCategory(const QCStringList& ids)
 {
   QCStringList::ConstIterator it;
+  
+  m_filterSet.singleFilter.categoryFilter = 1;
   for(it = ids.begin(); it != ids.end(); ++it)
     addCategory(*it);  
 }
@@ -174,6 +181,16 @@ void MyMoneyTransactionFilter::setNumberFilter(const QString& from, const QStrin
   m_toNr = to;
 }
 
+void MyMoneyTransactionFilter::setReportAllSplits(const bool report)
+{
+  m_reportAllSplits = report;  
+}
+
+const QValueList<MyMoneySplit> MyMoneyTransactionFilter::matchingSplits(void) const
+{
+  return m_matchingSplits;
+}
+
 const bool MyMoneyTransactionFilter::match(const MyMoneyTransaction& transaction, const IMyMoneyStorage* const storage)
 {
   QValueList<MyMoneySplit>::Iterator it;
@@ -204,40 +221,62 @@ const bool MyMoneyTransactionFilter::match(const MyMoneyTransaction& transaction
   // remove all the splits that do not match account and/or categories.
   m_matchingSplits = transaction.splits();
 
+  bool categoryMatched = !m_filterSet.singleFilter.categoryFilter;
+  bool accountMatched = !m_filterSet.singleFilter.accountFilter;
+  bool isTransfer = true;
+  
   if(m_filterSet.singleFilter.accountFilter == 1
   || m_filterSet.singleFilter.categoryFilter == 1) {
     for(it = m_matchingSplits.begin(); it != m_matchingSplits.end(); ) {
       bool removeSplit = true;
       MyMoneyAccount acc = storage->account((*it).accountId());
-      switch(acc.accountGroup()) {
-        case MyMoneyAccount::Income:
-        case MyMoneyAccount::Expense:
-          // check if the split references one of the categories in the list
-          if(m_filterSet.singleFilter.categoryFilter) {
-            if(m_categories.count() > 0) {
-              if(m_categories.find((*it).accountId())) {
-                removeSplit = false;
+      if(m_reportAllSplits) {
+        switch(acc.accountGroup()) {
+          case MyMoneyAccount::Income:
+          case MyMoneyAccount::Expense:
+            isTransfer = false;
+            // check if the split references one of the categories in the list
+            if(m_filterSet.singleFilter.categoryFilter) {
+              if(m_categories.count() > 0) {
+                if(m_categories.find((*it).accountId())) {
+                  categoryMatched = true;
+                  removeSplit = false;
+                }
+              } else {
+                // we're looking for transactions with 'no' categories
+                return false;
               }
-            } else {
-              // we're looking for transactions with 'no' categories
-              return false;
+            }
+            break;
+
+          default:
+            // check if the split references one of the accounts in the list
+            if(m_filterSet.singleFilter.accountFilter) {
+              if(m_accounts.count() > 0) {
+                if(m_accounts.find((*it).accountId())) {
+                  accountMatched = true;
+                  removeSplit = false;
+                }
+              }
+            } else
+              removeSplit = false;
+
+            break;
+        }
+        
+      } else {
+        if(m_filterSet.singleFilter.accountFilter) {
+          if(m_accounts.count() > 0) {
+            if(m_accounts.find((*it).accountId())) {
+              accountMatched = true;
+              removeSplit = false;
             }
           }
-          break;
+        } else
+          removeSplit = false;
           
-        default:
-          // check if the split references one of the accounts in the list
-          if(m_filterSet.singleFilter.accountFilter) {
-            if(m_accounts.count() > 0) {
-              if(m_accounts.find((*it).accountId())) {
-                removeSplit = false;
-              }
-            }
-          } else
-            removeSplit = false;
-
-          break;
       }
+      
       if(removeSplit) {
         // qDebug(" S: %s", (*it).id().data());
         it = m_matchingSplits.remove(it);
@@ -247,7 +286,14 @@ const bool MyMoneyTransactionFilter::match(const MyMoneyTransaction& transaction
     }
   }
 
-  if(m_matchingSplits.count() == 0)
+  // if there's no category filter and the category did not
+  // match, then we still want to see this transaction if it's
+  // a transfer
+  if(!categoryMatched && !m_filterSet.singleFilter.categoryFilter)
+    categoryMatched = isTransfer;
+    
+  if(m_matchingSplits.count() == 0
+  || !(accountMatched && categoryMatched))
     return false;
 
   FilterSet filterSet = m_filterSet;
@@ -351,7 +397,11 @@ const bool MyMoneyTransactionFilter::match(const MyMoneyTransaction& transaction
       }
     }
   }
-      
+
+  if(m_reportAllSplits == false && m_matchingSplits.count() != 0) {
+    m_matchingSplits.clear();
+    m_matchingSplits.append(transaction.splits()[0]);
+  }
   // all filters passed, I guess we have a match
   // qDebug("  C: %d", m_matchingSplits.count());
   return m_matchingSplits.count() != 0;

@@ -895,7 +895,15 @@ const MyMoneyTransaction& MyMoneySeqAccessMgr::transaction(const QCString& accou
 
   // new implementation if the above code does not work anymore
   QValueList<MyMoneyTransaction> list;
-  MyMoneyTransactionFilter filter(account);
+  MyMoneyAccount acc = m_accountList[account];
+  MyMoneyTransactionFilter filter;
+
+  if(acc.accountGroup() == MyMoneyAccount::Income
+  || acc.accountGroup() == MyMoneyAccount::Expense)
+    filter.addCategory(account);
+  else
+    filter.addAccount(account);
+    
   list = transactionList(filter);
   if(idx < 0 || idx >= static_cast<int> (list.count()))
     throw new MYMONEYEXCEPTION("Unknown idx for transaction");
@@ -1151,7 +1159,7 @@ void MyMoneySeqAccessMgr::addSchedule(MyMoneySchedule& sched)
     throw new MYMONEYEXCEPTION("schedule already contains an id");
 
   // The following will throw an exception when it fails
-  sched.validate(true);
+  sched.validate(false);
 
   sched.setId(nextScheduleID());
 

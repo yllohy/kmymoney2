@@ -206,7 +206,22 @@ public:
   const bool match(const MyMoneyTransaction& transaction, const IMyMoneyStorage* const storage);
 
   /**
-    * This method returns the id of the first matching split for the filter.
+    * This method is used to switch the amount of splits reported
+    * by matchingSplits(). If the argument @p report is @p true (the default
+    * if no argument specified) then matchingSplits() will return all
+    * matching splits of the transaction. If @p report is set to @p false,
+    * then only the very first matching split will be returned by
+    * matchingSplits().
+    *
+    * @param report controls the behaviour of matchingsSplits() as explained above.
+    */
+  void setReportAllSplits(const bool report = true);
+  
+  /**
+    * This method returns the id of the matching splits for the filter.
+    * If m_reportAllSplits is set to false, then only the very first
+    * split will be returned. Use setReportAllSplits() to change the
+    * behaviour.
     *
     * @return reference to QCString object containing the id of the
     *         matching split. If multiple split match, only the first
@@ -215,8 +230,12 @@ public:
     * @note an empty id will be returned, if the filter only required
     *       to check the data contained in the MyMoneyTransaction
     *       object (e.g. posting-date, state, etc.).
+    *
+    * @note The constructors set m_reportAllSplits differently. Please
+    *       see the documentation of the constructors MyMoneyTransactionFilter()
+    *       and MyMoneyTransactionFilter(const QCString&) for details.
     */
-  const QValueList<MyMoneySplit> matchingSplits(void) const { return m_matchingSplits; };
+  const QValueList<MyMoneySplit> matchingSplits(void) const;
   
 private:
   /**
@@ -254,6 +273,7 @@ private:
       unsigned stateFilter      : 1;
     } singleFilter;
   }                   m_filterSet;
+  bool                m_reportAllSplits;
   
   QRegExp             m_text;
   QAsciiDict<char>    m_accounts;
