@@ -329,6 +329,7 @@ void KMyMoney2App::slotFileNew()
 
 // General open
 void KMyMoney2App::slotFileOpen()
+
 {
   QString prevMsg = slotStatusMsg(i18n("Open a document."));
 
@@ -684,9 +685,6 @@ void KMyMoney2App::slotQifExport()
 
   KExportDlg* dlg = new KExportDlg(0);
 
-  connect(dlg, SIGNAL(profileEditorSelected(void)), this, SLOT(slotQifProfileEditor(void)));
-  connect(this, SIGNAL(qifProfileSelected(const QString&)), dlg, SLOT(slotSelectProfile(const QString&)));
-  
   if(dlg->exec()) {
     MyMoneyQifWriter writer;
     connect(&writer, SIGNAL(signalProgress(const int, const int)), this, SLOT(slotStatusProgressBar(const int, const int)));
@@ -711,6 +709,7 @@ void KMyMoney2App::slotSettings()
     myMoneyView->slotRefreshViews();
 
   }
+
 }
 
 /** Init wizard dialog */
