@@ -44,9 +44,9 @@ class QIODevice;
 class IMyMoneyStorageFormat;
 
 class MyMoneyStorageBin : public IMyMoneyStorageFormat {
-public: 
-	MyMoneyStorageBin();
-	~MyMoneyStorageBin();
+public:
+  MyMoneyStorageBin();
+  ~MyMoneyStorageBin();
 
   //enum fileVersionDirectionType {
   //  Reading = 0,          /**< version of file to be read */
@@ -120,11 +120,12 @@ private:
   const QMap<QCString, QString> readKeyValueContainer(QDataStream& s) const;
 
   /**
-    * This is a helper method to extract the numeric value from an @p id.
+    * This is a helper method to extract the numeric value from an internal
+    * id given in @p txt.
     * Id's inside the MyMoneySeqAccessMgr object are formatted using a
     * non-numeric leadin of 1 or more characters and a numeric value.
     *
-    * @param id const reference to QCString containing the id
+    * @param txt const reference to QCString containing the id
     * @return numeric value of the id as unsigned long
     */
   const unsigned long extractId(const QCString& txt) const;

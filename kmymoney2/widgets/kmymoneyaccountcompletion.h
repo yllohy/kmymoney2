@@ -70,15 +70,12 @@ public:
 
   /**
     * This method loads the set of accounts into the widget
-    * as defined by the parameter @p typeMask. @p typeMask is
-    * a bit mask. See KMyMoneyUtils::categoryTypeE for
-    * possible values.
+    * as defined by the parameter @p typeList. @p typeList is
+    * a list of ints representing different account types.
+    * See MyMoneyAccount::accountTypeE for possible values.
     *
-    * If multiple sets should be displayed, several KMyMoneyUtils::categoryTypeE values
-    * can be logically OR-ed.
+    * @param typeList QValueList conatining the account types to be displayed
     *
-    * @param typeMask bitmask defining which types of accounts
-    *                 should be loaded into the completion list
     * @return This method returns the number of accounts loaded into the list
     */
   const int loadList(QValueList<int> typeList);

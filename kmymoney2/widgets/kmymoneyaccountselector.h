@@ -262,9 +262,9 @@ public:
   /**
     * This method selects/deselects all items that
     * are currently in this object's account list AND are present in the supplied
-    * @p list of accounts to select, according to the @p state.
+    * @p accountlist of accounts to select, according to the @p state.
     *
-    * @param list list of accounts to apply @p state to
+    * @param accountlist list of accounts to apply @p state to
     * @param state select items if @p true, deselect otherwise
     */
   void selectAccounts(const QCStringList& accountlist, const bool state);

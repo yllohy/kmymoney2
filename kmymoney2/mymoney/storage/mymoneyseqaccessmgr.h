@@ -646,7 +646,7 @@ public:
     *
     * An exception will be thrown upon error conditions.
     *
-    * @param account MyMoneySecurity filled with data
+    * @param security MyMoneySecurity filled with data
     */
   virtual void addSecurity(MyMoneySecurity& security);
 
@@ -854,7 +854,7 @@ public:
     * @param id QCString containing the id of the MyMoneyReport object
     * @return MyMoneyReport object
     */
-  MyMoneyReport report( const QCString& _id ) const;
+  MyMoneyReport report( const QCString& id ) const;
 
   /**
     * This method is used to remove an existing MyMoneyReport object

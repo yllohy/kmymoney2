@@ -93,7 +93,7 @@ public:
     * This method is used to convert a security type from it's
     * string form to the internal used numeric value.
     *
-    * @param type reference to a QString containing the string to convert
+    * @param txt reference to a QString containing the string to convert
     * @return eSECURITYTYPE containing the internal used numeric value. For possible
     *         values see MyMoneySecurity::eSECURITYTYPE
     */

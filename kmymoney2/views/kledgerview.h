@@ -534,7 +534,7 @@ public slots:
     * Called when the category field has been changed.
     * m_transaction and m_split will be updated accordingly.
     *
-    * @param category const reference to the id of the category
+    * @param categoryId const reference to the id of the category
     */
   virtual void slotCategoryChanged(const QCString& categoryId);
 

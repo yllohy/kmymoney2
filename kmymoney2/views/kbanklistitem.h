@@ -74,7 +74,7 @@ public:
   /**
     * This method allows to set the account type.
     *
-    * @param id account id to be stored in m_accountID;
+    * @param type accountTypeE to be stored in m_accountType
     */
   void setAccountType(const MyMoneyAccount::accountTypeE type) { m_accountType = type; }
 

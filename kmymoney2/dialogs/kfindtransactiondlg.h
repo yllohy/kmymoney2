@@ -117,7 +117,7 @@ public:
     *       is not shown in the find transaction dialog but the method
     *       must be provided as part of the IMyMoneyRegisterParent interface.
     */
-  const MyMoneyMoney balance(const int /*idx*/) const { return 0; };
+  const MyMoneyMoney balance(const int idx) const { return 0; };
 
   /**
     * This method is called by the engine whenever a required notification

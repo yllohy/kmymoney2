@@ -143,8 +143,8 @@ public:
   /**
     * This method is used to clear the accounts filter only.
     */
-  void clearAccountFilter(void);  
-  
+  void clearAccountFilter(void);
+
   /**
     * This method is used to set the regular expression filter to the value specified
     * as parameter @p exp. The following text based fields are searched:
@@ -199,7 +199,7 @@ public:
   void setDateFilter(const QDate& from, const QDate& to);
 
   void setDateFilter(unsigned range);
-  
+
   /**
     * This method sets the amount filter to match only transactions with
     * an amount in the range specified by @p from and @p to.
@@ -346,34 +346,34 @@ public:
 
   /**
     * This method is used to return information about the
-    * presence of a date filter.  
+    * presence of a date filter.
     *
     * @param from result value for the beginning of the date range
     * @param to result value for the end of the date range
     * @return true if an amount filter is set
     */
   const bool dateFilter( QDate& from, QDate& to ) const;
-  
+
   /**
     * This method is used to return information about the
-    * presence of an amount filter.  
+    * presence of an amount filter.
     *
     * @param from result value for the low end of the amount range
     * @param to result value for the high end of the amount range
     * @return true if an amount filter is set
     */
   const bool amountFilter( MyMoneyMoney& from, MyMoneyMoney& to ) const;
-  
+
   /**
     * This method is used to return information about the
-    * presence of an number filter.  
+    * presence of an number filter.
     *
     * @param from result value for the low end of the number range
     * @param to result value for the high end of the number range
     * @return true if a number filter is set
     */
   const bool numberFilter( QString& from, QString& to ) const;
-  
+
   /**
     * This method returns whether a payee filter has been set,
     * and if so, it returns all the payees set in the filter.
@@ -382,7 +382,7 @@ public:
     * @return return true if a payee filter has been set
     */
   const bool payees(QCStringList& list) const;
-  
+
   /**
     * This method returns whether an account filter has been set,
     * and if so, it returns all the accounts set in the filter.
@@ -391,7 +391,7 @@ public:
     * @return return true if an account filter has been set
     */
   const bool accounts(QCStringList& list) const;
-  
+
   /**
     * This method returns whether a category filter has been set,
     * and if so, it returns all the categories set in the filter.
@@ -400,7 +400,7 @@ public:
     * @return return true if a category filter has been set
     */
   const bool categories(QCStringList& list) const;
-  
+
   /**
     * This method returns whether a type filter has been set,
     * and if so, it returns the first type in the filter.
@@ -409,18 +409,18 @@ public:
     * @return return true if a type filter has been set
     */
   const bool firstType(int& i) const;
- 
+
   const bool types(QValueList<int>& list) const;
-  
+
   /**
     * This method returns whether a state filter has been set,
     * and if so, it returns the first state in the filter.
     *
-    * @param int int to replace with first state filter, untouched otherwise
+    * @param i reference to int to replace with first state filter, untouched otherwise
     * @return return true if a state filter has been set
     */
   const bool firstState(int& i) const;
-  
+
   const bool states(QValueList<int>& list) const;
   /**
     * This method returns whether a text filter has been set,
@@ -430,7 +430,7 @@ public:
     * @return return true if a text filter has been set
     */
   const bool textFilter(QRegExp& text) const;
-  
+
   /**
     * This method translates a plain-language date range into QDate
     * start & end
@@ -441,7 +441,7 @@ public:
     * @return return true if a range was successfully set, or false if @p range was invalid
     */
   static const bool translateDateRange(int range, QDate& start, QDate& end);
-  
+
 private:
   /**
     * This is a conversion tool from MyMoneySplit::reconcileFlagE
