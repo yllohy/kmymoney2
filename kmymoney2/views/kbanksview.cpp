@@ -28,7 +28,6 @@ KAccountsView::KAccountsView(QWidget *parent, const char *name)
 	accountListView->setRootIsDecorated(true);
 	accountListView->setAllColumnsShowFocus(true);
 	accountListView->addColumn(i18n("Account"));
-	accountListView->addColumn(i18n("Col2"));
 	//accountListView->addColumn(i18n("Type"));
 	//accountListView->addColumn(i18n("Balance"));
 	accountListView->setMultiSelection(false);
@@ -50,7 +49,7 @@ KAccountsView::KAccountsView(QWidget *parent, const char *name)
   m_bSignals=true;
 
   // never show a horizontal scroll bar
-  accountListView->setHScrollBarMode(QScrollView::AlwaysOff);
+  //accountListView->setHScrollBarMode(QScrollView::AlwaysOff);
 }
 
 KAccountsView::~KAccountsView()

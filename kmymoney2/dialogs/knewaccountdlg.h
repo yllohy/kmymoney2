@@ -27,6 +27,8 @@
 #include "../widgets/kmymoneydateinput.h"
 
 #include "knewaccountdlgdecl.h"
+#include "../views/kbanklistitem.h"
+#include <qcstring.h>
 
 // This dialog lets you create/edit an account.
 // Use the second constructor to edit an account.
@@ -38,11 +40,17 @@ private:
   MyMoneyAccount m_parentAccount;
   MyMoneyFile *m_file;
 
+  void initParentWidget();
+  void showSubAccounts(QCStringList accounts, KAccountListItem *parentItem, MyMoneyFile *file);
+
 public:
 	KNewAccountDlg(MyMoneyAccount& account, MyMoneyFile* file, QWidget *parent=0, const char *name=0, const char *title=0);
 	~KNewAccountDlg();
   MyMoneyAccount account(void);
-  MyMoneyAccount parentAccount(void);
+  const MyMoneyAccount parentAccount(void);
+
+protected:
+  void resizeEvent(QResizeEvent* e);
 
 protected slots:
   void okClicked();

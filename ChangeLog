@@ -3,6 +3,8 @@
   * You can now read a file into KMyMoney2 again.
   * Using MyMoneyStorageDump we can now dump the file by
     choosing the menu option File|Info.
+  * You can now add institutions, (but not see them).
+  * You can also add accounts, (in a limited fashion).
 
 2002-06-04 Michael Edwardes <mte@users.sourceforge.net>
   * Made some of the accounts view work with the new engine.

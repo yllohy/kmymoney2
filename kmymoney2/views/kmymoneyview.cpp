@@ -395,28 +395,30 @@ void KMyMoneyView::slotAccountNew(void)
   if (!fileOpen())
     return;
 
-  try
+  MyMoneyAccount account;
+
+  KNewAccountDlg dialog(account, m_file, this, "hi", i18n("Create a new Account"));
+
+  if (dialog.exec())
   {
-    MyMoneyAccount account;
-
-    KNewAccountDlg dialog(account, m_file, this, "hi", i18n("Create a new Account"));
-
-    if (dialog.exec())
+    // The dialog doesn't check the parent.
+    // An exception will be thrown on the next line instead.
+    try
     {
-      // The dialog doesn't check the parent.
-      // An exception will be thrown on the next line instead.
       MyMoneyAccount newAccount = dialog.account();
       MyMoneyAccount parentAccount = dialog.parentAccount();
       m_file->addAccount(newAccount, parentAccount);
       accountsView->refresh(m_file, "");
       viewAccountList(newAccount.id());
     }
-  }
-  catch (MyMoneyException *e)
-  {
-    KMessageBox::information(this, "Unable to add account.");
-    delete e;
-    return;
+    catch (MyMoneyException *e)
+    {
+      QString message("Unable to add account: ");
+      message += e->what();
+      KMessageBox::information(this, message);
+      delete e;
+      return;
+    }
   }
 }
 
@@ -794,6 +796,7 @@ void KMyMoneyView::newFile(void)
     delete e;
 	}
 */
+    accountsView->refresh(m_file, "");
   }
 }
 
