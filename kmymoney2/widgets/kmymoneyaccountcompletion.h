@@ -71,9 +71,11 @@ public:
     *
     * @param typeMask bitmask defining which types of accounts
     *                 should be loaded into the completion list
-    *
+    * @return This method returns the number of accounts loaded into the list
     */
-  void loadList(KMyMoneyUtils::categoryTypeE typeMask) { m_accountSelector->loadList(typeMask); };
+  int loadList(KMyMoneyUtils::categoryTypeE typeMask) { m_accountType = typeMask; return m_accountSelector->loadList(typeMask); };
+
+  int loadList(void) { return loadList(m_accountType); };
 
   /**
     * This method sets the current account with id @p id as
@@ -82,6 +84,8 @@ public:
     * @param id id of account to be selected
     */
   void setSelected(const QCString& id) { m_id = id; };
+
+  const QCStringList accountList(void) const { return m_accountSelector->accountList(); };
 
 public slots:
   void slotMakeCompletion(const QString& txt);
@@ -107,6 +111,7 @@ private:
   QWidget*                    m_parent;
   kMyMoneyAccountSelector*    m_accountSelector;
   QCString                    m_id;
+  KMyMoneyUtils::categoryTypeE  m_accountType;
 };
 
 #endif

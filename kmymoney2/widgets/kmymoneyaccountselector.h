@@ -75,10 +75,10 @@ public:
     * see KListViewItem::isAlternate()
     */
   bool isAlternate(void);
-  
+
 signals:
   void stateChanged(bool);
-  
+
 protected:
   virtual void stateChange(bool);
 
@@ -136,7 +136,7 @@ private:
 class kMyMoneyAccountSelector : public QWidget, public MyMoneyObserver
 {
   Q_OBJECT
-public: 
+public:
   kMyMoneyAccountSelector(QWidget *parent=0, const char *name=0, QWidget::WFlags flags = 0, const bool createButtons = true);
   ~kMyMoneyAccountSelector();
 
@@ -149,7 +149,7 @@ public:
     *
     * @note This method must be called prior to loadList(). When the
     *       widget is created, it defaults to QListView::Single.
-    *       
+    *
     */
   void setSelectionMode(const QListView::SelectionMode mode);
 
@@ -168,9 +168,9 @@ public:
     *
     * @param typeMask bitmask defining which types of accounts
     *                 should be loaded into the widget
-    *
+    * @return This method returns the number of accounts loaded into the list
     */
-  void loadList(KMyMoneyUtils::categoryTypeE typeMask);
+  const int loadList(KMyMoneyUtils::categoryTypeE typeMask);
 
   /**
     * This method returns the list of selected account id's. If
@@ -212,6 +212,14 @@ public:
 
   KListView* listView(void) const { return m_listView; };
 
+  /**
+    * This method returns a list of account ids of those accounts
+    * currently loaded into the widget.
+    *
+    * @return QCStringList of account ids
+    */
+  const QCStringList accountList(void) const;
+
 public slots:
   /**
     * This slot selects all items that are currently in
@@ -235,23 +243,23 @@ public slots:
 
 signals:
   void stateChanged(void);
-  
+
 protected:
   /**
     * Helper method for setSelected() to traverse the tree.
     */
   void setSelected(QListViewItem *item, const QCString& id, const bool state);
-  
+
   /**
     * Helper method for selectedAccounts() to traverse the tree.
     */
   void selectedAccounts(QCStringList& list, QListViewItem* item) const;
-  
+
   /**
     * Helper method for allAccountsSelected() to traverse the tree.
     */
   const bool allAccountsSelected(const QListViewItem *item) const;
-  
+
   /**
     * This method creates a new selectable object depending on the
     * selection mode. This is either a KListViewItem for single
@@ -267,8 +275,9 @@ protected:
     *
     * @param parent pointer to parent widget
     * @param list QCStringList containing the ids of all subaccounts to load
+    * @return This method returns the number of accounts loaded into the list
     */
-  void loadSubAccounts(QListViewItem* parent, const QCStringList& list);
+  const int loadSubAccounts(QListViewItem* parent, const QCStringList& list);
 
   /**
     * This method selects/deselects all items that
@@ -300,13 +309,13 @@ protected:
     * @sa slotShowSelected()
     */
   void ensureItemVisible(const QListViewItem *item);
-    
+
 protected slots:
   /**
     * This slot selects all income categories
-    */      
+    */
   void slotSelectIncomeCategories(void) { selectCategories(true, false); };
-  
+
   /**
     * This slot selects all expense categories
     */
@@ -320,7 +329,7 @@ protected slots:
     * @sa ensureItemVisible(), setSelected(const QCString&)
     */
   void slotShowSelected(void);
-    
+
 private:
   QListView::SelectionMode  m_selMode;
   KListView*                m_listView;

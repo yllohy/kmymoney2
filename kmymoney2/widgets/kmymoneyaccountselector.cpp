@@ -155,7 +155,7 @@ kMyMoneyAccountSelector::kMyMoneyAccountSelector(QWidget *parent, const char *na
 {
   QHBoxLayout*   layout;
   QVBoxLayout*   buttonLayout;
-  
+
   m_selMode = QListView::Single;
 
   m_listView = new KListView(this);
@@ -173,7 +173,7 @@ kMyMoneyAccountSelector::kMyMoneyAccountSelector(QWidget *parent, const char *na
   m_listView->header()->hide();
   m_listView->header()->setStretchEnabled(true, -1);
   m_listView->header()->adjustHeaderSize();
-  
+
   layout->addWidget( m_listView );
 
   if(createButtons) {
@@ -224,7 +224,7 @@ void kMyMoneyAccountSelector::setSelectionMode(const QListView::SelectionMode mo
   if(m_selMode != mode) {
     m_selMode = mode;
     m_listView->clear();
-    
+
     // make sure, it's either Multi or Single
     if(mode != QListView::Multi) {
       m_selMode = QListView::Single;
@@ -252,12 +252,12 @@ void kMyMoneyAccountSelector::setSelectionMode(const QListView::SelectionMode mo
 QListViewItem* kMyMoneyAccountSelector::newEntryFactory(QListViewItem* parent, const QString& name, const QCString& id)
 {
   QListViewItem* p;
-  
+
   if(m_selMode == QListView::Multi) {
     kMyMoneyCheckListItem* q = new kMyMoneyCheckListItem(parent, name, id);
     connect(q, SIGNAL(stateChanged(bool)), this, SIGNAL(stateChanged(void)));
     p = static_cast<QListViewItem*> (q);
-    
+
   } else {
     kMyMoneyListViewItem* q = new kMyMoneyListViewItem(parent, name, id);
     p = static_cast<QListViewItem*> (q);
@@ -266,11 +266,12 @@ QListViewItem* kMyMoneyAccountSelector::newEntryFactory(QListViewItem* parent, c
   return p;
 }
 
-void kMyMoneyAccountSelector::loadList(KMyMoneyUtils::categoryTypeE typeMask)
+const int kMyMoneyAccountSelector::loadList(KMyMoneyUtils::categoryTypeE typeMask)
 {
   QCStringList list;
   QCStringList::ConstIterator it_l;
   MyMoneyFile* file = MyMoneyFile::instance();
+  int count = 0;
 
   m_typeMask = typeMask;
   m_listView->clear();
@@ -279,19 +280,19 @@ void kMyMoneyAccountSelector::loadList(KMyMoneyUtils::categoryTypeE typeMask)
     m_incomeCategoriesButton->hide();
     m_expenseCategoriesButton->hide();
   }
-  
+
   for(int mask = 0x01; mask != KMyMoneyUtils::last; mask <<= 1) {
     kMyMoneyCheckListItem* item = 0;
     if(typeMask & mask & KMyMoneyUtils::asset) {
       item = new kMyMoneyCheckListItem(m_listView, i18n("Asset accounts"), QCString(), QCheckListItem::Controller);
       list = file->asset().accountList();
     }
-    
+
     if(typeMask & mask & KMyMoneyUtils::liability) {
       item = new kMyMoneyCheckListItem(m_listView, i18n("Liability accounts"), QCString(), QCheckListItem::Controller);
       list = file->liability().accountList();
     }
-    
+
     if(typeMask & mask & KMyMoneyUtils::income) {
       item = new kMyMoneyCheckListItem(m_listView, i18n("Income categories"), QCString(), QCheckListItem::Controller);
       list = file->income().accountList();
@@ -307,17 +308,18 @@ void kMyMoneyAccountSelector::loadList(KMyMoneyUtils::categoryTypeE typeMask)
         m_expenseCategoriesButton->show();
       }
     }
-  
+
     if(item != 0) {
       item->setSelectable(false);
       item->setOpen(true);
       // scan all matching accounts found in the engine
       for(it_l = list.begin(); it_l != list.end(); ++it_l) {
+        ++count;
         MyMoneyAccount acc = file->account(*it_l);
         QListViewItem* subItem = newEntryFactory(item, acc.name(), acc.id());
         if(acc.accountList().count() > 0) {
           subItem->setOpen(true);
-          loadSubAccounts(subItem, acc.accountList());
+          count += loadSubAccounts(subItem, acc.accountList());
         }
       }
     }
@@ -327,21 +329,25 @@ void kMyMoneyAccountSelector::loadList(KMyMoneyUtils::categoryTypeE typeMask)
     m_listView->clearSelection();
   }
   QWidget::update();
+  return count;
 }
 
-void kMyMoneyAccountSelector::loadSubAccounts(QListViewItem* parent, const QCStringList& list)
+const int kMyMoneyAccountSelector::loadSubAccounts(QListViewItem* parent, const QCStringList& list)
 {
   QCStringList::ConstIterator it_l;
   MyMoneyFile* file = MyMoneyFile::instance();
+  int count = 0;
 
   for(it_l = list.begin(); it_l != list.end(); ++it_l) {
+    ++count;
     MyMoneyAccount acc = file->account(*it_l);
     QListViewItem* item = newEntryFactory(parent, acc.name(), acc.id());
     if(acc.accountList().count() > 0) {
       item->setOpen(true);
-      loadSubAccounts(item, acc.accountList());
+      count += loadSubAccounts(item, acc.accountList());
     }
   }
+  return count;
 }
 
 const bool kMyMoneyAccountSelector::allAccountsSelected(void) const
@@ -350,7 +356,7 @@ const bool kMyMoneyAccountSelector::allAccountsSelected(void) const
 
   if(m_selMode == QListView::Single)
     return false;
-    
+
   for(it_v = m_listView->firstChild(); it_v != 0; it_v = it_v->nextSibling()) {
     if(it_v->rtti() == 1) {
       QCheckListItem* it_c = static_cast<QCheckListItem*>(it_v);
@@ -434,7 +440,7 @@ const QCStringList kMyMoneyAccountSelector::selectedAccounts(void) const
     kMyMoneyListViewItem* it_c = static_cast<kMyMoneyListViewItem*>(m_listView->selectedItem());
     if(it_c != 0)
       list << it_c->id();
-    
+
   } else {
     for(it_v = m_listView->firstChild(); it_v != 0; it_v = it_v->nextSibling()) {
       if(it_v->rtti() == 1) {
@@ -445,6 +451,36 @@ const QCStringList kMyMoneyAccountSelector::selectedAccounts(void) const
         }
         selectedAccounts(list, it_v);
       }
+    }
+  }
+  return list;
+}
+
+const QCStringList kMyMoneyAccountSelector::accountList(void) const
+{
+  QCStringList    list;
+  QListViewItemIterator it;
+  QListViewItem* it_v;
+
+#if QT_VERSION >= 0x030201
+  it = QListViewItemIterator(m_listView, QListViewItemIterator::Selectable);
+  while((it_v = it.current()) != 0) {
+    {
+#else
+  it = QListViewItemIterator(m_listView);
+  while((it_v = it.current()) != 0) {
+    if(it_v->isSelectable()) {
+#endif
+      if(it_v->rtti() == 1) {
+        kMyMoneyCheckListItem* it_c = static_cast<kMyMoneyCheckListItem*>(it_v);
+        if(it_c->type() == QCheckListItem::CheckBox) {
+          list << it_c->id();
+        }
+      } else if(it_v->rtti() == 0) {
+        kMyMoneyListViewItem* it_c = static_cast<kMyMoneyListViewItem*>(it_v);
+        list << it_c->id();
+      }
+      it++;
     }
   }
   return list;
@@ -496,7 +532,7 @@ void kMyMoneyAccountSelector::setSelected(const QCString& id, const bool state)
 void kMyMoneyAccountSelector::setSelected(QListViewItem* item, const QCString& id, const bool state)
 {
   QListViewItem* it_v;
-  
+
   for(it_v = item->firstChild(); it_v != 0; it_v = it_v->nextSibling()) {
     if(it_v->rtti() == 1) {
       kMyMoneyCheckListItem* it_c = static_cast<kMyMoneyCheckListItem*>(it_v);
@@ -527,7 +563,7 @@ void kMyMoneyAccountSelector::ensureItemVisible(const QListViewItem *it_v)
   // The solution was to store the item we wanted to see in a local var
   // and call QListView::ensureItemVisible() about 10ms later in
   // the slot slotShowSelected.  (ipwizard, 12/29/2003)
-  m_visibleItem = it_v;  
+  m_visibleItem = it_v;
   QTimer::singleShot(10, this, SLOT(slotShowSelected()));
 }
 
@@ -541,7 +577,7 @@ void kMyMoneyAccountSelector::update(const QCString& /* id */)
   QListViewItem* it_v = m_listView->currentItem();
   QCString previousHighlighted;
   bool state = false;
-  
+
   if(m_selMode == QListView::Multi && it_v) {
     if(it_v->rtti() == 1) {
       kMyMoneyCheckListItem* it_c = static_cast<kMyMoneyCheckListItem*>(it_v);
@@ -551,7 +587,7 @@ void kMyMoneyAccountSelector::update(const QCString& /* id */)
       }
     }
   }
-    
+
   QCStringList list = selectedAccounts();
   QCStringList::Iterator it;
 
@@ -634,7 +670,7 @@ int kMyMoneyAccountSelector::slotMakeCompletion(const QString& txt)
           }
         }
         ++it;
-        
+
       } else if(it_v->text(0).contains(txt, false) != 0) {
         // a node with children contains the text. We want
         // to display all child nodes in this case, so we need
@@ -651,7 +687,7 @@ int kMyMoneyAccountSelector::slotMakeCompletion(const QString& txt)
         do {
           ++it;
         } while(it.current() && it.current() != item);
-        
+
       } else {
         // It's a node with children that does not match. We don't
         // change it's status here.
@@ -660,7 +696,7 @@ int kMyMoneyAccountSelector::slotMakeCompletion(const QString& txt)
     }
   }
 
-  // Get the number of visible nodes for the return code  
+  // Get the number of visible nodes for the return code
   int cnt = 0;
 
 #if QT_VERSION >= 0x030201

@@ -39,6 +39,7 @@
 kMyMoneyAccountCompletion::kMyMoneyAccountCompletion(QWidget *parent, const char *name ) :
   QVBox(parent, name, WType_Popup)
 {
+  m_accountType = (KMyMoneyUtils::categoryTypeE) 0x0f;
   m_parent = parent;
   setFocusProxy((parent) ? parent : (QWidget*) NoFocus);
   setFrameStyle(QFrame::PopupPanel | QFrame::Raised);
@@ -94,11 +95,13 @@ void kMyMoneyAccountCompletion::adjustSize(const int count)
 
 void kMyMoneyAccountCompletion::show(void)
 {
-  loadList((KMyMoneyUtils::categoryTypeE) 0x0f);
+  int  count;
+
+  count = loadList(m_accountType);
   if(!m_id.isEmpty())
     m_accountSelector->setSelected(m_id);
 
-  adjustSize(MAX_ITEMS);
+  adjustSize(count);
 
   if(m_parent)
     qApp->installEventFilter(this);
