@@ -1,10 +1,22 @@
+2003-09-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * added new account selection widget
+  * find transaction dialog uses new account selection widget
+  * QIF import uses new account selection widget
+  * added convenience methods to MyMoneyTransactionFilter
+  * added button icons to the institution dialog
+  * added button icons to the category/account selection dialog
+  * fixed KFindTransactionDlg so that references to income and
+    expense accounts are not shown
+  * fixed transaction display in payees view
+  * added new reconcile icon for buttons
+
 2003-09-18 Michael Edwardes <mte@users.sourceforge.net>
   * MyMoneySchedule::isFinished() now works for occurences of 'Once'.
   * Added 'Todays payments' to the home view to make it easier to spot them.
   * If the schedule has finished use the word Finished instead of the next payment
     date in the schedule list view.
   * Select the account type in the account wizard.
-  
+
 2003-09-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * added new fr.po supplied by Laurent
   * fixed loading new account wizard widgets after loading of file
