@@ -42,6 +42,7 @@
 #include "kgloballedgerview.h"
 #include "kledgerviewcheckings.h"
 #include "kledgerviewsavings.h"
+#include "kledgerviewcreditcard.h"
 
 #include "../mymoney/mymoneyaccount.h"
 #include "../mymoney/mymoneyfile.h"
@@ -86,8 +87,11 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
     this, SLOT(slotSelectAccountAndTransaction(const QCString&, const QCString&)));
 
   // Credit card account
-  KPushButton* creditCardAccount = new KPushButton("Credit Card account", m_accountStack);
-  m_accountStack->addWidget(creditCardAccount, MyMoneyAccount::CreditCard);
+  view = m_specificView[MyMoneyAccount::CreditCard] = new KLedgerViewCreditCard(this);
+  m_accountStack->addWidget(view, MyMoneyAccount::CreditCard);
+  connect(view, SIGNAL(accountAndTransactionSelected(const QCString&, const QCString&)),
+    this, SLOT(slotSelectAccountAndTransaction(const QCString&, const QCString&)));
+
 
   Form1Layout->addWidget(m_accountStack);
 
@@ -139,6 +143,14 @@ void KGlobalLedgerView::show()
 
   emit signalViewActivated();
   QWidget::show();
+}
+
+void KGlobalLedgerView::hide()
+{
+  for(int i = 0; i < MyMoneyAccount::MaxAccountTypes; ++i) {
+    if(m_specificView[i] != 0)
+      m_specificView[i]->hide();
+  }
 }
 
 

@@ -59,8 +59,6 @@ public:
 	KGlobalLedgerView(QWidget *parent=0, const char *name=0);
 	~KGlobalLedgerView();
 
-  void show();
-
   void refreshView(void);
 
   /**
@@ -73,6 +71,13 @@ public:
   void selectAccount(const QCString& id);
 
 public slots:
+  /**
+    * This slot calls the hide() slot of all known specific ledger views
+    */
+  void hide(void);
+
+  void show(void);
+
   /**
     * Called when the user changes the visibility
     * setting of the transaction form
