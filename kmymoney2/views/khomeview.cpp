@@ -327,7 +327,10 @@ void KHomeView::showPaymentEntry(const MyMoneySchedule& sched)
         link(VIEW_SCHEDULE, QString("?id=%1").arg(sched.id())) + sched.name() + linkend() +
         "</td>" +
         "<td width=\"10%\" align=\"right\">";
-      tmp += sp.value().formatMoney();
+
+      QString amount = sp.value().formatMoney();
+      amount.replace(" ","&nbsp;");
+      tmp += amount;
       tmp += "</td>";
       // qDebug("paymentEntry = '%s'", tmp.latin1());
       m_part->write(tmp);
@@ -432,11 +435,12 @@ void KHomeView::showAccountEntry(const MyMoneyAccount& acc)
   QString tmp;
   MyMoneySecurity currency = MyMoneyFile::instance()->currency(acc.currencyId());
 
+  QString amount = MyMoneyFile::instance()->balance(acc.id()).formatMoney(currency.tradingSymbol());
+  amount.replace(" ","&nbsp;");
+
   tmp = QString("<td width=\"70%\">") +
       link(VIEW_LEDGER, QString("?id=%1").arg(acc.id())) + acc.name() + linkend() + "</td>";
-  tmp += QString("<td width=\"30%\" align=\"right\">") +
-      MyMoneyFile::instance()->balance(acc.id()).formatMoney(currency.tradingSymbol()) +
-      "</td>";
+  tmp += QString("<td width=\"30%\" align=\"right\">%1</td>").arg(amount);
   // qDebug("accountEntry = '%s'", tmp.latin1());
   m_part->write(tmp);
 }

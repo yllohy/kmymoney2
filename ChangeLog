@@ -2,7 +2,8 @@
   * Handle QIF-imported opening balances the new way
   * Terminology changes to US-english-ize the base text
     (Submitted by Robert Wadley <rob@robntina.fastmail.us>)
-
+  * Fixed #1171039 (Made spaces in value amounts non-breaking in home view)
+  
 2005-03-25 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Avoid inadvertent overwrite of foreign file types
 
