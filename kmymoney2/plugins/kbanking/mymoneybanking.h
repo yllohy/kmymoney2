@@ -102,9 +102,12 @@ public:
 
 protected:
   const AB_ACCOUNT_STATUS* _getAccountStatus(AB_IMEXPORTER_ACCOUNTINFO *ai);
+  void _xaToStatement(const AB_TRANSACTION *t,
+                      MyMoneyStatement &ks);
 
 private:
   KBankingPlugin* m_parent;
+
 };
 
 
