@@ -295,15 +295,14 @@ void KMyMoneyView::slotAccountDelete()
 
 bool KMyMoneyView::fileOpen(void)
 {
-  // FIXME
-  return true;
+  KMyMoneyFile::instance()->isOpen();
 }
 
 void KMyMoneyView::closeFile(void)
 {
-  // FIXME
-  if (fileOpen()) {
-    KMyMoneyFile::instance()->reset();
+  if (fileOpen())
+  {
+    KMyMoneyFile::instance()->close();
   }
 
   accountsView->clear();
@@ -314,12 +313,14 @@ void KMyMoneyView::closeFile(void)
 bool KMyMoneyView::readFile(QString filename)
 
 {
-  // FIXME
   KMyMoneyFile *kfile = KMyMoneyFile::instance();
   if (fileOpen())
   {
-    kfile->reset();
+    kfile->close();
+    kfile->open();
   }
+  else
+    kfile->open();
 
   // Use the old reader for now
   MyMoneyStorageBin *binaryReader = new MyMoneyStorageBin;
@@ -334,6 +335,7 @@ bool KMyMoneyView::readFile(QString filename)
 
   return true;
 }
+
 
 
 void KMyMoneyView::saveFile(QString filename)
@@ -495,6 +497,7 @@ void KMyMoneyView::slotAccountImportAscii(void)
       }
     }
   }
+
 */
 
 }
@@ -533,9 +536,11 @@ void KMyMoneyView::slotReconcileFinished(bool success)
 void KMyMoneyView::newFile(void)
 {
   if (fileOpen())
-    return;
+  {
+    KMyMoneyFile::instance()->close();
+    KMyMoneyFile::instance()->open();
+  }
 
-  KMyMoneyFile::instance()->reset();
   MyMoneyFile *file = KMyMoneyFile::instance()->file();
 
   KNewFileDlg newFileDlg(this, "e", i18n("Create new KMyMoneyFile"));
@@ -584,6 +589,7 @@ void KMyMoneyView::loadDefaultCategories(void)
 {
 /*
   QString filename = KGlobal::dirs()->findResource("appdata", "default_categories.dat");
+
   if (filename == QString::null) {
     KMessageBox::error(this, i18n("Cannot find the data file containing the default categories"));
     return;

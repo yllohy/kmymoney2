@@ -25,6 +25,7 @@
 KMyMoneyFile *KMyMoneyFile::m_instance = 0L;
 MyMoneyFile *KMyMoneyFile::m_file = 0L;
 MyMoneySeqAccessMgr *KMyMoneyFile::m_storage = 0L;
+bool KMyMoneyFile::m_open = false;
 
 KMyMoneyFile::KMyMoneyFile()
 {
@@ -113,4 +114,25 @@ QString KMyMoneyFile::accountTypeToString(MyMoneyAccount::accountTypeE accountTy
   }
 
   return returnString;
+}
+
+void KMyMoneyFile::open()
+{
+  reset();
+  m_open = true;
+}
+
+void KMyMoneyFile::close()
+{
+  reset();
+  m_open = false;
+}
+
+bool KMyMoneyFile::isOpen()
+{
+  /* keeping this debug here for now because it
+    highlights the infinite loop bug on exit
+  */
+  qDebug("returning open %d", m_open);
+  return m_open;
 }
