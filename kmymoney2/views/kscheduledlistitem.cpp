@@ -35,8 +35,8 @@
 #include "../mymoney/mymoneyfile.h"
 #include "../kmymoneyutils.h"
 
-KScheduledListItem::KScheduledListItem(QListView *parent, const char *name)
- : QListViewItem(parent,name), m_even(false), m_base(true)
+KScheduledListItem::KScheduledListItem(KListView *parent, const char *name)
+ : KListViewItem(parent,name)/*, m_even(false)*/, m_base(true)
 {
   setText(0, name);
   if (name == i18n("Bills"))
@@ -47,13 +47,13 @@ KScheduledListItem::KScheduledListItem(QListView *parent, const char *name)
     setPixmap(0, KMyMoneyUtils::transferScheduleIcon(KIcon::Small));
 }
 
-KScheduledListItem::KScheduledListItem(KScheduledListItem *parent, const MyMoneySchedule& schedule, bool even)
- : QListViewItem(parent), m_base(false)
+KScheduledListItem::KScheduledListItem(KScheduledListItem *parent, const MyMoneySchedule& schedule/*, bool even*/)
+ : KListViewItem(parent), m_base(false)
 {
   m_schedule = schedule;
   setPixmap(0, KMyMoneyUtils::scheduleIcon(KIcon::Small));
 
-  m_even = even;
+//  m_even = even;
   try
   {
     m_id = schedule.id();
@@ -117,18 +117,13 @@ void KScheduledListItem::paintCell(QPainter* p, const QColorGroup& cg, int colum
 
   QColor colour = Qt::white;
   QColor bgColour = QColor(224, 253, 182); // Same as for home view
-
   QColor textColour;
   QFont cellFont(p->font());
-  QColor baseItemColour = QColor(219, 237, 237);  // Same as for home view
-  QColor baseItemTextColour = Qt::black;
 
   bgColour = config->readColorEntry("listBGColor", &bgColour);
   colour = config->readColorEntry("listColor", &colour);
   textColour = config->readColorEntry("listGridColor", &textColour);
   cellFont = config->readFontEntry("listCellFont", &cellFont);
-  baseItemColour = config->readColorEntry("BaseListItemColor", &baseItemColour);
-  baseItemTextColour = config->readColorEntry("BaseListItemTextColor", &baseItemTextColour);
 
   if (m_schedule.isFinished())
   {
@@ -146,20 +141,67 @@ void KScheduledListItem::paintCell(QPainter* p, const QColorGroup& cg, int colum
 
   if (m_base)
   {
-    cg2.setColor(QColorGroup::Base, baseItemColour);
     QFont font(p->font());
-//    font.setPointSize(font.pointSize()+1);
     font.setBold(true);
     p->setFont(font);
-    cg2.setColor(QColorGroup::Text, baseItemTextColour);
+  }
+
+  if (isAlternate())
+  {
+    cg2.setColor(QColorGroup::Base, bgColour);
   }
   else
   {
-    if (m_even)
-      cg2.setColor(QColorGroup::Base, bgColour);
-    else
-      cg2.setColor(QColorGroup::Base, colour);
+    cg2.setColor(QColorGroup::Base, colour);
   }
-  
+
+  int indent = 0;
+  if (column == 0)
+  {
+    indent = -20 * (depth()+1);
+    p->save();
+    p->translate(indent, 0);
+    if (isAlternate())
+      p->fillRect( 0, 0, width+indent, height(), bgColour );
+    else
+      p->fillRect( 0, 0, width+indent, height(), colour );
+
+    if (childCount() > 0)
+    {
+      p->setPen( cg.foreground() );
+      p->setBrush( cg.base() );
+      p->drawRect( 5, height() / 2 - 4, 9, 9 );
+      p->drawLine( 7, height() / 2, 11, height() / 2 );
+      if ( !isOpen() )
+          p->drawLine( 9, height() / 2 - 2, 9, height() / 2 + 2 );
+    }
+    
+    p->restore();
+  }
+
   QListViewItem::paintCell(p, cg2, column, width, align);
+}
+
+void KScheduledListItem::paintBranches(QPainter* p, const QColorGroup& cg, int w, int y, int h)
+{
+  QColorGroup cg2(cg);
+
+  KConfig *config = KGlobal::config();
+  config->setGroup("List Options");
+
+  QColor colour = Qt::white;
+  QColor bgColour = QColor(224, 253, 182); // Same as for home view
+  bgColour = config->readColorEntry("listBGColor", &bgColour);
+  colour = config->readColorEntry("listColor", &colour);
+  
+  if (isAlternate())
+  {
+    cg2.setColor(QColorGroup::Base, bgColour);
+  }
+  else
+  {
+    cg2.setColor(QColorGroup::Base, colour);
+  }
+
+  QListViewItem::paintBranches(p, cg2, w, y, h);
 }

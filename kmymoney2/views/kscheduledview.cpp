@@ -141,7 +141,7 @@ void KScheduledView::refresh(bool full, const QCString schedId)
       }
       catch (MyMoneyException *e)
       {
-        KMessageBox::detailedError(this, i18n("Unable to load accounts"), e->what());
+        KMessageBox::detailedError(this, i18n("Unable to load accounts: "), e->what());
         delete e;
       }
     }
@@ -164,7 +164,6 @@ void KScheduledView::refresh(bool full, const QCString schedId)
 
     KScheduledListItem *openItem=0;
 
-    int i1=1, i2=1, i3=1;
     for (it = scheduledItems.begin(); it != scheduledItems.end(); ++it)
     {
       MyMoneySchedule schedData = (*it);
@@ -187,22 +186,19 @@ void KScheduledView::refresh(bool full, const QCString schedId)
       switch (schedData.type())
       {
         case MyMoneySchedule::TYPE_BILL:
-          item = new KScheduledListItem(itemBills, schedData, (i1%2) == 0);
+          item = new KScheduledListItem(itemBills, schedData);
           if (schedData.id() == schedId)
             openItem = item;
-          i1++;
           break;
         case MyMoneySchedule::TYPE_DEPOSIT:
-          item = new KScheduledListItem(itemDeposits, schedData, (i2%2) == 0);
+          item = new KScheduledListItem(itemDeposits, schedData);
           if (schedData.id() == schedId)
             openItem = item;
-          i2++;
           break;
         case MyMoneySchedule::TYPE_TRANSFER:
-          item = new KScheduledListItem(itemTransfers, schedData, (i3%2) == 0);
+          item = new KScheduledListItem(itemTransfers, schedData);
           if (schedData.id() == schedId)
             openItem = item;
-          i3++;
           break;
         case MyMoneySchedule::TYPE_ANY:
           break; // Should we display an error ?

@@ -25,10 +25,10 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 #include <qwidget.h>
-#include <qlistview.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
+#include <klistview.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -40,7 +40,7 @@
   * @author Michael Edwardes
   * $id$
   */
-class KScheduledListItem : public QListViewItem  {
+class KScheduledListItem : public KListViewItem  {
 public:
   /**
     * This constructor is used to create a child of the main list view widget.
@@ -57,7 +57,7 @@ public:
     *
     * @see MyMoneySchedule
   **/
-  KScheduledListItem(QListView *parent, const char *description);
+  KScheduledListItem(KListView *parent, const char *description);
   
   /**
     * This constructor is used to create a child of one of the children
@@ -71,7 +71,7 @@ public:
     *
     * @see MyMoneySchedule
   **/
-  KScheduledListItem(KScheduledListItem *parent, const MyMoneySchedule& schedule, bool even);
+  KScheduledListItem(KScheduledListItem *parent, const MyMoneySchedule& schedule/*, bool even*/);
 
   /**
     * Standard destructor.
@@ -91,12 +91,14 @@ public:
 
 protected:
   void paintCell(QPainter* p, const QColorGroup& cg, int column, int width, int align);
+  void paintBranches(QPainter* p, const QColorGroup& cg, int w, int y, int h);
 
 private:
   /// The schedule's id.
   QCString m_id;
-  
+/*  
   bool m_even;
+*/
   bool m_base;
 
   MyMoneySchedule m_schedule;
