@@ -1,6 +1,17 @@
+2004-02-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed #892954 (Creating accounts within QIF import crashes application)
+
+2004-02-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * 0.6rc2 released
+
+2004-02-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * updated messages for further translation
+
+2004-02-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Updated fix for #886979
+
 2004-02-03 Michael Edwardes <mte@users.sourceforge.net>
   * Fix #886979
-
 
 2004-02-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed bug in 'create schedule' to include all splits of the originating
@@ -41,6 +52,9 @@
   * Fixed #882290 (Default accounts only support ISO8859-1 charset)
   * Fixed #884224 (Transaction details missing in search dialog)
   * added russian homepage, default accounts and po file
+
+2004-01-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * 0.6rc1 released
 
 2004-01-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated integration into KDE (desktop files)
