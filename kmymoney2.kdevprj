@@ -23,19 +23,19 @@ install_location=
 type=DATA
 
 [Config for BinMakefileAm]
-addcxxflags=-fexceptions HAVE_LIBXMLPP
+addcxxflags=-fexceptions
 bin_program=kmymoney2
 cflags=
 cppflags=
 cxxflags=\s-O0 -g3 -Wall
 ldadd=\s$(LIB_KHTML) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT)
-ldflags=\s    \s
+ldflags=\s     \s
 path_to_bin_program=kmymoney2
 
 [General]
-AMChanged=true
+AMChanged=false
 author=Michael Edwardes
-configure_args=\s--build=i386-linux --host=i386-linux --target=i386-linux --prefix=/opt/kde3 --enable-debug\s
+configure_args=--prefix=/opt/kde3\s
 dir_where_make_will_be_called=
 email=mte@users.sourceforge.net
 kdevprj_version=1.3
