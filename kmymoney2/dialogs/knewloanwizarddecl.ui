@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>KNewLoanWizardDecl</class>
 <widget class="QWizard">
     <property name="name">
@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>539</width>
-            <height>329</height>
+            <width>589</width>
+            <height>415</height>
         </rect>
     </property>
     <property name="maximumSize">
@@ -38,12 +38,6 @@
         <vbox>
             <property name="name">
                 <cstring>unnamed</cstring>
-            </property>
-            <property name="margin">
-                <number>11</number>
-            </property>
-            <property name="spacing">
-                <number>6</number>
             </property>
             <widget class="QLayoutWidget">
                 <property name="name">
@@ -139,8 +133,8 @@ Please make sure that you have the relevant information handy. You usually get t
                 </property>
                 <property name="sizeHint">
                     <size>
-                        <width>0</width>
-                        <height>58</height>
+                        <width>20</width>
+                        <height>20</height>
                     </size>
                 </property>
             </spacer>
@@ -153,104 +147,110 @@ Please make sure that you have the relevant information handy. You usually get t
         <attribute name="title">
             <string></string>
         </attribute>
-        <widget class="QLayoutWidget">
+        <vbox>
             <property name="name">
-                <cstring>Layout2_2</cstring>
+                <cstring>unnamed</cstring>
             </property>
-            <property name="geometry">
-                <rect>
-                    <x>12</x>
-                    <y>12</y>
-                    <width>505</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <hbox>
+            <widget class="QLayoutWidget">
                 <property name="name">
-                    <cstring>unnamed</cstring>
+                    <cstring>Layout2_2</cstring>
                 </property>
-                <property name="margin">
-                    <number>0</number>
+                <hbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <property name="margin">
+                        <number>0</number>
+                    </property>
+                    <property name="spacing">
+                        <number>6</number>
+                    </property>
+                    <spacer>
+                        <property name="name">
+                            <cstring>Spacer2_2</cstring>
+                        </property>
+                        <property name="orientation">
+                            <enum>Horizontal</enum>
+                        </property>
+                        <property name="sizeType">
+                            <enum>Expanding</enum>
+                        </property>
+                        <property name="sizeHint">
+                            <size>
+                                <width>98</width>
+                                <height>0</height>
+                            </size>
+                        </property>
+                    </spacer>
+                    <widget class="QLabel">
+                        <property name="name">
+                            <cstring>TextLabel1_1_2</cstring>
+                        </property>
+                        <property name="font">
+                            <font>
+                                <family>Helvetica</family>
+                                <pointsize>16</pointsize>
+                                <bold>1</bold>
+                            </font>
+                        </property>
+                        <property name="text">
+                            <string>Edit Loan Account Wizard</string>
+                        </property>
+                        <property name="alignment">
+                            <set>AlignTop|AlignHCenter</set>
+                        </property>
+                    </widget>
+                    <spacer>
+                        <property name="name">
+                            <cstring>Spacer3_2</cstring>
+                        </property>
+                        <property name="orientation">
+                            <enum>Horizontal</enum>
+                        </property>
+                        <property name="sizeType">
+                            <enum>Expanding</enum>
+                        </property>
+                        <property name="sizeHint">
+                            <size>
+                                <width>119</width>
+                                <height>0</height>
+                            </size>
+                        </property>
+                    </spacer>
+                </hbox>
+            </widget>
+            <widget class="QLabel">
+                <property name="name">
+                    <cstring>TextLabel1_2_2</cstring>
                 </property>
-                <property name="spacing">
-                    <number>6</number>
-                </property>
-                <spacer>
-                    <property name="name">
-                        <cstring>Spacer2_2</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>98</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>TextLabel1_1_2</cstring>
-                    </property>
-                    <property name="font">
-                        <font>
-                            <family>Helvetica</family>
-                            <pointsize>16</pointsize>
-                            <bold>1</bold>
-                        </font>
-                    </property>
-                    <property name="text">
-                        <string>Edit Loan Account Wizard</string>
-                    </property>
-                    <property name="alignment">
-                        <set>AlignTop|AlignHCenter</set>
-                    </property>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>Spacer3_2</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>119</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                </spacer>
-            </hbox>
-        </widget>
-        <widget class="QLabel">
-            <property name="name">
-                <cstring>TextLabel1_2_2</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>12</x>
-                    <y>38</y>
-                    <width>505</width>
-                    <height>94</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>
+                <property name="text">
+                    <string>
 Welcome to the Edit Loan Account Wizard. Please use this wizard to modify information about your loan account.
 
 Please make sure that you have the relevant information handy. You usually get the information out of your contract and the last statement.</string>
-            </property>
-            <property name="alignment">
-                <set>WordBreak|AlignTop</set>
-            </property>
-        </widget>
+                </property>
+                <property name="alignment">
+                    <set>WordBreak|AlignTop</set>
+                </property>
+            </widget>
+            <spacer>
+                <property name="name">
+                    <cstring>spacer79</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>20</width>
+                        <height>20</height>
+                    </size>
+                </property>
+            </spacer>
+        </vbox>
     </widget>
     <widget class="QWidget">
         <property name="name">
@@ -5296,7 +5296,7 @@ This page summarizes the data you entered. If you need to modify anything, pleas
         <class>kMyMoneyDateInput</class>
         <header location="local">../widgets/kmymoneydateinput.h</header>
         <sizehint>
-            <width>90</width>
+            <width>120</width>
             <height>25</height>
         </sizehint>
         <container>0</container>
@@ -5324,38 +5324,6 @@ This page summarizes the data you entered. If you need to modify anything, pleas
             <verstretch>0</verstretch>
         </sizepolicy>
         <pixmap>image0</pixmap>
-    </customwidget>
-    <customwidget>
-        <class>kMyMoneyCombo</class>
-        <header location="local">../widgets/kmymoneycombo.h</header>
-        <sizehint>
-            <width>-1</width>
-            <height>-1</height>
-        </sizehint>
-        <container>0</container>
-        <sizepolicy>
-            <hordata>5</hordata>
-            <verdata>5</verdata>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-        </sizepolicy>
-        <pixmap>image0</pixmap>
-    </customwidget>
-    <customwidget>
-        <class>kMyMoneyPayee</class>
-        <header location="local">../widgets/kmymoneypayee.h</header>
-        <sizehint>
-            <width>-1</width>
-            <height>-1</height>
-        </sizehint>
-        <container>0</container>
-        <sizepolicy>
-            <hordata>5</hordata>
-            <verdata>5</verdata>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-        </sizepolicy>
-        <pixmap>image1</pixmap>
     </customwidget>
     <customwidget>
         <class>kMyMoneyLineEdit</class>
@@ -5389,6 +5357,38 @@ This page summarizes the data you entered. If you need to modify anything, pleas
         </sizepolicy>
         <pixmap>image1</pixmap>
     </customwidget>
+    <customwidget>
+        <class>kMyMoneyCombo</class>
+        <header location="local">../widgets/kmymoneycombo.h</header>
+        <sizehint>
+            <width>-1</width>
+            <height>25</height>
+        </sizehint>
+        <container>0</container>
+        <sizepolicy>
+            <hordata>5</hordata>
+            <verdata>5</verdata>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+        <pixmap>image1</pixmap>
+    </customwidget>
+    <customwidget>
+        <class>kMyMoneyPayee</class>
+        <header location="local">../widgets/kmymoneypayee.h</header>
+        <sizehint>
+            <width>-1</width>
+            <height>25</height>
+        </sizehint>
+        <container>0</container>
+        <sizepolicy>
+            <hordata>5</hordata>
+            <verdata>5</verdata>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+        <pixmap>image1</pixmap>
+    </customwidget>
 </customwidgets>
 <images>
     <image name="image0">
@@ -5404,7 +5404,7 @@ This page summarizes the data you entered. If you need to modify anything, pleas
     <includehint>kmymoneylineedit.h</includehint>
     <includehint>kmymoneypayee.h</includehint>
     <includehint>kmymoneydateinput.h</includehint>
-    <includehint>kintnuminput.h</includehint>
+    <includehint>knuminput.h</includehint>
     <includehint>knuminput.h</includehint>
     <includehint>kmymoneycombo.h</includehint>
     <includehint>kmymoneyedit.h</includehint>
@@ -5413,7 +5413,7 @@ This page summarizes the data you entered. If you need to modify anything, pleas
     <includehint>kcombobox.h</includehint>
     <includehint>kmymoneyedit.h</includehint>
     <includehint>kmymoneyedit.h</includehint>
-    <includehint>kintnuminput.h</includehint>
+    <includehint>knuminput.h</includehint>
     <includehint>knuminput.h</includehint>
     <includehint>kmymoneycombo.h</includehint>
     <includehint>kmymoneyedit.h</includehint>
