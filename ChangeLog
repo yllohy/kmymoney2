@@ -3,6 +3,10 @@
   * KExportDlg now conforms to coding standards and uses i18n where
     appropriate.
   * Updated version to 0.3.7.
+  * Small update to coding standards mentioning i18n.
+  * Import QIF now has a progress bar.
+  * KImportDlg now conforms to coding standards and uses i18n where
+    appropriate.
 
 2001-08-18 Michael Edwardes <mte@users.sourceforge.net>
   * Moved the QIF read & write methods into MyMoneyAccount.

@@ -29,31 +29,57 @@
 // ----------------------------------------------------------------------------
 // Project Headers
 #include "kimportdlgdecl.h"
-
 #include "../mymoney/mymoneyaccount.h"
 
 /**
-  *@author Michael Edwardes
-  */
-
+  * This class is used to import a qif file to an account.
+  * It relies upon the QIF file handling routines in MyMoneyAccount to do
+  * the actual writing of QIF files.
+  *
+  * It uses the global KConfig object to read and write the application
+  * settings.
+  *
+  * @see MyMoneyAccount
+  *
+  * @author Felix Rodriguez, Michael Edwardes 2000-2001
+  * $Id: kimportdlg.h,v 1.3 2001/08/19 18:59:20 mte Exp $
+  *
+  * @short A class to import a qif file to an account.
+**/
 class KImportDlg : public KImportDlgDecl  {
-	Q_OBJECT
+  Q_OBJECT
+
 private:
   void readConfig(void);
   void writeConfig(void);
 
-	QString m_qstringLastFormat;
+  QString m_qstringLastFormat;
   MyMoneyAccount *m_mymoneyaccount;
 
-public:
-	KImportDlg(MyMoneyAccount *account);
-	~KImportDlg();
 protected slots:
+  /** Performs the import process */
   void slotOkClicked();
 
-public slots: // Public slots
-  /** No descriptions */
+  /** Called to let the user browse for a QIF file to import from. */
   void slotBrowse();
+
+  /**
+    * Called when the progress bar needs updating.
+    *
+    * @param progress An integer representing the new progress.
+  */
+  void slotSetProgress(int progress);
+
+public:
+  /**
+    * Standard constructor
+    *
+    * @param account The account to import to.
+  */
+  KImportDlg(MyMoneyAccount *account);
+
+  /** Standard destructor */
+  ~KImportDlg();
 };
 
 #endif

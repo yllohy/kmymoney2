@@ -11,8 +11,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>501</width>
-            <height>356</height>
+            <width>453</width>
+            <height>338</height>
         </rect>
     </property>
     <property stdset="1">
@@ -44,7 +44,7 @@
 a QIF file, because of the extension).   Please enter the path to the QIF file or select it by
 clicking on the Browse button.
 
-Once you have the file's path press the OK button and KMyMoney2 will import all the
+Once you have the file's path press the Import button and KMyMoney2 will import all the
 transactions, categories and payees it finds.</string>
             </property>
         </widget>
@@ -184,10 +184,6 @@ transactions, categories and payees it finds.</string>
             <property stdset="1">
                 <name>name</name>
                 <cstring>m_qgroupbox</cstring>
-            </property>
-            <property stdset="1">
-                <name>enabled</name>
-                <bool>false</bool>
             </property>
             <property stdset="1">
                 <name>title</name>
@@ -351,7 +347,7 @@ transactions, categories and payees it finds.</string>
                     </property>
                     <property stdset="1">
                         <name>text</name>
-                        <string>&amp;OK</string>
+                        <string>&amp;Import</string>
                     </property>
                     <property stdset="1">
                         <name>default</name>
@@ -366,7 +362,7 @@ transactions, categories and payees it finds.</string>
                     </property>
                     <property stdset="1">
                         <name>text</name>
-                        <string>&amp;Cancel</string>
+                        <string>&amp;Close</string>
                     </property>
                 </widget>
             </hbox>

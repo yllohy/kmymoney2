@@ -59,7 +59,7 @@
 **/
 KSettingsDlg::KSettingsDlg(QWidget *parent, const char *name, bool modal)
  : KDialogBase(IconList, i18n("Configure"), Ok|Cancel|Apply|User1, Ok, parent,
-    name, modal, true, "&Reset")
+    name, modal, true, i18n("&Reset"))
 {
   // Setup the pages and then read the configuration object.
   setPageGeneral();
@@ -233,7 +233,7 @@ void KSettingsDlg::setPageList()
   qvboxInsideTab2-&gt;setSpacing( 6 );
   qvboxInsideTab2-&gt;setMargin( 11 );
   m_kfontchooserCell = new KFontChooser(qvboxInsideTab2);
-  qtabwidget-&gt;addTab(qvboxInsideTab2, "Cell Font");
+  qtabwidget-&gt;addTab(qvboxInsideTab2, i18n("Cell Font"));
 }
 
 /** Read all the settings in from the global KConfig object and set all the
@@ -308,7 +308,7 @@ void KSettingsDlg::slotOk()
 {
   int nCount = m_klineeditRowCount-&gt;text().toInt();
   if (nCount &lt;= 0 || nCount &gt;= 4) {
-    KMessageBox::information(this, "The row count has to be between 1 and 3");
+    KMessageBox::information(this, i18n("The row count has to be between 1 and 3"));
     m_klineeditRowCount-&gt;setFocus();
     return;
   }
@@ -321,7 +321,7 @@ void KSettingsDlg::slotApply()
 {
   int nCount = m_klineeditRowCount-&gt;text().toInt();
   if (nCount &lt;= 0 || nCount &gt;= 4) {
-    KMessageBox::information(this, "The row count has to be between 1 and 3");
+    KMessageBox::information(this, i18n("The row count has to be between 1 and 3"));
     m_klineeditRowCount-&gt;setFocus();
     return;
   }

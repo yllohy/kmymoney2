@@ -293,7 +293,7 @@ void MyMoneyAccount::setDescription(const QString& description) { m_description 
 void MyMoneyAccount::setLastReconcile(const QDate& date) { m_lastReconcile = date; if (m_parent) m_parent->file()->setDirty(true); }
 
 /** No descriptions */
-bool MyMoneyAccount::readQIFFile(const QString& name, const QString& dateFormat)
+bool MyMoneyAccount::readQIFFile(const QString& name, const QString& dateFormat, int& transCount, int& catCount)
 {
   bool catmode = false;
   bool transmode = false;
@@ -311,6 +311,22 @@ bool MyMoneyAccount::readQIFFile(const QString& name, const QString& dateFormat)
   QString category = "";
   MyMoneyCategory *oldcategory = 0;
 
+  // Find out how many transactions are in the file first
+  int nTransactionGuess = 0;
+  QFile qfile(name);
+  if (qfile.open(IO_ReadOnly)) {
+    QString qstring;
+    QTextStream qtextstream(&qfile);
+    while (!qtextstream.eof()) {
+      qstring = qtextstream.readLine();
+      if (qstring.left(1) == "D") // Assume it's a transaction
+        nTransactionGuess++;
+    }
+    qfile.close();
+  }
+
+  emit signalProgressCount(nTransactionGuess);
+
     QFile f(name);
     if ( f.open(IO_ReadOnly) ) {    // file opened successfully
         QTextStream t( &f );        // use a text stream
@@ -325,13 +341,11 @@ bool MyMoneyAccount::readQIFFile(const QString& name, const QString& dateFormat)
             }
             else if(s.left(10) == "!Type:Bank")
             {
-              qDebug("Found Bank Type");
                     transmode = true;
                 catmode = false;
             }
             else if(s.left(5) == "!Type")
             {
-              qDebug("Found Just Type");
               catmode = false;
               transmode = false;
             }
@@ -509,11 +523,6 @@ bool MyMoneyAccount::readQIFFile(const QString& name, const QString& dateFormat)
               addTransaction(transmethod, checknumber, payee,
                                       moneyamount, transdate, majorcat, minorcat, "",payee,
                                       "", "", transcleared);
-              qDebug("Date:%s",date.latin1());
-              qDebug("Amount:%s",amount.latin1());
-              qDebug("Type:%s",type.latin1());
-              qDebug("Payee:%s",payee.latin1());
-              qDebug("Category:%s",category.latin1());
 
               date = "";
               amount = "";
@@ -523,6 +532,8 @@ bool MyMoneyAccount::readQIFFile(const QString& name, const QString& dateFormat)
               cleared = false;
               writetrans = false;
               numtrans += 1;
+
+              emit signalProgress(numtrans);
             }
             if(catmode && writecat)
             {
@@ -589,6 +600,8 @@ bool MyMoneyAccount::readQIFFile(const QString& name, const QString& dateFormat)
             //qDebug("%s",s.latin1());
         }
         f.close();
+        transCount = numtrans;
+        catCount = numcat;
     }
     return true;
 }
@@ -598,9 +611,7 @@ bool MyMoneyAccount::writeQIFFile(const QString& name, const QString& dateFormat
 {
   int numcat = 0;
   int numtrans = 0;
-  int nProgress = 0;
-  emit signalQIFWriteCount(transactionCount(startDate, endDate));
-  qDebug("emitted count %d", transactionCount());
+  emit signalProgressCount(transactionCount(startDate, endDate));
 
     QFile f(name);
     if ( f.open(IO_WriteOnly) ) {    // file opened successfully
@@ -686,8 +697,7 @@ bool MyMoneyAccount::writeQIFFile(const QString& name, const QString& dateFormat
             t << "L" << Category << endl;
             t << "^" << endl;
             numtrans += 1;
-            emit signalQIFWriteTransaction(numtrans);
-            qDebug("emitted transaction count %d", numtrans);
+            emit signalProgress(numtrans);
           }
         }
       }

@@ -104,8 +104,8 @@ void KExportDlg::slotOkClicked()
   if (m_mymoneyaccount) {
     // Connect to the provided signals in MyMoneyAccount
     // These signals will be emitted at appropriate times.
-    connect(m_mymoneyaccount, SIGNAL(signalQIFWriteCount(int)), m_qprogressbar, SLOT(setTotalSteps(int)));
-    connect(m_mymoneyaccount, SIGNAL(signalQIFWriteTransaction(int)), this, SLOT(slotSetProgress(int)));
+    connect(m_mymoneyaccount, SIGNAL(signalProgressCount(int)), m_qprogressbar, SLOT(setTotalSteps(int)));
+    connect(m_mymoneyaccount, SIGNAL(signalProgress(int)), this, SLOT(slotSetProgress(int)));
 
     int nTransCount = 0;
     int nCatCount = 0;
@@ -114,10 +114,10 @@ void KExportDlg::slotOkClicked()
     if (!m_mymoneyaccount->writeQIFFile(m_qlineeditFile->text(), m_qcomboboxDateFormat->currentText(),
           m_qcheckboxAccount->isChecked(), m_qcheckboxCategories->isChecked(), m_kmymoneydateStart->getQDate(),
           m_kmymoneydateEnd->getQDate(), nTransCount, nCatCount)) {
-      KMessageBox::error(this, "Error occurred whilst exporting to qif file", i18n("Export QIF"));
+      KMessageBox::error(this, i18n("Error occurred whilst exporting to qif file."), i18n("Export QIF"));
     }
     else {
-      QString qstringPrompt = i18n("Export finished successfully.\n");
+      QString qstringPrompt = i18n("Export finished successfully.\n\n");
       qstringPrompt += i18n("Number of transactions exported ");
       qstringPrompt += QString::number(nTransCount);
       qstringPrompt += i18n(".\nNumber of categories exported ");

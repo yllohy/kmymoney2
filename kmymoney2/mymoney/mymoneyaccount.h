@@ -34,7 +34,7 @@ class MyMoneyBank;
   * @see MyMoneyTransaction
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: mymoneyaccount.h,v 1.13 2001/08/19 14:30:42 mte Exp $
+  * $Id: mymoneyaccount.h,v 1.14 2001/08/19 18:59:20 mte Exp $
   *
   * @short Representation of an account which holds transactions.
 **/
@@ -374,15 +374,15 @@ public:
   MyMoneyBank *bank(void) { return m_parent; }
 
   /** No descriptions */
-  bool readQIFFile(const QString& name, const QString& dateFormat);
+  bool readQIFFile(const QString& name, const QString& dateFormat, int& transCount, int& catCount);
 
   /** No descriptions */
   bool writeQIFFile(const QString& name, const QString& dateFormat, bool expCat,bool expAcct,
                     QDate startDate, QDate endDate, int& transCount, int& catCount);
 
 signals:
-  void signalQIFWriteCount(int);
-  void signalQIFWriteTransaction(int);
+  void signalProgressCount(int);
+  void signalProgress(int);
 
 };
 
