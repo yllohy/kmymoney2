@@ -31,6 +31,7 @@
 
 #include <klocale.h>
 #include <kmessagebox.h>
+#include <kconfig.h>
 
 // ----------------------------------------------------------------------------
 // Project Headers
@@ -45,6 +46,8 @@ MyMoneyQifReader::MyMoneyQifReader() :
   m_tempFile.close();
   m_tempFile.setAutoDelete(true);
   m_skipAccount = false;
+  m_transactionsProcessed =
+  m_transactionsSkipped = 0;
 }
 
 MyMoneyQifReader::~MyMoneyQifReader()
@@ -85,6 +88,9 @@ void MyMoneyQifReader::import(void)
   };
   int entryType = EntryUnknown;
 
+  m_dontAskAgain.clear();
+  m_accountTranslation.clear();
+  
   QFile qifFile(m_filename);
   QStringList entry;
   if(qifFile.open(IO_ReadOnly)) {
@@ -171,7 +177,19 @@ void MyMoneyQifReader::import(void)
         }
       }
     }
-  }  
+  }
+
+  // remove the Don't ask again entries
+  KConfig* config = KGlobal::config();
+  config->setGroup(QString::fromLatin1("Notification Messages"));
+  QStringList::ConstIterator it;
+
+  for(it = m_dontAskAgain.begin(); it != m_dontAskAgain.end(); ++it) {
+    config->deleteEntry(*it);
+  }
+  config->sync();
+  m_dontAskAgain.clear();
+  m_accountTranslation.clear();
 }
 
 const QString MyMoneyQifReader::scanFileForAccount(void)
@@ -262,10 +280,10 @@ void MyMoneyQifReader::processMSAccountEntry(const QStringList& lines, const MyM
     }
     m_account.setName(name);
     m_account.setAccountType(accountType);
-    selectOrCreateAccount(Create);
+    selectOrCreateAccount(Select, m_account);
     
   } else {
-    selectOrCreateAccount(Select);
+    selectOrCreateAccount(Select, m_account);
     // process the data as transaction but first we have to select an account
   }
 }
@@ -276,6 +294,7 @@ void MyMoneyQifReader::processCategoryEntry(const QStringList& lines)
 
 void MyMoneyQifReader::processTransactionEntry(const QStringList& lines)
 {
+  ++m_transactionsProcessed;
   // in case the user selected to skip the account or the account
   // was not found we skip this transaction
   if(m_account.id().isEmpty()) {
@@ -289,9 +308,18 @@ void MyMoneyQifReader::processTransactionEntry(const QStringList& lines)
   QString tmp;
   QCString accountId;
 
+  // mark it imported for the view
+  t.setValue("Imported", "true");
+  
   // Process general transaction data
   t.setPostDate(m_qifProfile.date(extractLine('D', lines)));
-  t.setMemo(extractLine('L', lines));
+
+  tmp = extractLine('L', lines);
+  if(tmp.left(1) == m_qifProfile.accountDelimiter().left(1)) {
+    // it's a transfer, so we wipe the memo
+    tmp = "";
+  }
+  t.setMemo(tmp);
 
   // Collect data for the account's split
   s1.setAccountId(m_account.id());
@@ -303,7 +331,37 @@ void MyMoneyQifReader::processTransactionEntry(const QStringList& lines)
   try {
     s1.setPayeeId(file->payeeByName(tmp).id());
   } catch (MyMoneyException *e) {
-    // FIXME: Payee does not exist, ask if it should be created or left blank
+    MyMoneyPayee payee;
+
+    // Ask the user if that is what he intended to do?
+    QString msg = i18n("Do you want to add '%1' as payee/receiver ?").arg(tmp);
+    msg += i18n("If you select the 'Don't ask again' box, you will not be asked for this"
+                " payee again during the current import in case you select 'No'.");
+                
+    QString askKey = QString("QIF-Import-Payee-")+tmp;
+    if(!m_dontAskAgain.contains(askKey)) {
+      m_dontAskAgain += askKey;
+    }
+    
+    if(KMessageBox::questionYesNo(0, msg, i18n("New payee/receiver"),
+                KStdGuiItem::yes(), KStdGuiItem::no(), askKey) == KMessageBox::Yes) {
+      // for now, we just add the payee to the pool. In the future,
+      // we could open a dialog and ask for all the other attributes
+      // of the payee.
+      payee.setName(tmp);
+
+      try {
+        file->addPayee(payee);
+        s1.setPayeeId(payee.id());
+
+      } catch(MyMoneyException *e) {
+        KMessageBox::detailedSorry(0, i18n("Unable to add payee/receiver"),
+          (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+        delete e;
+
+      }
+    } else
+      s1.setPayeeId("");
     delete e;
   }
 
@@ -313,38 +371,86 @@ void MyMoneyQifReader::processTransactionEntry(const QStringList& lines)
   else if(tmp == "*")
     s1.setReconcileFlag(MyMoneySplit::Cleared);
 
+  if(file->accountGroup(m_account.accountType()) == MyMoneyAccount::Asset) {
+    if(s1.value() >= 0)
+      s1.setAction(MyMoneySplit::ActionDeposit);
+    else
+      s1.setAction(MyMoneySplit::ActionWithdrawal);
+  } else {
+    if(s1.value() >= 0)
+      s1.setAction(MyMoneySplit::ActionWithdrawal);
+    else
+      s1.setAction(MyMoneySplit::ActionDeposit);
+  }
+  
   t.addSplit(s1);
 
   if(extractLine('$', lines).isEmpty()) {
+    MyMoneyAccount account;
+    // use the same values for the second split, but clear the ID and reverse the value
     MyMoneySplit s2 = s1;
     s2.setValue(-s1.value());
-
+    s2.setId("");
+    
     // standard transaction
     tmp = extractLine('L', lines);
     if(tmp.left(1) == m_qifProfile.accountDelimiter().left(1)) {
       // it's a transfer, extract the account name
       tmp = tmp.mid(1, tmp.length()-2);
-
+      accountId = file->nameToAccount(tmp);
+      if(accountId.isEmpty()) {
+        qDebug("Account '%s' not found", tmp.latin1());
+        account.setName(tmp);
+        selectOrCreateAccount(Select, account);
+        accountId = account.id();
+      }
+      s1.setAction(MyMoneySplit::ActionTransfer);
+      s2.setAction(MyMoneySplit::ActionTransfer);
+      t.modifySplit(s1);
+      
     } else {
       // it's an expense / income
       accountId = file->categoryToAccount(tmp);
       if(accountId.isEmpty()) {
         qDebug("Category '%s' not found", tmp.latin1());
-        // FIXME: selectOrCreateCategory
-        //        set accountId to id if selected
-      }
-
-      if(!accountId.isEmpty()) {
-        try {
-          MyMoneyAccount account = file->account(accountId);
-          // FIXME: check that the type matches and ask if not
-          s2.setAccountId(accountId);
-          t.addSplit(s2);
-        } catch (MyMoneyException *e) {
-          qWarning("Account with id %s not found", accountId.data());
-          delete e;
+        account.setName(tmp);
+        
+        if(file->accountGroup(m_account.accountType()) == MyMoneyAccount::Asset) {
+          if(s1.value() >= 0)
+            account.setAccountType(MyMoneyAccount::Income);
+          else
+            account.setAccountType(MyMoneyAccount::Expense);
+         
+        } else {
+          if(s1.value() >= 0)
+            account.setAccountType(MyMoneyAccount::Expense);
+          else
+            account.setAccountType(MyMoneyAccount::Income);
+          
         }
+        selectOrCreateAccount(Select, account);
+        accountId = account.id();
       }
+    }
+
+    if(!accountId.isEmpty()) {
+      try {
+        MyMoneyAccount account = file->account(accountId);
+        // FIXME: check that the type matches and ask if not
+      } catch (MyMoneyException *e) {
+        qWarning("Account with id %s not found", accountId.data());
+        accountId = "";
+        delete e;
+      }
+    }
+    s2.setAccountId(accountId);
+    try {
+      t.addSplit(s2);
+    } catch (MyMoneyException *e) {
+      QString message(i18n("Unable to add second split: "));
+      message += e->what();
+      KMessageBox::information(0, message);
+      delete e;
     }
   } else {
     // splitted transaction
@@ -356,7 +462,9 @@ void MyMoneyQifReader::processTransactionEntry(const QStringList& lines)
   try {
     file->addTransaction(t);
   } catch (MyMoneyException *e) {
-    qWarning("Problem while adding imported transaction");
+    QString message(i18n("Problem adding imported transaction: "));
+    message += e->what();
+    KMessageBox::information(0, message);
     delete e;
   }
   
@@ -393,10 +501,10 @@ void MyMoneyQifReader::processAccountEntry(const QStringList& lines)
     m_account.setAccountType(MyMoneyAccount::Checkings);
     qDebug("Unknown account type '%s', checkings assumed", type.latin1());
   }
-  selectOrCreateAccount(Create);
+  selectOrCreateAccount(Select, m_account);
 }
 
-void MyMoneyQifReader::selectOrCreateAccount(SelectCreateMode mode)
+void MyMoneyQifReader::selectOrCreateAccount(SelectCreateMode mode, MyMoneyAccount& account)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
   
@@ -404,7 +512,23 @@ void MyMoneyQifReader::selectOrCreateAccount(SelectCreateMode mode)
   QString msg;
   KMyMoneyUtils::categoryTypeE type;
 
-  switch(file->accountGroup(m_account.accountType())) {
+  QMap<QString, QCString>::ConstIterator it;
+  
+  it = m_accountTranslation.find(account.name());
+  if(it != m_accountTranslation.end()) {
+    try {
+      account = file->account(*it);
+      return;
+      
+    } catch (MyMoneyException *e) {
+      QString message(i18n("Account '%1' disappeard: ").arg(account.name()));
+      message += e->what();
+      KMessageBox::error(0, message);
+      delete e;
+    }
+  }
+  
+  switch(file->accountGroup(account.accountType())) {
     case MyMoneyAccount::Liability:
       type = KMyMoneyUtils::liability;
       break;
@@ -426,18 +550,18 @@ void MyMoneyQifReader::selectOrCreateAccount(SelectCreateMode mode)
   KAccountSelectDlg accountSelect(type,"QifImport");
   
   if(m_account.name().length() != 0) {
-    accountId = file->nameToAccount(m_account.name());
+    accountId = file->nameToAccount(account.name());
     if(mode == Create) {
       if(accountId.length() != 0) {
         if(mode == Create) {
-          m_account = file->account(accountId);
+          account = file->account(accountId);
           return;
         }
 
       } else {
         switch(KMessageBox::questionYesNo(0,
                   i18n("The account '%1' does not exist. Do you "
-                       "want to create it?").arg(m_account.name()))) {
+                       "want to create it?").arg(account.name()))) {
           case KMessageBox::Yes:
             break;
           case KMessageBox::No:
@@ -447,13 +571,13 @@ void MyMoneyQifReader::selectOrCreateAccount(SelectCreateMode mode)
     } else {
       if(accountId.length() != 0) {
         msg = i18n("The account '%1' currently exists. Do you want "
-                   "to import transactions to this account?").arg(m_account.name());
+                   "to import transactions to this account?").arg(account.name());
 
       } else {
         msg = i18n("The account '%1' currently does not exist. You can "
                    "create a new account by pressing the Create button. "
                    "or select another account manually "
-                   "from the selection box.").arg(m_account.name());
+                   "from the selection box.").arg(account.name());
       }
     }
   } else {
@@ -464,18 +588,29 @@ void MyMoneyQifReader::selectOrCreateAccount(SelectCreateMode mode)
 
   accountSelect.setDescription(msg);
   accountSelect.setHeader(i18n("Account to import transactions to"));
-  accountSelect.setAccount(m_account);
+  accountSelect.setAccount(account);
   accountSelect.setMode(mode == Create);
  
   if(accountSelect.exec() == QDialog::Accepted) {
-    accountId = file->nameToAccount(accountSelect.selectedAccount());
+    switch(type) {
+      case KMyMoneyUtils::asset:
+      case KMyMoneyUtils::liability:
+        accountId = file->nameToAccount(accountSelect.selectedAccount());
+        break;
+      case KMyMoneyUtils::income:
+      case KMyMoneyUtils::expense:
+        accountId = file->categoryToAccount(accountSelect.selectedAccount());
+        break;
+    }
+    
     if(accountId.length() != 0) {
-      m_account = file->account(accountId);
+      m_accountTranslation[account.name()] = accountId;
+      account = file->account(accountId);
       
     } else
-      m_account = MyMoneyAccount();
+      account = MyMoneyAccount();
     
   } else
-    m_account = MyMoneyAccount();
+    account = MyMoneyAccount();
 }
 

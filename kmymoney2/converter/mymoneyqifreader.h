@@ -28,6 +28,7 @@
 
 #include <qobject.h>
 #include <qstring.h>
+#include <qstringlist.h>
 
 // ----------------------------------------------------------------------------
 // KDE Headers
@@ -152,12 +153,12 @@ private:
   };
   /**
     * This method is used to find an account using the account's name
-    * in m_account.name() in the current MyMoneyFile object. If it does not
+    * stored in @p account in the current MyMoneyFile object. If it does not
     * exist, the user has the chance to create it or to skip processing
     * of this account.
     *
-    * If an account has been selected, m_account will be set to contain it's data.
-    * If the skip operation was requested, m_account will be empty.
+    * If an account has been selected, account will be set to contain it's data.
+    * If the skip operation was requested, account will be empty.
     *
     * Depending on @p mode the bahaviour of this method is slightly different.
     * The following table shows the dependencies:
@@ -183,18 +184,21 @@ private:
     * @endcode
     *
     * @param mode Is either Create or Select depending on the above table
+    * @param account Reference to MyMoneyAccount object
     */
-  void selectOrCreateAccount(SelectCreateMode mode);
+  void selectOrCreateAccount(const SelectCreateMode mode, MyMoneyAccount& account);
 
 private:
-  QString           m_originalFilename;
-  QString           m_filename;
-  MyMoneyQifProfile m_qifProfile;
-  KTempFile         m_tempFile;
-  MyMoneyAccount    m_account;
-  bool              m_skipAccount;
-  unsigned long     m_transactionsSkipped;
-  
+  QString                 m_originalFilename;
+  QString                 m_filename;
+  MyMoneyQifProfile       m_qifProfile;
+  KTempFile               m_tempFile;
+  MyMoneyAccount          m_account;
+  bool                    m_skipAccount;
+  unsigned long           m_transactionsSkipped;
+  unsigned long           m_transactionsProcessed;
+  QStringList             m_dontAskAgain;
+  QMap<QString, QCString> m_accountTranslation;
 };
 
 #endif
