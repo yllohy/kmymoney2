@@ -62,8 +62,21 @@ private:
 	QString m_name;
 };
 
-#endif
+void unexpectedException(MyMoneyException *e)
+{
+	string msg = "Unexpected exception: ";
+	msg += e->what();
+	msg += " thrown in ";
+	msg += e->file().latin1();
+	msg += ":";
+	char line[8];
+	sprintf(line, "%ld", e->line());
+	msg += line;
+	delete e;
+	CPPUNIT_FAIL(msg);
+}
 
+#endif // HAVE_LIBCPPUNIT
 
 int
 main(int argc, char** argv)
