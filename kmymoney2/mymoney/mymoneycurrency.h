@@ -33,7 +33,7 @@
 #define MYMONEYCURRENCY_H
 
 #ifndef MYMONEYEQUITY_H
-#include <mymoneyequity.h>
+#include "mymoneyequity.h"
 #endif
 
 /**
