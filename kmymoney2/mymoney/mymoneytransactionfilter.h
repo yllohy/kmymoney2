@@ -206,6 +206,7 @@ public:
     * matches.
     *
     * @param transaction A transaction
+    * @param storage pointer to object of IMyMoneyStorage class
     *
     * @retval true The transaction matches the filter set
     * @retval false The transaction does not match at least of of

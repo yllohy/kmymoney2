@@ -93,6 +93,9 @@ public:
     * transaction passed as @p transaction.
     *
     * @param transaction pointer to a transaction
+    * @param match identifies the number of the matching split within the transaction
+    *              should be used to extract the account information. 0 will use
+    *              the first matching split.
     *
     * @return const QCString containing the account's id.
     */
@@ -114,7 +117,7 @@ public:
     *       is not shown in the find transaction dialog but the method
     *       must be provided as part of the IMyMoneyRegisterParent interface.
     */
-  const MyMoneyMoney balance(const int /* idx */) const { return 0; };
+  const MyMoneyMoney balance(const int idx) const { return 0; };
 
   /**
     * This method is called by the engine whenever a required notification

@@ -110,7 +110,7 @@ public:
     * This method is used to check if the given account is used
     * in any of the splits of this transation
     *
-    * @param id reference to id
+    * @param id account id that should be checked for usage
     */
   const bool accountReferenced(const QCString& id) const;
 
@@ -118,7 +118,7 @@ public:
     * This method is used to add a split to the transaction. The split
     * will be assigned an id. The id member must be empty.
     *
-    * param @split reference to the split that should be added
+    * @param split reference to the split that should be added
     *
     */
   void addSplit(MyMoneySplit& split);

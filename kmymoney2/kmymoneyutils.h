@@ -75,7 +75,7 @@ public:
     * This method is used to convert an account type from it's
     * string form to the internal used numeric value.
     *
-    * @param accountType reference to a QString containing the string to convert
+    * @param type reference to a QString containing the string to convert
     * @return accountTypeE containing the internal used numeric value. For possible
     *         values see MyMoneyAccount::accountTypeE
     */
@@ -105,7 +105,7 @@ public:
     * This method is used to convert the payment type from it's
     * internal representation into a human readable format.
     *
-    * @param occurence numerical representation of the MyMoneySchedule
+    * @param paymentType numerical representation of the MyMoneySchedule
     *                  payment type
     *
     * @return QString representing the human readable format
@@ -116,7 +116,7 @@ public:
     * This method is used to convert the schedule type from it's
     * internal representation into a human readable format.
     *
-    * @param occurence numerical representation of the MyMoneySchedule
+    * @param type numerical representation of the MyMoneySchedule
     *                  schedule type
     *
     * @return QString representing the human readable format
@@ -131,7 +131,7 @@ public:
     *
     * @return QString with text of this item
     */
-  static const QString homePageItemToString(const int i);
+  static const QString homePageItemToString(const int idx);
 
   /**
     * This method is used to convert the name of a home page item
@@ -183,25 +183,22 @@ public:
   /**
     * Retrieve a KDE KGuiItem for the split button
     *
-    * @param none
     * @return The KGuiItem that can be used to display the icon and text for a split button.
-  **/
+    */
   static KGuiItem splitGuiItem(void);
 
   /**
     * Retrieve a KDE KGuiItem for the new schedule button.
     *
-    * @param none
     * @return The KGuiItem that can be used to display the icon and text
-  **/
+    */
   static KGuiItem scheduleNewGuiItem(void);
 
   /**
     * Retrieve a KDE KGuiItem for the account filter button
     *
-    * @param none
     * @return The KGuiItem that can be used to display the icon and text
-  **/
+    */
   static KGuiItem accountsFilterGuiItem(void);
 
   /**

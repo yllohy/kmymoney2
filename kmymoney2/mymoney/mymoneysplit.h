@@ -101,7 +101,7 @@ public:
     *                        the id of the currency assigned to the account that is
     *                        referenced by the split)
     */
-  void setValue(const MyMoneyMoney& value, const QCString& transactionCurrencyId, const QCString& splitCurrenceId);
+  void setValue(const MyMoneyMoney& value, const QCString& transactionCurrencyId, const QCString& splitCurrencyId);
 
   void setAccountId(const QCString& account);
   void setMemo(const QString& memo);

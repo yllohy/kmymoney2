@@ -120,6 +120,7 @@ private:
     * @p show. Uses createInputWidgets() and destroyInputWidgets() to dynamically
     * create and destroy the widgets. Updates m_editRow.
     *
+    * @param row the row that should be updated
     * @param show true will create and show, false will hide and destroy the widgets
     */
   void showWidgets(int row, bool show = true);
@@ -178,10 +179,10 @@ protected slots:
     * the edit widgets with either the current selected split or an empty
     * split if a new one should be added.
     *
-    * @params row The row of the table the widgets should be shown
-    * @params col unused but provided to match the double-click signal
-    * @params button The mouse button used
-    * @params point The point, the click was issued
+    * @param row The row of the table the widgets should be shown
+    * @param col unused but provided to match the double-click signal
+    * @param button The mouse button used
+    * @param point The point, the click was issued
     */
   void slotStartEdit(int row, int col, int button, const QPoint&  point);
 

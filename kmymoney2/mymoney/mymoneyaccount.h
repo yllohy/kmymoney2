@@ -125,8 +125,8 @@ public:
     * This is the constructor for a new account known to the current file
     * This is the only constructor that will set the attribute m_openingDate
     * to a correct value.
-    * @param file pointer to current MyMoneyFile object
-    * @param ID id assigned to the account
+    *
+    * @param id id assigned to the account
     * @param right account definition
     */
   MyMoneyAccount(const QCString& id, const MyMoneyAccount& right);

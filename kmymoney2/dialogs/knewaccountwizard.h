@@ -66,7 +66,7 @@ public:
   /**
     * This method is used to preset the name of the account in the wizard
     *
-    * @param name name of the account
+    * @param accountName name of the account
     */
   void setAccountName(const QString& accountName);
 

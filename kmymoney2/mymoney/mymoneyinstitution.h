@@ -65,11 +65,10 @@ public:
 
   /**
     * This is the constructor for a new institution known to the current file
-    * @param file pointer to current MyMoneyFile object
+    *
     * @param ID id assigned to the institution
     * @param right institution definition
     */
-  //MyMoneyInstitution(MyMoneyFile *file, const QString ID, const MyMoneyInstitution& right);
   MyMoneyInstitution(const QCString ID, const MyMoneyInstitution& right);
 
   const QString& manager(void) const { return m_manager; }

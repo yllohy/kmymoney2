@@ -47,7 +47,7 @@
 class IMyMoneyStorage;
 class MyMoneyTransactionFilter;
 
-/**.
+/**
   * This class represents the interface to the MyMoney engine.
   * For historical reasons it is still called MyMoneyFile.
   * It is implemented using the singleton pattern and thus only
@@ -100,6 +100,15 @@ class MyMoneyTransactionFilter;
   * transaction() and transactionList() are used to retrieve
   * a single instance or a QValueList of MyMoneyTransaction objects.
   *
+  * The methods addEquity(), modifyEquitiy() and removeEquity()
+  * implement the general access to equities held in the engine.
+  *
+  * The methods addCurrency(), modifyCurrency() and removeCurrency()
+  * implement the general access to multiple currencies held in the engine.
+  * The methods baseCurrency() and setBaseCurrency() allow to retrieve/set
+  * the currency selected by the user as base currency. If a currency
+  * reference is emtpy, it will usually be interpreted as baseCurrency().
+  *
   * The methods liability(), asset(), expense() and income() are used to
   * retrieve the four standard accounts. isStandardAccount() checks if a
   * given accountId references one of the or not. setAccountName() is used
@@ -114,7 +123,7 @@ class MyMoneyTransactionFilter;
   * for MyMoneyKeyValueContainer which provides a container to store
   * these values indexed by an alphanumeric key.
   *
-  * @exceptions MyMoneyException is thrown whenever an error occurs
+  * @exception MyMoneyException is thrown whenever an error occurs
   * while the engine code is running. The MyMoneyException:: object
   * describes the problem.
   */
@@ -491,7 +500,7 @@ public:
     * This method is used to return the actual balance of an account
     * without it's sub-ordinate accounts
     *
-    * @param account id of the account in question
+    * @param id id of the account in question
     * @return balance of the account as MyMoneyMoney object
     */
   const MyMoneyMoney balance(const QCString& id) const;
@@ -500,7 +509,7 @@ public:
     * This method is used to return the actual balance of an account
     * including it's sub-ordinate accounts
     *
-    * @param account id of the account in question
+    * @param id id of the account in question
     * @return balance of the account as MyMoneyMoney object
     */
   const MyMoneyMoney totalBalance(const QCString& id) const;
@@ -645,7 +654,7 @@ public:
     * is part of a hierarchy, the category name will be the concatenation of
     * the single account names seperated by MyMoneyAccount::AccountSeperator.
     *
-    * @param id const QCString reference of the account's id
+    * @param accountId const QCString reference of the account's id
     *
     * @return QString of the constructed name.
     */
@@ -860,8 +869,8 @@ public:
     * @param type      only schedules of type @p type are searched for.
     *                  See MyMoneySchedule::typeE for details.
     *                  Default is MyMoneySchedule::TYPE_ANY
-    * @param occurance only schedules of occurance type @p occurance are searched for.
-    *                  See MyMoneySchedule::occuranceE for details.
+    * @param occurence only schedules of occurence type @p occurence are searched for.
+    *                  See MyMoneySchedule::occurenceE for details.
     *                  Default is MyMoneySchedule::OCCUR_ANY
     * @param paymentType only schedules of payment method @p paymentType
     *                  are searched for.
@@ -876,13 +885,13 @@ public:
     *
     * @return const QValueList<MyMoneySchedule> list of schedule objects.
     */
-  const QValueList<MyMoneySchedule> scheduleList(const QCString& = QCString(),
-                                     const MyMoneySchedule::typeE = MyMoneySchedule::TYPE_ANY,
-                                     const MyMoneySchedule::occurenceE = MyMoneySchedule::OCCUR_ANY,
-                                     const MyMoneySchedule::paymentTypeE = MyMoneySchedule::STYPE_ANY,
-                                     const QDate& = QDate(),
-                                     const QDate& = QDate(),
-                                     const bool = false) const;
+  const QValueList<MyMoneySchedule> scheduleList(const QCString& accountId = QCString(),
+                                     const MyMoneySchedule::typeE type = MyMoneySchedule::TYPE_ANY,
+                                     const MyMoneySchedule::occurenceE occurence = MyMoneySchedule::OCCUR_ANY,
+                                     const MyMoneySchedule::paymentTypeE paymentType = MyMoneySchedule::STYPE_ANY,
+                                     const QDate& startDate = QDate(),
+                                     const QDate& endDate = QDate(),
+                                     const bool overdue = false) const;
 
   const QStringList consistencyCheck(void);
     

@@ -182,7 +182,7 @@ public:
   /**
     * Simple method that returns the schedule last payment.
     *
-    * @retun QDate The last payment for the instance.
+    * @return QDate The last payment for the instance.
     */
   const QDate lastPayment(void) const { return m_lastPayment; }
 
@@ -299,8 +299,8 @@ public:
     * @return If this method returns, all checks are passed. Otherwise,
     *         it will throw a MyMoneyException object.
     *
-    * @exceptions MyMoneyException with detailed error information is thrown
-    *             in case of failure of any check.
+    * @exception MyMoneyException with detailed error information is thrown
+    *            in case of failure of any check.
     */
   void validate(bool id_check=true) const;
 
@@ -330,7 +330,6 @@ public:
   /**
     * Returns the instances name
     *
-    * @param none.
     * @return The name
     */
   const QString name(void) const { return m_name; }

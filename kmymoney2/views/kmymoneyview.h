@@ -327,9 +327,7 @@ public slots:
   /**
     * Called whenever the user 'executes' an account. This operation opens the account
     * and shows the register view.
-    *
-    * @param account The account which was 'executed'.
-  **/
+    **/
   void slotAccountDoubleClick(void);
 
   /**
@@ -346,9 +344,9 @@ public slots:
     * Called, whenever the payees view should pop up and a specific
     * transaction in an account should be shown. 
     *
-    * @param payee The ID of the payee to be shown
-    * @param account The ID of the account to be shown
-    * @param transaction The ID of the transaction to be selected
+    * @param payeeId The ID of the payee to be shown
+    * @param accountId The ID of the account to be shown
+    * @param transactionId The ID of the transaction to be selected
     */
   void slotPayeeSelected(const QCString& payeeId, const QCString& accountId, const QCString& transactionId);
 
@@ -459,11 +457,7 @@ protected slots:
     * Called whenever the user right clicks on an account.  It brings up
     * a context menu.  TODO: move the context menu into kmymoney2ui.rc, move
     * this method into KBanksView, remove the param inList.
-    *
-
-    * @param account The account which has been clicked on.
-    * @param inList Whether the click was on an account (REDUNDANT).
-  **/
+    **/
   void slotAccountRightMouse();
   void slotBankRightMouse();
   void slotRightMouse();
@@ -474,28 +468,26 @@ protected slots:
     * Called by the context menu created in slotAccountRightMouse.  Brings up
     * a dialog which allows the user to edit the account details.  TODO: move this
     * method into KBanksView.
-  **/
-
+    **/
   void slotAccountEdit();
 
   /**
-
     * Called by the context menu created in slotAccountRightMouse.  Deletes the currently
     * selected account. TODO: move this method into KBanksView.
-  **/
+    **/
   void slotAccountDelete();
 
   /**
     * Called by the context menu created in slotBankRightMouse.  Brings up
     * a dialog which allows the user to edit the bank details.  TODO: move this
     * method into KBanksView.
-  **/
+    **/
   void slotBankEdit();
 
   /**
     * Called by the context menu created in slotBankRightMouse.  Deletes the currently
     * selected bank. TODO: move this method into KBanksView.
-  **/
+    **/
   void slotBankDelete();
 
   /**

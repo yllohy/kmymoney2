@@ -87,7 +87,7 @@ public:
     *
     * @param parent pointer to the KListView object this entry should be
     *               added to.
-    * @param institution const reference to MyMoneyPayee for which
+    * @param payee const reference to MyMoneyPayee for which
     *               the KListView entry is constructed
     */
   KPayeeListItem(KListView *parent, const MyMoneyPayee& payee);

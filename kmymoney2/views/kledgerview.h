@@ -160,6 +160,8 @@ private:
   * - KLedgerViewCreditCard
   * - KLedgerViewSavings
   * - KLedgerViewCash
+  * - KLedgerViewLoan
+  * - KLedgerViewInvestment
   *
   * Each KLedgerView is devided into three parts:
   *
@@ -179,7 +181,7 @@ private:
   * transaction:
   *
   * - enter new transaction (New)
-  * - start editing new transaction (Edit)
+  * - start editing selected transaction (Edit)
   * - cancel editing (Cancel)
   * - end editing (Enter)
   * - selecting additional functions (More)
@@ -414,7 +416,7 @@ public slots:
     * Called when the category field has been changed.
     * m_transaction and m_split will be updated accordingly.
     *
-    * @param name const reference to the name of the category
+    * @param category const reference to the name of the category
     */
   virtual void slotCategoryChanged(const QString& category);
 
@@ -470,7 +472,7 @@ public slots:
     * Called when the to field has been changed by the user.
     * m_transaction and m_split will be updated accordingly.
     *
-    * @param date const reference to the to account name
+    * @param to const reference to the to account name
     */
   virtual void slotToChanged(const QString& to);
 
@@ -486,7 +488,7 @@ public slots:
     * Called when the type field has been changed by the user.
     * m_transaction and m_split will be updated accordingly.
     *
-    * @param action const QCString reference to the new action value
+    * @param type const QCString reference to the new action value
     */
   virtual void slotTypeChanged(const QCString& type);
 
@@ -902,7 +904,7 @@ signals:
   /**
     * The signal payeeSelected() is emitted, when a the user selects the
     * 'Goto payee/receiver' option. It will be routed by the KGlobalLedgerView()
-    * to the KMyMoneyView() for further processing. The parameters @payeeId,
+    * to the KMyMoneyView() for further processing. The parameters @p payeeId,
     * @p accountId and @p transactionId specify some options for the initial
     * display of the payee view.
     *

@@ -64,7 +64,7 @@ public:
     *
     * @param filename The name of the output file with full path information
     * @param profile The name of the profile to be used for conversion
-    * @param accoundId The id of the account that will be exported
+    * @param accountId The id of the account that will be exported
     * @param accountData If true, the transactions will be exported
     * @param categoryData If true, the categories will be exported as well
     * @param startDate Transations before this date will not be exported

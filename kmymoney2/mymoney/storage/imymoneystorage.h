@@ -254,7 +254,7 @@ public:
     * This method is used to return the actual balance of an account
     * without it's sub-ordinate accounts
     *
-    * @param account id of the account in question
+    * @param id id of the account in question
     * @return balance of the account as MyMoneyMoney object
     */
   virtual const MyMoneyMoney balance(const QCString& id) = 0;
@@ -263,7 +263,7 @@ public:
     * This method is used to return the actual balance of an account
     * including it's sub-ordinate accounts
     *
-    * @param account id of the account in question
+    * @param id id of the account in question
     * @return balance of the account as MyMoneyMoney object
     */
   virtual const MyMoneyMoney totalBalance(const QCString& id) = 0;
@@ -596,8 +596,8 @@ public:
     * @param type      only schedules of type @p type are searched for.
     *                  See MyMoneySchedule::typeE for details.
     *                  Default is MyMoneySchedule::TYPE_ANY
-    * @param occurance only schedules of occurance type @p occurance are searched for.
-    *                  See MyMoneySchedule::occuranceE for details.
+    * @param occurence only schedules of occurence type @p occurance are searched for.
+    *                  See MyMoneySchedule::occurenceE for details.
     *                  Default is MyMoneySchedule::OCCUR_ANY
     * @param paymentType only schedules of payment method @p paymentType
     *                  are searched for.
@@ -612,13 +612,13 @@ public:
     *
     * @return const QValueList<MyMoneySchedule> list of schedule objects.
     */
-  virtual const QValueList<MyMoneySchedule> scheduleList(const QCString& = QCString(),
-                                     const MyMoneySchedule::typeE = MyMoneySchedule::TYPE_ANY,
-                                     const MyMoneySchedule::occurenceE = MyMoneySchedule::OCCUR_ANY,
-                                     const MyMoneySchedule::paymentTypeE = MyMoneySchedule::STYPE_ANY,
-                                     const QDate& = QDate(),
-                                     const QDate& = QDate(),
-                                     const bool = false) const = 0;
+  virtual const QValueList<MyMoneySchedule> scheduleList(const QCString& accountId = QCString(),
+                                     const MyMoneySchedule::typeE type = MyMoneySchedule::TYPE_ANY,
+                                     const MyMoneySchedule::occurenceE occurence = MyMoneySchedule::OCCUR_ANY,
+                                     const MyMoneySchedule::paymentTypeE paymentType = MyMoneySchedule::STYPE_ANY,
+                                     const QDate& startDate = QDate(),
+                                     const QDate& endDate = QDate(),
+                                     const bool overdue = false) const = 0;
 
   virtual QValueList<MyMoneySchedule> scheduleListEx( int scheduleTypes,
                                               int scheduleOcurrences,

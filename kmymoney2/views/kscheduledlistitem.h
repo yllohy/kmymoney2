@@ -38,7 +38,6 @@
   * The list view item that describes a scheduled transaction.
   *
   * @author Michael Edwardes
-  * $id$
   */
 class KScheduledListItem : public KListViewItem  {
 public:
@@ -56,7 +55,7 @@ public:
     * @param description The (translated) description.
     *
     * @see MyMoneySchedule
-  **/
+    */
   KScheduledListItem(KListView *parent, const char *description);
   
   /**
@@ -66,16 +65,15 @@ public:
     * This child describes a schedule and represents the data in schedule.
     *
     * @param parent The list view item to be a child of.
-    * @param accountId The account id the schedule is for.
     * @param schedule The schedule to be represented.
     *
     * @see MyMoneySchedule
-  **/
+    */
   KScheduledListItem(KScheduledListItem *parent, const MyMoneySchedule& schedule/*, bool even*/);
 
   /**
     * Standard destructor.
-  **/
+    */
   ~KScheduledListItem();
 
   /**
@@ -84,9 +82,8 @@ public:
     *
     * Returns an empty string for the top level items.
     *
-    * @param none.
     * @return The schedule id.
-  **/
+    */
   QCString scheduleId(void) const { return m_id; }
 
 protected:
