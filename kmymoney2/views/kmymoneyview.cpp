@@ -156,15 +156,15 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   // to end any pending edit activities
   connect(this, SIGNAL(aboutToShowPage(QWidget*)), m_ledgerView, SLOT(hide()));
   connect(m_ledgerView, SIGNAL(signalViewActivated()), this, SLOT(slotActivatedAccountView()));
+  connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_ledgerView, SLOT(slotReloadView()));
 
   // Page 6
   m_investmentViewFrame = addVBoxPage( i18n("Investments"), i18n("Investments"),
     DesktopIcon("categories"));
-  m_investmentView = new KInvestmentView(m_investmentViewFrame, "categoriesView");
-  connect(m_investmentView, SIGNAL(signalViewActivated()), this, SLOT(slotActivatedInvestmentView()));
+  m_investmentView = new KInvestmentView(m_investmentViewFrame, "investmentView");
+  // connect(m_investmentView, SIGNAL(signalViewActivated()), this, SLOT(slotActivatedInvestmentView()));
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_investmentView, SLOT(slotReloadView()));
 
-  connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_ledgerView, SLOT(slotReloadView()));
 
 
   connect(m_accountsView, SIGNAL(accountRightMouseClick()),
@@ -343,8 +343,14 @@ void KMyMoneyView::slotAccountDoubleClick(void)
     acc = m_categoriesView->currentAccount(ok);
 
   if(ok == true) {
-    showPage(pageIndex(m_ledgerViewFrame));
-    m_ledgerView->slotSelectAccount(acc);
+    // select the correct view
+    MyMoneyAccount account = MyMoneyFile::instance()->account(acc);
+    if(account.accountType() == MyMoneyAccount::Investment) {
+      showPage(pageIndex(m_investmentViewFrame));
+    } else {
+      showPage(pageIndex(m_ledgerViewFrame));
+      m_ledgerView->slotSelectAccount(acc);
+    }
   }
 }
 

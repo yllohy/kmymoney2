@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>kInvestmentViewDecl</class>
 <widget class="QWidget">
     <property name="name">
@@ -8,96 +8,103 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>801</width>
-            <height>559</height>
+            <width>707</width>
+            <height>527</height>
         </rect>
     </property>
     <property name="caption">
         <string>Investment Summary</string>
     </property>
-    <widget class="QTabWidget">
+    <vbox>
         <property name="name">
-            <cstring>tabWidget2</cstring>
+            <cstring>unnamed</cstring>
         </property>
-        <property name="geometry">
-            <rect>
-                <x>10</x>
-                <y>51</y>
-                <width>761</width>
-                <height>490</height>
-            </rect>
-        </property>
-        <widget class="QWidget">
+        <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>tab</cstring>
+                <cstring>layout1</cstring>
             </property>
-            <attribute name="title">
-                <string>Investment Summary</string>
-            </attribute>
-            <widget class="KListView">
+            <hbox>
                 <property name="name">
-                    <cstring>investmentTable</cstring>
+                    <cstring>unnamed</cstring>
                 </property>
-                <property name="geometry">
-                    <rect>
-                        <x>10</x>
-                        <y>10</y>
-                        <width>740</width>
-                        <height>440</height>
-                    </rect>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel1</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Select Account:</string>
+                    </property>
+                </widget>
+                <widget class="KComboBox">
+                    <property name="name">
+                        <cstring>m_accountComboBox</cstring>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer1</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>101</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+            </hbox>
+        </widget>
+        <widget class="QTabWidget">
+            <property name="name">
+                <cstring>m_tab</cstring>
+            </property>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>m_summaryTab</cstring>
                 </property>
-                <property name="font">
-                    <font>
-                        <pointsize>9</pointsize>
-                    </font>
+                <attribute name="title">
+                    <string>Investment Summary</string>
+                </attribute>
+                <hbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="KListView">
+                        <property name="name">
+                            <cstring>investmentTable</cstring>
+                        </property>
+                        <property name="font">
+                            <font>
+                                <pointsize>9</pointsize>
+                            </font>
+                        </property>
+                        <property name="toolTip" stdset="0">
+                            <string>Summary of the equities contained in this account, showing price and % gains.</string>
+                        </property>
+                    </widget>
+                </hbox>
+            </widget>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>m_transactionTab</cstring>
                 </property>
-                <property name="toolTip" stdset="0">
-                    <string>Summary of the equities contained in this account, showing price and % gains.</string>
-                </property>
+                <attribute name="title">
+                    <string>Investment Transactions</string>
+                </attribute>
             </widget>
         </widget>
-        <widget class="QWidget">
-            <property name="name">
-                <cstring>tab</cstring>
-            </property>
-            <attribute name="title">
-                <string>Investment Transactions</string>
-            </attribute>
-        </widget>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabel1</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>10</x>
-                <y>10</y>
-                <width>150</width>
-                <height>30</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Select Account:</string>
-        </property>
-    </widget>
-    <widget class="KComboBox">
-        <property name="name">
-            <cstring>kComboBox1</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>160</x>
-                <y>10</y>
-                <width>150</width>
-                <height>29</height>
-            </rect>
-        </property>
-    </widget>
+    </vbox>
 </widget>
+<customwidgets>
+</customwidgets>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>klistview.h</includehint>
     <includehint>kcombobox.h</includehint>
+    <includehint>klistview.h</includehint>
 </includehints>
 </UI>

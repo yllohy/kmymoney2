@@ -26,6 +26,7 @@
 #include <qtabbar.h>
 #include <qtabwidget.h>
 
+class QLabel;
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -50,12 +51,19 @@ public:
   KLedgerViewInvestments(QWidget *parent = NULL, const char *name = NULL);
   ~KLedgerViewInvestments();
 
+public slots:
+  void slotRegisterDoubleClicked(int row, int col, int button, const QPoint &mousePos);
+
 protected slots:
-  virtual void slotReconciliation();
+  /**
+    * Calling this slot opens the account edit dialog for the current
+    * selected account.
+    */
+  virtual void slotAccountDetail(void);
+
+  virtual void slotReconciliation(void);
 
 protected:
-  void createRegister(void);
-  void createForm();
   virtual void fillForm();
   virtual void fillSummary();
   virtual void showWidgets();
@@ -63,11 +71,54 @@ protected:
   virtual void reloadEditWidgets(const MyMoneyTransaction& t);
 
 private:
+  /**
+    * This method is used by the constructor to create the necessary widgets
+    * for the register of the view and set it up.
+    */
+  void createRegister(void);
+
+  /**
+    * This method is used by the constructor to create the transaction form
+    * provided by the view.
+    */
+  void createForm(void);
+
+  /**
+    * This method is used by the constructor to create the summary line underneath
+    * the register widget in the view.
+    */
+  void createSummary(void);
+
+  /**
+    * This method is used by the constructor to create the info stack on
+    * the right of the register widget. The stack widget itself is created
+    * by the base class member of this function.
+    */
+  void createInfoStack(void);
+
+protected:
+  KPushButton*  m_detailsButton;
+  KPushButton*  m_reconcileButton;
+
+private:
+  /**
+    * This member keeps a pointer to the summary line
+    * which is located underneath the register. The
+    * widget itself is created in createSummary()
+    */
+  QLabel          *m_summaryLine;
+
+  QHBoxLayout*    m_summaryLayout;
+
+  QLabel*         m_lastReconciledLabel;
+
+/*
   KTextBrowser *textBrowser;
   QGridLayout *mainGrid;
   QTabWidget *m_InvestmentTabs;
   QWidget *m_SummaryTab,
        *m_TransactionTab;
+*/
 };
 
 #endif

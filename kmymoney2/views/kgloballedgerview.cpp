@@ -158,8 +158,8 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
 
   //Investment View
-  view = m_specificView[MyMoneyAccount::Investment] = new KLedgerViewInvestments(this);
-  m_accountStack->addWidget(view, MyMoneyAccount::Investment);
+  // view = m_specificView[MyMoneyAccount::Investment] = new KLedgerViewInvestments(this);
+  // m_accountStack->addWidget(view, MyMoneyAccount::Investment);
   //connect(view, SIGNAL(accountAndTransactionSelected(const QCString&, const QCString&)),
   //  this, SLOT(slotSelectAccountAndTransaction(const QCString&, const QCString&)));
   //connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
@@ -249,10 +249,12 @@ void KGlobalLedgerView::loadAccounts(void)
   acc = file->asset();
   for(it_s = acc.accountList().begin(); it_s != acc.accountList().end(); ++it_s) {
     subAcc = file->account(*it_s);
-    m_accountComboBox->insertItem(subAcc.name());
-    if(m_accountId.isEmpty()) {
-      m_accountId = *it_s;
-      currentName = subAcc.name();
+    if(subAcc.accountType() != MyMoneyAccount::Investment) {
+      m_accountComboBox->insertItem(subAcc.name());
+      if(m_accountId.isEmpty()) {
+        m_accountId = *it_s;
+        currentName = subAcc.name();
+      }
     }
   }
 
