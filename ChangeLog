@@ -1,3 +1,12 @@
+2002-12-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Show transaction action also in register underneath the date
+  * Changes to payment/deposit and transaction type are reflected
+    in the 'other widgets' during the edit phase of a transaction
+  * Updated kMyMoneyCombo to serve as widget for the ledger view
+  * Preset post date only, if invalid. Otherwise, take user's input
+  * kMyMoneyEdit will respect selected text upon entry of arithmetic
+    operators (e.g. +, -, *, etc.)
+
 2002-11-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Balance of accounts in accounts and category view did not get updated
   * Show liablities also as positive values in accounts view
