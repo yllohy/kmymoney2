@@ -3635,7 +3635,7 @@
     </customwidget>
     <customwidget>
         <class>kMyMoneyTable</class>
-        <header location="local">/home/mte/src/kmymoney2/kmymoney2/widgets/kmymoneytable.h</header>
+        <header location="local">./widgets/kmymoneytable.h</header>
         <sizehint>
             <width>330</width>
             <height>100</height>
