@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2004-01-11 17:51+0100\n"
+"POT-Creation-Date: 2004-01-13 18:59+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -724,7 +724,7 @@ msgid "%1 items of the details for the transaction have changed."
 msgstr ""
 
 #: dialogs/kenterscheduledialog.cpp:485 dialogs/kenterscheduledialog.cpp:613
-#: kmymoney2.cpp:1150
+#: kmymoney2.cpp:1153
 msgid "Unable to modify schedule: "
 msgstr ""
 
@@ -744,7 +744,7 @@ msgid ""
 "Are you sure you want to enter this occurence which is %1 days after today?"
 msgstr ""
 
-#: dialogs/kenterscheduledialog.cpp:619 kmymoney2.cpp:1157
+#: dialogs/kenterscheduledialog.cpp:619 kmymoney2.cpp:1160
 msgid "Unable to add transaction: "
 msgstr ""
 
@@ -1872,8 +1872,8 @@ msgstr ""
 msgid "Use this to open the profile editor"
 msgstr ""
 
-#: dialogs/kbackupdlgdecl.cpp:114 kmymoney2.cpp:888 kmymoney2.cpp:914
-#: kmymoney2.cpp:943 kmymoney2.cpp:950 kmymoney2.cpp:971 kmymoney2.cpp:973
+#: dialogs/kbackupdlgdecl.cpp:114 kmymoney2.cpp:890 kmymoney2.cpp:916
+#: kmymoney2.cpp:945 kmymoney2.cpp:952 kmymoney2.cpp:973 kmymoney2.cpp:975
 msgid "Backup"
 msgstr ""
 
@@ -4348,9 +4348,9 @@ msgstr ""
 msgid "Edit a category"
 msgstr ""
 
-#: kmymoney2.cpp:141 kmymoney2.cpp:233 kmymoney2.cpp:745 kmymoney2.cpp:901
-#: kmymoney2.cpp:926 kmymoney2.cpp:945 kmymoney2.cpp:962 kmymoney2.cpp:976
-#: kmymoney2.cpp:981
+#: kmymoney2.cpp:141 kmymoney2.cpp:233 kmymoney2.cpp:746 kmymoney2.cpp:903
+#: kmymoney2.cpp:928 kmymoney2.cpp:947 kmymoney2.cpp:964 kmymoney2.cpp:978
+#: kmymoney2.cpp:983
 msgid "Ready."
 msgstr ""
 
@@ -4517,116 +4517,116 @@ msgstr ""
 msgid "Closing window..."
 msgstr ""
 
-#: kmymoney2.cpp:493 kmymoney2.cpp:511
+#: kmymoney2.cpp:493 kmymoney2.cpp:512
 msgid "The file has been changed, save it ?"
 msgstr ""
 
-#: kmymoney2.cpp:527
+#: kmymoney2.cpp:528
 msgid "Exiting..."
 msgstr ""
 
-#: kmymoney2.cpp:550
+#: kmymoney2.cpp:551
 msgid "Toggling toolbar..."
 msgstr ""
 
-#: kmymoney2.cpp:567
+#: kmymoney2.cpp:568
 msgid "Toggle the statusbar..."
 msgstr ""
 
-#: kmymoney2.cpp:644
+#: kmymoney2.cpp:645
 msgid "Viewing personal data..."
 msgstr ""
 
-#: kmymoney2.cpp:649 kmymoney2.cpp:662
+#: kmymoney2.cpp:650 kmymoney2.cpp:663
 msgid "No MyMoneyFile open"
 msgstr ""
 
-#: kmymoney2.cpp:667
+#: kmymoney2.cpp:668
 msgid ""
 "This function is used by the developers to\n"
 "\n"
 "perform a dump of the engine's data in memory."
 msgstr ""
 
-#: kmymoney2.cpp:683
+#: kmymoney2.cpp:684
 msgid "Importing file..."
 msgstr ""
 
-#: kmymoney2.cpp:753
+#: kmymoney2.cpp:754
 msgid "Exporting file..."
 msgstr ""
 
-#: kmymoney2.cpp:818
+#: kmymoney2.cpp:819
 msgid "The file must be saved first "
 msgstr ""
 
-#: kmymoney2.cpp:819
+#: kmymoney2.cpp:820
 msgid "before it can be backed up.  Do you want to continue?"
 msgstr ""
 
-#: kmymoney2.cpp:832
+#: kmymoney2.cpp:833
 msgid ""
 "The current implementation of the backup functionality only supports local "
 "files as source files! Your current source file is '%1'."
 msgstr ""
 
-#: kmymoney2.cpp:834
+#: kmymoney2.cpp:836
 msgid "Local files only"
 msgstr ""
 
-#: kmymoney2.cpp:849
+#: kmymoney2.cpp:851
 msgid "Mounting %1"
 msgstr ""
 
-#: kmymoney2.cpp:888
+#: kmymoney2.cpp:890
 msgid "Backup file for today exists on that device.  Replace ?"
 msgstr ""
 
-#: kmymoney2.cpp:888
+#: kmymoney2.cpp:890
 msgid "&Replace"
 msgstr ""
 
-#: kmymoney2.cpp:893 kmymoney2.cpp:917 kmymoney2.cpp:935 kmymoney2.cpp:952
+#: kmymoney2.cpp:895 kmymoney2.cpp:919 kmymoney2.cpp:937 kmymoney2.cpp:954
 msgid "Unmounting %1"
 msgstr ""
 
-#: kmymoney2.cpp:907
+#: kmymoney2.cpp:909
 msgid "Writing %1"
 msgstr ""
 
-#: kmymoney2.cpp:914
+#: kmymoney2.cpp:916
 msgid "Error mounting device"
 msgstr ""
 
-#: kmymoney2.cpp:942 kmymoney2.cpp:969
+#: kmymoney2.cpp:944 kmymoney2.cpp:971
 msgid "Done"
 msgstr ""
 
-#: kmymoney2.cpp:943 kmymoney2.cpp:971
+#: kmymoney2.cpp:945 kmymoney2.cpp:973
 msgid "File successfully backed up"
 msgstr ""
 
-#: kmymoney2.cpp:950
+#: kmymoney2.cpp:952
 msgid "Error copying file to device"
 msgstr ""
 
-#: kmymoney2.cpp:973
+#: kmymoney2.cpp:975
 msgid "Error unmounting device"
 msgstr ""
 
-#: kmymoney2.cpp:1070
+#: kmymoney2.cpp:1073
 msgid "Running consitency check..."
 msgstr ""
 
-#: kmymoney2.cpp:1074
+#: kmymoney2.cpp:1077
 msgid "Consitency check result"
 msgstr ""
 
-#: kmymoney2.cpp:1086
+#: kmymoney2.cpp:1089
 msgid "Checking for overdue schedules..."
 msgstr ""
 
-#: kmymoney2.cpp:1206
+#: kmymoney2.cpp:1209
 msgid ""
 "The currently opened KMyMoney document does not contain a single asset "
 "account. In order to maintain your finances you need at least one asset "
@@ -4634,7 +4634,7 @@ msgid ""
 "Wizard\" now which allows you to create your first asset account."
 msgstr ""
 
-#: kmymoney2.cpp:1208
+#: kmymoney2.cpp:1211
 msgid "No asset account"
 msgstr ""
 
@@ -4648,6 +4648,109 @@ msgstr ""
 msgid ""
 "_: EMAIL OF TRANSLATORS\n"
 "Your emails"
+msgstr ""
+
+#: _tips.cpp:3
+msgid ""
+"<p>...that you can change the sort order of ledger entries by\n"
+"right-clicking the header of the ledger view?\n"
+msgstr ""
+
+#: _tips.cpp:8
+msgid ""
+"<p>...that you can easily move to the other side of a transfer transaction\n"
+"by opening the context menu with the right mouse button and selecting the\n"
+"'Goto ...' function?\n"
+msgstr ""
+
+#: _tips.cpp:14
+msgid ""
+"<p>...that you can start editing a transaction by double-clicking on the\n"
+"transaction in the register?\n"
+msgstr ""
+
+#: _tips.cpp:19
+msgid ""
+"<p>...that you can show more details of the selected transaction in the\n"
+"register by selecting the 'ledger lens' feature in the settings dialog?\n"
+msgstr ""
+
+#: _tips.cpp:24
+msgid ""
+"<p>...that transactions with no category assigned or splitted\n"
+"transactions with unassigned values blink in \n"
+"<font color=\"red\">red</font> in the register?\n"
+msgstr ""
+
+#: _tips.cpp:30
+msgid ""
+"<p>...that you can show all details of the transactions in the register\n"
+"by typeing &lt;Ctrl-T&gt; or selecting the 'Settings/Show Transaction "
+"Detail'\n"
+"menu entry? You can turn this feature off the same way.\n"
+msgstr ""
+
+#: _tips.cpp:36
+msgid ""
+"<p>...that you can switch between a listing of all accounts or\n"
+"an icon view of all asset and liability accounts with the tabs\n"
+"in the accounts view?\n"
+msgstr ""
+
+#: _tips.cpp:42
+msgid "<p>...that the KMyMoney development team wishes you a nice day?\n"
+msgstr ""
+
+#: _tips.cpp:46
+msgid ""
+"<p>...you can use your own external filter program to convert any\n"
+"import format to QIF on the fly? See the QIF profile editor for\n"
+"more details.\n"
+msgstr ""
+
+#: _tips.cpp:52
+msgid ""
+"<p>...you have the option to configure KMyMoney so that it opens\n"
+"the last opened file automatically when started? See the \"General\"\n"
+"page of the \"Configure\" dialog for that option. \n"
+msgstr ""
+
+#: _tips.cpp:58
+msgid ""
+"<p>...that you can create a scheduled transaction from an existing\n"
+"one by selecting the context menu on a transaction in the ledger\n"
+"or the \"More...\"-menu in the transaction form?\n"
+msgstr ""
+
+#: _tips.cpp:64
+msgid ""
+"<p>...that you can switch to the payee of a transaction\n"
+"by selecting the context menu on a transaction in the ledger\n"
+"or the \"More...\"-menu in the transaction form?\n"
+msgstr ""
+
+#: _tips.cpp:70
+msgid ""
+"<p>...that you can modify the colors and fonts used for the ledgers\n"
+"via <i>Configure/Register/...</i>?\n"
+msgstr ""
+
+#: _tips.cpp:75
+msgid ""
+"<p>...that you can hide transactions prior to a specific date?\n"
+"The date can be modified via <i>Configure/Register/Filter</i>.\n"
+msgstr ""
+
+#: _tips.cpp:80
+msgid ""
+"<p>...that you can customize the \"Home-Page\"\n"
+"via <i>Configure/Home</i>?\n"
+msgstr ""
+
+#: _tips.cpp:85
+msgid ""
+"<p>...that you can enter new transactions even while reconciling\n"
+"an account? You can also make the transaction form visible.\n"
 msgstr ""
 
 #: main.cpp:40
