@@ -1,3 +1,11 @@
+2003-07-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * fill AccountsView with standard accounts even if there are
+    no further accounts defined
+  * preset correct type of new account according to current selected
+    account in the accounts and categories view
+  * made new widgets compilable under KDE 3.0 - while loosing some
+    functionality :-(
+
 2003-07-03 Michael Edwardes <mte@users.sourceforge.net>
   * Subclassed a new more specific to schedules calendar class
     from kMyMoneyCalendar.
