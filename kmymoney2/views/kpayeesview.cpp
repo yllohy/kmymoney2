@@ -417,6 +417,9 @@ void KPayeesView::resizeEvent(QResizeEvent* ev)
   w -= m_transactionView->columnWidth(1);
   w -= m_transactionView->columnWidth(3);
   m_transactionView->setColumnWidth(2, w);
+  m_transactionView->resizeContents(
+    m_transactionView->visibleWidth(),
+    m_transactionView->visibleHeight());
 
   KPayeesViewDecl::resizeEvent(ev);
 }
@@ -424,7 +427,8 @@ void KPayeesView::resizeEvent(QResizeEvent* ev)
 void KPayeesView::slotTransactionDoubleClicked(QListViewItem* i)
 {
   KTransactionListItem* item = static_cast<KTransactionListItem *>(i);
-  emit transactionSelected(item->accountId(), item->transactionId());
+  if (item)
+    emit transactionSelected(item->accountId(), item->transactionId());
 }
 
 void KPayeesView::slotSelectPayeeAndTransaction(const QCString& payeeId, const QCString& accountId, const QCString& transactionId)
