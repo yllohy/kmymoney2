@@ -27,6 +27,8 @@
 #include <kaboutdata.h>
 #include <klocale.h>
 #include <ktip.h>
+#include <dcopclient.h>
+#include <kmessagebox.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -101,9 +103,23 @@ int main(int argc, char *argv[])
       qWarning("Unable to select language '%s'. This has one of two reasons:\n\ta) the standard KDE message catalogue is not installed\n\tb) the KMyMoney message catalogue is not installed", language.data());
     }
   }
-  
+
   kmymoney2 = new KMyMoney2App();
   a->setMainWidget( kmymoney2 );
+
+  // connect to DCOP server
+  if(a->dcopClient()->registerAs("kmymoney", true) != false) {
+    if(kmymoney2->instanceList().count() > 0) {
+      if(KMessageBox::questionYesNo(0, i18n("Another instance of KMyMoney is already running. Do you want to quit?")) == KMessageBox::Yes) {
+        delete a;
+        exit(1);
+      }
+    }
+  } else {
+    qDebug("DCOP registration failed. Some functions are not available.");
+  }
+
+  
   kmymoney2->show();
   kmymoney2->setEnabled(false);
   

@@ -39,6 +39,7 @@
 #include <kaction.h>
 #include <kprocess.h>
 #include <kurl.h>
+#include <dcopobject.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -77,10 +78,10 @@ class IMyMoneyStorage;
   *
   * @short Main application class.
 **/
-class KMyMoney2App : public KMainWindow, MyMoneyObserver
+class KMyMoney2App : public KMainWindow, MyMoneyObserver, public DCOPObject
 {
   Q_OBJECT
-
+  K_DCOP
 
 protected slots:
   void slotKeySettings();
@@ -191,6 +192,17 @@ public:
     *                    these widgets are not yet created (the default is false).
     */
   void updateCaption(const bool skipActions = false);
+
+  /**
+    * This method returns a list of all 'other' dcop registered kmymoney processes.
+    * It's a subset of the return of DCOPclient()->registeredApplications().
+    *
+    * @retval QCStringList of process ids
+    */
+  const QCStringList instanceList(void) const;
+
+k_dcop:
+  const QString filename() const;
 
 protected:
   /** save general Options like all bar positions and status as well as the geometry and the recent file list to the configuration

@@ -20,7 +20,6 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
-#include <qapplication.h>
 #include <qdir.h>
 #include <qprinter.h>
 #include <qpainter.h>
@@ -29,6 +28,7 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 
+#include <kapplication.h>
 #include <kshortcut.h>
 #include <kiconloader.h>
 #include <kmessagebox.h>
@@ -48,11 +48,13 @@
 #include <kkeydialog.h>
 #include <kprogress.h>
 #include <kio/netaccess.h>
+#include <dcopclient.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
 
 #include "kmymoney2.h"
+#include "kmymoney2_stub.h"
 #include "kstartuplogo.h"
 
 #include "dialogs/kstartdlg.h"
@@ -77,7 +79,8 @@
 #define ID_STATUS_MSG 1
 
 KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name)
- : KMainWindow(0, name)
+ : KMainWindow(0, name),
+ DCOPObject("kmymoney2app")
 {
   updateCaption(true);
 
@@ -362,21 +365,45 @@ void KMyMoney2App::slotFileOpenRecent(const KURL& url)
   QString prevMsg = slotStatusMsg(i18n("Loading file..."));
   KURL lastFile = fileName;
 
-  if(url.isValid() && KIO::NetAccess::exists(url)) {
-    slotFileClose();
-    if(!myMoneyView->fileOpen()) {
-      if(myMoneyView->readFile(url)) {
-        fileName = url;
-        fileOpenRecent->addURL( url );
-        writeLastUsedFile(url.url());
-        
-        // Check the schedules
-        slotCheckSchedules();
+  // check if there are other instances which might have this file open
+  QCStringList list = instanceList();
+  QCStringList::ConstIterator it;
+  bool duplicate = false;
+
+  for(it = list.begin(); duplicate == false && it != list.end(); ++it) {
+    KMyMoney2App_stub* remoteApp = new KMyMoney2App_stub(kapp->dcopClient(), (*it), "kmymoney2app");
+    QString remoteFile = remoteApp->filename();
+    if(!remoteApp->ok()) {
+      qDebug("DCOP error while calling app->filename()");
+    } else {
+      if(remoteFile == url.url()) {
+        duplicate = true;
       }
-      
-      updateCaption();
-      emit fileLoaded(fileName);
     }
+    delete remoteApp;
+  }
+
+  if(!duplicate) {
+  
+    if(url.isValid() && KIO::NetAccess::exists(url)) {
+      slotFileClose();
+      if(!myMoneyView->fileOpen()) {
+        if(myMoneyView->readFile(url)) {
+          fileName = url;
+          fileOpenRecent->addURL( url );
+          writeLastUsedFile(url.url());
+
+          // Check the schedules
+          slotCheckSchedules();
+        }
+
+        updateCaption();
+        emit fileLoaded(fileName);
+      }
+    }
+  } else {
+    KMessageBox::sorry(this, i18n("File '%1'already opened in another instance of KMyMoney").arg(url.url()), "Duplicate open");
+    return;
   }
   slotStatusMsg(prevMsg);
 }
@@ -1294,4 +1321,26 @@ void KMyMoney2App::createInitialAccount(void)
       i18n("No asset account"));
     myMoneyView->slotAccountNew();
   }
+}
+
+const QString KMyMoney2App::filename() const
+{
+  return fileName.url();
+}
+
+const QCStringList KMyMoney2App::instanceList(void) const
+{
+  QCStringList list;
+  QCStringList apps = kapp->dcopClient()->registeredApplications();
+  QCStringList::ConstIterator it;
+
+  for(it = apps.begin(); it != apps.end(); ++it) {
+    // skip over myself
+    if((*it) == kapp->dcopClient()->appId())
+      continue;
+    if((*it).find("kmymoney-") == 0) {
+      list += (*it);
+    }
+  }
+  return list;
 }
