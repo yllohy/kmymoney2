@@ -29,6 +29,9 @@
 // KDE Includes
 
 #include <klocale.h>
+#include <kiconloader.h>
+#include <kguiitem.h>
+#include <kpushbutton.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -43,7 +46,26 @@ KImportVerifyDlg::KImportVerifyDlg(const MyMoneyAccount& account, QWidget *paren
 {
   m_ledgerView->slotReloadView();
   m_ledgerView->slotSelectAccount(account.id());
+
+  // add icons to buttons
+  KIconLoader *il = KGlobal::iconLoader();
+  KGuiItem okButtenItem( i18n("&Ok" ),
+                    QIconSet(il->loadIcon("button_ok", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Accepts the imported transactions and continues"),
+                    i18n("Use this to accept all transactions and import them into the file."));
+  buttonOk->setGuiItem(okButtenItem);
+
+  KGuiItem cancelButtenItem( i18n( "&Cancel" ),
+                    QIconSet(il->loadIcon("button_cancel", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Cancel the import operation"),
+                    i18n("Use this to abort the import and undo all changes made during import."));
+  buttonCancel->setGuiItem(cancelButtenItem);
+
+  // for now, we don't have online help
+  buttonHelp->hide();
+  
   connect(buttonOk, SIGNAL(clicked()), this, SLOT(slotOkClicked()));
+  connect(buttonCancel, SIGNAL(clicked()), this, SLOT(reject()));
 }
 
 KImportVerifyDlg::~KImportVerifyDlg()
