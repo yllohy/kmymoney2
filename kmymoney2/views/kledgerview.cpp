@@ -642,6 +642,8 @@ void KLedgerView::slotPayeeChanged(const QString& name)
   if(!m_editPayee)
     return;
 
+  // FIXME: add #929127 (new transaction default spits based on payee) here
+
   createSecondSplit();
 
   MyMoneySplit sp;
