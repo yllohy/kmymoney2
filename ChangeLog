@@ -1,3 +1,7 @@
+2002-12-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed translation problem in KReconcileDlgDecl.ui
+  * Remember the type of accounts view the user selected last
+
 2002-12-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Dynamically allocate application object to cover more code with
     memory leakage checker
