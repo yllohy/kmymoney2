@@ -81,6 +81,15 @@ private:
   KLedgerView*  m_view;
 };
 
+/**
+  * The class kMyMoneyTransactionFormTableItem is a specialized version
+  * of the QTableItem base class that allows control of the alignment.
+  * Within the base class, all numeric values will be aligned to the left,
+  * all other values will be aligned to the right. In order to control
+  * the alignment, this class is provided. Use it like the standard QTableItem
+  * class and additionally alignment() and setAlignment() to control
+  * this attribute.
+  */
 class kMyMoneyTransactionFormTableItem : public QTableItem
 {
 public:
@@ -92,7 +101,18 @@ public:
 
   kMyMoneyTransactionFormTableItem(QTable* tbl, EditType ed, const QString& str);
   ~kMyMoneyTransactionFormTableItem();
+
+  /**
+    * Returns the alignment setting of the current object.
+    * @return alignmentTypeE of the current setting
+    */
   int alignment() const;
+
+  /**
+    * This method is used to set the alignment value for this object.
+    *
+    * @param align alignment type
+    */
   void setAlignment(alignmentTypeE align = standard);
 
 private:

@@ -215,7 +215,7 @@ kMyMoneyTransactionForm::kMyMoneyTransactionForm( KLedgerView* parent,  const ch
 
 
   formTable = new kMyMoneyTransactionFormTable( m_view, formFrame, "formTable" );
-  formTable->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)5, (QSizePolicy::SizeType)5, 0, 0, formTable->sizePolicy().hasHeightForWidth() ) );
+  formTable->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding, 0, 0, formTable->sizePolicy().hasHeightForWidth() ) );
   formTable->setBackgroundOrigin(QTable::WindowOrigin);
   formTable->setFrameShape( QTable::NoFrame );
   formTable->setFrameShadow( QTable::Plain );
@@ -249,4 +249,3 @@ kMyMoneyTransactionForm::~kMyMoneyTransactionForm()
 {
     // no need to delete child widgets, Qt does it all for us
 }
-
