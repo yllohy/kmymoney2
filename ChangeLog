@@ -9,6 +9,12 @@
     allows straight file generation for the first time user
   * speedup reading of default income/expense categories
   * finished work on reconciliation wizard
+  * added consitency check to the new account wizard (Don't allow to
+    proceed if data is not entered)
+  * allow creation of new payees from new account wizard
+  * added icons to KNewAccountDlg
+  * allow 'reverse' category for schedule, but warn if it is selected
+  * added button icons to KBackupDlg
 
 2003-12-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * reworked KEndingBalanceDlg to be a wizard
