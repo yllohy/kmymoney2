@@ -133,10 +133,15 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name)
 
   m_reader = 0;
   m_engineBackup = 0;
+
+  // make sure, we get a note when the engine changes state
+  MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAnyChange, this);
 }
 
 KMyMoney2App::~KMyMoney2App()
 {
+  MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassAnyChange, this);
+  
   delete m_startLogo;
   if(m_reader != 0)
     delete m_reader;
@@ -158,6 +163,7 @@ void KMyMoney2App::readFile(void)
   myMoneyView->readFile(fileName);
 
   slotStatusMsg(prevMsg);
+  updateCaption();
 }
 
 void KMyMoney2App::initActions()
@@ -382,6 +388,7 @@ bool KMyMoney2App::queryExit()
 {
   saveOptions();
   return true;
+
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -433,6 +440,7 @@ void KMyMoney2App::slotFileOpen()
   fileName = KURL();
   initWizard();
   slotStatusMsg(prevMsg);
+  updateCaption();
 }
 
 void KMyMoney2App::slotFileOpenRecent(const KURL& url)
@@ -445,6 +453,7 @@ void KMyMoney2App::slotFileOpenRecent(const KURL& url)
 #else
     int answer = KMessageBox::warningContinueCancel(this, i18n("KMyMoney file already open.  Close it ?"), "Close File", "Close", "dont_ask_again");
 #endif
+
     if (answer==KMessageBox::Cancel) {
       slotStatusMsg(prevMsg);
       return;
@@ -457,6 +466,7 @@ void KMyMoney2App::slotFileOpenRecent(const KURL& url)
   fileOpenRecent->addURL( url );
 
   slotStatusMsg(prevMsg);
+
 }
 
 void KMyMoney2App::slotFileSave()
@@ -472,6 +482,7 @@ void KMyMoney2App::slotFileSave()
   myMoneyView->saveFile(fileName);
 
   slotStatusMsg(prevMsg);
+  updateCaption();
 }
 
 void KMyMoney2App::slotFileSaveAs()
@@ -518,6 +529,7 @@ void KMyMoney2App::slotFileSaveAs()
   }
 
   slotStatusMsg(prevMsg);
+  updateCaption();
 }
 
 void KMyMoney2App::slotFileCloseWindow()
@@ -554,6 +566,7 @@ void KMyMoney2App::slotFileClose()
 
   myMoneyView->closeFile();
   fileName = KURL();
+  updateCaption();
 
 }
 
@@ -798,6 +811,7 @@ void KMyMoney2App::slotQifImportFinished(void)
     m_reader = 0;
     slotStatusProgressBar(-1, -1);
     slotStatusMsg(i18n("Ready."));
+
   }
 }
 
@@ -1199,4 +1213,18 @@ bool KMyMoney2App::verifyImportedData()
   rc = (dialog->exec() == QDialog::Accepted);
   delete dialog;
   return rc;
+}
+
+void KMyMoney2App::updateCaption(void)
+{
+  QString caption;
+
+  caption = kapp->makeStdCaption(fileName.filename(false), false, MyMoneyFile::instance()->dirty());
+  caption += " - KMyMoney";
+  setPlainCaption(caption);
+}
+
+void KMyMoney2App::update(const QCString& /* id */)
+{
+  updateCaption();
 }

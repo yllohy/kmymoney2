@@ -62,11 +62,11 @@ class KStartupLogo;
   * @see KMyMoneyView
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: kmymoney2.h,v 1.30 2003/06/30 19:50:05 ipwizard Exp $
+  * $Id: kmymoney2.h,v 1.31 2003/07/23 18:21:43 ipwizard Exp $
   *
   * @short Main application class.
 **/
-class KMyMoney2App : public KMainWindow
+class KMyMoney2App : public KMainWindow, MyMoneyObserver
 {
   Q_OBJECT
 
@@ -128,6 +128,7 @@ protected slots:
     * @param enable If true enable all the KActions otherwise disable them
     *
     * @see KMyMoneyView
+
   **/
   //void enableFileOperations(bool enable=true);
 
@@ -225,6 +226,12 @@ public:
 
   static void progressCallback(int current, int total, const QString&);
 
+  /**
+    * This function will be called by the engine when the engine data changed
+    * and the application object needs to update it's state.
+    */
+  virtual void update(const QCString& id);
+  
 protected:
   /** save general Options like all bar positions and status as well as the geometry and the recent file list to the configuration
    * file
@@ -258,6 +265,12 @@ protected:
    */
   virtual bool queryExit();
 
+  /**
+    * This method is used to update the caption of the application window.
+    * It set's the caption to "filename [modified] - KMyMoney".
+    */
+  void updateCaption(void);
+  
 public slots:
   /** */
   /** Open a new window */
