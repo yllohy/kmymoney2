@@ -169,6 +169,7 @@ void KImportDlg::slotOkClicked()
     if (!m_mymoneyaccount->readQIFFile(m_qlineeditFile->text(),
                                        m_qcomboboxDateFormat->currentText(),
                                        m_qApostropheGroup->id(m_qApostropheGroup->selected()),
+                                       m_qDecimalSymbol->text(),
                                        nTransCount, nCatCount)) {
         KMessageBox::error(this, i18n("Import from QIF file failed."));
     } else {
@@ -192,6 +193,9 @@ void KImportDlg::readConfig(void)
   kconfig->setGroup("Last Use Settings");
   m_qlineeditFile->setText(kconfig->readEntry("KImportDlg_LastFile"));
   m_qstringLastFormat = kconfig->readEntry("KImportDlg_LastFormat", "%d/%m/%yy");
+  m_qstringLastDecimalSymbol = kconfig->readEntry("KImportDlg_LastDecimalSymbol",
+                               KGlobal::locale()->monetaryDecimalSymbol());
+  m_qDecimalSymbol->setText(m_qstringLastDecimalSymbol);
   if (m_qlineeditFile->text().length()>=1  && fileExists(m_qlineeditFile->text())) {
     m_qcomboboxDateFormat->setEnabled(true);
     m_qbuttonOk->setEnabled(true);
@@ -212,6 +216,7 @@ void KImportDlg::writeConfig(void)
   kconfig->writeEntry("KImportDlg_LastFormat", m_qcomboboxDateFormat->currentText());
 	kconfig->writeEntry("KImportDlg_LastApostrophe",
 											m_qApostropheGroup->id(m_qApostropheGroup->selected())+1);
+  kconfig->writeEntry("KImportDlg_LastDecimalSymbol", m_qDecimalSymbol->text());
   kconfig->sync();
 }
 

@@ -43,7 +43,7 @@
   * @see MyMoneyAccount
   *
   * @author Felix Rodriguez, Michael Edwardes 2000-2001
-  * $Id: kimportdlg.h,v 1.5 2001/09/30 08:42:37 ipwizard Exp $
+  * $Id: kimportdlg.h,v 1.6 2001/12/12 20:41:29 ipwizard Exp $
   *
   * @short A class to import a qif file to an account.
 **/
@@ -55,6 +55,7 @@ private:
   void writeConfig(void);
 
   QString m_qstringLastFormat;
+  QString m_qstringLastDecimalSymbol;
   MyMoneyAccount *m_mymoneyaccount;
 
   bool fileExists(KURL url);
