@@ -285,7 +285,7 @@ public slots:
   /**
     * This slot hides all accounts/categories that do not contain
     * txt in their name. If @p txt matches, all child accounts
-    * will also be shown. The mehtod retuns the number of visible
+    * will also be shown. The method retuns the number of visible
     * items.
     */
   int slotMakeCompletion(const QString& txt);
