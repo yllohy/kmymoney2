@@ -812,7 +812,7 @@ void KLedgerViewCheckings::fillForm(void)
     m_form->editButton()->setEnabled(true);
     m_form->enterButton()->setEnabled(false);
     m_form->cancelButton()->setEnabled(false);
-    m_form->moreButton()->setEnabled(false);
+    m_form->moreButton()->setEnabled(true);
   } else {
     m_transaction = MyMoneyTransaction();
     m_split = MyMoneySplit();

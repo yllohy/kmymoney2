@@ -1287,7 +1287,6 @@ void KLedgerView::slotEndEdit(void)
     // Splits not referencing any account will be removed.
     // Price information for other currencies will be collected
 
-    QCString payeeId;
     QMap<QCString, MyMoneyMoney> priceInfo;
     for(it = list.begin(); it != list.end(); ++it) {
       if((*it).accountId().isEmpty()) {
@@ -1311,9 +1310,6 @@ void KLedgerView::slotEndEdit(void)
           m_transaction.modifySplit(*it);
           break;
       }
-      if((*it).action() == MyMoneySplit::ActionTransfer
-      && payeeId.isEmpty() && !(*it).payeeId().isEmpty())
-        payeeId = (*it).payeeId();
 
       if(m_transaction.commodity() != acc.currencyId()) {
         // different currencies, try to find recent price info
@@ -1370,11 +1366,13 @@ void KLedgerView::slotEndEdit(void)
       }
     }
 
-    if(m_transaction.splitCount() == 2 && !payeeId.isEmpty()) {
+    if(transactionType(m_transaction) == Transfer && !m_split.payeeId().isEmpty()) {
       for(it = list.begin(); it != list.end(); ++it) {
-        if((*it).action() == MyMoneySplit::ActionTransfer
-        && (*it).payeeId().isEmpty()) {
-          (*it).setPayeeId(payeeId);
+        if((*it).id() == m_split.id())
+          continue;
+
+        if((*it).payeeId().isEmpty()) {
+          (*it).setPayeeId(m_split.payeeId());
           m_transaction.modifySplit(*it);
         }
       }

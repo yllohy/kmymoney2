@@ -279,15 +279,6 @@ protected:
     * @param enable true enables the widgets, false disables them
     */
   virtual void enableWidgets(const bool enable);
-#if 0
-  /**
-    * Called when the type field has been changed by the user.
-    * m_transaction and m_split will be updated accordingly.
-    *
-    * @param type index of the selected item in the combo box
-    */
-  void slotTypeChanged(int type);
-#endif
 
 protected slots:
   /**

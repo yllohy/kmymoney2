@@ -699,7 +699,7 @@ protected:
     * in m_register. It must be overridden by any derived
     * class.
     */
-  virtual void fillFormStatics(void) {};
+  virtual void fillFormStatics(void) = 0;
 
   /**
     * This method is called to fill the summary line with
