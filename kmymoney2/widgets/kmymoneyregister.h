@@ -412,6 +412,11 @@ signals:
   void signalNextTransaction();
 
   /**
+    * This signal is emitted when the user presses the 'Home' or 'End' key
+    */
+  void signalSelectTransaction(const QCString&);
+  
+  /**
     * This signal is emitted when the user presses DELETE
     */
   void signalDelete();

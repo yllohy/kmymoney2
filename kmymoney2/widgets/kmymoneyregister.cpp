@@ -388,7 +388,8 @@ bool kMyMoneyRegister::eventFilter(QObject* o, QEvent* e)
     int lines = visibleHeight()/rowHeight(0);
     if(m_ledgerLens)
       lines += maxRpt()-1;
-      
+    QCString transactionId;
+          
     QKeyEvent *k = static_cast<QKeyEvent *> (e);
     rc = true;
     switch(k->key()) {
@@ -410,7 +411,17 @@ bool kMyMoneyRegister::eventFilter(QObject* o, QEvent* e)
           emit signalNextTransaction();
         break;
         break;
-                
+
+      case Qt::Key_Home:
+        transactionId = m_parent->transaction(0)->id();
+        // tricky fall through here
+        
+      case Qt::Key_End:
+        emit signalSelectTransaction(transactionId);
+        break;
+        
+        break;
+                        
       case Qt::Key_Return:
       case Qt::Key_Enter:
         emit signalEnter();

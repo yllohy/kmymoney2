@@ -316,6 +316,14 @@ public:
   const QString action2str(const QCString& action, const bool showHotkey = false) const;
 
   /**
+    * This method is used to check if the transaction is being edited
+    *
+    * @return true if editing, false otherwise.
+    */
+  const bool isEditMode(void) const;
+
+public slots:
+  /**
     * This method is used to select a specific transaction. If @p id is equal
     * to "", then the last available transaction will be selected.
     *
@@ -326,14 +334,6 @@ public:
     */
   bool selectTransaction(const QCString& id);
 
-  /**
-    * This method is used to check if the transaction is being edited
-    *
-    * @return true if editing, false otherwise.
-    */
-  const bool isEditMode(void) const;
-
-public slots:
   /**
     * This slot is called by KGlobalLedgerView::selectAccount to set
     * the current account to @p accountId. It calls
@@ -644,34 +644,6 @@ protected:
     */
   virtual void enableWidgets(const bool enable);
 
-#if 0  
-  /**
-    * This method reloads the account data from the engine, refreshes
-    * the view using refreshView() and repaints the register if not
-    * suppressed by an argument. If repainting is requested, the transaction
-    * form is also updated using fillForm().
-    *
-    * @param repaint If true, the register is repainted with the new
-    *                the new values, if false, repainting is suppressed.
-    *                The default is true.
-    */
-  void reloadAccount(const bool repaint = true);
-
-  /**
-    * This method reloads the account data using reloadAccount(), selects
-    * the last transaction in the current register as the current
-    * transaction and fills the form with the data of this transaction
-    * using fillForm().
-    */
-  void loadAccount(void);
-
-  /**
-    * This method clears the m_TransactionPtrVector and rebuilds and sorts
-    * it according to the current settings. Once the m_transactionPtrVector
-    * is available, it rebuilds the m_balance vector.
-    */
-  void filterTransactions(void);
-#endif
   void setupPointerAndBalanceArrays(void);
 
   /**

@@ -393,6 +393,9 @@ private:
   QLabel*         m_differenceLabel;
 
   QCheckBox*      m_transactionCheckBox;
+  
+  QLabel*         m_lastReconciledLabel;
+
 };
 
 #endif

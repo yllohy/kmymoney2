@@ -623,6 +623,8 @@ void KLedgerView::slotPayeeChanged(const QString& name)
   if(!m_editPayee)
     return;
 
+  createSecondSplit();
+  
   MyMoneySplit sp;
   if(m_transaction.splitCount() == 2) {
     sp = m_transaction.splitByAccount(m_account.id(), false);
@@ -631,7 +633,6 @@ void KLedgerView::slotPayeeChanged(const QString& name)
   if(!name.isEmpty()) {
     MyMoneyPayee payee;
     try {
-      createSecondSplit();
 
       payee = MyMoneyFile::instance()->payeeByName(name);
       m_split.setPayeeId(payee.id());
@@ -1184,6 +1185,7 @@ void KLedgerView::slotTypeChanged(const QCString& action)
             split = m_transaction.splitByAccount(m_account.id(), false);
             m_transaction.removeSplit(split);
           }
+          qDebug("split count is %d", m_transaction.splitCount());
         } catch(MyMoneyException *e) {
           delete e;
         }

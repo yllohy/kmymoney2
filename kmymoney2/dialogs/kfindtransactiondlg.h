@@ -147,6 +147,7 @@ protected slots:
   void slotNextTransaction(void);
   void slotPreviousTransaction(void);
   void slotSelectTransaction(void);
+  void slotSelectTransaction(const QCString& id);
   
 private slots:
   void slotRightSize(void);

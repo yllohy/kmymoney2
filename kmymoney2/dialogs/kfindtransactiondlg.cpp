@@ -115,6 +115,7 @@ KFindTransactionDlg::KFindTransactionDlg(QWidget *parent, const char *name)
   connect(m_register, SIGNAL(signalEnter()), this, SLOT(slotSelectTransaction()));
   connect(m_register, SIGNAL(signalNextTransaction()), this, SLOT(slotNextTransaction()));
   connect(m_register, SIGNAL(signalPreviousTransaction()), this, SLOT(slotPreviousTransaction()));
+  connect(m_register, SIGNAL(signalSelectTransaction(const QCString&)), this, SLOT(slotSelectTransaction(const QCString&)));
 
   // FIXME: Once we have the online help going, we can show the help button
   m_helpButton->hide();
@@ -791,6 +792,32 @@ void KFindTransactionDlg::slotPreviousTransaction(void)
 {
   if(m_register->currentTransactionIndex() > 0) {
     m_register->setCurrentTransactionIndex(m_register->currentTransactionIndex()-1);
+    m_register->ensureTransactionVisible();
+    m_register->repaintContents(false);
+  }
+}
+
+void KFindTransactionDlg::slotSelectTransaction(const QCString& transactionId)
+{
+  int   idx = -1;
+  
+  if(!transactionId.isEmpty()) {
+    for(unsigned i = 0; i < m_transactionPtrVector.count(); ++i) {
+      if(m_transactionPtrVector[i]->id() == transactionId) {
+        idx = i;
+        break;
+      }
+    }
+  } else {
+    if(m_transactionPtrVector.count() > 0) {
+      idx = m_transactionPtrVector.count()-1;
+    }
+  }
+
+  if(idx != -1) {
+    // qDebug("KLedgerView::selectTransaction index is %d", idx);
+    m_transactionPtr = m_transactionPtrVector[idx];
+    m_register->setCurrentTransactionIndex(idx);
     m_register->ensureTransactionVisible();
     m_register->repaintContents(false);
   }

@@ -106,6 +106,15 @@ void KLedgerViewCheckings::refreshView(void)
     KLedgerView::refreshView(m_transactionCheckBox->isChecked());
   else
     KLedgerView::refreshView();
+
+  QDate date;
+  if(!m_account.value("lastStatementDate").isEmpty())
+    date = QDate::fromString(m_account.value("lastStatementDate"), Qt::ISODate);
+    
+  if(date.isValid())  
+    m_lastReconciledLabel->setText(i18n("Reconciled: %1").arg(KGlobal::locale()->formatDate(date, true)));
+  else
+    m_lastReconciledLabel->setText(QString());
 }
 
 void KLedgerViewCheckings::resizeEvent(QResizeEvent* /* ev */)
@@ -268,7 +277,8 @@ void KLedgerViewCheckings::createRegister(void)
   connect(m_register, SIGNAL(signalNextTransaction()), this, SLOT(slotNextTransaction()));
   connect(m_register, SIGNAL(signalPreviousTransaction()), this, SLOT(slotPreviousTransaction()));
   connect(m_register, SIGNAL(signalDelete()), this, SLOT(slotDeleteTransaction()));
-  
+  connect(m_register, SIGNAL(signalSelectTransaction(const QCString&)), this, SLOT(selectTransaction(const QCString&)));
+    
   connect(m_register->horizontalHeader(), SIGNAL(clicked(int)), this, SLOT(slotRegisterHeaderClicked(int)));
 }
 
@@ -386,6 +396,9 @@ void KLedgerViewCheckings::createInfoStack(void)
   m_reconcileButton->setGuiItem(reconcileButtenItem);
   buttonLayout->addWidget(m_reconcileButton);
 
+  m_lastReconciledLabel = new QLabel("", frame);
+  buttonLayout->addWidget(m_lastReconciledLabel);
+  
   connect(m_reconcileButton, SIGNAL(clicked()), this, SLOT(slotReconciliation()));
   connect(m_detailsButton, SIGNAL(clicked()), this, SLOT(slotAccountDetail()));
 
@@ -809,11 +822,13 @@ void KLedgerViewCheckings::reloadEditWidgets(const MyMoneyTransaction& t)
           case MyMoneyAccount::Expense:
           case MyMoneyAccount::Income:
             category = MyMoneyFile::instance()->accountToCategory(s.accountId());
+            m_editCategory->loadList(static_cast<KMyMoneyUtils::categoryTypeE> (KMyMoneyUtils::income | KMyMoneyUtils::expense));
             break;
 
           case MyMoneyAccount::Asset:
           case MyMoneyAccount::Liability:
             if(!m_transaction.isLoanPayment()) {
+              m_editCategory->loadList(static_cast<KMyMoneyUtils::categoryTypeE> (KMyMoneyUtils::asset | KMyMoneyUtils::liability));
               if(m_split.action() != MyMoneySplit::ActionTransfer) {
                 m_split.setAction(MyMoneySplit::ActionTransfer);
                 m_transaction.modifySplit(m_split);
@@ -823,14 +838,20 @@ void KLedgerViewCheckings::reloadEditWidgets(const MyMoneyTransaction& t)
                 m_transaction.modifySplit(s);
               }
               if(m_split.value() > 0) {
-                m_editFrom->loadText(MyMoneyFile::instance()->accountToCategory(s.accountId()));
-                m_editTo->loadText(MyMoneyFile::instance()->accountToCategory(m_account.id()));
+                category = MyMoneyFile::instance()->accountToCategory(m_account.id());
+                if(m_editFrom)
+                  m_editFrom->loadText(MyMoneyFile::instance()->accountToCategory(s.accountId()));
+                if(m_editTo)
+                  m_editTo->loadText(category);
+                  
               } else {
-                m_editTo->loadText(MyMoneyFile::instance()->accountToCategory(s.accountId()));
-                m_editFrom->loadText(MyMoneyFile::instance()->accountToCategory(m_account.id()));
+                category = MyMoneyFile::instance()->accountToCategory(s.accountId());
+                if(m_editTo)
+                  m_editTo->loadText(category);
+                if(m_editFrom)
+                  m_editFrom->loadText(MyMoneyFile::instance()->accountToCategory(m_account.id()));
                 amount = -amount;       // make it positive
               }
-              category = m_editTo->text();
               
             } else {
               // Make sure that we do not allow the user to modify the category
@@ -1213,12 +1234,13 @@ void KLedgerViewCheckings::slotReconciliation(void)
     lastReconciledBalance = MyMoneyMoney(m_account.value("lastStatementBalance"));
 
   MyMoneyMoney statementBalance(m_account.value("statementBalance"));
-  QStringList vals(QStringList::split("-", QString(m_account.value("statementDate"))));
-  QDate statementDate = QDate::currentDate();
-
-  if(vals.count() == 3) {
-    statementDate.setYMD(vals[0].toInt(), vals[1].toInt(), vals[2].toInt());
-  }
+  
+  QDate statementDate;
+  if(!m_account.value("statementDate").isEmpty())
+    statementDate = QDate::fromString(m_account.value("statementDate"), Qt::ISODate);
+    
+  if(!statementDate.isValid())
+    statementDate = QDate::currentDate();
 
   KEndingBalanceDlg dlg(lastReconciledBalance, statementBalance, statementDate);
 
@@ -1388,9 +1410,9 @@ void KLedgerViewCheckings::slotToggleClearFlag(void)
 void KLedgerViewCheckings::slotPostponeReconciliation(void)
 {
   if(m_inReconciliation == true) {
-    m_account.setValue("lastReconciledBalance", m_prevBalance.formatMoney());
-    m_account.setValue("statementBalance", m_endingBalance.formatMoney());
-    m_account.setValue("statementDate", m_endingDate.toString("yyyy-MM-dd"));
+    m_account.setValue("lastReconciledBalance", m_prevBalance.toString());
+    m_account.setValue("statementBalance", m_endingBalance.toString());
+    m_account.setValue("statementDate", m_endingDate.toString(Qt::ISODate));
 
     try {
       MyMoneyFile::instance()->modifyAccount(m_account);
@@ -1423,8 +1445,8 @@ void KLedgerViewCheckings::endReconciliation(void)
 void KLedgerViewCheckings::slotEndReconciliation(void)
 {
   if(m_inReconciliation == true) {
-    m_account.setValue("lastStatementBalance", m_endingBalance.formatMoney());
-    m_account.setValue("lastStatementDate", m_endingDate.toString("yyyy-MM-dd"));
+    m_account.setValue("lastStatementBalance", m_endingBalance.toString());
+    m_account.setValue("lastStatementDate", m_endingDate.toString(Qt::ISODate));
 
     m_account.deletePair("lastReconciledBalance");
     m_account.deletePair("statementBalance");
