@@ -320,7 +320,7 @@ void KTransactionView::slotFocusChange(int row, int col, int button, const QPoin
    if(m_date->isVisible() || ( m_viewType != NORMAL))
 		return;
 	
-	if (row > (transactionsTable->numRows()-3))  // make sure there is room for the input widgets
+	if (row > (transactionsTable->numRows()-2))  // make sure there is room for the input widgets
 	  return;
 	
   KConfig *config = KGlobal::config();
@@ -887,7 +887,7 @@ void KTransactionView::updateTransactionList(int row, int col)
     m_index=-1;
 
   int i = 0;
-    transactionsTable->setNumRows((m_transactions->count() * NO_ROWS) + 3);
+    transactionsTable->setNumRows((m_transactions->count() * NO_ROWS) + 2);
     for (transaction=m_transactions->first(); transaction; transaction=m_transactions->next(), i++) {
 //      transactionsTable->setEnabled(false);
       QString colText;
@@ -948,8 +948,8 @@ void KTransactionView::updateTransactionList(int row, int col)
       if (NO_ROWS==2)
         transactionsTable->setText(rowCount + 1, 2, colText);
 
-      if (NO_ROWS==3)
-        transactionsTable->setText(rowCount + 2, 2, transaction->memo());
+      //if (NO_ROWS==3)
+      //  transactionsTable->setText(rowCount + 2, 2, transaction->memo());
 
       QString cLet;
       switch (transaction->state()) {
@@ -986,7 +986,7 @@ void KTransactionView::updateTransactionList(int row, int col)
       transactionsTable->setText(rowCount+1, 0, "");
     }
 */
-    transactionsTable->ensureCellVisible(rowCount+2, 0);
+    transactionsTable->ensureCellVisible(rowCount+1, 0);
 
 /*
     transactionsTable->setText(rowCount, 1, "");
