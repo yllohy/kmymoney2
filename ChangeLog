@@ -1,3 +1,11 @@
+2005-03-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Removed unused files
+  * Added missing header file to support 'make bcheck'
+
+2005-03-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fix mymoneymoneytest.cpp to work with 64 bit systems
+  * Fixed description of kbanking.m4 and libofx.m4 to match behaviour
+
 2005-03-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Resolved doxygen warnings in kfindtransactiondlg.h
   * Added missing include stoppers in kmymoneypricedlg.h
