@@ -48,8 +48,8 @@ extern "C" {
 #endif
 
 KGPGFile::KGPGFile(const QString& fn, const QString& homedir, const QString& options) :
-  m_homedir(homedir),
   m_options(options),
+  m_homedir(homedir),
   m_readRemain(0),
   m_needExitLoop(false)
 {
