@@ -51,16 +51,17 @@ from.
      Slackware 9.0  |  omit this parameter    | /opt/kde
      MEPIS          |  omit this parameter    | /usr
 
-     Distribution   | --man-dir               | 
+     Distribution   | --man-dir               | --program-prefix
      ---------------+-------------------------+---------------------------
-     SuSE 8.1       |  /usr/share/man         | 
+     SuSE 8.1       |  /usr/share/man         | ""
      Mandrake 9.0   |  ???                    | 
      Slackware 9.0  |  ???                    | 
-     MEPIS          |  ???
+     MEPIS          |  omit this parameter    | omit this parameter
 
      so for SuSE 8.1 the command is:
 
-           ./configure --prefix=/opt/kde3 --mandir=/usr/share/man
+           ./configure --prefix=/opt/kde3 --mandir=/usr/share/man \
+              --program-prefix=""
 
      Please tell us the values for other distributions, so we can add
      them to this list. Send an e-mail to the developers mailing list.
