@@ -1,11 +1,13 @@
 [Desktop Entry]
-Comment=
-DocPath=kmymoney2/index.html
-Exec=kmymoney2 -caption "%c" %i %m
-Icon=kmymoney2.png
-MimeType=text/x-kmymoney2
-MiniIcon=kmymoney2.png
+Encoding=UTF-8
 Name=KMyMoney
-ServiceTypes=
-Terminal=0
+Exec=kmymoney2
+Comment=Personal Finance Manager
+Comment[de]=Persönlicher Finanzassistent
+Comment[fr]=
+MimeType=application/x-kmymoney
 Type=Application
+DocPath=kmymoney2/index.html
+Icon=kmymoney2
+MiniIcon=kmymoney2
+ServiceTypes=
