@@ -1,4 +1,14 @@
-2002-10-xx Thomas Baumgart <ipwizard@users.sourceforge.net>
+2002-10-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Changed line number in MyMoneyException to unsigned long
+  * Added documentation to some engine and view classes
+  * Removed references to MyMoneyFile within a transaction
+  * Renamed 'Bills & Reminders' into 'Schedule' in icon list
+  * Added icons for the icon list to icons/48x48/apps
+  * Added accountTypeToString and stringToAccountType helper methods
+    to KMyMoneyFile
+  * Added KTransactionPtrVector::setSortType()
+
+2002-10-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Modified name of member variable in KCategoryView
   * Added checks for atoll and strtoll to configure.in.in
   * Replace atoll with strtoll in mymoneymoney.h
