@@ -65,6 +65,9 @@ KNewAccountWizard::KNewAccountWizard(QWidget *parent, const char *name )
   connect(newInstitutionButton, SIGNAL(clicked()), this, SLOT(slotNewInstitution()));
   connect(accountTypeListBox, SIGNAL(highlighted(const QString &)), this, SLOT(slotAccountType(const QString &)));
   connect(reminderCheckBox, SIGNAL(toggled(bool)), estimateFrame, SLOT(setEnabled(bool)));
+
+  // always select the first item and show the appropriate note
+  accountTypeListBox->setCurrentItem(0);
 }
 
 KNewAccountWizard::~KNewAccountWizard()
@@ -114,6 +117,8 @@ void KNewAccountWizard::accept()
 
 int KNewAccountWizard::exec()
 {
+  int rc;
+  
   KConfig *config = KGlobal::config();
   config->setGroup("List Options");
   QFont defaultFont = QFont("helvetica", 12);
@@ -143,10 +148,6 @@ int KNewAccountWizard::exec()
   loadAccountTypes();
   loadAccountList();
 
-  // always select the first item and show the appropriate note
-  accountTypeListBox->setCurrentItem(0);
-  slotAccountType(accountTypeListBox->currentText());
-
   // always check the payment reminder
   reminderCheckBox->setChecked(true);
   estimateFrame->setEnabled(true);
@@ -154,7 +155,12 @@ int KNewAccountWizard::exec()
   // reset everything else if not preset
   accountNumber->setText("");
 
-  return KNewAccountWizardDecl::exec();
+  rc = KNewAccountWizardDecl::exec();
+
+  // always select the first item and show the appropriate note
+  accountTypeListBox->setCurrentItem(0);
+
+  return rc;
 }
 
 void KNewAccountWizard::loadInstitutionList(void)
@@ -235,6 +241,7 @@ void KNewAccountWizard::loadAccountTypes(void)
   accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::MoneyMarket));
   accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Currency));
   accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Asset));
+  accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Liability));
 }
 
 void KNewAccountWizard::slotNewInstitution(void)
@@ -247,7 +254,7 @@ void KNewAccountWizard::slotAccountType(const QString& sel)
 {
   QString txt = "<h2><center>" + sel + "</center></h2><p><p>";
 
-  if(sel == i18n("Checkings")) {
+  if(sel == KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Checkings)) {
     txt += i18n(
       "Use the checkings account type to manage "
       "activities on your checkings account e.g. payments, cheques and ec-card "
@@ -255,33 +262,40 @@ void KNewAccountWizard::slotAccountType(const QString& sel)
     );
     m_accountType = MyMoneyAccount::Checkings;
 
-  } else if(sel == i18n("Savings")) {
+  } else if(sel == KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Savings)) {
     txt += i18n(
       "Use the savings account type to manage "
       "activities on your savings account."
     );
     m_accountType = MyMoneyAccount::Savings;
 
-  } else if(sel == i18n("Credit Card")) {
+  } else if(sel == KMyMoneyUtils::accountTypeToString(MyMoneyAccount::CreditCard)) {
     txt += i18n(
       "Use the credit card account type to manage "
       "activities on your credit card."
     );
     m_accountType = MyMoneyAccount::CreditCard;
 
-  } else if(sel == i18n("Cash")) {
+  } else if(sel == KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Cash)) {
     txt += i18n(
       "Use the cash account type to manage "
       "activities in your wallet."
     );
     m_accountType = MyMoneyAccount::Cash;
 
-  } else if(sel == i18n("Asset")) {
+  } else if(sel == KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Asset)) {
     txt += i18n(
       "Use the asset account type to manage "
       "assets (e.g. your house, car or art collection)."
     );
     m_accountType = MyMoneyAccount::Asset;
+
+  } else if(sel == KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Liability)) {
+    txt += i18n(
+      "Use the liability account type to manage "
+      "liabilities (e.g. xxxx)."
+    );
+    m_accountType = MyMoneyAccount::Liability;
 
   } else {
     txt += i18n("Explanation is not yet available! UnknownAccountType will be set");
@@ -345,9 +359,12 @@ void KNewAccountWizard::setOpeningDate(const QDate& date)
 void KNewAccountWizard::setAccountType(const MyMoneyAccount::accountTypeE type)
 {
   int i;
+  
   for(i = accountTypeListBox->count()-1; i > 0; --i) {
     if(accountTypeListBox->text(i) == KMyMoneyUtils::accountTypeToString(type))
       break;
   }
-  accountTypeListBox->setCurrentItem(i);
+  // FIXME: I have no idea how to get the selection bar back to the window.
+  accountTypeListBox->setSelected(i, true);
+  // accountTypeListBox->setCurrentItem(i);
 }

@@ -74,7 +74,18 @@ void KAccountSelectDlg::setHeader(const QString& msg)
 
 void KAccountSelectDlg::setAccount(const MyMoneyAccount& account)
 {
+  int   i;
+  
   m_account = account;
+  if(!m_account.name().isEmpty()) {
+    for(i = 0; i < m_accountComboBox->count(); ++i) {
+      if(m_accountComboBox->text(i) == m_account.name()) {
+        m_accountComboBox->setCurrentText(m_account.name());
+        break;
+      }
+    }
+  } else
+    m_accountComboBox->setCurrentText(m_accountComboBox->text(0));
 }
 
 void KAccountSelectDlg::loadAccounts(void)
@@ -143,6 +154,7 @@ void KAccountSelectDlg::slotCreateAccount(void)
       MyMoneyFile::instance()->addAccount(newAccount, parentAccount);
 
       m_accountComboBox->setCurrentText(wizard.account().name());
+      accept();
     }
     catch (MyMoneyException *e)
     {
@@ -152,4 +164,23 @@ void KAccountSelectDlg::slotCreateAccount(void)
       delete e;
     }
   }
+}
+
+void KAccountSelectDlg::setMode(const int mode)
+{
+  m_mode = mode ? 1 : 0;
+}
+
+int KAccountSelectDlg::exec(void)
+{
+  int rc;
+  
+  if(m_mode == 1) {
+    slotCreateAccount();
+    rc = result();
+  }
+  if(rc != Accepted)
+    rc = KAccountSelectDlgDecl::exec();
+    
+  return rc;
 }

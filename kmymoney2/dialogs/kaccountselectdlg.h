@@ -86,6 +86,22 @@ public:
     * @return QString containing the account name
     */
   const QString selectedAccount(void) const { return m_accountComboBox->currentText(); };
+
+  /**
+    * This method is used to set the mode of the dialog. Two modes
+    * are supplied: a) select or create and b) create only.
+    * If @p mode is 0, select or create is selected, otherwise create only
+    * is selected.
+    *
+    * @param mode selected mode
+    */
+  void setMode(const int mode);
+
+public slots:
+  /**
+    * Reimplemented from QDialog
+    */
+  int exec();
   
 protected slots:    
   /**
@@ -122,6 +138,7 @@ private:
 private:
   QString         m_purpose;
   MyMoneyAccount  m_account;
+  int             m_mode;       // 0 - select or create, 1 - create only
 };
 
 #endif

@@ -146,16 +146,46 @@ private:
     */
   const QString extractLine(const QChar id, const QStringList& lines, int cnt = 1) const;
 
+  enum SelectCreateMode {
+    Create = 0,
+    Select
+  };
   /**
     * This method is used to find an account using the account's name
     * in m_account.name() in the current MyMoneyFile object. If it does not
     * exist, the user has the chance to create it or to skip processing
     * of this account.
     *
-    * If an account has been selected, m_account will be set to contain it's data. If the
-    * skip operation was requested, m_account will be empty.
+    * If an account has been selected, m_account will be set to contain it's data.
+    * If the skip operation was requested, m_account will be empty.
+    *
+    * Depending on @p mode the bahaviour of this method is slightly different.
+    * The following table shows the dependencies:
+    *
+    * @code
+    * case                              mode            operation
+    * -----------------------------------------------------------------------------
+    * account with same name exists     Create          returns immediately
+    *                                                   m_account contains data
+    *                                                   of existing account
+    *
+    * account does not exist            Create          immediately calls dialog
+    *                                                   to create account
+    *
+    * account with same name exists     Select          User will be asked if
+    *                                                   he wants to use the existing
+    *                                                   account or create a new one
+    *
+    * account does not exist            Select          User will be asked to
+    *                                                   select a different account
+    *                                                   or create a new one
+    *
+    * @endcode
+    *
+    * @param mode Is either Create or Select depending on the above table
     */
-  void selectOrCreateAccount(void);
+  void selectOrCreateAccount(SelectCreateMode mode);
+
   
 private:
   QString           m_originalFilename;
@@ -164,6 +194,8 @@ private:
   KTempFile         m_tempFile;
   MyMoneyAccount    m_account;
   bool              m_skipAccount;
+  unsigned long     m_transactionsSkipped;
+  
 };
 
 #endif
