@@ -15,14 +15,13 @@
 #include "kstartdlg.h"
 #include "kstartdlg.moc"
 
-#include <stream.h>
-
 #include <qvbox.h>
 #include <qlayout.h>
 #include <qbuttongroup.h>
 #include <qabstractlayout.h>
 #include <qpixmap.h>
 #include <qtextview.h>
+#include <qlabel.h>
 
 #include <kstddirs.h>
 #include <kiconloader.h>
@@ -33,7 +32,7 @@
 #include <kurlrequester.h>
 #include <kfile.h>
 
-KStartDlg::KStartDlg(QString &obsolete, QWidget *parent, const char *name, bool modal) : KDialogBase(IconList,i18n("Start KMyMoney 2"),Help|Ok|Cancel,Ok, parent, name, modal, true)
+KStartDlg::KStartDlg(QWidget *parent, const char *name, bool modal) : KDialogBase(IconList,i18n("Start KMyMoney 2"),Help|Ok|Cancel,Ok, parent, name, modal, true)
 {
 	setPage_Template();
   setPage_Documents();
@@ -67,19 +66,12 @@ void KStartDlg::setPage_Documents()
   (kurlrequest->fileDialog())->setFilter( i18n("%1|KMyMoney files (*.kmy)").arg("*.kmy") );
   mainLayout->addWidget( kurlrequest );
 
-  QGroupBox *GroupBox1 = new QGroupBox( mainFrame, "GroupBox1" );
-  GroupBox1->setTitle( i18n( "Recent Documents" ) );
-  GroupBox1->setColumnLayout(0, Qt::Vertical );
-  GroupBox1->layout()->setSpacing( 0 );
-  GroupBox1->layout()->setMargin( 0 );
-  QVBoxLayout *GroupBox1Layout = new QVBoxLayout( GroupBox1->layout() );
-  GroupBox1Layout->setAlignment( Qt::AlignTop );
-  GroupBox1Layout->setSpacing( 6 );
-  GroupBox1Layout->setMargin( 11 );
-  view_recent = new KIconView( GroupBox1, "view_recent" );
+	QLabel *label1 = new QLabel( mainFrame, "label1" );
+	label1->setText( i18n("Recent Files") );
+	mainLayout->addWidget( label1 );
+  view_recent = new KIconView( mainFrame, "view_recent" );
   connect( view_recent, SIGNAL( executed(QIconViewItem *) ), this, SLOT( slotRecentClicked(QIconViewItem *) ) );
-  GroupBox1Layout->addWidget( view_recent );
-  mainLayout->addWidget( GroupBox1 );
+  mainLayout->addWidget( view_recent );
 }
 
 void KStartDlg::slotTemplateClicked(QIconViewItem *item)

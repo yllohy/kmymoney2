@@ -35,7 +35,7 @@
 class KStartDlg : public KDialogBase  {
    Q_OBJECT
 public:
-	KStartDlg( QString &filename, QWidget *parent=0, const char *name=0, bool modal=true );
+	KStartDlg( QWidget *parent=0, const char *name=0, bool modal=true );
 	~KStartDlg();
   //NOTE: filename argument in KStarDlg is not necessary. This can be set in recent documents.
   bool isNewFile(void)          { return isnewfile;           }

@@ -647,7 +647,7 @@ void KMyMoney2App::slotShowInputBox()
 /** Init wizard dialog */
 bool KMyMoney2App::initWizard()
 {
-    KStartDlg start(fileName, this);
+    KStartDlg start;
     if (start.exec()) {
       if (start.isNewFile()) {
         fprintf(stderr, "isNewFile\n");
