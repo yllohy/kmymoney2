@@ -67,14 +67,6 @@ from.
      them to this list. Send an e-mail to the developers mailing list.
      See the address below.
 
-     Note for 64 bit systems:
-
-     I had to add the following options to configure to get things
-     compiled with my 64 bit system under SuSE 9.2
-
-           --enable-libsuffix=64 --with-qt-libraries=/usr/lib64/qt3/lib64
-
-
 3)   Build the package by issuing the following command:
 
           make

@@ -3,6 +3,9 @@
 /* define if you have atoll */
 #undef HAVE_ATOLL
 
+/* Define to 1 if you have the <Carbon/Carbon.h> header file. */
+#undef HAVE_CARBON_CARBON_H
+
 /* Define if you have the CoreAudio API */
 #undef HAVE_COREAUDIO
 
