@@ -76,20 +76,14 @@ KInvestmentView::KInvestmentView(QWidget *parent, const char *name)
   // FIXME: check if we really want to remove the margin
   // kInvestmentViewDeclLayout->setMargin(0);
 
-  qDebug("KInvestmentView::KInvestmentView: Investment View starting up");
-
   initSummaryTab();
   initTransactionTab();
 
-  m_tabMap[m_summaryTab] = VIEW_SUMMARY;
-  m_tabMap[m_transactionTab] = VIEW_TRANSACTIONS;
-  qDebug("KInvestmentView::KInvestmentView: widgets in map = %d", m_tabMap.size());
-
   // never show a horizontal scroll bar
- // investmentTable->setHScrollBarMode(QScrollView::AlwaysOff);
+  // investmentTable->setHScrollBarMode(QScrollView::AlwaysOff);
 
   //no sorting yet...
- // investmentTable->setSorting(-1);
+  // investmentTable->setSorting(-1);
 
   connect(investmentTable, SIGNAL(rightButtonClicked(QListViewItem* , const QPoint&, int)),
     this, SLOT(slotListRightMouse(QListViewItem*, const QPoint&, int)));
@@ -145,7 +139,7 @@ void KInvestmentView::initSummaryTab(void)
 
 void KInvestmentView::initTransactionTab(void)
 {
-  QHBoxLayout* m_TransactionTabLayout = new QHBoxLayout( m_transactionTab, 11, 6, "m_summaryTabLayout");
+  QHBoxLayout* m_TransactionTabLayout = new QHBoxLayout( m_transactionTab, 0, 2, "m_summaryTabLayout");
 
   m_ledgerView = new KLedgerViewInvestments(m_transactionTab, "ledgerview");
   m_TransactionTabLayout->addWidget(m_ledgerView);
@@ -361,32 +355,8 @@ void KInvestmentView::slotListRightMouse(QListViewItem* item, const QPoint& poin
 
 void KInvestmentView::slotTabSelected(QWidget *pWidget)
 {
-  qDebug("KInvestmentView::slotTabSelected() called, size=%d", m_tabMap.size());
-  tabmap_iterator it = m_tabMap.find(pWidget);
-  if(it == m_tabMap.end())
-  {
-    return;
-  }
-  else
-  {
-    int ID = it.data();
-    qDebug("KInvestmentView::slotTabSelected(), id=%d", ID);
-    switch(ID)
-    {
-      case VIEW_SUMMARY:
-      {
-        updateDisplay();
-        break;
-      }
-      case VIEW_TRANSACTIONS:
-      {
-        break;
-      }
-      default:
-      {
-        break;
-      }
-    }
+  if(pWidget == m_summaryTab) {
+    updateDisplay();
   }
 }
 

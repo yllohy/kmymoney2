@@ -56,11 +56,6 @@ class KInvestmentView : public kInvestmentViewDecl, MyMoneyObserver
   Q_OBJECT
 
 public:
-  typedef enum {
-    VIEW_SUMMARY = 0,
-    VIEW_TRANSACTIONS
-  } eViewType;
-
   KInvestmentView(QWidget *parent=0, const char *name=0);
   ~KInvestmentView();
 
@@ -161,7 +156,6 @@ private:
   void initTransactionTab(void);
 
 private:
-  QMap<QWidget*, int> m_tabMap;
   KPopupMenu*       m_popMenu;
   KLedgerView*      m_ledgerView;
   MyMoneyAccount    m_account;
