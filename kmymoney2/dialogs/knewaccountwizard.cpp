@@ -199,6 +199,7 @@ void KNewAccountWizard::accept()
       MyMoneyPayee payee(m_payee->text());
       MyMoneyFile::instance()->addPayee(payee);
       payeeId = payee.id();
+      delete e;
     }
     
     MyMoneySplit s1, s2;
