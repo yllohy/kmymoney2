@@ -1,3 +1,17 @@
+2003-09-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * use the accounts view as standard, not the institutions view
+  * added 'Unknown institution' as standard to institutions view
+  * fixed memory leak in exception handling of KAccountsView::slotListRightMouse
+  * create Default QIF profile if not existant during QIF import/export
+  * use KDE documentpath to start looking for files to be imported
+  * fixed missing notifications when adding/modifying/removing institutions
+  * removed i18n() from certain non-translatable strings in the QIF profile
+    editor
+  * improved error messages during QIF import and display QIF entry
+    during account/category selection for user's reference
+  * set focus in KAccountSelectDlg to create button
+  * fixed edit and delete operation of RMB menu for institutions
+
 2003-09-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * fixed visibility of new institution dialog when import a QIF file
   * use current date as opening date for new accounts if the date
