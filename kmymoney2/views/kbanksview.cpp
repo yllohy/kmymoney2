@@ -208,7 +208,7 @@ static const char* const checkingsIconImage[] = {
 ".............cc##aa##cc.........",
 "...............cc##cc..........."};
 
-static const char* const investmentIconImage[] = {
+static const char* const liabilityIconImage[] = {
 "32 32 5 1",
 ". c None",
 "# c #000000",
@@ -570,6 +570,12 @@ const QPixmap KAccountsView::accountImage(const MyMoneyAccount::accountTypeE typ
   QPixmap rc;
   switch(type) {
     default:
+      if(MyMoneyFile::instance()->accountGroup(type) == MyMoneyAccount::Asset)
+        rc = QPixmap(assetIconImage);
+      else
+        rc = QPixmap(liabilityIconImage);
+      break;
+      
     case MyMoneyAccount::Checkings:
     case MyMoneyAccount::Savings:
       rc = QPixmap(checkingsIconImage);
@@ -577,7 +583,8 @@ const QPixmap KAccountsView::accountImage(const MyMoneyAccount::accountTypeE typ
 
     case MyMoneyAccount::Loan:
       rc = QPixmap(loanIconImage);
-    
+      break;
+      
     case MyMoneyAccount::CreditCard:
       rc = QPixmap(creditCardIconImage);
       break;
