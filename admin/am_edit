@@ -1495,7 +1495,7 @@ sub tag_DIST () {
     foreach $entry (readdir(THISDIR)) {
         next if ($entry eq "CVS" || $entry =~ /^\./  || $entry =~ /^Makefile$$/ || $entry =~ /~$/ || $entry =~ /^\#.*\#$/);
         next if (! -f $entry);
-        next if ($entry =~ /\.moc/ || $entry =~ /\.lo$/ || $entry =~ /\.la$/ || $entry =~ /\.o/);
+        next if ($entry =~ /\.moc/ || $entry =~ /\.lo$/ || $entry =~ /\.la$/ || $entry =~ /\.o/ || $entry =~ /\.a/);
         next if ($entry =~ /.+meta_unload.$cppExt$/ || $entry =~ /\.all_$cppExt\.$cppExt$/);
         $foundfiles{$entry} = 1;
     }
@@ -1926,7 +1926,7 @@ sub updateMakefile ()
     open (FILEOUT, "> $makefile")
                         || die "Could not create $makefile: $!\n";
 
-    print FILEOUT "\# $progId - " . '$Revision: 1.5 $ '  . "\n";
+    print FILEOUT "\# $progId - " . '$Revision: 1.6 $ '  . "\n";
     $MakefileData =~ s/\034/\\\n\t/g;    # Restore continuation lines
     print FILEOUT $MakefileData;
     close FILEOUT;
