@@ -6,4 +6,4 @@ Comment[fr]=Fichier KMyMoney
 Icon=kmymoney2
 Type=MimeType
 MimeType=application/x-kmymoney
-Patterns=*.kmy;
+Patterns=*.kmy;*.kmt;
