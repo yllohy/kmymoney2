@@ -72,40 +72,28 @@ public:
 #ifdef _CHECK_MEMORY
 
 #include <cstddef>
-#define _CHECK_MEMORYPP_FILENAME_SIZE 256
+#include <qmap.h>
 
-typedef struct {
-  void *p;
-  int line;
-  size_t size;
-  char file[_CHECK_MEMORYPP_FILENAME_SIZE];
-} _CheckMemoryData;
+class _CheckMemoryEntry {
+public:
+  _CheckMemoryEntry();
+  _CheckMemoryEntry(void *p, int line, size_t size, const char *file);
+  ~_CheckMemoryEntry() {};
 
-class _CheckMemoryHashTable {
- public:
-  _CheckMemoryHashTable();
-  _CheckMemoryHashTable(int nSize);
-  virtual ~_CheckMemoryHashTable();
+  void * pointer(void) const { return m_p; };
+  const int line(void) const { return m_line; };
+  const size_t size(void) const { return m_size; };
+  const char* file(void) const { return m_file; };
 
-  bool Create(int nSize);
-  void Destroy();
-  void DeleteAll();
-  inline bool IsCreated() { return (data != NULL); };
-  inline int GetSize() { return size; };
-  inline _CheckMemoryData *GetData() { return data; };
-  inline _CheckMemoryData &operator [](int index) { return data[index]; };
-
-  bool SetAt(const _CheckMemoryData &d);
-  bool GetAt(void *p,_CheckMemoryData &d);
-  bool DeleteAt(void *p);
-
- private:
-  int Hash(void *p);
-  static bool ReHash(_CheckMemoryHashTable &table);
-
-  _CheckMemoryData *data;
-  int size;
+private:
+  void *m_p;
+  int m_line;
+  size_t m_size;
+  QCString m_file;
 };
+
+typedef QMap<void *, _CheckMemoryEntry> CheckMemoryTable;
+
 typedef void _CheckMemoryOutFunc(const char *);
 
 class _CheckMemory {
@@ -117,14 +105,14 @@ class _CheckMemory {
   _CheckMemoryOutFunc *SetOutFunc(_CheckMemoryOutFunc *out);
   bool CheckMemoryLeak(bool freeall);
   void FreeAll();
-  inline void Restart() { table.DeleteAll(); };
+  inline void Restart() { table.clear(); };
 
   int TableCount(void);
 
  private:
   void Output(const char *fmt,...);
 
-  _CheckMemoryHashTable table;
+  CheckMemoryTable table;
   _CheckMemoryOutFunc *outfunc;
 
   friend void * operator new(size_t s,const char *file,int line);
