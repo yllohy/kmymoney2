@@ -17,6 +17,8 @@
 #ifndef KRECONCILELISTITEM_H
 #define KRECONCILELISTITEM_H
 
+#if 0 // currently, this object is unused
+
 #include <qwidget.h>
 #include <qlistview.h>
 #include "../mymoney/mymoneytransaction.h"
@@ -41,4 +43,5 @@ public:
 
 };
 
+#endif  // #if 0
 #endif

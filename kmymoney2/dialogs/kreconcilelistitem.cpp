@@ -13,6 +13,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+#if 0  // currently, this object is unused
+
 #include <kglobal.h>
 #include <klocale.h>
 #include "kreconcilelistitem.h"
@@ -87,3 +90,4 @@ QString KReconcileListItem::key(int column, bool ascending) const
 */
 }
 
+#endif

@@ -44,12 +44,12 @@ class QFile;
 #include "../dialogs/kcsvprogressdlg.h"
 
 #include "kbanksview.h"
-#include "ktransactionview.h"
+// #include "ktransactionview.h"
 #include "khomeview.h"
 #include "kcategoriesview.h"
 #include "kpayeesview.h"
 #include "kscheduledview.h"
-#include "kinvestmentview.h"
+// #include "kinvestmentview.h"
 #include "kmymoneyfile.h"
 #include "kgloballedgerview.h"
 
@@ -63,7 +63,7 @@ class IMyMoneyStorageFormat;
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.23 2002/11/17 09:00:51 ipwizard Exp $
+  * $Id: kmymoneyview.h,v 1.24 2002/11/25 14:47:31 ipwizard Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -82,7 +82,7 @@ private:
   KCategoriesView *m_categoriesView;
   KPayeesView *m_payeesView;
   KScheduledView *m_scheduledView;
-  KInvestmentView *m_investmentView;
+  // KInvestmentView *m_investmentView;
   KNewAccountWizard *m_newAccountWizard;
   KGlobalLedgerView *m_ledgerView;
 
