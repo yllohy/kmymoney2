@@ -120,6 +120,22 @@
         </widget>
     </vbox>
 </widget>
+<customwidgets>
+    <customwidget>
+        <class>KListView</class>
+        <header location="global">klistview.h</header>
+        <sizehint>
+            <width>330</width>
+            <height>100</height>
+        </sizehint>
+        <container>0</container>
+        <sizepolicy>
+            <hordata>5</hordata>
+            <verdata>5</verdata>
+        </sizepolicy>
+        <pixmap>image0</pixmap>
+    </customwidget>
+</customwidgets>
 <connections>
     <connection>
         <sender>buttonOk</sender>

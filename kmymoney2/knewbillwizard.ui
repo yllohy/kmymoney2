@@ -2070,6 +2070,34 @@
         </sizepolicy>
         <pixmap>image0</pixmap>
     </customwidget>
+    <customwidget>
+        <class>KComboBox</class>
+        <header location="global">kcombobox.h</header>
+        <sizehint>
+            <width>90</width>
+            <height>25</height>
+        </sizehint>
+        <container>0</container>
+        <sizepolicy>
+            <hordata>1</hordata>
+            <verdata>1</verdata>
+        </sizepolicy>
+        <pixmap>image0</pixmap>
+    </customwidget>
+    <customwidget>
+        <class>KIntNumInput</class>
+        <header location="global">knuminput.h</header>
+        <sizehint>
+            <width>90</width>
+            <height>25</height>
+        </sizehint>
+        <container>0</container>
+        <sizepolicy>
+            <hordata>1</hordata>
+            <verdata>1</verdata>
+        </sizepolicy>
+        <pixmap>image0</pixmap>
+    </customwidget>
 </customwidgets>
 <images>
     <image>
