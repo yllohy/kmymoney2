@@ -5,12 +5,13 @@ bin_PROGRAMS = kmymoney2
 
 ## INCLUDES were found outside kdevelop specific part
 
-kmymoney2_SOURCES = kmymoneyutils.cpp kstartuplogo.cpp kmymoney2.cpp main.cpp kmymoney2.stub kmymoney2.skel 
-kmymoney2_LDADD   = ./views/libviews.a ./converter/libconverter.a ./dialogs/libdialogs.a ./widgets/libwidgets.a ./mymoney/storage/libstorage.a ./mymoney/libmymoney.a  $(LIB_KHTML) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT) $(LIBSOCKET)
+kmymoney2_SOURCES = kmymoneyutils.cpp kstartuplogo.cpp kmymoney2.cpp main.cpp kmymoney2.stub kmymoney2.skel kapptest.cpp kapptest.stub kapptest.skel
 
-SUBDIRS = widgets dialogs views converter mymoney pics icons html 
+kmymoney2_LDADD   = ./views/libviews.a ./converter/libconverter.a ./dialogs/libdialogs.a ./widgets/libwidgets.a ./mymoney/storage/libstorage.a ./mymoney/libmymoney.a $(LIB_KHTML) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT) $(LIBSOCKET)
 
-EXTRA_DIST = main.cpp kmymoney2.cpp kmymoney2.h kmymoney2ui.rc kmymoney2.desktop kstartuplogo.cpp kstartuplogo.h lo16-app-kmymoney2.png lo32-app-kmymoney2.png kmymoney_wizard.png mimetype_kmy_16x16.png mimetype_kmy_32x32.png mimetype_kmy_48x48.png x-kmymoney2.desktop hi16-app-kmymoney2.png hi32-app-kmymoney2.png tips default_accounts_de.dat kmymoneyutils.cpp kmymoneyutils.h default_accounts_enGB.dat comptes_par_defaut_fr.dat default_accounts_enC.dat default_accounts_enUS.dat 
+SUBDIRS = widgets dialogs views converter mymoney pics icons html
+
+EXTRA_DIST = main.cpp kmymoney2.cpp kmymoney2.h kmymoney2ui.rc kmymoney2.desktop kstartuplogo.cpp kstartuplogo.h lo16-app-kmymoney2.png lo32-app-kmymoney2.png kmymoney_wizard.png mimetype_kmy_16x16.png mimetype_kmy_32x32.png mimetype_kmy_48x48.png x-kmymoney2.desktop hi16-app-kmymoney2.png hi32-app-kmymoney2.png tips default_accounts_de.dat kmymoneyutils.cpp kmymoneyutils.h default_accounts_enGB.dat comptes_par_defaut_fr.dat default_accounts_enC.dat default_accounts_enUS.dat kapptest.cpp kapptest.h
 
 install-data-local:
 	$(mkinstalldirs) $(kde_datadir)/kmymoney2/
@@ -144,13 +145,14 @@ uninstall-hook:
 	-rm -f $(DESTDIR)$(bindir)/kmymoney
 
 if CPPUNIT
-TESTS = kmymoneytest
-check_PROGRAMS = $(TESTS)
+TESTS = kmymoneytest 
+
+check_PROGRAMS = kmymoneytest
 
 kmymoneytest_SOURCES = kmymoneytest.cpp
-
 kmymoneytest_LDADD = ./mymoney/storage/libstoragetest.a ./mymoney/libmymoneytest.a ./views/libviewstest.a $(kmymoney2_LDADD)
 
 # the library search path.
 kmymoneytest_LDFLAGS = $(all_libraries) $(kde_RPATH) $(CPPUNIT_LIBS)
 endif
+
