@@ -1,4 +1,5 @@
 2004-08-07 Ace Jones <acejones@users.sourceforge.net>
+  * Added MS Money date format as an option to QIF importer (%m/%d'%yyyy)  
   * Added some new default reports, which are permutations of the old ones
   * Modified the reports index list to show a tree view, organized by type of
     report.

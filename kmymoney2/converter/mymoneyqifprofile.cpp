@@ -356,6 +356,7 @@ const QDate MyMoneyQifProfile::date(const QString& datein) const
       case '/':
       case '-':
       case '.':
+      case '\'':
         if(delim == 2) {
           qWarning("MyMoneyQifProfile::date(const QString& datein) Too many delimiters in date format");
           return QDate();
