@@ -25,7 +25,6 @@
 #include "kmainview.h"
 #include "kreconciledlg.h"
 #include "kfindtransactiondlg.h"
-#include "ktfindresultsdlg.h"
 #include "kscheduleview.h"
 #include "kimportdlg.h"
 #include "kexportdlg.h"
@@ -37,7 +36,7 @@
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.9 2001/06/21 20:34:39 mte Exp $
+  * $Id: kmymoneyview.h,v 1.10 2001/06/29 05:19:59 mte Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -51,7 +50,6 @@ private:
   bool m_reconcileInited;  // True if a reconciliation has already been completed this execution
   KReconcileDlg *reconcileDlg;  // These exists during app run time ?
   KFindTransactionDlg *transactionFindDlg;
-  KTFindResultsDlg *transactionResultsDlg;
 	KImportDlg       *importDlg;
 
   // The schedule view
@@ -61,7 +59,6 @@ private:
   // Parses a line in the default categories file
   bool parseDefaultCategory(QString& line, bool& income, QString& name, QStringList& minors);
   void viewBankList(void); // Show the bank view
-  void viewTransactionList(void);  // Show the transaction view
 
   // Some utility functions for the KFindTransactionDlg calls in doTransactionSearch()
   bool checkTransactionDates(const MyMoneyTransaction *transaction, const bool enabled, const QDate start, const QDate end);
@@ -181,12 +178,6 @@ public:
   void settingsLists();
 
   /**
-    * Brings up a dialog to let the user search for specific transaction(s).  It then
-    * opens a results window to display those transactions.
-  **/
-  void accountFind();
-
-  /**
     * Utility method to retrieve the currently selected bank name.
     *
     * @return The currently selected bank name.
@@ -207,6 +198,12 @@ public:
 										QDate startDate, QDate endDate);
 
 public slots:
+  /**
+    * Brings up a dialog to let the user search for specific transaction(s).  It then
+    * opens a results window to display those transactions.
+  **/
+  void accountFind();
+
   /** */
   void slotAccountSelected();
 
@@ -260,6 +257,8 @@ public slots:
   void fileBackup();
 	
 protected slots:
+  void viewTransactionList(void);  // Show the transaction view
+
   /** */
   void slotBankSelected();
 

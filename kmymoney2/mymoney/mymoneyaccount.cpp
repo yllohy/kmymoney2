@@ -88,22 +88,22 @@ MyMoneyTransaction* MyMoneyAccount::transactionLast(void)
 {
   return m_transactions.last();
 }
-
+/*
 MyMoneyTransaction* MyMoneyAccount::transactionAt(int index)
 {
  	return m_transactions.at(index);
 }
-
+*/
 unsigned int MyMoneyAccount::transactionCount(void) const
 {
   return m_transactions.count();
 }
-
+/*
 bool MyMoneyAccount::removeCurrentTransaction(unsigned int pos)
 {
   return m_transactions.remove(pos);
 }
-
+*/
 bool MyMoneyAccount::removeTransaction(const MyMoneyTransaction& transaction)
 {
   unsigned int pos;

@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
 {
 	KAboutData aboutData( "kmymoney2", I18N_NOOP("KMyMoney2"),
 		VERSION, description, KAboutData::License_GPL,
-		"(c) 2000, Michael Edwardes", 0, "http://kmymoney2.sourceforge.net");
+		"(c) 2000-2001, Michael Edwardes", 0, "http://kmymoney2.sourceforge.net");
 	aboutData.addAuthor("Michael Edwardes", I18N_NOOP("Project Manager"), "mte@users.sourceforge.net");
 	aboutData.addAuthor("Felix Rodriguez", I18N_NOOP("Project Admin"), "frodriguez@users.sourceforge.net");
 	aboutData.addAuthor("Javier Campos Morales", I18N_NOOP("Developer & Artist"), "javi_c@users.sourceforge.net");

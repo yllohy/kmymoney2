@@ -26,7 +26,7 @@ KMainView::KMainView(QWidget *parent, const char *name )
 
   connect(banksView, SIGNAL(bankRightMouseClick(const MyMoneyBank, bool)), this, SLOT(slotBRightMouseClick(const MyMoneyBank, bool)));
   connect(banksView, SIGNAL(accountRightMouseClick(const MyMoneyAccount, bool)), this, SLOT(slotARightMouseClick(const MyMoneyAccount, bool)));
-  connect(banksView, SIGNAL(accountDoubleClick(const MyMoneyAccount)), this, SLOT(slotADoubleClick(const MyMoneyAccount)));
+
   connect(banksView, SIGNAL(bankSelected()), this, SLOT(slotBankSelected()));
   connect(banksView, SIGNAL(accountSelected()), this, SLOT(slotAccountSelected()));
 
@@ -49,11 +49,6 @@ void KMainView::slotBRightMouseClick(const MyMoneyBank bank, bool inList)
 void KMainView::slotARightMouseClick(const MyMoneyAccount account, bool inList)
 {
   emit accountRightMouseClick(account, inList);
-}
-
-void KMainView::slotADoubleClick(const MyMoneyAccount account)
-{
-  emit accountDoubleClick(account);
 }
 
 void KMainView::slotTransactionListChanged()
@@ -115,9 +110,12 @@ void KMainView::resizeEvent(QResizeEvent *e)
   transactionView->resize(size);
 }
 
-void KMainView::initTransactionView(MyMoneyFile *file, const MyMoneyBank bank, const MyMoneyAccount account)
+void KMainView::initTransactionView(MyMoneyFile *file, const MyMoneyBank bank,
+  const MyMoneyAccount account,
+  QList<MyMoneyTransaction> theList,
+  KTransactionView::viewingType type)
 {
-  transactionView->init(file, bank, account);
+  transactionView->init(file, bank, account, theList, type);
 }
 /** No descriptions */
 KTransactionView* KMainView::getTransactionView(){

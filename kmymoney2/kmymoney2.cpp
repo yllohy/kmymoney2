@@ -629,7 +629,6 @@ void KMyMoney2App::enableAccountOperations(bool enable)
 
   accountAdd->setEnabled(true);
   accountReconcile->setEnabled(enable);
-  accountFind->setEnabled(enable);
   accountImport->setEnabled(enable);
   accountExport->setEnabled(enable);
 
@@ -651,6 +650,7 @@ void KMyMoney2App::enableTransactionOperations(bool enable)
     enableAccountOperations(true);
   }
 
+  accountFind->setEnabled(enable);
   viewUp->setEnabled(enable);
 
   QString caption;

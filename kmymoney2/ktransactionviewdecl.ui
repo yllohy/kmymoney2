@@ -11,167 +11,208 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>767</width>
-            <height>447</height>
+            <width>801</width>
+            <height>511</height>
         </rect>
     </property>
     <property stdset="1">
         <name>caption</name>
         <string>Form1</string>
     </property>
-    <widget>
-        <class>kMyMoneyTable</class>
+    <vbox>
         <property stdset="1">
-            <name>name</name>
-            <cstring>transactionsTable</cstring>
+            <name>margin</name>
+            <number>11</number>
         </property>
         <property stdset="1">
-            <name>geometry</name>
-            <rect>
-                <x>10</x>
-                <y>8</y>
-                <width>755</width>
-                <height>350</height>
-            </rect>
-        </property>
-        <property stdset="1">
-            <name>minimumSize</name>
-            <size>
-                <width>755</width>
-                <height>350</height>
-            </size>
-        </property>
-        <property stdset="1">
-            <name>backgroundOrigin</name>
-            <enum>ParentOrigin</enum>
-        </property>
-    </widget>
-    <widget>
-        <class>QFrame</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>frmBalance</cstring>
-        </property>
-        <property stdset="1">
-            <name>geometry</name>
-            <rect>
-                <x>11</x>
-                <y>361</y>
-                <width>755</width>
-                <height>75</height>
-            </rect>
-        </property>
-        <property stdset="1">
-            <name>minimumSize</name>
-            <size>
-                <width>200</width>
-                <height>75</height>
-            </size>
-        </property>
-        <property stdset="1">
-            <name>maximumSize</name>
-            <size>
-                <width>32767</width>
-                <height>75</height>
-            </size>
-        </property>
-        <property stdset="1">
-            <name>frameShape</name>
-            <enum>StyledPanel</enum>
-        </property>
-        <property stdset="1">
-            <name>frameShadow</name>
-            <enum>Raised</enum>
+            <name>spacing</name>
+            <number>6</number>
         </property>
         <widget>
-            <class>QGroupBox</class>
+            <class>QLayoutWidget</class>
             <property stdset="1">
                 <name>name</name>
-                <cstring>BalanceGroupBox</cstring>
+                <cstring>Layout2</cstring>
             </property>
-            <property stdset="1">
-                <name>geometry</name>
-                <rect>
-                    <x>520</x>
-                    <y>10</y>
-                    <width>230</width>
-                    <height>50</height>
-                </rect>
-            </property>
-            <property stdset="1">
-                <name>title</name>
-                <string></string>
-            </property>
-            <widget>
-                <class>QLabel</class>
+            <hbox>
                 <property stdset="1">
-                    <name>name</name>
-                    <cstring>lblBalanceAmt</cstring>
+                    <name>margin</name>
+                    <number>0</number>
                 </property>
                 <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>120</x>
-                        <y>10</y>
-                        <width>100</width>
-                        <height>30</height>
-                    </rect>
+                    <name>spacing</name>
+                    <number>6</number>
                 </property>
-                <property stdset="1">
-                    <name>frameShape</name>
-                    <enum>MShape</enum>
-                </property>
-                <property stdset="1">
-                    <name>frameShadow</name>
-                    <enum>MShadow</enum>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string></string>
-                </property>
-                <property stdset="1">
-                    <name>alignment</name>
-                    <set>AlignVCenter|AlignRight</set>
-                </property>
-                <property>
-                    <name>hAlign</name>
-                </property>
-            </widget>
-            <widget>
-                <class>QLabel</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>lblBalance</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>10</x>
-                        <y>10</y>
-                        <width>100</width>
-                        <height>30</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>font</name>
-                    <font>
-                        <pointsize>12</pointsize>
-                    </font>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>Ending Balance:</string>
-                </property>
-                <property stdset="1">
-                    <name>alignment</name>
-                    <set>AlignVCenter|AlignRight</set>
-                </property>
-                <property>
-                    <name>hAlign</name>
-                </property>
-            </widget>
+                <widget>
+                    <class>QComboBox</class>
+                    <item>
+                        <property>
+                            <name>text</name>
+                            <string>All Transactions (default)</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property>
+                            <name>text</name>
+                            <string>Search Results</string>
+                        </property>
+                    </item>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>viewTypeCombo</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>sizePolicy</name>
+                        <sizepolicy>
+                            <hsizetype>3</hsizetype>
+                            <vsizetype>0</vsizetype>
+                        </sizepolicy>
+                    </property>
+                    <property stdset="1">
+                        <name>minimumSize</name>
+                        <size>
+                            <width>260</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                </widget>
+                <spacer>
+                    <property>
+                        <name>name</name>
+                        <cstring>Spacer2</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>orientation</name>
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property stdset="1">
+                        <name>sizeType</name>
+                        <enum>Expanding</enum>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+            </hbox>
         </widget>
-    </widget>
+        <widget>
+            <class>kMyMoneyTable</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>transactionsTable</cstring>
+            </property>
+            <property stdset="1">
+                <name>minimumSize</name>
+                <size>
+                    <width>0</width>
+                    <height>0</height>
+                </size>
+            </property>
+            <property stdset="1">
+                <name>backgroundOrigin</name>
+                <enum>ParentOrigin</enum>
+            </property>
+        </widget>
+        <widget>
+            <class>QLayoutWidget</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>Layout1</cstring>
+            </property>
+            <hbox>
+                <property stdset="1">
+                    <name>margin</name>
+                    <number>0</number>
+                </property>
+                <property stdset="1">
+                    <name>spacing</name>
+                    <number>6</number>
+                </property>
+                <spacer>
+                    <property>
+                        <name>name</name>
+                        <cstring>Spacer1</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>orientation</name>
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property stdset="1">
+                        <name>sizeType</name>
+                        <enum>Expanding</enum>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget>
+                    <class>QLabel</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>lblBalance</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>sizePolicy</name>
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                        </sizepolicy>
+                    </property>
+                    <property stdset="1">
+                        <name>font</name>
+                        <font>
+                            <pointsize>12</pointsize>
+                        </font>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>Ending Balance:</string>
+                    </property>
+                    <property stdset="1">
+                        <name>alignment</name>
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                    <property>
+                        <name>hAlign</name>
+                    </property>
+                </widget>
+                <widget>
+                    <class>QLabel</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>lblBalanceAmt</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>frameShape</name>
+                        <enum>MShape</enum>
+                    </property>
+                    <property stdset="1">
+                        <name>frameShadow</name>
+                        <enum>MShadow</enum>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string></string>
+                    </property>
+                    <property stdset="1">
+                        <name>alignment</name>
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                    <property>
+                        <name>hAlign</name>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+    </vbox>
 </widget>
 <customwidgets>
     <customwidget>

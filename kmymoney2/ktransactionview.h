@@ -44,6 +44,11 @@
 // and the KTransactionListView itself
 class KTransactionView : public KTransactionViewDecl  {
   Q_OBJECT
+public:
+  enum viewingType { NORMAL, // All transactions view
+          SUBSET, // Sub set view
+          CUSTOM // Future use e.g for different sort orders
+          };
 private:
   MyMoneyFile *m_filePointer;
   MyMoneyBank m_bankIndex;
@@ -57,6 +62,7 @@ private:
 	int m_currentrow;
     int m_currentbutton;
     QPoint m_currentpos;
+  viewingType m_viewType;
 
 
 	kMyMoneyDateInput*  m_date;
@@ -86,9 +92,12 @@ public:
 	KTransactionView(QWidget *parent=0, const char *name=0);
 	~KTransactionView();
 
-	void init(MyMoneyFile *file, MyMoneyBank bank, MyMoneyAccount account);
+	void init(MyMoneyFile *file, MyMoneyBank bank, MyMoneyAccount account, QList<MyMoneyTransaction> transList, viewingType type);
 	void clear(void);
   void refresh(void);
+
+protected:
+  void resizeEvent(QResizeEvent*);
 
 protected slots:
   void enterClicked();
@@ -101,9 +110,13 @@ protected slots:
   void slotTransactionCleared();
 	void slotPayeeCompleted();
 	void slotMethodCompleted();
+  void viewTypeActivated(int num);
 
 signals:
  void transactionListChanged();
+  void viewTypeSearchActivated();
+  void viewTypeNormalActivated();
+
 public slots: // Public slots
   /** No descriptions */
   void slotNextTransaction();

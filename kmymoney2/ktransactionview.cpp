@@ -44,7 +44,7 @@ KTransactionView::KTransactionView(QWidget *parent, const char *name)
 	transactionsTable->horizontalHeader()->setLabel(5, i18n("Deposit"));
 	transactionsTable->horizontalHeader()->setLabel(6, i18n("Balance"));
 	transactionsTable->setSelectionMode(QTable::NoSelection);
-   	transactionsTable->setLeftMargin(0);
+ 	transactionsTable->setLeftMargin(0);
 	transactionsTable->verticalHeader()->hide();
 
   KMyMoneySettings *p_settings = KMyMoneySettings::singleton();
@@ -55,6 +55,8 @@ KTransactionView::KTransactionView(QWidget *parent, const char *name)
 
   connect(transactionsTable, SIGNAL(clicked(int, int, int, const QPoint&)),
     this, SLOT(slotFocusChange(int, int, int, const QPoint&)));
+
+  connect(viewTypeCombo, SIGNAL(activated(int)), this, SLOT(viewTypeActivated(int)));
 
   m_index = -1;
 
@@ -487,12 +489,28 @@ void KTransactionView::slotTransactionCleared()
   m_filePointer->setDirty(true);
 }
 
-void KTransactionView::init(MyMoneyFile *file, MyMoneyBank bank, MyMoneyAccount account)
+void KTransactionView::init(MyMoneyFile *file, MyMoneyBank bank, MyMoneyAccount account,
+  QList<MyMoneyTransaction> transList, viewingType type)
 {
   m_filePointer = file;
   m_bankIndex = bank;
   m_accountIndex = account;
+  m_transactions = transList;
 
+  switch (type) {
+    case NORMAL:
+      viewTypeCombo->setCurrentItem(0);
+      break;
+    case SUBSET:
+      viewTypeCombo->setCurrentItem(1);
+      break;
+    default:
+      viewTypeCombo->setCurrentItem(0);
+      break;
+  }
+  m_viewType=type;
+
+ clear();
  useall = true;
  usedate = false;
  userow = false;
@@ -502,8 +520,9 @@ void KTransactionView::init(MyMoneyFile *file, MyMoneyBank bank, MyMoneyAccount 
 void KTransactionView::clear(void)
 {
   for (int i=0; i<transactionsTable->numRows(); i++)
-    for (int j=0; j<=8; j++)
+    for (int j=0; j<=6; j++)
       transactionsTable->setText(i, j, "");
+  transactionsTable->setNumRows(0);
 }
 
 void KTransactionView::enterClicked()
@@ -663,7 +682,7 @@ void KTransactionView::enterClicked()
 			  }
 		  }		
 	  }
-   	account->removeCurrentTransaction(m_index);
+   	account->removeTransaction(*m_transactions.at(m_index));
   	account->addTransaction(newmethod, m_number->text(), m_payee->currentText(),
                             newamount, newdate, catmajor, catminor, "",
   													m_payee->currentText(), "", "", newstate);
@@ -825,13 +844,15 @@ void KTransactionView::updateTransactionList(int row, int col)
   QString currentBalance;
 
   if (row==-1) { // We are going to refresh the whole list
+    int w=transactionsTable->width();
     transactionsTable->setColumnWidth(0, 100);
     transactionsTable->setColumnWidth(1, 100);
-    transactionsTable->setColumnWidth(2, 200);
+    transactionsTable->setColumnWidth(2, w-530-5);
     transactionsTable->setColumnWidth(3, 30);
     transactionsTable->setColumnWidth(4, 100);
     transactionsTable->setColumnWidth(5, 100);
     transactionsTable->setColumnWidth(6, 100);
+    /*
     transactionsTable->setColumnStretchable(0, false);
     transactionsTable->setColumnStretchable(1, false);
 		transactionsTable->setColumnStretchable(2, false);
@@ -839,19 +860,29 @@ void KTransactionView::updateTransactionList(int row, int col)
 		transactionsTable->setColumnStretchable(4, false);
     transactionsTable->setColumnStretchable(5, false);
 		transactionsTable->setColumnStretchable(6, false);
-		transactionsTable->horizontalHeader()->setResizeEnabled(false);
+		*/
+//		transactionsTable->horizontalHeader()->setResizeEnabled(false);
 		transactionsTable->horizontalHeader()->setMovingEnabled(false);
-		transactionsTable->verticalHeader()->setResizeEnabled(false);
-		transactionsTable->verticalHeader()->setMovingEnabled(false);
+//		transactionsTable->verticalHeader()->setResizeEnabled(false);
+//		transactionsTable->verticalHeader()->setMovingEnabled(false);
+/* Removed me
 		m_transactions.clear();
+*/
     m_index=-1;
     //clear();
-    transactionsTable->setNumRows((account->transactionCount() * 2) + 2);
+    transactionsTable->setNumRows((m_transactions.count() * 2) + 2);
     int i = 0;
+/* removed me
 		bool isEmpty = m_transactions.isEmpty();
+*/
+/* changed me
     for ( transaction = account->transactionFirst(); transaction; transaction=account->transactionNext(), i++ ) {
+*/
+    for (transaction=m_transactions.first(); transaction; transaction=m_transactions.next(), i++ ) {
+/* Removed me
       if(isEmpty)
 			  m_transactions.append(transaction);
+*/
       QString colText;
       if (transaction->type()==MyMoneyTransaction::Credit)
         balance += transaction->amount();
@@ -1022,9 +1053,12 @@ void KTransactionView::updateTransactionList(int row, int col)
     transactionsTable->setItem(rowCount + 1, 6, item88);
 
 		lblBalanceAmt->setText(currentBalance);
+    if (p_settings)
+      lblBalanceAmt->setFont(p_settings->lists_cellFont());
 		transactionsTable->ensureCellVisible(rowCount + 1,0);
 
   } else { // We are just updating a section of it
+    qDebug("is this ever called ???");
     QString txt;
     if (row<0 || row>transactionsTable->numRows()-1)
       return;
@@ -1203,4 +1237,27 @@ void KTransactionView::slotNextTransaction(){
 
 	slotFocusChange(m_currentrow + 2,m_currentcol,m_currentbutton,m_currentpos);
 
+}
+
+void KTransactionView::viewTypeActivated(int num)
+{
+  if (num == 1 && m_viewType != SUBSET)
+    emit viewTypeSearchActivated();
+  else if (num == 0 && m_viewType != NORMAL)
+    emit viewTypeNormalActivated();
+  switch (num) {
+    case 0:
+      m_viewType = NORMAL;
+      break;
+    case 1:
+      m_viewType = SUBSET;
+      break;
+  }
+}
+
+void KTransactionView::resizeEvent(QResizeEvent*)
+{
+  // Costly, but works for now.
+  clear();
+  updateTransactionList(-1);
 }

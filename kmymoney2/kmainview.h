@@ -51,7 +51,10 @@ public:
   void viewTransactionList(void);
   viewType viewing(void) { return m_showing; }
   void showInputBox(bool val);
-  void initTransactionView(MyMoneyFile *file, const MyMoneyBank bank, const MyMoneyAccount account);
+  void initTransactionView(MyMoneyFile *file, const MyMoneyBank bank, const MyMoneyAccount account,
+    QList<MyMoneyTransaction> theList,
+    KTransactionView::viewingType type
+    );
   /** No descriptions */
   KTransactionView* getTransactionView();
 	
@@ -61,7 +64,6 @@ protected:
 protected slots:
   void slotBRightMouseClick(const MyMoneyBank, bool);
   void slotARightMouseClick(const MyMoneyAccount, bool);
-  void slotADoubleClick(const MyMoneyAccount);
 //  void slotEnterPressed(const MyMoneyTransaction& trans, bool);
   void slotTransactionListChanged();
   void slotBankSelected();
@@ -70,7 +72,6 @@ protected slots:
 signals:
   void bankRightMouseClick(const MyMoneyBank, bool);
   void accountRightMouseClick(const MyMoneyAccount, bool);
-  void accountDoubleClick(const MyMoneyAccount);
 //  void enterBtnClicked(const MyMoneyTransaction&, bool);
   void transactionListChanged();
   void bankSelected();

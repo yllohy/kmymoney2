@@ -1,3 +1,9 @@
+2001-06-29 Michael Edwardes <mte@users.sourceforge.net>
+  * Added ability to search for transactions and view them in
+    register view.
+  * Fixed resize issues with transaction view.
+  * Added the Back icon onto the toolbar.
+
 2001-06-23 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
   * Payee ComboBox now populates from PayeeList also
 

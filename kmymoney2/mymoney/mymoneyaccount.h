@@ -31,7 +31,7 @@
   * @see MyMoneyTransaction
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: mymoneyaccount.h,v 1.7 2001/06/17 17:44:19 mte Exp $
+  * $Id: mymoneyaccount.h,v 1.8 2001/06/29 05:19:59 mte Exp $
   *
   * @short Representation of an account which holds transactions.
 **/
@@ -275,7 +275,7 @@ public:
 	  *
 	  * @return The current transaction
 	**/
-	MyMoneyTransaction* transactionAt(int index);
+//	MyMoneyTransaction* transactionAt(int index);
 	
   /**
     * Retrieve the number of transactions held in this account.
@@ -292,7 +292,9 @@ public:
     * @return Whether the remove was successful.
   **/
   bool removeTransaction(const MyMoneyTransaction& transaction);
-  bool removeCurrentTransaction(unsigned int index);
+
+  /** I don't want any indexed methods */
+//  bool removeCurrentTransaction(unsigned int index);
 
   /**
     * Adds a transaction to the list.

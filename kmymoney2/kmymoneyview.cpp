@@ -55,11 +55,15 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(m_mainView, SIGNAL(bankSelected()), this, SLOT(slotBankSelected()));
   connect(m_mainView, SIGNAL(accountSelected()), this, SLOT(slotAccountSelected()));
 
+  connect(m_mainView->getTransactionView(), SIGNAL(viewTypeSearchActivated()),
+    this, SLOT(accountFind()));
+  connect(m_mainView->getTransactionView(), SIGNAL(viewTypeNormalActivated()),
+    this, SLOT(viewTransactionList()));
+
   m_inReconciliation=false;
   m_reconcileInited=false;
   reconcileDlg=0;
   transactionFindDlg=0;
-  transactionResultsDlg=0;
 }
 
 KMyMoneyView::~KMyMoneyView()
@@ -821,7 +825,13 @@ void KMyMoneyView::viewTransactionList(void)
     return;
   }
 
-  m_mainView->initTransactionView(&m_file, *pBank, *pAccount);
+  QList<MyMoneyTransaction> list;
+  MyMoneyTransaction *trans=0;
+  for (trans=pAccount->transactionFirst(); trans; trans=pAccount->transactionNext())
+    list.append(trans);
+
+  qDebug("kmymoneyview::view transactionlist");
+  m_mainView->initTransactionView(&m_file, *pBank, *pAccount, list, KTransactionView::NORMAL);
   m_mainView->viewTransactionList();
   emit transactionOperations(true);
 }
@@ -922,11 +932,9 @@ void KMyMoneyView::doTransactionSearch()
     numberRegExp );
 
   QList<MyMoneyTransaction> transactionList;
-//  QListIterator<MyMoneyTransaction> it = m_file.transactionIterator(bankIndex, accountIndex);
   MyMoneyTransaction *transaction;
 
   for ( transaction=pAccount->transactionFirst(); transaction; transaction=pAccount->transactionNext()) {
-//    MyMoneyTransaction *transaction = it.current();
     if (checkTransactionDates(transaction, doDate, startDate, endDate) &&
       checkTransactionAmount(transaction, doAmount, amountID, money) &&
       checkTransactionCredit(transaction, doCredit, creditID) &&
@@ -950,12 +958,19 @@ void KMyMoneyView::doTransactionSearch()
         transaction->state()));
     }
   }
-
-  if (!transactionResultsDlg) {
-    transactionResultsDlg = new KTFindResultsDlg(0);
-  }
-  transactionResultsDlg->setList(transactionList);
-  transactionResultsDlg->show();
+/*
+  qDebug("looping through found transactions");
+  MyMoneyTransaction *t;
+  for ( t=transactionList.first(); t != 0; t=transactionList.next() )
+    qDebug("\tSearch Transaction %s, %d, %s, %s, %f", t->date().toString().latin1(),
+      t->method(),
+      t->payee().latin1(),
+      t->memo().latin1(),
+      t->amount().amount());
+*/
+  m_mainView->initTransactionView(&m_file, *pBank, *pAccount, transactionList, KTransactionView::SUBSET);
+  m_mainView->viewTransactionList();
+  emit transactionOperations(true);
 }
 
 bool KMyMoneyView::checkTransactionDates(const MyMoneyTransaction *transaction, const bool enabled, const QDate start, const QDate end)
@@ -974,10 +989,11 @@ bool KMyMoneyView::checkTransactionAmount(const MyMoneyTransaction *transaction,
   if (!enabled)
     return true;
 
-  if (id==i18n("At Least")) {
+  qDebug("id = %s", id.latin1());
+  if (id==i18n("At least")) {
     if (transaction->amount() >= amount)
       return true;
-  } else if (id==i18n("At Most")) {
+  } else if (id==i18n("At most")) {
     if (transaction->amount() <= amount)
       return true;
   } else {
