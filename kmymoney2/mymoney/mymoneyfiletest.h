@@ -81,6 +81,9 @@ class MyMoneyFileTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST(testHasAccount);
 	CPPUNIT_TEST(testAddEquityAccount);
 	CPPUNIT_TEST(testReparentEquity);
+	CPPUNIT_TEST(testBaseCurrency);
+	CPPUNIT_TEST(testOpeningBalanceNoBase);
+	CPPUNIT_TEST(testOpeningBalance);
 #if 0
 	CPPUNIT_TEST(testMoveSplits);
 #endif
@@ -131,6 +134,9 @@ public:
 	void testAddEquityAccount();
 	void testReparentEquity();
 	void testReparentEquity(QValueList<MyMoneyAccount::accountTypeE>& list, MyMoneyAccount& parent);
+	void testBaseCurrency();
+	void testOpeningBalanceNoBase();
+	void testOpeningBalance();
 
 private:
 	void testRemoveStdAccount(const MyMoneyAccount& acc);

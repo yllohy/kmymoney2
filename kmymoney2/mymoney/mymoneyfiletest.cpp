@@ -1448,3 +1448,92 @@ void MyMoneyFileTest::testReparentEquity(QValueList<MyMoneyAccount::accountTypeE
 	}
 }
 
+void MyMoneyFileTest::testBaseCurrency(void)
+{
+	MyMoneySecurity base("EUR", "Euro", QChar(0x20ac));
+	MyMoneySecurity ref;
+
+	// make sure, no base currency is set
+	try {
+		ref = m->baseCurrency();
+		CPPUNIT_ASSERT(ref.id().isEmpty());
+	} catch(MyMoneyException *e) {
+		unexpectedException(e);
+	}
+
+	// make sure, we cannot assign an unknown currency
+	try {
+		m->setBaseCurrency(base);
+		CPPUNIT_FAIL("Missing expected exception");
+	} catch(MyMoneyException *e) {
+		delete e;
+	}
+
+	// add the currency and try again
+	try {
+		m->addCurrency(base);
+		m->setBaseCurrency(base);
+	} catch(MyMoneyException *e) {
+		unexpectedException(e);
+	}
+
+	// make sure, the base currency is set
+	try {
+		ref = m->baseCurrency();
+		CPPUNIT_ASSERT(ref.id() == "EUR");
+		CPPUNIT_ASSERT(ref.name() == "Euro");
+		CPPUNIT_ASSERT(ref.tradingSymbol() == QChar(0x20ac));
+	} catch(MyMoneyException *e) {
+		unexpectedException(e);
+	}
+}
+
+void MyMoneyFileTest::testOpeningBalanceNoBase(void)
+{
+	MyMoneyAccount openingAcc;
+	MyMoneySecurity base;
+
+	try {
+		base = m->baseCurrency();
+		openingAcc = m->openingBalanceAccount(base);
+		CPPUNIT_FAIL("Missing expected exception");
+	} catch(MyMoneyException *e) {
+		delete e;
+	}
+}
+
+void MyMoneyFileTest::testOpeningBalance(void)
+{
+	MyMoneyAccount openingAcc;
+	MyMoneySecurity second("USD", "US Dollar", "$");
+	testBaseCurrency();
+
+	try {
+		openingAcc = m->openingBalanceAccount(m->baseCurrency());
+		CPPUNIT_ASSERT(openingAcc.parentAccountId() == m->equity().id());
+		CPPUNIT_ASSERT(openingAcc.name() == MyMoneyFile::OpeningBalancesPrefix);
+		CPPUNIT_ASSERT(openingAcc.openingBalance() == MyMoneyMoney(0,1));
+		CPPUNIT_ASSERT(openingAcc.openingDate() == QDate::currentDate());
+	} catch(MyMoneyException *e) {
+		unexpectedException(e);
+	}
+
+	// add a second currency
+	try {
+		m->addCurrency(second);
+	} catch(MyMoneyException *e) {
+		unexpectedException(e);
+	}
+
+	QString refName = QString("%1 (%2)").arg(MyMoneyFile::OpeningBalancesPrefix).arg("USD");
+	try {
+		openingAcc = m->openingBalanceAccount(second);
+		CPPUNIT_ASSERT(openingAcc.parentAccountId() == m->equity().id());
+		CPPUNIT_ASSERT(openingAcc.name() == refName);
+		CPPUNIT_ASSERT(openingAcc.openingBalance() == MyMoneyMoney(0,1));
+		CPPUNIT_ASSERT(openingAcc.openingDate() == QDate::currentDate());
+	} catch(MyMoneyException *e) {
+		unexpectedException(e);
+	}
+}
+
