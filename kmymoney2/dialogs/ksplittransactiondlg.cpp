@@ -790,7 +790,7 @@ void KSplitTransactionDlg::slotCategoryChanged(const QString& category)
     }
 
     m_split.setAccountId(id);
-
+/*
     // Now we check, if a split referencing this account already exists
     // within this transaction. If so, we join them.
     QValueList<MyMoneySplit> list = getSplits();
@@ -812,7 +812,7 @@ void KSplitTransactionDlg::slotCategoryChanged(const QString& category)
         break;
       }
     }
-
+*/
     m_editCategory->loadText(category);
 
   } catch(MyMoneyException *e) {

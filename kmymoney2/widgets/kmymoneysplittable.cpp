@@ -156,10 +156,10 @@ void kMyMoneySplitTable::endEdit(int row, int col, bool accept, bool replace )
 
 bool kMyMoneySplitTable::eventFilter(QObject *o, QEvent *e)
 {
+  QKeyEvent *k = static_cast<QKeyEvent *> (e);
   bool rc = false;
 
   if(e->type() == QEvent::KeyPress && !m_inlineEditMode) {
-    QKeyEvent *k = static_cast<QKeyEvent *> (e);
     rc = true;
     switch(k->key()) {
       case Qt::Key_Up:
@@ -183,6 +183,7 @@ bool kMyMoneySplitTable::eventFilter(QObject *o, QEvent *e)
         break;
 
       case Qt::Key_Tab:
+      case Qt::Key_F2:
         if((k->state() & Qt::ShiftButton) == 0) {
           signalTab();
         }
@@ -190,6 +191,15 @@ bool kMyMoneySplitTable::eventFilter(QObject *o, QEvent *e)
 
       default:
         rc = false;
+        break;
+    }
+  } else if(e->type() == QEvent::KeyPress && m_inlineEditMode) {
+    // suppress the F2 functionality to start editing in inline edit mode
+    switch(k->key()) {
+      case Qt::Key_F2:
+        rc = true;
+        break;
+      default:
         break;
     }
   }

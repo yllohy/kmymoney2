@@ -1750,12 +1750,13 @@ void KMyMoneyView::fixTransactions(void)
       }
     }
 
+/*
     // if there are at least two splits referencing the same account,
     // we need to combine them into one and get rid of the others
     if(hasDuplicateAccounts) {
       fixDuplicateAccounts(*it_t);
     }
-
+*/
     ++cnt;
     if(!(cnt % 10))
       kmymoney2->slotStatusProgressBar(cnt);

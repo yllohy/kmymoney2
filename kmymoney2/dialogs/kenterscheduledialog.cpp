@@ -216,7 +216,7 @@ void KEnterScheduleDialog::initWidgets()
         connect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
       }
       else
-        m_category->setText(MyMoneyFile::instance()->instance()->accountToCategory(m_transaction.splitByAccount(m_schedule.account().id(), false).accountId()));
+        m_category->setText(MyMoneyFile::instance()->accountToCategory(m_transaction.splitByAccount(m_schedule.account().id(), false).accountId()));
     }
 
     m_memo->setText(m_transaction.splitByAccount(m_schedule.account().id()).memo());
@@ -398,7 +398,7 @@ bool KEnterScheduleDialog::checkData(void)
       if (m_schedule.transaction().splitCount() >= 3)
         category = i18n("Splitted Transaction");
       else
-        category = MyMoneyFile::instance()->instance()->accountToCategory(m_schedule.transaction()
+        category = MyMoneyFile::instance()->accountToCategory(m_schedule.transaction()
           .splitByAccount(m_schedule.account().id(), false).accountId());
 
       if (category != m_category->text())

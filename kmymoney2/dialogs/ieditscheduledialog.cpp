@@ -651,7 +651,7 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
         m_category->loadText(i18n("Loan payment"));
       }
       else
-        m_category->loadText(MyMoneyFile::instance()->instance()->accountToCategory(m_schedule.transaction().splitByAccount(theAccountId(), false).accountId()));
+        m_category->loadText(MyMoneyFile::instance()->accountToCategory(m_schedule.transaction().splitByAccount(theAccountId(), false).accountId()));
     }
     
     m_qlineeditMemo->setText(m_schedule.transaction().splitByAccount(theAccountId()).memo());
