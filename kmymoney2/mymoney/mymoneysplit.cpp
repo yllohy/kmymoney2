@@ -22,12 +22,20 @@
 
 #include "mymoneysplit.h"
 
+const char MyMoneySplit::ActionCheck[] = "Check";
+const char MyMoneySplit::ActionDeposit[] = "Deposit";
+const char MyMoneySplit::ActionTransfer[] = "Transfer";
+const char MyMoneySplit::ActionWithdrawal[] = "Withdrawal";
+const char MyMoneySplit::ActionATM[] = "ATM";
+
+
 MyMoneySplit::MyMoneySplit()
 {
   m_reconcileFlag = NotReconciled;
   m_account =
   m_memo =
   m_payee =
+  m_action =
   m_id = "";
 }
 
@@ -42,6 +50,7 @@ bool MyMoneySplit::operator == (const MyMoneySplit& right) const
     m_account == right.m_account &&
     m_payee == right.m_payee &&
     m_memo == right.m_memo &&
+    m_action == right.m_action &&
     m_reconcileDate == right.m_reconcileDate &&
     m_reconcileFlag == right.m_reconcileFlag &&
     m_shares == right.m_shares &&
@@ -86,4 +95,14 @@ void MyMoneySplit::setId(const QCString& id)
 void MyMoneySplit::setPayeeId(const QCString& payee)
 {
   m_payee = payee;
+}
+
+void MyMoneySplit::setAction(const QCString& action)
+{
+  m_action = action;
+}
+
+void MyMoneySplit::setNumber(const QString& number)
+{
+  m_number = number;
 }

@@ -314,11 +314,12 @@ void MyMoneyStorageBin::readOldFormat(QDataStream& s, IMyMoneySerialize* storage
         MyMoneyMoney amount;
         QString category;
         QString payee;
+        QCString action;
         Q_INT32 method;
 
         sp1.setAccountId(acc.id());
         s >> tmp_int32;   // id
-        s >> tmp; // FIXME: sp1.setNumber(tmp);
+        s >> tmp; sp1.setNumber(tmp);
         s >> payee;
 
         // converting from a double to a MyMoneyMoney object is not that
@@ -327,7 +328,30 @@ void MyMoneyStorageBin::readOldFormat(QDataStream& s, IMyMoneySerialize* storage
         // negative values? I am not sure.
         s >> tmp_d; amount = MyMoneyMoney(tmp_d);
         s >> date; tr.setPostDate(date);
-        s >> method;      // method
+        s >> method;
+        switch(method) {
+          default:
+            qDebug("Unknown transaction method %d", method);
+            // tricky fall through here, so that the default
+            // is cheque
+          case 0:         // cheque
+            action = MyMoneySplit::ActionCheck;
+            break;
+          case 1:
+            action = MyMoneySplit::ActionDeposit;
+            break;
+          case 2:
+            action = MyMoneySplit::ActionTransfer;
+            break;
+          case 3:
+            action = MyMoneySplit::ActionWithdrawal;
+            break;
+          case 4:
+            action = MyMoneySplit::ActionATM;
+            break;
+        }
+        sp1.setAction(action);
+
         s >> category;    // major category
         s >> tmp;         // minor category
         if(tmp != "")
@@ -339,6 +363,7 @@ void MyMoneyStorageBin::readOldFormat(QDataStream& s, IMyMoneySerialize* storage
         s >> tmp; // account to
         s >> tmp; sp1.setMemo(tmp); sp2.setMemo(tmp);
         s >> tmp_int32;  // state
+
         switch(tmp_int32) {
           case 0:
             sp1.setReconcileFlag(MyMoneySplit::Cleared);

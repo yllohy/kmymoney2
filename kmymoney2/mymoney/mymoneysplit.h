@@ -64,6 +64,8 @@ public:
   const QDate reconcileDate(void) const { return m_reconcileDate; };
   const QCString id(void) const { return m_id; };
   const QCString payeeId(void) const { return m_payee; };
+  const QCString action(void) const { return m_action; };
+  const QString number(void) const { return m_number; };
 
   void setShares(const MyMoneyMoney& shares);
   void setValue(const MyMoneyMoney& value);
@@ -73,6 +75,14 @@ public:
   void setReconcileDate(const QDate date);
   void setId(const QCString& id);
   void setPayeeId(const QCString& payee);
+  void setAction(const QCString& action);
+  void setNumber(const QString& number);
+
+  static const char ActionCheck[];
+  static const char ActionDeposit[];
+  static const char ActionTransfer[];
+  static const char ActionWithdrawal[];
+  static const char ActionATM[];
 
 private:
   /**
@@ -107,15 +117,29 @@ private:
     * @li NotReconciled
     * @li Cleared
     * @li Reconciled
+    * @li Frozen
     *
     */
   reconcileFlagE m_reconcileFlag;
 
   /**
-    * In case the reconciliation flag is set to Reconciled
+    * In case the reconciliation flag is set to Reconciled or Frozen
     * this member contains the date of the reconciliation.
     */
   QDate         m_reconcileDate;
+
+  /**
+    * The m_action member is an arbitrary string, but is intended to
+    * be conveniently limited to a menu of selections such as
+    * "Buy", "Sell", "Interest", etc.
+    */
+  QCString      m_action;
+
+  /**
+    * The m_number member is used to store a reference number to
+    * the split supplied by the user (e.g. check number, etc.).
+    */
+  QString       m_number;
 };
 
 #endif

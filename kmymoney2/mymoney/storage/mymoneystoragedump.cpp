@@ -112,6 +112,8 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
       s << " (" << acc.name() << ")" << "\n";
       s << "    Memo = " << (*it_s).memo() << "\n";
       s << "    Value = " << (*it_s).value().formatMoney() << "\n";
+      s << "    Action = '" << (*it_s).action() << "'\n";
+      s << "    Nr = '" << (*it_s).number() << "'\n";
       s << "\n";
     }
     s << "\n";
