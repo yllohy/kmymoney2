@@ -76,8 +76,8 @@ int main(int argc, char *argv[])
   aboutData.addAuthor("John C", I18N_NOOP("Developer"), "tacoturtle@users.sourceforge.net");
   aboutData.addAuthor("Thomas Baumgart", I18N_NOOP("Developer & Release Manager"), "ipwizard@users.sourceforge.net");
   aboutData.addAuthor("Kevin Tambascio", I18N_NOOP("Developer"), "ktambascio@users.sourceforge.net");
+  aboutData.addAuthor("Ace Jones", I18N_NOOP("Developer of reporting logic"), "");
   aboutData.addCredit("Arni Ingimundarson", I18N_NOOP("Developer"), "arniing@users.sourceforge.net");
-  aboutData.addCredit("Ace Jones", I18N_NOOP("for developing the first report"), "");
   KCmdLineArgs::init( argc, argv, &aboutData );
   KCmdLineArgs::addCmdLineOptions( options ); // Add our own options.
 
