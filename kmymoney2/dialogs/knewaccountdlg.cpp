@@ -237,7 +237,7 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
     if(account.accountType() == MyMoneyAccount::Stock) {
       m_equity->loadEquity(account.currencyId());
     } else {
-      m_currency->setCurrency(file->currency(account.currencyId()));
+      m_currency->setSecurity(file->currency(account.currencyId()));
     }
 
     // we do not allow to change the account type once an account
@@ -472,7 +472,7 @@ void KNewAccountDlg::okClicked()
     if(m_account.accountType() == MyMoneyAccount::Stock) {
       m_account.setCurrencyId(m_equity->id());
     } else {
-      m_account.setCurrencyId(m_currency->currency().id());
+      m_account.setCurrencyId(m_currency->security().id());
     }
 
     if(m_qcheckboxPreferred->isChecked())

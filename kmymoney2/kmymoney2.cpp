@@ -72,6 +72,7 @@
 #include "dialogs/kimportverifydlg.h"
 #include "dialogs/kenterscheduledialog.h"
 #include "dialogs/kmymoneypricedlg.h"
+#include "dialogs/kcurrencyeditdlg.h"
 #include "dialogs/kequitypriceupdatedlg.h"
 #include "dialogs/ksecuritylisteditor.h"
 
@@ -213,8 +214,9 @@ void KMyMoney2App::initActions()
   new KAction(i18n("Consistency Check"), "", 0, this, SLOT(slotFileConsitencyCheck()), actionCollection(), "file_consistency_check");
 
   new KAction(i18n("Securities ..."), "", 0, this, SLOT(slotSecurityEditor()), actionCollection(), "tool_security_editor");
+  new KAction(i18n("Currencies ..."), "", 0, this, SLOT(slotCurrencyDialog()), actionCollection(), "tool_currency_editor");
 
-  new KAction(i18n("Prices ..."), "", 0, this, SLOT(slotPriceDialog()), actionCollection(), "tool_currency_dialog");
+  new KAction(i18n("Prices ..."), "", 0, this, SLOT(slotPriceDialog()), actionCollection(), "tool_price_editor");
   new KAction(i18n("Update Stock and Currency Prices..."), "", 0, this, SLOT(slotEquityPriceUpdate()), actionCollection(), "equity_price_update");
 
   // The Settings Menu
@@ -1425,13 +1427,17 @@ void KMyMoney2App::update(const QCString& /* id */)
   updateCaption();
 }
 
+void KMyMoney2App::slotCurrencyDialog(void)
+{
+  KCurrencyEditDlg dlg(this, "Currency Editor");
+  dlg.exec();
+
+  myMoneyView->slotRefreshViews();
+}
+
 void KMyMoney2App::slotPriceDialog(void)
 {
-#if 0
-  KCurrencyEditDlg dlg;
-#else
   KMyMoneyPriceDlg dlg(this, "Price Editor");
-#endif
   dlg.exec();
 
   myMoneyView->slotRefreshViews();

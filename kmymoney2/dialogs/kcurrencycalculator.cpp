@@ -27,6 +27,7 @@
 #include <qradiobutton.h>
 #include <qcheckbox.h>
 #include <qwidgetstack.h>
+#include <qgroupbox.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -36,6 +37,7 @@
 #include <kconfig.h>
 #include <kiconloader.h>
 #include <kguiitem.h>
+#include <kcombobox.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -199,6 +201,8 @@ void KCurrencyCalculator::updateExample(const MyMoneyMoney& price)
 
 void KCurrencyCalculator::accept(void)
 {
+  slotUpdateRate(QString());
+
   if(m_updateButton->isChecked()) {
     MyMoneyPrice pr = MyMoneyFile::instance()->price(m_fromCurrency.id(), m_toCurrency.id(), m_date);
     if(!pr.isValid()

@@ -103,6 +103,11 @@ public slots:
     */
   void slotCancelEdit(void);
 
+  /**
+    * This slot starts the logic to add a price information to the file
+    */
+  void slotAddPrice(void);
+
 protected:
   /**
     * This method reloads the account selection combo box of the

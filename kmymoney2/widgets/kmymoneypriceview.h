@@ -51,17 +51,11 @@ class kMyMoneyPriceItem : public kMyMoneyListViewItem
 {
 public:
   kMyMoneyPriceItem(KListView *, const MyMoneyPrice& pr);
-  ~kMyMoneyPriceItem();
+  ~kMyMoneyPriceItem() {};
 
   int compare(QListViewItem *p, int col, bool ascending) const;
 
   const MyMoneyPrice price(void) const { return m_pr; };
-#if 0
-  const QDate date(void) const { return m_date; };
-  const MyMoneyMoney price(void) const { return m_price; };
-  void setPrice(const MyMoneyMoney& price);
-  void setDate(const QDate& date);
-#endif
 
 private:
   MyMoneyPrice  m_pr;
@@ -74,10 +68,6 @@ class kMyMoneyPriceView : public kMyMoneyPriceViewDecl, public MyMoneyObserver
 public:
   kMyMoneyPriceView(QWidget *parent=0, const char *name=0);
   ~kMyMoneyPriceView();
-
-  void setHistory(const QMap<QDate,MyMoneyMoney>& history);
-  const QMap<QDate, MyMoneyMoney> history(void) const;
-  const bool dirty(void) const { return m_dirty; };
 
   void update(const QCString& id);
 
@@ -94,16 +84,17 @@ protected:
 
 protected slots:
   void slotListClicked(QListViewItem* item, const QPoint&, int);
-  void slotAddPrice(void);
+  void slotNewPrice(void);
   void slotDeletePrice(void);
-  void slotEditPrice(void);
+  int slotEditPrice(void);
+  void slotShowAllPrices(bool enabled);
 
 private slots:
   void slotTimerDone(void);
 
 private:
-  bool            m_dirty;
   KPopupMenu*     m_contextMenu;
+  bool            m_showAll;
 };
 
 #endif

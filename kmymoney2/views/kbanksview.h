@@ -42,7 +42,7 @@
 #include "../views/kbanklistitem.h"
 
 /**
-  *@author Michael Edwardes, Thomas Baumgart
+  * @author Michael Edwardes, Thomas Baumgart
   */
 
 /**
@@ -50,8 +50,9 @@
   * It handles the resize event, the totals widgets
   * and the KAccountListView itself
   */
-class KAccountsView : public KBankViewDecl, MyMoneyObserver  {
-   Q_OBJECT
+class KAccountsView : public KBankViewDecl, MyMoneyObserver
+{
+  Q_OBJECT
 private:
   bool m_bSelectedAccount;
   QCString m_selectedAccount;
@@ -61,7 +62,6 @@ private:
   bool m_hideCategory;
   QCString m_selectedInstitution;
   bool m_bSelectedInstitution;
-  bool m_bInstitutionViewOverride;
   void refresh(const QCString& selectAccount);
   void refreshNetWorth(void);
   const bool showSubAccounts(const QCStringList& accounts, KAccountListItem *parentItem, const bool used);
@@ -71,7 +71,7 @@ private:
 
 public:
   KAccountsView(QWidget *parent=0, const char *name=0, bool bInstitutionView=false);
-  ~KAccountsView();
+  virtual ~KAccountsView();
   QCString currentAccount(bool&);
   QCString currentInstitution(bool&);
   void clear(void);
@@ -161,7 +161,7 @@ signals:
     * expense, income and any of the standard accounts.
     */
   void accountDoubleClick();
-  
+
   void categoryDoubleClick();
 
   void signalViewActivated();

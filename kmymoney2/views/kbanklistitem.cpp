@@ -21,10 +21,7 @@
 #include <qcolor.h>
 #include <qstyle.h>
 #include <qglobal.h>
-
-#if QT_VERSION > 300
 #include <qpainter.h>
-#endif
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -32,11 +29,7 @@
 #include <kglobal.h>
 #include <kconfig.h>
 #include <klocale.h>
-#if QT_VERSION > 300
 #include <kstandarddirs.h>
-#else
-#include <kstddirs.h>
-#endif
 #include <kmessagebox.h>
 
 // ----------------------------------------------------------------------------
@@ -213,8 +206,15 @@ void KAccountListItem::update(const QCString& accountId)
 
     try {
       MyMoneyMoney balance = file->balance(accountId);
-      MyMoneyMoney value = file->accountValue(accountId);
-      m_valueValid = file->accountValueValid(accountId);
+      MyMoneyMoney value;
+
+      if(acc.accountType() == MyMoneyAccount::Investment) {
+        value = file->totalValue(accountId);
+        m_valueValid = file->totalValueValid(accountId);
+      } else {
+        value = file->accountValue(accountId);
+        m_valueValid = file->accountValueValid(accountId);
+      }
 
       // make sure, we translate the standard account names
       if(file->isStandardAccount(acc.id())) {
@@ -227,7 +227,7 @@ void KAccountListItem::update(const QCString& accountId)
         } else if(acc.id() == file->expense().id()) {
           setText(0, i18n("Expense"));
         } else if(acc.id() == file->equity().id()) {
-          setText(0, i18n("Equity"));
+          setText(0, i18n("Personal Equity"));
         }
         value = file->totalValue(accountId);
         m_valueValid = file->totalValueValid(accountId);

@@ -113,6 +113,9 @@ void KCategoriesView::slotRefreshView(void)
   categoryListView->header()->setFont(KMyMoneyUtils::headerFont());
   bool accountUsed;
 
+  // Disable the note about hidden categories
+  m_hiddenCategories->hide();
+
   categoryListView->clear();
   m_accountMap.clear();
   m_transactionCountMap = MyMoneyFile::instance()->transactionCountMap();
@@ -153,6 +156,7 @@ void KCategoriesView::slotRefreshView(void)
         // subaccounts has no split, we can safely remove it and all
         // it's sub-ordinate accounts from the list
         delete accountItem;
+        m_hiddenCategories->show();
       }
     }
 
@@ -179,6 +183,7 @@ void KCategoriesView::slotRefreshView(void)
         // subaccounts has no split, we can safely remove it and all
         // it's sub-ordinate accounts from the list
         delete accountItem;
+        m_hiddenCategories->show();
       }
     }
 

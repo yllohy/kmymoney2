@@ -95,10 +95,6 @@ KEditEquityEntryDlg::KEditEquityEntryDlg(const MyMoneySecurity& selectedSecurity
                     i18n("Create a new price information entry."));
   btnAddEntry->setGuiItem(addButtenItem);
 
-
-
-
-
   KGuiItem editButtenItem( i18n( "&Edit" ),
                     QIconSet(il->loadIcon("edit", KIcon::Small, KIcon::SizeSmall)),
                     i18n("Modify the selected entry"),
@@ -130,7 +126,7 @@ void KEditEquityEntryDlg::slotTimerDone(void)
 /** No descriptions */
 void KEditEquityEntryDlg::slotOKClicked()
 {
-  if(m_changes || kpvPriceHistory->dirty())
+  if(m_changes /* || kpvPriceHistory->dirty() */)
   {
     m_selectedSecurity.setName(edtEquityName->text());
     m_selectedSecurity.setTradingSymbol(edtMarketSymbol->text());
@@ -160,17 +156,4 @@ void KEditEquityEntryDlg::slotDataChanged(void)
   btnOK->setEnabled(okEnabled);
 
   m_changes = true;
-}
-
-// This function is not needed.  However, removing the KUpdateStockPriceDlg
-// instantiation below causes link failures:
-//
-// kmymoney2/widgets/kmymoneypriceview.cpp:179: undefined reference to
-// `KUpdateStockPriceDlg::KUpdateStockPriceDlg[in-charge](QWidget*, char const*)'
-// kmymoney2/widgets/kmymoneypriceview.cpp:204: undefined reference to
-// `KUpdateStockPriceDlg::KUpdateStockPriceDlg[in-charge](QDate const&, QString const&, QWidget*, char const*)'
-
-void KEditEquityEntryDlg_useless(void)
-{
-  delete new KUpdateStockPriceDlg(QDate(), QString(), NULL);
 }

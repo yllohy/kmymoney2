@@ -68,7 +68,7 @@ KSettingsDlg::KSettingsDlg(QWidget *parent, const char *name, bool modal)
 {
   // Setup the pages and then read the configuration object.
   setPageGeneral();
-  setPageAccountsView();
+  // setPageAccountsView();
   setPageList();
   setHomePage();
   setPageSchedule();
@@ -137,7 +137,7 @@ void KSettingsDlg::setPageGeneral()
   // --------------------
 
   // Create a group box to hold the available options
-  QButtonGroup *qpagebuttongroup = new QButtonGroup(qvboxMainFrame, "GroupBox2");
+  QButtonGroup *qpagebuttongroup = new QButtonGroup(qvboxMainFrame, "ButtonGroup1");
   qpagebuttongroup->setTitle( i18n( "Startup page options" ) );
   qpagebuttongroup->setColumnLayout(0, Qt::Vertical );
   qpagebuttongroup->layout()->setSpacing( 0 );
@@ -161,7 +161,7 @@ void KSettingsDlg::setPageGeneral()
 
 
   // Create a group to hold the price precision
-  QButtonGroup *qbuttongroupPrice = new QButtonGroup(qvboxMainFrame, "ButtonGroup1");
+  QButtonGroup *qbuttongroupPrice = new QButtonGroup(qvboxMainFrame, "ButtonGroup2");
   qbuttongroupPrice->setTitle(i18n("Equity/Currency/Value options"));
   qbuttongroupPrice->setColumnLayout(0, Qt::Vertical );
   qbuttongroupPrice->layout()->setSpacing( 0 );
@@ -179,8 +179,26 @@ void KSettingsDlg::setPageGeneral()
   qhboxlayout2->addWidget(m_qIntPricePrecision);
   qhboxlayout2->addWidget(new QLabel(i18n("digits"), qbuttongroupPrice));
   qhboxlayout2->addStretch(20);
-}
 
+
+  // Create a check box for the hide category feature
+  QButtonGroup *qbuttongroupAccount = new QButtonGroup(qvboxMainFrame, "ButtonGroup3");
+  qbuttongroupAccount->setTitle(i18n("Account options"));
+
+  qbuttongroupAccount->setColumnLayout(0, Qt::Vertical );
+  qbuttongroupAccount->layout()->setSpacing( 0 );
+  qbuttongroupAccount->layout()->setMargin( 0 );
+
+  QHBoxLayout *qhboxlayout3 = new QHBoxLayout(qbuttongroupAccount->layout());
+  qhboxlayout3->setAlignment( Qt::AlignTop );
+  qhboxlayout3->setSpacing( 6 );
+  qhboxlayout3->setMargin( 11 );
+
+  m_qcheckboxHideCategory = new QCheckBox("hide_categories", qbuttongroupAccount);
+  m_qcheckboxHideCategory->setText( i18n( "Don't show unused categories" ) );
+  qhboxlayout3->addWidget(m_qcheckboxHideCategory);
+}
+#if 0
 void KSettingsDlg::setPageAccountsView()
 {
   // Create the main frame to hold the widgets
@@ -234,10 +252,8 @@ void KSettingsDlg::setPageAccountsView()
   m_qradiobuttonAccountWizard->setText( i18n( "Use the new account wizard" ) );
   qwizardvboxlayout->addWidget(m_qradiobuttonAccountWizard);
 */
-  // Create a check box for the hide category feature
-  m_qcheckboxHideCategory = new QCheckBox("hide_categories", qvboxMainFrame);
-  m_qcheckboxHideCategory->setText( i18n( "Don't show unused categories" ) );
 }
+#endif
 
 void KSettingsDlg::setHomePage()
 {
@@ -492,9 +508,11 @@ void KSettingsDlg::configRead()
   m_qdateTempStart = kconfig->readDateTimeEntry("StartDate", &defaultDate).date();
   m_dateinputStart->setDate(m_qdateTempStart);
 
+#if 0
   m_bTempNormalView = kconfig->readBoolEntry("NormalAccountsView", false);
   m_qradiobuttonNormalView->setChecked(m_bTempNormalView);
   m_qradiobuttonAccountView->setChecked(!m_bTempNormalView);
+#endif
 
   kconfig->setGroup("Homepage Options");
   m_tempHomePageItems = kconfig->readListEntry("Itemlist");
@@ -508,14 +526,17 @@ void KSettingsDlg::configRead()
   m_intSchedulePreview->setEnabled(m_bTempCheckSchedule);
   m_iTempSchedulePreview = kconfig->readNumEntry("CheckSchedulePreview", 0);
   m_intSchedulePreview->setValue(m_iTempSchedulePreview);
-  
-  // TODO: Find a better way to handle these defaults so they're not 
+
+  m_onlineQuotesWidget->readConfig();
+#if 0
+  // TODO: Find a better way to handle these defaults so they're not
   // duplicated in 2 places
   kconfig->setGroup("Online Quotes Options");
   m_onlineQuotesWidget->m_editURL->setText(kconfig->readEntry("URL","http://finance.yahoo.com/d/quotes.csv?s=%1&f=sl1d1"));
   m_onlineQuotesWidget->m_editSymbol->setText(kconfig->readEntry("SymbolRegex","\"([^,\"]*)\",.*"));
   m_onlineQuotesWidget->m_editPrice->setText(kconfig->readEntry("PriceRegex","[^,]*,[^,]*,\"([^\"]*)\""));
   m_onlineQuotesWidget->m_editDate->setText(kconfig->readEntry("DateRegex","[^,]*,([^,]*),.*"));
+#endif
 }
 
 /** Write out all the settings to the global KConfig object.
@@ -538,13 +559,9 @@ void KSettingsDlg::configWrite()
   kconfig->writeEntry("ShowGrid", m_qcheckboxShowGrid->isChecked());
   // kconfig->writeEntry("ColourPerTransaction", m_qradiobuttonPerTransaction->isChecked());
   kconfig->writeEntry("HideUnusedCategory", m_qcheckboxHideCategory->isChecked());
-#if QT_VERSION > 300
   kconfig->writeEntry("StartDate", QDateTime(m_dateinputStart->getQDate()));
-#else
-  kconfig->writeEntry("StartDate", m_dateinputStart->getQDate());
-#endif
 
-  kconfig->writeEntry("NormalAccountsView", m_qradiobuttonNormalView->isChecked());
+  // kconfig->writeEntry("NormalAccountsView", m_qradiobuttonNormalView->isChecked());
 
   kconfig->setGroup("General Options");
   // kconfig->writeEntry("StartDialog", m_qradiobuttonStartPrompt->isChecked());
@@ -563,12 +580,15 @@ void KSettingsDlg::configWrite()
   kconfig->writeEntry("CheckSchedules", m_qradiobuttonCheckSchedules->isChecked());
   kconfig->writeEntry("CheckSchedulePreview", m_intSchedulePreview->value());
 
+#if 0
   kconfig->setGroup("Online Quotes Options");
   kconfig->writeEntry("URL",m_onlineQuotesWidget->m_editURL->text());
   kconfig->writeEntry("SymbolRegex", m_onlineQuotesWidget->m_editSymbol->text());
   kconfig->writeEntry("PriceRegex", m_onlineQuotesWidget->m_editPrice->text());
   kconfig->writeEntry("DateRegex", m_onlineQuotesWidget->m_editDate->text());
-  
+#endif
+  m_onlineQuotesWidget->writeConfig();
+
   kconfig->sync();
 }
 
@@ -609,13 +629,11 @@ void KSettingsDlg::slotCancel()
   kconfig->writeEntry("listCellFont", m_qfontTempCell);
   kconfig->writeEntry("ShowGrid", m_bTempShowGrid);
   kconfig->writeEntry("HideUnusedCategory", m_bTempHideCategory);
-#if QT_VERSION > 300
   kconfig->writeEntry("StartDate", QDateTime(m_qdateTempStart));
-#else
-  kconfig->writeEntry("StartDate", m_qdateTempStart);
-#endif
 
+#if 0
   kconfig->writeEntry("NormalAccountsView", m_bTempNormalView);
+#endif
 
   kconfig->setGroup("General Options");
   kconfig->writeEntry("StartLastViewSelected", m_bTempStartPage);
@@ -629,6 +647,8 @@ void KSettingsDlg::slotCancel()
 
   kconfig->setGroup("Homepage Options");
   kconfig->writeEntry("Itemlist", m_tempHomePageItems);
+  m_onlineQuotesWidget->resetConfig();
+
   kconfig->sync();
 
   if (m_bDoneApply)
@@ -652,8 +672,10 @@ void KSettingsDlg::slotUser1()
   m_qcheckboxShowGrid->setChecked(m_bTempShowGrid);
   m_qcheckboxHideCategory->setChecked(m_bTempHideCategory);
   m_dateinputStart->setDate(m_qdateTempStart);
+#if 0
   m_qradiobuttonNormalView->setChecked(m_bTempNormalView);
   m_qradiobuttonAccountView->setChecked(!m_bTempNormalView);
+#endif
   m_qcheckboxLedgerLens->setChecked(m_bTempLedgerLens);
   m_qcheckboxTransactionForm->setChecked(m_bTempTransactionForm);
   m_qcheckboxTypeToNr->setChecked(m_bTempTypeToNr);
@@ -668,6 +690,7 @@ void KSettingsDlg::slotUser1()
   QStringList list = m_tempHomePageItems;
   KMyMoneyUtils::addDefaultHomePageItems(list);
   fillHomePageItems(list);
+  m_onlineQuotesWidget->resetConfig();
 }
 
 void KSettingsDlg::slotNrFieldToggled(bool state)

@@ -26,20 +26,27 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 
+#include <kiconloader.h>
+#include <kguiitem.h>
+
 // ----------------------------------------------------------------------------
 // Project Includes
 
 #include "kupdatestockpricedlg.h"
+#include "../widgets/kmymoneycurrencyselector.h"
 
-KUpdateStockPriceDlg::KUpdateStockPriceDlg(QWidget* parent,  const char* name) : kUpdateStockPriceDecl(parent,name,TRUE)
+KUpdateStockPriceDlg::KUpdateStockPriceDlg(QWidget* parent,  const char* name) :
+  kUpdateStockPriceDecl(parent, name, true)
 {
+  m_date->setDate(QDate::currentDate());
   init();
 }
 
-KUpdateStockPriceDlg::KUpdateStockPriceDlg(const QDate& date, const QString& price, QWidget* parent,  const char* name) : kUpdateStockPriceDecl(parent,name,TRUE)
+KUpdateStockPriceDlg::KUpdateStockPriceDlg(const QDate& date, const MyMoneyPrice& price, QWidget* parent,  const char* name) :
+  kUpdateStockPriceDecl(parent, name, true)
 {
-  dateInput->setDate(date);
-  priceInput->loadText(price);
+  m_date->setDate(date);
+
   init();
 }
 
@@ -49,10 +56,41 @@ KUpdateStockPriceDlg::~KUpdateStockPriceDlg()
 
 void KUpdateStockPriceDlg::init()
 {
-  connect(btnOK, SIGNAL(clicked()), this, SLOT(accept()));
-  connect(btnCancel, SIGNAL(clicked()), this, SLOT(reject()));
+  KIconLoader* il = KGlobal::iconLoader();
+  KGuiItem okButtenItem( i18n("&Ok" ),
+                    QIconSet(il->loadIcon("button_ok", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Accepts the entered data and stores it"),
+                    i18n("Use this to accept the data."));
+  m_okButton->setGuiItem(okButtenItem);
+
+  KGuiItem cancelButtenItem( i18n( "&Cancel" ),
+                    QIconSet(il->loadIcon("button_cancel", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Reject all changes to the data and closes the dialog"),
+                    i18n("Use this to reject all changes."));
+  m_cancelButton->setGuiItem(cancelButtenItem);
+
+  connect(m_okButton, SIGNAL(clicked()), this, SLOT(accept()));
+  connect(m_cancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+
+  connect(m_commodity, SIGNAL(activated(int)), this, SLOT(slotCheckData()));
+  connect(m_currency, SIGNAL(activated(int)), this, SLOT(slotCheckData()));
+
+  slotCheckData();
 }
 
+int KUpdateStockPriceDlg::exec(void)
+{
+  slotCheckData();
+  return kUpdateStockPriceDecl::exec();
+}
+
+void KUpdateStockPriceDlg::slotCheckData(void)
+{
+  QCString from = m_commodity->security().id();
+  QCString to   = m_currency->security().id();
+
+  m_okButton->setEnabled(!from.isEmpty() && !to.isEmpty() && from != to);
+}
 
 
 

@@ -45,9 +45,9 @@
   <Menu name="tools">
     <Action name="qif_editor"/>
     <Action name="tool_security_editor"/>
+    <Action name="tool_currency_editor"/>
     <Action name="tool_price_editor"/>
-    <Action name="tool_currency_dialog"/>
-    <Action name="file_consistency_check"/>
+<!--    <Action name="file_consistency_check"/> -->
     <Action name="equity_price_update"/>
   </Menu>
 

@@ -58,6 +58,7 @@
 #define PRICE_COL       2
 #define DATE_COL        3
 #define ID_COL          4
+#define SOURCE_COL      5
 
 KEquityPriceUpdateDlg::KEquityPriceUpdateDlg(QWidget *parent, const QCString& securityId) :
   KEquityPriceUpdateDlgDecl(parent),
@@ -71,7 +72,8 @@ KEquityPriceUpdateDlg::KEquityPriceUpdateDlg(QWidget *parent, const QCString& se
   lvEquityList->addColumn(i18n("Date"));
 
   // This is a "get it up and running" hack.  Will replace this in the future.
-  lvEquityList->addColumn(i18n("ID"));
+  lvEquityList->addColumn("ID");
+  lvEquityList->addColumn("Source");
   lvEquityList->setColumnWidth(ID_COL, 0);
 
   lvEquityList->setMultiSelection(true);
@@ -99,6 +101,7 @@ KEquityPriceUpdateDlg::KEquityPriceUpdateDlg(QWidget *parent, const QCString& se
           item->setText(DATE_COL, pr.date().toString(Qt::ISODate));
         }
         item->setText(ID_COL,(*it).id());
+        item->setText(SOURCE_COL, (*it).value("kmm-online-source"));
         btnUpdateAll->setEnabled(true);
       }
     }
@@ -263,7 +266,6 @@ void KEquityPriceUpdateDlg::launchUpdate(QListViewItem* _item )
     QString tmpFile;
     if( KIO::NetAccess::download( url, tmpFile, NULL ) )
     {
-      qDebug(QString("Downloaded %1").arg(tmpFile));
       QFile f(tmpFile);
       if ( f.open( IO_ReadOnly ) )
       {
@@ -332,10 +334,6 @@ void KEquityPriceUpdateDlg::slotInsertUpdate(QListViewItem* _item, const QString
     else
     {
       logErrorMessage(i18n("Unable to update price for %1").arg(_item->text(NAME_COL)));
-#if 0
-      _item->setText(PRICE_COL, "Error");
-      _item->setText(DATE_COL, "Unable to update");
-#endif
     }
   }
 

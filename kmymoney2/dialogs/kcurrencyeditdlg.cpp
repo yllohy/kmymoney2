@@ -91,6 +91,9 @@ KCurrencyEditDlg::KCurrencyEditDlg(QWidget *parent, const char *name ) :
   // FIXME: currently, no online help available
   buttonHelp->hide();
 
+  // FIXME this is currently unused so we hide it also
+  m_description->hide();
+
   resize(width()-1, height()-1);
   QTimer::singleShot(10, this, SLOT(timerDone()));
 }
@@ -165,27 +168,26 @@ void KCurrencyEditDlg::checkBaseCurrency(void)
   if(MyMoneyFile::instance()->baseCurrency().id().isEmpty()) {
     m_baseCurrencyButton->setEnabled(true);
     buttonClose->setEnabled(false);
-    m_detailGroup->setEnabled(true);
-    m_priceList->setEnabled(false);
+    m_detailGroup->setEnabled(false);
   } else {
     buttonClose->setEnabled(true);
     m_baseCurrencyFrame->hide();
-    m_priceList->setEnabled(true);
   }
 }
 
 void KCurrencyEditDlg::updateCurrency(void)
 {
-// FIXME PRICE
-#if 0
   if(!m_currency.id().isEmpty()) {
-    if(m_priceList->dirty()
-    || (m_symbolEdit->text() != m_currency.tradingSymbol())) {
-      m_currency.setPriceHistory(m_priceList->history());
-      MyMoneyFile::instance()->modifyCurrency(m_currency);
+    if(m_symbolEdit->text() != m_currency.tradingSymbol()) {
+      m_currency.setTradingSymbol(m_symbolEdit->text());
+      try {
+        MyMoneyFile::instance()->modifyCurrency(m_currency);
+      } catch(MyMoneyException *e) {
+        qWarning("Updateing the currency failed!");
+        delete e;
+      }
     }
   }
-#endif
 }
 
 void KCurrencyEditDlg::slotSelectCurrency(const QCString& id)
@@ -207,7 +209,27 @@ void KCurrencyEditDlg::slotSelectCurrency(QListViewItem *item)
   QMap<QDate, MyMoneyMoney> history;
   MyMoneyFile* file = MyMoneyFile::instance();
 
+  updateCurrency();
+
   m_detailGroup->setEnabled(item != 0);
+  m_onlineSourceTable->clear();
+  m_idLabel->setText(QString());
+  m_symbolEdit->setText(QString());
+
+  if(item) {
+    try {
+      kMyMoneyListViewItem* p = static_cast<kMyMoneyListViewItem *>(item);
+      m_currency = file->security(p->id());
+      m_idLabel->setText(m_currency.id());
+      m_symbolEdit->setText(m_currency.tradingSymbol());
+
+    } catch(MyMoneyException *e) {
+      delete e;
+      m_onlineSourceTable->clear();
+      m_idLabel->setText(QString());
+      m_symbolEdit->setText(QString());
+    }
+  }
 // FIXME PRICE
 #if 0
   if(item) {
@@ -290,10 +312,13 @@ void KCurrencyEditDlg::slotRenameCurrency(QListViewItem* item, int /* col */, co
   kMyMoneyListViewItem* p = static_cast<kMyMoneyListViewItem *>(item);
 
   try {
-    MyMoneySecurity currency = file->currency(p->id());
-    currency.setName(txt);
-    file->modifyCurrency(currency);
-    m_currency = currency;
+    if(txt != m_currency.name()) {
+      qDebug("Renaming");
+      MyMoneySecurity currency = file->currency(p->id());
+      currency.setName(txt);
+      file->modifyCurrency(currency);
+      m_currency = currency;
+    }
   } catch(MyMoneyException *e) {
     delete e;
     updateCurrency();

@@ -1,11 +1,26 @@
-2004-12-20 Ace Jones <acejones@users.sourceforge.net>
+2004-12-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed ChangeLog entry to show the correct author
+  * Added more price entry logic (manual add, delete, etc.)
+  * Added icon to institution view
+  * Removed settings logic to distinguish between old and new accounts view
+  * Resolved a few warnings about deprecated methods
+  * Display a note in accounts and categories view if categories are hidden
+    by settings because they are unused (are not referenced by any split)
+  * Enhanced logic to convert account values into the base currency 
+  * Fixed MyMoneyFile::security(const QCString& id) to return the baseCurrency
+    in case id is empty
+  * Fixed designer version problem in dialogs/keditschedtransdlgdecl.ui
+  * Added configure summary
+  * renamed kmymoneyonlinequoteconfig.ui into kmymoneyonlinequoteconfigdecl.ui
+
+2004-12-29 Ace Jones <acejones@users.sourceforge.net>
   * Added simple category matcher for OFX import.  This fills in the rest of an
     imported transaction using the most recent transaction with this payee as a
     model.
   * Maintain backward compatibility with Qt designer 3.2 
   * Removed support for older versions of LibOFX  
   * Removed check for libuuid (not using this anymore, see 12/14 checkin)
-  
+
 2004-12-28 Michael Edwardes <mte@users.sourceforge.net>
   * Fixed #944780 (Schedule Brief Widget)
   * Fixed # 972028 (Does not honour Scheduled Method)
@@ -16,7 +31,7 @@
 2004-12-28 Michael Edwardes <mte@users.sourceforge.net>
   * 64bit fixes for MyMoneyMoney
 
-2004-12-28 Tony Bloomfield <tonybloom@users.sourceforge.net>
+2004-12-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added new admin directory from kdelibs 3.3.0
 
 2004-12-23 Tony Bloomfield <tonybloom@users.sourceforge.net>
@@ -26,10 +41,10 @@
 2004-12-20 Ace Jones <acejones@users.sourceforge.net>
   * Fixed bug in net worth reports with investments, related to new price scheme
   * Added test case to catch this bug next time
-  
+
 2004-12-19 Ace Jones <acejones@users.sourceforge.net>
   * Adjustments to work with new price scheme
-  
+
 2004-12-18 Kevin Tambascio <ktambascio@users.sourceforge.net>
   * Added a new institution view, so users can easily edit
     institution properties.

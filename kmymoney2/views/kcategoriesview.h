@@ -71,7 +71,7 @@ public slots:
   void slotDeleteClicked(MyMoneyAccount& account);
   void slotRefreshView(void);
   void slotReloadView(void) { slotRefreshView(); };
-    
+
 protected slots:
   void slotListRightMouse(QListViewItem* item, const QPoint& , int col);
   void slotListDoubleClicked(QListViewItem* item, const QPoint& , int col);
@@ -82,7 +82,7 @@ signals:
 
 public:
   KCategoriesView(QWidget *parent=0, const char *name=0);
-  ~KCategoriesView();
+  virtual ~KCategoriesView();
   void show();
 
 

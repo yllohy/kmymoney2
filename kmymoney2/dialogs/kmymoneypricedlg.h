@@ -44,6 +44,9 @@ public:
 public slots:
   void slotSelectPrice(QListViewItem* item);
 
+protected:
+  void loadList(void);
+
 private:
   QListViewItem*    m_currentItem;
 };

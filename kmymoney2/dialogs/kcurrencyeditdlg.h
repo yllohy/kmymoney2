@@ -31,14 +31,13 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 
-#include <kpopupmenu.h>
+class KPopupMenu;
 
 // ----------------------------------------------------------------------------
 // Project Includes
 
 #include "kcurrencyeditdlgdecl.h"
 #include "../mymoney/mymoneysecurity.h"
-// #include "../mymoney/mymoneycurrency.h"
 
 /**
   * @author Thomas Baumgart

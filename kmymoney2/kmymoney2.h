@@ -340,6 +340,11 @@ public slots:
   void slotPriceDialog(void);
 
   /**
+    * fires up the currency table editor
+    */
+  void slotCurrencyDialog(void);
+
+  /**
     * toggles the toolbar
     */
   void slotViewToolBar();

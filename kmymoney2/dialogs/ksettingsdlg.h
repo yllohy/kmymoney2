@@ -126,8 +126,10 @@ private:
   /** Restrict options */
   kMyMoneyDateInput *m_dateinputStart;
 
+#if 0
   QRadioButton *m_qradiobuttonNormalView;
   QRadioButton *m_qradiobuttonAccountView;
+#endif
 
   QRadioButton *m_qradiobuttonAccountDialog;
   QRadioButton *m_qradiobuttonAccountWizard;
@@ -168,7 +170,7 @@ private:
   void setPageFont();
 
   /** Set online quote options */
-  void setPageOnlineQuotes();
+  void setPageOnlineQuotes(void);
 
   /** Write settings */
   void configWrite();
@@ -190,7 +192,7 @@ private:
   bool m_bDoneApply;
   bool m_bTempHideCategory;
   QDate m_qdateTempStart;
-  bool m_bTempNormalView;
+//  bool m_bTempNormalView;
   bool m_bTempAccountWizard;
   bool m_bTempLedgerLens;
   bool m_bTempTransactionForm;

@@ -778,16 +778,62 @@ const MyMoneyMoney MyMoneyFile::totalBalance(const QCString& id, const QDate& da
   return m_storage->totalBalance(id, date);
 }
 
+void MyMoneyFile::warningMissingRate(const QCString& fromId, const QCString& toId) const
+{
+  MyMoneySecurity from, to;
+  try {
+    from = security(fromId);
+    to = security(toId);
+    qWarning("Missing price info for conversion from %s to %s", from.name().latin1(), to.name().latin1());
+
+  } catch(MyMoneyException *e) {
+    qFatal("Missing security caught in MyMoneyFile::warningMissingRate(): %s(%ld) %s", e->file().data(), e->line(), e->what().data());
+    delete e;
+  }
+}
+
 const bool MyMoneyFile::accountValueValid(const QCString& id) const
 {
   bool result = true;
   try {
-    MyMoneyAccount acc;
+    // if the balance is zero, we don't care about conversion. It must be 0
+    // and thus the currency / security doesn't matter. It will remain 0
+    // and thus the value is valid.
+    if(!balance(id).isZero()) {
+      MyMoneyAccount acc;
 
-    acc = account(id);
-    if(acc.currencyId() != baseCurrency().id())
-      result = price(acc.currencyId(), baseCurrency().id()).isValid();
+      acc = account(id);
 
+      if(acc.currencyId() != baseCurrency().id()) {
+        // if the currency of the account differs from the base currency,
+        // we have to distinguish between 'monetary' and 'stock' accounts
+        // here. For monetary accounts, we assume that there is a direct price
+        // information available (currency exchange rate). For stock this is
+        // different, as stocks might be traded in a different currency than
+        // the base currency. So we convert the price twice in this case.
+
+        if(acc.accountType() == MyMoneyAccount::Stock) {
+          MyMoneySecurity security = this->security(acc.currencyId());
+          result = price(acc.currencyId(), security.tradingCurrency()).isValid();
+          if(!result) {
+            warningMissingRate(acc.currencyId(), security.tradingCurrency());
+          }
+          // if the trading currency differs from the base currency, we
+          // calculate the conversion between these two currencies now.
+          if(result == true && security.tradingCurrency() != baseCurrency().id()) {
+            result = price(security.tradingCurrency(), baseCurrency().id()).isValid();
+            if(!result) {
+              warningMissingRate(security.tradingCurrency(), baseCurrency().id());
+            }
+          }
+        } else {
+          result = price(acc.currencyId(), baseCurrency().id()).isValid();
+          if(!result) {
+            warningMissingRate(acc.currencyId(), baseCurrency().id());
+          }
+        }
+      }
+    }
   } catch(MyMoneyException *e) {
     qDebug("MyMoneyFile::totalValueValid: %s thrown in %s line %ld",
       e->what().data(), e->file().data(), e->line());
@@ -826,9 +872,31 @@ const MyMoneyMoney MyMoneyFile::accountValue(const QCString& id) const
     MyMoneyAccount acc;
 
     acc = this->account(id);
-    MyMoneyPrice price = this->price(acc.currencyId(), baseCurrency().id());
-    result = result * price.rate();
 
+    // we don't have to convert anything, if we're already on base currency
+    if(acc.currencyId() != baseCurrency().id()) {
+      // if the currency of the account differs from the base currency,
+      // we have to distinguish between 'monetary' and 'stock' accounts
+      // here. For monetary accounts, we assume that there is a direct price
+      // information available (currency exchange rate). For stock this is
+      // different, as stocks might be traded in a different currency than
+      // the base currency. So we convert the price twice in this case.
+
+      if(acc.accountType() == MyMoneyAccount::Stock) {
+        MyMoneySecurity security = this->security(acc.currencyId());
+        MyMoneyPrice price = this->price(acc.currencyId(), security.tradingCurrency());
+        result = result * price.rate();
+        // if the trading currency differs from the base currency, we
+        // calculate the conversion between these two currencies now.
+        if(security.tradingCurrency() != baseCurrency().id()) {
+          price = this->price(security.tradingCurrency(), baseCurrency().id());
+          result = result * price.rate();
+        }
+      } else {
+        MyMoneyPrice price = this->price(acc.currencyId(), baseCurrency().id());
+        result = result * price.rate();
+      }
+    }
   } catch(MyMoneyException *e) {
     qDebug("MyMoneyFile::accountValue: %s thrown in %s line %ld",
       e->what().data(), e->file().data(), e->line());
@@ -1407,6 +1475,9 @@ void MyMoneyFile::removeSecurity(const MyMoneySecurity& security)
 
 const MyMoneySecurity MyMoneyFile::security(const QCString& id) const
 {
+  if(id.isEmpty())
+    return baseCurrency();
+
   checkStorage();
 
   MyMoneySecurity e = m_storage->security(id);
@@ -1544,27 +1615,6 @@ const MyMoneyPriceList MyMoneyFile::priceList(void) const
   checkStorage();
 
   return m_storage->priceList();
-}
-
-const MyMoneyMoney MyMoneyFile::currencyPrice(const QCString& currencyId, const QDate date) const
-{
-  MyMoneyMoney price(1);
-// FIXME PRICE   this whole function should go ....
-#if 0
-  try {
-    MyMoneySecurity currency = instance()->currency(currencyId);
-    QMap<QDate, MyMoneyMoney>::ConstIterator it;
-    for(it = currency.priceHistory().begin(); it != currency.priceHistory().end(); ++it) {
-      if(it.key() <= date)
-        price = *it;
-      else if(it.key() > date)
-        break;
-    }
-  } catch(MyMoneyException *e) {
-    delete e;
-  }
-#endif
-  return price;
 }
 
 const bool MyMoneyFile::hasAccount(const QCString& id, const QString& name) const

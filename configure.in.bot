@@ -1,0 +1,38 @@
+echo ""
+echo ""
+echo "Configure results:"
+echo "------------------------------------------"
+if test x$have_kbanking = xyes; then
+	echo "KBanking support:                      yes"
+else
+	echo "KBanking support:                      no"
+	echo "    You are missing the KBanking headers and libraries"
+	echo "    The HBCI support won't be compiled."
+fi
+
+echo ""
+
+if test x$have_new_ofx = xyes; then
+	echo "OFX support:                           yes"
+else
+	echo "OFX support:                           no"
+	echo "    You are missing the libofx headers and libraries"
+	echo "    The OFX support won't be compiled."
+fi
+
+echo ""
+
+if test x$no_cppunit = x; then
+	echo "CPPUNIT support:                       yes"
+else
+	echo "CPPUNIT support:                       no"
+	echo "    You are missing the CPPUNIT headers and libraries"
+	echo "    The unit test framework support won't be compiled."
+	echo "    This is not relevant for the usage of the application.";
+	echo "    Unit tests are only required by the developers.";
+fi
+
+echo ""
+
+echo "------------------------------------------"
+echo ""

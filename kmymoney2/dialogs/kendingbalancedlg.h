@@ -53,16 +53,16 @@ public:
   KEndingBalanceDlg(const MyMoneyAccount& account, QWidget *parent=0, const char *name=0);
   ~KEndingBalanceDlg();
 
-  const MyMoneyMoney endingBalance(void) const { return m_endingBalance->getMoneyValue(); };
-  const MyMoneyMoney previousBalance(void) const { return m_previousBalance->getMoneyValue(); };
+  const MyMoneyMoney endingBalance(void) const { return m_endingBalance->value(); };
+  const MyMoneyMoney previousBalance(void) const { return m_previousBalance->value(); };
   const QDate statementDate(void) const { return m_statementDate->getQDate(); };
 
   const MyMoneyTransaction interestTransaction(void) const;
   const MyMoneyTransaction chargeTransaction(void) const;
-  
+
 protected:
   const MyMoneyTransaction createTransaction(const int sign, kMyMoneyEdit *amountEdit, kMyMoneyCategory *categoryEdit) const;
-  
+
 protected slots:
   void slotCheckPageFinished(void);
 
@@ -87,28 +87,28 @@ public:
     * has been created. If not, an empty transaction will be returned.
     */
   const MyMoneyTransaction adjustmentTransaction(void) const;
-  
+
   /**
     * This method returns the starting date of the statement as provided
     * by the user. The value returned is only valid if the dialog returned
     * with QDialog::accept.
     */
   const QDate startDate(void) const { return m_startDateEdit->getQDate(); };
-  
+
   /**
     * This method returns the ending date of the statement as provided
     * by the user. The value returned is only valid if the dialog returned
     * with QDialog::accept.
     */
   const QDate endDate(void) const { return m_endDateEdit->getQDate(); };
-  
+
 protected:
   const MyMoneyMoney totalInterest(const QDate& start, const QDate& end) const;
   const MyMoneyMoney totalAmortization(const QDate& start, const QDate& end) const;
 
 public slots:
   void next();
-  
+
 protected slots:
   void slotCheckPageFinished(void);
 

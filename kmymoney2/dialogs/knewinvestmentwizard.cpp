@@ -63,7 +63,7 @@ KNewInvestmentWizard::KNewInvestmentWizard( const MyMoneyAccount& acc, QWidget *
 
   m_investmentSymbol->setText(m_security.tradingSymbol());
   m_tradingMarket->setCurrentText(m_security.tradingMarket());
-  m_tradingCurrencyEdit->setCurrency(tradingCurrency);
+  m_tradingCurrencyEdit->setSecurity(tradingCurrency);
 
   m_onlineSourceCombo->setCurrentText(m_security.value("kmm-online-source"));
 
@@ -90,7 +90,7 @@ KNewInvestmentWizard::KNewInvestmentWizard( const MyMoneySecurity& security, QWi
 
   m_investmentSymbol->setText(m_security.tradingSymbol());
   m_tradingMarket->setCurrentText(m_security.tradingMarket());
-  m_tradingCurrencyEdit->setCurrency(tradingCurrency);
+  m_tradingCurrencyEdit->setSecurity(tradingCurrency);
 
   m_onlineSourceCombo->setCurrentText(m_security.value("kmm-online-source"));
 
@@ -156,7 +156,7 @@ void KNewInvestmentWizard::createObjects(const QCString& parentId)
   m_security.setName(m_investmentName->text());
   m_security.setTradingSymbol(m_investmentSymbol->text());
   m_security.setTradingMarket(m_tradingMarket->currentText());
-  m_security.setTradingCurrency(m_tradingCurrencyEdit->currency().id());
+  m_security.setTradingCurrency(m_tradingCurrencyEdit->security().id());
   m_security.setValue("kmm-online-source", m_onlineSourceCombo->currentText());
 
   // if the security was not found, we have to create it while not forgetting

@@ -75,7 +75,7 @@ public:
   enum viewID {
     HomeView = 0,
     AccountsView,
-		InstitutionsView,
+    InstitutionsView,
     SchedulesView,
     CategoriesView,
     PayeesView,
@@ -99,7 +99,7 @@ private:
 
   KHomeView *m_homeView;
   KAccountsView *m_accountsView;
-	KAccountsView *m_institutionsView;
+  KAccountsView *m_institutionsView;
   KCategoriesView *m_categoriesView;
   KPayeesView *m_payeesView;
   KScheduledView *m_scheduledView;
@@ -111,7 +111,7 @@ private:
 
   QVBox* m_homeViewFrame;
   QVBox* m_accountsViewFrame;
-	QVBox* m_institutionsViewFrame;
+  QVBox* m_institutionsViewFrame;
   QVBox* m_categoriesViewFrame;
   QVBox* m_payeesViewFrame;
   QVBox* m_scheduleViewFrame;
@@ -348,7 +348,7 @@ public slots:
     * @param schedule The ID of the schedule to be shown
     */
   void slotScheduleSelected(const QCString& schedule);
-  
+
   /**
     * Called, whenever the report view should pop up and a specific
     * report should be shown.

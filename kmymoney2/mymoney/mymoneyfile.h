@@ -536,8 +536,12 @@ public:
   /**
     * This method is used to return the actual value of an account
     * excluding it's sub-ordinate accounts. A value of an account
-    * is calculated by multiplying the balance with the currencies
-    * price for today. The price for accounts held in the baseCurrency()
+    * is calculated by multiplying the balance with the security's
+    * price for today. If the security's trading currency differs
+    * from baseCurrency() then the result of this multiplication
+    * is multiplied again by the trading currency's price for today.
+    *
+    * The price for accounts held in the baseCurrency()
     * is 1. The same applies for prices that are not available (no entry
     * in price list for the current date).
     *
@@ -551,8 +555,8 @@ public:
 
   /**
     * This method returns if the value returned by totalValue(const QCString&)
-    * is valid or not. The value is considered valid, if a conversion rate (price)
-    * is available for the currency used for the account referenced by @p id.
+    * is valid or not. The value is considered valid, if all conversion rates (prices)
+    * are available to convert the account's balance to the base currency.
     * The same applies for any of the subaccounts of @p id.
     *
     * If for any of the accounts a conversion rate for the current date cannot
@@ -561,7 +565,7 @@ public:
     *
     * @param id account id of the account in question
     * @retval false value returned by totalValue(const QCString&) is not
-    *               completely correct
+    *               completely correct (missing conversion rates are assumed to be 1)
     * @retval true value returned by totalValue(const QCString&) is correct
     */
   const bool totalValueValid(const QCString& id) const;
@@ -1050,7 +1054,7 @@ public:
     * This method is used to retrieve a single MyMoneySecurity object.
     * The id of the object must be supplied in the parameter @p id.
     * If no security with the given id is found, then a corresponding
-    * currency is searched.
+    * currency is searched. If @p id is empty, the baseCurrency() is returned.
     *
     * An exception will be thrown upon erronous situations.
     *
@@ -1141,20 +1145,6 @@ public:
     * @param currency
     */
   void setBaseCurrency(const MyMoneySecurity& currency);
-
-  /**
-    * This method is used to retrieve a price for a specific currency
-    * on a specific date. If there is no price for this date, the last
-    * known price for this currency is used. If no price information
-    * is available, 1.0 will be returned as price.
-    *
-    * @param currencyId the id of the currency in question
-    * @param date the date for which the price should be returned (default = today)
-    *
-    * @return price found as MyMoneyMoney object
-    * @deprecated Use price interface instead
-    */
-  const MyMoneyMoney currencyPrice(const QCString& currencyId, const QDate date = QDate::currentDate()) const __attribute__ ((deprecated));
 
   /**
     * This method adds/replaces a price to/from the price list
@@ -1316,6 +1306,8 @@ private:
   const QCString locateSubAccount(const MyMoneyAccount& base, const QString& category) const;
 
   void ensureDefaultCurrency(MyMoneyAccount& acc) const;
+
+  void warningMissingRate(const QCString& fromId, const QCString& toId) const;
 
 private:
   /**

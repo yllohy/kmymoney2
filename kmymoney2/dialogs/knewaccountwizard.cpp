@@ -187,10 +187,10 @@ void KNewAccountWizard::accept()
   m_account.setAccountType(m_accountType);
   m_account.setName(accountName->text());
   m_account.setNumber(accountNumber->text());
-  m_account.setCurrencyId(m_currencyComboBox->currency().id());
+  m_account.setCurrencyId(m_currencyComboBox->security().id());
 
   m_brokerage.setAccountType(MyMoneyAccount::Checkings);
-  m_brokerage.setCurrencyId(m_currencyComboBox->currency().id());
+  m_brokerage.setCurrencyId(m_currencyComboBox->security().id());
   m_brokerage.setNumber(accountNumber->text());
 
   if(!institutionComboBox->currentText().isEmpty()) {
@@ -625,12 +625,12 @@ void KNewAccountWizard::slotNewPayee(const QString& payeeName)
 
 void KNewAccountWizard::slotCurrencyChanged(int)
 {
-  m_priceButton->setEnabled(m_currencyComboBox->currency().id() != MyMoneyFile::instance()->baseCurrency().id());
+  m_priceButton->setEnabled(m_currencyComboBox->security().id() != MyMoneyFile::instance()->baseCurrency().id());
 }
 
 void KNewAccountWizard::slotPriceUpdate(void)
 {
   KCurrencyEditDlg dlg(this, KAppTest::widgetName(this, "KCurrencyEditDlg"));
-  dlg.slotSelectCurrency(m_currencyComboBox->currency().id());
+  dlg.slotSelectCurrency(m_currencyComboBox->security().id());
   dlg.exec();
 }

@@ -62,6 +62,7 @@
 #include "../dialogs/knewinvestmentwizard.h"
 
 #include "../widgets/kmymoneyaccountcombo.h"
+#include "../widgets/kmymoneycurrencyselector.h"
 
 #include "../kapptest.h"
 
@@ -194,7 +195,9 @@ void KInvestmentView::slotEditInvestment()
 void KInvestmentView::slotUpdatePrice()
 {
   // TODO: When initiated from here, the price update dialog should only show
-  // the stock you picked, and it should AUTOMATICALLY launch the update.
+  // the stock you picked, and it should AUTOMATICALLY launch the update. (???)
+  //
+  // Isn't that done already? (ipwizard)
 
   KInvestmentListItem *pItem = dynamic_cast<KInvestmentListItem*>(investmentTable->selectedItem());
   if(pItem)
@@ -204,9 +207,23 @@ void KInvestmentView::slotUpdatePrice()
   }
 }
 
+void KInvestmentView::slotAddPrice()
+{
+  KInvestmentListItem *pItem = dynamic_cast<KInvestmentListItem*>(investmentTable->selectedItem());
+  if(pItem) {
+    KUpdateStockPriceDlg dlg(this);
+    dlg.m_commodity->setSecurity(MyMoneyFile::instance()->security(pItem->securityId()));
+    dlg.m_currency->setSecurity(pItem->tradingCurrency());
+    if(dlg.exec()) {
+      MyMoneyPrice price(dlg.m_commodity->security().id(), dlg.m_currency->security().id(), dlg.date(), MyMoneyMoney(1,1));
+      // FIXME here we have to insert the currency calculator
+    }
+  }
+}
+
 void KInvestmentView::slotListRightMouse(QListViewItem* item, const QPoint& /*point*/, int /*x*/)
 {
-  int newId, editId, updateId;
+  int newId, editId, updateId, addId;
 
   // setup the context menu
   KIconLoader *kiconloader = KGlobal::iconLoader();
@@ -214,6 +231,7 @@ void KInvestmentView::slotListRightMouse(QListViewItem* item, const QPoint& /*po
   m_popMenu->insertTitle(kiconloader->loadIcon("transaction", KIcon::MainToolbar), i18n("Investment Options"));
   newId = m_popMenu->insertItem(kiconloader->loadIcon("file_new", KIcon::Small), i18n("New ..."), this, SLOT(slotNewInvestment()));
   editId = m_popMenu->insertItem(kiconloader->loadIcon("edit", KIcon::Small), i18n("Edit ..."), this, SLOT(slotEditInvestment()));
+  addId = m_popMenu->insertItem(i18n("Manual Price Update..."), this, SLOT(slotAddPrice()));
   updateId = m_popMenu->insertItem(kiconloader->loadIcon("edit", KIcon::Small), i18n("On-line Price Update ..."), this, SLOT(slotUpdatePrice()));
 #if 0
   delId = m_popMenu->insertItem(kiconloader->loadIcon("delete", KIcon::Small),
@@ -223,6 +241,7 @@ void KInvestmentView::slotListRightMouse(QListViewItem* item, const QPoint& /*po
   if(!item) {
     m_popMenu->setItemEnabled(editId, false);
     m_popMenu->setItemEnabled(updateId, false);
+    m_popMenu->setItemEnabled(addId, false);
   } else {
     m_popMenu->setItemEnabled(updateId, false);
     KInvestmentListItem *pItem = dynamic_cast<KInvestmentListItem*>(item);

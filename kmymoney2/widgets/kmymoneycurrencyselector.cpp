@@ -36,26 +36,35 @@
 
 #include "kmymoneycurrencyselector.h"
 
-kMyMoneyCurrencySelector::kMyMoneyCurrencySelector(QWidget *parent, const char *name ) :
-  KComboBox(parent,name),
+kMyMoneySecuritySelector::kMyMoneySecuritySelector(QWidget *parent, const char *name ) :
+  KComboBox(parent, name),
   m_displayItem(FullName),
-  m_displayOnly(false)
+  m_displayOnly(false),
+  m_displayType(TypeAll)
 {
   update(QCString());
-  setMaximumWidth(200);
 }
 
-kMyMoneyCurrencySelector::~kMyMoneyCurrencySelector()
+kMyMoneySecuritySelector::kMyMoneySecuritySelector(displayTypeE type, QWidget *parent, const char *name ) :
+  KComboBox(parent,name),
+  m_displayItem(FullName),
+  m_displayOnly(false),
+  m_displayType(type)
+{
+  update(QCString());
+}
+
+kMyMoneySecuritySelector::~kMyMoneySecuritySelector()
 {
 }
 
-void kMyMoneyCurrencySelector::selectDisplayItem(kMyMoneyCurrencySelector::displayItemE item)
+void kMyMoneySecuritySelector::selectDisplayItem(kMyMoneySecuritySelector::displayItemE item)
 {
   m_displayItem = item;
   update(QCString());
 }
 
-void kMyMoneyCurrencySelector::update(const QCString& id)
+void kMyMoneySecuritySelector::update(const QCString& id)
 {
   MyMoneySecurity curr = MyMoneyFile::instance()->baseCurrency();
   QCString baseCurrency = curr.id();
@@ -64,7 +73,12 @@ void kMyMoneyCurrencySelector::update(const QCString& id)
     curr = m_currency;
 
   this->clear();
-  QValueList<MyMoneySecurity> list = MyMoneyFile::instance()->currencyList();
+  m_list.clear();
+  if(m_displayType & TypeCurrencies)
+    m_list += MyMoneyFile::instance()->currencyList();
+  if(m_displayType & TypeSecurities)
+    m_list += MyMoneyFile::instance()->securityList();
+
   QValueList<MyMoneySecurity>::ConstIterator it;
 
   // construct a transparent 16x16 pixmap
@@ -73,16 +87,15 @@ void kMyMoneyCurrencySelector::update(const QCString& id)
 
   int itemId = 0;
   int m_selectedItemId = 0;
-  for(it = list.begin(); it != list.end(); ++it) {
+  for(it = m_list.begin(); it != m_list.end(); ++it) {
     QString display;
     switch(m_displayItem) {
       default:
       case FullName:
         if((*it).isCurrency()) {
-          display = (*it).id();
-          display += QString(" (%1)").arg((*it).name());
+          display = QString("%1 (%2)").arg((*it).id()).arg((*it).name());
         } else
-          display = (*it).name();
+          display = QString("%1 (%2)").arg((*it).tradingSymbol()).arg((*it).name());
         break;
         break;
 
@@ -110,7 +123,7 @@ void kMyMoneyCurrencySelector::update(const QCString& id)
   setCurrentItem(m_selectedItemId);
 }
 
-void kMyMoneyCurrencySelector::setDisplayOnly(const bool disp)
+void kMyMoneySecuritySelector::setDisplayOnly(const bool disp)
 {
   if(disp == m_displayOnly)
     return;
@@ -126,20 +139,23 @@ void kMyMoneyCurrencySelector::setDisplayOnly(const bool disp)
   m_displayOnly = disp;
 }
 
-void kMyMoneyCurrencySelector::slotSetInitialCurrency(void)
+void kMyMoneySecuritySelector::slotSetInitialSecurity(void)
 {
-  qDebug("Set current item to %d", m_selectedItemId);
   setCurrentItem(m_selectedItemId);
 }
 
-const MyMoneySecurity kMyMoneyCurrencySelector::currency(void) const
+const MyMoneySecurity kMyMoneySecuritySelector::security(void) const
 {
-  QValueList<MyMoneySecurity> list = MyMoneyFile::instance()->currencyList();
-  return list[currentItem()];
+  return m_list[currentItem()];
 }
 
-void kMyMoneyCurrencySelector::setCurrency(const MyMoneySecurity& currency)
+void kMyMoneySecuritySelector::setSecurity(const MyMoneySecurity& currency)
 {
   m_currency = currency;
   update(QCString("x"));
+}
+
+kMyMoneyCurrencySelector::kMyMoneyCurrencySelector(QWidget *parent, const char *name ) :
+  kMyMoneySecuritySelector(TypeCurrencies, parent, name)
+{
 }

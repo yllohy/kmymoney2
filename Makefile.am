@@ -38,3 +38,4 @@ EXTRA_DIST += admin/acinclude.m4.in admin/libtool.m4.in admin/conf.change.pl adm
 dist-hook:
 	cd $(top_distdir) && perl admin/am_edit -padmin
 	cd $(top_distdir) && $(MAKE) -f admin/Makefile.common subdirs
+

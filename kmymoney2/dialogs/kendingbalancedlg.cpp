@@ -147,7 +147,7 @@ const MyMoneyTransaction KEndingBalanceDlg::createTransaction(const int sign, kM
     return t;
 
   MyMoneySplit s1, s2;
-  MyMoneyMoney val = amountEdit->getMoneyValue() * MyMoneyMoney(sign,1);
+  MyMoneyMoney val = amountEdit->value() * MyMoneyMoney(sign,1);
   try {
     QCString accId = file->categoryToAccount(categoryEdit->text());
     if(accId.isEmpty())
@@ -239,8 +239,8 @@ void KEndingBalanceLoanDlg::slotCheckPageFinished(void)
     MyMoneyMoney interest = totalInterest(m_startDateEdit->getQDate(), m_endDateEdit->getQDate());
     MyMoneyMoney amortization = totalAmortization(m_startDateEdit->getQDate(), m_endDateEdit->getQDate());
 
-    if(interest == m_interestTotalEdit->getMoneyValue()
-    && amortization == m_amortizationTotalEdit->getMoneyValue()) {
+    if(interest == m_interestTotalEdit->value()
+    && amortization == m_amortizationTotalEdit->value()) {
       if(indexOf(m_adjustmentTransactionPage) != -1) {
         removePage(m_adjustmentTransactionPage);
         // the following line forces to update the buttons
@@ -341,7 +341,7 @@ void KEndingBalanceLoanDlg::next(void)
     m_categoryEdit->setEnabled(false);
 
     MyMoneyMoney interest = totalInterest(m_startDateEdit->getQDate(), m_endDateEdit->getQDate());
-    if(interest != m_interestTotalEdit->getMoneyValue()) {
+    if(interest != m_interestTotalEdit->value()) {
       m_categoryEdit->setEnabled(true);
     }
   }
@@ -359,8 +359,8 @@ const MyMoneyTransaction KEndingBalanceLoanDlg::adjustmentTransaction(void) cons
   MyMoneyMoney interest = totalInterest(m_startDateEdit->getQDate(), m_endDateEdit->getQDate());
   MyMoneyMoney amortization = totalAmortization(m_startDateEdit->getQDate(), m_endDateEdit->getQDate());
 
-  if(interest != m_interestTotalEdit->getMoneyValue()
-  || amortization != m_amortizationTotalEdit->getMoneyValue()) {
+  if(interest != m_interestTotalEdit->value()
+  || amortization != m_amortizationTotalEdit->value()) {
     MyMoneySplit sAccount, sAmortization, sInterest;
     int          adjust = 1;
 
@@ -371,8 +371,8 @@ const MyMoneyTransaction KEndingBalanceLoanDlg::adjustmentTransaction(void) cons
     interest = interest * MyMoneyMoney(adjust,1);
     amortization = amortization * MyMoneyMoney(adjust,1);
 
-    sAmortization.setValue((m_amortizationTotalEdit->getMoneyValue() - amortization) * MyMoneyMoney(adjust,1));
-    sInterest.setValue((m_interestTotalEdit->getMoneyValue() - interest) * MyMoneyMoney(adjust,1));
+    sAmortization.setValue((m_amortizationTotalEdit->value() - amortization) * MyMoneyMoney(adjust,1));
+    sInterest.setValue((m_interestTotalEdit->value() - interest) * MyMoneyMoney(adjust,1));
     sAccount.setValue( -(sAmortization.value() + sInterest.value()));
 
     try {

@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
 <class>KCurrencyCalculatorDecl</class>
 <widget class="QDialog">
     <property name="name">
@@ -11,7 +11,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>460</width>
+            <width>454</width>
             <height>317</height>
         </rect>
     </property>
@@ -278,7 +278,7 @@ xx</string>
             <property name="sizeHint">
                 <size>
                     <width>20</width>
-                    <height>16</height>
+                    <height>60</height>
                 </size>
             </property>
         </spacer>

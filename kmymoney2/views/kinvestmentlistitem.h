@@ -64,6 +64,7 @@ public:
 
   QCString securityId() const { return m_account.currencyId(); };
   const MyMoneyAccount& account(void) const { return m_account; };
+  const MyMoneySecurity tradingCurrency(void) const { return m_tradingCurrency; };
 
   void update(const QCString& id);
 

@@ -133,22 +133,22 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_homeView, SLOT(slotReloadView()));
 
   // Page 1
-  m_accountsViewFrame = addVBoxPage( i18n("Accounts"), i18n("Institutions/Accounts"),
+  m_institutionsViewFrame = addVBoxPage( i18n("Institutions"), i18n("Institutions"),
+    DesktopIcon("kfm_home"));
+  m_institutionsView = new KAccountsView(m_institutionsViewFrame, KAppTest::widgetName(this, "KAccountsView"), true);
+  signalMap->setMapping(m_institutionsView, InstitutionsView);
+  connect(m_institutionsView, SIGNAL(signalViewActivated()), signalMap, SLOT(map()));
+  connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_institutionsView, SLOT(slotReloadView()));
+
+  // Page 2
+  m_accountsViewFrame = addVBoxPage( i18n("Accounts"), i18n("Accounts"),
     DesktopIcon("kmy"));
   m_accountsView = new KAccountsView(m_accountsViewFrame, KAppTest::widgetName(this, "KAccountsView"));
   signalMap->setMapping(m_accountsView, AccountsView);
   connect(m_accountsView, SIGNAL(signalViewActivated()), signalMap, SLOT(map()));
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_accountsView, SLOT(slotReloadView()));
-	
-	// Page for Institution View
-  m_institutionsViewFrame = addVBoxPage( i18n("Institutions"), i18n("Institutions"),
-    DesktopIcon("kmy"));
-  m_institutionsView = new KAccountsView(m_institutionsViewFrame, KAppTest::widgetName(this, "KAccountsView"), true);
-  signalMap->setMapping(m_institutionsView, AccountsView);
-  connect(m_institutionsView, SIGNAL(signalViewActivated()), signalMap, SLOT(map()));
-  connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_institutionsView, SLOT(slotReloadView()));
 
-  // Page 2
+  // Page 3
   m_scheduleViewFrame = addVBoxPage( i18n("Schedule"), i18n("Bills & Reminders"),
     DesktopIcon("schedule"));
   m_scheduledView = new KScheduledView(m_scheduleViewFrame, KAppTest::widgetName(this, "KScheduledView"));
@@ -156,7 +156,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(m_scheduledView, SIGNAL(signalViewActivated()), signalMap, SLOT(map()));
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_scheduledView, SLOT(slotReloadView()));
 
-  // Page 3
+  // Page 4
   m_categoriesViewFrame = addVBoxPage( i18n("Categories"), i18n("Categories"),
     DesktopIcon("categories"));
   m_categoriesView = new KCategoriesView(m_categoriesViewFrame, KAppTest::widgetName(this, "KCategoriesView"));
@@ -164,7 +164,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(m_categoriesView, SIGNAL(signalViewActivated()), signalMap, SLOT(map()));
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_categoriesView, SLOT(slotReloadView()));
 
-  // Page 4
+  // Page 5
   m_payeesViewFrame = addVBoxPage( i18n("Payees"), i18n("Payees"),
     DesktopIcon("payee"));
   m_payeesView = new KPayeesView(m_payeesViewFrame, KAppTest::widgetName(this, "KPayeesView"));
@@ -172,7 +172,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(m_payeesView, SIGNAL(signalViewActivated()), signalMap, SLOT(map()));
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_payeesView, SLOT(slotReloadView()));
 
-  // Page 5
+  // Page 6
   m_ledgerViewFrame = addVBoxPage( i18n("Ledgers"), i18n("Ledgers"),
     DesktopIcon("ledger"));
   m_ledgerView = new KGlobalLedgerView(m_ledgerViewFrame, KAppTest::widgetName(this, "KGlobalLedgerView"));
@@ -185,7 +185,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
       this, SLOT(slotLedgerSelected(const QCString&, const QCString&)));
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_ledgerView, SLOT(slotReloadView()));
 
-  // Page 6
+  // Page 7
   m_investmentViewFrame = addVBoxPage( i18n("Investments"), i18n("Investments"),
     DesktopIcon("categories"));
 
@@ -197,7 +197,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
       this, SLOT(slotLedgerSelected(const QCString&, const QCString&)));
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_investmentView, SLOT(slotReloadView()));
 
-  // Page 7
+  // Page 8
   m_reportsViewFrame = addVBoxPage(i18n("Reports"), i18n("Reports"),
     DesktopIcon("report"));
   m_reportsView = new KReportsView(m_reportsViewFrame, KAppTest::widgetName(this, "KReportsView"));
@@ -205,7 +205,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(m_reportsView, SIGNAL(signalViewActivated()), signalMap, SLOT(map()));
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_reportsView, SLOT(slotReloadView()));
 
-  // page 8
+  // page 9
   m_jobViewFrame = 0;
   if(KMyMoneyBanking::instance()->isAvailable()) {
     m_jobViewFrame = addVBoxPage( i18n("Outbox"), i18n("Outbox"),
@@ -223,7 +223,8 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(m_accountsView, SIGNAL(bankRightMouseClick()), this, SLOT(slotBankRightMouse()));
   connect(m_accountsView, SIGNAL(rightMouseClick()), this, SLOT(slotRightMouse()));
 
-	connect(m_institutionsView, SIGNAL(bankRightMouseClick()), this, SLOT(slotBankRightMouse()));
+  connect(m_institutionsView, SIGNAL(bankRightMouseClick()), this, SLOT(slotBankRightMouse()));
+  connect(m_institutionsView, SIGNAL(accountRightMouseClick()), this, SLOT(slotAccountRightMouse()));
 
   connect(m_categoriesView, SIGNAL(categoryRightMouseClick()),
     this, SLOT(slotAccountRightMouse()));
@@ -345,6 +346,8 @@ void KMyMoneyView::slotAccountRightMouse()
 
   if(pageIndex(m_accountsViewFrame) == activePageIndex())
     acc = m_accountsView->currentAccount(ok);
+  else if(pageIndex(m_institutionsViewFrame) == activePageIndex())
+    acc = m_institutionsView->currentAccount(ok);
   else
     acc = m_categoriesView->currentAccount(ok);
 
@@ -479,6 +482,8 @@ void KMyMoneyView::slotAccountDoubleClick(void)
 
   if(pageIndex(m_accountsViewFrame) == activePageIndex())
     acc = m_accountsView->currentAccount(ok);
+  else if(pageIndex(m_institutionsViewFrame) == activePageIndex())
+    acc = m_institutionsView->currentAccount(ok);
   else
     acc = m_categoriesView->currentAccount(ok);
 
@@ -500,9 +505,11 @@ void KMyMoneyView::slotBankRightMouse()
   int deleteId = m_bankMenu->idAt(3);
   bool bankSuccess;
   bool state = false;
-  
+
   if(pageIndex(m_accountsViewFrame) == activePageIndex())
     state = !m_accountsView->currentInstitution(bankSuccess).isEmpty();
+  else if(pageIndex(m_institutionsViewFrame) == activePageIndex())
+    state = !m_institutionsView->currentInstitution(bankSuccess).isEmpty();
   else
     state = !m_institutionsView->currentInstitution(bankSuccess).isEmpty();
 
@@ -521,11 +528,11 @@ void KMyMoneyView::slotBankEdit()
   try
   {
     MyMoneyFile* file = MyMoneyFile::instance();
-    
+
     //grab a pointer to the view, regardless of it being a account or institution view.
     KAccountsView* pView = NULL;
     pView = (pageIndex(m_accountsViewFrame) == activePageIndex()) ? m_accountsView : m_institutionsView;
-    
+
     MyMoneyInstitution institution = file->institution(pView->currentInstitution(bankSuccess));
 
     // bankSuccess is not checked anymore because m_file->institution will throw anyway
@@ -556,11 +563,11 @@ void KMyMoneyView::slotBankDelete()
   try
   {
     MyMoneyFile *file = MyMoneyFile::instance();
-    
+
     //grab a pointer to the view, regardless of it being a account or institution view.
     KAccountsView* pView = NULL;
     pView = (pageIndex(m_accountsViewFrame) == activePageIndex()) ? m_accountsView : m_institutionsView;
-    
+
     MyMoneyInstitution institution = file->institution(pView->currentInstitution(bankSuccess));
     QString msg = i18n("Really delete this institution: ");
     msg += institution.name();
@@ -592,8 +599,13 @@ void KMyMoneyView::slotAccountEdit()
     MyMoneyFile* file = MyMoneyFile::instance();
     MyMoneyAccount account;
 
-    if(pageIndex(m_accountsViewFrame) == activePageIndex()) {
-      QCString accountId = m_accountsView->currentAccount(accountSuccess);
+    if(pageIndex(m_accountsViewFrame) == activePageIndex()
+    || pageIndex(m_institutionsViewFrame) == activePageIndex()) {
+
+      //grab a pointer to the view, regardless of it being a account or institution view.
+      KAccountsView* pView = (pageIndex(m_accountsViewFrame) == activePageIndex()) ? m_accountsView : m_institutionsView;
+
+      QCString accountId = pView->currentAccount(accountSuccess);
       if(!accountId.isEmpty()) {
         account = file->account(accountId);
         switch(MyMoneyAccount::accountGroup(account.accountType())) {
@@ -640,8 +652,12 @@ void KMyMoneyView::slotAccountDelete()
     MyMoneyFile* file = MyMoneyFile::instance();
     MyMoneyAccount account;
 
-    if(pageIndex(m_accountsViewFrame) == activePageIndex()) {
-      QCString accountId = m_accountsView->currentAccount(accountSuccess);
+    if(pageIndex(m_accountsViewFrame) == activePageIndex()
+    || pageIndex(m_institutionsViewFrame) == activePageIndex()) {
+      //grab a pointer to the view, regardless of it being a account or institution view.
+      KAccountsView* pView = (pageIndex(m_accountsViewFrame) == activePageIndex()) ? m_accountsView : m_institutionsView;
+
+      QCString accountId = pView->currentAccount(accountSuccess);
       if(!accountId.isEmpty()) {
         account = file->account(accountId);
         switch(MyMoneyAccount::accountGroup(account.accountType())) {
@@ -685,8 +701,12 @@ void KMyMoneyView::slotAccountOnlineMap()
         MyMoneyFile* file = MyMoneyFile::instance();
         MyMoneyAccount account;
 
-        if(pageIndex(m_accountsViewFrame) == activePageIndex()) {
-          QCString accountId = m_accountsView->currentAccount(accountSuccess);
+        if(pageIndex(m_accountsViewFrame) == activePageIndex()
+        || pageIndex(m_institutionsViewFrame) == activePageIndex()) {
+          //grab a pointer to the view, regardless of it being a account or institution view.
+          KAccountsView* pView = (pageIndex(m_accountsViewFrame) == activePageIndex()) ? m_accountsView : m_institutionsView;
+
+          QCString accountId = pView->currentAccount(accountSuccess);
           if(!accountId.isEmpty()) {
             QString bankCode;
             QString accountNumber;
@@ -749,8 +769,12 @@ void KMyMoneyView::slotAccountOnlineUpdate()
       MyMoneyFile* file = MyMoneyFile::instance();
       MyMoneyAccount account;
 
-      if(pageIndex(m_accountsViewFrame) == activePageIndex()) {
-        QCString accountId = m_accountsView->currentAccount(accountSuccess);
+      if(pageIndex(m_accountsViewFrame) == activePageIndex()
+      || pageIndex(m_institutionsViewFrame) == activePageIndex()) {
+        //grab a pointer to the view, regardless of it being a account or institution view.
+        KAccountsView* pView = (pageIndex(m_accountsViewFrame) == activePageIndex()) ? m_accountsView : m_institutionsView;
+
+        QCString accountId = pView->currentAccount(accountSuccess);
         if(!accountId.isEmpty()) {
 
           account=file->account(accountId);
@@ -779,15 +803,18 @@ void KMyMoneyView::slotAccountOnlineUpdate()
 
 void KMyMoneyView::slotAccountOfxConnect(void)
 {
+  bool accountSuccess=false;
   try
   {
     MyMoneyFile* file = MyMoneyFile::instance();
     MyMoneyAccount account;
 
-    if(pageIndex(m_accountsViewFrame) == activePageIndex())
-    {
-      bool ok;
-      QCString accountId = m_accountsView->currentAccount(ok);
+    if(pageIndex(m_accountsViewFrame) == activePageIndex()
+    || pageIndex(m_institutionsViewFrame) == activePageIndex()) {
+      //grab a pointer to the view, regardless of it being a account or institution view.
+      KAccountsView* pView = (pageIndex(m_accountsViewFrame) == activePageIndex()) ? m_accountsView : m_institutionsView;
+
+      QCString accountId = pView->currentAccount(accountSuccess);
       if(!accountId.isEmpty())
       {
         account = file->account(accountId);
@@ -1314,6 +1341,8 @@ void KMyMoneyView::accountNew(const bool createCategory)
 
     if(pageIndex(m_accountsViewFrame) == activePageIndex())
       accId = m_accountsView->currentAccount(ok);
+    else if(pageIndex(m_institutionsViewFrame) == activePageIndex())
+      accId = m_institutionsView->currentAccount(ok);
     else if(pageIndex(m_categoriesViewFrame) == activePageIndex())
       accId = m_categoriesView->currentAccount(ok);
 
@@ -1445,6 +1474,8 @@ void KMyMoneyView::slotAccountReconcile(void)
 
   if(pageIndex(m_accountsViewFrame) == activePageIndex())
     acc = m_accountsView->currentAccount(ok);
+  else if(pageIndex(m_institutionsViewFrame) == activePageIndex())
+    acc = m_institutionsView->currentAccount(ok);
   else
     acc = m_categoriesView->currentAccount(ok);
 

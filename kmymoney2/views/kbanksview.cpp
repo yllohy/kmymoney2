@@ -299,13 +299,9 @@ static const char* const loanIconImage[] = {
 
 KAccountsView::KAccountsView(QWidget *parent, const char *name, bool bInstitutionView)
  : KBankViewDecl(parent,name),
-   m_bInstitutionViewOverride(bInstitutionView),
-   m_suspendUpdate(false)
+   m_suspendUpdate(false),
+   m_bViewNormalAccountsView(bInstitutionView)
 {
-  KConfig *config = KGlobal::config();
-  config->setGroup("List Options");
-  m_bViewNormalAccountsView = (m_bInstitutionViewOverride) ? true : config->readBoolEntry("NormalAccountsView", false);
-
   accountListView->setRootIsDecorated(true);
   accountListView->setAllColumnsShowFocus(true);
 
@@ -331,9 +327,14 @@ KAccountsView::KAccountsView(QWidget *parent, const char *name, bool bInstitutio
 
   accountListView->header()->setFont(KMyMoneyUtils::headerFont());
 
-  // select the type the user viewed last
-  config->setGroup("Last Use Settings");
-  accountTabWidget->setCurrentPage(config->readNumEntry("KAccountsView_LastType", 0));
+  if(!m_bViewNormalAccountsView) {
+    // select the type the user viewed last (list or icon) but only
+    // for the accounts view
+    KConfig *config = KGlobal::config();
+    config->setGroup("Last Use Settings");
+    accountTabWidget->setCurrentPage(config->readNumEntry("KAccountsView_LastType", 0));
+  } else
+    accountTabWidget->setCurrentPage(0);
 
   connect(accountListView, SIGNAL(selectionChanged(QListViewItem*)),
     this, SLOT(slotSelectionChanged(QListViewItem*)));
@@ -354,7 +355,7 @@ KAccountsView::KAccountsView(QWidget *parent, const char *name, bool bInstitutio
 
   connect(accountTabWidget, SIGNAL(currentChanged(QWidget*)),
     this, SLOT(slotViewSelected(QWidget*)));
-	
+
   m_bSelectedAccount=false;
   m_bSelectedInstitution=false;
   // m_bSignals=true;
@@ -362,6 +363,11 @@ KAccountsView::KAccountsView(QWidget *parent, const char *name, bool bInstitutio
   accountIconView->clear();
   accountIconView->setSorting(-1);
   accountListView->setSorting(0);
+
+  // don't enable the icon tab in institutions mode
+  if(m_bViewNormalAccountsView) {
+    accountTabWidget->removePage(accountTabWidget->page(1));
+  }
 
   // never show a horizontal scroll bar
   //accountListView->setHScrollBarMode(QScrollView::AlwaysOff);
@@ -671,9 +677,11 @@ void KAccountsView::refresh(const QCString& selectAccount)
 
   KConfig *config = KGlobal::config();
   config->setGroup("List Options");
-  m_bViewNormalAccountsView = (m_bInstitutionViewOverride) ? true : config->readBoolEntry("NormalAccountsView", false);
   m_hideCategory = config->readBoolEntry("HideUnusedCategory", false);
   bool accountUsed;
+
+  // Disable the note about hidden categories
+  m_hiddenCategories->hide();
 
   clear();
 
@@ -696,6 +704,10 @@ void KAccountsView::refresh(const QCString& selectAccount)
       for(accountIterator = acclist.begin();
           accountIterator != acclist.end();
           ++accountIterator) {
+
+        // Don't show stock accounts
+        if((*accountIterator).accountType() == MyMoneyAccount::Stock)
+          continue;
 
         switch((*accountIterator).accountGroup()) {
           case MyMoneyAccount::Asset:
@@ -733,6 +745,10 @@ void KAccountsView::refresh(const QCString& selectAccount)
         for ( QCStringList::ConstIterator it = accountList.begin();
               it != accountList.end();
               ++it ) {
+          // don't show stock accounts
+          if(m_accountMap[*it].accountType() == MyMoneyAccount::Stock)
+            continue;
+
           KAccountListItem *accountItem = new KAccountListItem(topLevelInstitution,
               m_accountMap[*it]);
           accountItem->setText(1, QString("%1").arg(m_transactionCountMap[*it]));
@@ -756,7 +772,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
 
   } else {       // Show new 'advanced' view
     accountListView->header()->setLabel(0, i18n("Account"));
-    // Do all 4 account roots
+    // Do all 5 account roots
     try {
       // Asset
       MyMoneyAccount assetAccount = file->asset();
@@ -766,6 +782,12 @@ void KAccountsView::refresh(const QCString& selectAccount)
       for ( QCStringList::ConstIterator it = assetAccount.accountList().begin();
             it != assetAccount.accountList().end();
             ++it ) {
+
+        // don't show stock accounts in non-expert mode
+        if((m_accountMap[*it].accountType() == MyMoneyAccount::Stock)
+        && !KMyMoneyUtils::isExpertMode())
+          continue;
+
         KAccountListItem *accountItem = new KAccountListItem(assetTopLevelAccount,
             m_accountMap[*it]);
         accountItem->setText(1, QString("%1").arg(m_transactionCountMap[*it]));
@@ -788,6 +810,12 @@ void KAccountsView::refresh(const QCString& selectAccount)
       for ( QCStringList::ConstIterator it = liabilityAccount.accountList().begin();
             it != liabilityAccount.accountList().end();
             ++it ) {
+
+        // don't show stock accounts in non-expert mode
+        if((m_accountMap[*it].accountType() == MyMoneyAccount::Stock)
+        && !KMyMoneyUtils::isExpertMode())
+          continue;
+
         KAccountListItem *accountItem = new KAccountListItem(liabilityTopLevelAccount,
             m_accountMap[*it]);
         accountItem->setText(1, QString("%1").arg(m_transactionCountMap[*it]));
@@ -827,6 +855,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
           // subaccounts has no split, we can safely remove it and all
           // it's sub-ordinate accounts from the list
           delete accountItem;
+          m_hiddenCategories->show();
         }
       }
 
@@ -854,6 +883,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
           // subaccounts has no split, we can safely remove it and all
           // it's sub-ordinate accounts from the list
           delete accountItem;
+          m_hiddenCategories->show();
         }
       }
 
@@ -903,6 +933,12 @@ const bool KAccountsView::showSubAccounts(const QCStringList& accounts, KAccount
   bool  accountUsed = used;
 
   for ( QCStringList::ConstIterator it = accounts.begin(); it != accounts.end(); ++it ) {
+
+    // don't show stock accounts in non-expert mode
+    if((m_accountMap[*it].accountType() == MyMoneyAccount::Stock)
+    && !KMyMoneyUtils::isExpertMode())
+      continue;
+
     KAccountListItem *accountItem  = new KAccountListItem(parentItem,
           m_accountMap[*it]);
 
