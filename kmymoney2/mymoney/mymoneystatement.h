@@ -38,12 +38,15 @@ Represents the electronic analog of the paper bank statement just like we used t
 */
 struct MyMoneyStatement
 {
+  enum EType { etNone = 0, etCheckings, etSavings, etInvestment, etCreditCard, etEnd };
+  
   struct Transaction
   {
     QDate m_datePosted;
     QString m_strPayee;
     QString m_strMemo;
     QString m_strNumber;
+    QString m_strBankID;
     double m_moneyAmount;
   };
   
@@ -53,6 +56,7 @@ struct MyMoneyStatement
   QDate m_dateBegin;
   QDate m_dateEnd;
   double m_moneyClosingBalance;
+  EType m_eType;
   
   QValueList<Transaction> m_listTransactions;
   

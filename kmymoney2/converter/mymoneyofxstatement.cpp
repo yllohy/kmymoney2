@@ -27,10 +27,13 @@
 
 #ifdef HAVE_LIBOFX
 
-#include "../mymoney/mymoneyexception.h"
-#include "mymoneyofxstatement.h"
+#include <qfile.h>
+#include <qtextstream.h>
 
 #include <libofx/libofx.h>
+
+#include "../mymoney/mymoneyexception.h"
+#include "mymoneyofxstatement.h"
 
 MyMoneyOfxStatement* pgCurrentStatement = NULL;
 
@@ -57,6 +60,26 @@ MyMoneyOfxStatement::MyMoneyOfxStatement(const QString& filename):
 
 MyMoneyOfxStatement::~MyMoneyOfxStatement()
 {
+}
+
+bool MyMoneyOfxStatement::isOfxFile(const QString& filename)
+{
+  // filename is an Ofx file if it contains the tag "<OFX>" somewhere.
+  bool result = false;  
+  
+  QFile f( filename );
+  if ( f.open( IO_ReadOnly ) )
+  {
+    QTextStream ts( &f );
+    
+    while ( !ts.atEnd() && !result )
+      if ( ts.readLine().contains("<OFX>",false) )
+        result = true;
+    
+    f.close();
+  }
+  
+  return result;
 }
 
 //
@@ -95,13 +118,14 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data)
   {
     t.m_strNumber = data.check_number;
   }
-  else if(data.fi_id_valid==true)
+  
+  if(data.fi_id_valid==true)
   {
-    t.m_strNumber = QString("ID ") + data.fi_id;
+    t.m_strBankID = QString("ID ") + data.fi_id;
   }
   else if(data.reference_number_valid==true)
   {
-    t.m_strNumber = QString("REF ") + data.reference_number;
+    t.m_strBankID = QString("REF ") + data.reference_number;
   }
   
   if(data.payee_id_valid==true)
@@ -179,6 +203,30 @@ int ofx_proc_account_cb(struct OfxAccountData data)
   if(data.currency_valid==true)
   {
     pgCurrentStatement->m_strCurrency = data.currency;
+  }
+  
+  if(data.account_type_valid==true)
+  {
+    switch(data.account_type){
+    case OfxAccountData::OFX_CHECKING: 
+      pgCurrentStatement->m_eType = MyMoneyStatement::etCheckings;
+      break;
+    case OfxAccountData::OFX_SAVINGS:
+      pgCurrentStatement->m_eType = MyMoneyStatement::etSavings;
+      break;
+    case OfxAccountData::OFX_INVESTMENT:
+    case OfxAccountData::OFX_MONEYMRKT:
+      pgCurrentStatement->m_eType = MyMoneyStatement::etInvestment;
+      break;
+    case OfxAccountData::OFX_CREDITCARD:
+    case OfxAccountData::OFX_CREDITLINE:
+      pgCurrentStatement->m_eType = MyMoneyStatement::etCreditCard;
+      break;
+    case OfxAccountData::OFX_CMA:
+    default:
+      // unsupported account type, treat as NO ACCOUNT SPECIFIED
+      break;
+    }
   }
   
   return 0;

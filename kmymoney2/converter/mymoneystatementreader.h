@@ -129,7 +129,7 @@ private:
     * @param mode Is either Create or Select depending on the above table
     * @param account Reference to MyMoneyAccount object
     */
-  void selectOrCreateAccount(const SelectCreateMode mode, MyMoneyAccount& account);
+  bool selectOrCreateAccount(const SelectCreateMode mode, MyMoneyAccount& account);
 
 signals:
   /**
@@ -141,7 +141,6 @@ private:
   
   MyMoneyAccount          m_account;
   QStringList             m_dontAskAgain;
-  QMap<QString, QCString> m_accountTranslation;
   bool                    m_skipAccount;
   bool                    m_userAbort;
   bool                    m_autoCreatePayee;

@@ -63,7 +63,11 @@ void MyMoneyStatementReader::setAutoCreatePayee(const bool create)
 
 const bool MyMoneyStatementReader::startImport(const MyMoneyStatement& s)
 {
-  bool result = false;
+  // right now, it's always true that the import started successfully.
+  // if there are problems, we'll report them in the result code to 
+  // finishImport, just so the caller can handle the result in the
+  // same place.
+  bool result = true;
   
   //
   // Select the account
@@ -78,21 +82,42 @@ const bool MyMoneyStatementReader::startImport(const MyMoneyStatement& s)
   if ( s.m_dateEnd.isValid() )
     m_account.setValue("lastStatementDate", s.m_dateEnd.toString("yyyy-MM-dd"));
 
-  // TODO: Make this a statement property
-  m_account.setAccountType(MyMoneyAccount::Checkings);
+  switch ( s.m_eType )
+  {
+    case MyMoneyStatement::etCheckings:
+      m_account.setAccountType(MyMoneyAccount::Checkings);
+      break;
+    case MyMoneyStatement::etSavings:
+      m_account.setAccountType(MyMoneyAccount::Savings);
+      break;
+    case MyMoneyStatement::etInvestment:
+      m_userAbort = true;
+      KMessageBox::error(kmymoney2, i18n("This is an investment statement.  These are not supported currently."), i18n("Critical Error"));
+      break;
+    case MyMoneyStatement::etCreditCard:
+      m_account.setAccountType(MyMoneyAccount::CreditCard);
+      break;
+    default:
+      m_account.setAccountType(MyMoneyAccount::Checkings);
+      break;
+  }
     
-  selectOrCreateAccount(Select, m_account);
+  if ( !m_userAbort )
+    m_userAbort = ! selectOrCreateAccount(Select, m_account);
   
   //  
   // Process the transactions
   //
   
-  QValueList<MyMoneyStatement::Transaction>::const_iterator it_t = s.m_listTransactions.begin();
-  while ( it_t != s.m_listTransactions.end() )
+  if ( !m_userAbort )
   {
-    processTransactionEntry(*it_t);
-    ++it_t;
-  }  
+    QValueList<MyMoneyStatement::Transaction>::const_iterator it_t = s.m_listTransactions.begin();
+    while ( it_t != s.m_listTransactions.end() )
+    {
+      processTransactionEntry(*it_t);
+      ++it_t;
+    }  
+  }
   
   emit importFinished();
   return result;
@@ -112,7 +137,6 @@ const bool MyMoneyStatementReader::finishImport(void)
   }
   config->sync();
   m_dontAskAgain.clear();
-  m_accountTranslation.clear();
 
   signalProgress(-1, -1);
   rc = !m_userAbort;
@@ -136,6 +160,9 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
   t.setPostDate(t_in.m_datePosted);
   t.setMemo(t_in.m_strMemo);
 
+  if ( ! t_in.m_strBankID.isEmpty() )
+    t.setBankID(t_in.m_strBankID);
+  
   MyMoneySplit s1;
 
   s1.setMemo(t_in.m_strMemo);
@@ -209,15 +236,15 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
   
   // Add the transaction
   try {
-    // First, do the duplicate check
-    QValueList<MyMoneyTransaction> list;
+    // check for duplicates ONLY by Bank ID.  We know Bank ID will definitly
+    // find duplicates.  For "softer" duplicates, we'll wait for the full
+    // matching interface.
     MyMoneyTransactionFilter filter;
     filter.setDateFilter(t.postDate().addDays(-4), t.postDate().addDays(4));
-    list = file->transactionList(filter);
-
+    QValueList<MyMoneyTransaction> list = file->transactionList(filter);
     QValueList<MyMoneyTransaction>::Iterator it;
     for(it = list.begin(); it != list.end(); ++it) {
-      if(t.isDuplicate(*it))
+      if(t.bankID() == (*it).bankID())
         break;
     }
     if(it == list.end()) {
@@ -229,143 +256,103 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
     KMessageBox::information(0, message);
     delete e;
   }
-
 }
 
-void MyMoneyStatementReader::selectOrCreateAccount(const SelectCreateMode mode, MyMoneyAccount& account)
+bool MyMoneyStatementReader::selectOrCreateAccount(const SelectCreateMode /*mode*/, MyMoneyAccount& account)
 {
+  bool result = false;
+  
   MyMoneyFile* file = MyMoneyFile::instance();
 
   QCString accountId;
-  QString msg;
-  QString typeStr;
-  QString leadIn;
-  KMyMoneyUtils::categoryTypeE type;
-
-  type = KMyMoneyUtils::none;
-  switch(account.accountGroup()) {
-    default:
-      type = KMyMoneyUtils::asset;
-      type = (KMyMoneyUtils::categoryTypeE) (type | KMyMoneyUtils::liability);
-      typeStr = i18n("account");
-      leadIn = i18n("al");
-      break;
-
-    case MyMoneyAccount::Income:
-    case MyMoneyAccount::Expense:
-      type = KMyMoneyUtils::income;
-      type = (KMyMoneyUtils::categoryTypeE) (type | KMyMoneyUtils::expense);
-      typeStr = i18n("category");
-      leadIn = i18n("ei");
-      msg = i18n("Category selection");
-      break;
-  }
-
-  KAccountSelectDlg accountSelect(type, "StatementImport", kmymoney2);
-  if(!msg.isEmpty())
-    accountSelect.setCaption(msg);
     
-  // TODO: Prompt the user to set the account number or comment such that we'll
-  // be able to find it again next time.
+  // Try to find an existing account in the engine which matches this one.  
+  // There are two ways to be a "matching account".  The account number can
+  // match the statement account OR the "StatementKey" property can match.
+  // Either way, we'll update the "StatementKey" property for next time.
 
-  QMap<QString, QCString>::ConstIterator it = m_accountTranslation.find((leadIn + ":" + account.name()).lower());
-  if(it != m_accountTranslation.end()) {
-    try {
-      account = file->account(*it);
-      m_account = account;
-      return;
-
-    } catch (MyMoneyException *e) {
-      QString message(i18n("Account \"%1\" disappeard: ").arg(account.name()));
-      message += e->what();
-      KMessageBox::error(0, message);
-      delete e;
-    }
-  }
-
-  if(!account.name().isEmpty()) {
-    if(type & (KMyMoneyUtils::income | KMyMoneyUtils::expense)) {
-      accountId = file->categoryToAccount(account.name());
-    } else {
-      accountId = file->nameToAccount(account.name());
-    }
-
-    if(mode == Create) {
-      if(!accountId.isEmpty()) {
-        account = file->account(accountId);
-        return;
-
-      } else {
-        switch(KMessageBox::questionYesNo(0,
-                  i18n("The %1 '%2' does not exist. Do you "
-                       "want to create it?").arg(typeStr).arg(account.name()))) {
-          case KMessageBox::Yes:
-            break;
-          case KMessageBox::No:
-            return;
+  QString accountNumber = account.number();
+  if ( ! accountNumber.isEmpty() )
+  {
+    // Get a list of all accounts
+    QValueList<MyMoneyAccount> accounts = file->accountList(QCStringList());
+    
+    // Iterate through them
+    QValueList<MyMoneyAccount>::const_iterator it_account = accounts.begin();
+    while ( it_account != accounts.end() )
+    {
+      if (
+          ( (*it_account).value("StatementKey") == accountNumber ) ||
+          ( (*it_account).number() == accountNumber )
+        )
+        {
+          account.setAccountId( (*it_account).id() );  
+          accountId = (*it_account).id();
+          break;
         }
-      }
-    } else {
-      accountSelect.setHeader(i18n("Select %1").arg(typeStr));
-      if(!accountId.isEmpty()) {
-        msg = i18n("The %1 <b>%2</b> currently exists. Do you want "
-                   "to import transactions to this account?")
-                    .arg(typeStr).arg(account.name());
-
-      } else {
-      
-        QString number;
-        if ( ! account.number().isEmpty() )
-          number = QString(" [%1]").arg(account.number());
-        msg = i18n("The %1 <b>%2</b> currently does not exist. You can "
-                   "create a new %3 by pressing the <b>Create</b> button "
-                   "or select another %4 manually from the selection box.")
-                  .arg(typeStr).arg(account.name()+number).arg(typeStr).arg(typeStr);
-      }
+    
+      ++it_account;  
     }
-  } else {
-    accountSelect.setHeader(i18n("Import transactions to %1").arg(typeStr));
-    msg = i18n("No %1 information has been found in the selected QIF file. "
-               "Please select an account using the selection box in the dialog or "
-               "create a new %2 by pressing the <b>Create</b> button.")
-               .arg(typeStr).arg(typeStr);
   }
 
+  QString msg = i18n("<b>You have downloaded a statement for the following account:</b><br><br>");
+  msg += i18n(" - Account Name: %1<br>").arg(account.name());
+  msg += i18n(" - Account Type: %1<br>").arg(KMyMoneyUtils::accountTypeToString(account.accountType()));
+  msg += i18n(" - Account Number: %1<br>").arg(account.number());
+  msg += "<br>";
+  
+  QString header;
+      
+  if(!account.name().isEmpty()) 
+  {
+    if(!accountId.isEmpty())
+      msg += i18n("Do you want to import transactions to this account?");
+    else
+      msg += i18n("KMyMoney cannot determine which of your accounts to use.  You can "
+                  "create a new account by pressing the <b>Create</b> button "
+                  "or select another one manually from the selection box below.");
+  } 
+  else 
+  {
+    msg += i18n("No account information has been found in the selected statement file. "
+               "Please select an account using the selection box in the dialog or "
+               "create a new account by pressing the <b>Create</b> button.");
+  }
+
+  KMyMoneyUtils::categoryTypeE type = static_cast<KMyMoneyUtils::categoryTypeE>(KMyMoneyUtils::asset|KMyMoneyUtils::liability);
+  KAccountSelectDlg accountSelect(type, "StatementImport", kmymoney2);
+  accountSelect.setHeader(i18n("Import transactions"));
   accountSelect.setDescription(msg);
   accountSelect.setAccount(account, accountId);
-  accountSelect.setMode(mode == Create);
+  accountSelect.setMode(false);
   accountSelect.showAbortButton(true);
+  accountSelect.m_qifEntry->hide();
 
-  for(;;) {
-    if(accountSelect.exec() == QDialog::Accepted) {
-      if(!accountSelect.selectedAccount().isEmpty()) {
-        accountId = accountSelect.selectedAccount();
-
-        m_accountTranslation[(leadIn + ":" + account.name()).lower()] = accountId;
-        MyMoneyAccount importedAccountData(account);
-        account = file->account(accountId);
-        if(typeStr == i18n("account")
-        && importedAccountData.openingBalance() != account.openingBalance()) {
-          if(KMessageBox::questionYesNo(0, i18n("Do you want to override the opening balance of this account currently set to %1 with %2?")
-              .arg(account.openingBalance().formatMoney())
-              .arg(importedAccountData.openingBalance().formatMoney())
-            ,QString(),KStdGuiItem::yes(),KStdGuiItem::no(),"replaceopeningbalance") == KMessageBox::Yes) {
-            account.setOpeningBalance(importedAccountData.openingBalance());
-            MyMoneyFile::instance()->modifyAccount(account);
-          }
-        }
-        break;
+  bool done = false;
+  while ( !done )
+  {
+    if ( accountSelect.exec() == QDialog::Accepted && !accountSelect.selectedAccount().isEmpty() )
+    {
+      result = true;
+      done = true;
+      accountId = accountSelect.selectedAccount();
+      account = file->account(accountId);
+      if ( ! accountNumber.isEmpty() && account.value("StatementKey") != accountNumber )
+      {
+        account.setValue("StatementKey",accountNumber);
+        MyMoneyFile::instance()->modifyAccount(account);
       }
-
-    } else if(accountSelect.aborted())
-      throw new MYMONEYEXCEPTION("USERABORT");
-
-    if(typeStr == i18n("account")) {
-      KMessageBox::error(0, i18n("You must select or create an account."));
-    } else {
-      KMessageBox::error(0, i18n("You must select or create a category."));
+    } 
+    else 
+    {
+      if(accountSelect.aborted())
+        //throw new MYMONEYEXCEPTION("USERABORT");
+        done = true;
+      else
+        KMessageBox::error(0, i18n("You must select an account, create a new one, or press the Abort button."));
     }
   }
+  return result;
 }
 
 void MyMoneyStatementReader::setProgressCallback(void(*callback)(int, int, const QString&))

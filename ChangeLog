@@ -1,3 +1,15 @@
+2004-09-04 Ace Jones <acejones@users.sourceforge.net>
+  * Added support for Quicken "web connect".  To enable this, set up KMM to
+    handle the mimetypes "application/vnd.intu.qfx", "application/x-ofx".  KMM
+    will launch and import those transactions.  If there is another instance of
+    KMM open at the time, it will import them into THAT instance.
+  * Added bankID's to MyMoneyStatement & MyMoneyTransaction.  This is a
+    unique bank-assigned ID that can be used to detect duplicate transactions.
+  * Modified MyMoneyStatement importer to skip transactions with BankID's that
+    are already in the file.
+  * Added type identifier to MyMoneyStatement (checkings, savings, etc)
+  * Cleaned up MyMoneyStatement importer
+
 2004-09-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added set/get functions to MyMoneyMoney for completeness
   * Added formatting testcases to MyMoneyMoneyTest

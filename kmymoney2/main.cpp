@@ -38,6 +38,7 @@
 #include "views/kbanklistitem.h"
 #include "kapptest.h"
 #include "kmymoneyutils.h"
+#include "converter/mymoneyofxstatement.h"
 
 static const char *description =
   I18N_NOOP("KMyMoney, the Personal Finance Manager for KDE.\n\nPlease consider contributing to this project with code and or suggestions.");
@@ -116,8 +117,37 @@ int main(int argc, char *argv[])
   a->setMainWidget( kmymoney2 );
 
   // connect to DCOP server
-  if(a->dcopClient()->registerAs("kmymoney", true) != false) {
-    if(kmymoney2->instanceList().count() > 0) {
+  DCOPClient* client = a->dcopClient();
+  if(client->registerAs("kmymoney", true) != false) {
+    const QCStringList instances = kmymoney2->instanceList();
+    if(instances.count() > 0) {
+    
+      // If the user launches a second copy of the app and includes a file to 
+      // open, they may be attempting a "WebConnect" session.  In this case,
+      // we'll check if it's an OFX file that's passed in, and if so, we'll
+      // notify the primary instance of the file and kill ourselves.
+   
+      if(args->count() > 0) {
+        KURL url = args->url(0);
+        if ( MyMoneyOfxStatement::isOfxFile( url.path() ) )
+        {
+          // if there are multiple instances, we'll send this to the first one
+          QCString primary = instances[0];
+          
+          // send a message to the primary client to import this ofx
+          QByteArray data;
+          QDataStream arg(data, IO_WriteOnly);
+          arg << url.path();
+          if (!client->send(primary, "kmymoney2app", "ofxWebConnect(QString)",
+                        data))
+            qDebug("Unable to launch WebConnect via DCOP.");
+            
+          // TODO: Figure out why this segfaults!?!
+          delete a;
+          exit(0);
+        }
+      } 
+      
       if(KMessageBox::questionYesNo(0, i18n("Another instance of KMyMoney is already running. Do you want to quit?")) == KMessageBox::Yes) {
         delete a;
         exit(1);
@@ -127,7 +157,6 @@ int main(int argc, char *argv[])
     qDebug("DCOP registration failed. Some functions are not available.");
   }
 
-
   kmymoney2->show();
   kmymoney2->setEnabled(false);
 
@@ -136,11 +165,25 @@ int main(int argc, char *argv[])
 
   int rc = 0;
 
+  QString importfile;
   KURL url;
   // make sure, we take the file provided on the command
   // line before we go and open the last one used
   if(args->count() > 0) {
     url = args->url(0);
+    
+    // Check to see if this is an importable file, as opposed to a loadable
+    // file.  If it is importable, what we really want to do is load the
+    // last used file anyway and then immediately import this file.  This
+    // implements a "web connect" session where there is not already an
+    // instance of the program running.
+    
+    if ( MyMoneyOfxStatement::isOfxFile( url.path() ) )
+    {
+      importfile = url.path();
+      url = kmymoney2->readLastUsedFile();
+    }
+    
   } else {
     url = kmymoney2->readLastUsedFile();
   }
@@ -153,6 +196,12 @@ int main(int argc, char *argv[])
     // kmymoney2->createInitialAccount();
     KTipDialog::showTip(kmymoney2, "", false);
   }
+  
+  // TODO: Handle the case where the user launches with an importable file
+  // but DOES NOT have a 'last used file' set.
+  
+  if ( ! importfile.isEmpty() )
+    kmymoney2->ofxWebConnect( importfile );
 
   CREATE_TEST_CONTAINER();
 

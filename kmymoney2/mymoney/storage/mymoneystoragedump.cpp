@@ -294,6 +294,7 @@ void MyMoneyStorageDump::dumpTransaction(QTextStream& s, IMyMoneyStorage* storag
   s << "  EntryDate = " << it_t.entryDate().toString(Qt::ISODate) << "\n";
   s << "  Commodity = [" << it_t.commodity() << "]\n";
   s << "  Memo = " << it_t.memo() << "\n";
+  s << "  BankID = " << it_t.bankID() << "\n";
   s << "  KVP: " << "\n";
   QMap<QCString, QString>kvp = it_t.pairs();
   QMap<QCString, QString>::Iterator it;

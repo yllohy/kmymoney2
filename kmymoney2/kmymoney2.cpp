@@ -50,6 +50,8 @@
 #include <kprogress.h>
 #include <kio/netaccess.h>
 #include <dcopclient.h>
+#include <kwin.h>
+#include <kmainwindowiface.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -806,7 +808,6 @@ void KMyMoney2App::slotQifImportFinished(void)
 void KMyMoney2App::slotOfxImport(void)
 {
 #ifdef HAVE_LIBOFX
-  bool result = false;
   QString prevMsg = slotStatusMsg(i18n("Importing a statement from OFX"));
 
   KFileDialog* dialog = new KFileDialog(KGlobalSettings::documentPath(),
@@ -817,9 +818,18 @@ void KMyMoney2App::slotOfxImport(void)
   if(dialog->exec() == QDialog::Accepted)
   {
     MyMoneyOfxStatement s( dialog->selectedURL().path() );
-    if ( s.isValid() )
+    
+    if ( s.isValid() )  
       slotStatementImport(s);
+    else
+    {
+      QMessageBox::critical( this, i18n("Invalid OFX"), i18n("Error importing %1: This file is not a valid OFX file.").arg(dialog->selectedURL().path()), QMessageBox::Ok, 0 );
+      slotStatusMsg(prevMsg);
+    }
   }
+  else
+    slotStatusMsg(prevMsg);
+
 #else
   QMessageBox::critical( this, i18n("Critical Error"), i18n("OFX import is unavailable.  This version of KMyMoney was built without OFX support."), QMessageBox::Ok, 0 );
 #endif
@@ -897,8 +907,11 @@ void KMyMoney2App::slotStatementImport()
     delete doc;
 
     if ( !result )
+    {
       QMessageBox::critical( this, i18n("Critical Error"), i18n("Unable to read file %1: %2").arg( dialog->selectedURL().path(),error), QMessageBox::Ok, 0 );
-
+      
+      slotStatusMsg(prevMsg);
+    }
   }
   delete dialog;
 
@@ -941,7 +954,6 @@ void KMyMoney2App::slotStatementImportFinished(void)
 
   myMoneyView->suspendUpdate(false);
   if(m_smtReader != 0) {
-    // fixme: re-enable the QIF import menu options
     if(m_smtReader->finishImport()) {
       if(verifyImportedData(m_smtReader->account())) {
         // keep the new data set, destroy the backup copy
@@ -1596,4 +1608,29 @@ void KMyMoney2App::slotAccountNew(void)
 {
   Q_CHECK_PTR(myMoneyView);
   myMoneyView->slotAccountNew();
+}
+
+void KMyMoney2App::ofxWebConnect(const QString& url)
+{
+  // Steal the focus!  (Yes, I am sure what I'm doing.  Yes this IS in response to 
+  // user input.  Yes the user REALLY WANTS to do this.)
+  KApplication::kApplication()->updateUserTimestamp();
+  KWin::activateWindow(KMainWindowInterface(this).getWinID());
+  
+#ifdef HAVE_LIBOFX
+  QString prevMsg = slotStatusMsg(i18n("Importing a statement from OFX"));
+  
+  MyMoneyOfxStatement s( url );
+  if ( s.isValid() )  
+    slotStatementImport(s);
+  else
+  {
+    QMessageBox::critical( this, i18n("Invalid OFX"), i18n("Error importing %1: This file is not a valid OFX file.").arg(url), QMessageBox::Ok, 0 );
+    slotStatusMsg(prevMsg);
+  }
+    
+#else
+  QMessageBox::critical( this, i18n("Critical Error"), i18n("OFX import is unavailable.  This version of KMyMoney was built without OFX support."), QMessageBox::Ok, 0 );
+#endif
+  
 }

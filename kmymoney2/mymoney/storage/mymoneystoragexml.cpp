@@ -754,6 +754,7 @@ MyMoneyTransaction MyMoneyStorageXML::readTransaction(QDomElement& transaction, 
   t.setPostDate(getDate(QStringEmpty(transaction.attribute(QString("postdate")))));
   t.setMemo(QStringEmpty(transaction.attribute(QString("memo"))));
   t.setCommodity(QCStringEmpty(transaction.attribute(QString("commodity"))));
+  t.setBankID(QStringEmpty(transaction.attribute(QString("bankid"))));
 
   id = QCStringEmpty(transaction.attribute(QString("id")));
   if(!withinSchedule)
@@ -786,6 +787,7 @@ void MyMoneyStorageXML::writeTransaction(QDomElement& transaction, const MyMoney
   transaction.setAttribute(QString("memo"), tx.memo());
   transaction.setAttribute(QString("entrydate"), getString(tx.entryDate()));
   transaction.setAttribute(QString("commodity"), tx.commodity());
+  transaction.setAttribute(QString("bankid"), tx.bankID());
 
   QDomElement splits = m_doc->createElement("SPLITS");
   QValueList<MyMoneySplit> splitList = tx.splits();

@@ -25,11 +25,14 @@
 // QT Includes
 
 #include <qdom.h>
+#include <qstringlist.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
 
 #include "mymoneystatement.h"
+
+const QStringList kTypeText = QStringList::split(",","none,checkings,savings,investment,creditcard,invalid");
 
 void MyMoneyStatement::write(QDomElement& _root,QDomDocument* _doc) const
 {
@@ -43,6 +46,7 @@ void MyMoneyStatement::write(QDomElement& _root,QDomDocument* _doc) const
   e.setAttribute("begindate", m_dateBegin.toString(Qt::ISODate));
   e.setAttribute("enddate", m_dateEnd.toString(Qt::ISODate));
   e.setAttribute("closingbalance", QString::number(m_moneyClosingBalance));
+  e.setAttribute("type",kTypeText[m_eType]);
   
   // iterate over transactions, and add each one
   QValueList<Transaction>::const_iterator it_t = m_listTransactions.begin();
@@ -54,6 +58,7 @@ void MyMoneyStatement::write(QDomElement& _root,QDomDocument* _doc) const
     p.setAttribute("memo", (*it_t).m_strMemo);
     p.setAttribute("number", (*it_t).m_strNumber);
     p.setAttribute("amount", QString::number((*it_t).m_moneyAmount));
+    p.setAttribute("bankid", (*it_t).m_strBankID);
     e.appendChild(p);
     
     ++it_t;
@@ -74,7 +79,11 @@ bool MyMoneyStatement::read(const QDomElement& _e)
     m_dateBegin = QDate::fromString(_e.attribute("begindate"),Qt::ISODate);
     m_dateEnd = QDate::fromString(_e.attribute("enddate"),Qt::ISODate);
     m_moneyClosingBalance = _e.attribute("closingbalance").toDouble();
-    
+ 
+    int i = kTypeText.findIndex(_e.attribute("type",kTypeText[1]));
+    if ( i != -1 )
+      m_eType = static_cast<EType>(i);
+        
     QDomNode child = _e.firstChild();
     while(!child.isNull() && child.isElement())
     {
@@ -86,6 +95,7 @@ bool MyMoneyStatement::read(const QDomElement& _e)
       t.m_strMemo = c.attribute("memo");
       t.m_strNumber = c.attribute("number");
       t.m_strPayee = c.attribute("payee");
+      t.m_strBankID = c.attribute("bankid");
       
       m_listTransactions += t;
       child = child.nextSibling();

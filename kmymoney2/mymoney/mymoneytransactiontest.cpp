@@ -39,9 +39,11 @@ void MyMoneyTransactionTest::testEmptyConstructor() {
 void MyMoneyTransactionTest::testSetFunctions() {
 	m->setMemo("Memo");
 	m->setPostDate(QDate(1,2,3));
+	m->setBankID("BankID");
 
 	CPPUNIT_ASSERT(m->postDate() == QDate(1,2,3));
 	CPPUNIT_ASSERT(m->memo() == "Memo");
+	CPPUNIT_ASSERT(m->bankID() == "BankID");
 }
 
 void MyMoneyTransactionTest::testConstructor() {
@@ -52,6 +54,7 @@ void MyMoneyTransactionTest::testConstructor() {
 	CPPUNIT_ASSERT(a.entryDate() == QDate::currentDate());
 	CPPUNIT_ASSERT(a.memo() == "Memo");
 	CPPUNIT_ASSERT(a.postDate() == QDate(1,2,3));
+	CPPUNIT_ASSERT(a.bankID() == "BankID");
 }
 
 void MyMoneyTransactionTest::testCopyConstructor() {
@@ -64,6 +67,7 @@ void MyMoneyTransactionTest::testCopyConstructor() {
 	CPPUNIT_ASSERT(n.entryDate() == QDate::currentDate());
 	CPPUNIT_ASSERT(n.memo() == "Memo");
 	CPPUNIT_ASSERT(n.postDate() == QDate(1,2,3));
+	CPPUNIT_ASSERT(n.bankID() == "BankID");
 	
 }
 
@@ -79,6 +83,7 @@ void MyMoneyTransactionTest::testAssignmentConstructor() {
 	CPPUNIT_ASSERT(n.entryDate() == QDate::currentDate());
 	CPPUNIT_ASSERT(n.memo() == "Memo");
 	CPPUNIT_ASSERT(n.postDate() == QDate(1,2,3));
+	CPPUNIT_ASSERT(n.bankID() == "BankID");
 }
 
 void MyMoneyTransactionTest::testEquality() {
