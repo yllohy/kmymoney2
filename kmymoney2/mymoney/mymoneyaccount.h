@@ -93,7 +93,7 @@ public:
   /**
     * Account types currently supported.
     */
-  enum accountTypeE {
+  typedef enum _accountTypeE {
     UnknownAccountType=0, /**< For error handling */
     Checkings,            /**< Standard checking account */
     Savings,              /**< Typical savings account */
@@ -112,7 +112,7 @@ public:
 
     /* insert new account types above this line */
     MaxAccountTypes       /**< Denotes the number of different account types */
-  };
+  }accountTypeE;
 
   /**
     * This is the constructor for a new empty account
@@ -408,10 +408,25 @@ public:
   void setAccountType(const accountTypeE type);
 
   /**
+    * This method returns the account type based on the string that is read from
+    * the XML file.
+    *
+    * @param QCString reference to type from XML file.
+    */
+  void setAccountTypeByName(const QCString& strType);
+
+  /**
     * This method is used to set a new parent account id
     * @param parent QString reference to new parent account
     */
   void setParentAccountId(const QCString& parent);
+
+  /**
+    * This method is used to set a new account id
+    * @param id QString reference to new id.
+    */
+  void setAccountId(const QCString& id);
+
 
   /**
     * This method is used to update m_lastModified to the current date

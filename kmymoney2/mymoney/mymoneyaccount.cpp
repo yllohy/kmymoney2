@@ -114,6 +114,24 @@ void MyMoneyAccount::setAccountType(const accountTypeE type)
   m_accountType = type;
 }
 
+void MyMoneyAccount::setAccountTypeByName(const QCString& strType)
+{
+  if(strType == "CHECKING")
+  {
+    m_accountType = MyMoneyAccount::Checkings;
+  }
+  else if(strType == "SAVINGS")
+  {
+    m_accountType = MyMoneyAccount::Savings;
+  }
+  else
+  {
+    m_accountType = MyMoneyAccount::UnknownAccountType;
+  }
+
+  //return m_accountType;
+}
+
 /* removed with MyMoneyAccount::Transaction
 const QValueList<MyMoneyAccount::Transaction>& MyMoneyAccount::transactionList(void) const
 {
@@ -160,6 +178,11 @@ const MyMoneyMoney MyMoneyAccount::balance(void) const
   return result;
 }
 */
+
+void MyMoneyAccount::setAccountId(const QCString& id)
+{
+  m_id = id;
+}
 
 void MyMoneyAccount::addAccountId(const QCString& account)
 {

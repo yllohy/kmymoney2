@@ -44,9 +44,10 @@ using namespace xmlpp;
 
 MyMoneyStorageXML::MyMoneyStorageXML()
 {
-  m_pStorage = NULL;
+  m_pStorage            = NULL;
   m_pCurrentInstitution = NULL;
-  m_pCurrentPayee = NULL;
+  m_pCurrentPayee       = NULL;
+  m_pCurrentAccount     = NULL;
 }
 
 MyMoneyStorageXML::~MyMoneyStorageXML()
@@ -57,61 +58,33 @@ MyMoneyStorageXML::~MyMoneyStorageXML()
 //Function to read in the file, send to XML parser.
 void MyMoneyStorageXML::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
 {
-  if(!CreateXMLParser())
-  {
-    return;
-  }
-         
-  //
-  //  Need to use the file object and read it at 1000 bytes at a time.  We need to send the
-  //  XML file to the SAX interface in chunks not too big to waste memory, but not too small to
-  //  still provide good speed.  The ideal number of bytes read should be determined by profiling.
-  //
   if(pDevice && storage)
   {
     m_pStorage = storage;
-    Q_LONG totalSize = 0;
-    char buf[1000];
-    Q_LONG readSize = 0;
-    while(readSize >= 0)
+
+    //reads the contents of the entire file into this buffer.
+    QTextStream stream(pDevice);
+    QString strEntireFile = stream.read();
+    
+    try
     {
-      readSize = pDevice->readBlock((char*)&buf, 1000);
-      totalSize += readSize;
-      if(readSize > 0)
-      {
-        qDebug("XMLREADER: %ld chars read", readSize);
-        std::string parseString(buf);
-        try
-        {
-          parse_memory(parseString);
-        }
-        catch(xmlpp::parse_error* e)
-        {
-          qDebug("XMLREADER: EXCEPTION while parsing buffer");
-        }
-      }
-      else
-      {
-       break;
-      }
+      parse_memory(strEntireFile);
+    }
+    catch(xmlpp::parse_error* e)
+    {
+      qDebug("XMLREADER: EXCEPTION while parsing buffer");
     }
 
     //don't use this pointer after the function has exited...
     m_pStorage = NULL;
 
-    qDebug("XMLREADER: %ld total file size", totalSize);
-    
+    //qDebug("XMLREADER: %ld total file size", totalSize);
   }
 }
 
 void MyMoneyStorageXML::writeFile(QIODevice* qf, IMyMoneySerialize* storage)
 {
   qDebug("XMLWRITER: not implemented yet!");
-}
-
-bool MyMoneyStorageXML::CreateXMLParser()
-{
-  return true;
 }
 
 void MyMoneyStorageXML::on_start_document(void)
@@ -247,6 +220,8 @@ void MyMoneyStorageXML::on_start_element(const std::string &n, const Element::At
   {
     if(getCurrentParseState() == PARSE_PAYEES)
     {
+      qDebug("XMLREADER: Parsing a new Payee entry");
+      
       ChangeParseState(PARSE_PAYEE);
 
       if(!m_pCurrentPayee)
@@ -256,6 +231,8 @@ void MyMoneyStorageXML::on_start_element(const std::string &n, const Element::At
 
       if(m_pCurrentPayee)
       {
+        qDebug("XMLREADER: Filling out information for the new payee");
+        
         strTemp = getPropertyValue(std::string("name"), p);
         m_pCurrentPayee->setName(QString(strTemp.data()));
 
@@ -264,19 +241,66 @@ void MyMoneyStorageXML::on_start_element(const std::string &n, const Element::At
 
         strTemp = getPropertyValue(std::string("ref"), p);
         m_pCurrentPayee->setReference(QString(strTemp.data()));
+
+        qDebug("XMLREADER: Done filling out information for the new payee");
       }
     }
   }
   else if(!n.find("ACCOUNTS"))
   {
+    qDebug("XMLREADER: Parsing Accounts");
     ChangeParseState(PARSE_ACCOUNTS);
   }
   else if(!n.find("ACCOUNT"))
   {
-    if(getCurrentParseState() == PARSE_ACCOUNT)
+    qDebug("XMLREADER: Parsing an Account");
+    if(getCurrentParseState() == PARSE_ACCOUNTS)
     {
       ChangeParseState(PARSE_ACCOUNT);
 
+      if(!m_pCurrentAccount)
+      {
+        qDebug("XMLREADER: Creating new account object to fill in.");
+        m_pCurrentAccount = new MyMoneyAccount;
+      }
+
+      if(m_pCurrentAccount)
+      {
+        strTemp = getPropertyValue(std::string("id"), p);
+        m_pCurrentAccount->setAccountId(QCString(strTemp.data()));
+        
+        // The type of account specified must match up with one of the types, or this file should be treated as invalid.
+        strTemp = getPropertyValue(std::string("type"), p);
+        m_pCurrentAccount->setAccountTypeByName(QCString(strTemp.data()));
+        
+        strTemp = getPropertyValue(std::string("name"), p);
+        m_pCurrentAccount->setName(QString(strTemp.data()));
+
+        strTemp = getPropertyValue(std::string("description"), p);
+        m_pCurrentAccount->setDescription(QString(strTemp.data()));
+
+        strTemp = getPropertyValue(std::string("institution"), p);
+        m_pCurrentAccount->setInstitutionId(QCString(strTemp.data()));
+
+        strTemp = getPropertyValue(std::string("number"), p);
+        m_pCurrentAccount->setNumber(QString(strTemp.data()));
+
+        strTemp = getPropertyValue(std::string("opened"), p);
+        QDate openingDate = QDate::fromString(QString(strTemp.data()), Qt::TextDate);
+        m_pCurrentAccount->setOpeningDate(openingDate);
+
+        strTemp = getPropertyValue(std::string("openingbalance"), p);
+        MyMoneyMoney openBalance(QString(strTemp.data()));
+        m_pCurrentAccount->setOpeningBalance(openBalance);
+
+        strTemp = getPropertyValue(std::string("lastmodified"), p);
+        QDate lastModified = QDate::fromString(QString(strTemp.data()), Qt::TextDate);
+        m_pCurrentAccount->setLastModified(lastModified);
+
+        strTemp = getPropertyValue(std::string("lastreconciled"), p);
+        QDate lastReconciled = QDate::fromString(QString(strTemp.data()), Qt::TextDate);
+        m_pCurrentAccount->setLastReconciliationDate(lastReconciled);
+      }
     }
   }
 }
@@ -305,6 +329,7 @@ void MyMoneyStorageXML::on_end_element(const std::string &n)
   {
     if(m_pCurrentInstitution)
     {
+      qDebug("XMLREADER:  Adding institution to the list of institutions, name = %s", m_pCurrentInstitution->name().data());
       m_pStorage->addInstitution(*m_pCurrentInstitution);
       delete m_pCurrentInstitution;
       m_pCurrentInstitution = NULL;
@@ -314,6 +339,7 @@ void MyMoneyStorageXML::on_end_element(const std::string &n)
   {
     if(m_pCurrentPayee)
     {
+      qDebug("XMLREADER:  Adding Payee to the list of Payees, name = %s", m_pCurrentPayee->name().data());
       m_pStorage->addPayee(*m_pCurrentPayee);
       delete m_pCurrentPayee;
       m_pCurrentPayee = NULL;
@@ -324,10 +350,10 @@ void MyMoneyStorageXML::on_end_element(const std::string &n)
 
 void MyMoneyStorageXML::on_characters(const std::string &s)
 {
-  qDebug("XMLREADER:  Character data = %s", s.data());
-  qDebug("   length = %d", s.size());
+  //qDebug("XMLREADER:  Character data = %s", s.data());
+  //qDebug("   length = %d", s.size());
 
-  if(m_pStorage)
+  /*if(m_pStorage)
   {
     const QString strData(s.data());
 
@@ -354,7 +380,7 @@ void MyMoneyStorageXML::on_characters(const std::string &s)
         m_pStorage->setUserTelephone(strData);
       }
     }
-  }
+  } */
 }
 
 void MyMoneyStorageXML::on_comment(const std::string &s)

@@ -38,8 +38,6 @@ class QIODevice;
 
 #include "imymoneyserialize.h"
 #include "imymoneystorageformat.h"
-//#include "mymoneyxmlparser.h"
-//#include "mymoneystoragexmlcallback.h"
 
 typedef enum {
     PARSE_NEXTIDS,
@@ -54,52 +52,11 @@ typedef enum {
     PARSE_STATE_UNKNOWN
   }eParseState;
 
-typedef enum {
-    ADDRESS_STREET,
-    ADDRESS_CITY,
-    ADDRESS_STATE,
-    ADDRESS_ZIPCODE,
-    ADDRESS_COUNTY,
-    ADDRESS_COUNTRY,
-    ADDRESS_TELEPHONE
-  }eAddressParseState;
-
-typedef enum {
-    ACCOUNT_TYPE,
-    ACCOUNT_NAME,
-    ACCOUNT_DESCRIPTION,
-    ACCOUNT_INSTITUTION,
-    ACCOUNT_NUMBER,
-    ACCOUNT_OPENED,
-    ACCOUNT_OPENINGBALANCE,
-    ACCOUNT_LASTMODIFIED,
-    ACCOUNT_LASTRECONCILED,
-    ACCOUNT_TRANSACTIONS
-  }eAccountParseState;
-
-typedef enum {
-    TX_MEMO,
-    TX_ENTRYDATE,
-    TX_POSTDATE,
-    TX_SPLITS
-  }eTxParseState;
-
-typedef enum {
-    SPLIT_ACCOUNT,
-    SPLIT_ACTION,
-    SPLIT_MEMO,
-    SPLIT_PAYEE,
-    SPLIT_VALUE,
-    SPLIT_RECONCILE
-  }eSplitParseState;
-
 using namespace xmlpp;
 
 /**
   *@author Kevin Tambascio (ktambascio@yahoo.com)
   */
-
-                            
 class MyMoneyStorageXML : public IMyMoneyStorageFormat, public xmlpp::SaxParser
 {
 public: 
@@ -129,13 +86,11 @@ private:
   std::string         getPropertyValue(std::string str, const Element::AttributeMap& p);
   eParseState         m_parseState;
   eParseState         m_previousParseState;
-  eAddressParseState  m_addressParseState;
-  eAccountParseState  m_accountParseState;
-  eTxParseState       m_txParseState;
   eParseState         getCurrentParseState() const { return m_parseState; }
   void                parseNextIDS(const std::string &n, const Element::AttributeMap& p);
   MyMoneyInstitution* m_pCurrentInstitution;
   MyMoneyPayee*       m_pCurrentPayee;
+  MyMoneyAccount*     m_pCurrentAccount;
   
   /**
     * This method returns the version of the underlying file. It
@@ -159,13 +114,6 @@ private:
 
 
 private:
-  //MyMoneyXMLParser *m_parser;
-  //MyMoneyStorageXMLCallback* m_callback;
-  /**
-    * Instantiates the XML parser if it hasn't been created already.
-    */
-  bool CreateXMLParser();
-
   /**
     * This member is used to store the file version information
     * obtained while reading a file.
