@@ -37,7 +37,9 @@
 #include <klocale.h>
 #include <kconfig.h>
 #include <kmessagebox.h>
-#include <klistview.h>
+#include <kpushbutton.h>
+#include <kiconloader.h>
+#include <kguiitem.h>
 
 #if QT_VERSION > 300
 #include <kstandarddirs.h>
@@ -53,16 +55,56 @@
 #include "../mymoney/mymoneyfile.h"
 #include "../kmymoneyutils.h"
 
+KPayeeListItem::KPayeeListItem(KListView *parent, const MyMoneyPayee& payee) :
+  KListViewItem(parent)
+{
+  m_suspendUpdate = false;
+  setPayeeID(payee.id());
+  MyMoneyFile::instance()->attach(payee.id(), this);
+  setText(0, payee.name());
+  // allow in column rename
+  setRenameEnabled(0, true);
+}
+
+KPayeeListItem::~KPayeeListItem()
+{
+  MyMoneyFile::instance()->detach(payeeID(), this);
+}
+
+void KPayeeListItem::paintCell(QPainter *p, const QColorGroup & cg, int column, int width, int align)
+{
+  p->setFont(KMyMoneyUtils::cellFont());
+
+  QColor colour = KMyMoneyUtils::listColour();
+  QColor bgColour = KMyMoneyUtils::backgroundColour();
+
+  QColorGroup cg2(cg);
+
+  if (isAlternate())
+    cg2.setColor(QColorGroup::Base, colour);
+  else
+    cg2.setColor(QColorGroup::Base, bgColour);
+
+  QListViewItem::paintCell(p, cg2, column, width, align);
+}
+
+void KPayeeListItem::update(const QCString& /* id */)
+{
+  if(listView()->selectedItem() == this) {
+    // since we are the current selected item, we have
+    // to unselect ourselves and reselect afterwards
+    // in order to force QListView to send out signals.
+    // The actual update is performed via
+    // KPayeesView::slotSelectPayee(QListViewItem*)
+    listView()->setSelected(this, false);
+    listView()->setSelected(this, true);
+  }
+}
+
 KPayeesView::KPayeesView(QWidget *parent, const char *name )
   : KPayeesViewDecl(parent,name),
     m_suspendUpdate(false)
 {
-//  QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_payees.png");
-//  QPixmap *pm = new QPixmap(filename);
-//  m_qpixmaplabel->setPixmap(*pm);
-
-  readConfig();
-
   m_transactionView->setSorting(-1);
   m_transactionView->setAllColumnsShowFocus(true);
   m_transactionView->setColumnWidthMode(2, QListView::Manual);
@@ -70,27 +112,53 @@ KPayeesView::KPayeesView(QWidget *parent, const char *name )
   // never show horizontal scroll bars
   m_transactionView->setHScrollBarMode(QScrollView::AlwaysOff);
 
-  connect(payeeCombo, SIGNAL(activated(const QString&)), this, SLOT(payeeHighlighted(const QString&)));
-  connect(addButton, SIGNAL(clicked()), this, SLOT(slotAddClicked()));
-  connect(payeeEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotPayeeTextChanged(const QString&)));
-  connect(updateButton, SIGNAL(clicked()), this, SLOT(slotUpdateClicked()));
-  connect(deleteButton, SIGNAL(clicked()), this, SLOT(slotDeleteClicked()));
+  m_payeesList->addColumn(i18n("Name"));
+  connect(m_payeesList, SIGNAL(selectionChanged(QListViewItem*)), this, SLOT(slotSelectPayee(QListViewItem*)));
+  connect(m_payeesList, SIGNAL(itemRenamed(QListViewItem*,int,const QString&)), this, SLOT(slotRenamePayee(QListViewItem*,int,const QString&)));
+
+  connect(addressEdit, SIGNAL(textChanged()), this, SLOT(slotPayeeDataChanged()));
+  connect(postcodeEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotPayeeDataChanged()));
+  connect(telephoneEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotPayeeDataChanged()));
+  connect(emailEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotPayeeDataChanged()));
+  connect(m_updateButton, SIGNAL(pressed()), this, SLOT(slotUpdatePayee()));
+
+  // somehow, the rightButtonClicked signal does not make it, we use
+  // rightButtonPressed instead to show the context menu
+  // connect(accountListView, SIGNAL(rightButtonClicked(QListViewItem* , const QPoint&, int)),
+  //   this, SLOT(slotListRightMouse(QListViewItem*, const QPoint&, int)));
+  connect(m_payeesList, SIGNAL(rightButtonPressed(QListViewItem* , const QPoint&, int)),
+    this, SLOT(slotListRightMouse(QListViewItem*, const QPoint&, int)));
 
   connect(m_transactionView, SIGNAL(doubleClicked(QListViewItem*)),
           this, SLOT(slotTransactionDoubleClicked(QListViewItem*)));
 
-  MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassPayee, this);
+  m_updateButton->setEnabled(false);
+
+  KIconLoader* il = KGlobal::iconLoader();
+  KGuiItem updateButtenItem( i18n("&Update" ),
+                    QIconSet(il->loadIcon("button_ok", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Accepts the entered data and stores it"),
+                    i18n("Use this to accept the modified data."));
+  m_updateButton->setGuiItem(updateButtenItem);
+
+  m_contextMenu = new KPopupMenu(this);
+  m_contextMenu->insertTitle(i18n("Payee Options"));
+  m_contextMenu->insertItem(il->loadIcon("edit", KIcon::Small), i18n("New payee..."), this, SLOT(slotAddPayee()));
+  m_contextMenu->insertItem(il->loadIcon("delete", KIcon::Small),
+                        i18n("Delete payee ..."),
+                        this, SLOT(slotDeletePayee()));
   
+  MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassPayeeSet, this);
 }
 
 KPayeesView::~KPayeesView()
 {
-  MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassPayee, this);
+  MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassPayeeSet, this);
 
   writeConfig();
 }
 
-void KPayeesView::update(const QCString & /* id */)
+void KPayeesView::update(const QCString & id)
 {
   if(m_suspendUpdate == false)
     slotRefreshView();
@@ -106,15 +174,27 @@ void KPayeesView::suspendUpdate(const bool suspend)
   m_suspendUpdate = suspend;
 }
 
-void KPayeesView::payeeHighlighted(const QString& text)
+void KPayeesView::slotRenamePayee(QListViewItem* /* p */, int /* col */, const QString& txt)
 {
+  m_newName = txt;
+  slotPayeeDataChanged();
+}
+
+void KPayeesView::slotSelectPayee(QListViewItem *p)
+{
+  KPayeeListItem* item = static_cast<KPayeeListItem *>(p);
+
+  if(m_updateButton->isEnabled()) {
+    if (KMessageBox::questionYesNo(this, i18n("Do you want to discard the changes for '%1'").arg(m_newName), i18n("Discard changes")) == KMessageBox::No) {
+      slotUpdatePayee();      
+    }
+  }
+  
   try {
     MyMoneyFile* file = MyMoneyFile::instance();
 
-    m_payee = file->payeeByName(text);
-    m_lastPayee = m_payee.name();
-
-    nameLabel->setText(m_payee.name());
+    m_payee = file->payee(item->payeeID());
+    m_newName = m_payee.name();
 
     addressEdit->setEnabled(true);
     addressEdit->setText(m_payee.address());
@@ -124,17 +204,16 @@ void KPayeesView::payeeHighlighted(const QString& text)
     telephoneEdit->setText(m_payee.telephone());
     emailEdit->setEnabled(true);
     emailEdit->setText(m_payee.email());
-    updateButton->setEnabled(true);
-    deleteButton->setEnabled(true);
+
+    slotPayeeDataChanged();
 
     showTransactions();
     writeConfig();
+    
   } catch(MyMoneyException *e) {
     qDebug("exception during display of payee: %s at %s:%ld", e->what().latin1(), e->file().latin1(), e->line());
     m_transactionView->clear();
     m_payee = MyMoneyPayee();
-    updateButton->setEnabled(false);
-    deleteButton->setEnabled(false);
     delete e;
   }
 }
@@ -243,34 +322,6 @@ void KPayeesView::showTransactions(void)
     }
     item->setText(2, txt);
     item->setText(3, s.value().formatMoney());
-/*
-    QValueList<MyMoneySplit> list = t->splits();
-    QValueList<MyMoneySplit>::Iterator it_s;
-    for(it_s = list.begin(); it_s != list.end(); ++it_s) {
-      if((*it_s).payeeId() == m_payee.id()) {
-        item = new KTransactionListItem(m_transactionView, item, (*it_s).accountId(), t->id());
-        item->setText(0, (*it_s).number());
-        item->setText(1, KGlobal::locale()->formatDate(t->postDate(), true));
-
-        QString txt;
-        if((*it_s).action() == MyMoneySplit::ActionTransfer) {
-          MyMoneyAccount acc = file->account((*it_s).accountId());
-          if((*it_s).value() >= 0) {
-            txt = i18n("Transfer to %1").arg(acc.name());
-          } else {
-            txt = i18n("Transfer from %1").arg(acc.name());
-          }
-        } else if(t->splitCount() > 2) {
-          txt = i18n("Splitted transaction");
-        } else {
-          MyMoneySplit s = t->splitByAccount((*it_s).accountId(), false);
-          txt = MyMoneyFile::instance()->accountToCategory(s.accountId());
-        }
-        item->setText(2, txt);
-        item->setText(3, (*it_s).value().formatMoney());
-      }
-    }
-*/
   }
   m_balanceLabel->setText(i18n("Balance: %1").arg(balance.formatMoney()));
 
@@ -283,79 +334,80 @@ void KPayeesView::showTransactions(void)
   QTimer::singleShot(50, this, SLOT(rearrange()));
 }
 
-void KPayeesView::slotAddClicked()
+void KPayeesView::slotAddPayee()
 {
   try {
     MyMoneyPayee p;
-
-    p = MyMoneyFile::instance()->payeeByName(payeeEdit->text());
-    KMessageBox::detailedSorry(0, i18n("Unable to add payee with same name"),
-      i18n("Payee already exists"));
-
+    p.setName(i18n("New Payee"));
+    MyMoneyFile::instance()->addPayee(p);
+    // the callbacks should have made sure, that the payees view has been
+    // updated already. So we search for the id in the list of items
+    // and select it.
+    slotSelectPayeeAndTransaction(p.id(), QCString(), QCString());
   } catch (MyMoneyException *e) {
-    m_payee = MyMoneyPayee();
+    KMessageBox::detailedSorry(0, i18n("Unable to add payee"),
+      (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+    delete e;
+  }
+}
 
-    try {
-      m_payee.setName(payeeEdit->text());
-      m_lastPayee = m_payee.name();
-      MyMoneyFile::instance()->addPayee(m_payee);
-      payeeEdit->setText(QString());
+void KPayeesView::slotPayeeDataChanged(void)
+{
+  bool rc = false;
+
+  rc |= ((m_payee.email().isEmpty() != emailEdit->text().isEmpty())
+      || (!emailEdit->text().isEmpty() && m_payee.email() != emailEdit->text()));
+  rc |= ((m_payee.address().isEmpty() != addressEdit->text().isEmpty())
+      || (!addressEdit->text().isEmpty() && m_payee.address() != addressEdit->text()));
+  rc |= ((m_payee.postcode().isEmpty() != postcodeEdit->text().isEmpty())
+      || (!postcodeEdit->text().isEmpty() && m_payee.postcode() != postcodeEdit->text()));
+  rc |= ((m_payee.telephone().isEmpty() != telephoneEdit->text().isEmpty())
+      || (!telephoneEdit->text().isEmpty() && m_payee.telephone() != telephoneEdit->text()));
+  rc |= ((m_payee.name().isEmpty() != m_newName.isEmpty())
+      || (!m_newName.isEmpty() && m_payee.name() != m_newName));
       
+  m_updateButton->setEnabled(rc);
+}
+
+void KPayeesView::slotUpdatePayee()
+{
+  if(m_updateButton->isEnabled()) {
+    try {
+      m_payee.setName(m_newName);
+      m_payee.setAddress(addressEdit->text());
+      m_payee.setPostcode(postcodeEdit->text());
+      m_payee.setTelephone(telephoneEdit->text());
+      m_payee.setEmail(emailEdit->text());
+
+      MyMoneyFile::instance()->modifyPayee(m_payee);
+
     } catch(MyMoneyException *e) {
-      KMessageBox::detailedSorry(0, i18n("Unable to add payee"),
+      KMessageBox::detailedSorry(0, i18n("Unable to modify payee"),
         (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
       delete e;
-
-      // Keep the old payee
-      m_lastPayee = payeeCombo->currentText();
     }
+    m_updateButton->setEnabled(false);
   }
 }
 
-void KPayeesView::slotPayeeTextChanged(const QString& text)
+void KPayeesView::slotDeletePayee()
 {
-  if (text.isEmpty())
-    addButton->setEnabled(false);
-  else
-    addButton->setEnabled(true);
-}
+  KPayeeListItem* item = static_cast<KPayeeListItem*>(m_payeesList->selectedItem());
+  if(item) {
+    QString prompt(i18n("Do you really want to remove this payee: "));
+    prompt += item->text(0);
 
-void KPayeesView::slotUpdateClicked()
-{
-  try {
-    m_payee.setName(nameLabel->text());
-    m_payee.setAddress(addressEdit->text());
-    m_payee.setPostcode(postcodeEdit->text());
-    m_payee.setTelephone(telephoneEdit->text());
-    m_payee.setEmail(emailEdit->text());
+    if (KMessageBox::questionYesNo(this, prompt, i18n("Remove Payee"))==KMessageBox::No)
+      return;
 
-    MyMoneyFile::instance()->modifyPayee(m_payee);
+    try {
+      MyMoneyFile::instance()->removePayee(m_payee);
 
-  } catch(MyMoneyException *e) {
-    KMessageBox::detailedSorry(0, i18n("Unable to modify payee"),
-      (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
-    delete e;
-  }
-}
-
-void KPayeesView::slotDeleteClicked()
-{
-  QString prompt(i18n("Remove this payee: "));
-  prompt += nameLabel->text();
-
-  if (KMessageBox::questionYesNo(this, prompt, i18n("Remove Payee"))==KMessageBox::No)
-    return;
-
-  try {
-    MyMoneyPayee payee = m_payee;
-    m_payee = MyMoneyPayee();
-    m_lastPayee = "";
-    MyMoneyFile::instance()->removePayee(payee);
-
-  } catch(MyMoneyException *e) {
-    KMessageBox::detailedSorry(0, i18n("Unable to remove payee"),
-      (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
-    delete e;
+    } catch(MyMoneyException *e) {
+      KMessageBox::detailedSorry(0, i18n("Unable to remove payee"),
+        (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+      delete e;
+    }
   }
 }
 
@@ -375,57 +427,53 @@ void KPayeesView::readConfig(void)
 
 void KPayeesView::writeConfig(void)
 {
+/*
   KConfig *config = KGlobal::config();
   config->setGroup("Last Use Settings");
   config->writeEntry("KPayeesView_LastPayee", m_lastPayee);
   config->sync();
+*/
 }
 
 void KPayeesView::show()
 {
-  slotRefreshView();
+  QTimer::singleShot(50, this, SLOT(rearrange()));
   emit signalViewActivated();
   QWidget::show();
 }
 
 void KPayeesView::slotReloadView(void)
 {
-  KConfig *config = KGlobal::config();
-  config->setGroup("Last Use Settings");
-  m_lastPayee = config->readEntry("KPayeesView_LastPayee");
   slotRefreshView();
+  rearrange();
 }
 
 void KPayeesView::slotRefreshView(void)
 {
-  bool found = false;
+  QCString id;
 
   readConfig();
-  
-  payeeCombo->clear();
 
   QValueList<MyMoneyPayee>list = MyMoneyFile::instance()->payeeList();
   QValueList<MyMoneyPayee>::ConstIterator it;
-  QStringList payees;
+
+  KPayeeListItem *currentItem = static_cast<KPayeeListItem *>(m_payeesList->selectedItem());
+  if(currentItem)
+    id = currentItem->payeeID();
+
+  m_payeesList->clear();
+  m_transactionView->clear();
+  currentItem = 0;
 
   for (it = list.begin(); it != list.end(); ++it) {
-    payees += (*it).name();
-    if(m_lastPayee.length() == 0)
-      m_lastPayee = (*it).name();
-    if((*it).name() == m_lastPayee) {
-      m_payee = *it;
-      found = true;
-    }
+    KPayeeListItem* item = new KPayeeListItem(m_payeesList, *it);
+    if(item->payeeID() == id)
+      currentItem = item;
   }
-  payees.sort();
 
-  payeeCombo->insertStringList(payees);
-
-  if(found == true) {
-    payeeCombo->setCurrentText(m_lastPayee);
-    payeeHighlighted(payeeCombo->currentText());
-  } else
-    payeeHighlighted("");
+  if(currentItem) {
+    slotSelectPayee(currentItem);
+  }
 }
 
 void KPayeesView::rearrange(void)
@@ -445,6 +493,7 @@ void KPayeesView::resizeEvent(QResizeEvent* ev)
     m_transactionView->visibleWidth(),
     m_transactionView->contentsHeight());
 
+  m_payeesList->setColumnWidth(0, m_payeesList->visibleWidth());
   KPayeesViewDecl::resizeEvent(ev);
 }
 
@@ -457,30 +506,48 @@ void KPayeesView::slotTransactionDoubleClicked(QListViewItem* i)
 
 void KPayeesView::slotSelectPayeeAndTransaction(const QCString& payeeId, const QCString& accountId, const QCString& transactionId)
 {
-  MyMoneyFile* file = MyMoneyFile::instance();
-  MyMoneyPayee payee;
-
   try {
-    payee = file->payee(payeeId);
-    m_lastPayee = payee.name();
-    slotRefreshView();
-
-    KTransactionListItem* item = static_cast<KTransactionListItem*> (m_transactionView->firstChild());
-    while(item != 0) {
-      if(item->accountID() == accountId && item->transactionId() == transactionId)
+    // find the payee in the list
+    QListViewItem* it;
+    for(it = m_payeesList->firstChild(); it; it = it->itemBelow()) {
+      KPayeeListItem* item = static_cast<KPayeeListItem *>(it);
+      if(item->payeeID() == payeeId) {
+        if(it->itemAbove())
+          m_payeesList->ensureItemVisible(it->itemAbove());
+        if(it->itemBelow())
+          m_payeesList->ensureItemVisible(it->itemBelow());
+        
+        m_payeesList->setCurrentItem(it);
+        m_payeesList->ensureItemVisible(it);
+        
+        KTransactionListItem* item = static_cast<KTransactionListItem*> (m_transactionView->firstChild());
+        while(item != 0) {
+          if(item->accountID() == accountId && item->transactionId() == transactionId)
+            break;
+          item = static_cast<KTransactionListItem*> (item->nextSibling());
+        }
+        if(!item) {
+          item = static_cast<KTransactionListItem*> (m_transactionView->firstChild());
+        }
+        if(item) {
+          m_transactionView->setSelected(item, true);
+          m_transactionView->ensureItemVisible(item);
+        }
+        // quit out of for() loop
         break;
-      item = static_cast<KTransactionListItem*> (item->nextSibling());
+      }
     }
-    if(!item) {
-      item = static_cast<KTransactionListItem*> (m_transactionView->firstChild());
-    }
-    if(item) {
-      m_transactionView->setSelected(item, true);
-      m_transactionView->ensureItemVisible(item);
-    }
+
   } catch(MyMoneyException *e) {
     qWarning("Unexpected exception in KPayeesView::slotSelectPayeeAndTransaction");
     delete e;
   }
+}
+
+void KPayeesView::slotListRightMouse(QListViewItem* it, const QPoint& /* p */, int /* col */)
+{
+  // Don't enable delete when no payee is selected
+  m_contextMenu->setItemEnabled(m_contextMenu->idAt(2), it != 0);
+  m_contextMenu->exec(QCursor::pos());
 }
 

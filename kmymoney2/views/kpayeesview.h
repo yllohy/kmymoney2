@@ -31,6 +31,9 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 
+#include <klistview.h>
+#include <kpopupmenu.h>
+
 // ----------------------------------------------------------------------------
 // Project Includes
 
@@ -42,6 +45,79 @@
 /**
   *@author Michael Edwardes
   */
+
+/**
+  * This class is a base class that maintains payee information
+  * for the KPayeesListItem.
+  */
+class KPayeeItem
+{
+public:
+  KPayeeItem() {} ;
+  virtual ~KPayeeItem() {};
+
+  /**
+    * This method allows to set the payees id.
+    *
+    * @param id payee id to be stored in m_payeeID;
+    */
+  void setPayeeID(const QCString& id) { m_payeeID = id; };
+
+  /**
+    * This method returns the payee's id for this object
+    *
+    * @return const QCString of the Id
+    */
+  const QCString payeeID(void) const { return m_payeeID; };
+
+private:
+  QCString    m_payeeID;
+};
+
+
+/**
+  * This class represents an item in the account list view. It is used
+  * by the KPayeesView to select between the payees.
+  */
+class KPayeeListItem : public KListViewItem, public KPayeeItem, MyMoneyObserver
+{
+public:
+  /**
+    * Constructor to be used to construct a payee entry object.
+    *
+    * @param parent pointer to the KListView object this entry should be
+    *               added to.
+    * @param institution const reference to MyMoneyPayee for which
+    *               the KListView entry is constructed
+    */
+  KPayeeListItem(KListView *parent, const MyMoneyPayee& payee);
+  ~KPayeeListItem();
+
+  /**
+    * This method is re-implemented from QListViewItem::paintCell().
+    * Besides the standard implementation, the QPainter is set
+    * according to the applications settings.
+    */
+  void paintCell(QPainter *p, const QColorGroup & cg, int column, int width, int align);
+
+  //void paintFocus(QPainter *p, const QColorGroup & cg, const QRect& rect);
+
+  /**
+    * This method is called by the MyMoneyFile object, whenever the
+    * payee that is represented by this object changes within the
+    * MyMoneyFile engine.
+    *
+    * @param id reference to QCString of the payee's id
+    */
+  void update(const QCString& id);
+
+  /**
+    */
+  void suspendUpdate(const bool suspend) { m_suspendUpdate = suspend; };
+
+private:
+  bool    m_suspendUpdate;
+};
 
 class KPayeesView : public KPayeesViewDecl, MyMoneyObserver
 {
@@ -86,16 +162,27 @@ protected slots:
     */
   void showTransactions(void);
 
-  void payeeHighlighted(const QString&);
-  void slotAddClicked();
-  void slotPayeeTextChanged(const QString& text);
-  void slotUpdateClicked();
-  void slotDeleteClicked();
+  void slotSelectPayee(QListViewItem*);
+  void slotAddPayee();
+  void slotDeletePayee();
+  
+  /**
+    * This slot marks the current selected payee as modified (dirty).
+    */
+  void slotPayeeDataChanged();
+  void slotRenamePayee(QListViewItem *p, int col, const QString& txt);
+  void slotUpdatePayee();
 
   void slotTransactionDoubleClicked(QListViewItem *);
 
 private slots:
   void rearrange(void);
+
+  /**
+    * This slot receives the signal from the listview control that an item was right-clicked,
+    * Pass this signal along to the main view to display the RMB menu.
+    */
+  void slotListRightMouse(QListViewItem* item, const QPoint& point, int);
 
 private:
   void readConfig(void);
@@ -107,7 +194,7 @@ signals:
 
 private:
   MyMoneyPayee m_payee;
-  QString m_lastPayee;
+  QString      m_newName;
 
   /**
     * This member holds a list of all transactions
@@ -127,6 +214,7 @@ private:
     */
   bool m_suspendUpdate;
 
+  KPopupMenu*   m_contextMenu;
 };
 
 #endif
