@@ -16,7 +16,7 @@
 #include <kmessagebox.h>
 #include <kglobal.h>
 #include <klocale.h>
-#include <kstddirs.h>
+#include <kstandarddirs.h>
 
 #include "kreconciledlg.h"
 #include "kreconcilelistitem.h"

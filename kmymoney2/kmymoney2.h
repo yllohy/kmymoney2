@@ -21,7 +21,7 @@
 #endif
 
 // include files for KDE
-#include <kapp.h>
+#include <kapplication.h>
 #include <kmainwindow.h>
 #include <kaccel.h>
 #include <kaction.h>
@@ -52,7 +52,7 @@
   * @see KMyMoneyView
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: kmymoney2.h,v 1.14 2002/02/09 18:16:58 mte Exp $
+  * $Id: kmymoney2.h,v 1.15 2002/02/14 01:48:13 mte Exp $
   *
   * @short Main application class.
 **/

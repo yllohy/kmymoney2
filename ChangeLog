@@ -1,3 +1,6 @@
+2002-02-14 Michael Edwardes <mte@users.sourceforge.net>
+  * Made the source fully KDE3 compatable.
+
 2002-02-13 Michael Edwardes <mte@users.sourceforge.net>
   * Updated KDE 3 support to current KDE 3 cvs.
 

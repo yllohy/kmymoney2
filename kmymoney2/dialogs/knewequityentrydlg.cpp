@@ -22,7 +22,7 @@
 
 #include <kglobal.h>
 #include <klocale.h>
-#include <kstddirs.h>
+#include <kstandarddirs.h>
 #include <qpixmap.h>
 
 // ----------------------------------------------------------------------------

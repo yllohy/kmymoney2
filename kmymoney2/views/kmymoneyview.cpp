@@ -15,7 +15,7 @@
  ***************************************************************************/
 #include <kfiledialog.h>
 #include <kglobal.h>
-#include <kstddirs.h>
+#include <kstandarddirs.h>
 #include <kmessagebox.h>
 #include <qlabel.h>
 #include <qfile.h>

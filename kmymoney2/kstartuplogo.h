@@ -19,7 +19,7 @@
 
 #include <qwidget.h>
 #include <qframe.h>
-#include <kapp.h>
+#include <kapplication.h>
 
 // Simple class that just shows a picture
 class KStartupLogo : public QFrame  {

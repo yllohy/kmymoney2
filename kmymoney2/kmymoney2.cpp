@@ -29,7 +29,7 @@
 #include <kconfig.h>
 #include <kstdaction.h>
 #include <kglobal.h>
-#include <kstddirs.h>
+#include <kstandarddirs.h>
 #include <kkeydialog.h>
 
 #include <stdio.h>
@@ -127,6 +127,7 @@ void KMyMoney2App::initActions()
   viewToolBar = KStdAction::showToolbar(this, SLOT(slotViewToolBar()), actionCollection());
   viewStatusBar = KStdAction::showStatusbar(this, SLOT(slotViewStatusBar()), actionCollection());
 
+#if QT_VERSION < 300
   fileNew->setStatusText(i18n("Creates a new document"));
   fileNewWindow->setStatusText(i18n("Creates a new window"));
   fileOpen->setStatusText(i18n("Opens an existing document"));
@@ -147,14 +148,23 @@ void KMyMoney2App::initActions()
   viewToolBar->setStatusText(i18n("Enables/disables the toolbar"));
   viewStatusBar->setStatusText(i18n("Enables/disables the statusbar"));
 
+  fileViewInfo->setStatusText(i18n("View information about the file"));
+  filePersonalData->setStatusText(i18n("Lets you view/edit your personal data"));
+  fileBackup->setStatusText(i18n("Lets you backup your file to a removeable drive"));
+  categoriesEdit->setStatusText(i18n("Edit and create categories or sub-categories"));
+  categoriesPayees->setStatusText(i18n("View and edit Payees"));
+  bankAdd->setStatusText(i18n("Lets you create a new institution"));
+  accountOpen->setStatusText(i18n("View the account register"));
+  accountAdd->setStatusText(i18n("Lets you create a new account"));
+  accountReconcile->setStatusText(i18n("Balance your account"));
+  accountFind->setStatusText(i18n("Find transactions"));
+  accountImport->setStatusText(i18n("Import transactions"));
+  accountExport->setStatusText(i18n("Export transactions"));
+#endif
   // Additions to the file menu
   fileViewInfo = new KAction(i18n("View Info..."), "view_info", 0, this, SLOT(slotFileFileInfo()), actionCollection(), "file_view_info");
-  fileViewInfo->setStatusText(i18n("View information about the file"));
   filePersonalData = new KAction(i18n("Personal Data..."), "personal_data", 0, this, SLOT(slotFileViewPersonal()), actionCollection(), "file_personal_data");
-  filePersonalData->setStatusText(i18n("Lets you view/edit your personal data"));
   fileBackup = new KAction(i18n("Backup..."), "backup",0,this,SLOT(slotFileBackup()),actionCollection(),"file_backup");
-  fileBackup->setStatusText(i18n("Lets you backup your file to a removeable drive"));
-
 
   // The Settings Menu
 	settingsKey = KStdAction::keyBindings(this, SLOT(slotKeySettings()), actionCollection());
@@ -162,27 +172,18 @@ void KMyMoney2App::initActions()
 
   // The Categories Menu
   categoriesEdit = new KAction(i18n("Edit Categories..."), "categories", 0, this, SLOT(slotCategoriesEdit()), actionCollection(), "categories_edit");
-  categoriesEdit->setStatusText(i18n("Edit and create categories or sub-categories"));
   categoriesPayees = new KAction(i18n("Edit Payees..."), "pay_edit", 0, this, SLOT(slotCategoriesPayees()), actionCollection(), "categories_payees");
-  categoriesPayees->setStatusText(i18n("View and edit Payees"));
 
   // The Bank Menu
   bankAdd = new KAction(i18n("Add new institution..."), "bank", 0, this, SLOT(slotBankAdd()), actionCollection(), "bank_add");
-  bankAdd->setStatusText(i18n("Lets you create a new institution"));
 
   // The Account Menu
   accountOpen = new KAction(i18n("Open account register..."), "account_open", 0, this, SLOT(slotAccountOpen()), actionCollection(), "account_open");
-  accountOpen->setStatusText(i18n("View the account register"));
   accountAdd = new KAction(i18n("Add new account..."), "account"/*QIconSet(QPixmap(KGlobal::dirs()->findResource("appdata", "toolbar/kmymoney_newacc.xpm")))*/, 0, this, SLOT(slotAccountAdd()), actionCollection(), "account_add");
-  accountAdd->setStatusText(i18n("Lets you create a new account"));
   accountReconcile = new KAction(i18n("Reconcile account..."), "reconcile", 0, this, SLOT(slotAccountReconcile()), actionCollection(), "account_reconcile");
-  accountReconcile->setStatusText(i18n("Balance your account"));
   accountFind = new KAction(i18n("Find transaction..."), "transaction_find", 0, this, SLOT(slotAccountFind()), actionCollection(), "account_find");
-  accountFind->setStatusText(i18n("Find transactions"));
   accountImport = new KAction(i18n("Import transactions..."), "transaction_import", 0, this, SLOT(slotAccountImport()), actionCollection(), "account_import");
-  accountImport->setStatusText(i18n("Import transactions"));
   accountExport = new KAction(i18n("Export transactions..."), "transaction_export", 0, this, SLOT(slotAccountExport()), actionCollection(), "account_export");
-  accountExport->setStatusText(i18n("Export transactions"));
 
   // The Bill Menu
 /* Future

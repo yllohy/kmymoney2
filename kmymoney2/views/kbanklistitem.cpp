@@ -16,7 +16,7 @@
 #include <kglobal.h>
 #include <kconfig.h>
 #include <klocale.h>
-#include <kstddirs.h>
+#include <kstandarddirs.h>
 #include <qpixmap.h>
 #include <qcolor.h>
 

@@ -22,7 +22,7 @@
 #include <qtextview.h>
 #include <qlabel.h>
 
-#include <kstddirs.h>
+#include <kstandarddirs.h>
 #include <kiconloader.h>
 #include <kconfig.h>
 #include <kglobalsettings.h>

@@ -17,7 +17,7 @@
 #include "kstartuplogo.h"
 
 #include <kglobal.h>
-#include <kstddirs.h>
+#include <kstandarddirs.h>
 #include <qpixmap.h>
 #include <qtimer.h>
 

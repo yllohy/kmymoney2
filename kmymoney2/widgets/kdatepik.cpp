@@ -26,7 +26,7 @@
 
 #include "kdatepik.h"
 #include <kglobal.h>
-#include <kapp.h>
+#include <kapplication.h>
 #include <klocale.h>
 #include <kiconloader.h>
 #include <qframe.h>
