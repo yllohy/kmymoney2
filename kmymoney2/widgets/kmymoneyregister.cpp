@@ -78,7 +78,7 @@ void kMyMoneyRegister::setTransactionCount(const int r, const bool setTransactio
   if(setTransaction) {
     setCurrentTransactionIndex(r);
   }
-  
+
   // add or remove scrollbars as required
   updateScrollBars();
 }
@@ -96,7 +96,7 @@ void kMyMoneyRegister::readConfig(void)
   m_bgColor = KMyMoneyUtils::backgroundColour();
   m_gridColor = KMyMoneyUtils::gridColour();
   m_importColor = Qt::yellow;
-  
+
   QFont cellFont = KMyMoneyUtils::cellFont();
   m_headerFont = KMyMoneyUtils::headerFont();
   updateHeaders();
@@ -133,7 +133,7 @@ void kMyMoneyRegister::setTransactionRow(const int row)
     lastRow = (m_currentTransactionIndex * m_rpt) + maxRpt() - 1;
   else
     lastRow = (m_currentTransactionIndex * m_rpt) + m_rpt - 1;
-    
+
   m_transactionIndex = row/m_rpt;
   m_transactionRow = row%m_rpt;
 
@@ -150,7 +150,7 @@ void kMyMoneyRegister::setTransactionRow(const int row)
     qFatal("kMyMoneyRegister::setTransactionRow(): m_parent == 0 !  Use setParent() to set it up");
     exit(0);
   }
-  
+
   m_transaction = m_parent->transaction(m_transactionIndex);
   if(m_transaction != NULL) {
     m_split = m_transaction->splitById(m_transaction->splitId());
@@ -205,7 +205,7 @@ void kMyMoneyRegister::paintCell(QPainter *p, int row, int col, const QRect& r,
 
   // this should have been called by the caller already, but we never know
   setTransactionRow(row);
-  
+
   if(m_transaction != NULL) {
     if(m_transaction->value("Imported").lower() == "true") {
       m_cg.setColor(QColorGroup::Base, m_importColor);
@@ -225,7 +225,7 @@ void kMyMoneyRegister::paintCell(QPainter *p, int row, int col, const QRect& r,
   // p->setPen(m_textColor);
 
   /* new stuff */
-  
+
   const bool lastLine = m_ledgerLens && m_transactionIndex == m_currentTransactionIndex
                          ? m_transactionRow == maxRpt() - 1
                          : m_transactionRow == m_rpt-1;
@@ -253,8 +253,7 @@ void kMyMoneyRegister::paintCell(QPainter *p, int row, int col, const QRect& r,
 
   // QColor textColor(m_textColor);
   // if it's an erronous transaction, set it to error color (which toggles ;-)  )
-  if(m_transaction->splitCount() < 2
-  || m_transaction->splitSum() != 0) {
+  if(m_transaction->splitSum() != 0) {
     m_textColor = m_errorColor;
   }
   p->setPen(m_textColor);
@@ -264,7 +263,7 @@ void kMyMoneyRegister::paintCell(QPainter *p, int row, int col, const QRect& r,
     p->drawText(m_textRect, align, " ");
   else
     p->drawText(m_textRect, align, txt);
-  
+
   if(m_transactionIndex == m_currentDateIndex && m_transactionRow == 0) {
     p->setPen(m_gridColor);
     p->drawLine(m_cellRect.x(), 0, m_cellRect.width(), 0);
@@ -357,7 +356,7 @@ void kMyMoneyRegister::ensureTransactionVisible(void)
     next = curr + rpt() + maxRpt() - 1;
   else
     next = curr + rpt()*2 - 1;
-    
+
   int wt = contentsY();           // window top
   int wh = visibleHeight();       // window height
   int lt = prev * rowHeight(0);   // top of line above lens
@@ -386,7 +385,7 @@ bool kMyMoneyRegister::eventFilter(QObject* o, QEvent* e)
     if(m_ledgerLens)
       lines += maxRpt()-1;
     QCString transactionId;
-          
+
     rc = true;
     switch(k->key()) {
       case Qt::Key_Space:
@@ -401,7 +400,7 @@ bool kMyMoneyRegister::eventFilter(QObject* o, QEvent* e)
         while(lines-- > 0)
           emit signalPreviousTransaction();
         break;
-        
+
       case Qt::Key_PageDown:
         while(lines-- > 0)
           emit signalNextTransaction();
@@ -411,13 +410,13 @@ bool kMyMoneyRegister::eventFilter(QObject* o, QEvent* e)
       case Qt::Key_Home:
         transactionId = m_parent->transaction(0)->id();
         // tricky fall through here
-        
+
       case Qt::Key_End:
         emit signalSelectTransaction(transactionId);
         break;
-        
+
         break;
-                        
+
       case Qt::Key_Return:
       case Qt::Key_Enter:
         emit signalEnter();
