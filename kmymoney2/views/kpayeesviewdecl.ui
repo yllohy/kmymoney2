@@ -11,8 +11,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>601</width>
-            <height>512</height>
+            <width>596</width>
+            <height>495</height>
         </rect>
     </property>
     <property stdset="1">
@@ -28,92 +28,6 @@
             <name>spacing</name>
             <number>6</number>
         </property>
-        <widget>
-            <class>QLayoutWidget</class>
-            <property stdset="1">
-                <name>name</name>
-                <cstring>Layout12</cstring>
-            </property>
-            <hbox>
-                <property stdset="1">
-                    <name>margin</name>
-                    <number>0</number>
-                </property>
-                <property stdset="1">
-                    <name>spacing</name>
-                    <number>6</number>
-                </property>
-                <widget>
-                    <class>QLabel</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>m_qpixmaplabel</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>sizePolicy</name>
-                        <sizepolicy>
-                            <hsizetype>0</hsizetype>
-                            <vsizetype>0</vsizetype>
-                        </sizepolicy>
-                    </property>
-                    <property stdset="1">
-                        <name>minimumSize</name>
-                        <size>
-                            <width>200</width>
-                            <height>150</height>
-                        </size>
-                    </property>
-                    <property stdset="1">
-                        <name>text</name>
-                        <string>TextLabel1</string>
-                    </property>
-                </widget>
-                <widget>
-                    <class>QLabel</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>TextLabel1_2</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>text</name>
-                        <string>Select a payee from the choice box below or type in a new payee
-name.  The other details are optional and are there to provide useful
-information when viewing the payee details.</string>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget>
-            <class>Line</class>
-            <property stdset="1">
-                <name>name</name>
-                <cstring>Line1</cstring>
-            </property>
-            <property>
-                <name>frameShape</name>
-                <enum>HLine</enum>
-            </property>
-            <property stdset="1">
-                <name>frameShadow</name>
-                <enum>Raised</enum>
-            </property>
-            <property stdset="1">
-                <name>lineWidth</name>
-                <number>1</number>
-            </property>
-            <property stdset="1">
-                <name>midLineWidth</name>
-                <number>0</number>
-            </property>
-            <property stdset="1">
-                <name>orientation</name>
-                <enum>Horizontal</enum>
-            </property>
-            <property>
-                <name>frameShape</name>
-                <enum>HLine</enum>
-            </property>
-        </widget>
         <widget>
             <class>QLayoutWidget</class>
             <property stdset="1">

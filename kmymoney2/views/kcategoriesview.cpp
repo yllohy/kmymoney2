@@ -37,9 +37,9 @@
 KCategoriesView::KCategoriesView(MyMoneyFile *file, QWidget *parent, const char *name )
   : kCategoriesViewDecl(parent,name)
 {
-  QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_edit_categories.png");
-  QPixmap *pm = new QPixmap(filename);
-  m_qpixmaplabel->setPixmap(*pm);
+//  QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_edit_categories.png");
+//  QPixmap *pm = new QPixmap(filename);
+//  m_qpixmaplabel->setPixmap(*pm);
 
   m_file = file;
 	categoryListView->setRootIsDecorated(true);

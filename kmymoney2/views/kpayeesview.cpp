@@ -39,9 +39,9 @@
 KPayeesView::KPayeesView(MyMoneyFile *file, QWidget *parent, const char *name )
   : kPayeesViewDecl(parent,name)
 {
-  QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_payees.png");
-  QPixmap *pm = new QPixmap(filename);
-  m_qpixmaplabel->setPixmap(*pm);
+//  QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_payees.png");
+//  QPixmap *pm = new QPixmap(filename);
+//  m_qpixmaplabel->setPixmap(*pm);
 	m_file = file;
 
   readConfig();

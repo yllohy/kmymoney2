@@ -1,10 +1,13 @@
+2002-01-25 Michael Edwardes <mte@users.sourceforge.net>
+`* Removed the pics and text from the payees/categories view.
+
 2002-01-25 Kevin Tambascio <ktambascio@users.sourceforge.net>
   * Added account types in mymoneyaccount class.
   * Forgot to add loans and mortgage category in the dialog.
   * Made a few other changes to display the proper account type in the bankview listview.
 
 2002-01-25 Kevin Tambascio <ktambascio@users.sourceforge.net>
-  * Modified new account dialog for some of the new account types. 
+  * Modified new account dialog for some of the new account types.
 
 2002-01-24 Michael Edwardes <mte@users.sourceforge.net>
   * Added functionality to the categories view.
