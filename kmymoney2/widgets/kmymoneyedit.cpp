@@ -61,7 +61,7 @@ kMyMoneyEdit::~kMyMoneyEdit()
 
 MyMoneyMoney kMyMoneyEdit::getMoneyValue(void)
 {
-  MyMoneyMoney money(text().toDouble());
+  MyMoneyMoney money(text());
   return money;
 }
 
@@ -101,7 +101,7 @@ void kMyMoneyEdit::focusOutEvent(QFocusEvent *e)
       setText(s);
     }
   }
-  if(text().toDouble() != m_text.toDouble())
+  if(MyMoneyMoney(text()) != MyMoneyMoney(m_text))
     emit valueChanged(text());
 
   QLineEdit::focusOutEvent(e);
