@@ -126,10 +126,12 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
     typeCombo->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Cash));
     typeCombo->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::CreditCard));
     typeCombo->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Loan));
+/*
     typeCombo->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::CertificateDep));
     typeCombo->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Investment));
     typeCombo->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::MoneyMarket));
     typeCombo->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Currency));
+*/
     typeCombo->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Asset));
     typeCombo->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Liability));
 
@@ -152,6 +154,7 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
       case MyMoneyAccount::Loan:
         typeCombo->setCurrentItem(4);
         break;
+/*
       case MyMoneyAccount::CertificateDep:
         typeCombo->setCurrentItem(5);
         break;
@@ -164,11 +167,12 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
       case MyMoneyAccount::Currency:
         typeCombo->setCurrentItem(8);
         break;
+*/
       case MyMoneyAccount::Asset:
-        typeCombo->setCurrentItem(9);
+        typeCombo->setCurrentItem(5);
         break;
       case MyMoneyAccount::Liability:
-        typeCombo->setCurrentItem(10);
+        typeCombo->setCurrentItem(6);
         break;
     }
 

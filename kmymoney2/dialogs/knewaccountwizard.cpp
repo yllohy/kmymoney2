@@ -381,9 +381,11 @@ void KNewAccountWizard::loadAccountTypes(void)
   accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::CreditCard));
   accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Cash));
   accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Loan));
+/*
   accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Investment));
   accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::MoneyMarket));
   accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Currency));
+*/
   accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Asset));
   accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Liability));
 }
@@ -440,7 +442,6 @@ void KNewAccountWizard::slotAccountType(const QString& sel)
       "liabilities (e.g. xxxx)."
     );
     m_accountType = MyMoneyAccount::Liability;
-
   } else {
     txt += i18n("Explanation is not yet available! UnknownAccountType will be set");
     m_accountType = MyMoneyAccount::UnknownAccountType;
