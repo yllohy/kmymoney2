@@ -31,53 +31,19 @@ void MyMoneyScheduleTest::tearDown () {
 }
 
 void MyMoneyScheduleTest::testEmptyConstructor() {
-	MyMoneyFile *m_file = MyMoneyFile::instance();
-	m_file = MyMoneyFile::instance();
-  MyMoneySeqAccessMgr *storage = new MyMoneySeqAccessMgr;
-	m_file->attachStorage(storage);
-
-  MyMoneyInstitution institution;
-
-	institution.setName("institution1");
-	institution.setTown("town");
-	institution.setStreet("street");
-	institution.setPostcode("postcode");
-	institution.setTelephone("telephone");
-	institution.setManager("manager");
-	institution.setSortcode("sortcode");
-
-	QString id;
-
-	try {
-		m_file->addInstitution(institution);
-	} catch(MyMoneyException *e) {
-		CPPUNIT_FAIL("Unexpected exception");
-		delete e;
-	}
-
- 	MyMoneyAccount  a;
-	a.setAccountType(MyMoneyAccount::Checkings);
-	a.setName("Account1");
-	a.setInstitutionId(institution.id());
-
-	try {
-		MyMoneyAccount parent = m_file->asset();
-		m_file->addAccount(a, parent);
-    CPPUNIT_ASSERT(a.id() == "A000001");
-	} catch(MyMoneyException *e) {
-		delete e;
-		CPPUNIT_FAIL("Unexpected exception!");
-	}
-
-  CPPUNIT_ASSERT(m_file->asset().accountList().count() == 1);
-
-
-  MyMoneySchedule s;
+	MyMoneySchedule s;
 	
 	CPPUNIT_ASSERT(s.m_id == "");
 	CPPUNIT_ASSERT(s.m_occurence == MyMoneySchedule::OCCUR_ANY);
-
-	delete storage;
+	CPPUNIT_ASSERT(s.m_type == MyMoneySchedule::TYPE_ANY);
+	CPPUNIT_ASSERT(s.m_paymentType == MyMoneySchedule::STYPE_ANY);
+	CPPUNIT_ASSERT(s.m_fixed == false);
+	CPPUNIT_ASSERT(!s.m_startDate.isValid());
+	CPPUNIT_ASSERT(!s.m_endDate.isValid());
+	CPPUNIT_ASSERT(!s.m_lastPayment.isValid());
+	CPPUNIT_ASSERT(s.m_autoEnter == false);
+	CPPUNIT_ASSERT(s.m_name == "");
+	CPPUNIT_ASSERT(s.willEnd() == false);
 }
 
 void MyMoneyScheduleTest::testConstructor() {
@@ -86,7 +52,7 @@ void MyMoneyScheduleTest::testConstructor() {
 				MyMoneySchedule::OCCUR_WEEKLY,
 				MyMoneySchedule::STYPE_DIRECTDEBIT,
 				QDate::currentDate(),
-				false,
+				QDate(),
 				true,
 				true);
 
@@ -98,6 +64,8 @@ void MyMoneyScheduleTest::testConstructor() {
 	CPPUNIT_ASSERT(s.isFixed() == true);
 	CPPUNIT_ASSERT(s.autoEnter() == true);
 	CPPUNIT_ASSERT(s.name() == "A Name");
+	CPPUNIT_ASSERT(!s.m_endDate.isValid());
+	CPPUNIT_ASSERT(!s.m_lastPayment.isValid());
 }
 
 void MyMoneyScheduleTest::testSetFunctions() {
@@ -108,6 +76,10 @@ void MyMoneyScheduleTest::testSetFunctions() {
 	
 	s.setType(MyMoneySchedule::TYPE_BILL);
 	CPPUNIT_ASSERT(s.type() == MyMoneySchedule::TYPE_BILL);
+
+	s.setEndDate(QDate::currentDate());
+	CPPUNIT_ASSERT(s.endDate() == QDate::currentDate());
+	CPPUNIT_ASSERT(s.willEnd() == true);
 }
 
 void MyMoneyScheduleTest::testCopyConstructor() {
