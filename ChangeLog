@@ -1,5 +1,9 @@
 2001-12-11 Thomas Baumgart  <ipwizard@users.sourceforge.net>
   * fixed display of transaction view for large amount of transactions
+  * leave more room for scroll bar on the right side of transaction view
+    to avoid horizontal scroll bar
+  * fixed loading of payment method combo-box in transaction view
+  * added german date handling to QIF import
 
 2001-12-10 Thomas Baumgart  <ipwizard@users.sourceforge.net>
   * modified acinclude.m4.in to work with autoconf 2.50
