@@ -171,7 +171,7 @@ void KHomeView::showPayments(void)
   QValueList<MyMoneySchedule>::Iterator d_it;
   for (d_it=schedule.begin(); d_it!=schedule.end();)
   {
-    if ((*d_it).isFinished())
+    if ((*d_it).isFinished() || (*d_it).nextPayment((*d_it).lastPayment()) == QDate())
     {
       d_it = schedule.remove(d_it);
       continue;
@@ -181,7 +181,7 @@ void KHomeView::showPayments(void)
 
   for (d_it=overdues.begin(); d_it!=overdues.end();)
   {
-    if ((*d_it).isFinished())
+    if ((*d_it).isFinished() || (*d_it).nextPayment((*d_it).lastPayment()) == QDate())
     {
       d_it = overdues.remove(d_it);
       continue;
