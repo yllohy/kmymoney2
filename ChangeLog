@@ -1,3 +1,7 @@
+2001-12-14 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
+  * fixed another memory leak bug having to do with the Account KPopupMenu
+
+
 2001-12-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * fixed debug output of QIF import (result message of date conversion)
   * commented debug messages in QIF import
