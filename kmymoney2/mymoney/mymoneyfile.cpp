@@ -392,6 +392,9 @@ void MyMoneyFile::addBankName(const QString& val)
 
 void MyMoneyFile::addMajorCategory(const bool income, const QString& val)
 {
+  if (val.isEmpty() || val == QString::null)
+    return;
+
   MyMoneyCategory *tst;
   for (tst=m_categoryList.first(); tst!=0; tst=m_categoryList.next()) {
     if (tst->name() == val) { // Already in, return true
@@ -415,6 +418,9 @@ void MyMoneyFile::addMajorCategory(const bool income, const QString& val)
 
 void MyMoneyFile::addMinorCategory(const bool income, const QString& major, const QString& minor)
 {
+  if (major.isEmpty() || minor.isEmpty())
+    return;
+
   MyMoneyCategory *data;
   for (data=m_categoryList.first(); data!=0; data=m_categoryList.next()) {
     if (data->name() == major) {
@@ -440,6 +446,9 @@ void MyMoneyFile::addMinorCategory(const bool income, const QString& major, cons
 
 void MyMoneyFile::addCategory(const bool income, const QString& major, QStringList& minors)
 {
+  if (major.isEmpty() || major == QString::null)
+    return;
+
   MyMoneyCategory *data;
   for (data=m_categoryList.first(); data!=0; data=m_categoryList.next()) {
     if (data->name() == major) {
@@ -465,6 +474,9 @@ void MyMoneyFile::addCategory(const bool income, const QString& major, QStringLi
 
 void MyMoneyFile::addCategory(const bool income, const QString& major, const QString& minor)
 {
+  if (major.isEmpty() || minor.isEmpty())
+    return;
+
   addMinorCategory(income, major, minor);
 }
 
@@ -499,6 +511,9 @@ void MyMoneyFile::removeMinorCategory(const QString& major, const QString& minor
 
 void MyMoneyFile::renameMajor(const QString& oldName, const QString& newName)
 {
+  if (newName.isEmpty())
+    return;
+
   MyMoneyCategory *data;
   for (data=m_categoryList.first(); data!=0; data=m_categoryList.next()) {
     if (data->name() == oldName) {
@@ -510,6 +525,9 @@ void MyMoneyFile::renameMajor(const QString& oldName, const QString& newName)
 
 void MyMoneyFile::renameMinor(const QString& major, const QString& oldName, const QString& newName)
 {
+  if (newName.isEmpty())
+    return;
+
   MyMoneyCategory *data;
   for (data=m_categoryList.first(); data!=0; data=m_categoryList.next()) {
     if (data->name() == major) {
@@ -521,6 +539,9 @@ void MyMoneyFile::renameMinor(const QString& major, const QString& oldName, cons
 
 void MyMoneyFile::addPayee(const QString& newPayee, QString address, QString postcode, QString telephone, QString email)
 {
+  if (newPayee.isEmpty() || newPayee==QString::null)
+    return;
+
   bool found=false;
   MyMoneyPayee *payee;
   for ( payee=m_payeeList.first(); payee!=0; payee=m_payeeList.next()) {

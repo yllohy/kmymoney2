@@ -1,3 +1,9 @@
+2001-07-23 Michael Edwardes <mte@users.sourceforge.net>
+  * MyMoneyFile now doesn't add empty categories & payees.  If this is going
+    to become a standard financial library these sort of checks are going to
+    have to be made everywhere.
+  * Fixed two bugs in the reconcile dialog.
+
 2001-07-23 Felix Rodriguez<frodriguez@mail.wesleyan.edu>
   * Fixed data entry bug
 

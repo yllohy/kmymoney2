@@ -165,6 +165,8 @@ void KReconcileDlg::insertTransactions(void)
 void KReconcileDlg::slotDebitSelected(QListViewItem* item, const QPoint&/*p*/, int/* col*/)
 {
     KReconcileListItem *reconcileItem = (KReconcileListItem*)item;
+    if (!reconcileItem)
+      return;
 
 		// Changed double types to MyMoneyMoney because in the future
 		// we will support mulitple currencies and have our own incompatable
@@ -205,6 +207,8 @@ void KReconcileDlg::slotDebitSelected(QListViewItem* item, const QPoint&/*p*/, i
 void KReconcileDlg::slotCreditSelected(QListViewItem* item, const QPoint&, int)
 {
     KReconcileListItem *reconcileItem = (KReconcileListItem*)item;
+    if (!reconcileItem)
+      return;
 
 		// See above func
 //		double dblCredit = m_creditBalance.amount();
