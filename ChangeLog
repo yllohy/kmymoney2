@@ -1,8 +1,27 @@
+2002-11-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * kMyMoneyRegister now fully supports font changes of cell and
+    header Font
+  * Ctrl-T now switches the register detailed view on/off. The form
+    visibility can be changed using the settings dialog
+  * Setting for row count in register deprecated and removed from
+    settings dialog
+  * Fixed recursive loop in kMyMoneyDateInput widget
+  * Eliminated unused method slotEnterPressed()
+  * Fixed kMyMoneyDateInput to obey KDE's locale settings
+  * Added locale handling interface to MyMoneyMoney
+    ([set]decimalSeparator() and [set]thousandSeparator()
+  * Modified MyMoneyMoney::formatMoney() and MyMoneyMoney(QString&)
+    constructor to support locale settings
+  * Added testcases for the MyMoneyMoney locale stuff
+  * Added some more API documentation
+  * Fixed a bunch of problems introduced with the latest
+    check-in by Kevin
+
 2002-11-04 Kevin Tambascio <ktambascio@yahoo.com>
   * Added new pure virtual class to describe the file type reader classes,
     IMyMoneyStorageFormat.cpp and .h.
   * Updated project files to include these new files.
-  
+
 2002-11-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed return code of kMyMoneyLedgerViewCheckings::focusNextPrevChild()
   * Improved KLedgerView::focusNextPrevChild to handle invisible and
