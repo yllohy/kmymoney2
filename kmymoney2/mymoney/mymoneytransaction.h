@@ -69,7 +69,8 @@ public:
   void setId(const QString& id) { m_id = id; };
 
   bool operator == (const MyMoneyTransaction&) const;
-
+  inline bool operator != (const MyMoneyTransaction& r) const { return !(*this == r); };
+  
   /**
     * This method is used to extract a split for a given accountId
     * from a transaction. A parameter controls, whether the accountId

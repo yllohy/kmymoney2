@@ -87,6 +87,7 @@ void MyMoneyTransactionTest::testEquality() {
 	MyMoneyTransaction n(*m);
 
 	CPPUNIT_ASSERT(n == *m);
+	CPPUNIT_ASSERT(!(n != *m));
 }
 
 void MyMoneyTransactionTest::testInequality() {
@@ -96,6 +97,7 @@ void MyMoneyTransactionTest::testInequality() {
 
 	n.setPostDate(QDate(1,1,1));
 	CPPUNIT_ASSERT(!(n == *m));
+	CPPUNIT_ASSERT(n != *m);
 }
 
 void MyMoneyTransactionTest::testAddSplits() {
