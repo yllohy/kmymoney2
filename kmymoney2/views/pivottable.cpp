@@ -749,7 +749,7 @@ void PivotTable::convertToBaseCurrency( void )
       TInnerGroup::iterator it_row = (*it_innergroup).begin();
       while ( it_row != (*it_innergroup).end() )
       {
-        QDate valuedate = m_beginDate.addMonths(1).addDays(-1);
+        QDate valuedate = m_beginDate.addMonths( m_config_f.columnPitch() ).addDays(-1);
         unsigned column = 1;
         while ( column < m_numColumns )
         {
@@ -767,8 +767,8 @@ void PivotTable::convertToBaseCurrency( void )
 
           DEBUG_OUTPUT_IF(conversionfactor != 1.0 ,QString("Factor of %1, value was %2, now %3").arg(conversionfactor).arg(DEBUG_SENSITIVE(oldval)).arg(DEBUG_SENSITIVE(it_row.data()[column].toDouble())));
 
-          // Move to the end of the next month
-          valuedate = valuedate.addDays(1).addMonths(1).addDays(-1);
+          // Move to the end of the next period
+          valuedate = valuedate.addDays(1).addMonths( m_config_f.columnPitch() ).addDays(-1);
 
           ++column;
         }

@@ -1,3 +1,7 @@
+2004-10-09 Ace Jones <acejones@users.sourceforge.net>
+  * Fixed a bug in collapsed-column net worth reports (quarterly, yearly, etc)
+    where currency conversion was involved.  The wrong price was being used.
+
 2004-10-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * make sure widgets are destroyed when edit transaction mode is left
     before any other operation is started. There used to be a race
