@@ -1,3 +1,8 @@
+2004-09-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed inclusion order of header files
+  * Include xmethod generated files prior to any other header file
+  * Fixed argument for QMessageBox in kmymoney2.cpp
+
 2004-09-10 Ace Jones <acejones@users.sourceforge.net>
   * Added patch from Martin Preuss to import files via AqBanking
 
