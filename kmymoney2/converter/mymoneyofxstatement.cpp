@@ -295,6 +295,12 @@ MyMoneyOfxStatement::MyMoneyOfxStatement(const QString& filename):
 
 
 
+// FIXME: Remove this workaround, and solve this problem correctly.  The
+// program should not construct MMOS objects without one of these
+// defined.
+#if ! defined(HAVE_LIBOFX) && ! defined(HAVE_NEW_OFX)
+MyMoneyOfxStatement::MyMoneyOfxStatement(const QString&): m_valid(false) {}
+#endif
 
 
 #ifdef HAVE_LIBOFX
