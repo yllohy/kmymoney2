@@ -29,6 +29,7 @@
 #include <qdir.h>
 #include <qprinter.h>
 #include <qlayout.h>
+#include <qsignalmapper.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -120,6 +121,9 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name)
   layout->addWidget(myMoneyView, 10);
 
   config = kapp->config();
+
+  m_pluginSignalMapper = new QSignalMapper( this );
+  connect( m_pluginSignalMapper, SIGNAL( mapped( const QString& ) ), this, SLOT( slotPluginImport( const QString& ) ) ); 
 
   ///////////////////////////////////////////////////////////////////
   // call inits to invoke all other construction parts
@@ -247,7 +251,7 @@ void KMyMoney2App::initActions()
   m_nextViewButton->setEnabled(false);
 
   // use the absolute path to your kmymoney2ui.rc file for testing purpose in createGUI();
-  createGUI();
+  createGUI(QString::null,false);
 }
 
 void KMyMoney2App::initStatusBar()
@@ -865,6 +869,73 @@ void KMyMoney2App::slotGncImport(void)
   delete dialog;
 
   slotStatusMsg(prevMsg);
+}
+
+void KMyMoney2App::slotPluginImport(const QString& format)
+{
+  kdDebug() << __PRETTY_FUNCTION__ << ": Activated '" << format << "'plugin." << endl;
+  
+  if ( m_importerPlugins.contains(format) )
+  {
+    KMyMoneyPlugin::ImporterPlugin* plugin = m_importerPlugins[format];
+    
+    QString prevMsg = slotStatusMsg(i18n("Importing a statement using %1 plugin").arg(format));
+    
+    KFileDialog* dialog = new KFileDialog(KGlobalSettings::documentPath(),
+                              i18n("%1|OFX files\n%2|All files (*.*)").arg("*.ofx").arg("*.*"),
+                              this, i18n("Import OFX Statement..."), true);
+    dialog->setMode(KFile::File | KFile::ExistingOnly);
+    
+    if(dialog->exec() == QDialog::Accepted)
+    {
+      if ( plugin->isMyFormat(dialog->selectedURL().path()) )
+      {
+        QValueList<MyMoneyStatement> statements;
+        if ( plugin->import(dialog->selectedURL().path(),statements) )
+        {
+          bool hasstatements = (statements.count() > 0);
+          bool ok = true;
+          bool abort = false;
+        
+  /*        if ( ofx.errors().count() )
+          {
+            if ( KMessageBox::warningContinueCancelList(this,i18n("The following errors were returned from your bank"),ofx.errors(),i18n("OFX Errors")) == KMessageBox::Cancel )
+              abort = true;
+          }
+        
+          if ( ofx.warnings().count() )
+          {
+            if ( KMessageBox::warningContinueCancelList(this,i18n("The following warnings were returned from your bank"),ofx.warnings(),i18n("OFX Warnings"),KStdGuiItem::cont(),"ofxwarnings") == KMessageBox::Cancel )
+              abort = true;
+          }*/
+        
+          QValueList<MyMoneyStatement>::const_iterator it_s = statements.begin();
+          while ( it_s != statements.end() && !abort )
+          {
+            ok = ok && slotStatementImport(*it_s);
+            ++it_s;
+          }
+          if ( hasstatements && !ok )
+          {
+            KMessageBox::error( this, i18n("Importing process terminated unexpectedly.").arg(format), i18n("Failed to import all statements."));
+          }              
+        }
+        else
+        {
+          KMessageBox::error( this, i18n("Unable to import %1 using %2 plugin.  The plugin returned the following error: %3").arg(dialog->selectedURL().prettyURL(),format,plugin->lastError()), i18n("Importing error"));
+        }
+      }
+      else
+      {
+          KMessageBox::error( this, i18n("Unable to import %1 using %2 plugin.  This file is not the correct format.").arg(dialog->selectedURL().prettyURL(),format), i18n("Incorrect format"));
+      }
+    }
+    slotStatusMsg(prevMsg);
+  }
+  else
+  {
+    KMessageBox::error( this, i18n("Unable to import <b>%1</b> file.  There is no such plugin loaded.").arg(format), i18n("Function not available"));
+  }
 }
 
 //
@@ -1741,26 +1812,67 @@ void KMyMoney2App::createInterfaces(void)
 
 void KMyMoney2App::loadPlugins(void)
 {
-  KTrader::OfferList offers = KTrader::self()->query("KMyMoneyPlugin");
+  {
+    KTrader::OfferList offers = KTrader::self()->query("KMyMoneyPlugin");
+  
+    KTrader::OfferList::ConstIterator iter;
+    for(iter = offers.begin(); iter != offers.end(); ++iter) {
+      KService::Ptr service = *iter;
+      int errCode = 0;
+  
+      KMyMoneyPlugin::Plugin* plugin =
+        KParts::ComponentFactory::createInstanceFromService<KMyMoneyPlugin::Plugin>
+        ( service, m_pluginInterface, service->name(), QStringList(), &errCode);
+      // here we ought to check the error code.
+  
+      if (plugin) {
+        guiFactory()->addClient(plugin);
+        kdDebug() << "Loaded '"
+                  << plugin->name() << "' plugin" << endl;
+      } else {
+        kdDebug() << "Failed to load '"
+                  << service->name() << "' service, error=" << errCode << endl;
+        kdDebug() << KLibLoader::self()->lastErrorMessage() << endl;
+      }
+    }
+  }
+  {
+    KTrader::OfferList offers = KTrader::self()->query("KMyMoneyImporterPlugin");
+  
+    KTrader::OfferList::ConstIterator iter;
+    for(iter = offers.begin(); iter != offers.end(); ++iter) {
+      KService::Ptr service = *iter;
+      int errCode = 0;
+  
+      KMyMoneyPlugin::ImporterPlugin* plugin =
+        KParts::ComponentFactory::createInstanceFromService<KMyMoneyPlugin::ImporterPlugin>
+        ( service, NULL, service->name(), QStringList(), &errCode);
+      // here we ought to check the error code.
+  
+      if (plugin) {
+        kdDebug() << "Loaded '"
+                  << plugin->name() << "' importer plugin" << endl;
 
-  KTrader::OfferList::ConstIterator iter;
-  for(iter = offers.begin(); iter != offers.end(); ++iter) {
-    KService::Ptr service = *iter;
-    int errCode = 0;
-
-    KMyMoneyPlugin::Plugin* plugin =
-      KParts::ComponentFactory::createInstanceFromService<KMyMoneyPlugin::Plugin>
-      ( service, m_pluginInterface, service->name(), QStringList(), &errCode);
-    // here we ought to check the error code.
-
-    if (plugin) {
-      guiFactory()->addClient(plugin);
-      kdDebug() << "Loaded '"
-                << plugin->name() << "' plugin" << endl;
-    } else {
-      kdDebug() << "Failed to load '"
-                << service->name() << "' service" << endl;
-      kdDebug() << KLibLoader::self()->lastErrorMessage() << endl;
+        // Create the custom action for this plugin                  
+        QString format = plugin->formatName();
+        KAction* action = new KAction(i18n("%1 (Plugin)...").arg(format), "", 0, m_pluginSignalMapper, SLOT(map()), actionCollection(), QString("file_import_plugin_%1").arg(format));
+        
+        // Add it to the signal mapper, so we'll know which plugin triggered the signal
+        m_pluginSignalMapper->setMapping( action, format );
+        
+        // Add it to the plugin map, so we can find it later
+        // FIXME: Check for duplicate and error out if there is already a plugin to handle this format.
+        m_importerPlugins[format] = plugin;
+        
+        // Add it into the UI at the 'file_import_plugins' insertion point
+        QPtrList<KAction> import_actions;
+        import_actions.append( action );
+        plugActionList( "file_import_plugins", import_actions );
+      } else {
+        kdDebug() << "Failed to load '"
+                  << service->name() << "' service, error=" << errCode << endl;
+        kdDebug() << KLibLoader::self()->lastErrorMessage() << endl;
+      }
     }
   }
 }

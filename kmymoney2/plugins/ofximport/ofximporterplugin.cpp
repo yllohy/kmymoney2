@@ -89,16 +89,16 @@ bool OfxImporterPlugin::import( const QString& filename, QValueList<MyMoneyState
   libofx_free_context(ctx);
 
   if ( m_valid )
+  {
     result += m_statementlist;
+    m_fatalerror = QString();
+  }
   return m_valid;
 }
 
 QString OfxImporterPlugin::lastError(void) const
 {
-  if ( m_fatalerror )
-    return QString();
-  else
-    return m_fatalerror;
+  return m_fatalerror;
 }
 
 /* __________________________________________________________________________

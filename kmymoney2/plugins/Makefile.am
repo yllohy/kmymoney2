@@ -9,7 +9,7 @@ libkmm_plugin_la_SOURCES = kmymoneyplugin.cpp viewinterface.cpp statementinterfa
 libkmm_plugin_la_LDFLAGS = $(all_libraries) -version-info 0:0:0
 
 #definition of the service type
-kde_servicetypes_DATA = kmymoneyplugin.desktop
+kde_servicetypes_DATA = kmymoneyplugin.desktop kmymoneyimporterplugin.desktop
 
 # make sure this lib is build before any subdirectory
 BUILT_SOURCES = libkmm_plugin.la

@@ -94,7 +94,7 @@ namespace KMyMoneyPlugin {
       *
       * @return QString Name of the format
       */
-    virtual QString formatName(void) const = 0;
+    virtual QString formatName(void) const /*= 0*/;
   
     /**
       * This method returns whether this plugin is able to import
@@ -104,7 +104,7 @@ namespace KMyMoneyPlugin {
       *
       * @return bool Whether the indicated file is importable by this plugin
       */
-    virtual bool isMyFormat( const QString& filename ) const = 0;
+    virtual bool isMyFormat( const QString& filename ) const /*= 0*/;
     
     /**
       * Import a file
@@ -116,7 +116,7 @@ namespace KMyMoneyPlugin {
       * @return bool Whether the import was successful.  If the return value is
       *  false, the @p result list should be unmodified.
       */
-    virtual bool import( const QString& filename, QValueList<MyMoneyStatement>& result ) = 0;
+    virtual bool import( const QString& filename, QValueList<MyMoneyStatement>& result ) /*= 0*/;
   
     /**
       * Returns the error result of the last import
@@ -125,7 +125,7 @@ namespace KMyMoneyPlugin {
       *  last import, or QString() if it was successful.
       * 
       */
-    virtual QString lastError(void) const = 0;
+    virtual QString lastError(void) const /*= 0*/;
     
   };
   

@@ -43,6 +43,7 @@
 #include "mymoney/mymoneyobserver.h"
 #include "mymoney/mymoneyscheduled.h"
 
+class QSignalMapper;
 class KProgress;
 class KStartupLogo;
 class KMyMoneyView;
@@ -51,6 +52,8 @@ class MyMoneyStatementReader;
 class MyMoneyStatement;
 class MyMoneyOfxStatement;
 class IMyMoneyStorage;
+
+namespace KMyMoneyPlugin { class ImporterPlugin; }
 
 /*! \mainpage KMyMoney Main Page for API documentation.
  *
@@ -124,6 +127,8 @@ protected slots:
   void slotOfxImport(void);
 
   void slotGncImport(void);
+  
+  void slotPluginImport(const QString&);
 
   /**
     * Opens a file selector dialog for the user to choose an existing KMM
@@ -458,6 +463,8 @@ private:
   KAction *actionStatementImport;
   KAction *actionAqbImport;
   KAction *actionLoadTemplate;
+  QSignalMapper *m_pluginSignalMapper;
+  QMap<QString,KMyMoneyPlugin::ImporterPlugin*> m_importerPlugins;
 
   enum backupStateE {
     BACKUP_IDLE = 0,

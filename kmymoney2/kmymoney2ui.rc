@@ -11,6 +11,7 @@
       <Action name="file_import_qif"/>
       <Action name="file_import_ofx"/>
       <Action name="file_import_gnc"/>
+      <ActionList name="file_import_plugins"/>
       <Separator/>
       <Action name="file_import_template"/>
     </Menu>

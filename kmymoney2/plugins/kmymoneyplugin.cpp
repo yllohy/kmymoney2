@@ -58,3 +58,12 @@ KMyMoneyPlugin::ImporterPlugin::~ImporterPlugin()
 {
 }
 
+QString KMyMoneyPlugin::ImporterPlugin::formatName(void) const /*= 0*/
+{}
+bool KMyMoneyPlugin::ImporterPlugin::isMyFormat( const QString& filename ) const /*= 0*/
+{}
+bool KMyMoneyPlugin::ImporterPlugin::import( const QString& filename, QValueList<MyMoneyStatement>& result ) /*= 0*/
+{}
+QString KMyMoneyPlugin::ImporterPlugin::lastError(void) const /*= 0*/
+{}
+
