@@ -68,7 +68,7 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
   s << "last modification date = " << storage->lastModificationDate().toString(Qt::ISODate) << "\n";
   s << "base currency = " << storage->value("kmm-baseCurrency") << "\n";
   s << "\n";
-  
+
   s << "Internal-Info\n";
   s << "-------------\n";
   s << "next account id     = " << _storage->accountId() << "\n";
@@ -77,7 +77,7 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
   s << "next institution id = " << _storage->institutionId() << "\n";
   s << "next schedule id    = " << _storage->scheduleId() << "\n";
   s << "\n";
-  
+
   s << "Institutions\n";
   s << "------------\n";
 
@@ -138,7 +138,7 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
       s << "n/a";
     }
     s << "\n";
-    
+
     s << "  Institution = " << (*it_a).institutionId();
     if(!(*it_a).institutionId().isEmpty()) {
       MyMoneyInstitution inst = storage->institution((*it_a).institutionId());
@@ -147,12 +147,12 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
       s << "n/a";
     }
     s << "\n";
-    
+
     s << "  Opening data = " << (*it_a).openingDate().toString(Qt::ISODate) << "\n";
     s << "  Opening balance = " << (*it_a).openingBalance().formatMoney() << "\n";
     s << "  Last modified = " << (*it_a).lastModified().toString(Qt::ISODate) << "\n";
     s << "  Last reconciled = " << (*it_a).lastReconciliationDate().toString(Qt::ISODate) << "\n";
-    
+
     s << "  KVP: " << "\n";
     QMap<QCString, QString>kvp = (*it_a).pairs();
     QMap<QCString, QString>::Iterator it;
@@ -245,7 +245,7 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
       }
     }
     s << "  TRANSACTION\n";
-    dumpTransaction(s, storage, (*it_s).transaction());    
+    dumpTransaction(s, storage, (*it_s).transaction());
   }
   s << "\n";
 }
@@ -275,8 +275,14 @@ void MyMoneyStorageDump::dumpTransaction(QTextStream& s, IMyMoneyStorage* storag
     } else
       s << " ()\n";
     s << "    Account = " << (*it_s).accountId();
-    MyMoneyAccount acc = storage->account((*it_s).accountId());
-    s << " (" << acc.name() << ") [" << acc.currencyId() << "]\n";
+    MyMoneyAccount acc;
+    try {
+      acc = storage->account((*it_s).accountId());
+      s << " (" << acc.name() << ") [" << acc.currencyId() << "]\n";
+    } catch (MyMoneyException *e) {
+      s << " (---) [---]\n";
+      delete e;
+    }
     s << "    Memo = " << (*it_s).memo() << "\n";
     if((*it_s).value() == MyMoneyMoney::minValue + 1)
       s << "    Value = will be calculated" << "\n";
@@ -410,7 +416,7 @@ const QString MyMoneyStorageDump::paymentMethodToString(MyMoneySchedule::payment
 const QString MyMoneyStorageDump::reconcileToString(MyMoneySplit::reconcileFlagE flag) const
 {
   QString rc;
-  
+
   switch(flag) {
     case MyMoneySplit::NotReconciled:
       rc = i18n("not reconciled");
