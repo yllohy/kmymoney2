@@ -1,3 +1,7 @@
+2003-09-25 Kevin Tambascio <ktambascio@yahoo.com>
+  * Able to write out files in XML with all the categories present in the new engine.
+  * Started the code for reading the XML files.
+
 2003-09-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * moved KMyMoneyUtils::isCreditPayment to MyMoneyTransaction::isLoanPayment
   * added testcase for MyMoneyTransaction::isLoanPayment
