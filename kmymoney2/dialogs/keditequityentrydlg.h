@@ -47,6 +47,10 @@ class KEditEquityEntryDlg : public kEditEquityEntryDecl
 public: 
 	KEditEquityEntryDlg(QWidget *parent = NULL, const char *name = NULL);
 	~KEditEquityEntryDlg();
+                          
+protected slots:
+  void onOKClicked();
+	void onCancelClicked();	
 };
 
 #endif

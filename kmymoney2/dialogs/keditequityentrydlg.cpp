@@ -39,6 +39,7 @@
 #include <qprogressbar.h>
 #include <qlineedit.h>
 #include <qgroupbox.h>
+#include <qlistview.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -54,10 +55,25 @@
 KEditEquityEntryDlg::KEditEquityEntryDlg(QWidget *parent, const char *name)
   : kEditEquityEntryDecl(parent, name, true)
 {
+  lvPriceHistory->addColumn(QString("Date"));
+  lvPriceHistory->addColumn(QString("Price"));
   
+  connect(btnOK, SIGNAL(clicked()), this, SLOT(onOKClicked()));
+	connect(btnCancel, SIGNAL(clicked()), this, SLOT(onCancelClicked()));  
 }
 
 KEditEquityEntryDlg::~KEditEquityEntryDlg()
 {
   
+}
+
+/** No descriptions */
+void KEditEquityEntryDlg::onOKClicked()
+{
+	accept();
+}
+
+void KEditEquityEntryDlg::onCancelClicked()
+{
+	reject();
 }

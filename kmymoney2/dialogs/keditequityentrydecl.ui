@@ -1,5 +1,6 @@
 <!DOCTYPE UI><UI version="3.1" stdsetdef="1">
 <class>kEditEquityEntryDecl</class>
+<author>Kevin Tambascio </author>
 <widget class="QDialog">
     <property name="name">
         <cstring>kEditEquityEntryDecl</cstring>
@@ -207,22 +208,6 @@
             <string>Cancel</string>
         </property>
     </widget>
-    <widget class="QPushButton">
-        <property name="name">
-            <cstring>btnOK</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>60</x>
-                <y>430</y>
-                <width>80</width>
-                <height>32</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>OK</string>
-        </property>
-    </widget>
     <widget class="QLabel">
         <property name="name">
             <cstring>lblMarket</cstring>
@@ -290,6 +275,36 @@
             <string>Shows the price history for this security.</string>
         </property>
     </widget>
+    <widget class="QPushButton">
+        <property name="name">
+            <cstring>btnOK</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>60</x>
+                <y>430</y>
+                <width>80</width>
+                <height>32</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>OK</string>
+        </property>
+    </widget>
 </widget>
+<connections>
+    <connection>
+        <sender>btnOK</sender>
+        <signal>clicked()</signal>
+        <receiver>kEditEquityEntryDecl</receiver>
+        <slot>btnOK_clicked()</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="local" impldecl="in implementation">keditequityentrydecl.ui.h</include>
+</includes>
+<slots>
+    <slot>btnOK_clicked()</slot>
+</slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

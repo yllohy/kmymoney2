@@ -424,10 +424,10 @@ void KNewAccountWizard::loadAccountTypes(void)
   
 /*
   // accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::AssetLoan));
-  accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Investment));
   accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::MoneyMarket));
   accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Currency));
 */
+  accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Investment));
   accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Asset));
   accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Liability));
 }
@@ -501,6 +501,11 @@ void KNewAccountWizard::slotAccountType(const QString& sel)
     );
     m_accountType = MyMoneyAccount::Loan;
 */
+  } else if(sel == KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Investment)) {
+    txt += i18n(
+      "Use the investment account to manage your stock and mutual fund account."
+    );
+    m_accountType = MyMoneyAccount::Investment;
   } else {
     txt += i18n("Explanation is not yet available! UnknownAccountType will be set");
     m_accountType = MyMoneyAccount::UnknownAccountType;
