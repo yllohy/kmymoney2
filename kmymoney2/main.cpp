@@ -88,6 +88,10 @@ int main(int argc, char *argv[])
   _CheckMemory_Init(0);
 #endif
 
+  // setup the MyMoneyMoney locale settings according to the KDE settings
+  MyMoneyMoney::setThousandSeparator(*(KGlobal::locale()->thousandsSeparator().latin1()));
+  MyMoneyMoney::setDecimalSeparator(*(KGlobal::locale()->decimalSymbol().latin1()));
+
 	if (kmymoney2->startWithDialog()) {
 	  if (kmymoney2->initWizard()) {
   		args->clear();
