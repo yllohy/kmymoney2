@@ -14,7 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifdef HAVE_CONFIG
+#ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
 
@@ -62,7 +62,7 @@ class IMyMoneyStorageFormat;
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.31 2003/02/13 20:25:28 ipwizard Exp $
+  * $Id: kmymoneyview.h,v 1.32 2003/02/26 19:38:31 ipwizard Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
