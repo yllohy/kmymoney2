@@ -74,6 +74,8 @@ public:
     */
   void setProfile(const QString& name);
 
+  void import(void);
+  
   const QString scanFileForAccount(void);
 
   const MyMoneyAccount& account() const { return m_account; };
@@ -84,11 +86,15 @@ private:
   /**
     * This method scans a transaction contained in
     * a QIF file formatted as an account record. This
-    * format is used by MS-Money.
+    * format is used by MS-Money. If the specific data
+    * is not found, then the data in the entry is treated
+    * as a transaction. In this case, the user will be asked to
+    * specify the account to which the transactions should be imported.
     *
     * @param lines A list of all the lines for this transaction
+    * @param accountType see MyMoneyAccount() for details. Defaults to MyMoneyAccount::Checkings
     */
-  void processMSAccountEntry(const QStringList& lines);
+  void processMSAccountEntry(const QStringList& lines, const MyMoneyAccount::accountTypeE accountType = MyMoneyAccount::Checkings);
 
   /**
     * This method scans an account record as specified
@@ -97,6 +103,22 @@ private:
     * @param lines A list of all the lines for this account
     */
   void processAccountEntry(const QStringList& lines);
+
+  /**
+    * This method scans a category record as specified
+    * by Quicken.
+    *
+    * @param lines A list of all the lines for this category
+    */
+  void processCategoryEntry(const QStringList& lines);
+  
+  /**
+    * This method scans a transaction record as specified
+    * by Quicken.
+    *
+    * @param lines A list of all the lines for this category
+    */
+  void processTransactionEntry(const QStringList& lines);
 
   /**
     * This method reads lines from the QTextStream @p s into
@@ -117,18 +139,31 @@ private:
     *
     * @param id QChar containing the letter to be found
     * @param lines QStringList containing the lines
+    * @param cnt return cnt'th of occurance of id in lines. cnt defaults to 1.
     *
     * @return QString with the remainder of the line or empty if
     *         @p id is not found in @p lines
     */
-  const QString extractLine(const QChar id, const QStringList& lines) const;
+  const QString extractLine(const QChar id, const QStringList& lines, int cnt = 1) const;
 
+  /**
+    * This method is used to find an account using the account's name
+    * in m_account.name() in the current MyMoneyFile object. If it does not
+    * exist, the user has the chance to create it or to skip processing
+    * of this account.
+    *
+    * If an account has been selected, m_account will be set to contain it's data. If the
+    * skip operation was requested, m_account will be empty.
+    */
+  void selectOrCreateAccount(void);
+  
 private:
   QString           m_originalFilename;
   QString           m_filename;
   MyMoneyQifProfile m_qifProfile;
   KTempFile         m_tempFile;
   MyMoneyAccount    m_account;
+  bool              m_skipAccount;
 };
 
 #endif

@@ -5,9 +5,10 @@ INCLUDES = $(all_includes)
 
 libconverter_a_METASOURCES = AUTO
 
-libconverter_a_SOURCES = mymoneyqifreader.cpp mymoneyqifwriter.cpp mymoneyqifprofileeditor.cpp mymoneyqifprofile.cpp mymoneyqifprofileeditordecl.ui 
+libconverter_a_SOURCES = mymoneyqifreader.cpp mymoneyqifwriter.cpp mymoneyqifprofile.cpp 
 
 
-EXTRA_DIST = mymoneyqifprofileeditordecl.ui mymoneyqifprofile.h mymoneyqifprofileeditor.h mymoneyqifprofile.cpp mymoneyqifprofileeditor.cpp mymoneyqifwriter.cpp mymoneyqifwriter.h mymoneyqifreader.cpp mymoneyqifreader.h 
+EXTRA_DIST = mymoneyqifprofile.h mymoneyqifprofile.cpp mymoneyqifwriter.cpp mymoneyqifwriter.h mymoneyqifreader.cpp mymoneyqifreader.h 
 
 ####### kdevelop will overwrite this part!!! (end)############
+
