@@ -92,18 +92,18 @@ main(int /* argc */, char** /* argv */ )
 #endif
 
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyExceptionTest); 
-  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyMoneyTest); 
+  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyKeyValueContainerTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyObserverTest);
-  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyInstitutionTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyMoneyTest); 
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneySplitTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyTransactionTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyFinancialCalculatorTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyInstitutionTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyAccountTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneySeqAccessMgrTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyStorageBinTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyFileTest);
-  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyKeyValueContainerTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyScheduleTest);
-  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyFinancialCalculatorTest);
 
   CppUnit::TestFactoryRegistry &registry =
     CppUnit::TestFactoryRegistry::getRegistry();
@@ -120,7 +120,7 @@ main(int /* argc */, char** /* argv */ )
 
   // make sure to delete the singletons before we start memory checking
   // to avoid false error reports
-  delete MyMoneyFile::instance();
+  // delete MyMoneyFile::instance();
 
 #ifdef _CHECK_MEMORY
   chkmem.CheckMemoryLeak( true );

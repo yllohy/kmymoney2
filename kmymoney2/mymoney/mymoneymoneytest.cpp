@@ -30,6 +30,10 @@ void MyMoneyMoneyTest::setUp()
 	m_0 = new MyMoneyMoney(12);
 	m_1 = new MyMoneyMoney(-10);
 	m_2 = new MyMoneyMoney(2);
+	m_3 = new MyMoneyMoney(123,0);
+	m_4 = new MyMoneyMoney(1234,1000);
+	m_5 = new MyMoneyMoney(195883,100000);
+
 	MyMoneyMoney::setDecimalSeparator('.');
 	MyMoneyMoney::setThousandSeparator(',');
 }
@@ -39,38 +43,63 @@ void MyMoneyMoneyTest::tearDown()
 	delete m_0;
 	delete m_1;
 	delete m_2;
+	delete m_3;
+	delete m_4;
+	delete m_5;
 }
 
 void MyMoneyMoneyTest::testEmptyConstructor()
 {
 	MyMoneyMoney *m = new MyMoneyMoney();
-	CPPUNIT_ASSERT(m->value() == 0);
+	CPPUNIT_ASSERT(m->m_num == 0);
+	CPPUNIT_ASSERT(m->m_denom == 1);
 	delete m;
+}
+
+void MyMoneyMoneyTest::testIntConstructor()
+{
+	CPPUNIT_ASSERT(m_0->m_num == 12);
+	CPPUNIT_ASSERT(m_0->m_denom == 100);
+
+	MyMoneyMoney a(123, 10000);
+	CPPUNIT_ASSERT(a.m_num == 123);
+	CPPUNIT_ASSERT(a.m_denom == 10000);
 }
 
 void MyMoneyMoneyTest::testAssignment()
 {
 	MyMoneyMoney *m = new MyMoneyMoney();
 	*m = *m_1;
-	CPPUNIT_ASSERT(m->value() == -10);
+	CPPUNIT_ASSERT(m->m_num == -10);
+	CPPUNIT_ASSERT(m->m_denom == 100);
 
 	*m = 0;
-	CPPUNIT_ASSERT(m->value() == 0);
+	CPPUNIT_ASSERT(m->m_num == 0);
+	CPPUNIT_ASSERT(m->m_denom == 100);
 
 	*m = 777888999;
-	CPPUNIT_ASSERT(m->value() == 777888999);
+	CPPUNIT_ASSERT(m->m_num == 777888999);
+	CPPUNIT_ASSERT(m->m_denom == 100);
 
 	*m = (int)-5678;
-	CPPUNIT_ASSERT(m->value() == -5678);
+	CPPUNIT_ASSERT(m->m_num == -5678);
+	CPPUNIT_ASSERT(m->m_denom == 100);
 
 	*m = QString("-987");
-	CPPUNIT_ASSERT(m->value() == -987);
+	CPPUNIT_ASSERT(m->m_num == -987);
+	CPPUNIT_ASSERT(m->m_denom == 1);
 
-	*m = QString("999888777666555444");
-	CPPUNIT_ASSERT(m->value() == 999888777666555444LL);
+	*m = QString("9998887776665554.44");
+	CPPUNIT_ASSERT(m->m_num == 999888777666555444LL);
+	CPPUNIT_ASSERT(m->m_denom == 100);
+
+	*m = QString("-99988877766655.444");
+	CPPUNIT_ASSERT(m->m_num == -99988877766655444LL);
+	CPPUNIT_ASSERT(m->m_denom == 1000);
 
 	*m = -666555444333222111LL;
-	CPPUNIT_ASSERT(m->value() == -666555444333222111LL);
+	CPPUNIT_ASSERT(m->m_num == -666555444333222111LL);
+	CPPUNIT_ASSERT(m->m_denom == 100);
 
 	delete m;
 }
@@ -78,10 +107,12 @@ void MyMoneyMoneyTest::testAssignment()
 void MyMoneyMoneyTest::testStringConstructor()
 {
 	MyMoneyMoney *m1 = new MyMoneyMoney("-999666555444");
-	CPPUNIT_ASSERT(m1->value() == -999666555444LL);
+	CPPUNIT_ASSERT(m1->m_num == -999666555444LL);
+	CPPUNIT_ASSERT(m1->m_denom == 1);
 
-	MyMoneyMoney *m2 = new MyMoneyMoney("444555666999");
-	CPPUNIT_ASSERT(m2->value() == 444555666999LL);
+	MyMoneyMoney *m2 = new MyMoneyMoney("4445556669.99");
+	CPPUNIT_ASSERT(m2->m_num == 444555666999LL);
+	CPPUNIT_ASSERT(m2->m_denom == 100);
 
 	*m1 = 444555666999LL;
 	CPPUNIT_ASSERT(*m1 == *m2);
@@ -90,24 +121,53 @@ void MyMoneyMoneyTest::testStringConstructor()
 	delete m2;
 
 	m1 = new MyMoneyMoney("");
-	CPPUNIT_ASSERT(m1->value() == 0LL);
+	CPPUNIT_ASSERT(m1->m_num == 0LL);
+	CPPUNIT_ASSERT(m1->m_denom == 1);
 	delete m1;
 
 	m1 = new MyMoneyMoney("1,123.");
-	CPPUNIT_ASSERT(m1->value() == 112300LL);
+	CPPUNIT_ASSERT(m1->m_num == 1123LL);
+	CPPUNIT_ASSERT(m1->m_denom == 1);
 	delete m1;
 
 	m1 = new MyMoneyMoney("123.1");
-	CPPUNIT_ASSERT(m1->value() == 12310LL);
+	CPPUNIT_ASSERT(m1->m_num == 1231LL);
+	CPPUNIT_ASSERT(m1->m_denom == 10);
 	delete m1;
 
 	m1 = new MyMoneyMoney("123.456");
-	CPPUNIT_ASSERT(m1->value() == 12345LL);
+	CPPUNIT_ASSERT(m1->m_num == 123456LL);
+	CPPUNIT_ASSERT(m1->m_denom == 1000);
 	delete m1;
 
 	m1 = new MyMoneyMoney("12345/100");
-	CPPUNIT_ASSERT(m1->value() == 12345LL);
+	CPPUNIT_ASSERT(m1->m_num == 12345LL);
+	CPPUNIT_ASSERT(m1->m_denom == 100);
 	delete m1;
+}
+
+void MyMoneyMoneyTest::testConvert()
+{
+	MyMoneyMoney a("123.456");
+	MyMoneyMoney b = a.convert(100);
+	CPPUNIT_ASSERT(b.m_num == 12346);
+	CPPUNIT_ASSERT(b.m_denom == 100);
+	a = QString("-123.456");
+	b = a.convert(100);
+	CPPUNIT_ASSERT(b.m_num == -12346);
+	CPPUNIT_ASSERT(b.m_denom == 100);
+
+	a = QString("123.1");
+	b = a.convert(100);
+	CPPUNIT_ASSERT(b.m_num == 12310);
+	CPPUNIT_ASSERT(b.m_denom == 100);
+
+	a = QString("-73010.28");
+	b = QString("1.95583");
+	CPPUNIT_ASSERT((a * b).convert(100) == QString("-142795.70"));
+
+	a = QString("-142795.69");
+	CPPUNIT_ASSERT((a / b).convert(100) == QString("-73010.28"));
 }
 
 void MyMoneyMoneyTest::testEquality()
@@ -122,6 +182,14 @@ void MyMoneyMoneyTest::testEquality()
 	MyMoneyMoney m3(-999666555444LL);
 	MyMoneyMoney m4(-999666555444LL);
 	CPPUNIT_ASSERT(m3 == m4);
+
+	MyMoneyMoney m5(1230,100);
+	MyMoneyMoney m6(123,10);
+	MyMoneyMoney m7(246,20);
+	CPPUNIT_ASSERT(m5 == m6);
+	CPPUNIT_ASSERT(m5 == m7);
+
+	CPPUNIT_ASSERT(m5 == QString("369/30"));
 }
 
 void MyMoneyMoneyTest::testInequality()
@@ -137,6 +205,8 @@ void MyMoneyMoneyTest::testInequality()
 	MyMoneyMoney m3(-999666555444LL);
 	MyMoneyMoney m4(999666555444LL);
 	CPPUNIT_ASSERT(m3 != m4);
+
+	CPPUNIT_ASSERT(m4 != QString("999666555444"));
 }
 
 
@@ -156,6 +226,14 @@ void MyMoneyMoneyTest::testAddition()
 	m1++;
 	CPPUNIT_ASSERT(m1 == 101);
 	CPPUNIT_ASSERT((++m1) == 102);
+
+	m1 = QString("123.20");
+	MyMoneyMoney m2(40, 1000);
+	CPPUNIT_ASSERT((m1 + m2) == QString("123.24"));
+
+	m1 += m2;
+	CPPUNIT_ASSERT(m1.m_num == 123240);
+	CPPUNIT_ASSERT(m1.m_denom == 1000);
 }
 
 void MyMoneyMoneyTest::testSubtraction()
@@ -174,15 +252,37 @@ void MyMoneyMoneyTest::testSubtraction()
 	m1--;
 	CPPUNIT_ASSERT(m1 == 99);
 	CPPUNIT_ASSERT((--m1) == 98);
+
+	m1 = QString("123.20");
+	MyMoneyMoney m2(1, 5);
+	CPPUNIT_ASSERT((m1 - m2) == MyMoneyMoney(123,1));
+
+	m1 -= m2;
+	CPPUNIT_ASSERT(m1.m_num == 12300);
+	CPPUNIT_ASSERT(m1.m_denom == 100);
 }
 
 void MyMoneyMoneyTest::testMultiplication()
 {
-	MyMoneyMoney m1(100);
+	MyMoneyMoney m1(100,1);
 
-	CPPUNIT_ASSERT((m1 * 50) == 5000);
-	CPPUNIT_ASSERT((m1 * 10000000) == 1000000000);
+	CPPUNIT_ASSERT((m1 * MyMoneyMoney(50,1)) == MyMoneyMoney(5000,1));
+	CPPUNIT_ASSERT((m1 * MyMoneyMoney(10000000,1)) == MyMoneyMoney(1000000000,1));
 	CPPUNIT_ASSERT((m1 * (*m_0)) == 1200);
+
+	MyMoneyMoney m2 = QString("-73010.28");
+	m1 = QString("1.95583");
+	CPPUNIT_ASSERT((m1 * m2) == QString("-142795.6959324"));
+}
+
+void MyMoneyMoneyTest::testDivision()
+{
+	MyMoneyMoney m1(100);
+	CPPUNIT_ASSERT((m1 / MyMoneyMoney(50)) == MyMoneyMoney(2,1));
+
+	MyMoneyMoney m2 = QString("-142795.69");
+	m1 = QString("1.95583");
+	CPPUNIT_ASSERT((m2 / m1).convert(100000000) == QString("-73010.27696681"));
 }
 
 void MyMoneyMoneyTest::testSetDecimalSeparator()
@@ -234,6 +334,10 @@ void MyMoneyMoneyTest::testFormatMoney()
 
 	m1 = INT64_MIN;
 	CPPUNIT_ASSERT(m1.formatMoney() == QString("-92,233,720,368,547,758.08"));
+
+	m1 = MyMoneyMoney(1,5);
+	CPPUNIT_ASSERT(m1.formatMoney() == QString("0.20"));
+
 }
 
 void MyMoneyMoneyTest::testRelation()
@@ -242,11 +346,30 @@ void MyMoneyMoneyTest::testRelation()
 	MyMoneyMoney m2(50);
 	MyMoneyMoney m3(100);
 
+	// tests with same denominator
 	CPPUNIT_ASSERT(m1 > m2);
 	CPPUNIT_ASSERT(m2 < m1);
 
 	CPPUNIT_ASSERT(m1 <= m3);
 	CPPUNIT_ASSERT(m3 >= m1);
+	CPPUNIT_ASSERT(m1 <= m1);
+	CPPUNIT_ASSERT(m3 >= m3);
+
+	// tests with different denominator
+	m1 = QString("1/8");
+	m2 = QString("1/7");
+	CPPUNIT_ASSERT(m1 < m2);
+	CPPUNIT_ASSERT(m2 > m1);
+	m2 = QString("-1/7");
+	CPPUNIT_ASSERT(m2 < m1);
+	CPPUNIT_ASSERT(m1 > m2);
+	CPPUNIT_ASSERT(m1 >= m2);
+	CPPUNIT_ASSERT(m2 <= m1);
+
+	m1 = QString("-2/14");
+	CPPUNIT_ASSERT(m1 >= m2);
+	CPPUNIT_ASSERT(m1 <= m2);
+
 }
 
 void MyMoneyMoneyTest::testUnaryMinus()
@@ -288,7 +411,7 @@ void MyMoneyMoneyTest::testToString()
 
 	CPPUNIT_ASSERT(m1.toString() == QString("-100/100"));
 	CPPUNIT_ASSERT(m2.toString() == QString("1234/100"));
-	CPPUNIT_ASSERT(m3.toString() == QString("0/100"));
+	CPPUNIT_ASSERT(m3.toString() == QString("0/1"));
 }
 
 void MyMoneyMoneyTest::testFromString()
@@ -296,11 +419,15 @@ void MyMoneyMoneyTest::testFromString()
 	MyMoneyMoney m;
 
 	m.fromString("-100/100");
-	CPPUNIT_ASSERT(m.value() == -100LL);
+	CPPUNIT_ASSERT(m.m_num == -100LL);
+	CPPUNIT_ASSERT(m.m_denom == 100LL);
 	m.fromString("1234/100");
-	CPPUNIT_ASSERT(m.value() == 1234LL);
+	CPPUNIT_ASSERT(m.m_num == 1234LL);
+	CPPUNIT_ASSERT(m.m_denom == 100LL);
 	m.fromString("1234/10");
-	CPPUNIT_ASSERT(m.value() == 0LL);
-	
+	CPPUNIT_ASSERT(m.m_num == 1234LL);
+	CPPUNIT_ASSERT(m.m_denom == 10LL);
+	m.fromString("1234/2");
+	CPPUNIT_ASSERT(m.m_num == 1234LL);
+	CPPUNIT_ASSERT(m.m_denom == 2LL);
 }
-

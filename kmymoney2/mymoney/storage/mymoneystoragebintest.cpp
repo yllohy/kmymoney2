@@ -114,7 +114,7 @@ void MyMoneyStorageBinTest::appendV3Account(QDataStream& s,
   if(magic == 0x00000007) {
     s << open;
     double amount;
-    amount = balance.value() / 100;
+    amount = balance.convert(100).toDouble();
     s << amount;
   }
   s << reconcile;

@@ -35,7 +35,7 @@ void MyMoneyAccountTest::testEmptyConstructor() {
 	CPPUNIT_ASSERT(a.name().isEmpty());
 	CPPUNIT_ASSERT(a.accountType() == MyMoneyAccount::UnknownAccountType);
 	CPPUNIT_ASSERT(a.openingDate() == QDate());
-	CPPUNIT_ASSERT(a.openingBalance() == 0);
+	CPPUNIT_ASSERT(a.openingBalance() == MyMoneyMoney());
 	CPPUNIT_ASSERT(a.lastModified() == QDate());
 	CPPUNIT_ASSERT(a.lastReconciliationDate() == QDate());
 /* removed with MyMoneyAccount::Transaction
@@ -71,7 +71,7 @@ void MyMoneyAccountTest::testConstructor() {
 */
 	CPPUNIT_ASSERT(a.accountList().count() == 0);
 	CPPUNIT_ASSERT(a.parentAccountId() == "Parent");
-	CPPUNIT_ASSERT(a.openingBalance() == 1);
+	CPPUNIT_ASSERT(a.openingBalance() == MyMoneyMoney(1));
 }
 
 void MyMoneyAccountTest::testSetFunctions() {
@@ -95,7 +95,7 @@ void MyMoneyAccountTest::testSetFunctions() {
 	CPPUNIT_ASSERT(a.lastModified() == today);
 	CPPUNIT_ASSERT(a.description() == "Desc");
 	CPPUNIT_ASSERT(a.number() == "123456");
-	CPPUNIT_ASSERT(a.openingBalance() == 2);
+	CPPUNIT_ASSERT(a.openingBalance() == MyMoneyMoney(2));
 /* removed with MyMoneyAccount::Transaction
 	CPPUNIT_ASSERT(a.transactionList().count() == 0);
 */
@@ -140,7 +140,7 @@ void MyMoneyAccountTest::testCopyConstructor() {
 	CPPUNIT_ASSERT(b.transactionList().count() == 1);
 */
 	CPPUNIT_ASSERT(b.parentAccountId() == "ParentAccount");
-	CPPUNIT_ASSERT(b.openingBalance() == 3);
+	CPPUNIT_ASSERT(b.openingBalance() == MyMoneyMoney(3));
 
 /* removed with MyMoneyAccount::Transaction
 	MyMoneyAccount::Transaction tc = b.transaction(0);

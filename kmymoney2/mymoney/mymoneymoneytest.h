@@ -26,16 +26,19 @@
 class MyMoneyMoneyTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST_SUITE(MyMoneyMoneyTest);
 	CPPUNIT_TEST(testEmptyConstructor);
-	CPPUNIT_TEST(testAssignment);
+	CPPUNIT_TEST(testIntConstructor);
 	CPPUNIT_TEST(testStringConstructor);
+	CPPUNIT_TEST(testAssignment);
+	CPPUNIT_TEST(testConvert);
 	CPPUNIT_TEST(testEquality);
 	CPPUNIT_TEST(testInequality);
 	CPPUNIT_TEST(testAddition);
 	CPPUNIT_TEST(testSubtraction);
 	CPPUNIT_TEST(testMultiplication);
-	CPPUNIT_TEST(testFormatMoney);
+	CPPUNIT_TEST(testDivision);
 	CPPUNIT_TEST(testSetDecimalSeparator);
 	CPPUNIT_TEST(testSetThousandSeparator);
+	CPPUNIT_TEST(testFormatMoney);
 	CPPUNIT_TEST(testRelation);
 	CPPUNIT_TEST(testUnaryMinus);
 	CPPUNIT_TEST(testDoubleConstructor);
@@ -45,20 +48,23 @@ class MyMoneyMoneyTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST_SUITE_END();
 
 protected:
-	MyMoneyMoney *m_0, *m_1, *m_2, *m_3;
+	MyMoneyMoney *m_0, *m_1, *m_2, *m_3, *m_4, *m_5;
 public:
 	MyMoneyMoneyTest();
 
 	void setUp();
 	void tearDown();
 	void testEmptyConstructor();
-	void testAssignment();
+	void testIntConstructor();
 	void testStringConstructor();
+	void testAssignment();
+	void testConvert();
 	void testEquality();
 	void testInequality();
 	void testAddition();
 	void testSubtraction();
 	void testMultiplication();
+	void testDivision();
 	void testFormatMoney();
 	void testSetDecimalSeparator();
 	void testSetThousandSeparator();
