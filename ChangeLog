@@ -1,3 +1,11 @@
+2002-08-xx Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added reconciliation flag display in KMyMoneyRegisterCheckings
+  * Added MyMoneyFile::accountToCategory()
+  * Added enable/disable of buttons in transaction form
+  * Added display of category within transactions
+  * Display only absolute value of amount in transaction form
+  * Fixed initial visibility if more than 1 row per transaction is selected
+
 2002-08-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added number and action handling to MyMoneySplit
   * Added number and action handling to MyMoneyStorageBin
