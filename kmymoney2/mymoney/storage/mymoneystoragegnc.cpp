@@ -349,7 +349,7 @@ void MyMoneyStorageGNC::readAccount(const QDomElement& account)
   qDebug("Account %s has id of %s, type of %d, parent is %s, this=0x%08X.", acc.name().data(), id.data(), acc.accountType(), acc.parentAccountId().data(),&acc);
 
   
-  return acc;//MyMoneyAccount(id, acc);
+  //return acc;//MyMoneyAccount(id, acc);
 }
 
 /*void MyMoneyStorageGNC::readTransactions(QDomElement& transactions)
