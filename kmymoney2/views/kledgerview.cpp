@@ -207,20 +207,23 @@ void KLedgerView::filterTransactions(void)
   m_transactionPtrVector.clear();
   m_transactionPtrVector.resize(m_transactionList.size());
   for(i = 0, it_t = m_transactionList.begin(); it_t != m_transactionList.end(); ++it_t) {
-    // only show those transactions, that are posted after the configured start date
-    if((*it_t).postDate() < m_dateStart)
-      continue;
 
-    // if in reconciliation mode, don't show old stuff
+    // if in reconciliation mode, don't show old stuff and don't
+    // use any of the other filters
     if(m_inReconciliation == true) {
       MyMoneySplit s = (*it_t).split(m_account.id());
       if(s.reconcileFlag() == MyMoneySplit::Reconciled
       || s.reconcileFlag() == MyMoneySplit::Frozen) {
         continue;
       }
-    }
+    } else {
 
-    // add more filters before this line ;-)
+      // only show those transactions, that are posted after the configured start date
+      if((*it_t).postDate() < m_dateStart)
+        continue;
+
+      // add more filters before this line ;-)
+    }
 
     // Wow, we made it through all the filters. Guess we have to show this one
     m_transactionPtrVector.insert(i, &(*it_t));
@@ -742,6 +745,7 @@ void KLedgerView::slotDateChanged(const QDate& date)
 
 void KLedgerView::slotShowTransactionForm(bool visible)
 {
+/*
   // if the setting is different, don't forget to update
   // the configuration
   if(m_transactionFormActive != visible) {
@@ -749,7 +753,7 @@ void KLedgerView::slotShowTransactionForm(bool visible)
     config->setGroup("General Options");
     config->writeEntry("TransactionForm", visible);
   }
-
+*/
   m_transactionFormActive = visible;
 
   if(m_form != 0) {
