@@ -20,22 +20,24 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef KEDITEQUITYENTRYDLG_H
+#define KEDITEQUITYENTRYDLG_H
+
+ 
 // ----------------------------------------------------------------------------
 // QT Includes
+#include <qdialog.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
+#include <klistview.h>
+#include <klocale.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#ifndef KEDITEQUITYENTRYDLG_H
-#define KEDITEQUITYENTRYDLG_H
-
-#include <qdialog.h>
-#include <klocale.h>
-
 #include "keditequityentrydecl.h"
+#include "../mymoney/mymoneyequity.h"
 
 /**
   *@author Kevin Tambascio
@@ -45,12 +47,19 @@ class KEditEquityEntryDlg : public kEditEquityEntryDecl
 {
   Q_OBJECT
 public: 
-	KEditEquityEntryDlg(QWidget *parent = NULL, const char *name = NULL);
+	KEditEquityEntryDlg(MyMoneyEquity* selectedEquity, QWidget *parent = NULL, const char *name = NULL);
 	~KEditEquityEntryDlg();
                           
 protected slots:
-  void onOKClicked();
-	void onCancelClicked();	
+  void slotOKClicked();
+	void slotCancelClicked();
+  void slotPriceHistoryDoubleClicked(QListViewItem *item, const QPoint &point, int c);
+  void slotEquityNameChanged(const QString& str);
+  void slotEquitySymbolChanged(const QString& str);
+
+private:
+  MyMoneyEquity* m_selectedEquity;
+  bool m_changes;	
 };
 
 #endif

@@ -49,17 +49,26 @@
 #include <kmessagebox.h>
 #include <kconfig.h>
 #include <knuminput.h>
+#include <klistview.h>
                           
 #include "keditequityentrydlg.h"
 
-KEditEquityEntryDlg::KEditEquityEntryDlg(QWidget *parent, const char *name)
+KEditEquityEntryDlg::KEditEquityEntryDlg(MyMoneyEquity* selectedEquity, QWidget *parent, const char *name)
   : kEditEquityEntryDecl(parent, name, true)
 {
+  m_selectedEquity = selectedEquity;
   lvPriceHistory->addColumn(QString("Date"));
   lvPriceHistory->addColumn(QString("Price"));
   
-  connect(btnOK, SIGNAL(clicked()), this, SLOT(onOKClicked()));
-	connect(btnCancel, SIGNAL(clicked()), this, SLOT(onCancelClicked()));  
+  connect(btnOK, SIGNAL(clicked()), this, SLOT(slotOKClicked()));
+	connect(btnCancel, SIGNAL(clicked()), this, SLOT(slotCancelClicked()));
+  connect(lvPriceHistory, SIGNAL(doubleClicked(QListViewItem*, const QPoint&, int)), this, SLOT(slotPriceHistoryDoubleClicked(QListViewItem *, const QPoint&, int)));
+  connect(edtEquityName, SIGNAL(textChanged(const QString &)), this, SLOT(slotEquityNameChanged(const QString&)));
+  connect(edtMarketSymbol, SIGNAL(textChanged(const QString &)), this, SLOT(slotEquitySymbolChanged(const QString&)));
+  
+  edtEquityName->setText(m_selectedEquity->getEquityName());
+
+  m_changes = false;
 }
 
 KEditEquityEntryDlg::~KEditEquityEntryDlg()
@@ -68,12 +77,27 @@ KEditEquityEntryDlg::~KEditEquityEntryDlg()
 }
 
 /** No descriptions */
-void KEditEquityEntryDlg::onOKClicked()
+void KEditEquityEntryDlg::slotOKClicked()
 {
 	accept();
 }
 
-void KEditEquityEntryDlg::onCancelClicked()
+void KEditEquityEntryDlg::slotCancelClicked()
 {
 	reject();
+}
+
+void KEditEquityEntryDlg::slotPriceHistoryDoubleClicked(QListViewItem *item, const QPoint &point, int c)
+{
+
+}
+
+void KEditEquityEntryDlg::slotEquityNameChanged(const QString& str)
+{
+  m_changes = true;
+}
+
+void KEditEquityEntryDlg::slotEquitySymbolChanged(const QString& str)
+{
+  m_changes = true;
 }
