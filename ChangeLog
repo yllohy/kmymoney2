@@ -1,3 +1,6 @@
+2005-02-16 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Gnucash import
+    - fix scheduled transactions >999.99
 2005-02-15 Ace Jones <acejones@users.sourceforge.net>
   Latest Robert Wadley icons
   * Made the colors more consistent, 

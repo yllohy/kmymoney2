@@ -1400,22 +1400,27 @@ void MyMoneyStorageGNC::convertTemplateSplit (const QString schedName, const Gnc
         validSlotCount++;
       }
       // validate numeric, work out sign
+      MyMoneyMoney exFormula;
+      exFormula.setThousandSeparator (','); // gnucash always uses these in internal file format?
+      exFormula.setDecimalSeparator ('.');
       QString numericTest;
       if (!gncCreditFormula.isEmpty()) {
-        split.setValue(MyMoneyMoney("-" + gncCreditFormula));
+        exFormula = "-" + gncCreditFormula;
         numericTest = gncCreditFormula;
       } else if (!gncDebitFormula.isEmpty()) {
+        exFormula = gncDebitFormula;
         numericTest = gncDebitFormula;
-        split.setValue(MyMoneyMoney(gncDebitFormula));
       }
-      bool isNumeric;
-      double temp;
-      temp = numericTest.toDouble (&isNumeric); // this seems to be the only way to test for valid numeric
-      if (!isNumeric) {
-      qDebug ("%s is not numeric", numericTest.latin1());
-        nonNumericFormula = true;
-        split.setValue(MyMoneyMoney(0));
+      if (exFormula.isZero()) { // if there was a real formula there it would be converted to zero
+        bool isNumeric;         // but just the fact that it's zero doesn't make it bad...
+        double temp;
+        temp = numericTest.toDouble (&isNumeric); // this seems to be the only way to test for valid numeric
+        if (!isNumeric) {
+          qDebug ("%s is not numeric", numericTest.latin1());
+          nonNumericFormula = true;
+        }
       }
+      split.setValue (exFormula);
       xactionCount++;
     } else {
       postMessage ("SC", 3, schedName.latin1(), slot->key().latin1(), slot->type().latin1());
@@ -2007,8 +2012,8 @@ GncMessages::messText GncMessages::texts [] = {
       {"SC", 3, QObject::tr("Schedule %1 contains unknown action (key = %2, type = %3)")},
       {"SC", 4, QObject::tr("Schedule %1 contains multiple actions; only one has been imported")},
       {"SC", 5, QObject::tr("Schedule %1 contains no valid splits")},
-      {"SC", 6, QObject::tr("Schedule %1 appears to contain a formula. Gnucash formulae are not convertible")},
-      {"SC", 7, QObject::tr("Schedule %1 contains a composite interval which has not been converted")},
+      {"SC", 6, QObject::tr("Schedule %1 appears to contain a formula. GnuCash formulae are not convertible")},
+      {"SC", 7, QObject::tr("Schedule %1 contains a composite interval specification; please check for correct operation")},
       {"ZZ", 0, ""} // stopper
     };
 //
