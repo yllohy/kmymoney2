@@ -1,6 +1,11 @@
+2003-12-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * respect date changes when entering schedule transactions
+
 2003-12-12 Kevin Tambascio <ktambascio@users.sourceforge.net>
   * Able to read and write all elements of the storage file using XML.
-  * Added a US list of account categories.  This file is called 'default_accounts_enUS.dat', and it requires the user to select it, its not the default list.
+  * Added a US list of account categories.  This file is called 
+  * 'default_accounts_enUS.dat', and it requires the user to select it,
+  * it's not the default list.
 
 2003-12-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * reset the reconcile flag when creating schedules from existing
