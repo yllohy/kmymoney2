@@ -70,6 +70,10 @@
 #include <kdatetbl.h> // for maximum re-use
 #include <kpopupmenu.h>
 
+#if KDE_IS_VERSION(3,2,0)
+#include <kcalendarsystem.h>
+#endif
+
 // ----------------------------------------------------------------------------
 // Project Includes
 #include "kmymoneycalendar.h"
@@ -257,7 +261,7 @@ kMyMoneyCalendar::dateChangedSlot(QDate date)
     kdDebug() << "kMyMoneyCalendar::dateChangedSlot: date changed (" << date.year() << "/" << date.month() << "/" << date.day() << ")." << endl;
     line->setText(KGlobal::locale()->formatDate(date, true));
     d->selectWeek->setText(i18n("Week %1").arg(weekOfYear(date)));
-    selectMonth->setText(KGlobal::locale()->monthName(date.month(), false));
+    selectMonth->setText(MONTH_NAME(date.month(), date.year(), false));
     selectYear->setText(date.toString("yyyy"));
     emit(dateChanged(date));
 }
@@ -293,7 +297,7 @@ kMyMoneyCalendar::setDate(const QDate& date)
   // -----
   table->setDate(date);
   d->selectWeek->setText(i18n("Week %1").arg(weekOfYear(date)));
-  selectMonth->setText(KGlobal::locale()->monthName(date.month(), false));
+  selectMonth->setText(MONTH_NAME(date.month(), date.year(), false));
   temp.setNum(date.year());
   selectYear->setText(temp);
   line->setText(KGlobal::locale()->formatDate(date, true));
@@ -536,7 +540,7 @@ kMyMoneyCalendar::setFontSize(int s)
     QFontMetrics metrics(selectMonth->fontMetrics());
     for(int i=1; i <= 12; ++i)
       { // maxMonthRect is used by sizeHint()
-        r=metrics.boundingRect(KGlobal::locale()->monthName(i, false));
+        r=metrics.boundingRect(MONTH_NAME(i, 2000, false));
         maxMonthRect.setWidth(QMAX(r.width(), maxMonthRect.width()));
         maxMonthRect.setHeight(QMAX(r.height(),  maxMonthRect.height()));
       }

@@ -61,6 +61,9 @@
 #include <klocale.h>
 #include <kdebug.h>
 #include <knotifyclient.h>
+#if KDE_IS_VERSION(3,2,0)
+#include <kcalendarsystem.h>
+#endif
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -121,9 +124,9 @@ kMyMoneyDateTbl::paintCell(QPainter *painter, int row, int col)
       bool normalday = true;
       QString daystr;
       if ( col+firstWeekDay < 8 )
-        daystr = KGlobal::locale()->weekDayName(col+firstWeekDay, true);
+        daystr = WEEK_DAY_NAME(col+firstWeekDay, true);
       else
-        daystr = KGlobal::locale()->weekDayName(col+firstWeekDay-7, true);
+        daystr = WEEK_DAY_NAME(col+firstWeekDay-7, true);
 
       if ( daystr==i18n("Sunday", "Sun") || daystr==i18n("Saturday", "Sat") )
         normalday=false;
@@ -346,7 +349,7 @@ kMyMoneyDateTbl::setFontSize(int size)
 
   for(count=0; count<m_colCount; ++count)
   {
-    rect=metrics.boundingRect(KGlobal::locale()->weekDayName(count+1, true));
+    rect=metrics.boundingRect(WEEK_DAY_NAME(count+1, true));
     maxCell.setWidth(QMAX(maxCell.width(), rect.width()));
     maxCell.setHeight(QMAX(maxCell.height(), rect.height()));
   }

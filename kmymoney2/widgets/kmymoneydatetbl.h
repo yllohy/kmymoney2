@@ -52,15 +52,16 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 
+#include "kdecompat.h"
+
 // ----------------------------------------------------------------------------
 // Project Includes
 
 
 
 /**
-  *@author Michael Edwardes
+  * @author Michael Edwardes
   */
-
 class kMyMoneyDateTbl : public QGridView  {
    Q_OBJECT
 public:
@@ -68,13 +69,13 @@ public:
                       MONTHLY,
                       QUARTERLY };
 
-public: 
+public:
     /**
      * The constructor.
      */
     kMyMoneyDateTbl(QWidget *parent=0,
-	       QDate date=QDate::currentDate(),
-	       const char* name=0, WFlags f=0);
+         QDate date=QDate::currentDate(),
+         const char* name=0, WFlags f=0);
     /**
      * Returns a recommended size for the widget.
      * To save some time, the size of the largest used cell content is
@@ -176,6 +177,12 @@ protected:
 private:
 #if QT_VERSION <= 0x030005
     int weekNumber(const QDate&, int *yr) const;
+#endif
+
+#if KDE_IS_VERSION(3,2,0)
+  #define WEEK_DAY_NAME(a,b)  KGlobal::locale()->calendar()->weekDayName(a,b)
+#else
+  #define WEEK_DAY_NAME(a,b)  KGlobal::locale()->weekDayName(a,b)
 #endif
 };
 

@@ -55,6 +55,8 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 
+#include "kdecompat.h"
+
 // ----------------------------------------------------------------------------
 // Project Includes
 #include "kmymoneydatetbl.h"
@@ -67,14 +69,14 @@ class QPushButton;
 
 /**
   * A representation of a calendar.
-  *  
+  *
   * @author Michael Edwardes 2003
   *
 **/
 class kMyMoneyCalendar : public QFrame  {
    Q_OBJECT
 public:
-   
+
 public:
   /**
     * Standard constructor.
@@ -193,7 +195,7 @@ protected:
     //  QSize sizehint;
   /// the widest month string in pixels:
   QSize maxMonthRect;
-  
+
 protected slots:
   void dateChangedSlot(QDate);
   void tableClickedSlot();
@@ -210,7 +212,7 @@ protected slots:
   void slotSetStyleWeekly();
   void slotSetStyleMonthly();
   void slotSetStyleQuarterly();
-  
+
 signals:
   /** This signal is emitted each time the selected date is changed.
    *  Usually, this does not mean that the date has been entered,
@@ -249,6 +251,12 @@ private:
   kMyMoneyCalendarPrivate *d;
   // calculate ISO 8601 week number
   int weekOfYear(QDate);
+
+#if KDE_IS_VERSION(3,2,0)
+  #define MONTH_NAME(a,b,c)  KGlobal::locale()->calendar()->monthName(a,b,c)
+#else
+  #define MONTH_NAME(a,b,c)  KGlobal::locale()->monthName(a,c)
+#endif
 };
 
 #endif
