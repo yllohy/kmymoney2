@@ -1,7 +1,7 @@
 /***************************************************************************
                           mymoneyaccount.h
                              -------------------
-    copyright            : (C) 2000 by Michael Edwardes
+    copyright            : (C) 2000-2001 by Michael Edwardes
     email                : mte@users.sourceforge.net
  ***************************************************************************/
 
@@ -23,10 +23,28 @@
 #include "mymoneymoney.h"
 #include "mymoneyscheduled.h"
 
-// This class represents an Account held at a Bank
+/**
+  * A representation of an account typically held at a bank.  This class currently
+  * only supports two types of account - current & savings.
+  *
+  * @see MyMoneyBank
+  * @see MyMoneyTransaction
+  *
+  * @author Michael Edwardes 2000-2001
+  * $Id: mymoneyaccount.h,v 1.4 2001/03/15 02:24:01 mte Exp $
+  *
+  * @short Representation of an account which holds transactions.
+**/
 class MyMoneyAccount {
 public:
-  enum accountTypeE { Unknown_Account, Savings, Current };
+  /**
+    Account types currently supported.
+  **/
+  enum accountTypeE {
+    Unknown_Account, /**< For error handling */
+    Savings, /**< Typical savings account */
+    Current /**< Typical current account */
+  };
 
 private:
   // Account details
@@ -46,50 +64,275 @@ private:
   friend QDataStream &operator<<(QDataStream &, const MyMoneyAccount &);
   friend QDataStream &operator>>(QDataStream &, MyMoneyAccount &);
 
+  // Looks through the transaction list for a transaction !
   bool findTransactionPosition(const MyMoneyTransaction& transaction, unsigned int&);
 
 public:
+  /**
+    * The default constructor which loads default values into the attributes.
+  **/
 	MyMoneyAccount();
-  MyMoneyAccount(const QString& name, const QString& number, accountTypeE type, const QString& description, const QDate& lastReconcile);
+	
+	/**
+	  * The most commonly used constructor.  Initialises all the attributes to the
+	  * supplied arguments.
+	  *
+	  * @param name The account name.
+	  * @param number The account number.
+	  * @param type The account type either savings or current at the moment
+	  * @param description A description of the account. Unlimited in length.
+	  * @param lastReconcile TODO: remove this param, *why* is it here ?
+	**/
+  MyMoneyAccount(const QString& name, const QString& number, accountTypeE type,
+    const QString& description, const QDate& lastReconcile);
+
+  /**
+    * Standard destructor.
+  **/
 	~MyMoneyAccount();
 
-  // Simple get operations
+  /**
+    * Simple get operation.
+    *
+    * @return The name of the account.
+  **/
   QString name(void) const { return m_accountName; }
+
+  /**
+    * Simple get operation.
+    *
+    * @return The account number.
+  **/
   QString accountNumber(void) { return m_accountNumber; }
+
+  /**
+    * Simple get operation.
+    *
+    * @return The name of the account.
+  **/
   QString accountName(void) { return m_accountName; }
+
+  /**
+    * Simple get operation.
+    *
+    * @see accountTypeE
+    *
+    * @return The account type.
+  **/
   accountTypeE accountType(void) { return m_accountType; }
+
+  /**
+    * Simple get operation.
+    *
+    * @return A description of the account.
+  **/
   QString description(void) { return m_description; }
+
+  /**
+    * Simple get operation.
+    *
+    * @return The date of the last reconciliaton.
+  **/
   QDate lastReconcile(void) { return m_lastReconcile; }
+
+  /**
+    * Simple get operation.
+    *
+    * @see MyMoneyScheduled
+    *
+    * @return All the scheduled transactions for this account.
+  **/
   MyMoneyScheduled scheduled(void) { return m_scheduled; }
 
+  /**
+    * Calculates the balance of the account and returns it in a MyMoneyMoney
+    * object.
+    *
+    * @see MyMoneyMoney
+    *
+    * @return The balance of the account.
+  **/
   MyMoneyMoney balance(void) const;
 
-  // Simple set operations
+  /**
+    * Simple set operation.
+    *
+    * @param name The new name for the account.
+  **/
   void setName(const QString& name) { m_accountName = name; }
+
+  /**
+    * Simple set operation.
+    *
+    * @param number The new account number for the account.
+  **/
   void setAccountNumber(const QString& number) { m_accountNumber = number; }
+
+  /**
+    * Simple set operation.
+    * TODO: remove this operation.  Shouldn't be needed because we update m_lastId
+    * internally now (in addTransaction).
+    *
+    * @param id The new last id for the account.
+  **/
   void setLastId(const long id) { m_lastId = id; }
+
+  /**
+    * Simple set operation.
+    *
+    * @param type The new account type.
+    *
+    * @see accountTypeE
+  **/
   void setAccountType(MyMoneyAccount::accountTypeE type) { m_accountType = type; }
+
+  /**
+    * Simple set operation.
+    *
+    * @param description The new description for the account.
+  **/
   void setDescription(const QString& description) { m_description = description; }
+
+  /**
+    * Simple set operation.
+    *
+    * TODO: maybe do this automatically somehow ??
+    *
+    * @param date The last time this account was reconciled.
+  **/
   void setLastReconcile(const QDate& date) { m_lastReconcile = date; }
 
-  // Operations on transactions
+  /**
+    * Finds a transaction in the list that matches the argument.
+    *
+    * @param transaction The transaction to look for.
+    *
+    * @return The found transaction or 0 if not found.
+  **/
   MyMoneyTransaction* transaction(const MyMoneyTransaction& transaction);
+	
+	/**
+	  * Gets the first transaction in the list.
+	  * Typically used in for statements such as:
+	  * for (transaction=transactionFirst(); transaction; transaction=transactionNext()) {
+	  *  ...
+	  * }
+	  *
+	  * @return The first transaction in the list or 0 if no transactions exist.
+	  *
+	  * @see transactionNext
+	  * @see transactionLast
+	**/
 	MyMoneyTransaction* transactionFirst(void);
+	
+	/**
+	  * Gets the next transaction in the list.  You must have called transactionFirst to get the
+	  * next !
+	  * Typically used in for statements such as:
+	  * for (transaction=transactionFirst(); transaction; transaction=transactionNext()) {
+	  *  ...
+	  * }
+	  *
+	  * @return The next transaction in the list or 0 if at end or no transactions.
+	  *
+	  * @see transactionFirst
+	  * @see transactionLast
+	**/
 	MyMoneyTransaction* transactionNext(void);
+	
+	/**
+	  * Gets the last transaction in the list.
+	  *
+	  * @return The last transaction in the list or 0 if no transactions.
+	  *
+	  * @see transactionFirst
+	  * @see transactionNext
+	**/
 	MyMoneyTransaction* transactionLast(void);
+	
+	/**
+	  * Get a transaction from a specific index in the list.
+	  * TODO: Why do we have this, I can't remember putting it in ??  Isn't it
+	  * a bit error prone.  It doesn't even use the argument it just gets
+	  * the last indexed transaction ?? - Michael 15-March-2001.
+	  *
+	  * @param index The index into the list (Not Used??)
+	  *
+	  * @return The current transaction
+	**/
 	MyMoneyTransaction* transactionAt(int index);
+	
+  /**
+    * Retrieve the number of transactions held in this account.
+    *
+    * @return The total number of transactions.
+  **/
   unsigned int transactionCount(void) const;
-  bool removeTransaction(const MyMoneyTransaction& transaction);
-  bool addTransaction(MyMoneyTransaction::transactionMethod methodType, const QString& number, const QString& memo,
-                     const MyMoneyMoney& amount, const QDate& date, const QString& categoryMajor, const QString& categoryMinor, const QString& atmName,
-                     const QString& fromTo, const QString& bankFrom, const QString& bankTo, MyMoneyTransaction::stateE state);
 
+  /**
+    * Removes a specific transaction from the list.
+    *
+    * @param transaction The transaction to remove.
+    *
+    * @return Whether the remove was successful.
+  **/
+  bool removeTransaction(const MyMoneyTransaction& transaction);
+
+  /**
+    * Adds a transaction to the list.
+    *
+    * @param methodType The transaction method.
+    * @param number The transaction number.
+    * @param memo A memo for the transaction.
+    * @param amount A MyMoneyMoney object containing the transaction amount.
+    * @param date The date on which the transaction occurred.
+    * @param categoryMajor The major category string.  TODO: use an index instead.
+    * @param categoryMinor The minor category string.  TODO: use an index instead.
+    * @param atmName Future expansion.
+    * @param payee The payees name.
+    * @param accountFrom  For a transfer transaction this is the account where the money come from.
+    * TODO: remove this and accountTo and only use method calls from elsewhere e.g transferFunds(Account1, Account2).
+    * @param accountTo For a transfer transaction this is the account where the money goes to.
+    * TODO: see above.
+    * @param state Whether or not the transaction has been reconciled.  TODO: remove this it's not needed because
+    * the default of UnReconciled is always used.
+    *
+    * @return TRUE if the transaction has been added.
+    *
+    * @see MyMoneyTransaction
+  **/
+  bool addTransaction(MyMoneyTransaction::transactionMethod methodType, const QString& number, const QString& memo,
+    const MyMoneyMoney& amount, const QDate& date, const QString& categoryMajor, const QString& categoryMinor,
+    const QString& atmName, const QString& payee, const QString& accountFrom, const QString& accountTo,
+    MyMoneyTransaction::stateE state);
+
+  /**
+    * Remove all the transaction from the list.
+  **/
   void clear(void);
 
-  bool operator == (const MyMoneyAccount&);
-  // Copy constructors
-  MyMoneyAccount(const MyMoneyAccount&);
-  MyMoneyAccount& operator = (const MyMoneyAccount&);
+  /**
+    * Equality operator.
+    *
+    * @param right The account to compare to.
+    *
+    * @return TRUE if the accounts are the same.
+  **/
+  bool operator == (const MyMoneyAccount& right);
+
+  /**
+    * Copy constructor.
+    *
+    * @param right The account to copy.
+  **/
+
+  MyMoneyAccount(const MyMoneyAccount& right);
+  /**
+    * Assignment operator.
+    *
+    * @param right The account to copy.
+  **/
+  MyMoneyAccount& operator = (const MyMoneyAccount& right);
 };
 
 #endif
