@@ -1305,6 +1305,12 @@ void KLedgerView::timerDone(void)
 {
   m_register->ensureTransactionVisible();
   m_register->repaintContents(false);
+  
+  // the resize operation does the trick to adjust
+  // all widgets in the view to the size they should
+  // have and show up correctly. Don't ask me, why
+  // this is, but it cured the problem (ipwizard).
+  resize(width()+1, height()+1);
 }
 
 const QCString KLedgerView::str2action(const QString &action) const
@@ -1892,7 +1898,10 @@ void KLedgerView::show()
     m_form->tabBar()->blockSignals(false);
 
   fillForm();
-  resizeEvent(NULL);
+  // the following timer event forces an update of the view once
+  // it is shown. This corrects the sizes of all widgets. If we
+  // don't do this, some of the data/widgets might not be visible.
+  QTimer::singleShot(10,this, SLOT(timerDone()));
 }
 
 void KLedgerView::slotCreateSchedule(void)
