@@ -172,8 +172,8 @@ void kMyMoneyEquity::slotSelectEquity(const QCString& id)
 {
   KLineEdit::setText(MyMoneyFile::instance()->equity(id).tradingSymbol());
   if(m_id != id) {
-    emit equityChanged(id);
     m_id = id;
+    emit equityChanged(id);
   }
   m_equitySelector->hide();
 }
