@@ -42,6 +42,7 @@ class KReportsViewTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST(testXMLWrite);
 	CPPUNIT_TEST(testQueryBasics);
 	CPPUNIT_TEST(testCashFlowAnalysis);
+	CPPUNIT_TEST(testAccountQuery);
 	CPPUNIT_TEST_SUITE_END();
 
 private:
@@ -72,6 +73,7 @@ public:
         void testXMLWrite();
         void testQueryBasics();
         void testCashFlowAnalysis();
+	void testAccountQuery();
 };
 
 #endif

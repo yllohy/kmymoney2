@@ -1,3 +1,8 @@
+2004-11-27 Ace Jones <acejones@users.sourceforge.net>
+  * More test cases for transaction reports
+  * Fixed bug where grand total was getting too large when multiple
+    levels of subtotalling were in effect.
+    
 2004-11-25 Ace Jones <acejones@users.sourceforge.net>
   * Added "Anonymous" as a file saving type, which will save off a
     version of the user's data with all private information (names,
