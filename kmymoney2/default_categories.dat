@@ -1,0 +1,8 @@
+# Lines like these are comments
+
+# Blank lines like the above are ignored
+# The data starts here and is in the format
+# income_boolean Name_Enclosed_In_Quotes Sub_Categories_Enclose_In_Quotes
+# the subcategories must be separated by a comma with NO whitespace
+true "Other Income" "Student loan,Mum & Dad"
+false "Bills" "Telephone,Rent,Electricity,TV,SKY"

@@ -1,0 +1,714 @@
+/***************************************************************************
+                          kmymoney2.cpp
+                             -------------------
+    copyright            : (C) 2000 by Michael Edwardes
+    email                : Michael.Edwardes@students.dmu.ac.uk
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+// include files for QT
+#include <qapp.h>
+#include <qdir.h>
+#include <qprinter.h>
+#include <qpainter.h>
+
+// include files for KDE
+#include <kiconloader.h>
+#include <kmessagebox.h>
+#include <kfiledialog.h>
+#include <kmenubar.h>
+#include <klocale.h>
+#include <kconfig.h>
+#include <kstdaction.h>
+#include <kglobal.h>
+#include <kstddirs.h>
+
+#include <stdio.h>
+
+// application specific includes
+#include "kmymoney2.h"
+#include "kstartdlg.h"
+#include "ksettingsdlg.h"
+#include "kmymoneysettings.h"
+#include "kstartuplogo.h"
+
+#define ID_STATUS_MSG 1
+
+KMyMoney2App::KMyMoney2App(QWidget* , const char* name):KMainWindow(0, name)
+{
+  KStartupLogo *start_logo = new KStartupLogo;
+  start_logo->show();
+
+  config=kapp->config();
+  myMoneyView = new KMyMoneyView(this);
+
+  ///////////////////////////////////////////////////////////////////
+  // call inits to invoke all other construction parts
+  initStatusBar();
+  initActions();
+  readOptions();
+
+  ///////////////////////////////////////////////////////////////////
+  // disable actions at startup
+  editCut->setEnabled(false);
+  editCopy->setEnabled(false);
+  editPaste->setEnabled(false);
+
+  setCentralWidget(myMoneyView);
+  connect(myMoneyView, SIGNAL(fileOperations(bool)), this, SLOT(enableFileOperations(bool)));
+  connect(myMoneyView, SIGNAL(bankOperations(bool)), this, SLOT(enableBankOperations(bool)));
+  connect(myMoneyView, SIGNAL(accountOperations(bool)), this, SLOT(enableAccountOperations(bool)));
+  connect(myMoneyView, SIGNAL(transactionOperations(bool)), this, SLOT(enableTransactionOperations(bool)));
+
+  enableFileOperations(false);
+  enableBankOperations(false);
+  enableAccountOperations(false);
+  enableTransactionOperations(false);
+}
+
+KMyMoney2App::~KMyMoney2App()
+{
+}
+
+void KMyMoney2App::initActions()
+{
+  fileNew = KStdAction::openNew(this, SLOT(slotFileNew()), actionCollection());
+  fileOpen = KStdAction::open(this, SLOT(slotFileOpen()), actionCollection());
+  fileOpenRecent = KStdAction::openRecent(this, SLOT(slotFileOpenRecent(const KURL&)), actionCollection());
+  fileSave = KStdAction::save(this, SLOT(slotFileSave()), actionCollection());
+  fileSaveAs = KStdAction::saveAs(this, SLOT(slotFileSaveAs()), actionCollection());
+  fileClose = KStdAction::close(this, SLOT(slotFileClose()), actionCollection());
+  filePrint = KStdAction::print(this, SLOT(slotFilePrint()), actionCollection());
+  fileQuit = KStdAction::quit(this, SLOT(slotFileQuit()), actionCollection());
+  editCut = KStdAction::cut(this, SLOT(slotEditCut()), actionCollection());
+  editCopy = KStdAction::copy(this, SLOT(slotEditCopy()), actionCollection());
+  editPaste = KStdAction::paste(this, SLOT(slotEditPaste()), actionCollection());
+  viewToolBar = KStdAction::showToolbar(this, SLOT(slotViewToolBar()), actionCollection());
+  viewStatusBar = KStdAction::showStatusbar(this, SLOT(slotViewStatusBar()), actionCollection());
+
+  fileNew->setStatusText(i18n("Creates a new document"));
+  fileOpen->setStatusText(i18n("Opens an existing document"));
+  fileOpenRecent->setStatusText(i18n("Opens a recently used file"));
+  fileSave->setStatusText(i18n("Saves the actual document"));
+  fileSaveAs->setStatusText(i18n("Saves the actual document as..."));
+  fileClose->setStatusText(i18n("Closes the actual document"));
+  filePrint ->setStatusText(i18n("Prints out the actual document"));
+  fileQuit->setStatusText(i18n("Quits the application"));
+  editCut->setStatusText(i18n("Cuts the selected section and puts it to the clipboard"));
+  editCopy->setStatusText(i18n("Copies the selected section to the clipboard"));
+  editPaste->setStatusText(i18n("Pastes the clipboard contents to actual position"));
+  viewToolBar->setStatusText(i18n("Enables/disables the toolbar"));
+  viewStatusBar->setStatusText(i18n("Enables/disables the statusbar"));
+
+  // Additions to the file menu
+  fileViewInfo = new KAction(i18n("View Info..."), 0, 0, this, SLOT(slotFileFileInfo()), actionCollection(), "file_view_info");
+  fileViewInfo->setStatusText(i18n("View information about the file"));
+  filePersonalData = new KAction(i18n("Personal Data..."), 0, 0, this, SLOT(slotFileViewPersonal()), actionCollection(), "file_personal_data");
+  filePersonalData->setStatusText(i18n("Lets you view/edit your personal data"));
+
+  // The Settings Menu
+  settingsGeneral = new KAction(i18n("General settings..."), 0, 0, this, SLOT(slotSettingsGeneral()), actionCollection(), "settings_general");
+  settingsGeneral->setStatusText(i18n("Change some global settings"));
+  settingsLocale = new KAction(i18n("Localisation settings..."), 0, 0, this, SLOT(slotSettingsLocale()), actionCollection(), "settings_locale");
+  settingsLocale->setStatusText(i18n("Change the locale settings"));
+  settingsLists = new KAction(i18n("List view(s) settings..."), 0, 0, this, SLOT(slotSettingsLists()), actionCollection(), "settings_lists");
+  settingsLists->setStatusText(i18n("Change the list view behaviour"));
+
+  // The Categories Menu
+  categoriesEdit = new KAction(i18n("Edit Categories..."), QIconSet(QPixmap(KGlobal::dirs()->findResource("appdata", "toolbar/kmymoney_editcat.xpm"))), 0, this, SLOT(slotCategoriesEdit()), actionCollection(), "categories_edit");
+  categoriesEdit->setStatusText(i18n("Edit and create categories or sub-categories"));
+  categoriesPayees = new KAction(i18n("Edit Payees..."), QIconSet(QPixmap(KGlobal::dirs()->findResource("appdata", "toolbar/kmymoney_editPay.xpm"))), 0, this, SLOT(slotCategoriesPayees()), actionCollection(), "categories_payees");
+  categoriesPayees->setStatusText(i18n("View and edit Payees"));
+
+  // The Bank Menu
+  bankAdd = new KAction(i18n("Add new bank..."), QIconSet(QPixmap(KGlobal::dirs()->findResource("appdata", "toolbar/kmymoney_newbank.xpm"))), 0, this, SLOT(slotBankAdd()), actionCollection(), "bank_add");
+  bankAdd->setStatusText(i18n("Lets you create a new bank"));
+
+  // The Account Menu
+  accountAdd = new KAction(i18n("Add new account..."), QIconSet(QPixmap(KGlobal::dirs()->findResource("appdata", "toolbar/kmymoney_newacc.xpm"))), 0, this, SLOT(slotAccountAdd()), actionCollection(), "account_add");
+  accountAdd->setStatusText(i18n("Lets you create a new account"));
+  accountReconcile = new KAction(i18n("Reconcile account..."), QIconSet(QPixmap(KGlobal::dirs()->findResource("appdata", "toolbar/kmymoney_recon.xpm"))), 0, this, SLOT(slotAccountReconcile()), actionCollection(), "account_reconcile");
+  accountReconcile->setStatusText(i18n("Balance your account"));
+  accountFind = new KAction(i18n("Find transaction..."), QIconSet(QPixmap(KGlobal::dirs()->findResource("appdata", "toolbar/kmymoney_accfind.xpm"))), 0, this, SLOT(slotAccountFind()), actionCollection(), "account_find");
+  accountFind->setStatusText(i18n("Find transactions"));
+  accountImport = new KAction(i18n("Import transactions..."), 0, 0, this, SLOT(slotAccountImport()), actionCollection(), "account_import");
+  accountImport->setStatusText(i18n("Import tab delimited text"));
+  accountExport = new KAction(i18n("Export transactions..."), 0, 0, this, SLOT(slotAccountExport()), actionCollection(), "account_export");
+  accountExport->setStatusText(i18n("Export to tab delimited text"));
+  accountShowBox = new KAction(i18n("Show/Hide Input Box"), 0, 0, this, SLOT(slotShowInputBox()), actionCollection(), "account_showbox");
+  accountShowBox->setStatusText(i18n("Export to tab delimited text"));
+
+  // The Bill Menu
+  billsAdd = new KAction(i18n("Add Bill/Deposit..."), 0, 0, this, SLOT(slotBillsAdd()), actionCollection(), "bills_add");
+  billsAdd->setStatusText(i18n("Add a new Bill or Deposit"));
+
+  // The Report Menu
+  reportBasic = new KAction(i18n("Basic report..."), 0, 0, this, SLOT(slotReportBasic()), actionCollection(), "report_basic");
+  reportBasic->setStatusText(i18n("Basic report on your transactions"));
+
+  // The Plugin Menu
+  pluginLoad = new KAction(i18n("Load plugin..."), 0, 0, this, SLOT(slotPluginLoad()), actionCollection(), "plugin_load");
+  pluginLoad->setStatusText(i18n("Load a plugin enabling a new feature"));
+  pluginUnload = new KAction(i18n("Unload plugin..."), 0, 0, this, SLOT(slotPluginUnload()), actionCollection(), "plugin_unload");
+  pluginUnload->setStatusText(i18n("Unlaod a plugin disabling that feature"));
+  pluginList = new KAction(i18n("List plugins..."), 0, 0, this, SLOT(slotPluginList()), actionCollection(), "plugin_list");
+  pluginList->setStatusText(i18n("View all plugins and/or add new ones"));
+
+  // For the toolbar only
+  viewUp = new KAction(i18n("Move view up..."), QIconSet(QPixmap(KGlobal::dirs()->findResource("appdata", "toolbar/kmymoney_up.xpm"))), 0, this, SLOT(slotViewUp()), actionCollection(), "view_up");
+
+  // use the absolute path to your kmymoney2ui.rc file for testing purpose in createGUI();
+  createGUI();
+}
+
+
+void KMyMoney2App::initStatusBar()
+{
+  ///////////////////////////////////////////////////////////////////
+  // STATUSBAR
+  // TODO: add your own items you need for displaying current application status.
+  statusBar()->insertItem(i18n("Ready."), ID_STATUS_MSG);
+}
+
+void KMyMoney2App::openDocumentFile(const KURL& url)
+{
+/*
+  slotStatusMsg(i18n("Opening file..."));
+  if (myMoneyView->fileOpen()) {
+    if ((KMessageBox::questionYesNo(this, i18n("KMyMoney file already open.  Close ?")))==KMessageBox::No) {
+      slotStatusMsg(i18n("Ready"));
+      return;
+    }
+    else {
+      myMoneyView->close();
+    }
+  }
+
+  myMoneyView->readFile(url.filename());
+
+  fileOpenRecent->addURL( url );
+  slotStatusMsg(i18n("Ready."));
+*/
+}
+
+void KMyMoney2App::saveOptions()
+{	
+  config->setGroup("General Options");
+  config->writeEntry("Geometry", size());
+  config->writeEntry("Show Toolbar", viewToolBar->isChecked());
+  config->writeEntry("Show Statusbar",viewStatusBar->isChecked());
+  config->writeEntry("ToolBarPos", (int) toolBar("mainToolBar")->barPos());
+  fileOpenRecent->saveEntries(config,"Recent Files");
+  config->writeEntry("OpenLastFile", m_openLastFile);
+  config->writeEntry("LastFile", fileName);
+  config->writeEntry("StartDialog", m_startDialog);
+  config->writeEntry("ShowInputBox", m_showInputBox);
+
+  KMyMoneySettings *p_settings = KMyMoneySettings::singleton();
+  config->setGroup("List Options");
+	config->writeEntry("listColor", p_settings->lists_color());
+	config->writeEntry("listBGColor", p_settings->lists_BGColor());
+	config->writeEntry("listHeaderFont", p_settings->lists_headerFont());
+	config->writeEntry("listCellFont", p_settings->lists_cellFont());
+}
+
+
+void KMyMoney2App::readOptions()
+{
+	
+  config->setGroup("General Options");
+
+  // bar status settings
+  bool bViewToolbar = config->readBoolEntry("Show Toolbar", true);
+  viewToolBar->setChecked(bViewToolbar);
+  slotViewToolBar();
+
+  bool bViewStatusbar = config->readBoolEntry("Show Statusbar", true);
+  viewStatusBar->setChecked(bViewStatusbar);
+  slotViewStatusBar();
+
+
+  // bar position settings
+  KToolBar::BarPosition toolBarPos;
+  toolBarPos=(KToolBar::BarPosition) config->readNumEntry("ToolBarPos", KToolBar::Top);
+  toolBar("mainToolBar")->setBarPos(toolBarPos);
+	
+  // initialize the recent file list
+  fileOpenRecent->loadEntries(config,"Recent Files");
+
+  QSize size=config->readSizeEntry("Geometry");
+  if(!size.isEmpty())
+  {
+    resize(size);
+  }
+
+  m_openLastFile = config->readBoolEntry("OpenLastFile", false);
+  fileName = config->readEntry("LastFile");
+  m_startDialog = config->readBoolEntry("StartDialog", true);
+  m_showInputBox = config->readBoolEntry("ShowInputBox", true);
+  myMoneyView->showTransactionInputBox(m_showInputBox);
+
+	QColor l_listColor;
+	QColor l_listBGColor;
+	QFont l_listHeaderFont;
+	QFont l_listCellFont;
+
+  config->setGroup("List Options");
+	l_listColor = config->readColorEntry("listColor");
+	l_listBGColor = config->readColorEntry("listBGColor");
+	l_listHeaderFont = config->readFontEntry("listHeaderFont");
+	l_listCellFont = config->readFontEntry("listCellFont");
+
+  KMyMoneySettings *p_settings = KMyMoneySettings::singleton();
+
+  p_settings->setListSettings(
+     	l_listColor,
+     	l_listBGColor,
+     	l_listHeaderFont,
+     	l_listCellFont );
+}
+
+bool KMyMoney2App::queryClose()
+{
+  if (myMoneyView->dirty())
+    myMoneyView->saveFile(fileName);
+  return true;
+}
+
+bool KMyMoney2App::queryExit()
+{
+  saveOptions();
+/*
+  if (myMoneyView->dirty()) {
+    int id = KMessageBox::warningYesNoCancel(this, i18n("The file has been changed, save it ?"));
+    if (id == KMessageBox::Yes)
+      slotFileSave();
+    else if (id==KMessageBox::Cancel)
+      return false;
+  }
+*/
+  return true;
+}
+
+/////////////////////////////////////////////////////////////////////
+// SLOT IMPLEMENTATION
+/////////////////////////////////////////////////////////////////////
+void KMyMoney2App::slotFileNew()
+{
+  slotStatusMsg(i18n("Creating new document..."));
+  myMoneyView->newFile();
+  slotStatusMsg(i18n("Ready."));
+}
+
+void KMyMoney2App::slotFileOpen()
+{
+  slotStatusMsg(i18n("Opening file..."));
+  bool close=false;
+  if (myMoneyView->fileOpen()) {
+    if ((KMessageBox::questionYesNo(this, i18n("KMyMoney file already open.  Close ?")))==KMessageBox::No) {
+      slotStatusMsg(i18n("Ready"));
+      return;
+    }
+    else {
+      // reset the data later in case they cancel the file open
+      close=true;
+    }
+  }
+  slotStatusMsg(i18n("Opening file..."));
+
+  fileName=KFileDialog::getOpenFileName(QDir::homeDirPath(),
+                                                    i18n("*.kmy|KMyMoney files (*.kmy)"
+                                                    "\n*.*|All files (*.*)"), this, i18n("Open File..."));
+
+  if(!fileName.isEmpty()) {
+    if (close) {
+      myMoneyView->closeFile();
+    }
+    myMoneyView->readFile(fileName);
+  }
+  slotStatusMsg(i18n("Ready."));
+}
+
+void KMyMoney2App::slotFileOpenRecent(const KURL& url)
+{
+  if (myMoneyView->fileOpen()) {
+    if ((KMessageBox::questionYesNo(this, i18n("KMyMoney file already open.  Close ?")))==KMessageBox::No) {
+      slotStatusMsg(i18n("Ready"));
+      return;
+    }
+    else {
+      myMoneyView->close();
+    }
+  }
+
+  slotStatusMsg(i18n("Opening file..."));
+
+  myMoneyView->readFile(url.filename());
+
+  slotStatusMsg(i18n("Ready."));
+}
+
+void KMyMoney2App::slotFileSave()
+{
+  slotStatusMsg(i18n("Saving file..."));
+
+  if (fileName.isEmpty()) {
+    slotFileSaveAs();
+    slotStatusMsg(i18n("Ready"));
+    return;
+  }
+
+  myMoneyView->saveFile(fileName);
+	
+  slotStatusMsg(i18n("Ready."));
+}
+
+void KMyMoney2App::slotFileSaveAs()
+{
+  slotStatusMsg(i18n("Saving file with a new filename..."));
+
+  QString newName=KFileDialog::getSaveFileName(QDir::currentDirPath(),
+                                               i18n("*.kmy|KMyMoney files\n"
+                                               "*.*|All files"), this, i18n("Save as..."));
+  if(!newName.isEmpty())
+  {
+    QFileInfo saveAsInfo(newName);
+//    addRecentFile(newName);
+
+    fileName = newName;
+    myMoneyView->saveFile(newName);
+  }
+
+  slotStatusMsg(i18n("Ready."));
+}
+
+void KMyMoney2App::slotFileClose()
+{
+  slotStatusMsg(i18n("Closing file..."));
+	
+  if (myMoneyView->dirty()) {
+    if (KMessageBox::questionYesNo(this, i18n("The file has been changed, save it ?"))==KMessageBox::Yes)
+      slotFileSave();
+  }
+
+  myMoneyView->closeFile();
+
+  slotStatusMsg(i18n("Ready."));
+}
+
+void KMyMoney2App::slotFilePrint()
+{
+  slotStatusMsg(i18n("Printing..."));
+  KMessageBox::information(this, i18n("Sorry, unavailable at this time."));
+/*
+  QPrinter printer;
+  if (printer.setup(this))
+  {
+    view->print(&printer);
+  }
+*/
+  slotStatusMsg(i18n("Ready."));
+}
+
+void KMyMoney2App::slotFileQuit()
+{
+  slotStatusMsg(i18n("Exiting..."));
+//	saveOptions();
+	kapp->quit();
+  slotStatusMsg(i18n("Ready."));
+}
+
+void KMyMoney2App::slotEditCut()
+{
+  slotStatusMsg(i18n("Cutting selection..."));
+
+  slotStatusMsg(i18n("Ready."));
+}
+
+void KMyMoney2App::slotEditCopy()
+{
+  slotStatusMsg(i18n("Copying selection to clipboard..."));
+
+  slotStatusMsg(i18n("Ready."));
+}
+
+void KMyMoney2App::slotEditPaste()
+{
+  slotStatusMsg(i18n("Inserting clipboard contents..."));
+
+  slotStatusMsg(i18n("Ready."));
+}
+
+void KMyMoney2App::slotViewToolBar()
+{
+  slotStatusMsg(i18n("Toggling toolbar..."));
+  ///////////////////////////////////////////////////////////////////
+  // turn Toolbar on or off
+  if(!viewToolBar->isChecked())
+  {
+    toolBar("mainToolBar")->hide();
+  }
+  else
+  {
+    toolBar("mainToolBar")->show();
+  }		
+
+  slotStatusMsg(i18n("Ready."));
+}
+
+void KMyMoney2App::slotViewStatusBar()
+{
+  slotStatusMsg(i18n("Toggle the statusbar..."));
+  ///////////////////////////////////////////////////////////////////
+  //turn Statusbar on or off
+  if(!viewStatusBar->isChecked())
+  {
+    statusBar()->hide();
+  }
+  else
+  {
+    statusBar()->show();
+  }
+
+  slotStatusMsg(i18n("Ready."));
+}
+
+
+void KMyMoney2App::slotStatusMsg(const QString &text)
+{
+  ///////////////////////////////////////////////////////////////////
+  // change status message permanently
+  statusBar()->clear();
+  statusBar()->changeItem(text, ID_STATUS_MSG);
+}
+
+void KMyMoney2App::slotFileViewPersonal()
+{
+  if ( !myMoneyView->fileOpen() ) {
+    KMessageBox::information(this, i18n("No MyMoneyFile open"));
+    return;
+  }
+
+  slotStatusMsg(i18n("Viewing personal data..."));
+
+  myMoneyView->viewPersonal();
+
+  slotStatusMsg(i18n("Ready"));
+}
+
+void KMyMoney2App::slotFileFileInfo()
+{
+  if ( !myMoneyView->fileOpen() ) {
+    KMessageBox::information(this, i18n("No MyMoneyFile open"));
+    return;
+  }
+
+  myMoneyView->fileInfo();
+}
+
+void KMyMoney2App::slotBankAdd()
+{
+  myMoneyView->slotBankNew();
+}
+
+void KMyMoney2App::slotAccountAdd()
+{
+  myMoneyView->slotAccountNew();
+}
+
+void KMyMoney2App::slotAccountReconcile()
+{
+  myMoneyView->slotAccountReconcile();
+}
+
+void KMyMoney2App::slotAccountImport()
+{
+  myMoneyView->slotAccountImportAscii();
+}
+
+void KMyMoney2App::slotAccountExport()
+{
+  myMoneyView->slotAccountExportAscii();
+}
+
+void KMyMoney2App::slotBillsAdd()
+{
+  KMessageBox::information(this, "Placement holder for future addition...\nPlease wait, I'm on it.\nMichael (Michael.Edwardes@students.dmu.ac.uk.");
+}
+
+void KMyMoney2App::slotReportBasic()
+{
+  KMessageBox::information(this, "Placement holder for future addition...\nPlease wait, I'm on it.\nMichael (Michael.Edwardes@students.dmu.ac.uk.");
+}
+
+void KMyMoney2App::slotPluginLoad()
+{
+  KMessageBox::information(this, "Placement holder for future addition...\nPlease wait, I'm on it.\nMichael (Michael.Edwardes@students.dmu.ac.uk.");
+}
+
+void KMyMoney2App::slotPluginUnload()
+{
+  KMessageBox::information(this, "Placement holder for future addition...\nPlease wait, I'm on it.\nMichael (Michael.Edwardes@students.dmu.ac.uk.");
+}
+
+void KMyMoney2App::slotPluginList()
+{
+  KMessageBox::information(this, "Placement holder for future addition...\nPlease wait, I'm on it.\nMichael (Michael.Edwardes@students.dmu.ac.uk.");
+}
+
+void KMyMoney2App::slotCategoriesEdit()
+{
+  myMoneyView->editCategories();
+}
+
+void KMyMoney2App::slotCategoriesPayees()
+{
+  myMoneyView->editPayees();
+}
+
+void KMyMoney2App::enableFileOperations(bool enable)
+{
+  enableBankOperations(false);
+  enableAccountOperations(false);
+  enableTransactionOperations(false);
+
+  fileClose->setEnabled(enable);
+  fileSave->setEnabled(enable);
+  fileSaveAs->setEnabled(enable);
+  filePrint->setEnabled(enable);
+  fileViewInfo->setEnabled(enable);
+  filePersonalData->setEnabled(enable);
+  billsAdd->setEnabled(enable);
+  reportBasic->setEnabled(enable);
+  categoriesEdit->setEnabled(enable);
+  categoriesPayees->setEnabled(enable);
+  settingsGeneral->setEnabled(enable);
+  settingsLocale->setEnabled(enable);
+  settingsLists->setEnabled(enable);
+  bankAdd->setEnabled(enable);
+
+  fileNew->setEnabled(!enable);
+  fileOpen->setEnabled(!enable);
+  fileOpenRecent->setEnabled(!enable);
+}
+
+void KMyMoney2App::enableBankOperations(bool enable)
+{
+  if (enable) {
+    enableFileOperations(true);
+    enableAccountOperations(false);
+    enableTransactionOperations(false);
+  }
+
+  bankAdd->setEnabled(enable);
+  viewUp->setEnabled(!enable);
+  setCaption(myMoneyView->currentBankName());
+}
+
+void KMyMoney2App::enableAccountOperations(bool enable)
+{
+  if (enable) {
+    enableFileOperations(true);
+    enableBankOperations(false);
+    enableTransactionOperations(false);
+  }
+
+  accountAdd->setEnabled(enable);
+  viewUp->setEnabled(enable);
+  QString caption;
+  caption.sprintf("%s : %s", myMoneyView->currentBankName().latin1(), myMoneyView->currentAccountName().latin1());
+  setCaption(caption);
+}
+
+void KMyMoney2App::slotViewUp()
+{
+  myMoneyView->viewUp();
+}
+
+void KMyMoney2App::enableTransactionOperations(bool enable)
+{
+  if (enable) {
+    enableFileOperations(true);
+    enableBankOperations(false);
+    enableAccountOperations(false);
+  }
+
+  accountReconcile->setEnabled(enable);
+  accountFind->setEnabled(enable);
+  accountImport->setEnabled(enable);
+  accountExport->setEnabled(enable);
+  viewUp->setEnabled(enable);
+
+  QString caption;
+  caption.sprintf("%s : %s", myMoneyView->currentBankName().latin1(), myMoneyView->currentAccountName().latin1());
+  setCaption(caption);
+}
+
+void KMyMoney2App::slotSettingsGeneral()
+{
+  KSettingsDlg dlg(m_startDialog, m_openLastFile, this, "SettingsDialog");
+  if (dlg.exec()) {
+    m_openLastFile = dlg.openLastFile;
+    m_startDialog = dlg.startDialog;
+  }
+}
+
+void KMyMoney2App::slotSettingsLists()
+{
+  myMoneyView->settingsLists();
+}
+
+void KMyMoney2App::slotSettingsLocale()
+{
+  KMessageBox::information(this, i18n("KMyMoney 2 reads it's settings from the KDE desktop.\nYou can change these values from the KMenuBar:\n    Preferences --> Personalisation --> Country & Language"));
+}
+
+void KMyMoney2App::slotAccountFind()
+{
+  myMoneyView->accountFind();
+}
+
+void KMyMoney2App::slotShowInputBox()
+{
+  if (m_showInputBox)
+    m_showInputBox=false;
+  else
+    m_showInputBox=true;
+  myMoneyView->showTransactionInputBox(m_showInputBox);
+}
+
+/** Init wizard dialog */
+bool KMyMoney2App::initWizard()
+{
+//  if (m_startDialog) {
+    KStartDlg start(fileName, this);
+    if (start.exec()) {
+      if (start.isNewFile()) {
+        fprintf(stderr, "isNewFile\n");
+        fileName = start.m_filename;
+        slotFileNew();
+      } else if (start.isOpenFile()) {
+        fileName = start.m_filename;
+        myMoneyView->readFile(fileName);
+      } else { // Wizard / Template
+        fileName = start.m_filename;
+      }
+			return true;
+    } else {
+      // cancel clicked so post an exit call
+      fprintf(stderr, "cancelling the application\n");
+			return false;
+      kapp->quit();
+    }
+//  } else { // m_openLastFile
+//    myMoneyView->readFile(fileName);
+//  }
+}

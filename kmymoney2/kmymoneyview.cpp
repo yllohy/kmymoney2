@@ -1,0 +1,1043 @@
+/***************************************************************************
+                          kmymoneyview.cpp
+                             -------------------
+    copyright            : (C) 2000 by Michael Edwardes
+    email                : Michael.Edwardes@students.dmu.ac.uk
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#include <kglobal.h>
+#include <kstddirs.h>
+#include <kmessagebox.h>
+#include <qlabel.h>
+#include <qfile.h>
+#include <qtextstream.h>
+
+#include <stdio.h>
+
+#include "knewbankdlg.h"
+#include "knewaccountdlg.h"
+#include "kendingbalancedlg.h"
+#include "kcategoriesdlg.h"
+#include "kpayeedlg.h"
+#include "knewfiledlg.h"
+#include "kfileinfodlg.h"
+#include "klistsettingsdlg.h"
+#include "kmymoneysettings.h"
+#include "kmymoneyview.h"
+
+KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
+ : KTabCtl(parent,name)
+{
+  m_mainView = new KMainView(this);
+  m_scheduledView = new KScheduleView(this);
+
+  addTab(m_mainView, i18n("Accounts"));
+  addTab(m_scheduledView, i18n("Bills & Deposits"));
+  QLabel *reportsLabel = new QLabel(i18n("Sorry, Reports not available yet"), this);
+  addTab(reportsLabel, i18n("Reports"));
+  QLabel *pluginsLabel = new QLabel(i18n("Sorry, Plugins not yet available"), this);
+  addTab(pluginsLabel, i18n("Plugins"));
+
+  connect(m_mainView, SIGNAL(transactionListChanged()), this, SLOT(slotTransactionListChanged()));
+
+  connect(m_mainView, SIGNAL(accountRightMouseClick(const MyMoneyAccount, bool)), this, SLOT(slotAccountRightMouse(const MyMoneyAccount, bool)));
+  connect(m_mainView, SIGNAL(accountDoubleClick(const MyMoneyAccount)), this, SLOT(slotAccountDoubleClick(const MyMoneyAccount)));
+
+  connect(m_mainView, SIGNAL(bankRightMouseClick(const MyMoneyBank, bool)), this, SLOT(slotBankRightMouse(const MyMoneyBank, bool)));
+
+  m_inReconciliation=false;
+  m_reconcileInited=false;
+  reconcileDlg=0;
+  transactionFindDlg=0;
+  transactionResultsDlg=0;
+}
+
+KMyMoneyView::~KMyMoneyView()
+{
+}
+
+void KMyMoneyView::slotTransactionListChanged()
+{
+	if (m_inReconciliation)
+	  reconcileDlg->updateData();
+}
+
+void KMyMoneyView::slotAccountRightMouse(const MyMoneyAccount, bool inList)
+{
+  KPopupMenu menu(i18n("Account Options"), this);
+  int id1 = menu.insertItem(i18n("Reconcile..."), this, SLOT(slotAccountReconcile()));
+  menu.insertSeparator();
+  int id3 = menu.insertItem(i18n("Edit..."), this, SLOT(slotAccountEdit()));
+  int id4 = menu.insertItem(i18n("Delete..."), this, SLOT(slotAccountDelete()));
+  menu.insertSeparator();
+  int id5 = menu.insertItem(i18n("Import ascii..."), this, SLOT(slotAccountImportAscii()));
+  int id6 = menu.insertItem(i18n("Export ascii..."), this, SLOT(slotAccountExportAscii()));
+  if (!inList) {
+    menu.setItemEnabled(id1, false);
+    menu.setItemEnabled(id3, false);
+    menu.setItemEnabled(id4, false);
+    menu.setItemEnabled(id5, false);
+    menu.setItemEnabled(id6, false);
+  }
+  menu.exec(QCursor::pos());
+}
+
+void KMyMoneyView::slotAccountDoubleClick(const MyMoneyAccount)
+{
+  if (!m_file.isInitialised()) {
+    KMessageBox::error(this, i18n("Tried to access a file when it's not open"));
+    return;
+  }
+
+  qDebug("In account double click in kmymoneyview");
+  viewTransactionList();
+}
+
+void KMyMoneyView::slotBankRightMouse(const MyMoneyBank, bool inList)
+{
+  qDebug("Creating menu");
+  KPopupMenu menu(i18n("Bank Options"), this);
+  int id1 = menu.insertItem(i18n("New Bank..."), this, SLOT(slotBankNew()));
+  int id2 = menu.insertItem(i18n("New Account..."), this, SLOT(slotAccountNew()));
+  int id3 = menu.insertItem(i18n("Edit..."), this, SLOT(slotBankEdit()));
+  int id4 = menu.insertItem(i18n("Delete..."), this, SLOT(slotBankDelete()));
+  if (!inList) {
+    menu.setItemEnabled(id2, false);
+    menu.setItemEnabled(id3, false);
+    menu.setItemEnabled(id4, false);
+  } else
+    menu.setItemEnabled(id1, false);
+  menu.exec(QCursor::pos());
+}
+
+void KMyMoneyView::slotBankEdit()
+{
+  if ( !m_file.isInitialised() ) {
+    KMessageBox::information(this, i18n("No MyMoneyFile open"));
+    return;
+  }
+
+  bool bankSuccess=false;
+  MyMoneyBank bank = m_mainView->currentBank(bankSuccess);
+  if (bankSuccess) {
+    KNewBankDlg dlg(bank.name(),
+      bank.sortCode(),
+      bank.city(),
+      bank.street(),
+      bank.postcode(),
+      bank.telephone(),
+      bank.manager(),
+      i18n("Edit Bank"), this);
+
+    if (dlg.exec()) {
+      MyMoneyBank *bankWrite;
+      if ((bankWrite=m_file.bank(bank))) {
+        bankWrite->setName(dlg.m_name);
+        bankWrite->setCity(dlg.m_city);
+        bankWrite->setStreet(dlg.m_street);
+        bankWrite->setPostcode(dlg.m_postcode);
+        bankWrite->setTelephone(dlg.m_telephone);
+        bankWrite->setManager(dlg.m_managerName);
+        m_file.setDirty(true);
+        m_mainView->refreshBankView(m_file);
+      } else {
+        KMessageBox::information(this, i18n("Unable to grab a pointer to a bank"));
+      }
+    } else
+      qDebug("WARNING: unable to get currf2ent bank");
+  }
+}
+
+void KMyMoneyView::slotBankDelete()
+{
+  bool bankSuccess=false;
+  MyMoneyBank bank = m_mainView->currentBank(bankSuccess);
+  if (bankSuccess) {
+    QString msg;
+    msg.sprintf(i18n("Delete this bank: %s ?"), bank.name().latin1());
+    if ((KMessageBox::questionYesNo(this, msg))==KMessageBox::No)
+      return;
+
+    m_file.removeBank(bank);
+
+    if (m_file.bankCount()<=0)  // If no more banks exist
+      emit bankOperations(false);
+
+    m_mainView->refreshBankView(m_file);
+  } else
+    qDebug("WARNING: unable to get currfent bank");
+}
+
+void KMyMoneyView::slotAccountEdit()
+{
+  if (!m_file.isInitialised()) {
+    KMessageBox::error(this, i18n("Tried to access a file when it's not open"));
+    return;
+  }
+
+  bool bankSuccess=false, accountSuccess=false;
+  MyMoneyBank *pBank;
+  MyMoneyAccount *pAccount;
+
+	pBank = m_file.bank(m_mainView->currentBank(bankSuccess));
+	if (!pBank || !bankSuccess) {
+    qDebug("KMyMoneyView::slotAccountEdit: Unable to get the current bank");
+    return;
+  }
+  pAccount = pBank->account(m_mainView->currentAccount(accountSuccess));
+  if (!pAccount || !accountSuccess) {
+    qDebug("KMyMoneyView::slotAccountEdit: Unable to grab the current account");
+    return;
+  }
+
+  KNewAccountDlg dlg(pAccount->name(),
+                         pAccount->accountNumber(),
+                         pAccount->accountType(),
+                         pAccount->description(),
+                         this, "hi", i18n("Edit an Account"), i18n("commit"));
+
+  if (!dlg.exec())
+    return;
+
+  pAccount->setName(dlg.accountNameText);
+  pAccount->setAccountNumber(dlg.accountNoText);
+  pAccount->setAccountType(dlg.type);
+  pAccount->setAccountNumber(dlg.accountNoText);
+  pAccount->setDescription(dlg.descriptionText);
+
+  m_file.setDirty(true);
+
+  m_mainView->refreshBankView(m_file);
+}
+
+
+void KMyMoneyView::slotAccountDelete()
+{
+  if (!m_file.isInitialised()) {
+    KMessageBox::error(this, i18n("Tried to access a file when it's not open"));
+    return;
+  }
+
+  bool bankSuccess=false, accountSuccess=false;
+  MyMoneyBank *pBank;
+  MyMoneyAccount *pAccount;
+
+	pBank = m_file.bank(m_mainView->currentBank(bankSuccess));
+	if (!pBank || !bankSuccess) {
+    qDebug("KMyMoneyView::slotAccountDelete: Unable to get the current bank");
+    return;
+  }
+  pAccount = pBank->account(m_mainView->currentAccount(accountSuccess));
+  if (!pAccount || !accountSuccess) {
+    qDebug("KMyMoneyView::slotAccountDelete: Unable to grab the current account");
+    return;
+  }
+
+  QString prompt;
+  prompt.sprintf(i18n("Delete this account ? :-\n%s"),
+    pAccount->name().latin1());
+
+  if ((KMessageBox::questionYesNo(this, prompt))==KMessageBox::No)
+    return;
+
+  pBank->removeAccount(*pAccount);
+  if (pBank->accountCount()<=0) // If no more accounts exist
+    emit accountOperations(false);
+
+  m_mainView->refreshBankView(m_file);
+  m_file.setDirty(true);
+}
+
+bool KMyMoneyView::fileOpen(void)
+{
+  return m_file.isInitialised();
+}
+
+void KMyMoneyView::closeFile(void)
+{
+  if (m_file.isInitialised()) {
+    m_file.resetAllData();  // Make sure all memory is released
+//    delete m_file;
+//    m_file = 0;
+//    m_file.setInitialised(false);
+  }
+
+  m_mainView->clear();
+  emit fileOperations(false);
+}
+
+bool KMyMoneyView::readFile(QString filename)
+{
+  if (!m_file.isInitialised()) {
+//    m_file = new MyMoneyFile;
+    m_file.init();
+  }
+  m_file.resetAllData();
+
+  QString error;
+  int ret;	
+  if ((ret=m_file.readAllData(filename))!=0) {
+    switch (ret) {
+      case 1: // bad version  number
+        error.sprintf(i18n("Error while reading file: Bad version number"));
+        KMessageBox::information(this, error);
+        break;
+      case 2: // bad magic number
+        error.sprintf(i18n("Error while reading file: Bad magic number"));
+        KMessageBox::information(this, error);
+        break;
+      case 3: // File doesn't exist
+        error.sprintf(i18n("Error while reading file: File doesn't exist"));
+        KMessageBox::information(this, error);
+        break;
+      default:
+        error.sprintf(i18n("Error while reading file %d"), ret);
+        KMessageBox::information(this, error);
+        break;
+    }
+    m_file.resetAllData();
+//    delete m_file;
+//    m_file=0;
+    return false;
+  }
+  else {
+    m_mainView->viewBankList();
+    m_mainView->refreshBankView(m_file);
+    emit bankOperations(true);
+    m_file.init();
+  }
+  return true;
+}
+
+void KMyMoneyView::saveFile(QString filename)
+{
+  if (!m_file.isInitialised()) {
+    KMessageBox::error(this, i18n("Tried to access a file when it's not open"));
+    return;
+  }
+
+  m_file.saveAllData(filename);
+}
+
+bool KMyMoneyView::dirty(void)
+{
+  if (!m_file.isInitialised())
+    return false;
+  return m_file.dirty();
+}
+
+void KMyMoneyView::setDirty(bool dirty)
+{
+  if (!m_file.isInitialised()) {
+    KMessageBox::error(this, i18n("Tried to access a file when it's not open"));
+    return;
+  }
+  m_file.setDirty(dirty);
+}
+
+void KMyMoneyView::slotBankNew(void)
+{
+  if (!m_file.isInitialised()) {
+    KMessageBox::error(this, i18n("Tried to access a file when it's not open"));
+    return;
+  }
+
+  KNewBankDlg dlg(this);
+  if (dlg.exec()) {
+    m_mainView->clear();
+
+    m_file.addBank(dlg.m_name, dlg.m_sortCode, dlg.m_city, dlg.m_street, dlg.m_postcode, dlg.m_telephone, dlg.m_managerName);
+    m_mainView->refreshBankView(m_file);
+    viewBankList();
+    emit bankOperations(true);
+  }
+}
+
+void KMyMoneyView::slotAccountNew(void)
+{
+  if (!m_file.isInitialised()) {
+    KMessageBox::error(this, i18n("Tried to access a file when it's not open"));
+    return;
+  }
+
+  if (m_file.bankCount()<=0)
+    return;
+
+  bool bankSuccess=false;
+  MyMoneyBank *pBank;
+  MyMoneyAccount *pAccount;
+
+	pBank = m_file.bank(m_mainView->currentBank(bankSuccess));
+	if (!pBank || !bankSuccess) {
+    qDebug("KMyMoneyView::slotAccountNew: Unable to get the current bank");
+    return;
+  }
+
+  KNewAccountDlg dialog(this, "hi", i18n("Create a new Account"), i18n("Create"));
+
+  if (dialog.exec()) {
+    pBank->newAccount(dialog.accountNameText,
+                            dialog.accountNoText,
+                            dialog.type,
+                            dialog.descriptionText,
+                            QDate(1923, 1, 1)
+                            );
+    qDebug("Avbout to refresh account list");
+    m_mainView->refreshBankView(m_file);
+
+    MyMoneyAccount accountTmp(dialog.accountNameText,
+                          dialog.accountNoText,
+                          dialog.type,
+                          dialog.descriptionText,
+                          QDate(1923, 1, 1));
+    pAccount = pBank->account(accountTmp);
+    if (!pAccount) {
+      qDebug("Unable to grab the newly created account");
+      return;
+    }
+
+    MyMoneyMoney money(dialog.startBalance);
+    if (!money.isZero()) {
+      pAccount->addTransaction(MyMoneyTransaction::Deposit,
+          0,
+          i18n("Initial account balance"),
+          money,
+          dialog.startDate,
+          "", "", "", "", "", "",
+          MyMoneyTransaction::Unreconciled );
+    }
+    viewBankList();
+    emit accountOperations(true);
+  }
+}
+
+void KMyMoneyView::slotAccountReconcile(void)
+{
+  MyMoneyMoney l_previousBal, l_endingBalGuess;
+//  QListIterator<MyMoneyTransaction> it = m_file.transactionIterator(bankIndex, accountIndex);
+	
+  bool bankSuccess=false, accountSuccess=false;
+  MyMoneyBank *pBank;
+  MyMoneyAccount *pAccount;
+
+	pBank = m_file.bank(m_mainView->currentBank(bankSuccess));
+	if (!pBank || !bankSuccess) {
+    qDebug("KMyMoneyView::slotAccountReconcile: Unable to get the current bank");
+    return;
+  }
+  pAccount = pBank->account(m_mainView->currentAccount(accountSuccess));
+  if (!pAccount || !accountSuccess) {
+    qDebug("KMyMoneyView::slotAccountReconcile: Unable to grab the current account");
+    return;
+  }
+
+  MyMoneyTransaction *transaction;
+  // Calculate the previous balance and the guess
+  for ( transaction=pAccount->transactionFirst(); transaction; transaction=pAccount->transactionNext()) {
+    if (transaction->state() == MyMoneyTransaction::Reconciled)
+      if (transaction->type() == MyMoneyTransaction::Credit)
+        l_previousBal += transaction->amount();
+      else
+        l_previousBal -= transaction->amount();
+
+    if (transaction->type() == MyMoneyTransaction::Credit)
+      l_endingBalGuess += transaction->amount();
+    else
+      l_endingBalGuess -= transaction->amount();
+  }
+	
+  KEndingBalanceDlg dlg(l_previousBal, l_endingBalGuess, this);
+	if (dlg.exec()) {
+    if (!m_reconcileInited) {
+      reconcileDlg = new KReconcileDlg(l_previousBal, dlg.endingBalance, dlg.endingDate, *pBank, *pAccount, m_file, 0);
+      connect(reconcileDlg, SIGNAL(reconcileFinished(bool)), this, SLOT(slotReconcileFinished(bool)));
+    	reconcileDlg->show();
+    	m_inReconciliation = true;
+  	  m_reconcileInited=true;
+    } else {
+      reconcileDlg->resetData(l_previousBal, dlg.endingBalance, dlg.endingDate, *pBank, *pAccount, m_file);
+      reconcileDlg->show();
+  	  m_inReconciliation = true;
+    }
+  }
+}
+
+void KMyMoneyView::slotAccountImportAscii(void)
+{
+  KMessageBox::information(this, "slotAccountImportAscii: Placement holder for future addition...\nPlease wait, I'm on it.\nMichael (Michael.Edwardes@students.dmu.ac.uk.");
+}
+
+void KMyMoneyView::slotAccountExportAscii(void)
+{
+  KMessageBox::information(this, "slotAccountExportAscii: Placement holder for future addition...\nPlease wait, I'm on it.\nMichael (Michael.Edwardes@students.dmu.ac.uk.");
+}
+
+void KMyMoneyView::editCategories(void)
+{
+  if (!m_file.isInitialised()) {
+    KMessageBox::error(this, i18n("Tried to access a file when it's not open"));
+    return;
+  }
+
+  KCategoriesDlg dlg(&m_file, this);
+  dlg.exec();
+}
+
+void KMyMoneyView::editPayees(void)
+{
+  if (!m_file.isInitialised()) {
+    KMessageBox::error(this, i18n("Tried to access a file when it's not open"));
+    return;
+  }
+
+  KPayeeDlg dlg(&m_file, this);
+  dlg.exec();
+}
+
+void KMyMoneyView::slotReconcileFinished(bool success)
+{
+  bool bankSuccess=false, accountSuccess=false;
+  MyMoneyBank *pBank;
+  MyMoneyAccount *pAccount;
+
+	pBank = m_file.bank(m_mainView->currentBank(bankSuccess));
+	if (!pBank || !bankSuccess) {
+    qDebug("KMyMoneyView::slotreconcileFinished: Unable to get the current bank");
+    return;
+  }
+  pAccount = pBank->account(m_mainView->currentAccount(accountSuccess));
+  if (!pAccount || !accountSuccess) {
+    qDebug("KMyMoneyView::slotreconcileFinished: Unable to grab the current account");
+    return;
+  }
+
+  if (success) {
+    m_mainView->refreshTransactionView();
+  } else
+    KMessageBox::information(this, i18n("Reconciliation failed for some reason"));
+
+  reconcileDlg->hide();
+  m_inReconciliation=false;
+}
+
+void KMyMoneyView::newFile(void)
+{
+  if (m_file.isInitialised()) {
+    if ((KMessageBox::questionYesNo(this, i18n("Money file already open\nClose ?")))==KMessageBox::No) {
+      return;
+    }
+    closeFile();
+    m_file.init();
+    m_file.resetAllData();
+  }
+   // create the money file
+  KNewFileDlg newFileDlg(this, "e", i18n("Create new KMyMoneyFile"));
+  if (newFileDlg.exec()) {
+  qDebug("nameText: %s", newFileDlg.nameText.latin1());
+    m_file.set_moneyName(newFileDlg.nameText);
+    m_file.set_userName(newFileDlg.userNameText);
+    m_file.set_userStreet(newFileDlg.userStreetText);
+    m_file.set_userTown(newFileDlg.userTownText);
+    m_file.set_userCounty(newFileDlg.userCountyText);
+    m_file.set_userPostcode(newFileDlg.userPostcodeText);
+    m_file.set_userTelephone(newFileDlg.userTelephoneText);
+    m_file.set_userEmail(newFileDlg.userEmailText);
+    m_file.setCreateDate(QDate::currentDate() );
+
+    loadDefaultCategories();
+
+    m_file.init();
+    qDebug("in newFile qDebug");
+    fprintf(stderr, "in new|File fprintf\n");
+    qDebug("file name: %s", m_file.name().latin1());
+    emit bankOperations(true);
+    m_file.setDirty(true);
+    viewBankList();
+  }
+}
+
+void KMyMoneyView::viewPersonal(void)
+{
+  if (!m_file.isInitialised()) {
+    KMessageBox::information(this, i18n("Cannot start wizard on an unopened file"));
+    return;
+  }
+
+  KNewFileDlg newFileDlg(m_file.name(), m_file.userName(), m_file.userStreet(),
+    m_file.userTown(), m_file.userCounty(), m_file.userPostcode(), m_file.userTelephone(),
+    m_file.userEmail(), this, "e", i18n("Edit Personal Data"), i18n("Commit"));
+  if (newFileDlg.exec()) {
+    m_file.set_moneyName(newFileDlg.nameText);
+    m_file.set_userName(newFileDlg.userNameText);
+    m_file.set_userStreet(newFileDlg.userStreetText);
+    m_file.set_userTown(newFileDlg.userTownText);
+    m_file.set_userCounty(newFileDlg.userCountyText);
+    m_file.set_userPostcode(newFileDlg.userPostcodeText);
+    m_file.set_userTelephone(newFileDlg.userTelephoneText);
+    m_file.set_userEmail(newFileDlg.userEmailText);
+
+    m_file.setDirty(true);
+  }
+}
+
+void KMyMoneyView::loadDefaultCategories(void)
+{
+  QString filename = KGlobal::dirs()->findResource("appdata", "default_categories.dat");
+  if (filename == QString::null) {
+    KMessageBox::error(this, i18n("Cannot find the data file containing the default categories"));
+    return;
+  }
+
+  QFile f(filename);
+  if (f.open(IO_ReadOnly) ) {
+    QTextStream t(&f);
+    QString s;
+    while ( !t.eof() ) {        // until end of file...
+      s = t.readLine();       // line of text excluding '\n'
+      if (!s.isEmpty() && s[0]!='#') {
+        bool l_income=false;
+        QString l_categoryName;
+        QStringList l_minorList;
+        if (parseDefaultCategory(s, l_income, l_categoryName, l_minorList)) {
+          m_file.addCategory(l_income, l_categoryName, l_minorList);
+        }
+        l_minorList.clear(); // clear the list
+      }
+    }
+    f.close();
+  }
+}
+
+bool KMyMoneyView::parseDefaultCategory(QString& line, bool& income, QString& name, QStringList& minors)
+{
+  // Parse the argument line separating into 3 other arguments
+  if (line.isEmpty() || line.isNull())
+    return false;
+
+  QString buffer;
+  unsigned int count=0;
+  int tokenCount=0;
+  bool done1=false, done2=false, done3=false, b_inEnclosed=false;
+  QChar commentChar('#');
+  QChar encloseChar('\"');
+  QChar separatorChar(',');
+
+  while (count <= line.length()) {
+    if (line[count]==commentChar)
+        return false;
+    else if (count==line.length()) {
+      tokenCount++;
+      unsigned int inner_count=0;
+      QString inner_buffer;
+      while (inner_count <= buffer.length()) {
+        if (buffer[inner_count]==separatorChar) {
+          minors.append(inner_buffer);
+          inner_count++;
+          inner_buffer = QString::null;
+        }
+        else if (inner_count==buffer.length()) {
+          minors.append(inner_buffer);
+          break;
+        }
+        else
+          inner_buffer += buffer[inner_count++];
+      }
+      done3=true;
+      if (done1 && done2 && done3)
+        return true;
+      else
+        return false;
+    }
+    else if (line[count].isSpace()) {
+      if (!b_inEnclosed) {
+        while (line[count].isSpace())
+          count++;
+
+        switch (tokenCount) {
+          case 0: // income
+            if (buffer=="true" || buffer=="TRUE")
+              income = true;
+            else if (buffer=="false" || buffer=="FALSE")
+              income = false;
+            else
+              return false;
+              tokenCount++;
+              done1=true;
+              buffer = QString::null;
+              break;
+          case 1: // name
+            name = buffer;
+            tokenCount++;
+            done2=true;
+            buffer = QString::null;
+            break;
+          default:
+            return false;
+        }
+      } else {
+        if (line[count]==QChar('\n'))
+          return false;
+        buffer += ' ';
+        count++;
+      }
+    } else if (line[count]==encloseChar) {
+      if (b_inEnclosed)
+        b_inEnclosed = false;
+      else
+        b_inEnclosed = true;
+      count++;
+    } else {
+      buffer += line[count++];
+    }
+  }
+  if (done1 && done2 && done3)
+    return true;
+  return false;
+}
+
+void KMyMoneyView::viewUp(void)
+{
+  if (!m_file.isInitialised())
+    return;
+
+  switch (m_mainView->viewing()) {
+//    case KMainView::AccountList:
+//      qDebug("currently viewing account list");
+//      viewBankList();
+//      break;
+    case KMainView::TransactionList:
+      viewBankList();
+      break;
+    default:
+      break;
+  }
+}
+
+void KMyMoneyView::viewBankList(void)
+{
+  if (!m_file.isInitialised())
+    return;
+
+  m_mainView->refreshBankView(m_file);
+  m_mainView->viewBankList();
+  qDebug("viewBankList called in kmymoneyview");
+  emit bankOperations(true);
+}
+
+void KMyMoneyView::viewTransactionList(void)
+{
+  if (!m_file.isInitialised())
+    return;
+
+  bool bankSuccess=false, accountSuccess=false;
+  MyMoneyBank *pBank;
+  MyMoneyAccount *pAccount;
+
+	pBank = m_file.bank(m_mainView->currentBank(bankSuccess));
+	if (!pBank || !bankSuccess) {
+    qDebug("KMyMoneyView::viewTransactionList: Unable to get the current bank");
+    return;
+  }
+  pAccount = pBank->account(m_mainView->currentAccount(accountSuccess));
+  if (!pAccount || !accountSuccess) {
+    qDebug("KMyMoneyView::viewTransactionList: Unable to grab the current account");
+    return;
+  }
+
+  m_mainView->initTransactionView(&m_file, *pBank, *pAccount);
+  m_mainView->viewTransactionList();
+  emit transactionOperations(true);
+}
+
+void KMyMoneyView::fileInfo(void)
+{
+  KFileInfoDlg dlg(m_file.createdDate(), m_file.lastAccessDate(), m_file.lastModifyDate(), this);
+  dlg.exec();
+}
+
+void KMyMoneyView::settingsLists()
+{
+  bool bankSuccess=false, accountSuccess=false;
+  MyMoneyBank *pBank;
+  MyMoneyAccount *pAccount;
+
+	pBank = m_file.bank(m_mainView->currentBank(bankSuccess));
+	if (!pBank || !bankSuccess) {
+    qDebug("KMyMoneyView::settingsLists: Unable to get the current bank");
+    return;
+  }
+  pAccount = pBank->account(m_mainView->currentAccount(accountSuccess));
+  if (!pAccount || !accountSuccess) {
+    qDebug("KMyMoneyView::settingsLists: Unable to grab the current account");
+    return;
+  }
+
+  KMyMoneySettings *p_settings = KMyMoneySettings::singleton();
+
+  KListSettingsDlg dlg(this);
+  if (dlg.exec()) {
+    p_settings->setListSettings(
+      	dlg.m_listColor,
+      	dlg.m_listBGColor,
+      	dlg.m_listHeaderFont,
+      	dlg.m_listCellFont );
+
+    // See which list we are viewing and then refresh it
+    switch(m_mainView->viewing()) {
+      case KMainView::BankList:
+        m_mainView->refreshBankView(m_file);
+        break;
+//      case KMainView::AccountList:
+//        m_mainView->refresh(KMainView::BankList, m_file);
+//        break;
+      case KMainView::TransactionList:
+        m_mainView->refreshTransactionView();
+        break;
+      default:
+        break;
+    }
+  }
+}
+
+void KMyMoneyView::accountFind()
+{
+  if (!transactionFindDlg) {
+    transactionFindDlg = new KFindTransactionDlg(0);
+    connect(transactionFindDlg, SIGNAL(searchReady()), this, SLOT(doTransactionSearch()));
+  }
+
+  transactionFindDlg->show();
+}
+
+void KMyMoneyView::doTransactionSearch()
+{
+  bool bankSuccess=false, accountSuccess=false;
+  MyMoneyBank *pBank;
+  MyMoneyAccount *pAccount;
+
+	pBank = m_file.bank(m_mainView->currentBank(bankSuccess));
+	if (!pBank || !bankSuccess) {
+    qDebug("KMyMoneyView::doTransactionSearch: Unable to get the current bank");
+    return;
+  }
+  pAccount = pBank->account(m_mainView->currentAccount(accountSuccess));
+  if (!pAccount || !accountSuccess) {
+    qDebug("KMyMoneyView::doTransactionSearch: Unable to grab the current account");
+    return;
+  }
+
+ 	bool doDate;
+ 	bool doAmount;
+ 	bool doCredit;
+ 	bool doStatus;
+ 	bool doDescription;
+ 	bool doNumber;
+ 	QString amountID;
+ 	QString creditID;
+ 	QString statusID;
+ 	QString description;
+ 	QString number;
+  MyMoneyMoney money;
+  QDate startDate;
+  QDate endDate;
+  bool descriptionRegExp;
+  bool numberRegExp;
+
+  transactionFindDlg->data(doDate, doAmount, doCredit, doStatus, doDescription, doNumber,
+    amountID,
+    creditID,
+    statusID,
+    description,
+    number,
+    money,
+    startDate,
+    endDate,
+    descriptionRegExp,
+    numberRegExp );
+
+  QList<MyMoneyTransaction> transactionList;
+//  QListIterator<MyMoneyTransaction> it = m_file.transactionIterator(bankIndex, accountIndex);
+  MyMoneyTransaction *transaction;
+
+  for ( transaction=pAccount->transactionFirst(); transaction; transaction=pAccount->transactionNext()) {
+//    MyMoneyTransaction *transaction = it.current();
+    if (checkTransactionDates(transaction, doDate, startDate, endDate) &&
+      checkTransactionAmount(transaction, doAmount, amountID, money) &&
+      checkTransactionCredit(transaction, doCredit, creditID) &&
+      checkTransactionStatus(transaction, doStatus, statusID) &&
+      checkTransactionDescription(transaction, doDescription, description, descriptionRegExp) &&
+      checkTransactionNumber(transaction, doNumber, number, numberRegExp) ) {
+
+      transactionList.append(new MyMoneyTransaction(
+        transaction->id(),
+        transaction->method(),
+        transaction->number(),
+        transaction->memo(),
+        transaction->amount(),
+        transaction->date(),
+        transaction->categoryMajor(),
+        transaction->categoryMinor(),
+        transaction->atmBankName(),
+        transaction->payee(),
+        transaction->accountFrom(),
+        transaction->accountTo(),
+        transaction->state()));
+    }
+  }
+
+  if (!transactionResultsDlg) {
+    transactionResultsDlg = new KTFindResultsDlg(0);
+  }
+  transactionResultsDlg->setList(transactionList);
+  transactionResultsDlg->show();
+}
+
+bool KMyMoneyView::checkTransactionDates(const MyMoneyTransaction *transaction, const bool enabled, const QDate start, const QDate end)
+{
+  if (enabled) {
+    if (transaction->date()>=start && transaction->date()<=end)
+      return true;
+    else
+      return false;
+  }
+  return true;
+}
+
+bool KMyMoneyView::checkTransactionAmount(const MyMoneyTransaction *transaction, const bool enabled, const QString id, const MyMoneyMoney amount)
+{
+  if (!enabled)
+    return true;
+
+  if (id==i18n("At Least")) {
+    if (transaction->amount() >= amount)
+      return true;
+  } else if (id==i18n("At Most")) {
+    if (transaction->amount() <= amount)
+      return true;
+  } else {
+    if (transaction->amount() == amount)
+      return true;
+  }
+
+  return false;
+}
+
+bool KMyMoneyView::checkTransactionCredit(const MyMoneyTransaction *transaction, const bool enabled, const QString id)
+{
+  if (!enabled)
+    return true;
+
+  if (id==i18n("Credit or Debit") && (transaction->type()==MyMoneyTransaction::Credit || transaction->type()==MyMoneyTransaction::Debit))
+    return true;
+  else if (id==i18n("Credit") && transaction->type()==MyMoneyTransaction::Credit)
+    return true;
+  else if (id==i18n("Debit") && transaction->type()==MyMoneyTransaction::Debit)
+    return true;
+  else if (id==i18n("Cheque") && transaction->method()==MyMoneyTransaction::Cheque)
+    return true;
+  else if (id==i18n("Deposit") && transaction->method()==MyMoneyTransaction::Deposit)
+    return true;
+  else if (id==i18n("Transfer") && transaction->method()==MyMoneyTransaction::Transfer)
+    return true;
+  else if (id==i18n("Withdrawal") && transaction->method()==MyMoneyTransaction::Withdrawal)
+    return true;
+  else if (id==i18n("ATM") && transaction->method()==MyMoneyTransaction::ATM)
+    return true;
+
+  return false;
+}
+
+bool KMyMoneyView::checkTransactionStatus(const MyMoneyTransaction *transaction, const bool enabled, const QString id)
+{
+  if (!enabled)
+    return true;
+
+  if (id==i18n("Cleared") && transaction->state()==MyMoneyTransaction::Cleared)
+    return true;
+  if (id==i18n("Reconciled") && transaction->state()==MyMoneyTransaction::Reconciled)
+    return true;
+  if (id==i18n("Unreconciled") && transaction->state()==MyMoneyTransaction::Unreconciled)
+    return true;
+
+  return false;
+}
+
+bool KMyMoneyView::checkTransactionDescription(const MyMoneyTransaction *transaction, const bool enabled, const QString description, const bool isRegExp)
+{
+  if (!enabled)
+    return true;
+
+  if (!isRegExp) {
+    if (transaction->memo().contains(description))
+      return true;
+    else
+      return false;
+  } else {
+    QRegExp regExp(description);
+    if (!regExp.isValid())
+      return false;
+    if (regExp.match(transaction->memo())==-1)
+      return false;
+    else
+      return true;
+  }
+}
+
+bool KMyMoneyView::checkTransactionNumber(const MyMoneyTransaction *transaction, const bool enabled, const QString number, const bool isRegExp)
+{
+  if (!enabled)
+    return true;
+
+  if (!isRegExp) {
+    if (transaction->number().contains(number))
+      return true;
+    else
+      return false;
+  } else {
+    QRegExp regExp(number);
+    if (!regExp.isValid())
+      return false;
+    if (regExp.match(transaction->number())==-1)
+      return false;
+    else
+      return true;
+  }
+}
+
+QString KMyMoneyView::currentBankName(void)
+{
+  bool bankSuccess=false;
+  if (m_file.isInitialised()) {
+    MyMoneyBank bank = m_mainView->currentBank(bankSuccess);
+    if (bankSuccess)
+      return bank.name();
+  }
+  return "Unknown Bank";
+}
+
+QString KMyMoneyView::currentAccountName(void)
+{
+  bool accountSuccess=false;
+  if (m_file.isInitialised()) {
+    MyMoneyAccount account = m_mainView->currentAccount(accountSuccess);
+    if (accountSuccess)
+      return account.name();
+  }
+  return "Unknown Account";
+}
+
+void KMyMoneyView::showTransactionInputBox(bool val)
+{
+  m_mainView->showInputBox(val);
+}
+
+//#include "kmymoneyview.moc"

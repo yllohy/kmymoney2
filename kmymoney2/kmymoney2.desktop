@@ -1,0 +1,11 @@
+[Desktop Entry]
+Comment=
+DocPath=kmymoney2/index.html
+Exec=kmymoney2 -caption "%c" %i %m
+Icon=kmymoney2.png
+MimeType=text/x-kmymoney2
+MiniIcon=kmymoney2.png
+Name=KMyMoney2
+ServiceTypes=
+Terminal=0
+Type=Application
