@@ -256,14 +256,21 @@ void KSplitTransactionDlg::slotCancelClicked()
 void KSplitTransactionDlg::slotClearAllClicked()
 {
   int answer;
-
+#if QT_VERSION > 300
+  answer = KMessageBox::warningContinueCancel (NULL,
+     i18n("You are about to delete all splits of this transaction. "
+          "Do you really want to continue?"),
+     i18n("KMyMoney2"),
+     i18n("Continue"),
+     /*false*/);
+#else
   answer = KMessageBox::warningContinueCancel (NULL,
      i18n("You are about to delete all splits of this transaction. "
           "Do you really want to continue?"),
      i18n("KMyMoney2"),
      i18n("Continue"),
      false);
-
+#endif
   if(answer == KMessageBox::Continue) {
     while(m_splitList.count()) {
       deleteSplitTransaction(0);
@@ -434,13 +441,21 @@ void KSplitTransactionDlg::slotDeleteSplitTransaction(int row)
   int answer;
 
   if(row < static_cast<int> (m_splitList.count())) {
+#if QT_VERSION > 300
+    answer = KMessageBox::warningContinueCancel (NULL,
+       i18n("You are about to delete this part of the transaction. "
+            "Do you really want to continue?"),
+       i18n("KMyMoney2"),
+       i18n("Continue"),
+       /*false*/);
+#else
     answer = KMessageBox::warningContinueCancel (NULL,
        i18n("You are about to delete this part of the transaction. "
             "Do you really want to continue?"),
        i18n("KMyMoney2"),
        i18n("Continue"),
        false);
-
+#endif
     if(answer == KMessageBox::Continue) {
       deleteSplitTransaction(row);
       updateTransactionList();
