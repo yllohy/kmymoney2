@@ -279,7 +279,7 @@ void KEditScheduleDialog::slotSplitClicked()
     MyMoneyMoney calculatedValue(0);
     QValueList<MyMoneySplit>::ConstIterator it_s;
     for(it_s = m_transaction.splits().begin(); it_s != m_transaction.splits().end(); ++it_s) {
-      if((*it_s).accountId() == theAccountId())
+      if((*it_s).accountId() == theAccountId() || (*it_s).accountId().isEmpty())
         continue;
       MyMoneyAccount tmpacc = MyMoneyFile::instance()->account((*it_s).accountId());
       if(tmpacc.accountType() == MyMoneyAccount::Loan
@@ -344,7 +344,7 @@ void KEditScheduleDialog::slotSplitClicked()
   }
   catch (MyMoneyException *e)
   {
-//    KMessageBox::detailedError(this, i18n("Exception in slot split clicked"), e->what());
+    KMessageBox::detailedError(this, i18n("Exception in slot split clicked"), e->what());
     delete e;
   }
   m_category->blockSignals(false);

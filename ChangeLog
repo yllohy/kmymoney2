@@ -1,6 +1,8 @@
 2003-01-04 Michael Edwardes <mte@users.sourceforge.net>
   * Added button icons to KEnterScheduleDialog.
   * Fixed handling of lastPayment in KEnterScheduleDialog.
+  * Increased vertical space to KEditScheduleDialog.
+  * Quick fix to make the split button work with no category.
 
 2004-01-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * added engine observer functionality to kMyMoneyAccountSelector
