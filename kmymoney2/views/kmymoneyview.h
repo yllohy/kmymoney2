@@ -63,7 +63,7 @@ class IMyMoneyStorageFormat;
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.29 2002/12/30 09:42:11 ipwizard Exp $
+  * $Id: kmymoneyview.h,v 1.30 2003/01/26 17:33:57 ipwizard Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -102,7 +102,8 @@ private:
   viewType m_showing;
   viewShowing m_realShowing;
 
-  KMyMoneyFile *m_file;  // The interface to the file
+  bool m_fileOpen;
+  // KMyMoneyFile *m_file;  // The interface to the file
   //MyMoneySeqAccessMgr *m_storage;
 
 /*
@@ -121,6 +122,7 @@ private:
   // The schedule view
   // KScheduleView *m_scheduledView;
 
+private:
   /**
     * This method gets a filename from the user for the template
     * of accounts to be used when the file is created. The directory
@@ -136,6 +138,19 @@ private:
     * @param filename absolute filename of the file to be loaded
     */
   void readDefaultCategories(const QString& filename);
+
+  /**
+    * This method attaches an empty storage object to the MyMoneyFile
+    * object. It calls removeStorage() to remove a possibly attached
+    * storage object.
+    */
+  void newStorage(void);
+
+  /**
+    * This method removes an attached storage from the MyMoneyFile
+    * object.
+    */
+  void removeStorage(void);
 
   // Parses a line in the default categories file
   bool parseDefaultCategory(QString& line, bool& income, QString& name, QStringList& minors);
@@ -254,8 +269,10 @@ public slots:
     * class KMyMoneySettings (a singleton).
     *
     * @see KListSettingsDlg
-  **/
-  void settingsLists();
+    * Refreshs all views. Used e.g. after settings have been changed or
+    * data has been loaded from external sources (QIF import).
+    **/
+  void slotRefreshViews();
 
   /**
     * Brings up a dialog to let the user search for specific transaction(s).  It then

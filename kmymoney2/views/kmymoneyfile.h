@@ -23,6 +23,10 @@
 #ifndef KMYMONEYFILE_H
 #define KMYMONEYFILE_H
 
+/*
+ * This file is currently not used anymore, but kept here for reference purposes
+ */
+#if 0
 #include "../mymoney/mymoneyaccount.h"
 class MyMoneySeqAccessMgr;
 
@@ -72,5 +76,5 @@ public:
     */
   static const MyMoneyAccount::accountTypeE stringToAccountType(const QString& type);
 };
-
+#endif
 #endif

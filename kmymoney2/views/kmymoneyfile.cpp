@@ -20,6 +20,11 @@
  *                                                                         *
  ***************************************************************************/
 
+/*
+ * This file is currently not used anymore, but kept here for reference purposes
+ */
+#if 0
+
 #include <klocale.h>
 
 #include "kmymoneyfile.h"
@@ -181,3 +186,4 @@ const MyMoneyAccount::accountTypeE KMyMoneyFile::stringToAccountType(const QStri
 
   return rc;
 }
+#endif

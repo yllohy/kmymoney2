@@ -79,19 +79,19 @@
 #include "../mymoney/storage/mymoneystoragexml.h"
 
 #include "kmymoneyview.h"
-#include "kmymoneyfile.h"
+// #include "kmymoneyfile.h"
 
 #include "../kmymoney2.h"
 
 #define COMPRESSION_MIME_TYPE "application/x-gzip"
 
 KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
-  : KJanusWidget(parent, name, KJanusWidget::IconList)
+  : KJanusWidget(parent, name, KJanusWidget::IconList),
+  m_fileOpen(false)
 {
   // create an empty file
-  m_file = new KMyMoneyFile;
-  MyMoneyFile* engine = MyMoneyFile::instance();
-  engine->attachStorage(m_file->storage());
+  // m_file = new KMyMoneyFile;
+  newStorage();
 
   // Page 0
   m_homeViewFrame = addVBoxPage( i18n("Home"), i18n("Home"),
@@ -209,8 +209,24 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
 
 KMyMoneyView::~KMyMoneyView()
 {
-  if(m_file != 0)
-    delete m_file;
+  removeStorage();
+}
+
+void KMyMoneyView::newStorage(void)
+{
+  removeStorage();
+  MyMoneyFile* file = MyMoneyFile::instance();
+  file->attachStorage(new MyMoneySeqAccessMgr);
+}
+
+void KMyMoneyView::removeStorage(void)
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
+  IMyMoneyStorage* p = file->storage();
+  if(p != 0) {
+    file->detachStorage(p);
+    delete p;
+  }
 }
 
 void KMyMoneyView::slotRightMouse()
@@ -437,13 +453,13 @@ void KMyMoneyView::slotAccountDelete()
 
 bool KMyMoneyView::fileOpen(void)
 {
-  return m_file->isOpen();
+  return m_fileOpen;
 }
 
 void KMyMoneyView::closeFile(void)
 {
-  m_file->close();
-
+  newStorage();
+  m_fileOpen = false;
 
   accountsView->clear();
   emit signalEnableKMyMoneyOperations(false);
@@ -452,6 +468,7 @@ void KMyMoneyView::closeFile(void)
 bool KMyMoneyView::readFile(const KURL& url)
 {
   QString filename;
+/*
   KMyMoneyFile *kfile = m_file;
   if (fileOpen())
   {
@@ -460,6 +477,9 @@ bool KMyMoneyView::readFile(const KURL& url)
   }
   else
     kfile->open();
+*/
+  newStorage();
+  m_fileOpen = true;
 
   IMyMoneyStorageFormat* pReader = NULL;    
 
@@ -526,7 +546,7 @@ bool KMyMoneyView::readFile(const KURL& url)
 
       if(qfile->open(IO_ReadOnly)) {
         try {
-          pReader->readFile(qfile, kfile->storage());
+          pReader->readFile(qfile, dynamic_cast<IMyMoneySerialize*> (MyMoneyFile::instance()->storage()));
         } catch (MyMoneyException *e) {
           QString msg = e->what();
           qDebug("%s", msg.latin1());
@@ -580,7 +600,7 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter)
     }
 
     pWriter->setProgressCallback(&KMyMoneyView::progressCallback);
-    pWriter->writeFile(dev, m_file->storage());
+    pWriter->writeFile(dev, dynamic_cast<IMyMoneySerialize*> (MyMoneyFile::instance()->storage()));
     pWriter->setProgressCallback(0);
 
   } catch (MyMoneyException *e) {
@@ -899,8 +919,7 @@ void KMyMoneyView::slotReconcileFinished(bool success)
 
 void KMyMoneyView::newFile(void)
 {
-  m_file->close();
-  m_file->open();
+  closeFile();
 
   MyMoneyFile *file = MyMoneyFile::instance();
 
@@ -918,6 +937,8 @@ void KMyMoneyView::newFile(void)
 
     loadDefaultCategories();
     // FIXME: remove  accountsView->refresh("");
+    m_fileOpen = true;
+
   }
 }
 
@@ -1238,7 +1259,7 @@ void KMyMoneyView::viewTransactionList(void)
 */
 }
 
-void KMyMoneyView::settingsLists()
+void KMyMoneyView::slotRefreshViews()
 {
   accountsView->refreshView();
   m_categoriesView->refreshView();
@@ -1617,7 +1638,7 @@ void KMyMoneyView::slotShowTransactionDetail(bool detailed)
   config->writeEntry("ShowRegisterDetailed", detailed);
   config->sync();
 
-  settingsLists();
+  slotRefreshViews();
 }
 
 
@@ -1627,7 +1648,7 @@ void KMyMoneyView::memoryDump()
   g.open( IO_WriteOnly );
   QDataStream st(&g);
   MyMoneyStorageDump dumper;
-  dumper.writeStream(st, m_file->storage());
+  dumper.writeStream(st, dynamic_cast<IMyMoneySerialize*> (MyMoneyFile::instance()->storage()));
   g.close();
 }
 
