@@ -79,7 +79,8 @@ void MyMoneyScheduleTest::testEmptyConstructor() {
 }
 
 void MyMoneyScheduleTest::testConstructor() {
-	MyMoneySchedule s(	MyMoneySchedule::TYPE_BILL,
+	MyMoneySchedule s(	"A Name",
+				MyMoneySchedule::TYPE_BILL,
 				MyMoneySchedule::OCCUR_WEEKLY,
 				MyMoneySchedule::STYPE_DIRECTDEBIT,
 				QDate::currentDate(),
@@ -163,7 +164,8 @@ void MyMoneyScheduleTest::testAddSchedule()
   	t.addSplit(sp1);
   	t.addSplit(sp2);
 
-  	MyMoneySchedule s1(	MyMoneySchedule::TYPE_BILL,
+  	MyMoneySchedule s1(	"s1",
+				MyMoneySchedule::TYPE_BILL,
   				MyMoneySchedule::OCCUR_WEEKLY,
   				MyMoneySchedule::STYPE_DIRECTDEBIT,
   				QDate(2001, 1, 1),
@@ -171,7 +173,8 @@ void MyMoneyScheduleTest::testAddSchedule()
   				true,
   				true);
   	s1.setTransaction(t);
-  	MyMoneySchedule s2(	MyMoneySchedule::TYPE_DEPOSIT,
+  	MyMoneySchedule s2(	"s2",
+				MyMoneySchedule::TYPE_DEPOSIT,
   				MyMoneySchedule::OCCUR_MONTHLY,
   				MyMoneySchedule::STYPE_MANUALDEPOSIT,
   				QDate(2001, 2, 1),
@@ -179,7 +182,8 @@ void MyMoneyScheduleTest::testAddSchedule()
   				true,
   				true);
   	s2.setTransaction(t);
-  	MyMoneySchedule s3(	MyMoneySchedule::TYPE_TRANSFER,
+  	MyMoneySchedule s3(	"s3",
+				MyMoneySchedule::TYPE_TRANSFER,
   				MyMoneySchedule::OCCUR_YEARLY,
   				MyMoneySchedule::STYPE_WRITECHEQUE,
   				QDate(2001, 3, 1),
