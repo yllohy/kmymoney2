@@ -16,6 +16,8 @@
 
 // #include <stdio.h>
 
+#include <sys/stat.h>
+
 // ----------------------------------------------------------------------------
 // QT Includes
 
@@ -50,6 +52,8 @@
 #include <ksavefile.h>
 #include <kfilterdev.h>
 #include <kfilterbase.h>
+#include <kfileitem.h>
+#include <kpushbutton.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -150,8 +154,9 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   // to end any pending edit activities
   connect(this, SIGNAL(aboutToShowPage(QWidget*)), m_ledgerView, SLOT(hide()));
   connect(m_ledgerView, SIGNAL(signalViewActivated()), this, SLOT(slotActivatedAccountView()));
+
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_ledgerView, SLOT(slotReloadView()));
-  
+
 /*
   m_investmentView = new KInvestmentView(qvboxMainFrame2, "investmentView");
 
@@ -214,6 +219,9 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   m_rightMenu = new KPopupMenu(this);
   m_rightMenu->insertTitle(kiconloader->loadIcon("bank", KIcon::MainToolbar), i18n("KMyMoney Options"));
   m_rightMenu->insertItem(kiconloader->loadIcon("bank", KIcon::Small), i18n("New Institution..."), this, SLOT(slotBankNew()));
+
+  // construct an empty file
+  newFile(true);
   
   // select the page first, before connecting the aboutToShow signal
   // because we don't want to override the information stored in the config file
@@ -520,7 +528,7 @@ bool KMyMoneyView::readFile(const KURL& url)
   QString filename;
 
   newStorage();
-  m_fileOpen = true;
+  m_fileOpen = false;
 
   IMyMoneyStorageFormat* pReader = NULL;    
 
@@ -606,11 +614,14 @@ bool KMyMoneyView::readFile(const KURL& url)
         qfile->close();
       } else {
         KMessageBox::sorry(this, i18n("File '%1' not found!").arg(filename));
+        delete qfile;
+        return false;
       }
       delete qfile;
     }
   } else {
     KMessageBox::sorry(this, i18n("File '%1' not found!").arg(filename));
+    return false;
   }
 
 
@@ -655,15 +666,18 @@ bool KMyMoneyView::readFile(const KURL& url)
     qDebug("Skipping automatic transaction fix!");
   }
 
+  // FIXME: we need to check, if it's necessary to have this
+  //        automatic funcitonality
   // if there's no asset account, then automatically start the
   // new account wizard
-  kmymoney2->createInitialAccount();
+  // kmymoney2->createInitialAccount();
     
   // if we currently see a different page, then select the right one
   if(page != activePageIndex()) {
     showPage(page);
   }
 
+  m_fileOpen = true;
   return true;
 }
 
@@ -705,6 +719,10 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter)
 
 const bool KMyMoneyView::saveFile(const KURL& url)
 {
+  // check if we have nothing to do
+  if(!MyMoneyFile::instance()->dirty())
+    return true;
+    
   QString filename = url.path();
 
   if (!fileOpen()) {
@@ -769,6 +787,7 @@ const bool KMyMoneyView::saveFile(const KURL& url)
   } catch (MyMoneyException *e) {
     KMessageBox::error(this, e->what());
     delete e;
+    MyMoneyFile::instance()->setDirty();
     rc = false;
   }
   delete pWriter;
@@ -1018,27 +1037,37 @@ void KMyMoneyView::slotAccountExportAscii(void)
 */
 }
 
-void KMyMoneyView::newFile(void)
+void KMyMoneyView::newFile(const bool createEmtpyFile)
 {
   closeFile();
 
   MyMoneyFile *file = MyMoneyFile::instance();
 
-  KNewFileDlg newFileDlg(this, "e", i18n("Create new KMyMoneyFile"));
-  if (newFileDlg.exec())
-  {
-    file->setUserName(newFileDlg.userNameText);
-    file->setUserStreet(newFileDlg.userStreetText);
-    file->setUserTown(newFileDlg.userTownText);
-    file->setUserCounty(newFileDlg.userCountyText);
-    file->setUserPostcode(newFileDlg.userPostcodeText);
-    file->setUserTelephone(newFileDlg.userTelephoneText);
-    file->setUserEmail(newFileDlg.userEmailText);
+  if(!createEmtpyFile) {
+    KNewFileDlg newFileDlg(this, "e", i18n("Create new KMyMoneyFile"));
+    newFileDlg.cancelButton()->hide();
 
-    loadDefaultCategories();
-    m_fileOpen = true;
+    if (newFileDlg.exec() == QDialog::Accepted)
+    {
+      if(newFileDlg.userNameText.length() != 0)
+        file->setUserName(newFileDlg.userNameText);
+      if(newFileDlg.userStreetText.length() != 0)
+        file->setUserStreet(newFileDlg.userStreetText);
+      if(newFileDlg.userTownText.length() != 0)
+        file->setUserTown(newFileDlg.userTownText);
+      if(newFileDlg.userCountyText.length() != 0)
+        file->setUserCounty(newFileDlg.userCountyText);
+      if(newFileDlg.userPostcodeText.length() != 0)
+        file->setUserPostcode(newFileDlg.userPostcodeText);
+      if(newFileDlg.userTelephoneText.length() != 0)
+        file->setUserTelephone(newFileDlg.userTelephoneText);
+      if(newFileDlg.userEmailText.length() != 0)
+        file->setUserEmail(newFileDlg.userEmailText);
 
+      loadDefaultCategories();
+    }
   }
+  m_fileOpen = true;
 }
 
 void KMyMoneyView::viewPersonal(void)
@@ -1056,7 +1085,6 @@ void KMyMoneyView::viewPersonal(void)
 
   if (newFileDlg.exec())
   {
-
     file->setUserName(newFileDlg.userNameText);
     file->setUserStreet(newFileDlg.userStreetText);
     file->setUserTown(newFileDlg.userTownText);
@@ -1071,10 +1099,12 @@ void KMyMoneyView::loadDefaultCategories(void)
 {
   KFileDialog* dialog = new KFileDialog(KGlobal::dirs()->findResourceDir("appdata", "default_accounts_enC.dat"),
                                         i18n("*.dat|Account templates"),
-                                        this, i18n("Select account template"),
+                                        this, "defaultaccounts",
                                         true);
   dialog->setMode(KFile::File | KFile::ExistingOnly | KFile::LocalOnly);
-  if(dialog->exec()) {
+  dialog->setCaption(i18n("Select account template"));
+  
+  if(dialog->exec() == QDialog::Accepted) {
     readDefaultCategories(dialog->selectedFile());
   }
   delete dialog;
@@ -1175,7 +1205,7 @@ void KMyMoneyView::readDefaultCategories(const QString& filename)
 
           QString msg("Unable to add account '");
           msg += account.name() + ": " + e->what();
-          qDebug(msg);
+          // qDebug(msg);
           delete e;
           continue;
         }

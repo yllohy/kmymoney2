@@ -61,7 +61,7 @@ class MyMoneyTransaction;
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.48 2004/02/03 18:43:38 ipwizard Exp $
+  * $Id: kmymoneyview.h,v 1.49 2004/02/20 06:10:00 ipwizard Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -208,9 +208,7 @@ public:
   bool readFile(const KURL& url);
 
   /**
-    * Saves the data into permanent storage. Depending on the extension,
-    * the XML or the binary writer are used. (See MyMoneyStorageXML() and
-    * MyMoneyStorageBin()).
+    * Saves the data into permanent storage using the XML format.
     *
     * @param url The URL to save into.
     *            If no protocol is specified, file:// is assumed.
@@ -223,26 +221,30 @@ public:
   /**
     * Call this to see if the MyMoneyFile contains any unsaved data.
     *
-    * @return TRUE if any data has been modified but not saved.
-  **/
+    * @retval true if any data has been modified but not saved
+    * @retval false otherwise
+    */
   bool dirty(void);
 
   /**
-
     * Creates a new file first making sure that one isn't open already.  Opens
-
     * up a KNewFileDlg to input the new details.
     *
+    * @param createEmtpyFile if false (default) the user will be asked for personal
+    *                        information and will be offered to load default income
+    *                        and expense accounts. If true, a completely empty file
+    *                        will be created without user interaction.
+    *
     * @see MyMoneyFile
-  **/
-  void newFile(void);
+    */
+  void newFile(const bool createEmtpyFile = false);
 
   /**
     * Brings up a dialog that displays information about the user who created
     * the MyMoneyFile if set.
     *
     * @see KNewFileDlg
-  **/
+    */
   void viewPersonal(void);
 
   /**

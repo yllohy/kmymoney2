@@ -47,6 +47,7 @@
 #include <ktip.h>
 #include <kkeydialog.h>
 #include <kprogress.h>
+#include <kio/netaccess.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -77,8 +78,7 @@
 KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name)
  : KMainWindow(0, name)
 {
-  fileSave = 0;
-  updateCaption();
+  updateCaption(true);
 
   m_startLogo = new KStartupLogo;
   config=kapp->config();
@@ -122,6 +122,9 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name)
   m_reader = 0;
   m_engineBackup = 0;
 
+  // make sure everyone knows we're around
+  emit fileLoaded(fileName);
+
   // make sure, we get a note when the engine changes state
   MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAnyChange, this);
 }
@@ -140,6 +143,11 @@ KMyMoney2App::~KMyMoney2App()
 const KURL KMyMoney2App::lastOpenedURL(void)
 {
   KURL url = m_startDialog ? KURL() : fileName;
+
+  if(!url.isValid())
+  {
+    url = readLastUsedFile();
+  }
   
   m_startLogo->close();
   slotStatusMsg(i18n("Ready."));
@@ -148,6 +156,7 @@ const KURL KMyMoney2App::lastOpenedURL(void)
 
 void KMyMoney2App::initActions()
 {
+  fileNew = KStdAction::openNew(this, SLOT(slotFileNew()), actionCollection());
   fileOpen = KStdAction::open(this, SLOT(slotFileOpen()), actionCollection());
   fileOpenRecent = KStdAction::openRecent(this, SLOT(slotFileOpenRecent(const KURL&)), actionCollection());
   fileSave = KStdAction::save(this, SLOT(slotFileSave()), actionCollection());
@@ -219,11 +228,6 @@ void KMyMoney2App::initActions()
   actionQifExport->setStatusText(i18n("Export transactions using QIF format"));
 #endif
 
-
-
-
-
-
   // use the absolute path to your kmymoney2ui.rc file for testing purpose in createGUI();
   createGUI();
 }
@@ -257,7 +261,6 @@ void KMyMoney2App::saveOptions()
   config->writeEntry("Show Statusbar",viewStatusBar->isChecked());
   config->writeEntry("ToolBarPos", (int) toolBar("mainToolBar")->barPos());
   fileOpenRecent->saveEntries(config,"Recent Files");
-  config->writeEntry("LastFile", fileName.url());
 }
 
 
@@ -290,8 +293,6 @@ void KMyMoney2App::readOptions()
 
   // Startdialog is written in the settings dialog
   m_startDialog = config->readBoolEntry("StartDialog", true);
-  if (!m_startDialog)
-    fileName = config->readEntry("LastFile");
 
   config->setGroup("Schedule Options");
   m_bCheckSchedules = config->readBoolEntry("CheckSchedules", true);
@@ -323,112 +324,69 @@ void KMyMoney2App::slotFileNew()
 {
   QString prevMsg = slotStatusMsg(i18n("Creating new document..."));
   
-#if 0
-  if (myMoneyView->fileOpen()) {
-#if QT_VERSION > 300
-
-    int answer = KMessageBox::warningContinueCancel(this, i18n("KMyMoney file already open.  Close it ?"), "Close File"/*, "Close", "dont_ask_again"*/);
-#else
-    int answer = KMessageBox::warningContinueCancel(this, i18n("KMyMoney file already open.  Close it ?"), "Close File", "Close", "dont_ask_again");
-#endif
-    if (answer==KMessageBox::Cancel) {
-      slotStatusMsg(prevMsg);
-      return;
-    }
-    slotFileClose();
-  }
-#else
   slotFileClose();
   if(myMoneyView->fileOpen())
     return;
-#endif
 
   fileName = KURL();
   myMoneyView->newFile();
   slotStatusMsg(prevMsg);
+  updateCaption();
   
   emit fileLoaded(fileName);
 }
 
 // General open
 void KMyMoney2App::slotFileOpen()
-
-
 {
-  QString prevMsg = slotStatusMsg(i18n("Open a document."));
+  QString prevMsg = slotStatusMsg(i18n("Open a file."));
 
-#if 0
-  if (myMoneyView->fileOpen()) {
-#if QT_VERSION > 300
-
-    int answer = KMessageBox::warningContinueCancel(this, i18n("KMyMoney file already open.  Close it ?"), "Close File"/*, "Close", "dont_ask_again"*/);
-#else
-    int answer = KMessageBox::warningContinueCancel(this, i18n("KMyMoney file already open.  Close it ?"), "Close File", "Close", "dont_ask_again");
-#endif
-    if (answer==KMessageBox::Cancel) {
-      slotStatusMsg(prevMsg);
-      return;
-    }
-    slotFileClose();
-  }
+  KFileDialog* dialog = new KFileDialog(KGlobalSettings::documentPath(),
+                            i18n("%1|KMyMoney files\n%2|All files (*.*)").arg("*.kmy *.xml").arg("*.*"),
+                            this, i18n("Open File..."), true);
+  dialog->setMode(KFile::File | KFile::ExistingOnly);
   
-#else
-  slotFileClose();
-  if(myMoneyView->fileOpen())
-    return;
-#endif
-  initWizard();
-  slotStatusMsg(prevMsg);
-  updateCaption();
+  if(dialog->exec() == QDialog::Accepted) {
+    slotFileOpenRecent(dialog->selectedURL());
+  }
+  delete dialog;
 
-  emit fileLoaded(fileName);
+  slotStatusMsg(prevMsg);
 }
 
 void KMyMoney2App::slotFileOpenRecent(const KURL& url)
 {
   QString prevMsg = slotStatusMsg(i18n("Loading file..."));
+  KURL lastFile = fileName;
 
-#if 0
-  if (myMoneyView->fileOpen()) {
-#if QT_VERSION > 300
-    int answer = KMessageBox::warningContinueCancel(this, i18n("KMyMoney file already open.  Close it ?"), "Close File"/*, "Close", "dont_ask_again"*/);
-#else
-    int answer = KMessageBox::warningContinueCancel(this, i18n("KMyMoney file already open.  Close it ?"), "Close File", "Close", "dont_ask_again");
-#endif
-
-    if (answer==KMessageBox::Cancel) {
-      slotStatusMsg(prevMsg);
-      return;
-    }
+  if(url.isValid() && KIO::NetAccess::exists(url)) {
     slotFileClose();
+    if(!myMoneyView->fileOpen()) {
+      if(myMoneyView->readFile(url)) {
+        fileName = url;
+        fileOpenRecent->addURL( url );
+        writeLastUsedFile(url.url());
+        
+        // Check the schedules
+        slotCheckSchedules();
+      }
+      
+      updateCaption();
+      emit fileLoaded(fileName);
+    }
   }
-
-#else
-  slotFileClose();
-  if(myMoneyView->fileOpen())
-    return;
-#endif
-
-  fileName = url;
-  fileOpenRecent->addURL( url );
-
-  myMoneyView->readFile(fileName);
-
-  // Check the schedules
-  slotCheckSchedules();
-
   slotStatusMsg(prevMsg);
-  updateCaption();
-  
-  emit fileLoaded(fileName);
 }
 
 const bool KMyMoney2App::slotFileSave()
 {
+  // if there's nothing changed, there's no need to save anything
+  if(!myMoneyView->dirty())
+    return true;
+
   bool rc = false;
   
   QString prevMsg = slotStatusMsg(i18n("Saving file..."));
-
 
   if (fileName.isEmpty()) {
     rc = slotFileSaveAs();
@@ -487,6 +445,7 @@ const bool KMyMoney2App::slotFileSaveAs()
 
     //write the directory used for this file as the default one for next time.
     writeLastUsedDir(newName);
+    writeLastUsedFile(newName);
   }
 
   slotStatusMsg(prevMsg);
@@ -499,8 +458,6 @@ void KMyMoney2App::slotFileCloseWindow()
   QString prevMsg = slotStatusMsg(i18n("Closing window..."));
 
   if (myMoneyView->dirty()) {
-
-
     int answer = KMessageBox::warningYesNoCancel(this, i18n("The file has been changed, save it ?"));
     if (answer == KMessageBox::Cancel)
       return;
@@ -516,9 +473,6 @@ void KMyMoney2App::slotFileCloseWindow()
 void KMyMoney2App::slotFileClose()
 {
   // no update status here, as we might delete the status too early.
-
-
-
   if (myMoneyView->dirty()) {
     int answer = KMessageBox::warningYesNoCancel(this, i18n("The file has been changed, save it ?"));
     if (answer == KMessageBox::Cancel)
@@ -814,7 +768,10 @@ bool KMyMoney2App::initWizard()
 
     //save off directory as the last one used.
     if(fileName.isLocalFile() && fileName.hasPath())
+    {
       writeLastUsedDir(fileName.path(0));
+      writeLastUsedFile(fileName.path(0));
+    }
     
     return true;
 
@@ -1066,7 +1023,7 @@ bool KMyMoney2App::verifyImportedData()
   return rc;
 }
 
-void KMyMoney2App::updateCaption(void)
+void KMyMoney2App::updateCaption(const bool skipActions)
 {
   QString caption;
 
@@ -1091,8 +1048,18 @@ void KMyMoney2App::updateCaption(void)
   caption += " - KMyMoney";
   setPlainCaption(caption);
 
-  if(fileSave)
+  if(!skipActions) {
     fileSave->setEnabled(modified);
+    fileSaveAs->setEnabled(myMoneyView->fileOpen());
+    filePersonalData->setEnabled(myMoneyView->fileOpen());
+    fileBackup->setEnabled(myMoneyView->fileOpen());
+    fileViewInfo->setEnabled(myMoneyView->fileOpen());
+    actionFindTransaction->setEnabled(myMoneyView->fileOpen());
+    actionQifExport->setEnabled(myMoneyView->fileOpen());
+    actionQifImport->setEnabled(myMoneyView->fileOpen());
+    bankAdd->setEnabled(myMoneyView->fileOpen());
+    accountAdd->setEnabled(myMoneyView->fileOpen());
+  }
 }
 
 void KMyMoney2App::update(const QCString& /* id */)
@@ -1235,12 +1202,25 @@ void KMyMoney2App::writeLastUsedDir(const QString& directory)
   KConfig *kconfig = KGlobal::config();
   if(kconfig)
   {
-
     kconfig->setGroup("General Options");
-
 
     //write path entry, no error handling since its void.
     kconfig->writePathEntry("LastUsedDirectory", directory);
+  }
+}
+
+void KMyMoney2App::writeLastUsedFile(const QString& fileName)
+{
+  //get global config object for our app.
+  KConfig *kconfig = KGlobal::config();
+  if(kconfig)
+  {
+    kconfig->setGroup("General Options");
+
+    // write path entry, no error handling since its void.
+    // use a standard string, as fileName could contain a protocol
+    // e.g. file:/home/thb/....
+    kconfig->writeEntry("LastUsedFile", fileName);
   }
 }
 
@@ -1259,6 +1239,23 @@ QString KMyMoney2App::readLastUsedDir()
     // if the path stored is empty, we use the default nevertheless
     if(str.isEmpty())
       str = KGlobalSettings::documentPath();
+  }
+
+  return str;
+}
+
+QString KMyMoney2App::readLastUsedFile()
+{
+  QString str;
+
+  // get global config object for our app.
+  KConfig *kconfig = KGlobal::config();
+  if(kconfig)
+  {
+    kconfig->setGroup("General Options");
+
+    // read filename entry.
+    str = kconfig->readEntry("LastUsedFile", "");
   }
 
   return str;

@@ -27,7 +27,9 @@
 #include <qtimer.h>
 
 KStartupLogo::KStartupLogo(QWidget *parent, const char *name )
-  : QFrame(parent, name, WStyle_NoBorder | WStyle_Customize)
+  : QFrame(parent, name,
+    WStyle_NoBorder | WStyle_StaysOnTop | WStyle_Tool | WWinOwnDC // WStyle_Splash
+    | WStyle_Customize)
 { 	
   QString filename = KGlobal::dirs()->findResource("appdata", "pics/startlogo.png");
   QPixmap *pm = new QPixmap(filename);
@@ -36,19 +38,15 @@ KStartupLogo::KStartupLogo(QWidget *parent, const char *name )
   setFrameShadow( QFrame::Raised );
 	setLineWidth( 2 );
   setGeometry( QRect( (QApplication::desktop()->width()/2)-(pm->width()/2), (QApplication::desktop()->height()/2)-(pm->height()/2), pm->width(), pm->height() ) );
-/*
-	QTimer *timer = new QTimer( this );
-  connect( timer, SIGNAL(timeout()), this, SLOT(timerDone()) );
-	timer->start( 500, TRUE );
-*/
+
+  QTimer::singleShot(1000, this, SLOT(timerDone()));
 }
 
 KStartupLogo::~KStartupLogo()
 {
 }
 
-/** Timeout 0.5 second */
 void KStartupLogo::timerDone()
 {
-	this->close();
+  this->close();
 }

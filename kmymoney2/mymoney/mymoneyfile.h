@@ -261,6 +261,14 @@ public:
   bool dirty(void) const;
 
   /**
+    * This method is used to force the attached storage object to
+    * be dirty. This is used by the application to re-set the dirty
+    * flag after a failed upload to a server when the save operation
+    * to a local temp file was OK.
+    */
+  void setDirty(void) const;
+  
+  /**
     * Adds an institution to the file-global institution pool. A
     * respective institution-ID will be generated for this object.
     * The ID is stored as QString in the object passed as argument.

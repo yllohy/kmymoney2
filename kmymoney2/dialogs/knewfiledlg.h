@@ -27,14 +27,16 @@
 class KNewFileDlg : public KNewFileDlgDecl  {
    Q_OBJECT
 public: 
-	KNewFileDlg(QWidget *parent=0, const char *name=0, const char *title=0);
+  KNewFileDlg(QWidget *parent=0, const char *name=0, const char *title=0);
   KNewFileDlg(QString userName, QString userStreet,
     QString userTown, QString userCounty, QString userPostcode, QString userTelephone,
     QString userEmail, QWidget *parent=0, const char *name=0, const char *title=0);
-	~KNewFileDlg();
+  ~KNewFileDlg();
+
+  KPushButton* cancelButton(void) { return cancelBtn; };
 
 public:
-	QString userNameText;
+  QString userNameText;
   QString userStreetText;
   QString userTownText;
   QString userCountyText;

@@ -84,10 +84,10 @@ void KNewFileDlg::okClicked()
 {
   userNameText = userNameEdit->text();
   userStreetText = streetEdit->text();
-  userTownText += townEdit->text();
-  userCountyText += countyEdit->text();
-  userPostcodeText += postcodeEdit->text();
-  userTelephoneText += telephoneEdit->text();
+  userTownText = townEdit->text();
+  userCountyText = countyEdit->text();
+  userPostcodeText = postcodeEdit->text();
+  userTelephoneText = telephoneEdit->text();
   userEmailText = emailEdit->text();
 
   accept();

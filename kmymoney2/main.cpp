@@ -119,27 +119,22 @@ int main(int argc, char *argv[])
   if(args->count() > 0) {
     url = args->url(0);
   } else {
-    url = kmymoney2->lastOpenedURL();
+    url = kmymoney2->readLastUsedFile();
   }
-  
-  if (url.url().isEmpty()) {
-    if (kmymoney2->initWizard()) {
-      KTipDialog::showTip(kmymoney2, "", false);
-      
-    } else {
-      delete kmymoney2;
-      kmymoney2 = 0;
-    }
-    
-  } else {
+
+  if(url.isValid()) {
     KTipDialog::showTip(kmymoney2, "", false);
     kmymoney2->slotFileOpenRecent(url);
+  } else {
+    // kmymoney2->slotFileNew();
+    // kmymoney2->createInitialAccount();
+    KTipDialog::showTip(kmymoney2, "", false);
   }
 
   if(kmymoney2 != 0) {
+    kmymoney2->updateCaption();
     args->clear();
     kmymoney2->setEnabled(true);
-    kmymoney2->createInitialAccount();
     rc = a->exec();
   }
   

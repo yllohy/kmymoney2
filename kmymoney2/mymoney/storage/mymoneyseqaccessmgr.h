@@ -403,6 +403,14 @@ public:
   bool dirty(void) const { return m_dirty; }
 
   /**
+    * This method can be used by an external object to force the
+    * storage object to be dirty. This is used e.g. when an upload
+    * to an external destination failed but the previous storage
+    * to a local disk was ok.
+    */
+  void setDirty(void) { m_dirty = true; };
+
+  /**
     * This method returns a list of the institutions
     * inside a MyMoneyFile object
     *

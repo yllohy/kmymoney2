@@ -636,6 +636,13 @@ bool MyMoneyFile::dirty(void) const
   return m_storage->dirty();
 }
 
+void MyMoneyFile::setDirty(void) const
+{
+  checkStorage();
+
+  m_storage->setDirty();
+}
+
 const unsigned int MyMoneyFile::accountCount(void) const
 {
   checkStorage();

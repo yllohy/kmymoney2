@@ -103,7 +103,8 @@ void KSettingsDlg::setPageGeneral()
 
   // Startup page options
   // --------------------
-  
+
+/* These settings are deprecated  
   // Create a group box to hold the available options
   QButtonGroup *qfilebuttongroup = new QButtonGroup(qvboxMainFrame, "GroupBox1");
   qfilebuttongroup->setTitle( i18n( "Startup file options" ) );
@@ -126,7 +127,7 @@ void KSettingsDlg::setPageGeneral()
   m_qradiobuttonStartFile = new QRadioButton("start_file", qfilebuttongroup);
   m_qradiobuttonStartFile->setText( i18n( "Start with last file used" ) );
   qvboxfilelayout->addWidget(m_qradiobuttonStartFile);
-
+*/
   // Startup file options
   // --------------------
 
@@ -440,9 +441,10 @@ void KSettingsDlg::configRead()
   this->resize(kconfig->readSizeEntry("Geometry", &qsizeDefaultSize));
 
   kconfig->setGroup("General Options");
-  m_bTempStartPrompt = kconfig->readBoolEntry("StartDialog", true);
-  m_qradiobuttonStartPrompt->setChecked(m_bTempStartPrompt);
-  m_qradiobuttonStartFile->setChecked(!m_bTempStartPrompt);
+  // FIXME: to be removed
+  // m_bTempStartPrompt = kconfig->readBoolEntry("StartDialog", true);
+  // m_qradiobuttonStartPrompt->setChecked(m_bTempStartPrompt);
+  // m_qradiobuttonStartFile->setChecked(!m_bTempStartPrompt);
 
   m_bTempStartPage = kconfig->readBoolEntry("StartLastViewSelected", false);
   m_qradiobuttonStartHome->setChecked(!m_bTempStartPage);
@@ -562,7 +564,7 @@ void KSettingsDlg::configWrite()
   kconfig->writeEntry("NormalAccountsView", m_qradiobuttonNormalView->isChecked());
 
   kconfig->setGroup("General Options");
-  kconfig->writeEntry("StartDialog", m_qradiobuttonStartPrompt->isChecked());
+  // kconfig->writeEntry("StartDialog", m_qradiobuttonStartPrompt->isChecked());
   kconfig->writeEntry("StartLastViewSelected", m_qradiobuttonStartLast->isChecked());
   // kconfig->writeEntry("NewAccountWizard", true);
   kconfig->writeEntry("LedgerLens", m_qcheckboxLedgerLens->isChecked());
@@ -636,7 +638,7 @@ void KSettingsDlg::slotCancel()
   kconfig->writeEntry("NormalAccountsView", m_bTempNormalView);
 
   kconfig->setGroup("General Options");
-  kconfig->writeEntry("StartDialog", m_bTempStartPrompt);
+  // kconfig->writeEntry("StartDialog", m_bTempStartPrompt);
   kconfig->writeEntry("StartLastViewSelected", m_bTempStartPage);
   // kconfig->writeEntry("NewAccountWizard", m_bTempAccountWizard);
   kconfig->writeEntry("LedgerLens", m_bTempLedgerLens);
@@ -663,8 +665,8 @@ void KSettingsDlg::slotCancel()
 **/
 void KSettingsDlg::slotUser1()
 {
-  m_qradiobuttonStartPrompt->setChecked(m_bTempStartPrompt);
-  m_qradiobuttonStartFile->setChecked(!m_bTempStartPrompt);
+  // m_qradiobuttonStartPrompt->setChecked(m_bTempStartPrompt);
+  // m_qradiobuttonStartFile->setChecked(!m_bTempStartPrompt);
   m_kcolorbuttonList->setColor(m_qcolorTempList);
   m_kcolorbuttonBack->setColor(m_qcolorTempListBG);
   m_kfontchooserHeader->setFont(m_qfontTempHeader);

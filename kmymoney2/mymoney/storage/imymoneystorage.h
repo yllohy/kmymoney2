@@ -284,6 +284,14 @@ public:
   virtual bool dirty(void) const = 0;
 
   /**
+    * This method can be used by an external object to force the
+    * storage object to be dirty. This is used e.g. when an upload
+    * to an external destination failed but the previous storage
+    * to a local disk was ok.
+    */
+  virtual void setDirty(void) = 0;
+  
+  /**
     * This method returns the number of accounts currently known to this storage
     * in the range 0..MAXUINT
     *

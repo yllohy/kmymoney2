@@ -67,7 +67,6 @@ class IMyMoneyStorage;
  */
 
 /**
-
   * The base class for KMyMoney application windows. It sets up the main
   * window and reads the config file as well as providing a menubar, toolbar
   * and statusbar.  All functionality is passed down to KMyMoneyView.
@@ -75,7 +74,6 @@ class IMyMoneyStorage;
   * @see KMyMoneyView
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: kmymoney2.h,v 1.42 2004/02/03 18:43:12 ipwizard Exp $
   *
   * @short Main application class.
 **/
@@ -172,6 +170,8 @@ public:
 
   void writeLastUsedDir(const QString& directory);
   QString readLastUsedDir();
+  void writeLastUsedFile(const QString& fileName);
+  QString readLastUsedFile();
  
 
   /**
@@ -180,6 +180,16 @@ public:
     */
   virtual void update(const QCString& id);
   
+  /**
+    * This method is used to update the caption of the application window.
+    * It set's the caption to "filename [modified] - KMyMoney".
+    *
+    * @param skipActions if true, the actions will not be updated. This
+    *                    is usually onyl required by some early calls when
+    *                    these widgets are not yet created (the default is false).
+    */
+  void updateCaption(const bool skipActions = false);
+
 protected:
   /** save general Options like all bar positions and status as well as the geometry and the recent file list to the configuration
    * file
@@ -212,12 +222,6 @@ protected:
    * @see KTMainWindow#closeEvent
    */
   virtual bool queryExit();
-
-  /**
-    * This method is used to update the caption of the application window.
-    * It set's the caption to "filename [modified] - KMyMoney".
-    */
-  void updateCaption(void);
 
   void slotCheckSchedules(void);
   
@@ -318,6 +322,7 @@ private:
 
   // KAction pointers to enable/disable actions
   KAction *fileNewWindow;
+  KAction* fileNew;
   KAction* fileOpen;
   KRecentFilesAction* fileOpenRecent;
   KAction* fileSave;
