@@ -50,11 +50,6 @@ class MyMoneyTransactionFilter;
   * It is implemented using the singleton pattern and thus only
   * exists once for each running instance of an application.
   *
-  * The following diagram shows the MyMoneyFile object and it's
-  * interface to the persistant storage objects.
-  *
-  * @image html mymoneyfile-interface.png "Interfaces between MyMoneyFile and the persitance layer"
-  *
   * The instance of the MyMoneyFile object is accessed as follows:
   *
   * @code
