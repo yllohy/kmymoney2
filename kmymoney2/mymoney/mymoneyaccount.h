@@ -370,6 +370,8 @@ public:
     */
   const accountTypeE accountType(void) const {return m_accountType; };
 
+  // Statics
+
 private:
   /**
     * This member variable identifies the type of account
@@ -455,7 +457,6 @@ private:
     * This member contains the ID of the parent account
     */
   QCString m_parentAccount;
-
 };
 
 #endif

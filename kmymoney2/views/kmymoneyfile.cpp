@@ -19,7 +19,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
+#include <klocale.h>
 #include "kmymoneyfile.h"
 
 KMyMoneyFile *KMyMoneyFile::m_instance = 0L;
@@ -66,4 +66,51 @@ void KMyMoneyFile::reset()
   delete m_instance->m_file;
   m_instance->m_storage = new MyMoneySeqAccessMgr;
   m_instance->m_file = new MyMoneyFile(m_storage);
+}
+
+QString KMyMoneyFile::accountTypeToString(MyMoneyAccount::accountTypeE accountType)
+{
+  QString returnString;
+
+  // FIXME: We need to localise these strings
+  switch (accountType)
+  {
+    case MyMoneyAccount::Checkings:
+      returnString = i18n("Checkings");
+      break;
+    case MyMoneyAccount::Savings:
+      returnString = i18n("Savings");
+      break;
+    case MyMoneyAccount::Cash:
+      returnString = i18n("Cash");
+      break;
+    case MyMoneyAccount::CertificateDep:
+      returnString = i18n("Certificate of Deposit");
+      break;
+    case MyMoneyAccount::Investment:
+      returnString = i18n("Investment");
+      break;
+    case MyMoneyAccount::MoneyMarket:
+      returnString = i18n("Money Market");
+      break;
+    case MyMoneyAccount::Asset:
+      returnString = i18n("Asset");
+      break;
+    case MyMoneyAccount::Liability:
+      returnString = i18n("Liability");
+      break;
+    case MyMoneyAccount::Currency:
+      returnString = i18n("Currency");
+      break;
+    case MyMoneyAccount::Income:
+      returnString = i18n("Income");
+      break;
+    case MyMoneyAccount::Expense:
+      returnString = i18n("Expense");
+      break;
+    default:
+      returnString = i18n("Unknown");
+  }
+
+  return returnString;
 }

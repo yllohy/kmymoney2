@@ -32,9 +32,12 @@ class KAccountListItem : public QListViewItem  {
   int m_nInstitutionColumn;
 
 public:
-  KAccountListItem(KListView *parent, const QString& accountName, const QCString& accountID, const QString&);
-  KAccountListItem(KAccountListItem *parent, const QString& accountName, const QCString& accountID, const QString&);
-  KAccountListItem(KListView *parent, const QString& institutionName, const QCString& institutionID);
+  KAccountListItem(KListView *parent, const QString& accountName,
+      const QCString& accountID, const QString&, const QString&);
+  KAccountListItem(KAccountListItem *parent, const QString& accountName,
+      const QCString& accountID, const QString&, const QString&);
+  KAccountListItem(KListView *parent, const QString& institutionName,
+      const QCString& institutionID);
 	~KAccountListItem();
 	QCString accountID(void);
   void paintCell(QPainter *p, const QColorGroup & cg, int column, int width, int align);

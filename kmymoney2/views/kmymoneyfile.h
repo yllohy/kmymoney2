@@ -24,6 +24,7 @@
 #define KMYMONEYFILE_H
 
 #include "../mymoney/mymoneyfile.h"
+#include "../mymoney/mymoneyaccount.h"
 #include "../mymoney/storage/mymoneyseqaccessmgr.h"
 
 /**
@@ -44,6 +45,12 @@ public:
   static MyMoneyFile* file();
   static MyMoneySeqAccessMgr* storage();
   static void reset();
+
+  /**
+    * Helper method for account types
+    * FIXME: Create some helpers to convert to/from ints
+  **/
+  static QString accountTypeToString(MyMoneyAccount::accountTypeE accountType);
 };
 
 #endif

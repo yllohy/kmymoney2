@@ -30,7 +30,6 @@
 //#include <kglobal.h>
 //#include <klocale.h>
 
-
 #if 0
 
 //Includes for STL support below
@@ -56,7 +55,6 @@ typedef long long DLONG;
 
 // typedef for id lists
 typedef QValueList<QCString> QCStringList;
-
 
 //class that has utility functions to use throughout the application.
 class MyMoneyUtils

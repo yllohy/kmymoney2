@@ -21,6 +21,7 @@
  ***************************************************************************/
 
 #include "mymoneyutils.h"
+#include "mymoneyaccount.h"
 
 #ifdef _CHECK_MEMORY
 
@@ -352,5 +353,3 @@ bool MyMoneyUtils::appendCorrectFileExt(String& str, const String strExtToUse)
   */
 	return true;
 }
-
-

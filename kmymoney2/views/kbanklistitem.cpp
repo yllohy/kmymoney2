@@ -31,21 +31,26 @@
 #include <qpainter.h>
 #endif
 
-KAccountListItem::KAccountListItem(KListView *parent, const QString& accountName, const QCString& accountID, const QString& typeName)
+KAccountListItem::KAccountListItem(KListView *parent, const QString& accountName,
+  const QCString& accountID, const QString& typeName, const QString& balString)
   : QListViewItem(parent), m_accountID(accountID)
 {
+  setPixmap(0, QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/22x22/actions/account.png")));
   setText(0, accountName);
   setText(1, typeName);
-	//setText(2, KGlobal::locale()->formatMoney(m_account.balance().amount(), "",
-  //                                          KGlobal::locale()->fracDigits()));
+  if (balString.length() >= 1)
+    setText(2, balString);
 }
 
-KAccountListItem::KAccountListItem(KAccountListItem *parent, const QString& accountName, const QCString& accountID, const QString& typeName)
+KAccountListItem::KAccountListItem(KAccountListItem *parent, const QString& accountName,
+  const QCString& accountID, const QString& typeName, const QString& balString)
   : QListViewItem(parent), m_accountID(accountID)
 {
+  setPixmap(0, QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/22x22/actions/account.png")));
   setText(0, accountName);
   setText(1, typeName);
-  //setPixmap(0, QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/22x22/actions/account.png")));
+  if (balString.length() >= 1)
+    setText(2, balString);
 }
 
 KAccountListItem::KAccountListItem(KListView *parent, const QString& institutionName, const QCString& institutionID)
