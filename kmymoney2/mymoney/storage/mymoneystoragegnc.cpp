@@ -76,7 +76,7 @@ void MyMoneyStorageGNC::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
   }
   m_storage = storage;
   bool containsScheds = false;
-  
+
   m_doc = new QDomDocument;
   Q_CHECK_PTR(m_doc);
   if(m_doc->setContent(pDevice, FALSE))
@@ -601,7 +601,7 @@ void MyMoneyStorageGNC::readAccount(const QDomElement& account)
 
     //all the details from the file about the account should be known by now.
     //calling new account should automatically fill in the account ID.
-    m_storage->newAccount(acc);
+    m_storage->addAccount(acc);
     id = acc.id();
   }
   else
@@ -1187,7 +1187,7 @@ void MyMoneyStorageGNC::readTemplateSplits(gncTemplateTx& tx, QDomElement& split
   {
     m_splitActionType = MyMoneySplit::ActionDeposit;
   }
-  
+
   QValueList<MyMoneySplit>::iterator it = m_splitList.begin();
   while (!m_splitList.isEmpty())
   {

@@ -225,21 +225,19 @@ void KInvestmentView::slotItemDoubleClicked(QListViewItem* pItem, const QPoint& 
     KInvestmentListItem *pInvestListItem = dynamic_cast<KInvestmentListItem*>(pItem);
     if(pInvestListItem)
     {
-      MyMoneyFile* currentFile = MyMoneyFile::instance();
+      MyMoneyFile* file = MyMoneyFile::instance();
 
       //get the ID of the equity that was double-clicked, to look up to pass to the dialog.
       QCString id = pInvestListItem->equityId();
-      MyMoneyEquity equity = currentFile->equity(id);
+      MyMoneyEquity equity = file->equity(id);
       KEditEquityEntryDlg *pDlg = new KEditEquityEntryDlg(equity, this);
       if(pDlg->exec())
       {
         //copies all of the modified object's data into our local copy.
         pDlg->updatedEquity(equity);
-        
+
         //puts this in the storage container.
-        currentFile->modifyEquity(equity); 
-        
-        currentFile->setDirty();     
+        file->modifyEquity(equity);
       }
     }
   }

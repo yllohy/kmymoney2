@@ -481,7 +481,7 @@ void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
 
   account.setParentAccountId(parent.id());
 
-  m_storage->newAccount(account);
+  m_storage->addAccount(account);
   m_storage->addAccount(parent, account);
 
   if(account.institutionId().length() != 0)

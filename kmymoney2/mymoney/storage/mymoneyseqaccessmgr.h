@@ -116,7 +116,7 @@ public:
     * new owner of the object and must destroy it.
     */
   MyMoneySeqAccessMgr * const duplicate(void);
-  
+
   /**
     * Returns the account addressed by it's id.
     *
@@ -160,7 +160,7 @@ public:
     *
     * @param account MyMoneyAccount filled with data
     */
-  void newAccount(MyMoneyAccount& account);
+  void addAccount(MyMoneyAccount& account);
 
   /**
     * This method is used to create a new payee
@@ -445,7 +445,7 @@ public:
     * @return set of transactions in form of a QValueList<MyMoneyTransaction>
     */
   const QValueList<MyMoneyTransaction> transactionList(MyMoneyTransactionFilter& filter) const;
-    
+
   /**
     * This method is used to pull a list of transactions from the file
     * global transaction pool. It returns either the whole journal or
@@ -526,24 +526,24 @@ public:
   virtual void loadSchedule(const MyMoneySchedule& sched);
   virtual void loadEquity(const MyMoneyEquity& equity);
   virtual void loadCurrency(const MyMoneyCurrency& currency);
-  
+
   virtual void loadAccountId(const unsigned long id);
   virtual void loadTransactionId(const unsigned long id);
   virtual void loadPayeeId(const unsigned long id);
   virtual void loadInstitutionId(const unsigned long id);
   virtual void loadScheduleId(const unsigned long id);
   virtual void loadEquityId(const unsigned long id);
-  
+
   virtual const unsigned long accountId(void) { return m_nextAccountID; };
   virtual const unsigned long transactionId(void) { return m_nextTransactionID; };
   virtual const unsigned long payeeId(void) { return m_nextPayeeID; };
   virtual const unsigned long institutionId(void) { return m_nextInstitutionID; };
   virtual const unsigned long scheduleId(void) { return m_nextScheduleID; };
   virtual const unsigned long equityId(void) { return m_nextEquityID; };
-  
-  
+
+
   /**
-    * This method is used to extract a value from 
+    * This method is used to extract a value from
     * KeyValueContainer. For details see MyMoneyKeyValueContainer::value().
     *
     * @param key const reference to QCString containing the key
@@ -552,7 +552,7 @@ public:
   const QString value(const QCString& key) const;
 
   /**
-    * This method is used to set a value in the 
+    * This method is used to set a value in the
     * KeyValueContainer. For details see MyMoneyKeyValueContainer::setValue().
     *
     * @param key const reference to QCString containing the key
@@ -620,28 +620,31 @@ public:
 
   /**
     * This method is used to create a new equity object.  The ID will be created
-    * automatically.
+    * automatically. The object passed with the parameter @p equity is modified
+    * to contain the assigned id.
     *
     * An exception will be thrown upon error conditions.
     *
     * @param account MyMoneyEquity filled with data
     */
-  virtual void newEquity(MyMoneyEquity& equity);
+  virtual void addEquity(MyMoneyEquity& equity);
 
+#if 0
   /**
     * This method is used to add a new equity object to the engine.
     * The ID of the object is the trading symbol, so there is no need for an additional
-    * ID since the symbol is guaranteed to be unique.  
+    * ID since the symbol is guaranteed to be unique.
     *
     * An exception will be thrown upon erronous situations.
     *
     * @param equity reference to the MyMoneyEquity object
     */
   void addEquity(MyMoneyEquity& equity);
+#endif
 
   /**
     * This method is used to modify an existing MyMoneySchedule
-    * object. 
+    * object.
     *
     * An exception will be thrown upon erronous situations.
     *
@@ -651,7 +654,7 @@ public:
 
   /**
     * This method is used to remove an existing MyMoneyEquity object
-    * from the engine. 
+    * from the engine.
     *
     * An exception will be thrown upon erronous situations.
     *
@@ -768,7 +771,7 @@ public:
                                               int schedulePaymentTypes,
                                               QDate startDate,
                                               const QCStringList& accounts=QCStringList()) const;
-    
+
 private:
 
   static const int INSTITUTION_ID_SIZE = 6;
@@ -808,7 +811,7 @@ private:
     * This member variable keeps the name of the User
     * @see userName(), setUserName()
     */
-  QString m_userName;           
+  QString m_userName;
 
   /**
     * This member variable keeps the street of the users address
@@ -887,7 +890,7 @@ private:
     * nextEquityID()
     */
   unsigned long m_nextEquityID;
-  
+
   /**
     * The member variable m_institutionList is the container for the
     * institutions known within this file.
@@ -938,9 +941,9 @@ private:
     * information for reports in a equity account.
     */
   QMap<QCString, MyMoneyEquity> m_equitiesList;
-  
+
   /**
-    * A list containing all the currency information objects.  
+    * A list containing all the currency information objects.
     */
   QMap<QCString, MyMoneyCurrency> m_currencyList;
 

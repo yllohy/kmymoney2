@@ -132,7 +132,7 @@ void MyMoneySeqAccessMgrTest::testNewAccount() {
 	a.setName("AccountName");
 	a.setNumber("AccountNumber");
 
-	m->newAccount(a);
+	m->addAccount(a);
 
 	CPPUNIT_ASSERT(m->m_nextAccountID == 1);
 	CPPUNIT_ASSERT(m->dirty() == true);
@@ -173,7 +173,7 @@ void MyMoneySeqAccessMgrTest::testAddNewAccount() {
 	MyMoneyAccount a,b;
 	b.setName("Account2");
 	b.setNumber("Acc2");
-	m->newAccount(b);
+	m->addAccount(b);
 
 	m->m_dirty = false;
 
@@ -385,12 +385,12 @@ void MyMoneySeqAccessMgrTest::testReparentAccount() {
 	ch.setName("My checkings account");
 
 	try {
-		m->newAccount(ex1);
-		m->newAccount(ex2);
-		m->newAccount(ex3);
-		m->newAccount(ex4);
-		m->newAccount(in);
-		m->newAccount(ch);
+		m->addAccount(ex1);
+		m->addAccount(ex2);
+		m->addAccount(ex3);
+		m->addAccount(ex4);
+		m->addAccount(in);
+		m->addAccount(ch);
 
 		CPPUNIT_ASSERT(ex1.id() == "A000001");
 		CPPUNIT_ASSERT(ex2.id() == "A000002");
@@ -958,9 +958,9 @@ void MyMoneySeqAccessMgrTest::testRemoveAccountFromTree() {
 	// remains in the storag manager
 
 	try {
-		m->newAccount(a);
-		m->newAccount(b);
-		m->newAccount(c);
+		m->addAccount(a);
+		m->addAccount(b);
+		m->addAccount(c);
 		m->reparentAccount(b, a);
 		m->reparentAccount(c, b);
 

@@ -751,7 +751,7 @@ void KLedgerViewInvestments::slotEndEdit()
   {
     QString name = m_editSymbolName->text();
     qDebug("Symbol name is %s", name.data());
-  
+
     MyMoneyFile* file = MyMoneyFile::instance();
     if(file)
     {
@@ -765,7 +765,7 @@ void KLedgerViewInvestments::slotEndEdit()
           break;
         }
       }
-  
+
       //if we don't know about this equity, throw up a dialog box to collect the basic information about it.
       if(!bKnownEquity)
       {
@@ -775,19 +775,16 @@ void KLedgerViewInvestments::slotEndEdit()
         {
           //create the new Equity object, and give it its ID.
           MyMoneyEquity newEquity;
-          IMyMoneyStorage *storage = file->storage();
-          if(storage)
-          {
-            qDebug("Adding equity %s to the our storage object\n", name.data());
-              
-            //fill in the fields.
-            newEquity.setTradingSymbol(pDlg->symbolName());
-            newEquity.setName(pDlg->name());
-  
-            storage->newEquity(newEquity);
-            
-            //mark the file as needing to be saved.
-            storage->setDirty();
+          qDebug("Adding equity %s to the our storage object\n", name.data());
+
+          //fill in the fields.
+          newEquity.setTradingSymbol(pDlg->symbolName());
+          newEquity.setName(pDlg->name());
+          try {
+            file->addEquity(newEquity);
+          } catch(MyMoneyException *e) {
+            qWarning("Cannot add equity %s to storage", newEquity.name().data());
+            delete e;
           }
         }
       }

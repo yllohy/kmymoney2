@@ -179,7 +179,7 @@ void MyMoneyStorageBin::addCategory(IMyMoneySerialize* storage,
   name = majorName;
   if(!categories.contains(name)) {
     majorCat.setName(name);
-    storage->newAccount(majorCat);
+    storage->addAccount(majorCat);
     storage->addAccount(group, majorCat);
     categories[name] = majorCat.id();
   }
@@ -197,7 +197,7 @@ void MyMoneyStorageBin::addCategory(IMyMoneySerialize* storage,
       }
       minorCat.setName(minorName);
       minorCat.setAccountType(majorCat.accountType());
-      storage->newAccount(minorCat);
+      storage->addAccount(minorCat);
       storage->addAccount(*it, minorCat);
       categories[name] = minorCat.id();
     }
@@ -328,7 +328,7 @@ void MyMoneyStorageBin::readOldFormat(QDataStream& s, IMyMoneySerialize* storage
 
       s >> date; acc.setLastReconciliationDate(date);
 
-      storage->newAccount(acc);
+      storage->addAccount(acc);
       storage->addAccount(institution, acc);
       storage->addAccount(parent, acc);
 
@@ -529,7 +529,7 @@ void MyMoneyStorageBin::readNewFormat(QDataStream&s, IMyMoneySerialize* storage)
   storage->setPairs(readKeyValueContainer(s));
   if(s.atEnd())
     return;
-    
+
   readScheduledTransactions(s, storage);
   if(s.atEnd())
     return;
@@ -600,7 +600,7 @@ void MyMoneyStorageBin::writeStream(QDataStream& s, IMyMoneySerialize* storage)
   writeScheduledTransactions(s, storage);
 
   // add new items to be saved in front of this line
-  
+
   // this seems to be nonsense, but it clears the dirty flag
   // as a side-effect.
   storage->setLastModificationDate(storage->lastModificationDate());
@@ -874,7 +874,7 @@ void MyMoneyStorageBin::writeTransactions(QDataStream& s, IMyMoneySerialize* sto
   QValueList<MyMoneyTransaction> list;
   QValueList<MyMoneyTransaction>::ConstIterator it;
   MyMoneyTransactionFilter filter;
-  
+
   tmp = 1;      // version
   s << tmp;
 
@@ -1043,7 +1043,7 @@ void MyMoneyStorageBin::readScheduledTransactions(QDataStream& s, IMyMoneySerial
 
   s >> version;
   s >> cnt;
-  
+
   signalProgress(0, cnt, QObject::tr("Loading schedules..."));
   for(int i = 0; i < cnt; ++i) {
     MyMoneySchedule sched = readSchedule(s);
@@ -1104,7 +1104,7 @@ void MyMoneyStorageBin::writeSchedule(QDataStream&s, const MyMoneySchedule& sc)
   s << payments.count();
   for (it=payments.begin(); it!=payments.end(); ++it)
     s << *it;
-    
+
   writeTransaction(s, sc.transaction());
 }
 
@@ -1132,10 +1132,10 @@ const MyMoneySchedule MyMoneyStorageBin::readSchedule(QDataStream& s)
     tmp_n = convertOldPaymentType(tmp_n);
   sc.setPaymentType((MyMoneySchedule::paymentTypeE)tmp_n);
   s >> tmp_n; sc.setFixed(tmp_n);
-  
+
   if(version < 3)
     s >> tmp_n; // sc.setWillEnd(tmp_n);
-    
+
   if (version < 2)
   {
     s >> tmp_n; /* sc.setTransactionsRemaining(tmp_n); */
@@ -1167,7 +1167,7 @@ const MyMoneySchedule MyMoneyStorageBin::readSchedule(QDataStream& s)
       sc.recordPayment(tmp_d);
     }
   }
-  
+
   MyMoneyTransaction t = readTransaction(s);
   sc.setTransaction(t);
 

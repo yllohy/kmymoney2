@@ -142,7 +142,7 @@ const QValueList<MyMoneyAccount> MyMoneySeqAccessMgr::accountList(void) const
   return list;
 }
 
-void MyMoneySeqAccessMgr::newAccount(MyMoneyAccount& account)
+void MyMoneySeqAccessMgr::addAccount(MyMoneyAccount& account)
 {
   // create the account
   MyMoneyAccount newAccount(nextAccountID(), account);
@@ -175,7 +175,7 @@ const MyMoneyPayee MyMoneySeqAccessMgr::payeeByName(const QString& payee) const
 {
   if(payee.isEmpty())
     return MyMoneyPayee();
-    
+
   QMap<QCString, MyMoneyPayee>::ConstIterator it_p;
 
   for(it_p = m_payeeList.begin(); it_p != m_payeeList.end(); ++it_p) {
@@ -220,6 +220,7 @@ void MyMoneySeqAccessMgr::removePayee(const MyMoneyPayee& payee)
         throw new MYMONEYEXCEPTION("Cannot remove payee that is referenced");
     }
   }
+  // FIXME: check referential integrity in schedules
 
   m_payeeList.remove(it_p);
   touch();
@@ -681,7 +682,7 @@ void MyMoneySeqAccessMgr::reparentAccount(MyMoneyAccount &account, MyMoneyAccoun
 
   // make sure the type is the same as the new parent
   (*childAccount).setAccountType((*newParent).accountType());
-  
+
   parent = *newParent;
   account = *childAccount;
 
@@ -715,6 +716,8 @@ void MyMoneySeqAccessMgr::removeTransaction(const MyMoneyTransaction& transactio
   for(it_s = (*it_t).splits().begin(); it_s != (*it_t).splits().end(); ++it_s) {
     modifiedAccounts[(*it_s).accountId()] = true;
   }
+
+  // FIXME: check if any split is frozen and throw exception
 
   // remove the transaction from the two lists
   m_transactionList.remove(it_t);
@@ -775,6 +778,8 @@ void MyMoneySeqAccessMgr::removeAccount(const MyMoneyAccount& account)
   it_p = m_accountList.find(parent.id());
   if(it_p == m_accountList.end())
     throw new MYMONEYEXCEPTION("Internal error: parent account not found in list");
+
+  // FIXME: check referential integrity for the account to be removed
 
   // check if the new info is based on the old one.
   // this is the case, when the file and the id
@@ -914,7 +919,7 @@ const MyMoneyTransaction& MyMoneySeqAccessMgr::transaction(const QCString& accou
     filter.addCategory(account);
   else
     filter.addAccount(account);
-    
+
   list = transactionList(filter);
   if(idx < 0 || idx >= static_cast<int> (list.count()))
     throw new MYMONEYEXCEPTION("Unknown idx for transaction");
@@ -1244,6 +1249,8 @@ void MyMoneySeqAccessMgr::removeSchedule(const MyMoneySchedule& sched)
     throw new MYMONEYEXCEPTION(msg);
   }
 
+  // FIXME: check referential integrity for loan accounts
+
   m_scheduleList.remove(it);
   touch();
 }
@@ -1275,28 +1282,28 @@ const QValueList<MyMoneySchedule> MyMoneySeqAccessMgr::scheduleList(
   QValueList<MyMoneySchedule> list;
 
   // qDebug("scheduleList()");
-  
+
   for(pos = m_scheduleList.begin(); pos != m_scheduleList.end(); ++pos) {
     // qDebug("  '%s'", (*pos).id().data());
-    
+
     if(type != MyMoneySchedule::TYPE_ANY) {
       if(type != (*pos).type()) {
         continue;
       }
     }
-    
+
     if(occurence != MyMoneySchedule::OCCUR_ANY) {
       if(occurence != (*pos).occurence()) {
         continue;
       }
     }
-    
+
     if(paymentType != MyMoneySchedule::STYPE_ANY) {
       if(paymentType != (*pos).paymentType()) {
         continue;
       }
     }
-    
+
     if(!accountId.isEmpty()) {
       MyMoneyTransaction t = (*pos).transaction();
       QValueList<MyMoneySplit>::ConstIterator it;
@@ -1316,13 +1323,13 @@ const QValueList<MyMoneySchedule> MyMoneySeqAccessMgr::scheduleList(
         continue;
       }
     }
-    
+
     if(startDate.isValid() && !endDate.isValid()) {
       if(!(*pos).nextPayment(startDate.addDays(-1)).isValid()) {
         continue;
       }
     }
-    
+
     if(!startDate.isValid() && endDate.isValid()) {
       if((*pos).startDate() > endDate) {
         continue;
@@ -1372,7 +1379,7 @@ QValueList<MyMoneySchedule> MyMoneySeqAccessMgr::scheduleListEx(int scheduleType
                                                                 const QCStringList& accounts) const
 {
 //  qDebug("scheduleListEx");
-  
+
   QMap<QCString, MyMoneySchedule>::ConstIterator pos;
   QValueList<MyMoneySchedule> list;
 
@@ -1382,11 +1389,11 @@ QValueList<MyMoneySchedule> MyMoneySeqAccessMgr::scheduleListEx(int scheduleType
   for(pos = m_scheduleList.begin(); pos != m_scheduleList.end(); ++pos)
   {
     if (scheduleTypes && !(scheduleTypes & (*pos).type()))
-      continue; 
+      continue;
 
     if (scheduleOcurrences && !(scheduleOcurrences & (*pos).occurence()))
       continue;
-      
+
     if (schedulePaymentTypes && !(schedulePaymentTypes & (*pos).paymentType()))
       continue;
 
@@ -1404,42 +1411,59 @@ QValueList<MyMoneySchedule> MyMoneySeqAccessMgr::scheduleListEx(int scheduleType
       if (accounts.contains((*pos).account().id()))
         continue;
     }
-    
+
 //    qDebug("\tAdding '%s'", (*pos).name().latin1());
     list << *pos;
   }
-  
-  return list;  
-}
 
-void MyMoneySeqAccessMgr::newEquity(MyMoneyEquity& equity)
-{
-  // create the account
-  MyMoneyEquity newEquity(nextEquityID(), equity);
-  
-  qDebug("New Equity object ID is %s\n", newEquity.id().data());
-  
-  m_equitiesList[newEquity.id()] = newEquity;
-  
-  qDebug("Size of equity list is now %d\n", m_equitiesList.size());
-  
-  touch();
-  equity = newEquity;
+  return list;
 }
 
 void MyMoneySeqAccessMgr::addEquity(MyMoneyEquity& equity)
 {
-  m_equitiesList[equity.id()] = equity;
+  // create the account
+  MyMoneyEquity newEquity(nextEquityID(), equity);
+
+  qDebug("New Equity object ID is %s\n", newEquity.id().data());
+
+  m_equitiesList[newEquity.id()] = newEquity;
+
+  qDebug("Size of equity list is now %d\n", m_equitiesList.size());
+
+  touch();
+  equity = newEquity;
 }
 
 void MyMoneySeqAccessMgr::modifyEquity(const MyMoneyEquity& equity)
 {
+  QMap<QCString, MyMoneyEquity>::ConstIterator it;
+
+  it = m_equitiesList.find(equity.id());
+  if(it == m_equitiesList.end())
+  {
+    QString msg = "Unknown equity  '";
+    msg += equity.id() + "' during modifyEquity()";
+    throw new MYMONEYEXCEPTION(msg);
+  }
+
   m_equitiesList[equity.id()] = equity;
   touch();
 }
 
 void MyMoneySeqAccessMgr::removeEquity(const MyMoneyEquity& equity)
 {
+  QMap<QCString, MyMoneyEquity>::ConstIterator it;
+
+  // FIXME: check referential integrity
+
+  it = m_equitiesList.find(equity.id());
+  if(it == m_equitiesList.end())
+  {
+    QString msg = "Unknown equity  '";
+    msg += equity.id() + "' during removeEquity()";
+    throw new MYMONEYEXCEPTION(msg);
+  }
+
   m_equitiesList.erase(equity.id());
   touch();
 }
@@ -1497,19 +1521,21 @@ void MyMoneySeqAccessMgr::removeCurrency(const MyMoneyCurrency& currency)
 {
   QMap<QCString, MyMoneyCurrency>::Iterator it;
 
+  // FIXME: check referential integrity
+
   it = m_currencyList.find(currency.id());
   if(it == m_currencyList.end()) {
     throw new MYMONEYEXCEPTION(QString("Cannot remove currency with unknown id %1").arg(currency.id().data()));
   }
 
-  m_currencyList.remove(it);  
+  m_currencyList.remove(it);
   touch();
 }
 
 const MyMoneyCurrency MyMoneySeqAccessMgr::currency(const QCString& id) const
 {
   if(id.isEmpty()) {
-    
+
   }
   QMap<QCString, MyMoneyCurrency>::ConstIterator it;
 

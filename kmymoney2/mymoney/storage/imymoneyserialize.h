@@ -50,7 +50,7 @@
   * This class represents the interface to serialize a MyMoneyStorage object
   */
 class IMyMoneySerialize {
-public: 
+public:
   IMyMoneySerialize();
   virtual ~IMyMoneySerialize();
 
@@ -155,7 +155,7 @@ public:
     * knowledge of.
     */
   virtual const QValueList<MyMoneyEquity> equityList(void) const = 0;
-                                       
+
   /**
     * This method is used to return the standard liability account
     * @return MyMoneyAccount liability account(group)
@@ -187,7 +187,7 @@ public:
     *
     * @param account MyMoneyAccount filled with data
     */
-  virtual void newAccount(MyMoneyAccount& account) = 0;
+  virtual void addAccount(MyMoneyAccount& account) = 0;
 
   /**
     * This method is used to add one account as sub-ordinate to another

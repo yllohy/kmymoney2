@@ -53,7 +53,7 @@
   * @see MyMoneySeqAccessMgr
   */
 class IMyMoneyStorage {
-public: 
+public:
   IMyMoneyStorage();
   virtual ~IMyMoneyStorage();
 
@@ -96,7 +96,7 @@ public:
     *
     * @param account MyMoneyAccount filled with data
     */
-  virtual void newAccount(MyMoneyAccount& account) = 0;
+  virtual void addAccount(MyMoneyAccount& account) = 0;
 
   /**
     * This method is used to add one account as sub-ordinate to another
@@ -300,7 +300,7 @@ public:
     * to a local disk was ok.
     */
   virtual void setDirty(void) = 0;
-  
+
   /**
     * This method returns the number of accounts currently known to this storage
     * in the range 0..MAXUINT
@@ -503,21 +503,12 @@ public:
 
   /**
     * This method is used to create a new equity object.  The ID will be created
-    * automatically.
+    * automatically. The object passed with the parameter @p equity is modified
+    * to contain the assigned id.
     *
     * An exception will be thrown upon error conditions.
     *
     * @param account MyMoneyEquity filled with data
-    */
-  virtual void newEquity(MyMoneyEquity& equity) = 0;
-
-  /**
-    * This method is used to add a new equity object to the engine. This object is expected
-    * to already have a valid ID.
-    *
-    * An exception will be thrown upon erronous situations.
-    *
-    * @param equity reference to the MyMoneyEquity object
     */
   virtual void addEquity(MyMoneyEquity& equity) = 0;
 
