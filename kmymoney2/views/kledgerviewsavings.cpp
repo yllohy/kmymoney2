@@ -47,7 +47,10 @@ KLedgerViewSavings::KLedgerViewSavings(QWidget *parent, const char *name )
 {
   m_form->tabBar()->removeTab(m_tabCheck);
   m_form->tabBar()->removeTab(m_tabAtm);
-  m_register->hideColumn(0);
+  KConfig *config = KGlobal::config();
+  config->setGroup("General Options");
+  if(config->readBoolEntry("AlwaysShowNrField", false) == false)
+    m_register->hideColumn(0);
   m_register->repaintContents(false);
 }
 
@@ -64,7 +67,15 @@ void KLedgerViewSavings::resizeEvent(QResizeEvent* ev)
   int m_creditWidth = 80;
   int m_balanceWidth = 100;
 
-  m_register->setColumnWidth(0, 0);             // we don't have a Nr. here
+  KConfig *config = KGlobal::config();
+  config->setGroup("General Options");
+  if(config->readBoolEntry("AlwaysShowNrField", false) == false) {
+    m_register->hideColumn(0);
+    m_register->setColumnWidth(0, 0);             // we don't have a Nr. here
+  } else {
+    m_register->showColumn(0);
+    m_register->setColumnWidth(0, 80);
+  }
   m_register->setColumnWidth(1, 100);
   m_register->setColumnWidth(3, 20);
   m_register->setColumnWidth(4, m_debitWidth);
@@ -108,7 +119,14 @@ void KLedgerViewSavings::createEditWidgets(void)
   m_editMemo = new kMyMoneyLineEdit(0, "editMemo");
   m_editAmount = new kMyMoneyEdit(0, "editAmount");
   m_editDate = new kMyMoneyDateInput(0, "editDate");
-  m_editNr = 0;
+
+  KConfig *config = KGlobal::config();
+  config->setGroup("General Options");
+  if(config->readBoolEntry("AlwaysShowNrField", false) == false)
+    m_editNr = 0;
+  else
+    m_editNr = new kMyMoneyLineEdit(0, "editNr");
+
   m_editFrom = new kMyMoneyCategory(0, "editFrom", static_cast<kMyMoneyCategory::categoryTypeE> (kMyMoneyCategory::asset | kMyMoneyCategory::liability));
   m_editTo = new kMyMoneyCategory(0, "editTo", static_cast<kMyMoneyCategory::categoryTypeE> (kMyMoneyCategory::asset | kMyMoneyCategory::liability));
   m_editSplit = new KPushButton("Split", 0, "editSplit");
