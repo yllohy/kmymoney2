@@ -48,6 +48,7 @@
 #include "../widgets/kmymoneycategory.h"
 #include "../dialogs/ksplittransactiondlg.h"
 #include "../dialogs/kconfirmmanualenterdialog.h"
+#include "../dialogs/kcurrencycalculator.h"
 
 KEnterScheduleDialog::KEnterScheduleDialog(QWidget *parent, const MyMoneySchedule& schedule,
   const QDate& date)
@@ -627,15 +628,141 @@ void KEnterScheduleDialog::commitTransaction()
 
     m_transaction.setEntryDate(QDate::currentDate());
     m_transaction.setPostDate(m_schedDate);
-    MyMoneyFile::instance()->addTransaction(m_transaction);
+    m_transaction.setCommodity(m_schedule.account().currencyId());
 
-    try
-    {
+    try {
+      MyMoneyFile* file = MyMoneyFile::instance();
+      QValueList<MyMoneySplit> list = m_transaction.splits();
+      QValueList<MyMoneySplit>::Iterator it;
+
+      // Fix the payeeId. For non-asset and non-liability accounts,
+      // the payeeId will be cleared. If a transfer has one split
+      // with an empty payeeId the other one will be copied.
+      //
+      // Splits not referencing any account will be removed.
+      // Price information for other currencies will be collected
+
+      QMap<QCString, MyMoneyMoney> priceInfo;
+      for(it = list.begin(); it != list.end(); ++it) {
+        if((*it).accountId().isEmpty()) {
+          m_transaction.removeSplit(*it);
+          continue;
+        }
+        MyMoneyAccount acc = file->account((*it).accountId());
+        MyMoneySecurity currency(file->currency(m_schedule.account().currencyId()));
+        int fract = currency.smallestAccountFraction();
+        if(acc.accountType() == MyMoneyAccount::Cash)
+          fract = currency.smallestCashFraction();
+
+        MyMoneyAccount::accountTypeE accType = file->accountGroup(acc.accountType());
+        switch(accType) {
+          case MyMoneyAccount::Asset:
+          case MyMoneyAccount::Liability:
+            break;
+
+          default:
+            (*it).setPayeeId(QCString());
+            m_transaction.modifySplit(*it);
+            break;
+        }
+
+        if(m_transaction.commodity() != acc.currencyId()) {
+          // different currencies, try to find recent price info
+          QMap<QCString, MyMoneyMoney>::Iterator it_p;
+          QCString key = m_transaction.commodity() + "-" + acc.currencyId();
+          it_p = priceInfo.find(key);
+
+          // if it's not found, then collect it from the user first
+          MyMoneyMoney price;
+          if(it_p == priceInfo.end()) {
+            MyMoneySecurity fromCurrency, toCurrency;
+            MyMoneyMoney fromValue, toValue;
+            if(m_transaction.commodity() != m_schedule.account().currencyId()) {
+              toCurrency = file->currency(m_transaction.commodity());
+              fromCurrency = file->currency(acc.currencyId());
+              toValue = (*it).value();
+              fromValue = (*it).shares();
+            } else {
+              fromCurrency = file->currency(m_transaction.commodity());
+              toCurrency = file->currency(acc.currencyId());
+              fromValue = (*it).value();
+              toValue = (*it).shares();
+            }
+
+            KCurrencyCalculator calc(fromCurrency,
+                                    toCurrency,
+                                    fromValue,
+                                    toValue,
+                                    m_transaction.postDate(),
+                                    fract,
+                                    this, "currencyCalculator");
+            if(calc.exec() == QDialog::Rejected) {
+              return;
+            }
+            price = calc.price();
+            priceInfo[key] = price;
+          } else {
+            price = (*it_p);
+          }
+
+          // update shares if the transaction commodity is the currency
+          // of the current selected account
+          if(m_transaction.commodity() == m_schedule.account().currencyId()) {
+            (*it).setShares(((*it).value() * price).convert(fract));
+          }
+
+          // now update the split
+          m_transaction.modifySplit(*it);
+        } else {
+          if((*it).shares() != (*it).value()) {
+            (*it).setShares((*it).value());
+            m_transaction.modifySplit(*it);
+          }
+        }
+      }
+
+#if 0
+      // FIXME: This should be run through, but currently we don't have
+      // access to the transactionType() routine. So we keep the source here
+      // and let things go.
+      if(transactionType(m_transaction) == Transfer && !m_split.payeeId().isEmpty()) {
+        for(it = list.begin(); it != list.end(); ++it) {
+          if((*it).id() == m_split.id())
+            continue;
+
+          if((*it).payeeId().isEmpty()) {
+            (*it).setPayeeId(m_split.payeeId());
+            m_transaction.modifySplit(*it);
+          }
+        }
+      }
+
+      // check if this is a transfer to/from loan account and
+      // mark it as amortization in this case
+      if(m_transaction.splitCount() == 2) {
+        bool isAmortization = false;
+        for(it = list.begin(); !isAmortization && it != list.end(); ++it) {
+          if((*it).action() == MyMoneySplit::ActionTransfer) {
+            MyMoneyAccount acc = file->account((*it).accountId());
+            if(acc.accountType() == MyMoneyAccount::Loan
+            || acc.accountType() == MyMoneyAccount::AssetLoan)
+              isAmortization = true;
+          }
+        }
+
+        if(isAmortization) {
+          for(it = list.begin(); it != list.end(); ++it) {
+            (*it).setAction(MyMoneySplit::ActionAmortization);
+            m_transaction.modifySplit(*it);
+          }
+        }
+      }
+#endif
+      MyMoneyFile::instance()->addTransaction(m_transaction);
       MyMoneyFile::instance()->modifySchedule(m_schedule);
-    }
-    catch (MyMoneyException *e)
-    {
-      KMessageBox::error(this, i18n("Unable to modify schedule: ") + e->what());
+    } catch(MyMoneyException *e) {
+      KMessageBox::detailedSorry(0, i18n("Unable to add transaction/modify schedule"),
+        (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
       delete e;
     }
   }
