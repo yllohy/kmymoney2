@@ -56,8 +56,6 @@
 #include "../widgets/kmymoneypayee.h"
 #include "../widgets/kmymoneyequity.h"
 
-#include "../kapptest.h"
-
 #define ACTIVITY_ROW      0
 #define DATE_ROW          0
 #define SYMBOL_ROW        1
@@ -1125,7 +1123,7 @@ void KLedgerViewInvestments::slotRegisterDoubleClicked(int /* row */,
 
 void KLedgerViewInvestments::createRegister(void)
 {
-  KLedgerView::createRegister(new kMyMoneyRegisterInvestment(this, KAppTest::widgetName(this, "kMyMoneyRegisterInvestment")));
+  KLedgerView::createRegister(new kMyMoneyRegisterInvestment(this, "kMyMoneyRegisterInvestment"));
 }
 
 void KLedgerViewInvestments::createSummary(void)

@@ -138,6 +138,7 @@ protected slots:
   void slotEditInvestment();
   void slotUpdatePrice();
   void slotTabSelected(QWidget *pWidget);
+  void slotRemoveInvestment();
 
 signals:
   void signalViewActivated(void);

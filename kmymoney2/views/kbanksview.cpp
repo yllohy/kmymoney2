@@ -46,7 +46,6 @@
 #include "../dialogs/knewaccountdlg.h"
 #include "../dialogs/knewbankdlg.h"
 #include "../kmymoneyutils.h"
-#include "../kapptest.h"
 
 KAccountsView::KAccountsView(QWidget *parent, const char *name, bool bInstitutionView)
  : KBankViewDecl(parent,name),

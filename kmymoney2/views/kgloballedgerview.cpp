@@ -56,7 +56,6 @@
 #include "../mymoney/mymoneyfile.h"
 #include "../widgets/kmymoneyaccountcombo.h"
 #include "../widgets/kmymoneytitlelabel.h"
-#include "../kapptest.h"
 
 KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   : KMyMoneyViewBase(parent, name, i18n("Ledgers"))
@@ -74,7 +73,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
 
   QHBoxLayout* Layout2 = new QHBoxLayout( 0, 0, 6, "Layout2");
 
-  m_accountComboBox = new kMyMoneyAccountCombo(this, KAppTest::widgetName(this, "kMyMoneyAccountCombo"));
+  m_accountComboBox = new kMyMoneyAccountCombo(this, "AccountCombo");
   // m_accountComboBox->setMinimumSize( QSize( 240, 0 ) );
   Layout2->addWidget( m_accountComboBox );
   QSpacerItem* spacer = new QSpacerItem( 20, 20,
@@ -83,10 +82,10 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   Layout2->addItem( spacer );
   m_viewLayout->addLayout( Layout2 );
 
-  m_accountStack = new QWidgetStack(this, KAppTest::widgetName(this, "QWidgetStack"));
+  m_accountStack = new QWidgetStack(this, "AccountStack");
 
   // Checkings account
-  view = m_specificView[MyMoneyAccount::Checkings] = new KLedgerViewCheckings(this, KAppTest::widgetName(this, "KLedgerViewCheckings"));
+  view = m_specificView[MyMoneyAccount::Checkings] = new KLedgerViewCheckings(this, "CheckingsView");
   m_accountStack->addWidget(view, MyMoneyAccount::Checkings);
   connect(view, SIGNAL(accountAndTransactionSelected(const QCString&, const QCString&)),
     this, SLOT(slotSelectAccount(const QCString&, const QCString&)));
@@ -95,7 +94,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   // connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
 
   // Savings account
-  view = m_specificView[MyMoneyAccount::Savings] = new KLedgerViewSavings(this, KAppTest::widgetName(this, "KLedgerViewSavings"));
+  view = m_specificView[MyMoneyAccount::Savings] = new KLedgerViewSavings(this, "SavingsView");
   m_accountStack->addWidget(view, MyMoneyAccount::Savings);
   connect(view, SIGNAL(accountAndTransactionSelected(const QCString&, const QCString&)),
     this, SLOT(slotSelectAccount(const QCString&, const QCString&)));
@@ -104,7 +103,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   // connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
 
   // Credit card account
-  view = m_specificView[MyMoneyAccount::CreditCard] = new KLedgerViewCreditCard(this, KAppTest::widgetName(this, "KLedgerViewCreditCard"));
+  view = m_specificView[MyMoneyAccount::CreditCard] = new KLedgerViewCreditCard(this, "CreditCardView");
   m_accountStack->addWidget(view, MyMoneyAccount::CreditCard);
   connect(view, SIGNAL(accountAndTransactionSelected(const QCString&, const QCString&)),
     this, SLOT(slotSelectAccount(const QCString&, const QCString&)));
@@ -113,7 +112,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   // connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
 
   // Cash account
-  view = m_specificView[MyMoneyAccount::Cash] = new KLedgerViewCash(this, KAppTest::widgetName(this, "KLedgerViewCash"));
+  view = m_specificView[MyMoneyAccount::Cash] = new KLedgerViewCash(this, "CashView");
   m_accountStack->addWidget(view, MyMoneyAccount::Cash);
   connect(view, SIGNAL(accountAndTransactionSelected(const QCString&, const QCString&)),
     this, SLOT(slotSelectAccount(const QCString&, const QCString&)));
@@ -122,7 +121,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   // connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
 
   // Asset account
-  view = m_specificView[MyMoneyAccount::Asset] = new KLedgerViewAsset(this, KAppTest::widgetName(this, "KLedgerViewAsset"));
+  view = m_specificView[MyMoneyAccount::Asset] = new KLedgerViewAsset(this, "AssetView");
   m_accountStack->addWidget(view, MyMoneyAccount::Asset);
   connect(view, SIGNAL(accountAndTransactionSelected(const QCString&, const QCString&)),
     this, SLOT(slotSelectAccount(const QCString&, const QCString&)));
@@ -131,7 +130,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   // connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
 
   // Loan account
-  view = m_specificView[MyMoneyAccount::Loan] = m_specificView[MyMoneyAccount::AssetLoan] = new KLedgerViewLoan(this, KAppTest::widgetName(this, "KLedgerViewLoan"));
+  view = m_specificView[MyMoneyAccount::Loan] = m_specificView[MyMoneyAccount::AssetLoan] = new KLedgerViewLoan(this, "LoanView");
   m_accountStack->addWidget(view, MyMoneyAccount::Loan);
   connect(view, SIGNAL(accountAndTransactionSelected(const QCString&, const QCString&)),
     this, SLOT(slotSelectAccount(const QCString&, const QCString&)));
@@ -140,7 +139,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   // connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
 
   // Liability account
-  view = m_specificView[MyMoneyAccount::Liability] = new KLedgerViewLiability(this, KAppTest::widgetName(this, "KLedgerViewLiability"));
+  view = m_specificView[MyMoneyAccount::Liability] = new KLedgerViewLiability(this, "LiabilityView");
   m_accountStack->addWidget(view, MyMoneyAccount::Liability);
   connect(view, SIGNAL(accountAndTransactionSelected(const QCString&, const QCString&)),
     this, SLOT(slotSelectAccount(const QCString&, const QCString&)));
@@ -149,7 +148,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   // connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
 
   // Investment account
-  view = m_specificView[MyMoneyAccount::Investment] = new KLedgerViewInvestments(this, KAppTest::widgetName(this, "KLedgerViewInvestments"));
+  view = m_specificView[MyMoneyAccount::Investment] = new KLedgerViewInvestments(this, "InvestmentsView");
   m_accountStack->addWidget(view, MyMoneyAccount::Investment);
   connect(view, SIGNAL(accountAndTransactionSelected(const QCString&, const QCString&)),
     this, SLOT(slotSelectAccount(const QCString&, const QCString&)));
