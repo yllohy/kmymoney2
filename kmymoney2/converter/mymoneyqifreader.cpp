@@ -414,7 +414,8 @@ void MyMoneyQifReader::processTransactionEntry(void)
 
   // mark it imported for the view
   t.setValue("Imported", "true");
-  
+  t.setCommodity(m_account.currencyId());
+
   // Process general transaction data
   t.setPostDate(m_qifProfile.date(extractLine('D')));
   if(!t.postDate().isValid()) {
