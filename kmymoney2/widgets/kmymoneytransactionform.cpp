@@ -240,7 +240,7 @@ kMyMoneyTransactionForm::kMyMoneyTransactionForm( KLedgerView* parent,  const ch
   buttonCancel->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)3, (QSizePolicy::SizeType)0, 0, 0, buttonCancel->sizePolicy().hasHeightForWidth() ) );
   buttonLayout->addWidget( buttonCancel );
 
-  KGuiItem moreButtItem( i18n( "&More" ),
+  KGuiItem moreButtItem( i18n( "M&ore" ),
                     QIconSet(il->loadIcon("configure", KIcon::Small, KIcon::SizeSmall)),
                     i18n("Access more functions"),
                     i18n("Use this to access special functions"));
