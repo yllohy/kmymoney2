@@ -300,7 +300,7 @@ bool KMyMoney2App::queryClose()
     if (ans==KMessageBox::Cancel)
       return false;
     else if (ans==KMessageBox::Yes)
-      slotFileSave();
+      return slotFileSave();
   }
   return true;
 }
@@ -419,24 +419,29 @@ void KMyMoney2App::slotFileOpenRecent(const KURL& url)
   emit fileLoaded(fileName);
 }
 
-void KMyMoney2App::slotFileSave()
+const bool KMyMoney2App::slotFileSave()
 {
+  bool rc = false;
+  
   QString prevMsg = slotStatusMsg(i18n("Saving file..."));
 
   if (fileName.isEmpty()) {
-    slotFileSaveAs();
+    rc = slotFileSaveAs();
     slotStatusMsg(prevMsg);
-    return;
+    return rc;
   }
 
-  myMoneyView->saveFile(fileName);
+  rc = myMoneyView->saveFile(fileName);
 
   slotStatusMsg(prevMsg);
   updateCaption();
+  return rc;
 }
 
-void KMyMoney2App::slotFileSaveAs()
+const bool KMyMoney2App::slotFileSaveAs()
 {
+  bool rc = false;
+  
   QString prevMsg = slotStatusMsg(i18n("Saving file with a new filename..."));
 
   QString newName=KFileDialog::getSaveFileName(readLastUsedDir(),//KGlobalSettings::documentPath(),
@@ -473,7 +478,7 @@ void KMyMoney2App::slotFileSaveAs()
     QFileInfo saveAsInfo(newName);
 
     fileName = newName;
-    myMoneyView->saveFile(newName);
+    rc = myMoneyView->saveFile(newName);
 
     //write the directory used for this file as the default one for next time.
     writeLastUsedDir(newName);
@@ -481,6 +486,7 @@ void KMyMoney2App::slotFileSaveAs()
 
   slotStatusMsg(prevMsg);
   updateCaption();
+  return rc;
 }
 
 void KMyMoney2App::slotFileCloseWindow()
@@ -544,6 +550,9 @@ void KMyMoney2App::slotFileQuit()
 
   } else
       kapp->quit();
+
+  // in case we don't really quit      
+  slotStatusMsg(prevMsg);
 }
 
 void KMyMoney2App::slotViewToolBar()
@@ -573,11 +582,6 @@ void KMyMoney2App::slotViewStatusBar()
     statusBar()->hide();
   }
   else
-
-
-
-
-
   {
     statusBar()->show();
   }
@@ -633,9 +637,6 @@ void KMyMoney2App::progressCallback(int current, int total, const QString& msg)
 {
   if(!msg.isEmpty())
     kmymoney2->slotStatusMsg(msg);
-
-
-
 
   kmymoney2->slotStatusProgressBar(current, total);
 }
@@ -731,6 +732,7 @@ void KMyMoney2App::slotQifImportFinished(void)
       }
       file->attachStorage(m_engineBackup);
       m_engineBackup = 0;
+
     }
     
     // update the views as they might still contain invalid data
@@ -770,6 +772,7 @@ void KMyMoney2App::slotQifExport()
 }
 
 void KMyMoney2App::slotSettings()
+
 {
   KSettingsDlg dlg( this, "Settings");
   connect(&dlg, SIGNAL(signalApply()), myMoneyView, SLOT(slotRefreshViews()));
@@ -801,7 +804,8 @@ bool KMyMoney2App::initWizard()
     }
 
     //save off directory as the last one used.
-    writeLastUsedDir(start.getURL());
+    if(fileName.isLocalFile() && fileName.hasPath())
+      writeLastUsedDir(fileName.path(0));
     
     return true;
 
@@ -815,6 +819,7 @@ void KMyMoney2App::slotFileBackup()
 {
   // Save the file first so isLocalFile() works
   if (myMoneyView && myMoneyView->dirty())
+
   {
     if (KMessageBox::questionYesNo(this, i18n("The file must be saved first "
         "before it can be backed up.  Do you want to continue?")) == KMessageBox::No)
@@ -1187,6 +1192,9 @@ QString KMyMoney2App::readLastUsedDir()
 
     //read path entry.  Second parameter is the default if the setting is not found, which will be the default document path.
     str = kconfig->readPathEntry("LastUsedDirectory", KGlobalSettings::documentPath());
+    // if the path stored is empty, we use the default nevertheless
+    if(str.isEmpty())
+      str = KGlobalSettings::documentPath();
   }
 
   return str;

@@ -674,27 +674,27 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter)
   KConfig *config = KGlobal::config();
   config->setGroup("General Options");
 
-  try {
-    if(config->readBoolEntry("WriteDataUncompressed", false) == false) {
-      base = KFilterBase::findFilterByMimeType( COMPRESSION_MIME_TYPE );
-      if(base) {
-        base->setDevice(qfile, false);
-        qfile->close();
-        // we need to reopen the file to set the mode inside the filter stuff
-        dev = new KFilterDev(base, true);
-        dev->open(IO_WriteOnly);
-      }
+  if(config->readBoolEntry("WriteDataUncompressed", false) == false) {
+    base = KFilterBase::findFilterByMimeType( COMPRESSION_MIME_TYPE );
+    if(base) {
+      base->setDevice(qfile, false);
+      qfile->close();
+      // we need to reopen the file to set the mode inside the filter stuff
+      dev = new KFilterDev(base, true);
+      if(!dev || !dev->open(IO_WriteOnly))
+        throw new MYMONEYEXCEPTION(i18n("Unable to open file for writing."));
     }
-
-    pWriter->setProgressCallback(&KMyMoneyView::progressCallback);
-    pWriter->writeFile(dev, dynamic_cast<IMyMoneySerialize*> (MyMoneyFile::instance()->storage()));
-    pWriter->setProgressCallback(0);
-
-  } catch (MyMoneyException *e) {
-    QString msg = e->what();
-    qDebug("%s", msg.latin1());
-    delete e;
   }
+
+  pWriter->setProgressCallback(&KMyMoneyView::progressCallback);
+  dev->resetStatus();
+  pWriter->writeFile(dev, dynamic_cast<IMyMoneySerialize*> (MyMoneyFile::instance()->storage()));
+  if(dev->status() != IO_Ok) {
+    // need-i18n
+    throw new MYMONEYEXCEPTION(QString("Failure while writing to %1").arg(qfile->name()));
+  }
+  pWriter->setProgressCallback(0);
+
   if(base != 0) {
     dev->flush();
     dev->close();
@@ -703,13 +703,13 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter)
     qfile->close();
 }
 
-void KMyMoneyView::saveFile(const KURL& url)
+const bool KMyMoneyView::saveFile(const KURL& url)
 {
   QString filename = url.path();
 
   if (!fileOpen()) {
     KMessageBox::error(this, i18n("Tried to access a file when it's not open"));
-    return;
+    return false;
   }
 
   if(KMessageBox::warningContinueCancel(this, i18n(
@@ -719,7 +719,7 @@ void KMyMoneyView::saveFile(const KURL& url)
       "please make sure you keep a backup-file of your finance data. "
       "If you want to abort this operation, please press Cancel now"),
       QString::null, KStdGuiItem::cont(), "WarningNewFileVersion0.5") == KMessageBox::Cancel)
-    return;
+    return false;
 
   IMyMoneyStorageFormat* pWriter = NULL;
 
@@ -737,26 +737,41 @@ void KMyMoneyView::saveFile(const KURL& url)
 
   // actually, url should be the parameter to this function
   // but for now, this would involve too many changes
-
-  if(url.isMalformed()) {
-    qDebug("Invalid URL '%s'", url.url().latin1());
-    return;
-  }
-
-  if(url.isLocalFile()) {
-    filename = url.path();
-    KSaveFile qfile(filename);
-    if(qfile.status() == 0) {
-      saveToLocalFile(qfile.file(), pWriter);
+  bool rc = true;
+  try {
+    if(url.isMalformed()) {
+      // need-i18n
+      throw new MYMONEYEXCEPTION(QString("Malformed URL '%1'").arg(url.url()));
     }
-  } else {
-    KTempFile tmpfile;
-    saveToLocalFile(tmpfile.file(), pWriter);
-    KIO::NetAccess::upload(tmpfile.name(), url);
-    tmpfile.unlink();
-  }
 
+    if(url.isLocalFile()) {
+      filename = url.path();
+      KSaveFile qfile(filename);
+      if(qfile.status() == 0) {
+        saveToLocalFile(qfile.file(), pWriter);
+        if(!qfile.close()) {
+          // need-i18n
+          throw new MYMONEYEXCEPTION(QString("Unable to write changes to %1").arg(filename));
+        }
+      } else {
+        // need-i18n
+        throw new MYMONEYEXCEPTION(QString("Unable to write changes to %1").arg(filename));
+      }
+    } else {
+      KTempFile tmpfile;
+      saveToLocalFile(tmpfile.file(), pWriter);
+      // need-i18n
+      if(!KIO::NetAccess::upload(tmpfile.name(), url))
+        throw new MYMONEYEXCEPTION(QString("Unable to upload to %1").arg(url.url()));
+      tmpfile.unlink();
+    }
+  } catch (MyMoneyException *e) {
+    KMessageBox::error(this, e->what());
+    delete e;
+    rc = false;
+  }
   delete pWriter;
+  return rc;
 }
 
 bool KMyMoneyView::dirty(void)

@@ -61,7 +61,7 @@ class MyMoneyTransaction;
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.45 2003/12/11 18:44:11 ipwizard Exp $
+  * $Id: kmymoneyview.h,v 1.46 2004/01/21 20:09:31 ipwizard Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -207,15 +207,17 @@ public:
   bool readFile(const KURL& url);
 
   /**
-    * Calls MyMoneyFile::saveAllData which saves all the data structures in memory
-
-    * into the file specified by filename.
+    * Saves the data into permanent storage. Depending on the extension,
+    * the XML or the binary writer are used. (See MyMoneyStorageXML() and
+    * MyMoneyStorageBin()).
     *
     * @param url The URL to save into.
     *            If no protocol is specified, file:// is assumed.
     *
-  **/
-  void saveFile(const KURL& url);
+    * @retval false save operation failed
+    * @retval true save operation was successful
+    */
+  const bool saveFile(const KURL& url);
 
   /**
     * Call this to see if the MyMoneyFile contains any unsaved data.

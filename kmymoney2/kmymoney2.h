@@ -75,7 +75,7 @@ class IMyMoneyStorage;
   * @see KMyMoneyView
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: kmymoney2.h,v 1.40 2004/01/03 17:04:04 ipwizard Exp $
+  * $Id: kmymoney2.h,v 1.41 2004/01/21 20:09:31 ipwizard Exp $
   *
   * @short Main application class.
 **/
@@ -232,13 +232,25 @@ public slots:
   void slotFileOpen();
 
   /** opens a file from the recent files menu */
+
   void slotFileOpenRecent(const KURL& url);
 
-  /** save a document */
-  void slotFileSave();
+  /**
+    * saves the current document. If it has no name yet, the user
+    * will be queried for it.
+    *
+    * @retval false save operation failed
+    * @retval true save operation was successful
+    */
+  const bool slotFileSave();
 
-  /** save a document by a new filename*/
-  void slotFileSaveAs();
+  /**
+    * ask the user for the filename and save the current document
+    *
+    * @retval false save operation failed
+    * @retval true save operation was successful
+    */
+  const bool slotFileSaveAs();
 
   /** asks for saving if the file is modified, then closes the actual file and window */
   void slotFileCloseWindow();

@@ -78,6 +78,7 @@ private slots:
   /** Handle selections */
   void slotTemplateSelectionChanged(QIconViewItem* item);
   void slotRecentSelectionChanged(QIconViewItem* item);
+  void slotAboutToShowPage(QWidget* page);
 };
 
 #endif

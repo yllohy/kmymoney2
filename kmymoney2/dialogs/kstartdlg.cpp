@@ -76,9 +76,10 @@ void KStartDlg::setPage_Template()
   templateMainFrame = addVBoxPage( i18n("Templates"), i18n("Select templates"), DesktopIcon("wizard"));
   view_wizard = new KIconView( templateMainFrame, "view_options" );
   (void)new QIconViewItem( view_wizard, i18n("New KMyMoney document"), ic->loadIcon("mime_empty.png", KIcon::Desktop, KIcon::SizeLarge)/*QPixmap( locate("icon","hicolor/48x48/mimetypes/mime_empty.png") )*/ );
-  connect( view_wizard, SIGNAL( executed(QIconViewItem *) ), this, SLOT( slotTemplateClicked(QIconViewItem *) ) );
+  connect(view_wizard, SIGNAL(executed(QIconViewItem *) ), this, SLOT(slotTemplateClicked(QIconViewItem *) ) );
   connect(view_wizard, SIGNAL(selectionChanged(QIconViewItem*)),
     this, SLOT(slotTemplateSelectionChanged(QIconViewItem*)));
+  connect(this, SIGNAL(aboutToShowPage(QWidget*)), this, SLOT(slotAboutToShowPage(QWidget*)));
 }
 
 /** Set the Misc options Page of the preferences dialog */
@@ -156,9 +157,11 @@ void KStartDlg::readConfig()
   // default to the recent files page if no entry exists but files have been found
   // otherwise, default to template page
   if(view_recent->count() > 0)
-    this->showPage(config->readNumEntry("LastPage", this->pageIndex(recentMainFrame)));
-  else
-    this->showPage(config->readNumEntry("LastPage", this->pageIndex(templateMainFrame)));
+    showPage(config->readNumEntry("LastPage", this->pageIndex(recentMainFrame)));
+  else {
+    showPage(config->readNumEntry("LastPage", this->pageIndex(templateMainFrame)));
+    slotAboutToShowPage(templateMainFrame);
+  }
 }
 
 /** Write config window */
@@ -224,4 +227,9 @@ void KStartDlg::slotRecentSelectionChanged(QIconViewItem* item)
   isnewfile = false;
   isopenfile = true;
   kurlrequest->setURL( kitem->fileURL() );
+}
+
+void KStartDlg::slotAboutToShowPage(QWidget* page)
+{
+  enableButtonOK(page == recentMainFrame);
 }
