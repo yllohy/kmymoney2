@@ -131,9 +131,17 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   
   m_accountId = QCString();
 
+  MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAccountHierarchy, this);
+  
   // setup connections
   connect(m_accountComboBox, SIGNAL(activated(const QString&)),
           this, SLOT(slotSelectAccount(const QString&)));
+}
+
+KGlobalLedgerView::~KGlobalLedgerView()
+{
+  MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassAccountHierarchy, this);
+  delete m_formLayout;
 }
 
 void KGlobalLedgerView::slotReloadView(void)
@@ -210,11 +218,6 @@ void KGlobalLedgerView::loadAccounts(void)
       m_accountId = *it_s;
     }
   }
-}
-
-KGlobalLedgerView::~KGlobalLedgerView()
-{
-  delete m_formLayout;
 }
 
 const bool KGlobalLedgerView::slotSelectAccount(const QString& accountName)
@@ -322,5 +325,15 @@ void KGlobalLedgerView::hide()
   for(int i = 0; i < MyMoneyAccount::MaxAccountTypes; ++i) {
     if(m_specificView[i] != 0)
       m_specificView[i]->hide();
+  }
+}
+
+void KGlobalLedgerView::update(const QCString& id)
+{
+  QCString lastUsed = m_accountId;
+  loadAccounts();
+  if(m_accountId != lastUsed) {
+    m_accountId = lastUsed;
+    slotRefreshView();
   }
 }

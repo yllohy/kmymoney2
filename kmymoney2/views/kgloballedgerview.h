@@ -41,6 +41,7 @@
 
 #include "../mymoney/mymoneyutils.h"
 #include "../mymoney/mymoneyaccount.h"
+#include "../mymoney/mymoneyobserver.h"
 
 class QVBoxLayout;
 class QHBoxLayout;
@@ -54,7 +55,7 @@ class KLedgerView;
   *@author Thomas Baumgart
   */
 
-class KGlobalLedgerView : public QWidget
+class KGlobalLedgerView : public QWidget, MyMoneyObserver
 {
    Q_OBJECT
 public:
@@ -76,6 +77,10 @@ public:
     */
   void suspendUpdate(const bool suspend);
 
+  /**
+    */
+  void update(const QCString& id);
+  
 public slots:
   // void reloadView(void);
   

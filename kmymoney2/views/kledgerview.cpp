@@ -255,6 +255,8 @@ KLedgerView::KLedgerView(QWidget *parent, const char *name )
 
   m_blinkTimer.start(500);       // setup blink frequency to one hertz
   m_blinkState = false;
+  MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAccountHierarchy, this);
+  
   connect(&m_blinkTimer, SIGNAL(timeout()), SLOT(slotBlinkTimeout()));
 }
 
@@ -263,7 +265,7 @@ KLedgerView::~KLedgerView()
   if(m_infoStack != 0)
     delete m_infoStack;
 
-  MyMoneyFile::instance()->detach(m_account.id(), this);
+  MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassAccountHierarchy, this);
 }
 
 void KLedgerView::slotBlinkTimeout(void)
