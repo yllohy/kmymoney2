@@ -1,3 +1,8 @@
+2002-06-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * added accountId as parameter to MyMoneyFile::transactionCount()
+  * added test cases for it
+  * removeing an account did not remove it from it's parent accountList.
+
 2002-06-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed the singleton pattern
   * Added double constructor for MyMoneyMoney and testcase
