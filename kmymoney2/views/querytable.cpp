@@ -72,12 +72,22 @@ bool QueryTable::TableRow::operator<( const TableRow& _compare ) const
   return result;
 }
 
+// needed for KDE < 3.2 implementation of qHeapSort
+bool QueryTable::TableRow::operator==( const TableRow& _compare ) const
+{
+  return ( !( *this < _compare ) && !( _compare < *this ) );
+}
+bool QueryTable::TableRow::operator>( const TableRow& _compare ) const
+{
+  return ( _compare < *this );
+}
 /**
   * TODO
   *
   * - Collapse 2- & 3- groups when they are identical
   * - Way more test cases (especially splits & transfers)
   * - Option to collapse splits
+  * - Option to exclude transfers
   *
   */
 

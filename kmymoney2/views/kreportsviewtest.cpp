@@ -1141,4 +1141,22 @@ void KReportsViewTest::testQueryBasics()
     CPPUNIT_FAIL(e->what());
     delete e;
   }
+
+  // Test querytable::TableRow::operator> and operator==
+
+  reports::QueryTable::TableRow low;
+  low["first"] = "A";
+  low["second"] = "B";
+  low["third"] = "C";
+
+  reports::QueryTable::TableRow high;
+  high["first"] = "A";
+  high["second"] = "C";
+  high["third"] = "B";
+
+  reports::QueryTable::TableRow::setSortCriteria("first,second,third");
+  CPPUNIT_ASSERT( low < high );
+  CPPUNIT_ASSERT( high > low );
+  CPPUNIT_ASSERT( high == high );
+  
 }
