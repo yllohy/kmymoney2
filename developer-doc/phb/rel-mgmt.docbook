@@ -76,14 +76,142 @@ version of the source tar ball.
 Another possibility to distribute the program is to use the Red-Hat Package
 manager (RPM) format. In order to be able to create such a package for
 &app;, you need to have a source tar-ball as described in <link
-linkend="tar-ball">a previous chapter</link>. Either version (GZIP or
-BZIP2) will work. Additionally, you need an
-RPM-spec file for the respective distribution. You have to perform the
-following steps:
+linkend="tar-ball">the previous chapter</link>. Either version (GZIP or
+BZIP2) will work.
 </para>
 
 <para>
-<command>FIXME: TO BE DONE!</command>
+The RPM system uses a directory structure which
+for my system - a SuSE distribution - is located in /usr/src/packages. This
+may be different on your system. The location can be configured in
+/etc/rpmrc.
+I will refer to this directory as the 'RPM base directory' in the remainder
+of this document.
 </para>
+
+<para>
+The RPM base directory has a set of subdirectories. They all serve a
+specific purpose. For us, the directories SOURCES, SPECS, SRPMS and RPMS
+are important. RPMS is further divided into directories for specific
+CPU architectures (e.g. i386, i486, ppc, etc.). In the remainder of this
+document, I will use the names of these directories without mentioning
+the RPM base directory.
+</para>
+
+<sect2 id="rpm-tar-ball">
+<title>Copying the tar-ball to the RPM structure</title>
+<para>
+The first thing that needs to be done is to copy the tar-ball to a defined
+place where the RPM tool will look for it. For this purpose the SOURCES
+directory is used. Move or copy your <link 
+linkend="tar-ball">tar-ball</link> to this directory. Either version
+(GZIP or BZIP2) will be ok.
+</para>
+</sect2>
+
+<sect2 id="rpm-test-building">
+<title>Test building</title>
+<para>
+<!-- taken from RPM Howto (start) -->
+   The first thing you'll probably want to do is get the source to build
+   cleanly without using RPM. To do this, unpack the sources, and change
+   the directory name to $NAME.orig. Then unpack the source again. Use
+   this source to build from. Go into the source directory and follow the
+   instructions to build it. If you have to edit things, you'll need a
+   patch. Once you get it to build, clean the source directory. Make sure
+   and remove any files that get made from a configure script. Then cd
+   back out of the source directory to its parent. Then you'll do
+   something like:
+
+<screen>
+
+  <prompt>thb:~&gt; </prompt><userinput>diff -uNr dirname.orig dirname &gt; ../SOURCES/dirname-distroname.patch</userinput>
+
+
+</screen>
+
+   This will create a patch for you that you can use in your spec file.
+   Note that the "distro-name" that you see in the patch name is just an
+   identifier. You might want to use something more descriptive like
+   "MDK9" or "RPM8" to describe why you had to make a patch. It's also
+   a good idea to look at the patch file you are creating before using it
+   to make sure no binaries were included by accident.
+<!-- taken from RPM Howto (end) -->
+<note>
+<para>
+This section has been copied from the RPM-Howto and adapted where necessary
+</para>
+</note>
+</para>
+
+<sect2 id="rpm-specfile">
+<title>Setting up the SPEC file</title>
+<para>
+The next step is to create an RPM SPEC file for the specific distribution.
+The contents may vary between distribution and that is where your knowledge
+is required. An example for an RPM SPEC file is contained in appendix ??.
+It will work on SuSE 8.1 directly. More details on howto setup a SPEC file
+including an explanation of the various sections, commands and options is
+contained in the RPM-Howto. 
+</para>
+</sect2>
+
+<sect2 id="rpm-build-package">
+<title>Building the package</title>
+<para>
+Once you have the spec file it's time to try and build your package. The
+usual way to do this is using the following command:
+
+
+<screen>
+
+  <prompt>thb:~&gt; </prompt><userinput>rpm -ba kmymoney2.xxx.spec</userinput>
+
+
+</screen>
+
+Once the command finishes successfully, you have a source RPM in SRPMS and
+a binary RPM for your distribution in one of the subdirectories of RPMS.
+<note>
+<para>
+More details about this process and a description on the available options
+can be found in the RPM-Howto.
+</para>
+</note>
+</para>
+</sect2>
+
+<sect2 id="rpm-test">
+<title>Testing the package</title>
+<para>
+<!-- taken from RPM Howto (start) -->
+   Once you have a source and binary rpm for your package, you need to
+   test it. The easiest and best way is to use a totally different
+   machine from the one you are building on to test. After all, you've
+   just done a lot of make install's on your own machine, so it should be
+   installed fairly well.
+</para>
+
+<para>
+   You can do an rpm -e packagename on the package to test, but that can
+   be deceiving because in building the package, you did a make install.
+   If you left something out of your file list, it will not get
+   uninstalled. You'll then reinstall the binary package and your system
+   will be complete again, but your rpm still isn't. Make sure and keep
+   in mind that just because you do a rpm -ba package, most people
+   installing your package will just be doing the rpm -i package. Make
+   sure you don't do anything in the build or install sections that will
+   need to be done when the binaries are installed by themselves.
+<!-- taken from RPM Howto (end) -->
+
+<note>
+<para>
+This section has been copied from the RPM-Howto and adapted where necessary
+</para>
+</note>
+</para>
+</sect2>
+
+
 </sect1>
 </chapter>

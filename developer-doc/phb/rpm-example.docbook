@@ -1,0 +1,146 @@
+<appendix id="rpm-example">
+<title>RPM SPEC file example</title>
+<para>
+This appendix contains an example of an RPM SPEC file. 
+</para>
+
+<screen>
+
+#
+# spec file for package kmymoney2 (Version 0.4)
+#
+# Copyright  (c)  2001  Thomas Baumgart
+# This file and all modifications and additions to the pristine
+# package are under the same license as the package itself.
+#
+# please send bugfixes or comments to kmymoney2-developer@lists.sourceforge.net
+#
+
+Name:      kmymoney2
+%define kde_path	/opt/kde2
+%define _bindir		%kde_path/bin
+%define _datadir	%kde_path/share
+%define _iconsdir	%_datadir/icons
+%define _docdir		%_datadir/doc
+%define qt_path		/usr/lib/qt2
+Summary:   A personal finances manager for KDE.
+Requires:  qt >= 2.3.0
+Version:   0.4
+Release:   2
+License:   GPL
+Vendor:    Michael Edwardes &lt;mte@users.sourceforge.net&gt;
+Packager:  Thomas Baumgart &lt;ipwizard@users.sourceforge.net&gt;
+Group:     X11/KDE/Applications
+Source0:   kmymoney2-%version.tar.gz
+BuildRoot: %_tmppath/%name-%version-%release-root
+
+%description
+KMyMoney2 provides a simple but functional personal finances
+manager for KDE.  This is the first stable version 0.4.
+For the most up-to-date sources please use the CVS available
+at http://kmymoney2.sourceforge.net/.
+
+%prep
+%setup -q
+echo %_target
+echo %_target_alias
+echo %_target_cpu
+echo %_target_os
+echo %_target_vendor
+
+%build
+make -f Makefile.dist
+CFLAGS="%optflags" CXXFLAGS="%optflags" \
+        ./configure --prefix=%kde_path \
+		    --with-qt-dir=%{qt_path}\
+	            --disable-rpath \
+		    --with-xinerama \
+		    --disable-debug \
+		    --enable-final
+
+make
+
+%install
+make DESTDIR=%buildroot install
+
+%clean
+[ ${RPM_BUILD_ROOT} != "/" ] && rm -rf ${RPM_BUILD_ROOT}
+
+%post
+
+%postun
+
+%files
+%defattr(-,root,root)
+
+%dir %_docdir/HTML/en/kmymoney2/
+%doc %_docdir/HTML/en/kmymoney2/index.docbook
+%doc %_docdir/HTML/en/kmymoney2/index.cache.bz2
+%doc %_docdir/HTML/en/kmymoney2/common
+%doc %_docdir/HTML/en/kmymoney2/*.png
+
+%_bindir/%name
+#
+#
+%dir %_datadir/apps/
+%dir %_datadir/apps/%name/
+%_datadir/apps/%name/*rc
+%_datadir/apps/%name/*.dat
+
+
+%dir %_datadir/apps/%name/pics/
+%_datadir/apps/%name/pics/*.png
+%_datadir/apps/%name/pics/*.xpm
+
+
+%dir %_datadir/apps/%name/icons/
+%dir %_datadir/apps/%name/icons/hicolor/
+%dir %_datadir/apps/%name/icons/hicolor/16x16/
+%dir %_datadir/apps/%name/icons/hicolor/16x16/actions/
+%_datadir/apps/%name/icons/hicolor/16x16/actions/*.png
+
+%dir %_datadir/apps/%name/icons/hicolor/22x22/
+%dir %_datadir/apps/%name/icons/hicolor/22x22/actions/
+%_datadir/apps/%name/icons/hicolor/22x22/actions/*.png
+
+#
+#
+%dir %_datadir/applnk/
+%dir %_datadir/applnk/Applications/
+%_datadir/applnk/Applications/*.desktop
+#
+#
+%dir %_iconsdir/hicolor/
+%dir %_iconsdir/hicolor/16x16/
+%dir %_iconsdir/hicolor/16x16/mimetypes/
+%_iconsdir/hicolor/16x16/mimetypes/*.png
+
+#
+%dir %_iconsdir/hicolor/32x32/
+%dir %_iconsdir/hicolor/32x32/mimetypes/
+%_iconsdir/hicolor/32x32/mimetypes/*.png
+#
+%dir %_iconsdir/hicolor/48x48/
+%dir %_iconsdir/hicolor/48x48/mimetypes/
+%_iconsdir/hicolor/48x48/mimetypes/*.png
+#
+#
+%dir %_iconsdir/locolor/
+%dir %_iconsdir/locolor/16x16/
+%dir %_iconsdir/locolor/16x16/apps/
+%_iconsdir/locolor/16x16/apps/*.png
+#
+#
+%dir %_iconsdir/locolor/32x32/
+%dir %_iconsdir/locolor/32x32/apps/
+%_iconsdir/locolor/32x32/apps/*.png
+#
+%dir %_iconsdir/hicolor/16x16/apps/
+%_iconsdir/hicolor/16x16/apps/*.png
+#
+#
+%dir %_iconsdir/hicolor/32x32/apps/
+%_iconsdir/hicolor/32x32/apps/*.png
+
+</screen>
+</appendix>

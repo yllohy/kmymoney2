@@ -12,6 +12,7 @@
   <!ENTITY src-examples SYSTEM "src-examples.docbook">
   <!ENTITY unit-test SYSTEM "unit-test.docbook">
   <!ENTITY test-examples SYSTEM "test-examples.docbook">
+  <!ENTITY rpm-example SYSTEM "rpm-example.docbook">
   <!ENTITY licence SYSTEM "licence.docbook">
   <!ENTITY fdl-licence SYSTEM "fdl-licence">
 ]>
@@ -126,5 +127,6 @@ The dedication will show up here!
 &cvs-examples;
 &src-examples;
 &test-examples;
+&rpm-example;
 &licence;
 </book>
