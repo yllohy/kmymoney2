@@ -139,6 +139,7 @@ public slots:
   void slotEndEdit(void);
   void slotDeleteSplit(void);
   void slotCancelEdit(void);
+  void slotDuplicateSplit(void);
 
 protected slots:
   virtual void columnWidthChanged(int col);
@@ -197,6 +198,9 @@ private:
 
   /// keeps the id of the delete entry in the context menu
   int                 m_contextMenuDelete;
+
+  /// keeps the id of the duplicate entry in the context menu
+  int                 m_contextMenuDuplicate;
 
   /**
     * This member contains a pointer to the input widget for the category.

@@ -41,6 +41,8 @@
 #include <kcompletionbox.h>
 #include <kpushbutton.h>
 #include <kpopupmenu.h>
+#include <kstdaccel.h>
+#include <kshortcut.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -89,6 +91,7 @@ kMyMoneySplitTable::kMyMoneySplitTable(QWidget *parent, const char *name ) :
   KIconLoader *il = KGlobal::iconLoader();
   m_contextMenu->insertTitle(il->loadIcon("transaction", KIcon::MainToolbar), i18n("Split Options"));
   m_contextMenu->insertItem(il->loadIcon("edit", KIcon::Small), i18n("Edit ..."), this, SLOT(slotStartEdit()));
+  m_contextMenuDuplicate = m_contextMenu->insertItem(il->loadIcon("editcopy", KIcon::Small), i18n("Duplicate"), this, SLOT(slotDuplicateSplit()));
   m_contextMenuDelete = m_contextMenu->insertItem(il->loadIcon("delete", KIcon::Small),
                         i18n("Delete ..."),
                         this, SLOT(slotDeleteSplit()));
@@ -260,6 +263,10 @@ bool kMyMoneySplitTable::eventFilter(QObject *o, QEvent *e)
 
       default:
         rc = false;
+        if(KStdAccel::copy().contains(KKey(k))) {
+          slotDuplicateSplit();
+          rc = true;
+        }
         break;
     }
 
@@ -357,6 +364,8 @@ void kMyMoneySplitTable::slotSetFocus(int realrow, int /* col */, int button, co
       // if the very last entry is selected, the delete
       // operation is not available otherwise it is
       m_contextMenu->setItemEnabled(m_contextMenuDelete,
+            row < static_cast<int> (m_transaction.splits().count()-1));
+      m_contextMenu->setItemEnabled(m_contextMenuDuplicate,
             row < static_cast<int> (m_transaction.splits().count()-1));
 
       m_contextMenu->exec(QCursor::pos());
@@ -543,6 +552,23 @@ void kMyMoneySplitTable::resizeEvent(QResizeEvent* /* ev */)
   setColumnWidth(2, m_amountWidth);
 
   updateTransactionTableSize();
+}
+
+void kMyMoneySplitTable::slotDuplicateSplit(void)
+{
+  MYMONEYTRACER(tracer);
+  QValueList<MyMoneySplit> list = getSplits(m_transaction);
+  if(m_currentRow < static_cast<int> (list.count())) {
+    MyMoneySplit split = list[m_currentRow];
+    split.setId(QCString());
+    try {
+      m_transaction.addSplit(split);
+      emit transactionChanged(m_transaction);
+    } catch(MyMoneyException *e) {
+      qDebug("Cannot duplicate split: %s", e->what().latin1());
+      delete e;
+    }
+  }
 }
 
 void kMyMoneySplitTable::slotDeleteSplit(void)
