@@ -105,7 +105,7 @@ void KStartDlg::readConfig()
 		key = QString( "File%1" ).arg( i );
 		value = config->readEntry( key, QString::null );
 		if( !value.isNull() )
-			(void)new QIconViewItem( view_recent, value, QPixmap( locate("icon","hicolor/48x48/mimetypes/kmymoney2.png") ) );
+			(void)new QIconViewItem( view_recent, value, QPixmap( locate("icon","hicolor/48x48/mimetypes/kmy.png") ) );
 		i++;
 	}
 

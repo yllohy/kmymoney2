@@ -8,9 +8,6 @@
   </Menu>
 
   <Menu name="settings"><text>&amp;Settings</text>
-    <Action name="settings_general"/>
-    <Action name="settings_locale"/>
-    <Action name="settings_lists"/>
     <Action name="account_showbox"/>
   </Menu>
 

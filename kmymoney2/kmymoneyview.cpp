@@ -30,7 +30,6 @@
 #include "kpayeedlg.h"
 #include "knewfiledlg.h"
 #include "kfileinfodlg.h"
-#include "klistsettingsdlg.h"
 #include "kmymoneysettings.h"
 #include "kmymoneyview.h"
 
@@ -851,16 +850,6 @@ void KMyMoneyView::settingsLists()
     return;
   }
 
-  KMyMoneySettings *p_settings = KMyMoneySettings::singleton();
-
-  KListSettingsDlg dlg(this);
-  if (dlg.exec()) {
-    p_settings->setListSettings(
-      	dlg.m_listColor,
-      	dlg.m_listBGColor,
-      	dlg.m_listHeaderFont,
-      	dlg.m_listCellFont );
-
     // See which list we are viewing and then refresh it
     switch(m_mainView->viewing()) {
       case KMainView::BankList:
@@ -875,7 +864,6 @@ void KMyMoneyView::settingsLists()
       default:
         break;
     }
-  }
 }
 
 void KMyMoneyView::accountFind()

@@ -16,48 +16,45 @@
 
 #ifndef KSETTINGSDLG_H
 #define KSETTINGSDLG_H
-/*
-//Generated area. DO NOT EDIT!!!(begin)
-#include <qwidget.h>
-#include <qpushbutton.h>
-#include <qbuttongroup.h>
-#include <qradiobutton.h>
-//Generated area. DO NOT EDIT!!!(end)
-#include <klocale.h>
-#include <qdialog.h>
-*/
 
-#include "ksettingsdlgdecl.h"
+#include <kdialogbase.h>
+
+#include <qradiobutton.h>
+#include <kfontdialog.h>
+#include <kcolorbutton.h>
 
 // This dialog lets the user change the program settings.
 // Doesn't do much at the moment !
-class KSettingsDlg : public KSettingsDlgDecl  {
+class KSettingsDlg : public KDialogBase  {
    Q_OBJECT
-protected slots:
-  void okClicked();
-  void startDialogToggle(bool on);
-  void lastFileToggle(bool on);
-
 public:
-  bool openLastFile;
-  bool startDialog;
-
-public:
-  KSettingsDlg(bool checkDialog, bool checkLastFile, QWidget *parent=0, const char *name=0);
+  KSettingsDlg(QWidget *parent=0, const char *name=0, bool modal=true);
 	~KSettingsDlg();
-
-protected: 
-/*
-	void initDialog();
-	//Generated area. DO NOT EDIT!!!(begin)
-	QPushButton *cancelBtn;
-	QPushButton *okBtn;
-	QButtonGroup *startGroup;
-	QRadioButton *startDialogRadio;
-	QRadioButton *lastFileRadio;
-	//Generated area. DO NOT EDIT!!!(end)
-*/
-private: 
+private: // Private methods
+  /** Set page general */
+  void setPageGeneral();
+  /** Set page list settings */
+  void setPageList();
+  /** Write settings */
+  void configWrite();
+  /** Read settings */
+  void configRead();
+private: // Private attributes
+  /** Start prompt dialog */
+  QRadioButton *start_prompt;
+  /** Start last proyect */
+  QRadioButton *start_last;
+  /** Color list */
+  KColorButton *color_list;
+  /** Color background */
+  KColorButton *color_back;
+  /** Select font header */
+  KFontChooser *font_header;
+  /** Font cell setting */
+  KFontChooser *font_cell;
+private slots: // Private slots
+  /** Slot ok */
+  void slotOk();
 };
 
 #endif

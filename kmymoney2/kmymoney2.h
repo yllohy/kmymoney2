@@ -52,7 +52,7 @@
   * @see KMyMoneyView
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: kmymoney2.h,v 1.6 2001/06/07 23:26:30 frodriguez Exp $
+  * $Id: kmymoney2.h,v 1.7 2001/06/16 07:30:44 javi_c Exp $
   *
   * @short Main application class.
 **/
@@ -202,19 +202,7 @@ protected slots:
     *
     * @see KSettingsDlg
   **/
-  void slotSettingsGeneral();
-
-  /**
-    * Open up the list(s) settings dialog.
-    *
-    * @see KListSettingsDlg
-  **/
-  void slotSettingsLists();
-
-  /**
-    * Informs the user how to change the locale settings.
-  **/
-  void slotSettingsLocale();
+  void slotSettings();
 
   /**
     * Called when the user wishes to search for specific
@@ -376,9 +364,10 @@ protected slots:
     KAction *fileViewInfo;
     KAction *filePersonalData;
 
-    KAction *settingsGeneral;
-    KAction *settingsLists;
-    KAction *settingsLocale;
+		KAction *settings;
+//    KAction *settingsGeneral;
+//    KAction *settingsLists;
+//    KAction *settingsLocale;
 
     KAction *categoriesEdit;
     KAction *categoriesPayees;

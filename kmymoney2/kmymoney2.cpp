@@ -124,12 +124,13 @@ void KMyMoney2App::initActions()
 
 
   // The Settings Menu
-  settingsGeneral = new KAction(i18n("General settings..."), 0, 0, this, SLOT(slotSettingsGeneral()), actionCollection(), "settings_general");
-  settingsGeneral->setStatusText(i18n("Change some global settings"));
-  settingsLocale = new KAction(i18n("Localisation settings..."), 0, 0, this, SLOT(slotSettingsLocale()), actionCollection(), "settings_locale");
-  settingsLocale->setStatusText(i18n("Change the locale settings"));
-  settingsLists = new KAction(i18n("List view(s) settings..."), 0, 0, this, SLOT(slotSettingsLists()), actionCollection(), "settings_lists");
-  settingsLists->setStatusText(i18n("Change the list view behaviour"));
+	settings 	= KStdAction::preferences				(this, SLOT( slotSettings() ), actionCollection());
+//  settingsGeneral = new KAction(i18n("General settings..."), 0, 0, this, SLOT(slotSettingsGeneral()), actionCollection(), "settings_general");
+//  settingsGeneral->setStatusText(i18n("Change some global settings"));
+//  settingsLocale = new KAction(i18n("Localisation settings..."), 0, 0, this, SLOT(slotSettingsLocale()), actionCollection(), "settings_locale");
+//  settingsLocale->setStatusText(i18n("Change the locale settings"));
+//  settingsLists = new KAction(i18n("List view(s) settings..."), 0, 0, this, SLOT(slotSettingsLists()), actionCollection(), "settings_lists");
+//  settingsLists->setStatusText(i18n("Change the list view behaviour"));
 
   // The Categories Menu
   categoriesEdit = new KAction(i18n("Edit Categories..."), QIconSet(QPixmap(KGlobal::dirs()->findResource("appdata", "toolbar/kmymoney_editcat.xpm"))), 0, this, SLOT(slotCategoriesEdit()), actionCollection(), "categories_edit");
@@ -564,9 +565,7 @@ void KMyMoney2App::enableFileOperations(bool enable)
   reportBasic->setEnabled(enable);
   categoriesEdit->setEnabled(enable);
   categoriesPayees->setEnabled(enable);
-  settingsGeneral->setEnabled(enable);
-  settingsLocale->setEnabled(enable);
-  settingsLists->setEnabled(enable);
+  settings->setEnabled(enable);
   bankAdd->setEnabled(enable);
 
   fileNew->setEnabled(!enable);
@@ -626,23 +625,18 @@ void KMyMoney2App::enableTransactionOperations(bool enable)
   setCaption(caption);
 }
 
-void KMyMoney2App::slotSettingsGeneral()
+void KMyMoney2App::slotSettings()
 {
-  KSettingsDlg dlg(m_startDialog, m_openLastFile, this, "SettingsDialog");
-  if (dlg.exec()) {
-    m_openLastFile = dlg.openLastFile;
-    m_startDialog = dlg.startDialog;
-  }
-}
-
-void KMyMoney2App::slotSettingsLists()
-{
-  myMoneyView->settingsLists();
-}
-
-void KMyMoney2App::slotSettingsLocale()
-{
-  KMessageBox::information(this, i18n("KMyMoney 2 reads it's settings from the KDE desktop.\nYou can change these values from the KMenuBar:\n    Preferences --> Personalisation --> Country & Language"));
+//  KSettingsDlg dlg(m_startDialog, m_openLastFile, this, "SettingsDialog");
+//  if (dlg.exec()) {
+//    m_openLastFile = dlg.openLastFile;
+//    m_startDialog = dlg.startDialog;
+//  }
+	KSettingsDlg dlg( this, "Settings");
+	if( dlg.exec() )
+	{
+		myMoneyView->settingsLists();
+	}
 }
 
 void KMyMoney2App::slotAccountFind()

@@ -39,10 +39,6 @@ AC_ARG_PROGRAM
 
 dnl PACKAGE set before
 
-#MIN_CONFIG
-
-dnl PACKAGE set before
-
 KDE_CREATE_SUBDIRSLIST
 AC_OUTPUT( \
 ./Makefile \
