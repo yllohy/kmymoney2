@@ -73,7 +73,8 @@ MyMoneyStorageGNC::~MyMoneyStorageGNC() {
 //************************ readFile *****************************
 //Function to read in the file, send to XML parser.
 void MyMoneyStorageGNC::readFile(QIODevice* pDevice, IMyMoneySerialize* storage) {
-    
+  
+  try{
     Q_CHECK_PTR(storage);
     Q_CHECK_PTR(pDevice);
     if(!storage) {
@@ -81,6 +82,7 @@ void MyMoneyStorageGNC::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
     }
     m_storage = storage;
     bool containsScheds = false;
+    m_defaultPayee = createPayee (QObject::tr("Unknown payee"));
     
     m_doc = new QDomDocument;
     Q_CHECK_PTR(m_doc);
@@ -243,7 +245,7 @@ void MyMoneyStorageGNC::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
             m_mapIds.clear();
             m_mapEquities.clear();
             m_mapSchedules.clear();
-            m_splitList.clear();
+            m_splitList.clear(); m_liabilitySplitList.clear(); m_otherSplitList.clear();
             m_templateList.clear();
             // this seems to be nonsense, but it clears the dirty flag
             // as a side-effect.
@@ -253,16 +255,21 @@ void MyMoneyStorageGNC::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
             //hides the progress bar.
             signalProgress(-1, -1);
         } else {
-            throw new MYMONEYEXCEPTION (QObject::tr("File is empty")); // root is null
+            throw new MYMONEYEXCEPTION (QObject::tr("Input file is empty")); // root is null
         }  // end if root null
     }
     else {
-        throw new MYMONEYEXCEPTION(QObject::tr("File was not parsable!"));
+        throw new MYMONEYEXCEPTION(QObject::tr("Input file was not parsable!"));
     }  // end set content
     if (gncdebug) qDebug ("Exiting gnucash importer");
     return;
 } // end read file
-
+catch (MyMoneyException *e) {
+  QMessageBox::critical (0, "KMyMoney2", QObject::tr("Import failed\n\n") + e->what(),
+                         QMessageBox::Abort, QMessageBox::NoButton , QMessageBox::NoButton);
+  qFatal (e->what());
+} // end catch
+} // THE end
 //****************************** readCommodity *******************************
 void MyMoneyStorageGNC::readCommodity(const QDomElement& cmdty) {
     
@@ -596,11 +603,11 @@ void MyMoneyStorageGNC::readTransaction(QDomElement& transaction, const bool wit
     // initialize class variables related to transactions
     m_txChequeNumber = "";
     m_txCommodity = "";
-    m_txPayeeId = "";
+    m_txPayeeId = m_defaultPayee;
     m_txMemo = "";
     m_potentialTransfer = true;
     m_assetFound = false;
-    Q_ASSERT(m_splitList.isEmpty());
+    m_splitList.clear(); m_liabilitySplitList.clear(); m_otherSplitList.clear();
     
     // read the gnucash data
     QString gncVersion = transaction.attributes().namedItem(QString("version")).nodeValue();
@@ -699,21 +706,11 @@ QString MyMoneyStorageGNC::createPayee (QString gncDescription) {
             break;
         }
     }
-    
+    // new payee, add to file. for now, we just add the payee to the pool. In the future,
+    // we could open a dialog and ask for all the other attributes of the payee.
     if (it == payeeList.end()) {
-        // new payee, add to file
-        // for now, we just add the payee to the pool. In the future,
-        // we could open a dialog and ask for all the other attributes
-        // of the payee.
         payee.setName(gncDescription);
-        try {
-            m_storage->addPayee(payee);
-        } catch(MyMoneyException *e) {
-            QMessageBox::critical(0, "KMyMoney2",
-                                  QObject::tr("Unable to add payee/receiver\n" +
-                                              e->what() + " " + QObject::tr("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
-            qFatal("Can't add payee");
-        }
+        m_storage->addPayee(payee);
     }
     return (payee.id());
 }
@@ -731,6 +728,7 @@ void MyMoneyStorageGNC::readSplits(MyMoneyTransaction& tx, QDomElement& splits) 
         }
         child = child.nextSibling();
     }
+    m_splitList += m_liabilitySplitList += m_otherSplitList;
     // the splits are in order in splitList. Transfer them to the tx
     // also, determine the action type
     // first off, is it a transfer (can only have 2 splits?)
@@ -752,7 +750,7 @@ void MyMoneyStorageGNC::saveSplits (MyMoneyTransaction& tx, MyMoneySplit s) {
     // 1. assets
     // 2. liabilities
     // 3. others (categories)
-    
+  // but keeping each in same order as gnucash    
     //we need a IMyMoneyStorage pointer, since m_storage is IMyMoneySerialize.
     IMyMoneyStorage* pStoragePtr = dynamic_cast<IMyMoneyStorage*>(m_storage);
     MyMoneyEquity e;
@@ -778,7 +776,7 @@ void MyMoneyStorageGNC::saveSplits (MyMoneyTransaction& tx, MyMoneySplit s) {
             }
         }
         m_assetFound = true;
-        m_splitList.prepend(s);
+        m_splitList.append(s);
         break;
     case MyMoneyAccount::CreditCard:
     case MyMoneyAccount::Loan:
@@ -786,7 +784,7 @@ void MyMoneyStorageGNC::saveSplits (MyMoneyTransaction& tx, MyMoneySplit s) {
         s.value().isNegative() ? 
                 s.setAction (MyMoneySplit::ActionWithdrawal) :
                 s.setAction (MyMoneySplit::ActionDeposit);
-        m_assetFound ? m_splitList.append(s) : m_splitList.prepend(s);
+        m_liabilitySplitList.append(s);
         break;
     case MyMoneyAccount::Stock:
         s.value() == MyMoneyMoney(0) ?
@@ -808,7 +806,7 @@ void MyMoneyStorageGNC::saveSplits (MyMoneyTransaction& tx, MyMoneySplit s) {
         break;
     default:
         m_potentialTransfer = false;
-        m_splitList.append (s);
+        m_otherSplitList.append (s);
     }
     // backdate the account opening date if necessary
     if (m_txDatePosted < m_splitAccount.openingDate()) {
@@ -974,12 +972,12 @@ gncTemplateTx MyMoneyStorageGNC::readTemplate(QDomElement& templatetx) {
     // initialize class variables related to transactions
     m_txChequeNumber = "";
     m_txCommodity = "";
-    m_txPayeeId = "";
+    m_txPayeeId = m_defaultPayee;
     m_txMemo = "";
     m_templateId = "";
     m_potentialTransfer = true;
     m_assetFound = false;
-    Q_ASSERT(m_splitList.isEmpty());
+    m_splitList.clear(); m_liabilitySplitList.clear(); m_otherSplitList.clear();
     
     QString gncVersion = templatetx.attributes().namedItem(QString("version")).nodeValue();
     if (gncdebug) qDebug("Version of this template object is %s\n", gncVersion.data());
@@ -1065,6 +1063,7 @@ gncTemplateTx MyMoneyStorageGNC::readTemplate(QDomElement& templatetx) {
 
 void MyMoneyStorageGNC::readTemplateSplits(gncTemplateTx& tx, QDomElement& splits) {
     MyMoneySplit split;
+    QCString negativeActionType, positiveActionType;
     
     QDomNode child = splits.firstChild();
     while(!child.isNull() && child.isElement()) {
@@ -1075,17 +1074,19 @@ void MyMoneyStorageGNC::readTemplateSplits(gncTemplateTx& tx, QDomElement& split
         }
         child = child.nextSibling();
     }
+    if (!m_splitList.isEmpty()) {
+      positiveActionType = MyMoneySplit::ActionDeposit;
+      negativeActionType = MyMoneySplit::ActionWithdrawal;
+    } else {
+      positiveActionType = MyMoneySplit::ActionWithdrawal;
+      negativeActionType = MyMoneySplit::ActionDeposit;
+    }
+    m_splitList += m_liabilitySplitList += m_otherSplitList;
     // the splits are in order in splitList. Transfer them to the tx
     // also, determine the action type
     // first off, is it a transfer (can only have 2 splits?)
     if (m_splitList.count() != 2) m_potentialTransfer = false;
     // at this point, if m_potentialTransfer is still true, it is actually one!
-    // but work out the other type in case...
-    if (m_splitList.first().value().isNegative()) {
-        m_splitActionType = MyMoneySplit::ActionWithdrawal;
-    } else {
-        m_splitActionType = MyMoneySplit::ActionDeposit;
-    }
     
     QValueList<MyMoneySplit>::iterator it = m_splitList.begin();
     while (!m_splitList.isEmpty()) {
@@ -1093,7 +1094,11 @@ void MyMoneyStorageGNC::readTemplateSplits(gncTemplateTx& tx, QDomElement& split
         if (m_potentialTransfer) {
             split.setAction(MyMoneySplit::ActionTransfer);
         } else {
-            split.setAction (QCString(m_splitActionType));
+          if (split.value().isNegative()) {
+                split.setAction (QCString(negativeActionType));
+              } else {
+                split.setAction (QCString(positiveActionType));
+              } 
         }
         tx.t.addSplit(split);
         it = m_splitList.remove(it);
@@ -1308,7 +1313,7 @@ void MyMoneyStorageGNC::readSchedule(QDomElement& schedule) {
     // variables to hold gnucash string data
     QString gncName, gncAutoCreate, gncAutoCreateNotify, gncAutoCreateDays,
     gncAdvanceCreateDays, gncAdvanceRemindDays, gncInstanceCount,
-    gncStartDate, gncLastDate, gncNumOccur, gncRemOccur, gncTemplateId;
+    gncStartDate, gncLastDate, gncEndDate, gncNumOccur, gncRemOccur, gncTemplateId;
     gncFreqSpec fs = {false}; // suspectflag = false to start
     // to hold our data
     MyMoneySchedule sc;
@@ -1317,7 +1322,7 @@ void MyMoneyStorageGNC::readSchedule(QDomElement& schedule) {
     unsigned char interval;  // day, week, month, year
     unsigned int intervalCount;
     QDate today = QDate::currentDate();
-    QDate startDate, lastDate, nextDate;
+    QDate startDate, lastDate, endDate, nextDate;
     int numOccurs;
     
     //fs.suspectFlag = false;  // assume we're good to start with
@@ -1358,6 +1363,11 @@ void MyMoneyStorageGNC::readSchedule(QDomElement& schedule) {
                 } else if(QString("sx:last") == temp.tagName()) {
                     if (temp.hasChildNodes()) {
                         gncLastDate =
+                                QStringEmpty(temp.firstChild().toElement().firstChild().toText().nodeValue());
+                    }
+                } else if(QString("sx:end") == temp.tagName()) {
+                    if (temp.hasChildNodes()) {
+                        gncEndDate =
                                 QStringEmpty(temp.firstChild().toElement().firstChild().toText().nodeValue());
                     }
                 } else if(QString("sx:num-occur") == temp.tagName()) {
@@ -1417,16 +1427,27 @@ void MyMoneyStorageGNC::readSchedule(QDomElement& schedule) {
         sc.setAutoEnter(false);
     }
     // set the occurrence interval
+    //enum weekendOptionE { MoveFriday=0, MoveMonday=1, MoveNothing=2 };
+    MyMoneySchedule::weekendOptionE weekendOption = MyMoneySchedule::MoveNothing;
     if (QString("daily") == fs.intvlType) {
         sc.setOccurence((MyMoneySchedule::occurenceE)MyMoneySchedule::OCCUR_DAILY);
         interval = 'd';
         intervalCount = 1;
+    } else if (QString("daily_mf") == fs.intvlType) {
+        sc.setOccurence((MyMoneySchedule::occurenceE)MyMoneySchedule::OCCUR_DAILY);
+        interval = 'w';
+        intervalCount = 1;
+        weekendOption = MyMoneySchedule::MoveMonday; // doesn't work at present, bug raised
     } else if (QString("weekly") == fs.intvlType) {
         sc.setOccurence((MyMoneySchedule::occurenceE)MyMoneySchedule::OCCUR_WEEKLY);
         interval = 'w';
         intervalCount = 1;
-    } else if (QString("bi-weekly") == fs.intvlType) {
+    } else if (QString("bi_weekly") == fs.intvlType) { // bi-weekly in gnc means fortnightly, not twice a week!
         sc.setOccurence((MyMoneySchedule::occurenceE)MyMoneySchedule::OCCUR_FORTNIGHTLY);
+        interval = 'w';
+        intervalCount = 2;
+    } else if (QString("semi_monthly") == fs.intvlType) { // not really correct but will implement
+        sc.setOccurence((MyMoneySchedule::occurenceE)MyMoneySchedule::OCCUR_EVERYOTHERWEEK);
         interval = 'w';
         intervalCount = 2;
     } else if (QString("monthly") == fs.intvlType) {
@@ -1437,38 +1458,70 @@ void MyMoneyStorageGNC::readSchedule(QDomElement& schedule) {
         sc.setOccurence((MyMoneySchedule::occurenceE)MyMoneySchedule::OCCUR_QUARTERLY);
         interval = 'm';
         intervalCount = 3;
+    }   else if (QString("tri_annually") == fs.intvlType) {
+        sc.setOccurence((MyMoneySchedule::occurenceE)MyMoneySchedule::OCCUR_EVERYFOURMONTHS);
+        interval = 'm';
+        intervalCount = 4;
+    }   else if (QString("semi_yearly") == fs.intvlType) {
+        sc.setOccurence((MyMoneySchedule::occurenceE)MyMoneySchedule::OCCUR_TWICEYEARLY);
+        interval = 'm';
+        intervalCount = 6;
     } else if (QString("yearly") == fs.intvlType) {
         sc.setOccurence((MyMoneySchedule::occurenceE)MyMoneySchedule::OCCUR_YEARLY);
         interval = 'y';
         intervalCount = 1;
+    } else {
+         throw new MYMONEYEXCEPTION (QObject::tr(QString().sprintf("Unknown schedule interval %s", fs.intvlType.latin1())));
     }
-    // work out the last payment date, set up to work out end date if any
-    numOccurs = gncNumOccur.toUInt();
-    nextDate = startDate;
-    while (nextDate < today) {
-        lastDate = nextDate;
-        nextDate = incrDate (lastDate, interval, intervalCount);
-        numOccurs--;
+    // TODO: got a bit confused here between last date and end date. I think a last date is always present?
+    // if a last date was specified, use it, otherwise try to work out the last date
+    fields = QStringList::split(" ", gncLastDate);
+    if(fields.count()) {
+        QString firstField = fields.first();
+        lastDate = getDate(firstField);
+        sc.setLastPayment(lastDate);
+    } else {
+        numOccurs = gncNumOccur.toUInt();
+        nextDate = startDate;
+        while (nextDate < today) {
+            lastDate = nextDate;
+            nextDate = incrDate (lastDate, interval, intervalCount);
+            numOccurs--;
+        }
+        sc.setLastPayment(lastDate);
     }
-    sc.setLastPayment(lastDate);
+    /* Of course, this is probably unnecessary too. If it has been posted, lastDate will be today. If lastDate +
+       interval is today, it hasn't been posted!! All down to confusing last with end...
+    nextDate = incrDate (lastDate, interval, intervalCount);
     if (nextDate == today) {
         QString dupMess =
                 (QObject::tr(QString().sprintf("Scheduled transaction %s due today.\n"
                                                "Please check for duplicate post.", gncName.latin1())));
         QMessageBox::information (0, "KMyMoney2", dupMess);
     }
-    
+    */
+    // if an end date was specified, use it, otherwise
+    // if the input file had a number of occurs and still some left
+    // work out the end date
+    fields = QStringList::split(" ", gncEndDate);
+    if(fields.count()) {
+        QString firstField = fields.first();
+        endDate = getDate(firstField);
+        sc.setEndDate(endDate);
+    } /*  else { TODO: maybe this ain't needed - probably it will get handled automatically
+        if (numOccurs > 0) {
+          while (numOccurs-- > 0) {
+              endDate = nextDate;
+              nextDate = incrDate (endDate, interval, intervalCount);
+          }
+          sc.setEndDate(endDate);
+        }
+    } */
     // payment type
     sc.setPaymentType((MyMoneySchedule::paymentTypeE)MyMoneySchedule::STYPE_OTHER);
-    // if the input file had a number of occurs and still some left
-    // work out the final date
-    if (numOccurs > 0) {
-        while (numOccurs-- > 0) {
-            lastDate = nextDate;
-            nextDate = incrDate (lastDate, interval, intervalCount);
-        }
-        sc.setEndDate(lastDate);
-    }
+    // weekend option
+    if (gncdebug) qDebug ("Setting weekend option to %d", (int)weekendOption);
+    sc.setWeekendOption (weekendOption);
     // type
     QCString actionType = ttx.t.splits().first().action();
     if (actionType == MyMoneySplit::ActionDeposit) {

@@ -1,3 +1,8 @@
+2004-12-05 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Gnucash import changes
+  * Improve exception reporting
+  * More comprehensive scheduled transaction processing
+  
 2004-12-05 Ace Jones <acejones@users.sourceforge.net>
   * Maintain libofx 0.6.6 compatability
   

@@ -211,6 +211,7 @@ private:
   /**
     * Temporary storage areas for transaction processing
     */
+  QString m_defaultPayee; // kmm is unhappy without a payee though gnc doesn't necessarily have one
   QString m_txChequeNumber; // gnc holds at tx level, we need it in split
   QDate m_txDatePosted;     // ditto
   QString m_txCommodity;    // pretty much the same
@@ -222,6 +223,7 @@ private:
     * areas will hold the splits until we've read them all
     */
   QValueList<MyMoneySplit> m_splitList;
+  QValueList<MyMoneySplit> m_liabilitySplitList, m_otherSplitList;
   MyMoneyAccount m_splitAccount;
   bool m_potentialTransfer;       // to determine whether this might be a transfer
   bool m_assetFound;              // split0 is an asset
