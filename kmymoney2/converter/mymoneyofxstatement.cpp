@@ -58,6 +58,14 @@
 #define OFX_SELLOPT OfxTransactionData::OFX_SELLOPT 
 #define OFX_SELLOTHER OfxTransactionData::OFX_SELLOTHER 
 #define OFX_SELLSTOCK OfxTransactionData::OFX_SELLSTOCK 
+#define OFX_INCOME OfxTransactionData::OFX_INCOME
+#define OFX_CLOSUREOPT OfxTransactionData::OFX_CLOSUREOPT
+#define OFX_INVEXPENSE OfxTransactionData::OFX_INVEXPENSE
+#define OFX_JRNLFUND OfxTransactionData::OFX_JRNLFUND
+#define OFX_MARGININTEREST OfxTransactionData::OFX_MARGININTEREST
+#define OFX_RETOFCAP OfxTransactionData::OFX_RETOFCAP
+#define OFX_SPLIT OfxTransactionData::OFX_SPLIT
+#define OFX_TRANSFER OfxTransactionData::OFX_TRANSFER
 #endif
 
 int ofxTransactionCallback(struct OfxTransactionData data, void * pv)

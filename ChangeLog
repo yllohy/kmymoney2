@@ -1,8 +1,11 @@
+2004-12-05 Ace Jones <acejones@users.sourceforge.net>
+  * Maintain libofx 0.6.6 compatability
+  
 2004-12-03 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Implement KMyMoneyAccountCombo in scheduled transaction dialogs
   * Allows selecting any asset/liability account for bills, etc.
   
-2004-11-28 Tony Bloomfield <email address to follow>
+2004-11-28 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Partial correction of share price import
   * Fix bug 1067499 - crash om import
   * Create orphan accounts for unknown account ids
