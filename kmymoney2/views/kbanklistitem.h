@@ -60,7 +60,7 @@ class MyMoneyInstitution;
   * by the KAccountsView, the KCategoriesView and the KNewAccountWizard
   * to select between the accounts.
   */
-class KAccountListItem : public QListViewItem, MyMoneyObserver  {
+class KAccountListItem : public KListViewItem, MyMoneyObserver  {
 public:
 
   KAccountListItem(KListView *parent, const QString& txt);
@@ -129,6 +129,11 @@ public:
     * to avoid false error reports by the memory leakage checker.
     */
   static void cleanCache(void);
+
+  /**
+    * Override and do nothing
+  **/
+  void paintBranches(QPainter* p, const QColorGroup& cg, int w, int y, int h);
 
 private:
   /**

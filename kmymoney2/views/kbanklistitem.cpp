@@ -46,13 +46,13 @@
 QPixmap* KAccountListItem::accountPixmap = 0;
 
 KAccountListItem::KAccountListItem(KListView *parent, const MyMoneyAccount& account)
-  : QListViewItem(parent)
+  : KListViewItem(parent)
 {
   newAccount(account);
 }
 
 KAccountListItem::KAccountListItem(KAccountListItem *parent, const MyMoneyAccount& account)
-  : QListViewItem(parent)
+  : KListViewItem(parent)
 {
   newAccount(account);
 }
@@ -100,13 +100,13 @@ void KAccountListItem::newAccount(const MyMoneyAccount& account)
 }
 
 KAccountListItem::KAccountListItem(KListView *parent, const QString& txt)
-  : QListViewItem(parent), m_accountID(QCString()), m_bViewNormal(true)
+  : KListViewItem(parent), m_accountID(QCString()), m_bViewNormal(true)
 {
   setText(0, txt);  
 }
 
 KAccountListItem::KAccountListItem(KListView *parent, const MyMoneyInstitution& institution)
-  : QListViewItem(parent), m_accountID(institution.id()), m_bViewNormal(true)
+  : KListViewItem(parent), m_accountID(institution.id()), m_bViewNormal(true)
 {
   setText(0, institution.name());
 }
@@ -166,19 +166,55 @@ void KAccountListItem::paintCell(QPainter *p, const QColorGroup & cg, int column
   QFont defaultFont = QFont("helvetica", 12);
   p->setFont(config->readFontEntry("listCellFont", &defaultFont));
 
-/*
-  if (column==2)
-  {
-    QFont font = p->font();
-    if (m_account.balance().amount()<0)
-      font.setItalic(true);
+  QColor colour = Qt::white;
+  QColor bgColour = QColor(224, 253, 182); // Same as for home view
+  QColor textColour;
+  
+  bgColour = config->readColorEntry("listBGColor", &bgColour);
+  colour = config->readColorEntry("listColor", &colour);
+  textColour = config->readColorEntry("listGridColor", &textColour);
 
-    p->setFont(font);
-    QListViewItem::paintCell(p, cg, column, width, 2);
+  QColorGroup cg2(cg);
+  cg2.setColor(QColorGroup::Text, textColour);
+
+  if (isAlternate())
+  {
+    cg2.setColor(QColorGroup::Base, bgColour);
   }
   else
-*/
-  QListViewItem::paintCell(p, cg, column, width, align);
+  {
+    cg2.setColor(QColorGroup::Base, colour);
+  }
+
+  int indent = 0;
+  if (column == 0)
+  {
+    indent = -20 * (depth()+1);
+    p->save();
+    p->translate(indent, 0);
+    if (isAlternate())
+      p->fillRect( 0, 0, width+indent, height(), bgColour );
+    else
+      p->fillRect( 0, 0, width+indent, height(), colour );
+
+    if (childCount() > 0)
+    {
+      p->save();
+      p->translate((20 * (depth()+1))-20, 0);
+      
+      p->setPen( cg.foreground() );
+      p->setBrush( cg.base() );
+      p->drawRect( 5, height() / 2 - 4, 9, 9 );
+      p->drawLine( 7, height() / 2, 11, height() / 2 );
+      if ( !isOpen() )
+          p->drawLine( 9, height() / 2 - 2, 9, height() / 2 + 2 );
+      p->restore();
+    }
+
+    p->restore();
+  }
+
+  QListViewItem::paintCell(p, cg2, column, width, align);
 }
 
 
@@ -211,4 +247,21 @@ KTransactionListItem::KTransactionListItem(KListView* view, KTransactionListItem
 
 KTransactionListItem::~KTransactionListItem()
 {
+}
+
+void KAccountListItem::paintBranches(QPainter* p, const QColorGroup&/* cg*/, int w, int/* y*/, int h)
+{
+  KConfig *config = KGlobal::config();
+  config->setGroup("List Options");
+
+  QColor colour = Qt::white;
+  QColor bgColour = QColor(224, 253, 182); // Same as for home view
+
+  bgColour = config->readColorEntry("listBGColor", &bgColour);
+  colour = config->readColorEntry("listColor", &colour);
+
+  if (isAlternate())
+    p->fillRect( 0, 0, w, h, bgColour );
+  else
+    p->fillRect( 0, 0, w, h, colour );
 }

@@ -182,26 +182,19 @@ void KScheduledListItem::paintCell(QPainter* p, const QColorGroup& cg, int colum
   QListViewItem::paintCell(p, cg2, column, width, align);
 }
 
-void KScheduledListItem::paintBranches(QPainter* p, const QColorGroup& cg, int w, int y, int h)
+void KScheduledListItem::paintBranches(QPainter* p, const QColorGroup&/* cg*/, int w, int/* y*/, int h)
 {
-  QColorGroup cg2(cg);
-
   KConfig *config = KGlobal::config();
   config->setGroup("List Options");
 
   QColor colour = Qt::white;
   QColor bgColour = QColor(224, 253, 182); // Same as for home view
+  
   bgColour = config->readColorEntry("listBGColor", &bgColour);
   colour = config->readColorEntry("listColor", &colour);
   
   if (isAlternate())
-  {
-    cg2.setColor(QColorGroup::Base, bgColour);
-  }
+    p->fillRect( 0, 0, w, h, bgColour );
   else
-  {
-    cg2.setColor(QColorGroup::Base, colour);
-  }
-
-  QListViewItem::paintBranches(p, cg2, w, y, h);
+    p->fillRect( 0, 0, w, h, colour );
 }

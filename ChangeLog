@@ -1,6 +1,7 @@
 2003-09-24 Michael Edwardes <mte@users.sourceforge.net>
   * Draw the background colour across the _whole_ list view in schedule
     view.
+  * Use alternating colours for the accounts and categories view.
 
 2003-09-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * added new account selection widget
