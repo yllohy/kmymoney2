@@ -21,8 +21,8 @@ type=DATA
 [Config for BinMakefileAm]
 addcxxflags=
 bin_program=kmymoney2
-cxxflags= -O2 -g3 -Wall
-ldadd= -lkfile -lkdeui -lkdecore $(LIB_QT)
+cxxflags=-O2 -g3 -Wall
+ldadd=-lkfile -lkdeui -lkdecore $(LIB_QT)
 ldflags=
 path_to_bin_program=kmymoney2
 [General]
@@ -32,8 +32,8 @@ configure_args=--with-qt-dir=/usr/lib/qt --prefix=/opt/kde
 dir_where_make_will_be_called=
 email=Michael.Edwardes@students.dmu.ac.uk
 kdevprj_version=1.3
-lfv_open_groups=GNU,User Interface
-make_options= -j2
+lfv_open_groups=GNU,Others,User Interface
+make_options=-j2
 makefiles=Makefile.am,kmymoney2/Makefile.am,doc/Makefile.am,doc/en/Makefile.am,po/Makefile.am,kmymoney2/widgets/Makefile.am,kmymoney2/mymoney/Makefile.am,kmymoney2/pics/Makefile.am,kmymoney2/pics/toolbar/Makefile.am,
 modifyMakefiles=true
 project_name=KMyMoney2
@@ -66,7 +66,7 @@ Translations=*.po,
 User Interface=*.kdevdlg,*.ui,*.rc,
 groups=Headers,Sources,User Interface,Translations,GNU,Others,
 [Makefile.am]
-files=kmymoney2.kdevprj,AUTHORS,COPYING,ChangeLog,INSTALL,README,TODO,kmymoney2.lsm,compile.sh,mk-ui.sh,kmymoney2.spec,readme-overview.txt,ChangeLog.original
+files=kmymoney2.kdevprj,AUTHORS,COPYING,ChangeLog,INSTALL,README,TODO,kmymoney2.lsm,kmymoney2.spec,readme-overview.txt,ChangeLog.original
 sub_dirs=kmymoney2,po,doc,
 type=normal
 [README]
@@ -86,11 +86,6 @@ header_file=/home/mte/src/kmymoney2/kmymoney2/kmymoney2.h
 openfiles=Untitled.h,Untitled.cpp,/home/mte/src/kmymoney2/kmymoney2/kmymoney2.h,/home/mte/src/kmymoney2/kmymoney2/main.cpp
 show_outputview=false
 show_treeview=true
-[compile.sh]
-dist=true
-install=false
-install_location=
-type=DATA
 [doc/Makefile.am]
 sub_dirs=en,
 type=normal
@@ -101,7 +96,7 @@ type=normal
 [doc/en/index.docbook]
 dist=true
 install=false
-install_location=$$$$$$$$$$$$$$$$(kde_icondir)/small/locolor/apps/kmymoney2.xpm
+install_location=$$(kde_icondir)/small/locolor/apps/kmymoney2.xpm
 type=DATA
 [kmymoney2.kdevprj]
 dist=true
@@ -125,7 +120,7 @@ type=prog_main
 [kmymoney2/default_categories.dat]
 dist=true
 install=true
-install_location=$$$$(kde_datadir)/kmymoney2/default_categories.dat
+install_location=$$(kde_datadir)/kmymoney2/default_categories.dat
 type=DATA
 [kmymoney2/kbanklistitem.cpp]
 dist=true
@@ -305,7 +300,7 @@ type=SOURCE
 [kmymoney2/kmymoney2.desktop]
 dist=true
 install=true
-install_location=$$$$(kde_appsdir)/Applications/kmymoney2.desktop
+install_location=$$(kde_appsdir)/Applications/kmymoney2.desktop
 type=DATA
 [kmymoney2/kmymoney2.h]
 dist=true
@@ -320,7 +315,7 @@ type=DATA
 [kmymoney2/kmymoney_logo.png]
 dist=true
 install=true
-install_location=$$$$(kde_datadir)/kmymoney2/pics/kmymoney_logo.png
+install_location=$$(kde_datadir)/kmymoney2/pics/kmymoney_logo.png
 type=DATA
 [kmymoney2/kmymoney_wizard.png]
 dist=true
@@ -575,12 +570,12 @@ type=SOURCE
 [kmymoney2/lo16-app-kmymoney2.png]
 dist=true
 install=true
-install_location=$$$$(kde_icondir)/locolor/16x16/apps/kmymoney2.png
+install_location=$$(kde_icondir)/locolor/16x16/apps/kmymoney2.png
 type=DATA
 [kmymoney2/lo32-app-kmymoney2.png]
 dist=true
 install=true
-install_location=$$$$(kde_icondir)/locolor/32x32/apps/kmymoney2.png
+install_location=$$(kde_icondir)/locolor/32x32/apps/kmymoney2.png
 type=DATA
 [kmymoney2/main.cpp]
 dist=true
@@ -698,12 +693,12 @@ type=normal
 [kmymoney2/pics/account-folder.xpm]
 dist=true
 install=true
-install_location=$$$$(kde_datadir)/kmymoney2/pics/account-folder.xpm
+install_location=$$(kde_datadir)/kmymoney2/pics/account-folder.xpm
 type=DATA
 [kmymoney2/pics/bank-folder.xpm]
 dist=true
 install=true
-install_location=$$$$(kde_datadir)/kmymoney2/pics/bank-folder.xpm
+install_location=$$(kde_datadir)/kmymoney2/pics/bank-folder.xpm
 type=DATA
 [kmymoney2/pics/toolbar/Makefile.am]
 files=kmymoney2/pics/toolbar/kmymoney_accfind.xpm,kmymoney2/pics/toolbar/kmymoney_editPay.xpm,kmymoney2/pics/toolbar/kmymoney_editcat.xpm,kmymoney2/pics/toolbar/kmymoney_newacc.xpm,kmymoney2/pics/toolbar/kmymoney_newbank.xpm,kmymoney2/pics/toolbar/kmymoney_recon.xpm,kmymoney2/pics/toolbar/kmymoney_up.xpm,
@@ -712,37 +707,37 @@ type=normal
 [kmymoney2/pics/toolbar/kmymoney_accfind.xpm]
 dist=true
 install=true
-install_location=$$$$(kde_datadir)/kmymoney2/toolbar/kmymoney_accfind.xpm
+install_location=$$(kde_datadir)/kmymoney2/toolbar/kmymoney_accfind.xpm
 type=DATA
 [kmymoney2/pics/toolbar/kmymoney_editPay.xpm]
 dist=true
 install=true
-install_location=$$$$(kde_datadir)/kmymoney2/toolbar/kmymoney_editPay.xpm
+install_location=$$(kde_datadir)/kmymoney2/toolbar/kmymoney_editPay.xpm
 type=DATA
 [kmymoney2/pics/toolbar/kmymoney_editcat.xpm]
 dist=true
 install=true
-install_location=$$$$(kde_datadir)/kmymoney2/toolbar/kmymoney_editcat.xpm
+install_location=$$(kde_datadir)/kmymoney2/toolbar/kmymoney_editcat.xpm
 type=DATA
 [kmymoney2/pics/toolbar/kmymoney_newacc.xpm]
 dist=true
 install=true
-install_location=$$$$(kde_datadir)/kmymoney2/toolbar/kmymoney_newacc.xpm
+install_location=$$(kde_datadir)/kmymoney2/toolbar/kmymoney_newacc.xpm
 type=DATA
 [kmymoney2/pics/toolbar/kmymoney_newbank.xpm]
 dist=true
 install=true
-install_location=$$$$(kde_datadir)/kmymoney2/toolbar/kmymoney_newbank.xpm
+install_location=$$(kde_datadir)/kmymoney2/toolbar/kmymoney_newbank.xpm
 type=DATA
 [kmymoney2/pics/toolbar/kmymoney_recon.xpm]
 dist=true
 install=true
-install_location=$$$$(kde_datadir)/kmymoney2/toolbar/kmymoney_recon.xpm
+install_location=$$(kde_datadir)/kmymoney2/toolbar/kmymoney_recon.xpm
 type=DATA
 [kmymoney2/pics/toolbar/kmymoney_up.xpm]
 dist=true
 install=true
-install_location=$$$$(kde_datadir)/kmymoney2/toolbar/kmymoney_up.xpm
+install_location=$$(kde_datadir)/kmymoney2/toolbar/kmymoney_up.xpm
 type=DATA
 [kmymoney2/widgets/Makefile.am]
 files=kmymoney2/widgets/kdatepik.cpp,kmymoney2/widgets/kdatepik.h,kmymoney2/widgets/kmymoneydateinput.cpp,kmymoney2/widgets/kmymoneydateinput.h,kmymoney2/widgets/kmymoneyedit.cpp,kmymoney2/widgets/kmymoneyedit.h,kmymoney2/widgets/kmymoneytable.cpp,kmymoney2/widgets/kmymoneytable.h
@@ -789,11 +784,6 @@ install=false
 install_location=
 type=HEADER
 [kmymoney2/x-kmymoney2.desktop]
-dist=true
-install=false
-install_location=
-type=DATA
-[mk-ui.sh]
 dist=true
 install=false
 install_location=
