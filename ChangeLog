@@ -1,3 +1,6 @@
+2004-08-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed asset loan view activation
+
 2004-07-31 Ace Jones <acejones@users.sourceforge.net>
   * First draft of transaction reports.  Doesn't yet convert currency or export
     to CSV, and definitely needs more testing.
@@ -14,6 +17,10 @@
   * Fixed the case where the user enters transactions before the
     opening date of the account and calls for a net worth report.
 
+2004-07-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Maintain backward compatibility for KDE 3.0 (it's still broken
+    due to usage to KTabWidget which only exists in KDE >= 3.2)
+
 2004-07-28 Ace Jones <acejones@users.sourceforge.net>
   * Fixed bug in reporting logic.  AccountDescriptor::operator<() was broken,
     missing a case.
@@ -25,6 +32,9 @@
 
 2004-07-26 Ace Jones <acejones@users.sourceforge.net>
   * Added numerous exceptions for overflow conditions in reports
+
+2004-07-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed alignment of institution dialog
   
 2004-07-26 Ace Jones <acejones@users.sourceforge.net>
   * Standardized formatting of headers for scheduled payments on home page
