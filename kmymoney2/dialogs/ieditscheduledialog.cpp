@@ -60,20 +60,25 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
   reloadFromFile();
   loadWidgetsFromSchedule();
 
-  if (m_actionType != MyMoneySplit::ActionTransfer)
+  if (m_actionType == MyMoneySplit::ActionTransfer)
   {
-    TextLabel1_3->setEnabled(false);
-    m_kcomboTo->setEnabled(false);
-    if (m_actionType == MyMoneySplit::ActionDeposit)
+      TextLabel1_3->setEnabled(true);
+      m_kcomboTo->setEnabled(true);
+      setCaption(i18n("Edit Transfer Schedule"));
+  }
+  else if (m_actionType == MyMoneySplit::ActionDeposit)
+  {
+      m_accountCombo->setEnabled(false);
+      m_qlabelPay2->setEnabled(false);
+      TextLabel1_3->setEnabled(true);
+      m_kcomboTo->setEnabled(true);
       setCaption(i18n("Edit Deposit Schedule"));
-    else
-      setCaption(i18n("Edit Bill Schedule"));
   }
   else
   {
-    TextLabel1_3->setEnabled(true);
-    m_kcomboTo->setEnabled(true);
-    setCaption(i18n("Edit Transfer Schedule"));
+      TextLabel1_3->setEnabled(false);
+      m_kcomboTo->setEnabled(false);
+      setCaption(i18n("Edit Bill Schedule"));
   }
 
   connect(m_qbuttonCancel, SIGNAL(clicked()), this, SLOT(reject()));
@@ -229,15 +234,15 @@ void KEditScheduleDialog::slotSplitClicked()
         delete e;
       }
 
-      reloadWidgets();
-
       m_kmoneyeditAmount->setFocus();
     }
+
+    reloadWidgets();
 
     delete dlg;
   } catch (MyMoneyException *e)
   {
-    KMessageBox::detailedError(this, i18n("Exception in slot split clicked"), e->what());
+//    KMessageBox::detailedError(this, i18n("Exception in slot split clicked"), e->what());
     delete e;
   }
 
@@ -262,7 +267,7 @@ void KEditScheduleDialog::reloadWidgets(void)
         category = MyMoneyFile::instance()->accountToCategory(s.accountId());
         break;
       case 1:
-        category = " ";
+        category = "";
         m_transaction.removeSplits();
         break;
       default:
@@ -271,7 +276,7 @@ void KEditScheduleDialog::reloadWidgets(void)
     }
   } catch (MyMoneyException *e) {
     delete e;
-    category = " ";
+    category = "";
   }
 
   m_category->setText(category);

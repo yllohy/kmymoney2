@@ -45,8 +45,15 @@
 #include "../widgets/kmymoneyscheduleddatetbl.h"
 #include "../dialogs/ieditscheduledialog.h"
 
+  bool m_openBills;
+  bool m_openDeposits;
+  bool m_openTransfers;
+
 KScheduledView::KScheduledView(QWidget *parent, const char *name )
- : kScheduledViewDecl(parent,name, false)
+ : kScheduledViewDecl(parent,name, false),
+ m_openBills(true),
+ m_openDeposits(true),
+ m_openTransfers(true)
 {
   m_qlistviewScheduled->setRootIsDecorated(true);
   m_qlistviewScheduled->addColumn(i18n("Type/Name"));
@@ -81,6 +88,10 @@ KScheduledView::KScheduledView(QWidget *parent, const char *name )
     this, SLOT(slotListViewContextMenu(QListViewItem*, const QPoint&, int)));
   connect(m_qlistviewScheduled, SIGNAL(executed(QListViewItem*)),
     this, SLOT(slotListItemExecuted(QListViewItem*)));
+  connect(m_qlistviewScheduled, SIGNAL(expanded(QListViewItem*)),
+    this, SLOT(slotListViewExpanded(QListViewItem*)));
+  connect(m_qlistviewScheduled, SIGNAL(collapsed(QListViewItem*)),
+    this, SLOT(slotListViewCollapsed(QListViewItem*)));
 }
 
 KScheduledView::~KScheduledView()
@@ -181,9 +192,15 @@ void KScheduledView::refresh(bool full, const QCString schedId)
       }
     }
 
-    itemBills->setOpen(true);
-    itemDeposits->setOpen(true);
-    itemTransfers->setOpen(true);
+    if (m_openBills)
+      itemBills->setOpen(true);
+
+    if (m_openDeposits)
+      itemDeposits->setOpen(true);
+
+    if (m_openTransfers)
+      itemTransfers->setOpen(true);
+      
     if (openItem)
     {
       m_qlistviewScheduled->ensureItemVisible(openItem);
@@ -317,14 +334,18 @@ void KScheduledView::readConfig(void)
 {
   KConfig *config = KGlobal::config();
   config->setGroup("Last Use Settings");
-//  m_lastCat = config->readEntry("KCategoriesView_LastCategory");
+  m_openBills = config->readBoolEntry("KScheduleView_openBills", true);
+  m_openDeposits = config->readBoolEntry("KScheduleView_openDeposits", true);
+  m_openTransfers = config->readBoolEntry("KScheduleView_openTransfers", true);
 }
 
 void KScheduledView::writeConfig(void)
 {
   KConfig *config = KGlobal::config();
   config->setGroup("Last Use Settings");
-//  config->writeEntry("KCategoriesView_LastCategory", item->text(0));
+  config->writeEntry("KScheduleView_openBills", m_openBills);
+  config->writeEntry("KScheduleView_openDeposits", m_openDeposits);
+  config->writeEntry("KScheduleView_openTransfers", m_openTransfers);
   config->sync();
 }
 
@@ -529,5 +550,33 @@ void KScheduledView::slotAccountActivated(int id)
   {
     KMessageBox::detailedError(this, i18n("Unable to filter account"), e->what());
     delete e;
+  }
+}
+
+void KScheduledView::slotListViewExpanded(QListViewItem* item)
+{
+  KScheduledListItem *scheduleItem = (KScheduledListItem*)item;
+  if (scheduleItem)
+  {
+    if (scheduleItem->text(0) == i18n("Bills"))
+      m_openBills = true;
+    else if (scheduleItem->text(0) == i18n("Deposits"))
+      m_openDeposits = true;
+    else if (scheduleItem->text(0) == i18n("Transfers"))
+      m_openTransfers = true;
+  }
+}
+
+void KScheduledView::slotListViewCollapsed(QListViewItem* item)
+{
+  KScheduledListItem *scheduleItem = (KScheduledListItem*)item;
+  if (scheduleItem)
+  {
+    if (scheduleItem->text(0) == i18n("Bills"))
+      m_openBills = false;
+    else if (scheduleItem->text(0) == i18n("Deposits"))
+      m_openDeposits = false;
+    else if (scheduleItem->text(0) == i18n("Transfers"))
+      m_openTransfers = false;
   }
 }

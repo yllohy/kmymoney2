@@ -1,3 +1,7 @@
+2003-07-23 Michael Edwardes <mte@users.sourceforge.net>
+  * Fix handling of split dialog.
+  * Save open state of top level items in schedule list view.
+    
 2003-07-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Show filename and modification mark in caption of main window
   * Avoid some compiler warnings
