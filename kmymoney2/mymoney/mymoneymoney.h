@@ -18,6 +18,12 @@
 
 #include <stdlib.h>
 
+#ifndef HAVE_ATOLL
+#  ifdef HAVE_STRTOLL
+#    define atoll(a) strtoll(a, 0, 10)
+#  endif
+#endif
+
 // So we can save this object
 #include <qstring.h>
 #include <qdatastream.h>
