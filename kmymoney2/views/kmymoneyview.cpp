@@ -93,6 +93,7 @@
 
 KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   : KJanusWidget(parent, name, KJanusWidget::IconList),
+  m_searchDlg(0),
   m_fileOpen(false)
 {
   // create an empty file
@@ -221,6 +222,8 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
 KMyMoneyView::~KMyMoneyView()
 {
   removeStorage();
+  if(m_searchDlg)
+    delete m_searchDlg;
 }
 
 void KMyMoneyView::newStorage(void)
@@ -1338,20 +1341,21 @@ void KMyMoneyView::slotRefreshViews()
   m_homeView->refreshView();
 }
 
-void KMyMoneyView::slotAccountFind()
+void KMyMoneyView::slotFindTransaction(void)
 {
-/*
-  if (!transactionFindDlg) {
-    transactionFindDlg = new KFindTransactionDlg(0);
-    connect(transactionFindDlg, SIGNAL(searchReady()), this, SLOT(doTransactionSearch()));
+  if(m_searchDlg == 0) {
+    m_searchDlg = new KFindTransactionDlg();
+    connect(m_searchDlg, SIGNAL(destroyed()), this, SLOT(slotCloseSearchDialog()));
   }
-
-  transactionFindDlg->show();
-*/
+  m_searchDlg->show();
+  m_searchDlg->raise();
 }
 
-void KMyMoneyView::doTransactionSearch()
+void KMyMoneyView::slotCloseSearchDialog(void)
 {
+  if(m_searchDlg)
+    m_searchDlg->deleteLater();
+  m_searchDlg = 0;
 /*
   bool bankSuccess=false, accountSuccess=false;
   MyMoneyBank *pBank;

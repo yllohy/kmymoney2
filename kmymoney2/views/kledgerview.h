@@ -42,7 +42,6 @@ class QWidgetStack;
 // ----------------------------------------------------------------------------
 // Project Includes
 
-class kMyMoneyRegister;
 class kMyMoneyTransactionForm;
 class kMyMoneyTransactionFormTable;
 class kMyMoneyPayee;
@@ -57,10 +56,10 @@ class KPopupMenu;
 #include "../mymoney/mymoneyaccount.h"
 #include "../mymoney/mymoneytransaction.h"
 #include "../mymoney/mymoneyobserver.h"
-
+#include "../widgets/kmymoneyregister.h"
 
 /**
-  *@author Thomas Baumgart
+  * @author Thomas Baumgart
   *
   * @todo Add account (hierarchy) upon new category
   */
@@ -155,7 +154,11 @@ private:
   * of the account which ledger is shown. The following specific ledger views are
   * available:
   *
-  * @li KLedgerViewCheckings
+  * - KLedgerViewCheckings
+  * - KLedgerViewAsset
+  * - KLedgerViewCreditCard
+  * - KLedgerViewSavings
+  * - KLedgerViewCash
   *
   * Each KLedgerView is devided into three parts:
   *
@@ -191,7 +194,7 @@ private:
   * form of the tab order for the keyboard focus while editing a transaction.
   * It has to be filled and maintained by the derived class.
   */
-class KLedgerView : public QWidget, MyMoneyObserver  {
+class KLedgerView : public QWidget, MyMoneyObserver, public IMyMoneyRegisterParent  {
   Q_OBJECT
 
   friend class kMyMoneyTransactionFormTable;
@@ -266,18 +269,6 @@ public:
   void suspendUpdate(const bool suspend);
 
   /**
-    * This method returns a pointer to the transaction data
-    * in the ledger of this account. The transaction is identified
-    * by the parameter @p idx.
-    *
-    * @param idx index into ledger starting at 0
-    * @return pointer to MyMoneyTransaction object representing the
-    *         selected transaction. If idx is out of bounds,
-    *         0 will be returned.
-    */
-  MyMoneyTransaction* const transaction(const int idx) const;
-
-  /**
     * This method returns the balance of any visible transaction
     * in the ledger of this account. The balance depends on filters
     * and is automatically calculated when any view option is changed
@@ -298,6 +289,28 @@ public:
     * @return const QCString containing the account's id.
     */
   const QCString accountId(void) { return m_account.id(); }
+
+  /**
+    * This method returns the id of the account that is currently
+    * shown by this widget. It simply calls the above method but
+    * the interface must be provided as this class implements the
+    * interface defined in IMyMoneyRegisterParent.
+    *
+    * @return const QCString containing the account's id.
+    */
+  const QCString accountId(const MyMoneyTransaction* const) const { return m_account.id(); }
+
+  /**
+    * This method returns a pointer to the transaction data
+    * in the ledger of this account. The transaction is identified
+    * by the parameter @p idx.
+    *
+    * @param idx index into ledger starting at 0
+    * @return pointer to MyMoneyTransaction object representing the
+    *         selected transaction. If idx is out of bounds,
+    *         0 will be returned.
+    */
+  MyMoneyTransaction* transaction(const int idx) const;
 
   /**
     * This method is used to convert a string used in the

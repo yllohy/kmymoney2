@@ -61,7 +61,7 @@ class MyMoneyTransaction;
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.37 2003/07/31 15:28:53 mte Exp $
+  * $Id: kmymoneyview.h,v 1.38 2003/08/11 05:36:15 ipwizard Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -90,7 +90,8 @@ private:
   KScheduledView *m_scheduledView;
   KNewAccountWizard *m_newAccountWizard;
   KGlobalLedgerView *m_ledgerView;
-
+  KFindTransactionDlg* m_searchDlg;
+  
   QVBox* m_homeViewFrame;
   QVBox* m_accountsViewFrame;
   QVBox* m_categoriesViewFrame;
@@ -293,7 +294,7 @@ public slots:
     * Brings up a dialog to let the user search for specific transaction(s).  It then
     * opens a results window to display those transactions.
     */
-  void slotAccountFind();
+  void slotFindTransaction();
 
   /**
     * Called whenever the user 'executes' an account. This operation opens the account
@@ -449,12 +450,9 @@ protected slots:
   void slotReconcileFinished(bool success);
 
   /**
-    * Brings up the find transaction dialog and shows the results.
-    *
-    * @see KFindTransactionDlg
-    * @see KTFindResultsDlg
-  **/
-  void doTransactionSearch();
+    * Destroys the search dialog
+    **/
+  void slotCloseSearchDialog(void);
 
   /**
 

@@ -238,33 +238,7 @@ void KLedgerViewCheckings::slotRegisterDoubleClicked(int /* row */,
 void KLedgerViewCheckings::createRegister(void)
 {
   m_register = new kMyMoneyRegisterCheckings(this);
-  m_register->setView(this);
-
-  m_register->setNumCols(7);
-  m_register->setCurrentCell(0, 1);
-  m_register->horizontalHeader()->setClickEnabled(true);
-  m_register->horizontalHeader()->setLabel(0, i18n("Nr."));
-  m_register->horizontalHeader()->setLabel(1, i18n("Date"));
-  m_register->horizontalHeader()->setLabel(2, i18n("Payee"));
-  m_register->horizontalHeader()->setLabel(3, i18n("C"));
-  m_register->horizontalHeader()->setLabel(4, i18n("Payment"));
-  m_register->horizontalHeader()->setLabel(5, i18n("Deposit"));
-  m_register->horizontalHeader()->setLabel(6, i18n("Balance"));
-  m_register->setLeftMargin(0);
-  m_register->verticalHeader()->hide();
-  m_register->setColumnStretchable(0, false);
-  m_register->setColumnStretchable(1, false);
-  m_register->setColumnStretchable(2, false);
-  m_register->setColumnStretchable(3, false);
-  m_register->setColumnStretchable(4, false);
-  m_register->setColumnStretchable(5, false);
-  m_register->setColumnStretchable(6, false);
-
-  m_register->horizontalHeader()->setResizeEnabled(false);
-  m_register->horizontalHeader()->setMovingEnabled(false);
-
-  // never show horizontal scroll bars
-  m_register->setHScrollBarMode(QScrollView::AlwaysOff);
+  m_register->setParent(this);
 
   connect(m_register, SIGNAL(clicked(int, int, int, const QPoint&)), this, SLOT(slotRegisterClicked(int, int, int, const QPoint&)));
   connect(m_register, SIGNAL(doubleClicked(int, int, int, const QPoint&)), this, SLOT(slotRegisterDoubleClicked(int, int, int, const QPoint&)));

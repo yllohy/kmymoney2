@@ -502,7 +502,7 @@ void KLedgerView::suspendUpdate(const bool suspend)
     m_suspendUpdate = suspend;
 }
 
-MyMoneyTransaction* const KLedgerView::transaction(const int idx) const
+MyMoneyTransaction* KLedgerView::transaction(const int idx) const
 {
   if(idx >= 0 && static_cast<unsigned> (idx) < m_transactionPtrVector.count())
     return m_transactionPtrVector[idx];
