@@ -211,6 +211,18 @@ void KSettingsDlg::setPageList()
   m_qcheckboxTransactionForm = new QCheckBox(i18n("Show transaction form"), qwidgetPage);
   qvboxlayoutPage->addWidget(m_qcheckboxTransactionForm);
 
+  // In some transaction forms, no Nr. field is shown. This
+  // switch allows to override this feature.
+  m_qcheckboxShowNrField = new QCheckBox(i18n("Always show a Nr. field in transaction form"), qwidgetPage);
+  qvboxlayoutPage->addWidget(m_qcheckboxShowNrField);
+  connect(m_qcheckboxShowNrField, SIGNAL(toggled(bool)),
+    this, SLOT(slotNrFieldToggled(bool)));
+
+  // Setting for switch to copy transaction type into Nr. field upon
+  // new transactions
+  m_qcheckboxTypeToNr = new QCheckBox(i18n("Insert transaction type into Nr. field for new transactions"), qwidgetPage);
+  qvboxlayoutPage->addWidget(m_qcheckboxTypeToNr);
+
   // Create a group to hold two radio buttons
   QButtonGroup *qbuttongroup = new QButtonGroup(qwidgetPage, "ButtonGroup1");
   qbuttongroup->setTitle(i18n("Row Colour options"));
@@ -359,6 +371,19 @@ void KSettingsDlg::configRead()
   m_bTempTransactionForm = kconfig->readBoolEntry("TransactionForm", true);
   m_qcheckboxTransactionForm->setChecked(m_bTempTransactionForm);
 
+  m_bTempShowNrField = kconfig->readBoolEntry("AlwaysShowNrField", false);
+  m_qcheckboxShowNrField->setChecked(m_bTempShowNrField);
+
+  if(m_bTempShowNrField == true) {
+    m_bTempTypeToNr = kconfig->readBoolEntry("CopyTypeToNr", false);
+    m_qcheckboxTypeToNr->setChecked(m_bTempTypeToNr);
+    m_qcheckboxTypeToNr->setEnabled(true);
+  } else {
+    m_bTempTypeToNr = false;
+    m_qcheckboxTypeToNr->setChecked(m_bTempTypeToNr);
+    m_qcheckboxTypeToNr->setEnabled(false);
+  }
+
   kconfig->setGroup("List Options");
 
   QFont qfontDefault = QFont("helvetica", 12);
@@ -440,6 +465,8 @@ void KSettingsDlg::configWrite()
   kconfig->writeEntry("NewAccountWizard", m_qradiobuttonAccountWizard->isChecked());
   kconfig->writeEntry("LedgerLens", m_qcheckboxLedgerLens->isChecked());
   kconfig->writeEntry("TransactionForm", m_qcheckboxTransactionForm->isChecked());
+  kconfig->writeEntry("CopyTypeToNr", m_qcheckboxTypeToNr->isChecked());
+  kconfig->writeEntry("AlwaysShowNrField", m_qcheckboxShowNrField->isChecked());
   kconfig->sync();
 }
 
@@ -503,6 +530,8 @@ void KSettingsDlg::slotCancel()
   kconfig->writeEntry("NewAccountWizard", m_bTempAccountWizard);
   kconfig->writeEntry("LedgerLens", m_bTempLedgerLens);
   kconfig->writeEntry("TransactionForm", m_bTempTransactionForm);
+  kconfig->writeEntry("CopyTypeToNr", m_bTempTypeToNr);
+  kconfig->writeEntry("AlwaysShowNrField", m_bTempShowNrField);
 
   kconfig->sync();
 
@@ -536,4 +565,16 @@ void KSettingsDlg::slotUser1()
   m_qradiobuttonAccountDialog->setChecked(!m_bTempAccountWizard);
   m_qcheckboxLedgerLens->setChecked(m_bTempLedgerLens);
   m_qcheckboxTransactionForm->setChecked(m_bTempTransactionForm);
+  m_qcheckboxTypeToNr->setChecked(m_bTempTypeToNr);
+  m_qcheckboxShowNrField->setChecked(m_bTempShowNrField);
+}
+
+void KSettingsDlg::slotNrFieldToggled(bool state)
+{
+  if(state == true) {
+    m_qcheckboxTypeToNr->setEnabled(true);
+  } else {
+    m_qcheckboxTypeToNr->setChecked(false);
+    m_qcheckboxTypeToNr->setEnabled(false);
+  }
 }

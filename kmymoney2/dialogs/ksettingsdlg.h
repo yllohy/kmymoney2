@@ -53,7 +53,7 @@
   * @see KDialogBase
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: ksettingsdlg.h,v 1.8 2002/11/27 15:25:49 ipwizard Exp $
+  * $Id: ksettingsdlg.h,v 1.9 2002/12/08 16:12:19 ipwizard Exp $
   *
   * @short A class to manipulate the settings needed for running KMyMoney2
 **/
@@ -90,6 +90,12 @@ private:
 
   /** Show transaction form */
   QCheckBox *m_qcheckboxTransactionForm;
+
+  /* copy type to nr field */
+  QCheckBox* m_qcheckboxTypeToNr;
+
+  /* always show a nr field in the transaction form */
+  QCheckBox* m_qcheckboxShowNrField;
 
   /** colour options */
   QRadioButton *m_qradiobuttonPerTransaction;
@@ -136,6 +142,8 @@ private:
   bool m_bTempAccountWizard;
   bool m_bTempLedgerLens;
   bool m_bTempTransactionForm;
+  bool m_bTempTypeToNr;
+  bool m_bTempShowNrField;
 
 private slots:
   /** Called when OK pressed */
@@ -149,6 +157,9 @@ private slots:
 
   /** Called when Reset pressed */
   void slotUser1();
+
+  /** Called when 'Always show nr field' is toggled */
+  void slotNrFieldToggled(bool state);
 
 public:
   /**
