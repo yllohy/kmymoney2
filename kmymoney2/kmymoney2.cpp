@@ -633,6 +633,7 @@ void KMyMoney2App::progressCallback(int current, int total, const QString& msg)
     kmymoney2->slotStatusMsg(msg);
 
 
+
   kmymoney2->slotStatusProgressBar(current, total);
 }
 
@@ -789,6 +790,7 @@ bool KMyMoney2App::initWizard()
     } else if (start.isOpenFile()) {
       KURL url; 
       url = start.getURL();
+
       fileName = url.url();
       slotFileOpenRecent(url);
     } else { // Wizard / Template
@@ -1192,13 +1194,16 @@ void KMyMoney2App::createInitialAccount(void)
   if(file->asset().accountCount() == 0
   && file->liability().accountCount() == 0
   && myMoneyView != 0) {
-    KMessageBox::information(this, i18n(
-          "The currently opened KMyMoney document does not contain "
-          "a single asset account. In order to maintain "
-          "your finances you need at least one asset account (e.g. "
-          "your checkings account). KMyMoney will start the \"New Account Wizard\" "
-          "now which allows you to create your first asset account."),
-           i18n("No asset account"));
+    KMessageBox::information(
+      this,
+      // I had some trouble with xgettext to get this in a single message when
+      // I split the message over multiple lines. Make sure, you don't break
+      // the i18n stuff when you modify this message. See kmymoney2.pot for
+      // this entry. (ipwizard)
+      i18n(
+        "The currently opened KMyMoney document does not contain a single asset account. In order to maintain your finances you need at least one asset account (e.g. your checkings account). KMyMoney will start the \"New Account Wizard\" now which allows you to create your first asset account."
+          ),
+      i18n("No asset account"));
     myMoneyView->slotAccountNew();
   }
 }

@@ -88,27 +88,31 @@ void KMyMoneyBriefSchedule::loadSchedule()
     {
       MyMoneySchedule sched = m_scheduleList[m_index];
 
-      m_indexLabel->setText(QString::number(m_index+1) + i18n(" of ") + QString::number(m_scheduleList.count()));
+      m_indexLabel->setText(i18n("%1 of %2")
+                              .arg(QString::number(m_index+1))
+                              .arg(QString::number(m_scheduleList.count())));
       m_name->setText(sched.name());
       m_type->setText(KMyMoneyUtils::scheduleTypeToString(sched.type()));
       m_account->setText(sched.account().name());
-      QString text(i18n("Payment on "));
-      text += m_date.toString();
-      text += i18n(" for ");
+      QString text;
       MyMoneyMoney amount = sched.transaction().splitByAccount(sched.account().id()).value();
       if (amount < 0)
         amount = -amount;
-      text += amount.formatMoney();
+        
       if (sched.willEnd())
       {
-        text += i18n(" with ");
         int transactions = sched.paymentDates(m_date, sched.endDate()).count()-1;
-        text += QString::number(transactions);
-        text += i18n(" transactions remaining ");
+        text = i18n("Payment on %1 for %2 with %3 transactions remaining occuring %4.")
+                .arg(m_date.toString())
+                .arg(amount.formatMoney())
+                .arg(QString::number(transactions))
+                .arg(KMyMoneyUtils::occurenceToString(sched.occurence()));
+      } else {
+        text = i18n("Payment on %1 for %2 occuring %4.")
+                .arg(m_date.toString())
+                .arg(amount.formatMoney())
+                .arg(KMyMoneyUtils::occurenceToString(sched.occurence()));
       }
-      text += i18n(" occuring ");
-      text += KMyMoneyUtils::occurenceToString(sched.occurence());
-      text += ".";
 
       if (m_date < QDate::currentDate())
       {
@@ -125,10 +129,10 @@ void KMyMoneyBriefSchedule::loadSchedule()
           int transactions = sched.paymentDates(startD, QDate::currentDate()).count();
 
           text += "<br><font color=red>";
-          text += QString::number(days);
-          text += i18n(" days overdue (");
-          text += QString::number(transactions);
-          text += i18n(" occurences).</color>");
+          text += i18n("%1 days overdue (%2 occurences).")
+                      .arg(QString::number(days))
+                      .arg(QString::number(transactions));
+          text += "</color>";
         }
       }
       

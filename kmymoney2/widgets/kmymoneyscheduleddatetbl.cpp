@@ -225,7 +225,7 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int /*row*/, 
     QValueList<MyMoneySchedule> transferSchedules;
     try
     {
-      text = "";
+      text = QString();
 
       if (!m_filterBills)
       {
@@ -237,8 +237,7 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int /*row*/, 
                                      
         if (billSchedules.count() >= 1)
         {
-          text += QString::number(billSchedules.count());
-          text += i18n(" Bills.");
+          text += i18n("%1 Bills.").arg(QString::number(billSchedules.count()));
         }
       }
 
@@ -252,9 +251,9 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int /*row*/, 
 
         if (depositSchedules.count() >= 1)
         {
-          text += "  ";
-          text += QString::number(depositSchedules.count());
-          text += i18n("Deposits.");
+          if(!text.isEmpty())
+            text += "  ";
+          text += i18n("%1 Deposits.").arg(QString::number(depositSchedules.count()));
         }
       }
 
@@ -268,9 +267,9 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int /*row*/, 
         
         if (transferSchedules.count() >= 1)
         {
-          text += "  ";
-          text += QString::number(transferSchedules.count());
-          text += i18n("Transfers.");
+          if(!text.isEmpty())
+            text += "  ";
+          text += i18n("%1 Transfers.").arg(QString::number(transferSchedules.count()));
         }
       }
     }
