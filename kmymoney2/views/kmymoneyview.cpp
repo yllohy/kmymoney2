@@ -868,6 +868,29 @@ void KMyMoneyView::accountNew(const bool createCategory)
     // An exception will be thrown on the next line instead.
     try
     {
+      // Check the opening balance
+      MyMoneyMoney openingBal = newAccount.openingBalance();
+      if (openingBal > 0 && newAccount.accountGroup() == MyMoneyAccount::Liability)
+      {
+        openingBal = -openingBal;
+        QString message = i18n("This account is a liability and if the "
+            "opening balance represents money owed, then it should be negative.  "
+            "Negate the amount?\n\n"
+            "Please click Yes to change the opening balance to %1,\n"
+            "Please click No to leave the amount as %2,\n"
+            "Please click Cancel to abort the account creation.")
+            .arg(openingBal.formatMoney())
+            .arg(newAccount.openingBalance().formatMoney());
+            
+        int ans = KMessageBox::questionYesNoCancel(this, message);
+        if (ans == KMessageBox::Yes)
+        {
+          newAccount.setOpeningBalance(openingBal);
+        }
+        else if (ans == KMessageBox::Cancel)
+          return;
+      }
+            
       MyMoneyFile::instance()->addAccount(newAccount, parentAccount);
 
       // Add the credit card schedule only if one exists

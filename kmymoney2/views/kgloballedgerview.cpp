@@ -48,6 +48,7 @@
 #include "kledgerviewasset.h"
 #include "kledgerviewcash.h"
 #include "kledgerviewloan.h"
+#include "kledgerviewliability.h"
 
 #include "../mymoney/mymoneyaccount.h"
 #include "../mymoney/mymoneyfile.h"
@@ -81,7 +82,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   m_formLayout->addLayout( Layout2 );
 
   m_accountStack = new QWidgetStack(this, "Stack");
-  
+
   // Checkings account
   view = m_specificView[MyMoneyAccount::Checkings] = new KLedgerViewCheckings(this);
   m_accountStack->addWidget(view, MyMoneyAccount::Checkings);
@@ -145,6 +146,14 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
     SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
   connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
 
+  // Liability account
+  view = m_specificView[MyMoneyAccount::Liability] = new KLedgerViewLiability(this);
+  m_accountStack->addWidget(view, MyMoneyAccount::Liability);
+  connect(view, SIGNAL(accountAndTransactionSelected(const QCString&, const QCString&)),
+    this, SLOT(slotSelectAccountAndTransaction(const QCString&, const QCString&)));
+  connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
+    SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
+  connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
   
   m_formLayout->addWidget(m_accountStack);
   setMinimumHeight(m_accountComboBox->minimumHeight() + m_accountStack->sizeHint().height());
