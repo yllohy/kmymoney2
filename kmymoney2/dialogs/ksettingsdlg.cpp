@@ -44,6 +44,7 @@
 #include <kmessagebox.h>
 #include <klistview.h>
 #include <kpushbutton.h>
+#include <kguiitem.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -64,6 +65,14 @@ KSettingsDlg::KSettingsDlg(QWidget *parent, const char *name, bool modal)
   setHomePage();
   configRead();
   m_bDoneApply=false;
+  
+  KPushButton *reset = static_cast<KPushButton *>(actionButton(User1));
+  KIconLoader* il = KGlobal::iconLoader();
+  KGuiItem resetButtonItem( i18n( "&Reset" ),
+                    QIconSet(il->loadIcon("undo", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Reset all settings"),
+                    i18n("Use this to reset all settings to the state they were when the dialog was opened."));
+  reset->setGuiItem(resetButtonItem);
 }
 
 /** Standard destructor for the class.
@@ -212,12 +221,20 @@ void KSettingsDlg::setHomePage()
 
   QVBoxLayout* Layout1 = new QVBoxLayout( 0, 0, 6, "Layout1");
 
-  m_upButton = new KPushButton( KGlobal::iconLoader()->loadIconSet("up", KIcon::Small), QString(""), frame, "KPushButtonUp" );
-  m_upButton->setText(i18n("Up"));
+  
+  KIconLoader* il = KGlobal::iconLoader();
+  KGuiItem upButtonItem( i18n( "&Up" ),
+                    QIconSet(il->loadIcon("up", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Move selected item up"),
+                    i18n("Use this to move the selected item up by one position in the list."));
+  m_upButton = new KPushButton( upButtonItem, frame, "KPushButtonUp" );
   Layout1->addWidget( m_upButton );
 
-  m_downButton = new KPushButton( KGlobal::iconLoader()->loadIconSet("down", KIcon::Small), QString(""), frame, "KPushButtonDown" );
-  m_downButton->setText(i18n("Down"));
+  KGuiItem downButtonItem( i18n( "&Down" ),
+                    QIconSet(il->loadIcon("down", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Move selected item down"),
+                    i18n("Use this to move the selected item down by one position in the list."));
+  m_downButton = new KPushButton(downButtonItem, frame, "KPushButtonDown" );
   Layout1->addWidget( m_downButton );
   Layout2->addLayout( Layout1 );
   
