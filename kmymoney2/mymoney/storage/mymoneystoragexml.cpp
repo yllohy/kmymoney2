@@ -298,6 +298,9 @@ MyMoneyAccount MyMoneyStorageXML::readAccount(const QDomElement& account)
   QString tmp;
   
   acc.setName(account.attribute(QString("name")));
+
+  qDebug("Reading information for account %s", acc.name().data());
+  
   acc.setParentAccountId(QCString(account.attribute(QString("parentaccount"))));
   acc.setLastModified(QDate::fromString(account.attribute(QString("lastmodified")), Qt::ISODate));
   acc.setLastReconciliationDate(QDate::fromString(account.attribute(QString("lastreconciled")), Qt::ISODate));
@@ -317,6 +320,8 @@ MyMoneyAccount MyMoneyStorageXML::readAccount(const QDomElement& account)
   acc.setDescription(account.attribute(QString("description")));
   
   id = account.attribute(QString("id"));
+
+  qDebug("Account %s has id of %s, type of %d, parent is %s.", acc.name().data(), id.data(), type, acc.parentAccountId().data());
 
   /////////////////////////////////////////////////////////////////////////////////////////
   //  Process any Sub-Account information found inside the account entry.
@@ -489,7 +494,7 @@ void MyMoneyStorageXML::writeAccounts(QDomDocument *pDoc, QDomElement& accounts,
 
   expense = pDoc->createElement("ACCOUNT");
   writeAccount(pDoc, expense, storage->expense());
-  expense.appendChild(liability);
+  accounts.appendChild(expense);
 
   income = pDoc->createElement("ACCOUNT");
   writeAccount(pDoc, income, storage->income());
