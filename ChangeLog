@@ -1,3 +1,13 @@
+2002-06-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed the singleton pattern
+  * Added double constructor for MyMoneyMoney and testcase
+  * Modified MyMoneyStorageBin to use the new constructor when reading old
+    files
+  * use macro supplied by CPPUNIT to detect presence of CPPUNIT >= 1.8.0
+  * don't try to compile test code, if CPPUNIT is not present
+  * added chapter about unit testing and example code to the PHB
+  * minor spelling modifications in the PHB
+
 2002-06-14 Michael Edwardes <mte@users.sourceforge.net>
   * Improved the 'file open' logic.
   * Fixed the infinite loop on exit.  Can't believe we didn't spot this
@@ -40,7 +50,7 @@
   * Adding institution in the account dialog now works.
   * The edit account dialog now loads nearly all the 'fields'
     properly.
-	* Integrated the date input widget changes from the 0-4-kde3-branch.
+  * Integrated the date input widget changes from the 0-4-kde3-branch.
 
 2002-06-06 Michael Edwardes <mte@users.sourceforge.net>
   * Selecting the four root accounts in the parent account widget
@@ -462,7 +472,7 @@
   * Bumped version up to 0.3.8.
   * Removed some old icons and added some new ones.  Please be aware that
     I am a useless artist!
-    
+
 2001-09-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed two uninitialized variable bugs
 
@@ -829,7 +839,6 @@
     are updated
 
 2001-03-13  Michael Edwardes  <mte@users.sourceforge.net>
-
   * Ran KFileReplace to change my email address because I won't
     always be at university.
   * Remove all #include <x.moc> from the source files.
@@ -843,11 +852,9 @@
   * Added files to .cvsignore (make-ui.sh, *~)
 
 2001-03-11  Javier Campos Morales  <javi@DarkStar>
-
 	* Insert new startuplogo
 
 2001-03-08  Javier Campos Morales  <javi@DarkStar>
-
 	* Fixed kmymoney2 repository
 	* Remove compile.sh and mkui.sh
 	* Modify the project to complain with kdevelop 1.4
@@ -858,18 +865,3 @@
 	* KMyMoney2App::slotFileOpen now open the start dialog.
 	* Fixed errors with compile.
 	* Added .cvsignore in all project.
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
