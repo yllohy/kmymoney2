@@ -101,7 +101,7 @@ KTransactionView::KTransactionView(QWidget *parent, const char *name)
   m_contextMenu->insertSeparator();
   m_contextMenu->insertItem(kiconloader->loadIcon("set_as", KIcon::Small), i18n("Set as"), setAsMenu);
 
-  m_contextMenu->insertItem(kiconloader->loadIcon("split", KIcon::Small), i18n("Split"), this, SLOT(slotEditSplit()));
+  // m_contextMenu->insertItem(kiconloader->loadIcon("split", KIcon::Small), i18n("Split"), this, SLOT(slotEditSplit()));
   createInputWidgets();
 }
 
@@ -233,6 +233,7 @@ void KTransactionView::createInputWidgets()
   m_enter = new KPushButton(i18n("Enter"),0);
   m_cancel = new KPushButton(i18n("Cancel"),0);
   m_delete = new KPushButton(i18n("Delete"),0);
+  m_split = new KPushButton(i18n("Split"),0);
 
   m_payee->setEditable(true);
   m_payee->setAutoCompletion(true);
@@ -289,12 +290,14 @@ void KTransactionView::createInputWidgets()
 				  this, SLOT(enterClicked()));
 	connect(m_category,SIGNAL(signalEnter()),
 				  this, SLOT(enterClicked()));
+
 	connect(m_payment,SIGNAL(signalNextTransaction()),this,SLOT(slotNextTransaction()));
 	connect(m_withdrawal,SIGNAL(signalNextTransaction()),this,SLOT(slotNextTransaction()));
 	connect(m_category,SIGNAL(signalNextTransaction()),this,SLOT(slotNextTransaction()));
 	connect(m_cancel, SIGNAL(clicked()),this,SLOT(cancelClicked()));
 	connect(m_enter, SIGNAL(clicked()),this,SLOT(enterClicked()));
 	connect(m_delete, SIGNAL(clicked()),this,SLOT(deleteClicked()));
+  connect(m_split, SIGNAL(clicked()),this,SLOT(slotEditSplit()));
 	
 	connect(m_category, SIGNAL(activated(int)), this, SLOT(slotCategoryActivated(int)));
 }
@@ -433,6 +436,8 @@ void KTransactionView::slotFocusChange(int row, int col, int button, const QPoin
       m_cancel->show();
       transactionsTable->setCellWidget(realrow + 1 ,6,m_delete);
       m_delete->show();
+      transactionsTable->setCellWidget(realrow + 1, 3, m_split);
+      m_split->show();
 
       updateInputLists();
       if(m_transactions->count() > transrow)
@@ -608,7 +613,7 @@ void KTransactionView::slotEditSplit()
   MyMoneyAccount *pAccount;
   KConfig *config = KGlobal::config();
   config->setGroup("List Options");
-//  const int NO_ROWS = (config->readEntry("RowCount", "2").toInt());
+  // const int NO_ROWS = (config->readEntry("RowCount", "2").toInt());
 	
 	pAccount = getAccount();
 	if(pAccount == 0)
@@ -618,23 +623,37 @@ void KTransactionView::slotEditSplit()
   if (!transaction)
     return;
 
-  MyMoneyMoney amount = 9.99;
-  MyMoneySplitTransaction* tmp = new MyMoneySplitTransaction;
-
-  tmp->setAmount(amount);
-  tmp->setMemo("This is the memo");
-  tmp->setCategoryMajor("major");
-  tmp->setCategoryMinor("minor");
-
-  transaction->m_splitList.append(tmp);
-
-
-  amount = 99.99;
+  MyMoneyMoney amount = transaction->amount().amount();
 
   KSplitTransactionDlg* dlg = new KSplitTransactionDlg(0, 0,
     m_filePointer, getBank(), pAccount,
-    transaction->splitList(), &amount, true);
-  dlg->exec();
+    &amount, true);
+
+  MyMoneySplitTransaction* split;
+  MyMoneySplitTransaction* tmp;
+
+  // copy the split list
+  split = transaction->firstSplit();
+  while(split) {
+    tmp = new MyMoneySplitTransaction(*split);
+    dlg->addTransaction(tmp);
+    split = transaction->nextSplit();
+  }
+
+  if(dlg->exec() == QDialog::Accepted) {
+    transaction->clearSplitList();
+    // copy the split list
+    split = dlg->firstTransaction();
+    while(split != NULL) {
+      tmp = new MyMoneySplitTransaction(*split);
+      tmp->setParent(transaction);
+      transaction->addSplit(tmp);
+      split = dlg->nextTransaction();
+    }
+    m_payment->setText(((transaction->type()==MyMoneyTransaction::Debit) ? KGlobal::locale()->formatMoney(amount.amount(),"") : QString("")));
+    m_withdrawal->setText(((transaction->type()==MyMoneyTransaction::Credit) ? KGlobal::locale()->formatMoney(amount.amount(),"") : QString("")));
+    m_category->setCurrentItem("Split");
+  }
   delete dlg;
 }
 
@@ -931,36 +950,25 @@ void KTransactionView::clearInputData()
 
 void KTransactionView::setInputData(const MyMoneyTransaction transaction)
 {
+  // keep a copy of the transaction for the case the user cancels
+  m_originalTransaction = transaction;
+
 	m_date->setDate(transaction.date());
 	m_payee->setEditText(transaction.payee());
 	m_memo->setText(transaction.memo());
 	m_number->setText(transaction.number());
   m_payment->setText(((transaction.type()==MyMoneyTransaction::Debit) ? KGlobal::locale()->formatMoney(transaction.amount().amount(),"") : QString("")));
   m_withdrawal->setText(((transaction.type()==MyMoneyTransaction::Credit) ? KGlobal::locale()->formatMoney(transaction.amount().amount(),"") : QString("")));
-  bool categorySet = false;
-  for(int i = 0; i < m_category->count(); i++)
-  {
-		QString theText;
-		if(transaction.categoryMinor() == "")
-		{
-			theText = transaction.categoryMajor();
-		}
-		else
-		{
-		  theText = transaction.categoryMajor();
-		  theText += ":";
-		  theText += transaction.categoryMinor();
-		}
-   	if(m_category->text(i) == theText)
-		{
-			m_category->setCurrentItem(i);
-     	categorySet = true;
-		}
-	}
-  if(!categorySet)
-	{
-   	m_category->setCurrentItem(0);
-	}
+
+  QString theText;
+  if(transaction.categoryMinor() == "") {
+    theText = transaction.categoryMajor();
+  } else {
+    theText = transaction.categoryMajor();
+    theText += ":";
+    theText += transaction.categoryMinor();
+  }
+  m_category->setCurrentItem(theText);
 }
 
 void KTransactionView::updateInputLists(void)
@@ -1063,6 +1071,8 @@ void KTransactionView::updateInputLists(void)
   		}
     }
   }
+
+  qstringlistAccount.append("Split");
 
 	m_category->clear();
 	
@@ -1324,6 +1334,10 @@ void KTransactionView::updateTransactionList(int row, int col)
 void KTransactionView::cancelClicked()
 {
 	hideWidgets();
+	if(m_index < static_cast<long> (m_transactions->count())) {
+    MyMoneyTransaction *transaction = m_transactions->at(m_index);
+    *transaction = m_originalTransaction;
+  }
 }
 
 void KTransactionView::deleteClicked()
@@ -1428,8 +1442,8 @@ void KTransactionView::viewTypeActivated(int num)
 
 void KTransactionView::resizeEvent(QResizeEvent*)
 {
-	hideWidgets();
-//  clear();
+	// hideWidgets();
+
   int w=transactionsTable->visibleWidth() - 200 - 30 -
     m_debitWidth - m_creditWidth - m_balanceWidth;
 
@@ -1445,20 +1459,17 @@ void KTransactionView::resizeEvent(QResizeEvent*)
 /** No descriptions */
 void KTransactionView::hideWidgets()
 {
-    m_date->hide();
-    m_method->hide();
-    m_number->hide();
-    m_payee->hide();
-    m_payment->hide();
-    m_withdrawal->hide();
-    m_hlayout->hide();
-  //m_category->hide();
-  //m_memo->hide();
-    m_enter->hide();
-    m_cancel->hide();
-    m_delete->hide();
-
-
+  m_date->hide();
+  m_method->hide();
+  m_number->hide();
+  m_payee->hide();
+  m_payment->hide();
+  m_withdrawal->hide();
+  m_hlayout->hide();
+  m_enter->hide();
+  m_cancel->hide();
+  m_delete->hide();
+  m_split->hide();
 }
 
 /**
@@ -1467,12 +1478,37 @@ void KTransactionView::hideWidgets()
 */
 void KTransactionView::slotCategoryActivated(int pos)
 {
+/* FIXME: not required anymore, can be removed
   QString qstringText = m_category->text(pos);
   if ( qstringText == i18n("--- Income ---") ||
       qstringText == i18n("--- Expense ---") ||
       qstringText == i18n("--- Special ---") ) {
     KMessageBox::error(this, i18n("Please do not choose the type options (--- ??? ---)"));
     m_category->setFocus(); // Don't think this will work anyway
+  }
+*/
+  MyMoneyTransaction* transaction = m_transactions->at(m_index);
+  if(transaction == NULL) {
+    qDebug("transaction == NULL in slotCategoryActivated");
+    return;
+  }
+
+  bool haveSplits = transaction->firstSplit() != NULL;
+  bool isSplit = m_category->text(pos) == "Split";
+
+  // if we move the category away, we delete all splits
+  if(haveSplits && !isSplit) {
+    if(KMessageBox::warningContinueCancel(
+            0, QString(i18n("Changing the category will erase all "
+                            "information about the splits. Do you "
+                            "want to continue?")),
+            QString(i18n("Delete split information")),
+            QString(i18n("Continue")), false  ) == KMessageBox::Continue) {
+      transaction->clearSplitList();
+      transaction->setDirty(true);
+    } else {
+      m_category->setCurrentItem("Split");
+    }
   }
 }
 

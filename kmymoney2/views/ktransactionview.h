@@ -81,12 +81,20 @@ private:
 	KPushButton* m_enter;
   KPushButton* m_cancel;
 	KPushButton* m_delete;
+  KPushButton* m_split;
 	kMyMoneyLineEdit* m_memo;
   kMyMoneyHLayout*	m_hlayout;
 
   KPopupMenu* m_contextMenu;
 
+  /// List of all transactions in an account
   QList<MyMoneyTransaction> *m_transactions;
+
+  /// keeps a copy of the transaction that will be edited
+  /// and is used when the user rejects any modification (Cancel button)
+  /// This member is set in setInputData(const MyMoneyTransaction) and
+  /// used in cancelClicked().
+  MyMoneyTransaction m_originalTransaction;
 
   void updateTransactionList(int start, int col=-1);
 
