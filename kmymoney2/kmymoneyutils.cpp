@@ -478,7 +478,7 @@ void KMyMoneyUtils::newPayee(QWidget* parent, kMyMoneyPayee* payeeEdit, const QS
   // Ask the user if that is what he intended to do?
   QString msg = i18n("Do you want to add '%1' as payee/receiver ?").arg(payeeName);
 
-  if(KMessageBox::questionYesNo(parent, msg, i18n("New payee/receiver")) == KMessageBox::Yes) {
+  if(KMessageBox::questionYesNo(parent, msg, i18n("New payee/receiver"),KStdGuiItem::yes(),KStdGuiItem::no(),"NewPayee") == KMessageBox::Yes) {
     // for now, we just add the payee to the pool. In the future,
     // we could open a dialog and ask for all the other attributes
     // of the payee.
