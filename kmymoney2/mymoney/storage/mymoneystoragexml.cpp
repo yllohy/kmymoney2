@@ -882,8 +882,8 @@ QDomElement MyMoneyStorageXML::writeKeyValuePairs(const QMap<QCString, QString> 
     for(it = pairs.begin(); it != pairs.end(); ++it)
     {
       QDomElement pair = m_doc->createElement("PAIR");
-      pair.setAttribute(QString("Key"), it.key());
-      pair.setAttribute(QString("Value"), it.data());
+      pair.setAttribute(QString("key"), it.key());
+      pair.setAttribute(QString("value"), it.data());
       keyValPairs.appendChild(pair);
     }
     return keyValPairs;
