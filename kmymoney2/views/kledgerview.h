@@ -59,15 +59,37 @@ class kMyMoneyDateInput;
   * @todo Add account (hierarchy) upon new category
   */
 
+/**
+  * This class is used to store a sorted vector of pointers to
+  * the transactions that are visible in a ledger view. When the
+  * vector is created, the sort method is set to SortPostDate.
+  * The sort type can be changed using the method setSortType().
+  */
 class KTransactionPtrVector : public QPtrVector<MyMoneyTransaction> {
 public:
+  /**
+    * This enumerator defines the possible sort methods.
+    * Possible values are:
+    *
+    */
   enum TransactionSortE {
-    SortEntryDate = 0,
-    SortPostDate,
+    SortEntryDate = 0,      /**< Sort the vector so that the transactions appear sorted
+                              *  according to their entry date
+                              */
+    SortPostDate,           /**< Sort the vector so that the transactions appear sorted
+                              *     according to their post date
+                              */
   };
 
   KTransactionPtrVector() { m_sortType = SortPostDate; };
   ~KTransactionPtrVector() {};
+
+  /**
+    * This method is used to set a different sort type.
+    * The vector is resorted. See KTransactionPtrVector::TransactionSortE
+    * for possible values.
+    */
+  void setSortType(const TransactionSortE type);
 
 protected:
   int compareItems(KTransactionPtrVector::Item d1, KTransactionPtrVector::Item d2);
@@ -76,6 +98,14 @@ private:
   TransactionSortE  m_sortType;
 };
 
+/**
+  * This class is the abstract base class for all ledger views. Common functionality
+  * for all ledger views. The specifics of the ledger view depend on the account type
+  * of the account which ledger is shown. The following specific ledger views are
+  * available:
+  *
+  * @li KLedgerViewCheckings
+  */
 class KLedgerView : public QWidget, MyMoneyObserver  {
    Q_OBJECT
 
@@ -240,18 +270,43 @@ protected:
   virtual void hideWidgets(void) = 0;
 
 protected:
+  /**
+    * This member keeps a pointer to the specific register for the account
+    */
   kMyMoneyRegister *m_register;
+
+  /**
+    * This member keeps a pointer to the specifc form for the account
+    */
   kMyMoneyTransactionForm *m_form;
 
+  /**
+    * This member holds the date from which on transactions should be shown
+    * in the ledger view. See KSettingsDlg where this value can be changed.
+    */
   QDate m_dateStart;
+
+  /**
+    * This member keeps the account information for the account that is shown
+    * in the specific view
+    */
   MyMoneyAccount m_account;
 
+  /**
+    * This member holds a list of all transactions that belong to the account
+    * shown in this view.
+    */
   QValueList<MyMoneyTransaction> m_transactionList;
+
+  /**
+    * This member holds vector of the balances for each transaction
+    */
   QValueVector<MyMoneyMoney> m_balance;
 
   /**
     * This member keeps a vector of pointers to all visible (filtered)
-    * transaction in m_transactionList.
+    * transaction in m_transactionList in sorted order. Sorting is done
+    * in KTransactionPtrVector::compareItems
     */
   KTransactionPtrVector m_transactionPtrVector;
 
@@ -273,21 +328,30 @@ protected:
     */
   MyMoneySplit m_split;
 
-  QTimer*      m_timer;
+  /*
+   * The following members are pointers to the edit widgets
+   */
+  kMyMoneyPayee*        m_editPayee;      ///< pointer to payee edit widget
+  kMyMoneyCategory*     m_editCategory;   ///< pointer to category edit widget
+  kMyMoneyLineEdit*     m_editMemo;       ///< pointer to memo edit widget
+  kMyMoneyEdit*         m_editAmount;     ///< pointer to amount edit widget
+  kMyMoneyLineEdit*     m_editNr;         ///< pointer to number edit widget
+  kMyMoneyDateInput*    m_editDate;       ///< pointer to date edit widget
+  kMyMoneyCategory*     m_editFrom;       ///< pointer to 'from account' edit widget
+  kMyMoneyCategory*     m_editTo;         ///< pointer to 'to account' edit widget
 
-  kMyMoneyPayee*        m_editPayee;
-  kMyMoneyCategory*     m_editCategory;
-  kMyMoneyLineEdit*     m_editMemo;
-  kMyMoneyEdit*         m_editAmount;
-  kMyMoneyLineEdit*     m_editNr;
-  kMyMoneyDateInput*    m_editDate;
-  kMyMoneyCategory*     m_editFrom;
-  kMyMoneyCategory*     m_editTo;
+private:
+  QTimer*      m_timer;
 
 private slots:
   void timerDone(void);
 
 signals:
+  /**
+    * The signal transactionSelected(void) is emitted, when a different
+    * transaction than the currently selected transaction is selected by
+    * the user.
+    */
   void transactionSelected(void);
 
 };

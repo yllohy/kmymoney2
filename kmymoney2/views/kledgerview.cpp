@@ -43,21 +43,6 @@
 #include "../widgets/kmymoneylineedit.h"
 #include "../widgets/kmymoneydateinput.h"
 
-KLedgerView::KLedgerView(QWidget *parent, const char *name )
-  : QWidget(parent,name)
-{
-  m_editPayee = 0;
-  m_register = 0;
-  m_form = 0;
-  m_transactionPtr = 0;
-  m_timer = 0;
-}
-
-KLedgerView::~KLedgerView()
-{
-  MyMoneyFile::instance()->detach(m_account.id(), this);
-}
-
 int KTransactionPtrVector::compareItems(KTransactionPtrVector::Item d1, KTransactionPtrVector::Item d2)
 {
   MyMoneyTransaction* t1 = static_cast<MyMoneyTransaction*>(d1);
@@ -76,6 +61,27 @@ int KTransactionPtrVector::compareItems(KTransactionPtrVector::Item d1, KTransac
       break;
   }
   return rc;
+}
+
+void KTransactionPtrVector::setSortType(const TransactionSortE type)
+{
+  m_sortType = type;
+  sort();
+}
+
+KLedgerView::KLedgerView(QWidget *parent, const char *name )
+  : QWidget(parent,name)
+{
+  m_editPayee = 0;
+  m_register = 0;
+  m_form = 0;
+  m_transactionPtr = 0;
+  m_timer = 0;
+}
+
+KLedgerView::~KLedgerView()
+{
+  MyMoneyFile::instance()->detach(m_account.id(), this);
 }
 
 void KLedgerView::setCurrentAccount(const QCString& accountId)
