@@ -122,6 +122,9 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   QVBox *qvboxMainFrame6 = addVBoxPage( i18n("Ledgers"), i18n("Ledgers"),
     DesktopIcon("ledger"));
   m_ledgerView = new KGlobalLedgerView(qvboxMainFrame6, "ledgerView");
+  // the next line causes the ledgers to get a hide() signal to be able
+  // to end any pending edit activities
+  connect(this, SIGNAL(aboutToShowPage(QWidget*)), m_ledgerView, SLOT(hide()));
   connect(m_ledgerView, SIGNAL(signalViewActivated()), this, SLOT(slotActivatedAccountView()));
 
 /*
