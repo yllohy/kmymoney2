@@ -14,9 +14,10 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <kglobal.h>
+#include <kconfig.h>
 #include <qpalette.h>
 #include "kmymoneytable.h"
-#include "../kmymoneysettings.h"
 
 kMyMoneyTable::kMyMoneyTable(QWidget *parent, const char *name )
  : QTable(parent,name)
@@ -30,12 +31,13 @@ kMyMoneyTable::~kMyMoneyTable()
 
 void kMyMoneyTable::paintEmptyArea(QPainter *p, int cx, int cy, int cw, int ch)
 {
-  KMyMoneySettings *p_settings = KMyMoneySettings::singleton();
-  if (p_settings) {
-    QPalette pal = palette();
-    pal.setColor(QColorGroup::Base, p_settings->lists_color());
-    setPalette(pal);
-  }
+  KConfig *config = KGlobal::config();
+  config->setGroup("List Options");
+  QColor defaultColor = Qt::white;
+	
+  QPalette pal = palette();
+  pal.setColor(QColorGroup::Base, config->readColorEntry("listColor", &defaultColor));
+  setPalette(pal);
 
   QTable::paintEmptyArea(p, cx, cy, cw, ch);
 }

@@ -1,4 +1,14 @@
 2001-07-06 Michael Edwardes <mte@users.sourceforge.net>
+  * Added the ability to customize the key definitions.
+  * Fixed the ability to load the last file edited automatically.
+    This is done in the configure dialog and bypasses the start
+    dialog if needed.  Beware: the random crashes on exit mean
+    it doesn't always update the options properly.  But you can
+    hand edit $HOME/.kde/share/config/kmymoney2rc.
+  * Removed KMyMoneySettings class and changed all references to
+    use the KConfig class.
+
+2001-07-06 Michael Edwardes <mte@users.sourceforge.net>
   * Improved the payee editor, adding a delete button and improving
     a lot of the logic.
   * Fixed a bug in the MyMoneyFile class that didn't update the

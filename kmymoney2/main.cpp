@@ -13,6 +13,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <stdio.h>
 
 #include <kcmdlineargs.h>
 #include <kaboutdata.h>
@@ -49,54 +50,14 @@ int main(int argc, char *argv[])
   a.setMainWidget( kmymoney2 );
   kmymoney2->show();
 
-// FUTURE EXPANSION
-//	if ( args->count() > 0 )
-//	{	kmymoney2->openURL( args->url(0) ); 	args->clear();	return a.exec();}
-//  else {
-	if( kmymoney2->initWizard() )
-		{
+	if (kmymoney2->startWithDialog()) {
+	  if (kmymoney2->initWizard()) {
+  		args->clear();
+	    return a.exec();
+	  }
+	} else {
 		args->clear();
 	  return a.exec();
-		} else { return false; }
-// }
-
-/*
-  KApplication app;
- 
-  KStartupLogo* start_logo = new KStartupLogo;
-  start_logo->show();
-  bool blogo=true;
-
-  if (app.isRestored()) {
-    if (blogo) {
-      start_logo->close();
-      delete start_logo;
-      blogo=false;
-    }
-    RESTORE(KMyMoney2App);
-  }
-  else {
-    KMyMoney2App *kmymoney2 = new KMyMoney2App();
-    if( kmymoney2!=0 ) kmymoney2->show();
-    if (blogo) {
-      start_logo->close();
-      delete start_logo;
-    }
-
-    KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
-		
-		if (args->count())
-		{
-        fprintf(stderr, "arg count: %d (%s)\n", args->count(), args->arg(0));
-        kmymoney2->openDocumentFile(args->arg(0));
-		}
-		else
-		{
-		  kmymoney2->openDocumentFile();
-		}
-		args->clear();
-  }
-
-  return app.exec();
-*/
+	}
+  return false;
 }

@@ -14,7 +14,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "ksettingsdlg.h"
-#include "kmymoneysettings.h"
 
 #include <klocale.h>
 #include <kstddirs.h>
@@ -55,14 +54,10 @@ void KSettingsDlg::setPageGeneral()
 	GroupBox1Layout->setSpacing( 6 );
 	GroupBox1Layout->setMargin( 11 );
 
-	start_prompt = new QRadioButton( GroupBox1, "start_prompt" );
+	start_prompt = new QCheckBox( "start_prompt", GroupBox1 );
 	start_prompt->setText( tr( "Start with dialog prompt (default)" ) );
 	start_prompt->setChecked( TRUE );
 	GroupBox1Layout->addWidget( start_prompt );
-
-	start_last = new QRadioButton( GroupBox1, "start_last" );
-	start_last->setText( tr( "Open last proyect" ) );
-	GroupBox1Layout->addWidget( start_last );
 }
 
 /** Set page list settings */
@@ -111,11 +106,19 @@ void KSettingsDlg::configRead()
 	QSize *defaultSize = new QSize(470,470);
 	this->resize( config->readSizeEntry("Geometry", defaultSize ) );
 
-  KMyMoneySettings *p_settings = KMyMoneySettings::singleton();
-  color_list->setColor(p_settings->lists_color());
-	color_back->setColor(p_settings->lists_BGColor());
-	font_header->setFont(p_settings->lists_headerFont());
-	font_cell->setFont(p_settings->lists_cellFont());
+	config->setGroup("General Options");
+	start_prompt->setChecked(config->readBoolEntry("StartDialog", true));
+	
+  config->setGroup("List Options");
+
+  QFont defaultFont = QFont("helvetica", 12);
+  QColor defaultColor = Qt::white;
+  QColor defaultBGColor = Qt::gray;
+	
+	color_list->setColor(config->readColorEntry("listColor", &defaultColor));
+	color_back->setColor(config->readColorEntry("listBGColor", &defaultBGColor));
+	font_header->setFont(config->readFontEntry("listHeaderFont", &defaultFont));
+	font_cell->setFont(config->readFontEntry("listCellFont", &defaultFont));
 }
 
 /** Write settings */
@@ -124,14 +127,17 @@ void KSettingsDlg::configWrite()
   KConfig *config = KGlobal::config();
 	config->setGroup("Settings Dialog");
 	config->writeEntry("Geometry", this->size() );
-  config->sync();
 
-  KMyMoneySettings *p_settings = KMyMoneySettings::singleton();
-	p_settings->setListSettings(
-				color_list->color(),
-      	color_back->color(),
-      	font_header->font(),
-      	font_cell->font() );
+  config->setGroup("List Options");
+	config->writeEntry("listColor", color_list->color());
+	config->writeEntry("listBGColor", color_back->color());
+	config->writeEntry("listHeaderFont", font_header->font());
+	config->writeEntry("listCellFont", font_cell->font());
+	
+	config->setGroup("General Options");
+	config->writeEntry("StartDialog", start_prompt->isChecked());
+
+  config->sync();
 }
 
 /** Slot ok */

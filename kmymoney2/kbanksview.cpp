@@ -15,12 +15,12 @@
  ***************************************************************************/
 #include "kbanksview.h"
 #include "kbanklistitem.h"
-#include "kmymoneysettings.h"
 #include <qheader.h>
 #include <kglobal.h>
 #include <klocale.h>
 #include <qtooltip.h>
 #include <klistview.h>
+#include <kconfig.h>
 
 KBanksView::KBanksView(QWidget *parent, const char *name)
  : KBankViewDecl(parent,name)
@@ -34,9 +34,9 @@ KBanksView::KBanksView(QWidget *parent, const char *name)
 	bankListView->header()->setResizeEnabled(false);
 	bankListView->setColumnWidthMode(0, QListView::Manual);
 
-  KMyMoneySettings *p_settings = KMyMoneySettings::singleton();
-  if (p_settings)
-    bankListView->header()->setFont(p_settings->lists_headerFont());
+	KConfig *config = KGlobal::config();
+  QFont defaultFont = QFont("helvetica", 12);
+  bankListView->header()->setFont(config->readFontEntry("listHeaderFont", &defaultFont));
 
   connect(bankListView, SIGNAL(selectionChanged(QListViewItem*)),
     this, SLOT(slotSelectionChanged(QListViewItem*)));
@@ -90,9 +90,9 @@ MyMoneyAccount KBanksView::currentAccount(bool& success)
 
 void KBanksView::refresh(MyMoneyFile file)
 {
-  KMyMoneySettings *p_settings = KMyMoneySettings::singleton();
-  if (p_settings)
-    bankListView->header()->setFont(p_settings->lists_headerFont());
+	KConfig *config = KGlobal::config();
+  QFont defaultFont = QFont("helvetica", 12);
+  bankListView->header()->setFont(config->readFontEntry("listHeaderFont", &defaultFont));
 
   clear();
   MyMoneyMoney totalProfit;
@@ -111,8 +111,7 @@ void KBanksView::refresh(MyMoneyFile file)
   QString s("Total Profits: ");
   s += KGlobal::locale()->formatMoney(totalProfit.amount());
 
-  if (p_settings)
-    totalProfitsLabel->setFont(p_settings->lists_cellFont());
+  totalProfitsLabel->setFont(config->readFontEntry("listCellFont", &defaultFont));
   totalProfitsLabel->setText(s);
 }
 

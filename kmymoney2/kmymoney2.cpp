@@ -30,6 +30,7 @@
 #include <kstdaction.h>
 #include <kglobal.h>
 #include <kstddirs.h>
+#include <kkeydialog.h>
 
 #include <stdio.h>
 #include <stream.h>
@@ -37,7 +38,6 @@
 #include "kmymoney2.h"
 #include "kstartdlg.h"
 #include "ksettingsdlg.h"
-#include "kmymoneysettings.h"
 #include "kstartuplogo.h"
 #include "dialogs/kbackupdlg.h"
 
@@ -78,7 +78,9 @@ KMyMoney2App::KMyMoney2App(QWidget* , const char* name):KMainWindow(0, name)
   mountbackup = false;
   copybackup = false;
   unmountbackup = false;
-  fileName = "";
+
+  if (!m_startDialog)
+    myMoneyView->readFile(fileName);
 }
 
 KMyMoney2App::~KMyMoney2App()
@@ -132,6 +134,7 @@ void KMyMoney2App::initActions()
 
 
   // The Settings Menu
+	settingsKey = KStdAction::keyBindings(this, SLOT(slotKeySettings()), actionCollection());
 	settings 	= KStdAction::preferences(this, SLOT( slotSettings() ), actionCollection());
 
   // The Categories Menu
@@ -193,29 +196,22 @@ void KMyMoney2App::initStatusBar()
 
 void KMyMoney2App::saveOptions()
 {	
+  qDebug("in saveOptions");
   config->setGroup("General Options");
   config->writeEntry("Geometry", size());
   config->writeEntry("Show Toolbar", viewToolBar->isChecked());
   config->writeEntry("Show Statusbar",viewStatusBar->isChecked());
   config->writeEntry("ToolBarPos", (int) toolBar("mainToolBar")->barPos());
   fileOpenRecent->saveEntries(config,"Recent Files");
-  config->writeEntry("OpenLastFile", m_openLastFile);
   config->writeEntry("LastFile", fileName);
-  config->writeEntry("StartDialog", m_startDialog);
 
-  KMyMoneySettings *p_settings = KMyMoneySettings::singleton();
-  config->setGroup("List Options");
-	config->writeEntry("listColor", p_settings->lists_color());
-	config->writeEntry("listBGColor", p_settings->lists_BGColor());
-	config->writeEntry("listHeaderFont", p_settings->lists_headerFont());
-	config->writeEntry("listCellFont", p_settings->lists_cellFont());
 	config->writeEntry("BackupMountPoint",mountpoint);
+
 }
 
 
 void KMyMoney2App::readOptions()
 {
-	
   config->setGroup("General Options");
 
   // bar status settings
@@ -242,32 +238,11 @@ void KMyMoney2App::readOptions()
     resize(size);
   }
 
-  m_openLastFile = config->readBoolEntry("OpenLastFile", false);
-  fileName = config->readEntry("LastFile");
+
   m_startDialog = config->readBoolEntry("StartDialog", true);
+  if (!m_startDialog)
+    fileName = config->readEntry("LastFile");
 
-	QColor l_listColor;
-	QColor l_listBGColor;
-	QFont l_listHeaderFont;
-	QFont l_listCellFont;
-
-  config->setGroup("List Options");
-  config->setGroup("List Options");
-  QFont defaultFont = QFont("helvetica", 12);
-  QColor defaultColor = Qt::white;
-  QColor defaultBGColor = Qt::gray;
-	l_listColor = config->readColorEntry("listColor", &defaultColor);
-	l_listBGColor = config->readColorEntry("listBGColor", &defaultBGColor);
-	l_listHeaderFont = config->readFontEntry("listHeaderFont", &defaultFont);
-	l_listCellFont = config->readFontEntry("listCellFont", &defaultFont);
-
-  KMyMoneySettings *p_settings = KMyMoneySettings::singleton();
-
-  p_settings->setListSettings(
-     	l_listColor,
-     	l_listBGColor,
-     	l_listHeaderFont,
-     	l_listCellFont );
   mountpoint = config->readEntry("BackupMountPoint");
 }
 
@@ -660,11 +635,6 @@ void KMyMoney2App::enableTransactionOperations(bool enable)
 
 void KMyMoney2App::slotSettings()
 {
-//  KSettingsDlg dlg(m_startDialog, m_openLastFile, this, "SettingsDialog");
-//  if (dlg.exec()) {
-//    m_openLastFile = dlg.openLastFile;
-//    m_startDialog = dlg.startDialog;
-//  }
 	KSettingsDlg dlg( this, "Settings");
 	if( dlg.exec() )
 	{
@@ -806,4 +776,10 @@ void KMyMoney2App::slotFileNewWindow()
 void KMyMoney2App::slotAccountOpen()
 {
   myMoneyView->slotAccountDoubleClick();
+}
+
+void KMyMoney2App::slotKeySettings()
+{
+  QString path = KGlobal::dirs()->findResource("appdata", "kmymoney2ui.rc");
+  KKeyDialog::configureKeys(actionCollection(), path);
 }

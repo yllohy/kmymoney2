@@ -52,7 +52,7 @@
   * @see KMyMoneyView
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: kmymoney2.h,v 1.10 2001/06/21 20:34:39 mte Exp $
+  * $Id: kmymoney2.h,v 1.11 2001/07/07 22:43:08 mte Exp $
   *
   * @short Main application class.
 **/
@@ -65,12 +65,11 @@ private:
 	KMyMoneyView *myMoneyView;
 	// The filename currently being edited when open.
 	QString fileName;
-	// Some variables to read into in readOptions
-	// and saved in saveOptions
-	bool m_openLastFile;
 	bool m_startDialog;
 
 protected slots:
+  void slotKeySettings();
+
   /**
     * Called when the user asks for file information.
   **/
@@ -226,6 +225,8 @@ protected slots:
   void slotFileBackup();
 
   public:
+    bool startWithDialog(void) { return m_startDialog; }
+
     /** construtor of KMyMoney2App, calls all init functions to create the application.
      */
     KMyMoney2App(QWidget* parent=0, const char* name=0);
@@ -365,6 +366,7 @@ protected slots:
     KAction *filePersonalData;
 
 		KAction *settings;
+		KAction *settingsKey;
 
     KAction *categoriesEdit;
     KAction *categoriesPayees;

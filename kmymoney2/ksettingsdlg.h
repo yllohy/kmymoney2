@@ -19,7 +19,7 @@
 
 #include <kdialogbase.h>
 
-#include <qradiobutton.h>
+#include <qcheckbox.h>
 #include <kfontdialog.h>
 #include <kcolorbutton.h>
 
@@ -41,9 +41,7 @@ private: // Private methods
   void configRead();
 private: // Private attributes
   /** Start prompt dialog */
-  QRadioButton *start_prompt;
-  /** Start last proyect */
-  QRadioButton *start_last;
+  QCheckBox *start_prompt;
   /** Color list */
   KColorButton *color_list;
   /** Color background */

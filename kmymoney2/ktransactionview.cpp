@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include <kglobal.h>
+#include <kconfig.h>
 #include <klocale.h>
 
 #include <qpushbutton.h>
@@ -24,7 +25,6 @@
 #include <qinputdialog.h>
 
 #include "ktransactionview.h"
-#include "kmymoneysettings.h"
 #include "knewcategorydlg.h"
 #include <kmessagebox.h>
 #include "widgets/kmymoneyedit.h"
@@ -47,9 +47,9 @@ KTransactionView::KTransactionView(QWidget *parent, const char *name)
  	transactionsTable->setLeftMargin(0);
 	transactionsTable->verticalHeader()->hide();
 
-  KMyMoneySettings *p_settings = KMyMoneySettings::singleton();
-  if (p_settings)
-    transactionsTable->horizontalHeader()->setFont(p_settings->lists_headerFont());
+	KConfig *config = KGlobal::config();
+  QFont defaultFont = QFont("helvetica", 12);
+  transactionsTable->horizontalHeader()->setFont(config->readFontEntry("listHeaderFont", &defaultFont));
 	
   m_filePointer=0;
 
@@ -818,10 +818,10 @@ void KTransactionView::updateTransactionList(int row, int col)
   if (!m_filePointer)
     return;
 
-  KMyMoneySettings *p_settings = KMyMoneySettings::singleton();
-  if (p_settings) {
-    transactionsTable->horizontalHeader()->setFont(p_settings->lists_headerFont());
-  }
+  KConfig *config = KGlobal::config();
+  config->setGroup("List Options");
+  QFont defaultFont = QFont("helvetica", 12);
+  transactionsTable->horizontalHeader()->setFont(config->readFontEntry("listHeaderFont", &defaultFont));
 
   MyMoneyAccount *account;
 
@@ -1047,8 +1047,7 @@ void KTransactionView::updateTransactionList(int row, int col)
     transactionsTable->setItem(rowCount + 1, 6, item88);
 
 		lblBalanceAmt->setText(currentBalance);
-    if (p_settings)
-      lblBalanceAmt->setFont(p_settings->lists_cellFont());
+    lblBalanceAmt->setFont(config->readFontEntry("listCellFont", &defaultFont));
 		transactionsTable->ensureCellVisible(rowCount + 1,0);
 
   } else { // We are just updating a section of it

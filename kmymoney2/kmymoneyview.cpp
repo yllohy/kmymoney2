@@ -30,7 +30,6 @@
 #include "kpayeedlg.h"
 #include "knewfiledlg.h"
 #include "kfileinfodlg.h"
-#include "kmymoneysettings.h"
 #include "kmymoneyview.h"
 
 KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)

@@ -14,13 +14,13 @@
  *                                                                         *
  ***************************************************************************/
 #include <kglobal.h>
+#include <kconfig.h>
 #include <klocale.h>
 #include <kstddirs.h>
 #include <qpixmap.h>
 #include <qcolor.h>
 
 #include "kbanklistitem.h"
-#include "kmymoneysettings.h"
 
 KBankListItem::KBankListItem(QListView *parent, MyMoneyBank bank )
  : QListViewItem(parent)
@@ -73,9 +73,10 @@ bool KBankListItem::isBank(void)
 
 void KBankListItem::paintCell(QPainter *p, const QColorGroup & cg, int column, int width, int align)
 {
-  KMyMoneySettings *p_settings = KMyMoneySettings::singleton();
-  if (p_settings)
-    p->setFont(p_settings->lists_cellFont());
+	KConfig *config = KGlobal::config();
+  config->setGroup("List Options");
+  QFont defaultFont = QFont("helvetica", 12);
+  p->setFont(config->readFontEntry("listCellFont", &defaultFont));
 
   if (column==2) {
     QFont font = p->font();

@@ -18,7 +18,6 @@
 #include <klocale.h>
 
 #include "kreconciledlg.h"
-#include "kmymoneysettings.h"
 #include "kreconcilelistitem.h"
 
 KReconcileDlg::KReconcileDlg(const MyMoneyMoney previousBal, const MyMoneyMoney endingBal, const QDate endingDate, const MyMoneyBank bankIndex, MyMoneyAccount *accountIndex, const MyMoneyFile file, QWidget *parent, const char *name)
@@ -156,7 +155,6 @@ void KReconcileDlg::loadLists(void)
 
 void KReconcileDlg::insertTransactions(void)
 {
-	KMyMoneySettings *p_settings = KMyMoneySettings::singleton();
   creditListView->clear();
   debitListView->clear();
 

@@ -16,8 +16,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <kglobal.h>
+#include <kconfig.h>
 #include "ktransactiontableitem.h"
-#include "kmymoneysettings.h"
 
 KTransactionTableItem::KTransactionTableItem(QTable *t, EditType et, const QString &txt, int items = 1)
   : QTableItem(t, et, txt)
@@ -29,18 +30,22 @@ KTransactionTableItem::KTransactionTableItem(QTable *t, EditType et, const QStri
 
 void KTransactionTableItem::paint(QPainter *p, const QColorGroup &cg, const QRect &cr, bool selected)
 {
-  KMyMoneySettings *p_settings = KMyMoneySettings::singleton();
+  KConfig *config = KGlobal::config();
+  config->setGroup("List Options");
 
-  QColorGroup g(cg);
-  if ((row()%2) && p_settings)
-    g.setColor(QColorGroup::Base, p_settings->lists_BGColor());
-  else if (p_settings)
-    g.setColor(QColorGroup::Base, p_settings->lists_color());
-
-  if (p_settings)
-    p->setFont(p_settings->lists_cellFont());
+  QFont defaultFont = QFont("helvetica", 12);
+  QColor defaultColor = Qt::white;
+  QColor defaultBGColor = Qt::gray;
 	
-   QString firsttext = text();
+  QColorGroup g(cg);
+  if ((row()%2))
+    g.setColor(QColorGroup::Base, config->readColorEntry("listBGColor", &defaultBGColor));
+  else
+    g.setColor(QColorGroup::Base, config->readColorEntry("listColor", &defaultColor));
+
+  p->setFont(config->readFontEntry("listCellFont", &defaultFont));
+	
+  QString firsttext = text();
 	QString secondtext = m_item2;
 	QRect myrect = cr;
 	myrect.setX(0);

@@ -19,7 +19,6 @@
 #include "knewbillwizardimpl.h"
 
 #include "kscheduleview.h"
-#include "kmymoneysettings.h"
 #include "mymoney/mymoneyscheduled.h"
 #include "kschedulelistitem.h"
 
