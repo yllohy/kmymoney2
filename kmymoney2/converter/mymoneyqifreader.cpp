@@ -28,6 +28,7 @@
 #include <qtimer.h>
 #include <qtextedit.h>
 #include <qregexp.h>
+#include <qbuffer.h>
 
 // ----------------------------------------------------------------------------
 // KDE Headers
@@ -35,6 +36,7 @@
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kconfig.h>
+#include <kdebug.h>
 
 // ----------------------------------------------------------------------------
 // Project Headers
@@ -135,49 +137,32 @@ void MyMoneyQifReader::slotReceivedDataFromFilter(KProcess* /* proc */, char *bu
 
 void MyMoneyQifReader::slotProcessBuffers(void)
 {
-#if 0
-  QValueList<QByteArray>::Iterator it;
-
-  while(!m_userAbort && !m_data.isEmpty()) {
-    unsigned int   i;
-
-    it = m_data.begin();
-
-    // parse this buffer
-    for(i = 0; !m_userAbort && i < (*it).size(); ++i) {
-      QChar c((*it).at(i));
-      if(c == '\r')
-        continue;
-      if(c == '\n') {
-        processQifLine();
-        m_qifLine = QString();
-      } else
-        m_qifLine += c;
-    }
-    m_data.remove(it);
-  }
-  m_data.clear();
-#else
   QValueList<QByteArray>::Iterator it = m_data.begin();
-  while(!m_userAbort && it != m_data.end()) {
-    unsigned int i;
-
-    // parse this buffer
-    for(i = 0; !m_userAbort && i < (*it).size(); ++i) {
-      QChar c((*it).at(i));
-      if(c == '\r')
-        continue;
-      if(c == '\n') {
+  while(!m_userAbort && it != m_data.end()) 
+  {
+    QBuffer databuffer(*it);
+    databuffer.open( IO_ReadOnly );
+    
+    while ( ! databuffer.atEnd() )
+    {
+      QCString line(80);
+      databuffer.readLine( line.data(), line.size() );
+      m_qifLine += QString::fromUtf8(line);  // or fromLocal8Bit?
+      
+      if ( m_qifLine.right(1) == "\n" )
+      {
+        m_qifLine.remove(QRegExp("[\r\n]"));
         processQifLine();
-        m_qifLine = QString();
-      } else
-        m_qifLine += c;
+        m_qifLine = QCString();
+      }
     }
-    ++it;
-  }
-  m_data.clear();
+    
+    databuffer.close();
 
-#endif
+    // remove this chunk from the list.  In case ANOTHER chunk came in while
+    // we were doing this operation, we can't just ++it and clear() at the end.    
+    it = m_data.remove(it);
+  }
 
 #ifndef DEBUG_IMPORT
   emit importFinished();
@@ -315,8 +300,6 @@ const bool MyMoneyQifReader::finishImport(void)
 #endif
   return rc;
 }
-
-#include <kdebug.h>
 
 void MyMoneyQifReader::processQifEntry(void)
 {

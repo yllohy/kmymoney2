@@ -1,3 +1,7 @@
+2005-03-31 Ace Jones <acejones@users.sourceforge.net>
+  * Added support for utf8-encoded QIF files
+  * Cleaned up some character-based string handling in QIF imports
+  
 2005-03-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Set all values when entering scheduled transactions
   * Don't show 'More ...' in home view, if there are no more scheduled tx
