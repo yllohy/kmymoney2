@@ -1,3 +1,25 @@
+2002-11-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added RBM context menu to the ledger view
+  * Saving the file in binary format now clears the dirty flag
+  * Added option to 'jump' to the opposite split of a transfer transaction
+    in the context menu
+  * Prepared to store scheduled transactions in the binary file
+  * Fixed decimal problem in kMyMoneyCalculator
+  * Removed some debug output which I do not need anymore
+  * Fixed bugs in MyMoneyMoney(QString) constructor regarding fractions
+    Added testcases to find them the next time
+  * Write balance in register in red when negative
+  * Fixed a problem introduced by removing an entry from settings dlg
+  * Re-organized keyboard handling in split dialog
+  * Fixed a bug in register keyboard handling
+  * Added split handling to savings ledger view
+  * Don't open calculator if first character is plus or minus
+  * Added possibility to create transactions with an empty category
+  * Fixed the 'leave unassigned' feature for splitted transactions
+  * Incorrect transactions (less than 2 splits, sum of splits not equal 0)
+    will change their textcolor in the register with 1Hz
+  * Removed more unused code
+
 2002-11-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Removed unused files from project
   * Fixed bug in MyMoneyMoney::formatMoney() when value is negative and
