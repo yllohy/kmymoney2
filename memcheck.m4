@@ -16,5 +16,8 @@ AC_DEFUN([AC_MEMORY_LEAK_CHECK], [
   if test "x$use_memory_leak_check" != "xno"; then
     CPPFLAGS="$CPPFLAGS -D_CHECK_MEMORY"
   fi
+  if test "x$kde_use_debug_code" != "xno"; then
+    CPPFLAGS="$CPPFLAGS -DKMM_DEBUG"
+  fi
 ])
 
