@@ -18,6 +18,8 @@
 # include <config.h>
 #endif
 
+#include "kdecompat.h"
+
 #include <stdio.h>
 #include <iostream>
 
