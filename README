@@ -1,0 +1,33 @@
+KMyMoney 2.  (covered by the GNU license - see COPYING)
+
+Authors - Michael Edwardes - Michael.Edwardes@students.dmu.ac.uk.
+    Javier Campos Morales - javi_c@ctv.es.
+    Felix Rodriguez - frodriguez@mail.wesleyan.edu.
+
+Homepage - kmymoney2.sourceforge.net
+
+The two most important libraries are QT-2.2.* available from www.trolltech.no and
+KDE 2 from www.kde.org.
+
+To compile use this general sequence:
+
+  tar --bzip2 -xvf kmymoney2-0.3.[version].tar.bz2
+  cd kmymoney-0.3.[version]
+  ./compile.sh # You may need to edit this file to point to your location of QT and KDE
+  make install
+
+  Please read INSTALL for generic instructions on how to use configure.
+
+AND/OR
+
+  Get KDevelop 1.4 and use the supplied kmymoney2.kdevprj located in the base directory.
+  For more information on KDevelop please contact www.kdevelop.org.
+
+If you find this program useful in any way or wish to contribute please send an email to me at
+  Michael.Edwardes@students.dmu.ac.uk.
+
+The latest version of KMyMoney2 can always (hopefully) be found at kymoney2.sourceforge.net
+and the cvs at cvs.kmymoney2.sourceforge.net:/cvsroot/kmymoney2.
+
+For more information on the cvs interface, ftp interface or web interface, please see the
+wonderful sourceforge.net or the homepage at kmymoney2.sourceforge.net for more information.
