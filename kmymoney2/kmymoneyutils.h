@@ -47,13 +47,20 @@
 class KMyMoneyUtils
 {
 public:
+  /**
+    * This enum is used to describe the bits of an account type filter mask.
+    * Each bit is used to define a specific account class. Multiple classes
+    * can be specified by OR'ing multiple entries. The special entry @p last
+    * marks the left most bit in the mask and is used by scanners of this
+    * bitmask to determine the end of processing.
+    */
   enum categoryTypeE {
-    none =       0x00,
-    liability =  0x01,
-    asset =      0x02,
-    expense =    0x04,
-    income =     0x08,
-    last =       0x10
+    none =       0x00,          ///< no account class selected
+    liability =  0x01,          ///< liability accounts selected
+    asset =      0x02,          ///< asset accounts selected
+    expense =    0x04,          ///< expense accounts selected
+    income =     0x08,          ///< income accounts selected
+    last =       0x10           ///< the leftmost bit in the mask
   };
 
   static const int maxHomePageItems = 3;
@@ -203,10 +210,10 @@ public:
 
   /**
     * This method adds the file extension passed as argument @p extension
-    * to the end of the file name passed as argument @name if it is not present.
+    * to the end of the file name passed as argument @p name if it is not present.
     * If @p name contains an extension it will be removed.
     *
-    * @param str filename to be checked
+    * @param name filename to be checked
     * @param extension extension to be added (w/o the dot)
     *
     * @retval true if @p name was changed
