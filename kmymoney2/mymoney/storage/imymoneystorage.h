@@ -41,6 +41,7 @@
 #include "../mymoneytransactionfilter.h"
 #include "../mymoneyequity.h"
 #include "../mymoneycurrency.h"
+#include "../mymoneyreport.h"
 
 /**
   * @author Thomas Baumgart
@@ -669,13 +670,13 @@ public:
   virtual void removeCurrency(const MyMoneyCurrency& currency) = 0;
 
   /**
-    * This method is used to retrieve a single MyMoneySchedule object.
+    * This method is used to retrieve a single MyMoneyCurrency object.
     * The id of the object must be supplied in the parameter @p id.
     *
     * An exception will be thrown upon erronous situations.
     *
-    * @param id QCString containing the id of the MyMoneySchedule object
-    * @return MyMoneySchedule object
+    * @param id QCString containing the id of the MyMoneyCurrency object
+    * @return MyMoneyCurrency object
     */
   virtual const MyMoneyCurrency currency(const QCString& id) const = 0;
 
@@ -688,6 +689,57 @@ public:
     * @return QValueList of all MyMoneyCurrency objects.
     */
   virtual const QValueList<MyMoneyCurrency> currencyList(void) const = 0;
+  
+  /**
+    * This method is used to retrieve the list of all reports
+    * known to the engine.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @return QValueList of all MyMoneyReport objects.
+    */
+  virtual const QValueList<MyMoneyReport> reportList( void ) const = 0;
+  
+  /**
+    * This method is used to add a new report to the engine.
+    * It must be sure, that the id of the object is not filled. When the
+    * method returns to the caller, the id will be filled with the
+    * newly created object id value.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param report reference to the MyMoneyReport object
+    */
+  virtual void addReport( MyMoneyReport& report ) = 0;
+  
+  /**
+    * This method is used to modify an existing MyMoneyReport
+    * object. Therefor, the id attribute of the object must be set.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param report const reference to the MyMoneyReport object to be updated
+    */
+  virtual void modifyReport( const MyMoneyReport& report ) = 0;
+  
+  /**
+    * This method returns the number of reports currently known to file
+    * in the range 0..MAXUINT
+    *
+    * @return number of reports known to file
+    */
+  virtual unsigned countReports( void ) const = 0;
+  
+  /**
+    * This method is used to retrieve a single MyMoneyReport object.
+    * The id of the object must be supplied in the parameter @p id.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param id QCString containing the id of the MyMoneyReport object
+    * @return MyMoneyReport object
+    */
+  virtual MyMoneyReport report( const QCString& id ) const = 0;
 };
 
 #endif

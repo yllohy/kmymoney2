@@ -37,6 +37,7 @@ MyMoneySeqAccessMgr::MyMoneySeqAccessMgr()
   m_nextPayeeID = 0;
   m_nextScheduleID = 0;
   m_nextEquityID = 0;
+  m_nextReportID = 0;
   m_userName =
   m_userStreet =
   m_userTown =
@@ -1558,3 +1559,71 @@ const QValueList<MyMoneyCurrency> MyMoneySeqAccessMgr::currencyList(void) const
   return list;
 }
 
+const QValueList<MyMoneyReport> MyMoneySeqAccessMgr::reportList(void) const
+{
+  QValueList<MyMoneyReport> result;
+  QMap<QCString, MyMoneyReport>::ConstIterator it_report = m_reportList.begin();
+  while ( it_report != m_reportList.end() )
+  {
+    result += *it_report;
+    ++it_report;
+  }
+  return result;
+}
+
+void MyMoneySeqAccessMgr::addReport( MyMoneyReport& report ) 
+{ 
+  if(!report.id().isEmpty())
+    throw new MYMONEYEXCEPTION("transaction already contains an id");
+    
+  report.setId( nextReportID() );
+  
+  m_reportList[report.id()] = report;
+  
+  touch();
+
+}
+
+void MyMoneySeqAccessMgr::loadReport( const MyMoneyReport& report ) 
+{ 
+  // in order to be 'loaded', this report must have an ID, and it must not already
+  // be in the list.
+  if ( report.id().isEmpty() )
+    throw new MYMONEYEXCEPTION(QString("Unable to load report %1 with unassigned ID during loadReport()").arg(report.name()));
+  if ( m_reportList.contains(report.id()) )
+    throw new MYMONEYEXCEPTION(QString("Duplicate report %1 during loadReport()").arg(report.id()));
+  
+  m_reportList[report.id()] = report;
+}
+
+void MyMoneySeqAccessMgr::modifyReport( const MyMoneyReport& report )
+{
+  QMap<QCString, MyMoneyReport>::Iterator it;
+
+  it = m_reportList.find(report.id());
+  if(it == m_reportList.end()) {
+    QString msg = "Unknown report '" + report.id() + "'";
+    throw new MYMONEYEXCEPTION(msg);
+  }
+  touch();
+  
+  *it = report;
+}
+
+const QCString MyMoneySeqAccessMgr::nextReportID(void)
+{
+  QCString id;
+  id.setNum(++m_nextReportID);
+  id = "R" + id.rightJustify(REPORT_ID_SIZE, '0');
+  return id;
+}
+
+unsigned MyMoneySeqAccessMgr::countReports(void) const 
+{ 
+  return m_reportList.count(); 
+}
+
+MyMoneyReport MyMoneySeqAccessMgr::report( const QCString& _id ) const 
+{ 
+  return m_reportList[_id]; 
+}

@@ -41,6 +41,7 @@
 #include "../mymoneytransactionfilter.h"
 #include "../mymoneyequity.h"
 #include "../mymoneycurrency.h"
+#include "../mymoneyreport.h"
 
 /**
   * @author Thomas Baumgart
@@ -285,6 +286,7 @@ public:
   virtual void loadSchedule(const MyMoneySchedule& sched) = 0;
   virtual void loadEquity(const MyMoneyEquity& equity) = 0;
   virtual void loadCurrency(const MyMoneyCurrency& currency) = 0;
+  virtual void loadReport( const MyMoneyReport& report ) = 0;
 
   virtual const unsigned long accountId(void) = 0;
   virtual const unsigned long transactionId(void) = 0;
@@ -339,6 +341,16 @@ public:
     */
   virtual const QValueList<MyMoneyCurrency> currencyList(void) const = 0;
 
+  /**
+    * This method is used to retrieve the list of all reports
+    * known to the engine.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @return QValueList of all MyMoneyReport objects.
+    */
+  virtual const QValueList<MyMoneyReport> reportList( void ) const = 0;
+  
 };
 
 #endif

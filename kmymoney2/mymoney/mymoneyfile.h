@@ -39,6 +39,7 @@
 #include "mymoneykeyvaluecontainer.h"
 #include "mymoneyequity.h"
 #include "mymoneycurrency.h"
+#include "mymoneyreport.h"
 
 /**
   * @author Thomas Baumgart, Michael Edwardes, Kevin Tambascio
@@ -965,6 +966,12 @@ public:
   static const QCString NotifyClassEquity;
 
   /**
+    * MyMoneyFile::NotifyClassReport
+    * is a special id that will be notified whenever any report is changed
+    */
+  static const QCString NotifyClassReport;
+  
+  /**
     * createCategory creates a category from a text name.
     *
     * The whole account hierarchy is created if it doesnt
@@ -1136,6 +1143,57 @@ public:
     */
   const bool hasAccount(const QCString& id, const QString& name) const;
 
+  /**
+    * This method is used to retrieve the list of all reports
+    * known to the engine.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @return QValueList of all MyMoneyReport objects.
+    */
+  const QValueList<MyMoneyReport> reportList( void ) const;
+  
+  /**
+    * Adds a report to the file-global institution pool. A
+    * respective report-ID will be generated for this object.
+    * The ID is stored as QString in the object passed as argument.
+    *
+    * An exception will be thrown upon error conditions.
+    *
+    * @param report The complete report information in a
+    *        MyMoneyReport object
+    */
+  void addReport( MyMoneyReport& report );
+  
+  /**
+    * Modifies an already existing report in the file global
+    * report pool.
+    *
+    * An exception will be thrown upon error conditions.
+    *
+    * @param report The complete new report information
+    */
+  void modifyReport( const MyMoneyReport& report );
+  
+  /**
+    * This method returns the number of reports currently known to file
+    * in the range 0..MAXUINT
+    *
+    * @return number of reports known to file
+    */
+  unsigned countReports( void ) const;
+  
+  /**
+    * This method is used to retrieve a single MyMoneyReport object.
+    * The id of the object must be supplied in the parameter @p id.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param id QCString containing the id of the MyMoneyReport object
+    * @return MyMoneyReport object
+    */
+  MyMoneyReport report( const QCString& id ) const;
+    
 protected:
   /**
     * This is the constructor for a new empty file description

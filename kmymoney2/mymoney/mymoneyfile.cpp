@@ -33,6 +33,7 @@
 #include "storage/mymoneyseqaccessmgr.h"
 #include "mymoneycurrency.h"
 #include "mymoneyfile.h"
+#include "mymoneyreport.h"
 #ifndef HAVE_CONFIG_H
 #define VERSION "UNKNOWN"
 #else
@@ -50,6 +51,7 @@ const QCString MyMoneyFile::NotifyClassSchedule = "MyMoneyFile::NotifySchedule";
 const QCString MyMoneyFile::NotifyClassAnyChange = "MyMoneyFile::NotifyAnyChange";
 const QCString MyMoneyFile::NotifyClassCurrency = "MyMoneyFile::NotifyCurrency";
 const QCString MyMoneyFile::NotifyClassEquity = "MyMoneyFile::NotifyEquity";
+const QCString MyMoneyFile::NotifyClassReport = "MyMoneyFile::NotifyReport";
 
 // include the following line to get a 'cout' for debug purposes
 // #include <iostream>
@@ -1526,4 +1528,44 @@ const bool MyMoneyFile::hasAccount(const QCString& id, const QString& name) cons
       rc = true;
   }
   return rc;
+}
+
+const QValueList<MyMoneyReport> MyMoneyFile::reportList( void ) const
+{
+  checkStorage();
+
+  return m_storage->reportList();
+}
+
+void MyMoneyFile::addReport( MyMoneyReport& report )
+{
+  checkStorage();
+
+  m_storage->addReport( report );
+}
+
+void MyMoneyFile::modifyReport( const MyMoneyReport& report )
+{
+  checkStorage();
+
+  // automatically notify all observers once this routine is done
+  MyMoneyNotifier notifier(this);
+
+  m_storage->modifyReport( report );
+  
+  addNotification(NotifyClassReport);
+}
+
+unsigned MyMoneyFile::countReports(void) const
+{
+  checkStorage();
+
+  return m_storage->countReports();
+}
+
+MyMoneyReport MyMoneyFile::report( const QCString& id ) const
+{
+  checkStorage();
+
+  return m_storage->report(id);
 }

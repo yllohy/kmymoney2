@@ -775,6 +775,69 @@ public:
                                               QDate startDate,
                                               const QCStringList& accounts=QCStringList()) const;
 
+  /**
+    * This method is used to retrieve the list of all reports
+    * known to the engine.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @return QValueList of all MyMoneyReport objects.
+    */
+  const QValueList<MyMoneyReport> reportList( void ) const;
+  
+  /**
+    * This method is used to add a new report to the engine.
+    * It must be sure, that the id of the object is not filled. When the
+    * method returns to the caller, the id will be filled with the
+    * newly created object id value.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param report reference to the MyMoneyReport object
+    */
+  void addReport( MyMoneyReport& report );
+  
+  /**
+    * This method is used to load a report into the engine.  This is
+    * used when loading from storage, and an ID is already known.  It
+    * is similiar to addReport, however loadReport will not assign
+    * a new ID.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param report reference to the MyMoneyReport object
+    */
+  void loadReport( const MyMoneyReport& report );
+  
+  /**
+    * This method is used to modify an existing MyMoneyReport
+    * object. Therefor, the id attribute of the object must be set.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param report const reference to the MyMoneyReport object to be updated
+    */
+  void modifyReport( const MyMoneyReport& report );
+  
+  /**
+    * This method returns the number of reports currently known to file
+    * in the range 0..MAXUINT
+    *
+    * @return number of reports known to file
+    */
+  unsigned countReports(void) const;
+  
+  /**
+    * This method is used to retrieve a single MyMoneyReport object.
+    * The id of the object must be supplied in the parameter @p id.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param id QCString containing the id of the MyMoneyReport object
+    * @return MyMoneyReport object
+    */
+  MyMoneyReport report( const QCString& _id ) const;
+                                              
 private:
 
   static const int INSTITUTION_ID_SIZE = 6;
@@ -783,6 +846,7 @@ private:
   static const int PAYEE_ID_SIZE = 6;
   static const int SCHEDULE_ID_SIZE = 6;
   static const int EQUITY_ID_SIZE = 6;
+  static const int REPORT_ID_SIZE = 6;
 
   static const int YEAR_SIZE = 4;
   static const int MONTH_SIZE = 2;
@@ -894,6 +958,8 @@ private:
     */
   unsigned long m_nextEquityID;
 
+  unsigned long m_nextReportID;
+  
   /**
     * The member variable m_institutionList is the container for the
     * institutions known within this file.
@@ -950,6 +1016,8 @@ private:
     */
   QMap<QCString, MyMoneyCurrency> m_currencyList;
 
+  QMap<QCString, MyMoneyReport> m_reportList;
+  
   /**
     * This member signals if the file has been modified or not
     */
@@ -1004,6 +1072,8 @@ private:
     */
   const QCString nextEquityID(void);
 
+  const QCString nextReportID(void);
+  
   /**
     * This method re-parents an existing account
     *

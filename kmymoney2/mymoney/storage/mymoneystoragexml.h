@@ -150,6 +150,9 @@ private:
   void readCurrencies(QDomElement& currencies);
   const MyMoneyCurrency readCurrency(QDomElement& currencyElement);
 
+  void readReports(QDomElement& e);
+  void writeReports(QDomElement& e) const;
+  
   QDomElement findChildElement(const QString& name, const QDomElement& root);
   
 private:

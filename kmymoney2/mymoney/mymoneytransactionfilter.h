@@ -379,6 +379,8 @@ public:
     * @return return true if a type filter has been set
     */
   const bool firstType(int& i) const;
+ 
+  const bool types(QValueList<int>& list) const;
   
   /**
     * This method returns whether a state filter has been set,
@@ -389,6 +391,7 @@ public:
     */
   const bool firstState(int& i) const;
   
+  const bool states(QValueList<int>& list) const;
   /**
     * This method returns whether a text filter has been set,
     * and if so, it returns the text filter.

@@ -530,7 +530,7 @@ const bool MyMoneyTransactionFilter::numberFilter( QString& from, QString& to ) 
 { 
   from = m_fromNr; 
   to = m_toNr; 
-  return m_filterSet.singleFilter.amountFilter==1; 
+  return m_filterSet.singleFilter.nrFilter==1; 
 }
 
 const bool MyMoneyTransactionFilter::payees(QCStringList& list) const
@@ -582,6 +582,38 @@ const bool MyMoneyTransactionFilter::categories(QCStringList& list) const
   return result;
 }
 
+const bool MyMoneyTransactionFilter::types(QValueList<int>& list) const
+{
+  bool result = m_filterSet.singleFilter.typeFilter;
+
+  if ( result )
+  {
+    QIntDictIterator<char> it_type( m_types );
+    while ( it_type.current() )
+    {
+      list += it_type.currentKey();
+      ++it_type;
+    }
+  }
+  return result;
+}
+
+const bool MyMoneyTransactionFilter::states(QValueList<int>& list) const
+{
+  bool result = m_filterSet.singleFilter.stateFilter;
+
+  if ( result )
+  {
+    QIntDictIterator<char> it_state( m_states );
+    while ( it_state.current() )
+    {
+      list += it_state.currentKey();
+      ++it_state;
+    }
+  }
+  return result;
+}
+
 const bool MyMoneyTransactionFilter::firstType(int&i) const
 {
   bool result = m_filterSet.singleFilter.typeFilter;
@@ -590,7 +622,7 @@ const bool MyMoneyTransactionFilter::firstType(int&i) const
   {
     QIntDictIterator<char> it_type( m_types );
     if ( it_type.current() )
-      i = *it_type.current();
+      i = it_type.currentKey();
   }
   return result;
 }
@@ -603,7 +635,7 @@ const bool MyMoneyTransactionFilter::firstState(int&i) const
   {
     QIntDictIterator<char> it_state( m_states );
     if ( it_state.current() )
-      i = *it_state.current();
+      i = it_state.currentKey();
   }
   return result;
 }

@@ -35,7 +35,7 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 #include "../mymoney/mymoneyfile.h"
-#include "../mymoney/mymoneytransactionfilter.h"
+#include "../mymoney/mymoneyreport.h"
 
 class MyMoneyTransactionFilter;
 
@@ -69,53 +69,6 @@ public:
   ~Tester();
   void output( const QString& _text );
   static void enable( bool _e ) { m_sEnabled = _e; }
-};
-
-class ReportConfigurationFilter: public MyMoneyTransactionFilter
-{
-public:
-  enum ERowType { eNoRows = 0x0, eAsset = 0x1, eLiability = 0x2, eAssetLiability = 0x3, eExpense = 0x4, eIncome = 0x8, eExpenseIncome = 0xc };
-  enum EColumnType { eNoColumns = 0, eMonths = 1, eBiMonths = 2, eQuarters = 3, eYears = 12 };
-private:
-  QString m_name;
-  bool m_showSubAccounts;
-  bool m_convertCurrency;
-  enum ERowType m_rowType;
-  enum EColumnType m_columnType;
-
-public:
-  ReportConfigurationFilter(ERowType _rt = eExpenseIncome, EColumnType _ct = eMonths):
-    m_name("Unconfigured Report"),
-    m_showSubAccounts(false),
-    m_convertCurrency(true),
-    m_rowType(_rt),
-    m_columnType(_ct)
-  {
-  }
-  ReportConfigurationFilter(ERowType _rt, EColumnType _ct, const QDate& _db, const QDate& _de):
-    m_name("Unconfigured Report"),
-    m_showSubAccounts(false),
-    m_convertCurrency(true),
-    m_rowType(_rt),
-    m_columnType(_ct)
-  {
-    setDateFilter(_db,_de);
-  }
-  void setName(const QString& _s) { m_name = _s; }
-  void setShowSubAccounts(bool _f) { m_showSubAccounts = _f; }
-  void setConvertCurrency(bool _f) { m_convertCurrency = _f; }
-  void setRowType(ERowType _rt) { m_rowType = _rt; }
-  void setColumnType(EColumnType _ct) { m_columnType = _ct; }
-  void assignFilter(const MyMoneyTransactionFilter& _filter);
-  const QString& getName(void) const { return m_name; }
-  bool getShowSubAccounts(void) const { return m_showSubAccounts; }
-  bool getShowRowTotals(void) const { return ((m_rowType & eExpense) || (m_rowType & eIncome)); }
-  ERowType getRowType(void) const { return m_rowType; }
-  EColumnType getColumnType(void) const { return m_columnType; }
-  bool getRunningSum(void) const { return ((m_rowType & eAsset) || (m_rowType & eLiability)); }
-  bool getConvertCurrency(void) const { return m_convertCurrency; }
-  unsigned getColumnPitch(void) const { return static_cast<unsigned>(m_columnType); }
-  bool getShowColumnTotals(void) const { return m_convertCurrency; }
 };
 
   /**
@@ -280,15 +233,15 @@ private:
     QDate m_beginDate;
     QDate m_endDate;
     
-    ReportConfigurationFilter m_config_f;
+    MyMoneyReport m_config_f;
 
 public:
   /**
     * Create a Pivot table style report
     *
-    * @param ReportConfigurationFilter The configuration parameters for this report
+    * @param MyMoneyReport The configuration parameters for this report
     */
-    PivotTable( const ReportConfigurationFilter& _config_f );
+    PivotTable( const MyMoneyReport& _config_f );
 
   /**
     * Render the report to an HTML stream.

@@ -39,6 +39,7 @@
 
 #include "mymoneystoragexml.h"
 #include "../../kmymoneyutils.h"
+#include "../mymoneyreport.h"
 
 unsigned int MyMoneyStorageXML::fileVersionRead = 0;
 unsigned int MyMoneyStorageXML::fileVersionWrite = 0;
@@ -119,6 +120,10 @@ void MyMoneyStorageXML::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
         {
           readCurrencies(childElement);
         }
+        else if(QString("REPORTS") == childElement.tagName())
+        {
+          readReports(childElement);
+        }
         child = child.nextSibling();
       }
     }
@@ -197,6 +202,10 @@ void MyMoneyStorageXML::writeFile(QIODevice* qf, IMyMoneySerialize* storage)
   QDomElement currencies = m_doc->createElement("CURRENCIES");
   writeCurrencies(currencies);
   mainElement.appendChild(currencies);
+
+  QDomElement reports = m_doc->createElement("REPORTS");
+  writeReports(reports);
+  mainElement.appendChild(reports);
 
   QTextStream stream(qf);
 #if KDE_IS_VERSION(3,2,0)
@@ -1114,6 +1123,35 @@ MyMoneyEquity MyMoneyStorageXML::readEquity(QDomElement& equityElement)
   }
 
   return MyMoneyEquity(id, e);
+}
+
+void MyMoneyStorageXML::readReports(QDomElement& reports)
+{
+  QDomNode child = reports.firstChild();
+
+  while(!child.isNull())
+  {
+    if(child.isElement())
+    {
+      MyMoneyReport report;
+      if ( report.read(child.toElement() ) )
+        m_storage->loadReport(report);
+    }
+    child = child.nextSibling();
+  }
+}
+
+void MyMoneyStorageXML::writeReports(QDomElement& parent) const
+{
+  QValueList<MyMoneyReport> list = m_storage->reportList();
+  QValueList<MyMoneyReport>::ConstIterator it;
+
+  for(it = list.begin(); it != list.end(); ++it)
+  {
+    QDomElement child = m_doc->createElement("REPORT");
+    (*it).write(child, m_doc);
+    parent.appendChild(child);
+  }
 }
 
 const unsigned long MyMoneyStorageXML::extractId(const QCString& txt) const

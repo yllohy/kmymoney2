@@ -46,6 +46,7 @@ void MyMoneySeqAccessMgrTest::testEmptyConstructor()
 	CPPUNIT_ASSERT(m->m_nextTransactionID == 0);
 	CPPUNIT_ASSERT(m->m_nextPayeeID == 0);
 	CPPUNIT_ASSERT(m->m_nextScheduleID == 0);
+	CPPUNIT_ASSERT(m->m_nextReportID == 0);
 	CPPUNIT_ASSERT(m->m_institutionList.count() == 0);
 	CPPUNIT_ASSERT(m->m_accountList.count() == 4);
 	CPPUNIT_ASSERT(m->m_transactionList.count() == 0);
@@ -115,6 +116,8 @@ void MyMoneySeqAccessMgrTest::testSupportFunctions()
 	CPPUNIT_ASSERT(m->m_nextPayeeID == 1);
 	CPPUNIT_ASSERT(m->nextScheduleID() == "SCH000001");
 	CPPUNIT_ASSERT(m->m_nextScheduleID == 1);
+	CPPUNIT_ASSERT(m->nextReportID() == "R000001");
+	CPPUNIT_ASSERT(m->m_nextReportID == 1);
 }
 
 void MyMoneySeqAccessMgrTest::testIsStandardAccount()

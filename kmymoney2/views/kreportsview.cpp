@@ -33,6 +33,7 @@
 #include <qpainter.h>
 #include <qfile.h>
 #include <qtabwidget.h>
+#include <qtimer.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -55,6 +56,7 @@
 // Project Includes
 #include "kreportsview.h"
 #include "../mymoney/mymoneyfile.h"
+#include "../mymoney/mymoneyreport.h"
 #include "../dialogs/kreportconfigurationfilterdlg.h"
 #include "pivottable.h"
 using namespace reports;
@@ -68,43 +70,11 @@ using namespace reports;
 KReportsView::KReportsView(QWidget *parent, const char *name )
  : QWidget(parent,name)
 {
-
-  ReportConfigurationFilter spending_f;
-  spending_f.setName(i18n("Monthly Income and Expenses"));
-  spending_f.setDateFilter(QDate(QDate::currentDate().year(),1,1),QDate::currentDate());
-  spending_f.setShowSubAccounts(true);
-  spending_f.setRowType( ReportConfigurationFilter::eExpenseIncome );
-  m_reports_f.push_back(spending_f);
-  
-  ReportConfigurationFilter networth_f;
-  networth_f.setName(i18n("Net Worth Over Time"));
-  networth_f.setDateFilter(QDate(QDate::currentDate().year(),1,1),QDate::currentDate());
-  networth_f.setShowSubAccounts(false);
-  networth_f.setRowType( ReportConfigurationFilter::eAssetLiability );
-  m_reports_f.push_back(networth_f);
-  
   m_qvboxlayoutPage = new QVBoxLayout(this);
   m_qvboxlayoutPage->setSpacing( 6 );
   m_qvboxlayoutPage->setMargin( 11 );
 
   m_reportTabWidget = new QTabWidget( this, "reportTabWidget" );
-
-  m_tab.push_back(new QWidget( m_reportTabWidget, "tab[0]" ));
-  m_tabLayout.push_back(new QVBoxLayout( m_tab[0], 11, 6, "tabLayout[0]"));
-  m_part.push_back(new KHTMLPart(m_tab[0], "htmlpart_km2[0]"));
-  m_tabLayout[0]->addWidget( m_part[0]->view() );
-  m_reportTabWidget->insertTab( m_tab[0], m_reports_f[0].getName() );
-  connect(m_part[0]->browserExtension(), SIGNAL(openURLRequest(const KURL&, const KParts::URLArgs&)),
-          this, SLOT(slotOpenURL(const KURL&, const KParts::URLArgs&)));
-
-  m_tab.push_back(new QWidget( m_reportTabWidget, "tab[1]" ));
-  m_tabLayout.push_back(new QVBoxLayout( m_tab[1], 11, 6, "tabLayout[1]"));
-  m_part.push_back( new KHTMLPart(m_tab[1], "htmlpart_km2[1]"));
-  m_tabLayout[1]->addWidget( m_part[1]->view() );
-  m_reportTabWidget->insertTab( m_tab[1], m_reports_f[1].getName() );
-  connect(m_part[1]->browserExtension(), SIGNAL(openURLRequest(const KURL&, const KParts::URLArgs&)),
-          this, SLOT(slotOpenURL(const KURL&, const KParts::URLArgs&)));
-  
   m_qvboxlayoutPage->addWidget( m_reportTabWidget );
 }
 
@@ -133,7 +103,7 @@ const QString KReportsView::createTable(int page, const QString& links) const
   QString html;
   html += header;
   html += links;
-  html += PivotTable( m_reports_f[page] ).renderHTML();
+  html += PivotTable( MyMoneyFile::instance()->report(m_reportid[page]) ).renderHTML();
   html += footer;
 
   return html;
@@ -141,6 +111,43 @@ const QString KReportsView::createTable(int page, const QString& links) const
 
 void KReportsView::slotRefreshView(void)
 {
+  QValueList<MyMoneyReport> reports = MyMoneyFile::instance()->reportList();
+  
+  // Delete unnecessary tabs
+  while ( reports.count() < m_tab.count() )
+  {
+    delete m_tab.back();
+    m_tab.pop_back();
+    m_tabLayout.pop_back();
+    m_part.pop_back();
+  }
+  
+  // Add additional tabs as needed
+  while ( m_tab.count() < reports.count() )
+  {
+    m_tab.push_back(new QWidget( m_reportTabWidget, "tab" ));
+    m_tabLayout.push_back( new QVBoxLayout( m_tab.back(), 11, 6, "tabLayout") );
+    m_part.push_back(new KHTMLPart( m_tab.back(), "htmlpart_km2") );
+    m_tabLayout.back()->addWidget( m_part.back()->view() );
+    m_reportTabWidget->insertTab( m_tab.back(), "Unnamed Tab" );
+    m_reportTabWidget->setTabEnabled( m_tab.back(),true );
+
+    connect( m_part.back()->browserExtension(), SIGNAL(openURLRequest(const KURL&, const KParts::URLArgs&)),
+            this, SLOT(slotOpenURL(const KURL&, const KParts::URLArgs&)) );
+  }
+
+  // Set the name and ID's of each tab
+  m_reportid.clear();
+  QValueList<MyMoneyReport>::const_iterator it_report = reports.begin();
+  QValueVector<QWidget*>::iterator it_tab = m_tab.begin();
+  while( it_report != reports.end() )
+  {
+    m_reportid.push_back((*it_report).id());
+    m_reportTabWidget->changeTab( *it_tab, (*it_report).name() );
+    
+    ++it_report;
+    ++it_tab;
+  }
   QString links;
 
   links += linkfull(VIEW_REPORTS, QString("?command=configure&target=1"),i18n("Configure This Report"));
@@ -149,13 +156,15 @@ void KReportsView::slotRefreshView(void)
   links += "&nbsp;|&nbsp;";
   links += linkfull(VIEW_REPORTS, QString("?command=save&target=1"),i18n("Save to File"));
   
-  m_part[0]->begin();
-  m_part[0]->write(createTable(0,links));
-  m_part[0]->end();
-
-  m_part[1]->begin();
-  m_part[1]->write(createTable(1,links));
-  m_part[1]->end();
+  // run each report and assign the contents into the html part
+  unsigned index = 0;
+  while ( index < reports.count() )
+  {
+    m_part[index]->begin();
+    m_part[index]->write(createTable(index,links));
+    m_part[index]->end();
+    ++index;
+  }
 }
 
 void KReportsView::slotPrintView(void)
@@ -205,14 +214,16 @@ void KReportsView::slotConfigure(void)
 {
   int page = m_reportTabWidget->currentPageIndex();
 
-  KReportConfigurationFilterDlg dlg(m_reports_f[page]);
+  KReportConfigurationFilterDlg dlg(MyMoneyFile::instance()->report(m_reportid[page]));
 
   if (dlg.exec())
   {
-    m_reports_f[page] = dlg.getConfig();
-    m_reportTabWidget->changeTab( m_tab[page], m_reports_f[page].getName() );
-
+    MyMoneyFile::instance()->modifyReport(dlg.getConfig());
     slotRefreshView();
+    
+    // NOTE: This is only valid as long as we aren't deleting or adding pages here!!
+    m_reportTabWidget->setCurrentPage(page);
+    
   }
 }
 

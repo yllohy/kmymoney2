@@ -745,6 +745,10 @@ bool KMyMoneyView::readFile(const KURL& url)
     // run the above loop.
     selectBaseCurrency();
   }
+  
+  // See whether we have any reports, and if not, load the defaults.
+  if ( ! MyMoneyFile::instance()->countReports() )
+    loadDefaultReports();
 
   MyMoneyFile::instance()->suspendNotify(false);
 
@@ -1183,6 +1187,7 @@ void KMyMoneyView::newFile(const bool createEmtpyFile)
       loadDefaultCategories();
       loadDefaultCurrencies();
       selectBaseCurrency();
+      loadDefaultReports();
     }
   }
   m_fileOpen = true;
@@ -1233,6 +1238,23 @@ void KMyMoneyView::selectBaseCurrency(void)
       file->modifyAccount(*it);
     }
   }
+}
+
+void KMyMoneyView::loadDefaultReports(void)
+{
+  MyMoneyReport spending_f;
+  spending_f.setName("Monthly Income and Expenses");
+  spending_f.setDateFilter(QDate(QDate::currentDate().year(),1,1),QDate(QDate::currentDate().year(),12,31));
+  spending_f.setShowSubAccounts(true);
+  spending_f.setRowType( MyMoneyReport::eExpenseIncome );
+  MyMoneyFile::instance()->addReport(spending_f);
+  
+  MyMoneyReport networth_f;
+  networth_f.setName("Net Worth Over Time");
+  networth_f.setDateFilter(QDate(QDate::currentDate().year(),1,1),QDate(QDate::currentDate().year(),12,31));
+  networth_f.setShowSubAccounts(false);
+  networth_f.setRowType( MyMoneyReport::eAssetLiability );
+  MyMoneyFile::instance()->addReport(networth_f);
 }
 
 void KMyMoneyView::loadDefaultCurrencies(void)
@@ -1664,6 +1686,7 @@ void KMyMoneyView::slotRefreshViews()
   m_payeesView->slotRefreshView();
   m_homeView->slotRefreshView();
   m_investmentView->slotRefreshView();
+  m_reportsView->slotRefreshView();
 
   m_scheduledView->slotReloadView();
 }

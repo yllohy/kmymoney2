@@ -39,6 +39,7 @@ class KReportsViewTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST(testMultipleCurrencies);
 	CPPUNIT_TEST(testAdvancedFilter);
 	CPPUNIT_TEST(testColumnType);
+	CPPUNIT_TEST(testXMLWrite);
 	CPPUNIT_TEST_SUITE_END();
 
 private:
@@ -66,6 +67,7 @@ public:
 	void testMultipleCurrencies();
 	void testAdvancedFilter();
 	void testColumnType();
+        void testXMLWrite();
 };
 
 #endif

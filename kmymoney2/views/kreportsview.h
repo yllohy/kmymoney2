@@ -42,8 +42,7 @@ class QTabWidget;
 #include "pivottable.h"
 
 /**
-  * Displays a page where reports can be placed.  For now only contains
-  * one simple report, but can easily be extended.
+  * Displays a page where reports can be placed.
   *
   * @author Ace Jones
   *
@@ -56,12 +55,11 @@ private:
   QValueVector<QWidget*> m_tab;
   QValueVector<KHTMLPart*> m_part;
   QValueVector<QVBoxLayout*> m_tabLayout;
+  QValueVector<QCString> m_reportid;
   QVBoxLayout *m_qvboxlayoutPage;
   QTabWidget* m_reportTabWidget;
   bool m_boolShowSubAccounts;
 
-  QValueVector<reports::ReportConfigurationFilter> m_reports_f;
-    
 public:
   /**
     * Standard constructor.

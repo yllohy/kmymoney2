@@ -136,6 +136,11 @@ private:
   void loadDefaultCurrencies(void);
 
   /**
+    * This method preloads the basic reports into the engine
+    */
+  void loadDefaultReports(void);
+  
+  /**
     * if no base currency is defined, start the dialog and force it to be set
     */
   void selectBaseCurrency(void);
