@@ -1,3 +1,12 @@
+2005-01-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Allow modification of end date for scheduled transactions at any time
+  * Allow to add splits to scheduled transfers
+  * Loan wizard now treats final payment as 0 if two fields are left blank
+  * Updated handling of calculated last payment vs. final payment
+  * Fixed rounding problems in financial calculator
+  * Added testcases to financial calculator based on user's error reports
+  * Enter manually added price information into engine
+
 2005-01-18 Ace Jones <acejones@users.sourceforge.net>
   * Added MSN.CA as another canadian source
   * Fixed the online quote config dialog that I broke in my last checkin
