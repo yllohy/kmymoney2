@@ -1,3 +1,13 @@
+2002-01-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * added tab/back-tab handling to kMyMoneyEdit and kMyMoneyLineEdit
+  * added keyboard handling to KSplitTransactionDlg
+  * added debug output if QIF import date conversion fails
+  * added new method setCurrentItem(QString &) to kMyMoneyCombo and
+    use it in KTransactionView::setInputData()
+  * check for valid category is now done in kMyMoneyComboBox. One cannot
+    select the special entries like '--- Income ---' anymore.
+  * removed check for those special entries in KTransactionView
+
 2002-01-22 Michael Edwardes <mte@users.sourceforge.net>
   * Created a views directory for the different views of mymoney and
     added the relevant classes to that dir.
