@@ -74,6 +74,8 @@
 #include "kmymoneyview.h"
 #include "kmymoneyfile.h"
 
+#include "../kmymoney2.h"
+
 #define COMPRESSION_MIME_TYPE "application/x-gzip"
 
 KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
@@ -466,6 +468,8 @@ bool KMyMoneyView::readFile(const KURL& url)
   // let's glimps into the file to figure out, if it's one
   // of the old (uncompressed) or new (compressed) files.
 
+  pReader->setProgressCallback(&KMyMoneyView::progressCallback);
+
   QFile file(filename);
   QIODevice *qfile = 0;
 
@@ -506,6 +510,8 @@ bool KMyMoneyView::readFile(const KURL& url)
     KMessageBox::sorry(this, i18n("File '%1' not found!").arg(filename));
   }
 
+  pReader->setProgressCallback(0);
+
   delete pReader;
 
   // if a temporary file was constructed by NetAccess::download,
@@ -540,7 +546,10 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter)
       }
     }
 
+    pWriter->setProgressCallback(&KMyMoneyView::progressCallback);
     pWriter->writeFile(dev, m_file->storage());
+    pWriter->setProgressCallback(0);
+
   } catch (MyMoneyException *e) {
     QString msg = e->what();
     qDebug("%s", msg.latin1());
@@ -917,8 +926,9 @@ void KMyMoneyView::readDefaultCategories(const QString& filename)
   m_categoriesView->suspendUpdate(true);
   QFile f(filename);
   if (f.open(IO_ReadOnly) ) {
-    QProgressDialog progress(i18n("Loading default accounts"),
-                             i18n("Continue"), f.size(), 0, 0, true);
+    kmymoney2->slotStatusMsg(i18n("Loading default accounts"));
+    kmymoney2->slotStatusProgressBar(0, f.size());
+
     QTextStream t(&f);
     QString s;
     QMap<QString, MyMoneyAccount> accounts;
@@ -929,7 +939,7 @@ void KMyMoneyView::readDefaultCategories(const QString& filename)
 
       // update progress bar every ten lines
       if(!(line % 10))
-        progress.setProgress(f.at());
+        kmymoney2->slotStatusProgressBar(f.at());
 
       if (!s.isEmpty() && s[0]!='#') {
         MyMoneyAccount account, parentAccount;
@@ -992,7 +1002,8 @@ void KMyMoneyView::readDefaultCategories(const QString& filename)
         }
       }
     }
-    progress.setProgress(f.size());
+    kmymoney2->slotStatusMsg(i18n("Ready"));
+    kmymoney2->slotStatusProgressBar(-1, -1);
     f.close();
   }
   m_categoriesView->suspendUpdate(false);
@@ -1577,4 +1588,12 @@ void KMyMoneyView::slotCancelEdit(void) const
 {
   if(m_ledgerView != 0)
     m_ledgerView->slotCancelEdit();
+}
+
+void KMyMoneyView::progressCallback(int current, int total, const QString& msg)
+{
+  if(!msg.isEmpty())
+    kmymoney2->slotStatusMsg(msg);
+  
+  kmymoney2->slotStatusProgressBar(current, total);
 }

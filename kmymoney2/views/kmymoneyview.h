@@ -14,7 +14,9 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifdef HAVE_CONFIG
 #include "config.h"
+#endif
 
 #ifndef KMYMONEYVIEW_H
 #define KMYMONEYVIEW_H
@@ -35,8 +37,8 @@ class QFile;
 
 // ----------------------------------------------------------------------------
 // Project Includes
+
 #include "../mymoney/mymoneyaccount.h"
-//#include "kmainview.h"
 #include "../dialogs/kreconciledlg.h"
 #include "../dialogs/kfindtransactiondlg.h"
 #include "../dialogs/knewaccountwizard.h"
@@ -44,20 +46,14 @@ class QFile;
 #include "../dialogs/kcsvprogressdlg.h"
 
 #include "kbanksview.h"
-// #include "ktransactionview.h"
 #include "khomeview.h"
 #include "kcategoriesview.h"
 #include "kpayeesview.h"
 #include "kscheduledview.h"
-// #include "kinvestmentview.h"
 #include "kmymoneyfile.h"
 #include "kgloballedgerview.h"
-
-
-
-
-
 #include "../mymoney/storage/mymoneyseqaccessmgr.h"
+
 class IMyMoneyStorageFormat;
 
 /**
@@ -67,7 +63,7 @@ class IMyMoneyStorageFormat;
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.27 2002/12/08 16:17:42 ipwizard Exp $
+  * $Id: kmymoneyview.h,v 1.28 2002/12/13 13:53:25 ipwizard Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -151,10 +147,13 @@ private:
   bool checkTransactionCredit(const MyMoneyTransaction *transaction, const bool enabled, const QString id);
   bool checkTransactionStatus(const MyMoneyTransaction *transaction, const bool enabled, const QString id);
   bool checkTransactionDescription(const MyMoneyTransaction *transaction, const bool enabled, const QString description, const bool isRegExp);
+
   bool checkTransactionNumber(const MyMoneyTransaction *transaction, const bool enabled, const QString number, const bool isRegExp);
   bool checkTransactionPayee(const MyMoneyTransaction *transaction, const bool enabled, const QString payee, const bool isRegExp);
 
   bool checkTransactionCategory(const MyMoneyTransaction *transaction, const bool enabled, const QString category);
+
+  static void progressCallback(int current, int total, const QString&);
 
 public:
   /**
@@ -180,6 +179,7 @@ public:
   **/
   void closeFile(void);
 
+
   /**
     * Calls MyMoneyFile::readAllData which reads a MyMoneyFile into appropriate
     * data structures in memory.  The return result is examined to make sure no
@@ -194,6 +194,7 @@ public:
 
   /**
     * Calls MyMoneyFile::saveAllData which saves all the data structures in memory
+
     * into the file specified by filename.
     *
     * @param url The URL to save into.
@@ -311,6 +312,7 @@ public slots:
   void slotAccountReconcile(void);
 
   // Not implemented, not documented!
+
   void slotAccountImportAscii(void);
   void slotAccountExportAscii(void);
 
