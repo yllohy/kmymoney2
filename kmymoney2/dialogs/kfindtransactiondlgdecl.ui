@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>KFindTransactionDlgDecl</class>
 <widget class="QDialog">
     <property name="name">
@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>495</width>
-            <height>511</height>
+            <width>572</width>
+            <height>573</height>
         </rect>
     </property>
     <property name="caption">
@@ -488,49 +488,61 @@
                                     <property name="name">
                                         <cstring>unnamed</cstring>
                                     </property>
-                                    <property name="margin">
-                                        <number>11</number>
-                                    </property>
-                                    <property name="spacing">
-                                        <number>6</number>
-                                    </property>
                                     <widget class="QLayoutWidget">
                                         <property name="name">
-                                            <cstring>Layout22</cstring>
+                                            <cstring>layout22</cstring>
                                         </property>
                                         <hbox>
                                             <property name="name">
                                                 <cstring>unnamed</cstring>
                                             </property>
-                                            <property name="margin">
-                                                <number>0</number>
-                                            </property>
-                                            <property name="spacing">
-                                                <number>6</number>
-                                            </property>
-                                            <widget class="QLayoutWidget">
+                                            <widget class="QButtonGroup">
                                                 <property name="name">
-                                                    <cstring>Layout21</cstring>
+                                                    <cstring>ButtonGroup1</cstring>
                                                 </property>
-                                                <grid>
+                                                <property name="frameShape">
+                                                    <enum>NoFrame</enum>
+                                                </property>
+                                                <property name="frameShadow">
+                                                    <enum>Sunken</enum>
+                                                </property>
+                                                <property name="title">
+                                                    <string></string>
+                                                </property>
+                                                <vbox>
                                                     <property name="name">
                                                         <cstring>unnamed</cstring>
                                                     </property>
                                                     <property name="margin">
                                                         <number>0</number>
                                                     </property>
-                                                    <property name="spacing">
-                                                        <number>6</number>
-                                                    </property>
-                                                    <widget class="QLabel" row="1" column="1">
+                                                    <widget class="QRadioButton">
                                                         <property name="name">
-                                                            <cstring>TextLabel7</cstring>
+                                                            <cstring>m_amountButton</cstring>
                                                         </property>
                                                         <property name="text">
-                                                            <string>from</string>
+                                                            <string>Search this amount</string>
                                                         </property>
                                                     </widget>
-                                                    <widget class="kMyMoneyEdit" row="2" column="2">
+                                                    <widget class="QRadioButton">
+                                                        <property name="name">
+                                                            <cstring>m_amountRangeButton</cstring>
+                                                        </property>
+                                                        <property name="text">
+                                                            <string>Search amount in the range</string>
+                                                        </property>
+                                                    </widget>
+                                                </vbox>
+                                            </widget>
+                                            <widget class="QLayoutWidget">
+                                                <property name="name">
+                                                    <cstring>layout20</cstring>
+                                                </property>
+                                                <grid>
+                                                    <property name="name">
+                                                        <cstring>unnamed</cstring>
+                                                    </property>
+                                                    <widget class="kMyMoneyEdit" row="2" column="1">
                                                         <property name="name">
                                                             <cstring>m_amountToEdit</cstring>
                                                         </property>
@@ -541,7 +553,23 @@
                                                             </size>
                                                         </property>
                                                     </widget>
-                                                    <widget class="kMyMoneyEdit" row="0" column="2">
+                                                    <widget class="QLabel" row="0" column="0">
+                                                        <property name="name">
+                                                            <cstring>TextLabel9</cstring>
+                                                        </property>
+                                                        <property name="text">
+                                                            <string></string>
+                                                        </property>
+                                                    </widget>
+                                                    <widget class="QLabel" row="2" column="0">
+                                                        <property name="name">
+                                                            <cstring>TextLabel8</cstring>
+                                                        </property>
+                                                        <property name="text">
+                                                            <string>to</string>
+                                                        </property>
+                                                    </widget>
+                                                    <widget class="kMyMoneyEdit" row="0" column="1">
                                                         <property name="name">
                                                             <cstring>m_amountEdit</cstring>
                                                         </property>
@@ -552,53 +580,15 @@
                                                             </size>
                                                         </property>
                                                     </widget>
-                                                    <widget class="QButtonGroup" row="0" column="0" rowspan="3" colspan="1">
+                                                    <widget class="QLabel" row="1" column="0">
                                                         <property name="name">
-                                                            <cstring>ButtonGroup1</cstring>
+                                                            <cstring>TextLabel7</cstring>
                                                         </property>
-                                                        <property name="frameShape">
-                                                            <enum>NoFrame</enum>
+                                                        <property name="text">
+                                                            <string>from</string>
                                                         </property>
-                                                        <property name="frameShadow">
-                                                            <enum>Sunken</enum>
-                                                        </property>
-                                                        <property name="title">
-                                                            <string></string>
-                                                        </property>
-                                                        <widget class="QRadioButton">
-                                                            <property name="name">
-                                                                <cstring>m_amountButton</cstring>
-                                                            </property>
-                                                            <property name="geometry">
-                                                                <rect>
-                                                                    <x>4</x>
-                                                                    <y>4</y>
-                                                                    <width>146</width>
-                                                                    <height>19</height>
-                                                                </rect>
-                                                            </property>
-                                                            <property name="text">
-                                                                <string>Search this amount</string>
-                                                            </property>
-                                                        </widget>
-                                                        <widget class="QRadioButton">
-                                                            <property name="name">
-                                                                <cstring>m_amountRangeButton</cstring>
-                                                            </property>
-                                                            <property name="geometry">
-                                                                <rect>
-                                                                    <x>4</x>
-                                                                    <y>40</y>
-                                                                    <width>181</width>
-                                                                    <height>19</height>
-                                                                </rect>
-                                                            </property>
-                                                            <property name="text">
-                                                                <string>Search amount in the range</string>
-                                                            </property>
-                                                        </widget>
                                                     </widget>
-                                                    <widget class="kMyMoneyEdit" row="1" column="2">
+                                                    <widget class="kMyMoneyEdit" row="1" column="1">
                                                         <property name="name">
                                                             <cstring>m_amountFromEdit</cstring>
                                                         </property>
@@ -607,22 +597,6 @@
                                                                 <width>100</width>
                                                                 <height>0</height>
                                                             </size>
-                                                        </property>
-                                                    </widget>
-                                                    <widget class="QLabel" row="2" column="1">
-                                                        <property name="name">
-                                                            <cstring>TextLabel8</cstring>
-                                                        </property>
-                                                        <property name="text">
-                                                            <string>to</string>
-                                                        </property>
-                                                    </widget>
-                                                    <widget class="QLabel" row="0" column="1">
-                                                        <property name="name">
-                                                            <cstring>TextLabel9</cstring>
-                                                        </property>
-                                                        <property name="text">
-                                                            <string></string>
                                                         </property>
                                                     </widget>
                                                 </grid>
@@ -640,7 +614,7 @@
                                                 <property name="sizeHint">
                                                     <size>
                                                         <width>16</width>
-                                                        <height>0</height>
+                                                        <height>16</height>
                                                     </size>
                                                 </property>
                                             </spacer>
@@ -658,8 +632,8 @@
                                         </property>
                                         <property name="sizeHint">
                                             <size>
-                                                <width>0</width>
-                                                <height>82</height>
+                                                <width>16</width>
+                                                <height>75</height>
                                             </size>
                                         </property>
                                     </spacer>
@@ -728,7 +702,7 @@
                                                     <property name="clickable">
                                                         <bool>false</bool>
                                                     </property>
-                                                    <property name="resizeable">
+                                                    <property name="resizable">
                                                         <bool>true</bool>
                                                     </property>
                                                 </column>
@@ -1157,7 +1131,7 @@
                                 <string>Help</string>
                             </property>
                             <property name="accel">
-                                <number>0</number>
+                                <string></string>
                             </property>
                             <property name="autoDefault">
                                 <bool>true</bool>
@@ -1338,4 +1312,28 @@
     </image>
 </images>
 <layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>klineedit.h</includehint>
+    <includehint>kmymoneyaccountselector.h</includehint>
+    <includehint>kcombobox.h</includehint>
+    <includehint>kmymoneydateinput.h</includehint>
+    <includehint>kmymoneydateinput.h</includehint>
+    <includehint>kmymoneyedit.h</includehint>
+    <includehint>kmymoneyedit.h</includehint>
+    <includehint>kmymoneyedit.h</includehint>
+    <includehint>kmymoneyaccountselector.h</includehint>
+    <includehint>klistview.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kcombobox.h</includehint>
+    <includehint>kcombobox.h</includehint>
+    <includehint>kmymoneylineedit.h</includehint>
+    <includehint>kmymoneylineedit.h</includehint>
+    <includehint>kmymoneylineedit.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kmymoneyregistersearch.h</includehint>
+</includehints>
 </UI>
