@@ -1,3 +1,7 @@
+2004-10-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Updated changes for equity price edit dialog
+  * Updated currency edit dialog to show a better equation for price
+
 2004-10-04 Ace Jones <acejones@users.sourceforge.net>
   * Added importing of investment statements via OFX files.  This is highly
     experimental, and should not be used with any real data!!
