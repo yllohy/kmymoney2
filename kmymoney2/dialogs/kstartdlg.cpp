@@ -57,10 +57,10 @@ KStartDlg::~KStartDlg()
 /** Set the font  Page of the preferences dialog */
 void KStartDlg::setPage_Template()
 {
-  KIconLoader ic("kmymoney2");
+  KIconLoader *ic = KGlobal::iconLoader();
 	templateMainFrame = addVBoxPage( i18n("Templates"), i18n("Select templates"), DesktopIcon("wizard"));
   view_wizard = new KIconView( templateMainFrame, "view_options" );
-  (void)new QIconViewItem( view_wizard, i18n("Blank Document"), ic.loadIcon("mime_empty.png", KIcon::Desktop, KIcon::SizeLarge)/*QPixmap( locate("icon","hicolor/48x48/mimetypes/mime_empty.png") )*/ );
+  (void)new QIconViewItem( view_wizard, i18n("Blank Document"), ic->loadIcon("mime_empty.png", KIcon::Desktop, KIcon::SizeLarge)/*QPixmap( locate("icon","hicolor/48x48/mimetypes/mime_empty.png") )*/ );
   connect( view_wizard, SIGNAL( executed(QIconViewItem *) ), this, SLOT( slotTemplateClicked(QIconViewItem *) ) );
   connect(view_wizard, SIGNAL(selectionChanged(QIconViewItem*)),
     this, SLOT(slotTemplateSelectionChanged(QIconViewItem*)));

@@ -83,9 +83,9 @@ KScheduledView::KScheduledView(QWidget *parent, const char *name )
   m_qbuttonNew->setGuiItem(KMyMoneyUtils::scheduleNewGuiItem());
   m_accountsCombo->setGuiItem(KMyMoneyUtils::accountsFilterGuiItem());
 
-  KIconLoader il("kmymoney");
-  m_tabWidget->setTabIconSet(listTab, QIconSet(il.loadIcon("schedulelisttab", KIcon::Small, KIcon::SizeSmall)));
-  m_tabWidget->setTabIconSet(calendarTab, QIconSet(il.loadIcon("calendartab", KIcon::Small, KIcon::SizeSmall)));
+  KIconLoader *il = KGlobal::iconLoader();
+  m_tabWidget->setTabIconSet(listTab, QIconSet(il->loadIcon("schedulelisttab", KIcon::Small, KIcon::SizeSmall)));
+  m_tabWidget->setTabIconSet(calendarTab, QIconSet(il->loadIcon("calendartab", KIcon::Small, KIcon::SizeSmall)));
 
   readConfig();
 
@@ -152,9 +152,9 @@ void KScheduledView::refresh(bool full, const QCString schedId)
 
     MyMoneyFile *file = MyMoneyFile::instance();
 
-    KScheduledListItem *itemBills = new KScheduledListItem(m_qlistviewScheduled, i18n("Bills"));
-    KScheduledListItem *itemDeposits = new KScheduledListItem(m_qlistviewScheduled, i18n("Deposits"));
     KScheduledListItem *itemTransfers = new KScheduledListItem(m_qlistviewScheduled, i18n("Transfers"));
+    KScheduledListItem *itemDeposits = new KScheduledListItem(m_qlistviewScheduled, i18n("Deposits"));
+    KScheduledListItem *itemBills = new KScheduledListItem(m_qlistviewScheduled, i18n("Bills"));
   
     QValueList<MyMoneySchedule> scheduledItems = file->scheduleList();
 
@@ -162,7 +162,7 @@ void KScheduledView::refresh(bool full, const QCString schedId)
 
     KScheduledListItem *openItem=0;
 
-    int i=1;
+    int i1=0, i2=0, i3=0;
     for (it = scheduledItems.begin(); it != scheduledItems.end(); ++it)
     {
       MyMoneySchedule schedData = (*it);
@@ -185,25 +185,26 @@ void KScheduledView::refresh(bool full, const QCString schedId)
       switch (schedData.type())
       {
         case MyMoneySchedule::TYPE_BILL:
-          item = new KScheduledListItem(itemBills, schedData, (i%2) == 0);
+          item = new KScheduledListItem(itemBills, schedData, (i1%2) == 0);
           if (schedData.id() == schedId)
             openItem = item;
+          i1++;
           break;
         case MyMoneySchedule::TYPE_DEPOSIT:
-          item = new KScheduledListItem(itemDeposits, schedData, (i%2) == 0);
+          item = new KScheduledListItem(itemDeposits, schedData, (i2%2) == 0);
           if (schedData.id() == schedId)
             openItem = item;
+          i2++;
           break;
         case MyMoneySchedule::TYPE_TRANSFER:
-          item = new KScheduledListItem(itemTransfers, schedData, (i%2) == 0);
+          item = new KScheduledListItem(itemTransfers, schedData, (i3%2) == 0);
           if (schedData.id() == schedId)
             openItem = item;
+          i3++;
           break;
         case MyMoneySchedule::TYPE_ANY:
           break; // Should we display an error ?
       }
-
-      i++;
     }
 
     if (m_openBills)

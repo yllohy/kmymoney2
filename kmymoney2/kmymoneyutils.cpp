@@ -26,6 +26,7 @@
 // ----------------------------------------------------------------------------
 // KDE Headers
 #include "klocale.h"
+#include <kglobal.h>
 #include <kiconloader.h>
 
 // ----------------------------------------------------------------------------
@@ -235,10 +236,10 @@ const QString KMyMoneyUtils::scheduleTypeToString(MyMoneySchedule::typeE type)
 
 KGuiItem KMyMoneyUtils::splitGuiItem(void)
 {
-  KIconLoader ic("kmymoney2");
+  KIconLoader *ic = KGlobal::iconLoader();
   
   KGuiItem splitGuiItem(  i18n("&Split"),
-                          QIconSet(ic.loadIcon("split", KIcon::Small, KIcon::SizeSmall)),
+                          QIconSet(ic->loadIcon("split", KIcon::User, KIcon::SizeSmall)),
                           i18n("Split the amount into different categories."),
                           i18n("Split the amount into different categories."));
 
@@ -247,10 +248,10 @@ KGuiItem KMyMoneyUtils::splitGuiItem(void)
 
 KGuiItem KMyMoneyUtils::scheduleNewGuiItem(void)
 {
-  KIconLoader ic("kmymoney2");
+  KIconLoader *ic = KGlobal::iconLoader();
 
   KGuiItem splitGuiItem(  i18n("&New Schedule..."),
-                          QIconSet(ic.loadIcon("newschedule", KIcon::Small, KIcon::SizeSmall)),
+                          QIconSet(ic->loadIcon("newschedule", KIcon::User, KIcon::SizeSmall)),
                           i18n("Create a new schedule."),
                           i18n("Use this to create a new schedule."));
 
@@ -259,13 +260,36 @@ KGuiItem KMyMoneyUtils::scheduleNewGuiItem(void)
 
 KGuiItem KMyMoneyUtils::accountsFilterGuiItem(void)
 {
-  KIconLoader ic("kmymoney2");
+  KIconLoader *ic = KGlobal::iconLoader();
 
   KGuiItem splitGuiItem(  i18n("&Filter"),
-                          QIconSet(ic.loadIcon("accountfilter", KIcon::Small, KIcon::SizeSmall)),
+                          QIconSet(ic->loadIcon("accountfilter", KIcon::User, KIcon::SizeSmall)),
                           i18n("Filter out accounts"),
                           i18n("Use this to filter out accounts"));
 
   return splitGuiItem;
 }
   
+QPixmap KMyMoneyUtils::billScheduleIcon(int size)
+{
+  KIconLoader *ic = KGlobal::iconLoader();
+  return ic->loadIcon("billschedule", KIcon::User, size);
+}
+
+QPixmap KMyMoneyUtils::depositScheduleIcon(int size)
+{
+  KIconLoader *ic = KGlobal::iconLoader();
+  return ic->loadIcon("depositschedule", KIcon::User, size);
+}
+
+QPixmap KMyMoneyUtils::transferScheduleIcon(int size)
+{
+  KIconLoader *ic = KGlobal::iconLoader();
+  return ic->loadIcon("transferschedule", KIcon::User, size);
+}
+
+QPixmap KMyMoneyUtils::scheduleIcon(int size)
+{
+  KIconLoader *ic = KGlobal::iconLoader();
+  return ic->loadIcon("schedule", KIcon::User, size);
+}

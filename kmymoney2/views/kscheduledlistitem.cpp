@@ -26,6 +26,7 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 #include "kconfig.h"
+#include <klocale.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -38,11 +39,19 @@ KScheduledListItem::KScheduledListItem(QListView *parent, const char *name)
  : QListViewItem(parent,name), m_even(false), m_base(true)
 {
   setText(0, name);
+  if (name == i18n("Bills"))
+    setPixmap(0, KMyMoneyUtils::billScheduleIcon(KIcon::Small));
+  else if (name == i18n("Deposits"))
+    setPixmap(0, KMyMoneyUtils::depositScheduleIcon(KIcon::Small));
+  else if (name == i18n("Transfers"))
+    setPixmap(0, KMyMoneyUtils::transferScheduleIcon(KIcon::Small));
 }
 
 KScheduledListItem::KScheduledListItem(KScheduledListItem *parent, const MyMoneySchedule& schedule, bool even)
  : QListViewItem(parent), m_base(false)
 {
+  setPixmap(0, KMyMoneyUtils::scheduleIcon(KIcon::Small));
+
   m_even = even;
   try
   {
@@ -84,18 +93,26 @@ void KScheduledListItem::paintCell(QPainter* p, const QColorGroup& cg, int colum
   QColor textColour = Qt::black;
   QFont cellFont(p->font());
   QColor baseItemColour = Qt::darkCyan;
+  QColor baseItemTextColour = Qt::white;
 
   bgColour = config->readColorEntry("listBGColor", &bgColour);
   colour = config->readColorEntry("listColor", &colour);
   textColour = config->readColorEntry("listGridColor", &textColour);
   cellFont = config->readFontEntry("listCellFont", &cellFont);
   baseItemColour = config->readColorEntry("BaseListItemColor", &baseItemColour);
-
+  baseItemTextColour = config->readColorEntry("BaseListItemTextColor", &baseItemTextColour);
   p->setFont(cellFont);
   cg2.setColor(QColorGroup::Text, textColour);
 
   if (m_base)
+  {
     cg2.setColor(QColorGroup::Base, baseItemColour);
+    QFont font(p->font());
+//    font.setPointSize(font.pointSize()+1);
+    font.setBold(true);
+    p->setFont(font);
+    cg2.setColor(QColorGroup::Text, baseItemTextColour);
+  }
   else
   {
     if (m_even)

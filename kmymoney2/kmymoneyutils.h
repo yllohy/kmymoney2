@@ -130,6 +130,11 @@ public:
     * @return The KGuiItem that can be used to display the icon and text
   **/
   static KGuiItem accountsFilterGuiItem(void);
+
+  static QPixmap billScheduleIcon(int size);
+  static QPixmap depositScheduleIcon(int size);
+  static QPixmap transferScheduleIcon(int size);
+  static QPixmap scheduleIcon(int size);
 };
 
 #endif

@@ -1,3 +1,8 @@
+2003-07-30 Michael Edwardes <mte@users.sourceforge.net>
+  * Use the IconGroup User to load icons.
+  * Add icons to the schedule list view items.
+  * Use the global icon loader object.
+
 2003-07-29 Michael Edwardes <mte@users.sourceforge.net>
   * Add icons to the edit schedule dialog.
   * Added icons to the schedule dialog.
