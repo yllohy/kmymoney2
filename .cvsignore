@@ -21,3 +21,4 @@ make-ui.sh
 configure.in
 subdirs
 configure.files
+kmymoney2.kdevses
