@@ -97,6 +97,14 @@ int GncObject::m_gncAccountCount = 0;
 int GncObject::m_gncTransactionCount = 0;
 int GncObject::m_gncScheduleCount = 0;
 
+GncObject::GncObject () {
+  m_v.setAutoDelete (true);
+  m_gncCommodityCount = 0;
+  m_gncAccountCount = 0;
+  m_gncTransactionCount = 0;
+  m_gncScheduleCount = 0;
+}
+
 // Check that the current element is of a version we are coded for
 void GncObject::checkVersion (const QString& elName, const QXmlAttributes& elAttrs) {
   // a list of elements to check, and the required version numbers
@@ -243,6 +251,7 @@ GncFile::GncFile () {
   m_subElementListCount = END_FILE_SELS;
   m_dataElementListCount = 0;
   m_processingTemplates = false;
+  m_bookFound = false;
 }
 
 GncFile::~GncFile () {}
@@ -250,12 +259,11 @@ GncFile::~GncFile () {}
 GncObject *GncFile::startSubEl() {
   TRY
   if (pMain->xmldebug) qDebug ("File start subel m_state %d", m_state);
-  static bool bookFound = false; // to check for duplicate books in a file
   GncObject *next = 0;
   switch (m_state) {
   case BOOK:
-    if (bookFound) throw new MYMONEYEXCEPTION (QObject::tr("This version of the importer cannot handle multi-book files."));
-    bookFound = true;
+    if (m_bookFound) throw new MYMONEYEXCEPTION (QObject::tr("This version of the importer cannot handle multi-book files."));
+    m_bookFound = true;
     break;
   case COUNT: next = new GncCountData; break;
   case CMDTY: next = new GncCommodity; break;
@@ -1006,7 +1014,7 @@ void MyMoneyStorageGNC::convertTransaction (const GncTransaction *gtx) {
   tx.setEntryDate (gtx->dateEntered());
   tx.setPostDate (gtx->datePosted());
   m_txDatePosted = tx.postDate(); // save for use in splits
-  tx.setCommodity (static_cast<const QCString>(gtx->currency()));
+  tx.setCommodity (gtx->currency().utf8());
   m_txCommodity = tx.commodity(); // save in storage, maybe needed for Orphan accounts
   // process splits
   for (i = 0; i < gtx->splitCount(); i++) {
@@ -1163,7 +1171,7 @@ MyMoneyTransaction MyMoneyStorageGNC::convertTemplateTransaction (const QString 
   tx.setEntryDate(gtx->dateEntered());
   tx.setPostDate(gtx->datePosted());
   m_txDatePosted = tx.postDate();
-  tx.setCommodity (static_cast<const QCString>(gtx->currency()));
+  tx.setCommodity (gtx->currency().utf8());
   m_txCommodity = tx.commodity(); // save for possible use in orphan account
   // process splits
   for (i = 0; i < gtx->splitCount(); i++) {
@@ -1270,7 +1278,8 @@ void MyMoneyStorageGNC::convertTemplateSplit (const QString schedName, const Gnc
         split.setValue(MyMoneyMoney(gncDebitFormula));
       }
       bool isNumeric;
-      double temp = numericTest.toDouble (&isNumeric); // this seems to be the only way to test for valid numeric
+      double temp;
+      temp = numericTest.toDouble (&isNumeric); // this seems to be the only way to test for valid numeric
       if (!isNumeric) {
         nonNumericFormula = true;
         split.setValue(MyMoneyMoney(0));

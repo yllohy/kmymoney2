@@ -1,3 +1,7 @@
+2005-01-26 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Gnucash import
+    * Properly fix coding error picked up by stricter compiler!
+    
 2005-01-24 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Gnucash import
     * Fix coding error picked up by stricter compiler
