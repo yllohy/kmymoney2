@@ -263,6 +263,7 @@ void KEditScheduleDialog::reloadWidgets(void)
         break;
       case 1:
         category = " ";
+        m_transaction.removeSplits();
         break;
       default:
         category = i18n("Splitted transaction");
@@ -472,6 +473,7 @@ void KEditScheduleDialog::okClicked()
 
     MyMoneySplit s = m_transaction.split(m_accountCombo->currentAccountId());
     s.setPayeeId(payeeId);
+    s.setMemo(m_qlineeditMemo->text());
     m_transaction.modifySplit(s);
 
     m_schedule.setTransaction(m_transaction);

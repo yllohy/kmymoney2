@@ -181,6 +181,9 @@ void KScheduledView::refresh(bool full, const QCString schedId)
       }
     }
 
+    itemBills->setOpen(true);
+    itemDeposits->setOpen(true);
+    itemTransfers->setOpen(true);
     if (openItem)
     {
       m_qlistviewScheduled->ensureItemVisible(openItem);

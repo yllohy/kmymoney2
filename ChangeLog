@@ -4,6 +4,8 @@
   * Changing transactions remaining also changes end date in edit dialog.
   * Changing end date also changes transactions remaining in edit dialog.
   * Fix IEditScheduleDialog.
+  * Set default list view items to open.
+  * Save memo field in KEditScheduleDialog.
 
 2003-07-22 Michael Edwardes <mte@users.sourceforge.net>
   * Removed unnecessary atributes from MyMoneySchedule.
