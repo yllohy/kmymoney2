@@ -1,4 +1,12 @@
-2003-01-04 Michael Edwardes <mte@users.sourceforge.net>
+2004-01-04 Kevin Tambascio <ktambascio@users.sourceforge.net>
+  * removed the "nextid" attribute from some of the top-level XML attributes.
+	* added qWarnings and qError statements when irregularities in the file are found.
+  * personal data dialog box had lower case "O" and "C" for the ok and cancel buttons, which is inconsistent.
+	* added some Q_CHECK_PTR() functions to check for invalid pointer values, which issues a warning to stderr.
+	* added some Q_ASSERT checks in various places in the XML Reader/Writer code.
+	* added a version field to keep track of different XML file versions, in a similar fashion to the binary reader/writer.
+	
+2004-01-04 Michael Edwardes <mte@users.sourceforge.net>
   * Added button icons to KEnterScheduleDialog.
   * Fixed handling of lastPayment in KEnterScheduleDialog.
   * Increased vertical space to KEditScheduleDialog.
