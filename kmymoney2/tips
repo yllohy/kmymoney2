@@ -12,3 +12,32 @@ right-clicking the header of the ledger view?
 </html>
 </tip>
 
+<tip category="KMyMoney|Ledger">
+<html>
+<p>...that you can easily move to the other side of a transfer transaction
+by opening the context menu with the right mouse button and selecting the
+'Goto ...' function?
+</html>
+</tip>
+
+<tip category="KMyMoney|Ledger">
+<html>
+<p>...that you can start editing a transaction by double-clicking on the
+transaction in the register?
+</html>
+</tip>
+
+<tip category="KMyMoney|Ledger">
+<html>
+<p>...that you can show more details of the selected transaction in the
+register by selecting the 'ledger lens' feature in the settings dialog?
+</html>
+</tip>
+
+<tip category="KMyMoney|Ledger">
+<html>
+<p>...that you transactions with no category assigned or splitted
+transactions with unassigned value blink in red in the register?
+</html>
+</tip>
+
