@@ -56,10 +56,36 @@ The SourceForge.net platform allows to assign a severity level to each
 problem. It ranges from 1 to 10. The meaning in our project and the
 consequences are defined as follows:
 
+</para> <para> FIXME: A more detailed description of the prios needs to be given
+
 <orderedlist>
 <listitem>
 <para>
+Lowest priority
+</para>
+</listitem>
+
+<listitem>
+<para>
 TBD!
+</para>
+</listitem>
+
+<listitem>
+<para>
+TBD!
+</para>
+</listitem>
+
+<listitem>
+<para>
+TBD!
+</para>
+</listitem>
+
+<listitem>
+<para>
+Medium priority (default)
 </para>
 </listitem>
 
@@ -89,31 +115,7 @@ TBD!
 
 <listitem>
 <para>
-TBD!
-</para>
-</listitem>
-
-<listitem>
-<para>
-TBD!
-</para>
-</listitem>
-
-<listitem>
-<para>
-TBD!
-</para>
-</listitem>
-
-<listitem>
-<para>
-TBD!
-</para>
-</listitem>
-
-<listitem>
-<para>
-TBD!
+Highest priority
 </para>
 </listitem>
 
@@ -128,8 +130,8 @@ TBD!
 </para>
 </sect2>
 
-<sect2 id="problem-assigned-to">
-<title>Assigned To</title>
+<sect2 id="problem-assignee">
+<title>Assignee</title>
 <para>
 This field represents the SourceForge.net username of the individual
 working on the problem. Each developer should pick problems he feels
@@ -156,6 +158,8 @@ developer is working on the problem, he will have to modifiy the value of
 this field to reflect the current status. The following values are
 available and have the associated meaning:
 
+</para> <para> FIXME: A more detailed description of the states needs to be given
+
 <table>
 <title>Available problem status values</title>
 <tgroup cols="2">
@@ -175,9 +179,23 @@ The problem is not yet fixed. A developer might be working on it.
 </row>
 
 <row>
-<entry>OTHER</entry>
+<entry>closed</entry>
 <entry>
-Have to be described!
+The problem has been closed. No further action is required.
+</entry>
+</row>
+
+<row>
+<entry>deleted</entry>
+<entry>
+???
+</entry>
+</row>
+
+<row>
+<entry>pending</entry>
+<entry>
+???
 </entry>
 </row>
 
@@ -187,5 +205,117 @@ Have to be described!
 
 </para>
 </sect2>
+
+
+<sect2 id="problem-resolution">
+<title>Resolution</title>
+<para>
+???
+The following values are available and have the associated meaning:
+
+</para> <para> FIXME: A more detailed description of the resolutions and their usage needs to be given
+
+<table>
+<title>Available problem resolution values</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Resolution</entry>
+<entry>Meaning</entry>
+</row>
+</thead>
+
+<tbody>
+<row>
+<entry>Accepted</entry>
+<entry>
+???
+</entry>
+</row>
+
+<row>
+<entry>Duplicated</entry>
+<entry>
+???
+</entry>
+</row>
+
+<row>
+<entry>Fixed</entry>
+<entry>
+???
+</entry>
+</row>
+
+<row>
+<entry>Invalid</entry>
+<entry>
+???
+</entry>
+</row>
+
+<row>
+<entry>Later</entry>
+<entry>
+???
+</entry>
+</row>
+
+<row>
+<entry>None</entry>
+<entry>
+???
+</entry>
+</row>
+
+<row>
+<entry>Out of date</entry>
+<entry>
+???
+</entry>
+</row>
+
+<row>
+<entry>Postponed</entry>
+<entry>
+???
+</entry>
+</row>
+
+<row>
+<entry>Rejected</entry>
+<entry>
+???
+</entry>
+</row>
+
+<row>
+<entry>Remind</entry>
+<entry>
+???
+</entry>
+</row>
+
+<row>
+<entry>Wont fix</entry>
+<entry>
+???
+</entry>
+</row>
+
+<row>
+<entry>Works for me</entry>
+<entry>
+???
+</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+
+</para>
+</sect2>
+
 </sect1>
 </chapter>

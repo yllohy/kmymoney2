@@ -654,7 +654,9 @@ If you follow the procedure as it has been defined, you will understand the
 commands in our example. I assume to have a current unstable version of
 0.3.x which will result in the stable version 0.4 and the next development
 version of 0.5.x. Further on, I assume, that I already differentiate
-between development and release directories.
+between development and release directories. Also, the version number
+maintained with KDevelop is setup correctly (0.4.pre1) and all files are
+checked into the repository.
 </para>
 
 <example>
@@ -664,8 +666,12 @@ between development and release directories.
 
   <prompt>thb:~&gt; </prompt><userinput>cd devel/kmymoney2</userinput>
   <prompt>thb:~/devel/kmymoney2&gt; </prompt><userinput>cvs tag rel-0-4-pre1</userinput>
-  <prompt>thb:~/devel/kmymoney2&gt; </prompt><userinput>cvs tag rel-0-5-base</userinput>
   <prompt>thb:~/devel/kmymoney2&gt; </prompt><userinput>cvs tag -b rel-0-4-branch</userinput>
+
+  Now modify the version number in KDevelop to 0.5.0, regenerate the files and
+  checkin the changes as usual.
+
+  <prompt>thb:~/devel/kmymoney2&gt; </prompt><userinput>cvs tag rel-0-5-base</userinput>
   <prompt>thb:~/devel/kmymoney2&gt; </prompt>
 
 

@@ -257,11 +257,64 @@ be identified by a micro release number of
 
 </sect2>
 
+<sect2 id="create-new-version">
+<title>Creating a new version</title>
+<para>
+At certain stages it is necessary to release a version as a tar-ball archive.
+As all releases must be reproducable, the contents of the tar-ball archive
+must be tagged in the repository. The following paragraphs explain what
+needs to be done in that case.
+<note>
+<para>
+The steps explained apply for both the development branches as well as the
+release branches. For convenience, the examples are based on the
+development branch.
+</para>
+</note>
+</para>
+
+<orderedlist>
+<listitem>
+<para>
+Make sure that the project version is set correct to the
+version to be created (e.g. 0.5.6). If this is not the case, change
+the version in KDevelop. This
+should regenerate a bunch of file automatically. Checkin the changes you
+have made to the repository before you proceed with the next step.
+</para>
+</listitem>
+
+<listitem>
+<para>
+Tag the version with the applicable tag (e.g. 0.5.6)
+</para>
+</listitem>
+
+<listitem>
+<para>
+Make sure that you increase the project version to the next version
+(e.g. 0.5.7).  This
+should regenerate a bunch of file automatically. Checkin the changes you
+have made to the repository before you proceed with the next step.
+</para>
+</listitem>
+
+</orderedlist>
+
+<note>
+<para>
+The version number in the sandbox is <emphasis>always</emphasis> the
+version number that is currently developed (we're a little ahead here).
+</para>
+</note>
+
+</sect2>
+
 
 <sect2 id="create-stable-procedure">
 <title>Creating a new stable version</title>
 <para>
-At a certain time in the projects development cycle, the configuration
+At a certain time in the project's development cycle, the configuration
 manager decides that a feature freeze is necessary to start a new stable
 version. The exact dates when this will happen are announced on the
 developers mailing list ahead of the event. When the time has come to
@@ -278,20 +331,21 @@ When the time has come to create a new stable branch, the following steps
 have to be performed.
 
 <orderedlist>
+<listitem>
+<para>
+Make sure that the project version is set correct to the
+stable version to be created (e.g. 0.4.pre1). If this is not the case, change
+the version in KDevelop. This
+should regenerate a bunch of file automatically. Checkin the changes you
+have made to the repository before you proceed with the next step.
+</para>
+</listitem>
+
 <listitem><para>Tag the currently unstable version with the
 <emphasis>root-name</emphasis> of the stable version. The root-name is
 identified by appending the text pre1 to the version number.
  For example, the root tag for versions 0.4 is
 <emphasis>rel-0-4-pre1</emphasis>.
-</para>
-</listitem>
-
-<listitem>
-<para>
-Tag the same version with the base-name of the next unstable release. The
-base name is constructed using the appendix <emphasis>-base</emphasis> to
-the major and minor release number of the next unstable version. In our
-example this will be <emphasis>rel-0-5-base</emphasis>.
 </para>
 </listitem>
 
@@ -307,6 +361,22 @@ A complete example with all &cvs; commands can be found
 </para></listitem>
 
 <listitem>
+<para>
+Change the project version to the next development version (e.g. 0.5.0).
+Change the version in KDevelop. This
+should regenerate a bunch of file automatically. Checkin the changes you
+have made to the repository before you proceed with the next step.
+</para>
+</listitem>
+
+<listitem>
+<para>
+Tag the the current version with the base-name of the next unstable release. The
+base name is constructed using the appendix <emphasis>-base</emphasis> to
+the major and minor release number of the next unstable version. In our
+example this will be <emphasis>rel-0-5-base</emphasis>.
+</para>
+
 <para>
 From this moment on, the developers working on versions 0.4.x must make
 sure, that they checkout or update their sandbox using the
