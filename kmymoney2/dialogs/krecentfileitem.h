@@ -37,7 +37,7 @@
 
 
 /**
-  *@author Michael Edwardes
+  * @author Michael Edwardes
   */
 
 class KRecentFileItem : public QIconViewItem  {
@@ -46,8 +46,11 @@ public:
   ~KRecentFileItem();
   QString fileURL(void) const { return m_url; }
 
+  bool move( int x, int y );
+  
 private:
   QString m_url;
+  QWidget* m_parent;
 };
 
 #endif

@@ -23,6 +23,11 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
+#include <qtooltip.h>
+#include <qwidget.h>
+#include <qrect.h>
+#include <qpoint.h>
+
 // ----------------------------------------------------------------------------
 // KDE Includes
 
@@ -33,10 +38,25 @@
 #include "krecentfileitem.h"
 
 KRecentFileItem::KRecentFileItem(const QString& url, QIconView* parent, const QString& text, const QPixmap& icon)
-  : QIconViewItem(parent, text, icon), m_url(url)
+  : QIconViewItem(parent, text, icon),
+    m_url(url),
+    m_parent(parent)
 {
+  QToolTip::add(parent, rect(), url);
+  // avoid moving this item around
+  setDragEnabled(false);
 }
 
 KRecentFileItem::~KRecentFileItem()
 {
 }
+
+bool KRecentFileItem::move( int x, int y )
+{
+  QRect r = rect();
+  QToolTip::remove(m_parent, rect());
+  r.moveTopLeft(QPoint(x,y));
+  QToolTip::add(m_parent, r, m_url);
+  return QIconViewItem::move(x,y);
+}
+
