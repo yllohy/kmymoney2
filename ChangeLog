@@ -1,3 +1,15 @@
+2003-12-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * resized starting size of split dialog
+  * use different icons for loan accounts in the account icon view
+  * added inequality operator to MyMoneyTransaction
+  * fixed logic of terminating notification suspending in MyMoneyFile
+  * added more debug output to MyMoneyStorageDump
+  * added default color settings to be drawn from KMyMoneyUtils
+  * show template page during startup if no other info was found. This
+    allows straight file generation for the first time user
+  * speedup reading of default income/expense categories
+  * finished work on reconciliation wizard
+
 2003-12-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * reworked KEndingBalanceDlg to be a wizard
   * added function to add interest and charge transactions during
