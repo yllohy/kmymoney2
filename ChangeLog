@@ -1,3 +1,6 @@
+2002-03-20 Arni Ingimundarson <arniing@users.sourceforge.net>
+  * Fixed Datepicker inconsistency (bug 502805)
+  
 2002-03-19 Arni Ingimundarson <arniing@users.sourceforge.net>
   * Fixed file dialog choose->cancel bug (490427)
     in kbackupdlg.cpp, kexportdlg.cpp and kimportdlg.cpp

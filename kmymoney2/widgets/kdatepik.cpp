@@ -25,6 +25,7 @@
 */
 
 #include "kdatepik.h"
+#include "kdatetbl.h"
 #include <kglobal.h>
 #if QT_VERSION > 300
 #include <kapplication.h>
@@ -47,7 +48,6 @@
 #include <qlineedit.h>
 #include <qvalidator.h>
 #include <kdebug.h>
-#include <kdatetbl.h>
 
 KTempDatePicker::KTempDatePicker(QWidget *parent, QDate dt, const char *name, WFlags f)
   : QFrame(parent,name, f),
