@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>630</width>
-            <height>421</height>
+            <width>639</width>
+            <height>426</height>
         </rect>
     </property>
     <property name="caption">
@@ -95,28 +95,39 @@
                 </property>
                 <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>layout12</cstring>
+                        <cstring>layout10</cstring>
                     </property>
                     <grid>
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
-                        <widget class="kMyMoneyCombo" row="2" column="3">
+                        <widget class="QLabel" row="0" column="2">
                             <property name="name">
-                                <cstring>m_kcomboFreq</cstring>
+                                <cstring>TextLabel2_3</cstring>
                             </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>3</hsizetype>
-                                    <vsizetype>5</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
+                            <property name="text">
+                                <string>Pay to:</string>
                             </property>
                         </widget>
-                        <widget class="kMyMoneyPayee" row="0" column="3">
+                        <widget class="QLabel" row="1" column="2">
                             <property name="name">
-                                <cstring>m_kcomboPayTo</cstring>
+                                <cstring>TextLabel6</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Next due date:</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="2" column="2">
+                            <property name="name">
+                                <cstring>TextLabel7</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Frequency:</string>
+                            </property>
+                        </widget>
+                        <widget class="kMyMoneyDateInput" row="1" column="3">
+                            <property name="name">
+                                <cstring>m_kdateinputDue</cstring>
                             </property>
                             <property name="sizePolicy">
                                 <sizepolicy>
@@ -125,22 +136,6 @@
                                     <horstretch>0</horstretch>
                                     <verstretch>0</verstretch>
                                 </sizepolicy>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="0" column="1">
-                            <property name="name">
-                                <cstring>m_qlabelAccountFrom</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>3</hsizetype>
-                                    <vsizetype>5</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="text">
-                                <string>TextLabel1</string>
                             </property>
                         </widget>
                         <widget class="QLabel" row="0" column="0">
@@ -171,25 +166,14 @@
                                 <string>From:</string>
                             </property>
                         </widget>
-                        <widget class="QLabel" row="1" column="2">
+                        <widget class="kMyMoneyCombo" row="0" column="1">
                             <property name="name">
-                                <cstring>TextLabel6</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Next due date:</string>
+                                <cstring>m_accountCombo</cstring>
                             </property>
                         </widget>
-                        <widget class="QLabel" row="1" column="0">
+                        <widget class="kMyMoneyCombo" row="2" column="3">
                             <property name="name">
-                                <cstring>TextLabel1_3</cstring>
-                            </property>
-                            <property name="text">
-                                <string>To:</string>
-                            </property>
-                        </widget>
-                        <widget class="kMyMoneyCombo" row="1" column="1">
-                            <property name="name">
-                                <cstring>m_kcomboTo</cstring>
+                                <cstring>m_kcomboFreq</cstring>
                             </property>
                             <property name="sizePolicy">
                                 <sizepolicy>
@@ -213,17 +197,25 @@
                                 </sizepolicy>
                             </property>
                         </widget>
-                        <widget class="kMyMoneyDateInput" row="1" column="3">
+                        <widget class="kMyMoneyCombo" row="1" column="1">
                             <property name="name">
-                                <cstring>m_kdateinputDue</cstring>
+                                <cstring>m_kcomboTo</cstring>
                             </property>
                             <property name="sizePolicy">
                                 <sizepolicy>
                                     <hsizetype>3</hsizetype>
-                                    <vsizetype>1</vsizetype>
+                                    <vsizetype>5</vsizetype>
                                     <horstretch>0</horstretch>
                                     <verstretch>0</verstretch>
                                 </sizepolicy>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="1" column="0">
+                            <property name="name">
+                                <cstring>TextLabel1_3</cstring>
+                            </property>
+                            <property name="text">
+                                <string>To:</string>
                             </property>
                         </widget>
                         <widget class="QLabel" row="2" column="0">
@@ -254,20 +246,17 @@
                                 <string>Method:</string>
                             </property>
                         </widget>
-                        <widget class="QLabel" row="2" column="2">
+                        <widget class="kMyMoneyPayee" row="0" column="3">
                             <property name="name">
-                                <cstring>TextLabel7</cstring>
+                                <cstring>m_kcomboPayTo</cstring>
                             </property>
-                            <property name="text">
-                                <string>Frequency:</string>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="0" column="2">
-                            <property name="name">
-                                <cstring>TextLabel2_3</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Pay to:</string>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>3</hsizetype>
+                                    <vsizetype>1</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
                             </property>
                         </widget>
                     </grid>
@@ -766,11 +755,12 @@
 </images>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
+    <includehint>kmymoneydateinput.h</includehint>
+    <includehint>kmymoneycombo.h</includehint>
+    <includehint>kmymoneycombo.h</includehint>
+    <includehint>kmymoneycombo.h</includehint>
     <includehint>kmymoneycombo.h</includehint>
     <includehint>kmymoneypayee.h</includehint>
-    <includehint>kmymoneycombo.h</includehint>
-    <includehint>kmymoneycombo.h</includehint>
-    <includehint>kmymoneydateinput.h</includehint>
     <includehint>kmymoneyedit.h</includehint>
     <includehint>kmymoneycategory.h</includehint>
     <includehint>kmymoneydateinput.h</includehint>

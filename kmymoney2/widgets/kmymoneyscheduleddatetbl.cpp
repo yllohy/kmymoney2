@@ -137,7 +137,7 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int row, int 
       // Honour the filter.
       if (!m_filterBills)
       {
-        schedules += file->scheduleList(m_accountId,
+        schedules += file->scheduleList("",
                                      MyMoneySchedule::TYPE_BILL,
                                      MyMoneySchedule::OCCUR_ANY,
                                      MyMoneySchedule::STYPE_ANY,
@@ -146,7 +146,7 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int row, int 
       }
       if (!m_filterDeposits)
       {
-        schedules += file->scheduleList(m_accountId,
+        schedules += file->scheduleList("",
                                      MyMoneySchedule::TYPE_DEPOSIT,
                                      MyMoneySchedule::OCCUR_ANY,
                                      MyMoneySchedule::STYPE_ANY,
@@ -155,7 +155,7 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int row, int 
       }
       if (!m_filterTransfers)
       {
-        schedules += file->scheduleList(m_accountId,
+        schedules += file->scheduleList("",
                                      MyMoneySchedule::TYPE_TRANSFER,
                                      MyMoneySchedule::OCCUR_ANY,
                                      MyMoneySchedule::STYPE_ANY,
@@ -212,7 +212,7 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int row, int 
 
       if (!m_filterBills)
       {
-        billSchedules = file->scheduleList(m_accountId,
+        billSchedules = file->scheduleList("",
                                      MyMoneySchedule::TYPE_BILL,
                                      MyMoneySchedule::OCCUR_ANY,
                                      MyMoneySchedule::STYPE_ANY,
@@ -227,7 +227,7 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int row, int 
 
       if (!m_filterDeposits)
       {
-        depositSchedules = file->scheduleList(m_accountId,
+        depositSchedules = file->scheduleList("",
                                      MyMoneySchedule::TYPE_DEPOSIT,
                                      MyMoneySchedule::OCCUR_ANY,
                                      MyMoneySchedule::STYPE_ANY,
@@ -243,7 +243,7 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int row, int 
 
       if (!m_filterTransfers)
       {
-        transferSchedules = file->scheduleList(m_accountId,
+        transferSchedules = file->scheduleList("",
                                      MyMoneySchedule::TYPE_TRANSFER,
                                      MyMoneySchedule::OCCUR_ANY,
                                      MyMoneySchedule::STYPE_ANY,
@@ -301,9 +301,8 @@ void kMyMoneyScheduledDateTbl::addDayPostfix(QString& text)
   }
 }
 
-void kMyMoneyScheduledDateTbl::refresh(const QCString& accountId)
+void kMyMoneyScheduledDateTbl::refresh()
 {
-  m_accountId = accountId;
   repaintContents(false);
 }
 
@@ -389,7 +388,7 @@ void kMyMoneyScheduledDateTbl::contentsMouseMoveEvent(QMouseEvent* e)
   {
     if (!m_filterBills)
     {
-        schedules += file->scheduleList(m_accountId,
+        schedules += file->scheduleList("",
                                      MyMoneySchedule::TYPE_BILL,
                                      MyMoneySchedule::OCCUR_ANY,
                                      MyMoneySchedule::STYPE_ANY,
@@ -399,7 +398,7 @@ void kMyMoneyScheduledDateTbl::contentsMouseMoveEvent(QMouseEvent* e)
 
     if (!m_filterDeposits)
     {
-        schedules += file->scheduleList(m_accountId,
+        schedules += file->scheduleList("",
                                      MyMoneySchedule::TYPE_DEPOSIT,
                                      MyMoneySchedule::OCCUR_ANY,
                                      MyMoneySchedule::STYPE_ANY,
@@ -409,7 +408,7 @@ void kMyMoneyScheduledDateTbl::contentsMouseMoveEvent(QMouseEvent* e)
 
     if (!m_filterTransfers)
     {
-        schedules += file->scheduleList(m_accountId,
+        schedules += file->scheduleList("",
                                      MyMoneySchedule::TYPE_TRANSFER,
                                      MyMoneySchedule::OCCUR_ANY,
                                      MyMoneySchedule::STYPE_ANY,

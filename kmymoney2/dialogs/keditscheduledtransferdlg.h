@@ -40,7 +40,7 @@
   * a scheduled transfer.
   *
   * @author Michael Edwardes
-  * $Id: keditscheduledtransferdlg.h,v 1.4 2003/07/02 19:22:52 mte Exp $
+  * $Id: keditscheduledtransferdlg.h,v 1.5 2003/07/17 11:32:13 mte Exp $
   *
   * @short Edit details for a scheduled transfer.
 **/
@@ -49,9 +49,6 @@ class KEditScheduledTransferDlg : public kEditScheduledTransferDlgDecl  {
 private:
   /// Save last payee used for convenience
   QString m_lastPayee;
-
-  /// The account we're scheduling for
-  QCString m_accountId;
 
   /// The transaction details
   MyMoneyTransaction m_transaction;
@@ -104,7 +101,7 @@ public:
   /**
     * Standard QWidget constructor.
   **/
-	KEditScheduledTransferDlg(const QCString& accountId, const MyMoneySchedule& schedule, QWidget *parent=0, const char *name=0);
+	KEditScheduledTransferDlg(const MyMoneySchedule& schedule, QWidget *parent=0, const char *name=0);
 
   /**
     * Standard destructor.

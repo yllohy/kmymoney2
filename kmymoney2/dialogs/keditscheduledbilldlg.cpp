@@ -44,13 +44,11 @@
 #include "../dialogs/ksplittransactiondlg.h"
 #include "../widgets/kmymoneydateinput.h"
 #include "../widgets/kmymoneycategory.h"
-
 #include "../widgets/kmymoneypayee.h"
 
-KEditScheduledBillDlg::KEditScheduledBillDlg(const QCString& accountId, const MyMoneySchedule& schedule, QWidget *parent, const char *name)
+KEditScheduledBillDlg::KEditScheduledBillDlg(const MyMoneySchedule& schedule, QWidget *parent, const char *name)
  : kEditScheduledBillDlgDecl(parent, name, true)
 {
-  m_accountId = accountId;
   m_schedule = schedule;
   m_transaction = schedule.transaction();
 
@@ -108,32 +106,7 @@ void KEditScheduledBillDlg::reloadFromFile(void)
   m_kcomboFreq->insertItem(i18n("Yearly"));
   m_kcomboFreq->insertItem(i18n("Every other year"));
 
-  MyMoneyFile* file = MyMoneyFile::instance();
-
-  MyMoneyAccount acc;
-  QCStringList::ConstIterator it_s;
-
-  acc = file->asset();
-  for(it_s = acc.accountList().begin(); it_s != acc.accountList().end(); ++it_s)
-  {
-    if (*it_s == m_accountId)
-    {
-      MyMoneyAccount a = file->account(*it_s);
-      m_qlabelAccountFrom->setText(a.name());
-      return;
-    }
-  }
-
-  acc = file->liability();
-  for(it_s = acc.accountList().begin(); it_s != acc.accountList().end(); ++it_s)
-  {
-    if (*it_s == m_accountId)
-    {
-      MyMoneyAccount a = file->account(*it_s);
-      m_qlabelAccountFrom->setText(a.name());
-      return;
-    }
-  }
+  m_accountCombo->loadAccounts(true, false);
 }
 
 /*
@@ -169,7 +142,7 @@ void KEditScheduledBillDlg::slotSplitClicked()
           payeeId = (*it_p).id();
       }
 
-      split1.setAccountId(m_accountId);
+      split1.setAccountId(m_accountCombo->currentAccountId());
       split1.setAction(split1.ActionWithdrawal);
       split1.setPayeeId(payeeId);
       split1.setMemo(m_qlineeditMemo->text());
@@ -177,8 +150,8 @@ void KEditScheduledBillDlg::slotSplitClicked()
       m_transaction.addSplit(split1);
     }
 
-    MyMoneyAccount acc = MyMoneyFile::instance()->account(m_accountId);
-  
+    MyMoneyAccount acc = MyMoneyFile::instance()->account(m_accountCombo->currentAccountId());
+
     KSplitTransactionDlg* dlg = new KSplitTransactionDlg(m_transaction,
                                                          acc,
                                                          isValidAmount,
@@ -203,7 +176,7 @@ void KEditScheduledBillDlg::slotSplitClicked()
           default:
             connect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
             break;
-        }  
+        }
       } catch (MyMoneyException *e) {
         delete e;
       }
@@ -239,7 +212,7 @@ void KEditScheduledBillDlg::reloadWidgets(void)
     MyMoneySplit s;
     switch(m_transaction.splitCount()) {
       case 2:
-        s = m_transaction.split(m_accountId, false);
+        s = m_transaction.split(m_accountCombo->currentAccountId(), false);
         category = MyMoneyFile::instance()->accountToCategory(s.accountId());
         break;
       case 1:
@@ -256,7 +229,7 @@ void KEditScheduledBillDlg::reloadWidgets(void)
 
   m_category->setText(category);
 
-  MyMoneySplit split = m_transaction.split(m_accountId);
+  MyMoneySplit split = m_transaction.split(m_accountCombo->currentAccountId());
   MyMoneyMoney amount(split.value());
   if (amount < 0)
     amount = -amount;
@@ -297,7 +270,6 @@ void KEditScheduledBillDlg::okClicked()
     m_category->setFocus();
     return;
   }
-
 
   try
   {
@@ -405,7 +377,7 @@ void KEditScheduledBillDlg::okClicked()
       }
 
       MyMoneySplit split1;
-      split1.setAccountId(m_accountId);
+      split1.setAccountId(m_accountCombo->currentAccountId());
       split1.setAction(split1.ActionWithdrawal);
       split1.setPayeeId(payeeId);
       split1.setMemo(m_qlineeditMemo->text());
@@ -436,7 +408,7 @@ void KEditScheduledBillDlg::okClicked()
       m_transaction.addSplit(split2);
     }
 
-    MyMoneySplit s = m_transaction.split(m_accountId);
+    MyMoneySplit s = m_transaction.split(m_accountCombo->currentAccountId());
     s.setPayeeId(payeeId);
     m_transaction.modifySplit(s);
 
@@ -451,12 +423,11 @@ void KEditScheduledBillDlg::okClicked()
     }
 
     m_schedule.setName(m_scheduleName->text());
+    m_schedule.setAccountId(m_accountCombo->currentAccountId());
   } catch (MyMoneyException *e)
   {
-    QString s(i18n("Exception in okClicked: "));
-    s += e->what();
+    KMessageBox::detailedError(this, i18n("Unable to add bill"), e->what());
     delete e;
-    KMessageBox::information(this, s);
   }
 
   accept();
@@ -466,7 +437,7 @@ void KEditScheduledBillDlg::loadWidgetsFromSchedule(void)
 {
   try
   {
-    m_kcomboPayTo->loadText(MyMoneyFile::instance()->payee(m_schedule.transaction().split(m_accountId).payeeId()).name());
+    m_kcomboPayTo->loadText(MyMoneyFile::instance()->payee(m_schedule.transaction().split(m_accountCombo->currentAccountId()).payeeId()).name());
     m_kdateinputDue->setDate(m_schedule.startDate());
 
     switch (m_schedule.paymentType())
@@ -480,7 +451,8 @@ void KEditScheduledBillDlg::loadWidgetsFromSchedule(void)
       case MyMoneySchedule::STYPE_OTHER:
         m_kcomboMethod->setCurrentItem(2);
         break;
-
+      default:
+        break;
     }
 
     switch (m_schedule.occurence())
@@ -527,9 +499,11 @@ void KEditScheduledBillDlg::loadWidgetsFromSchedule(void)
       case MyMoneySchedule::OCCUR_EVERYOTHERYEAR:
         m_kcomboFreq->setCurrentItem(13);
         break;
+      default:
+        break;
     }
-    
-    MyMoneyMoney amount = m_schedule.transaction().split(m_accountId).value();
+
+    MyMoneyMoney amount = m_schedule.transaction().split(m_accountCombo->currentAccountId()).value();
     if (amount < 0)
       amount = -amount;
     m_kmoneyeditAmount->setText(amount.formatMoney());
@@ -537,8 +511,8 @@ void KEditScheduledBillDlg::loadWidgetsFromSchedule(void)
     if (m_schedule.transaction().splitCount() >= 3)
       m_category->loadText(i18n("Splitted Transaction"));
     else
-      m_category->loadText(MyMoneyFile::instance()->instance()->accountToCategory(m_schedule.transaction().split(m_accountId, false).accountId()));
-    m_qlineeditMemo->setText(m_schedule.transaction().split(m_accountId).memo());
+      m_category->loadText(MyMoneyFile::instance()->instance()->accountToCategory(m_schedule.transaction().split(m_accountCombo->currentAccountId(), false).accountId()));
+    m_qlineeditMemo->setText(m_schedule.transaction().split(m_accountCombo->currentAccountId()).memo());
     m_qcheckboxAuto->setChecked(m_schedule.autoEnter());
     m_qcheckboxEnd->setChecked(m_schedule.willEnd());
     if (m_schedule.willEnd())

@@ -66,7 +66,7 @@ public:
   **/
   void setDateTable(kMyMoneyDateTbl* tbl) { table = tbl; }
 
-  void refresh(const QCString& accountId) { m_scheduledDateTable->refresh(accountId); }
+  void refresh() { m_scheduledDateTable->refresh(); }
 
 
 protected slots:
@@ -74,6 +74,7 @@ protected slots:
   void slotSetViewDeposits();
   void slotSetViewTransfers();
   void slotHoverSchedules(QValueList<MyMoneySchedule>, QDate date);
+  void slotAccountChecked();
 
 private:
   KPopupMenu* kpopupmenu;

@@ -30,11 +30,13 @@
 // KDE Includes
 #include <klocale.h>
 #include <kpopupmenu.h>
+#include <kmessagebox.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
 #include "kmymoneyscheduledcalendar.h"
 #include "kmymoneyscheduleddatetbl.h"
+#include "../mymoney/mymoneyfile.h"
 
 kMyMoneyScheduledCalendar::kMyMoneyScheduledCalendar(QWidget *parent, const char *name )
   : kMyMoneyCalendar(parent,name)
@@ -43,9 +45,12 @@ kMyMoneyScheduledCalendar::kMyMoneyScheduledCalendar(QWidget *parent, const char
 
   kpopupmenu = new KPopupMenu(this);
   kpopupmenu->setCheckable(true);
-  kpopupmenu->insertItem(i18n("Bills"), this, SLOT(slotSetViewBills()), CTRL+Key_B, 0);
-  kpopupmenu->insertItem(i18n("Deposits"), this, SLOT(slotSetViewDeposits()), CTRL+Key_D, 1);
-  kpopupmenu->insertItem(i18n("Transfers"), this, SLOT(slotSetViewTransfers()), CTRL+Key_T, 2);
+  kpopupmenu->insertItem(i18n("Bills"), 0);
+  kpopupmenu->insertItem(i18n("Deposits"), 1);
+  kpopupmenu->insertItem(i18n("Transfers"), 2);
+  kpopupmenu->connectItem(0, this, SLOT(slotSetViewBills()));
+  kpopupmenu->connectItem(1, this, SLOT(slotSetViewDeposits()));
+  kpopupmenu->connectItem(2, this, SLOT(slotSetViewTransfers())); 
   kpopupmenu->setItemChecked(0, true);
   kpopupmenu->setItemChecked(1, true);
   kpopupmenu->setItemChecked(2, true);
@@ -96,4 +101,8 @@ void kMyMoneyScheduledCalendar::slotHoverSchedules(QValueList<MyMoneySchedule> l
   {
     briefWidget.hide();
   }
+}
+
+void kMyMoneyScheduledCalendar::slotAccountChecked()
+{
 }

@@ -46,7 +46,7 @@ public:
 	       const char* name=0, WFlags f=0);
 
   ~kMyMoneyScheduledDateTbl();
-  void refresh(const QCString& accountId);
+  void refresh();
   void filterBills(bool enable);
   void filterDeposits(bool enable);
   void filterTransfers(bool enable);
@@ -60,7 +60,6 @@ protected:
   void contentsMouseMoveEvent(QMouseEvent* e);
 
 private:
-  QCString m_accountId;
   bool m_filterBills, m_filterDeposits, m_filterTransfers;
 };
 

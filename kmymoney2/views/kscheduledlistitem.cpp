@@ -37,23 +37,25 @@ KScheduledListItem::KScheduledListItem(QListView *parent, const char *name )
   setText(0, name);
 }
 
-KScheduledListItem::KScheduledListItem(KScheduledListItem *parent, const QCString accountId, const MyMoneySchedule& schedule)
+KScheduledListItem::KScheduledListItem(KScheduledListItem *parent, const MyMoneySchedule& schedule)
  : QListViewItem(parent)
 {
 //  type, payee, amount, due date, freq, payment method.
   try
   {
+    QCString accountId = schedule.accountId();
     m_id = schedule.id();
     MyMoneyTransaction transaction = schedule.transaction();
     setText(0, schedule.name());
-    setText(1, MyMoneyFile::instance()->payee(transaction.split(accountId).payeeId()).name());
+    setText(1, MyMoneyFile::instance()->account(schedule.accountId()).name());
+    setText(2, MyMoneyFile::instance()->payee(transaction.split(accountId).payeeId()).name());
     MyMoneyMoney amount = transaction.split(accountId).value();
     if (amount < 0)
       amount = -amount;
-    setText(2, amount.formatMoney());
-    setText(3, schedule.nextPayment().toString());
-    setText(4, schedule.occurenceToString());
-    setText(5, schedule.paymentMethodToString());
+    setText(3, amount.formatMoney());
+    setText(4, schedule.nextPayment().toString());
+    setText(5, schedule.occurenceToString());
+    setText(6, schedule.paymentMethodToString());
   }
   catch (MyMoneyException *e)
   {

@@ -25,17 +25,17 @@
 
 // ----------------------------------------------------------------------------
 // Project Includes
-
 #include "kmymoneycombo.h"
+#include "../mymoney/mymoneyfile.h"
 
 kMyMoneyCombo::kMyMoneyCombo(QWidget *w, const char *name)
-  : KComboBox(w, name)
+  : KComboBox(w, name), m_type(NONE)
 {
   init();
 }
 
 kMyMoneyCombo::kMyMoneyCombo(bool rw, QWidget *w, const char *name)
-  : KComboBox(rw, w, name)
+  : KComboBox(rw, w, name), m_type(NONE)
 {
   init();
 }
@@ -164,4 +164,54 @@ void kMyMoneyCombo::focusOutEvent(QFocusEvent *ev)
     emit selectionChanged(currentItem());
   }
   KComboBox::focusOutEvent(ev);
+}
+
+void kMyMoneyCombo::loadAccounts(bool asset, bool liability)
+{
+  try
+  {
+    MyMoneyFile* file = MyMoneyFile::instance();
+
+    MyMoneyAccount acc;
+    QCStringList::ConstIterator it_s;
+
+    if (asset)
+    {
+      acc = file->asset();
+      for(it_s = acc.accountList().begin(); it_s != acc.accountList().end(); ++it_s)
+      {
+        MyMoneyAccount a = file->account(*it_s);
+        KComboBox::insertItem(a.name());
+      }
+    }
+
+    if (liability)
+    {
+      acc = file->liability();
+      for(it_s = acc.accountList().begin(); it_s != acc.accountList().end(); ++it_s)
+      {
+        MyMoneyAccount a = file->account(*it_s);
+        KComboBox::insertItem(a.name());
+      }
+    }
+
+    m_type = ACCOUNT;
+  }
+  catch (MyMoneyException *e)
+  {
+    delete e;
+  }
+}
+
+QCString kMyMoneyCombo::currentAccountId(void)
+{
+  try
+  {
+    if (m_type == ACCOUNT)
+      return MyMoneyFile::instance()->nameToAccount(currentText());
+  }
+  catch (MyMoneyException *e)
+  {
+    delete e;
+  }
 }

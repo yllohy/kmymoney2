@@ -72,13 +72,14 @@ void KMyMoneyBriefSchedule::loadSchedule(unsigned int index)
       m_indexLabel->setText(QString::number(m_index+1) + i18n(" of ") + QString::number(m_scheduleList.count()));
       m_name->setText(sched.name());
       m_type->setText(sched.typeToString());
+      m_account->setText(MyMoneyFile::instance()->account(sched.accountId()).name());
       QString text(i18n("Next payment on "));
       text += sched.nextPayment().toString();
       text += i18n(" for ");
-// TODO
-//      text += sched.transaction().split(m_accountId).value().formatMoney();
-// should be
-//      text += sched.transaction().split(sched.accountId).value().formatMoney();
+      MyMoneyMoney amount = sched.transaction().split(sched.accountId()).value();
+      if (amount < 0)
+        amount = -amount;
+      text += amount.formatMoney();
       if (sched.willEnd())
       {
         text += i18n(" with ");

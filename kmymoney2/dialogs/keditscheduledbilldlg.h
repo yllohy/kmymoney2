@@ -40,7 +40,7 @@
   * a scheduled bill.
   *
   * @author Michael Edwardes
-  * $Id: keditscheduledbilldlg.h,v 1.4 2003/01/30 12:21:21 mte Exp $
+  * $Id: keditscheduledbilldlg.h,v 1.5 2003/07/17 11:32:13 mte Exp $
   *
   * @short Edit details for a scheduled bill.
 **/
@@ -49,9 +49,6 @@ class KEditScheduledBillDlg : public kEditScheduledBillDlgDecl  {
 private:
   /// Save last payee used for convenience
   QString m_lastPayee;
-
-  /// The account we're scheduling for
-  QCString m_accountId;
 
   /// The transaction details
   MyMoneyTransaction m_transaction;
@@ -104,7 +101,7 @@ public:
   /**
     * Standard QWidget constructor.
   **/
-	KEditScheduledBillDlg(const QCString& accountId, const MyMoneySchedule& schedule, QWidget *parent=0, const char *name=0);
+	KEditScheduledBillDlg(const MyMoneySchedule& schedule, QWidget *parent=0, const char *name=0);
 
   /**
     * Standard destructor.

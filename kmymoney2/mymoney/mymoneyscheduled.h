@@ -88,6 +88,7 @@ public:
     m_startDate = QDate(1900, 1, 1);
     m_lastPayment = QDate(1900, 1, 1);
     m_id = "";
+    m_accountId = "";
   }
 
   /**
@@ -110,6 +111,7 @@ public:
     m_startDate = startDate;
     m_lastPayment = m_startDate;
     m_id = "";
+    m_accountId = "";
   }
 
   /**
@@ -203,6 +205,13 @@ public:
     * @retun QDate The last payment for the instance.
     */
   QDate lastPayment(void) const { return m_lastPayment; }
+
+  /**
+    * The account id for the transaction.
+    *
+    * @return QCString The account id
+  **/
+  QCString accountId(void) const { return m_accountId; }
 
   /**
     * Simple method that sets the frequency for the schedule.
@@ -383,6 +392,14 @@ public:
   **/
   QString typeToString(void) const;
 
+  /**
+    * Sets the account id
+    *
+    * @param The new account id
+    * @return none
+  **/
+  void setAccountId(const QCString& accountId) { m_accountId = accountId; }
+
 private:
   /// Its occurence
   occurenceE m_occurence;
@@ -422,260 +439,9 @@ private:
 
   /// The name
   QString m_name;
-};
 
-
-/**
-  * This class represents a set of schedules.
-  *
-  * Each schedule is given a unique id and the set
-  * can be queried for the common operations, (overdue etc).
-  *
-  * The schedules are mapped to the accounts they belong to and all member
-  * functions expect a valid account id.
-  *
-  * Implemeted in a singleton pattern.  Use MyMoneyScheduled::instance() to get
-  * the instance.
-  *
-  * @short A class to represent a set of schedules.
-  * @see MyMoneySchedule
-  */
-  class MyMoneyScheduled {
-public:
-
-  /**
-    * Get the instance.
-    */
-  static MyMoneyScheduled* instance();
-  
-  /**
-    * Standard destructor.
-    */
-  ~MyMoneyScheduled();
-
-  /**
-    * Adds a schedule to the collection.
-    *
-    * Must be a valid schedule otherwise an exception is thrown and an empty
-    * id is returned.
-    *
-    * The account referenced must exist or an exception will be thrown.
-    *
-    * @param accountId The account reference the schedule is for.
-    * @param schedule The new schedule to insert.
-    * @return QString The system generated id for the schedule if successful.
-    *
-    * @see MyMoneySchedule
-    * @see MyMoneyException
-    */
-  QCString addSchedule(const QCString& accountId, const MyMoneySchedule& schedule);
-
-  /**
-    * Remove a schedule from the collection.
-    *
-    * An exception is thrown if no schedule in the collection matches the
-    * supplied parameter.
-    *
-    * The account reference supplied must exist or an exception will
-    * be thrown.
-    *
-    * @param accountId The account reference the schedule is for.
-    * @param scheduleId The schedule id to be removed.
-    * @return none
-    *
-    * @see MyMoneySchedule
-    * @see MyMoneyException
-    */
-  void removeSchedule(const QCString& accountId, const QString& scheduleId);
-
-  /**
-    * Replace a schedule in the collection.
-    *
-    * An exception is thrown if no schedule in the collection matches
-    * the supplied id.
-    *
-    * The account reference supplied must exist or an exception will
-    * be thrown.
-    *
-    * @param accountId The account reference the schedule is for.
-    * @param scheduleId The scheduleId to be replaced.
-    * @param schedule The new schedule data.
-    * @return QString The schedule id if successful, empty string otherwise.
-    *
-    * @see MyMoneySchedule
-    * @see MyMoneyException
-    */
-  QString replaceSchedule(const QCString& accountId, const QString& scheduleId, const MyMoneySchedule& schedule);
-
-  /**
-    * Retrieve a specific schedule from the collection by its id.
-    *
-    * Throws an exception if no matcing schedule id is found.
-    *
-    * The account reference supplied must exist or an exception will
-    * be thrown.
-    *
-    * @param accountId The account reference the schedule is for.
-    * @param scheduleId The schedule id to be retrieved.
-    * @return MyMoneySchedule
-    */
-  MyMoneySchedule getSchedule(const QCString& accountId, const QString& scheduleId);
-    
- 
-  /**
-    * An overloaded method to retrieve all schedules conforming to the supplied parameters.
-    *
-    * If no parameters are supplied the whole collection is returned as a list.
-    *
-    * The account reference supplied must exist or an exception will
-    * be thrown.
-    *
-    * Default sort order is by date.
-    *
-    * @param accountId The account reference the schedule is for.
-    * @param type Restrict the schedule types returned to type.  Default is any type.
-    * @param paymentType Restrict the schedule payment types to paymentType. Default
-    * is any payment type.
-    * @param occurence Restrict the schedule frequencyies returned to occurence.
-    * Default is any frequency type.
-    *
-    * @return QList<QString> A sorted list of schedule id's that match the supplied
-    * parameters.
-    *
-    * @see MyMoneySchedule
-    *
-    * @todo Implement sorting and add other sort types.
-    */
-  QStringList getScheduled(const QCString& accountId, const MyMoneySchedule::typeE type=MyMoneySchedule::TYPE_ANY,
-    const MyMoneySchedule::paymentTypeE paymentType=MyMoneySchedule::STYPE_ANY,
-    const MyMoneySchedule::occurenceE occurence=MyMoneySchedule::OCCUR_ANY);
-    
-  /**
-    * An overloaded method to retrieve all schedules conforming to the supplied parameters.
-    *
-    * If no parameters are supplied the whole collection is returned as a list.
-    *
-    * The account reference supplied must exist or an exception will
-    * be thrown.
-    *
-    * Default sort order is by date.
-    *
-    * @param accountId The account reference the schedule is for.
-    * @param startDate Restrict the search between the start and end dates.
-    * @param endDate Restrict the search between the start and end dates.
-    * @param type Restrict the schedule types returned to type.  Default is any type.
-    * @param paymentType Restrict the schedule payment types to paymentType. Default
-    * is any payment type.
-    * @param occurence Restrict the schedule frequencyies returned to occurence.
-    * Default is any frequency type.
-    *
-    * @return QList<QString> A sorted list of schedule id's that match the supplied
-    * parameters.
-    *
-    * @see MyMoneySchedule
-    *
-    * @todo Implement sorting and add other sort types.
-    */
-  QStringList getScheduled(const QCString& accountId, const QDate& startDate, const QDate& endDate,
-    const MyMoneySchedule::typeE type=MyMoneySchedule::TYPE_ANY,
-    const MyMoneySchedule::paymentTypeE paymentType=MyMoneySchedule::STYPE_ANY,
-    const MyMoneySchedule::occurenceE occurence=MyMoneySchedule::OCCUR_ANY);
-
-  /**
-    * A method to retrieve all schedules that are overdue and conform to the supplied
-    * parameters.
-    *
-    * The account reference supplied must exist or an exception will
-    * be thrown.
-    *
-    * If no parameters are supplied the whole collection is returned as
-    * a list.
-    *
-    * Default sort order is by date.
-    *
-    * @param accountId The account reference the schedule is for.
-    * @param type Restrict the schedule types returned to type.  Default is any type.
-    * @param paymentType Restrict the schedule payment types to paymentType. Default
-    * is any payment type.
-    * @param occurence Restrict the schedule frequencyies returned to occurence.
-    * Default is any frequency type.
-    *
-    * @return QList<QString> A sorted list of schedule id's that match the supplied
-    * parameters.
-    *
-    * @see MyMoneySchedule
-    *
-    * @todo Implement sorting and add other sort types.
-    */
-  QStringList getOverdue(const QCString& accountId, const MyMoneySchedule::typeE type=MyMoneySchedule::TYPE_ANY,
-    const MyMoneySchedule::paymentTypeE paymentType=MyMoneySchedule::STYPE_ANY,
-    const MyMoneySchedule::occurenceE occurence=MyMoneySchedule::OCCUR_ANY);
-      
-  /**
-    * Convenience function to see if any schedules are overdue.
-    *
-    * Can restrict the check by using the parameters.
-    *
-    * The account reference supplied must exist or an exception will
-    * be thrown.
-    *
-    * @param accountId The account reference the schedule is for.
-    * @param type Restrict the schedule types returned to type.  Default is any type.
-    * @param paymentType Restrict the schedule payment types to paymentType. Default
-    * is any payment type.
-    *
-    * @param boolean True if any overdue schedules exist for the supplied parameters.
-    *
-    * @see MyMoneySchedule
-    */
-  bool anyOverdue(const QCString& accountId, const MyMoneySchedule::typeE type=MyMoneySchedule::TYPE_ANY,
-    const MyMoneySchedule::occurenceE occurence=MyMoneySchedule::OCCUR_ANY,
-    const MyMoneySchedule::paymentTypeE paymentType=MyMoneySchedule::STYPE_ANY);
-    
-  /**
-    * Convenience function to see if any schedules exist.
-    *
-    * The account reference supplied must exist or an exception will
-    * be thrown.
-    *
-    * Can restrict the check by using the parameters.
-    *
-    * @param accountId The account reference the schedule is for.
-    * @param type Restrict the schedule types returned to type.  Default is any type.
-    * @param paymentType Restrict the schedule payment types to paymentType. Default
-    * is any payment type.
-    *
-    * @param boolean True if any schedules exist for the supplied parameters.
-    *
-    * @see MyMoneySchedule
-    */
-  bool anyScheduled(const QCString& accountId, const MyMoneySchedule::typeE type=MyMoneySchedule::TYPE_ANY,
-    const MyMoneySchedule::occurenceE occurence=MyMoneySchedule::OCCUR_ANY,
-    const MyMoneySchedule::paymentTypeE paymentType=MyMoneySchedule::STYPE_ANY);
-
-  /**
-    * Returns the number of schedules scheduled for the account.
-    *
-    *
-    * @param accountId The account reference the schedule is for.
-    * @return int The number of schedules.
-  **/
-  unsigned int count(const QCString& accountId);
-
-private:
-  /// The instance
-  static MyMoneyScheduled *m_instance;
-
-  /// The account to schedule dictionary
-  QMap<QCString, QMap<QString, MyMoneySchedule> > m_accountsScheduled;
-
-  /// The next id available for the schedule, used for all.
-  unsigned int m_nextId;
-
-  /**
-    * Standard constructor.
-    */
-  MyMoneyScheduled();
+  /// The account id
+  QCString m_accountId;
 };
 
 #endif

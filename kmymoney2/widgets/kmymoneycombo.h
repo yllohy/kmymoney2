@@ -59,6 +59,25 @@ public:
 
   void resetCurrentItem(void);
 
+  /**
+    * Loads the combo box with accounts for convenience.
+    *
+    * @see currentAccountId()
+    *
+    * @param asset  Load the asset accounts if true
+    * @param liability Load the liablity accounts if true
+    * @return none
+  **/
+  void loadAccounts(bool asset=true, bool liability=false);
+
+  /**
+    * Convenience function to return the account id of the
+    * currently selected item
+    *
+    * @return QCString The account id or "" if not found
+  **/
+  QCString currentAccountId(void);
+
 private:
   /// perform initialization required for all constructors
   void init(void);
@@ -89,6 +108,15 @@ private:
     * This member keeps a copy of the original selected item
     */
   int   m_item;
+
+  /**
+    * The current type of the combo box
+    *
+    * Only supports 'account' type for now.  Can easily
+    * be extended to cater for categories or whatever.
+  **/
+  enum combo_type { NONE, ACCOUNT };
+  combo_type m_type;
 };
 
 #endif

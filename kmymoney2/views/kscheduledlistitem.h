@@ -71,7 +71,7 @@ public:
     *
     * @see MyMoneySchedule
   **/
-  KScheduledListItem(KScheduledListItem *parent, const QCString accountId, const MyMoneySchedule& schedule);
+  KScheduledListItem(KScheduledListItem *parent, const MyMoneySchedule& schedule);
 
   /**
     * Standard destructor.

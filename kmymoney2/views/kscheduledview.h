@@ -46,7 +46,7 @@
   * Used by the KMyMoneyView class to show the view.
   *
   * @author Michael Edwardes 2000-2002
-  * $Id: kscheduledview.h,v 1.10 2003/07/14 18:17:19 ipwizard Exp $
+  * $Id: kscheduledview.h,v 1.11 2003/07/17 11:32:14 mte Exp $
   *
   * @short A class to encapsulate recurring transaction operations.
   */
@@ -89,7 +89,7 @@ protected:
     * It just updates the account list in the combo box.  (We dont need to
     * update anything else.
     */
-  void update(const QCString& account);
+//  void update(const QCString& account);
 
 protected slots:
   /**
@@ -122,7 +122,7 @@ protected slots:
     *
     * @param accountName Const reference to the item string selected.
   **/
-  void slotAccountSelected(const QString& accountName);
+//  void slotAccountSelected(const QString& accountName);
 
   /**
     * Creates and shows the context menu when the user right clicks or presses
@@ -140,7 +140,7 @@ protected slots:
 
 private:
   /// The account currently selected via the accounts view
-  QCString m_accountId;
+//  QCString m_accountId;
 
   /// The selected schedule id in the list view.
   QCString m_selectedSchedule;
@@ -159,7 +159,7 @@ private:
   /**
     * Loads the accounts into the combo box.
     */
-  void loadAccounts(void);
+//  void loadAccounts(void);
 };
 
 #endif
