@@ -249,7 +249,8 @@ KLedgerView::KLedgerView(QWidget *parent, const char *name )
   : QWidget(parent,name),
   m_contextMenu(0),
   m_blinkTimer(parent),
-  m_suspendUpdate(false)
+  m_suspendUpdate(false),
+  m_editMode(false)
 {
   KConfig *config = KGlobal::config();
   config->setGroup("General Options");
@@ -262,18 +263,6 @@ KLedgerView::KLedgerView(QWidget *parent, const char *name )
   m_register = 0;
   m_form = 0;
   m_transactionPtr = 0;
-
-  // initialize pointer to widgets
-  m_editPayee = 0;
-  m_editCategory = 0;
-  m_editMemo = 0;
-  m_editAmount = 0;
-  m_editDate = 0;
-  m_editNr = 0;
-  m_editSplit = 0;
-  m_editPayment = 0;
-  m_editDeposit = 0;
-  m_editType = 0;
 
   m_inReconciliation = false;
 
@@ -1228,6 +1217,7 @@ void KLedgerView::destroyWidgets(void)
       m_register->clearCellWidget(firstRow+i, j);
     }
   }
+  m_editMode = false;
 }
 
 void KLedgerView::slotNew(void)
@@ -1333,6 +1323,7 @@ void KLedgerView::slotStartEdit(void)
   enableMoreButton(true);
 
   showWidgets();
+  m_editMode = true;
 
   disconnect(m_register, SIGNAL(signalEnter()), this, SLOT(slotStartEdit()));
   if(!m_transactionFormActive)
@@ -1873,7 +1864,8 @@ void KLedgerView::slotSortOrderChanged(int order)
 
 const bool KLedgerView::isEditMode(void) const
 {
-  return m_editDate && m_editDate->isVisible();
+  // return m_editDate && m_editDate->isVisible();
+  return m_editMode;
 }
 
 void KLedgerView::show()

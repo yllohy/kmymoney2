@@ -920,6 +920,11 @@ protected:
   QGuardedPtr<kMyMoneyCombo>        m_editType;       ///< pointer to transaction type
 
   /**
+    * This member identifies, if we are editing a transaction (@p true) or not (@p false).
+    */
+  bool          m_editMode;
+
+  /**
     * This member keeps the tab order for the above widgets
     */
   QWidgetList   m_tabOrderWidgets;
