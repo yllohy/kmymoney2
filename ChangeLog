@@ -1,3 +1,7 @@
+2003-12-16 Kevin Tambascio <ktambascio@users.sourceforge.net>
+  * Added ability for the user's last used directory to be stored in the save and open dialogs.
+  * Left old code in place pending reviews from the team.
+
 2003-12-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * fixed some bugs in handling w/o inline editing (no transaction form)
   * Some marketing on the about page
