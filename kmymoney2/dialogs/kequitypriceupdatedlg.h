@@ -35,6 +35,7 @@
 // Project Includes
 
 #include "kequitypriceupdatedlgdecl.h"
+#include "../mymoney/mymoneyonlinepriceupdate.h"
 
 
 /**
@@ -47,6 +48,9 @@ class KEquityPriceUpdateDlg : public KEquityPriceUpdateDlgDecl
 public: 
   KEquityPriceUpdateDlg(QWidget *parent);
   ~KEquityPriceUpdateDlg();
+  void  logStatusMessage(const QString& message);
+  void  logBeginingStatus();
+  void  logSummaryStatus();
 
 };
 

@@ -33,6 +33,7 @@
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kpushbutton.h>
+#include <klistbox.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -45,6 +46,26 @@ KEquityPriceUpdateDlg::KEquityPriceUpdateDlg(QWidget *parent) : KEquityPriceUpda
 }
 
 KEquityPriceUpdateDlg::~KEquityPriceUpdateDlg()
+{
+
+}
+
+/*!
+    \fn KEquityPriceUpdateDlg::logStatusMessage(const QString& message)
+    Logs a message in the status window at the bottom of the dialog.
+ */
+void  KEquityPriceUpdateDlg::logStatusMessage(const QString& message)
+{
+  //inserts the message at the bottom of the listbox.
+  lbStatus->insertItem(message);
+}
+
+void KEquityPriceUpdateDlg::logBeginingStatus()
+{
+
+}
+
+void KEquityPriceUpdateDlg::logSummaryStatus()
 {
 
 }
