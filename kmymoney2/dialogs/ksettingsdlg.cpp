@@ -522,15 +522,6 @@ void KSettingsDlg::configRead()
 
   m_onlineQuotesWidget->readConfig();
   m_encryptionWidget->readConfig();
-#if 0
-  // TODO: Find a better way to handle these defaults so they're not
-  // duplicated in 2 places
-  kconfig->setGroup("Online Quotes Options");
-  m_onlineQuotesWidget->m_editURL->setText(kconfig->readEntry("URL","http://finance.yahoo.com/d/quotes.csv?s=%1&f=sl1d1"));
-  m_onlineQuotesWidget->m_editSymbol->setText(kconfig->readEntry("SymbolRegex","\"([^,\"]*)\",.*"));
-  m_onlineQuotesWidget->m_editPrice->setText(kconfig->readEntry("PriceRegex","[^,]*,[^,]*,\"([^\"]*)\""));
-  m_onlineQuotesWidget->m_editDate->setText(kconfig->readEntry("DateRegex","[^,]*,([^,]*),.*"));
-#endif
 }
 
 /** Write out all the settings to the global KConfig object.
@@ -574,13 +565,6 @@ void KSettingsDlg::configWrite()
   kconfig->writeEntry("CheckSchedules", m_qradiobuttonCheckSchedules->isChecked());
   kconfig->writeEntry("CheckSchedulePreview", m_intSchedulePreview->value());
 
-#if 0
-  kconfig->setGroup("Online Quotes Options");
-  kconfig->writeEntry("URL",m_onlineQuotesWidget->m_editURL->text());
-  kconfig->writeEntry("SymbolRegex", m_onlineQuotesWidget->m_editSymbol->text());
-  kconfig->writeEntry("PriceRegex", m_onlineQuotesWidget->m_editPrice->text());
-  kconfig->writeEntry("DateRegex", m_onlineQuotesWidget->m_editDate->text());
-#endif
   m_onlineQuotesWidget->writeConfig();
   m_encryptionWidget->writeConfig();
 
