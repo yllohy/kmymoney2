@@ -259,8 +259,14 @@ void MyMoneyFile::reparentAccount(MyMoneyAccount &account, MyMoneyAccount& paren
 
   if(accountGroup(account.accountType()) == accountGroup(parent.accountType())
   || (account.accountType() == MyMoneyAccount::Income && parent.accountType() == MyMoneyAccount::Expense)
-  || (account.accountType() == MyMoneyAccount::Expense && parent.accountType() == MyMoneyAccount::Income)
-  || (account.accountType() == MyMoneyAccount::Stock && parent.accountType() == MyMoneyAccount::Investment)) {
+  || (account.accountType() == MyMoneyAccount::Expense && parent.accountType() == MyMoneyAccount::Income)) {
+
+    if(account.accountType() == MyMoneyAccount::Stock && parent.accountType() != MyMoneyAccount::Investment)
+      throw new MYMONEYEXCEPTION("Unable to reparent Stock to non-investment account");
+
+    if(parent.accountType() == MyMoneyAccount::Investment && account.accountType() != MyMoneyAccount::Stock)
+      throw new MYMONEYEXCEPTION("Unable to reparent non-stock to investment account");
+
     // automatically notify all observers once this routine is done
     MyMoneyNotifier notifier(this);
 
