@@ -48,7 +48,8 @@ public:
     liability =  0x01,
     asset =      0x02,
     expense =    0x04,
-    income =     0x08
+    income =     0x08,
+    last =       0x10
   };
 
   static const int maxHomePageItems = 3;
