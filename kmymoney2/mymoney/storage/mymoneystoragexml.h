@@ -113,6 +113,7 @@ private:
   static unsigned int fileVersion(fileVersionDirectionType dir = Reading);
 
   void writeFileBeginning(QTextStream& s);
+  void writeUserInformation(QTextStream& s, IMyMoneySerialize* storage);
   
   void writeInstitution(QTextStream&s, const MyMoneyInstitution& i);
   void writeInstitutions(QTextStream& s, IMyMoneySerialize* storage);

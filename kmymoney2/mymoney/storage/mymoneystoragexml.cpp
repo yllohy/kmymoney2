@@ -476,13 +476,13 @@ void MyMoneyStorageXML::writeInstitutions(QTextStream& s, IMyMoneySerialize* sto
   s << "\t</INSTITUTIONS>\n";
 }
 
-void writeFileBeginning(QTextStream& s)
+void MyMoneyStorageXML::writeFileBeginning(QTextStream& s)
 {
   s << "<?xml version=\"1.0\"?>\n";
   s << "<KMYMONEY-FILE name=\"kmm-modified.xml\" creationdate="">\n";
 }
 
-void writeUserInformation(QTextStream& s, IMyMoneySerialize* storage)
+void MyMoneyStorageXML::writeUserInformation(QTextStream& s, IMyMoneySerialize* storage)
 {
 /*s << storage->userName();
   s << storage->userStreet();
@@ -500,42 +500,42 @@ void writeUserInformation(QTextStream& s, IMyMoneySerialize* storage)
   s << "\t</USER>\n";
 }
 
-void writePayees(QTextStream& s, IMyMoneySerialize* storage)
+void MyMoneyStorageXML::writePayees(QTextStream& s, IMyMoneySerialize* storage)
 {
 
 }
 
-void writePayee(QTextStream& s, const MyMoneyPayee& p)
+void MyMoneyStorageXML::writePayee(QTextStream& s, const MyMoneyPayee& p)
 {
 
 }
 
-void writeAccounts(QTextStream& s, IMyMoneySerialize* storage)
+void MyMoneyStorageXML::writeAccounts(QTextStream& s, IMyMoneySerialize* storage)
 {
 
 }
 
-void writeAccount(QTextStream& s, const MyMoneyAccount& p)
+void MyMoneyStorageXML::writeAccount(QTextStream& s, const MyMoneyAccount& p)
 {
 
 }
 
-void writeTransactions(QTextStream& s, IMyMoneySerialize* storage)
+void MyMoneyStorageXML::writeTransactions(QTextStream& s, IMyMoneySerialize* storage)
 {
               
 }
 
-void writeTransaction(QTextStream& s, const MyMoneyTransaction& tx)
+void MyMoneyStorageXML::writeTransaction(QTextStream& s, const MyMoneyTransaction& tx)
 {
 
 }
 
-void writeSplits(QTextStream& s, const MyMoneyTransaction& tx)
+void MyMoneyStorageXML::writeSplits(QTextStream& s, const MyMoneyTransaction& tx)
 {                 
 
 }
 
-void writeSplit(QTextStream& s, const MyMoneySplit& split)
+void MyMoneyStorageXML::writeSplit(QTextStream& s, const MyMoneySplit& split)
 {
 
 }
