@@ -71,11 +71,32 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
 
   s << "Internal-Info\n";
   s << "-------------\n";
-  s << "next account id     = " << _storage->accountId() << "\n";
-  s << "next transaction id = " << _storage->transactionId() << "\n";
-  s << "next payee id       = " << _storage->payeeId() << "\n";
-  s << "next institution id = " << _storage->institutionId() << "\n";
-  s << "next schedule id    = " << _storage->scheduleId() << "\n";
+  s << "accounts = " << _storage->accountList().count() <<", next id = " << _storage->accountId() << "\n";
+  MyMoneyTransactionFilter filter;
+  QValueList<MyMoneyTransaction> list_t = storage->transactionList(filter);
+  QValueList<MyMoneyTransaction>::ConstIterator it_t;
+  s << "transactions = " << list_t.count() << ", next id = " << _storage->transactionId() << "\n";
+  QMap<int,int> xferCount;
+  for(it_t = list_t.begin(); it_t != list_t.end(); ++it_t) {
+    QValueList<MyMoneySplit>::ConstIterator it_s;
+    int accountCount = 0;
+    for(it_s = (*it_t).splits().begin(); it_s != (*it_t).splits().end(); ++it_s) {
+      MyMoneyAccount acc = storage->account((*it_s).accountId());
+      if(acc.accountGroup() != MyMoneyAccount::Expense
+      && acc.accountGroup() != MyMoneyAccount::Income)
+        accountCount++;
+    }
+    if(accountCount > 1)
+      xferCount[accountCount] = xferCount[accountCount] + 1;
+  }
+  QMap<int,int>::ConstIterator it_cnt;
+  for(it_cnt = xferCount.begin(); it_cnt != xferCount.end(); ++it_cnt) {
+    s << "               " << *it_cnt << " of them references " << it_cnt.key() << " accounts\n";
+  }
+
+  s << "payees = " << _storage->payeeList().count() << ", next id = " << _storage->payeeId() << "\n";
+  s << "institutions = " << _storage->institutionList().count() << ", next id = " << _storage->institutionId() << "\n";
+  s << "schedules = " << _storage->scheduleList().count() << ", next id = " << _storage->scheduleId() << "\n";
   s << "\n";
 
   s << "Institutions\n";
@@ -194,9 +215,6 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
   s << "Transactions" << "\n";
   s << "------------" << "\n";
 
-  MyMoneyTransactionFilter filter;
-  QValueList<MyMoneyTransaction> list_t = storage->transactionList(filter);
-  QValueList<MyMoneyTransaction>::ConstIterator it_t;
   for(it_t = list_t.begin(); it_t != list_t.end(); ++it_t) {
     dumpTransaction(s, storage, *it_t);
   }
