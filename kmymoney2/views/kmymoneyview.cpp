@@ -47,6 +47,8 @@
 #include <kio/netaccess.h>
 #include <ktempfile.h>
 #include <ksavefile.h>
+#include <kfilterdev.h>
+#include <kfilterbase.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -70,6 +72,8 @@
 
 #include "kmymoneyview.h"
 #include "kmymoneyfile.h"
+
+#define COMPRESSION_MIME_TYPE "application/x-gzip"
 
 KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   : KJanusWidget(parent, name, KJanusWidget::IconList)
@@ -409,20 +413,49 @@ bool KMyMoneyView::readFile(QString filename)
       return false;
   }
 
-  QFile qfile(filename);
+  // let's glimps into the file to figure out, if it's one
+  // of the old (uncompressed) or new (compressed) files.
 
-  if(qfile.open(IO_ReadOnly)) {
-    try {
-      pReader->readFile(&qfile, kfile->storage());
-    } catch (MyMoneyException *e) {
-      QString msg = e->what();
-      qDebug("%s", msg.latin1());
-      delete e;
+  QFile file(filename);
+  QIODevice *qfile = 0;
+
+  if(file.open(IO_ReadOnly)) {
+    QString  buffer;
+    int ch;
+    for(unsigned int i = 0; i < 2; ++i) {
+      ch = file.getch();
+      if(ch == -1)
+        break;
+      buffer += QChar(ch);
     }
-    qfile.close();
+    file.close();
+
+    if(buffer.length() == 2) {
+      if(buffer == QString("\037\213")) {         // gzipped?
+        qfile = KFilterDev::deviceForFile(filename, COMPRESSION_MIME_TYPE);
+      } else {
+        // we can't use file directly, as we delete qfile later on
+        qfile = new QFile(file.name());
+      }
+
+      if(qfile->open(IO_ReadOnly)) {
+        try {
+          pReader->readFile(qfile, kfile->storage());
+        } catch (MyMoneyException *e) {
+          QString msg = e->what();
+          qDebug("%s", msg.latin1());
+          delete e;
+        }
+        qfile->close();
+      } else {
+        KMessageBox::sorry(this, i18n("File not found!"));
+      }
+      delete qfile;
+    }
   } else {
     KMessageBox::sorry(this, i18n("File not found!"));
   }
+
   delete pReader;
 
   // if a temporary file was constructed by NetAccess::download,
@@ -439,14 +472,36 @@ bool KMyMoneyView::readFile(QString filename)
 
 void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter)
 {
+  QIODevice *dev = qfile;
+  KFilterBase *base = 0;
+
+  KConfig *config = KGlobal::config();
+  config->setGroup("General Options");
+
   try {
-    pWriter->writeFile(qfile, m_file->storage());
+    if(config->readBoolEntry("WriteDataUncompressed", false) == false) {
+      base = KFilterBase::findFilterByMimeType( COMPRESSION_MIME_TYPE );
+      if(base) {
+        base->setDevice(qfile, false);
+        qfile->close();
+        // we need to reopen the file to set the mode inside the filter stuff
+        dev = new KFilterDev(base, true);
+        dev->open(IO_WriteOnly);
+
+      }
+    }
+
+    pWriter->writeFile(dev, m_file->storage());
   } catch (MyMoneyException *e) {
     QString msg = e->what();
     qDebug("%s", msg.latin1());
     delete e;
   }
-  qfile->close();
+  if(base != 0) {
+    dev->close();
+    delete dev;
+  } else
+    qfile->close();
 }
 
 void KMyMoneyView::saveFile(QString filename)
