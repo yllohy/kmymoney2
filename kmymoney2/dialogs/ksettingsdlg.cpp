@@ -197,9 +197,11 @@ void KSettingsDlg::setPageList()
   m_qcheckboxShowGrid = new QCheckBox(i18n("Show a grid in the register."), qwidgetPage);
   qvboxlayoutPage->addWidget(m_qcheckboxShowGrid);
 
+/*
   // and another widget
   m_qcheckboxTextPrompt = new QCheckBox(i18n("Show a textual prompt in the register."), qwidgetPage);
   qvboxlayoutPage->addWidget(m_qcheckboxTextPrompt);
+*/
 
   // and one more
   m_qcheckboxLedgerLens = new QCheckBox(i18n("Use the ledger lens"), qwidgetPage);
@@ -387,8 +389,10 @@ void KSettingsDlg::configRead()
   m_bTempShowGrid = kconfig->readBoolEntry("ShowGrid", true);
   m_qcheckboxShowGrid->setChecked(m_bTempShowGrid);
 
+/*
   m_bTempTextPrompt = kconfig->readBoolEntry("TextPrompt", true);
   m_qcheckboxTextPrompt->setChecked(m_bTempTextPrompt);
+*/
 
   m_bTempColourPerTransaction = kconfig->readBoolEntry("ColourPerTransaction", true);
   m_qradiobuttonPerTransaction->setChecked(m_bTempColourPerTransaction);
@@ -420,7 +424,7 @@ void KSettingsDlg::configWrite()
   kconfig->writeEntry("listHeaderFont", m_kfontchooserHeader->font());
   kconfig->writeEntry("listCellFont", m_kfontchooserCell->font());
   // kconfig->writeEntry("RowCount", m_klineeditRowCount->text());
-  kconfig->writeEntry("ShowGrid", m_qcheckboxShowGrid->isChecked());
+  // kconfig->writeEntry("ShowGrid", m_qcheckboxShowGrid->isChecked());
   kconfig->writeEntry("ColourPerTransaction", m_qradiobuttonPerTransaction->isChecked());
   kconfig->writeEntry("TextPrompt", m_qcheckboxTextPrompt->isChecked());
 #if QT_VERSION > 300
@@ -524,7 +528,7 @@ void KSettingsDlg::slotUser1()
   m_qcheckboxShowGrid->setChecked(m_bTempShowGrid);
   m_qradiobuttonPerTransaction->setChecked(m_bTempColourPerTransaction);
   m_qradiobuttonOtherRow->setChecked(!m_bTempColourPerTransaction);
-  m_qcheckboxTextPrompt->setChecked(m_bTempTextPrompt);
+  // m_qcheckboxTextPrompt->setChecked(m_bTempTextPrompt);
   m_dateinputStart->setDate(m_qdateTempStart);
   m_qradiobuttonNormalView->setChecked(m_bTempNormalView);
   m_qradiobuttonAccountView->setChecked(!m_bTempNormalView);
