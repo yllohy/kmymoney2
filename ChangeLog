@@ -1,3 +1,7 @@
+2004-08-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * More changes to maintain backward compatibility with older Qt versions.
+    Application now compiles under KDE 3.0 again.
+
 2004-08-04 Ace Jones <acejones@users.sourceforge.net>
   * Added more operators to reports::QueryTable::TableRow to satisfy
     qHeapSort in earlier versions of QT
