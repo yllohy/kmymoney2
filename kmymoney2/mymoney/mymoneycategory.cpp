@@ -18,6 +18,7 @@
 
 MyMoneyCategory::MyMoneyCategory()
 {
+  m_income = true;
 }
 
 MyMoneyCategory::MyMoneyCategory(const bool income, const QString name)
