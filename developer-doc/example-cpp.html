@@ -1,0 +1,196 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+  <link type="text/css" rel="stylesheet" href="kmymoney2.css">
+</head>
+<body>
+
+<table width="100%">
+<tr>
+  <td width="33%" align="left"><a href="coding-cpp.html">Previous</a><td>
+  <td width="33%" align="center"><a href="code-standards.html">Code Standards</a></td>
+  <td width="33%" align="right">Next</td>
+</tr>
+</table>
+<hr>
+<h2 class="highlighted">Example source file for use by KMyMoney2</h2>
+<pre>
+/***************************************************************************
+                          mymoneyfile.cpp
+                             -------------------
+    copyright            : (C) 2000 by Michael Edwardes
+    email                : mte@users.sourceforge.net
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+//-----------------------------------------------------------------------------
+// QT Headers
+#include &lt;qfile.h&gt;
+#include &lt;qdatastream.h&gt;
+
+//-----------------------------------------------------------------------------
+// KDE Headers
+
+//-----------------------------------------------------------------------------
+// Project Headers
+#include &lt;string.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;ctype.h&gt;
+#include &lt;stdlib.h&gt;
+
+#include "mymoneybank.h"
+#include "mymoneypayee.h"
+#include "mymoneycategory.h"
+#include "mymoneyaccount.h"
+#include "mymoneyfile.h"
+#include "mymoney_config.h"
+
+#ifndef HAVE_CONFIG_H
+#define VERSION "UNKNOWN"
+#else
+#include "config.h"
+#endif
+
+MyMoneyFile::MyMoneyFile(void)
+{
+  m_qdateCreatedDate = QDate::currentDate();
+  m_qdateLastAccess = QDate::currentDate();
+  m_qdateLastModify = QDate::currentDate();
+  m_bDirty = false;
+  m_bInitialised = m_bContainsBanks = m_bContainsAccounts = m_bContainsTransactions = false;
+}
+
+MyMoneyFile::MyMoneyFile(const QString& usern, const QString& userStreet,
+ const QString& userTown, const QString& userCounty, const QString& userPostcode, const QString& userTelephone,
+ const QString& userEmail, const QDate& createDate)
+{
+  m_qstringUserName = usern;
+  m_qstringUserStreet = userStreet;
+  m_qstringUserTown = userTown;
+  m_qstringUserCounty = userCounty;
+  m_qstringUserPostcode = userPostcode;
+  m_qstringUserTelephone = userTelephone;
+  m_qstringUserEmail = userEmail;
+  m_qdateCreatedDate = createDate;
+  m_qdateLastAccess = createDate;
+  m_qdateLastModify = createDate;
+  m_bDirty = false;
+  m_bPasswordProtected=false;
+  m_bEncrypted=false;
+  m_bInitialised = m_bContainsBanks = m_bContainsAccounts = m_bContainsTransactions = false;
+}
+
+MyMoneyFile::~MyMoneyFile()
+{
+}
+
+QString MyMoneyFile::userAddress(void)
+{
+  // Return an address containing concatenated strings
+  QString qstringUserAddress;
+  qstringUserAddress = m_qstringUserStreet + "\n";
+  qstringUserAddress += m_qstringUserTown + "\n";
+  qstringUserAddress += m_qstringUserCounty + "\n";
+  qstringUserAddress += m_qstringUserPostcode + "\n";
+  qstringUserAddress += m_qstringUserTelephone + "\n";
+  qstringUserAddress += m_qstringUserEmail + "\n";
+  return qstringUserAddress;
+}
+
+int MyMoneyFile::saveAllData(const QString& fileName)
+{
+  QFile qfile( fileName );
+  qfile.open( IO_WriteOnly );
+  QDataStream qdatastream( &qfile );
+
+  // Write a header with a "magic number" and a version
+  QString qstringVer(VERSION);
+  qdatastream &lt;&lt; qstringVer;
+  qdatastream &lt;&lt; (Q_INT32)MAGIC;
+  if (m_bPasswordProtected)
+    qdatastream &lt;&lt; (Q_INT32)1;
+  else
+    qdatastream &lt;&lt; (Q_INT32)0;
+  if (m_bEncrypted)
+    qdatastream &lt;&lt; (Q_INT32)1;
+  else
+    qdatastream &lt;&lt; (Q_INT32)0;
+  qdatastream &lt;&lt; m_qstringPassword;
+
+  // Is updated if the user chooses to save the file
+  m_bLastModify = QDate::currentDate();
+
+  // Simple Data
+  qdatastream &lt;&lt; m_userName
+    &lt;&lt; m_userStreet
+    &lt;&lt; m_userTown
+    &lt;&lt; m_userCounty
+    &lt;&lt; m_userPostcode
+    &lt;&lt; m_userTelephone
+    &lt;&lt; m_userEmail
+    &lt;&lt; m_createdDate
+    &lt;&lt; m_lastAccess
+    &lt;&lt; m_lastModify;
+
+  // Read through the three lists writing the count and then the objects
+  // in turn
+  qdatastream &lt;&lt; m_qlistBankNames.count();
+  for (QStringList::Iterator it = m_qlistBankNames.begin(); it != m_qlistBankNames.end(); ++it)
+    qdatastream &lt;&lt; (*it);
+
+  qdatastream &lt;&lt; m_qlistCategoryList.count();
+  MyMoneyCategory *mymoneyCategory;
+  for (mymoneyCategory=m_qlistCategoryList.first(); mymoneyCategory != 0; mymoneyCategory = m_qlistCategoryList.next()) {
+    qdatastream &lt;&lt; *mymoneyCategory;
+  }
+
+  qdatastream &lt;&lt; m_qlistPayeeList.count();
+  MyMoneyPayee *mymoneypayee;
+  for ( mymoneypayee=m_qlistPayeeList.first(); mymoneypayee!=0; mymoneypayee=m_qlistPayeeList.next()) {
+    qdatastream &lt;&lt; *mymoneypayee;
+  }
+
+  qdatastream &lt;&lt; (Q_INT32)bankCount();
+  MyMoneyBank *mymoneybank;
+  for (mymoneybank=bankFirst(); mymoneybank!=0; mymoneybank=bankNext()) {
+    qdatastream &lt;&lt; *mymoneybank;
+
+    qdatastream &lt;&lt; (Q_INT32)mymoneybank-&gt;accountCount();
+    MyMoneyAccount *mymoneyaccount;
+    for (mymoneyaccount=mymoneybank-&gt;accountFirst(); mymoneyaccount!=0; mymoneyaccount=mymoneybank-&gt;accountNext()) {
+      qdatastream &lt;&lt; *mymoneyaccount;
+
+      qdatastream &lt;&lt; (Q_INT32)mymoneyaccount-&gt;transactionCount();
+      MyMoneyTransaction *mymoneytransaction;
+      for (mymoneytransaction=mymoneyaccount-&gt;transactionFirst(); mymoneytransaction!=0; mymoneytransaction=mymoneyaccount-&gt;transactionNext()) {
+        qdatastream &lt;&lt; *mymoneytransaction;
+      }
+    }
+  }
+
+  qfile.close();
+  m_bDirty = false;
+  return 0;
+}
+</pre>
+
+<p>Implementation for mymoneyfile.cpp continues...</p>
+
+<hr>
+<table width="100%">
+<tr>
+  <td width="33%" align="left"><a href="coding-cpp.html">Previous</a><td>
+  <td width="33%" align="center"><a href="code-standards.html">Code Standards</a></td>
+  <td width="33%" align="right">Next</td>
+</tr>
+</table>
+
+</body>
+</html>
