@@ -33,20 +33,20 @@
 
 class KMyMoneyFile {
 private:
-  static KMyMoneyFile *_instance;
-  MyMoneyFile *m_file;
+  // static KMyMoneyFile *_instance;
+  // MyMoneyFile *m_file;
   MyMoneySeqAccessMgr *m_storage;
   bool m_open;
 
 protected:
-  KMyMoneyFile();
   // KMyMoneyFile(const QString&);
 
 public:
+  KMyMoneyFile();
   ~KMyMoneyFile();
-  static KMyMoneyFile *instance();
+//  static KMyMoneyFile *instance();
 
-  MyMoneyFile* file();
+  // MyMoneyFile* file();
   MyMoneySeqAccessMgr* storage();
   void reset();
   void open();

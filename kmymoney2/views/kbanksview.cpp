@@ -70,7 +70,7 @@ void KAccountsView::slotListDoubleClicked(QListViewItem* pItem, const QPoint& po
   if(accountItem)
   {
     // Only emit the signal if its an account
-    MyMoneyFile *file = KMyMoneyFile::instance()->file();
+    MyMoneyFile *file = MyMoneyFile::instance();
 
     try
     {
@@ -101,7 +101,7 @@ void KAccountsView::slotListRightMouse(QListViewItem* item, const QPoint& , int 
     {
       try
       {
-        MyMoneyFile *file = KMyMoneyFile::instance()->file();
+        MyMoneyFile *file = MyMoneyFile::instance();
         MyMoneyAccount account = file->account(accountItem->accountID());
         
         m_bSelectedAccount=true;
@@ -151,7 +151,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
 
   m_selectedAccount = selectAccount;
 
-  MyMoneyFile *file = KMyMoneyFile::instance()->file();
+  MyMoneyFile *file = MyMoneyFile::instance();
 
   MyMoneyAccount liabilityAccount = file->liability();
   MyMoneyAccount assetAccount = file->asset();
@@ -367,7 +367,7 @@ void KAccountsView::slotSelectionChanged(QListViewItem *item)
   KAccountListItem *accountItem = (KAccountListItem*)item;
   if (accountItem)
   {
-    MyMoneyFile *file = KMyMoneyFile::instance()->file();
+    MyMoneyFile *file = MyMoneyFile::instance();
 
     try
     {
