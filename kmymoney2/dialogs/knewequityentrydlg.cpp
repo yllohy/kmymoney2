@@ -64,9 +64,12 @@ KNewEquityEntryDlg::KNewEquityEntryDlg(QWidget *parent, const char *name)
 KNewEquityEntryDlg::~KNewEquityEntryDlg()
 {
 }
+
 /** No descriptions */
 void KNewEquityEntryDlg::onOKClicked()
 {
+  m_strSymbolName = edtMarketSymbol->text();
+  m_strName = edtEquityName->text();
   accept();
 }
 
@@ -78,7 +81,7 @@ void KNewEquityEntryDlg::onCancelClicked()
 void KNewEquityEntryDlg::setSymbolName(const QString& str)
 {
   m_strSymbolName = str;
-  edtMarketSymbol->setText(m_strSymbolName); 
+  edtMarketSymbol->setText(m_strSymbolName);
 }
 
 void KNewEquityEntryDlg::setName(const QString& str)

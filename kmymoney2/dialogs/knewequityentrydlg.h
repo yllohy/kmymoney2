@@ -41,22 +41,22 @@ class KNewEquityEntryDlg : public kNewEquityEntryDecl
   Q_OBJECT
 public:
   KNewEquityEntryDlg(QWidget *parent = NULL, const char *name = NULL);
-  ~KNewEquityEntryDlg();
- 
+  virtual ~KNewEquityEntryDlg();
+
   void setSymbolName(const QString& str);
   QString symbolName() const  { return m_strSymbolName; }
-  
+
   void setName(const QString& str);
   QString name() const  { return m_strName; }
-  
+
 protected slots:
   void onOKClicked();
-  void onCancelClicked(); 
-  
+  void onCancelClicked();
+
 private:
   QString m_strSymbolName;
   QString m_strName;
-  
+
 };
 
 #endif
