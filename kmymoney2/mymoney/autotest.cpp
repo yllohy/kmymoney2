@@ -116,6 +116,10 @@ main(int /* argc */, char** /* argv */ )
 
   delete runner;
 
+  // make sure to delete the singletons before we start memory checking
+  // to avoid false error reports
+  delete MyMoneyFile::instance();
+
 #ifdef _CHECK_MEMORY
   chkmem.CheckMemoryLeak( true );
   _CheckMemory_End();
