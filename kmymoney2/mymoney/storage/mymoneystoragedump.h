@@ -1,5 +1,5 @@
 /***************************************************************************
-                          imymoneystoragedump.h  -  description
+                           mymoneystoragedump.h  -  description
                              -------------------
     begin                : Sun May 5 2002
     copyright            : (C) 2000-2002 by Michael Edwardes
@@ -34,18 +34,24 @@
 #include "imymoneyserialize.h"
 
 /**
-  *@author Thomas Baumgart
+  * @author Thomas Baumgart
   */
 
-class MyMoneyStorageDump {
+class MyMoneyStorageDump
+{
 public: 
-	MyMoneyStorageDump();
-	~MyMoneyStorageDump();
+  MyMoneyStorageDump();
+  ~MyMoneyStorageDump();
 
   void readStream(QDataStream& s, IMyMoneySerialize* storage);
   void writeStream(QDataStream& s, IMyMoneySerialize* storage);
 
 private:
+  void dumpTransaction(QTextStream& s, IMyMoneyStorage* storage, const MyMoneyTransaction& it_t);
+  const QString occurenceToString(const MyMoneySchedule::occurenceE occurence);
+  const QString scheduleTypeToString(MyMoneySchedule::typeE type);
+  const QString paymentMethodToString(MyMoneySchedule::paymentTypeE paymentType);
+  
 };
 
 #endif
