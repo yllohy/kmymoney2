@@ -48,6 +48,7 @@ private:
   QString m_qstringSecondItem;
   int m_nLastRow;
   int m_rowOffset;
+  int m_currentDateRow;
 
 protected:
   void paintCell(QPainter *p, int row, int col, const QRect& r, bool selected);
@@ -67,6 +68,7 @@ public:
   void paintFocus(QPainter *p, const QRect &cr);
 
   void setRowOffset(int row);
+  void setCurrentDateRow(int row);
 
 	QString cellEditedOriginalText(void) { return m_orig; }
 	

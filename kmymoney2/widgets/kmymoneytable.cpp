@@ -39,6 +39,7 @@ kMyMoneyTable::kMyMoneyTable(QWidget *parent, const char *name )
 
 	m_nLastRow = 0;
   m_rowOffset = 0;
+  m_currentDateRow = 0;
 
   // never show a horizontal scroll bar
   setHScrollBarMode(QScrollView::AlwaysOff);
@@ -320,6 +321,11 @@ void kMyMoneyTable::paintCell(QPainter *p, int row, int col, const QRect& r, boo
       } else {
         p->drawText(rr2, Qt::AlignLeft | Qt::AlignVCenter,firsttext);
       }
+      if(row == m_currentDateRow) {
+        p->setPen(defaultGridColor);
+        p->drawLine(rr.x(), 1, rr.width(), 1);
+        p->setPen(g.foreground());
+      }
       break;
     case 3:
       if (bShowGrid) {
@@ -329,6 +335,11 @@ void kMyMoneyTable::paintCell(QPainter *p, int row, int col, const QRect& r, boo
         p->setPen(g.foreground());
       }
       p->drawText(rr2, Qt::AlignCenter | Qt::AlignVCenter,firsttext);
+      if(row == m_currentDateRow) {
+        p->setPen(defaultGridColor);
+        p->drawLine(rr.x(), 1, rr.width(), 1);
+        p->setPen(g.foreground());
+      }
       break;
     case 4:
     case 5:
@@ -341,8 +352,18 @@ void kMyMoneyTable::paintCell(QPainter *p, int row, int col, const QRect& r, boo
         p->setPen(g.foreground());
       }
       p->drawText(rr2, Qt::AlignRight | Qt::AlignVCenter,firsttext);
+      if(row == m_currentDateRow) {
+        p->setPen(defaultGridColor);
+        p->drawLine(rr.x(), 1, rr.width(), 1);
+        p->setPen(g.foreground());
+      }
       break;
   }
+}
+
+void kMyMoneyTable::setCurrentDateRow(int row)
+{
+  m_currentDateRow = row;
 }
 
 void kMyMoneyTable::setRowOffset(int row)
