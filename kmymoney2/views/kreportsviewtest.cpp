@@ -309,7 +309,6 @@ void KReportsViewTest::tearDown ()
 
 void KReportsViewTest::testNetWorthSingle()
 {
-
   try 
   {
     MyMoneyReport filter( MyMoneyReport::eAssetLiability );
@@ -598,7 +597,7 @@ void KReportsViewTest::testMultipleCurrencies()
   XMLandback(filter);
   PivotTable spending_f( filter );
   writeTabletoCSV(spending_f);
-
+#if 1
   // test single foreign currency
   CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Foreign"][acCanCash][2]==(-moCanTransaction*moCanPrice));
   CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Foreign"][acCanCash][3]==(-moCanTransaction*moCanPrice));
@@ -610,20 +609,20 @@ void KReportsViewTest::testMultipleCurrencies()
   CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Foreign"][acJpyCash][4]==(-moJpyTransaction*moJpyPrice));
   CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Foreign"].m_total[2]==(-moJpyTransaction*moJpyPrice-moCanTransaction*moCanPrice));
   CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Foreign"].m_total.m_total==(-moJpyTransaction*moJpyPrice-moCanTransaction*moCanPrice-moJpyTransaction*moJpyPrice-moCanTransaction*moCanPrice-moJpyTransaction*moJpyPrice-moCanTransaction*moCanPrice));
-  
+#endif
   // Test the report type where we DO NOT convert the currency
   filter.setConvertCurrency(false);
   filter.setShowSubAccounts(true);
   XMLandback(filter);
   PivotTable spending_fnc( filter );
-  
+#if 1
   CPPUNIT_ASSERT(spending_fnc.m_grid["Expense"]["Foreign"][acCanCash][2]==(-moCanTransaction));
   CPPUNIT_ASSERT(spending_fnc.m_grid["Expense"]["Foreign"][acCanCash][3]==(-moCanTransaction));
   CPPUNIT_ASSERT(spending_fnc.m_grid["Expense"]["Foreign"][acCanCash][4]==(-moCanTransaction));
   CPPUNIT_ASSERT(spending_fnc.m_grid["Expense"]["Foreign"][acJpyCash][2]==(-moJpyTransaction));
   CPPUNIT_ASSERT(spending_fnc.m_grid["Expense"]["Foreign"][acJpyCash][3]==(-moJpyTransaction));
   CPPUNIT_ASSERT(spending_fnc.m_grid["Expense"]["Foreign"][acJpyCash][4]==(-moJpyTransaction));
-  
+#endif
   filter.setConvertCurrency(true);
   filter.clear();
   filter.setRowType(MyMoneyReport::eAssetLiability);
@@ -631,7 +630,7 @@ void KReportsViewTest::testMultipleCurrencies()
   XMLandback(filter);
   PivotTable networth_f( filter );
   writeTabletoCSV(networth_f);
-
+#if 1
   // test single foreign currency
   CPPUNIT_ASSERT(networth_f.m_grid["Asset"]["Canadian Checking"][acCanChecking][1]==(moCanOpening*moCanPrice));
   CPPUNIT_ASSERT(networth_f.m_grid["Asset"]["Canadian Checking"][acCanChecking][2]==((moCanOpening-moCanTransaction)*moCanPrice));
@@ -653,7 +652,8 @@ void KReportsViewTest::testMultipleCurrencies()
   // test multiple currencies totalled up
   CPPUNIT_ASSERT(networth_f.m_grid["Asset"].m_total[4]==((moCanOpening-moCanTransaction-moCanTransaction-moCanTransaction)*moCanPrice)+((moJpyOpening-moJpyTransaction-moJpyTransaction-moJpyTransaction)*moJpyPrice));
   CPPUNIT_ASSERT(networth_f.m_grid["Asset"].m_total[5]==((moCanOpening-moCanTransaction-moCanTransaction-moCanTransaction)*moCanPrice)+((moJpyOpening-moJpyTransaction-moJpyTransaction-moJpyTransaction)*moJpyPrice2)+moCheckingOpen);
-
+#endif
+  
 #if 0  
   // Test out Stuart Bailey's CSV writer
   MyMoneyCsvWriter csvw;
@@ -1034,5 +1034,4 @@ void KReportsViewTest::testQueryBasics()
   CPPUNIT_ASSERT(qtbl.m_transactions[11]["categorytype"]="Expense");
   CPPUNIT_ASSERT(qtbl.m_transactions[11]["category"]="Solo");
   CPPUNIT_ASSERT(qtbl.m_transactions[11]["postdate"]="2005-01-01");
-  
 }

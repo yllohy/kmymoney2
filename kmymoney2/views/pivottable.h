@@ -42,19 +42,33 @@ namespace reports {
 
 // define to enable massive debug logging to stderr
 #undef DEBUG_REPORTS
-//#define DEBUG_REPORTS
+
 #define DEBUG_ENABLED_BY_DEFAULT false
 
 #ifdef DEBUG_REPORTS
+
+// define to filter out account names & transaction amounts
+// DO NOT check into CVS with this defined!! It breaks all
+// unit tests.
+#undef DEBUG_HIDE_SENSITIVE
+
 #define DEBUG_ENTER(x) Tester ___TEST(x)
 #define DEBUG_OUTPUT(x) ___TEST.output(x)
 #define DEBUG_OUTPUT_IF(x,y) { if (x) ___TEST.output(y); }
 #define DEBUG_ENABLE(x) Tester::enable(x)
+#ifdef DEBUG_HIDE_SENSITIVE
+#define DEBUG_SENSITIVE(x) QString("hidden")
 #else
+#define DEBUG_SENSITIVE(x) (x)
+#endif
+
+#else
+
 #define DEBUG_ENTER(x)
 #define DEBUG_OUTPUT(x)
 #define DEBUG_OUTPUT_IF(x,y)
 #define DEBUG_ENABLE(x) 
+#define DEBUG_SENSITIVE(x)
 #endif
 
 class Tester

@@ -139,7 +139,7 @@ void Tester::output( const QString& _text )
 
 PivotTable::AccountDescriptor::AccountDescriptor( void )
 {
-  DEBUG_ENTER("AccountDescriptor::AccountDescriptor( void )");
+  //DEBUG_ENTER("AccountDescriptor::AccountDescriptor( void )");
   m_file = MyMoneyFile::instance();
 }
 
@@ -155,6 +155,7 @@ PivotTable::AccountDescriptor::AccountDescriptor( const AccountDescriptor& copy 
 PivotTable::AccountDescriptor::AccountDescriptor( const QCString& accountid ): m_account( accountid )
 {
   DEBUG_ENTER("AccountDescriptor::AccountDescriptor( account )");
+  DEBUG_OUTPUT(QString("Account %1").arg(accountid));
   m_file = MyMoneyFile::instance();
   calculateAccountHierarchy();
 }
@@ -165,8 +166,12 @@ void PivotTable::AccountDescriptor::calculateAccountHierarchy( void )
 
   QCString resultid = m_account;
   QCString parentid = m_file->account(resultid).parentAccountId();
-  m_names.prepend(m_file->account(resultid).name());
 
+#ifdef DEBUG_HIDE_SENSITIVE
+  m_names.prepend(m_file->account(resultid).id());
+#else
+  m_names.prepend(m_file->account(resultid).name());
+#endif
   while (!m_file->isStandardAccount(parentid))
   {
     // take on the identity of our parent
@@ -174,7 +179,11 @@ void PivotTable::AccountDescriptor::calculateAccountHierarchy( void )
 
     // and try again
     parentid = m_file->account(resultid).parentAccountId();
+#ifdef DEBUG_HIDE_SENSITIVE
+    m_names.prepend(m_file->account(resultid).id());
+#else
     m_names.prepend(m_file->account(resultid).name());
+#endif
   }
 }
 
@@ -206,7 +215,7 @@ MyMoneyMoney PivotTable::AccountDescriptor::currencyPrice(const QDate& date) con
 
 bool PivotTable::AccountDescriptor::operator<(const AccountDescriptor& second) const
 {
-  DEBUG_ENTER("AccountDescriptor::operator<");
+  //DEBUG_ENTER("AccountDescriptor::operator<");
 
   bool result = false;
   bool haveresult = false;
@@ -285,6 +294,7 @@ QString PivotTable::AccountDescriptor::getTopLevel( void ) const
 PivotTable::PivotTable( const MyMoneyReport& _config_f ):
   m_config_f( _config_f )
 {
+  DEBUG_ENABLE(true);
   DEBUG_ENTER("PivotTable::PivotTable()");
 
   //
@@ -367,7 +377,8 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
   QValueList<MyMoneyTransaction>::const_iterator it_transaction = transactions.begin();
   unsigned colofs = m_beginDate.year() * 12 + m_beginDate.month() - 1;
 
-  DEBUG_OUTPUT(QString("Matched %1 transactions").arg(transactions.count()));
+  DEBUG_OUTPUT(QString("Found %1 matching transactions").arg(transactions.count()));
+  DEBUG_ENABLE(false);
   while ( it_transaction != transactions.end() )
   {
     QDate postdate = (*it_transaction).postDate();
@@ -442,6 +453,8 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
 
 void PivotTable::collapseColumns(void)
 {      
+  DEBUG_ENTER("PivotTable::collapseColumns");
+  
   unsigned columnpitch = m_config_f.columnPitch();
   if ( columnpitch != 1 )
   {
@@ -477,6 +490,9 @@ void PivotTable::collapseColumns(void)
 
 void PivotTable::accumulateColumn(unsigned destcolumn, unsigned sourcecolumn)
 {
+  DEBUG_ENTER("PivotTable::accumulateColumn");
+  DEBUG_OUTPUT(QString("From Column %1 to %2").arg(sourcecolumn).arg(destcolumn));
+
   // iterate over outer groups
   TGrid::iterator it_outergroup = m_grid.begin();
   while ( it_outergroup != m_grid.end() )
@@ -506,6 +522,9 @@ void PivotTable::accumulateColumn(unsigned destcolumn, unsigned sourcecolumn)
 
 void PivotTable::clearColumn(unsigned column)
 {
+  DEBUG_ENTER("PivotTable::clearColumn");
+  DEBUG_OUTPUT(QString("Column %1").arg(column));
+
   // iterate over outer groups
   TGrid::iterator it_outergroup = m_grid.begin();
   while ( it_outergroup != m_grid.end() )
@@ -531,7 +550,9 @@ void PivotTable::clearColumn(unsigned column)
 }
 
 void PivotTable::calculateColumnHeadings(void)  
-{  
+{ 
+  DEBUG_ENTER("PivotTable::calculateColumnHeadings");
+
   // one column for the opening balance
   m_columnHeadings.append( "Opening" );
   
@@ -676,7 +697,7 @@ void PivotTable::convertToBaseCurrency( void )
           double value = oldval * conversionfactor;
           it_row.data()[column] = MyMoneyMoney( value );
 
-          DEBUG_OUTPUT_IF(conversionfactor != 1.0 ,QString("Factor of %1, value was %2, now %3").arg(conversionfactor).arg(oldval).arg(it_row.data()[column].toDouble()));
+          DEBUG_OUTPUT_IF(conversionfactor != 1.0 ,QString("Factor of %1, value was %2, now %3").arg(conversionfactor).arg(DEBUG_SENSITIVE(oldval)).arg(DEBUG_SENSITIVE(it_row.data()[column].toDouble())));
 
           // Move to the end of the next month
           valuedate = valuedate.addDays(1).addMonths(1).addDays(-1);
@@ -805,7 +826,7 @@ void PivotTable::calculateTotals( void )
 void PivotTable::assignCell( const QString& outergroup, const PivotTable::AccountDescriptor& row, unsigned column, MyMoneyMoney value )
 {
   DEBUG_ENTER("PivotTable::assignCell");
-  DEBUG_OUTPUT(QString("Parameters: %1,%2,%3,%4").arg(outergroup).arg(row.debugName()).arg(column).arg(value.toDouble()));
+  DEBUG_OUTPUT(QString("Parameters: %1,%2,%3,%4").arg(outergroup).arg(row.debugName()).arg(column).arg(DEBUG_SENSITIVE(value.toDouble())));
 
   // ensure the row already exists (and its parental hierarchy)
   createRow( outergroup, row, true );
@@ -873,7 +894,7 @@ bool PivotTable::includesAccount( const MyMoneyAccount& account ) const
 
 QString PivotTable::renderCSV( void ) const
 {
-  DEBUG_ENTER("PivotTable::renderHTML");
+  DEBUG_ENTER("PivotTable::renderCSV");
 
   //
   // Report Title
