@@ -1,0 +1,404 @@
+/***************************************************************************
+                          ofxiimporterplugin.cpp
+                             -------------------
+    begin                : Sat Jan 01 2005
+    copyright            : (C) 2005 by Ace Jones
+    email                : Ace Jones <acejones@users.sourceforge.net>
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+// ----------------------------------------------------------------------------
+// KDE Includes
+
+#include <kgenericfactory.h>
+
+// ----------------------------------------------------------------------------
+// QT Includes
+
+#include <qfile.h>
+#include <qtextstream.h>
+
+// ----------------------------------------------------------------------------
+// Project Includes
+
+#include "ofximporterplugin.h"
+
+K_EXPORT_COMPONENT_FACTORY( kmm_ofximport,
+                            KGenericFactory<OfxImporterPlugin>( "kmm_ofximport" ) )
+
+OfxImporterPlugin::OfxImporterPlugin(QObject *parent, const char *name, const QStringList&)
+ : KMyMoneyPlugin::ImporterPlugin( parent, name ),
+ m_valid( false )
+{
+}
+
+OfxImporterPlugin::~OfxImporterPlugin()
+{
+}
+
+QString OfxImporterPlugin::formatName(void) const
+{
+  return "OFX";
+}
+
+bool OfxImporterPlugin::isMyFormat( const QString& filename ) const
+{
+  // filename is an Ofx file if it contains the tag "<OFX>" somewhere.
+  bool result = false;
+
+  QFile f( filename );
+  if ( f.open( IO_ReadOnly ) )
+  {
+    QTextStream ts( &f );
+
+    while ( !ts.atEnd() && !result )
+      if ( ts.readLine().contains("<OFX>",false) )
+        result = true;
+
+    f.close();
+  }
+
+  return result;
+}
+  
+bool OfxImporterPlugin::import( const QString& filename, QValueList<MyMoneyStatement>& result )
+{
+  m_fatalerror = "Unable to parse file";
+  m_valid = false;
+  
+// Yes, I'll get rid of these once the plugin is only made if you have libofx.
+#ifdef HAVE_NEW_OFX
+  m_statementlist.clear();
+  
+  QCString filename_deep( filename.utf8() );
+
+  LibofxContextPtr ctx = libofx_get_new_context();
+  Q_CHECK_PTR(ctx);
+
+  ofx_set_transaction_cb(ctx, ofxTransactionCallback, this);
+  ofx_set_statement_cb(ctx, ofxStatementCallback, this);
+  ofx_set_account_cb(ctx, ofxAccountCallback, this);
+  ofx_set_status_cb(ctx, ofxStatusCallback, this);
+  libofx_proc_file(ctx, filename_deep, AUTODETECT);
+  libofx_free_context(ctx);
+
+  if ( m_valid )
+    result += m_statementlist;
+#endif    
+  return m_valid;
+}
+
+QString OfxImporterPlugin::lastError(void) const
+{
+  if ( m_fatalerror )
+    return QString();
+  else
+    return m_fatalerror;
+}
+
+#ifdef HAVE_NEW_OFX
+
+/* __________________________________________________________________________
+ * AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+ *
+ * Static callbacks for LibOFX
+ *
+ * YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
+ */
+
+int OfxImporterPlugin::ofxTransactionCallback(struct OfxTransactionData data, void * pv)
+{
+  OfxImporterPlugin* pofx = reinterpret_cast<OfxImporterPlugin*>(pv);
+  MyMoneyStatement& s = pofx->back();
+
+  MyMoneyStatement::Transaction t;
+
+  if(data.date_posted_valid==true)
+  {
+    QDateTime dt;
+    dt.setTime_t(data.date_posted);
+    t.m_datePosted = dt.date();
+  }
+  else if(data.date_initiated_valid==true)
+  {
+    QDateTime dt;
+    dt.setTime_t(data.date_initiated);
+    t.m_datePosted = dt.date();
+  }
+
+  if(data.amount_valid==true)
+  {
+    // if this is an investment statement, reverse the sign.  not sure
+    // why this is needed, so I suppose it's a bit of a hack for the moment.
+    double sign = 1.0;
+    if (data.invtransactiontype_valid==true)
+      sign=-1.0;
+
+    t.m_moneyAmount = sign * data.amount;
+  }
+
+  if(data.check_number_valid==true)
+  {
+    t.m_strNumber = data.check_number;
+  }
+
+  if(data.fi_id_valid==true)
+  {
+    t.m_strBankID = QString("ID ") + data.fi_id;
+  }
+  else if(data.reference_number_valid==true)
+  {
+    t.m_strBankID = QString("REF ") + data.reference_number;
+  }
+
+  if(data.payee_id_valid==true)
+  {
+    t.m_strPayee = data.payee_id;
+  }
+  else if(data.name_valid==true)
+  {
+    t.m_strPayee = data.name;
+  }
+
+  if(data.memo_valid==true){
+    t.m_strMemo = data.memo;
+  }
+
+  // If the payee or memo fields are blank, set them to
+  // the other one which is NOT blank.
+  if ( t.m_strPayee.isEmpty() )
+  {
+    if ( ! t.m_strMemo.isEmpty() )
+      t.m_strPayee = t.m_strMemo;
+  }
+  else
+  {
+    if ( t.m_strMemo.isEmpty() )
+      t.m_strMemo = t.m_strPayee;
+  }
+
+  if(data.security_data_valid==true)
+  {
+    struct OfxSecurityData* secdata = data.security_data_ptr;
+
+    if(secdata->ticker_valid==true){
+      t.m_strSecurity += secdata->ticker;
+    }
+
+    if(secdata->secname_valid==true){
+      t.m_strSecurity += QString(" ") + secdata->secname;
+    }
+  }
+
+  if(data.units_valid==true)
+  {
+    t.m_dShares = data.units;
+  }
+  else
+  {
+    t.m_dShares = 0;
+  }
+
+  bool unhandledtype = false;
+  QString type;
+
+  if(data.invtransactiontype_valid==true)
+  {
+    switch (data.invtransactiontype)
+    {
+    case OFX_BUYDEBT:
+    case OFX_BUYMF:
+    case OFX_BUYOPT:
+    case OFX_BUYOTHER:
+    case OFX_BUYSTOCK:
+      t.m_eAction = MyMoneyStatement::Transaction::eaBuy;
+      break;
+    case OFX_REINVEST:
+      t.m_eAction = MyMoneyStatement::Transaction::eaReinvestDividend;
+      break;
+    case OFX_SELLDEBT:
+    case OFX_SELLMF:
+    case OFX_SELLOPT:
+    case OFX_SELLOTHER:
+    case OFX_SELLSTOCK:
+      t.m_eAction = MyMoneyStatement::Transaction::eaSell;
+      break;
+    case OFX_INCOME:
+      t.m_eAction = MyMoneyStatement::Transaction::eaCashDividend;
+      // NOTE: With CashDividend, the amount of the dividend should
+      // be in data.amount.  Since I've never seen an OFX file with
+      // cash dividends, this is an assumption on my part. (acejones)
+      break;
+
+    //
+    // These types are all not handled.  We will generate a warning for them.
+    //
+    case OFX_CLOSUREOPT:
+      unhandledtype = true;
+      type = "CLOSUREOPT (Close a position for an option)";
+      break;
+    case OFX_INVEXPENSE:
+      unhandledtype = true;
+      type = "INVEXPENSE (Misc investment expense that is associated with a specific security)";
+      break;
+    case OFX_JRNLFUND:
+      unhandledtype = true;
+      type = "JRNLFUND (Journaling cash holdings between subaccounts within the same investment account)";
+      break;
+    case OFX_MARGININTEREST:
+      unhandledtype = true;
+      type = "MARGININTEREST (Margin interest expense)";
+      break;
+    case OFX_RETOFCAP:
+      unhandledtype = true;
+      type = "RETOFCAP (Return of capital)";
+      break;
+    case OFX_SPLIT:
+      unhandledtype = true;
+      type = "SPLIT (Stock or mutial fund split)";
+      break;
+    case OFX_TRANSFER:
+      unhandledtype = true;
+      type = "TRANSFER (Transfer holdings in and out of the investment account)";
+      break;
+    default:
+      pofx->addWarning(QString("OFX Transaction Warning: File includes a transaction of an unknown type (%1).  Please contact the developers mailing list, and we can try to add support for it.").arg(data.invtransactiontype));
+      break;
+    }
+  }
+
+  if ( unhandledtype )
+    pofx->addWarning(QString("OFX Transaction Warning: File includes a transaction of an unsupported type (%1).  Please contact the developers mailing list, and we can try to add support for it.").arg(type));
+  else
+    s.m_listTransactions += t;
+
+  return 0;
+}
+
+int OfxImporterPlugin::ofxStatementCallback(struct OfxStatementData data, void* pv)
+{
+  OfxImporterPlugin* pofx = reinterpret_cast<OfxImporterPlugin*>(pv);
+  MyMoneyStatement& s = pofx->back();
+
+  pofx->setValid();
+
+  if(data.currency_valid==true)
+  {
+    s.m_strCurrency = data.currency;
+  }
+  if(data.account_id_valid==true)
+  {
+    s.m_strAccountNumber = data.account_id;
+  }
+  if(data.date_start_valid==true)
+  {
+    QDateTime dt;
+    dt.setTime_t(data.date_start);
+    s.m_dateBegin = dt.date();
+  }
+
+  if(data.date_end_valid==true)
+  {
+    QDateTime dt;
+    dt.setTime_t(data.date_end);
+    s.m_dateEnd = dt.date();
+  }
+
+  if(data.ledger_balance_valid==true)
+  {
+    s.m_moneyClosingBalance = static_cast<double>(data.ledger_balance);
+  }
+
+  return 0;
+}
+
+int OfxImporterPlugin::ofxAccountCallback(struct OfxAccountData data, void * pv)
+{
+  OfxImporterPlugin* pofx = reinterpret_cast<OfxImporterPlugin*>(pv);
+  pofx->addnew();
+  MyMoneyStatement& s = pofx->back();
+
+  // Having any account at all makes an ofx statement valid
+  pofx->m_valid = true;
+  
+  if(data.account_id_valid==true)
+  {
+    s.m_strAccountName = data.account_name;
+    s.m_strAccountNumber = data.account_id;
+  }
+  if(data.currency_valid==true)
+  {
+    s.m_strCurrency = data.currency;
+  }
+
+  if(data.account_type_valid==true)
+  {
+    switch(data.account_type)
+    {
+    case OfxAccountData::OFX_CHECKING : s.m_eType = MyMoneyStatement::etCheckings;
+      break;
+    case OfxAccountData::OFX_SAVINGS : s.m_eType = MyMoneyStatement::etSavings;
+      break;
+    case OfxAccountData::OFX_MONEYMRKT : s.m_eType = MyMoneyStatement::etInvestment;
+      break;
+    case OfxAccountData::OFX_CREDITLINE : s.m_eType = MyMoneyStatement::etCreditCard;
+      break;
+    case OfxAccountData::OFX_CMA : s.m_eType = MyMoneyStatement::etCreditCard;
+      break;
+    case OfxAccountData::OFX_CREDITCARD : s.m_eType = MyMoneyStatement::etCreditCard;
+      break;
+    case OfxAccountData::OFX_INVESTMENT : s.m_eType = MyMoneyStatement::etInvestment;
+      break;
+    }
+  }
+
+  return 0;
+}
+
+int OfxImporterPlugin::ofxStatusCallback(struct OfxStatusData data, void * pv)
+{
+  OfxImporterPlugin* pofx = reinterpret_cast<OfxImporterPlugin*>(pv);
+  QString message;
+
+  // if we got this far, we know we were able to parse the file.
+  // so if it fails after here it can only because there were no actual
+  // accounts in the file!
+  pofx->m_fatalerror = "No accounts found.";
+  
+  if(data.ofx_element_name_valid==true)
+    message.prepend(QString("%1: ").arg(data.ofx_element_name));
+
+  if(data.code_valid==true)
+    message += QString("%1 (Code %2): %3").arg(data.name).arg(data.code).arg(data.description);
+
+  if(data.server_message_valid==true)
+    message += QString(" (%1)").arg(data.server_message);
+
+  if(data.severity_valid==true){
+    switch(data.severity){
+    case OfxStatusData::INFO:
+      pofx->addInfo( message );
+      break;
+    case OfxStatusData::ERROR:
+      pofx->addError( message );
+      break;
+    case OfxStatusData::WARN:
+      pofx->addWarning( message );
+      break;
+    default:
+      pofx->addWarning( message );
+      pofx->addWarning( "Previous message was an unknown type.  'WARNING' was assumed.");
+      break;
+    }
+  }
+  return 0;
+}
+#endif

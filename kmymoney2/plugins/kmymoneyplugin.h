@@ -71,5 +71,63 @@ namespace KMyMoneyPlugin {
 
   };
 
+/**
+  * This class describes the interface between the KMyMoney
+  * application and it's IMPORTER plugins. All importer plugins 
+  * must be derived from this class.
+  *
+  * A good tutorial on how to design and develop a plugin
+  * structure for a KDE application (e.g. KMyMoney) can be found at
+  * http://developer.kde.org/documentation/tutorials/developing-a-plugin-structure/index.html
+  *
+  */
+  class ImporterPlugin : public QObject
+  {
+    Q_OBJECT
+  public:
+    ImporterPlugin(QObject* parent, const char* name);
+    virtual ~ImporterPlugin();
+    
+    /**
+      * This method returns the english-language name of the format
+      * this plugin imports, e.g. "OFX"
+      *
+      * @return QString Name of the format
+      */
+    virtual QString formatName(void) const = 0;
+  
+    /**
+      * This method returns whether this plugin is able to import
+      * a particular file.
+      *
+      * @param filename Fully-qualified pathname to a file
+      *
+      * @return bool Whether the indicated file is importable by this plugin
+      */
+    virtual bool isMyFormat( const QString& filename ) const = 0;
+    
+    /**
+      * Import a file
+      *
+      * @param filename File to import
+      * @param result List of statements onto which to add the resulting 
+      *  statements 
+      *
+      * @return bool Whether the import was successful.  If the return value is
+      *  false, the @p result list should be unmodified.
+      */
+    virtual bool import( const QString& filename, QValueList<MyMoneyStatement>& result ) = 0;
+  
+    /**
+      * Returns the error result of the last import
+      *
+      * @return QString English-language name of the error encountered in the
+      *  last import, or QString() if it was successful.
+      * 
+      */
+    virtual QString lastError(void) const = 0;
+    
+  };
+  
 }; // end of namespace
 #endif
