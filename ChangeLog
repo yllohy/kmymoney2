@@ -1,3 +1,9 @@
+2004-02-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed #897033 (fixed open file handling)
+  * Fixed #902580 (unable to create category during transaction entry)
+  * Fixed #902581 (unable to modify date correctly in ledger view)
+  * Set initial focus of new account wizard to account name
+
 2004-02-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added new MyMoneyMoney implementation which is based on
     numerators and denominators (based on GNUCash's gnc_numeric
