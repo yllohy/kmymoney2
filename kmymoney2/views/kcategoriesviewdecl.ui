@@ -35,8 +35,8 @@
                     <height>30</height>
                 </size>
             </property>
-            <property name="leftImageFile" stdset="0">
-                <cstring>pics/titlelabel_categories.png</cstring>
+            <property name="text" stdset="0">
+                <string>Categories</string>
             </property>
             <property name="rightImageFile" stdset="0">
                 <cstring>pics/titlelabel_background.png</cstring>
@@ -155,6 +155,7 @@
             <verstretch>0</verstretch>
         </sizepolicy>
         <pixmap>image0</pixmap>
+        <property type="String">text</property>
         <property type="CString">leftImageFile</property>
         <property type="CString">rightImageFile</property>
     </customwidget>

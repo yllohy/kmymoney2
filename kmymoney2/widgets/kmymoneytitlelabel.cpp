@@ -17,23 +17,35 @@
 
 // ----------------------------------------------------------------------------
 // QT Includes
+
 #include <qpixmap.h>
 #include <qvariant.h>
+#include <qstyle.h>
+#include <qpainter.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
+
 #include <kglobal.h>
 #include <kstandarddirs.h>
 #include <kdebug.h>
+#include <kglobalsettings.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
+
 #include "kmymoneytitlelabel.h"
 
 kMyMoneyTitleLabel::kMyMoneyTitleLabel(QWidget *parent, const char *name)
  :  QLabel(parent, name),
-    m_bgColor( QColor(50,131,96) )
+    m_bgColor( KGlobalSettings::highlightColor() ),
+    m_textColor( KGlobalSettings::highlightedTextColor() ),
+    m_shadowColor( KGlobalSettings::textColor() )
 {
+  QFont f = font();
+  f.setPointSize(14);
+  f.setStyleHint( QFont::SansSerif, QFont::PreferAntialias );
+  setFont(f);
 }
 
 kMyMoneyTitleLabel::~kMyMoneyTitleLabel()
@@ -63,7 +75,7 @@ void kMyMoneyTitleLabel::resizeEvent ( QResizeEvent * )
   QRect cr = contentsRect();
   QImage output( cr.width(), cr.height(), 32 );
   output.fill( m_bgColor.rgb() );
-  
+
   bitBlt ( &output, cr.width() - m_rightImage.width(), 0, &m_rightImage, 0, 0, m_rightImage.width(), m_rightImage.height(), 0 );
   bitBlt ( &output, 0, 0, &m_leftImage, 0, 0, m_leftImage.width(), m_leftImage.height(), 0 );
 
@@ -71,4 +83,27 @@ void kMyMoneyTitleLabel::resizeEvent ( QResizeEvent * )
   pix.convertFromImage(output);
   setPixmap(pix);
   setMinimumWidth( m_rightImage.width() );
+}
+
+void kMyMoneyTitleLabel::drawContents(QPainter *p)
+{
+  // first draw pixmap
+  QLabel::drawContents(p);
+
+  // then draw shadow
+  QRect shadowrect = contentsRect();
+  shadowrect.setTop( shadowrect.top() + 2 );
+  shadowrect.setLeft( shadowrect.left() + 2 );
+  style().drawItem( p, shadowrect, alignment(), colorGroup(), isEnabled(),
+                          0, QString("   ")+m_text, -1, &m_shadowColor );
+  
+  // then draw text on top
+  style().drawItem( p, contentsRect(), alignment(), colorGroup(), isEnabled(),
+                          0, QString("   ")+m_text, -1, &m_textColor );
+}
+
+void kMyMoneyTitleLabel::setText(const QString& txt)
+{
+  m_text = txt;
+  update();
 }

@@ -53,7 +53,7 @@ KAccountsView::KAccountsView(QWidget *parent, const char *name, bool bInstitutio
    m_bViewNormalAccountsView(bInstitutionView)
 {
   if ( bInstitutionView )
-    titleLabel->setProperty( "leftImageFile", "pics/titlelabel_institutions.png" );
+    titleLabel->setProperty( "text", i18n("Institutions") );
 
   accountListView->setRootIsDecorated(true);
   accountListView->setAllColumnsShowFocus(true);

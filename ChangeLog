@@ -1,3 +1,6 @@
+2005-02-16 Ace Jones <acejones@users.sourceforge.net>
+  * Changed the title bar to draw the text in at runtime.  Thanks to THB.
+  
 2005-02-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed reported documentation inconsistencies
 

@@ -75,7 +75,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
 
   kMyMoneyTitleLabel* titleLabel = new kMyMoneyTitleLabel( this, "titleLabel" );
   titleLabel->setMinimumSize( QSize( 100, 30 ) );
-  titleLabel->setProperty( "leftImageFile", "pics/titlelabel_ledgers.png" );
+  titleLabel->setProperty( "text", i18n("Ledgers") );
   titleLabel->setProperty( "rightImageFile", "pics/titlelabel_background.png" );
   m_formLayout->addWidget( titleLabel );
 

@@ -60,8 +60,8 @@ KHomeView::KHomeView(QWidget *parent, const char *name )
 
   titleLabel = new kMyMoneyTitleLabel( this, "titleLabel" );
   titleLabel->setMinimumSize( QSize( 100, 30 ) );
-  titleLabel->setProperty( "leftImageFile", "pics/titlelabel_home.png" );
   titleLabel->setProperty( "rightImageFile", "pics/titlelabel_background.png" );
+  titleLabel->setProperty( "text", i18n("Home") );
   m_qvboxlayoutPage->addWidget( titleLabel );
 
   titleLine = new QFrame( this, "titleLine" );

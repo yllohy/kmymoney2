@@ -228,7 +228,7 @@ KReportsView::KReportsView(QWidget *parent, const char *name )
 
   titleLabel = new kMyMoneyTitleLabel( this, "titleLabel" );
   titleLabel->setMinimumSize( QSize( 100, 30 ) );
-  titleLabel->setProperty( "leftImageFile", "pics/titlelabel_reports.png" );
+  titleLabel->setProperty( "text", i18n("Reports") );
   titleLabel->setProperty( "rightImageFile", "pics/titlelabel_background.png" );
   m_qvboxlayoutPage->addWidget( titleLabel );
 
