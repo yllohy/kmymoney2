@@ -476,9 +476,12 @@ inline const MyMoneyMoney& MyMoneyMoney::operator=(int iAmountInPence)
 ////////////////////////////////////////////////////////////////////////////////
 inline bool MyMoneyMoney::operator==(const MyMoneyMoney& Amount) const
 {
-  if((m_num == Amount.m_num && m_denom == Amount.m_denom)
-  || (m_num == 0 && Amount.m_num == 0))
+  if(m_denom == Amount.m_denom)
+    return m_num == Amount.m_num;
+
+  if(m_num == 0 && Amount.m_num == 0)
     return true;
+
   return ((m_num * Amount.m_denom) == (Amount.m_num * m_denom));
 }
 
