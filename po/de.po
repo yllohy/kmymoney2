@@ -4505,11 +4505,11 @@ msgstr ""
 
 #: views/kledgerviewloan.cpp:208 views/kledgerviewcheckings.cpp:402
 msgid "&Reconcile ..."
-msgstr "&Ableichen ..."
+msgstr "&Abgleichen ..."
 
 #: views/kledgerviewloan.cpp:210 views/kledgerviewcheckings.cpp:404
 msgid "Start the account reconciliation"
-msgstr "Kontoabgleich starten"
+msgstr "Kontenabgleich starten"
 
 #: views/kledgerviewloan.cpp:211 views/kledgerviewcheckings.cpp:405
 msgid "Use this to reconcile your account against the bank statement."
@@ -4520,7 +4520,7 @@ msgstr "Drücken, um Konten mit den Kontoauszügen abzustimmen."
 #: views/kledgerviewcheckings.cpp:302 views/kledgerviewcheckings.cpp:322
 #: views/kledgerviewcheckings.cpp:1335 views/kledgerviewcheckings.cpp:1377
 msgid "Edit splits ..."
-msgstr "Teilbuchung bearbeiten ..."
+msgstr "Positionen bearbeiten ..."
 
 #: views/kledgerviewloan.cpp:297 views/kledgerviewloan.cpp:314
 #: views/kledgerviewloan.cpp:1012 views/kledgerviewloan.cpp:1061
