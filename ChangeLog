@@ -1,3 +1,6 @@
+2004-12-18 Kevin Tambascio <ktambascio@users.sourceforge.net>
+  * Added a new institution view, so users can easily edit institution properties.
+
 2004-12-17 Ace Jones <acejones@users.sourceforge.net>
   * Maintain backward compatibility with Qt designer 3.2 
 
