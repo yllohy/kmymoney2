@@ -54,6 +54,7 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
   m_qbuttonOK->setGuiItem(KStdGuiItem::ok());
   m_qbuttonCancel->setGuiItem(KStdGuiItem::cancel());
   m_qbuttonSplit->setGuiItem(KMyMoneyUtils::splitGuiItem());
+  m_helpButton->setGuiItem(KStdGuiItem::help());
   
   m_actionType = action;
   m_schedule = schedule;

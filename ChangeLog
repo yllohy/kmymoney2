@@ -5,6 +5,7 @@
   * Remove the new, edit and delete buttons from the categories view.
   * Select the payee after adding it in the payees view.
   * Dont let account types not supported by engine at this time get created.
+  * Add a, non functional, help button to the new schedule dialog.
 
 2003-09-25 Kevin Tambascio <ktambascio@yahoo.com>
   * Able to write out files in XML with all the categories present in the new engine.
