@@ -3,6 +3,7 @@
     transaction
   * Make a selected schedule visible when coming from the 'home' page
     through a link on the schedule
+  * Fixed EOL coding from CRLF to LF in all relevant files
 
 2004-01-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed #887044 (cannot rename categories)
