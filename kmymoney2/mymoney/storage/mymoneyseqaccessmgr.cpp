@@ -366,13 +366,11 @@ void MyMoneySeqAccessMgr::addTransaction(MyMoneyTransaction& transaction, const 
   // perform some checks to see that the transaction stuff is OK. For
   // now we assume that
   // * no ids are assigned
-  // * the pointer to the MyMoneyFile object is 0
   // * the date valid (must not be empty)
   // * the referenced accounts in the splits exist
 
   // first perform all the checks
   if(transaction.id() != ""
-  || transaction.file() != 0
   || !transaction.postDate().isValid())
     throw new MYMONEYEXCEPTION("invalid transaction to be added");
 
