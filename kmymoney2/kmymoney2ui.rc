@@ -43,6 +43,7 @@
     <Action name="tool_currency_dialog"/>
     <Action name="file_consistency_check"/>
     <Action name="equity_price_update"/>
+    <Action name="banking_settings"/>
   </Menu>
 
   <Menu name="help">

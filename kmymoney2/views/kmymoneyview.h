@@ -55,6 +55,7 @@ class IMyMoneyStorageFormat;
 class MyMoneyTransaction;
 class KInvestmentView;
 class KReportsView;
+class KJobView;
 
 /**
   * This class represents the view of the MyMoneyFile which contains
@@ -89,6 +90,8 @@ private:
     AccountReconcile,
     AccountEdit,
     AccountDelete,
+    AccountOnlineMap,
+    AccountOnlineUpdate,
     CategoryNew
   };
 
@@ -101,6 +104,7 @@ private:
   KInvestmentView *m_investmentView;
   KReportsView* m_reportsView;
   KFindTransactionDlg* m_searchDlg;
+  KJobView *m_jobView;
 
   QVBox* m_homeViewFrame;
   QVBox* m_accountsViewFrame;
@@ -110,6 +114,7 @@ private:
   QVBox* m_ledgerViewFrame;
   QVBox* m_investmentViewFrame;
   QVBox* m_reportsViewFrame;
+  QVBox* m_jobViewFrame;
 
   bool m_fileOpen;
 
@@ -427,6 +432,10 @@ protected slots:
     * selected account. TODO: move this method into KBanksView.
     */
   void slotAccountDelete();
+
+  void slotAccountOnlineMap();
+
+  void slotAccountOnlineUpdate();
 
   /**
     * Called by the context menu created in slotBankRightMouse.  Brings up

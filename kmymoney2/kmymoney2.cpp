@@ -14,8 +14,18 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
+
 #include <stdio.h>
 #include <iostream>
+
+#ifdef HAVE_KBANKING
+#include <converter/mymoneybanking.h>
+#endif
+
 
 // ----------------------------------------------------------------------------
 // QT Includes
@@ -55,10 +65,6 @@
 
 // ----------------------------------------------------------------------------
 // Project Includes
-
-#ifdef HAVE_CONFIG_H
-#include "../config.h"
-#endif
 
 #include "kmymoney2.h"
 #include "kmymoney2_stub.h"
@@ -197,9 +203,7 @@ void KMyMoney2App::initActions()
   filePersonalData = new KAction(i18n("Personal Data..."), "info", 0, this, SLOT(slotFileViewPersonal()), actionCollection(), "file_personal_data");
   fileBackup = new KAction(i18n("Backup..."), "backup",0,this,SLOT(slotFileBackup()),actionCollection(),"file_backup");
   actionQifImport = new KAction(i18n("QIF ..."), "", 0, this, SLOT(slotQifImport()), actionCollection(), "file_import_qif");
-#if HAVE_LIBOFX
   actionOfxImport = new KAction(i18n("OFX ..."), "", 0, this, SLOT(slotOfxImport()), actionCollection(), "file_import_ofx");
-#endif
   actionGncImport = new KAction(i18n("Gnucash ..."), "", 0, this, SLOT(slotGncImport()), actionCollection(), "file_import_gnc");
   actionGncImport = new KAction(i18n("Statement file ..."), "", 0, this, SLOT(slotStatementImport()), actionCollection(), "file_import_statement");
   actionLoadTemplate = new KAction(i18n("Account Template ..."), "", 0, this, SLOT(slotLoadAccountTemplates()), actionCollection(), "file_import_template");
@@ -219,6 +223,7 @@ void KMyMoney2App::initActions()
 
   // The tool menu
   new KAction(i18n("QIF Profile Editor..."), "edit", 0, this, SLOT(slotQifProfileEditor()), actionCollection(), "qif_editor");
+  new KAction(i18n("Banking Settings..."), "edit", 0, this, SLOT(slotBankingSettings()), actionCollection(), "banking_settings");
 
   // The help menu
   new KAction(i18n("&Show tip of the day"), "idea", 0, this, SLOT(slotShowTipOfTheDay()), actionCollection(), "show_tip");
@@ -228,29 +233,6 @@ void KMyMoney2App::initActions()
 
   m_previousViewButton->setEnabled(false);
   m_nextViewButton->setEnabled(false);
-
-#if QT_VERSION < 300
-  fileNewWindow->setStatusText(i18n("Creates a new window"));
-  fileOpen->setStatusText(i18n("Opens an existing document"));
-  fileOpenRecent->setStatusText(i18n("Opens a recently used file"));
-
-
-  fileSave->setStatusText(i18n("Saves the actual document"));
-  fileSaveAs->setStatusText(i18n("Saves the actual document as..."));
-  fileClose->setStatusText(i18n("Closes the actual document"));
-  fileCloseWindow->setStatusText(i18n("Closes the actual window"));
-  fileQuit->setStatusText(i18n("Quits the application"));
-  viewToolBar->setStatusText(i18n("Enables/disables the toolbar"));
-  viewStatusBar->setStatusText(i18n("Enables/disables the statusbar"));
-  fileViewInfo->setStatusText(i18n("View information about the file"));
-  filePersonalData->setStatusText(i18n("Lets you view/edit your personal data"));
-  fileBackup->setStatusText(i18n("Lets you backup your file to a removeable drive"));
-  bankAdd->setStatusText(i18n("Lets you create a new institution"));
-  accountOpen->setStatusText(i18n("View the account register"));
-  accountAdd->setStatusText(i18n("Lets you create a new account"));
-  actionQifImport->setStatusText(i18n("Import transactions using QIF format"));
-  actionQifExport->setStatusText(i18n("Export transactions using QIF format"));
-#endif
 
   // use the absolute path to your kmymoney2ui.rc file for testing purpose in createGUI();
   createGUI();
@@ -621,6 +603,7 @@ const QString KMyMoney2App::slotStatusMsg(const QString &text)
   return msg;
 }
 
+
 void KMyMoney2App::slotStatusProgressBar(const int current, const int total)
 {
   if(total == -1 && current == -1) {      // reset
@@ -807,7 +790,8 @@ void KMyMoney2App::slotQifImportFinished(void)
 
 void KMyMoney2App::slotOfxImport(void)
 {
-#ifdef HAVE_LIBOFX
+#if defined(HAVE_LIBOFX) || defined(HAVE_NEW_OFX)
+  bool result = false;
   QString prevMsg = slotStatusMsg(i18n("Importing a statement from OFX"));
 
   KFileDialog* dialog = new KFileDialog(KGlobalSettings::documentPath(),
@@ -818,20 +802,17 @@ void KMyMoney2App::slotOfxImport(void)
   if(dialog->exec() == QDialog::Accepted)
   {
     MyMoneyOfxStatement s( dialog->selectedURL().path() );
-    
-    if ( s.isValid() )  
+
+    if ( s.isValid() )
       slotStatementImport(s);
     else
     {
       QMessageBox::critical( this, i18n("Invalid OFX"), i18n("Error importing %1: This file is not a valid OFX file.").arg(dialog->selectedURL().path()), QMessageBox::Ok, 0 );
-      slotStatusMsg(prevMsg);
     }
   }
-  else
-    slotStatusMsg(prevMsg);
-
+  slotStatusMsg(prevMsg);
 #else
-  QMessageBox::critical( this, i18n("Critical Error"), i18n("OFX import is unavailable.  This version of KMyMoney was built without OFX support."), QMessageBox::Ok, 0 );
+  KMessageBox::information( this, QString("<p>")+i18n("<b>OFX</b> import is unavailable.  This version of <b>KMyMoney</b> was built without <b>OFX</b> support."), i18n("Function not available"));
 #endif
 }
 
@@ -909,7 +890,7 @@ void KMyMoney2App::slotStatementImport()
     if ( !result )
     {
       QMessageBox::critical( this, i18n("Critical Error"), i18n("Unable to read file %1: %2").arg( dialog->selectedURL().path(),error), QMessageBox::Ok, 0 );
-      
+
       slotStatusMsg(prevMsg);
     }
   }
@@ -1011,8 +992,31 @@ void KMyMoney2App::slotQifExport()
   slotStatusMsg(prevMsg);
 }
 
-void KMyMoney2App::slotSettings()
 
+
+void KMyMoney2App::slotBankingSettings() {
+#ifdef HAVE_KBANKING
+  KBankingSettings *bs;
+
+  if (kbanking) {
+    bs=new KBankingSettings(kbanking, 0, "BankingSettings");
+    if (bs->init()) {
+      qWarning("Error on ini of settings dialog.");
+    } else {
+      bs->exec();
+      if (!bs->fini()) {
+        qWarning("Error on fini of settings dialog.");
+      }
+    }
+  }
+#else
+  KMessageBox::information( this, QString("<p>")+i18n("Banking settings is unavailable.  This version of <b>KMyMoney</b> was built without <b>KBanking</b> support."), i18n("Function not available"));
+#endif
+}
+
+
+
+void KMyMoney2App::slotSettings()
 {
   KSettingsDlg dlg( this, "Settings");
   connect(&dlg, SIGNAL(signalApply()), myMoneyView, SLOT(slotRefreshViews()));
@@ -1612,25 +1616,25 @@ void KMyMoney2App::slotAccountNew(void)
 
 void KMyMoney2App::ofxWebConnect(const QString& url)
 {
-  // Steal the focus!  (Yes, I am sure what I'm doing.  Yes this IS in response to 
+  // Steal the focus!  (Yes, I am sure what I'm doing.  Yes this IS in response to
   // user input.  Yes the user REALLY WANTS to do this.)
   KApplication::kApplication()->updateUserTimestamp();
   KWin::activateWindow(KMainWindowInterface(this).getWinID());
-  
+
 #ifdef HAVE_LIBOFX
   QString prevMsg = slotStatusMsg(i18n("Importing a statement from OFX"));
-  
+
   MyMoneyOfxStatement s( url );
-  if ( s.isValid() )  
+  if ( s.isValid() )
     slotStatementImport(s);
   else
   {
     QMessageBox::critical( this, i18n("Invalid OFX"), i18n("Error importing %1: This file is not a valid OFX file.").arg(url), QMessageBox::Ok, 0 );
     slotStatusMsg(prevMsg);
   }
-    
+
 #else
   QMessageBox::critical( this, i18n("Critical Error"), i18n("OFX import is unavailable.  This version of KMyMoney was built without OFX support."), QMessageBox::Ok, 0 );
 #endif
-  
+
 }

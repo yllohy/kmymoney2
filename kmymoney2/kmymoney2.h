@@ -20,6 +20,7 @@
 #include <config.h>
 #endif
 
+
 // ----------------------------------------------------------------------------
 // QT Includes
 
@@ -46,6 +47,11 @@
 
 #include "mymoney/mymoneyobserver.h"
 #include "mymoney/mymoneyscheduled.h"
+
+#ifdef HAVE_KBANKING
+  #include "converter/mymoneybanking.h"
+  extern KMyMoneyBanking *kbanking;
+#endif
 
 class KProgress;
 class KStartupLogo;
@@ -119,7 +125,7 @@ protected slots:
 
   void slotStatementImport(void);
   void slotStatementImportFinished(void);
-  
+
   void slotLoadAccountTemplates(void);
   void loadAccountTemplates(const QStringList& filelist);
 
@@ -149,6 +155,11 @@ protected slots:
   void slotShowTipOfTheDay(void);
 
   void slotQifProfileEditor(void);
+
+  /**
+   * This slot modifies the AqBanking settings
+   */
+  void slotBankingSettings(void);
 
   void slotShowPreviousView(void);
 
@@ -219,7 +230,7 @@ public:
 
 k_dcop:
   const QString filename() const;
-  
+
   void ofxWebConnect(const QString&);
 
 protected:

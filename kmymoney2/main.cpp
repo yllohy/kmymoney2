@@ -13,7 +13,20 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
+
 #include <stdio.h>
+
+
+#ifdef HAVE_KBANKING
+# include "converter/mymoneybanking.h"
+# include <gwenhywfar/logger.h>
+#endif
+
 
 // ----------------------------------------------------------------------------
 // QT Includes
@@ -54,6 +67,9 @@ static KCmdLineOptions options[] =
 QTime timer;
 
 KMyMoney2App* kmymoney2;
+#ifdef HAVE_KBANKING
+KMyMoneyBanking *kbanking=0;
+#endif
 
 int main(int argc, char *argv[])
 {
@@ -112,6 +128,19 @@ int main(int argc, char *argv[])
       qWarning("Unable to select language '%s'. This has one of two reasons:\n\ta) the standard KDE message catalogue is not installed\n\tb) the KMyMoney message catalogue is not installed", language.data());
     }
   }
+
+#ifdef HAVE_KBANKING
+  // create KBanking object
+  GWEN_Logger_SetLevel(0, GWEN_LoggerLevelInfo);
+  GWEN_Logger_SetLevel(AQBANKING_LOGDOMAIN, GWEN_LoggerLevelInfo);
+  kbanking=new KMyMoneyBanking("kmymoney");
+  int rv=kbanking->init();
+  if (rv) {
+    qWarning("Could not initialize banking interface");
+    delete kbanking;
+    kbanking=0;
+  }
+#endif
 
   kmymoney2 = new KMyMoney2App();
   a->setMainWidget( kmymoney2 );
@@ -213,6 +242,18 @@ int main(int argc, char *argv[])
   }
 
   DESTROY_TEST_CONTAINER();
+
+#ifdef HAVE_KBANKING
+  if (kbanking) {
+    int rv;
+
+    rv=kbanking->fini();
+    if (rv) {
+      qWarning("Could not deinitialize banking interface");
+    }
+    delete kbanking;
+  }
+#endif
 
   delete a;
   KAccountListItem::cleanCache();
