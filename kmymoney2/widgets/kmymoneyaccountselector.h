@@ -175,13 +175,27 @@ public:
   /**
     * This method loads the set of accounts into the widget
     * as defined by the parameter @p typeList. @p typeList is
-    * a QValueList of MyMoneyAccount::accountTypeE:
+    * a QValueList of MyMoneyAccount::accountTypeE.
     *
     * @param typeList QValueList of MyMoneyAccount::accountTypeE account types
     *                 which should be loaded into the widget
     * @return This method returns the number of accounts loaded into the list
     */
   const int loadList(QValueList<int> typeList);
+
+
+  /**
+    * This method loads the set of accounts into the widget
+    * as defined by the parameter @p accountIdList. @p accountIdList is
+    * a QValueList of account ids.
+    *
+    * @param baseName QString which should be used as group text
+    * @param accountIdList QValueList of QCString account ids
+    *                 which should be loaded into the widget
+    * @param clear if true (default) clears the widget before populating
+    * @return This method returns the number of accounts loaded into the list
+    */
+  const int loadList(const QString& baseName, const QValueList<QCString>& accountIdList, const bool clear = true);
 
   /**
     * This method returns the list of selected account id's. If
@@ -244,7 +258,7 @@ public:
     * @param state select items if @p true, deselect otherwise
     */
   void selectAllAccounts(const bool state);
-  
+
   /**
     * This method selects/deselects all items that
     * are currently in this object's account list AND are present in the supplied
@@ -254,7 +268,7 @@ public:
     * @param state select items if @p true, deselect otherwise
     */
   void selectAccounts(const QCStringList& accountlist, const bool state);
-  
+
 public slots:
   /**
     * This slot selects all items that are currently in
@@ -323,7 +337,7 @@ protected:
     * This is a helper method for selectAccounts().
     */
   void selectSubAccounts(QListViewItem* item, const QCStringList& accountlist, const bool state);
-  
+
   /**
     * This is a helper method for selectAllIncomeCategories()
     * and selectAllExpenseCategories().

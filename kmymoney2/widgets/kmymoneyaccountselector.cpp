@@ -302,7 +302,7 @@ const int kMyMoneyAccountSelector::loadList(QValueList<int> typeList)
   QCStringList::ConstIterator it_l;
   MyMoneyFile* file = MyMoneyFile::instance();
   int count = 0;
-  int typeMask;
+  int typeMask = 0;
 
   if((typeList.contains(MyMoneyAccount::Checkings)
     + typeList.contains(MyMoneyAccount::Savings)
@@ -383,6 +383,35 @@ const int kMyMoneyAccountSelector::loadList(QValueList<int> typeList)
     m_listView->setCurrentItem(m_listView->firstChild());
     m_listView->clearSelection();
   }
+  QWidget::update();
+  return count;
+}
+
+const int kMyMoneyAccountSelector::loadList(const QString& baseName, const QValueList<QCString>& accountIdList, const bool clear)
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
+  int count = 0;
+  kMyMoneyCheckListItem* item = 0;
+
+  if(clear)
+    m_listView->clear();
+
+  item = new kMyMoneyCheckListItem(m_listView, baseName, QCString(), QCheckListItem::Controller);
+  item->setSelectable(false);
+  item->setOpen(true);
+
+  QValueList<QCString>::ConstIterator it;
+  for(it = accountIdList.begin(); it != accountIdList.end(); ++it)   {
+    ++count;
+    MyMoneyAccount acc = file->account(*it);
+    QListViewItem* subItem = newEntryFactory(item, acc.name(), acc.id());
+  }
+
+  if(m_listView->firstChild()) {
+    m_listView->setCurrentItem(m_listView->firstChild());
+    m_listView->clearSelection();
+  }
+
   QWidget::update();
   return count;
 }
