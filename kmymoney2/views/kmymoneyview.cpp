@@ -169,7 +169,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
 
   // Page 7
   m_reportsViewFrame = addVBoxPage(i18n("Reports"), i18n("Reports"),
-    DesktopIcon("ledger"));
+    DesktopIcon("report"));
   m_reportsView = new KReportsView(m_reportsViewFrame, "reportsView");
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_reportsView, SLOT(slotReloadView()));
 
