@@ -11,6 +11,8 @@
       <Action name="file_import_qif"/>
       <Action name="file_import_ofx"/>
       <Action name="file_import_gnc"/>
+      <Separator/>
+      <Action name="file_import_template"/>
     </Menu>
     <Menu name="export" icon="fileexport" append="save_merge"><text>E&amp;xport</text>
       <Action name="file_export_qif"/>
