@@ -1,3 +1,10 @@
+2004-08-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Removed "Create Me" files from Makefile.am
+  * Better handling of next due date in loan wizard
+  * Updated README with instructions about how to get the memory leak
+    detection code compiled in
+  * Fixed #1016219 (Account creation fails after loan creation)
+
 2004-08-24 Ace Jones <acejones@users.sourceforge.net>
   * Removed "Create Me" graphics from all dialogs 
 
