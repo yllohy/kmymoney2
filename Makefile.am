@@ -2,7 +2,7 @@
 
 SUBDIRS = kmymoney2 po doc developer-doc 
 
-EXTRA_DIST = kmymoney2.kdevprj AUTHORS COPYING ChangeLog INSTALL README TODO kmymoney2.lsm kmymoney2.spec readme-overview.txt ChangeLog.original 
+EXTRA_DIST = kmymoney2.kdevprj AUTHORS COPYING ChangeLog INSTALL README TODO ChangeLog.original 
 
 ####### kdevelop will overwrite this part!!! (end)############
 # not a GNU package. You can remove this line, if 
@@ -18,6 +18,7 @@ $(top_srcdir)/subdirs:
 $(top_srcdir)/acinclude.m4: $(top_srcdir)/admin/acinclude.m4.in $(top_srcdir)/admin/libtool.m4.in
 	@cd $(top_srcdir) && cat admin/acinclude.m4.in admin/libtool.m4.in > acinclude.m4
 
+DISTCLEANFILES=kmymoney2.kdevses kmymoney2.doxygen
 MAINTAINERCLEANFILES = subdirs configure.in acinclude.m4 configure.files 
 
 package-messages:
