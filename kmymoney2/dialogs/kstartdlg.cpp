@@ -11,6 +11,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "config.h"
 
 #include "kstartdlg.h"
 
@@ -35,6 +36,7 @@
 #include <kurl.h>
 #include <kurlrequester.h>
 #include <kfile.h>
+#include <kio/netaccess.h>
 
 KStartDlg::KStartDlg(QWidget *parent, const char *name, bool modal) : KDialogBase(IconList,i18n("Start Dialog"),Help|Ok|Cancel,Ok, parent, name, modal, true)
 {
@@ -69,7 +71,8 @@ void KStartDlg::setPage_Documents()
   kurlrequest = new KURLRequester( mainFrame, "kurlrequest" );
 
 	//allow user to select either a .kmy file, or any generic file.
-  (kurlrequest->fileDialog())->setFilter( i18n("%1|KMyMoney files (*.kmy)\n" "%2|All files (*.*)").arg("*.kmy").arg("*.*") );
+  kurlrequest->fileDialog()->setFilter( i18n("%1|KMyMoney files (*.kmy)\n" "%2|All files (*.*)").arg("*.kmy").arg("*.*") );
+  kurlrequest->fileDialog()->setMode(KFile::File || KFile::ExistingOnly);
   mainLayout->addWidget( kurlrequest );
 
 	QLabel *label1 = new QLabel( mainFrame, "label1" );
@@ -139,11 +142,8 @@ void KStartDlg::slotRecentClicked(QIconViewItem *item)
 {
   if(!item) return;
 
-	KURL fileNAME;
-  // If the item is the blank document turn isnewfile variable true, else is template or wizard
   isopenfile = true;
-	fileNAME = item->text();
-	kurlrequest->setURL( fileNAME.directory(false,true)+fileNAME.fileName() );
+	kurlrequest->setURL( item->text() );
   // Close the window if the user press an icon
 	slotOk();
 }
@@ -157,15 +157,5 @@ void KStartDlg::slotOk()
 
 bool KStartDlg::fileExists(KURL url)
 {
-  if (url.isLocalFile()) {
-    // Lets make sure it exists first
-    if (url.fileName().length()>=1) {
-      QFile f(url.directory(false,true)+url.fileName());
-      return f.exists();
-    }
-  }
-  // We don't bother checking URL's or showing them
-  // because at the moment MyMoneyFile can't read them
-  // anyway
-  return false;
+  return KIO::NetAccess::exists(url);
 }

@@ -370,8 +370,9 @@ void KMyMoneyView::closeFile(void)
   emit signalEnableKMyMoneyOperations(false);
 }
 
-bool KMyMoneyView::readFile(QString filename)
+bool KMyMoneyView::readFile(const KURL& url)
 {
+  QString filename;
   KMyMoneyFile *kfile = m_file;
   if (fileOpen())
   {
@@ -394,12 +395,6 @@ bool KMyMoneyView::readFile(QString filename)
     pReader = new MyMoneyStorageBin;
   }
 
-  // actually, url should be the parameter to this function
-  // but for now, this would involve too many changes
-  KURL url;
-  url.setPath(filename);
-  url.setProtocol("file");
-
   if(url.isMalformed()) {
     qDebug("Invalid URL '%s'", url.url().latin1());
     return false;
@@ -409,8 +404,13 @@ bool KMyMoneyView::readFile(QString filename)
     filename = url.path();
 
   } else {
-    if(!KIO::NetAccess::download(url, filename))
+    if(!KIO::NetAccess::download(url, filename)) {
+      KMessageBox::detailedError(this,
+             i18n("Error while loading file '%1'!").arg(url.url()),
+             KIO::NetAccess::lastErrorString(),
+             i18n("File access error"));
       return false;
+    }
   }
 
   // let's glimps into the file to figure out, if it's one
@@ -448,12 +448,12 @@ bool KMyMoneyView::readFile(QString filename)
         }
         qfile->close();
       } else {
-        KMessageBox::sorry(this, i18n("File not found!"));
+        KMessageBox::sorry(this, i18n("File '%1' not found!").arg(filename));
       }
       delete qfile;
     }
   } else {
-    KMessageBox::sorry(this, i18n("File not found!"));
+    KMessageBox::sorry(this, i18n("File '%1' not found!").arg(filename));
   }
 
   delete pReader;
@@ -504,8 +504,10 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter)
     qfile->close();
 }
 
-void KMyMoneyView::saveFile(QString filename)
+void KMyMoneyView::saveFile(const KURL& url)
 {
+  QString filename = url.path();
+
   if (!fileOpen()) {
     KMessageBox::error(this, i18n("Tried to access a file when it's not open"));
     return;
@@ -528,9 +530,6 @@ void KMyMoneyView::saveFile(QString filename)
 
   // actually, url should be the parameter to this function
   // but for now, this would involve too many changes
-  KURL url;
-  url.setPath(filename);
-  url.setProtocol("file");
 
   if(url.isMalformed()) {
     qDebug("Invalid URL '%s'", url.url().latin1());

@@ -138,7 +138,7 @@ void KMyMoney2App::initActions()
   viewStatusBar = KStdAction::showStatusbar(this, SLOT(slotViewStatusBar()), actionCollection());
 
   // Setup transaction detail switch
-  viewTransactionForm = new KToggleAction(i18n("Show Transaction Detail"), KShortcut("Ctrl+T"), actionCollection(), "show_transaction_form");
+  viewTransactionForm = new KToggleAction(i18n("Show Transaction Detail"), KShortcut("Ctrl+T"), actionCollection(), "show_transaction_detail");
   config->setGroup("List Options");
   if(config->readBoolEntry("ShowRegisterDetailed", true) == true)
     viewTransactionForm->setChecked(true);
@@ -242,7 +242,7 @@ void KMyMoney2App::saveOptions()
   config->writeEntry("Show Statusbar",viewStatusBar->isChecked());
   config->writeEntry("ToolBarPos", (int) toolBar("mainToolBar")->barPos());
   fileOpenRecent->saveEntries(config,"Recent Files");
-  config->writeEntry("LastFile", fileName);
+  config->writeEntry("LastFile", fileName.url());
 }
 
 
@@ -319,7 +319,7 @@ void KMyMoney2App::slotFileNew()
     }
     slotFileClose();
   }
-  fileName="";
+  fileName = KURL();
   myMoneyView->newFile();
   slotStatusMsg(i18n("Ready."));
 }
@@ -331,6 +331,7 @@ void KMyMoney2App::slotFileOpen()
 
   if (myMoneyView->fileOpen()) {
 #if QT_VERSION > 300
+
     int answer = KMessageBox::warningContinueCancel(this, i18n("KMyMoney file already open.  Close it ?"), "Close File"/*, "Close", "dont_ask_again"*/);
 #else
     int answer = KMessageBox::warningContinueCancel(this, i18n("KMyMoney file already open.  Close it ?"), "Close File", "Close", "dont_ask_again");
@@ -341,7 +342,7 @@ void KMyMoney2App::slotFileOpen()
     }
     slotFileClose();
   }
-  fileName="";
+  fileName = KURL();
 	initWizard();
   slotStatusMsg(i18n("Ready."));
 }
@@ -363,10 +364,9 @@ void KMyMoney2App::slotFileOpenRecent(const KURL& url)
     slotFileClose();
   }
 
-
-  myMoneyView->readFile( url.directory(false,true)+url.fileName() );
+  myMoneyView->readFile( url );
+  fileName = url;
 	fileOpenRecent->addURL( url );
-  fileName = url.directory(false,true)+url.fileName();
 
   slotStatusMsg(i18n("Ready."));
 }
@@ -461,7 +461,7 @@ void KMyMoney2App::slotFileClose()
   }
 
   myMoneyView->closeFile();
-  fileName="";
+  fileName = KURL();
 
   slotStatusMsg(i18n("Ready."));
 }
@@ -521,6 +521,7 @@ void KMyMoney2App::slotEditCopy()
 
 void KMyMoney2App::slotEditPaste()
 {
+
   slotStatusMsg(i18n("Inserting clipboard contents..."));
 
   slotStatusMsg(i18n("Ready."));
@@ -760,12 +761,12 @@ bool KMyMoney2App::initWizard()
       if (start.isNewFile()) {
         slotFileNew();
       } else if (start.isOpenFile()) {
-        fileName = start.getFileName();
-				cout << fileName;
-        this->slotFileOpenRecent( fileName );
+        KURL url;
+        url = start.getURL();
+        fileName = url.url();
+        slotFileOpenRecent(url);
       } else { // Wizard / Template
-        fileName = start.getFileName();
-				cout << fileName;
+        fileName = start.getURL();
       }
 			return true;
     } else {
@@ -776,6 +777,15 @@ bool KMyMoney2App::initWizard()
 /** No descriptions */
 void KMyMoney2App::slotFileBackup()
 {
+  if(!fileName.isLocalFile()) {
+    KMessageBox::sorry(this,
+                       i18n("The current immplementation of the backup functionality "
+                            "only supports local files as source files! "
+                            "Your current source file is '%1'.)").arg(fileName.url()),
+                       i18n("Local files only"));
+    return;
+  }
+
   if (myMoneyView->dirty()) {
     int answer = KMessageBox::warningYesNoCancel(this, i18n("The file has been changed, save it ?"));
     if (answer == KMessageBox::Cancel)
@@ -795,7 +805,7 @@ void KMyMoney2App::slotFileBackup()
     // make sure the file doesn't exist already
     QString today;
     today.sprintf("-%d-%d-%d.kmy",QDate::currentDate().day(), QDate::currentDate().month(), QDate::currentDate().year());
-    QFile f(mountpoint + fileName.mid(fileName.findRev("/")) + today);
+    QFile f(mountpoint + fileName.url().mid(fileName.url().findRev("/")) + today);
     if (f.exists()) {
       int answer = KMessageBox::warningContinueCancel(this, i18n("Backup file for today exists on that device.  Replace ?"), i18n("Backup"), i18n("&Replace"));
       if (answer==KMessageBox::Cancel)
@@ -818,9 +828,8 @@ void KMyMoney2App::slotFileBackup()
       copybackup = false;
       unmountbackup = false;
       proc.clearArguments();
-      QString backupfile = mountpoint + fileName.mid(fileName.findRev("/")) + today;
-      proc.clearArguments();
-      proc << "cp" << "-f" << fileName << backupfile;
+      QString backupfile = mountpoint + fileName.url().mid(fileName.url().findRev("/")) + today;
+      proc << "cp" << "-f" << fileName.url() << backupfile;
       proc.start();
     }
   }
@@ -838,10 +847,10 @@ void KMyMoney2App::slotProcessExited(){
 			if(proc.exitStatus() == 0)
 			{
 				QString backupfile;
-				backupfile = mountpoint + fileName.mid(fileName.findRev("/"));
 				proc.clearArguments();
+				backupfile = mountpoint + fileName.url().mid(fileName.url().findRev("/"));
 				proc << "cp";
-    			proc << "-f" << fileName << backupfile;
+  			proc << "-f" << fileName.url() << backupfile;
 				proc.start();
 				mountbackup = false;
        			copybackup = true;
@@ -948,6 +957,7 @@ void KMyMoney2App::slotCategoryView()
 
 void KMyMoney2App::slotPayeeView()
 {
+
   //disableAllAccountActions();
 }
 

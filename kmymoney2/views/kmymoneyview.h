@@ -14,6 +14,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "config.h"
+
 #ifndef KMYMONEYVIEW_H
 #define KMYMONEYVIEW_H
 
@@ -29,6 +31,7 @@ class QFile;
 #include <kpopupmenu.h>
 #include <kjanuswidget.h>
 
+#include <kurl.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -60,7 +63,7 @@ class IMyMoneyStorageFormat;
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.21 2002/11/08 20:18:58 ipwizard Exp $
+  * $Id: kmymoneyview.h,v 1.22 2002/11/10 08:58:18 ipwizard Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -150,19 +153,22 @@ public:
     * data structures in memory.  The return result is examined to make sure no
     * errors occured whilst parsing.
     *
-    * @param filename The file to read from, could be a URL - NOT TESTED.
+    * @param url The URL to read from.
+    *            If no protocol is specified, file:// is assumed.
     *
     * @return Whether the read was successfull.
   **/
-  bool readFile(QString filename);
+  bool readFile(const KURL& url);
 
   /**
     * Calls MyMoneyFile::saveAllData which saves all the data structures in memory
     * into the file specified by filename.
     *
-    * @param filename The file to save into, could be a URL but not tested.
+    * @param url The URL to save into.
+    *            If no protocol is specified, file:// is assumed.
+    *
   **/
-  void saveFile(QString filename);
+  void saveFile(const KURL& url);
 
   /**
     * Call this to see if the MyMoneyFile contains any unsaved data.
@@ -352,6 +358,7 @@ protected slots:
   **/
   void slotActivatedHomePage();
 
+
   /**
     * Called when the user clicks on the accounts button
     *
@@ -374,6 +381,7 @@ protected slots:
     * @param show if true, the transaction form is shown
     */
   void slotShowTransactionForm(bool show);
+
 
   /**
     * Called when the user changes the detail

@@ -16,6 +16,8 @@
 #ifndef KSTARTDLG_H
 #define KSTARTDLG_H
 
+#include "config.h"
+
 #include <kdialogbase.h>
 
 #include <klocale.h>
@@ -39,7 +41,7 @@ public:
 	~KStartDlg();
   bool isNewFile(void)          { return isnewfile;           }
   bool isOpenFile(void)         { return !kurlrequest->url().isEmpty();          }
-  QString getFileName(void)     { return kurlrequest->url();  }
+  const QString getURL(void) const { return kurlrequest->url(); }
   QString getTemplateName(void) { return templatename;    }
 
 private: // Private methods

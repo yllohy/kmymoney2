@@ -56,7 +56,7 @@
   * @see KMyMoneyView
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: kmymoney2.h,v 1.22 2002/10/30 19:18:41 ipwizard Exp $
+  * $Id: kmymoney2.h,v 1.23 2002/11/10 08:58:17 ipwizard Exp $
   *
   * @short Main application class.
 **/
@@ -393,8 +393,8 @@ protected slots:
   KProcess proc;
   // A pointer to the view holding the tabs.
   KMyMoneyView *myMoneyView;
-  // The filename currently being edited when open.
-  QString fileName;
+  // The URL of the file currently being edited when open.
+  KURL  fileName;
 
   bool m_startDialog;
   QString mountpoint;
