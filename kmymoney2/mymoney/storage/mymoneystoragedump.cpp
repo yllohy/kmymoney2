@@ -55,11 +55,23 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
 
   s << "File-Info\n";
   s << "---------\n";
-  s << "username = " << storage->userName() << "\n";
-  s << "usercity = " << storage->userTown() << "\n";
+  s << "user name = " << storage->userName() << "\n";
+  s << "user street = " << storage->userStreet() << "\n";
+  s << "user city = " << storage->userTown() << "\n";
+  s << "user city = " << storage->userCounty() << "\n";
+  s << "user zip = " << storage->userPostcode() << "\n";
+  s << "user telephone = " << storage->userTelephone() << "\n";
+  s << "user e-mail = " << storage->userEmail() << "\n";
+  s << "creation date = " << storage->creationDate().toString(Qt::ISODate) << "\n";
+  s << "last modification date = " << storage->lastModificationDate().toString(Qt::ISODate) << "\n";
+  s << "\n";
+  
+  s << "Internal-Info\n";
+  s << "-------------\n";
   s << "next account id     = " << _storage->accountId() << "\n";
   s << "next transaction id = " << _storage->transactionId() << "\n";
   s << "next payee id       = " << _storage->payeeId() << "\n";
+  s << "next institution id = " << _storage->institutionId() << "\n";
   s << "next schedule id    = " << _storage->scheduleId() << "\n";
   s << "\n";
   
@@ -83,6 +95,13 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
   for(it_p = list_p.begin(); it_p != list_p.end(); ++it_p) {
     s << "  ID = " << (*it_p).id() << "\n";
     s << "  Name = " << (*it_p).name() << "\n";
+    s << "  Address = " << (*it_p).address() << "\n";
+    s << "  City = " << (*it_p).city() << "\n";
+    s << "  State = " << (*it_p).state() << "\n";
+    s << "  Zip = " << (*it_p).postcode() << "\n";
+    s << "  E-Mail = " << (*it_p).email() << "\n";
+    s << "  Telephone = " << (*it_p).telephone() << "\n";
+    s << "  Reference = " << (*it_p).reference() << "\n";
     s << "\n";
   }
   s << "\n";
@@ -100,6 +119,8 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
   for(it_a = list_a.begin(); it_a != list_a.end(); ++it_a) {
     s << "  ID = " << (*it_a).id() << "\n";
     s << "  Name = " << (*it_a).name() << "\n";
+    s << "  Number = " << (*it_a).number() << "\n";
+    s << "  Description = " << (*it_a).description() << "\n";
     s << "  Type = " << (*it_a).accountType() << "\n";
     s << "  Parent = " << (*it_a).parentAccountId();
     if(!(*it_a).parentAccountId().isEmpty()) {
@@ -109,7 +130,21 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
       s << "n/a";
     }
     s << "\n";
-    s << "  Balance = " << (*it_a).openingBalance().formatMoney() << "\n";
+    
+    s << "  Institution = " << (*it_a).institutionId();
+    if(!(*it_a).institutionId().isEmpty()) {
+      MyMoneyInstitution inst = storage->institution((*it_a).institutionId());
+      s << " (" << inst.name() << ")";
+    } else {
+      s << "n/a";
+    }
+    s << "\n";
+    
+    s << "  Opening data = " << (*it_a).openingDate().toString(Qt::ISODate) << "\n";
+    s << "  Opening balance = " << (*it_a).openingBalance().formatMoney() << "\n";
+    s << "  Last modified = " << (*it_a).lastModified().toString(Qt::ISODate) << "\n";
+    s << "  Last reconciled = " << (*it_a).lastReconciliationDate().toString(Qt::ISODate) << "\n";
+    
     s << "  KVP: " << "\n";
     QMap<QCString, QString>kvp = (*it_a).pairs();
     QMap<QCString, QString>::Iterator it;
@@ -150,9 +185,9 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
   for(it_s = list_s.begin(); it_s != list_s.end(); ++it_s) {
     s << "  ID = " << (*it_s).id() << "\n";
     s << "  Name = " << (*it_s).name() << "\n";
-    s << "  Startdate = " << (*it_s).startDate().toString() << "\n";
+    s << "  Startdate = " << (*it_s).startDate().toString(Qt::ISODate) << "\n";
     if((*it_s).willEnd())
-      s << "  Enddate   = " << (*it_s).endDate().toString() << "\n";
+      s << "  Enddate   = " << (*it_s).endDate().toString(Qt::ISODate) << "\n";
     else
       s << "  Enddate   = not specified\n";
     s << "  Occurence = " << occurenceToString((*it_s).occurence()) << "\n";
@@ -162,16 +197,27 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
     s << "  AutoEnter = " << (*it_s).autoEnter() << "\n";
 
     if((*it_s).lastPayment().isValid())
-      s << "  Last payment = " << (*it_s).lastPayment().toString() << "\n";
+      s << "  Last payment = " << (*it_s).lastPayment().toString(Qt::ISODate) << "\n";
     else
       s << "  Last payment = not defined" << "\n";
     if((*it_s).isFinished())
       s << "  Next payment = payment finished" << "\n";
     else {
-      s << "  Next payment = " << (*it_s).nextPayment().toString() << "\n";
+      s << "  Next payment = " << (*it_s).nextPayment().toString(Qt::ISODate) << "\n";
       if((*it_s).isOverdue())
       s << "               = overdue!" << "\n";
-    }  
+    }
+
+    QValueList<QDate> list_d;
+    QValueList<QDate>::ConstIterator it_d;
+
+    list_d = (*it_s).recordedPayments();
+    if(list_d.count() > 0) {
+      s << "  Recorded payments" << "\n";
+      for(it_d = list_d.begin(); it_d != list_d.end(); ++it_d) {
+        s << "    " << (*it_d).toString(Qt::ISODate) << "\n";
+      }
+    }
     s << "  TRANSACTION\n";
     dumpTransaction(s, storage, (*it_s).transaction());    
   }
@@ -181,8 +227,9 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
 void MyMoneyStorageDump::dumpTransaction(QTextStream& s, IMyMoneyStorage* storage, const MyMoneyTransaction& it_t)
 {
   s << "  ID = " << it_t.id() << "\n";
-  s << "  Postdate  = " << it_t.postDate().toString() << "\n";
-  s << "  EntryDate = " << it_t.entryDate().toString() << "\n";
+  s << "  Postdate  = " << it_t.postDate().toString(Qt::ISODate) << "\n";
+  s << "  EntryDate = " << it_t.entryDate().toString(Qt::ISODate) << "\n";
+  s << "  Memo = " << it_t.memo() << "\n";
   s << "  KVP: " << "\n";
   QMap<QCString, QString>kvp = it_t.pairs();
   QMap<QCString, QString>::Iterator it;
@@ -208,6 +255,7 @@ void MyMoneyStorageDump::dumpTransaction(QTextStream& s, IMyMoneyStorage* storag
       s << "    Value = will be calculated" << "\n";
     else
       s << "    Value = " << (*it_s).value().formatMoney() << "\n";
+    s << "    Shares = " <<  (*it_s).shares().formatMoney() << "\n";
     s << "    Action = '" << (*it_s).action() << "'\n";
     s << "    Nr = '" << (*it_s).number() << "'\n";
     s << "    ReconcileFlag = '" << reconcileToString((*it_s).reconcileFlag()) << "'\n";
