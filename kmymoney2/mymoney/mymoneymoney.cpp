@@ -57,7 +57,7 @@ const QString MyMoneyMoney::formatMoney(/*QString locale="C", bool addPrefixPost
     }
   }
   else
-    return QString("0");
+    return QString("0.00");
 }
 
 QDataStream &operator<<(QDataStream &s, const MyMoneyMoney &money)
