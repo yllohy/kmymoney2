@@ -23,6 +23,7 @@
 #include <cppunit/TestSuite.h>
 */
 #include <cppunit/extensions/HelperMacros.h>
+#include "autotest.h"
 
 #define private public
 #include "mymoneytransaction.h"
@@ -38,9 +39,11 @@ class MyMoneyTransactionTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST(testAddSplits);
 	CPPUNIT_TEST(testModifySplits);
 	CPPUNIT_TEST(testDeleteSplits);
+	CPPUNIT_TEST(testDeleteAllSplits);
 	CPPUNIT_TEST(testEquality);
 	CPPUNIT_TEST(testInequality);
 	CPPUNIT_TEST(testExtractSplit);
+	CPPUNIT_TEST(testSplitSum);
         CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -62,5 +65,7 @@ public:
 	void testModifySplits();
 	void testDeleteSplits();
 	void testExtractSplit();
+	void testDeleteAllSplits();
+	void testSplitSum();
 };
 #endif

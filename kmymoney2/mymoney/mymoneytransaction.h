@@ -89,9 +89,13 @@ public:
   MyMoneyFile *file(void) const { return m_file; }
 
   /**
-    * This method is used to add a split to the transaction
+    * This method is used to add a split to the transaction. The split
+    * will be assigned an id. The id member must be empty.
+    *
+    * param @split reference to the split that should be added
+    *
     */
-  void addSplit(MyMoneySplit split);
+  void addSplit(MyMoneySplit& split);
 
   /**
     * This method is used to modify a split in a transaction
@@ -102,6 +106,18 @@ public:
     * This method is used to remove a split from a transaction
     */
   void removeSplit(const MyMoneySplit& split);
+
+  /**
+    * This method is used to remove all splits from a transaction
+    */
+  void removeSplits(void);
+
+  /**
+    * This method is used to return the sum of all splits of this transaction
+    *
+    * @return MyMoneyMoney value of sum of all splits
+    */
+  const MyMoneyMoney splitSum(void) const;
 
 private:
   static const int SPLIT_ID_SIZE = 4;

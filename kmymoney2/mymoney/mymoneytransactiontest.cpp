@@ -116,10 +116,20 @@ void MyMoneyTransactionTest::testAddSplits() {
 		CPPUNIT_ASSERT(m->accountReferenced("A000002") == true);
 		CPPUNIT_ASSERT(m->splits()[0].id() == "S0001");
 		CPPUNIT_ASSERT(m->splits()[1].id() == "S0002");
+		CPPUNIT_ASSERT(split1.id() == "S0001");
+		CPPUNIT_ASSERT(split2.id() == "S0002");
 
 	} catch(MyMoneyException *e) {
+		unexpectedException(e);
+	}
+
+	// try to add split with assigned ID
+	try {
+		m->addSplit(split1);
+		CPPUNIT_FAIL("Exception expected!");
+
+	} catch (MyMoneyException *e) {
 		delete e;
-		CPPUNIT_FAIL("Unexpected exception!");
 	}
 }
 
@@ -189,6 +199,18 @@ void MyMoneyTransactionTest::testDeleteSplits() {
 	}
 }
 
+void MyMoneyTransactionTest::testDeleteAllSplits() {
+	testAddSplits();
+
+	try {
+		m->removeSplits();
+		CPPUNIT_ASSERT(m->splitCount() == 0);
+	} catch(MyMoneyException *e) {
+		CPPUNIT_FAIL("Unexpected exception!");
+		delete e;
+	}
+}
+
 void MyMoneyTransactionTest::testExtractSplit() {
 	testAddSplits();
 	MyMoneySplit split;
@@ -220,4 +242,33 @@ void MyMoneyTransactionTest::testExtractSplit() {
 		CPPUNIT_FAIL("Unexpected exception!");
 		delete e;
 	}
+}
+
+void MyMoneyTransactionTest::testSplitSum() {
+	CPPUNIT_ASSERT(m->splitSum() == 0);
+
+	testAddSplits();
+
+	MyMoneySplit s1, s2;
+
+	s1 = m->splits()[0];
+	s1.setValue(0);
+	s2 = m->splits()[1];
+	s2.setValue(0);
+
+	m->modifySplit(s1);
+	m->modifySplit(s2);
+	CPPUNIT_ASSERT(m->splitSum() == 0);
+
+	s1.setValue(1234);
+	m->modifySplit(s1);
+	CPPUNIT_ASSERT(m->splitSum() == 1234);
+
+	s2.setValue(-1234);
+	m->modifySplit(s2);
+	CPPUNIT_ASSERT(m->splitSum() == 0);
+
+	s1.setValue(5678);
+	m->modifySplit(s1);
+	CPPUNIT_ASSERT(m->splitSum() == 4444);
 }

@@ -68,8 +68,11 @@ const bool MyMoneyTransaction::accountReferenced(const QCString& id) const
   return false;
 }
 
-void MyMoneyTransaction::addSplit(MyMoneySplit split)
+void MyMoneyTransaction::addSplit(MyMoneySplit& split)
 {
+  if(split.id() != "")
+    throw new MYMONEYEXCEPTION("Cannot add split with assigned id (" + split.id() + ")");
+
   split.setId(nextSplitID());
   m_splits.append(split);
 }
@@ -85,7 +88,7 @@ void MyMoneyTransaction::modifySplit(MyMoneySplit& split)
     }
   }
   if(it == m_splits.end())
-    throw new MYMONEYEXCEPTION("Invalid split id");
+    throw new MYMONEYEXCEPTION("Invalid split id '" + split.id() + "'");
 
   split = *it;
 }
@@ -101,7 +104,12 @@ void MyMoneyTransaction::removeSplit(const MyMoneySplit& split)
     }
   }
   if(it == m_splits.end())
-    throw new MYMONEYEXCEPTION("Invalid split id");
+    throw new MYMONEYEXCEPTION("Invalid split id '" + split.id() + "'");
+}
+
+void MyMoneyTransaction::removeSplits(void)
+{
+  m_splits.clear();
 }
 
 const MyMoneySplit& MyMoneyTransaction::split(const QCString& accountId, const bool match) const
@@ -123,6 +131,17 @@ const QCString MyMoneyTransaction::nextSplitID()
   id = "S" + id.setNum(++m_nextSplitID).rightJustify(SPLIT_ID_SIZE, '0');
   return id;
 
+}
+
+const MyMoneyMoney MyMoneyTransaction::splitSum(void) const
+{
+  MyMoneyMoney result(0);
+  QValueList<MyMoneySplit>::ConstIterator it;
+
+  for(it = m_splits.begin(); it != m_splits.end(); ++it) {
+    result += (*it).value();
+  }
+  return result;
 }
 
 #if 0
