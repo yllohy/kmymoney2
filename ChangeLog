@@ -1,3 +1,7 @@
+2002-01-18 Kevin Tambascio <ktambascio@users.sourceforge.net>
+  * added newline to mymoneytransactionbase.h, because it was causing compiler
+    warnings all over the place.
+
 2002-01-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * added more functionality to the split transaction handling
     which is not yet done.

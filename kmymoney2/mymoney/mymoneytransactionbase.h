@@ -33,7 +33,7 @@
   * @see MyMoneySplitTransaction
   *
   * @author Thomas Baumgart
-  * @version $Id: mymoneytransactionbase.h,v 1.1 2002/01/14 06:42:30 ipwizard Exp $
+  * @version $Id: mymoneytransactionbase.h,v 1.2 2002/01/18 05:50:44 ktambascio Exp $
   *
   * @short Representation of the common values of transactions.
 **/
