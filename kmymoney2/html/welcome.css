@@ -5,14 +5,23 @@ David Wadley     mail<at>davidwadley.com
 ********************************************************************/
 
 body {
-	background-color: highlight;
-	margin-top:83px;
-	margin-bottom: 65px;
+   background-color: highlight;
+   margin-top:83px;
+   }
+   
+#background_image {
+z-index: -10;
+position:absolute;
+left:0px; 
+top:0px; 
+width:100%;
 }
+
 #KMyMoneyLogo {
   position:absolute;
   top:10px;
   right:10px;
+  z-index: 10;
   }
 /*line of text under logo("Personal Finance Software")*/
 #tagline {
@@ -27,8 +36,8 @@ body {
 /*("Welcome to KMyMoney","What's New in...")*/
 #title {
   font-family:bitstream vera sans, verdana, sans;
-  line-height:10px;
-  font-size: 26px;
+  line-height:1em;  
+  font-size: 20px;
   position:absolute;
   top:0px;
   left:10px;
@@ -62,6 +71,7 @@ url(./images/topleft.png) no-repeat left top;
   width:87%;
   margin-left:5%;
   margin-right:5%;
+  z-index: 10;
   }
 #topright {
   background: 
@@ -70,6 +80,7 @@ url(./images/topleft.png) no-repeat left top;
   position: relative;
   right:-22px;
   padding-top: 20px;
+  z-index: 10;
 
   }
 #rightborder {
@@ -79,16 +90,16 @@ url(./images/topleft.png) no-repeat left top;
   position: relative;
   right:-22px;
   padding-right: 22px;
- /* margin-top: -1em;*/
   margin-bottom: -20px;
+  z-index: 10;
   }
 #bottomleft {
   background: 
 	url(./images/bottomleft.png) 
   bottom left no-repeat;
     position: relative;
-	/*padding-top: 20px;*/
 	top: 20px;
+	z-index: 10;
   }
 #bottomright {
 	background: 
@@ -97,6 +108,7 @@ url(./images/topleft.png) no-repeat left top;
     position: relative;
     right:-22px;
     padding-top: 20px;
+    z-index: 10;
   }
   /* end content box frame */
   
