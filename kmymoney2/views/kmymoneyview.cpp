@@ -384,17 +384,6 @@ bool KMyMoneyView::readFile(const KURL& url)
 
   IMyMoneyStorageFormat* pReader = NULL;    
 
-  QString strFileExtension = MyMoneyUtils::getFileExtension(filename);
-  if(strFileExtension.find("XML") != -1)
-  {
-    pReader = new MyMoneyStorageXML;
-  }
-  else
-  {
-    // Use the old reader for now
-    pReader = new MyMoneyStorageBin;
-  }
-
   if(url.isMalformed()) {
     qDebug("Invalid URL '%s'", url.url().latin1());
     return false;
@@ -411,6 +400,17 @@ bool KMyMoneyView::readFile(const KURL& url)
              i18n("File access error"));
       return false;
     }
+  }
+
+  QString strFileExtension = MyMoneyUtils::getFileExtension(filename);
+  if(strFileExtension.find("XML") != -1)
+  {
+    pReader = new MyMoneyStorageXML;
+  }
+  else
+  {
+    // Use the old reader for now
+    pReader = new MyMoneyStorageBin;
   }
 
   // let's glimps into the file to figure out, if it's one
