@@ -50,8 +50,11 @@
                         <cstring>TextLabel1</cstring>
                     </property>
                     <property stdset="1">
-                        <name>text</name>
-                        <string>Transaction View</string>
+                        <name>sizePolicy</name>
+                        <sizepolicy>
+                            <hsizetype>1</hsizetype>
+                            <vsizetype>1</vsizetype>
+                        </sizepolicy>
                     </property>
                     <property stdset="1">
                         <name>font</name>
@@ -61,11 +64,8 @@
                         </font>
                     </property>
                     <property stdset="1">
-                        <name>sizePolicy</name>
-                        <sizepolicy>
-                            <hsizetype>1</hsizetype>
-                            <vsizetype>1</vsizetype>
-                        </sizepolicy>
+                        <name>text</name>
+                        <string>Transaction View</string>
                     </property>
                 </widget>
                 <spacer>
@@ -88,13 +88,6 @@
                             <height>20</height>
                         </size>
                     </property>
-                    <property>
-                        <name>sizeHint</name>
-                        <size>
-                            <width>20</width>
-                            <height>20</height>
-                        </size>
-                    </property>
                 </spacer>
                 <widget>
                     <class>QLabel</class>
@@ -103,15 +96,15 @@
                         <cstring>descriptionLabel</cstring>
                     </property>
                     <property stdset="1">
-                        <name>text</name>
-                        <string>Double blah de blah</string>
-                    </property>
-                    <property stdset="1">
                         <name>sizePolicy</name>
                         <sizepolicy>
                             <hsizetype>3</hsizetype>
                             <vsizetype>0</vsizetype>
                         </sizepolicy>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>Double blah de blah</string>
                     </property>
                 </widget>
             </hbox>
@@ -122,16 +115,16 @@
                 <name>name</name>
                 <cstring>transactionsTable</cstring>
             </property>
+            <property stdset="1">
+                <name>backgroundOrigin</name>
+                <enum>ParentOrigin</enum>
+            </property>
         </widget>
         <widget>
             <class>QTabWidget</class>
             <property stdset="1">
                 <name>name</name>
                 <cstring>tabbedInputBox</cstring>
-            </property>
-            <property stdset="1">
-                <name>tabShape</name>
-                <enum>Rounded</enum>
             </property>
             <property stdset="1">
                 <name>minimumSize</name>
@@ -141,15 +134,19 @@
                 </size>
             </property>
             <property stdset="1">
-                <name>tabPosition</name>
-                <enum>Top</enum>
-            </property>
-            <property stdset="1">
                 <name>maximumSize</name>
                 <size>
                     <width>32767</width>
                     <height>200</height>
                 </size>
+            </property>
+            <property stdset="1">
+                <name>tabPosition</name>
+                <enum>Top</enum>
+            </property>
+            <property stdset="1">
+                <name>tabShape</name>
+                <enum>Rounded</enum>
             </property>
             <widget>
                 <class>QWidget</class>
@@ -203,15 +200,15 @@
                                     <cstring>chequeEditBtn</cstring>
                                 </property>
                                 <property stdset="1">
-                                    <name>text</name>
-                                    <string>Edit</string>
-                                </property>
-                                <property stdset="1">
                                     <name>maximumSize</name>
                                     <size>
                                         <width>32767</width>
                                         <height>32767</height>
                                     </size>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Edit</string>
                                 </property>
                             </widget>
                             <spacer>
@@ -226,13 +223,6 @@
                                 <property stdset="1">
                                     <name>sizeType</name>
                                     <enum>Fixed</enum>
-                                </property>
-                                <property>
-                                    <name>sizeHint</name>
-                                    <size>
-                                        <width>30</width>
-                                        <height>20</height>
-                                    </size>
                                 </property>
                                 <property>
                                     <name>sizeHint</name>
@@ -284,13 +274,6 @@
                                         <height>20</height>
                                     </size>
                                 </property>
-                                <property>
-                                    <name>sizeHint</name>
-                                    <size>
-                                        <width>20</width>
-                                        <height>20</height>
-                                    </size>
-                                </property>
                             </spacer>
                         </hbox>
                     </widget>
@@ -329,23 +312,12 @@
                                         <height>20</height>
                                     </size>
                                 </property>
-                                <property>
-                                    <name>sizeHint</name>
-                                    <size>
-                                        <width>20</width>
-                                        <height>20</height>
-                                    </size>
-                                </property>
                             </spacer>
                             <widget>
                                 <class>QLabel</class>
                                 <property stdset="1">
                                     <name>name</name>
                                     <cstring>TextLabel7</cstring>
-                                </property>
-                                <property stdset="1">
-                                    <name>text</name>
-                                    <string>Date:</string>
                                 </property>
                                 <property stdset="1">
                                     <name>minimumSize</name>
@@ -360,6 +332,10 @@
                                         <width>60</width>
                                         <height>20</height>
                                     </size>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Date:</string>
                                 </property>
                             </widget>
                             <widget>
@@ -407,10 +383,6 @@
                                     <cstring>TextLabel5_2</cstring>
                                 </property>
                                 <property stdset="1">
-                                    <name>text</name>
-                                    <string>Pay to:</string>
-                                </property>
-                                <property stdset="1">
                                     <name>minimumSize</name>
                                     <size>
                                         <width>70</width>
@@ -424,6 +396,10 @@
                                         <height>20</height>
                                     </size>
                                 </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Pay to:</string>
+                                </property>
                             </widget>
                             <widget>
                                 <class>KComboBox</class>
@@ -432,8 +408,11 @@
                                     <cstring>chequePayToCombo</cstring>
                                 </property>
                                 <property stdset="1">
-                                    <name>editable</name>
-                                    <bool>true</bool>
+                                    <name>sizePolicy</name>
+                                    <sizepolicy>
+                                        <hsizetype>3</hsizetype>
+                                        <vsizetype>0</vsizetype>
+                                    </sizepolicy>
                                 </property>
                                 <property stdset="1">
                                     <name>minimumSize</name>
@@ -450,11 +429,8 @@
                                     </size>
                                 </property>
                                 <property stdset="1">
-                                    <name>sizePolicy</name>
-                                    <sizepolicy>
-                                        <hsizetype>3</hsizetype>
-                                        <vsizetype>0</vsizetype>
-                                    </sizepolicy>
+                                    <name>editable</name>
+                                    <bool>true</bool>
                                 </property>
                             </widget>
                             <spacer>
@@ -477,23 +453,12 @@
                                         <height>20</height>
                                     </size>
                                 </property>
-                                <property>
-                                    <name>sizeHint</name>
-                                    <size>
-                                        <width>40</width>
-                                        <height>20</height>
-                                    </size>
-                                </property>
                             </spacer>
                             <widget>
                                 <class>QLabel</class>
                                 <property stdset="1">
                                     <name>name</name>
                                     <cstring>TextLabel8</cstring>
-                                </property>
-                                <property stdset="1">
-                                    <name>text</name>
-                                    <string>Amount:</string>
                                 </property>
                                 <property stdset="1">
                                     <name>minimumSize</name>
@@ -508,6 +473,10 @@
                                         <width>60</width>
                                         <height>20</height>
                                     </size>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Amount:</string>
                                 </property>
                             </widget>
                             <widget>
@@ -555,8 +524,11 @@
                                     <cstring>TextLabel5_2_2</cstring>
                                 </property>
                                 <property stdset="1">
-                                    <name>text</name>
-                                    <string>Category:</string>
+                                    <name>minimumSize</name>
+                                    <size>
+                                        <width>70</width>
+                                        <height>20</height>
+                                    </size>
                                 </property>
                                 <property stdset="1">
                                     <name>maximumSize</name>
@@ -566,11 +538,8 @@
                                     </size>
                                 </property>
                                 <property stdset="1">
-                                    <name>minimumSize</name>
-                                    <size>
-                                        <width>70</width>
-                                        <height>20</height>
-                                    </size>
+                                    <name>text</name>
+                                    <string>Category:</string>
                                 </property>
                             </widget>
                             <widget>
@@ -580,6 +549,13 @@
                                     <cstring>chequeCategoryMajorCombo</cstring>
                                 </property>
                                 <property stdset="1">
+                                    <name>sizePolicy</name>
+                                    <sizepolicy>
+                                        <hsizetype>3</hsizetype>
+                                        <vsizetype>0</vsizetype>
+                                    </sizepolicy>
+                                </property>
+                                <property stdset="1">
                                     <name>minimumSize</name>
                                     <size>
                                         <width>154</width>
@@ -596,13 +572,6 @@
                                 <property stdset="1">
                                     <name>editable</name>
                                     <bool>true</bool>
-                                </property>
-                                <property stdset="1">
-                                    <name>sizePolicy</name>
-                                    <sizepolicy>
-                                        <hsizetype>3</hsizetype>
-                                        <vsizetype>0</vsizetype>
-                                    </sizepolicy>
                                 </property>
                             </widget>
                             <widget>
@@ -612,6 +581,13 @@
                                     <cstring>chequeCategoryMinorCombo</cstring>
                                 </property>
                                 <property stdset="1">
+                                    <name>sizePolicy</name>
+                                    <sizepolicy>
+                                        <hsizetype>3</hsizetype>
+                                        <vsizetype>0</vsizetype>
+                                    </sizepolicy>
+                                </property>
+                                <property stdset="1">
                                     <name>minimumSize</name>
                                     <size>
                                         <width>154</width>
@@ -628,13 +604,6 @@
                                 <property stdset="1">
                                     <name>editable</name>
                                     <bool>true</bool>
-                                </property>
-                                <property stdset="1">
-                                    <name>sizePolicy</name>
-                                    <sizepolicy>
-                                        <hsizetype>3</hsizetype>
-                                        <vsizetype>0</vsizetype>
-                                    </sizepolicy>
                                 </property>
                             </widget>
                             <spacer>
@@ -657,23 +626,12 @@
                                         <height>20</height>
                                     </size>
                                 </property>
-                                <property>
-                                    <name>sizeHint</name>
-                                    <size>
-                                        <width>40</width>
-                                        <height>20</height>
-                                    </size>
-                                </property>
                             </spacer>
                             <widget>
                                 <class>QLabel</class>
                                 <property stdset="1">
                                     <name>name</name>
                                     <cstring>TextLabel9</cstring>
-                                </property>
-                                <property stdset="1">
-                                    <name>text</name>
-                                    <string>Number:</string>
                                 </property>
                                 <property stdset="1">
                                     <name>minimumSize</name>
@@ -688,6 +646,10 @@
                                         <width>60</width>
                                         <height>20</height>
                                     </size>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Number:</string>
                                 </property>
                             </widget>
                             <widget>
@@ -735,10 +697,6 @@
                                     <cstring>TextLabel5_3</cstring>
                                 </property>
                                 <property stdset="1">
-                                    <name>text</name>
-                                    <string>Memo:</string>
-                                </property>
-                                <property stdset="1">
                                     <name>minimumSize</name>
                                     <size>
                                         <width>70</width>
@@ -751,6 +709,10 @@
                                         <width>70</width>
                                         <height>20</height>
                                     </size>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Memo:</string>
                                 </property>
                             </widget>
                             <widget>
@@ -794,13 +756,6 @@
                                         <height>20</height>
                                     </size>
                                 </property>
-                                <property>
-                                    <name>sizeHint</name>
-                                    <size>
-                                        <width>50</width>
-                                        <height>20</height>
-                                    </size>
-                                </property>
                             </spacer>
                             <widget>
                                 <class>QLabel</class>
@@ -809,8 +764,11 @@
                                     <cstring>TextLabel6</cstring>
                                 </property>
                                 <property stdset="1">
-                                    <name>text</name>
-                                    <string>Cheque</string>
+                                    <name>minimumSize</name>
+                                    <size>
+                                        <width>110</width>
+                                        <height>30</height>
+                                    </size>
                                 </property>
                                 <property stdset="1">
                                     <name>font</name>
@@ -820,11 +778,8 @@
                                     </font>
                                 </property>
                                 <property stdset="1">
-                                    <name>minimumSize</name>
-                                    <size>
-                                        <width>110</width>
-                                        <height>30</height>
-                                    </size>
+                                    <name>text</name>
+                                    <string>Cheque</string>
                                 </property>
                             </widget>
                         </hbox>
@@ -883,15 +838,15 @@
                                     <cstring>depositEditBtn</cstring>
                                 </property>
                                 <property stdset="1">
-                                    <name>text</name>
-                                    <string>Edit</string>
-                                </property>
-                                <property stdset="1">
                                     <name>maximumSize</name>
                                     <size>
                                         <width>32767</width>
                                         <height>32767</height>
                                     </size>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Edit</string>
                                 </property>
                             </widget>
                             <spacer>
@@ -906,13 +861,6 @@
                                 <property stdset="1">
                                     <name>sizeType</name>
                                     <enum>Fixed</enum>
-                                </property>
-                                <property>
-                                    <name>sizeHint</name>
-                                    <size>
-                                        <width>30</width>
-                                        <height>20</height>
-                                    </size>
                                 </property>
                                 <property>
                                     <name>sizeHint</name>
@@ -964,13 +912,6 @@
                                         <height>20</height>
                                     </size>
                                 </property>
-                                <property>
-                                    <name>sizeHint</name>
-                                    <size>
-                                        <width>20</width>
-                                        <height>20</height>
-                                    </size>
-                                </property>
                             </spacer>
                         </hbox>
                     </widget>
@@ -1009,23 +950,12 @@
                                         <height>20</height>
                                     </size>
                                 </property>
-                                <property>
-                                    <name>sizeHint</name>
-                                    <size>
-                                        <width>20</width>
-                                        <height>20</height>
-                                    </size>
-                                </property>
                             </spacer>
                             <widget>
                                 <class>QLabel</class>
                                 <property stdset="1">
                                     <name>name</name>
                                     <cstring>TextLabel7_6</cstring>
-                                </property>
-                                <property stdset="1">
-                                    <name>text</name>
-                                    <string>Date:</string>
                                 </property>
                                 <property stdset="1">
                                     <name>minimumSize</name>
@@ -1040,6 +970,10 @@
                                         <width>60</width>
                                         <height>20</height>
                                     </size>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Date:</string>
                                 </property>
                             </widget>
                             <widget>
@@ -1087,10 +1021,6 @@
                                     <cstring>TextLabel5_2_9</cstring>
                                 </property>
                                 <property stdset="1">
-                                    <name>text</name>
-                                    <string>From:</string>
-                                </property>
-                                <property stdset="1">
                                     <name>minimumSize</name>
                                     <size>
                                         <width>70</width>
@@ -1104,6 +1034,10 @@
                                         <height>20</height>
                                     </size>
                                 </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>From:</string>
+                                </property>
                             </widget>
                             <widget>
                                 <class>KComboBox</class>
@@ -1112,8 +1046,11 @@
                                     <cstring>depositFromCombo</cstring>
                                 </property>
                                 <property stdset="1">
-                                    <name>editable</name>
-                                    <bool>true</bool>
+                                    <name>sizePolicy</name>
+                                    <sizepolicy>
+                                        <hsizetype>3</hsizetype>
+                                        <vsizetype>0</vsizetype>
+                                    </sizepolicy>
                                 </property>
                                 <property stdset="1">
                                     <name>minimumSize</name>
@@ -1130,11 +1067,8 @@
                                     </size>
                                 </property>
                                 <property stdset="1">
-                                    <name>sizePolicy</name>
-                                    <sizepolicy>
-                                        <hsizetype>3</hsizetype>
-                                        <vsizetype>0</vsizetype>
-                                    </sizepolicy>
+                                    <name>editable</name>
+                                    <bool>true</bool>
                                 </property>
                             </widget>
                             <spacer>
@@ -1157,23 +1091,12 @@
                                         <height>20</height>
                                     </size>
                                 </property>
-                                <property>
-                                    <name>sizeHint</name>
-                                    <size>
-                                        <width>40</width>
-                                        <height>20</height>
-                                    </size>
-                                </property>
                             </spacer>
                             <widget>
                                 <class>QLabel</class>
                                 <property stdset="1">
                                     <name>name</name>
                                     <cstring>TextLabel8_6</cstring>
-                                </property>
-                                <property stdset="1">
-                                    <name>text</name>
-                                    <string>Amount:</string>
                                 </property>
                                 <property stdset="1">
                                     <name>minimumSize</name>
@@ -1188,6 +1111,10 @@
                                         <width>60</width>
                                         <height>20</height>
                                     </size>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Amount:</string>
                                 </property>
                             </widget>
                             <widget>
@@ -1235,8 +1162,11 @@
                                     <cstring>TextLabel5_2_3</cstring>
                                 </property>
                                 <property stdset="1">
-                                    <name>text</name>
-                                    <string>Category:</string>
+                                    <name>minimumSize</name>
+                                    <size>
+                                        <width>70</width>
+                                        <height>20</height>
+                                    </size>
                                 </property>
                                 <property stdset="1">
                                     <name>maximumSize</name>
@@ -1246,11 +1176,8 @@
                                     </size>
                                 </property>
                                 <property stdset="1">
-                                    <name>minimumSize</name>
-                                    <size>
-                                        <width>70</width>
-                                        <height>20</height>
-                                    </size>
+                                    <name>text</name>
+                                    <string>Category:</string>
                                 </property>
                             </widget>
                             <widget>
@@ -1260,6 +1187,13 @@
                                     <cstring>depositCategoryMajorCombo</cstring>
                                 </property>
                                 <property stdset="1">
+                                    <name>sizePolicy</name>
+                                    <sizepolicy>
+                                        <hsizetype>3</hsizetype>
+                                        <vsizetype>0</vsizetype>
+                                    </sizepolicy>
+                                </property>
+                                <property stdset="1">
                                     <name>minimumSize</name>
                                     <size>
                                         <width>154</width>
@@ -1276,13 +1210,6 @@
                                 <property stdset="1">
                                     <name>editable</name>
                                     <bool>true</bool>
-                                </property>
-                                <property stdset="1">
-                                    <name>sizePolicy</name>
-                                    <sizepolicy>
-                                        <hsizetype>3</hsizetype>
-                                        <vsizetype>0</vsizetype>
-                                    </sizepolicy>
                                 </property>
                             </widget>
                             <widget>
@@ -1292,6 +1219,13 @@
                                     <cstring>depositCategoryMinorCombo</cstring>
                                 </property>
                                 <property stdset="1">
+                                    <name>sizePolicy</name>
+                                    <sizepolicy>
+                                        <hsizetype>3</hsizetype>
+                                        <vsizetype>0</vsizetype>
+                                    </sizepolicy>
+                                </property>
+                                <property stdset="1">
                                     <name>minimumSize</name>
                                     <size>
                                         <width>154</width>
@@ -1308,13 +1242,6 @@
                                 <property stdset="1">
                                     <name>editable</name>
                                     <bool>true</bool>
-                                </property>
-                                <property stdset="1">
-                                    <name>sizePolicy</name>
-                                    <sizepolicy>
-                                        <hsizetype>3</hsizetype>
-                                        <vsizetype>0</vsizetype>
-                                    </sizepolicy>
                                 </property>
                             </widget>
                             <spacer>
@@ -1337,23 +1264,12 @@
                                         <height>20</height>
                                     </size>
                                 </property>
-                                <property>
-                                    <name>sizeHint</name>
-                                    <size>
-                                        <width>40</width>
-                                        <height>20</height>
-                                    </size>
-                                </property>
                             </spacer>
                             <widget>
                                 <class>QLabel</class>
                                 <property stdset="1">
                                     <name>name</name>
                                     <cstring>TextLabel9_6</cstring>
-                                </property>
-                                <property stdset="1">
-                                    <name>text</name>
-                                    <string>Number:</string>
                                 </property>
                                 <property stdset="1">
                                     <name>minimumSize</name>
@@ -1368,6 +1284,10 @@
                                         <width>60</width>
                                         <height>20</height>
                                     </size>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Number:</string>
                                 </property>
                             </widget>
                             <widget>
@@ -1415,10 +1335,6 @@
                                     <cstring>TextLabel5_3_6</cstring>
                                 </property>
                                 <property stdset="1">
-                                    <name>text</name>
-                                    <string>Memo:</string>
-                                </property>
-                                <property stdset="1">
                                     <name>minimumSize</name>
                                     <size>
                                         <width>70</width>
@@ -1431,6 +1347,10 @@
                                         <width>70</width>
                                         <height>20</height>
                                     </size>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Memo:</string>
                                 </property>
                             </widget>
                             <widget>
@@ -1474,13 +1394,6 @@
                                         <height>20</height>
                                     </size>
                                 </property>
-                                <property>
-                                    <name>sizeHint</name>
-                                    <size>
-                                        <width>50</width>
-                                        <height>20</height>
-                                    </size>
-                                </property>
                             </spacer>
                             <widget>
                                 <class>QLabel</class>
@@ -1489,8 +1402,11 @@
                                     <cstring>TextLabel6_6</cstring>
                                 </property>
                                 <property stdset="1">
-                                    <name>text</name>
-                                    <string>Deposit</string>
+                                    <name>minimumSize</name>
+                                    <size>
+                                        <width>110</width>
+                                        <height>30</height>
+                                    </size>
                                 </property>
                                 <property stdset="1">
                                     <name>font</name>
@@ -1500,11 +1416,8 @@
                                     </font>
                                 </property>
                                 <property stdset="1">
-                                    <name>minimumSize</name>
-                                    <size>
-                                        <width>110</width>
-                                        <height>30</height>
-                                    </size>
+                                    <name>text</name>
+                                    <string>Deposit</string>
                                 </property>
                             </widget>
                         </hbox>
@@ -1563,15 +1476,15 @@
                                     <cstring>transferEditBtn</cstring>
                                 </property>
                                 <property stdset="1">
-                                    <name>text</name>
-                                    <string>Edit</string>
-                                </property>
-                                <property stdset="1">
                                     <name>maximumSize</name>
                                     <size>
                                         <width>32767</width>
                                         <height>32767</height>
                                     </size>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Edit</string>
                                 </property>
                             </widget>
                             <spacer>
@@ -1586,13 +1499,6 @@
                                 <property stdset="1">
                                     <name>sizeType</name>
                                     <enum>Fixed</enum>
-                                </property>
-                                <property>
-                                    <name>sizeHint</name>
-                                    <size>
-                                        <width>30</width>
-                                        <height>20</height>
-                                    </size>
                                 </property>
                                 <property>
                                     <name>sizeHint</name>
@@ -1644,13 +1550,6 @@
                                         <height>20</height>
                                     </size>
                                 </property>
-                                <property>
-                                    <name>sizeHint</name>
-                                    <size>
-                                        <width>20</width>
-                                        <height>20</height>
-                                    </size>
-                                </property>
                             </spacer>
                         </hbox>
                     </widget>
@@ -1676,10 +1575,6 @@
                                     <cstring>TextLabel5_5</cstring>
                                 </property>
                                 <property stdset="1">
-                                    <name>text</name>
-                                    <string>From:</string>
-                                </property>
-                                <property stdset="1">
                                     <name>minimumSize</name>
                                     <size>
                                         <width>70</width>
@@ -1693,6 +1588,10 @@
                                         <height>20</height>
                                     </size>
                                 </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>From:</string>
+                                </property>
                             </widget>
                             <widget>
                                 <class>KComboBox</class>
@@ -1701,8 +1600,11 @@
                                     <cstring>transferFromCombo</cstring>
                                 </property>
                                 <property stdset="1">
-                                    <name>editable</name>
-                                    <bool>true</bool>
+                                    <name>sizePolicy</name>
+                                    <sizepolicy>
+                                        <hsizetype>3</hsizetype>
+                                        <vsizetype>0</vsizetype>
+                                    </sizepolicy>
                                 </property>
                                 <property stdset="1">
                                     <name>minimumSize</name>
@@ -1719,11 +1621,8 @@
                                     </size>
                                 </property>
                                 <property stdset="1">
-                                    <name>sizePolicy</name>
-                                    <sizepolicy>
-                                        <hsizetype>3</hsizetype>
-                                        <vsizetype>0</vsizetype>
-                                    </sizepolicy>
+                                    <name>editable</name>
+                                    <bool>true</bool>
                                 </property>
                             </widget>
                             <spacer>
@@ -1746,23 +1645,12 @@
                                         <height>20</height>
                                     </size>
                                 </property>
-                                <property>
-                                    <name>sizeHint</name>
-                                    <size>
-                                        <width>40</width>
-                                        <height>20</height>
-                                    </size>
-                                </property>
                             </spacer>
                             <widget>
                                 <class>QLabel</class>
                                 <property stdset="1">
                                     <name>name</name>
                                     <cstring>TextLabel7_3</cstring>
-                                </property>
-                                <property stdset="1">
-                                    <name>text</name>
-                                    <string>Date:</string>
                                 </property>
                                 <property stdset="1">
                                     <name>minimumSize</name>
@@ -1777,6 +1665,10 @@
                                         <width>60</width>
                                         <height>20</height>
                                     </size>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Date:</string>
                                 </property>
                             </widget>
                             <widget>
@@ -1824,10 +1716,6 @@
                                     <cstring>TextLabel5_2_5</cstring>
                                 </property>
                                 <property stdset="1">
-                                    <name>text</name>
-                                    <string>To:</string>
-                                </property>
-                                <property stdset="1">
                                     <name>minimumSize</name>
                                     <size>
                                         <width>70</width>
@@ -1841,6 +1729,10 @@
                                         <height>20</height>
                                     </size>
                                 </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>To:</string>
+                                </property>
                             </widget>
                             <widget>
                                 <class>KComboBox</class>
@@ -1849,8 +1741,11 @@
                                     <cstring>transferToCombo</cstring>
                                 </property>
                                 <property stdset="1">
-                                    <name>editable</name>
-                                    <bool>true</bool>
+                                    <name>sizePolicy</name>
+                                    <sizepolicy>
+                                        <hsizetype>3</hsizetype>
+                                        <vsizetype>0</vsizetype>
+                                    </sizepolicy>
                                 </property>
                                 <property stdset="1">
                                     <name>minimumSize</name>
@@ -1867,11 +1762,8 @@
                                     </size>
                                 </property>
                                 <property stdset="1">
-                                    <name>sizePolicy</name>
-                                    <sizepolicy>
-                                        <hsizetype>3</hsizetype>
-                                        <vsizetype>0</vsizetype>
-                                    </sizepolicy>
+                                    <name>editable</name>
+                                    <bool>true</bool>
                                 </property>
                             </widget>
                             <spacer>
@@ -1894,23 +1786,12 @@
                                         <height>20</height>
                                     </size>
                                 </property>
-                                <property>
-                                    <name>sizeHint</name>
-                                    <size>
-                                        <width>40</width>
-                                        <height>20</height>
-                                    </size>
-                                </property>
                             </spacer>
                             <widget>
                                 <class>QLabel</class>
                                 <property stdset="1">
                                     <name>name</name>
                                     <cstring>TextLabel8_3</cstring>
-                                </property>
-                                <property stdset="1">
-                                    <name>text</name>
-                                    <string>Amount:</string>
                                 </property>
                                 <property stdset="1">
                                     <name>minimumSize</name>
@@ -1925,6 +1806,10 @@
                                         <width>60</width>
                                         <height>20</height>
                                     </size>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Amount:</string>
                                 </property>
                             </widget>
                             <widget>
@@ -1972,8 +1857,11 @@
                                     <cstring>TextLabel5_2_4</cstring>
                                 </property>
                                 <property stdset="1">
-                                    <name>text</name>
-                                    <string>Category:</string>
+                                    <name>minimumSize</name>
+                                    <size>
+                                        <width>70</width>
+                                        <height>20</height>
+                                    </size>
                                 </property>
                                 <property stdset="1">
                                     <name>maximumSize</name>
@@ -1983,11 +1871,8 @@
                                     </size>
                                 </property>
                                 <property stdset="1">
-                                    <name>minimumSize</name>
-                                    <size>
-                                        <width>70</width>
-                                        <height>20</height>
-                                    </size>
+                                    <name>text</name>
+                                    <string>Category:</string>
                                 </property>
                             </widget>
                             <widget>
@@ -1997,6 +1882,13 @@
                                     <cstring>transferCategoryMajorCombo</cstring>
                                 </property>
                                 <property stdset="1">
+                                    <name>sizePolicy</name>
+                                    <sizepolicy>
+                                        <hsizetype>3</hsizetype>
+                                        <vsizetype>0</vsizetype>
+                                    </sizepolicy>
+                                </property>
+                                <property stdset="1">
                                     <name>minimumSize</name>
                                     <size>
                                         <width>154</width>
@@ -2013,13 +1905,6 @@
                                 <property stdset="1">
                                     <name>editable</name>
                                     <bool>true</bool>
-                                </property>
-                                <property stdset="1">
-                                    <name>sizePolicy</name>
-                                    <sizepolicy>
-                                        <hsizetype>3</hsizetype>
-                                        <vsizetype>0</vsizetype>
-                                    </sizepolicy>
                                 </property>
                             </widget>
                             <widget>
@@ -2029,6 +1914,13 @@
                                     <cstring>transferCategoryMinorCombo</cstring>
                                 </property>
                                 <property stdset="1">
+                                    <name>sizePolicy</name>
+                                    <sizepolicy>
+                                        <hsizetype>3</hsizetype>
+                                        <vsizetype>0</vsizetype>
+                                    </sizepolicy>
+                                </property>
+                                <property stdset="1">
                                     <name>minimumSize</name>
                                     <size>
                                         <width>154</width>
@@ -2045,13 +1937,6 @@
                                 <property stdset="1">
                                     <name>editable</name>
                                     <bool>true</bool>
-                                </property>
-                                <property stdset="1">
-                                    <name>sizePolicy</name>
-                                    <sizepolicy>
-                                        <hsizetype>3</hsizetype>
-                                        <vsizetype>0</vsizetype>
-                                    </sizepolicy>
                                 </property>
                             </widget>
                             <spacer>
@@ -2074,23 +1959,12 @@
                                         <height>20</height>
                                     </size>
                                 </property>
-                                <property>
-                                    <name>sizeHint</name>
-                                    <size>
-                                        <width>40</width>
-                                        <height>20</height>
-                                    </size>
-                                </property>
                             </spacer>
                             <widget>
                                 <class>QLabel</class>
                                 <property stdset="1">
                                     <name>name</name>
                                     <cstring>TextLabel9_3</cstring>
-                                </property>
-                                <property stdset="1">
-                                    <name>text</name>
-                                    <string>Number:</string>
                                 </property>
                                 <property stdset="1">
                                     <name>minimumSize</name>
@@ -2105,6 +1979,10 @@
                                         <width>60</width>
                                         <height>20</height>
                                     </size>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Number:</string>
                                 </property>
                             </widget>
                             <widget>
@@ -2152,10 +2030,6 @@
                                     <cstring>TextLabel5_3_3</cstring>
                                 </property>
                                 <property stdset="1">
-                                    <name>text</name>
-                                    <string>Memo:</string>
-                                </property>
-                                <property stdset="1">
                                     <name>minimumSize</name>
                                     <size>
                                         <width>70</width>
@@ -2168,6 +2042,10 @@
                                         <width>70</width>
                                         <height>20</height>
                                     </size>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Memo:</string>
                                 </property>
                             </widget>
                             <widget>
@@ -2211,13 +2089,6 @@
                                         <height>20</height>
                                     </size>
                                 </property>
-                                <property>
-                                    <name>sizeHint</name>
-                                    <size>
-                                        <width>50</width>
-                                        <height>20</height>
-                                    </size>
-                                </property>
                             </spacer>
                             <widget>
                                 <class>QLabel</class>
@@ -2226,8 +2097,11 @@
                                     <cstring>TextLabel6_3</cstring>
                                 </property>
                                 <property stdset="1">
-                                    <name>text</name>
-                                    <string>Transfer</string>
+                                    <name>minimumSize</name>
+                                    <size>
+                                        <width>110</width>
+                                        <height>30</height>
+                                    </size>
                                 </property>
                                 <property stdset="1">
                                     <name>font</name>
@@ -2237,11 +2111,8 @@
                                     </font>
                                 </property>
                                 <property stdset="1">
-                                    <name>minimumSize</name>
-                                    <size>
-                                        <width>110</width>
-                                        <height>30</height>
-                                    </size>
+                                    <name>text</name>
+                                    <string>Transfer</string>
                                 </property>
                             </widget>
                         </hbox>
@@ -2300,15 +2171,15 @@
                                     <cstring>withdrawalEditBtn</cstring>
                                 </property>
                                 <property stdset="1">
-                                    <name>text</name>
-                                    <string>Edit</string>
-                                </property>
-                                <property stdset="1">
                                     <name>maximumSize</name>
                                     <size>
                                         <width>32767</width>
                                         <height>32767</height>
                                     </size>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Edit</string>
                                 </property>
                             </widget>
                             <spacer>
@@ -2323,13 +2194,6 @@
                                 <property stdset="1">
                                     <name>sizeType</name>
                                     <enum>Fixed</enum>
-                                </property>
-                                <property>
-                                    <name>sizeHint</name>
-                                    <size>
-                                        <width>30</width>
-                                        <height>20</height>
-                                    </size>
                                 </property>
                                 <property>
                                     <name>sizeHint</name>
@@ -2381,13 +2245,6 @@
                                         <height>20</height>
                                     </size>
                                 </property>
-                                <property>
-                                    <name>sizeHint</name>
-                                    <size>
-                                        <width>20</width>
-                                        <height>20</height>
-                                    </size>
-                                </property>
                             </spacer>
                         </hbox>
                     </widget>
@@ -2426,23 +2283,12 @@
                                         <height>20</height>
                                     </size>
                                 </property>
-                                <property>
-                                    <name>sizeHint</name>
-                                    <size>
-                                        <width>20</width>
-                                        <height>20</height>
-                                    </size>
-                                </property>
                             </spacer>
                             <widget>
                                 <class>QLabel</class>
                                 <property stdset="1">
                                     <name>name</name>
                                     <cstring>TextLabel7_6_2</cstring>
-                                </property>
-                                <property stdset="1">
-                                    <name>text</name>
-                                    <string>Date:</string>
                                 </property>
                                 <property stdset="1">
                                     <name>minimumSize</name>
@@ -2457,6 +2303,10 @@
                                         <width>60</width>
                                         <height>20</height>
                                     </size>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Date:</string>
                                 </property>
                             </widget>
                             <widget>
@@ -2504,10 +2354,6 @@
                                     <cstring>TextLabel5_2_9_2</cstring>
                                 </property>
                                 <property stdset="1">
-                                    <name>text</name>
-                                    <string>Pay to:</string>
-                                </property>
-                                <property stdset="1">
                                     <name>minimumSize</name>
                                     <size>
                                         <width>70</width>
@@ -2521,6 +2367,10 @@
                                         <height>20</height>
                                     </size>
                                 </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Pay to:</string>
+                                </property>
                             </widget>
                             <widget>
                                 <class>KComboBox</class>
@@ -2529,8 +2379,11 @@
                                     <cstring>withdrawalPayToCombo</cstring>
                                 </property>
                                 <property stdset="1">
-                                    <name>editable</name>
-                                    <bool>true</bool>
+                                    <name>sizePolicy</name>
+                                    <sizepolicy>
+                                        <hsizetype>3</hsizetype>
+                                        <vsizetype>0</vsizetype>
+                                    </sizepolicy>
                                 </property>
                                 <property stdset="1">
                                     <name>minimumSize</name>
@@ -2547,11 +2400,8 @@
                                     </size>
                                 </property>
                                 <property stdset="1">
-                                    <name>sizePolicy</name>
-                                    <sizepolicy>
-                                        <hsizetype>3</hsizetype>
-                                        <vsizetype>0</vsizetype>
-                                    </sizepolicy>
+                                    <name>editable</name>
+                                    <bool>true</bool>
                                 </property>
                             </widget>
                             <spacer>
@@ -2574,23 +2424,12 @@
                                         <height>20</height>
                                     </size>
                                 </property>
-                                <property>
-                                    <name>sizeHint</name>
-                                    <size>
-                                        <width>40</width>
-                                        <height>20</height>
-                                    </size>
-                                </property>
                             </spacer>
                             <widget>
                                 <class>QLabel</class>
                                 <property stdset="1">
                                     <name>name</name>
                                     <cstring>TextLabel8_6_2</cstring>
-                                </property>
-                                <property stdset="1">
-                                    <name>text</name>
-                                    <string>Amount:</string>
                                 </property>
                                 <property stdset="1">
                                     <name>minimumSize</name>
@@ -2605,6 +2444,10 @@
                                         <width>60</width>
                                         <height>20</height>
                                     </size>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Amount:</string>
                                 </property>
                             </widget>
                             <widget>
@@ -2652,8 +2495,11 @@
                                     <cstring>TextLabel5_2_3_2</cstring>
                                 </property>
                                 <property stdset="1">
-                                    <name>text</name>
-                                    <string>Category:</string>
+                                    <name>minimumSize</name>
+                                    <size>
+                                        <width>70</width>
+                                        <height>20</height>
+                                    </size>
                                 </property>
                                 <property stdset="1">
                                     <name>maximumSize</name>
@@ -2663,11 +2509,8 @@
                                     </size>
                                 </property>
                                 <property stdset="1">
-                                    <name>minimumSize</name>
-                                    <size>
-                                        <width>70</width>
-                                        <height>20</height>
-                                    </size>
+                                    <name>text</name>
+                                    <string>Category:</string>
                                 </property>
                             </widget>
                             <widget>
@@ -2677,6 +2520,13 @@
                                     <cstring>withdrawalCategoryMajorCombo</cstring>
                                 </property>
                                 <property stdset="1">
+                                    <name>sizePolicy</name>
+                                    <sizepolicy>
+                                        <hsizetype>3</hsizetype>
+                                        <vsizetype>0</vsizetype>
+                                    </sizepolicy>
+                                </property>
+                                <property stdset="1">
                                     <name>minimumSize</name>
                                     <size>
                                         <width>154</width>
@@ -2693,13 +2543,6 @@
                                 <property stdset="1">
                                     <name>editable</name>
                                     <bool>true</bool>
-                                </property>
-                                <property stdset="1">
-                                    <name>sizePolicy</name>
-                                    <sizepolicy>
-                                        <hsizetype>3</hsizetype>
-                                        <vsizetype>0</vsizetype>
-                                    </sizepolicy>
                                 </property>
                             </widget>
                             <widget>
@@ -2709,6 +2552,13 @@
                                     <cstring>withdrawalCategoryMinorCombo</cstring>
                                 </property>
                                 <property stdset="1">
+                                    <name>sizePolicy</name>
+                                    <sizepolicy>
+                                        <hsizetype>3</hsizetype>
+                                        <vsizetype>0</vsizetype>
+                                    </sizepolicy>
+                                </property>
+                                <property stdset="1">
                                     <name>minimumSize</name>
                                     <size>
                                         <width>154</width>
@@ -2725,13 +2575,6 @@
                                 <property stdset="1">
                                     <name>editable</name>
                                     <bool>true</bool>
-                                </property>
-                                <property stdset="1">
-                                    <name>sizePolicy</name>
-                                    <sizepolicy>
-                                        <hsizetype>3</hsizetype>
-                                        <vsizetype>0</vsizetype>
-                                    </sizepolicy>
                                 </property>
                             </widget>
                             <spacer>
@@ -2754,23 +2597,12 @@
                                         <height>20</height>
                                     </size>
                                 </property>
-                                <property>
-                                    <name>sizeHint</name>
-                                    <size>
-                                        <width>40</width>
-                                        <height>20</height>
-                                    </size>
-                                </property>
                             </spacer>
                             <widget>
                                 <class>QLabel</class>
                                 <property stdset="1">
                                     <name>name</name>
                                     <cstring>TextLabel9_6_2</cstring>
-                                </property>
-                                <property stdset="1">
-                                    <name>text</name>
-                                    <string>Number:</string>
                                 </property>
                                 <property stdset="1">
                                     <name>minimumSize</name>
@@ -2785,6 +2617,10 @@
                                         <width>60</width>
                                         <height>20</height>
                                     </size>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Number:</string>
                                 </property>
                             </widget>
                             <widget>
@@ -2832,10 +2668,6 @@
                                     <cstring>TextLabel5_3_6_2</cstring>
                                 </property>
                                 <property stdset="1">
-                                    <name>text</name>
-                                    <string>Memo:</string>
-                                </property>
-                                <property stdset="1">
                                     <name>minimumSize</name>
                                     <size>
                                         <width>70</width>
@@ -2848,6 +2680,10 @@
                                         <width>70</width>
                                         <height>20</height>
                                     </size>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Memo:</string>
                                 </property>
                             </widget>
                             <widget>
@@ -2891,13 +2727,6 @@
                                         <height>20</height>
                                     </size>
                                 </property>
-                                <property>
-                                    <name>sizeHint</name>
-                                    <size>
-                                        <width>50</width>
-                                        <height>20</height>
-                                    </size>
-                                </property>
                             </spacer>
                             <widget>
                                 <class>QLabel</class>
@@ -2906,8 +2735,11 @@
                                     <cstring>TextLabel6_6_2</cstring>
                                 </property>
                                 <property stdset="1">
-                                    <name>text</name>
-                                    <string>Withdrawal</string>
+                                    <name>minimumSize</name>
+                                    <size>
+                                        <width>110</width>
+                                        <height>30</height>
+                                    </size>
                                 </property>
                                 <property stdset="1">
                                     <name>font</name>
@@ -2917,11 +2749,8 @@
                                     </font>
                                 </property>
                                 <property stdset="1">
-                                    <name>minimumSize</name>
-                                    <size>
-                                        <width>110</width>
-                                        <height>30</height>
-                                    </size>
+                                    <name>text</name>
+                                    <string>Withdrawal</string>
                                 </property>
                             </widget>
                         </hbox>
@@ -2980,15 +2809,15 @@
                                     <cstring>atmEditBtn</cstring>
                                 </property>
                                 <property stdset="1">
-                                    <name>text</name>
-                                    <string>Edit</string>
-                                </property>
-                                <property stdset="1">
                                     <name>maximumSize</name>
                                     <size>
                                         <width>32767</width>
                                         <height>32767</height>
                                     </size>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Edit</string>
                                 </property>
                             </widget>
                             <spacer>
@@ -3003,13 +2832,6 @@
                                 <property stdset="1">
                                     <name>sizeType</name>
                                     <enum>Fixed</enum>
-                                </property>
-                                <property>
-                                    <name>sizeHint</name>
-                                    <size>
-                                        <width>30</width>
-                                        <height>20</height>
-                                    </size>
                                 </property>
                                 <property>
                                     <name>sizeHint</name>
@@ -3061,13 +2883,6 @@
                                         <height>20</height>
                                     </size>
                                 </property>
-                                <property>
-                                    <name>sizeHint</name>
-                                    <size>
-                                        <width>20</width>
-                                        <height>20</height>
-                                    </size>
-                                </property>
                             </spacer>
                         </hbox>
                     </widget>
@@ -3106,23 +2921,12 @@
                                         <height>20</height>
                                     </size>
                                 </property>
-                                <property>
-                                    <name>sizeHint</name>
-                                    <size>
-                                        <width>20</width>
-                                        <height>20</height>
-                                    </size>
-                                </property>
                             </spacer>
                             <widget>
                                 <class>QLabel</class>
                                 <property stdset="1">
                                     <name>name</name>
                                     <cstring>TextLabel7_6_3</cstring>
-                                </property>
-                                <property stdset="1">
-                                    <name>text</name>
-                                    <string>Date:</string>
                                 </property>
                                 <property stdset="1">
                                     <name>minimumSize</name>
@@ -3137,6 +2941,10 @@
                                         <width>60</width>
                                         <height>20</height>
                                     </size>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Date:</string>
                                 </property>
                             </widget>
                             <widget>
@@ -3184,10 +2992,6 @@
                                     <cstring>TextLabel5_2_9_3</cstring>
                                 </property>
                                 <property stdset="1">
-                                    <name>text</name>
-                                    <string>Pay to:</string>
-                                </property>
-                                <property stdset="1">
                                     <name>minimumSize</name>
                                     <size>
                                         <width>70</width>
@@ -3201,16 +3005,16 @@
                                         <height>20</height>
                                     </size>
                                 </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Pay to:</string>
+                                </property>
                             </widget>
                             <widget>
                                 <class>QLabel</class>
                                 <property stdset="1">
                                     <name>name</name>
                                     <cstring>atmPayToLabel</cstring>
-                                </property>
-                                <property stdset="1">
-                                    <name>text</name>
-                                    <string>Cash</string>
                                 </property>
                                 <property stdset="1">
                                     <name>minimumSize</name>
@@ -3225,6 +3029,10 @@
                                         <width>32767</width>
                                         <height>20</height>
                                     </size>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Cash</string>
                                 </property>
                             </widget>
                             <spacer>
@@ -3247,23 +3055,12 @@
                                         <height>20</height>
                                     </size>
                                 </property>
-                                <property>
-                                    <name>sizeHint</name>
-                                    <size>
-                                        <width>20</width>
-                                        <height>20</height>
-                                    </size>
-                                </property>
                             </spacer>
                             <widget>
                                 <class>QLabel</class>
                                 <property stdset="1">
                                     <name>name</name>
                                     <cstring>TextLabel8_6_3</cstring>
-                                </property>
-                                <property stdset="1">
-                                    <name>text</name>
-                                    <string>Amount:</string>
                                 </property>
                                 <property stdset="1">
                                     <name>minimumSize</name>
@@ -3278,6 +3075,10 @@
                                         <width>60</width>
                                         <height>20</height>
                                     </size>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Amount:</string>
                                 </property>
                             </widget>
                             <widget>
@@ -3325,8 +3126,11 @@
                                     <cstring>TextLabel5_2_3_3</cstring>
                                 </property>
                                 <property stdset="1">
-                                    <name>text</name>
-                                    <string>Category:</string>
+                                    <name>minimumSize</name>
+                                    <size>
+                                        <width>70</width>
+                                        <height>20</height>
+                                    </size>
                                 </property>
                                 <property stdset="1">
                                     <name>maximumSize</name>
@@ -3336,11 +3140,8 @@
                                     </size>
                                 </property>
                                 <property stdset="1">
-                                    <name>minimumSize</name>
-                                    <size>
-                                        <width>70</width>
-                                        <height>20</height>
-                                    </size>
+                                    <name>text</name>
+                                    <string>Category:</string>
                                 </property>
                             </widget>
                             <widget>
@@ -3350,6 +3151,13 @@
                                     <cstring>atmCategoryMajorCombo</cstring>
                                 </property>
                                 <property stdset="1">
+                                    <name>sizePolicy</name>
+                                    <sizepolicy>
+                                        <hsizetype>3</hsizetype>
+                                        <vsizetype>0</vsizetype>
+                                    </sizepolicy>
+                                </property>
+                                <property stdset="1">
                                     <name>minimumSize</name>
                                     <size>
                                         <width>154</width>
@@ -3366,13 +3174,6 @@
                                 <property stdset="1">
                                     <name>editable</name>
                                     <bool>true</bool>
-                                </property>
-                                <property stdset="1">
-                                    <name>sizePolicy</name>
-                                    <sizepolicy>
-                                        <hsizetype>3</hsizetype>
-                                        <vsizetype>0</vsizetype>
-                                    </sizepolicy>
                                 </property>
                             </widget>
                             <widget>
@@ -3382,6 +3183,13 @@
                                     <cstring>atmCategoryMinorCombo</cstring>
                                 </property>
                                 <property stdset="1">
+                                    <name>sizePolicy</name>
+                                    <sizepolicy>
+                                        <hsizetype>3</hsizetype>
+                                        <vsizetype>0</vsizetype>
+                                    </sizepolicy>
+                                </property>
+                                <property stdset="1">
                                     <name>minimumSize</name>
                                     <size>
                                         <width>154</width>
@@ -3398,13 +3206,6 @@
                                 <property stdset="1">
                                     <name>editable</name>
                                     <bool>true</bool>
-                                </property>
-                                <property stdset="1">
-                                    <name>sizePolicy</name>
-                                    <sizepolicy>
-                                        <hsizetype>3</hsizetype>
-                                        <vsizetype>0</vsizetype>
-                                    </sizepolicy>
                                 </property>
                             </widget>
                             <spacer>
@@ -3427,23 +3228,12 @@
                                         <height>20</height>
                                     </size>
                                 </property>
-                                <property>
-                                    <name>sizeHint</name>
-                                    <size>
-                                        <width>40</width>
-                                        <height>20</height>
-                                    </size>
-                                </property>
                             </spacer>
                             <widget>
                                 <class>QLabel</class>
                                 <property stdset="1">
                                     <name>name</name>
                                     <cstring>TextLabel9_6_3</cstring>
-                                </property>
-                                <property stdset="1">
-                                    <name>text</name>
-                                    <string>Number:</string>
                                 </property>
                                 <property stdset="1">
                                     <name>minimumSize</name>
@@ -3458,6 +3248,10 @@
                                         <width>60</width>
                                         <height>20</height>
                                     </size>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Number:</string>
                                 </property>
                             </widget>
                             <widget>
@@ -3505,10 +3299,6 @@
                                     <cstring>TextLabel5_3_6_3</cstring>
                                 </property>
                                 <property stdset="1">
-                                    <name>text</name>
-                                    <string>Memo:</string>
-                                </property>
-                                <property stdset="1">
                                     <name>minimumSize</name>
                                     <size>
                                         <width>70</width>
@@ -3521,6 +3311,10 @@
                                         <width>70</width>
                                         <height>20</height>
                                     </size>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Memo:</string>
                                 </property>
                             </widget>
                             <widget>
@@ -3564,13 +3358,6 @@
                                         <height>20</height>
                                     </size>
                                 </property>
-                                <property>
-                                    <name>sizeHint</name>
-                                    <size>
-                                        <width>50</width>
-                                        <height>20</height>
-                                    </size>
-                                </property>
                             </spacer>
                             <widget>
                                 <class>QLabel</class>
@@ -3579,8 +3366,11 @@
                                     <cstring>TextLabel6_6_3</cstring>
                                 </property>
                                 <property stdset="1">
-                                    <name>text</name>
-                                    <string>ATM</string>
+                                    <name>minimumSize</name>
+                                    <size>
+                                        <width>110</width>
+                                        <height>30</height>
+                                    </size>
                                 </property>
                                 <property stdset="1">
                                     <name>font</name>
@@ -3590,11 +3380,8 @@
                                     </font>
                                 </property>
                                 <property stdset="1">
-                                    <name>minimumSize</name>
-                                    <size>
-                                        <width>110</width>
-                                        <height>30</height>
-                                    </size>
+                                    <name>text</name>
+                                    <string>ATM</string>
                                 </property>
                             </widget>
                         </hbox>
@@ -3605,6 +3392,20 @@
     </vbox>
 </widget>
 <customwidgets>
+    <customwidget>
+        <class>QWidget</class>
+        <header location="global">qwidget.h</header>
+        <sizehint>
+            <width>-1</width>
+            <height>-1</height>
+        </sizehint>
+        <container>1</container>
+        <sizepolicy>
+            <hordata>5</hordata>
+            <verdata>5</verdata>
+        </sizepolicy>
+        <pixmap>image0</pixmap>
+    </customwidget>
     <customwidget>
         <class>kMyMoneyEdit</class>
         <header location="local">./widgets/kmymoneyedit.h</header>
@@ -3621,7 +3422,7 @@
     </customwidget>
     <customwidget>
         <class>kMyMoneyDateInput</class>
-        <header location="local">./widgets/kmymoneydateinput.h</header>
+        <header location="global">./widgets/kmymoneydateinput.h</header>
         <sizehint>
             <width>90</width>
             <height>25</height>
