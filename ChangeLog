@@ -2,6 +2,7 @@
   * Draw the background colour across the _whole_ list view in schedule
     view.
   * Use alternating colours for the accounts and categories view.
+  * Start with the alternate colour in the list views.
 
 2003-09-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * added new account selection widget

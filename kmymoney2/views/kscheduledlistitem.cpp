@@ -148,11 +148,11 @@ void KScheduledListItem::paintCell(QPainter* p, const QColorGroup& cg, int colum
 
   if (isAlternate())
   {
-    cg2.setColor(QColorGroup::Base, bgColour);
+    cg2.setColor(QColorGroup::Base, colour);
   }
   else
   {
-    cg2.setColor(QColorGroup::Base, colour);
+    cg2.setColor(QColorGroup::Base, bgColour);
   }
 
   int indent = 0;
@@ -161,15 +161,12 @@ void KScheduledListItem::paintCell(QPainter* p, const QColorGroup& cg, int colum
     indent = -20 * (depth()+1);
     p->save();
     p->translate(indent, 0);
-    if (isAlternate())
-      p->fillRect( 0, 0, width+indent, height(), bgColour );
-    else
-      p->fillRect( 0, 0, width+indent, height(), colour );
+    p->fillRect( 0, 0, width+indent, height(), cg2.base() );
 
     if (childCount() > 0)
     {
-      p->setPen( cg.foreground() );
-      p->setBrush( cg.base() );
+      p->setPen( cg2.foreground() );
+      p->setBrush( cg2.base() );
       p->drawRect( 5, height() / 2 - 4, 9, 9 );
       p->drawLine( 7, height() / 2, 11, height() / 2 );
       if ( !isOpen() )
@@ -194,7 +191,7 @@ void KScheduledListItem::paintBranches(QPainter* p, const QColorGroup&/* cg*/, i
   colour = config->readColorEntry("listColor", &colour);
   
   if (isAlternate())
-    p->fillRect( 0, 0, w, h, bgColour );
-  else
     p->fillRect( 0, 0, w, h, colour );
+  else
+    p->fillRect( 0, 0, w, h, bgColour );
 }
