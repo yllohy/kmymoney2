@@ -20,6 +20,9 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef KLEDGERVIEWINVESTMENTS_H
+#define KLEDGERVIEWINVESTMENTS_H
+
 // ----------------------------------------------------------------------------
 // QT Includes
 #include <qlayout.h>
@@ -34,17 +37,20 @@ class QLabel;
 
 // ----------------------------------------------------------------------------
 // Project Includes
+
+#if 0
 #include "../widgets/kmymoneydateinput.h"
 #include "../widgets/kmymoneyedit.h"
 #include "../widgets/kmymoneylineedit.h"
 #include "../widgets/kmymoneycombo.h"
 #include "../widgets/kmymoneycategory.h"
 #include "../widgets/kmymoneypayee.h"
-
-#ifndef KLEDGERVIEWINVESTMENTS_H
-#define KLEDGERVIEWINVESTMENTS_H
+#endif
 
 #include "kledgerview.h"
+
+class kMyMoneyEdit;
+class kMyMoneyEquity;
 
 /**
   *@author Kevin Tambascio
@@ -79,6 +85,7 @@ protected slots:
   virtual void slotNew();
   virtual void slotStartEdit();
   virtual void slotEndEdit();
+  virtual void slotEquityChanged(const QCString& id);
 
 protected:
   virtual void createEditWidgets();
@@ -151,7 +158,7 @@ private:
   QCString m_action;
 
   kMyMoneyEdit *m_editShares, *m_editPPS, *m_editTotalAmount, *m_editFees;
-  kMyMoneyLineEdit *m_editSymbolName;
+  kMyMoneyEquity *m_editSymbolName;
 /*
   KTextBrowser *textBrowser;
   QGridLayout *mainGrid;

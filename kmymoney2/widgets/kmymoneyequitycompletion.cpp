@@ -53,6 +53,7 @@ void kMyMoneyEquityCompletion::show(void)
   int  count;
 
   count = loadList();
+  qDebug("Found %d equity entries", count);
   if(!m_id.isEmpty())
     m_equitySelector->setSelected(m_id);
 
@@ -64,19 +65,14 @@ void kMyMoneyEquityCompletion::show(void)
 
 void kMyMoneyEquityCompletion::slotMakeCompletion(const QString& txt)
 {
+  qDebug("equity slotMakeCompletion");
   if(txt.isEmpty() || txt.length() == 0)
     return;
-
-  QString account(txt);
-  int pos = txt.findRev(':');
-  if(pos != -1) {
-    account = txt.mid(pos+1);
-  }
 
   if(m_parent && m_parent->isVisible() && !isVisible())
     show();
 
-  int count = m_equitySelector->slotMakeCompletion(account);
+  int count = m_equitySelector->slotMakeCompletion(txt);
 
   if(count != 0) {
     // don't forget the four group lines

@@ -45,6 +45,7 @@
 #include <kpushbutton.h>
 #include <kiconloader.h>
 #include <kguiitem.h>
+#include <kmessagebox.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -61,7 +62,13 @@
 
 #include "../widgets/kmymoneyregistercheckings.h"
 #include "../widgets/kmymoneytransactionform.h"
-
+#include "../widgets/kmymoneydateinput.h"
+#include "../widgets/kmymoneyedit.h"
+#include "../widgets/kmymoneylineedit.h"
+#include "../widgets/kmymoneycombo.h"
+#include "../widgets/kmymoneycategory.h"
+#include "../widgets/kmymoneypayee.h"
+#include "../widgets/kmymoneyequity.h"
 
 #define SYMBOL_ROW        0
 #define QUANTITY_ROW      1
@@ -372,7 +379,10 @@ void KLedgerViewInvestments::createEditWidgets()
     m_editPPS = new kMyMoneyEdit(0, "editPPS");
   }
   if(!m_editSymbolName) {
-    m_editSymbolName = new kMyMoneyLineEdit(0, "editSymbolName", AlignLeft|AlignVCenter);
+    m_editSymbolName = new kMyMoneyEquity(0, "editSymbolName");
+    connect(m_editSymbolName, SIGNAL(equityChanged(const QCString&)), this, SLOT(slotEquityChanged(const QCString&)));
+    connect(m_editSymbolName, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
+    connect(m_editSymbolName, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   }
   if(!m_editTotalAmount) {
     m_editTotalAmount = new kMyMoneyEdit(0, "editTotalAmount");
@@ -753,41 +763,62 @@ void KLedgerViewInvestments::slotEndEdit()
     qDebug("Symbol name is %s", name.data());
 
     MyMoneyFile* file = MyMoneyFile::instance();
-    if(file)
+
+#if 0
+    // I moved this logic to kMyMoneyEquity. We can remove it here, I guess (ipwizard)
+
+    const QValueList<MyMoneyEquity> list = file->equityList();
+    bool bKnownEquity = false;
+    for(QValueList<MyMoneyEquity>::ConstIterator it = list.begin(); it != list.end(); ++it)
     {
-      const QValueList<MyMoneyEquity> list = file->equityList();
-      bool bKnownEquity = false;
-      for(QValueList<MyMoneyEquity>::ConstIterator it = list.begin(); it != list.end(); ++it)
+      if((*it).tradingSymbol() == name)
       {
-        if((*it).name() == name)
-        {
-          bKnownEquity = true;
-          break;
-        }
+        bKnownEquity = true;
+        break;
       }
+    }
 
-      //if we don't know about this equity, throw up a dialog box to collect the basic information about it.
-      if(!bKnownEquity)
+    //if we don't know about this equity, throw up a dialog box to collect the basic information about it.
+    if(!bKnownEquity)
+    {
+      KNewEquityEntryDlg *pDlg = new KNewEquityEntryDlg(this, name.data());
+      pDlg->setSymbolName(name);
+      if(pDlg->exec())
       {
-        KNewEquityEntryDlg *pDlg = new KNewEquityEntryDlg(this, name.data());
-        pDlg->setSymbolName(name);
-        if(pDlg->exec())
-        {
-          //create the new Equity object, and give it its ID.
-          MyMoneyEquity newEquity;
-          qDebug("Adding equity %s to the our storage object\n", name.data());
+        //create the new Equity object, and give it its ID.
+        MyMoneyEquity newEquity;
+        qDebug("Adding equity %s to the our storage object\n", name.data());
 
-          //fill in the fields.
-          newEquity.setTradingSymbol(pDlg->symbolName());
-          newEquity.setName(pDlg->name());
-          try {
-            file->addEquity(newEquity);
-          } catch(MyMoneyException *e) {
-            qWarning("Cannot add equity %s to storage", newEquity.name().data());
-            delete e;
-          }
+        //fill in the fields.
+        newEquity.setTradingSymbol(pDlg->symbolName());
+        newEquity.setName(pDlg->name());
+        try {
+          file->addEquity(newEquity);
+        } catch(MyMoneyException *e) {
+          qWarning("Cannot add equity %s to storage", newEquity.name().data());
+          delete e;
         }
       }
     }
+#endif
+  }
+}
+
+void KLedgerViewInvestments::slotEquityChanged(const QCString& id)
+{
+  MyMoneyTransaction t;
+  MyMoneySplit s;
+
+  t = m_transaction;
+  s = m_split;
+
+  try {
+      m_editSymbolName->loadEquity(id);
+  } catch(MyMoneyException *e) {
+    KMessageBox::detailedSorry(0, i18n("Unable to modify equity"),
+        (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+    delete e;
+    m_transaction = t;
+    m_split = s;
   }
 }

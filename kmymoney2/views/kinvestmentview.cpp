@@ -86,7 +86,7 @@ KInvestmentView::KInvestmentView(QWidget *parent, const char *name)
 
   initSummaryTab();
   initTransactionTab();
-  
+
   m_tabMap[m_summaryTab] = VIEW_SUMMARY;
   m_tabMap[m_transactionTab] = VIEW_TRANSACTIONS;
   qDebug("KInvestmentView::KInvestmentView: widgets in map = %d", m_tabMap.size());
@@ -234,7 +234,7 @@ void KInvestmentView::slotItemDoubleClicked(QListViewItem* pItem, const QPoint& 
 
         //puts this in the storage container.
         file->modifyEquity(equity);
-        
+
         //update the summary display to show the new data.
         updateDisplay();
       }
@@ -244,10 +244,11 @@ void KInvestmentView::slotItemDoubleClicked(QListViewItem* pItem, const QPoint& 
 
 
 
-/*void KInvestmentView::slotNewInvestment()
+void KInvestmentView::slotNewInvestment(void)
 {
   MyMoneyEquity equity;
   KNewEquityEntryDlg *pDlg = new KNewEquityEntryDlg(this);
+/*
   pDlg->exec();
   int nResult = pDlg->result();
   if(nResult)
@@ -277,7 +278,9 @@ void KInvestmentView::slotItemDoubleClicked(QListViewItem* pItem, const QPoint& 
     //display new equity in the list view.
     //displayNewEquity(equity);
   }
-}   */
+*/
+  delete pDlg;
+}
 
 void KInvestmentView::addEquityEntry(MyMoneyEquity* /*pEntry*/)
 {/*
@@ -454,10 +457,8 @@ const bool KInvestmentView::slotSelectAccount(const QCString& id, const bool rec
 
   bool    rc = false;
 
-  qDebug("KInvestmentView::slotSelectAccount id=%s", id.data());
-
   // cancel any pending edit operation in the ledger views
-  //emit cancelEdit();
+  // emit cancelEdit();
 
   if(!id.isEmpty()) {
     // if the account id differs, then we have to do something

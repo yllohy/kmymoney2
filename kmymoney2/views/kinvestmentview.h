@@ -132,6 +132,8 @@ public slots:
 
   void show(void);
 
+  void slotNewInvestment(void);
+
 protected:
   /**
     * This method reloads the account selection combo box of the

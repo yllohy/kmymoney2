@@ -44,7 +44,7 @@ kMyMoneyEquitySelector::~kMyMoneyEquitySelector()
 {
 }
 
-const int kMyMoneyEquitySelector::loadList()
+const int kMyMoneyEquitySelector::loadList(void)
 {
   QValueList<MyMoneyEquity> list;
   QValueList<MyMoneyEquity>::ConstIterator it_l;
@@ -64,10 +64,10 @@ const int kMyMoneyEquitySelector::loadList()
 
   item->setSelectable(false);
   item->setOpen(true);
-  // scan all matching accounts found in the engine
+  // scan all matching equities found in the engine
   for(it_l = list.begin(); it_l != list.end(); ++it_l) {
     ++count;
-    newEntryFactory(item, (*it_l).name(), (*it_l).id());
+    newEntryFactory(item, (*it_l).tradingSymbol(), (*it_l).id());
   }
 
   if(m_listView->firstChild()) {
