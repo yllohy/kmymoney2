@@ -1,3 +1,7 @@
+2003-09-01 Michael Edwardes <mte@users.sourceforge.net>
+  * Made the list colours in the schedule view match the home view.
+  * Implemented the schedule link from the home page.
+  
 2003-08-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * added MyMoneyTransactionFilter class
   * modified engine to use MyMoneyTransactionFilter instead of dedicated code
