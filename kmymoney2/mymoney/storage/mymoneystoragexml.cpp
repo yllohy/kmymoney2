@@ -22,9 +22,6 @@
 
 #include "config.h"
 
-#ifdef _COMPILE_XML
-#if HAVE_LIBXMLPP
-
 // ----------------------------------------------------------------------------
 // QT Includes
 
@@ -34,24 +31,15 @@
 // ----------------------------------------------------------------------------
 // Third party Includes
 
-#include <libxml++-1.0/libxml++/libxml++.h>
-
 // ----------------------------------------------------------------------------
 // Project Includes
 
 #include "mymoneystoragexml.h"
 #include "../../kmymoneyutils.h"
 
-using namespace xmlpp;
-
 MyMoneyStorageXML::MyMoneyStorageXML()// : xmlpp::SaxParser(false)
 {
   m_pStorage            = NULL;
-  //m_pCurrentInstitution = NULL;
-  //m_pCurrentPayee       = NULL;
-  //m_pCurrentAccount     = NULL;
-  //m_pCurrentTx          = NULL;
-  //m_pCurrentSplit       = NULL;
 }
 
 MyMoneyStorageXML::~MyMoneyStorageXML()
@@ -104,7 +92,7 @@ void MyMoneyStorageXML::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
 void MyMoneyStorageXML::writeFile(QIODevice* qf, IMyMoneySerialize* storage)
 {
   qDebug("XMLWRITER: Starting file write");
-  QDomDocument *pDoc = new QDomDocument();
+  QDomDocument *pDoc = new QDomDocument("KMYMONEY-FILE");
 
   QDomElement mainElement = pDoc->createElement("KMYMONEY-FILE");
   pDoc->appendChild(mainElement);
@@ -114,38 +102,52 @@ void MyMoneyStorageXML::writeFile(QIODevice* qf, IMyMoneySerialize* storage)
   mainElement.appendChild(userInfo);
 
   QDomElement institutions = pDoc->createElement("INSTITUTIONS");
-  writeInstitutions(institutions, storage);
+  writeInstitutions(pDoc, institutions, storage);
   mainElement.appendChild(institutions);
 
   QDomElement payees = pDoc->createElement("PAYEES");
-  //writePayees(payees, storage);
+  //writePayees(pDoc, payees, storage);
   mainElement.appendChild(payees);
 
   QDomElement accounts = pDoc->createElement("ACCOUNTS");
-  //writeAccounts(accounts, storage);
+  //writeAccounts(pDoc, accounts, storage);
   mainElement.appendChild(accounts);
 
   QDomElement transactions = pDoc->createElement("TRANSACTIONS");
-  //writeTransactions(transactions, storage);
+  //writeTransactions(pDoc, transactions, storage);
   mainElement.appendChild(transactions);
 
   QDomElement schedules = pDoc->createElement("SCHEDULES");
-  //writeSchedules(schedules, storage);
+  //writeSchedules(pDoc, schedules, storage);
   mainElement.appendChild(schedules);
 
-  QTextStream stream(qf);
+  QDataStream stream(qf);
+  //stream.setEncoding(QTextStream::Locale);
   QString temp = pDoc->toString();
-  stream << temp;
+  stream << temp.data();
+
+  qDebug("File contains %s", temp.data());
+  
   delete pDoc;
   pDoc = NULL;
 }
 
 void MyMoneyStorageXML::writeUserInformation(QDomDocument *pDoc, QDomElement& userInfo, IMyMoneySerialize* storage)
 {
+  userInfo.setAttribute(QString("name"), storage->userName());
+  userInfo.setAttribute(QString("email"), storage->userEmail());
 
+  QDomElement address = pDoc->createElement("ADDRESS");
+  address.setAttribute(QString("street"), storage->userStreet());
+  address.setAttribute(QString("city"), storage->userTown());
+  address.setAttribute(QString("county"), storage->userCounty());
+  address.setAttribute(QString("zipcode"), storage->userPostcode());
+  address.setAttribute(QString("telephone"), storage->userTelephone());
+
+  userInfo.appendChild(address);
 }
 
-void writeInstitution(QDomDocument *pDoc, QDomElement& institution, const MyMoneyInstitution& i)
+void MyMoneyStorageXML::writeInstitution(QDomDocument *pDoc, QDomElement& institution, const MyMoneyInstitution& i)
 {
   institution.setAttribute(QString("id"), i.id());
   institution.setAttribute(QString("name"), i.name());
@@ -162,7 +164,7 @@ void writeInstitution(QDomDocument *pDoc, QDomElement& institution, const MyMone
   institution.appendChild(address);
 }
 
-void writeInstitutions(QDomDocument *pDoc, QDomElement& institutions, IMyMoneySerialize* storage)
+void MyMoneyStorageXML::writeInstitutions(QDomDocument *pDoc, QDomElement& institutions, IMyMoneySerialize* storage)
 {
   Q_INT32 tmp;
   QValueList<MyMoneyInstitution> list;
@@ -174,275 +176,53 @@ void writeInstitutions(QDomDocument *pDoc, QDomElement& institutions, IMyMoneySe
   list = storage->institutionList();
   for(it = list.begin(); it != list.end(); ++it)
   {
-    CDomElement institution = pDoc->createElement("INSTITUTION");
+    QDomElement institution = pDoc->createElement("INSTITUTION");
     writeInstitution(pDoc, institution, *it);
     institutions.appendChild(institution);
   }
 }
 
-void writePayees(QDomDocument *pDoc, QDomElement& payees, IMyMoneySerialize* storage)
+void MyMoneyStorageXML::writePayees(QDomDocument *pDoc, QDomElement& payees, IMyMoneySerialize* storage)
 {
 
 }
 
-void writePayee(QDomDocument *pDoc, QDomElement& payee, const MyMoneyPayee& p)
+void MyMoneyStorageXML::writePayee(QDomDocument *pDoc, QDomElement& payee, const MyMoneyPayee& p)
 {
 
 }
 
-void writeAccounts(QDomDocument *pDoc, QDomElement& accounts, IMyMoneySerialize* storage)
+void MyMoneyStorageXML::writeAccounts(QDomDocument *pDoc, QDomElement& accounts, IMyMoneySerialize* storage)
 {
 
 }
 
-void writeAccount(QDomDocument *pDoc, QDomElement& account, const MyMoneyAccount& p)
+void MyMoneyStorageXML::writeAccount(QDomDocument *pDoc, QDomElement& account, const MyMoneyAccount& p)
 {
 
 }
 
-void writeTransactions(QDomDocument *pDoc, QDomElement& transactions, IMyMoneySerialize* storage)
+void MyMoneyStorageXML::writeTransactions(QDomDocument *pDoc, QDomElement& transactions, IMyMoneySerialize* storage)
 {
 
 }
 
-void writeTransaction(QDomDocument *pDoc, QDomElement& transaction, const MyMoneyTransaction& tx)
+void MyMoneyStorageXML::writeTransaction(QDomDocument *pDoc, QDomElement& transaction, const MyMoneyTransaction& tx)
 {
 
 }
 
-void writeSplits(QDomDocument *pDoc, QDomElement& splits, IMyMoneySerialize* storage)
+void MyMoneyStorageXML::writeSplits(QDomDocument *pDoc, QDomElement& splits, IMyMoneySerialize* storage)
 {
 
 }
 
-void writeSplit(QDomDocument *pDoc, QDomElement& split, const MyMoneySplit& split)
+void MyMoneyStorageXML::writeSplit(QDomDocument *pDoc, QDomElement& splitElement, const MyMoneySplit& split)
 {
 
 }
 
- /*
-void MyMoneyStorageXML::on_start_document(void)
-{
-  qDebug("XMLREADER:  start_document() called");
-  ChangeParseState(PARSE_NEXTIDS);
-}
-
-
-
-void MyMoneyStorageXML::on_end_document(void)
-{
-  qDebug("XMLREADER:  end_document() called");
-}
-
-void MyMoneyStorageXML::on_start_element(const std::string &n, const AttributeMap& p)
-{
-  qDebug("XMLREADER:  start_element called, %s", n.data());
-
-  std::string strTemp;
-
-  if(!n.find("USER"))
-  {
-    strTemp = getPropertyValue(std::string("name"), p);
-    qDebug("XMLREADER:  user name is %s", strTemp.data());
-
-    if(m_pStorage)
-    {
-      m_pStorage->setUserName(QString(strTemp.data()));
-    }
-      
-    ChangeParseState(PARSE_USERINFO);
-  }
-  else if(!n.find("ADDRESS"))
-  {
-    getAddress(p);
-  }
-  else if(!n.find("INSTITUTIONS"))
-  {
-    ChangeParseState(PARSE_INSTITUTIONS);
-  }
-  else if(!n.find("INSTITUTION"))
-  {
-    qDebug("XMLREADER: Parsing an institution");
-
-    if(getCurrentParseState() == PARSE_INSTITUTIONS)
-    {
-      ChangeParseState(PARSE_INSTITUTION);
-      
-      if(!m_pCurrentInstitution)
-      {
-        qDebug("XMLREADER: creating new institution object to use.");
-        m_pCurrentInstitution = new MyMoneyInstitution;
-      }
-
-      if(m_pCurrentInstitution)
-      {
-        getInstitutionDetails(m_pCurrentInstitution, p);
-        qDebug("XMLREADER: Main information for institution object in place");
-      }
-    }
-  }
-  else if(!n.find("PAYEES"))
-  {
-    ChangeParseState(PARSE_PAYEES);
-  }
-  else if(!n.find("PAYEE"))
-  {
-    if(getCurrentParseState() == PARSE_PAYEES)
-    {
-      qDebug("XMLREADER: Parsing a new Payee entry");
-      
-      ChangeParseState(PARSE_PAYEE);
-
-      if(!m_pCurrentPayee)
-      {
-        m_pCurrentPayee = new MyMoneyPayee;
-      }
-
-      if(m_pCurrentPayee)
-      {
-        qDebug("XMLREADER: Filling out information for the new payee");
-        getPayeeDetails(m_pCurrentPayee, p);
-        qDebug("XMLREADER: Done filling out information for the new payee");
-      }
-    }
-  }
-  else if(!n.find("ACCOUNTS"))
-  {
-    qDebug("XMLREADER: Parsing Accounts");
-    ChangeParseState(PARSE_ACCOUNTS);
-  }
-  else if(!n.find("ACCOUNT"))
-  {
-    qDebug("XMLREADER: Parsing an Account");
-    if(getCurrentParseState() == PARSE_ACCOUNTS)
-    {
-      ChangeParseState(PARSE_ACCOUNT);
-
-      if(!m_pCurrentAccount)
-      {
-        qDebug("XMLREADER: Creating new account object to fill in.");
-        m_pCurrentAccount = new MyMoneyAccount;
-      }
-
-      if(m_pCurrentAccount)
-      {
-        getAccountDetails(m_pCurrentAccount, p);
-      }
-    }
-  }
-  else if(!n.find("TRANSACTIONS"))
-  {
-    qDebug("XMLREADER: Parsing Transactions for current account");
-    ChangeParseState(PARSE_TRANSACTIONS);
-  }
-  else if(!n.find("TRANSACTION") && getCurrentParseState() == PARSE_TRANSACTIONS)
-  {
-    m_pCurrentTx = new MyMoneyTransaction();
-    getTransactionDetails(p);
-  }
-  else if(!n.find("SPLITS"))
-  {
-
-  }
-  else if(!n.find("SPLIT"))
-  {
-
-  }
-  else
-  {
-    qDebug("XMLREADER: Unsupported XML tag found, %s", n.data());
-  }
-}
-
-std::string MyMoneyStorageXML::getPropertyValue(std::string str, const AttributeMap& p)
-{
-  AttributeMap::const_iterator i = p.find(str.data());
-  if(i != p.end())
-  {
-    return (*i).second;
-  }
-
-  return std::string("");
-}
-
-void MyMoneyStorageXML::on_end_element(const std::string &n)
-{
-  qDebug("XMLREADER:  on_end_element called, %s", n.data());
-  
-  if(!n.find("INSTITUTION"))
-  {
-    if(m_pCurrentInstitution)
-    {
-      qDebug("XMLREADER:  Adding institution to the list of institutions, name = %s", m_pCurrentInstitution->name().data());
-      m_pStorage->addInstitution(*m_pCurrentInstitution);
-      delete m_pCurrentInstitution;
-      m_pCurrentInstitution = NULL;
-    }
-  }
-  else if(!n.find("PAYEE"))
-  {
-    if(m_pCurrentPayee)
-    {
-      qDebug("XMLREADER:  Adding Payee to the list of Payees, name = %s", m_pCurrentPayee->name().data());
-      m_pStorage->addPayee(*m_pCurrentPayee);
-      delete m_pCurrentPayee;
-      m_pCurrentPayee = NULL;
-    }
-  }
-  else if(!n.find("ACCOUNT"))
-  {
-    if(m_pCurrentAccount)
-    {
-      qDebug("XMLREADER:  Adding account to the list of Accoutns, name=%s", m_pCurrentAccount->name().data());
-      m_pStorage->newAccount(*m_pCurrentAccount);
-      delete m_pCurrentAccount;
-      m_pCurrentAccount = NULL;
-    }
-  }
-  else if(!n.find("TRANSACTION"))
-  {
-    if(m_pCurrentTx)
-    {
-      qDebug("XMLREADER:  Adding Transaction to the list of Transactions");
-      m_pStorage->addTransaction(*m_pCurrentTx);
-      delete m_pCurrentTx;
-      m_pCurrentTx = NULL;
-    }
-  }
-  
-  m_parseState = m_previousParseState;
-}
-
-void MyMoneyStorageXML::on_characters(const std::string &s)
-{
-  //qDebug("XMLREADER:  Character data = %s", s.data());
-}
-
-void MyMoneyStorageXML::on_comment(const std::string &s)
-{
-
-}
-
-void MyMoneyStorageXML::on_warning(const std::string &s)
-{
-}
-
-void MyMoneyStorageXML::on_error(const std::string &s)
-{
-
-}
-
-void MyMoneyStorageXML::on_fatal_error(const std::string &s)
-{
-}
-
-void MyMoneyStorageXML::ChangeParseState(eParseState state)
-{
-  m_previousParseState = m_parseState;
-  m_parseState = state;
-}
-
-void MyMoneyStorageXML::getTransactionDetails(const AttributeMap& p)
+/*void MyMoneyStorageXML::getTransactionDetails(const AttributeMap& p)
 {
   if(m_pCurrentTx)
   {
@@ -529,123 +309,5 @@ void MyMoneyStorageXML::getInstitutionDetails(MyMoneyInstitution* pInstitution, 
   strTemp = getPropertyValue(std::string("sortcode"), p);
   m_pCurrentInstitution->setSortcode(QString(strTemp.data()));
 }
+      */
 
-void MyMoneyStorageXML::getAddress(const AttributeMap& p)
-{
-  std::string strTemp;
-  if(getCurrentParseState() == PARSE_USERINFO && m_pStorage)
-  {
-    qDebug("XMLREADER: Parsing address for User info");
-
-    strTemp = getPropertyValue(std::string("street"), p);
-    m_pStorage->setUserStreet(QString(strTemp.data()));
-
-    strTemp = getPropertyValue(std::string("city"), p);
-    m_pStorage->setUserTown(QString(strTemp.data()));
-
-    strTemp = getPropertyValue(std::string("state"), p);
-    m_pStorage->setUserCounty(QString(strTemp.data()));
-
-    strTemp = getPropertyValue(std::string("zip"), p);
-    m_pStorage->setUserPostcode(QString(strTemp.data()));
-  }
-  else if(getCurrentParseState() == PARSE_INSTITUTION && m_pCurrentInstitution)
-  {
-    qDebug("XMLREADER: Parsing address for Institution info");
-
-    strTemp = getPropertyValue(std::string("street"), p);
-    m_pCurrentInstitution->setStreet(QString(strTemp.data()));
-
-    strTemp = getPropertyValue(std::string("city"), p);
-    m_pCurrentInstitution->setCity(QString(strTemp.data()));
-
-    strTemp = getPropertyValue(std::string("state"), p);
-    m_pCurrentInstitution->setTown(QString(strTemp.data()));
-
-    strTemp = getPropertyValue(std::string("zip"), p);
-    m_pCurrentInstitution->setPostcode(QString(strTemp.data()));
-  }
-  else if(getCurrentParseState() == PARSE_PAYEE && m_pCurrentPayee)
-  {
-    qDebug("XMLREADER: Parsing address for Payee info");
-
-    strTemp = getPropertyValue(std::string("street"), p);
-    m_pCurrentPayee->setAddress(QString(strTemp.data()));
-
-    strTemp = getPropertyValue(std::string("city"), p);
-    m_pCurrentPayee->setCity(QString(strTemp.data()));
-
-    strTemp = getPropertyValue(std::string("state"), p);
-    m_pCurrentPayee->setState(QString(strTemp.data()));
-
-    strTemp = getPropertyValue(std::string("zip"), p);
-    m_pCurrentPayee->setPostcode(QString(strTemp.data()));
-  }
-} */
-
-void MyMoneyStorageXML::writeInstitution(QTextStream&s, const MyMoneyInstitution& i)
-{
-  s << "\t\t<INSTITUTION id=\"" << i.id() << "\" name=\"" << i.name() << "\" manager=\"" << i.manager() << "\" sortcode=\"" << i.sortcode() << "\">\n";
-  s << "\t\t\t<ADDRESS street=\"" << i.street() << "\" city=\"" << i.city() << "\" zipcode=\"" << i.postcode() << "\" state=\"" << i.town() << "\" telephone=\"" << i.telephone() << "\"/>\n";
-  s << "\t\t</INSTITUTION>\n";
-}
-  
-void MyMoneyStorageXML::writeInstitutions(QTextStream& s, IMyMoneySerialize* storage)
-{
-  Q_INT32 tmp;
-  QValueList<MyMoneyInstitution> list;
-  QValueList<MyMoneyInstitution>::ConstIterator it;
-
-  list = storage->institutionList();
-  s << "\t<INSTITUTIONS nextid=\"" << list.count() << "\">\n";
-  for(it = list.begin(); it != list.end(); ++it)
-  {
-    writeInstitution(s, *it);
-  }
-  s << "\t</INSTITUTIONS>\n";
-}
-
-
-void MyMoneyStorageXML::writePayees(QTextStream& s, IMyMoneySerialize* storage)
-{
-
-}
-
-void MyMoneyStorageXML::writePayee(QTextStream& s, const MyMoneyPayee& p)
-{
-
-}
-
-void MyMoneyStorageXML::writeAccounts(QTextStream& s, IMyMoneySerialize* storage)
-{
-
-}
-
-void MyMoneyStorageXML::writeAccount(QTextStream& s, const MyMoneyAccount& p)
-{
-
-}
-
-void MyMoneyStorageXML::writeTransactions(QTextStream& s, IMyMoneySerialize* storage)
-{
-              
-}
-
-void MyMoneyStorageXML::writeTransaction(QTextStream& s, const MyMoneyTransaction& tx)
-{
-
-}
-
-void MyMoneyStorageXML::writeSplits(QTextStream& s, const MyMoneyTransaction& tx)
-{                 
-
-}
-
-void MyMoneyStorageXML::writeSplit(QTextStream& s, const MyMoneySplit& split)
-{
-
-}
-
-
-#endif // HAVE_LIBXMLPP
-#endif

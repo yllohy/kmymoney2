@@ -23,10 +23,6 @@
 #ifndef MYMONEYSTORAGEXML_H
 #define MYMONEYSTORAGEXML_H
 
-#ifdef _COMPILE_XML
-
-//#include <libxml++-1.0/libxml++/libxml++.h>
-
 // ----------------------------------------------------------------------------
 // QT Includes
 
@@ -40,27 +36,10 @@ class QIODevice;
 #include "imymoneyserialize.h"
 #include "imymoneystorageformat.h"
 
-/*typedef enum {
-    PARSE_NEXTIDS,
-    PARSE_USERINFO,
-    PARSE_USERINFO_ADDRESS,
-    PARSE_ACCOUNTS,
-    PARSE_ACCOUNT,
-    PARSE_INSTITUTIONS,
-    PARSE_INSTITUTION,
-    PARSE_PAYEES,
-    PARSE_PAYEE,
-    PARSE_TRANSACTIONS,
-    PARSE_TRANSACTION,
-    PARSE_STATE_UNKNOWN
-  }eParseState;       */
-
-//using namespace xmlpp;
-
 /**
   *@author Kevin Tambascio (ktambascio@yahoo.com)
   */
-class MyMoneyStorageXML : public IMyMoneyStorageFormat//, public xmlpp::SaxParser
+class MyMoneyStorageXML : public IMyMoneyStorageFormat
 {
 public: 
 	MyMoneyStorageXML();
@@ -72,30 +51,10 @@ public:
   };
 
 protected:
-  /*virtual void  on_start_document();
-  virtual void  on_end_document();
-  virtual void  on_start_element(const std::string& name, const AttributeMap& attributes);
-  virtual void  on_end_element(const std::string& name);
-  virtual void  on_characters(const std::string& characters);
-  virtual void  on_comment(const std::string& text);
-  virtual void  on_warning(const std::string& text);
-  virtual void  on_error(const std::string& text);
-  virtual void  on_fatal_error(const std::string& text);
-  void          ChangeParseState(eParseState state);   */
-  void          setProgressCallback(void(*callback)(int, int, const QString&)) {};
+   void          setProgressCallback(void(*callback)(int, int, const QString&)) {};
 
 private:
   IMyMoneySerialize*  m_pStorage;
-  //std::string         getPropertyValue(std::string str, const AttributeMap& p);
-//  eParseState         m_parseState;
-//  eParseState         m_previousParseState;
-  //eParseState         getCurrentParseState() const { return m_parseState; }
-  //void                parseNextIDS(const std::string &n, const AttributeMap& p);
-//  MyMoneyInstitution* m_pCurrentInstitution;
-//  MyMoneyPayee*       m_pCurrentPayee;
-//  MyMoneyAccount*     m_pCurrentAccount;
-//  MyMoneyTransaction* m_pCurrentTx;
-//  MyMoneySplit*       m_pCurrentSplit;
   
   /**
     * This method returns the version of the underlying file. It
@@ -128,7 +87,7 @@ private:
   void writeTransaction(QDomDocument *pDoc, QDomElement& transactions, const MyMoneyTransaction& tx);
 
   void writeSplits(QDomDocument *pDoc, QDomElement& splits, IMyMoneySerialize* storage);
-  void writeSplit(QDomDocument *pDoc, QDomElement& splits, const MyMoneySplit& split);
+  void writeSplit(QDomDocument *pDoc, QDomElement& splitElement, const MyMoneySplit& split);
     
   void readFile(QIODevice* s, IMyMoneySerialize* storage);
   void writeFile(QIODevice* s, IMyMoneySerialize* storage);
@@ -165,14 +124,6 @@ private:
     * encrypted on the permanent storage device
     */
   bool m_encrypted;
-
-  //void getAccountDetails(MyMoneyAccount* pCurrentAccount, const AttributeMap& p);
-  //void getPayeeDetails(MyMoneyPayee* pCurrentPayee, const AttributeMap& p);
-  //void getInstitutionDetails(MyMoneyInstitution* pInstitution, const AttributeMap& p);
-  //void getAddress(const AttributeMap& p);
-  //void getTransactionDetails(const AttributeMap& p);
-  
 };
 
-#endif
 #endif
