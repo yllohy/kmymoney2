@@ -30,12 +30,13 @@
 #include "kbanklistitem.h"
 
 #include "../mymoney/mymoneyfile.h"
+#include "../mymoney/mymoneyobserver.h"
 
 /**
   *@author Michael Edwardes
   */
 
-class KCategoriesView : public kCategoriesViewDecl  {
+class KCategoriesView : public kCategoriesViewDecl, MyMoneyObserver  {
    Q_OBJECT
 private:
 	QString m_lastCat;
@@ -61,6 +62,7 @@ public:
 	KCategoriesView(QWidget *parent=0, const char *name=0);
 	~KCategoriesView();
   void show();
+  void update(const QCString& id);
 };
 
 #endif

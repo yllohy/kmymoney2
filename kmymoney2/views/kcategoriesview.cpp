@@ -71,10 +71,21 @@ KCategoriesView::KCategoriesView(QWidget *parent, const char *name )
 	connect(buttonEdit, SIGNAL(clicked()), this, SLOT(slotEditClicked()));
 	connect(buttonNew, SIGNAL(clicked()), this, SLOT(slotNewClicked()));
   connect(buttonDelete, SIGNAL(clicked()), this, SLOT(slotDeleteClicked()));
+
+  MyMoneyAccount acc;
+  acc = MyMoneyFile::instance()->income();
+  MyMoneyFile::instance()->attach(acc.id(), this);
+  acc = MyMoneyFile::instance()->expense();
+  MyMoneyFile::instance()->attach(acc.id(), this);
 }
 
 KCategoriesView::~KCategoriesView()
 {
+  MyMoneyAccount acc;
+  acc = MyMoneyFile::instance()->income();
+  MyMoneyFile::instance()->detach(acc.id(), this);
+  acc = MyMoneyFile::instance()->expense();
+  MyMoneyFile::instance()->detach(acc.id(), this);
   writeConfig();
 }
 
@@ -87,7 +98,7 @@ void KCategoriesView::refresh(void)
 
   categoryListView->clear();
 
-  MyMoneyFile *file = KMyMoneyFile::instance()->file();
+  MyMoneyFile *file = MyMoneyFile::instance();
 
   try
   {
@@ -200,7 +211,7 @@ void KCategoriesView::slotNewClicked()
   {
     try
     {
-      MyMoneyFile* file = KMyMoneyFile::instance()->file();
+      MyMoneyFile* file = MyMoneyFile::instance();
 
       MyMoneyAccount newAccount = dialog.account();
       MyMoneyAccount parentAccount = dialog.parentAccount();
@@ -233,7 +244,7 @@ void KCategoriesView::slotDeleteClicked()
   {
     try
     {
-      MyMoneyFile *file = KMyMoneyFile::instance()->file();
+      MyMoneyFile *file = MyMoneyFile::instance();
 
       file->removeAccount(file->account(item->accountID()));
       categoryListView->clear();
@@ -272,7 +283,7 @@ void KCategoriesView::slotEditClicked()
 
   try
   {
-    MyMoneyFile* file = KMyMoneyFile::instance()->file();
+    MyMoneyFile* file = MyMoneyFile::instance();
     MyMoneyAccount account = file->account(item->accountID());
 
     KNewAccountDlg dlg(account, true, true, this, "hi", i18n("Edit an Account"));
@@ -308,4 +319,10 @@ void KCategoriesView::writeConfig(void)
   config->setGroup("Last Use Settings");
   config->writeEntry("KCategoriesView_LastCategory", item->text(0));
   config->sync();
+}
+
+void KCategoriesView::update(const QCString& id)
+{
+  qDebug("KCategoriesView::update() called");
+  refresh();
 }
