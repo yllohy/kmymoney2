@@ -27,6 +27,10 @@
 #define KDE_IS_VERSION(a,b,c) (KDE_VERSION >= KDE_MAKE_VERSION(a,b,c))
 #endif
 
+#ifndef QT_IS_VERSION
+#define QT_IS_VERSION(a,b,c) (QT_VERSION >= KDE_MAKE_VERSION(a,b,c))
+#endif
+
 #if KDE_VERSION < KDE_MAKE_VERSION(3,2,0)
 #define KDE_DEPRECATED
 #endif
