@@ -27,6 +27,7 @@
 // QT Includes
 
 #include <qwidget.h>
+class QVBox;
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -39,10 +40,13 @@
 
 #include "../mymoney/mymoneyaccount.h"
 #include "../kmymoneyutils.h"
+class kMyMoneyAccountCompletion;
 
 /**
   * @author Thomas Baumgart
   */
+
+#define OWN_COMPLETION 1
 
 class kMyMoneyCategory : public KLineEdit
 {
@@ -84,15 +88,17 @@ signals:
 
   void signalFocusIn(void);
 
-protected:
-  void focusOutEvent(QFocusEvent *ev);
-  void focusInEvent(QFocusEvent *ev);
-
 public slots:
   void loadText(const QString& text);
 
 protected:
   virtual void keyPressEvent( QKeyEvent * );
+  void focusOutEvent(QFocusEvent *ev);
+  void focusInEvent(QFocusEvent *ev);
+  void toggleAccountSelector(void);
+
+protected slots:
+  void slotSelectAccount(const QCString& id);
 
 private:
   void addCategories(QStringList& strList, const QCString& id, const QString& leadIn);
@@ -106,6 +112,9 @@ private:
 
   QValueList<MyMoneyAccount> m_accountList;
   QMap<QString, QCString>    m_categoryConversionList;
+
+  QVBox*                     m_accountFrame;
+  kMyMoneyAccountCompletion* m_accountSelector;
 };
 
 #endif

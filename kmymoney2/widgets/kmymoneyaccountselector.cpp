@@ -27,6 +27,7 @@
 #include <qheader.h>
 #include <qlabel.h>
 #include <qtimer.h>
+#include <qpainter.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -63,7 +64,7 @@ void kMyMoneyListViewItem::paintCell(QPainter *p, const QColorGroup &cg, int col
 {
   QColorGroup _cg = cg;
   _cg.setColor(QColorGroup::Base, backgroundColor());
-  
+
   // make sure to bypass KListViewItem::paintCell() as
   // we don't like it's logic - that's why we do this
   // here ;-)    (ipwizard)
@@ -104,6 +105,12 @@ void kMyMoneyCheckListItem::paintCell(QPainter *p, const QColorGroup &cg, int co
 {
   QColorGroup _cg = cg;
   _cg.setColor(QColorGroup::Base, backgroundColor());
+
+  // write the groups in bold
+  QFont f = p->font();
+  f.setBold(!isSelectable());
+  p->setFont(f);
+
   QCheckListItem::paintCell(p, _cg, column, width, alignment);
 }
 
@@ -139,15 +146,23 @@ bool kMyMoneyCheckListItem::isAlternate(void)
   return m_odd;
 }
 
-kMyMoneyAccountSelector::kMyMoneyAccountSelector(QWidget *parent, const char *name, QWidget::WFlags flags) :
-  QWidget(parent, name, flags)
+kMyMoneyAccountSelector::kMyMoneyAccountSelector(QWidget *parent, const char *name, QWidget::WFlags flags, const bool createButtons) :
+  QWidget(parent, name, flags),
+  m_allAccountsButton(0),
+  m_noAccountButton(0),
+  m_incomeCategoriesButton(0),
+  m_expenseCategoriesButton(0)
 {
   QHBoxLayout*   layout;
   QVBoxLayout*   buttonLayout;
   
   m_selMode = QListView::Single;
-  
+
   m_listView = new KListView(this);
+  if(parent) {
+    setFocusProxy(parent->focusProxy());
+    m_listView->setFocusProxy(parent->focusProxy());
+  }
 
 
   layout = new QHBoxLayout( this, 0, 6, "accountSelectorLayout");
@@ -161,36 +176,40 @@ kMyMoneyAccountSelector::kMyMoneyAccountSelector(QWidget *parent, const char *na
   
   layout->addWidget( m_listView );
 
-  buttonLayout = new QVBoxLayout( 0, 0, 6, "accountSelectorButtonLayout");
+  if(createButtons) {
+    buttonLayout = new QVBoxLayout( 0, 0, 6, "accountSelectorButtonLayout");
 
-  m_allAccountsButton = new KPushButton( this, "m_allAccountsButton" );
-  m_allAccountsButton->setText( i18n( "All" ) );
-  buttonLayout->addWidget( m_allAccountsButton );
+    m_allAccountsButton = new KPushButton( this, "m_allAccountsButton" );
+    m_allAccountsButton->setText( i18n( "All" ) );
+    buttonLayout->addWidget( m_allAccountsButton );
 
-  m_incomeCategoriesButton = new KPushButton( this, "m_incomeCategoriesButton" );
-  m_incomeCategoriesButton->setText( i18n( "Income" ) );
-  buttonLayout->addWidget( m_incomeCategoriesButton );
+    m_incomeCategoriesButton = new KPushButton( this, "m_incomeCategoriesButton" );
+    m_incomeCategoriesButton->setText( i18n( "Income" ) );
+    buttonLayout->addWidget( m_incomeCategoriesButton );
 
-  m_expenseCategoriesButton = new KPushButton( this, "m_expenseCategoriesButton" );
-  m_expenseCategoriesButton->setText( i18n( "Expense" ) );
-  buttonLayout->addWidget( m_expenseCategoriesButton );
+    m_expenseCategoriesButton = new KPushButton( this, "m_expenseCategoriesButton" );
+    m_expenseCategoriesButton->setText( i18n( "Expense" ) );
+    buttonLayout->addWidget( m_expenseCategoriesButton );
 
-  m_noAccountButton = new KPushButton( this, "m_noAccountButton" );
-  m_noAccountButton->setText( i18n( "None" ) );
-  buttonLayout->addWidget( m_noAccountButton );
-  
-  QSpacerItem* spacer = new QSpacerItem( 0, 67, QSizePolicy::Minimum, QSizePolicy::Expanding );
-  buttonLayout->addItem( spacer );
-  layout->addLayout( buttonLayout );
+    m_noAccountButton = new KPushButton( this, "m_noAccountButton" );
+    m_noAccountButton->setText( i18n( "None" ) );
+    buttonLayout->addWidget( m_noAccountButton );
+
+    QSpacerItem* spacer = new QSpacerItem( 0, 67, QSizePolicy::Minimum, QSizePolicy::Expanding );
+    buttonLayout->addItem( spacer );
+    layout->addLayout( buttonLayout );
+  }
 
   // force init
   m_selMode = QListView::Multi;
   setSelectionMode(QListView::Single);
-  
-  connect(m_allAccountsButton, SIGNAL(clicked()), this, SLOT(slotSelectAllAccounts()));
-  connect(m_noAccountButton, SIGNAL(clicked()), this, SLOT(slotDeselectAllAccounts()));
-  connect(m_incomeCategoriesButton, SIGNAL(clicked()), this, SLOT(slotSelectIncomeCategories()));
-  connect(m_expenseCategoriesButton, SIGNAL(clicked()), this, SLOT(slotSelectExpenseCategories()));
+
+  if(createButtons) {
+    connect(m_allAccountsButton, SIGNAL(clicked()), this, SLOT(slotSelectAllAccounts()));
+    connect(m_noAccountButton, SIGNAL(clicked()), this, SLOT(slotDeselectAllAccounts()));
+    connect(m_incomeCategoriesButton, SIGNAL(clicked()), this, SLOT(slotSelectIncomeCategories()));
+    connect(m_expenseCategoriesButton, SIGNAL(clicked()), this, SLOT(slotSelectExpenseCategories()));
+  }
 
   MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAccountHierarchy, this);
 }
@@ -210,18 +229,21 @@ void kMyMoneyAccountSelector::setSelectionMode(const QListView::SelectionMode mo
     if(mode != QListView::Multi) {
       m_selMode = QListView::Single;
       connect(m_listView, SIGNAL(selectionChanged(void)), this, SIGNAL(stateChanged(void)));
-      
-      m_allAccountsButton->hide();
-      m_noAccountButton->hide();
-      m_incomeCategoriesButton->hide();
-      m_expenseCategoriesButton->hide();
 
+      if(m_allAccountsButton) {
+        m_allAccountsButton->hide();
+        m_noAccountButton->hide();
+        m_incomeCategoriesButton->hide();
+        m_expenseCategoriesButton->hide();
+      }
     } else {
       disconnect(m_listView, SIGNAL(selectionChanged(void)), this, SIGNAL(stateChanged(void)));
-      m_allAccountsButton->show();
-      m_noAccountButton->show();
-      m_incomeCategoriesButton->show();
-      m_expenseCategoriesButton->show();
+      if(m_allAccountsButton) {
+        m_allAccountsButton->show();
+        m_noAccountButton->show();
+        m_incomeCategoriesButton->show();
+        m_expenseCategoriesButton->show();
+      }
     }
   }
   QWidget::update();
@@ -299,6 +321,10 @@ void kMyMoneyAccountSelector::loadList(KMyMoneyUtils::categoryTypeE typeMask)
         }
       }
     }
+  }
+  if(m_listView->firstChild()) {
+    m_listView->setCurrentItem(m_listView->firstChild());
+    m_listView->clearSelection();
   }
   QWidget::update();
 }
@@ -545,4 +571,89 @@ void kMyMoneyAccountSelector::update(const QCString& /* id */)
       setSelected(previousHighlighted);
     }
   }
+}
+
+int kMyMoneyAccountSelector::slotMakeCompletion(const QString& txt)
+{
+  QListViewItemIterator it(m_listView, QListViewItemIterator::Selectable);
+  QListViewItem* it_v;
+
+  // The logic used here seems to be awkward. The problem is, that
+  // QListViewItem::setVisible works recursively on all it's children
+  // and grand-children.
+  //
+  // The way out of this is as follows: Make all items visible.
+  // Then go through the list again and perform the checks.
+  // If an item does not have any children (last leaf in the tree view)
+  // perform the check. Then check recursively on the parent of this
+  // leaf that it has no visible children. If that is the case, make the
+  // parent invisible and continue this check with it's parent.
+  while((it_v = it.current()) != 0) {
+    it_v->setVisible(true);
+    ++it;
+  }
+
+  if(!txt.isEmpty()) {
+    it = QListViewItemIterator(m_listView, QListViewItemIterator::Selectable);
+    while((it_v = it.current()) != 0) {
+      if(it_v->firstChild() == 0) {
+        if(it_v->text(0).contains(txt, false) == 0) {
+          // this is a node which does not contain the
+          // text and does not have children. So we can
+          // safely hide it. Then we check, if the parent
+          // has more children which are still visible. If
+          // none are found, the parent node is hidden also. We
+          // continue until the top of the tree or until we
+          // find a node that still has visible children.
+          bool hide = true;
+          while(hide) {
+            it_v->setVisible(false);
+            it_v = it_v->parent();
+            if(it_v && it_v->isSelectable()) {
+              hide = (it_v->text(0).contains(txt, false) == 0);
+              QListViewItem* child = it_v->firstChild();
+              for(; child && hide; child = child->nextSibling()) {
+                if(child->isVisible())
+                  hide = false;
+              }
+            } else
+              hide = false;
+          }
+        }
+        ++it;
+        
+      } else if(it_v->text(0).contains(txt, false) != 0) {
+        // a node with children contains the text. We want
+        // to display all child nodes in this case, so we need
+        // to advance the iterator to the next sibling of the
+        // current node. This could well be the sibling of a
+        // parent or grandparent node.
+        QListViewItem* curr = it_v;
+        QListViewItem* item;
+        while((item = curr->nextSibling()) == 0) {
+          curr = curr->parent();
+          if(curr == 0)
+            break;
+        }
+        do {
+          ++it;
+        } while(it.current() && it.current() != item);
+        
+      } else {
+        // It's a node with children that does not match. We don't
+        // change it's status here.
+        ++it;
+      }
+    }
+  }
+
+  // Get the number of visible nodes for the return code  
+  int cnt = 0;
+
+  it = QListViewItemIterator(m_listView, QListViewItemIterator::Selectable | QListViewItemIterator::Visible);
+  while((it_v = it.current()) != 0) {
+    cnt++;
+    it++;
+  }
+  return cnt;
 }

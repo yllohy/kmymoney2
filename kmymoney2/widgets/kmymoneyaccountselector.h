@@ -40,6 +40,7 @@ class KPushButton;
 
 #include "../kmymoneyutils.h"
 #include "../mymoney/mymoneyobserver.h"
+class kMyMoneyAccountCompletion;
 
 /**
   * @author Thomas Baumgart
@@ -54,6 +55,7 @@ class kMyMoneyCheckListItem : public QObject, public QCheckListItem
 {
   Q_OBJECT
 public:
+
   kMyMoneyCheckListItem(QListView *parent, const QString& txt, const QCString& id, Type type = QCheckListItem::CheckBox);
   kMyMoneyCheckListItem(QListViewItem *parent, const QString& txt, const QCString& id, Type type = QCheckListItem::CheckBox);
   ~kMyMoneyCheckListItem();
@@ -135,7 +137,7 @@ class kMyMoneyAccountSelector : public QWidget, public MyMoneyObserver
 {
   Q_OBJECT
 public: 
-  kMyMoneyAccountSelector(QWidget *parent=0, const char *name=0, QWidget::WFlags flags = 0);
+  kMyMoneyAccountSelector(QWidget *parent=0, const char *name=0, QWidget::WFlags flags = 0, const bool createButtons = true);
   ~kMyMoneyAccountSelector();
 
   /**
@@ -207,7 +209,9 @@ public:
     * MyMoney engine (see MyMoneyFile::attach() ).
     */
   void update(const QCString& id);
-  
+
+  KListView* listView(void) const { return m_listView; };
+
 public slots:
   /**
     * This slot selects all items that are currently in
@@ -220,6 +224,14 @@ public slots:
     * the account list of the widget.
     */
   void slotDeselectAllAccounts(void) { selectAllAccounts(false); };
+
+  /**
+    * This slot hides all accounts/categories that do not contain
+    * txt in their name. If @p txt matches, all child accounts
+    * will also be shown. The mehtod retuns the number of visible
+    * items.
+    */
+  int slotMakeCompletion(const QString& txt);
 
 signals:
   void stateChanged(void);
