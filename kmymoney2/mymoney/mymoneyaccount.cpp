@@ -175,3 +175,25 @@ void MyMoneyAccount::removeAccountId(const QCString& account)
   if(it != m_accountList.end())
     m_accountList.remove(it);
 }
+
+const MyMoneyAccount::accountTypeE MyMoneyAccount::accountGroup(MyMoneyAccount::accountTypeE type)
+{
+  switch(type) {
+    case MyMoneyAccount::Checkings:
+    case MyMoneyAccount::Savings:
+    case MyMoneyAccount::Cash:
+    case MyMoneyAccount::Currency:
+    case MyMoneyAccount::Investment:
+    case MyMoneyAccount::MoneyMarket:
+    case MyMoneyAccount::CertificateDep:
+      return MyMoneyAccount::Asset;
+
+    case MyMoneyAccount::CreditCard:
+    case MyMoneyAccount::Loan:
+      return MyMoneyAccount::Liability;
+
+    default:
+      return type;
+  }
+}
+

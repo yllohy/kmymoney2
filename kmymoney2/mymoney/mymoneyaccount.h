@@ -127,12 +127,21 @@ public:
     * @param ID id assigned to the account
     * @param right account definition
     */
-  // MyMoneyAccount(MyMoneyFile* file, const QString& ID, const QString& parent, const MyMoneyAccount& right);
   MyMoneyAccount(const QCString& id, const MyMoneyAccount& right);
+
   /**
     * This is the destructor for any MyMoneyAccount object
     */
   ~MyMoneyAccount();
+
+  /**
+    * This converts the account type into one of the four
+    * major account types liability, asset, expense or income
+    *
+    * @param type actual account type
+    * @return accountTypeE of major account type
+    */
+  static const MyMoneyAccount::accountTypeE accountGroup(MyMoneyAccount::accountTypeE type);
 
   /**
     * This method returns the ID of the account under which it is known
