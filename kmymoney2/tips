@@ -30,7 +30,8 @@ register by selecting the 'ledger lens' feature in the settings dialog?
 <tip category="KMyMoney|Ledger">
 <html>
 <p>...that transactions with no category assigned or splitted
-transactions with unassigned value blink in red in the register?
+transactions with unassigned value blink in 
+<font color="red">red</font> in the register?
 </html>
 
 <tip category="KMyMoney|Ledger">
@@ -57,7 +58,8 @@ in the accounts view?
 <tip category="KMyMoney|General">
 <html>
 <p>...you can use your own external filter program to convert any
-import format to QIF on the fly?
+import format to QIF on the fly? See the QIF profile editor for
+more details.
 </html>
 </tip>
 
