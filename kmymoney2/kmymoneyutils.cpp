@@ -101,6 +101,9 @@ const QString KMyMoneyUtils::accountTypeToString(const MyMoneyAccount::accountTy
     case MyMoneyAccount::AssetLoan:
       returnString = i18n("Investment Loan");
       break;
+    case MyMoneyAccount::Stock:
+      returnString = i18n("Stock");
+      break;
     default:
       returnString = i18n("Unknown");
   }
@@ -112,7 +115,7 @@ const MyMoneyAccount::accountTypeE KMyMoneyUtils::stringToAccountType(const QStr
 {
   MyMoneyAccount::accountTypeE rc = MyMoneyAccount::UnknownAccountType;
   QString tmp = type.lower();
-  
+
   if(tmp == i18n("Checkings").lower())
     rc = MyMoneyAccount::Checkings;
   else if(tmp == i18n("Savings").lower())
@@ -141,6 +144,8 @@ const MyMoneyAccount::accountTypeE KMyMoneyUtils::stringToAccountType(const QStr
     rc = MyMoneyAccount::Expense;
   else if(tmp == i18n("Investment Loan").lower())
     rc = MyMoneyAccount::AssetLoan;
+  else  if(tmp == i18n("Stock").lower())
+    rc = MyMoneyAccount::Stock;
 
   return rc;
 }
@@ -179,7 +184,7 @@ const MyMoneySchedule::occurenceE KMyMoneyUtils::stringToOccurence(const QString
   else if(tmp == i18n("Every other year").lower())
     occurence = MyMoneySchedule::OCCUR_EVERYOTHERYEAR;
 
-  return occurence;  
+  return occurence;
 }
 
 const QString KMyMoneyUtils::occurenceToString(const MyMoneySchedule::occurenceE occurence)
@@ -268,7 +273,7 @@ const QString KMyMoneyUtils::paymentMethodToString(MyMoneySchedule::paymentTypeE
 const QString KMyMoneyUtils::scheduleTypeToString(MyMoneySchedule::typeE type)
 {
   QString text;
-  
+
   switch (type)
   {
     case MyMoneySchedule::TYPE_BILL:
@@ -293,7 +298,7 @@ const QString KMyMoneyUtils::scheduleTypeToString(MyMoneySchedule::typeE type)
 KGuiItem KMyMoneyUtils::splitGuiItem(void)
 {
   KIconLoader *ic = KGlobal::iconLoader();
-  
+
   KGuiItem splitGuiItem(  i18n("&Split"),
                           QIconSet(ic->loadIcon("split", KIcon::User, KIcon::SizeSmall)),
                           i18n("Split the amount into different categories."),
@@ -325,7 +330,7 @@ KGuiItem KMyMoneyUtils::accountsFilterGuiItem(void)
 
   return splitGuiItem;
 }
-  
+
 QPixmap KMyMoneyUtils::billScheduleIcon(int size)
 {
   KIconLoader *ic = KGlobal::iconLoader();
@@ -353,7 +358,7 @@ QPixmap KMyMoneyUtils::scheduleIcon(int size)
 const QString KMyMoneyUtils::homePageItemToString(const int idx)
 {
   QString rc;
-  
+
   switch(abs(idx)) {
     case 1:
       rc = i18n("Payments");
@@ -396,7 +401,7 @@ void KMyMoneyUtils::addDefaultHomePageItems(QStringList& list)
 bool KMyMoneyUtils::appendCorrectFileExt(QString& str, const QString& strExtToUse)
 {
   bool rc = false;
-  
+
   if(!str.isEmpty()) {
     //find last . delminator
     int nLoc = str.findRev('.');
@@ -523,7 +528,7 @@ void KMyMoneyUtils::updateSettings(void)
 
   c = defaultBackgroundColour();
   _backgroundColour = config->readColorEntry("listBGColor", &c);
-  
+
   c = defaultListColour();
   _listColour = config->readColorEntry("listColor", &c);
 
