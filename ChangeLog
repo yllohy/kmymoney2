@@ -1,4 +1,10 @@
 2001-07-06 Michael Edwardes <mte@users.sourceforge.net>
+  * Improved the payee editor, adding a delete button and improving
+    a lot of the logic.
+  * Fixed a bug in the MyMoneyFile class that didn't update the
+    dirty flag when adding a payee.
+
+2001-07-06 Michael Edwardes <mte@users.sourceforge.net>
   * Improved the transaction search process.
   * Changed acinclude.m4.in to enable debug by default.  We'll
     change it back for the stable release.
