@@ -13,6 +13,9 @@ AM_PATH_CPPUNIT(1.8.0,
 	AC_SUBST(CPPUNIT_LIBS)
 	)
 
+AC_FUNC_CHECK(atoll, [AC_DEFINE_UNQUOTED(HAVE_ATOLL, 1, [define if you have atoll])])
+AC_FUNC_CHECK(strtoll, [AC_DEFINE_UNQUOTED(HAVE_STRTOLL, 1, [define if you have strtoll])])
+
 dnl CXXFLAGS="$NOOPT_CXXFLAGS" dnl __kdevelop[noopt]__
 CXXFLAGS="$CXXFLAGS $USE_EXCEPTIONS" dnl __kdevelop[exc]__
 dnl KDE_NEED_FLEX dnl __kdevelop__

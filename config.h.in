@@ -1,4 +1,7 @@
-/* config.h.in.  Generated from configure.in by autoheader.  */
+/* config.h.in.  Generated automatically from configure.in by autoheader.  */
+
+/* define if you have atoll */
+#undef HAVE_ATOLL
 
 /* Defines if your system has the crypt function */
 #undef HAVE_CRYPT
@@ -44,6 +47,9 @@
 
 /* Define if you have the <string.h> header file. */
 #undef HAVE_STRING_H
+
+/* define if you have strtoll */
+#undef HAVE_STRTOLL
 
 /* Define if you have the <sys/stat.h> header file. */
 #undef HAVE_SYS_STAT_H
