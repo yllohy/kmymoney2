@@ -49,16 +49,16 @@ MyMoneySeqAccessMgr::MyMoneySeqAccessMgr()
   // setup standard accounts
   MyMoneyAccount acc_l;
   acc_l.setAccountType(MyMoneyAccount::Liability);
-	acc_l.setName("Liability");
+  acc_l.setName("Liability");
   MyMoneyAccount acc_a;
   acc_a.setAccountType(MyMoneyAccount::Asset);
-	acc_a.setName("Asset");
+  acc_a.setName("Asset");
   MyMoneyAccount acc_e;
   acc_e.setAccountType(MyMoneyAccount::Expense);
-	acc_e.setName("Expense");
+  acc_e.setName("Expense");
   MyMoneyAccount acc_i;
   acc_i.setAccountType(MyMoneyAccount::Income);
-	acc_i.setName("Income");
+  acc_i.setName("Income");
 
   MyMoneyAccount* a;
   a = new MyMoneyAccount(STD_ACC_LIABILITY, acc_l);
@@ -87,6 +87,13 @@ MyMoneySeqAccessMgr::MyMoneySeqAccessMgr()
 
 MyMoneySeqAccessMgr::~MyMoneySeqAccessMgr()
 {
+}
+
+MyMoneySeqAccessMgr* const MyMoneySeqAccessMgr::duplicate(void)
+{
+  MyMoneySeqAccessMgr* that = new MyMoneySeqAccessMgr();
+  *that = *this;
+  return that;
 }
 
 const bool MyMoneySeqAccessMgr::isStandardAccount(const QCString& id) const

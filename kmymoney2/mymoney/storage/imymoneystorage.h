@@ -81,6 +81,13 @@ public:
   virtual void deletePair(const QCString& key) = 0;
 
   /**
+    * This method is used to duplicate an IMyMoneyStorage object and return
+    * a pointer to the newly created copy. The caller of this method is the
+    * new owner of the object and must destroy it.
+    */
+  virtual IMyMoneyStorage* const duplicate(void) = 0;
+
+  /**
     * This method is used to create a new account
     *
     * An exception will be thrown upon error conditions.

@@ -87,8 +87,8 @@ public:
 #define STD_ACC_EXPENSE   "AStd::Expense"
 #define STD_ACC_INCOME    "AStd::Income"
 
-	MyMoneySeqAccessMgr();
-	~MyMoneySeqAccessMgr();
+  MyMoneySeqAccessMgr();
+  ~MyMoneySeqAccessMgr();
 
   // general get functions
   const QString& userName(void) const { return m_userName; };
@@ -112,6 +112,13 @@ public:
   void setCreationDate(const QDate& val) { m_creationDate = val; touch(); };
   void setLastModificationDate(const QDate& val) { m_lastModificationDate = val; m_dirty = false; };
 
+  /**
+    * This method is used to duplicate the MyMoneySeqAccessMgr object and return
+    * a pointer to the newly created copy. The caller of this method is the
+    * new owner of the object and must destroy it.
+    */
+  MyMoneySeqAccessMgr * const duplicate(void);
+  
   /**
     * Returns the account addressed by it's id.
     *

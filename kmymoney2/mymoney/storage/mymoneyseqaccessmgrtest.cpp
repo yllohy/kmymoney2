@@ -987,15 +987,18 @@ void MyMoneySeqAccessMgrTest::testPayeeName() {
 	}
 }
 
-void MyMoneySeqAccessMgrTest::testEquality() {
+void MyMoneySeqAccessMgrTest::testAssignment() {
 	testAddTransactions();
 
 	m->setUserName("Thomas");
 
 	MyMoneySeqAccessMgr test = *m;
-	MyMoneySeqAccessMgr *t = &test;
+	testEquality(&test);
+}
 
-	CPPUNIT_ASSERT( t->m_userName == "Thomas");
+void MyMoneySeqAccessMgrTest::testEquality(const MyMoneySeqAccessMgr *t)
+{
+	CPPUNIT_ASSERT( m->m_userName == t->m_userName);
 	CPPUNIT_ASSERT( m->m_userStreet == t->m_userStreet);
 	CPPUNIT_ASSERT( m->m_userTown == t->m_userTown);
 	CPPUNIT_ASSERT( m->m_userCounty == t->m_userCounty);
@@ -1028,3 +1031,10 @@ void MyMoneySeqAccessMgrTest::testEquality() {
 	CPPUNIT_ASSERT(m->m_balanceCache.values() == t->m_balanceCache.values()); 
 }
 
+void MyMoneySeqAccessMgrTest::testDuplicate() {
+	const MyMoneySeqAccessMgr* t;
+
+	t = m->duplicate();
+	testEquality(t);
+	delete t;
+}
