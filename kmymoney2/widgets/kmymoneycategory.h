@@ -68,6 +68,8 @@ public:
 
   virtual bool eventFilter(QObject * , QEvent * );
 
+  kMyMoneyAccountCompletion* selector(void) const { return m_accountSelector; };
+
 signals:
   /**
     * This signal is emitted, when a new category name has been
