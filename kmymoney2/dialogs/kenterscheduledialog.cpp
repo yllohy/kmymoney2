@@ -132,7 +132,7 @@ void KEnterScheduleDialog::initWidgets()
     MyMoneySplit amortizationSplit;
     QValueList<MyMoneySplit>::ConstIterator it_s;
     for(it_s = m_transaction.splits().begin(); it_s != m_transaction.splits().end(); ++it_s) {
-      if((*it_s).value() == MyMoneyMoney::minValue+1
+      if((*it_s).value() == MyMoneyMoney::autoCalc
       && (*it_s).action() == MyMoneySplit::ActionAmortization) {
         MyMoneyAccount acc = MyMoneyFile::instance()->account((*it_s).accountId());
         switch(acc.accountType()) {
@@ -870,7 +870,7 @@ void KEnterScheduleDialog::calculateInterest(void)
     MyMoneySplit interestSplit, amortizationSplit;
     QValueList<MyMoneySplit>::ConstIterator it_s;
     for(it_s = m_transaction.splits().begin(); it_s != m_transaction.splits().end(); ++it_s) {
-      if((*it_s).value() == MyMoneyMoney::minValue+1) {
+      if((*it_s).value() == MyMoneyMoney::autoCalc) {
         if((*it_s).action() == MyMoneySplit::ActionAmortization) {
           amortizationSplit = (*it_s);
         } else if((*it_s).action() == MyMoneySplit::ActionInterest) {
@@ -928,10 +928,10 @@ void KEnterScheduleDialog::calculateInterest(void)
       calc.setCF(KMyMoneyUtils::occurenceToFrequency(m_schedule.occurence()));
 
       calc.setPv(balance.toDouble());
-      calc.setIr(static_cast<FCALC_DOUBLE> (acc.interestRate(dueDate).abs().toDouble()) / 100.0);
+      calc.setIr(static_cast<FCALC_DOUBLE> (acc.interestRate(dueDate).abs().toDouble()));
       calc.setPmt(acc.periodicPayment().toDouble());
 
-      MyMoneyMoney interest(calc.interestDue()/100.0), amortization;
+      MyMoneyMoney interest(calc.interestDue()), amortization;
       interest = interest.abs();    // make sure it's positive for now
       amortization = acc.periodicPayment() - interest;
 
