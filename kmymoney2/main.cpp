@@ -46,11 +46,13 @@
 #include "converter/mymoneyofxstatement.h"
 
 static const char *description =
-  I18N_NOOP("KMyMoney, the Personal Finance Manager for KDE.\n\nPlease consider contributing to this project with code and or suggestions.");
+  I18N_NOOP("\nKMyMoney, the Personal Finance Manager for KDE.\n\nPlease consider contributing to this project with code and/or suggestions.");
 
 static KCmdLineOptions options[] =
 {
   { "lang <lang-code>", I18N_NOOP("language to be used"), 0 },
+  { "trace", I18N_NOOP("turn on program traces"), 0},
+
   // INSERT YOUR COMMANDLINE OPTIONS HERE
   { "+[File]", I18N_NOOP("file to open"), 0 },
   { 0, 0, 0 }
@@ -65,7 +67,7 @@ int main(int argc, char *argv[])
   QString feature;
 
 #ifdef _CHECK_MEMORY
-  feature += "\t- Memory leakage detection\n";
+  feature += "\t- " I18N_NOOP("Memory leakage detection") "\n";
 #endif
 
   if(!feature.isEmpty())
@@ -73,18 +75,19 @@ int main(int argc, char *argv[])
 
   KAboutData aboutData( "kmymoney2", I18N_NOOP("KMyMoney"),
     VERSION, description, KAboutData::License_GPL,
-    "(c) 2000-2004, Michael Edwardes", feature,
+    "(c) 2000-2005 The KMyMoney development team", feature,
     "http://kmymoney2.sourceforge.net/",
     "kmymoney2-developer@lists.sourceforge.net");
 
-  aboutData.addAuthor("Michael Edwardes (babelfish_mte on jabber & msn).", I18N_NOOP("Project Manager"), "mte@users.sourceforge.net");
+  aboutData.addAuthor("Michael Edwardes (babelfish_mte on jabber & msn).", I18N_NOOP("Initial idea, much intial source code, Project admin"), "mte@users.sourceforge.net");
+  aboutData.addAuthor("Thomas Baumgart", I18N_NOOP("Core engine, Release Manager, Project admin"), "ipwizard@users.sourceforge.net");
+  aboutData.addAuthor("Ace Jones", I18N_NOOP("Reporting logic"), "acejones@users.sourceforge.net");
+  aboutData.addAuthor("Kevin Tambascio", I18N_NOOP("Initial investment support"), "ktambascio@users.sourceforge.net");
   aboutData.addAuthor("Felix Rodriguez", I18N_NOOP("Project Admin"), "frodriguez@users.sourceforge.net");
-  aboutData.addCredit("Javier Campos Morales", I18N_NOOP("Developer & Artist"), "javi_c@users.sourceforge.net");
   aboutData.addAuthor("John C", I18N_NOOP("Developer"), "tacoturtle@users.sourceforge.net");
-  aboutData.addAuthor("Thomas Baumgart", I18N_NOOP("Developer & Release Manager"), "ipwizard@users.sourceforge.net");
-  aboutData.addAuthor("Kevin Tambascio", I18N_NOOP("Developer"), "ktambascio@users.sourceforge.net");
-  aboutData.addAuthor("Ace Jones", I18N_NOOP("Developer of reporting logic"), "acejones@users.sourceforge.net");
-  aboutData.addCredit("Arni Ingimundarson", I18N_NOOP("Developer"), "arniing@users.sourceforge.net");
+
+  aboutData.addCredit("Javier Campos Morales", I18N_NOOP("Developer & Artist"), "javi_c@users.sourceforge.net");
+  aboutData.addCredit("Robert Wadley", I18N_NOOP("Icons & splash screen"), "rob@robntina.fastmail.us");
   KCmdLineArgs::init( argc, argv, &aboutData );
   KCmdLineArgs::addCmdLineOptions( options ); // Add our own options.
 
@@ -117,6 +120,9 @@ int main(int argc, char *argv[])
       qWarning("Unable to select language '%s'. This has one of two reasons:\n\ta) the standard KDE message catalogue is not installed\n\tb) the KMyMoney message catalogue is not installed", language.data());
     }
   }
+
+  if(args->isSet("trace"))
+    MyMoneyTracer::on();
 
   kmymoney2 = new KMyMoney2App();
   a->setMainWidget( kmymoney2 );
@@ -194,13 +200,9 @@ int main(int argc, char *argv[])
     url = kmymoney2->readLastUsedFile();
   }
 
+  KTipDialog::showTip(kmymoney2, "", false);
   if(url.isValid()) {
-    KTipDialog::showTip(kmymoney2, "", false);
     kmymoney2->slotFileOpenRecent(url);
-  } else {
-    // kmymoney2->slotFileNew();
-    // kmymoney2->createInitialAccount();
-    KTipDialog::showTip(kmymoney2, "", false);
   }
 
   if ( ! importfile.isEmpty() )
