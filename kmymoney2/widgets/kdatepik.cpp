@@ -26,7 +26,11 @@
 
 #include "kdatepik.h"
 #include <kglobal.h>
+#if QT_VERSION > 300
 #include <kapplication.h>
+#else
+#include <kapp.h>
+
 #include <klocale.h>
 #include <kiconloader.h>
 #include <qframe.h>

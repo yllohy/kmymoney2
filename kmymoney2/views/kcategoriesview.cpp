@@ -22,7 +22,12 @@
 #include <klistview.h>
 #include <klocale.h>
 #include <kglobal.h>
+#if QT_VERSION > 300
 #include <kstandarddirs.h>
+#else
+#include <kstddirs.h>
+#endif
+
 #include <kmessagebox.h>
 #include <kconfig.h>
 

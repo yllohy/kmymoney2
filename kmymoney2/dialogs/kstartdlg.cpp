@@ -22,7 +22,12 @@
 #include <qtextview.h>
 #include <qlabel.h>
 
+#if QT_VERSION > 300
 #include <kstandarddirs.h>
+#else
+#include <kstddirs.h>
+#endif
+
 #include <kiconloader.h>
 #include <kconfig.h>
 #include <kglobalsettings.h>

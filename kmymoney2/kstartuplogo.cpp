@@ -17,7 +17,12 @@
 #include "kstartuplogo.h"
 
 #include <kglobal.h>
+#if QT_VERSION > 300
 #include <kstandarddirs.h>
+#else
+#include <kstddirs.h>
+#endif
+
 #include <qpixmap.h>
 #include <qtimer.h>
 

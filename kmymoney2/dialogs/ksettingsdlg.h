@@ -28,7 +28,12 @@
 // KDE Includes
 #include <kdialogbase.h>
 #include <kfontdialog.h>
+#if QT_VERSION > 300
 #include <kcolorbutton.h>
+#else
+#include <kcolorbtn.h>
+#endif
+
 #include <klineedit.h>
 
 // ----------------------------------------------------------------------------
@@ -48,7 +53,7 @@
   * @see KDialogBase
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: ksettingsdlg.h,v 1.2 2002/01/27 16:45:39 mte Exp $
+  * $Id: ksettingsdlg.h,v 1.3 2002/02/14 01:57:23 mte Exp $
   *
   * @short A class to manipulate the settings needed for running KMyMoney2
 **/

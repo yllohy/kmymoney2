@@ -21,7 +21,12 @@
  ***************************************************************************/
 #include <kglobal.h>
 #include <klocale.h>
+#if QT_VERSION > 300
 #include <kstandarddirs.h>
+#else
+#include <kstddirs.h>
+#endif
+
 #include <qpixmap.h>
 
 #include <kglobal.h>

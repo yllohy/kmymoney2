@@ -19,7 +19,11 @@
 
 #include <qwidget.h>
 #include <qframe.h>
+#if QT_VERSION > 300
 #include <kapplication.h>
+#else
+#include <kapp.h>
+
 
 // Simple class that just shows a picture
 class KStartupLogo : public QFrame  {

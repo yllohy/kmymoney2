@@ -29,7 +29,12 @@
 #include <kconfig.h>
 #include <kstdaction.h>
 #include <kglobal.h>
+#if QT_VERSION > 300
 #include <kstandarddirs.h>
+#else
+#include <kstddirs.h>
+#endif
+
 #include <kkeydialog.h>
 
 #include <stdio.h>

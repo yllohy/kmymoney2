@@ -26,10 +26,20 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 #include <klocale.h>
+#if QT_VERSION > 300
 #include <kstandarddirs.h>
+#else
+#include <kstddirs.h>
+#endif
+
 #include <kiconloader.h>
 #include <kconfig.h>
+#if QT_VERSION > 300
 #include <kcolorbutton.h>
+#else
+#include <kcolorbtn.h>
+#endif
+
 #include <kmessagebox.h>
 
 // ----------------------------------------------------------------------------
