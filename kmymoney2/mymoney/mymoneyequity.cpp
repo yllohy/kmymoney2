@@ -30,8 +30,8 @@ MyMoneyEquity::MyMoneyEquity()
 
 MyMoneyEquity::MyMoneyEquity(const QCString& id, const MyMoneyEquity& equity)
 {
-  m_id = id;
   *this = equity;
+  m_id = id;
 }
 
 MyMoneyEquity::~MyMoneyEquity()
