@@ -72,8 +72,15 @@ public:
     // insert new constants above of this line
     stateOptionCount
   };
- 
+
+  /**
+    * This is the standard constructor for a transaction filter.
+    * It creates the object and calls setReportAllSplits() to
+    * report all matching splits as separate entries. Use
+    * setReportAllSplits() to override this behaviour.
+    */ 
   MyMoneyTransactionFilter();
+
   /**
     * This is a convenience constructor to allow construction of
     * a simple account filter. It is basically the same as the
@@ -82,6 +89,7 @@ public:
     * @code
     * :
     *   MyMoneyTransactionFilter filter;
+    *   filter.setReportAllSplits(false);
     *   filter.addAccount(id);
     * :
     * @endcode
