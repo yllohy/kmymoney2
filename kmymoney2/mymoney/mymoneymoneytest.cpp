@@ -216,16 +216,16 @@ void MyMoneyMoneyTest::testAddition()
 
 	MyMoneyMoney m1(100);
 
-	CPPUNIT_ASSERT((m1+50) == 150);
-	CPPUNIT_ASSERT((m1+1000000000) == 1000000100);
-	CPPUNIT_ASSERT((m1+-50) == 50);
+	CPPUNIT_ASSERT((m1 + 50) == MyMoneyMoney(51,1));
+	CPPUNIT_ASSERT((m1 + 1000000000) == MyMoneyMoney(1000000001,1));
+	CPPUNIT_ASSERT((m1 + -50) == MyMoneyMoney(-49,1));
 
-	CPPUNIT_ASSERT((m1 += *m_0) == 112);
-	CPPUNIT_ASSERT((m1 += -12) == 100);
+	CPPUNIT_ASSERT((m1 += *m_0) == MyMoneyMoney(112));
+	CPPUNIT_ASSERT((m1 += -12) == MyMoneyMoney(100));
 
 	m1++;
-	CPPUNIT_ASSERT(m1 == 101);
-	CPPUNIT_ASSERT((++m1) == 102);
+	CPPUNIT_ASSERT(m1 == MyMoneyMoney(101));
+	CPPUNIT_ASSERT((++m1) == MyMoneyMoney(102));
 
 	m1 = QString("123.20");
 	MyMoneyMoney m2(40, 1000);
@@ -242,16 +242,16 @@ void MyMoneyMoneyTest::testSubtraction()
 
 	MyMoneyMoney m1(100);
 
-	CPPUNIT_ASSERT((m1-50) == 50);
-	CPPUNIT_ASSERT((m1-1000000000) == -999999900);
-	CPPUNIT_ASSERT((m1 - -50) == 150);
+	CPPUNIT_ASSERT((m1-50) == MyMoneyMoney(-49,1));
+	CPPUNIT_ASSERT((m1-1000000000) == MyMoneyMoney(-999999999,1));
+	CPPUNIT_ASSERT((m1 - -50) == MyMoneyMoney(51,1));
 
-	CPPUNIT_ASSERT((m1 -= *m_0) == 88);
-	CPPUNIT_ASSERT((m1 -= -12) == 100);
+	CPPUNIT_ASSERT((m1 -= *m_0) == MyMoneyMoney(88));
+	CPPUNIT_ASSERT((m1 -= -12) == MyMoneyMoney(100));
 
 	m1--;
-	CPPUNIT_ASSERT(m1 == 99);
-	CPPUNIT_ASSERT((--m1) == 98);
+	CPPUNIT_ASSERT(m1 == MyMoneyMoney(99));
+	CPPUNIT_ASSERT((--m1) == MyMoneyMoney(98));
 
 	m1 = QString("123.20");
 	MyMoneyMoney m2(1, 5);
@@ -283,6 +283,10 @@ void MyMoneyMoneyTest::testDivision()
 	MyMoneyMoney m2 = QString("-142795.69");
 	m1 = QString("1.95583");
 	CPPUNIT_ASSERT((m2 / m1).convert(100000000) == QString("-73010.27696681"));
+
+	MyMoneyMoney m3 = MyMoneyMoney(0) / MyMoneyMoney(100);
+	CPPUNIT_ASSERT(m3.m_num == 0);
+	CPPUNIT_ASSERT(m3.m_denom == 1);
 }
 
 void MyMoneyMoneyTest::testSetDecimalSeparator()

@@ -458,6 +458,8 @@ MyMoneyMoney MyMoneyMoney::operator / ( const MyMoneyMoney& _b ) const
     quotient.m_denom = -quotient.m_denom;
   }
 
+  Q_ASSERT(quotient.m_denom != 0);
+
   return quotient;
 }
 

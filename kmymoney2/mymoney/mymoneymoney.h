@@ -186,16 +186,16 @@ public:
   MyMoneyMoney operator+( const QString& pszAmountInPence ) const;
   MyMoneyMoney operator+( signed64 AmountInPence ) const;
   MyMoneyMoney operator+( long ldAmountInPence ) const;
-  MyMoneyMoney operator+( int iAmountInPence ) const;
 */
+  MyMoneyMoney operator+( int iAmountInPence ) const;
 
   MyMoneyMoney operator-( const MyMoneyMoney& Amount ) const;
 /*
   MyMoneyMoney operator-( const QString& pszAmountInPence ) const;
   MyMoneyMoney operator-( signed64 AmountInPence ) const;
   MyMoneyMoney operator-( long ldAmountInPence ) const;
-  MyMoneyMoney operator-( int iAmountInPence ) const;
 */
+  MyMoneyMoney operator-( int iAmountInPence ) const;
   MyMoneyMoney operator-( ) const;
 
   MyMoneyMoney operator*( const MyMoneyMoney& Amount ) const;
@@ -976,6 +976,7 @@ inline MyMoneyMoney MyMoneyMoney::operator+(long ldAmountInPence) const
   result.m_64Value += static_cast<signed64>(ldAmountInPence);
   return result;
 }
+*/
 
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: operator+
@@ -987,11 +988,8 @@ inline MyMoneyMoney MyMoneyMoney::operator+(long ldAmountInPence) const
 ////////////////////////////////////////////////////////////////////////////////
 inline MyMoneyMoney MyMoneyMoney::operator+(int iAmountInPence) const
 {
-  MyMoneyMoney result(*this);
-  result.m_64Value += static_cast<signed64>(iAmountInPence);
-  return result;
+  return *this + MyMoneyMoney(iAmountInPence, 1);
 }
-*/
 
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: operator-
@@ -1054,6 +1052,7 @@ inline MyMoneyMoney MyMoneyMoney::operator-(long ldAmountInPence) const
   result.m_64Value -= static_cast<signed64>(ldAmountInPence);
   return result;
 }
+*/
 
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: operator-
@@ -1065,11 +1064,8 @@ inline MyMoneyMoney MyMoneyMoney::operator-(long ldAmountInPence) const
 ////////////////////////////////////////////////////////////////////////////////
 inline MyMoneyMoney MyMoneyMoney::operator-(int iAmountInPence) const
 {
-  MyMoneyMoney result(*this);
-  result.m_64Value -= static_cast<signed64>(iAmountInPence);
-  return result;
+  return *this + MyMoneyMoney(iAmountInPence, 1);
 }
-*/
 
 /*
 ////////////////////////////////////////////////////////////////////////////////
