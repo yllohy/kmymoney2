@@ -23,13 +23,13 @@ Compiling and installing KMyMoney2
 
 1b)  If you got the sources from a tar-ball you will need to type:
 
-        tar -xvjf kmymoney2-0.5.[version].tar.bz2    or
-        tar -xvzf kmymoney2-0.5.[version].tar.gz
+        tar -xvjf kmymoney2-[version].tar.bz2    or
+        tar -xvzf kmymoney2-[version].tar.gz
 
      depending if the packages was made with bzip2 or gzip compression.
      Change into the directory with
 
-        cd kmymoney2-0.5.[version]
+        cd kmymoney2-[version]
 
 
 
@@ -49,10 +49,18 @@ from.
      SuSE 8.1       |  omit this parameter    | /opt/kde3
      Mandrake 9.0   |  omit this parameter    | /usr
      Slackware 9.0  |  omit this parameter    | /opt/kde
+     MEPIS          |  omit this parameter    | /usr
+
+     Distribution   | --man-dir               | 
+     ---------------+-------------------------+---------------------------
+     SuSE 8.1       |  /usr/share/man         | 
+     Mandrake 9.0   |  ???                    | 
+     Slackware 9.0  |  ???                    | 
+     MEPIS          |  ???
 
      so for SuSE 8.1 the command is:
 
-           ./configure --prefix=/opt/kde3
+           ./configure --prefix=/opt/kde3 --mandir=/usr/share/man
 
      Please tell us the values for other distributions, so we can add
      them to this list. Send an e-mail to the developers mailing list.
