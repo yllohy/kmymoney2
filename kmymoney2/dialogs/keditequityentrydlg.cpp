@@ -127,9 +127,7 @@ void KEditEquityEntryDlg::slotAddPriceClicked()
   KUpdateStockPriceDlg *pDlg = new KUpdateStockPriceDlg(this);
   if(pDlg->exec() == QDialog::Accepted)
   {
-    QDate date = pDlg->getDate();
-    MyMoneyMoney price(pDlg->getPrice());
-    KListViewItem *pItem = new KListViewItem(lvPriceHistory, date.toString(), price.formatMoney());
+    KListViewItem *pItem = new KListViewItem(lvPriceHistory, pDlg->getDate().toString(), pDlg->getPrice().formatMoney());
     lvPriceHistory->insertItem(pItem);
     lvPriceHistory->sort();
   }
@@ -145,10 +143,8 @@ void KEditEquityEntryDlg::slotEditPriceClicked()
     KUpdateStockPriceDlg *pDlg = new KUpdateStockPriceDlg(QDate::fromString(date), price, this);
     if(pDlg->exec() == QDialog::Accepted)
     {
-      QDate newDate = pDlg->getDate();
-      MyMoneyMoney newPrice(pDlg->getPrice());
-      pItem->setText(0, newDate.toString());
-      pItem->setText(1, newPrice.formatMoney());
+      pItem->setText(0, pDlg->getDate().toString());
+      pItem->setText(1, pDlg->getPrice().formatMoney());
       lvPriceHistory->sort();
     }
   }

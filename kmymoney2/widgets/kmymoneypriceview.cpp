@@ -177,12 +177,12 @@ void kMyMoneyPriceView::slotAddPrice(void)
     for(it = m_priceHistory->firstChild(); it; it = it->nextSibling()) {
       kMyMoneyPriceItem* item = static_cast<kMyMoneyPriceItem*>(it);
       if(item->date() == dlg.getDate()) {
-        item->setPrice(MyMoneyMoney(dlg.getPrice()));
+        item->setPrice(dlg.getPrice());
         break;
       }
     }
     if(!it) {
-      new kMyMoneyPriceItem(m_priceHistory, dlg.getDate(), MyMoneyMoney(dlg.getPrice()));
+      new kMyMoneyPriceItem(m_priceHistory, dlg.getDate(), dlg.getPrice());
     }
     m_dirty = true;
   }
@@ -195,7 +195,7 @@ void kMyMoneyPriceView::slotEditPrice(void)
     KUpdateStockPriceDlg dlg(item->date(), item->price().formatMoney(), this);
     if(dlg.exec()) {
       item->setDate(dlg.getDate());
-      item->setPrice(MyMoneyMoney(dlg.getPrice()));
+      item->setPrice(dlg.getPrice());
       m_dirty = true;
     }    
   }

@@ -28,16 +28,29 @@
 #include "config.h"
 #endif
 
+// ----------------------------------------------------------------------------
+// QT Includes
+
 #include <qdatetime.h>
+
+// ----------------------------------------------------------------------------
+// KDE Includes
 
 #include <kdialogbase.h>
 #include <klocale.h>
 #include <kpushbutton.h>
 
+// ----------------------------------------------------------------------------
+// Project Includes
+
 #include "kupdatestockpricedlgdecl.h"
 
+#include "../mymoney/mymoneymoney.h"
+#include "../widgets/kmymoneydateinput.h"
+#include "../widgets/kmymoneyedit.h"
+
 /**
-  *@author Kevin Tambascio
+  * @author Kevin Tambascio
   */
 
 class KUpdateStockPriceDlg : public kUpdateStockPriceDecl
@@ -45,23 +58,16 @@ class KUpdateStockPriceDlg : public kUpdateStockPriceDecl
   Q_OBJECT
   
 public: 
-	KUpdateStockPriceDlg(QWidget* parent = NULL,  const char* name = NULL);
+  KUpdateStockPriceDlg(QWidget* parent = NULL,  const char* name = NULL);
   KUpdateStockPriceDlg(const QDate& date, const QString& strPrice, QWidget* parent = NULL,  const char* name = NULL);
-	~KUpdateStockPriceDlg();
+  ~KUpdateStockPriceDlg();
 
-protected:
+  const QDate getDate() const { return dateInput->getQDate(); };
+  const MyMoneyMoney getPrice() const { return priceInput->getMoneyValue(); };
+
+private:
   void init();
   
-  QString m_price;
-  QDate m_date;
-
-protected slots:
-  void slotOkClicked();
-  void slotCancelClicked();
-
-public:
-  QDate getDate() const { return m_date; }
-  QString getPrice() const { return m_price; }    
 };
 
 #endif

@@ -20,12 +20,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qstring.h>
+// ----------------------------------------------------------------------------
+// QT Includes
 
-#include <kpushbutton.h>
+// ----------------------------------------------------------------------------
+// KDE Includes
 
-#include "../widgets/kmymoneydateinput.h"
-#include "../widgets/kmymoneylineedit.h" 
+// ----------------------------------------------------------------------------
+// Project Includes
+
 #include "kupdatestockpricedlg.h"
 
 KUpdateStockPriceDlg::KUpdateStockPriceDlg(QWidget* parent,  const char* name) : kUpdateStockPriceDecl(parent,name,TRUE)
@@ -33,36 +36,25 @@ KUpdateStockPriceDlg::KUpdateStockPriceDlg(QWidget* parent,  const char* name) :
   init();  
 }
 
-KUpdateStockPriceDlg::KUpdateStockPriceDlg(const QDate& date, const QString& strPrice, QWidget* parent,  const char* name) : kUpdateStockPriceDecl(parent,name,TRUE)
+KUpdateStockPriceDlg::KUpdateStockPriceDlg(const QDate& date, const QString& price, QWidget* parent,  const char* name) : kUpdateStockPriceDecl(parent,name,TRUE)
 {
-  m_date = date;
-  m_price = strPrice;
-  dateInput->setDate(m_date);
-  priceInput->setText(m_price);
+  dateInput->setDate(date);
+  priceInput->loadText(price);
   init();
 }
 
 KUpdateStockPriceDlg::~KUpdateStockPriceDlg()
 {
-
 }
 
 void KUpdateStockPriceDlg::init()
 {
-  connect(btnOK, SIGNAL(clicked()), this, SLOT(slotOkClicked()));
-  connect(btnCancel, SIGNAL(clicked()), this, SLOT(slotCancelClicked()));
-}
-
-void KUpdateStockPriceDlg::slotOkClicked()
-{
-  m_date = dateInput->getQDate();
-  m_price = priceInput->text();
-  accept();
-}
-
-void KUpdateStockPriceDlg::slotCancelClicked()
-{
-  reject();
+  connect(btnOK, SIGNAL(clicked()), this, SLOT(accept()));
+  connect(btnCancel, SIGNAL(clicked()), this, SLOT(reject()));
+  connect(priceInput, SIGNAL(signalEnter()), this, SLOT(accept()));
+  connect(dateInput, SIGNAL(signalEnter()), this, SLOT(accept()));
+  connect(priceInput, SIGNAL(signalEsc()), this, SLOT(reject()));
+  connect(dateInput, SIGNAL(signalEsc()), this, SLOT(reject()));
 }
 
 
