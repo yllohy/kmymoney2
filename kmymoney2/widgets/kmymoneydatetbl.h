@@ -46,7 +46,6 @@
 
 // ----------------------------------------------------------------------------
 // QT Includes
-#include <qwidget.h>
 #include <qgridview.h>
 #include <qdatetime.h>
 
@@ -82,13 +81,22 @@ public:
     /**
      * Set the font size of the date table.
      */
-    void setFontSize(int size);
+    virtual void setFontSize(int size);
     /**
      * Select and display this date.
      */
-    bool setDate(const QDate&);
-    const QDate& getDate() const;
+    virtual bool setDate(const QDate&);
+    virtual const QDate& getDate() const;
 
+signals:
+    /**
+     * The selected date changed.
+     */
+    void dateChanged(QDate);
+    /**
+     * A date has been selected by clicking on the table.
+     */
+    void tableClicked();
 
 protected:
     /**
@@ -107,6 +115,9 @@ protected:
     virtual void keyPressEvent( QKeyEvent *e );
     virtual void focusInEvent( QFocusEvent *e );
     virtual void focusOutEvent( QFocusEvent *e );
+
+    virtual void drawCellContents(QPainter *painter, int row, int col) = 0;
+
     /**
      * The font size of the displayed text.
      */
@@ -136,22 +147,6 @@ protected:
      * Save the size of the largest used cell content.
      */
     QRect maxCell;
-signals:
-    /**
-     * The selected date changed.
-     */
-    void dateChanged(QDate);
-    /**
-     * A date has been selected by clicking on the table.
-     */
-    void tableClicked();
-
-protected:
-  virtual void virtual_hook( int id, void* data );
-private:
-    class kMyMoneyDateTblPrivate;
-    kMyMoneyDateTblPrivate *d;
-
 };
 
 #endif

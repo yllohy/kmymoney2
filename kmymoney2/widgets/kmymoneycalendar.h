@@ -62,7 +62,7 @@ class QLineEdit;
 class QToolButton;
 class KDateValidator;
 class kMyMoneyDateTbl;
-
+class QPushButton;
 
 /**
   * A representation of a calendar.
@@ -75,8 +75,7 @@ class kMyMoneyCalendar : public QFrame  {
 public:
   enum calendarType { WEEKLY,
                       MONTHLY,
-                      QUARTERLY,
-                      YEARLY };
+                      QUARTERLY };
    
 public:
   /**
@@ -159,12 +158,22 @@ public:
    */
   bool hasCloseButton() const;
 
+  /**
+    * Dynamically set the Date Table
+  **/
+  virtual void setDateTable(kMyMoneyDateTbl *tbl) = 0;
+
+  void setUserButton1(bool enable, QPushButton* pb);
+  void setUserButton2(bool enable, QPushButton* pb);
+
 
 protected:
   /// to catch move keyEvents when QLineEdit has keyFocus
   virtual bool eventFilter(QObject *o, QEvent *e );
   /// the resize event
   virtual void resizeEvent(QResizeEvent*);
+  /// the style control button
+  QPushButton *styleControl;
   /// the year forward button
   QToolButton *yearForward;
   /// the year backward button
@@ -200,6 +209,10 @@ protected slots:
   void selectMonthClicked();
   void selectYearClicked();
   void lineEnterPressed();
+
+  void slotSetStyleWeekly();
+  void slotSetStyleMonthly();
+  void slotSetStyleQuarterly();
   
 signals:
   /** This signal is emitted each time the selected date is changed.
@@ -232,9 +245,9 @@ private:
 
 protected:
   virtual void virtual_hook( int id, void* data );
+  void init( const QDate &dt );
 
 private:
-  void init( const QDate &dt );
   class kMyMoneyCalendarPrivate;
   kMyMoneyCalendarPrivate *d;
   // calculate ISO 8601 week number

@@ -33,6 +33,8 @@
 // Project Includes
 #include "kmymoneycalendar.h"
 
+class kMyMoneyDateTbl;
+
 /**
   * A representation of a calendar.
   *
@@ -56,9 +58,11 @@ public:
   **/
   ~kMyMoneyScheduledCalendar();
 
-protected:
-//  void mouseMoveEvent(QMouseEvent *e);
-//  void mouseReleaseEvent(QResizeEvent *e);  
+  /**
+    * Dynamically set the Date Table
+  **/
+  void setDateTable(kMyMoneyDateTbl* tbl) { table = tbl; }
+  
 };
 
 #endif

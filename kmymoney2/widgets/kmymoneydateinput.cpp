@@ -38,7 +38,6 @@
 #include <kglobal.h>
 #include <klocale.h>
 #include <kstandarddirs.h>
-#include <kdeversion.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -83,7 +82,6 @@ kMyMoneyDateInput::kMyMoneyDateInput(QWidget *parent, const char *name, Qt::Alig
   dateEdit->setSeparator(separator);
 
 	m_datePicker = new KDatePicker(m_dateFrame, m_date);
-
 #if KDE_VERSION >= 310
   // Let the date picker have a close button (Added in 3.1)
   m_datePicker->setCloseButton(true);

@@ -22,6 +22,7 @@
 
 // ----------------------------------------------------------------------------
 // QT Includes
+#include <qpushbutton.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -29,10 +30,17 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 #include "kmymoneyscheduledcalendar.h"
+#include "kmymoneyscheduleddatetbl.h"
 
 kMyMoneyScheduledCalendar::kMyMoneyScheduledCalendar(QWidget *parent, const char *name )
   : kMyMoneyCalendar(parent,name)
 {
+//  QPushButton *pb1 = new QPushButton("User 1", this);
+//  QPushButton *pb2 = new QPushButton("User 2", this);
+  setDateTable((kMyMoneyDateTbl*)new kMyMoneyScheduledDateTbl(this));
+//  setUserButton1(true, pb1);
+//  setUserButton2(true, pb2);
+  init( QDate::currentDate() );
 }
 
 kMyMoneyScheduledCalendar::~kMyMoneyScheduledCalendar()

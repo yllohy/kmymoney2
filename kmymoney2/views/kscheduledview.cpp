@@ -26,6 +26,7 @@
 #include <qtoolbutton.h>
 #include <qcombobox.h>
 #include <qtabwidget.h>
+#include <qlayout.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -40,6 +41,7 @@
 // Project Includes
 #include "kscheduledview.h"
 #include "kscheduledlistitem.h"
+#include "../widgets/kmymoneyscheduleddatetbl.h"
 
 KScheduledView::KScheduledView(QWidget *parent, const char *name )
  : kScheduledViewDecl(parent,name, false)

@@ -38,7 +38,7 @@
 #include "../dialogs/keditscheduledtransferdlg.h"
 #include "../mymoney/mymoneyfile.h"
 #include "../mymoney/mymoneyaccount.h"
-//#include "../mymoney/mymoneyobserver.h"
+#include "../widgets/kmymoneyscheduledcalendar.h"
 
 /**
   * Contains all the scheduled transactions be they bills, deposits or transfers.
@@ -46,7 +46,7 @@
   * Used by the KMyMoneyView class to show the view.
   *
   * @author Michael Edwardes 2000-2002
-  * $Id: kscheduledview.h,v 1.6 2003/01/30 12:21:22 mte Exp $
+  * $Id: kscheduledview.h,v 1.7 2003/07/04 14:57:07 mte Exp $
   *
   * @short A class to encapsulate recurring transaction operations.
   */
@@ -144,7 +144,7 @@ private:
 
   /// The selected schedule id in the list view.
   QString m_selectedSchedule;
-  
+
   /// Read config file
   void readConfig(void);
 

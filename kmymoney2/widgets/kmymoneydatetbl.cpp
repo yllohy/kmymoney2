@@ -64,8 +64,6 @@
 // Project Includes
 #include "kmymoneydatetbl.h"
 
-//#include <assert.h>
-
 kMyMoneyDateTbl::kMyMoneyDateTbl(QWidget *parent, QDate date_, const char* name, WFlags f)
   : QGridView(parent, name, f)
 {
@@ -92,18 +90,16 @@ kMyMoneyDateTbl::paintCell(QPainter *painter, int row, int col)
   QPen pen;
   int w=cellWidth();
   int h=cellHeight();
-  int pos;
   QBrush brushBlue(KGlobalSettings::activeTitleColor());
   QBrush brushLightblue(KGlobalSettings::baseColor());
   QFont font=KGlobalSettings::generalFont();
   // -----
   font.setPointSize(fontsize);
 #if KDE_VERSION < 310
-  int firstWeekDay = KGlobal::locale()->weekStartsMonday() ? 1 : 0;
+  int firstweekDay = KGlobal::locale()->weekStartsMonday() ? 1 : 0;
 #else
   int firstWeekDay = KGlobal::locale()->weekStartDay();
 #endif
-
   if(row==0)
     { // we are drawing the headline
       font.setBold(true);
@@ -136,58 +132,9 @@ kMyMoneyDateTbl::paintCell(QPainter *painter, int row, int col)
       painter->lineTo(w-1, h-1);
       // ----- draw the weekday:
     } else {
-      painter->setFont(font);
-      pos=7*(row-1)+col;
-      if ( firstWeekDay < 4 )
-          pos += firstWeekDay;
-      else
-          pos += firstWeekDay - 7;
-      if(pos<firstday || (firstday+numdays<=pos))
-        { // we are either
-          // ° painting a day of the previous month or
-          // ° painting a day of the following month
-          if(pos<firstday)
-            { // previous month
-              text.setNum(numDaysPrevMonth+pos-firstday+1);
-            } else { // following month
-              text.setNum(pos-firstday-numdays+1);
-            }
-          painter->setPen(gray);
-        } else { // paint a day of the current month
-          text.setNum(pos-firstday+1);
-          painter->setPen(KGlobalSettings::textColor());
-        }
-
-      pen=painter->pen();
-      if(firstday+date.day()-1==pos)
-        {
-          if(hasFocus())
-            { // draw the currently selected date
-              painter->setPen(KGlobalSettings::highlightColor());
-              painter->setBrush(KGlobalSettings::highlightColor());
-              pen=white;
-            } else {
-              painter->setPen(KGlobalSettings::calculateAlternateBackgroundColor(KGlobalSettings::highlightColor()));
-              painter->setBrush(KGlobalSettings::calculateAlternateBackgroundColor(KGlobalSettings::highlightColor()));
-              pen=white;
-            }
-        } else {
-          painter->setBrush(KGlobalSettings::baseColor());
-          painter->setPen(KGlobalSettings::baseColor());
-        }
-
-      QDate cur_date = QDate::currentDate();
-      if ( (date.year()  == cur_date.year()) &&
-           (date.month() == cur_date.month()) &&
-           (firstday+cur_date.day()-1 == pos) )
-      {
-         painter->setPen(KGlobalSettings::textColor());
-      }
-
-      painter->drawRect(0, 0, w, h);
-      painter->setPen(pen);
-      painter->drawText(0, 0, w, h, AlignCenter, text, -1, &rect);
+      drawCellContents(painter, row, col);
     }
+    
   if(rect.width()>maxCell.width()) maxCell.setWidth(rect.width());
   if(rect.height()>maxCell.height()) maxCell.setHeight(rect.height());
 }
@@ -302,7 +249,7 @@ kMyMoneyDateTbl::contentsMousePressEvent(QMouseEvent *e)
 #else
   int dayoff = KGlobal::locale()->weekStartDay();
 #endif
-  
+
   // -----
   int row, col, pos, temp;
   QPoint mouseCoord;
@@ -414,5 +361,4 @@ kMyMoneyDateTbl::sizeHint() const
     }
 }
 
-void kMyMoneyDateTbl::virtual_hook( int, void* )
-{ /*BASE::virtual_hook( id, data );*/ }
+

@@ -1,3 +1,13 @@
+2003-07-04 Michael Edwardes <mte@users.sourceforge.net>
+  * More work on the calendar view, including deriving a new class from
+    kMyMoneyDateTbl as kMyMoneyScheduledDateTbl.
+  * Added a style control button to the calendar view.  (Not working).
+  * Draw rectangles around the days.  (Will be configurable in future).
+  * Added ability to add 'user buttons' to the calendar.  This will be
+    used by the schedule table to display schedule options for the
+    calendar.  Only two user buttons are currently supported.
+  * Fixed bug in KDateTable::setEnabled()
+  
 2003-07-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * fill AccountsView with standard accounts even if there are
     no further accounts defined
