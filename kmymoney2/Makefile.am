@@ -103,11 +103,17 @@ rc_DATA = kmymoney2ui.rc
 # automatically generated names which usually not need to be translated
 # from clobbering the pot file. (ipwizard@user.sourceforge.net, 07/16/2003)
 messages: rc.cpp
+	if test -f tips; then \
+	 $(PREPARETIPS) > _tips.cpp; \
+	fi;
 	LIST=`find . -name \*.h -o -name \*.hh -o -name \*.H -o -name \*.hxx -o \
 	-name \*.hpp -o -name \*.cpp -o -name \*.cc -o -name \*.cxx -o -name \*.ecpp -o \
 	-name \*.C | grep -v -E \*\.moc\.\*`; \
 	if test -n "$$LIST"; then \
 	 $(XGETTEXT) $$LIST -o $(podir)/kmymoney2.pot; \
+	fi
+	if test -f _tips.cpp; then \
+	rm _tips.cpp; \
 	fi
 
 #
