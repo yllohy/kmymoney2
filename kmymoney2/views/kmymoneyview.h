@@ -464,6 +464,11 @@ public slots:
     */
   void slotPrintView(void);
 
+  /**
+    * This slot switches the view to present the home page
+    */
+  void slotShowHomePage(void) { showPage(0); }
+
 protected slots:
   /**
     * Called whenever the user right clicks on an account.  It brings up

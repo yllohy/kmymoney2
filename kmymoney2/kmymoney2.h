@@ -457,6 +457,11 @@ private:
   KAction *actionStatementImport;
   KAction *actionAqbImport;
   KAction *actionLoadTemplate;
+  KAction* actionSecurities;
+  KAction* actionCurrencies;
+  KAction* actionPrices;
+  KAction* actionPriceUpdate;
+
   QSignalMapper *m_pluginSignalMapper;
   QMap<QString,KMyMoneyPlugin::ImporterPlugin*> m_importerPlugins;
 

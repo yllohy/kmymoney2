@@ -114,7 +114,7 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name)
   // values for margin (11) and spacing(6) taken from KDialog implementation
   QBoxLayout* layout = new QBoxLayout(frame, QBoxLayout::TopToBottom, 11, 6);
 
-  myMoneyView = new KMyMoneyView(frame, "/KMyMoneyView");
+  myMoneyView = new KMyMoneyView(frame, "KMyMoneyView");
   layout->addWidget(myMoneyView, 10);
 
   config = kapp->config();
@@ -201,7 +201,9 @@ void KMyMoney2App::initActions()
   connect(viewTransactionForm, SIGNAL(toggled(bool)), myMoneyView, SLOT(slotShowTransactionDetail(bool)));
 
   // Additions to the file menu
-  fileViewInfo = new KAction(i18n("Dump Memory..."), "", 0, this, SLOT(slotFileFileInfo()), actionCollection(), "file_view_info");
+#ifdef KMM_DEBUG
+  fileViewInfo = new KAction(i18n("Dump Memory..."), "", 0, this, SLOT(slotFileFileInfo()),  actionCollection(), "file_view_info");
+#endif
   filePersonalData = new KAction(i18n("Personal Data..."), "personal_data", 0, this, SLOT(slotFileViewPersonal()), actionCollection(), "file_personal_data");
   fileBackup = new KAction(i18n("Backup..."), "backup",0,this,SLOT(slotFileBackup()),actionCollection(),"file_backup");
   actionQifImport = new KAction(i18n("QIF ..."), "", 0, this, SLOT(slotQifImport()), actionCollection(), "file_import_qif");
@@ -212,11 +214,11 @@ void KMyMoney2App::initActions()
   actionQifExport = new KAction(i18n("QIF ..."), "", 0, this, SLOT(slotQifExport()), actionCollection(), "file_export_qif");
   new KAction(i18n("Consistency Check"), "", 0, this, SLOT(slotFileConsitencyCheck()), actionCollection(), "file_consistency_check");
 
-  new KAction(i18n("Securities ..."), "", 0, this, SLOT(slotSecurityEditor()), actionCollection(), "tool_security_editor");
-  new KAction(i18n("Currencies ..."), "", 0, this, SLOT(slotCurrencyDialog()), actionCollection(), "tool_currency_editor");
+  actionSecurities = new KAction(i18n("Securities ..."), "", 0, this, SLOT(slotSecurityEditor()), actionCollection(), "tool_security_editor");
+  actionCurrencies = new KAction(i18n("Currencies ..."), "", 0, this, SLOT(slotCurrencyDialog()), actionCollection(), "tool_currency_editor");
 
-  new KAction(i18n("Prices ..."), "", 0, this, SLOT(slotPriceDialog()), actionCollection(), "tool_price_editor");
-  new KAction(i18n("Update Stock and Currency Prices..."), "", 0, this, SLOT(slotEquityPriceUpdate()), actionCollection(), "equity_price_update");
+  actionPrices = new KAction(i18n("Prices ..."), "", 0, this, SLOT(slotPriceDialog()), actionCollection(), "tool_price_editor");
+  actionPriceUpdate = new KAction(i18n("Update Stock and Currency Prices..."), "", 0, this, SLOT(slotEquityPriceUpdate()), actionCollection(), "equity_price_update");
 
   // The Settings Menu
   settingsKey = KStdAction::keyBindings(this, SLOT(slotKeySettings()), actionCollection());
@@ -240,6 +242,9 @@ void KMyMoney2App::initActions()
 
   m_previousViewButton->setEnabled(false);
   m_nextViewButton->setEnabled(false);
+
+  // force to show the home page if the file is closed
+  connect(fileClose, SIGNAL(activated()), myMoneyView, SLOT(slotShowHomePage()));
 
   // use the absolute path to your kmymoney2ui.rc file for testing purpose in createGUI();
   createGUI(QString::null,false);
@@ -1450,18 +1455,28 @@ void KMyMoney2App::updateCaption(const bool skipActions)
   setPlainCaption(caption);
 
   if(!skipActions) {
+    bool fileOpen = myMoneyView->fileOpen();
+
     fileSave->setEnabled(modified);
-    fileSaveAs->setEnabled(myMoneyView->fileOpen());
-    filePersonalData->setEnabled(myMoneyView->fileOpen());
-    fileBackup->setEnabled(myMoneyView->fileOpen());
-    fileViewInfo->setEnabled(myMoneyView->fileOpen());
-    actionFindTransaction->setEnabled(myMoneyView->fileOpen());
-    actionQifExport->setEnabled(myMoneyView->fileOpen());
-    actionQifImport->setEnabled(myMoneyView->fileOpen());
-    actionGncImport->setEnabled(myMoneyView->fileOpen());
-    actionLoadTemplate->setEnabled(myMoneyView->fileOpen());
-    bankAdd->setEnabled(myMoneyView->fileOpen());
-    accountAdd->setEnabled(myMoneyView->fileOpen());
+    fileSaveAs->setEnabled(fileOpen);
+    fileClose->setEnabled(fileOpen);
+    filePersonalData->setEnabled(fileOpen);
+    fileBackup->setEnabled(fileOpen);
+    fileViewInfo->setEnabled(fileOpen);
+
+    actionFindTransaction->setEnabled(fileOpen);
+    actionQifExport->setEnabled(fileOpen);
+    actionQifImport->setEnabled(fileOpen);
+    actionGncImport->setEnabled(fileOpen);
+    actionLoadTemplate->setEnabled(fileOpen);
+    bankAdd->setEnabled(fileOpen);
+    accountAdd->setEnabled(fileOpen);
+
+    actionSecurities->setEnabled(fileOpen);
+    actionCurrencies->setEnabled(fileOpen);
+    actionPrices->setEnabled(fileOpen);
+    actionPriceUpdate->setEnabled(fileOpen);
+
     myMoneyView->enableViews();
   }
 }

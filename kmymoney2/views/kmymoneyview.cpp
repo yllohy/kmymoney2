@@ -203,6 +203,8 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(m_reportsView, SIGNAL(signalViewActivated()), signalMap, SLOT(map()));
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_reportsView, SLOT(slotReloadView()));
 
+  m_reportsView->setEnabled(false);
+
   // connect the view activation signal mapper
   connect(signalMap, SIGNAL(mapped(int)), this, SIGNAL(viewActivated(int)));
 
@@ -316,6 +318,7 @@ void KMyMoneyView::enableViews(int state)
   m_categoriesViewFrame->setEnabled(state);
   m_payeesViewFrame->setEnabled(state);
   m_ledgerViewFrame->setEnabled(state);
+  m_investmentViewFrame->setEnabled(state);
   m_reportsViewFrame->setEnabled(state);
 
   emit viewStateChanged(state != 0);
@@ -1441,7 +1444,9 @@ void KMyMoneyView::newFile(const bool createEmtpyFile)
     KNewFileDlg newFileDlg(this, "NewFileDlg", i18n("Create new KMyMoney file"));
     newFileDlg.cancelButton()->hide();
 
-    newFileDlg.exec();
+    // still have to work on the cancellation of a new file
+    if(newFileDlg.exec() == QDialog::Rejected)
+      return;
 
     if(newFileDlg.userNameText.length() != 0)
       file->setUserName(newFileDlg.userNameText);
@@ -1458,22 +1463,15 @@ void KMyMoneyView::newFile(const bool createEmtpyFile)
     if(newFileDlg.userEmailText.length() != 0)
       file->setUserEmail(newFileDlg.userEmailText);
 
-#if 0
-    KMessageBox::information(this,
-                  i18n("The next dialog allows you to add a set of predefined accounts and categories to the new file. Different languages are available to select from. You can skip loading any predefined categories by selecting \"Cancel\" from the next dialog."),
-                  i18n("Load predefined accounts/categories"));
-
-    loadDefaultCategories();
-#endif
-
     loadDefaultCurrencies();
 
     // Stay in this endless loop until we have a base currency,
     // as without it the application does not work anymore.
     while(MyMoneyFile::instance()->baseCurrency().id().isEmpty())
       selectBaseCurrency();
+
+    m_fileOpen = true;
   }
-  m_fileOpen = true;
 }
 
 void KMyMoneyView::viewPersonal(void)
