@@ -59,7 +59,13 @@ int ofxTransactionCallback(struct OfxTransactionData data, void * pv)
 
   if(data.amount_valid==true)
   {
-    t.m_moneyAmount = data.amount;
+    // if this is an investment statement, reverse the sign.  not sure
+    // why this is needed, so I suppose it's a bit of a hack for the moment.
+    double sign = 1.0;
+    if (data.invtransactiontype_valid==true)
+      sign=-1.0;
+  
+    t.m_moneyAmount = sign * data.amount;
   }
 
   if(data.check_number_valid==true)
