@@ -43,7 +43,7 @@ MyMoneyStorageDump::~MyMoneyStorageDump()
 {
 }
 
-void MyMoneyStorageDump::readStream(QDataStream& s, IMyMoneySerialize* storage)
+void MyMoneyStorageDump::readStream(QDataStream& s, IMyMoneySerialize* /* storage */)
 {
   qDebug("Reading not supported by MyMoneyStorageDump!!");
 }
