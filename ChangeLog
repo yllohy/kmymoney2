@@ -1,3 +1,8 @@
+2004-07-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added possibility to update currency rate for foreign currency accounts
+    during account creation
+  * Added duplicate transaction detection and use it during QIF import
+
 2004-07-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed spelling of institution
   * Added test for presence of round() function
