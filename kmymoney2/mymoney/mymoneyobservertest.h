@@ -65,19 +65,19 @@ void tearDown () {
 }
 
 void testEmptySubject() {
-	CPPUNIT_ASSERT(subject->_observers.count() == 0);
+	CPPUNIT_ASSERT(subject->m_observers.count() == 0);
 }
 
 void testAddObserver() {
 	subject->attach(observer1);
-	CPPUNIT_ASSERT(subject->_observers.count() == 1);
-	CPPUNIT_ASSERT(subject->_observers.at(0) == observer1);
+	CPPUNIT_ASSERT(subject->m_observers.count() == 1);
+	CPPUNIT_ASSERT(subject->m_observers.at(0) == observer1);
 }
 
 void testRemoveObserver() {
 	testAddObserver();
 	subject->detach(observer1);
-	CPPUNIT_ASSERT(subject->_observers.count() == 0);
+	CPPUNIT_ASSERT(subject->m_observers.count() == 0);
 }
 
 void testNotifyObserver() {
@@ -90,9 +90,9 @@ void testNotifyObserver() {
 void testNotifyMultipleObserver() {
 	testAddObserver();
 	subject->attach(observer2);
-	CPPUNIT_ASSERT(subject->_observers.count() == 2);
-	CPPUNIT_ASSERT(subject->_observers.at(0) == observer1);
-	CPPUNIT_ASSERT(subject->_observers.at(1) == observer2);
+	CPPUNIT_ASSERT(subject->m_observers.count() == 2);
+	CPPUNIT_ASSERT(subject->m_observers.at(0) == observer1);
+	CPPUNIT_ASSERT(subject->m_observers.at(1) == observer2);
 
 	CPPUNIT_ASSERT(observer1->updated() == "");
 	CPPUNIT_ASSERT(observer2->updated() == "");
