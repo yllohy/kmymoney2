@@ -1,3 +1,12 @@
+2003-08-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * added MyMoneyTransactionFilter class
+  * modified engine to use MyMoneyTransactionFilter instead of dedicated code
+  * modified GUI code to use MyMoneyTransactionFilter
+  * added 'case sensitivity' and 'regular expression' switch to
+    KFindTransactionDlg
+  * added definition of MyMoneyMoney::minValue and MyMoneyMoney::maxValue
+  * major overhaul of the view interface
+
 2003-08-31 Michael Edwardes <mte@users.sourceforge.net>
   * Added a default default_accounts_enC.dat file.
   * Set KDialog to look for the default_accounts_enC.dat file for its
@@ -7,7 +16,7 @@
   * Make sure default_accounts_enGB.dat, default_accounts_enC.dat and
     comptes_par_defaut_fr.dat are installed.
   * Made the Schedule brief widget borderless and added a close button.
-    
+
 2003-08-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * added french files provided by Laurent Colognes
 
