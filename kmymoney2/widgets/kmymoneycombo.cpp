@@ -24,6 +24,12 @@ kMyMoneyCombo::kMyMoneyCombo(QWidget *w)
 {
 }
 
+kMyMoneyCombo::kMyMoneyCombo(bool rw, QWidget *w)
+  : KComboBox(rw, w)
+{
+}
+
+
 kMyMoneyCombo::~kMyMoneyCombo()
 {
 }

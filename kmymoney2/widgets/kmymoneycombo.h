@@ -30,6 +30,7 @@ class kMyMoneyCombo : public KComboBox  {
 	Q_OBJECT
 public:
 	kMyMoneyCombo(QWidget *w);
+    kMyMoneyCombo(bool rw, QWidget *w);
 	~kMyMoneyCombo();
   /** No descriptions */
   virtual bool eventFilter(QObject *, QEvent *);

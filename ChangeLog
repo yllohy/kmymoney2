@@ -1,3 +1,6 @@
+2001-07-22 Felix Rodriguez<frodriguez@mail.wesleyan.edu>
+  * Made Payee Combobox editable and enabled autocompletion
+
 2001-07-22 Michael Edwardes <mte@users.sourceforge.net>
   * Added an apply button to the settings dialog.
   * Added a reset button to the settings dialog.

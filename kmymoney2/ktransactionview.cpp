@@ -79,6 +79,18 @@ KTransactionView::KTransactionView(QWidget *parent, const char *name)
 
 KTransactionView::~KTransactionView()
 {
+	delete m_date;
+	delete m_method;
+    delete m_payee;
+    delete m_payment;
+    delete m_withdrawal;
+	delete m_number;
+	delete m_category;
+	delete m_memo;
+    delete m_enter;
+    delete m_cancel;
+    delete m_delete;
+
 }
 
 void KTransactionView::slotPayeeCompleted()
@@ -179,7 +191,7 @@ void KTransactionView::createInputWidgets()
 
 	m_date = new kMyMoneyDateInput(0,QDate::currentDate());
 	m_method = new kMyMoneyCombo(0);
-  m_payee = new kMyMoneyCombo(0);
+  m_payee = new kMyMoneyCombo(true,0);
   m_payment = new kMyMoneyEdit(0);
   m_withdrawal = new kMyMoneyEdit(0);
 	m_number = new kMyMoneyLineEdit(0);
@@ -298,6 +310,8 @@ void KTransactionView::loadPayees()
 	payeelist.sort();
 	m_payee->clear();
   m_payee->insertStringList(payeelist);
+  KCompletion *payeecomp = m_payee->completionObject();
+  payeecomp->setItems(payeelist);
 
 }
 
