@@ -28,6 +28,8 @@
 
 #include <qwidget.h>
 #include <qtabbar.h>
+class QLabel;
+class QHBoxLayout;
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -49,13 +51,50 @@ class kMyMoneyTransactionFormTable;
 /**
   * This class represents the ledger view for checkings accounts.
   * As described with the base class KLedgerView, it consists out
-  * of a register, a button line and a form.
-  * The register is provided by kMyMoneyRegisterCheckings. The form
-  * is maintained within this class, even though most of the members
-  * required are provided by KLedgerView.
+  * of a register, a button line and a form. These are organized as follows:
   *
-  * The tabbar on top of the form shows the possible transaction types. It
-  * is also loaded in the constructor of this class.
+  * @code
+  *
+  * +------------------------------------------------------------------------------+
+  * | formLayout                                                                   |
+  * |                                                                              |
+  * | +---------------------------------------------------+   +------------------+ |
+  * | | ledgerLayout                                      |   | buttonLayout     | |
+  * | |                                                   |   |                  | |
+  * | | +-----------------------------------------------+ |   | +--------------+ | |
+  * | | | kMyMoneyRegisterCheckings                     | |   | | KPushButton  | | |
+  * | | |                                               | |   | +--------------+ | |
+  * | | |                                               | |   |                  | |
+  * | | |                                               | |   | +--------------+ | |
+  * | | |                                               | |   | | KPushButton  | | |
+  * | | |                                               | |   | +--------------+ | |
+  * | | |                                               | |   |                  | |
+  * | | |                                               | |   |                  | |
+  * | | +-----------------------------------------------+ |   |       -----      | |
+  * | | +-----------------------------------------------+ |   |         |        | |
+  * | | | Summary Line                                  | |   |         |        | |
+  * | | +-----------------------------------------------+ |   |       -----      | |
+  * | | +-----------------------------------------------+ |   |   QSpacerItem    | |
+  * | | | kMyMoneyTransactionForm                       | |   |                  | |
+  * | | |                                               | |   |                  | |
+  * | | |                                               | |   |                  | |
+  * | | |                                               | |   |                  | |
+  * | | |                                               | |   |                  | |
+  * | | |                                               | |   |                  | |
+  * | | +-----------------------------------------------+ |   |                  | |
+  * | +---------------------------------------------------+   +------------------+ |
+  * +------------------------------------------------------------------------------+
+
+  * @endcode
+  *
+  * The register is provided by kMyMoneyRegisterCheckings. The form
+  * is based on a kMyMoneyTransactionForm object. The various parts
+  * are created in createRegister(), createSummary() and createForm().
+  * The layouts and the KPushButtons are created directly in the constructor.
+  *
+  * The tabbar on top of the actual form is part of the kMyMoneyTransactionForm
+  * widget and shows the possible transaction types. It
+  * is loaded in the constructor of this class.
   *
   * The form is QTable-based and will be created with 4 rows and 5 columns
   * in the constructor of this class. Except for
@@ -64,13 +103,19 @@ class kMyMoneyTransactionFormTable;
   *
   * The edit widgets are created within showWidgets(). This method also
   * attaches the widgets to the table's cells using QTable::setCellWidget().
-  * It also maintains the tab order.
+  * It also maintains the tab order. It uses the private methods
+  * loadEditWidgets(), arrangeEditWidgetsInForm() and arrangeEditWidgetsInRegister()
+  * to load the data of the current selected transaction into the widgets and
+  * to place the widgets appropriately.
   *
   * hideWidgets() removes all edit widgets from the form table and returns
   * to the read-only form view.
   *
   * fillForm() fills the data provided by the current selected transaction
-  * into the read-only form. The layout depends on the type of transaction.
+  * into the read-only form. The layout of the form depends on the type
+  * the selected of transaction.
+  *
+  * fillSummary() will be called and should update the summary line.
   */
 class KLedgerViewCheckings : public KLedgerView  {
    Q_OBJECT
@@ -83,8 +128,6 @@ public:
 
   void show();
 
-  void fillForm(void);
-
 public slots:
   /**
     * refresh the current view
@@ -96,6 +139,10 @@ public slots:
   void slotRegisterDoubleClicked(int row, int col, int button, const QPoint &mousePos);
 
 protected:
+  void fillSummary(void);
+
+  void fillForm(void);
+
   void resizeEvent(QResizeEvent*);
 
   /**
@@ -120,15 +167,19 @@ protected:
     */
   virtual bool focusNextPrevChild(bool next);
 
-private:
   /**
     * This method creates all widgets that allow a view to edit
-    * a transaction. If different widgets are required for in-register
+    * a transaction. All signal/slot connections of the created
+    * widgets will be setup also in this method.
+    *
+    * If different widgets are required for in-register
     * and in-form editing, both will be created. They can be destroyed
     * later on. See arrangeEditWidgetsInForm() or arrangeEditWidgetsInRegister().
+    * This method will be called by showWidgets().
     */
-  void createEditWidgets(void);
+  virtual void createEditWidgets(void);
 
+private:
   /**
     * This method loads the data of the current transaction into the
     * widgets created with createEditWidgets(). If different widgets are
@@ -168,7 +219,25 @@ private:
     */
   void arrangeEditWidgetsInRegister(QWidget*& focusWidget, const int transType);
 
-private:
+  /**
+    * This method is used by the constructor to create the necessary widgets
+    * for the register of the view and set it up.
+    */
+  void createRegister(void);
+
+  /**
+    * This method is used by the constructor to create the summary line underneath
+    * the register widget in the view.
+    */
+  void createSummary(void);
+
+  /**
+    * This method is used by the constructor to create the transaction form
+    * provided by the view.
+    */
+  void createForm(void);
+
+protected:
   QTab* m_tabCheck;
   QTab* m_tabDeposit;
   QTab* m_tabTransfer;
@@ -183,6 +252,15 @@ private:
     * which is used for new transactions.
     */
   QCString m_action;
+
+  /**
+    * This member keeps a pointer to the summary line
+    * which is located underneath the register. The
+    * widget itself is created in createSummary()
+    */
+  QLabel          *m_summaryLine;
+
+  QHBoxLayout*    m_summaryLayout;
 };
 
 #endif

@@ -241,14 +241,6 @@ public:
   const QString action2str(const QCString& action, const bool showHotkey = false) const;
 
   /**
-    * This method is called to fill the transaction form
-    * with the data of the currently selected transaction
-    * in m_register. It must be overridden by any derived
-    * class.
-    */
-  virtual void fillForm(void) = 0;
-
-  /**
     * This method is used to select a specific transaction
     *
     * @param id const reference to the ID of the transaction to be selected
@@ -413,6 +405,22 @@ public slots:
   virtual void slotNew(void);
 
 protected:
+  /**
+    * This method is called to fill the transaction form
+    * with the data of the currently selected transaction
+    * in m_register. It must be overridden by any derived
+    * class.
+    */
+  virtual void fillForm(void) = 0;
+
+  /**
+    * This method is called to fill the summary line with
+    * the necessary data. It must be overridden by any derived
+    * class. In it's easiest form, it does nothing. Unfortunately,
+    * the view then does not have a summary line :-(
+    */
+  virtual void fillSummary(void) = 0;
+
   /**
     * This method reloads the account data from the engine, refreshes
     * the view using refreshView() and repaints the register if not

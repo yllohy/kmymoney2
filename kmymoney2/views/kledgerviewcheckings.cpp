@@ -48,19 +48,16 @@
 KLedgerViewCheckings::KLedgerViewCheckings(QWidget *parent, const char *name )
   : KLedgerView(parent,name)
 {
-  m_register = new kMyMoneyRegisterCheckings(this);
-  m_register->setView(this);
-
-  QGridLayout* formLayout = new QGridLayout( this, 1, 1, 11, 6, "Form1Layout");
-  QVBoxLayout* buttonLayout = new QVBoxLayout( 0, 0, 6, "Layout2");
-  QVBoxLayout* ledgerLayout = new QVBoxLayout( 0, 0, 6, "Layout3");
+  QGridLayout* formLayout = new QGridLayout( this, 1, 1, 11, 6, "FormLayout");
+  QVBoxLayout* buttonLayout = new QVBoxLayout( 0, 0, 6, "ButtonLayout");
+  QVBoxLayout* ledgerLayout = new QVBoxLayout( 0, 0, 6, "LedgerLayout");
 
   m_detailsButton = new KPushButton(this, "detailsButton" );
   m_detailsButton->setText(i18n("Account Details"));
   buttonLayout->addWidget(m_detailsButton);
 
   m_reconcileButton = new KPushButton(this, "reconcileButton");
-  m_reconcileButton->setText(i18n("Reconcile ..."));
+  m_reconcileButton->setText(i18n("&Reconcile ..."));
   buttonLayout->addWidget(m_reconcileButton);
 
   QSpacerItem* spacer = new QSpacerItem( 20, 20,
@@ -69,74 +66,27 @@ KLedgerViewCheckings::KLedgerViewCheckings(QWidget *parent, const char *name )
 
   formLayout->addLayout( buttonLayout, 0, 1 );
 
+  createRegister();
   ledgerLayout->addWidget(m_register, 3);
 
-  m_form = new kMyMoneyTransactionForm(this, 0, 0, 4, 5);
-  m_tabCheck = new QTab(action2str(MyMoneySplit::ActionCheck, true));
-  m_tabDeposit = new QTab(action2str(MyMoneySplit::ActionDeposit, true));
-  m_tabTransfer = new QTab(action2str(MyMoneySplit::ActionTransfer, true));
-  m_tabWithdrawal = new QTab(action2str(MyMoneySplit::ActionWithdrawal, true));
-  m_tabAtm = new QTab(action2str(MyMoneySplit::ActionATM, true));
+  createSummary();
+  ledgerLayout->addLayout(m_summaryLayout);
 
-  m_form->addTab(m_tabCheck);
-  m_form->addTab(m_tabDeposit);
-  m_form->addTab(m_tabTransfer);
-  m_form->addTab(m_tabWithdrawal);
-  m_form->addTab(m_tabAtm);
-
+  createForm();
   ledgerLayout->addWidget(m_form);
 
   formLayout->addLayout( ledgerLayout, 0, 0);
 
-  m_register->setNumCols(7);
-  m_register->setCurrentCell(0, 1);
-  m_register->horizontalHeader()->setLabel(0, i18n("Nr."));
-	m_register->horizontalHeader()->setLabel(1, i18n("Date"));
-	m_register->horizontalHeader()->setLabel(2, i18n("Payee"));
-	m_register->horizontalHeader()->setLabel(3, i18n("C"));
-	m_register->horizontalHeader()->setLabel(4, i18n("Payment"));
-	m_register->horizontalHeader()->setLabel(5, i18n("Deposit"));
-	m_register->horizontalHeader()->setLabel(6, i18n("Balance"));
- 	m_register->setLeftMargin(0);
-	m_register->verticalHeader()->hide();
-  m_register->setColumnStretchable(0, false);
-  m_register->setColumnStretchable(1, false);
-	m_register->setColumnStretchable(2, false);
-  m_register->setColumnStretchable(3, false);
-	m_register->setColumnStretchable(4, false);
-  m_register->setColumnStretchable(5, false);
-	m_register->setColumnStretchable(6, false);
-		
-	m_register->horizontalHeader()->setResizeEnabled(false);
-	m_register->horizontalHeader()->setMovingEnabled(false);
+  // load the form with inital settings. Always consider transaction type Deposit
+  m_form->tabBar()->blockSignals(true);
+  slotTypeSelected(1);
+  m_form->tabBar()->blockSignals(false);
 
-  // never show horizontal scroll bars
-  m_register->setHScrollBarMode(QScrollView::AlwaysOff);
-  m_form->table()->setHScrollBarMode(QScrollView::AlwaysOff);
-
-  // adjust size of form table
-  m_form->table()->setMaximumHeight(m_form->table()->rowHeight(0)*m_form->table()->numRows());
-
-  // FIXME: make this a config setting and keep it in the rc file
+  // setup the form to be visible or not
   slotShowTransactionForm(m_transactionFormActive);
 
   // and the register has the focus
   m_register->setFocus();
-
-  // connections
-  connect(m_form->tabBar(), SIGNAL(selected(int)), this, SLOT(slotTypeSelected(int)));
-
-  connect(m_register, SIGNAL(clicked(int, int, int, const QPoint&)), this, SLOT(slotRegisterClicked(int, int, int, const QPoint&)));
-  connect(m_register, SIGNAL(doubleClicked(int, int, int, const QPoint&)), this, SLOT(slotRegisterDoubleClicked(int, int, int, const QPoint&)));
-
-  connect(m_register, SIGNAL(signalEnter()), this, SLOT(slotStartEdit()));
-  connect(m_register, SIGNAL(signalNextTransaction()), this, SLOT(slotNextTransaction()));
-  connect(m_register, SIGNAL(signalPreviousTransaction()), this, SLOT(slotPreviousTransaction()));
-
-  connect(m_form->editButton(), SIGNAL(clicked()), this, SLOT(slotStartEdit()));
-  connect(m_form->cancelButton(), SIGNAL(clicked()), this, SLOT(slotCancelEdit()));
-  connect(m_form->enterButton(), SIGNAL(clicked()), this, SLOT(slotEndEdit()));
-  connect(m_form->newButton(), SIGNAL(clicked()), this, SLOT(slotNew()));
 }
 
 KLedgerViewCheckings::~KLedgerViewCheckings()
@@ -273,6 +223,102 @@ void KLedgerViewCheckings::slotRegisterDoubleClicked(int row, int col, int butto
   slotStartEdit();
 }
 
+void KLedgerViewCheckings::createRegister(void)
+{
+  m_register = new kMyMoneyRegisterCheckings(this);
+  m_register->setView(this);
+
+  m_register->setNumCols(7);
+  m_register->setCurrentCell(0, 1);
+  m_register->horizontalHeader()->setLabel(0, i18n("Nr."));
+	m_register->horizontalHeader()->setLabel(1, i18n("Date"));
+	m_register->horizontalHeader()->setLabel(2, i18n("Payee"));
+	m_register->horizontalHeader()->setLabel(3, i18n("C"));
+	m_register->horizontalHeader()->setLabel(4, i18n("Payment"));
+	m_register->horizontalHeader()->setLabel(5, i18n("Deposit"));
+	m_register->horizontalHeader()->setLabel(6, i18n("Balance"));
+ 	m_register->setLeftMargin(0);
+	m_register->verticalHeader()->hide();
+  m_register->setColumnStretchable(0, false);
+  m_register->setColumnStretchable(1, false);
+	m_register->setColumnStretchable(2, false);
+  m_register->setColumnStretchable(3, false);
+	m_register->setColumnStretchable(4, false);
+  m_register->setColumnStretchable(5, false);
+	m_register->setColumnStretchable(6, false);
+		
+	m_register->horizontalHeader()->setResizeEnabled(false);
+	m_register->horizontalHeader()->setMovingEnabled(false);
+
+  // never show horizontal scroll bars
+  m_register->setHScrollBarMode(QScrollView::AlwaysOff);
+
+  connect(m_register, SIGNAL(clicked(int, int, int, const QPoint&)), this, SLOT(slotRegisterClicked(int, int, int, const QPoint&)));
+  connect(m_register, SIGNAL(doubleClicked(int, int, int, const QPoint&)), this, SLOT(slotRegisterDoubleClicked(int, int, int, const QPoint&)));
+
+  connect(m_register, SIGNAL(signalEnter()), this, SLOT(slotStartEdit()));
+  connect(m_register, SIGNAL(signalNextTransaction()), this, SLOT(slotNextTransaction()));
+  connect(m_register, SIGNAL(signalPreviousTransaction()), this, SLOT(slotPreviousTransaction()));
+
+}
+
+void KLedgerViewCheckings::createForm(void)
+{
+  m_form = new kMyMoneyTransactionForm(this, 0, 0, 4, 5);
+  m_tabCheck = new QTab(action2str(MyMoneySplit::ActionCheck, true));
+  m_tabDeposit = new QTab(action2str(MyMoneySplit::ActionDeposit, true));
+  m_tabTransfer = new QTab(action2str(MyMoneySplit::ActionTransfer, true));
+  m_tabWithdrawal = new QTab(action2str(MyMoneySplit::ActionWithdrawal, true));
+  m_tabAtm = new QTab(action2str(MyMoneySplit::ActionATM, true));
+
+  m_form->addTab(m_tabCheck);
+  m_form->addTab(m_tabDeposit);
+  m_form->addTab(m_tabTransfer);
+  m_form->addTab(m_tabWithdrawal);
+  m_form->addTab(m_tabAtm);
+
+  // never show horizontal scroll bars
+  m_form->table()->setHScrollBarMode(QScrollView::AlwaysOff);
+
+  // adjust size of form table
+  m_form->table()->setMaximumHeight(m_form->table()->rowHeight(0)*m_form->table()->numRows());
+
+  // connections
+  connect(m_form->tabBar(), SIGNAL(selected(int)), this, SLOT(slotTypeSelected(int)));
+
+  connect(m_form->editButton(), SIGNAL(clicked()), this, SLOT(slotStartEdit()));
+  connect(m_form->cancelButton(), SIGNAL(clicked()), this, SLOT(slotCancelEdit()));
+  connect(m_form->enterButton(), SIGNAL(clicked()), this, SLOT(slotEndEdit()));
+  connect(m_form->newButton(), SIGNAL(clicked()), this, SLOT(slotNew()));
+}
+
+void KLedgerViewCheckings::createSummary(void)
+{
+  m_summaryLayout = new QHBoxLayout(0, 0, 6, "SummaryLayout");
+
+  QSpacerItem* spacer = new QSpacerItem( 20, 1, QSizePolicy::Expanding, QSizePolicy::Minimum );
+  m_summaryLayout->addItem(spacer);
+
+  m_summaryLine = new QLabel(this);
+
+  m_summaryLayout->addWidget(m_summaryLine);
+}
+
+void KLedgerViewCheckings::fillSummary(void)
+{
+  MyMoneyMoney balance;
+  QLabel *summary = static_cast<QLabel *> (m_summaryLine);
+
+  if(accountId().length() > 0) {
+    try {
+      balance = MyMoneyFile::instance()->balance(accountId());
+      summary->setText(i18n("Current balance: ") + balance.formatMoney());
+    } catch(MyMoneyException *e) {
+        qDebug("Unexpected exception in KLedgerViewCheckings::fillSummary");
+    }
+  } else
+    summary->setText("");
+}
 
 void KLedgerViewCheckings::fillForm(void)
 {
@@ -554,7 +600,8 @@ void KLedgerViewCheckings::loadEditWidgets(int& transType)
     m_editMemo->loadText(m_split.memo());
     m_editAmount->loadText(amount.formatMoney());
     m_editDate->loadDate(m_transactionPtr->postDate());
-    m_editNr->loadText(m_split.number());
+    if(m_editNr != 0)
+      m_editNr->loadText(m_split.number());
 
     if(m_split.value() < 0) {
       m_editPayment->loadText((-m_split.value()).formatMoney());
@@ -611,7 +658,8 @@ void KLedgerViewCheckings::arrangeEditWidgetsInForm(QWidget*& focusWidget, const
   m_editMemo->setPalette(palette);
   m_editAmount->setPalette(palette);
   m_editDate->setPalette(palette);
-  m_editNr->setPalette(palette);
+  if(m_editNr != 0)
+    m_editNr->setPalette(palette);
   m_editFrom->setPalette(palette);
   m_editTo->setPalette(palette);
 
@@ -643,6 +691,8 @@ void KLedgerViewCheckings::arrangeEditWidgetsInForm(QWidget*& focusWidget, const
     case ATM: // ATM
       m_form->table()->setEditable(0, 4);
       fromRow = toRow = -1;
+      if(m_editNr == 0)
+        nrRow = -1;
       break;
 
     case Deposit: // Deposit
@@ -709,7 +759,8 @@ void KLedgerViewCheckings::arrangeEditWidgetsInForm(QWidget*& focusWidget, const
       m_tabOrderWidgets.append(m_editCategory);
       m_tabOrderWidgets.append(m_editSplit);
       m_tabOrderWidgets.append(m_editMemo);
-      m_tabOrderWidgets.append(m_editNr);
+      if(m_editNr != 0)
+        m_tabOrderWidgets.append(m_editNr);
       break;
 
     case Deposit: // Deposit
@@ -737,7 +788,8 @@ void KLedgerViewCheckings::arrangeEditWidgetsInRegister(QWidget*& focusWidget, c
   delete m_editAmount; m_editAmount = 0;
 
   int   firstRow = m_register->currentTransactionIndex() * m_register->rpt();
-  m_register->setCellWidget(firstRow, 0, m_editNr);
+  if(m_editNr != 0)
+    m_register->setCellWidget(firstRow, 0, m_editNr);
   m_register->setCellWidget(firstRow, 1, m_editDate);
   m_register->setCellWidget(firstRow, 2, m_editPayee);
   m_register->setCellWidget(firstRow+1, 2, m_editCategory);
@@ -745,7 +797,12 @@ void KLedgerViewCheckings::arrangeEditWidgetsInRegister(QWidget*& focusWidget, c
   m_register->setCellWidget(firstRow, 4, m_editPayment);
   m_register->setCellWidget(firstRow, 5, m_editDeposit);
 
-  m_tabOrderWidgets.append(m_editNr);
+  if(m_editNr != 0) {
+    m_tabOrderWidgets.append(m_editNr);
+    focusWidget = m_editNr;
+  } else
+    focusWidget = m_editDate;
+
   m_tabOrderWidgets.append(m_editDate->focusWidget());
   m_tabOrderWidgets.append(m_editPayee);
   m_tabOrderWidgets.append(m_editCategory);
@@ -753,7 +810,6 @@ void KLedgerViewCheckings::arrangeEditWidgetsInRegister(QWidget*& focusWidget, c
   m_tabOrderWidgets.append(m_editPayment);
   m_tabOrderWidgets.append(m_editDeposit);
 
-  focusWidget = m_editNr;
 }
 
 void KLedgerViewCheckings::showWidgets(void)

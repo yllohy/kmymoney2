@@ -40,6 +40,8 @@
 
 #include "kgloballedgerview.h"
 #include "kledgerviewcheckings.h"
+#include "kledgerviewsavings.h"
+
 #include "../mymoney/mymoneyaccount.h"
 #include "../mymoney/mymoneyfile.h"
 
@@ -75,8 +77,9 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
                                  MyMoneyAccount::Checkings);
 
   // Savings account
-  KPushButton* savingsAccount = new KPushButton("Savings account", m_accountStack);
-  m_accountStack->addWidget(savingsAccount, MyMoneyAccount::Savings);
+  m_specificView[MyMoneyAccount::Savings] = new KLedgerViewSavings(this);
+  m_accountStack->addWidget(m_specificView[MyMoneyAccount::Savings],
+                                 MyMoneyAccount::Savings);
 
   // Credit card account
   KPushButton* creditCardAccount = new KPushButton("Credit Card account", m_accountStack);
@@ -114,6 +117,10 @@ void KGlobalLedgerView::loadAccounts(void)
   for(it_s = acc.accountList().begin(); it_s != acc.accountList().end(); ++it_s) {
     accountComboBox->insertItem(file->account(*it_s).name());
   }
+
+  if(m_accountId == "") {       // no accounts available?
+    selectAccount("");
+  }
 }
 
 KGlobalLedgerView::~KGlobalLedgerView()
@@ -138,8 +145,6 @@ void KGlobalLedgerView::refresh(void)
 
 void KGlobalLedgerView::refreshView(void)
 {
-  // FIXME: this should actually call all views on the stack not
-  //        only the current selected view
   for(int i = 0; i < MyMoneyAccount::MaxAccountTypes; ++i) {
     if(m_specificView[i] != 0)
       m_specificView[i]->refreshView();
@@ -148,17 +153,24 @@ void KGlobalLedgerView::refreshView(void)
 
 void KGlobalLedgerView::selectAccount(const QCString& accountId)
 {
-  MyMoneyAccount acc = MyMoneyFile::instance()->account(accountId);
-  m_accountStack->raiseWidget(acc.accountType());
-  if(m_specificView[acc.accountType()] != 0) {
-    m_currentView = m_specificView[acc.accountType()];
-    m_currentView->setCurrentAccount(accountId);
-    m_accountId = accountId;
-    accountComboBox->setCurrentText(acc.name());
+  if(accountId != "") {
+    MyMoneyAccount acc = MyMoneyFile::instance()->account(accountId);
+    m_accountStack->raiseWidget(acc.accountType());
+    if(m_specificView[acc.accountType()] != 0) {
+      m_currentView = m_specificView[acc.accountType()];
+      m_currentView->setCurrentAccount(accountId);
+      m_accountId = accountId;
+      accountComboBox->setCurrentText(acc.name());
+    } else {
+      QString msg = "Specific ledger view for account type " +
+        QString::number(acc.accountType()) + " not yet implemented";
+      KMessageBox::sorry(0, msg, "Implementation problem");
+    }
   } else {
-    QString msg = "Specific ledger view for account type " +
-      QString::number(acc.accountType()) + " not yet implemented";
-    KMessageBox::sorry(0, msg, "Implementation problem");
+    m_accountStack->raiseWidget(MyMoneyAccount::Checkings);
+    if(m_specificView[MyMoneyAccount::Checkings] != 0) {
+      m_currentView = m_specificView[MyMoneyAccount::Checkings];
+    }
   }
 }
 

@@ -93,7 +93,6 @@ KLedgerView::KLedgerView(QWidget *parent, const char *name )
   m_editDate = 0;
   m_editFrom = 0;
   m_editTo = 0;
-
 }
 
 KLedgerView::~KLedgerView()
@@ -140,6 +139,9 @@ void KLedgerView::reloadAccount(const bool repaint)
 
     // don't forget to show the data in the form
     fillForm();
+
+    // and the summary line
+    fillSummary();
   }
 }
 
@@ -155,6 +157,9 @@ void KLedgerView::loadAccount(void)
 
   // fill in the form with the currently selected transaction
   fillForm();
+
+  // fill in the current summary as well
+  fillSummary();
 }
 
 void KLedgerView::refreshView(void)
@@ -262,8 +267,10 @@ void KLedgerView::slotRegisterClicked(int row, int col, int button, const QPoint
     // a new transaction should be created.
     if(m_register->currentTransactionIndex() == m_transactionList.count()) {
       slotNew();
-    } else
+    } else {
       fillForm();
+      fillSummary();
+    }
 
     emit transactionSelected();
 
@@ -282,6 +289,7 @@ void KLedgerView::slotNextTransaction(void)
     m_register->ensureTransactionVisible();
     m_register->repaintContents();
     fillForm();
+    fillSummary();
     emit transactionSelected();
   }
 }
@@ -298,6 +306,7 @@ void KLedgerView::slotPreviousTransaction(void)
     m_register->ensureTransactionVisible();
     m_register->repaintContents();
     fillForm();
+    fillSummary();
     emit transactionSelected();
   }
 }
@@ -312,6 +321,7 @@ void KLedgerView::selectTransaction(const QCString& transactionId)
       m_register->ensureTransactionVisible();
       m_register->repaintContents();
       fillForm();
+      fillSummary();
       emit transactionSelected();
       break;
     }
@@ -856,6 +866,7 @@ void KLedgerView::slotNew(void)
   m_register->ensureTransactionVisible();
   m_register->repaintContents();
   fillForm();
+  fillSummary();
 
   m_form->enterButton()->setEnabled(true);
   m_form->cancelButton()->setEnabled(true);
@@ -872,6 +883,54 @@ void KLedgerView::slotNew(void)
 
 void KLedgerView::slotStartEdit(void)
 {
+  // we use the warnlevel to keep track, if we have to warn the
+  // user that some or all splits have been reconciled or if the
+  // user cannot modify the transaction if at least one split
+  // has the status frozen. The following value are used:
+  //
+  // 0 - no sweat, user can modify
+  // 1 - user should be warned that at least one split has been reconciled
+  //     already
+  // 2 - user will be informed, that this transaction cannot be changed anymore
+
+  int warnLevel = 0;
+
+  QValueList<MyMoneySplit>::ConstIterator it;
+
+  for(it = m_transaction.splits().begin(); it != m_transaction.splits().end(); ++it) {
+    if((*it).reconcileFlag() == MyMoneySplit::Frozen)
+      warnLevel = 2;
+    if((*it).reconcileFlag() == MyMoneySplit::Reconciled && warnLevel < 1)
+      warnLevel = 1;
+  }
+
+  switch(warnLevel) {
+    case 0:
+      break;
+
+    case 1:
+      if(KMessageBox::warningContinueCancel(0,
+        i18n(
+          "At least one split of this transaction has been reconciled. "
+          "Do you wish to continue to edit the transaction anyway?"
+        ),
+        i18n("Transaction already reconciled")) == KMessageBox::Cancel) {
+
+        warnLevel = 2;
+      }
+      break;
+
+    case 2:
+      KMessageBox::sorry(0,
+            i18n("At least one split of this transaction has been frozen. "
+                 "Editing this transaction is therefore prohibited."),
+            i18n("Transaction already frozen"));
+      break;
+  }
+
+  if(warnLevel == 2)
+    return;
+
   m_register->ensureTransactionVisible();
 
   m_form->newButton()->setEnabled(false);
