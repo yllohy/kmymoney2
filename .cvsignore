@@ -8,3 +8,5 @@ config.status
 config.h
 config.h.in
 libtool
+kmymoney2.doxygen
+kmymoney2-api
