@@ -2,6 +2,8 @@
   * Moved categoryTypeE to KMyMoneyUtils
   * Updated template files to contain standard text
   * Added tips entry
+  * added MyMoneyKeyValueContainer functionality to MyMoneyTransaction
+  * more work on the QIF import (not done yet)
 
 2003-02-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * include config.h in mymoneymoney.h
