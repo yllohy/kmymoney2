@@ -192,7 +192,7 @@ void KTransactionView::slotMethodCompleted()
 void KTransactionView::createInputWidgets()
 {
 
-    m_date = new kMyMoneyDateInput(0,QDate::currentDate());
+    m_date = new kMyMoneyDateInput(0,QDate::currentDate(), Qt::AlignRight);
     m_method = new kMyMoneyCombo(0);
     m_payee = new kMyMoneyCombo(true,0);
     m_payment = new kMyMoneyEdit(0);

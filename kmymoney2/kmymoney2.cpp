@@ -153,8 +153,8 @@ void KMyMoney2App::initActions()
   categoriesPayees->setStatusText(i18n("View and edit Payees"));
 
   // The Bank Menu
-  bankAdd = new KAction(i18n("Add new bank..."), "bank", 0, this, SLOT(slotBankAdd()), actionCollection(), "bank_add");
-  bankAdd->setStatusText(i18n("Lets you create a new bank"));
+  bankAdd = new KAction(i18n("Add new institution..."), "bank", 0, this, SLOT(slotBankAdd()), actionCollection(), "bank_add");
+  bankAdd->setStatusText(i18n("Lets you create a new institution"));
 
   // The Account Menu
   accountOpen = new KAction(i18n("Open account register..."), "account_open", 0, this, SLOT(slotAccountOpen()), actionCollection(), "account_open");
@@ -166,9 +166,9 @@ void KMyMoney2App::initActions()
   accountFind = new KAction(i18n("Find transaction..."), "transaction_find", 0, this, SLOT(slotAccountFind()), actionCollection(), "account_find");
   accountFind->setStatusText(i18n("Find transactions"));
   accountImport = new KAction(i18n("Import transactions..."), "transaction_import", 0, this, SLOT(slotAccountImport()), actionCollection(), "account_import");
-  accountImport->setStatusText(i18n("Import tab delimited text"));
+  accountImport->setStatusText(i18n("Import transactions"));
   accountExport = new KAction(i18n("Export transactions..."), "transaction_export", 0, this, SLOT(slotAccountExport()), actionCollection(), "account_export");
-  accountExport->setStatusText(i18n("Export to tab delimited text"));
+  accountExport->setStatusText(i18n("Export transactions"));
 
   // The Bill Menu
 /* Future
@@ -600,7 +600,6 @@ void KMyMoney2App::enableFileOperations(bool enable)
   categoriesEdit->setEnabled(enable);
   categoriesPayees->setEnabled(enable);
   settings->setEnabled(enable);
-  bankAdd->setEnabled(enable);
   fileBackup->setEnabled(enable);
 
 //  fileNew->setEnabled(!enable);
@@ -618,7 +617,8 @@ void KMyMoney2App::enableBankOperations(bool enable)
 
   // Make sure there is a bank selected before enabling
   // accountAdd
-  if (myMoneyView->currentBankName()==i18n("Unknown Institution"))
+  if (myMoneyView->currentBankName()==i18n("Unknown Institution") &&
+      myMoneyView->currentAccountName() == i18n("Unknown Account"))
     accountAdd->setEnabled(false);
   else
     accountAdd->setEnabled(enable);
@@ -631,14 +631,16 @@ void KMyMoney2App::enableAccountOperations(bool enable)
 {
   if (enable) {
     enableFileOperations(true);
-    enableBankOperations(true);
+    enableBankOperations(false);
     enableTransactionOperations(false);
   }
 
-  accountAdd->setEnabled(true);
+//  accountAdd->setEnabled(false);
+  accountOpen->setEnabled(enable);
   accountReconcile->setEnabled(enable);
   accountImport->setEnabled(enable);
   accountExport->setEnabled(enable);
+  accountFind->setEnabled(enable);
 
   QString caption = myMoneyView->currentBankName();
   caption += " : ";
@@ -659,7 +661,10 @@ void KMyMoney2App::enableTransactionOperations(bool enable)
     enableAccountOperations(true);
   }
 
-  accountFind->setEnabled(enable);
+  bankAdd->setEnabled(false);
+  accountAdd->setEnabled(false);
+  accountOpen->setEnabled(false);
+
   viewUp->setEnabled(enable);
 
   QString caption = myMoneyView->currentBankName();

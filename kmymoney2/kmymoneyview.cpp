@@ -117,6 +117,8 @@ void KMyMoneyView::slotAccountDoubleClick(void)
 
 void KMyMoneyView::slotBankRightMouse(const MyMoneyBank, bool inList)
 {
+  emit bankOperations(false);
+
   KIconLoader *kiconloader = KGlobal::iconLoader();
 
   KPopupMenu menu(this);

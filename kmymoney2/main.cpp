@@ -25,7 +25,7 @@
 #include "kstartuplogo.h"
 
 static const char *description =
-	I18N_NOOP("KMyMoney2 a personal finances application for KDE 2\n\nPlease consider contributing to this product with code and or suggestions");
+	I18N_NOOP("KMyMoney2 a personal finances application for KDE.\n\nPlease consider contributing to this project with code and or suggestions.");
 	
 static KCmdLineOptions options[] =
 {
@@ -43,6 +43,7 @@ int main(int argc, char *argv[])
 	aboutData.addAuthor("Felix Rodriguez", I18N_NOOP("Project Admin"), "frodriguez@users.sourceforge.net");
 	aboutData.addAuthor("Javier Campos Morales", I18N_NOOP("Developer & Artist"), "javi_c@users.sourceforge.net");
 	aboutData.addAuthor("John C", I18N_NOOP("Developer"), "tacoturtle@users.sourceforge.net");
+	aboutData.addAuthor("Thomas Baumgart", I18N_NOOP("Developer"), "ipwizard@users.sourceforge.net");
 	KCmdLineArgs::init( argc, argv, &aboutData );
 	KCmdLineArgs::addCmdLineOptions( options ); // Add our own options.
 

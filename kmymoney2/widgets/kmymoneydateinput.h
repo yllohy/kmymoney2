@@ -31,8 +31,8 @@ class kMyMoneyDateInput : public QWidget  {
    Q_OBJECT
 
 public: 
-	kMyMoneyDateInput(QWidget *parent=0, const char *name=0);
-  kMyMoneyDateInput(QWidget *parent=0, const QDate& date=QDate::currentDate());
+	kMyMoneyDateInput(QWidget *parent=0, const char *name=0, Qt::AlignmentFlags flags=Qt::AlignLeft);
+  kMyMoneyDateInput(QWidget *parent=0, const QDate& date=QDate::currentDate(), Qt::AlignmentFlags flags=Qt::AlignLeft);
 	~kMyMoneyDateInput();
 	
 	// Use this to get the selected date
@@ -59,6 +59,7 @@ private:
   QLineEdit *lineEdit;
   KTempDatePicker *datePicker;
   QDate m_date;  // The date !
+  Qt::AlignmentFlags m_qtalignment;
 };
 
 #endif

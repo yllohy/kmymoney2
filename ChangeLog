@@ -1,3 +1,7 @@
+2001-09-27 Michael Edwardes <mte@users.sourceforge.net>
+  * Changed the date input class to display either left or right.
+  * Fixed a couple of issues of when to show action(s).
+
 2001-09-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Call resize() of base class in KCategoriesDlg, KBanksView, KReconcileDlg
   * Prevent hiding of fields 'cleared balance' and 'difference' when shrinking

@@ -24,9 +24,11 @@
 
 #include "kmymoneydateinput.h"
 
-kMyMoneyDateInput::kMyMoneyDateInput(QWidget *parent, const char *name )
+kMyMoneyDateInput::kMyMoneyDateInput(QWidget *parent, const char *name, Qt::AlignmentFlags flags)
  : QWidget(parent,name)
 {
+  m_qtalignment = flags;
+
   lineEdit=new QLineEdit(this);
   lineEdit->setReadOnly(true);
 
@@ -43,9 +45,11 @@ kMyMoneyDateInput::kMyMoneyDateInput(QWidget *parent, const char *name )
   slotDateChosen(QDate::currentDate());
 }
 
-kMyMoneyDateInput::kMyMoneyDateInput(QWidget *parent, const QDate& date )
+kMyMoneyDateInput::kMyMoneyDateInput(QWidget *parent, const QDate& date, Qt::AlignmentFlags flags)
  : QWidget(parent)
 {
+  m_qtalignment = flags;
+
   lineEdit=new QLineEdit(this);
   lineEdit->setReadOnly(true);
 
@@ -92,8 +96,11 @@ void kMyMoneyDateInput::mousePressEvent(QMouseEvent* qme)
       datePicker->hide();
     } else {
       QPoint point = mapToGlobal(rect().bottomRight());
-      point.setX(point.x());
-//      point.setX(point.x() - datePicker->width());
+      if (m_qtalignment == Qt::AlignRight)
+        point.setX(point.x());
+      else
+        point.setX(point.x() - datePicker->width());
+
       datePicker->move(point);
       datePicker->show();
     }

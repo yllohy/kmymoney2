@@ -1,14 +1,9 @@
 KMyMoney 2.  (covered by the GNU license - see COPYING)
 
-Authors - Michael Edwardes - mte@users.sourceforge.net
-    Javier Campos Morales - javi_c@users.sourceforge.net.
-    Felix Rodriguez - frodriguez@users.sourceforge.net.
-    John C - thetacoturtle@users.sourceforge.net
-
 Homepage - kmymoney2.sourceforge.net
 
 The two most important libraries are QT-2.2.* and above available from www.trolltech.com and
-KDE 2 from www.kde.org.
+KDE 2 from www.kde.org.  At least version 2.2 of KDE is required to run KMyMoney2.
 
 To compile use this general sequence:
 
@@ -27,7 +22,7 @@ To compile use this general sequence:
 
 AND/OR
 
-  Get KDevelop 1.4 and use the supplied kmymoney2.kdevprj located in the base directory.
+  Get KDevelop 2 and use the supplied kmymoney2.kdevprj located in the base directory.
   For more information on KDevelop please contact www.kdevelop.org.
 
 If you find this program useful in any way or wish to contribute please send an email to me at
