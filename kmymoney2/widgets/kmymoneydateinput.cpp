@@ -20,8 +20,8 @@
 #include <qdrawutil.h>
 #include <qpoint.h>
 #include <qvalidator.h>
-#include <kdatetbl.h>
 
+#include "kdatetbl.h"
 #include "kmymoneydateinput.h"
 
 #if QT_VERSION > 300
@@ -33,10 +33,8 @@ kMyMoneyDateInput::kMyMoneyDateInput(QWidget *parent, const char *name, Qt::Alig
 {
   m_qtalignment = flags;
 
-  lineEdit=new QLineEdit(this);
-  lineEdit->setReadOnly(true);
-
-//  connect(lineEdit,SIGNAL(returnPressed()),SLOT(slotEnterPressed()));
+  dateEdit = new KDateEdit(this, "sniff");
+  connect(dateEdit, SIGNAL(returnPressed()), this, SLOT(slotEnterPressed()));
 
   // I use KTempDatePicker so I can use the WType_Popup flag in the constructor
   datePicker = new KTempDatePicker(parent, QDate::currentDate(), "datePicker", WType_Popup);
@@ -54,8 +52,8 @@ kMyMoneyDateInput::kMyMoneyDateInput(QWidget *parent, const QDate& date, Qt::Ali
 {
   m_qtalignment = flags;
 
-  lineEdit=new QLineEdit(this);
-  lineEdit->setReadOnly(true);
+  dateEdit = new KDateEdit(this, "sniff");
+  connect(dateEdit, SIGNAL(returnPressed()), this, SLOT(slotEnterPressed()));
 
   // I use KTempDatePicker so I can use the WType_Popup flag in the constructor
   datePicker = new KTempDatePicker(parent, date, "datePicker", WType_Popup);
@@ -94,7 +92,7 @@ void kMyMoneyDateInput::paintEvent(QPaintEvent*)
 
 void kMyMoneyDateInput::resizeEvent(QResizeEvent*)
 {
-  lineEdit->setGeometry(0,0,width()-23,height());
+  dateEdit->setGeometry(0,0,width()-23,height());
 }
 
 void kMyMoneyDateInput::mousePressEvent(QMouseEvent* qme)
@@ -118,11 +116,43 @@ void kMyMoneyDateInput::mousePressEvent(QMouseEvent* qme)
   }
 }
 
+/** Overriding QWidget::keyPressEvent
+  *
+  * increments/decrements the date upon +/- key input
+  */
+void kMyMoneyDateInput::keyPressEvent(QKeyEvent * k)
+{
+  if (k->key()==Key_Plus) {
+    datePicker->nextDay();
+    slotDateChosen(datePicker->getDate());
+  } else if (k->key()==Key_Minus) {
+    datePicker->prevDay();
+    slotDateChosen(datePicker->getDate());
+  } else if (k->key()==Key_PageDown) {
+     QPoint point = mapToGlobal(rect().bottomRight());
+     if (m_qtalignment == Qt::AlignRight)
+      point.setX(point.x());
+     else
+      point.setX(point.x() - datePicker->width());
+
+    datePicker->move(point);
+    datePicker->show();
+    return;
+  }
+}
+
 void kMyMoneyDateInput::slotDateChosen(QDate date)
 {
-  lineEdit->setText(KGlobal::locale()->formatDate(date, true));
+  dateEdit->setText(KGlobal::locale()->formatDate(date, true));
   m_date=date;
   datePicker->hide();
+}
+
+void kMyMoneyDateInput::slotEnterPressed()
+{
+  m_date = KGlobal::locale()->readDate(dateEdit->text());
+  dateEdit->setText(KGlobal::locale()->formatDate(m_date, true));
+  datePicker->setDate(m_date);
 }
 
 /*
@@ -140,7 +170,7 @@ void kMyMoneyDateInput::show()
 */
 QWidget* kMyMoneyDateInput::getLineEdit()
 {
- 	return lineEdit;
+ 	return dateEdit;
 }
 
 QDate kMyMoneyDateInput::getQDate(void)
@@ -155,16 +185,16 @@ void kMyMoneyDateInput::setDate(QDate date)
 
 QSize kMyMoneyDateInput::sizeHint() const
 {
-  if (lineEdit)
-    return lineEdit->sizeHint();
+  if (dateEdit)
+    return dateEdit->sizeHint();
 
   return QSize(-1, -1);
 }
 
 QSizePolicy kMyMoneyDateInput::sizePolicy() const
 {
-  if (lineEdit)
-    return lineEdit->sizePolicy();
+  if (dateEdit)
+    return dateEdit->sizePolicy();
 
   return QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 }

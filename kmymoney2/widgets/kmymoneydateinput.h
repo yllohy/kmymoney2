@@ -51,12 +51,15 @@ protected:
   void paintEvent(QPaintEvent*);
   void resizeEvent(QResizeEvent*);
   void mousePressEvent(QMouseEvent* qme);
+  /** Overriding QWidget::keyPressEvent */
+  void keyPressEvent(QKeyEvent * k);
 
 protected slots:
   void slotDateChosen(QDate date);
+  void slotEnterPressed();
 
 private:
-  QLineEdit *lineEdit;
+  KDateEdit *dateEdit;
   KTempDatePicker *datePicker;
   QDate m_date;  // The date !
   Qt::AlignmentFlags m_qtalignment;

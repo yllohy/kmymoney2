@@ -29,7 +29,7 @@
 /**
 * A table containing month names. It is used to pick a month directly.
 * @internal
-* @version $Id: kdatetbl.h,v 1.1 2002/03/20 19:29:54 arniing Exp $
+* @version $Id: kdatetbl.h,v 1.2 2002/03/23 00:40:14 arniing Exp $
 * @author Tim Gilman, Mirko Boehm
 */
 class KDateInternalMonthPicker : public QTableView
@@ -74,7 +74,7 @@ private:
 
 /** Year selection widget.
 * @internal
-* @version $Id: kdatetbl.h,v 1.1 2002/03/20 19:29:54 arniing Exp $
+* @version $Id: kdatetbl.h,v 1.2 2002/03/23 00:40:14 arniing Exp $
 * @author Tim Gilman, Mirko Boehm
 */
 class KDateInternalYearSelector : public QLineEdit
@@ -102,7 +102,7 @@ private:
 /**
  Frame with popup menu behaviour.
  @author Tim Gilman, Mirko Boehm
- @version $Id: kdatetbl.h,v 1.1 2002/03/20 19:29:54 arniing Exp $
+ @version $Id: kdatetbl.h,v 1.2 2002/03/23 00:40:14 arniing Exp $
 */
 class KPopupFrame : public QFrame
 {
@@ -154,6 +154,21 @@ public:
     virtual State validate(QString&, int&) const;
     virtual void fixup ( QString & input ) const;
     State date(const QString&, QDate&) const;
+private:
+  QString format, delim;
+};
+
+/**
+* Overrides keyPressEvent from QLineEdit only to
+* filter some keys.
+*/
+class KDateEdit : public QLineEdit
+{
+public:
+  KDateEdit(QWidget * parent, const char * name=0);
+  ~KDateEdit();
+
+  void keyPressEvent(QKeyEvent *k);
 };
 
 /**
@@ -166,7 +181,7 @@ public:
  * dateSelected(QDate)
  *
  * @internal
- * @version $Id: kdatetbl.h,v 1.1 2002/03/20 19:29:54 arniing Exp $
+ * @version $Id: kdatetbl.h,v 1.2 2002/03/23 00:40:14 arniing Exp $
  * @author Tim Gilman, Mirko Boehm
  */
 class KDateTable : public QTableView

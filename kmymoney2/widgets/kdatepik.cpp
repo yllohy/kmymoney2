@@ -57,7 +57,7 @@ KTempDatePicker::KTempDatePicker(QWidget *parent, QDate dt, const char *name, WF
     monthBackward(new QToolButton(this)),
     selectMonth(new QToolButton(this)),
     selectYear(new QToolButton(this)),
-    line(new QLineEdit(this)),
+    line(new KDateEdit(this)),
     val(new KDateValidator(this)),
     table(new KDateTable(this)),
     fontsize(10)
@@ -179,21 +179,21 @@ KTempDatePicker::setDate(const QDate& date)
 void
 KTempDatePicker::monthForwardClicked()
 {
-    QDate temp=table->getDate();
-    int day=temp.day();
-    // -----
-    if(temp.month()==12) {
-	temp.setYMD(temp.year()+1, 1, 1);
-    } else {
-	temp.setYMD(temp.year(), temp.month()+1, 1);
-    }
-    if(temp.daysInMonth()<day) {
-	temp.setYMD(temp.year(), temp.month(), temp.daysInMonth());
-    } else {
-	temp.setYMD(temp.year(), temp.month(), day);
-    }
-    // assert(temp.isValid());
-    setDate(temp);
+  QDate temp=table->getDate();
+  int day=temp.day();
+  // -----
+  if(temp.month()==12) {
+    temp.setYMD(temp.year()+1, 1, 1);
+  } else {
+    temp.setYMD(temp.year(), temp.month()+1, 1);
+  }
+  if(temp.daysInMonth()<day) {
+    temp.setYMD(temp.year(), temp.month(), temp.daysInMonth());
+  } else {
+    temp.setYMD(temp.year(), temp.month(), day);
+  }
+  // assert(temp.isValid());
+  setDate(temp);
 }
 
 void
@@ -327,9 +327,9 @@ KTempDatePicker::lineEnterPressed()
   // -----
   if(val->date(line->text(), temp)==QValidator::Acceptable)
     {
-	kdDebug() << "KDatePicker::lineEnterPressed: valid date entered." << endl;
-	emit(dateEntered(temp));
-	setDate(temp);
+      kdDebug() << "KDatePicker::lineEnterPressed: valid date entered." << endl;
+      emit(dateEntered(temp));
+      setDate(temp);
     } else {
       kapp->beep();
       kdDebug() << "KDatePicker::lineEnterPressed: invalid date entered." << endl;
@@ -400,4 +400,52 @@ KTempDatePicker::setFontSize(int s)
       maxMonthRect.setHeight(QMAX(r.height(),  maxMonthRect.height()));
     }
   table->setFontSize(s);
+}
+
+void KTempDatePicker::keyPressEvent(QKeyEvent * k)
+{
+  if (k->key()==Key_Plus) {
+    nextDay();
+  } else if (k->key()==Key_Minus) {
+    prevDay();
+  } else if (k->key()==Key_Enter || k->key()==Key_Return)
+    emit(dateSelected(table->getDate()));
+//    kapp->beep();
+}
+
+/** Change the date to next day. */
+void KTempDatePicker::nextDay()
+{
+  QDate temp=table->getDate();
+  int day=temp.day();
+
+  if (day < temp.daysInMonth()) {
+    temp.setYMD(temp.year(), temp.month(), day+1);
+  } else {
+    if(temp.month()==12) {
+      temp.setYMD(temp.year()+1, 1, 1);
+    } else {
+      temp.setYMD(temp.year(), temp.month()+1, 1);
+    }
+  }
+  setDate(temp);
+}
+
+/** Change the date to previous day. */
+void KTempDatePicker::prevDay()
+{
+  QDate temp=table->getDate();
+  int day=temp.day();
+
+  if (day > 1) {
+    temp.setYMD(temp.year(), temp.month(), day-1);
+  } else {
+    if(temp.month()==1) {
+      temp.setYMD(temp.year()-1, 12, 31);
+    } else {
+      temp.setYMD(temp.year(), temp.month()-1, 1);
+      temp.setYMD(temp.year(), temp.month(), temp.daysInMonth());
+    }
+  }
+  setDate(temp);
 }

@@ -51,6 +51,12 @@
 KDateValidator::KDateValidator(QWidget* parent, const char* name)
     : QValidator(parent, name)
 {
+  int y,m,d;
+  format = KGlobal::locale()->formatDate(QDate(00,12,31), true);
+  y = format.find("00", 0);
+  m = format.find("12", 0);
+  d = format.find("31", 0);
+  delim = d<m ? format.mid(d+2, m-d-2) : format.mid(m+2, d-m-2);
 }
 
 QValidator::State
@@ -72,9 +78,52 @@ KDateValidator::date(const QString& text, QDate& d) const
       return Valid;
 }
 
-void KDateValidator::fixup( QString& ) const
+//  010203 -> 01.02.03
+//  5.123  -> 5.12.3
+//  224.5  -> 22.4.5
+void KDateValidator::fixup( QString& str) const
 {
+  unsigned int i, run = i = 0;
 
+  while (i < str.length())
+  {
+    if (str.find(delim, i, false) == i) {
+      run = 0;
+    } else {
+      if (run++ >= 2) {
+        str.insert(i, delim);
+        run = 0;
+      }
+    }
+    i++;
+  }
+}
+
+KDateEdit::KDateEdit(QWidget * parent, const char * name=0)
+  : QLineEdit(parent, name)
+{
+  setValidator(new KDateValidator(parent));
+  setMaxLength(10);
+}
+KDateEdit::~KDateEdit(){
+}
+
+void KDateEdit::keyPressEvent(QKeyEvent *k)
+{
+  QChar key = k->key();
+  QChar::Category  c = key.category();
+
+  if (key == Key_Plus || key == Key_Minus || key == Key_PageDown)
+    k->ignore();
+  else
+    if (key.isDigit() || ! (c == QChar::Letter_Lowercase || c==QChar::Letter_Uppercase)) {
+      int p = text().length();
+      QLineEdit::keyPressEvent(k);
+      if (text().length() > p)
+        cursorRight(false, text().length()-p);
+      if (k->key()==Key_Enter || k->key()==Key_Return)
+        k->accept();
+    }
 }
 
 KDateTable::KDateTable(QWidget *parent, QDate date_, const char* name, WFlags f)
@@ -283,7 +332,7 @@ bool
 KDateTable::setDate(const QDate& date_)
 {
   bool changed=false;
-  QDate temp,t=QDate::currentDate();
+  QDate temp;
   // -----
   if(!date_.isValid())
     {

@@ -1,3 +1,7 @@
+2002-03-22 Arni Ingimundarson <arniing@users.sourceforge.net>
+  * Added support for keyboard input in kMyMoneyDateInput
+    +/- now works and PgDn popsup the DatePickerWidget.
+  
 2002-03-20 Arni Ingimundarson <arniing@users.sourceforge.net>
   * Fixed Datepicker inconsistency (bug 502805)
   

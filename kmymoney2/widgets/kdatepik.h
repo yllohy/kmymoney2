@@ -33,6 +33,7 @@ class QLineEdit;
 class QToolButton;
 class KDateValidator;
 class KDateTable;
+class KDateEdit;
 
 /**
  * Provide a widget for calendar date input.
@@ -48,7 +49,7 @@ class KDateTable;
  *
  * @image kdatepicker.png KDatePicker
  *
- *     @version $Id: kdatepik.h,v 1.2 2001/12/20 03:01:43 ktambascio Exp $
+ *     @version $Id: kdatepik.h,v 1.3 2002/03/23 00:40:14 arniing Exp $
  *     @author Tim Gilman, Mirko Sucker
  *
  * @short A date selection widget.
@@ -101,10 +102,20 @@ public:
    */
   int fontSize() const
     { return fontsize; }
+  /**
+   * Change the date to next day.
+   **/
+  void nextDay();
+  /**
+   * Change the date to previous day.
+   **/
+  void prevDay();
 
 protected:
   /// the resize event
   void resizeEvent(QResizeEvent*);
+  /** to handle +/- keys */
+  void keyPressEvent(QKeyEvent * k);
   /// the year forward button
   QToolButton *yearForward;
   /// the year backward button
@@ -118,7 +129,7 @@ protected:
   /// the button for selecting the year directly
   QToolButton *selectYear;
   /// the line edit to enter the date directly
-  QLineEdit *line;
+  KDateEdit *line;
   /// the validator for the line edit:
   KDateValidator *val;
   /// the date table 
@@ -162,8 +173,8 @@ private:
   /// the font size for the widget
   int fontsize;
 
-  class KDatePickerPrivate;
-  KDatePickerPrivate *d;
+//  class KDatePickerPrivate;
+//  KDatePickerPrivate *d;
 };
 
 #endif //  KTEMPDATEPICKER_H
