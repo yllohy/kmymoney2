@@ -1,3 +1,10 @@
+2002-12-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Removed unknown file references from the KDevelop project file
+  * Removed some debug output that is not needed anymore
+  * Modified some Makefile.am to not include unnecessary files
+    in the source distribution
+  * Updated README with up-to-date installation instructions
+
 2002-12-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Speedup load operation by filling the balance cache while loading
   * Added some more tips
