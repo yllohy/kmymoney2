@@ -52,6 +52,19 @@ public:
     */
   int count(void) const { return m_selector->accountList().count(); };
 
+  /**
+    * This method loads the set of accounts into the widget
+    * as defined by the parameter @p accountIdList. @p accountIdList is
+    * a QValueList of account ids.
+    *
+    * @param baseName QString which should be used as group text
+    * @param accountIdList QValueList of QCString account ids
+    *                 which should be loaded into the widget
+    * @param clear if true (default) clears the widget before populating
+    * @return This method returns the number of accounts loaded into the list
+    */
+  const int loadList(const QString& baseName, const QValueList<QCString>& accountIdList, const bool clear = true);
+
   const QCStringList accountList(const QValueList<MyMoneyAccount::accountTypeE>& list = QValueList<MyMoneyAccount::accountTypeE>()) const { return m_selector->accountList(list); };
 
   int loadList(KMyMoneyUtils::categoryTypeE typeMask);
@@ -68,6 +81,9 @@ public:
 
 public slots:
   void slotButtonPressed(void);
+
+protected slots:
+  void slotSelected(const QCString&);
 
 signals:
   void accountSelected(const QCString&);

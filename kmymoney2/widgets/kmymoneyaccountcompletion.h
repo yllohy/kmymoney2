@@ -57,6 +57,19 @@ public:
 
   /**
     * This method loads the set of accounts into the widget
+    * as defined by the parameter @p accountIdList. @p accountIdList is
+    * a QValueList of account ids.
+    *
+    * @param baseName QString which should be used as group text
+    * @param accountIdList QValueList of QCString account ids
+    *                 which should be loaded into the widget
+    * @param clear if true (default) clears the widget before populating
+    * @return This method returns the number of accounts loaded into the list
+    */
+  const int loadList(const QString& baseName, const QValueList<QCString>& accountIdList, const bool clear = true);
+
+  /**
+    * This method loads the set of accounts into the widget
     * as defined by the parameter @p typeMask. @p typeMask is
     * a bit mask. See KMyMoneyUtils::categoryTypeE for
     * possible values.
@@ -96,6 +109,8 @@ public slots:
 private:
   kMyMoneyAccountSelector*      m_accountSelector;
   QValueList<int>               m_typeList;
+  QValueList<QCString>          m_accountIdList;
+  QString                       m_baseName;
 };
 
 #endif

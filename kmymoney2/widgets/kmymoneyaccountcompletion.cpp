@@ -64,37 +64,50 @@ kMyMoneyAccountCompletion::~kMyMoneyAccountCompletion()
 {
 }
 
+const int kMyMoneyAccountCompletion::loadList(const QString& baseName, const QValueList<QCString>& accountIdList, const bool clear)
+{
+  m_typeList.clear();
+  m_baseName = baseName;
+  m_accountIdList = accountIdList;
+
+  return m_accountSelector->loadList(baseName, accountIdList);
+}
+
 void kMyMoneyAccountCompletion::show(void)
 {
   int  count;
 
-  count = loadList(m_typeList);
-  if(!m_id.isEmpty())
-    m_accountSelector->setSelected(m_id);
+  if(m_typeList.isEmpty()) {
+    count = loadList(m_baseName, m_accountIdList);
+  } else {
+    count = loadList(m_typeList);
 
-  // make sure we increase the count by the account groups
-  if((m_typeList.contains(MyMoneyAccount::Checkings)
-    + m_typeList.contains(MyMoneyAccount::Savings)
-    + m_typeList.contains(MyMoneyAccount::Cash)
-    + m_typeList.contains(MyMoneyAccount::AssetLoan)
-    + m_typeList.contains(MyMoneyAccount::CertificateDep)
-    + m_typeList.contains(MyMoneyAccount::Investment)
-    + m_typeList.contains(MyMoneyAccount::MoneyMarket)
-    + m_typeList.contains(MyMoneyAccount::Asset)
-    + m_typeList.contains(MyMoneyAccount::Currency)) > 0)
-    ++count;
+    // make sure we increase the count by the account groups
+    if((m_typeList.contains(MyMoneyAccount::Checkings)
+      + m_typeList.contains(MyMoneyAccount::Savings)
+      + m_typeList.contains(MyMoneyAccount::Cash)
+      + m_typeList.contains(MyMoneyAccount::AssetLoan)
+      + m_typeList.contains(MyMoneyAccount::CertificateDep)
+      + m_typeList.contains(MyMoneyAccount::Investment)
+      + m_typeList.contains(MyMoneyAccount::MoneyMarket)
+      + m_typeList.contains(MyMoneyAccount::Asset)
+      + m_typeList.contains(MyMoneyAccount::Currency)) > 0)
+      ++count;
 
-  if((m_typeList.contains(MyMoneyAccount::CreditCard)
-    + m_typeList.contains(MyMoneyAccount::Loan)
-    + m_typeList.contains(MyMoneyAccount::Liability)) > 0)
-    ++count;
+    if((m_typeList.contains(MyMoneyAccount::CreditCard)
+      + m_typeList.contains(MyMoneyAccount::Loan)
+      + m_typeList.contains(MyMoneyAccount::Liability)) > 0)
+      ++count;
 
-  if((m_typeList.contains(MyMoneyAccount::Income)) > 0)
-    ++count;
+    if((m_typeList.contains(MyMoneyAccount::Income)) > 0)
+      ++count;
 
-  if((m_typeList.contains(MyMoneyAccount::Expense)) > 0)
-    ++count;
+    if((m_typeList.contains(MyMoneyAccount::Expense)) > 0)
+      ++count;
 
+    if(!m_id.isEmpty())
+      m_accountSelector->setSelected(m_id);
+  }
   adjustSize(count);
 
   kMyMoneyCompletion::show();

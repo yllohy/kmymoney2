@@ -159,13 +159,15 @@ private:
   QCString        m_action;
 
   kMyMoneyEdit *m_editShares, *m_editPPS, *m_editTotalAmount, *m_editFees;
-  kMyMoneyEquity *m_editSymbolName;
+  // kMyMoneyEquity *m_editSymbolName;
 
+  // The stock split is kept in m_split which comes with KLedgerView
   MyMoneySplit    m_accountSplit;
   MyMoneySplit    m_feeSplit;
-  MyMoneySplit    m_equityAssetSplit;
   MyMoneySplit    m_interestSplit;
-  kMyMoneyAccountCombo  *m_editCashAccount;
+
+  kMyMoneyAccountCombo* m_editStockAccount;
+  kMyMoneyAccountCombo* m_editCashAccount;
   kMyMoneyCategory *m_editFeeCategory;
 
 /*

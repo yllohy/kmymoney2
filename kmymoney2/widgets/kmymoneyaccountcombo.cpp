@@ -34,6 +34,7 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
+#include "../mymoney/mymoneyfile.h"
 #include "kmymoneyaccountcombo.h"
 #include "kmymoneyaccountcompletion.h"
 
@@ -42,6 +43,7 @@ kMyMoneyAccountCombo::kMyMoneyAccountCombo( QWidget* parent, const char* name ) 
 {
   m_selector = new kMyMoneyAccountCompletion(this, "selector");
   connect(this, SIGNAL(clicked()), this, SLOT(slotButtonPressed()));
+  connect(m_selector, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotSelected(const QCString&)));
   connect(m_selector, SIGNAL(itemSelected(const QCString&)), this, SIGNAL(accountSelected(const QCString&)));
 
   // make sure that we can display a minimum of characters
@@ -59,6 +61,16 @@ void kMyMoneyAccountCombo::slotButtonPressed(void)
 {
   m_selector->loadList();
   m_selector->show();
+}
+
+void kMyMoneyAccountCombo::slotSelected(const QCString& id)
+{
+  try {
+    MyMoneyAccount acc = MyMoneyFile::instance()->account(id);
+    setText(acc.name());
+  } catch(MyMoneyException *e) {
+    delete e;
+  }
 }
 
 void kMyMoneyAccountCombo::setSelected(const MyMoneyAccount& acc)
@@ -159,6 +171,10 @@ void kMyMoneyAccountCombo::paintEvent( QPaintEvent * )
         ( re.height() - pix->height() ) / 2, *pix );
     }
   }
+}
+const int kMyMoneyAccountCombo::loadList(const QString& baseName, const QValueList<QCString>& accountIdList, const bool clear)
+{
+  return m_selector->loadList(baseName, accountIdList, clear);
 }
 
 int kMyMoneyAccountCombo::loadList(KMyMoneyUtils::categoryTypeE typeMask)
