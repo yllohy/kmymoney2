@@ -137,7 +137,7 @@ void KEditEquityEntryDlg::slotAddPriceClicked()
 
 void KEditEquityEntryDlg::slotEditPriceClicked()
 {
-  KListViewItem *pItem = lvPriceHistory->selectedItem();
+  QListViewItem *pItem = lvPriceHistory->selectedItem();
   if(pItem)
   {
     QString date = pItem->text(0);
@@ -157,7 +157,7 @@ void KEditEquityEntryDlg::slotEditPriceClicked()
 void KEditEquityEntryDlg::slotRemovePriceClicked()
 {
 
-  KListViewItem *pItem = lvPriceHistory->selectedItem();
+  QListViewItem *pItem = lvPriceHistory->selectedItem();
   if(pItem)
   {
     lvPriceHistory->takeItem(pItem);
