@@ -164,7 +164,7 @@ const FCALC_DOUBLE MyMoneyFinancialCalculator::payment(void)
   FCALC_DOUBLE AA = _Ax(eint);
   FCALC_DOUBLE BB = _Bx(eint);
 
-  m_pmt = -floor((m_fv + m_pv * (AA + 1.0)) / (AA * BB));
+  m_pmt = -floorl((m_fv + m_pv * (AA + 1.0)) / (AA * BB));
 
   m_mask |= PMT_SET;
   return m_pmt;

@@ -51,6 +51,7 @@
 #define powl(a,b)     pow(a,b)
 #define expl(a)       exp(a)
 #define logl(a)       log(a)
+#define floorl(a)     floor(a)
 #endif
 
 /**
