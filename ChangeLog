@@ -1,5 +1,13 @@
+2003-12-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * reworked KEndingBalanceDlg to be a wizard
+  * added function to add interest and charge transactions during
+    reconciliation
+  * renamed 'total profit' into 'net worth'
+  * added changes required to compile engine on MAC
+
 2003-12-16 Kevin Tambascio <ktambascio@users.sourceforge.net>
-  * Added ability for the user's last used directory to be stored in the save and open dialogs.
+  * Added ability for the user's last used directory to be stored in the
+    save and open dialogs.
   * Left old code in place pending reviews from the team.
 
 2003-12-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
