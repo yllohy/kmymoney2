@@ -248,7 +248,7 @@ MyMoneyAccount MyMoneyStorageGNC::readAccount(const QDomElement& account)
       //acc.setInstitutionId(QCStringEmpty(account.attribute(QString("institution"))));
       //acc.setOpeningBalance(MyMoneyMoney(account.attribute(QString("openingbalance"))));
 
-      acc.setValue(QCString(GNUCASH_ID_KEY), gncAccountId);
+      acc.setValue("GNUCASH_ID", gncAccountId);
       
       id = acc.id();
   
@@ -275,10 +275,10 @@ MyMoneyAccount MyMoneyStorageGNC::readAccount(const QDomElement& account)
     }   
   }
   
-  qDebug("Account %s has id of %s, type of %d, parent is %s.", acc.name().data(), id.data(), acc.accountType(), acc.parentAccountId().data());
+  qDebug("Account %s has id of %s, type of %d, parent is %s, this=0x%08X.", acc.name().data(), id.data(), acc.accountType(), acc.parentAccountId().data(),&acc);
 
   
-  return MyMoneyAccount(id, acc);
+  return acc;//MyMoneyAccount(id, acc);
 }
 
 QCString MyMoneyStorageGNC::findGNCParentAccount(QCString gnuCashParentAccountId)
@@ -290,8 +290,10 @@ QCString MyMoneyStorageGNC::findGNCParentAccount(QCString gnuCashParentAccountId
 
   for(it = list.begin(); it != list.end(); ++it)
   {
-    QString temp = (*it).value(QCString(GNUCASH_ID_KEY));
-    qDebug("GNUCASH id = %s, passed in id = %s\n", temp.data(), gnuCashParentAccountId.data());
+    Q_ASSERT((*it).pairs().count());
+    QString temp = (*it).value("GNUCASH_ID");
+    Q_ASSERT(!temp.isEmpty());
+    qDebug("GNUCASH id = %s, passed in id = %s, object address=0x%08X\n", temp.data(), gnuCashParentAccountId.data(), &(*it));
     if(QCString(temp) == gnuCashParentAccountId)
     {
       return (*it).id();
