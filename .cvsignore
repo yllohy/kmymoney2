@@ -9,6 +9,7 @@ Makefile.in
 libtool
 stamp-h
 stamp-h.in
+stamp-h1
 build-stamp
 install-stamp
 aclocal.m4
