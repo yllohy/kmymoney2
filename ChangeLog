@@ -1,3 +1,6 @@
+2001-05-03 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
+  * Implemented Update of transfer transactions
+
 2001-05-02 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
   * Optimized refresh of TransactionView
 
