@@ -54,6 +54,9 @@ KNewFileDlg::KNewFileDlg(QString userName, QString userStreet,
   QString userEmail, QWidget *parent, const char *name, const char *title)
   : KNewFileDlgDecl(parent,name,true)
 {
+  okBtn->setGuiItem(KStdGuiItem::ok());
+  cancelBtn->setGuiItem(KStdGuiItem::cancel());
+
   QString filename = KGlobal::dirs()->findResource("appdata", "pics/view_info.png");
   m_qpixmaplabel->setPixmap(QPixmap(filename));
 
