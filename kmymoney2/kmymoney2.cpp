@@ -996,15 +996,14 @@ void KMyMoney2App::slotQifExport()
 
 void KMyMoney2App::slotBankingSettings() {
 #ifdef HAVE_KBANKING
-  KBankingSettings *bs;
+  KBankingSettings bs(kbanking, 0, "BankingSettings");
 
   if (kbanking) {
-    bs=new KBankingSettings(kbanking, 0, "BankingSettings");
-    if (bs->init()) {
+    if (bs.init()) {
       qWarning("Error on ini of settings dialog.");
     } else {
-      bs->exec();
-      if (!bs->fini()) {
+      bs.exec();
+      if (!bs.fini()) {
         qWarning("Error on fini of settings dialog.");
       }
     }

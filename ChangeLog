@@ -8,6 +8,7 @@
   * Unified the 2 interfaces to LibOFX (pre-0.7 and post-0.7).  They now
     share the same code for processing the data, the only differences are
     in how it interacts with the library.
+  * Fixed memory leak in KMyMoney2App::slotBankingSettings()
 
 2004-09-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added KBanking support supplied by Martin Preuss
