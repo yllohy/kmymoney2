@@ -118,7 +118,7 @@
         <account name="Diversão" type="13"/>
         <account name="Cinemas e Aluguel de Vídeos" type="13"/>
         <account name="Eventos Esportivos" type="13"/>
-        <account name="Fitas & CDs" type="13"/>
+        <account name="Fitas &amp; CDs" type="13"/>
         <account name="Eventos Culturais" type="13"/>
         <account name="Brinquedos e Jogos" type="13"/>
       </account>

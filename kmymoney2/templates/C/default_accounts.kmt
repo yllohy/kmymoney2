@@ -16,7 +16,7 @@
         <account name="Fuel Oil" type="13"/>
         <account name="Gas" type="13"/>
         <account name="Mortgage Interest" type="13"/>
-        <account name="Water & Sewage" type="13"/>
+        <account name="Water &amp; Sewage" type="13"/>
       </account>
       <account name="Bank Charges" type="13">
         <account name="Interest Paid" type="13"/>
@@ -70,14 +70,14 @@
         <account name="Reimbursed" type="13"/>
       </account>
       <account name="Leisure" type="13">
-        <account name="Books & Magazines" type="13"/>
+        <account name="Books &amp; Magazines" type="13"/>
         <account name="Entertaining" type="13"/>
-        <account name="Films & Video Rentals" type="13"/>
+        <account name="Films &amp; Video Rentals" type="13"/>
         <account name="Sporting Events" type="13"/>
         <account name="Sports Goods" type="13"/>
-        <account name="Tapes & CDs" type="13"/>
-        <account name="Theatre & Concerts etc" type="13"/>
-        <account name="Toys & Games" type="13"/>
+        <account name="Tapes &amp; CDs" type="13"/>
+        <account name="Theatre &amp; Concerts etc" type="13"/>
+        <account name="Toys &amp; Games" type="13"/>
       </account>
       <account name="Loan" type="13">
         <account name="Loan Interest" type="13"/>
@@ -128,7 +128,7 @@
         <account name="Foreign" type="12"/>
         <account name="Lump sums" type="12"/>
         <account name="Other employ" type="12"/>
-        <account name="Salary & wages" type="12"/>
+        <account name="Salary &amp; wages" type="12"/>
       </account>
       <account name="Gift Received" type="12"/>
       <account name="Int Inc" type="12">
@@ -177,7 +177,7 @@
         <account name="Unemployment Benefit" type="12"/>
       </account>
       <account name="Retirement Income" type="12">
-        <account name="Pensions & Annuities" type="12"/>
+        <account name="Pensions &amp; Annuities" type="12"/>
         <account name="State Pension Benefits" type="12"/>
       </account>
       <account name="Social security" type="12">
@@ -185,7 +185,7 @@
         <account name="Invalid" type="12"/>
         <account name="Widowed" type="12"/>
       </account>
-      <account name="Wages & Salary" type="12">
+      <account name="Wages &amp; Salary" type="12">
         <account name="Bonus" type="12"/>
         <account name="Commission" type="12"/>
         <account name="Employer Pension Contributions" type="12"/>

@@ -70,6 +70,7 @@
           <account name="Benefits" type="13"/>
           <account name="Workman's Comp" type="13"/>
         </account>
+      </account>
       <account name="Car" type="13">
         <account name="Fuel" type="13"/>
         <account name="Service" type="13"/>

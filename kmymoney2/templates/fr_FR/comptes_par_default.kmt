@@ -78,14 +78,14 @@
       <account name="Loisirs" type="13">
         <account name="Billard" type="13"/>
         <account name="Bowling" type="13"/>
-        <account name="Cassettes & CDs" type="13"/>
+        <account name="Cassettes et CDs" type="13"/>
         <account name="Cinéma" type="13"/>
         <account name="Discothèque" type="13"/>
         <account name="Divertissement" type="13"/>
         <account name="Equipements sportifs" type="13"/>
         <account name="Informatique" type="13"/>
         <account name="Jeux et jouets" type="13"/>
-        <account name="Livres & Magazines" type="13"/>
+        <account name="Livres et Magazines" type="13"/>
         <account name="Musées et expositions" type="13"/>
         <account name="Parc d'attraction" type="13"/>
         <account name="Spectacles" type="13"/>
