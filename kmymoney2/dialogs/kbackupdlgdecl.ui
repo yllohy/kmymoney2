@@ -1,249 +1,231 @@
-<!DOCTYPE UI><UI>
+<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
 <class>kbackupdlgdecl</class>
-<widget>
-    <class>QDialog</class>
-    <property stdset="1">
-        <name>name</name>
+<widget class="QDialog">
+    <property name="name">
         <cstring>kbackupdlgdecl</cstring>
     </property>
-    <property stdset="1">
-        <name>geometry</name>
+    <property name="geometry">
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>546</width>
-            <height>319</height>
+            <width>578</width>
+            <height>314</height>
         </rect>
     </property>
-    <property stdset="1">
-        <name>caption</name>
+    <property name="caption">
         <string>Backup</string>
     </property>
     <vbox>
-        <property stdset="1">
-            <name>margin</name>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
             <number>11</number>
         </property>
-        <property stdset="1">
-            <name>spacing</name>
+        <property name="spacing">
             <number>6</number>
         </property>
-        <widget>
-            <class>QLayoutWidget</class>
-            <property stdset="1">
-                <name>name</name>
+        <widget class="QLayoutWidget">
+            <property name="name">
                 <cstring>Layout4</cstring>
             </property>
             <hbox>
-                <property stdset="1">
-                    <name>margin</name>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
                     <number>0</number>
                 </property>
-                <property stdset="1">
-                    <name>spacing</name>
+                <property name="spacing">
                     <number>6</number>
                 </property>
-                <widget>
-                    <class>QLabel</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QLabel">
+                    <property name="name">
                         <cstring>m_qpixmaplabel</cstring>
                     </property>
-                    <property stdset="1">
-                        <name>sizePolicy</name>
+                    <property name="sizePolicy">
                         <sizepolicy>
                             <hsizetype>0</hsizetype>
                             <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
                         </sizepolicy>
                     </property>
-                    <property stdset="1">
-                        <name>minimumSize</name>
+                    <property name="minimumSize">
                         <size>
                             <width>200</width>
                             <height>150</height>
                         </size>
                     </property>
-                    <property stdset="1">
-                        <name>text</name>
+                    <property name="text">
                         <string>TextLabel1</string>
                     </property>
                 </widget>
-                <widget>
-                    <class>QLabel</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QLabel">
+                    <property name="name">
                         <cstring>TextLabel1</cstring>
                     </property>
-                    <property stdset="1">
-                        <name>text</name>
+                    <property name="text">
                         <string>Use this dialog to backup your data. 
 
-Please make sure you have a disk inserted and that the drive is ready.
-Then choose the mount point from either the Choose button or by
-entering the path in the available box.
+Please make sure you have a disk inserted and that the drive is ready. Then choose the mount point from either the Choose button or by entering the path in the available box.
 
-Click on OK to perform the backup making sure you have ticked the
-mount checkbox if your system doesn't use automount.</string>
+Click on OK to perform the backup making sure you have ticked the mount checkbox if your system doesn't use automount.</string>
+                    </property>
+                    <property name="alignment">
+                        <set>WordBreak|AlignTop</set>
                     </property>
                 </widget>
             </hbox>
         </widget>
-        <widget>
-            <class>Line</class>
-            <property stdset="1">
-                <name>name</name>
+        <widget class="Line">
+            <property name="name">
                 <cstring>Line1</cstring>
             </property>
-            <property stdset="1">
-                <name>frameShadow</name>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
                 <enum>Raised</enum>
             </property>
-            <property stdset="1">
-                <name>orientation</name>
+            <property name="orientation">
                 <enum>Horizontal</enum>
             </property>
         </widget>
-        <widget>
-            <class>QGroupBox</class>
-            <property stdset="1">
-                <name>name</name>
+        <widget class="QGroupBox">
+            <property name="name">
                 <cstring>GroupBox1</cstring>
             </property>
-            <property stdset="1">
-                <name>title</name>
+            <property name="title">
                 <string>Device options</string>
             </property>
             <vbox>
-                <property stdset="1">
-                    <name>margin</name>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
                     <number>11</number>
                 </property>
-                <property stdset="1">
-                    <name>spacing</name>
+                <property name="spacing">
                     <number>6</number>
                 </property>
-                <widget>
-                    <class>QLayoutWidget</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>Layout3</cstring>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>Layout42</cstring>
                     </property>
                     <hbox>
-                        <property stdset="1">
-                            <name>margin</name>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <property name="margin">
                             <number>0</number>
                         </property>
-                        <property stdset="1">
-                            <name>spacing</name>
+                        <property name="spacing">
                             <number>6</number>
                         </property>
-                        <widget>
-                            <class>QLabel</class>
-                            <property stdset="1">
-                                <name>name</name>
+                        <widget class="QLabel">
+                            <property name="name">
                                 <cstring>lblMountPoint</cstring>
                             </property>
-                            <property stdset="1">
-                                <name>text</name>
+                            <property name="text">
                                 <string>Mount Point:</string>
                             </property>
                         </widget>
-                        <widget>
-                            <class>QLineEdit</class>
-                            <property stdset="1">
-                                <name>name</name>
+                        <widget class="QLineEdit">
+                            <property name="name">
                                 <cstring>txtMountPoint</cstring>
                             </property>
                         </widget>
-                        <widget>
-                            <class>QPushButton</class>
-                            <property stdset="1">
-                                <name>name</name>
+                        <widget class="KPushButton">
+                            <property name="name">
                                 <cstring>chooseButton</cstring>
                             </property>
-                            <property stdset="1">
-                                <name>text</name>
+                            <property name="text">
                                 <string>C&amp;hoose...</string>
                             </property>
                         </widget>
                     </hbox>
                 </widget>
-                <widget>
-                    <class>QCheckBox</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QCheckBox">
+                    <property name="name">
                         <cstring>mountCheckBox</cstring>
                     </property>
-                    <property stdset="1">
-                        <name>text</name>
+                    <property name="text">
                         <string>Mount this directory before backing up.</string>
                     </property>
                 </widget>
-            </vbox>
-        </widget>
-        <widget>
-            <class>QLayoutWidget</class>
-            <property stdset="1">
-                <name>name</name>
-                <cstring>Layout1</cstring>
-            </property>
-            <hbox>
-                <property stdset="1">
-                    <name>margin</name>
-                    <number>0</number>
-                </property>
-                <property stdset="1">
-                    <name>spacing</name>
-                    <number>6</number>
-                </property>
                 <spacer>
-                    <property>
-                        <name>name</name>
-                        <cstring>Spacer1</cstring>
+                    <property name="name">
+                        <cstring>Spacer17</cstring>
                     </property>
-                    <property stdset="1">
-                        <name>orientation</name>
-                        <enum>Horizontal</enum>
+                    <property name="orientation">
+                        <enum>Vertical</enum>
                     </property>
-                    <property stdset="1">
-                        <name>sizeType</name>
+                    <property name="sizeType">
                         <enum>Expanding</enum>
                     </property>
-                    <property>
-                        <name>sizeHint</name>
+                    <property name="sizeHint">
                         <size>
-                            <width>20</width>
-                            <height>20</height>
+                            <width>0</width>
+                            <height>24</height>
                         </size>
                     </property>
                 </spacer>
-                <widget>
-                    <class>QPushButton</class>
-                    <property stdset="1">
-                        <name>name</name>
+            </vbox>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>Layout44</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <spacer>
+                    <property name="name">
+                        <cstring>Spacer1</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>455</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="KPushButton">
+                    <property name="name">
                         <cstring>btnOK</cstring>
                     </property>
-                    <property stdset="1">
-                        <name>text</name>
+                    <property name="text">
                         <string>&amp;OK</string>
                     </property>
-                    <property stdset="1">
-                        <name>default</name>
+                    <property name="autoDefault">
+                        <bool>true</bool>
+                    </property>
+                    <property name="default">
                         <bool>true</bool>
                     </property>
                 </widget>
-                <widget>
-                    <class>QPushButton</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="KPushButton">
+                    <property name="name">
                         <cstring>btnCancel</cstring>
                     </property>
-                    <property stdset="1">
-                        <name>text</name>
+                    <property name="text">
                         <string>&amp;Cancel</string>
                     </property>
-                    <property stdset="1">
-                        <name>autoDefault</name>
+                    <property name="autoDefault">
                         <bool>true</bool>
                     </property>
                 </widget>
@@ -251,4 +233,5 @@ mount checkbox if your system doesn't use automount.</string>
         </widget>
     </vbox>
 </widget>
+<layoutdefaults spacing="6" margin="11"/>
 </UI>

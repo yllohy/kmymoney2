@@ -16,16 +16,17 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <kglobal.h>
-#include <klocale.h>
-#if QT_VERSION > 300
-#include <kstandarddirs.h>
-#else
-#include <kstddirs.h>
-#endif
+
+// ----------------------------------------------------------------------------
+// QT Includes
 
 #include <qpixmap.h>
 #include <qlabel.h>
+#include <qlineedit.h>
+#include <qcheckbox.h>
+
+// ----------------------------------------------------------------------------
+// KDE Includes
 
 #include <kglobal.h>
 #include <klocale.h>
@@ -35,16 +36,17 @@
 #include <kstddirs.h>
 #endif
 
-#include <qpixmap.h>
-
-#include <kglobal.h>
 #include <kconfig.h>
-#include <qpushbutton.h>
-#include <qlineedit.h>
-#include <qcheckbox.h>
 #include <kdirselectdialog.h>
-#include "kbackupdlg.h"
 #include <kglobalsettings.h>
+#include <kpushbutton.h>
+#include <kiconloader.h>
+#include <kguiitem.h>
+
+// ----------------------------------------------------------------------------
+// Project Includes
+
+#include "kbackupdlg.h"
 
 KBackupDlg::KBackupDlg( QWidget* parent,  const char* name/*, bool modal*/)
   : kbackupdlgdecl( parent,  name , true)
@@ -53,6 +55,27 @@ KBackupDlg::KBackupDlg( QWidget* parent,  const char* name/*, bool modal*/)
   m_qpixmaplabel->setPixmap(QPixmap(filename));
 
   readConfig();
+
+  // add icons to buttons
+  KIconLoader *il = KGlobal::iconLoader();
+  KGuiItem okButtenItem( i18n("&Ok" ),
+                    QIconSet(il->loadIcon("button_ok", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Start the backup operation"),
+                    i18n("Pressing this button starts the backup operation."));
+  btnOK->setGuiItem(okButtenItem);
+
+  KGuiItem cancelButtenItem( i18n( "&Cancel" ),
+                    QIconSet(il->loadIcon("button_cancel", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Cancel the backup operation"),
+                    i18n("Use this to abort the backup and to return to KMyMoney."));
+  btnCancel->setGuiItem(cancelButtenItem);
+
+  KGuiItem chooseButtenItem( i18n("C&hoose..."),
+                    QIconSet(il->loadIcon("folder", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Select mount point"),
+                    i18n("Use this to browse to the mount point."));
+  chooseButton->setGuiItem(chooseButtenItem);
+  
   connect(chooseButton, SIGNAL(clicked()), this, SLOT(chooseButtonClicked()));
   connect(btnOK,SIGNAL(clicked()),this,SLOT(accept()));
   connect(btnCancel,SIGNAL(clicked()),this,SLOT(reject()));
