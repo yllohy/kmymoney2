@@ -84,9 +84,7 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
   
   m_subAccountLabel->setText(i18n("Is a sub account"));
   
-  KConfig *config = KGlobal::config();
-  QFont defaultFont = QFont("helvetica", 12);
-  m_qlistviewParentAccounts->header()->setFont(config->readFontEntry("listHeaderFont", &defaultFont));
+  m_qlistviewParentAccounts->header()->setFont(KMyMoneyUtils::headerFont());
 
   accountNameEdit->setText(account.name());
   descriptionEdit->setText(account.description());

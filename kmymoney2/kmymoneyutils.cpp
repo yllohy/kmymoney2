@@ -42,6 +42,9 @@ QColor KMyMoneyUtils::_backgroundColour;
 QColor KMyMoneyUtils::_listColour;
 QColor KMyMoneyUtils::_gridColour;
 
+QFont  KMyMoneyUtils::_cellFont;
+QFont  KMyMoneyUtils::_headerFont;
+
 KMyMoneyUtils::KMyMoneyUtils()
 {
 }
@@ -514,6 +517,7 @@ const QColor KMyMoneyUtils::defaultGridColour(void)
 void KMyMoneyUtils::updateSettings(void)
 {
   QColor c;
+  QFont  f;
   KConfig *config = KGlobal::config();
   config->setGroup("List Options");
 
@@ -525,5 +529,11 @@ void KMyMoneyUtils::updateSettings(void)
 
   c = defaultListColour();
   _gridColour = config->readColorEntry("listGridColor", &c);
+
+  f = KGlobalSettings::generalFont();
+  _cellFont = config->readFontEntry("listCellFont", &f);
+
+  f = KGlobalSettings::windowTitleFont();
+  _headerFont = config->readFontEntry("listHeaderFont", &f);
 }
 

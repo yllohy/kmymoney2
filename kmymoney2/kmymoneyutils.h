@@ -27,6 +27,7 @@
 // QT Includes
 
 #include <qcolor.h>
+#include <qfont.h>
 
 // ----------------------------------------------------------------------------
 // KDE Headers
@@ -256,11 +257,17 @@ public:
   static const QColor& backgroundColour(void) { return _backgroundColour; };
   static const QColor& listColour(void) { return _listColour; };
   static const QColor& gridColour(void) { return _gridColour; };
-  
+
+  static const QFont& cellFont(void) { return _cellFont; };
+  static const QFont& headerFont(void) { return _headerFont; };
+
 private:
   static QColor _backgroundColour;
   static QColor _listColour;
   static QColor _gridColour;
+
+  static QFont  _cellFont;
+  static QFont  _headerFont;
 };
 
 #endif

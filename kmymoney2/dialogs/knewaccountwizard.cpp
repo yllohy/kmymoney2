@@ -300,10 +300,7 @@ int KNewAccountWizard::exec()
 {
   int rc;
   
-  KConfig *config = KGlobal::config();
-  config->setGroup("List Options");
-  QFont defaultFont = QFont("helvetica", 12);
-  accountListView->header()->setFont(config->readFontEntry("listHeaderFont", &defaultFont));
+  accountListView->header()->setFont(KMyMoneyUtils::headerFont());
 
   // currently, we don't have help :-(
   setHelpEnabled(institutionPage, false);

@@ -39,6 +39,7 @@
 #include "kbanklistitem.h"
 #include "../mymoney/mymoneyfile.h"
 #include "../dialogs/knewaccountdlg.h"
+#include "../kmymoneyutils.h"
 
 static const char* const assetIconImage[] = {
 "32 32 9 1",
@@ -322,8 +323,7 @@ KAccountsView::KAccountsView(QWidget *parent, const char *name)
 
   accountListView->header()->setResizeEnabled(true);
 
-  QFont defaultFont = QFont("helvetica", 12);
-  accountListView->header()->setFont(config->readFontEntry("listHeaderFont", &defaultFont));
+  accountListView->header()->setFont(KMyMoneyUtils::headerFont());
 
   // select the type the user viewed last
   config->setGroup("Last Use Settings");
@@ -541,10 +541,6 @@ void KAccountsView::slotRefreshView(void)
 
 void KAccountsView::refreshNetWorth(void)
 {
-  KConfig *config = KGlobal::config();
-  config->setGroup("List Options");
-  QFont defaultFont = QFont("helvetica", 12);
-
   MyMoneyMoney netWorth;
   MyMoneyFile* file = MyMoneyFile::instance();
 
@@ -558,7 +554,7 @@ void KAccountsView::refreshNetWorth(void)
   s += netWorth.formatMoney();
 
 
-  totalProfitsLabel->setFont(config->readFontEntry("listCellFont", &defaultFont));
+  totalProfitsLabel->setFont(KMyMoneyUtils::cellFont());
   totalProfitsLabel->setText(s);
 }
 
@@ -638,12 +634,11 @@ void KAccountsView::fillAccountMap(void)
 
 
 void KAccountsView::refresh(const QCString& selectAccount)
-
 {
+  accountListView->header()->setFont(KMyMoneyUtils::headerFont());
+
   KConfig *config = KGlobal::config();
   config->setGroup("List Options");
-  QFont defaultFont = QFont("helvetica", 12);
-  accountListView->header()->setFont(config->readFontEntry("listHeaderFont", &defaultFont));
   m_bViewNormalAccountsView = config->readBoolEntry("NormalAccountsView", false);
   m_hideCategory = config->readBoolEntry("HideUnusedCategory", false);
   bool accountUsed;

@@ -37,7 +37,7 @@ kMyMoneyRegister::kMyMoneyRegister(int maxRpt, QWidget *parent, const char *name
     m_ledgerLens(true),
     m_maxRpt(maxRpt)
 {
-  m_cellFont = QFont("helvetica", 10);
+  m_cellFont = KMyMoneyUtils::cellFont();
   setFont(m_cellFont);
   readConfig();
   m_currentTransactionIndex = 0;
@@ -92,18 +92,13 @@ void kMyMoneyRegister::readConfig(void)
   KConfig *config = KGlobal::config();
   config->setGroup("List Options");
 
-  QFont cellFont = QFont("helvetica", 10);
   m_color = KMyMoneyUtils::defaultListColour();
   m_bgColor = KMyMoneyUtils::defaultBackgroundColour();
   m_gridColor = KMyMoneyUtils::defaultGridColour();
   m_importColor = Qt::yellow;
   
-  m_bgColor = config->readColorEntry("listBGColor", &m_bgColor);
-  m_color = config->readColorEntry("listColor", &m_color);
-  m_gridColor = config->readColorEntry("listGridColor", &m_gridColor);
-
-  cellFont = config->readFontEntry("listCellFont", &cellFont);
-  m_headerFont = config->readFontEntry("listHeaderFont", &m_headerFont);
+  QFont cellFont = KMyMoneyUtils::cellFont();
+  m_headerFont = KMyMoneyUtils::headerFont();
   updateHeaders();
 
   if(cellFont != m_cellFont) {

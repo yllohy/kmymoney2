@@ -168,17 +168,11 @@ void KAccountListItem::update(const QCString& accountId)
 
 void KAccountListItem::paintCell(QPainter *p, const QColorGroup & cg, int column, int width, int align)
 {
-  KConfig *config = KGlobal::config();
-  config->setGroup("List Options");
-  QFont defaultFont = QFont("helvetica", 12);
-  p->setFont(config->readFontEntry("listCellFont", &defaultFont));
+  p->setFont(KMyMoneyUtils::cellFont());
 
   QColor colour = KMyMoneyUtils::defaultListColour();;
   QColor bgColour = KMyMoneyUtils::defaultBackgroundColour();
   
-  bgColour = config->readColorEntry("listBGColor", &bgColour);
-  colour = config->readColorEntry("listColor", &colour);
-
   QColorGroup cg2(cg);
 
   if (isAlternate())

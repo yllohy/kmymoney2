@@ -51,6 +51,7 @@
 #include "kpayeesview.h"
 #include "kbanklistitem.h"
 #include "../mymoney/mymoneyfile.h"
+#include "../kmymoneyutils.h"
 
 KPayeesView::KPayeesView(QWidget *parent, const char *name )
   : KPayeesViewDecl(parent,name),
@@ -360,13 +361,10 @@ void KPayeesView::slotDeleteClicked()
 
 void KPayeesView::readConfig(void)
 {
-  KConfig *config = KGlobal::config();
-  QFont font = QFont("helvetica", 10);
-  config->setGroup("List Options");
-  font = config->readFontEntry("listCellFont", &font);
+  QFont font = KMyMoneyUtils::cellFont();
   m_transactionView->setFont(font);
 
-  font = config->readFontEntry("listHeaderFont", &font);
+  font = KMyMoneyUtils::headerFont();
   QFontMetrics fm( font );
   int height = fm.lineSpacing()+6;
 

@@ -129,9 +129,7 @@ KSplitTransactionDlg::KSplitTransactionDlg(const MyMoneyTransaction& t,
   clearAllBtn->setFocusPolicy(QWidget::NoFocus);
   transactionsTable->setFocus();
 
-  KConfig *config = KGlobal::config();
-  QFont defaultFont = QFont("helvetica", 12);
-  transactionsTable->horizontalHeader()->setFont(config->readFontEntry("listHeaderFont", &defaultFont));
+  transactionsTable->horizontalHeader()->setFont(KMyMoneyUtils::headerFont());
 
   // initialize the display
   updateSplit();
@@ -182,10 +180,7 @@ KSplitTransactionDlg::KSplitTransactionDlg(const MyMoneyTransaction& t,
 
 void KSplitTransactionDlg::createInputWidgets(const int row)
 {
-  KConfig *config = KGlobal::config();
-  config->setGroup("List Options");
-  QFont cellFont = QFont("helvetica", 12);
-  cellFont = config->readFontEntry("listCellFont", &cellFont);
+  QFont cellFont = KMyMoneyUtils::cellFont();
   
 
   // create the widgets
@@ -477,10 +472,7 @@ void KSplitTransactionDlg::updateSplit(int row, int /* col */)
 
   QValueList<MyMoneySplit> list = getSplits();
 
-  KConfig *config = KGlobal::config();
-  config->setGroup("List Options");
-  QFont defaultFont = QFont("helvetica", 12);
-  transactionsTable->horizontalHeader()->setFont(config->readFontEntry("listHeaderFont", &defaultFont));
+  transactionsTable->horizontalHeader()->setFont(KMyMoneyUtils::headerFont());
 
   if (row==-1) { // We are going to refresh the whole list
 

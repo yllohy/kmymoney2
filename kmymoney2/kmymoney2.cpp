@@ -85,6 +85,9 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name)
   if(bViewSplash)
     m_startLogo->show();
 
+  // initial setup of settings
+  KMyMoneyUtils::updateSettings();
+  
   QFrame* frame = new QFrame(this);
   frame->setFrameStyle(QFrame::NoFrame);
   // values for margin (11) and spacing(6) taken from KDialog implementation
@@ -117,9 +120,6 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name)
 
   // make sure, we get a note when the engine changes state
   MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAnyChange, this);
-
-  // initial setup of settings
-  KMyMoneyUtils::updateSettings();
 }
 
 KMyMoney2App::~KMyMoney2App()
@@ -507,6 +507,7 @@ void KMyMoney2App::slotFileClose()
   // no update status here, as we might delete the status too early.
 
 
+
   if (myMoneyView->dirty()) {
     int answer = KMessageBox::warningYesNoCancel(this, i18n("The file has been changed, save it ?"));
     if (answer == KMessageBox::Cancel)
@@ -831,6 +832,7 @@ void KMyMoney2App::slotFileBackup()
     KMessageBox::sorry(this,
                        i18n("The current implementation of the backup functionality only supports local files as source files! Your current source file is '%1'.")
                             .arg(fileName.url()),
+
                        i18n("Local files only"));
     return;
   }

@@ -63,25 +63,21 @@ void kMyMoneySplitTable::paintCell(QPainter *p, int row, int col, const QRect& r
 {
   KConfig *config = KGlobal::config();
   config->setGroup("List Options");
+  const bool bShowGrid = config->readBoolEntry("ShowGrid", true);
 
-  QFont defaultFont = QFont("helvetica", 12);
   QColor defaultColor = KMyMoneyUtils::defaultListColour();
   QColor defaultBGColor = KMyMoneyUtils::defaultBackgroundColour();
   QColor defaultGridColor = KMyMoneyUtils::defaultGridColour();
-	
-  const bool bShowGrid = config->readBoolEntry("ShowGrid", true);
 
   QColorGroup g = colorGroup();
   QColor textColor;
 
   if (row%2)
-    g.setColor(QColorGroup::Base, config->readColorEntry("listColor", &defaultColor));
+    g.setColor(QColorGroup::Base, defaultColor);
   else
-    g.setColor(QColorGroup::Base, config->readColorEntry("listBGColor", &defaultBGColor));
+    g.setColor(QColorGroup::Base, defaultBGColor);
 
-  defaultGridColor = config->readColorEntry("listGridColor", &defaultGridColor);
-
-  p->setFont(config->readFontEntry("listCellFont", &defaultFont));
+  p->setFont(KMyMoneyUtils::cellFont());
 
   QString firsttext = text(row, col);
   QString qstringCategory;
@@ -254,11 +250,7 @@ void kMyMoneySplitTable::setNumRows(int irows)
 {
   QTable::setNumRows(irows);
 
-  KConfig *config = KGlobal::config();
-  config->setGroup("List Options");
-  QFont font = QFont("helvetica", 12);
-  font = config->readFontEntry("listCellFont", &font);
-  QFontMetrics fm( font );
+  QFontMetrics fm( KMyMoneyUtils::cellFont() );
   int height = fm.lineSpacing()+2;
 
   verticalHeader()->setUpdatesEnabled(false);

@@ -51,6 +51,7 @@
 #include "../dialogs/knewaccountdlg.h"
 #include "kcategoriesview.h"
 #include "kbanklistitem.h"
+#include "../kmymoneyutils.h"
 
 KCategoriesView::KCategoriesView(QWidget *parent, const char *name )
   : kCategoriesViewDecl(parent,name)
@@ -98,9 +99,8 @@ void KCategoriesView::slotRefreshView(void)
 {
   KConfig *config = KGlobal::config();
   config->setGroup("List Options");
-  QFont defaultFont = QFont("helvetica", 12);
-  categoryListView->header()->setFont(config->readFontEntry("listHeaderFont", &defaultFont));
   m_hideCategory = config->readBoolEntry("HideUnusedCategory", false);
+  categoryListView->header()->setFont(KMyMoneyUtils::headerFont());
   bool accountUsed;
 
   categoryListView->clear();

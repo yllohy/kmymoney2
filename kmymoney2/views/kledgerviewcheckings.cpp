@@ -450,12 +450,8 @@ void KLedgerViewCheckings::createInfoStack(void)
                         "to clear the transactions "
                         "appearing on your bank statement."), innerFrame);
 
-  KConfig *config = KGlobal::config();
-  config->setGroup("List Options");
-
-  QFont defaultFont = QFont("helvetica", 10);
-  defaultFont = config->readFontEntry("listCellFont", &defaultFont);
-
+  
+  QFont defaultFont = KMyMoneyUtils::cellFont();
   txt->setFont(defaultFont);
   innerLayout->addWidget(txt);
 
