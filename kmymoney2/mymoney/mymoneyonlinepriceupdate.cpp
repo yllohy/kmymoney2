@@ -97,40 +97,42 @@ MyMoneyOnlinePriceUpdate::~MyMoneyOnlinePriceUpdate()
 }
 
 // get a single currency quote
-const MyMoneyCurrency MyMoneyOnlinePriceUpdate::getQuote(const MyMoneyCurrency& quoteItem)
+void MyMoneyOnlinePriceUpdate::getQuote(MyMoneyCurrency *pQuoteItem)
 {
-    QValueList<MyMoneyCurrency> cl;
-    cl.append (quoteItem);
-    cl = getQuotes (cl);
-    return (cl.first());
+    EquityList cl;
+    cl.push_back(pQuoteItem);
+    m_quoteType = MyMoneyOnlinePriceUpdate::Currency;
+    /*cl = */getQuotes(cl);
+    //return (cl.first());
 }
     
 // get multiple currency quotes
 
-const QValueList<MyMoneyCurrency> MyMoneyOnlinePriceUpdate::getQuotes(const QValueList<MyMoneyCurrency>& quoteList)
+void MyMoneyOnlinePriceUpdate::getQuotes(const CurrencyList& pQuoteList)
 {
-    m_ql = (QValueList<MyMoneyEquity>* ) (&quoteList);
+    m_ql = (EquityList*)(&pQuoteList);
     m_quoteType = MyMoneyOnlinePriceUpdate::Currency;
     retrieve();
-    return (*(reinterpret_cast <QValueList<MyMoneyCurrency>*> (m_ql)));
+    //return (*(reinterpret_cast <QValueList<MyMoneyCurrency>*> (m_ql)));
 }
 
 // get a single equity quote
-const MyMoneyEquity MyMoneyOnlinePriceUpdate::getQuote(const MyMoneyEquity& quoteItem) {
-    
-    QValueList<MyMoneyEquity> cl;
-    cl.append (quoteItem);
-    cl = getQuotes (cl);
-    return (cl.first());
+void MyMoneyOnlinePriceUpdate::getQuote(MyMoneyEquity *pQuoteItem)
+{
+    EquityList cl;
+    cl.push_back(pQuoteItem);
+    m_quoteType = MyMoneyOnlinePriceUpdate::Equity;
+    /*cl = */getQuotes(cl);
+    //return (cl.first());
 }
     
 // get  multiple equity quotes
-const QValueList<MyMoneyEquity> MyMoneyOnlinePriceUpdate::getQuotes(const QValueList<MyMoneyEquity>& quoteList)
+void MyMoneyOnlinePriceUpdate::getQuotes(const EquityList& pQuoteList)
 {
-    m_ql = (QValueList<MyMoneyEquity>* ) (&quoteList);
+    m_ql = (EquityList*)(&pQuoteList);
     m_quoteType = MyMoneyOnlinePriceUpdate::Equity;
     retrieve();
-    return (*(reinterpret_cast <QValueList<MyMoneyEquity>*> (m_ql)));
+    //return (*(reinterpret_cast <QValueList<MyMoneyEquity>*> (m_ql)));
 }
 
 // get a list of F::Q price sources
@@ -222,7 +224,7 @@ void MyMoneyOnlinePriceUpdate::inputSource () {
     case INVEST:
         // write equity details
         m_p.writeToStdin (QString("<EQUITY source = \"%1\" id = \"%2\"/>")
-                        .arg((*m_qit).tradingMarket()).arg((*m_qit).tradingSymbol()));
+                        .arg((*m_qit)->tradingMarket()).arg((*m_qit)->tradingSymbol()));
         if (++m_qit == m_ql->end()) m_inputState = ENDINV;
         break;
     case ENDINV:
@@ -236,7 +238,7 @@ void MyMoneyOnlinePriceUpdate::inputSource () {
     case CURRCY:
         // write currency details
         m_p.writeToStdin (QString("<CURRENCY id = \"%1\"/>")
-                        .arg((*m_qit).tradingSymbol())); 
+                        .arg((*m_qit)->tradingSymbol())); 
         if (++m_qit == m_ql->end()) m_inputState = ENDCURR;
         break;
     case ENDCURR:
@@ -297,11 +299,11 @@ void MyMoneyOnlinePriceUpdate::parseOutput (const QString& xmlBuffer) {
 }
 
 //
-void MyMoneyOnlinePriceUpdate::readInvestments (const QDomElement& elem) {
-
+void MyMoneyOnlinePriceUpdate::readInvestments (const QDomElement& elem)
+{
     QDomNodeList nodeList = elem.childNodes();
-    for (unsigned int x = 0; x < nodeList.count(); x++) {
-        
+    for (unsigned int x = 0; x < nodeList.count(); x++)
+    {
         QString source, id, errcode, pdate, eqcurr, eqrate, price;
         
         QDomElement temp = nodeList.item(x).toElement();
@@ -319,9 +321,9 @@ void MyMoneyOnlinePriceUpdate::readInvestments (const QDomElement& elem) {
         }
         // match against next in list, update data
         // items should be returned in same order as requested
-        if (((*m_qit).tradingMarket() != source) || ((*m_qit).tradingSymbol() != id))
+        if(((*m_qit)->tradingMarket() != source) || ((*m_qit)->tradingSymbol() != id))
         {
-            qFatal ("%s != %s or %s != %s",  (*m_qit).tradingMarket().latin1(), source.latin1(), (*m_qit).tradingSymbol().latin1(), id.latin1());
+            qFatal ("%s != %s or %s != %s",  (*m_qit)->tradingMarket().latin1(), source.latin1(), (*m_qit)->tradingSymbol().latin1(), id.latin1());
         }
         
         //(*m_qit).m_errorCode = (MMQItem::quoterErrorsE)errcode.toInt();
@@ -332,7 +334,7 @@ void MyMoneyOnlinePriceUpdate::readInvestments (const QDomElement& elem) {
             (*m_qit).m_quoteRate = eqrate;
             (*m_qit).m_value= price;*/
             MyMoneyMoney value;
-            (*m_qit).addPriceHistory(QDate::fromString(pdate, Qt::ISODate), value);
+            (*m_qit)->addPriceHistory(QDate::fromString(pdate, Qt::ISODate), value);
         }
         // FIXME - convert curr/rate to MyMoneyMoney, MyMopneyCurrency or whatever
         m_qit++;
@@ -361,13 +363,13 @@ void MyMoneyOnlinePriceUpdate::readCurrencies (const QDomElement& elem)
         
         // match against next in list, update data
         // items should be returned in same order as requested
-        if ((*m_qit).tradingSymbol() != id)
-            qFatal ("%s != %s", (*m_qit).tradingSymbol().latin1(), id.latin1());
+        if ((*m_qit)->tradingSymbol() != id)
+            qFatal ("%s != %s", (*m_qit)->tradingSymbol().latin1(), id.latin1());
         //(*m_qit).m_errorCode = (MyMoneyEquity::quoterErrorsE)errcode.toInt();
         if (errcode == "0")
         {
             MyMoneyMoney value;
-            (*m_qit).addPriceHistory(QDate::fromString(pdate, Qt::ISODate), value);
+            (*m_qit)->addPriceHistory(QDate::fromString(pdate, Qt::ISODate), value);
             
             //(*m_qit).m_quoteDate = QDate::fromString(pdate, Qt::ISODate);
             // FIXME - convert rate to MyMoneyMoney
@@ -420,7 +422,7 @@ int MyMoneyOnlinePriceUpdate::getQuotes(const QStringList& symbolNames)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
   QValueList<MyMoneyEquity> equities = file->equityList();
-  QValueList<MyMoneyEquity> equitiesToUpdate;
+  QPtrList<MyMoneyEquity> equitiesToUpdate;
   qDebug("MyMoneyOnlinePriceUpdate::getQuotes: Number of equity objects: %d", equities.size());
 
   for(QStringList::ConstIterator it = symbolNames.begin(); it != symbolNames.end(); ++it)
@@ -429,7 +431,7 @@ int MyMoneyOnlinePriceUpdate::getQuotes(const QStringList& symbolNames)
     {  
       if((*theEquity).name() == (*it))
       {
-        equitiesToUpdate.push_back(*theEquity);
+        equitiesToUpdate.append(&(*theEquity));
       }
     }
   }
