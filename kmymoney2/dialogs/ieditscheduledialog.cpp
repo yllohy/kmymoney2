@@ -36,6 +36,7 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 #include "../widgets/kmymoneycombo.h"
+#include "../widgets/kmymoneyaccountcombo.h"
 #include "../mymoney/mymoneyinstitution.h"
 #include "../mymoney/mymoneyaccount.h"
 #include "../mymoney/mymoneypayee.h"
@@ -46,6 +47,15 @@
 #include "../widgets/kmymoneycategory.h"
 #include "../widgets/kmymoneydateinput.h"
 #include "ieditscheduledialog.h"
+
+/*
+void dumpSplit (int i, MyMoneySplit s) {
+  qDebug ("Split %d", i);
+  qDebug ("Acct: %s", s.accountId().data());
+  qDebug ("Payee: %s", s.payeeId().data());
+  qDebug ("Action = %s", s.action().data());
+  qDebug ("Value: %s", s.value().toString().latin1());
+} */
 
 KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySchedule& schedule, QWidget *parent, const char *name)
  : kEditScheduledTransferDlgDecl(parent,name, true)
@@ -125,12 +135,12 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
     this, SLOT(slotEndDateChanged(const QDate&)));
   connect(m_kmoneyeditAmount, SIGNAL(valueChanged(const QString&)),
     this, SLOT(slotAmountChanged(const QString&)));
-  connect(m_accountCombo, SIGNAL(activated(const QString&)),
-    this, SLOT(slotAccountChanged(const QString&)));
+  connect(m_accountCombo, SIGNAL(accountSelected(const QCString&)),
+    this, SLOT(slotAccountChanged(const QCString&)));
   connect(m_scheduleName, SIGNAL(textChanged(const QString&)),
     this, SLOT(slotScheduleNameChanged(const QString&)));
-  connect(m_kcomboTo, SIGNAL(activated(const QString&)),
-    this, SLOT(slotToChanged(const QString&)));
+  connect(m_kcomboTo, SIGNAL(accountSelected(const QCString&)),
+    this, SLOT(slotToChanged(const QCString&)));
   connect(m_kcomboMethod, SIGNAL(activated(int)),
     this, SLOT(slotMethodChanged(int)));
   connect(m_kcomboPayTo, SIGNAL(textChanged(const QString&)),
@@ -213,13 +223,15 @@ void KEditScheduleDialog::reloadFromFile(void)
   ||  m_actionType == MyMoneySplit::ActionAmortization
       )
   {
-    m_accountCombo->loadAccounts(true, false);
+    m_accountCombo->loadList
+        ((KMyMoneyUtils::categoryTypeE)(KMyMoneyUtils::asset | KMyMoneyUtils::liability));
   }
 
   if (m_actionType == MyMoneySplit::ActionDeposit ||
       m_actionType == MyMoneySplit::ActionTransfer)
   {
-    m_kcomboTo->loadAccounts(true, false);
+    m_kcomboTo->loadList
+        ((KMyMoneyUtils::categoryTypeE)(KMyMoneyUtils::asset | KMyMoneyUtils::liability));
   }
   m_accountCombo->blockSignals(false);
   m_kcomboTo->blockSignals(false);
@@ -415,7 +427,7 @@ void KEditScheduleDialog::okClicked()
 
   if (m_actionType == MyMoneySplit::ActionTransfer)
   {
-    if (m_accountCombo->currentText() == m_kcomboTo->currentText())
+    if (m_fromAccountId == m_toAccountId)
     {
       KMessageBox::detailedError(this, i18n("Unable to edit schedule"), i18n("Account from and account to are the same"));
       m_kcomboTo->setFocus();
@@ -472,7 +484,7 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
   {
     if (m_schedule.account().name().isEmpty())
       return;
-
+   // for (int i = 0; i < m_transaction.splitCount(); i++) dumpSplit (i, m_transaction.splits()[i]);
     if (m_actionType == MyMoneySplit::ActionTransfer)
     {
       // Jiggle the splits to how we want them
@@ -489,25 +501,32 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
         m_transaction.addSplit(s1);
         } catch (MyMoneyException *e)
         {
+          KMessageBox::detailedError(this, i18n("Exception in loadWidgetsFromSchedule(1)"), e->what());
           qDebug("e: %s", e->what().latin1());
           delete e;
         }
       }
     }
 
-    if (m_actionType != MyMoneySplit::ActionDeposit)
-      m_accountCombo->setCurrentText(MyMoneyFile::instance()->account(m_transaction.splits()[0].accountId()).name());
-    else
-      m_kcomboTo->setCurrentText(MyMoneyFile::instance()->account(m_transaction.splits()[0].accountId()).name());
-
+    if (m_actionType != MyMoneySplit::ActionDeposit) {
+      m_fromAccountId = m_transaction.splits()[0].accountId();
+      //m_accountCombo->setCurrentText(MyMoneyFile::instance()->account(m_transaction.splits()[0].accountId()).name()); 
+      m_kcomboTo->setSelected (m_fromAccountId);
+    } else{
+      m_toAccountId = m_transaction.splits()[0].accountId();
+      //m_kcomboTo->setCurrentText(MyMoneyFile::instance()->account(m_transaction.splits()[0].accountId()).name());
+      m_kcomboTo->setSelected (m_toAccountId);
+    }
     if (m_actionType == MyMoneySplit::ActionTransfer
     ||  m_actionType == MyMoneySplit::ActionAmortization)
     {
-      m_kcomboTo->setCurrentText(
-        MyMoneyFile::instance()->account(m_transaction.splits()[1].accountId()).name());
+      m_toAccountId = m_transaction.splits()[1].accountId();
+     // m_kcomboTo->setCurrentText(
+       // MyMoneyFile::instance()->account(m_transaction.splits()[1].accountId()).name());
+      m_kcomboTo->setSelected (m_toAccountId);
     }
-
     m_kcomboPayTo->loadText(MyMoneyFile::instance()->payee(m_schedule.transaction().splitByAccount(theAccountId()).payeeId()).name());
+ 
     m_kdateinputDue->setDate(m_schedule.nextPayment(m_schedule.lastPayment())/*m_schedule.startDate()*/);
 
     int method=0;
@@ -690,6 +709,7 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
     slotMethodChanged(method);
   } catch (MyMoneyException *e)
   {
+    KMessageBox::detailedError(this, i18n("Exception in loadWidgetsFromSchedule(2)"), e->what());
     delete e;
   }
 }
@@ -836,8 +856,9 @@ void KEditScheduleDialog::slotAmountChanged(const QString&)
   }
 }
 
-void KEditScheduleDialog::slotAccountChanged(const QString&)
+void KEditScheduleDialog::slotAccountChanged(const QCString& id)
 {
+  m_fromAccountId = id;
   if (m_actionType != MyMoneySplit::ActionDeposit)
   {
     int count = m_transaction.splitCount();
@@ -847,7 +868,7 @@ void KEditScheduleDialog::slotAccountChanged(const QString&)
     }
 
     MyMoneySplit s = m_transaction.splits()[0];
-    s.setAccountId(m_accountCombo->currentAccountId());
+    s.setAccountId(id);
     m_transaction.modifySplit(s);
   }
 }
@@ -857,8 +878,9 @@ void KEditScheduleDialog::slotScheduleNameChanged(const QString& text)
   m_schedule.setName(text);
 }
 
-void KEditScheduleDialog::slotToChanged(const QString&)
+void KEditScheduleDialog::slotToChanged(const QCString& id)
 {
+  m_toAccountId = id;
   if (m_actionType == MyMoneySplit::ActionTransfer
   ||  m_actionType == MyMoneySplit::ActionAmortization)
   {
@@ -868,7 +890,7 @@ void KEditScheduleDialog::slotToChanged(const QString&)
       createSplits();
     }
     MyMoneySplit s = m_transaction.splits()[1];
-    s.setAccountId(m_kcomboTo->currentAccountId());
+    s.setAccountId(id);
     m_transaction.modifySplit(s);
   }
   else if (m_actionType == MyMoneySplit::ActionDeposit)
@@ -879,7 +901,7 @@ void KEditScheduleDialog::slotToChanged(const QString&)
       createSplits();
     }
     MyMoneySplit s = m_transaction.splits()[0];
-    s.setAccountId(m_kcomboTo->currentAccountId());
+    s.setAccountId(id);
     m_transaction.modifySplit(s);
   }
 }
@@ -973,7 +995,7 @@ void KEditScheduleDialog::slotPayeeChanged(const QString& text)
   }
   catch (MyMoneyException *e)
   {
-    // We add it later
+       // KMessageBox::detailedError(this, i18n("Exception in slot PayeeChanged"), e->what());
     delete e;
   }
 }
@@ -1119,7 +1141,7 @@ void KEditScheduleDialog::createSplits()
     if (m_actionType == MyMoneySplit::ActionTransfer)
     {
       MyMoneySplit split2;
-      split2.setAccountId(m_kcomboTo->currentAccountId());
+      split2.setAccountId((QCString)m_kcomboTo->currentText());
       split2.setAction(MyMoneySplit::ActionTransfer);
       m_transaction.addSplit(split2);
     }
@@ -1262,11 +1284,11 @@ QCString KEditScheduleDialog::theAccountId()
       m_actionType == MyMoneySplit::ActionAmortization ||
       m_actionType == MyMoneySplit::ActionWithdrawal)
   {
-    return m_accountCombo->currentAccountId();
+    return m_fromAccountId;
   }
   else if (m_actionType == MyMoneySplit::ActionDeposit)
   {
-    return m_kcomboTo->currentAccountId();
+    return m_toAccountId;
   }
 
   return QCString();

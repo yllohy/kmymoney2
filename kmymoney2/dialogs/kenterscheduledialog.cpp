@@ -42,7 +42,7 @@
 #include "../mymoney/mymoneyfile.h"
 #include "../mymoney/mymoneyfinancialcalculator.h"
 #include "../kmymoneyutils.h"
-#include "../widgets/kmymoneycombo.h"
+#include "../widgets/kmymoneyaccountcombo.h"
 #include "../widgets/kmymoneypayee.h"
 #include "../widgets/kmymoneydateinput.h"
 #include "../widgets/kmymoneycategory.h"
@@ -64,10 +64,10 @@ KEnterScheduleDialog::KEnterScheduleDialog(QWidget *parent, const MyMoneySchedul
 
   connect(m_splitButton, SIGNAL(clicked()), this, SLOT(slotSplitClicked()));
   connect(m_buttonOk, SIGNAL(clicked()), this, SLOT(slotOK()));
-  connect(m_from, SIGNAL(activated(int)),
-    this, SLOT(slotFromActivated(int)));
-  connect(m_to, SIGNAL(activated(int)),
-    this, SLOT(slotToActivated(int)));
+  connect(m_from, SIGNAL(accountSelected(const QCString&)),
+    this, SLOT(slotFromActivated(const QCString&)));
+  connect(m_to, SIGNAL(accountSelected(const QCString&)),
+    this, SLOT(slotToActivated(const QCString&)));
   connect(m_date, SIGNAL(dateChanged(const QDate&)), this, SLOT(checkDateInPeriod(const QDate&)));
 }
 
@@ -77,7 +77,7 @@ KEnterScheduleDialog::~KEnterScheduleDialog()
 
 void KEnterScheduleDialog::initWidgets()
 {
-  kMyMoneyCombo* loanAccount = 0;
+  kMyMoneyAccountCombo* loanAccount = 0;
 
   // Work around backwards transfers
   try
@@ -125,7 +125,7 @@ void KEnterScheduleDialog::initWidgets()
 
   if (m_schedule.type() != MyMoneySchedule::TYPE_DEPOSIT
   &&  m_schedule.type() != MyMoneySchedule::TYPE_LOANPAYMENT)
-    m_from->loadAccounts(true, false);
+    m_from->loadList((KMyMoneyUtils::categoryTypeE)(KMyMoneyUtils::asset | KMyMoneyUtils::liability));
 
   if (m_schedule.type() == MyMoneySchedule::TYPE_LOANPAYMENT)
   {
@@ -139,14 +139,14 @@ void KEnterScheduleDialog::initWidgets()
           case MyMoneyAccount::Loan:
             m_from->setEnabled(true);
             m_to->setEnabled(false);
-            m_from->loadAccounts(true, false);
+            m_from->loadList((KMyMoneyUtils::categoryTypeE)(KMyMoneyUtils::asset | KMyMoneyUtils::liability));
             loanAccount = m_from;
             break;
 
           case MyMoneyAccount::AssetLoan:
             m_from->setEnabled(false);
             m_to->setEnabled(true);
-            m_to->loadAccounts(true, false);
+            m_to->loadList((KMyMoneyUtils::categoryTypeE)(KMyMoneyUtils::asset | KMyMoneyUtils::liability));
             loanAccount = m_to;
             break;
 
@@ -170,7 +170,7 @@ void KEnterScheduleDialog::initWidgets()
     }
 
     m_to->setEnabled(true);
-    m_to->loadAccounts(true, false);
+    m_to->loadList((KMyMoneyUtils::categoryTypeE)(KMyMoneyUtils::asset | KMyMoneyUtils::liability));
   }
 
   try
@@ -183,17 +183,22 @@ void KEnterScheduleDialog::initWidgets()
       m_from->setCurrentText(m_schedule.account().name());
       m_to->setCurrentText(/*m_schedule.transferAccount().name()*/
         MyMoneyFile::instance()->account(m_schedule.transaction().splits()[1].accountId()).name());
+        m_toAccountId = m_schedule.transaction().splits()[1].accountId();
     }
-    else if (m_schedule.type() == MyMoneySchedule::TYPE_DEPOSIT)
+    else if (m_schedule.type() == MyMoneySchedule::TYPE_DEPOSIT) {
       m_to->setCurrentText(m_schedule.account().name());
-
+      m_toAccountId = m_schedule.account().id();
+    }
     else if (m_schedule.type() == MyMoneySchedule::TYPE_LOANPAYMENT)
     {
       loanAccount->setCurrentText(m_schedule.account().name());
+      loanAccount == m_to ? 
+          m_toAccountId = m_schedule.account().id() : m_fromAccountId = m_schedule.account().id();
     }
     else
     {
       m_from->setCurrentText(m_schedule.account().name());
+      m_fromAccountId = m_schedule.account().id();
       m_to->setEnabled(false);
     }
 
@@ -331,7 +336,7 @@ void KEnterScheduleDialog::slotSplitClicked()
     delete dlg;
   } catch (MyMoneyException *e)
   {
-//    KMessageBox::detailedError(this, i18n("Exception in slot split clicked"), e->what());
+    KMessageBox::detailedError(this, i18n("Exception in slot split clicked"), e->what());
     delete e;
   }
 
@@ -344,7 +349,7 @@ bool KEnterScheduleDialog::checkData(void)
   int noItemsChanged=0;
   QString payeeName;
 
-  if (m_from->currentText() == m_to->currentText())
+  if (m_fromAccountId == m_toAccountId)
   {
     KMessageBox::error(this, i18n("Account and transfer account are the same.  Please change one."));
     m_from->setFocus();
@@ -678,7 +683,7 @@ void KEnterScheduleDialog::setTo()
     else
       id = 0;
     MyMoneySplit s = m_transaction.splits()[id];
-    s.setAccountId(m_to->currentAccountId());
+    s.setAccountId(m_toAccountId);
     m_transaction.modifySplit(s);
   }
 }
@@ -694,7 +699,7 @@ void KEnterScheduleDialog::setFrom()
     }
 
     MyMoneySplit s = m_transaction.splits()[0];
-    s.setAccountId(m_from->currentAccountId());
+    s.setAccountId(m_fromAccountId);
     m_transaction.modifySplit(s);
   }
 }
@@ -807,7 +812,7 @@ void KEnterScheduleDialog::createSplits()
       checkCategory();
     }
     else
-      split2.setAccountId(m_to->currentAccountId());
+      split2.setAccountId(m_toAccountId);
 
     split2.setPayeeId(split1.payeeId());
     split2.setMemo(split1.memo());
@@ -828,38 +833,38 @@ QCString KEnterScheduleDialog::theAccountId()
 {
   if( m_schedule.type() == MyMoneySchedule::TYPE_LOANPAYMENT) {
     if(m_from->isEnabled())
-      return m_from->currentAccountId();
+      return m_fromAccountId;
     if(m_to->isEnabled())
-      return m_to->currentAccountId();
+      return m_toAccountId;
     qFatal("This should never happen %s:%d", __FILE__, __LINE__);
   }
 
   if (m_schedule.type() != MyMoneySchedule::TYPE_DEPOSIT)
-    return m_from->currentAccountId();
+    return m_fromAccountId;
   else
-    return m_to->currentAccountId();
+    return m_toAccountId;
 }
 
-void KEnterScheduleDialog::slotFromActivated(int)
+void KEnterScheduleDialog::slotFromActivated(const QCString& id)
 {
   if (m_schedule.type() != MyMoneySchedule::TYPE_DEPOSIT)
   {
     // Change the splits because otherwise they wont be found
     // if the user clicks on the split button
     MyMoneySplit s = m_transaction.splits()[0];
-    s.setAccountId(m_from->currentAccountId());
+    s.setAccountId(id);
     m_transaction.modifySplit(s);
   }
 }
 
-void KEnterScheduleDialog::slotToActivated(int)
+void KEnterScheduleDialog::slotToActivated(const QCString& id)
 {
   if (m_schedule.type() == MyMoneySchedule::TYPE_DEPOSIT)
   {
     // Change the splits because otherwise they wont be found
     // if the user clicks on the split button
     MyMoneySplit s = m_transaction.splits()[0];
-    s.setAccountId(m_to->currentAccountId());
+    s.setAccountId(id);
     m_transaction.modifySplit(s);
   }
 }

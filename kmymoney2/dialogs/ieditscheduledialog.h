@@ -81,9 +81,9 @@ protected slots:
   void slotEndDateChanged(const QDate& date);
 
   void slotAmountChanged(const QString&);
-  void slotAccountChanged(const QString&);
+  void slotAccountChanged(const QCString&);
   void slotScheduleNameChanged(const QString&);
-  void slotToChanged(const QString&);
+  void slotToChanged(const QCString&);
   void slotMethodChanged(int);
   void slotPayeeChanged(const QString&);
   void slotDateChanged(const QDate&);
@@ -95,6 +95,8 @@ protected slots:
 
 
 private:
+  /// Save the current account ids (there must be a better way...)
+  QCString m_fromAccountId, m_toAccountId;
   /// Save last payee used for convenience
   QString m_lastPayee;
 

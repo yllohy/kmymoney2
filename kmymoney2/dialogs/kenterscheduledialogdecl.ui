@@ -209,7 +209,7 @@
                         <property name="spacing">
                             <number>6</number>
                         </property>
-                        <widget class="kMyMoneyCombo" row="1" column="1">
+                        <widget class="kMyMoneyAccountCombo" row="1" column="1">
                             <property name="name">
                                 <cstring>m_from</cstring>
                             </property>
@@ -252,7 +252,7 @@
                                 <bool>true</bool>
                             </property>
                         </widget>
-                        <widget class="kMyMoneyCombo" row="2" column="1">
+                        <widget class="kMyMoneyAccountCombo" row="2" column="1">
                             <property name="name">
                                 <cstring>m_to</cstring>
                             </property>
@@ -633,8 +633,8 @@
         <pixmap>image0</pixmap>
     </customwidget>
     <customwidget>
-        <class>kMyMoneyCombo</class>
-        <header location="local">../widgets/kmymoneycombo.h</header>
+        <class>kMyMoneyAccountCombo</class>
+        <header location="local">../widgets/kmymoneyaccountcombo.h</header>
         <sizehint>
             <width>-1</width>
             <height>-1</height>
@@ -699,7 +699,7 @@
 </connections>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>kmymoneycombo.h</includehint>
+    <includehint>kmymoneyaccountcombo.h</includehint>
     <includehint>kmymoneypayee.h</includehint>
     <includehint>kmymoneyedit.h</includehint>
     <includehint>kmymoneycombo.h</includehint>

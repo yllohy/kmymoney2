@@ -52,8 +52,8 @@ public:
 protected slots:
   void slotOK();
   void slotSplitClicked();
-  void slotFromActivated(int);
-  void slotToActivated(int);
+  void slotFromActivated(const QCString&);
+  void slotToActivated(const QCString&);
 
   /**
     * Make sure the date is between a certain range valid for the schedule.
@@ -82,6 +82,7 @@ private:
   void createSplits();
   void commitTransaction();
   QCString theAccountId();
+  QCString m_toAccountId, m_fromAccountId;
 };
 
 #endif

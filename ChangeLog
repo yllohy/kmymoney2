@@ -1,3 +1,7 @@
+2004-12-03 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Implement KMyMoneyAccountCombo in scheduled transaction dialogs
+  * Allows selecting any asset/liability account for bills, etc.
+  
 2004-11-28 Tony Bloomfield <email address to follow>
   * Partial correction of share price import
   * Fix bug 1067499 - crash om import
