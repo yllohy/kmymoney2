@@ -26,6 +26,8 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
+#include <qcolor.h>
+
 // ----------------------------------------------------------------------------
 // KDE Headers
 #include <kguiitem.h>
@@ -227,7 +229,24 @@ public:
     * @return int reflecting the payment frequency in days
     */
   static int occurenceToFrequency(const MyMoneySchedule::occurenceE occurence);
-  
+
+  /**
+    * This method returns the applications default background color if
+    * none has been setup by the user.
+    */
+  static const QColor defaultBackgroundColour(void);
+
+  /**
+    * This method returns the applications default list color if
+    * none has been setup by the user.
+    */
+  static const QColor defaultListColour(void);
+
+  /**
+    * This method returns the applications default grid color if
+    * none has been setup by the user.
+    */
+  static const QColor defaultGridColour(void);
 };
 
 #endif

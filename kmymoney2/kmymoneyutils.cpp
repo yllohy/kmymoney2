@@ -490,3 +490,18 @@ void KMyMoneyUtils::newPayee(QWidget* parent, kMyMoneyPayee* payeeEdit, const QS
   } else
     payeeEdit->resetText();
 }
+
+const QColor KMyMoneyUtils::defaultBackgroundColour(void)
+{
+  return QColor(255,255,204);
+}
+
+const QColor KMyMoneyUtils::defaultListColour(void)
+{
+  return QColor(255,255,238);
+}
+
+const QColor KMyMoneyUtils::defaultGridColour(void)
+{
+  return QColor(154,154,154);
+}
