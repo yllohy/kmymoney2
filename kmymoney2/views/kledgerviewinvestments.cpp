@@ -1115,6 +1115,7 @@ void KLedgerViewInvestments::slotEndEdit()
       // setup stock account split
       m_split.setValue((m_editPPS->getMoneyValue() * shares));
       m_split.setShares(shares);
+      m_split.setMemo(m_editMemo->text());
       m_split.setAccountId(m_editStockAccount->selectedAccounts().first());
       m_split.setId(QCString());
 
@@ -1130,12 +1131,35 @@ void KLedgerViewInvestments::slotEndEdit()
       m_accountSplit.setAccountId(accountId);
       m_accountSplit.setValue(-total);
       m_accountSplit.setShares(-total);
+      m_accountSplit.setMemo(m_editMemo->text());
       m_accountSplit.setId(QCString());
 
       m_transaction.addSplit(m_accountSplit);
       m_transaction.addSplit(m_split);
       if(m_feeSplit.value() != 0)
         m_transaction.addSplit(m_feeSplit);
+      break;
+
+    case ReinvestDividend:
+    case Dividend:
+    case Yield:
+      break;
+
+    case AddShares:
+    case RemoveShares:
+      shares = m_editShares->getMoneyValue();
+      m_split.setAction(MyMoneySplit::ActionAddShares);
+      if(currentAction == RemoveShares) {
+        shares = -shares;
+      }
+      // setup stock account split
+      m_split.setValue(0);
+      m_split.setShares(shares);
+      m_split.setMemo(m_editMemo->text());
+      m_split.setAccountId(m_editStockAccount->selectedAccounts().first());
+      m_split.setId(QCString());
+
+      m_transaction.addSplit(m_split);
       break;
   }
 
@@ -1147,6 +1171,7 @@ void KLedgerViewInvestments::slotEndEdit()
 
   if(transaction(m_register->currentTransactionIndex()) != 0) {
     m_form->editButton()->setEnabled(true);
+    m_form->moreButton()->setEnabled(true);
   }
 
   hideWidgets();
