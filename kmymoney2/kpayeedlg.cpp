@@ -14,6 +14,11 @@
  *                                                                         *
  ***************************************************************************/
 #include <kglobal.h>
+#include <klocale.h>
+#include <kstddirs.h>
+#include <qpixmap.h>
+
+#include <kglobal.h>
 #include <kconfig.h>
 #include <klocale.h>
 #include <kmessagebox.h>
@@ -23,6 +28,9 @@
 KPayeeDlg::KPayeeDlg(MyMoneyFile *file, QWidget *parent, const char *name)
  : KPayeeDlgDecl(parent,name,true)
 {
+  QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_payees.png");
+  QPixmap pm(filename);
+  m_qpixmaplabel->setPixmap(pm);
 	m_file = file;
 
   readConfig();

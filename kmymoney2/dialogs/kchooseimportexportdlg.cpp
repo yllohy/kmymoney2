@@ -17,6 +17,11 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <kglobal.h>
+#include <klocale.h>
+#include <kstddirs.h>
+#include <qpixmap.h>
+
 #include <qlabel.h>
 #include <qcombobox.h>
 #include <qpushbutton.h>
@@ -31,6 +36,10 @@ KChooseImportExportDlg::KChooseImportExportDlg(int type, QWidget *parent, const 
  : KChooseImportExportDlgDecl(parent,name, true)
 {
   if (type==0) { // import
+  	QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_import.png");
+  	QPixmap pm(filename);
+  	m_qpixmaplabel->setPixmap(pm);
+
     topLabel->setText(i18n("Please choose the type of import you wish to perform.   A simple explanation\n"
         "of the import type is available at the bottom of the screen and is updated when\n"
         "you select an item from the choice box."
@@ -38,6 +47,10 @@ KChooseImportExportDlg::KChooseImportExportDlg(int type, QWidget *parent, const 
     promptLabel->setText(i18n("Choose import type:"));
     setCaption(i18n("Choose Import Type Dialog"));
   } else { // export
+  	QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_export.png");
+  	QPixmap pm(filename);
+  	m_qpixmaplabel->setPixmap(pm);
+
     topLabel->setText(i18n("Please choose the type of export you wish to perform.   A simple explanation\n"
         "of the export type is available at the bottom of the screen and is updated when\n"
         "you select an item from the choice box."

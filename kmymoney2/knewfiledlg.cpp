@@ -13,20 +13,29 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <kglobal.h>
+#include <klocale.h>
+#include <kstddirs.h>
+#include <qpixmap.h>
 #include <kmessagebox.h>
 #include <qpushbutton.h>
 #include <qlineedit.h>
+#include <qlabel.h>
 
 #include "knewfiledlg.h"
 
 KNewFileDlg::KNewFileDlg(QWidget *parent, const char *name, const char *title)
   : KNewFileDlgDecl(parent,name,true)
 {
+  QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_edit_file.png");
+  QPixmap pm(filename);
+  m_qpixmaplabel->setPixmap(pm);
+
 	if (title)
 	  setCaption(title);
-	
+
 	userNameEdit->setFocus();
-	
+
 	connect(cancelBtn, SIGNAL(clicked()), this, SLOT(reject()));
 	connect(okBtn, SIGNAL(clicked()), this, SLOT(okClicked()));
 }
@@ -36,6 +45,10 @@ KNewFileDlg::KNewFileDlg(QString userName, QString userStreet,
   QString userEmail, QWidget *parent, const char *name, const char *title)
   : KNewFileDlgDecl(parent,name,true)
 {
+  QString filename = KGlobal::dirs()->findResource("appdata", "pics/view_info.png");
+  QPixmap pm(filename);
+  m_qpixmaplabel->setPixmap(pm);
+
   userNameEdit->setText(userName);
   streetEdit->setText(userStreet);
   townEdit->setText(userTown);
@@ -46,9 +59,9 @@ KNewFileDlg::KNewFileDlg(QString userName, QString userStreet,
 
 	if (title)
 	  setCaption(title);
-	
+
 	userNameEdit->setFocus();
-	
+
 	connect(cancelBtn, SIGNAL(clicked()), this, SLOT(reject()));
 	connect(okBtn, SIGNAL(clicked()), this, SLOT(okClicked()));
 }

@@ -15,6 +15,8 @@
  ***************************************************************************/
 #include <kglobal.h>
 #include <klocale.h>
+#include <kstddirs.h>
+#include <qpixmap.h>
 
 #include "kfileinfodlg.h"
 
@@ -22,6 +24,9 @@ KFileInfoDlg::KFileInfoDlg(QDate created, QDate access, QDate modify, QWidget *p
  : KFileInfoDlgDecl(parent,name,true)
 {
 //	initDialog();
+  QString filename = KGlobal::dirs()->findResource("appdata", "pics/view_info.png");
+  QPixmap pm(filename);
+  m_qpixmaplabel->setPixmap(pm);
 	
 	createdEdit->setReadOnly(true);
 	createdEdit->setText(KGlobal::locale()->formatDate(created));

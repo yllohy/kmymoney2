@@ -16,6 +16,7 @@
 #include <kmessagebox.h>
 #include <kglobal.h>
 #include <klocale.h>
+#include <kstddirs.h>
 
 #include "kreconciledlg.h"
 #include "kreconcilelistitem.h"
@@ -25,6 +26,10 @@ KReconcileDlg::KReconcileDlg(const MyMoneyMoney previousBal, const MyMoneyMoney 
   const MyMoneyFile file, QWidget *parent, const char *name)
  : KReconcileDlgDecl(parent,name,true)
 {
+  QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_reconcile.png");
+  QPixmap pm(filename);
+  m_qpixmaplabel->setPixmap(pm);
+
   m_balanced = false;
   m_debitsQList.setAutoDelete(false);
   m_creditsQList.setAutoDelete(false);

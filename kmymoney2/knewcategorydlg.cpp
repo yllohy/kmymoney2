@@ -13,17 +13,27 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <kglobal.h>
+#include <klocale.h>
+#include <kstddirs.h>
+#include <qpixmap.h>
+
 #include <qlineedit.h>
 #include <kcombobox.h>
 #include <qpushbutton.h>
+#include <qlabel.h>
 
 #include "knewcategorydlg.h"
 
 KNewCategoryDlg::KNewCategoryDlg(MyMoneyCategory* category, QWidget *parent, const char *name)
  : KNewCategoryDlgDecl(parent,name,true)
 {
+  QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_edit_category.png");
+  QPixmap pm(filename);
+  m_qpixmaplabel->setPixmap(pm);
+
 	m_category = category;
-	
+
 	categoryNameEdit->setText(m_category->name());
 	(m_category->isIncome()) ? typeCombo->setCurrentItem(0) : typeCombo->setCurrentItem(1);
 	minorCategoriesCombo->insertStringList(m_category->minorCategories());

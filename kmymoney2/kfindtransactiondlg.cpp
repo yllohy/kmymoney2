@@ -13,6 +13,11 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <kglobal.h>
+#include <klocale.h>
+#include <kstddirs.h>
+#include <qpixmap.h>
+
 #include <kcombobox.h>
 
 #include "kfindtransactiondlg.h"
@@ -20,6 +25,10 @@
 KFindTransactionDlg::KFindTransactionDlg(MyMoneyFile *file, QWidget *parent, const char *name)
  : KFindTransactionDlgDecl(parent,name,false)
 {
+  QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_find_transaction.png");
+  QPixmap pm(filename);
+  m_qpixmaplabel->setPixmap(pm);
+
   m_filePointer = file;
 	
 	readConfig();

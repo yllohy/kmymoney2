@@ -13,16 +13,26 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <kglobal.h>
+#include <klocale.h>
+#include <kstddirs.h>
+#include <qpixmap.h>
+
 #include <kmessagebox.h>
 
 #include <qpushbutton.h>
 #include <qlineedit.h>
+#include <qlabel.h>
 
 #include "knewbankdlg.h"
 
 KNewBankDlg::KNewBankDlg(QWidget *parent, const char *name)
   : KNewBankDlgDecl(parent,name,true)
 {
+  QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_new_institution.png");
+  QPixmap pm(filename);
+  m_qpixmaplabel->setPixmap(pm);
+
   nameEdit->setFocus();
 	connect(okBtn, SIGNAL(clicked()), SLOT(okClicked()));
 	connect(cancelBtn, SIGNAL(clicked()), SLOT(reject()));
@@ -33,6 +43,9 @@ KNewBankDlg::KNewBankDlg(QString b_name, QString b_sortCode, QString b_city,
   QString title, QWidget *parent, const char *name)
   : KNewBankDlgDecl(parent, name, true)
 {
+  QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_new_institution.png");
+  QPixmap pm(filename);
+  m_qpixmaplabel->setPixmap(pm);
 	setCaption(title);
 
 	nameEdit->setText(b_name);

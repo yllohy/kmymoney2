@@ -16,6 +16,11 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <kglobal.h>
+#include <klocale.h>
+#include <kstddirs.h>
+#include <qpixmap.h>
+
 // ----------------------------------------------------------------------------
 // QT Headers
 #include <qpushbutton.h>
@@ -38,6 +43,10 @@
 KImportDlg::KImportDlg(MyMoneyAccount *account, QWidget *parent)
   : KImportDlgDecl(parent,0,TRUE)
 {
+  QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_qif_import.png");
+  QPixmap pm(filename);
+  m_qpixmaplabel->setPixmap(pm);
+
   // We have to be careful of nulls though
   m_mymoneyaccount = account;
   

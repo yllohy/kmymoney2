@@ -14,6 +14,12 @@
  *                                                                         *
  ***************************************************************************/
 #include <kglobal.h>
+#include <klocale.h>
+#include <kstddirs.h>
+#include <qpixmap.h>
+#include <qlabel.h>
+
+#include <kglobal.h>
 #include <kconfig.h>
 #include <kmessagebox.h>
 #include <qpushbutton.h>
@@ -26,6 +32,9 @@
 KCategoriesDlg::KCategoriesDlg(MyMoneyFile *file, QWidget *parent, const char *name)
  : KCategoryDlgDecl(parent,name,true)
 {
+  QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_edit_categories.png");
+  QPixmap pm(filename);
+  m_qpixmaplabel->setPixmap(pm);
 	m_file = file;
 	
 	categoryListView->setRootIsDecorated(true);

@@ -17,6 +17,17 @@
  *                                                                         *
  ***************************************************************************/
 #include <kglobal.h>
+#include <klocale.h>
+#include <kstddirs.h>
+#include <qpixmap.h>
+#include <qlabel.h>
+
+#include <kglobal.h>
+#include <klocale.h>
+#include <kstddirs.h>
+#include <qpixmap.h>
+
+#include <kglobal.h>
 #include <kconfig.h>
 #include <qpushbutton.h>
 #include <qlineedit.h>
@@ -27,6 +38,10 @@
 KBackupDlg::KBackupDlg( QWidget* parent,  const char* name/*, bool modal*/)
   : kbackupdlgdecl( parent,  name , true)
 {
+  QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_backup.png");
+  QPixmap pm(filename);
+  m_qpixmaplabel->setPixmap(pm);
+
   readConfig();
   connect(chooseButton, SIGNAL(clicked()), this, SLOT(chooseButtonClicked()));
   connect(btnOK,SIGNAL(clicked()),this,SLOT(accept()));

@@ -31,14 +31,14 @@ ldflags=
 path_to_bin_program=kmymoney2
 
 [General]
-AMChanged=false
+AMChanged=true
 author=Michael Edwardes
 configure_args=
 dir_where_make_will_be_called=
 email=mte@users.sourceforge.net
 kdevprj_version=1.3
 lfv_open_groups=GNU,User Interface
-make_options=\s-j1
+make_options=
 makefiles=Makefile.am,kmymoney2/Makefile.am,doc/Makefile.am,doc/en/Makefile.am,po/Makefile.am,kmymoney2/widgets/Makefile.am,kmymoney2/mymoney/Makefile.am,kmymoney2/pics/Makefile.am,kmymoney2/dialogs/Makefile.am,kmymoney2/icons/hicolor/22x22/actions/Makefile.am,kmymoney2/icons/hicolor/22x22/Makefile.am,kmymoney2/icons/hicolor/Makefile.am,kmymoney2/icons/Makefile.am,kmymoney2/icons/hicolor/16x16/actions/Makefile.am,kmymoney2/icons/hicolor/16x16/Makefile.am,doc/images/Makefile.am,developer-doc/Makefile.am
 modifyMakefiles=true
 project_name=KMyMoney2
@@ -48,7 +48,7 @@ short_info=
 sub_dir=kmymoney2/
 version=0.3.8
 version_control=CVS
-workspace=1
+workspace=0
 
 [INSTALL]
 dist=true
@@ -92,10 +92,10 @@ install_location=
 type=DATA
 
 [Workspace_1]
-browser_file=file:/usr/share/doc/qt2-devel-2.2.3/html/qtable.html
-cpp_file=/home/mte/src/kmymoney2/kmymoney2/main.cpp
-header_file=/home/mte/src/kmymoney2/kmymoney2/kmymoney2.h
-openfiles=Untitled.h,Untitled.cpp,/home/mte/src/kmymoney2/kmymoney2/kmymoney2.h,/home/mte/src/kmymoney2/kmymoney2/main.cpp
+browser_file=
+cpp_file=
+header_file=
+openfiles=
 show_outputview=false
 show_treeview=true
 
@@ -252,7 +252,7 @@ type=prog_main
 [kmymoney2/default_categories.dat]
 dist=true
 install=true
-install_location=$$(kde_datadir)/kmymoney2/default_categories.dat
+install_location=$(kde_datadir)/kmymoney2/default_categories.dat
 type=DATA
 
 [kmymoney2/dialogs/Makefile.am]
@@ -353,13 +353,13 @@ type=SOURCE
 [kmymoney2/hi16-app-kmymoney2.png]
 dist=true
 install=true
-install_location=$$(kde_icondir)/hicolor/16x16/apps/kmymoney2.png
+install_location=$(kde_icondir)/hicolor/16x16/apps/kmymoney2.png
 type=DATA
 
 [kmymoney2/hi32-app-kmymoney2.png]
 dist=true
 install=true
-install_location=$$(kde_icondir)/hicolor/32x32/apps/kmymoney2.png
+install_location=$(kde_icondir)/hicolor/32x32/apps/kmymoney2.png
 type=DATA
 
 [kmymoney2/icons/Makefile.am]
@@ -378,44 +378,48 @@ type=normal
 [kmymoney2/icons/hicolor/16x16/actions/bank.png]
 dist=true
 install=true
-install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions/bank.png
+install_location=$(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions/bank.png
 type=DATA
 
 [kmymoney2/icons/hicolor/16x16/actions/categories.png]
 dist=true
 install=true
-install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions/categories.png
+install_location=$(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions/categories.png
 type=DATA
 
 [kmymoney2/icons/hicolor/16x16/actions/pay_edit.png]
 dist=true
 install=true
-install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions/pay_edit.png
+install_location=$(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions/pay_edit.png
 type=DATA
 
 [kmymoney2/icons/hicolor/16x16/actions/reconcile.png]
 dist=true
 install=true
-install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions/reconcile.png
+install_location=$(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions/reconcile.png
 type=DATA
 
 [kmymoney2/icons/hicolor/16x16/actions/transaction_export.png]
 dist=true
 install=true
-install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions/transaction_export.png
+install_location=$(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions/transaction_export.png
 type=DATA
 
 [kmymoney2/icons/hicolor/16x16/actions/transaction_find.png]
 dist=true
 install=true
-install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions/transaction_find.png
+install_location=$(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions/transaction_find.png
 type=DATA
 
 [kmymoney2/icons/hicolor/16x16/actions/transaction_import.png]
 dist=true
 install=true
-install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions/transaction_import.png
+install_location=$(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions/transaction_import.png
 type=DATA
+
+[kmymoney2/icons/hicolor/Makefile.am]
+sub_dirs=22x22,16x16
+type=normal
 
 [kmymoney2/icons/hicolor/22x22/Makefile.am]
 sub_dirs=actions
@@ -429,114 +433,110 @@ type=normal
 [kmymoney2/icons/hicolor/22x22/actions/account.png]
 dist=true
 install=true
-install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/account.png
+install_location=$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/account.png
 type=DATA
 
 [kmymoney2/icons/hicolor/22x22/actions/account_open.png]
 dist=true
 install=true
-install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/account_open.png
+install_location=$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/account_open.png
 type=DATA
 
 [kmymoney2/icons/hicolor/22x22/actions/backup.png]
 dist=true
 install=true
-install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/backup.png
+install_location=$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/backup.png
 type=DATA
 
 [kmymoney2/icons/hicolor/22x22/actions/bank.png]
 dist=true
 install=true
-install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/bank.png
+install_location=$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/bank.png
 type=DATA
 
 [kmymoney2/icons/hicolor/22x22/actions/categories.png]
 dist=true
 install=true
-install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/categories.png
+install_location=$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/categories.png
 type=DATA
 
 [kmymoney2/icons/hicolor/22x22/actions/cleared.png]
 dist=true
 install=true
-install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/cleared.png
+install_location=$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/cleared.png
 type=DATA
 
 [kmymoney2/icons/hicolor/22x22/actions/close_window.png]
 dist=true
 install=true
-install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/close_window.png
+install_location=$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/close_window.png
 type=DATA
 
 [kmymoney2/icons/hicolor/22x22/actions/delete.png]
 dist=true
 install=true
-install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/delete.png
+install_location=$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/delete.png
 type=DATA
 
 [kmymoney2/icons/hicolor/22x22/actions/pay_edit.png]
 dist=true
 install=true
-install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/pay_edit.png
+install_location=$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/pay_edit.png
 type=DATA
 
 [kmymoney2/icons/hicolor/22x22/actions/personal_data.png]
 dist=true
 install=true
-install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/personal_data.png
+install_location=$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/personal_data.png
 type=DATA
 
 [kmymoney2/icons/hicolor/22x22/actions/reconcile.png]
 dist=true
 install=true
-install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/reconcile.png
+install_location=$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/reconcile.png
 type=DATA
 
 [kmymoney2/icons/hicolor/22x22/actions/set_as.png]
 dist=true
 install=true
-install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/set_as.png
+install_location=$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/set_as.png
 type=DATA
 
 [kmymoney2/icons/hicolor/22x22/actions/transaction.png]
 dist=true
 install=true
-install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/transaction.png
+install_location=$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/transaction.png
 type=DATA
 
 [kmymoney2/icons/hicolor/22x22/actions/transaction_export.png]
 dist=true
 install=true
-install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/transaction_export.png
+install_location=$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/transaction_export.png
 type=DATA
 
 [kmymoney2/icons/hicolor/22x22/actions/transaction_find.png]
 dist=true
 install=true
-install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/transaction_find.png
+install_location=$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/transaction_find.png
 type=DATA
 
 [kmymoney2/icons/hicolor/22x22/actions/transaction_import.png]
 dist=true
 install=true
-install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/transaction_import.png
+install_location=$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/transaction_import.png
 type=DATA
 
 [kmymoney2/icons/hicolor/22x22/actions/unreconciled.png]
 dist=true
 install=true
-install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/unreconciled.png
+install_location=$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/unreconciled.png
 type=DATA
 
 [kmymoney2/icons/hicolor/22x22/actions/view_info.png]
 dist=true
 install=true
-install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/view_info.png
+install_location=$(kde_datadir)/kmymoney2/icons/hicolor/22x22/actions/view_info.png
 type=DATA
-
-[kmymoney2/icons/hicolor/Makefile.am]
-sub_dirs=22x22,16x16
-type=normal
 
 [kmymoney2/kbanklistitem.cpp]
 dist=true
@@ -673,7 +673,7 @@ type=SOURCE
 [kmymoney2/kmymoney2.desktop]
 dist=true
 install=true
-install_location=$$(kde_appsdir)/Applications/kmymoney2.desktop
+install_location=$(kde_appsdir)/Applications/kmymoney2.desktop
 type=DATA
 
 [kmymoney2/kmymoney2.h]
@@ -685,7 +685,7 @@ type=HEADER
 [kmymoney2/kmymoney2ui.rc]
 dist=true
 install=true
-install_location=$$(kde_datadir)/kmymoney2/kmymoney2ui.rc
+install_location=$(kde_datadir)/kmymoney2/kmymoney2ui.rc
 type=DATA
 
 [kmymoney2/kmymoney_wizard.png]
@@ -931,13 +931,13 @@ type=SOURCE
 [kmymoney2/lo16-app-kmymoney2.png]
 dist=true
 install=true
-install_location=$$(kde_icondir)/locolor/16x16/apps/kmymoney2.png
+install_location=$(kde_icondir)/locolor/16x16/apps/kmymoney2.png
 type=DATA
 
 [kmymoney2/lo32-app-kmymoney2.png]
 dist=true
 install=true
-install_location=$$(kde_icondir)/locolor/32x32/apps/kmymoney2.png
+install_location=$(kde_icondir)/locolor/32x32/apps/kmymoney2.png
 type=DATA
 
 [kmymoney2/main.cpp]
@@ -949,19 +949,19 @@ type=SOURCE
 [kmymoney2/mimetype_kmy_16x16.png]
 dist=true
 install=true
-install_location=$$(kde_icondir)/hicolor/16x16/mimetypes/kmy.png
+install_location=$(kde_icondir)/hicolor/16x16/mimetypes/kmy.png
 type=DATA
 
 [kmymoney2/mimetype_kmy_32x32.png]
 dist=true
 install=true
-install_location=$$(kde_icondir)/hicolor/32x32/mimetypes/kmy.png
+install_location=$(kde_icondir)/hicolor/32x32/mimetypes/kmy.png
 type=DATA
 
 [kmymoney2/mimetype_kmy_48x48.png]
 dist=true
 install=true
-install_location=$$(kde_icondir)/hicolor/48x48/mimetypes/kmy.png
+install_location=$(kde_icondir)/hicolor/48x48/mimetypes/kmy.png
 type=DATA
 
 [kmymoney2/mymoney/Makefile.am]
@@ -1078,32 +1078,128 @@ install_location=
 type=DATA
 
 [kmymoney2/pics/Makefile.am]
-files=kmymoney2/pics/account-folder.xpm,kmymoney2/pics/bank-folder.xpm,kmymoney2/pics/startlogo.png,kmymoney2/pics/kmymoney2_setting_list.png
+files=kmymoney2/pics/account-folder.xpm,kmymoney2/pics/bank-folder.xpm,kmymoney2/pics/startlogo.png,kmymoney2/pics/kmymoney2_setting_list.png,kmymoney2/pics/view_info.png,kmymoney2/pics/dlg_backup.png,kmymoney2/pics/dlg_csv_import.png,kmymoney2/pics/dlg_edit_categories.png,kmymoney2/pics/dlg_edit_category.png,kmymoney2/pics/dlg_edit_file.png,kmymoney2/pics/dlg_ending_balance.png,kmymoney2/pics/dlg_export.png,kmymoney2/pics/dlg_find_transaction.png,kmymoney2/pics/dlg_import.png,kmymoney2/pics/dlg_new_account.png,kmymoney2/pics/dlg_new_institution.png,kmymoney2/pics/dlg_payees.png ,kmymoney2/pics/dlg_qif_export.png,kmymoney2/pics/dlg_qif_import.png,kmymoney2/pics/dlg_reconcile.png
 sub_dirs=
 type=normal
 
 [kmymoney2/pics/account-folder.xpm]
 dist=true
 install=true
-install_location=$$(kde_datadir)/kmymoney2/pics/account-folder.xpm
+install_location=$(kde_datadir)/kmymoney2/pics/account-folder.xpm
 type=DATA
 
 [kmymoney2/pics/bank-folder.xpm]
 dist=true
 install=true
-install_location=$$(kde_datadir)/kmymoney2/pics/bank-folder.xpm
+install_location=$(kde_datadir)/kmymoney2/pics/bank-folder.xpm
 type=DATA
 
 [kmymoney2/pics/kmymoney2_setting_list.png]
 dist=true
 install=true
-install_location=$$(kde_datadir)/kmymoney2/pics/setting_list.png
+install_location=$(kde_datadir)/kmymoney2/pics/setting_list.png
 type=DATA
 
 [kmymoney2/pics/startlogo.png]
 dist=true
 install=true
-install_location=$$(kde_datadir)/kmymoney2/pics/startlogo.png
+install_location=$(kde_datadir)/kmymoney2/pics/startlogo.png
+type=DATA
+
+[kmymoney2/pics/view_info.png]
+dist=true
+install=true
+install_location=$(kde_datadir)/kmymoney2/pics/view_info.png
+type=DATA
+
+[kmymoney2/pics/dlg_backup.png]
+dist=true
+install=true
+install_location=$(kde_datadir)/kmymoney2/pics/dlg_backup.png
+type=DATA
+
+[kmymoney2/pics/dlg_csv_import.png]
+dist=true
+install=true
+install_location=$(kde_datadir)/kmymoney2/pics/dlg_csv_import.png
+type=DATA
+
+[kmymoney2/pics/dlg_edit_categories.png]
+dist=true
+install=true
+install_location=$(kde_datadir)/kmymoney2/pics/dlg_edit_categories.png]
+type=DATA
+
+[kmymoney2/pics/dlg_edit_category.png]
+dist=true
+install=true
+install_location=$(kde_datadir)/kmymoney2/pics/dlg_edit_category.png
+type=DATA
+
+[kmymoney2/pics/dlg_edit_file.png]
+dist=true
+install=true
+install_location=$(kde_datadir)/kmymoney2/pics/dlg_edit_file.png
+type=DATA
+
+[kmymoney2/pics/dlg_ending_balance.png]
+dist=true
+install=true
+install_location=$(kde_datadir)/kmymoney2/pics/dlg_ending_balance.png
+type=DATA
+
+[kmymoney2/pics/dlg_export.png]
+dist=true
+install=true
+install_location=$(kde_datadir)/kmymoney2/pics/dlg_export.png
+type=DATA
+
+[kmymoney2/pics/dlg_find_transaction.png]
+dist=true
+install=true
+install_location=$(kde_datadir)/kmymoney2/pics/dlg_find_transaction.png
+type=DATA
+
+[kmymoney2/pics/dlg_import.png]
+dist=true
+install=true
+install_location=$(kde_datadir)/kmymoney2/pics/dlg_import.png
+type=DATA
+
+[kmymoney2/pics/dlg_new_account.png]
+dist=true
+install=true
+install_location=$(kde_datadir)/kmymoney2/pics/dlg_new_account.png
+type=DATA
+
+[kmymoney2/pics/dlg_new_institution.png]
+dist=true
+install=true
+install_location=$(kde_datadir)/kmymoney2/pics/dlg_new_institution.png
+type=DATA
+
+[kmymoney2/pics/dlg_payees.png]
+dist=true
+install=true
+install_location=$(kde_datadir)/kmymoney2/pics/dlg_payees.png
+type=DATA
+
+[kmymoney2/pics/dlg_qif_export.png]
+dist=true
+install=true
+install_location=$(kde_datadir)/kmymoney2/pics/dlg_qif_export.png
+type=DATA
+
+[kmymoney2/pics/dlg_qif_import.png]
+dist=true
+install=true
+install_location=$(kde_datadir)/kmymoney2/pics/dlg_qif_import.png
+type=DATA
+
+[kmymoney2/pics/dlg_reconcile.png]
+dist=true
+install=true
+install_location=$(kde_datadir)/kmymoney2/pics/dlg_reconcile.png
 type=DATA
 
 [kmymoney2/widgets/Makefile.am]

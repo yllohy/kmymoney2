@@ -16,6 +16,11 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <kglobal.h>
+#include <klocale.h>
+#include <kstddirs.h>
+#include <qpixmap.h>
+
 // ----------------------------------------------------------------------------
 // QT Headers
 #include <qlineedit.h>
@@ -43,6 +48,10 @@
 KExportDlg::KExportDlg(MyMoneyAccount *account, QWidget *parent)
   : KExportDlgDecl(parent,0,TRUE)
 {
+  QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_qif_export.png");
+  QPixmap pm(filename);
+  m_qpixmaplabel->setPixmap(pm);
+
   m_mymoneyaccount = account;
 
   // Set the account name that we will be operating on

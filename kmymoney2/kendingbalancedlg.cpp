@@ -13,6 +13,11 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <kglobal.h>
+#include <klocale.h>
+#include <kstddirs.h>
+#include <qpixmap.h>
+
 #include <kmessagebox.h>
 #include <kglobal.h>
 #include <klocale.h>
@@ -22,7 +27,10 @@ KEndingBalanceDlg::KEndingBalanceDlg(MyMoneyMoney& prevBal, MyMoneyMoney& ending
  : KEndingBalanceDlgDecl(parent,name,true)
 {
 //	initDialog();
-	
+   QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_ending_balance.png");
+  QPixmap pm(filename);
+  m_qpixmaplabel->setPixmap(pm);
+
 	previousbalEdit->setText(KGlobal::locale()->formatNumber(prevBal.amount()));
 	previousbalEdit->setFocus();
 	previousbalEdit->setSelection(0, KGlobal::locale()->formatNumber(prevBal.amount()).length());	

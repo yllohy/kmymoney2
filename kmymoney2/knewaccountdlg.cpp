@@ -13,6 +13,11 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <kglobal.h>
+#include <klocale.h>
+#include <kstddirs.h>
+#include <qpixmap.h>
+
 #include <kmessagebox.h>
 #include <qpushbutton.h>
 #include <qlabel.h>
@@ -24,6 +29,9 @@
 KNewAccountDlg::KNewAccountDlg(QString institution, QWidget *parent, const char *name, const char *title)
   : KNewAccountDlgDecl(parent,name,true)
 {
+  QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_new_account.png");
+  QPixmap pm(filename);
+  m_qpixmaplabel->setPixmap(pm);
 	if (title)
 	  setCaption(title);
 
@@ -40,6 +48,10 @@ KNewAccountDlg::KNewAccountDlg(QString institution, QString m_name, QString no,
   QWidget *parent, const char *name, const char *title)
   : KNewAccountDlgDecl(parent,name,true)
 {
+  QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_new_account.png");
+  QPixmap pm(filename);
+  m_qpixmaplabel->setPixmap(pm);
+
   institutionNameLabel->setText(institution);
 
   accountNameEdit->setText(m_name);
