@@ -383,6 +383,7 @@ void kMyMoneyRegister::ensureTransactionVisible(void)
 
 bool kMyMoneyRegister::eventFilter(QObject* o, QEvent* e)
 {
+  QKeyEvent *k = static_cast<QKeyEvent *> (e);
   bool rc = false;
 
   if(e->type() == QEvent::KeyPress && !m_inlineEditMode) {
@@ -391,7 +392,6 @@ bool kMyMoneyRegister::eventFilter(QObject* o, QEvent* e)
       lines += maxRpt()-1;
     QCString transactionId;
           
-    QKeyEvent *k = static_cast<QKeyEvent *> (e);
     rc = true;
     switch(k->key()) {
       case Qt::Key_Space:
@@ -444,16 +444,25 @@ bool kMyMoneyRegister::eventFilter(QObject* o, QEvent* e)
         rc = false;
         break;
     }
+  } else if(e->type() == QEvent::KeyPress && m_inlineEditMode) {
+    // suppress the F2 functionality to start editing in inline edit mode
+    switch(k->key()) {
+      case Key_F2:
+        rc = true;
+        break;
+      default:
+        break;
+    }
   }
+
 
   // if the key has not been processed here, forward it to
   // the base class implementation
   if(rc == false) {
-    if(e->type() == QEvent::KeyPress
-    || e->type() == QEvent::KeyRelease) {
-      rc = false;
-    } else
+    if(e->type() != QEvent::KeyPress
+    && e->type() != QEvent::KeyRelease) {
       rc = QTable::eventFilter(o, e);
+    }
   }
 
   return rc;
