@@ -35,7 +35,7 @@
 
 // ----------------------------------------------------------------------------
 // Project Includes
-
+#include "kinvestmentlistitem.h"
 #include "../mymoney/mymoneyequity.h"
 #include "../mymoney/mymoneyaccount.h"
 #include "kinvestmentviewdecl.h"
@@ -43,20 +43,6 @@
 class MyMoneyTransaction;
 class MyMoneyInvestTransaction;
 class KLedgerView;
-
-//indexes for the various columns on the summary view
-#define COLUMN_NAME_INDEX       0
-#define COLUMN_SYMBOL_INDEX     1
-#define COLUMN_QUANTITY_INDEX   2
-#define COLUMN_CURRPRICE_INDEX  3
-#define COLUMN_COSTBASIS_INDEX  4
-#define COLUMN_RAWGAIN_INDEX    5
-#define COLUMN_1WEEKGAIN_INDEX  6
-#define COLUMN_4WEEKGAIN_INDEX  7
-#define COLUMN_3MONGAIN_INDEX   8
-#define COLUMN_YTDGAIN_INDEX    9
-
-
 
 /**
   * @author Kevin Tambascio

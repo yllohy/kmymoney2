@@ -1394,21 +1394,27 @@ QValueList<MyMoneySchedule> MyMoneySeqAccessMgr::scheduleListEx(int scheduleType
 
 void MyMoneySeqAccessMgr::addEquity(MyMoneyEquity& equity)
 {
-
+  m_equitiesList[equity.id()] = equity;
 }
 
 void MyMoneySeqAccessMgr::modifyEquity(const MyMoneyEquity& equity)
 {
-
+  m_equitiesList[equity.id()] = equity;
 }
 
 void MyMoneySeqAccessMgr::removeEquity(const MyMoneyEquity& equity)
 {
-
+  m_equitiesList.erase(equity.id());
 }
 
 const MyMoneyEquity MyMoneySeqAccessMgr::equity(const QCString& id) const
 {
+  QMap<QCString, MyMoneyEquity>::ConstIterator it = m_equitiesList.find(id);
+  if(it != m_equitiesList.end())
+  {
+    return it.data();
+  }
+
   return MyMoneyEquity();
 }
 

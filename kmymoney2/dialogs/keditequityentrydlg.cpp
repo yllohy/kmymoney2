@@ -41,7 +41,7 @@
 #include "keditequityentrydlg.h"
 #include "kupdatestockpricedlg.h"
 
-KEditEquityEntryDlg::KEditEquityEntryDlg(MyMoneyEquity* selectedEquity, QWidget *parent, const char *name)
+KEditEquityEntryDlg::KEditEquityEntryDlg(const MyMoneyEquity& selectedEquity, QWidget *parent, const char *name)
   : kEditEquityEntryDecl(parent, name, true)
 {
   m_selectedEquity = selectedEquity;
@@ -59,15 +59,15 @@ KEditEquityEntryDlg::KEditEquityEntryDlg(MyMoneyEquity* selectedEquity, QWidget 
   connect(lvPriceHistory, SIGNAL(clicked(QListViewItem *, const QPoint&, int)), this, SLOT(slotPriceHistoryClicked(QListViewItem*, const QPoint&, int)));
   
   //fill in the fields for what we know.
-  edtEquityName->setText(m_selectedEquity->name());
-  edtMarketSymbol->setText(m_selectedEquity->tradingSymbol());
-  cmbInvestmentType->setCurrentItem((int)m_selectedEquity->equityType());
-  equity_price_history priceHistory = m_selectedEquity->priceHistory();
+  edtEquityName->setText(m_selectedEquity.name());
+  edtMarketSymbol->setText(m_selectedEquity.tradingSymbol());
+  cmbInvestmentType->setCurrentItem((int)m_selectedEquity.equityType());
+  equity_price_history priceHistory = m_selectedEquity.priceHistory();
   if(priceHistory.size())
   {
     for(equity_price_history::ConstIterator it = priceHistory.begin(); it != priceHistory.end(); ++it)
     {
-      QListViewItem *item = new QListViewItem(lvPriceHistory, it.key().toString(), it.data().toString());
+      QListViewItem *item = new QListViewItem(lvPriceHistory, it.key().toString(), it.data().formatMoney());
       lvPriceHistory->insertItem(item);
     }
   }

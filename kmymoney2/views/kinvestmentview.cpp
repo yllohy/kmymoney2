@@ -69,6 +69,7 @@
 #include "../dialogs/kupdatestockpricedlg.h"
 #include "../dialogs/keditequityentrydlg.h"
 #include "kinvestmentview.h"
+#include "kinvestmentlistitem.h"
 #include "kledgerviewinvestments.h"
 
 KInvestmentView::KInvestmentView(QWidget *parent, const char *name)
@@ -193,33 +194,37 @@ bool KInvestmentView::init(const MyMoneyAccount& account)
 /** No descriptions */
 void KInvestmentView::updateDisplay()
 {
-	//for(emp=list.first(); emp != 0; emp=list.next())
-	//{
-		//printf( "%s earns %d\n", emp->name().latin1(), emp->salary() );
-	//}
-
+  //remove all current items
+  investmentTable->clear();
+  
   MyMoneyFile* file = MyMoneyFile::instance();
   QValueList<MyMoneyEquity> equities = file->equityList();
-
-  qDebug("Number of equity objects: %d", equities.size());
+  QValueList<MyMoneyTransaction> transactions;
+  qDebug("slotRefreshView: Number of equity objects: %d", equities.size());
 
   for(QValueList<MyMoneyEquity>::ConstIterator it = equities.begin(); it != equities.end(); ++it)
   {
-    KListViewItem* item = new KListViewItem(investmentTable, (*it).name(), (*it).tradingSymbol());
+    KInvestmentListItem* item = new KInvestmentListItem(investmentTable, (*it), transactions);
     investmentTable->insertItem(item);
   }
+  
 }
 
 void KInvestmentView::slotItemDoubleClicked(QListViewItem* pItem, const QPoint& pos, int c)
 {
   if(COLUMN_NAME_INDEX == c || COLUMN_SYMBOL_INDEX == c)
   {
-    MyMoneyFile* currentFile = MyMoneyFile::instance();
-    //currentFile->
-    //QString clickedEquity = pItem->text(COLUMN_SYMBOL_INDEX);
-    MyMoneyEquity equity;
-    KEditEquityEntryDlg *pDlg = new KEditEquityEntryDlg(&equity, this);
-	  pDlg->exec();
+    KInvestmentListItem *pInvestListItem = dynamic_cast<KInvestmentListItem*>(pItem);
+    if(pInvestListItem)
+    {
+      MyMoneyFile* currentFile = MyMoneyFile::instance();
+
+      //get the ID of the equity that was double-clicked, to look up to pass to the dialog.
+      QCString id = pInvestListItem->equityId();
+      MyMoneyEquity equity = currentFile->equity(id);
+      KEditEquityEntryDlg *pDlg = new KEditEquityEntryDlg(equity, this);
+	    pDlg->exec();
+    }
   }
 }
 
@@ -302,7 +307,7 @@ void KInvestmentView::slotUpdatePrice()
 */
 }
 
-void KInvestmentView::slotListRightMouse(QListViewItem* /*item*/, const QPoint& /*point*/, int)
+void KInvestmentView::slotListRightMouse(QListViewItem* item, const QPoint& point, int x)
 {
 /*
   // setup the context menu
@@ -347,6 +352,8 @@ void KInvestmentView::slotViewChanged(int ID)
 
 void KInvestmentView::slotReloadView(void)
 {
+  updateDisplay();
+  
   // qDebug("KInvestmentView::slotReloadView()");
 
   // make sure to determine the current account from scratch
@@ -357,16 +364,7 @@ void KInvestmentView::slotReloadView(void)
 
 void KInvestmentView::slotRefreshView(void)
 {
-  MyMoneyFile* file = MyMoneyFile::instance();
-  QValueList<MyMoneyEquity> equities = file->equityList();
-
-  qDebug("Number of equity objects: %d", equities.size());
-
-  for(QValueList<MyMoneyEquity>::ConstIterator it = equities.begin(); it != equities.end(); ++it)
-  {
-    KListViewItem* item = new KListViewItem(investmentTable, (*it).name(), (*it).tradingSymbol());
-    investmentTable->insertItem(item);
-  }
+  updateDisplay();
   
   QCString id = m_account.id();
 

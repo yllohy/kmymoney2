@@ -1233,22 +1233,26 @@ void MyMoneyFile::suspendNotify(const bool state)
 
 void MyMoneyFile::addEquity(MyMoneyEquity& equity)
 {
-
+  checkStorage();
+  m_storage->addEquity(equity);
 }
 
 void MyMoneyFile::modifyEquity(const MyMoneyEquity& equity)
 {
-
+  checkStorage();
+  m_storage->modifyEquity(equity);
 }
 
 void MyMoneyFile::removeEquity(const MyMoneyEquity& equity)
 {
-
+  checkStorage();
+  m_storage->removeEquity(equity);
 }
 
 const MyMoneyEquity MyMoneyFile::equity(const QCString& id) const
 {
-  return MyMoneyEquity();
+  checkStorage();
+  return m_storage->equity(id);
 }
 
 const QValueList<MyMoneyEquity> MyMoneyFile::equityList(void) const

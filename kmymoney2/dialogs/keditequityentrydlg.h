@@ -47,7 +47,7 @@ class KEditEquityEntryDlg : public kEditEquityEntryDecl
 {
   Q_OBJECT
 public: 
-	KEditEquityEntryDlg(MyMoneyEquity* selectedEquity, QWidget *parent = NULL, const char *name = NULL);
+	KEditEquityEntryDlg(const MyMoneyEquity& selectedEquity, QWidget *parent = NULL, const char *name = NULL);
 	~KEditEquityEntryDlg();
                           
 protected slots:
@@ -62,7 +62,7 @@ protected slots:
   void slotRemovePriceClicked();
   
 private:
-  MyMoneyEquity* m_selectedEquity;
+  MyMoneyEquity m_selectedEquity;
   bool m_changes;	
 };
 
