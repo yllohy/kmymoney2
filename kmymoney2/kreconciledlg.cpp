@@ -434,7 +434,7 @@ void KReconcileDlg::editClicked()
   hide();
 }
 
-void KReconcileDlg::resizeEvent(QResizeEvent*)
+void KReconcileDlg::resizeEvent(QResizeEvent* e)
 {
   debitListView->setColumnWidth( 2, debitListView->width()
     - debitListView->columnWidth(0)
@@ -447,4 +447,7 @@ void KReconcileDlg::resizeEvent(QResizeEvent*)
     - creditListView->columnWidth(1)
     - creditListView->columnWidth(3)
     - creditListView->columnWidth(4) - 5);
+
+  // call base class resizeEvent()
+  KReconcileDlgDecl::resizeEvent(e);
 }

@@ -122,10 +122,13 @@ void KCategoriesDlg::slotDeleteClicked()
   refresh();
 }
 
-void KCategoriesDlg::resizeEvent(QResizeEvent*)
+void KCategoriesDlg::resizeEvent(QResizeEvent* e)
 {
-	categoryListView->setColumnWidth(0, categoryListView->width()-105);
+  categoryListView->setColumnWidth(0, categoryListView->width()-105);
   categoryListView->setColumnWidth(1, 100);
+
+  // call base class resizeEvent()
+  KCategoryDlgDecl::resizeEvent(e);
 }
 
 void KCategoriesDlg::slotSelectionChanged(QListViewItem* item)

@@ -121,12 +121,15 @@ void KBanksView::clear(void)
   m_bSelectedBank = m_bSelectedAccount = false;
 }
 
-void KBanksView::resizeEvent(QResizeEvent* /*e*/)
+void KBanksView::resizeEvent(QResizeEvent* e)
 {
 	bankListView->setColumnWidth(0,400);
 	bankListView->setColumnWidth(1,150);
 	int totalWidth=bankListView->width();
 	bankListView->setColumnWidth(2, totalWidth-550-5);
+
+	// call base class resizeEvent()
+	KBankViewDecl::resizeEvent(e);
 }
 
 void KBanksView::slotSelectionChanged(QListViewItem *item)
