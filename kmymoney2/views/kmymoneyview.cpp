@@ -59,6 +59,11 @@
 KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   : KJanusWidget(parent, name, KJanusWidget::IconList)
 {
+  // create an empty file
+  m_file = new KMyMoneyFile;
+  MyMoneyFile* engine = MyMoneyFile::instance();
+  engine->attachStorage(m_file->storage());
+
   QVBox *qvboxMainFrame1 = addVBoxPage( i18n("Home"), i18n("Home"),
     DesktopIcon("home"));
   m_homeView = new KHomeView(qvboxMainFrame1);
@@ -172,7 +177,7 @@ void KMyMoneyView::slotBankEdit()
   bool bankSuccess=false;
   try
   {
-    MyMoneyFile* file = KMyMoneyFile::instance()->file();
+    MyMoneyFile* file = MyMoneyFile::instance();
     MyMoneyInstitution institution = file->institution(accountsView->currentInstitution(bankSuccess));
     // bankSuccess is not checked anymore because m_file->institution will throw anyway
     KNewBankDlg dlg(institution, true, this, "edit_bank");
@@ -202,7 +207,7 @@ void KMyMoneyView::slotBankDelete()
   bool bankSuccess=false;
   try
   {
-    MyMoneyFile *file = KMyMoneyFile::instance()->file();
+    MyMoneyFile *file = MyMoneyFile::instance();
     MyMoneyInstitution institution = file->institution(accountsView->currentInstitution(bankSuccess));
     QString msg = i18n("Really delete this institution: ");
     msg += institution.name();
@@ -232,7 +237,7 @@ void KMyMoneyView::slotAccountEdit()
 
   try
   {
-    MyMoneyFile* file = KMyMoneyFile::instance()->file();
+    MyMoneyFile* file = MyMoneyFile::instance();
     MyMoneyAccount account = file->account(accountsView->currentAccount(accountSuccess));
 
     KNewAccountDlg dlg(account, true, false, this, "hi", i18n("Edit an Account"));
@@ -267,7 +272,7 @@ void KMyMoneyView::slotAccountDelete()
 
   try
   {
-    MyMoneyFile* file = KMyMoneyFile::instance()->file();
+    MyMoneyFile* file = MyMoneyFile::instance();
 
     MyMoneyAccount account = file->account(accountsView->currentAccount(accountSuccess));
     QString prompt = i18n("Delete this account ? :-\n");
@@ -295,15 +300,12 @@ void KMyMoneyView::slotAccountDelete()
 
 bool KMyMoneyView::fileOpen(void)
 {
-  return KMyMoneyFile::instance()->isOpen();
+  return m_file->isOpen();
 }
 
 void KMyMoneyView::closeFile(void)
 {
-  if (fileOpen())
-  {
-    KMyMoneyFile::instance()->close();
-  }
+  m_file->close();
 
   accountsView->clear();
   transactionView->clear();
@@ -313,7 +315,7 @@ void KMyMoneyView::closeFile(void)
 bool KMyMoneyView::readFile(QString filename)
 
 {
-  KMyMoneyFile *kfile = KMyMoneyFile::instance();
+  KMyMoneyFile *kfile = m_file;
   if (fileOpen())
   {
     kfile->close();
@@ -325,10 +327,14 @@ bool KMyMoneyView::readFile(QString filename)
   // Use the old reader for now
   MyMoneyStorageBin *binaryReader = new MyMoneyStorageBin;
   QFile qfile(filename);
-  qfile.open(IO_ReadOnly);
-  QDataStream s(&qfile);
-  binaryReader->readStream(s, kfile->storage());
-  qfile.close();
+
+  if(qfile.open(IO_ReadOnly)) {
+    QDataStream s(&qfile);
+    binaryReader->readStream(s, kfile->storage());
+    qfile.close();
+  } else {
+    KMessageBox::sorry(this, i18n("File not found!"));
+  }
   delete binaryReader;
 
   accountsView->refresh("");
@@ -356,7 +362,7 @@ bool KMyMoneyView::dirty(void)
   if (!fileOpen())
     return false;
 
-  return KMyMoneyFile::instance()->file()->dirty();
+  return MyMoneyFile::instance()->dirty();
 }
 
 void KMyMoneyView::slotBankNew(void)
@@ -371,7 +377,7 @@ void KMyMoneyView::slotBankNew(void)
   {
     try
     {
-      MyMoneyFile* file = KMyMoneyFile::instance()->file();
+      MyMoneyFile* file = MyMoneyFile::instance();
 
       institution = dlg.institution();
       file->addInstitution(institution);
@@ -401,7 +407,7 @@ void KMyMoneyView::slotAccountNew(void)
     // An exception will be thrown on the next line instead.
     try
     {
-      MyMoneyFile* file = KMyMoneyFile::instance()->file();
+      MyMoneyFile* file = MyMoneyFile::instance();
 
       MyMoneyAccount newAccount = dialog.account();
       MyMoneyAccount parentAccount = dialog.parentAccount();
@@ -417,6 +423,7 @@ void KMyMoneyView::slotAccountNew(void)
       message += e->what();
       KMessageBox::information(this, message);
       delete e;
+
       return;
     }
   }
@@ -489,6 +496,7 @@ void KMyMoneyView::slotAccountImportAscii(void)
         transactionView->refresh();
         accountsView->refresh(m_file);
       }
+
     }
     else {
       KCsvProgressDlg kcsvprogressdlg(0, getAccount(), this);
@@ -537,13 +545,10 @@ void KMyMoneyView::slotReconcileFinished(bool success)
 
 void KMyMoneyView::newFile(void)
 {
-  if (fileOpen())
-  {
-    KMyMoneyFile::instance()->close();
-    KMyMoneyFile::instance()->open();
-  }
+  m_file->close();
+  m_file->open();
 
-  MyMoneyFile *file = KMyMoneyFile::instance()->file();
+  MyMoneyFile *file = MyMoneyFile::instance();
 
   KNewFileDlg newFileDlg(this, "e", i18n("Create new KMyMoneyFile"));
   if (newFileDlg.exec())
@@ -569,7 +574,7 @@ void KMyMoneyView::viewPersonal(void)
     return;
   }
 
-  MyMoneyFile* file = KMyMoneyFile::instance()->file();
+  MyMoneyFile* file = MyMoneyFile::instance();
 
   KNewFileDlg newFileDlg(file->userName(), file->userStreet(),
     file->userTown(), file->userCounty(), file->userPostcode(), file->userTelephone(),
@@ -589,8 +594,7 @@ void KMyMoneyView::viewPersonal(void)
 
 void KMyMoneyView::loadDefaultCategories(void)
 {
-/*
-  QString filename = KGlobal::dirs()->findResource("appdata", "default_categories.dat");
+  QString filename = KGlobal::dirs()->findResource("appdata", "default_accounts.dat");
 
   if (filename == QString::null) {
     KMessageBox::error(this, i18n("Cannot find the data file containing the default categories"));
@@ -601,21 +605,77 @@ void KMyMoneyView::loadDefaultCategories(void)
   if (f.open(IO_ReadOnly) ) {
     QTextStream t(&f);
     QString s;
+    QMap<QString, MyMoneyAccount> accounts;
+    int line = 0;
     while ( !t.eof() ) {        // until end of file...
       s = t.readLine();       // line of text excluding '\n'
+      ++line;
       if (!s.isEmpty() && s[0]!='#') {
+        MyMoneyAccount account, parentAccount;
         bool l_income=false;
-        QString l_categoryName;
-        QStringList l_minorList;
-        if (parseDefaultCategory(s, l_income, l_categoryName, l_minorList)) {
-          m_file.addCategory(l_income, l_categoryName, l_minorList);
+        QString type, parent, child;
+        QString msg;
+        int pos1, pos2;
+        // search the first and the last colon in the line
+        // stuff before the first colon is the type (income/expense)
+        // stuff after the last colon is the name of the account to be
+        // created. stuff between them is the parent account. If pos1 == pos2
+        // then the parent account is the standard account.
+        pos1 = s.find(':');
+        pos2 = s.findRev(':');
+        if(pos1 == -1 || pos2 == -1) {
+          qDebug("Format error in line %d of default_accounts.dat", line);
+          continue;
         }
-        l_minorList.clear(); // clear the list
+        type = s.left(pos1).lower();
+
+        if(type == "income") {
+          account.setAccountType(MyMoneyAccount::Income);
+          parentAccount = MyMoneyFile::instance()->income();
+        } else if(type == "expense") {
+          account.setAccountType(MyMoneyAccount::Expense);
+          parentAccount = MyMoneyFile::instance()->expense();
+        } else {
+          QString msg("Unknown type '");
+          msg += type + "' in line %d of defaults_account.dat";
+          qDebug(msg, line);
+          continue;
+        }
+
+        parent = s.left(pos2);
+
+        if(pos1 != pos2) {
+          QMap<QString, MyMoneyAccount>::ConstIterator it;
+          it = accounts.find(parent);
+          if(it == accounts.end()) {
+            QString msg("Unknown parent account '");
+            msg += parent + "' in line %d of defaults_account.dat";
+            qDebug(msg, line);
+            continue;
+          }
+          parentAccount = *it;
+        }
+
+        child = s.mid(pos2+1);
+        account.setName(child);
+        try {
+          MyMoneyFile::instance()->addAccount(account, parentAccount);
+          accounts[parent + ":" + child] = account;
+          QString msg("Added '");
+          msg += child + "'";
+          qDebug(msg);
+
+        } catch(MyMoneyException *e) {
+          QString msg("Unable to add account '");
+          msg += account.name() + ": " + e->what();
+          qDebug(msg);
+          delete e;
+          continue;
+        }
       }
     }
     f.close();
   }
-*/
 }
 
 bool KMyMoneyView::parseDefaultCategory(QString& line, bool& income, QString& name, QStringList& minors)
@@ -672,6 +732,7 @@ bool KMyMoneyView::parseDefaultCategory(QString& line, bool& income, QString& na
           case 0: // income
             if (buffer.upper() == "TRUE")
               income = true;
+
             else if (buffer.upper() == "FALSE")
               income = false;
             else
@@ -684,6 +745,7 @@ bool KMyMoneyView::parseDefaultCategory(QString& line, bool& income, QString& na
           case 1: // name
             if (buffer.length()<=0)
               return false;
+
 
             name = buffer;
             tokenCount++;
@@ -1083,6 +1145,7 @@ bool KMyMoneyView::checkTransactionNumber(const MyMoneyTransaction *transaction,
     if (transaction->number().contains(number))
       return true;
     else
+
       return false;
   } else {
     QRegExp regExp(number);
@@ -1134,6 +1197,7 @@ bool KMyMoneyView::checkTransactionCategory(const MyMoneyTransaction *transactio
         transaction->categoryMinor()==right)
       return true;
     else
+
       return false;
   }
 
@@ -1158,9 +1222,9 @@ QString KMyMoneyView::currentBankName(void)
 QString KMyMoneyView::currentAccountName(void)
 {
   bool accountSuccess=false;
+    MyMoneyFile* file = MyMoneyFile::instance();
     try
     {
-      MyMoneyFile* file = KMyMoneyFile::instance()->file();
 
       MyMoneyAccount account = file->account(accountsView->currentAccount(accountSuccess));
       if (accountSuccess)
@@ -1169,7 +1233,6 @@ QString KMyMoneyView::currentAccountName(void)
     catch (MyMoneyException *e)
     {
       // Try an instiution
-      MyMoneyFile* file = KMyMoneyFile::instance()->file();
 
       try
       {
@@ -1198,6 +1261,7 @@ void KMyMoneyView::slotActivatedAccountsView()
   m_realShowing = AccountsView;
 
 /*******************************************************
+
  *  DAMNED AWFUL HACK
 .* If anybody can think of an elegant way round this please
  * email mte@users.sourceforge.net.  09/02/2002.
@@ -1240,6 +1304,7 @@ transactionView->setSignals(true);
 void KMyMoneyView::slotActivatedScheduledView()
 {
   m_realShowing = ScheduledView;
+
   emit signalScheduledView();
 }
 
@@ -1262,6 +1327,6 @@ void KMyMoneyView::memoryDump()
   g.open( IO_WriteOnly );
   QDataStream st(&g);
   MyMoneyStorageDump dumper;
-  dumper.writeStream(st, KMyMoneyFile::instance()->storage());
+  dumper.writeStream(st, m_file->storage());
   g.close();
 }

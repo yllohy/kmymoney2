@@ -45,6 +45,7 @@
 #include "kpayeesview.h"
 #include "kscheduledview.h"
 #include "kinvestmentview.h"
+#include "kmymoneyfile.h"
 
 #include "../mymoney/storage/mymoneyseqaccessmgr.h"
 
@@ -55,7 +56,7 @@
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.13 2002/06/13 18:06:22 mte Exp $
+  * $Id: kmymoneyview.h,v 1.14 2002/06/24 06:05:03 ipwizard Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -78,7 +79,7 @@ private:
   viewType m_showing;
   viewShowing m_realShowing;
 
-  //MyMoneyFile *m_file;  // The interface to the transaction code
+  KMyMoneyFile *m_file;  // The interface to the file
   //MyMoneySeqAccessMgr *m_storage;
 
   bool m_inReconciliation;  // True if the reconciliaton dialog needs updating when the user adds/deletes transactions
