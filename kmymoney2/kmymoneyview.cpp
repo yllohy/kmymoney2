@@ -502,14 +502,17 @@ void KMyMoneyView::slotAccountImportAscii(void)
   if (dlg.exec()) {
     if (dlg.importExportType()=="QIF") {
       KImportDlg importDlg(getAccount(), this);
-      if (importDlg.exec())
+      if (importDlg.exec()) {
         m_mainView->refreshTransactionView();
-//      slotAccountImportQIF();
+        m_mainView->refreshBankView(m_file);
+      }
     }
     else {
       KCsvProgressDlg kcsvprogressdlg(0, getAccount(), this);
-      if (kcsvprogressdlg.exec())
+      if (kcsvprogressdlg.exec()) {
         m_mainView->refreshTransactionView();
+        m_mainView->refreshBankView(m_file);
+      }
     }
   }
 }
