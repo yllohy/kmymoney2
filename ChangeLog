@@ -1,3 +1,12 @@
+2004-07-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed spelling of institution
+  * Added test for presence of round() function
+  * Modified MyMoneyFinancialCalculator to use own rounding function if
+    round() is not available
+  * Fixed #979747 (Interest rate does not get updated)
+  * Added constant MyMoneyMoney::autoCalc used to identify automatically
+    calculated values.
+
 2004-07-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added patch supplied by Ace Jones
   * Fixed the 'all dates' option in the report generation as proposed
