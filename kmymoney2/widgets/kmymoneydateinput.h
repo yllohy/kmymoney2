@@ -25,12 +25,12 @@
 #include <qdatetime.h>
 #include <qdatetimeedit.h>
 #include <qvbox.h>
-#include <qpushbutton.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
 
 #include <kdatepicker.h>
+class KPushButton;
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -49,13 +49,13 @@ class kMyMoneyDateInput : public QHBox
 {
    Q_OBJECT
 
-public: 
-	kMyMoneyDateInput(QWidget *parent=0, const char *name=0, Qt::AlignmentFlags flags=Qt::AlignLeft);
-	~kMyMoneyDateInput();
-	
-	// Use this to get the selected date
-	QDate getQDate(void);
-	void setDate(QDate date);
+public:
+  kMyMoneyDateInput(QWidget *parent=0, const char *name=0, Qt::AlignmentFlags flags=Qt::AlignLeft);
+  ~kMyMoneyDateInput();
+
+  // Use this to get the selected date
+  QDate getQDate(void);
+  void setDate(QDate date);
   void loadDate(const QDate& date);
   void resetDate(void);
   QWidget* focusWidget(void) const;
@@ -83,7 +83,7 @@ protected:
 
 protected slots:
   void slotDateChosen(QDate date);
-	void toggleDatePicker();
+  void toggleDatePicker();
 
 private slots:
   void slotDateChosenRef(const QDate& date);
@@ -95,8 +95,8 @@ private:
   QDate m_date;  // The date !
   QDate m_prevDate;
   Qt::AlignmentFlags m_qtalignment;
-	QVBox *m_dateFrame;
-	QPushButton *m_dateButton;
+  QVBox *m_dateFrame;
+  KPushButton *m_dateButton;
 };
 
 #endif

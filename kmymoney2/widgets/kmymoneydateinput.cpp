@@ -37,7 +37,8 @@
 #include "kdecompat.h"
 #include <kglobal.h>
 #include <klocale.h>
-#include <kstandarddirs.h>
+#include <kiconloader.h>
+#include <kpushbutton.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -88,7 +89,7 @@ kMyMoneyDateInput::kMyMoneyDateInput(QWidget *parent, const char *name, Qt::Alig
 #endif
 
   // the next line is a try to add an icon to the button
-  m_dateButton = new QPushButton(QIconSet(QPixmap( locate("icon","hicolor/16x16/apps/korganizer.png"))), QString(""), this);
+  m_dateButton = new KPushButton(QIconSet(QPixmap(KGlobal::iconLoader()->iconPath("date", -KIcon::SizeSmall))), QString(""), this);
   m_dateButton->setMinimumWidth(30);
 
   connect(m_dateButton,SIGNAL(clicked()),SLOT(toggleDatePicker()));
