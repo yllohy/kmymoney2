@@ -1,0 +1,423 @@
+<appendix id="cvs-examples">
+<title>CVS examples</title>
+<para>
+It is not the intention of this document to give a complete introduction to
+CVS. Nevertheless, a few examples should give a quick overview on the basic
+operations to be performed by the developer.
+</para>
+
+<para>
+It is assumed, that the developer is registered with the &app; project and
+has read/write access to the repository. Also, it is assumed, that the
+necessary environment variables are setup, so that CVS knows how to access
+the repository. Details about the settings can be found on the <ulink
+url="http://www.sourceforge.net/">SourceForge.net</ulink> web-site.
+</para>
+
+<para>
+Throughout the next sections, the examples given use the CVS command line
+interface. The options are abbreviated. The operations described here are also
+accessible through various GUI clients available for CVS. Also, I usually
+use the -q (quiet) option to suppress some messages issued by CVS. If you
+omit the -q option, the output differs from the one shown here, even though
+the result of the operation is the same.
+</para>
+
+<section id="cvs-checkout">
+<title>Checking out from the repository</title>
+<para>
+The very first operation is to fill the sandbox. This is done using the
+<emphasis>checkout</emphasis> operation. The first time the repository is
+checked-out, it's location must be specified. This is done using the
+<emphasis>-d</emphasis> option. In the example below,
+you must replace <emphasis>username</emphasis> with your real username at
+SourcForge.net.
+
+</para>
+
+<example>
+<title>Filling the sandbox for the first time</title>
+<screen>
+
+  % cvs -d <emphasis>username</emphasis>@kmymoney2.sourceforge.net:kmymoney2 co kmymoney2
+
+
+</screen>
+<para>
+During the checkout process, CVS lists all filenames on the users screen
+and stores information about the repository's
+location and all the files checked out in the sandbox. Therefor, you do not
+need to specify the repository location during following CVS operations
+anymore.
+</para>
+
+<para>
+For the &app; project, a directory named <emphasis>kmymoney2</emphasis> is
+created in your current working directory.
+</para>
+</example>
+
+<para>
+The above example fills the sandbox with the HEAD revision of all files.
+This stage is sometimes referred to as the 'latest-and-greatest' and is the
+latest development stage.
+</para>
+
+<para>
+If for some reason, you need to checkout a version of the project that is
+different from the development stage (e.g. you want to fix a bug in a
+stable version), you can fill an empty sandbox by supplying the version-tag
+as parameter to the checkout command.
+</para>
+
+<example>
+<title>Filling the sandbox for the first time with a specific version</title>
+<screen>
+
+  % cvs -d <emphasis>username</emphasis>@kmymoney2.sourceforge.net:kmymoney2 -r <emphasis>version-tag</emphasis> co kmymoney2
+
+
+</screen>
+<para>
+This will store the version labelled with the tag
+<emphasis>version-tag</emphasis> in your sandbox. In case
+<emphasis>version-tag</emphasis> is a branch-tag, you are able to modify
+the files and check-in changes later on. In case,
+<emphasis>version-tag</emphasis> is a standard tag, checkin operations will
+be rejected by CVS.
+</para>
+
+<para>
+As in the previous example, the directory kmymoney2 is created as the
+sandbox.
+</para>
+</example>
+</section>
+
+<section id="cvs-checkin">
+<title>Checking in to the repository</title>
+<para>
+Once the sandbox is filled, changes to the project will be 
+applied by the developer. As soon as the developer is confident with the
+changes, he is about to promote these changes to the other developers. He
+does that by checking the changes back into the repository.
+</para>
+
+<para>
+Checking changes back into the repository should start by performing an
+update procedure as described in <link linkend="cvs-update">the next
+section</link>. This may seem strange, but updateing your sandbox will
+transfer changes performed by other developers in the meantime to your
+sandbox. It is good practice to re-compile the project if you notice that
+updateing the sandbox changes it's contents. This assures that the project
+is still compilable when you check-in your changes.
+</para>
+
+<para>
+The next step is to identify the changes you really want to promote. This
+can be performed by the <emphasis>diff</emphasis> operation supported by
+CVS.
+</para>
+
+<example>
+<title>Promote changes to the repository</title>
+<para>
+For the following example, I assume a single file that has been changed in
+the sandbox (~/kmymoney2/kmymoney2/knewbankdlg.cpp) and that the current
+directory is ~/kmymoney2/kmymoney2. Also, it is assumed, that the file
+README has been updated by another person in the repository. Since the
+README file has no influence on the compile process, we omit recompiling in
+this example.
+</para>
+
+<para>
+The part of the original file that has been changed is shown here to
+understand the output of the cvs diff command shown below. The beginning of
+the file is not included here as it is not changed.
+</para>
+
+<screen>
+
+void KNewBankDlg::okClicked()
+{
+  if (nameEdit->text().isEmpty()) {
+    KMessageBox::information(this, i18n("The institution name field is empty.  Please enter the name."), i18n("Adding New Institution"));
+    nameEdit->setFocus();
+    return;
+  }
+
+  m_name = nameEdit->text();
+  m_city = cityEdit->text();
+  m_street = streetEdit->text();
+  m_postcode = postcodeEdit->text();
+  m_telephone = telephoneEdit->text();
+  m_managerName = managerEdit->text();
+  m_sortCode = sortCodeEdit->text();
+  accept();
+}
+
+
+</screen>
+
+<para>
+The changed version of the method is included here.
+</para>
+
+<screen>
+
+void KNewBankDlg::okClicked()
+{
+  if (nameEdit->text().isEmpty()) {
+    KMessageBox::information(this, i18n("The institution name field is empty.  Please enter the name."), i18n("Adding New Institution"));
+    nameEdit->setFocus();
+
+  } else {
+    m_name = nameEdit->text();
+    m_city = cityEdit->text();
+    m_street = streetEdit->text();
+    m_postcode = postcodeEdit->text();
+    m_telephone = telephoneEdit->text();
+    m_managerName = managerEdit->text();
+    m_sortCode = sortCodeEdit->text();
+    accept();
+  }
+}
+
+
+</screen>
+
+<para>
+Now as the file has been changed, the changes should be promoted to the
+repository. As explained above, the process starts with checking for
+changes made by other people.
+</para>
+ 
+<screen>
+
+  % cvs -q upd
+  U README
+  M knewbankdlg.cpp
+  %
+
+
+</screen>
+
+<para>
+The above shown output has the following meaning: 
+the file <emphasis>README</emphasis> is udpated (U) from the repository to the sandbox because
+it has been changed by someone else in the meantime. The contents of the file
+in the sandbox will be replaced by the contents of the file in the
+repository, because it has not been altered in the sandbox.
+The file <emphasis>knewbankdlg.cpp</emphasis> has been modified (M) in the
+sandbox and needs to be returned to the repository.
+</para>
+
+<para>
+<anchor id="cvs-source-changes">
+As the next step, one should check what has been changed in the file
+<emphasis>knewbankdlg.cpp</emphasis>. This is done using the following command:
+</para>
+
+<screen>
+
+  % cvs -q diff knewbankdlg.cpp
+  74,75d73
+  <     return;
+  <   }
+  77,84c75,84
+  <   m_name = nameEdit->text();
+  <   m_city = cityEdit->text();
+  <   m_street = streetEdit->text();
+  <   m_postcode = postcodeEdit->text();
+  <   m_telephone = telephoneEdit->text();
+  <   m_managerName = managerEdit->text();
+  <   m_sortCode = sortCodeEdit->text();
+  <   accept();
+  ---
+  >   } else {
+  >     m_name = nameEdit->text();
+  >     m_city = cityEdit->text();
+  >     m_street = streetEdit->text();
+  >     m_postcode = postcodeEdit->text();
+  >     m_telephone = telephoneEdit->text();
+  >     m_managerName = managerEdit->text();
+  >     m_sortCode = sortCodeEdit->text();
+  >     accept();
+  >   }
+  %
+
+
+</screen>
+</example>
+
+<para>
+The output shows the changes between the current and the original revision
+of the file. If this is what needs to be changed then the next step can be
+started, which is checking the changes back into the repository.
+</para>
+<screen>
+
+  % cvs -q ci -m "Avoid return in the middle of a function" knewbankdlg.cpp
+  FIXME:  Need the output here.
+
+</screen>
+
+
+<note>
+<para>
+If the option -m and the descriptive text is omitted on the command line,
+CVS starts an editor where the developer has to enter a descriptive text
+about the changes and save that file. Performing checkin operations that
+way is meaningful, if the description is longer or covers more than one file.
+</para>
+</note>
+
+<para>
+At this point, the changes are stored in the repository. An automatic mail
+is generated and send to the kmymoney2-developer mailing list 
+<email>kmymoney2-developer@lists.sourceforge.net</email>. This mail
+informs all other developers about your changes and is an indication for
+them to <link linkend="cvs-update">update</link> their sandboxes. The
+contents of the mail looks something like this:
+</para>
+
+<screen>
+FIXME: Need a mail example here!
+</screen>
+
+<para>
+While you checkin your changes, you should maintain the file
+<emphasis>kmymoney2/ChangeLog</emphasis>. You could probably use the same
+comments that you use for checkin in your changes or a more general note
+for many changes. That depends on your changes. Once all your changes are
+checked in, you also checkin <emphasis>kmymoney2/ChangeLog</emphasis>. 
+</para>
+</section>
+
+<section id="cvs-update">
+<title>Updateing changes performed by other developers</title>
+<para>
+In case you noticed that other developers changed the repository -
+fortunately you will be noticed by a mail to the developer mailing list if
+that is the case - you should get those changes to your sandbox. This is
+accomplished using the <emphasis>update</emphasis> command of CVS.
+</para>
+
+<example>
+<title>Updating the sandbox</title>
+<para>
+To update the local sandbox the following command is used. As most other
+CVS commands, it operates recursively from the current working directory in
+the sandbox.
+</para>
+
+<screen>
+
+  % cvs -q upd
+  U README
+  M knewbankdlg.cpp
+  %
+
+
+</screen>
+
+<para>
+The above shown output has the following meaning:
+the file <emphasis>README</emphasis> is udpated (U) from the repository to
+the sandbox because
+it has been changed by someone else in the meantime. The contents of the
+file
+in the sandbox will be replaced by the contents of the file in the
+repository, because it has not been altered in the sandbox.
+The file <emphasis>knewbankdlg.cpp</emphasis> has been modified (M) in the
+sandbox and needs to be returned to the repository.
+</para>
+
+<para>
+If you run the same command again, the output will change, as the file
+<emphasis>README</emphasis> is now up-to-date.
+</para>
+
+<screen>
+
+  % cvs -q upd
+  M knewbankdlg.cpp
+  %
+
+
+</screen>
+
+
+</example>
+
+<para>
+Sometimes it is useful to get an overview of what the status of certain
+files in the repository is without modifying the sandbox (updating). This
+can be accomplished by using the -n option to the update command.
+</para>
+
+<example>
+<title>Checking the status of files in the sandbox</title>
+<screen>
+
+  % cvs -nq upd
+  U README
+  M knewbankdlg.cpp
+  %
+
+
+</screen>
+
+<para>
+The status of the files is the same as explained above, but the file
+<emphasis>README</emphasis>
+will <emphasis>not</emphasis> be updated. It remains unchanged in the
+sandbox. If you run this command again, the output remains.
+</para>
+</example>
+
+</section>
+
+<section id="dismissing-changes">
+<title>Dismissing changes</title>
+<para>
+It happens, that a developer tries to modify the source to gain a certain
+functionality and then wants to discard the changes. This is no problem at
+all with CVS. All the developer needs to do is to remove the file in the
+sandbox and run the <emphasis>update</emphasis> command of CVS. This will
+transfer the original version of the file in question to the sandbox.
+</para>
+
+<para>
+Let's assume, that the changes made to <emphasis>knewbankdlg.cpp</emphasis>
+as outlined in <link linkend="cvs-source-changes">a previous chapter</link> should
+be dismissed. The following commands perform this operation:
+</para>
+
+<example>
+<title>Reverting changes made to the sandbox</title>
+<screen>
+
+  % cvs -q upd
+  M knewbankdlg.cpp
+  % rm knewbankdlg.cpp
+  % cvs -q upd
+  U knewbankdlg.cpp
+  % cvs -q upd
+  %
+
+
+</screen>
+</example>
+
+</section>
+
+<section id="change-branch">
+<title>Changing to a different branch/version</title>
+<para>
+FIXME: to be done!
+</para>
+</section>
+
+</appendix>
+

@@ -1,0 +1,358 @@
+<chapter id="cfg-mgmt">
+<title>Configuration Management</title>
+<para>
+TBD: <emphasis>Introduction on config mgmt.</emphasis>
+</para>
+
+<para>
+Throughout this document a few terms are used. In order to avoid confusion
+because these terms might be used different in other documents, they are
+defined here.
+
+<variablelist>
+<varlistentry>
+<term>Revision</term>
+<listitem><para>
+A <emphasis>revision</emphasis> is the stage of a single file in the
+repository. <emphasis>Revisions</emphasis> start with the value 1.1 upon
+the initial check-in and are incremented with each check-in of that file.
+After the third check-in, the <emphasis>revision</emphasis> of a file has
+the numeric value of 1.3. </para>
+<para>
+Once branches are made, <emphasis>revisions</emphasis> can have values like
+1.6.2.2.  Since the <emphasis>revisions</emphasis> differ for all files,
+the revision number is only necessary for certain administrative tasks on a
+single file.
+</para>
+<para></para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>Tag, Label</term>
+<listitem><para>
+A <emphasis>tag</emphasis> is a string that represents a single revision of
+a file. Multiple tags can point to the same revision of a file.
+Sometimes, <emphasis>label</emphasis> is used as a synonym for tag.
+
+</para>
+<para></para>
+</listitem>
+</varlistentry>
+
+
+<varlistentry>
+<term>Version</term>
+<listitem><para>
+A <emphasis>version</emphasis> is the stage of the whole project in the
+repository. As already mentioned, the revisions for the files contained in
+the project differ from each other for a specific
+<emphasis>version</emphasis>. Therefor, each revision contained in a
+<emphasis>version</emphasis> receives the same tag.
+This tag can be used
+to checkout an exact copy of the version of the project.
+
+</para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term>Repository</term>
+<listitem><para>
+The repository is the central database containing all revisions of all
+files of the &app; project. It is located on the SourceForge.net and can
+be accessed via CVS.
+</para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term>Sandbox</term>
+<listitem><para>
+The sandbox is the local work area for the developer. Initially, a sandbox
+is filled by checking out a specific stage of the repository. Changes made
+to the sandbox are moved to the repository by the checkin process. Changes
+made by other developers are transferred to one's own sandbox by the update
+process.
+</para>
+
+<para>
+A developer can maintain different sandboxes of the same project in
+different directories on the same machine. This requires thorough attention
+of the developer which sandbox he is modifying. Using several sandboxes is
+usually meaningful if a developer works on changes on a release branch
+(stable release) and on the main-branch (development release) at the same
+time.
+</para></listitem>
+</varlistentry>
+
+</variablelist>
+</para>
+<!-- SECTION =================================================== -->
+<sect1 id="vc-tool">
+<title>Version Control Tool</title>
+<para>
+Since the &app; project is hosted on the <ulink
+url="http://www.sourceforge.net/">SourceForge</ulink> platform, <ulink
+url="http://www.cvshome.org">CVS</ulink> is used as the version control
+tool. CVS is widely accepted as version control tool in the open source
+community and covers our needs pretty well.
+</para>
+<para>
+The &app; project's central repository is handled on the
+SourceForge platform. Developers do not edit files directly in the
+repository, but rather checkout a working copy into their local
+sandbox. This local sandbox can then be modified without the necessity of
+a direct link to the central repository.
+Once the developer is confident with the changes made, he checks the files
+back into repository.
+</para>
+
+<para>
+During the checkin process, CVS keeps track of all the changes made. This
+allows to review a complete history of all modifications ever made to the
+project.
+As mentioned above, it is very important in certain circumstances to have
+such a history.
+</para>
+</sect1>
+
+<!-- SECTION =================================================== -->
+
+<sect1 id="repo-access">
+<title>Access to the repository</title>
+<para>
+Access to the repository is available in two different forms
+<itemizedlist>
+<listitem><para>Read-Only access</para></listitem>
+<listitem><para>Read-Write access</para></listitem>
+</itemizedlist>
+
+<sect2>
+<title>Read-Only access</title>
+<para>
+Read-Only access is granted to anybody anonymously to the repository. For
+this type of access you do not need a user account on the SourceForge
+platform. Access is made through the <emphasis>pserver</emphasis>-protocol
+of CVS: See <ulink
+url="http://">the description on SourceForge</ulink> for more details.
+</para>
+</sect2>
+
+<sect2>
+<title>Read-Write access</title>
+<para>
+In order to get read-write access to the repository, two things are
+necessary. First you need a user account on the SourceForge platform.
+Second you need to qualifiy as a developer with the &app; project
+administrator(s). Once they have added you to the list of developers, you
+can access the repository through an <emphasis>SSH</emphasis> encrypted
+tunnel.
+
+See <ulink
+url="http://">the description on SourceForge</ulink> for more details.
+
+</para>
+</sect2>
+</sect1>
+<sect1 id="version-mgmt">
+<title>Version management</title>
+<para>
+At certain times to be defined by the project's administrators (actually
+configuration manager) a snapshot is taken from the repository. In order to
+fix the stage of this snapshot in the repository, a
+<emphasis>tag</emphasis> is placed on this stage. Tagging the repository
+creates a version of the project.
+</para>
+
+<sect2>
+<title>Layout of the version numbers</title>
+<para>
+The name used as tag is organized in a specific way. It consists of 3
+numeric values.
+
+<orderedlist>
+<listitem><para>The major release number</para></listitem>
+<listitem><para>The minor release number</para></listitem>
+<listitem><para>The micro release number</para></listitem>
+</orderedlist>
+
+The major release number will be changed when ..... 
+
+FIXME: include recent mail from Michael which states when the major number
+will change for the first time.
+</para>
+
+<para>
+One of the objectives of the minor release number is to differentiate
+between stable and unstable versions of the project. As a widely accepted
+procedure, odd numbers are used for development versions, even numbers
+identify stable versions. Whenever the configuration manager decides that
+to create a new stable release, this will also bump the version number of
+the unstable release by two.
+</para>
+
+<para>
+The micro release number is reset to 0 when the minor release number is
+incremented and then incremented with each version following until the
+minor release number is modified again. Versions tagged between the
+creation of a stable branch and the actual release -0 of this branch will
+be identified by a micro release number of
+<emphasis>pre<subscript>n</subscript></emphasis>, where
+<emphasis>n</emphasis> is incremented each time a version is tagged.
+</para>
+
+</sect2>
+
+
+<sect2>
+<title>Creating a new stable version</title>
+<para>
+At a certain time in the projects development cycle, the configuration
+manager decides that a feature freeze is necessary to start a new stable
+version. The exact dates when this will happen are announced on the
+developers mailing list ahead of the event. When the time has come to
+freeze the features, a branch will be created as described in this
+section. From this time on, the stable release will only be changed to make
+the current features of the software more stable. New features are not
+introduced to the stable branch but can be developed on the main
+branch (unstable) in parallel.
+
+</para>
+
+<para>
+When the time has come to create a new stable branch, the following steps
+have to be performed.
+
+<orderedlist>
+<listitem><para>Tag the currently unstable version with the
+<emphasis>root-name</emphasis> of the stable version. The root-name is
+identified by appending the text pre1 to the version number.
+ For example, the root tag for versions 0.4 is
+<emphasis>0-4-pre1</emphasis>.
+</para>
+</listitem>
+
+<listitem>
+<para>
+Tag the same version with the base-name of the next unstable release. The
+base name is constructed using the appendix <emphasis>-base</emphasis> to
+the major and minor release number of the next unstable version. In our
+example this will be <emphasis>0-5-base</emphasis>.
+</para>
+</listitem>
+
+<listitem><para>
+Create a branch off of this root. The branch name is build by appending
+the text <emphasis>-branch</emphasis> to the major- and
+minor-release number of the version.
+
+For our example, the branch tag for versions 0.4 is
+<emphasis>0-4-branch</emphasis>.
+</para></listitem>
+
+<listitem>
+<para>
+From this moment on, the developers working on versions 0.4.x must make
+sure, that they checkout or update their copy sandbox using the
+tag <emphasis>0-4-branch</emphasis>. This gives them the head revisions of
+the files on the 0.4 branch. Omitting this tag information will leave
+them on the main branch. The main branch is reserved for the unstable
+versions.
+
+<caution>
+<para>
+The developers really have to
+take care from this point on which version they are modifying in their
+sandbox. Besides that, it is the developers responsibility to make sure
+that bug-fixes are also implemented on the main-branch.
+</para>
+</caution>
+
+</para>
+
+<para>
+When fixes are applied to the branch, new versions can be created by
+incrementing the micro-release thus 0-4-pre2, 0-4-pre3 are the next
+tags on the branch.
+
+</para>
+
+</listitem>
+
+<listitem>
+<para>
+When the configuration manager is confident with the development effort, he
+creates the first stable tag for the version. It is identified by a
+micro-release number of 0. For our example, the branch now contains a tag
+called <emphasis>0-4-0</emphasis>.
+</para>
+</listitem>
+</orderedlist>
+
+<note>
+<para>
+Since CVS does not allow periods inside a tag, we always replace periods
+(.) with dashes (-) inside a tag.
+</para>
+</note>
+
+<para>
+The following diagram shows the above example on two specifc files. Each
+node represented by an asterisk is labelled with it's revision number
+enclosed in parenthesis. If a node has one or more labels attached, then
+they are enclosed in brackets. Nodes may exist without a tag. Such
+revisions never went into a release neither stable nor unstable but are
+valid intermediate steps in the development of the file in question.
+</para>
+
+<example>
+<title>Revisions on the head of a stable branch</title>
+<para>
+The first file is changed rather often between the version tags. All tags
+are on different revision, except the ones required when the branch for the
+stable version is created on revision 1.14.
+</para>
+<screen>
+
+
+     *     (1.12) [0-3-7]
+     |
+     *     (1.13)
+     |
+     *     (1.14) [0-3-8] [0-4-pre1] [0-5-base]
+     |\__________________________
+     |                           \
+     |                            |
+     *     (1.15)                 * (1.14.2.1)    [0-4-pre2]
+     |                            |
+     *     (1.16) [0-5-0]         * (1.14.2.2)    [0-4-0]
+
+   [HEAD]                      [0-4-branch]
+
+
+</screen>
+<para>
+The second file is not changed at all between the version
+tags. Nevertheless, all tags are available even though now they are on
+the same revision 1.2.
+</para>
+<screen>
+
+
+     *     (1.2) [0-3-7] [0-3-8] [0-4-pre1] [0-5-base] [0-4-pre2] [0-4-0] [0-5-0]
+     |\__________________________
+     |                           \
+     |                            |
+
+   [HEAD]                      [0-4-branch]
+
+
+</screen>
+</example>
+
+
+<para>
+For
+</para>
+</sect2>
+</sect1>
+</chapter>
