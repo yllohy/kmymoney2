@@ -126,6 +126,79 @@ void KScheduledListItem::paintCell(QPainter* p, const QColorGroup& cg, int colum
   textColour = config->readColorEntry("listGridColor", &textColour);
   cellFont = config->readFontEntry("listCellFont", &cellFont);
 
+  int indent = 0;
+  if (column == 0)
+  {
+    int ts = listView()->treeStepSize();
+    int ofs;
+    indent = ts * (depth()+1);
+    p->save();
+    p->translate(-indent, 0);
+
+    if ( isSelected()) {
+      p->fillRect( 0, 0, indent, height(), cg2.brush( QColorGroup::Highlight ) );
+      if ( isEnabled() || !listView() )
+        p->setPen( cg2.highlightedText() );
+      else if ( !isEnabled() && listView())
+        p->setPen( listView()->palette().disabled().highlightedText() );
+
+    } else
+      p->fillRect( 0, 0, indent, height(), cg2.base() );
+
+    // draw dotted lines in upper levels to the left of us
+    QListViewItem *parent = this;
+    for(int j = depth()-1; j >= 0; --j) {
+      if(!parent)
+        break;
+      parent = parent->parent();
+      if(parent->nextSibling()) {
+        ofs = (j * ts) + ts/2 - 1;
+        for(int j = 0; j < height(); j += 2)
+          p->drawPoint(ofs, j);
+      }
+    }
+
+    if(childCount() == 0) {
+      // if we have no children, the we need to draw a vertical line
+      // which length depends if we have a sibling or not.
+      // also a horizontal line to the right is required.
+      ofs = depth()*ts + ts/2 - 1;
+      int end = nextSibling() ? height() : height()/2;
+      for(int i = 0; i < end; i += 2)
+        p->drawPoint(ofs, i);
+
+      for(int i = ofs; i < (depth()+1)*ts; i += 2)
+        p->drawPoint(i, height()/2);
+
+    } else {
+      // draw upper part of vertical line
+      ofs = depth()*ts + ts/2 - 1;
+      for(int i = 0; i < height()/2-(ts-2)/4; i += 2)
+        p->drawPoint(ofs, i);
+
+      // draw horizontal part
+      for(int i = ofs + ts/4 ; i < (depth()+1)*ts; i += 2)
+        p->drawPoint(i, height()/2);
+
+      // need to draw box with +/- in it
+      ofs = depth() * ts;
+      p->drawRect( ofs + ts/4, height() / 2 - (ts-2)/4, (ts-2)/2, (ts-2)/2 );
+      p->drawLine( ofs + ts/2-3, height() / 2, ofs + ts/2+1, height() / 2 );
+      if ( !isOpen() )
+          p->drawLine( ofs + ts/2-1, height() / 2 - 2, ofs + ts/2-1, height() / 2 + 2 );
+
+      // if there are more siblings, we need to draw
+      // the remainder of the vertical line
+      if(nextSibling()) {
+        ofs = depth()*ts + ts/2 - 1;
+        for(int i = height() / 2 + (ts-2)/4; i < height(); i += 2)
+          p->drawPoint(ofs, i);
+      }
+    }
+
+    p->restore();
+  }
+  
   if (m_schedule.isFinished())
   {
     textColour = Qt::darkGreen;
@@ -154,27 +227,6 @@ void KScheduledListItem::paintCell(QPainter* p, const QColorGroup& cg, int colum
   else
   {
     cg2.setColor(QColorGroup::Base, bgColour);
-  }
-
-  int indent = 0;
-  if (column == 0)
-  {
-    indent = -20 * (depth()+1);
-    p->save();
-    p->translate(indent, 0);
-    p->fillRect( 0, 0, width+indent, height(), cg2.base() );
-
-    if (childCount() > 0)
-    {
-      p->setPen( cg2.foreground() );
-      p->setBrush( cg2.base() );
-      p->drawRect( 5, height() / 2 - 4, 9, 9 );
-      p->drawLine( 7, height() / 2, 11, height() / 2 );
-      if ( !isOpen() )
-          p->drawLine( 9, height() / 2 - 2, 9, height() / 2 + 2 );
-    }
-    
-    p->restore();
   }
 
   QListViewItem::paintCell(p, cg2, column, width, align);
