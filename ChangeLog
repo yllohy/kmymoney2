@@ -1,3 +1,29 @@
+2002-11-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added MyMoneyKeyValueContainer class to have the ability to
+    add a variable number of arguments to an engine object
+  * Fixed reader for old format to interpret account type correctly
+  * Fixed testcases as well
+  * Fixed settings dialog to set the startdate to 1.1.1970 if not
+    present in kmymoney2rc file. Otherwise, it would use currentDate.
+  * Added MyMoneyKeyValueContainer to MyMoneyAccount
+  * Added testcases for MyMoneyKeyValueContainer and updated
+    testcases for MyMoneyAccount
+  * Added a widget stack to the ledger view and use it within the
+    the checkings and savings ledger view to switch between the
+    buttons and reconcile data
+  * Added methods to interface IMyMoneySerialize to load the internal id's
+  * Fixed KEndingBalanceDlg (activated code, made member vars private, etc)
+  * Started working on reconciliation for checkings and savings accounts
+  * Fixed a missing pointer assignment int kMyMoneyRegister
+  * Fixed resetting the next...Id values inside MyMoneySeqAccessMgr during
+    file reading
+  * Fixed flickering when redrawing the register
+  * Added first implementation of reconciliation code
+  * Modified kmymoneyview.cpp to correctly interpret the filename for
+    files accessed through a network-URL
+  * Fixed event processing in kMyMoneyEdit
+  * Added signalSpace() to kMyMoneyRegister
+
 2002-11-14 Kevin Tambascio <ktambascio@yahoo.com>
   * Modified kmymoneyview.cpp, to allow XML files to be passed to the right
     file parser.
@@ -5,14 +31,6 @@
   * removed mymoneystoragexmlcallback files, because they weren't needed.
   * more work on the XML Reader code.
 
-2002-11-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
-  * Added MyMoneyKeyValueContainer class to have the ability to
-    add a variable number of arguments to an engine object
-  * Fixed reader for old format to interpret account type correctly
-  * Fixed testcases as well
-  * Fixed settings dialog to set the startdate to 1.1.1970 if not
-    present in kmymoney2rc file. Otherwise, it would use currentDate.
- 
 2002-11-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added support for network file access over the protocols
     provided by KIO (ftp, http, smb etc.)
