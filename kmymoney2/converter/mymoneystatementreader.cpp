@@ -276,8 +276,10 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
   QString payeename = t_in.m_strPayee;
   if(!payeename.isEmpty())
   {
+    QCString payeeid;
     try {
-      s1.setPayeeId(file->payeeByName(payeename).id());
+      payeeid = file->payeeByName(payeename).id();
+      s1.setPayeeId(payeeid);
     }
     catch (MyMoneyException *e)
     {
@@ -310,7 +312,8 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
 
         try {
           file->addPayee(payee);
-          s1.setPayeeId(payee.id());
+          payeeid = payee.id();
+          s1.setPayeeId(payeeid);
 
         } catch(MyMoneyException *e) {
           KMessageBox::detailedSorry(0, i18n("Unable to add payee/receiver"),
@@ -328,6 +331,69 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
       }
       delete e;
     }
+    
+    //
+    // Fill in other side of the transaction (category/etc) based on payee
+    //
+    // Note, this logic is lifted from KLedgerView::slotPayeeChanged(),
+    // however this case is more complicated, because we have an amount and
+    // a memo.  We just don't have the other side of the transaction.
+    //
+    // We'll search for the most recent transaction in this account with
+    // this payee.  If this reference transaction is a simple 2-split
+    // transaction, it's simple.  If it's a complex split, and the amounts
+    // are different, we have a problem.  Somehow we have to balance the
+    // transaction.  For now, we'll leave it unbalanced, and let the user
+    // handle it.
+    //
+
+    MyMoneyTransactionFilter filter(m_account.id());
+    filter.addPayee(payeeid);
+    QValueList<MyMoneyTransaction> list = file->transactionList(filter);
+    if(!list.empty())
+    {
+      // Default to using the most recent transaction as the reference
+      MyMoneyTransaction t_old = list.last();
+      
+      // if there is more than one matching transaction, try to be a little
+      // smart about which one we take.  for now, we'll see if there's one
+      // with the same VALUE as our imported transaction, and if so take that one.
+      if ( list.count() > 1 )
+      {
+        QValueList<MyMoneyTransaction>::ConstIterator it_trans = list.fromLast();
+        while ( it_trans != list.end() )
+        {
+          MyMoneySplit s = (*it_trans).splitByAccount(m_account.id());
+          if ( s.value() == s1.value() )
+          {
+            t_old = *it_trans;
+            break;
+          }        
+          --it_trans;        
+        }      
+      }
+    
+      QValueList<MyMoneySplit>::ConstIterator it_split;
+      for(it_split = t_old.splits().begin(); it_split != t_old.splits().end(); ++it_split)
+      {
+        // We don't need the split that covers this account,
+        // we just need the other ones.
+        if ( (*it_split).accountId() != m_account.id() )
+        {
+          MyMoneySplit s(*it_split);
+          s.setReconcileFlag(MyMoneySplit::NotReconciled);
+          s.setId(QCString());
+    
+          if ( t_old.splits().count() == 2 )
+          {
+            s.setShares(-s1.shares());
+            s.setValue(-s1.value());
+          }
+          t.addSplit(s);
+        }
+      }
+    }
+    
   }
 
   t.addSplit(s1);

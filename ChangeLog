@@ -1,3 +1,9 @@
+2004-12-20 Ace Jones <acejones@users.sourceforge.net>
+  * Added simple category matcher for OFX import.  This fills in the rest of an
+    imported transaction using the most recent transaction with this payee as a
+    model.
+  * Maintain backward compatibility with Qt designer 3.2 
+
 2004-12-28 Michael Edwardes <mte@users.sourceforge.net>
   * Fixed #944780 (Schedule Brief Widget)
   * Fixed # 972028 (Does not honour Scheduled Method)
@@ -82,6 +88,7 @@
   * Added unit tests for OFX import of bank statements
   * Maintain libofx 0.6.6 compatability
   * Separated "From/To (account)" and "From/To (date)" for translation purposes  
+  
 2004-12-03 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Implement KMyMoneyAccountCombo in scheduled transaction dialogs
   * Allows selecting any asset/liability account for bills, etc.
