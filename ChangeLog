@@ -1,3 +1,6 @@
+2003-09-27 Michael Edwardes <mte@users.sourceforge.net>
+  * Change the end date when the start date changes while editing schedules.
+
 2003-09-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * smarter detection of filetype to be read (looks at file contents
     not the extension)

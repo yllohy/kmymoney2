@@ -441,7 +441,7 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
     }
     
     m_kcomboPayTo->loadText(MyMoneyFile::instance()->payee(m_schedule.transaction().splitByAccount(theAccountId()).payeeId()).name());
-    m_kdateinputDue->setDate(m_schedule.startDate());
+    m_kdateinputDue->setDate(m_schedule.nextPayment(m_schedule.lastPayment())/*m_schedule.startDate()*/);
 
     if (m_actionType == MyMoneySplit::ActionTransfer)
     {
@@ -874,7 +874,16 @@ void KEditScheduleDialog::slotDateChanged(const QDate& date)
     m_qcheckboxAuto->blockSignals(false);
   }
 
-  m_schedule.setStartDate(date);
+  qDebug("checking date");
+  if (date != m_schedule.startDate() && m_qcheckboxEnd->isChecked())
+  {
+    qDebug("re-setting end");
+    // Re-set the end date
+    m_schedule.setStartDate(date);
+    m_kdateinputFinal->setDate(m_schedule.dateAfter(m_qlineeditRemaining->text().toInt()));
+  }
+  else
+    m_schedule.setStartDate(date);
 }
 
 void KEditScheduleDialog::slotFrequencyChanged(int)
