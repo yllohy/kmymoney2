@@ -1,3 +1,6 @@
+2001-12-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * removed/resolved compiler warnings
+
 2001-12-17 Michael Edwardes <mte@users.sourceforge.net>
   * Fixed bug no 490015.
   * Updated admin directory to kdelibs-2.2.2 whilst preserving

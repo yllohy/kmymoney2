@@ -344,7 +344,7 @@ void KTransactionView::slotFocusChange(int row, int col, int button, const QPoin
   KConfig *config = KGlobal::config();
   config->setGroup("List Options");
   const int NO_ROWS = (config->readEntry("RowCount", "2").toInt());
-	int transrow = row / NO_ROWS;
+	unsigned transrow = row / NO_ROWS;
   int realrow = transrow * NO_ROWS;
 
   // Can't add transactions in search mode
@@ -358,7 +358,8 @@ void KTransactionView::slotFocusChange(int row, int col, int button, const QPoin
 	m_currentcol = col;
 	m_currentbutton = button;
 	m_currentpos = point;
-  if ((transrow != transactionsTable->numRows()-1) && (transactionsTable->numRows()>=1)) {
+  if ((transrow != static_cast<unsigned> (transactionsTable->numRows())-1)
+  && (transactionsTable->numRows()>=1)) {
 		if(button == 1) {
       if(m_transactions->count() > transrow)
       {
@@ -702,7 +703,7 @@ void KTransactionView::enterClicked()
   int greatindex = m_category->currentText().find(">");
 	QString transferAccount = "";
 
-	if(m_index < m_transactions->count())
+	if(m_index < static_cast<long> (m_transactions->count()))
 	{
     MyMoneyTransaction *transaction = m_transactions->at(m_index);
 		newstate = transaction->state();
@@ -1032,8 +1033,8 @@ void KTransactionView::updateTransactionList(int row, int col)
   if (row==-1) { // We are going to refresh the whole list
     m_index=-1;
 
-  int i = 0;
-  transactionsTable->setNumRows((m_transactions->count() * NO_ROWS) + 2);
+    int i = 0;
+    transactionsTable->setNumRows((m_transactions->count() * NO_ROWS) + 2);
 
     for (transaction=m_transactions->first(); transaction; transaction=m_transactions->next(), i++) {
       QString colText;
