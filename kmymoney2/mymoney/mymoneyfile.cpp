@@ -237,6 +237,7 @@ const MyMoneyAccount::accountTypeE MyMoneyFile::accountGroup(MyMoneyAccount::acc
     case MyMoneyAccount::MoneyMarket:
     case MyMoneyAccount::CertificateDep:
     case MyMoneyAccount::AssetLoan:
+    case MyMoneyAccount::Stock:
       return MyMoneyAccount::Asset;
 
     case MyMoneyAccount::CreditCard:
@@ -774,9 +775,14 @@ const bool MyMoneyFile::accountValueValid(const QCString& id) const
     MyMoneyAccount acc;
 
     acc = account(id);
-    MyMoneyCurrency currency = instance()->currency(acc.currencyId());
-    if(currency.id() != baseCurrency().id()) {
-      result = currency.hasPrice();
+    if(acc.accountType() == MyMoneyAccount::Stock) {
+      MyMoneyEquity equity = instance()->equity(acc.currencyId());
+      result = equity.hasPrice();
+    } else {
+      MyMoneyCurrency currency = instance()->currency(acc.currencyId());
+      if(currency.id() != baseCurrency().id()) {
+        result = currency.hasPrice();
+      }
     }
   } catch(MyMoneyException *e) {
     qDebug("MyMoneyFile::totalValueValid: %s thrown in %s line %ld",
@@ -816,9 +822,14 @@ const MyMoneyMoney MyMoneyFile::accountValue(const QCString& id) const
     MyMoneyAccount acc;
 
     acc = account(id);
-    MyMoneyCurrency currency = instance()->currency(acc.currencyId());
-    if(currency.id() != baseCurrency().id()) {
-      result = result * currency.price();
+    if(acc.accountType() == MyMoneyAccount::Stock) {
+      MyMoneyEquity equity = instance()->equity(acc.currencyId());
+      result = result * equity.price();
+    } else {
+      MyMoneyCurrency currency = instance()->currency(acc.currencyId());
+      if(currency.id() != baseCurrency().id()) {
+        result = result * currency.price();
+      }
     }
   } catch(MyMoneyException *e) {
     qDebug("MyMoneyFile::accountValue: %s thrown in %s line %ld",
@@ -1378,6 +1389,7 @@ void MyMoneyFile::modifyEquity(const MyMoneyEquity& equity)
   MyMoneyNotifier notifier(this);
 
   m_storage->modifyEquity(equity);
+  addNotification(equity.id());
   addNotification(NotifyClassEquity);
 }
 

@@ -98,6 +98,9 @@ const QString accountTypeToString(const MyMoneyAccount::accountTypeE accountType
     case MyMoneyAccount::AssetLoan:
       returnString = i18n("Investment Loan");
       break;
+    case MyMoneyAccount::Stock:
+      returnString = i18n("Stock");
+      break;
     default:
       returnString = i18n("Unknown");
   }
@@ -189,10 +192,18 @@ MyMoneyMoney AccountDescriptor::currencyPrice(const QDate& date) const
   MyMoneyAccount account = m_file->account(m_account);
 
   if(account.currencyId() != m_file->baseCurrency().id()) {
-    MyMoneyCurrency currency = m_file->currency(account.currencyId());
-    value = currency.price(date);
+    QString name;
+    if(account.accountType() == MyMoneyAccount::Stock) {
+      MyMoneyEquity equity = m_file->equity(account.currencyId());
+      name = equity.name();
+      value = equity.price(date);
+    } else {
+      MyMoneyCurrency currency = m_file->currency(account.currencyId());
+      name = currency.name();
+      value = currency.price(date);
+    }
 
-    DEBUG_OUTPUT(QString("Converting %1 to %2, price on %3 is %4").arg(m_file->currency(account.currencyId()).name()).arg(m_file->baseCurrency().name()).arg(date.toString()).arg(value.toDouble()));
+    DEBUG_OUTPUT(QString("Converting %1 to %2, price on %3 is %4").arg(name).arg(m_file->baseCurrency().name()).arg(date.toString()).arg(value.toDouble()));
   }
 
   return value;

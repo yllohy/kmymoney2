@@ -149,7 +149,11 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
     if((*it_a).currencyId().isEmpty()) {
       s << "  Currency = unknown\n";
     } else {
-      s << "  Currency = " << storage->currency((*it_a).currencyId()).name() << "\n";
+      if((*it_a).accountType() == MyMoneyAccount::Stock) {
+        s << "  Equity = " << storage->equity((*it_a).currencyId()).name() << "\n";
+      } else {
+        s << "  Currency = " << storage->currency((*it_a).currencyId()).name() << "\n";
+      }
     }
     s << "  Parent = " << (*it_a).parentAccountId();
     if(!(*it_a).parentAccountId().isEmpty()) {
@@ -210,6 +214,21 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
     s << "\n";
   }
   s << "\n";
+
+  s << "Equities" << "\n";
+  s << "--------" << "\n";
+
+  QValueList<MyMoneyEquity> list_e = storage->equityList();
+  QValueList<MyMoneyEquity>::ConstIterator it_e;
+  for(it_e = list_e.begin(); it_e != list_e.end(); ++it_e) {
+    s << "  Name = " << (*it_e).name() << "\n";
+    s << "    ID = " << (*it_e).id() << "\n";
+    s << "    Symbol = " << (*it_e).tradingSymbol() << "\n";
+    dumpPriceHistory(s, (*it_e).priceHistory());
+    s << "\n";
+  }
+  s << "\n";
+
 
 
   s << "Transactions" << "\n";
