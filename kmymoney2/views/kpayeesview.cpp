@@ -23,6 +23,7 @@
 
 // ----------------------------------------------------------------------------
 // QT Includes
+
 #include <qpushbutton.h>
 #include <qcombobox.h>
 #include <qlineedit.h>
@@ -40,12 +41,7 @@
 #include <kpushbutton.h>
 #include <kiconloader.h>
 #include <kguiitem.h>
-
-#if QT_VERSION > 300
 #include <kstandarddirs.h>
-#else
-#include <kstddirs.h>
-#endif
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -275,6 +271,7 @@ void KPayeesView::showTransactions(void)
       ++i;
     }
   }
+  m_transactionPtrVector.resize(i);
 
   // sort the transactions
   m_transactionPtrVector.sort();
