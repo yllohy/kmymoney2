@@ -40,6 +40,11 @@
 
 #define CATEGORY_SEPERATOR ":"
 
+const QCString MyMoneyFile::NotifyClassAccount = "MyMoneyFile::NotifyAccount";
+const QCString MyMoneyFile::NotifyClassPayee = "MyMoneyFile::NotifyPayee";
+const QCString MyMoneyFile::NotifyClassInstitution = "MyMoneyFile::NotifyInstitution";
+const QCString MyMoneyFile::NotifyClassAccountHierarchy = "MyMoneyFile::NotifyAccountHierarchy";
+
 // include the following line to get a 'cout' for debug purposes
 // #include <iostream>
 MyMoneyFile* MyMoneyFile::_instance = 0;
@@ -136,6 +141,7 @@ void MyMoneyFile::modifyTransaction(const MyMoneyTransaction& transaction)
   for(it_s = tr.splits().begin(); it_s != tr.splits().end(); ++it_s) {
     notifyAccountTree((*it_s).accountId());
   }
+  addNotification(NotifyClassAccount);
 }
 
 void MyMoneyFile::modifyAccount(const MyMoneyAccount& account)
@@ -155,11 +161,13 @@ void MyMoneyFile::modifyAccount(const MyMoneyAccount& account)
 
   // the account can be moved to another one, so we notify
   // the old one as well
+  addNotification(acc.institutionId());
   addNotification(account.institutionId());
 
   m_storage->modifyAccount(account);
 
   notifyAccountTree(account.id());
+  addNotification(NotifyClassAccount);
 }
 
 const MyMoneyAccount::accountTypeE MyMoneyFile::accountGroup(MyMoneyAccount::accountTypeE type) const
@@ -202,6 +210,8 @@ void MyMoneyFile::reparentAccount(MyMoneyAccount &account, MyMoneyAccount& paren
 
     // and also keep the new one
     notifyAccountTree(account.id());
+    addNotification(NotifyClassAccount);
+    addNotification(NotifyClassAccountHierarchy);
 
   } else
     throw new MYMONEYEXCEPTION("Unable to reparent to different account type");
@@ -252,6 +262,7 @@ void MyMoneyFile::removeTransaction(const MyMoneyTransaction& transaction)
   for(it_s = tr.splits().begin(); it_s != tr.splits().end(); ++it_s) {
     notifyAccountTree((*it_s).accountId());
   }
+  addNotification(NotifyClassAccount);
 
   m_storage->removeTransaction(transaction);
 }
@@ -308,6 +319,10 @@ void MyMoneyFile::removeAccount(const MyMoneyAccount& account)
   notifyAccountTree(parent.id());
 
   m_storage->removeAccount(account);
+
+  // also notify the pseudo account class
+  addNotification(NotifyClassAccount);
+  addNotification(NotifyClassAccountHierarchy);
 }
 
 void MyMoneyFile::removeInstitution(const MyMoneyInstitution& institution)
@@ -328,15 +343,25 @@ void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
   // transaction and sub-accounts and parent account
   // it's own ID is not set and it does not have a pointer to (MyMoneyFile)
 
-  if(account.name().length() == 0
-  || account.id().length() != 0
+  if(account.name().length() == 0)
+    throw new MYMONEYEXCEPTION("Account has no name");
+
+  if(account.id().length() != 0)
+    throw new MYMONEYEXCEPTION("New account must have no id");
+
 // removed with MyMoneyAccount::Transaction
 //  || account.transactionList().count() != 0
-  || account.accountList().count() != 0
-  || account.parentAccountId() != ""
-  || account.accountType() == MyMoneyAccount::UnknownAccountType
-  || account.file() != 0)
-    throw new MYMONEYEXCEPTION("Adding invalid account");
+  if(account.accountList().count() != 0)
+    throw new MYMONEYEXCEPTION("New account must have no sub-accounts");
+
+  if(account.parentAccountId() != "")
+    throw new MYMONEYEXCEPTION("New account must have no parent-id");
+
+  if(account.accountType() == MyMoneyAccount::UnknownAccountType)
+    throw new MYMONEYEXCEPTION("Account has invalid type");
+
+  if(account.file() != 0)
+    throw new MYMONEYEXCEPTION("File pointer must be 0 for new account");
 
   // make sure, that the parent account exists
   // if not, an exception is thrown. If it exists,
@@ -373,8 +398,10 @@ void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
     m_storage->addAccount(institution, account);
 
   // parse the complete account tree and collect all
-  // account and institution ids
+  // account and institution ids and also the pseudo account class
   notifyAccountTree(account.id());
+  addNotification(NotifyClassAccount);
+  addNotification(NotifyClassAccountHierarchy);
 }
 
 void MyMoneyFile::addTransaction(MyMoneyTransaction& transaction)
@@ -412,6 +439,7 @@ void MyMoneyFile::addTransaction(MyMoneyTransaction& transaction)
   for(it_s = transaction.splits().begin(); it_s != transaction.splits().end(); ++it_s) {
     notifyAccountTree((*it_s).accountId());
   }
+  addNotification(NotifyClassAccount);
 }
 
 const MyMoneyTransaction& MyMoneyFile::transaction(const QCString& id) const
@@ -428,11 +456,16 @@ const MyMoneyTransaction& MyMoneyFile::transaction(const QCString& account, cons
   return m_storage->transaction(account, idx);
 }
 
-void MyMoneyFile::addPayee(MyMoneyPayee& payee) const
+void MyMoneyFile::addPayee(MyMoneyPayee& payee)
 {
   checkStorage();
 
+  // automatically notify all observers once this routine is done
+  MyMoneyNotifier notifier(this);
+
   m_storage->addPayee(payee);
+
+  addNotification(NotifyClassPayee);
 }
 
 const MyMoneyPayee MyMoneyFile::payee(const QCString& id) const
@@ -449,18 +482,28 @@ const MyMoneyPayee MyMoneyFile::payeeByName(const QString& name) const
   return m_storage->payeeByName(name);
 }
 
-void MyMoneyFile::modifyPayee(const MyMoneyPayee& payee) const
+void MyMoneyFile::modifyPayee(const MyMoneyPayee& payee)
 {
   checkStorage();
+
+  // automatically notify all observers once this routine is done
+  MyMoneyNotifier notifier(this);
 
   m_storage->modifyPayee(payee);
+
+  addNotification(NotifyClassPayee);
 }
 
-void MyMoneyFile::removePayee(const MyMoneyPayee& payee) const
+void MyMoneyFile::removePayee(const MyMoneyPayee& payee)
 {
   checkStorage();
 
+  // automatically notify all observers once this routine is done
+  MyMoneyNotifier notifier(this);
+
   m_storage->removePayee(payee);
+
+  addNotification(NotifyClassPayee);
 }
 
 

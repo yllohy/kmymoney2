@@ -44,12 +44,16 @@
 class IMyMoneyStorage;
 class MyMoneyTransactionFilter;
 
-///  This class represents the interface to the MyMoney engine
 /**.
   * This class represents the interface to the MyMoney engine.
   * For historical reasons it is still called MyMoneyFile.
   * It is implemented using the singleton pattern and thus only
   * exists once for each running instance of an application.
+  *
+  * The following diagram shows the MyMoneyFile object and it's
+  * interface to the persistant storage objects.
+  *
+  * @image html mymoneyfile-interface.png "Interfaces between MyMoneyFile and the persitance layer"
   *
   * The instance of the MyMoneyFile object is accessed as follows:
   *
@@ -422,7 +426,7 @@ public:
     * on the argument given.
     *
     * @param account QCString reference to account id. If account equals ""
-    +                all transactions (the journal) is returned. If account
+    *                all transactions (the journal) is returned. If account
     *                is not equal to "" it returns the set of transactions
     *                that have splits in this account.
     *
@@ -561,11 +565,11 @@ public:
     * This method is used to attach an observer to a subject
     * represented by it's id. Whenever the object represented
     * by the id changes it's state, the observers method
-    * ::update(const QString& id) is called with id set to
+    * ::update(const QCString& id) is called with id set to
     * the value passed as argument to attach. This allows an
     * object of the GUI to observe multiple objects with the
     * ability to know which object changed. If it observes
-    * multiple objects, it's update(const QString& id) method
+    * multiple objects, it's update(const QCString& id) method
     * is called multiple times if more than one object changed
     * during a single operation.
     *
@@ -597,7 +601,7 @@ public:
     *
     * @param payee MyMoneyPayee reference to payee information
     */
-  void addPayee(MyMoneyPayee& payee) const;
+  void addPayee(MyMoneyPayee& payee);
 
   /**
     * This method is used to retrieve information about a payee
@@ -627,7 +631,7 @@ public:
     *
     * @param payee MyMoneyPayee reference to payee information
     */
-  void modifyPayee(const MyMoneyPayee& payee) const;
+  void modifyPayee(const MyMoneyPayee& payee);
 
   /**
     * This method is used to remove an existing payee.
@@ -638,7 +642,7 @@ public:
     *
     * @param payee MyMoneyPayee reference to payee information
     */
-  void removePayee(const MyMoneyPayee& payee) const;
+  void removePayee(const MyMoneyPayee& payee);
 
   /**
     * This method returns a list of the payees
@@ -647,6 +651,49 @@ public:
     * @return QValueList<MyMoneyPayee> containing the payee information
     */
   const QValueList<MyMoneyPayee> payeeList(void) const;
+
+public:
+  /**
+    * MyMoneyFile::NotifyClassAccount
+    * is a special id that will be notified whenever any account is changed.
+    * The typical usage is in the account tree, that must be notified about
+    * all changes of any account.
+    *
+    * @code
+    * MyAccountTreeClass tree;  // MyAccountTreeClass is derived from MyMoneyObserver
+    * MyMoneyFile *file = MyMoneyFile::instance();
+    *
+    * file->attach(MyMoneyFile::NotifyClassAccount, &tree);
+    * // from now on, the tree.update() method will be called, whenever an
+    * // account in the storage area is changed.
+    *
+    * file->detach(MyMoneyFile::NotifyClassAccount, &tree);
+    * // the change notification will not be performed anymore.
+    * @endcode
+    */
+  static const QCString NotifyClassAccount;
+
+  /**
+    * MyMoneyFile::NotifyClassAccount
+    * is a special id that will be notified whenever the accounthierarchy is
+    * changed.
+    * The typical usage is in the account tree, that must be reconstructed
+    * upon this type of change.
+    */
+  static const QCString NotifyClassAccountHierarchy;
+
+  /**
+    * MyMoneyFile::NotifyClassPayee
+    * is a special id that will be notified whenever any account is changed
+    */
+  static const QCString NotifyClassPayee;
+
+  /**
+    * MyMoneyFile::NotifyClassPayee
+    * is a special id that will be notified whenever any account is changed
+    */
+  static const QCString NotifyClassInstitution;
+
 
 protected:
   /**

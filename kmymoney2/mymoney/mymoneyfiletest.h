@@ -31,9 +31,15 @@ class TestObserverSet : public MyMoneyObserver
 {
 public:
         TestObserverSet() { m_updated.clear(); }
-        void update(const QCString& id) { m_updated.append(id); };
+        void update(const QCString& id) {
+		m_updated.append(id);
+		// cout << id << endl;
+	};
         const QCStringList& updated(void) { return m_updated; };
-        void reset(void) { m_updated.clear(); };
+        void reset(void) {
+		m_updated.clear();
+		// cout << "Reset" << endl;
+	};
 private:
         QCStringList m_updated;
 };
@@ -79,6 +85,7 @@ protected:
 	MyMoneyFile	*m;
 	MyMoneySeqAccessMgr*	storage;
 	TestObserverSet *observer;
+	TestObserverSet *hierarchyObserver;
 
 public:
 	MyMoneyFileTest ();
