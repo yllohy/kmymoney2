@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>655</width>
-            <height>415</height>
+            <width>639</width>
+            <height>315</height>
         </rect>
     </property>
     <property name="caption">
@@ -986,7 +986,7 @@
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>Layout7</cstring>
+                <cstring>Layout14</cstring>
             </property>
             <hbox>
                 <property name="name">
@@ -998,60 +998,36 @@
                 <property name="spacing">
                     <number>6</number>
                 </property>
-                <widget class="QPushButton">
+                <widget class="KPushButton">
                     <property name="name">
                         <cstring>m_helpButton</cstring>
                     </property>
                     <property name="text">
-                        <string>Help</string>
-                    </property>
-                    <property name="accel">
-                        <number>4144</number>
-                    </property>
-                    <property name="autoDefault">
-                        <bool>true</bool>
+                        <string>&amp;Help</string>
                     </property>
                 </widget>
-                <widget class="QPushButton">
+                <widget class="KPushButton">
                     <property name="name">
                         <cstring>m_newButton</cstring>
                     </property>
                     <property name="text">
-                        <string>New</string>
-                    </property>
-                    <property name="accel">
-                        <number>0</number>
-                    </property>
-                    <property name="autoDefault">
-                        <bool>true</bool>
+                        <string>&amp;New</string>
                     </property>
                 </widget>
-                <widget class="QPushButton">
+                <widget class="KPushButton">
                     <property name="name">
                         <cstring>m_deleteButton</cstring>
                     </property>
                     <property name="text">
-                        <string>Delete</string>
-                    </property>
-                    <property name="accel">
-                        <number>0</number>
-                    </property>
-                    <property name="autoDefault">
-                        <bool>true</bool>
+                        <string>&amp;Delete</string>
                     </property>
                 </widget>
-                <widget class="QPushButton">
+                <widget class="KPushButton">
                     <property name="name">
                         <cstring>m_renameButton</cstring>
                     </property>
                     <property name="text">
-                        <string>Rename</string>
-                    </property>
-                    <property name="accel">
-                        <number>0</number>
-                    </property>
-                    <property name="autoDefault">
-                        <bool>true</bool>
+                        <string>Re&amp;name</string>
                     </property>
                 </widget>
                 <spacer>
@@ -1066,31 +1042,25 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>85</width>
+                            <width>104</width>
                             <height>0</height>
                         </size>
                     </property>
                 </spacer>
-                <widget class="QPushButton">
+                <widget class="KPushButton">
                     <property name="name">
                         <cstring>m_resetButton</cstring>
                     </property>
                     <property name="text">
-                        <string>Reset</string>
-                    </property>
-                    <property name="accel">
-                        <number>0</number>
-                    </property>
-                    <property name="autoDefault">
-                        <bool>true</bool>
+                        <string>&amp;Reset</string>
                     </property>
                 </widget>
-                <widget class="QPushButton">
+                <widget class="KPushButton">
                     <property name="name">
                         <cstring>m_okButton</cstring>
                     </property>
                     <property name="text">
-                        <string>Ok</string>
+                        <string>&amp;Ok</string>
                     </property>
                     <property name="accel">
                         <number>0</number>
@@ -1102,7 +1072,7 @@
                         <bool>true</bool>
                     </property>
                 </widget>
-                <widget class="QPushButton">
+                <widget class="KPushButton">
                     <property name="name">
                         <cstring>m_cancelButton</cstring>
                     </property>
@@ -1120,13 +1090,5 @@
         </widget>
     </vbox>
 </widget>
-<connections>
-    <connection>
-        <sender>m_cancelButton</sender>
-        <signal>clicked()</signal>
-        <receiver>MyMoneyQifProfileEditorDecl</receiver>
-        <slot>reject()</slot>
-    </connection>
-</connections>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

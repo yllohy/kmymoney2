@@ -33,6 +33,7 @@
 #include <kmessagebox.h>
 #include <kcombobox.h>
 #include <kurlrequester.h>
+#include <kiconloader.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -76,13 +77,47 @@ MyMoneyQifProfileEditor::MyMoneyQifProfileEditor(const bool edit, QWidget *paren
   loadWidgets();
   loadProfileListFromConfig();
 
+  // load button icons
+  KIconLoader* il = KGlobal::iconLoader();
+  KGuiItem resetButtonItem( i18n( "&Reset" ),
+                    QIconSet(il->loadIcon("undo", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Reset all settings"),
+                    i18n("Use this to reset all settings to the state they were when the dialog was opened."));
+  m_resetButton->setGuiItem(resetButtonItem);
+  
+  KGuiItem cancelButtenItem( i18n( "&Cancel" ),
+                      QIconSet(il->loadIcon("button_cancel", KIcon::Small, KIcon::SizeSmall)),
+                      i18n("Close dialog"),
+                      i18n("Use this to close the dialog and abort the operation"));
+  m_cancelButton->setGuiItem(cancelButtenItem);
+
+  KGuiItem okButtenItem( i18n( "&Ok" ),
+                      QIconSet(il->loadIcon("button_ok", KIcon::Small, KIcon::SizeSmall)),
+                      i18n("Close dialog"),
+                      i18n("Use this to accept and store data"));
+  m_okButton->setGuiItem(okButtenItem);
+
+  KGuiItem deleteButtenItem( i18n( "&Delete" ),
+                      QIconSet(il->loadIcon("editdelete", KIcon::Small, KIcon::SizeSmall)),
+                      i18n("Delete the selected profile"),
+                      i18n("Use this to delete the selected profile"));
+  m_deleteButton->setGuiItem(deleteButtenItem);
+
+  KGuiItem newButtenItem( i18n( "&New..." ),
+                      QIconSet(il->loadIcon("filenew", KIcon::Small, KIcon::SizeSmall)),
+                      i18n("Create a new profile"),
+                      i18n("Use this to create a new QIF import/export profile"));
+  m_newButton->setGuiItem(newButtenItem);
+
+
   connect(m_profileListBox, SIGNAL(highlighted(const QString&)), this, SLOT(slotLoadProfileFromConfig(const QString&)));
   connect(m_resetButton, SIGNAL(clicked()), this, SLOT(slotReset()));
   connect(m_okButton, SIGNAL(clicked()), this, SLOT(slotOk()));
   connect(m_renameButton, SIGNAL(clicked()), this, SLOT(slotRename()));
   connect(m_deleteButton, SIGNAL(clicked()), this, SLOT(slotDelete()));
   connect(m_newButton, SIGNAL(clicked()), this, SLOT(slotNew()));
-
+  connect(m_cancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+  
   connect(m_editDescription, SIGNAL(textChanged(const QString&)), &m_profile, SLOT(setProfileDescription(const QString&)));
   connect(m_editType, SIGNAL(textChanged(const QString&)), &m_profile, SLOT(setProfileType(const QString&)));
   connect(m_editOpeningBalance, SIGNAL(textChanged(const QString&)), &m_profile, SLOT(setOpeningBalanceText(const QString&)));

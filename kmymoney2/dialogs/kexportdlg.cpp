@@ -37,6 +37,7 @@
 #include <kmessagebox.h>
 #include <kfiledialog.h>
 #include <kpushbutton.h>
+#include <kiconloader.h>
 
 // ----------------------------------------------------------------------------
 // Project Headers
@@ -58,10 +59,38 @@ KExportDlg::KExportDlg(QWidget *parent)
   loadProfiles(true);
   loadAccounts();
 
+  // load button icons
+  KIconLoader* il = KGlobal::iconLoader();
+  KGuiItem cancelButtenItem( i18n( "&Cancel" ),
+                      QIconSet(il->loadIcon("button_cancel", KIcon::Small, KIcon::SizeSmall)),
+                      i18n("Abort operation"),
+                      i18n("Use this to abort the export operation"));
+  m_qbuttonCancel->setGuiItem(cancelButtenItem);
+  
+  KGuiItem okButtenItem( i18n( "&Export" ),
+                      QIconSet(il->loadIcon("fileexport", KIcon::Small, KIcon::SizeSmall)),
+                      i18n("Start operation"),
+                      i18n("Use this to start the export operation"));
+  m_qbuttonOk->setGuiItem(okButtenItem);
+  
+  KGuiItem browseButtenItem( i18n( "&Browse..." ),
+                      QIconSet(il->loadIcon("fileopen", KIcon::Small, KIcon::SizeSmall)),
+                      i18n("Select filename"),
+                      i18n("Use this to select a filename to export to"));
+  m_qbuttonBrowse->setGuiItem(browseButtenItem);
+  
+  KGuiItem newButtenItem( i18n( "&New..." ),
+                      QIconSet(il->loadIcon("filenew", KIcon::Small, KIcon::SizeSmall)),
+                      i18n("Create a new profile"),
+                      i18n("Use this to open the profile editor"));
+  m_profileEditorButton->setGuiItem(newButtenItem);
+
+    
   // connect the buttons to their functionality
   connect(m_qbuttonBrowse, SIGNAL( clicked() ), this, SLOT( slotBrowse() ) );
   connect(m_profileEditorButton, SIGNAL(clicked()), this, SLOT(slotNewProfile()));
   connect(m_qbuttonOk, SIGNAL(clicked()), this, SLOT(slotOkClicked()));
+  connect(m_qbuttonCancel, SIGNAL(clicked()), this, SLOT(reject()));
 
   // connect the change signals to the check slot and perform initial check
   connect(m_qlineeditFile, SIGNAL(textChanged(const QString&)), this, SLOT(checkData()));

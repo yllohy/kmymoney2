@@ -111,7 +111,7 @@ You can choose the file's path, the account and the format of the QIF file (prof
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>Layout11</cstring>
+                <cstring>Layout45</cstring>
             </property>
             <hbox>
                 <property name="name">
@@ -150,19 +150,19 @@ You can choose the file's path, the account and the format of the QIF file (prof
                         <enum>Sunken</enum>
                     </property>
                 </widget>
-                <widget class="QPushButton">
+                <widget class="KPushButton">
                     <property name="name">
                         <cstring>m_qbuttonBrowse</cstring>
                     </property>
                     <property name="text">
-                        <string>Browse...</string>
+                        <string>&amp;Browse...</string>
                     </property>
                 </widget>
             </hbox>
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>Layout34</cstring>
+                <cstring>Layout48</cstring>
             </property>
             <hbox>
                 <property name="name">
@@ -219,7 +219,7 @@ You can choose the file's path, the account and the format of the QIF file (prof
                 </widget>
                 <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>Layout33</cstring>
+                        <cstring>Layout47</cstring>
                     </property>
                     <vbox>
                         <property name="name">
@@ -241,7 +241,7 @@ You can choose the file's path, the account and the format of the QIF file (prof
                         </widget>
                         <widget class="QLayoutWidget">
                             <property name="name">
-                                <cstring>Layout32</cstring>
+                                <cstring>Layout46</cstring>
                             </property>
                             <hbox>
                                 <property name="name">
@@ -280,7 +280,7 @@ You can choose the file's path, the account and the format of the QIF file (prof
                                         <cstring>m_profileEditorButton</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>New</string>
+                                        <string>New...</string>
                                     </property>
                                 </widget>
                             </hbox>
@@ -486,7 +486,7 @@ You can choose the file's path, the account and the format of the QIF file (prof
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>Layout24</cstring>
+                <cstring>Layout49</cstring>
             </property>
             <hbox>
                 <property name="name">
@@ -510,12 +510,12 @@ You can choose the file's path, the account and the format of the QIF file (prof
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>368</width>
+                            <width>451</width>
                             <height>0</height>
                         </size>
                     </property>
                 </spacer>
-                <widget class="QPushButton">
+                <widget class="KPushButton">
                     <property name="name">
                         <cstring>m_qbuttonOk</cstring>
                     </property>
@@ -529,7 +529,7 @@ You can choose the file's path, the account and the format of the QIF file (prof
                         <bool>true</bool>
                     </property>
                 </widget>
-                <widget class="QPushButton">
+                <widget class="KPushButton">
                     <property name="name">
                         <cstring>m_qbuttonCancel</cstring>
                     </property>
@@ -568,13 +568,5 @@ You can choose the file's path, the account and the format of the QIF file (prof
         <data format="XPM.GZ" length="646">789c6dd2c10ac2300c00d07bbf2234b7229d1be245fc04c5a3201e4615f430059d0711ff5ddb2e6bb236ec90eed134cb5a19d8ef36602af5ecdbfeeac05dda0798d3abebde87e3faa374d3807fa0d633a52d38d8de6f679fe33fc776e196f53cd010188256a3600a292882096246517815ca99884606e18044a3a40d91824820924265a7923a2e8bcd05f33db1173e002913175f2a6be6d3294871a2d95fa00e8a94ee017b69d339d90df1e77c57ea072ede6758</data>
     </image>
 </images>
-<connections>
-    <connection>
-        <sender>m_qbuttonCancel</sender>
-        <signal>clicked()</signal>
-        <receiver>KExportDlgDecl</receiver>
-        <slot>reject()</slot>
-    </connection>
-</connections>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

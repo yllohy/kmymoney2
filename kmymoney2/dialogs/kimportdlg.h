@@ -75,19 +75,8 @@ public:
   const QString profile(void) const { return m_profileComboBox->currentText(); };
   
 protected slots:
-  /** Performs the import process */
-  /** Performs de-/activation of apostrophe handling */
-  void slotDateFormatChanged(const QString& selectedDateFormat);
-
   /** Called to let the user browse for a QIF file to import from. */
   void slotBrowse();
-
-  /**
-    * Called when the progress bar needs updating.
-    *
-    * @param progress An integer representing the new progress.
-    */
-  void slotSetProgress(int progress);
 
   /** Test whether to enable the buttons */
   void slotFileTextChanged(const QString& text);
@@ -98,8 +87,6 @@ protected slots:
   void slotNewProfile(void);
 
   void slotOkClicked(void);
-
-  void slotScanClicked(void);
 
   void slotSelectProfile(const QString& text);
 
@@ -137,11 +124,6 @@ private:
 
   bool fileExists(KURL url);
 
-private:  
-  // QString m_qstringLastFormat;
-  // QString m_qstringLastDecimalSymbol;
-  // MyMoneyAccount *m_mymoneyaccount;
-  // MyMoneyQifReader  m_reader;
 };
 
 #endif
