@@ -80,10 +80,10 @@ const QString MyMoneyMoney::formatMoney(/*QString locale="C", bool addPrefixPost
     res = QString("%1").arg((long)left);
     int pos = res.length();
     while(0 < (pos -= 3))
-      res.insert(pos, _thousandSeparator);
+      res.insert(pos, thousandSeparator());
     QString format;
 
-    res += _decimalSeparator;
+    res += decimalSeparator();
     if (bNegative)
       res.insert(0, '-');
 
@@ -107,7 +107,7 @@ const QString MyMoneyMoney::formatMoney(/*QString locale="C", bool addPrefixPost
 */
   }
   else
-    res = QString("0")+QChar(_decimalSeparator)+"00";
+    res = QString("0")+QChar(decimalSeparator())+"00";
 
   return res;
 }
