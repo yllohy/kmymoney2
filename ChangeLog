@@ -1,3 +1,12 @@
+2003-01-23 Michael Edwardes <mte@users.sourceforge.net>
+  * Started work on UI for schedules.
+  * Started work on the 'New Bill' schedule interface dialog.
+  * Updated MyMoneyScheduled for account specification, preparing it for
+    inclusion into MyMoneyFile.
+  * Updated the schedule tests to add the account references.
+  * Started work on the 'New Deposit' schedule interface dialog.
+  * Started work on the 'New Transfer' schedule interface dialog.
+
 2003-01-21 Michael Edwardes <mte@users.sourceforge.net>
   * Added the beginnings of recurring transaction support.
   * Added some test cases for the MyMoneyScheduled and

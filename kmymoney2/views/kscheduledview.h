@@ -33,51 +33,120 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 #include "kscheduledviewdecl.h"
-#include "../mymoney/mymoneyfile.h"
 #include "../dialogs/keditscheduledbilldlg.h"
 #include "../dialogs/keditscheduleddepositdlg.h"
 #include "../dialogs/keditscheduledtransferdlg.h"
+#include "../mymoney/mymoneyfile.h"
+#include "../mymoney/mymoneyaccount.h"
+//#include "../mymoney/mymoneyobserver.h"
 
 /**
-  * Contains all the scheduled transactions be they bills or deposits.
+  * Contains all the scheduled transactions be they bills, deposits or transfers.
   * Encapsulates all the operations including adding, editing and deleting.
   * Used by the KMyMoneyView class to show the view.
   *
   * @author Michael Edwardes 2000-2002
-  * $Id: kscheduledview.h,v 1.4 2002/06/04 19:05:17 mte Exp $
+  * $Id: kscheduledview.h,v 1.5 2003/01/24 14:23:23 mte Exp $
   *
   * @short A class to encapsulate recurring transaction operations.
   */
-class KScheduledView : public kScheduledViewDecl  {
+class KScheduledView : public kScheduledViewDecl {
    Q_OBJECT
-private:
-  MyMoneyFile *m_file;
-  QString m_lastCat;
+   
+public:
+  /**
+    * Standard constructor for QWidgets.
+    */
+  KScheduledView(QWidget *parent=0, const char *name=0);
 
-  // Remember state
-  void readConfig(void);
-  void writeConfig(void);
-  void refresh(void);
+  /**
+    * Standard destructor.
+    */
+  ~KScheduledView();
 
-protected:
-  void resizeEvent(QResizeEvent *);
-
-protected slots:
-  // Called on appropriate signals
-  void slotEditClicked();
-  void slotDeleteClicked();
-  void slotSelectionChanged(QListViewItem*);
-  void slotNewBill();
-  void slotNewDeposit();
-  void slotNewTransfer();
+  /**
+    * Called by KMyMoneyView.
+    */
+  void show();
 
 signals:
+  /**
+    * Emitted when this view is shown.
+    */
   void signalViewActivated();
 
-public:
-  KScheduledView(QWidget *parent=0, const char *name=0);
-  ~KScheduledView();
-  void show();
+protected:
+  /**
+    * Re-implement the standard qt resize event.
+    */
+  void resizeEvent(QResizeEvent *);
+
+  /**
+    * Re-implement the update method from MyMoneyObserver.
+    *
+    * It just updates the account list in the combo box.  (We dont need to
+    * update anything else.
+    */
+  void update(const QCString& account);
+
+protected slots:
+  /**
+    * Edit button clicked.
+    */
+  void slotEditClicked();
+
+  /**
+    * Delete button clicked.
+    */
+  void slotDeleteClicked();
+
+  /**
+    * The selection has changed in the list view.
+    */
+  void slotSelectionChanged(QListViewItem*);
+
+  /**
+    * New Bill chosen.
+    */
+  void slotNewBill();
+
+  /**
+    * New Deposit chosen.
+    */
+  void slotNewDeposit();
+
+  /**
+    * New transfer chosen.
+    */
+  void slotNewTransfer();
+
+  /**
+    * Slot to handle the account selection in the combo box.
+    *
+    * @param accountName Const reference to the item string selected.
+  **/
+  void slotAccountSelected(const QString& accountName);
+
+
+private:
+  /// The account currently selected via the accounts view
+  QCString m_accountId;
+  
+  /// Read config file
+  void readConfig(void);
+
+  /// Write config file
+  void writeConfig(void);
+
+  /**
+    * Refresh the view.
+    */
+  void refresh(void);
+
+  /**
+    * Loads the accounts into the combo box.
+    */
+  void loadAccounts(void);
 };
 
 #endif

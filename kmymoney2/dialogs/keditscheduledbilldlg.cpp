@@ -23,11 +23,15 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 #include <qpushbutton.h>
+#include <qlabel.h>
+#include <qcheckbox.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
 #include <kconfig.h>
 #include <kmessagebox.h>
+#include <klocale.h>
+#include <knumvalidator.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -38,19 +42,26 @@
 #include "../mymoney/mymoneypayee.h"
 #include "../widgets/kmymoneyedit.h"
 #include "../dialogs/ksplittransactiondlg.h"
+#include "../widgets/kmymoneydateinput.h"
+#include "../widgets/kmymoneycategory.h"
 
-KEditScheduledBillDlg::KEditScheduledBillDlg(MyMoneyFile *file, QWidget *parent, const char *name)
+#include "../widgets/kmymoneypayee.h"
+
+KEditScheduledBillDlg::KEditScheduledBillDlg(const QCString& accountId, QWidget *parent, const char *name)
  : kEditScheduledBillDlgDecl(parent, name, true)
 {
-  m_mymoneyfile = file;
+  m_accountId = accountId;
 
+  KIntValidator *validator = new KIntValidator(1, 32768, this);
+  m_qlineeditRemaining->setValidator(validator);
+  
   readConfig();
   reloadFromFile();
 
-  m_transaction = new MyMoneyTransaction();
-
   connect(m_qbuttonCancel, SIGNAL(clicked()), this, SLOT(reject()));
   connect(m_qbuttonSplit, SIGNAL(clicked()), this, SLOT(slotSplitClicked()));
+  connect(m_qcheckboxEnd, SIGNAL(toggled(bool)), this, SLOT(slotWillEndToggled(bool)));
+  connect(m_qbuttonOK, SIGNAL(clicked()), this, SLOT(okClicked()));
 }
 
 KEditScheduledBillDlg::~KEditScheduledBillDlg()
@@ -69,35 +80,24 @@ void KEditScheduledBillDlg::writeConfig(void)
 {
   KConfig *config = KGlobal::config();
   config->setGroup("Last Use Settings");
-  config->writeEntry("LastPayee", m_kcomboPayTo->currentText());
+//  config->writeEntry("LastPayee", m_kcomboPayTo->currentText());
   config->sync();
 }
 
 void KEditScheduledBillDlg::reloadFromFile(void)
 {
-/*
-  int pos=0, k=0;
-  QListIterator<MyMoneyPayee> it = m_mymoneyfile->payeeIterator();
-  for ( ; it.current(); ++it, k++) {
-    m_kcomboPayTo->insertItem(it.current()->name());
-    if (it.current()->name()==m_lastPayee)
-      pos = k;
-  }
-  m_kcomboPayTo->setCurrentItem(pos);
-
-  m_kcomboMethod->insertItem(i18n("Cheque"));
-  m_kcomboMethod->insertItem(i18n("Deposit"));
-  m_kcomboMethod->insertItem(i18n("Transfer"));
-  m_kcomboMethod->insertItem(i18n("Withdrawal"));
-  m_kcomboMethod->insertItem(i18n("ATM"));
+  m_kcomboMethod->insertItem(i18n("Direct Debit"));
+  m_kcomboMethod->insertItem(i18n("Write Cheque"));
+  m_kcomboMethod->insertItem(i18n("Other"));
 
   m_kcomboFreq->insertItem(i18n("Once"));
   m_kcomboFreq->insertItem(i18n("Daily"));
   m_kcomboFreq->insertItem(i18n("Weekly"));
+  m_kcomboFreq->insertItem(i18n("Fortnightly"));
   m_kcomboFreq->insertItem(i18n("Every other week"));
-  m_kcomboFreq->insertItem(i18n("Twice a month"));
   m_kcomboFreq->insertItem(i18n("Every four weeks"));
   m_kcomboFreq->insertItem(i18n("Monthly"));
+  m_kcomboFreq->insertItem(i18n("Twice a month"));
   m_kcomboFreq->insertItem(i18n("Every other month"));
   m_kcomboFreq->insertItem(i18n("Every three months"));
   m_kcomboFreq->insertItem(i18n("Every four months"));
@@ -105,199 +105,311 @@ void KEditScheduledBillDlg::reloadFromFile(void)
   m_kcomboFreq->insertItem(i18n("Yearly"));
   m_kcomboFreq->insertItem(i18n("Every other year"));
 
-  QStringList categoryList;
-  QStringList qstringlistIncome;
-  QStringList qstringlistExpense;
-  bool bDoneInsert = false;
-  QString theText;
+  MyMoneyFile* file = MyMoneyFile::instance();
 
-  QListIterator<MyMoneyCategory> categoryIterator = m_mymoneyfile->categoryIterator();
-  for ( ; categoryIterator.current(); ++categoryIterator) {
-    MyMoneyCategory *category = categoryIterator.current();
+  MyMoneyAccount acc;
+  QCStringList::ConstIterator it_s;
 
-    theText = category->name();
-
-    if (category->isIncome()) {
-      // Add it alpabetically
-      if (qstringlistIncome.count()<=0)
-        qstringlistIncome.append(theText);
-      else {
-        for (QStringList::Iterator it3 = qstringlistIncome.begin(); it3 != qstringlistIncome.end(); ++it3 ) {
-          if ((*it3) >= theText && !bDoneInsert) {
-            qstringlistIncome.insert(it3, theText);
-            bDoneInsert = true;
-          }
-        }
-        if (!bDoneInsert)
-          qstringlistIncome.append(theText);
-      }
-    } else { // is expense
-      // Add it alpabetically
-      if (qstringlistExpense.count()<=0)
-        qstringlistExpense.append(theText);
-      else {
-        for (QStringList::Iterator it4 = qstringlistExpense.begin(); it4 != qstringlistExpense.end(); ++it4 ) {
-          if ((*it4) >= theText && !bDoneInsert) {
-            qstringlistExpense.insert(it4, theText);
-            bDoneInsert = true;
-          }
-        }
-        if (!bDoneInsert)
-          qstringlistExpense.append(theText);
-      }
-    }
-
-    // Now add all the minor categories
-    for ( QStringList::Iterator it = category->minorCategories().begin(); it != category->minorCategories().end(); ++it ) {
-      theText = category->name();
-			theText += ":";
-			theText += (*it);
-				
-			bDoneInsert = false;
-				
-      if (category->isIncome()) {
-        // Add it alpabetically
-        if (qstringlistIncome.count()<=0)
-          qstringlistIncome.append(theText);
-        else {
-          for (QStringList::Iterator it3 = qstringlistIncome.begin(); it3 != qstringlistIncome.end(); ++it3 ) {
-            if ((*it3) >= theText && !bDoneInsert) {
-              qstringlistIncome.insert(it3, theText);
-              bDoneInsert = true;
-            }
-          }
-          if (!bDoneInsert)
-            qstringlistIncome.append(theText);
-        }
-      } else { // is expense
-        // Add it alpabetically
-        if (qstringlistExpense.count()<=0)
-          qstringlistExpense.append(theText);
-        else {
-          for (QStringList::Iterator it4 = qstringlistExpense.begin(); it4 != qstringlistExpense.end(); ++it4 ) {
-            if ((*it4) >= theText && !bDoneInsert) {
-              qstringlistExpense.insert(it4, theText);
-              bDoneInsert = true;
-            }
-          }
-          if (!bDoneInsert)
-            qstringlistExpense.append(theText);
-        }
-      }
-    }  // End minor iterator
-  }
-
-  // Load all the accounts.
-  QStringList qstringlistAccounts;
-  MyMoneyBank *bank;
-  MyMoneyAccount *account;
-  for (bank=m_mymoneyfile->bankFirst(); bank; bank=m_mymoneyfile->bankNext())
+  acc = file->asset();
+  for(it_s = acc.accountList().begin(); it_s != acc.accountList().end(); ++it_s)
   {
-    for (account=bank->accountFirst(); account; account=bank->accountNext())
+    if (*it_s == m_accountId)
     {
-      qstringlistAccounts.append("<" + bank->name() + ":" + account->name() + ">");
+      MyMoneyAccount a = file->account(*it_s);
+      m_qlabelAccountFrom->setText(a.name());
+      return;
     }
   }
-  m_kcomboPayFrom->insertStringList(qstringlistAccounts);
 
-  qstringlistAccounts.append("Split");
-
-	m_kcomboCategory->clear();
-	
-	qstringlistIncome.prepend(i18n("--- Income ---"));
-  qstringlistIncome.prepend("");
-	categoryList = qstringlistIncome;
-	
-	qstringlistExpense.prepend(i18n("--- Expense ---"));
-	categoryList += qstringlistExpense;
-	
-	qstringlistAccounts.prepend(i18n("--- Special ---"));
-	categoryList += qstringlistAccounts;
-
-  m_kcomboCategory->insertStringList(categoryList);
-*/
+  acc = file->liability();
+  for(it_s = acc.accountList().begin(); it_s != acc.accountList().end(); ++it_s)
+  {
+    if (*it_s == m_accountId)
+    {
+      MyMoneyAccount a = file->account(*it_s);
+      m_qlabelAccountFrom->setText(a.name());
+      return;
+    }
+  }
 }
 
 /*
-  Modified from KTransactionView::slotEditSplit().
-*/
+ * Cribbed from : KLedgerViewCheckings::slotOpenSplitDialog(void)
+ */
 void KEditScheduledBillDlg::slotSplitClicked()
 {
-/*
-  MyMoneyMoney amount;
+  bool isDeposit = false;
+  bool isValidAmount = false;
 
-  bool amountSet = true;
-  if(m_kmoneyeditAmount->text() == "")
+  if(m_kmoneyeditAmount->text().length() != 0)
   {
-    amount = 0;
-    amountSet = false;
-  }
-  else
-  {
-    amount = m_kmoneyeditAmount->text();
+    isDeposit = false;
+    isValidAmount = true;
   }
 
-  // Build up the global transaction
-
-  QString qstringBankName =
-    m_kcomboPayFrom->currentText().mid(1, m_kcomboPayFrom->currentText().find(':')-1);
-
-  bool bFoundAll=false;
-
-  MyMoneyBank *bank;
-  MyMoneyAccount *account;
-  for (bank=m_mymoneyfile->bankFirst(); bank; bank=m_mymoneyfile->bankNext())
+  try
   {
-    if (bank->name() == qstringBankName)
+    MyMoneySplit split1;
+    
+    if (m_transaction.splitCount() == 0)
     {
-      QString qstringAccountName =
-        m_kcomboPayFrom->currentText().mid(
-          m_kcomboPayFrom->currentText().find(':')+1,
-          m_kcomboPayFrom->currentText().length() - (qstringBankName.length()+3) );
+      MyMoneyFile *file = MyMoneyFile::instance();
 
-      for (account=bank->accountFirst(); account; account=bank->accountNext())
+      QValueList<MyMoneyPayee> list = file->payeeList();
+      QValueList<MyMoneyPayee>::ConstIterator it_p;
+
+      QCString payeeId;
+      
+      for(it_p = list.begin(); it_p != list.end(); ++it_p)
       {
-        if (account->name() == qstringAccountName)
-        {
-          bFoundAll=true;
-          break;
-        }
+        if ((*it_p).name() == m_kcomboPayTo->text())
+          payeeId = (*it_p).id();
       }
-      if (bFoundAll)
+
+      split1.setAccountId(m_accountId);
+      split1.setAction(split1.ActionWithdrawal);
+      split1.setPayeeId(payeeId);
+      split1.setMemo(m_qlineeditMemo->text());
+      split1.setValue(m_kmoneyeditAmount->getMoneyValue());
+      m_transaction.addSplit(split1);
+    }
+
+    MyMoneyAccount acc = MyMoneyFile::instance()->account(m_accountId);
+  
+    KSplitTransactionDlg* dlg = new KSplitTransactionDlg(m_transaction,
+                                                         acc,
+                                                         isValidAmount,
+                                                         isDeposit,
+                                                         this);
+
+    if(dlg->exec())
+    {
+      m_transaction = dlg->transaction();
+
+      try {
+        switch(m_transaction.splitCount()) {
+          case 2:
+            disconnect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
+            break;
+          case 1:
+            disconnect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
+            break;
+          case 0:
+            disconnect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
+            break;
+          default:
+            connect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
+            break;
+        }  
+      } catch (MyMoneyException *e) {
+        delete e;
+      }
+
+      reloadWidgets();
+
+      m_kmoneyeditAmount->setFocus();
+    }
+
+    delete dlg;
+  } catch (MyMoneyException *e)
+  {
+    QString s;
+    s.sprintf(i18n("Exception in slot split clicked: %s"), e->what().latin1());
+    KMessageBox::information(this, s);
+    delete e;
+  }
+
+}
+
+void KEditScheduledBillDlg::slotWillEndToggled(bool on)
+{
+  m_endLabel1->setEnabled(on);
+  m_qlineeditRemaining->setEnabled(on);
+  m_endLabel2->setEnabled(on);
+  m_kdateinputFinal->setEnabled(on);
+}
+
+void KEditScheduledBillDlg::reloadWidgets(void)
+{
+  QString category;
+  try {
+    MyMoneySplit s;
+    switch(m_transaction.splitCount()) {
+      case 2:
+        s = m_transaction.split(m_accountId, false);
+        category = MyMoneyFile::instance()->accountToCategory(s.accountId());
+        break;
+      case 1:
+        category = " ";
+        break;
+      default:
+        category = i18n("Splitted transaction");
         break;
     }
+  } catch (MyMoneyException *e) {
+    delete e;
+    category = " ";
   }
 
-  if (!bFoundAll)
+  m_category->setText(category);
+
+  MyMoneySplit split = m_transaction.split(m_accountId);
+  MyMoneyMoney amount(split.value());
+  if (amount < 0)
+    amount = -amount;
+  m_kmoneyeditAmount->setText(amount.formatMoney());
+}
+
+MyMoneySchedule KEditScheduledBillDlg::schedule(void)
+{
+  return m_schedule;
+}
+
+void KEditScheduledBillDlg::okClicked()
+{
+  if (m_kcomboPayTo->text() == "")
   {
-    KMessageBox::information(this, i18n("Unable to locate account when getting ready for split dialog.\nHave you created one?"));
+    KMessageBox::information(this, i18n("Please fill in the payee field."));
+    m_kcomboPayTo->setFocus();
     return;
   }
 
-  KSplitTransactionDlg* dlg = new KSplitTransactionDlg(0, 0,
-    m_mymoneyfile, bank, account,
-    &amount, amountSet);
-
-  MyMoneySplitTransaction* split;
-  MyMoneySplitTransaction* tmp;
-
-  if(dlg->exec() == QDialog::Accepted)
+  if (m_kmoneyeditAmount->text() == "")
   {
-//    m_transaction.clearSplitList();  // The transaction should be empty anyway
-    // copy the split list
-    split = dlg->firstTransaction();
-    while(split != NULL)
-    {
-      tmp = new MyMoneySplitTransaction(*split);
-      tmp->setParent(m_transaction);
-      m_transaction->addSplit(tmp);
-      split = dlg->nextTransaction();
-    }
-    m_transaction->setAmount(amount);
-//    m_payment->setText(((transaction->type()==MyMoneyTransaction::Debit) ? KGlobal::locale()->formatMoney(amount.amount(),"") : QString("")));
-//    m_withdrawal->setText(((transaction->type()==MyMoneyTransaction::Credit) ? KGlobal::locale()->formatMoney(amount.amount(),"") : QString("")));
-    m_kcomboCategory->setCurrentItem("Split");
+    KMessageBox::information(this, i18n("Please fill in the amount field."));
+    m_kmoneyeditAmount->setFocus();
+    return;
   }
-  delete dlg;
-*/
+
+  if (m_category->text() == "")
+  {
+    KMessageBox::information(this, i18n("Please fill in the category field."));
+    m_category->setFocus();
+    return;
+  }
+
+
+  try
+  {
+    
+  QString occurence = m_kcomboFreq->currentText();
+  if (occurence == i18n("Once"))
+    m_schedule.setOccurence(MyMoneySchedule::OCCUR_ONCE);
+  else if (occurence = i18n("Daily"))
+    m_schedule.setOccurence(MyMoneySchedule::OCCUR_DAILY);
+  else if (occurence = i18n("Weekly"))
+    m_schedule.setOccurence(MyMoneySchedule::OCCUR_WEEKLY);
+  else if (occurence = i18n("Fortnightly"))
+    m_schedule.setOccurence(MyMoneySchedule::OCCUR_FORTNIGHTLY);
+  else if (occurence = i18n("Every other week"))
+    m_schedule.setOccurence(MyMoneySchedule::OCCUR_EVERYOTHERWEEK);
+  else if (occurence = i18n("Every four weeks"))
+    m_schedule.setOccurence(MyMoneySchedule::OCCUR_EVERYFOURWEEKS);
+  else if (occurence = i18n("Monthly"))
+    m_schedule.setOccurence(MyMoneySchedule::OCCUR_MONTHLY);
+  else if (occurence = i18n("Every other month"))
+    m_schedule.setOccurence(MyMoneySchedule::OCCUR_EVERYOTHERMONTH);
+  else if (occurence = i18n("Every three months"))
+    m_schedule.setOccurence(MyMoneySchedule::OCCUR_EVERYTHREEMONTHS);
+  else if (occurence = i18n("Every four months"))
+    m_schedule.setOccurence(MyMoneySchedule::OCCUR_EVERYFOURMONTHS);
+  else if (occurence = i18n("Twice a year"))
+    m_schedule.setOccurence(MyMoneySchedule::OCCUR_TWICEYEARLY);
+  else if (occurence = i18n("Quarterly"))
+    m_schedule.setOccurence(MyMoneySchedule::OCCUR_QUARTERLY);
+  else if (occurence = i18n("Yearly"))
+    m_schedule.setOccurence(MyMoneySchedule::OCCUR_YEARLY);
+  else if (occurence = i18n("Every other year"))
+    m_schedule.setOccurence(MyMoneySchedule::OCCUR_EVERYOTHERYEAR);
+
+  QString method = m_kcomboMethod->currentText();
+  if (method == i18n("Direct Debit"))
+    m_schedule.setPaymentType(MyMoneySchedule::STYPE_DIRECTDEBIT);
+  else if (method == i18n("Write Cheque"))
+    m_schedule.setPaymentType(MyMoneySchedule::STYPE_WRITECHEQUE);
+  else if (method == i18n("Other"))
+    m_schedule.setPaymentType(MyMoneySchedule::STYPE_OTHER);
+
+  m_schedule.setType(MyMoneySchedule::TYPE_BILL);
+
+  m_schedule.setStartDate(m_kdateinputDue->getQDate());
+  m_schedule.setLastPayment(m_kdateinputDue->getQDate());
+
+  m_schedule.setAutoEnter(m_qcheckboxAuto->isChecked());
+
+  m_schedule.setFixed(!m_qcheckboxEstimate->isChecked());
+
+  MyMoneyFile *file = MyMoneyFile::instance();
+
+  QValueList<MyMoneyPayee> list = file->payeeList();
+  QValueList<MyMoneyPayee>::ConstIterator it_p;
+
+  QCString payeeId;
+
+  for(it_p = list.begin(); it_p != list.end(); ++it_p)
+  {
+    if ((*it_p).name() == m_kcomboPayTo->text())
+      payeeId = (*it_p).id();
+  }
+
+  if (m_transaction.splitCount() == 0)
+  {
+    if (m_kmoneyeditAmount->text() == "")
+    {
+      KMessageBox::information(this, i18n("Please fill in the amount field"));
+      m_kmoneyeditAmount->setFocus();
+    }
+
+    MyMoneySplit split1;
+
+    MyMoneyFile *file = MyMoneyFile::instance();
+
+    QValueList<MyMoneyPayee> list = file->payeeList();
+    QValueList<MyMoneyPayee>::ConstIterator it_p;
+
+    QCString payeeId;
+
+    for(it_p = list.begin(); it_p != list.end(); ++it_p)
+    {
+      if ((*it_p).name() == m_kcomboPayTo->text())
+        payeeId = (*it_p).id();
+    }
+
+    split1.setAccountId(m_accountId);
+    split1.setAction(split1.ActionWithdrawal);
+    split1.setPayeeId(payeeId);
+    split1.setMemo(m_qlineeditMemo->text());
+    split1.setValue(m_kmoneyeditAmount->getMoneyValue());
+    m_transaction.addSplit(split1);
+
+    MyMoneySplit split2;
+    split2.setPayeeId(split1.payeeId());
+    split2.setMemo(split2.memo());
+    split2.setValue(-split2.value());
+    m_transaction.addSplit(split2);
+  }
+
+  MyMoneySplit s = m_transaction.split(m_accountId);
+  s.setPayeeId(payeeId);
+  m_transaction.modifySplit(s);
+
+  m_schedule.setTransaction(m_transaction);
+
+  m_schedule.setWillEnd(m_qcheckboxEnd->isChecked());
+
+  if (m_schedule.willEnd())
+  {
+    m_schedule.setEndDate(m_kdateinputFinal->getQDate());
+    m_schedule.setTransactionsRemaining(m_qlineeditRemaining->text().toInt());
+  }
+
+  } catch (MyMoneyException *e)
+  {
+    QString s(i18n("Exception in okClicked: "));
+    s += e->what();
+    delete e;
+    KMessageBox::information(this, s);
+  }
+
+  accept();
 }

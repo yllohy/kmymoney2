@@ -33,33 +33,86 @@
 // Project Includes
 #include "../mymoney/mymoneyfile.h"
 #include "keditschedtransdlgdecl.h"
+#include "../mymoney/mymoneyscheduled.h"
 
 /**
   * This class provides a dialog to edit the details pertaining to
   * a scheduled transfer.
   *
   * @author Michael Edwardes
-  * $Id: keditscheduledtransferdlg.h,v 1.2 2002/02/17 22:26:01 mte Exp $
+  * $Id: keditscheduledtransferdlg.h,v 1.3 2003/01/24 14:23:22 mte Exp $
   *
   * @short Edit details for a scheduled transfer.
 **/
 class KEditScheduledTransferDlg : public kEditScheduledTransferDlgDecl  {
    Q_OBJECT
 private:
-  MyMoneyFile *m_mymoneyfile;
+  /// Save last payee used for convenience
   QString m_lastPayee;
-  MyMoneyTransaction *m_transaction;
 
+  /// The account we're scheduling for
+  QCString m_accountId;
+
+  /// The transaction details
+  MyMoneyTransaction m_transaction;
+
+  /// The schedule details.
+  MyMoneySchedule m_schedule;
+
+  /**
+    * Sets up the widgets based on whats in MyMoneyFile.
+  */
   void reloadFromFile(void);
+
+  /**
+    * Read stored settings.
+  **/
   void readConfig(void);
+
+  /**
+    * Write setting to config file.
+  **/
   void writeConfig(void);
 
+  /**
+    * Reloads the widgets from the global transaction.
+  **/
+  void reloadWidgets(void);
+
+
 protected slots:
+  /**
+    * Called when the split button is clicked
+  **/
   void slotSplitClicked();
 
+  /**
+    * Called when the 'will end at some time' check box is clicked.
+  **/
+  void slotWillEndToggled(bool on);
+
+  /**
+    * Called when the OK button is clicked.
+  **/
+  void okClicked();
+
 public:
-	KEditScheduledTransferDlg(MyMoneyFile *file, QWidget *parent=0, const char *name=0);
+  /**
+    * Standard QWidget constructor.
+  **/
+	KEditScheduledTransferDlg(const QCString& accountId, QWidget *parent=0, const char *name=0);
+
+  /**
+    * Standard destructor.
+  **/
 	~KEditScheduledTransferDlg();
+
+  /**
+    * Returns the edited schedule.
+    *
+    * @return MyMoneySchedule The schedule details.
+  **/
+  MyMoneySchedule schedule(void);
 };
 
 #endif

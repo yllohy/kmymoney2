@@ -33,33 +33,86 @@
 // Project Includes
 #include "keditschedbilldlgdecl.h"
 #include "../mymoney/mymoneyfile.h"
+#include "../mymoney/mymoneyscheduled.h"
 
 /**
   * This class provides a dialog to edit the details pertaining to
   * a scheduled bill.
   *
   * @author Michael Edwardes
-  * $Id: keditscheduledbilldlg.h,v 1.2 2002/02/17 22:26:01 mte Exp $
+  * $Id: keditscheduledbilldlg.h,v 1.3 2003/01/24 14:23:22 mte Exp $
   *
   * @short Edit details for a scheduled bill.
 **/
 class KEditScheduledBillDlg : public kEditScheduledBillDlgDecl  {
    Q_OBJECT
 private:
-  MyMoneyFile *m_mymoneyfile;
+  /// Save last payee used for convenience
   QString m_lastPayee;
-  MyMoneyTransaction *m_transaction;
 
+  /// The account we're scheduling for
+  QCString m_accountId;
+
+  /// The transaction details
+  MyMoneyTransaction m_transaction;
+
+  /// The schedule details.
+  MyMoneySchedule m_schedule;
+  
+  /**
+    * Sets up the widgets based on whats in MyMoneyFile.
+  */
   void reloadFromFile(void);
+
+  /**
+    * Read stored settings.
+  **/
   void readConfig(void);
+
+  /**
+    * Write setting to config file.
+  **/
   void writeConfig(void);
 
+  /**
+    * Reloads the widgets from the global transaction.
+  **/
+  void reloadWidgets(void);
+
+
 protected slots:
+  /**
+    * Called when the split button is clicked
+  **/
   void slotSplitClicked();
 
-public: 
-	KEditScheduledBillDlg(MyMoneyFile *file, QWidget *parent=0, const char *name=0);
+  /**
+    * Called when the 'will end at some time' check box is clicked.
+  **/
+  void slotWillEndToggled(bool on);
+  
+  /**
+    * Called when the OK button is clicked.
+  **/
+  void okClicked();
+  
+public:
+  /**
+    * Standard QWidget constructor.
+  **/
+	KEditScheduledBillDlg(const QCString& accountId, QWidget *parent=0, const char *name=0);
+
+  /**
+    * Standard destructor.
+  **/
 	~KEditScheduledBillDlg();
+
+  /**
+    * Returns the edited schedule.
+    *
+    * @return MyMoneySchedule The schedule details.
+  **/
+  MyMoneySchedule schedule(void);
 };
 
 #endif

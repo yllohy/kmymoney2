@@ -19,8 +19,14 @@
  *                                                                         *
  ***************************************************************************/
 // ----------------------------------------------------------------------------
-// Project Includes
+// QT Includes
 
+// ----------------------------------------------------------------------------
+// KDE Includes
+#include <klocale.h>
+
+// ----------------------------------------------------------------------------
+// Project Includes
 #include "mymoneyscheduled.h"
 #include "mymoneyexception.h"
 
@@ -63,8 +69,12 @@ bool MyMoneySchedule::validate(bool id_check) const
         if (m_paymentType == STYPE_DIRECTDEBIT || m_paymentType == STYPE_WRITECHEQUE)
           return false;
         break;
+      case TYPE_ANY:
+        return false;
+        break;
       case TYPE_TRANSFER:
-        ; // Do all payment types apply?
+        if (m_paymentType == STYPE_DIRECTDEPOSIT || m_paymentType == STYPE_MANUALDEPOSIT)
+          return false;
         break;
     }
 
@@ -163,6 +173,8 @@ QDate MyMoneySchedule::nextPayment(void) const
         paymentDate = paymentDate.addYears(2);
       }
       return paymentDate;
+      break;
+    case OCCUR_ANY:
       break;
   }
 
@@ -263,6 +275,8 @@ QValueList<QDate> MyMoneySchedule::paymentDates(const QDate& startDate, const QD
         theDates.append(paymentDate);
       }
       break;
+    case OCCUR_ANY:
+      break;
   }
 
   return theDates;
@@ -288,7 +302,7 @@ MyMoneyScheduled::~MyMoneyScheduled()
 {
 }
 
-QString MyMoneyScheduled::addSchedule(const MyMoneySchedule& schedule)
+QString MyMoneyScheduled::addSchedule(const QCString& accountId, const MyMoneySchedule& schedule)
 {
   if (!schedule.validate())
   {
@@ -297,173 +311,375 @@ QString MyMoneyScheduled::addSchedule(const MyMoneySchedule& schedule)
   }
 
   QString newId;
-  newId.sprintf("SCHED%05d", m_nextId++);
 
-  MyMoneySchedule schedCopy(schedule);
-  schedCopy.setId(newId);
+  try
+  {
+    MyMoneyFile::instance()->account(accountId);
 
-  m_scheduled.insert(newId, schedCopy);
+    newId.sprintf("SCHED%05d", m_nextId++);
+
+    MyMoneySchedule schedCopy(schedule);
+    schedCopy.setId(newId);
+
+    QMap<QString, MyMoneySchedule> scheduled;
+    if (m_accountsScheduled.contains(accountId))
+    {
+      scheduled = m_accountsScheduled[accountId];
+    }
+
+    scheduled.insert(newId, schedCopy);
+
+    // will replace the old one if it exists
+    m_accountsScheduled.insert(accountId, scheduled, true);
+    
+  } catch (MyMoneyException *e)
+  {
+    QString s(i18n("Invalid accountId passed to MyMoneyScheduled: "));
+    s += e->what();
+    delete e;
+    throw new MYMONEYEXCEPTION(s);
+  }
 
   return newId;
 }
 
-void MyMoneyScheduled::removeSchedule(const QString& scheduleId)
+void MyMoneyScheduled::removeSchedule(const QCString& accountId, const QString& scheduleId)
 {
-  if ((m_scheduled.find(scheduleId)) == m_scheduled.end())
+  try
   {
-    throw new MYMONEYEXCEPTION("Supplied schedule ID does not exist in removeSchedule");
-    return;
-  }
+    MyMoneyFile::instance()->account(accountId);
 
-  m_scheduled.remove(scheduleId);
+    QMap<QString, MyMoneySchedule> scheduled;
+    if (m_accountsScheduled.contains(accountId))
+    {
+      scheduled = m_accountsScheduled[accountId];
+    }
+    else
+    {
+      throw new MYMONEYEXCEPTION("Supplied accountId does not exist in schedules");
+      return;
+    }
+    
+    if ((scheduled.find(scheduleId)) == scheduled.end())
+    {
+      throw new MYMONEYEXCEPTION("Supplied schedule ID does not exist in removeSchedule");
+      return;
+    }
+
+    scheduled.remove(scheduleId);
+
+    // Will replace
+    m_accountsScheduled.insert(accountId, scheduled, true);
+    
+  } catch (MyMoneyException *e)
+  {
+    QString s(i18n("Exception in MyMoneyScheduled: "));
+    s += e->what();
+    delete e;
+    throw new MYMONEYEXCEPTION(s);
+  }
 }
 
-QString MyMoneyScheduled::replaceSchedule(const QString& scheduleId, const MyMoneySchedule& schedule)
+QString MyMoneyScheduled::replaceSchedule(const QCString& accountId, const QString& scheduleId, const MyMoneySchedule& schedule)
 {
-  QMap<QString, MyMoneySchedule>::Iterator it = m_scheduled.find(scheduleId);
-  if (it == m_scheduled.end())
+  try
   {
-    throw new MYMONEYEXCEPTION("Supplied schedule ID does not exist in replaceSchedule");
-    return "";
-  }
+    MyMoneyFile::instance()->account(accountId);
 
-  if (!schedule.validate(false))
+    QMap<QString, MyMoneySchedule> scheduled;
+    if (m_accountsScheduled.contains(accountId))
+    {
+      scheduled = m_accountsScheduled[accountId];
+    }
+    else
+    {
+      throw new MYMONEYEXCEPTION("Supplied accountId does not exist in schedules");
+      return "";
+    }
+
+    if ((scheduled.find(scheduleId)) == scheduled.end())
+    {
+      throw new MYMONEYEXCEPTION("Supplied schedule ID does not exist in removeSchedule");
+      return "";
+    }
+
+    if (!schedule.validate(false))
+    {
+      throw new MYMONEYEXCEPTION("Invalid schedule instance when replacing in collection.");
+      return "";
+    }
+
+    scheduled.insert(scheduleId, schedule, true);
+
+    // Will replace
+    m_accountsScheduled.insert(accountId, scheduled, true);
+
+  } catch (MyMoneyException *e)
   {
-    throw new MYMONEYEXCEPTION("Invalid schedule instance when replacing in collection.");
-    return "";
+    QString s(i18n("Exception in MyMoneyScheduled: "));
+    s += e->what();
+    delete e;
+    throw new MYMONEYEXCEPTION(s);
   }
-
-  m_scheduled.insert(scheduleId, schedule, true);
 
   return scheduleId;
 }
 
-MyMoneySchedule MyMoneyScheduled::getSchedule(const QString& scheduleId)
+MyMoneySchedule MyMoneyScheduled::getSchedule(const QCString& accountId, const QString& scheduleId)
 {
   MyMoneySchedule sched;
+  QMap<QString, MyMoneySchedule>::Iterator it;
   
-  QMap<QString, MyMoneySchedule>::Iterator it = m_scheduled.find(scheduleId);
-  if (it == m_scheduled.end())
+  try
   {
-    throw new MYMONEYEXCEPTION("Supplied schedule ID does not exist in removeSchedule");
-    return sched;
+    MyMoneyFile::instance()->account(accountId);
+
+    QMap<QString, MyMoneySchedule> scheduled;
+    if (m_accountsScheduled.contains(accountId))
+    {
+      scheduled = m_accountsScheduled[accountId];
+    }
+    else
+    {
+      throw new MYMONEYEXCEPTION("Supplied accountId does not exist in schedules");
+      return sched;
+    }
+
+    it = scheduled.find(scheduleId);
+    if (it == scheduled.end())
+    {
+      throw new MYMONEYEXCEPTION("Supplied schedule ID does not exist in removeSchedule");
+      return sched;
+    }
+  } catch (MyMoneyException *e)
+  {
+    QString s(i18n("Exception in MyMoneyScheduled: "));
+    s += e->what();
+    delete e;
+    throw new MYMONEYEXCEPTION(s);
   }
 
   return it.data();
 }
 
-QValueList<QString> MyMoneyScheduled::getScheduled(const MyMoneySchedule::typeE type,
+QValueList<QString> MyMoneyScheduled::getScheduled(const QCString& accountId, const MyMoneySchedule::typeE type,
   const MyMoneySchedule::paymentTypeE paymentType,
   const MyMoneySchedule::occurenceE occurence)
 {
   QValueList<QString> idList;
-
   QMap<QString, MyMoneySchedule>::Iterator it;
-  for (it = m_scheduled.begin(); it != m_scheduled.end(); ++it)
+
+  try
   {
-    if (  (type==MyMoneySchedule::TYPE_ANY || it.data().type() == type) &&
-          (paymentType==MyMoneySchedule::STYPE_ANY || it.data().paymentType() == paymentType) &&
-          (occurence==MyMoneySchedule::OCCUR_ANY || it.data().occurence() == occurence) )
+    MyMoneyFile::instance()->account(accountId);
+
+    QMap<QString, MyMoneySchedule> scheduled;
+    if (m_accountsScheduled.contains(accountId))
     {
-      idList.append(it.key());
+      scheduled = m_accountsScheduled[accountId];
     }
+    else
+    {
+      throw new MYMONEYEXCEPTION("Supplied accountId does not exist in schedules");
+      return idList;
+    }
+
+    for (it = scheduled.begin(); it != scheduled.end(); ++it)
+    {
+      if (  (type==MyMoneySchedule::TYPE_ANY || it.data().type() == type) &&
+            (paymentType==MyMoneySchedule::STYPE_ANY || it.data().paymentType() == paymentType) &&
+            (occurence==MyMoneySchedule::OCCUR_ANY || it.data().occurence() == occurence) )
+      {
+        idList.append(it.key());
+      }
+    }
+  } catch (MyMoneyException *e)
+  {
+    QString s(i18n("Exception in MyMoneyScheduled: "));
+    s += e->what();
+    delete e;
+    throw new MYMONEYEXCEPTION(s);
   }
 
   return idList;
 }
 
-QValueList<QString> MyMoneyScheduled::getScheduled(const QDate& startDate, const QDate& endDate,
+QValueList<QString> MyMoneyScheduled::getScheduled(const QCString& accountId, const QDate& startDate, const QDate& endDate,
   const MyMoneySchedule::typeE type,
   const MyMoneySchedule::paymentTypeE paymentType,
   const MyMoneySchedule::occurenceE occurence)
 {
   QValueList<QString> idList;
-
   QMap<QString, MyMoneySchedule>::Iterator it;
-  for (it = m_scheduled.begin(); it != m_scheduled.end(); ++it)
+
+  try
   {
-    if (  (type==MyMoneySchedule::TYPE_ANY || it.data().type() == type) &&
-          (paymentType==MyMoneySchedule::STYPE_ANY || it.data().paymentType() == paymentType) &&
-          (occurence==MyMoneySchedule::OCCUR_ANY || it.data().occurence() == occurence) )
+    MyMoneyFile::instance()->account(accountId);
+
+    QMap<QString, MyMoneySchedule> scheduled;
+    if (m_accountsScheduled.contains(accountId))
     {
-      QString s;
-      s.sprintf("\nchecking %s, %s", startDate.toString().latin1(), endDate.toString().latin1());
-      QValueList<QDate> payments = it.data().paymentDates(startDate, endDate);
-      if (payments.size()>=1)
-        idList.append(it.key());
+      scheduled = m_accountsScheduled[accountId];
     }
+    else
+    {
+      throw new MYMONEYEXCEPTION("Supplied accountId does not exist in schedules");
+      return idList;
+    }
+
+    for (it = scheduled.begin(); it != scheduled.end(); ++it)
+    {
+      if (  (type==MyMoneySchedule::TYPE_ANY || it.data().type() == type) &&
+            (paymentType==MyMoneySchedule::STYPE_ANY || it.data().paymentType() == paymentType) &&
+            (occurence==MyMoneySchedule::OCCUR_ANY || it.data().occurence() == occurence) )
+      {
+        QString s;
+        s.sprintf("\nchecking %s, %s", startDate.toString().latin1(), endDate.toString().latin1());
+        QValueList<QDate> payments = it.data().paymentDates(startDate, endDate);
+        if (payments.size()>=1)
+          idList.append(it.key());
+      }
+    }
+  } catch (MyMoneyException *e)
+  {
+    QString s(i18n("Exception in MyMoneyScheduled: "));
+    s += e->what();
+    delete e;
+    throw new MYMONEYEXCEPTION(s);
   }
 
   return idList;
 }
 
-QValueList<QString> MyMoneyScheduled::getOverdue(const MyMoneySchedule::typeE type,
+QValueList<QString> MyMoneyScheduled::getOverdue(const QCString& accountId, const MyMoneySchedule::typeE type,
   const MyMoneySchedule::paymentTypeE paymentType,
   const MyMoneySchedule::occurenceE occurence)
 {
-  // Expensive but works for now.  Could maybe put a helper method in
-  // MyMoneySchedule
-  QValueList<QString> theList;
-  
+  QValueList<QString> idList;
   QMap<QString, MyMoneySchedule>::Iterator it;
-  for (it = m_scheduled.begin(); it != m_scheduled.end(); ++it)
+
+  try
   {
-    if (  (type==MyMoneySchedule::TYPE_ANY || it.data().type() == type) &&
-          (paymentType==MyMoneySchedule::STYPE_ANY || it.data().paymentType() == paymentType) &&
-          (occurence==MyMoneySchedule::OCCUR_ANY || it.data().occurence() == occurence) )
+    MyMoneyFile::instance()->account(accountId);
+
+    QMap<QString, MyMoneySchedule> scheduled;
+    if (m_accountsScheduled.contains(accountId))
     {
-      QValueList<QDate> list = it.data().paymentDates(it.data().lastPayment(), QDate::currentDate());
-      if (list.size() >= 2)
+      scheduled = m_accountsScheduled[accountId];
+    }
+    else
+    {
+      throw new MYMONEYEXCEPTION("Supplied accountId does not exist in schedules");
+      return idList;
+    }
+
+    for (it = scheduled.begin(); it != scheduled.end(); ++it)
+    {
+      if (  (type==MyMoneySchedule::TYPE_ANY || it.data().type() == type) &&
+            (paymentType==MyMoneySchedule::STYPE_ANY || it.data().paymentType() == paymentType) &&
+            (occurence==MyMoneySchedule::OCCUR_ANY || it.data().occurence() == occurence) )
       {
-        theList.append(it.key());
+        QValueList<QDate> list = it.data().paymentDates(it.data().lastPayment(), QDate::currentDate());
+        if (list.size() >= 2)
+        {
+          idList.append(it.key());
+        }
       }
     }
+  } catch (MyMoneyException *e)
+  {
+    QString s(i18n("Exception in MyMoneyScheduled: "));
+    s += e->what();
+    delete e;
+    throw new MYMONEYEXCEPTION(s);
   }
 
-  return theList;
+  return idList;
 }
 
-bool MyMoneyScheduled::anyOverdue(const MyMoneySchedule::typeE type,
+bool MyMoneyScheduled::anyOverdue(const QCString& accountId, const MyMoneySchedule::typeE type,
   const MyMoneySchedule::occurenceE occurence,
   const MyMoneySchedule::paymentTypeE paymentType)
 {
-  // Expensive but works for now.  Could maybe put a helper method in
-  // MyMoneySchedule
   QMap<QString, MyMoneySchedule>::Iterator it;
-  for (it = m_scheduled.begin(); it != m_scheduled.end(); ++it)
+
+  try
   {
-    if (  (type==MyMoneySchedule::TYPE_ANY || it.data().type() == type) &&
-          (paymentType==MyMoneySchedule::STYPE_ANY || it.data().paymentType() == paymentType) &&
-          (occurence==MyMoneySchedule::OCCUR_ANY || it.data().occurence() == occurence) )
+    MyMoneyFile::instance()->account(accountId);
+
+    QMap<QString, MyMoneySchedule> scheduled;
+    if (m_accountsScheduled.contains(accountId))
     {
-      QValueList<QDate> list = it.data().paymentDates(it.data().lastPayment(), QDate::currentDate());
-      if (list.size() >= 2)
+      scheduled = m_accountsScheduled[accountId];
+    }
+    else
+    {
+      throw new MYMONEYEXCEPTION("Supplied accountId does not exist in schedules");
+      return false;
+    }
+
+    for (it = scheduled.begin(); it != scheduled.end(); ++it)
+    {
+      if (  (type==MyMoneySchedule::TYPE_ANY || it.data().type() == type) &&
+            (paymentType==MyMoneySchedule::STYPE_ANY || it.data().paymentType() == paymentType) &&
+            (occurence==MyMoneySchedule::OCCUR_ANY || it.data().occurence() == occurence) )
       {
-        // abort early...
-        return true;
+        QValueList<QDate> list = it.data().paymentDates(it.data().lastPayment(), QDate::currentDate());
+        if (list.size() >= 2)
+        {
+          // abort early...
+          return true;
+        }
       }
     }
+  } catch (MyMoneyException *e)
+  {
+    QString s(i18n("Exception in MyMoneyScheduled: "));
+    s += e->what();
+    delete e;
+    throw new MYMONEYEXCEPTION(s);
   }
 
   return false;
 }
 
-bool MyMoneyScheduled::anyScheduled(const MyMoneySchedule::typeE type,
+bool MyMoneyScheduled::anyScheduled(const QCString& accountId, const MyMoneySchedule::typeE type,
   const MyMoneySchedule::occurenceE occurence,
   const MyMoneySchedule::paymentTypeE paymentType)
 {
-  unsigned int nCounter=0;
-  
   QMap<QString, MyMoneySchedule>::Iterator it;
-  for (it = m_scheduled.begin(); it != m_scheduled.end(); ++it)
+
+  try
   {
-    if (  (type==MyMoneySchedule::TYPE_ANY || it.data().type() == type) &&
-          (occurence==MyMoneySchedule::OCCUR_ANY || it.data().occurence() == occurence) &&
-          (paymentType==MyMoneySchedule::STYPE_ANY || it.data().paymentType() == paymentType) )
+    MyMoneyFile::instance()->account(accountId);
+
+    QMap<QString, MyMoneySchedule> scheduled;
+    if (m_accountsScheduled.contains(accountId))
     {
-      nCounter++;
+      scheduled = m_accountsScheduled[accountId];
     }
+    else
+    {
+      throw new MYMONEYEXCEPTION("Supplied accountId does not exist in schedules");
+      return false;
+    }
+
+    for (it = scheduled.begin(); it != scheduled.end(); ++it)
+    {
+      if (  (type==MyMoneySchedule::TYPE_ANY || it.data().type() == type) &&
+            (occurence==MyMoneySchedule::OCCUR_ANY || it.data().occurence() == occurence) &&
+            (paymentType==MyMoneySchedule::STYPE_ANY || it.data().paymentType() == paymentType) )
+      {
+        return true;
+      }
+    }
+  } catch (MyMoneyException *e)
+  {
+    QString s(i18n("Exception in MyMoneyScheduled: "));
+    s += e->what();
+    delete e;
+    throw new MYMONEYEXCEPTION(s);
   }
 
-  return (nCounter > 0);
+  return false;
 }

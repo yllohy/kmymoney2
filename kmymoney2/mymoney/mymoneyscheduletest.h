@@ -21,6 +21,8 @@
 
 #define private public
 #include "mymoneyscheduled.h"
+#include "mymoneyfile.h"
+#include "storage/mymoneyseqaccessmgr.h"
 #undef private
 
 class MyMoneyScheduleTest : public CppUnit::TestFixture  {
@@ -45,6 +47,10 @@ class MyMoneyScheduleTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST_SUITE_END();
 
 protected:
+//	MyMoneyFile	*m_file;
+//	MyMoneySeqAccessMgr*	storage;
+	//TestObserverSet *observer;
+	//TestObserverSet *hierarchyObserver;
 
 public:
 	MyMoneyScheduleTest();
