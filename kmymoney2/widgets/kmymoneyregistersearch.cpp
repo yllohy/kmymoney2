@@ -127,7 +127,7 @@ void kMyMoneyRegisterSearch::paintCell(QPainter *p, int row, int col, const QRec
       case 3:
         align |= Qt::AlignLeft;
         switch(m_transactionRow) {
-          case 0:
+          case 0:       // payee
             try {
               if(!m_split.payeeId().isEmpty()) {
                 MyMoneyPayee payee;
@@ -137,6 +137,25 @@ void kMyMoneyRegisterSearch::paintCell(QPainter *p, int row, int col, const QRec
             } catch(MyMoneyException *e) {
               delete e;
             }
+            break;
+
+          case 1:       // category
+            try {
+              if(m_transaction->isLoanPayment()) {
+                txt = QString(i18n("Loan payment"));
+              } else if(m_transaction->splitCount() > 2)
+                txt = QString(i18n("Splitted transaction"));
+              else {
+                MyMoneySplit split = m_transaction->splitByAccount(m_split.accountId(), false);
+                txt = MyMoneyFile::instance()->accountToCategory(split.accountId());
+              }
+            } catch(MyMoneyException *e) {
+              delete e;
+            }
+            break;
+
+          case 2:       // memo
+            txt = m_split.memo();
             break;
         }
         break;
