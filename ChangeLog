@@ -1,3 +1,17 @@
+2003-10-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * move resize-grip in find transaction dialog
+  * fixed minor problems in transaction filter
+  * fixed duplicates for transalations in KMyMoneyUtils::stringToAccountType 
+  * added investment loan to the new account wizard
+  * added button icons to KImportVerifyDlg
+  * show accounts in sorted order in the combo box of the ledger view
+  * make sure that kMyMoneyEdit fields always have a fractional part
+  * keep QIF profiles created during QIF input
+  * added financial calculator class MyMoneyFinancialCalculator
+  * force usage of new account wizard for creation of accounts
+  * removed selection of wizard from settings
+  * updated french translation file
+
 2003-10-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * modify transfers to/from loan accounts to amortization payments
     when a new transaction is entered into the engine
