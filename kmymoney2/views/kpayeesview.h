@@ -37,6 +37,7 @@ class KPayeesView : public kPayeesViewDecl  {
 public: 
 	KPayeesView(MyMoneyFile *file, QWidget *parent=0, const char *name=0);
 	~KPayeesView();
+  void show();
 
 protected slots:
   void payeeHighlighted(const QString&);
@@ -51,6 +52,8 @@ private:
 
   void readConfig(void);
   void writeConfig(void);
+
+  void refresh(void);
 };
 
 #endif

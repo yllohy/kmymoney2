@@ -46,17 +46,6 @@ KPayeesView::KPayeesView(MyMoneyFile *file, QWidget *parent, const char *name )
 
   readConfig();
 
-  int pos=0, k=0;
-  QListIterator<MyMoneyPayee> it = m_file->payeeIterator();
-  for ( ; it.current(); ++it, k++) {
-    payeeCombo->insertItem(it.current()->name());
-    if (it.current()->name()==m_lastPayee)
-      pos = k;
-  }
-  payeeCombo->setCurrentItem(pos);
-
-  payeeHighlighted(payeeCombo->currentText());
-
   connect(payeeCombo, SIGNAL(activated(const QString&)), this, SLOT(payeeHighlighted(const QString&)));
   connect(addButton, SIGNAL(clicked()), this, SLOT(slotAddClicked()));
   connect(payeeEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotPayeeTextChanged(const QString&)));
@@ -162,3 +151,24 @@ void KPayeesView::writeConfig(void)
   config->sync();
 }
 
+void KPayeesView::show()
+{
+  refresh();
+  QWidget::show();
+}
+
+void KPayeesView::refresh(void)
+{
+  payeeCombo->clear();
+
+  int pos=0, k=0;
+  QListIterator<MyMoneyPayee> it = m_file->payeeIterator();
+  for ( ; it.current(); ++it, k++) {
+    payeeCombo->insertItem(it.current()->name());
+    if (it.current()->name()==m_lastPayee)
+      pos = k;
+  }
+  payeeCombo->setCurrentItem(pos);
+
+  payeeHighlighted(payeeCombo->currentText());
+}
