@@ -299,7 +299,13 @@ void KMyMoneyView::slotAccountDoubleClick(void)
 
   if(ok == true) {
     showPage(pageIndex(m_ledgerViewFrame));
-    m_ledgerView->selectAccount(acc);
+    try {
+      MyMoneyAccount account = MyMoneyFile::instance()->account(acc);
+      m_ledgerView->slotAccountSelected(account.name(), false);
+    } catch(MyMoneyException *e) {
+      qWarning("This should not happen");
+      delete e;
+    }
   }
 }
 
@@ -377,29 +383,39 @@ void KMyMoneyView::slotAccountEdit()
     return;
 
   bool accountSuccess=false;
-
+  
   try
   {
     MyMoneyFile* file = MyMoneyFile::instance();
     MyMoneyAccount account;
 
-    if(pageIndex(m_accountsViewFrame) == activePageIndex())
-      account = file->account(accountsView->currentAccount(accountSuccess));
-    else
-      account = file->account(m_categoriesView->currentAccount(accountSuccess));
-
-    KNewAccountDlg dlg(account, true, false, this, "hi", i18n("Edit an Account"));
-
-    if (dlg.exec())
-    {
-      file->modifyAccount(dlg.account());
+    if(pageIndex(m_accountsViewFrame) == activePageIndex()) {
+      QCString accountId = accountsView->currentAccount(accountSuccess);
+      if(!accountId.isEmpty()) {
+        account = file->account(accountId);
+        switch(MyMoneyAccount::accountGroup(account.accountType())) {
+          case MyMoneyAccount::Asset:
+          case MyMoneyAccount::Liability:
+            accountsView->slotEditClicked();
+            break;
+          case MyMoneyAccount::Income:
+          case MyMoneyAccount::Expense:
+            m_categoriesView->slotEditClicked(account);
+            break;
+          default:
+            qDebug("%s:%d This should not happen!", __FILE__ , __LINE__);
+            break;
+        }
+      }
+    } else {
+      m_categoriesView->slotEditClicked();
     }
   }
   catch (MyMoneyException *e)
   {
     if (accountSuccess)
     {
-      QString errorString = i18n("Cannot edit account: ");
+      QString errorString = i18n("Cannot edit account/category: ");
       errorString += e->what();
 
       KMessageBox::information(this, errorString);
@@ -417,30 +433,33 @@ void KMyMoneyView::slotAccountDelete()
 
   bool accountSuccess=false;
 
-  try
-  {
+  try {
     MyMoneyFile* file = MyMoneyFile::instance();
     MyMoneyAccount account;
 
-    if(pageIndex(m_accountsViewFrame) == activePageIndex())
-      account = file->account(accountsView->currentAccount(accountSuccess));
-    else
-      account = file->account(m_categoriesView->currentAccount(accountSuccess));
-
-    QString prompt = i18n("Do you really want to delete the account '%1'")
-      .arg(account.name());
-
-    if ((KMessageBox::questionYesNo(this, prompt))==KMessageBox::No)
-      return;
-
-    file->removeAccount(account);
-  
-    // FIXME: remove  accountsView->refresh("");
-  }
-  catch (MyMoneyException *e)
-  {
-    if (accountSuccess)
-    {
+    if(pageIndex(m_accountsViewFrame) == activePageIndex()) {
+      QCString accountId = accountsView->currentAccount(accountSuccess);
+      if(!accountId.isEmpty()) {
+        account = file->account(accountId);
+        switch(MyMoneyAccount::accountGroup(account.accountType())) {
+          case MyMoneyAccount::Asset:
+          case MyMoneyAccount::Liability:
+            accountsView->slotDeleteClicked();
+            break;
+          case MyMoneyAccount::Income:
+          case MyMoneyAccount::Expense:
+            m_categoriesView->slotDeleteClicked(account);
+            break;
+          default:
+            qDebug("%s:%d This should not happen!", __FILE__ , __LINE__);
+            break;
+        }
+      }
+    } else {
+      m_categoriesView->slotDeleteClicked();
+    } 
+  } catch (MyMoneyException *e) {
+    if (accountSuccess) {
       QString errorString = i18n("Cannot delete account: ");
       errorString += e->what();
       KMessageBox::information(this, errorString);
@@ -769,7 +788,8 @@ void KMyMoneyView::slotAccountReconcile(void)
   bool  ok = false;
   QCString acc;
   MyMoneyFile* file = MyMoneyFile::instance();
-
+  MyMoneyAccount account;
+  
   if(pageIndex(m_accountsViewFrame) == activePageIndex())
     acc = accountsView->currentAccount(ok);
   else
@@ -783,7 +803,7 @@ void KMyMoneyView::slotAccountReconcile(void)
   // it make's sense for asset and liability accounts
   if(ok == true) {
     try {
-      MyMoneyAccount account = file->account(acc);
+      account = file->account(acc);
       switch(file->accountGroup(account.accountType())) {
         case MyMoneyAccount::Asset:
         case MyMoneyAccount::Liability:
@@ -799,7 +819,7 @@ void KMyMoneyView::slotAccountReconcile(void)
 
   if(ok == true) {
     showPage(pageIndex(m_ledgerViewFrame));
-    m_ledgerView->selectAccount(acc, "", true);
+    m_ledgerView->slotAccountSelected(account.name(), true);
   }
 
 /*
@@ -1662,8 +1682,12 @@ void KMyMoneyView::slotCancelEdit(void) const
 
 void KMyMoneyView::progressCallback(int current, int total, const QString& msg)
 {
-  if(!msg.isEmpty())
-    kmymoney2->slotStatusMsg(msg);
-  
-  kmymoney2->slotStatusProgressBar(current, total);
+  kmymoney2->progressCallback(current, total, msg);
+}
+
+void KMyMoneyView::suspendUpdate(const bool suspend)
+{
+  accountsView->suspendUpdate(suspend);
+  m_categoriesView->suspendUpdate(suspend);
+  m_ledgerView->suspendUpdate(suspend);
 }

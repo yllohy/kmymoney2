@@ -62,7 +62,7 @@ class IMyMoneyStorageFormat;
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.32 2003/02/26 19:38:31 ipwizard Exp $
+  * $Id: kmymoneyview.h,v 1.33 2003/06/20 12:05:21 ipwizard Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -259,6 +259,19 @@ public:
   **/
   QString currentAccountName(void);
 
+  /**
+    * utility method to suspend/activate updates of the MyMoney engine on
+    * all views. This is used to speed up operations with lot's of updates
+    * of engine data in a short time (e.g. importing data, creating a
+    * new file).
+    *
+    * @param suspend Suspend updates or not. Possible values are
+    *
+    * @li true updates are suspended
+    * @li false updates will be performed immediately
+    */
+  void suspendUpdate(const bool suspend);
+  
   void memoryDump();
 
 public slots:
@@ -275,6 +288,7 @@ public slots:
   /**
     * Brings up a dialog to let the user search for specific transaction(s).  It then
     * opens a results window to display those transactions.
+
     */
   void accountFind();
 
@@ -389,6 +403,7 @@ protected slots:
   void slotAccountEdit();
 
   /**
+
     * Called by the context menu created in slotAccountRightMouse.  Deletes the currently
     * selected account. TODO: move this method into KBanksView.
   **/

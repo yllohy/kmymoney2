@@ -210,8 +210,8 @@ public:
     Reconciliation
   };
 
-	KLedgerView(QWidget *parent=0, const char *name=0);
-	virtual ~KLedgerView();
+  KLedgerView(QWidget *parent=0, const char *name=0);
+  virtual ~KLedgerView();
 
   /**
     * This method is called by KGlobalLedgerView::selectAccount to set
@@ -241,6 +241,19 @@ public:
     *                  as requested for setCurrentAccount().
     */
   void update(const QCString& accountId);
+
+  /**
+    * utility method to suspend/activate updates of the MyMoney engine on
+    * all views. This is used to speed up operations with lot's of updates
+    * of engine data in a short time (e.g. importing data, creating a
+    * new file).
+    *
+    * @param suspend Suspend updates or not. Possible values are
+    *
+    * @li true updates are suspended
+    * @li false updates will be performed immediately
+    */
+  void suspendUpdate(const bool suspend);
 
   /**
     * This method returns a pointer to the transaction data
@@ -796,6 +809,12 @@ private:
     * to colorize erronous transactions in the register of the ledger view.
     */
   bool          m_blinkState;
+
+  /**
+    * This member holds the state of the toggle switch used
+    * to suppress updates due to MyMoney engine data changes
+    */
+  bool m_suspendUpdate;
 
 private slots:
   void timerDone(void);

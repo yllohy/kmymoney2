@@ -223,7 +223,8 @@ void KTransactionPtrVector::setPayeeId(const QCString& id)
 KLedgerView::KLedgerView(QWidget *parent, const char *name )
   : QWidget(parent,name),
   m_contextMenu(0),
-  m_blinkTimer(parent)
+  m_blinkTimer(parent),
+  m_suspendUpdate(false)
 {
   KConfig *config = KGlobal::config();
   config->setGroup("General Options");
@@ -446,14 +447,30 @@ void KLedgerView::filterTransactions(void)
   }
 }
 
+
 void KLedgerView::update(const QCString& accountId)
 {
-  try {
-    reloadAccount(true);
-  } catch(MyMoneyException *e) {
-    qDebug("Unexpected exception in KLedgerView::update");
-    delete e;
+  if(m_suspendUpdate == false) {
+    try {
+      reloadAccount(true);
+    } catch(MyMoneyException *e) {
+      qDebug("Unexpected exception in KLedgerView::update for '%s'", m_account.id().data());
+      delete e;
+    }
   }
+}
+
+void KLedgerView::suspendUpdate(const bool suspend)
+{
+  // force a refresh, if update was off
+  if(m_suspendUpdate == true
+  && suspend == false) {
+    m_suspendUpdate = false;
+    if(m_account.id() != "")
+      update("");
+    
+  } else
+    m_suspendUpdate = suspend;
 }
 
 MyMoneyTransaction* const KLedgerView::transaction(const int idx) const
