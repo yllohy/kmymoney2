@@ -706,6 +706,7 @@ void KMyMoneyView::loadDefaultCategories(void)
 bool KMyMoneyView::parseDefaultCategory(QString& line, bool& income, QString& name, QStringList& minors)
 {
   // Parse the argument line separating into 3 other arguments
+  // if third is missing then assume no minor categories.
   if (line.isEmpty() || line.isNull())
     return false;
 
@@ -726,19 +727,23 @@ bool KMyMoneyView::parseDefaultCategory(QString& line, bool& income, QString& na
       QString inner_buffer;
       while (inner_count <= buffer.length()) {
         if (buffer[inner_count]==separatorChar) {
-          minors.append(inner_buffer);
-          inner_count++;
-          inner_buffer = QString::null;
+          if (inner_buffer.length()>=1) {
+            minors.append(inner_buffer);
+            inner_count++;
+            inner_buffer = QString::null;
+          }
         }
         else if (inner_count==buffer.length()) {
-          minors.append(inner_buffer);
+          if (inner_buffer.length()>=1) {
+            minors.append(inner_buffer);
+          }
           break;
         }
         else
           inner_buffer += buffer[inner_count++];
       }
       done3=true;
-      if (done1 && done2 && done3)
+      if (done1 && done2)
         return true;
       else
         return false;
@@ -750,17 +755,21 @@ bool KMyMoneyView::parseDefaultCategory(QString& line, bool& income, QString& na
 
         switch (tokenCount) {
           case 0: // income
-            if (buffer=="true" || buffer=="TRUE")
+            if (buffer.upper() == "TRUE")
               income = true;
-            else if (buffer=="false" || buffer=="FALSE")
+            else if (buffer.upper() == "FALSE")
               income = false;
             else
               return false;
-              tokenCount++;
-              done1=true;
-              buffer = QString::null;
-              break;
+
+            tokenCount++;
+            done1=true;
+            buffer = QString::null;
+            break;
           case 1: // name
+            if (buffer.length()<=0)
+              return false;
+
             name = buffer;
             tokenCount++;
             done2=true;
@@ -785,6 +794,7 @@ bool KMyMoneyView::parseDefaultCategory(QString& line, bool& income, QString& na
       buffer += line[count++];
     }
   }
+
   if (done1 && done2 && done3)
     return true;
   return false;

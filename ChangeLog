@@ -1,3 +1,7 @@
+2001-08-27 Michael Edwardes <mte@users.sourceforge.net>
+  * Added some better default categories and slightly improved reading process
+    to deal with empty minor category lists.
+
 2001-08-23 Michael Edwardes <mte@users.sourceforge.net>
   * Slight improvement to the qif date formatter code by utilising qt.
   * Check whether import file exists.
