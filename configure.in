@@ -44,6 +44,7 @@ AC_OUTPUT( \
 ./Makefile \
 doc/Makefile \
 doc/en/Makefile \
+doc/images/Makefile \
 kmymoney2/Makefile \
 kmymoney2/dialogs/Makefile \
 kmymoney2/icons/Makefile \
