@@ -286,8 +286,17 @@ KAccountIconItem::~KAccountIconItem()
   MyMoneyFile::instance()->detach(accountID(), this);
 }
 
-void KAccountIconItem::update(const QCString& /* id */)
+void KAccountIconItem::update(const QCString& id)
 {
+  QString name;
+  
+  try {
+    MyMoneyAccount acc = MyMoneyFile::instance()->account(id);
+    name = acc.name();
+  } catch(MyMoneyException *e) {
+    delete e;
+  }
+  setText(name, true);
 }
 
 KTransactionListItem::KTransactionListItem(KListView* view, KTransactionListItem* parent, const QCString& accountId, const QCString& transactionId)
