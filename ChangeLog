@@ -1,3 +1,7 @@
+2001-06-07 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
+  * QIF import and export now provide feedback
+  * Added backup function to File menu
+
 2001-05-29 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
   * Widgets now goes to next transaction after pressing enter.
 
