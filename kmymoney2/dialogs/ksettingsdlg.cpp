@@ -471,12 +471,7 @@ void KSettingsDlg::configRead()
     m_qcheckboxTypeToNr->setEnabled(false);
   }
 
-  m_bTempCheckSchedule = kconfig->readBoolEntry("CheckSchedule");
-  m_qradiobuttonCheckSchedules->setChecked(m_bTempCheckSchedule);
-  m_intSchedulePreview->setEnabled(m_bTempCheckSchedule);
-  m_iTempSchedulePreview = kconfig->readNumEntry("CheckSchedulePreview", 0);
-  m_intSchedulePreview->setValue(m_iTempSchedulePreview);
-  
+ 
   kconfig->setGroup("List Options");
 
   QFont qfontDefault = QFont("helvetica", 12);
@@ -533,7 +528,11 @@ void KSettingsDlg::configRead()
   fillHomePageItems(list);
 
   kconfig->setGroup("Schedule Options");
-  m_qradiobuttonCheckSchedules->setChecked(kconfig->readBoolEntry("CheckSchedules", true));
+  m_bTempCheckSchedule = kconfig->readBoolEntry("CheckSchedules", true);
+  m_qradiobuttonCheckSchedules->setChecked(m_bTempCheckSchedule);
+  m_intSchedulePreview->setEnabled(m_bTempCheckSchedule);
+  m_iTempSchedulePreview = kconfig->readNumEntry("CheckSchedulePreview", 0);
+  m_intSchedulePreview->setValue(m_iTempSchedulePreview);
 }
 
 /** Write out all the settings to the global KConfig object.
@@ -570,14 +569,13 @@ void KSettingsDlg::configWrite()
   kconfig->writeEntry("TransactionForm", m_qcheckboxTransactionForm->isChecked());
   kconfig->writeEntry("CopyTypeToNr", m_qcheckboxTypeToNr->isChecked());
   kconfig->writeEntry("AlwaysShowNrField", m_qcheckboxShowNrField->isChecked());
-  kconfig->writeEntry("CheckSchedule", m_qradiobuttonCheckSchedules->isChecked());
-  kconfig->writeEntry("CheckSchedulePreview", m_intSchedulePreview->value());  
 
   kconfig->setGroup("Homepage Options");
   kconfig->writeEntry("Itemlist", homePageItems());
 
   kconfig->setGroup("Schedule Options");
   kconfig->writeEntry("CheckSchedules", m_qradiobuttonCheckSchedules->isChecked());
+  kconfig->writeEntry("CheckSchedulePreview", m_intSchedulePreview->value());
 
   kconfig->sync();
 }
