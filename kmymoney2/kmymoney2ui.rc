@@ -23,16 +23,9 @@
     <Action name="file_backup"/>
   </Menu>
 
-  <Menu name="settings">
-    <Action name="show_transaction_detail" append="show_merge"/>
-    <!-- <Action name="banking_settings" append="configure_merge"/> -->
-    <Action name="enable_messages" append="show_merge"/>
-  </Menu>
-
   <Menu name="bank"><text>&amp;Institution</text>
     <Action name="bank_add" icon="institution_add"/>
   </Menu>
-icon="institution_add"
   <Menu name="account"><text>&amp;Account</text>
     <Action name="account_open"/>
     <Action name="account_add" icon="account_add"/>
@@ -41,6 +34,8 @@ icon="institution_add"
     <Action name="account_find" icon="transaction_find"/>
   </Menu>
 
+  <Merge/>
+
   <Menu name="tools">
     <Action name="qif_editor"/>
     <Action name="tool_security_editor"/>
@@ -48,6 +43,12 @@ icon="institution_add"
     <Action name="tool_price_editor"/>
 <!--    <Action name="file_consistency_check"/> -->
     <Action name="equity_price_update"/>
+  </Menu>
+
+  <Menu name="settings">
+    <Action name="show_transaction_detail" append="show_merge"/>
+    <!-- <Action name="banking_settings" append="configure_merge"/> -->
+    <Action name="enable_messages" append="show_merge"/>
   </Menu>
 
   <Menu name="help">
