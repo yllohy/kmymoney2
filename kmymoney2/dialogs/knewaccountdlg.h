@@ -42,13 +42,14 @@ private:
   bool m_bSelectedParentAccount;
   KAccountListItem *m_foundItem;
   bool m_bFoundItem;
+  bool m_categoryEditor;
 
   void initParentWidget(const QString&);
   void showSubAccounts(QCStringList accounts, KAccountListItem *parentItem, MyMoneyFile *file, const QString&);
   void loadInstitutions(const QString&);
 
 public:
-	KNewAccountDlg(MyMoneyAccount& account, bool isEditing, QWidget *parent=0, const char *name=0, const char *title=0);
+	KNewAccountDlg(MyMoneyAccount& account, bool isEditing, bool categoryEditor, QWidget *parent=0, const char *name=0, const char *title=0);
 	~KNewAccountDlg();
   MyMoneyAccount account(void);
   const MyMoneyAccount parentAccount(void);

@@ -30,7 +30,7 @@
 #include <qtable.h>
 #include <qinputdialog.h>
 
-#include "../dialogs/knewcategorydlg.h"
+//#include "../dialogs/knewcategorydlg.h"
 #include "../dialogs/ksplittransactiondlg.h"
 #include <kmessagebox.h>
 

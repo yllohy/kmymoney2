@@ -29,7 +29,7 @@ KAccountsView::KAccountsView(QWidget *parent, const char *name)
 {
   KConfig *config = KGlobal::config();
   config->setGroup("List Options");
-  m_bViewNormalAccountsView = config->readBoolEntry("NormalAccountsView");
+  m_bViewNormalAccountsView = config->readBoolEntry("NormalAccountsView", true);
 
 	accountListView->setRootIsDecorated(true);
 	accountListView->setAllColumnsShowFocus(true);
@@ -104,7 +104,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
   config->setGroup("List Options");
   QFont defaultFont = QFont("helvetica", 12);
   accountListView->header()->setFont(config->readFontEntry("listHeaderFont", &defaultFont));
-  m_bViewNormalAccountsView = config->readBoolEntry("NormalAccountsView");
+  m_bViewNormalAccountsView = config->readBoolEntry("NormalAccountsView", true);
 
   clear();
 

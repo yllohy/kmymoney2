@@ -38,7 +38,6 @@
 //#include "../dialogs/kcategoriesdlg.h"
 //#include "../dialogs/kpayeedlg.h"
 #include "../dialogs/knewfiledlg.h"
-#include "../dialogs/kfileinfodlg.h"
 #include "kmymoneyview.h"
 #include "../dialogs/kchooseimportexportdlg.h"
 #include "../dialogs/kcsvprogressdlg.h"
@@ -238,7 +237,7 @@ void KMyMoneyView::slotAccountEdit()
     MyMoneyFile* file = KMyMoneyFile::instance()->file();
     MyMoneyAccount account = file->account(accountsView->currentAccount(accountSuccess));
 
-    KNewAccountDlg dlg(account, true, this, "hi", i18n("Edit an Account"));
+    KNewAccountDlg dlg(account, true, false, this, "hi", i18n("Edit an Account"));
 
     if (dlg.exec())
     {
@@ -396,7 +395,7 @@ void KMyMoneyView::slotAccountNew(void)
 
   MyMoneyAccount account;
 
-  KNewAccountDlg dialog(account, false, this, "hi", i18n("Create a new Account"));
+  KNewAccountDlg dialog(account, false, false, this, "hi", i18n("Create a new Account"));
 
   if (dialog.exec())
   {
@@ -408,6 +407,8 @@ void KMyMoneyView::slotAccountNew(void)
 
       MyMoneyAccount newAccount = dialog.account();
       MyMoneyAccount parentAccount = dialog.parentAccount();
+
+      qDebug("new %s, parent %s, name %s, %s", newAccount.id().data(), parentAccount.id().data(), newAccount.name().latin1(), parentAccount.name().latin1());
       file->addAccount(newAccount, parentAccount);
       accountsView->refresh("");
       viewAccountList(newAccount.id());

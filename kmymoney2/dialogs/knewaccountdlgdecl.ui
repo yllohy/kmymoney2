@@ -226,51 +226,6 @@ My Current Account</string>
                                     <number>6</number>
                                 </property>
                                 <widget class="QComboBox">
-                                    <item>
-                                        <property name="text">
-                                            <string>Checking Account</string>
-                                        </property>
-                                    </item>
-                                    <item>
-                                        <property name="text">
-                                            <string>Savings Account</string>
-                                        </property>
-                                    </item>
-                                    <item>
-                                        <property name="text">
-                                            <string>Cash</string>
-                                        </property>
-                                    </item>
-                                    <item>
-                                        <property name="text">
-                                            <string>Credit Cards</string>
-                                        </property>
-                                    </item>
-                                    <item>
-                                        <property name="text">
-                                            <string>Loan</string>
-                                        </property>
-                                    </item>
-                                    <item>
-                                        <property name="text">
-                                            <string>CD</string>
-                                        </property>
-                                    </item>
-                                    <item>
-                                        <property name="text">
-                                            <string>Investment</string>
-                                        </property>
-                                    </item>
-                                    <item>
-                                        <property name="text">
-                                            <string>Money Market</string>
-                                        </property>
-                                    </item>
-                                    <item>
-                                        <property name="text">
-                                            <string>Currency</string>
-                                        </property>
-                                    </item>
                                     <property name="name">
                                         <cstring>typeCombo</cstring>
                                     </property>

@@ -37,8 +37,9 @@
 
 #include "kcategoriesview.h"
 #include "../dialogs/kcategorylistitem.h"
-#include "../dialogs/knewcategorydlg.h"
+//#include "../dialogs/knewcategorydlg.h"
 #include "../views/kmymoneyfile.h"
+#include "../dialogs/knewaccountdlg.h"
 
 KCategoriesView::KCategoriesView(QWidget *parent, const char *name )
   : kCategoriesViewDecl(parent,name)
@@ -57,6 +58,8 @@ KCategoriesView::KCategoriesView(QWidget *parent, const char *name )
   categoryListView->setSorting(-1);
 
   readConfig();
+
+  refresh();
 	
 	connect(categoryListView, SIGNAL(selectionChanged(QListViewItem*)),
 	  this, SLOT(slotSelectionChanged(QListViewItem*)));
@@ -166,87 +169,103 @@ void KCategoriesView::resizeEvent(QResizeEvent* e)
 
 void KCategoriesView::slotNewClicked()
 {
-/*
-  // Uses the class KNewCategoryDlg
-  MyMoneyCategory category;
-  KNewCategoryDlg dlg(&category, this);
-  if (!dlg.exec())
-    return;
+  MyMoneyAccount account;
 
-  m_file->addCategory(category.isIncome(), category.name(), category.minorCategories());
-  categoryListView->clear();
-  refresh();
-*/
+  KNewAccountDlg dialog(account, false, true, this, "hi", i18n("Create A New Category"));
+
+  if (dialog.exec())
+  {
+    try
+    {
+      MyMoneyFile* file = KMyMoneyFile::instance()->file();
+
+      MyMoneyAccount newAccount = dialog.account();
+      MyMoneyAccount parentAccount = dialog.parentAccount();
+      file->addAccount(newAccount, parentAccount);
+      categoryListView->clear();
+      refresh();
+    }
+    catch (MyMoneyException *e)
+    {
+      QString message("Unable to add account: ");
+      message += e->what();
+      KMessageBox::information(this, message);
+      delete e;
+      return;
+    }
+  }
+
 }
 
 void KCategoriesView::slotDeleteClicked()
 {
-/*
   KCategoryListItem *item = (KCategoryListItem *)categoryListView->selectedItem();
   if (!item)
     return;
 
-  QString prompt;
-  if (item->isMajor()) {
-    prompt = i18n("By deleting a major category all minor(s) will be lost.\nAre you sure you want to delete: ");
-    prompt += item->text(0);
-  } else {
-    prompt = i18n("Delete this minor category item: ");
-    prompt += item->text(0);
-    prompt += i18n(" in major category: ");
-    prompt += item->majorName();
-  }
+  QString prompt = i18n("Delete this category item: ");
+  prompt += item->text(0);
 
-  if ((KMessageBox::questionYesNo(this, prompt))==KMessageBox::Yes) {
-    if (item->isMajor())
-      m_file->removeMajorCategory(item->text(0));
-    else
-      m_file->removeMinorCategory(item->majorName(), item->text(0));
+  if ((KMessageBox::questionYesNo(this, prompt))==KMessageBox::Yes)
+  {
+    try
+    {
+      MyMoneyFile *file = KMyMoneyFile::instance()->file();
+
+      file->removeAccount(file->account(item->accountID()));
+      categoryListView->clear();
+      refresh();
+    }
+    catch (MyMoneyException *e)
+    {
+      QString message(i18n("Unable to remove category: "));
+      message += e->what();
+      KMessageBox::error(this, message);
+      delete e;
+    }
   }
-  categoryListView->clear();
-  refresh();
-*/
 }
 
 void KCategoriesView::slotSelectionChanged(QListViewItem* item)
 {
-/*
   KCategoryListItem *kitem = (KCategoryListItem *)item;
-  if (!kitem) {
+  if (!kitem)
+  {
     buttonEdit->setEnabled(false);
     buttonDelete->setEnabled(false);
   }
-  else if(kitem->isMajor()) {
+  else
+  {
     buttonEdit->setEnabled(true);
     buttonDelete->setEnabled(true);
-  } else {
-    buttonEdit->setEnabled(false);
-    buttonDelete->setEnabled(true);
   }
-*/
 }
 
 void KCategoriesView::slotEditClicked()
 {
-/*
   KCategoryListItem *item = (KCategoryListItem *)categoryListView->selectedItem();
   if (!item)
     return;
 
-  QString prompt;
-  if(item->isMajor()) {
-    MyMoneyCategory category(item->income(), item->text(0), item->minors());
+  try
+  {
+    MyMoneyFile* file = KMyMoneyFile::instance()->file();
+    MyMoneyAccount account = file->account(item->accountID());
 
-    KNewCategoryDlg dlg(&category, this);
-    if (!dlg.exec())
-      return;
+    KNewAccountDlg dlg(account, true, true, this, "hi", i18n("Edit an Account"));
 
-    m_file->removeMajorCategory(item->text(0));
-    m_file->addCategory(category.isIncome(), category.name(), category.minorCategories());
-    categoryListView->clear();
-    refresh();
+    if (dlg.exec())
+    {
+      file->modifyAccount(dlg.account());
+    }
   }
-*/
+  catch (MyMoneyException *e)
+  {
+    QString errorString = i18n("Cannot edit category: ");
+    errorString += e->what();
+    KMessageBox::error(this, errorString);
+    delete e;
+  }
 }
 
 void KCategoriesView::readConfig(void)

@@ -1,3 +1,9 @@
+2002-06-11 Michael Edwardes <mte@users.sourceforge.net>
+  * Categories view now works as before.
+  * Made the new account dialog also serve as a new category dialog.
+  * The accounts view defaults to the original institution view.
+  * Removed some more old classes, (KNewCategoryDlg, KFileInfoDlg).
+
 2002-06-10 Michael Edwardes <mte@users.sourceforge.net>
   * Converted KMyMoneyView to use a singleton pattern for access
     to the MyMoneyFile.
