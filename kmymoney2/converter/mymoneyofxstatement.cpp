@@ -62,7 +62,8 @@
 
 int ofxTransactionCallback(struct OfxTransactionData data, void * pv)
 {
-  MyMoneyOfxStatement* ps = reinterpret_cast<MyMoneyOfxStatement*>(pv);
+  MyMoneyOfxStatement* pofx = reinterpret_cast<MyMoneyOfxStatement*>(pv);
+  MyMoneyStatement& s = pofx->back();
 
   MyMoneyStatement::Transaction t;
 
@@ -169,42 +170,43 @@ int ofxTransactionCallback(struct OfxTransactionData data, void * pv)
     }
   }
 
-  ps->m_listTransactions += t;
+  s.m_listTransactions += t;
 
   return 0;
 }
 
 int ofxStatementCallback(struct OfxStatementData data, void* pv)
 {
-  MyMoneyOfxStatement* ps = reinterpret_cast<MyMoneyOfxStatement*>(pv);
+  MyMoneyOfxStatement* pofx = reinterpret_cast<MyMoneyOfxStatement*>(pv);
+  MyMoneyStatement& s = pofx->back();
 
-  ps->setValid();
+  pofx->setValid();
 
   if(data.currency_valid==true)
   {
-    ps->m_strCurrency = data.currency;
+    s.m_strCurrency = data.currency;
   }
   if(data.account_id_valid==true)
   {
-    ps->m_strAccountNumber = data.account_id;
+    s.m_strAccountNumber = data.account_id;
   }
   if(data.date_start_valid==true)
   {
     QDateTime dt;
     dt.setTime_t(data.date_start);
-    ps->m_dateBegin = dt.date();
+    s.m_dateBegin = dt.date();
   }
 
   if(data.date_end_valid==true)
   {
     QDateTime dt;
     dt.setTime_t(data.date_end);
-    ps->m_dateEnd = dt.date();
+    s.m_dateEnd = dt.date();
   }
 
   if(data.ledger_balance_valid==true)
   {
-    ps->m_moneyClosingBalance = static_cast<double>(data.ledger_balance);
+    s.m_moneyClosingBalance = static_cast<double>(data.ledger_balance);
   }
 
   return 0;
@@ -212,35 +214,37 @@ int ofxStatementCallback(struct OfxStatementData data, void* pv)
 
 int ofxAccountCallback(struct OfxAccountData data, void * pv)
 {
-  MyMoneyOfxStatement* ps = reinterpret_cast<MyMoneyOfxStatement*>(pv);
+  MyMoneyOfxStatement* pofx = reinterpret_cast<MyMoneyOfxStatement*>(pv);
+  pofx->addnew();
+  MyMoneyStatement& s = pofx->back();
   
   if(data.account_id_valid==true)
   {
-    ps->m_strAccountName = data.account_name;
-    ps->m_strAccountNumber = data.account_id;
+    s.m_strAccountName = data.account_name;
+    s.m_strAccountNumber = data.account_id;
   }
   if(data.currency_valid==true)
   {
-    ps->m_strCurrency = data.currency;
+    s.m_strCurrency = data.currency;
   }
 
   if(data.account_type_valid==true)
   {
     switch(data.account_type)
     {
-    case OfxAccountData::OFX_CHECKING : ps->m_eType = MyMoneyStatement::etCheckings;
+    case OfxAccountData::OFX_CHECKING : s.m_eType = MyMoneyStatement::etCheckings;
       break;
-    case OfxAccountData::OFX_SAVINGS : ps->m_eType = MyMoneyStatement::etSavings;
+    case OfxAccountData::OFX_SAVINGS : s.m_eType = MyMoneyStatement::etSavings;
       break;
-    case OfxAccountData::OFX_MONEYMRKT : ps->m_eType = MyMoneyStatement::etInvestment;
+    case OfxAccountData::OFX_MONEYMRKT : s.m_eType = MyMoneyStatement::etInvestment;
       break;
-    case OfxAccountData::OFX_CREDITLINE : ps->m_eType = MyMoneyStatement::etCreditCard;
+    case OfxAccountData::OFX_CREDITLINE : s.m_eType = MyMoneyStatement::etCreditCard;
       break;
-    case OfxAccountData::OFX_CMA : ps->m_eType = MyMoneyStatement::etCreditCard;
+    case OfxAccountData::OFX_CMA : s.m_eType = MyMoneyStatement::etCreditCard;
       break;
-    case OfxAccountData::OFX_CREDITCARD : ps->m_eType = MyMoneyStatement::etCreditCard;
+    case OfxAccountData::OFX_CREDITCARD : s.m_eType = MyMoneyStatement::etCreditCard;
       break;
-    case OfxAccountData::OFX_INVESTMENT : ps->m_eType = MyMoneyStatement::etInvestment;
+    case OfxAccountData::OFX_INVESTMENT : s.m_eType = MyMoneyStatement::etInvestment;
       break;
     }
   }

@@ -24,18 +24,20 @@
 #ifndef MYMONEYOFXSTATEMENT_H
 #define MYMONEYOFXSTATEMENT_H
 
+#include <qvaluelist.h>
 #include "../mymoney/mymoneystatement.h"
 
 /**
-  * This is a MyMoneyStatement as loaded from an OFX file.
+  * This is a collection of MyMoneyStatements as loaded from an OFX file.
   * @author Ace Jones
   */
-class MyMoneyOfxStatement: public MyMoneyStatement
+class MyMoneyOfxStatement: public QValueList<MyMoneyStatement>
 {
 public:
     MyMoneyOfxStatement(const QString& filename);
     ~MyMoneyOfxStatement();
 
+    void addnew(void) { push_back(MyMoneyStatement()); }
     bool isValid(void) const { return m_valid; }
     void setValid(void) { m_valid = true; }
 

@@ -811,10 +811,16 @@ void KMyMoney2App::slotOfxImport(void)
 
   if(dialog->exec() == QDialog::Accepted)
   {
-    MyMoneyOfxStatement s( dialog->selectedURL().path() );
-
-    if ( s.isValid() )
-      slotStatementImport(s);
+    MyMoneyOfxStatement ofx( dialog->selectedURL().path() );
+    if ( ofx.isValid() )
+    {
+      QValueList<MyMoneyStatement>::const_iterator it_s = ofx.begin();
+      while ( it_s != ofx.end() )
+      {
+        slotStatementImport(*it_s);
+        ++it_s;
+      }
+    }
     else
     {
       QMessageBox::critical( this, i18n("Invalid OFX"), i18n("Error importing %1: This file is not a valid OFX file.").arg(dialog->selectedURL().path()), QMessageBox::Ok, 0 );
@@ -1643,9 +1649,16 @@ void KMyMoney2App::ofxWebConnect(const QString& url, const QCString& asn_id)
 
     if ( MyMoneyOfxStatement::isOfxFile( url ) )
     {
-      MyMoneyOfxStatement s( url );
-      if ( s.isValid() )
-        slotStatementImport(s);
+      MyMoneyOfxStatement ofx( url );
+      if ( ofx.isValid() )
+      {
+        QValueList<MyMoneyStatement>::const_iterator it_s = ofx.begin();
+        while ( it_s != ofx.end() )
+        {
+          slotStatementImport(*it_s);
+          ++it_s;
+        }
+      }
       else
       {
         QMessageBox::critical( this, i18n("Invalid OFX"), i18n("Error importing %1: This file is not a valid OFX file.").arg(url), QMessageBox::Ok, 0 );

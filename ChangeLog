@@ -1,3 +1,7 @@
+2004-11-08 Ace Jones <acejones@users.sourceforge.net>
+  * Added support for multiple accounts in a single OFX file, based on a patch
+    by Chris B <news@semperpax.com>.
+
 2004-10-29 Ace Jones <acejones@users.sourceforge.net>
   * Added option to obtain online stock quotes using a local shell script
   
