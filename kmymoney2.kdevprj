@@ -33,7 +33,7 @@ ldflags=\s         \s
 path_to_bin_program=kmymoney2
 
 [General]
-AMChanged=false
+AMChanged=true
 author=Michael Edwardes
 configure_args=
 dir_where_make_will_be_called=
@@ -2254,8 +2254,8 @@ type=SOURCE
 
 [kmymoney2/x-kmymoney2.desktop]
 dist=true
-install=false
-install_location=
+install=true
+install_location=$$(kde_mimedir)/application/x-kmymoney2.desktop
 type=DATA
 
 [po/Makefile.am]
