@@ -1,4 +1,13 @@
-2001-12-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
+2001-12-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Corrected transaction view to display correctly when resizing horizontaly
+  * Use visibleWidth() when resizing the transaction view. This will
+    automatically include/exclude the vertical scroll bar into/from
+    the calculation of the field widths.
+  * suppress popup of horizontal scroll bar in transaction view,
+    bank view, reconciliation and categories dialog
+  * fixed resizing the reconciliation dialog (almost)
+
+2001-12-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed bug #433660 Big numbers do not fit into the fields
 
 2001-12-19 Kevin Tambascio <ktambascio@yahoo.com>
