@@ -27,6 +27,7 @@
 // QT Includes
 
 #include <qwidget.h>
+#include <qpair.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -58,7 +59,10 @@ public slots:
   void slotUpdateSelectedClicked();
   void slotUpdateAllClicked();
   void slotConfigureClicked();
-  
+
+protected: 
+  bool fetchUpdate(const QString& _symbol, QPair<QDate,MyMoneyMoney>& _result);
+
 private:
   MyMoneyOnlinePriceUpdate *m_pPriceUpdate;
 

@@ -9,190 +9,188 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>431</width>
-            <height>526</height>
+            <width>502</width>
+            <height>482</height>
         </rect>
     </property>
     <property name="caption">
         <string>Update Stock and Currency Prices</string>
     </property>
-    <widget class="QLabel">
+    <vbox>
         <property name="name">
-            <cstring>textLabel1</cstring>
+            <cstring>unnamed</cstring>
         </property>
-        <property name="geometry">
-            <rect>
-                <x>10</x>
-                <y>290</y>
-                <width>90</width>
-                <height>16</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Status:</string>
-        </property>
-    </widget>
-    <widget class="KPushButton">
-        <property name="name">
-            <cstring>btnConfigure</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>290</x>
-                <y>110</y>
-                <width>111</width>
-                <height>31</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>&amp;Configure Updates</string>
-        </property>
-        <property name="accel">
-            <string>Alt+C</string>
-        </property>
-    </widget>
-    <widget class="KListView">
-        <property name="name">
-            <cstring>lvEquityList</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>10</x>
-                <y>30</y>
-                <width>250</width>
-                <height>240</height>
-            </rect>
-        </property>
-        <property name="frameShadow">
-            <enum>Plain</enum>
-        </property>
-        <property name="showSortIndicator">
-            <bool>true</bool>
-        </property>
-        <property name="itemsMovable">
-            <bool>false</bool>
-        </property>
-        <property name="toolTip" stdset="0">
-            <string>List of known Equities, and the date they were last updated on.</string>
-        </property>
-    </widget>
-    <widget class="KPushButton">
-        <property name="name">
-            <cstring>btnUpdateSelected</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>290</x>
-                <y>30</y>
-                <width>111</width>
-                <height>31</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>&amp;Update Selected</string>
-        </property>
-        <property name="accel">
-            <string>Alt+U</string>
-        </property>
-    </widget>
-    <widget class="KPushButton">
-        <property name="name">
-            <cstring>btnUpdateAll</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>290</x>
-                <y>70</y>
-                <width>111</width>
-                <height>31</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Update &amp;All</string>
-        </property>
-        <property name="accel">
-            <string>Alt+A</string>
-        </property>
-    </widget>
-    <widget class="KListBox">
-        <property name="name">
-            <cstring>lbStatus</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>10</x>
-                <y>310</y>
-                <width>410</width>
-                <height>111</height>
-            </rect>
-        </property>
-    </widget>
-    <widget class="KProgress">
-        <property name="name">
-            <cstring>prgOnlineProgress</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>10</x>
-                <y>430</y>
-                <width>410</width>
-                <height>23</height>
-            </rect>
-        </property>
-    </widget>
-    <widget class="KPushButton">
-        <property name="name">
-            <cstring>btnOK</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>190</x>
-                <y>480</y>
-                <width>111</width>
-                <height>31</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>&amp;OK</string>
-        </property>
-        <property name="accel">
-            <string>Alt+O</string>
-        </property>
-        <property name="default">
-            <bool>true</bool>
-        </property>
-    </widget>
-    <widget class="KPushButton">
-        <property name="name">
-            <cstring>btnCancel</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>310</x>
-                <y>480</y>
-                <width>111</width>
-                <height>31</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>&amp;Cancel</string>
-        </property>
-        <property name="accel">
-            <string>Alt+C</string>
-        </property>
-    </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout4</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="KListView">
+                    <property name="name">
+                        <cstring>lvEquityList</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>350</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Plain</enum>
+                    </property>
+                    <property name="showSortIndicator">
+                        <bool>true</bool>
+                    </property>
+                    <property name="itemsMovable">
+                        <bool>false</bool>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>List of known Equities, and the date they were last updated on.</string>
+                    </property>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout1</cstring>
+                    </property>
+                    <vbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="KPushButton">
+                            <property name="name">
+                                <cstring>btnUpdateSelected</cstring>
+                            </property>
+                            <property name="text">
+                                <string>&amp;Update Selected</string>
+                            </property>
+                            <property name="accel">
+                                <string>Alt+U</string>
+                            </property>
+                        </widget>
+                        <widget class="KPushButton">
+                            <property name="name">
+                                <cstring>btnUpdateAll</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Update &amp;All</string>
+                            </property>
+                            <property name="accel">
+                                <string>Alt+A</string>
+                            </property>
+                        </widget>
+                        <widget class="KPushButton">
+                            <property name="name">
+                                <cstring>btnConfigure</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Con&amp;figure</string>
+                            </property>
+                            <property name="accel">
+                                <string>Alt+F</string>
+                            </property>
+                        </widget>
+                        <spacer>
+                            <property name="name">
+                                <cstring>spacer1</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Vertical</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>21</width>
+                                    <height>81</height>
+                                </size>
+                            </property>
+                        </spacer>
+                    </vbox>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel1</cstring>
+            </property>
+            <property name="text">
+                <string>Status:</string>
+            </property>
+        </widget>
+        <widget class="KListBox">
+            <property name="name">
+                <cstring>lbStatus</cstring>
+            </property>
+        </widget>
+        <widget class="KProgress">
+            <property name="name">
+                <cstring>prgOnlineProgress</cstring>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout3</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer3</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>91</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="KPushButton">
+                    <property name="name">
+                        <cstring>btnOK</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;OK</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+O</string>
+                    </property>
+                    <property name="default">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="KPushButton">
+                    <property name="name">
+                        <cstring>btnCancel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Cancel</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+C</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+    </vbox>
 </widget>
 <customwidgets>
 </customwidgets>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>kpushbutton.h</includehint>
     <includehint>klistview.h</includehint>
-    <includehint>kpushbutton.h</includehint>
-    <includehint>kpushbutton.h</includehint>
     <includehint>klistbox.h</includehint>
     <includehint>kprogress.h</includehint>
-    <includehint>kpushbutton.h</includehint>
-    <includehint>kpushbutton.h</includehint>
 </includehints>
 </UI>

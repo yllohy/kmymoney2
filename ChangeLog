@@ -1,4 +1,5 @@
 2004-10-16 Ace Jones <acejones@users.sourceforge.net>
+  * Added online price updating for equities  
   * Added "Favorite Reports" to the home page.
   * Added investment view to the global ledger view, which is needed for 
     investment accounts to show up in the verify import dialog.
