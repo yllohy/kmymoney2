@@ -120,6 +120,11 @@ div.subtitle {
   text-align: center;
 }
 
+table.report {
+  margin-left:auto; 
+  margin-right:auto;
+}
+
 table.report th {
   padding: 0.5em 0.5em;
 }

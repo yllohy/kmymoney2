@@ -1,3 +1,6 @@
+2004-07-14 Ace Jones <acejones@users.sourceforge.net>
+  * Center reports within tab frame
+  
 2004-07-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * More investment work
   * Moved showWidgets() from the various ledger views to the base class
