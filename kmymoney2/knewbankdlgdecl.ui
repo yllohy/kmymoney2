@@ -11,13 +11,13 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>350</width>
-            <height>323</height>
+            <width>395</width>
+            <height>396</height>
         </rect>
     </property>
     <property stdset="1">
         <name>caption</name>
-        <string>New Bank Dialog</string>
+        <string>New Institution Dialog</string>
     </property>
     <vbox>
         <property stdset="1">
@@ -29,6 +29,39 @@
             <number>6</number>
         </property>
         <widget>
+            <class>QLabel</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>TextLabel1_2</cstring>
+            </property>
+            <property stdset="1">
+                <name>text</name>
+                <string>Adding a new institution.
+
+The only required field is the name, which can be the name of a bank
+like Woolwhich, or a descriptive name like Family Cash Accounts.</string>
+            </property>
+        </widget>
+        <widget>
+            <class>Line</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>Line1</cstring>
+            </property>
+            <property stdset="1">
+                <name>frameShadow</name>
+                <enum>Raised</enum>
+            </property>
+            <property stdset="1">
+                <name>lineWidth</name>
+                <number>3</number>
+            </property>
+            <property stdset="1">
+                <name>orientation</name>
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+        <widget>
             <class>QGroupBox</class>
             <property stdset="1">
                 <name>name</name>
@@ -36,7 +69,7 @@
             </property>
             <property stdset="1">
                 <name>title</name>
-                <string>Bank Details</string>
+                <string>Institution Details</string>
             </property>
             <vbox>
                 <property stdset="1">

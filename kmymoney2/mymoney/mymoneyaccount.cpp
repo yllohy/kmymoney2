@@ -195,6 +195,8 @@ MyMoneyAccount& MyMoneyAccount::operator = (const MyMoneyAccount& right)
   m_accountType = right.m_accountType;
   m_lastId = right.m_lastId;
   m_description = right.m_description;
+  m_openingDate = right.m_openingDate;
+  m_openingBalance = right.m_openingBalance;
   m_lastReconcile = right.m_lastReconcile;
   m_balance = right.m_balance;
   m_transactions.clear();

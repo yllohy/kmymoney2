@@ -11,8 +11,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>317</width>
-            <height>291</height>
+            <width>394</width>
+            <height>396</height>
         </rect>
     </property>
     <property stdset="1">
@@ -28,6 +28,41 @@
             <name>spacing</name>
             <number>6</number>
         </property>
+        <widget>
+            <class>QLabel</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>TextLabel1_2</cstring>
+            </property>
+            <property stdset="1">
+                <name>text</name>
+                <string>Creating user details for future retrieval.
+
+There are no required fields in this form, however, in the future this
+information my expand to cover such details as whether you own a
+credit card, and will then be used to create forecasts and budgets to
+suit YOUR needs.</string>
+            </property>
+        </widget>
+        <widget>
+            <class>Line</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>Line1</cstring>
+            </property>
+            <property stdset="1">
+                <name>frameShadow</name>
+                <enum>Raised</enum>
+            </property>
+            <property stdset="1">
+                <name>lineWidth</name>
+                <number>3</number>
+            </property>
+            <property stdset="1">
+                <name>orientation</name>
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
         <widget>
             <class>QLayoutWidget</class>
             <property stdset="1">

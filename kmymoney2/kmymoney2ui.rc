@@ -1,5 +1,5 @@
 <!DOCTYPE kpartgui>
-<kpartgui name="kmymoney2" version="0.3.1">
+<kpartgui name="kmymoney2" version="0.3.4">
 <MenuBar>
   <Menu name="file"><text>&amp;File</text>
     <Action name="file_view_info"/>
@@ -18,11 +18,12 @@
     <Action name="categories_payees"/>
   </Menu>
 
-  <Menu name="bank"><text>&amp;Bank</text>
+  <Menu name="bank"><text>&amp;Institution</text>
     <Action name="bank_add"/>
   </Menu>
 
   <Menu name="account"><text>&amp;Account</text>
+    <Action name="account_add"/>
     <Action name="account_reconcile"/>
     <Action name="account_find"/>
     <Action name="account_import"/>
@@ -48,10 +49,9 @@
   <Action name="categories_payees"/>
 	<Separator/>
   <Action name="bank_add"/>
+  <Action name="account_add"/>
 	<Separator/>
   <Action name="account_reconcile"/>
   <Action name="account_find"/>
-	<Separator/>
-  <Action name="view_up"/>
 </ToolBar>
 </kpartgui>

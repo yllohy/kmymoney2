@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include <kglobal.h>
+#include <klocale.h>
 #include <kstddirs.h>
 #include <qpixmap.h>
 
@@ -26,7 +27,13 @@ KBankListItem::KBankListItem(QListView *parent, MyMoneyBank bank )
   m_bank = bank;
 
   setText(0, m_bank.name());
-  setPixmap(0, QPixmap(KGlobal::dirs()->findResource("appdata", "pics/bank-folder.xpm")));
+  setPixmap(0, QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/22x22/actions/bank.png")));
+  setText(1, "Bank");  // dynamic in future, depending on institution type
+  MyMoneyMoney balance;
+  MyMoneyAccount *account;
+  for (account=bank.accountFirst(); account; account=bank.accountNext())
+    balance += account->balance();
+  setText(2, KGlobal::locale()->formatMoney(balance.amount()));
   m_isBank=true;
 }
 
@@ -38,6 +45,8 @@ KBankListItem::KBankListItem(KBankListItem *parent, MyMoneyBank bank, MyMoneyAcc
 
   setText(0, m_account.name());
   setPixmap(0, QPixmap(KGlobal::dirs()->findResource("appdata", "pics/account-folder.xpm")));
+  setText(1, "Current"); // dynamic in future...
+  setText(2, KGlobal::locale()->formatMoney(m_account.balance().amount()));
 
   m_isBank=false;
 }
@@ -66,5 +75,8 @@ void KBankListItem::paintCell(QPainter *p, const QColorGroup & cg, int column, i
   KMyMoneySettings *p_settings = KMyMoneySettings::singleton();
   if (p_settings)
     p->setFont(p_settings->lists_cellFont());
-  QListViewItem::paintCell(p, cg, column, width, align);
+  if (column==2)
+    QListViewItem::paintCell(p, cg, column, width, 2);
+  else
+    QListViewItem::paintCell(p, cg, column, width, align);
 }

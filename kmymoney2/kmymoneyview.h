@@ -37,7 +37,7 @@
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.7 2001/06/16 21:12:45 mte Exp $
+  * $Id: kmymoneyview.h,v 1.8 2001/06/17 17:44:19 mte Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -249,6 +249,9 @@ public slots:
   void fileBackup();
 	
 protected slots:
+  /** */
+  void slotBankSelected();
+
   /**
     * This slot is called whenever the transaction list is changed and is used
     * in the reconciliation process to update the view.

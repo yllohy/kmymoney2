@@ -54,12 +54,15 @@ public:
 protected slots:
   void slotListRightMouse(QListViewItem* item, const QPoint& point, int);
   void slotListDoubleClick(QListViewItem* item, const QPoint& point, int col);
+  void resizeEvent(QResizeEvent* e);
+  void slotSelectionChanged(QListViewItem *item);
 
 signals:
   void bankRightMouseClick(const MyMoneyBank, bool inList);
 //  void bankDoubleClick(const MyMoneyBank, bool inList);
   void accountRightMouseClick(const MyMoneyAccount, bool inList);
   void accountDoubleClick(const MyMoneyAccount);
+  void bankSelected();
 };
 
 #endif

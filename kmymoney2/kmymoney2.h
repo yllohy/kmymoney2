@@ -52,7 +52,7 @@
   * @see KMyMoneyView
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: kmymoney2.h,v 1.8 2001/06/16 21:12:45 mte Exp $
+  * $Id: kmymoney2.h,v 1.9 2001/06/17 17:44:19 mte Exp $
   *
   * @short Main application class.
 **/
@@ -95,7 +95,7 @@ protected slots:
     *
     * @see MyMoneyBank
   **/
-//  void slotAccountAdd();
+  void slotAccountAdd();
 
   /**
     * Called when the user wishes to reconcile an account. An
@@ -289,7 +289,10 @@ protected slots:
     /** save a document by a new filename*/
     void slotFileSaveAs();
 
-    /** asks for saving if the file is modified, then closes the actual file and window*/
+    /** asks for saving if the file is modified, then closes the actual file and window */
+    void slotFileCloseWindow();
+
+    /** asks for saving if the file is modified, then closes the actual file */
     void slotFileClose();
 
     /** print the actual file
@@ -345,6 +348,7 @@ protected slots:
     KAction* fileSaveAs;
 	KAction* fileBackup;
     KAction* fileClose;
+    KAction* fileCloseWindow;
     KAction* filePrint;
     KAction* fileQuit;
     KAction* editCut;
@@ -363,7 +367,7 @@ protected slots:
 
     KAction *bankAdd;
 
-//    KAction *accountAdd;
+    KAction *accountAdd;
     KAction *accountReconcile;
     KAction *accountFind;
     KAction *accountImport;

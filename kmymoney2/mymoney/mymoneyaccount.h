@@ -31,7 +31,7 @@
   * @see MyMoneyTransaction
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: mymoneyaccount.h,v 1.6 2001/06/16 21:12:46 mte Exp $
+  * $Id: mymoneyaccount.h,v 1.7 2001/06/17 17:44:19 mte Exp $
   *
   * @short Representation of an account which holds transactions.
 **/

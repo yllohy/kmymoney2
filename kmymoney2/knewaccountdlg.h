@@ -32,8 +32,8 @@
 class KNewAccountDlg : public KNewAccountDlgDecl  {
    Q_OBJECT
 public:
-	KNewAccountDlg(QWidget *parent=0, const char *name=0, const char *title=0);
-  KNewAccountDlg(QString m_name, QString no,
+	KNewAccountDlg(QString institution, QWidget *parent=0, const char *name=0, const char *title=0);
+  KNewAccountDlg(QString institution, QString m_name, QString no,
     MyMoneyAccount::accountTypeE type, QString description,
     QDate openingDate, MyMoneyMoney openingBalance,
     QWidget *parent, const char *name, const char *title);

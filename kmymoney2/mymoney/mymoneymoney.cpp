@@ -87,7 +87,12 @@ bool MyMoneyMoney::operator != (const MyMoneyMoney& right)
 
 bool MyMoneyMoney::isZero(void)
 {
-  return (m_amount<0.009999999999999)?true:false;
+  if (m_amount<0.009999999999999 && m_amount > -0.009999999999999) {
+    qDebug("MyMoneyMoney::isZero is returning true");
+    return true;
+  }
+  qDebug("MyMoneyMoney::isZero is returning false");
+  return false;
 }
 
 bool MyMoneyMoney::operator < (const MyMoneyMoney& right)

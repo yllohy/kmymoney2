@@ -38,7 +38,7 @@
   * @see MyMoneyBank
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: mymoneyfile.h,v 1.4 2001/06/16 21:12:46 mte Exp $
+  * $Id: mymoneyfile.h,v 1.5 2001/06/17 17:44:19 mte Exp $
   *
   * @short A representation of the file format used by KMyMoney2.
 **/

@@ -15,29 +15,33 @@
  ***************************************************************************/
 #include <kmessagebox.h>
 #include <qpushbutton.h>
+#include <qlabel.h>
 #include <kglobal.h>
 #include <klocale.h>
 
 #include "knewaccountdlg.h"
 
-KNewAccountDlg::KNewAccountDlg(QWidget *parent, const char *name, const char *title)
+KNewAccountDlg::KNewAccountDlg(QString institution, QWidget *parent, const char *name, const char *title)
   : KNewAccountDlgDecl(parent,name,true)
 {
 	if (title)
 	  setCaption(title);
 
+  institutionNameLabel->setText(institution);
   accountNameEdit->setFocus();
 
   connect(cancelButton, SIGNAL(clicked()), SLOT(reject()));
   connect(createButton, SIGNAL(clicked()), this, SLOT(okClicked()));
 }
 
-KNewAccountDlg::KNewAccountDlg(QString m_name, QString no,
+KNewAccountDlg::KNewAccountDlg(QString institution, QString m_name, QString no,
   MyMoneyAccount::accountTypeE type, QString description,
   QDate openingDate, MyMoneyMoney openingBalance,
   QWidget *parent, const char *name, const char *title)
   : KNewAccountDlgDecl(parent,name,true)
 {
+  institutionNameLabel->setText(institution);
+
   accountNameEdit->setText(m_name);
   accountNoEdit->setText(no);
 
@@ -49,7 +53,9 @@ KNewAccountDlg::KNewAccountDlg(QString m_name, QString no,
   accountNameEdit->setFocus();
 
   startDateEdit->setDate(openingDate);
+  startDateEdit->setEnabled(false);
   startBalanceEdit->setText(KGlobal::locale()->formatNumber(openingBalance.amount()));
+  startBalanceEdit->setEnabled(false);
 
   connect(cancelButton, SIGNAL(clicked()), SLOT(reject()));
   connect(createButton, SIGNAL(clicked()), this, SLOT(okClicked()));

@@ -2,7 +2,7 @@
 
 SUBDIRS = kmymoney2 po doc 
 
-EXTRA_DIST = kmymoney2.kdevprj AUTHORS COPYING ChangeLog INSTALL README TODO kmymoney2.lsm kmymoney2.spec readme-overview.txt ChangeLog.original 
+EXTRA_DIST = kmymoney2.kdevprj AUTHORS COPYING ChangeLog INSTALL README TODO kmymoney2.lsm kmymoney2.spec readme-overview.txt ChangeLog.original BUGS 
 
 ####### kdevelop will overwrite this part!!! (end)############
 # not a GNU package. You can remove this line, if 

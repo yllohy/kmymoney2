@@ -52,6 +52,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(m_mainView, SIGNAL(accountDoubleClick(const MyMoneyAccount)), this, SLOT(slotAccountDoubleClick(const MyMoneyAccount)));
 
   connect(m_mainView, SIGNAL(bankRightMouseClick(const MyMoneyBank, bool)), this, SLOT(slotBankRightMouse(const MyMoneyBank, bool)));
+  connect(m_mainView, SIGNAL(bankSelected()), this, SLOT(slotBankSelected()));
 
   m_inReconciliation=false;
   m_reconcileInited=false;
@@ -104,8 +105,8 @@ void KMyMoneyView::slotAccountDoubleClick(const MyMoneyAccount)
 void KMyMoneyView::slotBankRightMouse(const MyMoneyBank, bool inList)
 {
   qDebug("Creating menu");
-  KPopupMenu menu(i18n("Bank Options"), this);
-  int id1 = menu.insertItem(i18n("New Bank..."), this, SLOT(slotBankNew()));
+  KPopupMenu menu(i18n("Institution Options"), this);
+  int id1 = menu.insertItem(i18n("New Institution..."), this, SLOT(slotBankNew()));
   int id2 = menu.insertItem(i18n("New Account..."), this, SLOT(slotAccountNew()));
   int id3 = menu.insertItem(i18n("Edit..."), this, SLOT(slotBankEdit()));
   int id4 = menu.insertItem(i18n("Delete..."), this, SLOT(slotBankDelete()));
@@ -135,7 +136,7 @@ void KMyMoneyView::slotBankEdit()
       bank.postcode(),
       bank.telephone(),
       bank.manager(),
-      i18n("Edit Bank"), this);
+      i18n("Edit Institution"), this);
 
     if (dlg.exec()) {
       MyMoneyBank *bankWrite;
@@ -198,7 +199,7 @@ void KMyMoneyView::slotAccountEdit()
     return;
   }
 
-  KNewAccountDlg dlg(pAccount->name(),
+  KNewAccountDlg dlg(pBank->name(), pAccount->name(),
                          pAccount->accountNumber(),
                          pAccount->accountType(),
                          pAccount->description(),
@@ -383,7 +384,7 @@ void KMyMoneyView::slotAccountNew(void)
     return;
   }
 
-  KNewAccountDlg dialog(this, "hi", i18n("Create a new Account"));
+  KNewAccountDlg dialog(pBank->name(), this, "hi", i18n("Create a new Account"));
 
   if (dialog.exec()) {
     MyMoneyMoney money(dialog.startBalance);
@@ -1079,7 +1080,7 @@ QString KMyMoneyView::currentBankName(void)
     if (bankSuccess)
       return bank.name();
   }
-  return "Unknown Bank";
+  return "Unknown Institution";
 }
 
 QString KMyMoneyView::currentAccountName(void)
@@ -1470,7 +1471,9 @@ void KMyMoneyView::writeQIFFile(const QString& name, MyMoneyAccount *account,boo
 }
 /** No descriptions */
 void KMyMoneyView::fileBackup(){
+}
 
-
-
+void KMyMoneyView::slotBankSelected()
+{
+  emit bankOperations(true);
 }

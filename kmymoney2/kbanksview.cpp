@@ -20,24 +20,25 @@
 #include <kglobal.h>
 #include <klocale.h>
 #include <qtooltip.h>
+#include <klistview.h>
 
 KBanksView::KBanksView(QWidget *parent, const char *name)
  : KBankViewDecl(parent,name)
 {
-  descriptionLabel->setText(i18n("Double click on a bank to view it's accounts.\n"
-    "You can create a new bank by using the Menu Bar (Bank | Add new...),\n"
-    "right clicking on the list box or double clicking in an empty row"));
-
 	bankListView->setRootIsDecorated(true);
 	bankListView->setAllColumnsShowFocus(true);
-	bankListView->addColumn(i18n("Banks"));
+	bankListView->addColumn(i18n("Institutions/Accounts"));
+	bankListView->addColumn(i18n("Type"));
+	bankListView->addColumn(i18n("Balance"));
 	bankListView->setMultiSelection(false);
-	bankListView->setColumnWidth(0,200);
+	bankListView->header()->setResizeEnabled(false);
 
   KMyMoneySettings *p_settings = KMyMoneySettings::singleton();
   if (p_settings)
     bankListView->header()->setFont(p_settings->lists_headerFont());
 
+  connect(bankListView, SIGNAL(selectionChanged(QListViewItem*)),
+    this, SLOT(slotSelectionChanged(QListViewItem*)));
   connect(bankListView, SIGNAL(executed(QListViewItem*, const QPoint&, int)),
     this, SLOT(slotListDoubleClick(QListViewItem*, const QPoint&, int)));
   connect(bankListView, SIGNAL(rightButtonClicked(QListViewItem* , const QPoint&, int)),
@@ -109,6 +110,7 @@ void KBanksView::refresh(MyMoneyFile file)
     bankListView->header()->setFont(p_settings->lists_headerFont());
 
   clear();
+  MyMoneyMoney totalProfit;
   MyMoneyBank *bank;
 
   for ( bank=file.bankFirst(); bank; bank=file.bankNext() ) {
@@ -116,14 +118,37 @@ void KBanksView::refresh(MyMoneyFile file)
     MyMoneyAccount *account;
     for (account=bank->accountFirst(); account; account=bank->accountNext()) {
       KBankListItem *itemAccount = new KBankListItem(item0, *bank, *account);
+      totalProfit += account->balance();
     }
     bankListView->setOpen(item0, true);
   }
 
+  QString s("Total Profits: ");
+  s += KGlobal::locale()->formatMoney(totalProfit.amount());
+
+  totalProfitsLabel->setText(s);
 }
 
 void KBanksView::clear(void)
 {
   bankListView->clear();
   m_bSelectedBank = m_bSelectedAccount = false;
+}
+
+void KBanksView::resizeEvent(QResizeEvent* e)
+{
+	bankListView->setColumnWidth(0,200);
+	bankListView->setColumnWidth(1,200);
+	int totalWidth=bankListView->width();
+	bankListView->setColumnWidth(2, totalWidth-400-5);
+}
+
+void KBanksView::slotSelectionChanged(QListViewItem *item)
+{
+  KBankListItem *bankItem = (KBankListItem*)item;
+  if (bankItem->isBank()) {
+    m_bSelectedBank = true;
+    m_selectedBank = bankItem->bank();
+    emit bankSelected();
+  }
 }
