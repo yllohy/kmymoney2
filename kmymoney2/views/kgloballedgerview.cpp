@@ -147,6 +147,13 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
     SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
   // connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
 
+#if 0
+  // FIXME: I removed the below code to enable switching to the investment view
+  // when an investment account is selected via the combo box.  People reported,
+  // that the comboboxes on the globalledgerview and the investmentview are not
+  // in sync.  Not providing an investment ledger view within the global ledger view
+  // solves this problem.
+
   // Investment account
   view = m_specificView[MyMoneyAccount::Investment] = new KLedgerViewInvestments(this, "InvestmentsView");
   m_accountStack->addWidget(view, MyMoneyAccount::Investment);
@@ -155,6 +162,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
     SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
   // connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
+#endif
 
   m_viewLayout->addWidget(m_accountStack);
   setMinimumHeight(m_accountComboBox->minimumHeight() + m_accountStack->sizeHint().height());
