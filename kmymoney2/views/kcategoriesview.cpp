@@ -77,6 +77,8 @@ KCategoriesView::KCategoriesView(QWidget *parent, const char *name )
   MyMoneyFile::instance()->attach(acc.id(), this);
   acc = MyMoneyFile::instance()->expense();
   MyMoneyFile::instance()->attach(acc.id(), this);
+
+  m_suspendUpdate = false;
 }
 
 KCategoriesView::~KCategoriesView()
@@ -323,6 +325,18 @@ void KCategoriesView::writeConfig(void)
 
 void KCategoriesView::update(const QCString& id)
 {
-  qDebug("KCategoriesView::update() called");
-  refresh();
+  if(m_suspendUpdate == false) {
+    qDebug("KCategoriesView::update() called");
+    refresh();
+  }
+}
+
+void KCategoriesView::suspendUpdate(const bool suspend)
+{
+  // force a refresh, if update was off
+  if(m_suspendUpdate == true
+  && suspend == false)
+    refresh();
+
+  m_suspendUpdate = suspend;
 }

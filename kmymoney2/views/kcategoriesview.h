@@ -40,7 +40,8 @@ class KCategoriesView : public kCategoriesViewDecl, MyMoneyObserver  {
    Q_OBJECT
 private:
 	QString m_lastCat;
-	
+	bool m_suspendUpdate;
+
   void readConfig(void);
   void writeConfig(void);
   void refresh(void);
@@ -63,6 +64,7 @@ public:
 	~KCategoriesView();
   void show();
   void update(const QCString& id);
+  void suspendUpdate(const bool suspend);
 };
 
 #endif
