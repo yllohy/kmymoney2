@@ -78,6 +78,19 @@ protected slots:
   void slotRemainingChanged(const QString& text);
   void slotEndDateChanged(const QDate& date);
 
+  void slotAmountChanged(const QString&);
+  void slotAccountChanged(const QString&);
+  void slotScheduleNameChanged(const QString&);
+  void slotToChanged(const QString&);
+  void slotMethodChanged(int);
+  void slotPayeeChanged(const QString&);
+  void slotDateChanged(const QDate&);
+  void slotFrequencyChanged(int);
+  void slotEstimateChanged();
+  void slotCategoryChanged(const QString&);
+  void slotAutoEnterChanged();
+  void slotMemoChanged(const QString& text);
+
 
 private:
   /// Save last payee used for convenience
@@ -106,11 +119,6 @@ private:
     * Write setting to config file.
   **/
   void writeConfig(void);
-
-  /**
-    * Reloads the widgets from the global transaction.
-  **/
-  void reloadWidgets(void);
 
   /**
     * Reloads the qidgets from the global schedule.

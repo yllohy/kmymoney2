@@ -1,3 +1,10 @@
+2003-09-04 Michael Edwardes <mte@users.sourceforge.net>
+  * Fix bug in KEditScheduleDlg::slotSplitClicked() and
+    KEnterScheduleDialog::slotSplitClicked().
+  * More split related bugs fixed in KEditScheduleDialog and
+    KEnterScheduleDialog.
+  * Re-wrote most of KEditScheduleDialog.  Fixes _many_ bugs.
+
 2003-09-02 Michael Edwardes <mte@users.sourceforge.net>
   * Show overdue schedules with red text in the list view.
   * Fixed stupid bug when creating schedules.

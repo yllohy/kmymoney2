@@ -54,7 +54,6 @@ private:
   MyMoneyTransaction m_transaction;
 
   void initWidgets();
-  void reloadWidgets(void);
   bool checkData(void);
 };
 

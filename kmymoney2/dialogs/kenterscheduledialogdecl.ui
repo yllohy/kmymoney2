@@ -166,6 +166,9 @@
                             <property name="name">
                                 <cstring>m_from</cstring>
                             </property>
+                            <property name="enabled">
+                                <bool>false</bool>
+                            </property>
                             <property name="sizePolicy">
                                 <sizepolicy>
                                     <hsizetype>3</hsizetype>
@@ -229,6 +232,9 @@
                         <widget class="kMyMoneyCombo" row="2" column="1">
                             <property name="name">
                                 <cstring>m_to</cstring>
+                            </property>
+                            <property name="enabled">
+                                <bool>false</bool>
                             </property>
                             <property name="sizePolicy">
                                 <sizepolicy>
