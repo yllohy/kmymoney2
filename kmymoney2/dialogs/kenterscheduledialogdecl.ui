@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>kEnterScheduleDialogDecl</class>
 <widget class="QDialog">
     <property name="name">
@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>720</width>
-            <height>473</height>
+            <height>475</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -329,6 +329,7 @@
                             </property>
                             <property name="text">
                                 <string>&lt;b&gt;To:&lt;/b&gt;</string>
+                                <comment>&lt;b&gt;To (account):&lt;/b&gt;</comment>
                             </property>
                         </widget>
                         <widget class="QLabel" row="1" column="0">
@@ -351,6 +352,7 @@
                             </property>
                             <property name="text">
                                 <string>&lt;b&gt;From:&lt;/b&gt;</string>
+                                <comment>&lt;b&gt;From (account):&lt;/b&gt;</comment>
                             </property>
                         </widget>
                     </grid>
@@ -705,7 +707,6 @@
     <includehint>kmymoneycombo.h</includehint>
     <includehint>kmymoneydateinput.h</includehint>
     <includehint>kmymoneycategory.h</includehint>
-    <includehint>kpushbutton.h</includehint>
     <includehint>klineedit.h</includehint>
 </includehints>
 </UI>

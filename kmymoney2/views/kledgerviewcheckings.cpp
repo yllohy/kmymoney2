@@ -789,11 +789,11 @@ void KLedgerViewCheckings::fillFormStatics(void)
         case Credit:
         case UnknownDirection:
           formTable->setText(PAYEE_ROW, PAYEE_TXT_COL, i18n("Payer"));
-          formTable->setText(CATEGORY_ROW, CATEGORY_TXT_COL, i18n("From"));
+          formTable->setText(CATEGORY_ROW, CATEGORY_TXT_COL, i18n("From (account)","From"));
           break;
         case Debit:
           formTable->setText(PAYEE_ROW, PAYEE_TXT_COL, i18n("Receiver"));
-          formTable->setText(CATEGORY_ROW, CATEGORY_TXT_COL, i18n("To"));
+          formTable->setText(CATEGORY_ROW, CATEGORY_TXT_COL, i18n("To (account)","To"));
           break;
       }
       break;

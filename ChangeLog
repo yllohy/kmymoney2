@@ -5,6 +5,7 @@
   
 2004-12-05 Ace Jones <acejones@users.sourceforge.net>
   * Maintain libofx 0.6.6 compatability
+  * Separated "From/To (account)" and "From/To (date)" for translation purposes  
   
 2004-12-03 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Implement KMyMoneyAccountCombo in scheduled transaction dialogs

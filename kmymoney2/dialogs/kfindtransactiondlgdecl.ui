@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>KFindTransactionDlgDecl</class>
 <widget class="QDialog">
     <property name="name">
@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>572</width>
-            <height>603</height>
+            <height>605</height>
         </rect>
     </property>
     <property name="caption">
@@ -409,6 +409,7 @@
                                                         </property>
                                                         <property name="text">
                                                             <string>From</string>
+                                                            <comment>From (Date)</comment>
                                                         </property>
                                                     </widget>
                                                     <widget class="kMyMoneyDateInput" row="2" column="1">
@@ -430,6 +431,7 @@
                                                         </property>
                                                         <property name="text">
                                                             <string>To</string>
+                                                            <comment>To (Date)</comment>
                                                         </property>
                                                     </widget>
                                                     <widget class="kMyMoneyDateInput" row="1" column="1">
@@ -1332,18 +1334,12 @@
     <includehint>kmymoneyedit.h</includehint>
     <includehint>kmymoneyaccountselector.h</includehint>
     <includehint>klistview.h</includehint>
-    <includehint>kpushbutton.h</includehint>
-    <includehint>kpushbutton.h</includehint>
     <includehint>kcombobox.h</includehint>
     <includehint>kcombobox.h</includehint>
     <includehint>kcombobox.h</includehint>
     <includehint>kmymoneylineedit.h</includehint>
     <includehint>kmymoneylineedit.h</includehint>
     <includehint>kmymoneylineedit.h</includehint>
-    <includehint>kpushbutton.h</includehint>
-    <includehint>kpushbutton.h</includehint>
-    <includehint>kpushbutton.h</includehint>
-    <includehint>kpushbutton.h</includehint>
     <includehint>kmymoneyregistersearch.h</includehint>
 </includehints>
 </UI>
