@@ -1,3 +1,6 @@
+2002-03-19 Arni Ingimundarson <arniing@users.sourceforge.net>
+  * Fixed backup dialog choose->cancel  bug (490427)
+
 2002-03-14 Michael Edwardes <mte@users.sourceforge.net>
   * Fixed disappearing categories bug.
 
