@@ -172,9 +172,10 @@ void MyMoneySeqAccessMgr::modifyPayee(const MyMoneyPayee& payee)
   QMap<QCString, MyMoneyPayee>::Iterator it;
 
   it = m_payeeList.find(payee.id());
-  if(it == m_payeeList.end())
-    throw new MYMONEYEXCEPTION("Unknown payee");
-
+  if(it == m_payeeList.end()) {
+    QString msg = "Unknown payee '" + payee.id() + "'";
+    throw new MYMONEYEXCEPTION(msg);
+  }
   touch();
   *it = payee;
 }
@@ -186,8 +187,10 @@ void MyMoneySeqAccessMgr::removePayee(const MyMoneyPayee& payee)
   QMap<QCString, MyMoneyPayee>::Iterator it_p;
 
   it_p = m_payeeList.find(payee.id());
-  if(it_p == m_payeeList.end())
-    throw new MYMONEYEXCEPTION("Unknown payee");
+  if(it_p == m_payeeList.end()) {
+    QString msg = "Unknown payee '" + payee.id() + "'";
+    throw new MYMONEYEXCEPTION(msg);
+  }
 
   // scan all transactions to check if the payee is still referenced
   for(it_t = m_transactionList.begin(); it_t != m_transactionList.end(); ++it_t) {
@@ -958,7 +961,7 @@ const MyMoneyMoney MyMoneySeqAccessMgr::totalBalance(const QCString& id)
   accounts = acc.accountList();
 
   for(it_a = accounts.begin(); it_a != accounts.end(); ++it_a) {
-    result += balance(*it_a);
+    result += totalBalance(*it_a);
   }
 
   return result;
