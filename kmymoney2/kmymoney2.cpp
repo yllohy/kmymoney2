@@ -570,6 +570,7 @@ void KMyMoney2App::slotViewStatusBar()
   else
 
 
+
   {
     statusBar()->show();
   }
@@ -700,6 +701,7 @@ void KMyMoney2App::slotQifImportFinished(void)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
   
+  myMoneyView->suspendUpdate(false);
   if(m_reader != 0) {
     // fixme: re-enable the QIF import menu options
     if(m_reader->finishImport()) {
@@ -729,7 +731,6 @@ void KMyMoney2App::slotQifImportFinished(void)
       m_engineBackup = 0;
     }
     
-    myMoneyView->suspendUpdate(false);
     // update the views as they might still contain invalid data
     // from the import session. The same applies for the window caption
     myMoneyView->slotRefreshViews();
