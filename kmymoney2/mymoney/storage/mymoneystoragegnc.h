@@ -18,15 +18,15 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- ***************************************************************************/ 
+ ***************************************************************************/
 /*
 The main class of this module, MyMoneyStorageGNC, contains only a readFile()
 function, which controls the import of data from an XML file created by the
 current GnuCash version (1.8.8).
- 
+
 The XML is processed in class XmlReader, which is an implementation of the Qt
-SAX2 reader class. 
- 
+SAX2 reader class.
+
 Data in the input file is processed as a set of objects which fortunately,
 though perhaps not surprisingly, have almost a one-for-one correspondence with
 KMyMoney objects. These objects are bounded by start and end XML elements, and
@@ -36,18 +36,18 @@ items, also delimited by start and end elements. For example:
   <act:name>Account Name</act:name> * data string with start and end elements
   ...
 </gnc:account> * end of sub objects
- 
+
 A GnuCash file may consist of more than one 'book', or set of data. It is not
 clear how we could currently implement this, so only the first book in a file is
 processed. This should satisfy most user situations.
- 
+
 GnuCash is somewhat inconsistent in its division of the major sections of the
 file. For example, multiple price history entries are delimited by <gnc:pricedb>
 elements, while each account starts with  its own top-level element. In general,
 the 'container' elements are ignored.
- 
+
 XmlReader
- 
+
 This is an implementation of the Qt QXmlDefaultHandler class, which provides
 three main function calls in addition to start and end of document. The
 startElement() and endElement() calls are self-explanatory, the characters()
@@ -59,29 +59,29 @@ would be
   endElement() for act:name
   ...
   endElement() for gnc:account
- 
+
 Objects
- 
+
 Since the processing requirements of XML for most elements are very similar, the
 common code is implemented in a GncObject class, from which the others are
 derived, with virtual function calls to cater for any differences. The
 'grandfather' object, GncFile representing the file (or more correctly, 'book')
 as a whole, is created in the startDocument() function call.
- 
+
 The constructor function of each object is responsible for providing two lists
 for the XmlReader to scan, a list of element names which represent sub objects
 (called sub elements in the code), and a similar list of names representing data
 elements. In addition, an array of variables (m_v) is provided and initialized,
 to contain the actual data strings.
- 
+
 Implementation
- 
+
 Since objects may be nested, a stack is used, with the top element pointing to
 the 'current object'. The startDocument() call creates the first, GncFile,
 object at the top of the stack.
- 
+
 As each startElement() call occurs, the two element lists created by the current
-object are scanned. 
+object are scanned.
 If this element represents the start of a sub object, the current object's subEl()
 function is called to create an instance of the appropriate type. This is then
 pushed to the top of the stack, and the new object's initiate() function is
@@ -90,7 +90,7 @@ GnuCash makes little use of these.
 If this represents the start of a data element, a pointer (m_dataPointer) is set
 to point to an entry in the array (m_v) in which a subsequent characters() call
 can store the actual data.
- 
+
 When an endElement() call occurs, a check is made to see if it matches the
 element name which started the current object. If so, the object's terminate()
 function is called. If the object represents a similar KMM object, this will
@@ -104,24 +104,24 @@ For example, a GncSplit object makes little sense outside the context of its
 transaction, so will be saved by the transaction. A GncTransaction object on the
 other hand will be converted, along with its attendant splits, and then deleted
 by its parent.
- 
+
 Since at any one time an object will only be processing either a subobject or a
 data element, a single object variable, m_state, is used to determine the actual
 type. In effect, it acts as the current index into either the subElement or
 dataElement list. As an object variable, it will be saved on the stack across
 subobject processing.
- 
+
 Exceptions and Problems
- 
-Fatal exceptions are processed via the standard MyMoneyException method. 
+
+Fatal exceptions are processed via the standard MyMoneyException method.
 Due to differences in implementation between GnuCash and KMM, it is not always
 possible to provide an absolutely correct conversion. When such a problem
 situation is recognized, a message, along with any relevant variable data, is
 passed to the main class, and used to produce a report when processing
 terminates. The GncMessages and GncMessageArg classes implement this.
- 
+
 Anonymizer
- 
+
 When debugging problems, it is often useful to have a trace of what is happening
 within the module. However, in view of the sensitive nature of personal finance
 data, most users will be reluctant to provide this. Accordingly, an anonymize
@@ -176,8 +176,7 @@ class MyMoneyStorageGNC;
 */
 class GncObject {
 public:
-  GncObject() {m_v.setAutoDelete (true);}
-  ; // to save delete loop when finished
+  GncObject();             // to save delete loop when finished
   virtual ~GncObject() {}; // make sure to have impl  of all virtual rtns to avoid vtable errors?
 protected:
   friend class XmlReader;
@@ -256,6 +255,7 @@ private:
   virtual void endSubEl(GncObject *);
 
   bool m_processingTemplates; // gnc uses same transaction element for ordinary and template tx's; this will distinguish
+  bool m_bookFound;           // flag to check for multiple book definitions
 };
 // The following are 'utility' objects, which occur within several other object types
 // ****************************************************************************
@@ -329,7 +329,7 @@ private:
 /** Following are the main objects within the gnucash file, which correspond largely one-for-one
     with similar objects in the kmymoney structure, apart from schedules which gnc splits between
     template (transaction data) and schedule (date data)
-*/ 
+*/
 //********************************************************************
 class GncCountData : public GncObject {
 public:
@@ -504,11 +504,11 @@ protected:
   const QString numOccurs() const { return (var(NUMOCC));};
   const QString remOccurs() const { return (var(REMOCC));};
   const QString templId() const { return (var(TEMPLID));};
-  const QDate startDate () const 
+  const QDate startDate () const
     {QDate x = QDate(); return (m_vpStartDate == NULL ? x : m_vpStartDate->date());};
-  const QDate lastDate () const 
+  const QDate lastDate () const
     {QDate x = QDate(); return (m_vpLastDate == NULL ? x : m_vpLastDate->date());};
-  const QDate endDate() const 
+  const QDate endDate() const
     {QDate x = QDate(); return (m_vpEndDate == NULL ? x : m_vpEndDate->date());};
   const GncFreqSpec *getFreqSpec() const { return (m_vpFreqSpec);};
 private:
@@ -548,7 +548,7 @@ private:
                                     XML Reader
  The XML reader is an implementation of the Qt SAX2 XML parser. It determines the type
  of object represented by the XMl, and calls the appropriate object functions
-*/ 
+*/
 // *****************************************************************************************
 class XmlReader : public QXmlDefaultHandler {
 protected:
@@ -607,7 +607,7 @@ public:
     * A parameter is used to determine the direction.
     *
     * @param pDoc: pointer to the entire DOM document
-    * @param userInfo: DOM Element to write the user information to.  
+    * @param userInfo: DOM Element to write the user information to.
     *
     * @return void
     *
@@ -669,7 +669,7 @@ protected:
     you must select one of the following options.
        0 - create a separate investment account for each stock with the same name as the stock
        1 - create a single investment account to hold all stocks - you will be asked for a name
-       2 - create multiple investment accounts - you will be asked for a name for each stock 
+       2 - create multiple investment accounts - you will be asked for a name for each stock
        N.B. :- option 2 doesn't really work quite as desired at present
   */
   unsigned int m_investmentOption;
@@ -714,7 +714,7 @@ private:
   QMap<QCString, QCString> m_mapEquities;
   QMap<QCString, QCString> m_mapSchedules;
   /**
-    * A list of stock accounts (gnc ids) which will be held till the end 
+    * A list of stock accounts (gnc ids) which will be held till the end
       so we can implement the user's investment option
     */
   QValueList<QString> m_stockList;
