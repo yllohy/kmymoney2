@@ -21,7 +21,6 @@
 // ----------------------------------------------------------------------------
 // QT Headers
 #include <qlineedit.h>
-#include <qcombobox.h>
 #include <qtextstream.h>
 #include <qprogressbar.h>
 #include <qlabel.h>
@@ -31,6 +30,7 @@
 // ----------------------------------------------------------------------------
 // KDE Headers
 #include <kpushbutton.h>
+#include <kcombobox.h>
 #include <kmessagebox.h>
 #include <kfiledialog.h>
 #include <klocale.h>
@@ -44,6 +44,9 @@
 // ----------------------------------------------------------------------------
 // Project Headers
 #include "kimportdlg.h"
+#include "../mymoney/mymoneyfile.h"
+#include "../converter/mymoneyqifprofileeditor.h"
+#include "knewaccountwizard.h"
 
 KImportDlg::KImportDlg(QWidget *parent, const char * name)
   : KImportDlgDecl(parent, name, TRUE)
@@ -51,6 +54,11 @@ KImportDlg::KImportDlg(QWidget *parent, const char * name)
   QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_qif_import.png");
   m_qpixmaplabel->setPixmap(QPixmap(filename));
 
+  // Set all the last used options
+  readConfig();
+
+  loadProfiles(true);
+  loadAccounts();
 /*
   // We have to be careful of nulls though
   m_mymoneyaccount = account;
@@ -81,9 +89,6 @@ KImportDlg::KImportDlg(QWidget *parent, const char * name)
 
   m_qcomboboxDateFormat->setEditable(true);
 
-  // Set all the last used options
-  readConfig();
-
   int nErrorReturn = 0;
 
   if (m_mymoneyaccount->validateQIFDateFormat("", m_qstringLastFormat.latin1(), nErrorReturn, false)) {
@@ -111,11 +116,14 @@ KImportDlg::KImportDlg(QWidget *parent, const char * name)
     SLOT(slotFileTextChanged(const QString&)));
 
   connect(m_qbuttonBrowse, SIGNAL( clicked() ), this, SLOT( slotBrowse() ) );
+  connect(m_scanButton, SIGNAL(clicked()), this, SLOT(slotScanClicked()));
   connect(m_qbuttonOk, SIGNAL(clicked()), this, SLOT(slotOkClicked()));
   connect(m_qbuttonCancel, SIGNAL(clicked()), this, SLOT(reject()));
+  connect(m_profileEditorButton, SIGNAL(clicked()), this, SLOT(slotNewProfile()));
+  connect(m_profileComboBox, SIGNAL(highlighted(const QString&)), this, SLOT(slotProfileSelected(const QString&)));
 
-  m_qbuttonOk->setEnabled(false);
-  m_scanButton->setEnabled(false);
+  // setup button enable status
+  slotFileTextChanged(m_qlineeditFile->text());
 /*
 
   connect(m_qcomboboxDateFormat, SIGNAL( activated(const QString &)), this,
@@ -125,8 +133,6 @@ KImportDlg::KImportDlg(QWidget *parent, const char * name)
 
 KImportDlg::~KImportDlg()
 {
-  // Save the used options.
-  writeConfig();
 }
 
 void KImportDlg::slotBrowse()
@@ -134,6 +140,41 @@ void KImportDlg::slotBrowse()
   QString qstring(KFileDialog::getOpenFileName(QString::null,"*.QIF"));
   if (!qstring.isEmpty())
     m_qlineeditFile->setText(qstring);
+}
+
+void KImportDlg::slotScanClicked(void)
+{
+  QString accountName = m_reader.scanFileForAccount();
+  if(accountName.length() != 0) {
+    if(!m_accountComboBox->listBox()->findItem(accountName, Qt::ExactMatch | Qt::CaseSensitive)) {
+      int rc;
+      rc = KMessageBox::questionYesNo(0, i18n("The account '%1' currently does not exist. You can "
+                                              "create a new account by pressing the Create button. "
+                                              "Press Cancel if you want to select the account manually "
+                                              "from the selection box.").arg(accountName),
+                                         i18n("Account creation"),
+                                         KGuiItem(i18n("Create")),
+                                         KGuiItem(i18n("Cancel")));
+      if(rc == KMessageBox::Yes) {
+        KNewAccountWizard wizard(0);
+        wizard.setAccountName(accountName);
+        wizard.setAccountType(m_reader.account().accountType());
+        wizard.setOpeningBalance(m_reader.account().openingBalance());
+        wizard.setOpeningDate(m_reader.account().openingDate());
+        if(wizard.exec()) {
+          accountName = wizard.account().name();
+        }
+      }
+    }
+
+    if(m_accountComboBox->listBox()->findItem(accountName, Qt::ExactMatch | Qt::CaseSensitive)) {
+      m_accountComboBox->setCurrentText(accountName);
+    }
+  } else {
+    KMessageBox::information(0, i18n("No account information has been found in the selected QIF file."
+                                     "Please select the account using the selection box in the dialog"),
+                                i18n("No account info available"));
+  }
 }
 
 void KImportDlg::slotDateFormatChanged(const QString& selectedDateFormat)
@@ -152,6 +193,9 @@ void KImportDlg::slotDateFormatChanged(const QString& selectedDateFormat)
 /** Main work horse of the dialog. */
 void KImportDlg::slotOkClicked()
 {
+  // Save the used options.
+  writeConfig();
+
 /*
   if (m_qlineeditFile->text().isEmpty()) {
     KMessageBox::information(this, i18n("Please enter the path to the QIF file"), i18n("Import QIF"));
@@ -229,6 +273,7 @@ void KImportDlg::writeConfig(void)
   KConfig *kconfig = KGlobal::config();
   kconfig->setGroup("Last Use Settings");
   kconfig->writeEntry("KImportDlg_LastFile", m_qlineeditFile->text());
+  kconfig->writeEntry("KImportDlg_LastProfile", m_profileComboBox->currentText());
 /*
   kconfig->writeEntry("KImportDlg_LastFormat", m_qcomboboxDateFormat->currentText());
 	kconfig->writeEntry("KImportDlg_LastApostrophe",
@@ -253,6 +298,11 @@ void KImportDlg::slotSetProgress(int progress)
 */
 }
 
+void KImportDlg::slotProfileSelected(const QString& text)
+{
+  m_reader.setProfile(text);
+}
+
 /** Make sure the text input is ok */
 void KImportDlg::slotFileTextChanged(const QString& text)
 {
@@ -261,6 +311,7 @@ void KImportDlg::slotFileTextChanged(const QString& text)
     m_qbuttonOk->setEnabled(true);
     m_scanButton->setEnabled(true);
     m_qlineeditFile->setText(text);
+    m_reader.setFilename(text);
   } else {
     // m_qcomboboxDateFormat->setEnabled(false);
     m_qbuttonOk->setEnabled(false);
@@ -282,3 +333,87 @@ bool KImportDlg::fileExists(KURL url)
   // anyway
   return false;
 }
+
+void KImportDlg::slotNewProfile(void)
+{
+  MyMoneyQifProfileEditor* editor = new MyMoneyQifProfileEditor(true, this, "QIF Profile Editor");
+  if(editor->exec()) {
+    m_profileComboBox->setCurrentText(editor->selectedProfile());
+    m_reader.setProfile(editor->selectedProfile());
+    loadProfiles();
+  }
+  delete editor;
+}
+
+void KImportDlg::loadProfiles(const bool selectLast)
+{
+  QString current = m_profileComboBox->currentText();
+
+  m_profileComboBox->clear();
+
+  QStringList list;
+  KConfig* config = KGlobal::config();
+  config->setGroup("Profiles");
+
+  list = config->readListEntry("profiles");
+  list.sort();
+  m_profileComboBox->insertStringList(list);
+
+  if(selectLast == true) {
+    config->setGroup("Last Use Settings");
+    current = config->readEntry("KImportDlg_LastProfile");
+  }
+
+  m_profileComboBox->setCurrentItem(0);
+  if(list.contains(current) > 0) {
+    m_profileComboBox->setCurrentText(current);
+    m_reader.setProfile(current);
+  }
+}
+
+void KImportDlg::loadAccounts(void)
+{
+  QStringList strList;
+
+  try {
+    MyMoneyFile *file = MyMoneyFile::instance();
+
+    // read all account items from the MyMoneyFile objects and add them to the listbox
+    addCategories(strList, file->liability().id(), "");
+    addCategories(strList, file->asset().id(), "");
+
+  } catch (MyMoneyException *e) {
+    qDebug("Exception '%s' thrown in %s, line %ld caught in KExportDlg::loadAccounts:%d",
+      e->what().latin1(), e->file().latin1(), e->line(), __LINE__);
+    delete e;
+  }
+
+  strList.sort();
+  m_accountComboBox->insertStringList(strList);
+
+  KConfig* config = KGlobal::config();
+  config->setGroup("Last Use Settings");
+  QString current = config->readEntry("KExportDlg_LastAccount");
+
+  m_accountComboBox->setCurrentItem(0);
+  if(strList.contains(current) > 0)
+    m_accountComboBox->setCurrentText(current);
+}
+
+void KImportDlg::addCategories(QStringList& strList, const QCString& id, const QString& leadIn) const
+{
+  MyMoneyFile *file = MyMoneyFile::instance();
+  QString name;
+
+  MyMoneyAccount account = file->account(id);
+
+  QCStringList accList = account.accountList();
+  QCStringList::ConstIterator it_a;
+
+  for(it_a = accList.begin(); it_a != accList.end(); ++it_a) {
+    account = file->account(*it_a);
+    strList << leadIn + account.name();
+    addCategories(strList, *it_a, leadIn + account.name() + ":");
+  }
+}
+

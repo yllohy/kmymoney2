@@ -31,6 +31,7 @@
 // Project Headers
 #include "kimportdlgdecl.h"
 #include "../mymoney/mymoneyaccount.h"
+#include "../converter/mymoneyqifreader.h"
 
 /**
   * This class is used to import a qif file to an account.
@@ -43,42 +44,13 @@
   * @see MyMoneyAccount
   *
   * @author Felix Rodriguez, Michael Edwardes 2000-2001
-  * $Id: kimportdlg.h,v 1.7 2003/01/26 17:36:03 ipwizard Exp $
+  * $Id: kimportdlg.h,v 1.8 2003/02/05 20:44:09 ipwizard Exp $
   *
   * @short A class to import a qif file to an account.
 **/
-class KImportDlg : public KImportDlgDecl  {
+class KImportDlg : public KImportDlgDecl
+{
   Q_OBJECT
-
-private:
-  void readConfig(void);
-  void writeConfig(void);
-
-  QString m_qstringLastFormat;
-  QString m_qstringLastDecimalSymbol;
-  MyMoneyAccount *m_mymoneyaccount;
-
-  bool fileExists(KURL url);
-
-protected slots:
-  /** Performs the import process */
-  void slotOkClicked();
-
-	/** Performs de-/activation of apostrophe handling */
-	void slotDateFormatChanged(const QString& selectedDateFormat);
-
-  /** Called to let the user browse for a QIF file to import from. */
-  void slotBrowse();
-
-  /**
-    * Called when the progress bar needs updating.
-    *
-    * @param progress An integer representing the new progress.
-  */
-  void slotSetProgress(int progress);
-
-  /** Test whether to enable the buttons */
-  void slotFileTextChanged(const QString& text);
 
 public:
   /**
@@ -88,6 +60,74 @@ public:
 
   /** Standard destructor */
   ~KImportDlg();
+
+protected slots:
+  /** Performs the import process */
+  /** Performs de-/activation of apostrophe handling */
+  void slotDateFormatChanged(const QString& selectedDateFormat);
+
+  /** Called to let the user browse for a QIF file to import from. */
+  void slotBrowse();
+
+  /**
+    * Called when the progress bar needs updating.
+    *
+    * @param progress An integer representing the new progress.
+    */
+  void slotSetProgress(int progress);
+
+  /** Test whether to enable the buttons */
+  void slotFileTextChanged(const QString& text);
+
+  /**
+    * Called when the user needs a new profile
+    */
+  void slotNewProfile(void);
+
+  void slotOkClicked(void);
+
+  void slotScanClicked(void);
+
+  void slotProfileSelected(const QString& text);
+
+private:
+  /**
+    * This method loads the available profiles into
+    * the combo box. The parameter @p selectLast controls if
+    * the last profile used is preset or not. If preset is not
+    * selected, the current selection remains. If the currently selected
+    * text is not present in the list anymore, the first item will be
+    * selected.
+    *
+    * @param selectLast If true, the last used profile is selected. The
+    *                   default is false.
+    */
+  void loadProfiles(const bool selectLast = false);
+
+  /**
+    * This method is used to load the available accounts into the
+    * combo box for selection.
+    */
+  void loadAccounts(void);
+
+  /**
+    * This method is used to load an account hierarchy into a string list
+    *
+    * @param strList Reference to the string list to setup
+    * @param id Account id to add
+    * @param leadIn constant leadin to be added in front of the account name
+    */
+  void addCategories(QStringList& strList, const QCString& id, const QString& leadIn) const;
+
+  void readConfig(void);
+  void writeConfig(void);
+
+  bool fileExists(KURL url);
+
+  QString m_qstringLastFormat;
+  QString m_qstringLastDecimalSymbol;
+  MyMoneyAccount *m_mymoneyaccount;
+  MyMoneyQifReader  m_reader;
 };
 
 #endif

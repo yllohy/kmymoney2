@@ -179,7 +179,7 @@ Please enter the path to the QIF file or select it by clicking on the Browse but
                                 <cstring>TextLabel2_2</cstring>
                             </property>
                             <property name="text">
-                                <string>Account to import</string>
+                                <string>Account to import to</string>
                             </property>
                         </widget>
                         <widget class="QLayoutWidget">
