@@ -39,7 +39,7 @@ KAdvancedBankSettingsDlg::KAdvancedBankSettingsDlg(QWidget *parent, const char *
  : KAdvancedBankSettingsDlgDecl(parent, name)
 {
   connect(checkEnable,SIGNAL(toggled(bool)),this,SLOT(slotToggleEnabled(bool)));
-  connect(buttonHelp, SIGNAL(pressed()), this, SLOT(slotHelp()));
+  connect(buttonHelp, SIGNAL(clicked()), this, SLOT(slotHelp()));
 }
 
 KAdvancedBankSettingsDlg::~KAdvancedBankSettingsDlg()
@@ -72,7 +72,7 @@ void KAdvancedBankSettingsDlg::setValues(const MyMoneyKeyValueContainer& _values
 MyMoneyKeyValueContainer KAdvancedBankSettingsDlg::values(void) const
 {
   MyMoneyKeyValueContainer result;
-  
+
   result.setValue( "enabled",QString::number(checkEnable->isChecked()) );
   result.setValue( "url", editUrl->url() );
   result.setValue( "fiorg", editFiorg->text() );
@@ -80,7 +80,7 @@ MyMoneyKeyValueContainer KAdvancedBankSettingsDlg::values(void) const
   result.setValue( "iban", editIban->text() );
   result.setValue( "user", editUser->text() );
   result.setValue( "password", editPassword->text() );
-  
+
   return result;
 }
 
@@ -102,7 +102,7 @@ void KAdvancedBankSettingsDlg::slotHelp(void)
   "<p>Third, edit the properties of the account to enter the exact correct account number.  In order for Direct Connect to work, the account number has to be exactly as your bank is expecting it.  In the future, we will add some nice UI to show the valid values at your bank, but for now you have to get it right.</p>"
   "<p>Finally, to activate OFX Direct Connect, navigate to the accounts view, right click on the account to update, and choose \"Online Update using OFX...\".  If all is well, KMyMoney will connect to your bank, and download your data.  If not, we probably need to add some better error reporting and troubleshooting steps.</p>"
   "<p>The <a href=\"http://www.jongsma.org/gc/scripts/ofx-ba.py\">ofx-ba.py script</a> is a good start for troubleshooting.  Download that, and hack in your bank information.  If you can get this script to work, you should be able to get it working in KMyMoney.</p>";
-  
+
   QDialog dlg;
   QVBoxLayout layout( &dlg, 11, 6, "Layout17");
   KTextBrowser te(&dlg,"Help");
@@ -113,9 +113,9 @@ void KAdvancedBankSettingsDlg::slotHelp(void)
   dlg.setCaption(i18n("OFX Configuration Help"));
   unsigned width = QApplication::desktop()->width();
   unsigned height = QApplication::desktop()->height();
-  te.setMinimumSize(width/2,height/2);  
+  te.setMinimumSize(width/2,height/2);
   layout.setResizeMode(QLayout::Minimum);
-  dlg.exec();  
+  dlg.exec();
 }
 
 #include "kadvancedbanksettingsdlg.moc"
