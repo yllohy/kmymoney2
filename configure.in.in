@@ -5,7 +5,7 @@ AM_INIT_AUTOMAKE(kmymoney2,0.7.0)
 dnl
 dnl check for a recent autoconf version
 dnl
-AC_PREREQ(2.59)
+AC_PREREQ(2.53)
 
 dnl
 dnl check for atoll and strtoll
