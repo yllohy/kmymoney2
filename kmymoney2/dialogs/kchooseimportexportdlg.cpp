@@ -37,8 +37,8 @@ KChooseImportExportDlg::KChooseImportExportDlg(int type, QWidget *parent, const 
 {
   if (type==0) { // import
   	QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_import.png");
-  	QPixmap pm(filename);
-  	m_qpixmaplabel->setPixmap(pm);
+  	QPixmap *pm = new QPixmap(filename);
+  	m_qpixmaplabel->setPixmap(*pm);
 
     topLabel->setText(i18n("Please choose the type of import you wish to perform.   A simple explanation\n"
         "of the import type is available at the bottom of the screen and is updated when\n"

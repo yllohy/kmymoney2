@@ -45,8 +45,8 @@ KImportDlg::KImportDlg(MyMoneyAccount *account, QWidget *parent)
   : KImportDlgDecl(parent,0,TRUE)
 {
   QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_qif_import.png");
-  QPixmap pm(filename);
-  m_qpixmaplabel->setPixmap(pm);
+  QPixmap *pm = new QPixmap(filename);
+  m_qpixmaplabel->setPixmap(*pm);
 
   // We have to be careful of nulls though
   m_mymoneyaccount = account;

@@ -29,8 +29,8 @@ KNewCategoryDlg::KNewCategoryDlg(MyMoneyCategory* category, QWidget *parent, con
  : KNewCategoryDlgDecl(parent,name,true)
 {
   QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_edit_category.png");
-  QPixmap pm(filename);
-  m_qpixmaplabel->setPixmap(pm);
+  QPixmap *pm = new QPixmap(filename);
+  m_qpixmaplabel->setPixmap(*pm);
 
 	m_category = category;
 

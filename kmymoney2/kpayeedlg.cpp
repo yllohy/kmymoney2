@@ -29,8 +29,8 @@ KPayeeDlg::KPayeeDlg(MyMoneyFile *file, QWidget *parent, const char *name)
  : KPayeeDlgDecl(parent,name,true)
 {
   QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_payees.png");
-  QPixmap pm(filename);
-  m_qpixmaplabel->setPixmap(pm);
+  QPixmap *pm = new QPixmap(filename);
+  m_qpixmaplabel->setPixmap(*pm);
 	m_file = file;
 
   readConfig();

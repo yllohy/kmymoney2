@@ -1,3 +1,6 @@
+2001-12-08 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
+  * Fixed Pixmap Crash on Exit error.
+
 2001-12-08  Thomas Baumgart  <ipwizard@users.sourceforge.net>
   * Update flags when refreshing banksview
   * Fixed date of previous entry

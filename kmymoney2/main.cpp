@@ -56,20 +56,12 @@ int main(int argc, char *argv[])
 	if (kmymoney2->startWithDialog()) {
 	  if (kmymoney2->initWizard()) {
   		args->clear();
-	    a.exec();
+	  return  a.exec();
 	  }
 	} else {
 		args->clear();
-	   a.exec();
+	  return a.exec();
 	}
-  QWidgetList *list = QApplication::topLevelWidgets();
-  QWidgetListIt it(*list);
-  QWidget * w;
-  while( (w=it.current()) != 0 ) {
-     ++it;
-     if ( w->testWFlags( Qt::WDestructiveClose ) )
-          delete w;
-  }
 
   return 0;
 }

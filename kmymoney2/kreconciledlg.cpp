@@ -27,8 +27,8 @@ KReconcileDlg::KReconcileDlg(const MyMoneyMoney previousBal, const MyMoneyMoney 
  : KReconcileDlgDecl(parent,name,true)
 {
   QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_reconcile.png");
-  QPixmap pm(filename);
-  m_qpixmaplabel->setPixmap(pm);
+  QPixmap *pm = new QPixmap(filename);
+  m_qpixmaplabel->setPixmap(*pm);
 
   m_balanced = false;
   m_debitsQList.setAutoDelete(false);

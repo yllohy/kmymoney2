@@ -25,8 +25,8 @@ KFileInfoDlg::KFileInfoDlg(QDate created, QDate access, QDate modify, QWidget *p
 {
 //	initDialog();
   QString filename = KGlobal::dirs()->findResource("appdata", "pics/view_info.png");
-  QPixmap pm(filename);
-  m_qpixmaplabel->setPixmap(pm);
+  QPixmap *pm = new QPixmap(filename);
+  m_qpixmaplabel->setPixmap(*pm);
 	
 	createdEdit->setReadOnly(true);
 	createdEdit->setText(KGlobal::locale()->formatDate(created));

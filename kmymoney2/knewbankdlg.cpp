@@ -44,8 +44,8 @@ KNewBankDlg::KNewBankDlg(QString b_name, QString b_sortCode, QString b_city,
   : KNewBankDlgDecl(parent, name, true)
 {
   QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_new_institution.png");
-  QPixmap pm(filename);
-  m_qpixmaplabel->setPixmap(pm);
+  QPixmap *pm = new QPixmap(filename);
+  m_qpixmaplabel->setPixmap(*pm);
 	setCaption(title);
 
 	nameEdit->setText(b_name);

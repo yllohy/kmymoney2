@@ -49,8 +49,8 @@ KExportDlg::KExportDlg(MyMoneyAccount *account, QWidget *parent)
   : KExportDlgDecl(parent,0,TRUE)
 {
   QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_qif_export.png");
-  QPixmap pm(filename);
-  m_qpixmaplabel->setPixmap(pm);
+  QPixmap *pm = new QPixmap(filename);
+  m_qpixmaplabel->setPixmap(*pm);
 
   m_mymoneyaccount = account;
 
