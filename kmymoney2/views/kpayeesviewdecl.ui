@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>728</width>
-            <height>603</height>
+            <width>538</width>
+            <height>440</height>
         </rect>
     </property>
     <property name="caption">
@@ -433,9 +433,4 @@
     </hbox>
 </widget>
 <layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>klistview.h</includehint>
-    <includehint>klistview.h</includehint>
-    <includehint>kpushbutton.h</includehint>
-</includehints>
 </UI>
