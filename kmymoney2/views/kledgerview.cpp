@@ -752,7 +752,7 @@ void KLedgerView::slotAmountChanged(const QString& value)
     }
 
     m_split.setValue(val);
-
+    
     m_editAmount->loadText(value);
     m_transaction.modifySplit(m_split);
     if(m_transaction.splitCount() == 2) {
@@ -1352,8 +1352,11 @@ int KLedgerView::transactionType(const MyMoneySplit& split) const
     return Withdrawal;
   if(split.action() == MyMoneySplit::ActionATM)
     return ATM;
-  if(split.action() == MyMoneySplit::ActionAmortization)
+  if(split.action() == MyMoneySplit::ActionAmortization) {
+    if(m_account.accountType() == MyMoneyAccount::Loan)
+      return Deposit;
     return Withdrawal;
+  }
   qDebug("Unknown transaction type in KLedgerView::transactionType, Check assumed");
   return Check;
 }
@@ -1492,6 +1495,7 @@ void KLedgerView::slotCancelEdit(void)
   }
 
   hideWidgets();
+  fillForm();
 
   connect(m_register, SIGNAL(signalEnter()), this, SLOT(slotStartEdit()));
   m_register->setInlineEditingMode(false);
