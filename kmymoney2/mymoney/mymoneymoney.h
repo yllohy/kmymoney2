@@ -128,7 +128,7 @@ public:
   static void setPositiveMonetarySignPosition(const signPosition pos);
   static void setNegativePrefixCurrencySymbol(const bool flags);
   static void setPositivePrefixCurrencySymbol(const bool flags);
-  
+
   static unsigned char thousandSeparator(void);
   static unsigned char decimalSeparator(void);
   static void setFileVersion(const fileVersionE version);
@@ -154,7 +154,7 @@ public:
   bool operator>( const QString& pszAmount ) const;
   bool operator<=( const QString& pszAmount ) const;
   bool operator>=( const QString& pszAmount ) const;
-  
+
   bool operator==( const signed64 AmountInPence ) const;
   bool operator!=( const signed64 AmountInPence ) const;
   bool operator<( const signed64 AmountInPence ) const;
@@ -203,16 +203,16 @@ public:
 */
 
   MyMoneyMoney operator/( const MyMoneyMoney& Amount ) const;
-  
+
   // unary operators
-  MyMoneyMoney& operator+= ( const MyMoneyMoney&	Amount );
+  MyMoneyMoney& operator+= ( const MyMoneyMoney&  Amount );
 /*
   MyMoneyMoney& operator+=( const QString& pszAmountInPence );
   MyMoneyMoney& operator+=( signed64 AmountInPence );
   MyMoneyMoney& operator+=( long ldAmountInPence );
   MyMoneyMoney& operator+=( int iAmountInPence );
 */
-  MyMoneyMoney& operator-= ( const MyMoneyMoney&	Amount );
+  MyMoneyMoney& operator-= ( const MyMoneyMoney&  Amount );
 /*
   MyMoneyMoney& operator-=( const QString& pszAmountInPence );
   MyMoneyMoney& operator-=( signed64 AmountInPence );
@@ -225,12 +225,13 @@ public:
   MyMoneyMoney& operator--();
   MyMoneyMoney  operator--( int );
 
-  static signed64 maxValue;
-  static signed64 minValue;
+  static MyMoneyMoney maxValue;
+  static MyMoneyMoney minValue;
+  static MyMoneyMoney autoCalc;
 
   bool isNegative() const { return (m_num < 0) ? true : false; }
   bool isPositive() const { return !isNegative(); }
-  
+
 private:
   signed64 m_num;
   signed64 m_denom;
@@ -273,7 +274,7 @@ inline MyMoneyMoney::MyMoneyMoney()
 
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: MyMoneyMoney
-//   Purpose: Constructor - constructs object from an amount in a signed64 value 
+//   Purpose: Constructor - constructs object from an amount in a signed64 value
 //   Returns: None
 //    Throws: Nothing.
 // Arguments: Amount - signed 64 object containing amount
@@ -291,7 +292,7 @@ inline MyMoneyMoney::MyMoneyMoney(signed64 Amount, const signed64 denom)
 //   Purpose: Constructor - constructs object from an amount in a double value
 //   Returns: None
 //    Throws: Nothing.
-// Arguments: dAmount - double object containing amount 
+// Arguments: dAmount - double object containing amount
 //            denom   - denominator of the object
 //
 ////////////////////////////////////////////////////////////////////////////////
@@ -308,7 +309,7 @@ inline MyMoneyMoney::MyMoneyMoney(const double dAmount, const signed64 denom)
 //   Purpose: Constructor - constructs object from an amount in a long double value
 //   Returns: None
 //    Throws: Nothing.
-// Arguments: dAmount - long double object containing amount 
+// Arguments: dAmount - long double object containing amount
 //            denom   - denominator of the object
 //
 ////////////////////////////////////////////////////////////////////////////////
@@ -325,7 +326,7 @@ inline MyMoneyMoney::MyMoneyMoney(const long double dAmount, const signed64 deno
 //   Purpose: Constructor - constructs object from an amount in a long value
 //   Returns: None
 //    Throws: Nothing.
-// Arguments: ldAmount - long object containing amount 
+// Arguments: ldAmount - long object containing amount
 //            denom    - denominator of the object
 //
 ////////////////////////////////////////////////////////////////////////////////
@@ -337,10 +338,10 @@ inline MyMoneyMoney::MyMoneyMoney(const long ldAmount, const signed64 denom)
 
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: MyMoneyMoney
-//   Purpose: Constructor - constructs object from an amount in a integer value 
+//   Purpose: Constructor - constructs object from an amount in a integer value
 //   Returns: None
 //    Throws: Nothing.
-// Arguments: iAmount - integer object containing amount 
+// Arguments: iAmount - integer object containing amount
 //            denom   - denominator of the object
 //
 ////////////////////////////////////////////////////////////////////////////////
@@ -487,7 +488,7 @@ inline bool MyMoneyMoney::operator<(const MyMoneyMoney& Amount) const
 
   ab = m_num * Amount.m_denom;
   ba = m_denom * Amount.m_num;
-  
+
   return ( ab < ba ) ;
 }
 
@@ -501,12 +502,12 @@ inline bool MyMoneyMoney::operator<(const MyMoneyMoney& Amount) const
 //
 ////////////////////////////////////////////////////////////////////////////////
 inline bool MyMoneyMoney::operator>(const MyMoneyMoney& Amount) const
-{ 
+{
   if(m_denom == Amount.m_denom)
     return (m_num > Amount.m_num);
 
   signed64 ab, ba;
-  
+
   ab = m_num * Amount.m_denom;
   ba = m_denom * Amount.m_num;
 
@@ -515,7 +516,7 @@ inline bool MyMoneyMoney::operator>(const MyMoneyMoney& Amount) const
 
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: operator<=
-//   Purpose: Compare less than equal to operator - compares object with input 
+//   Purpose: Compare less than equal to operator - compares object with input
 //            MyMoneyMoney object
 //   Returns: true if object less than or equal to input amount
 //    Throws: Nothing.
@@ -523,7 +524,7 @@ inline bool MyMoneyMoney::operator>(const MyMoneyMoney& Amount) const
 //
 ////////////////////////////////////////////////////////////////////////////////
 inline bool MyMoneyMoney::operator<=(const MyMoneyMoney& Amount) const
-{ 
+{
   if(m_denom == Amount.m_denom)
     return (m_num <= Amount.m_num);
 
@@ -537,7 +538,7 @@ inline bool MyMoneyMoney::operator<=(const MyMoneyMoney& Amount) const
 
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: operator>=
-//   Purpose: Compare greater than equal to operator - compares object with input 
+//   Purpose: Compare greater than equal to operator - compares object with input
 //            MyMoneyMoney object
 //   Returns: true if object greater than or equal to input amount
 //    Throws: Nothing.
@@ -545,7 +546,7 @@ inline bool MyMoneyMoney::operator<=(const MyMoneyMoney& Amount) const
 //
 ////////////////////////////////////////////////////////////////////////////////
 inline bool MyMoneyMoney::operator>=(const MyMoneyMoney& Amount) const
-{ 
+{
   if(m_denom == Amount.m_denom)
     return (m_num >= Amount.m_num);
 
@@ -559,7 +560,7 @@ inline bool MyMoneyMoney::operator>=(const MyMoneyMoney& Amount) const
 
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: operator==
-//   Purpose: Compare equal operator - compares object with input amount in a 
+//   Purpose: Compare equal operator - compares object with input amount in a
 //            NULL terminated string
 //   Returns: true if equal, otherwise false
 //    Throws: Nothing.
@@ -567,7 +568,7 @@ inline bool MyMoneyMoney::operator>=(const MyMoneyMoney& Amount) const
 //
 ////////////////////////////////////////////////////////////////////////////////
 inline bool MyMoneyMoney::operator==(const QString& pszAmount) const
-{ 
+{
   MyMoneyMoney Amount( pszAmount );
   return ( *this == Amount ) ;
 }
@@ -582,7 +583,7 @@ inline bool MyMoneyMoney::operator==(const QString& pszAmount) const
 //
 ////////////////////////////////////////////////////////////////////////////////
 inline bool MyMoneyMoney::operator!=(const QString& pszAmount) const
-{ 
+{
   MyMoneyMoney Amount( pszAmount );
   return ( *this != Amount ) ;
 }
@@ -598,7 +599,7 @@ inline bool MyMoneyMoney::operator!=(const QString& pszAmount) const
 //            pence
 ////////////////////////////////////////////////////////////////////////////////
 inline bool MyMoneyMoney::operator<( const QString& pszAmountInPence) const
-{ 
+{
   MyMoneyMoney AmountInPence( pszAmountInPence );
   return ( m_64Value < AmountInPence.m_64Value ) ;
 }
@@ -614,14 +615,14 @@ inline bool MyMoneyMoney::operator<( const QString& pszAmountInPence) const
 //
 ////////////////////////////////////////////////////////////////////////////////
 inline bool MyMoneyMoney::operator>( const QString& pszAmountInPence) const
-{ 
+{
   MyMoneyMoney AmountInPence( pszAmountInPence );
   return ( m_64Value > AmountInPence.m_64Value ) ;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: operator<=
-//   Purpose: Compare less than equal to operator - compares object with input 
+//   Purpose: Compare less than equal to operator - compares object with input
 //            amount in a NULL terminated string
 //   Returns: true if object less than or equal to input amount
 //    Throws: Nothing.
@@ -629,14 +630,14 @@ inline bool MyMoneyMoney::operator>( const QString& pszAmountInPence) const
 //            pence
 ////////////////////////////////////////////////////////////////////////////////
 inline bool MyMoneyMoney::operator<=(const QString& pszAmountInPence) const
-{ 
+{
   MyMoneyMoney AmountInPence( pszAmountInPence );
   return ( m_64Value <= AmountInPence.m_64Value ) ;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: operator>=
-//   Purpose: Compare greater than equal to operator - compares object with input 
+//   Purpose: Compare greater than equal to operator - compares object with input
 //            amount in a NULL terminated string
 //   Returns: true if object greater than or equal to input amount
 //    Throws: Nothing.
@@ -644,7 +645,7 @@ inline bool MyMoneyMoney::operator<=(const QString& pszAmountInPence) const
 //
 ////////////////////////////////////////////////////////////////////////////////
 inline bool MyMoneyMoney::operator>=(const QString& pszAmountInPence) const
-{ 
+{
   MyMoneyMoney AmountInPence( pszAmountInPence );
   return ( m_64Value >= AmountInPence.m_64Value ) ;
 }
@@ -689,14 +690,14 @@ inline bool MyMoneyMoney::operator!=(const signed64 AmountInPence) const
 //
 ////////////////////////////////////////////////////////////////////////////////
 inline bool MyMoneyMoney::operator<( const signed64 AmountInPence) const
-{ 
+{
   MyMoneyMoney Amount( AmountInPence );
   return ( *this < Amount ) ;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: operator>
-//   Purpose: Compare greater than operator - compares object with input signed64 
+//   Purpose: Compare greater than operator - compares object with input signed64
 //            object
 //   Returns: true if object greater than input amount
 //    Throws: Nothing.
@@ -704,14 +705,14 @@ inline bool MyMoneyMoney::operator<( const signed64 AmountInPence) const
 //
 ////////////////////////////////////////////////////////////////////////////////
 inline bool MyMoneyMoney::operator>( const signed64 AmountInPence) const
-{ 
+{
   MyMoneyMoney Amount( AmountInPence );
   return ( *this > Amount ) ;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: operator<=
-//   Purpose: Compare less than equal to operator - compares object with input 
+//   Purpose: Compare less than equal to operator - compares object with input
 //            signed64 object
 //   Returns: true if object less than or equal to input amount
 //    Throws: Nothing.
@@ -719,14 +720,14 @@ inline bool MyMoneyMoney::operator>( const signed64 AmountInPence) const
 //
 ////////////////////////////////////////////////////////////////////////////////
 inline bool MyMoneyMoney::operator<=( const signed64 AmountInPence) const
-{ 
+{
   MyMoneyMoney Amount( AmountInPence );
   return ( *this <= Amount ) ;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: operator>=
-//   Purpose: Compare greater than equal to operator - compares object with input 
+//   Purpose: Compare greater than equal to operator - compares object with input
 //            signed64 object
 //   Returns: true if object greater than or equal to input amount
 //    Throws: Nothing.
@@ -734,7 +735,7 @@ inline bool MyMoneyMoney::operator<=( const signed64 AmountInPence) const
 //
 ////////////////////////////////////////////////////////////////////////////////
 inline bool MyMoneyMoney::operator>=(const signed64 AmountInPence) const
-{ 
+{
   MyMoneyMoney Amount( AmountInPence );
   return ( *this >= Amount ) ;
 }
@@ -749,7 +750,7 @@ inline bool MyMoneyMoney::operator>=(const signed64 AmountInPence) const
 //
 ////////////////////////////////////////////////////////////////////////////////
 inline bool MyMoneyMoney::operator==(int iAmountInPence) const
-{ 
+{
   return ( m_64Value == static_cast<signed64>(iAmountInPence) ) ;
 }
 
@@ -762,7 +763,7 @@ inline bool MyMoneyMoney::operator==(int iAmountInPence) const
 //
 ////////////////////////////////////////////////////////////////////////////////
 inline bool MyMoneyMoney::operator!=(int iAmountInPence) const
-{ 
+{
   return ( m_64Value != static_cast<signed64>(iAmountInPence) ) ;
 }
 
@@ -775,28 +776,28 @@ inline bool MyMoneyMoney::operator!=(int iAmountInPence) const
 // Arguments: AmountInPence - integer object to be compared with
 //
 ////////////////////////////////////////////////////////////////////////////////
-inline bool MyMoneyMoney::operator<(	int iAmountInPence) const
-{ 
+inline bool MyMoneyMoney::operator<(  int iAmountInPence) const
+{
   return ( m_64Value < static_cast<signed64>(iAmountInPence) ) ;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: operator>
-//   Purpose: Compare greater than operator - compares object with input integer 
+//   Purpose: Compare greater than operator - compares object with input integer
 //            object
 //   Returns: true if object greater than input amount
 //    Throws: Nothing.
 // Arguments: AmountInPence - integer object to be compared with
 //
 ////////////////////////////////////////////////////////////////////////////////
-inline bool MyMoneyMoney::operator>(	int iAmountInPence) const
-{ 
+inline bool MyMoneyMoney::operator>(  int iAmountInPence) const
+{
   return ( m_64Value > static_cast<signed64>(iAmountInPence) ) ;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: operator<=
-//   Purpose: Compare less than equal to operator - compares object with input 
+//   Purpose: Compare less than equal to operator - compares object with input
 //            integer object
 //   Returns: true if object less than or equal to input amount
 //    Throws: Nothing.
@@ -804,13 +805,13 @@ inline bool MyMoneyMoney::operator>(	int iAmountInPence) const
 //
 ////////////////////////////////////////////////////////////////////////////////
 inline bool MyMoneyMoney::operator<=(int iAmountInPence) const
-{ 
+{
   return ( m_64Value <= static_cast<signed64>(iAmountInPence) ) ;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: operator>=
-//   Purpose: Compare greater than equal to operator - compares object with input 
+//   Purpose: Compare greater than equal to operator - compares object with input
 //            integer object
 //   Returns: true if object greater than or equal to input amount
 //    Throws: Nothing.
@@ -818,7 +819,7 @@ inline bool MyMoneyMoney::operator<=(int iAmountInPence) const
 //
 ////////////////////////////////////////////////////////////////////////////////
 inline bool MyMoneyMoney::operator>=(int iAmountInPence) const
-{ 
+{
   return ( m_64Value >= static_cast<signed64>(iAmountInPence) ) ;
 }
 
@@ -831,7 +832,7 @@ inline bool MyMoneyMoney::operator>=(int iAmountInPence) const
 //
 ////////////////////////////////////////////////////////////////////////////////
 inline bool MyMoneyMoney::operator==(long ldAmountInPence) const
-{ 
+{
   return ( m_64Value == static_cast<signed64>(ldAmountInPence) ) ;
 }
 
@@ -844,7 +845,7 @@ inline bool MyMoneyMoney::operator==(long ldAmountInPence) const
 //
 ////////////////////////////////////////////////////////////////////////////////
 inline bool MyMoneyMoney::operator!=(long ldAmountInPence) const
-{ 
+{
   return ( m_64Value != static_cast<signed64>(ldAmountInPence) ) ;
 }
 
@@ -857,28 +858,28 @@ inline bool MyMoneyMoney::operator!=(long ldAmountInPence) const
 // Arguments: AmountInPence - long object to be compared with
 //
 ////////////////////////////////////////////////////////////////////////////////
-inline bool MyMoneyMoney::operator<(	long ldAmountInPence) const
-{ 
+inline bool MyMoneyMoney::operator<(  long ldAmountInPence) const
+{
   return ( m_64Value < static_cast<signed64>(ldAmountInPence) ) ;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: operator>
-//   Purpose: Compare greater than operator - compares object with input long 
+//   Purpose: Compare greater than operator - compares object with input long
 //            object
 //   Returns: true if object greater than input amount
 //    Throws: Nothing.
 // Arguments: AmountInPence - long object to be compared with
 //
 ////////////////////////////////////////////////////////////////////////////////
-inline bool MyMoneyMoney::operator>(	long ldAmountInPence) const
-{ 
+inline bool MyMoneyMoney::operator>(  long ldAmountInPence) const
+{
   return ( m_64Value > static_cast<signed64>(ldAmountInPence) ) ;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: operator<=
-//   Purpose: Compare less than equal to operator - compares object with input 
+//   Purpose: Compare less than equal to operator - compares object with input
 //            long object
 //   Returns: true if object less than or equal to input amount
 //    Throws: Nothing.
@@ -886,13 +887,13 @@ inline bool MyMoneyMoney::operator>(	long ldAmountInPence) const
 //
 ////////////////////////////////////////////////////////////////////////////////
 inline bool MyMoneyMoney::operator<=(long ldAmountInPence) const
-{ 
+{
   return ( m_64Value <= static_cast<signed64>(ldAmountInPence) ) ;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: operator>=
-//   Purpose: Compare greater than equal to operator - compares object with input 
+//   Purpose: Compare greater than equal to operator - compares object with input
 //            long object
 //   Returns: true if object greater than or equal to input amount
 //    Throws: Nothing.
@@ -900,7 +901,7 @@ inline bool MyMoneyMoney::operator<=(long ldAmountInPence) const
 //
 ////////////////////////////////////////////////////////////////////////////////
 inline bool MyMoneyMoney::operator>=(long ldAmountInPence) const
-{ 
+{
   return ( m_64Value >= static_cast<signed64>(ldAmountInPence) ) ;
 }
 */
@@ -1271,7 +1272,7 @@ inline MyMoneyMoney MyMoneyMoney::operator++(int)
 
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: operator--
-//   Purpose: Pre-deccrement operator - subtracts 1 (pence) from the current object 
+//   Purpose: Pre-deccrement operator - subtracts 1 (pence) from the current object
 //            which is then returned
 //   Returns: Reference to the current object
 //    Throws: Nothing.

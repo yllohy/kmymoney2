@@ -302,7 +302,7 @@ void MyMoneyStorageDump::dumpTransaction(QTextStream& s, IMyMoneyStorage* storag
       delete e;
     }
     s << "    Memo = " << (*it_s).memo() << "\n";
-    if((*it_s).value() == MyMoneyMoney::minValue + 1)
+    if((*it_s).value() == MyMoneyMoney::autoCalc)
       s << "    Value = will be calculated" << "\n";
     else
       s << "    Value = " << (*it_s).value().formatMoney() << "\n";

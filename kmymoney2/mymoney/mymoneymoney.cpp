@@ -20,7 +20,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#define __STDC_LIMIT_MACROS         // force definition of min and max values 
+#define __STDC_LIMIT_MACROS         // force definition of min and max values
 #include <stdint.h>
 
 // ----------------------------------------------------------------------------
@@ -42,8 +42,9 @@ bool MyMoneyMoney::_positivePrefixCurrencySymbol = false;
 
 MyMoneyMoney::fileVersionE MyMoneyMoney::_fileVersion = MyMoneyMoney::FILE_4_BYTE_VALUE;
 
-signed64 MyMoneyMoney::maxValue = INT64_MAX;
-signed64 MyMoneyMoney::minValue = INT64_MIN;
+MyMoneyMoney MyMoneyMoney::maxValue = MyMoneyMoney(INT64_MAX,100);
+MyMoneyMoney MyMoneyMoney::minValue = MyMoneyMoney(INT64_MIN,100);
+MyMoneyMoney MyMoneyMoney::autoCalc = MyMoneyMoney(INT64_MIN+1,100);
 
 void MyMoneyMoney::setNegativePrefixCurrencySymbol(const bool flag)
 {
@@ -107,7 +108,7 @@ MyMoneyMoney::MyMoneyMoney(const QString& pszAmount)
     fromString(pszAmount);
     return;
   }
-    
+
   QString res = pszAmount;
   int pos;
   while((pos = res.find(_thousandSeparator)) != -1)
@@ -116,7 +117,7 @@ MyMoneyMoney::MyMoneyMoney(const QString& pszAmount)
   if((pos = res.find(_decimalSeparator)) != -1) {
     // make sure, we get the denominator right
     m_denom = precToDenom(res.length() - pos - 1);
-    
+
     // now remove the decimal symbol
     res.remove(pos, 1);
   }
@@ -132,7 +133,7 @@ const QString MyMoneyMoney::formatMoney(const QString currency, const int prec) 
   unsigned int tmpPrec = prec;
   signed64 denom = 1;
   signed64 m_64Value;
-  
+
   while(tmpPrec--) {
     denom *= 10;
   }
@@ -152,7 +153,7 @@ const QString MyMoneyMoney::formatMoney(const QString currency, const int prec) 
     left = -left;
     bNegative = true;
   }
-  
+
   if(left & 0xFFFFFFFF00000000LL) {
     signed64 tmp = left;
 
@@ -214,20 +215,20 @@ const QString MyMoneyMoney::toString(void) const
   signed64 tmp = m_num < 0 ? - m_num : m_num;
   QString  res;
   QString  resf;
-  
+
   // QString.sprintf("%Ld") did not work :-(,  so I had to
-  // do it the old ugly way.  
+  // do it the old ugly way.
   while(tmp) {
     res.prepend(QString("%1").arg(static_cast<int>(tmp % 10)));
     tmp /= 10;
   }
   if(res.isEmpty())
     res = QString("0");
-    
+
   if(m_num < 0)
     res.prepend('-');
 
-  tmp = m_denom;    
+  tmp = m_denom;
   while(tmp) {
     resf.prepend(QString("%1").arg(static_cast<int>(tmp % 10)));
     tmp /= 10;
@@ -255,7 +256,7 @@ QDataStream &operator<<(QDataStream &s, const MyMoneyMoney &_money)
   // qglobal.h:typedef long          Q_INT64;
 
   MyMoneyMoney money = _money.convert(100);
-  
+
   switch(MyMoneyMoney::_fileVersion) {
     case MyMoneyMoney::FILE_4_BYTE_VALUE:
       if(money.m_num & 0xffffffff00000000LL)
@@ -407,7 +408,7 @@ MyMoneyMoney MyMoneyMoney::operator*( const MyMoneyMoney& _b ) const
 
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: operator/
-//   Purpose: Division operator - divides the object by the input amount 
+//   Purpose: Division operator - divides the object by the input amount
 //   Returns: The current object
 //    Throws: Nothing.
 // Arguments: b - MyMoneyMoney object to be used as dividend
@@ -534,7 +535,7 @@ const MyMoneyMoney MyMoneyMoney::convert(const signed64 _denom, const roundingMe
     }
 
     sign = (in.m_num < 0) ? -1 : 1;
-    
+
     /* if the denominator is less than zero, we are to interpret it as
      * the reciprocal of its magnitude. */
     if(denom < 0) {
@@ -635,7 +636,7 @@ const MyMoneyMoney MyMoneyMoney::convert(const signed64 _denom, const roundingMe
     }
     out.m_num = (sign > 0) ? out.m_num : (-out.m_num);
   }
-    
+
   return out;
 }
 
@@ -671,7 +672,7 @@ const signed64 MyMoneyMoney::precToDenom(const int prec)
 {
   register int tmpPrec = prec;
   signed64 denom = 1;
-  
+
   while(tmpPrec--)
     denom *= 10;
 
