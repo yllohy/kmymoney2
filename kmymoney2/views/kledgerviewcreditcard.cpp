@@ -1,0 +1,139 @@
+/***************************************************************************
+                          kledgerviewcreditcard.cpp  -  description
+                             -------------------
+    begin                : Wed Nov 27 2002
+    copyright            : (C) 2000-2002 by Michael Edwardes
+    email                : mte@users.sourceforge.net
+                           Javier Campos Morales <javi_c@users.sourceforge.net>
+                           Felix Rodriguez <frodriguez@users.sourceforge.net>
+                           John C <thetacoturtle@users.sourceforge.net>
+                           Thomas Baumgart <ipwizard@users.sourceforge.net>
+                           Kevin Tambascio <ktambascio@users.sourceforge.net>
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+// ----------------------------------------------------------------------------
+// QT Includes
+
+// ----------------------------------------------------------------------------
+// KDE Includes
+
+#include <kpushbutton.h>
+
+// ----------------------------------------------------------------------------
+// Project Includes
+
+#include "kledgerviewcreditcard.h"
+
+#include "../views/kledgerviewcheckings.h"
+#include "../widgets/kmymoneypayee.h"
+#include "../widgets/kmymoneycategory.h"
+#include "../widgets/kmymoneylineedit.h"
+#include "../widgets/kmymoneyedit.h"
+#include "../widgets/kmymoneydateinput.h"
+#include "../widgets/kmymoneyregister.h"
+#include "../widgets/kmymoneytransactionform.h"
+
+
+KLedgerViewCreditCard::KLedgerViewCreditCard(QWidget *parent, const char *name )
+  : KLedgerViewCheckings(parent,name)
+{
+	m_register->horizontalHeader()->setLabel(4, i18n("Charge"));
+	m_register->horizontalHeader()->setLabel(5, i18n("Payment"));
+
+  m_form->tabBar()->removeTab(m_tabCheck);
+  m_form->tabBar()->removeTab(m_tabAtm);
+  m_form->tabBar()->tabAt(0)->setText(i18n("&Payment"));
+  m_form->tabBar()->tabAt(2)->setText(i18n("C&harge"));
+
+  m_register->repaintContents(false);
+}
+
+KLedgerViewCreditCard::~KLedgerViewCreditCard()
+{
+}
+void KLedgerViewCreditCard::createEditWidgets(void)
+{
+  m_editPayee = new kMyMoneyPayee(0, "editPayee");
+  m_editCategory = new kMyMoneyCategory(0, "editCategory");
+  m_editMemo = new kMyMoneyLineEdit(0, "editMemo");
+  m_editAmount = new kMyMoneyEdit(0, "editAmount");
+  m_editDate = new kMyMoneyDateInput(0, "editDate");
+  m_editNr = 0;
+  m_editFrom = new kMyMoneyCategory(0, "editFrom", static_cast<kMyMoneyCategory::categoryTypeE> (kMyMoneyCategory::asset | kMyMoneyCategory::liability));
+  m_editTo = new kMyMoneyCategory(0, "editTo", static_cast<kMyMoneyCategory::categoryTypeE> (kMyMoneyCategory::asset | kMyMoneyCategory::liability));
+  m_editSplit = new KPushButton("Split", 0, "editSplit");
+  m_editPayment = new kMyMoneyEdit(0, "editPayment");
+  m_editDeposit = new kMyMoneyEdit(0, "editDeposit");
+
+  connect(m_editSplit, SIGNAL(clicked()), this, SLOT(slotOpenSplitDialog()));
+
+  connect(m_editPayee, SIGNAL(newPayee(const QString&)), this, SLOT(slotNewPayee(const QString&)));
+  connect(m_editPayee, SIGNAL(payeeChanged(const QString&)), this, SLOT(slotPayeeChanged(const QString&)));
+  connect(m_editMemo, SIGNAL(lineChanged(const QString&)), this, SLOT(slotMemoChanged(const QString&)));
+  connect(m_editCategory, SIGNAL(categoryChanged(const QString&)), this, SLOT(slotCategoryChanged(const QString&)));
+  connect(m_editAmount, SIGNAL(valueChanged(const QString&)), this, SLOT(slotAmountChanged(const QString&)));
+  connect(m_editDate, SIGNAL(dateChanged(const QDate&)), this, SLOT(slotDateChanged(const QDate&)));
+  connect(m_editFrom, SIGNAL(categoryChanged(const QString&)), this, SLOT(slotFromChanged(const QString&)));
+  connect(m_editTo, SIGNAL(categoryChanged(const QString&)), this, SLOT(slotToChanged(const QString&)));
+  connect(m_editPayment, SIGNAL(valueChanged(const QString&)), this, SLOT(slotPaymentChanged(const QString&)));
+  connect(m_editDeposit, SIGNAL(valueChanged(const QString&)), this, SLOT(slotDepositChanged(const QString&)));
+
+  connect(m_editPayee, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
+  connect(m_editMemo, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
+  connect(m_editCategory, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
+  connect(m_editDate, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
+  connect(m_editFrom, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
+  connect(m_editTo, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
+  connect(m_editAmount, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
+  connect(m_editPayment, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
+  connect(m_editDeposit, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
+
+  connect(m_editPayee, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
+  connect(m_editMemo, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
+  connect(m_editCategory, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
+  connect(m_editDate, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
+  connect(m_editFrom, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
+  connect(m_editTo, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
+  connect(m_editAmount, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
+  connect(m_editPayment, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
+  connect(m_editDeposit, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
+}
+
+void KLedgerViewCreditCard::slotReconciliation(void)
+{
+  KLedgerViewCheckings::slotReconciliation();
+}
+
+void KLedgerViewCreditCard::resizeEvent(QResizeEvent* ev)
+{
+  KLedgerViewCheckings::resizeEvent(ev);
+}
+
+void KLedgerViewCreditCard::fillSummary(void)
+{
+  MyMoneyMoney balance;
+  QLabel *summary = static_cast<QLabel *> (m_summaryLine);
+
+  if(accountId().length() > 0) {
+    try {
+      balance = MyMoneyFile::instance()->balance(accountId());
+      if(balance < 0)
+        summary->setText(i18n("You currently owe: ") + (-balance).formatMoney());
+      else
+        summary->setText(i18n("Current balance: ") + balance.formatMoney());
+
+    } catch(MyMoneyException *e) {
+        qDebug("Unexpected exception in KLedgerViewCreditCard::fillSummary");
+    }
+  } else
+    summary->setText("");
+}
