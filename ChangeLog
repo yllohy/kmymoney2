@@ -1,3 +1,8 @@
+2004-09-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added set/get functions to MyMoneyMoney for completeness
+  * Added formatting testcases to MyMoneyMoneyTest
+  * Improved libofx autoconf logic and put into separate file
+
 2004-08-31 Ace Jones <acejones@users.sourceforge.net>
   * Added importing of OFX files
   * Added libofx to the project
