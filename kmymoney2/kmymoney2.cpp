@@ -366,11 +366,9 @@ void KMyMoney2App::slotFileOpen()
   }
   
 #else
-  slotFileClose();
   if(myMoneyView->fileOpen())
     return;
 #endif
-  fileName = KURL();
   initWizard();
   slotStatusMsg(prevMsg);
   updateCaption();
@@ -501,8 +499,6 @@ void KMyMoney2App::slotFileClose()
 {
   // no update status here, as we might delete the status too early.
 
-
-
   if (myMoneyView->dirty()) {
     int answer = KMessageBox::warningYesNoCancel(this, i18n("The file has been changed, save it ?"));
     if (answer == KMessageBox::Cancel)
@@ -528,6 +524,7 @@ void KMyMoney2App::slotFileQuit()
 
     for(w=memberList->first(); w!=0; w=memberList->next()) {
       // only close the window if the closeEvent is accepted. If the user presses Cancel on the saveModified() dialog,
+
       // the window and the application stay open.
       if(!w->close())
         break;
@@ -637,6 +634,7 @@ void KMyMoney2App::progressCallback(int current, int total, const QString& msg)
 void KMyMoney2App::slotFileViewPersonal()
 {
   QString prevMsg = slotStatusMsg(i18n("Viewing personal data..."));
+
 
   if ( !myMoneyView->fileOpen() ) {
 
@@ -788,6 +786,7 @@ bool KMyMoney2App::initWizard()
 {
   KStartDlg start;
   if (start.exec()) {
+    slotFileClose();
     if (start.isNewFile()) {
       slotFileNew();
     } else if (start.isOpenFile()) {
@@ -1075,6 +1074,7 @@ void KMyMoney2App::slotFileConsitencyCheck(void)
 void KMyMoney2App::slotCheckSchedules(void)
 {
   QString prevMsg = slotStatusMsg(i18n("Checking for overdue schedules..."));
+
 
   MyMoneyFile *file = MyMoneyFile::instance();
 
