@@ -386,6 +386,11 @@ void KSettingsDlg::setPageList()
   m_qcheckboxTypeToNr = new QCheckBox(i18n("Insert transaction type into Nr. field for new transactions"), qwidgetPage);
   qvboxlayoutPage->addWidget(m_qcheckboxTypeToNr);
 
+  // Setting for the behaviour how changes should be treated when editing
+  // is left by selecting a different transaction/split
+  m_qcheckboxFocusChangeEnter = new QCheckBox(i18n("Keep changes when selecting a different transaction/split"), qwidgetPage);
+  qvboxlayoutPage->addWidget(m_qcheckboxFocusChangeEnter);
+
   // Add a vertical spacer to take up the remaining available space
   QSpacerItem* spacer = new QSpacerItem( 20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding );
   qvboxlayoutPage->addItem( spacer );
@@ -467,6 +472,7 @@ void KSettingsDlg::configRead()
   m_iTempPricePrecision = kconfig->readNumEntry("PricePrecision", 4);
   m_qIntPricePrecision->setText(QString("%1").arg(m_iTempPricePrecision));
 
+  m_bTempFocusChangeEnter = kconfig->readBoolEntry("FocusChangeIsEnter", false);
   kconfig->setGroup("List Options");
 
   m_qcolorTempList = KMyMoneyUtils::defaultListColour();
@@ -557,6 +563,7 @@ void KSettingsDlg::configWrite()
   kconfig->writeEntry("CopyTypeToNr", m_qcheckboxTypeToNr->isChecked());
   kconfig->writeEntry("AlwaysShowNrField", m_qcheckboxShowNrField->isChecked());
   kconfig->writeEntry("PricePrecision", m_qIntPricePrecision->text());
+  kconfig->writeEntry("FocusChangeIsEnter", m_qcheckboxFocusChangeEnter->isChecked());
 
   kconfig->setGroup("Homepage Options");
   kconfig->writeEntry("Itemlist", homePageItems());
@@ -623,6 +630,7 @@ void KSettingsDlg::slotCancel()
   kconfig->writeEntry("CheckSchedule", m_bTempCheckSchedule);
   kconfig->writeEntry("CheckSchedulePreview", m_iTempSchedulePreview);
   kconfig->writeEntry("PricePrecision", m_iTempPricePrecision);
+  kconfig->writeEntry("FocusChangeEnter", m_bTempFocusChangeEnter);
 
   kconfig->setGroup("Homepage Options");
   kconfig->writeEntry("Itemlist", m_tempHomePageItems);
@@ -660,6 +668,7 @@ void KSettingsDlg::slotUser1()
   m_qcheckboxTransactionForm->setChecked(m_bTempTransactionForm);
   m_qcheckboxTypeToNr->setChecked(m_bTempTypeToNr);
   m_qcheckboxShowNrField->setChecked(m_bTempShowNrField);
+  m_qcheckboxFocusChangeEnter->setChecked(m_bTempFocusChangeEnter);
   m_qradiobuttonStartLast->setChecked(m_bTempStartPage);
   m_qradiobuttonStartHome->setChecked(!m_bTempStartPage);
   m_qradiobuttonCheckSchedules->setChecked(m_bTempCheckSchedule);

@@ -481,7 +481,7 @@ void KLedgerView::setupPointerAndBalanceArrays(void)
         // for KLedgerViewInvestments this will fail, because there's no split with accountId()
         // in the transaction, only with the stock child
         if(!accountId().isEmpty() && !inherits("KLedgerViewInvestments"))
-          qDebug("Unexpected exception in KLedgerView::setupPointerAndBalanceArrays: %s",e->what().latin1());
+          qDebug("Unexpected exception in KLedgerView::setupPointerAndBalanceArrays: %s", e->what().latin1());
         delete e;
       }
       if(m_transactionPtrVector.sortType() == KTransactionPtrVector::SortPostDate) {
@@ -555,11 +555,13 @@ void KLedgerView::slotRegisterClicked(int row, int /* col */, int button, const 
   if(!(m_account.id().isEmpty())) {
     // only redraw the register and form, when a different
     // transaction has been selected with this click.
-    if(m_register->setCurrentTransactionRow(row) == true) {
+
+    if(m_register->differentTransaction(row) == true) {
+      cancelOrEndEdit();
+
+      m_register->setCurrentTransactionRow(row);
       m_register->ensureTransactionVisible();
       m_register->repaintContents(false);
-
-      slotCancelEdit();
 
       // if the very last entry has been selected, it means, that
       // a new transaction should be created.
@@ -576,7 +578,8 @@ void KLedgerView::slotRegisterClicked(int row, int /* col */, int button, const 
 
     if(button == Qt::RightButton) {
       if(static_cast<unsigned> (m_register->currentTransactionIndex()) != m_transactionList.count()) {
-        slotCancelEdit();
+        cancelOrEndEdit();
+
         Q_CHECK_PTR(m_contextMenu);
         m_contextMenu->exec(QCursor::pos());
       }
@@ -1431,6 +1434,16 @@ void KLedgerView::slotStartEdit(void)
 
   if(!m_transactionFormActive)
     m_register->setInlineEditingMode(true);
+}
+
+void KLedgerView::cancelOrEndEdit(void)
+{
+  KConfig* kconfig = KGlobal::config();
+  kconfig->setGroup("General Options");
+  if(kconfig->readBoolEntry("FocusChangeIsEnter", false) == true)
+    slotEndEdit();
+  else
+    slotCancelEdit();
 }
 
 void KLedgerView::slotCancelEdit(void)

@@ -322,6 +322,14 @@ int kMyMoneyRegister::transactionIndex(const int row) const
   return idx;
 }
 
+bool kMyMoneyRegister::differentTransaction(int row) const
+{
+  int idx = transactionIndex(row);
+  if(idx < 0)
+    idx = 0;
+  return (idx != m_currentTransactionIndex);
+}
+
 bool kMyMoneyRegister::setCurrentTransactionRow(const int row)
 {
   return setCurrentTransactionIndex(transactionIndex(row));

@@ -253,6 +253,16 @@ public:
     */
   void setAction(const QCString& action, const QString& txt);
 
+  /**
+    * This method tells the caller, if a given row belongs
+    * to the current transaction or not.
+    *
+    * @param row the row in question
+    * @retval false @p row belongs to the current transaction
+    * @retval true @p row belongs to a different transaction
+    */
+  bool differentTransaction(int row) const;
+
 public slots:
   /**
     * This method is used to inform the widget about the number

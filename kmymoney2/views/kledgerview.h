@@ -837,6 +837,12 @@ protected:
 
   virtual void vatCheck(MyMoneyTransaction& t, MyMoneySplit& s);
 
+  /**
+    * Depending on the setting of [General Options]:FocusChangeIsEnter this
+    * method calls either slotEndEdit() or slotCancelEdit().
+    */
+  void cancelOrEndEdit(void);
+
 protected:
   /**
     * This member keeps a pointer to the specific register for the account

@@ -114,6 +114,9 @@ private:
   /* always show a nr field in the transaction form */
   QCheckBox* m_qcheckboxShowNrField;
 
+  /* keep changes when selecting different transaction / split */
+  QCheckBox* m_qcheckboxFocusChangeEnter;
+
   /** colour options */
   QRadioButton *m_qradiobuttonPerTransaction;
   QRadioButton *m_qradiobuttonOtherRow;
@@ -202,6 +205,7 @@ private:
   bool m_bTempStartPage;
   bool m_bTempCheckSchedule;
   bool m_bTempUseSystemFont;
+  bool m_bTempFocusChangeEnter;
   int  m_iTempSchedulePreview;
   QStringList m_tempHomePageItems;
 
