@@ -47,6 +47,8 @@ public:
     QRadioButton* radioCategoriesAll;
     QLabel* labelReportName;
     QLineEdit* editReportname;
+    QLabel* labelReportComment;
+    QLineEdit* editReportComment;
     QButtonGroup* bgrpRows;
     QRadioButton* radioRowsIE;
     QRadioButton* radioRowsAL;
@@ -62,6 +64,7 @@ protected:
     QGridLayout* m_reportLayout;
     QVBoxLayout* reportLayout74;
     QHBoxLayout* reportLayout67;
+    QHBoxLayout* reportLayout68;
     QVBoxLayout* reportLayout75;
     QVBoxLayout* reportLayout76;
     QHBoxLayout* bgrpColumnsLayout;

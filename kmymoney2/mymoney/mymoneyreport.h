@@ -78,10 +78,13 @@ public:
   QCString id(void) const { return m_id; }
   void write(QDomElement& e, QDomDocument *doc) const;
   bool read(const QDomElement& e);
+  void setComment( const QString& _comment ) { m_comment = _comment; }
+  const QString& comment( void ) const { return m_comment; }
   
 private:
   QCString m_id;
   QString m_name;
+  QString m_comment;
   bool m_showSubAccounts;
   bool m_convertCurrency;
   enum ERowType m_rowType;

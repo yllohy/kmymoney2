@@ -951,6 +951,7 @@ void KReportsViewTest::testXMLWrite()
   megafilter.addCategory(acForeign);
   megafilter.setColumnType(MyMoneyReport::eBiMonths);
   megafilter.setName("Report Saved to XML");
+  megafilter.setComment("Good morning, America!");
   megafilter.setShowSubAccounts(false);
   megafilter.setConvertCurrency(false);
 
@@ -961,6 +962,7 @@ void KReportsViewTest::testXMLWrite()
 
   CPPUNIT_ASSERT(filters.count() == 1);
   CPPUNIT_ASSERT(filters[0].name() == "Report Saved to XML");
+  CPPUNIT_ASSERT(filters[0].comment() == "Good morning, America!");
   CPPUNIT_ASSERT(filters[0].isShowingSubAccounts() == megafilter.isShowingSubAccounts());
   CPPUNIT_ASSERT(filters[0].isConvertCurrency() == megafilter.isConvertCurrency());
   CPPUNIT_ASSERT(filters[0].rowType() == megafilter.rowType());

@@ -50,10 +50,12 @@ static const QStringList kStateText = QStringList::split(",","all,notreconciled,
 void MyMoneyReport::write(QDomElement& e, QDomDocument *doc) const
 {
   // No matter what changes, be sure to have a 'type' attribute.  Only change
-  // the type if it becomes impossible to maintain compatability with older
-  // versions of the program as new features are added to the reports.
-  e.setAttribute("type","pivottable 1.0");
+  // the major type if it becomes impossible to maintain compatability with 
+  // older versions of the program as new features are added to the reports.
+  // Feel free to change the minor type every time a change is made here.
+  e.setAttribute("type","pivottable 1.1");
   e.setAttribute("name", m_name);
+  e.setAttribute("comment", m_comment);
   e.setAttribute("showsubaccounts", m_showSubAccounts);
   e.setAttribute("convertcurrency", m_convertCurrency);
   e.setAttribute("rowtype", kRowTypeText[m_rowType]);
@@ -222,12 +224,13 @@ bool MyMoneyReport::read(const QDomElement& e)
         
   bool result = false;
   
-  if(QString("REPORT") == e.tagName() && e.attribute("type") == QString("pivottable 1.0"))
+  if(QString("REPORT") == e.tagName() && e.attribute("type").find(QString("pivottable 1.")) == 0 )
   {
     result = true;
 
     int i;
     m_name = e.attribute("name");
+    m_comment = e.attribute("comment");
     m_id = e.attribute("id");
     m_showSubAccounts = e.attribute("showsubaccounts","0").toUInt();
     m_convertCurrency = e.attribute("convertcurrency","1").toUInt();

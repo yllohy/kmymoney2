@@ -71,7 +71,7 @@ public:
     
   public:
     KReportListItem( KListView* parent, const MyMoneyReport& report ): 
-      KListViewItem( parent, report.name() ), 
+      KListViewItem( parent, report.name(), report.comment() ), 
       m_id( report.id() )
     {}
     const QCString& id(void) const { return m_id; }

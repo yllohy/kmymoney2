@@ -191,7 +191,9 @@ KReportsView::KReportsView(QWidget *parent, const char *name )
   m_reportTabWidget->insertTab( m_listTab, "Reports" );
   
   m_reportListView->addColumn(i18n("Report"));
+  m_reportListView->addColumn(i18n("Comment"));
   m_reportListView->setResizeMode(QListView::AllColumns);
+  m_reportListView->setAllColumnsShowFocus(true);
   
   connect( m_reportTabWidget, SIGNAL(closeRequest(QWidget*)), 
     this, SLOT(slotClose(QWidget*)) );
@@ -310,7 +312,12 @@ void KReportsView::slotSaveView(void)
 void KReportsView::slotConfigure(void)
 {
   KReportTab* tab = dynamic_cast<KReportTab*>(m_reportTabWidget->currentPage());
-  KReportConfigurationFilterDlg dlg(MyMoneyFile::instance()->report(tab->id()));
+  
+  MyMoneyReport report = MyMoneyFile::instance()->report(tab->id());
+  if ( report.comment() == i18n("Default Report") )
+    report.setComment( i18n("Custom Report") );
+
+  KReportConfigurationFilterDlg dlg(report);
 
   if (dlg.exec())
   {
@@ -328,16 +335,19 @@ void KReportsView::slotDuplicate(void)
   KReportTab* tab = dynamic_cast<KReportTab*>(m_reportTabWidget->currentPage());
 
   MyMoneyReport dupe = MyMoneyFile::instance()->report(tab->id());
-  dupe.setName( QString("Copy of %1").arg(dupe.name()) );
+  dupe.setName( QString(i18n("Copy of %1")).arg(dupe.name()) );
+  if ( dupe.comment() == i18n("Default Report") )
+    dupe.setComment( i18n("Custom Report") );
   dupe.setId(QCString());
-  MyMoneyFile::instance()->addReport(dupe);
   
   KReportConfigurationFilterDlg dlg(dupe);
   if (dlg.exec())
-    MyMoneyFile::instance()->modifyReport(dlg.getConfig());
-  
-  new KReportListItem( m_reportListView, dupe );
-  addReportTab(dupe);
+  {
+    dupe = dlg.getConfig();
+    MyMoneyFile::instance()->addReport(dupe);
+    new KReportListItem( m_reportListView, dupe );
+    addReportTab(dupe);
+  }
 }
 
 void KReportsView::slotDelete(void)
@@ -345,7 +355,7 @@ void KReportsView::slotDelete(void)
   KReportTab* tab = dynamic_cast<KReportTab*>(m_reportTabWidget->currentPage());
 
   MyMoneyReport report = MyMoneyFile::instance()->report(tab->id());
-  if ( QMessageBox::Ok == QMessageBox::warning(this,"Delete Report?",QString("Are you sure you want to delete %1?  There is no way to recover it!").arg(report.name()), QMessageBox::Ok, QMessageBox::Cancel) )
+  if ( QMessageBox::Ok == QMessageBox::warning(this,i18n("Delete Report?"),QString(i18n("Are you sure you want to delete %1?  There is no way to recover it!")).arg(report.name()), QMessageBox::Ok, QMessageBox::Cancel) )
   {
     MyMoneyFile::instance()->removeReport(report);
     slotClose(tab);

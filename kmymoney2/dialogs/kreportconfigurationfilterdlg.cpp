@@ -97,7 +97,7 @@ KReportConfigurationFilterDlg::KReportConfigurationFilterDlg(
     QWhatsThis::add( radioCategoriesAll, tr2i18n( "<b>Show: All Categories</b>\n""<br>\n""Select this option to display one line in the report for each category.  For top-level categories with sub-categories, a subtotal line will also be displayed." ) );
     reportLayout74->addWidget( radioCategoriesAll );
 
-    m_reportLayout->addWidget( bgrpShow, 1, 2 );
+    m_reportLayout->addWidget( bgrpShow, 2, 2 );
 
     //
     // labelREportName
@@ -116,6 +116,24 @@ KReportConfigurationFilterDlg::KReportConfigurationFilterDlg(
     reportLayout67->addWidget( editReportname );
 
     m_reportLayout->addMultiCellLayout( reportLayout67, 0, 0, 0, 2 );
+
+    //
+    // labelREportName
+    //
+
+    reportLayout68 = new QHBoxLayout( 0, 0, 6, "reportLayout68");
+
+    labelReportComment = new QLabel( m_reportFrame, "labelReportComment" );
+    labelReportComment->setText( tr2i18n( "Comment" ) );
+    QWhatsThis::add( labelReportComment, tr2i18n( "<b>Comment</b>\n""<br>\n""Information about the report to help you remember it." ) );
+    reportLayout68->addWidget( labelReportComment );
+
+    editReportComment = new QLineEdit( m_reportFrame, "editReportComment" );
+    editReportComment->setFocus();
+    QWhatsThis::add( editReportname, tr2i18n( "<b>Comment</b>\n""<br>\n""Information about the report to help you remember it." ) );
+    reportLayout68->addWidget( editReportComment );
+
+    m_reportLayout->addMultiCellLayout( reportLayout68, 1, 1, 0, 2 );
 
     //
     // bgrpRows
@@ -138,7 +156,7 @@ KReportConfigurationFilterDlg::KReportConfigurationFilterDlg(
     QWhatsThis::add( radioRowsAL, tr2i18n( "<b>Assets/Liabilities</b>\n""<br>\n""Show only asset and liability accounts in this report." ) );
     reportLayout75->addWidget( radioRowsAL );
 
-    m_reportLayout->addWidget( bgrpRows, 1, 1 );
+    m_reportLayout->addWidget( bgrpRows, 2, 1 );
 
     //
     // bgrpCurrency
@@ -157,7 +175,7 @@ KReportConfigurationFilterDlg::KReportConfigurationFilterDlg(
     QWhatsThis::add( checkConvertCurrency, tr2i18n( "<b>Convert to Base Currency</b>\n""<br>\n""Choose whether all values should be converted to the file's base currency.  Column totals will only be shown if this option is checked.\n""<br><br>\n""This option is not yet implemented." ) );
     reportLayout76->addWidget( checkConvertCurrency );
 
-    m_reportLayout->addMultiCellWidget( bgrpCurrency, 2, 2, 1, 2 );
+    m_reportLayout->addMultiCellWidget( bgrpCurrency, 3, 3, 1, 2 );
 
     //
     // bgrpColumns
@@ -201,7 +219,7 @@ KReportConfigurationFilterDlg::KReportConfigurationFilterDlg(
     reportLayout12->addWidget( radioYearCols );
     bgrpColumnsLayout->addLayout( reportLayout12 );
 
-    m_reportLayout->addMultiCellWidget( bgrpColumns, 1, 2, 0, 0 );
+    m_reportLayout->addMultiCellWidget( bgrpColumns, 2, 3, 0, 0 );
 
     KFindTransactionDlgDeclLayout->insertWidget( 0, m_reportFrame );
 
@@ -229,6 +247,7 @@ void KReportConfigurationFilterDlg::slotSearch()
   // Then extract the report properties
   m_currentState.setShowSubAccounts( radioCategoriesAll->isChecked() );
   m_currentState.setName( editReportname->text() );
+  m_currentState.setComment( editReportComment->text() );
   m_currentState.setRowType( radioRowsAL->isChecked() ? MyMoneyReport::eAssetLiability : MyMoneyReport::eExpenseIncome );
   m_currentState.setConvertCurrency( checkConvertCurrency->isChecked() );
 
@@ -255,6 +274,7 @@ void KReportConfigurationFilterDlg::slotReset(void)
   //
 
   editReportname->setText( m_initialState.name() );
+  editReportComment->setText( m_initialState.comment() );
   radioCategoriesAll->setChecked( m_initialState.isShowingSubAccounts() );
   checkConvertCurrency->setChecked( m_initialState.isConvertCurrency() );
   radioRowsAL->setChecked( m_initialState.rowType() == MyMoneyReport::eAssetLiability );

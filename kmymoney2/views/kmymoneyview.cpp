@@ -1243,14 +1243,16 @@ void KMyMoneyView::selectBaseCurrency(void)
 void KMyMoneyView::loadDefaultReports(void)
 {
   MyMoneyReport spending_f;
-  spending_f.setName("Monthly Income and Expenses");
+  spending_f.setName(i18n("Monthly Income and Expenses"));
+  spending_f.setComment(i18n("Default Report"));
   spending_f.setDateFilter(QDate(QDate::currentDate().year(),1,1),QDate(QDate::currentDate().year(),12,31));
   spending_f.setShowSubAccounts(true);
   spending_f.setRowType( MyMoneyReport::eExpenseIncome );
   MyMoneyFile::instance()->addReport(spending_f);
   
   MyMoneyReport networth_f;
-  networth_f.setName("Net Worth Over Time");
+  networth_f.setName(i18n("Net Worth Over Time"));
+  networth_f.setComment(i18n("Default Report"));
   networth_f.setDateFilter(QDate(QDate::currentDate().year(),1,1),QDate(QDate::currentDate().year(),12,31));
   networth_f.setShowSubAccounts(false);
   networth_f.setRowType( MyMoneyReport::eAssetLiability );
