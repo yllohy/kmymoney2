@@ -74,8 +74,13 @@ void KCategoryListItem::update(const QCString& accountId)
         } else if(acc.id() == file->equity().id()) {
           setText(0, i18n("Equity"));
         }
-      } else
-        setText(0, acc.name());
+      } else {
+        // make sure, that 'Opening Balances' is converted to
+        // the i18n version
+        QString name = acc.name();
+        name.replace(MyMoneyFile::OpeningBalancesPrefix, i18n("Opening Balances"));
+        setText(0, name);
+      }
 
       if(!acc.parentAccountId().isEmpty())
         setText(1, QString::number(file->transactionCount(accountId)));
@@ -107,6 +112,13 @@ void KCategoryListItem::update(const QCString& accountId)
     // try to get account info that does not exist anymore
     delete e;
   }
+}
+
+void KAccountListItem::setValue(const MyMoneyMoney& value, const bool valid)
+{
+  int prec = MyMoneyMoney::denomToPrec(MyMoneyFile::instance()->baseCurrency().smallestAccountFraction());
+  setText(3, value.formatMoney(MyMoneyFile::instance()->baseCurrency().tradingSymbol(), prec));
+  m_valueValid = valid;
 }
 
 KAccountListItem::KAccountListItem(KListView *parent, const MyMoneyAccount& account)
@@ -248,6 +260,7 @@ void KAccountListItem::update(const QCString& accountId)
           // tricky fall through here
 
         case MyMoneyAccount::Liability:
+        case MyMoneyAccount::Equity:
           balance = -balance;
           value = -value;
           break;

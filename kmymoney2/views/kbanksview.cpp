@@ -702,6 +702,9 @@ void KAccountsView::refresh(const QCString& selectAccount)
                        i18n("Accounts with no institution assigned"));
       QValueList<MyMoneyAccount> acclist = file->accountList();
       QValueList<MyMoneyAccount>::ConstIterator accountIterator;
+      MyMoneyMoney balance;
+      bool balanceValid = true;
+
       for(accountIterator = acclist.begin();
           accountIterator != acclist.end();
           ++accountIterator) {
@@ -717,14 +720,19 @@ void KAccountsView::refresh(const QCString& selectAccount)
               KAccountListItem *accountItem;
               accountItem = new KAccountListItem(topLevelInstitution, (*accountIterator));
               accountItem->setText(1, QString("%1").arg(m_transactionCountMap[(*accountIterator).id()]));
-              new KAccountIconItem(accountIconView, (*accountIterator),
-                accountImage((*accountIterator).accountType()));
+              // new KAccountIconItem(accountIconView, (*accountIterator),
+              //   accountImage((*accountIterator).accountType()));
+              balance += file->accountValue((*accountIterator).id());
+              if(!file->accountValueValid((*accountIterator).id()))
+                balanceValid = false;
             }
             break;
           default:
             break;
         }
       }
+
+      topLevelInstitution->setValue(balance.abs(), balanceValid);
 
       // in case there is no account w/o reference to an institution
       // we can safely remove this entry to avoid user's confusion
@@ -739,10 +747,13 @@ void KAccountsView::refresh(const QCString& selectAccount)
             institutionIterator != list.end();
             ++institutionIterator) {
 
+        MyMoneyMoney balance;
+        bool balanceValid = true;
         KAccountListItem *topLevelInstitution = new KAccountListItem(accountListView,
                       *institutionIterator);
 
         QCStringList accountList = (*institutionIterator).accountList();
+        balance = MyMoneyMoney(0, 1);
         for ( QCStringList::ConstIterator it = accountList.begin();
               it != accountList.end();
               ++it ) {
@@ -754,16 +765,15 @@ void KAccountsView::refresh(const QCString& selectAccount)
               m_accountMap[*it]);
           accountItem->setText(1, QString("%1").arg(m_transactionCountMap[*it]));
 
-          new KAccountIconItem(accountIconView,
-              m_accountMap[*it],
-              accountImage(m_accountMap[*it].accountType()));
+          // new KAccountIconItem(accountIconView,
+          //     m_accountMap[*it],
+          //     accountImage(m_accountMap[*it].accountType()));
 
-          QCStringList subAccounts = m_accountMap[*it].accountList();
-          if (subAccounts.count() >= 1) {
-
-            showSubAccounts(subAccounts, accountItem, "");
-          }
+          balance += file->accountValue(*it);
+          if(!file->accountValueValid(*it))
+            balanceValid = false;
         }
+        topLevelInstitution->setValue(balance, balanceValid);
       }
 
     } catch (MyMoneyException *e) {

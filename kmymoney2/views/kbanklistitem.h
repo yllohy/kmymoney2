@@ -178,6 +178,8 @@ public:
 
   int compare(QListViewItem* i, int col, bool ascending) const;
 
+  void setValue(const MyMoneyMoney& value, const bool valid = true);
+
 private:
   /**
     * This method is a helper for the constructors that contains
