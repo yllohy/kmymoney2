@@ -185,7 +185,7 @@ private:
     * @return QString with the remainder of the line or empty if
     *         @p id is not found in @p lines
     */
-  const QString extractLine(const QChar id, int cnt = 1) const;
+  const QString extractLine(const QChar id, int cnt = 1);
 
   enum SelectCreateMode {
     Create = 0,
@@ -267,6 +267,7 @@ private:
   QFile                   *m_file;
   char                    m_buffer[1024];
   QStringList             m_qifEntry;
+  int                     m_extractedLine;
   QString                 m_qifLine;
   int                     m_entryType;
   bool                    m_processingData;

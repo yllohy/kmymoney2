@@ -26,6 +26,7 @@
 #include <qfile.h>
 #include <qstringlist.h>
 #include <qtimer.h>
+#include <qtextedit.h>
 
 // ----------------------------------------------------------------------------
 // KDE Headers
@@ -311,17 +312,20 @@ void MyMoneyQifReader::processQifEntry(void)
   }
 }
 
-const QString MyMoneyQifReader::extractLine(const QChar id, int cnt) const
+const QString MyMoneyQifReader::extractLine(const QChar id, int cnt)
 {
   QStringList::ConstIterator it;
 
+  m_extractedLine = -1;
   for(it = m_qifEntry.begin(); it != m_qifEntry.end(); ++it) {
+    m_extractedLine++;
     if((*it)[0] == id) {
       if(cnt-- == 1) {
         return (*it).mid(1);
       }
     }
   }
+  m_extractedLine = -1;
   return QString();
 }
 
@@ -377,7 +381,26 @@ void MyMoneyQifReader::processTransactionEntry(void)
   
   // Process general transaction data
   t.setPostDate(m_qifProfile.date(extractLine('D')));
-
+  if(!t.postDate().isValid()) {
+    int rc = KMessageBox::warningContinueCancel(0,
+         i18n("The date entry \"%1\" read from the file cannot be interpreted through the current "
+              "date profile setting of \"%2\".\n\nPressing \"Continue\" will "
+              "assign todays date to the transaction. Pressing \"Cancel\" will abort "
+              "the import operation. You can then restart the import and select a different "
+              "QIF profile or create a new one.")
+           .arg(extractLine('D')).arg(m_qifProfile.dateFormat()),
+         i18n("Invalid date format"));
+    switch(rc) {
+      case KMessageBox::Continue:
+        t.setPostDate(QDate::currentDate());
+        break;
+        
+      case KMessageBox::Cancel:
+        throw new MYMONEYEXCEPTION("USERABORT");
+        break;
+    }
+  }
+  
   tmp = extractLine('L');
   pos = tmp.findRev("--");
   if(tmp.left(1) == m_qifProfile.accountDelimiter().left(1)) {
@@ -408,10 +431,13 @@ void MyMoneyQifReader::processTransactionEntry(void)
       MyMoneyPayee payee;
 
       // Ask the user if that is what he intended to do?
-      QString msg = i18n("Do you want to add '%1' as payee/receiver? ").arg(tmp);
-      msg += i18n("If you select the 'Don't ask again' box, you will not be asked for this"
-                  " payee again during the current import in case you select 'No'."
-                  " 'Cancel' aborts the import and leaves the data unchanged.");
+      QString msg = i18n("Do you want to add \"%1\" as payee/receiver?\n\n").arg(tmp);
+      msg += i18n("Selecting \"Yes\" will create the payee, \"No\" will skip "
+                  "creation of a payee record and remove the payee information "
+                  "from this transaction. Selecting \"Cancel\" aborts the import "
+                  "operation.\n\nIf you select \"No\" here and mark the \"Don't ask "
+                  "again\" checkbox, the payee information for all following transactions "
+                  "referencing \"%1\" will be removed.").arg(tmp);
 
       QString askKey = QString("QIF-Import-Payee-")+tmp;
       if(!m_dontAskAgain.contains(askKey)) {
@@ -661,7 +687,7 @@ void MyMoneyQifReader::selectOrCreateAccount(const SelectCreateMode mode, MyMone
   KMyMoneyUtils::categoryTypeE type;
 
   QMap<QString, QCString>::ConstIterator it;
-  
+
   type = KMyMoneyUtils::none;
   switch(file->accountGroup(account.accountType())) {
     default:
@@ -684,14 +710,20 @@ void MyMoneyQifReader::selectOrCreateAccount(const SelectCreateMode mode, MyMone
       type = KMyMoneyUtils::income;
       typeStr = i18n("category");
       leadIn = i18n("income");
+      msg = i18n("Category selection");
       break;
 
     case MyMoneyAccount::Expense:
       type = KMyMoneyUtils::expense;
       typeStr = i18n("category");
       leadIn = i18n("expense");
+      msg = i18n("Category selection");
       break;
   }
+
+  KAccountSelectDlg accountSelect(type, "QifImport", kmymoney2);
+  if(!msg.isEmpty())
+    accountSelect.setCaption(msg);
 
   it = m_accountTranslation.find(leadIn + ":" + account.name());
   if(it != m_accountTranslation.end()) {
@@ -700,15 +732,13 @@ void MyMoneyQifReader::selectOrCreateAccount(const SelectCreateMode mode, MyMone
       return;
       
     } catch (MyMoneyException *e) {
-      QString message(i18n("Account '%1' disappeard: ").arg(account.name()));
+      QString message(i18n("Account \"%1\" disappeard: ").arg(account.name()));
       message += e->what();
       KMessageBox::error(0, message);
       delete e;
     }
   }
 
-  KAccountSelectDlg accountSelect(type,"QifImport", kmymoney2);
-  
   if(m_account.name().length() != 0) {
     if(type & (KMyMoneyUtils::income | KMyMoneyUtils::expense)) {
       accountId = file->categoryToAccount(account.name());
@@ -732,6 +762,7 @@ void MyMoneyQifReader::selectOrCreateAccount(const SelectCreateMode mode, MyMone
         }
       }
     } else {
+      accountSelect.setHeader(i18n("Select %1").arg(typeStr));
       if(accountId.length() != 0) {
         msg = i18n("The %1 <b>%2</b> currently exists. Do you want "
                    "to import transactions to this account?")
@@ -739,24 +770,35 @@ void MyMoneyQifReader::selectOrCreateAccount(const SelectCreateMode mode, MyMone
 
       } else {
         msg = i18n("The %1 <b>%2</b> currently does not exist. You can "
-                   "create a new account by pressing the Create button. "
-                   "or select another account manually "
-                   "from the selection box.").arg(typeStr).arg(account.name());
+                   "create a new %3 by pressing the <b>Create</b> button "
+                   "or select another %4 manually from the selection box.")
+                  .arg(typeStr).arg(account.name()).arg(typeStr).arg(typeStr);
       }
     }
   } else {
-    msg = i18n("No %1 information has been found in the selected QIF file."
+    accountSelect.setHeader(i18n("Import transactions to %1").arg(typeStr));
+    msg = i18n("No %1 information has been found in the selected QIF file. "
                "Please select an account using the selection box in the dialog or "
-               "create a new account by pressing the Create button.")
-               .arg(typeStr);
+               "create a new %2 by pressing the <b>Create</b> button.")
+               .arg(typeStr).arg(typeStr);
   }
 
   accountSelect.setDescription(msg);
-  accountSelect.setHeader(i18n("Account to import transactions to"));
   accountSelect.setAccount(account);
   accountSelect.setMode(mode == Create);
   accountSelect.showAbortButton(true);
-  
+
+  // display current entry in widget, the offending line (if any) will be shown in red
+  QStringList::Iterator it_e;
+  int i = 0;
+  for(it_e = m_qifEntry.begin(); it_e != m_qifEntry.end(); ++it_e) {
+    if(m_extractedLine == i)
+      accountSelect.m_qifEntry->setColor(QColor("red"));
+    accountSelect.m_qifEntry->append(*it_e);
+    accountSelect.m_qifEntry->setColor(QColor("black"));
+    ++i;
+  }
+    
   if(accountSelect.exec() == QDialog::Accepted) {
     if((type & KMyMoneyUtils::asset)
     || (type & KMyMoneyUtils::liability)) {

@@ -342,7 +342,7 @@ const QDate MyMoneyQifProfile::date(const QString& datein) const
     if(m_dateFormat[i] == '%') {
       ++part;
       if(part == 3) {
-        qWarning("Too many parts in date format");
+        qWarning("MyMoneyQifProfile::date(const QString& datein) Too many parts in date format");
         return QDate();
       }
       ++i;
@@ -356,14 +356,14 @@ const QDate MyMoneyQifProfile::date(const QString& datein) const
       case '/':
       case '.':
         if(delim == 2) {
-          qWarning("Too many delimiters in date format");
+          qWarning("MyMoneyQifProfile::date(const QString& datein) Too many delimiters in date format");
           return QDate();
         }
         formatDelim[delim] = m_dateFormat[i];
         ++delim;
         break;
       default:
-        qWarning("Invalid char in date format");
+        qWarning("MyMoneyQifProfile::date(const QString& datein) Invalid char in date format");
         return QDate();
     }
   }
@@ -378,7 +378,7 @@ const QDate MyMoneyQifProfile::date(const QString& datein) const
       case '.':
       case '\'':
         if(delim == 2) {
-          qWarning("Too many delimiters in date field");
+          qWarning("MyMoneyQifProfile::date(const QString& datein) Too many delimiters in date field");
           return QDate();
         }
         scannedDelim[delim] = datein[i];
@@ -404,7 +404,7 @@ const QDate MyMoneyQifProfile::date(const QString& datein) const
   for(i = 0; i < 2; ++i) {
     if(scannedDelim[i] != formatDelim[i]
     && scannedDelim[i] != QChar('\'')) {
-      qWarning("Invalid delimiter %s when %s was expected",
+      qWarning("MyMoneyQifProfile::date(const QString& datein) Invalid delimiter '%s' when '%s' was expected",
         scannedDelim[i].latin1(), formatDelim[i].latin1());
       return QDate();
     }
@@ -485,7 +485,7 @@ const QDate MyMoneyQifProfile::date(const QString& datein) const
         break;
     }
     if(!ok) {
-      qWarning(msg.latin1());
+      qWarning(QString("MyMoneyQifProfile::date(const QString& datein) ") + msg.latin1());
       return QDate();
     }
   }
