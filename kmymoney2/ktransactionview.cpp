@@ -266,14 +266,53 @@ void KTransactionView::slotTransactionDelete()
     return;
   }
 
+	QDate transdate;
+	MyMoneyMoney transamount;
+	QString transcategory;
+	
+	
   QString prompt;
   MyMoneyTransaction *transaction = m_transactions.at(m_index);
   if (!transaction)
     return;
 
+
   prompt.sprintf(i18n("Delete this transaction ? :-\n%s"), transaction->memo().latin1());
   if ((KMessageBox::questionYesNo(this, prompt))==KMessageBox::No)
     return;
+
+	transdate = transaction->date();
+	transamount = transaction->amount();
+	transcategory = transaction->categoryMajor();
+
+	int lessindex = m_category->currentText().find("<");
+  int greatindex = m_category->currentText().find(">");
+	QString transferAccount = "";
+  if((lessindex != -1) && (greatindex != -1) )
+  {
+  	transferAccount =  transcategory;
+		transferAccount = transferAccount.remove(0,1);
+		transferAccount = transferAccount.remove(transferAccount.length() - 1,1);
+    MyMoneyAccount *currentAccount;
+    for(currentAccount = m_bankIndex.accountFirst(); currentAccount != 0; currentAccount = m_bankIndex.accountNext())
+    {
+			if(currentAccount->accountName() == transferAccount)
+      {
+				MyMoneyTransaction *currentTransaction;
+				for(currentTransaction = currentAccount->transactionFirst(); currentTransaction != 0; currentTransaction = currentAccount->transactionNext())
+				{
+					QString matchCategory = "";
+					matchCategory.sprintf("<%s>",pAccount->accountName().latin1());
+					if(currentTransaction->date().toString() == transdate.toString() &&
+             currentTransaction->amount().amount() == transamount.amount() &&
+						 currentTransaction->categoryMajor() == matchCategory)
+					{
+						currentAccount->removeTransaction(*currentTransaction);
+					}
+				}
+			}
+		}		
+	}
 
   pAccount->removeTransaction(*transaction);
   m_filePointer->setDirty(true);
