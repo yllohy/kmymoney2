@@ -130,7 +130,7 @@ private:
   unsigned int m_nextSplitID;
 
 private:
-  const QString nextSplitID(void);
+  const QCString nextSplitID(void);
 
   // friend QDataStream &operator<<(QDataStream &, const MyMoneyTransaction &);
   // friend QDataStream &operator>>(QDataStream &, MyMoneyTransaction &);

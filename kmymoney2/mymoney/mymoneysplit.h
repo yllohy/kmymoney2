@@ -62,7 +62,7 @@ public:
   const QString memo(void) const { return m_memo; };
   const reconcileFlagE reconcileFlag(void) const { return m_reconcileFlag; };
   const QDate reconcileDate(void) const { return m_reconcileDate; };
-  const QString id(void) const { return m_id; };
+  const QCString id(void) const { return m_id; };
 
   void setShares(const MyMoneyMoney& shares);
   void setValue(const MyMoneyMoney& value);
@@ -70,10 +70,10 @@ public:
   void setMemo(const QString& memo);
   void setReconcileFlag(const reconcileFlagE flag);
   void setReconcileDate(const QDate date);
-  void setId(const QString& id);
+  void setId(const QCString& id);
 
 private:
-  QString       m_id;
+  QCString      m_id;
   MyMoneyMoney  m_shares;
   MyMoneyMoney  m_value;
   QCString      m_account;

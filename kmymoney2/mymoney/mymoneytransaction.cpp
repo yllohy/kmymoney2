@@ -104,10 +104,10 @@ void MyMoneyTransaction::removeSplit(const MyMoneySplit& split)
     throw new MYMONEYEXCEPTION("Invalid split id");
 }
 
-const QString MyMoneyTransaction::nextSplitID()
+const QCString MyMoneyTransaction::nextSplitID()
 {
-  QString id = "S";
-  id += QString::number(++m_nextSplitID).rightJustify(SPLIT_ID_SIZE, '0');
+  QCString id;
+  id = "S" + id.setNum(++m_nextSplitID).rightJustify(SPLIT_ID_SIZE, '0');
   return id;
 
 }

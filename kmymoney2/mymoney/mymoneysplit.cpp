@@ -26,7 +26,8 @@ MyMoneySplit::MyMoneySplit()
 {
   m_reconcileFlag = NotReconciled;
   m_account =
-  m_memo = "";
+  m_memo =
+  m_id = "";
 }
 
 MyMoneySplit::~MyMoneySplit()
@@ -75,7 +76,7 @@ void MyMoneySplit::setValue(const MyMoneyMoney& value)
   m_value = value;
 }
 
-void MyMoneySplit::setId(const QString& id)
+void MyMoneySplit::setId(const QCString& id)
 {
   m_id = id;
 }
