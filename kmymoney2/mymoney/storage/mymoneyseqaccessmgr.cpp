@@ -70,6 +70,13 @@ MyMoneySeqAccessMgr::MyMoneySeqAccessMgr()
   a = new MyMoneyAccount(STD_ACC_INCOME, acc_i);
   m_accountList[STD_ACC_INCOME] = *a;
   delete a;
+
+  MyMoneyBalanceCacheItem balance;
+
+  m_balanceCache[STD_ACC_LIABILITY] = balance;
+  m_balanceCache[STD_ACC_ASSET] = balance;
+  m_balanceCache[STD_ACC_EXPENSE] = balance;
+  m_balanceCache[STD_ACC_INCOME] = balance;
 }
 
 MyMoneySeqAccessMgr::~MyMoneySeqAccessMgr()
@@ -218,6 +225,9 @@ void MyMoneySeqAccessMgr::addAccount(MyMoneyAccount& parent, MyMoneyAccount& acc
 
   (*theChild).setParentAccountId(parent.id());
   account = *theChild;
+
+  MyMoneyBalanceCacheItem balance;
+  m_balanceCache[account.id()] = balance;
 
   touch();
 }
@@ -381,6 +391,7 @@ void MyMoneySeqAccessMgr::addTransaction(MyMoneyTransaction& transaction, const 
       if(acc != m_accountList.end()) {
         (*acc).touch();
         refreshAccountTransactionList(acc);
+        invalidateBalanceCache((*acc).id());
       }
     }
   }
@@ -511,6 +522,10 @@ void MyMoneySeqAccessMgr::modifyAccount(const MyMoneyAccount& account)
       }
       // update information in account list
       m_accountList[account.id()] = account;
+
+      // invalidate cached balance
+      invalidateBalanceCache(account.id());
+
       // mark file as changed
       touch();
 
@@ -607,6 +622,7 @@ void MyMoneySeqAccessMgr::modifyTransaction(const MyMoneyTransaction& transactio
     if(acc != m_accountList.end()) {
       (*acc).touch();
       refreshAccountTransactionList(acc);
+      invalidateBalanceCache((*acc).id());
     }
   }
 }
@@ -686,6 +702,7 @@ void MyMoneySeqAccessMgr::removeTransaction(const MyMoneyTransaction& transactio
     if(acc != m_accountList.end()) {
       (*acc).touch();
       refreshAccountTransactionList(acc);
+      invalidateBalanceCache((*acc).id());
     }
   }
 
@@ -764,6 +781,10 @@ void MyMoneySeqAccessMgr::removeAccount(const MyMoneyAccount& account)
     if(theInstitution != m_institutionList.end()) {
       (*theInstitution).removeAccountId(account.id());
     }
+
+    // remove from balance list
+    m_balanceCache.remove(account.id());
+    invalidateBalanceCache(parent.id());
 
     // mark file as changed
     touch();
@@ -871,39 +892,47 @@ const MyMoneyTransaction& MyMoneySeqAccessMgr::transaction(const QCString& accou
   return transaction(list[idx].id());
 }
 
-const MyMoneyMoney MyMoneySeqAccessMgr::balance(const QCString& id) const
+const MyMoneyMoney MyMoneySeqAccessMgr::balance(const QCString& id)
 {
+  MyMoneyMoney result(0);
   MyMoneyAccount acc;
 
-  acc = account(id);
+  if(m_balanceCache[id].valid == true)
+    result = m_balanceCache[id].balance;
 
-/* removed with MyMoneyAccount::Transaction
-  return acc.balance();
-*/
+  else {
+    acc = account(id);
 
-  // new implementation if the above code does not work anymore
-  MyMoneyMoney result(0);
-  result += acc.openingBalance();
+  /* removed with MyMoneyAccount::Transaction
+    return acc.balance();
+  */
 
-  QValueList<MyMoneyTransaction> list;
-  QValueList<MyMoneyTransaction>::ConstIterator it;
-  MyMoneySplit split;
-  list = transactionList(id);
+    // new implementation if the above code does not work anymore
+    result += acc.openingBalance();
 
-  for(it = list.begin(); it != list.end(); ++it) {
-    try {
-      split = (*it).split(id);
-      result += split.value();
+    QValueList<MyMoneyTransaction> list;
+    QValueList<MyMoneyTransaction>::ConstIterator it;
+    MyMoneySplit split;
+    list = transactionList(id);
 
-    } catch(MyMoneyException *e) {
-      // account is not referenced within this transaction
-      delete e;
+    for(it = list.begin(); it != list.end(); ++it) {
+      try {
+        split = (*it).split(id);
+        result += split.value();
+
+      } catch(MyMoneyException *e) {
+        // account is not referenced within this transaction
+        delete e;
+      }
     }
+
+    MyMoneyBalanceCacheItem balance(result);
+    m_balanceCache[id] = balance;
   }
   return result;
 }
 
-const MyMoneyMoney MyMoneySeqAccessMgr::totalBalance(const QCString& id) const
+const MyMoneyMoney MyMoneySeqAccessMgr::totalBalance(const QCString& id)
 {
   QCStringList accounts;
   QCStringList::ConstIterator it_a;
@@ -970,3 +999,18 @@ const unsigned int MyMoneyFile::moveSplits(const QString& oldAccount, const QStr
   return cnt;
 }
 */
+
+void MyMoneySeqAccessMgr::invalidateBalanceCache(const QCString& id)
+{
+  MyMoneyAccount  acc;
+
+  try {
+    m_balanceCache[id].valid = false;
+    if(!isStandardAccount(id)) {
+      acc = account(id);
+      invalidateBalanceCache(acc.parentAccountId());
+    }
+  } catch (MyMoneyException *e) {
+    delete e;
+  }
+}

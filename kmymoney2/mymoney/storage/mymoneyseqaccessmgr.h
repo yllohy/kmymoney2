@@ -38,6 +38,15 @@
 
 class MyMoneyTransactionFilter;
 
+class MyMoneyBalanceCacheItem {
+public:
+  MyMoneyBalanceCacheItem() { valid = false; };
+  MyMoneyBalanceCacheItem(const MyMoneyMoney& val) { balance = val; valid = true; };
+
+  bool          valid;
+  MyMoneyMoney  balance;
+};
+
 class MyMoneySeqAccessMgr : public IMyMoneyStorage, public IMyMoneySerialize  {
 public:
 
@@ -313,7 +322,7 @@ public:
     * @param account id of the account in question
     * @return balance of the account as MyMoneyMoney object
     */
-  const MyMoneyMoney balance(const QCString& id) const;
+  const MyMoneyMoney balance(const QCString& id);
 
   /**
     * This method is used to return the actual balance of an account
@@ -322,7 +331,7 @@ public:
     * @param account id of the account in question
     * @return balance of the account as MyMoneyMoney object
     */
-  const MyMoneyMoney totalBalance(const QCString& id) const;
+  const MyMoneyMoney totalBalance(const QCString& id);
 
   /**
     * Returns the institution of a given ID
@@ -459,6 +468,14 @@ private:
   void touch(void);
 
   /**
+    * This method is used to invalidate the cached balance for
+    * the selected account and all it's parents.
+    *
+    * @param account id of the account in question
+    */
+  void invalidateBalanceCache(const QCString& id);
+
+  /**
     * This method reconstructs the transaction list of an account
     * in the m_accountList.
     *
@@ -547,6 +564,12 @@ private:
     * known within this file.
     */
   QMap<QCString, MyMoneyAccount> m_accountList;
+
+  /**
+    * The member variable m_balanceCache is the container for the
+    * accounts actual balance
+    */
+  QMap<QCString, MyMoneyBalanceCacheItem> m_balanceCache;
 
   /**
     * The member variable m_transactionList is the container for all

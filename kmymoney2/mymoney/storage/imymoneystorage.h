@@ -233,7 +233,7 @@ public:
     * @param account id of the account in question
     * @return balance of the account as MyMoneyMoney object
     */
-  virtual const MyMoneyMoney balance(const QCString& id) const = 0;
+  virtual const MyMoneyMoney balance(const QCString& id) = 0;
 
   /**
     * This method is used to return the actual balance of an account
@@ -242,7 +242,7 @@ public:
     * @param account id of the account in question
     * @return balance of the account as MyMoneyMoney object
     */
-  virtual const MyMoneyMoney totalBalance(const QCString& id) const = 0;
+  virtual const MyMoneyMoney totalBalance(const QCString& id) = 0;
 
   /**
     * Returns the institution of a given ID
