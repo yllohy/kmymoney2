@@ -424,7 +424,7 @@
 <customwidgets>
     <customwidget>
         <class>KListView</class>
-        <header location="global">/opt/kde2/include/klistview.h</header>
+        <header location="global">klistview.h</header>
         <sizehint>
             <width>-1</width>
             <height>-1</height>
