@@ -101,6 +101,11 @@ void kMyMoneyAccountCompletion::show(void)
   if(!m_id.isEmpty())
     m_accountSelector->setSelected(m_id);
 
+  // make sure we increase the count by the account groups
+  for(int mask = 0x01; mask != KMyMoneyUtils::last; mask <<= 1) {
+    if(m_accountType & mask)
+      ++count;
+  }
   adjustSize(count);
 
   if(m_parent)
@@ -206,9 +211,11 @@ void kMyMoneyAccountCompletion::slotItemSelected(QListViewItem *item, const QPoi
 {
   kMyMoneyListViewItem* it_v = static_cast<kMyMoneyListViewItem*>(item);
   if(it_v && it_v->isSelectable()) {
-    // qDebug("kMyMoneyAccountCompletion::slotItemSelected(%s)", it_v->id().data());
-    emit accountSelected(it_v->id());
-    m_id = it_v->id();
+    QCString id = it_v->id();
+    // hide the widget, so we can debug the slots that are connect
+    // to the signal we emit very soon
     hide();
+    emit accountSelected(id);
+    m_id = id;
   }
 }

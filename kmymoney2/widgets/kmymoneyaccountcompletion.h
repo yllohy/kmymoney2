@@ -85,7 +85,15 @@ public:
     */
   void setSelected(const QCString& id) { m_id = id; };
 
-  const QCStringList accountList(void) const { return m_accountSelector->accountList(); };
+  const QCStringList accountList(const QValueList<MyMoneyAccount::accountTypeE>& list = QValueList<MyMoneyAccount::accountTypeE>()) const { return m_accountSelector->accountList(list); };
+
+  /**
+    * This method returns the list of selected account id's. If
+    * no account is selected, the list is empty.
+    *
+    * @return list of selected accounts
+    */
+  const QCStringList selectedAccounts(void) const { return m_accountSelector->selectedAccounts(); };
 
 public slots:
   void slotMakeCompletion(const QString& txt);

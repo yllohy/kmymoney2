@@ -43,6 +43,10 @@ kMyMoneyAccountCombo::kMyMoneyAccountCombo( QWidget* parent, const char* name ) 
   m_selector = new kMyMoneyAccountCompletion(this, "selector");
   connect(this, SIGNAL(clicked()), this, SLOT(slotButtonPressed()));
   connect(m_selector, SIGNAL(accountSelected(const QCString&)), this, SIGNAL(accountSelected(const QCString&)));
+
+  // make sure that we can display a minimum of characters
+  QFontMetrics fm(font());
+  setMinimumWidth(fm.maxWidth()*15);
 }
 
 kMyMoneyAccountCombo::~kMyMoneyAccountCombo()
@@ -153,37 +157,4 @@ void kMyMoneyAccountCombo::paintEvent( QPaintEvent * )
         ( re.height() - pix->height() ) / 2, *pix );
     }
   }
-#if 0
-   else {
-    style().drawComplexControl( QStyle::CC_ComboBox, &p, this, rect(), g,
-              flags, QStyle::SC_All,
-              (d->arrowDown ?
-              QStyle::SC_ComboBoxArrow :
-              QStyle::SC_None ));
-
-    QRect re = style().querySubControlMetrics( QStyle::CC_ComboBox, this,
-                QStyle::SC_ComboBoxEditField );
-    re = QStyle::visualRect(re, this);
-    p.setClipRect( re );
-
-    if ( !d->ed ) {
-      QListBoxItem * item = d->listBox()->item( d->current );
-      if ( item ) {
-        int itemh = item->height( d->listBox() );
-        p.translate( re.x(), re.y() + (re.height() - itemh)/2  );
-        item->paint( &p );
-      }
-    } else if ( d->listBox() && d->listBox()->item( d->current ) ) {
-      QListBoxItem * item = d->listBox()->item( d->current );
-      const QPixmap *pix = item->pixmap();
-      if ( pix ) {
-        p.fillRect( re.x(), re.y(), pix->width() + 4, re.height(),
-              colorGroup().brush( QColorGroup::Base ) );
-        p.drawPixmap( re.x() + 2, re.y() +
-                ( re.height() - pix->height() ) / 2, *pix );
-      }
-    }
-    p.setClipping( FALSE );
-  }
-#endif
 }

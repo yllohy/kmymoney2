@@ -214,11 +214,16 @@ public:
 
   /**
     * This method returns a list of account ids of those accounts
-    * currently loaded into the widget.
+    * currently loaded into the widget. It is possible to select
+    * a list of specific account types only. In this case, pass
+    * a list of account types as parameter @p list.
     *
+    * @param list QValueList of account types to be returned. If this
+    *             list is empty (the default), then the ids of all accounts
+    *             will be returned.
     * @return QCStringList of account ids
     */
-  const QCStringList accountList(void) const;
+  const QCStringList accountList(const QValueList<MyMoneyAccount::accountTypeE>& list = QValueList<MyMoneyAccount::accountTypeE>()) const;
 
 public slots:
   /**

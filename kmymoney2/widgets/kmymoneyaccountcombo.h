@@ -52,11 +52,19 @@ public:
     */
   int count(void) const { return m_selector->accountList().count(); };
 
-  const QCStringList accountList(void) const { return m_selector->accountList(); };
+  const QCStringList accountList(const QValueList<MyMoneyAccount::accountTypeE>& list = QValueList<MyMoneyAccount::accountTypeE>()) const { return m_selector->accountList(list); };
 
   int loadList(KMyMoneyUtils::categoryTypeE typeMask) { return m_selector->loadList(typeMask); };
 
   void setSelected(const MyMoneyAccount& acc);
+
+  /**
+    * This method returns the list of selected account id's. If
+    * no account is selected, the list is empty.
+    *
+    * @return list of selected accounts
+    */
+  const QCStringList selectedAccounts(void) const { return m_selector->selectedAccounts(); };
 
 public slots:
   void slotButtonPressed(void);

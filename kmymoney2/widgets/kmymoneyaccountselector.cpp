@@ -456,11 +456,12 @@ const QCStringList kMyMoneyAccountSelector::selectedAccounts(void) const
   return list;
 }
 
-const QCStringList kMyMoneyAccountSelector::accountList(void) const
+const QCStringList kMyMoneyAccountSelector::accountList(const  QValueList<MyMoneyAccount::accountTypeE>& filterList) const
 {
   QCStringList    list;
   QListViewItemIterator it;
   QListViewItem* it_v;
+  QValueList<MyMoneyAccount::accountTypeE>::ConstIterator it_f;
 
 #if QT_VERSION >= 0x030201
   it = QListViewItemIterator(m_listView, QListViewItemIterator::Selectable);
@@ -474,11 +475,17 @@ const QCStringList kMyMoneyAccountSelector::accountList(void) const
       if(it_v->rtti() == 1) {
         kMyMoneyCheckListItem* it_c = static_cast<kMyMoneyCheckListItem*>(it_v);
         if(it_c->type() == QCheckListItem::CheckBox) {
-          list << it_c->id();
+          MyMoneyAccount acc = MyMoneyFile::instance()->account(it_c->id());
+          it_f = filterList.find(acc.accountType());
+          if(filterList.count() == 0 || it_f != filterList.end())
+            list << it_c->id();
         }
       } else if(it_v->rtti() == 0) {
         kMyMoneyListViewItem* it_c = static_cast<kMyMoneyListViewItem*>(it_v);
-        list << it_c->id();
+        MyMoneyAccount acc = MyMoneyFile::instance()->account(it_c->id());
+        it_f = filterList.find(acc.accountType());
+        if(filterList.count() == 0 || it_f != filterList.end())
+          list << it_c->id();
       }
       it++;
     }
