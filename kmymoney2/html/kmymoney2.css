@@ -6,7 +6,7 @@ A:hover { text-decoration: none; font-weight: normal; color: #4C59A6 }
 
 td
 {
-  font-size: 11px;
+/*  font-size: 11px; */
   font-family: verdana, arial;
 }
 
@@ -47,7 +47,7 @@ h2.report {
 }
 
 .row-even {
-  font-size: 11px;
+/*  font-size: 11px; */
   font-family: verdana, arial, helvetica;
   background-color: #FFFFEE;
   color: black;
@@ -57,7 +57,7 @@ h2.report {
 
 .row-odd {
   font-family: verdana, arial, helvetica;
-  font-size: 11px;
+/*  font-size: 11px; */
   background-color: #FFFFCC;
   color: black;
   padding-top: 2px;
@@ -65,7 +65,7 @@ h2.report {
 }
 
 .item {
-  font-size: 11px;
+/*  font-size: 11px; */
   background-color: white;
   color: black;
   padding-top: 2px;
