@@ -41,7 +41,7 @@ kMyMoneyRegister::kMyMoneyRegister(int maxRpt, QWidget *parent, const char *name
   m_currentTransactionIndex = 0;
   m_inlineEditMode = false;
   setSelectionMode(QTable::SingleRow);
-
+  resize(670,200);
   m_editWidgets.clear();
 }
 
@@ -92,7 +92,8 @@ void kMyMoneyRegister::readConfig(void)
   m_color = Qt::white;
   m_bgColor = Qt::gray;
   m_gridColor = Qt::black;
-
+  m_importColor = Qt::yellow;
+  
   m_bgColor = config->readColorEntry("listBGColor", &m_bgColor);
   m_color = config->readColorEntry("listColor", &m_color);
   m_gridColor = config->readColorEntry("listGridColor", &m_gridColor);
@@ -179,6 +180,9 @@ void kMyMoneyRegister::paintCell(QPainter *p, int row, int col, const QRect& r,
   if(m_transaction != NULL) {
     m_split = m_transaction->split(m_view->accountId());
     m_balance = m_view->balance(m_transactionIndex);
+    if(m_transaction->value("Imported").lower() == "true") {
+      m_cg.setColor(QColorGroup::Base, m_importColor);
+    }
   }
 
   if(m_transactionIndex == m_currentTransactionIndex) {
@@ -451,4 +455,14 @@ void kMyMoneyRegister::slotSetErrorColor(const bool state)
 void kMyMoneyRegister::setCurrentDateIndex(const int idx)
 {
   m_currentDateIndex = idx;
+}
+
+QSize kMyMoneyRegister::sizeHint() const
+{
+  return QSize(670, 200);
+}
+
+QSize kMyMoneyRegister::minimumSizeHint() const
+{
+  return QSize(650, 200);
 }

@@ -188,6 +188,9 @@ public:
     */
   QFont cellFont(void) const { return m_cellFont; };
 
+  QSize minimumSizeHint() const;
+  QSize sizeHint() const;
+
 public slots:
   /**
     * This method is used to inform the widget about the number
@@ -261,7 +264,8 @@ protected:
   QColor m_bgColor;
   QColor m_gridColor;
   QColor m_errorColor;
-
+  QColor m_importColor;
+  
   bool   m_showGrid;
   bool   m_colorPerTransaction;
 
