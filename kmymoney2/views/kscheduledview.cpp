@@ -227,6 +227,7 @@ void KScheduledView::refresh(bool full, const QCString schedId)
     // using a timeout is the only way, I got the 'ensureTransactionVisible'
     // working when coming from hidden form to visible form. I assume, this
     // has something to do with the delayed update of the display somehow.
+    resize(width(), height()-1);
     QTimer::singleShot(10, this, SLOT(slotTimerDone()));
     m_qlistviewScheduled->update();
 
