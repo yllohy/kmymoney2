@@ -1,3 +1,28 @@
+2002-11-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Removed unused files from project
+  * Fixed bug in MyMoneyMoney::formatMoney() when value is negative and
+    fraction is 0
+  * Modifed the MyMoneyMoney stream in/out operators to support 64 bit values
+    Write out warnings, if old format is used
+  * Fixed handling of locale settings in MyMoneyMoney
+  * Setup locale settings in MyMoneyMoney before the first usage
+  * Integrated the split dialog
+  * Fixed visual appearance of calculator
+  * Removed setting for textual prompt as it is not provided anymore
+  * Added border around KMyMoneyView in KMyMoney2App
+  * Fixed minor details while going from gcc 2.95 to gcc 3.2
+  * Set the row height of the transaction form to a fixed value
+  * Corrected usage of filters during reconciliation
+
+2002-11-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed filter set for reconciliation
+  * Added difference display in reconciliation view
+  * Fixed alignment of display in reconciliation view
+  * Added switch to turn on transaction form during reconciliation
+  * Fixed bug introduced with last change to kMyMoneyEdit
+  * Made sure that the datepicker is always shown completely on screen
+  * Added icon to the datepicker button
+
 2002-11-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added MyMoneyKeyValueContainer class to have the ability to
     add a variable number of arguments to an engine object
