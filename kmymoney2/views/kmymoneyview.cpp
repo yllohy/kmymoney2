@@ -95,6 +95,7 @@
 #include "kscheduledview.h"
 #include "kgloballedgerview.h"
 #include "kinvestmentview.h"
+#include "kreportsview.h"
 
 #include "../kmymoney2.h"
 #include "../kmymoneyutils.h"
@@ -166,7 +167,11 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   // connect(m_investmentView, SIGNAL(signalViewActivated()), this, SLOT(slotActivatedInvestmentView()));
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_investmentView, SLOT(slotReloadView()));
 
-
+  // Page 7
+  m_reportsViewFrame = addVBoxPage(i18n("Reports"), i18n("Reports"),
+    DesktopIcon("ledger"));
+  m_reportsView = new KReportsView(m_reportsViewFrame, "reportsView");
+  connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_reportsView, SLOT(slotReloadView()));
 
   connect(m_accountsView, SIGNAL(accountRightMouseClick()),
     this, SLOT(slotAccountRightMouse()));

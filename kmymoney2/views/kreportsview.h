@@ -1,0 +1,102 @@
+/***************************************************************************
+                          kreportsview.h  -  description
+                             -------------------
+    begin                : Sat Mar 27 2004
+    copyright            : (C) 2000-2004 by Michael Edwardes
+    email                : mte@users.sourceforge.net
+                           Javier Campos Morales <javi_c@users.sourceforge.net>
+                           Felix Rodriguez <frodriguez@users.sourceforge.net>
+                           John C <thetacoturtle@users.sourceforge.net>
+                           Thomas Baumgart <ipwizard@users.sourceforge.net>
+                           Kevin Tambascio <ktambascio@users.sourceforge.net>
+                           Ace Jones <ace.jones@hotpop.com>
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+#ifndef KREPORTSVIEW_H
+#define KREPORTSVIEW_H
+
+// ----------------------------------------------------------------------------
+// QT Includes
+#include <qwidget.h>
+class QVBoxLayout;
+
+// ----------------------------------------------------------------------------
+// KDE Includes
+#include <khtml_part.h>
+
+// ----------------------------------------------------------------------------
+// Project Includes
+
+#include "../mymoney/mymoneyscheduled.h"
+#include "../mymoney/mymoneyaccount.h"
+
+/**
+  * Displays a page where reports can be placed.  For now only contains
+  * one simple report, but can easily be extended.
+  *
+  * @author Ace Jones
+  *
+  * @short A view for reports.
+**/
+class KReportsView : public QWidget  {
+   Q_OBJECT
+
+private:
+  KHTMLPart *m_part;
+  // QString m_html;
+  QVBoxLayout *m_qvboxlayoutPage;
+    
+signals:
+  void signalViewActivated();
+
+public:
+  /**
+    * Standard constructor.
+    *
+    * @param parent The QWidget this is used in.
+    * @param name The QT name.
+    *
+    * @return An object of type KReportsView
+    *
+    * @see ~KReportsView
+  **/
+  KReportsView(QWidget *parent=0, const char *name=0);
+
+  /**
+    * Standard destructor.
+    *
+    * @return Nothing.
+    *
+    * @see KReportsView
+  **/
+  ~KReportsView();
+
+  /**
+    * Overridden so we can emit the activated signal.
+    *
+    * @return Nothing.
+  **/
+  void show();
+
+protected:
+  static const QString linkfull(const QString& view, const QString& query, const QString& label);
+  const QString createTable(const QString& links = QString()) const;
+  
+public slots:
+  void slotOpenURL(const KURL &url, const KParts::URLArgs& args);
+
+  void slotRefreshView(void);
+  void slotPrintView(void);
+  void slotCopyView(void);
+  void slotReloadView(void) { slotRefreshView(); };
+};
+
+#endif
