@@ -87,6 +87,9 @@ const QString KMyMoneyUtils::accountTypeToString(const MyMoneyAccount::accountTy
     case MyMoneyAccount::Expense:
       returnString = i18n("Expense");
       break;
+    case MyMoneyAccount::AssetLoan:
+      returnString = i18n("Investment Loan");
+      break;
     default:
       returnString = i18n("Unknown");
   }
@@ -99,37 +102,76 @@ const MyMoneyAccount::accountTypeE KMyMoneyUtils::stringToAccountType(const QStr
   MyMoneyAccount::accountTypeE rc = MyMoneyAccount::UnknownAccountType;
   QString tmp = type.lower();
   
-  if(tmp == i18n("checkings"))
+  if(tmp == i18n("Checkings").lower())
     rc = MyMoneyAccount::Checkings;
-  else if(tmp == i18n("savings"))
+  else if(tmp == i18n("Savings").lower())
     rc = MyMoneyAccount::Savings;
-  else if(tmp == i18n("credit card"))
+  else if(tmp == i18n("Credit Card").lower())
     rc = MyMoneyAccount::CreditCard;
-  else if(tmp == i18n("cash"))
+  else if(tmp == i18n("Cash").lower())
     rc = MyMoneyAccount::Cash;
-  else if(tmp == i18n("loan"))
+  else if(tmp == i18n("Loan").lower())
     rc = MyMoneyAccount::Loan;
-  else if(tmp == i18n("certificate of deposit"))
+  else if(tmp == i18n("Certificate of Deposit").lower())
     rc = MyMoneyAccount::CertificateDep;
-  else if(tmp == i18n("investment"))
+  else if(tmp == i18n("Investment").lower())
     rc = MyMoneyAccount::Investment;
-  else if(tmp == i18n("money market"))
+  else if(tmp == i18n("Money Market").lower())
     rc = MyMoneyAccount::MoneyMarket;
-  else if(tmp == i18n("asset"))
+  else if(tmp == i18n("Asset").lower())
     rc = MyMoneyAccount::Asset;
-  else if(tmp == i18n("liability"))
+  else if(tmp == i18n("Liability").lower())
     rc = MyMoneyAccount::Liability;
-  else if(tmp == i18n("currency"))
+  else if(tmp == i18n("Currency").lower())
     rc = MyMoneyAccount::Currency;
-  else if(tmp == i18n("income"))
+  else if(tmp == i18n("Income").lower())
     rc = MyMoneyAccount::Income;
-  else if(tmp == i18n("expense"))
+  else if(tmp == i18n("Expense").lower())
     rc = MyMoneyAccount::Expense;
+  else if(tmp == i18n("Investment Loan").lower())
+    rc = MyMoneyAccount::AssetLoan;
 
   return rc;
 }
 
-const QString KMyMoneyUtils::occurenceToString(MyMoneySchedule::occurenceE occurence)
+const MyMoneySchedule::occurenceE KMyMoneyUtils::stringToOccurence(const QString& text)
+{
+  MyMoneySchedule::occurenceE occurence = MyMoneySchedule::OCCUR_ANY;
+  QString tmp = text.lower();
+
+  if(tmp == i18n("Once").lower())
+    occurence = MyMoneySchedule::OCCUR_ONCE;
+  else if(tmp == i18n("Daily").lower())
+    occurence = MyMoneySchedule::OCCUR_DAILY;
+  else if(tmp == i18n("Weekly").lower())
+    occurence = MyMoneySchedule::OCCUR_WEEKLY;
+  else if(tmp == i18n("Fortnightly").lower())
+    occurence = MyMoneySchedule::OCCUR_FORTNIGHTLY;
+  else if(tmp == i18n("Every other week").lower())
+    occurence = MyMoneySchedule::OCCUR_EVERYOTHERWEEK;
+  else if(tmp == i18n("Every four week").lower())
+    occurence = MyMoneySchedule::OCCUR_EVERYFOURWEEKS;
+  else if(tmp == i18n("Monthly").lower())
+    occurence = MyMoneySchedule::OCCUR_MONTHLY;
+  else if(tmp == i18n("Every two months").lower())
+    occurence = MyMoneySchedule::OCCUR_EVERYOTHERMONTH;
+  else if(tmp == i18n("Every three months").lower())
+    occurence = MyMoneySchedule::OCCUR_EVERYTHREEMONTHS;
+  else if(tmp == i18n("Quarterly").lower())
+    occurence = MyMoneySchedule::OCCUR_QUARTERLY;
+  else if(tmp == i18n("Every four months").lower())
+    occurence = MyMoneySchedule::OCCUR_EVERYFOURMONTHS;
+  else if(tmp == i18n("Twice yearly").lower())
+    occurence = MyMoneySchedule::OCCUR_TWICEYEARLY;
+  else if(tmp == i18n("Yearly").lower())
+    occurence = MyMoneySchedule::OCCUR_YEARLY;
+  else if(tmp == i18n("Every other year").lower())
+    occurence = MyMoneySchedule::OCCUR_EVERYOTHERYEAR;
+
+  return occurence;  
+}
+
+const QString KMyMoneyUtils::occurenceToString(const MyMoneySchedule::occurenceE occurence)
 {
   QString text;
 
