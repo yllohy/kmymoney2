@@ -1,3 +1,23 @@
+2003-09-10 Michael Edwardes <mte@users.sourceforge.net>
+  * Implemented adding a schedule for the credit card account type when using the
+    account wizard.
+  * When executing a schedule list item, set the date to the real next payment.
+  * Only call the slots in KEditScheduleDialog::relodFromFile() if its a new
+    schedule.
+  * Only load the 'to' accounts if the schedule's type is transfer.
+  * Only set the name field of the account dialog if we are editing.
+  * Add ability to create category hierarchy to MyMoneyFile.
+  * You can now create categories directly from the edit schedule dialog.
+  * You can now create categories directly from the enter schedule dialog.
+  * Masses of fixes to KEditScheduleDialog.
+  * Setup KEnterScheduleDialog with the correct date.
+  * The schedule's transaction can now be committed to the engine via a manual
+    enter.  NOTE ONLY THE LAST PAYMENT CAN BE COMMITTED at the moment.
+  * Added two methods to MyMoneySchedule : isOverdue() and isFinished().
+  * Changed the enums for MyMoneySchedule members.
+  * Only show the enter button for valid schedule next payments.
+  * Schedules that have finished now have green text.
+
 2003-09-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * use the accounts view as standard, not the institutions view
   * added 'Unknown institution' as standard to institutions view

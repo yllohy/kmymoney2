@@ -71,14 +71,14 @@ public:
   void setFilterAccounts(const QCStringList& list) { m_scheduledDateTable->setFilterAccounts(list); }
 
 signals:
-  void enterClicked(const MyMoneySchedule&);
+  void enterClicked(const MyMoneySchedule&, const QDate&);
 
 protected slots:
   void slotSetViewBills();
   void slotSetViewDeposits();
   void slotSetViewTransfers();
   void slotHoverSchedules(QValueList<MyMoneySchedule>, QDate date);
-  void slotEnterClicked(const MyMoneySchedule&);
+  void slotEnterClicked(const MyMoneySchedule&, const QDate&);
 
 private:
   KPopupMenu* kpopupmenu;

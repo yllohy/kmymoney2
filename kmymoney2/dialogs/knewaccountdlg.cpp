@@ -83,9 +83,11 @@ KNewAccountDlg::KNewAccountDlg(MyMoneyAccount& account, bool isEditing, bool cat
   QFont defaultFont = QFont("helvetica", 12);
   m_qlistviewParentAccounts->header()->setFont(config->readFontEntry("listHeaderFont", &defaultFont));
 
-  accountNameEdit->setText(account.name());
   if (isEditing)
+  {
+    accountNameEdit->setText(account.name());
     descriptionEdit->setText(account.description());
+  }
 
   typeCombo->setEnabled(true);
   

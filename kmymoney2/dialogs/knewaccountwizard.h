@@ -119,6 +119,7 @@ private:
   void loadSubAccountList(KListView* parent, const QCString& accountId);
   QValueList<MyMoneyAccount>::ConstIterator findAccount(const QCString& accountId) const;
   void loadAccountList(void);
+  void loadPaymentMethods();
 
 private:
   MyMoneyAccount::accountTypeE m_accountType;

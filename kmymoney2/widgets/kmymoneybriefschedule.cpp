@@ -87,6 +87,20 @@ void KMyMoneyBriefSchedule::loadSchedule()
     if (m_index < m_scheduleList.count())
     {
       MyMoneySchedule sched = m_scheduleList[m_index];
+
+      // TODO
+      // For now hide the enter button.  At some point in the
+      // future we will be able to add any occurence and will
+      // have to remove this code.
+      QDate nextPayment = sched.nextPayment(sched.lastPayment());
+      if (m_date < QDate::currentDate())
+        if (m_date != nextPayment)
+          m_buttonEnter->hide();
+        else
+          m_buttonEnter->show();
+      else
+        m_buttonEnter->hide();
+        
       m_indexLabel->setText(QString::number(m_index+1) + i18n(" of ") + QString::number(m_scheduleList.count()));
       m_name->setText(sched.name());
       m_type->setText(KMyMoneyUtils::scheduleTypeToString(sched.type()));
@@ -101,7 +115,7 @@ void KMyMoneyBriefSchedule::loadSchedule()
       if (sched.willEnd())
       {
         text += i18n(" with ");
-        int transactions = sched.paymentDates(m_date, sched.endDate()).count();
+        int transactions = sched.paymentDates(m_date, sched.endDate()).count()-1;
         text += QString::number(transactions);
         text += i18n(" transactions remaining ");
       }
@@ -111,14 +125,14 @@ void KMyMoneyBriefSchedule::loadSchedule()
 
       if (m_date < QDate::currentDate())
       {
-        if (  (sched.lastPayment().isValid() &&
-              sched.lastPayment() < QDate::currentDate()) ||
-              (!sched.lastPayment().isValid() &&
-              sched.startDate() < QDate::currentDate()))
+        if (sched.isOverdue())
         {
           QDate startD = (sched.lastPayment().isValid()) ?
             sched.lastPayment() :
             sched.startDate();
+            
+          if (m_date.isValid())
+            startD = m_date;
           
           int days = startD.daysTo(QDate::currentDate());
           int transactions = sched.paymentDates(startD, QDate::currentDate()).count();
@@ -169,5 +183,5 @@ void KMyMoneyBriefSchedule::slotNextClicked()
 void KMyMoneyBriefSchedule::slotEnterClicked()
 {
   hide();
-  emit enterClicked(m_scheduleList[m_index]);
+  emit enterClicked(m_scheduleList[m_index], m_date);
 }

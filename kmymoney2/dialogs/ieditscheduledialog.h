@@ -126,6 +126,10 @@ private:
   void loadWidgetsFromSchedule(void);
 
   MyMoneySchedule::occurenceE comboToOccurence(void);
+  void createSplits();
+  void checkCategory();
+  void checkPayee();
+  QCString theAccountId();
 };
 
 #endif

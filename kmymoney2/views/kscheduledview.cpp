@@ -98,7 +98,7 @@ KScheduledView::KScheduledView(QWidget *parent, const char *name )
   connect(m_qlistviewScheduled, SIGNAL(collapsed(QListViewItem*)),
     this, SLOT(slotListViewCollapsed(QListViewItem*)));
 
-  connect(m_calendar, SIGNAL(enterClicked(const MyMoneySchedule&)), this, SLOT(slotBriefEnterClicked(const MyMoneySchedule&)));
+  connect(m_calendar, SIGNAL(enterClicked(const MyMoneySchedule&, const QDate&)), this, SLOT(slotBriefEnterClicked(const MyMoneySchedule&, const QDate&)));
 }
 
 KScheduledView::~KScheduledView()
@@ -532,7 +532,7 @@ void KScheduledView::slotListItemExecuted(QListViewItem* item)
     {
       MyMoneySchedule schedule = MyMoneyFile::instance()->schedule(scheduleId);
 
-      m_calendar->setDate(schedule.nextPayment());
+      m_calendar->setDate(schedule.nextPayment(schedule.lastPayment()));
       m_tabWidget->showPage(calendarTab);
       m_selectedSchedule = schedule.id();
     }
@@ -620,6 +620,7 @@ void KScheduledView::slotEnterClicked()
       KEnterScheduleDialog *dlg = new KEnterScheduleDialog(this, schedule);
       if (dlg->exec())
       {
+        refresh(false/*, schedule.id()*/);
       }
     } catch (MyMoneyException *e)
     {
@@ -628,10 +629,11 @@ void KScheduledView::slotEnterClicked()
   }
 }
 
-void KScheduledView::slotBriefEnterClicked(const MyMoneySchedule& schedule)
+void KScheduledView::slotBriefEnterClicked(const MyMoneySchedule& schedule, const QDate& date)
 {
-  KEnterScheduleDialog *dlg = new KEnterScheduleDialog(this, schedule);
+  KEnterScheduleDialog *dlg = new KEnterScheduleDialog(this, schedule, date);
   if (dlg->exec())
   {
+    refresh(false);
   }
 }

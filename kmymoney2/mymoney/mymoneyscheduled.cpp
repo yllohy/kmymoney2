@@ -438,7 +438,7 @@ int MyMoneySchedule::transactionsRemaining(void) const
   {
     QValueList<QDate> dates = paymentDates(m_lastPayment, m_endDate);
     // Dont include the last payment so -1
-    counter = dates.count()-1;
+    counter = dates.count();
   }
   return counter;
 }
@@ -468,7 +468,7 @@ const MyMoneyAccount MyMoneySchedule::account(int cnt) const
 
 QDate MyMoneySchedule::dateAfter(int transactions) const
 {
-  int counter=0;
+  int counter=1;
   QDate paymentDate(m_startDate);
 
   if (transactions<=0)
@@ -540,4 +540,52 @@ QDate MyMoneySchedule::dateAfter(int transactions) const
   }
 
   return paymentDate;
+}
+
+bool MyMoneySchedule::isOverdue() const
+{
+  if (isFinished())
+    return false;
+
+  // Check the payment dates first
+/*
+  QValueList<QDate> datesBeforeToday = paymentDates(m_startDate, QDate::currentDate());
+  if (datesBeforeToday.count() == 0)
+    return false;
+  else if (datesBeforeToday.count() == 1)
+  {
+    if ((lastPayment().isValid() && lastPayment() < QDate::currentDate()) ||
+        !lastPayment().isValid())
+      return true;
+  }
+          
+  // Check the dates
+*/
+
+  if ((nextPayment(m_lastPayment) < QDate::currentDate()) ||
+      (!m_lastPayment.isValid() && m_startDate < QDate::currentDate()))
+  {
+      return true;
+  }
+
+  return false;  
+}
+
+bool MyMoneySchedule::isFinished() const
+{
+  if (m_endDate.isValid() && m_lastPayment >= m_endDate)
+    return true;
+    
+  return false;
+}
+
+bool MyMoneySchedule::hasRecordedPayment(const QDate& date) const
+{
+  // m_lastPayment should always be > recordedPayments()
+  if (m_lastPayment.isValid() && m_lastPayment >= date)
+    return true;
+    
+  // if (m_recordedPayments.contains(date))
+  //  return true;
+  return false;
 }

@@ -42,19 +42,32 @@
 class KEnterScheduleDialog : public kEnterScheduleDialogDecl  {
    Q_OBJECT
 public: 
-	KEnterScheduleDialog(QWidget *parent, const MyMoneySchedule& schedule);
+	KEnterScheduleDialog(QWidget *parent, const MyMoneySchedule& schedule, const QDate& date=QDate());
 	~KEnterScheduleDialog();
 
 protected slots:
   void slotOK();
   void slotSplitClicked();
+  void slotFromActivated(int);
+  void slotToActivated(int);
 
 private:
   MyMoneySchedule m_schedule;
   MyMoneyTransaction m_transaction;
+  QDate m_schedDate;
 
   void initWidgets();
   bool checkData(void);
+  void checkCategory();
+  void setPayee();
+  void setTo();
+  void setFrom();
+  void setCategory();
+  void setMemo();
+  void setAmount();
+  void createSplits();
+  void commitTransaction();
+  QCString theAccountId();
 };
 
 #endif

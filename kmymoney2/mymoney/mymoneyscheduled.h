@@ -53,26 +53,24 @@ public:
     * This enum is used to describe all the possible schedule frequencies.
     * The special entry, OCCUR_ANY, is used to combine all the other types.
     */
-  enum occurenceE { OCCUR_ONCE=0, OCCUR_DAILY, OCCUR_WEEKLY, OCCUR_FORTNIGHTLY,
-                    OCCUR_EVERYOTHERWEEK, OCCUR_MONTHLY, OCCUR_EVERYFOURWEEKS,
-                    OCCUR_EVERYOTHERMONTH, OCCUR_EVERYTHREEMONTHS,
-                    OCCUR_TWICEYEARLY, OCCUR_EVERYOTHERYEAR, OCCUR_QUARTERLY,
-                    OCCUR_EVERYFOURMONTHS, OCCUR_YEARLY,
-                    OCCUR_ANY };
+  enum occurenceE { OCCUR_ANY=0, OCCUR_ONCE=1, OCCUR_DAILY=2, OCCUR_WEEKLY=4, OCCUR_FORTNIGHTLY=8,
+                    OCCUR_EVERYOTHERWEEK=16, OCCUR_MONTHLY=32, OCCUR_EVERYFOURWEEKS=64,
+                    OCCUR_EVERYOTHERMONTH=128, OCCUR_EVERYTHREEMONTHS=256,
+                    OCCUR_TWICEYEARLY=1024, OCCUR_EVERYOTHERYEAR=2048, OCCUR_QUARTERLY=4096,
+                    OCCUR_EVERYFOURMONTHS=8192, OCCUR_YEARLY=16384
+                     };
 
   /**
     * This enum is used to describe the schedule type.
     */
-  enum typeE {  TYPE_BILL=15, TYPE_DEPOSIT, TYPE_TRANSFER,
-                TYPE_ANY };
+  enum typeE {  TYPE_ANY=0, TYPE_BILL=1, TYPE_DEPOSIT=2, TYPE_TRANSFER=4 };
 
   /**
     * This enum is used to describe the schedule's payment type.
     */
-  enum paymentTypeE { STYPE_DIRECTDEBIT=19, STYPE_DIRECTDEPOSIT,
-                      STYPE_MANUALDEPOSIT, STYPE_OTHER,
-                      STYPE_WRITECHEQUE,
-                      STYPE_ANY };
+  enum paymentTypeE { STYPE_ANY=0, STYPE_DIRECTDEBIT=1, STYPE_DIRECTDEPOSIT=2,
+                      STYPE_MANUALDEPOSIT=4, STYPE_OTHER=8,
+                      STYPE_WRITECHEQUE=16 };
 
   /**
     * Standard constructor
@@ -328,6 +326,10 @@ public:
   const MyMoneyAccount account(int cnt = 1) const;
   const MyMoneyAccount transferAccount(void) const { return account(2); };
   QDate dateAfter(int transactions) const;
+
+  bool isOverdue() const;
+  bool isFinished() const;
+  bool hasRecordedPayment(const QDate&) const;
   
 private:
   /// Its occurence

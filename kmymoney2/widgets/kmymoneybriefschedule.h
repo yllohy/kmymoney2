@@ -48,7 +48,7 @@ public:
   void setSchedules(QValueList<MyMoneySchedule> list, const QDate& date);
 
 signals:
-  void enterClicked(const MyMoneySchedule&);
+  void enterClicked(const MyMoneySchedule&, const QDate&);
 
 protected slots:
   void slotPrevClicked();

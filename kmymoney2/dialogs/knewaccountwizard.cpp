@@ -37,15 +37,20 @@
 #include <ktextbrowser.h>
 #include <klineedit.h>
 #include <kconfig.h>
+#include <kmessagebox.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
 
 #include "../widgets/kmymoneyedit.h"
 #include "../widgets/kmymoneydateinput.h"
+#include "../widgets/kmymoneycombo.h"
+#include "../widgets/kmymoneycategory.h"
+#include "../widgets/kmymoneypayee.h"
 #include "../mymoney/mymoneyinstitution.h"
 #include "../mymoney/mymoneyfile.h"
 #include "../kmymoneyutils.h"
+#include "ieditscheduledialog.h"
 #include "knewaccountwizard.h"
 
 KNewAccountWizard::KNewAccountWizard(QWidget *parent, const char *name )
@@ -94,6 +99,7 @@ void KNewAccountWizard::next()
 
     case MyMoneyAccount::CreditCard:
       if(indexOf(accountPaymentPage) == -1) {
+        loadPaymentMethods();
         addPage(accountPaymentPage, m_accountPaymentPageTitle);
       }
       setAppropriate(accountPaymentPage, true);
@@ -147,6 +153,134 @@ void KNewAccountWizard::accept()
     case MyMoneyAccount::Liability:
       m_parent = MyMoneyFile::instance()->liability();
       break;
+  }
+
+  if (m_accountType == MyMoneyAccount::CreditCard && reminderCheckBox->isChecked())
+  {
+    // Make sure we have input
+    if (m_amount->text().isEmpty())
+    {
+      KMessageBox::error(this, i18n("Please enter the payment amount."));
+      m_amount->setFocus();
+      return;
+    }
+
+    if (m_name->text().isEmpty())
+    {
+      KMessageBox::error(this, i18n("Please enter the schedule name."));
+      m_name->setFocus();
+      return;
+    }
+
+    if (m_category->text().isEmpty())
+    {
+      KMessageBox::error(this, i18n("Please enter the category."));
+      m_category->setFocus();
+      return;
+    }
+
+    if (m_payee->text().isEmpty())
+    {
+      KMessageBox::error(this, i18n("Please enter the payee name."));
+      m_payee->setFocus();
+      return;
+    }
+    
+    KAccountListItem *item = (KAccountListItem*)accountListView->selectedItem();
+    if (!item)
+    {
+      KMessageBox::error(this, i18n("Please select the account."));
+      accountListView->setFocus();
+      return;
+    }
+
+    // Create the schedule transaction
+    QCString categoryId;
+    QCString payeeId;
+  
+    try
+    {
+      categoryId = MyMoneyFile::instance()->categoryToAccount(m_category->text());
+      if (categoryId.isEmpty())
+      {
+        int y = KMessageBox::questionYesNo(this, QString(i18n("Category '%1' does not exist.  Add it?")).arg(m_category->text()));
+        if (y == KMessageBox::No)
+        {
+          m_category->setText("");
+          m_category->setFocus();
+          return;
+        }
+        categoryId = MyMoneyFile::instance()->createCategory(MyMoneyFile::instance()->expense(), m_category->text());
+      }
+    }
+    catch (MyMoneyException *e)
+    {
+      KMessageBox::error(this, i18n("Unable to create category.  Please manually edit the schedule later."));
+      delete e;
+    }
+
+    try
+    {
+      payeeId = MyMoneyFile::instance()->payeeByName(m_payee->text()).id();
+    }
+    catch (MyMoneyException *e)
+    {
+      MyMoneyPayee payee(m_payee->text());
+      MyMoneyFile::instance()->addPayee(payee);
+      payeeId = payee.id();
+    }
+    
+    MyMoneySplit s1, s2;
+    s1.setValue(m_amount->getMoneyValue());
+    s2.setValue(-s1.value());
+    s1.setAction(MyMoneySplit::ActionWithdrawal);
+    s2.setAction(MyMoneySplit::ActionDeposit);
+    s1.setAccountId(item->accountID());
+    s2.setAccountId(categoryId);
+    s1.setPayeeId(payeeId);
+    s2.setPayeeId(payeeId);
+
+    MyMoneyTransaction t;
+    t.addSplit(s1);
+    t.addSplit(s2);
+
+    MyMoneySchedule::paymentTypeE paymentType;
+    
+    switch (m_method->currentItem())
+    {
+      case 0:
+        paymentType = MyMoneySchedule::STYPE_DIRECTDEBIT;
+        break;
+      case 1:
+        paymentType = MyMoneySchedule::STYPE_WRITECHEQUE;
+        break;
+      case 2:
+        paymentType = MyMoneySchedule::STYPE_OTHER;
+        break;
+      default:
+        paymentType = MyMoneySchedule::STYPE_DIRECTDEBIT;
+        break;
+    }
+
+    MyMoneySchedule paymentSchedule(  m_name->text(),
+                                      MyMoneySchedule::TYPE_BILL,
+                                      MyMoneySchedule::OCCUR_MONTHLY,
+                                      paymentType,
+                                      m_date->getQDate(),
+                                      QDate(),
+                                      false,
+                                      false);
+
+    paymentSchedule.setTransaction(t);
+
+    try
+    {
+      MyMoneyFile::instance()->addSchedule(paymentSchedule);
+    } catch (MyMoneyException *e)
+    {
+      KMessageBox::information(this, i18n("Unable to add schedule: "), e->what());
+      delete e;
+    }
   }
 
   KNewAccountWizardDecl::accept();
@@ -370,4 +504,12 @@ void KNewAccountWizard::setAccountType(const MyMoneyAccount::accountTypeE type)
   // FIXME: I have no idea how to get the selection bar back to the window.
   accountTypeListBox->setSelected(i, true);
   // accountTypeListBox->setCurrentItem(i);
+}
+
+void KNewAccountWizard::loadPaymentMethods()
+{
+  m_method->clear();
+  m_method->insertItem(i18n("Direct Debit"));
+  m_method->insertItem(i18n("Write Cheque"));
+  m_method->insertItem(i18n("Other"));
 }

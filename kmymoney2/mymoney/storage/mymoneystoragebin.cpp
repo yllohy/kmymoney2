@@ -1083,7 +1083,7 @@ void MyMoneyStorageBin::signalProgress(int current, int total, const QString& ms
 void MyMoneyStorageBin::writeSchedule(QDataStream&s, const MyMoneySchedule& sc)
 {
   Q_INT32 tmp;
-  tmp = 3;    // version
+  tmp = 4;    // version
   s << tmp;
 
   s << sc.occurence();
@@ -1109,10 +1109,19 @@ const MyMoneySchedule MyMoneyStorageBin::readSchedule(QDataStream& s)
   QDate tmp_d;
 
   s >> version;
-  s >> tmp_n; sc.setOccurence((MyMoneySchedule::occurenceE)tmp_n);
-  s >> tmp_n; sc.setType((MyMoneySchedule::typeE)tmp_n);
+  s >> tmp_n;
+  if (version <= 3)
+    tmp_n = convertOldOccurenceEnum(tmp_n);
+  sc.setOccurence((MyMoneySchedule::occurenceE)tmp_n);
+  s >> tmp_n;
+  if (version <= 3)
+    tmp_n = convertOldTypeEnum(tmp_n);
+  sc.setType((MyMoneySchedule::typeE)tmp_n);
   s >> tmp_d; sc.setStartDate(tmp_d);
-  s >> tmp_n; sc.setPaymentType((MyMoneySchedule::paymentTypeE)tmp_n);
+  s >> tmp_n;
+  if (version <= 3)
+    tmp_n = convertOldPaymentType(tmp_n);
+  sc.setPaymentType((MyMoneySchedule::paymentTypeE)tmp_n);
   s >> tmp_n; sc.setFixed(tmp_n);
   
   if(version < 3)
@@ -1138,4 +1147,77 @@ const MyMoneySchedule MyMoneyStorageBin::readSchedule(QDataStream& s)
   sc.setTransaction(t);
 
   return sc;
+}
+
+int MyMoneyStorageBin::convertOldOccurenceEnum(int tmp_n)
+{
+  switch (tmp_n)
+  {
+    case 0:
+      return 1;
+    case 1:
+      return 2;
+    case 2:
+      return 4;
+    case 3:
+      return 8;
+    case 4:
+      return 16;
+    case 5:
+      return 32;
+    case 6:
+      return 64;
+    case 7:
+      return 128;
+    case 8:
+      return 256;
+    case 9:
+      return 512;
+    case 10:
+      return 1024;
+    case 11:
+      return 2048;
+    case 12:
+      return 4096;
+    case 13:
+      return 8192;
+    case 14:
+      return 16384;
+    default:
+      return 0;
+  }
+}
+
+int MyMoneyStorageBin::convertOldTypeEnum(int tmp_n)
+{
+  switch (tmp_n)
+  {
+    case 15:
+      return 1;
+    case 16:
+      return 2;
+    case 17:
+      return 4;
+    default:
+      return 0;
+  }
+}
+
+int MyMoneyStorageBin::convertOldPaymentType(int tmp_n)
+{
+  switch (tmp_n)
+  {
+    case 19:
+      return 1;
+    case 20:
+      return 2;
+    case 21:
+      return 4;
+    case 22:
+      return 8;
+    case 23:
+      return 16;
+    default:
+      return 0;
+  }
 }

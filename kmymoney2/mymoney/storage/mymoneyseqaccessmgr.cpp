@@ -1299,3 +1299,50 @@ void MyMoneySeqAccessMgr::loadScheduleId(const unsigned long id)
 {
   m_nextScheduleID = id;
 }
+
+QValueList<MyMoneySchedule> MyMoneySeqAccessMgr::scheduleListEx(int scheduleTypes,
+                                                                int scheduleOcurrences,
+                                                                int schedulePaymentTypes,
+                                                                QDate date,
+                                                                const QCStringList& accounts) const
+{
+//  qDebug("scheduleListEx");
+  
+  QMap<QCString, MyMoneySchedule>::ConstIterator pos;
+  QValueList<MyMoneySchedule> list;
+
+  if (!date.isValid())
+    return list;
+
+  for(pos = m_scheduleList.begin(); pos != m_scheduleList.end(); ++pos)
+  {
+    if (scheduleTypes && !(scheduleTypes & (*pos).type()))
+      continue; 
+
+    if (scheduleOcurrences && !(scheduleOcurrences & (*pos).occurence()))
+      continue;
+      
+    if (schedulePaymentTypes && !(schedulePaymentTypes & (*pos).paymentType()))
+      continue;
+
+    if((*pos).paymentDates(date, date).count() == 0)
+      continue;
+
+    if ((*pos).isFinished())
+      continue;
+
+    if ((*pos).hasRecordedPayment(date))
+      continue;
+
+    if (accounts.count() > 0)
+    {
+      if (accounts.contains((*pos).account().id()))
+        continue;
+    }
+    
+//    qDebug("\tAdding '%s'", (*pos).name().latin1());
+    list << *pos;
+  }
+  
+  return list;  
+}

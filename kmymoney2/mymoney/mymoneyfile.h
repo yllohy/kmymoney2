@@ -851,6 +851,28 @@ public:
     * is a special id that will be notified whenever any object of the engine changes
     */
   static const QCString NotifyClassAnyChange;
+
+  /**
+    * createCategory creates a category from a text name.
+    *
+    * The whole account hierarchy is created if it doesnt
+    * aready exist.  e.g if name = Bills:Credit Card and
+    * base = expense(), Bills will first be checked to see if
+    * it exists and created if not.  Credit Card will then
+    * be created with Bills as it's parent.  The Credit Card account
+    * will have its id returned.
+    *
+    * @param base The account group, (expense or income)
+    * @param name The category to create.
+    * @return The category account id or "" on error.
+  **/
+  QCString createCategory(const MyMoneyAccount& base, const QString& name);
+
+  QValueList<MyMoneySchedule> scheduleListEx( int scheduleTypes,
+                                              int scheduleOcurrences,
+                                              int schedulePaymentTypes,
+                                              QDate startDate,
+                                              const QCStringList& accounts=QCStringList()) const;
   
 protected:
   /**

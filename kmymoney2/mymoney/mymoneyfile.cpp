@@ -1056,3 +1056,66 @@ const QStringList MyMoneyFile::consistencyCheck(void)
   return rc;
 }
 
+QCString MyMoneyFile::createCategory(const MyMoneyAccount& base, const QString& name)
+{
+  MyMoneyAccount *categoryAccount;
+  MyMoneyAccount parent = base;
+  QString categoryText;
+
+  QStringList subAccounts = QStringList::split(CATEGORY_SEPERATOR, name);
+  QStringList::Iterator it;
+  for (it = subAccounts.begin(); it != subAccounts.end(); ++it)
+  {
+    categoryAccount = new MyMoneyAccount();
+
+    categoryAccount->setName(*it);
+    if (base == expense())
+      categoryAccount->setAccountType(MyMoneyAccount::Expense);
+    else
+      categoryAccount->setAccountType(MyMoneyAccount::Income);
+
+    if (it == subAccounts.begin())
+      categoryText += *it;
+    else
+      categoryText += (":" + *it);
+
+    // Only create the account if it doesnt exist
+    try
+    {
+      QCString categoryId = categoryToAccount(categoryText);
+      if (categoryId.isEmpty())
+        addAccount(*categoryAccount, parent);
+      else
+      {
+        *categoryAccount = account(categoryId);
+      }
+    }
+    catch (MyMoneyException *e)
+    {
+      qDebug("Unable to add account %s, %s, %s: %s",
+        categoryAccount->name().latin1(),
+        parent.name().latin1(),
+        categoryText.latin1(),
+        e->what().latin1());
+      delete e;
+    }
+
+    parent = *categoryAccount;
+
+    // Reset the id
+    delete categoryAccount;
+  }
+
+  return categoryToAccount(name);
+}
+
+QValueList<MyMoneySchedule> MyMoneyFile::scheduleListEx( int scheduleTypes,
+                                              int scheduleOcurrences,
+                                              int schedulePaymentTypes,
+                                              QDate startDate,
+                                              const QCStringList& accounts) const
+{
+  checkStorage();
+
+  return m_storage->scheduleListEx(scheduleTypes, scheduleOcurrences, schedulePaymentTypes, startDate, accounts);
+}

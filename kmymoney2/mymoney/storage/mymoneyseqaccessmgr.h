@@ -630,6 +630,12 @@ public:
                                      const QDate& = QDate(),
                                      const QDate& = QDate(),
                                      const bool = false) const;
+
+  QValueList<MyMoneySchedule> scheduleListEx( int scheduleTypes,
+                                              int scheduleOcurrences,
+                                              int schedulePaymentTypes,
+                                              QDate startDate,
+                                              const QCStringList& accounts=QCStringList()) const;
     
 private:
 

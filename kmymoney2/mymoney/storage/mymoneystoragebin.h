@@ -185,6 +185,10 @@ private:
   QMap<QCString, MyMoneyAccount> m_accountList;
 
   void (*m_progressCallback)(int, int, const QString&);
+
+  int convertOldOccurenceEnum(int);
+  int convertOldTypeEnum(int);
+  int convertOldPaymentType(int);
 };
 
 #endif

@@ -94,24 +94,31 @@ void KScheduledListItem::paintCell(QPainter* p, const QColorGroup& cg, int colum
   QColor bgColour = QColor(224, 253, 182); // Same as for home view
 
   QColor textColour;
-  if (  (m_schedule.lastPayment().isValid() &&
-        m_schedule.lastPayment() < QDate::currentDate()) ||
-        (!m_schedule.lastPayment().isValid() &&
-        m_schedule.startDate() < QDate::currentDate()))
+
+  if (m_schedule.isFinished())
+  {
+    textColour = Qt::darkGreen;
+  }
+  else if (m_schedule.isOverdue())
+  {
     textColour = Qt::red;
+  }
   else
+  {
     textColour = Qt::black;
+  }
     
   QFont cellFont(p->font());
   QColor baseItemColour = QColor(219, 237, 237);  // Same as for home view
   QColor baseItemTextColour = Qt::black;
-
+/*
   bgColour = config->readColorEntry("listBGColor", &bgColour);
   colour = config->readColorEntry("listColor", &colour);
   textColour = config->readColorEntry("listGridColor", &textColour);
   cellFont = config->readFontEntry("listCellFont", &cellFont);
   baseItemColour = config->readColorEntry("BaseListItemColor", &baseItemColour);
   baseItemTextColour = config->readColorEntry("BaseListItemTextColor", &baseItemTextColour);
+*/
   p->setFont(cellFont);
   cg2.setColor(QColorGroup::Text, textColour);
 

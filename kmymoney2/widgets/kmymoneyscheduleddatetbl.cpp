@@ -135,57 +135,31 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int /*row*/, 
     {
 
       // Honour the filter.
+      int scheduleTypes=0;
+      int scheduleOcurrences=0;
+      int schedulePaymentTypes=0;
+
+      scheduleOcurrences |= MyMoneySchedule::OCCUR_ANY;
+      schedulePaymentTypes |= MyMoneySchedule::STYPE_ANY;
+
       if (!m_filterBills)
       {
-        schedules += file->scheduleList("",
-                                     MyMoneySchedule::TYPE_BILL,
-                                     MyMoneySchedule::OCCUR_ANY,
-                                     MyMoneySchedule::STYPE_ANY,
-                                     theDate,
-                                     theDate);
+        scheduleTypes |= MyMoneySchedule::TYPE_BILL;
       }
       if (!m_filterDeposits)
       {
-        schedules += file->scheduleList("",
-                                     MyMoneySchedule::TYPE_DEPOSIT,
-                                     MyMoneySchedule::OCCUR_ANY,
-                                     MyMoneySchedule::STYPE_ANY,
-                                     theDate,
-                                     theDate);
+        scheduleTypes |= MyMoneySchedule::TYPE_DEPOSIT;
       }
       if (!m_filterTransfers)
       {
-        schedules += file->scheduleList("",
-                                     MyMoneySchedule::TYPE_TRANSFER,
-                                     MyMoneySchedule::OCCUR_ANY,
-                                     MyMoneySchedule::STYPE_ANY,
-                                     theDate,
-                                     theDate);
+        scheduleTypes |= MyMoneySchedule::TYPE_TRANSFER;
       }
 
-      if (m_filterAccounts.count() > 0)
-      {
-        // Filter out the accounts
-        QValueList<MyMoneySchedule> toDelete;
-        QValueList<MyMoneySchedule>::Iterator schedit;
-        for (schedit=schedules.begin(); schedit!=schedules.end(); ++schedit)
-        {
-          QCStringList::Iterator it;
-          for (it=m_filterAccounts.begin(); it != m_filterAccounts.end(); ++it)
-          {
-            if ((*it) == (*schedit).account().id())
-            {
-              toDelete.append(*schedit);
-              break;
-            }
-          }
-        }
-        QValueList<MyMoneySchedule>::Iterator delit;
-        for (delit=toDelete.begin(); delit!=toDelete.end(); ++delit)
-        {
-          schedules.remove(*delit);
-        }
-      }
+      schedules = file->scheduleListEx( scheduleTypes,
+                                        scheduleOcurrences,
+                                        scheduleTypes,
+                                        theDate,
+                                        m_filterAccounts);
     }
     catch ( MyMoneyException* e)
     {
@@ -196,17 +170,14 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int /*row*/, 
 
     if (schedules.count() >= 1)
     {
+      QValueList<MyMoneySchedule>::Iterator iter;          
       bool anyOverdue=false;
-      QValueList<MyMoneySchedule>::Iterator iter;
       for (iter=schedules.begin(); iter!=schedules.end(); ++iter)
       {
         MyMoneySchedule schedule = *iter;
         if (theDate < QDate::currentDate())
         {
-          if (  (schedule.lastPayment().isValid() &&
-                schedule.lastPayment() < QDate::currentDate()) ||
-                (!schedule.lastPayment().isValid() &&
-                schedule.startDate() < QDate::currentDate()))
+          if (schedule.isOverdue())
           {
             anyOverdue = true;
             break; // out early
@@ -258,34 +229,12 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int /*row*/, 
 
       if (!m_filterBills)
       {
-        billSchedules = file->scheduleList("",
-                                     MyMoneySchedule::TYPE_BILL,
-                                     MyMoneySchedule::OCCUR_ANY,
-                                     MyMoneySchedule::STYPE_ANY,
-                                     theDate,
-                                     theDate);
-        if (m_filterAccounts.count() > 0)
-        {
-          QValueList<MyMoneySchedule> toDelete;
-          QValueList<MyMoneySchedule>::Iterator schedit;
-          for (schedit=billSchedules.begin(); schedit!=billSchedules.end(); ++schedit)
-          {
-            QCStringList::Iterator it;
-            for (it=m_filterAccounts.begin(); it != m_filterAccounts.end(); ++it)
-            {
-              if ((*it) == (*schedit).account().id())
-              {
-                toDelete.append(*schedit);
-                break;
-              }
-            }
-          }
-          QValueList<MyMoneySchedule>::Iterator delit;
-          for (delit=toDelete.begin(); delit!=toDelete.end(); ++delit)
-          {
-            billSchedules.remove((*delit));
-          }
-        }
+        billSchedules = file->scheduleListEx( MyMoneySchedule::TYPE_BILL,
+                                          MyMoneySchedule::OCCUR_ANY,
+                                          MyMoneySchedule::STYPE_ANY,
+                                          theDate,
+                                          m_filterAccounts);
+                                     
         if (billSchedules.count() >= 1)
         {
           text += QString::number(billSchedules.count());
@@ -295,35 +244,12 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int /*row*/, 
 
       if (!m_filterDeposits)
       {
-        depositSchedules = file->scheduleList("",
-                                     MyMoneySchedule::TYPE_DEPOSIT,
-                                     MyMoneySchedule::OCCUR_ANY,
-                                     MyMoneySchedule::STYPE_ANY,
-                                     theDate,
-                                     theDate);
-        if (m_filterAccounts.count() > 0)
-        {
-          // Filter out the accounts
-          QValueList<MyMoneySchedule> toDelete;
-          QValueList<MyMoneySchedule>::Iterator schedit;
-          for (schedit=depositSchedules.begin(); schedit!=depositSchedules.end(); ++schedit)
-          {
-            QCStringList::Iterator it;
-            for (it=m_filterAccounts.begin(); it != m_filterAccounts.end(); ++it)
-            {
-              if ((*it) == (*schedit).account().id())
-              {
-                toDelete.append(*schedit);
-                break;
-              }
-            }
-          }
-          QValueList<MyMoneySchedule>::Iterator delit;
-          for (delit=toDelete.begin(); delit!=toDelete.end(); ++delit)
-          {
-            depositSchedules.remove((*delit));
-          }
-        }
+        depositSchedules = file->scheduleListEx( MyMoneySchedule::TYPE_DEPOSIT,
+                                          MyMoneySchedule::OCCUR_ANY,
+                                          MyMoneySchedule::STYPE_ANY,
+                                          theDate,
+                                          m_filterAccounts);
+
         if (depositSchedules.count() >= 1)
         {
           text += "  ";
@@ -334,35 +260,11 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int /*row*/, 
 
       if (!m_filterTransfers)
       {
-        transferSchedules = file->scheduleList("",
-                                     MyMoneySchedule::TYPE_TRANSFER,
-                                     MyMoneySchedule::OCCUR_ANY,
-                                     MyMoneySchedule::STYPE_ANY,
-                                     theDate,
-                                     theDate);
-        if (m_filterAccounts.count() > 0)
-        {
-          // Filter out the accounts
-          QValueList<MyMoneySchedule> toDelete;
-          QValueList<MyMoneySchedule>::Iterator schedit;
-          for (schedit=transferSchedules.begin(); schedit!=transferSchedules.end(); ++schedit)
-          {
-            QCStringList::Iterator it;
-            for (it=m_filterAccounts.begin(); it != m_filterAccounts.end(); ++it)
-            {
-              if ((*it) == (*schedit).account().id())
-              {
-                toDelete.append(*schedit);
-                break;
-              }
-            }
-          }
-          QValueList<MyMoneySchedule>::Iterator delit;
-          for (delit=toDelete.begin(); delit!=toDelete.end(); ++delit)
-          {
-            transferSchedules.remove((*delit));
-          }
-        }
+        transferSchedules = file->scheduleListEx( MyMoneySchedule::TYPE_TRANSFER,
+                                          MyMoneySchedule::OCCUR_ANY,
+                                          MyMoneySchedule::STYPE_ANY,
+                                          theDate,
+                                          m_filterAccounts);
         
         if (transferSchedules.count() >= 1)
         {
@@ -386,16 +288,14 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int /*row*/, 
       MyMoneySchedule schedule = *iter;
       if (theDate < QDate::currentDate())
       {
-        if (  (schedule.lastPayment().isValid() &&
-              schedule.lastPayment() < QDate::currentDate()) ||
-              (!schedule.lastPayment().isValid() &&
-              schedule.startDate() < QDate::currentDate()))
+        if (schedule.isOverdue())
         {
           anyOverdue = true;
           break; // out early
         }
       }
     }
+    
     if (!anyOverdue)
     {
       for (iter=depositSchedules.begin(); iter!=depositSchedules.end(); ++iter)
@@ -403,16 +303,14 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int /*row*/, 
         MyMoneySchedule schedule = *iter;
         if (theDate < QDate::currentDate())
         {
-          if (  (schedule.lastPayment().isValid() &&
-                schedule.lastPayment() < QDate::currentDate()) ||
-                (!schedule.lastPayment().isValid() &&
-                schedule.startDate() < QDate::currentDate()))
+          if (schedule.isOverdue())
           {
             anyOverdue = true;
             break; // out early
           }
         }
       }
+      
       if (!anyOverdue)
       {
         for (iter=billSchedules.begin(); iter!=billSchedules.end(); ++iter)
@@ -420,10 +318,7 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int /*row*/, 
           MyMoneySchedule schedule = *iter;
           if (theDate < QDate::currentDate())
           {
-            if (  (schedule.lastPayment().isValid() &&
-                  schedule.lastPayment() < QDate::currentDate()) ||
-                  (!schedule.lastPayment().isValid() &&
-                  schedule.startDate() < QDate::currentDate()))
+            if (schedule.isOverdue())
             {
               anyOverdue = true;
               break; // out early
@@ -559,58 +454,29 @@ void kMyMoneyScheduledDateTbl::contentsMouseMoveEvent(QMouseEvent* e)
 
   try
   {
+    int types=0;
+    
     if (!m_filterBills)
     {
-        schedules += file->scheduleList("",
-                                     MyMoneySchedule::TYPE_BILL,
-                                     MyMoneySchedule::OCCUR_ANY,
-                                     MyMoneySchedule::STYPE_ANY,
-                                     drawDate,
-                                     drawDate);
+      types |= MyMoneySchedule::TYPE_BILL;
     }
 
     if (!m_filterDeposits)
     {
-        schedules += file->scheduleList("",
-                                     MyMoneySchedule::TYPE_DEPOSIT,
-                                     MyMoneySchedule::OCCUR_ANY,
-                                     MyMoneySchedule::STYPE_ANY,
-                                     drawDate,
-                                     drawDate);
+      types |= MyMoneySchedule::TYPE_DEPOSIT;
     }
 
     if (!m_filterTransfers)
     {
-        schedules += file->scheduleList("",
-                                     MyMoneySchedule::TYPE_TRANSFER,
-                                     MyMoneySchedule::OCCUR_ANY,
-                                     MyMoneySchedule::STYPE_ANY,
-                                     drawDate,
-                                     drawDate);
+      types |= MyMoneySchedule::TYPE_TRANSFER;
     }
-    if (m_filterAccounts.count() > 0)
-    {
-      // Filter out the accounts
-      QValueList<MyMoneySchedule> toDelete;
-      QValueList<MyMoneySchedule>::Iterator schedit;
-      for (schedit=schedules.begin(); schedit!=schedules.end(); ++schedit)
-      {
-        QCStringList::Iterator it;
-        for (it=m_filterAccounts.begin(); it != m_filterAccounts.end(); ++it)
-        {
-          if ((*it) == (*schedit).account().id())
-          {
-            toDelete.append(*schedit);
-            break;
-          }
-        }
-      }
-      QValueList<MyMoneySchedule>::Iterator delit;
-      for (delit=toDelete.begin(); delit!=toDelete.end(); ++delit)
-      {
-        schedules.remove((*delit));
-      }
-    }
+
+
+    schedules = file->scheduleListEx( types,
+                                      MyMoneySchedule::OCCUR_ANY,
+                                      MyMoneySchedule::STYPE_ANY,
+                                      drawDate,
+                                      m_filterAccounts);
   }
   catch ( MyMoneyException* e)
   {

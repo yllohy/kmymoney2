@@ -67,7 +67,7 @@ kMyMoneyScheduledCalendar::kMyMoneyScheduledCalendar(QWidget *parent, const char
   connect(m_scheduledDateTable, SIGNAL(hoverSchedules(QValueList<MyMoneySchedule>, QDate)),
     this, SLOT(slotHoverSchedules(QValueList<MyMoneySchedule>, QDate)));
 
-  connect(&briefWidget, SIGNAL(enterClicked(const MyMoneySchedule&)), this, SLOT(slotEnterClicked(const MyMoneySchedule&)));
+  connect(&briefWidget, SIGNAL(enterClicked(const MyMoneySchedule&, const QDate&)), this, SLOT(slotEnterClicked(const MyMoneySchedule&, const QDate&)));
 }
 
 kMyMoneyScheduledCalendar::~kMyMoneyScheduledCalendar()
@@ -127,7 +127,7 @@ void kMyMoneyScheduledCalendar::slotHoverSchedules(QValueList<MyMoneySchedule> l
   }
 }
 
-void kMyMoneyScheduledCalendar::slotEnterClicked(const MyMoneySchedule& schedule)
+void kMyMoneyScheduledCalendar::slotEnterClicked(const MyMoneySchedule& schedule, const QDate& date)
 {
-  emit enterClicked(schedule);
+  emit enterClicked(schedule, date);
 }

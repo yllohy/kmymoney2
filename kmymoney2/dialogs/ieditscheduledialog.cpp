@@ -72,6 +72,8 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
       m_qlabelPay2->setEnabled(true);
       TextLabel1_3->setEnabled(true);
       m_kcomboTo->setEnabled(true);
+      m_category->setEnabled(false);
+      m_qbuttonSplit->setEnabled(false);
       setCaption(i18n("Edit Transfer Schedule"));
   }
   else if (m_actionType == MyMoneySplit::ActionDeposit)
@@ -181,13 +183,28 @@ void KEditScheduleDialog::reloadFromFile(void)
   m_kcomboFreq->insertItem(i18n("Yearly"));
   m_kcomboFreq->insertItem(i18n("Every other year"));
 
-  m_accountCombo->loadAccounts(true, false);
-  m_kcomboTo->loadAccounts(true, false);
+  if (m_actionType == MyMoneySplit::ActionTransfer ||
+      m_actionType == MyMoneySplit::ActionWithdrawal)
+    m_accountCombo->loadAccounts(true, false);
+
+  if (m_actionType == MyMoneySplit::ActionDeposit ||
+      m_actionType == MyMoneySplit::ActionTransfer)
+    m_kcomboTo->loadAccounts(true, false);
 
   // Fire off the activated signals.
-  slotFrequencyChanged(0);
-  slotMethodChanged(0);
-  slotDateChanged(QDate::currentDate());
+  if (m_schedule.name().isEmpty())
+  {
+    slotFrequencyChanged(0);
+    slotMethodChanged(0);
+    slotDateChanged(QDate::currentDate());
+    if (m_actionType == MyMoneySplit::ActionTransfer ||
+        m_actionType == MyMoneySplit::ActionWithdrawal)
+      slotAccountChanged(0);
+
+    if (m_actionType == MyMoneySplit::ActionDeposit ||
+        m_actionType == MyMoneySplit::ActionTransfer)
+      slotToChanged(0);
+  }
 }
 
 /*
@@ -211,26 +228,21 @@ void KEditScheduleDialog::slotSplitClicked()
   {
     MyMoneySplit split1;
 
-    if (m_transaction.splitCount() == 0)
-    {
-      // fake a ui change so the following slot sets up the splits for us.     
-      slotAccountChanged(m_accountCombo->currentAccountId());
-    }
-    else
-    {
-      // the amount might have changed
-      // set it just in case, same for memo etc
-      slotAmountChanged(m_kmoneyeditAmount->text());
-      slotPayeeChanged(m_kcomboPayTo->text());
-    }
+    checkCategory();
+    checkPayee();
 
-    MyMoneyAccount acc = MyMoneyFile::instance()->account(m_accountCombo->currentAccountId());
+    MyMoneyAccount acc  = MyMoneyFile::instance()->account(theAccountId());
 
+    m_category->blockSignals(true);
+    
     KSplitTransactionDlg* dlg = new KSplitTransactionDlg(m_transaction,
                                                          acc,
                                                          isValidAmount,
                                                          isDeposit,
                                                          this);
+
+    // Avoid focusIn() events.
+    m_qlineeditMemo->setFocus();
 
     if(dlg->exec())
     {
@@ -242,7 +254,7 @@ void KEditScheduleDialog::slotSplitClicked()
       switch(m_transaction.splitCount())
       {
         case 2:
-          s = m_transaction.splitByAccount(m_accountCombo->currentAccountId(), false);
+          s = m_transaction.splits()[0];
           category = MyMoneyFile::instance()->accountToCategory(s.accountId());
           disconnect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
           break;
@@ -262,7 +274,7 @@ void KEditScheduleDialog::slotSplitClicked()
 
       m_category->setText(category);
 
-      MyMoneySplit split = m_transaction.splitByAccount(m_accountCombo->currentAccountId());
+      MyMoneySplit split = m_transaction.splits()[0];
       MyMoneyMoney amount(split.value());
       if (amount < 0)
         amount = -amount;
@@ -270,15 +282,13 @@ void KEditScheduleDialog::slotSplitClicked()
     }
 
     delete dlg;
-
-    // Avoid focusIn() events.
-    m_qlineeditMemo->setFocus();
   }
   catch (MyMoneyException *e)
   {
 //    KMessageBox::detailedError(this, i18n("Exception in slot split clicked"), e->what());
     delete e;
   }
+  m_category->blockSignals(false);
 }
 
 void KEditScheduleDialog::slotWillEndToggled(bool on)
@@ -327,7 +337,7 @@ void KEditScheduleDialog::okClicked()
     return;
   }
 
-  if (m_category->text() == "")
+  if (m_actionType != MyMoneySplit::ActionTransfer && m_category->text() == "")
   {
     KMessageBox::information(this, i18n("Please fill in the category field."));
     m_category->setFocus();
@@ -351,24 +361,29 @@ void KEditScheduleDialog::okClicked()
     }
   }
 
+  checkCategory();
+  checkPayee();
+  
   // Just reset the schedules transaction here.
   m_schedule.setTransaction(m_transaction);
   
 /*
   QString message;
   message += "Schedule Name: " + m_schedule.name() + "\n";
-  message += "Account: " + m_schedule.account().name() + "\n";
+  message += "Account1: " + MyMoneyFile::instance()->account(m_schedule.transaction().splits()[0].accountId()).name() + "\n";
+  message += "Account2: " + m_schedule.account().name() + "\n";
   if (m_actionType == MyMoneySplit::ActionTransfer)
     message += "To: " + m_schedule.transaction().splits()[1].accountId() + "\n";
   message += "Method: " + KMyMoneyUtils::paymentMethodToString(m_schedule.paymentType()) + "\n";
   message += "Payee: " + m_schedule.transaction().splits()[0].payeeId() + "\n";
   message += "Date: " + m_schedule.startDate().toString() + "\n";
   message += "Frequency: " + KMyMoneyUtils::occurenceToString(m_schedule.occurence()) + "\n";
-  message += "Category: " + m_schedule.transaction().splits()[0].accountId() + "\n";
+  message += "Category: " + MyMoneyFile::instance()->account(m_schedule.transaction().splits()[1].accountId()).name() + "\n";
   message += "Memo: " + m_schedule.transaction().splits()[0].memo() + "\n";
   message += "endDate: " + m_schedule.endDate().toString() + "\n";
   KMessageBox::information(this, message);
-*/  
+*/
+  
   accept();
 }
 
@@ -379,10 +394,15 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
     if (m_schedule.account().name() == "")
       return;
       
-    m_accountCombo->setCurrentText(m_schedule.account().name());
+    if (m_actionType != MyMoneySplit::ActionDeposit)
+      m_accountCombo->setCurrentText(MyMoneyFile::instance()->account(m_transaction.splits()[0].accountId()).name());
+    else
+      m_kcomboTo->setCurrentText(MyMoneyFile::instance()->account(m_transaction.splits()[0].accountId()).name());
+
     if (m_actionType == MyMoneySplit::ActionTransfer)
-      m_kcomboTo->setCurrentText(m_schedule.transferAccount().name());
-    m_kcomboPayTo->loadText(MyMoneyFile::instance()->payee(m_schedule.transaction().splitByAccount(m_accountCombo->currentAccountId()).payeeId()).name());
+      m_kcomboTo->setCurrentText(
+        MyMoneyFile::instance()->account(m_transaction.splits()[1].accountId()).name());
+    m_kcomboPayTo->loadText(MyMoneyFile::instance()->payee(m_schedule.transaction().splitByAccount(theAccountId()).payeeId()).name());
     m_kdateinputDue->setDate(m_schedule.startDate());
 
     if (m_actionType == MyMoneySplit::ActionTransfer)
@@ -391,8 +411,7 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
       {
         case MyMoneySchedule::STYPE_DIRECTDEPOSIT:
           m_kcomboMethod->setCurrentItem(0);
-          break;                      m_schedule.setFixed(!m_qcheckboxEstimate->isChecked());
-
+          break;
         case MyMoneySchedule::STYPE_MANUALDEPOSIT:
           m_kcomboMethod->setCurrentItem(1);
           break;
@@ -480,14 +499,24 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
         break;
     }
 
-    MyMoneyMoney amount = m_schedule.transaction().splitByAccount(m_accountCombo->currentAccountId()).value();
+    MyMoneyMoney amount = m_schedule.transaction().splitByAccount(theAccountId()).value();
+    if (amount < 0)
+      amount = -amount;
     m_kmoneyeditAmount->setText(amount.formatMoney());
     m_qcheckboxEstimate->setChecked(!m_schedule.isFixed());
-    if (m_schedule.transaction().splitCount() >= 3)
-      m_category->loadText(i18n("Splitted Transaction"));
-    else
-      m_category->loadText(MyMoneyFile::instance()->instance()->accountToCategory(m_schedule.transaction().splitByAccount(m_accountCombo->currentAccountId(), false).accountId()));
-    m_qlineeditMemo->setText(m_schedule.transaction().splitByAccount(m_accountCombo->currentAccountId()).memo());
+
+    if (m_actionType != MyMoneySplit::ActionTransfer)
+    {
+      if (m_schedule.transaction().splitCount() >= 3)
+      {
+        m_category->loadText(i18n("Splitted Transaction"));
+        connect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
+      }
+      else
+        m_category->loadText(MyMoneyFile::instance()->instance()->accountToCategory(m_schedule.transaction().splitByAccount(theAccountId(), false).accountId()));
+    }
+    
+    m_qlineeditMemo->setText(m_schedule.transaction().splitByAccount(theAccountId()).memo());
     m_qcheckboxAuto->setChecked(m_schedule.autoEnter());
     m_qcheckboxEnd->setChecked(m_schedule.willEnd());
     if (m_schedule.willEnd())
@@ -585,64 +614,64 @@ MyMoneySchedule::occurenceE KEditScheduleDialog::comboToOccurence()
 
 void KEditScheduleDialog::slotAmountChanged(const QString&)
 {
-  // Set the actionType() field here as well.  Doesnt really
-  // matter where we set it but this field has to be present
-  // so both will be set.
   try
   {
     int count = m_transaction.splitCount();
     if (count == 0)
     {
-      MyMoneySplit split1;
-      split1.setAccountId(m_accountCombo->currentAccountId());
-      if (m_schedule.type() == MyMoneySchedule::TYPE_DEPOSIT)
-        split1.setValue(m_kmoneyeditAmount->getMoneyValue());
-      else
-        split1.setValue(-m_kmoneyeditAmount->getMoneyValue());
-      split1.setAction(m_actionType);
-      m_transaction.addSplit(split1);
-
-
-      if (m_actionType == MyMoneySplit::ActionTransfer)
-      {
-        MyMoneySplit split2;
-        split2.setAccountId(m_kcomboTo->currentAccountId());
-        split2.setValue(-split1.value());
-        split2.setAction(m_actionType);
-        m_transaction.addSplit(split2);
-      }
-      else
-      {
-        MyMoneySplit split2;
-        split2.setValue(-split1.value());
-        split2.setAction(m_actionType);
-        m_transaction.addSplit(split2);
-      }
+      createSplits();
     }
-    else if (count >= 1 && count <= 2)
+    
+    MyMoneySplit s = m_transaction.splits()[0];
+    MyMoneyMoney amount = s.value();
+    if (m_kmoneyeditAmount->getMoneyValue() != amount)
     {
-      MyMoneySplit s = m_transaction.splitByAccount(m_accountCombo->currentAccountId());
-      MyMoneyMoney amount = s.value();
-      if (m_kmoneyeditAmount->getMoneyValue() != amount)
+      // Cribbed from KLedgerView::slotAmountChanged
+      
+      MyMoneyMoney val = MyMoneyMoney(m_kmoneyeditAmount->text());
+      
+      // if someone enters a negative number, we have to make sure that
+      // the action is corrected. For transfers, we don't have to do anything
+      // The accounts will be 'exchanged' in reloadEditWidgets() and fillForm()
+      if(val < 0)
       {
-        if (m_schedule.type() == MyMoneySchedule::TYPE_DEPOSIT)
-          s.setValue(m_kmoneyeditAmount->getMoneyValue());
-        else
-          s.setValue(-m_kmoneyeditAmount->getMoneyValue());
-        m_transaction.modifySplit(s);
-
-        MyMoneySplit s2;
-        if (m_transaction.splitCount()==2)
-          s2 = m_transaction.splitByAccount(m_accountCombo->currentAccountId(), false);
-        else
+        if (m_actionType == MyMoneySplit::ActionDeposit)
         {
-          s2.setAccountId(m_kcomboTo->currentAccountId());
-          s2.setMemo(s.memo());
-          s2.setPayeeId(s.payeeId());
+          s.setAction(MyMoneySplit::ActionWithdrawal);
+          val = -val;
         }
-          
-        s2.setValue(-s.value());
-        m_transaction.modifySplit(s2);
+        else if (m_actionType == MyMoneySplit::ActionWithdrawal)
+        {
+          s.setAction(MyMoneySplit::ActionDeposit);
+          val = -val;
+        }
+      }
+
+      if (m_actionType != MyMoneySplit::ActionDeposit)
+      {
+          // if it's the deposit part of a transfer, we don't invert sign
+          if(s.value() < 0)
+          {
+            val = -val;
+          }
+      }
+
+      s.setValue(val);
+      m_transaction.modifySplit(s);
+      
+      if(m_transaction.splitCount() == 2)
+      {
+        MyMoneySplit split = m_transaction.splits()[1];
+        split.setValue(-s.value());
+        m_transaction.modifySplit(split);
+      }  
+      else if (count >= 3)
+      {
+        KMessageBox::information(this, i18n("All split data lost.  Please re-enter splits"));
+        disconnect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
+        m_transaction.removeSplits();
+        m_category->setText("");
+        m_category->setFocus();
       }
     }
   }
@@ -655,27 +684,14 @@ void KEditScheduleDialog::slotAmountChanged(const QString&)
 
 void KEditScheduleDialog::slotAccountChanged(const QString&)
 {
-  int count = m_transaction.splitCount();
-  if (count == 0)
+  if (m_actionType != MyMoneySplit::ActionDeposit)
   {
-    MyMoneySplit split1;
-    split1.setAccountId(m_accountCombo->currentAccountId());
-    m_transaction.addSplit(split1);
-
-    if (m_actionType == MyMoneySplit::ActionTransfer)
+    int count = m_transaction.splitCount();
+    if (count == 0)
     {
-      MyMoneySplit split2;
-      split2.setAccountId(m_kcomboTo->currentAccountId());
-      m_transaction.addSplit(split2);
+      createSplits();
     }
-    else
-    {
-      MyMoneySplit split2;
-      m_transaction.addSplit(split2);
-    }  
-  }
-  else if (count>0)
-  {
+
     MyMoneySplit s = m_transaction.splits()[0];
     s.setAccountId(m_accountCombo->currentAccountId());
     m_transaction.modifySplit(s);
@@ -694,20 +710,22 @@ void KEditScheduleDialog::slotToChanged(const QString&)
     int count = m_transaction.splitCount();
     if (count == 0)
     {
-      MyMoneySplit split1;
-      split1.setAccountId(m_accountCombo->currentAccountId());
-      m_transaction.addSplit(split1);
-
-      MyMoneySplit split2;
-      split2.setAccountId(m_kcomboTo->currentAccountId());
-      m_transaction.addSplit(split2);
+      createSplits();
     }
-    else if (count==2)
+    MyMoneySplit s = m_transaction.splits()[1];
+    s.setAccountId(m_kcomboTo->currentAccountId());
+    m_transaction.modifySplit(s);
+  }
+  else if (m_actionType == MyMoneySplit::ActionDeposit)
+  {
+    int count = m_transaction.splitCount();
+    if (count == 0)
     {
-      MyMoneySplit s = m_transaction.splits()[1];
-      s.setAccountId(m_kcomboTo->currentAccountId());
-      m_transaction.modifySplit(s);
+      createSplits();
     }
+    MyMoneySplit s = m_transaction.splits()[0];
+    s.setAccountId(m_kcomboTo->currentAccountId());
+    m_transaction.modifySplit(s);
   }
 }
 
@@ -787,35 +805,21 @@ void KEditScheduleDialog::slotPayeeChanged(const QString& text)
   try
   {
     payeeId = MyMoneyFile::instance()->payeeByName(text).id();
-  }
-  catch (MyMoneyException *e)
-  {
-    MyMoneyPayee payee(m_kcomboPayTo->text());
-    MyMoneyFile::instance()->addPayee(payee);
-    payeeId = payee.id();
-    delete e;
-  }
 
-  int count = m_transaction.splitCount();
-  if (count == 0)
-  {
-    MyMoneySplit split1;
-    split1.setAccountId(m_accountCombo->currentAccountId());
-    split1.setPayeeId(payeeId);
-    m_transaction.addSplit(split1);
+    int count = m_transaction.splitCount();
+    if (count == 0)
+    {
+      createSplits();
+    }
 
-    MyMoneySplit split2;
-    split2.setPayeeId(payeeId);
-    m_transaction.addSplit(split2);
-  }
-  else if (count>=2)
-  {
     MyMoneySplit s = m_transaction.splits()[0];
     s.setPayeeId(payeeId);
     m_transaction.modifySplit(s);
-    s = m_transaction.splits()[1];
-    s.setPayeeId(payeeId);
-    m_transaction.modifySplit(s);
+  }
+  catch (MyMoneyException *e)
+  {
+    // We add it later
+    delete e;
   }
 }
 
@@ -841,27 +845,21 @@ void KEditScheduleDialog::slotCategoryChanged(const QString& text)
     int count = m_transaction.splitCount();
     if (count == 0)
     {
-      MyMoneySplit split1;
-      split1.setAccountId(m_accountCombo->currentAccountId());
-      m_transaction.addSplit(split1);
+      createSplits();
+    }
 
-      MyMoneySplit split2;
-      split2.setAccountId(m_kcomboTo->currentAccountId());
-      m_transaction.addSplit(split2);
-    }
-    else if (count>=2)
+    // Dont worry about transfers
+    MyMoneySplit s = m_transaction.splits()[1];
+    QString category = text;
+    QCString id = MyMoneyFile::instance()->categoryToAccount(category);
+    if(id == "" && category != "")
     {
-      MyMoneySplit s = m_transaction.splits()[1];
-      QString category = text;
-      QCString id = MyMoneyFile::instance()->categoryToAccount(category);
-      if(id == "" && category != "")
-      {
-        // They are probably still typing
-        return;
-      }
-      s.setAccountId(id);
-      m_transaction.modifySplit(s);
+      // They are probably still typing
+      // The category gets checked in okClicked()
+      return;
     }
+    s.setAccountId(id);
+    m_transaction.modifySplit(s);
   }
 }
 
@@ -875,22 +873,125 @@ void KEditScheduleDialog::slotMemoChanged(const QString& text)
   int count = m_transaction.splitCount();
   if (count == 0)
   {
-    MyMoneySplit split1;
-    split1.setAccountId(m_accountCombo->currentAccountId());
-    split1.setMemo(text);
-    m_transaction.addSplit(split1);
-
-    MyMoneySplit split2;
-    split2.setMemo(text);
-    m_transaction.addSplit(split2);
+    createSplits();
   }
-  else if (count>=2)
+
+  MyMoneySplit s = m_transaction.splits()[0];
+  s.setMemo(text);
+  m_transaction.modifySplit(s);
+
+  if (m_actionType == MyMoneySplit::ActionTransfer)
   {
-    MyMoneySplit s = m_transaction.splits()[0];
-    s.setMemo(text);
-    m_transaction.modifySplit(s);
     s = m_transaction.splits()[1];
     s.setMemo(text);
     m_transaction.modifySplit(s);
   }
+}
+
+void KEditScheduleDialog::createSplits()
+{
+  if (m_transaction.splitCount() == 0)
+  {
+    MyMoneySplit split1;
+    split1.setAccountId(theAccountId());
+    split1.setAction(m_actionType);
+    m_transaction.addSplit(split1);
+
+    if (m_actionType == MyMoneySplit::ActionTransfer)
+    {
+      MyMoneySplit split2;
+      split2.setAccountId(m_kcomboTo->currentAccountId());
+      split2.setAction(MyMoneySplit::ActionDeposit);
+      m_transaction.addSplit(split2);
+    }
+    else
+    {
+      MyMoneySplit split2;
+      if (m_actionType == MyMoneySplit::ActionDeposit)
+        split2.setAction(MyMoneySplit::ActionWithdrawal);
+      else /* MyMoneySplit::ActionWithdrawl */
+        split2.setAction(MyMoneySplit::ActionDeposit);
+      m_transaction.addSplit(split2);
+    }
+  }
+}
+
+void KEditScheduleDialog::checkCategory()
+{
+  // Make sure a category has been set
+  if (m_category->text() != i18n("Splitted Transaction") && !m_category->text().isEmpty())
+  {
+    bool invalid=false;
+    QCString categoryId = MyMoneyFile::instance()->categoryToAccount(m_category->text());
+    if (categoryId.isEmpty())
+      invalid = true;
+
+    if (invalid)
+    {
+      // Create the category
+      QString message = QString("The category '%1' does not exist.  Create?").arg(m_category->text());
+      if (KMessageBox::questionYesNo(this, message) == KMessageBox::Yes)
+      {
+        MyMoneyAccount base;
+        if (m_schedule.type() == MyMoneySchedule::TYPE_DEPOSIT)
+          base = MyMoneyFile::instance()->income();
+        else
+          base = MyMoneyFile::instance()->expense();
+
+        categoryId = MyMoneyFile::instance()->createCategory(base, m_category->text());
+
+        // Modify the split
+        MyMoneySplit s = m_transaction.splits()[1];
+        s.setAccountId(categoryId);
+        m_transaction.modifySplit(s);
+      }
+      else
+      {
+        m_category->setText("");
+        m_category->setFocus();
+        return;
+      }
+    }
+  }
+}
+
+void KEditScheduleDialog::checkPayee()
+{
+  QCString payeeId;
+  try
+  {
+    payeeId = MyMoneyFile::instance()->payeeByName(m_kcomboPayTo->text()).id();
+  }
+  catch (MyMoneyException *e)
+  {
+    MyMoneyPayee payee(m_kcomboPayTo->text());
+    MyMoneyFile::instance()->addPayee(payee);
+    payeeId = payee.id();
+    delete e;
+  }
+  MyMoneySplit s = m_transaction.splits()[0];
+  s.setPayeeId(payeeId);
+  m_transaction.modifySplit(s);
+
+  if (m_actionType == MyMoneySplit::ActionTransfer)
+  {
+    s = m_transaction.splits()[1];
+    s.setPayeeId(payeeId);
+    m_transaction.modifySplit(s);
+  }
+}
+
+QCString KEditScheduleDialog::theAccountId()
+{
+  if (m_actionType == MyMoneySplit::ActionTransfer ||
+      m_actionType == MyMoneySplit::ActionWithdrawal)
+  {
+    return m_accountCombo->currentAccountId();
+  }
+  else if (m_actionType == MyMoneySplit::ActionDeposit)
+  {
+    return m_kcomboTo->currentAccountId();
+  }
+
+  return "";
 }

@@ -811,7 +811,7 @@ void KMyMoneyView::accountNew(const bool createCategory)
     QString title;
     QCString accId;
     bool ok;
-            
+
     if(pageIndex(m_accountsViewFrame) == activePageIndex())
       accId = m_accountsView->currentAccount(ok);
     else if(pageIndex(m_categoriesViewFrame) == activePageIndex())
