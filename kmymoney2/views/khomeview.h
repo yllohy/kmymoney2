@@ -55,6 +55,7 @@ private:
   KHTMLPart *m_part;
   QVBoxLayout *m_qvboxlayoutPage;
   QString m_filename;
+  bool    m_showAllSchedules;
 
 signals:
   /**

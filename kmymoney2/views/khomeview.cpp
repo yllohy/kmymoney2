@@ -51,7 +51,8 @@
 #define VIEW_REPORTS        "reports"
 
 KHomeView::KHomeView(QWidget *parent, const char *name ) :
-  KMyMoneyViewBase(parent, name, i18n("Home"))
+  KMyMoneyViewBase(parent, name, i18n("Home")),
+  m_showAllSchedules(false)
 {
   m_part = new KHTMLPart(this, "htmlpart_km2");
   m_viewLayout->addWidget(m_part->view());
@@ -236,8 +237,7 @@ void KHomeView::showPayments(void)
       if ((*t_it).nextPayment((*t_it).lastPayment()) == QDate::currentDate())
       {
         todays.append(*t_it);
-        t_it = schedule.remove(t_it);
-        continue;
+        (*t_it).setLastPayment((*t_it).nextPayment((*t_it).lastPayment()));
       }
       ++t_it;
     }
@@ -266,12 +266,47 @@ void KHomeView::showPayments(void)
       m_part->write("<table width=\"75%\" cellspacing=\"0\" cellpadding=\"2\">");
       tmp = "<tr class=\"item\"><th class=\"left\" colspan=\"3\">" + i18n("Future payments") + "</th></tr>\n";
       m_part->write(tmp);
-      for(it = schedule.begin(); it != schedule.end(); ++it) {
+
+      // show all or the first 6 entries
+      int cnt;
+      cnt = (m_showAllSchedules) ? -1 : 6;
+
+      QDate lastDate = QDate::currentDate().addMonths(1);
+      qBubbleSort(schedule);
+      do {
+        it = schedule.begin();
+        if(it == schedule.end())
+          break;
+
+        QDate nextDate = (*it).nextPayment((*it).lastPayment());
+        if(!nextDate.isValid()) {
+          schedule.remove(it);
+          continue;
+        }
+
+        if (nextDate > lastDate)
+          break;
+
+        if(cnt == 0)
+          break;
+        if(cnt > 0)
+          --cnt;
+
         m_part->write(QString("<tr class=\"row-%1\">").arg(i++ & 0x01 ? "even" : "odd"));
         showPaymentEntry(*it);
         m_part->write("</tr>");
+
+        (*it).setLastPayment((*it).nextPayment((*it).lastPayment()));
+        qBubbleSort(schedule);
       }
+      while(1);
+
       m_part->write("</table>");
+      if(m_showAllSchedules) {
+        m_part->write(link(VIEW_SCHEDULE,  QString("?mode=%1").arg("reduced")) + i18n("Less ...") + linkend());
+      } else {
+        m_part->write(link(VIEW_SCHEDULE,  QString("?mode=%1").arg("full")) + i18n("More ...") + linkend());
+      }
     }
   }
 }
@@ -453,6 +488,7 @@ void KHomeView::slotOpenURL(const KURL &url, const KParts::URLArgs& /* args */)
 {
   QString view = url.fileName(false);
   QCString id = url.queryItem("id").data();
+  QCString mode = url.queryItem("mode").data();
 
   // qDebug("view = '%s'", url.fileName(false).latin1());
   // qDebug("id = '%s'", url.queryItem("id").latin1());
@@ -461,7 +497,12 @@ void KHomeView::slotOpenURL(const KURL &url, const KParts::URLArgs& /* args */)
     emit ledgerSelected(id, QCString());
 
   } else if(view == VIEW_SCHEDULE) {
-    emit scheduleSelected(id);
+    if(!id.isEmpty())
+      emit scheduleSelected(id);
+    if(!mode.isEmpty()) {
+      m_showAllSchedules = (mode == QCString("full"));
+      slotRefreshView();
+    }
 
   } else if(view == VIEW_REPORTS) {
     emit reportSelected(id);
