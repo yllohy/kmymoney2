@@ -111,11 +111,13 @@ protected:
   QRect  m_cellRect;
   QRect  m_textRect;
 
+  int    m_lastTransactionIndex;
   int    m_transactionIndex;
   int    m_transactionRow;
   int    m_currentDateRow;
 
   MyMoneyTransaction const * m_transaction;
+  MyMoneyMoney m_balance;
   MyMoneySplit m_split;
 };
 

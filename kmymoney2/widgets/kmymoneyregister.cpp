@@ -37,6 +37,7 @@ kMyMoneyRegister::kMyMoneyRegister(QWidget *parent, const char *name )
 {
   readConfig();
   m_currentDateRow = -1;
+  m_lastTransactionIndex = -1;
 }
 
 kMyMoneyRegister::~kMyMoneyRegister()
@@ -71,6 +72,8 @@ void kMyMoneyRegister::setTransactionCount(int r)
 
   // add or remove scrollbars as required
   updateScrollBars();
+
+  m_lastTransactionIndex = -1;
 }
 
 void kMyMoneyRegister::readConfig(void)
@@ -132,6 +135,10 @@ void kMyMoneyRegister::paintCell(QPainter *p, int row, int col, const QRect& r,
 
   m_transactionIndex = row/m_rpt;
   m_transactionRow = row%m_rpt;
-  m_transaction = m_view->transaction(m_transactionIndex);
-  m_split = m_transaction->split(m_view->accountId());
+  if(m_transactionIndex != m_lastTransactionIndex) {
+    m_transaction = m_view->transaction(m_transactionIndex);
+    m_split = m_transaction->split(m_view->accountId());
+    m_balance = m_view->balance(m_transactionIndex);
+    m_lastTransactionIndex = m_transactionIndex;
+  }
 }

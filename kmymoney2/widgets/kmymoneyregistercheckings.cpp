@@ -186,6 +186,8 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
           case 0:
             if(m_split.value() >= 0)
               txt = (m_split.value()).formatMoney();
+            else
+              txt = " ";    // make sure cell stays empty
             break;
 
           case 1:
@@ -199,6 +201,7 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
       if(txt.isEmpty()) {
         switch(m_transactionRow) {
           case 0:
+            txt = m_balance.formatMoney();
             break;
 
           case 1:
