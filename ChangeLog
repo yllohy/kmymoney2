@@ -1,3 +1,8 @@
+2003-09-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * added new fr.po supplied by Laurent
+  * fixed loading new account wizard widgets after loading of file
+  * update caption when QIF import is finished
+
 2003-09-17 Michael Edwardes <mte@users.sourceforge.net>
   * More validation on the KEditScheduleDialog user input.
   * Add a gap to the home page just before 'Future Payments'.
@@ -14,7 +19,7 @@
   * Refresh the schedule view list items starting with the background colour.
   * Take into account recorded payments when calculating the next payment
     for a schedule.
-    
+
 2003-09-15 Michael Edwardes <mte@users.sourceforge.net>
   * Fix memory leak in new account wizard when checking if a payee exists.
   * Individual occurences for a schedule can now be entered
@@ -47,8 +52,8 @@
   * Fix bug in KEditScheduleDialog that wrongly negated the entered amount.
 
 2003-09-10 Michael Edwardes <mte@users.sourceforge.net>
-  * Implemented adding a schedule for the credit card account type when using the
-    account wizard.
+  * Implemented adding a schedule for the credit card account type when
+    using the account wizard.
   * When executing a schedule list item, set the date to the real next payment.
   * Only call the slots in KEditScheduleDialog::relodFromFile() if its a new
     schedule.
