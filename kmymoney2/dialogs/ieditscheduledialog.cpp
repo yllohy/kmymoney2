@@ -176,7 +176,7 @@ void KEditScheduleDialog::reloadFromFile(void)
   m_kcomboFreq->insertItem(i18n("Every two weeks"));
   m_kcomboFreq->insertItem(i18n("Every four weeks"));
   m_kcomboFreq->insertItem(i18n("Monthly"));
-  m_kcomboFreq->insertItem(i18n("Every other month"));
+  m_kcomboFreq->insertItem(i18n("Every two months"));
   m_kcomboFreq->insertItem(i18n("Every three months"));
   m_kcomboFreq->insertItem(i18n("Every four months"));
   m_kcomboFreq->insertItem(i18n("Twice a year"));

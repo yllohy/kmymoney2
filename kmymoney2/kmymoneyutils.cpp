@@ -157,7 +157,7 @@ const QString KMyMoneyUtils::occurenceToString(MyMoneySchedule::occurenceE occur
       text = i18n("Monthly");
       break;
     case MyMoneySchedule::OCCUR_EVERYOTHERMONTH:
-      text = i18n("Every other month");
+      text = i18n("Every two months");
       break;
     case MyMoneySchedule::OCCUR_EVERYTHREEMONTHS:
       text = i18n("Every three months");
