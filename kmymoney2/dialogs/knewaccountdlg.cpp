@@ -342,17 +342,17 @@ void KNewAccountDlg::okClicked()
     && file->accountGroup(parent.accountType()) == MyMoneyAccount::Asset)
       acctype = MyMoneyAccount::AssetLoan;
       
-    if(!m_isEditing) {
-      if(file->nameToAccount(accountNameText) != m_account.id()) {
-        KMessageBox::error(this, i18n("Account with that name already exists."));
-        return;
-      }
+    if(!file->nameToAccount(accountNameText).isEmpty()
+    && (file->nameToAccount(accountNameText) != m_account.id())) {
+      KMessageBox::error(this, i18n("Account with that name already exists."));
+      return;
     }
   }
   else
   {
     acctype = MyMoneyFile::instance()->accountGroup(parent.accountType());
-    if(file->categoryToAccount(accountNameText) != m_account.id()) {
+    if(!file->categoryToAccount(accountNameText).isEmpty()
+    && (file->categoryToAccount(accountNameText) != m_account.id())) {
       KMessageBox::error(this, i18n("Category with that name already exists."));
       return;
     }
