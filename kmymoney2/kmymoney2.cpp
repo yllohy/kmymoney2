@@ -60,8 +60,7 @@
 #include <kprogress.h>
 #include <kio/netaccess.h>
 #include <dcopclient.h>
-#include <kwin.h>
-#include <kmainwindowiface.h>
+#include <kstartupinfo.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -93,6 +92,7 @@
 #include "converter/mymoneyofxstatement.h"
 
 #include "kmymoneyutils.h"
+#include "kdecompat.h"
 
 #define ID_STATUS_MSG 1
 
@@ -1614,12 +1614,15 @@ void KMyMoney2App::slotAccountNew(void)
   myMoneyView->slotAccountNew();
 }
 
-void KMyMoney2App::ofxWebConnect(const QString& url)
+void KMyMoney2App::ofxWebConnect(const QString& url, const QCString& asn_id)
 {
-  // Steal the focus!  (Yes, I am sure what I'm doing.  Yes this IS in response to
-  // user input.  Yes the user REALLY WANTS to do this.)
-  KApplication::kApplication()->updateUserTimestamp();
-  KWin::activateWindow(KMainWindowInterface(this).getWinID());
+  // Bring this window to the forefront.  This method was suggested by 
+  // Lubos Lunak <l.lunak@suse.cz> of the KDE core development team.
+  // Still have to figure out how to do it on earlier versions of KDE
+
+#if KDE_IS_VERSION(3,2,0)
+  KStartupInfo::setNewStartupId(this,asn_id);
+#endif
 
 #ifdef HAVE_LIBOFX
   QString prevMsg = slotStatusMsg(i18n("Importing a statement from OFX"));

@@ -1,3 +1,8 @@
+2004-09-09 Ace Jones <acejones@users.sourceforge.net>
+  * Changed the way the program raised itself to the forefront when
+    receiving an ofxWebConnect DCOP call.  This method was suggested by 
+    Lubos Lunak <l.lunak@suse.cz> of the KDE core development team.
+
 2004-09-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added KBanking support supplied by Martin Preuss
   * Set focus to register after deleting a transaction

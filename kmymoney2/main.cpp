@@ -167,7 +167,8 @@ int main(int argc, char *argv[])
           QByteArray data;
           QDataStream arg(data, IO_WriteOnly);
           arg << url.path();
-          if (!client->send(primary, "kmymoney2app", "ofxWebConnect(QString)",
+	  arg << kapp->startupId();
+          if (!client->send(primary, "kmymoney2app", "ofxWebConnect(QString,QCString)",
                         data))
             qDebug("Unable to launch WebConnect via DCOP.");
             
@@ -230,7 +231,7 @@ int main(int argc, char *argv[])
   // but DOES NOT have a 'last used file' set.
   
   if ( ! importfile.isEmpty() )
-    kmymoney2->ofxWebConnect( importfile );
+    kmymoney2->ofxWebConnect( importfile, kapp->startupId() );
 
   CREATE_TEST_CONTAINER();
 

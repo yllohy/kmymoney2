@@ -231,7 +231,7 @@ public:
 k_dcop:
   const QString filename() const;
 
-  void ofxWebConnect(const QString&);
+  void ofxWebConnect(const QString&, const QCString& asn_id);
 
 protected:
   /** save general Options like all bar positions and status as well as the geometry and the recent file list to the configuration
