@@ -1,5 +1,12 @@
+2004-07-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed painting of kMyMoneyAccountCombo
+
 2004-07-20 Felix Rodriguez <frodriguez@users.sourceforge.net>
   * Expanded Backup Dialog so we can see the OK and Cancel Buttons.
+
+2004-07-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Maintain backward compatibility with older Qt and KDE versions
+  * Added File/Import/Gnucash menu entry and logic to call the reader
 
 2004-07-17 Ace Jones <acejones@users.sourceforge.net>
   * Added 'comment' field for reports, displayed in the reports list tab
@@ -9,11 +16,11 @@
   * Context menu (right click) from the reports list to access the report 
     management actions.  (The same actions that are available as links in
     the report tabs)
-    
+
 2004-07-16 Ace Jones <acejones@users.sourceforge.net>
   * Interface to contain the reports, as suggested by Tom. Completely re-wrote
     KReportsView in the process.
-  
+
 2004-07-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed #987465 (can't edit scheduled transactions)
 
