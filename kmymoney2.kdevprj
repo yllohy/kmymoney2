@@ -33,7 +33,7 @@ ldflags=\s         \s
 path_to_bin_program=kmymoney2
 
 [General]
-AMChanged=true
+AMChanged=false
 author=Michael Edwardes
 configure_args=
 dir_where_make_will_be_called=
@@ -48,7 +48,7 @@ project_type=normal_kde2
 sgml_file=/home/thb/kmymoney2/doc/en/index.docbook
 short_info=
 sub_dir=kmymoney2/
-version=0.5.2
+version=0.6rc1
 version_control=CVS
 workspace=0
 
