@@ -91,7 +91,7 @@ public:
     *
     * @param id id of account to be selected
     */
-  void setSelected(const QCString& id) { m_id = id; };
+  void setSelected(const QCString& id) { m_id = id; m_accountSelector->setSelected(id, true); };
 
   const QCStringList accountList(const QValueList<MyMoneyAccount::accountTypeE>& list = QValueList<MyMoneyAccount::accountTypeE>()) const { return m_accountSelector->accountList(list); };
 
