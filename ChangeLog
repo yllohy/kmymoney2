@@ -1,3 +1,9 @@
+2004-01-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * added engine observer functionality to kMyMoneyAccountSelector
+  * correcting Mike's widget/Makefile.am change in the project file
+    so that it will be maintained over the next regeneration of
+    widgets/Makefile.am by KDevelop
+
 2004-01-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * suppress standard F2 handling while in ledger's inline-edit-mode
   * fix problem when to-account is empty and more button is pressed for
