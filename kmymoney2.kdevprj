@@ -39,7 +39,7 @@ email=mte@users.sourceforge.net
 kdevprj_version=1.3
 lfv_open_groups=
 make_options=\s-j1
-makefiles=Makefile.am,kmymoney2/Makefile.am,doc/Makefile.am,doc/en/Makefile.am,po/Makefile.am,kmymoney2/widgets/Makefile.am,kmymoney2/mymoney/Makefile.am,kmymoney2/pics/Makefile.am,kmymoney2/pics/toolbar/Makefile.am,kmymoney2/dialogs/Makefile.am,kmymoney2/icons/hicolor/22x22/actions/Makefile.am,kmymoney2/icons/hicolor/22x22/Makefile.am,kmymoney2/icons/hicolor/Makefile.am,kmymoney2/icons/Makefile.am,kmymoney2/icons/hicolor/16x16/actions/Makefile.am,kmymoney2/icons/hicolor/16x16/Makefile.am,doc/images/Makefile.am,developer-doc/Makefile.am
+makefiles=Makefile.am,kmymoney2/Makefile.am,doc/Makefile.am,doc/en/Makefile.am,po/Makefile.am,kmymoney2/widgets/Makefile.am,kmymoney2/mymoney/Makefile.am,kmymoney2/pics/Makefile.am,kmymoney2/dialogs/Makefile.am,kmymoney2/icons/hicolor/22x22/actions/Makefile.am,kmymoney2/icons/hicolor/22x22/Makefile.am,kmymoney2/icons/hicolor/Makefile.am,kmymoney2/icons/Makefile.am,kmymoney2/icons/hicolor/16x16/actions/Makefile.am,kmymoney2/icons/hicolor/16x16/Makefile.am,doc/images/Makefile.am,developer-doc/Makefile.am
 modifyMakefiles=true
 project_name=KMyMoney2
 project_type=normal_kde2
@@ -1013,7 +1013,7 @@ type=DATA
 
 [kmymoney2/pics/Makefile.am]
 files=kmymoney2/pics/account-folder.xpm,kmymoney2/pics/bank-folder.xpm,kmymoney2/pics/startlogo.png,kmymoney2/pics/kmymoney2_setting_list.png
-sub_dirs=toolbar,
+sub_dirs=
 type=normal
 
 [kmymoney2/pics/account-folder.xpm]
@@ -1039,11 +1039,6 @@ dist=true
 install=true
 install_location=$$(kde_datadir)/kmymoney2/pics/startlogo.png
 type=DATA
-
-[kmymoney2/pics/toolbar/Makefile.am]
-files=
-sub_dirs=
-type=normal
 
 [kmymoney2/widgets/Makefile.am]
 files=kmymoney2/widgets/kdatepik.cpp,kmymoney2/widgets/kdatepik.h,kmymoney2/widgets/kmymoneydateinput.cpp,kmymoney2/widgets/kmymoneydateinput.h,kmymoney2/widgets/kmymoneyedit.cpp,kmymoney2/widgets/kmymoneyedit.h,kmymoney2/widgets/kmymoneytable.cpp,kmymoney2/widgets/kmymoneytable.h,kmymoney2/widgets/kmymoneylineedit.cpp,kmymoney2/widgets/kmymoneylineedit.h,kmymoney2/widgets/kmymoneyhlayout.cpp,kmymoney2/widgets/kmymoneyhlayout.h,kmymoney2/widgets/kmymoneycombo.cpp,kmymoney2/widgets/kmymoneycombo.h

@@ -1,6 +1,6 @@
 ####### kdevelop will overwrite this part!!! (begin)##########
 
-SUBDIRS = toolbar 
+SUBDIRS =
 
 EXTRA_DIST = account-folder.xpm bank-folder.xpm startlogo.png kmymoney2_setting_list.png 
 
