@@ -116,6 +116,10 @@ body.highlighted  {
   color: #FFFFFF;
 }
 
+div.subtitle {
+  text-align: center;
+}
+
 table.report th {
   padding: 0.5em 0;
 }
