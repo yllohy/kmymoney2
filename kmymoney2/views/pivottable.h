@@ -1,15 +1,10 @@
 /***************************************************************************
-                          pivottable.h  -  description
+                          pivottable.h
                              -------------------
     begin                : Sat May 22 2004
-    copyright            : (C) 2000-2004 by Michael Edwardes
-    email                : mte@users.sourceforge.net
-                           Javier Campos Morales <javi_c@users.sourceforge.net>
-                           Felix Rodriguez <frodriguez@users.sourceforge.net>
-                           John C <thetacoturtle@users.sourceforge.net>
+    copyright            : (C) 2004-2005 by Ace Jones
+    email                : <ace.j@hotpop.com>
                            Thomas Baumgart <ipwizard@users.sourceforge.net>
-                           Kevin Tambascio <ktambascio@users.sourceforge.net>
-                           Ace Jones <ace.j@hotpop.com>
  ***************************************************************************/
 
 /***************************************************************************
@@ -195,23 +190,43 @@ public:
     bool operator<( const AccountDescriptor& right ) const;
   
     /**
-      * Returns the price of this account's currency on the indicated date,
+      * Returns the price of this account's underlying currency on the indicated date,
+      * translated into the account's deep currency
+      *
+      * There are three differeny currencies in play with a single Account:
+      *   - The underlying currency: What currency the account itself is denominated in
+      *   - The deep currency: The underlying currency's own underlying currency.  This
+      *      is only a factor if the underlying currency of this account IS NOT a
+      *      currency itself, but is some other kind of security.  In that case, the
+      *      underlying security has its own currency.  The deep currency is the
+      *      currency of the underlying security.  On the other hand, if the account
+      *      has a currency itself, then the deep currency == the underlying currency,
+      *      and this function will return 1.0.
+      *   - The base currency: The base currency of the user's overall file
+      *
+      * @param date The date in question
+      * @return MyMoneyMoney The value of the account's currency on that date
+      */
+    MyMoneyMoney deepCurrencyPrice( const QDate& date ) const;
+  
+    /**
+      * Returns the price of this account's deep currency on the indicated date,
       * translated into the base currency
       *
       * @param date The date in question
       * @return MyMoneyMoney The value of the account's currency on that date
       */
-    MyMoneyMoney currencyPrice( const QDate& date ) const;
+    MyMoneyMoney baseCurrencyPrice( const QDate& date ) const;
   
     /**
-      * Fetch the trading symbol of this account's currency
+      * Fetch the trading symbol of this account's deep currency
       *
       * @return QString The account's currency trading symbol
       */
     QString currency( void ) const;
       
     /**
-      * Determine if this account is in a different currency than the file's
+      * Determine if this account's deep currency is different from the file's
       * base currency
       *
       * @return bool True if this account is in a foreign currency
@@ -397,7 +412,15 @@ protected:
     *
     */
     void convertToBaseCurrency( void );
-    
+
+  /**
+    * Convert each value in the grid to the account/category's deep currency
+    *
+    * See AccountDescriptor::deepCurrencyPrice() for a description of 'deep' currency
+    *
+    */
+    void convertToDeepCurrency( void );
+
     void collapseColumns(void);
     void calculateColumnHeadings(void);
     

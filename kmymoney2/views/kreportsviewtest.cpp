@@ -65,8 +65,14 @@ public:
 
 TransactionHelper::TransactionHelper( const QDate& _date, const QCString& _action, MyMoneyMoney _value, const QCString& _accountid, const QCString& _categoryid, const QCString& _currencyid, const QString& _payee )
 {
+  // _currencyid is the currency of the transaction, and of the _value
+  // both the account and category can have their own currency (athough the category having
+  // a foreign currency is not yet supported by the program, the reports will still allow it,
+  // so it must be tested.)
+
+    MyMoneyFile* file = MyMoneyFile::instance();
     bool haspayee = ! _payee.isEmpty();
-    MyMoneyPayee payeeTest = MyMoneyFile::instance()->payeeByName(_payee);
+    MyMoneyPayee payeeTest = file->payeeByName(_payee);
 
     setPostDate(_date);
 
@@ -82,7 +88,8 @@ TransactionHelper::TransactionHelper( const QDate& _date, const QCString& _actio
       splitLeft.setPayeeId(payeeTest.id());
     splitLeft.setAction(_action);
     splitLeft.setValue(-_value);
-    splitLeft.setShares(-_value); // assumes transaction currency == this account's currency!
+    price = MyMoneyFile::instance()->price(currencyid, file->account(_accountid).currencyId(),_date).rate();
+    splitLeft.setShares(-_value * price);
     splitLeft.setAccountId(_accountid);
     addSplit(splitLeft);
 
@@ -91,8 +98,7 @@ TransactionHelper::TransactionHelper( const QDate& _date, const QCString& _actio
       splitRight.setPayeeId(payeeTest.id());
     splitRight.setAction(_action);
     splitRight.setValue(_value);
-    // price = MyMoneyFile::instance()->currency(currencyid).price(_date);
-    price = MyMoneyFile::instance()->price(currencyid, QCString(), _date).rate();
+    price = MyMoneyFile::instance()->price(currencyid, file->account(_categoryid).currencyId(),_date).rate();
     splitRight.setShares(_value * price );
     splitRight.setAccountId(_categoryid);
     addSplit(splitRight);
@@ -804,12 +810,24 @@ void KReportsViewTest::testMultipleCurrencies()
   TransactionHelper t4( QDate(2004,2,20), MyMoneySplit::ActionWithdrawal,MyMoneyMoney(moCanTransaction), acCanChecking, acCanCash, "CAD" );
   TransactionHelper t5( QDate(2004,3,20), MyMoneySplit::ActionWithdrawal,MyMoneyMoney(moCanTransaction), acCanChecking, acCanCash, "CAD" );
   TransactionHelper t6( QDate(2004,4,20), MyMoneySplit::ActionWithdrawal,MyMoneyMoney(moCanTransaction), acCanChecking, acCanCash, "CAD" );
-
+  
+#if 0
+  QFile g( "multicurrencykmy.xml" );
+  g.open( IO_WriteOnly );
+  MyMoneyStorageXML xml;
+  IMyMoneyStorageFormat& interface = xml;
+  interface.writeFile(&g, dynamic_cast<IMyMoneySerialize*> (MyMoneyFile::instance()->storage()));
+  g.close();
+#endif  
+  
   MyMoneyReport filter( MyMoneyReport::eExpenseIncome );
   filter.setDateFilter(QDate(2004,1,1),QDate(2005,1,1).addDays(-1));
   filter.setShowSubAccounts(true);
+  filter.setName("Multiple Currency Spending Rerport (with currency conversion)");
   XMLandback(filter);
+  
   PivotTable spending_f( filter );
+  
   writeTabletoCSV(spending_f);
 
   // test single foreign currency
@@ -827,7 +845,7 @@ void KReportsViewTest::testMultipleCurrencies()
   // Test the report type where we DO NOT convert the currency
   filter.setConvertCurrency(false);
   filter.setShowSubAccounts(true);
-  filter.setName("Spending WITHOUT currency conversion");
+  filter.setName("Multiple Currency Spending Report (WITHOUT currency conversion)");
   XMLandback(filter);
   PivotTable spending_fnc( filter );
   writeTabletoCSV(spending_fnc);

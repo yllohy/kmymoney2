@@ -1,15 +1,10 @@
 /***************************************************************************
-                          pivottable.cpp  -  description
+                          pivottable.h
                              -------------------
     begin                : Mon May 17 2004
-    copyright            : (C) 2000-2004 by Michael Edwardes
-    email                : mte@users.sourceforge.net
-                           Javier Campos Morales <javi_c@users.sourceforge.net>
-                           Felix Rodriguez <frodriguez@users.sourceforge.net>
-                           John C <thetacoturtle@users.sourceforge.net>
+    copyright            : (C) 2004-2005 by Ace Jones
+    email                : <ace.j@hotpop.com>
                            Thomas Baumgart <ipwizard@users.sourceforge.net>
-                           Kevin Tambascio <ktambascio@users.sourceforge.net>
-                           Ace Jones <ace.j@hotpop.com>
  ***************************************************************************/
 
 /***************************************************************************
@@ -196,7 +191,44 @@ void PivotTable::AccountDescriptor::calculateAccountHierarchy( void )
   }
 }
 
-MyMoneyMoney PivotTable::AccountDescriptor::currencyPrice(const QDate& date) const
+
+MyMoneyMoney PivotTable::AccountDescriptor::deepCurrencyPrice( const QDate& date ) const
+{
+  DEBUG_ENTER(__PRETTY_FUNCTION__);
+  
+  MyMoneyMoney result(1, 1);
+  MyMoneyAccount account = m_file->account(m_account);
+  
+  MyMoneySecurity undersecurity = m_file->security( account.currencyId() );
+  if ( ! undersecurity.isCurrency() )
+  {
+    // FIXME: If there is no price for this date, our method will return a 1.0,
+    // which will be confusing for the user. We should report an error back to the report.
+    // This will require an error-handling mechanism, which I don't have right now.   
+    MyMoneyPrice price = m_file->price(undersecurity.id(),undersecurity.tradingCurrency(),date);
+    if ( price.isValid() )
+    {
+      result = price.rate();
+  
+      DEBUG_OUTPUT(QString("Converting under %1 to deep %2, price on %3 is %4")
+        .arg(undersecurity.name())
+        .arg(m_file->security(undersecurity.tradingCurrency()).name())
+        .arg(date.toString())
+        .arg(result.toDouble()));
+    }
+    else
+    {
+      DEBUG_OUTPUT(QString("No price to convert under %1 to deep %2 on %3")
+        .arg(undersecurity.name())
+        .arg(m_file->security(undersecurity.tradingCurrency()).name())
+        .arg(date.toString()));
+    }
+  }
+  
+  return result;
+}
+
+MyMoneyMoney PivotTable::AccountDescriptor::baseCurrencyPrice( const QDate& date ) const
 {
   // Note that whether or not the user chooses to convert to base currency, all the values
   // for a given account/category are converted to the currency for THAT account/category
@@ -210,37 +242,47 @@ MyMoneyMoney PivotTable::AccountDescriptor::currencyPrice(const QDate& date) con
   // currency.  This confused me for a while, which is why I wrote this comment.
   //    --acejones
 
-  DEBUG_ENTER("AccountDescriptor::currencyPrice");
+  DEBUG_ENTER("AccountDescriptor::baseCurrencyPrice");
 
-  MyMoneyMoney value(1, 1);
-
+  MyMoneyMoney result(1, 1);
   MyMoneyAccount account = m_file->account(m_account);
 
-  if(account.currencyId() != m_file->baseCurrency().id()) {
-    QString name;
-    // FIXME: once equity and currency use the same interface
-    //        we can  get rid of this
-    MyMoneySecurity security = m_file->security(account.currencyId());
-    name = security.name();
-    MyMoneyPrice price = m_file->price(account.currencyId(), m_file->baseCurrency().id(), date);
-
-    if(price.isValid()) {
-      value = price.rate();
-    } else {
-      // FIXME: ace, we should report, that the conversion rate has been set to 1
-      //        because no price info is available for the accounts currency on
-      //        or before 'date'.
+  // First, get the deep currency
+  MyMoneySecurity deepcurrency = m_file->security( account.currencyId() );
+  if ( ! deepcurrency.isCurrency() )
+    deepcurrency = m_file->security( deepcurrency.tradingCurrency() );
+  
+  if(deepcurrency.id() != m_file->baseCurrency().id()) 
+  {
+    // FIXME: If there is no price for this date, our method will return a 1.0,
+    // which will be confusing for the user. We should report an error back to the report.
+    // This will require an error-handling mechanism, which I don't have right now.   
+    MyMoneyPrice price = m_file->price(deepcurrency.id(), m_file->baseCurrency().id(), date);
+    if(price.isValid())
+    {
+      result = price.rate();
+    
+      DEBUG_OUTPUT(QString("Converting deep %1 to base %2, price on %3 is %4")
+        .arg(deepcurrency.name())
+        .arg(m_file->baseCurrency().name())
+        .arg(date.toString())
+        .arg(result.toDouble()));
     }
-
-    DEBUG_OUTPUT(QString("Converting %1 to %2, price on %3 is %4").arg(name).arg(m_file->baseCurrency().name()).arg(date.toString()).arg(value.toDouble()));
+    else
+    {
+      DEBUG_OUTPUT(QString("No price to convert deep %1 to base %2 on %3")
+        .arg(deepcurrency.name())
+        .arg(m_file->baseCurrency().name())
+        .arg(date.toString()));
+    }
   }
 
-  return value;
+  return result;
 }
 
 bool PivotTable::AccountDescriptor::operator<(const AccountDescriptor& second) const
 {
-  DEBUG_ENTER("AccountDescriptor::operator<");
+//   DEBUG_ENTER("AccountDescriptor::operator<");
 
   bool result = false;
   bool haveresult = false;
@@ -277,7 +319,7 @@ bool PivotTable::AccountDescriptor::operator<(const AccountDescriptor& second) c
   if ( !haveresult && ( it_second != second.m_names.end() ) )
     result = true;
 
-  DEBUG_OUTPUT(QString("%1 < %2 is %3").arg(debugName(),second.debugName()).arg(result));
+//   DEBUG_OUTPUT(QString("%1 < %2 is %3").arg(debugName(),second.debugName()).arg(result));
   return result;
 }
 
@@ -288,17 +330,19 @@ bool PivotTable::AccountDescriptor::operator<(const AccountDescriptor& second) c
   */
 QString PivotTable::AccountDescriptor::currency( void ) const
 {
-  QString result;
   MyMoneyAccount account = m_file->account(m_account);
-  if(account.accountType() == MyMoneyAccount::Stock)
-    result = account.currencyId();
-  else
-    result = account.currencyId();
-  return result;
+  
+  // First, get the deep currency
+  MyMoneySecurity deepcurrency = m_file->security( account.currencyId() );
+  if ( ! deepcurrency.isCurrency() )
+    deepcurrency = m_file->security( deepcurrency.tradingCurrency() );
+  
+  // Return the deep currency's ID
+  return deepcurrency.id();
 }
 
 /**
-  * Determine if this account is in a different currency than the file's
+  * Determine if this account's deep currency is different from the file's
   * base currency
   *
   * @return bool True if this account is in a foreign currency
@@ -306,7 +350,12 @@ QString PivotTable::AccountDescriptor::currency( void ) const
 bool PivotTable::AccountDescriptor::isForiegnCurrency( void ) const
 {
   MyMoneyAccount account = m_file->account(m_account);
-  return ( account.currencyId() != m_file->baseCurrency().id() );
+  // First, get the deep currency
+  MyMoneySecurity deepcurrency = m_file->security( account.currencyId() );
+  if ( ! deepcurrency.isCurrency() )
+    deepcurrency = m_file->security( deepcurrency.tradingCurrency() );
+  
+  return ( deepcurrency.id() != m_file->baseCurrency().id() );
 }
 
 /**
@@ -424,18 +473,18 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
       // AND if its account group is included in this report type
       if ( includesAccount( splitAccount ) )
       {
+        // the row itself is the account
+        AccountDescriptor row( splitAccount.id() );
+
         // reverse sign to match common notation for cash flow direction, only for expense/income splits
         MyMoneyMoney reverse((splitAccount.accountGroup() == MyMoneyAccount::Income) |
                           (splitAccount.accountGroup() == MyMoneyAccount::Expense) ? -1 : 1, 1);
 
-        // retrieve the value in the account's currency
-        MyMoneyMoney value = (*it_split).value((*it_transaction).commodity(), splitAccount.currencyId())*reverse;
+        // retrieve the value in the account's underlying currency
+        MyMoneyMoney value = (*it_split).shares() * reverse;
 
         // the outer group is the account class (major account type)
         QString outergroup = accountTypeToString(splitAccount.accountGroup());
-
-        // the row itself is the account
-        AccountDescriptor row( splitAccount.id() );
 
         // add the value to its correct position in the pivot table
         assignCell( outergroup, row, column, value );
@@ -461,6 +510,12 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
 
   if ( m_config_f.isRunningSum() )
     calculateRunningSums();
+
+  //
+  // Convert all values to the deep currency
+  //
+
+  convertToDeepCurrency();
 
   //
   // Convert all values to the base currency
@@ -657,6 +712,7 @@ void PivotTable::calculateOpeningBalances( void )
       // extract the balance of the account for the given begin date, which is
       // the opening balance plus the sum of all transactions prior to the begin
       // date
+      // this is in the underlying currency
       MyMoneyMoney value = file->balance((*it_account).id(), from.addDays(-1));
 
       // remove the opening balance from the figure, if necessary
@@ -720,7 +776,7 @@ void PivotTable::calculateRunningSums( void )
 
 void PivotTable::convertToBaseCurrency( void )
 {
-  DEBUG_ENTER("PivotTable::convertToBaseCurrency");
+  DEBUG_ENTER(__PRETTY_FUNCTION__);
 
   TGrid::iterator it_outergroup = m_grid.begin();
   while ( it_outergroup != m_grid.end() )
@@ -738,11 +794,47 @@ void PivotTable::convertToBaseCurrency( void )
           if ( it_row.data().count() <= column )
             throw new MYMONEYEXCEPTION(QString("Column %1 out of grid range (%2) in PivotTable::convertToBaseCurrency").arg(column).arg(it_row.data().count()));
 
-          // (acejones) Would be nice to have
-          // MyMoneyMoney& MyMoneyMoney::operator*=(const MyMoneyMoney&)
-          // because then we could just do the following:
-          // it_row.data()[column] *= it_row.key().currencyPrice(valuedate);
-          double conversionfactor = it_row.key().currencyPrice(valuedate).toDouble();
+          double conversionfactor = it_row.key().baseCurrencyPrice(valuedate).toDouble();
+          double oldval = it_row.data()[column].toDouble();
+          double value = oldval * conversionfactor;
+          it_row.data()[column] = MyMoneyMoney( value );
+
+          DEBUG_OUTPUT_IF(conversionfactor != 1.0 ,QString("Factor of %1, value was %2, now %3").arg(conversionfactor).arg(DEBUG_SENSITIVE(oldval)).arg(DEBUG_SENSITIVE(it_row.data()[column].toDouble())));
+
+          // Move to the end of the next period
+          valuedate = valuedate.addDays(1).addMonths( m_config_f.columnPitch() ).addDays(-1);
+
+          ++column;
+        }
+        ++it_row;
+      }
+      ++it_innergroup;
+    }
+    ++it_outergroup;
+  }
+}
+
+void PivotTable::convertToDeepCurrency( void )
+{
+  DEBUG_ENTER(__PRETTY_FUNCTION__);
+
+  TGrid::iterator it_outergroup = m_grid.begin();
+  while ( it_outergroup != m_grid.end() )
+  {
+    TOuterGroup::iterator it_innergroup = (*it_outergroup).begin();
+    while ( it_innergroup != (*it_outergroup).end() )
+    {
+      TInnerGroup::iterator it_row = (*it_innergroup).begin();
+      while ( it_row != (*it_innergroup).end() )
+      {
+        QDate valuedate = m_beginDate.addMonths( m_config_f.columnPitch() ).addDays(-1);
+        unsigned column = 1;
+        while ( column < m_numColumns )
+        {
+          if ( it_row.data().count() <= column )
+            throw new MYMONEYEXCEPTION(QString("Column %1 out of grid range (%2) in PivotTable::convertToDeepCurrency").arg(column).arg(it_row.data().count()));
+
+          double conversionfactor = it_row.key().deepCurrencyPrice(valuedate).toDouble();
           double oldval = it_row.data()[column].toDouble();
           double value = oldval * conversionfactor;
           it_row.data()[column] = MyMoneyMoney( value );

@@ -1,3 +1,9 @@
+2005-02-14 Ace Jones <acejones@users.sourceforge.net>
+  * Fixed pivot table reports to handle foreign stocks
+  * Fixed report unit test helpers to deal with foreign currencies better
+  * Fixed MyMoneyMoney multiplication overflow in account query reports
+  * Made MyMoneyMoney::reduce() public so I can use it in reports
+  
 2005-02-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Use the correct account when selecting 'edit' from within
     the institution view

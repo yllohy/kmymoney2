@@ -663,6 +663,8 @@ void QueryTable::constructPerformanceRow( const MyMoneyAccount& account, TableRo
 
 void QueryTable::constructAccountTable(void)
 {
+  DEBUG_ENTER(__PRETTY_FUNCTION__);
+  
   MyMoneyFile* file = MyMoneyFile::instance();
 
   QValueList<MyMoneyAccount> accounts = file->accountList();
@@ -702,7 +704,9 @@ void QueryTable::constructAccountTable(void)
       if ( ! accountcurrency.isCurrency() )
       {
         MyMoneySecurity stockcurrency = MyMoneyFile::instance()->security(accountcurrency.tradingCurrency());
-        stockprice = file->price(accountcurrency.id(),stockcurrency.id(),QDate::currentDate()).rate();
+        stockprice = file->price(accountcurrency.id(),stockcurrency.id(),QDate::currentDate())
+          .rate()
+          .reduce();
         accountcurrency = stockcurrency;        
       }
 
@@ -710,13 +714,17 @@ void QueryTable::constructAccountTable(void)
       {
         // display currency is base currency, so set the accountcurrencyprice
         if ( accountcurrency.id() != file->baseCurrency().id() )
-          accountcurrencyprice = file->price(accountcurrency.id(),file->baseCurrency().id(),m_config.toDate(),false).rate();
+          accountcurrencyprice = file->price(accountcurrency.id(),file->baseCurrency().id(),m_config.toDate(),false)
+            .rate()
+            .reduce();
       }
       else
       {
         // display currency is the account currency.  display this fact in the report
         qaccountrow["currency"] = accountcurrency.tradingSymbol();
       }
+      
+      MyMoneyMoney netprice = (stockprice * accountcurrencyprice).reduce();
 
       qaccountrow["account"] = (*it_account).name();
       qaccountrow["accountid"] = (*it_account).id();
@@ -734,8 +742,10 @@ void QueryTable::constructAccountTable(void)
       MyMoneyMoney shares = file->balance((*it_account).id(),m_config.toDate());
       qaccountrow["shares"] = shares.toString();
 
-      qaccountrow["price"] = ( stockprice * accountcurrencyprice ).toString();
-      qaccountrow["value"] = ( stockprice * accountcurrencyprice * shares ).toString();
+      qaccountrow["price"] = ( netprice ).toString();
+      qaccountrow["value"] = ( netprice * shares.reduce() ).toString();
+
+      DEBUG_OUTPUT(QString("shares=%1 price=%2 value=%3").arg(qaccountrow["shares"],qaccountrow["price"],qaccountrow["value"]));
 
       QCString iid = (*it_account).institutionId();
       if ( iid.isEmpty() )
