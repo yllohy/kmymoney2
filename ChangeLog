@@ -1,3 +1,7 @@
+2004-09-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added KBanking support supplied by Martin Preuss
+  * Set focus to register after deleting a transaction
+
 2004-09-04 Ace Jones <acejones@users.sourceforge.net>
   * Added support for Quicken "web connect".  To enable this, set up KMM to
     handle the mimetypes "application/vnd.intu.qfx", "application/x-ofx".  KMM
@@ -14,6 +18,12 @@
   * Added set/get functions to MyMoneyMoney for completeness
   * Added formatting testcases to MyMoneyMoneyTest
   * Improved libofx autoconf logic and put into separate file
+  * Check for a minimum version of the automake package
+
+2004-09-02 Martin Preuss <aquamaniac@users.sourceforge.net>
+  * added optional support for next generation of LibOFX
+  * Online banking: Importing transaction statements from the result of
+    online requests now works.
 
 2004-08-31 Ace Jones <acejones@users.sourceforge.net>
   * Added importing of OFX files
@@ -33,6 +43,12 @@
   * Fixed #1016219 (Account creation fails after loan creation)
   * Added page to loan account wizard to specifiy the loan payout transaction
   * More investment view work (now can create and edit all transaction types)
+
+2004-08-26 Martin Preuss <aquamaniac@users.sourceforge.net>
+  * added support for online banking using kbanking
+    (http://www.aquamaniac.de/aqbanking/)
+    configure now checks whether KBanking is available and simply skips
+    support for it if kbanking is not found.
 
 2004-08-24 Ace Jones <acejones@users.sourceforge.net>
   * Removed "Create Me" graphics from all dialogs 
