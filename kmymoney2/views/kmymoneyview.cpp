@@ -629,7 +629,8 @@ void KMyMoneyView::saveFile(const KURL& url)
       "of KMyMoney2. If "
       "you still want to use prior versions of KMyMoney2 with your data files, "
       "please make sure you keep a backup-file of your finance data. "
-      "If you want to abort this operation, please press Cancel now")) == KMessageBox::Cancel)
+      "If you want to abort this operation, please press Cancel now"),
+      QString::null, KStdGuiItem::cont(), "WarningNewFileVersion0.5") == KMessageBox::Cancel)
     return;
 
   IMyMoneyStorageFormat* pWriter = NULL;
