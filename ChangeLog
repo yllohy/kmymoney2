@@ -1,3 +1,7 @@
+2002-01-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * added more functionality to the split transaction handling
+    which is not yet done.
+
 2002-01-16 Michael Edwardes <mte@users.sourceforge.net>
   * Removed some old 'recurring transactions' code.
   * Removed the unneeded KMainView class and converted KMyMoneyView
