@@ -53,10 +53,24 @@ public:
   bool isOpen();
 
   /**
-    * Helper method for account types
-    * FIXME: Create some helpers to convert to/from ints
-  **/
-  static QString accountTypeToString(MyMoneyAccount::accountTypeE accountType);
+    * This method is used to convert the internal representation of
+    * an account type into a human readable format
+    *
+    * @param accountType numerical representation of the account type.
+                         For possible values, see MyMoneyAccount::accountTypeE
+    * @return QString representing the human readable form
+    */
+  static const QString accountTypeToString(const MyMoneyAccount::accountTypeE accountType);
+
+  /**
+    * This method is used to convert an account type from it's
+    * string form to the internal used numeric value.
+    *
+    * @param accountType reference to a QString containing the string to convert
+    * @return accountTypeE containing the internal used numeric value. For possible
+    *         values see MyMoneyAccount::accountTypeE
+    */
+  static const MyMoneyAccount::accountTypeE stringToAccountType(const QString& type);
 };
 
 #endif

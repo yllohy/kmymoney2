@@ -81,11 +81,39 @@ void KMyMoneyFile::reset()
 */
 }
 
-QString KMyMoneyFile::accountTypeToString(MyMoneyAccount::accountTypeE accountType)
+void KMyMoneyFile::open()
+{
+  if(m_storage != 0)
+    close();
+
+  m_storage = new MyMoneySeqAccessMgr;
+  MyMoneyFile::instance()->attachStorage(m_storage);
+  m_open = true;
+}
+
+void KMyMoneyFile::close()
+{
+  if(m_storage != 0) {
+    MyMoneyFile::instance()->detachStorage(m_storage);
+    delete m_storage;
+    m_storage = 0;
+  }
+  m_open = false;
+}
+
+bool KMyMoneyFile::isOpen()
+{
+  /* keeping this debug here for now because it
+    highlights the infinite loop bug on exit
+  */
+  qDebug("returning open %d", m_open);
+  return m_open;
+}
+
+const QString KMyMoneyFile::accountTypeToString(const MyMoneyAccount::accountTypeE accountType)
 {
   QString returnString;
 
-  // FIXME: We need to localise these strings
   switch (accountType)
   {
     case MyMoneyAccount::Checkings:
@@ -128,32 +156,32 @@ QString KMyMoneyFile::accountTypeToString(MyMoneyAccount::accountTypeE accountTy
   return returnString;
 }
 
-void KMyMoneyFile::open()
+const MyMoneyAccount::accountTypeE KMyMoneyFile::stringToAccountType(const QString& type)
 {
-  if(m_storage != 0)
-    close();
+  MyMoneyAccount::accountTypeE rc = MyMoneyAccount::UnknownAccountType;
 
-  m_storage = new MyMoneySeqAccessMgr;
-  MyMoneyFile::instance()->attachStorage(m_storage);
-  m_open = true;
+  if(type == i18n("Checkings"))
+    rc = MyMoneyAccount::Checkings;
+  else if(type == i18n("Savings"))
+    rc = MyMoneyAccount::Savings;
+  else if(type == i18n("Cash"))
+    rc = MyMoneyAccount::Cash;
+  else if(type == i18n("Certificate of Deposit"))
+    rc = MyMoneyAccount::CertificateDep;
+  else if(type == i18n("Investment"))
+    rc = MyMoneyAccount::Investment;
+  else if(type == i18n("Money Market"))
+    rc = MyMoneyAccount::MoneyMarket;
+  else if(type == i18n("Asset"))
+    rc = MyMoneyAccount::Asset;
+  else if(type == i18n("Liability"))
+    rc = MyMoneyAccount::Liability;
+  else if(type == i18n("Currency"))
+    rc = MyMoneyAccount::Currency;
+  else if(type == i18n("Income"))
+    rc = MyMoneyAccount::Income;
+  else if(type == i18n("Expense"))
+    rc = MyMoneyAccount::Expense;
+
+  return rc;
 }
-
-void KMyMoneyFile::close()
-{
-  if(m_storage != 0) {
-    MyMoneyFile::instance()->detachStorage(m_storage);
-    delete m_storage;
-    m_storage = 0;
-  }
-  m_open = false;
-}
-
-bool KMyMoneyFile::isOpen()
-{
-  /* keeping this debug here for now because it
-    highlights the infinite loop bug on exit
-  */
-  qDebug("returning open %d", m_open);
-  return m_open;
-}
-
