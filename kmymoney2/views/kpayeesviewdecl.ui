@@ -490,7 +490,7 @@
 <customwidgets>
     <customwidget>
         <class>kMyMoneyTitleLabel</class>
-        <header location="global">/home/james/src/kmymoney2/kmymoney2/widgets/kmymoneytitlelabel.h</header>
+        <header location="local">../widgets/kmymoneytitlelabel.h</header>
         <sizehint>
             <width>-1</width>
             <height>-1</height>
