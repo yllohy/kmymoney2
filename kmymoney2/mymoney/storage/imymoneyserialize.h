@@ -87,12 +87,18 @@ public:
   virtual void setLastModificationDate(const QDate& val) = 0;
 
   /**
-    * This method returns a list of the accounts
-    * inside a MyMoneyStorage object
+    * This method returns a list of accounts inside a MyMoneyFile object.
+    * An optional parameter is a list of id's. If this list is emtpy (the default)
+    * the returned list contains all accounts, otherwise only those referenced
+    * in the id-list.
     *
-    * @return QMap<QString,MyMoneyAccount> with accounts
+    * @param idlist QCStringList of account ids of those accounts that
+    *        should be returned. If this list is empty, all accounts
+    *        currently known will be returned.
+    *
+    * @return QValueList containing the account objects
     */
-  virtual const QValueList<MyMoneyAccount> accountList(void) const = 0;
+  virtual const QValueList<MyMoneyAccount> accountList(const QCStringList& idlist = QCStringList()) const = 0;
 
   /**
     * This method returns a list of the institutions
@@ -352,7 +358,7 @@ public:
     * @return QValueList of all MyMoneyReport objects.
     */
   virtual const QValueList<MyMoneyReport> reportList( void ) const = 0;
-  
+
 };
 
 #endif

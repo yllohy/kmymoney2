@@ -474,12 +474,18 @@ public:
   virtual const unsigned int institutionCount(void) const = 0;
 
   /**
-    * This method returns a list of the accounts
-    * inside a MyMoneyStorage object
+    * This method returns a list of accounts inside a MyMoneyFile object.
+    * An optional parameter is a list of id's. If this list is emtpy (the default)
+    * the returned list contains all accounts, otherwise only those referenced
+    * in the id-list.
     *
-    * @return QValueList<MyMoneyAccount> with accounts
+    * @param idlist QCStringList of account ids of those accounts that
+    *        should be returned. If this list is empty, all accounts
+    *        currently known will be returned.
+    *
+    * @return QValueList containing the account objects
     */
-  virtual const QValueList<MyMoneyAccount> accountList(void) const = 0;
+  virtual const QValueList<MyMoneyAccount> accountList(const QCStringList& idlist = QCStringList()) const = 0;
 
   /**
     * This method is used to return the standard liability account
@@ -689,7 +695,7 @@ public:
     * @return QValueList of all MyMoneyCurrency objects.
     */
   virtual const QValueList<MyMoneyCurrency> currencyList(void) const = 0;
-  
+
   /**
     * This method is used to retrieve the list of all reports
     * known to the engine.
@@ -699,7 +705,7 @@ public:
     * @return QValueList of all MyMoneyReport objects.
     */
   virtual const QValueList<MyMoneyReport> reportList( void ) const = 0;
-  
+
   /**
     * This method is used to add a new report to the engine.
     * It must be sure, that the id of the object is not filled. When the
@@ -711,7 +717,7 @@ public:
     * @param report reference to the MyMoneyReport object
     */
   virtual void addReport( MyMoneyReport& report ) = 0;
-  
+
   /**
     * This method is used to modify an existing MyMoneyReport
     * object. Therefor, the id attribute of the object must be set.
@@ -721,7 +727,7 @@ public:
     * @param report const reference to the MyMoneyReport object to be updated
     */
   virtual void modifyReport( const MyMoneyReport& report ) = 0;
-  
+
   /**
     * This method returns the number of reports currently known to file
     * in the range 0..MAXUINT
@@ -729,7 +735,7 @@ public:
     * @return number of reports known to file
     */
   virtual unsigned countReports( void ) const = 0;
-  
+
   /**
     * This method is used to retrieve a single MyMoneyReport object.
     * The id of the object must be supplied in the parameter @p id.
@@ -740,7 +746,7 @@ public:
     * @return MyMoneyReport object
     */
   virtual MyMoneyReport report( const QCString& id ) const = 0;
-  
+
   /**
     * This method is used to remove an existing MyMoneyReport object
     * from the engine. The id attribute of the object must be set.
@@ -750,7 +756,7 @@ public:
     * @param report const reference to the MyMoneyReport object to be updated
     */
   virtual void removeReport(const MyMoneyReport& report) = 0;
-  
+
 };
 
 #endif

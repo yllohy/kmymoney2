@@ -131,14 +131,17 @@ const MyMoneyAccount& MyMoneySeqAccessMgr::account(const QCString id) const
   throw new MYMONEYEXCEPTION(msg);
 }
 
-const QValueList<MyMoneyAccount> MyMoneySeqAccessMgr::accountList(void) const
+const QValueList<MyMoneyAccount> MyMoneySeqAccessMgr::accountList(const QCStringList& idlist) const
 {
   QValueList<MyMoneyAccount> list;
   QMap<QCString, MyMoneyAccount>::ConstIterator it;
 
   for(it = m_accountList.begin(); it != m_accountList.end(); ++it) {
-    if(!isStandardAccount((*it).id()))
-      list.append(*it);
+    if(!isStandardAccount((*it).id())) {
+      if(idlist.isEmpty() || idlist.findIndex((*it).id()) != -1) {
+        list.append(*it);
+      }
+    }
   }
   return list;
 }
@@ -1576,28 +1579,28 @@ const QValueList<MyMoneyReport> MyMoneySeqAccessMgr::reportList(void) const
   return result;
 }
 
-void MyMoneySeqAccessMgr::addReport( MyMoneyReport& report ) 
-{ 
+void MyMoneySeqAccessMgr::addReport( MyMoneyReport& report )
+{
   if(!report.id().isEmpty())
     throw new MYMONEYEXCEPTION("transaction already contains an id");
-    
+
   report.setId( nextReportID() );
-  
+
   m_reportList[report.id()] = report;
-  
+
   touch();
 
 }
 
-void MyMoneySeqAccessMgr::loadReport( const MyMoneyReport& report ) 
-{ 
+void MyMoneySeqAccessMgr::loadReport( const MyMoneyReport& report )
+{
   // in order to be 'loaded', this report must have an ID, and it must not already
   // be in the list.
   if ( report.id().isEmpty() )
     throw new MYMONEYEXCEPTION(QString("Unable to load report %1 with unassigned ID during loadReport()").arg(report.name()));
   if ( m_reportList.contains(report.id()) )
     throw new MYMONEYEXCEPTION(QString("Duplicate report %1 during loadReport()").arg(report.id()));
-  
+
   m_reportList[report.id()] = report;
 }
 
@@ -1611,7 +1614,7 @@ void MyMoneySeqAccessMgr::modifyReport( const MyMoneyReport& report )
     throw new MYMONEYEXCEPTION(msg);
   }
   touch();
-  
+
   *it = report;
 }
 
@@ -1623,14 +1626,14 @@ const QCString MyMoneySeqAccessMgr::nextReportID(void)
   return id;
 }
 
-unsigned MyMoneySeqAccessMgr::countReports(void) const 
-{ 
-  return m_reportList.count(); 
+unsigned MyMoneySeqAccessMgr::countReports(void) const
+{
+  return m_reportList.count();
 }
 
-MyMoneyReport MyMoneySeqAccessMgr::report( const QCString& _id ) const 
-{ 
-  return m_reportList[_id]; 
+MyMoneyReport MyMoneySeqAccessMgr::report( const QCString& _id ) const
+{
+  return m_reportList[_id];
 }
 
 void MyMoneySeqAccessMgr::removeReport( const MyMoneyReport& report )

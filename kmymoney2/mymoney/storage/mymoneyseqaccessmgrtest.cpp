@@ -1482,3 +1482,21 @@ void MyMoneySeqAccessMgrTest::testCurrencyList()
                 CPPUNIT_FAIL("Unexpected exception");
 	}
 }
+
+void MyMoneySeqAccessMgrTest::testAccountList()
+{
+	CPPUNIT_ASSERT(m->accountList().count() == 0);
+	testAddNewAccount();
+	CPPUNIT_ASSERT(m->accountList().count() == 2);
+	QCStringList list;
+	list << "A000001";
+	QValueList<MyMoneyAccount> accList = m->accountList(list);
+	CPPUNIT_ASSERT(accList.count() == 1);
+	CPPUNIT_ASSERT(accList.first().id() == "A000001");
+	list.clear();
+	list << "A000002";
+	accList = m->accountList(list);
+	CPPUNIT_ASSERT(accList.count() == 1);
+	CPPUNIT_ASSERT(accList.first().id() == "A000002");
+}
+
