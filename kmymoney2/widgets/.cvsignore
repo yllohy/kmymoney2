@@ -7,3 +7,5 @@ Makefile.in
 *.o
 *_meta_unload.cpp
 *~
+kschedulebriefwidget.cpp
+kschedulebriefwidget.h
