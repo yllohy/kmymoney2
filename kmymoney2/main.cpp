@@ -34,9 +34,9 @@
 // Project Includes
 #include "kmymoney2.h"
 #include "kstartuplogo.h"
-
 #include "mymoney/mymoneyfile.h"
 #include "views/kbanklistitem.h"
+#include "kapptest.h"
 
 static const char *description =
   I18N_NOOP("KMyMoney, the Personal Finance Manager for KDE.\n\nPlease consider contributing to this project with code and or suggestions.");
@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
     "(c) 2000-2004, Michael Edwardes", feature,
     "http://kmymoney2.sourceforge.net/",
     "kmymoney2-developer@lists.sourceforge.net");
-    
+
   aboutData.addAuthor("Michael Edwardes (babelfish_mte on jabber & msn).", I18N_NOOP("Project Manager"), "mte@users.sourceforge.net");
   aboutData.addAuthor("Felix Rodriguez", I18N_NOOP("Project Admin"), "frodriguez@users.sourceforge.net");
   aboutData.addCredit("Javier Campos Morales", I18N_NOOP("Developer & Artist"), "javi_c@users.sourceforge.net");
@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
 
   KApplication* a = new KApplication();
   KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
-  
+
   // setup the MyMoneyMoney locale settings according to the KDE settings
   MyMoneyMoney::setThousandSeparator(*(KGlobal::locale()->monetaryThousandsSeparator().latin1()));
   MyMoneyMoney::setDecimalSeparator(*(KGlobal::locale()->monetaryDecimalSymbol().latin1()));
@@ -120,15 +120,14 @@ int main(int argc, char *argv[])
     qDebug("DCOP registration failed. Some functions are not available.");
   }
 
-  
+
   kmymoney2->show();
   kmymoney2->setEnabled(false);
-  
+
   // force complete paint of widgets
   qApp->processEvents();
 
   int rc = 0;
-
 
   KURL url;
   // make sure, we take the file provided on the command
@@ -148,13 +147,17 @@ int main(int argc, char *argv[])
     KTipDialog::showTip(kmymoney2, "", false);
   }
 
+  CREATE_TEST_CONTAINER();
+
   if(kmymoney2 != 0) {
     kmymoney2->updateCaption();
     args->clear();
     kmymoney2->setEnabled(true);
     rc = a->exec();
   }
-  
+
+  DESTROY_TEST_CONTAINER();
+
   delete a;
   KAccountListItem::cleanCache();
 
