@@ -41,12 +41,6 @@
 
 // #define NOSUBFOLDERS 1 // test only
 
-// to have a single investment account for all stocks, define its name here.
-// if it exists within the gnucash file, it will be marked as an investment account,
-// otherwise it will be created as such.
-// the default behaviour is to create one investment account for each stock
-//#define INVACCT "Investments"
-
 bool gncdebug = false;
 
 unsigned int MyMoneyStorageGNC::fileVersionRead = 0;
@@ -417,7 +411,7 @@ void MyMoneyStorageGNC::readPrice(const QDomElement& priceElement) {
     MyMoneyMoney priceValue(gncPriceValue);
     // FIXME PRICE
     // e.addPriceHistory(priceDate, priceValue);
-
+    e.setTradingCurrency (QCString(gncPriceCurrencyId));
     pStoragePtr->modifySecurity(e);
 
 }
@@ -493,15 +487,6 @@ void MyMoneyStorageGNC::readAccount(const QDomElement& account) {
 #endif
         acc.setParentAccountId(QCString(gncParent));
         // now determine the account type and its parent id
-#ifdef INVACCT
-        if (gncName == INVACCT) {
-            acc.setAccountType(MyMoneyAccount::Investment);
-            if (!bHasParent)
-                acc.setParentAccountId(QCString(m_mainName[m_mainAssetId]));
-            gncType = ""; // disable further processing
-            m_invAcctStored = true;
-        }
-#endif
 
         if(QString("BANK") == gncType) {
             acc.setAccountType(MyMoneyAccount::Checkings);
@@ -516,26 +501,13 @@ void MyMoneyStorageGNC::readAccount(const QDomElement& account) {
             if (!bHasParent)
                 acc.setParentAccountId(QCString(m_mainName[m_mainAssetId]));
         } else if(QString("STOCK") == gncType || QString("MUTUAL") == gncType ) {
-      #ifdef INVACCT
-      if (!m_invAcctStored) {
-          MyMoneyAccount iacc = acc;
-    iacc.setName (INVACCT);
-    iacc.setAccountType(MyMoneyAccount::Investment);
-    iacc.setParentAccountId(QCString(m_mainName[m_mainAssetId]));
-    m_storage->addAccount (iacc);
-    id = iacc.id();
-    m_invAcctStored = true;
-      } else {
-          id = m_invAcctId;
-      }
-      #else
             // need both an investment and a stock account
             acc.setAccountType(MyMoneyAccount::Investment);
             if (!bHasParent)
                 acc.setParentAccountId(QCString(m_mainName[m_mainAssetId]));
+          if (QString("ISO4217") != gncCurrencySpace) { // emergency fix for brokerage accounts,permanent fix in rewrite
             m_storage->addAccount(acc);
             id = acc.id();
-      #endif
             m_mapIds[QCString(id)] = QCString(id); // map to ourself so that stock account can be linked as child later
             if (gncdebug) qDebug("Account %s has id of %s, type of %d, parent is %s",
                                  acc.name().data(), id.data(), acc.accountType(), acc.parentAccountId().data());
@@ -548,6 +520,7 @@ void MyMoneyStorageGNC::readAccount(const QDomElement& account) {
             if (gncdebug) qDebug ("Acct security search, key = %s, found id = %s",
                                   gncCurrencyId.latin1(), e.id().data());
             acc.setCurrencyId (e.id());
+	   }
         // FIXME: Equity base account is now known
         } else if(QString("LIABILITY") == gncType  || QString("EQUITY") == gncType) {
             acc.setAccountType(MyMoneyAccount::Liability);
@@ -579,11 +552,6 @@ void MyMoneyStorageGNC::readAccount(const QDomElement& account) {
     } else {
         throw new MYMONEYEXCEPTION (QObject::tr("Can only handle account version 2.0.0"));
     }
-    #ifdef INVACCT
-    if (acc.accountType() == MyMoneyAccount::Investment) {
-        m_invAcctId = id;
-    }
-    #endif
     // assign the gnucash id as the key into the map to find our id
     m_mapIds[QCString(gncAccountId)] = QCString(id);
 
@@ -803,6 +771,7 @@ void MyMoneyStorageGNC::saveSplits (MyMoneyTransaction& tx, MyMoneySplit s) {
         newPrice = MyMoneyMoney ( price.toDouble(), (signed64)NEW_DENOM );
         // FIXME PRICE
         // e.addPriceHistory(m_txDatePosted, newPrice);
+	e.setTradingCurrency (QCString(m_txCommodity));
         if (gncdebug) qDebug ("added price for %s, %s date %s",
                 e.name().latin1(), price.toString().latin1(), tx.postDate().toString(Qt::ISODate).latin1());
         pStoragePtr->modifySecurity(e);
