@@ -1,3 +1,13 @@
+2003-09-16 Michael Edwardes <mte@users.sourceforge.net>
+  * You can only create schedules with a start date <= today if
+    they are not automatically entered.
+  * New option to the settings dialog to check schedules upon startup.
+  * MyMoneySeqAccessMgr::scheduleList() now calls MyMoneySchedule::isOverdue()
+    which takes into account the recorded payments for a schedule.
+  * Refresh the schedule view list items starting with the background colour.
+  * Take into account recorded payments when calculating the next payment
+    for a schedule.
+    
 2003-09-15 Michael Edwardes <mte@users.sourceforge.net>
   * Fix memory leak in new account wizard when checking if a payee exists.
   * Individual occurences for a schedule can now be entered
