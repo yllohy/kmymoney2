@@ -25,8 +25,13 @@
 
 MyMoneyEquity::MyMoneyEquity()
 {
-	//m_equityType = ETYPE_NONE;
-	//m_lCurrentPrice = 0;
+	m_equityType = ETYPE_NONE;
+}
+
+MyMoneyEquity::MyMoneyEquity(const QCString& id, const MyMoneyEquity& equity)
+{
+  m_id = id;
+  *this = equity;
 }
 
 MyMoneyEquity::~MyMoneyEquity()

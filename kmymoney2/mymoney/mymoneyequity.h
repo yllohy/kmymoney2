@@ -43,6 +43,7 @@ class MyMoneyEquity
 {
 public: 
   MyMoneyEquity();
+  MyMoneyEquity(const QCString& id, const MyMoneyEquity& equity);
   ~MyMoneyEquity();
 
 public:
@@ -53,20 +54,18 @@ public:
     ETYPE_NONE
   } eEQUITYTYPE;
 
-  QString   getEquityName()                       { return m_name; }
+  QCString  id() const  { return m_id; }
+
+  QString   getEquityName() const                 { return m_name; }
   void      setEquityName(const String& str)      { m_name = str; }
 
-	QString   getEquitySymbol()                     { return m_symbol; }
+	QString   getEquitySymbol() const               { return m_symbol; }
 	void      setEquitySymbol(const String& str)    { m_symbol = str; }
 
-	eEQUITYTYPE   getEquityType()                       { return m_equityType; }
+	eEQUITYTYPE   getEquityType() const                 { return m_equityType; }
 	void          setEquityType(const eEQUITYTYPE& e)   { m_equityType = e; }
 
-	QString   getEquityMarket()                     { return m_market; }
-	void      setEquityMarket(const String& str)    { m_market = str; }
-
-	MyMoneyMoney    getCurrentPrice()                       { return m_currentPrice; }
-	void            setCurrentPrice(const MyMoneyMoney& m)  { m_currentPrice = m; }
+  
   /** No descriptions */
   void setEquityType(const String& str);
 
@@ -77,7 +76,8 @@ public:
   void  removePriceHistory(QDate& date);
 	
 private:
-	QString m_name;
+  QCString m_id;
+  QString m_name;
 	QString m_symbol;
 	QString m_market;
 	eEQUITYTYPE m_equityType;

@@ -148,6 +148,13 @@ public:
                                      const QDate& = QDate(),
                                      const QDate& = QDate(),
                                      const bool = false) const = 0;
+
+   /**
+    * This method returns a list of equity objects that the engine has
+    * knowledge of.
+    */
+  virtual const QValueList<MyMoneyEquity> equityList(void) const = 0;
+                                       
   /**
     * This method is used to return the standard liability account
     * @return MyMoneyAccount liability account(group)

@@ -528,6 +528,7 @@ public:
   virtual const unsigned long payeeId(void) { return m_nextPayeeID; };
   virtual const unsigned long institutionId(void) { return m_nextInstitutionID; };
   virtual const unsigned long scheduleId(void) { return m_nextScheduleID; };
+  virtual const unsigned long equityId(void) { return m_nextEquityID; };
   
   /**
     * This method is used to extract a value from 
@@ -647,6 +648,13 @@ public:
     */
   const MyMoneyEquity equity(const QCString& id) const;
 
+
+  /**
+    * This method returns a list of equity objects that the engine has
+    * knowledge of.
+    */
+  const QValueList<MyMoneyEquity> equityList(void) const;
+
   /**
     * This method is used to extract a list of scheduled transactions
     * according to the filter criteria passed as arguments.
@@ -694,6 +702,7 @@ private:
   static const int TRANSACTION_ID_SIZE = 18;
   static const int PAYEE_ID_SIZE = 6;
   static const int SCHEDULE_ID_SIZE = 6;
+  static const int EQUITY_ID_SIZE = 6;
 
   static const int YEAR_SIZE = 4;
   static const int MONTH_SIZE = 2;
@@ -799,6 +808,13 @@ private:
   unsigned long m_nextScheduleID;
 
   /**
+    * The member variable m_nextEquityID keeps the number that will be
+    * assigned to the next equity object created.  It is maintained by
+    * nextEquityID()
+    */
+  unsigned long m_nextEquityID;
+  
+  /**
     * The member variable m_institutionList is the container for the
     * institutions known within this file.
     */
@@ -896,6 +912,12 @@ private:
     * @return id for a scheduled transaction
     */
   const QCString nextScheduleID(void);
+
+  /**
+    * This method is used to get the next valid ID for an equity object.
+    * @return id for an equity object
+    */
+  const QCString nextEquityID(void);
 
   /**
     * This method re-parents an existing account

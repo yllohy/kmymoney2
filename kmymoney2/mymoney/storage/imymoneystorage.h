@@ -534,7 +534,7 @@ public:
     */
   virtual const MyMoneyEquity equity(const QCString& id) const = 0;
 
-
+ 
   /**
     * This method is used to add a scheduled transaction to the engine.
     * It must be sure, that the id of the object is not filled. When the

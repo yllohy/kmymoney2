@@ -180,6 +180,10 @@ void MyMoneyStorageXML::writeFile(QIODevice* qf, IMyMoneySerialize* storage)
   writeSchedules(schedules);
   mainElement.appendChild(schedules);
 
+  QDomElement equities = m_doc->createElement("EQUITIES");
+  writeEquities(equities);
+  mainElement.appendChild(equities);
+
   QTextStream stream(qf);
   //stream.setEncoding(QTextStream::Locale);
   QCString temp = m_doc->toCString();
@@ -938,12 +942,41 @@ void MyMoneyStorageXML::writeSplit(QDomElement& splitElement, const MyMoneySplit
 
 void MyMoneyStorageXML::writeEquities(QDomElement& equities)
 {
-
+  QValueList<MyMoneyEquity> equityList = m_storage->equityList();
+  if(equityList.size())
+  {
+    for(QValueList<MyMoneyEquity>::Iterator it = equityList.begin(); it != equityList.end(); ++it)
+    {
+      QDomElement equity = m_doc->createElement("EQUITY");
+      writeEquity(equity, (*it));
+      equities.appendChild(equity);
+    }
+  }
+  
 }
 
 void MyMoneyStorageXML::writeEquity(QDomElement& equityElement, const MyMoneyEquity& equity)
 {
+  equityElement.setAttribute(QString("name"), equity.getEquityName());
+  equityElement.setAttribute(QString("symbol"), equity.getEquitySymbol());
+  equityElement.setAttribute(QString("type"), static_cast<int>(equity.getEquityType()));
+  equityElement.setAttribute(QString("id"), equity.id());
 
+  QDomElement history = m_doc->createElement("HISTORY");
+  
+  equity_price_history priceHistory = equity.getConstPriceHistory();
+  if(priceHistory.size())
+  {
+    for(equity_price_history::ConstIterator it = priceHistory.begin(); it != priceHistory.end(); ++it)
+    {
+      QDomElement entry = m_doc->createElement("ENTRY");
+      entry.setAttribute(QString("date"), getString(it.key()));
+      entry.setAttribute(QString("price"), it.data().toString());
+      history.appendChild(entry);
+    }
+  }
+
+  equityElement.appendChild(history);
 }
 
 void MyMoneyStorageXML::readEquities(QDomElement& equities)

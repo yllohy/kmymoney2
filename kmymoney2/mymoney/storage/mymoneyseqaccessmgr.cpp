@@ -36,6 +36,7 @@ MyMoneySeqAccessMgr::MyMoneySeqAccessMgr()
   m_nextTransactionID = 0;
   m_nextPayeeID = 0;
   m_nextScheduleID = 0;
+  m_nextEquityID = 0;
   m_userName =
   m_userStreet =
   m_userTown =
@@ -402,6 +403,15 @@ const QCString MyMoneySeqAccessMgr::nextScheduleID(void)
   id = "SCH" + id.rightJustify(SCHEDULE_ID_SIZE, '0');
   return id;
 }
+
+const QCString MyMoneySeqAccessMgr::nextEquityID(void)
+{
+  QCString id;
+  id.setNum(++m_nextEquityID);
+  id = "E" + id.rightJustify(EQUITY_ID_SIZE, '0');
+  return id;
+}
+
 
 void MyMoneySeqAccessMgr::addTransaction(MyMoneyTransaction& transaction, const bool skipAccountUpdate)
 {
@@ -1380,4 +1390,15 @@ void MyMoneySeqAccessMgr::removeEquity(const MyMoneyEquity& equity)
 const MyMoneyEquity MyMoneySeqAccessMgr::equity(const QCString& id) const
 {
   return MyMoneyEquity();
+}
+
+const QValueList<MyMoneyEquity> MyMoneySeqAccessMgr::equityList(void) const
+{
+  QValueList<MyMoneyEquity> list;
+  QMap<QCString, MyMoneyEquity>::ConstIterator it;
+  for(it = m_equitiesList.begin(); it != m_equitiesList.end(); ++it)
+  {
+    list.append(*it);
+  }
+  return list;
 }
