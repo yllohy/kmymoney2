@@ -25,7 +25,10 @@ package-messages:
 	$(MAKE) -f admin/Makefile.common package-messages
 	$(MAKE) -C po merge
 
-EXTRA_DIST += admin/cppunit.patch admin/acinclude.m4.in admin/libtool.m4.in admin/conf.change.pl admin/config.pl
+EXTRA_DIST += admin/cppunit.patch
+
+# The following line adds some files that are required to build an RPM
+EXTRA_DIST += admin/acinclude.m4.in admin/libtool.m4.in admin/conf.change.pl admin/config.pl
 
 dist-hook:
 	cd $(top_distdir) && perl admin/am_edit -padmin
