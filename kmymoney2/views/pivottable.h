@@ -28,6 +28,7 @@
 // QT Includes
 #include <qmap.h>
 #include <qvaluelist.h>
+#include <qcanvas.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -69,6 +70,16 @@ public:
   static void enable( bool _e ) { m_sEnabled = _e; }
 };
 
+class KReportChartView: public QCanvasView 
+{
+public:
+  QCanvas* m_canvas;
+  
+  KReportChartView( QWidget* parent, const char* name ): QCanvasView(parent,name) { m_canvas = new QCanvas(parent); setCanvas( m_canvas ); m_canvas->resize(600,600); }
+  ~KReportChartView() { if ( m_canvas ) delete m_canvas; }
+  static bool implemented(void) { return false; }
+};
+
 /**
   * Calculates a 'pivot table' of information about the transaction database.
   * Based on pivot tables in MS Excel, and implemented as 'Data Pilot' in
@@ -90,6 +101,27 @@ public:
 **/
 class PivotTable
 {
+public:
+  /**
+    * Create a Pivot table style report
+    *
+    * @param MyMoneyReport The configuration parameters for this report
+    */
+    PivotTable( const MyMoneyReport& _config_f );
+
+  /**
+    * Render the report to an HTML stream.
+    *
+    * @param showSubAccounts Whether to include all sub-accounts in the report (true) or just the top-most parents (false)
+    * @return QString HTML string representing the report
+    */
+    QString renderHTML( void ) const;
+    QString renderCSV( void ) const;
+    
+    void drawChart( KReportChartView& ) const;
+    
+    void dump( const QString& file ) const;
+
 protected:
   /**
     * Holds a description of a MyMoneyAccount suitable for use in the PivotTable
@@ -238,25 +270,6 @@ private:
     QDate m_endDate;
     
     MyMoneyReport m_config_f;
-
-public:
-  /**
-    * Create a Pivot table style report
-    *
-    * @param MyMoneyReport The configuration parameters for this report
-    */
-    PivotTable( const MyMoneyReport& _config_f );
-
-  /**
-    * Render the report to an HTML stream.
-    *
-    * @param showSubAccounts Whether to include all sub-accounts in the report (true) or just the top-most parents (false)
-    * @return QString HTML string representing the report
-    */
-    QString renderHTML( void ) const;
-    QString renderCSV( void ) const;
-    
-    void dump( const QString& file ) const;
 
 protected:
   /**

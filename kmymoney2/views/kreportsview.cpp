@@ -37,6 +37,8 @@
 #include <qiconset.h>
 #include <qpopupmenu.h>
 #include <qmessagebox.h>
+#include <qpushbutton.h>
+#include <qtooltip.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -79,11 +81,22 @@ using namespace reports;
 KReportsView::KReportTab::KReportTab(KTabWidget* parent, const MyMoneyReport& report ): 
   QWidget( parent, "reporttab" ), 
   m_part( new KHTMLPart( this, "reporttabpart" ) ),
+  m_chartView( new KReportChartView( this, "reportchart" ) ),
+  m_control( new kMyMoneyReportControlDecl( this, "reportcontrol" ) ),
   m_layout( new QVBoxLayout( this, 11, 6, "reporttablayout" ) ),
   m_reportId( report.id() ),
-  m_deleteMe( false )
+  m_deleteMe( false ),
+  m_showingChart( false )
 {
+  if ( ! KReportChartView::implemented() )
+  {
+    m_control->buttonChart->hide();
+  }
+
+  m_chartView->hide();
+  m_layout->addWidget( m_control ); //, 0, Qt::AlignTop );
   m_layout->addWidget( m_part->view() );
+  m_layout->addWidget( m_chartView );
   QIconSet icons(QPixmap("/usr/share/icons/default.kde/16x16/mimetypes/spreadsheet.png"));
   
   // I like this icon...
@@ -98,13 +111,7 @@ KReportsView::KReportTab::KReportTab(KTabWidget* parent, const MyMoneyReport& re
 
 void KReportsView::KReportTab::print(void)
 {
-  KHTMLPart part(this, "htmlpart_km2");
-
-  part.begin();
-  part.write(createTable());
-  part.end();
-
-  part.view()->print();
+  m_part->view()->print();
 }
 
 void KReportsView::KReportTab::copyToClipboard(void)
@@ -129,22 +136,8 @@ void KReportsView::KReportTab::saveAs( const QString& filename )
 
 void KReportsView::KReportTab::updateReport(void)
 {
-  QString links;
-
-  links += QString("<a href=\"/%1?command=configure\">%2</a>").arg(VIEW_REPORTS).arg(i18n("Configure"));
-  links += "&nbsp;|&nbsp;";
-  links += QString("<a href=\"/%1?command=duplicate\">%2</a>").arg(VIEW_REPORTS).arg(i18n("New Report"));
-  links += "&nbsp;|&nbsp;";
-  links += QString("<a href=\"/%1?command=copy\">%2</a>").arg(VIEW_REPORTS).arg(i18n("Copy to Clipboard"));
-  links += "&nbsp;|&nbsp;";
-  links += QString("<a href=\"/%1?command=save\">%2</a>").arg(VIEW_REPORTS).arg(i18n("Save to File"));
-  links += "&nbsp;|&nbsp;";
-  links += QString("<a href=\"/%1?command=delete\">%2</a>").arg(VIEW_REPORTS).arg(i18n("Delete"));
-  links += "&nbsp;|&nbsp;";
-  links += QString("<a href=\"/%1?command=close\">%2</a>").arg(VIEW_REPORTS).arg(i18n("Close"));
-    
   m_part->begin();
-  m_part->write(createTable(links));
+  m_part->write(createTable());
   m_part->end();
 }
 
@@ -171,6 +164,31 @@ QString KReportsView::KReportTab::createTable(const QString& links)
   }
   return html;
 
+}
+
+void KReportsView::KReportTab::toggleChart(void)
+{
+  // for now it will just SHOW the chart.  In the future it actually has to toggle it.
+
+  if ( m_showingChart )
+  {
+    m_part->show();
+    m_chartView->hide();  
+
+    m_control->buttonChart->setText( i18n( "Chart" ) );
+    QToolTip::add( m_control->buttonChart, i18n( "Show the chart version of this report" ) );
+  }
+  else
+  {
+    PivotTable t( MyMoneyFile::instance()->report(m_reportId) );
+    t.drawChart( *m_chartView );
+    m_part->hide();
+    m_chartView->show();  
+
+    m_control->buttonChart->setText( i18n( "Report" ) );
+    QToolTip::add( m_control->buttonChart, i18n( "Show the report version of this chart" ) );
+  }
+  m_showingChart = ! m_showingChart;
 }
 
 /**
@@ -396,6 +414,12 @@ void KReportsView::slotOpenReport(QListViewItem* item)
   }
 }
 
+void KReportsView::slotToggleChart(void)
+{
+  KReportTab* tab = dynamic_cast<KReportTab*>(m_reportTabWidget->currentPage());
+  tab->toggleChart();
+}
+
 void KReportsView::slotCloseCurrent(void)
 {
   slotClose(m_reportTabWidget->currentPage());
@@ -411,9 +435,22 @@ void KReportsView::slotClose(QWidget* w)
 void KReportsView::addReportTab(const MyMoneyReport& report)
 {
   KReportTab* tab = new KReportTab(m_reportTabWidget,report);
-  connect( tab->browserExtension(), SIGNAL(openURLRequest(const KURL&, const KParts::URLArgs&)),
-          this, SLOT(slotOpenURL(const KURL&, const KParts::URLArgs&)) );
-        
+
+  connect( tab->control()->buttonChart, SIGNAL(clicked()),
+    this, SLOT(slotToggleChart(void )));
+  connect( tab->control()->buttonConfigure, SIGNAL(clicked()),
+    this, SLOT(slotConfigure(void )));
+  connect( tab->control()->buttonNew, SIGNAL(clicked()),
+    this, SLOT(slotDuplicate(void )));
+  connect( tab->control()->buttonCopy, SIGNAL(clicked()),
+    this, SLOT(slotCopyView(void )));
+  connect( tab->control()->buttonExport, SIGNAL(clicked()),
+    this, SLOT(slotSaveView(void )));
+  connect( tab->control()->buttonDelete, SIGNAL(clicked()),
+    this, SLOT(slotDelete(void )));
+  connect( tab->control()->buttonClose, SIGNAL(clicked()),
+    this, SLOT(slotCloseCurrent(void )));
+    
   slotRefreshView();
   
   m_reportTabWidget->showPage(tab);

@@ -1,0 +1,150 @@
+<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
+<class>kMyMoneyReportControlDecl</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>kMyMoneyReportControlDecl</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>600</width>
+            <height>33</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>ReportControl</string>
+    </property>
+        <hbox>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <property name="margin">
+                <number>1</number>
+            </property>
+            <property name="spacing">
+                <number>1</number>
+            </property>
+            <widget class="QPushButton">
+                <property name="name">
+                    <cstring>buttonChart</cstring>
+                </property>
+                <property name="minimumSize">
+                    <size>
+                        <width>75</width>
+                        <height>0</height>
+                    </size>
+                </property>
+                <property name="text">
+                    <string>Chart</string>
+                </property>
+                <property name="toolTip" stdset="0">
+                    <string>Show the chart version of this report</string>
+                </property>
+            </widget>
+            <widget class="QPushButton">
+                <property name="name">
+                    <cstring>buttonConfigure</cstring>
+                </property>
+                <property name="minimumSize">
+                    <size>
+                        <width>75</width>
+                        <height>0</height>
+                    </size>
+                </property>
+                <property name="text">
+                    <string>Configure</string>
+                </property>
+                <property name="toolTip" stdset="0">
+                    <string>Configure this report</string>
+                </property>
+            </widget>
+            <widget class="QPushButton">
+                <property name="name">
+                    <cstring>buttonNew</cstring>
+                </property>
+                <property name="minimumSize">
+                    <size>
+                        <width>75</width>
+                        <height>0</height>
+                    </size>
+                </property>
+                <property name="text">
+                    <string>New</string>
+                </property>
+                <property name="toolTip" stdset="0">
+                    <string>Create a new report based on this one</string>
+                </property>
+            </widget>
+            <widget class="QPushButton">
+                <property name="name">
+                    <cstring>buttonCopy</cstring>
+                </property>
+                <property name="minimumSize">
+                    <size>
+                        <width>75</width>
+                        <height>0</height>
+                    </size>
+                </property>
+                <property name="text">
+                    <string>Copy</string>
+                </property>
+                <property name="toolTip" stdset="0">
+                    <string>Copy this report to the clipboard</string>
+                </property>
+            </widget>
+            <widget class="QPushButton">
+                <property name="name">
+                    <cstring>buttonExport</cstring>
+                </property>
+                <property name="minimumSize">
+                    <size>
+                        <width>75</width>
+                        <height>0</height>
+                    </size>
+                </property>
+                <property name="text">
+                    <string>Export</string>
+                </property>
+                <property name="toolTip" stdset="0">
+                    <string>Export this report as an HTML or CSV file</string>
+                </property>
+            </widget>
+            <widget class="QPushButton">
+                <property name="name">
+                    <cstring>buttonDelete</cstring>
+                </property>
+                <property name="minimumSize">
+                    <size>
+                        <width>75</width>
+                        <height>0</height>
+                    </size>
+                </property>
+                <property name="text">
+                    <string>Delete</string>
+                </property>
+                <property name="toolTip" stdset="0">
+                    <string>Permanently delete this report</string>
+                </property>
+            </widget>
+            <widget class="QPushButton">
+                <property name="name">
+                    <cstring>buttonClose</cstring>
+                </property>
+                <property name="minimumSize">
+                    <size>
+                        <width>75</width>
+                        <height>0</height>
+                    </size>
+                </property>
+                <property name="text">
+                    <string>Close</string>
+                </property>
+                <property name="toolTip" stdset="0">
+                    <string>Close this window</string>
+                </property>
+            </widget>
+        </hbox>
+</widget>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

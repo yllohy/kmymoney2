@@ -1,4 +1,9 @@
 2004-07-23 Ace Jones <acejones@users.sourceforge.net>
+  * Replaced report control hyperlinks with a new button bar widget at the
+    top of the tab
+  * Added a chart view for report charts.  No actual charts yet, just stubs.
+
+2004-07-23 Ace Jones <acejones@users.sourceforge.net>
   * Preliminary rough implementation of transaction report
 
 2004-07-22 Ace Jones <acejones@users.sourceforge.net>

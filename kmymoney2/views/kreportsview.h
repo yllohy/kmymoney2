@@ -41,6 +41,7 @@ class KTabWidget;
 
 #include "../mymoney/mymoneyscheduled.h"
 #include "../mymoney/mymoneyaccount.h"
+#include "../widgets/kmymoneyreportcontroldecl.h"
 class MyMoneyReport;
 
 #include "pivottable.h"
@@ -89,19 +90,23 @@ public:
   {
   private:
     KHTMLPart* m_part;
+    reports::KReportChartView* m_chartView;
+    kMyMoneyReportControlDecl* m_control;
     QVBoxLayout* m_layout;
     QCString m_reportId;
     bool m_deleteMe;
+    bool m_showingChart;
     
   public:
     KReportTab(KTabWidget* parent, const MyMoneyReport& report );
     const QCString& id(void) const { return m_reportId; }
     void print(void);
+    void toggleChart(void);
     void copyToClipboard(void);
     void saveAs( const QString& filename );
     void updateReport(void);
     QString createTable(const QString& links=QString());
-    KParts::BrowserExtension* browserExtension(void) const { return m_part->browserExtension(); }
+    const kMyMoneyReportControlDecl* control(void) const { return m_control; }
     bool isReadyToDelete(void) const { return m_deleteMe; }
     void setReadyToDelete(bool f) { m_deleteMe = f; }
   };
@@ -155,6 +160,7 @@ public slots:
   void slotReloadView(void) { slotRefreshView(); };
   void slotConfigure(void);
   void slotDuplicate(void);
+  void slotToggleChart(void);
   void slotOpenReport(QListViewItem*);
   void slotCloseCurrent(void);
   void slotClose(QWidget*);
