@@ -5061,7 +5061,8 @@ if xml++-config --libs print > /dev/null 2>&1; then
     AC_SUBST(LIBXMLPP_CFLAGS)
     AC_SUBST(LIBXMLPP_LIBS)
     CPPFLAGS="$LIBXMLPP_CFLAGS $CPPFLAGS"
-    LDFLAGS="$LDFLAGS $LIBXMLPP_LIBS"
+    LIBXMLPP_LIBS=`xml++-config --libs | cut -d' ' -f1 | cut -b3-`
+    LDFLAGS="$LDFLAGS $LIBXMLPP_LIBS/libxml++.a"
     ifelse([$1], , :, [$1])
 else
     AC_MSG_RESULT(no)
