@@ -63,7 +63,7 @@ KEnterScheduleDialog::KEnterScheduleDialog(QWidget *parent, const MyMoneySchedul
   calculateInterest();
 
   connect(m_splitButton, SIGNAL(clicked()), this, SLOT(slotSplitClicked()));
-  connect(buttonOk, SIGNAL(clicked()), this, SLOT(slotOK()));
+  connect(m_buttonOk, SIGNAL(clicked()), this, SLOT(slotOK()));
   connect(m_from, SIGNAL(activated(int)),
     this, SLOT(slotFromActivated(int)));
   connect(m_to, SIGNAL(activated(int)),
@@ -118,6 +118,9 @@ void KEnterScheduleDialog::initWidgets()
   }
 
   m_splitButton->setGuiItem(KMyMoneyUtils::splitGuiItem());
+  m_buttonOk->setGuiItem(KStdGuiItem::ok());
+  m_buttonCancel->setGuiItem(KStdGuiItem::cancel());
+  m_buttonHelp->setGuiItem(KStdGuiItem::help());
 
   if (m_schedule.type() != MyMoneySchedule::TYPE_DEPOSIT
   &&  m_schedule.type() != MyMoneySchedule::TYPE_LOANPAYMENT)
@@ -536,19 +539,45 @@ void KEnterScheduleDialog::checkCategory()
 
 void KEnterScheduleDialog::commitTransaction()
 {
+  QDate realLastPayment;
+  
   try
   {
     m_schedDate = m_date->getQDate();
     if (!m_schedDate.isValid())
       m_schedDate = m_schedule.nextPayment(m_schedule.lastPayment());
 
+    realLastPayment = m_schedDate;
+
+    if (m_schedDate != m_schedule.nextPayment(m_schedule.lastPayment()))
+    {
+      if (m_schedDate > m_schedule.lastPayment() && m_schedDate < m_schedule.nextPayment(m_schedule.lastPayment()))
+      {
+        // just replace the date
+        realLastPayment = m_schedule.nextPayment(m_schedule.lastPayment());
+      }
+      //else
+      //out of order dates will be handled below
+    }
+
     if (m_schedDate > m_schedule.nextPayment(m_schedule.lastPayment()))
     {
+      realLastPayment = m_schedDate;
+      
+      if (m_schedDate < m_schedule.nextPayment(m_schedule.nextPayment(m_schedule.lastPayment())))
+        realLastPayment = m_schedule.nextPayment(m_schedule.lastPayment());
+
       QString message = QString(i18n("Some occurences that are older than '%1' have not been entered yet.\n\nDelete all occurences that have not been entered before this date?")).arg(m_schedDate.toString());
-      if (KMessageBox::warningYesNo(this, message) == KMessageBox::No)
-        m_schedule.recordPayment(m_schedDate);
+
+      if (realLastPayment != m_schedule.nextPayment(m_schedule.lastPayment()) &&
+          KMessageBox::warningYesNo(this, message) == KMessageBox::No)
+      {
+        m_schedule.recordPayment(realLastPayment);
+      }
       else
-        m_schedule.setLastPayment(m_schedDate);   
+      {
+        m_schedule.setLastPayment(realLastPayment);
+      }
     }        
     else if (m_schedDate > QDate::currentDate())
     {
@@ -560,11 +589,11 @@ void KEnterScheduleDialog::commitTransaction()
       if (m_schedDate > m_schedule.nextPayment(m_schedule.lastPayment()))
         m_schedule.recordPayment(m_schedDate);
       else
-        m_schedule.setLastPayment(m_schedDate);
+        m_schedule.setLastPayment(realLastPayment);
     }
     else
     {
-      m_schedule.setLastPayment(m_schedDate);
+      m_schedule.setLastPayment(realLastPayment);
     }
 
     m_transaction.setEntryDate(QDate::currentDate());

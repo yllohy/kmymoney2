@@ -1,3 +1,7 @@
+2003-01-04 Michael Edwardes <mte@users.sourceforge.net>
+  * Added button icons to KEnterScheduleDialog.
+  * Fixed handling of lastPayment in KEnterScheduleDialog.
+
 2004-01-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * added engine observer functionality to kMyMoneyAccountSelector
   * correcting Mike's widget/Makefile.am change in the project file

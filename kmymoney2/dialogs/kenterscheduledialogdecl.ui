@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
 <class>kEnterScheduleDialogDecl</class>
 <widget class="QDialog">
     <property name="name">
@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>720</width>
-            <height>421</height>
+            <height>473</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -395,6 +395,14 @@
                             <property name="name">
                                 <cstring>m_category</cstring>
                             </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>3</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
                         </widget>
                         <widget class="KPushButton">
                             <property name="name">
@@ -507,15 +515,15 @@
                 <property name="spacing">
                     <number>6</number>
                 </property>
-                <widget class="QPushButton">
+                <widget class="KPushButton">
                     <property name="name">
-                        <cstring>buttonHelp</cstring>
+                        <cstring>m_buttonHelp</cstring>
                     </property>
                     <property name="text">
                         <string>&amp;Help</string>
                     </property>
                     <property name="accel">
-                        <number>4144</number>
+                        <string>F1</string>
                     </property>
                     <property name="autoDefault">
                         <bool>true</bool>
@@ -538,15 +546,15 @@
                         </size>
                     </property>
                 </spacer>
-                <widget class="QPushButton">
+                <widget class="KPushButton">
                     <property name="name">
-                        <cstring>buttonOk</cstring>
+                        <cstring>m_buttonOk</cstring>
                     </property>
                     <property name="text">
                         <string>&amp;OK</string>
                     </property>
                     <property name="accel">
-                        <number>0</number>
+                        <string></string>
                     </property>
                     <property name="autoDefault">
                         <bool>true</bool>
@@ -555,15 +563,15 @@
                         <bool>true</bool>
                     </property>
                 </widget>
-                <widget class="QPushButton">
+                <widget class="KPushButton">
                     <property name="name">
-                        <cstring>buttonCancel</cstring>
+                        <cstring>m_buttonCancel</cstring>
                     </property>
                     <property name="text">
                         <string>&amp;Cancel</string>
                     </property>
                     <property name="accel">
-                        <number>0</number>
+                        <string></string>
                     </property>
                     <property name="autoDefault">
                         <bool>true</bool>
@@ -595,7 +603,7 @@
         <class>kMyMoneyDateInput</class>
         <header location="local">../widgets/kmymoneydateinput.h</header>
         <sizehint>
-            <width>120</width>
+            <width>90</width>
             <height>25</height>
         </sizehint>
         <container>0</container>
@@ -629,7 +637,7 @@
         <header location="local">../widgets/kmymoneycombo.h</header>
         <sizehint>
             <width>-1</width>
-            <height>25</height>
+            <height>-1</height>
         </sizehint>
         <container>0</container>
         <sizepolicy>
@@ -638,14 +646,14 @@
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
         </sizepolicy>
-        <pixmap>image1</pixmap>
+        <pixmap>image0</pixmap>
     </customwidget>
     <customwidget>
         <class>kMyMoneyPayee</class>
         <header location="local">../widgets/kmymoneypayee.h</header>
         <sizehint>
             <width>-1</width>
-            <height>25</height>
+            <height>-1</height>
         </sizehint>
         <container>0</container>
         <sizepolicy>
@@ -661,7 +669,7 @@
         <header location="local">../widgets/kmymoneycategory.h</header>
         <sizehint>
             <width>-1</width>
-            <height>25</height>
+            <height>-1</height>
         </sizehint>
         <container>0</container>
         <sizepolicy>
@@ -683,11 +691,21 @@
 </images>
 <connections>
     <connection>
-        <sender>buttonCancel</sender>
+        <sender>m_buttonCancel</sender>
         <signal>clicked()</signal>
         <receiver>kEnterScheduleDialogDecl</receiver>
         <slot>reject()</slot>
     </connection>
 </connections>
 <layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>kmymoneycombo.h</includehint>
+    <includehint>kmymoneypayee.h</includehint>
+    <includehint>kmymoneyedit.h</includehint>
+    <includehint>kmymoneycombo.h</includehint>
+    <includehint>kmymoneydateinput.h</includehint>
+    <includehint>kmymoneycategory.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>klineedit.h</includehint>
+</includehints>
 </UI>
