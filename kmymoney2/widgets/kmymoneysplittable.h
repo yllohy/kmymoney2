@@ -34,7 +34,7 @@ class kMyMoneySplitTable : public QTable  {
    Q_OBJECT
 public: 
 	kMyMoneySplitTable(QWidget *parent=0, const char *name=0);
-	~kMyMoneySplitTable();
+	virtual ~kMyMoneySplitTable();
 
   void paintCell(QPainter *p, int row, int col, const QRect& r, bool /*selected*/);
   void paintFocus(QPainter *p, const QRect &cr);
@@ -48,12 +48,31 @@ public:
   int currentRow(void) { return m_currentRow; }
   void setMaxRows(int row);
 
+  /**
+    * This method is used to set the inline editing mode
+    *
+    * @param editing bool flag. if set, inline editing in the register
+    *                is performed, if reset, cells of the register are
+    *                read-only. When the object is constructed, the
+    *                value of the setting is false.
+    *
+    * @note If not set, certain events are filtered and not passed
+    *       to child widgets. See the source of eventFilter() for details.
+    */
+  void setInlineEditingMode(const bool editing);
+
+  /**
+    * This method returns the inline editing mode
+    *
+    * @return true if inline edit mode is on, false otherwise
+    */
+  const bool inlineEditingMode(void) const { return m_inlineEditMode; };
+
 protected:
   void contentsMousePressEvent( QMouseEvent* e );
   void contentsMouseReleaseEvent( QMouseEvent* e );
   void contentsMouseDoubleClickEvent( QMouseEvent* e );
   bool eventFilter(QObject *o, QEvent *e);
-  void keyPressEvent(QKeyEvent *k);
 
 public slots:
   /** No descriptions */
@@ -75,6 +94,8 @@ private:
   /// the number of rows filled with data
   int m_maxRows;
 
+  bool m_inlineEditMode;
+
 protected slots:
 	virtual void columnWidthChanged(int col);
 
@@ -85,8 +106,10 @@ signals: // Signals
   // signalTab is sent, when the Tab-Key is pressed
   void signalTab(void);
 
-  // signalEscape is sent, when the Esc-Key is pressed
-  void signalEscape(void);
+  // signalEsc is sent, when the Esc-Key is pressed
+  void signalEsc(void);
+
+  void signalEnter(void);
 
   // signalDelete is sent, when the Del-Key is pressed
   void signalDelete(int row);

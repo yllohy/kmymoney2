@@ -33,14 +33,20 @@
 
 kMyMoneySplitTable::kMyMoneySplitTable(QWidget *parent, const char *name ) :
   QTable(parent,name),
-  m_currentRow(0)
+  m_currentRow(0),
+  m_maxRows(0),
+  m_inlineEditMode(false)
 {
   setVScrollBarMode(QScrollView::AlwaysOn);
   // never show a horizontal scroll bar
   setHScrollBarMode(QScrollView::AlwaysOff);
+
+  for(int i = 0; i < 3; ++i)
+    m_colWidget[i] = 0;
 }
 
-kMyMoneySplitTable::~kMyMoneySplitTable(){
+kMyMoneySplitTable::~kMyMoneySplitTable()
+{
 }
 
 void kMyMoneySplitTable::paintCell(QPainter *p, int row, int col, const QRect& r, bool /*selected*/)
@@ -67,17 +73,6 @@ void kMyMoneySplitTable::paintCell(QPainter *p, int row, int col, const QRect& r
 
   p->setFont(config->readFontEntry("listCellFont", &defaultFont));
 
-#if 0
-  bool bLastTransaction = (row >= numRows()-2);
-  if (bLastTransaction && config->readBoolEntry("TextPrompt", true)) {
-    QFont qfontItalic = p->font();
-//    qfontItalic.setPointSize(qfontItalic.pointSize()-2);
-    qfontItalic.setWeight(QFont::Light);
-    qfontItalic.setItalic(true);
-    p->setFont(qfontItalic);
-  }
-#endif
-	
   QString firsttext = text(row, col);
   QString qstringCategory;
   QString qstringMemo;
@@ -146,6 +141,8 @@ void kMyMoneySplitTable::columnWidthChanged(int col)
 
 QWidget* kMyMoneySplitTable::createEditor(int row, int col, bool replace) const
 {
+  return QTable::createEditor(row, col, replace);
+/*
   switch(col) {
     case 0:   // category
     case 1:   // memo
@@ -157,33 +154,97 @@ QWidget* kMyMoneySplitTable::createEditor(int row, int col, bool replace) const
       break;
   }
   return NULL;
+*/
 }
 
-void kMyMoneySplitTable::clearCellWidget(int /*row*/, int /*col*/)
+void kMyMoneySplitTable::clearCellWidget(int row, int col)
 {
+  QTable::clearCellWidget(row, col);
+/*
+  qDebug("KMyMoneySplitTable::clearCellWidget in row %d and col %d", row, col);
+  switch(col) {
+    case 0:   // category
+    case 1:   // memo
+    case 2:   // amount
+      QTable::clearCellWidget(row, col);
+      break;
+
+    default:
+      qDebug("Unknown widget for KMyMoneySplitTable::clearCellWidget in row %d and col %d", row, col);
+      break;
+  }
+*/
 }
 
 QWidget* kMyMoneySplitTable::cellWidget(int row, int col)const
 {
+  return QTable::cellWidget(row, col);
+/*
   if(col >= 0 && col <= 2)
     return m_colWidget[col];
 
   return (QWidget*)0;
+*/
 }
 
 void kMyMoneySplitTable::insertWidget(int row, int col, QWidget* w)
 {
+  QTable::insertWidget(row, col, w);
+/*
   if(col >= 0 && col <= 2)
     m_colWidget[col] = w;
   else
     qDebug("Unknown widget for KMyMoneySplitTable::insertWidget in row %d and col %d", row, col);
+*/
 }
 
 bool kMyMoneySplitTable::eventFilter(QObject *o, QEvent *e)
 {
-  return QScrollView::eventFilter(o, e); //QTable::eventFilter(o,e);
+
+  bool rc = false;
+
+  if(e->type() == QEvent::KeyPress && !m_inlineEditMode) {
+    QKeyEvent *k = static_cast<QKeyEvent *> (e);
+    rc = true;
+    switch(k->key()) {
+      case Qt::Key_Up:
+      case Qt::Key_Down:
+      case Qt::Key_Home:
+      case Qt::Key_End:
+        emit signalNavigationKey(k->key());
+        break;
+
+      case Qt::Key_Return:
+      case Qt::Key_Enter:
+        emit signalEnter();
+        break;
+
+      case Qt::Key_Escape:
+        emit signalEsc();
+        break;
+
+      default:
+        rc = false;
+        break;
+    }
+  }
+
+  // if the key has not been processed here, forward it to
+  // the base class implementation
+  if(rc == false)
+    rc = QTable::eventFilter(o, e);
+
+  return rc;
+
+
+
+
+
 
 #if 0
+
+  return QScrollView::eventFilter(o, e); //QTable::eventFilter(o,e);
+
   char *txt = 0;
   if(e->type() == QEvent::MouseButtonPress)
     txt = "MouseButtonPress";
@@ -219,30 +280,6 @@ void kMyMoneySplitTable::contentsMouseDoubleClickEvent( QMouseEvent *e )
   emit doubleClicked(rowAt(e->pos().y()), columnAt(e->pos().x()), e->button(), e->pos() );
 }
 
-void kMyMoneySplitTable::keyPressEvent(QKeyEvent *k)
-{
-  switch ( k->key() ) {
-    case Key_Up:
-    case Key_Down:
-    case Key_Home:
-    case Key_End:
-      emit signalNavigationKey(k->key());
-      break;
-
-    case Key_Tab:
-      emit signalTab();
-      break;
-
-    case Key_Escape:
-      emit signalEscape();
-      break;
-
-    case Key_Delete:
-      emit signalDelete(m_currentRow);
-      break;
-  }
-}
-
 void kMyMoneySplitTable::setCurrentCell(int row, int col)
 {
   if(row > m_maxRows)
@@ -259,3 +296,9 @@ void kMyMoneySplitTable::setMaxRows(int row)
 {
   m_maxRows = row;
 }
+
+void kMyMoneySplitTable::setInlineEditingMode(const bool editing)
+{
+  m_inlineEditMode = editing;
+}
+
