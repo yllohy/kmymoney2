@@ -623,11 +623,23 @@ void KTransactionView::slotEditSplit()
   if (!transaction)
     return;
 
-  MyMoneyMoney amount = transaction->amount().amount();
+  // Get amount from payment or withdrawal Line Edit
+  MyMoneyMoney amount;
+  bool amountSet = true;
+	if(m_payment->text() == "")	{
+    if(m_withdrawal->text() == "")	{
+     	amount = 0;
+      amountSet = false;
+    } else {
+  	  amount = m_withdrawal->text();
+    }
+	} else {
+  	amount = m_payment->text();
+  }
 
   KSplitTransactionDlg* dlg = new KSplitTransactionDlg(0, 0,
     m_filePointer, getBank(), pAccount,
-    &amount, true);
+    &amount, amountSet);
 
   MyMoneySplitTransaction* split;
   MyMoneySplitTransaction* tmp;
@@ -650,6 +662,7 @@ void KTransactionView::slotEditSplit()
       transaction->addSplit(tmp);
       split = dlg->nextTransaction();
     }
+    transaction->setAmount(amount);
     m_payment->setText(((transaction->type()==MyMoneyTransaction::Debit) ? KGlobal::locale()->formatMoney(amount.amount(),"") : QString("")));
     m_withdrawal->setText(((transaction->type()==MyMoneyTransaction::Credit) ? KGlobal::locale()->formatMoney(amount.amount(),"") : QString("")));
     m_category->setCurrentItem("Split");
