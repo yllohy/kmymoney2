@@ -182,6 +182,18 @@ void MyMoneySeqAccessMgr::removePayee(const MyMoneyPayee& payee)
   touch();
 }
 
+const QValueList<MyMoneyPayee> MyMoneySeqAccessMgr::payeeList(void) const
+{
+  QValueList<MyMoneyPayee> list;
+  QMap<QCString, MyMoneyPayee>::ConstIterator it;
+
+  for(it = m_payeeList.begin(); it != m_payeeList.end(); ++it) {
+    list.append(*it);
+  }
+  return list;
+}
+
+
 void MyMoneySeqAccessMgr::addAccount(MyMoneyAccount& parent, MyMoneyAccount& account)
 {
   QMap<QCString, MyMoneyAccount>::Iterator theParent;

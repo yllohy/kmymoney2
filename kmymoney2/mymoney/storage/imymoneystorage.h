@@ -135,6 +135,14 @@ public:
   virtual void removePayee(const MyMoneyPayee& payee) = 0;
 
   /**
+    * This method returns a list of the payees
+    * inside a MyMoneyStorage object
+    *
+    * @return QValueList<MyMoneyPayee> containing the payee information
+    */
+  virtual const QValueList<MyMoneyPayee> payeeList(void) const = 0;
+
+  /**
     * This method is used to add an account to an institution. The account
     * data will be updated to contain the correct id of the referenced institution
     * and the account will be added to the list of accounts held at the
@@ -265,7 +273,8 @@ public:
     * This method returns a list of the institutions
     * inside a MyMoneyStorage object
     *
-    * @return QMap containing the institution information
+    * @return QValueList<MyMoneyInstitution> containing the
+    *         institution information
     */
   virtual const QValueList<MyMoneyInstitution> institutionList(void) const = 0;
 

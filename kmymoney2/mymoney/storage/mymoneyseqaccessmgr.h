@@ -155,6 +155,14 @@ public:
   void removePayee(const MyMoneyPayee& payee);
 
   /**
+    * This method returns a list of the payees
+    * inside a MyMoneyStorage object
+    *
+    * @return QValueList<MyMoneyPayee> containing the payee information
+    */
+  const QValueList<MyMoneyPayee> payeeList(void) const;
+
+  /**
     * This method is used to add one account as sub-ordinate to another
     * (parent) account. The objects passed as arguments will be modified
     * accordingly.

@@ -197,7 +197,7 @@ public:
   /**
     * Adds a transaction to the file-global transaction pool. A respective
     * transaction-ID will be generated within this record. The ID is stored
-    * QString with the object.
+    * as QString with the object.
     *
     * An exception will be thrown upon error conditions.
     *
@@ -219,10 +219,10 @@ public:
   virtual void refreshAllAccountTransactionLists(void) = 0;
 
 /*
-  virtual void loadAccount();
-  virtual void loadTransaction();
-  virtual void loadInstitution();
-  virtual void loadPayee();
+  virtual void loadAccount(const MyMoneyAccount& acc) = 0;
+  virtual void loadTransaction(const MyMoneyTransaction& tr) = 0;
+  virtual void loadInstitution(const MyMoneyInstitution& inst) = 0;
+  virtual void loadPayee(const MyMoneyPayee& payee) = 0;
 */
 };
 
