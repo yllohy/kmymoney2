@@ -149,8 +149,10 @@ protected:
   QValueList<MyMoneyTransaction> m_transactionList;
   QValueVector<MyMoneyMoney> m_balance;
 
-  KTransactionPtrVector m_transactionPtr;
-  MyMoneyTransaction *m_transaction;
+  KTransactionPtrVector m_transactionPtrVector;
+  MyMoneyTransaction *m_transactionPtr;
+  MyMoneyTransaction m_transaction;
+
   MyMoneySplit m_split;
 
   kMyMoneyPayee*        m_editPayee;
@@ -159,6 +161,10 @@ protected:
   kMyMoneyEdit*         m_editAmount;
   kMyMoneyLineEdit*     m_editNr;
   kMyMoneyDateInput*    m_editDate;
+
+signals:
+  void transactionSelected(void);
+
 };
 
 #endif

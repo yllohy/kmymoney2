@@ -41,6 +41,7 @@ KLedgerView::KLedgerView(QWidget *parent, const char *name )
   m_editPayee = 0;
   m_register = 0;
   m_form = 0;
+  m_transactionPtr = 0;
 }
 
 KLedgerView::~KLedgerView()
@@ -99,8 +100,8 @@ void KLedgerView::loadAccount(void)
   m_register->setCurrentTransactionIndex(m_transactionList.count()-1);
 
   // make sure, full transaction is visible
-  m_register->ensureCellVisible(m_transactionPtr.count() * m_register->rpt(), 0);
-  m_register->ensureCellVisible((m_transactionPtr.count()-1) * m_register->rpt(), 0);
+  m_register->ensureCellVisible(m_transactionPtrVector.count() * m_register->rpt(), 0);
+  m_register->ensureCellVisible((m_transactionPtrVector.count()-1) * m_register->rpt(), 0);
   m_register->repaintContents();
 
   // fill in the form with the currently selected transaction
@@ -119,7 +120,7 @@ void KLedgerView::refreshView(void)
   filterTransactions();
 
   m_register->readConfig();
-  m_register->setTransactionCount(m_transactionPtr.count()+1);
+  m_register->setTransactionCount(m_transactionPtrVector.count()+1);
   resizeEvent(NULL);
 }
 
@@ -130,8 +131,8 @@ void KLedgerView::filterTransactions(void)
   QValueList<MyMoneyTransaction>::ConstIterator it_t;
 
   // setup the pointer vector
-  m_transactionPtr.clear();
-  m_transactionPtr.resize(m_transactionList.size());
+  m_transactionPtrVector.clear();
+  m_transactionPtrVector.resize(m_transactionList.size());
   for(i = 0, it_t = m_transactionList.begin(); it_t != m_transactionList.end(); ++it_t) {
     // only show those transactions, that are posted after the configured start date
     if((*it_t).postDate() < m_dateStart)
@@ -140,13 +141,13 @@ void KLedgerView::filterTransactions(void)
     // add more filters before this line ;-)
 
     // Wow, we made it through all the filters. Guess we have to show this one
-    m_transactionPtr.insert(i, &(*it_t));
+    m_transactionPtrVector.insert(i, &(*it_t));
     ++i;
   }
-  m_transactionPtr.resize(i);
+  m_transactionPtrVector.resize(i);
 
   // sort the transactions
-  m_transactionPtr.sort();
+  m_transactionPtrVector.sort();
 
   // calculate the balance for each item
   MyMoneyMoney balance(0);
@@ -156,7 +157,7 @@ void KLedgerView::filterTransactions(void)
   // the trick is to go backwards ;-)
   while(--i >= 0) {
     m_balance[i] = balance;
-    balance -= m_transactionPtr[i]->split(accountId()).value();
+    balance -= m_transactionPtrVector[i]->split(accountId()).value();
   }
 }
 
@@ -172,8 +173,8 @@ void KLedgerView::update(const QCString& accountId)
 
 MyMoneyTransaction* const KLedgerView::transaction(const int idx) const
 {
-  if(idx >= 0 && idx < m_transactionPtr.count())
-    return m_transactionPtr[idx];
+  if(idx >= 0 && idx < m_transactionPtrVector.count())
+    return m_transactionPtrVector[idx];
   return 0;
 }
 
@@ -193,6 +194,7 @@ void KLedgerView::slotRegisterClicked(int row, int col, int button, const QPoint
   if(m_register->setCurrentTransactionIndex(row / m_register->rpt()) == true) {
     m_register->repaintContents();
     fillForm();
+    emit transactionSelected();
   }
 }
 
@@ -207,6 +209,10 @@ void KLedgerView::slotShowTransactionForm(bool visible)
 
   if(m_register != 0) {
     m_register->setInlineEditingAvailable(!visible);
+    // make sure, full transaction is visible
+    resizeEvent(NULL);
+    m_register->ensureCellVisible(m_register->currentTransactionIndex() * m_register->rpt(), 0);
+    m_register->ensureCellVisible((m_register->currentTransactionIndex()-1) * m_register->rpt(), 0);
   }
 }
 

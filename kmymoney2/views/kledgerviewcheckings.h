@@ -63,6 +63,9 @@ public slots:
   void slotStartEdit(void);
   void slotCancelEdit(void);
   void slotEndEdit(void);
+  void slotNew(void);
+
+  void slotRegisterDoubleClicked(int row, int col, int button, const QPoint &mousePos);
 
 protected:
   void resizeEvent(QResizeEvent*);

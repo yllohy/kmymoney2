@@ -121,11 +121,16 @@ KLedgerViewCheckings::KLedgerViewCheckings(QWidget *parent, const char *name )
 
   // connections
   connect(m_form->tabBar(), SIGNAL(selected(int)), this, SLOT(slotTypeSelected(int)));
+
   connect(m_register, SIGNAL(clicked(int, int, int, const QPoint&)), this, SLOT(slotRegisterClicked(int, int, int, const QPoint&)));
+  connect(m_register, SIGNAL(doubleClicked(int, int, int, const QPoint&)), this, SLOT(slotRegisterDoubleClicked(int, int, int, const QPoint&)));
+
+  connect(this, SIGNAL(transactionSelected()), this, SLOT(slotCancelEdit()));
 
   connect(m_form->editButton(), SIGNAL(clicked()), this, SLOT(slotStartEdit()));
   connect(m_form->cancelButton(), SIGNAL(clicked()), this, SLOT(slotCancelEdit()));
   connect(m_form->enterButton(), SIGNAL(clicked()), this, SLOT(slotEndEdit()));
+  connect(m_form->newButton(), SIGNAL(clicked()), this, SLOT(slotNew()));
 }
 
 KLedgerViewCheckings::~KLedgerViewCheckings()
@@ -186,13 +191,22 @@ void KLedgerViewCheckings::resizeEvent(QResizeEvent* ev)
 
 void KLedgerViewCheckings::show()
 {
+  // make sure, the QTabbar does not send out it's selected() signal
+  // which would drive us crazy here. fillForm calls slotTypeSelected()
+  // later on anyway.
+  m_form->tabBar()->blockSignals(true);
   KLedgerView::show();
+  m_form->tabBar()->blockSignals(false);
+
   fillForm();
   resizeEvent(NULL);
 }
 
 void KLedgerViewCheckings::slotTypeSelected(int type)
 {
+  if(!m_form->tabBar()->signalsBlocked())
+    slotCancelEdit();
+
   QTable* formTable = m_form->table();
 
   // clear complete table
@@ -238,27 +252,39 @@ void KLedgerViewCheckings::slotTypeSelected(int type)
       formTable->setText(2, 0, i18n("Category"));
       break;
   }
+
+  if(!m_form->tabBar()->signalsBlocked())
+    slotNew();
 }
+
+void KLedgerViewCheckings::slotRegisterDoubleClicked(int row, int col, int button, const QPoint &mousePos)
+{
+  slotStartEdit();
+}
+
 
 void KLedgerViewCheckings::fillForm(void)
 {
   QTable* formTable = m_form->table();
-  m_transaction = transaction(m_register->currentTransactionIndex());
+  m_transactionPtr = transaction(m_register->currentTransactionIndex());
 
-  if(m_transaction != 0) {
-    m_split = m_transaction->split(accountId());
+  if(m_transactionPtr != 0) {
+    m_split = m_transactionPtr->split(accountId());
     MyMoneyMoney amount = m_split.value();
 
     kMyMoneyTransactionFormTableItem* item;
 
     // setup the fields first
+    m_form->tabBar()->blockSignals(true);
     m_form->tabBar()->setCurrentTab(transactionType(m_split));
+    slotTypeSelected(transactionType(m_split));
+    m_form->tabBar()->blockSignals(false);
 
     // fill in common fields
     formTable->setText(3, 1, m_split.memo());
 
     // make sure, that the date is aligned to the right of the cell
-    item = new kMyMoneyTransactionFormTableItem(formTable, QTableItem::Never, KGlobal::locale()->formatDate(m_transaction->postDate(), true));
+    item = new kMyMoneyTransactionFormTableItem(formTable, QTableItem::Never, KGlobal::locale()->formatDate(m_transactionPtr->postDate(), true));
     item->setAlignment(kMyMoneyTransactionFormTableItem::right);
     formTable->setItem(1, 3, item);
 
@@ -273,8 +299,8 @@ void KLedgerViewCheckings::fillForm(void)
 
     QString category;
     try {
-      if(m_transaction->splitCount() == 2) {
-        MyMoneySplit s = m_transaction->split(accountId(), false);
+      if(m_transactionPtr->splitCount() == 2) {
+        MyMoneySplit s = m_transactionPtr->split(accountId(), false);
         category = MyMoneyFile::instance()->accountToCategory(s.accountId());
       } else {
         category = i18n("Splitted transaction");
@@ -348,6 +374,8 @@ void KLedgerViewCheckings::fillForm(void)
     m_form->cancelButton()->setEnabled(false);
     m_form->moreButton()->setEnabled(false);
   } else {
+    m_split = MyMoneySplit();
+
     // transaction empty, clean out space
     for(int i = 0; i < formTable->numRows(); ++i) {
       formTable->setText(i, 1, "");
@@ -377,8 +405,25 @@ int KLedgerViewCheckings::transactionType(const MyMoneySplit& split) const
   return 0;
 }
 
+void KLedgerViewCheckings::slotNew(void)
+{
+  // select the very last line (empty one), and load it into the form
+  m_register->setCurrentTransactionIndex(m_transactionList.count());
+  m_register->repaintContents();
+  fillForm();
+
+  m_form->enterButton()->setEnabled(true);
+  m_form->cancelButton()->setEnabled(true);
+  m_form->moreButton()->setEnabled(true);
+  m_form->editButton()->setEnabled(false);
+  m_form->newButton()->setEnabled(false);
+
+  showWidgets();
+}
+
 void KLedgerViewCheckings::slotStartEdit(void)
 {
+  m_form->newButton()->setEnabled(true);
   m_form->enterButton()->setEnabled(true);
   m_form->cancelButton()->setEnabled(true);
   m_form->moreButton()->setEnabled(true);
@@ -389,6 +434,7 @@ void KLedgerViewCheckings::slotStartEdit(void)
 
 void KLedgerViewCheckings::slotCancelEdit(void)
 {
+  m_form->newButton()->setEnabled(true);
   m_form->enterButton()->setEnabled(false);
   m_form->cancelButton()->setEnabled(false);
   m_form->moreButton()->setEnabled(false);
@@ -398,11 +444,63 @@ void KLedgerViewCheckings::slotCancelEdit(void)
   }
 
   hideWidgets();
-  fillForm();
 }
 
 void KLedgerViewCheckings::slotEndEdit(void)
 {
+  MyMoneyTransaction t;
+
+  // so, we now have to save something here.
+  // if an existing transaction has been changed, we take it as the base
+  if(m_transactionPtr != 0) {
+    t = *m_transactionPtr;
+  }
+
+  // perform any checks on the data, before we start storeing the transaction
+
+      // FIXME: add those checks, currently I don't know what could be done
+
+  // checks are done, now we store the data and switch the context
+  // first the transaction data
+  t.setMemo(m_editMemo->text());
+  t.setPostDate(m_editDate->getQDate());
+
+  // now the splits. for now, we don't worry about splitted
+  // transactions. so there always will be two splits!
+
+  try {
+    MyMoneySplit accSplit;
+    MyMoneySplit catSplit;
+
+    // locate the payee in the list
+    QValueList<MyMoneyPayee> payeeList = MyMoneyFile::instance()->payeeList();
+    QValueList<MyMoneyPayee>::ConstIterator it_p;
+    for(it_p = payeeList.begin(); it_p != payeeList.end(); ++it_p) {
+      if((*it_p).name() == m_editPayee->text())
+        break;
+    }
+    if(it_p == payeeList.end())
+      throw new MYMONEYEXCEPTION("Unable to find payee in list");
+
+    accSplit = t.split(accountId());
+    catSplit = t.split(accountId(), false);
+
+    accSplit.setAccountId(accountId());
+    accSplit.setMemo(m_editMemo->text());
+    if(m_editNr != 0)
+      accSplit.setNumber(m_editNr->text());
+    accSplit.setPayeeId((*it_p).id());
+    // accSplit.setValue();
+    accSplit.setShares(accSplit.value());
+    // accSplit.setAction();
+
+  } catch(MyMoneyException *e) {
+    qDebug("Exception '%s' thrown in %s, line %ld caught in KLedgerViewCheckings::showWidgets()",
+      e->what().latin1(), e->file().latin1(), e->line());
+    delete e;
+  }
+
+  m_form->newButton()->setEnabled(true);
   m_form->enterButton()->setEnabled(false);
   m_form->cancelButton()->setEnabled(false);
   m_form->moreButton()->setEnabled(false);
@@ -416,48 +514,132 @@ void KLedgerViewCheckings::slotEndEdit(void)
 
 void KLedgerViewCheckings::showWidgets(void)
 {
-  kMyMoneyPayee* test = new kMyMoneyPayee();
-
   QPalette palette = m_register->palette();
+  QWidget* focusWidget;
 
-  m_editPayee = new kMyMoneyPayee();
+  focusWidget = m_editPayee = new kMyMoneyPayee();
   m_editCategory = new kMyMoneyCategory();
   m_editMemo = new kMyMoneyLineEdit(0);
   m_editAmount = new kMyMoneyEdit(0);
   m_editDate = new kMyMoneyDateInput();
+  m_editNr = new kMyMoneyLineEdit(0);
 
   connect(m_editPayee, SIGNAL(newPayee(const QString&)), this, SLOT(slotNewPayee(const QString&)));
 
+  // make sure, we're using the right palette
   m_editPayee->setPalette(palette);
-  m_editPayee->setText(m_form->table()->text(1, 1));
-
   m_editCategory->setPalette(palette);
-  m_editCategory->setText(m_form->table()->text(2, 1));
-
   m_editMemo->setPalette(palette);
-  m_editMemo->setText(m_form->table()->text(3, 1));
-
   m_editAmount->setPalette(palette);
-  m_editAmount->setText(m_form->table()->text(2, 3));
-
   m_editDate->setPalette(palette);
-  m_editDate->setDate(m_transaction->postDate());
+  m_editNr->setPalette(palette);
+
+  int transType;
+
+  if(m_transactionPtr != 0) {
+    QString category, payee;
+    try {
+      if(m_split.payeeId() != "")
+        payee = MyMoneyFile::instance()->payee(m_split.payeeId()).name();
+
+      if(m_transactionPtr->splitCount() == 2) {
+        MyMoneySplit s = m_transactionPtr->split(accountId(), false);
+        category = MyMoneyFile::instance()->accountToCategory(s.accountId());
+      } else {
+        category = i18n("Splitted transaction");
+      }
+
+    } catch(MyMoneyException *e) {
+      qDebug("Exception '%s' thrown in %s, line %ld caught in KLedgerViewCheckings::showWidgets()",
+        e->what().latin1(), e->file().latin1(), e->line());
+      delete e;
+    }
+
+    MyMoneyMoney amount = m_split.value();
+    // for all other transaction types than deposit, we
+    // have to negate the value
+    if(transactionType(m_split) != 2)
+      amount = -amount;
+
+    m_editPayee->setText(payee);
+    m_editCategory->setText(category);
+    m_editMemo->setText(m_split.memo());
+    m_editAmount->setText(amount.formatMoney());
+    m_editDate->setDate(m_transactionPtr->postDate());
+    m_editNr->setText(m_split.number());
+
+    transType = transactionType(m_split);
+
+  } else {
+    m_editDate->setDate(QDate::currentDate());
+    transType = m_form->tabBar()->currentTab();
+  }
 
   if(m_form->isVisible()) {
-    m_form->table()->setCellWidget(1, 1, m_editPayee);
-    m_form->table()->setCellWidget(2, 1, m_editCategory);
+    m_form->table()->clearEditable();
     m_form->table()->setCellWidget(3, 1, m_editMemo);
-    m_form->table()->setCellWidget(2, 3, m_editAmount);
     m_form->table()->setCellWidget(1, 3, m_editDate);
+    m_form->table()->setCellWidget(2, 3, m_editAmount);
+
+    m_form->table()->setEditable(1, 1);
+    m_form->table()->setEditable(2, 1);
+    m_form->table()->setEditable(3, 1);
+    m_form->table()->setEditable(1, 3);
+    m_form->table()->setEditable(2, 3);
+
+    // depending on the transaction type, we figure out the
+    // location of the fields in the form. A row info of -1 means,
+    // that the field is not used in this type.
+    int payeeRow = 1,
+        categoryRow = 2,
+        nrRow = 0;
+    switch(transType) {
+      case 0:
+      case 4:
+        m_form->table()->setEditable(0, 3);
+        break;
+
+      case 1:
+      case 3:
+        nrRow = -1;
+        break;
+
+      case 2:
+        payeeRow = 2;
+        categoryRow = -1;
+        nrRow = -1;
+
+        m_form->table()->setEditable(0, 1);
+        break;
+    }
+
+    m_form->table()->setCellWidget(payeeRow, 1, m_editPayee);
+
+    if(categoryRow != -1) {
+      m_form->table()->setCellWidget(categoryRow, 1, m_editCategory);
+    } else {
+      delete m_editCategory;
+      m_editCategory = 0;
+    }
+
+    if(nrRow != -1) {
+      m_form->table()->setCellWidget(0, 3, m_editNr);
+    } else {
+      delete m_editNr;
+      m_editNr = 0;
+    }
+
+    focusWidget->setFocus();
   } else {
+    /// todo: in register editing of transactions in KLedgerViewCheckings
   }
 }
 
 void KLedgerViewCheckings::hideWidgets(void)
 {
-  m_form->table()->clearCellWidget(1, 1);
-  m_form->table()->clearCellWidget(2, 1);
-  m_form->table()->clearCellWidget(3, 1);
-  m_form->table()->clearCellWidget(1, 3);
-  m_form->table()->clearCellWidget(2, 3);
+  for(int i=0; i < m_form->table()->numRows(); ++i) {
+    m_form->table()->clearCellWidget(i, 1);
+    m_form->table()->clearCellWidget(i, 3);
+  }
+  m_form->table()->clearEditable();
 }
