@@ -5,8 +5,8 @@ bin_PROGRAMS = kmymoney2
 
 ## INCLUDES were found outside kdevelop specific part
 
-kmymoney2_SOURCES = kstartuplogo.cpp kmymoney2.cpp main.cpp 
-kmymoney2_LDADD   = ./mymoney/libmymoney.a ./dialogs/libdialogs.a ./widgets/libwidgets.a ./views/libviews.a  $(LIB_KFILE) $(LIB_KHTML) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT) $(LIBSOCKET)
+kmymoney2_SOURCES = kstartuplogo.cpp kmymoney2.cpp main.cpp
+kmymoney2_LDADD   = ./views/libviews.a ./dialogs/libdialogs.a ./mymoney/libmymoney.a  ./widgets/libwidgets.a $(LIB_KFILE) $(LIB_KHTML) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT) $(LIBSOCKET)
 
 SUBDIRS = dialogs views mymoney pics icons widgets html 
 
