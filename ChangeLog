@@ -1,3 +1,7 @@
+2003-07-29 Michael Edwardes <mte@users.sourceforge.net>
+  * Fixed loading of blank icon in the startup dialog.
+  * Fix schedule errors.
+
 2003-07-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * fixed setting of 'startup file options' in settings dialog when
     the reset button is pressed

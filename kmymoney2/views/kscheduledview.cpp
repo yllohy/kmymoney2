@@ -45,10 +45,6 @@
 #include "../widgets/kmymoneyscheduleddatetbl.h"
 #include "../dialogs/ieditscheduledialog.h"
 
-  bool m_openBills;
-  bool m_openDeposits;
-  bool m_openTransfers;
-
 KScheduledView::KScheduledView(QWidget *parent, const char *name )
  : kScheduledViewDecl(parent,name, false),
  m_openBills(true),

@@ -62,6 +62,8 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
 
   if (m_actionType == MyMoneySplit::ActionTransfer)
   {
+      m_accountCombo->setEnabled(true);
+      m_qlabelPay2->setEnabled(true);
       TextLabel1_3->setEnabled(true);
       m_kcomboTo->setEnabled(true);
       setCaption(i18n("Edit Transfer Schedule"));
@@ -76,6 +78,8 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
   }
   else
   {
+      m_accountCombo->setEnabled(true);
+      m_qlabelPay2->setEnabled(true);
       TextLabel1_3->setEnabled(false);
       m_kcomboTo->setEnabled(false);
       setCaption(i18n("Edit Bill Schedule"));
@@ -413,13 +417,6 @@ void KEditScheduleDialog::okClicked()
 
     m_schedule.setStartDate(m_kdateinputDue->getQDate());
     
-    // Michael, if I enter a new schedule, that does not mean
-    // that it ever was executed, right? That's why I commented
-    // the next line. If you agree, please remove this whole thing.
-    // I think, the lastpayment attribute should only be modified,
-    // if the scheduled transaction has been entered (auto or not).
-    // m_schedule.setLastPayment(m_kdateinputDue->getQDate());
-
     m_schedule.setAutoEnter(m_qcheckboxAuto->isChecked());
 
     m_schedule.setFixed(!m_qcheckboxEstimate->isChecked());
@@ -516,6 +513,9 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
 {
   try
   {
+    if (m_schedule.account().name() == "")
+      return;
+      
     m_accountCombo->setCurrentText(m_schedule.account().name());
     if (m_actionType == MyMoneySplit::ActionTransfer)
       m_kcomboTo->setCurrentText(m_schedule.transferAccount().name());
