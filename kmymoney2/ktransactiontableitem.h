@@ -30,10 +30,20 @@
 class KTransactionTableItem : public QTableItem  {
 //   Q_OBJECT
 public:
-	KTransactionTableItem(QTable *t, EditType et, const QString &txt);
+	KTransactionTableItem(QTable *t, EditType et, const QString &txt, int items = 1);
   void paint(QPainter *p, const QColorGroup &cg, const QRect &cr, bool selected);
   /** No descriptions */
   virtual void setContentFromEditor(QWidget* w);
+
+private: // Private attributes
+
+  /**  */
+  int m_numitems;
+  /**  */
+  QString m_item2;
+public: // Private methods
+  /** No descriptions */
+  void setItem2(const QString& item);
 };
 
 #endif

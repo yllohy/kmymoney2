@@ -19,6 +19,7 @@
 
 #include <qwidget.h>
 #include <qlabel.h>
+#include <qlayout.h>
 
 #include <kpushbutton.h>
 #include <klineedit.h>
@@ -38,6 +39,7 @@
 #include "widgets/kmymoneycategorycombo.h"
 
 #include "ktransactionviewdecl.h"
+#include "widgets/kmymoneyhlayout.h"
 
 // This class handles the transaction 'view'.
 // It handles the resize event, the totals widgets
@@ -75,8 +77,10 @@ private:
 	KPushButton* m_enter;
   KPushButton* m_cancel;
 	KPushButton* m_delete;
+	KLineEdit* m_memo;
+	kMyMoneyHLayout*	m_hlayout;
 
-  QList<MyMoneyTransaction> m_transactions;
+  QList<MyMoneyTransaction> *m_transactions;
 
   void updateTransactionList(int start, int col=-1);
 
@@ -87,12 +91,14 @@ private:
   void updateInputLists(void);
   /** No descriptions */
   MyMoneyAccount* getAccount();
+  /** No descriptions */
+  void hideWidgets();
 
 public:
 	KTransactionView(QWidget *parent=0, const char *name=0);
 	~KTransactionView();
 
-	void init(MyMoneyFile *file, MyMoneyBank bank, MyMoneyAccount account, QList<MyMoneyTransaction> transList, viewingType type);
+	void init(MyMoneyFile *file, MyMoneyBank bank, MyMoneyAccount account, QList<MyMoneyTransaction> *transList, viewingType type);
 	void clear(void);
   void refresh(void);
 

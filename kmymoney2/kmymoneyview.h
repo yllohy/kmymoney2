@@ -36,7 +36,7 @@
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.10 2001/06/29 05:19:59 mte Exp $
+  * $Id: kmymoneyview.h,v 1.11 2001/07/06 02:00:05 frodriguez Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -54,6 +54,8 @@ private:
 
   // The schedule view
   KScheduleView *m_scheduledView;
+  /**  */
+  QList<MyMoneyTransaction> m_transactionList;
 
   void loadDefaultCategories(void);  // Loads catgegories from default_categories.dat
   // Parses a line in the default categories file

@@ -112,7 +112,7 @@ void KMainView::resizeEvent(QResizeEvent *e)
 
 void KMainView::initTransactionView(MyMoneyFile *file, const MyMoneyBank bank,
   const MyMoneyAccount account,
-  QList<MyMoneyTransaction> theList,
+  QList<MyMoneyTransaction> *theList,
   KTransactionView::viewingType type)
 {
   transactionView->init(file, bank, account, theList, type);

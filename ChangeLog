@@ -1,3 +1,7 @@
+2001-07-05 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
+  * Added Memo Display
+  * Fixed numerous transactionview bugs.
+
 2001-06-29 Michael Edwardes <mte@users.sourceforge.net>
   * Added ability to search for transactions and view them in
     register view.

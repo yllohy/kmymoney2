@@ -825,13 +825,13 @@ void KMyMoneyView::viewTransactionList(void)
     return;
   }
 
-  QList<MyMoneyTransaction> list;
+	m_transactionList.clear();
   MyMoneyTransaction *trans=0;
   for (trans=pAccount->transactionFirst(); trans; trans=pAccount->transactionNext())
-    list.append(trans);
+    m_transactionList.append(trans);
 
   qDebug("kmymoneyview::view transactionlist");
-  m_mainView->initTransactionView(&m_file, *pBank, *pAccount, list, KTransactionView::NORMAL);
+  m_mainView->initTransactionView(&m_file, *pBank, *pAccount, &m_transactionList, KTransactionView::NORMAL);
   m_mainView->viewTransactionList();
   emit transactionOperations(true);
 }
@@ -931,9 +931,9 @@ void KMyMoneyView::doTransactionSearch()
     descriptionRegExp,
     numberRegExp );
 
-  QList<MyMoneyTransaction> transactionList;
-  MyMoneyTransaction *transaction;
 
+  MyMoneyTransaction *transaction;
+  m_transactionList.clear();
   for ( transaction=pAccount->transactionFirst(); transaction; transaction=pAccount->transactionNext()) {
     if (checkTransactionDates(transaction, doDate, startDate, endDate) &&
       checkTransactionAmount(transaction, doAmount, amountID, money) &&
@@ -942,7 +942,7 @@ void KMyMoneyView::doTransactionSearch()
       checkTransactionDescription(transaction, doDescription, description, descriptionRegExp) &&
       checkTransactionNumber(transaction, doNumber, number, numberRegExp) ) {
 
-      transactionList.append(new MyMoneyTransaction(
+      m_transactionList.append(new MyMoneyTransaction(
         transaction->id(),
         transaction->method(),
         transaction->number(),
@@ -968,7 +968,7 @@ void KMyMoneyView::doTransactionSearch()
       t->memo().latin1(),
       t->amount().amount());
 */
-  m_mainView->initTransactionView(&m_file, *pBank, *pAccount, transactionList, KTransactionView::SUBSET);
+  m_mainView->initTransactionView(&m_file, *pBank, *pAccount, &m_transactionList, KTransactionView::SUBSET);
   m_mainView->viewTransactionList();
   emit transactionOperations(true);
 }
