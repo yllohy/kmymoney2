@@ -190,13 +190,18 @@ QDate MyMoneySchedule::nextPayment(const QDate& refDate) const
 
   // if there never was a payment, then the next payment date must
   // be identical to the start date of the payments.
-  
+    
   if(!paymentDate.isValid()) {
     paymentDate = m_startDate;
     
     // if the reference date is invalid, then that's what we're looking for
     if(!refDate.isValid())
+    {
+      if (m_recordedPayments.contains(paymentDate))
+        return QDate();
+        
       return paymentDate;
+    }
   }
 
   // if the enddate is valid and it is before the reference date,
@@ -284,6 +289,10 @@ QDate MyMoneySchedule::nextPayment(const QDate& refDate) const
     if(m_endDate.isValid() && paymentDate > m_endDate)
       paymentDate = QDate();
   }
+
+  if (paymentDate.isValid() && m_recordedPayments.contains(paymentDate))
+    paymentDate = nextPayment(paymentDate);
+    
   return paymentDate;
 }
 
