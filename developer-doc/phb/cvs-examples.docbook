@@ -39,7 +39,7 @@ SourcForge.net.
 <title>Filling the sandbox for the first time</title>
 <screen>
 
-  <prompt>thb:~&gt; </prompt><userinput>cvs -d <emphasis>username</emphasis>@kmymoney2.sourceforge.net:kmymoney2 co kmymoney2</userinput>
+  <prompt>thb:~&gt; </prompt><userinput>cvs -d <emphasis>username</emphasis>@cvs.kmymoney2.sourceforge.net:/cvsroot/kmymoney2 co kmymoney2</userinput>
 
 
 </screen>
@@ -83,7 +83,7 @@ as parameter to the checkout command.
 <title>Filling the sandbox for the first time with a specific version</title>
 <screen>
 
-  <prompt>thb:~&gt; </prompt><userinput>cvs -d <emphasis>username</emphasis>@kmymoney2.sourceforge.net:kmymoney2 -r <emphasis>version-tag</emphasis> co kmymoney2</userinput>
+  <prompt>thb:~&gt; </prompt><userinput>cvs -d <emphasis>username</emphasis>@cvs.kmymoney2.sourceforge.net:/cvsroot/kmymoney2 co -r <emphasis>version-tag</emphasis> kmymoney2</userinput>
 
 
 </screen>
@@ -526,12 +526,12 @@ the repository.
 
   <prompt>thb:~&gt; </prompt><userinput>cd stable</userinput>
   <prompt>thb:~/stable&gt; </prompt><userinput>mv kmymoney2 devel</userinput>
-  <prompt>thb:~/stable&gt; </prompt><userinput>cvs -d <emphasis>username</emphasis>@kmymoney2.sourceforge.net:kmymoney2 \ <footnote>
+  <prompt>thb:~/stable&gt; </prompt><userinput>cvs -d <emphasis>username</emphasis>@kmymoney2.sourceforge.net:/cvsroot/kmymoney2 \ <footnote>
 <para>
 The back-slash is inserted here to break the line for readability. For real usage, the command has to be entered on a single line. 
 </para>
 </footnote>
-                -r <emphasis>rel-0-4-branch</emphasis> co kmymoney2</userinput>
+                co -r <emphasis>rel-0-4-branch</emphasis> kmymoney2</userinput>
   <prompt>thb:~/stable&gt; </prompt>
 
 
