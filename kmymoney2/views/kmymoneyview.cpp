@@ -93,6 +93,12 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   m_payeesView = new KPayeesView(qvboxMainFrame5, "payeesView");
   connect(m_payeesView, SIGNAL(signalViewActivated()), this, SLOT(slotActivatedPayeeView()));
 
+  QVBox *qvboxMainFrame6 = addVBoxPage( i18n("Ledgers"), i18n("Ledgers"),
+    DesktopIcon(""));
+  m_ledgerView = new KGlobalLedgerView(qvboxMainFrame6, "ledgerView");
+  connect(m_ledgerView, SIGNAL(signalViewActivated()), this, SLOT(slotActivatedAccountView()));
+
+
   m_investmentView = new KInvestmentView(qvboxMainFrame2, "investmentView");
 
   // Need to show it, although the user wont see it.
@@ -122,6 +128,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
 
   m_newAccountWizard = new KNewAccountWizard(this, "NewAccountWizard");
   connect(m_newAccountWizard, SIGNAL(newInstitutionClicked()), this, SLOT(slotBankNew()));
+
 
 
   // construct account context menu
@@ -242,6 +249,7 @@ void KMyMoneyView::slotAccountEdit()
 
   try
   {
+
     MyMoneyFile* file = MyMoneyFile::instance();
     MyMoneyAccount account = file->account(accountsView->currentAccount(accountSuccess));
 
@@ -259,6 +267,7 @@ void KMyMoneyView::slotAccountEdit()
     {
       QString errorString = i18n("Cannot edit account: ");
       errorString += e->what();
+
       KMessageBox::information(this, errorString);
     }
     delete e;
@@ -363,6 +372,7 @@ void KMyMoneyView::saveFile(QString filename)
 }
 
 bool KMyMoneyView::dirty(void)
+
 {
   if (!fileOpen())
     return false;
@@ -419,6 +429,7 @@ void KMyMoneyView::slotAccountNew(void)
     // regular dialog selected
     MyMoneyAccount account;
     KNewAccountDlg dialog(account, false, false, this, "hi", i18n("Create a new Account"));
+
     if((dialogResult = dialog.exec()) == QDialog::Accepted) {
       newAccount = dialog.account();
       parentAccount = dialog.parentAccount();
@@ -426,6 +437,7 @@ void KMyMoneyView::slotAccountNew(void)
   }
 
   if(dialogResult == QDialog::Accepted) {
+
     // The dialog/wizard doesn't check the parent.
     // An exception will be thrown on the next line instead.
     try
@@ -515,6 +527,7 @@ void KMyMoneyView::slotAccountImportAscii(void)
         accountsView->refresh(m_file);
       }
 
+
     }
     else {
       KCsvProgressDlg kcsvprogressdlg(0, getAccount(), this);
@@ -565,6 +578,9 @@ void KMyMoneyView::newFile(void)
 {
   m_file->close();
   m_file->open();
+
+
+
 
   MyMoneyFile *file = MyMoneyFile::instance();
 
@@ -619,6 +635,7 @@ void KMyMoneyView::loadDefaultCategories(void)
     return;
   }
 
+  m_categoriesView->suspendUpdate(true);
   QFile f(filename);
   if (f.open(IO_ReadOnly) ) {
     QTextStream t(&f);
@@ -679,9 +696,11 @@ void KMyMoneyView::loadDefaultCategories(void)
         try {
           MyMoneyFile::instance()->addAccount(account, parentAccount);
           accounts[parent + ":" + child] = account;
+      /*
           QString msg("Added '");
           msg += child + "'";
           qDebug(msg);
+      */
 
         } catch(MyMoneyException *e) {
           QString msg("Unable to add account '");
@@ -694,6 +713,7 @@ void KMyMoneyView::loadDefaultCategories(void)
     }
     f.close();
   }
+  m_categoriesView->suspendUpdate(false);
 }
 
 bool KMyMoneyView::parseDefaultCategory(QString& line, bool& income, QString& name, QStringList& minors)
@@ -708,6 +728,7 @@ bool KMyMoneyView::parseDefaultCategory(QString& line, bool& income, QString& na
   int tokenCount=0;
   bool done1=false, done2=false, done3=false, b_inEnclosed=false;
   QChar commentChar('#');
+
   QChar encloseChar('\"');
   QChar separatorChar(',');
 
@@ -752,6 +773,7 @@ bool KMyMoneyView::parseDefaultCategory(QString& line, bool& income, QString& na
               income = true;
 
             else if (buffer.upper() == "FALSE")
+
               income = false;
             else
               return false;
@@ -770,6 +792,7 @@ bool KMyMoneyView::parseDefaultCategory(QString& line, bool& income, QString& na
             done2=true;
             buffer = QString::null;
             break;
+
           default:
             return false;
         }
@@ -796,6 +819,7 @@ bool KMyMoneyView::parseDefaultCategory(QString& line, bool& income, QString& na
 }
 
 void KMyMoneyView::viewUp(void)
+
 {
   if (!fileOpen())
     return;
@@ -847,6 +871,7 @@ void KMyMoneyView::viewTransactionList(void)
     {
       m_showing = TransactionList;
 
+
       m_investmentView->hide();
 
       accountsView->hide();
@@ -866,12 +891,14 @@ void KMyMoneyView::viewTransactionList(void)
       KMessageBox::information(this, i18n("Unable to query account to view the transaction list"));
     }
     delete e;
+
   }
 }
 
 void KMyMoneyView::settingsLists()
 {
-  accountsView->refresh("");
+  // accountsView->refresh("");
+  m_ledgerView->refreshView();
 /*
   bool bankSuccess=false, accountSuccess=false;
   MyMoneyBank *pBank;
@@ -898,10 +925,12 @@ void KMyMoneyView::settingsLists()
       accountsView->refresh(m_file);
       break;
     case KMyMoneyView::TransactionList:
+
       qdateStart = config->readDateTimeEntry("StartDate", &defaultDate).date();
 
       if (qdateStart != defaultDate.date())
       {
+
         MyMoneyTransaction *transaction;
         m_transactionList.clear();
         for ( transaction=pAccount->transactionFirst(); transaction; transaction=pAccount->transactionNext()) {
@@ -986,6 +1015,7 @@ void KMyMoneyView::doTransactionSearch()
     payee,
     category,
     descriptionRegExp,
+
     numberRegExp,
     payeeRegExp );
 
@@ -1062,6 +1092,7 @@ bool KMyMoneyView::checkTransactionCredit(const MyMoneyTransaction *transaction,
 
 {
 /*
+
   if (!enabled)
     return true;
 
@@ -1155,6 +1186,8 @@ bool KMyMoneyView::checkTransactionPayee(const MyMoneyTransaction *transaction, 
     return true;
 
   if (!isRegExp) {
+
+
     if (transaction->payee().contains(payee))
       return true;
     else
@@ -1292,6 +1325,13 @@ transactionView->setSignals(true);
   emit signalAccountsView();
 }
 
+void KMyMoneyView::slotActivatedAccountView()
+{
+  m_realShowing = AccountView;
+
+  emit signalAccountView();
+}
+
 void KMyMoneyView::slotActivatedScheduledView()
 {
   m_realShowing = ScheduledView;
@@ -1301,6 +1341,7 @@ void KMyMoneyView::slotActivatedScheduledView()
 
 void KMyMoneyView::slotActivatedCategoriesView()
 {
+
   m_realShowing = CategoryView;
   emit signalCategoryView();
 }

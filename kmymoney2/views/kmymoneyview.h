@@ -47,6 +47,7 @@
 #include "kscheduledview.h"
 #include "kinvestmentview.h"
 #include "kmymoneyfile.h"
+#include "kgloballedgerview.h"
 
 #include "../mymoney/storage/mymoneyseqaccessmgr.h"
 
@@ -57,16 +58,17 @@
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.15 2002/07/08 11:15:28 ipwizard Exp $
+  * $Id: kmymoneyview.h,v 1.16 2002/07/21 17:43:38 ipwizard Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
 class KMyMoneyView : public KJanusWidget {
    Q_OBJECT
 
+
 public:
   enum viewType { None=0, BankList=1, TransactionList=2, InvestmentList=3 };
-  enum viewShowing { AccountsView, HomeView, PayeeView, CategoryView, ScheduledView };
+  enum viewShowing { AccountsView, HomeView, PayeeView, CategoryView, ScheduledView, AccountView };
 
 private:
   KHomeView *m_homeView;
@@ -77,6 +79,7 @@ private:
   KScheduledView *m_scheduledView;
   KInvestmentView *m_investmentView;
   KNewAccountWizard *m_newAccountWizard;
+  KGlobalLedgerView *m_ledgerView;
 
   viewType m_showing;
   viewShowing m_realShowing;
@@ -228,6 +231,7 @@ public slots:
 
   //void slotAccountDoubleClick(const MyMoneyAccount);
 
+
   /**
     * Called whenever the user wishes to create a new bank.  Brings up the input
     * dialog and saves the information.  It then enables the banks view.
@@ -356,6 +360,8 @@ protected slots:
 
   void slotActivatedPayeeView();
 
+  void slotActivatedAccountView();
+
 signals:
   /**
     * This signal is emitted whenever the bank actions needs enabling or disabling.
@@ -396,6 +402,7 @@ signals:
   void signalScheduledView();
   void signalCategoryView();
   void signalPayeeView();
+  void signalAccountView();
 };
 
 #endif
