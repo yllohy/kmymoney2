@@ -48,13 +48,13 @@ class KPopupMenu;
   * Used by the KMyMoneyView class to show the view.
   *
   * @author Michael Edwardes 2000-2002
-  * $Id: kscheduledview.h,v 1.23 2004/02/04 19:52:01 ipwizard Exp $
+  * $Id: kscheduledview.h,v 1.24 2004/08/22 16:46:46 ipwizard Exp $
   *
   * @short A class to encapsulate recurring transaction operations.
   */
 class KScheduledView : public kScheduledViewDecl {
    Q_OBJECT
-   
+
 public:
   /**
     * Standard constructor for QWidgets.
@@ -74,7 +74,7 @@ public:
 public slots:
   void slotSelectSchedule(const QCString& schedule);
   void slotReloadView();
-  
+
 signals:
   /**
     * Emitted when this view is shown.
@@ -150,8 +150,11 @@ protected slots:
   void slotBriefEnterClicked(const MyMoneySchedule& schedule, const QDate&);
 
   void slotTimerDone(void);
-  
+
   void slotSetSelectedItem(QListViewItem* item);
+
+  void slotRearrange(void);
+
 private:
   /// The account currently selected via the accounts view
 //  QCString m_accountId;
