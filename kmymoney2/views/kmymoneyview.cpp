@@ -554,39 +554,19 @@ bool KMyMoneyView::readFile(const KURL& url)
     }
   }
 
-  QString strFileExtension = MyMoneyUtils::getFileExtension(url.path());
-
-  if(strFileExtension.find("XML") != -1)
-  {
-    pReader = new MyMoneyStorageXML;
-  }
-  else
-  {
-    // Use the binary reader 
-    pReader = new MyMoneyStorageBin;
-  }
-
   // let's glimps into the file to figure out, if it's one
   // of the old (uncompressed) or new (compressed) files.
-
-  pReader->setProgressCallback(&KMyMoneyView::progressCallback);
-
   QFile file(filename);
   QIODevice *qfile = 0;
 
   if(file.open(IO_ReadOnly)) {
-    QString  buffer;
-    int ch;
-    for(unsigned int i = 0; i < 2; ++i) {
-      ch = file.getch();
-      if(ch == -1)
-        break;
-      buffer += QChar(ch);
-    }
+    QByteArray hdr(2);
+    int cnt;
+    cnt = file.readBlock(hdr.data(), 2);
     file.close();
 
-    if(buffer.length() == 2) {
-      if(buffer == QString("\037\213")) {         // gzipped?
+    if(cnt == 2) {
+      if(QString(hdr) == QString("\037\213")) {         // gzipped?
         qfile = KFilterDev::deviceForFile(filename, COMPRESSION_MIME_TYPE);
       } else {
         // we can't use file directly, as we delete qfile later on
@@ -595,11 +575,45 @@ bool KMyMoneyView::readFile(const KURL& url)
 
       if(qfile->open(IO_ReadOnly)) {
         try {
-          pReader->readFile(qfile, dynamic_cast<IMyMoneySerialize*> (MyMoneyFile::instance()->storage()));
+          hdr.resize(8);
+          if(qfile->readBlock(hdr.data(), 8) == 8) {
+            // Ok, we got the first block of 8 bytes. Read in the two
+            // unsigned long int's by preserving endianess. This is
+            // achieved by reading them through a QDataStream object
+            Q_INT32 magic0, magic1;
+            QDataStream s(hdr, IO_ReadOnly);
+            s >> magic0;
+            s >> magic1;
+
+            // If both magic numbers match (we actually read in the
+            // text 'KMyMoney2' then we assume a binary file and
+            // construct a reader for it. Otherwise, we construct
+            // an XML reader object.
+            //
+            // The expression magic0 < 30 is only used to create
+            // a binary reader if we assume an old binary file. This
+            // should be removed at some point. An alternative is to
+            // check the beginning of the file against an pattern
+            // of the XML file (e.g. '?<xml' ).
+            if((magic0 == MAGIC_0_50 && magic1 == MAGIC_0_51)
+            || magic0 < 30)
+              pReader = new MyMoneyStorageBin;
+            else
+              pReader = new MyMoneyStorageXML;
+
+            // rewind the file to give the reader a chance              
+            qfile->at(0);            
+            pReader->setProgressCallback(&KMyMoneyView::progressCallback);
+            pReader->readFile(qfile, dynamic_cast<IMyMoneySerialize*> (MyMoneyFile::instance()->storage()));
+          }
         } catch (MyMoneyException *e) {
           QString msg = e->what();
           qDebug("%s", msg.latin1());
           delete e;
+        }
+        if(pReader) {
+          pReader->setProgressCallback(0);
+          delete pReader;
         }
         qfile->close();
       } else {
@@ -611,9 +625,6 @@ bool KMyMoneyView::readFile(const KURL& url)
     KMessageBox::sorry(this, i18n("File '%1' not found!").arg(filename));
   }
 
-  pReader->setProgressCallback(0);
-
-  delete pReader;
 
   // if a temporary file was constructed by NetAccess::download,
   // then it will be removed with the next call. Otherwise, it

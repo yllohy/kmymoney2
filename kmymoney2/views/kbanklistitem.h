@@ -42,25 +42,53 @@ class MyMoneyInstitution;
   * This file contains class definitions for various objects used in
   * list and icon views. Currently it contains the following definitions:
   *
+  * - KAccountItem
   * - KAccountListItem
   * - KAccountIconItem
   * - KTransactionListItem
   *
   * @author Michael Edwardes
   * @author Thomas Baumgart
-  * @date 2002
+  * @date 2002, 2003
   *
-  *
-  * The following files are included by this file:
   *
   */
+
+/**
+  * This class is a base class that maintains account
+  * information for the KAccountListItem and KAccountIconItem.
+  */
+class KAccountItem
+{
+public:
+  KAccountItem() {} ;
+  virtual ~KAccountItem() {};
+
+  /**
+    * This method allows to set the account id.
+    *
+    * @param id account id to be stored in m_accountID;
+    */
+  void setAccountID(const QCString& id) { m_accountID = id; };
+        
+  /**
+    * This method returns the account's id for this object
+    *
+    * @return const QCString of the Id
+    */
+  const QCString accountID(void) const { return m_accountID; };
+
+private:
+  QCString    m_accountID;  
+};
 
 /**
   * This class represents an item in the account list view. It is used
   * by the KAccountsView, the KCategoriesView and the KNewAccountWizard
   * to select between the accounts.
   */
-class KAccountListItem : public KListViewItem, MyMoneyObserver  {
+class KAccountListItem : public KListViewItem, public KAccountItem, MyMoneyObserver
+{
 public:
 
   KAccountListItem(KListView *parent, const QString& txt);
@@ -98,14 +126,7 @@ public:
     */
   KAccountListItem(KAccountListItem *parent, const MyMoneyAccount& account);
 
-	~KAccountListItem();
-
-  /**
-    * This method returns the account's id for this object
-    *
-    * @return const QCString of the Id
-    */
-	const QCString accountID(void) const;
+  ~KAccountListItem();
 
   /**
     * This method is re-implemented from QListViewItem::paintCell().
@@ -114,6 +135,8 @@ public:
     */
   void paintCell(QPainter *p, const QColorGroup & cg, int column, int width, int align);
 
+  void paintFocus(QPainter *p, const QColorGroup & cg, const QRect& rect);
+  
   /**
     * This method is called by the MyMoneyFile object, whenever the
     * account that is represented by this object changes within the
@@ -151,7 +174,6 @@ private:
   void loadCache(void);
 
 private:
-  QCString m_accountID;
   bool m_bViewNormal;
   int m_nAccountColumn;
   int m_nInstitutionColumn;
@@ -164,7 +186,8 @@ private:
   * This class represents an item in the account icon view. It is used
   * by the KAccountsView to select between the accounts using icons.
   */
-class KAccountIconItem : public KIconViewItem, MyMoneyObserver  {
+class KAccountIconItem : public KIconViewItem, public KAccountItem, MyMoneyObserver
+{
 public:
   /**
     * Constructor to be used to construct an account icon object.
@@ -176,14 +199,7 @@ public:
     * @param pixmap const reference to QPixmap with the icon to be used
     */
   KAccountIconItem(QIconView *parent, const MyMoneyAccount& account, const QPixmap& pixmap);
-	~KAccountIconItem();
-
-  /**
-    * This method returns the account's id for this object
-    *
-    * @return const QCString of the Id
-    */
-	const QCString accountID(void) const { return m_accountID; };
+  ~KAccountIconItem();
 
   /**
     * This method is called by the MyMoneyFile object, whenever the
@@ -193,26 +209,21 @@ public:
     * @param id reference to QCString of the account's id
     */
   void update(const QCString& id);
-
-private:
-  QCString m_accountID;
 };
 
 /**
   * This class represents an item in the transaction list view. It is used
   * by the KPayeesView to select between transactions.
   */
-class KTransactionListItem : public KListViewItem
+class KTransactionListItem : public KListViewItem, public KAccountItem
 {
 public:
   KTransactionListItem(KListView* view, KTransactionListItem* parent, const QCString& accountId, const QCString& transaction);
   ~KTransactionListItem();
 
-  const QCString& accountId(void) const { return m_accountId; };
   const QCString& transactionId(void) const { return m_transactionId; };
 
 private:
-  QCString m_accountId;
   QCString m_transactionId;
 };
 

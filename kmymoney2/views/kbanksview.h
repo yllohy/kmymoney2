@@ -110,7 +110,7 @@ public slots:
 protected:
   void resizeEvent(QResizeEvent*);
 
-  void fillTransactionCountMap(void);
+  // void fillTransactionCountMap(void);
   void fillAccountMap(void);
 
 protected slots:

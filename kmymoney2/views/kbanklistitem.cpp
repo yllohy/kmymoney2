@@ -19,6 +19,8 @@
 
 #include <qpixmap.h>
 #include <qcolor.h>
+#include <qstyle.h>
+#include <qapplication.h>
 
 #if QT_VERSION > 300
 #include <qpainter.h>
@@ -77,14 +79,14 @@ void KAccountListItem::newAccount(const MyMoneyAccount& account)
   loadCache();
   MyMoneyFile*  file = MyMoneyFile::instance();
 
-  m_accountID = account.id();
+  setAccountID(account.id());
 
-  file->attach(m_accountID, this);
+  file->attach(account.id(), this);
 
   setPixmap(0, *accountPixmap);
   setText(0, account.name());
 
-  MyMoneyMoney balance = file->totalBalance(m_accountID);
+  MyMoneyMoney balance = file->totalBalance(account.id());
   
   // since income and liabilities are usually negative,
   // we reverse the sign for display purposes
@@ -100,20 +102,21 @@ void KAccountListItem::newAccount(const MyMoneyAccount& account)
 }
 
 KAccountListItem::KAccountListItem(KListView *parent, const QString& txt)
-  : KListViewItem(parent), m_accountID(QCString()), m_bViewNormal(true)
+  : KListViewItem(parent), m_bViewNormal(true)
 {
   setText(0, txt);  
 }
 
 KAccountListItem::KAccountListItem(KListView *parent, const MyMoneyInstitution& institution)
-  : KListViewItem(parent), m_accountID(institution.id()), m_bViewNormal(true)
+  : KListViewItem(parent), m_bViewNormal(true)
 {
+  setAccountID(institution.id());
   setText(0, institution.name());
 }
 
 KAccountListItem::~KAccountListItem()
 {
-  MyMoneyFile::instance()->detach(m_accountID, this);
+  MyMoneyFile::instance()->detach(accountID(), this);
 }
 
 void KAccountListItem::update(const QCString& accountId)
@@ -124,10 +127,10 @@ void KAccountListItem::update(const QCString& accountId)
     MyMoneyAccount acc = file->account(accountId);
 
     try {
-      MyMoneyMoney balance = file->totalBalance(m_accountID);
+      MyMoneyMoney balance = file->totalBalance(accountId);
 
       setText(0, acc.name());
-      setText(1, QString::number(file->transactionCount(m_accountID)));
+      setText(1, QString::number(file->transactionCount(accountId)));
       
       // since income and liabilities are usually negative,
       // we reverse the sign for display purposes
@@ -154,14 +157,9 @@ void KAccountListItem::update(const QCString& accountId)
   }
 }
 
-const QCString KAccountListItem::accountID(void) const
-{
-  return m_accountID;
-}
-
 void KAccountListItem::paintCell(QPainter *p, const QColorGroup & cg, int column, int width, int align)
 {
-	KConfig *config = KGlobal::config();
+  KConfig *config = KGlobal::config();
   config->setGroup("List Options");
   QFont defaultFont = QFont("helvetica", 12);
   p->setFont(config->readFontEntry("listCellFont", &defaultFont));
@@ -172,46 +170,90 @@ void KAccountListItem::paintCell(QPainter *p, const QColorGroup & cg, int column
   
   bgColour = config->readColorEntry("listBGColor", &bgColour);
   colour = config->readColorEntry("listColor", &colour);
-  textColour = config->readColorEntry("listGridColor", &textColour);
+  // textColour = config->readColorEntry("listGridColor", &textColour);
 
   QColorGroup cg2(cg);
-  cg2.setColor(QColorGroup::Text, textColour);
+  // cg2.setColor(QColorGroup::Text, textColour);
 
   if (isAlternate())
-  {
     cg2.setColor(QColorGroup::Base, colour);
-  }
   else
-  {
     cg2.setColor(QColorGroup::Base, bgColour);
-  }
 
+  QListViewItem::paintCell(p, cg2, column, width, align);
+  
   int indent = 0;
   if (column == 0)
   {
-    indent = -20 * (depth()+1);
+    int ts = listView()->treeStepSize();
+    int ofs;
+    indent = ts * (depth()+1);
     p->save();
-    p->translate(indent, 0);
-    p->fillRect( 0, 0, width+indent, height(), cg2.base() );
+    p->translate(-indent, 0);
 
-    if (childCount() > 0)
-    {
-      p->save();
-      p->translate((20 * (depth()+1))-20, 0);
-      
-      p->setPen( cg2.foreground() );
-      p->setBrush( cg2.base() );
-      p->drawRect( 5, height() / 2 - 4, 9, 9 );
-      p->drawLine( 7, height() / 2, 11, height() / 2 );
+    if ( isSelected()) {
+      p->fillRect( 0, 0, indent, height(), cg2.brush( QColorGroup::Highlight ) );
+      if ( isEnabled() || !listView() )
+        p->setPen( cg2.highlightedText() );
+      else if ( !isEnabled() && listView())
+        p->setPen( listView()->palette().disabled().highlightedText() );
+        
+    } else
+      p->fillRect( 0, 0, indent, height(), cg2.base() );
+
+    // draw dotted lines in upper levels to the left of us
+    QListViewItem *parent = this;
+    for(int j = depth()-1; j >= 0; --j) {
+      if(!parent)
+        break;
+      parent = parent->parent();
+      if(parent->nextSibling()) {
+        ofs = (j * ts) + ts/2 - 1;
+        for(int j = 0; j < height(); j += 2)
+          p->drawPoint(ofs, j);
+      }
+    }
+
+    if(childCount() == 0) {
+      // if we have no children, the we need to draw a vertical line
+      // which length depends if we have a sibling or not.
+      // also a horizontal line to the right is required.
+      ofs = depth()*ts + ts/2 - 1;
+      int end = nextSibling() ? height() : height()/2;
+      for(int i = 0; i < end; i += 2)
+        p->drawPoint(ofs, i);
+
+      for(int i = ofs; i < (depth()+1)*ts; i += 2)
+        p->drawPoint(i, height()/2);
+
+    } else {
+      // draw upper part of vertical line      
+      ofs = depth()*ts + ts/2 - 1;
+      for(int i = 0; i < height()/2-(ts-2)/4; i += 2)
+        p->drawPoint(ofs, i);
+
+      // draw horizontal part        
+      for(int i = ofs + ts/4 ; i < (depth()+1)*ts; i += 2)
+        p->drawPoint(i, height()/2);
+        
+      // need to draw box with +/- in it
+      ofs = depth() * ts;
+      p->drawRect( ofs + ts/4, height() / 2 - (ts-2)/4, (ts-2)/2, (ts-2)/2 );
+      p->drawLine( ofs + ts/2-3, height() / 2, ofs + ts/2+1, height() / 2 );
       if ( !isOpen() )
-          p->drawLine( 9, height() / 2 - 2, 9, height() / 2 + 2 );
-      p->restore();
+          p->drawLine( ofs + ts/2-1, height() / 2 - 2, ofs + ts/2-1, height() / 2 + 2 );
+
+      // if there are more siblings, we need to draw
+      // the remainder of the vertical line
+      if(nextSibling()) {
+        ofs = depth()*ts + ts/2 - 1;
+        for(int i = height() / 2 + (ts-2)/4; i < height(); i += 2)
+          p->drawPoint(ofs, i);
+      }
     }
 
     p->restore();
   }
-
-  QListViewItem::paintCell(p, cg2, column, width, align);
 }
 
 
@@ -221,14 +263,14 @@ KAccountIconItem::KAccountIconItem(QIconView* parent, const MyMoneyAccount& acco
 {
   MyMoneyFile*  file = MyMoneyFile::instance();
 
-  m_accountID = account.id();
+  setAccountID(account.id());
 
-  file->attach(m_accountID, this);
+  file->attach(account.id(), this);
 }
 
 KAccountIconItem::~KAccountIconItem()
 {
-  MyMoneyFile::instance()->detach(m_accountID, this);
+  MyMoneyFile::instance()->detach(accountID(), this);
 }
 
 void KAccountIconItem::update(const QCString& /* id */)
@@ -238,7 +280,7 @@ void KAccountIconItem::update(const QCString& /* id */)
 KTransactionListItem::KTransactionListItem(KListView* view, KTransactionListItem* parent, const QCString& accountId, const QCString& transactionId)
   : KListViewItem(view, parent)
 {
-  m_accountId = accountId;
+  setAccountID(accountId);
   m_transactionId = transactionId;
 }
 
@@ -246,19 +288,11 @@ KTransactionListItem::~KTransactionListItem()
 {
 }
 
-void KAccountListItem::paintBranches(QPainter* p, const QColorGroup&/* cg*/, int w, int/* y*/, int h)
+void KAccountListItem::paintBranches(QPainter* /* p */, const QColorGroup& /* cg */, int /* w */, int /* y */, int /* h */)
 {
-  KConfig *config = KGlobal::config();
-  config->setGroup("List Options");
-
-  QColor colour = Qt::white;
-  QColor bgColour = QColor(224, 253, 182); // Same as for home view
-
-  bgColour = config->readColorEntry("listBGColor", &bgColour);
-  colour = config->readColorEntry("listColor", &colour);
-
-  if (isAlternate())
-    p->fillRect( 0, 0, w, h, colour );
-  else
-    p->fillRect( 0, 0, w, h, bgColour );
 }
+
+void KAccountListItem::paintFocus(QPainter* /* p */, const QColorGroup& /* cg */, const QRect & /* rect */)
+{
+}
+

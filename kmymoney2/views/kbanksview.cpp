@@ -439,7 +439,7 @@ void KAccountsView::slotIconRightMouse(QIconViewItem* item, const QPoint&)
       m_bSelectedAccount=true;
       m_bSelectedInstitution=false;
       m_selectedAccount = accountItem->accountID();
-
+      
       emit accountRightMouseClick();
 
     } catch (MyMoneyException *e) {
@@ -467,6 +467,7 @@ void KAccountsView::slotListRightMouse(QListViewItem* item, const QPoint& , int 
         m_bSelectedAccount=true;
         m_bSelectedInstitution=false;
         m_selectedAccount = accountItem->accountID();
+
         emit accountRightMouseClick();
 
       } catch (MyMoneyException *e) {
@@ -602,6 +603,7 @@ void KAccountsView::fillAccountMap(void)
 {
   QValueList<MyMoneyAccount> accountList;
   accountList = MyMoneyFile::instance()->accountList();
+
 
   m_accountMap.clear();
 
@@ -843,6 +845,7 @@ void KAccountsView::clear(void)
   accountListView->clear();
   accountIconView->clear();
 
+
   m_bSelectedAccount = false;
   m_bSelectedInstitution=false;
 }
@@ -904,15 +907,27 @@ void KAccountsView::slotViewSelected(QWidget* /* view */)
 }
 
 void KAccountsView::slotEditClicked(void)
+
 {
-  KAccountListItem *item = (KAccountListItem *)accountListView->selectedItem();
-  if (!item)
-    return;
+  QCString  accountId;
+  
+  if(accountTabWidget->currentPageIndex() == 0) {   // ListView?
+    KAccountListItem *item = (KAccountListItem *)accountListView->currentItem();
+    if(!item)
+      return;
+    accountId = item->accountID();
+    
+  } else {
+    KAccountIconItem *item = (KAccountIconItem *)accountIconView->currentItem();
+    if(!item)
+      return;
+    accountId = item->accountID();
+  }
 
   try
   {
     MyMoneyFile* file = MyMoneyFile::instance();
-    MyMoneyAccount account = file->account(item->accountID());
+    MyMoneyAccount account = file->account(accountId);
 
     KNewAccountDlg dlg(account, true, false, this, "hi", i18n("Edit an account"));
 
@@ -938,14 +953,25 @@ void KAccountsView::slotEditClicked(void)
 
 void KAccountsView::slotDeleteClicked(void)
 {
-  KAccountListItem *item = (KAccountListItem *)accountListView->selectedItem();
-  if (!item)
-    return;
+  QCString  accountId;
+
+  if(accountTabWidget->currentPageIndex() == 0) {   // ListView?
+    KAccountListItem *item = (KAccountListItem *)accountListView->currentItem();
+    if(!item)
+      return;
+    accountId = item->accountID();
+
+  } else {
+    KAccountIconItem *item = (KAccountIconItem *)accountIconView->currentItem();
+    if(!item)
+      return;
+    accountId = item->accountID();
+  }
 
   try
   {
     MyMoneyFile *file = MyMoneyFile::instance();
-    MyMoneyAccount account = file->account(item->accountID());
+    MyMoneyAccount account = file->account(accountId);
     QString prompt = i18n("Do you really want to delete the account '%1'")
       .arg(account.name());
 

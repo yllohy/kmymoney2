@@ -431,7 +431,7 @@ void KPayeesView::slotTransactionDoubleClicked(QListViewItem* i)
 {
   KTransactionListItem* item = static_cast<KTransactionListItem *>(i);
   if (item)
-    emit transactionSelected(item->accountId(), item->transactionId());
+    emit transactionSelected(item->accountID(), item->transactionId());
 }
 
 void KPayeesView::slotSelectPayeeAndTransaction(const QCString& payeeId, const QCString& accountId, const QCString& transactionId)
@@ -446,7 +446,7 @@ void KPayeesView::slotSelectPayeeAndTransaction(const QCString& payeeId, const Q
 
     KTransactionListItem* item = static_cast<KTransactionListItem*> (m_transactionView->firstChild());
     while(item != 0) {
-      if(item->accountId() == accountId && item->transactionId() == transactionId)
+      if(item->accountID() == accountId && item->transactionId() == transactionId)
         break;
       item = static_cast<KTransactionListItem*> (item->nextSibling());
     }
