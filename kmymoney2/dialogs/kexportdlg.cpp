@@ -197,8 +197,10 @@ void KExportDlg::checkData(const QString& account)
 
   if(m_lastAccount != account) {
     MyMoneyFile* file = MyMoneyFile::instance();
-    QValueList<MyMoneyTransaction> list = file->transactionList(accountId(account));
+    MyMoneyTransactionFilter filter(accountId(account));
+    QValueList<MyMoneyTransaction> list = file->transactionList(filter);
     QValueList<MyMoneyTransaction>::Iterator it;
+    
     if(!list.isEmpty()) {
       it = list.begin();
       m_kmymoneydateStart->loadDate((*it).postDate());

@@ -690,11 +690,20 @@ void MyMoneyFile::clearNotification()
   m_notificationList.clear();
 }
 
+#if 0
 const QValueList<MyMoneyTransaction> MyMoneyFile::transactionList(const QCString& account) const
 {
   checkStorage();
 
   return m_storage->transactionList(account);
+}
+#endif
+
+const QValueList<MyMoneyTransaction> MyMoneyFile::transactionList(MyMoneyTransactionFilter& filter) const
+{
+  checkStorage();
+
+  return m_storage->transactionList(filter);
 }
 
 const QValueList<MyMoneyPayee> MyMoneyFile::payeeList(void) const
@@ -727,7 +736,7 @@ const QCString MyMoneyFile::categoryToAccount(const QString& category) const
   // search the category in the expense accounts and if it is not found, try
   // to locate it in the income accounts
   id = locateSubAccount(MyMoneyFile::instance()->expense(), category);
-  if(id == "")
+  if(id.isEmpty())
     id = locateSubAccount(MyMoneyFile::instance()->income(), category);
 
   return id;
@@ -740,7 +749,7 @@ const QCString MyMoneyFile::nameToAccount(const QString& name) const
   // search the category in the asset accounts and if it is not found, try
   // to locate it in the liability accounts
   id = locateSubAccount(MyMoneyFile::instance()->asset(), name);
-  if(id == "")
+  if(id.isEmpty())
     id = locateSubAccount(MyMoneyFile::instance()->liability(), name);
 
   return id;

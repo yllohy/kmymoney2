@@ -87,7 +87,8 @@ void MyMoneyQifWriter::writeAccountEntry(QTextStream &s, const QCString& account
   MyMoneyAccount account;
 
   account = file->account(accountId);
-  QValueList<MyMoneyTransaction> list = file->transactionList(accountId);
+  MyMoneyTransactionFilter filter(accountId);
+  QValueList<MyMoneyTransaction> list = file->transactionList(filter);
 
   s << "!Type:" << m_qifProfile.profileType() << endl;
   s << "D" << m_qifProfile.date(account.openingDate()) << endl;

@@ -39,7 +39,7 @@ KImportVerifyDlg::KImportVerifyDlg(const MyMoneyAccount& account, QWidget *paren
  : KImportVerifyDlgDecl(parent,name,true),
    m_account(account)
 {
-  m_ledgerView->slotAccountSelected(account.name());
+  m_ledgerView->slotSelectAccount(account.id());
   connect(buttonOk, SIGNAL(clicked()), this, SLOT(slotOkClicked()));
 }
 
@@ -50,7 +50,8 @@ KImportVerifyDlg::~KImportVerifyDlg()
 void KImportVerifyDlg::slotOkClicked(void)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
-  QValueList<MyMoneyTransaction> list = file->transactionList(m_account.id());
+  MyMoneyTransactionFilter filter(m_account.id());
+  QValueList<MyMoneyTransaction> list = file->transactionList(filter);
   QValueList<MyMoneyTransaction>::Iterator it_t;
 
   for(it_t = list.begin(); it_t != list.end(); ++it_t) {

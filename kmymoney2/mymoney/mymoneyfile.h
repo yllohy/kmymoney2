@@ -430,6 +430,18 @@ public:
 
   /**
     * This method is used to pull a list of transactions from the file
+    * global transaction pool. It returns all those transactions
+    * that match the filter passed as argument. If the filter is empty,
+    * the whole journal will be returned.
+    *
+    * @param filter MyMoneyTransactionFilter object with the match criteria
+    *
+    * @return set of transactions in form of a QValueList<MyMoneyTransaction>
+    */
+  const QValueList<MyMoneyTransaction> transactionList(MyMoneyTransactionFilter& filter) const;
+
+  /**
+    * This method is used to pull a list of transactions from the file
     * global transaction pool. It returns either the whole journal or
     * the set of transaction referenced by a specific account depending
     * on the argument given.
@@ -441,7 +453,7 @@ public:
     *
     * @return set of transactions in form of a QValueList<MyMoneyTransaction>
     */
-  const QValueList<MyMoneyTransaction> transactionList(const QCString& account = "") const;
+  // const QValueList<MyMoneyTransaction> transactionList(const QCString& account = "") const;
 
   /**
     * This method is used to remove a transaction from the transaction

@@ -920,9 +920,12 @@ void MyMoneyFileTest::testModifyTransactionNewAccount() {
 		CPPUNIT_ASSERT(m->account("A000002").transactionCount() == 0);
 		CPPUNIT_ASSERT(m->account("A000003").transactionCount() == 1);
 */
-		CPPUNIT_ASSERT(m->transactionList("A000001").count() == 1);
-		CPPUNIT_ASSERT(m->transactionList("A000002").count() == 0);
-		CPPUNIT_ASSERT(m->transactionList("A000003").count() == 1);
+		MyMoneyTransactionFilter f1("A000001");
+		MyMoneyTransactionFilter f2("A000002");
+		MyMoneyTransactionFilter f3("A000003");
+		CPPUNIT_ASSERT(m->transactionList(f1).count() == 1);
+		CPPUNIT_ASSERT(m->transactionList(f2).count() == 0);
+		CPPUNIT_ASSERT(m->transactionList(f3).count() == 1);
 
 		m->modifyTransaction(t);
 		t = m->transaction("T000000000000000001");
@@ -934,9 +937,9 @@ void MyMoneyFileTest::testModifyTransactionNewAccount() {
 		CPPUNIT_ASSERT(m->account("A000002").transactionCount() == 1);
 		CPPUNIT_ASSERT(m->account("A000003").transactionCount() == 1);
 */
-		CPPUNIT_ASSERT(m->transactionList("A000001").count() == 0);
-		CPPUNIT_ASSERT(m->transactionList("A000002").count() == 1);
-		CPPUNIT_ASSERT(m->transactionList("A000003").count() == 1);
+		CPPUNIT_ASSERT(m->transactionList(f1).count() == 0);
+		CPPUNIT_ASSERT(m->transactionList(f2).count() == 1);
+		CPPUNIT_ASSERT(m->transactionList(f3).count() == 1);
 
 		CPPUNIT_ASSERT(observer->updated().count() == 3);
 		CPPUNIT_ASSERT(observer->updated().contains(MyMoneyFile::NotifyClassAccount) == 1);
@@ -965,9 +968,12 @@ void MyMoneyFileTest::testRemoveTransaction () {
 		CPPUNIT_ASSERT(m->account("A000002").transactionCount() == 0);
 		CPPUNIT_ASSERT(m->account("A000003").transactionCount() == 0);
 */
-		CPPUNIT_ASSERT(m->transactionList("A000001").count() == 0);
-		CPPUNIT_ASSERT(m->transactionList("A000002").count() == 0);
-		CPPUNIT_ASSERT(m->transactionList("A000003").count() == 0);
+		MyMoneyTransactionFilter f1("A000001");
+		MyMoneyTransactionFilter f2("A000002");
+		MyMoneyTransactionFilter f3("A000003");
+		CPPUNIT_ASSERT(m->transactionList(f1).count() == 0);
+		CPPUNIT_ASSERT(m->transactionList(f2).count() == 0);
+		CPPUNIT_ASSERT(m->transactionList(f3).count() == 0);
 
 		CPPUNIT_ASSERT(observer->updated().count() == 2);
 		CPPUNIT_ASSERT(observer->updated().contains(MyMoneyFile::NotifyClassAccount) == 1);

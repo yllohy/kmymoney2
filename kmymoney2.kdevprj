@@ -29,13 +29,13 @@ cflags=
 cppflags=
 cxxflags=\s-O0 -g3 -Wall
 ldadd=\s$(LIB_KHTML) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT)
-ldflags=\s    \s
+ldflags=\s       \s
 path_to_bin_program=kmymoney2
 
 [General]
 AMChanged=false
 author=Michael Edwardes
-configure_args=--prefix=/opt/kde3 --enable-debug\s
+configure_args=\s--build=i386-linux --host=i386-linux --target=i386-linux --prefix=/opt/kde3 --enable-debug\s
 dir_where_make_will_be_called=
 email=mte@users.sourceforge.net
 kdevprj_version=1.3
@@ -1161,7 +1161,7 @@ install_location=$$(kde_icondir)/hicolor/48x48/mimetypes/kmy.png
 type=DATA
 
 [kmymoney2/mymoney/Makefile.am]
-files=kmymoney2/mymoney/mymoneyaccount.cpp,kmymoney2/mymoney/mymoneyaccount.h,kmymoney2/mymoney/mymoneycategory.cpp,kmymoney2/mymoney/mymoneycategory.h,kmymoney2/mymoney/mymoneyfile.cpp,kmymoney2/mymoney/mymoneyfile.h,kmymoney2/mymoney/mymoneymoney.cpp,kmymoney2/mymoney/mymoneymoney.h,kmymoney2/mymoney/mymoneypayee.cpp,kmymoney2/mymoney/mymoneypayee.h,kmymoney2/mymoney/mymoneyscheduled.cpp,kmymoney2/mymoney/mymoneyscheduled.h,kmymoney2/mymoney/mymoneytransaction.cpp,kmymoney2/mymoney/mymoneytransaction.h,kmymoney2/mymoney/mymoneyequity.cpp,kmymoney2/mymoney/mymoneyequity.h,kmymoney2/mymoney/mymoneyutils.h,kmymoney2/mymoney/mymoneyutils.cpp,kmymoney2/mymoney/mymoneyequitylist.cpp,kmymoney2/mymoney/mymoneyequitylist.h,kmymoney2/mymoney/mymoneyinvesttransaction.cpp,kmymoney2/mymoney/mymoneyinvesttransaction.h,kmymoney2/mymoney/mymoneyexception.cpp,kmymoney2/mymoney/mymoneyexception.h,kmymoney2/mymoney/mymoneyinstitution.cpp,kmymoney2/mymoney/mymoneyinstitution.h,kmymoney2/mymoney/mymoneysplit.cpp,kmymoney2/mymoney/mymoneysplit.h,kmymoney2/mymoney/mymoneysubject.cpp,kmymoney2/mymoney/mymoneysubject.h,kmymoney2/mymoney/mymoneyobserver.cpp,kmymoney2/mymoney/mymoneyobserver.h,kmymoney2/mymoney/mymoneykeyvaluecontainer.cpp,kmymoney2/mymoney/mymoneykeyvaluecontainer.h
+files=kmymoney2/mymoney/mymoneyaccount.cpp,kmymoney2/mymoney/mymoneyaccount.h,kmymoney2/mymoney/mymoneycategory.cpp,kmymoney2/mymoney/mymoneycategory.h,kmymoney2/mymoney/mymoneyfile.cpp,kmymoney2/mymoney/mymoneyfile.h,kmymoney2/mymoney/mymoneymoney.cpp,kmymoney2/mymoney/mymoneymoney.h,kmymoney2/mymoney/mymoneypayee.cpp,kmymoney2/mymoney/mymoneypayee.h,kmymoney2/mymoney/mymoneyscheduled.cpp,kmymoney2/mymoney/mymoneyscheduled.h,kmymoney2/mymoney/mymoneytransaction.cpp,kmymoney2/mymoney/mymoneytransaction.h,kmymoney2/mymoney/mymoneyequity.cpp,kmymoney2/mymoney/mymoneyequity.h,kmymoney2/mymoney/mymoneyutils.h,kmymoney2/mymoney/mymoneyutils.cpp,kmymoney2/mymoney/mymoneyequitylist.cpp,kmymoney2/mymoney/mymoneyequitylist.h,kmymoney2/mymoney/mymoneyinvesttransaction.cpp,kmymoney2/mymoney/mymoneyinvesttransaction.h,kmymoney2/mymoney/mymoneyexception.cpp,kmymoney2/mymoney/mymoneyexception.h,kmymoney2/mymoney/mymoneyinstitution.cpp,kmymoney2/mymoney/mymoneyinstitution.h,kmymoney2/mymoney/mymoneysplit.cpp,kmymoney2/mymoney/mymoneysplit.h,kmymoney2/mymoney/mymoneysubject.cpp,kmymoney2/mymoney/mymoneysubject.h,kmymoney2/mymoney/mymoneyobserver.cpp,kmymoney2/mymoney/mymoneyobserver.h,kmymoney2/mymoney/mymoneykeyvaluecontainer.cpp,kmymoney2/mymoney/mymoneykeyvaluecontainer.h,kmymoney2/mymoney/mymoneytransactionfilter.cpp,kmymoney2/mymoney/mymoneytransactionfilter.h
 sub_dirs=storage
 type=static_library
 
@@ -1352,6 +1352,18 @@ install_location=
 type=SOURCE
 
 [kmymoney2/mymoney/mymoneytransaction.h]
+dist=true
+install=false
+install_location=
+type=HEADER
+
+[kmymoney2/mymoney/mymoneytransactionfilter.cpp]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[kmymoney2/mymoney/mymoneytransactionfilter.h]
 dist=true
 install=false
 install_location=
