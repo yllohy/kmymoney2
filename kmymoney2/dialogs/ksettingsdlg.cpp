@@ -147,6 +147,27 @@ void KSettingsDlg::setPageGeneral()
   m_qradiobuttonStartLast = new QRadioButton("start_last", qpagebuttongroup);
   m_qradiobuttonStartLast->setText( i18n( "Start with last selected page" ) );
   qvboxpagelayout->addWidget(m_qradiobuttonStartLast);
+
+  // Startup schedule options
+  // --------------------
+
+  // Create a group box to hold the available options
+  QButtonGroup *qschedulebuttongroup = new QButtonGroup(qvboxMainFrame, "GroupBox3");
+  qschedulebuttongroup->setTitle( i18n( "Schedule startup options" ) );
+  qschedulebuttongroup->setColumnLayout(0, Qt::Vertical );
+  qschedulebuttongroup->layout()->setSpacing( 0 );
+  qschedulebuttongroup->layout()->setMargin( 0 );
+
+  // Create a layout to organize the widgets.
+  QVBoxLayout *qvboxschedulelayout = new QVBoxLayout(qschedulebuttongroup->layout());
+  qvboxschedulelayout->setAlignment( Qt::AlignTop );
+  qvboxschedulelayout->setSpacing( 6 );
+  qvboxschedulelayout->setMargin( 11 );
+
+  // Create a check box to be in the group box
+  m_qradiobuttonCheckSchedules = new QCheckBox("check_schedules", qschedulebuttongroup);
+  m_qradiobuttonCheckSchedules->setText( i18n( "Check schedules upon startup" ) );
+  qvboxschedulelayout->addWidget(m_qradiobuttonCheckSchedules);
 }
 
 void KSettingsDlg::setPageAccountsView()
@@ -599,6 +620,9 @@ void KSettingsDlg::configRead()
   QStringList list = m_tempHomePageItems;
   KMyMoneyUtils::addDefaultHomePageItems(list);
   fillHomePageItems(list);
+
+  kconfig->setGroup("Schedule Options");
+  m_qradiobuttonCheckSchedules->setChecked(kconfig->readBoolEntry("CheckSchedules", true));
 }
 
 /** Write out all the settings to the global KConfig object.
@@ -638,6 +662,9 @@ void KSettingsDlg::configWrite()
 
   kconfig->setGroup("Homepage Options");
   kconfig->writeEntry("Itemlist", homePageItems());
+
+  kconfig->setGroup("Schedule Options");
+  kconfig->writeEntry("CheckSchedules", m_qradiobuttonCheckSchedules->isChecked());
 
   kconfig->sync();
 }

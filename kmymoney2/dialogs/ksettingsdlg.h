@@ -56,7 +56,7 @@ class KPushButton;
   * @see KDialogBase
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: ksettingsdlg.h,v 1.13 2003/08/09 12:40:44 ipwizard Exp $
+  * $Id: ksettingsdlg.h,v 1.14 2003/09/17 11:57:55 mte Exp $
   *
   * @short A class to manipulate the settings needed for running KMyMoney2
 **/
@@ -120,6 +120,8 @@ private:
 
   QRadioButton *m_qradiobuttonAccountDialog;
   QRadioButton *m_qradiobuttonAccountWizard;
+
+  QCheckBox *m_qradiobuttonCheckSchedules;
 
 
   KListView*    m_homePageList;
