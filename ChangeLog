@@ -1,3 +1,6 @@
+2004-10-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed #1043892 (crash when changing action in checkings view)
+
 2004-10-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Reworked keyboard event handler
   * Removed signalEnter() and signalEsc() signals
