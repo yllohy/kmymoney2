@@ -110,6 +110,9 @@ private:
   void writeScheduledTransactions(QDataStream& s, IMyMoneySerialize* storage);
   void readScheduledTransactions(QDataStream& s, IMyMoneySerialize* storage);
 
+  void writeKeyValueContainer(QDataStream& s, QMap<QCString, QString> list) const;
+  const QMap<QCString, QString> readKeyValueContainer(QDataStream& s) const;
+
   /**
     * This is a helper method to extract the numeric value from an @p id.
     * Id's inside the MyMoneySeqAccessMgr object are formatted using a

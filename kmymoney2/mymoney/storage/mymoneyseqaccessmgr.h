@@ -47,7 +47,9 @@ public:
   MyMoneyMoney  balance;
 };
 
-class MyMoneySeqAccessMgr : public IMyMoneyStorage, public IMyMoneySerialize  {
+class MyMoneySeqAccessMgr : public IMyMoneyStorage, public IMyMoneySerialize,
+                            public MyMoneyKeyValueContainer
+{
 public:
 
   // definitions for the ID's of the standard accounts
@@ -467,6 +469,39 @@ public:
   virtual const unsigned long transactionId(void) { return m_nextTransactionID; };
   virtual const unsigned long payeeId(void) { return m_nextPayeeID; };
   virtual const unsigned long institutionId(void) { return m_nextInstitutionID; };
+
+  /**
+    * This method is used to extract a value from 
+    * KeyValueContainer. For details see MyMoneyKeyValueContainer::value().
+    *
+    * @param key const reference to QCString containing the key
+    * @return QString containing the value
+    */
+  const QString value(const QCString& key) const;
+
+  /**
+    * This method is used to set a value in the 
+    * KeyValueContainer. For details see MyMoneyKeyValueContainer::setValue().
+    *
+    * @param key const reference to QCString containing the key
+    * @param val const reference to QString containing the value
+    */
+  void setValue(const QCString& key, const QString& val);
+
+  /**
+    * This method is used to delete a key-value-pair from the
+    * KeyValueContainer identified by the parameter
+    * @p key. For details see MyMoneyKeyValueContainer::deletePair().
+    *
+    * @param key const reference to QCString containing the key
+    */
+  void deletePair(const QCString& key);
+
+  // documented in IMyMoneySerialize base class
+  QMap<QCString, QString> pairs(void) const;
+
+  // documented in IMyMoneySerialize base class
+  void setPairs(const QMap<QCString, QString>& list);
 
 private:
 

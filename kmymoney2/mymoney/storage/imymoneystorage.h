@@ -75,6 +75,11 @@ public:
   virtual void setUserTelephone(const QString& val) = 0;
   virtual void setUserEmail(const QString& val) = 0;
 
+  // methods provided by MyMoneyKeyValueContainer
+  virtual void setValue(const QCString& key, const QString& key) = 0;
+  virtual const QString value(const QCString& key) const = 0;
+  virtual void deletePair(const QCString& key) = 0;
+
   /**
     * This method is used to create a new account
     *

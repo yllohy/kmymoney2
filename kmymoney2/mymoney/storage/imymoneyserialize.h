@@ -239,6 +239,30 @@ public:
   virtual void loadTransactionId(const unsigned long id) = 0;
   virtual void loadPayeeId(const unsigned long id) = 0;
   virtual void loadInstitutionId(const unsigned long id) = 0;
+
+  /**
+    * This method is used to retrieve the whole set of key/value pairs
+    * from the container. It is meant to be used for permanent storage
+    * functionality. See MyMoneyKeyValueContainer::pairs() for details.
+    *
+    * @return QMap<QCString, QString> containing all key/value pairs of
+    *         this container.
+    */
+  virtual QMap<QCString, QString> pairs(void) const = 0;
+
+  /**
+    * This method is used to initially store a set of key/value pairs
+    * in the container. It is meant to be used for loading functionality
+    * from permanent storage. See MyMoneyKeyValueContainer::setPairs()
+    * for details
+    *
+    * @param list const QMap<QCString, QString> containing the set of
+    *             key/value pairs to be loaded into the container.
+    *
+    * @note All existing key/value pairs in the container will be deleted.
+    */
+  virtual void setPairs(const QMap<QCString, QString>& list) = 0;
+
 };
 
 #endif

@@ -1110,3 +1110,28 @@ void MyMoneySeqAccessMgr::loadInstitutionId(const unsigned long id)
 {
   m_nextInstitutionID = id;
 }
+
+const QString MyMoneySeqAccessMgr::value(const QCString& key) const
+{
+  return MyMoneyKeyValueContainer::value(key);
+}
+
+void MyMoneySeqAccessMgr::setValue(const QCString& key, const QString& val)
+{
+  MyMoneyKeyValueContainer::setValue(key, val);
+}
+
+void MyMoneySeqAccessMgr::deletePair(const QCString& key)
+{
+  MyMoneyKeyValueContainer::deletePair(key);
+}
+
+QMap<QCString, QString> MyMoneySeqAccessMgr::pairs(void) const
+{
+  return MyMoneyKeyValueContainer::pairs();
+}
+
+void MyMoneySeqAccessMgr::setPairs(const QMap<QCString, QString>& list)
+{
+  MyMoneyKeyValueContainer::setPairs(list);
+}

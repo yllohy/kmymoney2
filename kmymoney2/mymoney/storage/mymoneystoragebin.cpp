@@ -508,9 +508,16 @@ void MyMoneyStorageBin::readNewFormat(QDataStream&s, IMyMoneySerialize* storage)
   readAccounts(s, storage);
   readTransactions(s, storage);
 
+  if(s.atEnd())
+    return;
+
   // for now, we don't read the scheduled transactions back, as there
   // might be files out there that don't have it.
-  // readScheduledTransactions(s, storage);
+  readScheduledTransactions(s, storage);
+  if(s.atEnd())
+    return;
+
+  storage->setPairs(readKeyValueContainer(s));
 }
 
 void MyMoneyStorageBin::writeFile(QIODevice* qfile, IMyMoneySerialize* storage)
@@ -570,6 +577,7 @@ void MyMoneyStorageBin::writeStream(QDataStream& s, IMyMoneySerialize* storage)
   writePayees(s, storage);
   writeAccounts(s, storage);
   writeTransactions(s, storage);
+  writeKeyValueContainer(s, storage->pairs());
   writeScheduledTransactions(s, storage);
 
   // this seems to be nonsense, but it clears the dirty flag
@@ -784,7 +792,7 @@ void MyMoneyStorageBin::writeAccount(QDataStream& s, const MyMoneyAccount& acc)
   s << acc.openingDate();
   s << acc.parentAccountId();
   s << acc.accountList();
-  s << acc.pairs();
+  writeKeyValueContainer(s, acc.pairs());
 }
 
 const MyMoneyAccount MyMoneyStorageBin::readAccount(QDataStream& s)
@@ -819,9 +827,7 @@ const MyMoneyAccount MyMoneyStorageBin::readAccount(QDataStream& s)
     acc.addAccountId(*it);
 
   if(version > 1) {
-    QMap<QCString, QString> keyValuePairs;
-    s >> keyValuePairs;
-    acc.setPairs(keyValuePairs);
+    acc.setPairs(readKeyValueContainer(s));
   }
 
   return MyMoneyAccount(id, acc);
@@ -980,3 +986,15 @@ void MyMoneyStorageBin::readScheduledTransactions(QDataStream& s, IMyMoneySerial
   }
 }
 
+void MyMoneyStorageBin::writeKeyValueContainer(QDataStream& s, QMap<QCString, QString> list) const
+{
+  s << list;
+}
+
+const QMap<QCString, QString> MyMoneyStorageBin::readKeyValueContainer(QDataStream& s) const
+{
+  QMap<QCString, QString> keyValuePairs;
+  s >> keyValuePairs;
+
+  return keyValuePairs;
+}

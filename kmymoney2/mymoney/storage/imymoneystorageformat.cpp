@@ -20,16 +20,12 @@
  *                                                                         *
  ***************************************************************************/
 
- #include "imymoneystorageformat.h"
+#include "imymoneystorageformat.h"
  
- IMyMoneyStorageFormat::IMyMoneyStorageFormat()
- {
+IMyMoneyStorageFormat::IMyMoneyStorageFormat()
+{
+}
 
- }
-
- IMyMoneyStorageFormat::~IMyMoneyStorageFormat()
- {
-
- }
- 
-   
+IMyMoneyStorageFormat::~IMyMoneyStorageFormat()
+{
+}
