@@ -84,6 +84,10 @@ void MyMoneyMoneyTest::testStringConstructor()
 
 	delete m1;
 	delete m2;
+
+	m1 = new MyMoneyMoney("");
+	CPPUNIT_ASSERT(m1->value() == 0LL);
+	delete m1;
 }
 
 void MyMoneyMoneyTest::testEquality()
