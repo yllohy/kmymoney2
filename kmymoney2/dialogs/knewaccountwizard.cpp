@@ -54,10 +54,12 @@
 #include "../mymoney/mymoneyfile.h"
 
 #include "../kmymoneyutils.h"
+#include "../kapptest.h"
 
 #include "ieditscheduledialog.h"
 #include "knewaccountwizard.h"
 #include "knewloanwizard.h"
+#include "kcurrencyeditdlg.h"
 
 KNewAccountWizard::KNewAccountWizard(QWidget *parent, const char *name )
   : KNewAccountWizardDecl(parent,name,true),
@@ -83,14 +85,18 @@ KNewAccountWizard::KNewAccountWizard(QWidget *parent, const char *name )
   connect(m_name, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckPageFinished()));
   connect(m_payee, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckPageFinished()));
   connect(m_amount, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckPageFinished()));
-  
+
   connect(m_payee, SIGNAL(newPayee(const QString&)), this, SLOT(slotNewPayee(const QString&)));
-  
+  connect(m_currencyComboBox, SIGNAL(activated(int)), this, SLOT(slotCurrencyChanged(int)));
+  connect(m_priceButton, SIGNAL(clicked()), this, SLOT(slotPriceUpdate()));
+
   // always select the first item and show the appropriate note
   loadAccountTypes();
   accountTypeListBox->setCurrentItem(0);
 
   m_name->setFocus();
+
+  slotCurrencyChanged(0);
 }
 
 KNewAccountWizard::~KNewAccountWizard()
@@ -130,7 +136,7 @@ void KNewAccountWizard::next()
 
   if(currentPage() == accountTypePage && m_accountType == MyMoneyAccount::Loan) {
     int rc;
-    
+
     // we logically never come back to this wizard, so we hide it.
     hide();
 
@@ -154,10 +160,10 @@ void KNewAccountWizard::next()
       accept();
     else
       reject();
-      
+
   } else {
     KNewAccountWizardDecl::next();
-    
+
     // setup the availability of widgets on the selected page
     slotCheckPageFinished();
   }
@@ -223,7 +229,7 @@ void KNewAccountWizard::accept()
       m_payee->setFocus();
       return;
     }
-    
+
     KAccountListItem *item = (KAccountListItem*)accountListView->selectedItem();
     if (!item)
     {
@@ -234,7 +240,7 @@ void KNewAccountWizard::accept()
 
     // Create the schedule transaction
     QCString payeeId;
-  
+
     try
     {
       payeeId = MyMoneyFile::instance()->payeeByName(m_payee->text()).id();
@@ -246,7 +252,7 @@ void KNewAccountWizard::accept()
       payeeId = payee.id();
       delete e;
     }
-    
+
     MyMoneySplit s1, s2;
     s1.setValue(m_amount->getMoneyValue());
     s2.setValue(-s1.value());
@@ -262,7 +268,7 @@ void KNewAccountWizard::accept()
     t.addSplit(s2);
 
     MyMoneySchedule::paymentTypeE paymentType;
-    
+
     switch (m_method->currentItem())
     {
       case 0:
@@ -303,7 +309,7 @@ void KNewAccountWizard::accept()
 int KNewAccountWizard::exec()
 {
   int rc;
-  
+
   accountListView->header()->setFont(KMyMoneyUtils::headerFont());
 
   // currently, we don't have help :-(
@@ -422,7 +428,7 @@ void KNewAccountWizard::loadAccountTypes(void)
   accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::CreditCard));
   accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Cash));
   accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Loan));
-  
+
 /*
   // accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::AssetLoan));
   accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::MoneyMarket));
@@ -487,7 +493,7 @@ void KNewAccountWizard::slotAccountType(const QString& sel)
       "like mortgages you should create a loan account."
     );
     m_accountType = MyMoneyAccount::Liability;
-    
+
   } else if(sel == KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Loan)) {
     txt += i18n(
       "Use the loan account type to manage amortization loans "
@@ -535,7 +541,7 @@ void KNewAccountWizard::setOpeningDate(const QDate& date)
 void KNewAccountWizard::setAccountType(const MyMoneyAccount::accountTypeE type)
 {
   int i;
-  
+
   for(i = accountTypeListBox->count()-1; i > 0; --i) {
     if(accountTypeListBox->text(i) == KMyMoneyUtils::accountTypeToString(type))
       break;
@@ -565,11 +571,11 @@ void KNewAccountWizard::slotCheckPageFinished(void)
 {
   nextButton()->setEnabled(true);
   finishButton()->setEnabled(true);
-  
+
   if(currentPage() == accountNamePage) {
     if(accountName->text().isEmpty())
       nextButton()->setEnabled(false);
-      
+
   } else if(currentPage() == accountPaymentPage) {
     if(reminderCheckBox->isChecked()) {
       if(m_amount->text().isEmpty()
@@ -587,3 +593,14 @@ void KNewAccountWizard::slotNewPayee(const QString& payeeName)
   KMyMoneyUtils::newPayee(this, m_payee, payeeName);
 }
 
+void KNewAccountWizard::slotCurrencyChanged(int)
+{
+  m_priceButton->setEnabled(m_currencyComboBox->currency().id() != MyMoneyFile::instance()->baseCurrency().id());
+}
+
+void KNewAccountWizard::slotPriceUpdate(void)
+{
+  KCurrencyEditDlg dlg(this, KAppTest::widgetName(this, "KCurrencyEditDlg"));
+  dlg.slotSelectCurrency(m_currencyComboBox->currency().id());
+  dlg.exec();
+}

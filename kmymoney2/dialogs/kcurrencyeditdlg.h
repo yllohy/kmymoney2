@@ -47,9 +47,12 @@
 class KCurrencyEditDlg : public KCurrencyEditDlgDecl
 {
   Q_OBJECT
-public: 
+public:
   KCurrencyEditDlg(QWidget *parent=0, const char *name=0);
   ~KCurrencyEditDlg();
+
+public slots:
+  void slotSelectCurrency(const QCString& id);
 
 protected:
   /// the resize event
@@ -65,7 +68,7 @@ protected slots:
   void slotDeleteCurrency(void);
   void slotListClicked(QListViewItem* item, const QPoint&, int);
   void slotRenameCurrency(QListViewItem* item, int col, const QString& txt);
-  
+
 private slots:
   void timerDone(void);
 

@@ -135,7 +135,7 @@ void KCurrencyEditDlg::loadCurrencies(void)
   // construct a transparent 16x16 pixmap
   QPixmap empty(16, 16);
   empty.setMask(QBitmap(16, 16, true));
-  
+
   m_currencyList->clear();
   for(it = list.begin(); it != list.end(); ++it) {
     kMyMoneyListViewItem* p = new kMyMoneyListViewItem(m_currencyList, (*it).name(), (*it).id());
@@ -173,12 +173,26 @@ void KCurrencyEditDlg::checkBaseCurrency(void)
 
 void KCurrencyEditDlg::updateCurrency(void)
 {
-  if(!m_currency.id().isEmpty()) {  
+  if(!m_currency.id().isEmpty()) {
     if(m_priceList->dirty()
     || (m_symbolEdit->text() != m_currency.tradingSymbol())) {
       m_currency.setPriceHistory(m_priceList->history());
       MyMoneyFile::instance()->modifyCurrency(m_currency);
     }
+  }
+}
+
+void KCurrencyEditDlg::slotSelectCurrency(const QCString& id)
+{
+  QListViewItemIterator it(m_currencyList);
+
+  while(it.current()) {
+    kMyMoneyListViewItem* p = static_cast<kMyMoneyListViewItem*>(it.current());
+    if(p->id() == id) {
+      m_currencyList->setSelected(p, true);
+      break;
+    }
+    ++it;
   }
 }
 
@@ -188,7 +202,7 @@ void KCurrencyEditDlg::slotSelectCurrency(QListViewItem *item)
   MyMoneyFile* file = MyMoneyFile::instance();
 
   m_detailGroup->setEnabled(item != 0);
-  
+
   if(item) {
     try {
       updateCurrency();
@@ -216,7 +230,7 @@ void KCurrencyEditDlg::slotSelectCurrency(QListViewItem *item)
 void KCurrencyEditDlg::slotSetBaseCurrency(void)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
-  
+
   kMyMoneyListViewItem* p = static_cast<kMyMoneyListViewItem *>(m_currencyList->currentItem());
   if(p) {
     QString name = file->currency(p->id()).name();
@@ -225,7 +239,7 @@ void KCurrencyEditDlg::slotSetBaseCurrency(void)
       file->setBaseCurrency(file->currency(p->id()));
       accept();
     }
-  }  
+  }
 }
 
 void KCurrencyEditDlg::slotClose(void)
@@ -236,7 +250,7 @@ void KCurrencyEditDlg::slotClose(void)
 
 void KCurrencyEditDlg::slotNewCurrency(void)
 {
-  KMessageBox::sorry(this, i18n("This feature needs to be implemented."), i18n("Implementation missing"));  
+  KMessageBox::sorry(this, i18n("This feature needs to be implemented."), i18n("Implementation missing"));
 }
 
 void KCurrencyEditDlg::slotRenameCurrency(void)

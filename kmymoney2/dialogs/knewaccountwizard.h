@@ -44,7 +44,7 @@
 
 class KNewAccountWizard : public KNewAccountWizardDecl  {
    Q_OBJECT
-public: 
+public:
   KNewAccountWizard(QWidget *parent=0, const char *name=0);
   ~KNewAccountWizard();
 
@@ -104,7 +104,7 @@ public:
     * @param institution The institution
   **/
   void setInstitution(const MyMoneyInstitution& institution) { m_institution = institution; }
-    
+
 protected:
   /**
     * This method is used to reload the institution combo box
@@ -133,6 +133,8 @@ protected slots:
   void slotAccountType(const QString& sel);
   void slotCheckPageFinished(void);
   void slotNewPayee(const QString&);
+  void slotCurrencyChanged(int);
+  void slotPriceUpdate(void);
 
 signals:
   void newInstitutionClicked();
