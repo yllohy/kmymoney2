@@ -1,6 +1,10 @@
 2004-04-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added basic multiple currency work (currencies can be managed but
     they are not used for accounts and transactions yet)
+  * Added reporting view supplied by Ace Jones
+  * Made some changes to the reporting view to support printing through KDE
+  * Added detection of multiple KMyMoney instances and issue warning
+  * Prevent loading the same file into multiple instances of KMyMoney
 
 2004-03-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed #922678 (number field is not saved to XML file)
