@@ -691,8 +691,7 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter)
   dev->resetStatus();
   pWriter->writeFile(dev, dynamic_cast<IMyMoneySerialize*> (MyMoneyFile::instance()->storage()));
   if(dev->status() != IO_Ok) {
-    // need-i18n
-    throw new MYMONEYEXCEPTION(QString("Failure while writing to %1").arg(qfile->name()));
+    throw new MYMONEYEXCEPTION(i18n("Failure while writing to %1").arg(qfile->name()));
   }
   pWriter->setProgressCallback(0);
 
@@ -741,8 +740,7 @@ const bool KMyMoneyView::saveFile(const KURL& url)
   bool rc = true;
   try {
     if(url.isMalformed()) {
-      // need-i18n
-      throw new MYMONEYEXCEPTION(QString("Malformed URL '%1'").arg(url.url()));
+      throw new MYMONEYEXCEPTION(i18n("Malformed URL '%1'").arg(url.url()));
     }
 
     if(url.isLocalFile()) {
@@ -751,19 +749,16 @@ const bool KMyMoneyView::saveFile(const KURL& url)
       if(qfile.status() == 0) {
         saveToLocalFile(qfile.file(), pWriter);
         if(!qfile.close()) {
-          // need-i18n
-          throw new MYMONEYEXCEPTION(QString("Unable to write changes to %1").arg(filename));
+          throw new MYMONEYEXCEPTION(i18n("Unable to write changes to %1").arg(filename));
         }
       } else {
-        // need-i18n
-        throw new MYMONEYEXCEPTION(QString("Unable to write changes to %1").arg(filename));
+        throw new MYMONEYEXCEPTION(i18n("Unable to write changes to %1").arg(filename));
       }
     } else {
       KTempFile tmpfile;
       saveToLocalFile(tmpfile.file(), pWriter);
-      // need-i18n
       if(!KIO::NetAccess::upload(tmpfile.name(), url))
-        throw new MYMONEYEXCEPTION(QString("Unable to upload to %1").arg(url.url()));
+        throw new MYMONEYEXCEPTION(i18n("Unable to upload to %1").arg(url.url()));
       tmpfile.unlink();
     }
   } catch (MyMoneyException *e) {
@@ -1627,12 +1622,24 @@ void KMyMoneyView::fixTransactions(void)
   for(it_x = scheduleList.begin(); it_x != scheduleList.end(); ++it_x) {
     MyMoneyTransaction t = (*it_x).transaction();
     QValueList<MyMoneySplit>::ConstIterator it_s;
+    QCStringList accounts;
+    bool hasDuplicateAccounts = false;
+    
     for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s) {
+      if(accounts.contains((*it_s).accountId())) {
+        hasDuplicateAccounts = true;
+      } else {
+        accounts << (*it_s).accountId();
+      }
+
       if((*it_s).action() == MyMoneySplit::ActionInterest) {
         if(interestAccounts.contains((*it_s).accountId()) == 0) {
           interestAccounts << (*it_s).accountId();
         }
       }
+    }
+    if(hasDuplicateAccounts) {
+      fixDuplicateAccounts(t);
     }
     ++cnt;
     if(!(cnt % 10))
@@ -1645,6 +1652,7 @@ void KMyMoneyView::fixTransactions(void)
     const char *defaultAction = 0;
     QValueList<MyMoneySplit> splits = (*it_t).splits();
     QValueList<MyMoneySplit>::Iterator it_s;
+    QCStringList accounts;
     
     bool isLoan = false;
     // Determine default action
@@ -1711,9 +1719,16 @@ void KMyMoneyView::fixTransactions(void)
       splits = (*it_t).splits();    // update local copy
       qDebug("Fixed credit card assignment in %s", (*it_t).id().data());
     }
-    
+
+    bool hasDuplicateAccounts = false;
     // Check for correct assignment of ActionInterest in all splits
+    // and check if there are any duplicates in this transactions
     for(it_s = splits.begin(); it_s != splits.end(); ++it_s) {
+      if(accounts.contains((*it_s).accountId())) {
+        hasDuplicateAccounts = true;
+      } else {
+        accounts << (*it_s).accountId();
+      }
       // if this split references an interest account, the action
       // must be of type ActionInterest
       if(interestAccounts.contains((*it_s).accountId())) {
@@ -1735,6 +1750,12 @@ void KMyMoneyView::fixTransactions(void)
       }
     }
 
+    // if there are at least two splits referencing the same account,
+    // we need to combine them into one and get rid of the others
+    if(hasDuplicateAccounts) {
+      fixDuplicateAccounts(*it_t);
+    }
+
     ++cnt;
     if(!(cnt % 10))
       kmymoney2->slotStatusProgressBar(cnt);
@@ -1742,4 +1763,9 @@ void KMyMoneyView::fixTransactions(void)
   
   kmymoney2->slotStatusProgressBar(-1, -1);
   kmymoney2->slotStatusMsg(i18n("Ready"));
+}
+
+void KMyMoneyView::fixDuplicateAccounts(MyMoneyTransaction& t)
+{
+  qDebug("Duplicate account in transaction %s", t.id().data());  
 }
