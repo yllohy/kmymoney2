@@ -230,6 +230,7 @@ void KMyMoney2App::initActions()
   fileBackup->setStatusText(i18n("Lets you backup your file to a removeable drive"));
   bankAdd->setStatusText(i18n("Lets you create a new institution"));
   accountOpen->setStatusText(i18n("View the account register"));
+
   accountAdd->setStatusText(i18n("Lets you create a new account"));
   accountReconcile->setStatusText(i18n("Balance your account"));
   accountFind->setStatusText(i18n("Find transactions"));
@@ -758,6 +759,8 @@ void KMyMoney2App::slotSettings()
 {
   KSettingsDlg dlg( this, "Settings");
   connect(&dlg, SIGNAL(signalApply()), myMoneyView, SLOT(settingsLists()));
+  // terminate any edit session
+  myMoneyView->slotCancelEdit();
   if( dlg.exec() )
   {
     myMoneyView->settingsLists();
@@ -785,6 +788,7 @@ bool KMyMoney2App::initWizard()
         fileName = start.getURL();
       }
 			return true;
+
     } else {
       // cancel clicked so post an exit call
 			return false;
@@ -907,6 +911,7 @@ void KMyMoney2App::slotProcessExited(){
 			if(proc.exitStatus() == 0)
 			{
     			QMessageBox::information(this, i18n("Backup"), i18n("File Successfully Backed up"));
+
 				mountbackup = false;
        			copybackup = false;
 				unmountbackup = false;
