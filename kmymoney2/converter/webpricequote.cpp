@@ -559,35 +559,35 @@ QDate MyMoneyDateFormat::convertString(const QString& _in, bool _strict, unsigne
 // Unit test helpers
 //
 
-test::QuoteReceiver::QuoteReceiver(WebPriceQuote* q, QObject* parent, const char *name) :
+convertertest::QuoteReceiver::QuoteReceiver(WebPriceQuote* q, QObject* parent, const char *name) :
   QObject(parent,name)
 {
-  connect(q,SIGNAL(quote(const QString&,const QDate&, const MyMoneyMoney&)),
-    this,SLOT(slotGetQuote(const QString&,const QDate&, const MyMoneyMoney&)));
+  connect(q,SIGNAL(quote(const QString&,const QDate&, const double&)),
+    this,SLOT(slotGetQuote(const QString&,const QDate&, const double&)));
   connect(q,SIGNAL(status(const QString&)),
     this,SLOT(slotStatus(const QString&)));
   connect(q,SIGNAL(error(const QString&)),
     this,SLOT(slotError(const QString&)));
 }
 
-test::QuoteReceiver::~QuoteReceiver()
+convertertest::QuoteReceiver::~QuoteReceiver()
 {
 }
 
-void test::QuoteReceiver::slotGetQuote(const QString&,const QDate& d, const MyMoneyMoney& m)
+void convertertest::QuoteReceiver::slotGetQuote(const QString&,const QDate& d, const double& m)
 {
 //   kdDebug(2) << "test::QuoteReceiver::slotGetQuote( , " << d << " , " << m.toString() << " )" << endl;
  
-  m_price = m;
+  m_price = MyMoneyMoney(m);
   m_date = d;
 }
-void test::QuoteReceiver::slotStatus(const QString& msg)
+void convertertest::QuoteReceiver::slotStatus(const QString& msg)
 {
 //   kdDebug(2) << "test::QuoteReceiver::slotStatus( " << msg << " )" << endl;
   
   m_statuses += msg;
 }
-void test::QuoteReceiver::slotError(const QString& msg)
+void convertertest::QuoteReceiver::slotError(const QString& msg)
 {
 //   kdDebug(2) << "test::QuoteReceiver::slotError( " << msg << " )" << endl;
   

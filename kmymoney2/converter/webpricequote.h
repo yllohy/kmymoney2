@@ -149,7 +149,7 @@ private:
   QString m_format;
 };
 
-namespace test {
+namespace convertertest {
 
 /**
 Simple class to handle signals/slots for unit tests 
@@ -163,7 +163,7 @@ public:
     QuoteReceiver(WebPriceQuote* q, QObject *parent = 0, const char *name = 0);
     ~QuoteReceiver();
 public slots:
-  void slotGetQuote(const QString&,const QDate&, const MyMoneyMoney&);
+  void slotGetQuote(const QString&,const QDate&, const double&);
   void slotStatus(const QString&);
   void slotError(const QString&);
 public:
@@ -173,7 +173,7 @@ public:
   QDate m_date;
 };
 
-} // end namespace test
+} // end namespace convertertest
 
 
 #endif // WEBPRICEQUOTE_H
