@@ -960,8 +960,8 @@ const MyMoneyTransaction KNewLoanWizard::transaction() const
   } else {
     sPayment.setValue(m_paymentEdit->getMoneyValue());
   }
-  sInterest.setValue(MyMoneyMoney::minValue+1);
-  sAmortization.setValue(MyMoneyMoney::minValue+1);
+  sInterest.setValue(MyMoneyMoney::autoCalc);
+  sAmortization.setValue(MyMoneyMoney::autoCalc);
 
   // actions
   sPayment.setAction(MyMoneySplit::ActionAmortization);

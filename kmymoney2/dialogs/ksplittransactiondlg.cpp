@@ -196,7 +196,7 @@ void KSplitTransactionDlg::createInputWidgets(const unsigned row)
   m_editMemo->loadText(m_split.memo());
   m_editAmount->loadText(m_split.value().formatMoney());
   // don't allow automatically calculated values to be modified
-  if(m_split.value() == MyMoneyMoney::minValue+1) {
+  if(m_split.value() == MyMoneyMoney::autoCalc) {
     m_editAmount->setEnabled(false);
     m_editAmount->loadText("will be calculated");
   }
@@ -412,7 +412,7 @@ MyMoneyMoney KSplitTransactionDlg::splitsValue(void)
 
   // calculate the current sum of all split parts
   for(it = list.begin(); it != list.end(); ++it) {
-    if((*it).value() != MyMoneyMoney::minValue+1)
+    if((*it).value() != MyMoneyMoney::autoCalc)
       splitsValue += (*it).value();
   }
 
@@ -494,7 +494,7 @@ void KSplitTransactionDlg::updateSplit(int row, int /* col */)
         }
       }
       QString amountTxt = value.formatMoney();
-      if(value == MyMoneyMoney::minValue+1) {
+      if(value == MyMoneyMoney::autoCalc) {
         amountTxt = i18n("will be calculated");
       }
 
@@ -536,7 +536,7 @@ void KSplitTransactionDlg::updateSplit(int row, int /* col */)
         }
       }
       QString amountTxt = value.formatMoney();
-      if(value == MyMoneyMoney::minValue+1) {
+      if(value == MyMoneyMoney::autoCalc) {
         amountTxt = i18n("will be calculated");
       }
       if(colText.isEmpty() && s.memo().isEmpty() && value == 0)

@@ -147,7 +147,7 @@ void KEditLoanWizard::loadWidgets(const MyMoneyAccount& /* account */)
     // if it's the split that references the source/dest
     // of the money, we check if we borrow or loan money
     if((*it_s).action() == MyMoneySplit::ActionAmortization
-    && (*it_s).value() != MyMoneyMoney::minValue+1) {
+    && (*it_s).value() != MyMoneyMoney::autoCalc) {
       if((*it_s).value() < 0) {
         m_lendButton->setChecked(false);
         m_borrowButton->setChecked(true);
@@ -184,7 +184,7 @@ void KEditLoanWizard::loadWidgets(const MyMoneyAccount& /* account */)
       interestAccountId = (*it_s).accountId();
     }
 
-    if((*it_s).value() != MyMoneyMoney::minValue+1) {
+    if((*it_s).value() != MyMoneyMoney::autoCalc) {
       basePayment += (*it_s).value();
     } else {
       // remove the splits which should not show up
@@ -483,6 +483,7 @@ const MyMoneyAccount KEditLoanWizard::account(void) const
   acc.setFinalPayment(MyMoneyMoney(m_finalPaymentEdit->text()));
   acc.setTerm(term());
   acc.setPeriodicPayment(m_paymentEdit->getMoneyValue());
+  acc.setInterestRate(m_effectiveChangeDateEdit->getQDate(), m_interestRateEdit->getMoneyValue());
 
   if(!m_payeeEdit->text().isEmpty()) {
     try {
