@@ -507,7 +507,6 @@ void KMyMoneyView::closeFile(void)
   m_fileOpen = false;
 
   accountsView->clear();
-  emit signalEnableKMyMoneyOperations(false);
 }
 
 bool KMyMoneyView::readFile(const KURL& url)

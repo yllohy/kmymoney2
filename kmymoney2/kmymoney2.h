@@ -74,7 +74,7 @@ class IMyMoneyStorage;
   * @see KMyMoneyView
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: kmymoney2.h,v 1.32 2003/07/26 12:44:33 ipwizard Exp $
+  * $Id: kmymoney2.h,v 1.33 2003/07/31 15:28:53 mte Exp $
   *
   * @short Main application class.
 **/
@@ -118,97 +118,19 @@ protected slots:
   void slotQifExport();
 
   /**
-    * Called when the user wishes to add a recurring transaction/bill/deposit.
-    * A bank and account must be specified for this to work.
-    *
-
-    * @see MyMoneyBank
-    * @see MyMoneyAccount
-  **/
-  void slotBillsAdd();
-
-  // Not implemeted, not documented!
-  void slotReportBasic();
-  void slotPluginLoad();
-  void slotPluginUnload();
-  void slotPluginList();
-
-  /**
-    * A slot that is connected to the
-    * @ref KMyMoneyView::fileOperations
-    * signal.  It enables or disables some KActions depending
-    * upon the argument enable.
-    *
-    * @param enable If true enable all the KActions otherwise disable them
-    *
-    * @see KMyMoneyView
-
-  **/
-
-  //void enableFileOperations(bool enable=true);
-
-  /**
-    * A slot that is connected to the
-    * @ref KMyMoneyView::bankOperations
-    * signal.  It enables or disables some KActions depending
-    * upon the argument enable.
-    *
-    * @param enable If true enable all the KActions otherwise disable them
-    *
-    * @see KMyMoneyView
-  **/
-  //void enableBankOperations(bool enable=true);
-
-  /**
-    * A slot that is connected to the
-    * @ref KMyMoneyView::accountOperations
-    * signal.  It enables or disables some KActions depending
-    * upon the argument enable.
-    *
-    * @param enable If true enable all the KActions otherwise disable them
-    *
-    * @see KMyMoneyView
-  **/
-  //void enableAccountOperations(bool enable=true);
-
-  /**
-    * A slot that is connected to the
-    * @ref KMyMoneyView::transactionOperations
-    * signal.  It enables or disables some KActions depending
-    * upon the argument enable.
-    *
-    * @param enable If true enable all the KActions otherwise disable them
-    *
-    * @see KMyMoneyView
-  **/
-  //void enableTransactionOperations(bool enable=true);
-
-  /**
     * Open up the application wide settings dialog.
     *
     * @see KSettingsDlg
   **/
   void slotSettings();
 
-  /**
-    * Simulates moving up from the transaction view to the bank/account
-    * view.  It just hides the transaction view and shows the bank view.
-    * Checks where the user is before moving 'up'.
-    *
-    * @see KBanksView
-    * @see KTransactionView
-  **/
-  void slotViewUp();
   /** No descriptions */
   void slotFileBackup();
-
   void slotHomeView();
   void slotAccountsView();
   void slotScheduledView();
   void slotCategoryView();
   void slotPayeeView();
-
-  void slotEnableKMyMoneyOperations(bool enable=true);
 
   void slotShowTipOfTheDay(void);
   void slotQifProfileEditor(void);
@@ -288,11 +210,10 @@ protected:
   
 public slots:
   /** */
+  void slotFileNew();
+  
   /** Open a new window */
   void slotFileNewWindow();
-
-  /** clears the document in the actual view to reuse it as the new document */
-  void slotFileNew();
 
   /** open a file and load it into the document*/
   void slotFileOpen();
@@ -312,31 +233,10 @@ public slots:
   /** asks for saving if the file is modified, then closes the actual file */
   void slotFileClose();
 
-  /** print the actual file
-    * TODO
-  **/
-  void slotFilePrint();
-
   /** closes all open windows by calling close() on each memberList item until the list is empty, then quits the application.
    * If queryClose() returns false because the user canceled the saveModified() dialog, the closing breaks.
    */
   void slotFileQuit();
-
-  /** put the marked text/object into the clipboard and remove
-   *	it from the document
-   * TODO
-  **/
-  void slotEditCut();
-
-  /** put the marked text/object into the clipboard
-    * TODO
-  **/
-  void slotEditCopy();
-
-  /** paste the clipboard into the document
-    * TODO
-  **/
-  void slotEditPaste();
 
   /** toggles the toolbar
    */
@@ -377,14 +277,10 @@ private:
     
 private:
   /** the configuration object of the application */
-
-
-
   KConfig *config;
 
   // KAction pointers to enable/disable actions
   KAction *fileNewWindow;
-  KAction* fileNew;
   KAction* fileOpen;
   KRecentFilesAction* fileOpenRecent;
   KAction* fileSave;
@@ -392,41 +288,18 @@ private:
   KAction* fileBackup;
   KAction* fileClose;
   KAction* fileCloseWindow;
-  KAction* filePrint;
   KAction* fileQuit;
-  KAction* editCut;
-  KAction* editCopy;
-  KAction* editPaste;
   KToggleAction* viewToolBar;
   KToggleAction* viewStatusBar;
   KToggleAction* viewTransactionForm;
-
   KAction *fileViewInfo;
   KAction *filePersonalData;
-
-	KAction *settings;
-	KAction *settingsKey;
-
+  KAction *settings;
+  KAction *settingsKey;
   KAction *bankAdd;
-
-  KAction *accountOpen;
   KAction *accountAdd;
-  KAction *categoryAdd;
-  KAction *accountReconcile;
-
-  KAction *accountFind;
   KAction *actionQifImport;
   KAction *actionQifExport;
-
-  KAction *billsAdd;
-
-  KAction *reportBasic;
-
-  KAction *pluginLoad;
-  KAction *pluginUnload;
-  KAction *pluginList;
-
-  KAction *viewUp;
 
   enum backupStateE {
     BACKUP_IDLE = 0,
@@ -456,16 +329,11 @@ private:
     */
   bool    m_backupMount;
   
-      
-/*
-  bool mountbackup;
-  bool copybackup;
-  bool unmountbackup;
-*/
-
   KProcess proc;
+  
   // A pointer to the view holding the tabs.
   KMyMoneyView *myMoneyView;
+  
   // The URL of the file currently being edited when open.
   KURL  fileName;
 
@@ -483,11 +351,6 @@ private:
 
   IMyMoneyStorage*  m_engineBackup;
   MyMoneyQifReader* m_reader;
-      
-private:
-  //void disableAllAccountActions(bool enable=true);
-
-
 };
 
 extern  KMyMoney2App *kmymoney2;

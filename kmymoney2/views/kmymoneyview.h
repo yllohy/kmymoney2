@@ -61,7 +61,7 @@ class MyMoneyTransaction;
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.36 2003/07/28 17:07:41 ipwizard Exp $
+  * $Id: kmymoneyview.h,v 1.37 2003/07/31 15:28:53 mte Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -518,43 +518,6 @@ private:
   void accountNew(const bool createCategory);
   
 signals:
-  /**
-    * This signal is emitted whenever the bank actions needs enabling or disabling.
-    * KMyMoney2App connects to this signal and does the actual enabling.
-    *
-    * @param enable Whether to enable to actions.
-  **/
-  //void bankOperations(bool);
-
-  /**
-    * This signal is emitted whenever the account actions needs enabling or disabling.
-    * KMyMoney2App connects to this signal and does the actual enabling.
-    *
-    * @param enable Whether to enable to actions.
-  **/
-  //void accountOperations(bool);
-
-  /**
-    * This signal is emitted whenever the file actions needs enabling or disabling.
-    * KMyMoney2App connects to this signal and does the actual enabling.
-    *
-    * @param enable Whether to enable to actions.
-  **/
-  //void fileOperations(bool);
-
-
-  /**
-    * This signal is emitted whenever the transaction actions needs enabling or disabling.
-    * KMyMoney2App connects to this signal and does the actual enabling.
-    *
-    * @param enable Whether to enable to actions.
-  **/
-  //void transactionOperations(bool);
-
-  void signalEnableKMyMoneyOperations(bool);
-
-
-
   void signalHomeView();
   void signalAccountsView();
   void signalScheduledView();

@@ -1,5 +1,9 @@
 2003-07-31 Michael Edwardes <mte@users.sourceforge.net>
   * Fix the nasty bug i introduced into the start dialog.
+  * Removed the fileNew action.
+  * File Save/Save As default to Documents folder.
+  * Removed unnecessary actions.
+  * Fix crash when File|Close is chosen.
 
 2003-07-30 Michael Edwardes <mte@users.sourceforge.net>
   * Removed duplicate entries from default_accounts.dat.
