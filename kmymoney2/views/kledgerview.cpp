@@ -114,7 +114,7 @@ void KLedgerView::filterTransactions(void)
   // setup the pointer vector
   m_transactionPtr.clear();
   m_transactionPtr.resize(m_transactionList.size());
-  for(i = 0, it_t = m_transactionList.begin(); it_t != m_transactionList.end(); ++it_t, ++i) {
+  for(i = 0, it_t = m_transactionList.begin(); it_t != m_transactionList.end(); ++it_t) {
     // only show those transactions, that are posted after the configured start date
     if((*it_t).postDate() < m_dateStart)
       continue;
@@ -123,10 +123,23 @@ void KLedgerView::filterTransactions(void)
 
     // Wow, we made it through all the filters. Guess we have to show this one
     m_transactionPtr.insert(i, &(*it_t));
+    ++i;
   }
+  m_transactionPtr.resize(i);
 
   // sort the transactions
   m_transactionPtr.sort();
+
+  // calculate the balance for each item
+  MyMoneyMoney balance(0);
+  m_balance.resize(i, balance);
+
+  balance = MyMoneyFile::instance()->balance(accountId());
+  // the trick is to go backwards ;-)
+  while(--i >= 0) {
+    m_balance[i] = balance;
+    balance -= m_transactionPtr[i]->split(accountId()).value();
+  }
 }
 
 void KLedgerView::update(const QCString& accountId)
@@ -144,4 +157,13 @@ MyMoneyTransaction* const KLedgerView::transaction(const int idx) const
   if(idx >= 0 && idx < m_transactionPtr.count())
     return m_transactionPtr[idx];
   return 0;
+}
+
+const MyMoneyMoney& KLedgerView::balance(const int idx) const
+{
+  static MyMoneyMoney null(0);
+
+  if(idx >= 0 && idx < m_balance.size())
+    return m_balance[idx];
+  return null;
 }

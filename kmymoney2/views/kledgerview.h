@@ -29,6 +29,7 @@
 #include <qwidget.h>
 #include <qtable.h>
 #include <qvaluelist.h>
+#include <qvaluevector.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -76,6 +77,7 @@ public:
   void update(const QCString& accountId);
 
   MyMoneyTransaction* const transaction(const int idx) const;
+  const MyMoneyMoney& balance(const int idx) const;
   const QCString accountId(void) { return m_account.id(); }
 
 public slots:
@@ -94,6 +96,7 @@ protected:
   kMyMoneyRegister *m_register;
   MyMoneyAccount m_account;
   QValueList<MyMoneyTransaction> m_transactionList;
+  QValueVector<MyMoneyMoney> m_balance;
 
   KTransactionPtrVector m_transactionPtr;
 };
