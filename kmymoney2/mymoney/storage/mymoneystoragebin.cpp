@@ -389,7 +389,7 @@ void MyMoneyStorageBin::readOldFormat(QDataStream& s, IMyMoneySerialize* storage
         if(tmp != "")
           category += ":" + tmp;
         // for now, we keep it as it is and convert sp2.account later on
-        sp2.setAccountId(static_cast<QCString> (category));
+        sp2.setAccountId(category.latin1());
         s >> tmp; // ATM bank name
         s >> tmp; // account from
         s >> tmp; // account to
