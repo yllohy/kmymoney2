@@ -24,6 +24,7 @@
 // QT Includes
 
 #include <qdatetime.h>
+#include <qapp.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -77,6 +78,16 @@ KLedgerView::KLedgerView(QWidget *parent, const char *name )
   m_form = 0;
   m_transactionPtr = 0;
   m_timer = 0;
+
+  m_editPayee = 0;
+  m_editCategory = 0;
+  m_editMemo = 0;
+  m_editAmount = 0;
+  m_editNr = 0;
+  m_editDate = 0;
+  m_editFrom = 0;
+  m_editTo = 0;
+
 }
 
 KLedgerView::~KLedgerView()
@@ -99,7 +110,7 @@ void KLedgerView::setCurrentAccount(const QCString& accountId)
       file->attach(m_account.id(), this);
       // force initial load
       loadAccount();
-      refreshView();
+      // refreshView();
     } catch(MyMoneyException *e) {
       qDebug("Unexpected exception in KLedgerView::setCurrentAccount");
       delete e;
@@ -135,11 +146,7 @@ void KLedgerView::loadAccount(void)
 
   // make sure, full transaction is visible
   m_register->ensureTransactionVisible();
-/*
-  m_register->ensureCellVisible((m_transactionPtrVector.count() * m_register->rpt())-1, 0);
-  m_register->ensureCellVisible((m_transactionPtrVector.count()-1) * m_register->rpt(), 0);
-  m_register->repaintContents();
-*/
+
   // fill in the form with the currently selected transaction
   fillForm();
 }
@@ -235,6 +242,28 @@ void KLedgerView::slotRegisterClicked(int row, int col, int button, const QPoint
   }
 }
 
+void KLedgerView::slotNextTransaction(void)
+{
+  if(m_register->currentTransactionIndex() + 1 < m_transactionPtrVector.count()) {
+    m_register->setCurrentTransactionIndex(m_register->currentTransactionIndex()+1);
+    m_register->ensureTransactionVisible();
+    m_register->repaintContents();
+    fillForm();
+    emit transactionSelected();
+  }
+}
+
+void KLedgerView::slotPreviousTransaction(void)
+{
+  if(m_register->currentTransactionIndex() > 0) {
+    m_register->setCurrentTransactionIndex(m_register->currentTransactionIndex()-1);
+    m_register->ensureTransactionVisible();
+    m_register->repaintContents();
+    fillForm();
+    emit transactionSelected();
+  }
+}
+
 void KLedgerView::selectTransaction(const QCString& transactionId)
 {
   int i;
@@ -253,6 +282,9 @@ void KLedgerView::selectTransaction(const QCString& transactionId)
 
 void KLedgerView::slotPayeeChanged(const QString& name)
 {
+  if(!m_editPayee)
+    return;
+
   if(name != "") {
     MyMoneyPayee payee;
     try {
@@ -286,6 +318,9 @@ void KLedgerView::slotPayeeChanged(const QString& name)
 
 void KLedgerView::slotMemoChanged(const QString& memo)
 {
+  if(!m_editMemo)
+    return;
+
   m_split.setMemo(memo);
 
   try {
@@ -301,6 +336,9 @@ void KLedgerView::slotMemoChanged(const QString& memo)
 
 void KLedgerView::slotAmountChanged(const QString& value)
 {
+  if(!m_editAmount)
+    return;
+
   MyMoneyTransaction t;
   MyMoneySplit s;
 
@@ -336,6 +374,9 @@ void KLedgerView::slotAmountChanged(const QString& value)
 
 void KLedgerView::slotCategoryChanged(const QString& category)
 {
+  if(!m_editCategory)
+    return;
+
   MyMoneyTransaction t = m_transaction;
   MyMoneySplit s = m_split;
 
@@ -412,6 +453,9 @@ void KLedgerView::slotCategoryChanged(const QString& category)
 
 void KLedgerView::slotFromChanged(const QString& from)
 {
+  if(!m_editFrom)
+    return;
+
   MyMoneyTransaction t = m_transaction;
   MyMoneySplit s = m_split;
 
@@ -457,6 +501,9 @@ void KLedgerView::slotFromChanged(const QString& from)
 
 void KLedgerView::slotToChanged(const QString& to)
 {
+  if(!m_editTo)
+    return;
+
   MyMoneyTransaction t = m_transaction;
   MyMoneySplit s = m_split;
 
@@ -509,6 +556,9 @@ void KLedgerView::slotToChanged(const QString& to)
 
 void KLedgerView::slotNrChanged(const QString& nr)
 {
+  if(!m_editNr)
+    return;
+
   MyMoneyTransaction t = m_transaction;
   MyMoneySplit s = m_split;
   try {
@@ -530,6 +580,9 @@ void KLedgerView::slotNrChanged(const QString& nr)
 
 void KLedgerView::slotDateChanged(const QDate& date)
 {
+  if(!m_editDate)
+    return;
+
   MyMoneyTransaction t = m_transaction;
   MyMoneySplit s = m_split;
   try {
@@ -602,21 +655,29 @@ const QCString KLedgerView::str2action(const QString &action) const
   return MyMoneySplit::ActionCheck;
 }
 
-const QString KLedgerView::action2str(const QCString &action) const
+const QString KLedgerView::action2str(const QCString &action, const bool showHotkey) const
 {
-  if(action == MyMoneySplit::ActionCheck)
-    return i18n("Check");
-  if(action == MyMoneySplit::ActionDeposit)
-    return i18n("Deposit");
-  if(action == MyMoneySplit::ActionTransfer)
-    return i18n("Transfer");
-  if(action == MyMoneySplit::ActionWithdrawal)
-    return i18n("Withdrawal");
-  if(action == MyMoneySplit::ActionATM)
-    return i18n("ATM");
+  QString rc;
 
-  qDebug("Unsupported action string %s, set to check", static_cast<const char *>(action));
-  return i18n("Check");
+  if(action == MyMoneySplit::ActionCheck)
+    rc = i18n("&Check");
+  else if(action == MyMoneySplit::ActionDeposit)
+    rc = i18n("&Deposit");
+  else if(action == MyMoneySplit::ActionTransfer)
+    rc = i18n("&Transfer");
+  else if(action == MyMoneySplit::ActionWithdrawal)
+    rc = i18n("&Withdrawal");
+  else if(action == MyMoneySplit::ActionATM)
+    rc = i18n("AT&M");
+
+  if(rc.isEmpty()) {
+    qDebug("Unsupported action string %s, set to check", static_cast<const char *>(action));
+    rc = i18n("&Check");
+  }
+
+  if(showHotkey == false) {
+  }
+  return rc;
 }
 
 void KLedgerView::slotNewPayee(const QString& payeeName)
@@ -663,11 +724,6 @@ int KLedgerView::transactionType(const MyMoneySplit& split) const
   return Check;
 }
 
-void KLedgerView::hideEvent(QHideEvent *ev)
-{
-  slotCancelEdit();
-}
-
 void KLedgerView::slotNew(void)
 {
   // select the very last line (empty one), and load it into the form
@@ -710,6 +766,7 @@ void KLedgerView::slotCancelEdit(void)
   }
 
   hideWidgets();
+  m_register->setFocus();
 }
 
 void KLedgerView::slotEndEdit(void)
@@ -779,3 +836,30 @@ void KLedgerView::slotEndEdit(void)
   hideWidgets();
 }
 
+bool KLedgerView::focusNextPrevChild(bool next)
+{
+  bool  rc;
+
+  if(m_editDate != 0) {
+    QWidget *w = 0;
+
+    m_tabOrderWidgets.find(qApp->focusWidget());
+
+    if(next == true) {
+      w = m_tabOrderWidgets.next();
+      if(!w)
+        w = m_tabOrderWidgets.first();
+    } else {
+      w = m_tabOrderWidgets.prev();
+      if(!w)
+        w = m_tabOrderWidgets.last();
+    }
+
+    w->setFocus();
+    rc = true;
+
+  } else
+    rc = QWidget::focusNextPrevChild(next);
+
+  return rc;
+}

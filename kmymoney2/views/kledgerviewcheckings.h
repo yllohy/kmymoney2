@@ -32,10 +32,13 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 
+class KPushButton;
+
 // ----------------------------------------------------------------------------
 // Project Includes
 
 #include "kledgerview.h"
+class kMyMoneyTransactionFormTable;
 
 /**
   *@author Thomas Baumgart
@@ -45,6 +48,9 @@
 
 class KLedgerViewCheckings : public KLedgerView  {
    Q_OBJECT
+
+  friend kMyMoneyTransactionFormTable;
+
 public: 
 	KLedgerViewCheckings(QWidget *parent=0, const char *name=0);
 	~KLedgerViewCheckings();
@@ -69,7 +75,7 @@ protected:
   void showWidgets(void);
   void hideWidgets(void);
 
-private:
+  virtual bool focusNextPrevChild(bool next);
 
 private:
   QTab* m_tabCheck;
@@ -77,6 +83,9 @@ private:
   QTab* m_tabTransfer;
   QTab* m_tabWithdrawal;
   QTab* m_tabAtm;
+
+  KPushButton*  m_detailsButton;
+  KPushButton*  m_reconcileButton;
 
   /**
     * This attribute stores the current selected transaction type

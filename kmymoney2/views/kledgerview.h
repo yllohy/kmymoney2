@@ -31,6 +31,7 @@
 #include <qvaluelist.h>
 #include <qvaluevector.h>
 #include <qtimer.h>
+#include <qwidgetlist.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -42,6 +43,7 @@
 
 class kMyMoneyRegister;
 class kMyMoneyTransactionForm;
+class kMyMoneyTransactionFormTable;
 class kMyMoneyPayee;
 class kMyMoneyCategory;
 class kMyMoneyEdit;
@@ -105,9 +107,45 @@ private:
   * available:
   *
   * @li KLedgerViewCheckings
+  *
+  * Each KLedgerView is devided into three parts:
+  *
+  * - a @b register specific to the account type
+  * - a set of @b buttons to control the dialog
+  * - a @b transaction-form specific to the account type
+  *
+  * If the specific account provides multiple transaction types, the
+  * form can additionaly provide a @b tab. This is handled by the specific
+  * implementation of the ledger view. See KLedgerViewCheckings for an
+  * example of this feature.
+  *
+  * The register is provided by a derived class of the kMyMoneyRegister
+  * widget matching the account type (e.g. kMyMoneyRegisterCheckings).
+  *
+  * The buttons allow to select the following functions for the selected
+  * transaction:
+  *
+  * - enter new transaction (New)
+  * - start editing new transaction (Edit)
+  * - cancel editing (Cancel)
+  * - end editing (Enter)
+  * - selecting additional functions (More)
+  *
+  * The buttons are provided by the kMyMoneyTransactionForm class.
+  *
+  * The form is based on an invisible QTable widget. This allows an aligned
+  * arrangement of the fields and also a different visual appearance for
+  * read-only and edit mode. The maintenance of the table object, it's size,
+  * layout and contents has to be performed by the derived class.
+  *
+  * This class provides the member m_tabOrderWidgets to support a specific
+  * form of the tab order for the keyboard focus while editing a transaction.
+  * It has to be filled and maintained by the derived class.
   */
 class KLedgerView : public QWidget, MyMoneyObserver  {
-   Q_OBJECT
+  Q_OBJECT
+
+  friend kMyMoneyTransactionFormTable;
 
 public:
   enum transactionTypeE {
@@ -121,11 +159,63 @@ public:
 	KLedgerView(QWidget *parent=0, const char *name=0);
 	virtual ~KLedgerView();
 
+  /**
+    * This method is called by KGlobalLedgerView::selectAccount to set
+    * the current account to @p accountId. It calls
+    * loadAccount() to do the actual loading of data from the engine.
+    * If will also register
+    * this object as an observer with the engine's account represented by
+    * @p accountId which causes update() to be called whenever the engine's
+    * representation of the account changes.
+    *
+    * Any previously registered observer will be detached.
+    *
+    * @param accountId id of the account to be loaded.
+    * @see update
+    */
   void setCurrentAccount(const QCString& accountId);
+
+  /**
+    * This is the observer function called by the MyMoneyFile notify
+    * method when the account has been changed. It forces a reloadAccount() of the
+    * account into the ledger.
+    *
+    * @param accountId id of the account to be updated. This is same id
+    *                  as requested for setCurrentAccount().
+    */
   void update(const QCString& accountId);
 
+  /**
+    * This method returns a pointer to the transaction data
+    * in the ledger of this account. The transaction is identified
+    * by the parameter @p idx.
+    *
+    * @param idx index into ledger starting at 0
+    * @return pointer to MyMoneyTransaction object representing the
+    *         selected transaction. If idx is out of bounds,
+    *         0 will be returned.
+    */
   MyMoneyTransaction* const transaction(const int idx) const;
+
+  /**
+    * This method returns the balance of any visible transaction
+    * in the ledger of this account. The balance depends on filters
+    * and is automatically calculated when any view option is changed
+    * (e.g. filters, sort order, etc.)
+    *
+    * @param idx index into the ledger starting at 0
+    * @return Value of the balance for the account after the selected
+    *         transaction has been taken into account. If idx is out
+    *         of bounds, 0 will be returned as value.
+    */
   const MyMoneyMoney& balance(const int idx) const;
+
+  /**
+    * This method returns the id of the account that is currently
+    * shown by this widget.
+    *
+    * @return const QCString containing the account's id.
+    */
   const QCString accountId(void) { return m_account.id(); }
 
   /**
@@ -143,9 +233,11 @@ public:
     * within the engine to a form usable on the user interface.
     *
     * @param action QCString reference to normalized action string
+    * @param showHotkey If true, the hotkey will be part of the returned
+    *                   value. If false, the hotkey will not be shown.
     * @return QString with translated action string
     */
-  const QString action2str(const QCString& action) const;
+  const QString action2str(const QCString& action, const bool showHotkey = false) const;
 
   /**
     * This method is called to fill the transaction form
@@ -164,10 +256,28 @@ public:
 
 public slots:
   /**
-    * refresh the current view
+    * This method refreshes the current view. This includes reading the
+    * configuration options for the filters, the register and rebuilding
+    * the filters by calling filterTransactions().
     */
   virtual void refreshView(void);
+
+  /**
+    *
+    */
   virtual void slotRegisterClicked(int row, int col, int button, const QPoint &mousePos);
+
+  /**
+    * This method selects the next transaction if not
+    * at the end of the ledger.
+    */
+  virtual void slotNextTransaction(void);
+
+  /**
+    * This method selects the previous transaction if not
+    * at the beginning of the ledger.
+    */
+  virtual void slotPreviousTransaction(void);
 
   /**
     * Called when the user changes the visibility
@@ -176,56 +286,64 @@ public slots:
   virtual void slotShowTransactionForm(bool show);
 
   /**
-    * Called when the payee field has been changed
+    * Called when the payee field has been changed.
+    * m_transaction and m_split will be updated accordingly.
     *
     * @param name const reference to the name of the payee
     */
   virtual void slotPayeeChanged(const QString &name);
 
   /**
-    * Called when the memo field has been changed
+    * Called when the memo field has been changed.
+    * m_transaction and m_split will be updated accordingly.
     *
     * @param memo const reference to the new memo text
     */
   virtual void slotMemoChanged(const QString &memo);
 
   /**
-    * Called when the category field has been changed
+    * Called when the category field has been changed.
+    * m_transaction and m_split will be updated accordingly.
     *
     * @param name const reference to the name of the category
     */
   virtual void slotCategoryChanged(const QString& category);
 
   /**
-    * Called when the amount field has been changed by the user
+    * Called when the amount field has been changed by the user.
+    * m_transaction and m_split will be updated accordingly.
     *
     * @param amount const reference to the amount value
     */
   virtual void slotAmountChanged(const QString& amount);
 
   /**
-    * Called when the nr field has been changed by the user
+    * Called when the nr field has been changed by the user.
+    * m_transaction and m_split will be updated accordingly.
     *
     * @param nr const reference to the nr
     */
   virtual void slotNrChanged(const QString& nr);
 
   /**
-    * Called when the date field has been changed by the user
+    * Called when the date field has been changed by the user.
+    * m_transaction and m_split will be updated accordingly.
     *
     * @param date const reference to the date
     */
   virtual void slotDateChanged(const QDate& date);
 
   /**
-    * Called when the from account field has been changed by the user
+    * Called when the from account field has been changed by the user.
+    * m_transaction and m_split will be updated accordingly.
     *
     * @param from const reference to the from account name
     */
   virtual void slotFromChanged(const QString& from);
 
   /**
-    * Called when the to field has been changed by the user
+    * Called when the to field has been changed by the user.
+    * m_transaction and m_split will be updated accordingly.
     *
     * @param date const reference to the to account name
     */
@@ -234,39 +352,108 @@ public slots:
   /**
     * Called when a new payee entry has been edited
     * This routine will call the payee dialog and possibly add
-    * the payee to the MyMoneyFile object
+    * the payee to the MyMoneyFile object.
+    *
+    * @param payee const reference to the payee's name
     */
   virtual void slotNewPayee(const QString& payee);
 
   /**
-    * Called when editing a transaction begins
+    * Called when editing a transaction begins.
+    * This will ensure, that the transaction is visible in the
+    * register, the state of the buttons is updated and that
+    * the edit widgets will be shown (see showWidgets()).
     */
   virtual void slotStartEdit(void);
 
   /**
-    * Called when editing a transaction is cancelled
+    * Called when editing a transaction is cancelled.
+    * This will ensure, that the edit widgets are removed
+    * from the screen (see hideWidgets()) and that the state of
+    * the buttons is updated. The transaction is not written
+    * back to the engine. All changes made during the last
+    * call to slotStartEdit are lost.
     */
   virtual void slotCancelEdit(void);
 
   /**
-    * Called when editing a transaction is done and changes should be stored
+    * Called when editing a transaction is done and changes should be stored.
+    * This will ensure, that
+    * @li the changes made to the transaction are logically correct,
+    * @li the changes are written back to the engine (see MyMoneyFile::modifyTransaction())
+    * @li the state of the buttons is updated
+    * @li the edit widgets are removed (see hideWidget())
     */
   virtual void slotEndEdit(void);
 
   /**
-    * Called when a new transaction should be generated
+    * Called when a new transaction should be generated.
+    * This will select the 'new' transaction (last line of the register)
+    * fill the form, update button states and show the edit widgets
+    * (see showWidgets()).
     */
   virtual void slotNew(void);
 
 protected:
+  /**
+    * This method reloads the account data from the engine, refreshes
+    * the view using refreshView() and repaints the register if not
+    * suppressed by an argument. If repainting is requested, the transaction
+    * form is also updated using fillForm().
+    *
+    * @param repaint If true, the register is repainted with the new
+    *                the new values, if false, repainting is suppressed.
+    *                The default is true.
+    */
   void reloadAccount(const bool repaint = true);
+
+  /**
+    * This method reloads the account data using reloadAccount(), selects
+    * the last transaction in the current register as the current
+    * transaction and fills the form with the data of this transaction
+    * using fillForm().
+    */
   void loadAccount(void);
+
+  /**
+    * This method clears the m_TransactionPtrVector and rebuilds and sorts
+    * it according to the current settings. Once the m_transactionPtrVector
+    * is available, it rebuilds the m_balance vector.
+    */
   void filterTransactions(void);
-  void sortTransactions(void);
+
+  /**
+    * This method converts the actions strings contained in a split
+    * (e.g. MyMoneySplit::ActionATM) into the internal used numeric values.
+    *
+    * @param const reference to the split
+    * @return KLedgerView::transactionTypeE value of the action
+    */
   int transactionType(const MyMoneySplit& split) const;
 
-  virtual void hideEvent(QHideEvent *ev);
+  /**
+    * This method handles the focus of the keyboard. When in edit mode
+    * (m_editDate widget is visible) the keyboard focus is handled
+    * according to the widgets that are referenced in m_tabOrderWidgets.
+    * If not in edit mode, the base class functionality is provided.
+    *
+    * @param next true if forward-tab, false if backward-tab was
+    *             pressed by the user
+    */
+  virtual bool focusNextPrevChild(bool next);
+
+  /**
+    * This method is called when the edit widgets for the transaction
+    * should be shown and editing a transaction starts. Since it's pure
+    * virtual, it must be provided by the derived classes.
+    */
   virtual void showWidgets(void) = 0;
+
+  /**
+    * This method is called when the edit widgets for the transaction
+    * should be hidden and editing a transaction ends. Since it's pure
+    * virtual, it must be provided by the derived classes.
+    */
   virtual void hideWidgets(void) = 0;
 
 protected:
@@ -339,6 +526,11 @@ protected:
   kMyMoneyDateInput*    m_editDate;       ///< pointer to date edit widget
   kMyMoneyCategory*     m_editFrom;       ///< pointer to 'from account' edit widget
   kMyMoneyCategory*     m_editTo;         ///< pointer to 'to account' edit widget
+
+  /*
+   * The following member keeps the tab order for the above widgets
+   */
+  QWidgetList   m_tabOrderWidgets;
 
 private:
   QTimer*      m_timer;
