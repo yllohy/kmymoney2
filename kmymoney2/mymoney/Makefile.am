@@ -1,11 +1,12 @@
 ####### kdevelop will overwrite this part!!! (begin)##########
-noinst_LIBRARIES = libmymoney.a
 
 INCLUDES = $(all_includes)
+lib_LTLIBRARIES = libkmm_mymoney.la
 
-libmymoney_a_METASOURCES = AUTO
+libkmm_mymoney_la_METASOURCES = AUTO
 
-libmymoney_a_SOURCES = mymoneyfinancialcalculator.cpp mymoneytransactionfilter.cpp mymoneykeyvaluecontainer.cpp mymoneyobserver.cpp mymoneysubject.cpp mymoneysplit.cpp mymoneyinstitution.cpp mymoneyexception.cpp mymoneyinvesttransaction.cpp mymoneyutils.cpp mymoneysecurity.cpp mymoneytransaction.cpp mymoneyscheduled.cpp mymoneypayee.cpp mymoneymoney.cpp mymoneyfile.cpp mymoneycategory.cpp mymoneyaccount.cpp mymoneyonlinepriceupdate.cpp mymoneyreport.cpp mymoneystatement.cpp mymoneyprice.cpp
+libkmm_mymoney_la_SOURCES = mymoneyfinancialcalculator.cpp mymoneytransactionfilter.cpp mymoneykeyvaluecontainer.cpp mymoneyobserver.cpp mymoneysubject.cpp mymoneysplit.cpp mymoneyinstitution.cpp mymoneyexception.cpp mymoneyinvesttransaction.cpp mymoneyutils.cpp mymoneysecurity.cpp mymoneytransaction.cpp mymoneyscheduled.cpp mymoneypayee.cpp mymoneymoney.cpp mymoneyfile.cpp mymoneycategory.cpp mymoneyaccount.cpp mymoneyonlinepriceupdate.cpp mymoneyreport.cpp mymoneystatement.cpp mymoneyprice.cpp
+libkmm_mymoney_la_LDFLAGS = $(all_libraries) -version-info 0:0:0
 
 SUBDIRS = storage 
 

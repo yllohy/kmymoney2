@@ -2,7 +2,7 @@
 
 SUBDIRS = libkgpgfile kmymoney2 po doc developer-doc
 
-EXTRA_DIST = kmymoney2.kdevprj AUTHORS COPYING ChangeLog INSTALL README TODO ChangeLog.original configure.in.in
+EXTRA_DIST = kmymoney2.kdevprj AUTHORS COPYING ChangeLog INSTALL README TODO ChangeLog.original configure.in.in configure.in.bot
 
 ####### kdevelop will overwrite this part!!! (end)############
 # not a GNU package. You can remove this line, if
@@ -29,8 +29,6 @@ MAINTAINERCLEANFILES = subdirs configure.in acinclude.m4 configure.files
 package-messages:
 	$(MAKE) -f admin/Makefile.common package-messages
 	$(MAKE) -C po merge
-
-EXTRA_DIST += admin/cppunit.patch
 
 # The following line adds some files that are required to build an RPM
 EXTRA_DIST += admin/acinclude.m4.in admin/libtool.m4.in admin/conf.change.pl admin/config.pl

@@ -5,6 +5,7 @@ Makefile.in
 *.moc
 *.moc.cpp
 *.o
+*.lo
 *_meta_unload.cpp
 *~
 autotest

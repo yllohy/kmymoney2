@@ -28,6 +28,7 @@
 #include <qheader.h>
 #include <qlistbox.h>
 #include <qcursor.h>
+#include <qcheckbox.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -60,6 +61,7 @@
 #include "../dialogs/knewaccountdlg.h"
 #include "../dialogs/kequitypriceupdatedlg.h"
 #include "../dialogs/knewinvestmentwizard.h"
+#include "../dialogs/kcurrencycalculator.h"
 
 #include "../widgets/kmymoneyaccountcombo.h"
 #include "../widgets/kmymoneycurrencyselector.h"
@@ -210,8 +212,14 @@ void KInvestmentView::slotAddPrice()
     dlg.m_commodity->setSecurity(MyMoneyFile::instance()->security(pItem->securityId()));
     dlg.m_currency->setSecurity(pItem->tradingCurrency());
     if(dlg.exec()) {
-      MyMoneyPrice price(dlg.m_commodity->security().id(), dlg.m_currency->security().id(), dlg.date(), MyMoneyMoney(1,1));
+      KCurrencyCalculator calc(dlg.m_commodity->security(), dlg.m_currency->security(), MyMoneyMoney(1,1), MyMoneyMoney(1,1), dlg.date());
+
+      calc.m_updateButton->setChecked(true);
+      calc.m_updateButton->hide();
+      calc.exec();
       // FIXME here we have to insert the currency calculator
+
+      MyMoneyPrice price(dlg.m_commodity->security().id(), dlg.m_currency->security().id(), dlg.date(), MyMoneyMoney(1,1));
     }
   }
 }

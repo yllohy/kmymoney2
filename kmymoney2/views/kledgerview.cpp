@@ -812,10 +812,12 @@ void KLedgerView::amountChanged(const QString& value, int dir)
     // we need it to recalculate shares/values.
     MyMoneyMoney price = m_split.shares() / m_split.value();
 
-    MyMoneyAccount vacc;
     MyMoneySplit split = m_transaction.splitByAccount(accountId(), false);
-    vacc = MyMoneyFile::instance()->account(split.accountId());
-    bool checkVat = !split.accountId().isEmpty() && split.value().isZero() && !vacc.value("VatAccount").isEmpty();
+    bool checkVat = false;
+    if(!split.accountId().isEmpty()) {
+      MyMoneyAccount vacc = MyMoneyFile::instance()->account(split.accountId());
+      checkVat = split.value().isZero() && !vacc.value("VatAccount").isEmpty();
+    }
 
     // set either shares or value depending on the currencies
     m_split.setValue(val, m_transaction.commodity(), m_account.currencyId());

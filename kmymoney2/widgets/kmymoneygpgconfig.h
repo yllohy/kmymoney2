@@ -56,6 +56,7 @@ private:
   QString    m_resetUserId;
   bool       m_resetUseEncryption;
   bool       m_resetRecover;
+  int        m_checkCount;
 };
 
 #endif

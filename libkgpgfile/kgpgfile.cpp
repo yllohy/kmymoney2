@@ -15,15 +15,35 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifdef HAVE_CONFIG
+#include <config.h>
+#endif
+
+#include "kdecompat.h"
+
+// ----------------------------------------------------------------------------
+// QT Includes
+
 #include <qfile.h>
 #include <qdir.h>
 #include <qstring.h>
+
+#if QT_IS_VERSION(3,3,0)
+#include <qeventloop.h>
+#endif
+
+
+// ----------------------------------------------------------------------------
+// KDE Includes
 
 #include <kapplication.h>
 #include <klocale.h>
 #include <kprocess.h>
 #include <kpassdlg.h>
 #include <klibloader.h>
+
+// ----------------------------------------------------------------------------
+// Project Includes
 
 #include "kgpgfile.h"
 
@@ -457,7 +477,12 @@ const bool KGPGFile::GPGAvailable(void)
 
   // wait for the process to finish
   while(dummy.m_process && dummy.m_process->isRunning()) {
-    kapp->processEvents(100);
+#if QT_IS_VERSION(3,3,0)
+    // make sure, that the widgets will be gone (really deleted) before we continue
+    QApplication::eventLoop()->processEvents(QEventLoop::ExcludeUserInput, 100);
+#else
+    kapp->processEvents(10);
+#endif
   }
 
   if(dummy.m_exitStatus == 0) {
@@ -479,7 +504,7 @@ const bool KGPGFile::keyAvailable(const QString& name)
 
   // wait for the process to finish
   while(dummy.m_process && dummy.m_process->isRunning()) {
-    kapp->processEvents(100);
+    kapp->processEvents(10);
   }
 
   if(dummy.m_exitStatus == 0) {

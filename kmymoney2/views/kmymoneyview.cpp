@@ -1492,21 +1492,23 @@ void KMyMoneyView::selectBaseCurrency(void)
     dlg.exec();
   }
 
-  // check that all accounts have a currency
-  QValueList<MyMoneyAccount> list = file->accountList();
-  QValueList<MyMoneyAccount>::Iterator it;
+  if(!file->baseCurrency().id().isEmpty()) {
+    // check that all accounts have a currency
+    QValueList<MyMoneyAccount> list = file->accountList();
+    QValueList<MyMoneyAccount>::Iterator it;
 
-  // don't forget those standard accounts
-  list << file->asset();
-  list << file->liability();
-  list << file->income();
-  list << file->expense();
-  list << file->equity();
+    // don't forget those standard accounts
+    list << file->asset();
+    list << file->liability();
+    list << file->income();
+    list << file->expense();
+    list << file->equity();
 
-  for(it = list.begin(); it != list.end(); ++it) {
-    if((*it).currencyId().isEmpty() || (*it).currencyId().length() == 0) {
-      (*it).setCurrencyId(file->baseCurrency().id());
-      file->modifyAccount(*it);
+    for(it = list.begin(); it != list.end(); ++it) {
+      if((*it).currencyId().isEmpty() || (*it).currencyId().length() == 0) {
+        (*it).setCurrencyId(file->baseCurrency().id());
+        file->modifyAccount(*it);
+      }
     }
   }
 }

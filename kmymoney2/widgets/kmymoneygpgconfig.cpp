@@ -39,7 +39,8 @@
 #define RECOVER_KEY_ID  "0xD2B08440"
 
 kMyMoneyGPGConfig::kMyMoneyGPGConfig(QWidget *parent, const char *name )
-  : kMyMoneyGPGConfigDecl(parent, name)
+  : kMyMoneyGPGConfigDecl(parent, name),
+  m_checkCount(0)
 {
   m_idGroup->setEnabled(KGPGFile::GPGAvailable());
   m_recoveryGroup->setEnabled(KGPGFile::keyAvailable(RECOVER_KEY_ID));
@@ -82,10 +83,30 @@ void kMyMoneyGPGConfig::writeConfig(void)
 
 void kMyMoneyGPGConfig::slotIdChanged(const QString& txt)
 {
-  if(txt.length() > 0)
-    m_userKeyFound->setState((KLed::State) (KGPGFile::keyAvailable(txt) ? KLed::On : KLed::Off));
-  else
-    m_userKeyFound->setState(KLed::Off);
+  // this looks a bit awkward. Here's why: KGPGFile::keyAvailable() starts
+  // an external task and processes UI events while it waits for the external
+  // process to finish. Thus, the first time we get here, the external process
+  // is started and the user my press a second key which calls this routine
+  // again.
+  //
+  // The second invocation is counted, but the check is not started until the
+  // first one finishes. Once the external process finishes, we check if we
+  // were called in the meantime and restart the check.
+  if(++m_checkCount == 1) {
+    while(1) {
+      if(m_userId->text().stripWhiteSpace().length() > 0) {
+        m_userKeyFound->setState((KLed::State) (KGPGFile::keyAvailable(m_userId->text()) ? KLed::On : KLed::Off));
+        if(m_checkCount > 1) {
+          m_checkCount = 1;
+          continue;
+        }
+      } else {
+        m_userKeyFound->setState(KLed::Off);
+      }
+      break;
+    }
+    --m_checkCount;
+  }
 }
 
 void kMyMoneyGPGConfig::slotStatusChanged(bool state)
