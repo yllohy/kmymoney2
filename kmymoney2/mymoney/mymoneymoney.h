@@ -253,12 +253,13 @@ public:
   bool isPositive() const { return (m_num > 0) ? true : false; }
   bool isZero() const { return m_num == 0; }
 
+  const MyMoneyMoney reduce(void) const;
+
 private:
   signed64 m_num;
   signed64 m_denom;
 
   const signed64 getLcd(const MyMoneyMoney& b) const;
-  const MyMoneyMoney reduce(void) const;
 
   friend QDataStream &operator<<(QDataStream &, const MyMoneyMoney &);
   friend QDataStream &operator>>(QDataStream &, MyMoneyMoney &);
