@@ -11,7 +11,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>787</width>
+            <width>767</width>
             <height>447</height>
         </rect>
     </property>
@@ -30,14 +30,14 @@
             <rect>
                 <x>10</x>
                 <y>8</y>
-                <width>765</width>
+                <width>755</width>
                 <height>350</height>
             </rect>
         </property>
         <property stdset="1">
             <name>minimumSize</name>
             <size>
-                <width>765</width>
+                <width>755</width>
                 <height>350</height>
             </size>
         </property>
@@ -57,7 +57,7 @@
             <rect>
                 <x>11</x>
                 <y>361</y>
-                <width>765</width>
+                <width>755</width>
                 <height>75</height>
             </rect>
         </property>
@@ -92,7 +92,7 @@
             <property stdset="1">
                 <name>geometry</name>
                 <rect>
-                    <x>530</x>
+                    <x>520</x>
                     <y>10</y>
                     <width>230</width>
                     <height>50</height>
@@ -102,6 +102,41 @@
                 <name>title</name>
                 <string></string>
             </property>
+            <widget>
+                <class>QLabel</class>
+                <property stdset="1">
+                    <name>name</name>
+                    <cstring>lblBalanceAmt</cstring>
+                </property>
+                <property stdset="1">
+                    <name>geometry</name>
+                    <rect>
+                        <x>120</x>
+                        <y>10</y>
+                        <width>100</width>
+                        <height>30</height>
+                    </rect>
+                </property>
+                <property stdset="1">
+                    <name>frameShape</name>
+                    <enum>MShape</enum>
+                </property>
+                <property stdset="1">
+                    <name>frameShadow</name>
+                    <enum>MShadow</enum>
+                </property>
+                <property stdset="1">
+                    <name>text</name>
+                    <string></string>
+                </property>
+                <property stdset="1">
+                    <name>alignment</name>
+                    <set>AlignVCenter|AlignRight</set>
+                </property>
+                <property>
+                    <name>hAlign</name>
+                </property>
+            </widget>
             <widget>
                 <class>QLabel</class>
                 <property stdset="1">
@@ -126,33 +161,6 @@
                 <property stdset="1">
                     <name>text</name>
                     <string>Ending Balance:</string>
-                </property>
-                <property stdset="1">
-                    <name>alignment</name>
-                    <set>AlignVCenter|AlignRight</set>
-                </property>
-                <property>
-                    <name>hAlign</name>
-                </property>
-            </widget>
-            <widget>
-                <class>QLabel</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>lblBalanceAmt</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>120</x>
-                        <y>10</y>
-                        <width>100</width>
-                        <height>30</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string></string>
                 </property>
                 <property stdset="1">
                     <name>alignment</name>

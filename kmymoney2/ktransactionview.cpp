@@ -44,6 +44,8 @@ KTransactionView::KTransactionView(QWidget *parent, const char *name)
 	transactionsTable->horizontalHeader()->setLabel(5, i18n("Deposit"));
 	transactionsTable->horizontalHeader()->setLabel(6, i18n("Balance"));
 	transactionsTable->setSelectionMode(QTable::NoSelection);
+   	transactionsTable->setLeftMargin(0);
+	transactionsTable->verticalHeader()->hide();
 
   KMyMoneySettings *p_settings = KMyMoneySettings::singleton();
   if (p_settings)
@@ -769,7 +771,9 @@ void KTransactionView::updateInputLists(void)
     MyMoneyAccount *currentAccount;
     for(currentAccount = m_bankIndex.accountFirst(); currentAccount != 0; currentAccount = m_bankIndex.accountNext())
     {
-     	theText = currentAccount->accountName().latin1();
+     	theText = "<";
+        theText = theText + currentAccount->accountName().latin1();
+        theText = theText + ">";
 			categoryList.append(theText);
 		}
   }

@@ -67,8 +67,8 @@ KMyMoneyView::~KMyMoneyView()
 
 void KMyMoneyView::slotTransactionListChanged()
 {
-	if (m_inReconciliation)
-	  reconcileDlg->updateData();
+	//if (m_inReconciliation)
+	  //reconcileDlg->updateData();
 }
 
 void KMyMoneyView::slotAccountRightMouse(const MyMoneyAccount, bool inList)

@@ -73,6 +73,12 @@ private:
   void loadLists(void);
   void insertTransactions(void);
   void doDifference(void);
+  /** No descriptions */
+  bool inTransactions(MyMoneyTransaction *debittrans);
+  /** No descriptions */
+  bool inDebits(MyMoneyTransaction *transaction);
+  /** No descriptions */
+  bool inCredits(MyMoneyTransaction *transaction);
 public slots: // Public slots
   /** No descriptions */
   void slotTransactionChanged();

@@ -1,3 +1,8 @@
+2001-06-20 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
+  * Fixed Reconciliation Bugs when editing transactions
+    during reconciliation.
+  * Removed Vertical Header
+
 2001-06-19 Michael Edwardes <mte@users.sourceforge.net>
   * GUI improvements to the New Category dialog.
   * Bug fixed in MyMoneyFile in dealing with categories.
