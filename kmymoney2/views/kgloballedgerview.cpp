@@ -214,17 +214,19 @@ void KGlobalLedgerView::slotRefreshView(void)
 void KGlobalLedgerView::loadAccounts(void)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
-
+  QString currentName;
+  
   // qDebug("KGlobalLedgerView::loadAccounts()");
   m_accountComboBox->clear();
 
-  MyMoneyAccount acc;
+  MyMoneyAccount acc, subAcc;
 
   // check if the current account still exists and make it the
   // current account
   if(!m_accountId.isEmpty()) {
     try {
       acc = file->account(m_accountId);
+      currentName = acc.name();
     } catch(MyMoneyException *e) {
       delete e;
       m_accountId = QCString();
@@ -235,22 +237,28 @@ void KGlobalLedgerView::loadAccounts(void)
   QCStringList::ConstIterator it_s;
   acc = file->asset();
   for(it_s = acc.accountList().begin(); it_s != acc.accountList().end(); ++it_s) {
-    m_accountComboBox->insertItem(file->account(*it_s).name());
+    subAcc = file->account(*it_s);
+    m_accountComboBox->insertItem(subAcc.name());
     if(m_accountId.isEmpty()) {
       m_accountId = *it_s;
+      currentName = subAcc.name();
     }
   }
 
   acc = file->liability();
   for(it_s = acc.accountList().begin(); it_s != acc.accountList().end(); ++it_s) {
-    m_accountComboBox->insertItem(file->account(*it_s).name());
+    subAcc = file->account(*it_s);
+    m_accountComboBox->insertItem(subAcc.name());
     if(m_accountId.isEmpty()) {
       m_accountId = *it_s;
+      currentName = subAcc.name();
     }
   }
 
   // sort list by name of accounts
   m_accountComboBox->listBox()->sort();
+  if(!currentName.isEmpty())
+    m_accountComboBox->setCurrentItem(currentName);
 }
 
 const bool KGlobalLedgerView::slotSelectAccount(const QString& accountName)
