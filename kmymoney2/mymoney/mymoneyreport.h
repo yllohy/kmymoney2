@@ -236,7 +236,7 @@ private:
     */
   bool m_favorite;
   /**
-    * Whether this report should only include categories marked as "Tax Reports"="Yes"
+    * Whether this report should only include categories marked as "Tax"="Yes"
     */
   bool m_tax;
   /**

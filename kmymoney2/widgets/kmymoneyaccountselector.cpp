@@ -640,7 +640,8 @@ void kMyMoneyAccountSelector::setSelected(const QCString& id, const bool state)
 
   for(it_v = m_listView->firstChild(); it_v != 0; it_v = it_v->nextSibling()) {
     if(it_v->rtti() == 1) {
-      kMyMoneyCheckListItem* it_c = static_cast<kMyMoneyCheckListItem*>(it_v);
+      kMyMoneyCheckListItem* it_c = dynamic_cast<kMyMoneyCheckListItem*>(it_v);
+      Q_CHECK_PTR(it_c);
       if(it_c->type() == QCheckListItem::CheckBox) {
         if(it_c->id() == id) {
           it_c->setOn(state);
@@ -650,7 +651,8 @@ void kMyMoneyAccountSelector::setSelected(const QCString& id, const bool state)
         }
       }
     } else if(it_v->rtti() == 0) {
-      kMyMoneyListViewItem* it_c = static_cast<kMyMoneyListViewItem*>(it_v);
+      kMyMoneyListViewItem* it_c = dynamic_cast<kMyMoneyListViewItem*>(it_v);
+      Q_CHECK_PTR(it_c);
       if(it_c->id() == id) {
         m_listView->setSelected(it_v, true);
         ensureItemVisible(it_v);
@@ -667,7 +669,8 @@ void kMyMoneyAccountSelector::setSelected(QListViewItem* item, const QCString& i
 
   for(it_v = item->firstChild(); it_v != 0; it_v = it_v->nextSibling()) {
     if(it_v->rtti() == 1) {
-      kMyMoneyCheckListItem* it_c = static_cast<kMyMoneyCheckListItem*>(it_v);
+      kMyMoneyCheckListItem* it_c = dynamic_cast<kMyMoneyCheckListItem*>(it_v);
+      Q_CHECK_PTR(it_c);
       if(it_c->id() == id) {
         it_c->setOn(state);
         m_listView->setSelected(it_v, true);
@@ -675,7 +678,8 @@ void kMyMoneyAccountSelector::setSelected(QListViewItem* item, const QCString& i
         return;
       }
     } else if(it_v->rtti() == 0) {
-      kMyMoneyListViewItem* it_c = static_cast<kMyMoneyListViewItem*>(it_v);
+      kMyMoneyListViewItem* it_c = dynamic_cast<kMyMoneyListViewItem*>(it_v);
+      Q_CHECK_PTR(it_c);
       if(it_c->id() == id) {
         m_listView->setSelected(it_v, true);
         ensureItemVisible(it_v);
