@@ -28,6 +28,13 @@ KUpdateStockPriceDlg::KUpdateStockPriceDlg(QWidget* parent,  const char* name)
 
 }
 
+KUpdateStockPriceDlg::KUpdateStockPriceDlg(const QString& strDate, const QString& strPrice, QWidget* parent,  const char* name)
+	: kUpdateStockPriceDecl(parent,name,TRUE)
+{
+  m_date = strDate;
+  m_price = strPrice;
+}
+
 KUpdateStockPriceDlg::~KUpdateStockPriceDlg()
 {
 

@@ -54,9 +54,13 @@ protected slots:
   void slotOKClicked();
 	void slotCancelClicked();
   void slotPriceHistoryDoubleClicked(QListViewItem *item, const QPoint &point, int c);
+  void slotPriceHistoryClicked(QListViewItem* item, const QPoint& point, int c);
   void slotEquityNameChanged(const QString& str);
   void slotEquitySymbolChanged(const QString& str);
-
+  void slotAddPriceClicked();
+  void slotEditPriceClicked();
+  void slotRemovePriceClicked();
+  
 private:
   MyMoneyEquity* m_selectedEquity;
   bool m_changes;	

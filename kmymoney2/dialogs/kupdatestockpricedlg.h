@@ -29,10 +29,19 @@
   *@author Kevin Tambascio
   */
 
-class KUpdateStockPriceDlg : public kUpdateStockPriceDecl  {
+class KUpdateStockPriceDlg : public kUpdateStockPriceDecl
+{
 public: 
 	KUpdateStockPriceDlg(QWidget* parent = NULL,  const char* name = NULL);
+  KUpdateStockPriceDlg(const QString& strDate, const QString& strPrice, QWidget* parent = NULL,  const char* name = NULL);
 	~KUpdateStockPriceDlg();
+
+protected:
+  QString m_date, m_price;
+
+public:
+  QString getDate() const { return m_date; }
+  QString getPrice() const { return m_price; }    
 };
 
 #endif

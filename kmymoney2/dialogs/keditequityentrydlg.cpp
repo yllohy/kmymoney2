@@ -40,6 +40,7 @@
 #include <qlineedit.h>
 #include <qgroupbox.h>
 #include <qlistview.h>
+#include <qcombobox.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -52,6 +53,7 @@
 #include <klistview.h>
                           
 #include "keditequityentrydlg.h"
+#include "kupdatestockpricedlg.h"
 
 KEditEquityEntryDlg::KEditEquityEntryDlg(MyMoneyEquity* selectedEquity, QWidget *parent, const char *name)
   : kEditEquityEntryDecl(parent, name, true)
@@ -65,9 +67,30 @@ KEditEquityEntryDlg::KEditEquityEntryDlg(MyMoneyEquity* selectedEquity, QWidget 
   connect(lvPriceHistory, SIGNAL(doubleClicked(QListViewItem*, const QPoint&, int)), this, SLOT(slotPriceHistoryDoubleClicked(QListViewItem *, const QPoint&, int)));
   connect(edtEquityName, SIGNAL(textChanged(const QString &)), this, SLOT(slotEquityNameChanged(const QString&)));
   connect(edtMarketSymbol, SIGNAL(textChanged(const QString &)), this, SLOT(slotEquitySymbolChanged(const QString&)));
+  connect(btnAddEntry, SIGNAL(clicked()), this, SLOT(slotAddPriceClicked()));
+  connect(btnEditEntry, SIGNAL(clicked()), this, SLOT(slotEditPriceClicked()));
+  connect(btnRemoveEntry, SIGNAL(clicked()), this, SLOT(slotRemovePriceClicked()));
+  connect(lvPriceHistory, SIGNAL(clicked(QListViewItem *, const QPoint&, int)), this, SLOT(slotPriceHistoryClicked(QListViewItem*, const QPoint&, int)));
   
+  //fill in the fields for what we know.
   edtEquityName->setText(m_selectedEquity->getEquityName());
+  edtMarketSymbol->setText(m_selectedEquity->getEquitySymbol());
+  cmbInvestmentType->setCurrentItem((int)m_selectedEquity->getEquityType());
+  equity_price_history priceHistory = m_selectedEquity->getConstPriceHistory();
+  if(priceHistory.size())
+  {
+    for(equity_price_history::ConstIterator it = priceHistory.begin(); it != priceHistory.end(); ++it)
+    {
+      QListViewItem *item = new QListViewItem(lvPriceHistory, it.key().toString(), it.data().toString());
+      lvPriceHistory->insertItem(item);
+    }
+  }
 
+
+  //disable controls that can't be used until the user selects a price history item.
+  btnEditEntry->setEnabled(false);
+  btnRemoveEntry->setEnabled(false);
+  
   m_changes = false;
 }
 
@@ -92,6 +115,13 @@ void KEditEquityEntryDlg::slotPriceHistoryDoubleClicked(QListViewItem *item, con
 
 }
 
+void KEditEquityEntryDlg::slotPriceHistoryClicked(QListViewItem* item, const QPoint& point, int c)
+{
+
+  btnEditEntry->setEnabled(true);
+  btnRemoveEntry->setEnabled(true);
+}
+
 void KEditEquityEntryDlg::slotEquityNameChanged(const QString& str)
 {
   m_changes = true;
@@ -100,4 +130,20 @@ void KEditEquityEntryDlg::slotEquityNameChanged(const QString& str)
 void KEditEquityEntryDlg::slotEquitySymbolChanged(const QString& str)
 {
   m_changes = true;
+}
+
+void KEditEquityEntryDlg::slotAddPriceClicked()
+{
+  KUpdateStockPriceDlg *pDlg = new KUpdateStockPriceDlg(this);
+  pDlg->exec();
+}
+
+void KEditEquityEntryDlg::slotEditPriceClicked()
+{
+
+}
+
+void KEditEquityEntryDlg::slotRemovePriceClicked()
+{
+
 }
