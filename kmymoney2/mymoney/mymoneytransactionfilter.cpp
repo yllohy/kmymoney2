@@ -63,6 +63,8 @@ void MyMoneyTransactionFilter::clear(void)
   m_states.clear();
   m_validity.clear();
   m_matchingSplits.clear();
+  m_fromDate = QDate();
+  m_toDate = QDate();
 }
 
 void MyMoneyTransactionFilter::setTextFilter(const QRegExp& text)

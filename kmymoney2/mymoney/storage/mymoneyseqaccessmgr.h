@@ -439,6 +439,9 @@ public:
     * global transaction pool. It returns all those transactions
     * that match the filter passed as argument. If the filter is empty,
     * the whole journal will be returned.
+    * The list returned is sorted according to the transactions posting date.
+    * If more than one transaction exists for the same date, the order among
+    * them is undefined.
     *
     * @param filter MyMoneyTransactionFilter object with the match criteria
     *
