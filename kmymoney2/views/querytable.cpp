@@ -1,15 +1,9 @@
 /***************************************************************************
-                          querytable.cpp  -  description
-                             -------------------
+                          querytable.cpp
+                         -------------------
     begin                : Fri Jul 23 2004
-    copyright            : (C) 2000-2004 by Michael Edwardes
-    email                : mte@users.sourceforge.net
-                           Javier Campos Morales <javi_c@users.sourceforge.net>
-                           Felix Rodriguez <frodriguez@users.sourceforge.net>
-                           John C <thetacoturtle@users.sourceforge.net>
-                           Thomas Baumgart <ipwizard@users.sourceforge.net>
-                           Kevin Tambascio <ktambascio@users.sourceforge.net>
-                           Ace Jones <ace.j@hotpop.com>
+    copyright            : (C) 2004 by Ace Jones
+    email                : ace.j@hotpop.com
  ***************************************************************************/
 
 /***************************************************************************
@@ -33,7 +27,6 @@
 // without using this macro directly, I'll be freed of KDE dependency.
 
 #include <klocale.h>
-#include <kdebug.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -63,8 +56,6 @@ MyMoneyMoney CashFlowListItem::NPV( double _rate ) const
 {
   double T = static_cast<double>(m_sToday.daysTo(m_date)) / 365.0;
   MyMoneyMoney result = m_value.toDouble() / pow(1+_rate,T);
-  
-  //kdDebug(2)<<"Item{"<<m_date<<","<<m_value.formatMoney("",5)<<"}::NPV("<<_rate<<")="<<result<<endl;
   
   return result;
 }
@@ -111,7 +102,6 @@ double CashFlowList::IRR( void )
   // shift the range upward as much as needed
   while ( NPV( hibound ) < 0 )
   {
-    //kdDebug(2) << "CashFlowList::IRR(): Readusting hibound from "<<hibound<<", npv was"<< NPV( hibound ) << endl;
     lobound = hibound;
     hibound *= 10;
   }
@@ -120,7 +110,6 @@ double CashFlowList::IRR( void )
   {
     result = (lobound + hibound) / 2;
     MyMoneyMoney npv = NPV( result );
-    //kdDebug(2) << "CashFlowList::IRR(): Trying range ("<<lobound<<","<<hibound<<")... npv("<<result<<")="<<npv<<endl;
     if ( npv >= 0 )
       hibound = result;
     if ( npv <= 0 )
@@ -698,13 +687,12 @@ void QueryTable::render( QString& result, QString& csv ) const
       {
         if ((*it_group).isSubtotal())
         {
-          grandtotal += (*it_group).subtotal();
+          if ( (*it_group).depth() == 1 )
+            grandtotal += (*it_group).subtotal();
           
-//           MyMoneyMoney::setNegativeMonetarySignPosition(MyMoneyMoney::ParensAround);
           QString subtotal_html = (*it_group).subtotal().formatMoney();
           MyMoneyMoney::setThousandSeparator('\0');
           QString subtotal_csv = (*it_group).subtotal().formatMoney();
-//           MyMoneyMoney::setNegativeMonetarySignPosition(savesignpos);
           MyMoneyMoney::setThousandSeparator(savethsep);
 
           result += "<tr class=\"sectionfooter\">"
@@ -744,8 +732,6 @@ void QueryTable::render( QString& result, QString& csv ) const
       
       if ( moneyColumns.contains(*it_column) )
       {
-//         MyMoneyMoney::setNegativeMonetarySignPosition(MyMoneyMoney::ParensAround);
-
         result += QString("<td>%1&nbsp;%2</td>")
           .arg((*it_row)["currency"])
           .arg(MyMoneyMoney(data).formatMoney());
@@ -754,7 +740,6 @@ void QueryTable::render( QString& result, QString& csv ) const
 
         csv += (*it_row)["currency"] + " " + MyMoneyMoney(data).formatMoney() + ",";
 
-//         MyMoneyMoney::setNegativeMonetarySignPosition(savesignpos);
         MyMoneyMoney::setThousandSeparator(savethsep);
 
       }
@@ -785,13 +770,13 @@ void QueryTable::render( QString& result, QString& csv ) const
     while ( it_group != groupIteratorList.end() )
     {
       (*it_group).update(TableRow());
-      grandtotal += (*it_group).subtotal();
+      
+      if ( (*it_group).depth() == 1 )
+        grandtotal += (*it_group).subtotal();
 
-//       MyMoneyMoney::setNegativeMonetarySignPosition(MyMoneyMoney::ParensAround);
       QString subtotal_html = (*it_group).subtotal().formatMoney();
       MyMoneyMoney::setThousandSeparator('\0');
       QString subtotal_csv = (*it_group).subtotal().formatMoney();
-//       MyMoneyMoney::setNegativeMonetarySignPosition(savesignpos);
       MyMoneyMoney::setThousandSeparator(savethsep);
 
       result += "<tr class=\"sectionfooter\">"
@@ -807,11 +792,9 @@ void QueryTable::render( QString& result, QString& csv ) const
     // Grand total
     //
     
-//     MyMoneyMoney::setNegativeMonetarySignPosition(MyMoneyMoney::ParensAround);
     QString grandtotal_html = grandtotal.formatMoney();
     MyMoneyMoney::setThousandSeparator('\0');
     QString grandtotal_csv = grandtotal.formatMoney();
-//     MyMoneyMoney::setNegativeMonetarySignPosition(savesignpos);
     MyMoneyMoney::setThousandSeparator(savethsep);
 
     result += "<tr class=\"sectionfooter\">"
@@ -852,4 +835,3 @@ void QueryTable::dump( const QString& file, const QString& context ) const
 
 }
 // vim:cin:si:ai:et:ts=2:sw=2:
-
