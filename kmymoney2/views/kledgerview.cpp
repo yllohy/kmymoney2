@@ -94,8 +94,8 @@ void KLedgerView::loadAccount(void)
   m_register->setCurrentTransactionIndex(m_transactionList.count()-1);
 
   // make sure, full transaction is visible
-  m_register->ensureCellVisible(m_transactionPtr.count()-1 + m_register->rpt(), 0);
-  m_register->ensureCellVisible(m_transactionPtr.count()-1, 0);
+  m_register->ensureCellVisible(m_transactionPtr.count() * m_register->rpt(), 0);
+  m_register->ensureCellVisible((m_transactionPtr.count()-1) * m_register->rpt(), 0);
   m_register->repaintContents();
 
   // fill in the form with the currently selected transaction
