@@ -1269,11 +1269,15 @@ const QValueList<MyMoneySchedule> MyMoneySeqAccessMgr::scheduleList(
     }
 
     if(overdue) {
+      if (!(*pos).isOverdue())
+        continue;
+/*
       QDate nextPayment = (*pos).nextPayment((*pos).lastPayment());
       if(!nextPayment.isValid())
         continue;
       if(nextPayment >= QDate::currentDate())
         continue;
+*/
     }
 
     // qDebug("Adding '%s'", (*pos).name().latin1());
