@@ -48,7 +48,7 @@ kMyMoneyDateInput::kMyMoneyDateInput(QWidget *parent, const char *name, Qt::Alig
 	m_dateButton = new QPushButton(this);
 	
 	connect(m_dateButton,SIGNAL(clicked()),SLOT(toggleDatePicker()));
-  connect(dateEdit, SIGNAL(returnPressed()), this, SLOT(slotEnterPressed()));
+  // connect(dateEdit, SIGNAL(valueChanged(const QDate&)), this, SLOT(slotDateChosen(QDate)));
 	connect(m_datePicker, SIGNAL(dateSelected(QDate)), this, SLOT(slotDateChosen(QDate)));
   connect(m_datePicker, SIGNAL(dateEntered(QDate)), this, SLOT(slotDateChosen(QDate)));
 	connect(m_datePicker, SIGNAL(dateSelected(QDate)), m_dateFrame, SLOT(hide()));
@@ -87,7 +87,6 @@ void kMyMoneyDateInput::toggleDatePicker()
 		{
       m_datePicker->setDate(QDate::currentDate());
     }
-    
 		m_dateFrame->show();
   }
 }
