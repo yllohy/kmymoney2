@@ -42,8 +42,9 @@
 #include <qpushbutton.h>
 #include <qlineedit.h>
 #include <qcheckbox.h>
-#include <kfiledialog.h>
+#include <kdirselectdialog.h>
 #include "kbackupdlg.h"
+#include <kglobalsettings.h>
 
 KBackupDlg::KBackupDlg( QWidget* parent,  const char* name/*, bool modal*/)
   : kbackupdlgdecl( parent,  name , true)
@@ -64,9 +65,9 @@ KBackupDlg::~KBackupDlg()
 
 void KBackupDlg::chooseButtonClicked()
 {
-  QString newDir = KFileDialog::getExistingDirectory();
-  if (!newDir.isEmpty())
-    txtMountPoint->setText(newDir);
+  KURL newDir = KDirSelectDialog::selectDirectory(KGlobalSettings::documentPath());
+  if (newDir.hasPath())
+    txtMountPoint->setText(newDir.path());
 }
 
 void KBackupDlg::readConfig(void)
