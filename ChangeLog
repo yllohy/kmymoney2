@@ -1,3 +1,6 @@
+2002-05-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added unary minus operator to MyMoneyMoney
+
 2002-05-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Converted all id references from QString to QCString
   * In order to activate the memory leak checks, one must
