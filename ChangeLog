@@ -1,3 +1,9 @@
+2002-12-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added missing admin/am_edit to source distribution
+  * Added some tips
+  * Added some description to the 'home page'
+  * Added descriptive warning to the save operation
+
 2002-12-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed translation problem in KReconcileDlgDecl.ui
   * Remember the type of accounts view the user selected last
