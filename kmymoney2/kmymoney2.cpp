@@ -1758,6 +1758,8 @@ void KMyMoney2App::loadPlugins(void)
       kdDebug() << "Loaded '"
                 << plugin->name() << "' plugin" << endl;
     } else {
+      kdDebug() << "Failed to load '"
+                << service->name() << "' service" << endl;
       kdDebug() << KLibLoader::self()->lastErrorMessage() << endl;
     }
   }

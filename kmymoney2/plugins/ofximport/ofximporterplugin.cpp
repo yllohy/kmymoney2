@@ -74,8 +74,6 @@ bool OfxImporterPlugin::import( const QString& filename, QValueList<MyMoneyState
   m_fatalerror = "Unable to parse file";
   m_valid = false;
   
-// Yes, I'll get rid of these once the plugin is only made if you have libofx.
-#ifdef HAVE_NEW_OFX
   m_statementlist.clear();
   
   QCString filename_deep( filename.utf8() );
@@ -92,7 +90,6 @@ bool OfxImporterPlugin::import( const QString& filename, QValueList<MyMoneyState
 
   if ( m_valid )
     result += m_statementlist;
-#endif    
   return m_valid;
 }
 
@@ -103,8 +100,6 @@ QString OfxImporterPlugin::lastError(void) const
   else
     return m_fatalerror;
 }
-
-#ifdef HAVE_NEW_OFX
 
 /* __________________________________________________________________________
  * AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
@@ -401,4 +396,3 @@ int OfxImporterPlugin::ofxStatusCallback(struct OfxStatusData data, void * pv)
   }
   return 0;
 }
-#endif

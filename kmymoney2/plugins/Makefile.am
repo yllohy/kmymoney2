@@ -1,7 +1,7 @@
 METASOURCES = AUTO
 INCLUDES = -I$(top_srcdir)/src $(all_includes)
 
-SUBDIRS = interfaces ofximport @kbanking_plugin@
+SUBDIRS = interfaces @ofx_importerplugin@ @kbanking_plugin@
 
 # The library containing the plugin base class
 lib_LTLIBRARIES = libkmm_plugin.la
