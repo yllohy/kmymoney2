@@ -22,10 +22,14 @@
 
 // ----------------------------------------------------------------------------
 // QT Includes
+#include <qlayout.h>
 #include <qtabbar.h>
+#include <qtabwidget.h>
+
 
 // ----------------------------------------------------------------------------
 // KDE Includes
+#include <ktextbrowser.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -59,7 +63,10 @@ protected:
   virtual void reloadEditWidgets(const MyMoneyTransaction& t);
 
 private:
-  QTab *m_SummaryTab,
+  KTextBrowser *textBrowser;
+  QGridLayout *mainGrid;
+  QTabWidget *m_InvestmentTabs;
+  QWidget *m_SummaryTab,
        *m_TransactionTab;
 };
 
