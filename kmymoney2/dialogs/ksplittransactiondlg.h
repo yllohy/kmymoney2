@@ -55,50 +55,54 @@ class KSplitTransactionDlg : public kSplitTransactionDlgDecl  {
 public: 
   KSplitTransactionDlg(const MyMoneyTransaction& t,
                        const MyMoneyAccount& acc,
-                       MyMoneyMoney& amount,
                        const bool amountValid,
                        const bool deposit,
                        QWidget* parent = 0, const char* name = 0);
 
   virtual ~KSplitTransactionDlg();
 
+  /**
+    * Using this method, an external object can retrieve the result
+    * of the dialog.
+    *
+    * @return MyMoneyTransaction based on the transaction passes during
+    *         the construction of this object and modified using the
+    *         dialog.
+    */
   const MyMoneyTransaction& transaction(void) const { return m_transaction; };
-
-  /// get a pointer to the first split transaction
-  /// @return pointer to the first MyMoneySplitTransaction in the list
-  //MyMoneySplitTransaction* firstTransaction(void);
-
-  /// get a pointer to the next split transaction
-  /// @return pointer to the next MyMoneySplitTransaction in the list
-  //MyMoneySplitTransaction* nextTransaction(void);
-
-  /// add a MyMoneySplitTransaction to the dialog
-  /// @param split pointer to split transaction
-  //void addTransaction(MyMoneySplitTransaction* const split);
 
 protected:
   void resizeEvent(QResizeEvent*);
 
 private:
-  /// Setup initial width for the amount fields
+  /**
+    * This method sets the initial width for the amount field. The
+    * width will be updated within updateSplit().
+    */
   void initAmountWidth(void);
 
-  /// Update the display of the sums
+  /**
+    * This method updates the display of the sums below the register
+    */
   void updateSums(void);
 
   /**
     * This method creates the necessary input widgets in a specific row
-    * of the register.
+    * of the register. They can be destroyed using destroyInputWidgets().
     *
     * @param row row of the register to place the widgets
     */
   void createInputWidgets(const int row);
 
-  /// destroy the input widgets
+  /**
+    * This method destroys all input widgets created with createInputWidgets().
+    */
   void destroyInputWidgets(void);
 
-  /// resize the transaction table depending on the visual size
-  /// and the number of entries. Updates m_numExtraLines.
+  /**
+    * This method resizes the transaction table depending on the visual size
+    * and the number of entries. Updates m_numExtraLines.
+    */
   void updateTransactionTableSize(void);
 
   /**
@@ -110,38 +114,44 @@ private:
     */
   void updateSplit(int start = -1, int col = -1);
 
-  /// updates a single transaction with the values of the input widgets
-  //void updateTransaction(MyMoneySplitTransaction *);
-
-  /// enable (default) or disable input widgets
-  /// @param show true will enable, false will disable the widgets
+  /**
+    * This method shows or hides the input widgets according to the argument
+    * @p show. Uses createInputWidgets() and destroyInputWidgets() to dynamically
+    * create and destroy the widgets. Updates m_editRow.
+    *
+    * @param show true will create and show, false will hide and destroy the widgets
+    */
   void showWidgets(int row, bool show = true);
 
-  /// disable input widgets (provided for convenience)
+  /**
+    * This method hides and destroys the input widgets. It is provided for
+    * convenience and calls showWidgets() to do the job.
+    */
   void hideWidgets() { showWidgets(0, false); }
 
-  /// calculate the difference to the given transaction amount (if any)
-  /// @return the difference between sum of the splits to the transactions amount
+  /**
+    * This method calculates the difference between the split that references
+    * the account passed as argument to the constructor of this object and
+    * all the other splits shown in the register of this dialog.
+    *
+    * @return difference as MyMoneyMoney object
+    */
   MyMoneyMoney diffAmount(void);
 
-  /// calculate the sum of the splits
-  /// @return the sum of all split transactions
+  /**
+    * This method calculates the sum of the splits shown in the register
+    * of this dialog.
+    *
+    * @return sum of splits as MyMoneyMoney object
+    */
   MyMoneyMoney splitsValue(void);
 
-  /// creates a new split transaction at the end of the list. The
-  /// amount is updated to current difference value.
-  /// @param row the row in the table that will hold the transaction
-  void createSplit(int row);
-
-  /// stop editing a transaction, enter it and skip the next startEdit event
-  /// if the parameter is true. Do not skip that, if the parameter is false.
-  /// @param skipNextStart provided to be able to trick the focus selection
-  /// of the kMyMoneySplitTable. Default is false.
-  void endEdit(bool skipNextStart = false);
-
-  /// delete a split transaction from the list. No user interaction.
-  /// @param row the row to be deleted
-  void deleteSplitTransaction(int row);
+  /**
+    * This method deletes a split referenced by the argument @p row.
+    *
+    * @param row index of the split to be deleted from the transaction
+    */ 
+  void deleteSplit(int row);
 
 protected slots:
   void slotFinishClicked();
@@ -151,38 +161,69 @@ protected slots:
   /// called upon mouse click, to see where to set the focus
   void slotFocusChange(int row, int col, int button, const QPoint & mousePos);
 
-  /// called upon double click on a line
-  void slotStartEdit(int row, int col, int button, const QPoint&  point);
-
   /// move the selection bar around
   /// @param key the key that gives the direction
   void slotNavigationKey(int key);
 
-  /// start editing a transaction
+  /**
+    * This method is provided for convenience. It actually calls:
+    *
+    * slotStartEdit(transactionsTable->currentRow(), 0, Qt::LeftButton, QPoint(0, 0))
+    */
   void slotStartEdit(void);
 
-  /// stop editing a transaction, enter it and skip the next startEdit event
-  /// this is used to avoid automatic entry into the next transaction when
-  /// editing the transaction is ended with a TAB key in the m_amount field.
-  /// This is somewhat ugly, but I did not find another way to override the
-  /// focus selection stuff.
-  void slotEndEditTab(void) { endEdit(true); }
+  /**
+    * This method starts the edit phase of a split. It creates and preloads
+    * the edit widgets with either the current selected split or an empty
+    * split if a new one should be added.
+    *
+    * @params row The row of the table the widgets should be shown
+    * @params col unused but provided to match the double-click signal
+    * @params button The mouse button used
+    * @params point The point, the click was issued
+    */
+  void slotStartEdit(int row, int col, int button, const QPoint&  point);
 
-  /// stop editing a transaction and enter it. This is supplied
-  /// for convenience as wrapper to slotEndEdit(bool)
-  void slotEndEdit(void) { endEdit(false); }
+  /**
+    * This methods stops editing a split and modifies/adds it
+    * in/to the the transaction. This is supplied
+    * for convenience as wrapper to slotEndEdit(int key).
+    */
+  void slotEndEdit(void) { slotEndEdit(Qt::Key_Down); }
 
-  /// stop editing a transaction and discard it
+  /**
+    * This methods stops editing a split and modifies/adds it
+    * in/to the the transaction. The argument @p key is used
+    * to pass along an information, which direction should be taken
+    * to select the next transaction. Possible interpreted values are:
+    *
+    * - Qt::Key_Up - select previoius split
+    * - Qt::Key_Down - select next split
+    *
+    * @param key direction in which the next split should be selected
+    */
+  void slotEndEdit(int key);
+
+  /**
+    * This method stops editing the current split and destroys the widgets.
+    * The previous values of this split will be loaded to the register again.
+    */
   void slotQuitEdit(void);
 
-  /// delete a split transaction from the list. The user
-  /// will be asked if he wants to proceed.
-  /// @param row the row to be deleted
-  void slotDeleteSplitTransaction(int row);
+  /**
+    * This method ensures, that the user wants to delete the split
+    * specified by @p row. It calls deleteSplit() to actually remove
+    * the split from the transaction.
+    *
+    * @param row index of the split to be deleted into the list of splits
+    */
+  void slotDeleteSplit(int row);
 
-  /// delete the currently selected transaction. Wrapper
-  /// function for slotDeleteSplitTransaction(int row).
-  void slotDeleteSplitTransaction(void);
+  /**
+    * This method is provided for convenience to delete the current
+    * selected split. It calls slotDeleteSplit(int row) to do the job.
+    */
+  void slotDeleteSplit(void);
 
   /**
     * Called when the category field has been changed.
@@ -225,36 +266,58 @@ private:
 
 private:
 
-  /// keeps a copy of the current selected transaction
+  /**
+    * This member keeps a copy of the current selected transaction
+    */
   MyMoneyTransaction m_transaction;
 
-  /// keeps a copy of the currently selected account
+  /**
+    * This member keeps a copy of the currently edited split
+    */
+  MyMoneySplit m_split;
+
+  /**
+    * This member keeps a copy of the currently selected account
+    */
   MyMoneyAccount m_account;
 
-  /// keeps the actual width required for the amount field
+  /**
+    * This member keeps the actual width required for the amount field
+    */
   unsigned      m_amountWidth;
 
-  /// the initial amount entered into the transaction register
-  MyMoneyMoney* m_amountTransaction;
-
-  /// flag if an amount for the transaction was specified
+  /**
+    * flag that shows that the amount specified in the constructor
+    * should be used as fix value (true) or if it can be changed (false)
+    */
   bool          m_amountValid;
 
-  /// the number of table rows that are required to fill
-  /// the widget if less splits are entered. This number is adjusted
-  /// during resize.
+  /**
+    * This member contains the number of table rows that are required to fill
+    * the widget if less splits are entered. This number is adjusted
+    * during the execution of updateTransactionTableSize().
+    */
   int   m_numExtraLines;
 
-  /// pointer input widget for category. the widget will be
-  /// created in createInputWidgets()
+  /**
+    * This member contains a pointer to the input widget for the category.
+    * The widget will be created and destroyed dynamically in createInputWidgets()
+    * and destroyInputWidgets().
+    */
   kMyMoneyCategory* m_editCategory;
 
-  /// pointer to input widget for memo. the widget will be
-  /// created in createInputWidgets()
+  /**
+    * This member contains a pointer to the input widget for the memo.
+    * The widget will be created and destroyed dynamically in createInputWidgets()
+    * and destroyInputWidgets().
+    */
   kMyMoneyLineEdit* m_editMemo;
 
-  /// pointer to input widget for amount. the widget will be
-  /// created in createInputWidgets()
+  /**
+    * This member contains a pointer to the input widget for the amount.
+    * The widget will be created and destroyed dynamically in createInputWidgets()
+    * and destroyInputWidgets().
+    */
   kMyMoneyEdit*  m_editAmount;
 
   /**
@@ -262,19 +325,9 @@ private:
     */
   long m_editRow;
 
-  /// the dialog local list of splits
-  //QList<MyMoneySplitTransaction> m_splitList;
-
-  /// flag that is set if a new split has been created and can
-  /// be removed when discarded
-  bool  m_createdNewSplit;
-
-  /// flag that is set to skip the next call to StartEdit. This flag is set,
-  /// when a transaction is left using the TAB key. The same TAB key event
-  /// would otherwise start the next transaction.
-  bool  m_skipStartEdit;
-
-  /// pointer to the context menu
+  /**
+    * This member keeps a pointer to the context menu
+    */
   KPopupMenu* m_contextMenu;
 
   /// keeps the id of the delete entry in the context menu
