@@ -1065,6 +1065,12 @@ void MyMoneySeqAccessMgrTest::testDuplicate() {
 }
 
 void MyMoneySeqAccessMgrTest::testAddSchedule() {
+	/* Note addSchedule() now calls validate as it should
+	 * so we need an account id.  Later this will
+	 * be checked to make sure its a valid account id.  The
+	 * tests currently fail because no splits are defined
+	 * for the schedules transaction.
+	*/
 	CPPUNIT_ASSERT(m->m_scheduleList.count() == 0);
 
 	MyMoneySchedule schedule("Sched-Name",
@@ -1074,7 +1080,8 @@ void MyMoneySeqAccessMgrTest::testAddSchedule() {
 				 QDate(2003,7,10),
 				 true,
 				 true,
-				 false);
+				 false,
+				 "invalid_wont_work_later");
 
 	try {
 		m->addSchedule(schedule);
@@ -1083,6 +1090,7 @@ void MyMoneySeqAccessMgrTest::testAddSchedule() {
 		CPPUNIT_ASSERT(schedule.id() == "SCH000001");
 		CPPUNIT_ASSERT(m->m_scheduleList["SCH000001"].id() == "SCH000001");
 	} catch(MyMoneyException *e) {
+		qDebug("Error: %s", e->what().latin1());
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception");
 	}
@@ -1181,7 +1189,8 @@ void MyMoneySeqAccessMgrTest::testScheduleList() {
 				 notOverdue,
 				 false,
 				 false,
-				 false);
+				 false,
+				 "invalid_wont_work_later");
 	schedule1.setTransaction(t);
 
 	MyMoneySchedule schedule2("Schedule 2",
@@ -1191,7 +1200,8 @@ void MyMoneySeqAccessMgrTest::testScheduleList() {
 				 notOverdue.addDays(1),
 				 false,
 				 false,
-				 false);
+				 false,
+				 "invalid_wont_work_later");
 	MyMoneySchedule schedule3("Schedule 3",
 				 MyMoneySchedule::TYPE_TRANSFER,
 				 MyMoneySchedule::OCCUR_WEEKLY,
@@ -1199,7 +1209,8 @@ void MyMoneySeqAccessMgrTest::testScheduleList() {
 				 notOverdue.addDays(2),
 				 false,
 				 false,
-				 false);
+				 false,
+				 "invalid_wont_work_later");
 	MyMoneySchedule schedule4("Schedule 4",
 				 MyMoneySchedule::TYPE_BILL,
 				 MyMoneySchedule::OCCUR_WEEKLY,
@@ -1207,7 +1218,8 @@ void MyMoneySeqAccessMgrTest::testScheduleList() {
 				 overdue.addDays(-7),
 				 true,
 				 false,
-				 false);
+				 false,
+				 "invalid_wont_work_later");
 	schedule4.setEndDate(notOverdue.addMonths(1));
 
 	m->addSchedule(schedule1);
