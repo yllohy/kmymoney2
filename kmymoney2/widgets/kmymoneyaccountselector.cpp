@@ -575,7 +575,12 @@ void kMyMoneyAccountSelector::update(const QCString& /* id */)
 
 int kMyMoneyAccountSelector::slotMakeCompletion(const QString& txt)
 {
+#if QT_VERSION >= 0x030201
   QListViewItemIterator it(m_listView, QListViewItemIterator::Selectable);
+#else
+  QListViewItemIterator it(m_listView);
+#endif
+
   QListViewItem* it_v;
 
   // The logic used here seems to be awkward. The problem is, that
@@ -594,8 +599,16 @@ int kMyMoneyAccountSelector::slotMakeCompletion(const QString& txt)
   }
 
   if(!txt.isEmpty()) {
+#if QT_VERSION >= 0x030201
     it = QListViewItemIterator(m_listView, QListViewItemIterator::Selectable);
     while((it_v = it.current()) != 0) {
+#else
+    it = QListViewItemIterator(m_listView);
+    while((it_v = it.current()) != 0)
+     if(!it_v->isSelectable())
+       ++it;
+     else {
+#endif
       if(it_v->firstChild() == 0) {
         if(it_v->text(0).contains(txt, false) == 0) {
           // this is a node which does not contain the
@@ -650,10 +663,19 @@ int kMyMoneyAccountSelector::slotMakeCompletion(const QString& txt)
   // Get the number of visible nodes for the return code  
   int cnt = 0;
 
+#if QT_VERSION >= 0x030201
   it = QListViewItemIterator(m_listView, QListViewItemIterator::Selectable | QListViewItemIterator::Visible);
   while((it_v = it.current()) != 0) {
     cnt++;
     it++;
   }
+#else
+  it = QListViewItemIterator(m_listView);
+  while((it_v = it.current()) != 0) {
+    if(it_v->isSelectable() && it_v->isVisible())
+      cnt++;
+    it++;
+  }
+#endif
   return cnt;
 }
