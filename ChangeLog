@@ -1,3 +1,6 @@
+2002-01-30 Kevin Tambascio <ktambascio@users.sourceforge.net>
+  * Added a new investment view, started to add code to show investment view when an investment account is selected.
+
 2002-01-29 Kevin Tambascio <ktambascio@users.sourceforge.net>
   * Added a dialog for entering information about a new stock or mutual fund.
 
@@ -661,6 +664,7 @@
 	* Added .cvsignore in all project.
 
  
+
 
 
 

@@ -66,9 +66,11 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
     DesktopIcon("pay_edit"));
   m_payeesView = new KPayeesView(&m_file, qvboxMainFrame5, "payeesView");
 
+  m_investmentView = new KInvestmentView(qvboxMainFrame2, "investmentView");
 
   banksView->hide();
   transactionView->hide();
+  m_investmentView->hide();
 
   connect(banksView, SIGNAL(accountRightMouseClick(const MyMoneyAccount, bool)), this, SLOT(slotAccountRightMouse(const MyMoneyAccount, bool)));
   connect(banksView, SIGNAL(accountDoubleClick()), this, SLOT(slotAccountDoubleClick()));
@@ -118,6 +120,7 @@ void KMyMoneyView::slotAccountRightMouse(const MyMoneyAccount, bool/* inList*/)
 
 void KMyMoneyView::slotAccountDoubleClick(void)
 {
+	
   viewTransactionList();
 }
 
@@ -773,14 +776,36 @@ void KMyMoneyView::viewBankList(MyMoneyAccount *selectAccount, MyMoneyBank *sele
 
 void KMyMoneyView::viewTransactionList(void)
 {
-  banksView->hide();
-  transactionView->show();
-  m_showing = TransactionList;
+	bool bankSuccess=false, accountSuccess=false;
+  MyMoneyBank *pBank;
+  MyMoneyAccount *pAccount;
 
-  if (!m_file.isInitialised())
+	pBank = m_file.bank(banksView->currentBank(bankSuccess));
+	if (!pBank || !bankSuccess) {
+    qDebug("KMyMoneyView::slotAccountEdit: Unable to get the current bank");
     return;
+  }
+  pAccount = pBank->account(banksView->currentAccount(accountSuccess));
+  if (!pAccount || !accountSuccess) {
+    qDebug("KMyMoneyView::slotAccountEdit: Unable to grab the current account");
+    return;
+  }
 
-  bool bankSuccess=false, accountSuccess=false;
+  if(pAccount->accountType() == MyMoneyAccount::Investment)
+  {
+  	banksView->hide();
+  	m_investmentView->show();
+  }
+  else
+  {
+     banksView->hide();
+     transactionView->show();
+     m_showing = TransactionList;
+
+     if (!m_file.isInitialised())
+       return;
+
+/*  bool bankSuccess=false, accountSuccess=false;
   MyMoneyBank *pBank;
   MyMoneyAccount *pAccount;
 
@@ -793,41 +818,41 @@ void KMyMoneyView::viewTransactionList(void)
   if (!pAccount || !accountSuccess) {
     qDebug("KMyMoneyView::viewTransactionList: Unable to grab the current account");
     return;
-  }
+  } */
 
-  KConfig *config = KGlobal::config();
-  QDateTime defaultDate = QDate::currentDate();
-  QDate qdateStart = config->readDateTimeEntry("StartDate", &defaultDate).date();
+    KConfig *config = KGlobal::config();
+    QDateTime defaultDate = QDate::currentDate();
+    QDate qdateStart = config->readDateTimeEntry("StartDate", &defaultDate).date();
 
-  if (qdateStart != defaultDate.date())
-  {
-    MyMoneyTransaction *transaction;
-    m_transactionList.clear();
-    for ( transaction=pAccount->transactionFirst(); transaction; transaction=pAccount->transactionNext()) {
-      if (transaction->date() >= qdateStart)
-      {
-        m_transactionList.append(new MyMoneyTransaction(
-          pAccount,
-          transaction->id(),
-          transaction->method(),
-          transaction->number(),
-          transaction->memo(),
-          transaction->amount(),
-          transaction->date(),
-          transaction->categoryMajor(),
-          transaction->categoryMinor(),
-          transaction->atmBankName(),
-          transaction->payee(),
-          transaction->accountFrom(),
-          transaction->accountTo(),
-          transaction->state()));
+    if (qdateStart != defaultDate.date())
+    {
+      MyMoneyTransaction *transaction;
+      m_transactionList.clear();
+      for ( transaction=pAccount->transactionFirst(); transaction; transaction=pAccount->transactionNext()) {
+        if (transaction->date() >= qdateStart)
+        {
+          m_transactionList.append(new MyMoneyTransaction(
+            pAccount,
+            transaction->id(),
+            transaction->method(),
+            transaction->number(),
+            transaction->memo(),
+            transaction->amount(),
+            transaction->date(),
+            transaction->categoryMajor(),
+            transaction->categoryMinor(),
+            transaction->atmBankName(),
+            transaction->payee(),
+            transaction->accountFrom(),
+            transaction->accountTo(),
+            transaction->state()));
+        }
       }
+      transactionView->init(&m_file, *pBank, *pAccount, &m_transactionList, KTransactionView::SUBSET);
     }
-    transactionView->init(&m_file, *pBank, *pAccount, &m_transactionList, KTransactionView::SUBSET);
-  }
-  else
-    transactionView->init(&m_file, *pBank, *pAccount, pAccount->getTransactionList(), KTransactionView::SUBSET);
-
+    else
+	    transactionView->init(&m_file, *pBank, *pAccount, pAccount->getTransactionList(), KTransactionView::SUBSET);
+	}
   emit transactionOperations(true);
 }
 
