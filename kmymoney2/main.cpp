@@ -16,6 +16,7 @@
 #include <stdio.h>
 
 #include <qwidgetlist.h>
+#include <qdatetime.h>
 
 #include <kcmdlineargs.h>
 #include <kaboutdata.h>
@@ -34,6 +35,8 @@ static KCmdLineOptions options[] =
   // INSERT YOUR COMMANDLINE OPTIONS HERE
 };
 
+QTime timer;
+
 int main(int argc, char *argv[])
 {
 	KAboutData aboutData( "kmymoney2", I18N_NOOP("KMyMoney2"),
@@ -48,6 +51,8 @@ int main(int argc, char *argv[])
   aboutData.addAuthor("Arni Ingimundarson", I18N_NOOP("Developer"), "arniing@users.sourceforge.net");
 	KCmdLineArgs::init( argc, argv, &aboutData );
 	KCmdLineArgs::addCmdLineOptions( options ); // Add our own options.
+
+  timer.start();
 
   KApplication a;
 	KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
@@ -67,3 +72,10 @@ int main(int argc, char *argv[])
 
   return 0;
 }
+
+void timetrace(char *txt)
+{
+  qDebug("Timer(%s): %d elapsed", txt, timer.elapsed());
+  timer.restart();
+}
+
