@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "POT-Creation-Date: 2003-08-22 18:11+0200\n"
-"PO-Revision-Date: 2003-09-16 00:52+0200\n"
+"PO-Revision-Date: 2003-09-20 13:39+0200\n"
 "Last-Translator: Laurent Colonges <l.colonges@free.fr>\n"
 "Language-Team: français\n"
 "MIME-Version: 1.0\n"
@@ -21,7 +21,7 @@ msgstr ""
 #: dialogs/mymoneyqifprofileeditordecl.cpp:44
 #: dialogs/mymoneyqifprofileeditor.cpp:154
 msgid "QIF Profile Editor"
-msgstr "Editeur de profil QIF"
+msgstr "Éditeur de profil QIF"
 
 #: dialogs/mymoneyqifprofileeditordecl.cpp:65
 msgid "Description"
@@ -375,12 +375,15 @@ msgstr ""
 "chèques, c.a.d versements, chèques, et achats par carte de crédit."
 
 #: dialogs/knewaccountwizard.cpp:298
-msgid "Use the savings account type to manage activities on your savings account."
-msgstr "Utilisez le type de compte Economies pour gérer vos économies."
+msgid ""
+"Use the savings account type to manage activities on your savings account."
+msgstr "Utilisez le type de compte Épargne pour gérer vos économies."
 
 #: dialogs/knewaccountwizard.cpp:305
-msgid "Use the credit card account type to manage activities on your credit card."
-msgstr "Utilisez le type de compte Carte de crédit pour gérer votre carte de crédit."
+msgid ""
+"Use the credit card account type to manage activities on your credit card."
+msgstr ""
+"Utilisez le type de compte Carte de crédit pour gérer votre carte de crédit."
 
 #: dialogs/knewaccountwizard.cpp:312
 msgid "Use the cash account type to manage activities in your wallet."
@@ -400,7 +403,8 @@ msgstr "Utilisez le type de compte Passif pour gérer votre passif."
 
 #: dialogs/knewaccountwizard.cpp:332
 msgid "Explanation is not yet available! UnknownAccountType will be set"
-msgstr "L'explication n'est pas encore disponible ! UnknownAccountType sera défini"
+msgstr ""
+"L'explication n'est pas encore disponible ! UnknownAccountType sera défini"
 
 #: dialogs/knewaccountdlgdecl.cpp:73
 msgid "New Account Dialog"
@@ -501,7 +505,7 @@ msgstr ""
 "\n"
 "Cliquez sur la transaction de votre choix dans une des deux listes pour\n"
 "la marquer comme rapprochée. Pour créer ou éditer une transaction, vous "
-"pouvez revenir à l'enregistreur en cliquant sur le bouton Editer les "
+"pouvez revenir à l'enregistreur en cliquant sur le bouton Éditer les "
 "transactions.\n"
 "\n"
 "Votre compte est équilibré quand la différence est de zéro. Cliquez sur le "
@@ -534,7 +538,7 @@ msgstr "Différence :"
 
 #: dialogs/kreconciledlgdecl.cpp:202
 msgid "&Edit Transactions..."
-msgstr "&Editer les transactions..."
+msgstr "&Éditer les transactions..."
 
 #: dialogs/kreconciledlgdecl.cpp:208 dialogs/ksplittransactiondlgdecl.cpp:143
 #: dialogs/ksplittransactiondlg.cpp:102 views/kledgerviewcheckings.cpp:465
@@ -616,17 +620,17 @@ msgstr "Noms des interlocuteurs :"
 
 #: dialogs/keditschedbilldlgdecl.cpp:301
 msgid "Edit Scheduled Bills"
-msgstr "Editer les factures planifiées"
+msgstr "Éditer les échéances de factures"
 
 #: dialogs/keditschedbilldlgdecl.cpp:307
 #: dialogs/keditschedtransdlgdecl.cpp:306 dialogs/keditscheddepdlgdecl.cpp:305
 msgid "Editing Scheduled Transaction"
-msgstr "Edition des opérations planifiées"
+msgstr "Édition des échéances"
 
 #: dialogs/keditschedbilldlgdecl.cpp:321
 #: dialogs/keditschedtransdlgdecl.cpp:320 dialogs/keditscheddepdlgdecl.cpp:319
 msgid "Schedule Name:"
-msgstr "Nom de l'opération planifiée"
+msgstr "Nom de l'échéance"
 
 #: dialogs/keditschedbilldlgdecl.cpp:329 dialogs/keditscheddepdlgdecl.cpp:327
 msgid "Payee Details"
@@ -655,7 +659,7 @@ msgstr "Fréquence :"
 #: dialogs/keditschedbilldlgdecl.cpp:391
 #: dialogs/keditschedtransdlgdecl.cpp:343 dialogs/keditscheddepdlgdecl.cpp:367
 msgid "Next due date:"
-msgstr ""
+msgstr "Date du prochain paiement :"
 
 #: dialogs/keditschedbilldlgdecl.cpp:399
 #: dialogs/keditschedtransdlgdecl.cpp:398 dialogs/keditscheddepdlgdecl.cpp:381
@@ -714,7 +718,7 @@ msgstr "Le compte n'est pas équilibré, êtes-vous sûr ?"
 
 #: dialogs/keditschedtransdlgdecl.cpp:302
 msgid "Edit Scheduled Transfer"
-msgstr "Editer un transfert planifié"
+msgstr "Éditer une échéance de virement"
 
 #: dialogs/keditschedtransdlgdecl.cpp:390
 msgid "To:"
@@ -866,14 +870,14 @@ msgstr ""
 "simple\n"
 "du type d'import est disponible en bas de l'écran et est mise à jour "
 "lorsque\n"
-"vous sélectionnez un objet dansla liste de choix.\n"
+"vous sélectionnez un objet dans la liste de choix.\n"
 "\n"
 "Dès que vous avez choisi un type d'import, cliquez le bouton OK."
 
 #: dialogs/kchooseimportexportdlg.cpp:52
 #: dialogs/kchooseimportexportdlgdecl.cpp:64
 msgid "Choose import type:"
-msgstr "Choisisez le type d'import :"
+msgstr "Choisissez le type d'import :"
 
 #: dialogs/kchooseimportexportdlg.cpp:53
 #: dialogs/kchooseimportexportdlgdecl.cpp:34
@@ -957,7 +961,7 @@ msgstr "Ville :"
 
 #: dialogs/knewfiledlgdecl.cpp:106
 msgid "County/State:"
-msgstr "Pays / Etat :"
+msgstr "Pays / État :"
 
 #: dialogs/knewfiledlgdecl.cpp:128
 msgid "Telephone:"
@@ -969,11 +973,11 @@ msgstr "Courriel :"
 
 #: dialogs/knewfiledlgdecl.cpp:154
 msgid "ok"
-msgstr "ok"
+msgstr "OK"
 
 #: dialogs/knewfiledlgdecl.cpp:158
 msgid "cancel"
-msgstr "annuler"
+msgstr "Annuler"
 
 #: dialogs/kexportdlg.cpp:67 dialogs/kimportdlg.cpp:68
 msgid "Abort operation"
@@ -1143,7 +1147,7 @@ msgstr "Compte chèques"
 
 #: dialogs/knewaccountwizarddecl.cpp:2574 kmymoneyutils.cpp:55
 msgid "Savings"
-msgstr "Economies"
+msgstr "Épargne"
 
 #: dialogs/knewaccountwizarddecl.cpp:2575 kmymoneyutils.cpp:58
 msgid "Credit Card"
@@ -1174,8 +1178,10 @@ msgid "Preferred account"
 msgstr "Compte par défaut"
 
 #: dialogs/knewaccountwizarddecl.cpp:2620
-msgid "Mark this checkbox if the account should be maintained as preferred account"
-msgstr "Cochez cette case si le compte doit être marqué comme compte par défaut"
+msgid ""
+"Mark this checkbox if the account should be maintained as preferred account"
+msgstr ""
+"Cochez cette case si le compte doit être marqué comme compte par défaut"
 
 #: dialogs/knewaccountwizarddecl.cpp:2625
 msgid "Account Name"
@@ -1264,16 +1270,22 @@ msgid "Accept splits and return to transaction form"
 msgstr "Accepter les parties et retourner au formulaire d'opération"
 
 #: dialogs/ksplittransactiondlg.cpp:105
-msgid "Use this to accept all changes to the splits and return to the transaction"
-msgstr "Utilisez ceci pour accepter tous les changements et retourber à l'opération"
+msgid ""
+"Use this to accept all changes to the splits and return to the transaction"
+msgstr ""
+"Utilisez ceci pour accepter tous les changements et retourner à l'opération"
 
 #: dialogs/ksplittransactiondlg.cpp:110
 msgid "Reject all changes to the splits and return to transaction form"
-msgstr "Refuser tous les changements sur les parties et retourner au formulaire d'opération"
+msgstr ""
+"Refuser tous les changements sur les parties et retourner au formulaire "
+"d'opération"
 
 #: dialogs/ksplittransactiondlg.cpp:111
-msgid "Use this to reject all changes to the splits and return to the transaction"
-msgstr "Utilisez ceci pour refuser tous les changements et retourner à l'opération"
+msgid ""
+"Use this to reject all changes to the splits and return to the transaction"
+msgstr ""
+"Utilisez ceci pour refuser tous les changements et retourner à l'opération"
 
 #: dialogs/ksplittransactiondlg.cpp:116
 msgid "Clear all splits"
@@ -1290,7 +1302,7 @@ msgstr "Options de l'opération"
 
 #: dialogs/ksplittransactiondlg.cpp:167 views/kledgerview.cpp:1655
 msgid "Edit ..."
-msgstr "Editer..."
+msgstr "Éditer..."
 
 #: dialogs/ksplittransactiondlg.cpp:169
 msgid "Delete ..."
@@ -1350,7 +1362,7 @@ msgid ""
 "You are about to delete this part of the transaction. Do you really want to "
 "continue?"
 msgstr ""
-"Vous êtes sur le point d'effacer cette partie de l'opération. Etes-vous sûr "
+"Vous êtes sur le point d'effacer cette partie de l'opération. Êtes-vous sûr "
 "de vouloir continuer ?"
 
 #: dialogs/ksplittransactiondlg.cpp:699
@@ -1392,7 +1404,7 @@ msgstr "Impossible de modifier le montant"
 
 #: dialogs/keditscheddepdlgdecl.cpp:301
 msgid "Edit Scheduled Deposit"
-msgstr "Editer le dépôt planifié"
+msgstr "Éditer un échéance de dépôt"
 
 #: dialogs/keditscheddepdlgdecl.cpp:389
 msgid "Deposit to:"
@@ -1400,15 +1412,15 @@ msgstr "Dépôt vers :"
 
 #: dialogs/ieditscheduledialog.cpp:75
 msgid "Edit Transfer Schedule"
-msgstr "Editer les transferts planifiés"
+msgstr "Éditer une échéance de virement"
 
 #: dialogs/ieditscheduledialog.cpp:83
 msgid "Edit Deposit Schedule"
-msgstr "Editer les dépôts planifiés"
+msgstr "Éditer une échéance de dépôt"
 
 #: dialogs/ieditscheduledialog.cpp:91
 msgid "Edit Bill Schedule"
-msgstr "Editer les factures planifiées"
+msgstr "Éditer une échéance de facture"
 
 #: dialogs/ieditscheduledialog.cpp:128 dialogs/ieditscheduledialog.cpp:142
 msgid "Direct Debit"
@@ -1424,7 +1436,7 @@ msgstr "Dépôt manuel"
 
 #: dialogs/ieditscheduledialog.cpp:131 dialogs/ieditscheduledialog.cpp:143
 msgid "Write Cheque"
-msgstr "Ecrire un chèque"
+msgstr "Écrire un chèque"
 
 #: dialogs/ieditscheduledialog.cpp:132 dialogs/ieditscheduledialog.cpp:138
 #: dialogs/ieditscheduledialog.cpp:144 kmymoneyutils.cpp:203
@@ -1501,7 +1513,7 @@ msgstr "Merci de donner la date de fin"
 
 #: dialogs/ieditscheduledialog.cpp:347
 msgid "Unable to edit schedule"
-msgstr "Impossible d'éditer la planification"
+msgstr "Impossible d'éditer l'échéance"
 
 #: dialogs/ieditscheduledialog.cpp:347
 msgid "Account from and account to are the same"
@@ -1513,7 +1525,7 @@ msgstr "Merci de remplir le champ Montant."
 
 #: dialogs/ieditscheduledialog.cpp:511
 msgid "Unable to add transfer"
-msgstr "Impossible d'ajouter le transfert"
+msgstr "Impossible d'ajouter le virement"
 
 #: dialogs/ieditscheduledialog.cpp:629 views/kledgerview.cpp:926
 msgid "Splitted Transaction"
@@ -1563,7 +1575,9 @@ msgstr "Remettre à zéro les réglages"
 msgid ""
 "Use this to reset all settings to the state they were when the dialog was "
 "opened."
-msgstr "Utilisez ceci pour remettre tous les réglages dans l'état où ils étaientà l'ouverture de la fenêtre."
+msgstr ""
+"Utilisez ceci pour remettre tous les réglages dans l'état où ils étaient à "
+"l'ouverture de la fenêtre."
 
 #: dialogs/ksettingsdlg.cpp:96
 msgid "General settings"
@@ -1647,7 +1661,9 @@ msgstr "Déplacer l'objet sélectionné vers le haut"
 
 #: dialogs/ksettingsdlg.cpp:242
 msgid "Use this to move the selected item up by one position in the list."
-msgstr "Utilisez ceci pour déplacer l'objet sélectionné d'un cran vers le haut dans la liste"
+msgstr ""
+"Utilisez ceci pour déplacer l'objet sélectionné d'un cran vers le haut dans "
+"la liste"
 
 #: dialogs/ksettingsdlg.cpp:246
 msgid "&Down"
@@ -1659,7 +1675,9 @@ msgstr "Déplacer l'objet sélectionné vers le bas"
 
 #: dialogs/ksettingsdlg.cpp:249
 msgid "Use this to move the selected item down by one position in the list."
-msgstr "Utilisez ceci pour déplacer l'objet sélectionné d'un cran vers le bas dans la liste"
+msgstr ""
+"Utilisez ceci pour déplacer l'objet sélectionné d'un cran vers le bas dans "
+"la liste"
 
 #: dialogs/ksettingsdlg.cpp:262
 msgid ""
@@ -1669,7 +1687,8 @@ msgid ""
 msgstr ""
 "Les entrées sélectionnées sont montrées sur la page d'accueil du programme.\n"
 "\n"
-"Utilisez les boutons et les cases pour personnaliser l'affichage de la page d'accueil."
+"Utilisez les boutons et les cases pour personnaliser l'affichage de la page "
+"d'accueil."
 
 #: dialogs/ksettingsdlg.cpp:288
 msgid "Register"
@@ -1827,7 +1846,7 @@ msgstr ""
 
 #: dialogs/kcsvprogressdlgdecl.cpp:96
 msgid "Choose the csv file:"
-msgstr "Choisissez le fichier csv :"
+msgstr "Choisissez le fichier CSV :"
 
 #: dialogs/kcsvprogressdlgdecl.cpp:105
 msgid "&Browse"
@@ -2017,15 +2036,15 @@ msgstr "Paiements"
 #: views/kscheduledview.cpp:598 views/kscheduledlistitem.cpp:46
 #: widgets/kmymoneyscheduledcalendar.cpp:50
 msgid "Transfers"
-msgstr "Transferts"
+msgstr "Virements"
 
 #: dialogs/kfindtransactiondlgdecl.cpp:568
 msgid "State"
-msgstr "Etat"
+msgstr "État"
 
 #: dialogs/kfindtransactiondlgdecl.cpp:573
 msgid "All states"
-msgstr "Tous les etats"
+msgstr "Tous les états"
 
 #: dialogs/kfindtransactiondlgdecl.cpp:574 views/kledgerview.cpp:1651
 #: views/kledgerview.cpp:1693
@@ -2260,7 +2279,7 @@ msgstr "Dépôt manuel"
 
 #: kmymoneyutils.cpp:206
 msgid "Write cheque"
-msgstr "Ecrire un chèque"
+msgstr "Écrire un chèque"
 
 #: kmymoneyutils.cpp:222 views/kscheduledview.cpp:73
 msgid "Bill"
@@ -2275,7 +2294,7 @@ msgstr "Dépôt"
 #: kmymoneyutils.cpp:228 views/kscheduledview.cpp:75
 #: views/kledgerview.cpp:1261
 msgid "Transfer"
-msgstr "Transfert"
+msgstr "Virement"
 
 #: kmymoneyutils.cpp:243 kmymoneyutils.cpp:244
 msgid "Split the amount into different categories."
@@ -2283,15 +2302,15 @@ msgstr "Partager le montant en différentes catégories"
 
 #: kmymoneyutils.cpp:253
 msgid "&New Schedule..."
-msgstr "&Nouveau planning..."
+msgstr "&Nouvelle échéance..."
 
 #: kmymoneyutils.cpp:255
 msgid "Create a new schedule."
-msgstr "Créer un nouveau planning"
+msgstr "Créer un nouvelle échéance."
 
 #: kmymoneyutils.cpp:256
 msgid "Use this to create a new schedule."
-msgstr "Utilisez ceci pour créer une nouvelle opération planifiée."
+msgstr "Utilisez ceci pour créer une nouvelle échéance."
 
 #: kmymoneyutils.cpp:265
 msgid "&Filter"
@@ -2343,7 +2362,7 @@ msgstr "Type / nom"
 
 #: views/kscheduledview.cpp:60
 msgid "Next Due Date"
-msgstr "Prochaine date d'échéance"
+msgstr "Prochaine échéance"
 
 #: views/kscheduledview.cpp:61
 msgid "Frequency"
@@ -2365,16 +2384,16 @@ msgstr "Factures"
 
 #: views/kscheduledview.cpp:277
 msgid "Are you sure you want to delete the selected schedule?"
-msgstr "Voulez-vous vraiment effacer le compte la planification sélectionnée ?"
+msgstr "Voulez-vous vraiment effacer l'échéance sélectionnée ?"
 
 #: views/kscheduledview.cpp:286
 msgid "Unable to remove schedule"
-msgstr "Impossible d'enlever la planification"
+msgstr "Impossible d'enlever l'échéance"
 
 #: views/kscheduledview.cpp:385 views/kscheduledview.cpp:408
 #: views/kscheduledview.cpp:431
 msgid "Unable to add schedule: "
-msgstr "Impossible d'ajouter l'opération planifiée :"
+msgstr "Impossible d'ajouter l'échéance :"
 
 #: views/kscheduledview.cpp:456 views/kscheduledview.cpp:478
 msgid "Bill Options"
@@ -2396,17 +2415,17 @@ msgstr "Nouveau dépôt..."
 
 #: views/kscheduledview.cpp:466 views/kscheduledview.cpp:486
 msgid "Transfer Options"
-msgstr "Options du transfert"
+msgstr "Options du virement"
 
 #: views/kscheduledview.cpp:467 views/kscheduledview.cpp:487
 #: views/kscheduledview.cpp:511
 msgid "New Transfer..."
-msgstr "Nouveau transfert..."
+msgstr "Nouveau virement..."
 
 #: views/kscheduledview.cpp:493 views/kmymoneyview.cpp:203
 #: views/kmymoneyview.cpp:209
 msgid "Edit..."
-msgstr "Editer..."
+msgstr "Éditer..."
 
 #: views/kscheduledview.cpp:494 views/kmymoneyview.cpp:204
 #: views/kmymoneyview.cpp:210
@@ -2453,7 +2472,7 @@ msgid ""
 "information about categories and accounts. If you press continue, this "
 "information will be lost!"
 msgstr ""
-"Changer le type de transaction effécera toute information sur les catégories "
+"Changer le type de transaction effacera toute information sur les catégories "
 "et les comptes. Si vous cliquez sur Continuer, cette information sera "
 "perdue !"
 
@@ -2467,7 +2486,7 @@ msgstr "Impossible de modifier le type"
 
 #: views/kledgerview.cpp:1257
 msgid "Check"
-msgstr "Vérifier"
+msgstr "Chèque"
 
 #: views/kledgerview.cpp:1263
 msgid "Withdrawal"
@@ -2475,7 +2494,7 @@ msgstr "Retrait"
 
 #: views/kledgerview.cpp:1265
 msgid "ATM"
-msgstr "ATM"
+msgstr "DAB"
 
 #: views/kledgerview.cpp:1277
 msgid "&Cheque"
@@ -2483,23 +2502,23 @@ msgstr "&Chèque"
 
 #: views/kledgerview.cpp:1279
 msgid "&Deposit"
-msgstr "&Déposer"
+msgstr "&Dépôt"
 
 #: views/kledgerview.cpp:1281
 msgid "&Transfer"
-msgstr "&Transférer"
+msgstr "&Virement"
 
 #: views/kledgerview.cpp:1283
 msgid "&Withdrawal"
-msgstr "&Retirer"
+msgstr "&Retrait"
 
 #: views/kledgerview.cpp:1285
 msgid "AT&M"
-msgstr "AT&M"
+msgstr "DA&B"
 
 #: views/kledgerview.cpp:1289
 msgid "&Check"
-msgstr "&Vérifier"
+msgstr "&Chèque"
 
 #: views/kledgerview.cpp:1303
 msgid "Do you want to add '%1' as payee/receiver ?"
@@ -2530,7 +2549,7 @@ msgid ""
 "At least one split of this transaction has been frozen. Editing this "
 "transaction is therefore prohibited."
 msgstr ""
-"Au moins une partie de cette transaction a été validée. Editer cette "
+"Au moins une partie de cette transaction a été validée. Éditer cette "
 "opération est donc interdit."
 
 #: views/kledgerview.cpp:1438
@@ -2592,14 +2611,15 @@ msgstr "Impossible de marquer la partie"
 
 #: views/kledgerview.cpp:1743
 msgid "Moving a split to a different account is not yet implemented"
-msgstr "Déplacer une partie vers un comte différent n'est pas encoré implémenté"
+msgstr ""
+"Déplacer une partie vers un comte différent n'est pas encore implémenté"
 
 #: views/kledgerview.cpp:1751
 msgid ""
 "You are about to delete the selected transaction. Do you really want to "
 "continue?"
 msgstr ""
-"Vous êtes sur le point d'effacer l'opération sélectionnée. Etes-vous sur de "
+"Vous êtes sur le point d'effacer l'opération sélectionnée. Êtes-vous sur de "
 "vouloir continuer ?"
 
 #: views/kledgerview.cpp:1753
@@ -2622,7 +2642,7 @@ msgstr "Choisissez un tiers :"
 
 #: views/kpayeesviewdecl.cpp:56
 msgid "Or enter a new name:"
-msgstr "Ou entrer un nouveau nom :"
+msgstr "Ou entrez un nouveau nom :"
 
 #: views/kpayeesviewdecl.cpp:69
 msgid "&Add"
@@ -2679,11 +2699,11 @@ msgstr "Solde d'ouverture :"
 
 #: views/kmymoneyview.cpp:110
 msgid "Insitutions/Accounts"
-msgstr "Etablissements / comptes"
+msgstr "Établissements / comptes"
 
 #: views/kmymoneyview.cpp:116
 msgid "Schedule"
-msgstr "Planning"
+msgstr "Échéancier"
 
 #: views/kmymoneyview.cpp:116
 msgid "Bills & Reminders"
@@ -2794,7 +2814,7 @@ msgstr "Impossible d'éditer les données personnelles"
 
 #: views/kmymoneyview.cpp:1045
 msgid "Edit Personal Data"
-msgstr "Editer les données personnelles"
+msgstr "Éditer les données personnelles"
 
 #: views/kmymoneyview.cpp:1063
 msgid "*.dat|Account templates"
@@ -2824,7 +2844,7 @@ msgstr "Compte inconnu"
 
 #: views/kscheduledviewdecl.cpp:183
 msgid "New Schedule"
-msgstr "Nouvelle opération planifiée"
+msgstr "Nouvelle échéance"
 
 #: views/kscheduledviewdecl.cpp:189
 msgid "Filter Accounts"
@@ -2908,7 +2928,7 @@ msgstr "Nouvel investissement"
 
 #: views/kinvestmentview.cpp:258
 msgid "Edit Investment Properties"
-msgstr "Editer les propriétés de l'investissement"
+msgstr "Éditer les propriétés de l'investissement"
 
 #: views/kinvestmentview.cpp:259
 msgid "Update Investment Price"
@@ -2922,7 +2942,7 @@ msgstr "Nr"
 #: views/kledgerviewcheckings.cpp:259 views/kledgerviewcheckings.cpp:273
 #: views/kledgerviewcheckings.cpp:1223 views/kledgerviewcheckings.cpp:1265
 msgid "Edit splits ..."
-msgstr "Editer les parties..."
+msgstr "Éditer les parties..."
 
 #: views/kledgerviewcheckings.cpp:261 views/kledgerviewcheckings.cpp:275
 #: views/kledgerviewcheckings.cpp:1230 views/kledgerviewcheckings.cpp:1272
@@ -2957,7 +2977,7 @@ msgstr "Effacé :"
 
 #: views/kledgerviewcheckings.cpp:415
 msgid "Statement:"
-msgstr "Etat :"
+msgstr "État :"
 
 #: views/kledgerviewcheckings.cpp:451
 msgid "<p><b>3.</b> Hit the Finish button when you're done."
@@ -2990,7 +3010,7 @@ msgstr "Compte opposé"
 
 #: views/kledgerviewcheckings.cpp:1442
 msgid "Edit an Account"
-msgstr "Editer un compte"
+msgstr "Éditer un compte"
 
 #: views/kledgerviewcreditcard.cpp:50
 msgid "Charge"
@@ -3015,11 +3035,11 @@ msgstr "Vous détenez actuellement :"
 
 #: views/kpayeesview.cpp:207
 msgid "Transfer to %1"
-msgstr "Transférer vers %1"
+msgstr "Effectuer un virement vers %1"
 
 #: views/kpayeesview.cpp:209
 msgid "Transfer from %1"
-msgstr "Transférer depuis %1"
+msgstr "Effectuer un virement depuis %1"
 
 #: views/kpayeesview.cpp:222
 msgid "Balance: %1"
@@ -3075,11 +3095,11 @@ msgstr "Profits totaux :"
 
 #: views/kbanksview.cpp:632
 msgid "Institution"
-msgstr "Etablissement"
+msgstr "Établissement"
 
 #: views/kbanksview.cpp:888
 msgid "Edit an account"
-msgstr "Editer un compte"
+msgstr "Éditer un compte"
 
 #: views/kbanksview.cpp:903 views/kcategoriesview.cpp:344
 #: views/kcategoriesview.cpp:366
@@ -3104,7 +3124,7 @@ msgstr "Liste"
 
 #: views/kbankviewdecl.cpp:294
 msgid "Icons"
-msgstr "Icones"
+msgstr "Icônes"
 
 #: views/kcategoriesview.cpp:241
 msgid "Create A New Category"
@@ -3120,7 +3140,7 @@ msgstr "Impossible d'enlever la catégorie"
 
 #: views/kcategoriesview.cpp:326
 msgid "Edit a category"
-msgstr "Editer la catégorie"
+msgstr "Éditer la catégorie"
 
 #: kmymoney2.cpp:136 kmymoney2.cpp:237 kmymoney2.cpp:698 kmymoney2.cpp:846
 #: kmymoney2.cpp:870 kmymoney2.cpp:889 kmymoney2.cpp:904 kmymoney2.cpp:918
@@ -3158,7 +3178,7 @@ msgstr "QIF..."
 
 #: kmymoney2.cpp:182
 msgid "Consistency Check"
-msgstr ""
+msgstr "Consistency Check"
 
 #: kmymoney2.cpp:189
 msgid "Add new institution..."
@@ -3170,7 +3190,7 @@ msgstr "Ajouter un nouveau compte..."
 
 #: kmymoney2.cpp:195
 msgid "QIF Profile Editor..."
-msgstr "Editeur de profil QIF..."
+msgstr "Éditeur de profil QIF..."
 
 #: kmymoney2.cpp:198
 msgid "&Show tip of the day"
@@ -3186,7 +3206,7 @@ msgstr "Ouvre un document existant"
 
 #: kmymoney2.cpp:203
 msgid "Opens a recently used file"
-msgstr "Ouvre un fichier utilis�r�emment"
+msgstr "Ouvre un fichier utilisé récemment"
 
 #: kmymoney2.cpp:206
 msgid "Saves the actual document"
@@ -3222,7 +3242,7 @@ msgstr "Affiche les informations du fichier"
 
 #: kmymoney2.cpp:214
 msgid "Lets you view/edit your personal data"
-msgstr "Vous permet d'éditer / afficher vos données personnellles"
+msgstr "Vous permet d'éditer / afficher vos données personnelles"
 
 #: kmymoney2.cpp:215
 msgid "Lets you backup your file to a removeable drive"
@@ -3363,7 +3383,7 @@ msgstr "Démontage de %1 en cours"
 
 #: kmymoney2.cpp:852
 msgid "Writing %1"
-msgstr "Ecriture de %1"
+msgstr "Écriture de %1"
 
 #: kmymoney2.cpp:859
 msgid "Error mounting device"
@@ -3387,27 +3407,23 @@ msgstr "Erreur de démontage du périphérique"
 
 #: kmymoney2.cpp:1004
 msgid "Running consitency check..."
-msgstr ""
+msgstr "Effectuer un consitency check..."
 
 #: kmymoney2.cpp:1008
 msgid "Consitency check result"
-msgstr ""
+msgstr "Consitency check result"
 
 #: _translatorinfo.cpp:1
 msgid ""
 "_: NAME OF TRANSLATORS\n"
 "Your names"
-msgstr ""
-"Laurent Colonges\n"
-"Jérôme Bézanger"
+msgstr "Laurent Colonges,Jérôme Bézanger"
 
 #: _translatorinfo.cpp:3
 msgid ""
 "_: EMAIL OF TRANSLATORS\n"
 "Your emails"
-msgstr ""
-"l.colonges@free.fr\n"
-"jeromebezanger@altern.org"
+msgstr "l.colonges@free.fr,jeromebezanger@altern.org"
 
 #: main.cpp:40
 msgid ""
@@ -3453,8 +3469,6 @@ msgid ""
 "Unexpected exception '%1' thrown in %2, line %3 caught in MyMoneyQifWriter::"
 "write()"
 msgstr ""
-"Exception innatendue '%1' thrown in %2, ligne %3 caught in MyMoneyQifWriter::"
-"write()"
 
 #: converter/mymoneyqifwriter.cpp:80
 msgid "Unable to open file '%1' for writing"
@@ -3506,7 +3520,8 @@ msgstr "Le %1 '%2' n'existe pas. Voulez-vous le créer ?"
 msgid ""
 "The %1 <b>%2</b> currently exists. Do you want to import transactions to "
 "this account?"
-msgstr "Le %1 <b>%2</b> existe. Voulez-vous importer les opérations vers ce compte ?"
+msgstr ""
+"Le %1 <b>%2</b> existe. Voulez-vous importer les opérations vers ce compte ?"
 
 #: converter/mymoneyqifreader.cpp:741
 msgid ""
@@ -3558,7 +3573,7 @@ msgstr "&Greffons"
 
 #: widgets/kmymoneyscheduledcalendar.cpp:44
 msgid "Select Schedules"
-msgstr "Choisir les modèles"
+msgstr "Choisir les échéances"
 
 #: widgets/kmymoneydatetbl.cpp:168 widgets/kmymoneydatetbl.cpp:175
 msgid "Week %1 for year %2."
@@ -3575,7 +3590,7 @@ msgstr "R"
 
 #: widgets/kmymoneycalendar.cpp:103
 msgid "Select Style"
-msgstr "Choisir le style"
+msgstr "Choisir l'affichage"
 
 #: widgets/kmymoneycalendar.cpp:118
 msgid "Week"
@@ -3627,7 +3642,7 @@ msgstr "Semaine %1"
 
 #: widgets/kschedulebriefwidget.cpp:32
 msgid "Schedules"
-msgstr "Plannings"
+msgstr "Échéances"
 
 #: widgets/kschedulebriefwidget.cpp:38 widgets/kschedulebriefwidget.cpp:50
 msgid "..."
@@ -3650,7 +3665,7 @@ msgid ""
 "Next payment on DATE for AMOUNT with N transactions remaining occuring every "
 "OCCURENCE."
 msgstr ""
-"Prochain paiement le DATE de MONTANT avec N opérations restantes ayany lieu "
+"Prochain paiement le DATE de MONTANT avec N opérations restantes ayant lieu "
 "tous les OCCURENCE."
 
 #: widgets/kmymoneybriefschedule.cpp:77
@@ -3683,7 +3698,7 @@ msgstr "Dépôts."
 
 #: widgets/kmymoneyscheduleddatetbl.cpp:349
 msgid "Transfers."
-msgstr "Transferts."
+msgstr "Virements."
 
 #: widgets/kmymoneyscheduleddatetbl.cpp:382
 msgid "st"
@@ -3739,7 +3754,7 @@ msgstr "Utilisez ceci pour annuler les changements effectués à cette opératio
 
 #: widgets/kmymoneytransactionform.cpp:233
 msgid "&More"
-msgstr "&Davantage"
+msgstr "&Options"
 
 #: widgets/kmymoneytransactionform.cpp:235
 msgid "Access more functions"
@@ -3986,4 +4001,3 @@ msgstr "Utilisez ceci pour accéder à des fonctions spéciales"
 
 #~ msgid "KMyMoney2App"
 #~ msgstr "KMyMoney2App"
-
