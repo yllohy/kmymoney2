@@ -49,6 +49,9 @@ KNewAccountWizard::KNewAccountWizard(QWidget *parent, const char *name )
   : KNewAccountWizardDecl(parent,name,true),
     m_accountType(MyMoneyAccount::Checkings)
 {
+  // keep title of payment page
+  m_accountPaymentPageTitle = title(accountPaymentPage);
+
   accountListView->setRootIsDecorated(true);
   accountListView->setAllColumnsShowFocus(true);
   accountListView->addColumn(i18n("Account"));
@@ -68,24 +71,35 @@ KNewAccountWizard::~KNewAccountWizard()
 
 void KNewAccountWizard::next()
 {
-  KNewAccountWizardDecl::next();
-
   switch(m_accountType) {
     case MyMoneyAccount::Cash:
     case MyMoneyAccount::Asset:
-      setAppropriate(accountPaymentPage, false);
+      if(indexOf(accountPaymentPage) != -1) {
+        removePage(accountPaymentPage);
+      }
       setAppropriate(accountNumberPage, false);
+      setFinishEnabled(accountDetailsPage, true);
       break;
 
     case MyMoneyAccount::CreditCard:
+      if(indexOf(accountPaymentPage) == -1) {
+        addPage(accountPaymentPage, m_accountPaymentPageTitle);
+      }
       setAppropriate(accountPaymentPage, true);
+      setFinishEnabled(accountPaymentPage, true);
+      setFinishEnabled(accountDetailsPage, false);
       break;
 
     default:
-      setAppropriate(accountPaymentPage, false);
       setAppropriate(accountNumberPage, institutionComboBox->currentText() != "");
+      if(indexOf(accountPaymentPage) != -1) {
+        removePage(accountPaymentPage);
+      }
+      setFinishEnabled(accountDetailsPage, true);
       break;
   }
+
+  KNewAccountWizardDecl::next();
 }
 
 void KNewAccountWizard::accept()
@@ -253,7 +267,7 @@ void KNewAccountWizard::slotAccountType(const QString& sel)
     m_accountType = MyMoneyAccount::CreditCard;
 
   } else {
-    txt += i18n("Explanation is not yet available!");
+    txt += i18n("Explanation is not yet available! UnknownAccountType will be set");
     m_accountType = MyMoneyAccount::UnknownAccountType;
   }
   explanationTextBox->setText(txt);

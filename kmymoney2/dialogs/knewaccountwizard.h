@@ -95,6 +95,7 @@ private:
 private:
   MyMoneyAccount::accountTypeE m_accountType;
   QValueList<MyMoneyAccount> m_accountList;
+  QString m_accountPaymentPageTitle;
 };
 
 #endif
