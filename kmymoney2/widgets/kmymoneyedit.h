@@ -17,9 +17,23 @@
 #ifndef KMYMONEYEDIT_H
 #define KMYMONEYEDIT_H
 
+// ----------------------------------------------------------------------------
+// QT Includes
+
 #include <qwidget.h>
+#include <qvbox.h>
+
+// ----------------------------------------------------------------------------
+// KDE Includes
+
 #include <klineedit.h>
-#include "../mymoney/mymoneymoney.h"
+
+// ----------------------------------------------------------------------------
+// Project Includes
+
+class MyMoneyMoney;
+class kMyMoneyCalculator;
+
 
 // This class replaces OE Hansens kdbMoneyEdit I used
 // to use.  It has simpler interface and fixes some
@@ -30,12 +44,15 @@ class kMyMoneyEdit : public KLineEdit  {
 private:
   QString previousText; // keep track of what has been typed
   QString m_text;       // keep track of what was the original value
+  kMyMoneyCalculator* m_calculator;
+  QVBox*              m_calculatorFrame;
 
 protected:
   void focusOutEvent(QFocusEvent *e);
 
 protected slots:
   void theTextChanged(const QString & text);
+  void slotCalculatorResult();
 
 public:
   kMyMoneyEdit(QWidget *parent=0, const char *name=0);

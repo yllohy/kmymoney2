@@ -14,10 +14,23 @@
  *                                                                         *
  ***************************************************************************/
 
+// ----------------------------------------------------------------------------
+// QT Includes
+
+
+// ----------------------------------------------------------------------------
+// KDE Includes
+
 #include <knumvalidator.h>
 #include <kglobal.h>
 #include <klocale.h>
+
+// ----------------------------------------------------------------------------
+// Project Includes
+
 #include "kmymoneyedit.h"
+#include "kmymoneycalculator.h"
+#include "../mymoney/mymoneymoney.h"
 
 kMyMoneyEdit::kMyMoneyEdit(QWidget *parent, const char *name )
  : KLineEdit(parent,name)
@@ -27,16 +40,27 @@ kMyMoneyEdit::kMyMoneyEdit(QWidget *parent, const char *name )
 	validator->setAcceptLocalizedNumbers(true);
 	setValidator(validator);
 	setAlignment(AlignRight | AlignVCenter);
+
+  m_calculatorFrame = new QVBox(0,0,WType_Popup);
+
+	m_calculatorFrame->setFrameStyle(QFrame::PopupPanel | QFrame::Raised);
+  m_calculatorFrame->setLineWidth(3);
+	
+	m_calculator = new kMyMoneyCalculator(m_calculatorFrame);
+  m_calculatorFrame->setFixedSize(m_calculator->width()+3, m_calculator->height()+3);
+  m_calculatorFrame->hide();
+
   connect(this, SIGNAL(textChanged(const QString&)), this, SLOT(theTextChanged(const QString&)));
+  connect(m_calculator, SIGNAL(signalResultAvailable()), this, SLOT(slotCalculatorResult()));
 }
 
 kMyMoneyEdit::~kMyMoneyEdit()
 {
+  delete m_calculatorFrame;
 }
 
 MyMoneyMoney kMyMoneyEdit::getMoneyValue(void)
 {
-#warning "FIXME: I hope, I fixed it (Thomas)"
   MyMoneyMoney money(text().toDouble());
   return money;
 }
@@ -102,7 +126,30 @@ bool kMyMoneyEdit::eventFilter(QObject *o , QEvent *e )
 
     } else if(k->key() == Qt::Key_Tab) {
       emit signalTab();
+
+    } else if(k->key() == Qt::Key_Plus
+      || k->key() == Qt::Key_Minus
+      || k->key() == Qt::Key_Slash
+      || k->key() == Qt::Key_Asterisk
+      || k->key() == Qt::Key_Percent) {
+      m_calculator->setInitialValues(text(), k);
+
+      QPoint p = mapToGlobal(QPoint(0,0));
+      QRect r = m_calculator->geometry();
+      r.moveTopLeft(p);
+
+      m_calculatorFrame->setGeometry(r);
+      m_calculatorFrame->show();
     }
   }
   return KLineEdit::eventFilter(o,e);
+}
+
+void kMyMoneyEdit::slotCalculatorResult()
+{
+  QString result;
+  if(m_calculator != 0) {
+    setText(m_calculator->result());
+    m_calculatorFrame->hide();
+  }
 }
