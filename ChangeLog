@@ -1,3 +1,6 @@
+2004-07-20 Felix Rodriguez <frodriguez@users.sourceforge.net>
+  * Expanded Backup Dialog so we can see the OK and Cancel Buttons.
+
 2004-07-17 Ace Jones <acejones@users.sourceforge.net>
   * Added 'comment' field for reports, displayed in the reports list tab
   
