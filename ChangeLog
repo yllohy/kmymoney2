@@ -1,3 +1,11 @@
+2003-07-02 Michael Edwardes <mte@users.sourceforge.net>
+  * Fixed editing the schedule's transaction splits.
+  * Display only positive amounts in the schedule list view.
+  * More work on the scheduled transfer dialog.
+  * Fixed schedule validation for transfers.
+  * Added a name property to MyMoneySchedule.
+  * Updated UI dialogs to handle the schedule name.
+
 2003-07-01 Michael Edwardes <mte@users.sourceforge.net>
   * Fixed crash in KScheduleView::refresh when no accounts exist.
   * Monitor selections in KStartDlg so the user can select an item

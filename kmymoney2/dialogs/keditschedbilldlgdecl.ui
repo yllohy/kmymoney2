@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
 <class>kEditScheduledBillDlgDecl</class>
 <widget class="QDialog">
     <property name="name">
@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>546</width>
-            <height>409</height>
+            <width>614</width>
+            <height>458</height>
         </rect>
     </property>
     <property name="caption">
@@ -58,6 +58,29 @@
             <property name="orientation">
                 <enum>Horizontal</enum>
             </property>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout12</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel1</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Schedule Name:</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit">
+                    <property name="name">
+                        <cstring>m_scheduleName</cstring>
+                    </property>
+                </widget>
+            </hbox>
         </widget>
         <widget class="QGroupBox">
             <property name="name">
@@ -637,7 +660,7 @@
             </property>
             <property name="sizeHint">
                 <size>
-                    <width>0</width>
+                    <width>16</width>
                     <height>16</height>
                 </size>
             </property>
@@ -788,4 +811,13 @@
     </image>
 </images>
 <layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>kmymoneypayee.h</includehint>
+    <includehint>kmymoneycombo.h</includehint>
+    <includehint>kmymoneycombo.h</includehint>
+    <includehint>kmymoneydateinput.h</includehint>
+    <includehint>kmymoneyedit.h</includehint>
+    <includehint>kmymoneycategory.h</includehint>
+    <includehint>kmymoneydateinput.h</includehint>
+</includehints>
 </UI>

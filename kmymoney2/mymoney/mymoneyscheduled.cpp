@@ -73,8 +73,8 @@ bool MyMoneySchedule::validate(bool id_check) const
         return false;
         break;
       case TYPE_TRANSFER:
-        if (m_paymentType == STYPE_DIRECTDEPOSIT || m_paymentType == STYPE_MANUALDEPOSIT)
-          return false;
+//        if (m_paymentType == STYPE_DIRECTDEPOSIT || m_paymentType == STYPE_MANUALDEPOSIT)
+//          return false;
         break;
     }
 

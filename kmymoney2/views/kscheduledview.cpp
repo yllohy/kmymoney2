@@ -45,7 +45,8 @@ KScheduledView::KScheduledView(QWidget *parent, const char *name )
  : kScheduledViewDecl(parent,name, false)
 {
   m_qlistviewScheduled->setRootIsDecorated(true);
-  m_qlistviewScheduled->addColumn(i18n("Type/Payee"));
+  m_qlistviewScheduled->addColumn(i18n("Type/Name"));
+  m_qlistviewScheduled->addColumn(i18n("Payee"));
   m_qlistviewScheduled->addColumn(i18n("Amount"));
   m_qlistviewScheduled->addColumn(i18n("Next Due Date"));
   m_qlistviewScheduled->addColumn(i18n("Frequency"));
@@ -257,6 +258,15 @@ void KScheduledView::slotEditClicked()
         }
         case MyMoneySchedule::TYPE_TRANSFER:
         {
+          KEditScheduledTransferDlg *m_keditschedtransdlg = new KEditScheduledTransferDlg(m_accountId, schedule, this);
+          if (m_keditschedtransdlg->exec() == QDialog::Accepted)
+          {
+            MyMoneySchedule sched = m_keditschedtransdlg->schedule();
+            MyMoneyScheduled::instance()->replaceSchedule(m_accountId, m_selectedSchedule, sched);
+            refresh(m_selectedSchedule);
+          }
+          delete m_keditschedtransdlg;
+          break;
           break;
         }
       }
@@ -340,10 +350,9 @@ void KScheduledView::slotNewTransfer()
 {
   KMessageBox::information(this, "WARNING:\n\n\tALL SCHEDULE DATA WILL BE LOST ONCE KMYMONEY HAS BEEN CLOSED");
 
-  KMessageBox::information(this, "Not working yet...");
-  return;
-  
-  KEditScheduledTransferDlg *m_keditschedtransdlg = new KEditScheduledTransferDlg(m_accountId, this);
+  MyMoneySchedule schedule;
+
+  KEditScheduledTransferDlg *m_keditschedtransdlg = new KEditScheduledTransferDlg(m_accountId, schedule, this);
   if (m_keditschedtransdlg->exec() == QDialog::Accepted)
   {
     MyMoneySchedule sched = m_keditschedtransdlg->schedule();

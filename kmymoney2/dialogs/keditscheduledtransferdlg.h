@@ -40,7 +40,7 @@
   * a scheduled transfer.
   *
   * @author Michael Edwardes
-  * $Id: keditscheduledtransferdlg.h,v 1.3 2003/01/24 14:23:22 mte Exp $
+  * $Id: keditscheduledtransferdlg.h,v 1.4 2003/07/02 19:22:52 mte Exp $
   *
   * @short Edit details for a scheduled transfer.
 **/
@@ -79,6 +79,10 @@ private:
   **/
   void reloadWidgets(void);
 
+  /**
+    * Reloads the qidgets from the global schedule.
+  **/
+  void loadWidgetsFromSchedule(void);
 
 protected slots:
   /**
@@ -100,7 +104,7 @@ public:
   /**
     * Standard QWidget constructor.
   **/
-	KEditScheduledTransferDlg(const QCString& accountId, QWidget *parent=0, const char *name=0);
+	KEditScheduledTransferDlg(const QCString& accountId, const MyMoneySchedule& schedule, QWidget *parent=0, const char *name=0);
 
   /**
     * Standard destructor.

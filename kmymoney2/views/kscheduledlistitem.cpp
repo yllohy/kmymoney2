@@ -43,14 +43,15 @@ KScheduledListItem::KScheduledListItem(KScheduledListItem *parent, const QCStrin
   {
     m_id = schedule.id();
     MyMoneyTransaction transaction = schedule.transaction();
-    setText(0, MyMoneyFile::instance()->payee(transaction.split(accountId).payeeId()).name());
+    setText(0, schedule.name());
+    setText(1, MyMoneyFile::instance()->payee(transaction.split(accountId).payeeId()).name());
     MyMoneyMoney amount = transaction.split(accountId).value();
-    if (schedule.type() == MyMoneySchedule::TYPE_BILL)
+    if (amount < 0)
       amount = -amount;
-    setText(1, amount.formatMoney());
-    setText(2, schedule.nextPayment().toString());
-    setText(3, schedule.occurenceToString());
-    setText(4, schedule.paymentMethodToString());
+    setText(2, amount.formatMoney());
+    setText(3, schedule.nextPayment().toString());
+    setText(4, schedule.occurenceToString());
+    setText(5, schedule.paymentMethodToString());
   }
   catch (MyMoneyException *e)
   {

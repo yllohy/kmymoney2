@@ -95,7 +95,7 @@ public:
     * Please note that the optional fields are not set and the transaction
     * MUST be set before it can be used.
     */
-  MyMoneySchedule(typeE type, occurenceE occurence, paymentTypeE paymentType,
+  MyMoneySchedule(const QString& name, typeE type, occurenceE occurence, paymentTypeE paymentType,
         QDate startDate, bool willEnd, bool fixed, bool autoEnter) {
     // Set up the default values
     m_occurence = occurence;
@@ -353,7 +353,22 @@ public:
     * @return The textual description of the payment type.
   **/
   QString paymentMethodToString(void) const;
-    
+
+  /**
+    * Returns the instances name
+    *
+    * @param none.
+    * @return The name
+  **/
+  QString name(void) const { return m_name; }
+
+  /**
+    * Changes the instance name
+    *
+    * @param nm The new name
+    * @return none
+  **/
+  void setName(const QString& nm) { m_name = nm; }    
 
 private:
   /// Its occurence
@@ -389,8 +404,11 @@ private:
   /// The internal id.
   QString m_id;
 
-  // Internal date used for calculations
+  /// Internal date used for calculations
   QDate m_lastPayment;
+
+  /// The name
+  QString m_name;
 };
 
 
