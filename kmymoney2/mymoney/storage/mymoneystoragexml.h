@@ -100,6 +100,9 @@ private:
   void readUserInformation(QDomDocument* pDoc, QDomElement userElement, IMyMoneySerialize* storage);
   /** No descriptions */
 
+  void readInstitutions(QDomDocument *pDoc, QDomElement& childElement, const IMyMoneySerialize* storage);
+  MyMoneyInstitution readInstitution(const QDomElement& institution);
+
   QDomElement findChildElement(const QString& name, const QDomElement& root);
 private:
   /**
