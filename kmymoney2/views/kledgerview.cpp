@@ -32,6 +32,8 @@
 #include <qtimer.h>
 #include <qlayout.h>
 #include <qpalette.h>
+#include <qapplication.h>
+#include <qeventloop.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -247,10 +249,10 @@ QDate KLedgerView::m_lastPostDate = QDate();
 
 KLedgerView::KLedgerView(QWidget *parent, const char *name )
   : QWidget(parent,name),
+  m_editMode(false),
   m_contextMenu(0),
   m_blinkTimer(parent),
-  m_suspendUpdate(false),
-  m_editMode(false)
+  m_suspendUpdate(false)
 {
   KConfig *config = KGlobal::config();
   config->setGroup("General Options");
@@ -892,9 +894,14 @@ void KLedgerView::slotCategoryChanged(const QCString& categoryId)
   try {
     createSecondSplit();
     MyMoneySplit split = m_transaction.splitByAccount(accountId(), false);
-    MyMoneyAccount acc = MyMoneyFile::instance()->account(categoryId);
-    split.setAccountId(categoryId);
-    m_transaction.modifySplit(split);
+    if(!categoryId.isEmpty()) {
+      MyMoneyAccount acc = MyMoneyFile::instance()->account(categoryId);
+      split.setAccountId(categoryId);
+      m_transaction.modifySplit(split);
+    } else {
+      m_transaction.removeSplit(split);
+      createSecondSplit();
+    }
     fillFormStatics();
 
   } catch(MyMoneyException *e) {
@@ -1218,6 +1225,9 @@ void KLedgerView::destroyWidgets(void)
     }
   }
   m_editMode = false;
+
+  // make sure, that the widgets will be gone (really deleted) before we continue
+  QApplication::eventLoop()->processEvents(QEventLoop::ExcludeUserInput, 100);
 }
 
 void KLedgerView::slotNew(void)
