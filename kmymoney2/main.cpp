@@ -41,9 +41,10 @@ static const char *description =
 
 static KCmdLineOptions options[] =
 {
+  { "lang <lang-code>", I18N_NOOP("language to be used"), 0 },
+  // INSERT YOUR COMMANDLINE OPTIONS HERE
   { "+[File]", I18N_NOOP("file to open"), 0 },
   { 0, 0, 0 }
-  // INSERT YOUR COMMANDLINE OPTIONS HERE
 };
 
 QTime timer;
@@ -109,15 +110,23 @@ int main(int argc, char *argv[])
 
   KApplication* a = new KApplication();
   KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
-
+  
   // setup the MyMoneyMoney locale settings according to the KDE settings
   MyMoneyMoney::setThousandSeparator(*(KGlobal::locale()->thousandsSeparator().latin1()));
   MyMoneyMoney::setDecimalSeparator(*(KGlobal::locale()->decimalSymbol().latin1()));
 
+  QCString language = args->getOption("lang");
+  if(!language.isEmpty()) {
+    if(!KGlobal::locale()->setLanguage(language)) {
+      qWarning("Unable to select language '%s'. This has one of two reasons:\n\ta) the standard KDE message catalogue is not installed\n\tb) the KMyMoney2 message catalogue is not installed", language.data());
+    }
+  }
+  
   kmymoney2 = new KMyMoney2App();
   a->setMainWidget( kmymoney2 );
   kmymoney2->show();
-
+  kmymoney2->setEnabled(false);
+  
   // force complete paint of widgets
   qApp->processEvents();
 
@@ -129,6 +138,7 @@ int main(int argc, char *argv[])
     if (kmymoney2->initWizard()) {
       KTipDialog::showTip(kmymoney2, "", false);
       args->clear();
+      kmymoney2->setEnabled(true);
       rc = a->exec();
     } else {
       delete kmymoney2;
@@ -137,6 +147,7 @@ int main(int argc, char *argv[])
     KTipDialog::showTip(kmymoney2, "", false);
     kmymoney2->slotFileOpenRecent(url);
     args->clear();
+    kmymoney2->setEnabled(true);
     rc = a->exec();
   }
 
