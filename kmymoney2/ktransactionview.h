@@ -88,7 +88,6 @@ public:
 
 	void init(MyMoneyFile *file, MyMoneyBank bank, MyMoneyAccount account);
 	void clear(void);
-  void showInputBox(bool val);
   void refresh(void);
 
 protected slots:

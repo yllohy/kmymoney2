@@ -52,7 +52,7 @@
   * @see KMyMoneyView
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: kmymoney2.h,v 1.7 2001/06/16 07:30:44 javi_c Exp $
+  * $Id: kmymoney2.h,v 1.8 2001/06/16 21:12:45 mte Exp $
   *
   * @short Main application class.
 **/
@@ -69,7 +69,6 @@ private:
 	// and saved in saveOptions
 	bool m_openLastFile;
 	bool m_startDialog;
-	bool m_showInputBox;
 
 protected slots:
   /**
@@ -96,7 +95,7 @@ protected slots:
     *
     * @see MyMoneyBank
   **/
-  void slotAccountAdd();
+//  void slotAccountAdd();
 
   /**
     * Called when the user wishes to reconcile an account. An
@@ -215,16 +214,6 @@ protected slots:
   void slotAccountFind();
 
   /**
-    * Allows the user to change the visiblity of the input
-    * box contained in KTransactionView.  It calls
-    * KMyMoneyView::showTransactionInputBox which then passes
-    * down to KMainView and then KTransactionView.
-    *
-     @see KTransactionView
-  **/
-  void slotShowInputBox();
-
-  /**
     * Simulates moving up from the transaction view to the bank/account
     * view.  It just hides the transaction view and shows the bank view.
     * Checks where the user is before moving 'up'.
@@ -282,6 +271,9 @@ protected slots:
     virtual bool queryExit();
 
   public slots:
+    /** Open a new window */
+    void slotFileNewWindow();
+
     /** clears the document in the actual view to reuse it as the new document */
     void slotFileNew();
 
@@ -365,21 +357,17 @@ protected slots:
     KAction *filePersonalData;
 
 		KAction *settings;
-//    KAction *settingsGeneral;
-//    KAction *settingsLists;
-//    KAction *settingsLocale;
 
     KAction *categoriesEdit;
     KAction *categoriesPayees;
 
     KAction *bankAdd;
 
-    KAction *accountAdd;
+//    KAction *accountAdd;
     KAction *accountReconcile;
     KAction *accountFind;
     KAction *accountImport;
     KAction *accountExport;
-    KAction *accountShowBox;
 
     KAction *billsAdd;
 

@@ -202,7 +202,9 @@ void KMyMoneyView::slotAccountEdit()
                          pAccount->accountNumber(),
                          pAccount->accountType(),
                          pAccount->description(),
-                         this, "hi", i18n("Edit an Account"), i18n("commit"));
+                         pAccount->openingDate(),
+                         pAccount->openingBalance(),
+                         this, "hi", i18n("Edit an Account"));
 
   if (!dlg.exec())
     return;
@@ -212,6 +214,9 @@ void KMyMoneyView::slotAccountEdit()
   pAccount->setAccountType(dlg.type);
   pAccount->setAccountNumber(dlg.accountNoText);
   pAccount->setDescription(dlg.descriptionText);
+  pAccount->setOpeningDate(dlg.startDate);
+  MyMoneyMoney money(dlg.startBalance);
+  pAccount->setOpeningBalance(money);
 
   m_file.setDirty(true);
 
@@ -265,9 +270,6 @@ void KMyMoneyView::closeFile(void)
 {
   if (m_file.isInitialised()) {
     m_file.resetAllData();  // Make sure all memory is released
-//    delete m_file;
-//    m_file = 0;
-//    m_file.setInitialised(false);
   }
 
   m_mainView->clear();
@@ -381,22 +383,27 @@ void KMyMoneyView::slotAccountNew(void)
     return;
   }
 
-  KNewAccountDlg dialog(this, "hi", i18n("Create a new Account"), i18n("Create"));
+  KNewAccountDlg dialog(this, "hi", i18n("Create a new Account"));
 
   if (dialog.exec()) {
+    MyMoneyMoney money(dialog.startBalance);
+
     pBank->newAccount(dialog.accountNameText,
                             dialog.accountNoText,
                             dialog.type,
                             dialog.descriptionText,
+                            dialog.startDate,
+                            money,
                             QDate(1923, 1, 1)
                             );
-    qDebug("Avbout to refresh account list");
     m_mainView->refreshBankView(m_file);
 
     MyMoneyAccount accountTmp(dialog.accountNameText,
                           dialog.accountNoText,
                           dialog.type,
                           dialog.descriptionText,
+                          dialog.startDate,
+                          money,
                           QDate(1923, 1, 1));
     pAccount = pBank->account(accountTmp);
     if (!pAccount) {
@@ -404,7 +411,6 @@ void KMyMoneyView::slotAccountNew(void)
       return;
     }
 
-    MyMoneyMoney money(dialog.startBalance);
     if (!money.isZero()) {
       pAccount->addTransaction(MyMoneyTransaction::Deposit,
           0,
@@ -611,8 +617,6 @@ void KMyMoneyView::newFile(void)
    // create the money file
   KNewFileDlg newFileDlg(this, "e", i18n("Create new KMyMoneyFile"));
   if (newFileDlg.exec()) {
-  qDebug("nameText: %s", newFileDlg.nameText.latin1());
-    m_file.set_moneyName(newFileDlg.nameText);
     m_file.set_userName(newFileDlg.userNameText);
     m_file.set_userStreet(newFileDlg.userStreetText);
     m_file.set_userTown(newFileDlg.userTownText);
@@ -625,9 +629,6 @@ void KMyMoneyView::newFile(void)
     loadDefaultCategories();
 
     m_file.init();
-    qDebug("in newFile qDebug");
-    fprintf(stderr, "in new|File fprintf\n");
-    qDebug("file name: %s", m_file.name().latin1());
     emit bankOperations(true);
     m_file.setDirty(true);
     viewBankList();
@@ -641,11 +642,10 @@ void KMyMoneyView::viewPersonal(void)
     return;
   }
 
-  KNewFileDlg newFileDlg(m_file.name(), m_file.userName(), m_file.userStreet(),
+  KNewFileDlg newFileDlg(m_file.userName(), m_file.userStreet(),
     m_file.userTown(), m_file.userCounty(), m_file.userPostcode(), m_file.userTelephone(),
-    m_file.userEmail(), this, "e", i18n("Edit Personal Data"), i18n("Commit"));
+    m_file.userEmail(), this, "e", i18n("Edit Personal Data"));
   if (newFileDlg.exec()) {
-    m_file.set_moneyName(newFileDlg.nameText);
     m_file.set_userName(newFileDlg.userNameText);
     m_file.set_userStreet(newFileDlg.userStreetText);
     m_file.set_userTown(newFileDlg.userTownText);
@@ -1093,10 +1093,6 @@ QString KMyMoneyView::currentAccountName(void)
   return "Unknown Account";
 }
 
-void KMyMoneyView::showTransactionInputBox(bool val)
-{
-  m_mainView->showInputBox(val);
-}
 /** No descriptions */
 void KMyMoneyView::readQIFFile(const QString& name, MyMoneyAccount *account){
 

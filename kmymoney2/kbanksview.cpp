@@ -117,7 +117,9 @@ void KBanksView::refresh(MyMoneyFile file)
     for (account=bank->accountFirst(); account; account=bank->accountNext()) {
       KBankListItem *itemAccount = new KBankListItem(item0, *bank, *account);
     }
+    bankListView->setOpen(item0, true);
   }
+
 }
 
 void KBanksView::clear(void)

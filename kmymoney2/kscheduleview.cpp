@@ -66,7 +66,9 @@ void KScheduleView::refresh(MyMoneyFile *file)
 
 void KScheduleView::newBtnClicked()
 {
+/*
   KNewBillWizardImpl wizard(this, "NewBillWizard");
   wizard.setCaption(i18n("New Bill Wizard"));
   wizard.exec();
+*/
 }

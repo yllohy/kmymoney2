@@ -13,25 +13,28 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
 #include "mymoneyaccount.h"
+#include "mymoney_config.h"
 
 MyMoneyAccount::MyMoneyAccount()
 {
-//  m_transactions.setAutoDelete(true);
+  m_openingDate = QDate::currentDate();
   m_lastId = 0L;
   m_accountType = MyMoneyAccount::Current;
-  m_lastReconcile = QDate(1950, 1, 1); // After gregorian got implemented in most countries ???
+  m_lastReconcile = QDate::currentDate();
 }
 
-MyMoneyAccount::MyMoneyAccount(const QString& name, const QString& number, accountTypeE type, const QString& description, const QDate& lastReconcile)
+MyMoneyAccount::MyMoneyAccount(const QString& name, const QString& number, accountTypeE type,
+    const QString& description, const QDate openingDate, const MyMoneyMoney openingBal,
+    const QDate& lastReconcile)
 {
   m_accountName = name;
   m_accountNumber = number;
-//  m_transactions.setAutoDelete(true);
   m_lastId=0L;
   m_accountType = type;
   m_description = description;
+  m_openingDate = openingDate;
+  m_openingBalance = openingBal;
   m_lastReconcile = lastReconcile;
 }
 
@@ -205,6 +208,8 @@ QDataStream &operator<<(QDataStream &s, const MyMoneyAccount &account)
     << account.m_description
     << account.m_accountNumber
     << (Q_INT32)account.m_accountType
+    << account.m_openingDate
+    << account.m_openingBalance
     << account.m_lastReconcile;
 }
 
@@ -215,4 +220,22 @@ QDataStream &operator>>(QDataStream &s, MyMoneyAccount &account)
     >> account.m_accountNumber
     >> (Q_INT32 &)account.m_accountType
     >> account.m_lastReconcile;
+}
+
+bool MyMoneyAccount::readAllData(int version, QDataStream& stream)
+{
+  stream >> m_accountName
+    >> m_description
+    >> m_accountNumber
+    >> (Q_INT32 &)m_accountType;
+  if (version==VERSION_0_3_3) {
+    qDebug("\tIn MyMoneyAccount::readAllData:\n\t\tFound version 0.3.3 skipping opening account fields");
+    stream >> m_lastReconcile;
+  } else {
+    stream >> m_openingDate
+      >> m_openingBalance
+      >> m_lastReconcile;
+  }
+
+  return true;
 }

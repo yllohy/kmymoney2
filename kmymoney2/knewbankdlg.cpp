@@ -13,6 +13,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <kmessagebox.h>
+
 #include <qpushbutton.h>
 #include <qlineedit.h>
 
@@ -21,8 +23,7 @@
 KNewBankDlg::KNewBankDlg(QWidget *parent, const char *name)
   : KNewBankDlgDecl(parent,name,true)
 {
-//	initDialog();
-
+  nameEdit->setFocus();
 	connect(okBtn, SIGNAL(clicked()), SLOT(okClicked()));
 	connect(cancelBtn, SIGNAL(clicked()), SLOT(reject()));
 }
@@ -32,8 +33,6 @@ KNewBankDlg::KNewBankDlg(QString b_name, QString b_sortCode, QString b_city,
   QString title, QWidget *parent, const char *name)
   : KNewBankDlgDecl(parent, name, true)
 {
-//	initDialog();
-
 	setCaption(title);
 
 	nameEdit->setText(b_name);
@@ -44,6 +43,8 @@ KNewBankDlg::KNewBankDlg(QString b_name, QString b_sortCode, QString b_city,
         sortCodeEdit->setText(b_sortCode);
 
 	managerEdit->setText(b_manager);
+
+  nameEdit->setFocus();
 	connect(okBtn, SIGNAL(clicked()), SLOT(okClicked()));
 	connect(cancelBtn, SIGNAL(clicked()), SLOT(reject()));
 }
@@ -54,6 +55,12 @@ KNewBankDlg::~KNewBankDlg()
 
 void KNewBankDlg::okClicked()
 {
+  if (nameEdit->text().isEmpty()) {
+    KMessageBox::information(this, "The bank name field is empty.  Please enter the name.", "Adding New Bank");
+    nameEdit->setFocus();
+    return;
+  }
+
   m_name = nameEdit->text();
   m_city = cityEdit->text();
   m_street = streetEdit->text();

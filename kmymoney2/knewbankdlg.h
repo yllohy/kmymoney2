@@ -16,15 +16,7 @@
 
 #ifndef KNEWBANKDLG_H
 #define KNEWBANKDLG_H
-/*
-//Generated area. DO NOT EDIT!!!(begin)
-#include <qwidget.h>
-#include <qgroupbox.h>
-#include <qlabel.h>
-#include <qlineedit.h>
-#include <qpushbutton.h>
-//Generated area. DO NOT EDIT!!!(end)
-*/
+
 #include <klocale.h>
 #include <qdialog.h>
 
@@ -55,29 +47,6 @@ public:
 
 protected slots:
   void okClicked();
-
-protected: 
-/*
-	void initDialog();
-	//Generated area. DO NOT EDIT!!!(begin)
-	QGroupBox *QGroupBox_1;
-	QLabel *QLabel_7;
-	QGroupBox *QGroupBox_2;
-	QLabel *QLabel_5;
-	QLineEdit *nameEdit;
-	QLineEdit *cityEdit;
-	QLineEdit *streetEdit;
-	QLineEdit *postcodeEdit;
-	QLineEdit *telephoneEdit;
-	QLineEdit *managerEdit;
-	QPushButton *cancelBtn;
-	QPushButton *okBtn;
-	QLabel *QLabel_1;
-	QLabel *QLabel_3;
-	QLabel *QLabel_4;
-	QLabel *QLabel_6;
-	//Generated area. DO NOT EDIT!!!(end)
-*/
 };
 
 #endif

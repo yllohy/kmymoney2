@@ -11,8 +11,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>329</width>
-            <height>321</height>
+            <width>317</width>
+            <height>291</height>
         </rect>
     </property>
     <property stdset="1">
@@ -104,15 +104,15 @@
                                 <cstring>TextLabel2</cstring>
                             </property>
                             <property stdset="1">
-                                <name>text</name>
-                                <string>Street:</string>
-                            </property>
-                            <property stdset="1">
                                 <name>minimumSize</name>
                                 <size>
                                     <width>100</width>
                                     <height>0</height>
                                 </size>
+                            </property>
+                            <property stdset="1">
+                                <name>text</name>
+                                <string>Street:</string>
                             </property>
                         </widget>
                         <widget>
@@ -146,15 +146,15 @@
                                 <cstring>TextLabel3</cstring>
                             </property>
                             <property stdset="1">
-                                <name>text</name>
-                                <string>Town:</string>
-                            </property>
-                            <property stdset="1">
                                 <name>minimumSize</name>
                                 <size>
                                     <width>100</width>
                                     <height>0</height>
                                 </size>
+                            </property>
+                            <property stdset="1">
+                                <name>text</name>
+                                <string>Town:</string>
                             </property>
                         </widget>
                         <widget>
@@ -188,15 +188,15 @@
                                 <cstring>TextLabel4</cstring>
                             </property>
                             <property stdset="1">
-                                <name>text</name>
-                                <string>County:</string>
-                            </property>
-                            <property stdset="1">
                                 <name>minimumSize</name>
                                 <size>
                                     <width>100</width>
                                     <height>0</height>
                                 </size>
+                            </property>
+                            <property stdset="1">
+                                <name>text</name>
+                                <string>County:</string>
                             </property>
                         </widget>
                         <widget>
@@ -230,15 +230,15 @@
                                 <cstring>TextLabel5</cstring>
                             </property>
                             <property stdset="1">
-                                <name>text</name>
-                                <string>Postcode:</string>
-                            </property>
-                            <property stdset="1">
                                 <name>minimumSize</name>
                                 <size>
                                     <width>100</width>
                                     <height>0</height>
                                 </size>
+                            </property>
+                            <property stdset="1">
+                                <name>text</name>
+                                <string>Postcode:</string>
                             </property>
                         </widget>
                         <widget>
@@ -272,15 +272,15 @@
                                 <cstring>TextLabel6</cstring>
                             </property>
                             <property stdset="1">
-                                <name>text</name>
-                                <string>Telephone:</string>
-                            </property>
-                            <property stdset="1">
                                 <name>minimumSize</name>
                                 <size>
                                     <width>100</width>
                                     <height>0</height>
                                 </size>
+                            </property>
+                            <property stdset="1">
+                                <name>text</name>
+                                <string>Telephone:</string>
                             </property>
                         </widget>
                         <widget>
@@ -314,15 +314,15 @@
                                 <cstring>TextLabel7</cstring>
                             </property>
                             <property stdset="1">
-                                <name>text</name>
-                                <string>Email:</string>
-                            </property>
-                            <property stdset="1">
                                 <name>minimumSize</name>
                                 <size>
                                     <width>100</width>
                                     <height>0</height>
                                 </size>
+                            </property>
+                            <property stdset="1">
+                                <name>text</name>
+                                <string>Email:</string>
                             </property>
                         </widget>
                         <widget>
@@ -335,41 +335,6 @@
                     </hbox>
                 </widget>
             </vbox>
-        </widget>
-        <widget>
-            <class>QLayoutWidget</class>
-            <property stdset="1">
-                <name>name</name>
-                <cstring>Layout8</cstring>
-            </property>
-            <hbox>
-                <property stdset="1">
-                    <name>margin</name>
-                    <number>0</number>
-                </property>
-                <property stdset="1">
-                    <name>spacing</name>
-                    <number>6</number>
-                </property>
-                <widget>
-                    <class>QLabel</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>TextLabel8</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>text</name>
-                        <string>Name:</string>
-                    </property>
-                </widget>
-                <widget>
-                    <class>QLineEdit</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>nameEdit</cstring>
-                    </property>
-                </widget>
-            </hbox>
         </widget>
         <widget>
             <class>QLayoutWidget</class>
@@ -415,7 +380,7 @@
                     </property>
                     <property stdset="1">
                         <name>text</name>
-                        <string>Cancel</string>
+                        <string>&amp;Cancel</string>
                     </property>
                 </widget>
                 <widget>
@@ -426,7 +391,7 @@
                     </property>
                     <property stdset="1">
                         <name>text</name>
-                        <string>OK</string>
+                        <string>&amp;OK</string>
                     </property>
                     <property stdset="1">
                         <name>default</name>

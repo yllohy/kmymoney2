@@ -38,14 +38,13 @@
   * @see MyMoneyBank
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: mymoneyfile.h,v 1.3 2001/04/18 21:49:35 mte Exp $
+  * $Id: mymoneyfile.h,v 1.4 2001/06/16 21:12:46 mte Exp $
   *
   * @short A representation of the file format used by KMyMoney2.
 **/
 class MyMoneyFile {
 private:
   // File 'fields'
-  QString m_moneyName;
   QString m_userName;
   QString m_userStreet;
   QString m_userTown;
@@ -99,7 +98,6 @@ public:
     * This is the constructor usually used.  The passed parameters are used to
     * initialise the attributes of this class.
     *
-    * @param name The name for the file.  It is NOT the filename.
     * @param username The users name.
     * @param userStreet Part of the users address.
     * @param userTown Part of the users address.
@@ -109,7 +107,7 @@ public:
     * @param userEmail The users email address.
     * @param createDate TODO: remove this and use QDate::currentDate() in the constructor.
   **/
-  MyMoneyFile(const QString& name, const QString& username, const QString& userStreet,
+  MyMoneyFile(const QString& username, const QString& userStreet,
     const QString& userTown, const QString& userCounty, const QString& userPostcode, const QString& userTelephone,
     const QString& userEmail, const QDate& createDate);
 
@@ -210,8 +208,6 @@ public:
 
 
   QString userAddress(void);
-  QString name(void) const { return m_moneyName; }
-  QString moneyName(void) { return m_moneyName; }
   QString userName(void) { return m_userName; }
   QString userStreet(void) { return m_userStreet; }
   QString userTown(void) { return m_userTown; }
@@ -224,7 +220,6 @@ public:
   QDate lastModifyDate(void) { return m_lastModify; }
 
   // Simple set operations
-  void set_moneyName(const QString& val) { m_moneyName = val; }
   void set_userName(const QString& val) { m_userName = val; }
   void set_userStreet(const QString& val) { m_userStreet = val; }
   void set_userTown(const QString& val) { m_userTown = val; }

@@ -68,13 +68,15 @@ public:
 
 	// Operations on the contained accounts
   bool newAccount(const QString& name, const QString& number, MyMoneyAccount::accountTypeE type,
-    const QString& description, const QDate& lastReconcile);
+    const QString& description, const QDate openingDate, const MyMoneyMoney openingBal, const QDate& lastReconcile);
   MyMoneyAccount* account(const MyMoneyAccount& account);
 	MyMoneyAccount* accountFirst(void);
 	MyMoneyAccount* accountNext(void);
 	MyMoneyAccount* accountLast(void);
   unsigned int accountCount(void);
   bool removeAccount(const MyMoneyAccount& account);
+
+  bool readAllData(int version, QDataStream& stream);
 
   bool operator == (const MyMoneyBank&);
 

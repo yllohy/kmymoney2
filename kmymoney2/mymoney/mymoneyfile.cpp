@@ -30,26 +30,21 @@
 
 #include "mymoneyaccount.h"
 
-#define MAGIC 0x00000006  // File revision number
+#include "mymoney_config.h"
 
 MyMoneyFile::MyMoneyFile(void)
 {
-//  m_banks.setAutoDelete(true);
-//  m_categoryList.setAutoDelete(true);
-//  m_payeeList.setAutoDelete(true);
+  m_createdDate = QDate::currentDate();
+  m_lastAccess = QDate::currentDate();
+  m_lastModify = QDate::currentDate();
   m_dirty = false;
   m_initialised = m_containsBanks = m_containsAccounts = m_containsTransactions = false;
 }
 
-MyMoneyFile::MyMoneyFile(const QString& szname, const QString& usern, const QString& userStreet,
+MyMoneyFile::MyMoneyFile(const QString& usern, const QString& userStreet,
  const QString& userTown, const QString& userCounty, const QString& userPostcode, const QString& userTelephone,
  const QString& userEmail, const QDate& createDate)
 {
-//  m_banks.setAutoDelete(true);
-//  m_categoryList.setAutoDelete(true);
-//  m_payeeList.setAutoDelete(true);
-
-  m_moneyName = szname;
   m_userName = usern;
   m_userStreet = userStreet;
   m_userTown = userTown;
@@ -107,8 +102,7 @@ int MyMoneyFile::saveAllData(const QString& fileName)
   m_lastModify = QDate::currentDate();
 
   // Simple Data
-  s << m_moneyName
-    << m_userName
+  s << m_userName
     << m_userStreet
     << m_userTown
     << m_userCounty
@@ -137,38 +131,22 @@ int MyMoneyFile::saveAllData(const QString& fileName)
     s << *payee;
   }
 
-//  unsigned int bankIdx=0, accountIdx=0;
-
-  // Tell the objects to save themselves
-//  QListIterator<MyMoneyBank> it = bankIterator();
   s << (Q_INT32)bankCount();
   MyMoneyBank *bank;
-  //for ( ; it.current(); ++it) {
   for (bank=bankFirst(); bank!=0; bank=bankNext()) {
-//    s << (*it.current());
     s << *bank;
 
-    //QListIterator<MyMoneyAccount> it2 = accountIterator(*it.current());
-//    s << (Q_INT32)accountCount(*it.current());
     s << (Q_INT32)bank->accountCount();
     MyMoneyAccount *account;
     for (account=bank->accountFirst(); account!=0; account=bank->accountNext()) {
-    //for ( ; it2.current(); ++it2) {
-//      s << (*it2.current());
       s << *account;
 
-      //QListIterator<MyMoneyTransaction> it3 = transactionIterator(*it.current(), *it2.current());
-//      s << (Q_INT32)transactionCount(*it.current(), *it2.current());
       s << (Q_INT32)account->transactionCount();
       MyMoneyTransaction *transaction;
       for (transaction=account->transactionFirst(); transaction!=0; transaction=account->transactionNext()) {
-      //for ( ; it3.current(); ++it3) {
-//        s << (*it3.current());
         s << *transaction;
       }
-//      accountIdx++;
     }
-//    bankIdx++;
   }
 
   f.close();
@@ -197,8 +175,15 @@ int MyMoneyFile::readAllData(const QString& fileName)
 */
   Q_INT32 magic;
   s >> magic;
+  bool foundOldVersion=false;
+  int foundVersionID=0;
 
-  if (magic != MAGIC) {
+  if (magic==VERSION_0_3_3) { // Version(s) 0.3.3 and below
+    qDebug("Found a money file belonging to versions 0.3.3 and below.");
+    foundOldVersion = true;
+    foundVersionID = VERSION_0_3_3;
+  }
+  else if (magic != MAGIC) {
     return 2;
   }
 
@@ -220,8 +205,14 @@ int MyMoneyFile::readAllData(const QString& fileName)
   s >> m_password;
 
   // Simple Data
-  s >> m_moneyName
-    >> m_userName
+  if (foundOldVersion) { // We need to change how we read in the data
+    if (foundVersionID==VERSION_0_3_3) {
+      qDebug("Converting from old 0.3.3 release...\n\tRemoving old file::name field");
+      QString temp_delete;
+      s >> temp_delete;
+    }
+  }
+  s >> m_userName
     >> m_userStreet
     >> m_userTown
     >> m_userCounty
@@ -274,7 +265,8 @@ int MyMoneyFile::readAllData(const QString& fileName)
   s >> bank_count;
   for ( unsigned int j=0; j<bank_count; j++ ) {
     m_containsBanks = true;
-    s >> bankl;
+    bankl.readAllData(foundVersionID, s);
+//    s >> bankl;
     addBank(bankl.name(), bankl.sortCode(), bankl.city(), bankl.street(), bankl.postcode(), bankl.telephone(), bankl.manager());
 
     bankWrite = bank(bankl);
@@ -286,8 +278,9 @@ int MyMoneyFile::readAllData(const QString& fileName)
     s >> account_count;
     for ( unsigned int k=0; k<account_count; k++ ) {
       m_containsAccounts=true;
-      s >> account;
-      bankWrite->newAccount(account.name(), account.accountNumber(), account.accountType(), account.description(), account.lastReconcile());
+      account.readAllData(foundVersionID, s);
+//      s >> account;
+      bankWrite->newAccount(account.name(), account.accountNumber(), account.accountType(), account.description(), account.openingDate(), account.openingBalance(), account.lastReconcile());
 
       accountWrite = bankWrite->account(account);
       if (!accountWrite) {
@@ -298,7 +291,8 @@ int MyMoneyFile::readAllData(const QString& fileName)
       s >> transaction_count;
       for ( unsigned int l=0; l<transaction_count; l++) {
         m_containsTransactions=true;
-        s >> transaction;
+        transaction.readAllData(foundVersionID, s);
+//        s >> transaction;
         accountWrite->addTransaction(transaction.method(), transaction.number(), transaction.memo(),
             transaction.amount(), transaction.date(), transaction.categoryMajor(), transaction.categoryMinor(),
             transaction.atmBankName(), transaction.payee(), transaction.accountFrom(), transaction.accountTo(),
@@ -319,8 +313,8 @@ void MyMoneyFile::resetAllData(void)
     MyMoneyBank *bank = it.current();
     bank->clear();
   }
+  m_banks.clear();
 
-  m_moneyName = QString::null;
   m_userName = QString::null;
   m_userStreet = QString::null;
   m_userTown = QString::null;
@@ -376,38 +370,7 @@ bool MyMoneyFile::removeBank(const MyMoneyBank& bank)
     return m_banks.remove(pos);
   return false;
 }
-/*
-bool MyMoneyFile::addAccount(const QString& name, const QString& number, MyMoneyAccount::accountTypeE type,
-  const QString& description, const QDate& lastReconcile, const MyMoneyBank& bank)
-{
-  if (m_containsAccounts==false)
-    m_containsAccounts=true;
 
-  unsigned int pos=0;
-  if (findBankPosition(bank, pos)) {
-    return m_banks.at(pos)->newAccount(name, number, type, description, lastReconcile);
-  }
-  return false;
-}
-
-bool MyMoneyFile::addTransaction(const long id, MyMoneyTransaction::transactionMethod methodType, const QString& number, const QString& memo,
-  const MyMoneyMoney& amount, const QDate& date, const QString& categoryMajor, const QString& categoryMinor, const QString& atmName,
-  const QString& fromTo, const QString& bankFrom, const QString& bankTo, MyMoneyTransaction::stateE state, const MyMoneyBank& bank, const MyMoneyAccount& account)
-{
-  unsigned int pos;
-  MyMoneyAccount *accountTmp=0;
-  if (findBankPosition(bank, pos)) {
-    if ((accountTmp=m_banks.at(pos)->account(account))) {
-      if (m_containsTransactions==false)
-        m_containsTransactions=true;
-
-        return accountTmp->addTransaction(id, methodType, number, memo, amount, date, categoryMajor, categoryMinor, atmName,
-          fromTo, bankFrom, bankTo, state);
-    }
-  }
-  return false;
-}
-*/
 void MyMoneyFile::addBankName(const QString& val)
 {
   m_bankNames.append(val);
@@ -575,7 +538,6 @@ bool MyMoneyFile::addBank(const QString& name, const QString& sortCode, const QS
 
 MyMoneyFile::MyMoneyFile(const MyMoneyFile& right)
 {
-  m_moneyName = right.m_moneyName;
   m_userName = right.m_userName;
   m_userStreet = right.m_userStreet;
   m_userTown = right.m_userTown;
@@ -602,7 +564,6 @@ MyMoneyFile::MyMoneyFile(const MyMoneyFile& right)
 
 MyMoneyFile& MyMoneyFile::operator = (const MyMoneyFile& right)
 {
-  m_moneyName = right.m_moneyName;
   m_userName = right.m_userName;
   m_userStreet = right.m_userStreet;
   m_userTown = right.m_userTown;

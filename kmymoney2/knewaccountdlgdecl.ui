@@ -11,7 +11,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>336</width>
+            <width>331</width>
             <height>239</height>
         </rect>
     </property>
@@ -50,8 +50,30 @@
                         <cstring>TextLabel1</cstring>
                     </property>
                     <property stdset="1">
+                        <name>minimumSize</name>
+                        <size>
+                            <width>60</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property stdset="1">
+                        <name>maximumSize</name>
+                        <size>
+                            <width>60</width>
+                            <height>32767</height>
+                        </size>
+                    </property>
+                    <property stdset="1">
+                        <name>frameShape</name>
+                        <enum>MShape</enum>
+                    </property>
+                    <property stdset="1">
+                        <name>frameShadow</name>
+                        <enum>MShadow</enum>
+                    </property>
+                    <property stdset="1">
                         <name>text</name>
-                        <string>Account name:</string>
+                        <string>Name:</string>
                     </property>
                 </widget>
                 <widget>
@@ -85,8 +107,22 @@
                         <cstring>TextLabel2</cstring>
                     </property>
                     <property stdset="1">
+                        <name>minimumSize</name>
+                        <size>
+                            <width>60</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property stdset="1">
+                        <name>maximumSize</name>
+                        <size>
+                            <width>60</width>
+                            <height>32767</height>
+                        </size>
+                    </property>
+                    <property stdset="1">
                         <name>text</name>
-                        <string>Account number:</string>
+                        <string>Number:</string>
                     </property>
                 </widget>
                 <widget>
@@ -123,38 +159,32 @@
                         <name>title</name>
                         <string>Account type</string>
                     </property>
-                    <vbox>
+                    <widget>
+                        <class>QComboBox</class>
+                        <item>
+                            <property>
+                                <name>text</name>
+                                <string>Current</string>
+                            </property>
+                        </item>
                         <property stdset="1">
-                            <name>margin</name>
-                            <number>11</number>
+                            <name>name</name>
+                            <cstring>typeCombo</cstring>
                         </property>
                         <property stdset="1">
-                            <name>spacing</name>
-                            <number>6</number>
+                            <name>enabled</name>
+                            <bool>false</bool>
                         </property>
-                        <widget>
-                            <class>QRadioButton</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>currentRadio</cstring>
-                            </property>
-                            <property stdset="1">
-                                <name>text</name>
-                                <string>Current account</string>
-                            </property>
-                        </widget>
-                        <widget>
-                            <class>QRadioButton</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>savingsRadio</cstring>
-                            </property>
-                            <property stdset="1">
-                                <name>text</name>
-                                <string>Savings account</string>
-                            </property>
-                        </widget>
-                    </vbox>
+                        <property stdset="1">
+                            <name>geometry</name>
+                            <rect>
+                                <x>10</x>
+                                <y>20</y>
+                                <width>110</width>
+                                <height>22</height>
+                            </rect>
+                        </property>
+                    </widget>
                 </widget>
                 <widget>
                     <class>QGroupBox</class>
@@ -164,7 +194,7 @@
                     </property>
                     <property stdset="1">
                         <name>title</name>
-                        <string>Start details</string>
+                        <string>Opening details</string>
                     </property>
                     <vbox>
                         <property stdset="1">
@@ -195,6 +225,27 @@
                                     <property stdset="1">
                                         <name>name</name>
                                         <cstring>TextLabel3</cstring>
+                                    </property>
+                                    <property stdset="1">
+                                        <name>sizePolicy</name>
+                                        <sizepolicy>
+                                            <hsizetype>1</hsizetype>
+                                            <vsizetype>1</vsizetype>
+                                        </sizepolicy>
+                                    </property>
+                                    <property stdset="1">
+                                        <name>minimumSize</name>
+                                        <size>
+                                            <width>50</width>
+                                            <height>0</height>
+                                        </size>
+                                    </property>
+                                    <property stdset="1">
+                                        <name>maximumSize</name>
+                                        <size>
+                                            <width>50</width>
+                                            <height>32767</height>
+                                        </size>
                                     </property>
                                     <property stdset="1">
                                         <name>text</name>
@@ -230,6 +281,20 @@
                                     <property stdset="1">
                                         <name>name</name>
                                         <cstring>TextLabel4</cstring>
+                                    </property>
+                                    <property stdset="1">
+                                        <name>minimumSize</name>
+                                        <size>
+                                            <width>50</width>
+                                            <height>0</height>
+                                        </size>
+                                    </property>
+                                    <property stdset="1">
+                                        <name>maximumSize</name>
+                                        <size>
+                                            <width>50</width>
+                                            <height>32767</height>
+                                        </size>
                                     </property>
                                     <property stdset="1">
                                         <name>text</name>
@@ -272,7 +337,7 @@
                     </property>
                     <property stdset="1">
                         <name>text</name>
-                        <string>Description:</string>
+                        <string>Memo:</string>
                     </property>
                 </widget>
                 <widget>
@@ -319,13 +384,6 @@
                             <height>20</height>
                         </size>
                     </property>
-                    <property>
-                        <name>sizeHint</name>
-                        <size>
-                            <width>20</width>
-                            <height>20</height>
-                        </size>
-                    </property>
                 </spacer>
                 <widget>
                     <class>QPushButton</class>
@@ -335,7 +393,7 @@
                     </property>
                     <property stdset="1">
                         <name>text</name>
-                        <string>Cancel</string>
+                        <string>&amp;Cancel</string>
                     </property>
                 </widget>
                 <widget>
@@ -346,7 +404,7 @@
                     </property>
                     <property stdset="1">
                         <name>text</name>
-                        <string>OK</string>
+                        <string>&amp;OK</string>
                     </property>
                     <property stdset="1">
                         <name>default</name>

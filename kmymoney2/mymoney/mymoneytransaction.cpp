@@ -13,8 +13,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
 #include "mymoneytransaction.h"
+#include "mymoney_config.h"
 
 MyMoneyTransaction::MyMoneyTransaction()
 {
@@ -158,4 +158,23 @@ QDataStream &operator>>(QDataStream &s, MyMoneyTransaction &trans)
     >> trans.m_memo
     >> (Q_INT32 &)trans.m_state;
     return s;
+}
+
+bool MyMoneyTransaction::readAllData(int version, QDataStream& stream)
+{
+  // ignore version for now.
+  stream >> (Q_UINT32 &)m_id
+    >> m_number
+    >> m_payee
+    >> m_amount
+    >> m_date
+    >> (Q_UINT32 &)m_method
+    >> m_categoryMajor
+    >> m_categoryMinor
+    >> m_atmBankName
+    >> m_accountFrom
+    >> m_accountTo
+    >> m_memo
+    >> (Q_INT32 &)m_state;
+    return true;
 }

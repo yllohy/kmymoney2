@@ -31,7 +31,7 @@
   * @see MyMoneyTransaction
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: mymoneyaccount.h,v 1.5 2001/03/22 03:42:56 frodriguez Exp $
+  * $Id: mymoneyaccount.h,v 1.6 2001/06/16 21:12:46 mte Exp $
   *
   * @short Representation of an account which holds transactions.
 **/
@@ -56,6 +56,8 @@ private:
   QDate m_lastReconcile;
   MyMoneyMoney m_balance;  // Recalculated by balance()
   MyMoneyScheduled m_scheduled;
+  QDate m_openingDate;
+  MyMoneyMoney m_openingBalance;
 
   // A list of all the transactions
   QList<MyMoneyTransaction> m_transactions;
@@ -84,7 +86,8 @@ public:
 	  * @param lastReconcile TODO: remove this param, *why* is it here ?
 	**/
   MyMoneyAccount(const QString& name, const QString& number, accountTypeE type,
-    const QString& description, const QDate& lastReconcile);
+    const QString& description, const QDate openingDate, const MyMoneyMoney openingBal,
+    const QDate& lastReconcile);
 
   /**
     * Standard destructor.
@@ -143,6 +146,18 @@ public:
     * @return All the scheduled transactions for this account.
   **/
   MyMoneyScheduled scheduled(void) { return m_scheduled; }
+
+  /** */
+  QDate openingDate(void) { return m_openingDate; }
+
+  /** */
+  MyMoneyMoney openingBalance(void) { return m_openingBalance; }
+
+  /** */
+  void setOpeningDate(QDate date) { m_openingDate = date; }
+
+  /** */
+  void setOpeningBalance(MyMoneyMoney money) { m_openingBalance = money; }
 
   /**
     * Calculates the balance of the account and returns it in a MyMoneyMoney
@@ -334,6 +349,9 @@ public:
     * @param right The account to copy.
   **/
   MyMoneyAccount& operator = (const MyMoneyAccount& right);
+
+  /** */
+  bool readAllData(int version, QDataStream& stream);
 };
 
 #endif

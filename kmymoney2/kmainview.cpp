@@ -113,11 +113,6 @@ void KMainView::resizeEvent(QResizeEvent *e)
   transactionView->resize(size);
 }
 
-void KMainView::showInputBox(bool val)
-{
-  transactionView->showInputBox(val);
-}
-
 void KMainView::initTransactionView(MyMoneyFile *file, const MyMoneyBank bank, const MyMoneyAccount account)
 {
   transactionView->init(file, bank, account);

@@ -14,23 +14,19 @@
  *                                                                         *
  ***************************************************************************/
 #include <kmessagebox.h>
+#include <qpushbutton.h>
+#include <kglobal.h>
+#include <klocale.h>
+
 #include "knewaccountdlg.h"
 
-KNewAccountDlg::KNewAccountDlg(QWidget *parent, const char *name, const char *title,
-  const char *okName)
+KNewAccountDlg::KNewAccountDlg(QWidget *parent, const char *name, const char *title)
   : KNewAccountDlgDecl(parent,name,true)
 {
-//	initDialog();
-  createButton->setText(okName);
-
 	if (title)
 	  setCaption(title);
 
-//	startDateEdit = new kMyMoneyDateInput(startGroup, QDate::currentDate());
-//	startDateEdit->setGeometry(60, 20, 120, 30);
-
-//  startBalanceEdit = new kMyMoneyEdit(startGroup);
-//	startBalanceEdit->setGeometry(60, 50, 120, 30);
+  accountNameEdit->setFocus();
 
   connect(cancelButton, SIGNAL(clicked()), SLOT(reject()));
   connect(createButton, SIGNAL(clicked()), this, SLOT(okClicked()));
@@ -38,41 +34,22 @@ KNewAccountDlg::KNewAccountDlg(QWidget *parent, const char *name, const char *ti
 
 KNewAccountDlg::KNewAccountDlg(QString m_name, QString no,
   MyMoneyAccount::accountTypeE type, QString description,
-  QWidget *parent, const char *name, const char *title, const char *okName)
+  QDate openingDate, MyMoneyMoney openingBalance,
+  QWidget *parent, const char *name, const char *title)
   : KNewAccountDlgDecl(parent,name,true)
 {
-//	initDialog();
-
   accountNameEdit->setText(m_name);
   accountNoEdit->setText(no);
-
-  if (type==MyMoneyAccount::Current) {
-    currentRadio->setChecked(true);
-    savingsRadio->setChecked(false);
-  }
-  else if (type==MyMoneyAccount::Savings) {
-    currentRadio->setChecked(false);
-    savingsRadio->setChecked(true);
-  } else {
-    currentRadio->setChecked(false);
-    savingsRadio->setChecked(false);
-  }
-
-  createButton->setText(okName);
 
 	if (title)
 	  setCaption(title);
 
   descriptionEdit->setText(description);
 
-//	startDateEdit = new kMyMoneyDateInput(startGroup, QDate::currentDate());
-//	startDateEdit->setGeometry(60, 20, 120, 30);
+  accountNameEdit->setFocus();
 
-//	startBalanceEdit = new kMyMoneyEdit(startGroup);
-//	startBalanceEdit->setGeometry(60, 50, 120, 30);
-
-	startDateEdit->hide();
-	startBalanceEdit->hide();
+  startDateEdit->setDate(openingDate);
+  startBalanceEdit->setText(KGlobal::locale()->formatNumber(openingBalance.amount()));
 
   connect(cancelButton, SIGNAL(clicked()), SLOT(reject()));
   connect(createButton, SIGNAL(clicked()), this, SLOT(okClicked()));
@@ -91,10 +68,8 @@ void KNewAccountDlg::okClicked()
     return;
   }
   accountNoText = accountNoEdit->text();
-  if (currentRadio->isChecked())
-    type = MyMoneyAccount::Current;
-  else
-    type = MyMoneyAccount::Savings;
+
+  type = MyMoneyAccount::Current;
 
   descriptionText = descriptionEdit->text();
   startBalance = startBalanceEdit->getMoneyValue();

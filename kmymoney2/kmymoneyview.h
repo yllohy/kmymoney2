@@ -37,7 +37,7 @@
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.6 2001/06/07 23:26:30 frodriguez Exp $
+  * $Id: kmymoneyview.h,v 1.7 2001/06/16 21:12:45 mte Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -200,13 +200,6 @@ public:
   **/
   QString currentAccountName(void);
 
-  /**
-    * Calls KMainView::showInputBox to let the user change the
-    * visibility of the input box.
-    *
-    * @param show Whether to show the box or not.
-  **/
-  void showTransactionInputBox(bool show);
   /** No descriptions */
   void readQIFFile(const QString& name, MyMoneyAccount *account);
   /** No descriptions */

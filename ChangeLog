@@ -1,3 +1,19 @@
+2001-06-16 Michael Edwardes <mte@users.sourceforge.net>
+  * Removed 'name' input field from KNewFileDlg class.
+  * Removed m_moneyName from MyMoneyFile and made the
+    file reading code detect the older version and convert.
+  * Removed hide/show input box.
+  * Some minor GUI improvements, (focus etc).
+  * Added some opening balance fields to MyMoneyAccount.
+  * Better version control in file format.  Can convert
+    between versions now.
+  * The Bank list view is now open by default.
+  * Fixed bug in MyMoneyFile::resetAllData().
+  * Changed behaviour of File|New to open a new window because
+    the user can create a new file through the start dialog.
+    (Maybe we should change the open icon to something to
+    represent the start dialog ?).
+
 2001-06-16  Javier Campos Morales  <javi_cms@terra.es>
   * Only one settings dialog is needed so added new general settings dialog -> ksettingsdlg.
   * Remove klistsettings and old settings variables.

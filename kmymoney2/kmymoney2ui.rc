@@ -5,10 +5,12 @@
     <Action name="file_view_info"/>
     <Action name="file_personal_data"/>
     <Action name="file_backup"/>
+    <Separator/>
+    <Action name="file_new_window"/>
+    <Action name="file_close_window"/>
   </Menu>
 
   <Menu name="settings"><text>&amp;Settings</text>
-    <Action name="account_showbox"/>
   </Menu>
 
   <Menu name="categories"><text>&amp;Categories</text>
@@ -21,7 +23,6 @@
   </Menu>
 
   <Menu name="account"><text>&amp;Account</text>
-    <Action name="account_add"/>
     <Action name="account_reconcile"/>
     <Action name="account_find"/>
     <Action name="account_import"/>
@@ -48,7 +49,6 @@
 	<Separator/>
   <Action name="bank_add"/>
 	<Separator/>
-  <Action name="account_add"/>
   <Action name="account_reconcile"/>
   <Action name="account_find"/>
 	<Separator/>

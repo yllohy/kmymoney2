@@ -19,28 +19,23 @@
 
 #include "knewfiledlg.h"
 
-KNewFileDlg::KNewFileDlg(QWidget *parent, const char *name, const char *title,
-  const char *okName)
+KNewFileDlg::KNewFileDlg(QWidget *parent, const char *name, const char *title)
   : KNewFileDlgDecl(parent,name,true)
 {
-//	initDialog();
-	
-	okBtn->setText(okName);
 	if (title)
 	  setCaption(title);
+	
+	userNameEdit->setFocus();
 	
 	connect(cancelBtn, SIGNAL(clicked()), this, SLOT(reject()));
 	connect(okBtn, SIGNAL(clicked()), this, SLOT(okClicked()));
 }
 
-KNewFileDlg::KNewFileDlg(QString a_name, QString userName, QString userStreet,
+KNewFileDlg::KNewFileDlg(QString userName, QString userStreet,
   QString userTown, QString userCounty, QString userPostcode, QString userTelephone,
-  QString userEmail, QWidget *parent, const char *name, const char *title, const char *okName)
+  QString userEmail, QWidget *parent, const char *name, const char *title)
   : KNewFileDlgDecl(parent,name,true)
 {
-//	initDialog();
-	
-	nameEdit->setText(a_name);
   userNameEdit->setText(userName);
   streetEdit->setText(userStreet);
   townEdit->setText(userTown);
@@ -48,10 +43,11 @@ KNewFileDlg::KNewFileDlg(QString a_name, QString userName, QString userStreet,
   postcodeEdit->setText(userPostcode);
   telephoneEdit->setText(userTelephone);
   emailEdit->setText(userEmail);
-  okBtn->setText(okName);
 
 	if (title)
 	  setCaption(title);
+	
+	userNameEdit->setFocus();
 	
 	connect(cancelBtn, SIGNAL(clicked()), this, SLOT(reject()));
 	connect(okBtn, SIGNAL(clicked()), this, SLOT(okClicked()));
@@ -62,12 +58,6 @@ KNewFileDlg::~KNewFileDlg(){
 
 void KNewFileDlg::okClicked()
 {
-  nameText = nameEdit->text();
-  if (nameText.isEmpty()) {
-    KMessageBox::error(this, i18n("You have not specified a name.\n\nPlease fill in this field"));
-    nameEdit->setFocus();
-    return;
-  }
   userNameText = userNameEdit->text();
   userStreetText = streetEdit->text();
   userTownText += townEdit->text();

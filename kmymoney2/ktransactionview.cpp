@@ -1149,9 +1149,6 @@ void KTransactionView::refresh(void)
   updateTransactionList(-1,-1);
 }
 
-void KTransactionView::showInputBox(bool)
-{
-}
 /** gets a pointer to the current Account */
 MyMoneyAccount* KTransactionView::getAccount(){
 

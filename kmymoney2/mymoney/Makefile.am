@@ -9,6 +9,6 @@ noinst_LIBRARIES = libmymoney.a
 libmymoney_a_SOURCES = mymoneytransaction.cpp mymoneyscheduled.cpp mymoneypayee.cpp mymoneymoney.cpp mymoneyfile.cpp mymoneycategory.cpp mymoneybank.cpp mymoneyaccount.cpp 
 
 
-EXTRA_DIST = mymoneyaccount.cpp mymoneyaccount.h mymoneybank.cpp mymoneybank.h mymoneycategory.cpp mymoneycategory.h mymoneyfile.cpp mymoneyfile.h mymoneymoney.cpp mymoneymoney.h mymoneypayee.cpp mymoneypayee.h mymoneyscheduled.cpp mymoneyscheduled.h mymoneytransaction.cpp mymoneytransaction.h readme-mymoney.txt 
+EXTRA_DIST = mymoneyaccount.cpp mymoneyaccount.h mymoneybank.cpp mymoneybank.h mymoneycategory.cpp mymoneycategory.h mymoneyfile.cpp mymoneyfile.h mymoneymoney.cpp mymoneymoney.h mymoneypayee.cpp mymoneypayee.h mymoneyscheduled.cpp mymoneyscheduled.h mymoneytransaction.cpp mymoneytransaction.h readme-mymoney.txt mymoney_config.h 
 
 ####### kdevelop will overwrite this part!!! (end)############

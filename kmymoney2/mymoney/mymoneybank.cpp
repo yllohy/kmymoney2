@@ -13,8 +13,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
 #include "mymoneybank.h"
+#include "mymoney_config.h"
 
 MyMoneyBank::MyMoneyBank()
 {
@@ -50,9 +50,9 @@ void MyMoneyBank::clear(void)
 }
 
 bool MyMoneyBank::newAccount(const QString& name, const QString& number, MyMoneyAccount::accountTypeE type,
-  const QString& description, const QDate& lastReconcile)
+    const QString& description, const QDate openingDate, const MyMoneyMoney openingBal, const QDate& lastReconcile)
 {
-  MyMoneyAccount *account = new MyMoneyAccount(name, number, type, description, lastReconcile);
+  MyMoneyAccount *account = new MyMoneyAccount(name, number, type, description, openingDate, openingBal, lastReconcile);
   m_accounts.append(account);
   return true;
 }
@@ -171,4 +171,17 @@ QDataStream &operator>>(QDataStream &s, MyMoneyBank &bank)
     >> bank.m_telephone
     >> bank.m_manager
     >> bank.m_sortCode;
+}
+
+bool MyMoneyBank::readAllData(int version, QDataStream& stream)
+{
+  // Ignore version for now because we don't need it.
+  stream >> m_name
+    >> m_city
+    >> m_street
+    >> m_postcode
+    >> m_telephone
+    >> m_manager
+    >> m_sortCode;
+  return true;
 }

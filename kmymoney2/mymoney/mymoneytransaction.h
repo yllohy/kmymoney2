@@ -93,6 +93,8 @@ public:
   // Copy constructors
   MyMoneyTransaction(const MyMoneyTransaction&);
   MyMoneyTransaction& operator = (const MyMoneyTransaction&);
+
+  bool readAllData(int version, QDataStream& stream);
 };
 
 #endif
