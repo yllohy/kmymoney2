@@ -41,7 +41,6 @@
 #include "views/kbanklistitem.h"
 #include "kmymoney2.h"
 #include "kstartuplogo.h"
-#include "kapptest.h"
 #include "kmymoneyutils.h"
 
 static const char *description =
@@ -207,16 +206,12 @@ int main(int argc, char *argv[])
   if ( ! importfile.isEmpty() )
     kmymoney2->webConnect( importfile, kapp->startupId() );
 
-  CREATE_TEST_CONTAINER();
-
   if(kmymoney2 != 0) {
     kmymoney2->updateCaption();
     args->clear();
     kmymoney2->setEnabled(true);
     rc = a->exec();
   }
-
-  DESTROY_TEST_CONTAINER();
 
   delete a;
 

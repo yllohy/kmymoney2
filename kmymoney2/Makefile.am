@@ -5,13 +5,13 @@ bin_PROGRAMS = kmymoney2
 
 ## INCLUDES were found outside kdevelop specific part
 
-kmymoney2_SOURCES = kmymoneyutils.cpp kstartuplogo.cpp kmymoney2.cpp main.cpp kmymoney2.stub kmymoney2.skel kapptest.cpp kapptest.stub kapptest.skel
+kmymoney2_SOURCES = kmymoneyutils.cpp kstartuplogo.cpp kmymoney2.cpp main.cpp kmymoney2.stub kmymoney2.skel
 
 kmymoney2_LDADD = $(top_builddir)/kmymoney2/views/libviews.a $(top_builddir)/kmymoney2/reports/libreports.a  $(top_builddir)/kmymoney2/dialogs/libdialogs.a $(top_builddir)/kmymoney2/widgets/libwidgets.a $(top_builddir)/kmymoney2/converter/libconverter.a $(top_builddir)/kmymoney2/mymoney/storage/libstorage.a $(top_builddir)/kmymoney2/mymoney/libkmm_mymoney.la $(top_builddir)/libkgpgfile/libkgpgfile.la $(top_builddir)/kmymoney2/converter/online_quotes/libonline_quotes.a $(top_builddir)/kmymoney2/plugins/interfaces/libinterfaces.a $(top_builddir)/kmymoney2/plugins/libkmm_plugin.la dialogs/libdialogs.a $(LIB_KABC) $(LIB_KHTML) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT) $(LIBSOCKET)
 
 SUBDIRS = widgets dialogs views converter mymoney pics icons html templates plugins reports
 
-EXTRA_DIST = main.cpp kmymoney2.cpp kmymoney2.h kmymoney2ui.rc kmymoney2.desktop kstartuplogo.cpp kstartuplogo.h lo16-app-kmymoney2.png lo32-app-kmymoney2.png kmymoney_wizard.png mimetype_kmy_16x16.png mimetype_kmy_32x32.png mimetype_kmy_48x48.png x-kmymoney2.desktop hi16-app-kmymoney2.png hi32-app-kmymoney2.png tips kmymoneyutils.cpp kmymoneyutils.h kapptest.cpp kapptest.h
+EXTRA_DIST = main.cpp kmymoney2.cpp kmymoney2.h kmymoney2ui.rc kmymoney2.desktop kstartuplogo.cpp kstartuplogo.h lo16-app-kmymoney2.png lo32-app-kmymoney2.png kmymoney_wizard.png mimetype_kmy_16x16.png mimetype_kmy_32x32.png mimetype_kmy_48x48.png x-kmymoney2.desktop hi16-app-kmymoney2.png hi32-app-kmymoney2.png tips kmymoneyutils.cpp kmymoneyutils.h
 
 install-data-local:
 	$(mkinstalldirs) $(kde_datadir)/kmymoney2/

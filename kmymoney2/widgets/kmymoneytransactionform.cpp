@@ -49,7 +49,6 @@
 #include "kmymoneytransactionform.h"
 #include "../views/kledgerview.h"
 #include "../kmymoneyutils.h"
-#include "../kapptest.h"
 
 /* -------------------------------------------------------------------------------*/
 /*                           kMyMoneyTransactionFormTable                         */
@@ -304,7 +303,7 @@ kMyMoneyTransactionForm::kMyMoneyTransactionForm( KLedgerView* parent,  const ch
   line->setFrameShape(QFrame::ToolBarPanel);
   formFrameLayout->addWidget(line, 1, 0);
 
-  formTable = new kMyMoneyTransactionFormTable( m_view, formFrame, KAppTest::widgetName(this, "kMyMoneyTransactionFormTable") );
+  formTable = new kMyMoneyTransactionFormTable( m_view, formFrame, "kMyMoneyTransactionFormTable");
   formTable->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding, 0, 0, formTable->sizePolicy().hasHeightForWidth() ) );
   formTable->setBackgroundOrigin(QTable::WindowOrigin);
   formTable->setFrameShape( QTable::NoFrame );
