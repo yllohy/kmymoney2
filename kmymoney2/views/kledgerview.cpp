@@ -241,9 +241,11 @@ void KTransactionPtrVector::setPayeeId(const QCString& id)
   m_idMode = PayeeMode;
 }
 
+QDate KLedgerView::m_lastPostDate = QDate();
+
 KLedgerView::KLedgerView(QWidget *parent, const char *name )
   : QWidget(parent,name),
-  m_lastPostDate(QDate::currentDate()),
+  // m_lastPostDate(QDate::currentDate()),
   m_contextMenu(0),
   m_blinkTimer(parent),
   m_suspendUpdate(false)
@@ -253,6 +255,9 @@ KLedgerView::KLedgerView(QWidget *parent, const char *name )
   m_ledgerLens = config->readBoolEntry("LedgerLens", true);
   m_transactionFormActive = config->readBoolEntry("TransactionForm", true);
 
+  if(!m_lastPostDate.isValid())
+    m_lastPostDate = QDate::currentDate();
+  
   m_register = 0;
   m_form = 0;
   m_transactionPtr = 0;
@@ -1304,6 +1309,7 @@ void KLedgerView::slotShowTransactionForm(bool visible)
     // using a timeout is the only way, I got the 'ensureTransactionVisible'
     // working when coming from hidden form to visible form. I assume, this
     // has something to do with the delayed update of the display somehow.
+    resize(width()-1, height());
     QTimer::singleShot(10, this, SLOT(timerDone()));
   }
 }
@@ -1317,7 +1323,7 @@ void KLedgerView::timerDone(void)
   // all widgets in the view to the size they should
   // have and show up correctly. Don't ask me, why
   // this is, but it cured the problem (ipwizard).
-  resize(width()+1, height()+1);
+  resize(width()+1, height());
 }
 
 const QCString KLedgerView::str2action(const QString &action) const

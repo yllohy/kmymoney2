@@ -790,8 +790,8 @@ protected:
     * and is used to preset the posting date when new transactions are set.
     * This member is initialised to the current date when the program is started.
     */
-  QDate         m_lastPostDate;
-  
+  static QDate         m_lastPostDate;
+
   /*
    * The following members are pointers to the edit widgets
    */
