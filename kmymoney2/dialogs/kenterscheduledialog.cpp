@@ -68,6 +68,7 @@ KEnterScheduleDialog::KEnterScheduleDialog(QWidget *parent, const MyMoneySchedul
     this, SLOT(slotFromActivated(int)));
   connect(m_to, SIGNAL(activated(int)),
     this, SLOT(slotToActivated(int)));
+  connect(m_date, SIGNAL(dateChanged(const QDate&)), this, SLOT(checkDateInPeriod(const QDate&)));
 }
 
 KEnterScheduleDialog::~KEnterScheduleDialog()
@@ -349,6 +350,9 @@ bool KEnterScheduleDialog::checkData(void)
     m_from->setFocus();
     return false;
   }
+
+  if (!checkDateInPeriod(m_date->getQDate()))
+    return false;
 
   try
   {
@@ -918,4 +922,59 @@ void KEnterScheduleDialog::calculateInterest(void)
       m_transaction.modifySplit(interestSplit);
     }
   }
+}
+
+bool KEnterScheduleDialog::checkDateInPeriod(const QDate& date)
+{
+  QDate firstDate;
+  QDate nextDate = m_schedule.nextPayment(m_schedule.lastPayment());
+  switch (m_schedule.occurence())
+  {
+    case MyMoneySchedule::OCCUR_ONCE:
+      firstDate = nextDate;
+      break;
+    case MyMoneySchedule::OCCUR_DAILY:
+      firstDate = nextDate.addDays(-1);
+      break;
+    case MyMoneySchedule::OCCUR_WEEKLY:
+      firstDate = nextDate.addDays(-7);
+      break;
+    case MyMoneySchedule::OCCUR_FORTNIGHTLY:
+      firstDate = nextDate.addDays(-14);
+      break;
+    case MyMoneySchedule::OCCUR_EVERYFOURWEEKS:
+      firstDate = nextDate.addDays(-28);
+      break;
+    case MyMoneySchedule::OCCUR_MONTHLY:
+      firstDate = nextDate.addMonths(-1);
+      break;
+    case MyMoneySchedule::OCCUR_EVERYOTHERMONTH:
+      firstDate = nextDate.addMonths(-2);
+      break;
+    case MyMoneySchedule::OCCUR_EVERYTHREEMONTHS:
+      firstDate = nextDate.addMonths(-3);
+      break;
+    case MyMoneySchedule::OCCUR_EVERYFOURMONTHS:
+      firstDate = nextDate.addMonths(-4);
+      break;
+    case MyMoneySchedule::OCCUR_TWICEYEARLY:
+      firstDate = nextDate.addMonths(-6);
+      break;
+    case MyMoneySchedule::OCCUR_YEARLY:
+      firstDate = nextDate.addYears(-1);
+      break;
+    case MyMoneySchedule::OCCUR_EVERYOTHERYEAR:
+      firstDate = nextDate.addYears(-2);
+      break;
+    default:
+      break;
+  }
+
+  if (date < firstDate || date > nextDate)
+  {
+    KMessageBox::error(this, i18n("The date must lie in the range %1 to %2").arg(firstDate.addDays(1).toString()).arg(nextDate.toString()));
+    return false;
+  }
+
+  return true;
 }

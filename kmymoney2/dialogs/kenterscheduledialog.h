@@ -55,6 +55,11 @@ protected slots:
   void slotFromActivated(int);
   void slotToActivated(int);
 
+  /**
+    * Make sure the date is between a certain range valid for the schedule.
+  **/
+  bool checkDateInPeriod(const QDate& date);
+
 private:
   MyMoneySchedule m_schedule;
   MyMoneyTransaction m_transaction;
