@@ -69,7 +69,6 @@ private:
     QImage m_rightImage;
     QColor m_bgColor;
     QColor m_textColor;
-    QColor m_shadowColor;
     QString m_text;
 
     QCString m_leftImageFile;

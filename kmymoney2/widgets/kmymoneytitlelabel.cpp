@@ -39,8 +39,7 @@
 kMyMoneyTitleLabel::kMyMoneyTitleLabel(QWidget *parent, const char *name)
  :  QLabel(parent, name),
     m_bgColor( KGlobalSettings::highlightColor() ),
-    m_textColor( KGlobalSettings::highlightedTextColor() ),
-    m_shadowColor( KGlobalSettings::textColor() )
+    m_textColor( KGlobalSettings::highlightedTextColor() )
 {
   QFont f = font();
   f.setPointSize(14);
@@ -90,13 +89,6 @@ void kMyMoneyTitleLabel::drawContents(QPainter *p)
   // first draw pixmap
   QLabel::drawContents(p);
 
-  // then draw shadow
-  QRect shadowrect = contentsRect();
-  shadowrect.setTop( shadowrect.top() + 2 );
-  shadowrect.setLeft( shadowrect.left() + 2 );
-  style().drawItem( p, shadowrect, alignment(), colorGroup(), isEnabled(),
-                          0, QString("   ")+m_text, -1, &m_shadowColor );
-  
   // then draw text on top
   style().drawItem( p, contentsRect(), alignment(), colorGroup(), isEnabled(),
                           0, QString("   ")+m_text, -1, &m_textColor );
