@@ -615,6 +615,9 @@ void KNewAccountWizard::slotCheckPageFinished(void)
       }
     }
   }
+  else if(currentPage() == summaryPage) {
+    finishButton()->setDefault(true);
+  }
 }
 
 void KNewAccountWizard::slotNewPayee(const QString& payeeName)
