@@ -56,8 +56,12 @@ class MyProgressListener : public CppUnit::TextTestProgressListener
 {
 	void startTest(CppUnit::Test *test) {
 		QString name = test->getName().c_str();
-		name = name.mid(2);		// cut off first 2 chars
-		name = name.left(name.find('.'));
+		if(name.find('.') != -1) {		// in CPPUNIT 1.8.0
+			name = name.mid(2);		// cut off first 2 chars
+			name = name.left(name.find('.'));
+		} else if(name.find("::") != -1) {	// in CPPUNIT 1.9.14
+			name = name.left(name.find("::"));
+		}
 		if(m_name != name) {
 			if(m_name != "")
 				std::cout << std::endl;
@@ -124,6 +128,7 @@ main(int /* argc */, char** /* argv */ )
   MyProgressListener progress;
   runner->eventManager().addListener(&progress);
   runner->run();
+  std::cout << "Tests were run with CPPUNIT version " CPPUNIT_VERSION << std::endl;
 
   delete runner;
 
@@ -140,5 +145,4 @@ main(int /* argc */, char** /* argv */ )
   std::cout << "libcppunit not installed. no automatic tests available."
 		 << std::endl;
 #endif // HAVE_LIBCPPUNIT
-  return 0;
 }
