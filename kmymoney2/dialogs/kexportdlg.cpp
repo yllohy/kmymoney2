@@ -183,7 +183,7 @@ void KExportDlg::readConfig(void)
   m_qcheckboxCategories->setChecked(kconfig->readBoolEntry("KExportDlg_CatOpt", true));
   m_kmymoneydateStart->setDate(kconfig->readDateTimeEntry("KExportDlg_StartDate").date());
   m_kmymoneydateEnd->setDate(kconfig->readDateTimeEntry("KExportDlg_EndDate").date());
-  m_qstringLastFormat = kconfig->readEntry("KExportDlg_LastFormat");
+  m_qstringLastFormat = kconfig->readEntry("KExportDlg_LastFormat", "%d/%m/%yyyy");
 
   if (m_qlineeditFile->text().length()>=1) {
     m_qgroupboxDates->setEnabled(true);
