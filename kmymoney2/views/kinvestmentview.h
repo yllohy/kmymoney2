@@ -44,6 +44,19 @@ class MyMoneyTransaction;
 class MyMoneyInvestTransaction;
 class KLedgerView;
 
+//indexes for the various columns on the summary view
+#define COLUMN_NAME_INDEX       0
+#define COLUMN_SYMBOL_INDEX     1
+#define COLUMN_QUANTITY_INDEX   2
+#define COLUMN_CURRPRICE_INDEX  3
+#define COLUMN_COSTBASIS_INDEX  4
+#define COLUMN_RAWGAIN_INDEX    5
+#define COLUMN_1WEEKGAIN_INDEX  6
+#define COLUMN_4WEEKGAIN_INDEX  7
+#define COLUMN_3MONGAIN_INDEX   8
+#define COLUMN_YTDGAIN_INDEX    9
+
+
 
 /**
   * @author Kevin Tambascio
@@ -128,16 +141,17 @@ protected:
   void loadAccounts(void);
 
 protected slots:
+
   /**
     * This slot receives the signal from the listview control that an item was double-clicked,
     */
-  void slotListDoubleClicked(QListViewItem* pItem, const QPoint& pos, int c);
+  void slotItemDoubleClicked(QListViewItem* pItem, const QPoint& pos, int c);
 
   /**
     * This slot receives the signal from the listview control that an item was right-clicked,
     */
   void slotListRightMouse(QListViewItem* item, const QPoint& point, int);
-  void slotNewInvestment();
+  //void slotNewInvestment();
   void slotEditInvestment();
   void slotUpdatePrice();
   void slotViewChanged(int);

@@ -67,6 +67,7 @@
 #include "kinvestmentlistitem.h"
 #include "../dialogs/knewequityentrydlg.h"
 #include "../dialogs/kupdatestockpricedlg.h"
+#include "../dialogs/keditequityentrydlg.h"
 #include "kinvestmentview.h"
 #include "kledgerviewinvestments.h"
 
@@ -107,6 +108,8 @@ KInvestmentView::KInvestmentView(QWidget *parent, const char *name)
 
   //set the summary button to be true.
  // btnSummary->setChecked(TRUE);
+
+  connect(investmentTable, SIGNAL(doubleClicked(QListViewItem*,const QPoint&, int)), this, SLOT(slotItemDoubleClicked(QListViewItem*,const QPoint&, int)));
 }
 
 KInvestmentView::~KInvestmentView()
@@ -194,44 +197,53 @@ void KInvestmentView::updateDisplay()
 	//}
 }
 
-void KInvestmentView::slotNewInvestment()
+void KInvestmentView::slotItemDoubleClicked(QListViewItem* pItem, const QPoint& pos, int c)
 {
-	MyMoneyEquity *pEquity = NULL;
+  if(COLUMN_NAME_INDEX == c || COLUMN_SYMBOL_INDEX == c)
+  {
+    //QString clickedEquity = pItem->text(COLUMN_SYMBOL_INDEX);
+    MyMoneyEquity equity;
+    KEditEquityEntryDlg *pDlg = new KEditEquityEntryDlg(&equity, this);
+	  pDlg->exec();
+  }
+}
+
+
+
+/*void KInvestmentView::slotNewInvestment()
+{
+	MyMoneyEquity equity;
 	KNewEquityEntryDlg *pDlg = new KNewEquityEntryDlg(this);
 	pDlg->exec();
 	int nResult = pDlg->result();
 	if(nResult)
 	{
-		pEquity = new MyMoneyEquity;
-    if(pEquity)
-    {
-			//populate this equity entry with information from the dialog.
-			QString strTemp;
-			strTemp = pDlg->edtEquityName->text();
-			kdDebug(1) << "Equity name is: " << strTemp << endl;
-//			pEquity->setEquityName(strTemp);
+		//populate this equity entry with information from the dialog.
+		QString strTemp;
+		strTemp = pDlg->edtEquityName->text();
+		kdDebug(1) << "Equity name is: " << strTemp << endl;
+//		pEquity->setEquityName(strTemp);
 			
-			strTemp = pDlg->edtMarketSymbol->text();
-			kdDebug(1) << "Equity Symbol is: " << strTemp << endl;
-//			pEquity->setEquitySymbol(strTemp);
+		strTemp = pDlg->edtMarketSymbol->text();
+		kdDebug(1) << "Equity Symbol is: " << strTemp << endl;
+//	pEquity->setEquitySymbol(strTemp);
 			
-			strTemp = pDlg->cmbInvestmentType->currentText();
-			kdDebug(1) << "Equity Type is: " << strTemp << endl;
-//			pEquity->setEquityType(strTemp);
+	  strTemp = pDlg->cmbInvestmentType->currentText();
+		kdDebug(1) << "Equity Type is: " << strTemp << endl;
+//	pEquity->setEquityType(strTemp);
 			
-			const double price = pDlg->getStockPrice();
-			kdDebug(1) << "Current Equity Price is: " << price << endl;
-    	MyMoneyMoney money(price);
-//    	pEquity->setCurrentPrice(QDate::currentDate(), &money);
+		const double price = pDlg->getStockPrice();
+		kdDebug(1) << "Current Equity Price is: " << price << endl;
+    MyMoneyMoney money(price);
+//  pEquity->setCurrentPrice(QDate::currentDate(), &money);
     	
-    	//add to equity database
-    	addEquityEntry(pEquity);
+    //add to equity database
+    addEquityEntry(equity);
     	
-    	//display new equity in the list view.
-    	displayNewEquity(pEquity);
-    }
+    //display new equity in the list view.
+    //displayNewEquity(equity);
 	}
-}
+}   */
 
 void KInvestmentView::addEquityEntry(MyMoneyEquity* /*pEntry*/)
 {/*
@@ -273,10 +285,6 @@ void KInvestmentView::slotUpdatePrice()
 		int nResult = pDlg->result();
 	}
 */
-}
-
-void KInvestmentView::slotListDoubleClicked(QListViewItem* /*pItem*/, const QPoint& /*pos*/, int /*c*/)
-{
 }
 
 void KInvestmentView::slotListRightMouse(QListViewItem* /*item*/, const QPoint& /*point*/, int)
