@@ -963,7 +963,8 @@ void MyMoneyQifReader::selectOrCreateAccount(const SelectCreateMode mode, MyMone
         && importedAccountData.openingBalance() != account.openingBalance()) {
           if(KMessageBox::questionYesNo(0, i18n("Do you want to override the opening balance of this account currently set to %1 with %2?")
               .arg(account.openingBalance().formatMoney())
-              .arg(importedAccountData.openingBalance().formatMoney())) == KMessageBox::Yes) {
+              .arg(importedAccountData.openingBalance().formatMoney())
+            ,QString(),KStdGuiItem::yes(),KStdGuiItem::no(),"replaceopeningbalance") == KMessageBox::Yes) {
             account.setOpeningBalance(importedAccountData.openingBalance());
             MyMoneyFile::instance()->modifyAccount(account);
           }

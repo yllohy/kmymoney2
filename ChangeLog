@@ -1,3 +1,11 @@
+2004-08-21 Ace Jones <acejones@users.sourceforge.net>
+  * Fixed a bug in transaction reports where totals did not work
+    with the new parentheses-around money format
+  * Added "Do not ask again" to "Do you want to override the opening balance 
+    of this account currently set to %1 with %2?" in QIF reader.
+  * Added "Automatically create missing payees" to "Last Use Settings" in
+    configuration file.
+            
 2004-08-17 Ace Jones <acejones@users.sourceforge.net>
   * Fixed a bug where creating a new category would not properly use the
     currently selected account as the parent, for expense accounts.

@@ -131,6 +131,7 @@ void KImportDlg::readConfig(void)
   KConfig *kconfig = KGlobal::config();
   kconfig->setGroup("Last Use Settings");
   m_qlineeditFile->setText(kconfig->readEntry("KImportDlg_LastFile"));
+  m_payeeCreation->setChecked(kconfig->readBoolEntry("KImportDlg_CreatePayees",false));
 }
 
 void KImportDlg::writeConfig(void)
@@ -139,6 +140,7 @@ void KImportDlg::writeConfig(void)
   kconfig->setGroup("Last Use Settings");
   kconfig->writeEntry("KImportDlg_LastFile", m_qlineeditFile->text());
   kconfig->writeEntry("KImportDlg_LastProfile", m_profileComboBox->currentText());
+  kconfig->writeEntry("KImportDlg_CreatePayees",m_payeeCreation->isChecked());
   kconfig->sync();
 }
 
