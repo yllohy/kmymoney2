@@ -114,7 +114,7 @@ bool MyMoneyAccount::removeTransaction(const MyMoneyTransaction& transaction)
   unsigned int pos;
   if (findTransactionPosition(transaction, pos)) {
 		if (m_parent)
-			m_parent->parent()->setDirty(true);
+			m_parent->file()->setDirty(true);
     return m_transactions.remove(pos);
 	}
   return false;
@@ -132,7 +132,7 @@ bool MyMoneyAccount::addTransaction(MyMoneyTransaction::transactionMethod method
   if (m_transactions.isEmpty()) {
     m_transactions.append(transaction);
 		if (m_parent)
-			m_parent->parent()->setDirty(true);
+			m_parent->file()->setDirty(true);
     return true;
   }
   int idx=0;
@@ -151,7 +151,7 @@ bool MyMoneyAccount::addTransaction(MyMoneyTransaction::transactionMethod method
 
   m_transactions.insert(idx,transaction);
 	if (m_parent)	
-		m_parent->parent()->setDirty(true);
+		m_parent->file()->setDirty(true);
 
   return true;
 }
@@ -262,11 +262,11 @@ QList<MyMoneyTransaction> * MyMoneyAccount::getTransactionList(){
 
 }
 
-void MyMoneyAccount::setOpeningDate(QDate date) { m_openingDate = date; if (m_parent) m_parent->parent()->setDirty(true); }
-void MyMoneyAccount::setOpeningBalance(MyMoneyMoney money) { m_openingBalance = money; if (m_parent) m_parent->parent()->setDirty(true); }
-void MyMoneyAccount::setName(const QString& name) { m_accountName = name; if (m_parent) m_parent->parent()->setDirty(true); }
-void MyMoneyAccount::setAccountNumber(const QString& number) { m_accountNumber = number; if (m_parent) m_parent->parent()->setDirty(true); }
-void MyMoneyAccount::setLastId(const long id) { m_lastId = id; if (m_parent) m_parent->parent()->setDirty(true); }
-void MyMoneyAccount::setAccountType(MyMoneyAccount::accountTypeE type) { m_accountType = type; if (m_parent) m_parent->parent()->setDirty(true); }
-void MyMoneyAccount::setDescription(const QString& description) { m_description = description; if (m_parent) m_parent->parent()->setDirty(true); }
-void MyMoneyAccount::setLastReconcile(const QDate& date) { m_lastReconcile = date; if (m_parent) m_parent->parent()->setDirty(true); }
+void MyMoneyAccount::setOpeningDate(QDate date) { m_openingDate = date; if (m_parent) m_parent->file()->setDirty(true); }
+void MyMoneyAccount::setOpeningBalance(MyMoneyMoney money) { m_openingBalance = money; if (m_parent) m_parent->file()->setDirty(true); }
+void MyMoneyAccount::setName(const QString& name) { m_accountName = name; if (m_parent) m_parent->file()->setDirty(true); }
+void MyMoneyAccount::setAccountNumber(const QString& number) { m_accountNumber = number; if (m_parent) m_parent->file()->setDirty(true); }
+void MyMoneyAccount::setLastId(const long id) { m_lastId = id; if (m_parent) m_parent->file()->setDirty(true); }
+void MyMoneyAccount::setAccountType(MyMoneyAccount::accountTypeE type) { m_accountType = type; if (m_parent) m_parent->file()->setDirty(true); }
+void MyMoneyAccount::setDescription(const QString& description) { m_description = description; if (m_parent) m_parent->file()->setDirty(true); }
+void MyMoneyAccount::setLastReconcile(const QDate& date) { m_lastReconcile = date; if (m_parent) m_parent->file()->setDirty(true); }

@@ -58,7 +58,7 @@ public:
   QString telephone(void) const { return m_telephone; }
   QString manager(void) const { return m_manager; }
   QString sortCode(void) const { return m_sortCode; }
-	MyMoneyFile *parent(void) { return m_parent; }
+	MyMoneyFile *file(void) { return m_parent; }
 
 	// Simple set operations
   void setName(const QString& name);

@@ -709,34 +709,59 @@ bool KMyMoney2App::initWizard()
     }
 }
 /** No descriptions */
-void KMyMoney2App::slotFileBackup(){
+void KMyMoney2App::slotFileBackup()
+{
+  if (myMoneyView->dirty()) {
+    int answer = KMessageBox::warningYesNoCancel(this, i18n("The file has been changed, save it ?"));
+    if (answer == KMessageBox::Cancel)
+      return;
+    else if (answer == KMessageBox::Yes)
+      slotFileSave();
+  }
 
-  	KBackupDlg *backupDlg = new KBackupDlg(this,0,true);
-	connect(backupDlg->btnOK,SIGNAL(clicked()),backupDlg,SLOT(accept()));
-	connect(backupDlg->btnCancel,SIGNAL(clicked()),backupDlg,SLOT(reject()));
-    backupDlg->txtMountPoint->setText(mountpoint);
-	int returncode = backupDlg->exec();
+  KBackupDlg *backupDlg = new KBackupDlg(this,0/*,true*/);
+  connect(backupDlg->btnOK,SIGNAL(clicked()),backupDlg,SLOT(accept()));
+  connect(backupDlg->btnCancel,SIGNAL(clicked()),backupDlg,SLOT(reject()));
+  backupDlg->txtMountPoint->setText(mountpoint);
+  int returncode = backupDlg->exec();
 
-	if(returncode)
-	{
-		mountbackup = true;
-	    copybackup = false;
-       unmountbackup = false;
-		mountpoint = backupDlg->txtMountPoint->text();
-		proc.clearArguments();
-		proc << "mount";
-    	proc << mountpoint;
-		proc.start();
-	    qDebug("OK Pressed");
-	}
-	else
-	{
-   	qDebug("Cancel Pressed");
-	}
+  if(returncode)
+  {
+    // make sure the file doesn't exist already
+    QString today;
+    today.sprintf("-%d-%d-%d.kmy",QDate::currentDate().day(), QDate::currentDate().month(), QDate::currentDate().year());
+    QFile f(mountpoint + fileName.mid(fileName.findRev("/")) + today);
+    if (f.exists()) {
+      int answer = KMessageBox::warningContinueCancel(this, "Backup file for today exists on that device.  Replace ?", "Backup", "&Replace");
+      if (answer==KMessageBox::Cancel)
+        return;
+    }
 
-	delete backupDlg;
+    mountpoint = backupDlg->txtMountPoint->text();
+    if (backupDlg->mountCheckBox->isChecked()) {
+      mountbackup = true;
+      copybackup = false;
+      unmountbackup = false;
 
+      proc.clearArguments();
+      proc << "mount";
+      proc << mountpoint;
+      proc.start();
+    } else {
+      mountbackup = false;
+      copybackup = false;
+      unmountbackup = false;
+      proc.clearArguments();
+      QString backupfile = mountpoint + fileName.mid(fileName.findRev("/")) + today;
+      proc.clearArguments();
+      proc << "cp" << "-f" << fileName << backupfile;
+      proc.start();
+    }
+  }
+
+  delete backupDlg;
 }
+
 /** No descriptions */
 void KMyMoney2App::slotProcessExited(){
 
@@ -750,7 +775,7 @@ void KMyMoney2App::slotProcessExited(){
 				backupfile = mountpoint + fileName.mid(fileName.findRev("/"));
 				proc.clearArguments();
 				proc << "cp";
-    			proc << fileName << backupfile;
+    			proc << "-f" << fileName << backupfile;
 				proc.start();
 				mountbackup = false;
        			copybackup = true;
@@ -801,8 +826,14 @@ void KMyMoney2App::slotProcessExited(){
        			copybackup = false;
 				unmountbackup = false;
 			}
-	}
-
+  } else {
+    if(proc.exitStatus() == 0) {
+      KMessageBox::information(this, "File Successfully Backed Up", "Backup");
+    }
+    else {
+      KMessageBox::information(this, "Error copying file", "Backup");
+    }
+  }
 }
 
 void KMyMoney2App::slotFileNewWindow()

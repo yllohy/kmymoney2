@@ -33,7 +33,7 @@ class MyMoneyBank;
   * @see MyMoneyTransaction
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: mymoneyaccount.h,v 1.10 2001/07/08 17:45:02 mte Exp $
+  * $Id: mymoneyaccount.h,v 1.11 2001/07/09 21:11:36 mte Exp $
   *
   * @short Representation of an account which holds transactions.
 **/
@@ -360,7 +360,7 @@ public:
   /** No descriptions */
   QList<MyMoneyTransaction> * getTransactionList();
 
-	MyMoneyBank *parent(void) { return m_parent; }
+	MyMoneyBank *bank(void) { return m_parent; }
 };
 
 #endif

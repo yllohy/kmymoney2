@@ -1,3 +1,11 @@
+2001-07-09 Michael Edwardes <mte@users.sourceforge.net>
+  * Updated the parent() methods to have descriptive names and added missing
+    call in MyMoneyTransaction.
+  * Changed the backup dialog to incorporate a choose folder button.
+  * Fixed bug in backup dialog dealing with automount systems.
+  * Backup files now have the date appended to them, for proper backup
+    restoration, and a test exists to check overwriting files.
+
 2001-07-08 Michael Edwardes <mte@users.sourceforge.net>
   * Start dialog only shows files that exist.
   * Fixed bug in MyMoneyFile class that didn't delete the payee list

@@ -29,8 +29,11 @@
 
 class KBackupDlg : public kbackupdlgdecl  {
 	Q_OBJECT
-public: 
-	KBackupDlg( QWidget* parent,  const char* name, bool modal);
+protected slots:
+  void chooseButtonClicked();
+
+public:
+	KBackupDlg( QWidget* parent,  const char* name/*, bool modal*/);
 	~KBackupDlg();
 };
 

@@ -187,16 +187,16 @@ bool MyMoneyTransaction::readAllData(int version, QDataStream& stream)
     return true;
 }
 
-void MyMoneyTransaction::setNumber(const QString& val) { m_number = val; if (m_parent) m_parent->parent()->parent()->setDirty(true); }
-void MyMoneyTransaction::setMemo(const QString& val) { m_memo = val; if (m_parent) m_parent->parent()->parent()->setDirty(true); }
-void MyMoneyTransaction::setAmount(const MyMoneyMoney& val) { m_amount = val; if (m_parent) m_parent->parent()->parent()->setDirty(true); }
-void MyMoneyTransaction::setDate(const QDate& date) { m_date = date; if (m_parent) m_parent->parent()->parent()->setDirty(true); }
-void MyMoneyTransaction::setMethod(const transactionMethod method) { m_method = method; if (m_parent) m_parent->parent()->parent()->setDirty(true); }
-void MyMoneyTransaction::setCategoryMajor(const QString& major) { m_categoryMajor = major; if (m_parent) m_parent->parent()->parent()->setDirty(true); }
-void MyMoneyTransaction::setCategoryMinor(const QString& minor) { m_categoryMinor = minor; if (m_parent) m_parent->parent()->parent()->setDirty(true); }
-void MyMoneyTransaction::setAtmBankName(const QString& val) { m_atmBankName = val; if (m_parent) m_parent->parent()->parent()->setDirty(true); }
-void MyMoneyTransaction::setPayee(const QString& fromTo) { m_payee = fromTo; if (m_parent) m_parent->parent()->parent()->setDirty(true); }
-void MyMoneyTransaction::setAccountFrom(const QString& bankFrom) { m_accountFrom = bankFrom; if (m_parent) m_parent->parent()->parent()->setDirty(true); }
-void MyMoneyTransaction::setAccountTo(const QString& bankTo) { m_accountTo = bankTo; if (m_parent) m_parent->parent()->parent()->setDirty(true); }
-void MyMoneyTransaction::setState(const stateE state) { m_state = state; if (m_parent) m_parent->parent()->parent()->setDirty(true); }
-void MyMoneyTransaction::setIndex(const unsigned int index) { m_index = index; if (m_parent) m_parent->parent()->parent()->setDirty(true); }
+void MyMoneyTransaction::setNumber(const QString& val) { m_number = val; if (m_parent) m_parent->bank()->file()->setDirty(true); }
+void MyMoneyTransaction::setMemo(const QString& val) { m_memo = val; if (m_parent) m_parent->bank()->file()->setDirty(true); }
+void MyMoneyTransaction::setAmount(const MyMoneyMoney& val) { m_amount = val; if (m_parent) m_parent->bank()->file()->setDirty(true); }
+void MyMoneyTransaction::setDate(const QDate& date) { m_date = date; if (m_parent) m_parent->bank()->file()->setDirty(true); }
+void MyMoneyTransaction::setMethod(const transactionMethod method) { m_method = method; if (m_parent) m_parent->bank()->file()->setDirty(true); }
+void MyMoneyTransaction::setCategoryMajor(const QString& major) { m_categoryMajor = major; if (m_parent) m_parent->bank()->file()->setDirty(true); }
+void MyMoneyTransaction::setCategoryMinor(const QString& minor) { m_categoryMinor = minor; if (m_parent) m_parent->bank()->file()->setDirty(true); }
+void MyMoneyTransaction::setAtmBankName(const QString& val) { m_atmBankName = val; if (m_parent) m_parent->bank()->file()->setDirty(true); }
+void MyMoneyTransaction::setPayee(const QString& fromTo) { m_payee = fromTo; if (m_parent) m_parent->bank()->file()->setDirty(true); }
+void MyMoneyTransaction::setAccountFrom(const QString& bankFrom) { m_accountFrom = bankFrom; if (m_parent) m_parent->bank()->file()->setDirty(true); }
+void MyMoneyTransaction::setAccountTo(const QString& bankTo) { m_accountTo = bankTo; if (m_parent) m_parent->bank()->file()->setDirty(true); }
+void MyMoneyTransaction::setState(const stateE state) { m_state = state; if (m_parent) m_parent->bank()->file()->setDirty(true); }
+void MyMoneyTransaction::setIndex(const unsigned int index) { m_index = index; if (m_parent) m_parent->bank()->file()->setDirty(true); }

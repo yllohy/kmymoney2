@@ -16,10 +16,22 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <qpushbutton.h>
+#include <qlineedit.h>
+#include <kfiledialog.h>
 #include "kbackupdlg.h"
 
-KBackupDlg::KBackupDlg( QWidget* parent,  const char* name, bool modal):kbackupdlgdecl( parent,  name , true){
-
+KBackupDlg::KBackupDlg( QWidget* parent,  const char* name/*, bool modal*/)
+  : kbackupdlgdecl( parent,  name , true)
+{
+  connect(chooseButton, SIGNAL(clicked()), this, SLOT(chooseButtonClicked()));
 }
-KBackupDlg::~KBackupDlg(){
+
+KBackupDlg::~KBackupDlg()
+{
+}
+
+void KBackupDlg::chooseButtonClicked()
+{
+  txtMountPoint->setText(KFileDialog::getExistingDirectory());
 }

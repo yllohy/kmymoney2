@@ -98,6 +98,8 @@ public:
   MyMoneyTransaction& operator = (const MyMoneyTransaction&);
 
   bool readAllData(int version, QDataStream& stream);
+
+  MyMoneyAccount *account(void) { return m_parent; }
 };
 
 #endif
