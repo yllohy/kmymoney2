@@ -282,6 +282,92 @@ QValueList<QDate> MyMoneySchedule::paymentDates(const QDate& startDate, const QD
   return theDates;
 }
 
+QString MyMoneySchedule::occurenceToString(void) const
+{
+  QString text;
+  
+  switch (m_occurence)
+  {
+    case OCCUR_ONCE:
+      text = i18n("Once");
+      break;
+    case OCCUR_DAILY:
+      text = i18n("Daily");
+      break;
+    case OCCUR_WEEKLY:
+      text = i18n("Weekly");
+      break;
+    case OCCUR_FORTNIGHTLY:
+      text = i18n("Fortnightly");
+      break;
+    case OCCUR_EVERYOTHERWEEK:
+      text = i18n("Every other week");
+      break;
+    case OCCUR_EVERYFOURWEEKS:
+      text = i18n("Every four weeks");
+      break;
+    case OCCUR_MONTHLY:
+      text = i18n("Monthly");
+      break;
+    case OCCUR_EVERYOTHERMONTH:
+      text = i18n("Every other month");
+      break;
+    case OCCUR_EVERYTHREEMONTHS:
+      text = i18n("Every three months");
+      break;
+    case OCCUR_QUARTERLY:
+      text = i18n("Quarterly");
+      break;
+    case OCCUR_EVERYFOURMONTHS:
+      text = i18n("Every four months");
+      break;
+    case OCCUR_TWICEYEARLY:
+      text = i18n("Twice yearly");
+      break;
+    case OCCUR_YEARLY:
+      text = i18n("Yearly");
+      break;
+    case OCCUR_EVERYOTHERYEAR:
+      text = i18n("Every other year");
+      break;
+    case OCCUR_ANY:
+      text = i18n("Any (Error)");
+      break;
+  }
+
+  return text;
+}
+
+QString MyMoneySchedule::paymentMethodToString(void) const
+{
+  QString text;
+
+  switch (m_paymentType)
+  {
+    case STYPE_DIRECTDEBIT:
+      text = i18n("Direct debit");
+      break;
+    case STYPE_DIRECTDEPOSIT:
+      text = i18n("Direct deposit");
+      break;
+    case STYPE_MANUALDEPOSIT:
+      text = i18n("Manual deposit");
+      break;
+    case STYPE_OTHER:
+      text = i18n("Other");
+      break;
+    case STYPE_WRITECHEQUE:
+      text = i18n("Write cheque");
+      break;
+    case STYPE_ANY:
+      text = i18n("Any (Error)");
+      break;
+  }
+
+  return text;
+}
+
+
 
 MyMoneyScheduled* MyMoneyScheduled::m_instance = 0;
 
@@ -462,11 +548,11 @@ MyMoneySchedule MyMoneyScheduled::getSchedule(const QCString& accountId, const Q
   return it.data();
 }
 
-QValueList<QString> MyMoneyScheduled::getScheduled(const QCString& accountId, const MyMoneySchedule::typeE type,
+QStringList MyMoneyScheduled::getScheduled(const QCString& accountId, const MyMoneySchedule::typeE type,
   const MyMoneySchedule::paymentTypeE paymentType,
   const MyMoneySchedule::occurenceE occurence)
 {
-  QValueList<QString> idList;
+  QStringList idList;
   QMap<QString, MyMoneySchedule>::Iterator it;
 
   try
@@ -504,12 +590,12 @@ QValueList<QString> MyMoneyScheduled::getScheduled(const QCString& accountId, co
   return idList;
 }
 
-QValueList<QString> MyMoneyScheduled::getScheduled(const QCString& accountId, const QDate& startDate, const QDate& endDate,
+QStringList MyMoneyScheduled::getScheduled(const QCString& accountId, const QDate& startDate, const QDate& endDate,
   const MyMoneySchedule::typeE type,
   const MyMoneySchedule::paymentTypeE paymentType,
   const MyMoneySchedule::occurenceE occurence)
 {
-  QValueList<QString> idList;
+  QStringList idList;
   QMap<QString, MyMoneySchedule>::Iterator it;
 
   try
@@ -551,11 +637,11 @@ QValueList<QString> MyMoneyScheduled::getScheduled(const QCString& accountId, co
   return idList;
 }
 
-QValueList<QString> MyMoneyScheduled::getOverdue(const QCString& accountId, const MyMoneySchedule::typeE type,
+QStringList MyMoneyScheduled::getOverdue(const QCString& accountId, const MyMoneySchedule::typeE type,
   const MyMoneySchedule::paymentTypeE paymentType,
   const MyMoneySchedule::occurenceE occurence)
 {
-  QValueList<QString> idList;
+  QStringList idList;
   QMap<QString, MyMoneySchedule>::Iterator it;
 
   try
@@ -682,4 +768,24 @@ bool MyMoneyScheduled::anyScheduled(const QCString& accountId, const MyMoneySche
   }
 
   return false;
+}
+
+unsigned int MyMoneyScheduled::count(const QCString& accountId)
+{
+  try
+  {
+    MyMoneyFile::instance()->account(accountId);
+
+    if (m_accountsScheduled.contains(accountId))
+      return m_accountsScheduled[accountId].count();
+    
+  } catch (MyMoneyException *e)
+  {
+    QString s(i18n("Exception in MyMoneyScheduled: "));
+    s += e->what();
+    delete e;
+    throw new MYMONEYEXCEPTION(s);
+  }
+
+  return 0;
 }

@@ -47,16 +47,19 @@
 
 #include "../widgets/kmymoneypayee.h"
 
-KEditScheduledBillDlg::KEditScheduledBillDlg(const QCString& accountId, QWidget *parent, const char *name)
+KEditScheduledBillDlg::KEditScheduledBillDlg(const QCString& accountId, const MyMoneySchedule& schedule, QWidget *parent, const char *name)
  : kEditScheduledBillDlgDecl(parent, name, true)
 {
   m_accountId = accountId;
+  m_schedule = schedule;
+  m_transaction = schedule.transaction();
 
   KIntValidator *validator = new KIntValidator(1, 32768, this);
   m_qlineeditRemaining->setValidator(validator);
   
   readConfig();
   reloadFromFile();
+  loadWidgetsFromSchedule();
 
   connect(m_qbuttonCancel, SIGNAL(clicked()), this, SLOT(reject()));
   connect(m_qbuttonSplit, SIGNAL(clicked()), this, SLOT(slotSplitClicked()));
@@ -291,44 +294,70 @@ void KEditScheduledBillDlg::okClicked()
 
   try
   {
-    
-  QString occurence = m_kcomboFreq->currentText();
-  if (occurence == i18n("Once"))
-    m_schedule.setOccurence(MyMoneySchedule::OCCUR_ONCE);
-  else if (occurence = i18n("Daily"))
-    m_schedule.setOccurence(MyMoneySchedule::OCCUR_DAILY);
-  else if (occurence = i18n("Weekly"))
-    m_schedule.setOccurence(MyMoneySchedule::OCCUR_WEEKLY);
-  else if (occurence = i18n("Fortnightly"))
-    m_schedule.setOccurence(MyMoneySchedule::OCCUR_FORTNIGHTLY);
-  else if (occurence = i18n("Every other week"))
-    m_schedule.setOccurence(MyMoneySchedule::OCCUR_EVERYOTHERWEEK);
-  else if (occurence = i18n("Every four weeks"))
-    m_schedule.setOccurence(MyMoneySchedule::OCCUR_EVERYFOURWEEKS);
-  else if (occurence = i18n("Monthly"))
-    m_schedule.setOccurence(MyMoneySchedule::OCCUR_MONTHLY);
-  else if (occurence = i18n("Every other month"))
-    m_schedule.setOccurence(MyMoneySchedule::OCCUR_EVERYOTHERMONTH);
-  else if (occurence = i18n("Every three months"))
-    m_schedule.setOccurence(MyMoneySchedule::OCCUR_EVERYTHREEMONTHS);
-  else if (occurence = i18n("Every four months"))
-    m_schedule.setOccurence(MyMoneySchedule::OCCUR_EVERYFOURMONTHS);
-  else if (occurence = i18n("Twice a year"))
-    m_schedule.setOccurence(MyMoneySchedule::OCCUR_TWICEYEARLY);
-  else if (occurence = i18n("Quarterly"))
-    m_schedule.setOccurence(MyMoneySchedule::OCCUR_QUARTERLY);
-  else if (occurence = i18n("Yearly"))
-    m_schedule.setOccurence(MyMoneySchedule::OCCUR_YEARLY);
-  else if (occurence = i18n("Every other year"))
-    m_schedule.setOccurence(MyMoneySchedule::OCCUR_EVERYOTHERYEAR);
+  switch (m_kcomboFreq->currentItem())
+  {
+    case 0:
+      m_schedule.setOccurence(MyMoneySchedule::OCCUR_ONCE);
+      break;
+    case 1:
+      m_schedule.setOccurence(MyMoneySchedule::OCCUR_DAILY);
+      break;
+    case 2:
+      m_schedule.setOccurence(MyMoneySchedule::OCCUR_WEEKLY);
+      break;
+    case 3:
+      m_schedule.setOccurence(MyMoneySchedule::OCCUR_FORTNIGHTLY);
+      break;
+    case 4:
+      m_schedule.setOccurence(MyMoneySchedule::OCCUR_EVERYOTHERWEEK);
+      break;
+    case 5:
+      m_schedule.setOccurence(MyMoneySchedule::OCCUR_EVERYFOURWEEKS);
+      break;
+    case 6:
+      m_schedule.setOccurence(MyMoneySchedule::OCCUR_MONTHLY);
+      break;
+    case 7:
+      m_schedule.setOccurence(MyMoneySchedule::OCCUR_EVERYOTHERMONTH);
+      break;
+    case 8:
+      m_schedule.setOccurence(MyMoneySchedule::OCCUR_EVERYTHREEMONTHS);
+      break;
+    case 9:
+      m_schedule.setOccurence(MyMoneySchedule::OCCUR_EVERYFOURMONTHS);
+      break;
+    case 10:
+      m_schedule.setOccurence(MyMoneySchedule::OCCUR_TWICEYEARLY);
+      break;
+    case 11:
+      m_schedule.setOccurence(MyMoneySchedule::OCCUR_QUARTERLY);
+      break;
+    case 12:
+      m_schedule.setOccurence(MyMoneySchedule::OCCUR_YEARLY);
+      break;
+    case 13:
+      m_schedule.setOccurence(MyMoneySchedule::OCCUR_EVERYOTHERYEAR);
+      break;
+    default:
+      m_schedule.setOccurence(MyMoneySchedule::OCCUR_ANY);
+      break;
+  }
 
-  QString method = m_kcomboMethod->currentText();
-  if (method == i18n("Direct Debit"))
-    m_schedule.setPaymentType(MyMoneySchedule::STYPE_DIRECTDEBIT);
-  else if (method == i18n("Write Cheque"))
-    m_schedule.setPaymentType(MyMoneySchedule::STYPE_WRITECHEQUE);
-  else if (method == i18n("Other"))
-    m_schedule.setPaymentType(MyMoneySchedule::STYPE_OTHER);
+  switch (m_kcomboMethod->currentItem())
+  {
+    case 0:
+      m_schedule.setPaymentType(MyMoneySchedule::STYPE_DIRECTDEBIT);
+      break;
+    case 1:
+      m_schedule.setPaymentType(MyMoneySchedule::STYPE_WRITECHEQUE);
+      break;
+    case 2:
+      m_schedule.setPaymentType(MyMoneySchedule::STYPE_OTHER);
+      break;
+    default:
+      m_schedule.setPaymentType(MyMoneySchedule::STYPE_ANY);
+      break;
+  }
 
   m_schedule.setType(MyMoneySchedule::TYPE_BILL);
 
@@ -379,13 +408,30 @@ void KEditScheduledBillDlg::okClicked()
     split1.setAction(split1.ActionWithdrawal);
     split1.setPayeeId(payeeId);
     split1.setMemo(m_qlineeditMemo->text());
-    split1.setValue(m_kmoneyeditAmount->getMoneyValue());
+    MyMoneyMoney amount = m_kmoneyeditAmount->getMoneyValue();
+    if (amount > 0)
+      amount = -amount;
+    split1.setValue(amount);
     m_transaction.addSplit(split1);
 
     MyMoneySplit split2;
+
+    // Cribbed from KLedgerView::slotCategoryChanged
+    QString category = m_category->text();
+    QCString id = MyMoneyFile::instance()->categoryToAccount(category);
+    if(id == "" && category != "") {
+      // FIXME:
+      /// Todo: Add account (hierarchy) upon new category
+      KMessageBox::sorry(0, i18n("Direct creation of new account not yet implemented"));
+      m_category->resetText();
+      m_category->setFocus();
+      return;
+    }
+    
+    split2.setAccountId(id);
     split2.setPayeeId(split1.payeeId());
-    split2.setMemo(split2.memo());
-    split2.setValue(-split2.value());
+    split2.setMemo(split1.memo());
+    split2.setValue(-split1.value());
     m_transaction.addSplit(split2);
   }
 
@@ -413,3 +459,125 @@ void KEditScheduledBillDlg::okClicked()
 
   accept();
 }
+
+void KEditScheduledBillDlg::loadWidgetsFromSchedule(void)
+{
+  try
+  {
+    m_kcomboPayTo->loadText(MyMoneyFile::instance()->payee(m_schedule.transaction().split(m_accountId).payeeId()).name());
+    m_kdateinputDue->setDate(m_schedule.startDate());
+
+    switch (m_schedule.paymentType())
+    {
+      case MyMoneySchedule::STYPE_DIRECTDEBIT:
+        m_kcomboMethod->setCurrentItem(0);
+        break;
+      case MyMoneySchedule::STYPE_WRITECHEQUE:
+        m_kcomboMethod->setCurrentItem(1);
+        break;
+      case MyMoneySchedule::STYPE_OTHER:
+        m_kcomboMethod->setCurrentItem(2);
+        break;
+
+    }
+
+    switch (m_schedule.occurence())
+    {
+      case MyMoneySchedule::OCCUR_ONCE:
+        m_kcomboFreq->setCurrentItem(0);
+        break;
+      case MyMoneySchedule::OCCUR_DAILY:
+        m_kcomboFreq->setCurrentItem(1);
+        break;
+      case MyMoneySchedule::OCCUR_WEEKLY:
+        m_kcomboFreq->setCurrentItem(2);
+        break;
+      case MyMoneySchedule::OCCUR_FORTNIGHTLY:
+        m_kcomboFreq->setCurrentItem(3);
+        break;
+      case MyMoneySchedule::OCCUR_EVERYOTHERWEEK:
+        m_kcomboFreq->setCurrentItem(4);
+        break;
+      case MyMoneySchedule::OCCUR_EVERYFOURWEEKS:
+        m_kcomboFreq->setCurrentItem(5);
+        break;
+      case MyMoneySchedule::OCCUR_MONTHLY:
+        m_kcomboFreq->setCurrentItem(6);
+        break;
+      case MyMoneySchedule::OCCUR_EVERYOTHERMONTH:
+        m_kcomboFreq->setCurrentItem(7);
+        break;
+      case MyMoneySchedule::OCCUR_EVERYTHREEMONTHS:
+        m_kcomboFreq->setCurrentItem(8);
+        break;
+      case MyMoneySchedule::OCCUR_QUARTERLY:
+        m_kcomboFreq->setCurrentItem(9);
+        break;
+      case MyMoneySchedule::OCCUR_EVERYFOURMONTHS:
+        m_kcomboFreq->setCurrentItem(10);
+        break;
+      case MyMoneySchedule::OCCUR_TWICEYEARLY:
+        m_kcomboFreq->setCurrentItem(11);
+        break;
+      case MyMoneySchedule::OCCUR_YEARLY:
+        m_kcomboFreq->setCurrentItem(12);
+        break;
+      case MyMoneySchedule::OCCUR_EVERYOTHERYEAR:
+        m_kcomboFreq->setCurrentItem(13);
+        break;
+    }
+    
+    MyMoneyMoney amount = m_schedule.transaction().split(m_accountId).value();
+    if (amount < 0)
+      amount = -amount;
+    m_kmoneyeditAmount->setText(amount.formatMoney());
+    m_qcheckboxEstimate->setChecked(!m_schedule.isFixed());
+    if (m_schedule.transaction().splitCount() >= 3)
+      m_category->loadText(i18n("Splitted Transaction"));
+    else
+      m_category->loadText(MyMoneyFile::instance()->instance()->accountToCategory(m_schedule.transaction().split(m_accountId, false).accountId()));
+    m_qlineeditMemo->setText(m_schedule.transaction().split(m_accountId).memo());
+    m_qcheckboxAuto->setChecked(m_schedule.autoEnter());
+    m_qcheckboxEnd->setChecked(m_schedule.willEnd());
+    if (m_schedule.willEnd())
+    {
+      m_endLabel1->setEnabled(true);
+      m_qlineeditRemaining->setEnabled(true);
+      m_endLabel2->setEnabled(true);
+      m_kdateinputFinal->setEnabled(true);
+      m_qlineeditRemaining->setText(QString::number(m_schedule.transactionsRemaining()));
+      m_kdateinputFinal->setDate(m_schedule.endDate());
+    }
+
+    // Remove the splits from the transaction to make the logic a little
+    // better later
+    m_transaction.removeSplits();
+    m_schedule.setTransaction(m_transaction);
+    
+  } catch (MyMoneyException *e)
+  {
+    delete e;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -288,44 +288,73 @@ void KEditScheduledTransferDlg::okClicked()
     return;
   }
 
+  try
+  {
+  switch (m_kcomboFreq->currentItem())
+  {
+    case 0:
+      m_schedule.setOccurence(MyMoneySchedule::OCCUR_ONCE);
+      break;
+    case 1:
+      m_schedule.setOccurence(MyMoneySchedule::OCCUR_DAILY);
+      break;
+    case 2:
+      m_schedule.setOccurence(MyMoneySchedule::OCCUR_WEEKLY);
+      break;
+    case 3:
+      m_schedule.setOccurence(MyMoneySchedule::OCCUR_FORTNIGHTLY);
+      break;
+    case 4:
+      m_schedule.setOccurence(MyMoneySchedule::OCCUR_EVERYOTHERWEEK);
+      break;
+    case 5:
+      m_schedule.setOccurence(MyMoneySchedule::OCCUR_EVERYFOURWEEKS);
+      break;
+    case 6:
+      m_schedule.setOccurence(MyMoneySchedule::OCCUR_MONTHLY);
+      break;
+    case 7:
+      m_schedule.setOccurence(MyMoneySchedule::OCCUR_EVERYOTHERMONTH);
+      break;
+    case 8:
+      m_schedule.setOccurence(MyMoneySchedule::OCCUR_EVERYTHREEMONTHS);
+      break;
+    case 9:
+      m_schedule.setOccurence(MyMoneySchedule::OCCUR_EVERYFOURMONTHS);
+      break;
+    case 10:
+      m_schedule.setOccurence(MyMoneySchedule::OCCUR_TWICEYEARLY);
+      break;
+    case 11:
+      m_schedule.setOccurence(MyMoneySchedule::OCCUR_QUARTERLY);
+      break;
+    case 12:
+      m_schedule.setOccurence(MyMoneySchedule::OCCUR_YEARLY);
+      break;
+    case 13:
+      m_schedule.setOccurence(MyMoneySchedule::OCCUR_EVERYOTHERYEAR);
+      break;
+    default:
+      m_schedule.setOccurence(MyMoneySchedule::OCCUR_ANY);
+      break;
+  }
 
-  QString occurence = m_kcomboFreq->currentText();
-  if (occurence == i18n("Once"))
-    m_schedule.setOccurence(MyMoneySchedule::OCCUR_ONCE);
-  else if (occurence = i18n("Daily"))
-    m_schedule.setOccurence(MyMoneySchedule::OCCUR_DAILY);
-  else if (occurence = i18n("Weekly"))
-    m_schedule.setOccurence(MyMoneySchedule::OCCUR_WEEKLY);
-  else if (occurence = i18n("Fortnightly"))
-    m_schedule.setOccurence(MyMoneySchedule::OCCUR_FORTNIGHTLY);
-  else if (occurence = i18n("Every other week"))
-    m_schedule.setOccurence(MyMoneySchedule::OCCUR_EVERYOTHERWEEK);
-  else if (occurence = i18n("Every four weeks"))
-    m_schedule.setOccurence(MyMoneySchedule::OCCUR_EVERYFOURWEEKS);
-  else if (occurence = i18n("Monthly"))
-    m_schedule.setOccurence(MyMoneySchedule::OCCUR_MONTHLY);
-  else if (occurence = i18n("Every other month"))
-    m_schedule.setOccurence(MyMoneySchedule::OCCUR_EVERYOTHERMONTH);
-  else if (occurence = i18n("Every three months"))
-    m_schedule.setOccurence(MyMoneySchedule::OCCUR_EVERYTHREEMONTHS);
-  else if (occurence = i18n("Every four months"))
-    m_schedule.setOccurence(MyMoneySchedule::OCCUR_EVERYFOURMONTHS);
-  else if (occurence = i18n("Twice a year"))
-    m_schedule.setOccurence(MyMoneySchedule::OCCUR_TWICEYEARLY);
-  else if (occurence = i18n("Quarterly"))
-    m_schedule.setOccurence(MyMoneySchedule::OCCUR_QUARTERLY);
-  else if (occurence = i18n("Yearly"))
-    m_schedule.setOccurence(MyMoneySchedule::OCCUR_YEARLY);
-  else if (occurence = i18n("Every other year"))
-    m_schedule.setOccurence(MyMoneySchedule::OCCUR_EVERYOTHERYEAR);
+  switch (m_kcomboMethod->currentItem())
+  {
+    case 0:
+      m_schedule.setPaymentType(MyMoneySchedule::STYPE_DIRECTDEBIT);
+      break;
+    case 1:
+      m_schedule.setPaymentType(MyMoneySchedule::STYPE_OTHER);
+      break;
+    case 2:
+      m_schedule.setPaymentType(MyMoneySchedule::STYPE_WRITECHEQUE);
+      break;
+    default:
+      m_schedule.setPaymentType(MyMoneySchedule::STYPE_ANY);
+      break;
+  }
 
-  QString method = m_kcomboMethod->currentText();
-  if (method == i18n("Other"))
-    m_schedule.setPaymentType(MyMoneySchedule::STYPE_OTHER);
-  else if (method == i18n("Direct Debit"))
-    m_schedule.setPaymentType(MyMoneySchedule::STYPE_DIRECTDEBIT);
-  else if (method == i18n("Write Cheque"))
-    m_schedule.setPaymentType(MyMoneySchedule::STYPE_WRITECHEQUE);
 
   m_schedule.setType(MyMoneySchedule::TYPE_TRANSFER);
 
@@ -398,6 +427,14 @@ void KEditScheduledTransferDlg::okClicked()
   {
     m_schedule.setEndDate(m_kdateinputFinal->getQDate());
     m_schedule.setTransactionsRemaining(m_qlineeditRemaining->text().toInt());
+  }
+
+  } catch (MyMoneyException *e)
+  {
+    QString s(i18n("Exception in okClicked: "));
+    s += e->what();
+    delete e;
+    KMessageBox::information(this, s);
   }
 
   accept();

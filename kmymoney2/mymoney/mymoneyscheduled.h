@@ -25,7 +25,7 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
-#include <qvaluelist.h>
+#include <qstringlist.h>
 #include <qmap.h>
 #include <qdatetime.h>
 
@@ -338,6 +338,23 @@ public:
     */
   QValueList<QDate> paymentDates(const QDate& startDate, const QDate& endDate) const;
 
+  /**
+    * Helper method to convert the frequency enum.
+    *
+    * @param none.
+    * @return The textual description of the frequency.
+  **/
+  QString occurenceToString(void) const;
+
+  /**
+    * Helper method to convert the payment type enum.
+    *
+    * @param none.
+    * @return The textual description of the payment type.
+  **/
+  QString paymentMethodToString(void) const;
+    
+
 private:
   /// Its occurence
   occurenceE m_occurence;
@@ -498,7 +515,7 @@ public:
     *
     * @todo Implement sorting and add other sort types.
     */
-  QValueList<QString> getScheduled(const QCString& accountId, const MyMoneySchedule::typeE type=MyMoneySchedule::TYPE_ANY,
+  QStringList getScheduled(const QCString& accountId, const MyMoneySchedule::typeE type=MyMoneySchedule::TYPE_ANY,
     const MyMoneySchedule::paymentTypeE paymentType=MyMoneySchedule::STYPE_ANY,
     const MyMoneySchedule::occurenceE occurence=MyMoneySchedule::OCCUR_ANY);
     
@@ -528,7 +545,7 @@ public:
     *
     * @todo Implement sorting and add other sort types.
     */
-  QValueList<QString> getScheduled(const QCString& accountId, const QDate& startDate, const QDate& endDate,
+  QStringList getScheduled(const QCString& accountId, const QDate& startDate, const QDate& endDate,
     const MyMoneySchedule::typeE type=MyMoneySchedule::TYPE_ANY,
     const MyMoneySchedule::paymentTypeE paymentType=MyMoneySchedule::STYPE_ANY,
     const MyMoneySchedule::occurenceE occurence=MyMoneySchedule::OCCUR_ANY);
@@ -559,7 +576,7 @@ public:
     *
     * @todo Implement sorting and add other sort types.
     */
-  QValueList<QString> getOverdue(const QCString& accountId, const MyMoneySchedule::typeE type=MyMoneySchedule::TYPE_ANY,
+  QStringList getOverdue(const QCString& accountId, const MyMoneySchedule::typeE type=MyMoneySchedule::TYPE_ANY,
     const MyMoneySchedule::paymentTypeE paymentType=MyMoneySchedule::STYPE_ANY,
     const MyMoneySchedule::occurenceE occurence=MyMoneySchedule::OCCUR_ANY);
       
@@ -604,6 +621,15 @@ public:
   bool anyScheduled(const QCString& accountId, const MyMoneySchedule::typeE type=MyMoneySchedule::TYPE_ANY,
     const MyMoneySchedule::occurenceE occurence=MyMoneySchedule::OCCUR_ANY,
     const MyMoneySchedule::paymentTypeE paymentType=MyMoneySchedule::STYPE_ANY);
+
+  /**
+    * Returns the number of schedules scheduled for the account.
+    *
+    *
+    * @param accountId The account reference the schedule is for.
+    * @return int The number of schedules.
+  **/
+  unsigned int count(const QCString& accountId);
 
 private:
   /// The instance

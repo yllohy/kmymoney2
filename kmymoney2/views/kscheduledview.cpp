@@ -64,11 +64,12 @@ KScheduledView::KScheduledView(QWidget *parent, const char *name )
   kpopupmenuNew->insertItem(kiconloader->loadIcon("new_bill", KIcon::Small), i18n("Bill"), this, SLOT(slotNewBill()));
   kpopupmenuNew->insertItem(kiconloader->loadIcon("new_deposit", KIcon::Small), i18n("Deposit"), this, SLOT(slotNewDeposit()));
   kpopupmenuNew->insertItem(kiconloader->loadIcon("new_transfer", KIcon::Small), i18n("Transfer"), this, SLOT(slotNewTransfer()));
-
   m_qbuttonNew->setPopup(kpopupmenuNew);
 
   connect(m_qlistviewScheduled, SIGNAL(selectionChanged(QListViewItem*)),
     this, SLOT(slotSelectionChanged(QListViewItem*)));
+  connect(m_qlistviewScheduled, SIGNAL(contextMenuRequested(QListViewItem*, const QPoint&, int)),
+    this, SLOT(slotListViewContextMenu(QListViewItem*, const QPoint&, int)));
   connect(m_qbuttonEdit, SIGNAL(clicked()), this, SLOT(slotEditClicked()));
   connect(m_qbuttonDelete, SIGNAL(clicked()), this, SLOT(slotDeleteClicked()));
   connect(m_accountsCombo, SIGNAL(activated(const QString&)),
@@ -80,18 +81,79 @@ KScheduledView::~KScheduledView()
   writeConfig();
 }
 
-void KScheduledView::refresh(void)
+void KScheduledView::refresh(const QString schedId)
 {
-  loadAccounts();
-
   m_qlistviewScheduled->clear();
-  //KScheduledListItem *itemBills = new KScheduledListItem(m_qlistviewScheduled, i18n("Bills"));
-  //KScheduledListItem *itemDeposits = new KScheduledListItem(m_qlistviewScheduled, i18n("Deposits"));
+
+  if (MyMoneyScheduled::instance()->count(m_accountId) == 0)
+    return;
+
+//    MyMoneyScheduled *scheduled = MyMoneyFile::instance()->scheduledInstance();
+  MyMoneyScheduled *scheduled = MyMoneyScheduled::instance();
+
+  KScheduledListItem *itemBills = new KScheduledListItem(m_qlistviewScheduled, i18n("Bills"));
+  KScheduledListItem *itemDeposits = new KScheduledListItem(m_qlistviewScheduled, i18n("Deposits"));
+  KScheduledListItem *itemTransfers = new KScheduledListItem(m_qlistviewScheduled, i18n("Transfers"));
+  
+  try
+  {
+    QStringList scheduledBills = scheduled->getScheduled(m_accountId);
+
+    QStringList::Iterator it;
+
+    KScheduledListItem *openItem=0;
+
+    for (it = scheduledBills.begin(); it != scheduledBills.end(); ++it)
+    {
+      MyMoneySchedule schedData = scheduled->getSchedule(m_accountId, *it);
+
+      switch (schedData.type())
+      {
+        case MyMoneySchedule::TYPE_BILL:
+        {
+          KScheduledListItem *billItem = new KScheduledListItem(itemBills, m_accountId, schedData);
+          if (schedData.id() == schedId)
+          {
+            openItem = billItem;
+          }
+          break;
+        }
+        case MyMoneySchedule::TYPE_DEPOSIT:
+        {
+          KScheduledListItem *depositItem = new KScheduledListItem(itemDeposits, m_accountId, schedData);
+          if (schedData.id() == schedId)
+            openItem = depositItem;
+          break;
+        }
+        case MyMoneySchedule::TYPE_TRANSFER:
+        {
+          KScheduledListItem *transferItem = new KScheduledListItem(itemTransfers, m_accountId, schedData);
+          if (schedData.id() == schedId)
+            openItem = transferItem;
+          break;
+        }
+        case MyMoneySchedule::TYPE_ANY:
+          break; // Should we display an error ?
+      }
+    }
+
+    if (openItem)
+    {
+      m_qlistviewScheduled->ensureItemVisible(openItem);
+    }
+
+  } catch (MyMoneyException *e)
+  {
+    delete e;
+  }
 }
 
 void KScheduledView::show()
 {
+  loadAccounts();
+
   refresh();
+  
   emit signalViewActivated();
 
   m_qlistviewScheduled->setColumnWidth(0, 100);
@@ -121,14 +183,77 @@ void KScheduledView::resizeEvent(QResizeEvent* e)
 
 void KScheduledView::slotDeleteClicked()
 {
+  if (m_selectedSchedule != "")
+  {
+    try
+    {
+      if (KMessageBox::questionYesNo(this, i18n("Are you sure you want to delete the selected schedule?")) == KMessageBox::No)
+        return;
+        
+      MyMoneyScheduled::instance()->removeSchedule(m_accountId, m_selectedSchedule);
+
+      refresh();
+      
+    } catch (MyMoneyException *e)
+    {
+      KMessageBox::detailedSorry(this, i18n("Unable to remove schedule"), e->what());
+      delete e;
+    }
+  }
 }
 
 void KScheduledView::slotSelectionChanged(QListViewItem* item)
 {
+  if (item)
+  {
+    m_selectedSchedule = ((KScheduledListItem*)item)->scheduleId();
+  }
 }
 
 void KScheduledView::slotEditClicked()
 {
+  if (m_selectedSchedule != "")
+  {
+    try
+    {
+      MyMoneySchedule schedule = MyMoneyScheduled::instance()->getSchedule(m_accountId, m_selectedSchedule);
+
+      switch (schedule.type())
+      {
+        case MyMoneySchedule::TYPE_BILL:
+        {
+          KEditScheduledBillDlg *m_keditschedbilldlg = new KEditScheduledBillDlg(m_accountId, schedule, this);
+          if (m_keditschedbilldlg->exec() == QDialog::Accepted)
+          {
+            MyMoneySchedule sched = m_keditschedbilldlg->schedule();
+            MyMoneyScheduled::instance()->replaceSchedule(m_accountId, m_selectedSchedule, sched);
+            refresh(m_selectedSchedule);
+          }
+          delete m_keditschedbilldlg;
+          break;
+        }
+        case MyMoneySchedule::TYPE_DEPOSIT:
+        {
+          KEditScheduledDepositDlg *m_keditscheddepdlg = new KEditScheduledDepositDlg(m_accountId, schedule, this);
+          if (m_keditscheddepdlg->exec() == QDialog::Accepted)
+          {
+            MyMoneySchedule sched = m_keditscheddepdlg->schedule();
+            MyMoneyScheduled::instance()->replaceSchedule(m_accountId, m_selectedSchedule, sched);
+            refresh(m_selectedSchedule);
+          }
+          delete m_keditscheddepdlg;
+          break;
+        }
+        case MyMoneySchedule::TYPE_TRANSFER:
+        {
+          break;
+        }
+      }
+    } catch (MyMoneyException *e)
+    {
+      delete e;
+    }
+  }
 }
 
 void KScheduledView::readConfig(void)
@@ -148,47 +273,20 @@ void KScheduledView::writeConfig(void)
 
 void KScheduledView::slotNewBill()
 {
-  KEditScheduledBillDlg *m_keditschedbilldlg = new KEditScheduledBillDlg(m_accountId, this);
+  KMessageBox::information(this, "WARNING:\n\n\tALL SCHEDULE DATA WILL BE LOST ONCE KMYMONEY HAS BEEN CLOSED");
+  
+  MyMoneySchedule schedule;
+  
+  KEditScheduledBillDlg *m_keditschedbilldlg = new KEditScheduledBillDlg(m_accountId, schedule, this);
   if (m_keditschedbilldlg->exec() == QDialog::Accepted)
   {
     MyMoneySchedule sched = m_keditschedbilldlg->schedule();
-
-    QString s;
-    s.sprintf("autoEnter: %d\n"
-      "endDate: %s\n"
-      "fixed: %d\n"
-      "id: %s\n"
-      "lastPayment: %s\n"
-      "occurnce: %d\n"
-      "paytype: %d\n"
-      "startDtae: %s\n"
-      "transaremainaing: %d\n"
-      "type: %d\n"
-      "willEnd: %d\n"
-      "transactionSplitCount: %d\n",
-      sched.autoEnter(),
-      sched.endDate().toString().latin1(),
-      sched.isFixed(),
-      sched.id().latin1(),
-      sched.lastPayment().toString().latin1(),
-      sched.occurence(),
-      sched.paymentType(),
-      sched.startDate().toString().latin1(),
-      sched.transactionsRemaining(),
-      sched.type(),
-      sched.willEnd(),
-      sched.transaction().splitCount());
-
-    KMessageBox::information(this, s);
-
-//    MyMoneyScheduled *scheduled = MyMoneyFile::instance()->scheduledInstance();
     MyMoneyScheduled *scheduled = MyMoneyScheduled::instance();
 
     try
     {
       QString schedId = scheduled->addSchedule(m_accountId, sched);
-
-      KMessageBox::information(this, schedId);
+      refresh(schedId);
     } catch (MyMoneyException *e)
     {
       QString s("Unable to add schedule: ");
@@ -202,47 +300,20 @@ void KScheduledView::slotNewBill()
 
 void KScheduledView::slotNewDeposit()
 {
-  KEditScheduledDepositDlg *m_keditscheddepdlg = new KEditScheduledDepositDlg(m_accountId, this);
+  KMessageBox::information(this, "WARNING:\n\n\tALL SCHEDULE DATA WILL BE LOST ONCE KMYMONEY HAS BEEN CLOSED");
+
+  MyMoneySchedule schedule;
+
+  KEditScheduledDepositDlg *m_keditscheddepdlg = new KEditScheduledDepositDlg(m_accountId, schedule, this);
   if (m_keditscheddepdlg->exec() == QDialog::Accepted)
   {
     MyMoneySchedule sched = m_keditscheddepdlg->schedule();
-
-    QString s;
-    s.sprintf("autoEnter: %d\n"
-      "endDate: %s\n"
-      "fixed: %d\n"
-      "id: %s\n"
-      "lastPayment: %s\n"
-      "occurnce: %d\n"
-      "paytype: %d\n"
-      "startDtae: %s\n"
-      "transaremainaing: %d\n"
-      "type: %d\n"
-      "willEnd: %d\n"
-      "transactionSplitCount: %d\n",
-      sched.autoEnter(),
-      sched.endDate().toString().latin1(),
-      sched.isFixed(),
-      sched.id().latin1(),
-      sched.lastPayment().toString().latin1(),
-      sched.occurence(),
-      sched.paymentType(),
-      sched.startDate().toString().latin1(),
-      sched.transactionsRemaining(),
-      sched.type(),
-      sched.willEnd(),
-      sched.transaction().splitCount());
-
-    KMessageBox::information(this, s);
-
-//    MyMoneyScheduled *scheduled = MyMoneyFile::instance()->scheduledInstance();
     MyMoneyScheduled *scheduled = MyMoneyScheduled::instance();
 
     try
     {
       QString schedId = scheduled->addSchedule(m_accountId, sched);
-
-      KMessageBox::information(this, schedId);
+      refresh(schedId);
     } catch (MyMoneyException *e)
     {
       QString s("Unable to add schedule: ");
@@ -256,47 +327,21 @@ void KScheduledView::slotNewDeposit()
 
 void KScheduledView::slotNewTransfer()
 {
+  KMessageBox::information(this, "WARNING:\n\n\tALL SCHEDULE DATA WILL BE LOST ONCE KMYMONEY HAS BEEN CLOSED");
+
+  KMessageBox::information(this, "Not working yet...");
+  return;
+  
   KEditScheduledTransferDlg *m_keditschedtransdlg = new KEditScheduledTransferDlg(m_accountId, this);
   if (m_keditschedtransdlg->exec() == QDialog::Accepted)
   {
     MyMoneySchedule sched = m_keditschedtransdlg->schedule();
-
-    QString s;
-    s.sprintf("autoEnter: %d\n"
-      "endDate: %s\n"
-      "fixed: %d\n"
-      "id: %s\n"
-      "lastPayment: %s\n"
-      "occurnce: %d\n"
-      "paytype: %d\n"
-      "startDtae: %s\n"
-      "transaremainaing: %d\n"
-      "type: %d\n"
-      "willEnd: %d\n"
-      "transactionSplitCount: %d\n",
-      sched.autoEnter(),
-      sched.endDate().toString().latin1(),
-      sched.isFixed(),
-      sched.id().latin1(),
-      sched.lastPayment().toString().latin1(),
-      sched.occurence(),
-      sched.paymentType(),
-      sched.startDate().toString().latin1(),
-      sched.transactionsRemaining(),
-      sched.type(),
-      sched.willEnd(),
-      sched.transaction().splitCount());
-
-    KMessageBox::information(this, s);
-
-//    MyMoneyScheduled *scheduled = MyMoneyFile::instance()->scheduledInstance();
     MyMoneyScheduled *scheduled = MyMoneyScheduled::instance();
 
     try
     {
       QString schedId = scheduled->addSchedule(m_accountId, sched);
-
-      KMessageBox::information(this, schedId);
+      refresh(schedId);
     } catch (MyMoneyException *e)
     {
       QString s("Unable to add schedule: ");
@@ -352,8 +397,9 @@ void KScheduledView::slotAccountSelected(const QString& accountName)
     if (a.name() == accountName)
     {
       m_accountId = *it_s;
+      refresh();
       return;
-    }  
+    }
   }
 
   acc = file->liability();
@@ -363,7 +409,72 @@ void KScheduledView::slotAccountSelected(const QString& accountName)
     if (a.name() == accountName)
     {
       m_accountId = *it_s;
+      refresh();
       return;
+    }
+  }
+}
+
+void KScheduledView::slotListViewContextMenu(QListViewItem *item, const QPoint& pos, int col)
+{
+  KScheduledListItem *scheduleItem = (KScheduledListItem*)item;
+  if (scheduleItem)
+  {
+    try
+    {
+      QString scheduleId = scheduleItem->scheduleId();
+
+      KIconLoader *kiconloader = KGlobal::iconLoader();
+      KPopupMenu *listViewMenu = new KPopupMenu(m_qlistviewScheduled);
+
+      if (scheduleId == "") // Top level item
+      {
+        QString text = scheduleItem->text(0);
+        if (text == "Bills")
+        {
+          listViewMenu->insertTitle(i18n("Bill Options"));
+          listViewMenu->insertItem(kiconloader->loadIcon("new_bill", KIcon::Small), i18n("New Bill..."), this, SLOT(slotNewBill()));
+        }
+        else if (text == "Deposits")
+        {
+          listViewMenu->insertTitle(i18n("Deposit Options"));
+          listViewMenu->insertItem(kiconloader->loadIcon("new_deposit", KIcon::Small), i18n("New Deposit..."), this, SLOT(slotNewDeposit()));
+        }
+        if (text == "Transfers")
+        {
+          listViewMenu->insertTitle(i18n("Transfer Options"));
+          listViewMenu->insertItem(kiconloader->loadIcon("new_transfer", KIcon::Small), i18n("New Transfer..."), this, SLOT(slotNewTransfer()));
+        }
+      }
+      else // schedule item
+      {
+        MyMoneySchedule schedule = MyMoneyScheduled::instance()->getSchedule(m_accountId, scheduleId);
+
+        switch (schedule.type())
+        {
+          case MyMoneySchedule::TYPE_BILL:
+            listViewMenu->insertTitle(i18n("Bill Options"));
+            listViewMenu->insertItem(kiconloader->loadIcon("new_bill", KIcon::Small), i18n("New Bill..."), this, SLOT(slotNewBill()));
+            break;
+          case MyMoneySchedule::TYPE_DEPOSIT:
+            listViewMenu->insertTitle(i18n("Deposit Options"));
+            listViewMenu->insertItem(kiconloader->loadIcon("new_deposit", KIcon::Small), i18n("New Deposit..."), this, SLOT(slotNewDeposit()));
+            break;
+          case MyMoneySchedule::TYPE_TRANSFER:
+            listViewMenu->insertTitle(i18n("Transfer Options"));
+            listViewMenu->insertItem(kiconloader->loadIcon("new_transfer", KIcon::Small), i18n("New Transfer..."), this, SLOT(slotNewTransfer()));
+            break;
+        }
+        listViewMenu->insertSeparator();
+        listViewMenu->insertItem(kiconloader->loadIcon("edit", KIcon::Small), i18n("Edit..."), this, SLOT(slotEditClicked()));
+        listViewMenu->insertItem(kiconloader->loadIcon("delete", KIcon::Small), i18n("Delete..."), this, SLOT(slotDeleteClicked()));
+      }
+
+      listViewMenu->popup(pos);
+    } catch (MyMoneyException *e)
+    {
+      KMessageBox::detailedSorry(this, i18n("Error building context menu"), e->what());
+      delete e;
     }
   }
 }

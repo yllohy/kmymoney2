@@ -40,7 +40,7 @@
   * a scheduled bill.
   *
   * @author Michael Edwardes
-  * $Id: keditscheduledbilldlg.h,v 1.3 2003/01/24 14:23:22 mte Exp $
+  * $Id: keditscheduledbilldlg.h,v 1.4 2003/01/30 12:21:21 mte Exp $
   *
   * @short Edit details for a scheduled bill.
 **/
@@ -79,6 +79,10 @@ private:
   **/
   void reloadWidgets(void);
 
+  /**
+    * Fills in all the widgets from a schedule.
+  **/
+  void loadWidgetsFromSchedule(void);
 
 protected slots:
   /**
@@ -100,7 +104,7 @@ public:
   /**
     * Standard QWidget constructor.
   **/
-	KEditScheduledBillDlg(const QCString& accountId, QWidget *parent=0, const char *name=0);
+	KEditScheduledBillDlg(const QCString& accountId, const MyMoneySchedule& schedule, QWidget *parent=0, const char *name=0);
 
   /**
     * Standard destructor.

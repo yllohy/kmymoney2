@@ -46,7 +46,7 @@
   * Used by the KMyMoneyView class to show the view.
   *
   * @author Michael Edwardes 2000-2002
-  * $Id: kscheduledview.h,v 1.5 2003/01/24 14:23:23 mte Exp $
+  * $Id: kscheduledview.h,v 1.6 2003/01/30 12:21:22 mte Exp $
   *
   * @short A class to encapsulate recurring transaction operations.
   */
@@ -127,10 +127,23 @@ protected slots:
   **/
   void slotAccountSelected(const QString& accountName);
 
+  /**
+    * Creates and shows the context menu when the user right clicks or presses
+    * a 'windows' key when an item is selected.
+    *
+    * @param item The item
+    * @param pos The position to popup
+    * @param col The column where the click occurred
+    * @return none
+  **/
+  void slotListViewContextMenu(QListViewItem *item, const QPoint& pos, int col);
 
 private:
   /// The account currently selected via the accounts view
   QCString m_accountId;
+
+  /// The selected schedule id in the list view.
+  QString m_selectedSchedule;
   
   /// Read config file
   void readConfig(void);
@@ -141,7 +154,7 @@ private:
   /**
     * Refresh the view.
     */
-  void refresh(void);
+  void refresh(const QString schedId="");
 
   /**
     * Loads the accounts into the combo box.

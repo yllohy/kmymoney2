@@ -35,6 +35,22 @@ KScheduledListItem::KScheduledListItem(QListView *parent, const char *name )
   setText(0, name);
 }
 
+KScheduledListItem::KScheduledListItem(KScheduledListItem *parent, const QCString accountId, const MyMoneySchedule& schedule)
+ : QListViewItem(parent)
+{
+//  type, payee, amount, due date, freq, payment methof.
+  m_id = schedule.id();
+  MyMoneyTransaction transaction = schedule.transaction();
+  setText(1, MyMoneyFile::instance()->payee(transaction.split(accountId).payeeId()).name());
+  MyMoneyMoney amount = transaction.split(accountId).value();
+  if (schedule.type() == MyMoneySchedule::TYPE_BILL)
+    amount = -amount;
+  setText(2, amount.formatMoney());
+  setText(3, schedule.nextPayment().toString());
+  setText(4, schedule.occurenceToString());
+  setText(5, schedule.paymentMethodToString());
+}
+
 KScheduledListItem::~KScheduledListItem()
 {
 }
