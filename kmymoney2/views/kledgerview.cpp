@@ -80,6 +80,7 @@ int KTransactionPtrVector::compareItems(KTransactionPtrVector::Item d1, KTransac
   int   rc = 0;
   MyMoneyTransaction* t1 = static_cast<MyMoneyTransaction*>(d1);
   MyMoneyTransaction* t2 = static_cast<MyMoneyTransaction*>(d2);
+  MyMoneyMoney tmp;
 
   try {
     MyMoneySplit s1;
@@ -98,18 +99,17 @@ int KTransactionPtrVector::compareItems(KTransactionPtrVector::Item d1, KTransac
 
     switch(m_sortType) {
       case SortValue:
-        rc = static_cast<int> ((s2.value() - s1.value()).value());
-        if(rc == 0) {
+        rc = 1;
+        tmp = s2.value() - s1.value();
+        if(tmp == 0) {
           // same value? Sort by date
           rc = t2->postDate().daysTo(t1->postDate());
           if(rc == 0) {
-            // same date? Sort by value
-            rc = static_cast<int> ((s2.value() - s1.value()).value());
-            if(rc == 0) {
-              // same value? sort by id
-              rc = compareItems(t1->id(), t2->id());
-            }
+            // same date? Sort by id
+            rc = compareItems(t1->id(), t2->id());
           }
+        } else if(tmp < 0) {
+          rc = -1;
         }
         break;
 
@@ -117,10 +117,13 @@ int KTransactionPtrVector::compareItems(KTransactionPtrVector::Item d1, KTransac
         rc = t2->entryDate().daysTo(t1->entryDate());
         if(rc == 0) {
           // same date? Sort by value
-          rc = static_cast<int> ((s2.value() - s1.value()).value());
-          if(rc == 0) {
+          rc = 1;
+          tmp = s2.value() - s1.value();
+          if(tmp == 0) {
             // same value? sort by id
             rc = compareItems(t1->id(), t2->id());
+          } else if(tmp < 0) {
+            rc = -1;
           }
         }
         break;
@@ -136,10 +139,13 @@ int KTransactionPtrVector::compareItems(KTransactionPtrVector::Item d1, KTransac
             rc = t2->postDate().daysTo(t1->postDate());
             if(rc == 0) {
               // same date? Sort by value
-              rc = static_cast<int> ((s2.value() - s1.value()).value());
-              if(rc == 0) {
+              rc = 1;
+              tmp = s2.value() - s1.value();
+              if(tmp == 0) {
                 // same value? sort by id
                 rc = compareItems(t1->id(), t2->id());
+              } else if(tmp < 0) {
+                rc = -1;
               }
             }
           }
@@ -161,10 +167,13 @@ int KTransactionPtrVector::compareItems(KTransactionPtrVector::Item d1, KTransac
           rc = t2->postDate().daysTo(t1->postDate());
           if(rc == 0) {
             // same date? Sort by value
-            rc = static_cast<int> ((s2.value() - s1.value()).value());
-            if(rc == 0) {
+            rc = 1;
+            tmp = s2.value() - s1.value();
+            if(tmp == 0) {
               // same value? sort by id
               rc = compareItems(t1->id(), t2->id());
+            } else if(tmp < 0) {
+              rc = -1;
             }
           }
         }
@@ -177,10 +186,13 @@ int KTransactionPtrVector::compareItems(KTransactionPtrVector::Item d1, KTransac
           rc = t2->postDate().daysTo(t1->postDate());
           if(rc == 0) {
             // same date? Sort by value
-            rc = static_cast<int> ((s2.value() - s1.value()).value());
-            if(rc == 0) {
+            rc = 1;
+            tmp = s2.value() - s1.value();
+            if(tmp == 0) {
               // same value? sort by id
               rc = compareItems(t1->id(), t2->id());
+            } else if(tmp < 0) {
+              rc = -1;
             }
           }
         }
@@ -193,10 +205,13 @@ int KTransactionPtrVector::compareItems(KTransactionPtrVector::Item d1, KTransac
         rc = t2->postDate().daysTo(t1->postDate());
         if(rc == 0) {
           // on same day, larger amounts show up first
-          rc = static_cast<int> ((s2.value() - s1.value()).value());
-          if(rc == 0) {
+          rc = 1;
+          tmp = s2.value() - s1.value();
+          if(tmp == 0) {
             // same value? Sort by id
             rc = compareItems(t1->id(), t2->id());
+          } else if(tmp < 0) {
+            rc = -1;
           }
         }
         break;
