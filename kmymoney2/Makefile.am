@@ -7,7 +7,7 @@ bin_PROGRAMS = kmymoney2
 
 kmymoney2_SOURCES = kmymoneyutils.cpp kstartuplogo.cpp kmymoney2.cpp main.cpp kmymoney2.stub kmymoney2.skel kapptest.cpp kapptest.stub kapptest.skel
 
-kmymoney2_LDADD   = ./views/libviews.a ./converter/libconverter.a ./dialogs/libdialogs.a ./widgets/libwidgets.a ./mymoney/storage/libstorage.a ./mymoney/libmymoney.a ./converter/online_quotes/libonline_quotes.a $(top_builddir)/libkgpgfile/libkgpgfile.la $(LIB_KABC) $(LIB_KHTML) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT) $(LIBSOCKET) @kbanking_libs@
+kmymoney2_LDADD = $(top_builddir)/kmymoney2/views/libviews.a $(top_builddir)/kmymoney2/dialogs/libdialogs.a $(top_builddir)/kmymoney2/widgets/libwidgets.a $(top_builddir)/kmymoney2/converter/libconverter.a $(top_builddir)/kmymoney2/mymoney/storage/libstorage.a $(top_builddir)/kmymoney2/mymoney/libmymoney.a $(top_builddir)/libkgpgfile/libkgpgfile.la $(top_builddir)/kmymoney2/converter/online_quotes/libonline_quotes.a dialogs/libdialogs.a $(LIB_KABC) $(LIB_KHTML) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT) $(LIBSOCKET) @kbanking_libs@
 
 SUBDIRS = widgets dialogs views converter mymoney pics icons html templates
 

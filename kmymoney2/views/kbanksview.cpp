@@ -39,6 +39,7 @@
 
 #include "kbanksview.h"
 #include "kbanklistitem.h"
+#include "../widgets/kmymoneyaccounttree.h"
 #include "../mymoney/mymoneyfile.h"
 #include "../dialogs/knewaccountdlg.h"
 #include "../kmymoneyutils.h"

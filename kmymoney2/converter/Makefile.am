@@ -12,4 +12,4 @@ EXTRA_DIST = mymoneyqifprofile.h mymoneyqifprofile.cpp mymoneyqifwriter.cpp mymo
 
 ####### kdevelop will overwrite this part!!! (end)############
 
-noinst_HEADERS =  mymoneyofxstatement.h
+noinst_HEADERS = mymoneyofxstatement.h

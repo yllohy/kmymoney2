@@ -34,12 +34,7 @@
 #include <klistview.h>
 #include <klocale.h>
 #include <kglobal.h>
-#if QT_VERSION > 300
 #include <kstandarddirs.h>
-#else
-#include <kstddirs.h>
-#endif
-
 #include <kmessagebox.h>
 #include <kconfig.h>
 
@@ -49,6 +44,7 @@
 #include "../mymoney/mymoneyfile.h"
 #include "../views/kmymoneyfile.h"
 #include "../dialogs/knewaccountdlg.h"
+#include "../widgets/kmymoneyaccounttree.h"
 #include "kcategoriesview.h"
 #include "kbanklistitem.h"
 #include "../kmymoneyutils.h"
