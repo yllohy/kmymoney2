@@ -132,7 +132,7 @@ public:
     MyMoneyFile* m_file;
   };
 
-  friend MyMoneyNotifier;
+  friend class MyMoneyNotifier;
 
   /**
     * This is the function to access the MyMoneyFile object.
