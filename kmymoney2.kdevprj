@@ -33,7 +33,7 @@ ldflags=\s         \s
 path_to_bin_program=kmymoney2
 
 [General]
-AMChanged=false
+AMChanged=true
 author=Michael Edwardes
 configure_args=
 dir_where_make_will_be_called=
@@ -870,7 +870,7 @@ install_location=$$(kde_icondir)/hicolor/32x32/apps/kmymoney2.png
 type=DATA
 
 [kmymoney2/html/Makefile.am]
-files=kmymoney2/html/home.html,kmymoney2/html/kmymoney2.css,kmymoney2/html/home_fr.fr.html,kmymoney2/html/home_de.de.html
+files=kmymoney2/html/home.html,kmymoney2/html/kmymoney2.css,kmymoney2/html/home_fr.fr.html,kmymoney2/html/home_de.de.html,kmymoney2/html/home_ru.ru.html
 sub_dirs=
 type=normal
 
@@ -890,6 +890,12 @@ type=DATA
 dist=true
 install=true
 install_location=$$(kde_datadir)/kmymoney2/html/home_fr.fr.html
+type=DATA
+
+[kmymoney2/html/home_ru.ru.html]
+dist=true
+install=true
+install_location=$$(kde_datadir)/kmymoney2/html/home_ru.ru.html
 type=DATA
 
 [kmymoney2/html/kmymoney2.css]
