@@ -24,14 +24,12 @@ expense:Car
 expense:Car:Car Maintenance
 expense:Car:Petrol
 expense:Cash Withdrawal
-expense:Cash Withdrawal
 expense:Charity
 expense:Charity:Covenants
 expense:Charity:Donations
 expense:Charity:Settlements
 expense:Child Care
 expense:Christmas
-expense:Clothing
 expense:Clothing
 expense:Education
 expense:Education:Books
@@ -41,17 +39,12 @@ expense:Food
 expense:Food:Dining Out
 expense:Food:Groceries
 expense:Gardening
-expense:Gardening
-expense:Gardening
 expense:Healthcare
 expense:Healthcare:Dental
 expense:Healthcare:Doctor
 expense:Healthcare:Hospital
 expense:Healthcare:Optician
 expense:Healthcare:Prescriptions
-expense:Holidays
-expense:Holidays:Accomodation
-expense:Holidays:Travel
 expense:Holidays
 expense:Holidays:Accomodation
 expense:Holidays:Travel
@@ -76,20 +69,12 @@ expense:Leisure:Theatre & Concerts etc
 expense:Leisure:Toys & Games
 expense:Loan
 expense:Loan:Loan Interest
-expense:Loan
-expense:Loan:Loan Interest
 expense:Motor
 expense:Motor:Fuel
 expense:Motor:Loan
 expense:Motor:Service
-expense:Motor
-expense:Motor:Fuel
-expense:Motor:Loan
-expense:Motor:Service
-expense:Motor
-expense:Motor:Fuel
-expense:Motor:Loan
-expense:Motor:Service
+expense:Other Expense
+expense:Other Expense:Unknown
 expense:Pet Care
 expense:Pet Care:Food
 expense:Pet Care:Supplies
@@ -113,15 +98,6 @@ expense:Utilities:Water
 
 
 # next income 
-income:Other Income
-income:Other Income:Student loan
-income:Other Income:Child Support
-income:Other Income:Employee Share Option
-income:Other Income:Gifts Received
-income:Other Income:Loan Principal Received
-income:Other Income:Lottery or Premium Bond Prizes
-income:Other Income:Tax Refund
-income:Other Income:Unemployment Benefit
 income:Alimony
 income:Bonus
 income:Capital gains
@@ -135,7 +111,6 @@ income:Employment:Foreign
 income:Employment:Lump sums
 income:Employment:Other employ
 income:Employment:Salary & wages
-income:Foreign
 income:Gift Received
 income:Int Inc
 income:Int Inc:Bank Interest
@@ -167,6 +142,15 @@ income:Nat. Savings:Ord. account
 income:Old Age Pension
 income:Old Age Pension:Employer
 income:Old Age Pension:State
+income:Other Income
+income:Other Income:Student loan
+income:Other Income:Child Support
+income:Other Income:Employee Share Option
+income:Other Income:Gifts Received
+income:Other Income:Loan Principal Received
+income:Other Income:Lottery or Premium Bond Prizes
+income:Other Income:Tax Refund
+income:Other Income:Unemployment Benefit
 income:Retirement Income
 income:Retirement Income:Pensions & Annuities
 income:Retirement Income:State Pension Benefits

@@ -1,3 +1,9 @@
+2003-07-30 Michael Edwardes <mte@users.sourceforge.net>
+  * Removed duplicate entries from default_accounts.dat.
+  * Renamed default_accounts.dat to default_accounts_enGB.dat
+  * Display only the filename in the recent files icon view.
+  * Default to the 'Documents' folder in the start dialog.
+
 2003-07-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * added button icons to the ledger view
   * added button icons to split dialog

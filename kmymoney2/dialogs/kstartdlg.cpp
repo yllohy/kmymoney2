@@ -77,6 +77,7 @@ void KStartDlg::setPage_Documents()
 	//allow user to select either a .kmy file, or any generic file.
   kurlrequest->fileDialog()->setFilter( i18n("%1|KMyMoney files (*.kmy)\n" "%2|All files (*.*)").arg("*.kmy").arg("*.*") );
   kurlrequest->fileDialog()->setMode(KFile::File || KFile::ExistingOnly);
+  kurlrequest->fileDialog()->setURL(KURL(KGlobalSettings::documentPath()));
   mainLayout->addWidget( kurlrequest );
 
 	QLabel *label1 = new QLabel( recentMainFrame, "label1" );
@@ -85,8 +86,8 @@ void KStartDlg::setPage_Documents()
   view_recent = new KIconView( recentMainFrame, "view_recent" );
   connect( view_recent, SIGNAL( executed(QIconViewItem *) ), this, SLOT( slotRecentClicked(QIconViewItem *) ) );
   mainLayout->addWidget( view_recent );
-  view_recent->setArrangement(KIconView::TopToBottom);
-  view_recent->setItemTextPos(KIconView::Right);
+  view_recent->setArrangement(KIconView::LeftToRight/*TopToBottom*/);
+  view_recent->setItemTextPos(KIconView::Bottom);
 
   connect(view_recent, SIGNAL(selectionChanged(QIconViewItem*)),
     this, SLOT(slotRecentSelectionChanged(QIconViewItem*)));
@@ -124,8 +125,11 @@ void KStartDlg::readConfig()
 		key = QString( "File%1" ).arg( i );
 		value = config->readEntry( key, QString::null );
 		if( !value.isNull() && fileExists(value) )
-			(void)new QIconViewItem( view_recent, value, QPixmap( locate("icon","hicolor/48x48/mimetypes/kmy.png") ) );
-		i++;
+    {
+      QString file_name = value.mid(value.findRev('/')+1);
+			(void)new QIconViewItem( view_recent, file_name, QPixmap( locate("icon","hicolor/48x48/mimetypes/kmy.png") ) );
+  		i++;
+    }
 	}
 
 	config->setGroup("Start Dialog");
