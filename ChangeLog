@@ -1,3 +1,7 @@
+2001-05-08 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
+  * Implemented automatic cheque numbering
+  * Transactions now autocompletes after selecting Payee/Memo
+
 2001-05-03 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
   * Implemented Update of transfer transactions
 

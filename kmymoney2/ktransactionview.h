@@ -32,6 +32,8 @@
 #include "mymoney/mymoneytransaction.h"
 
 #include "widgets/kmymoneydateinput.h"
+#include "widgets/kmymoneymethodcombo.h"
+#include "widgets/kmymoneypayeecombo.h"
 
 #include "ktransactionviewdecl.h"
 
@@ -48,6 +50,8 @@ private:
   bool useall;
   bool usedate;
   bool userow;
+	long lastcheck;
+
 
 	kMyMoneyDateInput*  m_date;
 	KComboBox* m_method;
@@ -69,6 +73,8 @@ private:
   void clearInputData();
   void setInputData(const MyMoneyTransaction transaction);
   void updateInputLists(void);
+  /** No descriptions */
+  MyMoneyAccount* getAccount();
 
 public:
 	KTransactionView(QWidget *parent=0, const char *name=0);
@@ -88,7 +94,8 @@ protected slots:
   void slotTransactionDelete();
   void slotTransactionUnReconciled();
   void slotTransactionCleared();
-	void slotPayeeCompleted(const QString&);
+	void slotPayeeCompleted();
+	void slotMethodCompleted();
 
 signals:
  void transactionListChanged();

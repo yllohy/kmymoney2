@@ -63,9 +63,96 @@ KTransactionView::~KTransactionView()
 {
 }
 
-void KTransactionView::slotPayeeCompleted(const QString& complete)
+void KTransactionView::slotPayeeCompleted()
 {
-	qDebug("The completed String is %s",complete.latin1());
+	if(m_payee->currentText() != "")
+	{
+   QString payee = m_payee->currentText();
+   MyMoneyAccount *account;
+
+	 account = getAccount();
+	 if(account == 0)
+		return;
+
+  	MyMoneyTransaction *transaction;
+		MyMoneyTransaction *lasttransaction = 0;
+
+  	for ( transaction = account->transactionFirst(); transaction; transaction=account->transactionNext() )
+		{
+			if(transaction->memo() == payee)
+			{
+       	lasttransaction = transaction;
+			}			
+			
+		}
+		if(lasttransaction != 0)
+		{
+  		m_payment->setText(((lasttransaction->type()==MyMoneyTransaction::Debit) ? KGlobal::locale()->formatNumber(lasttransaction->amount().amount()) : QString("")));
+  		m_withdrawal->setText(((lasttransaction->type()==MyMoneyTransaction::Credit) ? KGlobal::locale()->formatNumber(lasttransaction->amount().amount()) : QString("")));
+  		bool categorySet = false;
+  		for(int i = 0; i < m_category->count(); i++)
+  		{
+				QString theText;
+				if(lasttransaction->categoryMinor() == "")
+				{
+					theText.sprintf("%s", lasttransaction->categoryMajor().latin1());
+				}
+				else
+				{
+					theText.sprintf("%s:%s",lasttransaction->categoryMajor().latin1(),lasttransaction->categoryMinor().latin1());
+				}
+   			if(m_category->text(i) == theText)
+				{
+					m_category->setCurrentItem(i);
+     			categorySet = true;
+				}
+			}
+  		if(!categorySet)
+			{
+   			m_category->setCurrentItem(0);
+			}
+		}		
+	}
+
+}
+
+void KTransactionView::slotMethodCompleted()
+{
+	if(m_method->currentText() == "Cheque")
+	{
+
+   MyMoneyAccount *account;
+
+	 account = getAccount();
+	 if(account == 0)
+		 return;
+
+  	MyMoneyTransaction *transaction;
+		QStringList payeelist;
+		QString oldnumber = "";
+		QString number = "";
+		lastcheck = 0;
+		long lastnumber = 0;
+
+  	for ( transaction = account->transactionFirst(); transaction; transaction=account->transactionNext() )
+		{
+			
+   		number = transaction->number();
+			if(number != "")
+			{
+        lastnumber = number.toLong();
+				if(lastnumber > lastcheck)
+				{
+         	lastcheck = lastnumber;
+				}
+			}
+			
+		}
+		lastcheck++;
+		number.setNum(lastcheck);
+		m_number->setText(number);
+		
+	}
 
 }
 
@@ -73,8 +160,8 @@ void KTransactionView::createInputWidgets()
 {
 
 	m_date = new kMyMoneyDateInput(transactionsTable, 0 );
-	m_method = new KComboBox(0,"");
-  m_payee = new QComboBox(0,"");
+	m_method = new kMyMoneyMethodCombo();
+  m_payee = new kMyMoneyPayeeCombo();
   m_payment = new KLineEdit(0);
   m_withdrawal = new KLineEdit(0);
 	m_number = new KLineEdit(0);
@@ -127,6 +214,10 @@ void KTransactionView::createInputWidgets()
 	m_cancel->hide();
 	m_delete->hide();
 
+  connect(m_method, SIGNAL(signalFocusOut()),
+          this, SLOT(slotMethodCompleted()));
+  connect(m_payee, SIGNAL(signalFocusOut()),
+          this, SLOT(slotPayeeCompleted()));
 	connect(m_cancel, SIGNAL(clicked()),this,SLOT(cancelClicked()));
 	connect(m_enter, SIGNAL(clicked()),this,SLOT(enterClicked()));
 	connect(m_delete, SIGNAL(clicked()),this,SLOT(deleteClicked()));
@@ -137,17 +228,10 @@ void KTransactionView::loadPayees()
   MyMoneyBank *bank;
   MyMoneyAccount *account;
 
-  bank = m_filePointer->bank(m_bankIndex);
-  if (!bank) {
-    qDebug("unable to find bank in updateData");
-    return;
-  }
+	account = getAccount();
+	if(account == 0)
+		return;
 
-  account = bank->account(m_accountIndex);
-  if (!account) {
-    qDebug("Unable to find account in updateData");
-    return;
-  }
   MyMoneyMoney balance;
   MyMoneyTransaction *transaction;
 	QStringList payeelist;
@@ -255,16 +339,9 @@ void KTransactionView::slotTransactionDelete()
   MyMoneyBank *pBank;
   MyMoneyAccount *pAccount;
 
-	pBank = m_filePointer->bank(m_bankIndex);
-	if (!pBank) {
-    qDebug("KMyMoneyView::slotTransactionDelete: Unable to get the current bank");
-    return;
-  }
-  pAccount = pBank->account(m_accountIndex);
-  if (!pAccount) {
-    qDebug("KMyMoneyView::slotTransactionDelete: Unable to grab the current account");
-    return;
-  }
+	pAccount = getAccount();
+	if(pAccount == 0)
+		return;
 
 	QDate transdate;
 	MyMoneyMoney transamount;
@@ -329,16 +406,9 @@ void KTransactionView::slotTransactionUnReconciled()
   MyMoneyBank *pBank;
   MyMoneyAccount *pAccount;
 
-	pBank = m_filePointer->bank(m_bankIndex);
-	if (!pBank) {
-    qDebug("KMyMoneyView::slotTransactionUnReconciled: Unable to get the current bank");
-    return;
-  }
-  pAccount = pBank->account(m_accountIndex);
-  if (!pAccount) {
-    qDebug("KMyMoneyView::slotTransactionUnReconciled: Unable to grab the current account");
-    return;
-  }
+	pAccount = getAccount();
+	if(pAccount == 0)
+		return;
 
   MyMoneyTransaction *transaction = m_transactions.at(m_index);
   if (!transaction)
@@ -354,16 +424,9 @@ void KTransactionView::slotTransactionCleared()
   MyMoneyBank *pBank;
   MyMoneyAccount *pAccount;
 
-	pBank = m_filePointer->bank(m_bankIndex);
-	if (!pBank) {
-    qDebug("KMyMoneyView::slotTransactionUnReconciled: Unable to get the current bank");
-    return;
-  }
-  pAccount = pBank->account(m_accountIndex);
-  if (!pAccount) {
-    qDebug("KMyMoneyView::slotTransactionUnReconciled: Unable to grab the current account");
-    return;
-  }
+	pAccount = getAccount();
+	if(pAccount == 0)
+		return;
 
   MyMoneyTransaction *transaction = m_transactions.at(m_index);
   if (!transaction)
@@ -639,12 +702,10 @@ void KTransactionView::setInputData(const MyMoneyTransaction transaction)
 		if(transaction.categoryMinor() == "")
 		{
 			theText.sprintf("%s", transaction.categoryMajor().latin1());
-			qDebug("No Minor Category");
 		}
 		else
 		{
 			theText.sprintf("%s:%s",transaction.categoryMajor().latin1(),transaction.categoryMinor().latin1());
-			qDebug("Has Minor Category");
 		}
    	if(m_category->text(i) == theText)
 		{
@@ -690,26 +751,16 @@ void KTransactionView::updateTransactionList(int row, int col)
   if (!m_filePointer)
     return;
 
-  qDebug("updateTransactionList called with %d %d", row, col);
   KMyMoneySettings *p_settings = KMyMoneySettings::singleton();
   if (p_settings) {
     transactionsTable->horizontalHeader()->setFont(p_settings->lists_headerFont());
   }
 
-  MyMoneyBank *bank;
   MyMoneyAccount *account;
 
-  bank = m_filePointer->bank(m_bankIndex);
-  if (!bank) {
-    qDebug("unable to find bank in updateData");
-    return;
-  }
-
-  account = bank->account(m_accountIndex);
-  if (!account) {
-    qDebug("Unable to find account in updateData");
-    return;
-  }
+	account = getAccount();
+	if(account == 0)
+		return;
   MyMoneyMoney balance;
   MyMoneyTransaction *transaction;
   int rowCount=0;
@@ -803,12 +854,10 @@ void KTransactionView::updateTransactionList(int row, int col)
 			if(transaction->categoryMinor() == "")
 			{
       	txt.sprintf("%s", transaction->categoryMajor().latin1());
-        qDebug("No Minor Category UpdateTransactionList");
 			}
 			else
 			{
 				txt.sprintf("%s:%s", transaction->categoryMajor().latin1(),transaction->categoryMinor().latin1());
-				qDebug("Has Minor Category UpdateTransactionList %s",transaction->categoryMinor().latin1());
 			}
       KTransactionTableItem *item4;
       item4 = new KTransactionTableItem(transactionsTable, QTableItem::Never, txt);
@@ -918,7 +967,6 @@ void KTransactionView::updateTransactionList(int row, int col)
 		transactionsTable->ensureCellVisible(rowCount + 1,0);
 
   } else { // We are just updating a section of it
-    qDebug("update called with %d and %d", row, col);
     QString txt;
     if (row<0 || row>transactionsTable->numRows()-1)
       return;
@@ -1073,4 +1121,25 @@ void KTransactionView::refresh(void)
 
 void KTransactionView::showInputBox(bool)
 {
+}
+/** gets a pointer to the current Account */
+MyMoneyAccount* KTransactionView::getAccount(){
+
+  MyMoneyBank *bank;
+  MyMoneyAccount *account;
+
+  bank = m_filePointer->bank(m_bankIndex);
+  if (!bank) {
+    qDebug("unable to find bank in updateData");
+    return 0;
+  }
+
+  account = bank->account(m_accountIndex);
+  if (!account) {
+    qDebug("Unable to find account in updateData");
+    return 0;
+  }
+
+	return account;
+
 }
