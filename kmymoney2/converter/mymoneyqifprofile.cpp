@@ -52,6 +52,7 @@ void MyMoneyQifProfile::clear(void)
   m_dateFormat = "%d.%m.%yyyy";
   m_apostropheFormat = "2000-2099";
   m_valueMode = "";
+  m_filterScript = "";
 
   m_decimal.clear();
   m_decimal['$'] =
@@ -91,6 +92,7 @@ void MyMoneyQifProfile::loadProfile(const QString& name)
   m_accountDelimiter = config->readEntry("AccountDelimiter", m_accountDelimiter);
   m_openingBalanceText = config->readEntry("OpeningBalance", m_openingBalanceText);
   m_voidMark = config->readEntry("VoidMark", m_voidMark);
+  m_filterScript = config->readEntry("FilterScript", m_filterScript);
 
   QString tmp = QString(m_decimal['Q']) + m_decimal['T'] + m_decimal['I'] +
                 m_decimal['$'] + m_decimal['O'];
@@ -126,6 +128,7 @@ void MyMoneyQifProfile::saveProfile(void)
     config->writeEntry("AccountDelimiter", m_accountDelimiter);
     config->writeEntry("OpeningBalance", m_openingBalanceText);
     config->writeEntry("VoidMark", m_voidMark);
+    config->writeEntry("FilterScript", m_filterScript);
 
     QString tmp;
 
@@ -317,6 +320,11 @@ const QString MyMoneyQifProfile::date(const QDate& datein) const
   return buffer;
 }
 
+const QDate MyMoneyQifProfile::date(const QString& datein) const
+{
+  return QDate(1900,1,1);
+}
+
 const QString MyMoneyQifProfile::twoDigitYear(const QChar delim, int yr) const
 {
   QChar realDelim = delim;
@@ -357,4 +365,29 @@ const QString MyMoneyQifProfile::value(const QChar& def, const MyMoneyMoney& val
   MyMoneyMoney::setThousandSeparator(_thousandsSeparator);
 
   return res;
+}
+
+const MyMoneyMoney MyMoneyQifProfile::value(const QChar& def, const QString& valuein) const
+{
+  unsigned char _decimalSeparator;
+  unsigned char _thousandsSeparator;
+  MyMoneyMoney res;
+
+  _decimalSeparator = MyMoneyMoney::decimalSeparator();
+  _thousandsSeparator = MyMoneyMoney::thousandSeparator();
+
+  MyMoneyMoney::setDecimalSeparator(amountDecimal(def));
+  MyMoneyMoney::setThousandSeparator(amountThousands(def));
+
+  res = MyMoneyMoney(valuein);
+
+  MyMoneyMoney::setDecimalSeparator(_decimalSeparator);
+  MyMoneyMoney::setThousandSeparator(_thousandsSeparator);
+
+  return res;
+}
+
+void MyMoneyQifProfile::setFilterScript(const QString& script)
+{
+  m_filterScript = script;
 }
