@@ -40,6 +40,7 @@
 #include "kupdatestockpricedlg.h"
 #include "kcurrencycalculator.h"
 #include "../widgets/kmymoneypriceview.h"
+#include "../dialogs/kequitypriceupdatedlg.h"
 
 #define COMMODITY_COL     0
 #define CURRENCY_COL      1
@@ -79,7 +80,8 @@ KMyMoneyPriceDlg::KMyMoneyPriceDlg(QWidget* parent, const char *name) :
   connect(m_editButton, SIGNAL(clicked()), m_priceList, SLOT(slotEditPrice()));
   connect(m_deleteButton, SIGNAL(clicked()), m_priceList, SLOT(slotDeletePrice()));
   connect(m_newButton, SIGNAL(clicked()), m_priceList, SLOT(slotNewPrice()));
-  connect(m_priceList, SIGNAL(selectionChanged(QListViewItem*)), this, SLOT(slotSelectPrice(QListViewItem*)));
+  connect(m_priceList, SIGNAL(selectionChanged(QListViewItem*)), this, SLOT(slotSelectPrice(QListViewItem*)));  
+  connect(m_onlineQuoteButton, SIGNAL(clicked()), this, SLOT(slotEquityPriceUpdate()));
 
   connect(m_showAllPrices, SIGNAL(toggled(bool)), m_priceList, SLOT(slotShowAllPrices(bool)));
 
@@ -98,6 +100,12 @@ void KMyMoneyPriceDlg::slotSelectPrice(QListViewItem * item)
   m_currentItem = item;
   m_editButton->setEnabled(item != 0);
   m_deleteButton->setEnabled(item != 0);
+}
+
+void KMyMoneyPriceDlg::slotEquityPriceUpdate()
+{
+  KEquityPriceUpdateDlg dlg(this);
+  dlg.exec();
 }
 
 // This function is not needed.  However, removing the KUpdateStockPriceDlg

@@ -1,3 +1,6 @@
+2005-01-22 Ace Jones <acejones@users.sourceforge.net>
+  * Hooked up the "online price updates" button in the price editor
+  
 2005-01-20 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Gnucash import
     * Scheduled transactions default to Bills rather than Deposits

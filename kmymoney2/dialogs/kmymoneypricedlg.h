@@ -43,6 +43,7 @@ public:
 
 public slots:
   void slotSelectPrice(QListViewItem* item);
+  void slotEquityPriceUpdate();
 
 protected:
   void loadList(void);
