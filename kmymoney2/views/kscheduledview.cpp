@@ -227,6 +227,8 @@ void KScheduledView::refresh(bool full, const QCString schedId)
       QTimer::singleShot(10, this, SLOT(slotTimerDone()));
     }
 
+/* QUICK fix for #886979
+
     if (m_openBills)
       itemBills->setOpen(true);
 
@@ -238,7 +240,7 @@ void KScheduledView::refresh(bool full, const QCString schedId)
 
     if (m_openLoans)
       itemLoans->setOpen(true);
-            
+*/            
   } catch (MyMoneyException *e)
   {
     KMessageBox::error(this, e->what());
