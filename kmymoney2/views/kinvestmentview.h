@@ -91,9 +91,11 @@ public slots:
 
   /**
     * This slot is used to select the correct ledger view type for
-    * the account specified by @p id.
+    * the account specified by @p id. If @p transactionId is not
+    * empty, then the respective transaction will be selected.
     *
-    * @param id Internal id used for the account to show
+    * @param accountId Internal id used for the account to show
+    * @param transactionId Internal id used for the transaction to select
     * @param reconciliation if true, the account will be selected in
     *                       reconciliation mode. If false, it will
     *                       be selected in regular ledger mode.
@@ -101,16 +103,7 @@ public slots:
     * @retval true selection of account referenced by @p id succeeded
     * @retval false selection of account failed
     */
-  const bool slotSelectAccount(const QCString& id, const bool reconciliation = false);
-
-  /**
-    * This slot can be used to popup a specific transaction for a
-    * specific account. Both entities are defined by the corresponding Id's.
-    *
-    * @param accountId const QCString reference to the account id
-    * @param transactionId const QCString reference to the transaction id
-    */
-  void slotSelectAccountAndTransaction(const QCString& accountId, const QCString& transactionId);
+  const bool slotSelectAccount(const QCString& accountId, const QCString& transactionId = QCString(), const bool reconciliation = false);
 
   void show(void);
 
@@ -155,7 +148,7 @@ signals:
     * This signal is emitted, if an account has been selected
     * which cannot handled by this view.
     */
-  void accountSelected(const QCString& accountId);
+  void accountSelected(const QCString& accountId, const QCString& transactionId);
 
 private:
   void initSummaryTab(void);

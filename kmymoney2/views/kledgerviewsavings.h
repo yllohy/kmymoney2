@@ -47,6 +47,9 @@ public:
   KLedgerViewSavings(QWidget *parent=0, const char *name=0);
   ~KLedgerViewSavings();
 
+  /// This has to be included for internal reasons, no API change
+  bool eventFilter(QObject* o, QEvent* e);
+
 protected slots:
   void resizeEvent(QResizeEvent*);
 

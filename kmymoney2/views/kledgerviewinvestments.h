@@ -74,6 +74,9 @@ public:
     */
   KMyMoneyTransaction* transaction(const int idx) const;
 
+  /// This has to be included for internal reasons, no API change
+  bool eventFilter(QObject* o, QEvent* e);
+
 protected:
   enum ChangedFieldE {
     None = 0,

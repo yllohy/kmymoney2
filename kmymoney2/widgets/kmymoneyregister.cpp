@@ -407,7 +407,6 @@ bool kMyMoneyRegister::eventFilter(QObject* o, QEvent* e)
         while(lines-- > 0)
           emit signalNextTransaction();
         break;
-        break;
 
       case Qt::Key_Home:
         transactionId = m_parent->transaction(0)->id();
@@ -415,17 +414,6 @@ bool kMyMoneyRegister::eventFilter(QObject* o, QEvent* e)
 
       case Qt::Key_End:
         emit signalSelectTransaction(transactionId);
-        break;
-
-        break;
-
-      case Qt::Key_Return:
-      case Qt::Key_Enter:
-        emit signalEnter();
-        break;
-
-      case Qt::Key_Escape:
-        emit signalEsc();
         break;
 
       case Qt::Key_Up:

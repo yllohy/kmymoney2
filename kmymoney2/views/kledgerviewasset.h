@@ -44,9 +44,12 @@ class KLedgerViewAsset : public KLedgerViewCheckings
 {
   Q_OBJECT
 
-public: 
+public:
   KLedgerViewAsset(QWidget *parent=0, const char *name=0);
   ~KLedgerViewAsset();
+
+  /// This has to be included for internal reasons, no API change
+  bool eventFilter(QObject* o, QEvent* e);
 
 protected slots:
 

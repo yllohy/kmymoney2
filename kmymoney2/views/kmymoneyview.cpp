@@ -175,8 +175,8 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(this, SIGNAL(aboutToShowPage(QWidget*)), m_ledgerView, SLOT(slotCancelEdit()));
   signalMap->setMapping(m_ledgerView, LedgersView);
   connect(m_ledgerView, SIGNAL(signalViewActivated()), signalMap, SLOT(map()));
-  connect(m_ledgerView, SIGNAL(accountSelected(const QCString&)),
-      this, SLOT(slotLedgerSelected(const QCString&)));
+  connect(m_ledgerView, SIGNAL(accountSelected(const QCString&, const QCString&)),
+      this, SLOT(slotLedgerSelected(const QCString&, const QCString&)));
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_ledgerView, SLOT(slotReloadView()));
 
   // Page 6
@@ -187,8 +187,8 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(this, SIGNAL(aboutToShowPage(QWidget*)), m_investmentView, SLOT(slotCancelEdit()));
   signalMap->setMapping(m_investmentView, InvestmentsView);
   connect(m_investmentView, SIGNAL(signalViewActivated()), signalMap, SLOT(map()));
-  connect(m_investmentView, SIGNAL(accountSelected(const QCString&)),
-      this, SLOT(slotLedgerSelected(const QCString&)));
+  connect(m_investmentView, SIGNAL(accountSelected(const QCString&, const QCString&)),
+      this, SLOT(slotLedgerSelected(const QCString&, const QCString&)));
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_investmentView, SLOT(slotReloadView()));
 
   // Page 7
@@ -399,7 +399,12 @@ void KMyMoneyView::slotLedgerSelected(const QCString& accId, const QCString& tra
   switch(acc.accountType()) {
     case MyMoneyAccount::Investment:
       showPage(pageIndex(m_investmentViewFrame));
-      m_investmentView->slotSelectAccountAndTransaction(accId, transaction);
+      m_investmentView->slotSelectAccount(accId, transaction);
+      break;
+
+    case MyMoneyAccount::Stock:
+      showPage(pageIndex(m_investmentViewFrame));
+      m_investmentView->slotSelectAccount(accId, transaction);
       break;
 
     case MyMoneyAccount::Checkings:
@@ -411,7 +416,7 @@ void KMyMoneyView::slotLedgerSelected(const QCString& accId, const QCString& tra
     case MyMoneyAccount::Liability:
     case MyMoneyAccount::AssetLoan:
       showPage(pageIndex(m_ledgerViewFrame));
-      m_ledgerView->slotSelectAccountAndTransaction(accId, transaction);
+      m_ledgerView->slotSelectAccount(accId, transaction);
       break;
 
     case MyMoneyAccount::CertificateDep:

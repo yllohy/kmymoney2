@@ -227,20 +227,7 @@ void KLedgerViewLoan::slotRegisterDoubleClicked(int /* row */,
 
 void KLedgerViewLoan::createRegister(void)
 {
-  m_register = new kMyMoneyRegisterLoan(this, "Loans");
-  m_register->setParent(this);
-
-  connect(m_register, SIGNAL(clicked(int, int, int, const QPoint&)), this, SLOT(slotRegisterClicked(int, int, int, const QPoint&)));
-  connect(m_register, SIGNAL(doubleClicked(int, int, int, const QPoint&)), this, SLOT(slotRegisterDoubleClicked(int, int, int, const QPoint&)));
-
-  connect(m_register, SIGNAL(signalEnter()), this, SLOT(slotStartEdit()));
-
-  connect(m_register, SIGNAL(signalNextTransaction()), this, SLOT(slotNextTransaction()));
-  connect(m_register, SIGNAL(signalPreviousTransaction()), this, SLOT(slotPreviousTransaction()));
-  connect(m_register, SIGNAL(signalDelete()), this, SLOT(slotDeleteTransaction()));
-  connect(m_register, SIGNAL(signalSelectTransaction(const QCString&)), this, SLOT(selectTransaction(const QCString&)));
-
-  connect(m_register->horizontalHeader(), SIGNAL(clicked(int)), this, SLOT(slotRegisterHeaderClicked(int)));
+  KLedgerView::createRegister(new kMyMoneyRegisterLoan(this, "Loans"));
 }
 
 void KLedgerViewLoan::createAccountMenu(void)
@@ -516,43 +503,31 @@ void KLedgerViewLoan::createEditWidgets(void)
     m_editPayee = new kMyMoneyPayee(0, "editPayee");
     connect(m_editPayee, SIGNAL(newPayee(const QString&)), this, SLOT(slotNewPayee(const QString&)));
     connect(m_editPayee, SIGNAL(payeeChanged(const QString&)), this, SLOT(slotPayeeChanged(const QString&)));
-    connect(m_editPayee, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
-    connect(m_editPayee, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   }
 
   if(!m_editCategory) {
     m_editCategory = new kMyMoneyCategory(0, "editCategory");
     connect(m_editCategory, SIGNAL(categoryChanged(const QCString&)), this, SLOT(slotCategoryChanged(const QCString&)));
-    connect(m_editCategory, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
-    connect(m_editCategory, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   }
   if(!m_editMemo) {
     m_editMemo = new kMyMoneyLineEdit(0, "editMemo", AlignLeft|AlignVCenter);
     connect(m_editMemo, SIGNAL(lineChanged(const QString&)), this, SLOT(slotMemoChanged(const QString&)));
-    connect(m_editMemo, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
-    connect(m_editMemo, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   }
 
   if(!m_editAmount) {
     m_editAmount = new kMyMoneyEdit(0, "editAmount");
     connect(m_editAmount, SIGNAL(valueChanged(const QString&)), this, SLOT(slotAmountChanged(const QString&)));
-    connect(m_editAmount, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
-    connect(m_editAmount, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   }
 
   if(!m_editDate) {
     m_editDate = new kMyMoneyDateInput(0, "editDate");
     m_editDate->setFocusPolicy(QWidget::StrongFocus);
     connect(m_editDate, SIGNAL(dateChanged(const QDate&)), this, SLOT(slotDateChanged(const QDate&)));
-    connect(m_editDate, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
-    connect(m_editDate, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   }
 
   if(!m_editNr) {
     m_editNr = new kMyMoneyLineEdit(0, "editNr");
     connect(m_editNr, SIGNAL(lineChanged(const QString&)), this, SLOT(slotNrChanged(const QString&)));
-    connect(m_editNr, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
-    connect(m_editNr, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   }
 
   if(!m_editSplit) {
@@ -1058,4 +1033,9 @@ void KLedgerViewLoan::slotReconciliation(void)
 
 void KLedgerViewLoan::updateTabBar(const MyMoneyTransaction& /* t */, const MyMoneySplit& /* s */)
 {
+}
+
+bool KLedgerViewLoan::eventFilter( QObject *o, QEvent *e )
+{
+  return KLedgerView::eventFilter(o, e);
 }

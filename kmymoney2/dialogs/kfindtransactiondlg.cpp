@@ -61,6 +61,7 @@ KFindTransactionDlg::KFindTransactionDlg(QWidget *parent, const char *name)
   // version (with the transaction register) will also fit on the screen
   // by moving the dialog by (-45,-45).
   m_register->setParent(this);
+  m_register->installEventFilter(this);
   m_registerFrame->hide();
   KFindTransactionDlgDecl::update();
   resize(minimumSizeHint());
@@ -112,7 +113,6 @@ KFindTransactionDlg::KFindTransactionDlg(QWidget *parent, const char *name)
   connect(m_register, SIGNAL(clicked(int, int, int, const QPoint&)), this, SLOT(slotRegisterClicked(int, int, int, const QPoint&)));
   connect(m_register, SIGNAL(doubleClicked(int, int, int, const QPoint&)), this, SLOT(slotRegisterDoubleClicked(int, int, int, const QPoint&)));
 
-  connect(m_register, SIGNAL(signalEnter()), this, SLOT(slotSelectTransaction()));
   connect(m_register, SIGNAL(signalNextTransaction()), this, SLOT(slotNextTransaction()));
   connect(m_register, SIGNAL(signalPreviousTransaction()), this, SLOT(slotPreviousTransaction()));
   connect(m_register, SIGNAL(signalSelectTransaction(const QCString&)), this, SLOT(slotSelectTransaction(const QCString&)));
@@ -575,16 +575,16 @@ void KFindTransactionDlg::setupFilter(void)
 
   // Amount tab
   if((m_amountButton->isChecked() && m_amountEdit->isValid())) {
-    m_filter.setAmountFilter(m_amountEdit->getMoneyValue(), m_amountEdit->getMoneyValue());
+    m_filter.setAmountFilter(m_amountEdit->value(), m_amountEdit->value());
 
   } else if((m_amountRangeButton->isChecked()
       && (m_amountFromEdit->isValid() || m_amountToEdit->isValid()))) {
 
     MyMoneyMoney from(MyMoneyMoney::minValue), to(MyMoneyMoney::maxValue);
     if(m_amountFromEdit->isValid())
-      from = m_amountFromEdit->getMoneyValue();
+      from = m_amountFromEdit->value();
     if(m_amountToEdit->isValid())
-      to = m_amountToEdit->getMoneyValue();
+      to = m_amountToEdit->value();
 
     m_filter.setAmountFilter(from, to);
   }
@@ -862,5 +862,30 @@ void KFindTransactionDlg::update(const QCString& /* id */)
 
     slotSelectTransaction(id);
   }
+}
+
+bool KFindTransactionDlg::eventFilter(QObject* o, QEvent* e)
+{
+  bool rc = false;
+
+  if(o->isWidgetType()) {
+    if(e->type() == QEvent::KeyPress) {
+      const QWidget* w = dynamic_cast<const QWidget*>(o);
+      QKeyEvent *k = static_cast<QKeyEvent *> (e);
+      if(w == m_register) {
+        switch(k->key()) {
+          default:
+            break;
+
+          case Qt::Key_Return:
+          case Qt::Key_Enter:
+            rc = true;
+            slotSelectTransaction();
+            break;
+        }
+      }
+    }
+  }
+  return rc;
 }
 // vim:cin:si:ai:et:ts=2:sw=2:

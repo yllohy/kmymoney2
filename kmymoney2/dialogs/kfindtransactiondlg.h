@@ -127,6 +127,8 @@ public:
     */
   void update(const QCString& id);
 
+  virtual bool eventFilter( QObject *o, QEvent *e );
+
 public slots:
   void slotUpdateSelections(void);
   void slotReset(void);

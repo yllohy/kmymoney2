@@ -84,7 +84,7 @@ void kMyMoneyAccountCompletion::show(void)
   int  count;
 
   if(m_typeList.isEmpty()) {
-    count = loadList(m_baseName, m_accountIdList);
+    count = loadList(m_baseName, m_accountIdList)+1;
   } else {
     count = loadList(m_typeList);
 
@@ -143,4 +143,3 @@ void kMyMoneyAccountCompletion::slotMakeCompletion(const QString& txt)
     hide();
   }
 }
-

@@ -38,14 +38,14 @@
 
 
 /**
-  *@author Thomas Baumgart
+  * @author Thomas Baumgart
   */
-
-class kMyMoneyPayee : public KLineEdit {
-   Q_OBJECT
-public: 
-	kMyMoneyPayee(QWidget *parent=0, const char *name=0);
-	~kMyMoneyPayee();
+class kMyMoneyPayee : public KLineEdit
+{
+  Q_OBJECT
+public:
+  kMyMoneyPayee(QWidget *parent=0, const char *name=0);
+  ~kMyMoneyPayee();
 
   /**
     * This method is used to load the combo box from the
@@ -58,8 +58,6 @@ public:
     * the one passed using loadText().
     */
   void resetText(void);
-
-  virtual bool eventFilter(QObject * , QEvent * );
 
 public slots:
   /**
@@ -85,16 +83,6 @@ signals:
     * the new payee is possibly available in the MyMoneyFile object.
     */
   void payeeChanged(const QString& payee);
-
-  /**
-    * This signal is emitted when the user presses RETURN while editing
-    */
-  void signalEnter();
-
-  /**
-    * This signal is emitted when the user presses ESC while editing
-    */
-  void signalEsc();
 
 protected:
   void focusOutEvent(QFocusEvent *ev);

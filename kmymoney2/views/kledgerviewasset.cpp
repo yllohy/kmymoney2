@@ -71,3 +71,8 @@ void KLedgerViewAsset::slotReconciliation(void)
 {
   KLedgerViewCheckings::slotReconciliation();
 }
+
+bool KLedgerViewAsset::eventFilter( QObject *o, QEvent *e )
+{
+  return KLedgerViewCheckings::eventFilter(o, e);
+}

@@ -44,9 +44,12 @@ class KLedgerViewCash : public KLedgerViewCheckings
 {
   Q_OBJECT
 
-public: 
+public:
   KLedgerViewCash(QWidget *parent=0, const char *name=0);
   ~KLedgerViewCash();
+
+  /// This has to be included for internal reasons, no API change
+  bool eventFilter(QObject* o, QEvent* e);
 
 protected slots:
 

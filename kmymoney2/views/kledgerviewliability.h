@@ -47,6 +47,9 @@ public:
   KLedgerViewLiability(QWidget *parent=0, const char *name=0);
   ~KLedgerViewLiability();
 
+  /// This has to be included for internal reasons, no API change
+  bool eventFilter(QObject* o, QEvent* e);
+
 protected slots:
 
   /* documented in base class */

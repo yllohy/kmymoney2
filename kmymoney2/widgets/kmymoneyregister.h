@@ -444,16 +444,6 @@ signals:
   void signalDelete();
 
   /**
-    * This signal is emitted when the user presses RETURN
-    */
-  void signalEnter();
-
-  /**
-    * This signal is emitted when the user presses ESC
-    */
-  void signalEsc();
-
-  /**
     * This signal is emitted when the user presses SPACE
     */
   void signalSpace();

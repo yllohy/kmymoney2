@@ -104,29 +104,6 @@ void kMyMoneyPayee::focusOutEvent(QFocusEvent *ev)
   KLineEdit::focusOutEvent(ev);
 }
 
-bool kMyMoneyPayee::eventFilter(QObject* o, QEvent* e)
-{
-  bool rc = KLineEdit::eventFilter(o, e);
-
-  if(rc == false) {
-    if(e->type() == QEvent::KeyPress) {
-      QKeyEvent *k = static_cast<QKeyEvent *> (e);
-      switch(k->key()) {
-        case Qt::Key_Return:
-        case Qt::Key_Enter:
-          emit signalEnter();
-          rc = true;
-          break;
-        case Qt::Key_Escape:
-          emit signalEsc();
-          rc = true;
-          break;
-      }
-    }
-  }
-  return rc;
-}
-
 void kMyMoneyPayee::keyPressEvent( QKeyEvent * ev)
 {
   KLineEdit::keyPressEvent(ev);
@@ -137,4 +114,3 @@ void kMyMoneyPayee::keyPressEvent( QKeyEvent * ev)
     KLineEdit::keyPressEvent(&evc);
   }
 }
-

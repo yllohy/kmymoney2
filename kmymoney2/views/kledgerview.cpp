@@ -34,6 +34,7 @@
 #include <qpalette.h>
 #include <qapplication.h>
 #include <qeventloop.h>
+#include <qwidgetlist.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -61,6 +62,10 @@
 #include "../dialogs/ieditscheduledialog.h"
 #include "../dialogs/knewaccountdlg.h"
 #include "../dialogs/kcurrencycalculator.h"
+
+/* -------------------------------------------------------------------------------*/
+/*                               KTransactionPtrVector                            */
+/* -------------------------------------------------------------------------------*/
 
 int KTransactionPtrVector::compareItems(const QCString& s1, const QCString& s2) const
 {
@@ -245,6 +250,11 @@ void KTransactionPtrVector::setPayeeId(const QCString& id)
   m_idMode = PayeeMode;
 }
 
+
+/* --------------------------------------------------------------*/
+/*                           KLedgerView                         */
+/* --------------------------------------------------------------*/
+
 QDate KLedgerView::m_lastPostDate = QDate();
 
 KLedgerView::KLedgerView(QWidget *parent, const char *name )
@@ -282,6 +292,25 @@ KLedgerView::~KLedgerView()
   // the following observer could have been attached by slotSelectAccount(),
   // so we better get rid of him here
   MyMoneyFile::instance()->detach(m_account.id(), this);
+}
+
+void KLedgerView::createRegister(kMyMoneyRegister* r)
+{
+  Q_CHECK_PTR(r);
+
+  m_register = r;
+  m_register->setParent(this);
+  m_register->installEventFilter(this);
+
+  connect(m_register, SIGNAL(clicked(int, int, int, const QPoint&)), this, SLOT(slotRegisterClicked(int, int, int, const QPoint&)));
+  connect(m_register, SIGNAL(doubleClicked(int, int, int, const QPoint&)), this, SLOT(slotRegisterDoubleClicked(int, int, int, const QPoint&)));
+
+  connect(m_register, SIGNAL(signalNextTransaction()), this, SLOT(slotNextTransaction()));
+  connect(m_register, SIGNAL(signalPreviousTransaction()), this, SLOT(slotPreviousTransaction()));
+  connect(m_register, SIGNAL(signalDelete()), this, SLOT(slotDeleteTransaction()));
+  connect(m_register, SIGNAL(signalSelectTransaction(const QCString&)), this, SLOT(selectTransaction(const QCString&)));
+
+  connect(m_register->horizontalHeader(), SIGNAL(clicked(int)), this, SLOT(slotRegisterHeaderClicked(int)));
 }
 
 void KLedgerView::slotBlinkTimeout(void)
@@ -1023,9 +1052,6 @@ void KLedgerView::slotShowTransactionForm(bool visible)
   }
 
   if(m_register != 0) {
-    // bool lensSetting = m_register->ledgerLens();
-    // unsigned int count = m_register->transactionCount();
-
     if(visible) {
       m_register->setLedgerLens(m_ledgerLens);
     } else {
@@ -1036,10 +1062,7 @@ void KLedgerView::slotShowTransactionForm(bool visible)
     m_register->setTransactionCount(m_transactionPtrVector.size()+1, false);
 
     // inform widget, if inline editing should be available or not
-    // m_register->setInlineEditingMode(!visible);
-
-    // make sure, full transaction is visible
-    resizeEvent(NULL);
+    m_register->setInlineEditingMode(!visible);
 
     // using a timeout is the only way, I got the 'ensureTransactionVisible'
     // working when coming from hidden form to visible form. I assume, this
@@ -1203,6 +1226,11 @@ void KLedgerView::showWidgets(void)
     focusWidget = arrangeEditWidgetsInRegister();
   }
 
+  // setup the keyboard filter for all widgets
+  for(QWidget* w = m_tabOrderWidgets.first(); w; w = m_tabOrderWidgets.next()) {
+    w->installEventFilter(this);
+  }
+
   // make sure, size of all form columns are correct
   resizeEvent(0);
 
@@ -1254,7 +1282,6 @@ void KLedgerView::slotNew(void)
   if(m_editDate->getQDate().isValid())
     m_transaction.setPostDate(m_editDate->getQDate());
 
-  disconnect(m_register, SIGNAL(signalEnter()), this, SLOT(slotStartEdit()));
   if(!m_transactionFormActive)
     m_register->setInlineEditingMode(true);
 }
@@ -1335,7 +1362,6 @@ void KLedgerView::slotStartEdit(void)
   showWidgets();
   m_editMode = true;
 
-  disconnect(m_register, SIGNAL(signalEnter()), this, SLOT(slotStartEdit()));
   if(!m_transactionFormActive)
     m_register->setInlineEditingMode(true);
 }
@@ -1359,7 +1385,6 @@ void KLedgerView::slotCancelEdit(void)
     fillForm();
   }
 
-  connect(m_register, SIGNAL(signalEnter()), this, SLOT(slotStartEdit()));
   m_register->setInlineEditingMode(false);
   m_register->setFocus();
 }
@@ -1572,7 +1597,6 @@ void KLedgerView::slotEndEdit(void)
     }
   }
 
-  connect(m_register, SIGNAL(signalEnter()), this, SLOT(slotStartEdit()));
   m_register->setInlineEditingMode(false);
   m_register->setFocus();
 }
@@ -1989,5 +2013,52 @@ void KLedgerView::setCellWidget(QTable* table, const int row, const int col, QWi
 
   if(table->cellWidget(row, col) != w)
     table->setCellWidget(row, col, w);
+}
+
+bool KLedgerView::eventFilter(QObject* o, QEvent* e)
+{
+  bool rc = false;
+
+  if(o->isWidgetType()) {
+    if(e->type() == QEvent::KeyPress) {
+      const QWidget* w = dynamic_cast<const QWidget*>(o);
+      QKeyEvent *k = static_cast<QKeyEvent *> (e);
+      if(m_tabOrderWidgets.findRef(w) != -1) {
+        rc = true;
+        switch(k->key()) {
+          default:
+            rc = false;
+            break;
+
+          case Qt::Key_Return:
+          case Qt::Key_Enter:
+            // we cannot call the slot directly, as it destroys the caller of
+            // this method :-(  So we let the event handler take care of calling
+            // the respective slot using a timeout.
+            QTimer::singleShot(0, this, SLOT(slotEndEdit()));
+            break;
+
+          case Qt::Key_Escape:
+            // we cannot call the slot directly, as it destroys the caller of
+            // this method :-(  So we let the event handler take care of calling
+            // the respective slot using a timeout.
+            QTimer::singleShot(0, this, SLOT(slotCancelEdit()));
+            break;
+        }
+      } else if(w == m_register && !isEditMode()) {
+        switch(k->key()) {
+          default:
+            break;
+
+          case Qt::Key_Return:
+          case Qt::Key_Enter:
+            rc = true;
+            slotStartEdit();
+            break;
+        }
+      }
+    }
+  }
+  return rc;
 }
 

@@ -305,6 +305,10 @@ const int kMyMoneyAccountSelector::loadList(QValueList<int> typeList)
   int count = 0;
   int typeMask = 0;
   m_baseName = QString();
+  QCString currentId;
+
+  if(m_selMode == QListView::Single)
+    currentId = selectedAccounts().first();
 
   if((typeList.contains(MyMoneyAccount::Checkings)
     + typeList.contains(MyMoneyAccount::Savings)
@@ -383,8 +387,12 @@ const int kMyMoneyAccountSelector::loadList(QValueList<int> typeList)
     }
   }
   if(m_listView->firstChild()) {
-    m_listView->setCurrentItem(m_listView->firstChild());
-    m_listView->clearSelection();
+    if(currentId.isEmpty()) {
+      m_listView->setCurrentItem(m_listView->firstChild());
+      m_listView->clearSelection();
+    } else {
+      setSelected(currentId);
+    }
   }
   QWidget::update();
   return count;

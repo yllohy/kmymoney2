@@ -266,15 +266,6 @@ bool kMyMoneyEdit::eventFilter(QObject * /* o */ , QEvent *e )
         rc = false;
         break;
 
-      case Qt::Key_Return:
-      case Qt::Key_Enter:
-        emit signalEnter();
-        break;
-
-      case Qt::Key_Escape:
-        emit signalEsc();
-        break;
-
       case Qt::Key_Tab:
         rc = false;         // we signal, but we also use the standard behaviour
         if(k->state() & Qt::ShiftButton)

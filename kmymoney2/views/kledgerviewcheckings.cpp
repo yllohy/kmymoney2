@@ -170,14 +170,6 @@ void KLedgerViewCheckings::refreshView(void)
   QDate date;
   if(!m_account.value("lastStatementDate").isEmpty())
     date = QDate::fromString(m_account.value("lastStatementDate"), Qt::ISODate);
-// FIXME: move to fillSummary()
-#if 0
-  if(date.isValid())
-    m_lastReconciledLabel->setText(i18n("Reconciled: %1").arg(KGlobal::locale()->formatDate(date, true)));
-  else
-    m_lastReconciledLabel->setText(QString());
-#endif
-
   m_tabTransfer->setEnabled(transfersPossible());
 }
 
@@ -378,8 +370,7 @@ void KLedgerViewCheckings::slotRegisterDoubleClicked(int /* row */,
 
 void KLedgerViewCheckings::createRegister(void)
 {
-  m_register = new kMyMoneyRegisterCheckings(this, KAppTest::widgetName(this, "kMyMoneyRegisterCheckings"));
-  m_register->setParent(this);
+  KLedgerView::createRegister(new kMyMoneyRegisterCheckings(this, KAppTest::widgetName(this, "kMyMoneyRegisterCheckings")));
 
 #define LOADACTION(a) m_register->setAction(QCString(a), action2str(a))
   LOADACTION(MyMoneySplit::ActionATM);
@@ -387,17 +378,6 @@ void KLedgerViewCheckings::createRegister(void)
   LOADACTION(MyMoneySplit::ActionDeposit);
   LOADACTION(MyMoneySplit::ActionWithdrawal);
   LOADACTION(MyMoneySplit::ActionTransfer);
-
-  connect(m_register, SIGNAL(clicked(int, int, int, const QPoint&)), this, SLOT(slotRegisterClicked(int, int, int, const QPoint&)));
-  connect(m_register, SIGNAL(doubleClicked(int, int, int, const QPoint&)), this, SLOT(slotRegisterDoubleClicked(int, int, int, const QPoint&)));
-
-  connect(m_register, SIGNAL(signalEnter()), this, SLOT(slotStartEdit()));
-  connect(m_register, SIGNAL(signalNextTransaction()), this, SLOT(slotNextTransaction()));
-  connect(m_register, SIGNAL(signalPreviousTransaction()), this, SLOT(slotPreviousTransaction()));
-  connect(m_register, SIGNAL(signalDelete()), this, SLOT(slotDeleteTransaction()));
-  connect(m_register, SIGNAL(signalSelectTransaction(const QCString&)), this, SLOT(selectTransaction(const QCString&)));
-
-  connect(m_register->horizontalHeader(), SIGNAL(clicked(int)), this, SLOT(slotRegisterHeaderClicked(int)));
 }
 
 void KLedgerViewCheckings::createAccountMenu(void)
@@ -966,42 +946,30 @@ void KLedgerViewCheckings::createEditWidgets(void)
     m_editPayee = new kMyMoneyPayee(0, KAppTest::widgetName(this, "kMyMoneyPayee"));
     connect(m_editPayee, SIGNAL(newPayee(const QString&)), this, SLOT(slotNewPayee(const QString&)));
     connect(m_editPayee, SIGNAL(payeeChanged(const QString&)), this, SLOT(slotPayeeChanged(const QString&)));
-    connect(m_editPayee, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
-    connect(m_editPayee, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   }
 
   if(!m_editCategory) {
     m_editCategory = new kMyMoneyCategory(0, KAppTest::widgetName(this, "kMyMoneyCategory"));
     connect(m_editCategory, SIGNAL(categoryChanged(const QCString&)), this, SLOT(slotCategoryChanged(const QCString&)));
-    connect(m_editCategory, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
-    connect(m_editCategory, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   }
   if(!m_editMemo) {
     m_editMemo = new kMyMoneyLineEdit(0, KAppTest::widgetName(this, "kMyMoneyLineEdit/Memo"), AlignLeft|AlignVCenter);
     connect(m_editMemo, SIGNAL(lineChanged(const QString&)), this, SLOT(slotMemoChanged(const QString&)));
-    connect(m_editMemo, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
-    connect(m_editMemo, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   }
 
   if(!m_editAmount) {
     m_editAmount = new kMyMoneyEdit(0, KAppTest::widgetName(this, "kMyMoneyEdit/Amount"));
     connect(m_editAmount, SIGNAL(valueChanged(const QString&)), this, SLOT(slotAmountChanged(const QString&)));
-    connect(m_editAmount, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
-    connect(m_editAmount, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   }
 
   if(!m_editDate) {
     m_editDate = new kMyMoneyDateInput(0, KAppTest::widgetName(this, "kMyMoneyDateInput"));
     connect(m_editDate, SIGNAL(dateChanged(const QDate&)), this, SLOT(slotDateChanged(const QDate&)));
-    connect(m_editDate, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
-    connect(m_editDate, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   }
 
   if(!m_editNr) {
     m_editNr = new kMyMoneyLineEdit(0, KAppTest::widgetName(this, "kMyMoneyLineEdit/Nr"));
     connect(m_editNr, SIGNAL(lineChanged(const QString&)), this, SLOT(slotNrChanged(const QString&)));
-    connect(m_editNr, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
-    connect(m_editNr, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   }
 
   if(!m_editSplit) {
@@ -1012,23 +980,17 @@ void KLedgerViewCheckings::createEditWidgets(void)
   if(!m_editPayment) {
     m_editPayment = new kMyMoneyEdit(0, KAppTest::widgetName(this, "kMyMoneyLineEdit/Payment"));
     connect(m_editPayment, SIGNAL(valueChanged(const QString&)), this, SLOT(slotPaymentChanged(const QString&)));
-    connect(m_editPayment, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
-    connect(m_editPayment, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   }
 
   if(!m_editDeposit) {
     m_editDeposit = new kMyMoneyEdit(0, KAppTest::widgetName(this, "kMyMoneyLineEdit/Deposit"));
     connect(m_editDeposit, SIGNAL(valueChanged(const QString&)), this, SLOT(slotDepositChanged(const QString&)));
-    connect(m_editDeposit, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
-    connect(m_editDeposit, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   }
 
   if(!m_editType) {
     m_editType = new kMyMoneyCombo(0, KAppTest::widgetName(this, "kMyMoneyCombo"));
     m_editType->setFocusPolicy(QWidget::StrongFocus);
     connect(m_editType, SIGNAL(selectionChanged(int)), this, SLOT(slotActionSelected(int)));
-    connect(m_editType, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
-    connect(m_editType, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   }
 }
 
@@ -1622,3 +1584,7 @@ void KLedgerViewCheckings::slotPayeeSelected(void)
     emit payeeSelected(m_split.payeeId(), m_split.accountId(), m_transaction.id());
 }
 
+bool KLedgerViewCheckings::eventFilter( QObject *o, QEvent *e )
+{
+  return KLedgerView::eventFilter(o, e);
+}

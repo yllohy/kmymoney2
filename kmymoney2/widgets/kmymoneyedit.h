@@ -190,18 +190,7 @@ public slots:
   void setText(const QString& txt) { m_edit->setText(txt); };
 
 signals: // Signals
-  /**
-    * This signal is emitted when the user presses RETURN while editing
-    */
-  void signalEnter();
 
-  /**
-    * This signal is emitted when the user presses ESC while editing
-    */
-  void signalEsc();
-
-  /** No descriptions */
-  // void signalNextTransaction();
   /** signal is sent, when the tab key is pressed */
   void signalTab();
   /** signal is sent, when the Back-tab (Shift-Tab) key is pressed */

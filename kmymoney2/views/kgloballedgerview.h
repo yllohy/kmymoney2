@@ -88,15 +88,6 @@ public slots:
   void slotCancelEdit(void);
 
   /**
-    * This slot can be used to popup a specific transaction for a
-    * specific account. Both entities are defined by the corresponding Id's.
-    *
-    * @param accountId const QCString reference to the account id
-    * @param transactionId const QCString reference to the transaction id
-    */
-  void slotSelectAccountAndTransaction(const QCString& accountId, const QCString& transactionId);
-
-  /**
     * This slot is used to reload all data from the MyMoneyFile engine.
     * All existing data in the view will be discarded.
     * Call this e.g. if a new file has been loaded.
@@ -115,7 +106,8 @@ public slots:
     * This slot is used to select the correct ledger view type for
     * the account specified by @p id in a specific mode.
     *
-    * @param id Internal id used for the account to show
+    * @param accountId Internal id used for the account to show
+    * @param transactionId Internal id used for the transaction to select
     * @param reconciliation if true, the account will be selected in
     *                       reconciliation mode. If false, it will
     *                       be selected in regular ledger mode.
@@ -123,19 +115,7 @@ public slots:
     * @retval true selection of account referenced by @p id succeeded
     * @retval false selection of account failed
     */
-  const bool slotSelectAccount(const QCString& id, const bool reconciliation);
-
-  /**
-    * This slot is used to select the correct ledger view type for
-    * the account specified by @p id. It is essentially the same
-    * as calling slotSelectAccount(id, false);
-    *
-    * @param id Internal id used for the account to show
-    *
-    * @retval true selection of account referenced by @p id succeeded
-    * @retval false selection of account failed
-    */
-  const bool slotSelectAccount(const QCString& id);
+  const bool slotSelectAccount(const QCString& accountId, const QCString& transactionId = QCString(), const bool reconciliation = false);
 
 protected:
   /**
@@ -146,11 +126,6 @@ protected:
     * the first account found in the list will be made the current account.
     */
   void loadAccounts(void);
-
-protected slots:
-
-protected:
-
 
 private:
   kMyMoneyAccountCombo* m_accountComboBox;
@@ -191,7 +166,7 @@ signals:
     * This signal is emitted, if an account has been selected
     * which cannot handled by this view.
     */
-  void accountSelected(const QCString& accountId);
+  void accountSelected(const QCString& accountId, const QCString& transactionId);
 
 };
 

@@ -42,9 +42,11 @@ kMyMoneyAccountCombo::kMyMoneyAccountCombo( QWidget* parent, const char* name ) 
   KComboBox( parent, name ),
   m_mlbDown(false)
 {
-  m_selector = new kMyMoneyAccountCompletion(this, "selector");
+  QCString myName(name);
+  myName += "/completion";
+  m_selector = new kMyMoneyAccountCompletion(this, myName.data());
+
   connect(this, SIGNAL(clicked()), this, SLOT(slotButtonPressed()));
-  // connect(m_selector, SIGNAL(itemSelected(const QCString&)), this, SIGNAL(accountSelected(const QCString&)));
   connect(m_selector, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotSelected(const QCString&)));
 
   // make sure that we can display a minimum of characters
@@ -141,15 +143,6 @@ int kMyMoneyAccountCombo::loadList(KMyMoneyUtils::categoryTypeE typeMask)
 void kMyMoneyAccountCombo::keyPressEvent(QKeyEvent* k)
 {
   switch(k->key()) {
-    case Qt::Key_Return:
-    case Qt::Key_Enter:
-      emit signalEnter();
-      break;
-
-    case Qt::Key_Escape:
-      emit signalEsc();
-      break;
-
     case Qt::Key_Tab:
       break;
 

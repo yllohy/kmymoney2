@@ -47,6 +47,9 @@ public:
   KLedgerViewCreditCard(QWidget *parent=0, const char *name=0);
   ~KLedgerViewCreditCard();
 
+  /// This has to be included for internal reasons, no API change
+  bool eventFilter(QObject* o, QEvent* e);
+
 protected:
   /* documented in base class */
   void fillSummary(void);

@@ -51,6 +51,9 @@ public:
   KLedgerViewLoan(QWidget *parent=0, const char *name=0);
   ~KLedgerViewLoan();
 
+  /// This has to be included for internal reasons, no API change
+  bool eventFilter(QObject* o, QEvent* e);
+
 public slots:
   /**
     * refresh the current view

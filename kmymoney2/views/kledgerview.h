@@ -152,6 +152,7 @@ private:
   TransactionSortE  m_sortType;
 };
 
+
 /**
   * This class is the abstract base class for all ledger views. Common functionality
   * for all ledger views. The specifics of the ledger view depend on the account type
@@ -424,6 +425,8 @@ public:
     * @retval Withdrawal returned if value is negative
     */
   static int transactionDirection(const MyMoneySplit& split);
+
+  virtual bool eventFilter( QObject *o, QEvent *e );
 
 public slots:
   /**
@@ -825,6 +828,12 @@ protected:
   void enableOkButton(const bool enabled);
   void enableCancelButton(const bool enabled);
   void enableMoreButton(const bool enabled);
+
+  /**
+    * This method is used by the derived classes to setup the necessary connections
+    * for the register of the view.
+    */
+  void createRegister(kMyMoneyRegister* reg);
 
 protected:
   /**

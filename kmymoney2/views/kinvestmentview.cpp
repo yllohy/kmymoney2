@@ -442,7 +442,7 @@ void KInvestmentView::loadAccounts(void)
   slotSelectAccount(acc.id());
 }
 
-const bool KInvestmentView::slotSelectAccount(const QCString& id, const bool reconciliation)
+const bool KInvestmentView::slotSelectAccount(const QCString& id, const QCString& transactionId, const bool reconciliation)
 {
   bool    rc = false;
 
@@ -453,10 +453,18 @@ const bool KInvestmentView::slotSelectAccount(const QCString& id, const bool rec
     // if the account id differs, then we have to do something
     MyMoneyAccount acc = MyMoneyFile::instance()->account(id);
     if(m_accountId != id) {
+      // if we have a stock account here, we need to get it's parent
+      if(acc.accountType() == MyMoneyAccount::Stock) {
+        acc = MyMoneyFile::instance()->account(acc.parentAccountId());
+      }
       if(acc.accountType() == MyMoneyAccount::Investment) {
         m_account = acc;
         m_accountComboBox->setSelected(acc);
         m_ledgerView->slotSelectAccount(acc.id());
+        if(!transactionId.isEmpty()) {
+          m_tab->showPage(m_transactionTab);
+          m_ledgerView->selectTransaction(transactionId);
+        }
         updateDisplay();
         rc = true;
       } else {
@@ -467,7 +475,7 @@ const bool KInvestmentView::slotSelectAccount(const QCString& id, const bool rec
         } else
           m_accountComboBox->setSelected(QCString());
         // ... and let's see, if someone else can handle this request
-        emit accountSelected(id);
+        emit accountSelected(id, transactionId);
       }
     } else {
 #if KDE_VERSION < 310
@@ -486,17 +494,6 @@ const bool KInvestmentView::slotSelectAccount(const QCString& id, const bool rec
 
   return rc;
 }
-
-void KInvestmentView::slotSelectAccountAndTransaction(const QCString& accountId,
-                                                const QCString& transactionId)
-{
-  // if the selection of the account succeeded then select the desired transaction
-  if(slotSelectAccount(accountId)) {
-    // FIXME: select ledger tab and then call the selectTransaction method
-    m_ledgerView->selectTransaction(transactionId);
-  }
-}
-
 
 void KInvestmentView::show(void)
 {

@@ -33,7 +33,7 @@
 
 KUpdateStockPriceDlg::KUpdateStockPriceDlg(QWidget* parent,  const char* name) : kUpdateStockPriceDecl(parent,name,TRUE)
 {
-  init();  
+  init();
 }
 
 KUpdateStockPriceDlg::KUpdateStockPriceDlg(const QDate& date, const QString& price, QWidget* parent,  const char* name) : kUpdateStockPriceDecl(parent,name,TRUE)
@@ -51,10 +51,6 @@ void KUpdateStockPriceDlg::init()
 {
   connect(btnOK, SIGNAL(clicked()), this, SLOT(accept()));
   connect(btnCancel, SIGNAL(clicked()), this, SLOT(reject()));
-  connect(priceInput, SIGNAL(signalEnter()), this, SLOT(accept()));
-  connect(dateInput, SIGNAL(signalEnter()), this, SLOT(accept()));
-  connect(priceInput, SIGNAL(signalEsc()), this, SLOT(reject()));
-  connect(dateInput, SIGNAL(signalEsc()), this, SLOT(reject()));
 }
 
 

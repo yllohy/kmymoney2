@@ -93,16 +93,6 @@ protected slots:
 signals:
   void accountSelected(const QCString&);
 
-  /**
-    * This signal is emitted when the user presses RETURN while this widget has the focus
-    */
-  void signalEnter();
-
-  /**
-    * This signal is emitted when the user presses ESC while this widget has the focus
-    */
-  void signalEsc();
-
   void pressed();
   void released();
   void clicked();

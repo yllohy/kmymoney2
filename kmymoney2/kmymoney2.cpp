@@ -1624,7 +1624,8 @@ void KMyMoney2App::ofxWebConnect(const QString& url, const QCString& asn_id)
 #if KDE_IS_VERSION(3,2,0)
   KStartupInfo::setNewStartupId(this,asn_id);
 #else
-  KWin::activateWindow( winId() );
+  QCString keepCompilerHappy1(asn_id);
+  KWin::setActiveWindow( winId() );
 #endif
 
 #if defined(HAVE_LIBOFX) || defined(HAVE_NEW_OFX)
@@ -1660,11 +1661,12 @@ void KMyMoney2App::ofxWebConnect(const QString& url, const QCString& asn_id)
         slotStatusMsg(prevMsg);
       }
     }
-    
+
   }
 
 #else
   KMessageBox::information( this, QString("<p>")+i18n("<b>OFX</b> import is unavailable.  This version of <b>KMyMoney</b> was built without <b>OFX</b> support."), i18n("Function not available"));
+  QString keepCompilerHappy2(url);
 #endif
 
 }
