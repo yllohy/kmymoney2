@@ -111,6 +111,7 @@ private:
     */
   void createInfoStack(void);
 
+protected:
   int transactionType(const MyMoneyTransaction& t, const MyMoneySplit& split) const;
   const QCString transactionType(int type) const;
 
