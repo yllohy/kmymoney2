@@ -35,12 +35,9 @@
 #include "kmymoneycalendar.h"
 
 kMyMoneyCalendar::kMyMoneyCalendar(QWidget *parent, const char *name )
-  : QGridView(parent,name), m_rows(1), m_cols(1)
+  : QGridView(parent,name), m_type(MONTHLY)
 {
-  setNumRows(m_rows);
-  setNumCols(m_cols);
-  setCellWidth(width()/m_cols);
-  setCellHeight(height()/m_rows);
+  initType();
 }
 
 kMyMoneyCalendar::~kMyMoneyCalendar()
@@ -57,6 +54,25 @@ void kMyMoneyCalendar::paintCell(QPainter *p, int row, int col)
 
 void kMyMoneyCalendar::resizeEvent(QResizeEvent* e)
 {
+  setCellWidth(width()/m_cols);
+  setCellHeight(height()/m_rows);
+}
+
+void kMyMoneyCalendar::initType()
+{
+  if (m_type == MONTHLY)
+  {
+    QDate today = QDate::currentDate();
+    m_cols = 7;
+    m_rows = today.daysInMonth() / 7;
+  }
+  else
+  {
+    m_rows = m_cols = 1;
+  }
+
+  setNumRows(m_rows);
+  setNumCols(m_cols);
   setCellWidth(width()/m_cols);
   setCellHeight(height()/m_rows);
 }

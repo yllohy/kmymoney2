@@ -83,6 +83,9 @@ kMyMoneyDateInput::kMyMoneyDateInput(QWidget *parent, const char *name, Qt::Alig
 
 	m_datePicker = new KDatePicker(m_dateFrame, m_date);
 
+  // Let the date picker have a close button (Added in 3.1)
+  m_datePicker->setCloseButton(true);
+
   // the next line is a try to add an icon to the button
 	m_dateButton = new QPushButton(QIconSet(QPixmap( locate("icon","hicolor/16x16/apps/korganizer.png"))), QString(""), this);
   m_dateButton->setMinimumWidth(30);

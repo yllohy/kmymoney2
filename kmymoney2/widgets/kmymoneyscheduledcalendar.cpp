@@ -1,5 +1,5 @@
 /***************************************************************************
-                          kmymoneycalendar.h  -  description
+                          kmymoneyscheduledcalendar.cpp  -  description
                              -------------------
     begin                : Wed Jul 2 2003
     copyright            : (C) 2000-2003 by Michael Edwardes
@@ -20,85 +20,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef KMYMONEYCALENDAR_H
-#define KMYMONEYCALENDAR_H
-
 // ----------------------------------------------------------------------------
 // QT Includes
-#include <qgridview.h>
-#include <qdatetime.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
 
 // ----------------------------------------------------------------------------
 // Project Includes
+#include "kmymoneyscheduledcalendar.h"
 
+kMyMoneyScheduledCalendar::kMyMoneyScheduledCalendar(QWidget *parent, const char *name )
+  : kMyMoneyCalendar(parent,name)
+{
+}
 
-/**
-  * A representation of a calendar.
-  *  
-  * @author Michael Edwardes 2003
-  *
-**/
-class kMyMoneyCalendar : public QGridView  {
-   Q_OBJECT
-public:
-  enum calendarType { WEEKLY,
-                      MONTHLY,
-                      QUARTERLY,
-                      YEARLY };
-   
-public:
-  /**
-    * Standard constructor.
-  **/
-  kMyMoneyCalendar(QWidget *parent=0, const char *name=0);
-
-  /**
-    * Standard destructor.
-  **/
-  ~kMyMoneyCalendar();
-
-  /**
-    * Sets the calendar type.
-  **/
-  void setType(calendarType type) { m_type = type; }
-
-  /**
-    * Get the calendar type.
-  **/
-  calendarType type(calendarType type) const { return m_type; }
-
-  /**
-    * Set the date to show.  The date is guaranteed to be visible
-    * on the calendar dependant upon the current type.
-  **/
-  void setVisibleDate(const QDate& date);
-
-protected:
-  /**
-    * Reimplement paintCell so we can custom draw the cells.
-    *
-    * @see QGridView
-  **/
-  virtual void paintCell(QPainter *p, int row, int col);
-
-  /**
-    * Handle the resize events.
-  **/
-  virtual void resizeEvent(QResizeEvent* e);
-
-private:
-  /// The number of columns and rows.  Dynamically set.
-  int m_cols;
-  int m_rows;
-
-  /// The type
-  calendarType m_type;
-
-  /// Draw the calendar type
-  void initType();
-};
-
-#endif
+kMyMoneyScheduledCalendar::~kMyMoneyScheduledCalendar()
+{
+}
