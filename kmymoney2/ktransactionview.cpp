@@ -26,6 +26,7 @@
 
 #include "ktransactionview.h"
 #include "knewcategorydlg.h"
+#include "dialogs/ksplittransactiondlg.h"
 #include <kmessagebox.h>
 
 #if QT_VERSION > 300
@@ -36,6 +37,7 @@ KTransactionView::KTransactionView(QWidget *parent, const char *name)
  : KTransactionViewDecl(parent,name)
 {
   transactionsTable->setNumCols(7);
+  transactionsTable->setCurrentCell(0, 1);
   transactionsTable->horizontalHeader()->setLabel(0, i18n("Date"));
 	transactionsTable->horizontalHeader()->setLabel(1, i18n("Type/Num"));
 	transactionsTable->horizontalHeader()->setLabel(2, i18n("Payee/Category/Memo"));
@@ -99,6 +101,7 @@ KTransactionView::KTransactionView(QWidget *parent, const char *name)
   m_contextMenu->insertSeparator();
   m_contextMenu->insertItem(kiconloader->loadIcon("set_as", KIcon::Small), i18n("Set as"), setAsMenu);
 
+  m_contextMenu->insertItem(kiconloader->loadIcon("split", KIcon::Small), i18n("Split"), this, SLOT(slotEditSplit()));
   createInputWidgets();
 }
 
@@ -598,6 +601,28 @@ void KTransactionView::slotTransactionCleared()
   transaction->setState(MyMoneyTransaction::Cleared);
   updateTransactionList(m_index*NO_ROWS, 3);
   m_filePointer->setDirty(true);
+}
+
+void KTransactionView::slotEditSplit()
+{
+  MyMoneyAccount *pAccount;
+  KConfig *config = KGlobal::config();
+  config->setGroup("List Options");
+//  const int NO_ROWS = (config->readEntry("RowCount", "2").toInt());
+	
+	pAccount = getAccount();
+	if(pAccount == 0)
+		return;
+
+  MyMoneyTransaction *transaction = m_transactions->at(m_index);
+  if (!transaction)
+    return;
+
+  MyMoneyMoney amount = 99.99;
+
+  KSplitTransactionDlg* dlg = new KSplitTransactionDlg(0, 0, &amount, true);
+  dlg->exec();
+  delete dlg;
 }
 
 void KTransactionView::init(MyMoneyFile *file, MyMoneyBank bank, MyMoneyAccount account,
@@ -1278,6 +1303,8 @@ void KTransactionView::updateTransactionList(int row, int col)
         break;
     }
   }
+  transactionsTable->setCurrentCell(1, 1);
+
   // setup new size values
   resizeEvent(NULL);
 }

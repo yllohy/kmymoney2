@@ -120,6 +120,7 @@ protected slots:
   void enterClicked();
   void slotFocusChange(int row, int col, int button, const QPoint & mousePos);
   void slotContextMenu(int row, int col, int button, const QPoint & mousePos);
+  void slotEditSplit();
 //  void editClicked();
   void cancelClicked();
   void deleteClicked();
