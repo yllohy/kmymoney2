@@ -2,14 +2,14 @@ KMyMoney 2.  (covered by the GNU license - see COPYING)
 
 Homepage - kmymoney2.sourceforge.net
 
-The two most important libraries are QT-2.2.* and above available from www.trolltech.com and
-KDE 2 from www.kde.org.  At least version 2.2 of KDE is required to run KMyMoney2.
+The two most important libraries are QT-3.0.* and above available from www.trolltech.com and
+KDE 3 from www.kde.org.  At least version 3.0 of KDE is required to run KMyMoney2.
 
 To compile use this general sequence:
 
-  tar --bzip2 -xvf kmymoney2-0.3.[version].tar.bz2
-  cd kmymoney-0.3.[version]
-  ./configure --with-qt-dir=[your location of qt2] --prefix=[your location of kde2]
+  tar --bzip2 -xvf kmymoney2-0.5.[version].tar.bz2
+  cd kmymoney-0.5.[version]
+  ./configure --with-qt-dir=[your location of qt3] --prefix=[your location of kde3]
   su # to gain root permissions to install
   make install
   exit # to revert to normal user
@@ -22,11 +22,11 @@ To compile use this general sequence:
 
 AND/OR
 
-  Get KDevelop 2 and use the supplied kmymoney2.kdevprj located in the base directory.
+  Get KDevelop and use the supplied kmymoney2.kdevprj located in the base directory.
   For more information on KDevelop please contact www.kdevelop.org.
 
-If you find this program useful in any way or wish to contribute please send an email to me at
-  mte@users.sourceforge.net.
+If you find this program useful in any way or wish to contribute please send an email to
+the developers list at kmymoney2-developer@lists.sourceforge.net.
 
 The latest version of KMyMoney2 can always be found at kymoney2.sourceforge.net
 and the cvs at cvs.kmymoney2.sourceforge.net:/cvsroot/kmymoney2 module kmymoney2.

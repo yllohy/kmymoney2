@@ -1,11 +1,1 @@
-You cannot create transactions with an amount 0.01  They get created as
-having a zero balance!  It's the same for -0.01 as well.  0.02 seems to
-work fine.
-
-Random crashes on exit ?
-
-Autocomplete should not put the last amount in deposit when entering a
-withdrawal.  (Does it do the same the other way around).  (Last transaction
-using the payee was a deposit).
-
-Better user feedback in kmymoney2 e.g using status bar messages and the like.
+See kmymoney2.sourceforge.net for known bugs.
