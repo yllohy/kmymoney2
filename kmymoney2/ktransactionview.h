@@ -45,6 +45,9 @@ private:
   MyMoneyBank m_bankIndex;
   MyMoneyAccount m_accountIndex;
   long m_index;
+  bool useall;
+  bool usedate;
+  bool userow;
 
 	kMyMoneyDateInput*  m_date;
 	KComboBox* m_method;

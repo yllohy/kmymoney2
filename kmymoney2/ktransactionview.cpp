@@ -317,6 +317,9 @@ void KTransactionView::slotTransactionDelete()
   pAccount->removeTransaction(*transaction);
   m_filePointer->setDirty(true);
 
+  useall = false;
+  usedate = false;
+  userow = true;
   updateTransactionList(-1, -1);
   emit transactionListChanged();
 }
@@ -377,6 +380,9 @@ void KTransactionView::init(MyMoneyFile *file, MyMoneyBank bank, MyMoneyAccount 
   m_bankIndex = bank;
   m_accountIndex = account;
 
+ useall = true;
+ usedate = false;
+ userow = false;
  updateTransactionList(-1);
 }
 
@@ -555,6 +561,9 @@ void KTransactionView::enterClicked()
   													transferAccount, "", "", newstate);
 	}
 	
+	useall = false;
+  usedate = true;
+  userow = false;
   updateTransactionList(-1, -1);
 	emit transactionListChanged();
 }
@@ -684,15 +693,23 @@ void KTransactionView::updateTransactionList(int row, int col)
 		transactionsTable->verticalHeader()->setMovingEnabled(false);
 		m_transactions.clear();
     m_index=-1;
-    clear();
+    //clear();
     transactionsTable->setNumRows((account->transactionCount() * 2) + 2);
-
+    int i = 0;
 		bool isEmpty = m_transactions.isEmpty();
-    for ( transaction = account->transactionFirst(); transaction; transaction=account->transactionNext() ) {
+    for ( transaction = account->transactionFirst(); transaction; transaction=account->transactionNext(), i++ ) {
       if(isEmpty)
 			  m_transactions.append(transaction);
       QString colText;
+      if (transaction->type()==MyMoneyTransaction::Credit)
+        balance += transaction->amount();
+      else
+        balance -= transaction->amount();
 
+		if((useall == true) ||
+       (usedate == true && transaction->date() >= m_date->getQDate()) ||
+       (userow == true && m_index >= i))
+    {
       switch (transaction->method()) {
         case MyMoneyTransaction::Cheque:
           colText = "Cheque";
@@ -787,16 +804,13 @@ void KTransactionView::updateTransactionList(int row, int col)
     	item77 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
     	transactionsTable->setItem(rowCount + 1, 5, item77);
 
-      if (transaction->type()==MyMoneyTransaction::Credit)
-        balance += transaction->amount();
-      else
-        balance -= transaction->amount();
 
       KTransactionTableItem *item8 = new KTransactionTableItem(transactionsTable, QTableItem::Never, KGlobal::locale()->formatMoney(balance.amount()));
       transactionsTable->setItem(rowCount, 6, item8);
 
     	KTransactionTableItem *item88 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
     	transactionsTable->setItem(rowCount + 1, 6, item88);
+    }
       rowCount += 2;
 			currentBalance = KGlobal::locale()->formatMoney(balance.amount());
     }
@@ -1008,6 +1022,9 @@ void KTransactionView::deleteClicked()
 void KTransactionView::refresh(void)
 {
   qDebug("KTransactionView::refresh()");
+  useall = true;
+  usedate = false;
+  userow = false;
   updateTransactionList(-1,-1);
 }
 
