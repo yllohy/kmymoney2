@@ -153,7 +153,7 @@ void KImportDlg::readConfig(void)
   KConfig *kconfig = KGlobal::config();
   kconfig->setGroup("Last Use Settings");
   m_qlineeditFile->setText(kconfig->readEntry("KImportDlg_LastFile"));
-  m_qstringLastFormat = kconfig->readEntry("KImportDlg_LastFormat");
+  m_qstringLastFormat = kconfig->readEntry("KImportDlg_LastFormat", "%d/%m/%yy");
   if (m_qlineeditFile->text().length()>=1  && fileExists(m_qlineeditFile->text())) {
     m_qcomboboxDateFormat->setEnabled(true);
     m_qbuttonOk->setEnabled(true);
