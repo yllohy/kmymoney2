@@ -84,12 +84,14 @@ KInvestmentView::KInvestmentView(QWidget *parent, const char *name)
   initSummaryTab();
   initTransactionTab();
 
-  // fill in some demo data
-  KListViewItem* item1 = new KListViewItem(investmentTable, QString("Redhat"), QString("RHAT"), QString("24"), QString("$20.00"), QString("$13.43"), QString("$212"), QString("5.43%"), QString("9.43%"));
-  investmentTable->insertItem(item1);
+ 
 
-  KListViewItem* item2 = new KListViewItem(investmentTable, QString("Yahoo"), QString("YHOO"), QString("100"), QString("$14.21"), QString("$25.43"), QString("$900"), QString("10.43%"), QString("19.12%"));
-  investmentTable->insertItem(item2);        
+  // fill in some demo data
+  //KListViewItem* item1 = new KListViewItem(investmentTable, QString("Redhat"), QString("RHAT"), QString("24"), QString("$20.00"), QString("$13.43"), QString("$212"), QString("5.43%"), QString("9.43%"));
+  //investmentTable->insertItem(item1);
+
+  //KListViewItem* item2 = new KListViewItem(investmentTable, QString("Yahoo"), QString("YHOO"), QString("100"), QString("$14.21"), QString("$25.43"), QString("$900"), QString("10.43%"), QString("19.12%"));
+  //investmentTable->insertItem(item2);        
 
   // never show a horizontal scroll bar
  // investmentTable->setHScrollBarMode(QScrollView::AlwaysOff);
@@ -195,6 +197,17 @@ void KInvestmentView::updateDisplay()
 	//{
 		//printf( "%s earns %d\n", emp->name().latin1(), emp->salary() );
 	//}
+
+  MyMoneyFile* file = MyMoneyFile::instance();
+  QValueList<MyMoneyEquity> equities = file->equityList();
+
+  qDebug("Number of equity objects: %d", equities.size());
+
+  for(QValueList<MyMoneyEquity>::ConstIterator it = equities.begin(); it != equities.end(); ++it)
+  {
+    KListViewItem* item = new KListViewItem(investmentTable, (*it).getEquityName(), (*it).getEquitySymbol());
+    investmentTable->insertItem(item);
+  }
 }
 
 void KInvestmentView::slotItemDoubleClicked(QListViewItem* pItem, const QPoint& pos, int c)
@@ -344,6 +357,17 @@ void KInvestmentView::slotReloadView(void)
 
 void KInvestmentView::slotRefreshView(void)
 {
+  MyMoneyFile* file = MyMoneyFile::instance();
+  QValueList<MyMoneyEquity> equities = file->equityList();
+
+  qDebug("Number of equity objects: %d", equities.size());
+
+  for(QValueList<MyMoneyEquity>::ConstIterator it = equities.begin(); it != equities.end(); ++it)
+  {
+    KListViewItem* item = new KListViewItem(investmentTable, (*it).getEquityName(), (*it).getEquitySymbol());
+    investmentTable->insertItem(item);
+  }
+  
   QCString id = m_account.id();
 
   // qDebug("KGlobalLedgerView::slotRefreshView()");
