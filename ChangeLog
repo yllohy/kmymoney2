@@ -1,3 +1,9 @@
+2003-08-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * avoid more compiler warnings
+  * use last used post date for new transactions
+  * fix view update after loading a file
+  * force memo field in transaction form to be left aligned
+
 2003-08-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * set date fields in export QIF dialog to the posting dates of the
     first and last transaction found in the selected account
