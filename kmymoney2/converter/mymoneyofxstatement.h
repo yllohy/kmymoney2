@@ -27,19 +27,18 @@
 #include "../mymoney/mymoneystatement.h"
 
 /**
-This is a MyMoneyStatement as loaded from an OFX file.
-
-@author Michael Edwardes
-*/
+  * This is a MyMoneyStatement as loaded from an OFX file.
+  * @author Ace Jones
+  */
 class MyMoneyOfxStatement: public MyMoneyStatement
 {
 public:
     MyMoneyOfxStatement(const QString& filename);
     ~MyMoneyOfxStatement();
-    
+
     bool isValid(void) const { return m_valid; }
     void setValid(void) { m_valid = true; }
-    
+
     static bool isOfxFile(const QString&);
 private:
   bool m_valid;
