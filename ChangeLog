@@ -1,3 +1,6 @@
+2004-07-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * added more investment logic (register layout)
+
 2004-07-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * set id of category before emitting signal in kMyMoneyCategory
   * added more investment logic (automatic form adaption)
