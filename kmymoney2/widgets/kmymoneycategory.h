@@ -26,6 +26,7 @@
 #include <qwidget.h>
 #include <klineedit.h>
 
+#include "../mymoney/mymoneyaccount.h"
 /**
   *@author Thomas Baumgart
   */
@@ -33,9 +34,42 @@
 class kMyMoneyCategory : public KLineEdit
 {
    Q_OBJECT
-public: 
-	kMyMoneyCategory(QWidget *parent=0, const char *name=0);
+public:
+  enum categoryTypeE {
+    liability =  0x01,
+    asset =      0x02,
+    expense =    0x04,
+    income =     0x08
+  };
+
+	kMyMoneyCategory(QWidget *parent=0, const char *name=0, const categoryTypeE type = static_cast<categoryTypeE>(expense | income));
 	~kMyMoneyCategory();
+
+  void loadList(const categoryTypeE type);
+
+  /**
+    */
+  void resetText(void);
+
+public slots:
+  void setText(const QString& text);
+
+protected:
+  virtual void keyPressEvent( QKeyEvent * );
+
+private:
+  void addCategories(QStringList& strList, const QCString& id, const QString& leadIn);
+
+private:
+  /**
+    * This member keeps the initial value. It is used during
+    * resetText() to set the widgets text back to this initial value
+    */
+  QString m_text;
+
+  QValueList<MyMoneyAccount> m_accountList;
+  QMap<QString, QCString>  m_categoryConversionList;
+
 };
 
 #endif
