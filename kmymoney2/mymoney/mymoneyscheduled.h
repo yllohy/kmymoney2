@@ -73,6 +73,14 @@ public:
                       STYPE_WRITECHEQUE=16 };
 
   /**
+    * This enum is used by the auto-commit functionality.
+    *
+    * Depending upon the value of m_weekdayOption the schedule can
+    * be entered on a different date
+  **/
+  enum weekendOptionE { MoveFriday=0, MoveMonday=1, MoveNothing=2 };
+
+  /**
     * Standard constructor
     */
   MyMoneySchedule();
@@ -179,6 +187,14 @@ public:
   const QDate lastPayment(void) const { return m_lastPayment; }
 
   /**
+    * Get the weekendOption that determines how the schedule check code
+    * will enter transactions that occur on a weekend.
+    *
+    * This not used by MyMoneySchedule but by the support code.
+  **/
+  weekendOptionE weekendOption(void) const { return m_weekendOption; }
+
+  /**
     * Simple method that sets the frequency for the schedule.
     *
     * @param occ The new occurence (frequency).
@@ -262,6 +278,14 @@ public:
     * @return none
     */
   void setLastPayment(const QDate& date);
+
+  /**
+    * Set the weekendOption that determines how the schedule check code
+    * will enter transactions that occur on a weekend.
+    *
+    * This not used by MyMoneySchedule but by the support code.
+  **/
+  void setWeekendOption(weekendOptionE option) { m_weekendOption = option; }
 
   /**
     * Validates the schedule instance.
@@ -369,6 +393,9 @@ private:
 
   /// The recorded payments
   QValueList<QDate> m_recordedPayments;
+
+  /// The weekday option
+  weekendOptionE m_weekendOption;
 };
 
 #endif

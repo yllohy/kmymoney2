@@ -1083,7 +1083,7 @@ void MyMoneyStorageBin::signalProgress(int current, int total, const QString& ms
 void MyMoneyStorageBin::writeSchedule(QDataStream&s, const MyMoneySchedule& sc)
 {
   Q_INT32 tmp;
-  tmp = 5;    // version
+  tmp = 6;    // version
   s << tmp;
 
   s << sc.occurence();
@@ -1096,6 +1096,7 @@ void MyMoneyStorageBin::writeSchedule(QDataStream&s, const MyMoneySchedule& sc)
   s << sc.id();
   s << sc.lastPayment();
   s << sc.name();
+  s << sc.weekendOption();
 
   QValueList<QDate> payments = sc.recordedPayments();
   QValueList<QDate>::Iterator it;
@@ -1149,6 +1150,12 @@ const MyMoneySchedule MyMoneyStorageBin::readSchedule(QDataStream& s)
     // Discard the old account id's
     s >> id;
     s >> id;
+  }
+
+  if (version >= 6)
+  {
+      s >> tmp_n;
+      sc.setWeekendOption((MyMoneySchedule::weekendOptionE)tmp_n);
   }
 
   if (version >= 5)

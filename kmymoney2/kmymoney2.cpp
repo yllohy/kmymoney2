@@ -788,6 +788,8 @@ void KMyMoney2App::slotSettings()
   if( dlg.exec() )
   {
     myMoneyView->slotRefreshViews();
+
+
   }
 
 }
@@ -832,6 +834,7 @@ void KMyMoney2App::slotFileBackup()
         "before it can be backed up.  Do you want to continue?")) == KMessageBox::No)
     {
       return;
+
     }
 
     slotFileSave();
@@ -980,6 +983,7 @@ void KMyMoney2App::slotProcessExited()
       }
       break;
 
+
     case BACKUP_UNMOUNTING:
       if(proc.normalExit() && proc.exitStatus() == 0) {
 
@@ -1022,6 +1026,7 @@ void KMyMoney2App::slotHomeView()
 void KMyMoney2App::slotAccountsView()
 {
 }
+
 
 void KMyMoney2App::slotScheduledView()
 {
@@ -1095,6 +1100,7 @@ void KMyMoney2App::update(const QCString& /* id */)
   updateCaption();
 }
 
+
 void KMyMoney2App::slotFileConsitencyCheck(void)
 {
   QString prevMsg = slotStatusMsg(i18n("Running consitency check..."));
@@ -1167,7 +1173,7 @@ void KMyMoney2App::slotCommitTransaction(const MyMoneySchedule& sched, const QDa
     schedDate = date;
   else
     schedDate = schedule.nextPayment(schedule.lastPayment());
-
+ 
   try
   {
     MyMoneyTransaction transaction = schedule.transaction();
@@ -1177,6 +1183,28 @@ void KMyMoney2App::slotCommitTransaction(const MyMoneySchedule& sched, const QDa
     else
       schedule.setLastPayment(schedDate);
 
+    if (schedule.weekendOption() != MyMoneySchedule::MoveNothing)
+    {
+      int dayOfWeek = schedDate.dayOfWeek();
+      if (dayOfWeek >= 6)
+      {
+        if (schedule.weekendOption() == MyMoneySchedule::MoveFriday)
+        {
+          if (dayOfWeek == 7)
+            schedDate = schedDate.addDays(-2);
+          else
+            schedDate = schedDate.addDays(-1);
+        }
+        else
+        {
+          if (dayOfWeek == 6)
+            schedDate = schedDate.addDays(2);
+          else
+            schedDate = schedDate.addDays(1);
+        }
+      }
+    }
+    
     transaction.setEntryDate(QDate::currentDate());
     transaction.setPostDate(schedDate);
 

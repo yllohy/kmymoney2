@@ -600,6 +600,28 @@ void KEnterScheduleDialog::commitTransaction()
       m_schedule.setLastPayment(realLastPayment);
     }
 
+    if (m_schedule.weekendOption() != MyMoneySchedule::MoveNothing)
+    {
+      int dayOfWeek = m_schedDate.dayOfWeek();
+      if (dayOfWeek >= 6)
+      {
+        if (m_schedule.weekendOption() == MyMoneySchedule::MoveFriday)
+        {
+          if (dayOfWeek == 7)
+            m_schedDate = m_schedDate.addDays(-2);
+          else
+            m_schedDate = m_schedDate.addDays(-1);
+        }
+        else
+        {
+          if (dayOfWeek == 6)
+            m_schedDate = m_schedDate.addDays(2);
+          else
+            m_schedDate = m_schedDate.addDays(1);
+        }
+      }
+    }
+
     m_transaction.setEntryDate(QDate::currentDate());
     m_transaction.setPostDate(m_schedDate);
     MyMoneyFile::instance()->addTransaction(m_transaction);

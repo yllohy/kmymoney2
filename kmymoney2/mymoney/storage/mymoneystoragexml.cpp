@@ -817,6 +817,7 @@ MyMoneySchedule MyMoneyStorageXML::readSchedule(QDomElement& schedule)
   sc.setName(QStringEmpty(schedule.attribute(QString("name"))));
   sc.setFixed(static_cast<bool>(schedule.attribute(QString("fixed")).toInt()));
   sc.setOccurence(static_cast<MyMoneySchedule::occurenceE>(schedule.attribute(QString("occurence")).toInt()));
+  sc.setWeekendOption(static_cast<MyMoneySchedule::weekendOptionE>(schedule.attribute(QString("weekendOption")).toInt()));
 
   QDomElement payments = findChildElement(QString("PAYMENTS"), schedule);
   if(!payments.isNull() && payments.isElement())
@@ -860,6 +861,7 @@ void MyMoneyStorageXML::writeSchedule(QDomElement& scheduledTx, const MyMoneySch
   scheduledTx.setAttribute(QString("autoEnter"), tx.autoEnter());
   scheduledTx.setAttribute(QString("id"), tx.id());
   scheduledTx.setAttribute(QString("lastPayment"), getString(tx.lastPayment()));
+  scheduledTx.setAttribute(QString("weekendOption"), tx.weekendOption());
 
   //store the payment history for this scheduled task.
   QValueList<QDate> payments = tx.recordedPayments();

@@ -3,6 +3,10 @@
  * Fixed config read/write in settings dialog.
  * Fixed 883085 (Options for schedules stored in wrong group)
  * Fixed 883260 (The schedule 'engine' doesnt honour the days in advance option)
+ * Fix edit schedule dialog that sets the estimate option even when not set.
+   (Only occurs if you never click on the checkbox).
+ * Fixed #880052 (Adjustment of payment date when scheduled for weekend).
+   (I think its a bug...)
 
 2004-01-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed #881136 (No warning when filesave fails)

@@ -425,6 +425,21 @@ void KEditScheduleDialog::okClicked()
     
   checkPayee();
   
+  slotEstimateChanged(); // Fix estimate being set when it shouldnt
+
+  switch (m_weekendOption->currentItem())
+  {
+    case 0:
+      m_schedule.setWeekendOption(MyMoneySchedule::MoveNothing);
+      break;
+    case 1:
+      m_schedule.setWeekendOption(MyMoneySchedule::MoveFriday);
+      break;
+    case 2:
+      m_schedule.setWeekendOption(MyMoneySchedule::MoveMonday);
+      break;
+  }
+  
   // Just reset the schedules transaction here.
   m_schedule.setTransaction(m_transaction);
   
@@ -654,6 +669,19 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
 
     m_scheduleName->setText(m_schedule.name());
 
+    switch (m_schedule.weekendOption())
+    {
+      case MyMoneySchedule::MoveNothing:
+        m_weekendOption->setCurrentItem(0);
+        break;
+      case MyMoneySchedule::MoveFriday:
+        m_weekendOption->setCurrentItem(1);
+        break;
+      case MyMoneySchedule::MoveMonday:
+        m_weekendOption->setCurrentItem(2);
+        break;
+    }
+    
     // Quick hack
     slotFrequencyChanged(frequency);
     slotMethodChanged(method);
