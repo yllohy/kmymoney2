@@ -275,6 +275,16 @@ public:
 
   void memoryDump();
 
+  /**
+    * This method allows to set the enable state of all views (except home view)
+    * The argument @p state controls the availability.
+    *
+    * @param state Controls whether views are disabled @p (0), enabled @p (1) or
+    *              enabled/disabled according to an open file @p (-1). The latter
+    *              is the default.
+    */
+  void enableViews(int state = -1);
+
 public slots:
   /**
     * This slot writes information about the page passed as argument @p widget

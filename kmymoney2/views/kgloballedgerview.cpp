@@ -382,5 +382,7 @@ void KGlobalLedgerView::update(const QCString& /* id */)
       m_accountId = lastUsed;
       slotRefreshView();
     }
+  } else {
+    slotRefreshView();
   }
 }

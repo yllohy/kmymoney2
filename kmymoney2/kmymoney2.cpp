@@ -221,7 +221,7 @@ void KMyMoney2App::initActions()
   new KAction(i18n("Consistency Check"), "", 0, this, SLOT(slotFileConsitencyCheck()), actionCollection(), "file_consistency_check");
   new KAction(i18n("Currencies ..."), "", 0, this, SLOT(slotCurrencyDialog()), actionCollection(), "tool_currency_dialog");
   new KAction(i18n("Update Stock and Currency Prices..."), "", 0, this, SLOT(slotEquityPriceUpdate()), actionCollection(), "equity_price_update");
-  
+
   // The Settings Menu
   settingsKey = KStdAction::keyBindings(this, SLOT(slotKeySettings()), actionCollection());
   settings = KStdAction::preferences(this, SLOT( slotSettings() ), actionCollection());
@@ -422,9 +422,12 @@ void KMyMoney2App::slotFileOpenRecent(const KURL& url)
         updateCaption();
         emit fileLoaded(fileName);
       }
+    } else {
+      slotFileClose();
+      KMessageBox::sorry(this, QString("<p>")+i18n("<b>%1</b> is either an invalid filename or the file does not exist. You can open another file or create a new one.").arg(url.url()), i18n("File not found"));
     }
   } else {
-    KMessageBox::sorry(this, i18n("File '%1'already opened in another instance of KMyMoney").arg(url.url()), "Duplicate open");
+    KMessageBox::sorry(this, QString("<p>")+i18n("File <b>%1</b> is already opened in another instance of KMyMoney").arg(url.url()), i18n("Duplicate open"));
     return;
   }
   slotStatusMsg(prevMsg);
@@ -1319,7 +1322,7 @@ void KMyMoney2App::updateCaption(const bool skipActions)
 
   caption = fileName.filename(false);
 
-  if(caption.isEmpty())
+  if(caption.isEmpty() && myMoneyView->fileOpen())
     caption = i18n("Untitled");
 
   // MyMoneyFile::instance()->dirty() throws an exception, if
@@ -1339,7 +1342,9 @@ void KMyMoney2App::updateCaption(const bool skipActions)
   caption += sizeMsg;
 
   caption = kapp->makeStdCaption(caption, false, modified);
-  caption += " - KMyMoney";
+  if(caption.length() > 0)
+    caption += " - ";
+  caption += "KMyMoney";
   setPlainCaption(caption);
 
   if(!skipActions) {
@@ -1356,6 +1361,7 @@ void KMyMoney2App::updateCaption(const bool skipActions)
     actionLoadTemplate->setEnabled(myMoneyView->fileOpen());
     bankAdd->setEnabled(myMoneyView->fileOpen());
     accountAdd->setEnabled(myMoneyView->fileOpen());
+    myMoneyView->enableViews();
   }
 }
 
@@ -1633,7 +1639,7 @@ void KMyMoney2App::ofxWebConnect(const QString& url, const QCString& asn_id)
 
 #if defined(HAVE_LIBOFX) || defined(HAVE_NEW_OFX)
   // Make sure we have an open file
-  if ( ! myMoneyView->fileOpen() &&   
+  if ( ! myMoneyView->fileOpen() &&
     KMessageBox::warningContinueCancel(kmymoney2, i18n("You must first select a KMyMoney file before you can import a statement.")) == KMessageBox::Continue )
       kmymoney2->slotFileOpen();
 
@@ -1641,7 +1647,7 @@ void KMyMoney2App::ofxWebConnect(const QString& url, const QCString& asn_id)
   if ( myMoneyView->fileOpen() )
   {
     QString prevMsg = slotStatusMsg(i18n("Importing a statement from OFX"));
-  
+
     MyMoneyOfxStatement s( url );
     if ( s.isValid() )
       slotStatementImport(s);
@@ -1651,7 +1657,7 @@ void KMyMoney2App::ofxWebConnect(const QString& url, const QCString& asn_id)
       slotStatusMsg(prevMsg);
     }
   }
-  
+
 #else
   KMessageBox::information( this, QString("<p>")+i18n("<b>OFX</b> import is unavailable.  This version of <b>KMyMoney</b> was built without <b>OFX</b> support."), i18n("Function not available"));
 #endif

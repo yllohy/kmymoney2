@@ -305,6 +305,22 @@ void KMyMoneyView::removeStorage(void)
   }
 }
 
+void KMyMoneyView::enableViews(int state)
+{
+  if(state == -1)
+    state = m_fileOpen;
+
+  m_accountsViewFrame->setEnabled(state);
+  m_scheduleViewFrame->setEnabled(state);
+  m_categoriesViewFrame->setEnabled(state);
+  m_payeesViewFrame->setEnabled(state);
+  m_ledgerViewFrame->setEnabled(state);
+  m_reportsViewFrame->setEnabled(state);
+#ifdef HAVE_KBANKING
+  m_jobViewFrame->setEnabled(state);
+#endif
+}
+
 void KMyMoneyView::slotRightMouse()
 {
   m_rightMenu->exec(QCursor::pos());
