@@ -250,29 +250,23 @@ public:
   static const QColor defaultGridColour(void);
 
   /**
-    *
+    * This method is used to update all settings when they are
+    * changed by the user through the respective settings dialog.
+    * This routine must be called before any of the color/font
+    * settings routine can be used.
     */
   static void updateSettings(void);
 
   static const QColor backgroundColour(void) {
-    if (_backgroundColour == QColor())
-      return defaultBackgroundColour();
-    else
-      return _backgroundColour;
+    return _backgroundColour;
   }
 
   static const QColor listColour(void) {
-    if (_listColour == QColor())
-      return defaultListColour();
-    else
-      return _listColour;
+    return _listColour;
   }
     
   static const QColor gridColour(void) {
-    if (_gridColour == QColor())
-      return defaultGridColour();
-    else
-      return _gridColour;
+    return _gridColour;
   }
   
   static const QFont& cellFont(void) { return _cellFont; };

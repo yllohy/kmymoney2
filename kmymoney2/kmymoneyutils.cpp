@@ -527,7 +527,7 @@ void KMyMoneyUtils::updateSettings(void)
   c = defaultListColour();
   _listColour = config->readColorEntry("listColor", &c);
 
-  c = defaultListColour();
+  c = defaultGridColour();
   _gridColour = config->readColorEntry("listGridColor", &c);
 
   f = KGlobalSettings::generalFont();
