@@ -784,8 +784,9 @@ public:
                                      const QDate& = QDate(),
                                      const QDate& = QDate(),
                                      const bool = false) const;
-  
-public:
+
+  const QStringList consistencyCheck(void);
+    
   /**
     * MyMoneyFile::NotifyClassAccount
     * is a special id that will be notified whenever any account is changed.
@@ -868,7 +869,7 @@ private:
     * This method is used to notify the objects observing
     * a specific id
     */
-  void notify(const QCString& id) const;
+  void notify(const QCString& id);
 
   /**
     * This method is used to notify all objects observing

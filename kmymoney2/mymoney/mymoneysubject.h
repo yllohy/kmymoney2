@@ -43,16 +43,16 @@ class MyMoneyObserver;
   */
 class MyMoneySubject {
 public: 
-	virtual ~MyMoneySubject();
+  virtual ~MyMoneySubject();
   virtual void attach(MyMoneyObserver*);
   virtual void detach(MyMoneyObserver*);
-  virtual void notify(const QCString& id) const;
+  virtual void notify(const QCString& id);
 
 protected:
-	MyMoneySubject();
+  MyMoneySubject();
 
 private:
-  QPtrList<MyMoneyObserver> _observers;
+  QPtrList<MyMoneyObserver> m_observers;
 };
 
 #endif

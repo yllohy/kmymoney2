@@ -201,7 +201,9 @@ void MyMoneyFile::reparentAccount(MyMoneyAccount &account, MyMoneyAccount& paren
   if(isStandardAccount(account.id()))
     throw new MYMONEYEXCEPTION("Unable to reparent the standard account groups");
 
-  if(accountGroup(account.accountType()) == accountGroup(parent.accountType())) {
+  if(accountGroup(account.accountType()) == accountGroup(parent.accountType())
+  || (account.accountType() == MyMoneyAccount::Income && parent.accountType() == MyMoneyAccount::Expense)
+  || (account.accountType() == MyMoneyAccount::Expense && parent.accountType() == MyMoneyAccount::Income)) {
     // automatically notify all observers once this routine is done
     MyMoneyNotifier notifier(this);
 
@@ -636,9 +638,9 @@ void MyMoneyFile::detach(const QCString& id, MyMoneyObserver* observer)
     (*it_s).detach(observer);
 }
 
-void MyMoneyFile::notify(const QCString& id) const
+void MyMoneyFile::notify(const QCString& id)
 {
-  QMap<QCString, MyMoneyFileSubject>::ConstIterator it_s;
+  QMap<QCString, MyMoneyFileSubject>::Iterator it_s;
 
   it_s = m_subjects.find(id);
   if(it_s != m_subjects.end()) {
@@ -666,12 +668,14 @@ void MyMoneyFile::notifyAccountTree(const QCString& id)
   QCString accId = id;
   MyMoneyAccount acc;
 
-  do {
+  for(;;) {
     addNotification(accId);
+    if(isStandardAccount(accId))
+      break;
     acc = account(accId);
     addNotification(acc.institutionId());
     accId = acc.parentAccountId();
-  } while(accId != "");
+  }
 }
 
 void MyMoneyFile::addNotification(const QCString& id)
@@ -846,3 +850,195 @@ const QValueList<MyMoneySchedule> MyMoneyFile::scheduleList(
 
   return m_storage->scheduleList(accountId, type, occurence, paymentType, startDate, endDate, overdue);
 }
+
+
+const QStringList MyMoneyFile::consistencyCheck(void)
+{
+  QValueList<MyMoneyAccount> list;
+  QValueList<MyMoneyAccount>::Iterator it_a;
+  QCStringList accountRebuild;
+  QCStringList::ConstIterator it_c;
+  
+  MyMoneyAccount parent;
+  MyMoneyAccount child;
+  MyMoneyAccount toplevel;
+  MyMoneyAccount::accountTypeE group;
+  
+  QCString parentId;
+  QStringList rc;
+
+  int problemCount = 0;
+  QString problemAccount;
+        
+  // check that we have a storage object
+  checkStorage();
+  
+  // automatically notify all observers once this routine is done
+  MyMoneyNotifier notifier(this);
+
+  // get the current list of accounts
+  list = accountList();
+  // add the standard accounts
+  list << MyMoneyFile::instance()->asset();
+  list << MyMoneyFile::instance()->liability();
+  list << MyMoneyFile::instance()->income();
+  list << MyMoneyFile::instance()->expense();
+    
+  for(it_a = list.begin(); it_a != list.end(); ++it_a) {
+    // no more checks for standard accounts
+    if(isStandardAccount((*it_a).id())) {
+      continue;
+    }
+    
+    group = accountGroup((*it_a).accountType());
+    switch(group) {
+      case MyMoneyAccount::Asset:
+        toplevel = asset();
+        break;
+      case MyMoneyAccount::Liability:
+        toplevel = liability();
+        break;
+      case MyMoneyAccount::Expense:
+        toplevel = expense();
+        break;
+      case MyMoneyAccount::Income:
+        toplevel = income();
+        break;
+      default:
+        qWarning("%s:%d This should never happen!", __FILE__ , __LINE__);
+        break;
+    }
+      
+    // check that the parent exists
+    parentId = (*it_a).parentAccountId();
+    try {
+      parent = account(parentId);
+      if(group != accountGroup(parent.accountType())) {
+        problemCount++;
+        if(problemAccount != (*it_a).name()) {
+          problemAccount = (*it_a).name();
+          rc << QString("* Problem with account '%1'").arg(problemAccount);
+        }
+        // the parent belongs to a different group, so we reconnect to the
+        // master group account (asset, liability, etc) to which this account
+        // should belong and update it in the engine.
+        rc << QString("  * Parent account '%1' belongs to a different group.").arg(parent.name());
+        rc << QString("    New parent account is the top level account '%1'.").arg(toplevel.name());
+        (*it_a).setParentAccountId(toplevel.id());
+
+        // make sure to rebuild the sub-accounts of the top account
+        // and the one we removed this account from
+        if(accountRebuild.contains(toplevel.id()) == 0)
+          accountRebuild << toplevel.id();
+        if(accountRebuild.contains(parent.id()) == 0)
+          accountRebuild << parent.id();
+      }
+    } catch(MyMoneyException *e) {
+      delete e;
+      // apparently, the parent does not exist anymore. we reconnect to the
+      // master group account (asset, liability, etc) to which this account
+      // should belong and update it in the engine.
+      problemCount++;
+      if(problemAccount != (*it_a).name()) {
+        problemAccount = (*it_a).name();
+        rc << QString("* Problem with account '%1'").arg(problemAccount);
+      }
+      rc << QString("  * The parent with id %1 does not exist anymore.").arg(parentId);
+      rc << QString("    New parent account is the top level account '%1'.").arg(toplevel.name());
+      (*it_a).setParentAccountId(toplevel.id());
+      
+      addNotification((*it_a).id());
+            
+      // make sure to rebuild the sub-accounts of the top account
+      if(accountRebuild.contains(toplevel.id()) == 0)
+        accountRebuild << toplevel.id();
+    }
+
+    // now check that all the children exist and have the correct type
+    for(it_c = (*it_a).accountList().begin(); it_c != (*it_a).accountList().end(); ++it_c) {
+      // check that the child exists
+      try {
+        child = account(*it_c);
+      } catch(MyMoneyException *e) {
+        problemCount++;
+        if(problemAccount != (*it_a).name()) {
+          problemAccount = (*it_a).name();
+          rc << QString("* Problem with account '%1'").arg(problemAccount);
+        }
+        rc << QString("  * Child account with id %1 does not exist anymore.").arg(*it_c);
+        rc << "    The child account list will be reconstructed.";
+        if(accountRebuild.contains((*it_a).id()) == 0)
+          accountRebuild << (*it_a).id();
+      }
+    }
+    // if the account was modified, we need to update it in the engine
+    if(!(m_storage->account((*it_a).id()) == (*it_a))) {
+      try {
+        m_storage->modifyAccount(*it_a, true);
+        addNotification((*it_a).id());
+      } catch (MyMoneyException *e) {
+        delete e;
+        rc << "  * Unable to update account data in engine";
+        return rc;
+      }
+    }
+  }
+
+  if(accountRebuild.count() != 0) {
+    rc << "* Reconstructing the child lists for";
+  }
+
+  // clear the affected lists
+  for(it_a = list.begin(); it_a != list.end(); ++it_a) {
+    if(accountRebuild.contains((*it_a).id())) {
+      rc << QString("  %1").arg((*it_a).name());
+      // clear the account list
+      for(it_c = (*it_a).accountList().begin(); it_c != (*it_a).accountList().end();) {
+        (*it_a).removeAccountId(*it_c);
+        it_c = (*it_a).accountList().begin();
+      }
+    }
+  }
+  
+  // reconstruct the lists  
+  for(it_a = list.begin(); it_a != list.end(); ++it_a) {
+    QValueList<MyMoneyAccount>::Iterator it;
+    parentId = (*it_a).parentAccountId();
+    if(accountRebuild.contains(parentId)) {
+      for(it = list.begin(); it != list.end(); ++it) {
+        if((*it).id() == parentId) {
+          (*it).addAccountId((*it_a).id());
+          break;
+        }
+      }
+    }
+  }
+
+  // update the engine objects
+  for(it_a = list.begin(); it_a != list.end(); ++it_a) {
+    if(accountRebuild.contains((*it_a).id())) {
+      try {
+        m_storage->modifyAccount(*it_a, true);
+        notifyAccountTree((*it_a).id());
+      } catch (MyMoneyException *e) {
+        delete e;
+        rc << QString("  * Unable to update account data for account %1 in engine").arg((*it_a).name());
+      }
+    }
+  }
+
+  addNotification(NotifyClassAccount);
+  addNotification(NotifyClassAccountHierarchy);
+  addNotification(NotifyClassAnyChange);
+  
+  // add more checks here
+  
+  if(problemCount == 0)
+    rc << "Finish! Data is consistent.";
+  else
+    rc << QString("Finish! %1 problems corrected. Data is consistent.")
+            .arg(QString::number(problemCount));
+    
+  return rc;
+}
+

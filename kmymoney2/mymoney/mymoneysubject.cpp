@@ -34,21 +34,23 @@ MyMoneySubject::~MyMoneySubject()
 
 void MyMoneySubject::attach (MyMoneyObserver* o)
 {
-  _observers.append(o);
+  m_observers.append(o);
 }
 
 void MyMoneySubject::detach (MyMoneyObserver* o)
 {
-  _observers.remove(o);
+  m_observers.remove(o);
 }
 
-void MyMoneySubject::notify(const QCString& id) const
+void MyMoneySubject::notify(const QCString& id) 
 {
-  QPtrList<MyMoneyObserver> ptrList = _observers;
+  QPtrList<MyMoneyObserver> ptrList = m_observers;
   MyMoneyObserver* i;
 
   for (i = ptrList.first(); i != NULL; i = ptrList.next()) {
-    i->update(id);
+    // only call the observer if it did not detach in the meantime
+    if(m_observers.findRef(i) != -1)
+      i->update(id);
   }
 }
 
