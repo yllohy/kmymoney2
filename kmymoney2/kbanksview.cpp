@@ -100,9 +100,15 @@ void KBanksView::refresh(MyMoneyFile file)
 
   for ( bank=file.bankFirst(); bank; bank=file.bankNext() ) {
     KBankListItem *item0 = new KBankListItem(bankListView, *bank);
+    // if this bank is identical to the selected bank, update flag
+    if(item0->bank() == m_selectedBank)
+      m_bSelectedBank = true;
     MyMoneyAccount *account;
     for (account=bank->accountFirst(); account; account=bank->accountNext()) {
       new KBankListItem(item0, *bank, *account);
+      // if this account is identical to the selected account, update flag
+      if(*account == m_selectedAccount)
+        m_bSelectedAccount = true;
       totalProfit += account->balance();
     }
     bankListView->setOpen(item0, true);

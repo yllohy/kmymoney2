@@ -1,4 +1,8 @@
-2001-11-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
+2001-12-08  Thomas Baumgart  <ipwizard@users.sourceforge.net>
+  * Update flags when refreshing banksview
+  * Fixed date of previous entry
+
+2001-12-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * force update of imported records on screen every ten iterations
 
 2001-11-26 Kevin Tambascio <ktambascio@yahoo.com>
