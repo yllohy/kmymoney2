@@ -141,11 +141,17 @@ void KPayeesView::payeeHighlighted(const QString& text)
 void KPayeesView::showTransactions(void)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
+  MyMoneyMoney balance(0);
   unsigned int   i;
 
-  if(m_payee.id().isEmpty())
+  // clear the current transaction listview
+  m_transactionView->clear();
+  
+  if(m_payee.id().isEmpty()) {
+    m_balanceLabel->setText(i18n("Balance: %1").arg(balance.formatMoney()));
     return;
-    
+  }
+      
   KConfig *config = KGlobal::config();
   config->setGroup("List Options");
   QDateTime defaultDate;
@@ -163,8 +169,6 @@ void KPayeesView::showTransactions(void)
   m_transactionPtrVector.resize(list.size());
   m_transactionPtrVector.setPayeeId(m_payee.id());
   m_transactionPtrVector.setSortType(KTransactionPtrVector::SortPostDate);
-
-  MyMoneyMoney balance(0);
 
   QValueList<MyMoneyTransaction>::ConstIterator it_t;
   QCString lastId;
@@ -196,7 +200,6 @@ void KPayeesView::showTransactions(void)
   m_transactionPtrVector.sort();
 
   // and fill the m_transactionView
-  m_transactionView->clear();
   KTransactionListItem *item = 0;
 
   for(i = 0; i < m_transactionPtrVector.size(); ++i) {
