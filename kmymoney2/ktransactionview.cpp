@@ -757,17 +757,19 @@ void KTransactionView::updateInputLists(void)
     QListIterator<MyMoneyCategory> categoryIterator = m_filePointer->categoryIterator();
     for ( ; categoryIterator.current(); ++categoryIterator) {
       MyMoneyCategory *category = categoryIterator.current();
-      theText.sprintf("%s", category->name().latin1());
+      theText = category->name().latin1();
       categoryList.append(theText);
       for ( QStringList::Iterator it = category->minorCategories().begin(); it != category->minorCategories().end(); ++it ) {
-        theText.sprintf("%s:%s",category->name().latin1(),(*it).latin1());
+        theText = category->name().latin1();
+				theText += ":";
+				theText += (*it).latin1();
         categoryList.append(theText);
       }
     }
     MyMoneyAccount *currentAccount;
     for(currentAccount = m_bankIndex.accountFirst(); currentAccount != 0; currentAccount = m_bankIndex.accountNext())
     {
-     	theText.sprintf("<%s>",currentAccount->accountName().latin1());
+     	theText = currentAccount->accountName().latin1();
 			categoryList.append(theText);
 		}
   }
