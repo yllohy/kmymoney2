@@ -582,6 +582,15 @@ public:
   const QCString nameToAccount(const QString& name) const;
 
   /**
+    * This method is used to extract the parent part of an account hierarchy
+    * name who's parts are seperated by MyMoneyAccount::AccountSeperator.
+    *
+    * @param name full account name
+    * @return parent name (full account name excluding the last part)
+    */
+  const QString parentName(const QString& name) const;
+  
+  /**
     * This method is used to attach an observer to a subject
     * represented by it's id. Whenever the object represented
     * by the id changes it's state, the observers method

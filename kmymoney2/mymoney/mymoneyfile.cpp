@@ -737,6 +737,11 @@ const QCString MyMoneyFile::nameToAccount(const QString& name) const
   return id;
 }
 
+const QString MyMoneyFile::parentName(const QString& name) const
+{
+  return name.section(CATEGORY_SEPERATOR, 0, -2);
+}
+
 const QCString MyMoneyFile::locateSubAccount(const MyMoneyAccount& base, const QString& category) const
 {
   MyMoneyAccount nextBase;
