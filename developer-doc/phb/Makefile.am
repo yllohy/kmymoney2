@@ -5,7 +5,7 @@ EXTRA_DIST = cfg-mgmt.docbook coding.docbook cvs-examples.docbook error-mgmt.doc
 
 ####### kdevelop will overwrite this part!!! (end)############
 
-DISTCLEANFILES = cfg-mgmt.html coding-std.html create-stable-example.html cvs-checkin.html cvs-examples.html cvs-update.html dismissing-changes.html header-files.html index.html licence.html multiple-branches.html problem-attributes.html problem-mgmt.html promoting-changes.html rel-mgmt.html repo-access.html rpm.html source-example.html source-files.html src-examples.html test-container-example.html test-examples.html test-source-example.html unit-test.html unit-testing-howto.html unit-testing-in-kmm.html version-controlled-files.html version-mgmt.html phb.aux phb.log phb.out phb.pdf phb.tex rpm-example.html
+DISTCLEANFILES = *.html phb.aux phb.log phb.out phb.pdf phb.tex
 
 CLEAN_FILES = *.html *.pdf *.out *.tex *.log *.aux
 
