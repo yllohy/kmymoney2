@@ -327,7 +327,7 @@ Your account is balanced when the Difference is Zero.  Click on the Finish butto
                         <name>minimumSize</name>
                         <size>
                             <width>250</width>
-                            <height>59</height>
+                            <height>120</height>
                         </size>
                     </property>
                     <property stdset="1">
