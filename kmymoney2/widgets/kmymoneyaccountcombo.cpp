@@ -47,6 +47,8 @@ kMyMoneyAccountCombo::kMyMoneyAccountCombo( QWidget* parent, const char* name ) 
   // make sure that we can display a minimum of characters
   QFontMetrics fm(font());
   setMinimumWidth(fm.maxWidth()*15);
+
+  setMaximumHeight(height());
 }
 
 kMyMoneyAccountCombo::~kMyMoneyAccountCombo()
