@@ -370,8 +370,6 @@ void KInvestmentView::slotReloadView(void)
 
 void KInvestmentView::slotRefreshView(void)
 {
-  updateDisplay();
-
   QCString id = m_account.id();
 
   // qDebug("KGlobalLedgerView::slotRefreshView()");
@@ -389,6 +387,9 @@ void KInvestmentView::slotRefreshView(void)
   } else {
     m_ledgerView->refreshView();
   }
+
+  // update the summary tab
+  updateDisplay();
 
   // Enable selection widget if we have at least one account
   m_accountComboBox->setEnabled(m_accountComboBox->count() > 0);
@@ -456,6 +457,7 @@ const bool KInvestmentView::slotSelectAccount(const QCString& id, const bool rec
         m_account = acc;
         m_accountComboBox->setSelected(acc);
         m_ledgerView->slotSelectAccount(acc.id());
+        updateDisplay();
         rc = true;
       } else {
         // keep the current selection ...
