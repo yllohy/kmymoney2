@@ -11,40 +11,68 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>596</width>
-            <height>480</height>
+            <width>805</width>
+            <height>559</height>
         </rect>
     </property>
     <property stdset="1">
         <name>caption</name>
-        <string>Investment Transactions</string>
+        <string>Investment Summary</string>
     </property>
     <widget>
         <class>KListView</class>
+        <column>
+            <property>
+                <name>text</name>
+                <string>Column 1</string>
+            </property>
+            <property>
+                <name>clickable</name>
+                <bool>true</bool>
+            </property>
+            <property>
+                <name>resizeable</name>
+                <bool>true</bool>
+            </property>
+        </column>
+    <item>
+        <property>
+            <name>text</name>
+            <string>New Item</string>
+        </property>
+        <property>
+            <name>pixmap</name>
+            <pixmap></pixmap>
+        </property>
+    </item>
         <property stdset="1">
             <name>name</name>
-            <cstring>stockListView</cstring>
+            <cstring>investmentTable</cstring>
         </property>
         <property stdset="1">
             <name>geometry</name>
             <rect>
-                <x>30</x>
-                <y>30</y>
-                <width>481</width>
-                <height>291</height>
+                <x>10</x>
+                <y>10</y>
+                <width>780</width>
+                <height>440</height>
             </rect>
+        </property>
+        <property stdset="1">
+            <name>frameShadow</name>
+            <enum>Sunken</enum>
         </property>
     </widget>
 </widget>
 <customwidgets>
     <customwidget>
-        <class>KListView</class>
-        <header location="global">klistview.h</header>
+        <class>QWidget</class>
+        <header location="global">qwidget.h</header>
         <sizehint>
             <width>-1</width>
             <height>-1</height>
         </sizehint>
-        <container>0</container>
+        <container>1</container>
         <sizepolicy>
             <hordata>5</hordata>
             <verdata>5</verdata>

@@ -1,7 +1,7 @@
 /***************************************************************************
-                          kinvestmentview.h  -  description
+                          mymoneyinvesttransaction.cpp  -  description
                              -------------------
-    begin                : Tue Jan 29 2002
+    begin                : Sun Feb 3 2002
     copyright            : (C) 2000-2002 by Michael Edwardes
     email                : mte@users.sourceforge.net
                            Javier Campos Morales <javi_c@users.sourceforge.net>
@@ -20,31 +20,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef KINVESTMENTVIEW_H
-#define KINVESTMENTVIEW_H
+#include "mymoneyinvesttransaction.h"
 
-#include <qlist.h>
-#include "kinvestmentviewdecl.h"
-
-class MyMoneyAccount;
-class MyMoneyTransaction;
-class MyMoneyInvestTransaction;
-
-/**
-  *@author Kevin Tambascio
-  */
-
-class KInvestmentView : public kInvestmentViewDecl
+MyMoneyInvestTransaction::MyMoneyInvestTransaction(MyMoneyAccount *parent, const long id, transactionMethod method, const QString& number, const QString& memo,
+                     const MyMoneyMoney& amount, const QDate& date, const QString& categoryMajor, const QString& categoryMinor, const QString& atmName,
+                     const QString& fromTo, const QString& bankFrom, const QString& bankTo, stateE state)
+ : MyMoneyTransaction(parent, id, method, number, memo, amount, date, categoryMajor, categoryMinor, atmName, fromTo, bankFrom, bankTo, state)
 {
-	Q_OBJECT
-public: 
-	KInvestmentView(QWidget *parent=0, const char *name=0);
-	~KInvestmentView();
-  /** No descriptions */
-  bool init(MyMoneyAccount *pAccount);
 
-private:
-	QList<MyMoneyTransaction> m_transactionList;
-};
+}
 
-#endif
+MyMoneyInvestTransaction::MyMoneyInvestTransaction()
+{
+}
+
+MyMoneyInvestTransaction::~MyMoneyInvestTransaction()
+{
+}

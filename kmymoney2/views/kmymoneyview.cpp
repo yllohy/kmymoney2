@@ -791,11 +791,14 @@ void KMyMoneyView::viewTransactionList(void)
     return;
   }
 
+  //set up stock account view
 	if(pAccount->accountType() == MyMoneyAccount::Investment)
   {
   	banksView->hide();
   	transactionView->hide();
   	m_investmentView->show();
+  	m_showing = InvestmentList;
+		m_investmentView->init(pAccount)  	
   }
   else
   {
@@ -824,7 +827,7 @@ void KMyMoneyView::viewTransactionList(void)
 
     KConfig *config = KGlobal::config();
     QDateTime defaultDate = QDate::currentDate();
-    QDate qdateStart = config->readDateTimeEntry("StartDate", &defaultDate).date();
+    QDate qdateStart = QDate::currentDate();//config->readDateTimeEntry("StartDate", &defaultDate).date();
 
     if (qdateStart != defaultDate.date())
     {
@@ -853,7 +856,7 @@ void KMyMoneyView::viewTransactionList(void)
       transactionView->init(&m_file, *pBank, *pAccount, &m_transactionList, KTransactionView::SUBSET);
     }
     else
-	    transactionView->init(&m_file, *pBank, *pAccount, pAccount->getTransactionList(), KTransactionView::SUBSET);
+	    transactionView->init(&m_file, *pBank, *pAccount, pAccount->getTransactionList(), KTransactionView::NORMAL);
 	}
   emit transactionOperations(true);
 }

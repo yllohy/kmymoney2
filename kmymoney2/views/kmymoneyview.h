@@ -53,7 +53,7 @@
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.5 2002/01/30 05:46:34 ktambascio Exp $
+  * $Id: kmymoneyview.h,v 1.6 2002/02/03 17:18:55 ktambascio Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -61,7 +61,7 @@ class KMyMoneyView : public KJanusWidget {
    Q_OBJECT
 
 public:
-  enum viewType { None, BankList, TransactionList };
+  enum viewType { None, BankList, TransactionList, InvestmentList };
 
 private:
   KHomeView *m_homeView;

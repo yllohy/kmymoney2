@@ -11,7 +11,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>793</width>
+            <width>789</width>
             <height>480</height>
         </rect>
     </property>
@@ -19,22 +19,6 @@
         <name>caption</name>
         <string>Form1</string>
     </property>
-    <widget>
-        <class>kMyMoneyTable</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>kMyMoneyTable2</cstring>
-        </property>
-        <property stdset="1">
-            <name>geometry</name>
-            <rect>
-                <x>10</x>
-                <y>20</y>
-                <width>770</width>
-                <height>411</height>
-            </rect>
-        </property>
-    </widget>
     <widget>
         <class>QLabel</class>
         <property stdset="1">
@@ -115,6 +99,22 @@
             <string>TextLabel4</string>
         </property>
     </widget>
+    <widget>
+        <class>kMyMoneyTable</class>
+        <property stdset="1">
+            <name>name</name>
+            <cstring>stockViewTable</cstring>
+        </property>
+        <property stdset="1">
+            <name>geometry</name>
+            <rect>
+                <x>10</x>
+                <y>20</y>
+                <width>770</width>
+                <height>411</height>
+            </rect>
+        </property>
+    </widget>
 </widget>
 <customwidgets>
     <customwidget>
@@ -125,6 +125,20 @@
             <height>100</height>
         </sizehint>
         <container>0</container>
+        <sizepolicy>
+            <hordata>5</hordata>
+            <verdata>5</verdata>
+        </sizepolicy>
+        <pixmap>image0</pixmap>
+    </customwidget>
+    <customwidget>
+        <class>QWidget</class>
+        <header location="global">qwidget.h</header>
+        <sizehint>
+            <width>-1</width>
+            <height>-1</height>
+        </sizehint>
+        <container>1</container>
         <sizepolicy>
             <hordata>5</hordata>
             <verdata>5</verdata>

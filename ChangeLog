@@ -1,3 +1,8 @@
+2002-02-03 Kevin Tambascio <ktambascio@users.sourceforge.net>
+  * Added MyMoneyInvestTransaction class to hold transaction information for investments.
+  * Made some more progress with the stock transactions.
+  * Fixed problem in the transaction view, not showing any transactions (Fix from Michael's email).
+
 2002-01-31 Michael Edwardes <mte@users.sourceforge.net>
   * Added scheduled transaction addition dialog.
   * Fixed constructor of kmymoneycombo.  Didn't fix the rest though.
@@ -671,6 +676,7 @@
 	* Added .cvsignore in all project.
 
  
+
 
 
 
