@@ -17,42 +17,47 @@
 #ifndef KNEWACCOUNTDLG_H
 #define KNEWACCOUNTDLG_H
 
-#include <qdialog.h>
-#include <klocale.h>
+// ----------------------------------------------------------------------------
+// QT Includes
 
-#include "../mymoney/mymoneyfile.h"
+#include <qcstring.h>
+
+// ----------------------------------------------------------------------------
+// KDE Headers
+
+// ----------------------------------------------------------------------------
+// Project Includes
+
 #include "../mymoney/mymoneyaccount.h"
 #include "../mymoney/mymoneymoney.h"
-#include "../widgets/kmymoneyedit.h"
-#include "../widgets/kmymoneydateinput.h"
 
 #include "knewaccountdlgdecl.h"
 #include "../views/kbanklistitem.h"
-#include <qcstring.h>
 
-// This dialog lets you create/edit an account.
-// Use the second constructor to edit an account.
+/**
+  * This dialog lets you create/edit an account.
+  */
 class KNewAccountDlg : public KNewAccountDlgDecl  {
    Q_OBJECT
 
 private:
   MyMoneyAccount m_account;
   MyMoneyAccount m_parentAccount;
-  MyMoneyFile *m_file;
   bool m_bSelectedParentAccount;
-  KAccountListItem *m_foundItem;
-  bool m_bFoundItem;
+  
+  KAccountListItem *m_parentItem;
+  KAccountListItem *m_accountItem;
   bool m_categoryEditor;
 
-  void initParentWidget(const QString&);
-  void showSubAccounts(QCStringList accounts, KAccountListItem *parentItem, MyMoneyFile *file, const QString&);
+  void initParentWidget(QCString parentId, const QCString& accountId);
+  void showSubAccounts(QCStringList accounts, KAccountListItem *parentItem, const QCString& parentId, const QCString& accountId);
   void loadInstitutions(const QString&);
-
+  
 public:
-	KNewAccountDlg(MyMoneyAccount& account, bool isEditing, bool categoryEditor, QWidget *parent=0, const char *name=0, const char *title=0);
-	~KNewAccountDlg();
-  MyMoneyAccount account(void);
-  const MyMoneyAccount parentAccount(void);
+  KNewAccountDlg(MyMoneyAccount& account, bool isEditing, bool categoryEditor, QWidget *parent=0, const char *name=0, const char *title=0);
+  ~KNewAccountDlg();
+  const MyMoneyAccount& account(void) const;
+  const MyMoneyAccount& parentAccount(void);
 
 protected:
   void resizeEvent(QResizeEvent* e);
@@ -62,6 +67,10 @@ protected slots:
   void slotSelectionChanged(QListViewItem *item);
   void slotSubAccountsToggled(bool on);
   void slotNewClicked();
+
+private slots:
+  void timerDone(void);
+
 };
 
 #endif
