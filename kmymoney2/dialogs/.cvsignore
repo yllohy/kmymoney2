@@ -9,3 +9,5 @@ Makefile.in
 *~
 *decl.cpp
 *decl.h
+ksplitcorrectiondlg.cpp
+ksplitcorrectiondlg.h

@@ -1,0 +1,262 @@
+<!DOCTYPE UI><UI>
+<class>kSplitCorrectionDlgDecl</class>
+<widget>
+    <class>QDialog</class>
+    <property stdset="1">
+        <name>name</name>
+        <cstring>kSplitCorrectionDlgDecl</cstring>
+    </property>
+    <property stdset="1">
+        <name>geometry</name>
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>432</width>
+            <height>187</height>
+        </rect>
+    </property>
+    <property stdset="1">
+        <name>caption</name>
+        <string>Correct splits</string>
+    </property>
+    <hbox>
+        <property stdset="1">
+            <name>margin</name>
+            <number>11</number>
+        </property>
+        <property stdset="1">
+            <name>spacing</name>
+            <number>6</number>
+        </property>
+        <widget>
+            <class>QLayoutWidget</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>Layout3</cstring>
+            </property>
+            <vbox>
+                <property stdset="1">
+                    <name>margin</name>
+                    <number>0</number>
+                </property>
+                <property stdset="1">
+                    <name>spacing</name>
+                    <number>6</number>
+                </property>
+                <widget>
+                    <class>QLabel</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>explanation</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>frameShape</name>
+                        <enum>MShape</enum>
+                    </property>
+                    <property stdset="1">
+                        <name>frameShadow</name>
+                        <enum>Raised</enum>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>The total amount of this transaction is %1 while the sum of the splits is %2. The remaining %3 are unassigned.</string>
+                    </property>
+                    <property stdset="1">
+                        <name>alignment</name>
+                        <set>WordBreak|AlignTop|AlignLeft</set>
+                    </property>
+                    <property>
+                        <name>vAlign</name>
+                    </property>
+                    <property>
+                        <name>wordwrap</name>
+                    </property>
+                </widget>
+                <widget>
+                    <class>QLabel</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>question</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>enabled</name>
+                        <bool>true</bool>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>What should happen with the difference?</string>
+                    </property>
+                </widget>
+                <widget>
+                    <class>QButtonGroup</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>buttonGroup</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>frameShape</name>
+                        <enum>NoFrame</enum>
+                    </property>
+                    <property stdset="1">
+                        <name>title</name>
+                        <string></string>
+                    </property>
+                    <vbox>
+                        <property stdset="1">
+                            <name>margin</name>
+                            <number>11</number>
+                        </property>
+                        <property stdset="1">
+                            <name>spacing</name>
+                            <number>6</number>
+                        </property>
+                        <widget>
+                            <class>QRadioButton</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>continueBtn</cstring>
+                            </property>
+                            <property stdset="1">
+                                <name>text</name>
+                                <string>Continue to &amp;edit splits</string>
+                            </property>
+                            <property stdset="1">
+                                <name>checked</name>
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                        <widget>
+                            <class>QRadioButton</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>changeBtn</cstring>
+                            </property>
+                            <property stdset="1">
+                                <name>text</name>
+                                <string>&amp;Change transaction amount into %2</string>
+                            </property>
+                        </widget>
+                        <widget>
+                            <class>QRadioButton</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>distributeBtn</cstring>
+                            </property>
+                            <property stdset="1">
+                                <name>enabled</name>
+                                <bool>false</bool>
+                            </property>
+                            <property stdset="1">
+                                <name>text</name>
+                                <string>&amp;Distribute difference among all splits</string>
+                            </property>
+                        </widget>
+                        <widget>
+                            <class>QRadioButton</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>leaveBtn</cstring>
+                            </property>
+                            <property stdset="1">
+                                <name>text</name>
+                                <string>&amp;Leave unassigned</string>
+                            </property>
+                        </widget>
+                    </vbox>
+                </widget>
+            </vbox>
+        </widget>
+        <widget>
+            <class>QLayoutWidget</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>Layout6</cstring>
+            </property>
+            <property stdset="1">
+                <name>maximumSize</name>
+                <size>
+                    <width>82</width>
+                    <height>32767</height>
+                </size>
+            </property>
+            <vbox>
+                <property stdset="1">
+                    <name>margin</name>
+                    <number>0</number>
+                </property>
+                <property stdset="1">
+                    <name>spacing</name>
+                    <number>6</number>
+                </property>
+                <widget>
+                    <class>QPushButton</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>okBtn</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>maximumSize</name>
+                        <size>
+                            <width>82</width>
+                            <height>32767</height>
+                        </size>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>OK</string>
+                    </property>
+                    <property stdset="1">
+                        <name>default</name>
+                        <bool>true</bool>
+                    </property>
+                    <property>
+                        <name>vAlign</name>
+                    </property>
+                    <property>
+                        <name>wordwrap</name>
+                    </property>
+                </widget>
+                <widget>
+                    <class>QPushButton</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>cancelBtn</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>maximumSize</name>
+                        <size>
+                            <width>82</width>
+                            <height>32767</height>
+                        </size>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>Cancel</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property>
+                        <name>name</name>
+                        <cstring>Spacer1</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>orientation</name>
+                        <enum>Vertical</enum>
+                    </property>
+                    <property stdset="1">
+                        <name>sizeType</name>
+                        <enum>Expanding</enum>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+            </vbox>
+        </widget>
+    </hbox>
+</widget>
+</UI>
