@@ -36,13 +36,7 @@ kMyMoneyEdit::~kMyMoneyEdit()
 
 MyMoneyMoney kMyMoneyEdit::getMoneyValue(void)
 {
-  KLocale* locale = KGlobal::locale();
-
-  // Truncate to frac_digits
-  // This will all be user specified in the future.
-  QString convString = // QString::number(text().toFloat(), 'f', int(localeconv()->frac_digits));
-    locale->formatMoney(text().toFloat(), "", locale->fracDigits());
-  MyMoneyMoney money(locale->readMoney(convString));
+  MyMoneyMoney money(KGlobal::locale()->readMoney(text()));
   return money;
 }
 

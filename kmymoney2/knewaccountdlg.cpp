@@ -66,7 +66,7 @@ KNewAccountDlg::KNewAccountDlg(QString institution, QString m_name, QString no,
 
   startDateEdit->setDate(openingDate);
   startDateEdit->setEnabled(false);
-  startBalanceEdit->setText(KGlobal::locale()->formatNumber(openingBalance.amount()));
+  startBalanceEdit->setText(KGlobal::locale()->formatMoney(openingBalance.amount(),""));
   startBalanceEdit->setEnabled(false);
 
   connect(cancelButton, SIGNAL(clicked()), SLOT(reject()));

@@ -133,8 +133,8 @@ void KTransactionView::slotPayeeCompleted()
 		}
 		if(lasttransaction != 0)
 		{
-  		m_payment->setText(((lasttransaction->type()==MyMoneyTransaction::Debit) ? KGlobal::locale()->formatNumber(lasttransaction->amount().amount()) : QString("")));
-  		m_withdrawal->setText(((lasttransaction->type()==MyMoneyTransaction::Credit) ? KGlobal::locale()->formatNumber(lasttransaction->amount().amount()) : QString("")));
+  		m_payment->setText(((lasttransaction->type()==MyMoneyTransaction::Debit) ? KGlobal::locale()->formatMoney(lasttransaction->amount().amount(),"") : QString("")));
+  		m_withdrawal->setText(((lasttransaction->type()==MyMoneyTransaction::Credit) ? KGlobal::locale()->formatMoney(lasttransaction->amount().amount(),"") : QString("")));
   		bool categorySet = false;
   		for(int i = 0; i < m_category->count(); i++)
   		{
@@ -858,8 +858,8 @@ void KTransactionView::setInputData(const MyMoneyTransaction transaction)
 	m_payee->setEditText(transaction.payee());
 	m_memo->setText(transaction.memo());
 	m_number->setText(transaction.number());
-  m_payment->setText(((transaction.type()==MyMoneyTransaction::Debit) ? KGlobal::locale()->formatNumber(transaction.amount().amount()) : QString("")));
-  m_withdrawal->setText(((transaction.type()==MyMoneyTransaction::Credit) ? KGlobal::locale()->formatNumber(transaction.amount().amount()) : QString("")));
+  m_payment->setText(((transaction.type()==MyMoneyTransaction::Debit) ? KGlobal::locale()->formatMoney(transaction.amount().amount(),"") : QString("")));
+  m_withdrawal->setText(((transaction.type()==MyMoneyTransaction::Credit) ? KGlobal::locale()->formatMoney(transaction.amount().amount(),"") : QString("")));
   bool categorySet = false;
   for(int i = 0; i < m_category->count(); i++)
   {
@@ -1205,10 +1205,10 @@ void KTransactionView::updateTransactionList(int row, int col)
         }
         break;
       case 4:
-        transactionsTable->setText(row, col, KGlobal::locale()->formatNumber(m_transactions->at(transrow)->amount().amount()));
+        transactionsTable->setText(row, col, KGlobal::locale()->formatMoney(m_transactions->at(transrow)->amount().amount(),""));
         break;
       case 5:
-        transactionsTable->setText(row, col, KGlobal::locale()->formatNumber(m_transactions->at(transrow)->amount().amount()));
+        transactionsTable->setText(row, col, KGlobal::locale()->formatMoney(m_transactions->at(transrow)->amount().amount(),""));
         break;
     }
   }

@@ -31,11 +31,11 @@ KEndingBalanceDlg::KEndingBalanceDlg(MyMoneyMoney& prevBal, MyMoneyMoney& ending
   QPixmap *pm = new QPixmap(KGlobal::dirs()->findResource("appdata", "pics/dlg_ending_balance.png"));
   m_qpixmaplabel->setPixmap(*pm);
 
-	previousbalEdit->setText(KGlobal::locale()->formatNumber(prevBal.amount()));
+	previousbalEdit->setText(KGlobal::locale()->formatMoney(prevBal.amount(),""));
 	previousbalEdit->setFocus();
-	previousbalEdit->setSelection(0, KGlobal::locale()->formatNumber(prevBal.amount()).length());	
+	previousbalEdit->setSelection(0, previousbalEdit->text().length());	
 	
-	endingEdit->setText(KGlobal::locale()->formatNumber(endingGuess.amount()));
+	endingEdit->setText(KGlobal::locale()->formatMoney(endingGuess.amount(),""));
 	
 	connect(cancelBtn, SIGNAL(clicked()), SLOT(reject()));
 	connect(okBtn, SIGNAL(clicked()), SLOT(okClicked()));
