@@ -38,6 +38,21 @@
 
 class MyMoneyTransactionFilter;
 
+/**
+  * This member represents an item in the balance cache. The balance cache
+  * is used for fast processing of the balance of an account. Several
+  * of these objects are held by the MyMoneySeqAccessMgr() object in a map
+  * with the account Id as key. If such a cache item is present in the map,
+  * the contained balance of it will be used as current balance for this
+  * account. If the balance is changed by any operation, the
+  * MyMoneyBalanceCacheItem for the modified account will be removed from
+  * the map and the next time the balance for this account is requested,
+  * it has to be recalculated. After recalculation, a new MyMoneyBalanceCacheItem
+  * will be created containing the new balance value.
+  *
+  * @see MyMoneySeqAccessMgr::balance() and
+  *      MyMoneySeqAccessMgr::invalidateBalanceCache() for a usage example
+  */
 class MyMoneyBalanceCacheItem {
 public:
   MyMoneyBalanceCacheItem() { valid = false; };
@@ -47,6 +62,19 @@ public:
   MyMoneyMoney  balance;
 };
 
+/**
+  * The MyMoneySeqAccessMgr class represents the storage engine for sequential
+  * files. The actual file type and it's internal storage format (e.g. binary
+  * or XML) is not important and handled through the IMyMoneySerialize() interface.
+  *
+  * The MyMoneySeqAccessMgr must be loaded by an application using the
+  * IMyMoneySerialize() interface and can then be accessed through the
+  * IMyMoneyStorage() interface. All data is loaded into memory, modified
+  * and kept there. It is the subject of an outside object to store the
+  * modified data in a persistant storage area using the IMyMoneySerialize()
+  * interface. As indication, if data has been changed, the retrun value
+  * of the method dirty() can be used.
+  */
 class MyMoneySeqAccessMgr : public IMyMoneyStorage, public IMyMoneySerialize,
                             public MyMoneyKeyValueContainer
 {

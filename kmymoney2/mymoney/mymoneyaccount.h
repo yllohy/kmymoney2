@@ -136,7 +136,30 @@ public:
 
   /**
     * This converts the account type into one of the four
-    * major account types liability, asset, expense or income
+    * major account types liability, asset, expense or income.
+    *
+    * The current assignment is as follows:
+    *
+    * - Asset
+    *   - Asset
+    *   - Checkings
+    *   - Savings
+    *   - Cash
+    *   - Currency
+    *   - Investment
+    *   - MoneyMarket
+    *   - CertificateDep
+    *
+    * - Liability
+    *   - Liability
+    *   - CreditCard
+    *   - Loan
+    *
+    * - Income
+    *   - Income
+    *
+    * - Expense
+    *   - Expense
     *
     * @param type actual account type
     * @return accountTypeE of major account type

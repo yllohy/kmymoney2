@@ -31,6 +31,11 @@
 typedef long long signed64;
 typedef unsigned long long unsigned64;
 
+/**
+  * This class represents a value within the MyMoney Engine
+  *
+  * @author Michael Edwardes
+  */
 class MyMoneyMoney
 {
 public:

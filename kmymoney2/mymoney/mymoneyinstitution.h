@@ -29,14 +29,15 @@
 
 #include "mymoneyutils.h"
 
-/**
-  *@author Thomas Baumgart
-  */
 
 class MyMoneyFile;
 class MyMoneyMoney;
 
-/// This class represents a Bank contained within a MyMoneyFile object
+/**
+  * This class represents a Bank contained within a MyMoneyFile object
+  *
+  * @author Thomas Baumgart
+  */
 class MyMoneyInstitution {
 public:
   /**

@@ -20,7 +20,11 @@
 #include <qstring.h>
 #include <qcstring.h>
 
-/// This class represents a simple payee.  Used in MyMoneySplit
+/**
+  * This class represents a payee or receiver within the MyMoney engine
+  *
+  * @author Thomas Baumgart
+  */
 class MyMoneyPayee {
 private:
 	// Simple fields

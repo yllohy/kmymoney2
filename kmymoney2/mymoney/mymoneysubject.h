@@ -32,15 +32,15 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
+
+class MyMoneyObserver;
+
 /**
   * This is the base class to be used to construct a
   * subject for usage in a subject/observer relationship
   *
   * @author Thomas Baumgart
   */
-
-class MyMoneyObserver;
-
 class MyMoneySubject {
 public: 
 	virtual ~MyMoneySubject();

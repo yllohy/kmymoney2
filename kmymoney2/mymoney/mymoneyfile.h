@@ -107,14 +107,14 @@ class MyMoneyTransactionFilter;
   * for an external observer to be attached and detached to and from
   * an object of the engine.
   *
-  * @exceptions MyMoneyException is thrown whenever an error occurs
-  * while the engine code is running. The MyMoneyException:: object
-  * describes the problem.
-  *
   * For abritrary values that have to be stored with the storage object
   * but are of importance to the application only, the object is derived
   * for MyMoneyKeyValueContainer which provides a container to store
   * these values indexed by an alphanumeric key.
+  *
+  * @exceptions MyMoneyException is thrown whenever an error occurs
+  * while the engine code is running. The MyMoneyException:: object
+  * describes the problem.
   */
 class MyMoneyFile
 {
@@ -571,7 +571,7 @@ public:
     * object of the GUI to observe multiple objects with the
     * ability to know which object changed. If it observes
     * multiple objects, it's update(const QCString& id) method
-    * is called multiple times if more than one object changed
+    * is called multiple times if more than one object is changed
     * during a single operation.
     *
     * @param id reference to id of the subject from which
