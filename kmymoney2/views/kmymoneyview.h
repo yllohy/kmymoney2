@@ -61,7 +61,7 @@ class MyMoneyTransaction;
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.47 2004/01/26 16:53:54 ipwizard Exp $
+  * $Id: kmymoneyview.h,v 1.48 2004/02/03 18:43:38 ipwizard Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/

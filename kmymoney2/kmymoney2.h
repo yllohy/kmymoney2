@@ -75,7 +75,7 @@ class IMyMoneyStorage;
   * @see KMyMoneyView
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: kmymoney2.h,v 1.41 2004/01/21 20:09:31 ipwizard Exp $
+  * $Id: kmymoney2.h,v 1.42 2004/02/03 18:43:12 ipwizard Exp $
   *
   * @short Main application class.
 **/
