@@ -51,6 +51,8 @@ public:
     income =     0x08
   };
 
+  static const int maxHomePageItems = 3;
+  
   KMyMoneyUtils();
   ~KMyMoneyUtils();
 
@@ -107,6 +109,27 @@ public:
     */
   static const QString scheduleTypeToString(MyMoneySchedule::typeE type);
 
+  /**
+    * This method is used to convert a numeric index of an item
+    * represented on the home page into it's string form.
+    *
+    * @param idx numeric index of item
+    *
+    * @return QString with text of this item
+    */
+  static const QString homePageItemToString(const int i);
+
+  /**
+    * This method is used to convert the name of a home page item
+    * to it's internal numerical representation
+    *
+    * @param txt QString reference of the items name
+    *
+    * @retval 0 @p txt is unknown
+    * @retval >0 numeric value for @p txt
+    */
+  static const int stringToHomePageItem(const QString& txt);
+  
   /**
     * Retrieve a KDE KGuiItem for the split button
     *

@@ -293,3 +293,36 @@ QPixmap KMyMoneyUtils::scheduleIcon(int size)
   KIconLoader *ic = KGlobal::iconLoader();
   return ic->loadIcon("schedule", KIcon::User, size);
 }
+
+const QString KMyMoneyUtils::homePageItemToString(const int idx)
+{
+  QString rc;
+  
+  switch(abs(idx)) {
+    case 1:
+      rc = i18n("Payments");
+      break;
+    case 2:
+      rc = i18n("Preferred accounts");
+      break;
+    case 3:
+      rc = i18n("Payment accounts");
+      break;
+    default:
+      rc = "";
+      break;
+  }
+  return rc;
+}
+
+const int KMyMoneyUtils::stringToHomePageItem(const QString& txt)
+{
+  int idx = 0;
+  if(txt == i18n("Payments"))
+    idx = 1;
+  else if(txt == i18n("Preferred accounts"))
+    idx = 2;
+  else if(txt == i18n("Payment accounts"))
+    idx = 3;
+  return idx;
+}
