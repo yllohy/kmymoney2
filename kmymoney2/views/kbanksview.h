@@ -31,6 +31,7 @@
 
 #include <klocale.h>
 #include <klistview.h>
+#include <kpopupmenu.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -60,16 +61,16 @@ private:
   bool m_hideCategory;
   QCString m_selectedInstitution;
   bool m_bSelectedInstitution;
-
+  bool m_bInstitutionViewOverride;
   void refresh(const QCString& selectAccount);
   void refreshNetWorth(void);
   const bool showSubAccounts(const QCStringList& accounts, KAccountListItem *parentItem, const bool used);
-
+  KPopupMenu* m_bankMenu;
   QMap<QCString, MyMoneyAccount> m_accountMap;
   QMap<QCString, unsigned long> m_transactionCountMap;
 
 public:
-  KAccountsView(QWidget *parent=0, const char *name=0);
+  KAccountsView(QWidget *parent=0, const char *name=0, bool bInstitutionView=false);
   ~KAccountsView();
   QCString currentAccount(bool&);
   QCString currentInstitution(bool&);

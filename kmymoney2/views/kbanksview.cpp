@@ -31,6 +31,8 @@
 #include <klistview.h>
 #include <kconfig.h>
 #include <kmessagebox.h>
+#include <kiconloader.h>
+#include <kapplication.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -40,6 +42,8 @@
 #include "../mymoney/mymoneyfile.h"
 #include "../dialogs/knewaccountdlg.h"
 #include "../kmymoneyutils.h"
+#include "../dialogs/knewbankdlg.h"
+#include "../kapptest.h"
 
 static const char* const assetIconImage[] = {
 "32 32 9 1",
@@ -293,13 +297,14 @@ static const char* const loanIconImage[] = {
 "................cc.............."};
 
 
-KAccountsView::KAccountsView(QWidget *parent, const char *name)
+KAccountsView::KAccountsView(QWidget *parent, const char *name, bool bInstitutionView)
  : KBankViewDecl(parent,name),
+   m_bInstitutionViewOverride(bInstitutionView),
    m_suspendUpdate(false)
 {
   KConfig *config = KGlobal::config();
   config->setGroup("List Options");
-  m_bViewNormalAccountsView = config->readBoolEntry("NormalAccountsView", false);
+  m_bViewNormalAccountsView = (m_bInstitutionViewOverride) ? true : config->readBoolEntry("NormalAccountsView", false);
 
   accountListView->setRootIsDecorated(true);
   accountListView->setAllColumnsShowFocus(true);
@@ -349,7 +354,7 @@ KAccountsView::KAccountsView(QWidget *parent, const char *name)
 
   connect(accountTabWidget, SIGNAL(currentChanged(QWidget*)),
     this, SLOT(slotViewSelected(QWidget*)));
-
+	
   m_bSelectedAccount=false;
   m_bSelectedInstitution=false;
   // m_bSignals=true;
@@ -666,7 +671,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
 
   KConfig *config = KGlobal::config();
   config->setGroup("List Options");
-  m_bViewNormalAccountsView = config->readBoolEntry("NormalAccountsView", false);
+  m_bViewNormalAccountsView = (m_bInstitutionViewOverride) ? true : config->readBoolEntry("NormalAccountsView", false);
   m_hideCategory = config->readBoolEntry("HideUnusedCategory", false);
   bool accountUsed;
 
@@ -1062,3 +1067,4 @@ void KAccountsView::slotDeleteClicked(void)
     delete e;
   }
 }
+

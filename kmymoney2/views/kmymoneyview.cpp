@@ -139,6 +139,14 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   signalMap->setMapping(m_accountsView, AccountsView);
   connect(m_accountsView, SIGNAL(signalViewActivated()), signalMap, SLOT(map()));
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_accountsView, SLOT(slotReloadView()));
+	
+	// Page for Institution View
+  m_institutionsViewFrame = addVBoxPage( i18n("Institutions"), i18n("Institutions"),
+    DesktopIcon("kmy"));
+  m_institutionsView = new KAccountsView(m_institutionsViewFrame, KAppTest::widgetName(this, "KAccountsView"), true);
+  signalMap->setMapping(m_institutionsView, AccountsView);
+  connect(m_institutionsView, SIGNAL(signalViewActivated()), signalMap, SLOT(map()));
+  connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_institutionsView, SLOT(slotReloadView()));
 
   // Page 2
   m_scheduleViewFrame = addVBoxPage( i18n("Schedule"), i18n("Bills & Reminders"),
@@ -208,16 +216,14 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   // connect the view activation signal mapper
   connect(signalMap, SIGNAL(mapped(int)), this, SIGNAL(viewActivated(int)));
 
-  connect(m_accountsView, SIGNAL(accountRightMouseClick()),
-    this, SLOT(slotAccountRightMouse()));
+  connect(m_accountsView, SIGNAL(accountRightMouseClick()), this, SLOT(slotAccountRightMouse()));
   connect(m_accountsView, SIGNAL(accountDoubleClick()), this, SLOT(slotAccountDoubleClick()));
   connect(m_accountsView, SIGNAL(categoryDoubleClick()), this, SLOT(slotAccountEdit()));
   //connect(accountsView, SIGNAL(accountSelected()), this, SLOT(slotAccountSelected()));
-  connect(m_accountsView, SIGNAL(bankRightMouseClick()),
-    this, SLOT(slotBankRightMouse()));
-  connect(m_accountsView, SIGNAL(rightMouseClick()),
-    this, SLOT(slotRightMouse()));
+  connect(m_accountsView, SIGNAL(bankRightMouseClick()), this, SLOT(slotBankRightMouse()));
+  connect(m_accountsView, SIGNAL(rightMouseClick()), this, SLOT(slotRightMouse()));
 
+	connect(m_institutionsView, SIGNAL(bankRightMouseClick()), this, SLOT(slotBankRightMouse()));
 
   connect(m_categoriesView, SIGNAL(categoryRightMouseClick()),
     this, SLOT(slotAccountRightMouse()));
@@ -317,6 +323,7 @@ void KMyMoneyView::enableViews(int state)
     state = m_fileOpen;
 
   m_accountsViewFrame->setEnabled(state);
+  m_institutionsViewFrame->setEnabled(state);
   m_scheduleViewFrame->setEnabled(state);
   m_categoriesViewFrame->setEnabled(state);
   m_payeesViewFrame->setEnabled(state);
@@ -492,7 +499,12 @@ void KMyMoneyView::slotBankRightMouse()
   int editId = m_bankMenu->idAt(2);
   int deleteId = m_bankMenu->idAt(3);
   bool bankSuccess;
-  bool state = !m_accountsView->currentInstitution(bankSuccess).isEmpty();
+  bool state = false;
+  
+  if(pageIndex(m_accountsViewFrame) == activePageIndex())
+    state = !m_accountsView->currentInstitution(bankSuccess).isEmpty();
+  else
+    state = !m_institutionsView->currentInstitution(bankSuccess).isEmpty();
 
   m_bankMenu->setItemEnabled(editId, state);
   m_bankMenu->setItemEnabled(deleteId, state);
@@ -509,7 +521,12 @@ void KMyMoneyView::slotBankEdit()
   try
   {
     MyMoneyFile* file = MyMoneyFile::instance();
-    MyMoneyInstitution institution = file->institution(m_accountsView->currentInstitution(bankSuccess));
+    
+    //grab a pointer to the view, regardless of it being a account or institution view.
+    KAccountsView* pView = NULL;
+    pView = (pageIndex(m_accountsViewFrame) == activePageIndex()) ? m_accountsView : m_institutionsView;
+    
+    MyMoneyInstitution institution = file->institution(pView->currentInstitution(bankSuccess));
 
     // bankSuccess is not checked anymore because m_file->institution will throw anyway
     KNewBankDlg dlg(institution, true, this, KAppTest::widgetName(this, "KNewBankDlg"));
@@ -539,7 +556,12 @@ void KMyMoneyView::slotBankDelete()
   try
   {
     MyMoneyFile *file = MyMoneyFile::instance();
-    MyMoneyInstitution institution = file->institution(m_accountsView->currentInstitution(bankSuccess));
+    
+    //grab a pointer to the view, regardless of it being a account or institution view.
+    KAccountsView* pView = NULL;
+    pView = (pageIndex(m_accountsViewFrame) == activePageIndex()) ? m_accountsView : m_institutionsView;
+    
+    MyMoneyInstitution institution = file->institution(pView->currentInstitution(bankSuccess));
     QString msg = i18n("Really delete this institution: ");
     msg += institution.name();
     if ((KMessageBox::questionYesNo(this, msg))==KMessageBox::No)
