@@ -130,16 +130,18 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name)
   connect(&proc,SIGNAL(processExited(KProcess *)),this,SLOT(slotProcessExited()));
 
   m_backupState = BACKUP_IDLE;
-/*
-  mountbackup = false;
-  copybackup = false;
-  unmountbackup = false;
-*/  
+
+  m_reader = 0;
+  m_engineBackup = 0;
 }
 
 KMyMoney2App::~KMyMoney2App()
 {
   delete m_startLogo;
+  if(m_reader != 0)
+    delete m_reader;
+  if(m_engineBackup != 0)
+    delete m_engineBackup;
 }
 
 bool KMyMoney2App::startWithDialog(void)
@@ -202,21 +204,23 @@ void KMyMoney2App::initActions()
   actionQifExport = new KAction(i18n("QIF ..."), "", 0, this, SLOT(slotQifExport()), actionCollection(), "file_export_qif");
 
   // The Settings Menu
-	settingsKey = KStdAction::keyBindings(this, SLOT(slotKeySettings()), actionCollection());
-	settings 	= KStdAction::preferences(this, SLOT( slotSettings() ), actionCollection());
+  settingsKey = KStdAction::keyBindings(this, SLOT(slotKeySettings()), actionCollection());
+  settings = KStdAction::preferences(this, SLOT( slotSettings() ), actionCollection());
 
   // The Bank Menu
-  bankAdd = new KAction(i18n("Add new institution..."), "bank", 0, this, SLOT(slotBankAdd()), actionCollection(), "bank_add");
+  bankAdd = new KAction(i18n("Add new institution..."), "bank", 0, myMoneyView, SLOT(slotBankNew()), actionCollection(), "bank_add");
 
   // The Account Menu
-  accountOpen = new KAction(i18n("Open account register..."), "account_open", 0, this, SLOT(slotAccountOpen()), actionCollection(), "account_open");
-  accountAdd = new KAction(i18n("Add new account..."), "account"/*QIconSet(QPixmap(KGlobal::dirs()->findResource("appdata", "toolbar/kmymoney_newacc.xpm")))*/, 0, this, SLOT(slotAccountAdd()), actionCollection(), "account_add");
-  accountReconcile = new KAction(i18n("Reconcile account..."), "reconcile", 0, this, SLOT(slotAccountReconcile()), actionCollection(), "account_reconcile");
-  accountFind = new KAction(i18n("Find transaction..."), "find", 0, this, SLOT(slotAccountFind()), actionCollection(), "account_find");
+  accountOpen = new KAction(i18n("Open account register..."), "account_open", 0, myMoneyView, SLOT(slotAccountDoubleClick()), actionCollection(), "account_open");
+  accountAdd = new KAction(i18n("Add new account..."), "account"/*QIconSet(QPixmap(KGlobal::dirs()->findResource("appdata", "toolbar/kmymoney_newacc.xpm")))*/, 0, myMoneyView, SLOT(slotAccountNew()), actionCollection(), "account_add");
+  categoryAdd = new KAction(i18n("Add new category..."), "account", 0, myMoneyView, SLOT(slotCategoryNew()), actionCollection(), "category_add");
+  accountReconcile = new KAction(i18n("Reconcile account..."), "reconcile", 0, myMoneyView, SLOT(slotAccountReconcile()), actionCollection(), "account_reconcile");
+  accountFind = new KAction(i18n("Find transaction..."), "find", 0, myMoneyView, SLOT(slotAccountFind()), actionCollection(), "account_find");
 
   // The Bill Menu
 /* Future
   billsAdd = new KAction(i18n("Add Bill/Deposit..."), 0, 0, this, SLOT(slotBillsAdd()), actionCollection(), "bills_add");
+
   billsAdd->setStatusText(i18n("Add a new Bill or Deposit"));
 
   // The Report Menu
@@ -542,9 +546,9 @@ void KMyMoney2App::slotFileClose()
   // no update status here, as we might delete the status too early.
   if (myMoneyView->dirty()) {
     int answer = KMessageBox::warningYesNoCancel(this, i18n("The file has been changed, save it ?"));
-		if (answer == KMessageBox::Cancel)
-			return;
-		else if (answer == KMessageBox::Yes)
+    if (answer == KMessageBox::Cancel)
+      return;
+    else if (answer == KMessageBox::Yes)
       slotFileSave();
   }
 
@@ -723,83 +727,78 @@ void KMyMoney2App::slotFileFileInfo()
     return;
   }
 
-  int answer = KMessageBox::warningYesNoCancel(this, i18n("This function no longer exists and is used by the developers.\n\nPerform a dump of the data in memory?."));
+  int answer = KMessageBox::warningYesNoCancel(this, i18n("This function is used by the developers to\n\nperform a dump of the engine's data in memory."));
   if (answer == KMessageBox::Cancel || answer == KMessageBox::No)
     return;
-
-
 
   myMoneyView->memoryDump();
 }
 
-void KMyMoney2App::slotBankAdd()
-{
-  myMoneyView->slotBankNew();
-}
-
-
-
-
-
-
-
-
-void KMyMoney2App::slotAccountAdd()
-{
-  myMoneyView->slotAccountNew();
-}
-
-void KMyMoney2App::slotAccountReconcile()
-{
-  myMoneyView->slotAccountReconcile();
-}
-
 void KMyMoney2App::slotQifImport()
 {
-  QString prevMsg = slotStatusMsg(i18n("Importing file..."));
+  if(m_reader == 0) {
+    // FIXME: the menu entry for qif import should be disabled here
 
-  KImportDlg* dlg = new KImportDlg(0);
+    KImportDlg* dlg = new KImportDlg(0);
 
-
-  if(dlg->exec()) {
-    myMoneyView->suspendUpdate(true);
-    
-    // construct a copy of the current engine
-    MyMoneySeqAccessMgr* backup = new MyMoneySeqAccessMgr;
-    MyMoneySeqAccessMgr* data = static_cast<MyMoneySeqAccessMgr *> (MyMoneyFile::instance()->storage());
-    *backup = *data;
-
-    MyMoneyQifReader reader;
-    reader.setFilename(dlg->filename());
-    reader.setProfile(dlg->profile());
-    reader.setProgressCallback(&progressCallback);
-    
-    if(reader.import()) {
+    if(dlg->exec()) {
+      slotStatusMsg(i18n("Importing file..."));
+      m_reader = new MyMoneyQifReader;
+      connect(m_reader, SIGNAL(importFinished()), this, SLOT(slotQifImportFinished()));
       
-      if(verifyImportedData(reader)) {
+      myMoneyView->suspendUpdate(true);
+
+      // construct a copy of the current engine
+      if(m_engineBackup)
+        delete m_engineBackup;
+      m_engineBackup = MyMoneyFile::instance()->storage()->duplicate();
+
+      m_reader->setFilename(dlg->filename());
+      m_reader->setProfile(dlg->profile());
+      m_reader->setProgressCallback(&progressCallback);
+
+      m_reader->startImport();
+    }
+    delete dlg;
+  }
+}
+
+void KMyMoney2App::slotQifImportFinished(void)
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
+  
+  if(m_reader != 0) {
+    // fixme: re-enable the QIF import menu options
+    if(m_reader->finishImport()) {
+      if(verifyImportedData()) {
         // keep the new data set, destroy the backup copy
-        delete backup;
-        backup = 0;
+        delete m_engineBackup;
+        m_engineBackup = 0;
       }
     }
     
-    if(backup != 0) {
+    if(m_engineBackup != 0) {
       // user cancelled, destroy the updated set and keep the backup copy
-      MyMoneyFile::instance()->detachStorage(data);
-      MyMoneyFile::instance()->attachStorage(backup);
-      delete data;
-
+      IMyMoneyStorage* data = file->storage();
+      if(data != 0) {
+        file->detachStorage(data);
+        delete data;      
+      }
+      file->attachStorage(m_engineBackup);
+      m_engineBackup = 0;
     }
     
     myMoneyView->suspendUpdate(false);
     // update the views as they might still contain invalid data
     // from the import session
     myMoneyView->slotRefreshViews();
+    
+    // slotStatusMsg(prevMsg);
+    delete m_reader;
+    m_reader = 0;
+    slotStatusProgressBar(-1, -1);
+    slotStatusMsg(i18n("Ready."));
   }
-  delete dlg;
-
-  // myMoneyView->slotAccountImportAscii();
-  slotStatusMsg(prevMsg);
 }
 
 void KMyMoney2App::slotQifExport()
@@ -955,11 +954,6 @@ void KMyMoney2App::slotSettings()
   }
 }
 
-void KMyMoney2App::slotAccountFind()
-{
-  myMoneyView->accountFind();
-}
-
 /** Init wizard dialog */
 bool KMyMoney2App::initWizard()
 {
@@ -1006,6 +1000,7 @@ void KMyMoney2App::slotFileBackup()
 
   KBackupDlg *backupDlg = new KBackupDlg(this,0/*,true*/);
   int returncode = backupDlg->exec();
+
 
 
   if(returncode)
@@ -1062,6 +1057,7 @@ void KMyMoney2App::slotProcessExited()
 
           }
         }
+
         if(m_backupResult == 0) {
           proc << "cp" << "-f" << fileName.path(0) << backupfile;
           m_backupState = BACKUP_COPYING;
@@ -1134,11 +1130,6 @@ void KMyMoney2App::slotFileNewWindow()
   newWin->show();
 }
 
-void KMyMoney2App::slotAccountOpen()
-{
-  myMoneyView->slotAccountDoubleClick();
-}
-
 void KMyMoney2App::slotKeySettings()
 {
   QString path = KGlobal::dirs()->findResource("appdata", "kmymoney2ui.rc");
@@ -1201,10 +1192,10 @@ void KMyMoney2App::slotQifProfileEditor(void)
 
 }
 
-bool KMyMoney2App::verifyImportedData(const MyMoneyQifReader& reader)
+bool KMyMoney2App::verifyImportedData()
 {
   bool rc;
-  QDialog *dialog = new KImportVerifyDlg(reader.account(), this);
+  QDialog *dialog = new KImportVerifyDlg(m_reader->account(), this);
   rc = (dialog->exec() == QDialog::Accepted);
   delete dialog;
   return rc;

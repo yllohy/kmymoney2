@@ -62,7 +62,7 @@ class KStartupLogo;
   * @see KMyMoneyView
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: kmymoney2.h,v 1.29 2003/06/20 12:25:25 ipwizard Exp $
+  * $Id: kmymoney2.h,v 1.30 2003/06/30 19:50:05 ipwizard Exp $
   *
   * @short Main application class.
 **/
@@ -84,31 +84,6 @@ protected slots:
   void slotFileViewPersonal();
 
   /**
-    * Called when the user wishes to add a bank.  The file must
-    * be open for this to work. Calls KMyMoneyView::slotBankNew.
-    *
-    * @see MyMoneyFile
-  **/
-  void slotBankAdd();
-
-  /**
-    * Called when the user wishes to add an account.  A bank
-    * must exist for this to work.  Calls KMyMoneyView::slotAccountNew.
-    *
-    * @see MyMoneyBank
-  **/
-  void slotAccountAdd();
-
-  /**
-    * Called when the user wishes to reconcile an account. An
-    * account must be 'open' for this to work.
-    * Calls KMyMoneyView::slotAccountReconcile
-    *
-    * @see MyMoneyAccount
-  **/
-  void slotAccountReconcile();
-
-  /**
     * Called when the user wishes to import tab delimeted transactions
     * into the current account.  An account must be open for this to
     * work.  Calls KMyMoneyView::slotAccountImportAscii.
@@ -117,6 +92,11 @@ protected slots:
     **/
   void slotQifImport();
 
+  /**
+    * Called when a QIF import is finished.
+    */
+  void slotQifImportFinished(void);
+  
   /**
     * Called when the user wishes to export some transaction to a
     * QIF formatted file. An account must be open for this to work.
@@ -193,16 +173,6 @@ protected slots:
     * @see KSettingsDlg
   **/
   void slotSettings();
-
-  /**
-    * Called when the user wishes to search for specific
-    * transactions.  Brings up a dialog to get the options
-    * and then opens a results window.
-    *
-    * @see KFindTransactionDlg
-    * @see KTFindResultsDlg
-  **/
-  void slotAccountFind();
 
   /**
     * Simulates moving up from the transaction view to the bank/account
@@ -290,8 +260,6 @@ protected:
 
 public slots:
   /** */
-  void slotAccountOpen();
-
   /** Open a new window */
   void slotFileNewWindow();
 
@@ -377,7 +345,7 @@ public slots:
   void slotProcessExited();
 
 private:
-  bool verifyImportedData(const MyMoneyQifReader& reader);
+  bool verifyImportedData(void);
     
 private:
   /** the configuration object of the application */
@@ -415,7 +383,9 @@ private:
 
   KAction *accountOpen;
   KAction *accountAdd;
+  KAction *categoryAdd;
   KAction *accountReconcile;
+
   KAction *accountFind;
   KAction *actionQifImport;
   KAction *actionQifExport;
@@ -482,7 +452,10 @@ private:
 
   int m_progressUpdate;
   int m_nextUpdate;
-  
+
+  IMyMoneyStorage*  m_engineBackup;
+  MyMoneyQifReader* m_reader;
+      
 private:
   //void disableAllAccountActions(bool enable=true);
 
