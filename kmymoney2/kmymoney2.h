@@ -52,14 +52,14 @@ class KMyMoneyView;
 class MyMoneyQifReader;
 class IMyMoneyStorage;
 
-/*! \mainpage KMyMoney2 Main Page for API documentation.
+/*! \mainpage KMyMoney Main Page for API documentation.
  *
  * \section intro Introduction
  *
- * This is the API documentation for KMyMoney2.  It should be used as a reference
- * for KMyMoney2 developers and users who wish to see how KMyMoney2 works.  This
+ * This is the API documentation for KMyMoney.  It should be used as a reference
+ * for KMyMoney developers and users who wish to see how KMyMoney works.  This
  * documentation will be kept up-to-date as development progresses and should be
- * read for new features that have been developed in KMyMoney2.
+ * read for new features that have been developed in KMyMoney.
  *
  * The latest version of this document is available from the project's web-site
  * at http://kmymoney2.sourceforge.net/ and is generated daily by doxygen reading
@@ -68,14 +68,14 @@ class IMyMoneyStorage;
 
 /**
 
-  * The base class for KMyMoney2 application windows. It sets up the main
+  * The base class for KMyMoney application windows. It sets up the main
   * window and reads the config file as well as providing a menubar, toolbar
   * and statusbar.  All functionality is passed down to KMyMoneyView.
   *
   * @see KMyMoneyView
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: kmymoney2.h,v 1.39 2003/12/26 12:40:39 ipwizard Exp $
+  * $Id: kmymoney2.h,v 1.40 2004/01/03 17:04:04 ipwizard Exp $
   *
   * @short Main application class.
 **/
@@ -265,6 +265,7 @@ public slots:
     * changes the statusbar contents for the standard label permanently,
     * used to indicate current actions. Returns the previous value for
     * 'stacked' usage.
+
    * @param text the text that is displayed in the statusbar
    */
   const QString slotStatusMsg(const QString &text);

@@ -573,7 +573,7 @@ bool KMyMoneyView::readFile(const KURL& url)
             s >> magic1;
 
             // If both magic numbers match (we actually read in the
-            // text 'KMyMoney2' then we assume a binary file and
+            // text 'KMyMoney' then we assume a binary file and
             // construct a reader for it. Otherwise, we construct
             // an XML reader object.
             //
@@ -713,10 +713,9 @@ void KMyMoneyView::saveFile(const KURL& url)
   }
 
   if(KMessageBox::warningContinueCancel(this, i18n(
-      "Since this version of KMyMoney2 only writes data files in it's new "
-      "format, files written with this version cannot be read by older versions "
-      "of KMyMoney2. If "
-      "you still want to use prior versions of KMyMoney2 with your data files, "
+      "Since this version of KMyMoney only writes data files in it's new "
+      "format, files written with this version cannot be read by KMyMoney version 0.4. "
+      "If you still want to use older versions of KMyMoney with your data files, "
       "please make sure you keep a backup-file of your finance data. "
       "If you want to abort this operation, please press Cancel now"),
       QString::null, KStdGuiItem::cont(), "WarningNewFileVersion0.5") == KMessageBox::Cancel)

@@ -79,7 +79,7 @@
                     <property name="text">
                         <string>From this dialog you are able to import transactions from a Quicken&lt;b&gt;&amp;trade;&lt;/b&gt; compatible file, (known as a QIF file, because of the extension).&lt;p&gt;
 
-Please enter the path to the QIF file or select it by clicking on the Browse button. Once you have the file's path press the Import button and KMyMoney2 will import all the transactions, categories and payees it finds.</string>
+Please enter the path to the QIF file or select it by clicking on the Browse button. Once you have the file's path press the Import button and KMyMoney will import all the transactions, categories and payees it finds.</string>
                     </property>
                     <property name="alignment">
                         <set>WordBreak|AlignVCenter</set>

@@ -374,7 +374,7 @@ void KSplitTransactionDlg::slotClearAllClicked()
   answer = KMessageBox::warningContinueCancel (NULL,
      i18n("You are about to delete all splits of this transaction. "
           "Do you really want to continue?"),
-     i18n("KMyMoney2"),
+     i18n("KMyMoney"),
      i18n("Continue")
      );
 
@@ -583,7 +583,7 @@ void KSplitTransactionDlg::slotDeleteSplit(int row)
     answer = KMessageBox::warningContinueCancel (NULL,
        i18n("You are about to delete this part of the transaction. "
             "Do you really want to continue?"),
-       i18n("KMyMoney2"),
+       i18n("KMyMoney"),
        i18n("Continue")
        );
     if(answer == KMessageBox::Continue) {
