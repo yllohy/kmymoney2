@@ -45,7 +45,7 @@
 #include "../mymoney/mymoneyfile.h"
 
 KAccountSelectDlg::KAccountSelectDlg(const KMyMoneyUtils::categoryTypeE accountType, const QString& purpose, QWidget *parent, const char *name )
- : KAccountSelectDlgDecl(parent,name),
+ : KAccountSelectDlgDecl(parent, name),
    m_purpose(purpose),
    m_accountType(accountType),
    m_aborted(false)
@@ -275,8 +275,9 @@ int KAccountSelectDlg::exec(void)
     slotCreateAccount();
     rc = result();
   }
-  if(rc != Accepted)
+  if(rc != Accepted) {
+    m_createButton->setFocus();
     rc = KAccountSelectDlgDecl::exec();
-    
+  }    
   return rc;
 }
