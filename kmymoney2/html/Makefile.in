@@ -1,4 +1,4 @@
-# KDE tags expanded automatically by am_edit - $Revision: 1.1 $ 
+# KDE tags expanded automatically by am_edit - $Revision: 1.2 $ 
 # Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
@@ -273,13 +273,13 @@ installcheck: installcheck-am
 install-exec-am:
 install-exec: install-exec-am
 
-install-data-am:
+install-data-am: install-data-local
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am:
+uninstall-am: uninstall-local
 uninstall: uninstall-am
 all-am: Makefile
 all-redirect: all-am
@@ -320,11 +320,33 @@ maintainer-clean: maintainer-clean-am
 
 .PHONY: tags distdir info-am info dvi-am dvi check check-am \
 	installcheck-am installcheck install-exec-am install-exec \
-	install-data-am install-data install-am install uninstall-am uninstall \
-	all-redirect all-am all installdirs mostlyclean-generic \
-	distclean-generic clean-generic maintainer-clean-generic clean \
-	mostlyclean distclean maintainer-clean
+	install-data-local install-data-am install-data install-am install \
+	uninstall-local uninstall-am uninstall all-redirect all-am all \
+	installdirs mostlyclean-generic distclean-generic clean-generic \
+	maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
+
+install-data-local:
+#>- 	$(mkinstalldirs) $(datadir)/kmymoney2/html/
+#>+ 1
+	$(mkinstalldirs) $(DESTDIR)$(datadir)/kmymoney2/html/
+#>- 	$(INSTALL_DATA) $(srcdir)/home.html $(datadir)/kmymoney2/html/home.html
+#>+ 1
+	$(INSTALL_DATA) $(srcdir)/home.html $(DESTDIR)$(datadir)/kmymoney2/html/home.html
+#>- 	$(mkinstalldirs) $(datadir)/kmymoney2/html/
+#>+ 1
+	$(mkinstalldirs) $(DESTDIR)$(datadir)/kmymoney2/html/
+#>- 	$(INSTALL_DATA) $(srcdir)/kmymoney2.css $(datadir)/kmymoney2/html/kmymoney2.css
+#>+ 1
+	$(INSTALL_DATA) $(srcdir)/kmymoney2.css $(DESTDIR)$(datadir)/kmymoney2/html/kmymoney2.css
+
+uninstall-local:
+#>- 	-rm -f $(datadir)/kmymoney2/html/home.html
+#>+ 1
+	-rm -f $(DESTDIR)$(datadir)/kmymoney2/html/home.html
+#>- 	-rm -f $(datadir)/kmymoney2/html/kmymoney2.css
+#>+ 1
+	-rm -f $(DESTDIR)$(datadir)/kmymoney2/html/kmymoney2.css
 
 ####### kdevelop will overwrite this part!!! (end)############
 
