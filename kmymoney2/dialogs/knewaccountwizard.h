@@ -43,8 +43,8 @@
 class KNewAccountWizard : public KNewAccountWizardDecl  {
    Q_OBJECT
 public: 
-	KNewAccountWizard(QWidget *parent=0, const char *name=0);
-	~KNewAccountWizard();
+  KNewAccountWizard(QWidget *parent=0, const char *name=0);
+  ~KNewAccountWizard();
 
   /**
     * This method returns the account information entered by the user
@@ -61,6 +61,34 @@ public:
     */
   const MyMoneyAccount parentAccount(void) const;
 
+  /**
+    * This method is used to preset the name of the account in the wizard
+    *
+    * @param name name of the account
+    */
+  void setAccountName(const QString& accountName);
+
+  /**
+    * This method is used to preset the opening balance of the account
+    *
+    * @param balance opening balance for the account
+    */
+  void setOpeningBalance(const MyMoneyMoney& balance);
+
+  /**
+    * This method is used to preset the opening date of the account
+    *
+    * @param date opening date for the account
+    */
+  void setOpeningDate(const QDate& date);
+
+  /**
+    * This method is used to preset the account type of the account
+    *
+    * @param type account type as specified in MyMoneyAccount
+    */
+  void setAccountType(const MyMoneyAccount::accountTypeE type);
+  
 protected:
   /**
     * This method is used to reload the institution combo box

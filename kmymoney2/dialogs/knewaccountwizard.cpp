@@ -41,8 +41,10 @@
 // Project Includes
 
 #include "../widgets/kmymoneyedit.h"
+#include "../widgets/kmymoneydateinput.h"
 #include "../mymoney/mymoneyinstitution.h"
 #include "../mymoney/mymoneyfile.h"
+#include "../kmymoneyutils.h"
 #include "knewaccountwizard.h"
 
 KNewAccountWizard::KNewAccountWizard(QWidget *parent, const char *name )
@@ -149,10 +151,8 @@ int KNewAccountWizard::exec()
   reminderCheckBox->setChecked(true);
   estimateFrame->setEnabled(true);
 
-  // reset everything else
-  accountName->setText("");
+  // reset everything else if not preset
   accountNumber->setText("");
-  openingBalance->setText("");
 
   return KNewAccountWizardDecl::exec();
 }
@@ -176,7 +176,6 @@ void KNewAccountWizard::loadSubAccountList(KListView* parent, const QCString& ac
 
   it = findAccount(accountId);
   KAccountListItem *topLevelAccount = new KAccountListItem(parent, *it);
-//                (*it).name(), (*it).id(), "", "");
 
   QCStringList::ConstIterator it_s;
   for(it_s = (*it).accountList().begin(); it_s != (*it).accountList().end(); ++it_s) {
@@ -190,7 +189,6 @@ void KNewAccountWizard::loadSubAccountList(KAccountListItem* parent, const QCStr
 
   it = findAccount(accountId);
   KAccountListItem *topLevelAccount = new KAccountListItem(parent, *it);
-//                (*it).name(), (*it).id(), "", "");
 
   QCStringList::ConstIterator it_s;
   for(it_s = (*it).accountList().begin(); it_s != (*it).accountList().end(); ++it_s) {
@@ -228,7 +226,7 @@ void KNewAccountWizard::loadAccountTypes(void)
 {
   accountTypeListBox->clear();
 
-  accountTypeListBox->insertItem(i18n("Checkings"));
+  accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Checkings));
   accountTypeListBox->insertItem(i18n("Savings"));
   accountTypeListBox->insertItem(i18n("Credit Card"));
   accountTypeListBox->insertItem(i18n("Cash"));
@@ -329,3 +327,27 @@ const MyMoneyAccount KNewAccountWizard::parentAccount(void) const
   return parent;
 }
 
+void KNewAccountWizard::setAccountName(const QString& name)
+{
+  accountName->setText(name);
+}
+
+void KNewAccountWizard::setOpeningBalance(const MyMoneyMoney& balance)
+{
+  openingBalance->setText(balance.formatMoney());
+}
+
+void KNewAccountWizard::setOpeningDate(const QDate& date)
+{
+  openingDate->setDate(date);
+}
+
+void KNewAccountWizard::setAccountType(const MyMoneyAccount::accountTypeE type)
+{
+  int i;
+  for(i = accountTypeListBox->count()-1; i > 0; --i) {
+    if(accountTypeListBox->text(i) == KMyMoneyUtils::accountTypeToString(type))
+      break;
+  }
+  accountTypeListBox->setCurrentItem(i);
+}
