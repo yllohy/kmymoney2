@@ -30,6 +30,7 @@
 // Project Includes
 
 #include "kmymoneyregister.h"
+#include "../kmymoneyutils.h"
 
 kMyMoneyRegister::kMyMoneyRegister(int maxRpt, QWidget *parent, const char *name )
   : QTable(parent, name),
@@ -92,9 +93,9 @@ void kMyMoneyRegister::readConfig(void)
   config->setGroup("List Options");
 
   QFont cellFont = QFont("helvetica", 10);
-  m_color = Qt::white;
-  m_bgColor = Qt::gray;
-  m_gridColor = Qt::black;
+  m_color = KMyMoneyUtils::defaultListColour();
+  m_bgColor = KMyMoneyUtils::defaultBackgroundColour();
+  m_gridColor = KMyMoneyUtils::defaultGridColour();
   m_importColor = Qt::yellow;
   
   m_bgColor = config->readColorEntry("listBGColor", &m_bgColor);

@@ -20,16 +20,26 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qapplication.h>
+// ----------------------------------------------------------------------------
+// QT Includes
+
+#include <qglobal.h>
 
 #if QT_VERSION > 300
 #include <qpainter.h>
 #endif
 
+// ----------------------------------------------------------------------------
+// KDE Includes
+
 #include <kconfig.h>
 #include <kglobal.h>
 
+// ----------------------------------------------------------------------------
+// Project Includes
+
 #include "kmymoneysplittable.h"
+#include "../kmymoneyutils.h"
 
 kMyMoneySplitTable::kMyMoneySplitTable(QWidget *parent, const char *name ) :
   QTable(parent,name),
@@ -55,9 +65,9 @@ void kMyMoneySplitTable::paintCell(QPainter *p, int row, int col, const QRect& r
   config->setGroup("List Options");
 
   QFont defaultFont = QFont("helvetica", 12);
-  QColor defaultColor = Qt::white;
-  QColor defaultBGColor = Qt::gray;
-  QColor defaultGridColor = Qt::black;
+  QColor defaultColor = KMyMoneyUtils::defaultListColour();
+  QColor defaultBGColor = KMyMoneyUtils::defaultBackgroundColour();
+  QColor defaultGridColor = KMyMoneyUtils::defaultGridColour();
 	
   const bool bShowGrid = config->readBoolEntry("ShowGrid", true);
 
@@ -129,7 +139,7 @@ void kMyMoneySplitTable::paintCell(QPainter *p, int row, int col, const QRect& r
 }
 
 /** Override the QTable member function to avoid display of focus */
-void kMyMoneySplitTable::paintFocus(QPainter *p, const QRect &cr)
+void kMyMoneySplitTable::paintFocus(QPainter * /* p */, const QRect & /*cr*/)
 {
 }
 
@@ -208,7 +218,7 @@ void kMyMoneySplitTable::contentsMousePressEvent( QMouseEvent* e )
   emit clicked( rowAt(e->pos().y()), columnAt(e->pos().x()), e->button(), e->pos() );
 }
 
-void kMyMoneySplitTable::contentsMouseReleaseEvent( QMouseEvent* e )
+void kMyMoneySplitTable::contentsMouseReleaseEvent( QMouseEvent* /* e */ )
 {
 }
 
