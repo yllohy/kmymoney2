@@ -101,6 +101,7 @@
 
 KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name)
  : KMainWindow(0, name),
+ myMoneyView(0),
  DCOPObject("kmymoney2app")
 {
   updateCaption(true);
@@ -1322,7 +1323,7 @@ void KMyMoney2App::updateCaption(const bool skipActions)
 
   caption = fileName.filename(false);
 
-  if(caption.isEmpty() && myMoneyView->fileOpen())
+  if(caption.isEmpty() && myMoneyView && myMoneyView->fileOpen())
     caption = i18n("Untitled");
 
   // MyMoneyFile::instance()->dirty() throws an exception, if
