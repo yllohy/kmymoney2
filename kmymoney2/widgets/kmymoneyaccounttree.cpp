@@ -144,30 +144,21 @@ void kMyMoneyAccountTree::slotObjectDropped(QDropEvent* event, QListViewItem* pa
 
   QCString id(event->encodedData("text/plain"));
   try {
-    MyMoneyAccount accTo, accFrom;
-    accTo = MyMoneyFile::instance()->account(newParent->accountID());
-    accFrom = MyMoneyFile::instance()->account(id);
-    if(KMessageBox::questionYesNo(this, QString("<p>")+i18n("Do you really want to move <b>%1</b> to be a sub-account of <b>%2</b>?").arg(accFrom.name()).arg(accTo.name()), i18n("Moving account")) == KMessageBox::Yes) {
-      try {
-        MyMoneyFile::instance()->reparentAccount(accFrom, accTo);
-      } catch(MyMoneyException *e) {
-        QString detail = i18n("%1 caught in %2 at line %3").arg(e->what()).arg(e->file()).arg(e->line());
-        KMessageBox::detailedError(this, i18n("Cannot move account"), detail, i18n("Error"));
-      }
-    }
+    // keep the account information and call the acutal routine right out
+    // of the main loop. This will reset the focus of the cursor.
+    m_accTo = MyMoneyFile::instance()->account(newParent->accountID());
+    m_accFrom = MyMoneyFile::instance()->account(id);
+    QTimer::singleShot(0, this, SLOT(slotReparentAccount()));
+
   } catch(MyMoneyException *e) {
     delete e;
     // might have been a bank that we dropped on. let's check
     try {
-      MyMoneyInstitution institution = MyMoneyFile::instance()->institution(newParent->accountID());
-      MyMoneyAccount acc = MyMoneyFile::instance()->account(id);
-      acc.setInstitutionId(institution.id());
-      try {
-        MyMoneyFile::instance()->modifyAccount(acc);
-      } catch(MyMoneyException *e) {
-        QString detail = i18n("%1 caught in %2 at line %3").arg(e->what()).arg(e->file()).arg(e->line());
-        KMessageBox::detailedError(this, i18n("Cannot move account to institution"), detail, i18n("Error"));
-      }
+      // keep the account and institution information and call the acutal
+      // routine right out of the main loop. This will reset the focus of the cursor.
+      m_institution = MyMoneyFile::instance()->institution(newParent->accountID());
+      m_accFrom = MyMoneyFile::instance()->account(id);
+      QTimer::singleShot(0, this, SLOT(slotReparentAccount()));
 
     } catch(MyMoneyException *e) {
       delete e;
@@ -182,5 +173,28 @@ void kMyMoneyAccountTree::slotObjectDropped(QDropEvent* event, QListViewItem* pa
         KMessageBox::detailedError(this, i18n("Cannot remove account from institution"), detail, i18n("Error"));
       }
     }
+  }
+}
+
+void kMyMoneyAccountTree::slotReparentAccount(void)
+{
+  if(KMessageBox::questionYesNo(this, QString("<p>")+i18n("Do you really want to move <b>%1</b> to be a sub-account of <b>%2</b>?").arg(m_accFrom.name()).arg(m_accTo.name()), i18n("Moving account")) == KMessageBox::Yes) {
+    try {
+      MyMoneyFile::instance()->reparentAccount(m_accFrom, m_accTo);
+    } catch(MyMoneyException *e) {
+      QString detail = i18n("%1 caught in %2 at line %3").arg(e->what()).arg(e->file()).arg(e->line());
+      KMessageBox::detailedError(this, i18n("Cannot move account"), detail, i18n("Error"));
+    }
+  }
+}
+
+void kMyMoneyAccountTree::slotReparentInstitution(void)
+{
+  m_accFrom.setInstitutionId(m_institution.id());
+  try {
+    MyMoneyFile::instance()->modifyAccount(m_accFrom);
+  } catch(MyMoneyException *e) {
+    QString detail = i18n("%1 caught in %2 at line %3").arg(e->what()).arg(e->file()).arg(e->line());
+    KMessageBox::detailedError(this, i18n("Cannot move account to institution"), detail, i18n("Error"));
   }
 }

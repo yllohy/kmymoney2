@@ -32,6 +32,7 @@ class QDragObject;
 // Project Includes
 
 #include "../mymoney/mymoneyaccount.h"
+#include "../mymoney/mymoneyinstitution.h"
 
 class kMyMoneyAccountTree : public KListView
 {
@@ -47,6 +48,13 @@ protected:
 
 protected slots:
   void slotObjectDropped(QDropEvent* event, QListViewItem* parent, QListViewItem* after);
+
+  void slotReparentAccount(void);
+  void slotReparentInstitution(void);
+
+private:
+  MyMoneyAccount      m_accFrom, m_accTo;
+  MyMoneyInstitution  m_institution;
 };
 
 #endif
