@@ -1,3 +1,13 @@
+2202-11-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added support for compressed file I/O. The reader checks if an
+    uncompressed or compressed file is read. The writer always adds
+    compression. This can be turned off by setting the switch
+    'WriteDataUncompressed' in the [General Options] section of
+    the kmymoney2rc file. A UI in the settings dialog is not supported
+    as the end-user should always get a compressed file
+  * Therefor changed the interface to IMyMoneyStorageFormat to pass a
+    QIODevice* instead of a QFile*
+
 2002-11-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed bug in MyMoneyMoney locale handling
   * Added testcase for that
