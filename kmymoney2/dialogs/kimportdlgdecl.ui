@@ -11,8 +11,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>749</width>
-            <height>517</height>
+            <width>873</width>
+            <height>525</height>
         </rect>
     </property>
     <property stdset="1">
@@ -161,7 +161,7 @@ and payees it finds.</string>
             <class>QLayoutWidget</class>
             <property stdset="1">
                 <name>name</name>
-                <cstring>Layout8</cstring>
+                <cstring>Layout7</cstring>
             </property>
             <grid>
                 <property stdset="1">
@@ -172,36 +172,6 @@ and payees it finds.</string>
                     <name>spacing</name>
                     <number>6</number>
                 </property>
-                <widget row="0"  column="2"  rowspan="2"  colspan="1" >
-                    <class>QLabel</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>TextLabel1_2</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>text</name>
-                        <string>The Date format is represented as follows:
-
-d = Day Number
-m = Month Number
-mmm = Month Name (abbreviated to three letters)
-yy = Year Number (last two digits)
-yyyy = Year Number
-
-To use the awful 'yy use a format like %d/%m%yy e.g for  1/2'01.</string>
-                    </property>
-                </widget>
-                <widget row="0"  column="0" >
-                    <class>QLabel</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>labelDateFormat</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>text</name>
-                        <string>Date Format:</string>
-                    </property>
-                </widget>
                 <spacer row="1"  column="1" >
                     <property>
                         <name>name</name>
@@ -236,6 +206,145 @@ To use the awful 'yy use a format like %d/%m%yy e.g for  1/2'01.</string>
                             <height>0</height>
                         </size>
                     </property>
+                </widget>
+                <widget row="0"  column="2"  rowspan="4"  colspan="1" >
+                    <class>QLabel</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>TextLabel1_2</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>The Date format is represented as follows:
+
+d = Day Number
+m = Month Number
+mmm = Month Name (abbreviated to three letters)
+yy = Year Number (last two digits)
+yyyy = Year Number
+
+To use the awful 'yy use a format like %d/%m/%yy
+and selected the meaning of the apostrophe.</string>
+                    </property>
+                </widget>
+                <widget row="0"  column="0" >
+                    <class>QLabel</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>labelDateFormat</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>Date Format:</string>
+                    </property>
+                </widget>
+                <spacer row="3"  column="1" >
+                    <property>
+                        <name>name</name>
+                        <cstring>Spacer5</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>orientation</name>
+                        <enum>Vertical</enum>
+                    </property>
+                    <property stdset="1">
+                        <name>sizeType</name>
+                        <enum>Expanding</enum>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget row="2"  column="1" >
+                    <class>QButtonGroup</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>m_qApostropheGroup</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>title</name>
+                        <string>Apostrophe handling</string>
+                    </property>
+                    <widget>
+                        <class>QRadioButton</class>
+                        <property stdset="1">
+                            <name>name</name>
+                            <cstring>m_qApostrophe2000</cstring>
+                        </property>
+                        <property stdset="1">
+                            <name>geometry</name>
+                            <rect>
+                                <x>10</x>
+                                <y>60</y>
+                                <width>98</width>
+                                <height>20</height>
+                            </rect>
+                        </property>
+                        <property stdset="1">
+                            <name>text</name>
+                            <string>2000+</string>
+                        </property>
+                        <property stdset="1">
+                            <name>checked</name>
+                            <bool>true</bool>
+                        </property>
+                        <property stdset="1">
+                            <name>buttonGroupId</name>
+                            <number>2</number>
+                        </property>
+                    </widget>
+                    <widget>
+                        <class>QRadioButton</class>
+                        <property stdset="1">
+                            <name>name</name>
+                            <cstring>m_qApostrophe1999</cstring>
+                        </property>
+                        <property stdset="1">
+                            <name>geometry</name>
+                            <rect>
+                                <x>10</x>
+                                <y>40</y>
+                                <width>98</width>
+                                <height>20</height>
+                            </rect>
+                        </property>
+                        <property stdset="1">
+                            <name>text</name>
+                            <string>1901-1999</string>
+                        </property>
+                        <property stdset="1">
+                            <name>buttonGroupId</name>
+                            <number>1</number>
+                        </property>
+                    </widget>
+                    <widget>
+                        <class>QRadioButton</class>
+                        <property stdset="1">
+                            <name>name</name>
+                            <cstring>m_qApostrophe1949</cstring>
+                        </property>
+                        <property stdset="1">
+                            <name>geometry</name>
+                            <rect>
+                                <x>10</x>
+                                <y>20</y>
+                                <width>98</width>
+                                <height>20</height>
+                            </rect>
+                        </property>
+                        <property stdset="1">
+                            <name>text</name>
+                            <string>1901-1949</string>
+                        </property>
+                        <property stdset="1">
+                            <name>buttonGroupId</name>
+                            <number>0</number>
+                        </property>
+                    </widget>
                 </widget>
             </grid>
         </widget>

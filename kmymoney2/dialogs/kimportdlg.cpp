@@ -29,6 +29,7 @@
 #include <qtextstream.h>
 #include <qprogressbar.h>
 #include <qlabel.h>
+#include <qbuttongroup.h>
 
 // ----------------------------------------------------------------------------
 // KDE Headers
@@ -79,9 +80,18 @@ KImportDlg::KImportDlg(MyMoneyAccount *account, QWidget *parent)
 
   int nErrorReturn = 0;
 
-  if (m_mymoneyaccount->validateQIFDateFormat("", m_qstringLastFormat.latin1(), nErrorReturn, false))
-    m_qcomboboxDateFormat->setEditText(m_qstringLastFormat);
-  else {
+  if (m_mymoneyaccount->validateQIFDateFormat("", m_qstringLastFormat.latin1(), nErrorReturn, false)) {
+// setEditText() does not work for me. Don't know why. The doc says, it has been
+// removed in qt 2.0
+//    m_qcomboboxDateFormat->setEditText(m_qstringLastFormat);
+    for(int i=0; i < m_qcomboboxDateFormat->count(); ++i) {
+      if(m_qcomboboxDateFormat->text(i) == m_qstringLastFormat) {
+        m_qcomboboxDateFormat->setCurrentItem(i);
+        break;
+      }
+    }
+    slotDateFormatChanged(m_qstringLastFormat);
+  } else {
     QString qstringError(i18n("QIF date format invalid: "));
     qstringError += m_mymoneyaccount->getQIFDateFormatErrorString(nErrorReturn);
     KMessageBox::error(this, qstringError, i18n("Import QIF"));
@@ -96,6 +106,9 @@ KImportDlg::KImportDlg(MyMoneyAccount *account, QWidget *parent)
   connect(m_qbuttonBrowse, SIGNAL( clicked() ), this, SLOT( slotBrowse() ) );
   connect(m_qbuttonOk, SIGNAL(clicked()), this, SLOT(slotOkClicked()));
   connect(m_qbuttonCancel, SIGNAL(clicked()), this, SLOT(reject()));
+
+	connect(m_qcomboboxDateFormat, SIGNAL( activated(const QString &)), this,
+		SLOT(slotDateFormatChanged(const QString&)));
 }
 
 KImportDlg::~KImportDlg()
@@ -108,6 +121,17 @@ void KImportDlg::slotBrowse()
 {
   QString qstring(KFileDialog::getOpenFileName(QString::null,"*.QIF"));
   m_qlineeditFile->setText(qstring);
+}
+
+void KImportDlg::slotDateFormatChanged(const QString& selectedDateFormat)
+{
+	// activate the apostrophe handling buttons when a
+	// slashed two digit year format is selected
+	if(selectedDateFormat.find("/%yy") != -1
+	&& selectedDateFormat.find("%yyyy") == -1) {
+		m_qApostropheGroup->setEnabled(true);
+	} else
+		m_qApostropheGroup->setDisabled(true);
 }
 
 /** Main work horse of the dialog. */
@@ -140,8 +164,10 @@ void KImportDlg::slotOkClicked()
     int nTransCount = 0;
     int nCatCount = 0;
 
-    if (!m_mymoneyaccount->readQIFFile(m_qlineeditFile->text(), m_qcomboboxDateFormat->currentText(),
-      nTransCount, nCatCount)) {
+    if (!m_mymoneyaccount->readQIFFile(m_qlineeditFile->text(),
+                                       m_qcomboboxDateFormat->currentText(),
+                                       m_qApostropheGroup->id(m_qApostropheGroup->selected()),
+                                       nTransCount, nCatCount)) {
         KMessageBox::error(this, i18n("Import from QIF file failed."));
     } else {
       QString qstringPrompt = i18n("Import finished successfully.\nPlease remember, all categories that already exist have not been imported\n\n");
@@ -154,7 +180,8 @@ void KImportDlg::slotOkClicked()
     }
   }
 
-//  accept();
+  // leave dialog directly
+  accept();
 }
 
 void KImportDlg::readConfig(void)
@@ -170,6 +197,9 @@ void KImportDlg::readConfig(void)
     m_qcomboboxDateFormat->setEnabled(false);
     m_qbuttonOk->setEnabled(false);
   }
+	int rc = kconfig->readEntry("KImportDlg_LastApostrophe").toUShort()-1;
+	if(rc >= 0 && rc <= 2)
+		m_qApostropheGroup->setButton(rc);
 }
 
 void KImportDlg::writeConfig(void)
@@ -178,6 +208,8 @@ void KImportDlg::writeConfig(void)
   kconfig->setGroup("Last Use Settings");
   kconfig->writeEntry("KImportDlg_LastFile", m_qlineeditFile->text());
   kconfig->writeEntry("KImportDlg_LastFormat", m_qcomboboxDateFormat->currentText());
+	kconfig->writeEntry("KImportDlg_LastApostrophe",
+											m_qApostropheGroup->id(m_qApostropheGroup->selected())+1);
   kconfig->sync();
 }
 

@@ -43,7 +43,7 @@
   * @see MyMoneyAccount
   *
   * @author Felix Rodriguez, Michael Edwardes 2000-2001
-  * $Id: kimportdlg.h,v 1.4 2001/08/23 17:07:16 mte Exp $
+  * $Id: kimportdlg.h,v 1.5 2001/09/30 08:42:37 ipwizard Exp $
   *
   * @short A class to import a qif file to an account.
 **/
@@ -62,6 +62,9 @@ private:
 protected slots:
   /** Performs the import process */
   void slotOkClicked();
+
+	/** Performs de-/activation of apostrophe handling */
+	void slotDateFormatChanged(const QString& selectedDateFormat);
 
   /** Called to let the user browse for a QIF file to import from. */
   void slotBrowse();
