@@ -1,6 +1,9 @@
 2004-01-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * added info about mandir setting in README
   * added man page found in MEPIS distro
+  * added new application icon
+  * added creation of symbolic link kmymoney -> kmymoney2 in $(bindir)
+    during 'make install'
 
 2004-01-05 Kevin Tambascio <ktambascio@users.sourceforge.net>
   * added support for the progress bar during read operations.
