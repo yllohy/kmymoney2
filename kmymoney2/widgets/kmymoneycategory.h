@@ -23,8 +23,19 @@
 #ifndef KMYMONEYCATEGORY_H
 #define KMYMONEYCATEGORY_H
 
+// ----------------------------------------------------------------------------
+// QT Includes
+
 #include <qwidget.h>
+
+// ----------------------------------------------------------------------------
+// KDE Includes
+
 #include <klineedit.h>
+
+// ----------------------------------------------------------------------------
+// Project Includes
+
 
 #include "../mymoney/mymoneyaccount.h"
 /**
@@ -76,8 +87,11 @@ signals:
     */
   void signalEsc();
 
+  void signalFocusIn(void);
+
 protected:
   void focusOutEvent(QFocusEvent *ev);
+  void focusInEvent(QFocusEvent *ev);
 
 public slots:
   void loadText(const QString& text);

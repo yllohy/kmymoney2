@@ -20,6 +20,15 @@
  *                                                                         *
  ***************************************************************************/
 
+// ----------------------------------------------------------------------------
+// QT Includes
+
+// ----------------------------------------------------------------------------
+// KDE Includes
+
+// ----------------------------------------------------------------------------
+// Project Includes
+
 #include "kmymoneycategory.h"
 #include "../mymoney/mymoneyfile.h"
 
@@ -115,6 +124,12 @@ void kMyMoneyCategory::loadList(const categoryTypeE type)
   // construct the list of completion items
   compObj()->setItems(strList);
   compObj()->setIgnoreCase(true);
+}
+
+void kMyMoneyCategory::focusInEvent(QFocusEvent *ev)
+{
+  KLineEdit::focusInEvent(ev);
+  emit signalFocusIn();
 }
 
 void kMyMoneyCategory::focusOutEvent(QFocusEvent *ev)
