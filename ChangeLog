@@ -1,3 +1,6 @@
+2004-12-17 Ace Jones <acejones@users.sourceforge.net>
+  * Maintain backward compatibility with Qt designer 3.2 
+
 2004-12-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added some changes for KDE 3.0 backward compatibility
   * Added patch supplied by Leonardo Skorianez to load one's own data
