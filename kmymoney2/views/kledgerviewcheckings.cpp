@@ -53,6 +53,7 @@
 #include "../dialogs/knewaccountdlg.h"
 #include "../mymoney/mymoneyfile.h"
 #include "../views/kmymoneyview.h"
+#include "../kapptest.h"
 
 #define PAYEE_ROW       0
 #define CATEGORY_ROW    1
@@ -336,7 +337,7 @@ void KLedgerViewCheckings::slotRegisterDoubleClicked(int /* row */,
 
 void KLedgerViewCheckings::createRegister(void)
 {
-  m_register = new kMyMoneyRegisterCheckings(this, "Checkings");
+  m_register = new kMyMoneyRegisterCheckings(this, KAppTest::widgetName(this, "kMyMoneyRegisterCheckings"));
   m_register->setParent(this);
 
 #define LOADACTION(a) m_register->setAction(QCString(a), action2str(a))
@@ -420,7 +421,7 @@ void KLedgerViewCheckings::createForm(void)
   int h = QMAX(dateInput.sizeHint().height(), splitButton.sizeHint().height());
   h = QMAX(h, category.sizeHint().height())-8;
 
-  m_form = new kMyMoneyTransactionForm(this, 0, 0, 3, 5, h);
+  m_form = new kMyMoneyTransactionForm(this, KAppTest::widgetName(this, "kMyMoneyTransactionForm"), 0, 3, 5, h);
   m_tabCheck = new QTab(action2str(MyMoneySplit::ActionCheck, true));
   m_tabDeposit = new QTab(action2str(MyMoneySplit::ActionDeposit, true));
   m_tabTransfer = new QTab(action2str(MyMoneySplit::ActionTransfer, true));
@@ -481,7 +482,7 @@ void KLedgerViewCheckings::createInfoStack(void)
 
   KIconLoader* il = KGlobal::iconLoader();
 
-  m_detailsButton = new KPushButton(frame, "detailsButton" );
+  m_detailsButton = new KPushButton(frame, KAppTest::widgetName(this, "KPushButton/Details") );
   KGuiItem detailsButtenItem( i18n("&Account Details"),
                     QIconSet(il->loadIcon("viewmag", KIcon::Small, KIcon::SizeSmall)),
                     i18n("Open the account dialog"),
@@ -489,7 +490,7 @@ void KLedgerViewCheckings::createInfoStack(void)
   m_detailsButton->setGuiItem(detailsButtenItem);
   buttonLayout->addWidget(m_detailsButton);
 
-  m_reconcileButton = new KPushButton(frame, "reconcileButton");
+  m_reconcileButton = new KPushButton(frame, KAppTest::widgetName(this, "KPushButton/Reconcile"));
   KGuiItem reconcileButtenItem( i18n("&Reconcile ..."),
                     QIconSet(il->loadIcon("reconcile", KIcon::Small, KIcon::SizeSmall)),
                     i18n("Start the account reconciliation"),
@@ -851,7 +852,7 @@ void KLedgerViewCheckings::fillForm(void)
 void KLedgerViewCheckings::createEditWidgets(void)
 {
   if(!m_editPayee) {
-    m_editPayee = new kMyMoneyPayee(0, "editPayee");
+    m_editPayee = new kMyMoneyPayee(0, KAppTest::widgetName(this, "kMyMoneyPayee"));
     connect(m_editPayee, SIGNAL(newPayee(const QString&)), this, SLOT(slotNewPayee(const QString&)));
     connect(m_editPayee, SIGNAL(payeeChanged(const QString&)), this, SLOT(slotPayeeChanged(const QString&)));
     connect(m_editPayee, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
@@ -859,60 +860,60 @@ void KLedgerViewCheckings::createEditWidgets(void)
   }
 
   if(!m_editCategory) {
-    m_editCategory = new kMyMoneyCategory(0, "editCategory");
+    m_editCategory = new kMyMoneyCategory(0, KAppTest::widgetName(this, "kMyMoneyCategory"));
     connect(m_editCategory, SIGNAL(categoryChanged(const QCString&)), this, SLOT(slotCategoryChanged(const QCString&)));
     connect(m_editCategory, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
     connect(m_editCategory, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   }
   if(!m_editMemo) {
-      m_editMemo = new kMyMoneyLineEdit(0, "editMemo", AlignLeft|AlignVCenter);
+      m_editMemo = new kMyMoneyLineEdit(0, KAppTest::widgetName(this, "kMyMoneyLineEdit/Memo"), AlignLeft|AlignVCenter);
       connect(m_editMemo, SIGNAL(lineChanged(const QString&)), this, SLOT(slotMemoChanged(const QString&)));
       connect(m_editMemo, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
       connect(m_editMemo, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   }
 
   if(!m_editAmount) {
-    m_editAmount = new kMyMoneyEdit(0, "editAmount");
+    m_editAmount = new kMyMoneyEdit(0, KAppTest::widgetName(this, "kMyMoneyEdit/Amount"));
     connect(m_editAmount, SIGNAL(valueChanged(const QString&)), this, SLOT(slotAmountChanged(const QString&)));
     connect(m_editAmount, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
     connect(m_editAmount, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   }
 
   if(!m_editDate) {
-    m_editDate = new kMyMoneyDateInput(0, "editDate");
+    m_editDate = new kMyMoneyDateInput(0, KAppTest::widgetName(this, "kMyMoneyDateInput"));
     connect(m_editDate, SIGNAL(dateChanged(const QDate&)), this, SLOT(slotDateChanged(const QDate&)));
     connect(m_editDate, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
     connect(m_editDate, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   }
 
   if(!m_editNr) {
-    m_editNr = new kMyMoneyLineEdit(0, "editNr");
+    m_editNr = new kMyMoneyLineEdit(0, KAppTest::widgetName(this, "kMyMoneyLineEdit/Nr"));
     connect(m_editNr, SIGNAL(lineChanged(const QString&)), this, SLOT(slotNrChanged(const QString&)));
     connect(m_editNr, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
     connect(m_editNr, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   }
 
   if(!m_editSplit) {
-    m_editSplit = new KPushButton(i18n("Split"), 0, "editSplit");
+    m_editSplit = new KPushButton(i18n("Split"), 0, KAppTest::widgetName(this, "KPushButton/Split"));
     connect(m_editSplit, SIGNAL(clicked()), this, SLOT(slotOpenSplitDialog()));
   }
 
   if(!m_editPayment) {
-    m_editPayment = new kMyMoneyEdit(0, "editPayment");
+    m_editPayment = new kMyMoneyEdit(0, KAppTest::widgetName(this, "kMyMoneyLineEdit/Payment"));
     connect(m_editPayment, SIGNAL(valueChanged(const QString&)), this, SLOT(slotPaymentChanged(const QString&)));
     connect(m_editPayment, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
     connect(m_editPayment, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   }
 
   if(!m_editDeposit) {
-    m_editDeposit = new kMyMoneyEdit(0, "editDeposit");
+    m_editDeposit = new kMyMoneyEdit(0, KAppTest::widgetName(this, "kMyMoneyLineEdit/Deposit"));
     connect(m_editDeposit, SIGNAL(valueChanged(const QString&)), this, SLOT(slotDepositChanged(const QString&)));
     connect(m_editDeposit, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
     connect(m_editDeposit, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   }
 
   if(!m_editType) {
-    m_editType = new kMyMoneyCombo(0, "editType");
+    m_editType = new kMyMoneyCombo(0, KAppTest::widgetName(this, "kMyMoneyCombo"));
     m_editType->setFocusPolicy(QWidget::StrongFocus);
     connect(m_editType, SIGNAL(selectionChanged(int)), this, SLOT(slotActionSelected(int)));
     connect(m_editType, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));

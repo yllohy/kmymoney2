@@ -13,6 +13,17 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+// ----------------------------------------------------------------------------
+// QT Includes
+
+#include <qpixmap.h>
+#include <qlineedit.h>
+#include <qlabel.h>
+
+// ----------------------------------------------------------------------------
+// KDE Headers
+
 #include <kglobal.h>
 #include <klocale.h>
 #if QT_VERSION > 300
@@ -22,13 +33,13 @@
 #endif
 #include <kstdguiitem.h>
 #include <kpushbutton.h>
-
-#include <qpixmap.h>
 #include <kmessagebox.h>
-#include <qlineedit.h>
-#include <qlabel.h>
+
+// ----------------------------------------------------------------------------
+// Project Includes
 
 #include "knewfiledlg.h"
+#include "../kapptest.h"
 
 KNewFileDlg::KNewFileDlg(QWidget *parent, const char *name, const char *title)
   : KNewFileDlgDecl(parent,name,true)
@@ -40,13 +51,16 @@ KNewFileDlg::KNewFileDlg(QWidget *parent, const char *name, const char *title)
   QPixmap pm(filename);
   m_qpixmaplabel->setPixmap(pm);
 
-	if (title)
-	  setCaption(title);
+  okBtn->setName(KAppTest::widgetName(this, "KPushButton/Ok"));
+  qDebug("Name is %s", okBtn->name());
 
-	userNameEdit->setFocus();
+  if (title)
+    setCaption(title);
 
-	connect(cancelBtn, SIGNAL(clicked()), this, SLOT(reject()));
-	connect(okBtn, SIGNAL(clicked()), this, SLOT(okClicked()));
+  userNameEdit->setFocus();
+
+  connect(cancelBtn, SIGNAL(clicked()), this, SLOT(reject()));
+  connect(okBtn, SIGNAL(clicked()), this, SLOT(okClicked()));
 }
 
 KNewFileDlg::KNewFileDlg(QString userName, QString userStreet,
@@ -68,13 +82,15 @@ KNewFileDlg::KNewFileDlg(QString userName, QString userStreet,
   telephoneEdit->setText(userTelephone);
   emailEdit->setText(userEmail);
 
-	if (title)
-	  setCaption(title);
+  okBtn->setName(KAppTest::widgetName(this, "KPushButton/Ok"));
+  qDebug("Name is %s", okBtn->name());
+  if (title)
+    setCaption(title);
 
-	userNameEdit->setFocus();
+  userNameEdit->setFocus();
 
-	connect(cancelBtn, SIGNAL(clicked()), this, SLOT(reject()));
-	connect(okBtn, SIGNAL(clicked()), this, SLOT(okClicked()));
+  connect(cancelBtn, SIGNAL(clicked()), this, SLOT(reject()));
+  connect(okBtn, SIGNAL(clicked()), this, SLOT(okClicked()));
 }
 
 KNewFileDlg::~KNewFileDlg(){

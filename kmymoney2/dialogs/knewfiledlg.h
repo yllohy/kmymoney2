@@ -17,16 +17,23 @@
 #ifndef KNEWFILEDLG_H
 #define KNEWFILEDLG_H
 
+// ----------------------------------------------------------------------------
+// QT Includes
 #include <qdialog.h>
+
+// ----------------------------------------------------------------------------
+// KDE Includes
 #include <klocale.h>
 
+// ----------------------------------------------------------------------------
+// Project Includes
 #include "knewfiledlgdecl.h"
 
 // This dialog lets the user create/edit a file.
 // Use the second constructor to edit a file.
 class KNewFileDlg : public KNewFileDlgDecl  {
    Q_OBJECT
-public: 
+public:
   KNewFileDlg(QWidget *parent=0, const char *name=0, const char *title=0);
   KNewFileDlg(QString userName, QString userStreet,
     QString userTown, QString userCounty, QString userPostcode, QString userTelephone,
