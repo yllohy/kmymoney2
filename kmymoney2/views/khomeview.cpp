@@ -36,11 +36,13 @@
 #endif
 
 #include <khtmlview.h>
+#include <kconfig.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
 #include "khomeview.h"
 #include "../mymoney/mymoneyfile.h"
+#include "../kmymoneyutils.h"
 
 #define VIEW_LEDGER     "ledger"
 #define VIEW_SCHEDULE   "schedule"
@@ -78,6 +80,13 @@ KHomeView::~KHomeView()
 
 void KHomeView::show()
 {
+  refreshView();
+  emit signalViewActivated();
+  QWidget::show();
+}
+
+void KHomeView::refreshView(void)
+{
   if(MyMoneyFile::instance()->accountList().count() == 0) {
     m_part->openURL(m_filename);
   } else {
@@ -89,18 +98,43 @@ void KHomeView::show()
     m_part->begin();
     m_part->write(header);
 
-    showPayments();
+    KConfig *kconfig = KGlobal::config();
+    kconfig->setGroup("Homepage Options");
+    QStringList settings = kconfig->readListEntry("Itemlist");
+    KMyMoneyUtils::addDefaultHomePageItems(settings);
     
-    m_part->write("<div class=\"gap\">&nbsp;</div>\n");
+    QStringList::ConstIterator it;
 
-    showAccounts();
+    for(it = settings.begin(); it != settings.end(); ++it) {
+      int option = (*it).toInt();
+      if(option > 0) {
+        switch(option) {
+          case 1:         // payments
+            showPayments();
+            break;
+            
+          case 2:         // preferred accounts
+            showAccounts(Preferred, i18n("Preferred Accounts"));
+            break;
+            
+          case 3:         // payment accounts
+            // Check if preferred accounts are shown separately
+            if(settings.find("2") == settings.end()) {
+              showAccounts(static_cast<paymentTypeE> (Payment | Preferred),
+                           i18n("Payment Accounts"));
+            } else {
+              showAccounts(Payment, i18n("Payment Accounts"));
+            }
+            break;
+        }
+        m_part->write("<div class=\"gap\">&nbsp;</div>\n");
+      }
+    }
 
     m_part->write(footer);
     m_part->end();
-  
+
   }
-  emit signalViewActivated();
-  QWidget::show();
 }
 
 void KHomeView::showPayments(void)
@@ -189,26 +223,78 @@ void KHomeView::showPaymentEntry(const MyMoneySchedule& sched)
   }  
 }
 
-void KHomeView::showAccounts(void)
+void KHomeView::showAccounts(KHomeView::paymentTypeE type, const QString& header)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
   QValueList<MyMoneyAccount> accounts;
   QValueList<MyMoneyAccount>::Iterator it;
+  QValueList<MyMoneyAccount>::Iterator prevIt;
 
-  // get list of the preferred accounts
+  // get list of all accounts
   accounts = file->accountList();
   for(it = accounts.begin(); it != accounts.end();) {
-    if((*it).value("PreferredAccount") != "Yes") {
-      it = accounts.remove(it);
-      continue;
+    prevIt = it;
+    switch((*it).accountType()) {
+      case MyMoneyAccount::Expense:
+      case MyMoneyAccount::Income:
+        // never show a category account
+        // Note: This might be different in a future version when
+        //       the homepage also shows category based information
+        it = accounts.remove(it);
+        break;
+
+      // Asset and Liability accounts are only shown if they
+      // have the preferred flag set
+      case MyMoneyAccount::Asset:
+      case MyMoneyAccount::Liability:
+        // if preferred accounts are requested, then keep in list
+        if((*it).value("PreferredAccount") != "Yes"
+        || (type & Preferred) == 0) {
+          it = accounts.remove(it);
+        }
+        break;
+        
+      // Check payment accounts. If payment and preferred is selected,
+      // then always show them. If only payment is selected, then
+      // show only if preferred flag is not set.
+      case MyMoneyAccount::Checkings:
+      case MyMoneyAccount::Savings:
+      case MyMoneyAccount::Cash:
+      case MyMoneyAccount::CreditCard:
+        switch(type & (Payment | Preferred)) {
+          case Payment:
+            if((*it).value("PreferredAccount") == "Yes")
+              it = accounts.remove(it);
+            break;
+
+          case Preferred:
+            if((*it).value("PreferredAccount") != "Yes")
+              it = accounts.remove(it);
+            break;
+                      
+          case Payment | Preferred:
+            break;
+            
+          default:
+            it = accounts.remove(it);
+            break;
+        }
+        break;
+        
+      // filter all accounts that are not used on homepage views
+      default:
+        it = accounts.remove(it);
+        break;
     }
-    ++it;
+    // if we still point to the same account, we better move on ;-)
+    if(prevIt == it)
+      ++it;
   }
 
   if(accounts.count() > 0) {
     QString tmp;
     int i = 0;
-    tmp = "<div class=\"itemheader\">" + i18n("Preferred Accounts") +
+    tmp = "<div class=\"itemheader\">" + header +
           "</div>\n<div class=\"gap\">&nbsp;</div>\n";
 
     m_part->write(tmp);

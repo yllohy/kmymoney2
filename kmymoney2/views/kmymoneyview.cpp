@@ -507,12 +507,7 @@ void KMyMoneyView::closeFile(void)
   m_fileOpen = false;
 
   // update all views
-  m_categoriesView->refreshView();
-  accountsView->refreshView();
-  m_ledgerView->reloadView();
-  m_payeesView->refreshView();
-  m_scheduledView->refreshView();
-
+  slotRefreshViews();
 }
 
 bool KMyMoneyView::readFile(const KURL& url)
@@ -627,12 +622,7 @@ bool KMyMoneyView::readFile(const KURL& url)
   }
 
   // update all views
-  m_categoriesView->refreshView();
-  accountsView->refreshView();
-  m_ledgerView->reloadView();
-  m_payeesView->refreshView();
-  m_scheduledView->refreshView();
-
+  slotRefreshViews();
   return true;
 }
 
@@ -1343,6 +1333,7 @@ void KMyMoneyView::slotRefreshViews()
   m_ledgerView->refreshView();
   m_payeesView->refreshView();
   m_scheduledView->refreshView();
+  m_homeView->refreshView();
 }
 
 void KMyMoneyView::slotAccountFind()

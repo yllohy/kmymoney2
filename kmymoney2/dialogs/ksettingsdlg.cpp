@@ -591,7 +591,9 @@ void KSettingsDlg::configRead()
 
   kconfig->setGroup("Homepage Options");
   m_tempHomePageItems = kconfig->readListEntry("Itemlist");
-  fillHomePageItems(m_tempHomePageItems);
+  QStringList list = m_tempHomePageItems;
+  KMyMoneyUtils::addDefaultHomePageItems(list);
+  fillHomePageItems(list);
 }
 
 /** Write out all the settings to the global KConfig object.
@@ -739,7 +741,9 @@ void KSettingsDlg::slotUser1()
   m_qradiobuttonStartLast->setChecked(m_bTempStartPage);
   m_qradiobuttonStartHome->setChecked(!m_bTempStartPage);
   
-  fillHomePageItems(m_tempHomePageItems);
+  QStringList list = m_tempHomePageItems;
+  KMyMoneyUtils::addDefaultHomePageItems(list);
+  fillHomePageItems(list);
 }
 
 void KSettingsDlg::slotNrFieldToggled(bool state)
@@ -769,7 +773,6 @@ const QStringList KSettingsDlg::homePageItems(void) const
 void KSettingsDlg::fillHomePageItems(QStringList& list)
 {
   QStringList::ConstIterator it;
-  int highest = 0;
   int w = 0;
   m_homePageList->clear();
   QCheckListItem *sel = 0;
@@ -785,7 +788,6 @@ void KSettingsDlg::fillHomePageItems(QStringList& list)
     int idx = (*it).toInt();
     bool enabled = idx > 0;
     if(!enabled) idx = -idx;
-    if(idx > highest) highest = idx;
     QCheckListItem* item = new QCheckListItem(m_homePageList, KMyMoneyUtils::homePageItemToString(idx), QCheckListItem::CheckBox);
     if(last)
       item->moveItem(last);
@@ -800,6 +802,7 @@ void KSettingsDlg::fillHomePageItems(QStringList& list)
     last = item;
   }
 
+#if 0  
   for(int idx = highest+1; idx <= KMyMoneyUtils::maxHomePageItems; ++idx) {
     list.append(QString::number(-idx));
     QCheckListItem* item = new QCheckListItem(m_homePageList, KMyMoneyUtils::homePageItemToString(idx), QCheckListItem::CheckBox);
@@ -815,7 +818,8 @@ void KSettingsDlg::fillHomePageItems(QStringList& list)
       sel = item;
     last = item;
   }
-  
+#endif
+
   if(sel) {
     m_homePageList->setSelected(sel, true);
     slotSelectHomePageItem(sel);

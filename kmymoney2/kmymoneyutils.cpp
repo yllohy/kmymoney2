@@ -326,3 +326,13 @@ const int KMyMoneyUtils::stringToHomePageItem(const QString& txt)
     idx = 3;
   return idx;
 }
+
+const void KMyMoneyUtils::addDefaultHomePageItems(QStringList& list)
+{
+  for(int i = 1; i <= KMyMoneyUtils::maxHomePageItems; ++i) {
+    if(list.find(QString::number(i)) != list.end()
+    || list.find(QString::number(-i)) != list.end())
+      continue;
+    list.append(QString::number(i));
+  }
+}

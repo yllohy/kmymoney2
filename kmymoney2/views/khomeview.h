@@ -42,7 +42,7 @@ class QVBoxLayout;
   * quicken and m$-money.
   *
   * @author Michael Edwardes
-  * $Id: khomeview.h,v 1.4 2003/07/29 19:08:09 ipwizard Exp $
+  * $Id: khomeview.h,v 1.5 2003/08/03 07:34:21 ipwizard Exp $
   *
   * @short A view containing the home page for kmymoney2.
 **/
@@ -88,10 +88,20 @@ public:
   **/
   void show();
 
+  void refreshView(void);
+  
 protected:
+  /**
+    * Definition of bitmap used as argument for showAccounts().
+    */
+  enum paymentTypeE {
+    Preferred = 1,          ///< show preferred accounts
+    Payment = 2             ///< show payment accounts
+  };
+  
   void showPayments(void);
   void showPaymentEntry(const MyMoneySchedule&);
-  void showAccounts(void);
+  void showAccounts(paymentTypeE type, const QString& hdr);
   void showAccountEntry(const MyMoneyAccount&);
   const QString link(const QString& view, const QString& query) const;
   const QString linkend(void) const;
