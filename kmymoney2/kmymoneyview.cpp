@@ -46,31 +46,22 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
 //  : KTabCtl(parent,name)
   : QVBox(parent, name)
 {
-  m_mainView = new KMainView(this);
-//  m_mainView->show();
+  banksView = new KBanksView(this, "banksView");
+  transactionView = new KTransactionView(this, "transactionsView");
 
-//  m_scheduledView = new KScheduleView(this);  // Future
+  banksView->hide();
+  transactionView->hide();
 
-/*  Future
-  addTab(m_mainView, i18n("Accounts"));
-  addTab(m_scheduledView, i18n("Bills & Deposits"));
-  QLabel *reportsLabel = new QLabel(i18n("Sorry, Reports not available yet"), this);
-  addTab(reportsLabel, i18n("Reports"));
-  QLabel *pluginsLabel = new QLabel(i18n("Sorry, Plugins not yet available"), this);
-  addTab(pluginsLabel, i18n("Plugins"));
-*/
-//  connect(m_mainView, SIGNAL(transactionListChanged()), this, SLOT(slotTransactionListChanged()));
+  connect(banksView, SIGNAL(accountRightMouseClick(const MyMoneyAccount, bool)), this, SLOT(slotAccountRightMouse(const MyMoneyAccount, bool)));
+  connect(banksView, SIGNAL(accountDoubleClick()), this, SLOT(slotAccountDoubleClick()));
 
-  connect(m_mainView, SIGNAL(accountRightMouseClick(const MyMoneyAccount, bool)), this, SLOT(slotAccountRightMouse(const MyMoneyAccount, bool)));
-  connect(m_mainView, SIGNAL(accountDoubleClick()), this, SLOT(slotAccountDoubleClick()));
+  connect(banksView, SIGNAL(bankRightMouseClick(const MyMoneyBank, bool)), this, SLOT(slotBankRightMouse(const MyMoneyBank, bool)));
+  connect(banksView, SIGNAL(bankSelected()), this, SLOT(slotBankSelected()));
+  connect(banksView, SIGNAL(accountSelected()), this, SLOT(slotAccountSelected()));
 
-  connect(m_mainView, SIGNAL(bankRightMouseClick(const MyMoneyBank, bool)), this, SLOT(slotBankRightMouse(const MyMoneyBank, bool)));
-  connect(m_mainView, SIGNAL(bankSelected()), this, SLOT(slotBankSelected()));
-  connect(m_mainView, SIGNAL(accountSelected()), this, SLOT(slotAccountSelected()));
-
-  connect(m_mainView->getTransactionView(), SIGNAL(viewTypeSearchActivated()),
+  connect(transactionView, SIGNAL(viewTypeSearchActivated()),
     this, SLOT(accountFind()));
-  connect(m_mainView->getTransactionView(), SIGNAL(viewTypeNormalActivated()),
+  connect(transactionView, SIGNAL(viewTypeNormalActivated()),
     this, SLOT(viewTransactionList()));
 
   m_inReconciliation=false;
@@ -101,13 +92,6 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
 KMyMoneyView::~KMyMoneyView()
 {
 }
-/*
-void KMyMoneyView::slotTransactionListChanged()
-{
-	//if (m_inReconciliation)
-	  //reconcileDlg->updateData();
-}
-*/
 
 void KMyMoneyView::slotAccountRightMouse(const MyMoneyAccount, bool/* inList*/)
 {
@@ -118,11 +102,6 @@ void KMyMoneyView::slotAccountDoubleClick(void)
 {
   viewTransactionList();
 }
-
-/*void KMyMoneyView::slotAccountDoubleClick(const MyMoneyAccount)
-{
-  viewTransactionList();
-} */
 
 void KMyMoneyView::slotBankRightMouse(const MyMoneyBank, bool inList)
 {
@@ -145,7 +124,7 @@ void KMyMoneyView::slotBankEdit()
   }
 
   bool bankSuccess=false;
-  MyMoneyBank bank = m_mainView->currentBank(bankSuccess);
+  MyMoneyBank bank = banksView->currentBank(bankSuccess);
   if (bankSuccess) {
     KNewBankDlg dlg(bank.name(),
       bank.sortCode(),
@@ -166,7 +145,7 @@ void KMyMoneyView::slotBankEdit()
         bankWrite->setTelephone(dlg.m_telephone);
         bankWrite->setManager(dlg.m_managerName);
         m_file.setDirty(true);
-        m_mainView->refreshBankView(m_file);
+        banksView->refresh(m_file);
       } else {
         KMessageBox::information(this, i18n("Unable to grab a pointer to a bank"));
       }
@@ -178,7 +157,7 @@ void KMyMoneyView::slotBankEdit()
 void KMyMoneyView::slotBankDelete()
 {
   bool bankSuccess=false;
-  MyMoneyBank bank = m_mainView->currentBank(bankSuccess);
+  MyMoneyBank bank = banksView->currentBank(bankSuccess);
   if (bankSuccess) {
     QString msg = i18n("Delete this bank: ");
     msg += bank.name();
@@ -190,7 +169,7 @@ void KMyMoneyView::slotBankDelete()
     if (m_file.bankCount()<=0)  // If no more banks exist
       emit bankOperations(false);
 
-    m_mainView->refreshBankView(m_file);
+    banksView->refresh(m_file);
   } else
     qDebug("WARNING: unable to get currfent bank");
 }
@@ -206,12 +185,12 @@ void KMyMoneyView::slotAccountEdit()
   MyMoneyBank *pBank;
   MyMoneyAccount *pAccount;
 
-	pBank = m_file.bank(m_mainView->currentBank(bankSuccess));
+	pBank = m_file.bank(banksView->currentBank(bankSuccess));
 	if (!pBank || !bankSuccess) {
     qDebug("KMyMoneyView::slotAccountEdit: Unable to get the current bank");
     return;
   }
-  pAccount = pBank->account(m_mainView->currentAccount(accountSuccess));
+  pAccount = pBank->account(banksView->currentAccount(accountSuccess));
   if (!pAccount || !accountSuccess) {
     qDebug("KMyMoneyView::slotAccountEdit: Unable to grab the current account");
     return;
@@ -239,7 +218,7 @@ void KMyMoneyView::slotAccountEdit()
 
   m_file.setDirty(true);
 
-  m_mainView->refreshBankView(m_file);
+  banksView->refresh(m_file);
 }
 
 
@@ -254,12 +233,12 @@ void KMyMoneyView::slotAccountDelete()
   MyMoneyBank *pBank;
   MyMoneyAccount *pAccount;
 
-	pBank = m_file.bank(m_mainView->currentBank(bankSuccess));
+	pBank = m_file.bank(banksView->currentBank(bankSuccess));
 	if (!pBank || !bankSuccess) {
     qDebug("KMyMoneyView::slotAccountDelete: Unable to get the current bank");
     return;
   }
-  pAccount = pBank->account(m_mainView->currentAccount(accountSuccess));
+  pAccount = pBank->account(banksView->currentAccount(accountSuccess));
   if (!pAccount || !accountSuccess) {
     qDebug("KMyMoneyView::slotAccountDelete: Unable to grab the current account");
     return;
@@ -275,7 +254,7 @@ void KMyMoneyView::slotAccountDelete()
   if (pBank->accountCount()<=0) // If no more accounts exist
     emit accountOperations(false);
 
-  m_mainView->refreshBankView(m_file);
+  banksView->refresh(m_file);
   m_file.setDirty(true);
 }
 
@@ -290,7 +269,8 @@ void KMyMoneyView::closeFile(void)
     m_file.resetAllData();  // Make sure all memory is released
   }
 
-  m_mainView->clear();
+  banksView->clear();
+  transactionView->clear();
   emit fileOperations(false);
 }
 
@@ -331,8 +311,8 @@ bool KMyMoneyView::readFile(QString filename)
     return false;
   }
   else {
-    m_mainView->viewBankList();
-    m_mainView->refreshBankView(m_file);
+    viewBankList();
+    banksView->refresh(m_file);
     emit bankOperations(true);
     m_file.init();
   }
@@ -374,12 +354,12 @@ void KMyMoneyView::slotBankNew(void)
 
   KNewBankDlg dlg(this);
   if (dlg.exec()) {
-    m_mainView->clear();
+//    clear();
 
     MyMoneyBank *mymoneybank = m_file.addBank(dlg.m_name, dlg.m_sortCode, dlg.m_city, dlg.m_street, dlg.m_postcode, dlg.m_telephone, dlg.m_managerName);
     if (mymoneybank)
     {
-      m_mainView->refreshBankView(m_file);
+      banksView->refresh(m_file);
       viewBankList(NULL, mymoneybank);
       emit bankOperations(true);
     }
@@ -400,7 +380,7 @@ void KMyMoneyView::slotAccountNew(void)
   MyMoneyBank *pBank;
   MyMoneyAccount *pAccount;
 
-	pBank = m_file.bank(m_mainView->currentBank(bankSuccess));
+	pBank = m_file.bank(banksView->currentBank(bankSuccess));
 	if (!pBank || !bankSuccess) {
     qDebug("KMyMoneyView::slotAccountNew: Unable to get the current bank");
     return;
@@ -419,7 +399,7 @@ void KMyMoneyView::slotAccountNew(void)
                             money,
                             QDate(1923, 1, 1)
                             );
-    m_mainView->refreshBankView(m_file);
+    banksView->refresh(m_file);
 
     MyMoneyAccount accountTmp(pBank, dialog.accountNameText,
                           dialog.accountNoText,
@@ -456,12 +436,12 @@ void KMyMoneyView::slotAccountReconcile(void)
   MyMoneyBank *pBank;
   MyMoneyAccount *pAccount;
 
-  pBank = m_file.bank(m_mainView->currentBank(bankSuccess));
+  pBank = m_file.bank(banksView->currentBank(bankSuccess));
   if (!pBank || !bankSuccess) {
     qDebug("KMyMoneyView::slotAccountReconcile: Unable to get the current bank");
     return;
   }
-  pAccount = pBank->account(m_mainView->currentAccount(accountSuccess));
+  pAccount = pBank->account(banksView->currentAccount(accountSuccess));
   if (!pAccount || !accountSuccess) {
     qDebug("KMyMoneyView::slotAccountReconcile: Unable to grab the current account");
     return;
@@ -487,13 +467,13 @@ void KMyMoneyView::slotAccountReconcile(void)
     if (!m_reconcileInited) {
       reconcileDlg = new KReconcileDlg(dlg.previousBalance, dlg.endingBalance, dlg.endingDate, *pBank, pAccount, m_file, 0);
       connect(reconcileDlg, SIGNAL(reconcileFinished(bool)), this, SLOT(slotReconcileFinished(bool)));
-      connect(m_mainView->getTransactionView(),SIGNAL(transactionListChanged()),reconcileDlg,SLOT(slotTransactionChanged()));
+      connect(transactionView,SIGNAL(transactionListChanged()),reconcileDlg,SLOT(slotTransactionChanged()));
       reconcileDlg->exec();
       m_inReconciliation = true;
       m_reconcileInited=true;
     } else {
       reconcileDlg->resetData(dlg.previousBalance, dlg.endingBalance, dlg.endingDate, *pBank, pAccount, m_file);
-      connect(m_mainView->getTransactionView(),SIGNAL(transactionListChanged()),reconcileDlg,SLOT(slotTransactionChanged()));
+      connect(transactionView,SIGNAL(transactionListChanged()),reconcileDlg,SLOT(slotTransactionChanged()));
       reconcileDlg->exec();
       m_inReconciliation = true;
     }
@@ -507,15 +487,15 @@ void KMyMoneyView::slotAccountImportAscii(void)
     if (dlg.importExportType()=="QIF") {
       KImportDlg importDlg(getAccount(), this);
       if (importDlg.exec()) {
-        m_mainView->refreshTransactionView();
-        m_mainView->refreshBankView(m_file);
+        transactionView->refresh();
+        banksView->refresh(m_file);
       }
     }
     else {
       KCsvProgressDlg kcsvprogressdlg(0, getAccount(), this);
       if (kcsvprogressdlg.exec()) {
-        m_mainView->refreshTransactionView();
-        m_mainView->refreshBankView(m_file);
+        transactionView->refresh();
+        banksView->refresh(m_file);
       }
     }
   }
@@ -535,77 +515,6 @@ void KMyMoneyView::slotAccountExportAscii(void)
       kcsvprogressdlg.exec();
     }
   }
-}
-
-void KMyMoneyView::slotAccountImportQIF(void)
-{
-/*
-  bool bankSuccess=false, accountSuccess=false;
-  MyMoneyBank *pBank;
-  MyMoneyAccount *pAccount;
-
-	pBank = m_file.bank(m_mainView->currentBank(bankSuccess));
-	if (!pBank || !bankSuccess) {
-    qDebug("KMyMoneyView::slotAccountReconcile: Unable to get the current bank");
-    return;
-  }
-  pAccount = pBank->account(m_mainView->currentAccount(accountSuccess));
-  if (!pAccount || !accountSuccess) {
-    qDebug("KMyMoneyView::slotAccountReconcile: Unable to grab the current account");
-    return;
-  }
-
-  KImportDlg *importDlg = new KImportDlg();
-//  connect( importDlg->btnBrowse, SIGNAL( clicked() ), importDlg, SLOT( slotBrowse() ) );
-
-	int returncode = importDlg->exec();
-
-	if(returncode)
-	{
-		readQIFFile(importDlg->txtFileImport->text(),importDlg->comboDateFormat->currentText(),pAccount);
-    m_mainView->refreshTransactionView();
-	}
-
-	delete importDlg;
-*/
-}
-
-void KMyMoneyView::slotAccountExportQIF(void)
-{
-/*
-  bool bankSuccess=false, accountSuccess=false;
-  MyMoneyBank *pBank;
-  MyMoneyAccount *pAccount;
-
-	pBank = m_file.bank(m_mainView->currentBank(bankSuccess));
-	if (!pBank || !bankSuccess) {
-    qDebug("KMyMoneyView::slotAccountReconcile: Unable to get the current bank");
-    return;
-  }
-  pAccount = pBank->account(m_mainView->currentAccount(accountSuccess));
-  if (!pAccount || !accountSuccess) {
-    qDebug("KMyMoneyView::slotAccountReconcile: Unable to grab the current account");
-    return;
-  }
-
-  KExportDlg *exportDlg = new KExportDlg();
-
-	int returncode = exportDlg->exec();
-
-	if(returncode)
-	{
-		bool expCat, expAcct;
-
-    expAcct = exportDlg->cbxAccount->isChecked();
- 		expCat = exportDlg->cbxCategories->isChecked();
-		QDate startDate = exportDlg->dateStartDate->getQDate();
-		QDate endDate = exportDlg->dateEndDate->getQDate();
-		writeQIFFile(exportDlg->txtFileExport->text(), exportDlg->comboDateFormat->currentText(),
-								pAccount,expCat,expAcct,startDate,endDate);
-	}
-
-	delete exportDlg;
-*/
 }
 
 void KMyMoneyView::editCategories(void)
@@ -633,11 +542,11 @@ void KMyMoneyView::editPayees(void)
 void KMyMoneyView::slotReconcileFinished(bool success)
 {
   if (success) {
-    m_mainView->refreshTransactionView();
+    transactionView->refresh();
   }
 
   // Remember to disconnect.
-  disconnect(m_mainView->getTransactionView(),SIGNAL(transactionListChanged()),reconcileDlg,SLOT(slotTransactionChanged()));
+  disconnect(transactionView,SIGNAL(transactionListChanged()),reconcileDlg,SLOT(slotTransactionChanged()));
   reconcileDlg->hide();
   m_inReconciliation=false;
 }
@@ -818,12 +727,12 @@ void KMyMoneyView::viewUp(void)
   if (!m_file.isInitialised())
     return;
 
-  switch (m_mainView->viewing()) {
+  switch (m_showing) {
 //    case KMainView::AccountList:
 //      qDebug("currently viewing account list");
 //      viewBankList();
 //      break;
-    case KMainView::TransactionList:
+    case KMyMoneyView::TransactionList:
       viewBankList();
       break;
     default:
@@ -833,16 +742,23 @@ void KMyMoneyView::viewUp(void)
 
 void KMyMoneyView::viewBankList(MyMoneyAccount *selectAccount, MyMoneyBank *selectBank)
 {
-  if (!m_file.isInitialised())
-    return;
+  banksView->show();
+  transactionView->hide();
+  m_showing = BankList;
 
-  m_mainView->refreshBankView(m_file, selectAccount, selectBank);
-  m_mainView->viewBankList();
-  emit bankOperations(true);
+  if (m_file.isInitialised())
+  {
+    banksView->refresh(m_file, selectAccount, selectBank);
+    emit bankOperations(true);
+  }
 }
 
 void KMyMoneyView::viewTransactionList(void)
 {
+  banksView->hide();
+  transactionView->show();
+  m_showing = TransactionList;
+
   if (!m_file.isInitialised())
     return;
 
@@ -850,21 +766,19 @@ void KMyMoneyView::viewTransactionList(void)
   MyMoneyBank *pBank;
   MyMoneyAccount *pAccount;
 
-	pBank = m_file.bank(m_mainView->currentBank(bankSuccess));
+	pBank = m_file.bank(banksView->currentBank(bankSuccess));
 	if (!pBank || !bankSuccess) {
     qDebug("KMyMoneyView::viewTransactionList: Unable to get the current bank");
     return;
   }
-  pAccount = pBank->account(m_mainView->currentAccount(accountSuccess));
+  pAccount = pBank->account(banksView->currentAccount(accountSuccess));
   if (!pAccount || !accountSuccess) {
     qDebug("KMyMoneyView::viewTransactionList: Unable to grab the current account");
     return;
   }
 
 
-  qDebug("kmymoneyview::view transactionlist");
-  m_mainView->getTransactionView()->init(&m_file, *pBank, *pAccount, pAccount->getTransactionList(), KTransactionView::NORMAL);
-  m_mainView->viewTransactionList();
+  transactionView->init(&m_file, *pBank, *pAccount, pAccount->getTransactionList(), KTransactionView::NORMAL);
   emit transactionOperations(true);
 }
 
@@ -880,27 +794,24 @@ void KMyMoneyView::settingsLists()
   MyMoneyBank *pBank;
   MyMoneyAccount *pAccount;
 
-	pBank = m_file.bank(m_mainView->currentBank(bankSuccess));
+	pBank = m_file.bank(banksView->currentBank(bankSuccess));
 	if (!pBank || !bankSuccess) {
     qDebug("KMyMoneyView::settingsLists: Unable to get the current bank");
     return;
   }
-  pAccount = pBank->account(m_mainView->currentAccount(accountSuccess));
+  pAccount = pBank->account(banksView->currentAccount(accountSuccess));
   if (!pAccount || !accountSuccess) {
     qDebug("KMyMoneyView::settingsLists: Unable to grab the current account");
     return;
   }
 
     // See which list we are viewing and then refresh it
-    switch(m_mainView->viewing()) {
-      case KMainView::BankList:
-        m_mainView->refreshBankView(m_file);
+    switch(m_showing) {
+      case KMyMoneyView::BankList:
+        banksView->refresh(m_file);
         break;
-//      case KMainView::AccountList:
-//        m_mainView->refresh(KMainView::BankList, m_file);
-//        break;
-      case KMainView::TransactionList:
-        m_mainView->refreshTransactionView();
+      case KMyMoneyView::TransactionList:
+        transactionView->refresh();
         break;
       default:
         break;
@@ -923,12 +834,12 @@ void KMyMoneyView::doTransactionSearch()
   MyMoneyBank *pBank;
   MyMoneyAccount *pAccount;
 
-	pBank = m_file.bank(m_mainView->currentBank(bankSuccess));
+	pBank = m_file.bank(banksView->currentBank(bankSuccess));
 	if (!pBank || !bankSuccess) {
     qDebug("KMyMoneyView::doTransactionSearch: Unable to get the current bank");
     return;
   }
-  pAccount = pBank->account(m_mainView->currentAccount(accountSuccess));
+  pAccount = pBank->account(banksView->currentAccount(accountSuccess));
   if (!pAccount || !accountSuccess) {
     qDebug("KMyMoneyView::doTransactionSearch: Unable to grab the current account");
     return;
@@ -986,18 +897,9 @@ void KMyMoneyView::doTransactionSearch()
         transaction->state()));
     }
   }
-/*
-  qDebug("looping through found transactions");
-  MyMoneyTransaction *t;
-  for ( t=transactionList.first(); t != 0; t=transactionList.next() )
-    qDebug("\tSearch Transaction %s, %d, %s, %s, %f", t->date().toString().latin1(),
-      t->method(),
-      t->payee().latin1(),
-      t->memo().latin1(),
-      t->amount().amount());
-*/
-  m_mainView->getTransactionView()->init(&m_file, *pBank, *pAccount, &m_transactionList, KTransactionView::SUBSET);
-  m_mainView->viewTransactionList();
+
+  transactionView->init(&m_file, *pBank, *pAccount, &m_transactionList, KTransactionView::SUBSET);
+  viewTransactionList();
   emit transactionOperations(true);
 }
 
@@ -1159,7 +1061,7 @@ QString KMyMoneyView::currentBankName(void)
 {
   bool bankSuccess=false;
   if (m_file.isInitialised()) {
-    MyMoneyBank bank = m_mainView->currentBank(bankSuccess);
+    MyMoneyBank bank = banksView->currentBank(bankSuccess);
     if (bankSuccess)
       return bank.name();
   }
@@ -1170,420 +1072,12 @@ QString KMyMoneyView::currentAccountName(void)
 {
   bool accountSuccess=false;
   if (m_file.isInitialised()) {
-    MyMoneyAccount account = m_mainView->currentAccount(accountSuccess);
+    MyMoneyAccount account = banksView->currentAccount(accountSuccess);
     if (accountSuccess)
       return account.name();
   }
   return i18n("Unknown Account");
 }
-
-/*
-void KMyMoneyView::readQIFFile(const QString& name, const QString& dateFormat, MyMoneyAccount *account){
-
-	bool catmode = false;
-  bool transmode = false;
-	bool writecat = false;
-	bool writetrans = false;
-  bool cleared = false;
-	int numcat = 0;
-	int numtrans = 0;
-  QString catname = "";
-	QString expense = "";
-	QString date = "";
-	QString amount = "";
-	QString type = "";
-	QString payee = "";
-	QString category = "";
-  MyMoneyCategory *oldcategory = 0;
-
-    QFile f(name);
-    if ( f.open(IO_ReadOnly) ) {    // file opened successfully
-        QTextStream t( &f );        // use a text stream
-        QString s;
-        //int n = 1;
-        while ( !t.eof() ) {        // until end of file...
-            s = t.readLine();       // line of text excluding '\n'
-						if(s.left(9) == "!Type:Cat")
-						{
-							catmode = true;
-							transmode = false;
-						}
-						else if(s.left(10) == "!Type:Bank")
-						{
-							qDebug("Found Bank Type");
-             				transmode = true;
-						  	catmode = false;
-						}
-						else if(s.left(5) == "!Type")
-						{
-							qDebug("Found Just Type");
-             	catmode = false;
-							transmode = false;
-						}
-						else if(catmode)
-						{
-							if(s.left(1) == "N")
-							{
-             		catname = s.mid(1);
-							}
-							else if(s.left(1) == "E")
-							{
-             		expense = "E";
-							}
-							else if(s.left(1) == "I")
-							{
-								expense = "I";
-							}
-            	else if(s.left(1) == "^")
-							{
-								writecat = true;
-							}
-						}
-					  else if(transmode)
-						{
-             				if(s.left(1) == "^")
-							{
-               				writetrans = true;
-							}
-							if(s.left(1) == "D")
-							{
-			         			date = s.mid(1);
-							}
-							if(s.left(1) == "T")
-							{
-               				amount = s.mid(1);
-							}
-							if(s.left(1) == "N")
-							{
-								type = s.mid(1);
-							}
-							if(s.left(1) == "P")
-							{
-		           			payee = s.mid(1);
-							}
-							if(s.left(1) == "L")
-							{
-               				category = s.mid(1);
-							}
-							if(s.left(1) == "C")
-							{
-               				cleared = true;
-							}
-						}
-						
-
-						if(transmode && writetrans)
-						{
-							int slash = -1;
-							int apost = -1;
-							int checknum = 0;
-							bool isnumber = false;
-							int intyear = 0;
-							int intmonth = 0;
-							int intday = 0;
-							QString checknumber = "";
-							MyMoneyTransaction::transactionMethod transmethod;
-							if(dateFormat == "MM/DD'YY")
-							{
-								slash = date.find("/");							
-								apost = date.find("'");
-								QString month = date.left(slash);
-								QString day = date.mid(slash + 1,2);
-								day = day.stripWhiteSpace();
-								QString year = date.mid(apost + 1,2);
-								year = year.stripWhiteSpace();
-								intyear = year.toInt();
-								if(intyear > 80)
-									intyear = 1900 + year.toInt();
-								else
-									intyear = 2000 + year.toInt();
-								intmonth = month.toInt();
-								intday = day.toInt();
-							}
-							else if(dateFormat == "MM/DD/YYYY")
-							{
-								slash = date.find("/");							
-								apost = date.findRev("/");
-								QString month = date.left(slash);
-								QString day = date.mid(slash + 1,2);
-								day = day.stripWhiteSpace();
-								QString year = date.mid(apost + 1,4);
-								year = year.stripWhiteSpace();
-								intyear = year.toInt();
-								intmonth = month.toInt();
-								intday = day.toInt();
-							}			
-							checknum = type.toInt(&isnumber);
-							if(isnumber == false)
-							{
-               				if(type == "ATM")
-								{
-								  if(amount.find("-") > -1)
-                 					transmethod = MyMoneyTransaction::ATM;
-									else
-										transmethod = MyMoneyTransaction::Deposit;
-								}
-								else if(type == "DEP")
-								{
-									if(amount.find("-") == -1)
-                 						transmethod = MyMoneyTransaction::Deposit;
-									else
-										transmethod = MyMoneyTransaction::Withdrawal;
-								}
-								else if(type == "TXFR")
-								{
-									if(amount.find("-") > -1)
-                 						transmethod = MyMoneyTransaction::Transfer;
-									else
-										transmethod = MyMoneyTransaction::Deposit;
-								}
-								else if(type == "WTHD")
-								{
-									if(amount.find("-") > -1)
-                 						transmethod = MyMoneyTransaction::Withdrawal;
-									else
-										transmethod = MyMoneyTransaction::Deposit;
-								}
-								else
-								{
-									if(amount.find("-") > -1)
-                 						transmethod = MyMoneyTransaction::Withdrawal;
-									else
-										transmethod = MyMoneyTransaction::Deposit;
-								}
-								
-							}
-							else
-							{
-									if(amount.find("-") > -1)
-               						transmethod = MyMoneyTransaction::Cheque;
-									else
-										transmethod = MyMoneyTransaction::Deposit;
-									checknumber=type;
-							}
-							QDate transdate(intyear,intmonth,intday);
-             				 int commaindex = amount.find(",");
-							double dblamount = 0;
-		          if(commaindex != -1)
-			          dblamount = amount.remove(commaindex,1).toDouble();
-		          else
-			          dblamount = amount.toDouble();
-							if(dblamount < 0)
-								dblamount = dblamount * -1;
-							MyMoneyMoney moneyamount(dblamount);
-							QString majorcat = "";
-							QString minorcat = "";
-							int catindex = category.find(":");
-							if(catindex == -1)				
-								majorcat = category;
-							else
-							{
-               	majorcat = category.left(catindex);
-								minorcat = category.mid(catindex + 1);
-							}
-							
-							MyMoneyTransaction::stateE transcleared;
-
-							if(cleared == true)
-								transcleared = MyMoneyTransaction::Reconciled;
-							else
-								transcleared = MyMoneyTransaction::Unreconciled;
-
-              if (!payee.isEmpty())
-                m_file.addPayee(payee);
-              account->addTransaction(transmethod, checknumber, payee,
-                                      moneyamount, transdate, majorcat, minorcat, "",payee,
-                                      "", "", transcleared);
-							qDebug("Date:%s",date.latin1());
-							qDebug("Amount:%s",amount.latin1());
-							qDebug("Type:%s",type.latin1());
-							qDebug("Payee:%s",payee.latin1());
-							qDebug("Category:%s",category.latin1());
-
-			        date = "";
-              amount = "";
-							type = "";
-		          payee = "";
-              category = "";
-              cleared = false;
-							writetrans = false;
-							numtrans += 1;
-						}
-						if(catmode && writecat)
-						{
-							QString majorcat = "";
-							QString minorcat = "";
-							bool minorcatexists = false;
-							bool majorcatexists = false;
-							int catindex = catname.find(":");
-							if(catindex == -1)
-								majorcat = catname;
-							else
-							{
-               				majorcat = catname.left(catindex);
-								minorcat = catname.mid(catindex + 1);
-							}
-  							QListIterator<MyMoneyCategory> it = m_file.categoryIterator();
-  							for ( ; it.current(); ++it ) {
-    							MyMoneyCategory *data = it.current();
-								if((majorcat == data->name()) && (minorcat == ""))
-								{
-									majorcatexists = true;
-                  					minorcatexists = true;
-								}
-								else if(majorcat == data->name())
-								{
-									oldcategory = it.current();
-									majorcatexists = true;
-    								for ( QStringList::Iterator it2 = data->minorCategories().begin(); it2 != data->minorCategories().end(); ++it2 ) {
-                  						 if((*it2) == minorcat)
-									 	{
-									 		 minorcatexists = true;
-									 	}
-									}
-
-    							}
-  						}
-
-  						MyMoneyCategory category;
-							category.setName(majorcat);
-							if(expense == "E")
-								category.setIncome(false);
-							if(expense == "I")
-								category.setIncome(true);
-							if(majorcatexists == true)
-							{
-								if((minorcatexists == false) && (minorcat != ""))
-								{
-									category.addMinorCategory(minorcat);
-									oldcategory->addMinorCategory(minorcat);
-									numcat += 1;
-								}
-							}
-							else
-							{
-								if(minorcat != "")
-									category.addMinorCategory(minorcat);
-								m_file.addCategory(category.isIncome(), category.name(), category.minorCategories());
-               	           numcat += 1;
-							}
-							catname = "";
-							expense = "";
-							writecat = false;
-						}	
-						//qDebug("%s",s.latin1());
-        }
-        f.close();
-    }
-	QString importmsg;
-	importmsg.sprintf("%d Categories imported.\n%d Transactions imported.",numcat,numtrans);
-    QMessageBox::information(this,"QIF Import",importmsg);
-
-}
-
-
-void KMyMoneyView::writeQIFFile(const QString& name, const QString& dateFormat, MyMoneyAccount *account,bool expCat,bool expAcct,
-																QDate startDate, QDate endDate){
-	int numcat = 0;
-	int numtrans = 0;
-
-    QFile f(name);
-    if ( f.open(IO_WriteOnly) ) {    // file opened successfully
-      QTextStream t( &f );        // use a text stream
-
-			if(expCat)
-			{
-				t << "!Type:Cat" << endl;
-  			QListIterator<MyMoneyCategory> it = m_file.categoryIterator();
-  			for ( ; it.current(); ++it ) {
-    			MyMoneyCategory *data = it.current();
-						t << "N" + data->name() << endl;
-						if(data->isIncome())
-							t << "I" << endl;
-						else
-							t << "E" << endl;
-						t << "^" << endl;
-						numcat += 1;
-    				for ( QStringList::Iterator it2 = data->minorCategories().begin(); it2 != data->minorCategories().end(); ++it2 ) {
-								t << "N" << data->name() << ":" << *it2 << endl;
-								if(data->isIncome())
-									t << "I" << endl;
-								else
-									t << "E" << endl;
-								t << "^" << endl;
-								numcat += 1;
-						}
-  			}       		
-			}
-			if(expAcct)
-			{
-				t << "!Type:Bank" << endl;
-				MyMoneyTransaction *transaction;
-    		for ( transaction = account->transactionFirst(); transaction; transaction=account->transactionNext())
-        {
-        	if((transaction->date() >= startDate) && (transaction->date() <= endDate))
-					{
-          	int year = transaction->date().year();
-						if(dateFormat == "MM/DD'YY")
-						{
-							if(year >=2000)
-            					year -= 2000;
-							else
-								year -= 1900;
-						}
-						int month = transaction->date().month();
-						int day = transaction->date().day();
-						double amount = transaction->amount().amount();
-						if(transaction->type() == MyMoneyTransaction::Debit)
-						  amount = amount * -1;
-						QString transmethod;
-						if(transaction->method() == MyMoneyTransaction::ATM)
-							transmethod = "ATM";
-						if(transaction->method() == MyMoneyTransaction::Deposit)
-							transmethod = "DEP";
-						if(transaction->method() == MyMoneyTransaction::Transfer)
-							transmethod = "TXFR";
-						if(transaction->method() == MyMoneyTransaction::Withdrawal)
-							transmethod = "WTHD";
-						if(transaction->method() == MyMoneyTransaction::Cheque)
-							transmethod = transaction->number();
-						QString Payee = transaction->payee();
-						QString Category;
-						if(transaction->categoryMinor() == "")
-							Category = transaction->categoryMajor();
-						else
-							Category = transaction->categoryMajor() + ":" + transaction->categoryMinor();
-							
-						if(dateFormat == "MM/DD'YY")
-						{
-							t << "D" << month << "/" << day << "'" << year << endl;
-						}
-						if(dateFormat == "MM/DD/YYYY")
-						{
-							t << "D" << month << "/" << day << "/" << year << endl;
-						}
-						t << "U" << amount << endl;
-						t << "T" << amount << endl;
-						if(transaction->state() == MyMoneyTransaction::Reconciled)
-							t << "CX" << endl;
-						t << "N" << transmethod << endl;
-						t << "P" << Payee << endl;
-						t << "L" << Category << endl;
-						t << "^" << endl;
-						numtrans += 1;
-
-													
-					}
-				}
-			}
-      f.close();
-		}
-	QString exportmsg;
-	exportmsg.sprintf("%d Categories exported.\n%d Transactions exported.",numcat,numtrans);
-    QMessageBox::information(this,"QIF Export",exportmsg);
-
-}
-*/
 
 void KMyMoneyView::fileBackup(){
 }
@@ -1604,12 +1098,12 @@ MyMoneyAccount* KMyMoneyView::getAccount(void)
   MyMoneyBank *mymoneybank;
   MyMoneyAccount *mymoneyaccount;
 
-  mymoneybank = m_file.bank(m_mainView->currentBank(bBankSuccess));
+  mymoneybank = m_file.bank(banksView->currentBank(bBankSuccess));
   if (!mymoneybank || !bBankSuccess) {
     qDebug("KMyMoneyView::getAccount: Unable to get the current bank");
     return 0;
   }
-  mymoneyaccount = mymoneybank->account(m_mainView->currentAccount(bAccountSuccess));
+  mymoneyaccount = mymoneybank->account(banksView->currentAccount(bAccountSuccess));
   if (!mymoneyaccount || !bAccountSuccess) {
     qDebug("KMyMoneyView::getAccount: Unable to get the current account");
     return 0;

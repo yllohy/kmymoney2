@@ -25,18 +25,21 @@
 
 // ----------------------------------------------------------------------------
 // KDE Includes
-#include <ktabctl.h>
+//#include <ktabctl.h>
 #include <kpopupmenu.h>
 
 
 // ----------------------------------------------------------------------------
 // Project Includes
 #include "mymoney/mymoneyaccount.h"
-#include "kmainview.h"
+//#include "kmainview.h"
 #include "kreconciledlg.h"
 #include "kfindtransactiondlg.h"
 //#include "kscheduleview.h"
 #include "dialogs/kcsvprogressdlg.h"
+
+#include "kbanksview.h"
+#include "ktransactionview.h"
 
 /**
   * This class represents the view of the MyMoneyFile which contains
@@ -45,16 +48,21 @@
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.24 2002/01/16 20:40:18 mte Exp $
+  * $Id: kmymoneyview.h,v 1.25 2002/01/16 23:14:32 mte Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
-//class KMyMoneyView : public KTabCtl  {  // Future
 class KMyMoneyView : public QVBox {
    Q_OBJECT
 
+public:
+  enum viewType { None, BankList, TransactionList };
+
 private:
-  KMainView *m_mainView;
+  KBanksView *banksView;
+  KTransactionView *transactionView;
+  viewType m_showing;
+
   MyMoneyFile m_file;  // The interface to the transaction code
   bool m_inReconciliation;  // True if the reconciliaton dialog needs updating when the user adds/deletes transactions
   bool m_reconcileInited;  // True if a reconciliation has already been completed this execution
@@ -274,8 +282,8 @@ public slots:
   void slotAccountImportAscii(void);
   void slotAccountExportAscii(void);
 
-  void slotAccountImportQIF(void);
-  void slotAccountExportQIF(void);
+//  void slotAccountImportQIF(void);
+//  void slotAccountExportQIF(void);
   /** No descriptions */
   void fileBackup();
 	
