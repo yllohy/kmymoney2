@@ -133,7 +133,7 @@ private:
   void readSplits(MyMoneyTransaction& t, QDomElement& splits);
 
   void readTransactions(QDomElement& transactions);
-  MyMoneyTransaction readTransaction(QDomElement& transaction);
+  MyMoneyTransaction readTransaction(QDomElement& transaction, const bool withinSchedule = false);
 
   void readSchedules(QDomElement& schedules);
   MyMoneySchedule readSchedule(QDomElement& schedule);

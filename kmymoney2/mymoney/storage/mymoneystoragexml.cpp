@@ -70,13 +70,13 @@ void MyMoneyStorageXML::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
     QDomElement rootElement = m_doc->documentElement();
     if(!rootElement.isNull())
     {
-      qDebug("XMLREADER: Root element of this file is %s\n", rootElement.tagName().data());
+      // qDebug("XMLREADER: Root element of this file is %s\n", rootElement.tagName().data());
 
       QDomNode child = rootElement.firstChild();
       while(!child.isNull() && child.isElement())
       {
         QDomElement childElement = child.toElement();
-        qDebug("XMLREADER: Processing child node %s", childElement.tagName().data());
+        // qDebug("XMLREADER: Processing child node %s", childElement.tagName().data());
         if(QString("FILEINFO") == childElement.tagName())
         {
           readFileInformation(childElement);
@@ -140,7 +140,7 @@ void MyMoneyStorageXML::writeFile(QIODevice* qf, IMyMoneySerialize* storage)
   }
   m_storage = storage;
 
-  qDebug("XMLWRITER: Starting file write");
+  // qDebug("XMLWRITER: Starting file write");
   m_doc = new QDomDocument("KMYMONEY-FILE");
   Q_CHECK_PTR(m_doc);
   QDomProcessingInstruction instruct = m_doc->createProcessingInstruction(QString("xml"), QString("version=\"1.0\" encoding=\"utf-8\""));
@@ -185,7 +185,7 @@ void MyMoneyStorageXML::writeFile(QIODevice* qf, IMyMoneySerialize* storage)
   QCString temp = m_doc->toCString();
   stream << temp.data();
 
-  qDebug("File contains %s", temp.data());
+  // qDebug("File contains %s", temp.data());
 
   delete m_doc;
   m_doc = NULL;
@@ -568,7 +568,7 @@ MyMoneyAccount MyMoneyStorageXML::readAccount(const QDomElement& account)
   
   acc.setName(account.attribute(QString("name")));
 
-  qDebug("Reading information for account %s", acc.name().data());
+  // qDebug("Reading information for account %s", acc.name().data());
   
   acc.setParentAccountId(QCStringEmpty(account.attribute(QString("parentaccount"))));
   acc.setLastModified(getDate(QStringEmpty(account.attribute(QString("lastmodified")))));
@@ -594,7 +594,7 @@ MyMoneyAccount MyMoneyStorageXML::readAccount(const QDomElement& account)
   
   id = QCStringEmpty(account.attribute(QString("id")));
   Q_ASSERT(id.size());
-  qDebug("Account %s has id of %s, type of %d, parent is %s.", acc.name().data(), id.data(), type, acc.parentAccountId().data());
+  // qDebug("Account %s has id of %s, type of %d, parent is %s.", acc.name().data(), id.data(), type, acc.parentAccountId().data());
 
   /////////////////////////////////////////////////////////////////////////////////////////
   //  Process any Sub-Account information found inside the account entry.
@@ -710,7 +710,7 @@ void MyMoneyStorageXML::writeTransactions(QDomElement& transactions)
   }
 }
 
-MyMoneyTransaction MyMoneyStorageXML::readTransaction(QDomElement& transaction)
+MyMoneyTransaction MyMoneyStorageXML::readTransaction(QDomElement& transaction, const bool withinSchedule)
 {
   QCString id;
   MyMoneyTransaction t;
@@ -720,8 +720,11 @@ MyMoneyTransaction MyMoneyStorageXML::readTransaction(QDomElement& transaction)
   t.setMemo(QStringEmpty(transaction.attribute(QString("memo"))));
 
   id = QCStringEmpty(transaction.attribute(QString("id")));
-  Q_ASSERT(id.size());
-  qDebug("Transaction has id of %s", id.data());
+  if(!withinSchedule)
+    Q_ASSERT(id.size());
+  else
+    Q_ASSERT(id.size() == 0);
+  // qDebug("Transaction has id of %s", id.data());
 
 
   QDomElement splits = findChildElement(QString("SPLITS"), transaction);
@@ -838,7 +841,7 @@ MyMoneySchedule MyMoneyStorageXML::readSchedule(QDomElement& schedule)
   QDomElement transaction = findChildElement(QString("TRANSACTION"), schedule);
   if(!transaction.isNull() && transaction.isElement())
   {
-    MyMoneyTransaction t = readTransaction(transaction);
+    MyMoneyTransaction t = readTransaction(transaction, true);
     sc.setTransaction(t);
   }
 
