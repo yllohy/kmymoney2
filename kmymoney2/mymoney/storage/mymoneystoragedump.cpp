@@ -101,7 +101,8 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
   QValueList<MyMoneyTransaction>::ConstIterator it_t;
   for(it_t = list_t.begin(); it_t != list_t.end(); ++it_t) {
     s << "  ID = " << (*it_t).id() << "\n";
-    s << "  Postdate = " << (*it_t).postDate().toString() << "\n";
+    s << "  Postdate  = " << (*it_t).postDate().toString() << "\n";
+    s << "  EntryDate = " << (*it_t).entryDate().toString() << "\n";
     s << "  Splits\n";
     s << "  ------\n";
     QValueList<MyMoneySplit>::ConstIterator it_s;
