@@ -87,7 +87,7 @@
 #include "../mymoney/mymoneyexception.h"
 #include "../mymoney/storage/mymoneystoragedump.h"
 #include "../mymoney/storage/mymoneystoragexml.h"
-#include "../mymoney/storage/mymoneystoragegnc.h"
+#include "../converter/mymoneygncreader.h"
 #include "../mymoney/storage/mymoneystorageanon.h"
 
 #include "kmymoneyview.h"
@@ -858,7 +858,7 @@ bool KMyMoneyView::readFile(const KURL& url)
                   m_fileType = KmmXML;
                 } else if(gncexp.search(txt) != -1) {
                   loadDefaultCurrencies(); // currency list required for gnc
-                  pReader = new MyMoneyStorageGNC;
+                  pReader = new MyMoneyGncReader;
                   m_fileType = GncXML;
                 }
               }

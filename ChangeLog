@@ -1,3 +1,6 @@
+2005-04-03 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Move GnuCash reader to converter directory
+
 2005-04-01 Ace Jones <acejones@users.sourceforge.net>
   * Fixed #937728: Opening balances sometimes not picked up in QIF files
   * Set the 'finish' button to be default in the last page of the new account 
