@@ -36,7 +36,23 @@ class MyMoneyAccount;
 class MyMoneyInstitution;
 
 /**
-  * @author Michael Edwardes, Thomas Baumgart
+  * @file
+  * @brief Class definitions for various list and icon items.
+  *
+  * This file contains class definitions for various objects used in
+  * list and icon views. Currently it contains the following definitions:
+  *
+  * - KAccountListItem
+  * - KAccountIconItem
+  * - KTransactionListItem
+  *
+  * @author Michael Edwardes
+  * @author Thomas Baumgart
+  * @date 2002
+  *
+  *
+  * The following files are included by this file:
+  *
   */
 
 /**
