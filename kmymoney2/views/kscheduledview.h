@@ -46,7 +46,7 @@
   * Used by the KMyMoneyView class to show the view.
   *
   * @author Michael Edwardes 2000-2002
-  * $Id: kscheduledview.h,v 1.8 2003/07/05 16:16:30 mte Exp $
+  * $Id: kscheduledview.h,v 1.9 2003/07/09 20:27:33 ipwizard Exp $
   *
   * @short A class to encapsulate recurring transaction operations.
   */
@@ -69,6 +69,8 @@ public:
     */
   void show();
 
+  void refreshView(void);
+  
 signals:
   /**
     * Emitted when this view is shown.

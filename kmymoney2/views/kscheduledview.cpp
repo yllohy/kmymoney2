@@ -147,12 +147,16 @@ void KScheduledView::refresh(const QString schedId)
   }
 }
 
-void KScheduledView::show()
+void KScheduledView::refreshView(void)
 {
+  m_qbuttonNew->setEnabled(true);
+  m_accountsCombo->setEnabled(true);
+  m_tabWidget->setEnabled(true);
+  
   loadAccounts();
 
   refresh();
-  
+
   if (m_accountsCombo->count() == 0)
   {
     // disable operations if no accounts exist
@@ -169,7 +173,12 @@ void KScheduledView::show()
   m_qlistviewScheduled->setColumnWidth(3, 120);
   m_qlistviewScheduled->setColumnWidth(4, 120);
   m_qlistviewScheduled->setColumnWidth(0, m_qlistviewScheduled->width()-480);
+}
 
+void KScheduledView::show()
+{
+  refreshView();
+  
   emit signalViewActivated();
 }
 
@@ -368,10 +377,13 @@ void KScheduledView::loadAccounts(void)
   QCStringList::ConstIterator it_s;
 
   QString selectAccountName;
-  
+  bool foundSelectedAccount = false;  
   acc = file->asset();
+  
   for(it_s = acc.accountList().begin(); it_s != acc.accountList().end(); ++it_s)
   {
+    if(m_accountId == file->account(*it_s).id())
+      foundSelectedAccount = true;
     m_accountsCombo->insertItem(file->account(*it_s).name());
     selectAccountName = file->account(*it_s).name();
     m_accountsCombo->setCurrentText(file->account(*it_s).name());
@@ -380,11 +392,15 @@ void KScheduledView::loadAccounts(void)
   acc = file->liability();
   for(it_s = acc.accountList().begin(); it_s != acc.accountList().end(); ++it_s)
   {
+    if(m_accountId == file->account(*it_s).id())
+      foundSelectedAccount = true;
     m_accountsCombo->insertItem(file->account(*it_s).name());
     selectAccountName = file->account(*it_s).name();
     m_accountsCombo->setCurrentText(file->account(*it_s).name());
   }
-
+  if(foundSelectedAccount == false)
+    m_accountId = "";
+    
   slotAccountSelected(selectAccountName);
 }
 
