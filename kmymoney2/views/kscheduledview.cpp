@@ -34,7 +34,7 @@
 // Project Includes
 #include "kscheduledview.h"
 #include "kscheduledlistitem.h"
-#include "../dialogs/knewscheduleddlg.h"
+//#include "../dialogs/knewscheduleddlg.h"
 
 KScheduledView::KScheduledView(MyMoneyFile *file, QWidget *parent, const char *name )
  : kScheduledViewDecl(parent,name, false)
@@ -100,8 +100,10 @@ void KScheduledView::resizeEvent(QResizeEvent* e)
 
 void KScheduledView::slotNewClicked()
 {
+/*
   KNewScheduledDlg *knewscheduleddlg = new KNewScheduledDlg(this);
   knewscheduleddlg->show();
+*/
 }
 
 void KScheduledView::slotDeleteClicked()
