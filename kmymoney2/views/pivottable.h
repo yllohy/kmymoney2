@@ -71,121 +71,8 @@ public:
   static void enable( bool _e ) { m_sEnabled = _e; }
 };
 
-  /**
-  * Holds a description of a MyMoneyAccount suitable for use in the PivotTable
-  * class.
-  *
-  * The primary functionality this provides is a full chain of account
-  * hierarchy that is easy to traverse.  It's needed because the PivotTable
-  * grid needs to store and sort by the full account hierarchy, while still
-  * having access to the account itself for currency conversion.
-  *
-  * @author Ace Jones
-  *
-  * @short
-**/
-class AccountDescriptor
-{
-private:
-  QCString m_account;
-  const MyMoneyFile* m_file;
-  QStringList m_names;
-
-public:
-  /**
-    * Default constructor
-    *
-    * Needed to allow this object to be stored in a QMap.
-    */
-  AccountDescriptor( void );
-
-  /**
-    * Copy constructor
-    *
-    * Needed to allow this object to be stored in a QMap.
-    */
-  AccountDescriptor( const AccountDescriptor& );
-
-  /**
-    * Regular constructor
-    *
-    * @param accountid Account which this account descriptor should be based off of
-    */
-  AccountDescriptor( const QCString& accountid );
-
-  /**
-    * @param right The object to compare against
-    * @return bool True if this object is less than the given object
-    */
-  bool operator<( const AccountDescriptor& right ) const;
-
-  /**
-    * Returns the price of this account's currency on the indicated date,
-    * translated into the base currency
-    *
-    * @param date The date in question
-    * @return MyMoneyMoney The value of the account's currency on that date
-    */
-  MyMoneyMoney currencyPrice( const QDate& date ) const;
-
-  /**
-    * The bottom-most sub-account of this account descriptor, prefaced with
-    * one tab for each parent.  'Tab' is currently implemented as 2 nbsp's.
-    *
-    * This is suitable for printing in the PivotTable report's HTML
-    *
-    * Note that this is a fairly specialized function for reporting.  If we
-    * need a more general-case display of the full hierarchy, a different
-    * method will be needed.
-    *
-    * @param showcurrency True if the currency of this account should be included. Note this flag is only considered if the account is not in the file's base currency.
-    * @return QString The account's full hierarchy (suitable for printing)
-    */
-  QString htmlTabbedName( bool showcurrency ) const;
-
-  /**
-    * The entire hierarchy of this account descriptor, suitable for displaying
-    * in debugging output
-    *
-    * @return QString The account's full hierarchy (suitable for debugging)
-    */
-  QString debugName( void ) const;
-
-  /**
-    * Whether this account is a 'top level' parent account.  This means that
-    * it's parent is an account class, like asset, liability, expense or income
-    *
-    * @return bool True if this account is a top level parent account
-    */
-  inline bool isTopLevel( void ) const;
-
-  /**
-    * Returns the name of the top level parent account
-    *
-    * (See isTopLevel for a definition of 'top level parent')
-    *
-    * @return QString The name of the top level parent account
-    */
-  inline QString getTopLevel( void ) const;
-
-  /**
-    * Returns the account descriptor of the immediate parent account
-    *
-    * @return AccountDescriptor The account descriptor of the immediate parent
-    */
-  AccountDescriptor getParent( void ) const;
-
-protected:
-  /**
-    * Calculates the full account hierarchy of this account
-    */
-  void calculateAccountHierarchy( void );
-
-};
-
-
 /**
-  * Holds a 'pivot table' of information about the transaction database.
+  * Calculates a 'pivot table' of information about the transaction database.
   * Based on pivot tables in MS Excel, and implemented as 'Data Pilot' in
   * OpenOffice.Org Calc.
   *
@@ -200,6 +87,120 @@ protected:
 **/
 class PivotTable
 {
+protected:
+  /**
+    * Holds a description of a MyMoneyAccount suitable for use in the PivotTable
+    * class.
+    *
+    * The primary functionality this provides is a full chain of account
+    * hierarchy that is easy to traverse.  It's needed because the PivotTable
+    * grid needs to store and sort by the full account hierarchy, while still
+    * having access to the account itself for currency conversion.
+    *
+    * @author Ace Jones
+    *
+    * @short
+  **/
+  class AccountDescriptor
+  {
+  private:
+    QCString m_account;
+    const MyMoneyFile* m_file;
+    QStringList m_names;
+  
+  public:
+    /**
+      * Default constructor
+      *
+      * Needed to allow this object to be stored in a QMap.
+      */
+    AccountDescriptor( void );
+  
+    /**
+      * Copy constructor
+      *
+      * Needed to allow this object to be stored in a QMap.
+      */
+    AccountDescriptor( const AccountDescriptor& );
+  
+    /**
+      * Regular constructor
+      *
+      * @param accountid Account which this account descriptor should be based off of
+      */
+    AccountDescriptor( const QCString& accountid );
+  
+    /**
+      * @param right The object to compare against
+      * @return bool True if this object is less than the given object
+      */
+    bool operator<( const AccountDescriptor& right ) const;
+  
+    /**
+      * Returns the price of this account's currency on the indicated date,
+      * translated into the base currency
+      *
+      * @param date The date in question
+      * @return MyMoneyMoney The value of the account's currency on that date
+      */
+    MyMoneyMoney currencyPrice( const QDate& date ) const;
+  
+    /**
+      * The bottom-most sub-account of this account descriptor, prefaced with
+      * one tab for each parent.  'Tab' is currently implemented as 2 nbsp's.
+      *
+      * This is suitable for printing in the PivotTable report's HTML
+      *
+      * Note that this is a fairly specialized function for reporting.  If we
+      * need a more general-case display of the full hierarchy, a different
+      * method will be needed.
+      *
+      * @param showcurrency True if the currency of this account should be included. Note this flag is only considered if the account is not in the file's base currency.
+      * @param htmlformat True if the spaces should be replaced with &nbsp;'s
+      * @return QString The account's full hierarchy (suitable for printing)
+      */
+    QString htmlTabbedName( bool showcurrency, bool htmlformat=true ) const;
+  
+    /**
+      * The entire hierarchy of this account descriptor, suitable for displaying
+      * in debugging output
+      *
+      * @return QString The account's full hierarchy (suitable for debugging)
+      */
+    QString debugName( void ) const;
+  
+    /**
+      * Whether this account is a 'top level' parent account.  This means that
+      * it's parent is an account class, like asset, liability, expense or income
+      *
+      * @return bool True if this account is a top level parent account
+      */
+    inline bool isTopLevel( void ) const;
+  
+    /**
+      * Returns the name of the top level parent account
+      *
+      * (See isTopLevel for a definition of 'top level parent')
+      *
+      * @return QString The name of the top level parent account
+      */
+    inline QString getTopLevel( void ) const;
+  
+    /**
+      * Returns the account descriptor of the immediate parent account
+      *
+      * @return AccountDescriptor The account descriptor of the immediate parent
+      */
+    AccountDescriptor getParent( void ) const;
+  
+  protected:
+    /**
+      * Calculates the full account hierarchy of this account
+      */
+    void calculateAccountHierarchy( void );
+  
+  };
+
 private:
   /**
     * The fundamental data construct of this class is a 'grid'.  It is organized as follows:
@@ -250,6 +251,7 @@ public:
     * @return QString HTML string representing the report
     */
     QString renderHTML( void ) const;
+    QString renderCSV( void ) const;
     
     void dump( const QString& file ) const;
 

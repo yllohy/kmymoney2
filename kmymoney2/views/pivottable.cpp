@@ -137,13 +137,13 @@ void Tester::output( const QString& _text )
     qDebug( "%s%s(): %s", m_sTabs.latin1(), m_methodName.latin1(), _text.latin1() );
 }
 
-AccountDescriptor::AccountDescriptor( void )
+PivotTable::AccountDescriptor::AccountDescriptor( void )
 {
   DEBUG_ENTER("AccountDescriptor::AccountDescriptor( void )");
   m_file = MyMoneyFile::instance();
 }
 
-AccountDescriptor::AccountDescriptor( const AccountDescriptor& copy ):
+PivotTable::AccountDescriptor::AccountDescriptor( const AccountDescriptor& copy ):
   m_account( copy.m_account ), m_names( copy.m_names )
 {
   // NOTE: I implemented the copy constructor solely for debugging reasons
@@ -152,14 +152,14 @@ AccountDescriptor::AccountDescriptor( const AccountDescriptor& copy ):
   m_file = MyMoneyFile::instance();
 }
 
-AccountDescriptor::AccountDescriptor( const QCString& accountid ): m_account( accountid )
+PivotTable::AccountDescriptor::AccountDescriptor( const QCString& accountid ): m_account( accountid )
 {
   DEBUG_ENTER("AccountDescriptor::AccountDescriptor( account )");
   m_file = MyMoneyFile::instance();
   calculateAccountHierarchy();
 }
 
-void AccountDescriptor::calculateAccountHierarchy( void )
+void PivotTable::AccountDescriptor::calculateAccountHierarchy( void )
 {
   DEBUG_ENTER("AccountDescriptor::calculateAccountHierarchy");
 
@@ -178,7 +178,7 @@ void AccountDescriptor::calculateAccountHierarchy( void )
   }
 }
 
-MyMoneyMoney AccountDescriptor::currencyPrice(const QDate& date) const
+MyMoneyMoney PivotTable::AccountDescriptor::currencyPrice(const QDate& date) const
 {
   DEBUG_ENTER("AccountDescriptor::currencyPrice");
 
@@ -204,7 +204,7 @@ MyMoneyMoney AccountDescriptor::currencyPrice(const QDate& date) const
   return value;
 }
 
-bool AccountDescriptor::operator<(const AccountDescriptor& second) const
+bool PivotTable::AccountDescriptor::operator<(const AccountDescriptor& second) const
 {
   DEBUG_ENTER("AccountDescriptor::operator<");
 
@@ -240,12 +240,12 @@ bool AccountDescriptor::operator<(const AccountDescriptor& second) const
   return result;
 }
 
-QString AccountDescriptor::htmlTabbedName( bool showcurrency ) const
+QString PivotTable::AccountDescriptor::htmlTabbedName( bool showcurrency, bool htmlformat ) const
 {
   QString result = m_names.back();
   unsigned tabs = m_names.size() - 1;
   while ( tabs-- )
-    result.prepend("&nbsp;&nbsp;");
+    result.prepend("  ");
 
   if ( showcurrency )
   {
@@ -256,27 +256,28 @@ QString AccountDescriptor::htmlTabbedName( bool showcurrency ) const
       else
         result.append(QString(" (%1)").arg(m_file->currency(account.currencyId()).tradingSymbol()));
   }
-  result.replace(QRegExp(" "),QString("&nbsp;"));
+  if ( htmlformat )
+    result.replace(QRegExp(" "),QString("&nbsp;"));
 
   return result;
 }
 
-QString AccountDescriptor::debugName( void ) const
+QString PivotTable::AccountDescriptor::debugName( void ) const
 {
   return m_names.join("|");
 }
 
-bool AccountDescriptor::isTopLevel( void ) const
+bool PivotTable::AccountDescriptor::isTopLevel( void ) const
 {
   return ( m_names.size() == 1 );
 }
 
-AccountDescriptor AccountDescriptor::getParent( void ) const
+PivotTable::AccountDescriptor PivotTable::AccountDescriptor::getParent( void ) const
 {
   return AccountDescriptor( m_file->account(m_account).parentAccountId() );
 }
 
-QString AccountDescriptor::getTopLevel( void ) const
+QString PivotTable::AccountDescriptor::getTopLevel( void ) const
 {
   return m_names.first();
 }
@@ -769,7 +770,7 @@ void PivotTable::calculateTotals( void )
 
 }
 
-void PivotTable::assignCell( const QString& outergroup, const AccountDescriptor& row, unsigned column, MyMoneyMoney value )
+void PivotTable::assignCell( const QString& outergroup, const PivotTable::AccountDescriptor& row, unsigned column, MyMoneyMoney value )
 {
   DEBUG_ENTER("PivotTable::assignCell");
   DEBUG_OUTPUT(QString("Parameters: %1,%2,%3,%4").arg(outergroup).arg(row.debugName()).arg(column).arg(value.toDouble()));
@@ -785,7 +786,7 @@ void PivotTable::assignCell( const QString& outergroup, const AccountDescriptor&
 
 }
 
-void PivotTable::createRow( const QString& outergroup, const AccountDescriptor& row, bool recursive )
+void PivotTable::createRow( const QString& outergroup, const PivotTable::AccountDescriptor& row, bool recursive )
 {
   DEBUG_ENTER("PivotTable::createRow");
 
@@ -831,6 +832,175 @@ bool PivotTable::includesAccount( const MyMoneyAccount& account ) const
     result = true;
 
   return result;
+}
+
+QString PivotTable::renderCSV( void ) const
+{
+  DEBUG_ENTER("PivotTable::renderHTML");
+
+  //
+  // Report Title
+  //
+
+  QString result = QString("\"Report: %1\"\n").arg(m_config_f.name());
+  if ( m_config_f.isConvertCurrency() )
+    result += i18n("All currencies converted to %1\n").arg(MyMoneyFile::instance()->baseCurrency().name());
+  else
+    result += i18n("All values shown in %1 unless otherwise noted\n").arg(MyMoneyFile::instance()->baseCurrency().name());
+
+  //
+  // Table Header
+  //
+
+  result += i18n("Account");
+
+  unsigned column = 1;
+  while ( column < m_numColumns )
+    result += QString(",%1").arg(QString(m_columnHeadings[column++]));
+
+  if ( m_config_f.isShowingRowTotals() )
+    result += QString(",%1").arg(i18n("Total"));
+
+  result += "\n";
+
+  //
+  // Outer groups
+  //
+
+  // iterate over outer groups
+  TGrid::const_iterator it_outergroup = m_grid.begin();
+  while ( it_outergroup != m_grid.end() )
+  {
+    //
+    // Outer Group Header
+    //
+
+    result += it_outergroup.key() + "\n";
+
+    //
+    // Inner Groups
+    //
+
+    TOuterGroup::const_iterator it_innergroup = (*it_outergroup).begin();
+    unsigned rownum = 0;
+    while ( it_innergroup != (*it_outergroup).end() )
+    {
+      //
+      // Rows
+      //
+
+      QString innergroupdata;
+      TInnerGroup::const_iterator it_row = (*it_innergroup).begin();
+      while ( it_row != (*it_innergroup).end() )
+      {
+        //
+        // Columns
+        //
+
+        QString rowdata;
+        unsigned column = 1;
+        while ( column < m_numColumns )
+          rowdata += QString(",%1").arg(it_row.data()[column++].formatMoney());
+
+        if ( m_config_f.isShowingRowTotals() )
+          rowdata += QString(",%1").arg((*it_row).m_total.formatMoney());
+
+        //
+        // Row Header
+        //
+
+        AccountDescriptor rowname = it_row.key();
+
+        innergroupdata += "\"" + rowname.htmlTabbedName(!m_config_f.isConvertCurrency(),false) + "\"";
+
+        if ( (*it_row).m_total != 0 )
+          innergroupdata += rowdata;
+
+        innergroupdata += "\n";
+
+        ++it_row;
+      }
+
+      //
+      // Inner Row Group Totals
+      //
+
+      bool finishrow = true;
+      if ( m_config_f.isShowingSubAccounts() && ((*it_innergroup).size() > 1 ))
+      {
+        // Print the individual rows
+        result += innergroupdata;
+
+        if ( m_config_f.isShowingColumnTotals() )
+        {
+          // Start the TOTALS row
+          result += i18n("Total");
+        }
+        else
+          finishrow = false;
+      }
+      else
+      {
+        // Start the single INDIVIDUAL ACCOUNT row
+        AccountDescriptor rowname = (*it_innergroup).begin().key();
+        result += "\"" + rowname.htmlTabbedName(!m_config_f.isConvertCurrency(),false) + "\"";
+      }
+
+      // Finish the row started above, unless told not to
+      if ( finishrow )
+      {
+        unsigned column = 1;
+        while ( column < m_numColumns )
+          result += QString(",%1").arg((*it_innergroup).m_total[column++].formatMoney());
+  
+        if (  m_config_f.isShowingRowTotals() )
+          result += QString(",%1").arg((*it_innergroup).m_total.m_total.formatMoney());
+  
+        result += "\n";
+      }
+      
+      ++rownum;
+      ++it_innergroup;
+    }
+
+    //
+    // Outer Row Group Totals
+    //
+
+    if ( m_config_f.isShowingColumnTotals() )
+    {
+      result += QString("%1 %2").arg(i18n("Total")).arg(it_outergroup.key());
+      unsigned column = 1;
+      while ( column < m_numColumns )
+        result += QString(",%1").arg((*it_outergroup).m_total[column++].formatMoney());
+  
+      if (  m_config_f.isShowingRowTotals() )
+        result += QString(",%1").arg((*it_outergroup).m_total.m_total.formatMoney());
+  
+      result += "\n";
+    }
+    ++it_outergroup;
+  }
+
+  //
+  // Report Totals
+  //
+
+  if ( m_config_f.isShowingColumnTotals() )
+  {
+    result += i18n("Grand Total");
+    unsigned totalcolumn = 1;
+    while ( totalcolumn < m_numColumns )
+      result += QString(",%1").arg(m_grid.m_total[totalcolumn++].formatMoney());
+  
+    if (  m_config_f.isShowingRowTotals() )
+      result += QString(",%1").arg(m_grid.m_total.m_total.formatMoney());
+  
+    result += "\n";
+  }
+  
+  return result;
+  
 }
 
 QString PivotTable::renderHTML( void ) const

@@ -298,7 +298,7 @@ void KReportsView::slotCopyView(void)
 void KReportsView::slotSaveView(void)
 {
   KReportTab* tab = dynamic_cast<KReportTab*>(m_reportTabWidget->currentPage());
-  QString newName=KFileDialog::getSaveFileName(KGlobalSettings::documentPath(),i18n("*.html|HTML files\n""*.*|All files"), this, i18n("Save as..."));
+  QString newName=KFileDialog::getSaveFileName(KGlobalSettings::documentPath(),i18n("*.csv|CSV files\n""*.html|HTML files\n""*.*|All files"), this, i18n("Save as..."));
 
   if(!newName.isEmpty())
   {

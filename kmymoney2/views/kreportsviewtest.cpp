@@ -133,12 +133,25 @@ void writeRCFtoXMLDoc( const MyMoneyReport& filter, QDomDocument* doc )
 
 }
 
+void writeTabletoCSV( const PivotTable& table, const QString& _filename = QString() )
+{
+  static unsigned filenum = 1;
+  QString filename = _filename;
+  if ( filename.isEmpty() )
+    filename = QString("report-%1%2.csv").arg((filenum<10)?"0":"").arg(filenum++);
+    
+  QFile g( filename );
+  g.open( IO_WriteOnly );
+  QTextStream(&g) << table.renderCSV();
+  g.close();
+    
+}
 void writeRCFtoXML( const MyMoneyReport& filter, const QString& _filename = QString() )
 {
   static unsigned filenum = 1;
   QString filename = _filename;
   if ( filename.isEmpty() )
-	  filename = QString("report-%1%2.xml").arg((filenum<10)?"0":"").arg(filenum++);
+    filename = QString("report-%1%2.xml").arg((filenum<10)?"0":"").arg(filenum++);
   
   QDomDocument* doc = new QDomDocument("KMYMONEY-FILE");
   Q_CHECK_PTR(doc);
@@ -300,6 +313,7 @@ void KReportsViewTest::testNetWorthSingle()
   filter.setDateFilter(QDate(2004,1,1),QDate(2004,7,1).addDays(-1));
   XMLandback(filter);
   PivotTable networth_f(filter);
+  writeTabletoCSV(networth_f);
 
   CPPUNIT_ASSERT(networth_f.m_grid["Asset"]["Checking Account"][acChecking][5]==moCheckingOpen);
   CPPUNIT_ASSERT(networth_f.m_grid["Asset"]["Checking Account"][acChecking][6]==moCheckingOpen);
@@ -363,6 +377,7 @@ void KReportsViewTest::testSpendingEmpty()
   XMLandback(filter);
   PivotTable spending_f1( filter );
   CPPUNIT_ASSERT(spending_f1.m_grid.m_total.m_total==moZero);
+  writeTabletoCSV(spending_f1);
   
   filter.setDateFilter(QDate(2004,9,1),QDate(2005,1,1).addDays(-1));
   PivotTable spending_f2( filter );
@@ -403,8 +418,10 @@ void KReportsViewTest::testSubAccount()
 
   MyMoneyReport filter( MyMoneyReport::eExpenseIncome );
   filter.setDateFilter(QDate(2004,9,1),QDate(2005,1,1).addDays(-1));
+  filter.setShowSubAccounts(true);
   XMLandback(filter);
   PivotTable spending_f( filter );
+  writeTabletoCSV(spending_f);
 
   CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Parent"][acParent][3]==(-moParent));
   CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Parent"][acChild][3]==(-moChild));
@@ -535,7 +552,7 @@ void KReportsViewTest::testFilterBasics()
   CPPUNIT_ASSERT(file->transactionList(filter).count() == 2);
       
 }    
-        
+  
 void KReportsViewTest::testMultipleCurrencies()
 {
   MyMoneyMoney moCanOpening( 1000.0 );
@@ -568,8 +585,10 @@ void KReportsViewTest::testMultipleCurrencies()
 
   MyMoneyReport filter( MyMoneyReport::eExpenseIncome );
   filter.setDateFilter(QDate(2004,1,1),QDate(2005,1,1).addDays(-1));
+  filter.setShowSubAccounts(true);
   XMLandback(filter);
   PivotTable spending_f( filter );
+  writeTabletoCSV(spending_f);
 
   // test single foreign currency
   CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Foreign"][acCanCash][2]==(-moCanTransaction*moCanPrice));
@@ -602,6 +621,7 @@ void KReportsViewTest::testMultipleCurrencies()
   filter.setDateFilter(QDate(2004,1,1),QDate(2005,1,1).addDays(-1));
   XMLandback(filter);
   PivotTable networth_f( filter );
+  writeTabletoCSV(networth_f);
 
   // test single foreign currency
   CPPUNIT_ASSERT(networth_f.m_grid["Asset"]["Canadian Checking"][acCanChecking][1]==(moCanOpening*moCanPrice));
@@ -624,7 +644,13 @@ void KReportsViewTest::testMultipleCurrencies()
   // test multiple currencies totalled up
   CPPUNIT_ASSERT(networth_f.m_grid["Asset"].m_total[4]==((moCanOpening-moCanTransaction-moCanTransaction-moCanTransaction)*moCanPrice)+((moJpyOpening-moJpyTransaction-moJpyTransaction-moJpyTransaction)*moJpyPrice));
   CPPUNIT_ASSERT(networth_f.m_grid["Asset"].m_total[5]==((moCanOpening-moCanTransaction-moCanTransaction-moCanTransaction)*moCanPrice)+((moJpyOpening-moJpyTransaction-moJpyTransaction-moJpyTransaction)*moJpyPrice2)+moCheckingOpen);
-  
+
+#if 0  
+  // Test out Stuart Bailey's CSV writer
+  MyMoneyCsvWriter csvw;
+
+  csvw.write("test.csv", "",acCanChecking, true,true,QDate(), QDate());
+#endif
 }
 
 void KReportsViewTest::testAdvancedFilter()
