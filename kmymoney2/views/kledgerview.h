@@ -146,7 +146,7 @@ private:
 class KLedgerView : public QWidget, MyMoneyObserver  {
   Q_OBJECT
 
-  friend kMyMoneyTransactionFormTable;
+  friend class kMyMoneyTransactionFormTable;
 
 public:
   enum transactionTypeE {

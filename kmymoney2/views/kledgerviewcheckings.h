@@ -75,7 +75,7 @@ class kMyMoneyTransactionFormTable;
 class KLedgerViewCheckings : public KLedgerView  {
    Q_OBJECT
 
-  friend kMyMoneyTransactionFormTable;
+  friend class kMyMoneyTransactionFormTable;
 
 public: 
 	KLedgerViewCheckings(QWidget *parent=0, const char *name=0);
