@@ -10,7 +10,7 @@ kmymoney2_LDADD   = ./views/libviews.a ./dialogs/libdialogs.a ./widgets/libwidge
 
 SUBDIRS = dialogs views widgets mymoney pics icons html 
 
-EXTRA_DIST = main.cpp kmymoney2.cpp kmymoney2.h kmymoney2ui.rc kmymoney2.desktop kstartuplogo.cpp kstartuplogo.h default_categories.dat lo16-app-kmymoney2.png lo32-app-kmymoney2.png kmymoney_wizard.png mimetype_kmy_16x16.png mimetype_kmy_32x32.png mimetype_kmy_48x48.png x-kmymoney2.desktop hi16-app-kmymoney2.png hi32-app-kmymoney2.png 
+EXTRA_DIST = main.cpp kmymoney2.cpp kmymoney2.h kmymoney2ui.rc kmymoney2.desktop kstartuplogo.cpp kstartuplogo.h default_categories.dat lo16-app-kmymoney2.png lo32-app-kmymoney2.png kmymoney_wizard.png mimetype_kmy_16x16.png mimetype_kmy_32x32.png mimetype_kmy_48x48.png x-kmymoney2.desktop hi16-app-kmymoney2.png hi32-app-kmymoney2.png default_accounts.dat 
 
 install-data-local:
 	$(mkinstalldirs) $(kde_datadir)/kmymoney2/
@@ -33,6 +33,8 @@ install-data-local:
 	$(INSTALL_DATA) $(srcdir)/hi16-app-kmymoney2.png $(kde_icondir)/hicolor/16x16/apps/kmymoney2.png
 	$(mkinstalldirs) $(kde_icondir)/hicolor/32x32/apps/
 	$(INSTALL_DATA) $(srcdir)/hi32-app-kmymoney2.png $(kde_icondir)/hicolor/32x32/apps/kmymoney2.png
+	$(mkinstalldirs) $(kde_datadir)/kmymoney2/
+	$(INSTALL_DATA) $(srcdir)/default_accounts.dat $(kde_datadir)/kmymoney2/default_accounts.dat
 
 uninstall-local:
 	-rm -f $(kde_datadir)/kmymoney2/kmymoney2ui.rc
@@ -45,6 +47,7 @@ uninstall-local:
 	-rm -f $(kde_icondir)/hicolor/48x48/mimetypes/kmy.png
 	-rm -f $(kde_icondir)/hicolor/16x16/apps/kmymoney2.png
 	-rm -f $(kde_icondir)/hicolor/32x32/apps/kmymoney2.png
+	-rm -f $(kde_datadir)/kmymoney2/default_accounts.dat
 
 ####### kdevelop will overwrite this part!!! (end)############
 # this 10 paths are KDE specific. Use them:

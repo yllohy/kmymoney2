@@ -1,0 +1,169 @@
+# Lines like these are comments
+
+# Blank lines like the above are ignored
+# The data starts here and is in the format
+# type:account:account:account:.... separated by colon
+# The parent account must exist
+# 
+
+# Expense categories first
+expense:Bills
+expense:Bills:Rent
+expense:Bills:Electricity
+expense:Bills:TV
+expense:Bills:SKY
+expense:Bills:Council Tax
+expense:Bills:Fuel Oil
+expense:Bills:Mortgage Interest
+expense:Bank Charges
+expense:Bank Charges:Interest Paid
+expense:Bank Charges:Service Charge
+expense:Car
+expense:Car:Car Maintenance
+expense:Car:Petrol
+expense:Cash Withdrawal
+expense:Charity
+expense:Charity:Covenants
+expense:Charity:Donations
+expense:Charity:Settlements
+expense:Child Care
+expense:Christmas
+expense:Clothing
+expense:Clothing
+expense:Education
+expense:Education:Books
+expense:Education:Fees
+expense:Education:Tuition
+expense:Food
+expense:Food:Dining Out
+expense:Food:Groceries
+expense:Gardening
+expense:Gardening
+expense:Gardening
+expense:Healthcare
+expense:Healthcare:Dental
+expense:Healthcare:Doctor
+expense:Healthcare:Hospital
+expense:Healthcare:Optician
+expense:Healthcare:Prescriptions
+expense:Holidays
+expense:Holidays:Accomodation
+expense:Holidays:Travel
+expense:Holidays
+expense:Holidays:Accomodation
+expense:Holidays:Travel
+expense:Household
+expense:Household:Furnishings
+expense:Insurance
+expense:Insurance:Home and Contents
+expense:Insurance:Life
+expense:Insurance:Medical
+expense:Insurance:Motor
+expense:Job Expense
+expense:Job Expense:Non-Reimbursed
+expense:Job Expense:Reimbursed
+expense:Leisure
+expense:Leisure:Books & Magazines
+expense:Leisure:Entertaining
+expense:Leisure:Films & Video Rentals
+expense:Leisure:Sporting Events
+expense:Leisure:Sports Goods
+expense:Leisure:Tapes & CDs
+expense:Leisure:Theatre & Concerts etc
+expense:Leisure:Toys & Games
+expense:Loan
+expense:Loan:Loan Interest
+expense:Motor
+expense:Motor:Fuel
+expense:Motor:Loan
+expense:Motor:Service
+expense:Pet Care
+expense:Pet Care:Food
+expense:Pet Care:Supplies
+expense:Pet Care:Vet's Bills
+expense:Recreation
+expense:Taxes
+expense:Taxes:1st option
+expense:Taxes:Foreign savings
+expense:Taxes:Income Tax
+expense:Taxes:Interest
+expense:Taxes:Local Tax
+expense:Taxes:Nat Ins
+expense:Taxes:Other Invest
+expense:Taxes:Other Tax
+expense:Taxes:Unit trust
+expense:Utilities
+expense:Utilities:Electricity
+expense:Utilities:Gas
+expense:Utilities:Telephone
+expense:Utilities:Water & Sewage
+
+# Now do income categories
+income:Other Income
+income:Other Income:Student loan
+income:Other Income:Child Support
+income:Other Income:Employee Share Option
+income:Other Income:Gifts Received
+income:Other Income:Loan Principal Received
+income:Other Income:Lottery or Premium Bond Prizes
+income:Other Income:Tax Refund
+income:Other Income:Unemployment Benefit
+income:Alimony
+income:Bonus
+income:Capital gains
+income:Child Benefit
+income:Div Income
+income:Div Income:Ord dividend
+income:Div Income:Stock dividend
+income:Employment
+income:Employment:Benefits
+income:Employment:Foreign
+income:Employment:Lump sums
+income:Employment:Other employ
+income:Employment:Salary & wages
+income:Foreign
+income:Gift Received
+income:Int Inc
+income:Int Inc:Bank Interest
+income:Int Inc:Gross
+income:Int Inc:Net
+income:Int Inc:Other savings
+income:Invest. income
+income:Invest. income:1st option
+income:Invest. income:Dividend
+income:Invest. income:Foreign
+income:Invest. income:Other savings
+income:Invest. income:Other trusts
+income:Invest. income:Other trusts:Capital
+income:Invest. income:Other trusts:Dist. rec'd
+income:Invest. income:Other trusts:Estate
+income:Invest. income:UK other
+income:Invest. income:UK other:Unit trusts
+income:Investment Income
+income:Investment Income:Capital Gains
+income:Investment Income:Dividends
+income:Investment Income:Interest
+income:Investment Income:Tax-Exempt Interest
+income:Nat. Savings
+income:Nat. Savings:Capital bonds
+income:Nat. Savings:Deposit bonds
+income:Nat. Savings:Income bonds
+income:Nat. Savings:Invest. account
+income:Nat. Savings:Ord. account
+income:Old Age Pension
+income:Old Age Pension:Employer
+income:Old Age Pension:State
+income:Retirement Income
+income:Retirement Income:Pensions & Annuities
+income:Retirement Income:State Pension Benefits
+income:Social security
+income:Social security:Industrial
+income:Social security:Invalid
+income:Social security:Widowed
+income:Wages & Salary
+income:Wages & Salary:Bonus
+income:Wages & Salary:Commission
+income:Wages & Salary:Employer Pension Contributions
+income:Wages & Salary:Gross Pay
+income:Wages & Salary:Net Pay
+income:Wages & Salary:Overtime
