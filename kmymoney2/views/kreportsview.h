@@ -54,6 +54,7 @@ class kMyMoneyTitleLabel;
 #include "../mymoney/mymoneyreport.h"
 #include "../widgets/kmymoneyreportcontroldecl.h"
 #include "../reports/kreportchartview.h"
+#include "../views/kmymoneyview.h"
 class MyMoneyReport;
 
 /**
@@ -63,7 +64,7 @@ class MyMoneyReport;
   *
   * @short A view for reports.
 **/
-class KReportsView : public QWidget
+class KReportsView : public KMyMoneyViewBase
 {
   Q_OBJECT
 
@@ -134,7 +135,7 @@ public:
   /**
     * Helper class for KReportView.
     *
-    * This is a named list of reports, which will be one section 
+    * This is a named list of reports, which will be one section
     * in the list of default reports
     *
     * @author Ace Jones
@@ -148,9 +149,9 @@ public:
     ReportGroup( const QString& name ): m_name( name ) {};
     const QString& name( void ) const { return m_name; };
   };
-  
+
 private:
-  QVBoxLayout *m_qvboxlayoutPage;
+  // QVBoxLayout *m_qvboxlayoutPage;
   KTabWidget* m_reportTabWidget;
   KListView* m_reportListView;
   QWidget* m_listTab;

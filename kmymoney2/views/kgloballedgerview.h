@@ -42,6 +42,7 @@
 #include "../mymoney/mymoneyutils.h"
 #include "../mymoney/mymoneyaccount.h"
 #include "../mymoney/mymoneyobserver.h"
+#include "../views/kmymoneyview.h"
 
 class QVBoxLayout;
 class QHBoxLayout;
@@ -55,7 +56,7 @@ class KLedgerView;
   * @author Thomas Baumgart
   */
 
-class KGlobalLedgerView : public QWidget, MyMoneyObserver
+class KGlobalLedgerView : public KMyMoneyViewBase, MyMoneyObserver
 {
    Q_OBJECT
 public:
@@ -144,7 +145,6 @@ private:
   KLedgerView* m_specificView[MyMoneyAccount::MaxAccountTypes];
   QWidgetStack* m_accountStack;
   KLedgerView* m_currentView;
-  QVBoxLayout* m_formLayout;
 
 signals:
   /**

@@ -59,7 +59,7 @@
 #include "../kapptest.h"
 
 KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
-  : QWidget(parent,name)
+  : KMyMoneyViewBase(parent, name, i18n("Ledgers"))
 {
   m_currentView = 0;
   KLedgerView* view;
@@ -71,20 +71,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
     setName( "Account register" );
 
   setCaption( i18n( "Account register" ) );
-  m_formLayout = new QVBoxLayout( this, 11, 6, "Form1Layout");
 
-  kMyMoneyTitleLabel* titleLabel = new kMyMoneyTitleLabel( this, "titleLabel" );
-  titleLabel->setMinimumSize( QSize( 100, 30 ) );
-  titleLabel->setProperty( "text", i18n("Ledgers") );
-  titleLabel->setProperty( "rightImageFile", "pics/titlelabel_background.png" );
-  m_formLayout->addWidget( titleLabel );
-
-  QFrame* titleLine = new QFrame( this, "titleLine" );
-  titleLine->setFrameShape( QFrame::HLine );
-  titleLine->setFrameShadow( QFrame::Sunken );
-  titleLine->setFrameShape( QFrame::HLine );
-  m_formLayout->addWidget( titleLine );
-  
   QHBoxLayout* Layout2 = new QHBoxLayout( 0, 0, 6, "Layout2");
 
   m_accountComboBox = new kMyMoneyAccountCombo(this, KAppTest::widgetName(this, "kMyMoneyAccountCombo"));
@@ -94,7 +81,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
                                          QSizePolicy::Expanding,
                                          QSizePolicy::Minimum );
   Layout2->addItem( spacer );
-  m_formLayout->addLayout( Layout2 );
+  m_viewLayout->addLayout( Layout2 );
 
   m_accountStack = new QWidgetStack(this, KAppTest::widgetName(this, "QWidgetStack"));
 
@@ -170,7 +157,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
     SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
   // connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
 
-  m_formLayout->addWidget(m_accountStack);
+  m_viewLayout->addWidget(m_accountStack);
   setMinimumHeight(m_accountComboBox->minimumHeight() + m_accountStack->sizeHint().height());
 
   m_accountId = QCString();
@@ -186,7 +173,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
 KGlobalLedgerView::~KGlobalLedgerView()
 {
   MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassAccount, this);
-  delete m_formLayout;
+  delete m_viewLayout;
 }
 
 void KGlobalLedgerView::slotReloadView(void)
@@ -388,7 +375,7 @@ void KGlobalLedgerView::show()
   // only show selection box if filled with at least one account
   m_accountComboBox->setEnabled(m_accountComboBox->count() > 0);
 
-  QWidget::show();
+  KMyMoneyViewBase::show();
   emit signalViewActivated();
 }
 

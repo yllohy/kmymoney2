@@ -220,26 +220,10 @@ void KReportsView::KReportTab::toggleChart(void)
   */
 
 KReportsView::KReportsView(QWidget *parent, const char *name )
- : QWidget(parent,name)
+ : KMyMoneyViewBase(parent, name, i18n("Reports"))
 {
-  m_qvboxlayoutPage = new QVBoxLayout(this);
-  m_qvboxlayoutPage->setSpacing( 6 );
-  m_qvboxlayoutPage->setMargin( 11 );
-
-  titleLabel = new kMyMoneyTitleLabel( this, "titleLabel" );
-  titleLabel->setMinimumSize( QSize( 100, 30 ) );
-  titleLabel->setProperty( "text", i18n("Reports") );
-  titleLabel->setProperty( "rightImageFile", "pics/titlelabel_background.png" );
-  m_qvboxlayoutPage->addWidget( titleLabel );
-
-  titleLine = new QFrame( this, "titleLine" );
-  titleLine->setFrameShape( QFrame::HLine );
-  titleLine->setFrameShadow( QFrame::Sunken );
-  titleLine->setFrameShape( QFrame::HLine );
-  m_qvboxlayoutPage->addWidget( titleLine );
-  
   m_reportTabWidget = new KTabWidget( this, "m_reportTabWidget" );
-  m_qvboxlayoutPage->addWidget( m_reportTabWidget );
+  m_viewLayout->addWidget( m_reportTabWidget );
 #if KDE_IS_VERSION(3,2,0)
   m_reportTabWidget->setHoverCloseButton( true );
 #endif
@@ -288,7 +272,7 @@ void KReportsView::slotRefreshView(void)
   unsigned pagenumber = 1;
 
   // Default Reports
-  
+
   QMap<QString,KListViewItem*> groupitems;
   QValueList<ReportGroup> defaultreports;
   defaultReports(defaultreports);
@@ -299,7 +283,7 @@ void KReportsView::slotRefreshView(void)
     QString pagename = QString::number(pagenumber++) + ". " + groupname;
     KListViewItem* curnode = new KListViewItem(m_reportListView,pagename);
     groupitems[groupname] = curnode;
-  
+
     QValueList<MyMoneyReport>::const_iterator it_report = (*it_group).begin();
     while( it_report != (*it_group).end() )
     {
@@ -308,15 +292,15 @@ void KReportsView::slotRefreshView(void)
       new KReportListItem( curnode, report );
       ++it_report;
     }
-    
+
     ++it_group;
-  }  
+  }
   // Custom reports
-  
+
   QString pagename = QString::number(pagenumber++) + ". " + i18n("Favorite Reports");
   KListViewItem* favoritenode = new KListViewItem(m_reportListView,pagename);
   KListViewItem* orphannode = NULL;
-  
+
   QValueList<MyMoneyReport> customreports = MyMoneyFile::instance()->reportList();
   QValueList<MyMoneyReport>::const_iterator it_report = customreports.begin();
   while( it_report != customreports.end() )
@@ -327,7 +311,7 @@ void KReportsView::slotRefreshView(void)
       new KReportListItem( groupnode, *it_report );
     else
     // otherwise, place it in the orphanage
-    { 
+    {
       if ( ! orphannode )
       {
         QString pagename = QString::number(pagenumber++) + ". " + i18n("Old Customized Reports");
@@ -335,11 +319,11 @@ void KReportsView::slotRefreshView(void)
       }
       new KReportListItem( orphannode, *it_report );
     }
-    
+
     // ALSO place it into the Favorites list if it's a favorite
     if ( (*it_report).isFavorite() )
       new KReportListItem( favoritenode, *it_report );
-    
+
     ++it_report;
   }
 
@@ -437,14 +421,14 @@ void KReportsView::slotConfigure(void)
   if (dlg.exec())
   {
     MyMoneyReport newreport = dlg.getConfig();
-    
+
     // If this report has an ID, then MODIFY it, otherwise ADD it
     if ( ! newreport.id().isEmpty() )
     {
       MyMoneyFile::instance()->modifyReport(newreport);
       tab->modifyReport(newreport);
       slotRefreshView();
-  
+
       m_reportTabWidget->changeTab( tab, newreport.name() );
       m_reportTabWidget->showPage(tab);
     }
@@ -504,16 +488,16 @@ void KReportsView::slotOpenReport(const QCString& id)
     while ( index < m_reportTabWidget->count() )
     {
       KReportTab* current = dynamic_cast<KReportTab*>(m_reportTabWidget->page(index));
-      
+
       if ( current->report().id() == id )
       {
         page = current;
         break;
       }
-      
+
       ++index;
     }
-  
+
     // Show the tab, or create a new one, as needed
     if ( page )
       m_reportTabWidget->showPage( page );
@@ -535,7 +519,7 @@ void KReportsView::slotOpenReport(QListViewItem* item)
     while ( index < m_reportTabWidget->count() )
     {
       KReportTab* current = dynamic_cast<KReportTab*>(m_reportTabWidget->page(index));
-      
+
       // If this report has an ID, we'll use the ID to match
       if ( ! reportItem->report().id().isEmpty() )
       {
@@ -555,7 +539,7 @@ void KReportsView::slotOpenReport(QListViewItem* item)
           break;
         }
       }
-      
+
       ++index;
     }
 
@@ -571,7 +555,7 @@ void KReportsView::slotOpenReport(QListViewItem* item)
     // means its a header.
     //
     // double-click on a header means toggle the expand/collapse state
-    
+
     item->setOpen( ! item->isOpen() );
   }
 }
@@ -601,7 +585,7 @@ void KReportsView::slotCloseAll(void)
   {
     m_reportTabWidget->removePage(tab);
     tab->setReadyToDelete(true);
-    
+
     tab = dynamic_cast<KReportTab*>(m_reportTabWidget->page(1));
   }
 }
@@ -628,7 +612,7 @@ void KReportsView::addReportTab(const MyMoneyReport& report)
   // if this is a default report, then you can't delete it!
   if ( report.id().isEmpty() )
     tab->control()->buttonDelete->setEnabled(false);
-    
+
   slotRefreshView();
 
   m_reportTabWidget->showPage(tab);
@@ -693,7 +677,7 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
 {
   {
     ReportGroup list = i18n("Income and Expenses");
-  
+
     list.push_back(MyMoneyReport(
       MyMoneyReport::eExpenseIncome,
       MyMoneyReport::eMonths,
@@ -714,7 +698,7 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
   }
   {
     ReportGroup list = i18n("Net Worth");
-  
+
     list.push_back(MyMoneyReport(
       MyMoneyReport::eAssetLiability,
       MyMoneyReport::eMonths,
@@ -757,12 +741,12 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
       i18n("Account Balances by Type"),
       i18n("Default Report")
     ));
- 
+
     groups.push_back(list);
   }
   {
     ReportGroup list = i18n("Transactions");
-        
+
     list.push_back(MyMoneyReport(
       MyMoneyReport::eAccount,
       MyMoneyReport::eQCnumber|MyMoneyReport::eQCpayee|MyMoneyReport::eQCcategory,
@@ -803,12 +787,12 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
       i18n("Transactions by Week"),
       i18n("Default Report")
     ));
-    
+
     groups.push_back(list);
-  }    
+  }
   {
     ReportGroup list = i18n("Investments");
-  
+
     list.push_back(MyMoneyReport(
       MyMoneyReport::eTopAccount,
       MyMoneyReport::eQCaction|MyMoneyReport::eQCshares|MyMoneyReport::eQCprice,
@@ -818,7 +802,7 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
       i18n("Default Report")
     ));
     list.back().setInvestmentsOnly(true);
-    
+
     list.push_back(MyMoneyReport(
       MyMoneyReport::eAccountByTopAccount,
       MyMoneyReport::eQCshares|MyMoneyReport::eQCprice,
@@ -838,7 +822,7 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
       i18n("Default Report")
     ));
     list.back().setInvestmentsOnly(true);
-    
+
     list.push_back(MyMoneyReport(
       MyMoneyReport::eAccountByTopAccount,
       MyMoneyReport::eQCperformance,
@@ -863,7 +847,7 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
   }
   {
     ReportGroup list = i18n("Taxes");
-  
+
     list.push_back(MyMoneyReport(
       MyMoneyReport::eCategory,
       MyMoneyReport::eQCnumber|MyMoneyReport::eQCpayee|MyMoneyReport::eQCaccount,

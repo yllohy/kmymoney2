@@ -43,7 +43,6 @@
 #include "khomeview.h"
 #include "../kmymoneyutils.h"
 #include "../mymoney/mymoneyfile.h"
-#include "../widgets/kmymoneytitlelabel.h"
 
 #define VIEW_LEDGER         "ledger"
 #define VIEW_SCHEDULE       "schedule"
@@ -51,27 +50,11 @@
 #define VIEW_HOME           "home"
 #define VIEW_REPORTS        "reports"
 
-KHomeView::KHomeView(QWidget *parent, const char *name )
- : QWidget(parent,name)
+KHomeView::KHomeView(QWidget *parent, const char *name ) :
+  KMyMoneyViewBase(parent, name, i18n("Home"))
 {
-  m_qvboxlayoutPage = new QVBoxLayout(this);
-  m_qvboxlayoutPage->setSpacing( 6 );
-  m_qvboxlayoutPage->setMargin( 11 );
-
-  titleLabel = new kMyMoneyTitleLabel( this, "titleLabel" );
-  titleLabel->setMinimumSize( QSize( 100, 30 ) );
-  titleLabel->setProperty( "rightImageFile", "pics/titlelabel_background.png" );
-  titleLabel->setProperty( "text", i18n("Home") );
-  m_qvboxlayoutPage->addWidget( titleLabel );
-
-  titleLine = new QFrame( this, "titleLine" );
-  titleLine->setFrameShape( QFrame::HLine );
-  titleLine->setFrameShadow( QFrame::Sunken );
-  titleLine->setFrameShape( QFrame::HLine );
-  m_qvboxlayoutPage->addWidget( titleLine );
-  
   m_part = new KHTMLPart(this, "htmlpart_km2");
-  m_qvboxlayoutPage->addWidget(m_part->view());
+  m_viewLayout->addWidget(m_part->view());
   QString language = KGlobal::locale()->language();
   QString country = KGlobal::locale()->country();
 

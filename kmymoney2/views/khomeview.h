@@ -37,7 +37,7 @@ class QFrame;
 
 #include "../mymoney/mymoneyscheduled.h"
 #include "../mymoney/mymoneyaccount.h"
-class kMyMoneyTitleLabel;
+#include "../views/kmymoneyview.h"
 
 /**
   * Displays a 'home page' for the user.  Similar to concepts used in
@@ -47,16 +47,15 @@ class kMyMoneyTitleLabel;
   *
   * @short A view containing the home page for kmymoney2.
 **/
-class KHomeView : public QWidget  {
-   Q_OBJECT
+class KHomeView : public KMyMoneyViewBase
+{
+  Q_OBJECT
 
 private:
   KHTMLPart *m_part;
   QVBoxLayout *m_qvboxlayoutPage;
   QString m_filename;
-  kMyMoneyTitleLabel* titleLabel;
-  QFrame* titleLine;
-  
+
 signals:
   /**
     * This signal is emitted whenever this view is activated.
@@ -104,7 +103,7 @@ protected:
     Preferred = 1,          ///< show preferred accounts
     Payment = 2             ///< show payment accounts
   };
-  
+
   void showPayments(void);
   void showPaymentEntry(const MyMoneySchedule&);
   void showAccounts(paymentTypeE type, const QString& hdr);
@@ -113,7 +112,7 @@ protected:
 
   const QString link(const QString& view, const QString& query) const;
   const QString linkend(void) const;
-  
+
 public slots:
   void slotOpenURL(const KURL &url, const KParts::URLArgs& args);
 
