@@ -590,7 +590,7 @@ void KSettingsDlg::configRead()
   m_qdateTempStart = kconfig->readDateTimeEntry("StartDate", &defaultDate).date();
   m_dateinputStart->setDate(m_qdateTempStart);
 
-  m_bTempNormalView = kconfig->readBoolEntry("NormalAccountsView", true);
+  m_bTempNormalView = kconfig->readBoolEntry("NormalAccountsView", false);
   m_qradiobuttonNormalView->setChecked(m_bTempNormalView);
   m_qradiobuttonAccountView->setChecked(!m_bTempNormalView);
 
