@@ -1,8 +1,15 @@
+2004-06-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Applied patch(es) supplied by Ace Jones
+  * Fixed QIF generation errors
+  * Added method hasAccount() to MyMoneyFile
+  * Added testcases for this method
+
 2004-06-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Report failures of unit tests correctly
   * Fixed transaction filter handling for reports
   * Fixed #968755 (Unwanted ledger view switch)
   * Partial cleanup of unused code
+  * Fixed #975134 (Finished transactions will be shown on homepage)
 
 2004-06-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added patch supplied by Ace Jones
