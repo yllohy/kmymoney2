@@ -37,12 +37,14 @@ MyMoneyTransactionFilter::MyMoneyTransactionFilter()
 {
   m_filterSet.allFilter = 0;
   m_reportAllSplits = true;
+  m_considerCategory = true;
 }
 
 MyMoneyTransactionFilter::MyMoneyTransactionFilter(const QCString& id)
 {
   m_filterSet.allFilter = 0;
   m_reportAllSplits = false;
+  m_considerCategory = false;
 
   addAccount(id);
   // addCategory(id);
@@ -199,6 +201,11 @@ void MyMoneyTransactionFilter::setReportAllSplits(const bool report)
   m_reportAllSplits = report;
 }
 
+void MyMoneyTransactionFilter::setConsiderCategory(const bool check)
+{
+  m_considerCategory = check;
+}
+
 const QValueList<MyMoneySplit> MyMoneyTransactionFilter::matchingSplits(void) const
 {
   return m_matchingSplits;
@@ -251,7 +258,7 @@ const bool MyMoneyTransactionFilter::match(const MyMoneyTransaction& transaction
     for(it = m_matchingSplits.begin(); it != m_matchingSplits.end(); ) {
       bool removeSplit = true;
       MyMoneyAccount acc = storage->account((*it).accountId());
-      if(m_reportAllSplits) {
+      if(m_considerCategory) {
         switch(acc.accountGroup()) {
           case MyMoneyAccount::Income:
           case MyMoneyAccount::Expense:

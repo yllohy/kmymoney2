@@ -241,6 +241,9 @@ public:
     */
   void setReportAllSplits(const bool report = true);
 
+
+  void setConsiderCategory(const bool check = true);
+
   /**
     * This method returns the id of the matching splits for the filter.
     * If m_reportAllSplits is set to false, then only the very first
@@ -311,6 +314,7 @@ private:
     } singleFilter;
   }                   m_filterSet;
   bool                m_reportAllSplits;
+  bool                m_considerCategory;
 
   QRegExp             m_text;
   QAsciiDict<char>    m_accounts;
