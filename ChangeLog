@@ -1,6 +1,9 @@
+2001-12-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * fixed another memory leak bug having to do with the Transaction KPopupMenu
+  * revised Felix' fixes to avoid creating countless objects
+
 2001-12-14 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
   * fixed another memory leak bug having to do with the Account KPopupMenu
-
 
 2001-12-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * fixed debug output of QIF import (result message of date conversion)
