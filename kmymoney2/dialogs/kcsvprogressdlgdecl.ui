@@ -1,0 +1,349 @@
+<!DOCTYPE UI><UI>
+<class>KCsvProgressDlgDecl</class>
+<widget>
+    <class>QDialog</class>
+    <property stdset="1">
+        <name>name</name>
+        <cstring>kcsvprogressdlgdecl</cstring>
+    </property>
+    <property stdset="1">
+        <name>geometry</name>
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>599</width>
+            <height>382</height>
+        </rect>
+    </property>
+    <property stdset="1">
+        <name>caption</name>
+        <string>CSV Dialog</string>
+    </property>
+    <vbox>
+        <property stdset="1">
+            <name>margin</name>
+            <number>11</number>
+        </property>
+        <property stdset="1">
+            <name>spacing</name>
+            <number>6</number>
+        </property>
+        <widget>
+            <class>QLabel</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>TextLabel2_2</cstring>
+            </property>
+            <property stdset="1">
+                <name>text</name>
+                <string>CSV Dialog.  Choose a file and then click on Run.  You can view your progress at
+the bottom of the screen.
+
+You can cancel the process at any time by clicking on the Cancel button.</string>
+            </property>
+        </widget>
+        <widget>
+            <class>Line</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>Line2</cstring>
+            </property>
+            <property stdset="1">
+                <name>orientation</name>
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+        <widget>
+            <class>QLayoutWidget</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>Layout6</cstring>
+            </property>
+            <hbox>
+                <property stdset="1">
+                    <name>margin</name>
+                    <number>0</number>
+                </property>
+                <property stdset="1">
+                    <name>spacing</name>
+                    <number>6</number>
+                </property>
+                <widget>
+                    <class>QLabel</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>TextLabel1_2</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>Choose a file to export to:</string>
+                    </property>
+                </widget>
+                <widget>
+                    <class>QLineEdit</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>m_qlineeditFile</cstring>
+                    </property>
+                </widget>
+                <widget>
+                    <class>QPushButton</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>m_qbuttonBrowse</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>&amp;Browse</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget>
+            <class>QLayoutWidget</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>Layout7</cstring>
+            </property>
+            <hbox>
+                <property stdset="1">
+                    <name>margin</name>
+                    <number>0</number>
+                </property>
+                <property stdset="1">
+                    <name>spacing</name>
+                    <number>6</number>
+                </property>
+                <spacer>
+                    <property>
+                        <name>name</name>
+                        <cstring>Spacer3</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>orientation</name>
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property stdset="1">
+                        <name>sizeType</name>
+                        <enum>Expanding</enum>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget>
+                    <class>QPushButton</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>m_qbuttonRun</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>enabled</name>
+                        <bool>false</bool>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>&amp;Run</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget>
+            <class>QGroupBox</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>m_qgroupbox</cstring>
+            </property>
+            <property stdset="1">
+                <name>enabled</name>
+                <bool>false</bool>
+            </property>
+            <property stdset="1">
+                <name>title</name>
+                <string>Progress Info</string>
+            </property>
+            <vbox>
+                <property stdset="1">
+                    <name>margin</name>
+                    <number>11</number>
+                </property>
+                <property stdset="1">
+                    <name>spacing</name>
+                    <number>6</number>
+                </property>
+                <widget>
+                    <class>QLayoutWidget</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>Layout2</cstring>
+                    </property>
+                    <hbox>
+                        <property stdset="1">
+                            <name>margin</name>
+                            <number>0</number>
+                        </property>
+                        <property stdset="1">
+                            <name>spacing</name>
+                            <number>6</number>
+                        </property>
+                        <widget>
+                            <class>QLabel</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>TextLabel2</cstring>
+                            </property>
+                            <property stdset="1">
+                                <name>text</name>
+                                <string>Processing Account:</string>
+                            </property>
+                        </widget>
+                        <widget>
+                            <class>QLabel</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>m_qlabelAccount</cstring>
+                            </property>
+                            <property stdset="1">
+                                <name>text</name>
+                                <string>Unknown</string>
+                            </property>
+                            <property stdset="1">
+                                <name>alignment</name>
+                                <set>AlignVCenter|AlignRight</set>
+                            </property>
+                            <property>
+                                <name>hAlign</name>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget>
+                    <class>QLayoutWidget</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>Layout1</cstring>
+                    </property>
+                    <hbox>
+                        <property stdset="1">
+                            <name>margin</name>
+                            <number>0</number>
+                        </property>
+                        <property stdset="1">
+                            <name>spacing</name>
+                            <number>6</number>
+                        </property>
+                        <widget>
+                            <class>QLabel</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>TextLabel3</cstring>
+                            </property>
+                            <property stdset="1">
+                                <name>text</name>
+                                <string>Processing Transaction:</string>
+                            </property>
+                        </widget>
+                        <widget>
+                            <class>QLabel</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>m_qlabelTransaction</cstring>
+                            </property>
+                            <property stdset="1">
+                                <name>text</name>
+                                <string>0 of 0</string>
+                            </property>
+                            <property stdset="1">
+                                <name>alignment</name>
+                                <set>AlignVCenter|AlignRight</set>
+                            </property>
+                            <property>
+                                <name>hAlign</name>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget>
+                    <class>QProgressBar</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>m_qprogressbar</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>enabled</name>
+                        <bool>false</bool>
+                    </property>
+                </widget>
+            </vbox>
+        </widget>
+        <widget>
+            <class>QLayoutWidget</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>Layout3</cstring>
+            </property>
+            <hbox>
+                <property stdset="1">
+                    <name>margin</name>
+                    <number>0</number>
+                </property>
+                <property stdset="1">
+                    <name>spacing</name>
+                    <number>6</number>
+                </property>
+                <spacer>
+                    <property>
+                        <name>name</name>
+                        <cstring>Spacer1</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>orientation</name>
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property stdset="1">
+                        <name>sizeType</name>
+                        <enum>Expanding</enum>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget>
+                    <class>QPushButton</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>m_qbuttonOk</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>&amp;OK</string>
+                    </property>
+                    <property stdset="1">
+                        <name>default</name>
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget>
+                    <class>QPushButton</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>m_qbuttonCancel</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>&amp;Cancel</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+    </vbox>
+</widget>
+</UI>
