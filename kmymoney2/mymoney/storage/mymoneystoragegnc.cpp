@@ -1077,7 +1077,7 @@ void MyMoneyStorageGNC::convertAccount (const GncAccount* gac) {
   } else if (QString("LIABILITY") == gac->type()) {
     acc.setAccountType(MyMoneyAccount::Liability);
   } else if (QString("CREDIT") == gac->type()) {
-    acc.setAccountType(MyMoneyAccount::Liability);
+    acc.setAccountType(MyMoneyAccount::CreditCard);
   } else if (QString("INCOME") == gac->type()) {
     acc.setAccountType(MyMoneyAccount::Income);
   } else if (QString("EXPENSE") == gac->type()) {

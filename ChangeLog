@@ -1,3 +1,6 @@
+2005-03-09 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Gnucash import
+    - Fix handling of credit card accounts
 2005-03-08 Ace Jones <acejones@users.sourceforge.net>
   * Fixed a crash in checking ledger when attempting to edit the splits of
     an investment transaction
