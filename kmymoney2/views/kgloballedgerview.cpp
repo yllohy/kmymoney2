@@ -48,6 +48,7 @@
 
 #include "../mymoney/mymoneyaccount.h"
 #include "../mymoney/mymoneyfile.h"
+#include "../widgets/kmymoneycombo.h"
 
 KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   : QWidget(parent,name)
@@ -62,18 +63,18 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
     setName( "Account register" );
 
   setCaption( i18n( "Account register" ) );
-  Form1Layout = new QVBoxLayout( this, 0, 6, "Form1Layout");
+  m_formLayout = new QVBoxLayout( this, 0, 6, "Form1Layout");
 
-  Layout2 = new QHBoxLayout( 0, 0, 6, "Layout2");
+  QHBoxLayout* Layout2 = new QHBoxLayout( 0, 0, 6, "Layout2");
 
-  accountComboBox = new KComboBox( FALSE, this, "accountComboBox" );
-  accountComboBox->setMinimumSize( QSize( 240, 0 ) );
-  Layout2->addWidget( accountComboBox );
+  m_accountComboBox = new kMyMoneyCombo(false, this, "accountComboBox" );
+  m_accountComboBox->setMinimumSize( QSize( 240, 0 ) );
+  Layout2->addWidget( m_accountComboBox );
   QSpacerItem* spacer = new QSpacerItem( 20, 20,
                                          QSizePolicy::Expanding,
                                          QSizePolicy::Minimum );
   Layout2->addItem( spacer );
-  Form1Layout->addLayout( Layout2 );
+  m_formLayout->addLayout( Layout2 );
 
   m_accountStack = new QWidgetStack(this, "Stack");
   // Checkings account
@@ -117,13 +118,13 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
     SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
 
 
-  Form1Layout->addWidget(m_accountStack);
+  m_formLayout->addWidget(m_accountStack);
 
   // read the configuration
   m_accountId = "";
 
   // setup connections
-  connect(accountComboBox, SIGNAL(activated(const QString&)),
+  connect(m_accountComboBox, SIGNAL(activated(const QString&)),
           this, SLOT(slotAccountSelected(const QString&)));
 }
 
@@ -131,43 +132,40 @@ void KGlobalLedgerView::loadAccounts(void)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
 
-  accountComboBox->clear();
+  m_accountComboBox->clear();
 
   MyMoneyAccount acc;
   QCStringList::ConstIterator it_s;
 
   acc = file->asset();
   for(it_s = acc.accountList().begin(); it_s != acc.accountList().end(); ++it_s) {
-    accountComboBox->insertItem(file->account(*it_s).name());
+    m_accountComboBox->insertItem(file->account(*it_s).name());
     if(m_accountId == "") {
-      selectAccount(*it_s, "", false, true);
-      accountComboBox->setCurrentText(file->account(*it_s).name());
+      m_accountId = *it_s;
     }
   }
 
   acc = file->liability();
   for(it_s = acc.accountList().begin(); it_s != acc.accountList().end(); ++it_s) {
-    accountComboBox->insertItem(file->account(*it_s).name());
+    m_accountComboBox->insertItem(file->account(*it_s).name());
     if(m_accountId == "") {
-      selectAccount(*it_s, "", false, true);
-      accountComboBox->setCurrentText(file->account(*it_s).name());
+      m_accountId = *it_s;
     }
-  }
-
-  if(m_accountId == "") {       // no accounts available?
-    selectAccount("");
   }
 }
 
 KGlobalLedgerView::~KGlobalLedgerView()
 {
+  delete m_formLayout;
 }
 
 void KGlobalLedgerView::show()
 {
   loadAccounts();
+  selectAccount(m_accountId, "", false, true);
+
   // only show selection box if filled with at least one account
-  accountComboBox->setEnabled(accountComboBox->count() > 0);
+  m_accountComboBox->setEnabled(m_accountComboBox->count() > 0);
 
   emit signalViewActivated();
   QWidget::show();
@@ -198,6 +196,14 @@ void KGlobalLedgerView::refreshView(void)
   }
 }
 
+void KGlobalLedgerView::suspendUpdate(const bool suspend)
+{
+  for(int i = 0; i < MyMoneyAccount::MaxAccountTypes; ++i) {
+    if(m_specificView[i] != 0)
+      m_specificView[i]->suspendUpdate(suspend);
+  }
+}
+
 void KGlobalLedgerView::slotSelectAccountAndTransaction(const QCString& accountId, const QCString& transactionId)
 {
   selectAccount(accountId, transactionId);
@@ -213,7 +219,7 @@ void KGlobalLedgerView::selectAccount(const QCString& accountId, const QCString&
       m_currentView = m_specificView[acc.accountType()];
       m_currentView->setCurrentAccount(accountId, forceLoad);
       m_accountId = accountId;
-      accountComboBox->setCurrentText(acc.name());
+      m_accountComboBox->setCurrentItem(acc.name());
       if(transaction != "") {
         try {
           m_currentView->selectTransaction(transaction);
@@ -238,9 +244,15 @@ void KGlobalLedgerView::selectAccount(const QCString& accountId, const QCString&
 
 void KGlobalLedgerView::slotAccountSelected(const QString& account)
 {
+  slotAccountSelected(account, false);
+}
+
+void KGlobalLedgerView::slotAccountSelected(const QString& account, const bool reconciliation)
+{
   MyMoneyAccount acc;
   QCStringList::ConstIterator it_s;
 
+  loadAccounts();
   acc = MyMoneyFile::instance()->asset();
   for(it_s = acc.accountList().begin(); it_s != acc.accountList().end(); ++it_s) {
     if(account == MyMoneyFile::instance()->account(*it_s).name())
@@ -256,7 +268,7 @@ void KGlobalLedgerView::slotAccountSelected(const QString& account)
   }
 
   if(it_s != acc.accountList().end()) {
-    selectAccount(*it_s);
+    selectAccount(*it_s, "", reconciliation);
   }
 }
 
@@ -275,3 +287,4 @@ void KGlobalLedgerView::slotCancelEdit(void)
       m_specificView[i]->slotCancelEdit();
   }
 }
+

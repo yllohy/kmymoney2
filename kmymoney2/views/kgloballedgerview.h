@@ -47,7 +47,7 @@ class QHBoxLayout;
 class QGridLayout;
 class QPopupMenu;
 
-class KComboBox;
+class kMyMoneyCombo;
 class KLedgerView;
 
 /**
@@ -58,29 +58,24 @@ class KGlobalLedgerView : public QWidget
 {
    Q_OBJECT
 public:
-	KGlobalLedgerView(QWidget *parent=0, const char *name=0);
-	~KGlobalLedgerView();
+  KGlobalLedgerView(QWidget *parent=0, const char *name=0);
+  ~KGlobalLedgerView();
 
   void reloadView(void);
   void refreshView(void);
 
   /**
-    * This method is used to open the account with the specified id
-    * in the ledger view. The respective view for this account type
-    * will be selected and the account data loaded.
-    * If a transaction ID is given in @p transaction, the specified
-    * transaction will be selected and shown. If transaction is empty,
-    * then the last transaction will be selected.
-    * The parameter @p reconciliation determines, if the reconciliation
-    * mode is started or not.
+    * utility method to suspend/activate updates of the MyMoney engine on
+    * all views. This is used to speed up operations with lot's of updates
+    * of engine data in a short time (e.g. importing data, creating a
+    * new file).
     *
-    * @param id id of the account in the MyMoneyFile object
-    * @param transaction ID of the transaction to be selected
-    * @param reconciliation if false (default), the standard ledger is
-    *                       opened, if true, the reconciliation mode is entered
-    * @param forceLoad if set to true, the account is reloaded into the view in any case
+    * @param suspend Suspend updates or not. Possible values are
+    *
+    * @li true updates are suspended
+    * @li false updates will be performed immediately
     */
-  void selectAccount(const QCString& id, const QCString& transaction = "", const bool reconciliation = false, const bool forceLoad = false);
+  void suspendUpdate(const bool suspend);
 
 public slots:
   /**
@@ -112,23 +107,53 @@ public slots:
     */
   void slotSelectAccountAndTransaction(const QCString& accountId, const QCString& transactionId);
 
-protected:
-  KComboBox* accountComboBox;
-  QVBoxLayout* Form1Layout;
-  QHBoxLayout* Layout2;
-
-  void loadAccounts(void);
-
-protected slots:
+  /**
+    * This slot is used to select an account by it's @p id.
+    *
+    * @param id const QCString reference to the account's id
+    *
+    * @note The account will be selected in standard mode (not in reconciliation mode)
+    */
+  void slotAccountSelected(const QString& id);
 
   /**
     * This slot is used to select an account by it's @p id.
     *
     * @param id const QCString reference to the account's id
+    * @param reconciliation if false (default), the standard ledger is
+    *                       opened, if true, the reconciliation mode is entered
     */
-  void slotAccountSelected(const QString& id);
+  void slotAccountSelected(const QString& id, const bool reconciliation);
+
+protected:
+  void loadAccounts(void);
+
+  /**
+    * This method is used to open the account with the specified id
+    * in the ledger view. The respective view for this account type
+    * will be selected and the account data loaded.
+    * If a transaction ID is given in @p transaction, the specified
+    * transaction will be selected and shown. If transaction is empty,
+    * then the last transaction will be selected.
+    * The parameter @p reconciliation determines, if the reconciliation
+    * mode is started or not.
+    *
+    * @param id id of the account in the MyMoneyFile object
+    * @param transaction ID of the transaction to be selected
+    * @param reconciliation if false (default), the standard ledger is
+    *                       opened, if true, the reconciliation mode is entered
+    * @param forceLoad if set to true, the account is reloaded into the view in any case
+    */
+  void selectAccount(const QCString& id, const QCString& transaction = "", const bool reconciliation = false, const bool forceLoad = false);
+  
+protected slots:
+
+protected:
+
 
 private:
+  kMyMoneyCombo* m_accountComboBox;
+
   /**
     * This member holds the id of the currently selected account
     */
@@ -143,7 +168,8 @@ private:
   KLedgerView* m_specificView[MyMoneyAccount::MaxAccountTypes];
   QWidgetStack* m_accountStack;
   KLedgerView* m_currentView;
-
+  QVBoxLayout* m_formLayout;
+  
 signals:
   void signalViewActivated();
 
