@@ -356,6 +356,17 @@ public:
   virtual const unsigned int transactionCount(const QCString& account = "") const = 0;
 
   /**
+    * This method returns a QMap filled with the number of transactions
+    * per account. The account id serves as index into the map. If one
+    * needs to have all transactionCounts() for many accounts, this method
+    * is faster than calling transactionCount(const QCString& account) many
+    * times.
+    *
+    * @return QMap with numbers of transactions per account
+    */
+  virtual const QMap<QCString, unsigned long> transactionCountMap(void) const = 0;
+
+  /**
     * This method is used to pull a list of transactions from the file
     * global transaction pool. It returns either the whole journal or
     * the set of transaction referenced by a specific account depending

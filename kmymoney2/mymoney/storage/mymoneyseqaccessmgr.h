@@ -58,6 +58,7 @@ public:
   MyMoneyBalanceCacheItem() { valid = false; };
   MyMoneyBalanceCacheItem(const MyMoneyMoney& val) { balance = val; valid = true; };
 
+  const bool operator == (const MyMoneyBalanceCacheItem& right) const;
   bool          valid;
   MyMoneyMoney  balance;
 };
@@ -434,6 +435,8 @@ public:
     * @return number of transactions in journal/account
     */
   const unsigned int transactionCount(const QCString& account = "") const;
+
+  const QMap<QCString, unsigned long> transactionCountMap(void) const;
 
   /**
     * This method returns the number of institutions currently known to file

@@ -22,6 +22,12 @@
 
 #include "mymoneyseqaccessmgr.h"
 
+const bool MyMoneyBalanceCacheItem::operator ==(const MyMoneyBalanceCacheItem & right) const
+{
+  return ((balance == right.balance)
+        && (valid == right.valid));
+}
+
 MyMoneySeqAccessMgr::MyMoneySeqAccessMgr()
 {
   m_nextAccountID = 0;
@@ -317,6 +323,22 @@ const unsigned int MyMoneySeqAccessMgr::transactionCount(const QCString& account
     }
   }
   return cnt;
+}
+
+const QMap<QCString, unsigned long> MyMoneySeqAccessMgr::transactionCountMap(void) const
+{
+  QMap<QCString, unsigned long> map;
+  QMap<QCString, MyMoneyTransaction>::ConstIterator it_t;
+  QValueList<MyMoneySplit>::ConstIterator it_s;
+
+  // scan all transactions
+  for(it_t = m_transactionList.begin(); it_t != m_transactionList.end(); ++it_t) {
+    // scan all splits of this transaction
+    for(it_s = (*it_t).splits().begin(); it_s != (*it_t).splits().end(); ++it_s) {
+      map[(*it_s).accountId()]++;
+    }
+  }
+  return map;
 }
 
 const unsigned int MyMoneySeqAccessMgr::institutionCount(void) const

@@ -56,6 +56,7 @@ class MyMoneySeqAccessMgrTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST(testPayeeName);
 	CPPUNIT_TEST(testRemovePayee);
 	CPPUNIT_TEST(testRemoveAccountFromTree);
+	CPPUNIT_TEST(testEquality);
 	CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -93,6 +94,7 @@ public:
 	void testPayeeName();
 	void testRemovePayee();
 	void testRemoveAccountFromTree();
+	void testEquality();
 };
 
 #endif

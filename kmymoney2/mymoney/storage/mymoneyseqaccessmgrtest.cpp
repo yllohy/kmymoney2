@@ -923,7 +923,7 @@ void MyMoneySeqAccessMgrTest::testRemoveAccountFromTree() {
 	c.setName("Acc C");
 
 	// build a tree A -> B -> C, remove B and see if A -> C
-	// remains in the storage manager
+	// remains in the storag manager
 
 	try {
 		m->newAccount(a);
@@ -942,7 +942,7 @@ void MyMoneySeqAccessMgrTest::testRemoveAccountFromTree() {
 
 		m->removeAccount(b);
 
-		// reload account info from storage
+		// reload account info from titutionIDtorage
 		a = m->account(a.id());
 		c = m->account(c.id());
 
@@ -986,3 +986,43 @@ void MyMoneySeqAccessMgrTest::testPayeeName() {
 		delete e;
 	}
 }
+
+void MyMoneySeqAccessMgrTest::testEquality() {
+	testAddTransactions();
+
+	MyMoneySeqAccessMgr test = *m;
+	MyMoneySeqAccessMgr *t = &test;
+
+	CPPUNIT_ASSERT( m->m_userName == t->m_userName);
+	CPPUNIT_ASSERT( m->m_userStreet == t->m_userStreet);
+	CPPUNIT_ASSERT( m->m_userTown == t->m_userTown);
+	CPPUNIT_ASSERT( m->m_userCounty == t->m_userCounty);
+	CPPUNIT_ASSERT( m->m_userPostcode == t->m_userPostcode);
+	CPPUNIT_ASSERT( m->m_userTelephone == t->m_userTelephone);
+	CPPUNIT_ASSERT( m->m_userEmail == t->m_userEmail);
+	CPPUNIT_ASSERT( m->m_nextInstitutionID == t->m_nextInstitutionID);
+	CPPUNIT_ASSERT( m->m_nextAccountID == t->m_nextAccountID);
+	CPPUNIT_ASSERT( m->m_nextTransactionID == t->m_nextTransactionID);
+	CPPUNIT_ASSERT( m->m_nextPayeeID == t->m_nextPayeeID);
+	CPPUNIT_ASSERT( m->m_dirty == t->m_dirty);
+	CPPUNIT_ASSERT( m->m_creationDate == t->m_creationDate);
+	CPPUNIT_ASSERT( m->m_lastModificationDate == t->m_lastModificationDate);
+
+	/*
+	 * make sure, that the keys and values are the same
+	 * on the left and the right side
+	 */
+	CPPUNIT_ASSERT(m->m_payeeList.keys() == t->m_payeeList.keys());
+	CPPUNIT_ASSERT(m->m_payeeList.values() == t->m_payeeList.values());
+	CPPUNIT_ASSERT(m->m_transactionKeys.keys() == t->m_transactionKeys.keys()); 
+	CPPUNIT_ASSERT(m->m_transactionKeys.values() == t->m_transactionKeys.values()); 
+	CPPUNIT_ASSERT(m->m_institutionList.keys() == t->m_institutionList.keys()); 
+	CPPUNIT_ASSERT(m->m_institutionList.values() == t->m_institutionList.values()); 
+	CPPUNIT_ASSERT(m->m_accountList.keys() == t->m_accountList.keys()); 
+	CPPUNIT_ASSERT(m->m_accountList.values() == t->m_accountList.values()); 
+	CPPUNIT_ASSERT(m->m_transactionList.keys() == t->m_transactionList.keys()); 
+	CPPUNIT_ASSERT(m->m_transactionList.values() == t->m_transactionList.values()); 
+	CPPUNIT_ASSERT(m->m_balanceCache.keys() == t->m_balanceCache.keys()); 
+	CPPUNIT_ASSERT(m->m_balanceCache.values() == t->m_balanceCache.values()); 
+}
+
