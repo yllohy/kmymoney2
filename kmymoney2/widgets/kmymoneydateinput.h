@@ -38,6 +38,11 @@ public:
 	// Use this to get the selected date
 	QDate getQDate(void);
 	void setDate(QDate date);
+  QWidget* getLineEdit();
+/*
+  virtual void hide();
+  virtual void show();
+*/
   virtual QSize sizeHint() const;
   virtual QSizePolicy sizePolicy() const;
 

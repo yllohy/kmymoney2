@@ -24,7 +24,7 @@ KMoneyTableItem::KMoneyTableItem(QTable *t, EditType et, const QString &txt)
 {
   setReplaceable(false);
 }
-
+/*
 QWidget *KMoneyTableItem::createEditor() const
 {
   ((KMoneyTableItem*)this)->money_edit = new kMyMoneyEdit(table()->viewport());
@@ -48,7 +48,7 @@ void KMoneyTableItem::setContentFromEditor(QWidget *w)
   else
     QTableItem::setContentFromEditor(w);
 }
-
+*/
 void KMoneyTableItem::setText(const QString &s)
 {
   if (money_edit) {

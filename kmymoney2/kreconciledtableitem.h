@@ -27,8 +27,8 @@
 class KReconciledTableItem : public QTableItem  {
 public:
 	KReconciledTableItem(QTable *t, EditType et, const QString &txt);
-  QWidget *createEditor() const;
-  void setContentFromEditor(QWidget *w);
+//  QWidget *createEditor() const;
+//  void setContentFromEditor(QWidget *w);
   void setText(const QString &s);
   void paint(QPainter *p, const QColorGroup &cg, const QRect &cr, bool selected);
 };

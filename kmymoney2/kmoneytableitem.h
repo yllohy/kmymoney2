@@ -32,8 +32,8 @@ class KMoneyTableItem : public QTableItem  {
 
 public:
 	KMoneyTableItem(QTable *t, EditType et, const QString &txt);
-  QWidget *createEditor() const;
-  void setContentFromEditor(QWidget *w);
+//  QWidget *createEditor() const;
+//  void setContentFromEditor(QWidget *w);
   void setText(const QString &s);
   MyMoneyMoney money(void) { return m_money; }
   void paint(QPainter *p, const QColorGroup &cg, const QRect &cr, bool selected);

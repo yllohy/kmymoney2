@@ -35,7 +35,7 @@ KCategoryTableItem::KCategoryTableItem(QTable *t, EditType et, const QString& tx
     }
   }
 }
-
+/*
 QWidget *KCategoryTableItem::createEditor() const
 {
   ((KCategoryTableItem*)this)->category_cb = new QComboBox(table()->viewport());
@@ -58,7 +58,7 @@ void KCategoryTableItem::setContentFromEditor(QWidget *w)
   else
     QTableItem::setContentFromEditor(w);
 }
-
+*/
 void KCategoryTableItem::setText(const QString &s)
 {
   int pos;

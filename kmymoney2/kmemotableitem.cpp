@@ -23,7 +23,7 @@ KMemoTableItem::KMemoTableItem(QTable *t, EditType et, const QString &txt)
 {
   setReplaceable(false);
 }
-
+/*
 QWidget *KMemoTableItem::createEditor() const
 {
   ((KMemoTableItem*)this)->memo_edit = new QLineEdit(table()->viewport());
@@ -40,7 +40,7 @@ void KMemoTableItem::setContentFromEditor(QWidget *w)
   else
     QTableItem::setContentFromEditor(w);
 }
-
+*/
 void KMemoTableItem::setText(const QString &s)
 {
   if (memo_edit)

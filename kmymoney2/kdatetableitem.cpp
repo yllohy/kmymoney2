@@ -26,7 +26,7 @@ KDateTableItem::KDateTableItem(QTable *t, EditType et, const QString &txt)
 {
   setReplaceable(false);
 }
-
+/*
 QWidget *KDateTableItem::createEditor() const
 {
   ((KDateTableItem*)this)->date_edit = new kMyMoneyDateInput(table()->viewport(), QDate::currentDate());
@@ -45,7 +45,7 @@ void KDateTableItem::setContentFromEditor(QWidget *w)
   else
     QTableItem::setContentFromEditor(w);
 }
-
+*/
 void KDateTableItem::setText(const QString &s)
 {
   QDate date = KGlobal::locale()->readDate(s);

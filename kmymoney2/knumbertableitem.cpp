@@ -22,7 +22,7 @@ KNumberTableItem::KNumberTableItem(QTable *t, EditType et, const QString &txt)
 {
   setReplaceable(false);
 }
-
+/*
 QWidget *KNumberTableItem::createEditor() const
 {
   ((KNumberTableItem*)this)->number_edit = new QLineEdit(table()->viewport());
@@ -39,7 +39,7 @@ void KNumberTableItem::setContentFromEditor(QWidget *w)
   else
     QTableItem::setContentFromEditor(w);
 }
-
+*/
 void KNumberTableItem::setText(const QString &s)
 {
 //  if (number_edit)

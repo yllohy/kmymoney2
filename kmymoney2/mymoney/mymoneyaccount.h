@@ -31,7 +31,7 @@
   * @see MyMoneyTransaction
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: mymoneyaccount.h,v 1.4 2001/03/15 02:24:01 mte Exp $
+  * $Id: mymoneyaccount.h,v 1.5 2001/03/22 03:42:56 frodriguez Exp $
   *
   * @short Representation of an account which holds transactions.
 **/
@@ -277,6 +277,7 @@ public:
     * @return Whether the remove was successful.
   **/
   bool removeTransaction(const MyMoneyTransaction& transaction);
+  bool removeCurrentTransaction(unsigned int index);
 
   /**
     * Adds a transaction to the list.

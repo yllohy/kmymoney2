@@ -32,8 +32,8 @@ class KDateTableItem : public QTableItem  {
 
 public: 
 	KDateTableItem(QTable *t, EditType et, const QString &txt);
-  QWidget *createEditor() const;
-  void setContentFromEditor(QWidget *w);
+//  QWidget *createEditor() const;
+//  void setContentFromEditor(QWidget *w);
   void setText(const QString &s);
   QDate date(void);
   void paint(QPainter *p, const QColorGroup &cg, const QRect &cr, bool selected);

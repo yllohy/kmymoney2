@@ -23,7 +23,7 @@ KReconciledTableItem::KReconciledTableItem(QTable *t, EditType et, const QString
 {
   setReplaceable(false);
 }
-
+/*
 QWidget *KReconciledTableItem::createEditor() const
 {
   return 0;
@@ -33,7 +33,7 @@ void KReconciledTableItem::setContentFromEditor(QWidget *w)
 {
   QTableItem::setContentFromEditor(w);
 }
-
+*/
 void KReconciledTableItem::setText(const QString &s)
 {
   QTableItem::setText(s);

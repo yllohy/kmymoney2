@@ -22,7 +22,7 @@ KMethodTableItem::KMethodTableItem(QTable *t, EditType et, const QString &txt)
 {
   setReplaceable(false);
 }
-
+/*
 QWidget *KMethodTableItem::createEditor() const
 {
       ((KMethodTableItem*)this)->method_cb = new QComboBox(table()->viewport());
@@ -52,7 +52,7 @@ void KMethodTableItem::setContentFromEditor(QWidget *w)
   else
     QTableItem::setContentFromEditor(w);
 }
-
+*/
 void KMethodTableItem::setText(const QString &s)
 {
       if (method_cb) {

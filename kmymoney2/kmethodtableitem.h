@@ -32,8 +32,8 @@ class KMethodTableItem : public QTableItem  {
 
 public:
 	KMethodTableItem(QTable *t, EditType et, const QString &txt);
-  QWidget *createEditor() const;
-  void setContentFromEditor(QWidget *w);
+//  QWidget *createEditor() const;
+//  void setContentFromEditor(QWidget *w);
   void setText(const QString &s);
   MyMoneyTransaction::transactionMethod method(void);
   void paint(QPainter *p, const QColorGroup &cg, const QRect &cr, bool selected);

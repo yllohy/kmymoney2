@@ -35,8 +35,8 @@ class KCategoryTableItem : public QTableItem  {
 
 public:
 	KCategoryTableItem(QTable *t, EditType et, const QString& txt, MyMoneyFile *file);
-  QWidget *createEditor() const;
-  void setContentFromEditor(QWidget *w);
+//  QWidget *createEditor() const;
+//  void setContentFromEditor(QWidget *w);
   void setText(const QString &s);
   MyMoneyCategory category(void) { return m_category; }
   void paint(QPainter *p, const QColorGroup &cg, const QRect &cr, bool selected);

@@ -29,6 +29,17 @@ class kMyMoneyTable : public QTable  {
    Q_OBJECT
 private:
   QString m_orig;
+  QWidget* m_col0;
+  QWidget* m_col1;
+  QWidget* m_col2;
+  QWidget* m_col3;
+  QWidget* m_col4;
+  QWidget* m_col5;
+  QWidget* m_col6;
+  QWidget* m_col7;
+  QWidget* m_col8;
+  QWidget* m_col9;
+  QWidget* m_col10;
 
 protected:
   void paintEmptyArea(QPainter *p, int cx, int cy, int cw, int ch);
@@ -37,7 +48,17 @@ protected:
 public:
 	kMyMoneyTable(QWidget *parent=0, const char *name=0);
 	~kMyMoneyTable();
+
+  void insertWidget(int row, int col, QWidget* w);
+  QWidget* cellWidget(int row,int col) const;
+	void clearCellWidget(int row, int col);
+
+
 	QString cellEditedOriginalText(void) { return m_orig; }
+
+protected slots:
+	virtual void columnWidthChanged(int col);
+
 };
 
 #endif

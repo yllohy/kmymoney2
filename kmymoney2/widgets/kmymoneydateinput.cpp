@@ -92,7 +92,8 @@ void kMyMoneyDateInput::mousePressEvent(QMouseEvent* qme)
       datePicker->hide();
     } else {
       QPoint point = mapToGlobal(rect().bottomRight());
-      point.setX(point.x() - datePicker->width());
+      point.setX(point.x());
+//      point.setX(point.x() - datePicker->width());
       datePicker->move(point);
       datePicker->show();
     }
@@ -104,6 +105,24 @@ void kMyMoneyDateInput::slotDateChosen(QDate date)
   lineEdit->setText(KGlobal::locale()->formatDate(date, true));
   m_date=date;
   datePicker->hide();
+}
+
+/*
+void kMyMoneyDateInput::hide()
+{
+ 	lineEdit->hide();
+  //datePicker->hide();
+}
+
+void kMyMoneyDateInput::show()
+{
+ 	lineEdit->show();
+  //datePicker->show();
+}
+*/
+QWidget* kMyMoneyDateInput::getLineEdit()
+{
+ 	return lineEdit;
 }
 
 QDate kMyMoneyDateInput::getQDate(void)

@@ -96,6 +96,11 @@ unsigned int MyMoneyAccount::transactionCount(void) const
   return m_transactions.count();
 }
 
+bool MyMoneyAccount::removeCurrentTransaction(unsigned int pos)
+{
+  return m_transactions.remove(pos);
+}
+
 bool MyMoneyAccount::removeTransaction(const MyMoneyTransaction& transaction)
 {
   unsigned int pos;
@@ -111,6 +116,7 @@ bool MyMoneyAccount::addTransaction(MyMoneyTransaction::transactionMethod method
   MyMoneyTransaction *transaction = new MyMoneyTransaction(m_lastId++, methodType, number,
     memo, amount, date, categoryMajor, categoryMinor, atmName,
     fromTo, bankFrom, bankTo, state);
+
 
   if (m_transactions.isEmpty()) {
     m_transactions.append(transaction);
