@@ -146,9 +146,10 @@ void kMyMoneyDateInput::toggleDatePicker()
       tmpPoint.setY(tmpPoint.y() - h - m_dateButton->height());
     }
 
-    if (m_qtalignment == Qt::AlignRight)
+    if((m_qtalignment == Qt::AlignRight && tmpPoint.x()+w <= QApplication::desktop()->width())
+    || (tmpPoint.x()-w < 0)  )
     {
-      m_dateFrame->setGeometry(tmpPoint.x(), tmpPoint.y(), w, h);
+      m_dateFrame->setGeometry(tmpPoint.x()-width(), tmpPoint.y(), w, h);
     }
     else
     {
