@@ -23,9 +23,9 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 
-#include <knumvalidator.h>
 #include <kglobal.h>
 #include <klocale.h>
+#include <kdebug.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -34,21 +34,79 @@
 #include "kmymoneycalculator.h"
 #include "../mymoney/mymoneymoney.h"
 
+kMyMoneyMoneyValidator::kMyMoneyMoneyValidator(QObject * parent, const char * name) :
+  KDoubleValidator(parent, name)
+{
+}
+
+kMyMoneyMoneyValidator::kMyMoneyMoneyValidator( double bottom, double top, int decimals,
+                                                QObject * parent, const char * name ) :
+  KDoubleValidator(bottom, top, decimals, parent, name)
+{
+}
+
+/*
+ * The code of the following function is taken from kdeui/knumvalidator.cpp
+ * and adjusted to always use the monetary symbols defined in the KDE control center
+ */
+QValidator::State kMyMoneyMoneyValidator::validate( QString & input, int & _p ) const
+{
+  QString s = input;
+  KLocale * l = KGlobal::locale();
+  // ok, we have to re-format the number to have:
+  // 1. decimalSymbol == '.'
+  // 2. negativeSign  == '-'
+  // 3. positiveSign  == <empty>
+  // 4. thousandsSeparator() == <empty> (we don't check that there
+  //    are exactly three decimals between each separator):
+  QString d = l->monetaryDecimalSymbol(),
+          n = l->negativeSign(),
+          p = l->positiveSign(),
+          t = l->monetaryThousandsSeparator();
+  // first, delete p's and t's:
+  if ( !p.isEmpty() )
+    for ( int idx = s.find( p ) ; idx >= 0 ; idx = s.find( p, idx ) )
+      s.remove( idx, p.length() );
+
+
+  if ( !t.isEmpty() )
+    for ( int idx = s.find( t ) ; idx >= 0 ; idx = s.find( t, idx ) )
+      s.remove( idx, t.length() );
+
+  // then, replace the d's and n's
+  if ( ( !n.isEmpty() && n.find('.') != -1 ) ||
+       ( !d.isEmpty() && d.find('-') != -1 ) ) {
+    // make sure we don't replace something twice:
+    kdWarning() << "KDoubleValidator: decimal symbol contains '-' or "
+                   "negative sign contains '.' -> improve algorithm" << endl;
+    return Invalid;
+  }
+
+  if ( !d.isEmpty() && d != "." )
+    for ( int idx = s.find( d ) ; idx >= 0 ; idx = s.find( d, idx + 1 ) )
+      s.replace( idx, d.length(), ".");
+
+  if ( !n.isEmpty() && n != "-" )
+    for ( int idx = s.find( n ) ; idx >= 0 ; idx = s.find( n, idx + 1 ) )
+      s.replace( idx, n.length(), "-" );
+
+  return QDoubleValidator::validate( s, _p );
+}
+
 kMyMoneyEdit::kMyMoneyEdit(QWidget *parent, const char *name )
  : KLineEdit(parent,name)
 {
-	// Yes, just a simple double validator !
-	KFloatValidator *validator = new KFloatValidator(this);
-	validator->setAcceptLocalizedNumbers(true);
-	setValidator(validator);
-	setAlignment(AlignRight | AlignVCenter);
+  // Yes, just a simple double validator !
+  kMyMoneyMoneyValidator *validator = new kMyMoneyMoneyValidator(this);
+  setValidator(validator);
+  setAlignment(AlignRight | AlignVCenter);
 
   m_calculatorFrame = new QVBox(0,0,WType_Popup);
 
-	m_calculatorFrame->setFrameStyle(QFrame::PopupPanel | QFrame::Raised);
+  m_calculatorFrame->setFrameStyle(QFrame::PopupPanel | QFrame::Raised);
   m_calculatorFrame->setLineWidth(3);
-	
-	m_calculator = new kMyMoneyCalculator(m_calculatorFrame);
+
+  m_calculator = new kMyMoneyCalculator(m_calculatorFrame);
   m_calculatorFrame->setFixedSize(m_calculator->width()+3, m_calculator->height()+3);
   m_calculatorFrame->hide();
 

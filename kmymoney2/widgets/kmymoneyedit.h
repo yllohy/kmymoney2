@@ -27,6 +27,7 @@
 // KDE Includes
 
 #include <klineedit.h>
+#include <knumvalidator.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -34,6 +35,35 @@
 class MyMoneyMoney;
 class kMyMoneyCalculator;
 
+// This class is derived from KDoubleValidator and uses
+// the monetary symbols instead of the numeric symbols.
+// Also, it always accepts localized input.
+class kMyMoneyMoneyValidator : public KDoubleValidator {
+  Q_OBJECT
+
+public:
+  /**
+    * Constuct a locale-aware KDoubleValidator with default range
+    * (whatever @ref QDoubleValidator uses for that) and parent @p
+    * parent
+    */
+  kMyMoneyMoneyValidator( QObject * parent, const char * name=0 );
+  /**
+    * Constuct a locale-aware KDoubleValidator for range [@p bottom,@p
+    * top] and a precision of @p decimals decimals after the decimal
+    * point.
+    */
+  kMyMoneyMoneyValidator( double bottom, double top, int decimals,
+                    QObject * parent, const char * name=0 );
+  /**
+    * Destructs the validator.
+    */
+  virtual ~kMyMoneyMoneyValidator() {};
+
+  /** Overloaded for internal reasons. The API is not affected. */
+  virtual QValidator::State validate( QString & input, int & pos ) const;
+
+};
 
 // This class replaces OE Hansens kdbMoneyEdit I used
 // to use.  It has simpler interface and fixes some
