@@ -1,3 +1,6 @@
+2004-12-28 Michael Edwardes <mte@users.sourceforge.net>
+  * 64bit fixes for MyMoneyMoney
+
 2004-12-28 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Added new admin directory from kdelibs 3.3.0
 

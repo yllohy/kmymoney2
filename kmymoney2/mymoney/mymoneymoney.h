@@ -92,7 +92,9 @@ public:
   MyMoneyMoney( const int iAmount, const signed64 denom = 100 );
   MyMoneyMoney( const QString& pszAmount );
   MyMoneyMoney( const signed64 Amount, const signed64 denom = 100  );
+#if __WORDSIZE == 32
   MyMoneyMoney( const long ldAmount, const signed64 denom = 100  );
+#endif
   MyMoneyMoney( const double dAmount, const signed64 denom = 100  );
 #if HAVE_LONG_DOUBLE
   MyMoneyMoney( const long double dAmount, const signed64 denom = 100  );
@@ -148,7 +150,9 @@ public:
   const MyMoneyMoney& operator=( const MyMoneyMoney& Amount );
   const MyMoneyMoney& operator=( const QString& pszAmount );
   const MyMoneyMoney& operator=( signed64 Amount );
+#if __WORDSIZE == 32
   const MyMoneyMoney& operator=( long ldAmount );
+#endif
   const MyMoneyMoney& operator=( int iAmount );
 
   // comparison
@@ -210,8 +214,9 @@ public:
   MyMoneyMoney operator*( const MyMoneyMoney& factor ) const;
   MyMoneyMoney operator*( int factor ) const;
   MyMoneyMoney operator*( signed64 factor ) const;
+#if __WORDSIZE == 32
   MyMoneyMoney operator*( long factor ) const;
-
+#endif
   MyMoneyMoney operator/( const MyMoneyMoney& Amount ) const;
 
   // unary operators
@@ -337,6 +342,7 @@ inline MyMoneyMoney::MyMoneyMoney(const long double dAmount, const signed64 deno
 }
 #endif
 
+#if __WORDSIZE == 32
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: MyMoneyMoney
 //   Purpose: Constructor - constructs object from an amount in a long value
@@ -351,6 +357,7 @@ inline MyMoneyMoney::MyMoneyMoney(const long ldAmount, const signed64 denom)
   m_num = static_cast<signed64>(ldAmount);
   m_denom = denom;
 }
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: MyMoneyMoney
@@ -1090,6 +1097,7 @@ inline MyMoneyMoney MyMoneyMoney::operator*(signed64 factor) const
   return result;
 }
 
+#if __WORDSIZE == 32
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: operator*
 //   Purpose: Multiplication operator - multiplies the object with factor
@@ -1104,6 +1112,7 @@ inline MyMoneyMoney MyMoneyMoney::operator*(long factor) const
   result.m_num *= factor;
   return result;
 }
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: operator*
