@@ -31,6 +31,8 @@
 
 namespace reports {
 
+class ReportAccount;
+
 /**
   * Calculates a query of information about the transaction database.
   *

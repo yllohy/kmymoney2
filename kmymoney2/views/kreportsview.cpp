@@ -62,8 +62,8 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 #include "kreportsview.h"
-#include "pivottable.h"
-#include "querytable.h"
+#include "../reports/pivottable.h"
+#include "../reports/querytable.h"
 #include "../mymoney/mymoneyfile.h"
 #include "../mymoney/mymoneyreport.h"
 #include "../dialogs/kreportconfigurationfilterdlg.h"

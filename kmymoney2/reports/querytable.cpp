@@ -36,7 +36,8 @@
 #include "../mymoney/mymoneyreport.h"
 #include "../mymoney/mymoneyexception.h"
 #include "../kmymoneyutils.h"
-#include "pivottable.h"
+#include "reportaccount.h"
+#include "reportdebug.h"
 #include "querytable.h"
 
 namespace reports {
@@ -687,8 +688,6 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
 
 void QueryTable::constructAccountTable(void)
 {
-  DEBUG_ENTER(__PRETTY_FUNCTION__);
-  
   MyMoneyFile* file = MyMoneyFile::instance();
 
   QValueList<MyMoneyAccount> accounts = file->accountList();
@@ -728,8 +727,6 @@ void QueryTable::constructAccountTable(void)
       MyMoneyMoney netprice = account.deepCurrencyPrice(m_config.toDate()).reduce() * displayprice;
       qaccountrow["price"] = ( netprice.reduce() ).toString();
       qaccountrow["value"] = ( netprice.reduce() * shares.reduce() ).toString();
-
-      DEBUG_OUTPUT(QString("shares=%1 price=%2 value=%3").arg(qaccountrow["shares"],qaccountrow["price"],qaccountrow["value"]));
 
       QCString iid = (*it_account).institutionId();
       if ( iid.isEmpty() )

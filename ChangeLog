@@ -1,6 +1,10 @@
 2005-02-16 Ace Jones <acejones@users.sourceforge.net>
   * Changed the title bar to draw the text in at runtime.  Thanks to THB.
-  
+  * Robert Wadley's latest 32x32 ledger icon
+  * Moved reports into kmymoney2/reports directory, and exploded the reports
+    source files into more files.
+  * Moved converter unit tests into kmymoney2/converter directory.  
+    
 2005-02-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed reported documentation inconsistencies
 

@@ -7,9 +7,9 @@ bin_PROGRAMS = kmymoney2
 
 kmymoney2_SOURCES = kmymoneyutils.cpp kstartuplogo.cpp kmymoney2.cpp main.cpp kmymoney2.stub kmymoney2.skel kapptest.cpp kapptest.stub kapptest.skel
 
-kmymoney2_LDADD = $(top_builddir)/kmymoney2/views/libviews.a $(top_builddir)/kmymoney2/dialogs/libdialogs.a $(top_builddir)/kmymoney2/widgets/libwidgets.a $(top_builddir)/kmymoney2/converter/libconverter.a $(top_builddir)/kmymoney2/mymoney/storage/libstorage.a $(top_builddir)/kmymoney2/mymoney/libkmm_mymoney.la $(top_builddir)/libkgpgfile/libkgpgfile.la $(top_builddir)/kmymoney2/converter/online_quotes/libonline_quotes.a $(top_builddir)/kmymoney2/plugins/interfaces/libinterfaces.a $(top_builddir)/kmymoney2/plugins/libkmm_plugin.la dialogs/libdialogs.a $(LIB_KABC) $(LIB_KHTML) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT) $(LIBSOCKET)
+kmymoney2_LDADD = $(top_builddir)/kmymoney2/views/libviews.a $(top_builddir)/kmymoney2/reports/libreports.a  $(top_builddir)/kmymoney2/dialogs/libdialogs.a $(top_builddir)/kmymoney2/widgets/libwidgets.a $(top_builddir)/kmymoney2/converter/libconverter.a $(top_builddir)/kmymoney2/mymoney/storage/libstorage.a $(top_builddir)/kmymoney2/mymoney/libkmm_mymoney.la $(top_builddir)/libkgpgfile/libkgpgfile.la $(top_builddir)/kmymoney2/converter/online_quotes/libonline_quotes.a $(top_builddir)/kmymoney2/plugins/interfaces/libinterfaces.a $(top_builddir)/kmymoney2/plugins/libkmm_plugin.la dialogs/libdialogs.a $(LIB_KABC) $(LIB_KHTML) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT) $(LIBSOCKET)
 
-SUBDIRS = widgets dialogs views converter mymoney pics icons html templates plugins
+SUBDIRS = widgets dialogs views converter mymoney pics icons html templates plugins reports
 
 EXTRA_DIST = main.cpp kmymoney2.cpp kmymoney2.h kmymoney2ui.rc kmymoney2.desktop kstartuplogo.cpp kstartuplogo.h lo16-app-kmymoney2.png lo32-app-kmymoney2.png kmymoney_wizard.png mimetype_kmy_16x16.png mimetype_kmy_32x32.png mimetype_kmy_48x48.png x-kmymoney2.desktop hi16-app-kmymoney2.png hi32-app-kmymoney2.png tips default_accounts_de.dat kmymoneyutils.cpp kmymoneyutils.h default_accounts_enGB.dat comptes_par_defaut_fr.dat default_accounts_enC.dat default_accounts_enUS.dat default_accounts_br.dat kapptest.cpp kapptest.h
 
@@ -148,7 +148,7 @@ TESTS = kmymoneytest
 check_PROGRAMS = kmymoneytest
 
 kmymoneytest_SOURCES = kmymoneytest.cpp kmymoneyutils.cpp
-kmymoneytest_LDADD = ./mymoney/storage/libstoragetest.a ./mymoney/libmymoneytest.a ./views/libviewstest.a $(kmymoney2_LDADD)
+kmymoneytest_LDADD = ./mymoney/storage/libstoragetest.a ./mymoney/libmymoneytest.a ./converter/libconvertertest.a ./reports/libreportstest.a $(kmymoney2_LDADD)
 
 # the library search path.
 kmymoneytest_LDFLAGS = $(all_libraries) $(kde_RPATH) $(CPPUNIT_LIBS)

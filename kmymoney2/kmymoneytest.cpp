@@ -48,7 +48,10 @@
 #include "mymoney/mymoneyfinancialcalculatortest.h"
 #include "mymoney/mymoneysecuritytest.h"
 
-#include "views/kreportsviewtest.h"
+#include "reports/pivottabletest.h"
+#include "reports/querytabletest.h"
+
+#include "converter/convertertest.h"
 
 #include "cppunit/TextTestProgressListener.h"
 
@@ -115,9 +118,13 @@ main(int /* argc */, char** /* argv */ )
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyScheduleTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneySecurityTest);
 
-  // views tests
-  CPPUNIT_TEST_SUITE_REGISTRATION(KReportsViewTest);
+  // reports tests
+  CPPUNIT_TEST_SUITE_REGISTRATION(PivotTableTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(QueryTableTest);
 
+  // converter tests
+  CPPUNIT_TEST_SUITE_REGISTRATION(ConverterTest);
+  
   // off we go
   CppUnit::TestFactoryRegistry &registry =
     CppUnit::TestFactoryRegistry::getRegistry();

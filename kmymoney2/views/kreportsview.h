@@ -51,10 +51,10 @@ class kMyMoneyTitleLabel;
 
 #include "../mymoney/mymoneyscheduled.h"
 #include "../mymoney/mymoneyaccount.h"
+#include "../mymoney/mymoneyreport.h"
 #include "../widgets/kmymoneyreportcontroldecl.h"
+#include "../reports/kreportchartview.h"
 class MyMoneyReport;
-
-#include "pivottable.h"
 
 /**
   * Displays a page where reports can be placed.

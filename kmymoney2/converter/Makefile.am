@@ -14,3 +14,8 @@ EXTRA_DIST = mymoneyqifprofile.h mymoneyqifprofile.cpp mymoneyqifwriter.cpp mymo
 
 noinst_HEADERS = mymoneyofxstatement.h webpricequote.h
 
+if CPPUNIT
+check_LIBRARIES = libconvertertest.a
+
+libconvertertest_a_SOURCES = convertertest.cpp
+endif
