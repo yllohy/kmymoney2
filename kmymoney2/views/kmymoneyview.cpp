@@ -798,7 +798,7 @@ void KMyMoneyView::viewTransactionList(void)
   	transactionView->hide();
   	m_investmentView->show();
   	m_showing = InvestmentList;
-		m_investmentView->init(pAccount)  	
+		m_investmentView->init(pAccount);  	
   }
   else
   {
