@@ -201,6 +201,21 @@ void KSettingsDlg::setPageList()
   // Add the horizontal layout
   qvboxlayoutColour->addLayout(qhboxlayoutBGColour);
 
+  // Create another horizontal layout to include the label and button
+  QHBoxLayout *qhboxlayoutGridColour = new QHBoxLayout;
+  qhboxlayoutBGColour->setSpacing( 6 );
+  qhboxlayoutBGColour->setMargin( 0 );
+
+  // Add the label and button
+  QLabel *qlabelListGridColour = new QLabel(i18n( "List grid colour :" ), qwidgetColour);
+  qhboxlayoutGridColour->addWidget(qlabelListGridColour);
+  m_kcolorbuttonGrid = new KColorButton(qwidgetColour, "colour_grid");
+  qhboxlayoutGridColour->addWidget(m_kcolorbuttonGrid);
+
+  // Add the horizontal layout
+  qvboxlayoutColour->addLayout(qhboxlayoutGridColour);
+
+
   // Add a vertical spacer to take up the remaining available space
   QSpacerItem* qspaceritemColour = new QSpacerItem( 20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding );
   qvboxlayoutColour->addItem( qspaceritemColour );
@@ -243,12 +258,16 @@ void KSettingsDlg::configRead()
   QFont qfontDefault = QFont("helvetica", 12);
   QColor qcolorDefault = Qt::white;
   QColor qcolorDefaultBG = Qt::gray;
+  QColor qcolorDefaultGrid = Qt::black;
 
   m_qcolorTempList = kconfig->readColorEntry("listColor", &qcolorDefault);
   m_kcolorbuttonList->setColor(m_qcolorTempList);
 
   m_qcolorTempListBG = kconfig->readColorEntry("listBGColor", &qcolorDefaultBG);
   m_kcolorbuttonBack->setColor(m_qcolorTempListBG);
+
+  m_qcolorTempListGrid = kconfig->readColorEntry("listGridColor", &qcolorDefaultGrid);
+  m_kcolorbuttonGrid->setColor(m_qcolorTempListGrid);
 
   m_qfontTempHeader = kconfig->readFontEntry("listHeaderFont", &qfontDefault);
   m_kfontchooserHeader->setFont(m_qfontTempHeader);
@@ -281,6 +300,7 @@ void KSettingsDlg::configWrite()
   kconfig->setGroup("List Options");
   kconfig->writeEntry("listColor", m_kcolorbuttonList->color());
   kconfig->writeEntry("listBGColor", m_kcolorbuttonBack->color());
+  kconfig->writeEntry("listGridColor", m_kcolorbuttonGrid->color());
   kconfig->writeEntry("listHeaderFont", m_kfontchooserHeader->font());
   kconfig->writeEntry("listCellFont", m_kfontchooserCell->font());
   kconfig->writeEntry("RowCount", m_klineeditRowCount->text());

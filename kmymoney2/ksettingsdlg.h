@@ -47,7 +47,7 @@
   * @see KDialogBase
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: ksettingsdlg.h,v 1.9 2001/07/27 17:46:01 mte Exp $
+  * $Id: ksettingsdlg.h,v 1.10 2002/01/14 06:50:08 ipwizard Exp $
   *
   * @short A class to manipulate the settings needed for running KMyMoney2
 **/
@@ -63,6 +63,8 @@ private:
   KColorButton *m_kcolorbuttonList;
   /** Color background */
   KColorButton *m_kcolorbuttonBack;
+  /** Color grid */
+  KColorButton *m_kcolorbuttonGrid;
   /** Select font header */
   KFontChooser *m_kfontchooserHeader;
   /** Font cell setting */
@@ -95,6 +97,7 @@ private:
   **/
   QColor m_qcolorTempList;
   QColor m_qcolorTempListBG;
+  QColor m_qcolorTempListGrid;
   QFont m_qfontTempHeader;
   QFont m_qfontTempCell;
   QString m_qstringTempRowCount;
