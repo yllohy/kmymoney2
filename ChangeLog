@@ -1,3 +1,17 @@
+2002-10-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added parameter name to constructor of kMyMoneyLineEdit
+  * Added kMyMoneyDateEdit::focusWidget()
+  * Fixed tab order handling in form based transaction entry
+  * Fixed calculator to return first operand as result if no second operand
+    has been entered after an operation was selected
+  * Improved keyboard support for ledger view
+  * Added more source code documentation
+  * Removed some unused code
+
+2002-10-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added detection of libxml2 and libxml++ to configure
+  * Fixed initial loading of KAccountListItem
+
 2002-10-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Changed line number in MyMoneyException to unsigned long
   * Added documentation to some engine and view classes
