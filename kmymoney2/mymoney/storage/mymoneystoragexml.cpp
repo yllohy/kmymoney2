@@ -297,6 +297,22 @@ void MyMoneyStorageXML::writeAccount(QDomDocument *pDoc, QDomElement& account, c
   account.setAttribute(QString("name"), p.name());
   account.setAttribute(QString("description"), p.description());
 
+  //Add in subaccount information, if this account has subaccounts.
+  if(p.accountCount())
+  {
+    QDomElement subAccounts = pDoc->createElement("SUBACCOUNTS");
+    QCStringList accountList = p.accountList();
+    QCStringList::Iterator it;
+    for(it = accountList.begin(); it != accountList.end(); ++it)
+    {
+      QDomElement temp = pDoc->createElement("SUBACCOUNT");
+      temp.setAttribute(QString("id"), (*it));
+      subAccounts.appendChild(temp);
+    }
+
+    account.appendChild(subAccounts);
+  }
+  
   writeKeyValuePairs(pDoc, account, p.pairs());
  
 }
@@ -401,6 +417,26 @@ void MyMoneyStorageXML::writeSchedule(QDomDocument *pDoc, QDomElement& scheduled
   scheduledTx.setAttribute(QString("endDate"), tx.endDate().toString());
   scheduledTx.setAttribute(QString("fixed"), tx.isFixed());
   scheduledTx.setAttribute(QString("autoEnter"), tx.autoEnter());
+  scheduledTx.setAttribute(QString("id"), tx.id());
+  scheduledTx.setAttribute(QString("lastPayment"), tx.lastPayment().toString());
+
+  //store the payment history for this scheduled task.
+  QValueList<QDate> payments = tx.recordedPayments();
+  QValueList<QDate>::Iterator it;
+  QDomElement paymentsElement = pDoc->createElement("PAYMENTS");
+  paymentsElement.setAttribute(QString("count"), payments.count());
+  for (it=payments.begin(); it!=payments.end(); ++it)
+  {
+    QDomElement paymentEntry = pDoc->createElement("PAYMENT");
+    paymentEntry.setAttribute(QString("date"), (*it).toString());
+    paymentsElement.appendChild(paymentEntry);
+  }
+  scheduledTx.appendChild(paymentsElement);
+
+  //store the transaction data for this task.
+  QDomElement transactionElement = pDoc->createElement("TRANSACTION");
+  writeTransaction(pDoc, transactionElement, tx.transaction());
+  scheduledTx.appendChild(transactionElement);
 }
 
 /*void MyMoneyStorageXML::getTransactionDetails(const AttributeMap& p)
