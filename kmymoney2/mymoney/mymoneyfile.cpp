@@ -54,6 +54,8 @@ const QCString MyMoneyFile::NotifyClassSecurity = "MyMoneyFile::NotifySecurity";
 const QCString MyMoneyFile::NotifyClassReport = "MyMoneyFile::NotifyReport";
 const QCString MyMoneyFile::NotifyClassPrice = "MyMoneyFile::NotifyPrice";
 
+const QString MyMoneyFile::OpeningBalancesPrefix = "Opening Balances";
+
 // include the following line to get a 'cout' for debug purposes
 // #include <iostream>
 MyMoneyFile* MyMoneyFile::_instance = 0;
@@ -490,17 +492,101 @@ void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
 
   account.setParentAccountId(parent.id());
 
+  MyMoneyMoney openingBalance(account.openingBalance());
+  account.setOpeningBalance(MyMoneyMoney(0,1));
+
   m_storage->addAccount(account);
   m_storage->addAccount(parent, account);
 
   if(account.institutionId().length() != 0)
     m_storage->addAccount(institution, account);
 
+  createOpeningBalanceTransaction(account, openingBalance);
+
   // parse the complete account tree and collect all
   // account and institution ids and also the pseudo account class
   notifyAccountTree(account.id());
   addNotification(NotifyClassAccount);
   addNotification(NotifyClassAccountHierarchy);
+}
+
+void MyMoneyFile::createOpeningBalanceTransaction(const MyMoneyAccount& acc, const MyMoneyMoney& balance)
+{
+  // if the opening balance is not zero, we need
+  // to create the respective transaction
+  if(!balance.isZero()) {
+    MyMoneySecurity currency = security(acc.currencyId());
+    MyMoneyAccount openAcc = openingBalanceAccount(currency);
+
+    if(openAcc.openingDate() > acc.openingDate()) {
+      openAcc.setOpeningDate(acc.openingDate());
+      modifyAccount(openAcc);
+    }
+
+    MyMoneyTransaction t;
+    MyMoneySplit s;
+
+    t.setPostDate(acc.openingDate());
+    t.setCommodity(acc.currencyId());
+
+    s.setAccountId(acc.id());
+    s.setShares(balance);
+    s.setValue(balance);
+    t.addSplit(s);
+
+    s.setId(QCString());
+    s.setAccountId(openAcc.id());
+    s.setShares(-balance);
+    s.setValue(-balance);
+    t.addSplit(s);
+
+    addTransaction(t);
+  }
+}
+
+const MyMoneyAccount MyMoneyFile::openingBalanceAccount(const MyMoneySecurity& security)
+{
+  if(!security.isCurrency())
+    throw new MYMONEYEXCEPTION("Opening balance for non currencies not supported");
+
+  MyMoneyAccount acc;
+  QRegExp match(QString("^%1").arg(MyMoneyFile::OpeningBalancesPrefix));
+
+  QValueList<MyMoneyAccount> accounts;
+  QValueList<MyMoneyAccount>::Iterator it;
+
+  accounts = accountList(equity().accountList(), true);
+
+  for(it = accounts.begin(); it != accounts.end(); ++it) {
+    if(match.search((*it).name()) != -1) {
+      if((*it).currencyId() == security.id()) {
+        acc = *it;
+        break;
+      }
+    }
+  }
+
+  if(acc.id().isEmpty()) {
+    return createOpeningBalanceAccount(security);
+  }
+
+  return acc;
+}
+
+const MyMoneyAccount MyMoneyFile::createOpeningBalanceAccount(const MyMoneySecurity& security)
+{
+  MyMoneyAccount acc;
+  QString name = MyMoneyFile::OpeningBalancesPrefix;
+  if(security.id() != baseCurrency().id()) {
+    name += QString(" (%1)").arg(security.id());
+  }
+  acc.setName(name);
+  acc.setAccountType(MyMoneyAccount::Equity);
+  acc.setCurrencyId(security.id());
+
+  MyMoneyAccount parent = equity();
+  this->addAccount(acc, parent);
+  return acc;
 }
 
 void MyMoneyFile::addTransaction(MyMoneyTransaction& transaction)
@@ -636,11 +722,11 @@ void MyMoneyFile::removePayee(const MyMoneyPayee& payee)
   addNotification(NotifyClassPayeeSet);
 }
 
-const QValueList<MyMoneyAccount> MyMoneyFile::accountList(const QCStringList& idlist) const
+const QValueList<MyMoneyAccount> MyMoneyFile::accountList(const QCStringList& idlist, const bool recursive) const
 {
   checkStorage();
 
-  return m_storage->accountList(idlist);
+  return m_storage->accountList(idlist, recursive);
 }
 
 const QValueList<MyMoneyInstitution> MyMoneyFile::institutionList(void) const

@@ -271,6 +271,34 @@ public:
   const MyMoneyAccount equity(void) const;
 
   /**
+    * This method returns the account information for the opening
+    * balances account for the given @p security. If the respective
+    * account does not exist, it will be created. The name is constructed
+    * using MyMoneyFile::OpeningBalancesPrefix and appending " (xxx)" in
+    * case the @p security is not the baseCurrency(). The account created
+    * will be a sub-account of the standard equity account provided by equity().
+    *
+    * @param security Security for which the account is searched
+    *
+    * @note No notifications will be sent!
+    */
+  const MyMoneyAccount openingBalanceAccount(const MyMoneySecurity& security);
+
+  /**
+    * Create an opening balance transaction for the account @p acc
+    * with a value of @p balance. If the corresponding opening balance account
+    * for the account's currency does not exist it will be created. If it exists
+    * and it's opening date is later than the opening date of @p acc,
+    * the opening date of the opening balances account will be adjusted to the
+    * one of @p acc.
+    *
+    * @param acc reference to account for which the opening balance transaction
+    *            should be created
+    * @param balance reference to the value of the opening balance transaction
+    */
+  void createOpeningBalanceTransaction(const MyMoneyAccount& acc, const MyMoneyMoney& balance);
+
+  /**
     * This method returns an indicator if the MyMoneyFile object has been
     * changed after it has last been saved to permanent storage.
     *
@@ -657,9 +685,11 @@ public:
     *        should be returned. If this list is empty, all accounts
     *        currently known will be returned.
     *
+    * @param recursive if @p true, then recurse in all found accounts. The default is @p false
+    *
     * @return QValueList containing the account objects
     */
-  const QValueList<MyMoneyAccount> accountList(const QCStringList& idlist = QCStringList()) const;
+  const QValueList<MyMoneyAccount> accountList(const QCStringList& idlist = QCStringList(), const bool recursive = false) const;
 
   /**
     * This method is used to convert an account id to a string representation
@@ -994,6 +1024,13 @@ public:
   static const QCString NotifyClassReport;
 
   /**
+    * MyMoneyFile::OpeningBalancesPrefix is a special string used
+    * to generate the name for opening balances accounts. See openingBalanceAccount()
+    * for details.
+    */
+  static const QString OpeningBalancesPrefix;
+
+  /**
     * createCategory creates a category from a text name.
     *
     * The whole account hierarchy is created if it doesnt
@@ -1308,6 +1345,16 @@ private:
   void ensureDefaultCurrency(MyMoneyAccount& acc) const;
 
   void warningMissingRate(const QCString& fromId, const QCString& toId) const;
+
+  /**
+    * This method creates an opening balances account. The name is constructed
+    * using MyMoneyFile::OpeningBalancesPrefix and appending " (xxx)" in
+    * case the @p security is not the baseCurrency(). The account created
+    * will be a sub-account of the standard equity account provided by equity().
+    *
+    * @param security Security for which the account is searched
+    */
+  const MyMoneyAccount createOpeningBalanceAccount(const MyMoneySecurity& security);
 
 private:
   /**
