@@ -1,4 +1,7 @@
-2003-07-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
+2003-07-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * always select a transaction in the ledger view if one's available
+
+2003-07-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed testcases for MyMoneySchedule related tests in
     MyMoneySeqAccessMgrTest
   * modified construction of transfer transactions in
