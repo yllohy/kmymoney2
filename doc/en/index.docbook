@@ -27,14 +27,23 @@
 <address><email>mte@users.sourceforge.net</email></address>
 </affiliation>
 </author>
+<author>
+<firstname>Thomas</firstname>
+<surname>Baumgart</surname>
+<affiliation>
+<address><email>ipwizard@users.sourceforge.net</email></address>
+</affiliation>
+</author>
 </authorgroup>
 
 <!-- TRANS:ROLES_OF_TRANSLATORS -->
 
 <copyright>
-<year>2000></year>
+<year>2000</year>
 <year>2001</year>
+<year>2003</year>
 <holder>Michael Edwardes</holder>
+<holder>Thomas Baumgart</holder>
 </copyright>
 <!-- Translators: put here the copyright notice of the translation -->
 <!-- Put here the FDL notice.  Read the explanation in fdl-notice.docbook
@@ -48,17 +57,17 @@ Please respect the format of the date (DD/MM/YYYY) and of the version
 (V.MM.LL), it could be used by automation scripts.
 Do NOT change these in the translation. -->
 
-<date>22/06/2001</date>
-<releaseinfo>0.1.0</releaseinfo>
+<date>22/06/2003</date>
+<releaseinfo>0.2.0</releaseinfo>
 
 <!-- Abstract about this handbook -->
 
 <abstract>
 <para>
-&kappname; is a personal finances manager for KDE.
+&kappname;, the personal finances manager for KDE.
 </para>
 <para>
-  This handbook describes &kappname; version 0.4.x.
+  This handbook describes &kappname; version 0.5.x.
 </para>
 <para>
   WARNING: This handbook is not finished and may not accurately describe the current
@@ -73,6 +82,7 @@ Please at least include KDE, the KDE package it is in, the name
 <keywordset>
 <keyword>KDE</keyword>
 <keyword>KMyMoney2</keyword>
+<keyword>KMyMoney</keyword>
 <keyword>kmymoney2</keyword>
 <keyword>kmymoney</keyword>
 <keyword>finance</keyword>
@@ -124,6 +134,10 @@ revision history. (see installation appendix comment) -->
 </chapter>
 
 <chapter id="exploreid"><title id="exploreid.title">Accounting principles. (In the eyes of &kappname;).</title>
+<para>
+  Within &kappname; a number of different terms is used. Their role and usage is
+  explained in the following.
+</para>
 <sect1 id="bankid"><title id="bankid.title">Explaining Institutions.</title>
 <para>
   An institution is used to represent a bank or other descriptive container
@@ -161,10 +175,38 @@ revision history. (see installation appendix comment) -->
 <sect1 id="accountid"><title id="accountid.title">Explaining Accounts.</title>
 <para>
   Accounts are used to hold all the data needed to process transactions and
-  are analogous to an account held at a typical bank.  &kappname; can currently
-  process only one type of account - Current, but future versions will have
-  support for a multitude of account types including Savings, Investment,
-  Cash, Credit Card etc.
+  are analogous to an account held at a typical bank. Accounts can be organized
+  in an arbitrary hierarchy where each account has a parent account. The top
+  most parent accounts are 'Assets' and 'Liabilities'. These are fixed accounts
+  which cannot be removed.
+</para>
+<para>
+  &kappname; can currently
+  process the following types of accounts:
+  <itemizedlist>
+  <listitem>
+  <para>Asset accounts to manage your house, car or art collection</para>
+  </listitem>
+  <listitem>
+  <para>Checkings accounts to manage activities on your checkings account e.g. payments, cheques and ec-card purchases.</para>
+  </listitem>
+  <listitem>
+  <para>Savings accounts to manage activities on your savings accounts</para>
+  </listitem>
+  <listitem>
+  <para>Credit Card accounts to manage activities on your credit cards</para>
+  </listitem>
+  <listitem>
+  <para>Cash accounts to manage activities in your wallet</para>
+  </listitem>
+  <listitem>
+  <para>Liability accounts to manage your mortgages etc.</para>
+  </listitem>
+  </itemizedlist>
+</para>
+<para>
+  Future versions will have
+  support for more account types including Investment, Loan, Money-Market etc.
 </para>
 <para>
   Data stored in an account is as follows:
@@ -239,7 +281,7 @@ revision history. (see installation appendix comment) -->
   certain types of transactions e.g Cheque.  You can create a brief description
   of the transaction for personal use.  The transaction can be performed many
   different ways and the action is stored along with the other data.  &kappname;
-  currently supports five different methods;
+  currently supports up to five different methods depending on the account type;
   <itemizedlist>
   <listitem>
     <para>Cheque payment.</para>
@@ -257,10 +299,14 @@ revision history. (see installation appendix comment) -->
     <para>A.T.M.</para>
   </listitem>
   </itemizedlist>
+</para>
+<para>
   The category is there to provide usefull information on why the transaction
   was performed and will be used by &kappname; to provide easy ways of seeing
-  how you spend your money over time.  Each category has two parts; the major
-  and minor category, which, when combined, provide useful information.  Typical
+  how you spend your money over time. Categories - just like accounts - are
+  organized in a hierarchical structure. The top most entries that all
+  categories are derived from are 'Expense' and 'Income'.
+  Typical
   categories are provided for you when &kappname; creates a new file and more
   can be created or edited within the categories dialog.  (See
   <link linkend="catid" endterm="catid.title"></link> and
@@ -278,7 +324,7 @@ revision history. (see installation appendix comment) -->
   your transactions.  There are two top level groups of categories; Income and
   Expense.  These two groups are further divided into useful categories for
   you to use such as Bills which is a category of the Expense group.  Each
-  category can be subdivided into two categories giving a more refined analysis
+  category can be subdivided into more categories giving a more refined analysis
   of your spending habits, e.g Bills could be further split by having sub
   categories such as Rent, Electricity etc.
 </para>
@@ -291,12 +337,13 @@ revision history. (see installation appendix comment) -->
 <para>
   When you create a new &kappname; file a default set of categories is
   created for you to use and this list can be changed by editing the
-  file $KDEDIR/share/apps/kmymoney2/default_categories.dat.  This file
+  file $KDEDIR/share/apps/kmymoney2/default_accounts.dat.  This file
   is in plain text, the format of which is explained within the file.
 </para>
 <para>
-  No information is stored about a category other than whether it is an
-  expense or income and it's name.  You can edit the category data within
+  As categories are handled as regular accounts, the same information
+  is stored for them.
+  You can edit the category data within
   KMyMoney2 by using the category editor.  Please see
   <link linkend="catpayid" endterm="catpayid.title"></link> for more
   information.
@@ -315,8 +362,8 @@ revision history. (see installation appendix comment) -->
   enter into the system which can then be altered later.  (See
   <link linkend="catpayid" endterm="catpayid.title"></link>).  This data
   provides useful information about each payee you use and can be analysed
-  to see where you spend your money and to whom.  (Not currently implemented
-  in &kappname;).
+  to see where you spend your money and to whom.  (Currently only implemented
+  in &kappname;'s payee editor).
 </para>
 </sect1>
 </chapter>
@@ -656,6 +703,14 @@ revision history. (see installation appendix comment) -->
 
 <sect1 id="imptutid"><title id="imptutid.title">Importing and Exporting.</title>
 <para>
+Importing and exporting transactions allows you to collect transactions you
+received through downloads from your bank or send transactions to other
+applications.
+</para>
+<para>
+Currently, &kappname; supports the QIF (Quicken Interchange Format)
+<!-- and CSV (Comma Seperated Values) -->
+format.
 </para>
 </sect1>
 
