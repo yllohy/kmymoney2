@@ -1,3 +1,8 @@
+2004-07-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * More investment work
+  * Moved showWidgets() from the various ledger views to the base class
+    as it was the same code in all derivatives
+
 2004-07-14 Ace Jones <acejones@users.sourceforge.net>
   * Don't attempt to 'fix' transfers from/to a credit card account on load
 
