@@ -19,8 +19,8 @@
 
 #include <qwidget.h>
 #include <qlistview.h>
-#include "./mymoney/mymoneybank.h"
-#include "./mymoney/mymoneyaccount.h"
+#include "../mymoney/mymoneybank.h"
+#include "../mymoney/mymoneyaccount.h"
 
 /**
   *@author Michael Edwardes

@@ -28,19 +28,19 @@
 #include <klistview.h>
 #include <kpopupmenu.h>
 
-#include "mymoney/mymoneyfile.h"
-#include "mymoney/mymoneybank.h"
-#include "mymoney/mymoneyaccount.h"
-#include "mymoney/mymoneytransaction.h"
+#include "../mymoney/mymoneyfile.h"
+#include "../mymoney/mymoneybank.h"
+#include "../mymoney/mymoneyaccount.h"
+#include "../mymoney/mymoneytransaction.h"
 
-#include "widgets/kmymoneydateinput.h"
-#include "widgets/kmymoneylineedit.h"
-#include "widgets/kmymoneycombo.h"
-#include "widgets/kmymoneyedit.h"
-#include "widgets/kmymoneytable.h"
+#include "../widgets/kmymoneydateinput.h"
+#include "../widgets/kmymoneylineedit.h"
+#include "../widgets/kmymoneycombo.h"
+#include "../widgets/kmymoneyedit.h"
+#include "../widgets/kmymoneytable.h"
 
 #include "ktransactionviewdecl.h"
-#include "widgets/kmymoneyhlayout.h"
+#include "../widgets/kmymoneyhlayout.h"
 
 // This class handles the transaction 'view'.
 // It handles the resize event, the totals widgets

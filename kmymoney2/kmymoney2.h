@@ -27,7 +27,7 @@
 #include <kaction.h>
 #include <kprocess.h>
 
-#include "kmymoneyview.h"
+#include "views/kmymoneyview.h"
 
 /*! \mainpage KMyMoney2 Main Page for API documentation.
  * Last update: 20 March 2001.
@@ -52,7 +52,7 @@
   * @see KMyMoneyView
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: kmymoney2.h,v 1.12 2001/07/13 22:43:34 mte Exp $
+  * $Id: kmymoney2.h,v 1.13 2002/01/22 20:30:29 mte Exp $
   *
   * @short Main application class.
 **/

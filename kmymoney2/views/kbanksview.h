@@ -29,7 +29,7 @@
 #include <klistview.h>
 //#include <qlistview.h>
 
-#include <mymoney/mymoneyfile.h>
+#include "../mymoney/mymoneyfile.h"
 //#include "kbanklistview.h"
 #include "kbankviewdecl.h"
 

@@ -23,18 +23,18 @@
 
 #include <stdio.h>
 
-#include "dialogs/knewbankdlg.h"
-#include "dialogs/knewaccountdlg.h"
-#include "dialogs/kendingbalancedlg.h"
-#include "dialogs/kcategoriesdlg.h"
-#include "dialogs/kpayeedlg.h"
-#include "dialogs/knewfiledlg.h"
-#include "dialogs/kfileinfodlg.h"
+#include "../dialogs/knewbankdlg.h"
+#include "../dialogs/knewaccountdlg.h"
+#include "../dialogs/kendingbalancedlg.h"
+#include "../dialogs/kcategoriesdlg.h"
+#include "../dialogs/kpayeedlg.h"
+#include "../dialogs/knewfiledlg.h"
+#include "../dialogs/kfileinfodlg.h"
 #include "kmymoneyview.h"
-#include "dialogs/kchooseimportexportdlg.h"
-#include "dialogs/kcsvprogressdlg.h"
-#include "dialogs/kimportdlg.h"
-#include "dialogs/kexportdlg.h"
+#include "../dialogs/kchooseimportexportdlg.h"
+#include "../dialogs/kcsvprogressdlg.h"
+#include "../dialogs/kimportdlg.h"
+#include "../dialogs/kexportdlg.h"
 
 #if QT_VERSION > 300
 #include <kicontheme.h>

@@ -25,8 +25,8 @@
 #include <qinputdialog.h>
 
 #include "ktransactionview.h"
-#include "dialogs/knewcategorydlg.h"
-#include "dialogs/ksplittransactiondlg.h"
+#include "../dialogs/knewcategorydlg.h"
+#include "../dialogs/ksplittransactiondlg.h"
 #include <kmessagebox.h>
 
 #if QT_VERSION > 300

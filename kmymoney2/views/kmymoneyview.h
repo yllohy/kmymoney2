@@ -31,12 +31,12 @@
 
 // ----------------------------------------------------------------------------
 // Project Includes
-#include "mymoney/mymoneyaccount.h"
+#include "../mymoney/mymoneyaccount.h"
 //#include "kmainview.h"
-#include "dialogs/kreconciledlg.h"
-#include "dialogs/kfindtransactiondlg.h"
+#include "../dialogs/kreconciledlg.h"
+#include "../dialogs/kfindtransactiondlg.h"
 //#include "kscheduleview.h"
-#include "dialogs/kcsvprogressdlg.h"
+#include "../dialogs/kcsvprogressdlg.h"
 
 #include "kbanksview.h"
 #include "ktransactionview.h"
@@ -48,7 +48,7 @@
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.26 2002/01/17 00:34:15 mte Exp $
+  * $Id: kmymoneyview.h,v 1.1 2002/01/22 20:32:14 mte Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/

@@ -217,7 +217,7 @@
 <customwidgets>
     <customwidget>
         <class>kMyMoneyTable</class>
-        <header location="local">./widgets/kmymoneytable.h</header>
+        <header location="local">../widgets/kmymoneytable.h</header>
         <sizehint>
             <width>330</width>
             <height>100</height>
