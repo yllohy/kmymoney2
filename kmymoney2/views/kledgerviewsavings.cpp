@@ -148,3 +148,8 @@ void KLedgerViewSavings::createEditWidgets(void)
   connect(m_editPayment, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   connect(m_editDeposit, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
 }
+
+void KLedgerViewSavings::slotReconciliation(void)
+{
+  KLedgerViewCheckings::slotReconciliation();
+}

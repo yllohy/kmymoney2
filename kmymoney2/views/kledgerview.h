@@ -32,6 +32,7 @@
 #include <qvaluevector.h>
 #include <qtimer.h>
 #include <qwidgetlist.h>
+class QWidgetStack;
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -157,6 +158,11 @@ public:
     ATM
   };
 
+  enum editModeE {
+    TransactionEdit = 0,
+    Reconciliation
+  };
+
 	KLedgerView(QWidget *parent=0, const char *name=0);
 	virtual ~KLedgerView();
 
@@ -244,21 +250,33 @@ public:
     * This method is used to select a specific transaction
     *
     * @param id const reference to the ID of the transaction to be selected
+    * @return true if the transaction was found and selected, false otherwise.
     */
-  void selectTransaction(const QCString& id);
+  bool selectTransaction(const QCString& id);
 
 public slots:
   /**
     * This method refreshes the current view. This includes reading the
-    * configuration options for the filters, the register and rebuilding
-    * the filters by calling filterTransactions().
+    * configuration options for the filters and calling updateView()
     */
   virtual void refreshView(void);
+
+  /**
+    * This method refreshes the current view including rebuild
+    * of the filters by calling filterTransactions().
+    */
+  virtual void updateView(void);
 
   /**
     *
     */
   virtual void slotRegisterClicked(int row, int col, int button, const QPoint &mousePos);
+
+  /**
+    * Calling this slot enters reconciliation mode. This
+    * method must be provided by each derived class.
+    */
+  virtual void slotReconciliation(void) = 0;
 
   /**
     * This method selects the next transaction if not
@@ -406,6 +424,15 @@ public slots:
 
 protected:
   /**
+    * This method is called to create the widget stack for the
+    * specific ledger view. It is the responsability of the
+    * derived object to fill the stack with widgets and panes.
+    * This method simply creates the object and attaches it
+    * to m_infoStack.
+    */
+  void createInfoStack(void);
+
+  /**
     * This method is called to fill the transaction form
     * with the data of the currently selected transaction
     * in m_register. It must be overridden by any derived
@@ -484,6 +511,11 @@ protected:
 
 protected:
   /**
+    * This member keeps a pointer to the specific info stack for the account
+    */
+  QWidgetStack     *m_infoStack;
+
+  /**
     * This member keeps a pointer to the specific register for the account
     */
   kMyMoneyRegister *m_register;
@@ -497,6 +529,13 @@ protected:
     * This member keeps the visibility status of the transaction form.
     */
   bool m_transactionFormActive;
+
+  /**
+    * This member keeps track of the reconciliation state.
+    * If it is true, the user is in reconciliation mode, otherwise
+    * he's in edit mode
+    */
+  bool            m_inReconciliation;
 
   /**
     * This member holds the date from which on transactions should be shown

@@ -44,8 +44,6 @@ class kMyMoneyTransactionFormTable;
 
 /**
   *@author Thomas Baumgart
-  *
-  * @todo in-register editing of transactions in KLedgerViewCheckings
   */
 
 /**
@@ -136,6 +134,11 @@ public slots:
 
   void slotTypeSelected(int transactionType);
 
+  /**
+    *
+    */
+  virtual void slotRegisterClicked(int row, int col, int button, const QPoint &mousePos);
+
   void slotRegisterDoubleClicked(int row, int col, int button, const QPoint &mousePos);
 
 protected:
@@ -178,6 +181,36 @@ protected:
     * This method will be called by showWidgets().
     */
   virtual void createEditWidgets(void);
+
+
+protected slots:
+  /**
+    * Calling this slot enters reconciliation mode. For checkings accounts
+    * this means, that a dialog is opened where the previous endinge balance, the
+    * current ending balance and the issue date of the statement are collected
+    * from the user. Any active editing of a transaction is cancelled.
+    */
+  virtual void slotReconciliation(void);
+
+  /**
+    * Calling this slot toggles the clear flag of the split of the
+    * current selected transaction. The display will be updated.
+    */
+  virtual void slotToggleClearFlag(void);
+
+  /**
+    * Calling this slot postpones the current reconciliation operation.
+    * Data entered by the user is saved in the accounts key-value-container
+    */
+  virtual void slotPostponeReconciliation(void);
+
+  /**
+    * Calling this slot ends the current reconciliation operation.
+    * Data entered by the user is saved in the account. All transactions
+    * that are marked cleared will be marked reconciled. The visual appearance
+    * reverts to normal transaction edit mode.
+    */
+  virtual void slotEndReconciliation(void);
 
 private:
   /**
@@ -232,10 +265,30 @@ private:
   void createSummary(void);
 
   /**
+    * This method is used by the constructor to create the info stack on
+    * the right of the register widget. The stack widget itself is created
+    * by the base class member of this function.
+    */
+  void createInfoStack(void);
+
+  /**
     * This method is used by the constructor to create the transaction form
     * provided by the view.
     */
   void createForm(void);
+
+  /**
+    * This method updates the respective data shown on the right of the
+    * register during reconciliation.
+    */
+  void fillReconcileData(void);
+
+  /**
+    * This method updates the visual elements from reconciliation mode
+    * to edit transaction mode. Called by slotPostponeReconciliation()
+    * and slotEndReconciliation().
+    */
+  void endReconciliation(void);
 
 protected:
   QTab* m_tabCheck;
@@ -261,6 +314,14 @@ protected:
   QLabel          *m_summaryLine;
 
   QHBoxLayout*    m_summaryLayout;
+
+private:
+  MyMoneyMoney    m_prevBalance;
+  MyMoneyMoney    m_endingBalance;
+  QDate           m_endingDate;
+
+  QLabel*         m_clearedLabel;
+  QLabel*         m_statementLabel;
 };
 
 #endif

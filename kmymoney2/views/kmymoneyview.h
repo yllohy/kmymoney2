@@ -63,7 +63,7 @@ class IMyMoneyStorageFormat;
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.22 2002/11/10 08:58:18 ipwizard Exp $
+  * $Id: kmymoneyview.h,v 1.23 2002/11/17 09:00:51 ipwizard Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -92,10 +92,12 @@ private:
   KMyMoneyFile *m_file;  // The interface to the file
   //MyMoneySeqAccessMgr *m_storage;
 
+/*
   bool m_inReconciliation;  // True if the reconciliaton dialog needs updating when the user adds/deletes transactions
   bool m_reconcileInited;  // True if a reconciliation has already been completed this execution
   KReconcileDlg *reconcileDlg;  // These exists during app run time ?
-  KFindTransactionDlg *transactionFindDlg;
+*/
+//  KFindTransactionDlg *transactionFindDlg;
 //  KImportDlg       *importDlg;
 
   KPopupMenu* m_accountMenu;

@@ -151,11 +151,12 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
     this, SLOT(viewTransactionList()));
 */
 
+/*
   m_inReconciliation=false;
   m_reconcileInited=false;
   reconcileDlg=0;
   transactionFindDlg=0;
-
+*/
   m_newAccountWizard = new KNewAccountWizard(this, "NewAccountWizard");
   connect(m_newAccountWizard, SIGNAL(newInstitutionClicked()), this, SLOT(slotBankNew()));
 
@@ -402,7 +403,7 @@ bool KMyMoneyView::readFile(const KURL& url)
     }
   }
 
-  QString strFileExtension = MyMoneyUtils::getFileExtension(filename);
+  QString strFileExtension = MyMoneyUtils::getFileExtension(url.path());
   if(strFileExtension.find("XML") != -1)
   {
     pReader = new MyMoneyStorageXML;
@@ -753,22 +754,18 @@ void KMyMoneyView::slotReconcileFinished(bool success)
   {
     transactionView->refresh();
   }
-*/
 
   // Remember to disconnect.
   // disconnect(transactionView,SIGNAL(transactionListChanged()),reconcileDlg,SLOT(slotTransactionChanged()));
   reconcileDlg->hide();
   m_inReconciliation=false;
+*/
 }
 
 void KMyMoneyView::newFile(void)
 {
   m_file->close();
   m_file->open();
-
-
-
-
 
   MyMoneyFile *file = MyMoneyFile::instance();
 

@@ -52,6 +52,10 @@ protected:
 
   /* documented in base class */
   virtual void createEditWidgets(void);
+
+  /* documented in base class */
+  virtual void slotReconciliation(void);
+
 };
 
 #endif

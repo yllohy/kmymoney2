@@ -25,6 +25,7 @@
 
 #include <qdatetime.h>
 #include <qapp.h>
+#include <qwidgetstack.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -93,10 +94,16 @@ KLedgerView::KLedgerView(QWidget *parent, const char *name )
   m_editDate = 0;
   m_editFrom = 0;
   m_editTo = 0;
+
+  m_infoStack = 0;
+  m_inReconciliation = false;
 }
 
 KLedgerView::~KLedgerView()
 {
+  if(m_infoStack != 0)
+    delete m_infoStack;
+
   MyMoneyFile::instance()->detach(m_account.id(), this);
 }
 
@@ -128,10 +135,10 @@ void KLedgerView::reloadAccount(const bool repaint)
   m_transactionList = MyMoneyFile::instance()->transactionList(m_account.id());
 
   // filter all unwanted transactions
-  refreshView();
+  updateView();
 
   if(repaint == true) {
-    m_register->repaintContents();
+    m_register->repaintContents(false);
     // if the very last transaction was deleted, we need to update
     // the index to the current transaction
     if(m_register->currentTransactionIndex() >= m_transactionList.count())
@@ -175,11 +182,17 @@ void KLedgerView::refreshView(void)
   m_ledgerLens = config->readBoolEntry("LedgerLens", true);
   m_transactionFormActive = config->readBoolEntry("TransactionForm", true);
 
+  m_register->readConfig();
+
+  updateView();
+}
+
+void KLedgerView::updateView(void)
+{
   filterTransactions();
 
   slotShowTransactionForm(m_transactionFormActive);
 
-  m_register->readConfig();
   m_register->setTransactionCount(m_transactionPtrVector.count()+1);
   resizeEvent(NULL);
 }
@@ -197,6 +210,15 @@ void KLedgerView::filterTransactions(void)
     // only show those transactions, that are posted after the configured start date
     if((*it_t).postDate() < m_dateStart)
       continue;
+
+    // if in reconciliation mode, don't show old stuff
+    if(m_inReconciliation == true) {
+      MyMoneySplit s = (*it_t).split(m_account.id());
+      if(s.reconcileFlag() == MyMoneySplit::Reconciled
+      || s.reconcileFlag() == MyMoneySplit::Frozen) {
+        continue;
+      }
+    }
 
     // add more filters before this line ;-)
 
@@ -259,7 +281,7 @@ void KLedgerView::slotRegisterClicked(int row, int col, int button, const QPoint
   // transaction has been selected with this click.
   if(m_register->setCurrentTransactionRow(row) == true) {
     m_register->ensureTransactionVisible();
-    m_register->repaintContents();
+    m_register->repaintContents(false);
 
     slotCancelEdit();
 
@@ -287,7 +309,7 @@ void KLedgerView::slotNextTransaction(void)
     slotCancelEdit();
     m_register->setCurrentTransactionIndex(m_register->currentTransactionIndex()+1);
     m_register->ensureTransactionVisible();
-    m_register->repaintContents();
+    m_register->repaintContents(false);
     fillForm();
     fillSummary();
     emit transactionSelected();
@@ -304,28 +326,31 @@ void KLedgerView::slotPreviousTransaction(void)
     slotCancelEdit();
     m_register->setCurrentTransactionIndex(m_register->currentTransactionIndex()-1);
     m_register->ensureTransactionVisible();
-    m_register->repaintContents();
+    m_register->repaintContents(false);
     fillForm();
     fillSummary();
     emit transactionSelected();
   }
 }
 
-void KLedgerView::selectTransaction(const QCString& transactionId)
+bool KLedgerView::selectTransaction(const QCString& transactionId)
 {
+  bool  rc = false;
   int i;
 
   for(i = 0; i < m_transactionPtrVector.size(); ++i) {
     if(m_transactionPtrVector[i]->id() == transactionId) {
       m_register->setCurrentTransactionIndex(i);
       m_register->ensureTransactionVisible();
-      m_register->repaintContents();
+      m_register->repaintContents(false);
       fillForm();
       fillSummary();
       emit transactionSelected();
+      rc = true;
       break;
     }
   }
+  return rc;
 }
 
 void KLedgerView::slotPayeeChanged(const QString& name)
@@ -768,7 +793,7 @@ void KLedgerView::slotShowTransactionForm(bool visible)
 void KLedgerView::timerDone(void)
 {
   m_register->ensureTransactionVisible();
-  m_register->repaintContents();
+  m_register->repaintContents(false);
   delete m_timer;
   m_timer = 0;
 }
@@ -864,7 +889,7 @@ void KLedgerView::slotNew(void)
   // select the very last line (empty one), and load it into the form
   m_register->setCurrentTransactionIndex(m_transactionList.count());
   m_register->ensureTransactionVisible();
-  m_register->repaintContents();
+  m_register->repaintContents(false);
   fillForm();
   fillSummary();
 
@@ -1065,5 +1090,13 @@ bool KLedgerView::focusNextPrevChild(bool next)
     rc = QWidget::focusNextPrevChild(next);
 
   return rc;
+}
+
+void KLedgerView::createInfoStack(void)
+{
+  if(m_infoStack != 0)
+    delete m_infoStack;
+
+  m_infoStack = new QWidgetStack(this, "InfoStack");
 }
 

@@ -25,6 +25,7 @@
 
 #include <qlayout.h>
 #include <qfocusdata.h>
+#include <qwidgetstack.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -44,27 +45,16 @@
 #include "../widgets/kmymoneycategory.h"
 #include "../widgets/kmymoneylineedit.h"
 #include "../widgets/kmymoneyregistercheckings.h"
+#include "../dialogs/kendingbalancedlg.h"
 
 KLedgerViewCheckings::KLedgerViewCheckings(QWidget *parent, const char *name )
   : KLedgerView(parent,name)
 {
   QGridLayout* formLayout = new QGridLayout( this, 1, 1, 11, 6, "FormLayout");
-  QVBoxLayout* buttonLayout = new QVBoxLayout( 0, 0, 6, "ButtonLayout");
   QVBoxLayout* ledgerLayout = new QVBoxLayout( 0, 0, 6, "LedgerLayout");
 
-  m_detailsButton = new KPushButton(this, "detailsButton" );
-  m_detailsButton->setText(i18n("Account Details"));
-  buttonLayout->addWidget(m_detailsButton);
-
-  m_reconcileButton = new KPushButton(this, "reconcileButton");
-  m_reconcileButton->setText(i18n("&Reconcile ..."));
-  buttonLayout->addWidget(m_reconcileButton);
-
-  QSpacerItem* spacer = new QSpacerItem( 20, 20,
-                   QSizePolicy::Minimum, QSizePolicy::Expanding );
-  buttonLayout->addItem( spacer );
-
-  formLayout->addLayout( buttonLayout, 0, 1 );
+  createInfoStack();
+  formLayout->addWidget(m_infoStack, 0, 1 );
 
   createRegister();
   ledgerLayout->addWidget(m_register, 3);
@@ -302,6 +292,141 @@ void KLedgerViewCheckings::createSummary(void)
   m_summaryLine = new QLabel(this);
 
   m_summaryLayout->addWidget(m_summaryLine);
+}
+
+void KLedgerViewCheckings::createInfoStack(void)
+{
+  // create the widget stack first
+  KLedgerView::createInfoStack();
+
+  // First page buttons inside a frame with layout
+  QFrame* frame = new QFrame(m_infoStack, "ButtonFrame");
+
+  frame->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding,
+                                     QSizePolicy::Minimum,
+                                     0, 0,
+                                     frame->sizePolicy().hasHeightForWidth() ) );
+
+  QVBoxLayout* buttonLayout = new QVBoxLayout( frame, 0, 6, "ButtonLayout");
+
+  m_detailsButton = new KPushButton(frame, "detailsButton" );
+  m_detailsButton->setText(i18n("Account Details"));
+  buttonLayout->addWidget(m_detailsButton);
+
+  m_reconcileButton = new KPushButton(frame, "reconcileButton");
+  m_reconcileButton->setText(i18n("&Reconcile ..."));
+  buttonLayout->addWidget(m_reconcileButton);
+
+  connect(m_reconcileButton, SIGNAL(clicked()), this, SLOT(slotReconciliation()));
+
+  QSpacerItem* spacer = new QSpacerItem( 20, 20,
+                   QSizePolicy::Minimum, QSizePolicy::Expanding );
+  buttonLayout->addItem( spacer );
+
+  m_infoStack->addWidget(frame, KLedgerView::TransactionEdit);
+
+
+
+  // Second page reconciliation info
+  frame = new QFrame(m_infoStack, "ReconcileFrame");
+
+  QVBoxLayout* reconcileLayout = new QVBoxLayout( frame, 0, 6, "ReconcileLayout");
+
+  frame->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding,
+                                     QSizePolicy::Minimum,
+                                     0, 0,
+                                     frame->sizePolicy().hasHeightForWidth() ) );
+
+  QFrame* innerFrame = new QFrame(frame, "InnerFrame");
+
+  innerFrame->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding,
+                                     QSizePolicy::Minimum,
+                                     0, 0,
+                                     frame->sizePolicy().hasHeightForWidth() ) );
+
+  innerFrame->setFrameShadow( QFrame::Plain );
+  innerFrame->setFrameShape( QFrame::Panel );
+  innerFrame->setMaximumWidth(125);
+  innerFrame->setLineWidth(1);
+
+  QVBoxLayout* innerLayout = new QVBoxLayout( innerFrame, 6, 6, "InnerLayout");
+
+  QLabel* txt;
+  QFont defaultFont = QFont("helvetica", 10);
+
+  txt = new QLabel(i18n("<center><b>Reconcile account</b></center><hr>\n"
+                        "<b>1.</b> Click on column 'C' "
+                        "to clear the transactions "
+                        "appearing on your bank statement."), innerFrame);
+  txt->setFont(defaultFont);
+  innerLayout->addWidget(txt);
+
+  txt = new QLabel(i18n("<b>2.</b> Match the cleared "
+                        "transactions with the amount "
+                        "noted on your bank statement."), innerFrame);
+  txt->setFont(defaultFont);
+  innerLayout->addWidget(txt);
+
+
+  QHBoxLayout* boxLayout = new QHBoxLayout(innerLayout, 0, "ClearedLayout");
+
+  txt = new QLabel(i18n("Cleared:"), innerFrame);
+  txt->setFont(defaultFont);
+  boxLayout->addWidget(txt);
+
+  spacer = new QSpacerItem( 1, 1,
+                   QSizePolicy::Minimum, QSizePolicy::Expanding );
+  boxLayout->addItem( spacer );
+
+  m_clearedLabel = new QLabel("2.400,00", innerFrame);
+  m_clearedLabel->setFont(defaultFont);
+  m_clearedLabel->setAlignment(Right);
+  boxLayout->addWidget(m_clearedLabel);
+
+  boxLayout = new QHBoxLayout(innerLayout, 0, "StatementLayout");
+
+  txt = new QLabel(i18n("Statement:"), innerFrame);
+  txt->setFont(defaultFont);
+  boxLayout->addWidget(txt);
+
+  spacer = new QSpacerItem( 1, 1,
+                   QSizePolicy::Minimum, QSizePolicy::Expanding );
+  boxLayout->addItem( spacer );
+
+  m_statementLabel = new QLabel("1.200,00", innerFrame);
+  m_statementLabel->setFont(defaultFont);
+  m_statementLabel->setAlignment(Right);
+  boxLayout->addWidget(m_statementLabel);
+
+  txt = new QLabel(i18n("<b>3.</b> Hit the Finish "
+                        "button below when you're done."), innerFrame);
+  txt->setFont(defaultFont);
+  innerLayout->addWidget(txt);
+
+
+  reconcileLayout->addWidget(innerFrame);
+
+
+  KPushButton* m_finishButton = new KPushButton(frame, "FinishButton");
+  m_finishButton->setText(i18n("&Finish"));
+  reconcileLayout->addWidget(m_finishButton);
+
+  connect(m_finishButton, SIGNAL(clicked()), this, SLOT(slotEndReconciliation()));
+
+  KPushButton* m_postponeButton = new KPushButton(frame, "PostponeButton");
+  m_postponeButton->setText(i18n("&Postpone"));
+  reconcileLayout->addWidget(m_postponeButton);
+
+  connect(m_postponeButton, SIGNAL(clicked()), this, SLOT(slotPostponeReconciliation()));
+
+  spacer = new QSpacerItem( 20, 20,
+                   QSizePolicy::Minimum, QSizePolicy::Expanding );
+  reconcileLayout->addItem( spacer );
+
+  m_infoStack->addWidget(frame, KLedgerView::Reconciliation);
+
+  // Initially show the page with the buttons
+  m_infoStack->raiseWidget(KLedgerView::TransactionEdit);
 }
 
 void KLedgerViewCheckings::fillSummary(void)
@@ -869,3 +994,176 @@ bool KLedgerViewCheckings::focusNextPrevChild(bool next)
   return KLedgerView::focusNextPrevChild(next);
 }
 
+void KLedgerViewCheckings::slotReconciliation(void)
+{
+  slotCancelEdit();
+
+  MyMoneyMoney lastReconciledBalance(m_account.value("lastReconciledBalance"));
+  if(lastReconciledBalance == 0)
+    lastReconciledBalance = MyMoneyMoney(m_account.value("lastStatementBalance"));
+
+  MyMoneyMoney statementBalance(m_account.value("statementBalance"));
+  QStringList vals(QStringList::split("-", QString(m_account.value("statementDate"))));
+  QDate statementDate = QDate::currentDate();
+
+  if(vals.count() == 3) {
+    statementDate.setYMD(vals[0].toInt(), vals[1].toInt(), vals[2].toInt());
+  }
+
+  KEndingBalanceDlg dlg(lastReconciledBalance, statementBalance, statementDate);
+
+  if(dlg.exec()) {
+    QCString transactionId;
+
+    m_infoStack->raiseWidget(KLedgerView::Reconciliation);
+    m_inReconciliation = true;
+    m_summaryLine->hide();
+    m_transactionFormActive = false;
+
+    m_prevBalance = dlg.previousBalance();
+    m_endingBalance = dlg.endingBalance();
+    m_endingDate = dlg.endingDate();
+
+    if(m_transactionPtr != 0)
+      transactionId = m_transactionPtr->id();
+
+    // do not show frozen or reconciled transactions
+    updateView();
+    fillReconcileData();
+
+    if(transactionId != "")
+      if(selectTransaction(transactionId) == false
+      && m_transactionPtrVector.size() > 0)
+        selectTransaction(m_transactionPtrVector[0]->id());
+
+    // allow SPACE to be used to toggle the clear state
+    connect(m_register, SIGNAL(signalSpace()), this, SLOT(slotToggleClearFlag()));
+  }
+}
+
+void KLedgerViewCheckings::fillReconcileData(void)
+{
+  MyMoneyMoney cleared(m_prevBalance);
+
+  for(unsigned int i = 0; i < m_transactionPtrVector.size(); ++i) {
+    MyMoneyTransaction* t = m_transactionPtrVector[i];
+    MyMoneySplit sp = t->split(m_account.id());
+    if(sp.reconcileFlag() == MyMoneySplit::Cleared)
+      cleared += sp.value();
+  }
+
+  m_clearedLabel->setText(cleared.formatMoney());
+  m_statementLabel->setText(m_endingBalance.formatMoney());
+}
+
+void KLedgerViewCheckings::slotRegisterClicked(int row, int col, int button, const QPoint &mousePos)
+{
+  KLedgerView::slotRegisterClicked(row, col, button, mousePos);
+
+  if(m_inReconciliation == true
+  && col == 3) {    // reconcileFlag column
+    slotToggleClearFlag();
+  }
+}
+
+void KLedgerViewCheckings::slotToggleClearFlag(void)
+{
+  if(m_transactionPtr != 0) {
+    MyMoneySplit sp = m_transactionPtr->split(m_account.id());
+    switch(sp.reconcileFlag()) {
+      case MyMoneySplit::NotReconciled:
+        sp.setReconcileFlag(MyMoneySplit::Cleared);
+        break;
+      default:
+        sp.setReconcileFlag(MyMoneySplit::NotReconciled);
+        break;
+    }
+    try {
+      m_transactionPtr->modifySplit(sp);
+      MyMoneyFile::instance()->modifyTransaction(*m_transactionPtr);
+
+    } catch(MyMoneyException *e) {
+      qDebug("Unexpected exception when setting reconcile flag");
+      delete e;
+    }
+
+    // update the display is partially done through the observer
+    // on the account in KLedgerView::update(). We add what's missing.
+    fillReconcileData();
+  }
+}
+
+void KLedgerViewCheckings::slotPostponeReconciliation(void)
+{
+  if(m_inReconciliation == true) {
+    m_account.setValue("lastReconciledBalance", m_prevBalance.formatMoney());
+    m_account.setValue("statementBalance", m_endingBalance.formatMoney());
+    m_account.setValue("statementDate", m_endingDate.toString("yyyy-MM-dd"));
+
+    try {
+      MyMoneyFile::instance()->modifyAccount(m_account);
+    } catch(MyMoneyException *e) {
+      qDebug("Unexpected exception when setting last reconcile info into account");
+      delete e;
+    }
+
+    endReconciliation();
+  }
+}
+
+void KLedgerViewCheckings::endReconciliation(void)
+{
+  QCString transactionId;
+  KConfig *config = KGlobal::config();
+  config->setGroup("General Options");
+
+  m_infoStack->raiseWidget(KLedgerView::TransactionEdit);
+  m_inReconciliation = false;
+  m_summaryLine->show();
+  m_transactionFormActive = config->readBoolEntry("TransactionForm", true);
+
+  if(m_transactionPtr != 0)
+    transactionId = m_transactionPtr->id();
+
+  updateView();
+
+  if(transactionId != "") {
+    if(selectTransaction(transactionId) == false
+    && m_transactionPtrVector.size() > 0)
+      selectTransaction(m_transactionPtrVector[m_transactionPtrVector.size()-1]->id());
+  }
+
+  disconnect(m_register, SIGNAL(signalSpace()), this, SLOT(slotToggleClearFlag()));
+}
+
+void KLedgerViewCheckings::slotEndReconciliation(void)
+{
+  if(m_inReconciliation == true) {
+    m_account.setValue("lastStatementBalance", m_endingBalance.formatMoney());
+    m_account.setValue("lastStatementDate", m_endingDate.toString("yyyy-MM-dd"));
+
+    m_account.deletePair("lastReconciledBalance");
+    m_account.deletePair("statementBalance");
+    m_account.deletePair("statementDate");
+
+    try {
+      MyMoneyFile::instance()->modifyAccount(m_account);
+      QValueList<MyMoneyTransaction> list = MyMoneyFile::instance()->transactionList(m_account.id());
+      QValueList<MyMoneyTransaction>::Iterator it;
+
+      for(it = list.begin(); it != list.end(); ++it) {
+        MyMoneySplit sp = (*it).split(m_account.id());
+        if(sp.reconcileFlag() == MyMoneySplit::Cleared) {
+          sp.setReconcileFlag(MyMoneySplit::Reconciled);
+          sp.setReconcileDate(m_endingDate);
+          (*it).modifySplit(sp);
+          MyMoneyFile::instance()->modifyTransaction(*it);
+        }
+      }
+    } catch(MyMoneyException *e) {
+      qDebug("Unexpected exception when setting cleared to reconcile");
+      delete e;
+    }
+    endReconciliation();
+  }
+}
