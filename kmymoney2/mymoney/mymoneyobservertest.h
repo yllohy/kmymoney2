@@ -17,9 +17,7 @@
 #ifndef __MYMONEYOBSERVERTEST_H__
 #define __MYMONEYOBSERVERTEST_H__
 
-#include <cppunit/TestCaller.h>
-#include <cppunit/TestCase.h>
-#include <cppunit/TestSuite.h>
+#include <cppunit/extensions/HelperMacros.h>
 
 class TestObserver : public MyMoneyObserver
 {

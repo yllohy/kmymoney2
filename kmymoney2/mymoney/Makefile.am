@@ -17,8 +17,10 @@ check_PROGRAMS = $(TESTS)
 
 INCLUDES += -Istorage
 
-autotest_SOURCES= autotest.cpp \
-                mymoneytransactiontest.cpp \
+
+if CPPUNIT
+autotest_SOURCES = autotest.cpp \
+		mymoneytransactiontest.cpp \
                 mymoneysplittest.cpp \
                 mymoneymoneytest.cpp \
                 mymoneyfiletest.cpp \
@@ -27,7 +29,10 @@ autotest_SOURCES= autotest.cpp \
                 mymoneyinstitutiontest.cpp
 
 autotest_DEPENDENCIES = all-recursive
+autotest_LDADD = $(LIB_KDECORE) $(LIB_QT) $(CPPUNIT_LIBS) storage/libstorage.a libmymoney.a
+else
+autotest_SOURCES= autotest.cpp 
+endif
 
-autotest_LDADD = $(LIB_KDECORE) $(LIB_QT) $(LIB_CPPUNIT) storage/libstoragetest.a storage/libstorage.a libmymoney.a
 autotest_LDFLAGS = $(all_libraries) $(kde_RPATH)
 

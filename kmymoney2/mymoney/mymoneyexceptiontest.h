@@ -17,9 +17,6 @@
 #ifndef __MYMONEYEXCEPTIONTEST_H__
 #define __MYMONEYEXCEPTIONTEST_H__
 
-#include <cppunit/TestCaller.h>
-#include <cppunit/TestCase.h>
-#include <cppunit/TestSuite.h>
 #include <cppunit/extensions/HelperMacros.h>
 
 #define private public
