@@ -1,8 +1,14 @@
+2004-06-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed problem in find transaction logic
+  * Fixed problem with scheduled payments when payment is on 29th-31st but
+    month has less days
+
 2004-06-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added kMyMoneyEquity to KLedgerViewInvestment
   * Removed unused members from kMyMoneyCategory
   * Fixed new equity entry dialog to keep updated values in member vars
   * Fixed some make issues
+  * Fix endless loop when using with Qt < 3.2.1
 
 2004-06-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Renamed newAccount() to addAccount() in the engine code to
