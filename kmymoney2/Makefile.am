@@ -1,7 +1,7 @@
 ####### kdevelop will overwrite this part!!! (begin)##########
 bin_PROGRAMS = kmymoney2
 kmymoney2_SOURCES = kreconciledtableitem.cpp kmoneytableitem.cpp kcategorytableitem.cpp kmemotableitem.cpp knumbertableitem.cpp kdatetableitem.cpp kmethodtableitem.cpp ktransactionviewdecl.ui kfindtransactiondlgdecl.ui kfileinfodlgdecl.ui knewfiledlgdecl.ui knewbankdlgdecl.ui knewaccountdlgdecl.ui knewcategorydlgdecl.ui kendingbalancedlgdecl.ui ksettingsdlgdecl.ui klistsettingsdlgdecl.ui kscheduleviewdecl.ui kreconciledlgdecl.ui kpayeedlgdecl.ui knewbillwizard.ui kcategorydlgdecl.ui kbankviewdecl.ui ktransactionview.cpp ktfindresultsdlgdecl.ui ktfindresultsdlg.cpp kstartuplogo.cpp kstartdlg.cpp ksettingsdlg.cpp kscheduleview.cpp kschedulelistitem.cpp kreconcilelistitem.cpp kreconciledlg.cpp kpayeedlg.cpp knewfiledlg.cpp knewcategorydlg.cpp knewbillwizardimpl.cpp knewbankdlg.cpp knewaccountdlg.cpp kmymoneyview.cpp kmymoneysettings.cpp kmainview.cpp klistsettingsdlg.cpp kfindtransactiondlg.cpp kfileinfodlg.cpp kendingbalancedlg.cpp kcategorylistitem.cpp kcategoriesdlg.cpp kbanksview.cpp kbanklistitem.cpp kmymoney2.cpp main.cpp 
-kmymoney2_LDADD   = ./widgets/libwidgets.a ./mymoney/libmymoney.a -lkfile -lkdeui -lkdecore $(LIB_QT) $(LIBSOCKET)
+kmymoney2_LDADD   = ./widgets/libwidgets.a ./mymoney/libmymoney.a  -lkfile -lkdeui -lkdecore $(LIB_QT) $(LIBSOCKET)
 
 SUBDIRS = widgets mymoney pics 
 
@@ -9,21 +9,21 @@ EXTRA_DIST = main.cpp kmymoney2.cpp kmymoney2.h kmymoney2ui.rc kmymoney2.desktop
 
 install-data-local:
 	$(mkinstalldirs) $$(kde_appsdir)/Applications/
-	$(INSTALL_DATA) kmymoney2.desktop $$(kde_appsdir)/Applications/kmymoney2.desktop
+	$(INSTALL_DATA) $(srcdir)/kmymoney2.desktop $$(kde_appsdir)/Applications/kmymoney2.desktop
 	$(mkinstalldirs) $$(kde_datadir)/kmymoney2/
-	$(INSTALL_DATA) default_categories.dat $$(kde_datadir)/kmymoney2/default_categories.dat
+	$(INSTALL_DATA) $(srcdir)/default_categories.dat $$(kde_datadir)/kmymoney2/default_categories.dat
 	$(mkinstalldirs) $$(kde_icondir)/locolor/16x16/apps/
-	$(INSTALL_DATA) lo16-app-kmymoney2.png $$(kde_icondir)/locolor/16x16/apps/kmymoney2.png
+	$(INSTALL_DATA) $(srcdir)/lo16-app-kmymoney2.png $$(kde_icondir)/locolor/16x16/apps/kmymoney2.png
 	$(mkinstalldirs) $$(kde_icondir)/locolor/32x32/apps/
-	$(INSTALL_DATA) lo32-app-kmymoney2.png $$(kde_icondir)/locolor/32x32/apps/kmymoney2.png
+	$(INSTALL_DATA) $(srcdir)/lo32-app-kmymoney2.png $$(kde_icondir)/locolor/32x32/apps/kmymoney2.png
 	$(mkinstalldirs) $$(kde_datadir)/kmymoney2/pics/
-	$(INSTALL_DATA) kmymoney_logo.png $$(kde_datadir)/kmymoney2/pics/kmymoney_logo.png
+	$(INSTALL_DATA) $(srcdir)/kmymoney_logo.png $$(kde_datadir)/kmymoney2/pics/kmymoney_logo.png
 	$(mkinstalldirs) $(kde_icondir)/hicolor/16x16/mimetypes/
-	$(INSTALL_DATA) mimetype_kmy_16x16.png $(kde_icondir)/hicolor/16x16/mimetypes/kmy2.png
+	$(INSTALL_DATA) $(srcdir)/mimetype_kmy_16x16.png $(kde_icondir)/hicolor/16x16/mimetypes/kmy2.png
 	$(mkinstalldirs) $(kde_icondir)/hicolor/32x32/mimetypes/
-	$(INSTALL_DATA) mimetype_kmy_32x32.png $(kde_icondir)/hicolor/32x32/mimetypes/kmy.png
+	$(INSTALL_DATA) $(srcdir)/mimetype_kmy_32x32.png $(kde_icondir)/hicolor/32x32/mimetypes/kmy.png
 	$(mkinstalldirs) $(kde_icondir)/hicolor/48x48/mimetypes/
-	$(INSTALL_DATA) mimetype_kmy_48x48.png $(kde_icondir)/hicolor/48x48/mimetypes/kmy.png
+	$(INSTALL_DATA) $(srcdir)/mimetype_kmy_48x48.png $(kde_icondir)/hicolor/48x48/mimetypes/kmy.png
 
 uninstall-local:
 	-rm -f $$(kde_appsdir)/Applications/kmymoney2.desktop
@@ -36,25 +36,6 @@ uninstall-local:
 	-rm -f $(kde_icondir)/hicolor/48x48/mimetypes/kmy.png
 
 ####### kdevelop will overwrite this part!!! (end)############
-kscheduleview.h: knewbillwizard.cpp kscheduleviewdecl.cpp
-kreconciledlg.h: kreconciledlgdecl.cpp
-kpayeedlg.h: kpayeedlgdecl.cpp
-knewbillwizardimpl.h: knewbillwizard.cpp
-kcategorydlg.h: kcategorydlgdecl.cpp
-kbankview.h: kbankviewdecl.cpp
-ktfindresultsdlg: ktfindresultsdlgdecl.cpp
-kmymoneyview.cpp: kcategorydlgdecl.cpp kbankviewdecl.cpp klistsettingsdlgdecl.cpp ksettingsdlgdecl.cpp kendingbalancedlgdecl.cpp knewcategorydlgdecl.cpp knewaccountdlgdecl.cpp knewbankdlgdecl.cpp knewfiledlgdecl.cpp
-klistsettingsdlg.h: klistsettingsdlgdecl.cpp
-ksettingsdlg.h: ksettingsdlgdecl.cpp
-kendingbalancedlg.h: kendingbalancedlgdecl.cpp
-knewcategorydlg.h: knewcategorydlgdecl.cpp
-knewaccountdlg.h: knewaccountdlgdecl.cpp
-knewbankdlg.h: knewbankdlgdecl.cpp
-knewfiledlg.h: knewfiledlgdecl.cpp
-kfileinfodlg.h: kfileinfodlgdecl.cpp
-kfindtransactiondlg.h: kfindtransactiondlgdecl.cpp
-ktransactionview.h: ktransactionviewdecl.cpp
-
 # this 10 paths are KDE specific. Use them:
 # kde_htmldir       Where your docs should go to. (contains lang subdirs)
 # kde_appsdir       Where your application file (.kdelnk) should go to. 
@@ -76,10 +57,20 @@ METASOURCES = AUTO
 # the library search path. 
 kmymoney2_LDFLAGS = $(all_libraries) $(KDE_RPATH)
 
-rcdir = $(kde_datadir)/kmymoney2
-rc_DATA = kmymoney2ui.rc
+# Uncomment the following two lines if you add a ui.rc file for your application to make use of
+# KDE
+#rcdir = $(kde_datadir)/kmymoney2
+#rc_DATA = kmymoney2ui.rc
 
-messages: rc.cpp
+#WARNING: if you use a ui.rc file above, use:
+
+# messages: rc.cpp
+
+# instead of 
+
+# messages:
+
+messages: 
 	LIST=`find . -name \*.h -o -name \*.hh -o -name \*.H -o -name \*.hxx -o -name \*.hpp -o -name \*.cpp -o -name \*.cc -o -name \*.cxx -o -name \*.ecpp -o -name \*.C`; \
 	if test -n "$$LIST"; then \
 	 $(XGETTEXT) $$LIST -o $(podir)/kmymoney2.pot; \

@@ -21,19 +21,19 @@ type=DATA
 [Config for BinMakefileAm]
 addcxxflags=
 bin_program=kmymoney2
-cxxflags=-O0 -g3 -Wall
-ldadd=-lkfile -lkdeui -lkdecore $(LIB_QT)
+cxxflags= -O2 -g3 -Wall
+ldadd= -lkfile -lkdeui -lkdecore $(LIB_QT)
 ldflags=
 path_to_bin_program=kmymoney2
 [General]
-AMChanged=true
+AMChanged=false
 author=Michael Edwardes
-configure_args=--with-qt-dir=/usr/lib/qt2 --prefix=/usr
+configure_args=--with-qt-dir=/usr/lib/qt --prefix=/opt/kde
 dir_where_make_will_be_called=
 email=Michael.Edwardes@students.dmu.ac.uk
 kdevprj_version=1.3
-lfv_open_groups=GNU
-make_options=-j1
+lfv_open_groups=GNU,User Interface
+make_options= -j2
 makefiles=Makefile.am,kmymoney2/Makefile.am,doc/Makefile.am,doc/en/Makefile.am,po/Makefile.am,kmymoney2/widgets/Makefile.am,kmymoney2/mymoney/Makefile.am,kmymoney2/pics/Makefile.am,kmymoney2/pics/toolbar/Makefile.am,
 modifyMakefiles=true
 project_name=KMyMoney2
@@ -42,7 +42,7 @@ sgml_file=/home/mte/src/kmymoney2/doc/en/index.docbook
 short_info=
 sub_dir=kmymoney2/
 version=0.3.1
-version_control=None
+version_control=CVS
 workspace=1
 [INSTALL]
 dist=true
