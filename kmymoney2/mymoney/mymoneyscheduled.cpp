@@ -29,6 +29,7 @@
 // Project Includes
 #include "mymoneyscheduled.h"
 #include "mymoneyexception.h"
+#include "mymoneyfile.h"
 
 bool MyMoneySchedule::validate(bool id_check) const
 {
