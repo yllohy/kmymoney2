@@ -43,7 +43,7 @@ MyMoneyStorageDump::~MyMoneyStorageDump()
 {
 }
 
-void MyMoneyStorageDump::readStream(QDataStream& s, IMyMoneySerialize* /* storage */)
+void MyMoneyStorageDump::readStream(QDataStream& /* s */, IMyMoneySerialize* /* storage */)
 {
   qDebug("Reading not supported by MyMoneyStorageDump!!");
 }
@@ -87,14 +87,33 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
   s << "--------" << "\n";
 
   QValueList<MyMoneyAccount> list_a = storage->accountList();
+  list_a.push_front(storage->expense());
+  list_a.push_front(storage->income());
+  list_a.push_front(storage->liability());
+  list_a.push_front(storage->asset());
   QValueList<MyMoneyAccount>::ConstIterator it_a;
   for(it_a = list_a.begin(); it_a != list_a.end(); ++it_a) {
     s << "  ID = " << (*it_a).id() << "\n";
     s << "  Name = " << (*it_a).name() << "\n";
+    s << "  Type = " << (*it_a).accountType() << "\n";
     s << "  Parent = " << (*it_a).parentAccountId();
-    MyMoneyAccount parent = storage->account((*it_a).parentAccountId());
-    s << " (" << parent.name() << ")" << "\n";
+    if((*it_a).parentAccountId() != "") {
+      MyMoneyAccount parent = storage->account((*it_a).parentAccountId());
+      s << " (" << parent.name() << ")";
+    } else {
+      s << "n/a";
+    }
+    s << "\n";
     // s << "  Balance = " << (*it_a).balance().formatMoney() << "\n";
+    QCStringList list_s = (*it_a).accountList();
+    QCStringList::ConstIterator it_s;
+    if(list_s.count() > 0) {
+      s << "  Children =" << "\n";
+    }
+    for(it_s = list_s.begin(); it_s != list_s.end(); ++it_s) {
+      MyMoneyAccount child = storage->account(*it_s);
+      s << "    " << *it_s << " (" << child.name() << ")\n";
+    }
     s << "\n";
   }
   s << "\n";
