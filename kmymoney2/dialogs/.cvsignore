@@ -11,3 +11,5 @@ Makefile.in
 *decl.h
 ksplitcorrectiondlg.cpp
 ksplitcorrectiondlg.h
+kconfirmmanualenterdialog.cpp
+kconfirmmanualenterdialog.h

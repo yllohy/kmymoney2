@@ -653,7 +653,6 @@ void KEditScheduleDialog::slotRemainingChanged(const QString& text)
 {
   // Make sure the required fields are set
   m_schedule.setStartDate(m_kdateinputDue->getQDate());
-  m_schedule.setLastPayment(m_kdateinputDue->getQDate());
   m_schedule.setOccurence(comboToOccurence());
   
   if (m_schedule.transactionsRemaining() != text.toInt())
@@ -666,13 +665,13 @@ void KEditScheduleDialog::slotEndDateChanged(const QDate& date)
 {
   // Make sure the required fields are set
   m_schedule.setStartDate(m_kdateinputDue->getQDate());
-  m_schedule.setLastPayment(m_kdateinputDue->getQDate());
   m_schedule.setOccurence(comboToOccurence());
 
   if (m_schedule.endDate() != date)
   {
     m_schedule.setEndDate(date);
-    m_qlineeditRemaining->setText(QString::number(m_schedule.transactionsRemaining()));
+    if (m_schedule.transactionsRemaining() != m_qlineeditRemaining->text().toInt());
+      m_qlineeditRemaining->setText(QString::number(m_schedule.transactionsRemaining()));
   }
 }
 

@@ -98,6 +98,8 @@ private:
   
   bool m_even;
   bool m_base;
+
+  MyMoneySchedule m_schedule;
 };
 
 #endif

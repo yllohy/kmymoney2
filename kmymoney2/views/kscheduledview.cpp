@@ -45,6 +45,7 @@
 #include "../widgets/kmymoneyscheduleddatetbl.h"
 #include "../dialogs/ieditscheduledialog.h"
 #include "../kmymoneyutils.h"
+#include "../dialogs/kenterscheduledialog.h"
 
 KScheduledView::KScheduledView(QWidget *parent, const char *name )
  : kScheduledViewDecl(parent,name, false),
@@ -68,7 +69,6 @@ KScheduledView::KScheduledView(QWidget *parent, const char *name )
   m_qlistviewScheduled->setSorting(-1);
   m_qlistviewScheduled->setColumnAlignment(3, Qt::AlignRight);
 
-  KIconLoader *kiconloader = KGlobal::iconLoader();
   KPopupMenu* kpopupmenuNew = new KPopupMenu(this);
   kpopupmenuNew->insertItem(KMyMoneyUtils::billScheduleIcon(KIcon::SizeSmall), i18n("Bill"), this, SLOT(slotNewBill()));
   kpopupmenuNew->insertItem(KMyMoneyUtils::depositScheduleIcon(KIcon::SizeSmall), i18n("Deposit"), this, SLOT(slotNewDeposit()));
@@ -97,6 +97,8 @@ KScheduledView::KScheduledView(QWidget *parent, const char *name )
     this, SLOT(slotListViewExpanded(QListViewItem*)));
   connect(m_qlistviewScheduled, SIGNAL(collapsed(QListViewItem*)),
     this, SLOT(slotListViewCollapsed(QListViewItem*)));
+
+  connect(m_calendar, SIGNAL(enterClicked(const MyMoneySchedule&)), this, SLOT(slotBriefEnterClicked(const MyMoneySchedule&)));
 }
 
 KScheduledView::~KScheduledView()
@@ -292,7 +294,7 @@ void KScheduledView::slotDeleteClicked()
 
 void KScheduledView::slotEditClicked()
 {
-  if (m_selectedSchedule != "")
+  if (!m_selectedSchedule.isEmpty())
   {
     try
     {
@@ -449,7 +451,7 @@ void KScheduledView::slotListViewContextMenu(QListViewItem *item, const QPoint& 
       KIconLoader *kiconloader = KGlobal::iconLoader();
       KPopupMenu *listViewMenu = new KPopupMenu(m_qlistviewScheduled);
 
-      if (scheduleId == "") // Top level item
+      if (scheduleId.isEmpty()) // Top level item
       {
         QString text = scheduleItem->text(0);
         if (text == i18n("Bills"))
@@ -491,6 +493,8 @@ void KScheduledView::slotListViewContextMenu(QListViewItem *item, const QPoint& 
             break;
         }
         listViewMenu->insertSeparator();
+        listViewMenu->insertItem(kiconloader->loadIcon("enter", KIcon::Small), i18n("Enter..."), this, SLOT(slotEnterClicked()));
+        listViewMenu->insertSeparator();
         listViewMenu->insertItem(kiconloader->loadIcon("edit", KIcon::Small), i18n("Edit..."), this, SLOT(slotEditClicked()));
         listViewMenu->insertItem(kiconloader->loadIcon("delete", KIcon::Small), i18n("Delete..."), this, SLOT(slotDeleteClicked()));
       }
@@ -524,7 +528,7 @@ void KScheduledView::slotListItemExecuted(QListViewItem* item)
   {
     QCString scheduleId = scheduleItem->scheduleId();
 
-    if (scheduleId != "") // Top level item
+    if (!scheduleId.isEmpty()) // Top level item
     {
       MyMoneySchedule schedule = MyMoneyFile::instance()->schedule(scheduleId);
 
@@ -603,4 +607,31 @@ void KScheduledView::slotListViewCollapsed(QListViewItem* item)
 void KScheduledView::slotSelectSchedule(const QCString& schedule)
 {
   refresh(true, schedule);
+}
+
+void KScheduledView::slotEnterClicked()
+{
+  if (!m_selectedSchedule.isEmpty())
+  {
+    try
+    {
+      MyMoneySchedule schedule = MyMoneyFile::instance()->schedule(m_selectedSchedule);
+
+      KEnterScheduleDialog *dlg = new KEnterScheduleDialog(this, schedule);
+      if (dlg->exec())
+      {
+      }
+    } catch (MyMoneyException *e)
+    {
+      delete e;
+    }
+  }
+}
+
+void KScheduledView::slotBriefEnterClicked(const MyMoneySchedule& schedule)
+{
+  KEnterScheduleDialog *dlg = new KEnterScheduleDialog(this, schedule);
+  if (dlg->exec())
+  {
+  }
 }

@@ -1,3 +1,13 @@
+2003-09-02 Michael Edwardes <mte@users.sourceforge.net>
+  * Show overdue schedules with red text in the list view.
+  * Fixed stupid bug when creating schedules.
+  * Schedule brief widget now shows only the schedule for the date we are over.
+  * Added initial ui file to enter schedules manually.
+  * Added class for the enter dialog.
+  * Display overdue schedules in red in the calendar.
+  * Added ability to right click on schedule in the list to enter it manually.
+  * Added an Enter button to the Brief schedule widget.
+
 2003-09-01 Michael Edwardes <mte@users.sourceforge.net>
   * Made the list colours in the schedule view match the home view.
   * Implemented the schedule link from the home page.

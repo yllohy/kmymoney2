@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>312</width>
-            <height>277</height>
+            <width>393</width>
+            <height>313</height>
         </rect>
     </property>
     <property name="caption">
@@ -233,8 +233,22 @@
                     <property name="enabled">
                         <bool>false</bool>
                     </property>
+                    <property name="textFormat">
+                        <enum>RichText</enum>
+                    </property>
                     <property name="text">
                         <string>Next payment on DATE for AMOUNT with N transactions remaining occuring every OCCURENCE.</string>
+                    </property>
+                    <property name="readOnly">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="KPushButton">
+                    <property name="name">
+                        <cstring>m_buttonEnter</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Enter...</string>
                     </property>
                 </widget>
                 <widget class="KPushButton">
@@ -252,6 +266,7 @@
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
     <includehint>qwidget.h</includehint>
+    <includehint>kpushbutton.h</includehint>
     <includehint>kpushbutton.h</includehint>
 </includehints>
 </UI>

@@ -45,17 +45,22 @@ class KMyMoneyBriefSchedule : public kScheduleBriefWidget  {
 public: 
   KMyMoneyBriefSchedule(QWidget *parent=0, const char *name=0);
   ~KMyMoneyBriefSchedule();
-  void setSchedules(QValueList<MyMoneySchedule> list);
+  void setSchedules(QValueList<MyMoneySchedule> list, const QDate& date);
+
+signals:
+  void enterClicked(const MyMoneySchedule&);
 
 protected slots:
   void slotPrevClicked();
   void slotNextClicked();
+  void slotEnterClicked();
 
 private:
   QValueList<MyMoneySchedule> m_scheduleList;
   unsigned int m_index;
+  QDate m_date;
 
-  void loadSchedule(unsigned int index);
+  void loadSchedule();
 };
 
 #endif

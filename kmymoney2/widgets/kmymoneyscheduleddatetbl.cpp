@@ -73,7 +73,7 @@ kMyMoneyScheduledDateTbl::~kMyMoneyScheduledDateTbl()
 {
 }
 
-void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int row, int col, const QDate& theDate)
+void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int /*row*/, int /*col*/, const QDate& theDate)
 {
   QRect rect;
   QString text;
@@ -196,7 +196,29 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int row, int 
 
     if (schedules.count() >= 1)
     {
-      painter->setPen(darkGray);
+      bool anyOverdue=false;
+      QValueList<MyMoneySchedule>::Iterator iter;
+      for (iter=schedules.begin(); iter!=schedules.end(); ++iter)
+      {
+        MyMoneySchedule schedule = *iter;
+        if (theDate < QDate::currentDate())
+        {
+          if (  (schedule.lastPayment().isValid() &&
+                schedule.lastPayment() < QDate::currentDate()) ||
+                (!schedule.lastPayment().isValid() &&
+                schedule.startDate() < QDate::currentDate()))
+          {
+            anyOverdue = true;
+            break; // out early
+          }
+        }
+      }
+      
+      if (anyOverdue)
+        painter->setPen(red);
+      else
+        painter->setPen(darkGray);
+        
       painter->setFont(fontLarge);
       painter->drawText(0, 0, w, h, AlignCenter, QString::number(schedules.count()),
           -1, &rect);
@@ -357,7 +379,65 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int row, int 
       delete e;
     }
 
-    painter->setPen(darkGray);
+    bool anyOverdue=false;
+    QValueList<MyMoneySchedule>::Iterator iter;
+    for (iter=transferSchedules.begin(); iter!=transferSchedules.end(); ++iter)
+    {
+      MyMoneySchedule schedule = *iter;
+      if (theDate < QDate::currentDate())
+      {
+        if (  (schedule.lastPayment().isValid() &&
+              schedule.lastPayment() < QDate::currentDate()) ||
+              (!schedule.lastPayment().isValid() &&
+              schedule.startDate() < QDate::currentDate()))
+        {
+          anyOverdue = true;
+          break; // out early
+        }
+      }
+    }
+    if (!anyOverdue)
+    {
+      for (iter=depositSchedules.begin(); iter!=depositSchedules.end(); ++iter)
+      {
+        MyMoneySchedule schedule = *iter;
+        if (theDate < QDate::currentDate())
+        {
+          if (  (schedule.lastPayment().isValid() &&
+                schedule.lastPayment() < QDate::currentDate()) ||
+                (!schedule.lastPayment().isValid() &&
+                schedule.startDate() < QDate::currentDate()))
+          {
+            anyOverdue = true;
+            break; // out early
+          }
+        }
+      }
+      if (!anyOverdue)
+      {
+        for (iter=billSchedules.begin(); iter!=billSchedules.end(); ++iter)
+        {
+          MyMoneySchedule schedule = *iter;
+          if (theDate < QDate::currentDate())
+          {
+            if (  (schedule.lastPayment().isValid() &&
+                  schedule.lastPayment() < QDate::currentDate()) ||
+                  (!schedule.lastPayment().isValid() &&
+                  schedule.startDate() < QDate::currentDate()))
+            {
+              anyOverdue = true;
+              break; // out early
+            }
+          }
+        }
+      }
+    }
+
+    if (anyOverdue)
+      painter->setPen(red);
+    else
+      painter->setPen(darkGray);
+
     painter->setFont(fontLarge);
     painter->drawText(0, 0, w, h, AlignCenter, text,
           -1, &rect);

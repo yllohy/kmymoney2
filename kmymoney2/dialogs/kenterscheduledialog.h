@@ -1,7 +1,7 @@
 /***************************************************************************
-                          kmymoneyscheduledcalendar.h  -  description
+                          kenterscheduledialog.h  -  description
                              -------------------
-    begin                : Wed Jul 2 2003
+    begin                : Mon Sep 1 2003
     copyright            : (C) 2000-2003 by Michael Edwardes
     email                : mte@users.sourceforge.net
                            Javier Campos Morales <javi_c@users.sourceforge.net>
@@ -19,71 +19,43 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
-#ifndef KMYMONEYSCHEDULEDCALENDAR_H
-#define KMYMONEYSCHEDULEDCALENDAR_H
+#ifndef KENTERSCHEDULEDIALOG_H
+#define KENTERSCHEDULEDIALOG_H
 
 // ----------------------------------------------------------------------------
 // QT Includes
+#include <qwidget.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
 
 // ----------------------------------------------------------------------------
 // Project Includes
-#include "kmymoneycalendar.h"
-#include "kmymoneyscheduleddatetbl.h"
-#include "kmymoneybriefschedule.h"
+#include "kenterscheduledialogdecl.h"
+#include "../mymoney/mymoneyscheduled.h"
 
-class KPopupMenu;
-class kMyMoneyDateTbl;
 
 /**
-  * A representation of a calendar.
-  *
-  * Uses the base class kMyMoneyCalendar to actually render
-  * the calendar.
-  *
-  * @author Michael Edwardes 2003
-  *
-**/
-class kMyMoneyScheduledCalendar : public kMyMoneyCalendar  {
+  *@author Michael Edwardes
+  */
+
+class KEnterScheduleDialog : public kEnterScheduleDialogDecl  {
    Q_OBJECT
-   
-public:
-  /**
-    * Standard constructor.
-  **/
-  kMyMoneyScheduledCalendar(QWidget *parent=0, const char *name=0);
-
-  /**
-    * Standard destructor.
-  **/
-  ~kMyMoneyScheduledCalendar();
-
-  /**
-    * Dynamically set the Date Table
-  **/
-  void setDateTable(kMyMoneyDateTbl* tbl) { table = tbl; }
-
-  void refresh() { m_scheduledDateTable->refresh(); }
-
-  void setFilterAccounts(const QCStringList& list) { m_scheduledDateTable->setFilterAccounts(list); }
-
-signals:
-  void enterClicked(const MyMoneySchedule&);
+public: 
+	KEnterScheduleDialog(QWidget *parent, const MyMoneySchedule& schedule);
+	~KEnterScheduleDialog();
 
 protected slots:
-  void slotSetViewBills();
-  void slotSetViewDeposits();
-  void slotSetViewTransfers();
-  void slotHoverSchedules(QValueList<MyMoneySchedule>, QDate date);
-  void slotEnterClicked(const MyMoneySchedule&);
+  void slotOK();
+  void slotSplitClicked();
 
 private:
-  KPopupMenu* kpopupmenu;
-  kMyMoneyScheduledDateTbl *m_scheduledDateTable;
-  KMyMoneyBriefSchedule briefWidget;
+  MyMoneySchedule m_schedule;
+  MyMoneyTransaction m_transaction;
+
+  void initWidgets();
+  void reloadWidgets(void);
+  bool checkData(void);
 };
 
 #endif

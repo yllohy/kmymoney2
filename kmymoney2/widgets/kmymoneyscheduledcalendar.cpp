@@ -66,6 +66,8 @@ kMyMoneyScheduledCalendar::kMyMoneyScheduledCalendar(QWidget *parent, const char
 
   connect(m_scheduledDateTable, SIGNAL(hoverSchedules(QValueList<MyMoneySchedule>, QDate)),
     this, SLOT(slotHoverSchedules(QValueList<MyMoneySchedule>, QDate)));
+
+  connect(&briefWidget, SIGNAL(enterClicked(const MyMoneySchedule&)), this, SLOT(slotEnterClicked(const MyMoneySchedule&)));
 }
 
 kMyMoneyScheduledCalendar::~kMyMoneyScheduledCalendar()
@@ -94,21 +96,28 @@ void kMyMoneyScheduledCalendar::slotHoverSchedules(QValueList<MyMoneySchedule> l
 {
   if (list.count() >= 1)
   {
-    briefWidget.setSchedules(list);
+    briefWidget.setSchedules(list, date);
 
     int h = briefWidget.height();
     int w = briefWidget.width();
 
+    // Take off five pixels so the mouse cursor
+    // will be over the widget
     QPoint p = QCursor::pos();
     if (p.y() + h > QApplication::desktop()->height())
     {
-      p.setY(p.y() - h);
+      p.setY(p.y() - (h-5));
     }
+    else
+      p.setY(p.y() - 5);
+
     if (p.x() + w > QApplication::desktop()->width())
     {
-      p.setX(p.x() - w);
+      p.setX(p.x() - (w-5));
     }
-  
+    else
+      p.setX(p.x() - 5);
+
     briefWidget.move(p);
     briefWidget.show();
   }
@@ -116,4 +125,9 @@ void kMyMoneyScheduledCalendar::slotHoverSchedules(QValueList<MyMoneySchedule> l
   {
     briefWidget.hide();
   }
+}
+
+void kMyMoneyScheduledCalendar::slotEnterClicked(const MyMoneySchedule& schedule)
+{
+  emit enterClicked(schedule);
 }

@@ -50,6 +50,7 @@ KScheduledListItem::KScheduledListItem(QListView *parent, const char *name)
 KScheduledListItem::KScheduledListItem(KScheduledListItem *parent, const MyMoneySchedule& schedule, bool even)
  : QListViewItem(parent), m_base(false)
 {
+  m_schedule = schedule;
   setPixmap(0, KMyMoneyUtils::scheduleIcon(KIcon::Small));
 
   m_even = even;
@@ -65,7 +66,8 @@ KScheduledListItem::KScheduledListItem(KScheduledListItem *parent, const MyMoney
     if (amount < 0)
       amount = -amount;
     setText(3, amount.formatMoney());
-    setText(4, schedule.nextPayment().toString());
+    // Do the real next payment like ms-money etc
+    setText(4, schedule.nextPayment(schedule.lastPayment()).toString());
     setText(5, KMyMoneyUtils::occurenceToString(schedule.occurence()));
     setText(6, KMyMoneyUtils::paymentMethodToString(schedule.paymentType()));
   }
@@ -90,7 +92,16 @@ void KScheduledListItem::paintCell(QPainter* p, const QColorGroup& cg, int colum
 
   QColor colour = Qt::white;
   QColor bgColour = QColor(224, 253, 182); // Same as for home view
-  QColor textColour = Qt::black;
+
+  QColor textColour;
+  if (  (m_schedule.lastPayment().isValid() &&
+        m_schedule.lastPayment() < QDate::currentDate()) ||
+        (!m_schedule.lastPayment().isValid() &&
+        m_schedule.startDate() < QDate::currentDate()))
+    textColour = Qt::red;
+  else
+    textColour = Qt::black;
+    
   QFont cellFont(p->font());
   QColor baseItemColour = QColor(219, 237, 237);  // Same as for home view
   QColor baseItemTextColour = Qt::black;
