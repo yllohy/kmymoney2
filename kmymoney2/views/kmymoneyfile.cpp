@@ -141,6 +141,7 @@ void KMyMoneyFile::close()
 {
   if(m_storage != 0) {
     MyMoneyFile::instance()->detachStorage(m_storage);
+    delete m_storage;
     m_storage = 0;
   }
   m_open = false;
