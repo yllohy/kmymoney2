@@ -266,6 +266,10 @@ KLedgerView::~KLedgerView()
     delete m_infoStack;
 
   MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassAccountHierarchy, this);
+  
+  // the following observer could have been attached by slotSelectAccount(),
+  // so we better get rid of him here
+  MyMoneyFile::instance()->detach(m_account.id(), this);
 }
 
 void KLedgerView::slotBlinkTimeout(void)
@@ -286,7 +290,8 @@ void KLedgerView::slotSelectAccount(const QCString& accountId)
   if(!accountId.isEmpty()) {
     if(accountId != m_account.id()) {
 
-      file->detach(m_account.id(), this);
+      if(!m_account.id().isEmpty())
+        file->detach(m_account.id(), this);
 
       try {
         m_account = file->account(accountId);
@@ -301,7 +306,8 @@ void KLedgerView::slotSelectAccount(const QCString& accountId)
       }
     }
   } else {
-    file->detach(m_account.id(), this);
+    if(!m_account.id().isEmpty())
+      file->detach(m_account.id(), this);
     m_transactionList.clear();
     m_transactionPtrVector.clear();
     m_transactionPtr = 0;
@@ -433,6 +439,11 @@ void KLedgerView::setupPointerAndBalanceArrays(void)
         }
       }
     }
+    // if the current date mark is not set, all transactions (if any) are in the
+    // future and we can safely set the date mark to the very first slot
+    if(dateMarkPlaced == false)
+      m_register->setCurrentDateIndex(0);
+      
   } catch(MyMoneyException *e) {
     if(!accountId().isEmpty())
       qDebug("Unexpected exception in KLedgerView::setupPointerAndBalanceArrays");
@@ -585,6 +596,9 @@ bool KLedgerView::selectTransaction(const QCString& transactionId)
     fillSummary();
     emit transactionSelected();
     rc = true;
+  } else {
+    fillForm();
+    fillSummary();
   }
   return rc;
 }

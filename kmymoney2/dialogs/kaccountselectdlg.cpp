@@ -230,7 +230,7 @@ void KAccountSelectDlg::slotCreateAccount(void)
       }
       
       file->addAccount(newAccount, parentAccount);
-
+      
       // widgets are updated in update() by engine's notification
       if(isCategory)
         m_accountComboBox->setCurrentItem(file->accountToCategory(newAccount.id()));

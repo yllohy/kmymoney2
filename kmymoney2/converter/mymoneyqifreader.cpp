@@ -53,7 +53,8 @@ MyMoneyQifReader::MyMoneyQifReader()
   m_entryType = EntryUnknown;
   m_processingData = false;
   m_userAbort = false;
-
+  m_autoCreatePayee = false;
+  
   connect(&m_filter, SIGNAL(wroteToStdin()), this, SLOT(slotSendDataToFilter()));
   connect(&m_filter, SIGNAL(readyReadStdout()), this, SLOT(slotReceivedDataFromFilter()));
   connect(&m_filter, SIGNAL(processExited()), this, SLOT(slotImportFinished()));
@@ -64,6 +65,11 @@ MyMoneyQifReader::~MyMoneyQifReader()
 {
   if(m_file)
     delete m_file;
+}
+
+void MyMoneyQifReader::setAutoCreatePayee(const bool create)
+{
+  m_autoCreatePayee = create;
 }
 
 void MyMoneyQifReader::setFilename(const QString& name)
@@ -429,22 +435,26 @@ void MyMoneyQifReader::processTransactionEntry(void)
       s1.setPayeeId(file->payeeByName(tmp).id());
     } catch (MyMoneyException *e) {
       MyMoneyPayee payee;
+      int rc = KMessageBox::Yes;
+      
+      if(m_autoCreatePayee == false) {
+        // Ask the user if that is what he intended to do?
+        QString msg = i18n("Do you want to add \"%1\" as payee/receiver?\n\n").arg(tmp);
+        msg += i18n("Selecting \"Yes\" will create the payee, \"No\" will skip "
+                    "creation of a payee record and remove the payee information "
+                    "from this transaction. Selecting \"Cancel\" aborts the import "
+                    "operation.\n\nIf you select \"No\" here and mark the \"Don't ask "
+                    "again\" checkbox, the payee information for all following transactions "
+                    "referencing \"%1\" will be removed.").arg(tmp);
 
-      // Ask the user if that is what he intended to do?
-      QString msg = i18n("Do you want to add \"%1\" as payee/receiver?\n\n").arg(tmp);
-      msg += i18n("Selecting \"Yes\" will create the payee, \"No\" will skip "
-                  "creation of a payee record and remove the payee information "
-                  "from this transaction. Selecting \"Cancel\" aborts the import "
-                  "operation.\n\nIf you select \"No\" here and mark the \"Don't ask "
-                  "again\" checkbox, the payee information for all following transactions "
-                  "referencing \"%1\" will be removed.").arg(tmp);
-
-      QString askKey = QString("QIF-Import-Payee-")+tmp;
-      if(!m_dontAskAgain.contains(askKey)) {
-        m_dontAskAgain += askKey;
-      }
-      int rc = KMessageBox::questionYesNoCancel(0, msg, i18n("New payee/receiver"),
+        QString askKey = QString("QIF-Import-Payee-")+tmp;
+        if(!m_dontAskAgain.contains(askKey)) {
+          m_dontAskAgain += askKey;
+        }
+        rc = KMessageBox::questionYesNoCancel(0, msg, i18n("New payee/receiver"),
                   KStdGuiItem::yes(), KStdGuiItem::no(), askKey);
+      }
+      
       if(rc == KMessageBox::Yes) {
         // for now, we just add the payee to the pool. In the future,
         // we could open a dialog and ask for all the other attributes
@@ -479,7 +489,7 @@ void MyMoneyQifReader::processTransactionEntry(void)
   else if(tmp == "*")
     s1.setReconcileFlag(MyMoneySplit::Cleared);
 
-  if(file->accountGroup(m_account.accountType()) == MyMoneyAccount::Asset) {
+  if(m_account.accountGroup() == MyMoneyAccount::Asset) {
     if(s1.value() >= 0)
       s1.setAction(MyMoneySplit::ActionDeposit);
     else
@@ -689,34 +699,20 @@ void MyMoneyQifReader::selectOrCreateAccount(const SelectCreateMode mode, MyMone
   QMap<QString, QCString>::ConstIterator it;
 
   type = KMyMoneyUtils::none;
-  switch(file->accountGroup(account.accountType())) {
+  switch(account.accountGroup()) {
     default:
       type = KMyMoneyUtils::asset;
-      // tricky fall through here
-
-    case MyMoneyAccount::Liability:
       type = (KMyMoneyUtils::categoryTypeE) (type | KMyMoneyUtils::liability);
       typeStr = i18n("account");
-      leadIn = i18n("liability");
-      break;
-
-    case MyMoneyAccount::Asset:
-      type = KMyMoneyUtils::asset;
-      typeStr = i18n("account");
-      leadIn = i18n("asset");
+      leadIn = i18n("al");
       break;
 
     case MyMoneyAccount::Income:
-      type = KMyMoneyUtils::income;
-      typeStr = i18n("category");
-      leadIn = i18n("income");
-      msg = i18n("Category selection");
-      break;
-
     case MyMoneyAccount::Expense:
-      type = KMyMoneyUtils::expense;
+      type = KMyMoneyUtils::income;
+      type = (KMyMoneyUtils::categoryTypeE) (type | KMyMoneyUtils::expense);
       typeStr = i18n("category");
-      leadIn = i18n("expense");
+      leadIn = i18n("ei");
       msg = i18n("Category selection");
       break;
   }
@@ -725,7 +721,7 @@ void MyMoneyQifReader::selectOrCreateAccount(const SelectCreateMode mode, MyMone
   if(!msg.isEmpty())
     accountSelect.setCaption(msg);
 
-  it = m_accountTranslation.find(leadIn + ":" + account.name());
+  it = m_accountTranslation.find((leadIn + ":" + account.name()).lower());
   if(it != m_accountTranslation.end()) {
     try {
       account = file->account(*it);
@@ -739,7 +735,7 @@ void MyMoneyQifReader::selectOrCreateAccount(const SelectCreateMode mode, MyMone
     }
   }
 
-  if(m_account.name().length() != 0) {
+  if(!m_account.name().isEmpty()) {
     if(type & (KMyMoneyUtils::income | KMyMoneyUtils::expense)) {
       accountId = file->categoryToAccount(account.name());
     } else {
@@ -747,7 +743,7 @@ void MyMoneyQifReader::selectOrCreateAccount(const SelectCreateMode mode, MyMone
     }
     
     if(mode == Create) {
-      if(accountId.length() != 0) {
+      if(!accountId.isEmpty()) {
         account = file->account(accountId);
         return;
 
@@ -763,7 +759,7 @@ void MyMoneyQifReader::selectOrCreateAccount(const SelectCreateMode mode, MyMone
       }
     } else {
       accountSelect.setHeader(i18n("Select %1").arg(typeStr));
-      if(accountId.length() != 0) {
+      if(!accountId.isEmpty()) {
         msg = i18n("The %1 <b>%2</b> currently exists. Do you want "
                    "to import transactions to this account?")
                     .arg(typeStr).arg(account.name());
@@ -802,20 +798,18 @@ void MyMoneyQifReader::selectOrCreateAccount(const SelectCreateMode mode, MyMone
   if(accountSelect.exec() == QDialog::Accepted) {
     if((type & KMyMoneyUtils::asset)
     || (type & KMyMoneyUtils::liability)) {
-      leadIn = (type & KMyMoneyUtils::asset) ? i18n("asset") : i18n("liability");
       accountId = file->nameToAccount(accountSelect.selectedAccount());
       
     } else if((type & KMyMoneyUtils::income)
            || (type & KMyMoneyUtils::expense)) {
-      leadIn = (type & KMyMoneyUtils::income) ? i18n("income") : i18n("expense");
       accountId = file->categoryToAccount(accountSelect.selectedAccount());
     } else {
         qWarning("No account selected!!!!");
         leadIn = "";
     }
     
-    if(accountId.length() != 0) {
-      m_accountTranslation[account.name()] = accountId;
+    if(!accountId.isEmpty()) {
+      m_accountTranslation[(leadIn + ":" + account.name()).lower()] = accountId;
       account = file->account(accountId);
       
     } else

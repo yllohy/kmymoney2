@@ -104,7 +104,7 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
       s << "n/a";
     }
     s << "\n";
-    // s << "  Balance = " << (*it_a).balance().formatMoney() << "\n";
+    s << "  Balance = " << (*it_a).openingBalance().formatMoney() << "\n";
     QCStringList list_s = (*it_a).accountList();
     QCStringList::ConstIterator it_s;
     if(list_s.count() > 0) {

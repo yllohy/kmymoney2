@@ -1,8 +1,8 @@
 /***************************************************************************
-                          kmymoneyregistercheckings.cpp  -  description
+                          kmymoneyregisterloan.cpp  -  description
                              -------------------
-    begin                : Thu Jul 18 2002
-    copyright            : (C) 2000-2002 by Michael Edwardes
+    begin                : Sat Sep 13 2003
+    copyright            : (C) 2003 by Thomas Baumgart
     email                : mte@users.sourceforge.net
                            Javier Campos Morales <javi_c@users.sourceforge.net>
                            Felix Rodriguez <frodriguez@users.sourceforge.net>
@@ -31,23 +31,22 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "kmymoneyregistercheckings.h"
+#include "kmymoneyregisterloan.h"
 #include "../mymoney/mymoneyfile.h"
 #include "../views/kledgerview.h"
 
-kMyMoneyRegisterCheckings::kMyMoneyRegisterCheckings(QWidget *parent, const char *name )
-  : kMyMoneyRegister(3, parent,name)
+kMyMoneyRegisterLoan::kMyMoneyRegisterLoan(QWidget *parent, const char *name ) :
+  kMyMoneyRegister(3, parent, name)
 {
-  setNumCols(7);
+  setNumCols(6);
   setCurrentCell(0, 1);
   horizontalHeader()->setClickEnabled(true);
-  horizontalHeader()->setLabel(0, i18n("Nr."));
-  horizontalHeader()->setLabel(1, i18n("Date"));
+  horizontalHeader()->setLabel(0, i18n("Date"));
+  horizontalHeader()->setLabel(1, i18n("Payment"));
   horizontalHeader()->setLabel(2, i18n("Payee"));
-  horizontalHeader()->setLabel(3, i18n("C"));
-  horizontalHeader()->setLabel(4, i18n("Payment"));
-  horizontalHeader()->setLabel(5, i18n("Deposit"));
-  horizontalHeader()->setLabel(6, i18n("Balance"));
+  horizontalHeader()->setLabel(3, i18n("Amount"));
+  horizontalHeader()->setLabel(4, i18n("Amortization"));
+  horizontalHeader()->setLabel(5, i18n("Balance"));
   setLeftMargin(0);
   verticalHeader()->hide();
   setColumnStretchable(0, false);
@@ -56,7 +55,6 @@ kMyMoneyRegisterCheckings::kMyMoneyRegisterCheckings(QWidget *parent, const char
   setColumnStretchable(3, false);
   setColumnStretchable(4, false);
   setColumnStretchable(5, false);
-  setColumnStretchable(6, false);
 
   horizontalHeader()->setResizeEnabled(false);
   horizontalHeader()->setMovingEnabled(false);
@@ -65,20 +63,29 @@ kMyMoneyRegisterCheckings::kMyMoneyRegisterCheckings(QWidget *parent, const char
   setHScrollBarMode(QScrollView::AlwaysOff);
 }
 
-kMyMoneyRegisterCheckings::~kMyMoneyRegisterCheckings()
+kMyMoneyRegisterLoan::~kMyMoneyRegisterLoan()
 {
 }
 
-void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const QRect& r,
-                                 bool selected, const QColorGroup& cg)
+void kMyMoneyRegisterLoan::paintCell(QPainter *p, int row, int col, const QRect& r,
+                                     bool selected, const QColorGroup& cg)
 {
   setTransactionRow(row);
-  
+
   int align = Qt::AlignVCenter;
   QString txt;
   if(m_transaction != 0) {
     switch (col) {
       case 0:
+        align |= Qt::AlignLeft;
+        switch(m_transactionRow) {
+          case 0:
+            txt = KGlobal::locale()->formatDate(m_transaction->postDate(), true);
+            break;
+        }
+        break;
+
+      case 1:
         align |= Qt::AlignRight;
         switch(m_transactionRow) {
           case 0:
@@ -87,19 +94,6 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
         }
         break;
 
-      case 1:
-        align |= Qt::AlignLeft;
-        switch(m_transactionRow) {
-          case 0:
-            txt = KGlobal::locale()->formatDate(m_transaction->postDate(), true);
-            break;
-
-          case 1:
-            txt = m_split.action();
-            break;
-        }
-        break;
-        
       case 2:
         align |= Qt::AlignLeft;
         switch(m_transactionRow) {
@@ -113,11 +107,13 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
 
           case 1:
             try {
-              if(m_transaction->splitCount() > 2)
-                txt = QString(i18n("Splitted transaction"));
-              else {
-                MyMoneySplit split = m_transaction->splitByAccount(m_transaction->splitId(), false);
-                txt = MyMoneyFile::instance()->accountToCategory(split.accountId());
+              QValueList<MyMoneySplit>::ConstIterator it;
+              for(it = m_transaction->splits().begin(); it != m_transaction->splits().end(); ++it) {
+                if((*it).action() == MyMoneySplit::ActionAmortization
+                && (*it).id() != m_split.id()) {
+                  MyMoneyAccount acc = MyMoneyFile::instance()->account((*it).accountId());
+                  txt = i18n("Transfer to/from %1").arg(acc.name());
+                }
               }
             } catch(MyMoneyException *e) {
               delete e;
@@ -129,21 +125,25 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
             break;
         }
         break;
-        
+
       case 3:
         switch(m_transactionRow) {
           case 0:
-            align |= Qt::AlignHCenter;
-            switch(m_split.reconcileFlag()) {
-              case MyMoneySplit::Cleared:
-                txt = i18n("C");
-                break;
-              case MyMoneySplit::Reconciled:
-              case MyMoneySplit::Frozen:
-                txt = i18n("R");
-                break;
-              case MyMoneySplit::NotReconciled:
-                break;
+            try {
+              QValueList<MyMoneySplit>::ConstIterator it;
+              for(it = m_transaction->splits().begin(); it != m_transaction->splits().end(); ++it) {
+                if((*it).action() == MyMoneySplit::ActionAmortization
+                && (*it).id() != m_split.id()) {
+                  align |= Qt::AlignRight;
+                  if((*it).value() >= 0)
+                    txt = ((*it).value()).formatMoney();
+                  else
+                    txt = (-(*it).value()).formatMoney();
+                }
+              }
+
+            } catch(MyMoneyException *e) {
+              delete e;
             }
             break;
         }
@@ -153,23 +153,15 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
         switch(m_transactionRow) {
           case 0:
             align |= Qt::AlignRight;
-            if(m_split.value() < 0)
+            if(m_split.value() >= 0)
+              txt = (m_split.value()).formatMoney();
+            else
               txt = (-m_split.value()).formatMoney();
             break;
         }
         break;
-        
+
       case 5:
-        switch(m_transactionRow) {
-          case 0:
-            align |= Qt::AlignRight;
-            if(m_split.value() >= 0)
-              txt = (m_split.value()).formatMoney();
-            break;
-        }
-        break;
-        
-      case 6:
         switch(m_transactionRow) {
           case 0:
             align |= Qt::AlignRight;
@@ -181,12 +173,12 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
         break;
     }
   }
-  
+
   // do general stuff
   kMyMoneyRegister::paintCell(p, row, col, r, selected, cg, txt, align);
 }
 
-void kMyMoneyRegisterCheckings::adjustColumn(int col)
+void kMyMoneyRegisterLoan::adjustColumn(int col)
 {
   QHeader *topHeader = horizontalHeader();
   QFontMetrics fontMetrics(m_headerFont);
@@ -198,47 +190,19 @@ void kMyMoneyRegisterCheckings::adjustColumn(int col)
 
   // scan through the transactions
   for ( int i = (numRows()/m_rpt)-1; i >= 0; --i ) {
-    QString txt;
-    KMyMoneyTransaction *t = m_parent->transaction(i);
-    MyMoneyMoney amount;
-    int nw;
-    
-    if(t != NULL) {
-      switch(col) {
-        default:
-          break;
+    switch(col) {
+      default:
+        break;
 
-        case 0:
-          txt = t->splitById(t->splitId()).number();
-          nw = fontMetrics.width(txt);
-          w = QMAX( w, nw );
-          break;
-        
-        case 1:
+      case 1:
+        QString txt;
+        MyMoneyTransaction *t = m_parent->transaction(i);
+        if(t != NULL) {
           txt = KGlobal::locale()->formatDate(t->postDate(), true)+"  ";
-          nw = fontMetrics.width(txt);
+          int nw = fontMetrics.width(txt);
           w = QMAX( w, nw );
-          break;
-        
-        case 4:
-          amount = t->splitById(t->splitId()).value();
-          if(amount < 0) {
-            txt = amount.formatMoney();
-            nw = fontMetrics.width(txt);
-            w = QMAX( w, nw );
-          }
-          break;
-          
-        case 5:
-          amount = t->splitById(t->splitId()).value();
-          if(amount >= 0) {
-            txt = amount.formatMoney();
-            nw = fontMetrics.width(txt);
-            w = QMAX( w, nw );
-          }
-          break;
-          
-      }
+        }
+        break;
     }
   }
   setColumnWidth( col, w );
@@ -246,7 +210,7 @@ void kMyMoneyRegisterCheckings::adjustColumn(int col)
 
 // This must be implemented here, as QTable::eventFilter is not virtual :-(
 
-bool kMyMoneyRegisterCheckings::eventFilter(QObject* o, QEvent* e)
+bool kMyMoneyRegisterLoan::eventFilter(QObject* o, QEvent* e)
 {
   return kMyMoneyRegister::eventFilter(o, e);
 }

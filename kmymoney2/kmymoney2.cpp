@@ -653,6 +653,7 @@ void KMyMoney2App::slotQifImport()
 
       m_reader->setFilename(dlg->filename());
       m_reader->setProfile(dlg->profile());
+      m_reader->setAutoCreatePayee(dlg->autoCreatePayee());
       m_reader->setProgressCallback(&progressCallback);
 
       m_reader->startImport();

@@ -1,10 +1,30 @@
-2003-09-10 Michael Edwardes <mte@users.sourceforge.net>
+2003-09-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * added MyMoneySplit::ActionAmortization
+  * added MyMoneySplit::isAmoritizationSplit
+  * added KMyMoneyUtils::isCreditPayment
+  * added kMyMoneyRegisterLoan
+  * fixed a bug in KNewAccountDialog when creating new accounts and
+    the accounts or category view is active
+  * force every account to have a parent in KNewAccountDlg
+  * allow to select all accounts as parents when creating an account
+  * fixed update of entry count in accounts/categories view
+  * fixed problem with date mark in ledger if all transactions are in
+    the future
+  * show matching substrings for payees in the transaction form the
+    same way as for categories/accounts
+  * added auto payee creation to QIF import
+  * do not allow to create account with same name
+  * fixed nasty bug that occured that occured during the cycle import /
+    verify / cancel /import and had to do with a loose observer object
+  * added case insensitive account names as suggested by Michael
+
+2003-09-15 Michael Edwardes <mte@users.sourceforge.net>
   * Removed some old search code from KMyMoneyView and some compile warnings.
   * Fix credit card schedule creation.
   * Use StrongFocus for certain widgets in the accout wizard ui.
   * Force the user to use the correct category type when creating schedules.
   * Fix bug in KEditScheduleDialog that wrongly negated the entered amount.
-  
+
 2003-09-10 Michael Edwardes <mte@users.sourceforge.net>
   * Implemented adding a schedule for the credit card account type when using the
     account wizard.

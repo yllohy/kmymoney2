@@ -24,6 +24,7 @@
 
 #include <qstring.h>
 #include <qlineedit.h>
+#include <qcheckbox.h>
 
 // ----------------------------------------------------------------------------
 // KDE Headers
@@ -35,9 +36,6 @@
 // Project Headers
 
 #include "kimportdlgdecl.h"
-
-// #include "../mymoney/mymoneyaccount.h"
-// #include "../converter/mymoneyqifreader.h"
 
 /**
   * This class is used to import a qif file to an account.
@@ -73,7 +71,11 @@ public:
   /**
     */
   const QString profile(void) const { return m_profileComboBox->currentText(); };
-  
+
+  /**
+    */
+  const bool autoCreatePayee(void) const { return m_payeeCreation->isChecked(); };
+    
 protected slots:
   /** Called to let the user browse for a QIF file to import from. */
   void slotBrowse();

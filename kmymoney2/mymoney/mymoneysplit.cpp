@@ -27,7 +27,7 @@ const char MyMoneySplit::ActionDeposit[] = "Deposit";
 const char MyMoneySplit::ActionTransfer[] = "Transfer";
 const char MyMoneySplit::ActionWithdrawal[] = "Withdrawal";
 const char MyMoneySplit::ActionATM[] = "ATM";
-
+const char MyMoneySplit::ActionAmortization[] = "Amortization";
 
 MyMoneySplit::MyMoneySplit()
 {

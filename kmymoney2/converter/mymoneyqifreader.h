@@ -106,7 +106,21 @@ public:
     *               abnormally or the user aborted the import process.
     */
   const bool finishImport(void);
-    
+
+  /**
+    * This method is used to modify the auto payee creation flag.
+    * If this flag is set, records for payees that are not currently
+    * found in the engine will be automatically created with no
+    * further user interaction required. If this flag is no set,
+    * the user will be asked if the payee should be created or not.
+    * If the MyMoneyQifReader object is created auto payee creation
+    * is turned off.
+    *
+    * @param create flag if this feature should be turned on (@p true)
+    *               or turned off (@p false)
+    */
+  void setAutoCreatePayee(const bool create);
+  
   const MyMoneyAccount& account() const { return m_account; };
 
   void setProgressCallback(void(*callback)(int, int, const QString&));
@@ -259,7 +273,6 @@ private:
   QString                 m_filename;
   MyMoneyQifProfile       m_qifProfile;
   MyMoneyAccount          m_account;
-  bool                    m_skipAccount;
   unsigned long           m_transactionsSkipped;
   unsigned long           m_transactionsProcessed;
   QStringList             m_dontAskAgain;
@@ -270,8 +283,10 @@ private:
   int                     m_extractedLine;
   QString                 m_qifLine;
   int                     m_entryType;
+  bool                    m_skipAccount;
   bool                    m_processingData;
   bool                    m_userAbort;
+  bool                    m_autoCreatePayee;
   unsigned long           m_pos;
     
   void (*m_progressCallback)(int, int, const QString&);

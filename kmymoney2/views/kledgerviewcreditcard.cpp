@@ -61,6 +61,7 @@ KLedgerViewCreditCard::KLedgerViewCreditCard(QWidget *parent, const char *name )
 KLedgerViewCreditCard::~KLedgerViewCreditCard()
 {
 }
+
 void KLedgerViewCreditCard::createEditWidgets(void)
 {
   m_editPayee = new kMyMoneyPayee(0, "editPayee");
@@ -129,14 +130,17 @@ void KLedgerViewCreditCard::fillSummary(void)
   MyMoneyMoney balance;
   QLabel *summary = static_cast<QLabel *> (m_summaryLine);
 
-  if(accountId().length() > 0) {
+  if(!accountId().isEmpty()) {
     try {
       balance = MyMoneyFile::instance()->balance(accountId());
+      summary->setText(i18n("You currently owe: ") + (-balance).formatMoney());
+/* the fancy version. don't know, if we should use it
       if(balance < 0)
         summary->setText(i18n("You currently owe: ") + (-balance).formatMoney());
       else
         summary->setText(i18n("Current balance: ") + balance.formatMoney());
-
+*/
+      
     } catch(MyMoneyException *e) {
         qDebug("Unexpected exception in KLedgerViewCreditCard::fillSummary");
     }

@@ -176,6 +176,22 @@ public:
     */
   static bool appendCorrectFileExt(QString& name, const QString& extension);
 
+  /**
+    * This method returns information if the transaction referenced by
+    * @p transaction is a credit payment transaction or not.
+    * Credit payment transactions have at least one
+    * split that is identified with a MyMoneySplit::action() of type
+    * MyMoneySplit::ActionAmortization.
+    *
+    * @param transaction const reference to a MyMoneyTransaction object
+    *
+    * @retval false transaction is no credit payment transaction
+    * @retval true  transaction is a credit payment transaction
+    *
+    * @note Upon internal failures, the return value @p false will be used.
+    */
+  static const bool isCreditPayment(const MyMoneyTransaction& transaction);
+  
   static QPixmap billScheduleIcon(int size);
   static QPixmap depositScheduleIcon(int size);
   static QPixmap transferScheduleIcon(int size);

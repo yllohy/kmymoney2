@@ -820,7 +820,8 @@ void KMyMoneyView::accountNew(const bool createCategory)
     if(ok) {
       try {
         MyMoneyFile* file = MyMoneyFile::instance();
-        account = file->account(accId);
+        file->account(accId);
+        account.setParentAccountId(accId);
       } catch(MyMoneyException *e) {
         delete e;
       }

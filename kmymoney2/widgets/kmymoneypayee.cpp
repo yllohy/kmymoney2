@@ -40,7 +40,13 @@ kMyMoneyPayee::kMyMoneyPayee(QWidget *parent, const char *name )
     completionObject();
 
   compObj()->setOrder(KCompletion::Sorted);
+  setCompletionMode(KGlobalSettings::CompletionPopupAuto);
   setAutoDeleteCompletionObject(true);
+
+  // set the standard value for substring completion, as we
+  // fake that with every key entered. see also
+  // code in keyPressEvent()
+  setKeyBinding(SubstringCompletion, KShortcut("Ctrl+T"));
 
   loadList();
 }
@@ -83,7 +89,7 @@ void kMyMoneyPayee::focusOutEvent(QFocusEvent *ev)
   // if the current text is not in the list of
   // possible completions, we have a new payee
   // and signal that to the outside world.
-  if(text() != "" && compObj()->items().contains(text()) == 0)
+  if(!text().isEmpty() && compObj()->items().contains(text()) == 0)
     emit newPayee(text());
 
   if(text() != m_text) {
@@ -113,5 +119,16 @@ bool kMyMoneyPayee::eventFilter(QObject* o, QEvent* e)
     }
   }
   return rc;
+}
+
+void kMyMoneyPayee::keyPressEvent( QKeyEvent * ev)
+{
+  KLineEdit::keyPressEvent(ev);
+  if(ev->isAccepted()) {
+    // if the key was accepted by KLineEdit, we fake a substring completion
+    // which we set previously to Ctrl+T.
+    QKeyEvent evc(QEvent::KeyPress, Qt::Key_T, 0, Qt::ControlButton);
+    KLineEdit::keyPressEvent(&evc);
+  }
 }
 

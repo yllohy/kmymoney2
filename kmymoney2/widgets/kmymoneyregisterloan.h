@@ -1,8 +1,8 @@
 /***************************************************************************
-                          kimportverifydlg.cpp  -  description
+                          kmymoneyregisterloan.h  -  description
                              -------------------
-    begin                : Mon Jun 9 2003
-    copyright            : (C) 2000-2003 by Thomas Baumgart
+    begin                : Sat Sep 13 2003
+    copyright            : (C) 2003 by Thomas Baumgart
     email                : mte@users.sourceforge.net
                            Javier Campos Morales <javi_c@users.sourceforge.net>
                            Felix Rodriguez <frodriguez@users.sourceforge.net>
@@ -20,10 +20,13 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef KMYMONEYREGISTERLOAN_H
+#define KMYMONEYREGISTERLOAN_H
+
 // ----------------------------------------------------------------------------
 // QT Includes
 
-#include <qpushbutton.h>
+#include <qwidget.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -31,36 +34,28 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "kimportverifydlg.h"
-#include "../views/kgloballedgerview.h"
-#include "../mymoney/mymoneyfile.h"
+#include "../widgets/kmymoneyregister.h"
 
-KImportVerifyDlg::KImportVerifyDlg(const MyMoneyAccount& account, QWidget *parent, const char *name)
- : KImportVerifyDlgDecl(parent,name,true),
-   m_account(account)
+/**
+  * @author Thomas Baumgart
+  */
+
+class kMyMoneyRegisterLoan : public kMyMoneyRegister
 {
-  m_ledgerView->slotReloadView();
-  m_ledgerView->slotSelectAccount(account.id());
-  connect(buttonOk, SIGNAL(clicked()), this, SLOT(slotOkClicked()));
-}
+   Q_OBJECT
+public: 
+  kMyMoneyRegisterLoan(QWidget *parent=0, const char *name=0);
+  ~kMyMoneyRegisterLoan();
 
-KImportVerifyDlg::~KImportVerifyDlg()
-{
-}
+  bool eventFilter(QObject* o, QEvent* e);
 
-void KImportVerifyDlg::slotOkClicked(void)
-{
-  MyMoneyFile* file = MyMoneyFile::instance();
-  MyMoneyTransactionFilter filter(m_account.id());
-  QValueList<MyMoneyTransaction> list = file->transactionList(filter);
-  QValueList<MyMoneyTransaction>::Iterator it_t;
+  virtual const int maxRpt(void) const { return 3; };
 
-  for(it_t = list.begin(); it_t != list.end(); ++it_t) {
-    if((*it_t).value("Imported") != "") {
-      (*it_t).deletePair("Imported");
-      file->modifyTransaction(*it_t);
-    }
-  }
-  
-  accept();  
-}
+public slots:
+  void adjustColumn(int col);
+
+protected:
+  void paintCell(QPainter *p, int row, int col, const QRect& r, bool selected, const QColorGroup& cg);
+};
+
+#endif

@@ -188,6 +188,7 @@ const MyMoneyAccount::accountTypeE MyMoneyFile::accountGroup(MyMoneyAccount::acc
     case MyMoneyAccount::Investment:
     case MyMoneyAccount::MoneyMarket:
     case MyMoneyAccount::CertificateDep:
+    case MyMoneyAccount::AssetLoan:
       return MyMoneyAccount::Asset;
 
     case MyMoneyAccount::CreditCard:
@@ -384,6 +385,22 @@ void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
   // if not, an exception is thrown. If it exists,
   // get a copy of the current data
   MyMoneyFile::account(parent.id());
+
+  // make sure that no account with the same name and type exist
+  // asset andliability as well as income and expense are considered
+  // the same type in this aspect.
+  switch(account.accountGroup()) {
+    case MyMoneyAccount::Income:
+    case MyMoneyAccount::Expense:
+      if(!categoryToAccount(account.name()).isEmpty())
+        throw new MYMONEYEXCEPTION("Account with that name already exists");
+      break;
+
+    default:
+      if(!nameToAccount(account.name()).isEmpty())
+        throw new MYMONEYEXCEPTION("Account with that name already exists");
+      break;
+  }
 
   // FIXME: make sure, that the parent has the same type
   // I left it out here because I don't know, if there is
@@ -634,6 +651,7 @@ const MyMoneyMoney MyMoneyFile::totalBalance(const QCString& id) const
 
 void MyMoneyFile::attach(const QCString& id, MyMoneyObserver* observer)
 {
+  // qDebug("attach 0x%08lX for %s", (unsigned long) observer, id.data());
   QMap<QCString, MyMoneyFileSubject>::Iterator it_s;
 
   // make sure an entry for the subject with the id exists
@@ -645,6 +663,7 @@ void MyMoneyFile::attach(const QCString& id, MyMoneyObserver* observer)
 
 void MyMoneyFile::detach(const QCString& id, MyMoneyObserver* observer)
 {
+  // qDebug("detach 0x%08lX for %s", (unsigned long) observer, id.data());
   QMap<QCString, MyMoneyFileSubject>::Iterator it_s;
 
   it_s = m_subjects.find(id);
@@ -777,7 +796,7 @@ const QCString MyMoneyFile::locateSubAccount(const MyMoneyAccount& base, const Q
 
   for(it_a = list.begin(); it_a != list.end(); ++it_a) {
     nextBase = account(*it_a);
-    if(nextBase.name() == level) {
+    if(nextBase.name().lower() == level.lower()) {
       if(remainder.isEmpty()) {
         return nextBase.id();
       }
@@ -1058,52 +1077,48 @@ const QStringList MyMoneyFile::consistencyCheck(void)
 
 QCString MyMoneyFile::createCategory(const MyMoneyAccount& base, const QString& name)
 {
-  MyMoneyAccount *categoryAccount;
   MyMoneyAccount parent = base;
   QString categoryText;
-
+  
+  if(base.id() != expense().id() && base.id() != income().id())
+    throw MYMONEYEXCEPTION("Invalid base category");
+    
   QStringList subAccounts = QStringList::split(CATEGORY_SEPERATOR, name);
   QStringList::Iterator it;
   for (it = subAccounts.begin(); it != subAccounts.end(); ++it)
   {
-    categoryAccount = new MyMoneyAccount();
+    MyMoneyAccount categoryAccount;
 
-    categoryAccount->setName(*it);
-    if (base == expense())
-      categoryAccount->setAccountType(MyMoneyAccount::Expense);
-    else
-      categoryAccount->setAccountType(MyMoneyAccount::Income);
+    categoryAccount.setName(*it);
+    categoryAccount.setAccountType(base.accountType());
 
     if (it == subAccounts.begin())
       categoryText += *it;
     else
       categoryText += (":" + *it);
 
-    // Only create the account if it doesnt exist
+    // Only create the account if it doesn't exist
     try
     {
       QCString categoryId = categoryToAccount(categoryText);
       if (categoryId.isEmpty())
-        addAccount(*categoryAccount, parent);
+        addAccount(categoryAccount, parent);
       else
       {
-        *categoryAccount = account(categoryId);
+        categoryAccount = account(categoryId);
       }
     }
     catch (MyMoneyException *e)
     {
       qDebug("Unable to add account %s, %s, %s: %s",
-        categoryAccount->name().latin1(),
+        categoryAccount.name().latin1(),
         parent.name().latin1(),
         categoryText.latin1(),
         e->what().latin1());
       delete e;
     }
 
-    parent = *categoryAccount;
-
-    // Reset the id
-    delete categoryAccount;
+    parent = categoryAccount;
   }
 
   return categoryToAccount(name);

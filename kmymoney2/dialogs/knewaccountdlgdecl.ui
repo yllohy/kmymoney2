@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>592</width>
-            <height>596</height>
+            <height>591</height>
         </rect>
     </property>
     <property name="caption">
@@ -388,12 +388,12 @@ My Current Account</string>
                         </widget>
                     </hbox>
                 </widget>
-                <widget class="QCheckBox">
+                <widget class="QLabel">
                     <property name="name">
-                        <cstring>m_qcheckboxSubAccount</cstring>
+                        <cstring>m_subAccountLabel</cstring>
                     </property>
                     <property name="text">
-                        <string>Sub Account</string>
+                        <string>Subaccount</string>
                     </property>
                 </widget>
                 <widget class="KListView">
@@ -499,7 +499,7 @@ My Current Account</string>
         <class>kMyMoneyDateInput</class>
         <header location="local">../widgets/kmymoneydateinput.h</header>
         <sizehint>
-            <width>90</width>
+            <width>120</width>
             <height>25</height>
         </sizehint>
         <container>0</container>

@@ -137,9 +137,10 @@ void kMyMoneyCategory::focusOutEvent(QFocusEvent *ev)
   // if the current text is not in the list of
   // possible completions, we have a new category
   // and signal that to the outside world.
-  if(text() != "" && compObj()->items().contains(text()) == 0)
+  if(!text().isEmpty() && compObj()->items().contains(text()) == 0) {
     emit newCategory(text());
-
+  }
+  
   if(text() != m_text) {
     emit categoryChanged(text());
   }

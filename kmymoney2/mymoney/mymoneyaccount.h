@@ -51,7 +51,7 @@ class MyMoneyFile;
   * @li  Savings
   * @li  Cash
   * @li  CreditCard
-  * @li  Loan
+  * @li  Loan (collected)
   * @li  CertificateDep
   * @li  Investment
   * @li  MoneyMarket
@@ -60,6 +60,7 @@ class MyMoneyFile;
   * @li  Liability
   * @li  Income
   * @li  Expense
+  * @li  Loan (given)
   *
   * @see MyMoneyInstitution
   * @see MyMoneyFile
@@ -100,16 +101,17 @@ public:
     Cash,                 /**< Denotes a shoe-box or pillowcase stuffed
                                with cash */
     CreditCard,           /**< Credit card accounts */
-    Loan,                 /**< Loan and mortgage accounts */
+    Loan,                 /**< Loan and mortgage accounts (liability) */
     CertificateDep,       /**< Certificates of Deposit */
     Investment,           /**< Investment account */
     MoneyMarket,          /**< Money Market Account */
     Asset,                /**< Denotes a generic asset account.*/
     Liability,            /**< Denotes a generic liability account.*/
     Currency,             /**< Denotes a currency trading account. */
-    Income,               /**< Denotes an income account*/
-    Expense,              /**< Denotes an expense account*/
-
+    Income,               /**< Denotes an income account */
+    Expense,              /**< Denotes an expense account */
+    AssetLoan,            /**< Denotes a loan (asset of the owner of this object) */
+    
     /* insert new account types above this line */
     MaxAccountTypes       /**< Denotes the number of different account types */
   }accountTypeE;

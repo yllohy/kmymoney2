@@ -48,15 +48,40 @@ private:
   KAccountListItem *m_parentItem;
   KAccountListItem *m_accountItem;
   bool m_categoryEditor;
-
+  bool m_isEditing;
+  
   void initParentWidget(QCString parentId, const QCString& accountId);
   void showSubAccounts(QCStringList accounts, KAccountListItem *parentItem, const QCString& parentId, const QCString& accountId);
   void loadInstitutions(const QString&);
   
 public:
-  KNewAccountDlg(MyMoneyAccount& account, bool isEditing, bool categoryEditor, QWidget *parent=0, const char *name=0, const char *title=0);
+  /**
+    * This is the constructor of the dialog. The parameters define the environment
+    * in which the dialog will be used. Depending on the environment, certain rules
+    * apply and will be handled by the dialog.
+    *
+    * @param account The original data to be used to create the account. In case
+    *                of @p isEditing is false, the account id, the parent account id
+    *                and the list of all child accounts will be cleared.
+    * @param isEditing If @p false, rules for new account creation apply.
+    *                  If @p true, rules for account editing apply
+    * @param categoryEditor If @p false, rules for asset/liability accounts apply.
+    *                       If @p true, rules for income/expense account apply.
+    * @param parent Pointer to parent object (passed to QDialog). Default is 0.
+    * @param name Name of the object (passed to QDialog). Default is 0.
+    * @param title Caption of the object (passed to QDialog). Default is 0.
+    */
+  KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bool categoryEditor, QWidget *parent=0, const char *name=0, const char *title=0);
   ~KNewAccountDlg();
+  
+  /**
+    * This method returns the edited account object.
+    */
   const MyMoneyAccount& account(void) const;
+  
+  /**
+    * This method returns the parent account of the edited account object.
+    */
   const MyMoneyAccount& parentAccount(void);
 
 protected:
@@ -65,7 +90,7 @@ protected:
 protected slots:
   void okClicked();
   void slotSelectionChanged(QListViewItem *item);
-  void slotSubAccountsToggled(bool on);
+  void slotAccountTypeChanged(const QString& type);
   void slotNewClicked();
 
 private slots:

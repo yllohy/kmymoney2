@@ -82,7 +82,21 @@ void KAccountListItem::newAccount(const MyMoneyAccount& account)
   file->attach(m_accountID, this);
 
   setPixmap(0, *accountPixmap);
-  update(m_accountID);
+  setText(0, account.name());
+
+  MyMoneyMoney balance = file->totalBalance(m_accountID);
+  
+  // since income and liabilities are usually negative,
+  // we reverse the sign for display purposes
+  switch(account.accountGroup()) {
+    case MyMoneyAccount::Income:
+    case MyMoneyAccount::Liability:
+      balance = -balance;
+      break;
+    default:
+      break;
+  }
+  setText(2, balance.formatMoney());
 }
 
 KAccountListItem::KAccountListItem(KListView *parent, const QString& txt)
@@ -113,10 +127,11 @@ void KAccountListItem::update(const QCString& accountId)
       MyMoneyMoney balance = file->totalBalance(m_accountID);
 
       setText(0, acc.name());
-
+      setText(1, QString::number(file->transactionCount(m_accountID)));
+      
       // since income and liabilities are usually negative,
       // we reverse the sign for display purposes
-      switch(file->accountGroup(acc.accountType())) {
+      switch(acc.accountGroup()) {
         case MyMoneyAccount::Income:
         case MyMoneyAccount::Liability:
           balance = -balance;

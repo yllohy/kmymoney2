@@ -98,6 +98,7 @@ signals:
 
 protected:
   void focusOutEvent(QFocusEvent *ev);
+  virtual void keyPressEvent( QKeyEvent * );
 
 private:
   /**

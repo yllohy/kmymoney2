@@ -154,3 +154,11 @@ void MyMoneySplitTest::testInequality() {
 	CPPUNIT_ASSERT(!(n == *m));
 }
 
+
+void MyMoneySplitTest::testAmortization() {
+	CPPUNIT_ASSERT(m->isAmortizationSplit() == false);
+	testSetFunctions();
+	CPPUNIT_ASSERT(m->isAmortizationSplit() == false);
+	m->setAction(MyMoneySplit::ActionAmortization);
+	CPPUNIT_ASSERT(m->isAmortizationSplit() == true);
+}

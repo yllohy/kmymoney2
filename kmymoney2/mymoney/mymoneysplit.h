@@ -67,8 +67,8 @@ public:
     Frozen
   };
 
-	MyMoneySplit();
-	~MyMoneySplit();
+  MyMoneySplit();
+  ~MyMoneySplit();
 
   bool operator == (const MyMoneySplit&) const;
 
@@ -82,7 +82,8 @@ public:
   const QCString payeeId(void) const { return m_payee; };
   const QCString action(void) const { return m_action; };
   const QString number(void) const { return m_number; };
-
+  const bool isAmortizationSplit(void) const { return m_action == ActionAmortization; };
+  
   void setShares(const MyMoneyMoney& shares);
   void setValue(const MyMoneyMoney& value);
   void setAccountId(const QCString& account);
@@ -99,7 +100,8 @@ public:
   static const char ActionTransfer[];
   static const char ActionWithdrawal[];
   static const char ActionATM[];
-
+  static const char ActionAmortization[];
+  
 private:
   /**
     * This member contains the ID of the transaction

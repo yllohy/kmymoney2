@@ -49,8 +49,10 @@ void MyMoneySubject::notify(const QCString& id)
 
   for (i = ptrList.first(); i != NULL; i = ptrList.next()) {
     // only call the observer if it did not detach in the meantime
-    if(m_observers.findRef(i) != -1)
+    if(m_observers.findRef(i) != -1) {
+      // qDebug("call observer @ 0x%08lX", (unsigned long)i);
       i->update(id);
+    }
   }
 }
 

@@ -211,6 +211,7 @@ const MyMoneyAccount::accountTypeE MyMoneyAccount::accountGroup(MyMoneyAccount::
     case MyMoneyAccount::Investment:
     case MyMoneyAccount::MoneyMarket:
     case MyMoneyAccount::CertificateDep:
+    case MyMoneyAccount::AssetLoan:
       return MyMoneyAccount::Asset;
 
     case MyMoneyAccount::CreditCard:
