@@ -364,6 +364,8 @@ KAccountsView::KAccountsView(QWidget *parent, const char *name)
   MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAccountHierarchy, this);
   MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAccount, this);
   MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassInstitution, this);
+  MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassEquity, this);
+  MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassCurrency, this);
 
   refresh(QCString());
 }
@@ -373,6 +375,8 @@ KAccountsView::~KAccountsView()
   MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassAccountHierarchy, this);
   MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassAccount, this);
   MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassInstitution, this);
+  MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassEquity, this);
+  MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassCurrency, this);
 }
 
 void KAccountsView::slotListDoubleClicked(QListViewItem* item, const QPoint& /* pos */, int /* c */)
@@ -440,7 +444,7 @@ void KAccountsView::slotIconRightMouse(QIconViewItem* item, const QPoint&)
       m_bSelectedAccount=true;
       m_bSelectedInstitution=false;
       m_selectedAccount = accountItem->accountID();
-      
+
       emit accountRightMouseClick();
 
     } catch (MyMoneyException *e) {
@@ -464,7 +468,7 @@ void KAccountsView::slotListRightMouse(QListViewItem* item, const QPoint& , int 
         MyMoneyFile *file = MyMoneyFile::instance();
         MyMoneyAccount account = file->account(accountItem->accountID());
 
-        
+
         m_bSelectedAccount=true;
         m_bSelectedInstitution=false;
         m_selectedAccount = accountItem->accountID();
@@ -476,7 +480,7 @@ void KAccountsView::slotListRightMouse(QListViewItem* item, const QPoint& , int 
         m_bSelectedInstitution=true;
         m_selectedInstitution = accountItem->accountID();
         delete e;
-        
+
         emit bankRightMouseClick();
       }
     }
@@ -503,10 +507,14 @@ void KAccountsView::update(const QCString& id)
   // updates in this phase. The switch is controlled with suspendUpdate().
   if(m_suspendUpdate == false) {
     if(id == MyMoneyFile::NotifyClassAccountHierarchy
+    || id == MyMoneyFile::NotifyClassCurrency
+    || id == MyMoneyFile::NotifyClassEquity
     || (id == MyMoneyFile::NotifyClassInstitution && m_bViewNormalAccountsView == true)) {
       refresh(id);
     }
-    if(id == MyMoneyFile::NotifyClassAccount)
+    if(id == MyMoneyFile::NotifyClassAccount
+    || id == MyMoneyFile::NotifyClassCurrency
+    || id == MyMoneyFile::NotifyClassEquity)
       refreshNetWorth();
   }
 }
@@ -529,7 +537,7 @@ void KAccountsView::suspendUpdate(const bool suspend)
       refresh(MyMoneyFile::NotifyClassInstitution);
     refreshNetWorth();
   }
-  
+
   m_suspendUpdate = suspend;
 }
 
@@ -579,7 +587,7 @@ const QPixmap KAccountsView::accountImage(const MyMoneyAccount::accountTypeE typ
       else
         rc = QPixmap(liabilityIconImage);
       break;
-      
+
     case MyMoneyAccount::Checkings:
     case MyMoneyAccount::Savings:
       rc = QPixmap(checkingsIconImage);
@@ -588,7 +596,7 @@ const QPixmap KAccountsView::accountImage(const MyMoneyAccount::accountTypeE typ
     case MyMoneyAccount::Loan:
       rc = QPixmap(loanIconImage);
       break;
-      
+
     case MyMoneyAccount::CreditCard:
       rc = QPixmap(creditCardIconImage);
       break;
@@ -675,7 +683,6 @@ void KAccountsView::refresh(const QCString& selectAccount)
 
         switch((*accountIterator).accountGroup()) {
           case MyMoneyAccount::Asset:
-
           case MyMoneyAccount::Liability:
             if((*accountIterator).institutionId().isEmpty()) {
               KAccountListItem *accountItem;
@@ -689,13 +696,13 @@ void KAccountsView::refresh(const QCString& selectAccount)
             break;
         }
       }
-      
+
       // in case there is no account w/o reference to an institution
       // we can safely remove this entry to avoid user's confusion
       if(topLevelInstitution->childCount() == 0) {
         delete topLevelInstitution;
       }
-      
+
       QValueList<MyMoneyInstitution> list = file->institutionList();
       QValueList<MyMoneyInstitution>::ConstIterator institutionIterator;
       for (institutionIterator = list.begin();
@@ -753,7 +760,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
 
         QCStringList subAccounts = m_accountMap[*it].accountList();
         if (subAccounts.count() >= 1) {
-          showSubAccounts(subAccounts, accountItem, i18n("Asset"));
+          showSubAccounts(subAccounts, accountItem, true);
         }
       }
 
@@ -776,7 +783,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
 
         QCStringList subAccounts = m_accountMap[*it].accountList();
         if (subAccounts.count() >= 1) {
-          showSubAccounts(subAccounts, accountItem, i18n("Liability"));
+          showSubAccounts(subAccounts, accountItem, true);
         }
       }
 
@@ -797,7 +804,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
 
         QCStringList subAccounts = m_accountMap[*it].accountList();
         if (subAccounts.count() >= 1) {
-          accountUsed |= showSubAccounts(subAccounts, accountItem, i18n("Income"));
+          accountUsed |= showSubAccounts(subAccounts, accountItem, false);
         }
         if(accountUsed == false && m_hideCategory == true) {
           // in case hide category is on and the account or any of it's
@@ -824,7 +831,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
         QCStringList subAccounts = m_accountMap[*it].accountList();
 
         if (subAccounts.count() >= 1) {
-          accountUsed |= showSubAccounts(subAccounts, accountItem, i18n("Expense"));
+          accountUsed |= showSubAccounts(subAccounts, accountItem, false);
         }
         if(accountUsed == false && m_hideCategory == true) {
           // in case hide category is on and the account or any of it's
@@ -852,20 +859,21 @@ void KAccountsView::refresh(const QCString& selectAccount)
 */
 }
 
-const bool KAccountsView::showSubAccounts(const QCStringList& accounts, KAccountListItem *parentItem, const QString& group)
+const bool KAccountsView::showSubAccounts(const QCStringList& accounts, KAccountListItem *parentItem, const bool used)
 {
-  bool  accountUsed = false;
+  bool  accountUsed = used;
 
   for ( QCStringList::ConstIterator it = accounts.begin(); it != accounts.end(); ++it ) {
     KAccountListItem *accountItem  = new KAccountListItem(parentItem,
           m_accountMap[*it]);
+
     accountItem->setText(1, QString("%1").arg(m_transactionCountMap[*it]));
 
-    accountUsed = m_transactionCountMap[*it] > 0;
+    accountUsed |= (m_transactionCountMap[*it] > 0);
 
     QCStringList subAccounts = m_accountMap[*it].accountList();
     if (subAccounts.count() >= 1) {
-      accountUsed |= showSubAccounts(subAccounts, accountItem, group) || m_transactionCountMap[*it] > 0;
+      accountUsed |= showSubAccounts(subAccounts, accountItem, used) || m_transactionCountMap[*it] > 0;
     }
 
     if(accountUsed == false && m_hideCategory == true) {
@@ -942,13 +950,13 @@ void KAccountsView::slotEditClicked(void)
 
 {
   QCString  accountId;
-  
+
   if(accountTabWidget->currentPageIndex() == 0) {   // ListView?
     KAccountListItem *item = (KAccountListItem *)accountListView->currentItem();
     if(!item)
       return;
     accountId = item->accountID();
-    
+
   } else {
     KAccountIconItem *item = (KAccountIconItem *)accountIconView->currentItem();
     if(!item)

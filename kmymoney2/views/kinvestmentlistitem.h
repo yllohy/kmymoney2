@@ -23,10 +23,21 @@
 #ifndef KINVESTMENTLISTITEM_H
 #define KINVESTMENTLISTITEM_H
 
+// ----------------------------------------------------------------------------
+// QT Includes
+
+// ----------------------------------------------------------------------------
+// KDE Includes
+
 #include <klistview.h>
 
+// ----------------------------------------------------------------------------
+// Project Includes
+
 #include "../mymoney/mymoneyequity.h"
+#include "../mymoney/mymoneyaccount.h"
 #include "../mymoney/mymoneytransaction.h"
+#include "../mymoney/mymoneyobserver.h"
 
 //indexes for the various columns on the summary view
 #define COLUMN_NAME_INDEX       0
@@ -44,12 +55,15 @@
   *@author Kevin Tambascio
   */
 
-class KInvestmentListItem : public KListViewItem  {
-public: 
-	KInvestmentListItem(KListView* parent, const MyMoneyEquity& equity, const QValueList<MyMoneyTransaction>& transactionList);
-	~KInvestmentListItem();
+class KInvestmentListItem : public KListViewItem, public MyMoneyObserver
+{
+public:
+  KInvestmentListItem(KListView* parent, const MyMoneyAccount& equity);
+  ~KInvestmentListItem();
 
-  QCString equityId() const { return m_equity.id(); }	
+  QCString equityId() const { return m_account.currencyId(); }
+  void update(const QCString& id);
+
 protected:
   void paintCell(QPainter * p, const QColorGroup & cg, int column, int width, int align);
 
@@ -58,8 +72,10 @@ private:
   const QString calculate4WeekGain(const equity_price_history& history);
   const QString calculate3MonthGain(const equity_price_history& history);
   const QString calculateYTDGain(const equity_price_history& history);
-	KListView *m_listView;
-  MyMoneyEquity m_equity;	
+
+private:
+  KListView*        m_listView;
+  MyMoneyAccount    m_account;
 };
 
 #endif

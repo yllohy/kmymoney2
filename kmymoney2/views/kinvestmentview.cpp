@@ -27,6 +27,7 @@
 #include <qtabwidget.h>
 #include <qheader.h>
 #include <qlistbox.h>
+#include <qcursor.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -52,14 +53,20 @@
 #include "../mymoney/mymoneytransaction.h"
 #include "../mymoney/mymoneyinvesttransaction.h"
 #include "../mymoney/mymoneyaccount.h"
-#include "kinvestmentlistitem.h"
+
 #include "../dialogs/knewequityentrydlg.h"
 #include "../dialogs/kupdatestockpricedlg.h"
 #include "../dialogs/keditequityentrydlg.h"
+#include "../dialogs/knewaccountdlg.h"
+
+#include "../widgets/kmymoneyaccountcombo.h"
+
+#include "../kapptest.h"
+
 #include "kinvestmentview.h"
 #include "kinvestmentlistitem.h"
 #include "kledgerviewinvestments.h"
-#include "../widgets/kmymoneyaccountcombo.h"
+
 
 KInvestmentView::KInvestmentView(QWidget *parent, const char *name)
  :  kInvestmentViewDecl(parent,name)
@@ -84,37 +91,40 @@ KInvestmentView::KInvestmentView(QWidget *parent, const char *name)
   //no sorting yet...
  // investmentTable->setSorting(-1);
 
-//  connect(investmentTable, SIGNAL(rightButtonClicked(QListViewItem* , const QPoint&, int)),
-//    this, SLOT(slotListRightMouse(QListViewItem*, const QPoint&, int)));
+  connect(investmentTable, SIGNAL(rightButtonClicked(QListViewItem* , const QPoint&, int)),
+    this, SLOT(slotListRightMouse(QListViewItem*, const QPoint&, int)));
 
   //connects the signal when a radio button is checked.
  // connect(m_btnGroupView, SIGNAL(clicked(int)), this, SLOT(slotViewChanged(int)));
 
-  //hide transaction view, since we show the summary view by default.
-//  transactionTable->hide();
-
   //set the summary button to be true.
  // btnSummary->setChecked(TRUE);
 
-   connect(m_accountComboBox, SIGNAL(accountSelected(const QCString&)),
-     this, SIGNAL(accountSelected(const QCString&)));
+  connect(m_accountComboBox, SIGNAL(accountSelected(const QCString&)),
+    this, SIGNAL(accountSelected(const QCString&)));
 
-   connect(m_tab, SIGNAL(currentChanged(QWidget*)), this, SLOT(slotTabSelected(QWidget*)));
+  connect(m_tab, SIGNAL(currentChanged(QWidget*)), this, SLOT(slotTabSelected(QWidget*)));
  //const bool KInvestmentView::slotSelectAccount(const QCString& id, const bool reconciliation)
 
-  MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAccount, this);
-
   connect(investmentTable, SIGNAL(doubleClicked(QListViewItem*,const QPoint&, int)), this, SLOT(slotItemDoubleClicked(QListViewItem*,const QPoint&, int)));
+
+  MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAccount, this);
+  MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAccountHierarchy, this);
+
+  // we temporarily need this to keep the linker happy
+  KNewEquityEntryDlg *pDlg = new KNewEquityEntryDlg(this);
+  delete pDlg;
 }
 
 KInvestmentView::~KInvestmentView()
 {
+  MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassAccountHierarchy, this);
   MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassAccount, this);
 }
 
 void KInvestmentView::initSummaryTab(void)
 {
-  investmentTable->setRootIsDecorated(true);
+  investmentTable->setRootIsDecorated(false);
   investmentTable->setColumnText(0, QString(i18n("Symbol")));
   investmentTable->addColumn(i18n("Name"));
   investmentTable->addColumn(i18n("Symbol"));
@@ -191,16 +201,13 @@ void KInvestmentView::updateDisplay()
   investmentTable->clear();
 
   MyMoneyFile* file = MyMoneyFile::instance();
-  QValueList<MyMoneyEquity> equities = file->equityList();
-  QValueList<MyMoneyTransaction> transactions;
-  qDebug("slotRefreshView: Number of equity objects: %d", equities.size());
+  QCStringList equities = m_account.accountList();
 
-  for(QValueList<MyMoneyEquity>::ConstIterator it = equities.begin(); it != equities.end(); ++it)
-  {
-    KInvestmentListItem* item = new KInvestmentListItem(investmentTable, (*it), transactions);
+  for(QCStringList::ConstIterator it = equities.begin(); it != equities.end(); ++it) {
+    MyMoneyAccount acc = file->account(*it);
+    KInvestmentListItem* item = new KInvestmentListItem(investmentTable, acc);
     investmentTable->insertItem(item);
   }
-
 }
 
 void KInvestmentView::slotItemDoubleClicked(QListViewItem* pItem, const QPoint& pos, int c)
@@ -235,8 +242,21 @@ void KInvestmentView::slotItemDoubleClicked(QListViewItem* pItem, const QPoint& 
 
 void KInvestmentView::slotNewInvestment(void)
 {
-  MyMoneyEquity equity;
-  KNewEquityEntryDlg *pDlg = new KNewEquityEntryDlg(this);
+  MyMoneyAccount acc;
+  acc.setAccountType(MyMoneyAccount::Stock);
+  acc.setParentAccountId(m_account.id());
+
+  KNewAccountDlg dlg(acc, false, false, this, KAppTest::widgetName(this, "KNewAccountDlg"));
+  if(dlg.exec() == QDialog::Accepted) {
+    try {
+      MyMoneyAccount acc = dlg.account();
+      MyMoneyFile::instance()->addAccount(acc, m_account);
+    } catch(MyMoneyException *e) {
+      qDebug("Unable to add equity account");
+      delete e;
+    }
+  }
+
 /*
   pDlg->exec();
   int nResult = pDlg->result();
@@ -267,8 +287,8 @@ void KInvestmentView::slotNewInvestment(void)
     //display new equity in the list view.
     //displayNewEquity(equity);
   }
-*/
   delete pDlg;
+*/
 }
 
 void KInvestmentView::addEquityEntry(MyMoneyEquity* /*pEntry*/)
@@ -315,22 +335,28 @@ void KInvestmentView::slotUpdatePrice()
 
 void KInvestmentView::slotListRightMouse(QListViewItem* item, const QPoint& point, int x)
 {
-/*
+  int newId, editId, updateId;
+
   // setup the context menu
   KIconLoader *kiconloader = KGlobal::iconLoader();
   m_popMenu = new KPopupMenu(this);
-  m_popMenu->insertTitle(kiconloader->loadIcon("transaction", KIcon::MainToolbar), i18n("Transaction Options"));
-  m_popMenu->insertItem(kiconloader->loadIcon("edit", KIcon::Small), i18n("New Investment"), this, SLOT(slotNewInvestment()));
-  m_popMenu->insertItem(kiconloader->loadIcon("edit", KIcon::Small), i18n("Edit Investment Properties"), this, SLOT(slotEditInvestment()));
-  m_popMenu->insertItem(kiconloader->loadIcon("edit", KIcon::Small), i18n("Update Investment Price"), this, SLOT(slotUpdatePrice()));
-  //m_popMenu = m_contextMenu->insertItem(kiconloader->loadIcon("delete", KIcon::Small),
-  //                      i18n("Delete ..."),
-  //                      this, SLOT(slotDeleteSplitTransaction()));
-  if(m_popMenu)
-  {
-    m_popMenu->exec(QCursor::pos());
+  m_popMenu->insertTitle(kiconloader->loadIcon("transaction", KIcon::MainToolbar), i18n("Investment Options"));
+  newId = m_popMenu->insertItem(kiconloader->loadIcon("file_new", KIcon::Small), i18n("New ..."), this, SLOT(slotNewInvestment()));
+  editId = m_popMenu->insertItem(kiconloader->loadIcon("edit", KIcon::Small), i18n("Edit ..."), this, SLOT(slotEditInvestment()));
+  updateId = m_popMenu->insertItem(kiconloader->loadIcon("edit", KIcon::Small), i18n("Update Price ..."), this, SLOT(slotUpdatePrice()));
+#if 0
+  delId = m_popMenu->insertItem(kiconloader->loadIcon("delete", KIcon::Small),
+                        i18n("Delete ..."),
+                        this, SLOT(slotDeleteSplitTransaction()));
+#endif
+  if(!item) {
+    m_popMenu->setItemEnabled(editId, false);
+    m_popMenu->setItemEnabled(updateId, false);
   }
-*/
+  if(m_account.accountType() != MyMoneyAccount::Investment)
+    m_popMenu->setItemEnabled(newId, false);
+
+  m_popMenu->exec(QCursor::pos());
 }
 
 void KInvestmentView::slotTabSelected(QWidget *pWidget)
@@ -501,13 +527,15 @@ void KInvestmentView::show(void)
   emit signalViewActivated();
 }
 
-void KInvestmentView::update(const QCString& /* id */)
+void KInvestmentView::update(const QCString& id)
 {
   if(m_tab->isEnabled()) {
     QCString lastUsed = m_account.id();
     loadAccounts();
     if(m_account.id() != lastUsed) {
       slotRefreshView();
+    } else if(id == MyMoneyFile::NotifyClassAccountHierarchy) {
+      updateDisplay();
     }
   }
 }

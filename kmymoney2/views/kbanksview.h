@@ -63,12 +63,12 @@ private:
 
   void refresh(const QCString& selectAccount);
   void refreshNetWorth(void);
-  const bool showSubAccounts(const QCStringList& accounts, KAccountListItem *parentItem, const QString& group);
+  const bool showSubAccounts(const QCStringList& accounts, KAccountListItem *parentItem, const bool used);
 
   QMap<QCString, MyMoneyAccount> m_accountMap;
   QMap<QCString, unsigned long> m_transactionCountMap;
 
-public: 
+public:
   KAccountsView(QWidget *parent=0, const char *name=0);
   ~KAccountsView();
   QCString currentAccount(bool&);
@@ -100,13 +100,13 @@ public:
     * the view will be refreshed once automatically.
     */
   void suspendUpdate(const bool suspend);
-  
+
 public slots:
   void slotEditClicked(void);
   void slotDeleteClicked(void);
   void slotRefreshView(void);
   void slotReloadView(void) { slotRefreshView(); };
-      
+
 protected:
   void resizeEvent(QResizeEvent*);
 
@@ -114,7 +114,7 @@ protected:
   void fillAccountMap(void);
 
 protected slots:
-  
+
   /**
     * This slot receives the signal from the listview control that an item was double-clicked,
     * if this item was a bank account, try to show the list of transactions for that account.

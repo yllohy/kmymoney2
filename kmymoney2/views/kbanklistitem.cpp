@@ -145,7 +145,7 @@ void KAccountListItem::newAccount(const MyMoneyAccount& account)
 {
   m_suspendUpdate = false;
   m_valueValid = true;
-  
+
   loadCache();
   MyMoneyFile*  file = MyMoneyFile::instance();
 
@@ -155,13 +155,13 @@ void KAccountListItem::newAccount(const MyMoneyAccount& account)
   setPixmap(0, *accountPixmap);
 
   // fill the columns with inital data
-  update(account.id());  
+  update(account.id());
 }
 
 KAccountListItem::KAccountListItem(KListView *parent, const QString& txt)
   : KListViewItem(parent), m_suspendUpdate(false), m_bViewNormal(true)
 {
-  setText(0, txt);  
+  setText(0, txt);
 }
 
 KAccountListItem::KAccountListItem(KListView *parent, const MyMoneyInstitution& institution)
@@ -180,16 +180,27 @@ void KAccountListItem::update(const QCString& accountId)
 {
   if(m_suspendUpdate == true)
     return;
-    
+
   MyMoneyFile*  file = MyMoneyFile::instance();
   MyMoneyCurrency baseCurrency = file->baseCurrency();
+  MyMoneyEquity equity;
+  MyMoneyCurrency currency;
+  MyMoneyEquity* eq;
+  int prec;
 
   try {
     MyMoneyAccount acc = file->account(accountId);
-    MyMoneyCurrency currency = file->currency(acc.currencyId());
-    int prec = MyMoneyMoney::denomToPrec((acc.accountType() == MyMoneyAccount::Cash)
-                 ? currency.smallestCashFraction()
-                 : currency.smallestAccountFraction());
+    if(acc.accountType() == MyMoneyAccount::Stock) {
+      equity = file->equity(acc.currencyId());
+      eq = &equity;
+      prec = 2;
+    } else {
+      currency = file->currency(acc.currencyId());
+      prec = MyMoneyMoney::denomToPrec((acc.accountType() == MyMoneyAccount::Cash)
+                ? currency.smallestCashFraction()
+                : currency.smallestAccountFraction());
+      eq = &currency;
+    }
 
     try {
       MyMoneyMoney balance = file->balance(accountId);
@@ -216,7 +227,7 @@ void KAccountListItem::update(const QCString& accountId)
         setText(1, QString::number(file->transactionCount(accountId)));
       else
         setText(1, QString(" "));
-      
+
       setText(2, " ");
       // since income and liabilities are usually negative,
       // we reverse the sign for display purposes
@@ -224,12 +235,12 @@ void KAccountListItem::update(const QCString& accountId)
         case MyMoneyAccount::Income:
           setText(2, (-value).formatMoney(baseCurrency.tradingSymbol(), prec));
           // tricky fall through here
-          
+
         case MyMoneyAccount::Liability:
           balance = -balance;
           value = -value;
           break;
-          
+
         case MyMoneyAccount::Expense:
           setText(2, value.formatMoney(baseCurrency.tradingSymbol(), prec));
           break;
@@ -237,11 +248,11 @@ void KAccountListItem::update(const QCString& accountId)
         default:
           break;
       }
-      if(currency.id() != baseCurrency.id())
-        setText(2, balance.formatMoney(currency.tradingSymbol(), prec));
+      if(eq->id() != baseCurrency.id())
+        setText(2, balance.formatMoney(eq->tradingSymbol(), prec));
 
       setText(3, value.formatMoney(baseCurrency.tradingSymbol(), prec));
-      
+
     } catch(MyMoneyException *e) {
       KMessageBox::detailedSorry(0, i18n("Unable to retrieve account information"),
           (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
@@ -261,7 +272,7 @@ void KAccountListItem::paintCell(QPainter *p, const QColorGroup & cg, int column
 
   QColor colour = KMyMoneyUtils::listColour();
   QColor bgColour = KMyMoneyUtils::backgroundColour();
-  
+
   QColorGroup cg2(cg);
 
   if (isAlternate())
@@ -275,7 +286,7 @@ void KAccountListItem::paintCell(QPainter *p, const QColorGroup & cg, int column
   }
 
   QListViewItem::paintCell(p, cg2, column, width, align);
-  
+
   int indent = 0;
   if (column == 0)
   {
@@ -291,7 +302,7 @@ void KAccountListItem::paintCell(QPainter *p, const QColorGroup & cg, int column
         p->setPen( cg2.highlightedText() );
       else if ( !isEnabled() && listView())
         p->setPen( listView()->palette().disabled().highlightedText() );
-        
+
     } else
       p->fillRect( 0, 0, indent, height(), cg2.base() );
 
@@ -321,15 +332,15 @@ void KAccountListItem::paintCell(QPainter *p, const QColorGroup & cg, int column
         p->drawPoint(i, height()/2);
 
     } else {
-      // draw upper part of vertical line      
+      // draw upper part of vertical line
       ofs = depth()*ts + ts/2 - 1;
       for(int i = 0; i < height()/2-(ts-2)/4; i += 2)
         p->drawPoint(ofs, i);
 
-      // draw horizontal part        
+      // draw horizontal part
       for(int i = ofs + ts/4 ; i < (depth()+1)*ts; i += 2)
         p->drawPoint(i, height()/2);
-        
+
       // need to draw box with +/- in it
       ofs = depth() * ts;
       p->drawRect( ofs + ts/4, height() / 2 - (ts-2)/4, (ts-2)/2, (ts-2)/2 );
@@ -370,7 +381,7 @@ KAccountIconItem::~KAccountIconItem()
 void KAccountIconItem::update(const QCString& id)
 {
   QString name;
-  
+
   try {
     MyMoneyAccount acc = MyMoneyFile::instance()->account(id);
     name = acc.name();
@@ -415,7 +426,7 @@ void KAccountListItem::paintFocus(QPainter* p, const QColorGroup& cg, const QRec
 
   QRect r2(r);
   r2.setLeft(r2.left() + -indent);
-  
+
   if (isSelected())
     p->fillRect(  r2.left(),
                   r2.top(),
