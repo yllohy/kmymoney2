@@ -115,6 +115,14 @@ public:
   virtual const QValueList<MyMoneyTransaction> transactionList(const QCString& account = "") const = 0;
 
   /**
+    * This method returns a list of the payees
+    * inside a MyMoneyStorage object
+    *
+    * @return QValueList<MyMoneyPayee> containing the payee information
+    */
+  virtual const QValueList<MyMoneyPayee> payeeList(void) const = 0;
+
+  /**
     * This method is used to return the standard liability account
     * @return MyMoneyAccount liability account(group)
     */

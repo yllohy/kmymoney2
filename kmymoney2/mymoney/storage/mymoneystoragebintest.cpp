@@ -289,9 +289,10 @@ void MyMoneyStorageBinTest::testReadOldMyMoneyFile(const QString version, unsign
   }
   CPPUNIT_ASSERT(a2.lastReconciliationDate() == QDate(7,9,7));
 
-
+/* removed with MyMoneyAccount::Transaction
   // check transactions in account one
   CPPUNIT_ASSERT(a1.transactionCount() == 3);
+*/
 
   MyMoneyTransaction t;
   MyMoneySplit sp1, sp2;
@@ -380,8 +381,10 @@ void MyMoneyStorageBinTest::testReadOldMyMoneyFile(const QString version, unsign
   CPPUNIT_ASSERT(sp2.reconcileFlag() == MyMoneySplit::NotReconciled);
   CPPUNIT_ASSERT(sp2.reconcileDate() == QDate());
 
+/* removed with MyMoneyAccount::Transaction
   // check transactions in account two
   CPPUNIT_ASSERT(a2.transactionCount() == 2);
+*/
 
   t = storage.transaction("A000004", 0);
   CPPUNIT_ASSERT(t.splitCount() == 2);

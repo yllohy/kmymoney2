@@ -405,6 +405,7 @@ void MyMoneySeqAccessMgr::touch(void)
 
 void MyMoneySeqAccessMgr::refreshAllAccountTransactionLists(void)
 {
+/* removed with MyMoneyAccount::Transaction
   QMap<QCString, MyMoneyTransaction>::ConstIterator it_t;
   QMap<QCString, MyMoneyAccount>::Iterator it_a;
   QValueList<MyMoneySplit>::ConstIterator it_s;
@@ -421,10 +422,12 @@ void MyMoneySeqAccessMgr::refreshAllAccountTransactionLists(void)
       (*it_a).addTransaction(val);
     }
   }
+*/
 }
 
 void MyMoneySeqAccessMgr::refreshAccountTransactionList(QMap<QCString, MyMoneyAccount>::Iterator acc) const
 {
+/* removed with MyMoneyAccount::Transaction
   QMap<QCString, MyMoneyTransaction>::ConstIterator it_t;
   QValueList<MyMoneySplit>::ConstIterator it_s;
 
@@ -441,6 +444,7 @@ void MyMoneySeqAccessMgr::refreshAccountTransactionList(QMap<QCString, MyMoneyAc
       }
     }
   }
+*/
 }
 
 const bool MyMoneySeqAccessMgr::hasActiveSplits(const QCString& id) const
@@ -843,6 +847,7 @@ const MyMoneyTransaction& MyMoneySeqAccessMgr::transaction(const QCString& id) c
 
 const MyMoneyTransaction& MyMoneySeqAccessMgr::transaction(const QCString& account, const int idx) const
 {
+/* removed with MyMoneyAccount::Transaction
   QMap<QCString, MyMoneyAccount>::ConstIterator acc;
 
   // find account object in list, throw exception if unknown
@@ -855,6 +860,15 @@ const MyMoneyTransaction& MyMoneySeqAccessMgr::transaction(const QCString& accou
 
   // return the transaction, throw exception if not found
   return transaction(t.transactionID());
+*/
+
+  // new implementation if the above code does not work anymore
+  QValueList<MyMoneyTransaction> list;
+  list = transactionList(account);
+  if(idx < 0 || idx >= static_cast<int> (list.count()))
+    throw new MYMONEYEXCEPTION("Unknown idx for transaction");
+
+  return transaction(list[idx].id());
 }
 
 const MyMoneyMoney MyMoneySeqAccessMgr::balance(const QCString& id) const
@@ -862,7 +876,31 @@ const MyMoneyMoney MyMoneySeqAccessMgr::balance(const QCString& id) const
   MyMoneyAccount acc;
 
   acc = account(id);
+
+/* removed with MyMoneyAccount::Transaction
   return acc.balance();
+*/
+
+  // new implementation if the above code does not work anymore
+  MyMoneyMoney result(0);
+  result += acc.openingBalance();
+
+  QValueList<MyMoneyTransaction> list;
+  QValueList<MyMoneyTransaction>::ConstIterator it;
+  MyMoneySplit split;
+  list = transactionList(id);
+
+  for(it = list.begin(); it != list.end(); ++it) {
+    try {
+      split = (*it).split(id);
+      result += split.value();
+
+    } catch(MyMoneyException *e) {
+      // account is not referenced within this transaction
+      delete e;
+    }
+  }
+  return result;
 }
 
 const MyMoneyMoney MyMoneySeqAccessMgr::totalBalance(const QCString& id) const

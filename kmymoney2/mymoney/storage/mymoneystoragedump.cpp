@@ -76,7 +76,7 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
     s << "  Parent = " << (*it_a).parentAccountId();
     MyMoneyAccount parent = storage->account((*it_a).parentAccountId());
     s << " (" << parent.name() << ")" << "\n";
-    s << "  Balance = " << (*it_a).balance().formatMoney() << "\n";
+    // s << "  Balance = " << (*it_a).balance().formatMoney() << "\n";
     s << "\n";
   }
   s << "\n";

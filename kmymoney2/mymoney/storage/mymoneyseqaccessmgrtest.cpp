@@ -478,6 +478,7 @@ void MyMoneySeqAccessMgrTest::testAddTransactions() {
 		CPPUNIT_ASSERT(it_t == m->m_transactionList.end());
 
 		ch = m->account("A000006");
+/* removed with MyMoneyAccount::Transaction
 		CPPUNIT_ASSERT(ch.transactionCount() == 2);
 
 		QValueList<MyMoneyAccount::Transaction>::ConstIterator it_l;
@@ -491,6 +492,7 @@ void MyMoneySeqAccessMgrTest::testAddTransactions() {
 
 		++it_l;
 		CPPUNIT_ASSERT(it_l == ch.transactionList().end());
+*/
 			
 	} catch (MyMoneyException *e) {
 		delete e;
@@ -575,6 +577,7 @@ void MyMoneySeqAccessMgrTest::testModifyTransaction() {
 		CPPUNIT_ASSERT(it_t == m->m_transactionList.end());
 
 		ch = m->account("A000006");
+/* removed with MyMoneyAccount::Transaction
 		CPPUNIT_ASSERT(ch.transactionCount() == 2);
 
 		QValueList<MyMoneyAccount::Transaction>::ConstIterator it_l;
@@ -588,6 +591,7 @@ void MyMoneySeqAccessMgrTest::testModifyTransaction() {
 
 		++it_l;
 		CPPUNIT_ASSERT(it_l == ch.transactionList().end());
+*/
 	} catch (MyMoneyException *e) {
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception");
@@ -702,8 +706,9 @@ void MyMoneySeqAccessMgrTest::testRemoveTransaction() {
 		m->removeTransaction(t);
 		CPPUNIT_ASSERT(m->dirty() == true);
 		CPPUNIT_ASSERT(m->transactionCount() == 1);
+/* removed with MyMoneyAccount::Transaction
 		CPPUNIT_ASSERT(m->account("A000006").transactionCount() == 1);
-
+*/
 	} catch (MyMoneyException *e) {
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception");
