@@ -35,6 +35,8 @@
 #endif
 
 #include <klineedit.h>
+class KListView;
+class KPushButton;
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -53,7 +55,7 @@
   * @see KDialogBase
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: ksettingsdlg.h,v 1.10 2003/01/26 17:35:10 ipwizard Exp $
+  * $Id: ksettingsdlg.h,v 1.11 2003/07/28 17:07:41 ipwizard Exp $
   *
   * @short A class to manipulate the settings needed for running KMyMoney2
 **/
@@ -65,6 +67,11 @@ private:
   QRadioButton *m_qradiobuttonStartPrompt;
   /** Start file */
   QRadioButton *m_qradiobuttonStartFile;
+  /** Start home page */
+  QRadioButton *m_qradiobuttonStartHome;
+  /** Start last page */
+  QRadioButton *m_qradiobuttonStartLast;
+  
   /** Color list */
   KColorButton *m_kcolorbuttonList;
   /** Color background */
@@ -114,6 +121,10 @@ private:
   QRadioButton *m_qradiobuttonAccountWizard;
 
 
+  KListView*  m_homePageList;
+  KPushButton* m_upButton;
+  KPushButton* m_downButton;
+  
   /** Set page general */
   void setPageGeneral();
   /** Set page list settings */
@@ -121,6 +132,9 @@ private:
 
   void setPageAccountsView();
 
+  /** Set homepage settings */
+  void setHomePage();
+  
   /** Write settings */
   void configWrite();
   /** Read settings */
@@ -147,7 +161,8 @@ private:
   bool m_bTempTransactionForm;
   bool m_bTempTypeToNr;
   bool m_bTempShowNrField;
-
+  bool m_bTempStartPage;
+  
 private slots:
   /** Called when OK pressed */
   void slotOk();

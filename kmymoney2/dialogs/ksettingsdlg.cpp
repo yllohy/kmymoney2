@@ -22,6 +22,7 @@
 #include <qgroupbox.h>
 #include <qtabwidget.h>
 #include <qvalidator.h>
+#include <qheader.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -41,6 +42,8 @@
 #endif
 
 #include <kmessagebox.h>
+#include <klistview.h>
+#include <kpushbutton.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -58,6 +61,7 @@ KSettingsDlg::KSettingsDlg(QWidget *parent, const char *name, bool modal)
   setPageGeneral();
   setPageAccountsView();
   setPageList();
+  setHomePage();
   configRead();
   m_bDoneApply=false;
 }
@@ -76,28 +80,57 @@ void KSettingsDlg::setPageGeneral()
   QVBox *qvboxMainFrame = addVBoxPage( i18n("General"), i18n("General settings"),
     DesktopIcon("misc"));
 
+  // Startup page options
+  // --------------------
+  
   // Create a group box to hold the available options
-  QButtonGroup *qbuttongroup = new QButtonGroup(qvboxMainFrame, "GroupBox1");
-  qbuttongroup->setTitle( i18n( "Startup options" ) );
-  qbuttongroup->setColumnLayout(0, Qt::Vertical );
-  qbuttongroup->layout()->setSpacing( 0 );
-  qbuttongroup->layout()->setMargin( 0 );
+  QButtonGroup *qfilebuttongroup = new QButtonGroup(qvboxMainFrame, "GroupBox1");
+  qfilebuttongroup->setTitle( i18n( "Startup file options" ) );
+  qfilebuttongroup->setColumnLayout(0, Qt::Vertical );
+  qfilebuttongroup->layout()->setSpacing( 0 );
+  qfilebuttongroup->layout()->setMargin( 0 );
 
   // Create a layout to organize the widgets.
-  QVBoxLayout *qvboxlayout = new QVBoxLayout(qbuttongroup->layout());
-  qvboxlayout->setAlignment( Qt::AlignTop );
-  qvboxlayout->setSpacing( 6 );
-  qvboxlayout->setMargin( 11 );
+  QVBoxLayout *qvboxfilelayout = new QVBoxLayout(qfilebuttongroup->layout());
+  qvboxfilelayout->setAlignment( Qt::AlignTop );
+  qvboxfilelayout->setSpacing( 6 );
+  qvboxfilelayout->setMargin( 11 );
 
   // Create a check box to be in the group box
-  m_qradiobuttonStartPrompt = new QRadioButton("start_prompt", qbuttongroup);
+  m_qradiobuttonStartPrompt = new QRadioButton("start_prompt", qfilebuttongroup);
   m_qradiobuttonStartPrompt->setText( i18n( "Start with dialog prompt (default)" ) );
-  qvboxlayout->addWidget(m_qradiobuttonStartPrompt);
+  qvboxfilelayout->addWidget(m_qradiobuttonStartPrompt);
 
   // Create another check box to the group box
-  m_qradiobuttonStartFile = new QRadioButton("start_file", qbuttongroup);
+  m_qradiobuttonStartFile = new QRadioButton("start_file", qfilebuttongroup);
   m_qradiobuttonStartFile->setText( i18n( "Start with last file used" ) );
-  qvboxlayout->addWidget(m_qradiobuttonStartFile);
+  qvboxfilelayout->addWidget(m_qradiobuttonStartFile);
+
+  // Startup file options
+  // --------------------
+
+  // Create a group box to hold the available options
+  QButtonGroup *qpagebuttongroup = new QButtonGroup(qvboxMainFrame, "GroupBox2");
+  qpagebuttongroup->setTitle( i18n( "Startup page options" ) );
+  qpagebuttongroup->setColumnLayout(0, Qt::Vertical );
+  qpagebuttongroup->layout()->setSpacing( 0 );
+  qpagebuttongroup->layout()->setMargin( 0 );
+
+  // Create a layout to organize the widgets.
+  QVBoxLayout *qvboxpagelayout = new QVBoxLayout(qpagebuttongroup->layout());
+  qvboxpagelayout->setAlignment( Qt::AlignTop );
+  qvboxpagelayout->setSpacing( 6 );
+  qvboxpagelayout->setMargin( 11 );
+
+  // Create a check box to be in the group box
+  m_qradiobuttonStartHome = new QRadioButton("start_home", qpagebuttongroup);
+  m_qradiobuttonStartHome->setText( i18n( "Start with home page" ) );
+  qvboxpagelayout->addWidget(m_qradiobuttonStartHome);
+
+  // Create another check box to the group box
+  m_qradiobuttonStartLast = new QRadioButton("start_last", qpagebuttongroup);
+  m_qradiobuttonStartLast->setText( i18n( "Start with last selected page" ) );
+  qvboxpagelayout->addWidget(m_qradiobuttonStartLast);
 }
 
 void KSettingsDlg::setPageAccountsView()
@@ -155,6 +188,57 @@ void KSettingsDlg::setPageAccountsView()
   // Create a check box for the hide category feature
   m_qcheckboxHideCategory = new QCheckBox("hide_categories", qvboxMainFrame);
   m_qcheckboxHideCategory->setText( i18n( "Don't show unused categories" ) );
+}
+
+void KSettingsDlg::setHomePage()
+{
+  // Create the page.
+  QVBox *qvboxMainFrame = addVBoxPage( i18n("Home"), i18n("Home page settings"),
+    DesktopIcon("home"));
+
+  QFrame* frame = new QFrame(qvboxMainFrame, "frame");
+  
+  QHBoxLayout* Form1Layout = new QHBoxLayout( frame, 11, 6, "Form1Layout");
+
+  m_homePageList = new KListView( frame, "KListView1" );
+  m_homePageList->header()->hide();
+  Form1Layout->addWidget( m_homePageList );
+
+  QVBoxLayout*  Layout5 = new QVBoxLayout( 0, 0, 6, "Layout5");
+  QSpacerItem* spacer = new QSpacerItem( 0, 40, QSizePolicy::Minimum, QSizePolicy::Expanding );
+  Layout5->addItem( spacer );
+
+  QHBoxLayout* Layout2 = new QHBoxLayout( 0, 0, 6, "Layout2");
+
+  QVBoxLayout* Layout1 = new QVBoxLayout( 0, 0, 6, "Layout1");
+
+  m_upButton = new KPushButton( KGlobal::iconLoader()->loadIconSet("up", KIcon::Small), QString(""), frame, "KPushButtonUp" );
+  m_upButton->setText(i18n("Up"));
+  Layout1->addWidget( m_upButton );
+
+  m_downButton = new KPushButton( KGlobal::iconLoader()->loadIconSet("down", KIcon::Small), QString(""), frame, "KPushButtonDown" );
+  m_downButton->setText(i18n("Down"));
+  Layout1->addWidget( m_downButton );
+  Layout2->addLayout( Layout1 );
+  
+  QSpacerItem* spacer_2 = new QSpacerItem( 177, 0, QSizePolicy::Expanding, QSizePolicy::Minimum );
+  Layout2->addItem( spacer_2 );
+  Layout5->addLayout( Layout2 );
+  QSpacerItem* spacer_3 = new QSpacerItem( 0, 40, QSizePolicy::Minimum, QSizePolicy::Expanding );
+  Layout5->addItem( spacer_3 );
+
+  QLabel* TextLabel1 = new QLabel( frame, "TextLabel1" );
+  TextLabel1->setText( i18n(
+     "Selected entries are shown on the home page of the application.\n\n"
+     "Use the buttons and checkboxes to customize the layout of the home page."
+     ) );
+  TextLabel1->setAlignment( int( QLabel::WordBreak | QLabel::AlignTop ) );
+
+  Layout5->addWidget( TextLabel1 );
+  QSpacerItem* spacer_4 = new QSpacerItem( 0, 40, QSizePolicy::Minimum, QSizePolicy::Expanding );
+  Layout5->addItem( spacer_4 );
+  Form1Layout->addLayout( Layout5 );
+        
 }
 
 /** Called to create the Main List page shown in the dialog.
@@ -393,6 +477,10 @@ void KSettingsDlg::configRead()
   m_qradiobuttonStartPrompt->setChecked(m_bTempStartPrompt);
   m_qradiobuttonStartFile->setChecked(!m_bTempStartPrompt);
 
+  m_bTempStartPage = kconfig->readBoolEntry("StartLastViewSelected", false);
+  m_qradiobuttonStartHome->setChecked(!m_bTempStartPage);
+  m_qradiobuttonStartLast->setChecked(m_bTempStartPage);
+  
   m_bTempAccountWizard = kconfig->readBoolEntry("NewAccountWizard", true);
   m_qradiobuttonAccountWizard->setChecked(m_bTempAccountWizard);
   m_qradiobuttonAccountDialog->setChecked(!m_bTempAccountWizard);
@@ -492,6 +580,7 @@ void KSettingsDlg::configWrite()
 
   kconfig->setGroup("General Options");
   kconfig->writeEntry("StartDialog", m_qradiobuttonStartPrompt->isChecked());
+  kconfig->writeEntry("StartLastViewSelected", m_qradiobuttonStartLast->isChecked());
   kconfig->writeEntry("NewAccountWizard", m_qradiobuttonAccountWizard->isChecked());
   kconfig->writeEntry("LedgerLens", m_qcheckboxLedgerLens->isChecked());
   kconfig->writeEntry("TransactionForm", m_qcheckboxTransactionForm->isChecked());
@@ -557,6 +646,7 @@ void KSettingsDlg::slotCancel()
 
   kconfig->setGroup("General Options");
   kconfig->writeEntry("StartDialog", m_bTempStartPrompt);
+  kconfig->writeEntry("StartLastViewSelected", m_bTempStartPage);
   kconfig->writeEntry("NewAccountWizard", m_bTempAccountWizard);
   kconfig->writeEntry("LedgerLens", m_bTempLedgerLens);
   kconfig->writeEntry("TransactionForm", m_bTempTransactionForm);
@@ -579,6 +669,7 @@ void KSettingsDlg::slotCancel()
 void KSettingsDlg::slotUser1()
 {
   m_qradiobuttonStartPrompt->setChecked(m_bTempStartPrompt);
+  m_qradiobuttonStartFile->setChecked(!m_bTempStartPrompt);
   m_kcolorbuttonList->setColor(m_qcolorTempList);
   m_kcolorbuttonBack->setColor(m_qcolorTempListBG);
   m_kfontchooserHeader->setFont(m_qfontTempHeader);
@@ -597,6 +688,8 @@ void KSettingsDlg::slotUser1()
   m_qcheckboxTransactionForm->setChecked(m_bTempTransactionForm);
   m_qcheckboxTypeToNr->setChecked(m_bTempTypeToNr);
   m_qcheckboxShowNrField->setChecked(m_bTempShowNrField);
+  m_qradiobuttonStartLast->setChecked(m_bTempStartPage);
+  m_qradiobuttonStartHome->setChecked(!m_bTempStartPage);
 }
 
 void KSettingsDlg::slotNrFieldToggled(bool state)

@@ -61,7 +61,7 @@ class MyMoneyTransaction;
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.35 2003/07/26 12:31:59 ipwizard Exp $
+  * $Id: kmymoneyview.h,v 1.36 2003/07/28 17:07:41 ipwizard Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -98,12 +98,7 @@ private:
   QVBox* m_scheduleViewFrame;
   QVBox* m_ledgerViewFrame;
 
-  viewType m_showing;
-  viewShowing m_realShowing;
-
   bool m_fileOpen;
-  // KMyMoneyFile *m_file;  // The interface to the file
-  //MyMoneySeqAccessMgr *m_storage;
 
 /*
   bool m_inReconciliation;  // True if the reconciliaton dialog needs updating when the user adds/deletes transactions
@@ -180,7 +175,7 @@ public:
     * Destructor
   **/
   ~KMyMoneyView();
-  
+
   /**
     * Makes sure that a MyMoneyFile is open and has been created succesfully.
     *
@@ -276,7 +271,15 @@ public:
 
 public slots:
   /**
+    * This slot writes information about the page passed as argument @p widget
+    * in the kmymoney2.rc file so that in can be selected automatically when
+    * the application is started again.
+    *
+    * @param widget pointer to page widget
+    */
+  void slotRememberPage(QWidget* widget);
 
+  /**
     * Brings up a dialog to change the list(s) settings and saves them into the
     * class KMyMoneySettings (a singleton).
     *
@@ -337,6 +340,7 @@ public slots:
     *
     * @see KBanksView
     * @see KNewAccountDlg
+
 
     * @see MyMoneyFile
     * @see MyMoneyAccount

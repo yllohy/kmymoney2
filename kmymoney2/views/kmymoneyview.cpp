@@ -212,8 +212,10 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   m_rightMenu->insertTitle(kiconloader->loadIcon("bank", KIcon::MainToolbar), i18n("KMyMoney Options"));
   m_rightMenu->insertItem(kiconloader->loadIcon("bank", KIcon::Small), i18n("New Institution..."), this, SLOT(slotBankNew()));
   
-  m_realShowing = HomeView;
+  // select the page first, before connecting the aboutToShow signal
+  // because we don't want to override the information stored in the config file
   showPage(0);
+  connect(this, SIGNAL(aboutToShowPage(QWidget*)), this, SLOT(slotRememberPage(QWidget*)));
 }
 
 KMyMoneyView::~KMyMoneyView()
@@ -511,16 +513,7 @@ void KMyMoneyView::closeFile(void)
 bool KMyMoneyView::readFile(const KURL& url)
 {
   QString filename;
-/*
-  KMyMoneyFile *kfile = m_file;
-  if (fileOpen())
-  {
-    kfile->close();
-    kfile->open();
-  }
-  else
-    kfile->open();
-*/
+
   newStorage();
   m_fileOpen = true;
 
@@ -614,12 +607,27 @@ bool KMyMoneyView::readFile(const KURL& url)
   // stays untouched on the local filesystem
   KIO::NetAccess::removeTempFile(filename);
 
+  KConfig *config = KGlobal::config();
+  int page;
+  config->setGroup("General Options");
+  if(config->readBoolEntry("StartLastViewSelected", false) == true) {
+    config->setGroup("Last Use Settings");
+    page = config->readNumEntry("LastViewSelected", 0);
+  } else {
+    page = pageIndex(m_homeViewFrame);
+  }
+  // if we currently see a different page, then select the right one
+  if(page != activePageIndex()) {
+    showPage(page);
+  }
+
   // update all views
   m_categoriesView->refreshView();
   accountsView->refreshView();
   m_ledgerView->reloadView();
   m_payeesView->refreshView();
   m_scheduledView->refreshView();
+
   return true;
 }
 
@@ -1265,30 +1273,14 @@ void KMyMoneyView::viewUp(void)
 {
   if (!fileOpen())
     return;
-
-  switch (m_showing) {
-    case KMyMoneyView::TransactionList:
-      viewAccountList("");
-      break;
-    default:
-      break;
-  }
 }
 
 void KMyMoneyView::viewAccountList(const QCString& selectAccount)
 {
-  if (m_realShowing != AccountsView)
+  if(pageIndex(m_accountsViewFrame) != activePageIndex())
     showPage(1);
 
   accountsView->show();
-  // transactionView->hide();
-  m_showing = BankList;
-
-  if (fileOpen())
-  {
-    // FIXME: remove accountsView->refresh(selectAccount);
-  }
-
 }
 
 void KMyMoneyView::viewTransactionList(void)
@@ -1667,42 +1659,31 @@ QString KMyMoneyView::currentAccountName(void)
 
 void KMyMoneyView::slotActivatedHomePage()
 {
-  m_realShowing = HomeView;
   emit signalHomeView();
 }
 
 void KMyMoneyView::slotActivatedAccountsView()
 {
-  m_realShowing = AccountsView;
-
   emit signalAccountsView();
 }
 
 void KMyMoneyView::slotActivatedAccountView()
 {
-  m_realShowing = AccountView;
-
   emit signalAccountView();
 }
 
 void KMyMoneyView::slotActivatedScheduledView()
 {
-  m_realShowing = ScheduledView;
-
   emit signalScheduledView();
 }
 
 void KMyMoneyView::slotActivatedCategoriesView()
 {
-
-  m_realShowing = CategoryView;
-
   emit signalCategoryView();
 }
 
 void KMyMoneyView::slotActivatedPayeeView()
 {
-  m_realShowing = PayeeView;
   emit signalPayeeView();
 }
 
@@ -1749,4 +1730,12 @@ void KMyMoneyView::suspendUpdate(const bool suspend)
   accountsView->suspendUpdate(suspend);
   m_categoriesView->suspendUpdate(suspend);
   m_ledgerView->suspendUpdate(suspend);
+}
+
+void KMyMoneyView::slotRememberPage(QWidget* w)
+{
+  KConfig *config = KGlobal::config();
+  config->setGroup("Last Use Settings");
+  config->writeEntry("LastViewSelected", pageIndex(w));
+  config->sync();
 }
