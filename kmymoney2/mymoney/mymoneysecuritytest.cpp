@@ -1,5 +1,5 @@
 /***************************************************************************
-                          mymoneyinstitutiontest.cpp
+                          mymoneysecuritytest.cpp
                           -------------------
     copyright            : (C) 2002 by Kevin Tambascio
     email                : ipwizard@users.sourceforge.net
@@ -14,75 +14,75 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "mymoneyequitytest.h"
+#include "mymoneysecuritytest.h"
 
-MyMoneyEquityTest::MyMoneyEquityTest()
+MyMoneySecurityTest::MyMoneySecurityTest()
 {
 }
 
 
-void MyMoneyEquityTest::setUp () {
-	m = new MyMoneyEquity();
+void MyMoneySecurityTest::setUp () {
+	m = new MyMoneySecurity();
 }
 
-void MyMoneyEquityTest::tearDown () {
+void MyMoneySecurityTest::tearDown () {
 	delete m;
 }
 
-void MyMoneyEquityTest::testEmptyConstructor() {
+void MyMoneySecurityTest::testEmptyConstructor() {
 	CPPUNIT_ASSERT(m->id().isEmpty());
 	CPPUNIT_ASSERT(m->name().isEmpty());
 	CPPUNIT_ASSERT(m->tradingSymbol().isEmpty());
-	CPPUNIT_ASSERT(m->priceHistory().count() == 0);
+	// CPPUNIT_ASSERT(m->priceHistory().count() == 0);
 }
 
-void MyMoneyEquityTest::testCopyConstructor() {
-	MyMoneyEquity* n1 = new MyMoneyEquity("GUID1", *m);
-	MyMoneyEquity n2(*n1);
+void MyMoneySecurityTest::testCopyConstructor() {
+	MyMoneySecurity* n1 = new MyMoneySecurity("GUID1", *m);
+	MyMoneySecurity n2(*n1);
 
 	// CPPUNIT_ASSERT(*n1 == n2);
 
 	delete n1;
 }
 
-void MyMoneyEquityTest::testNonemptyConstructor() {
+void MyMoneySecurityTest::testNonemptyConstructor() {
 	QDate date(2004,4,1);
 	MyMoneyMoney val("1234/100");
 
 	m->setName("name");
 	m->setTradingSymbol("symbol");
-	m->setEquityType(MyMoneyEquity::ETYPE_CURRENCY);
-	m->addPriceHistory(date, val);
+	m->setSecurityType(MyMoneySecurity::SECURITY_CURRENCY);
+	// m->addPriceHistory(date, val);
 
-	MyMoneyEquity n("id", *m);
+	MyMoneySecurity n("id", *m);
 
 	CPPUNIT_ASSERT(n.id() == QCString("id"));
 	CPPUNIT_ASSERT(n.tradingSymbol() == QString("symbol"));
-	CPPUNIT_ASSERT(n.equityType() == MyMoneyEquity::ETYPE_CURRENCY);
-	CPPUNIT_ASSERT(n.priceHistory().count() == 1);
+	CPPUNIT_ASSERT(n.securityType() == MyMoneySecurity::SECURITY_CURRENCY);
+	// CPPUNIT_ASSERT(n.priceHistory().count() == 1);
 }
 
 /*
 
-void MyMoneyEquityTest::testSetFunctions() {
+void MyMoneySecurityTest::testSetFunctions() {
 }
 
-void MyMoneyEquityTest::testMyMoneyFileConstructor() {
-	MyMoneyEquity *t = new MyMoneyEquity("GUID", *n);
+void MyMoneySecurityTest::testMyMoneyFileConstructor() {
+	MyMoneySecurity *t = new MyMoneySecurity("GUID", *n);
 
 	CPPUNIT_ASSERT(t->id() == "GUID");
 
 	delete t;
 }
 
-void MyMoneyEquityTest::testEquality () {
+void MyMoneySecurityTest::testEquality () {
 }
 
-void MyMoneyEquityTest::testInequality () {
+void MyMoneySecurityTest::testInequality () {
 }
 
-void MyMoneyEquityTest::testAccountIDList () {
-	MyMoneyEquity equity;
+void MyMoneySecurityTest::testAccountIDList () {
+	MyMoneySecurity equity;
 	QCStringList list;
 	QString id;
 

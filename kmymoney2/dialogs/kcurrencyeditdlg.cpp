@@ -46,8 +46,8 @@
 
 #include "kcurrencyeditdlg.h"
 
-#include "../mymoney/mymoneyequity.h"
-#include "../mymoney/mymoneycurrency.h"
+#include "../mymoney/mymoneysecurity.h"
+// #include "../mymoney/mymoneycurrency.h"
 #include "../mymoney/mymoneyfile.h"
 
 #include "../widgets/kmymoneyaccountselector.h"
@@ -127,8 +127,8 @@ void KCurrencyEditDlg::resizeEvent(QResizeEvent* /* e*/)
 
 void KCurrencyEditDlg::loadCurrencies(void)
 {
-  QValueList<MyMoneyCurrency> list = MyMoneyFile::instance()->currencyList();
-  QValueList<MyMoneyCurrency>::ConstIterator it;
+  QValueList<MyMoneySecurity> list = MyMoneyFile::instance()->currencyList();
+  QValueList<MyMoneySecurity>::ConstIterator it;
   QListViewItem *first = 0;
 
   QCString baseCurrency = MyMoneyFile::instance()->baseCurrency().id();
@@ -145,8 +145,11 @@ void KCurrencyEditDlg::loadCurrencies(void)
       p->setPixmap(0, QPixmap( locate("icon","hicolor/16x16/apps/kmymoney2.png")));
     } else {
       p->setPixmap(0, empty);
+// FIXME PRICE
+#if 0
       if((*it).priceHistory().count() != 0 && first == 0)
         first = p;
+#endif
     }
   }
   if(first == 0)
@@ -173,6 +176,8 @@ void KCurrencyEditDlg::checkBaseCurrency(void)
 
 void KCurrencyEditDlg::updateCurrency(void)
 {
+// FIXME PRICE
+#if 0
   if(!m_currency.id().isEmpty()) {
     if(m_priceList->dirty()
     || (m_symbolEdit->text() != m_currency.tradingSymbol())) {
@@ -180,6 +185,7 @@ void KCurrencyEditDlg::updateCurrency(void)
       MyMoneyFile::instance()->modifyCurrency(m_currency);
     }
   }
+#endif
 }
 
 void KCurrencyEditDlg::slotSelectCurrency(const QCString& id)
@@ -202,7 +208,8 @@ void KCurrencyEditDlg::slotSelectCurrency(QListViewItem *item)
   MyMoneyFile* file = MyMoneyFile::instance();
 
   m_detailGroup->setEnabled(item != 0);
-
+// FIXME PRICE
+#if 0
   if(item) {
     try {
       updateCurrency();
@@ -225,6 +232,7 @@ void KCurrencyEditDlg::slotSelectCurrency(QListViewItem *item)
       m_symbolEdit->setText(QString());
     }
   }
+#endif
 }
 
 void KCurrencyEditDlg::slotSetBaseCurrency(void)
@@ -282,7 +290,7 @@ void KCurrencyEditDlg::slotRenameCurrency(QListViewItem* item, int /* col */, co
   kMyMoneyListViewItem* p = static_cast<kMyMoneyListViewItem *>(item);
 
   try {
-    MyMoneyCurrency currency = file->currency(p->id());
+    MyMoneySecurity currency = file->currency(p->id());
     currency.setName(txt);
     file->modifyCurrency(currency);
     m_currency = currency;

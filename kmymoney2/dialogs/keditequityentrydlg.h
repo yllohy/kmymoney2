@@ -38,7 +38,7 @@
 // Project Includes
 
 #include "keditequityentrydecl.h"
-#include "../mymoney/mymoneyequity.h"
+#include "../mymoney/mymoneysecurity.h"
 
 /**
   * @author Kevin Tambascio
@@ -48,10 +48,10 @@ class KEditEquityEntryDlg : public kEditEquityEntryDecl
 {
   Q_OBJECT
 public:
-  KEditEquityEntryDlg(const MyMoneyEquity& selectedEquity, QWidget *parent = NULL, const char *name = NULL);
+  KEditEquityEntryDlg(const MyMoneySecurity& selectedSecurity, QWidget *parent = NULL, const char *name = NULL);
   ~KEditEquityEntryDlg();
 
-  void updatedEquity(MyMoneyEquity& equity) { equity = m_selectedEquity; }
+  void updatedEquity(MyMoneySecurity& security) { security = m_selectedSecurity; }
 
 protected slots:
   void slotOKClicked();
@@ -62,7 +62,7 @@ private slots:
   void slotTimerDone(void);
 
 private:
-  MyMoneyEquity m_selectedEquity;
+  MyMoneySecurity m_selectedSecurity;
   bool m_changes;
 };
 

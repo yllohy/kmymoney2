@@ -47,17 +47,17 @@
 // In libofx 0.6.6 these defines are inside OfxTransactionData, while in the
 // new version they are in the global scope.
 #if !defined(HAVE_NEW_OFX)
-#define OFX_BUYDEBT OfxTransactionData::OFX_BUYDEBT 
-#define OFX_BUYMF OfxTransactionData::OFX_BUYMF 
-#define OFX_BUYOPT OfxTransactionData::OFX_BUYOPT 
-#define OFX_BUYOTHER OfxTransactionData::OFX_BUYOTHER 
-#define OFX_BUYSTOCK OfxTransactionData::OFX_BUYSTOCK 
-#define OFX_REINVEST OfxTransactionData::OFX_REINVEST 
-#define OFX_SELLDEBT OfxTransactionData::OFX_SELLDEBT 
-#define OFX_SELLMF OfxTransactionData::OFX_SELLMF 
-#define OFX_SELLOPT OfxTransactionData::OFX_SELLOPT 
-#define OFX_SELLOTHER OfxTransactionData::OFX_SELLOTHER 
-#define OFX_SELLSTOCK OfxTransactionData::OFX_SELLSTOCK 
+#define OFX_BUYDEBT OfxTransactionData::OFX_BUYDEBT
+#define OFX_BUYMF OfxTransactionData::OFX_BUYMF
+#define OFX_BUYOPT OfxTransactionData::OFX_BUYOPT
+#define OFX_BUYOTHER OfxTransactionData::OFX_BUYOTHER
+#define OFX_BUYSTOCK OfxTransactionData::OFX_BUYSTOCK
+#define OFX_REINVEST OfxTransactionData::OFX_REINVEST
+#define OFX_SELLDEBT OfxTransactionData::OFX_SELLDEBT
+#define OFX_SELLMF OfxTransactionData::OFX_SELLMF
+#define OFX_SELLOPT OfxTransactionData::OFX_SELLOPT
+#define OFX_SELLOTHER OfxTransactionData::OFX_SELLOTHER
+#define OFX_SELLSTOCK OfxTransactionData::OFX_SELLSTOCK
 #define OFX_INCOME OfxTransactionData::OFX_INCOME
 #define OFX_CLOSUREOPT OfxTransactionData::OFX_CLOSUREOPT
 #define OFX_INVEXPENSE OfxTransactionData::OFX_INVEXPENSE
@@ -87,7 +87,7 @@ int ofxTransactionCallback(struct OfxTransactionData data, void * pv)
     dt.setTime_t(data.date_initiated);
     t.m_datePosted = dt.date();
   }
-  
+
   if(data.amount_valid==true)
   {
     // if this is an investment statement, reverse the sign.  not sure
@@ -95,7 +95,7 @@ int ofxTransactionCallback(struct OfxTransactionData data, void * pv)
     double sign = 1.0;
     if (data.invtransactiontype_valid==true)
       sign=-1.0;
-  
+
     t.m_moneyAmount = sign * data.amount;
   }
 
@@ -103,7 +103,7 @@ int ofxTransactionCallback(struct OfxTransactionData data, void * pv)
   {
     t.m_strNumber = data.check_number;
   }
-  
+
   if(data.fi_id_valid==true)
   {
     t.m_strBankID = QString("ID ") + data.fi_id;
@@ -138,15 +138,15 @@ int ofxTransactionCallback(struct OfxTransactionData data, void * pv)
     if ( t.m_strMemo.isEmpty() )
       t.m_strMemo = t.m_strPayee;
   }
-  
+
   if(data.security_data_valid==true)
   {
     struct OfxSecurityData* secdata = data.security_data_ptr;
-  
+
     if(secdata->ticker_valid==true){
       t.m_strSecurity += secdata->ticker;
     }
-    
+
     if(secdata->secname_valid==true){
       t.m_strSecurity += QString(" ") + secdata->secname;
     }
@@ -160,10 +160,10 @@ int ofxTransactionCallback(struct OfxTransactionData data, void * pv)
   {
     t.m_dShares = 0;
   }
- 
+
   bool unhandledtype = false;
   QString type;
-  
+
   if(data.invtransactiontype_valid==true)
   {
     switch (data.invtransactiontype)
@@ -195,7 +195,6 @@ int ofxTransactionCallback(struct OfxTransactionData data, void * pv)
     //
     // These types are all not handled.  We will generate a warning for them.
     //
-     
     case OFX_CLOSUREOPT:
       unhandledtype = true;
       type = "CLOSUREOPT (Close a position for an option)";
@@ -224,15 +223,14 @@ int ofxTransactionCallback(struct OfxTransactionData data, void * pv)
       unhandledtype = true;
       type = "TRANSFER (Transfer holdings in and out of the investment account)";
       break;
-      
     default:
-      pofx->addWarning(QString("OFX Transaction Warning: File includes a transaction of an unknown type (%1).  Please contact the developers mailing list, and we can try to add support for it.").arg(data.invtransactiontype));  
+      pofx->addWarning(QString("OFX Transaction Warning: File includes a transaction of an unknown type (%1).  Please contact the developers mailing list, and we can try to add support for it.").arg(data.invtransactiontype));
       break;
     }
   }
 
   if ( unhandledtype )
-    pofx->addWarning(QString("OFX Transaction Warning: File includes a transaction of an unsupported type (%1).  Please contact the developers mailing list, and we can try to add support for it.").arg(type));  
+    pofx->addWarning(QString("OFX Transaction Warning: File includes a transaction of an unsupported type (%1).  Please contact the developers mailing list, and we can try to add support for it.").arg(type));
   else
     s.m_listTransactions += t;
 
@@ -281,7 +279,7 @@ int ofxAccountCallback(struct OfxAccountData data, void * pv)
   MyMoneyOfxStatement* pofx = reinterpret_cast<MyMoneyOfxStatement*>(pv);
   pofx->addnew();
   MyMoneyStatement& s = pofx->back();
-  
+
   if(data.account_id_valid==true)
   {
     s.m_strAccountName = data.account_name;
@@ -312,36 +310,36 @@ int ofxAccountCallback(struct OfxAccountData data, void * pv)
       break;
     }
   }
-  
+
   return 0;
 }
 
 int ofxStatusCallback(struct OfxStatusData data, void * pv)
 {
   MyMoneyOfxStatement* pofx = reinterpret_cast<MyMoneyOfxStatement*>(pv);
-  QString message;  
+  QString message;
 
   // Having any status at all makes an ofx statement valid
   pofx->setValid();
-    
+
   if(data.ofx_element_name_valid==true)
     message.prepend(QString("%1: ").arg(data.ofx_element_name));
-  
+
   if(data.code_valid==true)
     message += QString("%1 (Code %2): %3").arg(data.name).arg(data.code).arg(data.description);
-  
+
   if(data.server_message_valid==true)
     message += QString(" (%1)").arg(data.server_message);
-  
+
   if(data.severity_valid==true){
     switch(data.severity){
     case OfxStatusData::INFO:
       pofx->addInfo( message );
       break;
-    case OfxStatusData::ERROR: 
+    case OfxStatusData::ERROR:
       pofx->addError( message );
       break;
-    case OfxStatusData::WARN: 
+    case OfxStatusData::WARN:
       pofx->addWarning( message );
       break;
     default:
@@ -353,12 +351,12 @@ int ofxStatusCallback(struct OfxStatusData data, void * pv)
   return 0;
 }
 
-#endif 
+#endif
 
 
 
 
- 
+
 
 #ifdef HAVE_NEW_OFX
 
@@ -382,7 +380,7 @@ MyMoneyOfxStatement::MyMoneyOfxStatement(const QString& filename):
 
   LibofxContextPtr ctx = libofx_get_new_context();
   Q_CHECK_PTR(ctx);
-  
+
   ofx_set_transaction_cb(ctx, ofxTransactionCallback, this);
   ofx_set_statement_cb(ctx, ofxStatementCallback, this);
   ofx_set_account_cb(ctx, ofxAccountCallback, this);
@@ -473,7 +471,7 @@ int ofx_proc_account_cb(struct OfxAccountData data)
 /* __________________________________________________________________________
  * AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
  *
- * The following part is compiled whether or not there is a version of LibOFX 
+ * The following part is compiled whether or not there is a version of LibOFX
  * available.
  *
  * YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY

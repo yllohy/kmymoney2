@@ -109,10 +109,10 @@ kMyMoneyEdit::kMyMoneyEdit(QWidget *parent, const char *name, const int prec)
   init();
 }
 
-kMyMoneyEdit::kMyMoneyEdit(const MyMoneyEquity& eq, QWidget *parent, const char *name)
+kMyMoneyEdit::kMyMoneyEdit(const MyMoneySecurity& sec, QWidget *parent, const char *name)
  : QHBox(parent, name)
 {
-  m_prec = MyMoneyMoney::denomToPrec(eq.smallestAccountFraction());
+  m_prec = MyMoneyMoney::denomToPrec(sec.smallestAccountFraction());
   init();
 }
 

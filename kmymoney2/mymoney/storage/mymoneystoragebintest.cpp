@@ -217,7 +217,7 @@ void MyMoneyStorageBinTest::testReadOldMyMoneyFile(const QString version, unsign
   MyMoneySeqAccessMgr storage;
 
   CPPUNIT_ASSERT(storage.institutionCount() == 0);
-  CPPUNIT_ASSERT(storage.accountCount() == 4);
+  CPPUNIT_ASSERT(storage.accountCount() == 5);
   CPPUNIT_ASSERT(storage.transactionCount() == 0);
 
   try {
@@ -248,9 +248,9 @@ void MyMoneyStorageBinTest::testReadOldMyMoneyFile(const QString version, unsign
     CPPUNIT_ASSERT(storage.lastModificationDate() == QDate(7,8,9));
 
     CPPUNIT_ASSERT(storage.institutionCount() == 1);
-    // we assume four basic account groups, two old accounts, a major
+    // we assume five basic account groups, two old accounts, a major
     // and a minor category. That's eight accounts
-    CPPUNIT_ASSERT(storage.accountCount() == 8);
+    CPPUNIT_ASSERT(storage.accountCount() == 9);
     CPPUNIT_ASSERT(storage.transactionCount() == 3);
 
     // get account information
@@ -445,7 +445,7 @@ void MyMoneyStorageBinTest::testReadOldMyMoneyFileEx() {
   MyMoneySeqAccessMgr storage;
 
   CPPUNIT_ASSERT(storage.institutionCount() == 0);
-  CPPUNIT_ASSERT(storage.accountCount() == 4);
+  CPPUNIT_ASSERT(storage.accountCount() == 5);
   CPPUNIT_ASSERT(storage.transactionCount() == 0);
 
   QFile f( "test.kmy" );

@@ -167,7 +167,7 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
         switch(m_transactionRow) {
           case 0:
             align |= Qt::AlignRight;
-            if(m_split.value() < 0) {
+            if(m_split.value().isNegative()) {
               splitCurrency = MyMoneyFile::instance()->account(m_split.accountId()).currencyId();
               txt = (-m_split.value(m_transaction->commodity(), splitCurrency)).formatMoney();
             }
@@ -179,7 +179,7 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
         switch(m_transactionRow) {
           case 0:
             align |= Qt::AlignRight;
-            if(m_split.value() >= 0) {
+            if(!m_split.value().isNegative()) {
               splitCurrency = MyMoneyFile::instance()->account(m_split.accountId()).currencyId();
               txt = m_split.value(m_transaction->commodity(), splitCurrency).formatMoney();
             }
@@ -192,7 +192,7 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
           case 0:
             align |= Qt::AlignRight;
             txt = m_balance.formatMoney();
-            if(m_balance < 0)
+            if(m_balance.isNegative())
               p->setPen(QColor(255, 0, 0));
             break;
         }
@@ -246,7 +246,7 @@ void kMyMoneyRegisterCheckings::adjustColumn(int col)
 
         case 4:
           amount = t->splitById(t->splitId()).value();
-          if(amount < 0) {
+          if(amount.isNegative()) {
             txt = amount.formatMoney();
             nw = cellFontMetrics.width(txt+"  ");
           }
@@ -254,7 +254,7 @@ void kMyMoneyRegisterCheckings::adjustColumn(int col)
 
         case 5:
           amount = t->splitById(t->splitId()).value();
-          if(amount >= 0) {
+          if(!amount.isNegative()) {
             txt = amount.formatMoney();
             nw = cellFontMetrics.width(txt+"  ");
           }

@@ -1,6 +1,5 @@
-
 /***************************************************************************
-                          mymoneyinstitutiontest.h
+                          mymoneysecuritytest.h
                           -------------------
     copyright            : (C) 2004 by Kevin Tambascio
     email                : ktambascio@users.sourceforge.net
@@ -15,17 +14,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __MYMONEYEQUITYTEST_H__
-#define __MYMONEYEQUITYTEST_H__
+#ifndef __MYMONEYSECURITYTEST_H__
+#define __MYMONEYSECURITYTEST_H__
 
 #include <cppunit/extensions/HelperMacros.h>
 
 #define private public
-#include "mymoneyequity.h"
+#include "mymoneysecurity.h"
 #undef private
 
-class MyMoneyEquityTest : public CppUnit::TestFixture  {
-	CPPUNIT_TEST_SUITE(MyMoneyEquityTest);
+class MyMoneySecurityTest : public CppUnit::TestFixture  {
+	CPPUNIT_TEST_SUITE(MyMoneySecurityTest);
 	CPPUNIT_TEST(testEmptyConstructor);
 	CPPUNIT_TEST(testNonemptyConstructor);
 	CPPUNIT_TEST(testCopyConstructor);
@@ -39,10 +38,10 @@ class MyMoneyEquityTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST_SUITE_END();
 
 protected:
-	MyMoneyEquity	*m;
+	MyMoneySecurity	*m;
 
 public:
-	MyMoneyEquityTest();
+	MyMoneySecurityTest();
 
 	void setUp ();
 	void tearDown ();

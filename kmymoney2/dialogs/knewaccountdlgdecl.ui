@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>KNewAccountDlgDecl</class>
 <widget class="QDialog">
     <property name="name">
@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>616</width>
-            <height>366</height>
+            <height>508</height>
         </rect>
     </property>
     <property name="caption">
@@ -45,7 +45,7 @@
                     </property>
                     <widget class="QLayoutWidget">
                         <property name="name">
-                            <cstring>layout17</cstring>
+                            <cstring>layout12</cstring>
                         </property>
                         <vbox>
                             <property name="name">
@@ -53,36 +53,28 @@
                             </property>
                             <widget class="QLayoutWidget">
                                 <property name="name">
-                                    <cstring>layout16</cstring>
+                                    <cstring>layout11</cstring>
                                 </property>
                                 <grid>
                                     <property name="name">
                                         <cstring>unnamed</cstring>
                                     </property>
-                                    <widget class="QLabel" row="0" column="0">
+                                    <widget class="QLineEdit" row="1" column="1">
                                         <property name="name">
-                                            <cstring>textLabel2</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>Type:</string>
+                                            <cstring>accountNameEdit</cstring>
                                         </property>
                                     </widget>
-                                    <widget class="QLabel" row="3" column="0">
+                                    <widget class="QLineEdit" row="2" column="1">
+                                        <property name="name">
+                                            <cstring>descriptionEdit</cstring>
+                                        </property>
+                                    </widget>
+                                    <widget class="QLabel" row="2" column="0">
                                         <property name="name">
                                             <cstring>TextLabel5</cstring>
                                         </property>
                                         <property name="text">
                                             <string>Notes:</string>
-                                        </property>
-                                    </widget>
-                                    <widget class="QLineEdit" row="1" column="1" rowspan="1" colspan="2">
-                                        <property name="name">
-                                            <cstring>accountNameEdit</cstring>
-                                        </property>
-                                    </widget>
-                                    <widget class="QLineEdit" row="2" column="1" rowspan="1" colspan="2">
-                                        <property name="name">
-                                            <cstring>accountNoEdit</cstring>
                                         </property>
                                     </widget>
                                     <widget class="QLabel" row="1" column="0">
@@ -111,7 +103,7 @@
                                             <string>Name:</string>
                                         </property>
                                     </widget>
-                                    <widget class="QComboBox" row="0" column="1" rowspan="1" colspan="2">
+                                    <widget class="QComboBox" row="0" column="1">
                                         <property name="name">
                                             <cstring>typeCombo</cstring>
                                         </property>
@@ -119,73 +111,12 @@
                                             <bool>true</bool>
                                         </property>
                                     </widget>
-                                    <widget class="QLabel" row="2" column="0">
+                                    <widget class="QLabel" row="0" column="0">
                                         <property name="name">
-                                            <cstring>TextLabel2</cstring>
-                                        </property>
-                                        <property name="minimumSize">
-                                            <size>
-                                                <width>60</width>
-                                                <height>0</height>
-                                            </size>
-                                        </property>
-                                        <property name="maximumSize">
-                                            <size>
-                                                <width>60</width>
-                                                <height>32767</height>
-                                            </size>
+                                            <cstring>textLabel2</cstring>
                                         </property>
                                         <property name="text">
-                                            <string>Number:</string>
-                                        </property>
-                                    </widget>
-                                    <widget class="QLabel" row="5" column="0" rowspan="1" colspan="2">
-                                        <property name="name">
-                                            <cstring>TextLabel4</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>Balance:</string>
-                                        </property>
-                                    </widget>
-                                    <widget class="kMyMoneyEdit" row="5" column="2">
-                                        <property name="name">
-                                            <cstring>startBalanceEdit</cstring>
-                                        </property>
-                                    </widget>
-                                    <widget class="kMyMoneyDateInput" row="4" column="2">
-                                        <property name="name">
-                                            <cstring>startDateEdit</cstring>
-                                        </property>
-                                    </widget>
-                                    <widget class="QLabel" row="4" column="0">
-                                        <property name="name">
-                                            <cstring>TextLabel1_2</cstring>
-                                        </property>
-                                        <property name="minimumSize">
-                                            <size>
-                                                <width>60</width>
-                                                <height>0</height>
-                                            </size>
-                                        </property>
-                                        <property name="maximumSize">
-                                            <size>
-                                                <width>60</width>
-                                                <height>32767</height>
-                                            </size>
-                                        </property>
-                                        <property name="frameShape">
-                                            <enum>MShape</enum>
-                                        </property>
-                                        <property name="frameShadow">
-                                            <enum>MShadow</enum>
-                                        </property>
-                                        <property name="text">
-                                            <string>Created:</string>
-                                        </property>
-                                    </widget>
-                                    <widget class="QLineEdit" row="3" column="1" rowspan="1" colspan="2">
-                                        <property name="name">
-                                            <cstring>descriptionEdit</cstring>
+                                            <string>Type:</string>
                                         </property>
                                     </widget>
                                 </grid>
@@ -266,7 +197,7 @@
                         <property name="sizeHint">
                             <size>
                                 <width>20</width>
-                                <height>31</height>
+                                <height>20</height>
                             </size>
                         </property>
                     </spacer>
@@ -303,6 +234,41 @@
                                 </property>
                                 <property name="text">
                                     <string>New...</string>
+                                </property>
+                            </widget>
+                        </hbox>
+                    </widget>
+                    <widget class="QLayoutWidget">
+                        <property name="name">
+                            <cstring>layout13</cstring>
+                        </property>
+                        <hbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QLabel">
+                                <property name="name">
+                                    <cstring>TextLabel2</cstring>
+                                </property>
+                                <property name="minimumSize">
+                                    <size>
+                                        <width>60</width>
+                                        <height>0</height>
+                                    </size>
+                                </property>
+                                <property name="maximumSize">
+                                    <size>
+                                        <width>60</width>
+                                        <height>32767</height>
+                                    </size>
+                                </property>
+                                <property name="text">
+                                    <string>Number:</string>
+                                </property>
+                            </widget>
+                            <widget class="QLineEdit">
+                                <property name="name">
+                                    <cstring>accountNoEdit</cstring>
                                 </property>
                             </widget>
                         </hbox>
@@ -621,6 +587,123 @@
                     </widget>
                 </vbox>
             </widget>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>TabPage</cstring>
+                </property>
+                <attribute name="title">
+                    <string>Opening Balance</string>
+                </attribute>
+                <vbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QLayoutWidget">
+                        <property name="name">
+                            <cstring>layout14</cstring>
+                        </property>
+                        <hbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QGroupBox">
+                                <property name="name">
+                                    <cstring>groupBox2</cstring>
+                                </property>
+                                <property name="title">
+                                    <string>Balance Information</string>
+                                </property>
+                                <grid>
+                                    <property name="name">
+                                        <cstring>unnamed</cstring>
+                                    </property>
+                                    <widget class="kMyMoneyEdit" row="0" column="1">
+                                        <property name="name">
+                                            <cstring>startBalanceEdit</cstring>
+                                        </property>
+                                    </widget>
+                                    <widget class="kMyMoneyDateInput" row="1" column="1">
+                                        <property name="name">
+                                            <cstring>startDateEdit</cstring>
+                                        </property>
+                                    </widget>
+                                    <widget class="QLabel" row="1" column="0">
+                                        <property name="name">
+                                            <cstring>TextLabel1_2</cstring>
+                                        </property>
+                                        <property name="minimumSize">
+                                            <size>
+                                                <width>60</width>
+                                                <height>0</height>
+                                            </size>
+                                        </property>
+                                        <property name="maximumSize">
+                                            <size>
+                                                <width>60</width>
+                                                <height>32767</height>
+                                            </size>
+                                        </property>
+                                        <property name="frameShape">
+                                            <enum>MShape</enum>
+                                        </property>
+                                        <property name="frameShadow">
+                                            <enum>MShadow</enum>
+                                        </property>
+                                        <property name="text">
+                                            <string>Date:</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="QLabel" row="0" column="0">
+                                        <property name="name">
+                                            <cstring>TextLabel4</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>Balance:</string>
+                                        </property>
+                                    </widget>
+                                </grid>
+                            </widget>
+                            <widget class="QButtonGroup">
+                                <property name="name">
+                                    <cstring>buttonGroup2</cstring>
+                                </property>
+                                <property name="title">
+                                    <string>Transfer Option</string>
+                                </property>
+                                <property name="exclusive">
+                                    <bool>true</bool>
+                                </property>
+                                <vbox>
+                                    <property name="name">
+                                        <cstring>unnamed</cstring>
+                                    </property>
+                                    <widget class="QRadioButton">
+                                        <property name="name">
+                                            <cstring>m_useOpeningBalancesButton</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>Use Opening Balances Equity Account</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="QRadioButton">
+                                        <property name="name">
+                                            <cstring>m_selectAccountButton</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>Select Transfer Account</string>
+                                        </property>
+                                    </widget>
+                                </vbox>
+                            </widget>
+                        </hbox>
+                    </widget>
+                    <widget class="kMyMoneyAccountSelector">
+                        <property name="name">
+                            <cstring>m_openingBalanceAccount</cstring>
+                        </property>
+                    </widget>
+                </vbox>
+            </widget>
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">
@@ -793,11 +876,12 @@
 </tabstops>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>kmymoneyedit.h</includehint>
-    <includehint>kmymoneydateinput.h</includehint>
     <includehint>kmymoneyequity.h</includehint>
     <includehint>kmymoneycurrencyselector.h</includehint>
     <includehint>kmymoneyedit.h</includehint>
+    <includehint>kmymoneyaccountselector.h</includehint>
+    <includehint>kmymoneyedit.h</includehint>
+    <includehint>kmymoneydateinput.h</includehint>
     <includehint>kmymoneyaccountselector.h</includehint>
 </includehints>
 </UI>

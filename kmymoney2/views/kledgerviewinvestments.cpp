@@ -248,8 +248,8 @@ void KLedgerViewInvestments::fillForm()
 
     // fill in common fields
     MyMoneyAccount acc = file->account(m_split.accountId());
-    MyMoneyEquity equity = file->equity(acc.currencyId());
-    formTable->setText(SYMBOL_ROW, SYMBOL_DATA_COL, equity.tradingSymbol());
+    MyMoneySecurity security = file->security(acc.currencyId());
+    formTable->setText(SYMBOL_ROW, SYMBOL_DATA_COL, security.tradingSymbol());
     formTable->setText(MEMO_ROW, MEMO_DATA_COL, m_split.memo());
 
     // make sure, that the date is aligned to the right of the cell
@@ -290,7 +290,7 @@ void KLedgerViewInvestments::fillForm()
 
         // shares
         shares = m_split.shares().abs();
-        prec = MyMoneyMoney::denomToPrec(m_equity.smallestAccountFraction());
+        prec = MyMoneyMoney::denomToPrec(m_security.smallestAccountFraction());
         item = new kMyMoneyTransactionFormTableItem(formTable, QTableItem::Never,
                  shares.formatMoney("", prec));
         item->setAlignment(kMyMoneyTransactionFormTableItem::right);
@@ -324,7 +324,7 @@ void KLedgerViewInvestments::fillForm()
 
         // shares
         shares = m_split.shares().abs();
-        prec = MyMoneyMoney::denomToPrec(m_equity.smallestAccountFraction());
+        prec = MyMoneyMoney::denomToPrec(m_security.smallestAccountFraction());
         item = new kMyMoneyTransactionFormTableItem(formTable, QTableItem::Never,
                  shares.formatMoney("", prec));
         item->setAlignment(kMyMoneyTransactionFormTableItem::right);
@@ -370,7 +370,7 @@ void KLedgerViewInvestments::fillForm()
           formTable->setText(ACTIVITY_ROW, ACTIVITY_DATA_COL, i18n("Remove Shares"));
 
         // shares
-        prec = MyMoneyMoney::denomToPrec(m_equity.smallestAccountFraction());
+        prec = MyMoneyMoney::denomToPrec(m_security.smallestAccountFraction());
         item = new kMyMoneyTransactionFormTableItem(formTable, QTableItem::Never,
                  m_split.shares().abs().formatMoney("", prec));
         item->setAlignment(kMyMoneyTransactionFormTableItem::right);
@@ -666,7 +666,7 @@ void KLedgerViewInvestments::preloadInvestmentSplits(const MyMoneyTransaction& t
   for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s) {
     MyMoneyAccount acc = MyMoneyFile::instance()->account((*it_s).accountId());
     if(acc.accountType() == MyMoneyAccount::Stock) {
-      m_equity = MyMoneyFile::instance()->equity(acc.currencyId());
+      m_security = MyMoneyFile::instance()->security(acc.currencyId());
       m_split = *it_s;
     } else if(acc.accountGroup() == MyMoneyAccount::Expense
            || acc.accountGroup() == MyMoneyAccount::Income) {
@@ -706,13 +706,13 @@ void KLedgerViewInvestments::preloadEditType(void)
 
   // Determine the actual action
   if(m_split.action() == MyMoneySplit::ActionBuyShares) {
-    if(m_split.value() < 0)
+    if(m_split.value().isNegative())
       m_editType->setCurrentItem(SellShares);
     else
       m_editType->setCurrentItem(BuyShares);
 
   } else if(m_split.action() == MyMoneySplit::ActionAddShares) {
-    if(m_split.value() < 0)
+    if(m_split.value().isNegative())
       m_editType->setCurrentItem(RemoveShares);
     else
       m_editType->setCurrentItem(AddShares);
@@ -770,10 +770,10 @@ void KLedgerViewInvestments::reloadEditWidgets(const MyMoneyTransaction& /*t*/ )
       if(m_editAmount)
         m_editAmount->loadText(m_split.value().abs().formatMoney());
       shares = m_split.shares().abs();
-      if(shares > 0) {
+      if(shares.isPositive()) {
         price = m_split.value().abs() / shares;
         if(m_editShares) {
-          prec = MyMoneyMoney::denomToPrec(m_equity.smallestAccountFraction());
+          prec = MyMoneyMoney::denomToPrec(m_security.smallestAccountFraction());
           m_editShares->setPrecision(prec);
           m_editShares->loadText(shares.abs().formatMoney("", prec));
         }
@@ -793,10 +793,10 @@ void KLedgerViewInvestments::reloadEditWidgets(const MyMoneyTransaction& /*t*/ )
       if(m_editAmount)
         m_editAmount->loadText(m_split.value().abs().formatMoney());
       shares = m_split.shares().abs();
-      if(shares > 0) {
+      if(shares.isPositive()) {
         price = m_split.value().abs() / shares;
         if(m_editShares) {
-          prec = MyMoneyMoney::denomToPrec(m_equity.smallestAccountFraction());
+          prec = MyMoneyMoney::denomToPrec(m_security.smallestAccountFraction());
           m_editShares->setPrecision(prec);
           m_editShares->loadText(shares.abs().formatMoney("", prec));
         }
@@ -830,7 +830,7 @@ void KLedgerViewInvestments::reloadEditWidgets(const MyMoneyTransaction& /*t*/ )
     case RemoveShares:
       shares = m_split.shares().abs();
       if(m_editShares) {
-        prec = MyMoneyMoney::denomToPrec(m_equity.smallestAccountFraction());
+        prec = MyMoneyMoney::denomToPrec(m_security.smallestAccountFraction());
         m_editShares->setPrecision(prec);
         m_editShares->loadText(shares.abs().formatMoney("", prec));
       }
@@ -889,8 +889,8 @@ void KLedgerViewInvestments::createEditWidgets()
   if(!m_editStockAccount) {
     m_editStockAccount = new kMyMoneyAccountCombo(0, "editStockAccount");
     m_editStockAccount->setMinimumWidth(0);  // override the widgets default
-    m_editStockAccount->loadList(i18n("Stocks"), m_account.accountList());
-    connect(m_editStockAccount, SIGNAL(accountSelected(const QCString&)), this, SLOT(slotEquityChanged(const QCString&)));
+    m_editStockAccount->loadList(i18n("Investments"), m_account.accountList());
+    connect(m_editStockAccount, SIGNAL(accountSelected(const QCString&)), this, SLOT(slotSecurityChanged(const QCString&)));
   }
   if(!m_editFees) {
     m_editFees = new kMyMoneyEdit(0, "editFees");
@@ -1157,12 +1157,12 @@ void KLedgerViewInvestments::slotAccountDetail(void)
 const KLedgerView::investTransactionTypeE KLedgerViewInvestments::transactionType(const MyMoneyTransaction& t, const MyMoneySplit& split) const
 {
   if(split.action() == MyMoneySplit::ActionAddShares) {
-    if(split.shares() >= 0)
+    if(!split.shares().isNegative())
       return AddShares;
     return RemoveShares;
   }
   else if(split.action() == MyMoneySplit::ActionBuyShares) {
-    if(split.value() >= 0)
+    if(!split.value().isNegative())
       return BuyShares;
     return SellShares;
   }
@@ -1476,7 +1476,9 @@ void KLedgerViewInvestments::slotEndEdit()
       // check if we have new or updated price info
       if(transactionContainsPriceInfo == true && ! m_split.shares().isZero()) {
         MyMoneyMoney price = m_split.value() / m_split.shares();
-        bool equityChanged = false;
+        bool securityChanged = false;
+// FIXME PRICE
+#if 0
         if(m_equity.hasPrice(m_transaction.postDate(), true) == false) {
           if(KMessageBox::questionYesNo(this, QString("<p>")+i18n("The price history for <b>%1</b> does not contain an entry for <b>%2</b>.  Do you want to add a new entry in the history based on the price of this transaction?").arg(m_equity.name()).arg(KGlobal::locale()->formatDate(m_transaction.postDate(), true)), i18n("Add price info"), KStdGuiItem::yes(), KStdGuiItem::no(), "StoreNewPrice") == KMessageBox::Yes) {
             m_equity.addPriceHistory(m_transaction.postDate(), price);
@@ -1488,12 +1490,13 @@ void KLedgerViewInvestments::slotEndEdit()
             equityChanged = true;
           }
         }
+#endif
 
-        if(equityChanged) {
+        if(securityChanged) {
           try {
-            file->modifyEquity(m_equity);
+            file->modifySecurity(m_security);
           } catch(MyMoneyException *e) {
-            KMessageBox::detailedSorry(0, i18n("Unable to add/modify equity"),
+            KMessageBox::detailedSorry(0, i18n("Unable to add/modify security"),
               (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
             delete e;
           }
@@ -1510,7 +1513,7 @@ void KLedgerViewInvestments::slotEndEdit()
   m_register->setInlineEditingMode(false);
 }
 
-void KLedgerViewInvestments::slotEquityChanged(const QCString& id)
+void KLedgerViewInvestments::slotSecurityChanged(const QCString& id)
 {
   MyMoneyTransaction t;
   MyMoneySplit s;
@@ -1520,7 +1523,7 @@ void KLedgerViewInvestments::slotEquityChanged(const QCString& id)
 
   try {
     MyMoneyAccount acc = MyMoneyFile::instance()->account(id);
-    m_equity = MyMoneyFile::instance()->equity(acc.currencyId());
+    m_security = MyMoneyFile::instance()->security(acc.currencyId());
     m_editStockAccount->setSelected(acc);
     m_split.setAccountId(id);
     reloadEditWidgets(m_transaction);
@@ -1626,65 +1629,65 @@ void KLedgerViewInvestments::updateValues(int field)
     case ReinvestDividend:
       fees = m_editFees->value();
       if(m_editFeeCategory->selectedAccountId().isEmpty())
-        fees = 0;
+        fees = MyMoneyMoney(0,1);
       shares = m_editShares->value();
       price = m_editPPS->value();
       total = m_editAmount->value();
       switch(field) {
         case Fees:
-          if(shares != 0 && price != 0)
+          if(!shares.isZero() && !price.isZero())
             calcField = Total;
-          else if(shares != 0 && total != 0)
+          else if(!shares.isZero() && !total.isZero())
             calcField = Price;
-          else if(price != 0 && total != 0)
+          else if(!price.isZero() && !total.isZero())
             calcField = Shares;
           break;
 
         case Price:
           if(m_editFeeCategory->selectedAccountId().isEmpty()) {
-            if(shares != 0)
+            if(!shares.isZero())
               calcField = Total;
-            else if(total != 0)
+            else if(!total.isZero())
               calcField = Shares;
           } else {
-            if(shares != 0 && fees != 0)
+            if(!shares.isZero() && !fees.isZero())
               calcField = Total;
-            else if(shares != 0 && total != 0)
+            else if(!shares.isZero() && !total.isZero())
               calcField = Fees;
-            else if(total != 0 && fees != 0)
+            else if(!total.isZero() && !fees.isZero())
               calcField = Shares;
           }
           break;
 
         case Shares:
           if(m_editFeeCategory->selectedAccountId().isEmpty()) {
-            if(price != 0)
+            if(!price.isZero())
               calcField = Total;
-            else if(total != 0)
+            else if(!total.isZero())
               calcField = Price;
           } else {
-            if(price != 0 && fees != 0)
+            if(!price.isZero() && !fees.isZero())
               calcField = Total;
-            else if(price != 0 && total != 0)
+            else if(!price.isZero() && !total.isZero())
               calcField = Fees;
-            else if(fees != 0 && total != 0)
+            else if(!fees.isZero() && !total.isZero())
               calcField = Price;
           }
           break;
 
         case Total:
           if(m_editFeeCategory->selectedAccountId().isEmpty()) {
-            if(shares != 0) {
+            if(!shares.isZero()) {
               calcField = Price;
-            } else if(price != 0) {
+            } else if(!price.isZero()) {
               calcField = Shares;
             }
           } else {
-            if(fees != 0 && shares != 0)
+            if(!fees.isZero() && !shares.isZero())
               calcField = Price;
-            else if(fees != 0 && price != 0)
+            else if(!fees.isZero() && !price.isZero())
               calcField = Shares;
-            else if(price != 0 && shares != 0)
+            else if(!price.isZero() && !shares.isZero())
               calcField = Fees;
           }
           break;
@@ -1815,13 +1818,13 @@ const bool KLedgerViewInvestments::slotDataChanged(int field)
     case Yield:
       if(m_editCashAccount->selectedAccounts().first().isEmpty()
       || m_editFeeCategory->selectedAccountId().isEmpty()
-      || m_editFees->value() == 0)
+      || m_editFees->value().isZero())
         ok = false;
       break;
 
     case AddShares:
     case RemoveShares:
-      if(m_editShares->value() == 0)
+      if(m_editShares->value().isZero())
         ok = false;
       break;
   }

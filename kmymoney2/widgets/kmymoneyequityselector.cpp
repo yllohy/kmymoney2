@@ -46,8 +46,8 @@ kMyMoneyEquitySelector::~kMyMoneyEquitySelector()
 
 const int kMyMoneyEquitySelector::loadList(void)
 {
-  QValueList<MyMoneyEquity> list;
-  QValueList<MyMoneyEquity>::ConstIterator it_l;
+  QValueList<MyMoneySecurity> list;
+  QValueList<MyMoneySecurity>::ConstIterator it_l;
   MyMoneyFile* file = MyMoneyFile::instance();
   int count = 0;
 
@@ -59,8 +59,8 @@ const int kMyMoneyEquitySelector::loadList(void)
   }
 
   kMyMoneyCheckListItem* item = 0;
-  item = new kMyMoneyCheckListItem(m_listView, i18n("Equities"), QCString(), QCheckListItem::Controller);
-  list = file->equityList();
+  item = new kMyMoneyCheckListItem(m_listView, i18n("Securities"), QCString(), QCheckListItem::Controller);
+  list = file->securityList();
 
   item->setSelectable(false);
   item->setOpen(true);

@@ -164,7 +164,7 @@ void kMyMoneyRegisterSearch::paintCell(QPainter *p, int row, int col, const QRec
         switch(m_transactionRow) {
           case 0:
             align |= Qt::AlignRight;
-            if(m_split.value() < 0)
+            if(m_split.value().isNegative())
               txt = (-m_split.value()).formatMoney();
             break;
         }
@@ -174,7 +174,7 @@ void kMyMoneyRegisterSearch::paintCell(QPainter *p, int row, int col, const QRec
         switch(m_transactionRow) {
           case 0:
             align |= Qt::AlignRight;
-            if(m_split.value() >= 0)
+            if(!m_split.value().isNegative())
               txt = (m_split.value()).formatMoney();
             break;
         }

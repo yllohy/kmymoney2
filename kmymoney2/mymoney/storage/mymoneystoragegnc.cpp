@@ -73,7 +73,7 @@ MyMoneyStorageGNC::~MyMoneyStorageGNC() {
 //************************ readFile *****************************
 //Function to read in the file, send to XML parser.
 void MyMoneyStorageGNC::readFile(QIODevice* pDevice, IMyMoneySerialize* storage) {
-  
+
   try{
     Q_CHECK_PTR(storage);
     Q_CHECK_PTR(pDevice);
@@ -83,7 +83,7 @@ void MyMoneyStorageGNC::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
     m_storage = storage;
     bool containsScheds = false;
     m_defaultPayee = createPayee (QObject::tr("Unknown payee"));
-    
+
     m_doc = new QDomDocument;
     Q_CHECK_PTR(m_doc);
     if(m_doc->setContent(pDevice, FALSE)) {
@@ -92,16 +92,16 @@ void MyMoneyStorageGNC::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
             if (gncdebug) qDebug("GNCREADER: Root element of this file is %s\n",rootElement.tagName().data());
             if(QString("gnc-v2") == rootElement.tagName())  {
                 if (gncdebug) qDebug("GNCREADER: parsing gnucash v2 file\n");
-                
+
                 QDomNode child = rootElement.firstChild();
                 while(!child.isNull() && child.isElement()) {
                     QDomElement childElement = child.toElement();
                     if (gncdebug) qDebug("GNCREADER: Processing child node %s", childElement.tagName().data());
-                    
+
                     QDomNodeList nodeList = childElement.childNodes();
                     if(nodeList.count()) {
                         signalProgress(0, nodeList.count(), QObject::tr("Loading GNUCash File..."));
-                        
+
                         for (unsigned int x = 0; x < nodeList.count(); x++) {
                             QDomElement temp = nodeList.item(x).toElement();
                             if (gncdebug) qDebug("GNCREADER: Dealing with %s\n", temp.tagName().data());
@@ -132,23 +132,23 @@ void MyMoneyStorageGNC::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
             } else {
                 throw new MYMONEYEXCEPTION (QObject::tr("Can only handle gnc-v2 format files"));
             }  // end if gnc-v2
-            
+
             delete m_doc;
             m_doc = NULL;
-            
+
             //////////////////////////////////////////////////////////////////////////////////////////////////
             // Next step is to walk the list and assign the parent/child relationship between the objects.
             //this code is just temporary to show us what is in the file.
-            
+
             if (gncdebug) qDebug("%d accounts found in the GNU Cash file", m_mapIds.count());
             for(map_accountIds::Iterator it = m_mapIds.begin(); it != m_mapIds.end(); ++it)       {
                 if (gncdebug) qDebug("key = %s, value = %s", it.key().data(), it.data().data());
             }
-            
+
             QValueList<MyMoneyAccount> list;
             QValueList<MyMoneyAccount>::Iterator theAccount;
             list = m_storage->accountList();
-            
+
             for(theAccount = list.begin(); theAccount != list.end(); ++theAccount) {
                 if((*theAccount).parentAccountId() == QCString(m_mainName[m_mainAssetId])) {
                     MyMoneyAccount assets = m_storage->asset();
@@ -157,7 +157,7 @@ void MyMoneyStorageGNC::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
                 } else if ((*theAccount).parentAccountId() == QCString(m_mainName[m_mainLiabilityId])) {
                     MyMoneyAccount liabilities = m_storage->liability();
                     m_storage->addAccount(liabilities, (*theAccount));
-                    if (gncdebug) qDebug("Account id %s is a child of the main liability account", (*theAccount).id().data()); 
+                    if (gncdebug) qDebug("Account id %s is a child of the main liability account", (*theAccount).id().data());
                 } else if ((*theAccount).parentAccountId() == QCString(m_mainName[m_mainIncomeId])) {
                     MyMoneyAccount incomes = m_storage->income();
                     m_storage->addAccount(incomes, (*theAccount));
@@ -166,7 +166,7 @@ void MyMoneyStorageGNC::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
                     MyMoneyAccount expenses = m_storage->expense();
                     m_storage->addAccount(expenses, (*theAccount));
                     if (gncdebug) qDebug("Account id %s is a child of the main expense account", (*theAccount).id().data());
-                } else {                
+                } else {
                     // it is not under one of the main accounts, so find gnucash parent
                     // we need a IMyMoneyStorage pointer, since m_storage is IMyMoneySerialize.
                     IMyMoneyStorage* pStoragePtr = dynamic_cast<IMyMoneyStorage*>(m_storage);
@@ -174,7 +174,7 @@ void MyMoneyStorageGNC::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
                     if (gncdebug) qDebug ("acc %s, parent %s", (*theAccount).id().data(),
                                           (*theAccount).parentAccountId().data());
                     map_accountIds::Iterator id = m_mapIds.find(parentKey);
-                    
+
                     if (id != m_mapIds.end()) {
                         if (gncdebug) qDebug("Setting account id %s's parent account id to %s",
                                              (*theAccount).id().data(),  id.data().data());
@@ -186,14 +186,14 @@ void MyMoneyStorageGNC::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
                     }
                 }
             } // end for account
-            
+
             // send a warning re scheduled txs
             if (containsScheds)
                 QMessageBox::information (0, "KMyMoney2",
                                           QObject::tr("The file contains scheduled transactions.\n"
                                                       "If you have not run gnucash against it recently,\n"
                                                       "some of these may have been missed.\n"));
-            
+
             // setup the base currency as the dominant currency of the gnc file
             unsigned long iMaxCount = 0;
             QString sDomCurrency = "";
@@ -206,7 +206,7 @@ void MyMoneyStorageGNC::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
             }
             if (!sDomCurrency.isEmpty()) {
                 QString sDomCurrencyName = "";
-                QValueList<MyMoneyCurrency>::ConstIterator cit;
+                QValueList<MyMoneySecurity>::ConstIterator cit;
                 for (cit = m_storage->currencyList().begin(); cit != m_storage->currencyList().end(); cit++) {
                     if (QString((*cit).id()) == sDomCurrency) {
                         if (gncdebug) qDebug ("curr %s = %s", (*cit).id().data(), (*cit).name().data());
@@ -238,8 +238,9 @@ void MyMoneyStorageGNC::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
             }
             ii = ii + ("It is advisable to run a consistency check (Tools menu) for a more thorough analysis");
             QMessageBox::information (0, "KMyMoney2", ii);
+
             if (gncdebug) qDebug(ii);
-	    
+
             // clear up the various maps and lists
             m_currencyCounter.clear();
             m_mapIds.clear();
@@ -251,7 +252,7 @@ void MyMoneyStorageGNC::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
             // as a side-effect.
             m_storage->setLastModificationDate(m_storage->lastModificationDate());
             m_storage = NULL;
-            
+
             //hides the progress bar.
             signalProgress(-1, -1);
         } else {
@@ -272,25 +273,25 @@ catch (MyMoneyException *e) {
 } // THE end
 //****************************** readCommodity *******************************
 void MyMoneyStorageGNC::readCommodity(const QDomElement& cmdty) {
-    
-    MyMoneyEquity equ;
+
+    MyMoneySecurity equ;
     unsigned long eid;
     QString tmp;
     QString gncName, gncSpace, gncId, gncFraction;
-    
+
     QString gncVersion = cmdty.attributes().namedItem(QString("version")).nodeValue();
     if (gncdebug) qDebug("Version of this cmdty object is %s\n", gncVersion.data());
-    
+
     if(QString("2.0.0") == gncVersion)
     {
         QDomNodeList nodeList = cmdty.childNodes();
         if (gncdebug) qDebug("Cmdty has %d children\n", nodeList.count());
         for(unsigned int x = 0; x < nodeList.count(); x++) {
             QDomElement temp = nodeList.item(x).toElement();
-            
+
             if(getChildCount(temp)) {
                 QDomText text = temp.firstChild().toText();
-                
+
                 if(QString("cmdty:space") == temp.tagName()) {
                     gncSpace = QStringEmpty(text.nodeValue());
                 } else if(QString("cmdty:id") == temp.tagName()) {
@@ -308,23 +309,23 @@ void MyMoneyStorageGNC::readCommodity(const QDomElement& cmdty) {
         equ.setName(gncName);
         equ.setTradingSymbol(gncId);
         equ.setTradingMarket(gncSpace);
-        equ.setEquityType(MyMoneyEquity::ETYPE_NONE);
+        equ.setSecurityType(MyMoneySecurity::SECURITY_NONE);
         //FIXME - replace this with the newEquity() call
         // assign the next available id - replace with newEquity()
-#define EQUITY_ID_SIZE 6
+#define SECURITY_ID_SIZE 6
         QCString id;
-        id.setNum(m_storage->equityId() + 1);
-        id = "E" + id.rightJustify(EQUITY_ID_SIZE, '0');
-        //tell the storage objects we have a new equity object.
-        MyMoneyEquity e = MyMoneyEquity(id, equ);
-        m_storage->loadEquity(e);
-        
+        id.setNum(m_storage->securityId() + 1);
+        id = "E" + id.rightJustify(SECURITY_ID_SIZE, '0');
+        //tell the storage objects we have a new security object.
+        MyMoneySecurity e = MyMoneySecurity(id, equ);
+        m_storage->loadSecurity(e);
+
         //assign the gnucash id as the key into the map to find our id
         if (gncdebug) qDebug ("mapping, key = %s, id = %s", gncId.latin1(), e.id().data());
         m_mapEquities[QCString(gncId)] = QCString(e.id());
         eid = extractId(e.id().data());
-        if(eid > m_storage->equityId()) {
-            m_storage->loadEquityId(eid);
+        if(eid > m_storage->securityId()) {
+            m_storage->loadSecurityId(eid);
         }
     } else {
         throw new MYMONEYEXCEPTION (QObject::tr("Can only handle commodity version 2.0.0"));
@@ -347,9 +348,9 @@ void MyMoneyStorageGNC::readPrices(const QDomElement& pricedb) {
 /******************************* readPrice ******************************/
 
 void MyMoneyStorageGNC::readPrice(const QDomElement& priceElement) {
-    
+
     QString gncPriceCommodityId, gncPriceCommoditySpace, gncPriceCurrencyId, gncPriceDate, gncPriceValue;
-    
+
     if(priceElement.hasChildNodes())
     {
         QDomNodeList nodeList = priceElement.childNodes();
@@ -401,47 +402,48 @@ void MyMoneyStorageGNC::readPrice(const QDomElement& priceElement) {
     }
     // temporarily, ignore currency exchange rates
     if (gncPriceCommoditySpace == QString("ISO4217")) return;
-    
+
     // now add this price to the price history
     //we need a IMyMoneyStorage pointer, since m_storage is IMyMoneySerialize.
     IMyMoneyStorage* pStoragePtr = dynamic_cast<IMyMoneyStorage*>(m_storage);
-    MyMoneyEquity e = pStoragePtr->equity(m_mapEquities[QCString(gncPriceCommodityId)]);
+    MyMoneySecurity e = pStoragePtr->security(m_mapEquities[QCString(gncPriceCommodityId)]);
     if (gncdebug) qDebug ("Searching map, key = %s, found id = %s",
                           gncPriceCommodityId.latin1(), e.id().data());
-    
+
     QStringList fields = QStringList::split(" ", gncPriceDate);
     QString firstField = fields.first();
     QDate priceDate = getDate(firstField);
-    
+
     MyMoneyMoney priceValue(gncPriceValue);
-    e.addPriceHistory(priceDate, priceValue);
-    
-    pStoragePtr->modifyEquity(e);
-    
+    // FIXME PRICE
+    // e.addPriceHistory(priceDate, priceValue);
+
+    pStoragePtr->modifySecurity(e);
+
 }
 //****************************** readAccount *******************************
-void MyMoneyStorageGNC::readAccount(const QDomElement& account) { 
-    
+void MyMoneyStorageGNC::readAccount(const QDomElement& account) {
+
     MyMoneyAccount acc;
     QCString id;
     QString tmp;
     QString gncName, gncAccountId, gncType, gncDescription, gncParent;
     QString gncCurrencySpace, gncCurrencyId;
     bool bHasParent = false;
-    
+
     QString gncVersion = account.attributes().namedItem(QString("version")).nodeValue();
     if (gncdebug) qDebug("Version of this account object is %s\n", gncVersion.data());
-    
+
     if(QString("2.0.0") == gncVersion)
     {
         QDomNodeList nodeList = account.childNodes();
         if (gncdebug) qDebug("Account has %d children\n", nodeList.count());
         for(unsigned int x = 0; x < nodeList.count(); x++) {
             QDomElement temp = nodeList.item(x).toElement();
-            
+
             if(getChildCount(temp)) {
                 QDomText text = temp.firstChild().toText();
-                
+
                 if(QString("act:id") == temp.tagName()) {
                     gncAccountId = QStringEmpty(text.nodeValue());
                     if (gncdebug) qDebug("gnucash account id = %s\n", gncAccountId.data());
@@ -473,12 +475,12 @@ void MyMoneyStorageGNC::readAccount(const QDomElement& account) {
         // check we haven't got a name which clashes with one of our standard names
         for (unsigned int i = 0; i < m_mainIdCount; i++) {
             if (gncName == m_mainName[i]) gncName = "ex_gnucash_" + gncName;
-        } 
+        }
         acc.setName(gncName);
         acc.setDescription(gncDescription);
-        
+
         QDate currentDate = QDate::currentDate();
-        
+
         acc.setOpeningDate(currentDate);
         acc.setLastModified(currentDate);
         acc.setLastReconciliationDate(currentDate);
@@ -500,7 +502,7 @@ void MyMoneyStorageGNC::readAccount(const QDomElement& account) {
             m_invAcctStored = true;
         }
 #endif
-	
+
         if(QString("BANK") == gncType) {
             acc.setAccountType(MyMoneyAccount::Checkings);
             if (!bHasParent)
@@ -514,26 +516,26 @@ void MyMoneyStorageGNC::readAccount(const QDomElement& account) {
             if (!bHasParent)
                 acc.setParentAccountId(QCString(m_mainName[m_mainAssetId]));
         } else if(QString("STOCK") == gncType || QString("MUTUAL") == gncType ) {
-	    #ifdef INVACCT
-	    if (!m_invAcctStored) {
-	        MyMoneyAccount iacc = acc;
-		iacc.setName (INVACCT);
-		iacc.setAccountType(MyMoneyAccount::Investment);
-		iacc.setParentAccountId(QCString(m_mainName[m_mainAssetId]));
-		m_storage->addAccount (iacc);
-		id = iacc.id();
-		m_invAcctStored = true;
-	    } else {
-	        id = m_invAcctId;
-	    }
-	    #else
+      #ifdef INVACCT
+      if (!m_invAcctStored) {
+          MyMoneyAccount iacc = acc;
+    iacc.setName (INVACCT);
+    iacc.setAccountType(MyMoneyAccount::Investment);
+    iacc.setParentAccountId(QCString(m_mainName[m_mainAssetId]));
+    m_storage->addAccount (iacc);
+    id = iacc.id();
+    m_invAcctStored = true;
+      } else {
+          id = m_invAcctId;
+      }
+      #else
             // need both an investment and a stock account
             acc.setAccountType(MyMoneyAccount::Investment);
             if (!bHasParent)
                 acc.setParentAccountId(QCString(m_mainName[m_mainAssetId]));
             m_storage->addAccount(acc);
             id = acc.id();
-	    #endif
+      #endif
             m_mapIds[QCString(id)] = QCString(id); // map to ourself so that stock account can be linked as child later
             if (gncdebug) qDebug("Account %s has id of %s, type of %d, parent is %s",
                                  acc.name().data(), id.data(), acc.accountType(), acc.parentAccountId().data());
@@ -542,10 +544,11 @@ void MyMoneyStorageGNC::readAccount(const QDomElement& account) {
             acc.setParentAccountId (id);
             //we need a IMyMoneyStorage pointer, since m_storage is IMyMoneySerialize.
             IMyMoneyStorage* pStoragePtr = dynamic_cast<IMyMoneyStorage*>(m_storage);
-            MyMoneyEquity e = pStoragePtr->equity(m_mapEquities[QCString(gncCurrencyId)]);
-            if (gncdebug) qDebug ("Acct equity search, key = %s, found id = %s",
+            MyMoneySecurity e = pStoragePtr->security(m_mapEquities[QCString(gncCurrencyId)]);
+            if (gncdebug) qDebug ("Acct security search, key = %s, found id = %s",
                                   gncCurrencyId.latin1(), e.id().data());
             acc.setCurrencyId (e.id());
+        // FIXME: Equity base account is now known
         } else if(QString("LIABILITY") == gncType  || QString("EQUITY") == gncType) {
             acc.setAccountType(MyMoneyAccount::Liability);
             if (!bHasParent)
@@ -565,10 +568,10 @@ void MyMoneyStorageGNC::readAccount(const QDomElement& account) {
         } else { // we have here an account type we can't currently handle
             QString em =
                 (QObject::tr(QString().sprintf("Current importer cannot handle GnuCash account type %s", gncType.latin1())));
-	    throw new MYMONEYEXCEPTION (em);
-	}
-	
-        
+            throw new MYMONEYEXCEPTION (em);
+        }
+
+
         // all the details from the file about the account should be known by now.
         // calling new account should automatically fill in the account ID.
         m_storage->addAccount(acc);
@@ -583,23 +586,22 @@ void MyMoneyStorageGNC::readAccount(const QDomElement& account) {
     #endif
     // assign the gnucash id as the key into the map to find our id
     m_mapIds[QCString(gncAccountId)] = QCString(id);
-    
+
     if (gncdebug) qDebug("Gnucash account %s has id of %s, type of %d, parent is %s",
                          gncAccountId.latin1(), id.data(), acc.accountType(), acc.parentAccountId().data());
-    
 }
 
 //*************************** ReadTransaction ****************************
 
 void MyMoneyStorageGNC::readTransaction(QDomElement& transaction, const bool withinSchedule) {
-    
+
     MyMoneyTransaction tx;
     QCString id;
     QString tmp;
     QString gncTxId, gncDatePosted, gncDateEntered, gncDescription;
     QString gncTxCurrencySpace;
     QStringList fields;
-    
+
     // initialize class variables related to transactions
     m_txChequeNumber = "";
     m_txCommodity = "";
@@ -608,21 +610,21 @@ void MyMoneyStorageGNC::readTransaction(QDomElement& transaction, const bool wit
     m_potentialTransfer = true;
     m_assetFound = false;
     m_splitList.clear(); m_liabilitySplitList.clear(); m_otherSplitList.clear();
-    
+
     // read the gnucash data
     QString gncVersion = transaction.attributes().namedItem(QString("version")).nodeValue();
     if (gncdebug) qDebug("Version of this transaction object is %s\n", gncVersion.data());
-    
+
     if(QString("2.0.0") == gncVersion)
     {
         QDomNodeList nodeList = transaction.childNodes();
         if (gncdebug) qDebug("Transaction has %d children\n", nodeList.count());
         for(unsigned int x = 0; x < nodeList.count(); x++) {
             QDomElement temp = nodeList.item(x).toElement();
-            
+
             if(getChildCount(temp)) {
                 QDomText text = temp.firstChild().toText();
-                
+
                 if(QString("trn:id") == temp.tagName()) {
                     gncTxId = QStringEmpty(text.nodeValue());
                     if (gncdebug) qDebug("gnucash transaction id = %s\n", gncTxId.data());
@@ -675,7 +677,7 @@ void MyMoneyStorageGNC::readTransaction(QDomElement& transaction, const bool wit
     } else {
         throw new MYMONEYEXCEPTION (QObject::tr("Can only handle transaction version 2.0.0"));
     }
-    
+
     // all gnucash data read, convert to native format
     // dateEntered
     fields = QStringList::split(" ", gncDateEntered);
@@ -717,7 +719,7 @@ QString MyMoneyStorageGNC::createPayee (QString gncDescription) {
 //************************** readSplits ****************************************
 
 void MyMoneyStorageGNC::readSplits(MyMoneyTransaction& tx, QDomElement& splits) {
-    
+
     MyMoneySplit split;
     QDomNode child = splits.firstChild();
     while(!child.isNull() && child.isElement()) {
@@ -750,12 +752,12 @@ void MyMoneyStorageGNC::saveSplits (MyMoneyTransaction& tx, MyMoneySplit s) {
     // 1. assets
     // 2. liabilities
     // 3. others (categories)
-  // but keeping each in same order as gnucash    
+    // but keeping each in same order as gnucash
     //we need a IMyMoneyStorage pointer, since m_storage is IMyMoneySerialize.
     IMyMoneyStorage* pStoragePtr = dynamic_cast<IMyMoneyStorage*>(m_storage);
-    MyMoneyEquity e;
+    MyMoneySecurity e;
     MyMoneyMoney price, newPrice;
-    
+
     switch (m_splitAccount.accountType())   {
         // asset types
     case MyMoneyAccount::Checkings:
@@ -781,7 +783,7 @@ void MyMoneyStorageGNC::saveSplits (MyMoneyTransaction& tx, MyMoneySplit s) {
     case MyMoneyAccount::CreditCard:
     case MyMoneyAccount::Loan:
     case MyMoneyAccount::Liability:
-        s.value().isNegative() ? 
+        s.value().isNegative() ?
                 s.setAction (MyMoneySplit::ActionWithdrawal) :
                 s.setAction (MyMoneySplit::ActionDeposit);
         m_liabilitySplitList.append(s);
@@ -794,15 +796,16 @@ void MyMoneyStorageGNC::saveSplits (MyMoneyTransaction& tx, MyMoneySplit s) {
         m_splitList.append (s);
         // add a price history entry
         //we need a IMyMoneyStorage pointer, since m_storage is IMyMoneySerialize.
-        e = pStoragePtr->equity(m_splitAccount.currencyId());
+        e = pStoragePtr->security(m_splitAccount.currencyId());
         // newPrice fix supplied by Phil Longstaff
         price = s.value() / s.shares();
         #define NEW_DENOM 10000
         newPrice = MyMoneyMoney ( price.toDouble(), (signed64)NEW_DENOM );
-        e.addPriceHistory(m_txDatePosted, newPrice);
+        // FIXME PRICE
+        // e.addPriceHistory(m_txDatePosted, newPrice);
         if (gncdebug) qDebug ("added price for %s, %s date %s",
                 e.name().latin1(), price.toString().latin1(), tx.postDate().toString(Qt::ISODate).latin1());
-        pStoragePtr->modifyEquity(e);
+        pStoragePtr->modifySecurity(e);
         break;
     default:
         m_potentialTransfer = false;
@@ -822,19 +825,19 @@ void MyMoneyStorageGNC::saveSplits (MyMoneyTransaction& tx, MyMoneySplit s) {
 //******************************** readSplit ***************************
 
 MyMoneySplit MyMoneyStorageGNC::readSplit(MyMoneyTransaction& tx, QDomElement& splitElement) {
-    
+
     MyMoneySplit split;
     QString strTmp;
     QString gncSplitId, gncSplitMemo, gncSplitReconciledState, gncSplitValue,
     gncSplitQuantity, gncSplitAccount, gncDateReconciled;
-    
+
     // load the gnucash data
     if(splitElement.hasChildNodes()) {
         QDomNodeList nodeList = splitElement.childNodes();
         if (gncdebug) qDebug("Split has %d children\n", nodeList.count());
         for(unsigned int x = 0; x < nodeList.count(); x++) {
             QDomElement temp = nodeList.item(x).toElement();
-            
+
             if(temp.hasChildNodes()) {
                 QDomText text = temp.firstChild().toText();
                 if(QString("split:id") == temp.tagName()) {
@@ -861,7 +864,7 @@ MyMoneySplit MyMoneyStorageGNC::readSplit(MyMoneyTransaction& tx, QDomElement& s
             }
         }
     }
-    
+
     // find the kmm account id coresponding to the gnc id
     QCString MyAccountId;
     map_accountIds::Iterator id = m_mapIds.find(QCString(gncSplitAccount));
@@ -872,9 +875,9 @@ MyMoneySplit MyMoneyStorageGNC::readSplit(MyMoneyTransaction& tx, QDomElement& s
 
         acc.setName(gncSplitAccount);
         acc.setDescription(gncSplitAccount);
-        
+
         QDate currentDate = QDate::currentDate();
-        
+
         acc.setOpeningDate(currentDate);
         acc.setLastModified(currentDate);
         acc.setLastReconciliationDate(currentDate);
@@ -890,9 +893,9 @@ MyMoneySplit MyMoneyStorageGNC::readSplit(MyMoneyTransaction& tx, QDomElement& s
         if (gncdebug) qDebug("Created unknown asset account %s with id of %s", acc.name().data(), MyAccountId.data());
     }
     // print some data so we can maybe identify this split later
-    //if (gncdebug) qDebug ("Split data - gncid %s, kmmid %s, memo %s, value %s, recon date %s", 
+    //if (gncdebug) qDebug ("Split data - gncid %s, kmmid %s, memo %s, value %s, recon date %s",
                //gncSplitAccount.latin1(), MyAccountId.data(), gncSplitMemo.latin1(), gncSplitValue.latin1(), gncDateReconciled.latin1());
-    
+
     // convert gnucash data to native format
     // payee id
     split.setPayeeId(QCString(m_txPayeeId));
@@ -904,7 +907,7 @@ MyMoneySplit MyMoneyStorageGNC::readSplit(MyMoneyTransaction& tx, QDomElement& s
     } else if(QString("y") == gncSplitReconciledState) {
         split.setReconcileFlag(MyMoneySplit::Reconciled);
     }
-    
+
     QStringList fields = QStringList::split(" ", gncDateReconciled);
     if(fields.count()) {
         QString firstField = fields.first();
@@ -918,7 +921,7 @@ MyMoneySplit MyMoneyStorageGNC::readSplit(MyMoneyTransaction& tx, QDomElement& s
     // are not viewable as split transactions in kmm so the split memo is not seen
     if ((m_txMemo.isEmpty()) && (!gncSplitMemo.isEmpty()))
         m_txMemo = gncSplitMemo;
-    
+
     // number
     if (!m_txChequeNumber.isEmpty()) {
         split.setNumber(m_txChequeNumber);
@@ -930,7 +933,7 @@ MyMoneySplit MyMoneyStorageGNC::readSplit(MyMoneyTransaction& tx, QDomElement& s
     MyMoneyMoney splitQuantity(gncSplitQuantity);
     split.setValue (splitValue);
     split.setShares (splitQuantity);
-    
+
     // find the account pointer and save for later
     QValueList<MyMoneyAccount> accList = m_storage->accountList();
     QValueList<MyMoneyAccount>::iterator it;
@@ -943,7 +946,7 @@ MyMoneySplit MyMoneyStorageGNC::readSplit(MyMoneyTransaction& tx, QDomElement& s
         throw new MYMONEYEXCEPTION (QObject::tr("readSplit - Can't find account %s in list", MyAccountId.data()));
     }
     m_splitAccount = *it;  // save for later
-    
+
     return split;
 }
 
@@ -964,11 +967,11 @@ void MyMoneyStorageGNC::readTemplates(QDomElement& templates) {
 //***************************** readTemplate **********************************
 
 gncTemplateTx MyMoneyStorageGNC::readTemplate(QDomElement& templatetx) {
-    
+
     gncTemplateTx tx = {false}; // set not suspect
     QString gncTxId, gncDatePosted, gncDateEntered, gncDescription;
     QString gncTxCurrencySpace;
-    
+
     // initialize class variables related to transactions
     m_txChequeNumber = "";
     m_txCommodity = "";
@@ -979,19 +982,19 @@ gncTemplateTx MyMoneyStorageGNC::readTemplate(QDomElement& templatetx) {
     m_assetFound = false;
     m_splitList.clear(); m_liabilitySplitList.clear(); m_otherSplitList.clear();
     QStringList fields;
-    
+
     QString gncVersion = templatetx.attributes().namedItem(QString("version")).nodeValue();
     if (gncdebug) qDebug("Version of this template object is %s\n", gncVersion.data());
-    
+
     if(QString("2.0.0") == gncVersion) {
         QDomNodeList nodeList = templatetx.childNodes();
         if (gncdebug) qDebug("template has %d children\n", nodeList.count());
         for(unsigned int x = 0; x < nodeList.count(); x++) {
             QDomElement temp = nodeList.item(x).toElement();
-            
+
             if(getChildCount(temp)) {
                 QDomText text = temp.firstChild().toText();
-                
+
                 if(QString("trn:num") == temp.tagName()) {
                     m_txChequeNumber = QStringEmpty(text.nodeValue());
                 } else if(QString("trn:description") == temp.tagName()) {
@@ -1010,7 +1013,7 @@ gncTemplateTx MyMoneyStorageGNC::readTemplate(QDomElement& templatetx) {
                     if(fields.count()) {
                       QString firstField = fields.first();
                       QDate postedDate = getDate(firstField);
-	              m_txDatePosted = postedDate;
+                m_txDatePosted = postedDate;
                     if (gncdebug) qDebug("Date is %s", postedDate.toString().data());
                     }
                 } else if(QString("trn:date-entered") == temp.tagName()) {
@@ -1059,14 +1062,14 @@ gncTemplateTx MyMoneyStorageGNC::readTemplate(QDomElement& templatetx) {
     // commodity, saved earlier
     tx.t.setCommodity(QCString(m_txCommodity));
     return (tx);
-    
+
 }
 //************************** readTemplateSplits ****************************************
 
 void MyMoneyStorageGNC::readTemplateSplits(gncTemplateTx& tx, QDomElement& splits) {
     MyMoneySplit split;
     QCString negativeActionType, positiveActionType;
-    
+
     QDomNode child = splits.firstChild();
     while(!child.isNull() && child.isElement()) {
         QDomElement childElement = child.toElement();
@@ -1089,7 +1092,7 @@ void MyMoneyStorageGNC::readTemplateSplits(gncTemplateTx& tx, QDomElement& split
     // first off, is it a transfer (can only have 2 splits?)
     if (m_splitList.count() != 2) m_potentialTransfer = false;
     // at this point, if m_potentialTransfer is still true, it is actually one!
-    
+
     QValueList<MyMoneySplit>::iterator it = m_splitList.begin();
     while (!m_splitList.isEmpty()) {
         split = *it;
@@ -1100,7 +1103,7 @@ void MyMoneyStorageGNC::readTemplateSplits(gncTemplateTx& tx, QDomElement& split
                 split.setAction (QCString(negativeActionType));
               } else {
                 split.setAction (QCString(positiveActionType));
-              } 
+              }
         }
         tx.t.addSplit(split);
         it = m_splitList.remove(it);
@@ -1110,25 +1113,25 @@ void MyMoneyStorageGNC::readTemplateSplits(gncTemplateTx& tx, QDomElement& split
 //******************************** readTemplateSplit ***************************
 
 MyMoneySplit MyMoneyStorageGNC::readTemplateSplit(gncTemplateTx& tx, QDomElement& splitElement) {
-    
+
     MyMoneySplit split;
     QString strTmp;
     QString gncSplitId, gncSplitMemo, gncSplitValue, gncSplitQuantity, gncSplitAccount;
-    
-    
+
+
     // load the gnucash data
     if(splitElement.hasChildNodes()) {
         QDomNodeList nodeList = splitElement.childNodes();
         if (gncdebug) qDebug("Template Split has %d children\n", nodeList.count());
         for(unsigned int x = 0; x < nodeList.count(); x++) {
             QDomElement temp = nodeList.item(x).toElement();
-            
+
             if(temp.hasChildNodes()) {
                 QDomText text = temp.firstChild().toText();
                 if(QString("split:account") == temp.tagName())  {
                     m_templateId = QStringEmpty(text.nodeValue());
-		} else if (QString("split:memo") == temp.tagName()) {
-		    gncSplitMemo = QStringEmpty(text.nodeValue());
+    } else if (QString("split:memo") == temp.tagName()) {
+        gncSplitMemo = QStringEmpty(text.nodeValue());
                 }  else if(QString("split:slots") == temp.tagName())  {
                     if (!readSplitSlots(split, temp)) {
                         tx.suspectFlag = true;
@@ -1137,7 +1140,7 @@ MyMoneySplit MyMoneyStorageGNC::readTemplateSplit(gncTemplateTx& tx, QDomElement
             }
         } //end for
     }
-    
+
     // convert gnucash data to native format
     // action, value and account will have been set from slots
     // reconcile state, always not
@@ -1153,7 +1156,7 @@ MyMoneySplit MyMoneyStorageGNC::readTemplateSplit(gncTemplateTx& tx, QDomElement
     if (!m_txChequeNumber.isEmpty()) {
         split.setNumber(m_txChequeNumber);
     }
-    
+
     return split;
 }
 
@@ -1162,14 +1165,14 @@ MyMoneySplit MyMoneyStorageGNC::readTemplateSplit(gncTemplateTx& tx, QDomElement
 bool MyMoneyStorageGNC::readSplitSlots(MyMoneySplit& split, QDomElement& splitSlots) {
     bool bRc = true;  // default return value
     unsigned int iValidScheds = 0;
-    
+
     // load the gnucash data
     if(splitSlots.hasChildNodes()){
         QDomNodeList nodeList = splitSlots.childNodes();
         if (gncdebug) qDebug("Split slot has %d children\n", nodeList.count());
         for(unsigned int x = 0; x < nodeList.count(); x++) {
             QDomElement temp = nodeList.item(x).toElement();
-            
+
             if(temp.hasChildNodes()) {
                 if(QString("slot") == temp.tagName()) {
                     QDomNodeList tmp2 = temp.childNodes();
@@ -1182,7 +1185,7 @@ bool MyMoneyStorageGNC::readSplitSlots(MyMoneySplit& split, QDomElement& splitSl
                     //if (gncdebug) qDebug ("value1 = %s", value1.latin1());
                     //if (gncdebug) qDebug ("tag2 = %s", tag2.latin1());
                     //if (gncdebug) qDebug ("attr2 = %s",attr2.latin1());
-                    
+
                     // all the following looks ridiculous but the only example I have in front of me
                     // has all these values. Until we have a full definition of the options available,
                     // this is the only type I know how to convert
@@ -1198,11 +1201,11 @@ bool MyMoneyStorageGNC::readSplitSlots(MyMoneySplit& split, QDomElement& splitSl
             }
         } // end for
     }
-    
+
     // we should find one and only one valid schedule slot, else we have a
     // potential error that the user must resolve
     if (iValidScheds != 1) bRc = false;
-    
+
     return bRc;
 }
 
@@ -1214,13 +1217,13 @@ bool MyMoneyStorageGNC::convertSplitSlot(MyMoneySplit& split, QDomElement& slot)
     bool bFoundStringDebitFormula = false;
     bool bFoundGuidAccountId = false;
     QString gncCreditFormula, gncDebitFormula, gncAccountId;
-    
+
     QDomNodeList sslots = slot.childNodes();
     if (gncdebug) qDebug ("%s has %d children", slot.tagName().latin1(), getChildCount(slot));
-    
+
     for (unsigned int x = 0; x < getChildCount(slot); x++) {
         QDomElement slot = sslots.item(x).toElement();
-        
+
         QDomNodeList temp = slot.childNodes();
         QString tag1 = temp.item(0).toElement().tagName();
         QString value1 = temp.item(0).toElement().firstChild().toText().nodeValue();
@@ -1250,11 +1253,11 @@ bool MyMoneyStorageGNC::convertSplitSlot(MyMoneySplit& split, QDomElement& slot)
             }
         }
     }
-    
+
     // all data read, now check we have everything
     if ((bFoundStringCreditFormula) && (bFoundStringDebitFormula) && (bFoundGuidAccountId))
         bRc = true;
-    
+
     // now convert data to native format
  // find the kmm account id coresponding to the gnc id
     QCString MyAccountId;
@@ -1266,9 +1269,9 @@ bool MyMoneyStorageGNC::convertSplitSlot(MyMoneySplit& split, QDomElement& slot)
 
         acc.setName(gncAccountId);
         acc.setDescription(gncAccountId);
-        
+
         QDate currentDate = QDate::currentDate();
-        
+
         acc.setOpeningDate(currentDate);
         acc.setLastModified(currentDate);
         acc.setLastReconciliationDate(currentDate);
@@ -1286,7 +1289,7 @@ bool MyMoneyStorageGNC::convertSplitSlot(MyMoneySplit& split, QDomElement& slot)
     split.setAccountId(MyAccountId);
     // payee id
     split.setPayeeId(QCString(m_txPayeeId));
-    
+
     // find the account details for later
     QValueList<MyMoneyAccount> accList = m_storage->accountList();
     QValueList<MyMoneyAccount>::iterator it;
@@ -1298,7 +1301,7 @@ bool MyMoneyStorageGNC::convertSplitSlot(MyMoneySplit& split, QDomElement& slot)
     if (it == accList.end())
         throw new MYMONEYEXCEPTION (QObject::tr("readSplitSlot - Can't find split account %s in accList", split.accountId().data()));
     m_splitAccount = *it;
-    
+
     if (!gncCreditFormula.isEmpty()) {
         split.setValue(MyMoneyMoney("-" + gncCreditFormula));
     } else if (!gncDebitFormula.isEmpty()) {
@@ -1310,9 +1313,9 @@ bool MyMoneyStorageGNC::convertSplitSlot(MyMoneySplit& split, QDomElement& slot)
 // ****************************** readSchedule *******************************
 
 void MyMoneyStorageGNC::readSchedule(QDomElement& schedule) {
-    
+
     QDomNode child = schedule.firstChild();
-    
+
     signalProgress(0, getChildCount(schedule), QObject::tr("Loading schedules..."));
     // variables to hold gnucash string data
     QString gncName, gncAutoCreate, gncAutoCreateNotify, gncAutoCreateDays,
@@ -1328,9 +1331,9 @@ void MyMoneyStorageGNC::readSchedule(QDomElement& schedule) {
     QDate today = QDate::currentDate();
     QDate startDate, lastDate, endDate, nextDate;
     int numOccurs;
-    
+
     //fs.suspectFlag = false;  // assume we're good to start with
-    
+
     QString gncVersion = schedule.attributes().namedItem(QString("version")).nodeValue();
     if (gncdebug) qDebug("Version of this schedule object is %s\n", gncVersion.data());
     if(QString("1.0.0") == gncVersion) {
@@ -1338,10 +1341,10 @@ void MyMoneyStorageGNC::readSchedule(QDomElement& schedule) {
         if (gncdebug) qDebug("schedule has %d children\n", nodeList.count());
         for(unsigned int x = 0; x < nodeList.count(); x++) {
             QDomElement temp = nodeList.item(x).toElement();
-            
+
             if(getChildCount(temp)) {
                 QDomText text = temp.firstChild().toText();
-                
+
                 if(QString("sx:id") == temp.tagName()) {
                     // nowt to do here
                 } else if(QString("sx:name") == temp.tagName()) {
@@ -1399,7 +1402,7 @@ void MyMoneyStorageGNC::readSchedule(QDomElement& schedule) {
     } else {
         throw new MYMONEYEXCEPTION (QObject::tr("Can only handle schedule version 1.0.0"));
     }
-    
+
     // we have all the data, now create the schedule (well, try anyway)
     // find the transaction template
     gncTemplateTx ttx;
@@ -1416,7 +1419,7 @@ void MyMoneyStorageGNC::readSchedule(QDomElement& schedule) {
         if (ttx.suspectFlag)
             suspectFlag = true;
     }
-    
+
     // startDate
     QStringList fields = QStringList::split(" ", gncStartDate);
     if(fields.count()) {
@@ -1554,12 +1557,12 @@ void MyMoneyStorageGNC::readSchedule(QDomElement& schedule) {
     sc.setId(QCString(id));
     //tell the storage objects we have a new schedule object.
     m_storage->loadSchedule(sc);
-    
+
     unsigned int scid = extractId(sc.id().data());
     if(scid > m_storage->scheduleId()) {
         m_storage->loadScheduleId(scid);
     }
-    
+
     if (suspectFlag) {
         QString susMess =
                 (QObject::tr(QString().sprintf
@@ -1573,7 +1576,7 @@ void MyMoneyStorageGNC::readSchedule(QDomElement& schedule) {
 // *************************** readFreqSpec *********************
 void MyMoneyStorageGNC::readFreqSpec (gncFreqSpec& fs, QDomElement& fspec, bool isComposite)
 {
-    
+
     QString gncVersion = fspec.attributes().namedItem(QString("version")).nodeValue();
     if (gncdebug) qDebug("Version of this fspec object is %s\n", gncVersion.data());
     if(QString("1.0.0") == gncVersion)
@@ -1651,7 +1654,7 @@ QDate MyMoneyStorageGNC::incrDate
 const unsigned long MyMoneyStorageGNC::extractId(const QCString& txt) const {
     int pos;
     unsigned long rc = 0;
-    
+
     pos = txt.find(QRegExp("\\d+"), 0);
     if(pos != -1) {
         rc = atol(txt.mid(pos));
@@ -1672,7 +1675,7 @@ QDate MyMoneyStorageGNC::getDate(const QString& strText) const {
             return QDate();
         }
     }
-    
+
     return date;
 }
 
@@ -1683,7 +1686,7 @@ QString MyMoneyStorageGNC::getString(const QDate& date) const {
     if(!date.isNull() && date.isValid()) {
         str = date.toString(Qt::ISODate);
     }
-    
+
     return str;
 }
 
@@ -1729,7 +1732,7 @@ QDomElement MyMoneyStorageGNC::findChildElement(const QString& name, const QDomE
                 return childElement;
             }
         }
-        
+
         child = child.nextSibling();
     }
     return QDomElement();
@@ -1746,13 +1749,13 @@ QMap<QCString, QString> MyMoneyStorageGNC::readKeyValuePairs(QDomElement& elemen
         if(QString("PAIR") == childElement.tagName()) {
             QCString key = QCString(childElement.attribute(QString("key")));
             QString value = childElement.attribute(QString("value"));
-            
+
             pairs.insert(key, value);
         }
-        
+
         child = child.nextSibling();
     }
-    
+
     return pairs;
 }
 
@@ -1760,10 +1763,10 @@ QMap<QCString, QString> MyMoneyStorageGNC::readKeyValuePairs(QDomElement& elemen
 
 const QCString MyMoneyStorageGNC::QCStringEmpty(const QString& val) const {
     QCString rc;
-    
+
     if(!val.isEmpty())
         rc = QCString(val);
-    
+
     return rc;
 }
 

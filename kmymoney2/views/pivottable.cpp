@@ -102,6 +102,9 @@ const QString accountTypeToString(const MyMoneyAccount::accountTypeE accountType
     case MyMoneyAccount::Stock:
       returnString = i18n("Stock");
       break;
+    case MyMoneyAccount::Equity:
+      returnString = i18n("Equity");
+      break;
     default:
       returnString = i18n("Unknown");
   }
@@ -209,20 +212,24 @@ MyMoneyMoney PivotTable::AccountDescriptor::currencyPrice(const QDate& date) con
 
   DEBUG_ENTER("AccountDescriptor::currencyPrice");
 
-  MyMoneyMoney value(1.0);
+  MyMoneyMoney value(1, 1);
 
   MyMoneyAccount account = m_file->account(m_account);
 
   if(account.currencyId() != m_file->baseCurrency().id()) {
     QString name;
-    if(account.accountType() == MyMoneyAccount::Stock) {
-      MyMoneyEquity equity = m_file->equity(account.currencyId());
-      name = equity.name();
-      value = equity.price(date);
+    // FIXME: once equity and currency use the same interface
+    //        we can  get rid of this
+    MyMoneySecurity security = m_file->security(account.currencyId());
+    name = security.name();
+    MyMoneyPrice price = m_file->price(account.currencyId(), m_file->baseCurrency().id(), date);
+
+    if(price.isValid()) {
+      value = price.rate(m_file->baseCurrency().id());
     } else {
-      MyMoneyCurrency currency = m_file->currency(account.currencyId());
-      name = currency.name();
-      value = currency.price(date);
+      // FIXME: ace, we should report, that the conversion rate has been set to 1
+      //        because no price info is available for the accounts currency on
+      //        or before 'date'.
     }
 
     DEBUG_OUTPUT(QString("Converting %1 to %2, price on %3 is %4").arg(name).arg(m_file->baseCurrency().name()).arg(date.toString()).arg(value.toDouble()));
@@ -598,7 +605,7 @@ void PivotTable::clearColumn(unsigned column)
         if ( (*it_row).count() <= column )
           throw new MYMONEYEXCEPTION(QString("Column %1 out of grid range (%2) in PivotTable::accumulateColumn").arg(column).arg((*it_row).count()));
 
-        (*it_row++)[column] = 0;
+        (*it_row++)[column] = MyMoneyMoney(0,1);
       }
 
       ++it_innergroup;
@@ -658,7 +665,7 @@ void PivotTable::calculateOpeningBalances( void )
     from = m_beginDate;
   if ( ! to.isValid() )
     to = m_endDate;
-  
+
   MyMoneyFile* file = MyMoneyFile::instance();
 
   const QValueList<MyMoneyAccount>& accounts = file->accountList();
@@ -672,7 +679,7 @@ void PivotTable::calculateOpeningBalances( void )
     if ( includesAccount( *it_account ) )
     {
       DEBUG_OUTPUT(QString("Includes account %1").arg((*it_account).name()));
-    
+
       // the row group is the account class (major account type)
       QString outergroup = accountTypeToString((*it_account).accountGroup());
 
@@ -705,7 +712,7 @@ void PivotTable::calculateOpeningBalances( void )
     {
       DEBUG_OUTPUT(QString("DOES NOT INCLUDE account %1").arg((*it_account).name()));
     }
-    
+
     ++it_account;
   }
 }
@@ -1155,7 +1162,7 @@ QString PivotTable::renderHTML( void ) const
 
 /*  MyMoneyMoney::signPosition savesignpos = MyMoneyMoney::negativeMonetarySignPosition();
   MyMoneyMoney::setNegativeMonetarySignPosition(MyMoneyMoney::ParensAround);*/
-  
+
   QString colspan = QString(" colspan=\"%1\"").arg(m_numColumns + 1 + (m_config_f.isShowingRowTotals() ? 1 : 0) );
 
   //
@@ -1346,7 +1353,7 @@ QString PivotTable::renderHTML( void ) const
   result += "</table>\n";
 
 //   MyMoneyMoney::setNegativeMonetarySignPosition(savesignpos);
-  
+
   return result;
 }
 

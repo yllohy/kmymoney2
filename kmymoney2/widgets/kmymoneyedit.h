@@ -39,7 +39,7 @@ class KPushButton;
 
 class MyMoneyMoney;
 class kMyMoneyCalculator;
-#include "../mymoney/mymoneyequity.h"
+#include "../mymoney/mymoneysecurity.h"
 
 #if KDE_VERSION <= KDE_MAKE_VERSION(3,1,0)
   #define KDoubleValidator QDoubleValidator
@@ -135,7 +135,7 @@ protected slots:
 
 public:
   kMyMoneyEdit(QWidget *parent=0, const char *name=0, const int prec = -1);
-  kMyMoneyEdit(const MyMoneyEquity& eq, QWidget *parent=0, const char *name=0);
+  kMyMoneyEdit(const MyMoneySecurity& eq, QWidget *parent=0, const char *name=0);
   ~kMyMoneyEdit();
 
   /**

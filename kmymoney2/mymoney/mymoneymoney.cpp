@@ -32,15 +32,6 @@
 
 #include "mymoneymoney.h"
 
-#ifdef HAVE_STDINT_H
-  #include <stdint.h>
-#else
-  #include <limits.h>
-  #define INT64_MAX LLONG_MAX
-  #define INT64_MIN LLONG_MIN
-#endif
-
-
 unsigned char MyMoneyMoney::_thousandSeparator = ',';
 unsigned char MyMoneyMoney::_decimalSeparator = '.';
 MyMoneyMoney::signPosition MyMoneyMoney::_negativeMonetarySignPosition = BeforeQuantityMoney;
@@ -127,11 +118,36 @@ MyMoneyMoney::MyMoneyMoney(const QString& pszAmount)
     return;
   }
 
-  QString res = pszAmount;
-  int pos;
-  while((pos = res.find(_thousandSeparator)) != -1)
-    res.remove(pos, 1);
+  // an empty string is zero
+  if(pszAmount.length() == 0)
+    return;
 
+  QString res = pszAmount;
+  // get rid of anything that is not
+  // a) numeric
+  // b) _decimalSeparator
+  // c) negative indicator
+  QString validChars = QString("\\d%1").arg(QChar(decimalSeparator()));
+  QString negChars("-");
+  if(_negativeMonetarySignPosition == ParensAround)
+    negChars = "()";
+  validChars += negChars;
+  // qDebug("0: '%s'", validChars.data());
+
+  QRegExp invChars(QString("[^%1]").arg(validChars));
+  // qDebug("1: '%s'", res.data());
+  res.remove(invChars);
+
+  QRegExp negCharSet(QString("[%1]").arg(negChars));
+  bool isNegative = false;
+  if(res.find(negCharSet) != -1) {
+    isNegative = true;
+    res.remove(negCharSet);
+  }
+  // qDebug("2: '%s'", res.data());
+  int pos;
+
+  // qDebug("3: '%s'", res.data());
   if((pos = res.find(_decimalSeparator)) != -1) {
     // make sure, we get the denominator right
     m_denom = precToDenom(res.length() - pos - 1);
@@ -139,9 +155,12 @@ MyMoneyMoney::MyMoneyMoney(const QString& pszAmount)
     // now remove the decimal symbol
     res.remove(pos, 1);
   }
-
+  // qDebug("4: '%s'", res.data());
   if(res.length() > 0)
     m_num = atoll( res );
+
+  if(isNegative)
+    m_num = -m_num;
 }
 
 const QString MyMoneyMoney::formatMoney(const QString currency, const int prec) const

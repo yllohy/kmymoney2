@@ -39,8 +39,8 @@
 #include "../mymoneypayee.h"
 #include "../mymoneyscheduled.h"
 #include "../mymoneytransactionfilter.h"
-#include "../mymoneyequity.h"
-#include "../mymoneycurrency.h"
+#include "../mymoneysecurity.h"
+#include "../mymoneyprice.h"
 #include "../mymoneyreport.h"
 
 /**
@@ -158,10 +158,10 @@ public:
                                      const bool = false) const = 0;
 
    /**
-    * This method returns a list of equity objects that the engine has
+    * This method returns a list of security objects that the engine has
     * knowledge of.
     */
-  virtual const QValueList<MyMoneyEquity> equityList(void) const = 0;
+  virtual const QValueList<MyMoneySecurity> securityList(void) const = 0;
 
   /**
     * This method is used to return the standard liability account
@@ -186,6 +186,12 @@ public:
     * @return MyMoneyAccount income account(group)
     */
   virtual const MyMoneyAccount income(void) const = 0;
+
+  /**
+    * This method is used to return the standard equity account
+    * @return MyMoneyAccount equity account(group)
+    */
+  virtual const MyMoneyAccount equity(void) const = 0;
 
   /**
     * This method is used to create a new account
@@ -290,8 +296,8 @@ public:
   virtual void loadInstitution(const MyMoneyInstitution& inst) = 0;
   virtual void loadPayee(const MyMoneyPayee& payee) = 0;
   virtual void loadSchedule(const MyMoneySchedule& sched) = 0;
-  virtual void loadEquity(const MyMoneyEquity& equity) = 0;
-  virtual void loadCurrency(const MyMoneyCurrency& currency) = 0;
+  virtual void loadSecurity(const MyMoneySecurity& security) = 0;
+  virtual void loadCurrency(const MyMoneySecurity& currency) = 0;
   virtual void loadReport( const MyMoneyReport& report ) = 0;
 
   virtual const unsigned long accountId(void) = 0;
@@ -299,7 +305,7 @@ public:
   virtual const unsigned long payeeId(void) = 0;
   virtual const unsigned long institutionId(void) = 0;
   virtual const unsigned long scheduleId(void) = 0;
-  virtual const unsigned long equityId(void) = 0;
+  virtual const unsigned long securityId(void) = 0;
   virtual const unsigned long reportId(void) = 0;
 
   virtual void loadAccountId(const unsigned long id) = 0;
@@ -307,7 +313,7 @@ public:
   virtual void loadPayeeId(const unsigned long id) = 0;
   virtual void loadInstitutionId(const unsigned long id) = 0;
   virtual void loadScheduleId(const unsigned long id) = 0;
-  virtual void loadEquityId(const unsigned long id) = 0;
+  virtual void loadSecurityId(const unsigned long id) = 0;
   virtual void loadReportId(const unsigned long id) = 0;
 
   /**
@@ -345,9 +351,9 @@ public:
     *
     * An exception will be thrown upon erronous situations.
     *
-    * @return QValueList of all MyMoneyCurrency objects.
+    * @return QValueList of all MyMoneySecurity objects representing a currency.
     */
-  virtual const QValueList<MyMoneyCurrency> currencyList(void) const = 0;
+  virtual const QValueList<MyMoneySecurity> currencyList(void) const = 0;
 
   /**
     * This method is used to retrieve the list of all reports
@@ -358,6 +364,18 @@ public:
     * @return QValueList of all MyMoneyReport objects.
     */
   virtual const QValueList<MyMoneyReport> reportList( void ) const = 0;
+
+  /**
+    * This method adds a price entry to the price list.
+    */
+  virtual void addPrice(const MyMoneyPrice& price) = 0;
+
+  /**
+    * This method returns a list of all prices.
+    *
+    * @return MyMoneyPriceList of all MyMoneyPrice objects.
+    */
+  virtual const MyMoneyPriceList priceList(void) const = 0;
 
 };
 

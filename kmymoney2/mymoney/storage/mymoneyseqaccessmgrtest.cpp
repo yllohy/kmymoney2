@@ -48,7 +48,7 @@ void MyMoneySeqAccessMgrTest::testEmptyConstructor()
 	CPPUNIT_ASSERT(m->m_nextScheduleID == 0);
 	CPPUNIT_ASSERT(m->m_nextReportID == 0);
 	CPPUNIT_ASSERT(m->m_institutionList.count() == 0);
-	CPPUNIT_ASSERT(m->m_accountList.count() == 4);
+	CPPUNIT_ASSERT(m->m_accountList.count() == 5);
 	CPPUNIT_ASSERT(m->m_transactionList.count() == 0);
 	CPPUNIT_ASSERT(m->m_transactionKeys.count() == 0);
 	CPPUNIT_ASSERT(m->m_payeeList.count() == 0);
@@ -61,6 +61,7 @@ void MyMoneySeqAccessMgrTest::testEmptyConstructor()
 	CPPUNIT_ASSERT(m->asset().name() == "Asset");
 	CPPUNIT_ASSERT(m->expense().name() == "Expense");
 	CPPUNIT_ASSERT(m->income().name() == "Income");
+	CPPUNIT_ASSERT(m->equity().name() == "Equity");
 }
 
 void MyMoneySeqAccessMgrTest::testSetFunctions() {
@@ -139,7 +140,7 @@ void MyMoneySeqAccessMgrTest::testNewAccount() {
 
 	CPPUNIT_ASSERT(m->m_nextAccountID == 1);
 	CPPUNIT_ASSERT(m->dirty() == true);
-	CPPUNIT_ASSERT(m->m_accountList.count() == 5);
+	CPPUNIT_ASSERT(m->m_accountList.count() == 6);
 	CPPUNIT_ASSERT(m->m_accountList["A000001"].name() == "AccountName");
 }
 
@@ -181,7 +182,7 @@ void MyMoneySeqAccessMgrTest::testAddNewAccount() {
 	m->m_dirty = false;
 
 	CPPUNIT_ASSERT(m->m_nextAccountID == 2);
-	CPPUNIT_ASSERT(m->m_accountList.count() == 6);
+	CPPUNIT_ASSERT(m->m_accountList.count() == 7);
 
 	// try to add account to undefined account
 	try {
@@ -717,10 +718,10 @@ void MyMoneySeqAccessMgrTest::testRemoveUnusedAccount() {
 	// now really remove an account
 	try {
 		CPPUNIT_ASSERT(i.accountCount() == 1);
-		CPPUNIT_ASSERT(m->accountCount() == 6);
+		CPPUNIT_ASSERT(m->accountCount() == 7);
 
 		m->removeAccount(a);
-		CPPUNIT_ASSERT(m->accountCount() == 5);
+		CPPUNIT_ASSERT(m->accountCount() == 6);
 		CPPUNIT_ASSERT(m->dirty() == true);
 		i = m->institution("I000001");
 		CPPUNIT_ASSERT(i.accountCount() == 0);
@@ -1361,7 +1362,7 @@ void MyMoneySeqAccessMgrTest::testScheduleList() {
 
 void MyMoneySeqAccessMgrTest::testAddCurrency()
 {
-	MyMoneyCurrency curr("EUR", "Euro", "?", 100, 100);
+	MyMoneySecurity curr("EUR", "Euro", "?", 100, 100);
 	CPPUNIT_ASSERT(m->m_currencyList.count() == 0);
 	m->m_dirty = false;
 	try {
@@ -1386,7 +1387,7 @@ void MyMoneySeqAccessMgrTest::testAddCurrency()
 
 void MyMoneySeqAccessMgrTest::testModifyCurrency()
 {
-	MyMoneyCurrency curr("EUR", "Euro", "?", 100, 100);
+	MyMoneySecurity curr("EUR", "Euro", "?", 100, 100);
 	testAddCurrency();
 	m->m_dirty = false;
 	curr.setName("EURO");
@@ -1402,7 +1403,7 @@ void MyMoneySeqAccessMgrTest::testModifyCurrency()
 
 	m->m_dirty = false;
 
-	MyMoneyCurrency unknownCurr("DEM", "Deutsche Mark", "DM", 100, 100);
+	MyMoneySecurity unknownCurr("DEM", "Deutsche Mark", "DM", 100, 100);
 	try {
 		m->modifyCurrency(unknownCurr);
                 CPPUNIT_FAIL("Expected exception missing");
@@ -1414,7 +1415,7 @@ void MyMoneySeqAccessMgrTest::testModifyCurrency()
 
 void MyMoneySeqAccessMgrTest::testRemoveCurrency()
 {
-	MyMoneyCurrency curr("EUR", "Euro", "?", 100, 100);
+	MyMoneySecurity curr("EUR", "Euro", "?", 100, 100);
 	testAddCurrency();
 	m->m_dirty = false;
 	try {
@@ -1428,7 +1429,7 @@ void MyMoneySeqAccessMgrTest::testRemoveCurrency()
 
 	m->m_dirty = false;
 
-	MyMoneyCurrency unknownCurr("DEM", "Deutsche Mark", "DM", 100, 100);
+	MyMoneySecurity unknownCurr("DEM", "Deutsche Mark", "DM", 100, 100);
 	try {
 		m->removeCurrency(unknownCurr);
                 CPPUNIT_FAIL("Expected exception missing");
@@ -1440,8 +1441,8 @@ void MyMoneySeqAccessMgrTest::testRemoveCurrency()
 
 void MyMoneySeqAccessMgrTest::testCurrency()
 {
-	MyMoneyCurrency curr("EUR", "Euro", "?", 100, 100);
-	MyMoneyCurrency newCurr;
+	MyMoneySecurity curr("EUR", "Euro", "?", 100, 100);
+	MyMoneySecurity newCurr;
 	testAddCurrency();
 	m->m_dirty = false;
 	try {
@@ -1470,7 +1471,7 @@ void MyMoneySeqAccessMgrTest::testCurrencyList()
 	testAddCurrency();
 	CPPUNIT_ASSERT(m->currencyList().count() == 1);
 
-	MyMoneyCurrency unknownCurr("DEM", "Deutsche Mark", "DM", 100, 100);
+	MyMoneySecurity unknownCurr("DEM", "Deutsche Mark", "DM", 100, 100);
 	try {
 		m->addCurrency(unknownCurr);
 		m->m_dirty = false;

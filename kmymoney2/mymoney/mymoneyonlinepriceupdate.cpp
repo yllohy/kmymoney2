@@ -117,6 +117,8 @@ int MyMoneyOnlinePriceUpdate::getWebServiceQuote(const QString& symbolName)
   return 0;
 }
 
+
+#if 0
 // get a single currency quote
 void MyMoneyOnlinePriceUpdate::getQuote(MyMoneyCurrency *pQuoteItem)
 {
@@ -137,8 +139,9 @@ void MyMoneyOnlinePriceUpdate::getQuotes(const CurrencyList& pQuoteList)
     //return (*(reinterpret_cast <QValueList<MyMoneyCurrency>*> (m_ql)));
 }
 
+#endif
 // get a single equity quote
-void MyMoneyOnlinePriceUpdate::getQuote(MyMoneyEquity *pQuoteItem)
+void MyMoneyOnlinePriceUpdate::getQuote(MyMoneySecurity *pQuoteItem)
 {
     EquityList cl;
     cl.push_back(pQuoteItem);
@@ -153,7 +156,7 @@ void MyMoneyOnlinePriceUpdate::getQuotes(const EquityList& pQuoteList)
     m_ql = (EquityList*)(&pQuoteList);
     m_quoteType = MyMoneyOnlinePriceUpdate::Equity;
     retrieve();
-    //return (*(reinterpret_cast <QValueList<MyMoneyEquity>*> (m_ql)));
+    //return (*(reinterpret_cast <QValueList<MyMoneySecurity>*> (m_ql)));
 }
 
 // get a list of F::Q price sources
@@ -355,7 +358,8 @@ void MyMoneyOnlinePriceUpdate::readInvestments (const QDomElement& elem)
             (*m_qit).m_quoteRate = eqrate;
             (*m_qit).m_value= price;*/
             MyMoneyMoney value;
-            (*m_qit)->addPriceHistory(QDate::fromString(pdate, Qt::ISODate), value);
+            // FIXME PRICE
+            // (*m_qit)->addPriceHistory(QDate::fromString(pdate, Qt::ISODate), value);
         }
         // FIXME - convert curr/rate to MyMoneyMoney, MyMopneyCurrency or whatever
         m_qit++;
@@ -386,11 +390,12 @@ void MyMoneyOnlinePriceUpdate::readCurrencies (const QDomElement& elem)
         // items should be returned in same order as requested
         if ((*m_qit)->tradingSymbol() != id)
             qFatal ("%s != %s", (*m_qit)->tradingSymbol().latin1(), id.latin1());
-        //(*m_qit).m_errorCode = (MyMoneyEquity::quoterErrorsE)errcode.toInt();
+        //(*m_qit).m_errorCode = (MyMoneySecurity::quoterErrorsE)errcode.toInt();
         if (errcode == "0")
         {
             MyMoneyMoney value;
-            (*m_qit)->addPriceHistory(QDate::fromString(pdate, Qt::ISODate), value);
+            // FIXME PRICE
+            // (*m_qit)->addPriceHistory(QDate::fromString(pdate, Qt::ISODate), value);
 
             //(*m_qit).m_quoteDate = QDate::fromString(pdate, Qt::ISODate);
             // FIXME - convert rate to MyMoneyMoney
@@ -442,13 +447,13 @@ void MyMoneyOnlinePriceUpdate::setPerlLocation(const QString& strLoc)
 int MyMoneyOnlinePriceUpdate::getQuotes(const QStringList& symbolNames)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
-  QValueList<MyMoneyEquity> equities = file->equityList();
-  QPtrList<MyMoneyEquity> equitiesToUpdate;
+  QValueList<MyMoneySecurity> equities = file->securityList();
+  QPtrList<MyMoneySecurity> equitiesToUpdate;
   qDebug("MyMoneyOnlinePriceUpdate::getQuotes: Number of equity objects: %d", equities.size());
 
   for(QStringList::ConstIterator it = symbolNames.begin(); it != symbolNames.end(); ++it)
   {
-    for(QValueList<MyMoneyEquity>::Iterator theEquity = equities.begin(); theEquity != equities.end(); ++theEquity)
+    for(QValueList<MyMoneySecurity>::Iterator theEquity = equities.begin(); theEquity != equities.end(); ++theEquity)
     {
       if((*theEquity).name() == (*it))
       {

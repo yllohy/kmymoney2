@@ -88,7 +88,7 @@ KCategoriesView::KCategoriesView(QWidget *parent, const char *name )
 
   connect(categoryListView, SIGNAL(rightButtonPressed(QListViewItem* , const QPoint&, int)),
     this, SLOT(slotListRightMouse(QListViewItem*, const QPoint&, int)));
-    
+
   connect(categoryListView, SIGNAL(doubleClicked(QListViewItem* , const QPoint&, int)),
     this, SLOT(slotListDoubleClicked(QListViewItem*, const QPoint&, int)));
 
@@ -250,7 +250,7 @@ void KCategoriesView::slotDeleteClicked(MyMoneyAccount& account)
       KMessageBox::error(this, message);
       delete e;
     }
-  }  
+  }
 }
 
 void KCategoriesView::slotDeleteClicked(void)
@@ -285,7 +285,7 @@ void KCategoriesView::slotEditClicked(MyMoneyAccount& account)
       MyMoneyAccount parent = dlg.parentAccount();
 
       MyMoneyFile* file = MyMoneyFile::instance();
-      
+
       // we need to reparent first, as modify will check for same type
       if(account.parentAccountId() != parent.id()) {
         file->reparentAccount(account, parent);
@@ -366,7 +366,7 @@ void KCategoriesView::suspendUpdate(const bool suspend)
     item->suspendUpdate(suspend);
     item = static_cast<KAccountListItem *>(item->itemBelow());
   }
-  
+
   // force a refresh, if update was off
   if(m_suspendUpdate == true
   && suspend == false)
@@ -418,7 +418,7 @@ void KCategoriesView::refreshProfits(void)
              file->totalBalance(expenseAccount.id()));
 
   totalProfitsLabel->setFont(KMyMoneyUtils::cellFont());
-  if(profit < 0)
+  if(profit.isNegative())
     totalProfitsLabel->setText(i18n("Loss: %1").arg((-profit).formatMoney(file->baseCurrency().tradingSymbol())));
   else
     totalProfitsLabel->setText(i18n("Profit: %1").arg(profit.formatMoney(file->baseCurrency().tradingSymbol())));

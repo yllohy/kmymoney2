@@ -347,8 +347,7 @@ void KEditScheduleDialog::slotSplitClicked()
 
       MyMoneySplit split = m_transaction.splits()[0];
       MyMoneyMoney amount(split.value());
-      if (amount < 0)
-        amount = -amount;
+      amount = amount.abs();
       m_kmoneyeditAmount->setText(amount.formatMoney());
     }
 
@@ -491,7 +490,7 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
       MyMoneySplit s1 = m_transaction.splits()[0];
       MyMoneySplit s2 = m_transaction.splits()[1];
 
-      if (s1.value() >= 0)
+      if (!s1.value().isNegative())
       {
         try {
         m_transaction.removeSplits();
@@ -656,8 +655,7 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
     }
 
     MyMoneyMoney amount = m_schedule.transaction().splitByAccount(theAccountId()).value();
-    if (amount < 0)
-      amount = -amount;
+    amount = amount.abs();
     m_kmoneyeditAmount->setText(amount.formatMoney());
     m_qcheckboxEstimate->setChecked(!m_schedule.isFixed());
 
@@ -811,7 +809,7 @@ void KEditScheduleDialog::slotAmountChanged(const QString&)
       // if someone enters a negative number, we have to make sure that
       // the action is corrected. For transfers, we don't have to do anything
       // The accounts will be 'exchanged' in reloadEditWidgets() and fillForm()
-      if(val < 0)
+      if(val.isNegative())
       {
         if (m_actionType == MyMoneySplit::ActionDeposit)
         {

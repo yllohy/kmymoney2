@@ -43,7 +43,7 @@ kMyMoneyRegisterInvestment::kMyMoneyRegisterInvestment(QWidget *parent, const ch
   setCurrentCell(0, 1);
   horizontalHeader()->setClickEnabled(true);
   horizontalHeader()->setLabel(0, i18n("Date"));
-  horizontalHeader()->setLabel(1, i18n("Equity"));
+  horizontalHeader()->setLabel(1, i18n("Security"));
   horizontalHeader()->setLabel(2, i18n("Activity"));
   horizontalHeader()->setLabel(3, i18n("C"));
   horizontalHeader()->setLabel(4, i18n("Amount"));
@@ -75,7 +75,7 @@ void kMyMoneyRegisterInvestment::paintCell(QPainter *p, int row, int col, const 
 {
   QCString splitCurrency;
   MyMoneyAccount acc;
-  MyMoneyEquity equity;
+  MyMoneySecurity security;
   MyMoneyMoney tmp;
   MyMoneyFile* file = MyMoneyFile::instance();
   KLedgerViewInvestments* myParent = dynamic_cast<KLedgerViewInvestments*> (m_parent);
@@ -98,7 +98,7 @@ void kMyMoneyRegisterInvestment::paintCell(QPainter *p, int row, int col, const 
       for(it_s = m_transaction->splits().begin(); it_s != m_transaction->splits().end(); ++it_s) {
         acc = file->account((*it_s).accountId());
         if(acc.accountType() == MyMoneyAccount::Stock) {
-          m_equity = MyMoneyFile::instance()->equity(acc.currencyId());
+          m_security = MyMoneyFile::instance()->security(acc.currencyId());
           m_split = *it_s;
         } else if(acc.accountGroup() == MyMoneyAccount::Expense) {
           m_feeSplit = *it_s;
@@ -130,8 +130,8 @@ void kMyMoneyRegisterInvestment::paintCell(QPainter *p, int row, int col, const 
             case 0:
               try {
                 acc = file->account(m_split.accountId());
-                equity = file->equity(acc.currencyId());
-                txt = equity.tradingSymbol();
+                security = file->security(acc.currencyId());
+                txt = security.tradingSymbol();
               } catch(MyMoneyException *e) {
                 delete e;
               }
@@ -289,7 +289,7 @@ void kMyMoneyRegisterInvestment::paintCell(QPainter *p, int row, int col, const 
                 case KLedgerView::ReinvestDividend:
                 case KLedgerView::AddShares:
                 case KLedgerView::RemoveShares:
-                  prec = MyMoneyMoney::denomToPrec(m_equity.smallestAccountFraction());
+                  prec = MyMoneyMoney::denomToPrec(m_security.smallestAccountFraction());
                   txt = m_split.shares().abs().formatMoney("", prec);
                   break;
                 case KLedgerView::Dividend:
@@ -403,7 +403,7 @@ void kMyMoneyRegisterInvestment::adjustColumn(int col)
     KMyMoneyTransaction *t = m_parent->transaction(i);
     MyMoneyMoney amount;
     MyMoneyAccount acc;
-    MyMoneyEquity equity;
+    MyMoneySecurity security;
     MyMoneySplit split, feeSplit, interestSplit, accountSplit;
     int nw = 0;
 
@@ -431,8 +431,8 @@ void kMyMoneyRegisterInvestment::adjustColumn(int col)
 
         case 1:
           acc = file->account(split.accountId());
-          equity = file->equity(acc.currencyId());
-          txt = equity.tradingSymbol();
+          security = file->security(acc.currencyId());
+          txt = security.tradingSymbol();
           nw = cellFontMetrics.width(txt+"  ");
           nw = QMAX(nw, cellFontMetrics.width(i18n("Fees")+"  "));
           nw = QMAX(nw, cellFontMetrics.width(i18n("Interest")+"  "));

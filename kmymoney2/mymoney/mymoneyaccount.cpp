@@ -32,8 +32,7 @@
 
 MyMoneyAccount::MyMoneyAccount()
 {
-  m_file = 0;
-  m_openingBalance = 0;
+  m_openingBalance = MyMoneyMoney(0);
   m_accountType = UnknownAccountType;
 }
 

@@ -49,10 +49,10 @@ public:
   KEquityPriceUpdateProcess(void);
   void setItem(QListViewItem* _item) { m_item = _item; m_string.truncate(0); }
 
-public slots:  
+public slots:
   void slotReceivedDataFromFilter(KProcess*, char*, int);
   void slotProcessExited(KProcess*);
-  
+
 signals:
   void processExited(QListViewItem*,const QString&);
 
@@ -68,23 +68,25 @@ private:
 class KEquityPriceUpdateDlg : public KEquityPriceUpdateDlgDecl
 {
   Q_OBJECT
-public: 
-  KEquityPriceUpdateDlg(QWidget *parent, const QString& symbol = QString());
+public:
+  KEquityPriceUpdateDlg(QWidget *parent, const QCString& securityId = QCString());
   ~KEquityPriceUpdateDlg();
-  void  logStatusMessage(const QString& message);
-  
-public slots:
+
+protected slots:
   void slotOKClicked();
   void slotCancelClicked();
   void slotUpdateSelectedClicked();
   void slotUpdateAllClicked();
   void slotConfigureClicked();
+  void slotUpdateSelection();
   void slotReceivedErrorFromFilter(KProcess*, char*, int);
   void slotInsertUpdate(QListViewItem* _item, const QString& _quotedata );
 
-protected: 
+protected:
   void launchUpdate(QListViewItem* _item);
-  
+  void logStatusMessage(const QString& message);
+  void logErrorMessage(const QString& message);
+
 private:
   KEquityPriceUpdateProcess m_filter;
   QString m_strdata;

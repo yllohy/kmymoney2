@@ -620,7 +620,7 @@ void KLedgerViewLoan::reloadEditWidgets(const MyMoneyTransaction& t)
   // exceptions are: deposits and transfers (which are always positive)
   if(transactionType(t) != Credit)
     amount = -amount;
-  if(m_split.action() == MyMoneySplit::ActionAmortization && amount < 0) {
+  if(m_split.action() == MyMoneySplit::ActionAmortization && amount.isNegative()) {
     amount = -amount;
   }
 
@@ -888,7 +888,7 @@ void KLedgerViewLoan::slotOpenSplitDialog(void)
   bool isDeposit = false;
   bool isValidAmount = false;
 
-  if(m_split.value() >= 0) {
+  if(!m_split.value().isNegative()) {
     isDeposit = true;
   }
 

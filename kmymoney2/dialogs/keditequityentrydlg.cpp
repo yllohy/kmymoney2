@@ -44,10 +44,10 @@
 #include "kupdatestockpricedlg.h"
 #include "../widgets/kmymoneypriceview.h"
 
-KEditEquityEntryDlg::KEditEquityEntryDlg(const MyMoneyEquity& selectedEquity, QWidget *parent, const char *name)
+KEditEquityEntryDlg::KEditEquityEntryDlg(const MyMoneySecurity& selectedSecurity, QWidget *parent, const char *name)
   : kEditEquityEntryDecl(parent, name, true)
 {
-  m_selectedEquity = selectedEquity;
+  m_selectedSecurity = selectedSecurity;
 
   connect(btnOK, SIGNAL(clicked()), this, SLOT(slotOKClicked()));
   connect(btnCancel, SIGNAL(clicked()), this, SLOT(reject()));
@@ -60,13 +60,14 @@ KEditEquityEntryDlg::KEditEquityEntryDlg(const MyMoneyEquity& selectedEquity, QW
   connect(kpvPriceHistory, SIGNAL(selectionChanged(QListViewItem*)), this, SLOT(slotSelectionChanged(QListViewItem*)));
 
   //fill in the fields with what we know.
-  edtEquityName->setText(m_selectedEquity.name());
-  edtMarketSymbol->setText(m_selectedEquity.tradingSymbol());
+  edtEquityName->setText(m_selectedSecurity.name());
+  edtMarketSymbol->setText(m_selectedSecurity.tradingSymbol());
   edtFraction->setPrecision(0);
   edtFraction->hideCalculatorButton();
-  edtFraction->loadText(QString::number(m_selectedEquity.smallestAccountFraction()));
-  cmbInvestmentType->setCurrentItem((int)m_selectedEquity.equityType());
-  kpvPriceHistory->setHistory(m_selectedEquity.priceHistory());
+  edtFraction->loadText(QString::number(m_selectedSecurity.smallestAccountFraction()));
+  cmbInvestmentType->setCurrentItem((int)m_selectedSecurity.securityType());
+  // FIXME PRICE
+  // kpvPriceHistory->setHistory(m_selectedSecurity.priceHistory());
 
   // add icons to buttons
   KIconLoader *il = KGlobal::iconLoader();
@@ -93,6 +94,10 @@ KEditEquityEntryDlg::KEditEquityEntryDlg(const MyMoneyEquity& selectedEquity, QW
                     i18n("Add a new entry"),
                     i18n("Create a new price information entry."));
   btnAddEntry->setGuiItem(addButtenItem);
+
+
+
+
 
   KGuiItem editButtenItem( i18n( "&Edit" ),
                     QIconSet(il->loadIcon("edit", KIcon::Small, KIcon::SizeSmall)),
@@ -127,11 +132,11 @@ void KEditEquityEntryDlg::slotOKClicked()
 {
   if(m_changes || kpvPriceHistory->dirty())
   {
-    m_selectedEquity.setName(edtEquityName->text());
-    m_selectedEquity.setTradingSymbol(edtMarketSymbol->text());
-    m_selectedEquity.setSmallestAccountFraction(edtFraction->value().abs());
-
-    m_selectedEquity.setPriceHistory(kpvPriceHistory->history());
+    m_selectedSecurity.setName(edtEquityName->text());
+    m_selectedSecurity.setTradingSymbol(edtMarketSymbol->text());
+    m_selectedSecurity.setSmallestAccountFraction(edtFraction->value().abs());
+    // FIXME PRICE
+    // m_selectedSecurity.setPriceHistory(kpvPriceHistory->history());
   }
 
   accept();
@@ -147,7 +152,7 @@ void KEditEquityEntryDlg::slotDataChanged(void)
 {
   bool okEnabled = true;
 
-  if(edtFraction->value() <= 0
+  if(!edtFraction->value().isPositive()
   || edtMarketSymbol->text().isEmpty()
   || edtEquityName->text().isEmpty())
     okEnabled = false;

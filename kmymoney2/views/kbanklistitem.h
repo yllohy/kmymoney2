@@ -32,7 +32,7 @@
 // Project Includes
 
 #include "../mymoney/mymoneyobserver.h"
-class MyMoneyAccount;
+#include "../mymoney/mymoneyaccount.h"
 class MyMoneyInstitution;
 
 /**
@@ -61,7 +61,7 @@ class MyMoneyInstitution;
 class KAccountItem
 {
 public:
-  KAccountItem() {} ;
+  KAccountItem() { m_accountType = MyMoneyAccount::UnknownAccountType; }
   virtual ~KAccountItem() {};
 
   /**
@@ -69,8 +69,15 @@ public:
     *
     * @param id account id to be stored in m_accountID;
     */
-  void setAccountID(const QCString& id) { m_accountID = id; };
-        
+  void setAccountID(const QCString& id) { m_accountID = id; }
+
+  /**
+    * This method allows to set the account type.
+    *
+    * @param id account id to be stored in m_accountID;
+    */
+  void setAccountType(const MyMoneyAccount::accountTypeE type) { m_accountType = type; }
+
   /**
     * This method returns the account's id for this object
     *
@@ -78,8 +85,16 @@ public:
     */
   const QCString accountID(void) const { return m_accountID; };
 
+  /**
+    * This method returns the account's type for this object
+    *
+    * @return const MyMoneyAccount::accountTypeE of the object
+    */
+  const MyMoneyAccount::accountTypeE accountType(void) const { return m_accountType; };
+
 private:
-  QCString    m_accountID;  
+  QCString                      m_accountID;
+  MyMoneyAccount::accountTypeE  m_accountType;
 };
 
 /**
@@ -91,7 +106,7 @@ class KAccountListItem : public KListViewItem, public KAccountItem, MyMoneyObser
 public:
 
   KAccountListItem(KListView *parent, const QString& txt);
-  
+
   /**
     * Constructor to be used to construct an institution entry
     * object.
@@ -135,7 +150,7 @@ public:
   void paintCell(QPainter *p, const QColorGroup & cg, int column, int width, int align);
 
   void paintFocus(QPainter *p, const QColorGroup & cg, const QRect& rect);
-  
+
   /**
     * This method is called by the MyMoneyFile object, whenever the
     * account that is represented by this object changes within the
@@ -155,11 +170,13 @@ public:
   /**
     */
   void suspendUpdate(const bool suspend) { m_suspendUpdate = suspend; };
-  
+
   /**
     * Override and do nothing
     **/
   void paintBranches(QPainter* p, const QColorGroup& cg, int w, int y, int h);
+
+  int compare(QListViewItem* i, int col, bool ascending) const;
 
 private:
   /**
@@ -275,12 +292,12 @@ public:
     * use my own paint method
     */
   void paintCell(QPainter *p, const QColorGroup &cg, int column, int width, int alignment);
-  
+
   /**
     * use my own backgroundColor method
     */
   const QColor backgroundColor();
-  
+
 private:
   QCString m_transactionId;
 };

@@ -393,7 +393,7 @@ void KHomeView::showAccounts(KHomeView::paymentTypeE type, const QString& header
 void KHomeView::showAccountEntry(const MyMoneyAccount& acc)
 {
   QString tmp;
-  MyMoneyCurrency currency = MyMoneyFile::instance()->currency(acc.currencyId());
+  MyMoneySecurity currency = MyMoneyFile::instance()->currency(acc.currencyId());
 
   tmp = QString("<td width=\"70%\">") +
       link(VIEW_LEDGER, QString("?id=%1").arg(acc.id())) + acc.name() + linkend() + "</td>";
@@ -407,8 +407,8 @@ void KHomeView::showAccountEntry(const MyMoneyAccount& acc)
 void KHomeView::showFavoriteReports(void)
 {
   QValueList<MyMoneyReport> reports = MyMoneyFile::instance()->reportList();
-  
-  if ( reports.count() > 0 ) 
+
+  if ( reports.count() > 0 )
   {
     m_part->write(QString("<div class=\"itemheader\">%1</div>\n<div class=\"gap\">&nbsp;</div>\n").arg(i18n("Favorite Reports")));
     m_part->write("<table width=\"75%\" cellspacing=\"0\" cellpadding=\"2\">");
@@ -418,7 +418,7 @@ void KHomeView::showFavoriteReports(void)
     m_part->write(i18n("Comment"));
     m_part->write("</th></tr>");
 
-    int row = 0;  
+    int row = 0;
     QValueList<MyMoneyReport>::const_iterator it_report = reports.begin();
     while( it_report != reports.end() )
     {
@@ -430,7 +430,7 @@ void KHomeView::showFavoriteReports(void)
           .arg(linkend())
           .arg((*it_report).comment())
         );
-      
+
       ++it_report;
     }
     m_part->write("</table>");

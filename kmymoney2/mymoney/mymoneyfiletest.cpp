@@ -51,7 +51,7 @@ void MyMoneyFileTest::testEmptyConstructor() {
 
 	CPPUNIT_ASSERT(m->institutionCount() == 0);
 	CPPUNIT_ASSERT(m->dirty() == false);
-	CPPUNIT_ASSERT(m->accountCount() == 4);
+	CPPUNIT_ASSERT(m->accountCount() == 5);
 }
 
 void MyMoneyFileTest::testAddOneInstitution() {
@@ -345,7 +345,7 @@ void MyMoneyFileTest::testAddAccounts() {
 
 	storage->m_dirty = false;
 
-	CPPUNIT_ASSERT(m->accountCount() == 4);
+	CPPUNIT_ASSERT(m->accountCount() == 5);
 
 	institution = m->institution("I000001");
 	CPPUNIT_ASSERT(institution.id() == "I000001");
@@ -363,7 +363,7 @@ void MyMoneyFileTest::testAddAccounts() {
 		observer->reset();
 		hierarchyObserver->reset();
 		m->addAccount(a, parent);
-		CPPUNIT_ASSERT(m->accountCount() == 5);
+		CPPUNIT_ASSERT(m->accountCount() == 6);
 		CPPUNIT_ASSERT(a.parentAccountId() == "AStd::Asset");
 		CPPUNIT_ASSERT(a.id() == "A000001");
 		CPPUNIT_ASSERT(a.institutionId() == "I000001");
@@ -427,7 +427,7 @@ void MyMoneyFileTest::testAddAccounts() {
 		CPPUNIT_ASSERT(m->dirty() == true);
 		CPPUNIT_ASSERT(b.id() == "A000002");
 		CPPUNIT_ASSERT(b.parentAccountId() == "AStd::Asset");
-		CPPUNIT_ASSERT(m->accountCount() == 6);
+		CPPUNIT_ASSERT(m->accountCount() == 7);
 
 		institution = m->institution("I000001");
 		CPPUNIT_ASSERT(institution.accountCount() == 1);
@@ -477,7 +477,7 @@ void MyMoneyFileTest::testModifyAccount() {
 		m->modifyAccount(p);
 
 		CPPUNIT_ASSERT(m->dirty() == true);
-		CPPUNIT_ASSERT(m->accountCount() == 6);
+		CPPUNIT_ASSERT(m->accountCount() == 7);
 		CPPUNIT_ASSERT(p.accountType() == MyMoneyAccount::Checkings);
 		CPPUNIT_ASSERT(p.name() == "New account name");
 
@@ -496,7 +496,7 @@ void MyMoneyFileTest::testModifyAccount() {
 		m->modifyAccount(p);
 
 		CPPUNIT_ASSERT(m->dirty() == true);
-		CPPUNIT_ASSERT(m->accountCount() == 6);
+		CPPUNIT_ASSERT(m->accountCount() == 7);
 		CPPUNIT_ASSERT(p.accountType() == MyMoneyAccount::Checkings);
 		CPPUNIT_ASSERT(p.name() == "New account name");
 		CPPUNIT_ASSERT(p.institutionId() == "I000002");
@@ -608,7 +608,7 @@ void MyMoneyFileTest::testRemoveAccount() {
 	try {
 		m->removeAccount(p);
 		CPPUNIT_ASSERT(m->dirty() == true);
-		CPPUNIT_ASSERT(m->accountCount() == 5);
+		CPPUNIT_ASSERT(m->accountCount() == 6);
 		institution = m->institution("I000001");
 		CPPUNIT_ASSERT(institution.accountCount() == 0);
 		CPPUNIT_ASSERT(m->asset().accountList().count() == 1);
@@ -646,7 +646,7 @@ void MyMoneyFileTest::testRemoveAccountTree() {
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception!");
 	}
-	CPPUNIT_ASSERT(m->accountCount() == 5);
+	CPPUNIT_ASSERT(m->accountCount() == 6);
 
 	// make sure it's gone
 	try {
@@ -717,7 +717,7 @@ void MyMoneyFileTest::testAddTransaction () {
 		CPPUNIT_FAIL("Unexpected exception!");
 	}
 
-	CPPUNIT_ASSERT(m->accountCount() == 8);
+	CPPUNIT_ASSERT(m->accountCount() == 9);
 	a = m->account("A000001");
 	CPPUNIT_ASSERT(a.lastModified() == QDate(1,2,3));
 
@@ -1311,7 +1311,7 @@ void MyMoneyFileTest::testHasAccount() {
 	b = m->account("A000001");
 	try {
 		m->addAccount(a, b);
-		CPPUNIT_ASSERT(m->accountCount() == 7);
+		CPPUNIT_ASSERT(m->accountCount() == 8);
 		CPPUNIT_ASSERT(a.parentAccountId() == "A000001");
 		CPPUNIT_ASSERT(m->hasAccount("A000001", "Account3") == true);
 		CPPUNIT_ASSERT(m->hasAccount("A000001", "Account2") == false);

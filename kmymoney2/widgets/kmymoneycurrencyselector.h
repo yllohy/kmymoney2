@@ -46,17 +46,30 @@
 class kMyMoneyCurrencySelector : public KComboBox, MyMoneyObserver
 {
   Q_OBJECT
-public: 
+public:
+  enum displayItemE {
+    Symbol = 0,
+    FullName
+  };
+
   kMyMoneyCurrencySelector(QWidget *parent=0, const char *name=0);
   ~kMyMoneyCurrencySelector();
 
-  const MyMoneyCurrency currency(void) const;
-  void setCurrency(const MyMoneyCurrency& currency);
+  const MyMoneySecurity currency(void) const;
+  void setCurrency(const MyMoneySecurity& currency);
+  void selectDisplayItem(kMyMoneyCurrencySelector::displayItemE item);
+  void setDisplayOnly(const bool disp);
 
   void update(const QCString& id);
-  
+
+public slots:
+  void slotSetInitialCurrency(void);
+
 private:
-  MyMoneyCurrency   m_currency;
+  MyMoneySecurity m_currency;
+  displayItemE    m_displayItem;
+  int             m_selectedItemId;
+  bool            m_displayOnly;
 };
 
 #endif

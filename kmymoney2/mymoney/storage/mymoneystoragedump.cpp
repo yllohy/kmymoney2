@@ -34,8 +34,8 @@
 #include "mymoneystoragedump.h"
 #include "imymoneystorage.h"
 #include "../mymoneyaccount.h"
-#include "../mymoneyequity.h"
-#include "../mymoneycurrency.h"
+#include "../mymoneysecurity.h"
+#include "../mymoneyprice.h"
 
 MyMoneyStorageDump::MyMoneyStorageDump()
 {
@@ -135,6 +135,7 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
   s << "--------" << "\n";
 
   QValueList<MyMoneyAccount> list_a = storage->accountList();
+  list_a.push_front(storage->equity());
   list_a.push_front(storage->expense());
   list_a.push_front(storage->income());
   list_a.push_front(storage->liability());
@@ -150,7 +151,7 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
       s << "  Currency = unknown\n";
     } else {
       if((*it_a).accountType() == MyMoneyAccount::Stock) {
-        s << "  Equity = " << storage->equity((*it_a).currencyId()).name() << "\n";
+        s << "  Equity = " << storage->security((*it_a).currencyId()).name() << "\n";
       } else {
         s << "  Currency = " << storage->currency((*it_a).currencyId()).name() << "\n";
       }
@@ -198,6 +199,7 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
   }
   s << "\n";
 
+#if 0
   s << "Currencies" << "\n";
   s << "----------" << "\n";
 
@@ -214,23 +216,62 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
     s << "\n";
   }
   s << "\n";
+#endif
 
-  s << "Equities" << "\n";
-  s << "--------" << "\n";
+  s << "Securities" << "\n";
+  s << "----------" << "\n";
 
-  QValueList<MyMoneyEquity> list_e = storage->equityList();
-  QValueList<MyMoneyEquity>::ConstIterator it_e;
+  QValueList<MyMoneySecurity> list_e = storage->securityList();
+  QValueList<MyMoneySecurity>::ConstIterator it_e;
   for(it_e = list_e.begin(); it_e != list_e.end(); ++it_e) {
     s << "  Name = " << (*it_e).name() << "\n";
     s << "    ID = " << (*it_e).id() << "\n";
-    s << "    Symbol = " << (*it_e).tradingSymbol() << "\n";
+    s << "    Market   = " << (*it_e).tradingMarket() << "\n";
+    s << "    Symbol   = " << (*it_e).tradingSymbol() << "\n";
+    s << "    Currency = " << (*it_e).tradingCurrency() << " (";
+    if((*it_e).tradingCurrency().isEmpty()) {
+      s << "unknown";
+    } else {
+      MyMoneySecurity tradingCurrency = storage->currency((*it_e).tradingCurrency());
+      if(!tradingCurrency.isCurrency()) {
+        s << "invalid currency: ";
+      }
+      s << tradingCurrency.name();
+    }
+    s << ")\n";
+
+    s << "    Type = " << securityTypeToString((*it_e).securityType()) << "\n";
     s << "    smallest account fraction = " << (*it_e).smallestAccountFraction() << "\n";
-    dumpPriceHistory(s, (*it_e).priceHistory());
+
+    s << "    KVP: " << "\n";
+    QMap<QCString, QString>kvp = (*it_e).pairs();
+    QMap<QCString, QString>::Iterator it;
+    for(it = kvp.begin(); it != kvp.end(); ++it) {
+      s << "      '" << it.key() << "' = '" << it.data() << "'\n";
+    }
     s << "\n";
   }
   s << "\n";
 
+  s << "Prices" << "\n";
+  s << "--------" << "\n";
 
+  MyMoneyPriceList list_pr = _storage->priceList();
+  MyMoneyPriceList::ConstIterator it_pr;
+  for(it_pr = list_pr.begin(); it_pr != list_pr.end(); ++it_pr) {
+    s << "  From = " << it_pr.key().first << "\n";
+    s << "    To = " << it_pr.key().second << "\n";
+    MyMoneyPriceEntries::ConstIterator it_pre;
+    for(it_pre = (*it_pr).begin(); it_pre != (*it_pr).end(); ++it_pre) {
+      s << "      Date = " << (*it_pre).date().toString() << "\n";
+      s << "        Price = " << (*it_pre).rate().formatMoney("", 8) << "\n";
+      s << "        Source = " << (*it_pre).source() << "\n";
+      s << "        From = " << (*it_pre).from() << "\n";
+      s << "        To   = " << (*it_pre).to() << "\n";
+    }
+    s << "\n";
+  }
+  s << "\n";
 
   s << "Transactions" << "\n";
   s << "------------" << "\n";
@@ -476,6 +517,34 @@ const QString MyMoneyStorageDump::reconcileToString(MyMoneySplit::reconcileFlagE
   return rc;
 }
 
+const QString MyMoneyStorageDump::securityTypeToString(const MyMoneySecurity::eSECURITYTYPE securityType)
+{
+  QString returnString;
+
+  switch (securityType)
+  {
+  case MyMoneySecurity::SECURITY_STOCK:
+    returnString = i18n("Stock");
+    break;
+  case MyMoneySecurity::SECURITY_MUTUALFUND:
+    returnString = i18n("Mutual Fund");
+    break;
+  case MyMoneySecurity::SECURITY_BOND:
+    returnString = i18n("Bond");
+    break;
+  case MyMoneySecurity::SECURITY_CURRENCY:
+    returnString = i18n("Currency");
+    break;
+  case MyMoneySecurity::SECURITY_NONE:
+    returnString = i18n("None");
+    break;
+  default:
+    returnString = i18n("Unknown");
+  }
+
+  return returnString;
+}
+#if 0
 void MyMoneyStorageDump::dumpPriceHistory(QTextStream& s, const equity_price_history history)
 {
   if(history.count() != 0) {
@@ -489,3 +558,4 @@ void MyMoneyStorageDump::dumpPriceHistory(QTextStream& s, const equity_price_his
     }
   }
 }
+#endif

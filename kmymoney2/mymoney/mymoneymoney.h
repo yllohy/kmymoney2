@@ -42,8 +42,17 @@
 #include <qstring.h>
 #include <qdatastream.h>
 
-typedef long long signed64;
-typedef unsigned long long unsigned64;
+// Check for standard definitions
+#ifdef HAVE_STDINT_H
+  #include <stdint.h>
+#else
+  #include <limits.h>
+  #define INT64_MAX LLONG_MAX
+  #define INT64_MIN LLONG_MIN
+#endif
+
+typedef int64_t signed64;
+typedef uint64_t unsigned64;
 
 /**
   * This class represents a value within the MyMoney Engine
@@ -157,6 +166,7 @@ public:
   bool operator<=( const QString& pszAmount ) const;
   bool operator>=( const QString& pszAmount ) const;
 
+/*
   bool operator==( const signed64 AmountInPence ) const;
   bool operator!=( const signed64 AmountInPence ) const;
   bool operator<( const signed64 AmountInPence ) const;
@@ -171,7 +181,6 @@ public:
   bool operator<=( int iAmountInPence ) const;
   bool operator>=( int iAmountInPence ) const;
 
-/*
   bool operator==( long ldAmountInPence ) const;
   bool operator!=( long ldAmountInPence ) const;
   bool operator<( long ldAmountInPence ) const;
@@ -186,24 +195,22 @@ public:
   MyMoneyMoney operator+( const QString& pszAmountInPence ) const;
   MyMoneyMoney operator+( signed64 AmountInPence ) const;
   MyMoneyMoney operator+( long ldAmountInPence ) const;
-*/
   MyMoneyMoney operator+( int iAmountInPence ) const;
+*/
 
   MyMoneyMoney operator-( const MyMoneyMoney& Amount ) const;
 /*
   MyMoneyMoney operator-( const QString& pszAmountInPence ) const;
   MyMoneyMoney operator-( signed64 AmountInPence ) const;
   MyMoneyMoney operator-( long ldAmountInPence ) const;
-*/
   MyMoneyMoney operator-( int iAmountInPence ) const;
+*/
   MyMoneyMoney operator-( ) const;
 
-  MyMoneyMoney operator*( const MyMoneyMoney& Amount ) const;
-  MyMoneyMoney operator*( int iAmountInPence ) const;
-/*
-  MyMoneyMoney operator*( signed64 AmountInPence ) const;
-  MyMoneyMoney operator*( long ldAmountInPence ) const;
-*/
+  MyMoneyMoney operator*( const MyMoneyMoney& factor ) const;
+  MyMoneyMoney operator*( int factor ) const;
+  MyMoneyMoney operator*( signed64 factor ) const;
+  MyMoneyMoney operator*( long factor ) const;
 
   MyMoneyMoney operator/( const MyMoneyMoney& Amount ) const;
 
@@ -222,11 +229,13 @@ public:
   MyMoneyMoney& operator-=( long ldAmountInPence );
   MyMoneyMoney& operator-=( int iAmountInPence );
 */
+/*
   // increment and decrement
   MyMoneyMoney& operator++();
   MyMoneyMoney  operator++( int );
   MyMoneyMoney& operator--();
   MyMoneyMoney  operator--( int );
+*/
 
   // conversion
   operator int() const;
@@ -236,7 +245,7 @@ public:
   static MyMoneyMoney autoCalc;
 
   bool isNegative() const { return (m_num < 0) ? true : false; }
-  bool isPositive() const { return !isNegative(); }
+  bool isPositive() const { return (m_num > 0) ? true : false; }
   bool isZero() const { return m_num == 0; }
 
 private:
@@ -402,6 +411,7 @@ inline const MyMoneyMoney& MyMoneyMoney::operator=(const QString& pszAmount)
   return *this;
 }
 
+/*
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: operator=
 //   Purpose: Assignment operator - modifies object from input signed 64 object
@@ -446,6 +456,7 @@ inline const MyMoneyMoney& MyMoneyMoney::operator=(int iAmountInPence)
   m_denom = 100;
   return *this;
 }
+*/
 
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: operator==
@@ -656,7 +667,6 @@ inline bool MyMoneyMoney::operator>=(const QString& pszAmountInPence) const
   MyMoneyMoney AmountInPence( pszAmountInPence );
   return ( m_64Value >= AmountInPence.m_64Value ) ;
 }
-*/
 
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: operator==
@@ -855,7 +865,6 @@ inline bool MyMoneyMoney::operator>=(int iAmountInPence) const
 // Arguments: AmountInPence - long object to be compared with
 //
 ////////////////////////////////////////////////////////////////////////////////
-/*
 inline bool MyMoneyMoney::operator==(long ldAmountInPence) const
 {
   return ( m_64Value == static_cast<signed64>(ldAmountInPence) ) ;
@@ -929,9 +938,7 @@ inline bool MyMoneyMoney::operator>=(long ldAmountInPence) const
 {
   return ( m_64Value >= static_cast<signed64>(ldAmountInPence) ) ;
 }
-*/
 
-/*
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: operator+
 //   Purpose: Addition operator - adds the input amount to the object
@@ -977,7 +984,6 @@ inline MyMoneyMoney MyMoneyMoney::operator+(long ldAmountInPence) const
   result.m_64Value += static_cast<signed64>(ldAmountInPence);
   return result;
 }
-*/
 
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: operator+
@@ -991,6 +997,7 @@ inline MyMoneyMoney MyMoneyMoney::operator+(int iAmountInPence) const
 {
   return *this + MyMoneyMoney(iAmountInPence, 1);
 }
+*/
 
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: operator-
@@ -1053,7 +1060,6 @@ inline MyMoneyMoney MyMoneyMoney::operator-(long ldAmountInPence) const
   result.m_64Value -= static_cast<signed64>(ldAmountInPence);
   return result;
 }
-*/
 
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: operator-
@@ -1067,51 +1073,51 @@ inline MyMoneyMoney MyMoneyMoney::operator-(int iAmountInPence) const
 {
   return *this - MyMoneyMoney(iAmountInPence, 1);
 }
+*/
 
-/*
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: operator*
-//   Purpose: Multiplication operator - multiplies the input amount to the object
+//   Purpose: Multiplication operator - multiplies the object with factor
 //   Returns: The current object
 //    Throws: Nothing.
 // Arguments: AmountInPence - signed64 object to be multiplied
 //
 ////////////////////////////////////////////////////////////////////////////////
-inline MyMoneyMoney MyMoneyMoney::operator*(signed64 AmountInPence ) const
+inline MyMoneyMoney MyMoneyMoney::operator*(signed64 factor) const
 {
   MyMoneyMoney result(*this);
-  result.m_64Value *= AmountInPence;
+  result.m_num *= factor;
   return result;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: operator*
-//   Purpose: Multiplication operator - multiplies the input amount to the object
+//   Purpose: Multiplication operator - multiplies the object with factor
 //   Returns: The current object
 //    Throws: Nothing.
 // Arguments: AmountInPence - long object to be multiplied
 //
 ////////////////////////////////////////////////////////////////////////////////
-inline MyMoneyMoney MyMoneyMoney::operator*(long ldAmountInPence ) const
+inline MyMoneyMoney MyMoneyMoney::operator*(long factor) const
 {
   MyMoneyMoney result(*this);
-  result.m_64Value *= static_cast<signed64>(ldAmountInPence);
+  result.m_num *= factor;
   return result;
 }
-*/
 
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: operator*
-//   Purpose: Multiplication operator - multiplies the input amount to the object
+//   Purpose: Multiplication operator - multiplies the object with factor
 //   Returns: The current object
 //    Throws: Nothing.
 // Arguments: AmountInPence - long object to be multiplied
 //
 ////////////////////////////////////////////////////////////////////////////////
-inline MyMoneyMoney MyMoneyMoney::operator*(int iAmountInPence ) const
+inline MyMoneyMoney MyMoneyMoney::operator*(int factor) const
 {
-  MyMoneyMoney factor(iAmountInPence, 1);
-  return *this * factor;
+  MyMoneyMoney result(*this);
+  result.m_num *= factor;
+  return result;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1259,6 +1265,8 @@ inline MyMoneyMoney& MyMoneyMoney::operator-=(int iAmountInPence)
   return *this;
 }
 */
+
+/*
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: operator++
 //   Purpose: Pre-increment operator - adds 1 (pence) to the current object which
@@ -1320,6 +1328,7 @@ inline MyMoneyMoney MyMoneyMoney::operator--(int)
   m_num -= 1;
   return current;
 }
+*/
 
 #endif
 

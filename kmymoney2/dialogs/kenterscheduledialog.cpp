@@ -88,7 +88,7 @@ void KEnterScheduleDialog::initWidgets()
 
     if (m_schedule.type() == MyMoneySchedule::TYPE_DEPOSIT)
     {
-      if (s1.value() < 0)
+      if (s1.value().isNegative())
       {
         transaction.removeSplits();
         s2.setId(QCString());
@@ -101,7 +101,7 @@ void KEnterScheduleDialog::initWidgets()
     }
     else if(m_schedule.type() != MyMoneySchedule::TYPE_LOANPAYMENT)
     {
-      if (s1.value() > 0)
+      if (s1.value().isPositive())
       {
         transaction.removeSplits();
         s2.setId(QCString());
@@ -209,7 +209,7 @@ void KEnterScheduleDialog::initWidgets()
       m_date->setDate(m_schedule.nextPayment(m_schedule.lastPayment()));
 
     MyMoneyMoney amount = m_transaction.splitByAccount(m_schedule.account().id()).value();
-    if (amount < 0)
+    if (amount.isNegative())
       amount = -amount;
     m_amount->setText(amount.formatMoney());
 
@@ -328,8 +328,7 @@ void KEnterScheduleDialog::slotSplitClicked()
 
       MyMoneySplit split = m_transaction.splitByAccount(theAccountId());
       MyMoneyMoney amount(split.value());
-      if (amount < 0)
-        amount = -amount;
+      amount = amount.abs();
       m_amount->setText(amount.formatMoney());
     }
 
@@ -426,8 +425,7 @@ bool KEnterScheduleDialog::checkData(void)
     }
 
     MyMoneyMoney amount = m_schedule.transaction().splitByAccount(m_schedule.account().id()).value();
-    if (amount < 0)
-      amount = -amount;
+    amount = amount.abs();
     if (amount != m_amount->getMoneyValue())
     {
       noItemsChanged++;

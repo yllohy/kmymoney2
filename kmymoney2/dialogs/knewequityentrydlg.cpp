@@ -99,7 +99,7 @@ void KNewEquityEntryDlg::slotDataChanged(void)
 {
   bool okEnabled = true;
 
-  if(edtFraction->getMoneyValue() <= 0
+  if(!edtFraction->getMoneyValue().isPositive()
   || edtMarketSymbol->text().isEmpty()
   || edtEquityName->text().isEmpty())
     okEnabled = false;

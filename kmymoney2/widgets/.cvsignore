@@ -9,4 +9,6 @@ Makefile.in
 *~
 kschedulebriefwidget.cpp
 kschedulebriefwidget.h
+kmymoneyonlinequoteconfig.cpp
+kmymoneyonlinequoteconfig.h
 *decl.*

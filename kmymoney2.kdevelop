@@ -11,7 +11,7 @@
     </keywords>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <version/>
+    <version>0.7.0</version>
     <description/>
     <ignoreparts/>
     <secondaryLanguages/>
@@ -25,8 +25,8 @@
       <configargs>\s--build=i386-linux --host=i386-linux --target=i386-linux\s</configargs>
     </configure>
     <make>
-      <abortonerror>false</abortonerror>
-      <numberofjobs>2</numberofjobs>
+      <abortonerror>true</abortonerror>
+      <numberofjobs>1</numberofjobs>
       <dontact>false</dontact>
       <makebin/>
       <envvars>
@@ -44,9 +44,27 @@
       <mainprogram>kmymoney2/kmymoney2</mainprogram>
       <programargs/>
       <terminal>false</terminal>
-      <autocompile>true</autocompile>
+      <autocompile>false</autocompile>
       <envvars/>
     </run>
+    <configurations>
+      <default>
+        <configargs/>
+        <builddir/>
+        <topsourcedir/>
+        <cppflags/>
+        <ldflags/>
+        <ccompiler>kdevgccoptions</ccompiler>
+        <cxxcompiler>kdevgppoptions</cxxcompiler>
+        <f77compiler>kdevpgf77options</f77compiler>
+        <ccompilerbinary/>
+        <cxxcompilerbinary/>
+        <f77compilerbinary/>
+        <cflags/>
+        <cxxflags>-D_CHECK_MEMORY</cxxflags>
+        <f77flags/>
+      </default>
+    </configurations>
   </kdevautoproject>
   <kdevfileview>
     <groups>
@@ -112,7 +130,7 @@
       <includeGlobalFunctions>true</includeGlobalFunctions>
       <includeTypes>true</includeTypes>
       <includeEnums>true</includeEnums>
-      <includeTypedefs>true</includeTypedefs>
+      <includeTypedefs>false</includeTypedefs>
       <automaticCodeCompletion>true</automaticCodeCompletion>
       <automaticArgumentsHint>true</automaticArgumentsHint>
       <automaticHeaderCompletion>true</automaticHeaderCompletion>

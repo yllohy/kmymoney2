@@ -995,19 +995,6 @@ private:
   void enableWidgets(QPtrList<QWidget> list, const bool enabled);
 
 private:
-   /**
-    * This is the blink timer used to toggle the color for
-    * erronous transactions in the register. The current state (on/off)
-    * is kept in m_blinkState.
-    */
-  QTimer        m_blinkTimer;
-
-  /**
-    * This member holds the state of the toggle switch used
-    * to colorize erronous transactions in the register of the ledger view.
-    */
-  bool          m_blinkState;
-
   /**
     * This member holds the state of the toggle switch used
     * to suppress updates due to MyMoney engine data changes
@@ -1016,14 +1003,6 @@ private:
 
 private slots:
   void timerDone(void);
-
-  /**
-    * This method is called by m_blinkTimer upon timeout and toggles
-    * m_blinkState between true and false.
-    * If a register is available, it informs the register about
-    * the state of m_blinkState.
-    */
-  void slotBlinkTimeout(void);
 
   /**
     * This method sets the reconcileFlag of the selected transaction

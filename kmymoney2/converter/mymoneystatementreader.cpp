@@ -177,7 +177,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
   {
     // the correct account is the stock account which matches two criteria:
     // (1) it is a sub-account of the selected investment account, and
-    // (2) the symbol of the underlying equity matches the security of the
+    // (2) the symbol of the underlying security matches the security of the
     // transaction
 
     // search through each subordinate account
@@ -187,8 +187,8 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
     while( !found && it_account != accounts.end() )
     {
       QCString currencyid = file->account(*it_account).currencyId();
-      MyMoneyEquity equity = file->equity( currencyid );
-      QString symbol = equity.tradingSymbol();
+      MyMoneySecurity security = file->security( currencyid );
+      QString symbol = security.tradingSymbol();
 
       // startsWith(QString, bool) is not available in Qt 3.0
       if ( t_in.m_strSecurity.lower().startsWith(QString(symbol+" ").lower()) )
@@ -199,12 +199,14 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
 
         // update the price, while we're here.  in the future, this should be
         // an option
+// FIXME PRICE
+#if 0
         if ( ! equity.hasPrice( t_in.m_datePosted,true ) )
         {
           equity.addPriceHistory( t_in.m_datePosted, t_in.m_moneyAmount / t_in.m_dShares );
           file->modifyEquity(equity);
         }
-
+#endif
       }
 
       ++it_account;
@@ -215,7 +217,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
       KMessageBox::information(0, i18n("This investment account does not contain the '%1' security.  "
                                         "Transactions involving this security will be ignored.").arg(t_in.m_strSecurity),
                                   i18n("Security not found"),
-                                  QString("MissingEquity%1").arg(t_in.m_strSecurity.stripWhiteSpace()));
+                                  QString("MissingSecurity%1").arg(t_in.m_strSecurity.stripWhiteSpace()));
       return;
     }
 
@@ -229,18 +231,18 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
       // NOTE: With CashDividend, the amount of the dividend should
       // be in data.amount.  Since I've never seen an OFX file with
       // cash dividends, this is an assumption on my part. (acejones)
-      
+
       // Cash dividends require setting 2 splits to get all of the information
       // in.  Split #1 will be the income split, and we'll set it to the first
       // income account.  This is a hack, but it's needed in order to get the
       // amount into the transaction.
-      
+
       // FIXME: Use a better mechanism to get the divident amount into the
       // transaction (I started a discussion on the mail list, 2004-11-28).
-      
+
       s1.setAccountId(*(file->income().accountList().begin()));
       s1.setShares(t_in.m_moneyAmount);
-      
+
       // Split 2 will be the zero-amount investment split that serves to
       // mark this transaction as a cash dividend and note which stock account
       // it belongs to.
@@ -266,7 +268,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
     // be disacarded in that case.
     s1.setAccountId(m_account.id());
 
-    if(s1.value() >= 0)
+    if(!s1.value().isNegative())
       s1.setAction(MyMoneySplit::ActionDeposit);
     else
       s1.setAction(MyMoneySplit::ActionWithdrawal);
@@ -330,7 +332,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
   }
 
   t.addSplit(s1);
-  
+
   // Add the transaction
   try {
     // check for duplicates ONLY by Bank ID in this account.
@@ -346,7 +348,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
       if(t.bankID() == (*it).bankID() && !t.bankID().isNull() && !(*it).bankID().isNull())
         break;
     }
-    if(it == list.end()) 
+    if(it == list.end())
     {
       file->addTransaction(t);
     }

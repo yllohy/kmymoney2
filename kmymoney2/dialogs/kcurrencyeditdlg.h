@@ -37,8 +37,8 @@
 // Project Includes
 
 #include "kcurrencyeditdlgdecl.h"
-#include "../mymoney/mymoneyequity.h"
-#include "../mymoney/mymoneycurrency.h"
+#include "../mymoney/mymoneysecurity.h"
+// #include "../mymoney/mymoneycurrency.h"
 
 /**
   * @author Thomas Baumgart
@@ -77,7 +77,7 @@ private:
   void checkBaseCurrency(void);
 
 private:
-  MyMoneyCurrency      m_currency;
+  MyMoneySecurity      m_currency;
   KPopupMenu*          m_contextMenu;
 };
 

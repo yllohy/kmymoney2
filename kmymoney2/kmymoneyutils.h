@@ -37,7 +37,7 @@
 // Project Includes
 
 #include "mymoney/mymoneyaccount.h"
-#include "mymoney/mymoneyequity.h"
+#include "mymoney/mymoneysecurity.h"
 #include "mymoney/mymoneyscheduled.h"
 #include "widgets/kmymoneypayee.h"
 
@@ -90,14 +90,24 @@ public:
   static const MyMoneyAccount::accountTypeE stringToAccountType(const QString& type);
 
   /**
-    * This method is used to convert the internal representation of
-    * an equity type into a human readable format
+    * This method is used to convert a security type from it's
+    * string form to the internal used numeric value.
     *
-    * @param equityType enumerated representation of the equity type.
-                         For possible values, see MyMoneyEquity::eEQUITYTYPE
+    * @param type reference to a QString containing the string to convert
+    * @return eSECURITYTYPE containing the internal used numeric value. For possible
+    *         values see MyMoneySecurity::eSECURITYTYPE
+    */
+  static const MyMoneySecurity::eSECURITYTYPE stringToSecurity(const QString& txt);
+
+  /**
+    * This method is used to convert the internal representation of
+    * an security type into a human readable format
+    *
+    * @param securityType enumerated representation of the security type.
+                         For possible values, see MyMoneySecurity::eSECURITYTYPE
     * @return QString representing the human readable form
     */
-  static const QString equityTypeToString(const MyMoneyEquity::eEQUITYTYPE equityType);
+  static const QString securityTypeToString(const MyMoneySecurity::eSECURITYTYPE securityType);
 
   /**
     * This method is used to convert the occurence type from it's
@@ -293,6 +303,8 @@ public:
     */
   static void checkConstants(void);
 
+  static bool isExpertMode(void) { return _expertMode; };
+
 private:
   static QColor _backgroundColour;
   static QColor _listColour;
@@ -300,6 +312,7 @@ private:
 
   static QFont  _cellFont;
   static QFont  _headerFont;
+  static bool   _expertMode;
 };
 
 #endif

@@ -19,15 +19,19 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 // ----------------------------------------------------------------------------
 // QT Includes
+
 #include <qpainter.h>
 #include <qstyle.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
-#include "kconfig.h"
+
+#include <kconfig.h>
 #include <klocale.h>
+#include <kglobalsettings.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -68,12 +72,12 @@ KScheduledListItem::KScheduledListItem(KScheduledListItem *parent, const MyMoney
 
     switch(schedule.type()) {
       case MyMoneySchedule::TYPE_DEPOSIT:
-        if (s1.value() >= 0)
+        if (!s1.value().isNegative())
           split = s1;
         else
           split = s2;
         break;
-        
+
       case MyMoneySchedule::TYPE_LOANPAYMENT:
         for(it_s = transaction.splits().begin(); it_s != transaction.splits().end(); ++it_s) {
           MyMoneyAccount acc = MyMoneyFile::instance()->account((*it_s).accountId());
@@ -90,9 +94,9 @@ KScheduledListItem::KScheduledListItem(KScheduledListItem *parent, const MyMoney
           qFatal("Split for payment account not found in %s:%d.", __FILE__, __LINE__);
         }
         break;
-        
+
       default:
-        if (s1.value() < 0)
+        if (s1.value().isNegative())
           split = s1;
         else
           split = s2;
@@ -108,7 +112,7 @@ KScheduledListItem::KScheduledListItem(KScheduledListItem *parent, const MyMoney
     }
     else if(schedule.type() == MyMoneySchedule::TYPE_LOANPAYMENT)
     {
-      
+
     }
     else
     {
@@ -122,8 +126,7 @@ KScheduledListItem::KScheduledListItem(KScheduledListItem *parent, const MyMoney
     setText(1, MyMoneyFile::instance()->account(split.accountId()).name());
     setText(2, MyMoneyFile::instance()->payee(split.payeeId()).name());
     MyMoneyMoney amount = split.value();
-    if (amount < 0)
-      amount = -amount;
+    amount = amount.abs();
     setText(3, amount.formatMoney());
     // Do the real next payment like ms-money etc
     if (schedule.isFinished())
@@ -132,7 +135,7 @@ KScheduledListItem::KScheduledListItem(KScheduledListItem *parent, const MyMoney
     }
     else
       setText(4, schedule.nextPayment(schedule.lastPayment()).toString());
-      
+
     setText(5, KMyMoneyUtils::occurenceToString(schedule.occurence()));
     setText(6, KMyMoneyUtils::paymentMethodToString(schedule.paymentType()));
   }
@@ -151,10 +154,10 @@ KScheduledListItem::~KScheduledListItem()
 void KScheduledListItem::paintCell(QPainter* p, const QColorGroup& cg, int column, int width, int align)
 {
   QColorGroup cg2(cg);
-  
+
   QColor colour = KMyMoneyUtils::listColour();
   QColor bgColour = KMyMoneyUtils::backgroundColour();
-  QColor textColour;
+  QColor textColour = KGlobalSettings::textColor();
   QFont cellFont = KMyMoneyUtils::cellFont();
 
   if (m_schedule.isFinished())
@@ -300,9 +303,9 @@ void KScheduledListItem::paintFocus(QPainter* p, const QColorGroup& cg, const QR
     textColour = Qt::darkGreen;
   else if (m_schedule.isOverdue())
     textColour = Qt::red;
-    
+
   cg2.setColor(QColorGroup::HighlightedText, textColour);
-  
+
   int indent = listView()->treeStepSize() * (depth()+1);
 
   QRect r2(r);

@@ -31,7 +31,7 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 #include "storage/mymoneyseqaccessmgr.h"
-#include "mymoneycurrency.h"
+// #include "mymoneycurrency.h"
 #include "mymoneyfile.h"
 #include "mymoneyreport.h"
 #ifndef HAVE_CONFIG_H
@@ -50,8 +50,9 @@ const QCString MyMoneyFile::NotifyClassAccountHierarchy = "MyMoneyFile::NotifyAc
 const QCString MyMoneyFile::NotifyClassSchedule = "MyMoneyFile::NotifySchedule";
 const QCString MyMoneyFile::NotifyClassAnyChange = "MyMoneyFile::NotifyAnyChange";
 const QCString MyMoneyFile::NotifyClassCurrency = "MyMoneyFile::NotifyCurrency";
-const QCString MyMoneyFile::NotifyClassEquity = "MyMoneyFile::NotifyEquity";
+const QCString MyMoneyFile::NotifyClassSecurity = "MyMoneyFile::NotifySecurity";
 const QCString MyMoneyFile::NotifyClassReport = "MyMoneyFile::NotifyReport";
+const QCString MyMoneyFile::NotifyClassPrice = "MyMoneyFile::NotifyPrice";
 
 // include the following line to get a 'cout' for debug purposes
 // #include <iostream>
@@ -293,27 +294,14 @@ const MyMoneyInstitution& MyMoneyFile::institution(const QCString& id) const
   return m_storage->institution(id);
 }
 
-const MyMoneyAccount& MyMoneyFile::account(const QCString& id) const
+const MyMoneyAccount MyMoneyFile::account(const QCString& id) const
 {
-/*  It would be nice if this works, but it causes a seg fault.
-    because we're returning a reference to a temporary.
-  MyMoneyAccount account;
-  if (m_storage->isStandardAccount(id))
-  {
-    if (id == STD_ACC_LIABILITY)
-      account = liability();
-    else if (id == STD_ACC_ASSET)
-      account = asset();
-    else if (id == STD_ACC_EXPENSE)
-      account = expense();
-    else if (id == STD_ACC_INCOME)
-      account = income();
-    return account;
-  }
-*/
   checkStorage();
 
-  return m_storage->account(id);
+  MyMoneyAccount acc;
+  acc = m_storage->account(id);
+  ensureDefaultCurrency(acc);
+  return acc;
 }
 
 void MyMoneyFile::removeTransaction(const MyMoneyTransaction& transaction)
@@ -439,9 +427,6 @@ void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
 
   if(account.accountType() == MyMoneyAccount::UnknownAccountType)
     throw new MYMONEYEXCEPTION("Account has invalid type");
-
-  if(account.file() != 0)
-    throw new MYMONEYEXCEPTION("File pointer must be 0 for new account");
 
   // make sure, that the parent account exists
   // if not, an exception is thrown. If it exists,
@@ -704,12 +689,21 @@ const unsigned int MyMoneyFile::accountCount(void) const
   return m_storage->accountCount();
 }
 
+void MyMoneyFile::ensureDefaultCurrency(MyMoneyAccount& acc) const
+{
+  if(acc.currencyId().isEmpty()) {
+    if(!baseCurrency().id().isEmpty())
+      acc.setCurrencyId(baseCurrency().id());
+    // m_storage->modifyAccount(acc);
+  }
+}
+
 const MyMoneyAccount MyMoneyFile::liability(void) const
 {
   checkStorage();
 
   MyMoneyAccount acc = m_storage->liability();
-  acc.setCurrencyId(baseCurrency().id());
+  ensureDefaultCurrency(acc);
   return acc;
 }
 
@@ -718,7 +712,7 @@ const MyMoneyAccount MyMoneyFile::asset(void) const
   checkStorage();
 
   MyMoneyAccount acc = m_storage->asset();
-  acc.setCurrencyId(baseCurrency().id());
+  ensureDefaultCurrency(acc);
   return acc;
 }
 
@@ -727,7 +721,7 @@ const MyMoneyAccount MyMoneyFile::expense(void) const
   checkStorage();
 
   MyMoneyAccount acc = m_storage->expense();
-  acc.setCurrencyId(baseCurrency().id());
+  ensureDefaultCurrency(acc);
   return acc;
 }
 
@@ -736,7 +730,16 @@ const MyMoneyAccount MyMoneyFile::income(void) const
   checkStorage();
 
   MyMoneyAccount acc = m_storage->income();
-  acc.setCurrencyId(baseCurrency().id());
+  ensureDefaultCurrency(acc);
+  return acc;
+}
+
+const MyMoneyAccount MyMoneyFile::equity(void) const
+{
+  checkStorage();
+
+  MyMoneyAccount acc = m_storage->equity();
+  ensureDefaultCurrency(acc);
   return acc;
 }
 
@@ -782,15 +785,9 @@ const bool MyMoneyFile::accountValueValid(const QCString& id) const
     MyMoneyAccount acc;
 
     acc = account(id);
-    if(acc.accountType() == MyMoneyAccount::Stock) {
-      MyMoneyEquity equity = instance()->equity(acc.currencyId());
-      result = equity.hasPrice();
-    } else {
-      MyMoneyCurrency currency = instance()->currency(acc.currencyId());
-      if(currency.id() != baseCurrency().id()) {
-        result = currency.hasPrice();
-      }
-    }
+    if(acc.currencyId() != baseCurrency().id())
+      result = price(acc.currencyId(), baseCurrency().id()).isValid();
+
   } catch(MyMoneyException *e) {
     qDebug("MyMoneyFile::totalValueValid: %s thrown in %s line %ld",
       e->what().data(), e->file().data(), e->line());
@@ -808,7 +805,7 @@ const bool MyMoneyFile::totalValueValid(const QCString& id) const
   try {
     MyMoneyAccount acc;
 
-    acc = account(id);
+    acc = this->account(id);
     accounts = acc.accountList();
 
     for(it_a = accounts.begin(); result == true && it_a != accounts.end(); ++it_a) {
@@ -828,16 +825,10 @@ const MyMoneyMoney MyMoneyFile::accountValue(const QCString& id) const
   try {
     MyMoneyAccount acc;
 
-    acc = account(id);
-    if(acc.accountType() == MyMoneyAccount::Stock) {
-      MyMoneyEquity equity = instance()->equity(acc.currencyId());
-      result = result * equity.price();
-    } else {
-      MyMoneyCurrency currency = instance()->currency(acc.currencyId());
-      if(currency.id() != baseCurrency().id()) {
-        result = result * currency.price();
-      }
-    }
+    acc = this->account(id);
+    MyMoneyPrice price = this->price(acc.currencyId(), baseCurrency().id());
+    result = result * price.rate();
+
   } catch(MyMoneyException *e) {
     qDebug("MyMoneyFile::accountValue: %s thrown in %s line %ld",
       e->what().data(), e->file().data(), e->line());
@@ -905,11 +896,14 @@ void MyMoneyFile::notify(void)
 {
   if(!m_suspendNotify) {
     QMap<QCString, bool>::ConstIterator it;
-    for(it = m_notificationList.begin(); it != m_notificationList.end(); ++it) {
+    // keep a local copy so that the called update()
+    // members can modify the original list
+    QMap<QCString, bool> list = m_notificationList;
+    for(it = list.begin(); it != list.end(); ++it) {
       notify(it.key());
     }
 
-    if(m_notificationList.count() > 0)
+    if(list.count() > 0)
       notify(NotifyClassAnyChange);
 
     clearNotification();
@@ -1377,54 +1371,58 @@ void MyMoneyFile::suspendNotify(const bool state)
 }
 
 
-void MyMoneyFile::addEquity(MyMoneyEquity& equity)
+void MyMoneyFile::addSecurity(MyMoneySecurity& security)
 {
   checkStorage();
 
   // automatically notify all observers once this routine is done
   MyMoneyNotifier notifier(this);
 
-  m_storage->addEquity(equity);
-  addNotification(NotifyClassEquity);
+  m_storage->addSecurity(security);
+  addNotification(NotifyClassSecurity);
 }
 
-void MyMoneyFile::modifyEquity(const MyMoneyEquity& equity)
+void MyMoneyFile::modifySecurity(const MyMoneySecurity& security)
 {
   checkStorage();
 
   // automatically notify all observers once this routine is done
   MyMoneyNotifier notifier(this);
 
-  m_storage->modifyEquity(equity);
-  addNotification(equity.id());
-  addNotification(NotifyClassEquity);
+  m_storage->modifySecurity(security);
+  addNotification(security.id());
+  addNotification(NotifyClassSecurity);
 }
 
-void MyMoneyFile::removeEquity(const MyMoneyEquity& equity)
+void MyMoneyFile::removeSecurity(const MyMoneySecurity& security)
 {
   checkStorage();
 
   // automatically notify all observers once this routine is done
   MyMoneyNotifier notifier(this);
 
-  m_storage->removeEquity(equity);
-  addNotification(NotifyClassEquity);
+  m_storage->removeSecurity(security);
+  addNotification(NotifyClassSecurity);
 }
 
-const MyMoneyEquity MyMoneyFile::equity(const QCString& id) const
-{
-  checkStorage();
-  return m_storage->equity(id);
-}
-
-const QValueList<MyMoneyEquity> MyMoneyFile::equityList(void) const
+const MyMoneySecurity MyMoneyFile::security(const QCString& id) const
 {
   checkStorage();
 
-  return m_storage->equityList();
+  MyMoneySecurity e = m_storage->security(id);
+  if(e.id().isEmpty())
+    e = m_storage->currency(id);
+  return e;
 }
 
-void MyMoneyFile::addCurrency(const MyMoneyCurrency& currency)
+const QValueList<MyMoneySecurity> MyMoneyFile::securityList(void) const
+{
+  checkStorage();
+
+  return m_storage->securityList();
+}
+
+void MyMoneyFile::addCurrency(const MyMoneySecurity& currency)
 {
   checkStorage();
 
@@ -1435,7 +1433,7 @@ void MyMoneyFile::addCurrency(const MyMoneyCurrency& currency)
   addNotification(NotifyClassCurrency);
 }
 
-void MyMoneyFile::modifyCurrency(const MyMoneyCurrency& currency)
+void MyMoneyFile::modifyCurrency(const MyMoneySecurity& currency)
 {
   checkStorage();
 
@@ -1446,7 +1444,7 @@ void MyMoneyFile::modifyCurrency(const MyMoneyCurrency& currency)
   addNotification(NotifyClassCurrency);
 }
 
-void MyMoneyFile::removeCurrency(const MyMoneyCurrency& currency)
+void MyMoneyFile::removeCurrency(const MyMoneySecurity& currency)
 {
   checkStorage();
 
@@ -1457,7 +1455,7 @@ void MyMoneyFile::removeCurrency(const MyMoneyCurrency& currency)
   addNotification(NotifyClassCurrency);
 }
 
-const MyMoneyCurrency MyMoneyFile::currency(const QCString& id) const
+const MyMoneySecurity MyMoneyFile::currency(const QCString& id) const
 {
   if(id.isEmpty())
     return baseCurrency();
@@ -1466,25 +1464,26 @@ const MyMoneyCurrency MyMoneyFile::currency(const QCString& id) const
   return m_storage->currency(id);
 }
 
-const QValueList<MyMoneyCurrency> MyMoneyFile::currencyList(void) const
+const QValueList<MyMoneySecurity> MyMoneyFile::currencyList(void) const
 {
   checkStorage();
 
   return m_storage->currencyList();
 }
 
-const MyMoneyCurrency MyMoneyFile::baseCurrency(void) const
+const MyMoneySecurity MyMoneyFile::baseCurrency(void) const
 {
   QCString id = QCString(value("kmm-baseCurrency"));
   if(id.isEmpty())
-    return MyMoneyCurrency();
+    return MyMoneySecurity();
 
   return currency(id);
 }
 
-void MyMoneyFile::setBaseCurrency(const MyMoneyCurrency& curr)
+void MyMoneyFile::setBaseCurrency(const MyMoneySecurity& curr)
 {
-  MyMoneyCurrency c = currency(curr.id());
+  // make sure the currency exists
+  MyMoneySecurity c = currency(curr.id());
 
   // automatically notify all observers once this routine is done
   MyMoneyNotifier notifier(this);
@@ -1494,12 +1493,66 @@ void MyMoneyFile::setBaseCurrency(const MyMoneyCurrency& curr)
   addNotification(NotifyClassCurrency);
 }
 
+void MyMoneyFile::addPrice(const MyMoneyPrice& price)
+{
+  checkStorage();
+
+  // automatically notify all observers once this routine is done
+  MyMoneyNotifier notifier(this);
+
+  m_storage->addPrice(price);
+
+  addNotification(NotifyClassPrice);
+  addNotification(price.from());
+  addNotification(price.to());
+}
+
+void MyMoneyFile::removePrice(const MyMoneyPrice& price)
+{
+  checkStorage();
+
+  // automatically notify all observers once this routine is done
+  MyMoneyNotifier notifier(this);
+
+  addNotification(NotifyClassPrice);
+  addNotification(price.from());
+  addNotification(price.to());
+
+  m_storage->removePrice(price);
+}
+
+const MyMoneyPrice MyMoneyFile::price(const QCString& fromId, const QCString& toId, const QDate& date, const bool exactDate) const
+{
+  checkStorage();
+
+  QCString to(toId);
+  if(to.isEmpty())
+    to = value("kmm-baseCurrency");
+  // if some id is missing, we can return an empty price object
+  if(fromId.isEmpty() || to.isEmpty())
+    return MyMoneyPrice();
+
+  MyMoneyPrice rc = m_storage->price(fromId, to, date, exactDate);
+  if(!rc.isValid()) {
+    rc = m_storage->price(to, fromId, date, exactDate);
+  }
+  return rc;
+}
+
+const MyMoneyPriceList MyMoneyFile::priceList(void) const
+{
+  checkStorage();
+
+  return m_storage->priceList();
+}
+
 const MyMoneyMoney MyMoneyFile::currencyPrice(const QCString& currencyId, const QDate date) const
 {
   MyMoneyMoney price(1);
-
+// FIXME PRICE   this whole function should go ....
+#if 0
   try {
-    MyMoneyCurrency currency = instance()->currency(currencyId);
+    MyMoneySecurity currency = instance()->currency(currencyId);
     QMap<QDate, MyMoneyMoney>::ConstIterator it;
     for(it = currency.priceHistory().begin(); it != currency.priceHistory().end(); ++it) {
       if(it.key() <= date)
@@ -1510,6 +1563,7 @@ const MyMoneyMoney MyMoneyFile::currencyPrice(const QCString& currencyId, const 
   } catch(MyMoneyException *e) {
     delete e;
   }
+#endif
   return price;
 }
 
@@ -1579,3 +1633,35 @@ void MyMoneyFile::removeReport(const MyMoneyReport& report)
   addNotification(NotifyClassReport);
 }
 
+const bool MyMoneyFile::isReferenced(const MyMoneySecurity& security) const
+{
+  // check the account list
+  QValueList<MyMoneyAccount> list_a = accountList();
+  QValueList<MyMoneyAccount>::ConstIterator it_a;
+  for(it_a = list_a.begin(); it_a != list_a.end(); ++it_a) {
+    if((*it_a).currencyId() == security.id())
+      return true;
+  }
+
+  // check the security list
+  QValueList<MyMoneySecurity> list_s = securityList();
+  list_s += currencyList();
+  QValueList<MyMoneySecurity>::ConstIterator it_s;
+  for(it_s = list_s.begin(); it_s != list_s.end(); ++it_s) {
+    // don't check myself
+    if((*it_s).id() == security.id())
+      continue;
+    if((*it_s).tradingCurrency() == security.id())
+      return true;
+  }
+
+  // check the price list
+  MyMoneyPriceList list_p = priceList();
+  MyMoneyPriceList::ConstIterator it_p;
+  for(it_p = list_p.begin(); it_p != list_p.end(); ++it_p) {
+    if(it_p.key().first == security.id()
+    || it_p.key().second == security.id())
+      return true;
+  }
+  return false;
+}

@@ -1,0 +1,74 @@
+/***************************************************************************
+                          mymoneyprice  -  description
+                             -------------------
+    begin                : Sun Nov 21 2004
+    copyright            : (C) 2000-2004 by Michael Edwardes
+    email                : mte@users.sourceforge.net
+                           Javier Campos Morales <javi_c@users.sourceforge.net>
+                           Felix Rodriguez <frodriguez@users.sourceforge.net>
+                           John C <thetacoturtle@users.sourceforge.net>
+                           Thomas Baumgart <ipwizard@users.sourceforge.net>
+                           Kevin Tambascio <ktambascio@users.sourceforge.net>
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+/**
+  * @author Thomas Baumgart
+  */
+
+// ----------------------------------------------------------------------------
+// QT Includes
+
+// ----------------------------------------------------------------------------
+// KDE Includes
+
+// ----------------------------------------------------------------------------
+// Project Includes
+
+#include "mymoneyprice.h"
+#include "mymoneyexception.h"
+
+MyMoneyPrice::MyMoneyPrice() :
+  m_date(QDate())
+{
+}
+
+MyMoneyPrice::MyMoneyPrice(const QCString& from, const QCString& to, const QDate& date, const MyMoneyMoney& rate, const QString& source) :
+  m_fromSecurity(from),
+  m_toSecurity(to),
+  m_date(date),
+  m_rate(rate),
+  m_source(source)
+{
+}
+
+MyMoneyPrice::~MyMoneyPrice()
+{
+}
+
+const MyMoneyMoney MyMoneyPrice::rate(const QCString& id) const
+{
+  if(!isValid())
+    return MyMoneyMoney(1,1);
+
+  if(id.isEmpty() || id == m_fromSecurity)
+    return m_rate;
+  if(id == m_toSecurity)
+    return MyMoneyMoney(1,1) / m_rate;
+
+  QString msg = QString("Unknown security id %1 for price info %2/%3.").arg(id).arg(m_fromSecurity).arg(m_toSecurity);
+  throw new MYMONEYEXCEPTION(msg);
+}
+
+const bool MyMoneyPrice::isValid(void) const
+{
+  return (m_date.isValid() && !m_fromSecurity.isEmpty() && !m_toSecurity.isEmpty());
+}

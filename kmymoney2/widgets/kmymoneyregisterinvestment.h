@@ -35,7 +35,7 @@
 // Project Includes
 
 #include "../widgets/kmymoneyregister.h"
-#include "../mymoney/mymoneyequity.h"
+#include "../mymoney/mymoneysecurity.h"
 
 /**
   * @author Thomas Baumgart
@@ -66,7 +66,7 @@ private:
   MyMoneySplit    m_accountSplit;
   MyMoneySplit    m_feeSplit;
   MyMoneySplit    m_interestSplit;
-  MyMoneyEquity   m_equity;
+  MyMoneySecurity m_security;
 };
 
 #endif

@@ -608,7 +608,7 @@ void MyMoneyQifReader::processTransactionEntry(void)
   } else if(tmp == "*")
     s1.setReconcileFlag(MyMoneySplit::Cleared);
 
-  if(s1.value() >= 0)
+  if(!s1.value().isNegative())
     s1.setAction(MyMoneySplit::ActionDeposit);
   else
     s1.setAction(MyMoneySplit::ActionWithdrawal);
@@ -798,7 +798,7 @@ const QCString MyMoneyQifReader::checkCategory(const QString& name, const MyMone
 
     // if we did not find the category, we create it
     if(!found) {
-      account.setAccountType((value >= 0 && value2 < 0) ? MyMoneyAccount::Income : MyMoneyAccount::Expense);
+      account.setAccountType((!value.isNegative() && value2.isNegative()) ? MyMoneyAccount::Income : MyMoneyAccount::Expense);
       selectOrCreateAccount(Select, account);
       accountId = account.id();
     }

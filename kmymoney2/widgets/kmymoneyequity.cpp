@@ -64,12 +64,12 @@ void kMyMoneyEquity::loadEquity(const QCString& id)
   m_id = QCString();
   if(!id.isEmpty()) {
     try {
-      MyMoneyEquity equity = MyMoneyFile::instance()->equity(id);
-      setText(equity.tradingSymbol());
+      MyMoneySecurity security = MyMoneyFile::instance()->security(id);
+      setText(security.tradingSymbol());
       m_id = id;
       m_equitySelector->setSelected(id);
     } catch(MyMoneyException *e) {
-      qDebug("Equity with id %s not found anymore", id.data());
+      qDebug("Security with id %s not found anymore", id.data());
       delete e;
     }
   }
@@ -83,40 +83,40 @@ void kMyMoneyEquity::focusInEvent(QFocusEvent *ev)
 
 void kMyMoneyEquity::checkForNewEquity(void)
 {
-  bool newEquity = true;
+  bool newSecurity = true;
 
   if(!text().isEmpty()) {
     if(!m_id.isEmpty()) {
-      MyMoneyEquity equity = MyMoneyFile::instance()->equity(m_id);
-      if(equity.tradingSymbol() == text())
-        newEquity = false;
+      MyMoneySecurity security = MyMoneyFile::instance()->security(m_id);
+      if(security.tradingSymbol() == text())
+        newSecurity = false;
     }
   } else {
     slotSelectEquity(QCString());
-    newEquity = false;
+    newSecurity = false;
   }
 
-  if(newEquity) {
+  if(newSecurity) {
     m_inCreation = true;
 
     if(KMessageBox::questionYesNo(this,
-          i18n("The equity \"%1\" currently does not exist. "
+          i18n("The security \"%1\" currently does not exist. "
                 "Do you want to create it?").arg(text())) == KMessageBox::Yes) {
 
       KNewEquityEntryDlg dlg(this, 0);
       dlg.setSymbolName(text());
       if(dlg.exec() == QDialog::Accepted) {
-        //create the new Equity object, and assign an ID.
-        MyMoneyEquity newEquity;
+        //create the new security object, and assign an ID.
+        MyMoneySecurity newSecurity;
         //fill in the fields.
-        newEquity.setTradingSymbol(dlg.symbolName());
-        newEquity.setName(dlg.name());
-        newEquity.setSmallestAccountFraction(dlg.fraction());
+        newSecurity.setTradingSymbol(dlg.symbolName());
+        newSecurity.setName(dlg.name());
+        newSecurity.setSmallestAccountFraction(dlg.fraction());
         try {
-          MyMoneyFile::instance()->addEquity(newEquity);
-          slotSelectEquity(newEquity.id());
+          MyMoneyFile::instance()->addSecurity(newSecurity);
+          slotSelectEquity(newSecurity.id());
         } catch(MyMoneyException *e) {
-          qWarning("Cannot add equity %s to storage", newEquity.name().data());
+          qWarning("Cannot add security %s to storage", newSecurity.name().data());
           delete e;
           slotSelectEquity(QCString());
         }
@@ -184,7 +184,7 @@ bool kMyMoneyEquity::eventFilter(QObject* o, QEvent* e)
 
 void kMyMoneyEquity::slotSelectEquity(const QCString& id)
 {
-  KLineEdit::setText(MyMoneyFile::instance()->equity(id).tradingSymbol());
+  KLineEdit::setText(MyMoneyFile::instance()->security(id).tradingSymbol());
   if(m_id != id) {
     m_id = id;
     emit equityChanged(id);

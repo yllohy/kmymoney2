@@ -108,18 +108,24 @@ void MyMoneyStorageXML::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
         else if(QString("KEYVALUEPAIRS") == childElement.tagName())
         {
           m_storage->setPairs(readKeyValuePairs(childElement));
+          m_baseCurrencyId = m_storage->pairs()["kmm-baseCurrency"];
         }
         else if(QString("SCHEDULES") == childElement.tagName())
         {
           readSchedules(childElement);
         }
-        else if(QString("EQUITIES") == childElement.tagName())
+        else if(QString("EQUITIES") == childElement.tagName()
+             || QString("SECURITIES") == childElement.tagName())
         {
-          readEquities(childElement);
+          readSecurities(childElement);
         }
         else if(QString("CURRENCIES") == childElement.tagName())
         {
           readCurrencies(childElement);
+        }
+        else if(QString("PRICES") == childElement.tagName())
+        {
+          readPrices(childElement);
         }
         else if(QString("REPORTS") == childElement.tagName())
         {
@@ -196,13 +202,17 @@ void MyMoneyStorageXML::writeFile(QIODevice* qf, IMyMoneySerialize* storage)
   writeSchedules(schedules);
   mainElement.appendChild(schedules);
 
-  QDomElement equities = m_doc->createElement("EQUITIES");
-  writeEquities(equities);
+  QDomElement equities = m_doc->createElement("SECURITIES");
+  writeSecurities(equities);
   mainElement.appendChild(equities);
 
   QDomElement currencies = m_doc->createElement("CURRENCIES");
   writeCurrencies(currencies);
   mainElement.appendChild(currencies);
+
+  QDomElement prices = m_doc->createElement("PRICES");
+  writePrices(prices);
+  mainElement.appendChild(prices);
 
   QDomElement reports = m_doc->createElement("REPORTS");
   writeReports(reports);
@@ -409,7 +419,7 @@ MyMoneyInstitution MyMoneyStorageXML::readInstitution(const QDomElement& institu
   if(!ofxsettings.isNull() && ofxsettings.isElement())
   {
     MyMoneyKeyValueContainer values;
-    
+
     QDomNamedNodeMap attributes = ofxsettings.attributes();
     int index = attributes.count();
     while ( index-- )
@@ -419,7 +429,7 @@ MyMoneyInstitution MyMoneyStorageXML::readInstitution(const QDomElement& institu
     }
     i.setOfxConnectionSettings(values);
   }
-    
+
   return MyMoneyInstitution(id, i);
 }
 
@@ -434,7 +444,6 @@ void MyMoneyStorageXML::writeInstitution(QDomElement& institution, const MyMoney
   address.setAttribute(QString("street"), i.street());
   address.setAttribute(QString("city"), i.city());
   address.setAttribute(QString("zip"), i.postcode());
-  address.setAttribute(QString("state"), i.town());
   address.setAttribute(QString("telephone"), i.telephone());
 
   institution.appendChild(address);
@@ -449,7 +458,7 @@ void MyMoneyStorageXML::writeInstitution(QDomElement& institution, const MyMoney
   }
 
   institution.appendChild(accounts);
-  
+
   QMap<QCString,QString> s = i.ofxConnectionSettings().pairs();
   if ( s.count() )
   {
@@ -458,11 +467,11 @@ void MyMoneyStorageXML::writeInstitution(QDomElement& institution, const MyMoney
     while ( it_key != s.end() )
     {
       ofxsettings.setAttribute(it_key.key(), it_key.data());
-      ++it_key;    
+      ++it_key;
     }
-  
+
     institution.appendChild(ofxsettings);
-  }    
+  }
 }
 
 void MyMoneyStorageXML::readPayees(QDomElement& payees)
@@ -1011,29 +1020,35 @@ void MyMoneyStorageXML::writeSplit(QDomElement& splitElement, const MyMoneySplit
   splitElement.setAttribute(QString("number"), split.number());
 }
 
-void MyMoneyStorageXML::writeEquities(QDomElement& equities)
+void MyMoneyStorageXML::writeSecurities(QDomElement& equities)
 {
-  QValueList<MyMoneyEquity> equityList = m_storage->equityList();
-  if(equityList.size())
+  QValueList<MyMoneySecurity> securityList = m_storage->securityList();
+  if(securityList.size())
   {
-    for(QValueList<MyMoneyEquity>::Iterator it = equityList.begin(); it != equityList.end(); ++it)
+    for(QValueList<MyMoneySecurity>::Iterator it = securityList.begin(); it != securityList.end(); ++it)
     {
-      QDomElement equity = m_doc->createElement("EQUITY");
-      writeEquity(equity, (*it));
-      equities.appendChild(equity);
+      QDomElement security = m_doc->createElement("SECURITY");
+      writeSecurity(security, (*it));
+      equities.appendChild(security);
     }
   }
 
 }
 
-void MyMoneyStorageXML::writeEquity(QDomElement& equityElement, const MyMoneyEquity& equity)
+void MyMoneyStorageXML::writeSecurity(QDomElement& securityElement, const MyMoneySecurity& security)
 {
-  equityElement.setAttribute(QString("name"), equity.name());
-  equityElement.setAttribute(QString("symbol"), equity.tradingSymbol());
-  equityElement.setAttribute(QString("type"), static_cast<int>(equity.equityType()));
-  equityElement.setAttribute(QString("id"), equity.id());
-  equityElement.setAttribute(QString("saf"), equity.smallestAccountFraction());
+  securityElement.setAttribute(QString("name"), security.name());
+  securityElement.setAttribute(QString("symbol"), security.tradingSymbol());
+  securityElement.setAttribute(QString("type"), static_cast<int>(security.securityType()));
+  securityElement.setAttribute(QString("id"), security.id());
+  securityElement.setAttribute(QString("saf"), security.smallestAccountFraction());
+  if(!security.isCurrency())
+    securityElement.setAttribute(QString("trading-currency"), security.tradingCurrency());
 
+  //Add in Key-Value Pairs for security
+  QDomElement keyValPairs = writeKeyValuePairs(security.pairs());
+  securityElement.appendChild(keyValPairs);
+#if 0
   QDomElement history = m_doc->createElement("HISTORY");
 
   equity_price_history priceHistory = equity.priceHistory();
@@ -1049,26 +1064,28 @@ void MyMoneyStorageXML::writeEquity(QDomElement& equityElement, const MyMoneyEqu
   }
 
   equityElement.appendChild(history);
+#endif
 }
 
-void MyMoneyStorageXML::readEquities(QDomElement& equities)
+void MyMoneyStorageXML::readSecurities(QDomElement& securities)
 {
   unsigned long id = 0;
-  QDomNode child = equities.firstChild();
+  QDomNode child = securities.firstChild();
   while(!child.isNull() && child.isElement())
   {
     QDomElement childElement = child.toElement();
-    if(QString("EQUITY") == childElement.tagName())
+    if(QString("EQUITY") == childElement.tagName()
+    || QString("SECURITY") == childElement.tagName())
     {
-      MyMoneyEquity equity = readEquity(childElement);
+      MyMoneySecurity security = readSecurity(childElement);
 
-      //tell the storage objects we have a new equity object.
-      m_storage->loadEquity(equity);
+      //tell the storage objects we have a new security object.
+      m_storage->loadSecurity(security);
 
-      id = extractId(equity.id().data());
-      if(id > m_storage->equityId())
+      id = extractId(security.id().data());
+      if(id > m_storage->securityId())
       {
-        m_storage->loadEquityId(id);
+        m_storage->loadSecurityId(id);
       }
     }
     child = child.nextSibling();
@@ -1077,22 +1094,21 @@ void MyMoneyStorageXML::readEquities(QDomElement& equities)
 
 void MyMoneyStorageXML::writeCurrencies(QDomElement& currencies)
 {
-  QValueList<MyMoneyCurrency> currencyList = m_storage->currencyList();
+  QValueList<MyMoneySecurity> currencyList = m_storage->currencyList();
   if(currencyList.size())
   {
-    for(QValueList<MyMoneyCurrency>::Iterator it = currencyList.begin(); it != currencyList.end(); ++it)
+    for(QValueList<MyMoneySecurity>::Iterator it = currencyList.begin(); it != currencyList.end(); ++it)
     {
       QDomElement currency = m_doc->createElement("CURRENCY");
       writeCurrency(currency, (*it));
       currencies.appendChild(currency);
     }
   }
-
 }
 
-void MyMoneyStorageXML::writeCurrency(QDomElement& currencyElement, const MyMoneyCurrency& currency)
+void MyMoneyStorageXML::writeCurrency(QDomElement& currencyElement, const MyMoneySecurity& currency)
 {
-  writeEquity(currencyElement, currency);
+  writeSecurity(currencyElement, currency);
   currencyElement.setAttribute(QString("ppu"), currency.partsPerUnit());
   currencyElement.setAttribute(QString("scf"), currency.smallestCashFraction());
   currencyElement.setAttribute(QString("saf"), currency.smallestAccountFraction());
@@ -1106,7 +1122,7 @@ void MyMoneyStorageXML::readCurrencies(QDomElement& currencies)
     QDomElement childElement = child.toElement();
     if(QString("CURRENCY") == childElement.tagName())
     {
-      MyMoneyCurrency currency = readCurrency(childElement);
+      MyMoneySecurity currency = readCurrency(childElement);
 
       //tell the storage objects we have a new currency object.
       m_storage->loadCurrency(currency);
@@ -1115,9 +1131,9 @@ void MyMoneyStorageXML::readCurrencies(QDomElement& currencies)
   }
 }
 
-const MyMoneyCurrency MyMoneyStorageXML::readCurrency(QDomElement& currencyElement)
+const MyMoneySecurity MyMoneyStorageXML::readCurrency(QDomElement& currencyElement)
 {
-  MyMoneyCurrency c(readEquity(currencyElement));
+  MyMoneySecurity c(readSecurity(currencyElement));
 
   c.setPartsPerUnit(currencyElement.attribute(QString("ppu")).toInt());
   c.setSmallestCashFraction(currencyElement.attribute(QString("scf")).toInt());
@@ -1126,22 +1142,33 @@ const MyMoneyCurrency MyMoneyStorageXML::readCurrency(QDomElement& currencyEleme
   return c;
 }
 
-MyMoneyEquity MyMoneyStorageXML::readEquity(QDomElement& equityElement)
+MyMoneySecurity MyMoneyStorageXML::readSecurity(QDomElement& securityElement)
 {
   QCString id;
-  MyMoneyEquity e;
+  MyMoneySecurity e;
 
-  e.setName(QStringEmpty(equityElement.attribute(QString("name"))));
-  e.setTradingSymbol(QStringEmpty(equityElement.attribute(QString("symbol"))));
-  e.setEquityType(static_cast<MyMoneyEquity::eEQUITYTYPE>(equityElement.attribute(QString("type")).toInt()));
-  int saf = equityElement.attribute(QString("saf")).toInt();
+  e.setName(QStringEmpty(securityElement.attribute(QString("name"))));
+  e.setTradingSymbol(QStringEmpty(securityElement.attribute(QString("symbol"))));
+  e.setSecurityType(static_cast<MyMoneySecurity::eSECURITYTYPE>(securityElement.attribute(QString("type")).toInt()));
+  // some old versions used to store type NONE
+  // let's default this to stock
+  if(e.securityType() == MyMoneySecurity::SECURITY_NONE)
+    e.setSecurityType(MyMoneySecurity::SECURITY_STOCK);
+
+  e.setTradingCurrency(QCStringEmpty(securityElement.attribute(QString("trading-currency"))));
+  if(e.tradingCurrency().isEmpty()) {
+    e.setTradingCurrency(m_baseCurrencyId);
+  }
+
+  int saf = securityElement.attribute(QString("saf")).toInt();
   if(saf == 0)
     saf = 100;
   e.setSmallestAccountFraction(saf);
 
-  id = QStringEmpty(equityElement.attribute(QString("id")));
+  id = QStringEmpty(securityElement.attribute(QString("id")));
 
-  QDomElement history = findChildElement(QString("HISTORY"), equityElement);
+  // FIXME: keep the history part for some time. After 0.8 this can be wiped out
+  QDomElement history = findChildElement(QString("HISTORY"), securityElement);
   if(!history.isNull() && history.isElement())
   {
     QDomNode child = history.firstChild();
@@ -1154,14 +1181,24 @@ MyMoneyEquity MyMoneyStorageXML::readEquity(QDomElement& equityElement)
         {
           QDate date = getDate(QStringEmpty(childElement.attribute(QString("date"))));
           MyMoneyMoney money(QStringEmpty(childElement.attribute(QString("price"))));
-          e.addPriceHistory(date, money);
+          // e.addPriceHistory(date, money);
+          MyMoneyPrice price(id, m_baseCurrencyId, date, money);
+          m_storage->addPrice(price);
         }
       }
       child = child.nextSibling();
     }
   }
 
-  return MyMoneyEquity(id, e);
+  /////////////////////////////////////////////////////////////////////////////////////////
+  //  Process any KeyValue pairs information found inside the security entry.
+  QDomElement keyValPairs = findChildElement(QString("KEYVALUEPAIRS"), securityElement);
+  if(!keyValPairs.isNull() && keyValPairs.isElement())
+  {
+    e.setPairs(readKeyValuePairs(keyValPairs));
+  }
+
+  return MyMoneySecurity(id, e);
 }
 
 void MyMoneyStorageXML::readReports(QDomElement& reports)
@@ -1298,6 +1335,98 @@ QMap<QCString, QString> MyMoneyStorageXML::readKeyValuePairs(QDomElement& elemen
   }
 
   return pairs;
+}
+
+void MyMoneyStorageXML::readPrices(QDomElement& prices)
+{
+  QDomNode child = prices.firstChild();
+  int x = 0;
+  signalProgress(0, getChildCount(prices), QObject::tr("Loading pricetable ..."));
+
+  while(!child.isNull())
+  {
+    if(child.isElement())
+    {
+      QDomElement childElement = child.toElement();
+      if(QString("PRICEPAIR") == childElement.tagName())
+      {
+        readPricePair(childElement);
+      }
+    }
+    child = child.nextSibling();
+    signalProgress(x++, 0);
+  }
+}
+
+void MyMoneyStorageXML::readPricePair(const QDomElement& pricePair)
+{
+  QCString from = QCString(pricePair.attribute(QString("from")));
+  QCString to = QCString(pricePair.attribute(QString("to")));
+  QDomNode child = pricePair.firstChild();
+
+  while(!child.isNull())
+  {
+    if(child.isElement())
+    {
+      QDomElement childElement = child.toElement();
+      if(QString("PRICE") == childElement.tagName())
+      {
+        MyMoneyPrice p = readPrice(from, to, childElement);
+
+        //tell the storage objects we have a new price.
+        m_storage->addPrice(p);
+      }
+    }
+    child = child.nextSibling();
+  }
+}
+
+const MyMoneyPrice MyMoneyStorageXML::readPrice(const QCString& from, const QCString& to, const QDomElement& price)
+{
+  QDate date;
+  MyMoneyMoney rate;
+  QString source;
+
+  date = QDate::fromString(price.attribute(QString("date")), Qt::ISODate);
+  rate = MyMoneyMoney(price.attribute(QString("price")));
+  source = price.attribute(QString("source"));
+
+  //create actual object to return to add into the engine's list of objects.
+  return MyMoneyPrice(from, to, date, rate, source);
+}
+
+void MyMoneyStorageXML::writePrices(QDomElement& prices)
+{
+  MyMoneyPriceList list;
+  MyMoneyPriceList::ConstIterator it;
+
+  list = m_storage->priceList();
+
+  for(it = list.begin(); it != list.end(); ++it)
+  {
+    QDomElement price = m_doc->createElement("PRICEPAIR");
+    price.setAttribute(QString("from"), it.key().first);
+    price.setAttribute(QString("to"), it.key().second);
+    writePricePair(price, *it);
+    prices.appendChild(price);
+  }
+}
+
+void MyMoneyStorageXML::writePricePair(QDomElement& price, const MyMoneyPriceEntries& p)
+{
+  MyMoneyPriceEntries::ConstIterator it;
+  for(it = p.begin(); it != p.end(); ++it) {
+    QDomElement entry = m_doc->createElement("PRICE");
+    writePrice(entry, *it);
+    price.appendChild(entry);
+  }
+}
+
+void MyMoneyStorageXML::writePrice(QDomElement& price, const MyMoneyPrice& p)
+{
+  price.setAttribute(QString("date"), p.date().toString(Qt::ISODate));
+  price.setAttribute(QString("price"), p.rate().toString());
+  price.setAttribute(QString("source"), p.source());
 }
 
 const QCString MyMoneyStorageXML::QCStringEmpty(const QString& val) const

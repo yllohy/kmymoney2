@@ -267,7 +267,7 @@ void KLedgerViewCheckings::slotAmountChanged(const QString& amount)
   int dir = transactionDirection(m_split);
   if(dir == UnknownDirection) {
     MyMoneyMoney sign(1,1);
-    if(value < 0) {
+    if(value.isNegative()) {
       sign = -sign;
       value = value.abs();
     }
@@ -747,7 +747,7 @@ void KLedgerViewCheckings::fillSummary(void)
       try {
         balance = file->balance(accountId());
         QString txt = balance.formatMoney(file->currency(m_account.currencyId()).tradingSymbol());
-        if(balance < 0)
+        if(balance.isNegative())
           txt = "<font color=\"red\"><b>" + txt + "</b></font>";
         txt = "<nobr>"+ i18n("Current balance: ") + txt + "</nobr>";
 
@@ -1074,7 +1074,7 @@ void KLedgerViewCheckings::reloadEditWidgets(const MyMoneyTransaction& t)
     m_editNr->loadText(m_split.number());
 
   if(m_editPayment && m_editDeposit) {
-    if(m_split.value() < 0) {
+    if(m_split.value().isNegative()) {
       m_editPayment->loadText((-m_split.value()).formatMoney());
       m_editDeposit->loadText(QString());
     } else {

@@ -1,15 +1,15 @@
-<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>KEquityPriceUpdateDlgDecl</class>
 <author>Kevin Tambascio &lt;ktambascio@users.sourceforge.net&gt;</author>
 <widget class="QDialog">
     <property name="name">
-        <cstring>kupdateequitypricedlgdecl</cstring>
+        <cstring>kequitypriceupdatedlgdecl</cstring>
     </property>
     <property name="geometry">
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>502</width>
+            <width>537</width>
             <height>482</height>
         </rect>
     </property>
@@ -121,9 +121,12 @@
                 <string>Status:</string>
             </property>
         </widget>
-        <widget class="KListBox">
+        <widget class="KTextEdit">
             <property name="name">
                 <cstring>lbStatus</cstring>
+            </property>
+            <property name="textFormat">
+                <enum>LogText</enum>
             </property>
         </widget>
         <widget class="KProgress">
@@ -185,12 +188,5 @@
         </widget>
     </vbox>
 </widget>
-<customwidgets>
-</customwidgets>
 <layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>klistview.h</includehint>
-    <includehint>klistbox.h</includehint>
-    <includehint>kprogress.h</includehint>
-</includehints>
 </UI>

@@ -56,6 +56,17 @@ public:
   const MyMoneyAccount account(void) const { return m_account; };
 
   /**
+    * This method returns the account information about a brokerage
+    * account entered by the user. The value returned only makes sense,
+    * if account() returned an account of type investment. If the returned
+    * value does not contain a name then the user selected not to create
+    * a corresponding brokerage account to the investment account.
+    *
+    * @return MyMoneyAccount filled with information by the user
+    */
+  const MyMoneyAccount brokerageAccount(void) const { return m_brokerage; };
+
+  /**
     * This method returns the parent account selected that is appropriate
     * to the account type selected by the user
     *
@@ -152,6 +163,7 @@ private:
   QString m_accountPaymentPageTitle;
   MyMoneyAccount m_account;
   MyMoneyAccount m_parent;
+  MyMoneyAccount m_brokerage;
   MyMoneySchedule m_schedule;
   MyMoneyInstitution m_institution;
 };

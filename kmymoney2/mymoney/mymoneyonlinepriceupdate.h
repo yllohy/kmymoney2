@@ -35,8 +35,8 @@
 #include <qdom.h>
 
 #include "mymoneymoney.h"
-#include "mymoneycurrency.h"
-#include "mymoneyequity.h"
+// #include "mymoneycurrency.h"
+#include "mymoneysecurity.h"
 
 typedef struct {
   QString symbolName;
@@ -91,13 +91,15 @@ public slots:
 };
 
 
-typedef std::vector<MyMoneyEquity*> EquityList;
+typedef std::vector<MyMoneySecurity*> EquityList;
 typedef EquityList::iterator EquityListIter;
 typedef EquityList::const_iterator EquityListCIter;
 
+#if 0
 typedef std::vector<MyMoneyCurrency*> CurrencyList;
 typedef EquityList::iterator EquityListIter;
 typedef EquityList::const_iterator EquityListCIter;
+#endif
 
 //******************************************************************************************
 // This is the class called by the user to retrieve quotes
@@ -110,7 +112,7 @@ public:
     ///Retrieves quotes using
     int getQuotes(const QStringList& symbolNames);
 
-    ///Tells this object to update price histories of MyMoneyEquity objects.
+    ///Tells this object to update price histories of MyMoneySecurity objects.
     int applyNewQuotes();
 
     ///Retrieves the date of the last update for this symbol name.
@@ -123,16 +125,18 @@ public:
 
 private:
     // get a single currency quote
-    void getQuote(MyMoneyCurrency *pQuoteItem); // throw MyMoneyException;
+    void getQuote(MyMoneySecurity *pQuoteItem); // throw MyMoneyException;
 
     // get a list of quotes
     void getQuotes(const EquityList&); // throw MyMoneyException;
 
+#if 0
     // get a single stock quote
-    void getQuote(MyMoneyEquity *pQuoteItem); // throw MyMoneyException;
+    void getQuote(MyMoneyCurrency *pQuoteItem); // throw MyMoneyException;
 
     // get a list of quotes
     void getQuotes(const CurrencyList&); // throw MyMoneyException; */
+#endif
 
     // get a list of F::Q price sources (key = name used by f::q, data = sensible name)
     const QMap<QString, QString> getSources();
@@ -157,8 +161,8 @@ private:
 
     EquityList *m_ql;      // list of items to quote for
     EquityListIter m_qit;
-    //QPtrList<MyMoneyEquity>::iterator m_qit;
-    //QPtrListIterator<MyMoneyEquity> m_qit;
+    //QPtrList<MyMoneySecurity>::iterator m_qit;
+    //QPtrListIterator<MyMoneySecurity> m_qit;
     typedef enum _quoteTypeE {
         Equity, Currency
       } quoteTypeE;

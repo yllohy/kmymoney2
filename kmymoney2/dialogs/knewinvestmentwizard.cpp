@@ -1,0 +1,184 @@
+/***************************************************************************
+                         knewinvestmentwizard  -  description
+                            -------------------
+   begin                : Sat Dec 4 2004
+   copyright            : (C) 2004 by Thomas Baumgart
+   email                : kmymoney2-developer@lists.sourceforge.net
+***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+// ----------------------------------------------------------------------------
+// QT Includes
+
+// ----------------------------------------------------------------------------
+// KDE Includes
+
+#include <kpushbutton.h>
+#include <kcombobox.h>
+#include <kurlrequester.h>
+#include <klocale.h>
+
+// ----------------------------------------------------------------------------
+// Project Includes
+
+#include "knewinvestmentwizard.h"
+
+#include "../widgets/kmymoneylineedit.h"
+#include "../widgets/kmymoneycurrencyselector.h"
+#include "../mymoney/mymoneysecurity.h"
+#include "../mymoney/mymoneyfile.h"
+#include "../kmymoneyutils.h"
+
+KNewInvestmentWizard::KNewInvestmentWizard( QWidget *parent, const char *name ) :
+  KNewInvestmentWizardDecl( parent, name )
+{
+  init();
+}
+
+KNewInvestmentWizard::KNewInvestmentWizard( const MyMoneyAccount& acc, QWidget *parent, const char *name ) :
+  KNewInvestmentWizardDecl( parent, name )
+{
+  setCaption(i18n("Investment detail wizard"));
+  init();
+
+  m_account = acc;
+
+  // make sure the first page is not shown
+  setAppropriate(m_investmentTypePage, false);
+  showPage(m_investmentDetailsPage);
+
+  // load the widgets with the data
+  m_investmentName->setText(m_account.name());
+
+  m_security = MyMoneyFile::instance()->security(m_account.currencyId());
+  MyMoneySecurity tradingCurrency = MyMoneyFile::instance()->currency(m_security.tradingCurrency());
+
+  m_investmentSymbol->setText(m_security.tradingSymbol());
+  m_tradingMarket->setCurrentText(m_security.tradingMarket());
+  m_tradingCurrencyEdit->setCurrency(tradingCurrency);
+
+  m_onlineSourceCombo->setCurrentText(m_security.value("kmm-online-source"));
+
+  // we can't see this one because the page is hidden, but we have to
+  // set it anyway because during createObjects() we use the value
+  m_securityType->setCurrentText(KMyMoneyUtils::securityTypeToString(m_security.securityType()));
+}
+
+KNewInvestmentWizard::KNewInvestmentWizard( const MyMoneySecurity& security, QWidget *parent, const char *name ) :
+  KNewInvestmentWizardDecl( parent, name )
+{
+  setCaption(i18n("Security detail wizard"));
+  init();
+  m_createAccount = false;
+
+  // make sure the first page is not shown
+  setAppropriate(m_investmentTypePage, false);
+  showPage(m_investmentDetailsPage);
+
+  // load the widgets with the data
+  m_security = security;
+  m_investmentName->setText(security.name());
+  MyMoneySecurity tradingCurrency = MyMoneyFile::instance()->currency(m_security.tradingCurrency());
+
+  m_investmentSymbol->setText(m_security.tradingSymbol());
+  m_tradingMarket->setCurrentText(m_security.tradingMarket());
+  m_tradingCurrencyEdit->setCurrency(tradingCurrency);
+
+  m_onlineSourceCombo->setCurrentText(m_security.value("kmm-online-source"));
+
+  // we can't see this one because the page is hidden, but we have to
+  // set it anyway because during createObjects() we use the value
+  m_securityType->setCurrentText(KMyMoneyUtils::securityTypeToString(m_security.securityType()));
+}
+
+void KNewInvestmentWizard::init(void)
+{
+  // FIXME for now, we don't have online help
+  helpButton()->hide();
+
+  connect(m_investmentName, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckPage(void)));
+  connect(m_investmentSymbol, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckPage(void)));
+  connect(m_investmentIdentification, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckPage(void)));
+
+  m_createAccount = true;
+}
+
+KNewInvestmentWizard::~KNewInvestmentWizard()
+{
+}
+
+void KNewInvestmentWizard::next(void)
+{
+  KNewInvestmentWizardDecl::next();
+  slotCheckPage();
+}
+
+void KNewInvestmentWizard::slotCheckPage(void)
+{
+  if(currentPage() == m_investmentDetailsPage) {
+    setNextEnabled(m_investmentDetailsPage, false);
+    if(m_investmentName->text().length() > 0
+    && m_investmentSymbol->text().length() > 0) {
+      setNextEnabled(m_investmentDetailsPage, true);
+    }
+  } else if(currentPage() == m_onlineUpdatePage) {
+    setFinishEnabled(m_onlineUpdatePage, true);
+  }
+}
+
+void KNewInvestmentWizard::createObjects(const QCString& parentId)
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
+
+  QValueList<MyMoneySecurity> list = MyMoneyFile::instance()->securityList();
+  QValueList<MyMoneySecurity>::ConstIterator it;
+
+  // check if we already have the security
+  MyMoneySecurity::eSECURITYTYPE type = KMyMoneyUtils::stringToSecurity(m_securityType->currentText());
+  if(m_security.id().isEmpty()) {
+    for(it = list.begin(); m_security.id().isEmpty() && it != list.end(); ++it) {
+      if((*it).securityType() == type
+      && (*it).tradingSymbol() == m_investmentSymbol->text()) {
+        m_security = *it;
+      }
+    }
+  }
+
+  // update all relevant attributes
+  m_security.setName(m_investmentName->text());
+  m_security.setTradingSymbol(m_investmentSymbol->text());
+  m_security.setTradingMarket(m_tradingMarket->currentText());
+  m_security.setTradingCurrency(m_tradingCurrencyEdit->currency().id());
+  m_security.setValue("kmm-online-source", m_onlineSourceCombo->currentText());
+
+  // if the security was not found, we have to create it while not forgetting
+  // to setup the type
+  if(m_security.id().isEmpty()) {
+    m_security.setSecurityType(type);
+    file->addSecurity(m_security);
+
+  } else {
+    file->modifySecurity(m_security);
+  }
+
+  if(m_createAccount) {
+    // now that the security exists, we can add the account to store it
+    m_account.setName(m_investmentName->text());
+    m_account.setAccountType(MyMoneyAccount::Stock);
+    m_account.setCurrencyId(m_security.id());
+
+    MyMoneyAccount parent = file->account(parentId);
+    if(m_account.id().isEmpty())
+      file->addAccount(m_account, parent);
+    else
+      file->modifyAccount(m_account);
+  }
+}

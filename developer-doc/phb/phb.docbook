@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
-<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
-  <!ENTITY app "<command>KMyMoney2</command>">
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V4.1//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+  <!ENTITY app "<command>KMyMoney</command>">
   <!ENTITY cvs "<command>CVS</command>">
   <!ENTITY ac "<command>autoconf</command>">
   <!ENTITY am "<command>automake</command>">

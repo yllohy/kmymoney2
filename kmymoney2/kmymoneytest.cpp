@@ -46,7 +46,7 @@
 #include "mymoney/mymoneykeyvaluecontainertest.h"
 #include "mymoney/mymoneyscheduletest.h"
 #include "mymoney/mymoneyfinancialcalculatortest.h"
-#include "mymoney/mymoneyequitytest.h"
+#include "mymoney/mymoneysecuritytest.h"
 
 #include "views/kreportsviewtest.h"
 
@@ -113,7 +113,7 @@ main(int /* argc */, char** /* argv */ )
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyStorageBinTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyFileTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyScheduleTest);
-  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyEquityTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneySecurityTest);
 
   // views tests
   CPPUNIT_TEST_SUITE_REGISTRATION(KReportsViewTest);
@@ -155,6 +155,7 @@ main(int /* argc */, char** /* argv */ )
   return rc;
 }
 
+#if 0
 #ifdef HAVE_LIBOFX
 
 // these symbols are needed when linking with libofx because it requires
@@ -167,3 +168,5 @@ extern "C" {
   void ofx_proc_account_cb() {}
 }
 #endif
+#endif
+

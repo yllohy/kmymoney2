@@ -39,8 +39,8 @@
 #include "../mymoneyscheduled.h"
 #include "../mymoneyobserver.h"
 #include "../mymoneytransactionfilter.h"
-#include "../mymoneyequity.h"
-#include "../mymoneycurrency.h"
+#include "../mymoneysecurity.h"
+#include "../mymoneyprice.h"
 #include "../mymoneyreport.h"
 
 /**
@@ -190,7 +190,7 @@ public:
     * @return reference to MyMoneyAccount object. An exception is thrown
     *         if the id is unknown
     */
-  virtual const MyMoneyAccount& account(const QCString id) const = 0;
+  virtual const MyMoneyAccount account(const QCString id) const = 0;
 
   /**
     * This method is used to check whether a given
@@ -512,54 +512,71 @@ public:
   virtual const MyMoneyAccount income(void) const = 0;
 
   /**
-    * This method is used to create a new equity object.  The ID will be created
-    * automatically. The object passed with the parameter @p equity is modified
+    * This method is used to create a new security object.  The ID will be created
+    * automatically. The object passed with the parameter @p security is modified
     * to contain the assigned id.
     *
     * An exception will be thrown upon error conditions.
     *
-    * @param account MyMoneyEquity filled with data
+    * @param security MyMoneySecurity filled with data
     */
-  virtual void addEquity(MyMoneyEquity& equity) = 0;
+  virtual void addSecurity(MyMoneySecurity& security) = 0;
 
   /**
-    * This method is used to modify an existing MyMoneySchedule
+    * This method is used to modify an existing MyMoneySecurity
     * object.
     *
     * An exception will be thrown upon erronous situations.
     *
-    * @param equity reference to the MyMoneyEquity object to be updated
+    * @param security reference to the MyMoneySecurity object to be updated
     */
-  virtual void modifyEquity(const MyMoneyEquity& equity) = 0;
+  virtual void modifySecurity(const MyMoneySecurity& security) = 0;
 
   /**
-    * This method is used to remove an existing MyMoneyEquity object
+    * This method is used to remove an existing MyMoneySecurity object
     * from the engine.
     *
     * An exception will be thrown upon erronous situations.
     *
-    * @param equity reference to the MyMoneyEquity object to be removed
+    * @param security reference to the MyMoneySecurity object to be removed
     */
-  virtual void removeEquity(const MyMoneyEquity& equity) = 0;
+  virtual void removeSecurity(const MyMoneySecurity& security) = 0;
 
   /**
-    * This method is used to retrieve a single MyMoneyEquity object.
+    * This method is used to retrieve a single MyMoneySecurity object.
     * The id of the object must be supplied in the parameter @p id.
     *
     * An exception will be thrown upon erronous situations.
     *
-    * @param id QCString containing the id of the MyMoneyEquity object
-    * @return MyMoneyEquity object
+    * @param id QCString containing the id of the MyMoneySecurity object
+    * @return MyMoneySecurity object
     */
-  virtual const MyMoneyEquity equity(const QCString& id) const = 0;
+  virtual const MyMoneySecurity security(const QCString& id) const = 0;
 
   /**
-    * This method returns a list of the equity objects
+    * This method returns a list of the security objects
     * inside a MyMoneyStorage object
     *
-    * @return QValueList<MyMoneyEquity> containing objects
+    * @return QValueList<MyMoneySecurity> containing objects
     */
-  virtual const QValueList<MyMoneyEquity> equityList(void) const = 0;
+  virtual const QValueList<MyMoneySecurity> securityList(void) const = 0;
+
+  virtual void addPrice(const MyMoneyPrice& price) = 0;
+  virtual void removePrice(const MyMoneyPrice& price) = 0;
+  virtual const MyMoneyPrice price(const QCString& fromId, const QCString& toId, const QDate& date, const bool exactDate) const = 0;
+
+  /**
+    * This method returns a list of all prices.
+    *
+    * @return MyMoneyPriceList of all MyMoneyPrice objects.
+    */
+  virtual const MyMoneyPriceList priceList(void) const = 0;
+
+  /**
+    * This method is used to return the standard equity account
+    * @return MyMoneyAccount equity account(group)
+    */
+  virtual const MyMoneyAccount equity(void) const = 0;
 
   /**
     * This method is used to add a scheduled transaction to the engine.
@@ -651,40 +668,40 @@ public:
     *
     * An exception will be thrown upon erronous situations.
     *
-    * @param currency reference to the MyMoneyCurrency object
+    * @param currency reference to the MyMoneySecurity object
     */
-  virtual void addCurrency(const MyMoneyCurrency& currency) = 0;
+  virtual void addCurrency(const MyMoneySecurity& currency) = 0;
 
   /**
-    * This method is used to modify an existing MyMoneyCurrency
+    * This method is used to modify an existing MyMoneySecurity
     * object.
     *
     * An exception will be thrown upon erronous situations.
     *
     * @param currency reference to the MyMoneyCurrency object
     */
-  virtual void modifyCurrency(const MyMoneyCurrency& currency) = 0;
+  virtual void modifyCurrency(const MyMoneySecurity& currency) = 0;
 
   /**
-    * This method is used to remove an existing MyMoneyCurrency object
+    * This method is used to remove an existing MyMoneySecurity object
     * from the engine.
     *
     * An exception will be thrown upon erronous situations.
     *
-    * @param currency reference to the MyMoneyCurrency object
+    * @param currency reference to the MyMoneySecurity object
     */
-  virtual void removeCurrency(const MyMoneyCurrency& currency) = 0;
+  virtual void removeCurrency(const MyMoneySecurity& currency) = 0;
 
   /**
-    * This method is used to retrieve a single MyMoneyCurrency object.
+    * This method is used to retrieve a single MyMoneySecurity object.
     * The id of the object must be supplied in the parameter @p id.
     *
     * An exception will be thrown upon erronous situations.
     *
-    * @param id QCString containing the id of the MyMoneyCurrency object
+    * @param id QCString containing the id of the MyMoneySecurity object
     * @return MyMoneyCurrency object
     */
-  virtual const MyMoneyCurrency currency(const QCString& id) const = 0;
+  virtual const MyMoneySecurity currency(const QCString& id) const = 0;
 
   /**
     * This method is used to retrieve the list of all currencies
@@ -692,9 +709,9 @@ public:
     *
     * An exception will be thrown upon erronous situations.
     *
-    * @return QValueList of all MyMoneyCurrency objects.
+    * @return QValueList of all MyMoneySecurity objects representing a currency.
     */
-  virtual const QValueList<MyMoneyCurrency> currencyList(void) const = 0;
+  virtual const QValueList<MyMoneySecurity> currencyList(void) const = 0;
 
   /**
     * This method is used to retrieve the list of all reports

@@ -1,5 +1,5 @@
 /***************************************************************************
-                          mymoneyequity.cpp  -  description
+                          mymoneysecurity.cpp  -  description
                              -------------------
     begin                : Tue Jan 29 2002
     copyright            : (C) 2000-2002 by Michael Edwardes
@@ -29,24 +29,45 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "mymoneyequity.h"
+#include "mymoneysecurity.h"
 
-MyMoneyEquity::MyMoneyEquity()
+MyMoneySecurity::MyMoneySecurity() :
+  m_securityType(SECURITY_NONE),
+  m_smallestAccountFraction(100),
+  m_smallestCashFraction(100),
+  m_partsPerUnit(100)
 {
-  m_equityType = ETYPE_NONE;
-  m_smallestAccountFraction = 100;
 }
 
-MyMoneyEquity::MyMoneyEquity(const QCString& id, const MyMoneyEquity& equity)
+MyMoneySecurity::MyMoneySecurity(const QCString& id, const QString& name, const QString& symbol, const int partsPerUnit, const int smallestCashFraction, const int smallestAccountFraction) :
+  m_id(id),
+  m_name(name),
+  m_securityType(SECURITY_CURRENCY)
+{
+  if(symbol.isEmpty())
+    m_tradingSymbol = id;
+  else
+    m_tradingSymbol = symbol;
+
+  m_partsPerUnit = partsPerUnit;
+  m_smallestCashFraction = smallestCashFraction;
+  if(smallestAccountFraction)
+    m_smallestAccountFraction = smallestAccountFraction;
+  else
+    m_smallestAccountFraction = smallestCashFraction;
+}
+
+MyMoneySecurity::MyMoneySecurity(const QCString& id, const MyMoneySecurity& equity)
 {
   *this = equity;
   m_id = id;
 }
 
-MyMoneyEquity::~MyMoneyEquity()
+MyMoneySecurity::~MyMoneySecurity()
 {
 }
 
+#if 0
 void MyMoneyEquity::setPriceHistory(const equity_price_history& history)
 {
   m_priceHistory = history;
@@ -107,7 +128,6 @@ void MyMoneyEquity::appendNewPriceData(const MyMoneyEquity& equity)
 
 }
 
-#if 0
 /** No descriptions */
 void MyMoneyEquity::setEquityType(const String& str)
 {

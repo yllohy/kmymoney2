@@ -36,7 +36,7 @@ MyMoneySeqAccessMgr::MyMoneySeqAccessMgr()
   m_nextTransactionID = 0;
   m_nextPayeeID = 0;
   m_nextScheduleID = 0;
-  m_nextEquityID = 0;
+  m_nextSecurityID = 0;
   m_nextReportID = 0;
   m_userName =
   m_userStreet =
@@ -63,6 +63,9 @@ MyMoneySeqAccessMgr::MyMoneySeqAccessMgr()
   MyMoneyAccount acc_i;
   acc_i.setAccountType(MyMoneyAccount::Income);
   acc_i.setName("Income");
+  MyMoneyAccount acc_q;
+  acc_q.setAccountType(MyMoneyAccount::Equity);
+  acc_q.setName("Equity");
 
   MyMoneyAccount* a;
   a = new MyMoneyAccount(STD_ACC_LIABILITY, acc_l);
@@ -81,6 +84,10 @@ MyMoneySeqAccessMgr::MyMoneySeqAccessMgr()
   m_accountList[STD_ACC_INCOME] = *a;
   delete a;
 
+  a = new MyMoneyAccount(STD_ACC_EQUITY, acc_q);
+  m_accountList[STD_ACC_EQUITY] = *a;
+  delete a;
+
   MyMoneyBalanceCacheItem balance;
 
   m_balanceCache.clear();
@@ -88,6 +95,7 @@ MyMoneySeqAccessMgr::MyMoneySeqAccessMgr()
   m_balanceCache[STD_ACC_ASSET] = balance;
   m_balanceCache[STD_ACC_EXPENSE] = balance;
   m_balanceCache[STD_ACC_INCOME] = balance;
+  m_balanceCache[STD_ACC_EQUITY] = balance;
 }
 
 MyMoneySeqAccessMgr::~MyMoneySeqAccessMgr()
@@ -106,7 +114,8 @@ const bool MyMoneySeqAccessMgr::isStandardAccount(const QCString& id) const
   return id == STD_ACC_LIABILITY
       || id == STD_ACC_ASSET
       || id == STD_ACC_EXPENSE
-      || id == STD_ACC_INCOME;
+      || id == STD_ACC_INCOME
+      || id == STD_ACC_EQUITY;
 }
 
 void MyMoneySeqAccessMgr::setAccountName(const QCString& id, const QString& name)
@@ -117,7 +126,7 @@ void MyMoneySeqAccessMgr::setAccountName(const QCString& id, const QString& name
   m_accountList[id].setName(name);
 }
 
-const MyMoneyAccount& MyMoneySeqAccessMgr::account(const QCString id) const
+const MyMoneyAccount MyMoneySeqAccessMgr::account(const QCString id) const
 {
   QMap<QCString, MyMoneyAccount>::ConstIterator pos;
 
@@ -232,13 +241,7 @@ void MyMoneySeqAccessMgr::removePayee(const MyMoneyPayee& payee)
 
 const QValueList<MyMoneyPayee> MyMoneySeqAccessMgr::payeeList(void) const
 {
-  QValueList<MyMoneyPayee> list;
-  QMap<QCString, MyMoneyPayee>::ConstIterator it;
-
-  for(it = m_payeeList.begin(); it != m_payeeList.end(); ++it) {
-    list.append(*it);
-  }
-  return list;
+  return m_payeeList.values();
 }
 
 
@@ -410,11 +413,11 @@ const QCString MyMoneySeqAccessMgr::nextScheduleID(void)
   return id;
 }
 
-const QCString MyMoneySeqAccessMgr::nextEquityID(void)
+const QCString MyMoneySeqAccessMgr::nextSecurityID(void)
 {
   QCString id;
-  id.setNum(++m_nextEquityID);
-  id = "E" + id.rightJustify(EQUITY_ID_SIZE, '0');
+  id.setNum(++m_nextSecurityID);
+  id = "E" + id.rightJustify(SECURITY_ID_SIZE, '0');
   return id;
 }
 
@@ -549,6 +552,7 @@ void MyMoneySeqAccessMgr::modifyAccount(const MyMoneyAccount& account, const boo
           (*newInst).addAccountId(account.id());
         }
       }
+
       // update information in account list
       m_accountList[account.id()] = account;
 
@@ -788,8 +792,7 @@ void MyMoneySeqAccessMgr::removeAccount(const MyMoneyAccount& account)
   // check if the new info is based on the old one.
   // this is the case, when the file and the id
   // as well as the type are equal.
-  if((*it_a).file() == account.file()
-  && (*it_a).id() == account.id()
+  if((*it_a).id() == account.id()
   && (*it_a).institutionId() == account.institutionId()
   && (*it_a).accountType() == account.accountType()) {
 
@@ -1063,7 +1066,8 @@ void MyMoneySeqAccessMgr::loadAccount(const MyMoneyAccount& acc)
   if(acc.id() == asset().id()
   || acc.id() == liability().id()
   || acc.id() == expense().id()
-  || acc.id() == income().id()) {
+  || acc.id() == income().id()
+  || acc.id() == equity().id()) {
     m_accountList[acc.id()] = acc;
     return;
   }
@@ -1131,24 +1135,24 @@ void MyMoneySeqAccessMgr::loadPayee(const MyMoneyPayee& payee)
   m_payeeList[payee.id()] = payee;
 }
 
-void MyMoneySeqAccessMgr::loadEquity(const MyMoneyEquity& equity)
+void MyMoneySeqAccessMgr::loadSecurity(const MyMoneySecurity& security)
 {
-  QMap<QCString, MyMoneyEquity>::ConstIterator it;
+  QMap<QCString, MyMoneySecurity>::ConstIterator it;
 
-  it = m_equitiesList.find(equity.id());
-  if(it != m_equitiesList.end())
+  it = m_securitiesList.find(security.id());
+  if(it != m_securitiesList.end())
   {
-    QString msg = "Duplicate equity  '";
-    msg += equity.id() + "' during loadEquity()";
+    QString msg = "Duplicate security  '";
+    msg += security.id() + "' during loadSecurity()";
     throw new MYMONEYEXCEPTION(msg);
   }
-  m_equitiesList[equity.id()] = equity;
-  //qDebug("loadEquity: Equity list size is %d, this=%8p", m_equitiesList.size(), (void*)this);
+  m_securitiesList[security.id()] = security;
+  //qDebug("loadSecurity: Security list size is %d, this=%8p", m_equitiesList.size(), (void*)this);
 }
 
-void MyMoneySeqAccessMgr::loadCurrency(const MyMoneyCurrency& currency)
+void MyMoneySeqAccessMgr::loadCurrency(const MyMoneySecurity& currency)
 {
-  QMap<QCString, MyMoneyCurrency>::ConstIterator it;
+  QMap<QCString, MyMoneySecurity>::ConstIterator it;
 
   it = m_currencyList.find(currency.id());
   if(it != m_currencyList.end())
@@ -1178,9 +1182,9 @@ void MyMoneySeqAccessMgr::loadInstitutionId(const unsigned long id)
   m_nextInstitutionID = id;
 }
 
-void MyMoneySeqAccessMgr::loadEquityId(const unsigned long id)
+void MyMoneySeqAccessMgr::loadSecurityId(const unsigned long id)
 {
-  m_nextEquityID = id;
+  m_nextSecurityID = id;
 }
 
 void MyMoneySeqAccessMgr::loadReportId(const unsigned long id)
@@ -1428,81 +1432,71 @@ QValueList<MyMoneySchedule> MyMoneySeqAccessMgr::scheduleListEx(int scheduleType
   return list;
 }
 
-void MyMoneySeqAccessMgr::addEquity(MyMoneyEquity& equity)
+void MyMoneySeqAccessMgr::addSecurity(MyMoneySecurity& security)
 {
   // create the account
-  MyMoneyEquity newEquity(nextEquityID(), equity);
+  MyMoneySecurity newSecurity(nextSecurityID(), security);
 
-  qDebug("New Equity object ID is %s\n", newEquity.id().data());
-
-  m_equitiesList[newEquity.id()] = newEquity;
-
-  qDebug("Size of equity list is now %d\n", m_equitiesList.size());
+  m_securitiesList[newSecurity.id()] = newSecurity;
 
   touch();
-  equity = newEquity;
+  security = newSecurity;
 }
 
-void MyMoneySeqAccessMgr::modifyEquity(const MyMoneyEquity& equity)
+void MyMoneySeqAccessMgr::modifySecurity(const MyMoneySecurity& security)
 {
-  QMap<QCString, MyMoneyEquity>::ConstIterator it;
+  QMap<QCString, MyMoneySecurity>::ConstIterator it;
 
-  it = m_equitiesList.find(equity.id());
-  if(it == m_equitiesList.end())
+  it = m_securitiesList.find(security.id());
+  if(it == m_securitiesList.end())
   {
-    QString msg = "Unknown equity  '";
-    msg += equity.id() + "' during modifyEquity()";
+    QString msg = "Unknown security  '";
+    msg += security.id() + "' during modifySecurity()";
     throw new MYMONEYEXCEPTION(msg);
   }
 
-  m_equitiesList[equity.id()] = equity;
+  m_securitiesList[security.id()] = security;
   touch();
 }
 
-void MyMoneySeqAccessMgr::removeEquity(const MyMoneyEquity& equity)
+void MyMoneySeqAccessMgr::removeSecurity(const MyMoneySecurity& security)
 {
-  QMap<QCString, MyMoneyEquity>::ConstIterator it;
+  QMap<QCString, MyMoneySecurity>::ConstIterator it;
 
   // FIXME: check referential integrity
 
-  it = m_equitiesList.find(equity.id());
-  if(it == m_equitiesList.end())
+  it = m_securitiesList.find(security.id());
+  if(it == m_securitiesList.end())
   {
-    QString msg = "Unknown equity  '";
-    msg += equity.id() + "' during removeEquity()";
+    QString msg = "Unknown security  '";
+    msg += security.id() + "' during removeSecurity()";
     throw new MYMONEYEXCEPTION(msg);
   }
 
-  m_equitiesList.erase(equity.id());
+  m_securitiesList.erase(security.id());
   touch();
 }
 
-const MyMoneyEquity MyMoneySeqAccessMgr::equity(const QCString& id) const
+const MyMoneySecurity MyMoneySeqAccessMgr::security(const QCString& id) const
 {
-  QMap<QCString, MyMoneyEquity>::ConstIterator it = m_equitiesList.find(id);
-  if(it != m_equitiesList.end())
+  QMap<QCString, MyMoneySecurity>::ConstIterator it = m_securitiesList.find(id);
+  if(it != m_securitiesList.end())
   {
     return it.data();
   }
 
-  return MyMoneyEquity();
+  return MyMoneySecurity();
 }
 
-const QValueList<MyMoneyEquity> MyMoneySeqAccessMgr::equityList(void) const
+const QValueList<MyMoneySecurity> MyMoneySeqAccessMgr::securityList(void) const
 {
-  //qDebug("equityList: Equity list size is %d, this=%8p", m_equitiesList.size(), (void*)this);
-  QValueList<MyMoneyEquity> list;
-  QMap<QCString, MyMoneyEquity>::ConstIterator it;
-  for(it = m_equitiesList.begin(); it != m_equitiesList.end(); ++it)
-  {
-    list.append(*it);
-  }
-  return list;
+  //qDebug("securityList: Security list size is %d, this=%8p", m_equitiesList.size(), (void*)this);
+  return m_securitiesList.values();
 }
 
-void MyMoneySeqAccessMgr::addCurrency(const MyMoneyCurrency& currency)
+void MyMoneySeqAccessMgr::addCurrency(const MyMoneySecurity& currency)
 {
-  QMap<QCString, MyMoneyCurrency>::Iterator it;
+  QMap<QCString, MyMoneySecurity>::Iterator it;
 
   it = m_currencyList.find(currency.id());
   if(it != m_currencyList.end()) {
@@ -1513,9 +1507,9 @@ void MyMoneySeqAccessMgr::addCurrency(const MyMoneyCurrency& currency)
   touch();
 }
 
-void MyMoneySeqAccessMgr::modifyCurrency(const MyMoneyCurrency& currency)
+void MyMoneySeqAccessMgr::modifyCurrency(const MyMoneySecurity& currency)
 {
-  QMap<QCString, MyMoneyCurrency>::Iterator it;
+  QMap<QCString, MyMoneySecurity>::Iterator it;
 
   it = m_currencyList.find(currency.id());
   if(it == m_currencyList.end()) {
@@ -1526,9 +1520,9 @@ void MyMoneySeqAccessMgr::modifyCurrency(const MyMoneyCurrency& currency)
   touch();
 }
 
-void MyMoneySeqAccessMgr::removeCurrency(const MyMoneyCurrency& currency)
+void MyMoneySeqAccessMgr::removeCurrency(const MyMoneySecurity& currency)
 {
-  QMap<QCString, MyMoneyCurrency>::Iterator it;
+  QMap<QCString, MyMoneySecurity>::Iterator it;
 
   // FIXME: check referential integrity
 
@@ -1541,12 +1535,12 @@ void MyMoneySeqAccessMgr::removeCurrency(const MyMoneyCurrency& currency)
   touch();
 }
 
-const MyMoneyCurrency MyMoneySeqAccessMgr::currency(const QCString& id) const
+const MyMoneySecurity MyMoneySeqAccessMgr::currency(const QCString& id) const
 {
   if(id.isEmpty()) {
 
   }
-  QMap<QCString, MyMoneyCurrency>::ConstIterator it;
+  QMap<QCString, MyMoneySecurity>::ConstIterator it;
 
   it = m_currencyList.find(id);
   if(it == m_currencyList.end()) {
@@ -1556,15 +1550,9 @@ const MyMoneyCurrency MyMoneySeqAccessMgr::currency(const QCString& id) const
   return *it;
 }
 
-const QValueList<MyMoneyCurrency> MyMoneySeqAccessMgr::currencyList(void) const
+const QValueList<MyMoneySecurity> MyMoneySeqAccessMgr::currencyList(void) const
 {
-  QValueList<MyMoneyCurrency> list;
-  QMap<QCString, MyMoneyCurrency>::ConstIterator it;
-
-  for(it = m_currencyList.begin(); it != m_currencyList.end(); ++it) {
-    list.append(*it);
-  }
-  return list;
+  return m_currencyList.values();
 }
 
 const QValueList<MyMoneyReport> MyMoneySeqAccessMgr::reportList(void) const
@@ -1649,3 +1637,52 @@ void MyMoneySeqAccessMgr::removeReport( const MyMoneyReport& report )
   m_reportList.remove(it);
   touch();
 }
+
+void MyMoneySeqAccessMgr::addPrice(const MyMoneyPrice& price)
+{
+  MyMoneyPriceEntries::ConstIterator it;
+  it = m_priceList[MyMoneySecurityPair(price.from(), price.to())].find(price.date());
+
+  // do not replace, if the information did not change.
+  if(it != m_priceList[MyMoneySecurityPair(price.from(), price.to())].end()) {
+    if((*it).rate() == price.rate()
+    && (*it).source() == price.source())
+      return;
+  }
+
+  m_priceList[MyMoneySecurityPair(price.from(), price.to())][price.date()] = price;
+  touch();
+}
+
+void MyMoneySeqAccessMgr::removePrice(const MyMoneyPrice& price)
+{
+  m_priceList[MyMoneySecurityPair(price.from(), price.to())].remove(price.date());
+  touch();
+}
+
+const MyMoneyPriceList MyMoneySeqAccessMgr::priceList(void) const
+{
+  return m_priceList;
+}
+
+const MyMoneyPrice MyMoneySeqAccessMgr::price(const QCString& fromId, const QCString& toId, const QDate& date, const bool exactDate) const
+{
+  MyMoneyPrice rc;
+  MyMoneyPriceEntries::ConstIterator it;
+
+  for(it = m_priceList[MyMoneySecurityPair(fromId, toId)].begin(); it != m_priceList[MyMoneySecurityPair(fromId, toId)].end(); ++it) {
+    if(date < it.key())
+      break;
+
+    if(exactDate) {
+      if(date == it.key())
+        rc = *it;
+
+    } else {
+      if(date >= it.key())
+        rc = *it;
+    }
+  }
+  return rc;
+}
+

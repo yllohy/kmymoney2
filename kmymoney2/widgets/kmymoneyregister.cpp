@@ -35,7 +35,8 @@
 kMyMoneyRegister::kMyMoneyRegister(int maxRpt, QWidget *parent, const char *name )
   : QTable(parent, name),
     m_ledgerLens(true),
-    m_maxRpt(maxRpt)
+    m_maxRpt(maxRpt),
+    m_blinkTimer(parent)
 {
   m_cellFont = KMyMoneyUtils::cellFont();
   setFont(m_cellFont);
@@ -43,9 +44,14 @@ kMyMoneyRegister::kMyMoneyRegister(int maxRpt, QWidget *parent, const char *name
   m_currentTransactionIndex = 0;
   m_inlineEditMode = false;
   setSelectionMode(QTable::SingleRow);
-  resize(670,200);
+  // resize(670,200);
   m_editWidgets.clear();
   m_parent = 0;
+  m_errorColor = QColor(255, 0, 0);
+  m_lastErrorColor = m_errorColor;
+
+  m_blinkTimer.start(500);       // setup blink frequency to one hertz
+  connect(&m_blinkTimer, SIGNAL(timeout()), SLOT(slotBlinkInvalid()));
 }
 
 kMyMoneyRegister::~kMyMoneyRegister()
@@ -112,8 +118,8 @@ void kMyMoneyRegister::readConfig(void)
     QTable::setNumRows(rows);
   }
 
-  // m_rpt = config->readEntry("RowCount", "1").toInt();
-  config->deleteEntry("RowCount");
+  // m_rpt = config->readEntry("", "1").toInt();
+  config->deleteEntry("");
   if(config->readBoolEntry("ShowRegisterDetailed", false))
     m_rpt = m_maxRpt;
   else
@@ -293,7 +299,7 @@ void kMyMoneyRegister::contentsMouseReleaseEvent( QMouseEvent* e )
 */
 }
 
-bool kMyMoneyRegister::setCurrentTransactionRow(const int row)
+int kMyMoneyRegister::transactionIndex(const int row) const
 {
   int firstRow,       // first row occupied by current transaction
       lastRow;        // last row occupied by current transaction
@@ -313,7 +319,12 @@ bool kMyMoneyRegister::setCurrentTransactionRow(const int row)
       idx = (row - maxRpt() + m_rpt) / m_rpt;
     }
   }
-  return setCurrentTransactionIndex(idx);
+  return idx;
+}
+
+bool kMyMoneyRegister::setCurrentTransactionRow(const int row)
+{
+  return setCurrentTransactionIndex(transactionIndex(row));
 }
 
 
@@ -556,12 +567,36 @@ void kMyMoneyRegister::updateHeaders(void)
   horizontalHeader()->setFont(m_headerFont);
 }
 
-void kMyMoneyRegister::slotSetErrorColor(const bool state)
+void kMyMoneyRegister::slotBlinkInvalid(void)
 {
-  if(state == false)
-    m_errorColor = m_textColor;
-  else
+  // setup the color invalid transactions will be drawn in
+  if(m_errorColor == m_textColor) {
     m_errorColor = QColor(255, 0, 0);
+  } else {
+    m_errorColor = m_textColor;
+  }
+
+  // now search for invalid transactions in the visible area
+  // and force to repaint them
+
+  if(m_parent && isVisible()) {
+    int c, w = 0;
+    for(c = 0; c < numCols(); ++c) {
+      w += columnWidth(c);
+    }
+    QSize size(w, rowHeight(0));
+
+    for(int r = 0; r < numRows(); ++r) {
+      MyMoneyTransaction* t = m_parent->transaction(transactionIndex(r));
+      if(t && !t->splitSum().isZero()) {
+        QRect cg(QPoint(0,rowPos(r)), size);
+        // following line taken from QTable::repaintCell()
+        QRect pr( QPoint( cg.x() - 2, cg.y() - 2 ),
+                QSize( cg.width() + 4, cg.height() + 4 ) );
+        repaintContents(pr, false);
+      }
+    }
+  }
 }
 
 void kMyMoneyRegister::setCurrentDateIndex(const int idx)

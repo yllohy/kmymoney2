@@ -32,7 +32,7 @@
 // Project Includes
 
 #include "imymoneyserialize.h"
-#include "../mymoneyequity.h"
+#include "../mymoneysecurity.h"
 
 /**
   * @author Thomas Baumgart
@@ -40,7 +40,7 @@
 
 class MyMoneyStorageDump
 {
-public: 
+public:
   MyMoneyStorageDump();
   ~MyMoneyStorageDump();
 
@@ -49,11 +49,12 @@ public:
 
 private:
   void dumpTransaction(QTextStream& s, IMyMoneyStorage* storage, const MyMoneyTransaction& it_t);
-  void dumpPriceHistory(QTextStream& s, const equity_price_history history);
+  // void dumpPriceHistory(QTextStream& s, const equity_price_history history);
   const QString occurenceToString(const MyMoneySchedule::occurenceE occurence);
   const QString scheduleTypeToString(MyMoneySchedule::typeE type);
   const QString paymentMethodToString(MyMoneySchedule::paymentTypeE paymentType);
   const QString reconcileToString(MyMoneySplit::reconcileFlagE flag) const;
+  const QString securityTypeToString(const MyMoneySecurity::eSECURITYTYPE securityType);
 };
 
 #endif

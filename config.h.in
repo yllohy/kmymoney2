@@ -27,6 +27,9 @@
 /* Define if you have a working libpthread (will enable threaded code) */
 #undef HAVE_LIBPTHREAD
 
+/* define if you have libuuid */
+#undef HAVE_LIBUUID
+
 /* Define if you have libxml2 */
 #undef HAVE_LIBXML2
 

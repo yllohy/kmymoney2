@@ -294,13 +294,13 @@ void KPayeesView::showTransactions(void)
     QString txt;
     if(s.action() == MyMoneySplit::ActionAmortization) {
       if(acc.accountType() == MyMoneyAccount::Loan) {
-        if(s.value() > 0) {
+        if(s.value().isPositive()) {
           txt = i18n("Amortization of %1").arg(acc.name());
         } else {
           txt = i18n("Payment to %1").arg(acc.name());
         }
       } else if(acc.accountType() == MyMoneyAccount::AssetLoan) {
-        if(s.value() < 0) {
+        if(s.value().isNegative()) {
           txt = i18n("Amortization of %1").arg(acc.name());
         } else {
           txt = i18n("Payment to %1").arg(acc.name());
@@ -309,7 +309,7 @@ void KPayeesView::showTransactions(void)
         txt = i18n("Loan payment from %1").arg(acc.name());
       }
     } else if(s.action() == MyMoneySplit::ActionTransfer) {
-      if(s.value() >= 0) {
+      if(!s.value().isNegative()) {
         txt = i18n("Transfer to %1").arg(acc.name());
       } else {
         txt = i18n("Transfer from %1").arg(acc.name());

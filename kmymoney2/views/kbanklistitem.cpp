@@ -54,11 +54,11 @@ void KCategoryListItem::update(const QCString& accountId)
     return;
 
   MyMoneyFile*  file = MyMoneyFile::instance();
-  MyMoneyCurrency baseCurrency = file->baseCurrency();
+  MyMoneySecurity baseCurrency = file->baseCurrency();
 
   try {
     MyMoneyAccount acc = file->account(accountId);
-    MyMoneyCurrency currency = file->currency(acc.currencyId());
+    MyMoneySecurity currency = file->currency(acc.currencyId());
     int prec = MyMoneyMoney::denomToPrec((acc.accountType() == MyMoneyAccount::Cash)
                  ? currency.smallestCashFraction()
                  : currency.smallestAccountFraction());
@@ -78,6 +78,8 @@ void KCategoryListItem::update(const QCString& accountId)
           setText(0, i18n("Income"));
         } else if(acc.id() == file->expense().id()) {
           setText(0, i18n("Expense"));
+        } else if(acc.id() == file->equity().id()) {
+          setText(0, i18n("Equity"));
         }
       } else
         setText(0, acc.name());
@@ -150,6 +152,7 @@ void KAccountListItem::newAccount(const MyMoneyAccount& account)
   MyMoneyFile*  file = MyMoneyFile::instance();
 
   setAccountID(account.id());
+  setAccountType(account.accountType());
 
   file->attach(account.id(), this);
   setPixmap(0, *accountPixmap);
@@ -176,30 +179,36 @@ KAccountListItem::~KAccountListItem()
   MyMoneyFile::instance()->detach(accountID(), this);
 }
 
+int KAccountListItem::compare(QListViewItem* i, int col, bool ascending) const
+{
+  KAccountListItem* item = static_cast<KAccountListItem*>(i);
+  if(col != 0 || MyMoneyAccount::accountGroup(accountType()) == MyMoneyAccount::accountGroup(item->accountType()))
+    return KListViewItem::compare(i, col, ascending);
+
+  return MyMoneyAccount::accountGroup(accountType()) - MyMoneyAccount::accountGroup(item->accountType());
+}
+
 void KAccountListItem::update(const QCString& accountId)
 {
   if(m_suspendUpdate == true)
     return;
 
   MyMoneyFile*  file = MyMoneyFile::instance();
-  MyMoneyCurrency baseCurrency = file->baseCurrency();
-  MyMoneyEquity equity;
-  MyMoneyCurrency currency;
-  MyMoneyEquity* eq;
+  MyMoneySecurity baseCurrency = file->baseCurrency();
+  MyMoneySecurity security;
   int prec;
 
   try {
     MyMoneyAccount acc = file->account(accountId);
     if(acc.accountType() == MyMoneyAccount::Stock) {
-      equity = file->equity(acc.currencyId());
-      eq = &equity;
-      prec = 2;
+      security = file->security(acc.currencyId());
+      prec = MyMoneyMoney::denomToPrec(security.smallestAccountFraction());
+
     } else {
-      currency = file->currency(acc.currencyId());
+      security = file->currency(acc.currencyId());
       prec = MyMoneyMoney::denomToPrec((acc.accountType() == MyMoneyAccount::Cash)
-                ? currency.smallestCashFraction()
-                : currency.smallestAccountFraction());
-      eq = &currency;
+                ? security.smallestCashFraction()
+                : security.smallestAccountFraction());
     }
 
     try {
@@ -217,6 +226,8 @@ void KAccountListItem::update(const QCString& accountId)
           setText(0, i18n("Income"));
         } else if(acc.id() == file->expense().id()) {
           setText(0, i18n("Expense"));
+        } else if(acc.id() == file->equity().id()) {
+          setText(0, i18n("Equity"));
         }
         value = file->totalValue(accountId);
         m_valueValid = file->totalValueValid(accountId);
@@ -248,8 +259,8 @@ void KAccountListItem::update(const QCString& accountId)
         default:
           break;
       }
-      if(eq->id() != baseCurrency.id())
-        setText(2, balance.formatMoney(eq->tradingSymbol(), prec));
+      if(security.id() != baseCurrency.id())
+        setText(2, balance.formatMoney(security.tradingSymbol(), prec));
 
       setText(3, value.formatMoney(baseCurrency.tradingSymbol(), prec));
 
@@ -369,6 +380,7 @@ KAccountIconItem::KAccountIconItem(QIconView* parent, const MyMoneyAccount& acco
   MyMoneyFile*  file = MyMoneyFile::instance();
 
   setAccountID(account.id());
+  setAccountType(account.accountType());
 
   file->attach(account.id(), this);
 }

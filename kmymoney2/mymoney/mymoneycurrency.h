@@ -32,8 +32,8 @@
 #ifndef MYMONEYCURRENCY_H
 #define MYMONEYCURRENCY_H
 
-#ifndef MYMONEYEQUITY_H
-#include "mymoneyequity.h"
+#ifndef MYMONEYSECURITY_H
+#include "mymoneysecurity.h"
 #endif
 
 /**

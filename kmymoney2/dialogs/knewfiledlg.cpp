@@ -14,6 +14,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "kdecompat.h"
+
 // ----------------------------------------------------------------------------
 // QT Includes
 
@@ -26,14 +28,15 @@
 
 #include <kglobal.h>
 #include <klocale.h>
-#if QT_VERSION > 300
 #include <kstandarddirs.h>
-#else
-#include <kstddirs.h>
-#endif
 #include <kstdguiitem.h>
 #include <kpushbutton.h>
 #include <kmessagebox.h>
+
+#if KDE_IS_VERSION(3,1,90)
+#include <kabc/addressee.h>
+#include <kabc/stdaddressbook.h>
+#endif
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -44,19 +47,7 @@
 KNewFileDlg::KNewFileDlg(QWidget *parent, const char *name, const char *title)
   : KNewFileDlgDecl(parent,name,true)
 {
-  okBtn->setGuiItem(KStdGuiItem::ok());
-  cancelBtn->setGuiItem(KStdGuiItem::cancel());
-
-  okBtn->setName(KAppTest::widgetName(this, "KPushButton/Ok"));
-  qDebug("Name is %s", okBtn->name());
-
-  if (title)
-    setCaption(title);
-
-  userNameEdit->setFocus();
-
-  connect(cancelBtn, SIGNAL(clicked()), this, SLOT(reject()));
-  connect(okBtn, SIGNAL(clicked()), this, SLOT(okClicked()));
+  init(title);
 }
 
 KNewFileDlg::KNewFileDlg(QString userName, QString userStreet,
@@ -64,9 +55,6 @@ KNewFileDlg::KNewFileDlg(QString userName, QString userStreet,
   QString userEmail, QWidget *parent, const char *name, const char *title)
   : KNewFileDlgDecl(parent,name,true)
 {
-  okBtn->setGuiItem(KStdGuiItem::ok());
-  cancelBtn->setGuiItem(KStdGuiItem::cancel());
-
   userNameEdit->setText(userName);
   streetEdit->setText(userStreet);
   townEdit->setText(userTown);
@@ -75,8 +63,15 @@ KNewFileDlg::KNewFileDlg(QString userName, QString userStreet,
   telephoneEdit->setText(userTelephone);
   emailEdit->setText(userEmail);
 
+  init(title);
+}
+
+void KNewFileDlg::init(const char* title)
+{
+  okBtn->setGuiItem(KStdGuiItem::ok());
+  cancelBtn->setGuiItem(KStdGuiItem::cancel());
+
   okBtn->setName(KAppTest::widgetName(this, "KPushButton/Ok"));
-  qDebug("Name is %s", okBtn->name());
   if (title)
     setCaption(title);
 
@@ -84,6 +79,7 @@ KNewFileDlg::KNewFileDlg(QString userName, QString userStreet,
 
   connect(cancelBtn, SIGNAL(clicked()), this, SLOT(reject()));
   connect(okBtn, SIGNAL(clicked()), this, SLOT(okClicked()));
+  connect(kabcBtn, SIGNAL(clicked()), this, SLOT(loadFromKABC()));
 }
 
 KNewFileDlg::~KNewFileDlg(){
@@ -100,4 +96,30 @@ void KNewFileDlg::okClicked()
   userEmailText = emailEdit->text();
 
   accept();
+}
+
+void KNewFileDlg::loadFromKABC(void)
+{
+#if KDE_IS_VERSION( 3, 1, 90 )
+  KABC::StdAddressBook *ab = static_cast<KABC::StdAddressBook*>
+    ( KABC::StdAddressBook::self() );
+  if ( !ab )
+    return;
+
+  KABC::Addressee addr = ab->whoAmI();
+  if ( addr.isEmpty() )
+   return;
+
+  userNameEdit->setText( addr.formattedName() );
+  emailEdit->setText( addr.preferredEmail() );
+
+  KABC::PhoneNumber phone = addr.phoneNumber( KABC::PhoneNumber::Home );
+  telephoneEdit->setText( phone.number() );
+
+  KABC::Address a = addr.address( KABC::Address::Home );
+  countyEdit->setText( a.country() + " / " + a.region() );
+  postcodeEdit->setText( a.postalCode() );
+  townEdit->setText( a.locality() );
+  streetEdit->setText( a.street() );
+#endif
 }

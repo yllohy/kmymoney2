@@ -1,5 +1,5 @@
 /***************************************************************************
-                          imymoneystoragestream.h  -  description
+                          mymoneyseqaccessmgr.h  -  description
                              -------------------
     begin                : Sun May 5 2002
     copyright            : (C) 2000-2002 by Michael Edwardes
@@ -33,7 +33,7 @@
 #include "imymoneyserialize.h"
 
 /**
-  *@author Thomas Baumgart
+  * @author Thomas Baumgart
   */
 
 /**
@@ -84,6 +84,7 @@ public:
 #define STD_ACC_ASSET     "AStd::Asset"
 #define STD_ACC_EXPENSE   "AStd::Expense"
 #define STD_ACC_INCOME    "AStd::Income"
+#define STD_ACC_EQUITY    "AStd::Equity"
 
   MyMoneySeqAccessMgr();
   ~MyMoneySeqAccessMgr();
@@ -124,7 +125,7 @@ public:
     * @return reference to MyMoneyAccount object. An exception is thrown
     *         if the id is unknown
     */
-  const MyMoneyAccount& account(const QCString id) const;
+  const MyMoneyAccount account(const QCString id) const;
 
   /**
     * This method is used to check whether a given
@@ -147,6 +148,7 @@ public:
     *           @li STD_ACC_ASSET
     *           @li STD_ACC_EXPENSE
     *           @li STD_ACC_INCOME
+    *           @li STD_ACC_EQUITY
     *
     * @param name QString reference to the name to be set
     *
@@ -528,20 +530,26 @@ public:
     */
   const MyMoneyAccount income(void) const { return account(STD_ACC_INCOME); };
 
+  /**
+    * This method is used to return the standard equity account
+    * @return MyMoneyAccount equity account(group)
+    */
+  const MyMoneyAccount equity(void) const { return account(STD_ACC_EQUITY); };
+
   virtual void loadAccount(const MyMoneyAccount& acc);
   virtual void loadTransaction(const MyMoneyTransaction& tr);
   virtual void loadInstitution(const MyMoneyInstitution& inst);
   virtual void loadPayee(const MyMoneyPayee& payee);
   virtual void loadSchedule(const MyMoneySchedule& sched);
-  virtual void loadEquity(const MyMoneyEquity& equity);
-  virtual void loadCurrency(const MyMoneyCurrency& currency);
+  virtual void loadSecurity(const MyMoneySecurity& security);
+  virtual void loadCurrency(const MyMoneySecurity& currency);
 
   virtual void loadAccountId(const unsigned long id);
   virtual void loadTransactionId(const unsigned long id);
   virtual void loadPayeeId(const unsigned long id);
   virtual void loadInstitutionId(const unsigned long id);
   virtual void loadScheduleId(const unsigned long id);
-  virtual void loadEquityId(const unsigned long id);
+  virtual void loadSecurityId(const unsigned long id);
   virtual void loadReportId(const unsigned long id);
 
   virtual const unsigned long accountId(void) { return m_nextAccountID; };
@@ -549,7 +557,7 @@ public:
   virtual const unsigned long payeeId(void) { return m_nextPayeeID; };
   virtual const unsigned long institutionId(void) { return m_nextInstitutionID; };
   virtual const unsigned long scheduleId(void) { return m_nextScheduleID; };
-  virtual const unsigned long equityId(void) { return m_nextEquityID; };
+  virtual const unsigned long securityId(void) { return m_nextSecurityID; };
   virtual const unsigned long reportId(void) { return m_nextReportID; };
 
 
@@ -630,27 +638,27 @@ public:
   const MyMoneySchedule schedule(const QCString& id) const;
 
   /**
-    * This method is used to create a new equity object.  The ID will be created
-    * automatically. The object passed with the parameter @p equity is modified
+    * This method is used to create a new security object.  The ID will be created
+    * automatically. The object passed with the parameter @p security is modified
     * to contain the assigned id.
     *
     * An exception will be thrown upon error conditions.
     *
-    * @param account MyMoneyEquity filled with data
+    * @param account MyMoneySecurity filled with data
     */
-  virtual void addEquity(MyMoneyEquity& equity);
+  virtual void addSecurity(MyMoneySecurity& security);
 
 #if 0
   /**
-    * This method is used to add a new equity object to the engine.
+    * This method is used to add a new security object to the engine.
     * The ID of the object is the trading symbol, so there is no need for an additional
     * ID since the symbol is guaranteed to be unique.
     *
     * An exception will be thrown upon erronous situations.
     *
-    * @param equity reference to the MyMoneyEquity object
+    * @param security reference to the MyMoneySecurity object
     */
-  void addEquity(MyMoneyEquity& equity);
+  void addSecurity(MyMoneySecurity& security);
 #endif
 
   /**
@@ -659,19 +667,19 @@ public:
     *
     * An exception will be thrown upon erronous situations.
     *
-    * @param equity reference to the MyMoneyEquity object to be updated
+    * @param security reference to the MyMoneySecurity object to be updated
     */
-  void modifyEquity(const MyMoneyEquity& equity);
+  void modifySecurity(const MyMoneySecurity& security);
 
   /**
-    * This method is used to remove an existing MyMoneyEquity object
+    * This method is used to remove an existing MyMoneySecurity object
     * from the engine.
     *
     * An exception will be thrown upon erronous situations.
     *
-    * @param equity reference to the MyMoneyEquity object to be removed
+    * @param security reference to the MyMoneySecurity object to be removed
     */
-  void removeEquity(const MyMoneyEquity& equity);
+  void removeSecurity(const MyMoneySecurity& security);
 
   /**
     * This method is used to retrieve a single MyMoneySchedule object.
@@ -682,14 +690,14 @@ public:
     * @param id QCString containing the id of the MyMoneySchedule object
     * @return MyMoneySchedule object
     */
-  const MyMoneyEquity equity(const QCString& id) const;
+  const MyMoneySecurity security(const QCString& id) const;
 
 
   /**
-    * This method returns a list of equity objects that the engine has
+    * This method returns a list of security objects that the engine has
     * knowledge of.
     */
-  const QValueList<MyMoneyEquity> equityList(void) const;
+  const QValueList<MyMoneySecurity> securityList(void) const;
 
   /**
     * This method is used to add a new currency object to the engine.
@@ -700,7 +708,7 @@ public:
     *
     * @param currency reference to the MyMoneyCurrency object
     */
-  void addCurrency(const MyMoneyCurrency& currency);
+  void addCurrency(const MyMoneySecurity& currency);
 
   /**
     * This method is used to modify an existing MyMoneyCurrency
@@ -710,7 +718,7 @@ public:
     *
     * @param currency reference to the MyMoneyCurrency object
     */
-  void modifyCurrency(const MyMoneyCurrency& currency);
+  void modifyCurrency(const MyMoneySecurity& currency);
 
   /**
     * This method is used to remove an existing MyMoneyCurrency object
@@ -720,7 +728,7 @@ public:
     *
     * @param currency reference to the MyMoneyCurrency object
     */
-  void removeCurrency(const MyMoneyCurrency& currency);
+  void removeCurrency(const MyMoneySecurity& currency);
 
   /**
     * This method is used to retrieve a single MyMoneySchedule object.
@@ -731,7 +739,7 @@ public:
     * @param id QCString containing the id of the MyMoneySchedule object
     * @return MyMoneySchedule object
     */
-  const MyMoneyCurrency currency(const QCString& id) const;
+  const MyMoneySecurity currency(const QCString& id) const;
 
   /**
     * This method is used to retrieve the list of all currencies
@@ -741,7 +749,7 @@ public:
     *
     * @return QValueList of all MyMoneyCurrency objects.
     */
-  const QValueList<MyMoneyCurrency> currencyList(void) const;
+  const QValueList<MyMoneySecurity> currencyList(void) const;
 
   /**
     * This method is used to extract a list of scheduled transactions
@@ -856,6 +864,26 @@ public:
     */
   void removeReport(const MyMoneyReport& report);
 
+  /**
+    * This method adds/replaces a price to/from the price list
+    */
+  void addPrice(const MyMoneyPrice& price);
+
+  /**
+    * This method removes a price from the price list
+    */
+  void removePrice(const MyMoneyPrice& price);
+
+  /**
+    * This method retrieves a price from the price list
+    */
+  const MyMoneyPrice price(const QCString& fromId, const QCString& toId, const QDate& date, const bool exactDate) const;
+
+  /**
+    * This method returns a list of all price entries.
+    */
+  const MyMoneyPriceList priceList(void) const;
+
 private:
 
   static const int INSTITUTION_ID_SIZE = 6;
@@ -863,7 +891,7 @@ private:
   static const int TRANSACTION_ID_SIZE = 18;
   static const int PAYEE_ID_SIZE = 6;
   static const int SCHEDULE_ID_SIZE = 6;
-  static const int EQUITY_ID_SIZE = 6;
+  static const int SECURITY_ID_SIZE = 6;
   static const int REPORT_ID_SIZE = 6;
 
   static const int YEAR_SIZE = 4;
@@ -970,11 +998,11 @@ private:
   unsigned long m_nextScheduleID;
 
   /**
-    * The member variable m_nextEquityID keeps the number that will be
-    * assigned to the next equity object created.  It is maintained by
-    * nextEquityID()
+    * The member variable m_nextSecurityID keeps the number that will be
+    * assigned to the next security object created.  It is maintained by
+    * nextSecurityID()
     */
-  unsigned long m_nextEquityID;
+  unsigned long m_nextSecurityID;
 
   unsigned long m_nextReportID;
 
@@ -1021,20 +1049,22 @@ private:
   QMap<QCString, MyMoneySchedule> m_scheduleList;
 
   /**
-    * A list containing all the equity information objects.  Each object
+    * A list containing all the security information objects.  Each object
     * can represent a stock, bond, or mutual fund.  It contains a price
     * history that a user can add entries to.  The price history will be used
     * to determine the cost basis for sales, as well as the source of
-    * information for reports in a equity account.
+    * information for reports in a security account.
     */
-  QMap<QCString, MyMoneyEquity> m_equitiesList;
+  QMap<QCString, MyMoneySecurity> m_securitiesList;
 
   /**
     * A list containing all the currency information objects.
     */
-  QMap<QCString, MyMoneyCurrency> m_currencyList;
+  QMap<QCString, MyMoneySecurity> m_currencyList;
 
   QMap<QCString, MyMoneyReport> m_reportList;
+
+  MyMoneyPriceList              m_priceList;
 
   /**
     * This member signals if the file has been modified or not
@@ -1085,10 +1115,10 @@ private:
   const QCString nextScheduleID(void);
 
   /**
-    * This method is used to get the next valid ID for an equity object.
-    * @return id for an equity object
+    * This method is used to get the next valid ID for an security object.
+    * @return id for an security object
     */
-  const QCString nextEquityID(void);
+  const QCString nextSecurityID(void);
 
   const QCString nextReportID(void);
 

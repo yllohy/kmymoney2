@@ -71,8 +71,9 @@
 #include "dialogs/mymoneyqifprofileeditor.h"
 #include "dialogs/kimportverifydlg.h"
 #include "dialogs/kenterscheduledialog.h"
-#include "dialogs/kcurrencyeditdlg.h"
+#include "dialogs/kmymoneypricedlg.h"
 #include "dialogs/kequitypriceupdatedlg.h"
+#include "dialogs/ksecuritylisteditor.h"
 
 #include "views/kmymoneyview.h"
 
@@ -210,7 +211,10 @@ void KMyMoney2App::initActions()
   actionLoadTemplate = new KAction(i18n("Account Template ..."), "", 0, this, SLOT(slotLoadAccountTemplates()), actionCollection(), "file_import_template");
   actionQifExport = new KAction(i18n("QIF ..."), "", 0, this, SLOT(slotQifExport()), actionCollection(), "file_export_qif");
   new KAction(i18n("Consistency Check"), "", 0, this, SLOT(slotFileConsitencyCheck()), actionCollection(), "file_consistency_check");
-  new KAction(i18n("Currencies ..."), "", 0, this, SLOT(slotCurrencyDialog()), actionCollection(), "tool_currency_dialog");
+
+  new KAction(i18n("Securities ..."), "", 0, this, SLOT(slotSecurityEditor()), actionCollection(), "tool_security_editor");
+
+  new KAction(i18n("Prices ..."), "", 0, this, SLOT(slotPriceDialog()), actionCollection(), "tool_currency_dialog");
   new KAction(i18n("Update Stock and Currency Prices..."), "", 0, this, SLOT(slotEquityPriceUpdate()), actionCollection(), "equity_price_update");
 
   // The Settings Menu
@@ -492,7 +496,7 @@ const bool KMyMoney2App::slotFileSaveAs()
       newName.append(".kmy");
     }
 
-    // If this is the anonymous file export, just save it, don't actually take the 
+    // If this is the anonymous file export, just save it, don't actually take the
     // name, or remember it!
     if (newName.right(9).lower() == ".anon.xml")
     {
@@ -500,12 +504,12 @@ const bool KMyMoney2App::slotFileSaveAs()
     }
     else
     {
-      
+
       QFileInfo saveAsInfo(newName);
-  
+
       fileName = newName;
       rc = myMoneyView->saveFile(newName);
-  
+
       //write the directory used for this file as the default one for next time.
       writeLastUsedDir(newName);
       writeLastUsedFile(newName);
@@ -876,7 +880,7 @@ void KMyMoney2App::slotStatementImport()
   if(dialog->exec() == QDialog::Accepted)
   {
     result = slotStatementImport(dialog->selectedURL().path());
-    
+
 /*    QFile f( dialog->selectedURL().path() );
     f.open( IO_ReadOnly );
     QString error = "Unable to parse file";
@@ -926,19 +930,19 @@ bool KMyMoney2App::slotOfxStatementImport(const MyMoneyOfxStatement& ofx)
   bool hasstatements = (ofx.begin() != ofx.end());
   bool ok = true;
   bool abort = false;
-  
+
   if ( ofx.errors().count() )
   {
     if ( KMessageBox::warningContinueCancelList(this,i18n("The following errors were returned from your bank"),ofx.errors(),i18n("OFX Errors")) == KMessageBox::Cancel )
       abort = true;
   }
-  
+
   if ( ofx.warnings().count() )
   {
     if ( KMessageBox::warningContinueCancelList(this,i18n("The following warnings were returned from your bank"),ofx.warnings(),i18n("OFX Warnings"),KStdGuiItem::cont(),"ofxwarnings") == KMessageBox::Cancel )
       abort = true;
   }
-  
+
   QValueList<MyMoneyStatement>::const_iterator it_s = ofx.begin();
   while ( it_s != ofx.end() && !abort )
   {
@@ -957,7 +961,7 @@ bool KMyMoney2App::slotOfxStatementImport(const QString& url)
     result = slotOfxStatementImport(s);
   else
     QMessageBox::critical( this, i18n("Invalid OFX"), i18n("Error importing %1: This file is not a valid OFX file.").arg(url), QMessageBox::Ok, 0 );
-  
+
   return result;
 }
 
@@ -969,7 +973,7 @@ bool KMyMoney2App::slotStatementImport(const QString& url)
     result = slotStatementImport(s);
   else
     QMessageBox::critical( this, i18n("Invalid Statement"), i18n("Error importing %1: This file is not a valid KMM statement file.").arg(url), QMessageBox::Ok, 0 );
-  
+
   return result;
 }
 
@@ -1421,10 +1425,13 @@ void KMyMoney2App::update(const QCString& /* id */)
   updateCaption();
 }
 
-void KMyMoney2App::slotCurrencyDialog(void)
+void KMyMoney2App::slotPriceDialog(void)
 {
+#if 0
   KCurrencyEditDlg dlg;
-
+#else
+  KMyMoneyPriceDlg dlg(this, "Price Editor");
+#endif
   dlg.exec();
 
   myMoneyView->slotRefreshViews();
@@ -1667,8 +1674,8 @@ const QCStringList KMyMoney2App::instanceList(void) const
 
 void KMyMoney2App::slotEquityPriceUpdate()
 {
-  KEquityPriceUpdateDlg *pDlg = new KEquityPriceUpdateDlg(this);
-  pDlg->exec();
+  KEquityPriceUpdateDlg dlg(this);
+  dlg.exec();
 }
 
 void KMyMoney2App::slotAccountNew(void)
@@ -1728,4 +1735,10 @@ void KMyMoney2App::slotEnableMessages(void)
 {
   KMessageBox::enableAllMessages();
   KMessageBox::information(this, i18n("All messages have been enabled."), i18n("All messages"));
+}
+
+void KMyMoney2App::slotSecurityEditor(void)
+{
+  KSecurityListEditor dlg(this, "KSecurityListEditor");
+  dlg.exec();
 }

@@ -40,8 +40,8 @@ namespace reports {
 /**
   * Calculates a query of information about the transaction database.
   *
-  * This is a middle-layer class, between the UI and the engine.  The 
-  * MyMoneyReport class holds only the CONFIGURATION parameters.  This 
+  * This is a middle-layer class, between the UI and the engine.  The
+  * MyMoneyReport class holds only the CONFIGURATION parameters.  This
   * class actually does the work of retrieving the data from the engine
   * and formatting it for the user.
   *
@@ -59,7 +59,7 @@ public:
   void dump( const QString& file, const QString& context=QString() ) const;
 public:
   /**
-    * Contains a single row in the table.  
+    * Contains a single row in the table.
     *
     * Each column is a key/value pair, both strings.  This class is just
     * a QMap with the added ability to specify which columns you'd like to
@@ -104,17 +104,19 @@ public:
   CashFlowListItem(void) {}
   CashFlowListItem( const QDate& _date, const MyMoneyMoney& _value ): m_date(_date), m_value(_value) {}
   bool operator<( const CashFlowListItem _second ) const { return m_date < _second.m_date; }
+  bool operator<=( const CashFlowListItem _second ) const { return m_date <= _second.m_date; }
+  bool operator>( const CashFlowListItem _second ) const { return m_date > _second.m_date; }
   const QDate& date( void ) const { return m_date; }
   const MyMoneyMoney& value( void ) const { return m_value; }
   MyMoneyMoney NPV( double _rate ) const;
-  
+
   static void setToday( const QDate& _today ) { m_sToday = _today; }
 
 private:
   QDate m_date;
   MyMoneyMoney m_value;
-  
-  static QDate m_sToday;  
+
+  static QDate m_sToday;
 };
 
 class CashFlowList: public QValueList<CashFlowListItem>
@@ -127,7 +129,7 @@ public:
   MyMoneyMoney total(void) const;
   void dumpDebug(void) const;
 protected:
-  const CashFlowListItem& mostRecent(void) const;  
+  const CashFlowListItem& mostRecent(void) const;
 };
 
 }

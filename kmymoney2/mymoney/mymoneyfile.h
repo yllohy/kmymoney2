@@ -37,8 +37,8 @@
 #include "mymoneyobserver.h"
 #include "mymoneysubject.h"
 #include "mymoneykeyvaluecontainer.h"
-#include "mymoneyequity.h"
-#include "mymoneycurrency.h"
+#include "mymoneysecurity.h"
+#include "mymoneyprice.h"
 #include "mymoneyreport.h"
 
 /**
@@ -101,7 +101,7 @@ class MyMoneyTransactionFilter;
   * transaction() and transactionList() are used to retrieve
   * a single instance or a QValueList of MyMoneyTransaction objects.
   *
-  * The methods addEquity(), modifyEquitiy() and removeEquity()
+  * The methods addSecurity(), modifySecurity() and removeSecurity()
   * implement the general access to equities held in the engine.
   *
   * The methods addCurrency(), modifyCurrency() and removeCurrency()
@@ -263,6 +263,12 @@ public:
     * @return MyMoneyAccount income account(group)
     */
   const MyMoneyAccount income(void) const;
+
+  /**
+    * This method is used to return the standard equity account
+    * @return MyMoneyAccount equity account(group)
+    */
+  const MyMoneyAccount equity(void) const;
 
   /**
     * This method returns an indicator if the MyMoneyFile object has been
@@ -517,7 +523,7 @@ public:
     * is calculated by multiplying the balance with the currencies
     * price for today. The price for accounts held in the baseCurrency()
     * is 1. The same applies for prices that are not available (no entry
-    * in MyMoneyEquity::priceHistory() for the current date).
+    * in price list for the current date).
     *
     * See totalValueValid(const QCString&) for information about the
     * validity of the returned value.
@@ -533,7 +539,7 @@ public:
     * is calculated by multiplying the balance with the currencies
     * price for today. The price for accounts held in the baseCurrency()
     * is 1. The same applies for prices that are not available (no entry
-    * in MyMoneyEquity::priceHistory() for the current date).
+    * in price list for the current date).
     *
     * See accountValueValid(const QCString&) for information about the
     * validity of the returned value.
@@ -632,10 +638,10 @@ public:
     * Returns the account addressed by it's id.
     *
     * @param id id of the account to locate.
-    * @return reference to MyMoneyAccount object. An exception is thrown
+    * @return MyMoneyAccount object carrying the @p id. An exception is thrown
     *         if the id is unknown
     */
-  const MyMoneyAccount& account(const QCString& id) const;
+  const MyMoneyAccount account(const QCString& id) const;
 
   /**
     * This method returns a list of accounts inside a MyMoneyFile object.
@@ -966,10 +972,16 @@ public:
   static const QCString NotifyClassCurrency;
 
   /**
-    * MyMoneyFile::NotifyClassEquity
-    * is a special id that will be notified whenever any equity is changed
+    * MyMoneyFile::NotifyClassSecurity
+    * is a special id that will be notified whenever any security is changed
     */
-  static const QCString NotifyClassEquity;
+  static const QCString NotifyClassSecurity;
+
+  /**
+    * MyMoneyFile::NotifyClassPrice
+    * is a special id that will be notified whenever a price is changed
+    */
+  static const QCString NotifyClassPrice;
 
   /**
     * MyMoneyFile::NotifyClassReport
@@ -1004,15 +1016,15 @@ public:
                                               const QCStringList& accounts=QCStringList()) const;
 
   /**
-    * This method is used to add a new equity object to the engine.
+    * This method is used to add a new security object to the engine.
     * The ID of the object is the trading symbol, so there is no need for an additional
     * ID since the symbol is guaranteed to be unique.
     *
     * An exception will be thrown upon erronous situations.
     *
-    * @param equity reference to the MyMoneyEquity object
+    * @param security reference to the MyMoneySecurity object
     */
-  void addEquity(MyMoneyEquity& equity);
+  void addSecurity(MyMoneySecurity& security);
 
   /**
     * This method is used to modify an existing MyMoneySchedule
@@ -1020,32 +1032,37 @@ public:
     *
     * An exception will be thrown upon erronous situations.
     *
-    * @param equity reference to the MyMoneyEquity object to be updated
+    * @param security reference to the MyMoneySecurity object to be updated
     */
-  void modifyEquity(const MyMoneyEquity& equity);
+  void modifySecurity(const MyMoneySecurity& security);
 
   /**
-    * This method is used to remove an existing MyMoneyEquity object
+    * This method is used to remove an existing MyMoneySecurity object
     * from the engine.
     *
     * An exception will be thrown upon erronous situations.
     *
-    * @param equity reference to the MyMoneyEquity object to be removed
+    * @param security reference to the MyMoneySecurity object to be removed
     */
-  void removeEquity(const MyMoneyEquity& equity);
+  void removeSecurity(const MyMoneySecurity& security);
 
   /**
-    * This method is used to retrieve a single MyMoneySchedule object.
+    * This method is used to retrieve a single MyMoneySecurity object.
     * The id of the object must be supplied in the parameter @p id.
+    * If no security with the given id is found, then a corresponding
+    * currency is searched.
     *
     * An exception will be thrown upon erronous situations.
     *
-    * @param id QCString containing the id of the MyMoneySchedule object
-    * @return MyMoneySchedule object
+    * @param id QCString containing the id of the MyMoneySecurity object
+    * @return MyMoneySecurity object
     */
-  const MyMoneyEquity equity(const QCString& id) const;
+  const MyMoneySecurity security(const QCString& id) const;
 
-  const QValueList<MyMoneyEquity> equityList(void) const;
+  /**
+    * This method is used to retrieve a list of all MyMoneySecurity objects.
+    */
+  const QValueList<MyMoneySecurity> securityList(void) const;
 
   /**
     * This method is used to add a new currency object to the engine.
@@ -1054,29 +1071,29 @@ public:
     *
     * An exception will be thrown upon erronous situations.
     *
-    * @param currency reference to the MyMoneyCurrency object
+    * @param currency reference to the MyMoneySecurity object
     */
-  void addCurrency(const MyMoneyCurrency& currency);
+  void addCurrency(const MyMoneySecurity& currency);
 
   /**
-    * This method is used to modify an existing MyMoneyCurrency
+    * This method is used to modify an existing MyMoneySecurity
     * object.
     *
     * An exception will be thrown upon erronous situations.
     *
-    * @param currency reference to the MyMoneyCurrency object
+    * @param currency reference to the MyMoneySecurity object
     */
-  void modifyCurrency(const MyMoneyCurrency& currency);
+  void modifyCurrency(const MyMoneySecurity& currency);
 
   /**
-    * This method is used to remove an existing MyMoneyCurrency object
+    * This method is used to remove an existing MyMoneySecurity object
     * from the engine.
     *
     * An exception will be thrown upon erronous situations.
     *
-    * @param currency reference to the MyMoneyCurrency object
+    * @param currency reference to the MyMoneySecurity object
     */
-  void removeCurrency(const MyMoneyCurrency& currency);
+  void removeCurrency(const MyMoneySecurity& currency);
 
   /**
     * This method is used to retrieve a single MyMoneySchedule object.
@@ -1088,7 +1105,7 @@ public:
     * @param id QCString containing the id of the MyMoneySchedule object
     * @return MyMoneySchedule object
     */
-  const MyMoneyCurrency currency(const QCString& id) const;
+  const MyMoneySecurity currency(const QCString& id) const;
 
   /**
     * This method is used to retrieve the list of all currencies
@@ -1096,22 +1113,22 @@ public:
     *
     * An exception will be thrown upon erronous situations.
     *
-    * @return QValueList of all MyMoneyCurrency objects.
+    * @return QValueList of all MyMoneySecurity objects.
     */
-  const QValueList<MyMoneyCurrency> currencyList(void) const;
+  const QValueList<MyMoneySecurity> currencyList(void) const;
 
   /**
-    * This method retrieves a MyMoneyCurrency object representing
+    * This method retrieves a MyMoneySecurity object representing
     * the selected base currency. If the base currency is not
     * selected (e.g. due to a previous call to setBaseCurrency())
-    * a standard MyMoneyCurrency object will be returned. See
-    * MyMoneyCurrency() for details.
+    * a standard MyMoneySecurity object will be returned. See
+    * MyMoneySecurity() for details.
     *
     * An exception will be thrown upon erronous situations.
     *
-    * @return MyMoneyCurrency describing base currency
+    * @return MyMoneySecurity describing base currency
     */
-  const MyMoneyCurrency baseCurrency(void) const;
+  const MyMoneySecurity baseCurrency(void) const;
 
   /**
     * This method allows to select the base currency. It does
@@ -1123,7 +1140,7 @@ public:
     *
     * @param currency
     */
-  void setBaseCurrency(const MyMoneyCurrency& currency);
+  void setBaseCurrency(const MyMoneySecurity& currency);
 
   /**
     * This method is used to retrieve a price for a specific currency
@@ -1135,8 +1152,43 @@ public:
     * @param date the date for which the price should be returned (default = today)
     *
     * @return price found as MyMoneyMoney object
+    * @deprecated Use price interface instead
     */
-  const MyMoneyMoney currencyPrice(const QCString& currencyId, const QDate date = QDate::currentDate()) const;
+  const MyMoneyMoney currencyPrice(const QCString& currencyId, const QDate date = QDate::currentDate()) const __attribute__ ((deprecated));
+
+  /**
+    * This method adds/replaces a price to/from the price list
+    */
+  void addPrice(const MyMoneyPrice& price);
+
+  /**
+    * This method removes a price from the price list
+    */
+  void removePrice(const MyMoneyPrice& price);
+
+  /**
+    * This method is used to retrieve a price for a specific security
+    * on a specific date. If there is no price for this date, the last
+    * known price for this currency is used. If no price information
+    * is available, 1.0 will be returned as price.
+    *
+    * @param fromId the id of the currency in question
+    * @param toId the id of the currency to convert to (if emtpy, baseCurrency)
+    * @param date the date for which the price should be returned (default = today)
+    * @param exactDate if true, entry for date must exist, if false any price information
+    *                  with a date less or equal to @p date will be returned
+    *
+    * @return price found as MyMoneyPrice object
+    * @note This throws an exception when the base currency is not set and toId is empty
+    */
+  const MyMoneyPrice price(const QCString& fromId, const QCString& toId = QCString(), const QDate& date = QDate::currentDate(), const bool exactDate = false) const;
+
+  /**
+    * This method returns a list of all prices.
+    *
+    * @return MyMoneyPriceList of all MyMoneyPrice objects.
+    */
+  const MyMoneyPriceList priceList(void) const;
 
   /**
     * This method allows to interrogate the engine, if a known account
@@ -1210,6 +1262,50 @@ public:
     */
   void removeReport(const MyMoneyReport& report);
 
+  /**
+    * This method checks, if the given @p security is referenced
+    * by another engine object.
+    *
+    * @param security const reference to object to be checked
+    *
+    * @retval false @p security is not used
+    * @retval true @p security is used
+    */
+  const bool isReferenced(const MyMoneySecurity& security) const;
+
+  /**
+    * This method checks, if the given @p account is referenced
+    * by another engine object.
+    *
+    * @param account const reference to object to be checked
+    *
+    * @retval false @p account is not used
+    * @retval true @p account is used
+    */
+  const bool isReferenced(const MyMoneyAccount& account) const;
+
+  /**
+    * This method checks, if the given @p institution is referenced
+    * by another engine object.
+    *
+    * @param institution const reference to object to be checked
+    *
+    * @retval false @p institution is not used
+    * @retval true @p institution is used
+    */
+  const bool isReferenced(const MyMoneyInstitution& institution) const;
+
+  /**
+    * This method checks, if the given @p payee is referenced
+    * by another engine object.
+    *
+    * @param payee const reference to object to be checked
+    *
+    * @retval false @p payee is not used
+    * @retval true @p payee is used
+    */
+  const bool isReferenced(const MyMoneyPayee& payee) const;
+
 protected:
   /**
     * This is the constructor for a new empty file description
@@ -1219,6 +1315,7 @@ protected:
 private:
   const QCString locateSubAccount(const MyMoneyAccount& base, const QString& category) const;
 
+  void ensureDefaultCurrency(MyMoneyAccount& acc) const;
 
 private:
   /**

@@ -27,23 +27,24 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
-#include <qdom.h>
-#include <qdatastream.h>
-class QIODevice;
+// #include <qdom.h>
+// #include <qdatastream.h>
+// class QIODevice;
 
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "imymoneyserialize.h"
-#include "imymoneystorageformat.h"
+// #include "imymoneyserialize.h"
+// #include "imymoneystorageformat.h"
+#include "mymoneystoragexml.h"
 
 /**
-  *@author Kevin Tambascio (ktambascio@users.sourceforge.net)
+  * @author Kevin Tambascio (ktambascio@users.sourceforge.net)
   */
 
 #define VERSION_0_60_XML  0x10000010    // Version 0.5 file version info
 #define VERSION_0_61_XML  0x10000011    // use 8 bytes for MyMoneyMoney objects
-   
+
 /**
   * This class provides storage of an anonymized version of the current
   * file.  Any object with an ID (account, transaction, etc) is renamed
@@ -52,101 +53,47 @@ class QIODevice;
   * replaced with an arbitrary number which matches the sign of the original.
   *
   * The purpose of this class is to give users a way to send a developer
-  * their file  without comprimising their financial data.  If a user 
+  * their file  without comprimising their financial data.  If a user
   * encounters an error, they should try saving the anonymous version of the
   * file and see if the error is still there.  If so, they should notify the
-  * list of the problem, and then when requested, send the anonymous file 
+  * list of the problem, and then when requested, send the anonymous file
   * privately to the developer who takes the problem.  I still don't think
   * it's wise to post the file to the public list...maybe I'm just paranoid.
   *
   * @author Ace Jones <ace.j@hotpop.com>
   */
 
-class MyMoneyStorageANON : public IMyMoneyStorageFormat
+class MyMoneyStorageANON : public MyMoneyStorageXML
 {
-public: 
-	MyMoneyStorageANON();
-	virtual ~MyMoneyStorageANON();
-
-  enum fileVersionDirectionType {
-    Reading = 0,          /**< version of file to be read */
-    Writing = 1           /**< version to be used when writing a file */
-  };
+public:
+  MyMoneyStorageANON();
+  virtual ~MyMoneyStorageANON();
 
 protected:
-   void          setProgressCallback(void(*callback)(int, int, const QString&));
-   void          signalProgress(int current, int total, const QString& = "");
-private:
-  IMyMoneySerialize *m_storage;
-  QDomDocument *m_doc;
-  
-  /**
-    * This method returns the version of the underlying file. It
-    * is used by the MyMoney objects contained in a MyMoneyStorageBin object (e.g.
-    * MyMoneyAccount, MyMoneyInstitution, MyMoneyTransaction, etc.) to
-    * determine the layout used when reading/writing a persistant file.
-    * A parameter is used to determine the direction.
-    *
-    * @param dir information about the direction (reading/writing). The
-    *            default is reading.
-    *
-    * @return version QString of file's version
-    *
-    * @see m_fileVersionRead, m_fileVersionWrite
-    */
-  static unsigned int fileVersion(fileVersionDirectionType dir = Reading);
-
-  void writeFileInformation(QDomElement& fileInfo);
-
   void writeUserInformation(QDomElement& userInfo);
-  
-  void writeInstitution(QDomElement& institutions, const MyMoneyInstitution& i);
-  void writeInstitutions(QDomElement& institutions);
 
-  void writePayees(QDomElement& payees);
+  void writeInstitution(QDomElement& institutions, const MyMoneyInstitution& i);
+
   void writePayee(QDomElement& payees, const MyMoneyPayee& p);
-  
-  void writeAccounts(QDomElement& accounts);
+
   void writeAccount(QDomElement& accounts, const MyMoneyAccount& p);
 
-  void writeTransactions(QDomElement& transactions);
   void writeTransaction(QDomElement& transactions, const MyMoneyTransaction& tx);
 
-  void writeSchedules(QDomElement& scheduled);
   void writeSchedule(QDomElement& scheduledTx, const MyMoneySchedule& tx);
 
   void writeSplits(QDomElement& splits, const QValueList<MyMoneySplit> splitList,const QCString& transid);
   void writeSplit(QDomElement& splitElement, const MyMoneySplit& split,const QCString& transid);
-    
+
   void readFile(QIODevice* s, IMyMoneySerialize* storage);
-  void writeFile(QIODevice* s, IMyMoneySerialize* storage);
 
   QDomElement writeKeyValuePairs(const QMap<QCString, QString> pairs);
 
-  void writeEquities(QDomElement& equities);
-  void writeEquity(QDomElement& equityElement, const MyMoneyEquity& equity);
-  
-  void writeCurrencies(QDomElement& currencies);
-  void writeCurrency(QDomElement& currencyElement, const MyMoneyCurrency& currency);
+  void writeSecurity(QDomElement& securityElement, const MyMoneySecurity& security);
 
-  void writeReports(QDomElement& e) const;
-  
   QDomElement findChildElement(const QString& name, const QDomElement& root);
-  
-private:
-  void (*m_progressCallback)(int, int, const QString&);
-  /**
-    * This member is used to store the file version information
-    * obtained while reading a file.
-    */
-  static unsigned int fileVersionRead;
 
-  /**
-    * This member is used to store the file version information
-    * to be used when writing a file.
-    */
-  static unsigned int fileVersionWrite;
-  
+private:
   /**
     * The list of key-value pairs to not modify
     */
@@ -154,12 +101,10 @@ private:
   /**
     * The list of key-value pairs which are numbers to be hidden
     */
-  static QStringList zKvpXNumber; 
+  static QStringList zKvpXNumber;
 
-  static QString hideString(const QString&);
-  static MyMoneyMoney hideNumber(const MyMoneyMoney&);
-  
-  QString getString(const QDate& date) const;
+  const QString hideString(const QString&) const;
+  const MyMoneyMoney hideNumber(const MyMoneyMoney&) const;
 };
 
 #endif

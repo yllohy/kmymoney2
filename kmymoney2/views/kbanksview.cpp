@@ -364,7 +364,7 @@ KAccountsView::KAccountsView(QWidget *parent, const char *name)
   MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAccountHierarchy, this);
   MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAccount, this);
   MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassInstitution, this);
-  MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassEquity, this);
+  MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassSecurity, this);
   MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassCurrency, this);
 
   refresh(QCString());
@@ -375,7 +375,7 @@ KAccountsView::~KAccountsView()
   MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassAccountHierarchy, this);
   MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassAccount, this);
   MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassInstitution, this);
-  MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassEquity, this);
+  MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassSecurity, this);
   MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassCurrency, this);
 }
 
@@ -388,12 +388,12 @@ void KAccountsView::slotListDoubleClicked(QListViewItem* item, const QPoint& /* 
       item->setOpen( ! item->isOpen() );
     else
     {
-  
+
       MyMoneyFile *file = MyMoneyFile::instance();
       try
       {
         MyMoneyAccount account = file->account(accountItem->accountID());
-  
+
         if(!file->isStandardAccount(account.id())) {
           switch(file->accountGroup(account.accountType())) {
             // the account signal will only be emitted for asset and liability accounts
@@ -412,7 +412,7 @@ void KAccountsView::slotListDoubleClicked(QListViewItem* item, const QPoint& /* 
               m_selectedAccount = accountItem->accountID();
               emit categoryDoubleClick();
               break;
-  
+
             default:
               break;
           }
@@ -519,13 +519,13 @@ void KAccountsView::update(const QCString& id)
   if(m_suspendUpdate == false) {
     if(id == MyMoneyFile::NotifyClassAccountHierarchy
     || id == MyMoneyFile::NotifyClassCurrency
-    || id == MyMoneyFile::NotifyClassEquity
+    || id == MyMoneyFile::NotifyClassSecurity
     || (id == MyMoneyFile::NotifyClassInstitution && m_bViewNormalAccountsView == true)) {
       refresh(id);
     }
     if(id == MyMoneyFile::NotifyClassAccount
     || id == MyMoneyFile::NotifyClassCurrency
-    || id == MyMoneyFile::NotifyClassEquity)
+    || id == MyMoneyFile::NotifyClassSecurity)
       refreshNetWorth();
   }
 }
@@ -573,11 +573,11 @@ void KAccountsView::refreshNetWorth(void)
   QString s(i18n("Net Worth: "));
   if(!(file->totalValueValid(assetAccount.id()) & file->totalValueValid(liabilityAccount.id())))
     s += "~ ";
-  if(netWorth < 0) {
+  if(netWorth.isNegative()) {
     s += "<b><font color=\"red\">";
   }
   s += netWorth.formatMoney(file->baseCurrency().tradingSymbol());
-  if(netWorth < 0) {
+  if(netWorth.isNegative()) {
     s += "</font></b>";
   }
 
@@ -849,6 +849,29 @@ void KAccountsView::refresh(const QCString& selectAccount)
           // subaccounts has no split, we can safely remove it and all
           // it's sub-ordinate accounts from the list
           delete accountItem;
+        }
+      }
+
+      // Equity
+      if(KMyMoneyUtils::isExpertMode()) {
+        MyMoneyAccount equityAccount = file->equity();
+        KAccountListItem *equityTopLevelAccount = new KAccountListItem(accountListView,
+              equityAccount);
+
+        for ( QCStringList::ConstIterator it = equityAccount.accountList().begin();
+              it != equityAccount.accountList().end();
+              ++it ) {
+          KAccountListItem *accountItem = new KAccountListItem(equityTopLevelAccount,
+              m_accountMap[*it]);
+          accountItem->setText(1, QString("%1").arg(m_transactionCountMap[*it]));
+
+          accountUsed = m_transactionCountMap[*it] > 0;
+
+          QCStringList subAccounts = m_accountMap[*it].accountList();
+
+          if (subAccounts.count() >= 1) {
+            accountUsed |= showSubAccounts(subAccounts, accountItem, false);
+          }
         }
       }
 

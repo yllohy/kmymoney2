@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "../mymoney/mymoneyequity.h"
+#include "../mymoney/mymoneysecurity.h"
 #include "../mymoney/mymoneyaccount.h"
 #include "../mymoney/mymoneytransaction.h"
 #include "../mymoney/mymoneyobserver.h"
@@ -59,25 +59,31 @@
 class KInvestmentListItem : public KListViewItem, public MyMoneyObserver
 {
 public:
-  KInvestmentListItem(KListView* parent, const MyMoneyAccount& equity);
+  KInvestmentListItem(KListView* parent, const MyMoneyAccount& security);
   ~KInvestmentListItem();
 
-  QCString equityId() const { return m_account.currencyId(); }
+  QCString securityId() const { return m_account.currencyId(); };
+  const MyMoneyAccount& account(void) const { return m_account; };
+
   void update(const QCString& id);
 
 protected:
   void paintCell(QPainter * p, const QColorGroup & cg, int column, int width, int align);
 
 private:
+  // FIXME PRICE
+#if 0
   const QString calculate1WeekGain(const equity_price_history& history);
   const QString calculate4WeekGain(const equity_price_history& history);
   const QString calculate3MonthGain(const equity_price_history& history);
   const QString calculateYTDGain(const equity_price_history& history);
   const QString calculateGain(const equity_price_history& history, int dayDifference, int monthDifference, bool YTD, bool& bNegative);
+#endif
 
 private:
   KListView*        m_listView;
   MyMoneyAccount    m_account;
+  MyMoneySecurity   m_tradingCurrency;
   bool bColumn5Negative, bColumn6Negative, bColumn7Negative, bColumn8Negative, bColumn9Negative;
 };
 

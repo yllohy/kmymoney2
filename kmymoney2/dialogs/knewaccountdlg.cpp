@@ -71,6 +71,7 @@
 #define TAB_INSTITUTION  1
 #define TAB_CURRENCY     2
 #define TAB_TAX          3
+#define TAB_OPENINGBAL   4
 
 KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bool categoryEditor, QWidget *parent,
     const char *name, const char *title)
@@ -107,6 +108,12 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
     QWidget* tab;
     // delete higher indexes prior to lower ones. Otherwise,
     // you have to maintain the offset.
+    if(isEditing) {
+      tab = m_tab->page(TAB_OPENINGBAL);
+      if(tab) {
+        m_tab->removePage(tab);
+      }
+    }
     tab = m_tab->page(TAB_CURRENCY);
     if(tab) {
       m_tab->removePage(tab);

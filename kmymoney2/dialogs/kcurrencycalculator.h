@@ -44,7 +44,7 @@
 class KCurrencyCalculator : public KCurrencyCalculatorDecl
 {
   Q_OBJECT
-  
+
 public:
   /**
     * @param from the @p from currency
@@ -57,28 +57,30 @@ public:
     * @param name see QWidget constructor
     *
     * @note @p value must not be 0!
-    */ 
-  KCurrencyCalculator(const MyMoneyCurrency& from, const MyMoneyCurrency& to, const MyMoneyMoney& value, const MyMoneyMoney& shares, const QDate& date, const int resultFraction = 100, QWidget *parent=0, const char *name=0);
+    */
+  KCurrencyCalculator(const MyMoneySecurity& from, const MyMoneySecurity& to, const MyMoneyMoney& value, const MyMoneyMoney& shares, const QDate& date, const int resultFraction = 100, QWidget *parent=0, const char *name=0);
   ~KCurrencyCalculator();
 
   const MyMoneyMoney price(void) const;
 
+protected:
+  void updateExample(const MyMoneyMoney& price);
+
 protected slots:
-  void slotSetFromTo(void);
-  void slotSetToFrom(void);
+  void slotSetToAmount(void);
+  void slotSetExchangeRate(void);
   void slotUpdateResult(const QString& txt);
   void slotUpdateRate(const QString& txt);
   virtual void accept();
 
 private:
-  MyMoneyCurrency     m_fromCurrency;
-  MyMoneyCurrency     m_toCurrency;
-  MyMoneyCurrency*    m_updateCurrency;
+  MyMoneySecurity     m_fromCurrency;
+  MyMoneySecurity     m_toCurrency;
   MyMoneyMoney        m_result;
   MyMoneyMoney        m_value;
   QDate               m_date;
-  int                 m_sign;
   int                 m_resultFraction;
+  int                 m_ratePrec;
 };
 
 #endif

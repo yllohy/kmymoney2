@@ -38,7 +38,7 @@ class QLabel;
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "../mymoney/mymoneyequity.h"
+#include "../mymoney/mymoneysecurity.h"
 #include "../widgets/kmymoneyaccountcombo.h"
 #include "kledgerview.h"
 
@@ -101,7 +101,7 @@ protected slots:
   virtual void slotReconciliation(void);
   virtual void slotNew();
   virtual void slotEndEdit();
-  virtual void slotEquityChanged(const QCString& id);
+  virtual void slotSecurityChanged(const QCString& id);
   const bool slotDataChanged(int field);
 
 protected:
@@ -263,9 +263,9 @@ private:
   MyMoneySplit    m_accountSplit;
   MyMoneySplit    m_feeSplit;
   MyMoneySplit    m_interestSplit;
-  MyMoneyEquity   m_equity;
+  MyMoneySecurity m_security;
 
-  QSignalMapper      m_editMapper;
+  QSignalMapper   m_editMapper;
 };
 
 #endif

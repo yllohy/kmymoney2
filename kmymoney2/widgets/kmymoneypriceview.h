@@ -38,8 +38,10 @@ class QListViewItem;
 // Project Includes
 
 #include "kmymoneypriceviewdecl.h"
-#include "../mymoney/mymoneymoney.h"
 #include "kmymoneyaccountselector.h"
+#include "../mymoney/mymoneyfile.h"
+#include "../mymoney/mymoneymoney.h"
+#include "../mymoney/mymoneyprice.h"
 
 /**
   * @author Thomas Baumgart
@@ -48,22 +50,25 @@ class QListViewItem;
 class kMyMoneyPriceItem : public kMyMoneyListViewItem
 {
 public:
-  kMyMoneyPriceItem(KListView *, const QDate& data, const MyMoneyMoney& price);
+  kMyMoneyPriceItem(KListView *, const MyMoneyPrice& pr);
   ~kMyMoneyPriceItem();
 
   int compare(QListViewItem *p, int col, bool ascending) const;
+
+  const MyMoneyPrice price(void) const { return m_pr; };
+#if 0
   const QDate date(void) const { return m_date; };
   const MyMoneyMoney price(void) const { return m_price; };
   void setPrice(const MyMoneyMoney& price);
   void setDate(const QDate& date);
+#endif
 
 private:
-  QDate         m_date;
-  MyMoneyMoney  m_price;
+  MyMoneyPrice  m_pr;
 };
 
 
-class kMyMoneyPriceView : public kMyMoneyPriceViewDecl
+class kMyMoneyPriceView : public kMyMoneyPriceViewDecl, public MyMoneyObserver
 {
    Q_OBJECT
 public:
@@ -73,6 +78,8 @@ public:
   void setHistory(const QMap<QDate,MyMoneyMoney>& history);
   const QMap<QDate, MyMoneyMoney> history(void) const;
   const bool dirty(void) const { return m_dirty; };
+
+  void update(const QCString& id);
 
 signals:
   /**
@@ -90,6 +97,9 @@ protected slots:
   void slotAddPrice(void);
   void slotDeletePrice(void);
   void slotEditPrice(void);
+
+private slots:
+  void slotTimerDone(void);
 
 private:
   bool            m_dirty;

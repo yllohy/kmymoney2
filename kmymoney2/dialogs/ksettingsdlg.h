@@ -47,6 +47,7 @@ class kMyMoneyOnlineQuoteConfig;
 // Project Includes
 #include "../widgets/kmymoneydateinput.h"
 
+
 /**
   * This class is used to manipulate all the settings available for KMyMoney2.
   * It currently stores the values for the list settings and whether to show
@@ -60,12 +61,12 @@ class kMyMoneyOnlineQuoteConfig;
   * @see KDialogBase
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: ksettingsdlg.h,v 1.20 2004/10/22 04:29:04 acejones Exp $
   *
   * @short A class to manipulate the settings needed for running KMyMoney2
-**/
-class KSettingsDlg : public KDialogBase  {
-   Q_OBJECT
+  */
+class KSettingsDlg : public KDialogBase
+{
+  Q_OBJECT
 
 private:
   /** Start prompt dialog */
@@ -121,7 +122,7 @@ private:
 
   /* Online quotes configuration widget */
   kMyMoneyOnlineQuoteConfig* m_onlineQuotesWidget;
-  
+
   /** Restrict options */
   kMyMoneyDateInput *m_dateinputStart;
 

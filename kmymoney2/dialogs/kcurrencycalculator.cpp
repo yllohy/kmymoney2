@@ -26,149 +26,186 @@
 #include <qlabel.h>
 #include <qradiobutton.h>
 #include <qcheckbox.h>
+#include <qwidgetstack.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
 
 #include <klocale.h>
 #include <kpushbutton.h>
+#include <kconfig.h>
+#include <kiconloader.h>
+#include <kguiitem.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
 
 #include "kcurrencycalculator.h"
 #include "../widgets/kmymoneyedit.h"
+#include "../widgets/kmymoneycurrencyselector.h"
+#include "../mymoney/mymoneyprice.h"
+#include "../kmymoneyutils.h"
 
-KCurrencyCalculator::KCurrencyCalculator(const MyMoneyCurrency& from, const MyMoneyCurrency& to, const MyMoneyMoney& value, const MyMoneyMoney& shares, const QDate& date, const int resultFraction, QWidget *parent, const char *name ) :
+KCurrencyCalculator::KCurrencyCalculator(const MyMoneySecurity& from, const MyMoneySecurity& to, const MyMoneyMoney& value, const MyMoneyMoney& shares, const QDate& date, const int resultFraction, QWidget *parent, const char *name ) :
   KCurrencyCalculatorDecl(parent, name),
   m_fromCurrency(from),
   m_toCurrency(to),
   m_result(shares.abs()),
   m_value(value.abs()),
   m_date(date),
-  m_sign((value < 0) ? -1 : 1),
   m_resultFraction(resultFraction)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
 
-  m_fromCurrencyName->setText(m_fromCurrency.name());
-  m_toCurrencyName->setText(m_toCurrency.name());
+  m_fromCurrencyText->setText(m_fromCurrency.isCurrency() ? m_fromCurrency.id() : m_fromCurrency.tradingSymbol());
+  m_toCurrencyText->setText(m_toCurrency.isCurrency() ? m_toCurrency.id() : m_toCurrency.tradingSymbol());
 
-  m_fromAmount->loadText(m_value.formatMoney("", MyMoneyMoney::denomToPrec(m_fromCurrency.smallestAccountFraction())));
-  m_fromAmount->setReadOnly(true);
+  m_fromAmount->setText(m_value.formatMoney("", MyMoneyMoney::denomToPrec(m_fromCurrency.smallestAccountFraction())));
+  m_dateText->setText(KGlobal::locale()->formatDate(m_date, true));
 
-  m_fromToButton->setText(i18n("%1 for 1 %2").arg(m_fromCurrency.name()).arg(m_toCurrency.name()));
-  m_toFromButton->setText(i18n("%1 for 1 %2").arg(m_toCurrency.name()).arg(m_fromCurrency.name()));
+  m_fromType->setText(KMyMoneyUtils::securityTypeToString(m_fromCurrency.securityType()));
+  m_toType->setText(KMyMoneyUtils::securityTypeToString(m_toCurrency.securityType()));
 
-  MyMoneyMoney price(1,1);
+  // load button icons
+  KIconLoader* il = KGlobal::iconLoader();
+  KGuiItem cancelButtenItem( i18n( "&Cancel" ),
+                      QIconSet(il->loadIcon("button_cancel", KIcon::Small, KIcon::SizeSmall)),
+                      i18n("Reject any changes"),
+                      i18n("Use this to abort the dialog"));
+  m_cancelButton->setGuiItem(cancelButtenItem);
+
+  KGuiItem okButtenItem( i18n( "&OK" ),
+                      QIconSet(il->loadIcon("button_ok", KIcon::Small, KIcon::SizeSmall)),
+                      i18n("Accept modifications"),
+                      i18n("Use this to accept the data and possibly update the exchange rate"));
+  m_okButton->setGuiItem(okButtenItem);
+
+  KConfig *kconfig = KGlobal::config();
+  kconfig->setGroup("General Options");
+  m_ratePrec = kconfig->readNumEntry("PricePrecision", 4);
 
   // setup initial result
   if(m_result == MyMoneyMoney() && !m_value.isZero()) {
-    if(m_fromCurrency.id() == file->baseCurrency().id()) {
-      price = MyMoneyMoney(1,1) / m_toCurrency.price(m_date);
-    } else if(m_toCurrency.id() == file->baseCurrency().id()) {
-      price = m_fromCurrency.price(m_date);
+    MyMoneyPrice pr = file->price(m_fromCurrency.id(), m_toCurrency.id(), m_date);
+    if(pr.isValid()) {
+      m_result = m_value * pr.rate(m_fromCurrency.id());
     }
-    m_result = m_value * price;
-  }
-
-  // check if we have a conversion rate for this date  
-  m_updateButton->setEnabled(false);
-  m_fromToButton->setChecked(true);
-
-  if(m_fromCurrency.id() == file->baseCurrency().id()) {
-    m_updateCurrency = &m_toCurrency;
-    m_updateButton->setEnabled(true);
-    m_toFromButton->setChecked(true);
-  }
-
-  if(m_toCurrency.id() == file->baseCurrency().id()) {
-    m_updateCurrency = &m_fromCurrency;
-    m_updateButton->setEnabled(true);
-    m_fromToButton->setChecked(true);
   }
 
   // fill in initial values
   m_toAmount->loadText(m_result.formatMoney("", MyMoneyMoney::denomToPrec(m_toCurrency.smallestAccountFraction())));
-  slotUpdateResult(m_toAmount->text());
 
-  connect(m_fromToButton, SIGNAL(clicked()), this, SLOT(slotSetFromTo()));
-  connect(m_toFromButton, SIGNAL(clicked()), this, SLOT(slotSetToFrom()));
+  connect(m_amountButton, SIGNAL(clicked()), this, SLOT(slotSetToAmount()));
+  connect(m_rateButton, SIGNAL(clicked()), this, SLOT(slotSetExchangeRate()));
+
   connect(m_toAmount, SIGNAL(valueChanged(const QString&)), this, SLOT(slotUpdateResult(const QString&)));
   connect(m_conversionRate, SIGNAL(valueChanged(const QString&)), this, SLOT(slotUpdateRate(const QString&)));
   connect(m_cancelButton, SIGNAL(clicked()), this, SLOT(reject()));
   connect(m_okButton, SIGNAL(clicked()), this, SLOT(accept()));
+
+  // use this as the default
+  m_amountButton->animateClick();
+  slotUpdateResult(m_toAmount->text());
+
+  // If the from security is not a currency, we only allow entering a price
+  if(!m_fromCurrency.isCurrency()) {
+    m_rateButton->animateClick();
+    m_amountButton->hide();
+    m_toAmount->hide();
+  }
 }
 
 KCurrencyCalculator::~KCurrencyCalculator()
 {
 }
 
-void KCurrencyCalculator::slotSetFromTo(void)
+void KCurrencyCalculator::slotSetToAmount(void)
 {
-  slotUpdateResult(m_toAmount->text());
+  m_rateButton->setChecked(false);
+  m_toAmount->setEnabled(true);
+  m_conversionRate->setEnabled(false);
 }
 
-void KCurrencyCalculator::slotSetToFrom(void)
+void KCurrencyCalculator::slotSetExchangeRate(void)
 {
-  slotUpdateResult(m_toAmount->text());
+  m_amountButton->setChecked(false);
+  m_toAmount->setEnabled(false);
+  m_conversionRate->setEnabled(true);
 }
 
 void KCurrencyCalculator::slotUpdateResult(const QString& txt)
 {
-  // make sure we only have positive numbers
-  if(txt.left(1) == "-") {
-    m_toAmount->loadText(txt.mid(1));
-    slotUpdateResult(m_toAmount->text());
+  MyMoneyMoney result = m_toAmount->value();
+  MyMoneyMoney price(0, 1);
+
+  if(result.isNegative()) {
+    m_toAmount->setValue(-result);
+    slotUpdateResult(QString());
     return;
   }
 
-  MyMoneyMoney price;
-  if(!MyMoneyMoney(txt).isZero()) {
-    m_result = MyMoneyMoney(txt).abs();
-    m_result.convert(m_resultFraction);
-    if(m_fromToButton->isChecked()) {
-      price = m_value / m_result;
-    } else {
-      price = m_result / m_value;
-    }
-    m_conversionRate->loadText(price.formatMoney("", 5));
+  if(!result.isZero()) {
+    price = result / m_value;
+
+    m_conversionRate->loadText(price.formatMoney("", m_ratePrec));
+    m_result = m_value * price;
+    m_toAmount->loadText(m_result.formatMoney("", MyMoneyMoney::denomToPrec(m_resultFraction)));
   }
-  m_toAmount->loadText(m_result.formatMoney("", MyMoneyMoney::denomToPrec(m_resultFraction)));
+  updateExample(price);
 }
 
 void KCurrencyCalculator::slotUpdateRate(const QString& txt)
 {
-  // make sure we only have positive numbers
-  if(txt.left(1) == "-") {
-    m_conversionRate->loadText(txt.mid(1));
-    slotUpdateRate(m_conversionRate->text());
+  MyMoneyMoney price = m_conversionRate->value();
+
+  if(price.isNegative()) {
+    m_conversionRate->setValue(-price);
+    slotUpdateRate(QString());
     return;
   }
 
-  MyMoneyMoney price(txt);
-
   if(!price.isZero()) {
-    if(m_fromToButton->isChecked()) {
-      m_result = m_value / price;
-    } else {
-      m_result = m_value * price;
-    }
+    m_conversionRate->loadText(price.formatMoney("", m_ratePrec));
+    m_result = m_value * price;
     m_toAmount->loadText(m_result.formatMoney("", MyMoneyMoney::denomToPrec(m_resultFraction)));
-    
-  } else {
-    slotUpdateResult(m_toAmount->text());
   }
+  updateExample(price);
+}
+
+void KCurrencyCalculator::updateExample(const MyMoneyMoney& price)
+{
+  QString msg;
+  if(price.isZero()) {
+    msg = QString("1 %1 = ? %2").arg(m_fromCurrency.tradingSymbol())
+                                .arg(m_toCurrency.tradingSymbol());
+    if(m_fromCurrency.isCurrency()) {
+      msg += QString("\n");
+      msg += QString("1 %1 = ? %2").arg(m_toCurrency.tradingSymbol())
+                                     .arg(m_fromCurrency.tradingSymbol());
+    }
+  } else {
+    msg = QString("1 %1 = %2 %3").arg(m_fromCurrency.tradingSymbol())
+                                 .arg(price.formatMoney("", m_ratePrec))
+                                 .arg(m_toCurrency.tradingSymbol());
+    if(m_fromCurrency.isCurrency()) {
+      msg += QString("\n");
+      msg += QString("1 %1 = %2 %3").arg(m_toCurrency.tradingSymbol())
+                                    .arg((MyMoneyMoney(1,1)/price).formatMoney("", m_ratePrec))
+                                    .arg(m_fromCurrency.tradingSymbol());
+    }
+  }
+  m_conversionExample->setText(msg);
 }
 
 void KCurrencyCalculator::accept(void)
 {
   if(m_updateButton->isChecked()) {
-    MyMoneyMoney price;
-    price = m_result / m_value;
-    if(m_updateCurrency->price(m_date) != price) {
-      m_updateCurrency->addPriceHistory(m_date, price);
-      MyMoneyFile::instance()->modifyCurrency(*m_updateCurrency);
+    MyMoneyPrice pr = MyMoneyFile::instance()->price(m_fromCurrency.id(), m_toCurrency.id(), m_date);
+    if(!pr.isValid()
+    || pr.date() != m_date
+    || (pr.date() == m_date && pr.rate(m_fromCurrency.id()) != price())) {
+      pr = MyMoneyPrice(m_fromCurrency.id(), m_toCurrency.id(), m_date, price(), i18n("User"));
+      MyMoneyFile::instance()->addPrice(pr);
     }
   }
   KCurrencyCalculatorDecl::accept();
@@ -176,5 +213,6 @@ void KCurrencyCalculator::accept(void)
 
 const MyMoneyMoney KCurrencyCalculator::price(void) const
 {
-  return m_value / m_result;
+  return m_result / m_value;
 }
+

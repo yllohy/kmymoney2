@@ -36,7 +36,7 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 #include "kinvestmentlistitem.h"
-#include "../mymoney/mymoneyequity.h"
+#include "../mymoney/mymoneysecurity.h"
 #include "../mymoney/mymoneyaccount.h"
 #include "../mymoney/mymoneyobserver.h"
 #include "kinvestmentviewdecl.h"
@@ -58,18 +58,6 @@ class KInvestmentView : public kInvestmentViewDecl, MyMoneyObserver
 public:
   KInvestmentView(QWidget *parent=0, const char *name=0);
   ~KInvestmentView();
-
-  /** No descriptions */
-  bool init(const MyMoneyAccount& account);
-
-  /** No descriptions */
-  void updateDisplay();
-
-  /** No description */
-  void displayNewEquity(MyMoneyEquity *pEntry);
-
-  /** No description */
-  void addEquityEntry(MyMoneyEquity *pEntry);
 
   void update(const QCString& id);
 
@@ -124,6 +112,11 @@ protected:
     * the first account found in the list will be made the current account.
     */
   void loadAccounts(void);
+
+  /**
+    * This methods updates the display of the investment overview.
+    */
+  void updateDisplay();
 
 protected slots:
 

@@ -470,7 +470,7 @@ void MyMoneyStorageBin::readOldFormat(QDataStream& s, IMyMoneySerialize* storage
         catminor = accname.right(len - colonindex);
       }
       addCategory(storage, categoryConversion, catmajor, catminor,
-           sp.value() >= 0 ? MyMoneyAccount::Expense : MyMoneyAccount::Income);
+           !sp.value().isNegative() ? MyMoneyAccount::Expense : MyMoneyAccount::Income);
       sp.setAccountId(categoryConversion[accname]);
     }
     (*it).modifySplit(sp);

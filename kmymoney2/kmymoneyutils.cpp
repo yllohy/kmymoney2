@@ -45,6 +45,8 @@ QColor KMyMoneyUtils::_gridColour;
 QFont  KMyMoneyUtils::_cellFont;
 QFont  KMyMoneyUtils::_headerFont;
 
+bool   KMyMoneyUtils::_expertMode;
+
 KMyMoneyUtils::KMyMoneyUtils()
 {
 }
@@ -104,6 +106,9 @@ const QString KMyMoneyUtils::accountTypeToString(const MyMoneyAccount::accountTy
     case MyMoneyAccount::Stock:
       returnString = i18n("Stock");
       break;
+    case MyMoneyAccount::Equity:
+      returnString = i18n("Equity");
+      break;
     default:
       returnString = i18n("Unknown");
   }
@@ -144,37 +149,56 @@ const MyMoneyAccount::accountTypeE KMyMoneyUtils::stringToAccountType(const QStr
     rc = MyMoneyAccount::Expense;
   else if(tmp == i18n("Investment Loan").lower())
     rc = MyMoneyAccount::AssetLoan;
-  else  if(tmp == i18n("Stock").lower())
+  else if(tmp == i18n("Stock").lower())
     rc = MyMoneyAccount::Stock;
+  else if(tmp == i18n("Equity").lower())
+    rc = MyMoneyAccount::Equity;
 
   return rc;
 }
 
-const QString KMyMoneyUtils::equityTypeToString(const MyMoneyEquity::eEQUITYTYPE equityType)
+const MyMoneySecurity::eSECURITYTYPE KMyMoneyUtils::stringToSecurity(const QString& txt)
+{
+  MyMoneySecurity::eSECURITYTYPE rc = MyMoneySecurity::SECURITY_NONE;
+  QString tmp = txt.lower();
+
+  if(tmp == i18n("Stock").lower())
+    rc = MyMoneySecurity::SECURITY_STOCK;
+  else if(tmp == i18n("Mutual Fund").lower())
+    rc = MyMoneySecurity::SECURITY_MUTUALFUND;
+  else if(tmp == i18n("Bond").lower())
+    rc = MyMoneySecurity::SECURITY_BOND;
+  else if(tmp == i18n("Currency").lower())
+    rc = MyMoneySecurity::SECURITY_CURRENCY;
+
+  return rc;
+}
+
+const QString KMyMoneyUtils::securityTypeToString(const MyMoneySecurity::eSECURITYTYPE securityType)
 {
   QString returnString;
-  
-  switch (equityType)
+
+  switch (securityType)
   {
-  case MyMoneyEquity::ETYPE_STOCK:
+  case MyMoneySecurity::SECURITY_STOCK:
     returnString = i18n("Stock");
     break;
-  case MyMoneyEquity::ETYPE_MUTUALFUND:
+  case MyMoneySecurity::SECURITY_MUTUALFUND:
     returnString = i18n("Mutual Fund");
     break;
-  case MyMoneyEquity::ETYPE_BOND:
+  case MyMoneySecurity::SECURITY_BOND:
     returnString = i18n("Bond");
     break;
-  case MyMoneyEquity::ETYPE_CURRENCY:
+  case MyMoneySecurity::SECURITY_CURRENCY:
     returnString = i18n("Currency");
     break;
-  case MyMoneyEquity::ETYPE_NONE:
+  case MyMoneySecurity::SECURITY_NONE:
     returnString = i18n("None");
     break;
-  default:  
+  default:
     returnString = i18n("Unknown");
   }
-  
+
   return returnString;
 }
 
@@ -580,13 +604,16 @@ void KMyMoneyUtils::updateSettings(void)
     _headerFont = config->readFontEntry("listHeaderFont", &f);
   else
     _headerFont = f;
+
+  config->setGroup("General Options");
+  _expertMode = config->readBoolEntry("ExpertMode", false);
 }
 
 void KMyMoneyUtils::checkConstants(void)
 {
-  Q_ASSERT(KLocale::ParensAround == MyMoneyMoney::ParensAround);
-  Q_ASSERT(KLocale::BeforeQuantityMoney == MyMoneyMoney::BeforeQuantityMoney);
-  Q_ASSERT(KLocale::AfterQuantityMoney == MyMoneyMoney::AfterQuantityMoney);
-  Q_ASSERT(KLocale::BeforeMoney == MyMoneyMoney::BeforeMoney);
-  Q_ASSERT(KLocale::AfterMoney == MyMoneyMoney::AfterMoney);
+  Q_ASSERT(static_cast<int>(KLocale::ParensAround) == static_cast<int>(MyMoneyMoney::ParensAround));
+  Q_ASSERT(static_cast<int>(KLocale::BeforeQuantityMoney) == static_cast<int>(MyMoneyMoney::BeforeQuantityMoney));
+  Q_ASSERT(static_cast<int>(KLocale::AfterQuantityMoney) == static_cast<int>(MyMoneyMoney::AfterQuantityMoney));
+  Q_ASSERT(static_cast<int>(KLocale::BeforeMoney) == static_cast<int>(MyMoneyMoney::BeforeMoney));
+  Q_ASSERT(static_cast<int>(KLocale::AfterMoney) == static_cast<int>(MyMoneyMoney::AfterMoney));
 }

@@ -486,7 +486,7 @@ const int MyMoneyTransactionFilter::splitType(const IMyMoneyStorage* const stora
       return transfers;
   }
 
-  if(split.value() > 0)
+  if(split.value().isPositive())
     return deposits;
 
   return payments;
@@ -513,36 +513,36 @@ const bool MyMoneyTransactionFilter::includesAccount( const QCString& acc ) cons
   return (! m_filterSet.singleFilter.accountFilter) || m_accounts.find( acc );
 }
 
-const bool MyMoneyTransactionFilter::includesPayee( const QCString& pye ) const 
-{ 
-  return (! m_filterSet.singleFilter.payeeFilter) || m_payees.find( pye ); 
+const bool MyMoneyTransactionFilter::includesPayee( const QCString& pye ) const
+{
+  return (! m_filterSet.singleFilter.payeeFilter) || m_payees.find( pye );
 }
 
 const bool MyMoneyTransactionFilter::dateFilter( QDate& from, QDate& to ) const
 {
-  from = m_fromDate; 
-  to = m_toDate; 
-  return m_filterSet.singleFilter.dateFilter==1; 
+  from = m_fromDate;
+  to = m_toDate;
+  return m_filterSet.singleFilter.dateFilter==1;
 }
 
-const bool MyMoneyTransactionFilter::amountFilter( MyMoneyMoney& from, MyMoneyMoney& to ) const 
-{ 
-  from = m_fromAmount; 
-  to = m_toAmount; 
-  return m_filterSet.singleFilter.amountFilter==1; 
+const bool MyMoneyTransactionFilter::amountFilter( MyMoneyMoney& from, MyMoneyMoney& to ) const
+{
+  from = m_fromAmount;
+  to = m_toAmount;
+  return m_filterSet.singleFilter.amountFilter==1;
 }
 
-const bool MyMoneyTransactionFilter::numberFilter( QString& from, QString& to ) const 
-{ 
-  from = m_fromNr; 
-  to = m_toNr; 
-  return m_filterSet.singleFilter.nrFilter==1; 
+const bool MyMoneyTransactionFilter::numberFilter( QString& from, QString& to ) const
+{
+  from = m_fromNr;
+  to = m_toNr;
+  return m_filterSet.singleFilter.nrFilter==1;
 }
 
 const bool MyMoneyTransactionFilter::payees(QCStringList& list) const
 {
   bool result = m_filterSet.singleFilter.payeeFilter;
-  
+
   if ( result )
   {
     QAsciiDictIterator<char> it_payee( m_payees );
@@ -558,7 +558,7 @@ const bool MyMoneyTransactionFilter::payees(QCStringList& list) const
 const bool MyMoneyTransactionFilter::accounts(QCStringList& list) const
 {
   bool result = m_filterSet.singleFilter.accountFilter;
-  
+
   if ( result )
   {
     QAsciiDictIterator<char> it_account( m_accounts );
@@ -575,7 +575,7 @@ const bool MyMoneyTransactionFilter::accounts(QCStringList& list) const
 const bool MyMoneyTransactionFilter::categories(QCStringList& list) const
 {
   bool result = m_filterSet.singleFilter.categoryFilter;
-  
+
   if ( result )
   {
     QAsciiDictIterator<char> it_category( m_categories );
@@ -623,7 +623,7 @@ const bool MyMoneyTransactionFilter::states(QValueList<int>& list) const
 const bool MyMoneyTransactionFilter::firstType(int&i) const
 {
   bool result = m_filterSet.singleFilter.typeFilter;
-  
+
   if ( result )
   {
     QIntDictIterator<char> it_type( m_types );
@@ -636,7 +636,7 @@ const bool MyMoneyTransactionFilter::firstType(int&i) const
 const bool MyMoneyTransactionFilter::firstState(int&i) const
 {
   bool result = m_filterSet.singleFilter.stateFilter;
-  
+
   if ( result )
   {
     QIntDictIterator<char> it_state( m_states );

@@ -51,9 +51,13 @@ public:
   QString userTelephoneText;
   QString userEmailText;
 
+protected:
+  /// helper method for constructors
+  void init(const char* title);
+
 protected slots:
   void okClicked();
-
+  void loadFromKABC(void);
 };
 
 #endif

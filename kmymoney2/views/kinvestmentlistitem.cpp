@@ -31,7 +31,7 @@
 #include <klistview.h>
 #include "kinvestmentlistitem.h"
 
-#include "../mymoney/mymoneyequity.h"
+#include "../mymoney/mymoneysecurity.h"
 #include "../mymoney/mymoneyfile.h"
 
 KInvestmentListItem::KInvestmentListItem(KListView* parent, const MyMoneyAccount& account)
@@ -45,18 +45,26 @@ KInvestmentListItem::KInvestmentListItem(KListView* parent, const MyMoneyAccount
 
   m_account = account;
   m_listView = parent;
-  update(account.id());
 
+  MyMoneySecurity security;
+  security = MyMoneyFile::instance()->security(m_account.currencyId());
+  m_tradingCurrency = MyMoneyFile::instance()->security(security.tradingCurrency());
+
+  update(account.id());
   MyMoneyFile::instance()->attach(m_account.id(), this);
   MyMoneyFile::instance()->attach(m_account.currencyId(), this);
+  MyMoneyFile::instance()->attach(m_tradingCurrency.id(), this);
 }
 
 KInvestmentListItem::~KInvestmentListItem()
 {
+  MyMoneyFile::instance()->detach(m_tradingCurrency.id(), this);
   MyMoneyFile::instance()->detach(m_account.currencyId(), this);
   MyMoneyFile::instance()->detach(m_account.id(), this);
 }
 
+// FIXME PRICE
+#if 0
 const QString KInvestmentListItem::calculate1WeekGain(const equity_price_history& history)
 {
   return calculateGain(history, -7, 0, false, bColumn6Negative);
@@ -164,6 +172,7 @@ const QString KInvestmentListItem::calculateGain(const equity_price_history& his
   }
   return QString("");
 }
+#endif
 
 void KInvestmentListItem::paintCell(QPainter * p, const QColorGroup & cg, int column, int width, int align)
 {
@@ -196,27 +205,38 @@ void KInvestmentListItem::update(const QCString& /*id*/)
   MyMoneyFile* file = MyMoneyFile::instance();
 
   try {
-    MyMoneyEquity equity;
+    MyMoneySecurity security;
     m_account = file->account(m_account.id());
-    equity = file->equity(m_account.currencyId());
+    security = file->security(m_account.currencyId());
+    MyMoneySecurity tradingCurrency = MyMoneyFile::instance()->security(security.tradingCurrency());
+    if(m_tradingCurrency.id() != tradingCurrency.id()) {
+      file->detach(m_tradingCurrency.id(), this);
+      m_tradingCurrency = tradingCurrency;
+      file->attach(m_tradingCurrency.id(), this);
+    }
+    int prec = MyMoneyMoney::denomToPrec(m_tradingCurrency.smallestAccountFraction());
+
     QValueList<MyMoneyTransaction> transactionList;
-    equity_price_history history = equity.priceHistory();
+    // FIXME PRICE
+    // equity_price_history history = equity.priceHistory();
 
     //column 0 (COLUMN_NAME_INDEX) is the name of the stock
-    setText(COLUMN_NAME_INDEX, equity.name());
+    setText(COLUMN_NAME_INDEX, security.name());
 
     //column 1 (COLUMN_SYMBOL_INDEX) is the ticker symbol
-    setText(COLUMN_SYMBOL_INDEX, equity.tradingSymbol());
+    setText(COLUMN_SYMBOL_INDEX, security.tradingSymbol());
 
     //column 2 is the net value (price * quantity owned)
-    setText(COLUMN_VALUE_INDEX, (file->balance(m_account.id()) * equity.price(QDate::currentDate())).formatMoney());
+    MyMoneyPrice price = file->price(m_account.currencyId(), m_tradingCurrency.id());
+    setText(COLUMN_VALUE_INDEX, (file->balance(m_account.id()) * price.rate()).formatMoney(m_tradingCurrency.tradingSymbol(), prec));
 
     //column 3 (COLUMN_QUANTITY_INDEX) is the quantity of shares owned
-    int prec = MyMoneyMoney::denomToPrec(equity.smallestAccountFraction());
+    prec = MyMoneyMoney::denomToPrec(security.smallestAccountFraction());
     setText(COLUMN_QUANTITY_INDEX, file->balance(m_account.id()).formatMoney("", prec));
 
     //column 4 is the current price
-    setText(COLUMN_PRICE_INDEX, equity.price(QDate::currentDate()).formatMoney());
+    prec = MyMoneyMoney::denomToPrec(m_tradingCurrency.smallestAccountFraction());
+    setText(COLUMN_PRICE_INDEX, price.rate().formatMoney(m_tradingCurrency.tradingSymbol(), prec));
 
     //column 4 (COLUMN_COSTBASIS_INDEX) is the cost basis
     if(transactionList.isEmpty())
@@ -239,7 +259,8 @@ void KInvestmentListItem::update(const QCString& /*id*/)
     {
 
     }
-
+// FIXME PRICE
+#if 0
     if(history.isEmpty())
     {
       setText(COLUMN_1WEEKGAIN_INDEX, QString("0.0%"));
@@ -254,6 +275,7 @@ void KInvestmentListItem::update(const QCString& /*id*/)
       setText(COLUMN_3MONGAIN_INDEX, calculate3MonthGain(history));
       setText(COLUMN_YTDGAIN_INDEX, calculateYTDGain(history));
     }
+#endif
 
   } catch(MyMoneyException *e) {
     delete e;

@@ -29,6 +29,7 @@
 #include <qwidget.h>
 #include <qpainter.h>
 #include <qtable.h>
+#include <qtimer.h>
 
 // #include <qfontmetric.h>
 
@@ -264,23 +265,6 @@ public slots:
     */
   void setTransactionCount(const int transactions, const bool setCurrentTransaction = true);
 
-  /**
-    * This method allows to modify the color for erronous transactions.
-    * Calling it repetetively with inverted values for the parameter @p on
-    * toggles the color for erronous transactions
-    * between the configured text color and red.
-    *
-    * @param on if true, erronous transaction will be shown in red. If false,
-    *           erronous transactions will be shown in the configured text
-    *           color as all other transactions.
-    *
-    * @note Erronous transactions are those, that have less than 1 split
-    *       or where the sum of all splits does not equal 0. This definition
-    *       is checked in e.g. kMyMoneyRegisterCheckings::paintCell(). The
-    *       check must be implemented by any class derived from this class.
-    */
-  void slotSetErrorColor(const bool on);
-
   virtual void setNumRows(int r);
 
   /**
@@ -290,6 +274,18 @@ public slots:
     * method should only be called when not editing a transaction.
     */
   virtual void setNumCols(int r);
+
+  /**
+    * This method allows to blink erronous transactions in the ledger.
+    * Calling it repetetively toggles the color for erronous transactions
+    * between the configured text color and red.
+    *
+    * @note Erronous transactions are those, that have less than 1 split
+    *       or where the sum of all splits does not equal 0. This definition
+    *       is checked in e.g. kMyMoneyRegisterCheckings::paintCell(). The
+    *       check must be implemented by any class derived from this class.
+    */
+  void slotBlinkInvalid(void);
 
 protected:
   /**
@@ -327,6 +323,8 @@ protected:
 
   bool focusNextPrevChild(bool next);
 
+  int transactionIndex(const int row) const;
+
 protected:
   int    m_rpt;     // current rows per transaction
   bool   m_ledgerLens;
@@ -341,7 +339,7 @@ protected:
   QColor m_textColor;
   QColor m_bgColor;
   QColor m_gridColor;
-  QColor m_errorColor;
+  QColor m_errorColor, m_lastErrorColor;
   QColor m_importColor;
 
   bool   m_showGrid;
@@ -428,6 +426,8 @@ private:
     * construction. See kMyMoneyRegister::kMyMoneyRegister.
     */
   int    m_maxRpt;
+
+  QTimer  m_blinkTimer;
 
 signals:
   void signalPreviousTransaction();

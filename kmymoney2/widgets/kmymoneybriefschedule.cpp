@@ -96,9 +96,8 @@ void KMyMoneyBriefSchedule::loadSchedule()
       m_account->setText(sched.account().name());
       QString text;
       MyMoneyMoney amount = sched.transaction().splitByAccount(sched.account().id()).value();
-      if (amount < 0)
-        amount = -amount;
-        
+      amount = amount.abs();
+
       if (sched.willEnd())
       {
         int transactions = sched.paymentDates(m_date, sched.endDate()).count()-1;
@@ -121,10 +120,10 @@ void KMyMoneyBriefSchedule::loadSchedule()
           QDate startD = (sched.lastPayment().isValid()) ?
             sched.lastPayment() :
             sched.startDate();
-            
+
           if (m_date.isValid())
             startD = m_date;
-          
+
           int days = startD.daysTo(QDate::currentDate());
           int transactions = sched.paymentDates(startD, QDate::currentDate()).count();
 
@@ -135,7 +134,7 @@ void KMyMoneyBriefSchedule::loadSchedule()
           text += "</color>";
         }
       }
-      
+
       m_details->setText(text);
 
       m_prevButton->setEnabled(true);

@@ -131,7 +131,7 @@ protected slots:
     * only.  KMM statement files are not designed to be exposed to the user.
     */
   void slotStatementImport(void);
-  
+
   void slotStatementImportFinished(void);
 
   void slotLoadAccountTemplates(void);
@@ -177,6 +177,8 @@ protected slots:
   void slotShowPreviousView(void);
 
   void slotShowNextView(void);
+
+  void slotSecurityEditor(void);
 
 public:
   /**
@@ -332,7 +334,10 @@ public slots:
 
   void slotFileConsitencyCheck(void);
 
-  void slotCurrencyDialog(void);
+  /**
+    * fires up the price table editor
+    */
+  void slotPriceDialog(void);
 
   /**
     * toggles the toolbar
@@ -382,19 +387,19 @@ public slots:
     * payee and transaction matching.
     */
   bool slotStatementImport(const MyMoneyStatement& s);
-  
+
   /**
     * Essentially similiar to the above slot, except this will load the file
     * from disk first, given the URL.
     */
   bool slotStatementImport(const QString& url);
-  
+
   /**
     * Essentially similiar to slotStatementImport, except this one will import
     * each individual account statement contained in the OFX Statement.
     */
   bool slotOfxStatementImport(const MyMoneyOfxStatement& s);
-  
+
   /**
     * Essentially similiar to the above slot, except this will load the file
     * from disk first, given the URL.

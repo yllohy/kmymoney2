@@ -135,10 +135,10 @@ void kMyMoneyRegisterLoan::paintCell(QPainter *p, int row, int col, const QRect&
                 if((*it).action() == MyMoneySplit::ActionAmortization
                 && (*it).id() != m_split.id()) {
                   align |= Qt::AlignRight;
-                  if((*it).value() >= 0)
-                    txt = ((*it).value()).formatMoney();
-                  else
+                  if((*it).value().isNegative())
                     txt = (-(*it).value()).formatMoney();
+                  else
+                    txt = ((*it).value()).formatMoney();
                 }
               }
 
@@ -153,10 +153,10 @@ void kMyMoneyRegisterLoan::paintCell(QPainter *p, int row, int col, const QRect&
         switch(m_transactionRow) {
           case 0:
             align |= Qt::AlignRight;
-            if(m_split.value() >= 0)
-              txt = (m_split.value()).formatMoney();
-            else
+            if(m_split.value().isNegative())
               txt = (-m_split.value()).formatMoney();
+            else
+              txt = (m_split.value()).formatMoney();
             break;
         }
         break;
@@ -166,7 +166,7 @@ void kMyMoneyRegisterLoan::paintCell(QPainter *p, int row, int col, const QRect&
           case 0:
             align |= Qt::AlignRight;
             txt = m_balance.formatMoney();
-            if(m_balance < 0)
+            if(m_balance.isNegative())
               p->setPen(QColor(255, 0, 0));
             break;
         }

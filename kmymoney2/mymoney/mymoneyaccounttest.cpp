@@ -31,7 +31,6 @@ void MyMoneyAccountTest::testEmptyConstructor() {
 	MyMoneyAccount a;
 
 	CPPUNIT_ASSERT(a.id().isEmpty());
-	CPPUNIT_ASSERT(a.file() == 0);
 	CPPUNIT_ASSERT(a.name().isEmpty());
 	CPPUNIT_ASSERT(a.accountType() == MyMoneyAccount::UnknownAccountType);
 	CPPUNIT_ASSERT(a.openingDate() == QDate());

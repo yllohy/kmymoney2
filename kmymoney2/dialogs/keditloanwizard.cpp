@@ -149,7 +149,7 @@ void KEditLoanWizard::loadWidgets(const MyMoneyAccount& /* account */)
     // of the money, we check if we borrow or loan money
     if((*it_s).action() == MyMoneySplit::ActionAmortization
     && (*it_s).value() != MyMoneyMoney::autoCalc) {
-      if((*it_s).value() < 0) {
+      if((*it_s).value().isNegative()) {
         m_lendButton->setChecked(false);
         m_borrowButton->setChecked(true);
       } else {

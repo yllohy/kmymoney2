@@ -21,6 +21,7 @@
  ***************************************************************************/
 
 #include <unistd.h>
+#include "kdecompat.h"
 
 // ----------------------------------------------------------------------------
 // QT Includes
@@ -33,8 +34,11 @@
 #include <qlayout.h>
 #include <qpalette.h>
 #include <qapplication.h>
-#include <qeventloop.h>
 #include <qwidgetlist.h>
+
+#if QT_IS_VERSION(3,3,0)
+#include <qeventloop.h>
+#endif
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -118,7 +122,7 @@ int KTransactionPtrVector::compareItems(KTransactionPtrVector::Item d1, KTransac
             // same date? Sort by id
             rc = compareItems(t1->id(), t2->id());
           }
-        } else if(tmp < 0) {
+        } else if(tmp.isNegative()) {
           rc = -1;
         }
         break;
@@ -132,7 +136,7 @@ int KTransactionPtrVector::compareItems(KTransactionPtrVector::Item d1, KTransac
           if(tmp.isZero()) {
             // same value? sort by id
             rc = compareItems(t1->id(), t2->id());
-          } else if(tmp < 0) {
+          } else if(tmp.isNegative()) {
             rc = -1;
           }
         }
@@ -154,7 +158,7 @@ int KTransactionPtrVector::compareItems(KTransactionPtrVector::Item d1, KTransac
               if(tmp.isZero()) {
                 // same value? sort by id
                 rc = compareItems(t1->id(), t2->id());
-              } else if(tmp < 0) {
+              } else if(tmp.isNegative()) {
                 rc = -1;
               }
             }
@@ -182,7 +186,7 @@ int KTransactionPtrVector::compareItems(KTransactionPtrVector::Item d1, KTransac
             if(tmp.isZero()) {
               // same value? sort by id
               rc = compareItems(t1->id(), t2->id());
-            } else if(tmp < 0) {
+            } else if(tmp.isNegative()) {
               rc = -1;
             }
           }
@@ -201,7 +205,7 @@ int KTransactionPtrVector::compareItems(KTransactionPtrVector::Item d1, KTransac
             if(tmp.isZero()) {
               // same value? sort by id
               rc = compareItems(t1->id(), t2->id());
-            } else if(tmp < 0) {
+            } else if(tmp.isNegative()) {
               rc = -1;
             }
           }
@@ -220,7 +224,7 @@ int KTransactionPtrVector::compareItems(KTransactionPtrVector::Item d1, KTransac
           if(tmp.isZero()) {
             // same value? Sort by id
             rc = compareItems(t1->id(), t2->id());
-          } else if(tmp < 0) {
+          } else if(tmp.isNegative()) {
             rc = -1;
           }
         }
@@ -261,7 +265,6 @@ KLedgerView::KLedgerView(QWidget *parent, const char *name )
   : QWidget(parent,name),
   m_editMode(false),
   m_contextMenu(0),
-  m_blinkTimer(parent),
   m_suspendUpdate(false)
 {
   KConfig *config = KGlobal::config();
@@ -278,11 +281,7 @@ KLedgerView::KLedgerView(QWidget *parent, const char *name )
 
   m_inReconciliation = false;
 
-  m_blinkTimer.start(500);       // setup blink frequency to one hertz
-  m_blinkState = false;
   MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAccountHierarchy, this);
-
-  connect(&m_blinkTimer, SIGNAL(timeout()), SLOT(slotBlinkTimeout()));
 }
 
 KLedgerView::~KLedgerView()
@@ -311,15 +310,6 @@ void KLedgerView::createRegister(kMyMoneyRegister* r)
   connect(m_register, SIGNAL(signalSelectTransaction(const QCString&)), this, SLOT(selectTransaction(const QCString&)));
 
   connect(m_register->horizontalHeader(), SIGNAL(clicked(int)), this, SLOT(slotRegisterHeaderClicked(int)));
-}
-
-void KLedgerView::slotBlinkTimeout(void)
-{
-  m_blinkState = !m_blinkState;
-  if(m_register) {
-    m_register->slotSetErrorColor(m_blinkState);
-    m_register->repaintContents(false);
-  }
 }
 
 void KLedgerView::slotSelectAccount(const QCString& accountId)
@@ -702,6 +692,7 @@ void KLedgerView::slotPayeeChanged(const QString& name)
             QValueList<MyMoneySplit>::ConstIterator it;
             for(it = t.splits().begin(); it != t.splits().end(); ++it) {
               MyMoneySplit s(*it);
+              s.setReconcileFlag(MyMoneySplit::NotReconciled);
               s.setId(QCString());
               m_transaction.addSplit(s);
             }
@@ -799,7 +790,7 @@ void KLedgerView::amountChanged(const QString& value, int dir)
     MyMoneyMoney val = MyMoneyMoney(value);
     // if someone enters a negative number, we have to make sure that
     // the action is corrected. For transfers, we don't have to do anything
-    if(val < 0) {
+    if(val.isNegative()) {
       switch(transactionDirection(s)) {
         case Credit:
         case UnknownDirection:
@@ -832,7 +823,7 @@ void KLedgerView::amountChanged(const QString& value, int dir)
     // if we use a different currency, then re-calculate the 'value' in
     // the transactions commodity based on the previous price but only
     // if we had a previous price.
-    if(m_transaction.commodity() != m_account.currencyId() && price != 0)
+    if(m_transaction.commodity() != m_account.currencyId() && !price.isZero())
       m_split.setValue(val / price);
 
     if(m_editAmount)
@@ -853,9 +844,9 @@ void KLedgerView::amountChanged(const QString& value, int dir)
       if(!split.accountId().isEmpty()) {
         acc = MyMoneyFile::instance()->account(split.accountId());
         // also keep track of a possible previous price
-        price = (split.shares() != 0) ? split.value() / split.shares() : MyMoneyMoney(0);
+        price = (!split.shares().isZero()) ? split.value() / split.shares() : MyMoneyMoney(0);
       } else
-        price = 0;
+        price = MyMoneyMoney(0);
 
       // in any case, we need to set the value to the negative value of
       // the first split to balance the transaction.
@@ -863,7 +854,7 @@ void KLedgerView::amountChanged(const QString& value, int dir)
 
       // if we use a different currency, then re-calculate the shares
       // in the accounts commodity/currency based on the previous price
-      if(m_transaction.commodity() != acc.currencyId() && price != 0) {
+      if(m_transaction.commodity() != acc.currencyId() && !price.isZero()) {
         split.setShares(split.value() / price);
       }
 
@@ -894,7 +885,7 @@ void KLedgerView::slotPaymentChanged(const QString& value)
   MyMoneyMoney val(value);
 
   m_split.setValue(0);
-  if(val < 0) {
+  if(val.isNegative()) {
     slotDepositChanged((-val).formatMoney());
     return;
   }
@@ -911,7 +902,7 @@ void KLedgerView::slotDepositChanged(const QString& value)
 
   MyMoneyMoney val(value);
 
-  if(val < 0) {
+  if(val.isNegative()) {
     slotPaymentChanged((-val).formatMoney());
     return;
   }
@@ -1209,7 +1200,7 @@ void KLedgerView::slotNewPayee(const QString& payeeName)
 
 int KLedgerView::transactionDirection(const MyMoneySplit& split)
 {
-  return (split.value().isZero()) ? UnknownDirection: ((split.value() > 0) ? Credit : Debit);
+  return (split.value().isZero()) ? UnknownDirection: ((split.value().isPositive()) ? Credit : Debit);
 }
 
 const MyMoneySplit KLedgerView::stockSplit(const MyMoneyTransaction& t)
@@ -1324,8 +1315,12 @@ void KLedgerView::destroyWidgets(void)
   }
   m_editMode = false;
 
+#if QT_IS_VERSION(3,3,0)
   // make sure, that the widgets will be gone (really deleted) before we continue
   QApplication::eventLoop()->processEvents(QEventLoop::ExcludeUserInput, 100);
+#else
+  qApp->processEvents(10);
+#endif
 }
 
 void KLedgerView::slotNew(void)
@@ -1499,7 +1494,7 @@ void KLedgerView::slotEndEdit(void)
         continue;
       }
       MyMoneyAccount acc = file->account((*it).accountId());
-      MyMoneyCurrency currency(file->currency(m_account.currencyId()));
+      MyMoneySecurity currency(file->currency(m_account.currencyId()));
       int fract = currency.smallestAccountFraction();
       if(acc.accountType() == MyMoneyAccount::Cash)
         fract = currency.smallestCashFraction();
@@ -1525,7 +1520,7 @@ void KLedgerView::slotEndEdit(void)
         // if it's not found, then collect it from the user first
         MyMoneyMoney price;
         if(it_p == priceInfo.end()) {
-          MyMoneyCurrency fromCurrency, toCurrency;
+          MyMoneySecurity fromCurrency, toCurrency;
           MyMoneyMoney fromValue, toValue;
           if(m_transaction.commodity() != m_account.currencyId()) {
             toCurrency = file->currency(m_transaction.commodity());
@@ -1558,7 +1553,7 @@ void KLedgerView::slotEndEdit(void)
         // update shares if the transaction commodity is the currency
         // of the current selected account
         if(m_transaction.commodity() == m_account.currencyId()) {
-          (*it).setShares(((*it).value() / price).convert(fract));
+          (*it).setShares(((*it).value() * price).convert(fract));
         }
 
         // now update the split
@@ -2001,12 +1996,12 @@ void KLedgerView::slotCreateSchedule(void)
     MyMoneySchedule::typeE scheduleType = MyMoneySchedule::TYPE_ANY;
 
     if(m_account.accountGroup() == MyMoneyAccount::Asset) {
-      if(m_split.value() >= 0)
+      if(!m_split.value().isNegative())
         scheduleType = MyMoneySchedule::TYPE_DEPOSIT;
       else
         scheduleType = MyMoneySchedule::TYPE_BILL;
     } else {
-      if(m_split.value() >= 0)
+      if(!m_split.value().isNegative())
         scheduleType = MyMoneySchedule::TYPE_BILL;
       else
         scheduleType = MyMoneySchedule::TYPE_DEPOSIT;

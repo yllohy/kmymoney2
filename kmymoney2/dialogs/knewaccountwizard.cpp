@@ -26,6 +26,7 @@
 #include <qcheckbox.h>
 #include <qheader.h>
 #include <qlabel.h>
+#include <qradiobutton.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -92,6 +93,8 @@ KNewAccountWizard::KNewAccountWizard(QWidget *parent, const char *name )
 
   // always select the first item and show the appropriate note
   loadAccountTypes();
+  loadPaymentMethods();
+
   accountTypeListBox->setCurrentItem(0);
 
   m_name->setFocus();
@@ -105,32 +108,30 @@ KNewAccountWizard::~KNewAccountWizard()
 
 void KNewAccountWizard::next()
 {
+  openingBalanceLabel->setText(i18n("What is the opening balance and date of this account?"));
+
+  setAppropriate(accountDetailsPage, true);
+  setAppropriate(accountPaymentPage, false);
+  setAppropriate(brokerageAccountPage, false);
+
   switch(m_accountType) {
     case MyMoneyAccount::Cash:
     case MyMoneyAccount::Asset:
-      if(indexOf(accountPaymentPage) != -1) {
-        removePage(accountPaymentPage);
-      }
       setAppropriate(accountNumberPage, false);
-      setFinishEnabled(accountDetailsPage, true);
+      break;
+
+    case MyMoneyAccount::Investment:
+      openingBalanceLabel->setText(i18n("What is the opening balance and date of this brokerage account?"));
+      setAppropriate(brokerageAccountPage, true);
+      setAppropriate(accountNumberPage, false);
       break;
 
     case MyMoneyAccount::CreditCard:
-      if(indexOf(accountPaymentPage) == -1) {
-        loadPaymentMethods();
-        addPage(accountPaymentPage, m_accountPaymentPageTitle);
-      }
       setAppropriate(accountPaymentPage, true);
-      setFinishEnabled(accountPaymentPage, true);
-      setFinishEnabled(accountDetailsPage, false);
       break;
 
     default:
       setAppropriate(accountNumberPage, institutionComboBox->currentText() != "");
-      if(indexOf(accountPaymentPage) != -1) {
-        removePage(accountPaymentPage);
-      }
-      setFinishEnabled(accountDetailsPage, true);
       break;
   }
 
@@ -167,6 +168,9 @@ void KNewAccountWizard::next()
       reject();
 
   } else {
+    if(currentPage() == brokerageAccountPage) {
+      setAppropriate(accountDetailsPage, brokerageYesButton->isChecked());
+    }
     KNewAccountWizardDecl::next();
 
     // setup the availability of widgets on the selected page
@@ -185,17 +189,33 @@ void KNewAccountWizard::accept()
   m_account.setNumber(accountNumber->text());
   m_account.setCurrencyId(m_currencyComboBox->currency().id());
 
+  m_brokerage.setAccountType(MyMoneyAccount::Checkings);
+  m_brokerage.setCurrencyId(m_currencyComboBox->currency().id());
+  m_brokerage.setNumber(accountNumber->text());
+
   if(!institutionComboBox->currentText().isEmpty()) {
     QValueList<MyMoneyInstitution> list;
     QValueList<MyMoneyInstitution>::ConstIterator it;
 
     list = MyMoneyFile::instance()->institutionList();
-    for(it = list.begin(); it != list.end(); ++it)
-      if((*it).name() == institutionComboBox->currentText())
+    for(it = list.begin(); it != list.end(); ++it) {
+      if((*it).name() == institutionComboBox->currentText()) {
         m_account.setInstitutionId((*it).id());
+        m_brokerage.setInstitutionId((*it).id());
+      }
+    }
   }
-  m_account.setOpeningBalance(MyMoneyMoney(openingBalance->text()));
-  m_account.setOpeningDate(openingDate->getQDate());
+  if(m_accountType == MyMoneyAccount::Investment) {
+    if(brokerageYesButton->isChecked()) {
+      m_brokerage.setName(m_account.name()+i18n(" (Brokerage)"));
+    }
+    m_brokerage.setOpeningBalance(MyMoneyMoney(openingBalance->text()));
+    m_brokerage.setOpeningDate(openingDate->getQDate());
+  } else {
+    m_account.setOpeningBalance(MyMoneyMoney(openingBalance->text()));
+    m_account.setOpeningDate(openingDate->getQDate());
+  }
+
   if(preferredAccount->isChecked())
     m_account.setValue("PreferredAccount", "Yes");
 
@@ -324,13 +344,17 @@ int KNewAccountWizard::exec()
   setHelpEnabled(accountNumberPage, false);
   setHelpEnabled(accountDetailsPage, false);
   setHelpEnabled(accountPaymentPage, false);
+  setHelpEnabled(brokerageAccountPage, false);
+  setHelpEnabled(summaryPage, false);
 
   setFinishEnabled(institutionPage, false);
   setFinishEnabled(accountTypePage, false);
   setFinishEnabled(accountNamePage, false);
   setFinishEnabled(accountNumberPage, false);
   setFinishEnabled(accountDetailsPage, false);
-  setFinishEnabled(accountPaymentPage, true);
+  setFinishEnabled(accountPaymentPage, false);
+  setFinishEnabled(brokerageAccountPage, false);
+  setFinishEnabled(summaryPage, true);
 
   // always start on first page
   showPage(institutionPage);
@@ -346,6 +370,7 @@ int KNewAccountWizard::exec()
 
   // reset everything else if not preset
   accountNumber->setText(QString());
+  m_brokerage = MyMoneyAccount();
 
   rc = KNewAccountWizardDecl::exec();
 
@@ -515,7 +540,7 @@ void KNewAccountWizard::slotAccountType(const QString& sel)
 */
   } else if(sel == KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Investment)) {
     txt += i18n(
-      "Use the investment account to manage your stock and mutual fund account."
+      "Use the investment account to manage your stock, mutual fund and other investments."
     );
     m_accountType = MyMoneyAccount::Investment;
   } else {

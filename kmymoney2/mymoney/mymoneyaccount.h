@@ -61,6 +61,7 @@ class MyMoneyFile;
   * @li  Income
   * @li  Expense
   * @li  Loan (given)
+  * @li  Equity
   *
   * @see MyMoneyInstitution
   * @see MyMoneyFile
@@ -111,7 +112,8 @@ public:
     Income,               /**< Denotes an income account */
     Expense,              /**< Denotes an expense account */
     AssetLoan,            /**< Denotes a loan (asset of the owner of this object) */
-    Stock,                /**< Denotes an stock account as sub-account for an investment */
+    Stock,                /**< Denotes an security account as sub-account for an investment */
+    Equity,               /**< Denotes an equity account e.g. opening/closeing balance */
 
     /* insert new account types above this line */
     MaxAccountTypes       /**< Denotes the number of different account types */
@@ -184,14 +186,6 @@ public:
     * @see setID()
     */
   const QCString id(void) const { return m_id; }
-
-  /**
-    * This method returns the pointer to MyMoneyFile object this account
-    * belongs to.
-    * @return pointer to MyMoneyFile object
-    * @see m_file, setFile()
-    */
-  MyMoneyFile* file(void) const { return m_file; }
 
   /**
     * This method returns the id of the MyMoneyInstitution object this account
@@ -463,12 +457,6 @@ private:
     * This member variable identifies the type of account
     */
   accountTypeE m_accountType;
-
-  /**
-    * This member variable keeps a pointer to the MyMoneyFile object
-    * that this object belongs to.
-    */
-  MyMoneyFile* m_file;
 
   /**
     * This member variable keeps the ID of the MyMoneyInstitution object
