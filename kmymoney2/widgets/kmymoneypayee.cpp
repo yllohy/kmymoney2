@@ -76,6 +76,6 @@ void kMyMoneyPayee::focusOutEvent(QFocusEvent *ev)
   // if the current text is not in the list of
   // possible completions, we have a new payee
   // and signal that to the outside world.
-  if(compObj()->items().contains(text()) == 0)
+  if(text() != "" && compObj()->items().contains(text()) == 0)
     emit newPayee(text());
 }
