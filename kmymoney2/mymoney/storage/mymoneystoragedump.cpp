@@ -57,7 +57,12 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
   s << "---------\n";
   s << "username = " << storage->userName() << "\n";
   s << "usercity = " << storage->userTown() << "\n";
-
+  s << "next account id     = " << _storage->accountId() << "\n";
+  s << "next transaction id = " << _storage->transactionId() << "\n";
+  s << "next payee id       = " << _storage->payeeId() << "\n";
+  s << "next schedule id    = " << _storage->scheduleId() << "\n";
+  s << "\n";
+  
   s << "Institutions\n";
   s << "------------\n";
 
