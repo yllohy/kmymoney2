@@ -1354,7 +1354,6 @@ void KReportsViewTest::testAccountQuery()
     filter.setRowType( MyMoneyReport::eInstitution );
     filter.setName("Accounts by Institution (No transactions)");
     QueryTable qtbl_1(filter);
-    qtbl_1.dump( "qareport-01.html", htmlcontext );
       
     CPPUNIT_ASSERT(qtbl_1.m_transactions.count() == 2);
     CPPUNIT_ASSERT(qtbl_1.m_transactions[0]["account"]=="Checking Account");
@@ -1390,7 +1389,6 @@ void KReportsViewTest::testAccountQuery()
     filter.setRowType( MyMoneyReport::eInstitution );
     filter.setName("Accounts by Institution (With Transactions)");
     QueryTable qtbl_2(filter);
-    qtbl_2.dump( "qareport-02.html", htmlcontext );
     
     CPPUNIT_ASSERT(qtbl_2.m_transactions.count() == 2);
     CPPUNIT_ASSERT(qtbl_2.m_transactions[0]["account"]=="Checking Account");
@@ -1408,7 +1406,6 @@ void KReportsViewTest::testAccountQuery()
     filter.setRowType( MyMoneyReport::eAccountType );
     filter.setName("Accounts by Type");
     QueryTable qtbl_3(filter);
-    qtbl_3.dump( "qareport-03.html", htmlcontext );
     
     CPPUNIT_ASSERT(qtbl_3.m_transactions.count() == 2);
     CPPUNIT_ASSERT(qtbl_3.m_transactions[0]["account"]=="Checking Account");
