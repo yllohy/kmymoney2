@@ -36,67 +36,14 @@
 // Project Includes
 
 #include "kmymoneyonlinequoteconfig.h"
-
-kMyMoneyOnlineQuoteSource::kMyMoneyOnlineQuoteSource(const QString& name)
-{
-  m_name = name;
-  KConfig *kconfig = KGlobal::config();
-  kconfig->setGroup(m_name);
-  m_sym = kconfig->readEntry("SymbolRegex");
-  m_date = kconfig->readEntry("DateRegex");
-  m_price = kconfig->readEntry("PriceRegex");
-  m_url = kconfig->readEntry("URL");
-}
-
-void kMyMoneyOnlineQuoteSource::writeConfig(void)
-{
-  KConfig *kconfig = KGlobal::config();
-  kconfig->setGroup(m_name);
-  kconfig->writeEntry("URL", m_url);
-  kconfig->writeEntry("PriceRegex", m_price);
-  kconfig->writeEntry("DateRegex", m_date);
-  kconfig->writeEntry("SymbolRegex", m_sym);
-}
-
-void kMyMoneyOnlineQuoteSource::renameConfig(const QString& name)
-{
-  KConfig *kconfig = KGlobal::config();
-  kconfig->deleteGroup(m_name);
-  m_name = name;
-  writeConfig();
-}
+#include "../converter/webpricequote.h"
 
 kMyMoneyOnlineQuoteConfig::kMyMoneyOnlineQuoteConfig(QWidget *parent, const char *name )
   : kMyMoneyOnlineQuoteConfigDecl(parent, name)
 {
-  QStringList groups = quoteSourceList();
-  KConfig *kconfig = KGlobal::config();
+  QStringList groups = WebPriceQuote::quoteSources();
 
-  // compatibility hack to load the 'old' stuff
-  if(groups.isEmpty()) {
-    groups += "Yahoo";
-    kconfig->setGroup("Online Quotes Options");
-    QString source(kconfig->readEntry("URL","http://finance.yahoo.com/d/quotes.csv?s=%1&f=sl1d1"));
-    QString symbolRegExp(kconfig->readEntry("SymbolRegex","\"([^,\"]*)\",.*"));
-    QString dateRegExp(kconfig->readEntry("DateRegex","[^,]*,[^,]*,\"([^\"]*)\""));
-    QString priceRegExp(kconfig->readEntry("PriceRegex","[^,]*,([^,]*),.*"));
-    kconfig->deleteGroup("Online Quotes Options");
-
-    kconfig->setGroup(groupName("Yahoo Stock"));
-    kconfig->writeEntry("URL", source);
-    kconfig->writeEntry("SymbolRegex", symbolRegExp);
-    kconfig->writeEntry("PriceRegex", priceRegExp);
-    kconfig->writeEntry("DateRegex", dateRegExp);
-
-    kconfig->setGroup(groupName("Yahoo Currency"));
-    kconfig->writeEntry("URL", "http://finance.yahoo.com/d/quotes.csv?s=%1%2=X&f=sl1d1");
-    kconfig->writeEntry("SymbolRegex", symbolRegExp);
-    kconfig->writeEntry("PriceRegex", priceRegExp);
-    kconfig->writeEntry("DateRegex", dateRegExp);
-    kconfig->sync();
-  }
-
-  loadList(true);
+  loadList(true /*updateResetList*/);
 
   m_updateButton->setEnabled(false);
 
@@ -137,7 +84,7 @@ kMyMoneyOnlineQuoteConfig::kMyMoneyOnlineQuoteConfig(QWidget *parent, const char
 
 void kMyMoneyOnlineQuoteConfig::loadList(const bool updateResetList)
 {
-  QStringList groups = quoteSourceList();
+  QStringList groups = WebPriceQuote::quoteSources();
   KConfig *kconfig = KGlobal::config();
 
   if(updateResetList)
@@ -145,10 +92,9 @@ void kMyMoneyOnlineQuoteConfig::loadList(const bool updateResetList)
   m_quoteSourceList->clear();
   QStringList::Iterator it;
   for(it = groups.begin(); it != groups.end(); ++it) {
-    kconfig->setGroup(groupName(*it));
     new QListViewItem(m_quoteSourceList, *it);
     if(updateResetList)
-      m_resetList += kMyMoneyOnlineQuoteSource(groupName(*it));
+      m_resetList += WebPriceQuoteSource(*it);
   }
 
   QListViewItem* first = m_quoteSourceList->firstChild();
@@ -159,44 +105,20 @@ void kMyMoneyOnlineQuoteConfig::loadList(const bool updateResetList)
   m_newButton->setEnabled(m_quoteSourceList->findItem(i18n("New Quote Source"), 0) == 0);
 }
 
-QStringList kMyMoneyOnlineQuoteConfig::quoteSourceList(void)
-{
-  KConfig *kconfig = KGlobal::config();
-  QStringList groups = kconfig->groupList();
-  QStringList::Iterator it;
-  QRegExp onlineQuoteSource(QString("^Online-Quote-Source-(.*)$"));
-
-  // get rid of all 'non online quote source' entries
-  for(it = groups.begin(); it != groups.end(); it = groups.remove(it)) {
-    if(onlineQuoteSource.search(*it) >= 0) {
-      // Insert the name part
-      groups.insert(it, onlineQuoteSource.cap(1));
-    }
-  }
-
-  return groups;
-}
-
-const QString kMyMoneyOnlineQuoteConfig::groupName(const QString& name) const
-{
-  return QString("Online-Quote-Source-%1").arg(name);
-}
-
 void kMyMoneyOnlineQuoteConfig::resetConfig(void)
 {
-  QStringList::Iterator it;
-  QStringList groups = quoteSourceList();
-  KConfig *kconfig = KGlobal::config();
+  QStringList::ConstIterator it;
+  QStringList groups = WebPriceQuote::quoteSources();
 
   // delete all currently defined entries
   for(it = groups.begin(); it != groups.end(); ++it) {
-    kconfig->deleteGroup(groupName(*it));
+    WebPriceQuoteSource(*it).remove();
   }
 
   // and write back the one's from the reset list
-  QValueList<kMyMoneyOnlineQuoteSource>::Iterator itr;
+  QValueList<WebPriceQuoteSource>::ConstIterator itr;
   for(itr = m_resetList.begin(); itr != m_resetList.end(); ++itr) {
-    (*itr).writeConfig();
+    (*itr).write();
   }
 
   loadList();
@@ -214,7 +136,7 @@ void kMyMoneyOnlineQuoteConfig::slotLoadWidgets(QListViewItem* item)
   m_editDate->setText(QString());
 
   if(item) {
-    m_currentItem = kMyMoneyOnlineQuoteSource(groupName(item->text(0)));
+    m_currentItem = WebPriceQuoteSource(item->text(0));
     m_editURL->setText(m_currentItem.m_url);
     m_editSymbol->setText(m_currentItem.m_sym);
     m_editPrice->setText(m_currentItem.m_price);
@@ -247,14 +169,14 @@ void kMyMoneyOnlineQuoteConfig::slotUpdateEntry(void)
   m_currentItem.m_sym = m_editSymbol->text();
   m_currentItem.m_date = m_editDate->text();
   m_currentItem.m_price = m_editPrice->text();
-  m_currentItem.writeConfig();
+  m_currentItem.write();
   slotEntryChanged();
 }
 
 void kMyMoneyOnlineQuoteConfig::slotNewEntry(void)
 {
-  kMyMoneyOnlineQuoteSource newSource(groupName(i18n("New Quote Source")));
-  newSource.writeConfig();
+  WebPriceQuoteSource newSource(i18n("New Quote Source"));
+  newSource.write();
   loadList();
   QListViewItem* item = m_quoteSourceList->findItem(i18n("New Quote Source"), 0);
   if(item) {
@@ -275,11 +197,11 @@ void kMyMoneyOnlineQuoteConfig::slotEntryRenamed(QListViewItem* item, const QStr
 
   // Make sure we get a non-empty and unique name
   if(text.length() > 0 && nameCount == 1) {
-    m_currentItem.renameConfig(groupName(text));
+    m_currentItem.rename(text);
   } else {
-    QRegExp onlineQuoteSource(QString("^Online-Quote-Source-(.*)$"));
-    onlineQuoteSource.search(m_currentItem.m_name);
-    item->setText(0, onlineQuoteSource.cap(1));
+    item->setText(0, m_currentItem.m_name);
   }
   m_newButton->setEnabled(m_quoteSourceList->findItem(i18n("New Quote Source"), 0) == 0);
 }
+#include  "kmymoneyonlinequoteconfig.moc"
+

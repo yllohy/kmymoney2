@@ -35,6 +35,7 @@
 #include "../widgets/kmymoneycurrencyselector.h"
 #include "../mymoney/mymoneysecurity.h"
 #include "../mymoney/mymoneyfile.h"
+#include "../converter/webpricequote.h"
 #include "../kmymoneyutils.h"
 
 KNewInvestmentWizard::KNewInvestmentWizard( QWidget *parent, const char *name ) :
@@ -101,6 +102,8 @@ KNewInvestmentWizard::KNewInvestmentWizard( const MyMoneySecurity& security, QWi
 
 void KNewInvestmentWizard::init(void)
 {
+  m_onlineSourceCombo->insertStringList( WebPriceQuote::quoteSources() );
+  
   // FIXME for now, we don't have online help
   helpButton()->hide();
 

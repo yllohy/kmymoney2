@@ -42,7 +42,7 @@ using namespace reports;
 #include "../mymoney/mymoneystatement.h"
 #include "../mymoney/storage/mymoneystoragexml.h"
 
-namespace reports {
+namespace test {
 
 class TransactionHelper: public MyMoneyTransaction
 {
@@ -188,7 +188,9 @@ InvTransactionHelper::InvTransactionHelper( const QDate& _date, const QCString& 
   //kdDebug(2) << "successfully added " << id() << endl;
 }
 
-} // end namespace reports
+} // end namespace test
+
+using namespace test;
 
 QCString makeAccount( const QString& _name, MyMoneyAccount::accountTypeE _type, MyMoneyMoney _balance, const QDate& _open, const QCString& _parent, QCString _currency="" )
 {
@@ -1426,17 +1428,17 @@ void KReportsViewTest::testQueryBasics()
 
   // Test querytable::TableRow::operator> and operator==
 
-  reports::QueryTable::TableRow low;
+  QueryTable::TableRow low;
   low["first"] = "A";
   low["second"] = "B";
   low["third"] = "C";
 
-  reports::QueryTable::TableRow high;
+  QueryTable::TableRow high;
   high["first"] = "A";
   high["second"] = "C";
   high["third"] = "B";
 
-  reports::QueryTable::TableRow::setSortCriteria("first,second,third");
+  QueryTable::TableRow::setSortCriteria("first,second,third");
   CPPUNIT_ASSERT( low < high );
   CPPUNIT_ASSERT( low <= high );
   CPPUNIT_ASSERT( high > low );
@@ -1589,7 +1591,7 @@ void KReportsViewTest::testInvestment(void)
   InvTransactionHelper s1c2( QDate(2004,9,1), MyMoneySplit::ActionDividend,         10.00, 120.00, acStock1, acChecking, acDividends );
 
   makeEquityPrice( eqStock1, QDate(2004,10,1), 100.00 );
-  
+
   //
   // Investment Transactions Report
   //
@@ -1597,11 +1599,12 @@ void KReportsViewTest::testInvestment(void)
   MyMoneyReport invtran_r(
       MyMoneyReport::eTopAccount,
       MyMoneyReport::eQCaction|MyMoneyReport::eQCshares|MyMoneyReport::eQCprice,
-      MyMoneyTransactionFilter::yearToDate,
+      MyMoneyTransactionFilter::userDefined,
       false,
       i18n("Investment Transactions"),
       i18n("Test Report")
     );
+  invtran_r.setDateFilter(QDate(2004,1,1),QDate(2004,12,31));
   invtran_r.setInvestmentsOnly(true);
   XMLandback(invtran_r);
   QueryTable invtran(invtran_r);
@@ -1962,6 +1965,50 @@ void KReportsViewTest::testOfxImport(void)
 
   // Unfortunately, I'm not even clear what this LOOKS like :-(
     
+}
+
+//
+// testWebQuotes: Needs to be moved to converter/something.cpp.  But this
+// requires a bunch of AM changes I don't want to make right now.  Will
+// move it when done.
+//
+
+#include "../converter/webpricequote.h"
+
+void KReportsViewTest::testWebQuotes()
+{
+  try
+  {
+    WebPriceQuote q;
+    QuoteReceiver qr(&q);
+    
+    q.launch("DIS");
+    
+//     kdDebug(2) << "KReportsViewTest::testWebQuotes(): quote is " << qr.m_date.toString() << " | " << qr.m_price.toString() << endl;
+    
+    // No errors allowed
+    CPPUNIT_ASSERT(qr.m_errors.count() == 0);
+    
+    // Quote date should be within the last week, or something bad is going on.
+    CPPUNIT_ASSERT(qr.m_date <= QDate::currentDate());
+    CPPUNIT_ASSERT(qr.m_date >= QDate::currentDate().addDays(-7));
+    
+    // Quote value should at least be positive
+    CPPUNIT_ASSERT(qr.m_price.isPositive());
+    
+    q.launch("MF8AAUKS.L","Yahoo UK");
+    
+//     kdDebug(2) << "KReportsViewTest::testWebQuotes(): quote is " << qr.m_date.toString() << " | " << qr.m_price.toString() << endl;
+        
+    CPPUNIT_ASSERT(qr.m_errors.count() == 0);
+    CPPUNIT_ASSERT(qr.m_date <= QDate::currentDate());
+    CPPUNIT_ASSERT(qr.m_date >= QDate::currentDate().addDays(-7));
+    CPPUNIT_ASSERT(qr.m_price.isPositive());
+  }
+  catch (MyMoneyException* e)
+  {
+    CPPUNIT_FAIL(e->what());
+  }
 }
 
 // vim:cin:si:ai:et:ts=2:sw=2:

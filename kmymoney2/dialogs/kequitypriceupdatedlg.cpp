@@ -9,6 +9,7 @@
                            John C <thetacoturtle@users.sourceforge.net>
                            Thomas Baumgart <ipwizard@users.sourceforge.net>
                            Kevin Tambascio <ktambascio@users.sourceforge.net>
+                           Ace Jones <acejones@users.sourceforge.net>
  ***************************************************************************/
 
 /***************************************************************************
@@ -40,10 +41,7 @@
 #include <ktextedit.h>
 #include <klistview.h>
 #include <kdebug.h>
-#include <kio/netaccess.h>
 #include <kprogress.h>
-#include <kconfig.h>
-#include <kurl.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -51,7 +49,6 @@
 #include "kequitypriceupdatedlg.h"
 #include "../mymoney/mymoneyfile.h"
 #include "../mymoney/mymoneysecurity.h"
-#include "../mymoney/mymoneyonlinepriceupdate.h"
 
 #define SYMBOL_COL      0
 #define NAME_COL        1
@@ -91,7 +88,7 @@ KEquityPriceUpdateDlg::KEquityPriceUpdateDlg(QWidget *parent, const QCString& se
     // const QString& symbol = (*it).tradingSymbol();
     if ( securityId.isEmpty() || ( (*it).id() == securityId ) )
     {
-      // only add those securities that have information to download prices
+      // only add those securities that have a valid source set
       if(!(*it).value("kmm-online-source").isEmpty()) {
         KListViewItem* item = new KListViewItem(lvEquityList, (*it).tradingSymbol(), (*it).name());
         MyMoneySecurity currency = MyMoneyFile::instance()->currency((*it).tradingCurrency());
@@ -112,9 +109,13 @@ KEquityPriceUpdateDlg::KEquityPriceUpdateDlg(QWidget *parent, const QCString& se
   connect(btnUpdateSelected, SIGNAL(clicked()), this, SLOT(slotUpdateSelectedClicked()));
   connect(btnUpdateAll, SIGNAL(clicked()), this, SLOT(slotUpdateAllClicked()));
 
-  connect(&m_filter, SIGNAL(processExited(QListViewItem*, const QString&)), this, SLOT(slotInsertUpdate(QListViewItem*, const QString&)));
-  connect(&m_filter, SIGNAL(receivedStderr(KProcess*, char*, int)), this, SLOT(slotReceivedErrorFromFilter(KProcess*, char*, int)));
-
+  connect(&m_webQuote,SIGNAL(quote(const QString&,const QDate&, const MyMoneyMoney&)),
+    this,SLOT(slotReceivedQuote(const QString&,const QDate&, const MyMoneyMoney&)));
+  connect(&m_webQuote,SIGNAL(status(const QString&)),
+    this,SLOT(logStatusMessage(const QString&)));
+  connect(&m_webQuote,SIGNAL(error(const QString&)),
+    this,SLOT(logErrorMessage(const QString&)));
+  
   connect(lvEquityList, SIGNAL(selectionChanged()), this, SLOT(slotUpdateSelection()));
 
   // Not implemented yet.
@@ -212,7 +213,7 @@ void KEquityPriceUpdateDlg::slotUpdateSelectedClicked()
   if(item) {
     prgOnlineProgress->setTotalSteps(1+lvEquityList->childCount());
     prgOnlineProgress->setProgress(skipCnt);
-    launchUpdate(item);
+    m_webQuote.launch(item->text(SYMBOL_COL),item->text(SOURCE_COL));
   }
   else
     logErrorMessage("No security selected.");
@@ -226,7 +227,7 @@ void KEquityPriceUpdateDlg::slotUpdateAllClicked()
     prgOnlineProgress->setTotalSteps(1+lvEquityList->childCount());
     prgOnlineProgress->setProgress(1);
     m_fUpdateAll = true;
-    launchUpdate( item );
+    m_webQuote.launch(item->text(SYMBOL_COL),item->text(SOURCE_COL));
   }
   else
     logErrorMessage("Security list is empty.");
@@ -236,156 +237,53 @@ void KEquityPriceUpdateDlg::slotConfigureClicked()
 {
 }
 
-void KEquityPriceUpdateDlg::launchUpdate(QListViewItem* _item )
+void KEquityPriceUpdateDlg::slotReceivedQuote(const QString& symbol,const QDate& date, const MyMoneyMoney& price)
 {
-  KConfig *kconfig = KGlobal::config();
-  kconfig->setGroup("Online Quotes Options");
-  QString source(kconfig->readEntry("URL","http://finance.yahoo.com/d/quotes.csv?s=%1&f=sl1d1"));
-  KURL url = KURL::fromPathOrURL(source.arg(_item->text(0)));
-
-  if ( url.isLocalFile() )
+  QListViewItem* item = lvEquityList->findItem(symbol,SYMBOL_COL,Qt::ExactMatch);
+  QListViewItem* next = NULL;
+  
+  if ( item )
   {
-    logStatusMessage(QString("Executing &lt;%1&gt;...").arg(url.path()));
-
-    m_filter.clearArguments();
-    m_filter << QStringList::split(" ",url.path());
-    m_filter.setItem(_item);
-
-    if(m_filter.start(KProcess::NotifyOnExit, KProcess::All))
-      m_filter.resume();
+    if ( price.isPositive() && date.isValid() )
+    {
+      item->setText(PRICE_COL, price.formatMoney());
+      item->setText(DATE_COL, date.toString(Qt::ISODate));
+      logStatusMessage(i18n("Price for %1 updated").arg(symbol));
+    }
     else
     {
-      logErrorMessage(QString("Unable to launch: %1").arg(url.path()));
-      slotInsertUpdate(_item,QString());
+      logErrorMessage(i18n("Received an invalid price for %1, unable to update.").arg(symbol));
+    }
+    
+    prgOnlineProgress->advance(1);
+    item->listView()->setSelected(item, false);
+  
+    // launch the NEXT one ... in case of m_fUpdateAll == false, we
+    // need to parse the list to find the next selected one
+    next = item->nextSibling();
+    if ( !m_fUpdateAll )
+    {
+      while(next && !next->isSelected()) 
+      {
+        prgOnlineProgress->advance(1);
+        next = next->nextSibling();
+      }
     }
   }
   else
   {
-    logStatusMessage(QString("Fetching URL &lt;%1&gt;...").arg(url.prettyURL()));
-
-    QString tmpFile;
-    if( KIO::NetAccess::download( url, tmpFile, NULL ) )
-    {
-      QFile f(tmpFile);
-      if ( f.open( IO_ReadOnly ) )
-      {
-        QString quote = QTextStream(&f).read();
-        f.close();
-        slotInsertUpdate(_item,quote);
-      }
-      else
-      {
-        slotInsertUpdate(_item,QString());
-      }
-      KIO::NetAccess::removeTempFile( tmpFile );
-    }
-    else
-    {
-      logErrorMessage(KIO::NetAccess::lastErrorString());
-      slotInsertUpdate(_item,QString());
-    }
-  }
-}
-
-void KEquityPriceUpdateDlg::slotInsertUpdate(QListViewItem* _item, const QString& _quotedata )
-{
-  bool gotprice = false;
-  bool gotdate = false;
-  MyMoneyMoney price;
-  QDate date;
-
-  if ( ! _quotedata.isEmpty() )
-  {
-    KConfig *kconfig = KGlobal::config();
-    kconfig->setGroup("Online Quotes Options");
-    QRegExp symbolRegExp(kconfig->readEntry("SymbolRegex","\"([^,\"]*)\",.*"));
-    QRegExp dateRegExp(kconfig->readEntry("PriceRegex","[^,]*,[^,]*,\"([^\"]*)\""));
-    QRegExp priceRegExp(kconfig->readEntry("DateRegex","[^,]*,([^,]*),.*"));
-
-    if( symbolRegExp.search(_quotedata) > -1)
-      logStatusMessage(QString("Symbol found: %1").arg(symbolRegExp.cap(1)));
-
-    if(priceRegExp.search(_quotedata)> -1)
-    {
-      gotprice = true;
-      price = MyMoneyMoney(priceRegExp.cap(1).toDouble()).toString();
-      logStatusMessage(QString("Price found: %1").arg(price.toString()));
-    }
-
-    if(dateRegExp.search(_quotedata) > -1)
-    {
-      QString datestr = dateRegExp.cap(1);
-      // TODO: Fix this temporary hack.  We know yahoo returns mm/dd/yyyy
-      QRegExp dateparse("([0-9]+)/([0-9]+)/([0-9]+)");
-      if ( dateparse.search( datestr ) > -1 )
-      {
-        gotdate = true;
-        date = QDate( dateparse.cap(3).toInt(), dateparse.cap(1).toInt(), dateparse.cap(2).toInt() );
-        logStatusMessage(QString("Date found: %1").arg(date.toString()));;
-      }
-    }
-
-    if ( gotprice && gotdate )
-    {
-      _item->setText(PRICE_COL, price.formatMoney());
-      _item->setText(DATE_COL, date.toString(Qt::ISODate));
-      logStatusMessage(i18n("Price for %1 updated").arg(_item->text(NAME_COL)));
-    }
-    else
-    {
-      logErrorMessage(i18n("Unable to update price for %1").arg(_item->text(NAME_COL)));
-    }
-  }
-
-  prgOnlineProgress->advance(1);
-  // _item->setSelected(false) does not cause the screen to be updated
-  _item->listView()->setSelected(_item, false); // turn off selection
-
-  // launch the NEXT one ... in case of m_fUpdateAll == false, we
-  // need to parse the list to find the next selected one
-  QListViewItem* next = _item->nextSibling();
-  if ( !m_fUpdateAll )
-  {
-    while(next && !next->isSelected()) {
-      prgOnlineProgress->advance(1);
-      next = next->nextSibling();
-    }
+    logErrorMessage(i18n("Received a price for %1, but this symbol is not on the list!  Aborting entire update.").arg(symbol));
   }
 
   if (next)
-    launchUpdate(next);
-
-  else {
+  {
+    m_webQuote.launch(next->text(SYMBOL_COL),next->text(SOURCE_COL));
+  }
+  else 
+  {
     // we've run past the end, reset to the default value.
     m_fUpdateAll = false;
     // force progress bar to show 100%
     prgOnlineProgress->setProgress(prgOnlineProgress->totalSteps());
   }
-}
-
-void KEquityPriceUpdateDlg::slotReceivedErrorFromFilter(KProcess*, char* _pcbuffer, int _nbufferlen)
-{
-  QByteArray data;
-  data.duplicate(_pcbuffer, _nbufferlen);
-  logStatusMessage(QString(data));
-}
-
-KEquityPriceUpdateProcess::KEquityPriceUpdateProcess(void): m_item(NULL)
-{
-  connect(this, SIGNAL(receivedStdout(KProcess*, char*, int)), this, SLOT(slotReceivedDataFromFilter(KProcess*, char*, int)));
-  connect(this, SIGNAL(processExited(KProcess*)), this, SLOT(slotProcessExited(KProcess*)));
-}
-
-void KEquityPriceUpdateProcess::slotReceivedDataFromFilter(KProcess* /*_process*/, char* _pcbuffer, int _nbufferlen)
-{
-  QByteArray data;
-  data.duplicate(_pcbuffer, _nbufferlen);
-
-  m_string += QString(data);
-}
-
-void KEquityPriceUpdateProcess::slotProcessExited(KProcess*)
-{
-  emit processExited(m_item,m_string);
-  m_string.truncate(0);
 }

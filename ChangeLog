@@ -1,3 +1,12 @@
+2005-01-04 Ace Jones <acejones@users.sourceforge.net>
+  * Hooked up multiple sources for online quotes
+  * Moved online quote logic out of KEquityPriceUpdateDlg and into the new 
+    WebPriceQuote class.
+  * Moved online quote configuration logic out of kMyMoneyOnlineQuoteConfig
+    and into the new WebPriceQuote class.
+  * Fixed a test case in KReportsViewTest::testInvestment to use the correct 
+    year (2004, not "current year").
+
 2005-01-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * added currency New Turkish Lira (YTL) for newly created files
   * reassigned id of New Israeli Shekel from ILS to NIS for newly created files

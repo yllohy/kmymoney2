@@ -39,27 +39,8 @@ class QListViewItem;
 // ----------------------------------------------------------------------------
 // Project Includes
 
+#include "../converter/webpricequote.h"
 #include "kequitypriceupdatedlgdecl.h"
-#include "../mymoney/mymoneyonlinepriceupdate.h"
-
-class KEquityPriceUpdateProcess: public KProcess
-{
-  Q_OBJECT
-public:
-  KEquityPriceUpdateProcess(void);
-  void setItem(QListViewItem* _item) { m_item = _item; m_string.truncate(0); }
-
-public slots:
-  void slotReceivedDataFromFilter(KProcess*, char*, int);
-  void slotProcessExited(KProcess*);
-
-signals:
-  void processExited(QListViewItem*,const QString&);
-
-private:
-  QListViewItem* m_item;
-  QString m_string;
-};
 
 /**
   * @author Kevin Tambascio & Ace Jones
@@ -79,18 +60,14 @@ protected slots:
   void slotUpdateAllClicked();
   void slotConfigureClicked();
   void slotUpdateSelection();
-  void slotReceivedErrorFromFilter(KProcess*, char*, int);
-  void slotInsertUpdate(QListViewItem* _item, const QString& _quotedata );
 
-protected:
-  void launchUpdate(QListViewItem* _item);
-  void logStatusMessage(const QString& message);
-  void logErrorMessage(const QString& message);
-
+  void logStatusMessage(const QString&);
+  void logErrorMessage(const QString&);
+  void slotReceivedQuote(const QString&,const QDate&, const MyMoneyMoney&);
+  
 private:
-  KEquityPriceUpdateProcess m_filter;
-  QString m_strdata;
   bool m_fUpdateAll;
+  WebPriceQuote m_webQuote;
 };
 
 #endif

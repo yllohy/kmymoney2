@@ -346,11 +346,6 @@ The first step in this process requires to select the type of investment. The fo
                                 <string></string>
                             </property>
                         </item>
-                        <item>
-                            <property name="text">
-                                <string>Yahoo</string>
-                            </property>
-                        </item>
                         <property name="name">
                             <cstring>m_onlineSourceCombo</cstring>
                         </property>
