@@ -113,7 +113,9 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
 
           case 1:
             try {
-              if(m_transaction->splitCount() > 2)
+              if(m_transaction->isLoanPayment()) {
+                txt = QString(i18n("Loan payment"));
+              } else if(m_transaction->splitCount() > 2)
                 txt = QString(i18n("Splitted transaction"));
               else {
                 MyMoneySplit split = m_transaction->splitByAccount(m_transaction->splitId(), false);
