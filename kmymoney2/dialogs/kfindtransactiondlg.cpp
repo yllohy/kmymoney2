@@ -62,7 +62,7 @@ KFindTransactionDlg::KFindTransactionDlg(QWidget *parent, const char *name)
   // by moving the dialog by (-45,-45).
   m_register->setParent(this);
   m_registerFrame->hide();
-  update();
+  KFindTransactionDlgDecl::update();
   resize(minimumSizeHint());
 
   move(x()-45, y()-45);
@@ -121,11 +121,15 @@ KFindTransactionDlg::KFindTransactionDlg(QWidget *parent, const char *name)
   m_helpButton->hide();
   
   m_textEdit->setFocus();
+
+  // make sure, we get a note when the engine changes state
+  MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAnyChange, this);
 }
 
 KFindTransactionDlg::~KFindTransactionDlg()
 {
-  // writeConfig();
+  // detach ourself from the engine
+  MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassAnyChange, this);
 }
 
 void KFindTransactionDlg::slotReset(void)
@@ -820,5 +824,18 @@ void KFindTransactionDlg::slotSelectTransaction(const QCString& transactionId)
     m_register->setCurrentTransactionIndex(idx);
     m_register->ensureTransactionVisible();
     m_register->repaintContents(false);
+  }
+}
+
+void KFindTransactionDlg::update(const QCString& /* id */)
+{
+  // only calculate the new list if it is currently visible
+  if(m_registerFrame->isVisible()) {
+    KMyMoneyTransaction *k = transaction(m_register->currentTransactionIndex());
+    QCString id = k->id();
+
+    slotRefreshView();
+
+    slotSelectTransaction(id);
   }
 }

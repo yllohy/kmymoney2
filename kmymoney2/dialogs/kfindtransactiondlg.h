@@ -29,9 +29,10 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "../mymoney/mymoneyutils.h"
 #include "../views/kledgerview.h"
+#include "../mymoney/mymoneyutils.h"
 #include "../mymoney/mymoneytransactionfilter.h"
+#include "../mymoney/mymoneyobserver.h"
 
 #include "kfindtransactiondlgdecl.h"
 
@@ -42,7 +43,7 @@ class QListViewItem;
   * @author Thomas Baumgart
   */
 
-class KFindTransactionDlg : public KFindTransactionDlgDecl, public IMyMoneyRegisterParent {
+class KFindTransactionDlg : public KFindTransactionDlgDecl, public IMyMoneyRegisterParent, public MyMoneyObserver {
   Q_OBJECT
 public:
 
@@ -115,6 +116,14 @@ public:
     */
   const MyMoneyMoney balance(const int /* idx */) const { return 0; };
 
+  /**
+    * This method is called by the engine whenever a required notification
+    * is sent out for this object. Attachment of the observer is performed
+    * within the constructor, detachment within the destructor of this
+    * object.
+    */
+  void update(const QCString& id);
+  
 public slots:
   void slotUpdateSelections(void);
   void slotReset(void);
