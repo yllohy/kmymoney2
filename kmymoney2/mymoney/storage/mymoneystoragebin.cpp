@@ -499,7 +499,7 @@ void MyMoneyStorageBin::readNewFormat(QDataStream&s, IMyMoneySerialize* storage)
   s >> tmp_s; storage->setUserTelephone(tmp_s);
   s >> tmp_s; storage->setUserEmail(tmp_s);
   s >> date; storage->setCreationDate(date);
-  s >> date; storage->setLastModificationDate(date);
+  s >> date; storage->setLastModificationDate(date);    // this resets the dirty flag
 
   s >> tmp;     // estimated number of items that follow
 
@@ -507,6 +507,10 @@ void MyMoneyStorageBin::readNewFormat(QDataStream&s, IMyMoneySerialize* storage)
   readPayees(s, storage);
   readAccounts(s, storage);
   readTransactions(s, storage);
+
+  // for now, we don't read the scheduled transactions back, as there
+  // might be files out there that don't have it.
+  // readScheduledTransactions(s, storage);
 }
 
 void MyMoneyStorageBin::writeFile(QIODevice* qfile, IMyMoneySerialize* storage)
@@ -566,6 +570,11 @@ void MyMoneyStorageBin::writeStream(QDataStream& s, IMyMoneySerialize* storage)
   writePayees(s, storage);
   writeAccounts(s, storage);
   writeTransactions(s, storage);
+  writeScheduledTransactions(s, storage);
+
+  // this seems to be nonsense, but it clears the dirty flag
+  // as a side-effect.
+  storage->setLastModificationDate(storage->lastModificationDate());
 }
 
 void MyMoneyStorageBin::writeInstitutions(QDataStream& s, IMyMoneySerialize* storage)
@@ -950,3 +959,24 @@ const unsigned long MyMoneyStorageBin::extractId(const QCString& txt) const
   }
   return rc;
 }
+
+void MyMoneyStorageBin::writeScheduledTransactions(QDataStream& s, IMyMoneySerialize* storage)
+{
+  s << (Q_INT32) 1;   // version
+
+  s << (Q_INT32) 0;   // for now there's nothing
+}
+
+void MyMoneyStorageBin::readScheduledTransactions(QDataStream& s, IMyMoneySerialize* storage)
+{
+  Q_INT32 version;
+  Q_INT32 cnt;
+
+  s >> version;
+
+  s >> cnt;
+
+  for(int i = 0; i < cnt; ++i) {
+  }
+}
+

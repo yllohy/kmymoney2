@@ -107,6 +107,8 @@ private:
   const QValueList<MyMoneySplit> readSplits(QDataStream& s);
   const MyMoneySplit readSplit(QDataStream& s);
 
+  void writeScheduledTransactions(QDataStream& s, IMyMoneySerialize* storage);
+  void readScheduledTransactions(QDataStream& s, IMyMoneySerialize* storage);
 
   /**
     * This is a helper method to extract the numeric value from an @p id.
