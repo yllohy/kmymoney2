@@ -295,7 +295,7 @@ void KMyMoneyView::slotAccountDelete()
 
 bool KMyMoneyView::fileOpen(void)
 {
-  KMyMoneyFile::instance()->isOpen();
+  return KMyMoneyFile::instance()->isOpen();
 }
 
 void KMyMoneyView::closeFile(void)
@@ -985,6 +985,7 @@ bool KMyMoneyView::checkTransactionDates(const MyMoneyTransaction *transaction, 
       return false;
   }
   return true;
+
 }
 
 bool KMyMoneyView::checkTransactionAmount(const MyMoneyTransaction *transaction, const bool enabled, const QString id, const MyMoneyMoney amount)
@@ -1113,6 +1114,7 @@ bool KMyMoneyView::checkTransactionPayee(const MyMoneyTransaction *transaction, 
     if (regExp.match(transaction->payee())==-1)
       return false;
     else
+
       return true;
   }
 */
