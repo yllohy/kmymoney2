@@ -6,7 +6,9 @@
     but also keeps additonal information required for display purposes
   * renamed MyMoneyTransaction::split to splitByAccount
   * added MyMoneyTransaction::splitById which returns a split by split id
-  * added more logic to the "find transaction dialog"
+  * optimized space for items in search register
+  * added full search functionality
+  * fixed bug in font handling of register code
 
 2003-09-04 Michael Edwardes <mte@users.sourceforge.net>
   * Fix bug in KEditScheduleDlg::slotSplitClicked() and
