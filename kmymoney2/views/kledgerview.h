@@ -222,9 +222,10 @@ public:
     * @param idx index into the ledger starting at 0
     * @return Value of the balance for the account after the selected
     *         transaction has been taken into account. If idx is out
-    *         of bounds, 0 will be returned as value.
+    *         of bounds, 0 will be returned as value. For liability type
+    *         accounts, the sign will be inverted for display purposes.
     */
-  const MyMoneyMoney& balance(const int idx) const;
+  const MyMoneyMoney balance(const int idx) const;
 
   /**
     * This method returns the id of the account that is currently
@@ -431,6 +432,12 @@ public slots:
     */
   virtual void slotNew(void);
 
+  /**
+    * This method is called, when the widget should be hidden. We use it to
+    * cancel any pending edit activities first.
+    */
+  virtual void hide(void);
+
 protected slots:
   /**
     * This method marks the split referencing the account in the current
@@ -556,6 +563,8 @@ protected:
 
   virtual void createContextMenu(void);
 
+  virtual void reloadEditWidgets(const MyMoneyTransaction& t) = 0;
+
 protected:
   /**
     * This member keeps a pointer to the specific info stack for the account
@@ -661,6 +670,9 @@ protected:
     * This member keeps a pointer to the popup-menu
     */
   KPopupMenu*   m_contextMenu;
+
+private:
+  void fromToChanged(const bool fromChanged, const QString& accountName);
 
 private:
   QTimer*       m_timer;
