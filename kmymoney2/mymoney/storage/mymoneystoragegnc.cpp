@@ -42,47 +42,31 @@ email                : mte@users.sourceforge.net
 #include "mymoneystoragegnc.h"
 #include "../mymoneyfile.h"
 #include "../mymoneyprice.h"
+#include "../../dialogs/kgncimportoptionsdlg.h"
 
 #define TRY try {
 #define PASS } catch (MyMoneyException *e) { throw e; }
 
-// user options; will implement a dialog for them later
-// for the moment, put them at start of module for easy access
+// user options
 void MyMoneyStorageGNC::setOptions () {
-  /*
-              Scheduled Transactions
-    Due to differences in implementation, it is not always possible to import scheduled
-    transactions correctly. Though best efforts are made, it may be that some
-    imported transactions cause problems within kmymoney.
-    An attempt is made within the importer to identify potential problem transactions,
-    and setting this option will cause them to be dropped from the file.
-    A report of which were dropped, and why, will be produced.
-     o drop suspect scheduled transactions
-  */
-  m_dropSuspectSchedules = false;
-  /*
-                Investments
-    In kmymoney, all accounts representing investments (stocks, shares, bonds, etc.) must
-    have an associated investment account (e.g. a broker account). The stock account holds
-    the share balance, the investment account a money balance.
-    Gnucash does not do this, so we cannot automate this function. If you have investments,
-    you must select one of the following options.
-     o create a separate investment account for each stock with the same name as the stock
-     o create a single investment account to hold all stocks - you will be asked for a name
-     o create multiple investment accounts - you will be asked for a name for each stock 
-  */ 
-  // investment option - 0, create investment a/c per stock a/c, 1 = single new investment account, 2 = prompt for each stock
-  // option 2 doesn't really work too well at present
-  m_investmentOption = 0;
-  /*          Debug Options
-    If you don't know what these are, best leave them alone.
-     o produce general debug messages
-     o produce a trace of the gnucash file XML
-     o hide personal data (account names, payees, etc., randomize money amounts)
-  */
-  gncdebug = false; // general debug messages
-  xmldebug = false; // xml trace
-  bAnonymize = false; // anonymize input
+  KGncImportOptionsDlg dlg; // display the dialog to allow the user to set own options
+  if (dlg.exec()) {
+    // set users input options
+    m_dropSuspectSchedules = dlg.scheduleOption();
+    m_investmentOption = dlg.investmentOption();
+    gncdebug = dlg.generalDebugOption();
+    xmldebug = dlg.xmlDebugOption();
+    bAnonymize = dlg.anonymizeOption();
+  } else {
+    // user declined, so set some sensible defaults
+    m_dropSuspectSchedules = false;
+    // investment option - 0, create investment a/c per stock a/c, 1 = single new investment account, 2 = prompt for each stock
+    // option 2 doesn't really work too well at present
+    m_investmentOption = 0;
+    gncdebug = false; // general debug messages
+    xmldebug = false; // xml trace
+    bAnonymize = false; // anonymize input
+  }
   // no dialog option for the following; it will set base currency, and print actual XML data
   developerDebug = false;
   // set your fave currency here to save getting that enormous dialog each time you run a test
@@ -874,7 +858,7 @@ void MyMoneyStorageGNC::convertCommodity (const GncCommodity *gcm) {
 
     //assign the gnucash id as the key into the map to find our id
     if (gncdebug) qDebug ("mapping, key = %s, id = %s", gcm->id().latin1(), equ.id().data());
-    m_mapEquities[QCString(gcm->id())] = QCString(equ.id());
+    m_mapEquities[gcm->id().utf8()] = equ.id();
   }
   signalProgress (++m_commodityCount, 0);
   return ;
@@ -886,16 +870,16 @@ void MyMoneyStorageGNC::convertPrice (const GncPrice *gpr) {
   // add this to our price history
   if (m_priceCount == 0) signalProgress (0, 1, QObject::tr("Loading prices..."));
   if (gpr->commodity()->isCurrency()) {
-    MyMoneyPrice exchangeRate (QCString(gpr->commodity()->id()), QCString(gpr->currency()->id()),
+    MyMoneyPrice exchangeRate (gpr->commodity()->id().utf8(), gpr->currency()->id().utf8(),
                                gpr->priceDate(), MyMoneyMoney(gpr->value()), QObject::tr("Imported History"));
     m_storage->addPrice (exchangeRate);
   } else {
-    MyMoneySecurity e = m_storage->security(m_mapEquities[QCString(gpr->commodity()->id())]);
+    MyMoneySecurity e = m_storage->security(m_mapEquities[gpr->commodity()->id().utf8()]);
     if (gncdebug) qDebug ("Searching map, key = %s, found id = %s",
                             gpr->commodity()->id().latin1(), e.id().data());
-    e.setTradingCurrency (QCString(gpr->currency()->id()));
+    e.setTradingCurrency (gpr->currency()->id().utf8());
     MyMoneyMoney priceValue(gpr->value());
-    MyMoneyPrice stockPrice(e.id(), QCString(gpr->currency()->id()), gpr->priceDate(), priceValue, QObject::tr("Imported History"));
+    MyMoneyPrice stockPrice(e.id(), gpr->currency()->id().utf8(), gpr->priceDate(), priceValue, QObject::tr("Imported History"));
     m_storage->addPrice (stockPrice);
     m_storage->modifySecurity(e);
   }
@@ -919,11 +903,11 @@ void MyMoneyStorageGNC::convertAccount (const GncAccount* gac) {
   acc.setLastModified(currentDate);
   acc.setLastReconciliationDate(currentDate);
   if (gac->commodity()->isCurrency()) {
-    acc.setCurrencyId (QCString(gac->commodity()->id()));
+    acc.setCurrencyId (gac->commodity()->id().utf8());
     m_currencyCount[gac->commodity()->id()]++;
   }
 
-  acc.setParentAccountId (QCString(gac->parent()));
+  acc.setParentAccountId (gac->parent().utf8());
   // now determine the account type and its parent id
   if (QString("BANK") == gac->type()) {
     acc.setAccountType(MyMoneyAccount::Checkings);
@@ -973,7 +957,7 @@ void MyMoneyStorageGNC::convertAccount (const GncAccount* gac) {
     // save the id for later linking to investment account
     m_stockList.append (gac->id());
     // set the equity type
-    MyMoneySecurity e = m_storage->security (m_mapEquities[QCString(gac->commodity()->id())]);
+    MyMoneySecurity e = m_storage->security (m_mapEquities[gac->commodity()->id().utf8()]);
     if (gncdebug) qDebug ("Acct equity search, key = %s, found id = %s",
                             gac->commodity()->id().latin1(), e.id().data());
     acc.setCurrencyId (e.id()); // actually, the security id
@@ -986,7 +970,7 @@ void MyMoneyStorageGNC::convertAccount (const GncAccount* gac) {
   // all the details from the file about the account should be known by now.
   // calling addAccount will automatically fill in the account ID.
   m_storage->addAccount(acc);
-  m_mapIds[QCString(gac->id())] = acc.id(); // to link gnucash id to ours for tx posting
+  m_mapIds[gac->id().utf8()] = acc.id(); // to link gnucash id to ours for tx posting
 
   if (gncdebug) qDebug("Gnucash account %s has id of %s, type of %s, parent is %s",
                          gac->id().latin1(), acc.id().data(),
@@ -1052,7 +1036,7 @@ void MyMoneyStorageGNC::convertSplit (const GncSplit *gsp) {
   MyMoneyAccount splitAccount;
   // find the kmm account id coresponding to the gnc id
   QCString kmmAccountId;
-  map_accountIds::Iterator id = m_mapIds.find(QCString(gsp->acct()));
+  map_accountIds::Iterator id = m_mapIds.find(gsp->acct().utf8());
   if (id != m_mapIds.end()) {
     kmmAccountId = id.data();
   } else { // for the case where the acs not found (which shouldn't happen?), create an account with gnc name
@@ -1066,7 +1050,7 @@ void MyMoneyStorageGNC::convertSplit (const GncSplit *gsp) {
                           gsp->acct().latin1(), kmmAccountId.data(), gsp->memo().latin1(), gsp->value().latin1(),
                           gsp->recon().latin1());
   // payee id
-  split.setPayeeId (QCString(m_txPayeeId));
+  split.setPayeeId (m_txPayeeId.utf8());
   // reconciled state and date
   switch (gsp->recon().at(0).latin1()) {
   case 'n':
@@ -1200,9 +1184,9 @@ MyMoneyTransaction MyMoneyStorageGNC::convertTemplateTransaction (const QString 
       split.setAction(MyMoneySplit::ActionTransfer);
     } else {
       if (split.value() <= MyMoneyMoney (0)) {
-        split.setAction (QCString(negativeActionType));
+        split.setAction (negativeActionType);
       } else {
-        split.setAction (QCString(positiveActionType));
+        split.setAction (positiveActionType);
       }
     }
     split.setNumber(gtx->no()); // set cheque no (or equivalent description)
@@ -1233,7 +1217,7 @@ void MyMoneyStorageGNC::convertTemplateSplit (const QString schedName, const Gnc
   // memo
   split.setMemo(gsp->memo());
   // payee id
-  split.setPayeeId (QCString(m_txPayeeId));
+  split.setPayeeId (m_txPayeeId.utf8());
   // read split slots (KVPs)
   int xactionCount = 0;
   int validSlotCount = 0;
@@ -1305,7 +1289,7 @@ void MyMoneyStorageGNC::convertTemplateSplit (const QString schedName, const Gnc
   }
   // find the kmm account id coresponding to the gnc id
   QCString kmmAccountId;
-  map_accountIds::Iterator id = m_mapIds.find(QCString(gncAccountId));
+  map_accountIds::Iterator id = m_mapIds.find(gncAccountId.utf8());
   if (id != m_mapIds.end()) {
     kmmAccountId = id.data();
   } else { // for the case where the acs not found (which shouldn't happen?), create an account with gnc name
@@ -1522,7 +1506,7 @@ void MyMoneyStorageGNC::terminate () {
   if (mainCurrency != "") {
     switch (QMessageBox::question (0, PACKAGE,
         QObject::tr("Your main currency seems to be %1 (%2); do you want to set this as your base currency?")
-            .arg(mainCurrency).arg(m_storage->currency(QCString(mainCurrency)).name()),
+            .arg(mainCurrency).arg(m_storage->currency(mainCurrency.utf8()).name()),
                     QMessageBox::Yes | QMessageBox::Default, QMessageBox::No)) {
         case QMessageBox::Yes:
           m_storage->setValue ("kmm-baseCurrency", mainCurrency);
@@ -1656,12 +1640,12 @@ const QCString MyMoneyStorageGNC::createOrphanAccount (const QString gncName) {
   acc.setOpeningDate (today);
   acc.setLastModified (today);
   acc.setLastReconciliationDate (today);
-  acc.setCurrencyId (QCString(m_txCommodity));
+  acc.setCurrencyId (m_txCommodity);
   acc.setAccountType (MyMoneyAccount::Asset);
   acc.setParentAccountId (m_storage->asset().id());
   m_storage->addAccount (acc);
   // assign the gnucash id as the key into the map to find our id
-  m_mapIds[QCString(gncName)] = acc.id();
+  m_mapIds[gncName.utf8()] = acc.id();
   postMessage ("OR", 1, acc.name().data());
   return (acc.id());
 }
@@ -1710,7 +1694,7 @@ void MyMoneyStorageGNC::checkInvestmentOption (QString stockId) {
   // implement the investment option for stock accounts
   // first check whether the parent account (gnucash id) is actually an
   // investment account. if it is, no further action is needed
-  MyMoneyAccount stockAcc = m_storage->account (m_mapIds[QCString(stockId)]);
+  MyMoneyAccount stockAcc = m_storage->account (m_mapIds[stockId.utf8()]);
   MyMoneyAccount parent;
   QCString parentKey = stockAcc.parentAccountId();
   map_accountIds::Iterator id = m_mapIds.find (parentKey);
@@ -1726,7 +1710,7 @@ void MyMoneyStorageGNC::checkInvestmentOption (QString stockId) {
     invAcc.setCurrencyId (QCString("")); // we don't know what currency it is!!
     invAcc.setParentAccountId (parentKey); // intersperse it between old parent and child stock acct
     m_storage->addAccount (invAcc);
-    m_mapIds [QCString(invAcc.id())] = QCString(invAcc.id()); // so stock account gets parented (again) to investment account later
+    m_mapIds [invAcc.id()] = invAcc.id(); // so stock account gets parented (again) to investment account later
     if (gncdebug) qDebug ("Created investment account %s as id %s, parent %s", invAcc.name().data(), invAcc.id().data(),
                             invAcc.parentAccountId().data());
     if (gncdebug) qDebug ("Setting stock %s, id %s, as child of %s", stockAcc.name().data(), stockAcc.id().data(), invAcc.id().data());
@@ -1749,7 +1733,7 @@ void MyMoneyStorageGNC::checkInvestmentOption (QString stockId) {
       singleInvAcc.setCurrencyId (QCString(""));
       singleInvAcc.setParentAccountId (m_storage->asset().id());
       m_storage->addAccount (singleInvAcc);
-      m_mapIds [QCString(singleInvAcc.id())] = QCString(singleInvAcc.id()); // so stock account gets parented (again) to investment account later
+      m_mapIds [singleInvAcc.id()] = singleInvAcc.id(); // so stock account gets parented (again) to investment account later
       if (gncdebug) qDebug ("Created investment account %s as id %s, parent %s, reparenting stock",
                               singleInvAcc.name().data(), singleInvAcc.id().data(), singleInvAcc.parentAccountId().data());
       singleInvAccId = singleInvAcc.id();
@@ -1816,7 +1800,7 @@ void MyMoneyStorageGNC::checkInvestmentOption (QString stockId) {
         }
       } // end if ok - user pressed Cancel
     } // end while !ok
-    m_mapIds [QCString(invAcc.id())] = QCString(invAcc.id()); // so stock account gets parented (again) to investment account later
+    m_mapIds [invAcc.id()] = invAcc.id(); // so stock account gets parented (again) to investment account later
     m_storage->addAccount(invAcc, stockAcc);
   } else { // investment option != 0, 1, 2
     qFatal ("Invalid investment option %d", m_investmentOption);

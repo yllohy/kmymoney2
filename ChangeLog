@@ -1,3 +1,6 @@
+2005-01-30 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Gnucash import - implement option dialog
+
 2005-01-28 Ace Jones <acejones@users.sourceforge.net>
   * Fixed a subtle bug in reports that caused a crash if you double-clicked on 
     empty areas.
