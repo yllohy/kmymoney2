@@ -131,6 +131,8 @@ public slots:
 protected slots:
   void slotNewInstitution();
   void slotAccountType(const QString& sel);
+  void slotCheckPageFinished(void);
+  void slotNewPayee(const QString&);
 
 signals:
   void newInstitutionClicked();

@@ -73,6 +73,14 @@ KNewAccountWizard::KNewAccountWizard(QWidget *parent, const char *name )
   connect(accountTypeListBox, SIGNAL(highlighted(const QString &)), this, SLOT(slotAccountType(const QString &)));
   connect(reminderCheckBox, SIGNAL(toggled(bool)), estimateFrame, SLOT(setEnabled(bool)));
 
+  connect(accountName, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckPageFinished()));
+  connect(reminderCheckBox, SIGNAL(stateChanged(int)), this, SLOT(slotCheckPageFinished()));
+  connect(m_name, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckPageFinished()));
+  connect(m_payee, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckPageFinished()));
+  connect(m_amount, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckPageFinished()));
+  
+  connect(m_payee, SIGNAL(newPayee(const QString&)), this, SLOT(slotNewPayee(const QString&)));
+  
   // always select the first item and show the appropriate note
   accountTypeListBox->setCurrentItem(0);
 
@@ -144,8 +152,12 @@ void KNewAccountWizard::next()
     else
       reject();
       
-  } else
+  } else {
     KNewAccountWizardDecl::next();
+    
+    // setup the availability of widgets on the selected page
+    slotCheckPageFinished();
+  }
 }
 
 void KNewAccountWizard::accept()
@@ -545,3 +557,30 @@ void KNewAccountWizard::showPage(QWidget* page)
 
   KNewAccountWizardDecl::showPage(page);
 }
+
+void KNewAccountWizard::slotCheckPageFinished(void)
+{
+  nextButton()->setEnabled(true);
+  finishButton()->setEnabled(true);
+  
+  if(currentPage() == accountNamePage) {
+    if(accountName->text().isEmpty())
+      nextButton()->setEnabled(false);
+      
+  } else if(currentPage() == accountPaymentPage) {
+    if(reminderCheckBox->isChecked()) {
+      if(m_amount->text().isEmpty()
+      || m_name->text().isEmpty()
+      || m_payee->text().isEmpty()
+      || accountListView->selectedItem() == 0) {
+        finishButton()->setEnabled(false);
+      }
+    }
+  }
+}
+
+void KNewAccountWizard::slotNewPayee(const QString& payeeName)
+{
+  KMyMoneyUtils::newPayee(this, m_payee, payeeName);
+}
+
