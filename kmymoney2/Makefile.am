@@ -66,6 +66,8 @@ uninstall-local:
 # kde_toolbardir    Where general toolbar icons should go to.
 # kde_wallpaperdir  Where general wallpapers should go to.
 
+DISTCLEANFILES=kmymoney2
+
 # set the include path for X, qt and KDE
 INCLUDES= $(all_includes)
 
