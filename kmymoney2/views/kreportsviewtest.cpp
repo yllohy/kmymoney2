@@ -1554,7 +1554,7 @@ void KReportsViewTest::testAccountQuery()
     CPPUNIT_ASSERT(qtbl_3.m_transactions[1]["value"]==(moCreditOpen-(moParent1 + moParent2 + moChild) * 3).toString());
 
     html = qtbl_3.renderHTML();
-    CPPUNIT_ASSERT( searchHTML(html,i18n("Total")+" "+i18n("Checkings")) == moCheckingOpen-moSolo*3 );
+    CPPUNIT_ASSERT( searchHTML(html,i18n("Total")+" "+i18n("Checking")) == moCheckingOpen-moSolo*3 );
     CPPUNIT_ASSERT( searchHTML(html,i18n("Total")+" "+i18n("Credit Card")) == moCreditOpen-(moParent1 + moParent2 + moChild) * 3 );
     CPPUNIT_ASSERT( searchHTML(html,i18n("Grand Total")) == moCheckingOpen+moCreditOpen-(moParent1 + moParent2 + moSolo + moChild) * 3 );
   }

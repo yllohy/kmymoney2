@@ -1,3 +1,7 @@
+2005-01-12 Ace Jones <acejones@users.sourceforge.net>
+  * Fixed reports test failure caused by fixing byg #1079427 ("Checkings" now 
+    reads "Checking")
+
 2005-01-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * removed unnecessary include at the end of kmymoneyonlinequoteconfig.cpp
   * Fixed #1079427 ("Checkings" should read "Checking")
