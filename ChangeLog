@@ -1,5 +1,7 @@
 2004-10-16 Ace Jones <acejones@users.sourceforge.net>
   * Added "Favorite Reports" to the home page.
+  * Added investment view to the global ledger view, which is needed for 
+    investment accounts to show up in the verify import dialog.
   * Fixed handling of "Sell" transactions in transaction reports.  They were 
     still being reported as "Buy" transactions.
   * Tweaked the logic for handling account filters with transfer transactions 
