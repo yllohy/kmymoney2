@@ -1,14 +1,19 @@
+2005-01-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Changed open balances handling to be transaction based
+  * Show balance per institution in institution view
+  * Added recursive option to MyMoneyFile::accountList()
+
 2005-01-26 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Gnucash import
     * Properly fix coding error picked up by stricter compiler!
-    
+
 2005-01-24 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Gnucash import
     * Fix coding error picked up by stricter compiler
-    
+
 2005-01-22 Ace Jones <acejones@users.sourceforge.net>
   * Hooked up the "online price updates" button in the price editor
-  
+
 2005-01-20 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Gnucash import
     * Scheduled transactions default to Bills rather than Deposits
