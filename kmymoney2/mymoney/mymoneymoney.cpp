@@ -58,8 +58,22 @@ MyMoneyMoney::MyMoneyMoney(const QString& pszAmountInPence)
   int pos;
   while((pos = res.find(_thousandSeparator)) != -1)
     res.remove(pos, 1);
-  if((pos = res.find(_decimalSeparator)) != -1)
+
+  if((pos = res.find(_decimalSeparator)) != -1) {
+    // make sure, we have exactly two digits of fractional part
+
+    // truncate, if too long
+    if((res.length() - pos - 1) > 2) {
+      res = res.left(pos+3);
+    }
+
+    // append 0's until enough
+    while((res.length() - pos - 1) < 2) {
+      res += '0';
+    }
+    // now remove the decimal symbol
     res.remove(pos, 1);
+  }
 
   if(res.length() > 0)
     m_64Value = atoll( res );

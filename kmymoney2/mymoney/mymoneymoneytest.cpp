@@ -88,6 +88,19 @@ void MyMoneyMoneyTest::testStringConstructor()
 	m1 = new MyMoneyMoney("");
 	CPPUNIT_ASSERT(m1->value() == 0LL);
 	delete m1;
+
+	m1 = new MyMoneyMoney("1,123.");
+	CPPUNIT_ASSERT(m1->value() == 112300LL);
+	delete m1;
+
+	m1 = new MyMoneyMoney("123.1");
+	CPPUNIT_ASSERT(m1->value() == 12310LL);
+	delete m1;
+
+	m1 = new MyMoneyMoney("123.456");
+	CPPUNIT_ASSERT(m1->value() == 12345LL);
+	delete m1;
+
 }
 
 void MyMoneyMoneyTest::testEquality()
