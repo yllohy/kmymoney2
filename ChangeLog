@@ -1,7 +1,8 @@
 2001-03-08  Javier Campos Morales  <javi@DarkStar>
 
-  * Added readConfig and writeConfig to KStartDlg
-  * Delete KMyMoney2App::openDocumentFile(const KURL& ulr) - Method not used
+	* Added directory icons with a few icons for the future
+	* Added readConfig and writeConfig to KStartDlg
+	* Delete KMyMoney2App::openDocumentFile(const KURL& ulr) - Method not used
 	* Added kstartdlg recent action. Now works.
 	* KMyMoney2App::slotFileOpen now open the start dialog.
 	* Fixed errors with compile.
