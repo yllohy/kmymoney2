@@ -62,7 +62,9 @@ void KStartDlg::setPage_Documents()
   QVBoxLayout *mainLayout = new QVBoxLayout( mainFrame );
 
   kurlrequest = new KURLRequester( mainFrame, "kurlrequest" );
-  (kurlrequest->fileDialog())->setFilter( i18n("%1|KMyMoney files (*.kmy)").arg("*.kmy") );
+
+	//allow user to select either a .kmy file, or any generic file.
+  (kurlrequest->fileDialog())->setFilter( i18n("%1|KMyMoney files (*.kmy)\n" "%2|All files (*.*)").arg("*.kmy").arg("*.*") );
   mainLayout->addWidget( kurlrequest );
 
 	QLabel *label1 = new QLabel( mainFrame, "label1" );
