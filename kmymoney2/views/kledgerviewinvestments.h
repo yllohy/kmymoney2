@@ -137,6 +137,8 @@ private:
        //*m_tabWithdrawal, *m_tabAtm;
 
   QCString m_action;
+	
+	kMyMoneyLineEdit *m_editQuantity; 
 /*
   KTextBrowser *textBrowser;
   QGridLayout *mainGrid;

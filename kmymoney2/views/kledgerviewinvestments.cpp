@@ -101,6 +101,14 @@ void KLedgerViewInvestments::fillSummary()
 void KLedgerViewInvestments::showWidgets()
 {
   createEditWidgets();
+	
+	kMyMoneyTransactionFormTable* table = m_form->table();
+
+	if(table)
+	{
+		table->setCellWidget(2, 1, m_editMemo);
+		table->setCellWidget(0, 4, m_editDate);
+	}
 }
 
 void KLedgerViewInvestments::hideWidgets()
@@ -139,6 +147,10 @@ void KLedgerViewInvestments::createEditWidgets()
   m_editAmount = new kMyMoneyEdit(0, "editAmount");
   m_editDate = new kMyMoneyDateInput(0, "editDate");
   m_editNr = new kMyMoneyLineEdit(0, "editNr");
+	
+	m_editQuantity = new kMyMoneyLineEdit(0, "editQuanity", AlignLeft|AlignVCenter);
+	
+	
   // m_editFrom = new kMyMoneyCategory(0, "editFrom", static_cast<KMyMoneyUtils::categoryTypeE> (KMyMoneyUtils::asset | KMyMoneyUtils::liability));
   // m_editTo = new kMyMoneyCategory(0, "editTo", static_cast<KMyMoneyUtils::categoryTypeE> (KMyMoneyUtils::asset | KMyMoneyUtils::liability));
   m_editSplit = new KPushButton("Split", 0, "editSplit");
@@ -182,6 +194,8 @@ void KLedgerViewInvestments::createForm(void)
   connect(m_form->newButton(), SIGNAL(clicked()), this, SLOT(slotNew()));
 
   m_form->enterButton()->setDefault(true);
+	
+	slotTypeSelected(KLedgerViewInvestments::AddShares);
 }
 
 void KLedgerViewInvestments::createInfoStack(void)
@@ -276,11 +290,13 @@ void KLedgerViewInvestments::slotTypeSelected(int type)
   }
 
   // common elements
-  formTable->setText(1, 0, i18n("Symbol Name"));
-  formTable->setText(3, 0, i18n("Memo"));
-
-  formTable->setText(1, 3, i18n("Date"));
-  formTable->setText(2, 3, i18n("Amount"));
+  formTable->setText(0, 0, i18n("Symbol Name"));
+  formTable->setText(1, 0, i18n("Quantity"));
+  formTable->setText(2, 0, i18n("Memo"));
+	formTable->setText(3, 0, i18n("Price Per Share"));
+  formTable->setText(0, 3, i18n("Date"));
+  formTable->setText(1, 3, i18n("Amount"));
+	formTable->setText(2, 3, i18n("Fees"));
 
   m_action = transactionType(type);
 
