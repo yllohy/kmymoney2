@@ -1,3 +1,10 @@
+2004-10-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * make sure widgets are destroyed when edit transaction mode is left
+    before any other operation is started. There used to be a race
+    condition somewhere which caused the program to crash
+  * Enable to clear the category field and save the transaction
+  * Added a 'use system font' switch to the configuration (Fixes #1039342)
+
 2004-10-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated changes for equity price edit dialog
   * Updated currency edit dialog to show a better equation for price
