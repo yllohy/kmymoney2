@@ -172,7 +172,7 @@ KNewAccountDlg::KNewAccountDlg(MyMoneyAccount& account, bool isEditing, bool cat
   QString institutionName;
   QString accountName;
 
-  MyMoneyFile *file = KMyMoneyFile::instance()->file();
+  MyMoneyFile *file = MyMoneyFile::instance();
 
   try
   {
@@ -253,7 +253,7 @@ void KNewAccountDlg::okClicked()
     {
       try
       {
-        MyMoneyFile *file = KMyMoneyFile::instance()->file();
+        MyMoneyFile *file = MyMoneyFile::instance();
 
         QValueList<MyMoneyInstitution> list = file->institutionList();
         QValueList<MyMoneyInstitution>::ConstIterator institutionIterator;
@@ -320,7 +320,7 @@ void KNewAccountDlg::okClicked()
   }
   else
   {
-    accType = KMyMoneyFile::instance()->file()->accountGroup(parent.accountType());
+    accType = MyMoneyFile::instance()->accountGroup(parent.accountType());
   }
 
 	m_account.setAccountType(accType);
@@ -348,7 +348,7 @@ const MyMoneyAccount KNewAccountDlg::parentAccount(void)
   }
   else  // Build the parent for them, force parent...
   {
-    MyMoneyFile *file = KMyMoneyFile::instance()->file();
+    MyMoneyFile *file = MyMoneyFile::instance();
 
     MyMoneyAccount account;
     switch (m_file->accountGroup(m_account.accountType()))
@@ -375,7 +375,7 @@ const MyMoneyAccount KNewAccountDlg::parentAccount(void)
 
 void KNewAccountDlg::initParentWidget(const QString& name)
 {
-  MyMoneyFile *file = KMyMoneyFile::instance()->file();
+  MyMoneyFile *file = MyMoneyFile::instance();
 
   MyMoneyAccount liabilityAccount = file->liability();
   MyMoneyAccount assetAccount = file->asset();
@@ -579,7 +579,7 @@ void KNewAccountDlg::slotSelectionChanged(QListViewItem *item)
   KAccountListItem *accountItem = (KAccountListItem*)item;
   try
   {
-    MyMoneyFile *file = KMyMoneyFile::instance()->file();
+    MyMoneyFile *file = MyMoneyFile::instance();
 
     //qDebug("Selected account id: %s", accountItem->accountID().data());
     m_parentAccount = file->account(accountItem->accountID());
@@ -619,7 +619,7 @@ void KNewAccountDlg::loadInstitutions(const QString& name)
   m_qcomboboxInstitutions->insertItem(i18n("<No Institution>"));
   try
   {
-    MyMoneyFile *file = KMyMoneyFile::instance()->file();
+    MyMoneyFile *file = MyMoneyFile::instance();
 
     QValueList<MyMoneyInstitution> list = file->institutionList();
     QValueList<MyMoneyInstitution>::ConstIterator institutionIterator;
@@ -651,7 +651,7 @@ void KNewAccountDlg::slotNewClicked()
   {
     try
     {
-      MyMoneyFile *file = KMyMoneyFile::instance()->file();
+      MyMoneyFile *file = MyMoneyFile::instance();
 
       institution = dlg.institution();
       file->addInstitution(institution);
