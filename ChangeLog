@@ -1,3 +1,9 @@
+2004-06-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Report failures of unit tests correctly
+  * Fixed transaction filter handling for reports
+  * Fixed #968755 (Unwanted ledger view switch)
+  * Partial cleanup of unused code
+
 2004-06-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added patch supplied by Ace Jones
   * Show preferred account after startup
