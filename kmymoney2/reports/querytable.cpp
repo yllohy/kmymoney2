@@ -538,6 +538,9 @@ void QueryTable::constructTransactionTable(void)
             qsplitrow["value"] = ((-(*it_split2).value())*displayprice).toString();
             qsplitrow["id"] = (*it_split2).id();
 
+            if (!(*it_split2).memo().isEmpty())
+              qsplitrow["memo"] = (*it_split2).memo();
+            
             // handle cash dividends.  these little fellas require very special handling.
             // the stock account will produce a qaccountrow with zero value & zero shares.
             // then there will be 2 qsplitrows, a category and a transfer account.  We are
