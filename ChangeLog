@@ -1,3 +1,7 @@
+2005-02-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added OK and Cancel buttons for the mouse users to the split widget
+  * Added .cvsignore to ofx plugin  directory
+
 2005-02-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Preload split widget when category is not known
   * Assign values when moving focus from e.g. amount field to split button
