@@ -3,9 +3,9 @@
 ####### kdevelop will overwrite this part!!! (begin)##########
 bin_PROGRAMS = kmymoney2
 kmymoney2_SOURCES = kstartuplogo.cpp kmymoney2.cpp main.cpp 
-kmymoney2_LDADD   = ./mymoney/libmymoney.a ./dialogs/libdialogs.a ./widgets/libwidgets.a ./views/libviews.a  $(LIB_KFILE) $(LIB_KHTML) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT) $(LIBSOCKET)
+kmymoney2_LDADD   = ./dialogs/libdialogs.a ./mymoney/libmymoney.a  ./widgets/libwidgets.a ./views/libviews.a  $(LIB_KFILE) $(LIB_KHTML) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT) $(LIBSOCKET)
 
-SUBDIRS = views dialogs mymoney pics icons widgets html 
+SUBDIRS = views dialogs mymoney pics icons widgets html
 
 EXTRA_DIST = main.cpp kmymoney2.cpp kmymoney2.h kmymoney2ui.rc kmymoney2.desktop kstartuplogo.cpp kstartuplogo.h default_categories.dat lo16-app-kmymoney2.png lo32-app-kmymoney2.png kmymoney_wizard.png mimetype_kmy_16x16.png mimetype_kmy_32x32.png mimetype_kmy_48x48.png x-kmymoney2.desktop hi16-app-kmymoney2.png hi32-app-kmymoney2.png 
 
@@ -61,8 +61,9 @@ uninstall-local:
 INCLUDES= $(all_includes)
 
 #BUG FIX
-kmymoney2_LDADD   = ./views/libviews.a ./dialogs/libdialogs.a ./mymoney/libmymoney.a  ./widgets/libwidgets.a   $(LIB_KFILE) $(LIB_KHTML) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT) $(LIBSOCKET)
-
+kmymoney2_LDADD   = ./dialogs/libdialogs.a ./views/libviews.a ./mymoney/libmymoney.a  ./widgets/libwidgets.a   $(LIB_KFILE) $(LIB_KHTML) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT) $(LIBSOCKET)
+SUBDIRS = dialogs mymoney pics icons widgets views html
+#END BUG FIX
 
 
 METASOURCES = AUTO
