@@ -11,8 +11,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>539</width>
-            <height>492</height>
+            <width>606</width>
+            <height>482</height>
         </rect>
     </property>
     <property stdset="1">
@@ -506,7 +506,7 @@ like Woolwhich, or a descriptive name like Family Cash Accounts.</string>
     <tabstop>telephoneEdit</tabstop>
     <tabstop>sortCodeEdit</tabstop>
     <tabstop>managerEdit</tabstop>
-    <tabstop>cancelBtn</tabstop>
     <tabstop>okBtn</tabstop>
+    <tabstop>cancelBtn</tabstop>
 </tabstops>
 </UI>
