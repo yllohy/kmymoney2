@@ -1,4 +1,11 @@
-2005-03-21 Ace Jones <acejones@users.sourceforge.net>
+2005-03-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Reworked build logic (Makefile.am)
+
+2005-03-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed reparenting of stock and investment accounts in engine
+  * Started to setup environment for external plugins
+
+2005-03-19 Ace Jones <acejones@users.sourceforge.net>
   * Cleaned up small issues in reports wrt foreign stocks.  These were
     exposed by the fixes in Tom's last checkin.
   * Edited the warning message for foreign stocks. 
@@ -9,7 +16,7 @@
     (Submitted by Robert Wadley <rob@robntina.fastmail.us>)
   * Fixed all warnings
   * Removed old online quotes system
-        
+
 2005-03-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Allow payment of stock transactions to be in different currency
     than the stock's security

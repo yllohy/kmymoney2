@@ -1,3 +1,5 @@
+KDE_OPTIONS = noautodist
+
 ####### kdevelop will overwrite this part!!! (begin)##########
 
 SUBDIRS = phb 

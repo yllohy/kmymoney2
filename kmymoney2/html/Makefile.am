@@ -1,5 +1,6 @@
 ####### kdevelop will overwrite this part!!! (begin)##########
 
+KDE_OPTIONS = noautodist
 
 EXTRA_DIST = home.html kmymoney2.css home_fr.fr.html home_de.de.html home_ru.ru.html home_br.pt_BR.html
 

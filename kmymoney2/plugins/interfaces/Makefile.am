@@ -1,3 +1,5 @@
+KDE_OPTIONS = noautodist
+
 METASOURCES = AUTO
 INCLUDES = -I$(top_srcdir)/src $(all_includes)
 SUBDIRS = 

@@ -1,5 +1,6 @@
 ####### kdevelop will overwrite this part!!! (begin)##########
 
+KDE_OPTIONS = noautodist
 
 EXTRA_DIST = startlogo.png titlelabel_background.png 
 

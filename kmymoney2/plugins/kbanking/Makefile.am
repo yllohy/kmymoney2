@@ -1,3 +1,5 @@
+KDE_OPTIONS = noautodist
+
 INCLUDES = $(all_includes) -I..
 METASOURCES = AUTO
 
@@ -24,3 +26,4 @@ kde_services_DATA = kmm_kbanking.desktop
 
 noinst_HEADERS = mymoneybanking.h
 
+EXTRA_DIST = kmm_kbanking.desktop kmm_kbanking.rc

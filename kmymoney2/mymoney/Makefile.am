@@ -1,3 +1,5 @@
+KDE_OPTIONS = noautodist
+
 INCLUDES = $(all_includes)
 lib_LTLIBRARIES = libkmm_mymoney.la
 

@@ -1,7 +1,8 @@
-noinst_LIBRARIES = libstorage.a
+KDE_OPTIONS = noautodist
 
 INCLUDES = $(all_includes)
 
+noinst_LIBRARIES = libstorage.a
 libstorage_a_METASOURCES = AUTO
 
 libstorage_a_SOURCES = mymoneystoragegnc.cpp imymoneystorageformat.cpp mymoneystoragexml.cpp mymoneystoragedump.cpp mymoneystoragebin.cpp mymoneyseqaccessmgr.cpp imymoneystorage.cpp imymoneyserialize.cpp mymoneystorageanon.cpp

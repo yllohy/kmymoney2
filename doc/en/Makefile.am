@@ -1,11 +1,8 @@
+KDE_OPTIONS = noautodist
+
 DISTCLEANFILES = kmymoney2.1.gz
 
-####### kdevelop will overwrite this part!!! (begin)##########
-
-
 EXTRA_DIST = index.docbook blank_icon.png mainwindow.png newaccount.png newaccount_icon.png newbank.png newbank_icon.png startdialog.png transwindow.png kmymoney2.1 
-
-####### kdevelop will overwrite this part!!! (end)############
 
 KDE_LANG = en
 KDE_DOCS = kmymoney2

@@ -1,3 +1,5 @@
+KDE_OPTIONS = noautodist
+
 METASOURCES = AUTO
 INCLUDES = -I$(top_srcdir)/src $(all_includes)
 
@@ -16,3 +18,5 @@ BUILT_SOURCES = libkmm_plugin.la
 
 pluginsincludedir = $(includedir)/kmymoney
 pluginsinclude_HEADERS = kmymoneyplugin.h viewinterface.h statementinterface.h
+
+EXTRA_DIST = kmymoneyplugin.desktop kmymoneyimporterplugin.desktop

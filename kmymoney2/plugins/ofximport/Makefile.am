@@ -1,3 +1,5 @@
+KDE_OPTIONS = noautodist
+
 INCLUDES = $(all_includes) -I..
 METASOURCES = AUTO
 
@@ -20,3 +22,4 @@ kde_services_DATA = kmm_ofximport.desktop
 
 noinst_HEADERS = ofximporterplugin.h
 
+EXTRA_DIST = kmm_ofximport.desktop

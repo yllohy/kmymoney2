@@ -2,12 +2,14 @@
 
 SUBDIRS = libkgpgfile kmymoney2 po doc developer-doc
 
-EXTRA_DIST = kmymoney2.kdevprj AUTHORS COPYING ChangeLog INSTALL README TODO ChangeLog.original configure.in.in configure.in.bot
+EXTRA_DIST = kmymoney2.kdevprj AUTHORS COPYING ChangeLog INSTALL README TODO ChangeLog.original configure.in.in configure.in.bot README.Fileformats stamp-h1 subdirs
+noinst_HEADERS = kdecompat.h
 
 ####### kdevelop will overwrite this part!!! (end)############
 # not a GNU package. You can remove this line, if
 # have all needed files, that a GNU package needs
 AUTOMAKE_OPTIONS = foreign
+KDE_OPTIONS = noautodist
 
 $(top_srcdir)/configure.in: configure.in.in $(top_srcdir)/subdirs
 	cd $(top_srcdir) && $(MAKE) -f admin/Makefile.common configure.in ;
@@ -30,10 +32,6 @@ package-messages:
 	$(MAKE) -f admin/Makefile.common package-messages
 	$(MAKE) -C po merge
 
-# The following line adds some files that are required to build an RPM
-EXTRA_DIST += admin/acinclude.m4.in admin/libtool.m4.in admin/conf.change.pl admin/config.pl
-
-dist-hook:
-	cd $(top_distdir) && perl admin/am_edit -padmin
-	cd $(top_distdir) && $(MAKE) -f admin/Makefile.common subdirs
+# The following line adds the required admin files
+EXTRA_DIST += admin/Makefile.common admin/cvs.sh admin/detect-autoconf.sh admin/acinclude.m4.in admin/conf.change.pl admin/config.pl admin/libtool.m4.in admin/configure.in.min admin/configure.in.bot.end admin/am_edit admin/debianrules
 
