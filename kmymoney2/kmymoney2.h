@@ -15,7 +15,7 @@
  ***************************************************************************/
 #ifndef KMYMONEY2_H
 #define KMYMONEY2_H
- 
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -112,7 +112,7 @@ protected slots:
   void slotQifImportFinished(void);
 
   void slotOfxImport();
-  
+
   /**
     * Called when the user wishes to export some transaction to a
     * QIF formatted file. An account must be open for this to work.
@@ -135,9 +135,14 @@ protected slots:
     * as argument @p view.
     */
   void slotSetViewSpecificActions(int view);
-  
+
   void slotShowTipOfTheDay(void);
+
   void slotQifProfileEditor(void);
+
+  void slotShowPreviousView(void);
+
+  void slotShowNextView(void);
 
 public:
   /**
@@ -145,7 +150,7 @@ public:
     * in the current storage object. If not, it starts the new account wizard.
     */
   void createInitialAccount(void);
-    
+
   /**
     * This method returns the last URL used or an empty URL
     * depending on the option setting if the last file should
@@ -176,14 +181,14 @@ public:
   QString readLastUsedDir();
   void writeLastUsedFile(const QString& fileName);
   QString readLastUsedFile();
- 
+
 
   /**
     * This function will be called by the engine when the engine data changed
     * and the application object needs to update it's state.
     */
   virtual void update(const QCString& id);
-  
+
   /**
     * This method is used to update the caption of the application window.
     * It set's the caption to "filename [modified] - KMyMoney".
@@ -239,11 +244,11 @@ protected:
   virtual bool queryExit();
 
   void slotCheckSchedules(void);
-  
+
 public slots:
   /** */
   void slotFileNew();
-  
+
   /** Open a new window */
   void slotFileNewWindow();
 
@@ -285,7 +290,7 @@ public slots:
   void slotFileConsitencyCheck(void);
 
   void slotCurrencyDialog(void);
-  
+
   /** toggles the toolbar
    */
   void slotViewToolBar();
@@ -320,7 +325,7 @@ public slots:
 
   /** No descriptions */
   void slotProcessExited();
-  
+
   /** Called to update stock and currency prices from the user menu */
   void slotEquityPriceUpdate();
 
@@ -334,7 +339,7 @@ signals:
     * is closed, this signal is also emitted with an empty url.
     */
   void fileLoaded(const KURL& url);
-      
+
 private:
   /** the configuration object of the application */
 
@@ -395,12 +400,12 @@ private:
     * the backup volume.
     */
   bool    m_backupMount;
-  
+
   KProcess proc;
-  
+
   // A pointer to the view holding the tabs.
   KMyMoneyView *myMoneyView;
-  
+
   // The URL of the file currently being edited when open.
   KURL  fileName;
 
@@ -420,6 +425,9 @@ private:
   MyMoneyQifReader* m_reader;
 
   bool m_bCheckSchedules;
+
+  KToolBarPopupAction*  m_previousViewButton;
+  KToolBarPopupAction*  m_nextViewButton;
 };
 
 extern  KMyMoney2App *kmymoney2;
