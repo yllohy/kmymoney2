@@ -20,6 +20,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #ifndef KREPORTCONFIGURATIONDLG_H
 #define KREPORTCONFIGURATIONDLG_H
 
@@ -31,14 +32,16 @@
 
 // ----------------------------------------------------------------------------
 // Project Includes
-#include <../dialogs/kreportconfigurationdecl.h>
-#include <../views/pivottable.h>
+
+#include "../dialogs/kreportconfigurationdecl.h"
+#include "../views/pivottable.h"
 
 /**
   * This dialog lets you create/edit an account.
   */
-class KReportConfigurationDlg : public KReportConfigurationDecl  {
-   Q_OBJECT
+class KReportConfigurationDlg : public KReportConfigurationDecl
+{
+  Q_OBJECT
 
 private:
   reports::ReportConfiguration m_currentConfiguration;
