@@ -41,6 +41,7 @@
 kMyMoneyOnlineQuoteConfig::kMyMoneyOnlineQuoteConfig(QWidget *parent, const char *name )
   : kMyMoneyOnlineQuoteConfigDecl(parent, name)
 {
+#if 0
   QStringList groups = WebPriceQuote::quoteSources();
 
   loadList(true /*updateResetList*/);
@@ -76,17 +77,18 @@ kMyMoneyOnlineQuoteConfig::kMyMoneyOnlineQuoteConfig(QWidget *parent, const char
   connect(m_editURL, SIGNAL(textChanged(const QString&)), this, SLOT(slotEntryChanged()));
   connect(m_editSymbol, SIGNAL(textChanged(const QString&)), this, SLOT(slotEntryChanged()));
   connect(m_editDate, SIGNAL(textChanged(const QString&)), this, SLOT(slotEntryChanged()));
+  connect(m_editDateFormat, SIGNAL(textChanged(const QString&)), this, SLOT(slotEntryChanged()));
   connect(m_editPrice, SIGNAL(textChanged(const QString&)), this, SLOT(slotEntryChanged()));
 
   // FIXME deleting a source is not yet implemented
   m_deleteButton->setEnabled(false);
+#endif
 }
 
 void kMyMoneyOnlineQuoteConfig::loadList(const bool updateResetList)
 {
   QStringList groups = WebPriceQuote::quoteSources();
-  KConfig *kconfig = KGlobal::config();
-
+  
   if(updateResetList)
     m_resetList.clear();
   m_quoteSourceList->clear();
@@ -134,6 +136,7 @@ void kMyMoneyOnlineQuoteConfig::slotLoadWidgets(QListViewItem* item)
   m_editSymbol->setText(QString());
   m_editPrice->setText(QString());
   m_editDate->setText(QString());
+  m_editDateFormat->setText(QString());
 
   if(item) {
     m_currentItem = WebPriceQuoteSource(item->text(0));
@@ -141,12 +144,14 @@ void kMyMoneyOnlineQuoteConfig::slotLoadWidgets(QListViewItem* item)
     m_editSymbol->setText(m_currentItem.m_sym);
     m_editPrice->setText(m_currentItem.m_price);
     m_editDate->setText(m_currentItem.m_date);
+    m_editDateFormat->setText(m_currentItem.m_dateformat);
 
   } else {
     m_editURL->setEnabled(false);
     m_editSymbol->setEnabled(false);
     m_editPrice->setEnabled(false);
     m_editDate->setEnabled(false);
+    m_editDateFormat->setEnabled(false);
   }
 
   m_updateButton->setEnabled(false);
@@ -158,6 +163,7 @@ void kMyMoneyOnlineQuoteConfig::slotEntryChanged(void)
   bool modified = m_editURL->text() != m_currentItem.m_url
                || m_editSymbol->text() != m_currentItem.m_sym
                || m_editDate->text() != m_currentItem.m_date
+               || m_editDateFormat->text() != m_currentItem.m_dateformat
                || m_editPrice->text() != m_currentItem.m_price;
 
   m_updateButton->setEnabled(modified);
@@ -168,6 +174,7 @@ void kMyMoneyOnlineQuoteConfig::slotUpdateEntry(void)
   m_currentItem.m_url = m_editURL->text();
   m_currentItem.m_sym = m_editSymbol->text();
   m_currentItem.m_date = m_editDate->text();
+  m_currentItem.m_dateformat = m_editDateFormat->text();
   m_currentItem.m_price = m_editPrice->text();
   m_currentItem.write();
   slotEntryChanged();
@@ -203,5 +210,3 @@ void kMyMoneyOnlineQuoteConfig::slotEntryRenamed(QListViewItem* item, const QStr
   }
   m_newButton->setEnabled(m_quoteSourceList->findItem(i18n("New Quote Source"), 0) == 0);
 }
-#include  "kmymoneyonlinequoteconfig.moc"
-

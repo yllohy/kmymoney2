@@ -29,4 +29,4 @@ knewequityentrydecl.h:
 kcurrencycalculatordecl.h:
 	make -C ../dialogs kcurrencycalculatordecl.h
 
-noinst_HEADERS = kmymoneyaccounttree.h kmymoneyonlinequoteconfig.h kmymoneygpgconfig.h
+noinst_HEADERS = kmymoneyaccounttree.h kmymoneygpgconfig.h

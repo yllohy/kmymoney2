@@ -71,7 +71,7 @@ struct WebPriceQuoteSource
 {
   WebPriceQuoteSource() {};
   WebPriceQuoteSource(const QString& name);
-  WebPriceQuoteSource(const QString& name, const QString& url, const QString& sym, const QString& price, const QString& date);
+  WebPriceQuoteSource(const QString& name, const QString& url, const QString& sym, const QString& price, const QString& date, const QString& dateformat);
   ~WebPriceQuoteSource() {};
 
   void write(void) const;
@@ -83,6 +83,7 @@ struct WebPriceQuoteSource
   QString    m_sym;
   QString    m_price;
   QString    m_date;
+  QString    m_dateformat;
 };
 
 /**
@@ -135,6 +136,17 @@ private:
   QDate m_date;
   MyMoneyMoney m_price;
   WebPriceQuoteSource m_source;  
+};
+
+class MyMoneyDateFormat
+{
+public:
+  MyMoneyDateFormat(const QString& _format): m_format(_format) {}
+  QString convertDate(const QDate& _in) const;
+  QDate convertString(const QString& _in, bool _strict=true, unsigned _centurymidpoint = QDate::currentDate().year() ) const;
+  const QString& format(void) const { return m_format; }
+private:
+  QString m_format;
 };
 
 namespace test {

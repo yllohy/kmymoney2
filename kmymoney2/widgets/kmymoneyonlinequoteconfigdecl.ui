@@ -9,8 +9,14 @@
             <x>0</x>
             <y>0</y>
             <width>594</width>
-            <height>518</height>
+            <height>487</height>
         </rect>
+    </property>
+    <property name="minimumSize">
+        <size>
+            <width>0</width>
+            <height>0</height>
+        </size>
     </property>
     <property name="caption">
         <string>Online Quotes</string>
@@ -65,53 +71,13 @@
                 </property>
                 <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>layout13</cstring>
+                        <cstring>layout3</cstring>
                     </property>
                     <grid>
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
-                        <widget class="QLabel" row="2" column="0">
-                            <property name="name">
-                                <cstring>textLabel2</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Symbol</string>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="1" column="0">
-                            <property name="name">
-                                <cstring>textLabel1</cstring>
-                            </property>
-                            <property name="text">
-                                <string>URL</string>
-                            </property>
-                        </widget>
                         <widget class="QLabel" row="3" column="0">
-                            <property name="name">
-                                <cstring>textLabel3</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Price</string>
-                            </property>
-                        </widget>
-                        <widget class="KLineEdit" row="3" column="1">
-                            <property name="name">
-                                <cstring>m_editPrice</cstring>
-                            </property>
-                            <property name="toolTip" stdset="0">
-                                <string>Regular Expression to extract the price from the downloaded data</string>
-                            </property>
-                        </widget>
-                        <widget class="KLineEdit" row="2" column="1">
-                            <property name="name">
-                                <cstring>m_editSymbol</cstring>
-                            </property>
-                            <property name="toolTip" stdset="0">
-                                <string>Regular Expression to extract the symbol from the downloaded data</string>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="4" column="0">
                             <property name="name">
                                 <cstring>textLabel4</cstring>
                             </property>
@@ -119,7 +85,39 @@
                                 <string>Date</string>
                             </property>
                         </widget>
+                        <widget class="QLabel" row="1" column="0">
+                            <property name="name">
+                                <cstring>textLabel2</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Symbol</string>
+                            </property>
+                        </widget>
                         <widget class="KLineEdit" row="1" column="1">
+                            <property name="name">
+                                <cstring>m_editSymbol</cstring>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>Regular Expression to extract the symbol from the downloaded data</string>
+                            </property>
+                        </widget>
+                        <widget class="KLineEdit" row="2" column="1">
+                            <property name="name">
+                                <cstring>m_editPrice</cstring>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>Regular Expression to extract the price from the downloaded data</string>
+                            </property>
+                        </widget>
+                        <widget class="KLineEdit" row="4" column="1">
+                            <property name="name">
+                                <cstring>m_editDateFormat</cstring>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>Regular Expression to extract the date from the downloaded data</string>
+                            </property>
+                        </widget>
+                        <widget class="KLineEdit" row="0" column="1">
                             <property name="name">
                                 <cstring>m_editURL</cstring>
                             </property>
@@ -130,12 +128,36 @@
                                 <string>Enter the URL from which stock quotes will be fetched.  &lt;b&gt;%1&lt;/b&gt; will be replaced with the symbol for the security being quoted. For currency conversions, &lt;b&gt;%2&lt;/b&gt; will be replaced with the currency to be quoted and &lt;b&gt;%1&lt;/b&gt; with the currency the quote is based on.</string>
                             </property>
                         </widget>
-                        <widget class="KLineEdit" row="4" column="1">
+                        <widget class="QLabel" row="2" column="0">
+                            <property name="name">
+                                <cstring>textLabel3</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Price</string>
+                            </property>
+                        </widget>
+                        <widget class="KLineEdit" row="3" column="1">
                             <property name="name">
                                 <cstring>m_editDate</cstring>
                             </property>
                             <property name="toolTip" stdset="0">
                                 <string>Regular Expression to extract the date from the downloaded data</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="4" column="0">
+                            <property name="name">
+                                <cstring>textLabel4_2</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Date Format</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="0" column="0">
+                            <property name="name">
+                                <cstring>textLabel1</cstring>
+                            </property>
+                            <property name="text">
+                                <string>URL</string>
                             </property>
                         </widget>
                     </grid>
@@ -212,5 +234,15 @@
         </widget>
     </vbox>
 </widget>
+<customwidgets>
+</customwidgets>
 <layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>klistview.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>klineedit.h</includehint>
+</includehints>
 </UI>

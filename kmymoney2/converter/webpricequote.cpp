@@ -20,6 +20,7 @@
 
 #include <qfile.h>
 #include <qregexp.h>
+#include <qtextstream.h>
 
 // ----------------------------------------------------------------------------
 // KDE Headers
@@ -35,6 +36,8 @@
 // ----------------------------------------------------------------------------
 // Project Headers
 
+#include "../mymoney/mymoneyexception.h"
+#include "mymoneyqifprofile.h"
 #include "webpricequote.h"
 
 WebPriceQuote::WebPriceQuote( QObject* _parent, const char* _name ):
@@ -53,13 +56,17 @@ bool WebPriceQuote::launch( const QString& _symbol, const QString& _sourcename )
   m_symbol = _symbol;
 
   // if we're running normally, with a UI, we can just get these the normal way,
-  // from the config gile
+  // from the config file
   if ( kapp )
   {
-    if ( _sourcename.isEmpty() )
-      m_source = WebPriceQuoteSource("Yahoo");
+    QString sourcename = _sourcename;
+    if ( sourcename.isEmpty() )
+      sourcename = "Yahoo";
+      
+    if ( quoteSources().contains(sourcename) )
+      m_source = WebPriceQuoteSource(sourcename);
     else
-      m_source = WebPriceQuoteSource(_sourcename);
+      emit error(QString("Source <%1> does not exist.").arg(sourcename));
   }
   // otherwise, if we have no kapp, we have no config.  so we just get them from
   // the defaults
@@ -156,9 +163,6 @@ bool WebPriceQuote::launch( const QString& _symbol, const QString& _sourcename )
   return result;
 }
 
-#include <qfile.h>
-#include <qtextstream.h>
-
 void WebPriceQuote::slotParseQuote(const QString& _quotedata)
 {
   QString quotedata = _quotedata;
@@ -206,13 +210,18 @@ void WebPriceQuote::slotParseQuote(const QString& _quotedata)
     if(dateRegExp.search(quotedata) > -1)
     {
       QString datestr = dateRegExp.cap(1);
-      // TODO: Fix this temporary hack.  We know yahoo returns mm/dd/yyyy
-      QRegExp dateparse("([0-9]+)/([0-9]+)/([0-9]+)");
-      if ( dateparse.search( datestr ) > -1 )
+      
+      MyMoneyDateFormat dateparse(m_source.m_dateformat);
+      try
       {
+        m_date = dateparse.convertString( datestr,false /*strict*/ );
         gotdate = true;
-        m_date = QDate( dateparse.cap(3).toInt(), dateparse.cap(1).toInt(), dateparse.cap(2).toInt() );
         emit status(i18n("Date found: %1").arg(m_date.toString()));;
+      }
+      catch (MyMoneyException* e)
+      {
+        emit error(i18n("Unable to parse date %1 using format %2: %3").arg(datestr,dateparse.format(),e->what()));
+        delete e;
       }
     }
 
@@ -235,23 +244,34 @@ QMap<QString,WebPriceQuoteSource> WebPriceQuote::defaultQuoteSources(void)
     "http://finance.yahoo.com/d/quotes.csv?s=%1&f=sl1d1",
     "\"([^,\"]*)\",.*",  // symbolregexp
     "[^,]*,([^,]*),.*", // priceregexp
-    "[^,]*,[^,]*,\"([^\"]*)\"" // dateregexp
+    "[^,]*,[^,]*,\"([^\"]*)\"", // dateregexp
+    "%m %d %y" // dateformat
   );
 
   result["Yahoo Currency"] = WebPriceQuoteSource("Yahoo Currency", 
     "http://finance.yahoo.com/d/quotes.csv?s=%1%2=X&f=sl1d1",
     "\"([^,\"]*)\",.*",  // symbolregexp
     "[^,]*,([^,]*),.*", // priceregexp
-    "[^,]*,[^,]*,\"([^\"]*)\"" // dateregexp
+    "[^,]*,[^,]*,\"([^\"]*)\"", // dateregexp
+    "%m %d %y" // dateformat
   );
 
   result["Yahoo UK"] = WebPriceQuoteSource("Yahoo UK", 
     "http://uk.finance.yahoo.com/d/quotes.csv?s=%1&f=sl1d1",
     "\"([^,\"]*)\",.*",  // symbolregexp
     "[^,]*,([^,]*),.*", // priceregexp
-    "[^,]*,[^,]*,\"([^\"]*)\"" // dateregexp
+    "[^,]*,[^,]*,\"([^\"]*)\"", // dateregexp
+    "%m %d %y" // dateformat
   );
-  
+
+  result["Canadian Mutuals"] = WebPriceQuoteSource("Canadian Mutuals", 
+    "http://globefunddb.theglobeandmail.com/gishome/plsql/gis.price_history?pi_fund_id=%1",
+    QString(),  // symbolregexp
+    "Reinvestment Price \\w+ \\d+, \\d+ (\\d+\.\\d+)", // priceregexp
+    "Reinvestment Price (\\w+ \\d+, \\d+)", // dateregexp
+    "%m %d %y" // dateformat
+  );
+    
   return result;
 }
 
@@ -273,7 +293,7 @@ QStringList WebPriceQuote::quoteSources(void)
 
   // if the user has the OLD quote source defined, now is the
   // time to remove that entry and convert it to the new system.
-  if ( ! groups.count() )
+  if ( ! groups.count() && kconfig->hasGroup("Online Quotes Options") )
   {
     kconfig->setGroup("Online Quotes Options");
     QString url(kconfig->readEntry("URL","http://finance.yahoo.com/d/quotes.csv?s=%1&f=sl1d1"));
@@ -288,6 +308,7 @@ QStringList WebPriceQuote::quoteSources(void)
     kconfig->writeEntry("SymbolRegex", symbolRegExp);
     kconfig->writeEntry("PriceRegex",priceRegExp);
     kconfig->writeEntry("DateRegex", dateRegExp);
+    kconfig->writeEntry("DateFormatRegex", "%m %d %y");
     kconfig->sync();
   }
 
@@ -313,12 +334,13 @@ QStringList WebPriceQuote::quoteSources(void)
 // Helper class to load/save an individual source
 //
 
-WebPriceQuoteSource::WebPriceQuoteSource(const QString& name, const QString& url, const QString& sym, const QString& price, const QString& date):
+WebPriceQuoteSource::WebPriceQuoteSource(const QString& name, const QString& url, const QString& sym, const QString& price, const QString& date, const QString& dateformat):
   m_name(name),
   m_url(url),
   m_sym(sym),
   m_price(price),
-  m_date(date)
+  m_date(date),
+  m_dateformat(dateformat)
 {
 }
 
@@ -329,6 +351,7 @@ WebPriceQuoteSource::WebPriceQuoteSource(const QString& name)
   kconfig->setGroup(QString("Online-Quote-Source-%1").arg(m_name));
   m_sym = kconfig->readEntry("SymbolRegex");
   m_date = kconfig->readEntry("DateRegex");
+  m_dateformat = kconfig->readEntry("DateFormatRegex","%m %d %y");
   m_price = kconfig->readEntry("PriceRegex");
   m_url = kconfig->readEntry("URL");
 }
@@ -340,6 +363,7 @@ void WebPriceQuoteSource::write(void) const
   kconfig->writeEntry("URL", m_url);
   kconfig->writeEntry("PriceRegex", m_price);
   kconfig->writeEntry("DateRegex", m_date);
+  kconfig->writeEntry("DateFormatRegex", m_dateformat);
   kconfig->writeEntry("SymbolRegex", m_sym);
 }
 
@@ -382,6 +406,145 @@ void WebPriceQuoteProcess::slotProcessExited(KProcess*)
   
   emit processExited(m_string);
   m_string.truncate(0);
+}
+
+//
+// Universal date converter
+//
+
+// In 'strict' mode, this is designed to be compatable with the QIF profile date
+// converter.  However, that converter deals with the concept of an apostrophe
+// format in a way I don't understand.  So for the moment, they are 99% 
+// compatable, waiting on that issue. (acejones)
+
+QDate MyMoneyDateFormat::convertString(const QString& _in, bool _strict, unsigned _centurymidpoint) const
+{
+  //
+  // Break date format string into component parts
+  //
+  
+  QRegExp formatrex("%([mdy]+)(\\W+)%([mdy]+)(\\W+)%([mdy]+)",false /* case sensitive */);
+  if ( formatrex.search(m_format) == -1 )
+  {
+    throw new MYMONEYEXCEPTION("Invalid format string");
+  }
+  
+  QStringList formatParts;
+  formatParts += formatrex.cap(1);
+  formatParts += formatrex.cap(3);
+  formatParts += formatrex.cap(5);
+  
+  QStringList formatDelimiters;
+  formatDelimiters += formatrex.cap(2);
+  formatDelimiters += formatrex.cap(4);
+  
+  //
+  // Break input string up into component parts,
+  // using the delimiters found in the format string
+  //
+  
+  QRegExp inputrex;
+  inputrex.setCaseSensitive(false);
+  
+  // strict mode means we must enforce the delimiters as specified in the 
+  // format.  non-strict allows any delimiters
+  if ( _strict )
+    inputrex.setPattern(QString("(\\w+)%1(\\w+)%2(\\w+)").arg(formatDelimiters[0],formatDelimiters[1]));
+  else
+    inputrex.setPattern("(\\w+)\\W+(\\w+)\\W+(\\w+)");
+
+  if ( inputrex.search(_in) == -1 )
+  {
+    throw new MYMONEYEXCEPTION("Invalid input string");
+  }
+
+  QStringList scannedParts;
+  scannedParts += inputrex.cap(1).lower();
+  scannedParts += inputrex.cap(2).lower();
+  scannedParts += inputrex.cap(3).lower();
+
+  //
+  // Convert the scanned parts into actual date components
+  //
+  
+  unsigned day = 0, month = 0, year = 0;
+  bool ok;
+  QRegExp digitrex("(\\d+)");
+  QStringList::const_iterator it_scanned = scannedParts.begin();
+  QStringList::const_iterator it_format = formatParts.begin();
+  while ( it_scanned != scannedParts.end() )
+  {
+    switch ( (*it_format)[0] )
+    {
+    case 'd':
+      // remove any extraneous non-digits (e.g. read "3rd" as 3)
+      ok = false;
+      if ( digitrex.search(*it_scanned) != -1 )
+        day = digitrex.cap(1).toUInt(&ok);
+      if ( !ok || day > 31 )
+        throw new MYMONEYEXCEPTION(QString("Invalid day entry: %1").arg(*it_scanned));
+      break;
+    case 'm':
+      month = (*it_scanned).toUInt(&ok);
+      if ( !ok )
+      {
+        // maybe it's a textual date
+        unsigned i = 1;
+        while ( i <= 12 )
+        {
+          if (  QDate::shortMonthName(i).lower() == *it_scanned || QDate::longMonthName(i).lower() == *it_scanned )
+            month = i;
+          ++i;
+        }
+      }
+      
+      if ( month < 1 || month > 12 )
+        throw new MYMONEYEXCEPTION(QString("Invalid month entry: %1").arg(*it_scanned));
+      
+      break;
+    case 'y':
+      if ( _strict && (*it_scanned).length() != (*it_format).length())
+        throw new MYMONEYEXCEPTION(QString("Length of year (%1) does not match expected length (%2).")
+                .arg(*it_scanned,*it_format));
+      
+      year = (*it_scanned).toUInt(&ok);
+      
+      if (!ok)
+        throw new MYMONEYEXCEPTION(QString("Invalid year entry: %1").arg(*it_scanned));
+        
+      //
+      // 2-digit year case
+      //
+      // this algorithm will pick a year within +/- 50 years of the 
+      // centurymidpoint parameter.  i.e. if the midpoint is 2000,
+      // then 0-49 will become 2000-2049, and 50-99 will become 1950-1999
+      if ( year < 100 )
+      {
+        unsigned centuryend = _centurymidpoint + 50;
+        unsigned centurybegin = _centurymidpoint - 50;
+        
+        if ( year < centuryend % 100 )
+          year += 100;
+        year += centurybegin - centurybegin % 100;
+      }
+      
+      if ( year < 1900 )
+        throw new MYMONEYEXCEPTION(QString("Invalid year (%1)").arg(year));
+      
+      break;
+    default:
+      throw new MYMONEYEXCEPTION("Invalid format character");
+    }
+  
+    ++it_scanned;
+    ++it_format; 
+  }
+  
+  QDate result(year,month,day);
+  if ( ! result.isValid() )
+    throw new MYMONEYEXCEPTION(QString("Invalid date (yr%1 mo%2 dy%3)").arg(year).arg(month).arg(day));
+
+  return result;
 }
 
 //

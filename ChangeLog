@@ -1,3 +1,9 @@
+2005-01-10 Ace Jones <acejones@users.sourceforge.net>
+  * Added customizable date parsing to online quotes
+  * Added canadian mutual funds source
+  * Created a general-purpose date format parsing object
+  * Added date-parsing unit tests
+ 
 2005-01-07 Ace Jones <acejones@users.sourceforge.net>
   * Online price quotes for foreign stocks will now automatically include a
     price quote for the foreign currency

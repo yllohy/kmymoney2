@@ -2013,6 +2013,16 @@ void KReportsViewTest::testWebQuotes()
     CPPUNIT_ASSERT(qr.m_date <= QDate::currentDate().addDays(1));
     CPPUNIT_ASSERT(qr.m_date >= QDate::currentDate().addDays(-7));
     CPPUNIT_ASSERT(qr.m_price.isPositive());
+  
+    q.launch("50492","Canadian Mutuals");
+
+//      kdDebug(2) << "KReportsViewTest::testWebQuotes(): quote is " << qr.m_date.toString() << " | " << qr.m_price.toString() << endl;
+    
+    CPPUNIT_ASSERT(qr.m_errors.count() == 0);
+    CPPUNIT_ASSERT(qr.m_date <= QDate::currentDate().addDays(1));
+    CPPUNIT_ASSERT(qr.m_date >= QDate::currentDate().addDays(-7));
+    CPPUNIT_ASSERT(qr.m_price.isPositive());
+  
   }
   catch (MyMoneyException* e)
   {
@@ -2020,4 +2030,50 @@ void KReportsViewTest::testWebQuotes()
   }
 }
 
-// vim:cin:si:ai:et:ts=2:sw=2:
+void KReportsViewTest::testDateFormat()
+{
+  try
+  {
+    MyMoneyDateFormat format("%mm-%dd-%yyyy");
+  
+    CPPUNIT_ASSERT(format.convertString("1-5-2005") == QDate(2005,1,5));
+    CPPUNIT_ASSERT(format.convertString("jan-15-2005") == QDate(2005,1,15));
+    CPPUNIT_ASSERT(format.convertString("august-25-2005") == QDate(2005,8,25));
+
+    format = MyMoneyDateFormat("%mm/%dd/%yy");
+
+    CPPUNIT_ASSERT(format.convertString("1/5/05") == QDate(2005,1,5));
+    CPPUNIT_ASSERT(format.convertString("jan/15/05") == QDate(2005,1,15));
+    CPPUNIT_ASSERT(format.convertString("august/25/05") == QDate(2005,8,25));
+
+    format = MyMoneyDateFormat("%d\\.%m\\.%yy");
+
+    CPPUNIT_ASSERT(format.convertString("1.5.05") == QDate(2005,5,1));
+    CPPUNIT_ASSERT(format.convertString("15.jan.05") == QDate(2005,1,15));
+    CPPUNIT_ASSERT(format.convertString("25.august.05") == QDate(2005,8,25));
+
+    format = MyMoneyDateFormat("%yyyy\\\\%dddd\\\\%mmmmmmmmmmm");
+  
+    CPPUNIT_ASSERT(format.convertString("2005\\31\\12") == QDate(2005,12,31));
+    CPPUNIT_ASSERT(format.convertString("2005\\15\\jan") == QDate(2005,1,15));
+    CPPUNIT_ASSERT(format.convertString("2005\\25\\august") == QDate(2005,8,25));
+  
+    format = MyMoneyDateFormat("%m %dd, %yyyy");
+  
+    CPPUNIT_ASSERT(format.convertString("jan 15, 2005") == QDate(2005,1,15));
+    CPPUNIT_ASSERT(format.convertString("august 25, 2005") == QDate(2005,8,25));
+    CPPUNIT_ASSERT(format.convertString("january 1st, 2005") == QDate(2005,1,1));
+
+    format = MyMoneyDateFormat("%m %d %y");
+  
+    CPPUNIT_ASSERT(format.convertString("12/31/50",false,2000) == QDate(1950,12,31));
+    CPPUNIT_ASSERT(format.convertString("1/1/90",false,2000) == QDate(1990,1,1));
+    CPPUNIT_ASSERT(format.convertString("december 31st, 5",false) == QDate(2005,12,31));
+  }
+  catch (MyMoneyException* e)
+  {
+    CPPUNIT_FAIL(e->what());
+  }
+}
+
+ // vim:cin:si:ai:et:ts=2:sw=2:
