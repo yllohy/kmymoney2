@@ -266,6 +266,20 @@ void KNewAccountWizard::slotAccountType(const QString& sel)
     );
     m_accountType = MyMoneyAccount::CreditCard;
 
+  } else if(sel == i18n("Cash")) {
+    txt += i18n(
+      "Use the cash account type to manage "
+      "activities in your wallet."
+    );
+    m_accountType = MyMoneyAccount::Cash;
+
+  } else if(sel == i18n("Asset")) {
+    txt += i18n(
+      "Use the asset account type to manage "
+      "assets (e.g. your house, car or art collection)."
+    );
+    m_accountType = MyMoneyAccount::Asset;
+
   } else {
     txt += i18n("Explanation is not yet available! UnknownAccountType will be set");
     m_accountType = MyMoneyAccount::UnknownAccountType;
