@@ -1,3 +1,7 @@
+2002-07-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added balance cache to MyMoneySeqAccessMgr for better performance
+  * Added balance display to ledger view and register widget  
+
 2002-07-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added global function timetrace() for simple time measurement
   * Added ledger view (base class and checkings implementation)
