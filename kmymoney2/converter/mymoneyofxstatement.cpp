@@ -143,6 +143,9 @@ int ofxTransactionCallback(struct OfxTransactionData data, void * pv)
     t.m_dShares = data.units;
   }
  
+  bool unhandledtype = false;
+  QString type;
+  
   if(data.invtransactiontype_valid==true)
   {
     switch (data.invtransactiontype)
@@ -164,13 +167,56 @@ int ofxTransactionCallback(struct OfxTransactionData data, void * pv)
     case OFX_SELLSTOCK:
       t.m_eAction = MyMoneyStatement::Transaction::eaSell;
       break;
+    case OFX_INCOME:
+      t.m_eAction = MyMoneyStatement::Transaction::eaCashDividend;
+      // NOTE: With CashDividend, the amount of the dividend should
+      // be in data.amount.  Since I've never seen an OFX file with
+      // cash dividends, this is an assumption on my part. (acejones)
+      break;
+
+    //
+    // These types are all not handled.  We will generate a warning for them.
+    //
+     
+    case OFX_CLOSUREOPT:
+      unhandledtype = true;
+      type = "CLOSUREOPT (Close a position for an option)";
+      break;
+    case OFX_INVEXPENSE:
+      unhandledtype = true;
+      type = "INVEXPENSE (Misc investment expense that is associated with a specific security)";
+      break;
+    case OFX_JRNLFUND:
+      unhandledtype = true;
+      type = "JRNLFUND (Journaling cash holdings between subaccounts within the same investment account)";
+      break;
+    case OFX_MARGININTEREST:
+      unhandledtype = true;
+      type = "MARGININTEREST (Margin interest expense)";
+      break;
+    case OFX_RETOFCAP:
+      unhandledtype = true;
+      type = "RETOFCAP (Return of capital)";
+      break;
+    case OFX_SPLIT:
+      unhandledtype = true;
+      type = "SPLIT (Stock or mutial fund split)";
+      break;
+    case OFX_TRANSFER:
+      unhandledtype = true;
+      type = "TRANSFER (Transfer holdings in and out of the investment account)";
+      break;
+      
     default:
-      // the importer does not support this kind of action
+      pofx->addWarning(QString("OFX Transaction Warning: File includes a transaction of an unknown type (%1).  Please contact the developers mailing list, and we can try to add support for it.").arg(data.invtransactiontype));  
       break;
     }
   }
 
-  s.m_listTransactions += t;
+  if ( unhandledtype )
+    pofx->addWarning(QString("OFX Transaction Warning: File includes a transaction of an unsupported type (%1).  Please contact the developers mailing list, and we can try to add support for it.").arg(type));  
+  else
+    s.m_listTransactions += t;
 
   return 0;
 }

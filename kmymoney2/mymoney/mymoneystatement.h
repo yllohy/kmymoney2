@@ -50,7 +50,7 @@ struct MyMoneyStatement
     double m_moneyAmount;
     
     // the following members are only used when m_eType==etInvestment
-    enum EAction { eaNone = 0, eaBuy, eaSell, eaReinvestDividend, eaEnd };
+    enum EAction { eaNone = 0, eaBuy, eaSell, eaReinvestDividend, eaCashDividend, eaEnd };
     EAction m_eAction;
     double m_dShares;
     QString m_strSecurity;  // should be security ID followed by name, e.g. "DIS The Disney Corporation"

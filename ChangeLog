@@ -1,5 +1,7 @@
 2004-11-28 Ace Jones <acejones@users.sourceforge.net>
   * Replaced 'splitted' with 'split', which is more gramatically correct
+  * Added support for cash dividends in OFX importing.  (Cash dividends are
+    dividends which are NOT reinvested).  
 
 2004-11-27 Ace Jones <acejones@users.sourceforge.net>
   * More test cases for transaction reports

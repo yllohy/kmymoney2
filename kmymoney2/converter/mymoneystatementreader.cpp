@@ -224,6 +224,33 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
       s1.setShares(MyMoneyMoney(t_in.m_dShares,1000));
       s1.setAction(MyMoneySplit::ActionReinvestDividend);
     }
+    if (t_in.m_eAction==MyMoneyStatement::Transaction::eaCashDividend)
+    {
+      // NOTE: With CashDividend, the amount of the dividend should
+      // be in data.amount.  Since I've never seen an OFX file with
+      // cash dividends, this is an assumption on my part. (acejones)
+      
+      // Cash dividends require setting 2 splits to get all of the information
+      // in.  Split #1 will be the income split, and we'll set it to the first
+      // income account.  This is a hack, but it's needed in order to get the
+      // amount into the transaction.
+      
+      // FIXME: Use a better mechanism to get the divident amount into the
+      // transaction (I started a discussion on the mail list, 2004-11-28).
+      
+      s1.setAccountId(*(file->income().accountList().begin()));
+      s1.setShares(t_in.m_moneyAmount);
+      
+      // Split 2 will be the zero-amount investment split that serves to
+      // mark this transaction as a cash dividend and note which stock account
+      // it belongs to.
+      MyMoneySplit s2;
+      s2.setMemo(t_in.m_strMemo);
+      s2.setValue(0);
+      s2.setAction(MyMoneySplit::ActionDividend);
+      s2.setAccountId(thisaccount.id());
+      t.addSplit(s2);
+    }
     else if (t_in.m_eAction==MyMoneyStatement::Transaction::eaBuy || t_in.m_eAction==MyMoneyStatement::Transaction::eaSell)
     {
       s1.setShares(MyMoneyMoney(t_in.m_dShares,1000));
@@ -303,7 +330,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
   }
 
   t.addSplit(s1);
-
+  
   // Add the transaction
   try {
     // check for duplicates ONLY by Bank ID in this account.
@@ -319,7 +346,8 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
       if(t.bankID() == (*it).bankID() && !t.bankID().isNull() && !(*it).bankID().isNull())
         break;
     }
-    if(it == list.end()) {
+    if(it == list.end()) 
+    {
       file->addTransaction(t);
     }
   } catch (MyMoneyException *e) {
