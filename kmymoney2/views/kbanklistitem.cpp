@@ -31,60 +31,27 @@
 #include <qpainter.h>
 #endif
 
-KAccountListItem::KAccountListItem(KListView *parent, const QString& accountName, const QCString& accountID, bool viewNormal)
-  : QListViewItem(parent), m_accountID(accountID), m_bViewNormal(viewNormal)
+KAccountListItem::KAccountListItem(KListView *parent, const QString& accountName, const QCString& accountID, const QString& typeName)
+  : QListViewItem(parent), m_accountID(accountID)
 {
-  if (m_bViewNormal)
-  {
-    m_nAccountColumn = 1;
-    m_nInstitutionColumn = 0;
-  }
-  else
-  {
-    m_nAccountColumn = 0;
-    m_nInstitutionColumn = -1;
-  }
-
-  setText(/*m_nAccountColumn*/0, accountName);
-  // setPixmap(1, QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/22x22/actions/account.png")));
-  //setText(1, m_account.getTypeName());
+  setText(0, accountName);
+  setText(1, typeName);
 	//setText(2, KGlobal::locale()->formatMoney(m_account.balance().amount(), "",
   //                                          KGlobal::locale()->fracDigits()));
 }
 
-KAccountListItem::KAccountListItem(KAccountListItem *parent, const QString& accountName, const QCString& accountID, bool viewNormal)
-  : QListViewItem(parent), m_accountID(accountID), m_bViewNormal(viewNormal)
+KAccountListItem::KAccountListItem(KAccountListItem *parent, const QString& accountName, const QCString& accountID, const QString& typeName)
+  : QListViewItem(parent), m_accountID(accountID)
 {
-  if (m_bViewNormal)
-  {
-    m_nAccountColumn = 1;
-    m_nInstitutionColumn = 0;
-  }
-  else
-  {
-    m_nAccountColumn = 0;
-    m_nInstitutionColumn = -1;
-  }
-
-  setText(/*m_nAccountColumn*/0, accountName);
+  setText(0, accountName);
+  setText(1, typeName);
   //setPixmap(0, QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/22x22/actions/account.png")));
 }
 
 KAccountListItem::KAccountListItem(KListView *parent, const QString& institutionName, const QCString& institutionID)
   : QListViewItem(parent), m_institutionID(institutionID), m_bViewNormal(true)
 {
-  if (m_bViewNormal)
-  {
-    m_nAccountColumn = 1;
-    m_nInstitutionColumn = 0;
-  }
-  else
-  {
-    m_nAccountColumn = 0;
-    m_nInstitutionColumn = -1;
-  }
-
-  setText(/*m_nInstitutionColumn*/0, institutionName);
+  setText(0, institutionName);
 }
 
 KAccountListItem::~KAccountListItem()

@@ -48,7 +48,7 @@ public:
 	KAccountsView(QWidget *parent=0, const char *name=0);
 	~KAccountsView();
 	QCString currentAccount(bool&);
-	void refresh(MyMoneyFile* file, const QCString& selectAccount);
+	void refresh(const QCString& selectAccount);
 	void clear(void);
   void show();
 

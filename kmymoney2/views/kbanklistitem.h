@@ -33,8 +33,8 @@ class KAccountListItem : public QListViewItem  {
   int m_nInstitutionColumn;
 
 public:
-  KAccountListItem(KListView *parent, const QString& accountName, const QCString& accountID, bool viewNormal);
-  KAccountListItem(KAccountListItem *parent, const QString& accountName, const QCString& accountID, bool viewNormal);
+  KAccountListItem(KListView *parent, const QString& accountName, const QCString& accountID, const QString&);
+  KAccountListItem(KAccountListItem *parent, const QString& accountName, const QCString& accountID, const QString&);
   KAccountListItem(KListView *parent, const QString& institutionName, const QCString& institutionID);
 	~KAccountListItem();
 	QCString accountID(void);

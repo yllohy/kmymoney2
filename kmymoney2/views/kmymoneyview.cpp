@@ -35,8 +35,8 @@
 #include "../dialogs/knewbankdlg.h"
 #include "../dialogs/knewaccountdlg.h"
 #include "../dialogs/kendingbalancedlg.h"
-#include "../dialogs/kcategoriesdlg.h"
-#include "../dialogs/kpayeedlg.h"
+//#include "../dialogs/kcategoriesdlg.h"
+//#include "../dialogs/kpayeedlg.h"
 #include "../dialogs/knewfiledlg.h"
 #include "../dialogs/kfileinfodlg.h"
 #include "kmymoneyview.h"
@@ -55,12 +55,11 @@
 #include <qregexp.h>
 #endif
 
+#include "kmymoneyfile.h"
+
 KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   : KJanusWidget(parent, name, KJanusWidget::IconList)
 {
-  m_storage = 0;
-  m_file = 0;
-  
   QVBox *qvboxMainFrame1 = addVBoxPage( i18n("Home"), i18n("Home"),
     DesktopIcon("home"));
   m_homeView = new KHomeView(qvboxMainFrame1);
@@ -236,14 +235,15 @@ void KMyMoneyView::slotAccountEdit()
 
   try
   {
-    MyMoneyAccount account = m_file->account(accountsView->currentAccount(accountSuccess));
+    MyMoneyFile* file = KMyMoneyFile::instance()->file();
+    MyMoneyAccount account = file->account(accountsView->currentAccount(accountSuccess));
 
-    KNewAccountDlg dlg(account, m_file, true, this, "hi", i18n("Edit an Account"));
+    KNewAccountDlg dlg(account, true, this, "hi", i18n("Edit an Account"));
 
     if (dlg.exec())
     {
-      m_file->modifyAccount(dlg.account());
-      accountsView->refresh(m_file, "");
+      file->modifyAccount(dlg.account());
+      accountsView->refresh("");
     }
   }
   catch (MyMoneyException *e)
@@ -269,16 +269,18 @@ void KMyMoneyView::slotAccountDelete()
 
   try
   {
-    MyMoneyAccount account = m_file->account(accountsView->currentAccount(accountSuccess));
+    MyMoneyFile* file = KMyMoneyFile::instance()->file();
+
+    MyMoneyAccount account = file->account(accountsView->currentAccount(accountSuccess));
     QString prompt = i18n("Delete this account ? :-\n");
     prompt += account.name();
 
     if ((KMessageBox::questionYesNo(this, prompt))==KMessageBox::No)
       return;
 
-    m_file->removeAccount(account);
+    file->removeAccount(account);
   
-    accountsView->refresh(m_file, "");
+    accountsView->refresh("");
   }
   catch (MyMoneyException *e)
   {
@@ -295,13 +297,13 @@ void KMyMoneyView::slotAccountDelete()
 
 bool KMyMoneyView::fileOpen(void)
 {
-  return (m_file)?true:false;
+  return true;
 }
 
 void KMyMoneyView::closeFile(void)
 {
   if (fileOpen()) {
-    delete m_file; // Is that enough?
+    KMyMoneyFile::instance()->reset();
   }
 
   accountsView->clear();
@@ -311,15 +313,10 @@ void KMyMoneyView::closeFile(void)
 
 bool KMyMoneyView::readFile(QString filename)
 {
-  if (!fileOpen())
+  KMyMoneyFile *kfile = KMyMoneyFile::instance();
+  if (fileOpen())
   {
-    m_storage = new MyMoneySeqAccessMgr;
-    m_file = new MyMoneyFile(m_storage);
-  }
-  else
-  {
-    qDebug("Trying to read into an already open file.");
-    return false;
+    kfile->reset();
   }
 
   // Use the old reader for now
@@ -327,11 +324,11 @@ bool KMyMoneyView::readFile(QString filename)
   QFile qfile(filename);
   qfile.open(IO_ReadOnly);
   QDataStream s(&qfile);
-  binaryReader->readStream(s, m_storage);
+  binaryReader->readStream(s, kfile->storage());
   qfile.close();
   delete binaryReader;
 
-  accountsView->refresh(m_file, "");
+  accountsView->refresh("");
 
   return true;
 }
@@ -351,7 +348,7 @@ bool KMyMoneyView::dirty(void)
   if (!fileOpen())
     return false;
 
-  return m_file->dirty();
+  return KMyMoneyFile::instance()->file()->dirty();
 }
 
 /*
@@ -377,9 +374,11 @@ void KMyMoneyView::slotBankNew(void)
   {
     try
     {
+      MyMoneyFile* file = KMyMoneyFile::instance()->file();
+
       institution = dlg.institution();
-      m_file->addInstitution(institution);
-      accountsView->refresh(m_file, "");
+      file->addInstitution(institution);
+      accountsView->refresh("");
     }
     catch (MyMoneyException *e)
     {
@@ -397,7 +396,7 @@ void KMyMoneyView::slotAccountNew(void)
 
   MyMoneyAccount account;
 
-  KNewAccountDlg dialog(account, m_file, false, this, "hi", i18n("Create a new Account"));
+  KNewAccountDlg dialog(account, false, this, "hi", i18n("Create a new Account"));
 
   if (dialog.exec())
   {
@@ -405,10 +404,12 @@ void KMyMoneyView::slotAccountNew(void)
     // An exception will be thrown on the next line instead.
     try
     {
+      MyMoneyFile* file = KMyMoneyFile::instance()->file();
+
       MyMoneyAccount newAccount = dialog.account();
       MyMoneyAccount parentAccount = dialog.parentAccount();
-      m_file->addAccount(newAccount, parentAccount);
-      accountsView->refresh(m_file, "");
+      file->addAccount(newAccount, parentAccount);
+      accountsView->refresh("");
       viewAccountList(newAccount.id());
     }
     catch (MyMoneyException *e)
@@ -519,24 +520,12 @@ void KMyMoneyView::slotAccountExportAscii(void)
 
 void KMyMoneyView::editCategories(void)
 {
-  if (!fileOpen()) {
-    KMessageBox::error(this, i18n("Tried to access a file when it's not open"));
-    return;
-  }
-
-  KCategoriesDlg dlg(m_file, this);
-  dlg.exec();
+    KMessageBox::error(this, i18n("REMOVED"));
 }
 
 void KMyMoneyView::editPayees(void)
 {
-  if (!fileOpen()) {
-    KMessageBox::error(this, i18n("Tried to access a file when it's not open"));
-    return;
-  }
-
-  KPayeeDlg dlg(m_file, this);
-  dlg.exec();
+    KMessageBox::error(this, i18n("REMOVED"));
 }
 
 void KMyMoneyView::slotReconcileFinished(bool success)
@@ -557,19 +546,19 @@ void KMyMoneyView::newFile(void)
   if (fileOpen())
     return;
 
-  m_storage = new MyMoneySeqAccessMgr;
-  m_file = new MyMoneyFile(m_storage);
+  KMyMoneyFile::instance()->reset();
+  MyMoneyFile *file = KMyMoneyFile::instance()->file();
 
   KNewFileDlg newFileDlg(this, "e", i18n("Create new KMyMoneyFile"));
   if (newFileDlg.exec())
   {
-    m_file->setUserName(newFileDlg.userNameText);
-    m_file->setUserStreet(newFileDlg.userStreetText);
-    m_file->setUserTown(newFileDlg.userTownText);
-    m_file->setUserCounty(newFileDlg.userCountyText);
-    m_file->setUserPostcode(newFileDlg.userPostcodeText);
-    m_file->setUserTelephone(newFileDlg.userTelephoneText);
-    m_file->setUserEmail(newFileDlg.userEmailText);
+    file->setUserName(newFileDlg.userNameText);
+    file->setUserStreet(newFileDlg.userStreetText);
+    file->setUserTown(newFileDlg.userTownText);
+    file->setUserCounty(newFileDlg.userCountyText);
+    file->setUserPostcode(newFileDlg.userPostcodeText);
+    file->setUserTelephone(newFileDlg.userTelephoneText);
+    file->setUserEmail(newFileDlg.userEmailText);
     //m_file->setCreateDate(QDate::currentDate() );  // This doesn't seem to exist.  Do we want it anymore, im not bothered.
 
     loadDefaultCategories();
@@ -796,7 +785,7 @@ void KMyMoneyView::newFile(void)
     delete e;
 	}
 */
-    accountsView->refresh(m_file, "");
+    accountsView->refresh("");
   }
 }
 
@@ -807,17 +796,20 @@ void KMyMoneyView::viewPersonal(void)
     return;
   }
 
-  KNewFileDlg newFileDlg(m_file->userName(), m_file->userStreet(),
-    m_file->userTown(), m_file->userCounty(), m_file->userPostcode(), m_file->userTelephone(),
-    m_file->userEmail(), this, "e", i18n("Edit Personal Data"));
+  MyMoneyFile* file = KMyMoneyFile::instance()->file();
+
+  KNewFileDlg newFileDlg(file->userName(), file->userStreet(),
+    file->userTown(), file->userCounty(), file->userPostcode(), file->userTelephone(),
+    file->userEmail(), this, "e", i18n("Edit Personal Data"));
+
   if (newFileDlg.exec()) {
-    m_file->setUserName(newFileDlg.userNameText);
-    m_file->setUserStreet(newFileDlg.userStreetText);
-    m_file->setUserTown(newFileDlg.userTownText);
-    m_file->setUserCounty(newFileDlg.userCountyText);
-    m_file->setUserPostcode(newFileDlg.userPostcodeText);
-    m_file->setUserTelephone(newFileDlg.userTelephoneText);
-    m_file->setUserEmail(newFileDlg.userEmailText);
+    file->setUserName(newFileDlg.userNameText);
+    file->setUserStreet(newFileDlg.userStreetText);
+    file->setUserTown(newFileDlg.userTownText);
+    file->setUserCounty(newFileDlg.userCountyText);
+    file->setUserPostcode(newFileDlg.userPostcodeText);
+    file->setUserTelephone(newFileDlg.userTelephoneText);
+    file->setUserEmail(newFileDlg.userEmailText);
   }
 }
 
@@ -973,7 +965,7 @@ void KMyMoneyView::viewAccountList(const QCString& selectAccount)
 
   if (fileOpen())
   {
-    accountsView->refresh(m_file, selectAccount);
+    accountsView->refresh(selectAccount);
   }
 }
 
@@ -1130,7 +1122,7 @@ void KMyMoneyView::settingsLists()
 void KMyMoneyView::accountFind()
 {
   if (!transactionFindDlg) {
-    transactionFindDlg = new KFindTransactionDlg(m_file, 0);
+    transactionFindDlg = new KFindTransactionDlg(0);
     connect(transactionFindDlg, SIGNAL(searchReady()), this, SLOT(doTransactionSearch()));
   }
 
@@ -1393,11 +1385,11 @@ QString KMyMoneyView::currentBankName(void)
 QString KMyMoneyView::currentAccountName(void)
 {
   bool accountSuccess=false;
-  if (m_file)
-  {
     try
     {
-      MyMoneyAccount account = m_file->account(accountsView->currentAccount(accountSuccess));
+      MyMoneyFile* file = KMyMoneyFile::instance()->file();
+
+      MyMoneyAccount account = file->account(accountsView->currentAccount(accountSuccess));
       if (accountSuccess)
         return account.name();
     }
@@ -1407,7 +1399,7 @@ QString KMyMoneyView::currentAccountName(void)
       // We dont need to do anything with it though.
       delete e;
     }
-  }
+
   return i18n("Unknown Account");
 }
 
@@ -1481,7 +1473,7 @@ transactionView->setSignals(false);
     accountsView->show();
     if (fileOpen())
     {
-      accountsView->refresh(m_file, "");
+      accountsView->refresh("");
     }
     m_showing = BankList;
   }
@@ -1520,6 +1512,6 @@ void KMyMoneyView::memoryDump()
   g.open( IO_WriteOnly );
   QDataStream st(&g);
   MyMoneyStorageDump dumper;
-  dumper.writeStream(st, m_storage);
+  dumper.writeStream(st, KMyMoneyFile::instance()->storage());
   g.close();
 }

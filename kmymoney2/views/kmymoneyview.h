@@ -55,7 +55,7 @@
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.10 2002/06/05 19:29:51 mte Exp $
+  * $Id: kmymoneyview.h,v 1.11 2002/06/10 21:28:04 mte Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -78,8 +78,8 @@ private:
   viewType m_showing;
   viewShowing m_realShowing;
 
-  MyMoneyFile *m_file;  // The interface to the transaction code
-	MyMoneySeqAccessMgr *m_storage;
+  //MyMoneyFile *m_file;  // The interface to the transaction code
+	//MyMoneySeqAccessMgr *m_storage;
 
   bool m_inReconciliation;  // True if the reconciliaton dialog needs updating when the user adds/deletes transactions
   bool m_reconcileInited;  // True if a reconciliation has already been completed this execution

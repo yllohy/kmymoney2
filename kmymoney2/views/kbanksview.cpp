@@ -22,19 +22,26 @@
 #include <klistview.h>
 #include <kconfig.h>
 
+#include "kmymoneyfile.h"
+
 KAccountsView::KAccountsView(QWidget *parent, const char *name)
  : KBankViewDecl(parent,name)
 {
+  KConfig *config = KGlobal::config();
+  config->setGroup("List Options");
+  m_bViewNormalAccountsView = config->readBoolEntry("NormalAccountsView");
+
 	accountListView->setRootIsDecorated(true);
 	accountListView->setAllColumnsShowFocus(true);
+//  if (m_bViewNormalAccountsView)
+//    accountListView->addColumn(i18n("Institution"));
 	accountListView->addColumn(i18n("Account"));
-	//accountListView->addColumn(i18n("Type"));
-	//accountListView->addColumn(i18n("Balance"));
+	accountListView->addColumn(i18n("Type"));
+	accountListView->addColumn(i18n("Balance"));
 	accountListView->setMultiSelection(false);
 	accountListView->header()->setResizeEnabled(false);
 	accountListView->setColumnWidthMode(0, QListView::Manual);
 
-	KConfig *config = KGlobal::config();
   QFont defaultFont = QFont("helvetica", 12);
   accountListView->header()->setFont(config->readFontEntry("listHeaderFont", &defaultFont));
 
@@ -91,7 +98,7 @@ QCString KAccountsView::currentAccount(bool& success)
   return m_selectedAccount;
 }
 
-void KAccountsView::refresh(MyMoneyFile* file, const QCString& selectAccount)
+void KAccountsView::refresh(const QCString& selectAccount)
 {
   KConfig *config = KGlobal::config();
   config->setGroup("List Options");
@@ -105,6 +112,7 @@ void KAccountsView::refresh(MyMoneyFile* file, const QCString& selectAccount)
 
   m_selectedAccount = selectAccount;
 
+  MyMoneyFile *file = KMyMoneyFile::instance()->file();
 
   MyMoneyAccount liabilityAccount = file->liability();
   MyMoneyAccount assetAccount = file->asset();
@@ -126,7 +134,7 @@ void KAccountsView::refresh(MyMoneyFile* file, const QCString& selectAccount)
               ++it )
         {
           KAccountListItem *accountItem = new KAccountListItem(topLevelInstitution,
-              file->account(*it).name(), file->account(*it).id(), m_bViewNormalAccountsView);
+              file->account(*it).name(), file->account(*it).id(), "");
 
           QCStringList subAccounts = file->account(*it).accountList();
           if (subAccounts.count() >= 1)
@@ -160,7 +168,7 @@ void KAccountsView::refresh(MyMoneyFile* file, const QCString& selectAccount)
               ++it )
         {
           KAccountListItem *accountItem = new KAccountListItem(assetTopLevelAccount,
-              file->account(*it).name(), file->account(*it).id(), m_bViewNormalAccountsView);
+              file->account(*it).name(), file->account(*it).id(), "");
 
           QCStringList subAccounts = file->account(*it).accountList();
           if (subAccounts.count() >= 1)
@@ -178,7 +186,7 @@ void KAccountsView::refresh(MyMoneyFile* file, const QCString& selectAccount)
               ++it )
         {
           KAccountListItem *accountItem = new KAccountListItem(liabilityTopLevelAccount,
-              file->account(*it).name(), file->account(*it).id(), m_bViewNormalAccountsView);
+              file->account(*it).name(), file->account(*it).id(), "");
 
           QCStringList subAccounts = file->account(*it).accountList();
           if (subAccounts.count() >= 1)
@@ -196,7 +204,7 @@ void KAccountsView::refresh(MyMoneyFile* file, const QCString& selectAccount)
               ++it )
         {
           KAccountListItem *accountItem = new KAccountListItem(incomeTopLevelAccount,
-              file->account(*it).name(), file->account(*it).id(), m_bViewNormalAccountsView);
+              file->account(*it).name(), file->account(*it).id(), "");
 
           QCStringList subAccounts = file->account(*it).accountList();
           if (subAccounts.count() >= 1)
@@ -214,7 +222,7 @@ void KAccountsView::refresh(MyMoneyFile* file, const QCString& selectAccount)
               ++it )
         {
           KAccountListItem *accountItem = new KAccountListItem(expenseTopLevelAccount,
-              file->account(*it).name(), file->account(*it).id(), m_bViewNormalAccountsView);
+              file->account(*it).name(), file->account(*it).id(), "");
 
           QCStringList subAccounts = file->account(*it).accountList();
           if (subAccounts.count() >= 1)
@@ -266,7 +274,7 @@ void KAccountsView::showSubAccounts(QCStringList accounts, KAccountListItem *par
   for ( QCStringList::ConstIterator it = accounts.begin(); it != accounts.end(); ++it )
   {
     KAccountListItem *accountItem  = new KAccountListItem(parentItem,
-          file->account(*it).name(), file->account(*it).id(), m_bViewNormalAccountsView);
+          file->account(*it).name(), file->account(*it).id(), "");
     //qDebug("acco: %s, %s", file->account(*it).name().latin1(), file->account(*it).id().data());
 
     QCStringList subAccounts = file->account(*it).accountList();
@@ -285,13 +293,13 @@ void KAccountsView::clear(void)
 
 void KAccountsView::resizeEvent(QResizeEvent* e)
 {
-	accountListView->setColumnWidth(0, /*400*/accountListView->width());
-	//accountListView->setColumnWidth(1,150);
-	//int totalWidth=accountListView->width();
-	//accountListView->setColumnWidth(2, totalWidth-550-5);
+	accountListView->setColumnWidth(0, 400);
+	accountListView->setColumnWidth(1,150);
+	int totalWidth=accountListView->width();
+	accountListView->setColumnWidth(2, totalWidth-550-5);
 
 	// call base class resizeEvent()
-	KBankViewDecl::resizeEvent(e);
+	//KBankViewDecl::resizeEvent(e);
 }
 
 void KAccountsView::slotSelectionChanged(QListViewItem *item)

@@ -48,7 +48,7 @@ private:
   void loadInstitutions(const QString&);
 
 public:
-	KNewAccountDlg(MyMoneyAccount& account, MyMoneyFile* file, bool isEditing, QWidget *parent=0, const char *name=0, const char *title=0);
+	KNewAccountDlg(MyMoneyAccount& account, bool isEditing, QWidget *parent=0, const char *name=0, const char *title=0);
 	~KNewAccountDlg();
   MyMoneyAccount account(void);
   const MyMoneyAccount parentAccount(void);
