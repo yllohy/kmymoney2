@@ -22,6 +22,7 @@
 
 #include "mymoneystoragexmlcallback.h"
 
+#if HAVE_LIBXMLPP
 MyMoneyStorageXMLCallback::MyMoneyStorageXMLCallback()
 {
   m_parseState          = PARSE_STATE_UNKNOWN;
@@ -97,3 +98,5 @@ void MyMoneyStorageXMLCallback::ChangeParseState(eParseState state)
   m_previousParseState = m_parseState;
   m_parseState = state;
 }
+
+#endif // HAVE_LIBXMLPP

@@ -20,6 +20,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#if HAVE_LIBXMLPP
+
 #include <xml++.h>
 #include "mymoneystoragexmlcallback.h"
 #include "mymoneystoragexml.h"
@@ -37,3 +39,5 @@ MyMoneyStorageXML::~MyMoneyStorageXML()
 {
   
 }
+
+#endif // HAVE_LIBXMLPP

@@ -23,6 +23,8 @@
 #ifndef MYMONEYSTORAGEXMLCALLBACK_H
 #define MYMONEYSTORAGEXMLCALLBACK_H
 
+#if HAVE_LIBXMLPP
+
 //include libxml++, using the SAX parser
 #include <xml++.h>
 
@@ -59,4 +61,6 @@ private:
   eParseState m_previousParseState;
 
 };
+
+#endif // HAVE_LIBXMLPP
 #endif
