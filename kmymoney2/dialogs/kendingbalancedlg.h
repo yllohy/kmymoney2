@@ -17,20 +17,27 @@
 #ifndef KENDINGBALANCEDLG_H
 #define KENDINGBALANCEDLG_H
 
-//Generated area. DO NOT EDIT!!!(begin)
+// ----------------------------------------------------------------------------
+// QT Includes
+
 #include <qwidget.h>
 #include <qgroupbox.h>
 #include <qlabel.h>
 #include <qpushbutton.h>
-//Generated area. DO NOT EDIT!!!(end)
-
-#include <klocale.h>
 #include <qdialog.h>
 #include <qdatetime.h>
+
+// ----------------------------------------------------------------------------
+// KDE Includes
+
+#include <klocale.h>
+
+// ----------------------------------------------------------------------------
+// Project Includes
+
 #include "../widgets/kmymoneyedit.h"
 #include "../mymoney/mymoneymoney.h"
 #include "../widgets/kmymoneydateinput.h"
-
 #include "kendingbalancedlgdecl.h"
 
 // This dialog lets the user selected an ending balance.
@@ -39,34 +46,22 @@ class KEndingBalanceDlg : public KEndingBalanceDlgDecl  {
    Q_OBJECT
 
 public:
-  // Read from these to get the value when the dialog has finished.
-  MyMoneyMoney endingBalance;
-  MyMoneyMoney previousBalance;
-  QDate endingDate;
-
-public:
-	KEndingBalanceDlg(MyMoneyMoney& prevBal, MyMoneyMoney& endingGuess, QWidget *parent=0, const char *name=0);
+	KEndingBalanceDlg(const MyMoneyMoney& prevBal, const MyMoneyMoney& endingGuess, const QDate& statementDate, QWidget *parent=0, const char *name=0);
 	~KEndingBalanceDlg();
 
-protected: 
-/*
-	void initDialog();
-	//Generated area. DO NOT EDIT!!!(begin)
-	QGroupBox *reconcileFrame;
-	QLabel *previousLabel;
-	QLabel *previousEdit;
-	QLabel *endingLabel;
-	QLabel *dateLabel;
-	QPushButton *okBtn;
-	QPushButton *cancelBtn;
-	//Generated area. DO NOT EDIT!!!(end)
-*/
+  const MyMoneyMoney endingBalance(void) const { return m_endingBalance; };
+  const MyMoneyMoney previousBalance(void) const { return m_previousBalance; };
+  const QDate endingDate(void) const { return m_endingDate; };
+
+protected:
+
 protected slots:
   void okClicked();
 
 private:
-//  kMyMoneyDateInput *endingDateEdit;
-//  kMyMoneyEdit *endingEdit;
+  MyMoneyMoney m_endingBalance;
+  MyMoneyMoney m_previousBalance;
+  QDate m_endingDate;
 };
 
 #endif
