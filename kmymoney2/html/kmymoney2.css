@@ -1,32 +1,54 @@
 A.el { text-decoration: none; }
 A.elRef { font-weight: bold }
-A.code { text-decoration: none; font-weight: normal; color: #4444ee }
-A.codeRef { font-weight: normal; color: #4444ee }
-A:hover { text-decoration: none; font-weight: bold; background-color: #f2f2ff }
+A.code { text-decoration: none; font-weight: normal; color: #4C59A6 }
+A.codeRef { font-weight: normal; color: #4C59A6 }
+A:hover { text-decoration: none; font-weight: bold; color: #4C59A6 }
+
+td
+{
+  font-size: 11px;
+  font-family: verdana, arial;
+}
 
 td.highlighted {
   background-color: #32A49E;
   color: #FFFFFF;
 }
 
-.itemheader {
-  background-color: blue;
+h2
+{
+  font-size: 18px;
+  font-family: verdana, arial;
+  margin-right: 10px;
+  margin-left: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  text-align: right;
+}
+
+.itemheader
+{
   color: white;
-  font-weight: bold;
-  padding-top: 2px;
+  font-family: verdana, arial, helvetica;
+  background-color: #4C59A6;
+  padding-top: 5px;
   padding-left: 20px;
-  padding-bottom: 2px;
+  padding-bottom: 5px;
 }
 
 .row-even {
-  background-color: #E0FDB6;
+  font-size: 11px;
+  font-family: verdana, arial, helvetica;
+  background-color: #FFFFEE;
   color: black;
   padding-top: 2px;
   padding-left: 20px;
 }
 
 .row-odd {
-  background-color: #DBEDED;
+  font-family: verdana, arial, helvetica;
+  font-size: 11px;
+  background-color: #FFFFCC;
   color: black;
   padding-top: 2px;
   padding-left: 20px;
@@ -61,12 +83,12 @@ table.highlighted {
 }
 
 font.kmymoney2 {
-  color: #308169;
+  color: #4C59A6;
   font-weight: bold;
 }
 
 font.highlighted {
-  background-color: #308169;
+  background-color: #4C59A6;
   color: #FFFFFF;
 }
 
