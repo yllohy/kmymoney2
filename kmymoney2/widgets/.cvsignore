@@ -6,3 +6,4 @@ Makefile.in
 *.moc.cpp
 *.o
 *_meta_unload.cpp
+*~
