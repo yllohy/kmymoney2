@@ -443,7 +443,15 @@ void KInvestmentView::loadAccounts(void)
   if(acc.id().isEmpty()) {
     QCStringList list = m_accountComboBox->accountList();
     if(list.count()) {
-      acc = file->account(*(list.begin()));
+      QCStringList::Iterator it;
+      for(it = list.begin(); it != list.end() && acc.id().isEmpty(); ++it) {
+        MyMoneyAccount a = file->account(*it);
+        if(a.value("PreferredAccount") == "Yes") {
+          acc = a;
+        }
+      }
+      if(acc.id().isEmpty())
+        acc = file->account(*(list.begin()));
     }
   }
 

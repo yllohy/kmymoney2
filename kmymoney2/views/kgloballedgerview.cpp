@@ -258,7 +258,15 @@ void KGlobalLedgerView::loadAccounts(void)
   if(acc.id().isEmpty()) {
     QCStringList list = m_accountComboBox->accountList();
     if(list.count()) {
-      acc = file->account(*(list.begin()));
+      QCStringList::Iterator it;
+      for(it = list.begin(); it != list.end() && acc.id().isEmpty(); ++it) {
+        MyMoneyAccount a = file->account(*it);
+        if(a.value("PreferredAccount") == "Yes") {
+          acc = a;
+        }
+      }
+      if(acc.id().isEmpty())
+        acc = file->account(*(list.begin()));
     }
   }
 
@@ -276,8 +284,6 @@ const bool KGlobalLedgerView::slotSelectAccount(const QCString& id)
 const bool KGlobalLedgerView::slotSelectAccount(const QCString& id, const bool reconciliation)
 {
   bool    rc = false;
-
-  // qDebug("KGlobalLedgerView::slotSelectAccount(const QCString& id, const bool reconciliation)");
 
   // cancel any pending edit operation in the ledger views
   emit cancelEdit();
