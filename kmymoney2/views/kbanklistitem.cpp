@@ -45,7 +45,7 @@ KAccountListItem::KAccountListItem(KListView *parent, const QString& accountName
     m_nInstitutionColumn = -1;
   }
 
-  setText(m_nAccountColumn, accountName);
+  setText(/*m_nAccountColumn*/0, accountName);
   // setPixmap(1, QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/22x22/actions/account.png")));
   //setText(1, m_account.getTypeName());
 	//setText(2, KGlobal::locale()->formatMoney(m_account.balance().amount(), "",
@@ -66,7 +66,7 @@ KAccountListItem::KAccountListItem(KAccountListItem *parent, const QString& acco
     m_nInstitutionColumn = -1;
   }
 
-  setText(m_nAccountColumn, accountName);
+  setText(/*m_nAccountColumn*/0, accountName);
   //setPixmap(0, QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/22x22/actions/account.png")));
 }
 
@@ -84,7 +84,7 @@ KAccountListItem::KAccountListItem(KListView *parent, const QString& institution
     m_nInstitutionColumn = -1;
   }
 
-  setText(m_nInstitutionColumn, institutionName);
+  setText(/*m_nInstitutionColumn*/0, institutionName);
 }
 
 KAccountListItem::~KAccountListItem()

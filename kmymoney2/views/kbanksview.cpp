@@ -94,8 +94,10 @@ QCString KAccountsView::currentAccount(bool& success)
 void KAccountsView::refresh(MyMoneyFile* file, const QCString& selectAccount)
 {
   KConfig *config = KGlobal::config();
+  config->setGroup("List Options");
   QFont defaultFont = QFont("helvetica", 12);
   accountListView->header()->setFont(config->readFontEntry("listHeaderFont", &defaultFont));
+  m_bViewNormalAccountsView = config->readBoolEntry("NormalAccountsView");
 
   clear();
 
@@ -103,11 +105,6 @@ void KAccountsView::refresh(MyMoneyFile* file, const QCString& selectAccount)
 
   m_selectedAccount = selectAccount;
 
-  // Get the view type from kconfig or something
-  // for now lets hardcode it to normal
-  //
-  // Please note that true crashes at the moment
-  m_bViewNormalAccountsView = false;
 
   MyMoneyAccount liabilityAccount = file->liability();
   MyMoneyAccount assetAccount = file->asset();
@@ -120,19 +117,16 @@ void KAccountsView::refresh(MyMoneyFile* file, const QCString& selectAccount)
       QValueList<MyMoneyInstitution>::ConstIterator institutionIterator;
       for (institutionIterator = list.begin(); institutionIterator != list.end(); ++institutionIterator)
       {
-        KAccountListItem *topLevelInstitution;
-        // = new KAccountListItem(accountListView,
-        //              (*institutionIterator).name(), (*institutionIterator).id());
-        qDebug("inst: %s, %s", (*institutionIterator).name().latin1(), (*institutionIterator).id().data());
+        KAccountListItem *topLevelInstitution = new KAccountListItem(accountListView,
+                      (*institutionIterator).name(), (*institutionIterator).id());
 
-        for ( QCStringList::ConstIterator it = (*institutionIterator).accountList().begin();
-              it != (*institutionIterator).accountList().end();
+        QCStringList accountList = (*institutionIterator).accountList();
+        for ( QCStringList::ConstIterator it = accountList.begin();
+              it != accountList.end();
               ++it )
         {
-          KAccountListItem *accountItem;
-            // = new KAccountListItem(topLevelInstitution,
-            //  file->account(*it).name(), file->account(*it).id(), m_bViewNormalAccountsView);
-          qDebug("acco: %s, %s", file->account(*it).name().latin1(), file->account(*it).id().data());
+          KAccountListItem *accountItem = new KAccountListItem(topLevelInstitution,
+              file->account(*it).name(), file->account(*it).id(), m_bViewNormalAccountsView);
 
           QCStringList subAccounts = file->account(*it).accountList();
           if (subAccounts.count() >= 1)
@@ -140,6 +134,7 @@ void KAccountsView::refresh(MyMoneyFile* file, const QCString& selectAccount)
             showSubAccounts(subAccounts, accountItem, file);
           }
         }
+
       }
     }
     catch (MyMoneyException *e)

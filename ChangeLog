@@ -1,6 +1,12 @@
 2002-06-09 Michael Edwardes <mte@users.sourceforge.net>
   * Fixed the date input widget.
   * New account dialog is now fully functional.
+  * Fixed the accounts view window.  You can now use the old banks view
+    or the newer accounts view.  Currently this can only be done
+    manually, by adding the following line to the "List Options"
+    group in ~/.kde/share/config/kmymoney2rc:
+                 NormalAccountsView=true
+    Set it to true for the banks view, false for the accounts view.
 
 2002-06-07 Michael Edwardes <mte@users.sourceforge.net>
   * Adding institution in the account dialog now works.
