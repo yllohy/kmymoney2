@@ -522,7 +522,7 @@ public:
     * This method returns a list of the institutions
     * inside a MyMoneyFile object
     *
-    * @return QValueList containing the institution information
+    * @return QValueList containing the institution objects
     */
   const QValueList<MyMoneyInstitution> institutionList(void) const;
 
@@ -539,7 +539,7 @@ public:
     * This method returns a list of the accounts
     * inside a MyMoneyFile object
     *
-    * @return QMap<QString,MyMoneyAccount> with accounts
+    * @return QValueList containing the account objects
     */
   const QValueList<MyMoneyAccount> accountList(void) const;
 
