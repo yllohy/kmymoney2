@@ -52,6 +52,7 @@
 #define expl(a)       exp(a)
 #define logl(a)       log(a)
 #define floorl(a)     floor(a)
+#define fabsl(a)      fabs(a)
 #endif
 
 /**
@@ -65,7 +66,7 @@
   */
 class MyMoneyFinancialCalculator
 {
-public: 
+public:
   MyMoneyFinancialCalculator();
   ~MyMoneyFinancialCalculator();
 
@@ -80,7 +81,7 @@ public:
     *             will be thrown
     */
   const FCALC_DOUBLE numPayments();
-  
+
   /**
     * This method calculates the amount of the payment (amortization and interest)
     * for the loan. ir, pv, fv and npp must be set. It sets the member variable
@@ -154,7 +155,7 @@ public:
     * @return the interest amount
     */
   const FCALC_DOUBLE interestDue(void) const;
-  
+
   /**
     * This method sets the rounding precision to @p prec fractional
     * digits. The default of @p is 2. Rounding is applied to pv, pmt
@@ -174,7 +175,7 @@ public:
   void setNpp(const FCALC_DOUBLE npp);
 
   const FCALC_DOUBLE npp(void) const { return m_npp; };
-  
+
   /**
     * This method sets the payment frequency. The parameter @p PF
     * specifies the payments per year.
@@ -189,12 +190,12 @@ public:
     *  - 26 == bi-weekly
     *  - 52 == weekly
     *  - 360 == daily
-    *  - 365 == daily 
+    *  - 365 == daily
     *
     * @param PF length of payment period (default is 12 - monthly)
     */
   void setPF(const unsigned short PF = 12);
-  
+
   /**
     * This method sets the compounding frequency. The parameter @p CF
     * specifies the compounding period per year.
@@ -242,7 +243,7 @@ public:
   void setIr(const FCALC_DOUBLE ir);
 
   const FCALC_DOUBLE ir(void) const { return m_ir; };
-    
+
   /**
     * This method sets the present value to the value passed
     * in the argument @p pv.
@@ -277,20 +278,20 @@ private:
   const FCALC_DOUBLE eff_int(void) const;
   const FCALC_DOUBLE nom_int(const FCALC_DOUBLE eint) const;
   const FCALC_DOUBLE rnd(const FCALC_DOUBLE x) const;
-  
+
   const FCALC_DOUBLE _Ax(const FCALC_DOUBLE eint) const;
   const FCALC_DOUBLE _Bx(const FCALC_DOUBLE eint) const;
   const FCALC_DOUBLE _Cx(const FCALC_DOUBLE eint) const;
   const FCALC_DOUBLE _fi(const FCALC_DOUBLE eint) const;
   const FCALC_DOUBLE _fip(const FCALC_DOUBLE eint) const;
-        
+
 private:
   FCALC_DOUBLE          m_ir;   // nominal interest rate
   FCALC_DOUBLE          m_pv;   // present value
   FCALC_DOUBLE          m_pmt;  // periodic payment
   FCALC_DOUBLE          m_fv;   // future value
   FCALC_DOUBLE          m_npp;  // number of payment periods
-  
+
   unsigned short        m_CF;   // compounding frequency
   unsigned short        m_PF;   // payment frequency
 

@@ -842,13 +842,30 @@ int KNewLoanWizard::calculateLoan(void)
     } else {
       // calculate the future value of the loan out of the other information
       val = calc.futureValue();
-      MyMoneyMoney refVal(static_cast<double>(val));
 
-      if((m_borrowButton->isChecked() && val < 0)
-      || (m_lendButton->isChecked() && val > 0)) {
-        qDebug("Future Value is %f", refVal.toDouble());
+      // we differentiate between the following cases:
+      // a) the future value is greater than a payment
+      // b) the future payment is less than a payment
+      // c) all other cases
+      //
+      // a) means, we have paid more than we owed. This can't be
+      // b) means, we paid more than we owed but the last payment is
+      //    less in value than regular payments. That means, that the
+      //    future value is to be treated as  (fully payed back)
+      // c) the loan is not payed back yet
+      if((m_borrowButton->isChecked() && val < 0 && fabsl(val) > fabsl(calc.payment()))
+      || (m_lendButton->isChecked() && val > 0 && fabs(val) > fabs(calc.payment()))) {
+        // case a)
+        qDebug("Future Value is %f", val);
         throw new MYMONEYEXCEPTION("incorrect fincancial calculation");
+
+      } else if((m_borrowButton->isChecked() && val < 0 && fabsl(val) <= fabsl(calc.payment()))
+             || (m_lendButton->isChecked() && val > 0 && fabs(val) <= fabs(calc.payment()))) {
+        // case b)
+        val = 0;
       }
+
+      MyMoneyMoney refVal(static_cast<double>(val));
       result = i18n("KMyMoney has calculated a final payment of %1 for this loan.")
                         .arg(refVal.abs().formatMoney());
 
