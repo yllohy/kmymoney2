@@ -189,6 +189,11 @@ public:
     *
     * @param parent parent account the account should be added to
     * @param account the account to be added
+    *
+    * @deprecated This method is only provided as long as we provide
+    *             the version 0.4 binary reader. As soon as we deprecate
+    *             this compatability mode this method will disappear from
+    *             this interface!
     */
   virtual void addAccount(MyMoneyAccount& parent, MyMoneyAccount& account) = 0;
 
@@ -198,6 +203,12 @@ public:
     * An exception will be thrown upon error conditions
     *
     * @param payee MyMoneyPayee reference to payee information
+    *
+    * @deprecated This method is only provided as long as we provide
+    *             the version 0.4 binary reader. As soon as we deprecate
+    *             this compatability mode this method will disappear from
+    *             this interface!
+    *
     */
   virtual void addPayee(MyMoneyPayee& payee) = 0;
 
@@ -212,6 +223,11 @@ public:
     *
     * @param institution MyMoneyInsitution the account should be added to
     * @param account MyMoneyAccount to be added
+    *
+    * @deprecated This method is only provided as long as we provide
+    *             the version 0.4 binary reader. As soon as we deprecate
+    *             this compatability mode this method will disappear from
+    *             this interface!
     */
   virtual void addAccount(MyMoneyInstitution& institution, MyMoneyAccount& account) = 0;
 
@@ -224,6 +240,11 @@ public:
     *
     * @param institution The complete institution information in a
     *        MyMoneyInstitution object
+    *
+    * @deprecated This method is only provided as long as we provide
+    *             the version 0.4 binary reader. As soon as we deprecate
+    *             this compatability mode this method will disappear from
+    *             this interface!
     */
   virtual void addInstitution(MyMoneyInstitution& institution) = 0;
 
@@ -240,6 +261,11 @@ public:
     *        bulk loading a lot of transactions but not during normal operation.
     *        Refreshing the account's transaction list can be done using
     *        refreshAllAccountTransactionList().
+    *
+    * @deprecated This method is only provided as long as we provide
+    *             the version 0.4 binary reader. As soon as we deprecate
+    *             this compatability mode this method will disappear from
+    *             this interface!
     */
   virtual void addTransaction(MyMoneyTransaction& transaction, const bool skipAccountUpdate = false) = 0;
 
