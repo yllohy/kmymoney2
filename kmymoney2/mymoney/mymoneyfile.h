@@ -38,7 +38,7 @@
   * @see MyMoneyBank
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: mymoneyfile.h,v 1.9 2001/12/27 01:50:18 mte Exp $
+  * $Id: mymoneyfile.h,v 1.10 2002/01/14 06:42:30 ipwizard Exp $
   *
   * @short A representation of the file format used by KMyMoney2.
 **/
@@ -251,7 +251,7 @@ public:
 
   // Internal modified flag
   bool dirty(void) { return m_dirty; }
-  void setDirty(bool dirty) { m_dirty = dirty; }
+  void setDirty(const bool dirty) { m_dirty = dirty; }
 
   // Payee operations
   void addPayee(const QString& newPayee, const QString address=QString::null, const QString postcode=QString::null, const QString telephone=QString::null, const QString email=QString::null);

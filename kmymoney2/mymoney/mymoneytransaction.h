@@ -19,12 +19,15 @@
 
 #include <qstring.h>
 #include <qdatetime.h>
+#include <qlist.h>
+#include "mymoneytransactionbase.h"
+#include "mymoneysplittransaction.h"
 #include "mymoneymoney.h"
 
 class MyMoneyAccount;
 
 // This class represents a Transaction in an Account
-class MyMoneyTransaction {
+class MyMoneyTransaction : public MyMoneyTransactionBase {
 public:
   enum transactionType { Debit, Credit };
   enum transactionMethod { Cheque, Deposit, Transfer, Withdrawal, ATM };
@@ -36,12 +39,8 @@ private:
   // The 'fields'
   unsigned long m_id;
   QString m_number;
-  QString m_memo;
-  MyMoneyMoney m_amount;
   QDate m_date;
   transactionMethod m_method;
-  QString m_categoryMajor;
-  QString m_categoryMinor;
   QString m_atmBankName;
   QString m_payee;
   QString m_accountFrom;
@@ -61,14 +60,10 @@ public:
 
   // Simple get operations
   QString number(void) const { return m_number; }
-  QString memo(void) const { return m_memo; }
-  MyMoneyMoney amount(void) const { return m_amount; }
   QDate date(void) const { return m_date; }
   long id(void) const { return m_id; }
   transactionType type(void) const;
   transactionMethod method(void) const { return m_method; }
-  QString categoryMajor(void) const { return m_categoryMajor; }
-  QString categoryMinor(void) const { return m_categoryMinor; }
   QString atmBankName(void) const { return m_atmBankName; }
   QString payee(void) const { return m_payee; }
   QString accountFrom(void) const { return m_accountFrom; }
@@ -77,31 +72,49 @@ public:
 
   // Simple set operations
   void setNumber(const QString& val);
-  void setMemo(const QString& val);
-  void setAmount(const MyMoneyMoney& val);
   void setDate(const QDate& date);
   void setMethod(const transactionMethod method);
-  void setCategoryMajor(const QString& major);
-  void setCategoryMinor(const QString& minor);
   void setAtmBankName(const QString& val);
   void setPayee(const QString& fromTo);
   void setAccountFrom(const QString& bankFrom);
   void setAccountTo(const QString& bankTo);
   void setState(const stateE state);
 
+  /**
+    * Set the parent's dirty flag
+    *
+    * @param flag Set the parent's dirty flag to this value. Can be true or false.
+    *
+    * @see MyMoneyTransaction
+    * @see MyMoneySplitTransaction
+    */
+  void setDirty(const bool flag);
+
   void setIndex(const unsigned int index);
   unsigned int index(void) { return m_index; }
 
   bool operator == (const MyMoneyTransaction&);
+
   // Copy constructors
   MyMoneyTransaction(const MyMoneyTransaction&);
   MyMoneyTransaction& operator = (const MyMoneyTransaction&);
 
   bool readAllData(int version, QDataStream& stream);
 
+  /**
+    * Returns false for MyMoneyTransactions
+    *
+    * @return always false
+    */
+  virtual bool isSplit(void) { return false; };
+
+  // List of splits
+  QList<MyMoneySplitTransaction> m_splitList;
+
   MyMoneyAccount *account(void) { return m_parent; }
 
   static transactionMethod stringToMethod(const char *method);
+
 };
 
 #endif

@@ -71,6 +71,15 @@ public:
 
 	void clear(void);
 
+  /**
+    * Set the parent's dirty flag, if a parent is available
+    *
+    * @param flag The value to which the dirty flag should be set
+    *
+    * @return none
+  **/
+  void setDirty(const bool flag);
+
 	// Operations on the contained accounts
   bool newAccount(const QString& name, const QString& number, MyMoneyAccount::accountTypeE type,
     const QString& description, const QDate openingDate, const MyMoneyMoney openingBal, const QDate& lastReconcile);

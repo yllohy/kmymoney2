@@ -28,16 +28,13 @@ MyMoneyTransaction::MyMoneyTransaction()
 MyMoneyTransaction::MyMoneyTransaction(MyMoneyAccount *parent, const long id, transactionMethod method, const QString& number, const QString& memo,
                      const MyMoneyMoney& amount, const QDate& date, const QString& categoryMajor, const QString& categoryMinor, const QString& atmName,
                      const QString& fromTo, const QString& bankFrom, const QString& bankTo, stateE state)
+  : MyMoneyTransactionBase(memo, amount, categoryMajor, categoryMinor)
 {
 	m_parent = parent;
   m_id=id;
   m_number = number;
-  m_memo = memo;
   m_method = method;
-  m_amount = amount;
   m_date = date;
-  m_categoryMajor = categoryMajor;
-  m_categoryMinor = categoryMinor;
   m_atmBankName = atmName;
   m_payee = fromTo;
   m_accountFrom = bankFrom;
@@ -74,15 +71,12 @@ MyMoneyTransaction::transactionType MyMoneyTransaction::type(void) const
 }
 
 MyMoneyTransaction::MyMoneyTransaction(const MyMoneyTransaction& right)
+  : MyMoneyTransactionBase(right)
 {
   m_id = right.m_id;
   m_number = right.m_number;
-  m_memo = right.m_memo;
-  m_amount = right.m_amount;
   m_date = right.m_date;
   m_method = right.m_method;
-  m_categoryMajor = right.m_categoryMajor;
-  m_categoryMinor = right.m_categoryMinor;
   m_atmBankName = right.m_atmBankName;
   m_payee = right.m_payee;
   m_accountFrom = right.m_accountFrom;
@@ -94,14 +88,11 @@ MyMoneyTransaction::MyMoneyTransaction(const MyMoneyTransaction& right)
 
 MyMoneyTransaction& MyMoneyTransaction::operator = (const MyMoneyTransaction& right)
 {
+  qDebug("MyMoneyTransaction = operator");
   m_id = right.m_id;
   m_number = right.m_number;
-  m_memo = right.m_memo;
-  m_amount = right.m_amount;
   m_date = right.m_date;
   m_method = right.m_method;
-  m_categoryMajor = right.m_categoryMajor;
-  m_categoryMinor = right.m_categoryMinor;
   m_atmBankName = right.m_atmBankName;
   m_payee = right.m_payee;
   m_accountFrom = right.m_accountFrom;
@@ -109,6 +100,13 @@ MyMoneyTransaction& MyMoneyTransaction::operator = (const MyMoneyTransaction& ri
   m_state = right.m_state;
   m_index = right.m_index;
 	m_parent = right.m_parent;
+
+  // don't forget to copy base class members
+  m_memo = right.m_memo;
+  m_amount = right.m_amount;
+  m_categoryMajor = right.m_categoryMajor;
+  m_categoryMinor = right.m_categoryMinor;
+
   return *this;
 }
 
@@ -116,12 +114,12 @@ bool MyMoneyTransaction::operator == (const MyMoneyTransaction& right)
 {
   if ( (m_id == right.m_id) &&
       (m_number == right.m_number) &&
-      (m_memo == right.m_memo) &&
-      (m_amount == right.m_amount) &&
+      (memo() == right.memo()) &&
+      (amount() == right.amount()) &&
       (m_date == right.m_date) &&
       (m_method == right.m_method) &&
-      (m_categoryMajor == right.m_categoryMajor) &&
-      (m_categoryMinor == right.m_categoryMinor) &&
+      (categoryMajor() == right.categoryMajor()) &&
+      (categoryMinor() == right.categoryMinor()) &&
       (m_atmBankName == right.m_atmBankName) &&
       (m_payee == right.m_payee) &&
       (m_accountFrom == right.m_accountFrom) &&
@@ -187,19 +185,15 @@ bool MyMoneyTransaction::readAllData(int version, QDataStream& stream)
     return true;
 }
 
-void MyMoneyTransaction::setNumber(const QString& val) { m_number = val; if (m_parent) m_parent->bank()->file()->setDirty(true); }
-void MyMoneyTransaction::setMemo(const QString& val) { m_memo = val; if (m_parent) m_parent->bank()->file()->setDirty(true); }
-void MyMoneyTransaction::setAmount(const MyMoneyMoney& val) { m_amount = val; if (m_parent) m_parent->bank()->file()->setDirty(true); }
-void MyMoneyTransaction::setDate(const QDate& date) { m_date = date; if (m_parent) m_parent->bank()->file()->setDirty(true); }
-void MyMoneyTransaction::setMethod(const transactionMethod method) { m_method = method; if (m_parent) m_parent->bank()->file()->setDirty(true); }
-void MyMoneyTransaction::setCategoryMajor(const QString& major) { m_categoryMajor = major; if (m_parent) m_parent->bank()->file()->setDirty(true); }
-void MyMoneyTransaction::setCategoryMinor(const QString& minor) { m_categoryMinor = minor; if (m_parent) m_parent->bank()->file()->setDirty(true); }
-void MyMoneyTransaction::setAtmBankName(const QString& val) { m_atmBankName = val; if (m_parent) m_parent->bank()->file()->setDirty(true); }
-void MyMoneyTransaction::setPayee(const QString& fromTo) { m_payee = fromTo; if (m_parent) m_parent->bank()->file()->setDirty(true); }
-void MyMoneyTransaction::setAccountFrom(const QString& bankFrom) { m_accountFrom = bankFrom; if (m_parent) m_parent->bank()->file()->setDirty(true); }
-void MyMoneyTransaction::setAccountTo(const QString& bankTo) { m_accountTo = bankTo; if (m_parent) m_parent->bank()->file()->setDirty(true); }
-void MyMoneyTransaction::setState(const stateE state) { m_state = state; if (m_parent) m_parent->bank()->file()->setDirty(true); }
-void MyMoneyTransaction::setIndex(const unsigned int index) { m_index = index; if (m_parent) m_parent->bank()->file()->setDirty(true); }
+void MyMoneyTransaction::setNumber(const QString& val) { m_number = val; setDirty(true); }
+void MyMoneyTransaction::setDate(const QDate& date) { m_date = date; setDirty(true); }
+void MyMoneyTransaction::setMethod(const transactionMethod method) { m_method = method; setDirty(true); }
+void MyMoneyTransaction::setAtmBankName(const QString& val) { m_atmBankName = val; setDirty(true); }
+void MyMoneyTransaction::setPayee(const QString& fromTo) { m_payee = fromTo; setDirty(true); }
+void MyMoneyTransaction::setAccountFrom(const QString& bankFrom) { m_accountFrom = bankFrom; setDirty(true); }
+void MyMoneyTransaction::setAccountTo(const QString& bankTo) { m_accountTo = bankTo; setDirty(true); }
+void MyMoneyTransaction::setState(const stateE state) { m_state = state; setDirty(true); }
+void MyMoneyTransaction::setIndex(const unsigned int index) { m_index = index; setDirty(true); }
 
 MyMoneyTransaction::transactionMethod MyMoneyTransaction::stringToMethod(const char *method)
 {
@@ -215,4 +209,10 @@ MyMoneyTransaction::transactionMethod MyMoneyTransaction::stringToMethod(const c
     return ATM;
   qDebug("Invalid transaction method '%s'. Use ATM instead.", method);
   return ATM;
+}
+
+void MyMoneyTransaction::setDirty(bool flag)
+{
+  if (m_parent)
+    m_parent->setDirty(flag);
 }

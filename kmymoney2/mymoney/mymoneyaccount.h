@@ -42,7 +42,7 @@ class MyMoneyBank;
   * @see MyMoneyTransaction
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: mymoneyaccount.h,v 1.22 2001/12/14 08:27:52 ipwizard Exp $
+  * $Id: mymoneyaccount.h,v 1.23 2002/01/14 06:42:30 ipwizard Exp $
   *
   * @short Representation of an account which holds transactions.
 **/
@@ -431,6 +431,15 @@ public:
     * @return true if all went ok.
   **/
   bool readCSVFile(const char *filename, int& transCount);
+
+  /**
+    * Set the parent's dirty flag, if a parent is available
+    *
+    * @param flag The value to which the dirty flag should be set
+    *
+    * @return none
+  **/
+  void setDirty(const bool flag);
 
 signals:
   void signalProgressCount(int);

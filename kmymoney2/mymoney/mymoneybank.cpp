@@ -58,8 +58,7 @@ bool MyMoneyBank::newAccount(const QString& name, const QString& number, MyMoney
 {
   MyMoneyAccount *account = new MyMoneyAccount(this, name, number, type, description, openingDate, openingBal, lastReconcile);
   m_accounts.append(account);
-	if (m_parent)
-		m_parent->setDirty(true);
+  setDirty(true);
   return true;
 }
 
@@ -98,8 +97,7 @@ bool MyMoneyBank::removeAccount(const MyMoneyAccount& account)
   unsigned int pos;
 
   if (findAccountPosition(account, pos)) {
-		if (m_parent)
-			m_parent->setDirty(true);
+    setDirty(true);
     return m_accounts.remove(pos);
 	}
   return false;
@@ -197,10 +195,16 @@ bool MyMoneyBank::readAllData(int version, QDataStream& stream)
   return true;
 }
 
-void MyMoneyBank::setName(const QString& name) { m_name = name; if (m_parent) m_parent->setDirty(true); }
-void MyMoneyBank::setCity(const QString& val) { m_city = val; if (m_parent) m_parent->setDirty(true); }
-void MyMoneyBank::setStreet(const QString& val) { m_street = val; if (m_parent) m_parent->setDirty(true); }
-void MyMoneyBank::setPostcode(const QString& val) { m_postcode = val; if (m_parent) m_parent->setDirty(true); }
-void MyMoneyBank::setTelephone(const QString& val) { m_telephone = val; if (m_parent) m_parent->setDirty(true); }
-void MyMoneyBank::setManager(const QString& val) { m_manager = val; if (m_parent) m_parent->setDirty(true); }
-void MyMoneyBank::setSortCode(const QString& val) { m_sortCode = val; if (m_parent) m_parent->setDirty(true); }
+void MyMoneyBank::setName(const QString& name) { m_name = name; setDirty(true); }
+void MyMoneyBank::setCity(const QString& val) { m_city = val; setDirty(true); }
+void MyMoneyBank::setStreet(const QString& val) { m_street = val; setDirty(true); }
+void MyMoneyBank::setPostcode(const QString& val) { m_postcode = val; setDirty(true); }
+void MyMoneyBank::setTelephone(const QString& val) { m_telephone = val; setDirty(true); }
+void MyMoneyBank::setManager(const QString& val) { m_manager = val; setDirty(true); }
+void MyMoneyBank::setSortCode(const QString& val) { m_sortCode = val; setDirty(true); }
+
+void MyMoneyBank::setDirty(const bool flag)
+{
+  if (m_parent)
+    m_parent->setDirty(flag);
+}
