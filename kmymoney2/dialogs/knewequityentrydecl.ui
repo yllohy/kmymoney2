@@ -1,300 +1,242 @@
-<!DOCTYPE UI><UI>
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
 <class>kNewEquityEntryDecl</class>
-<widget>
-    <class>QDialog</class>
-    <property stdset="1">
-        <name>name</name>
+<widget class="QDialog">
+    <property name="name">
         <cstring>kNewEquityEntryDecl</cstring>
     </property>
-    <property stdset="1">
-        <name>geometry</name>
+    <property name="geometry">
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>254</width>
+            <width>281</width>
             <height>252</height>
         </rect>
     </property>
-    <property stdset="1">
-        <name>caption</name>
+    <property name="caption">
         <string>Add New Investment</string>
     </property>
-    <widget>
-        <class>QLabel</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>lblEquityName</cstring>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>lblCurrentPrice</cstring>
         </property>
-        <property stdset="1">
-            <name>geometry</name>
+        <property name="geometry">
             <rect>
                 <x>10</x>
-                <y>10</y>
-                <width>70</width>
+                <y>130</y>
+                <width>85</width>
                 <height>21</height>
             </rect>
         </property>
-        <property stdset="1">
-            <name>text</name>
-            <string>Equity Name:</string>
+        <property name="text">
+            <string>Current Price:</string>
         </property>
     </widget>
-    <widget>
-        <class>QLabel</class>
-        <property stdset="1">
-            <name>name</name>
+    <widget class="QLabel">
+        <property name="name">
             <cstring>lblType</cstring>
         </property>
-        <property stdset="1">
-            <name>geometry</name>
+        <property name="geometry">
             <rect>
                 <x>10</x>
                 <y>90</y>
+                <width>105</width>
+                <height>21</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Investment Type:</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>lblSymbol</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>50</y>
+                <width>95</width>
+                <height>21</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Market Symbol:</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>lblEquityName</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>10</y>
                 <width>90</width>
                 <height>21</height>
             </rect>
         </property>
-        <property stdset="1">
-            <name>text</name>
-            <string>Investment Type:</string>
+        <property name="text">
+            <string>Equity Name:</string>
         </property>
     </widget>
-    <widget>
-        <class>QComboBox</class>
-        <item>
-            <property>
-                <name>text</name>
-                <string>NYSE</string>
-            </property>
-        </item>
-        <item>
-            <property>
-                <name>text</name>
-                <string>NASDAQ</string>
-            </property>
-        </item>
-        <item>
-            <property>
-                <name>text</name>
-                <string>AMEX</string>
-            </property>
-        </item>
-        <item>
-            <property>
-                <name>text</name>
-                <string></string>
-            </property>
-        </item>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>cmbMarket</cstring>
-        </property>
-        <property stdset="1">
-            <name>geometry</name>
-            <rect>
-                <x>100</x>
-                <y>170</y>
-                <width>151</width>
-                <height>21</height>
-            </rect>
-        </property>
-    </widget>
-    <widget>
-        <class>QLabel</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>lblCurrentPrice</cstring>
-        </property>
-        <property stdset="1">
-            <name>geometry</name>
-            <rect>
-                <x>10</x>
-                <y>130</y>
-                <width>70</width>
-                <height>21</height>
-            </rect>
-        </property>
-        <property stdset="1">
-            <name>text</name>
-            <string>Current Price:</string>
-        </property>
-    </widget>
-    <widget>
-        <class>QLabel</class>
-        <property stdset="1">
-            <name>name</name>
+    <widget class="QLabel">
+        <property name="name">
             <cstring>lblMarket</cstring>
         </property>
-        <property stdset="1">
-            <name>geometry</name>
+        <property name="geometry">
             <rect>
                 <x>10</x>
                 <y>170</y>
-                <width>80</width>
+                <width>97</width>
                 <height>20</height>
             </rect>
         </property>
-        <property stdset="1">
-            <name>text</name>
+        <property name="text">
             <string>Trading Market:</string>
         </property>
     </widget>
-    <widget>
-        <class>QComboBox</class>
-        <item>
-            <property>
-                <name>text</name>
-                <string>Stock</string>
-            </property>
-        </item>
-        <item>
-            <property>
-                <name>text</name>
-                <string>Mutual Fund</string>
-            </property>
-        </item>
-        <item>
-            <property>
-                <name>text</name>
-                <string>Bond</string>
-            </property>
-        </item>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>cmbInvestmentType</cstring>
+    <widget class="QLineEdit">
+        <property name="name">
+            <cstring>edtMarketSymbol</cstring>
         </property>
-        <property stdset="1">
-            <name>geometry</name>
+        <property name="geometry">
             <rect>
-                <x>100</x>
-                <y>90</y>
-                <width>151</width>
-                <height>21</height>
-            </rect>
-        </property>
-    </widget>
-    <widget>
-        <class>QLabel</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>lblSymbol</cstring>
-        </property>
-        <property stdset="1">
-            <name>geometry</name>
-            <rect>
-                <x>10</x>
+                <x>120</x>
                 <y>50</y>
-                <width>80</width>
-                <height>21</height>
+                <width>151</width>
+                <height>22</height>
             </rect>
         </property>
-        <property stdset="1">
-            <name>text</name>
-            <string>Market Symbol:</string>
+        <property name="toolTip" stdset="0">
+            <string>Trading Symbol of the stock or mutual fund, not required.</string>
+        </property>
+        <property name="whatsThis" stdset="0">
+            <string>Trading Symbol of the stock or mutual fund, not required.</string>
         </property>
     </widget>
-    <widget>
-        <class>QPushButton</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>btnOK</cstring>
-        </property>
-        <property stdset="1">
-            <name>geometry</name>
-            <rect>
-                <x>50</x>
-                <y>210</y>
-                <width>80</width>
-                <height>32</height>
-            </rect>
-        </property>
-        <property stdset="1">
-            <name>text</name>
-            <string>OK</string>
-        </property>
-    </widget>
-    <widget>
-        <class>QPushButton</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>btnCancel</cstring>
-        </property>
-        <property stdset="1">
-            <name>geometry</name>
-            <rect>
-                <x>130</x>
-                <y>210</y>
-                <width>80</width>
-                <height>32</height>
-            </rect>
-        </property>
-        <property stdset="1">
-            <name>text</name>
-            <string>Cancel</string>
-        </property>
-    </widget>
-    <widget>
-        <class>QLineEdit</class>
-        <property stdset="1">
-            <name>name</name>
+    <widget class="QLineEdit">
+        <property name="name">
             <cstring>edtEquityName</cstring>
         </property>
-        <property stdset="1">
-            <name>geometry</name>
+        <property name="geometry">
             <rect>
-                <x>100</x>
+                <x>120</x>
                 <y>10</y>
                 <width>151</width>
                 <height>22</height>
             </rect>
         </property>
-        <property>
-            <name>toolTip</name>
+        <property name="toolTip" stdset="0">
             <string>Name of the company, or mutual fund.</string>
         </property>
-        <property>
-            <name>whatsThis</name>
+        <property name="whatsThis" stdset="0">
             <string>Name of the company, or mutual fund.</string>
         </property>
     </widget>
-    <widget>
-        <class>QLineEdit</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>edtMarketSymbol</cstring>
+    <widget class="QComboBox">
+        <item>
+            <property name="text">
+                <string>Stock</string>
+            </property>
+        </item>
+        <item>
+            <property name="text">
+                <string>Mutual Fund</string>
+            </property>
+        </item>
+        <item>
+            <property name="text">
+                <string>Bond</string>
+            </property>
+        </item>
+        <property name="name">
+            <cstring>cmbInvestmentType</cstring>
         </property>
-        <property stdset="1">
-            <name>geometry</name>
+        <property name="geometry">
             <rect>
-                <x>100</x>
-                <y>50</y>
-                <width>151</width>
-                <height>22</height>
+                <x>120</x>
+                <y>90</y>
+                <width>150</width>
+                <height>30</height>
             </rect>
         </property>
-        <property>
-            <name>toolTip</name>
-            <string>Trading Symbol of the stock or mutual fund, not required.</string>
-        </property>
-        <property>
-            <name>whatsThis</name>
-            <string>Trading Symbol of the stock or mutual fund, not required.</string>
-        </property>
     </widget>
-    <widget>
-        <class>QLineEdit</class>
-        <property stdset="1">
-            <name>name</name>
+    <widget class="QLineEdit">
+        <property name="name">
             <cstring>dblCurrentPrice</cstring>
         </property>
-        <property stdset="1">
-            <name>geometry</name>
+        <property name="geometry">
             <rect>
-                <x>100</x>
+                <x>120</x>
                 <y>130</y>
-                <width>110</width>
+                <width>150</width>
                 <height>22</height>
             </rect>
+        </property>
+    </widget>
+    <widget class="QComboBox">
+        <item>
+            <property name="text">
+                <string>NYSE</string>
+            </property>
+        </item>
+        <item>
+            <property name="text">
+                <string>NASDAQ</string>
+            </property>
+        </item>
+        <item>
+            <property name="text">
+                <string>AMEX</string>
+            </property>
+        </item>
+        <item>
+            <property name="text">
+                <string></string>
+            </property>
+        </item>
+        <property name="name">
+            <cstring>cmbMarket</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>120</x>
+                <y>170</y>
+                <width>150</width>
+                <height>30</height>
+            </rect>
+        </property>
+    </widget>
+    <widget class="QPushButton">
+        <property name="name">
+            <cstring>btnCancel</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>140</x>
+                <y>210</y>
+                <width>80</width>
+                <height>32</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Cancel</string>
+        </property>
+    </widget>
+    <widget class="QPushButton">
+        <property name="name">
+            <cstring>btnOK</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>60</x>
+                <y>210</y>
+                <width>80</width>
+                <height>32</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>OK</string>
         </property>
     </widget>
 </widget>
@@ -306,4 +248,5 @@
     <tabstop>btnOK</tabstop>
     <tabstop>btnCancel</tabstop>
 </tabstops>
+<layoutdefaults spacing="6" margin="11"/>
 </UI>
