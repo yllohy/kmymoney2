@@ -51,7 +51,7 @@ private:
   const QString occurenceToString(const MyMoneySchedule::occurenceE occurence);
   const QString scheduleTypeToString(MyMoneySchedule::typeE type);
   const QString paymentMethodToString(MyMoneySchedule::paymentTypeE paymentType);
-  
+  const QString reconcileToString(MyMoneySplit::reconcileFlagE flag) const;
 };
 
 #endif

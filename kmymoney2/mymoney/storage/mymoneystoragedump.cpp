@@ -205,6 +205,10 @@ void MyMoneyStorageDump::dumpTransaction(QTextStream& s, IMyMoneyStorage* storag
       s << "    Value = " << (*it_s).value().formatMoney() << "\n";
     s << "    Action = '" << (*it_s).action() << "'\n";
     s << "    Nr = '" << (*it_s).number() << "'\n";
+    s << "    ReconcileFlag = '" << reconcileToString((*it_s).reconcileFlag()) << "'\n";
+    if((*it_s).reconcileFlag() != MyMoneySplit::NotReconciled) {
+      s << "    ReconcileDate = " << (*it_s).reconcileDate().toString(Qt::ISODate) << "\n";
+    }
     s << "\n";
   }
   s << "\n";
@@ -321,4 +325,28 @@ const QString MyMoneyStorageDump::paymentMethodToString(MyMoneySchedule::payment
       break;
   }
   return text;
+}
+
+const QString MyMoneyStorageDump::reconcileToString(MyMoneySplit::reconcileFlagE flag) const
+{
+  QString rc;
+  
+  switch(flag) {
+    case MyMoneySplit::NotReconciled:
+      rc = i18n("not reconciled");
+      break;
+    case MyMoneySplit::Cleared:
+      rc = i18n("cleared");
+      break;
+    case MyMoneySplit::Reconciled:
+      rc = i18n("reconciled");
+      break;
+    case MyMoneySplit::Frozen:
+      rc = i18n("frozen");
+      break;
+    default:
+      rc = i18n("unknown");
+      break;
+  }
+  return rc;
 }
