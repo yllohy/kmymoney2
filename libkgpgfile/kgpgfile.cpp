@@ -116,6 +116,10 @@ bool KGPGFile::atEnd(void) const
     return false;
 
   if(isReadable()) {
+    // if the unget buffer is filled, we're for sure not at the end of file
+    if(!m_ungetchBuffer.isEmpty())
+      return false;
+
     // If you wonder about 'this' and 'that': 'this' is const
     // but we need a non-const to call getch(). So we use 'that'.
     QIODevice* that = (QIODevice*) this;
