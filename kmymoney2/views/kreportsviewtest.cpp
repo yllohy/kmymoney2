@@ -1665,6 +1665,37 @@ void KReportsViewTest::testInvestment(void)
   html = invhold.renderHTML();
   CPPUNIT_ASSERT( searchHTML(html,i18n("Grand Total")) == MyMoneyMoney(170000.00) );
 
+  //
+  // Net Worth Report (with investments)
+  //
+
+  MyMoneyReport networth_r( MyMoneyReport::eAssetLiability );
+  networth_r.setDateFilter(QDate(2004,1,1),QDate(2004,12,31).addDays(-1));
+  XMLandback(networth_r);
+  PivotTable networth(networth_r);
+
+  networth.dump("networth_i.html");  
+  
+  CPPUNIT_ASSERT(networth.m_grid["Asset"]["Investment"].m_total[1]==moZero);
+  // 1000 shares @ $100.00
+  CPPUNIT_ASSERT(networth.m_grid["Asset"]["Investment"].m_total[2]==MyMoneyMoney(100000.0));
+  // 2000 shares @ $110.00
+  CPPUNIT_ASSERT(networth.m_grid["Asset"]["Investment"].m_total[3]==MyMoneyMoney(220000.0));
+  // 1800 shares @ $120.00
+  CPPUNIT_ASSERT(networth.m_grid["Asset"]["Investment"].m_total[4]==MyMoneyMoney(216000.0));
+  // 1600 shares @ $100.00
+  CPPUNIT_ASSERT(networth.m_grid["Asset"]["Investment"].m_total[5]==MyMoneyMoney(160000.0));
+  // 1650 shares @ $100.00
+  CPPUNIT_ASSERT(networth.m_grid["Asset"]["Investment"].m_total[6]==MyMoneyMoney(165000.0));
+  // 1700 shares @ $ 80.00
+  CPPUNIT_ASSERT(networth.m_grid["Asset"]["Investment"].m_total[7]==MyMoneyMoney(136000.0));
+  // 1700 shares @ $100.00
+  CPPUNIT_ASSERT(networth.m_grid["Asset"]["Investment"].m_total[8]==MyMoneyMoney(170000.0));
+  // 1700 shares @ $120.00
+  CPPUNIT_ASSERT(networth.m_grid["Asset"]["Investment"].m_total[9]==MyMoneyMoney(204000.0));
+  // 1700 shares @ $100.00
+  CPPUNIT_ASSERT(networth.m_grid["Asset"]["Investment"].m_total[10]==MyMoneyMoney(170000.0));
+
 #if 0
   // Dump file & reports
   QFile g( "investmentkmy.xml" );
