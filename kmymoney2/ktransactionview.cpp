@@ -52,6 +52,9 @@ KTransactionView::KTransactionView(QWidget *parent, const char *name)
 		
 	transactionsTable->horizontalHeader()->setResizeEnabled(false);
 	transactionsTable->horizontalHeader()->setMovingEnabled(false);
+
+  initAmountWidth();
+
 /*
   int w=transactionsTable->width();
   transactionsTable->setColumnWidth(0, 100);
@@ -1036,6 +1039,8 @@ void KTransactionView::updateTransactionList(int row, int col)
     int i = 0;
     transactionsTable->setNumRows((m_transactions->count() * NO_ROWS) + 2);
 
+    initAmountWidth();
+
     for (transaction=m_transactions->first(); transaction; transaction=m_transactions->next(), i++) {
       QString colText;
       if (transaction->type()==MyMoneyTransaction::Credit)
@@ -1104,23 +1109,27 @@ void KTransactionView::updateTransactionList(int row, int col)
       }
       transactionsTable->setText(rowCount, 3, colText);
 
-      transactionsTable->setText(rowCount, 4,
-        ((transaction->type()==MyMoneyTransaction::Debit) ?
-           KGlobal::locale()->formatMoney(transaction->amount().amount(), "",
-                                          KGlobal::locale()->fracDigits()) :
-           QString("")));
+      QString amountTxt = KGlobal::locale()->formatMoney(transaction->amount().amount(), "");
+      unsigned width = transactionsTable->fontMetrics().width(amountTxt);
+      if(transaction->type()==MyMoneyTransaction::Debit) {
+        transactionsTable->setText(rowCount, 4, amountTxt);
+        transactionsTable->setText(rowCount, 5, "");
+        if(width > m_debitWidth)
+          m_debitWidth = width;
+      } else {
+        transactionsTable->setText(rowCount, 4, "");
+        transactionsTable->setText(rowCount, 5, amountTxt);
+        if(width > m_creditWidth)
+          m_creditWidth = width;
+      }
 
-      transactionsTable->setText(rowCount, 5,
-        ((transaction->type()==MyMoneyTransaction::Credit) ?
-           KGlobal::locale()->formatMoney(transaction->amount().amount(), "",
-                                          KGlobal::locale()->fracDigits()) :
-           QString("")));
-
-      if (m_viewType==NORMAL)
-        transactionsTable->setText(rowCount, 6,
-          KGlobal::locale()->formatMoney(balance.amount(), "",
-                                          KGlobal::locale()->fracDigits()));
-      else
+      if (m_viewType==NORMAL) {
+        amountTxt = KGlobal::locale()->formatMoney(balance.amount(), "");
+        width = transactionsTable->fontMetrics().width(amountTxt);
+        transactionsTable->setText(rowCount, 6, amountTxt);
+        if(width > m_balanceWidth)
+          m_balanceWidth = width;
+      } else
         transactionsTable->setText(rowCount, 6, i18n("N/A"));
 
     }  // useall etc check
@@ -1218,6 +1227,8 @@ void KTransactionView::updateTransactionList(int row, int col)
         break;
     }
   }
+  // setup new size values
+  resizeEvent(NULL);
 }
 
 void KTransactionView::cancelClicked()
@@ -1329,14 +1340,16 @@ void KTransactionView::resizeEvent(QResizeEvent*)
 {
 	hideWidgets();
 //  clear();
-  int w=transactionsTable->width();
+  int w=transactionsTable->width() - 200 - 30 -
+    m_debitWidth - m_creditWidth - m_balanceWidth;
+
   transactionsTable->setColumnWidth(0, 100);
   transactionsTable->setColumnWidth(1, 100);
-  transactionsTable->setColumnWidth(2, w-530-25);
+  transactionsTable->setColumnWidth(2, w-25);
   transactionsTable->setColumnWidth(3, 30);
-  transactionsTable->setColumnWidth(4, 100);
-  transactionsTable->setColumnWidth(5, 100);
-  transactionsTable->setColumnWidth(6, 100);
+  transactionsTable->setColumnWidth(4, m_debitWidth);
+  transactionsTable->setColumnWidth(5, m_creditWidth);
+  transactionsTable->setColumnWidth(6, m_balanceWidth);
 }
 
 /** No descriptions */
@@ -1383,4 +1396,10 @@ MyMoneyBank* KTransactionView::getBank(void){
     qDebug("unable to find bank in updateData");
 
   return bank;
+}
+
+/** Setup initial width for the amount fields */
+void KTransactionView::initAmountWidth(void)
+{
+  m_debitWidth = m_creditWidth = m_balanceWidth = 80;
 }

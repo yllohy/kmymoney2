@@ -1,3 +1,6 @@
+2001-12-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed bug #433660 Big numbers do not fit into the fields
+
 2001-12-19 Kevin Tambascio <ktambascio@yahoo.com>
   * Fixed Bug #494908 Date/Calender control is too small
 

@@ -66,6 +66,10 @@ private:
     QPoint m_currentpos;
   viewingType m_viewType;
 
+  unsigned m_debitWidth;
+  unsigned m_creditWidth;
+  unsigned m_balanceWidth;
+
 
 	kMyMoneyDateInput*  m_date;
 	kMyMoneyCombo* m_method;
@@ -98,6 +102,8 @@ private:
 
   /** Need descriptions !*/
   MyMoneyBank *getBank(void);
+  /** Setup initial width for the amount fields */
+  void initAmountWidth(void);
 
 public:
 	KTransactionView(QWidget *parent=0, const char *name=0);
