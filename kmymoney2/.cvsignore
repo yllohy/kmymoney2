@@ -1,0 +1,6 @@
+.deps
+.libs
+templates
+*.moc
+*.moc.cpp
+*.o
