@@ -27,10 +27,12 @@ MyMoneyFileTest:: MyMoneyFileTest () {};
 void MyMoneyFileTest::setUp () {
 	observer = new TestObserverSet;
 	storage = new MyMoneySeqAccessMgr;
-	m = new MyMoneyFile(storage);
+	m = MyMoneyFile::instance();
+	m->attachStorage(storage);
 }
 
 void MyMoneyFileTest::tearDown () {
+	m->detachStorage(storage);
 	delete m;
 	delete storage;
 	delete observer;
@@ -718,11 +720,15 @@ void MyMoneyFileTest::testAddTransaction () {
 	// check the balance of the accounts
 	a = m->account("A000001");
 	CPPUNIT_ASSERT(a.lastModified() == QDate::currentDate());
+/* removed with MyMoneyAccount::Transaction
 	CPPUNIT_ASSERT(a.balance() == -1000);
 
+*/
 	MyMoneyAccount b = m->account("A000003");
 	CPPUNIT_ASSERT(b.lastModified() == QDate::currentDate());
+/* removed with MyMoneyAccount::Transaction
 	CPPUNIT_ASSERT(b.balance() == 1000);
+*/
 
 	storage->m_dirty = false;
 
@@ -836,17 +842,28 @@ void MyMoneyFileTest::testModifyTransactionNewAccount() {
 
 	storage->m_dirty = false;
 	try {
+/* removed with MyMoneyAccount::Transaction
 		CPPUNIT_ASSERT(m->account("A000001").transactionCount() == 1);
 		CPPUNIT_ASSERT(m->account("A000002").transactionCount() == 0);
 		CPPUNIT_ASSERT(m->account("A000003").transactionCount() == 1);
+*/
+		CPPUNIT_ASSERT(m->transactionList("A000001").count() == 1);
+		CPPUNIT_ASSERT(m->transactionList("A000002").count() == 0);
+		CPPUNIT_ASSERT(m->transactionList("A000003").count() == 1);
+
 		m->modifyTransaction(t);
 		t = m->transaction("T000000000000000001");
 		CPPUNIT_ASSERT(t.postDate() == QDate(2002,2,1));
 		t = m->transaction("A000002", 0);
 		CPPUNIT_ASSERT(m->dirty() == true);
+/* removed with MyMoneyAccount::Transaction
 		CPPUNIT_ASSERT(m->account("A000001").transactionCount() == 0);
 		CPPUNIT_ASSERT(m->account("A000002").transactionCount() == 1);
 		CPPUNIT_ASSERT(m->account("A000003").transactionCount() == 1);
+*/
+		CPPUNIT_ASSERT(m->transactionList("A000001").count() == 0);
+		CPPUNIT_ASSERT(m->transactionList("A000002").count() == 1);
+		CPPUNIT_ASSERT(m->transactionList("A000003").count() == 1);
 
 	} catch(MyMoneyException *e) {
 		delete e;
@@ -865,9 +882,14 @@ void MyMoneyFileTest::testRemoveTransaction () {
 		m->removeTransaction(t);
 		CPPUNIT_ASSERT(m->dirty() == true);
 		CPPUNIT_ASSERT(m->transactionCount() == 0);
+/* removed with MyMoneyAccount::Transaction
 		CPPUNIT_ASSERT(m->account("A000001").transactionCount() == 0);
 		CPPUNIT_ASSERT(m->account("A000002").transactionCount() == 0);
 		CPPUNIT_ASSERT(m->account("A000003").transactionCount() == 0);
+*/
+		CPPUNIT_ASSERT(m->transactionList("A000001").count() == 0);
+		CPPUNIT_ASSERT(m->transactionList("A000002").count() == 0);
+		CPPUNIT_ASSERT(m->transactionList("A000003").count() == 0);
 	} catch(MyMoneyException *e) {
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception!");
@@ -1007,4 +1029,131 @@ void MyMoneyFileTest::testModifyPayee() {
 }
 
 void MyMoneyFileTest::testRemovePayee() {
+	MyMoneyPayee p;
+
+	testAddPayee();
+	CPPUNIT_ASSERT(m->payeeList().count() == 1);
+
+	p = m->payee("P000001");
+	try {
+		m->removePayee(p);
+		CPPUNIT_ASSERT(m->payeeList().count() == 0);
+	} catch (MyMoneyException *e) {
+		delete e;
+		CPPUNIT_FAIL("Unexpected exception");
+	}
+}
+
+void MyMoneyFileTest::testAddTransactionStd() {
+	testAddAccounts();
+	MyMoneyTransaction t, p;
+	MyMoneyAccount a;
+
+	a = m->account("A000001");
+
+	// construct a transaction and add it to the pool
+	t.setPostDate(QDate(2002,2,1));
+	t.setMemo("Memotext");
+
+	MyMoneySplit split1;
+	MyMoneySplit split2;
+
+	split1.setAccountId("A000001");
+	split1.setShares(-1000);
+	split1.setValue(-1000);
+	split2.setAccountId(STD_ACC_EXPENSE);
+	split2.setValue(1000);
+	split2.setShares(1000);
+	try {
+		t.addSplit(split1);
+		t.addSplit(split2);
+	} catch(MyMoneyException *e) {
+		delete e;
+		CPPUNIT_FAIL("Unexpected exception!");
+	}
+
+/*
+	// FIXME: we don't have a payee and a number field right now
+	// guess we should have a number field per split, don't know
+	// about the payee
+	t.setMethod(MyMoneyCheckingTransaction::Withdrawal);
+	t.setPayee("Thomas Baumgart");
+	t.setNumber("1234");
+	t.setState(MyMoneyCheckingTransaction::Cleared);
+*/
+	storage->m_dirty = false;
+
+	try {
+		m->addTransaction(t);
+
+	} catch(MyMoneyException *e) {
+		delete e;
+		CPPUNIT_FAIL("Unexpected exception!");
+	}
+
+	CPPUNIT_ASSERT(t.id() == "T000000000000000001");
+	CPPUNIT_ASSERT(t.postDate() == QDate(2002,2,1));
+	CPPUNIT_ASSERT(t.entryDate() == QDate::currentDate());
+	CPPUNIT_ASSERT(m->dirty() == true);
+
+	// check the balance of the accounts
+	a = m->account("A000001");
+	CPPUNIT_ASSERT(a.lastModified() == QDate::currentDate());
+
+	MyMoneyAccount b = m->account(STD_ACC_EXPENSE);
+	CPPUNIT_ASSERT(b.lastModified() == QDate::currentDate());
+
+	storage->m_dirty = false;
+
+	// locate transaction in MyMoneyFile via id
+
+	try {
+		p = m->transaction("T000000000000000001");
+		CPPUNIT_ASSERT(p.splitCount() == 2);
+		CPPUNIT_ASSERT(p.memo() == "Memotext");
+		CPPUNIT_ASSERT(p.splits()[0].accountId() == "A000001");
+		CPPUNIT_ASSERT(p.splits()[1].accountId() == STD_ACC_EXPENSE);
+	} catch(MyMoneyException *e) {
+		delete e;
+		CPPUNIT_FAIL("Unexpected exception!");
+	}
+}
+
+void MyMoneyFileTest::testAttachStorage() {
+	IMyMoneyStorage *store = new MyMoneySeqAccessMgr;
+	MyMoneyFile *file = new MyMoneyFile;
+
+	CPPUNIT_ASSERT(file->storageAttached() == false);
+	try {
+		file->attachStorage(store);
+		CPPUNIT_ASSERT(file->storageAttached() == true);
+	} catch(MyMoneyException *e) {
+		delete e;
+		CPPUNIT_FAIL("Unexpected exception!");
+	}
+
+	try {
+		file->attachStorage(store);
+		CPPUNIT_FAIL("Exception expected!");
+	} catch(MyMoneyException *e) {
+		delete e;
+	}
+
+	try {
+		file->attachStorage(0);
+		CPPUNIT_FAIL("Exception expected!");
+	} catch(MyMoneyException *e) {
+		delete e;
+	}
+
+	try {
+		file->detachStorage(store);
+		CPPUNIT_ASSERT(file->storageAttached() == false);
+	} catch(MyMoneyException *e) {
+		delete e;
+		CPPUNIT_FAIL("Unexpected exception!");
+	}
+
+	delete store;
+	delete file;
 }

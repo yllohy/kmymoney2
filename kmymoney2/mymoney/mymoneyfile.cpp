@@ -40,14 +40,46 @@
 
 // include the following line to get a 'cout' for debug purposes
 // #include <iostream>
+MyMoneyFile* MyMoneyFile::_instance = 0;
 
-MyMoneyFile::MyMoneyFile(IMyMoneyStorage *storage)
+MyMoneyFile* const MyMoneyFile::instance()
 {
-  m_storage = storage;
+  if(_instance == 0) {
+    _instance = new MyMoneyFile;
+  }
+  return _instance;
+}
+
+MyMoneyFile::MyMoneyFile()
+{
+  m_storage = 0;
 }
 
 MyMoneyFile::~MyMoneyFile()
 {
+  _instance = 0;
+}
+
+MyMoneyFile::MyMoneyFile(IMyMoneyStorage *storage)
+{
+  m_storage = 0;
+  attachStorage(storage);
+}
+
+void MyMoneyFile::attachStorage(IMyMoneyStorage* const storage)
+{
+  if(m_storage != 0)
+    throw new MYMONEYEXCEPTION("Storage already attached");
+
+  if(storage == 0)
+    throw new MYMONEYEXCEPTION("Storage must not be 0");
+
+  m_storage = storage;
+}
+
+void MyMoneyFile::detachStorage(IMyMoneyStorage* const storage)
+{
+  m_storage = 0;
 }
 
 void MyMoneyFile::addInstitution(MyMoneyInstitution& institution)
@@ -61,11 +93,15 @@ void MyMoneyFile::addInstitution(MyMoneyInstitution& institution)
   || institution.file() != 0)
     throw new MYMONEYEXCEPTION("Not a new institution");
 
+  checkStorage();
+
   m_storage->addInstitution(institution);
 }
 
 void MyMoneyFile::modifyInstitution(const MyMoneyInstitution& institution)
 {
+  checkStorage();
+
   // automatically notify all observers once this routine is done
   MyMoneyNotifier notifier(this);
 
@@ -76,6 +112,8 @@ void MyMoneyFile::modifyInstitution(const MyMoneyInstitution& institution)
 
 void MyMoneyFile::modifyTransaction(const MyMoneyTransaction& transaction)
 {
+  checkStorage();
+
   // automatically notify all observers once this routine is done
   MyMoneyNotifier notifier(this);
 
@@ -100,6 +138,8 @@ void MyMoneyFile::modifyTransaction(const MyMoneyTransaction& transaction)
 
 void MyMoneyFile::modifyAccount(const MyMoneyAccount& account)
 {
+  checkStorage();
+
   // check that it's not one of the standard account groups
   if(isStandardAccount(account.id()))
     throw new MYMONEYEXCEPTION("Unable to modify the standard account groups");
@@ -143,6 +183,8 @@ const MyMoneyAccount::accountTypeE MyMoneyFile::accountGroup(MyMoneyAccount::acc
 
 void MyMoneyFile::reparentAccount(MyMoneyAccount &account, MyMoneyAccount& parent)
 {
+  checkStorage();
+
   // check that it's not one of the standard account groups
   if(isStandardAccount(account.id()))
     throw new MYMONEYEXCEPTION("Unable to reparent the standard account groups");
@@ -165,6 +207,8 @@ void MyMoneyFile::reparentAccount(MyMoneyAccount &account, MyMoneyAccount& paren
 
 const MyMoneyInstitution& MyMoneyFile::institution(const QCString& id) const
 {
+  checkStorage();
+
   return m_storage->institution(id);
 }
 
@@ -186,11 +230,15 @@ const MyMoneyAccount& MyMoneyFile::account(const QCString& id) const
 		return account;
 	}
 */	
+  checkStorage();
+
   return m_storage->account(id);
 }
 
 void MyMoneyFile::removeTransaction(const MyMoneyTransaction& transaction)
 {
+  checkStorage();
+
   // automatically notify all observers once this routine is done
   MyMoneyNotifier notifier(this);
 
@@ -209,21 +257,29 @@ void MyMoneyFile::removeTransaction(const MyMoneyTransaction& transaction)
 
 const bool MyMoneyFile::hasActiveSplits(const QCString& id) const
 {
+  checkStorage();
+
   return m_storage->hasActiveSplits(id);
 }
 
 const bool MyMoneyFile::isStandardAccount(const QCString& id) const
 {
+  checkStorage();
+
   return m_storage->isStandardAccount(id);
 }
 
 void MyMoneyFile::setAccountName(const QCString& id, const QString& name) const
 {
+  checkStorage();
+
   m_storage->setAccountName(id, name);
 }
 
 void MyMoneyFile::removeAccount(const MyMoneyAccount& account)
 {
+  checkStorage();
+
   MyMoneyAccount parent;
   MyMoneyAccount acc;
 
@@ -254,11 +310,15 @@ void MyMoneyFile::removeAccount(const MyMoneyAccount& account)
 
 void MyMoneyFile::removeInstitution(const MyMoneyInstitution& institution)
 {
+  checkStorage();
+
   m_storage->removeInstitution(institution);
 }
 
 void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
 {
+  checkStorage();
+
   MyMoneyInstitution institution;
 
   // perform some checks to see that the account stuff is OK. For
@@ -268,7 +328,8 @@ void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
 
   if(account.name().length() == 0
   || account.id().length() != 0
-  || account.transactionList().count() != 0
+// removed with MyMoneyAccount::Transaction
+//  || account.transactionList().count() != 0
   || account.accountList().count() != 0
   || account.parentAccountId() != ""
   || account.accountType() == MyMoneyAccount::UnknownAccountType
@@ -316,6 +377,8 @@ void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
 
 void MyMoneyFile::addTransaction(MyMoneyTransaction& transaction)
 {
+  checkStorage();
+
   // automatically notify all observers once this routine is done
   MyMoneyNotifier notifier(this);
 
@@ -351,110 +414,146 @@ void MyMoneyFile::addTransaction(MyMoneyTransaction& transaction)
 
 const MyMoneyTransaction& MyMoneyFile::transaction(const QCString& id) const
 {
+  checkStorage();
+
   return m_storage->transaction(id);
 }
 
 const MyMoneyTransaction& MyMoneyFile::transaction(const QCString& account, const int idx) const
 {
+  checkStorage();
+
   return m_storage->transaction(account, idx);
 }
 
 void MyMoneyFile::addPayee(MyMoneyPayee& payee) const
 {
+  checkStorage();
+
   m_storage->addPayee(payee);
 }
 
 const MyMoneyPayee MyMoneyFile::payee(const QCString& id) const
 {
+  checkStorage();
+
   return m_storage->payee(id);
 }
 
 void MyMoneyFile::modifyPayee(const MyMoneyPayee& payee) const
 {
+  checkStorage();
+
   m_storage->modifyPayee(payee);
 }
 
 void MyMoneyFile::removePayee(const MyMoneyPayee& payee) const
 {
+  checkStorage();
+
   m_storage->removePayee(payee);
 }
 
 
 const QValueList<MyMoneyAccount> MyMoneyFile::accountList(void) const
 {
+  checkStorage();
+
   return m_storage->accountList();
 }
 
 const QValueList<MyMoneyInstitution> MyMoneyFile::institutionList(void) const
 {
+  checkStorage();
+
   return m_storage->institutionList();
 }
 
 // general get functions
-const QString MyMoneyFile::userName(void) const { return m_storage->userName(); }
-const QString MyMoneyFile::userStreet(void) const { return m_storage->userStreet(); }
-const QString MyMoneyFile::userTown(void) const { return m_storage->userTown(); }
-const QString MyMoneyFile::userCounty(void) const { return m_storage->userCounty(); }
-const QString MyMoneyFile::userPostcode(void) const { return m_storage->userPostcode(); }
-const QString MyMoneyFile::userTelephone(void) const { return m_storage->userTelephone(); }
-const QString MyMoneyFile::userEmail(void) const { return m_storage->userEmail(); }
+const QString MyMoneyFile::userName(void) const { checkStorage(); return m_storage->userName(); }
+const QString MyMoneyFile::userStreet(void) const { checkStorage(); return m_storage->userStreet(); }
+const QString MyMoneyFile::userTown(void) const { checkStorage(); return m_storage->userTown(); }
+const QString MyMoneyFile::userCounty(void) const { checkStorage(); return m_storage->userCounty(); }
+const QString MyMoneyFile::userPostcode(void) const { checkStorage(); return m_storage->userPostcode(); }
+const QString MyMoneyFile::userTelephone(void) const { checkStorage(); return m_storage->userTelephone(); }
+const QString MyMoneyFile::userEmail(void) const { checkStorage(); return m_storage->userEmail(); }
 
 // general set functions
-void MyMoneyFile::setUserName(const QString& val) { m_storage->setUserName(val); }
-void MyMoneyFile::setUserStreet(const QString& val) { m_storage->setUserStreet(val); }
-void MyMoneyFile::setUserTown(const QString& val) { m_storage->setUserTown(val); }
-void MyMoneyFile::setUserCounty(const QString& val) { m_storage->setUserCounty(val); }
-void MyMoneyFile::setUserPostcode(const QString& val) { m_storage->setUserPostcode(val); }
-void MyMoneyFile::setUserTelephone(const QString& val) { m_storage->setUserTelephone(val); }
-void MyMoneyFile::setUserEmail(const QString& val) { m_storage->setUserEmail(val); }
+void MyMoneyFile::setUserName(const QString& val) { checkStorage(); m_storage->setUserName(val); }
+void MyMoneyFile::setUserStreet(const QString& val) { checkStorage(); m_storage->setUserStreet(val); }
+void MyMoneyFile::setUserTown(const QString& val) { checkStorage(); m_storage->setUserTown(val); }
+void MyMoneyFile::setUserCounty(const QString& val) { checkStorage(); m_storage->setUserCounty(val); }
+void MyMoneyFile::setUserPostcode(const QString& val) { checkStorage(); m_storage->setUserPostcode(val); }
+void MyMoneyFile::setUserTelephone(const QString& val) { checkStorage(); m_storage->setUserTelephone(val); }
+void MyMoneyFile::setUserEmail(const QString& val) { checkStorage(); m_storage->setUserEmail(val); }
 
 bool MyMoneyFile::dirty(void) const
 {
+  checkStorage();
+
   return m_storage->dirty();
 }
 
 const unsigned int MyMoneyFile::accountCount(void) const
 {
+  checkStorage();
+
   return m_storage->accountCount();
 }
 
 const MyMoneyAccount MyMoneyFile::liability(void) const
 {
+  checkStorage();
+
   return m_storage->liability();
 }
 
 const MyMoneyAccount MyMoneyFile::asset(void) const
 {
+  checkStorage();
+
   return m_storage->asset();
 }
 
 const MyMoneyAccount MyMoneyFile::expense(void) const
 {
+  checkStorage();
+
   return m_storage->expense();
 }
 
 const MyMoneyAccount MyMoneyFile::income(void) const
 {
+  checkStorage();
+
   return m_storage->income();
 }
 
 const unsigned int MyMoneyFile::transactionCount(const QCString& account) const
 {
+  checkStorage();
+
   return m_storage->transactionCount(account);
 }
 
 const unsigned int MyMoneyFile::institutionCount(void) const
 {
+  checkStorage();
+
   return m_storage->institutionCount();
 }
 
 const MyMoneyMoney MyMoneyFile::balance(const QCString& id) const
 {
+  checkStorage();
+
   return m_storage->balance(id);
 }
 
 const MyMoneyMoney MyMoneyFile::totalBalance(const QCString& id) const
 {
+  checkStorage();
+
   return m_storage->totalBalance(id);
 }
 
@@ -500,6 +599,8 @@ void MyMoneyFile::notify(void)
 
 void MyMoneyFile::notifyAccountTree(const QCString& id)
 {
+  checkStorage();
+
   QCString accId = id;
   MyMoneyAccount acc;
 
@@ -525,5 +626,14 @@ void MyMoneyFile::clearNotification()
 
 const QValueList<MyMoneyTransaction> MyMoneyFile::transactionList(const QCString& account) const
 {
+  checkStorage();
+
   return m_storage->transactionList(account);
+}
+
+const QValueList<MyMoneyPayee> MyMoneyFile::payeeList(void) const
+{
+  checkStorage();
+
+  return m_storage->payeeList();
 }

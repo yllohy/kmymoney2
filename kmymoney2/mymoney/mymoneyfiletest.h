@@ -21,9 +21,11 @@
 
 
 #define private public
+#define protected public
 #include "mymoneyfile.h"
 #include "storage/mymoneyseqaccessmgr.h"
 #undef private
+#undef protected
 
 class TestObserverSet : public MyMoneyObserver
 {
@@ -65,7 +67,8 @@ class MyMoneyFileTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST(testAddPayee);
 	CPPUNIT_TEST(testModifyPayee);
 	CPPUNIT_TEST(testRemovePayee);
-
+	CPPUNIT_TEST(testAddTransactionStd);
+	CPPUNIT_TEST(testAttachStorage);
 #if 0
 	CPPUNIT_TEST(testMoveSplits);
 #endif
@@ -106,6 +109,8 @@ public:
 	void testAddPayee();
 	void testModifyPayee();
 	void testRemovePayee();
+	void testAddTransactionStd();
+	void testAttachStorage();
 
 private:
 	void testRemoveStdAccount(const MyMoneyAccount& acc);

@@ -44,9 +44,72 @@
 class IMyMoneyStorage;
 class MyMoneyTransactionFilter;
 
-/**
-  * This class represents the interface to the MyMoney engine. For historical
-  * reasons it is still called MyMoneyFile
+///  This class represents the interface to the MyMoney engine
+/**.
+  * This class represents the interface to the MyMoney engine.
+  * For historical reasons it is still called MyMoneyFile.
+  * It is implemented using the singleton pattern and thus only
+  * exists once for each running instance of an application.
+  *
+  * The instance of the MyMoneyFile object is accessed as follows:
+  *
+  * @code
+  * MyMoneyFile *file = MyMoneyFile::instance();
+  * file->anyMemberFunction();
+  * @endcode
+  *
+  * The first line of the above code creates a unique MyMoneyFile
+  * object if it is called for the first time ever. All subsequent
+  * calls to this functions return a pointer to the object created
+  * during the first call.
+  *
+  * As the MyMoneyFile object represents the business logic, a storage
+  * manager must be attached to it. This mechanism allows to use different
+  * access methods to store the objects. The interface to access such an
+  * storage manager is defined in the class IMyMoneyStorage. The methods
+  * attachStorage() and detachStorage() are used to attach/detach a
+  * storage manager object. The following code can be used to create a
+  * functional MyMoneyFile instance:
+  *
+  * @code
+  * IMyMoneyStorage *storage = ....
+  * MyMoneyFile *file = MyMoneyFile::instance();
+  * file->attachStorage(storage);
+  * @endcode
+  *
+  * The methods addAccount(), modifyAccount() and removeAccount() implement the
+  * general account maintenance functions. The method reparentAccount() is
+  * available to move an account from one superordinate account to another.
+  * account() and accountList() are used to retrieve a single instance or a
+  * QValueList of MyMoneyAccount objects.
+  *
+  * The methods addInstitution(), modifyInstitution() and removeInstitution()
+  * implement the general institution maintenance functions. institution() and
+  * institutionList() are used to retrieve a single instance or a
+  * QValueList of MyMoneyInstitution objects.
+  *
+  * The methods addPayee(), modifyPayee() and removePayee()
+  * implement the general institution maintenance functions.
+  * payee() and payeeList() are used to retrieve a single instance or a
+  * QValueList of MyMoneyPayee objects.
+  *
+  * The methods addTransaction(), modifyTransaction() and removeTransaction()
+  * implement the general transaction maintenance functions.
+  * transaction() and transactionList() are used to retrieve
+  * a single instance or a QValueList of MyMoneyTransaction objects.
+  *
+  * The methods liablity(), asset(), expense() and income() are used to
+  * retrieve the four standard accounts. isStandardAccount() checks if a
+  * given accountId references one of the or not. setAccountName() is used
+  * to specify a name for the standard accounts from the GUI.
+  *
+  * The methods attach() and detach() provide the necessary functions
+  * for an external observer to be attached and detached to and from
+  * an object of the engine.
+  *
+  * @exceptions MyMoneyException is thrown whenever an error occurs
+  * while the engine code is running. The MyMoneyException:: object
+  * describes the problem.
   */
 class MyMoneyFile
 {
@@ -72,14 +135,25 @@ public:
   friend MyMoneyNotifier;
 
   /**
-    * This is the constructor for a new empty file description
+    * This is the function to access the MyMoneyFile object.
+    * It returns a pointer to the single instance of the object.
+    * If no instance exists, it will be created.
     */
-  MyMoneyFile(IMyMoneyStorage *storage);
+  static MyMoneyFile* const instance();
 
   /**
     * This is the destructor for any MyMoneyFile object
     */
   ~MyMoneyFile();
+
+  /**
+    * @deprecated This is a convenience constructor. Do not use it anymore.
+    * It will be deprecated in a future version of the engine.
+    *
+    * @param storage pointer to object that implements the IMyMoneyStorage
+    *                interface.
+    */
+  MyMoneyFile(IMyMoneyStorage *storage);
 
   // general get functions
   const QString userName(void) const;
@@ -98,6 +172,34 @@ public:
   void setUserPostcode(const QString& val);
   void setUserTelephone(const QString& val);
   void setUserEmail(const QString& val);
+
+  /**
+    * This method is used to attach a storage to the MyMoneyFile object
+    * Without an attached storage object, the MyMoneyFile object is
+    * of no use. In case of an error condition, an exception is thrown.
+    *
+    * @param storage pointer to object that implements the IMyMoneyStorage
+    *                interface.
+    */
+  void attachStorage(IMyMoneyStorage* const storage);
+
+  /**
+    * This method is used to detach a previously attached storage
+    * object from the MyMoneyFile object. In case of an error
+    * condition an exception will be thrown.
+    *
+    * @param storage pointer to object that implements the IMyMoneyStorage
+    *                interface.
+    */
+  void detachStorage(IMyMoneyStorage* const storage = 0);
+
+  /**
+    * This method returns whether a storage is currently attached to
+    * the engine or not.
+    *
+    * @return true if storage object is attached, false otherwise
+    */
+  bool storageAttached(void) const { return m_storage != 0; };
 
   /**
     * This method is used to return the standard liability account
@@ -489,6 +591,20 @@ public:
     */
   void removePayee(const MyMoneyPayee& payee) const;
 
+  /**
+    * This method returns a list of the payees
+    * inside a MyMoneyStorage object
+    *
+    * @return QValueList<MyMoneyPayee> containing the payee information
+    */
+  const QValueList<MyMoneyPayee> payeeList(void) const;
+
+protected:
+  /**
+    * This is the constructor for a new empty file description
+    */
+  MyMoneyFile();
+
 private:
   /**
     * This method is used to add an id to the list of objects
@@ -525,6 +641,15 @@ private:
   void notifyAccountTree(const QCString& id);
 
   /**
+    * This method checks if a storage object is attached and
+    * throws and exception if not.
+    */
+  inline void checkStorage(void) const {
+    if(m_storage == 0)
+      throw new MYMONEYEXCEPTION("No storage object attached to MyMoneyFile");
+  }
+
+  /**
     * This member points to the storage strategy
     */
   IMyMoneyStorage *m_storage;
@@ -541,6 +666,7 @@ private:
     */
   QMap<QCString, bool> m_notificationList;
 
+  static MyMoneyFile* _instance;
 };
 #endif
 
