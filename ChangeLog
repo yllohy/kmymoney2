@@ -1,3 +1,6 @@
+2004-09-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * More investment view work (mainly register based editing)
+
 2004-09-09 Ace Jones <acejones@users.sourceforge.net>
   * Changed the way the program raised itself to the forefront when
     receiving an ofxWebConnect DCOP call.  This method was suggested by 
