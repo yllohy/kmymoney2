@@ -1,3 +1,9 @@
+2004-10-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added patch supplied by Alexander Novitsky
+  * Fixed logic so that register is updated when a transaction is
+    modified/entered.
+  * Corrected error messages to point to the right method names
+
 2004-09-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed memory leak in KEditEquityEntryDlg
   * Added icons to buttons in KEditEquityEntryDlg
