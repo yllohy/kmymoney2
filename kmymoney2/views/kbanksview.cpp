@@ -306,14 +306,14 @@ KAccountsView::KAccountsView(QWidget *parent, const char *name)
   accountListView->addColumn(i18n("Account"));
   accountListView->addColumn(i18n("Entries"));
   accountListView->addColumn(i18n("Balance"));
-  accountListView->addColumn(i18n("Type"));
+  // accountListView->addColumn(i18n("Type"));
 
   accountListView->setMultiSelection(false);
 
   accountListView->setColumnWidthMode(0, QListView::Maximum);
   accountListView->setColumnWidthMode(1, QListView::Maximum);
   accountListView->setColumnWidthMode(2, QListView::Maximum);
-  accountListView->setColumnWidthMode(2, QListView::Maximum);
+  // accountListView->setColumnWidthMode(3, QListView::Maximum);
 
   accountListView->setColumnAlignment(2, Qt::AlignRight);
   accountListView->setColumnAlignment(1, Qt::AlignRight);
@@ -878,22 +878,15 @@ void KAccountsView::clear(void)
   m_bSelectedInstitution=false;
 }
 
-void KAccountsView::resizeEvent(QResizeEvent* /* e */)
+void KAccountsView::resizeEvent(QResizeEvent* e)
 {
-
-  //accountListView->setColumnWidth(0, 400);
-
-  //accountListView->setColumnWidth(1,150);
-  //int totalWidth=accountListView->width();
-  // accountListView->setColumnWidth(2, totalWidth-550-5);
-
-
   // call base class resizeEvent()
-  //KBankViewDecl::resizeEvent(e);
+  KBankViewDecl::resizeEvent(e);
 }
 
 void KAccountsView::slotSelectionChanged(QListViewItem *item)
 {
+
   KAccountListItem *accountItem = (KAccountListItem*)item;
   if (accountItem)
   {
