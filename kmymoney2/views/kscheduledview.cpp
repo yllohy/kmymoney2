@@ -217,6 +217,12 @@ void KScheduledView::refresh(bool full, const QCString schedId)
       }
     }
 
+    if (openItem)
+    {
+      m_qlistviewScheduled->ensureItemVisible(openItem);
+      m_qlistviewScheduled->setSelected(openItem, true);
+    }
+
     if (m_openBills)
       itemBills->setOpen(true);
 
@@ -229,11 +235,6 @@ void KScheduledView::refresh(bool full, const QCString schedId)
     if (m_openLoans)
       itemLoans->setOpen(true);
             
-    if (openItem)
-    {
-      m_qlistviewScheduled->ensureItemVisible(openItem);
-      m_qlistviewScheduled->setSelected(openItem, true);
-    }
   } catch (MyMoneyException *e)
   {
     KMessageBox::error(this, e->what());
@@ -414,7 +415,7 @@ void KScheduledView::slotNewBill()
     try
     {
       MyMoneyFile::instance()->addSchedule(sched);
-      refresh(sched.id());
+      refresh(false, sched.id());
     } catch (MyMoneyException *e)
     {
       KMessageBox::information(this, i18n("Unable to add schedule: "), e->what());
@@ -437,7 +438,7 @@ void KScheduledView::slotNewDeposit()
     try
     {
       MyMoneyFile::instance()->addSchedule(sched);
-      refresh(sched.id());
+      refresh(false, sched.id());
     } catch (MyMoneyException *e)
     {
       KMessageBox::information(this, i18n("Unable to add schedule: "), e->what());
@@ -460,7 +461,7 @@ void KScheduledView::slotNewTransfer()
     try
     {
       MyMoneyFile::instance()->addSchedule(sched);
-      refresh(sched.id());
+      refresh(false, sched.id());
     } catch (MyMoneyException *e)
     {
       KMessageBox::information(this, i18n("Unable to add schedule: "), e->what());
