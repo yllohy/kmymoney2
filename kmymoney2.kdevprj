@@ -33,7 +33,7 @@ ldflags=\s   \s
 path_to_bin_program=kmymoney2
 
 [General]
-AMChanged=false
+AMChanged=true
 author=Michael Edwardes
 configure_args=--prefix=/opt/kde3\s
 dir_where_make_will_be_called=
@@ -1261,7 +1261,7 @@ install_location=
 type=DATA
 
 [kmymoney2/mymoney/storage/Makefile.am]
-files=kmymoney2/mymoney/storage/imymoneyserialize.cpp,kmymoney2/mymoney/storage/imymoneyserialize.h,kmymoney2/mymoney/storage/imymoneystorage.cpp,kmymoney2/mymoney/storage/imymoneystorage.h,kmymoney2/mymoney/storage/mymoneyseqaccessmgr.cpp,kmymoney2/mymoney/storage/mymoneyseqaccessmgr.h,kmymoney2/mymoney/storage/mymoneystoragebin.cpp,kmymoney2/mymoney/storage/mymoneystoragebin.h,kmymoney2/mymoney/storage/mymoneystoragedump.cpp,kmymoney2/mymoney/storage/mymoneystoragedump.h
+files=kmymoney2/mymoney/storage/imymoneyserialize.cpp,kmymoney2/mymoney/storage/imymoneyserialize.h,kmymoney2/mymoney/storage/imymoneystorage.cpp,kmymoney2/mymoney/storage/imymoneystorage.h,kmymoney2/mymoney/storage/mymoneyseqaccessmgr.cpp,kmymoney2/mymoney/storage/mymoneyseqaccessmgr.h,kmymoney2/mymoney/storage/mymoneystoragebin.cpp,kmymoney2/mymoney/storage/mymoneystoragebin.h,kmymoney2/mymoney/storage/mymoneystoragedump.cpp,kmymoney2/mymoney/storage/mymoneystoragedump.h,kmymoney2/mymoney/storage/mymoneystoragexmlcallback.h,kmymoney2/mymoney/storage/mymoneystoragexmlcallback.cpp,kmymoney2/mymoney/storage/mymoneystoragexml.h,kmymoney2/mymoney/storage/mymoneystoragexml.cpp
 sharedlib_LDFLAGS=-version-info 0:0:0
 sharedlib_rootname=storage
 sub_dirs=
@@ -1322,6 +1322,30 @@ install_location=
 type=SOURCE
 
 [kmymoney2/mymoney/storage/mymoneystoragedump.h]
+dist=true
+install=false
+install_location=
+type=HEADER
+
+[kmymoney2/mymoney/storage/mymoneystoragexml.cpp]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[kmymoney2/mymoney/storage/mymoneystoragexml.h]
+dist=true
+install=false
+install_location=
+type=HEADER
+
+[kmymoney2/mymoney/storage/mymoneystoragexmlcallback.cpp]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[kmymoney2/mymoney/storage/mymoneystoragexmlcallback.h]
 dist=true
 install=false
 install_location=
