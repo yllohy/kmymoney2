@@ -205,7 +205,7 @@ The only required field is the name, which can be the name of a bank like Woolwh
                                 </size>
                             </property>
                             <property name="text">
-                                <string>Sort code:</string>
+                                <string>Routing Number:</string>
                             </property>
                         </widget>
                         <widget class="QLineEdit" row="0" column="1">

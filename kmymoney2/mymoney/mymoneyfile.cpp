@@ -544,7 +544,61 @@ void MyMoneyFile::createOpeningBalanceTransaction(const MyMoneyAccount& acc, con
   }
 }
 
+QCString MyMoneyFile::openingBalanceTransaction(const MyMoneyAccount& acc) const
+{
+  QCString result;
+
+  MyMoneySecurity currency = security(acc.currencyId());
+  MyMoneyAccount openAcc = openingBalanceAccount(currency);
+
+  // Iterate over all the opening balance transactions for this currency
+  MyMoneyTransactionFilter filter;
+  filter.addAccount(openAcc.id());
+  QValueList<MyMoneyTransaction> transactions = transactionList(filter);
+  QValueList<MyMoneyTransaction>::const_iterator it_t = transactions.begin();
+  while ( it_t != transactions.end() )
+  {
+    try
+    {
+      // Test whether the transaction also includes a split into
+      // this account
+      (*it_t).splitByAccount(acc.id(), true /*match*/);
+
+      // If so, we have a winner!
+      result = (*it_t).id();
+      break;
+    }
+    catch(MyMoneyException *e)
+    {
+      // If not, keep searching
+      ++it_t;
+    }
+  }
+ 
+  return result;
+}
+
 const MyMoneyAccount MyMoneyFile::openingBalanceAccount(const MyMoneySecurity& security)
+{
+  if(!security.isCurrency())
+    throw new MYMONEYEXCEPTION("Opening balance for non currencies not supported");
+
+  try
+  {
+    return openingBalanceAccount_internal(security);
+  }
+  catch(MyMoneyException *e)
+  {
+    return createOpeningBalanceAccount(security);
+  }    
+}
+
+const MyMoneyAccount MyMoneyFile::openingBalanceAccount(const MyMoneySecurity& security) const
+{
+  return openingBalanceAccount_internal(security);
+}
+
+const MyMoneyAccount MyMoneyFile::openingBalanceAccount_internal(const MyMoneySecurity& security) const
 {
   if(!security.isCurrency())
     throw new MYMONEYEXCEPTION("Opening balance for non currencies not supported");
@@ -567,7 +621,7 @@ const MyMoneyAccount MyMoneyFile::openingBalanceAccount(const MyMoneySecurity& s
   }
 
   if(acc.id().isEmpty()) {
-    return createOpeningBalanceAccount(security);
+    throw new MYMONEYEXCEPTION(QString("No opening balance account for %1").arg(security.tradingSymbol()));
   }
 
   return acc;

@@ -281,9 +281,24 @@ public:
     *
     * @param security Security for which the account is searched
     *
+    * @return The opening balance account
+    *
     * @note No notifications will be sent!
     */
   const MyMoneyAccount openingBalanceAccount(const MyMoneySecurity& security);
+
+  /**
+    * This method is essentially the same as the above, except it works on
+    * const objects.  If there is no opening balance account, this method
+    * WILL NOT create one.  Instead it will thrown an exception.
+    *
+    * @param security Security for which the account is searched
+    *
+    * @return The opening balance account
+    *
+    * @note No notifications will be sent!
+    */
+  const MyMoneyAccount openingBalanceAccount(const MyMoneySecurity& security) const;
 
   /**
     * Create an opening balance transaction for the account @p acc
@@ -298,6 +313,16 @@ public:
     * @param balance reference to the value of the opening balance transaction
     */
   void createOpeningBalanceTransaction(const MyMoneyAccount& acc, const MyMoneyMoney& balance);
+
+  /**
+    * Retrieve the opening balance transaction for the account @p acc.
+    * If there is no opening balance transaction, QCString() will be returned.
+    *
+    * @param acc reference to account for which the opening balance transaction
+    *            should be retrieved
+    * @return QString id for the transaction, or QCString() if no transaction exists
+    */
+  QCString openingBalanceTransaction(const MyMoneyAccount& acc) const;
 
   /**
     * This method returns an indicator if the MyMoneyFile object has been
@@ -1356,6 +1381,8 @@ private:
     * @param security Security for which the account is searched
     */
   const MyMoneyAccount createOpeningBalanceAccount(const MyMoneySecurity& security);
+
+  const MyMoneyAccount openingBalanceAccount_internal(const MyMoneySecurity& security) const;
 
 private:
   /**

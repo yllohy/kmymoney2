@@ -1,3 +1,8 @@
+2005-03-28 Ace Jones <acejones@users.sourceforge.net>
+  * Handle QIF-imported opening balances the new way
+  * Terminology changes to US-english-ize the base text
+    (Submitted by Robert Wadley <rob@robntina.fastmail.us>)
+
 2005-03-25 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Avoid inadvertent overwrite of foreign file types
 

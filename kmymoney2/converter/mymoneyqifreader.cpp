@@ -471,9 +471,7 @@ const QString MyMoneyQifReader::extractLine(const QChar id, int cnt)
 
 void MyMoneyQifReader::processMSAccountEntry(const MyMoneyAccount::accountTypeE accountType)
 {
-  // FIXME Handle this like any regular transaction.  I suspect we can just kill it, and
-  // move "P" == "Opening Balance" into processTransactionEntry() as a special case
-  if(extractLine('P') == m_qifProfile.openingBalanceText()) {
+  if(extractLine('P').lower() == m_qifProfile.openingBalanceText().lower()) {
     m_account = MyMoneyAccount();
     m_account.setAccountType(accountType);
     QString txt = extractLine('T');
@@ -489,7 +487,6 @@ void MyMoneyQifReader::processMSAccountEntry(const MyMoneyAccount::accountTypeE 
     }
     m_account.setName(name);
     selectOrCreateAccount(Select, m_account);
-
   } else {
     // for some unknown reason, Quicken 2001 generates the following (somewhat
     // misleading) sequence of lines:
@@ -515,6 +512,16 @@ void MyMoneyQifReader::processMSAccountEntry(const MyMoneyAccount::accountTypeE 
     // lines 7-11 are the leadin for the next account. So we check here if
     // the !Type:xxx record also contains an !Account line and process the
     // entry as required.
+    //
+    // (Ace) I think a better solution here is to handle exclamation point
+    // lines separately from entries.  In the above case:
+    // Line 1 would set the mode to "account entries".
+    // Lines 2-5 would be interpreted as an account entry.  This would set m_account.
+    // Line 6 would set the mode to "cc transaction entries".
+    // Line 7 would immediately set the mode to "account entries" again
+    // Lines 8-11 would be interpreted as an account entry.  This would set m_account.
+    // Line 12 would set the mode to "cc transaction entries"
+    // Lines 13+ would be interpreted as cc transaction entries, and life is good
     int exclamationCnt = 1;
     QString category;
     do {
@@ -991,7 +998,7 @@ void MyMoneyQifReader::selectOrCreateAccount(const SelectCreateMode mode, MyMone
       return;
 
     } catch (MyMoneyException *e) {
-      QString message(i18n("Account \"%1\" disappeard: ").arg(account.name()));
+      QString message(i18n("Account \"%1\" disappeared: ").arg(account.name()));
       message += e->what();
       KMessageBox::error(0, message);
       delete e;
@@ -1064,18 +1071,42 @@ void MyMoneyQifReader::selectOrCreateAccount(const SelectCreateMode mode, MyMone
         accountId = accountSelect.selectedAccount();
 
         m_accountTranslation[(leadIn + ":" + account.name()).lower()] = accountId;
+
+        // MMAccount::openingBalance() is where the accountSelect dialog has
+        // stashed the opening balance that the user chose.
         MyMoneyAccount importedAccountData(account);
+        MyMoneyMoney balance = importedAccountData.openingBalance();
         account = file->account(accountId);
-        if(typeStr == i18n("account")
-        && importedAccountData.openingBalance() != account.openingBalance()) {
-          if(KMessageBox::questionYesNo(0, i18n("Do you want to override the opening balance of this account currently set to %1 with %2?")
-              .arg(account.openingBalance().formatMoney())
-              .arg(importedAccountData.openingBalance().formatMoney())
-            ,QString(),KStdGuiItem::yes(),KStdGuiItem::no(),"replaceopeningbalance") == KMessageBox::Yes) {
-            account.setOpeningBalance(importedAccountData.openingBalance());
-            MyMoneyFile::instance()->modifyAccount(account);
+        if ( ! balance.isZero() )
+        {          
+          QCString openingtxid = file->openingBalanceTransaction(account);
+          if ( ! openingtxid.isEmpty() )
+          {
+            MyMoneyTransaction openingtx = file->transaction(openingtxid);
+            MyMoneySplit split = openingtx.splitByAccount(account.id());
+            
+            if ( split.shares() != balance )
+            {
+              if ( KMessageBox::questionYesNo(
+                qApp->mainWidget(),
+                i18n("The %1 account currently has an opening balance of %2. This QIF file reports an opening balance of %3. Would you like to overwrite the current balance with the one from the QIF file?").arg(account.name(),split.shares().formatMoney(),balance.formatMoney()),
+                i18n("Overwrite opening balance"),
+                KStdGuiItem::yes(),
+                KStdGuiItem::no(),
+                "OverwriteOpeningBalance" )
+                == KMessageBox::Yes )
+              { 
+                file->removeTransaction( openingtx );
+                file->createOpeningBalanceTransaction( account, balance );
+              }
+            }
           }
-        }
+          else
+          {
+            // Add an opening balance
+            file->createOpeningBalanceTransaction( account, balance );
+          }
+        }        
         break;
       }
 
