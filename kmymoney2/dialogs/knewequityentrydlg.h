@@ -49,14 +49,15 @@ public:
   void setName(const QString& str);
   QString name() const  { return m_strName; }
 
+  int fraction(void) const { return m_fraction; }
+
 protected slots:
   void onOKClicked();
-  void onCancelClicked();
 
 private:
   QString m_strSymbolName;
   QString m_strName;
-
+  int     m_fraction;
 };
 
 #endif

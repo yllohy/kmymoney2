@@ -224,6 +224,7 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
     s << "  Name = " << (*it_e).name() << "\n";
     s << "    ID = " << (*it_e).id() << "\n";
     s << "    Symbol = " << (*it_e).tradingSymbol() << "\n";
+    s << "    smallest account fraction = " << (*it_e).smallestAccountFraction() << "\n";
     dumpPriceHistory(s, (*it_e).priceHistory());
     s << "\n";
   }

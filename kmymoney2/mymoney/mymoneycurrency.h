@@ -42,7 +42,7 @@
 
 class MyMoneyCurrency : public MyMoneyEquity
 {
-public: 
+public:
   MyMoneyCurrency();
   MyMoneyCurrency(const QCString& id, const QString& name, const QString& symbol = QString(), const int partsPerUnit = 100, const int smallestCashFraction = 100, const int smallestAccountFraction = 0);
   MyMoneyCurrency(const MyMoneyEquity& r);
@@ -50,16 +50,13 @@ public:
 
   const int partsPerUnit(void) const { return m_partsPerUnit; };
   const int smallestCashFraction(void) const { return m_smallestCashFraction; };
-  const int smallestAccountFraction(void) const { return m_smallestAccountFraction; };
 
   void setPartsPerUnit(const int ppu) { m_partsPerUnit = ppu; };
   void setSmallestCashFraction(const int sf) { m_smallestCashFraction = sf; };
-  void setSmallestAccountFraction(const int sf) { m_smallestCashFraction = sf; };
 
 private:
   int     m_partsPerUnit;
   int     m_smallestCashFraction;
-  int     m_smallestAccountFraction;
 };
 
 #endif

@@ -20,45 +20,46 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <kglobal.h>
-#include <klocale.h>
-#if QT_VERSION > 300
-#include <kstandarddirs.h>
-#else
-#include <kstddirs.h>
-#endif
-
-#include <qpixmap.h>
 
 // ----------------------------------------------------------------------------
 // QT Includes
-#include <qfile.h>
-#include <qtextstream.h>
-#include <qlabel.h>
-#include <qpushbutton.h>
-#include <qprogressbar.h>
-#include <qlineedit.h>
-#include <qgroupbox.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
-#include <kfiledialog.h>
-#include <kglobal.h>
-#include <klocale.h>
-#include <kmessagebox.h>
-#include <kconfig.h>
-#include <knuminput.h>
-#include <kcombobox.h>
-#include <klineedit.h>
+
 #include <kpushbutton.h>
+#include <kiconloader.h>
+
+// ----------------------------------------------------------------------------
+// Project Includes
 
 #include "knewequityentrydlg.h"
+#include "../widgets/kmymoneyedit.h"
+#include "../mymoney/mymoneymoney.h"
 
 KNewEquityEntryDlg::KNewEquityEntryDlg(QWidget *parent, const char *name)
   : kNewEquityEntryDecl(parent, name, TRUE)
 {
+  edtFraction->hideCalculatorButton();
+  edtFraction->setPrecision(0);
+
   connect(btnOK, SIGNAL(clicked()), this, SLOT(onOKClicked()));
-  connect(btnCancel, SIGNAL(clicked()), this, SLOT(onCancelClicked()));
+  connect(btnCancel, SIGNAL(clicked()), this, SLOT(reject()));
+
+  // add icons to buttons
+  KIconLoader *il = KGlobal::iconLoader();
+  KGuiItem okButtenItem( i18n("&Ok" ),
+                    QIconSet(il->loadIcon("button_ok", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Accepts the value and stores them"),
+                    i18n("Use this to accept all values and close the dialog."));
+  btnOK->setGuiItem(okButtenItem);
+
+  KGuiItem cancelButtenItem( i18n( "&Cancel" ),
+                    QIconSet(il->loadIcon("button_cancel", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Cancel the operation"),
+                    i18n("Use this to dismiss all the changes made in this dialog."));
+  btnCancel->setGuiItem(cancelButtenItem);
+
 }
 
 KNewEquityEntryDlg::~KNewEquityEntryDlg()
@@ -70,12 +71,8 @@ void KNewEquityEntryDlg::onOKClicked()
 {
   m_strSymbolName = edtMarketSymbol->text();
   m_strName = edtEquityName->text();
+  m_fraction = edtFraction->getMoneyValue().abs();
   accept();
-}
-
-void KNewEquityEntryDlg::onCancelClicked()
-{
-  reject();
 }
 
 void KNewEquityEntryDlg::setSymbolName(const QString& str)

@@ -108,6 +108,7 @@ void kMyMoneyEquity::checkForNewEquity(void)
         //fill in the fields.
         newEquity.setTradingSymbol(dlg.symbolName());
         newEquity.setName(dlg.name());
+        newEquity.setSmallestAccountFraction(dlg.fraction());
         try {
           MyMoneyFile::instance()->addEquity(newEquity);
           slotSelectEquity(newEquity.id());

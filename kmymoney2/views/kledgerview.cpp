@@ -794,7 +794,7 @@ void KLedgerView::amountChanged(const QString& value, int dir)
       if(!split.accountId().isEmpty()) {
         acc = MyMoneyFile::instance()->account(split.accountId());
         // also keep track of a possible previous price
-        price = (split.shares() != 0) ? split.value() / split.shares() : 0;
+        price = (split.shares() != 0) ? split.value() / split.shares() : MyMoneyMoney(0);
       } else
         price = 0;
 

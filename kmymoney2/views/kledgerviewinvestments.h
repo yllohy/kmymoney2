@@ -28,6 +28,7 @@
 #include <qlayout.h>
 #include <qtabbar.h>
 #include <qtabwidget.h>
+#include <qsignalmapper.h>
 
 class QLabel;
 
@@ -37,6 +38,7 @@ class QLabel;
 // ----------------------------------------------------------------------------
 // Project Includes
 
+#include "../mymoney/mymoneyequity.h"
 #include "../widgets/kmymoneyaccountcombo.h"
 #include "kledgerview.h"
 
@@ -57,6 +59,15 @@ public:
 
   const investTransactionTypeE transactionType(const MyMoneyTransaction& t, const MyMoneySplit& split) const;
 
+protected:
+  enum ChangedFieldE {
+    None = 0,
+    Shares,
+    Price,
+    Fees,
+    Total
+  };
+
 public slots:
   void slotRegisterDoubleClicked(int row, int col, int button, const QPoint &mousePos);
 
@@ -73,7 +84,7 @@ protected slots:
   virtual void slotNew();
   virtual void slotEndEdit();
   virtual void slotEquityChanged(const QCString& id);
-  const bool slotDataChanged(void);
+  const bool slotDataChanged(int field);
 
 protected:
   /**
@@ -150,7 +161,7 @@ protected:
     */
   QWidget* arrangeEditWidgetsInRegister(void);
 
-  void updateTotalAmount(void);
+  void updateValues(int field);
 
 private:
   /**
@@ -213,10 +224,13 @@ private:
   MyMoneySplit    m_accountSplit;
   MyMoneySplit    m_feeSplit;
   MyMoneySplit    m_interestSplit;
+  MyMoneyEquity   m_equity;
 
   kMyMoneyAccountCombo* m_editStockAccount;
   kMyMoneyAccountCombo* m_editCashAccount;
   kMyMoneyCategory *m_editFeeCategory;
+
+  QSignalMapper      m_editMapper;
 };
 
 #endif

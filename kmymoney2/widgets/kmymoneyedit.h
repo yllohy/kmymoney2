@@ -39,6 +39,7 @@ class KPushButton;
 
 class MyMoneyMoney;
 class kMyMoneyCalculator;
+#include "../mymoney/mymoneyequity.h"
 
 #if KDE_VERSION <= KDE_MAKE_VERSION(3,1,0)
   #define KDoubleValidator QDoubleValidator
@@ -108,13 +109,19 @@ protected:
     */
   void calculatorOpen(QKeyEvent* ev);
 
+  /**
+    * Helper method for constructors.
+    */
+  void init(void);
+
 protected slots:
   void theTextChanged(const QString & text);
   void slotCalculatorResult(void);
   void slotCalculatorOpen(void);
 
 public:
-  kMyMoneyEdit(QWidget *parent=0, const char *name=0);
+  kMyMoneyEdit(QWidget *parent=0, const char *name=0, const int prec = -1);
+  kMyMoneyEdit(const MyMoneyEquity& eq, QWidget *parent=0, const char *name=0);
   ~kMyMoneyEdit();
   MyMoneyMoney getMoneyValue(void);
 
@@ -128,7 +135,32 @@ public:
 
   void setMinimumWidth(int w) { m_edit->setMinimumWidth(w); };
 
+  /**
+    * Set the number of fractional digits that should be shown
+    *
+    * @param prec number of fractional digits.
+    *
+    * @note should be used prior to calling loadText()
+    */
+  void setPrecision(const int prec);
+
   QWidget* focusWidget(void) const;
+
+  /**
+    * This method allows to show/hide the calculator button of the widget.
+    * The parameter @p show controls the behavior. Default is to show the
+    * button.
+    *
+    * @param show if true, button is shown, if false it is hidden
+    */
+  void showCalculatorButton(const bool show = true);
+
+  /**
+    * This method allows to hide the calculator button. It is
+    * provided as convenience function and is equivilant to @p
+    * showCalculatorButton(false).
+    */
+  void hideCalculatorButton(void) { showCalculatorButton(false); }
 
 public slots:
   void loadText(const QString& text);

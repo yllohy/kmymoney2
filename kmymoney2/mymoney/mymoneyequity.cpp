@@ -34,6 +34,7 @@
 MyMoneyEquity::MyMoneyEquity()
 {
   m_equityType = ETYPE_NONE;
+  m_smallestAccountFraction = 100;
 }
 
 MyMoneyEquity::MyMoneyEquity(const QCString& id, const MyMoneyEquity& equity)

@@ -90,11 +90,15 @@ void kMyMoneyRegisterInvestment::paintCell(QPainter *p, int row, int col, const 
   QString txt;
   if(m_transaction != 0) {
     try {
+      m_feeSplit = MyMoneySplit();
+      m_interestSplit = MyMoneySplit();
+      m_accountSplit = MyMoneySplit();
       // find the split that references the stock account
       QValueList<MyMoneySplit>::ConstIterator it_s;
       for(it_s = m_transaction->splits().begin(); it_s != m_transaction->splits().end(); ++it_s) {
         acc = file->account((*it_s).accountId());
         if(acc.accountType() == MyMoneyAccount::Stock) {
+          m_equity = MyMoneyFile::instance()->equity(acc.currencyId());
           m_split = *it_s;
         } else if(acc.accountGroup() == MyMoneyAccount::Expense) {
           m_feeSplit = *it_s;
@@ -107,6 +111,8 @@ void kMyMoneyRegisterInvestment::paintCell(QPainter *p, int row, int col, const 
       }
 
       KLedgerView::investTransactionTypeE transactionType = myParent->transactionType(*m_transaction, m_split);
+
+      int prec;
 
       switch (col) {
         case 0:
@@ -283,7 +289,8 @@ void kMyMoneyRegisterInvestment::paintCell(QPainter *p, int row, int col, const 
                 case KLedgerView::ReinvestDividend:
                 case KLedgerView::AddShares:
                 case KLedgerView::RemoveShares:
-                  txt = m_split.shares().abs().formatMoney();
+                  prec = MyMoneyMoney::denomToPrec(m_equity.smallestAccountFraction());
+                  txt = m_split.shares().abs().formatMoney("", prec);
                   break;
                 case KLedgerView::Dividend:
                 case KLedgerView::Yield:

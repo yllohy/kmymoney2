@@ -37,7 +37,6 @@ MyMoneyCurrency::MyMoneyCurrency()
   setEquityType(ETYPE_CURRENCY);
   m_partsPerUnit = 100;
   m_smallestCashFraction = 100;
-  m_smallestAccountFraction = 100;
   // m_symbol = QChar(0x00A4);         // general currency symbol
   m_symbol = QString();
 }

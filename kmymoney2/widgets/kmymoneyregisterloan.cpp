@@ -193,7 +193,7 @@ void kMyMoneyRegisterLoan::adjustColumn(int col)
     KMyMoneyTransaction *t = m_parent->transaction(i);
     MyMoneyMoney amount;
     int nw = 0;
-    
+
     QString txt;
     if(t != NULL) {
       switch(col) {

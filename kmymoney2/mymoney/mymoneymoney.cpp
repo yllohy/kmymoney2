@@ -705,3 +705,8 @@ const int MyMoneyMoney::denomToPrec(int fract)
   }
   return rc;
 }
+
+MyMoneyMoney::operator int() const
+{
+  return static_cast<int> (m_num / m_denom);
+}

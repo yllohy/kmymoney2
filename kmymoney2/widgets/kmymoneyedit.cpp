@@ -99,10 +99,24 @@ QValidator::State kMyMoneyMoneyValidator::validate( QString & input, int & _p ) 
   return QDoubleValidator::validate( s, _p );
 }
 
-kMyMoneyEdit::kMyMoneyEdit(QWidget *parent, const char *name )
+kMyMoneyEdit::kMyMoneyEdit(QWidget *parent, const char *name, const int prec)
  : QHBox(parent, name)
 {
-  m_prec = KGlobal::locale()->fracDigits();
+  m_prec = prec;
+  if(prec < 0 || prec > 20)
+    m_prec = KGlobal::locale()->fracDigits();
+  init();
+}
+
+kMyMoneyEdit::kMyMoneyEdit(const MyMoneyEquity& eq, QWidget *parent, const char *name)
+ : QHBox(parent, name)
+{
+  m_prec = MyMoneyMoney::denomToPrec(eq.smallestAccountFraction());
+  init();
+}
+
+void kMyMoneyEdit::init(void)
+{
   m_edit = new KLineEdit(this);
   m_edit->installEventFilter(this);
   setFocusProxy(m_edit);
@@ -131,6 +145,13 @@ kMyMoneyEdit::kMyMoneyEdit(QWidget *parent, const char *name )
 kMyMoneyEdit::~kMyMoneyEdit()
 {
   delete m_calculatorFrame;
+}
+
+void kMyMoneyEdit::setPrecision(const int prec)
+{
+  if(prec >= 0 && prec <= 20) {
+    m_prec = prec;
+  }
 }
 
 const bool kMyMoneyEdit::isValid(void) const
@@ -188,11 +209,21 @@ void kMyMoneyEdit::ensureFractionalPart(void)
   // followed by the required number of 0s
   QString s(m_edit->text());
   if (!s.isEmpty()) {
-    if (!s.contains(locale->monetaryDecimalSymbol())) {
-      s += locale->monetaryDecimalSymbol();
-      for (int i=0; i < m_prec; i++)
-        s += "0";
-      m_edit->setText(s);
+    if(m_prec > 0) {
+      if (!s.contains(locale->monetaryDecimalSymbol())) {
+        s += locale->monetaryDecimalSymbol();
+        for (int i=0; i < m_prec; i++)
+          s += "0";
+        m_edit->setText(s);
+      }
+    } else {
+      while(s.contains(locale->monetaryDecimalSymbol())) {
+        int pos = s.findRev(locale->monetaryDecimalSymbol());
+        if(pos != -1) {
+          s = s.left(pos);
+          m_edit->setText(s);
+        }
+      }
     }
   }
 }
@@ -320,4 +351,12 @@ QWidget* kMyMoneyEdit::focusWidget(void) const
   while(w->focusProxy())
     w = w->focusProxy();
   return w;
+}
+
+void kMyMoneyEdit::showCalculatorButton(const bool show)
+{
+  if(show)
+    m_calcButton->show();
+  else
+    m_calcButton->hide();
 }

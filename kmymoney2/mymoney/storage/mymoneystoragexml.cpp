@@ -1000,6 +1000,7 @@ void MyMoneyStorageXML::writeEquity(QDomElement& equityElement, const MyMoneyEqu
   equityElement.setAttribute(QString("symbol"), equity.tradingSymbol());
   equityElement.setAttribute(QString("type"), static_cast<int>(equity.equityType()));
   equityElement.setAttribute(QString("id"), equity.id());
+  equityElement.setAttribute(QString("saf"), equity.smallestAccountFraction());
 
   QDomElement history = m_doc->createElement("HISTORY");
 
@@ -1101,6 +1102,10 @@ MyMoneyEquity MyMoneyStorageXML::readEquity(QDomElement& equityElement)
   e.setName(QStringEmpty(equityElement.attribute(QString("name"))));
   e.setTradingSymbol(QStringEmpty(equityElement.attribute(QString("symbol"))));
   e.setEquityType(static_cast<MyMoneyEquity::eEQUITYTYPE>(equityElement.attribute(QString("type")).toInt()));
+  int saf = equityElement.attribute(QString("saf")).toInt();
+  if(saf == 0)
+    saf = 100;
+  e.setSmallestAccountFraction(saf);
 
   id = QStringEmpty(equityElement.attribute(QString("id")));
 
@@ -1139,7 +1144,7 @@ void MyMoneyStorageXML::readReports(QDomElement& reports)
       if ( report.read(child.toElement() ) )
       {
         m_storage->loadReport(report);
-        
+
         unsigned long id = extractId(report.id());
         if(id > m_storage->reportId())
           m_storage->loadReportId(id);

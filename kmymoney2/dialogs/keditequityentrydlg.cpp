@@ -34,6 +34,7 @@
 #include <kpushbutton.h>
 #include <klineedit.h>
 #include <kcombobox.h>
+#include <kiconloader.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -55,8 +56,9 @@ KEditEquityEntryDlg::KEditEquityEntryDlg(const MyMoneyEquity& selectedEquity, QW
   connect(btnOK, SIGNAL(clicked()), this, SLOT(slotOKClicked()));
   connect(btnCancel, SIGNAL(clicked()), this, SLOT(slotCancelClicked()));
   connect(lvPriceHistory, SIGNAL(doubleClicked(QListViewItem*, const QPoint&, int)), this, SLOT(slotPriceHistoryDoubleClicked(QListViewItem *, const QPoint&, int)));
-  connect(edtEquityName, SIGNAL(textChanged(const QString &)), this, SLOT(slotEquityNameChanged(const QString&)));
-  connect(edtMarketSymbol, SIGNAL(textChanged(const QString &)), this, SLOT(slotEquitySymbolChanged(const QString&)));
+  connect(edtEquityName, SIGNAL(textChanged(const QString &)), this, SLOT(slotDataChanged()));
+  connect(edtMarketSymbol, SIGNAL(textChanged(const QString &)), this, SLOT(slotDataChanged()));
+  connect(edtFraction, SIGNAL(textChanged(const QString&)), this, SLOT(slotDataChanged()));
   connect(btnAddEntry, SIGNAL(clicked()), this, SLOT(slotAddPriceClicked()));
   connect(btnEditEntry, SIGNAL(clicked()), this, SLOT(slotEditPriceClicked()));
   connect(btnRemoveEntry, SIGNAL(clicked()), this, SLOT(slotRemovePriceClicked()));
@@ -65,6 +67,9 @@ KEditEquityEntryDlg::KEditEquityEntryDlg(const MyMoneyEquity& selectedEquity, QW
   //fill in the fields for what we know.
   edtEquityName->setText(m_selectedEquity.name());
   edtMarketSymbol->setText(m_selectedEquity.tradingSymbol());
+  edtFraction->setPrecision(0);
+  edtFraction->hideCalculatorButton();
+  edtFraction->loadText(QString::number(m_selectedEquity.smallestAccountFraction()));
   cmbInvestmentType->setCurrentItem((int)m_selectedEquity.equityType());
   equity_price_history priceHistory = m_selectedEquity.priceHistory();
   if(priceHistory.size())
@@ -81,6 +86,20 @@ KEditEquityEntryDlg::KEditEquityEntryDlg(const MyMoneyEquity& selectedEquity, QW
   btnEditEntry->setEnabled(false);
   btnRemoveEntry->setEnabled(false);
 
+  // add icons to buttons
+  KIconLoader *il = KGlobal::iconLoader();
+  KGuiItem okButtenItem( i18n("&Ok" ),
+                    QIconSet(il->loadIcon("button_ok", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Accepts the value and stores them"),
+                    i18n("Use this to accept all values and close the dialog."));
+  btnOK->setGuiItem(okButtenItem);
+
+  KGuiItem cancelButtenItem( i18n( "&Cancel" ),
+                    QIconSet(il->loadIcon("button_cancel", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Cancel the operation"),
+                    i18n("Use this to dismiss all the changes made in this dialog."));
+  btnCancel->setGuiItem(cancelButtenItem);
+
   m_changes = false;
 }
 
@@ -96,6 +115,7 @@ void KEditEquityEntryDlg::slotOKClicked()
   {
     m_selectedEquity.setName(edtEquityName->text());
     m_selectedEquity.setTradingSymbol(edtMarketSymbol->text());
+    m_selectedEquity.setSmallestAccountFraction(edtFraction->getMoneyValue().abs());
     //m_selectedEquity.setEquityType((int)cmbInvestmentType->currentItem());
 
     m_selectedEquity.setPriceHistory(equity_price_history());
@@ -129,12 +149,7 @@ void KEditEquityEntryDlg::slotPriceHistoryClicked(QListViewItem* item, const QPo
   btnRemoveEntry->setEnabled(true);
 }
 
-void KEditEquityEntryDlg::slotEquityNameChanged(const QString& str)
-{
-  m_changes = true;
-}
-
-void KEditEquityEntryDlg::slotEquitySymbolChanged(const QString& str)
+void KEditEquityEntryDlg::slotDataChanged(void)
 {
   m_changes = true;
 }

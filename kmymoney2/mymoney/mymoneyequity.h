@@ -76,6 +76,8 @@ public:
   QString    tradingMarket() const  { return m_tradingMarket; }
   void       setTradingMarket(const QString& str) { m_tradingMarket = str; }
 
+  const int smallestAccountFraction(void) const { return m_smallestAccountFraction; };
+  void setSmallestAccountFraction(const int sf) { m_smallestAccountFraction = sf; };
 
   /** No descriptions */
   //virtual void setEquityType(const String& str);
@@ -121,12 +123,14 @@ public:
   const bool hasPrice(const QDate& date = QDate::currentDate()) const;
 
 protected:
-  QCString m_id;
-  QString m_name;
-  QString m_symbol;
-  QString m_tradingMarket;
-  eEQUITYTYPE m_equityType;
-  equity_price_history m_priceHistory;
+  QCString              m_id;
+  QString               m_name;
+  QString               m_symbol;
+  QString               m_tradingMarket;
+  eEQUITYTYPE           m_equityType;
+  equity_price_history  m_priceHistory;
+  int                   m_smallestAccountFraction;
+
 };
 
 #endif

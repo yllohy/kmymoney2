@@ -42,7 +42,7 @@ KInvestmentListItem::KInvestmentListItem(KListView* parent, const MyMoneyAccount
   bColumn7Negative = false;
   bColumn8Negative = false;
   bColumn9Negative = false;
-  
+
   m_account = account;
   m_listView = parent;
   update(account.id());
@@ -88,7 +88,7 @@ const QString KInvestmentListItem::calculateGain(const equity_price_history& his
   {
     bool bFoundCurrent = false, bFoundComparison = false;
     QDate tempDate, comparisonDate = QDate::currentDate();
-    
+
     if(YTD)
     {
       //if it is YTD, set the date to 01/01/<current year>
@@ -99,9 +99,9 @@ const QString KInvestmentListItem::calculateGain(const equity_price_history& his
       comparisonDate = comparisonDate.addDays(dayDifference);
       comparisonDate = comparisonDate.addMonths(monthDifference);
     }
-    
+
     MyMoneyMoney comparisonValue, currentValue;
-    
+
     //find the current value, or closest to the current value.
     equity_price_history::ConstIterator itToday = history.end();
     for(tempDate = QDate::currentDate(); tempDate >= comparisonDate; )
@@ -113,15 +113,15 @@ const QString KInvestmentListItem::calculateGain(const equity_price_history& his
         bFoundCurrent = true;
         break;
       }
-      
+
       tempDate = tempDate.addDays(-1);
     }
-    
+
     if(!bFoundCurrent)
     {
       return QString("0.0%");
     }
-    
+
     //find a date that is closest to a week old, not older, and not today's date.  Because its a QMap, this map
     //should already be sorted earliest to latest.
     for(equity_price_history::ConstIterator it = history.begin(); it != history.end(); ++it)
@@ -131,17 +131,17 @@ const QString KInvestmentListItem::calculateGain(const equity_price_history& his
         comparisonDate = it.key();
         comparisonValue = it.data();
         bFoundComparison = true;
-        break;  
+        break;
       }
     }
-    
+
     if(!bFoundComparison)
     {
       return QString("0.0%");
     }
-    
+
     qDebug("Current date/value to use is %s/%s, Previous is %s/%s", tempDate.toString().data(), currentValue.toString().data(), comparisonDate.toString().data(), comparisonValue.toString().data());
-    
+
     //compute the percentage difference
     if(comparisonValue != currentValue)
     {
@@ -151,10 +151,10 @@ const QString KInvestmentListItem::calculateGain(const equity_price_history& his
       {
         bNegative = true;
       }
-      
+
       QString ds = QString("%1%").arg(result, 0, 'f', 3);
       return ds;
-      
+
       /*MyMoneyMoney result = (currentValue / comparisonValue);
       result = result * 100;
       result = result - 100;
@@ -176,7 +176,7 @@ void KInvestmentListItem::paintCell(QPainter * p, const QColorGroup & cg, int co
   {
     bPaintRed = true;
   }
-  
+
   if(bPaintRed)
   {
     QColorGroup _cg( cg );
@@ -209,7 +209,8 @@ void KInvestmentListItem::update(const QCString& id)
     setText(COLUMN_SYMBOL_INDEX, equity.tradingSymbol());
 
     //column 2 (COLUMN_QUANTITY_INDEX) is the quantity of shares owned
-    setText(COLUMN_QUANTITY_INDEX, file->balance(m_account.id()).formatMoney("", 2));
+    int prec = MyMoneyMoney::denomToPrec(equity.smallestAccountFraction());
+    setText(COLUMN_QUANTITY_INDEX, file->balance(m_account.id()).formatMoney("", prec));
 
     //column 3 is the current price
     setText(COLUMN_CURRVALUE_INDEX, equity.price(QDate::currentDate()).formatMoney());

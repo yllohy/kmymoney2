@@ -23,7 +23,7 @@
 #ifndef KEDITEQUITYENTRYDLG_H
 #define KEDITEQUITYENTRYDLG_H
 
- 
+
 // ----------------------------------------------------------------------------
 // QT Includes
 #include <qdialog.h>
@@ -47,26 +47,25 @@
 class KEditEquityEntryDlg : public kEditEquityEntryDecl
 {
   Q_OBJECT
-public: 
+public:
   KEditEquityEntryDlg(const MyMoneyEquity& selectedEquity, QWidget *parent = NULL, const char *name = NULL);
   ~KEditEquityEntryDlg();
-                          
+
   void updatedEquity(MyMoneyEquity& equity) { equity = m_selectedEquity; }
-  
+
 protected slots:
   void slotOKClicked();
   void slotCancelClicked();
   void slotPriceHistoryDoubleClicked(QListViewItem *item, const QPoint &point, int c);
   void slotPriceHistoryClicked(QListViewItem* item, const QPoint& point, int c);
-  void slotEquityNameChanged(const QString& str);
-  void slotEquitySymbolChanged(const QString& str);
+  void slotDataChanged(void);
   void slotAddPriceClicked();
   void slotEditPriceClicked();
   void slotRemovePriceClicked();
-  
+
 private:
   MyMoneyEquity m_selectedEquity;
-  bool m_changes; 
+  bool m_changes;
 };
 
 #endif

@@ -163,14 +163,6 @@ public:
   bool operator>( const signed64 AmountInPence ) const;
   bool operator<=( const signed64 AmountInPence ) const;
   bool operator>=( const signed64 AmountInPence ) const;
-/*
-
-  bool operator==( long ldAmountInPence ) const;
-  bool operator!=( long ldAmountInPence ) const;
-  bool operator<( long ldAmountInPence ) const;
-  bool operator>( long ldAmountInPence ) const;
-  bool operator<=( long ldAmountInPence ) const;
-  bool operator>=( long ldAmountInPence ) const;
 
   bool operator==( int iAmountInPence ) const;
   bool operator!=( int iAmountInPence ) const;
@@ -178,7 +170,16 @@ public:
   bool operator>( int iAmountInPence ) const;
   bool operator<=( int iAmountInPence ) const;
   bool operator>=( int iAmountInPence ) const;
+
+/*
+  bool operator==( long ldAmountInPence ) const;
+  bool operator!=( long ldAmountInPence ) const;
+  bool operator<( long ldAmountInPence ) const;
+  bool operator>( long ldAmountInPence ) const;
+  bool operator<=( long ldAmountInPence ) const;
+  bool operator>=( long ldAmountInPence ) const;
 */
+
   // calculation
   MyMoneyMoney operator+( const MyMoneyMoney& Amount ) const;
 /*
@@ -198,10 +199,10 @@ public:
   MyMoneyMoney operator-( ) const;
 
   MyMoneyMoney operator*( const MyMoneyMoney& Amount ) const;
+  MyMoneyMoney operator*( int iAmountInPence ) const;
 /*
   MyMoneyMoney operator*( signed64 AmountInPence ) const;
   MyMoneyMoney operator*( long ldAmountInPence ) const;
-  MyMoneyMoney operator*( int iAmountInPence ) const;
 */
 
   MyMoneyMoney operator/( const MyMoneyMoney& Amount ) const;
@@ -226,6 +227,9 @@ public:
   MyMoneyMoney  operator++( int );
   MyMoneyMoney& operator--();
   MyMoneyMoney  operator--( int );
+
+  // conversion
+  operator int() const;
 
   static MyMoneyMoney maxValue;
   static MyMoneyMoney minValue;
@@ -742,7 +746,6 @@ inline bool MyMoneyMoney::operator>=(const signed64 AmountInPence) const
   return ( *this >= Amount ) ;
 }
 
-/*
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: operator==
 //   Purpose: Compare equal operator - compares object with input integer object
@@ -753,7 +756,10 @@ inline bool MyMoneyMoney::operator>=(const signed64 AmountInPence) const
 ////////////////////////////////////////////////////////////////////////////////
 inline bool MyMoneyMoney::operator==(int iAmountInPence) const
 {
-  return ( m_64Value == static_cast<signed64>(iAmountInPence) ) ;
+  if(iAmountInPence != 0)
+    qDebug("MyMoneyMoney::operator==(int) should only be used with 0");
+  MyMoneyMoney Amount( iAmountInPence );
+  return ( *this == Amount ) ;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -766,7 +772,10 @@ inline bool MyMoneyMoney::operator==(int iAmountInPence) const
 ////////////////////////////////////////////////////////////////////////////////
 inline bool MyMoneyMoney::operator!=(int iAmountInPence) const
 {
-  return ( m_64Value != static_cast<signed64>(iAmountInPence) ) ;
+  if(iAmountInPence != 0)
+    qDebug("MyMoneyMoney::operator!=(int) should only be used with 0");
+  MyMoneyMoney Amount( iAmountInPence );
+  return ( *this != Amount ) ;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -780,7 +789,10 @@ inline bool MyMoneyMoney::operator!=(int iAmountInPence) const
 ////////////////////////////////////////////////////////////////////////////////
 inline bool MyMoneyMoney::operator<(  int iAmountInPence) const
 {
-  return ( m_64Value < static_cast<signed64>(iAmountInPence) ) ;
+  if(iAmountInPence != 0)
+    qDebug("MyMoneyMoney::operator<(int) should only be used with 0");
+  MyMoneyMoney Amount( iAmountInPence );
+  return ( *this < Amount ) ;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -794,7 +806,10 @@ inline bool MyMoneyMoney::operator<(  int iAmountInPence) const
 ////////////////////////////////////////////////////////////////////////////////
 inline bool MyMoneyMoney::operator>(  int iAmountInPence) const
 {
-  return ( m_64Value > static_cast<signed64>(iAmountInPence) ) ;
+  if(iAmountInPence != 0)
+    qDebug("MyMoneyMoney::operator>(int) should only be used with 0");
+  MyMoneyMoney Amount( iAmountInPence );
+  return ( *this > Amount ) ;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -808,7 +823,10 @@ inline bool MyMoneyMoney::operator>(  int iAmountInPence) const
 ////////////////////////////////////////////////////////////////////////////////
 inline bool MyMoneyMoney::operator<=(int iAmountInPence) const
 {
-  return ( m_64Value <= static_cast<signed64>(iAmountInPence) ) ;
+  if(iAmountInPence != 0)
+    qDebug("MyMoneyMoney::operator<=(int) should only be used with 0");
+  MyMoneyMoney Amount( iAmountInPence );
+  return ( *this <= Amount ) ;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -822,7 +840,10 @@ inline bool MyMoneyMoney::operator<=(int iAmountInPence) const
 ////////////////////////////////////////////////////////////////////////////////
 inline bool MyMoneyMoney::operator>=(int iAmountInPence) const
 {
-  return ( m_64Value >= static_cast<signed64>(iAmountInPence) ) ;
+  if(iAmountInPence != 0)
+    qDebug("MyMoneyMoney::operator>=(int) should only be used with 0");
+  MyMoneyMoney Amount( iAmountInPence );
+  return ( *this >= Amount ) ;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -833,6 +854,7 @@ inline bool MyMoneyMoney::operator>=(int iAmountInPence) const
 // Arguments: AmountInPence - long object to be compared with
 //
 ////////////////////////////////////////////////////////////////////////////////
+/*
 inline bool MyMoneyMoney::operator==(long ldAmountInPence) const
 {
   return ( m_64Value == static_cast<signed64>(ldAmountInPence) ) ;
@@ -1079,6 +1101,7 @@ inline MyMoneyMoney MyMoneyMoney::operator*(long ldAmountInPence ) const
   result.m_64Value *= static_cast<signed64>(ldAmountInPence);
   return result;
 }
+*/
 
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: operator*
@@ -1090,11 +1113,9 @@ inline MyMoneyMoney MyMoneyMoney::operator*(long ldAmountInPence ) const
 ////////////////////////////////////////////////////////////////////////////////
 inline MyMoneyMoney MyMoneyMoney::operator*(int iAmountInPence ) const
 {
-  MyMoneyMoney result(*this);
-  result.m_64Value *= static_cast<signed64>(iAmountInPence);
-  return result;
+  MyMoneyMoney factor(iAmountInPence, 1);
+  return *this * factor;
 }
-*/
 
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: operator+=

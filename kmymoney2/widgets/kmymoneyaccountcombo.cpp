@@ -72,6 +72,17 @@ void kMyMoneyAccountCombo::slotSelected(const QCString& id)
   }
 }
 
+void kMyMoneyAccountCombo::setSelected(const QCString& id)
+{
+  try {
+    MyMoneyAccount acc = MyMoneyFile::instance()->account(id);
+    setSelected(acc);
+  } catch(MyMoneyException *e) {
+    qDebug("Account '%s' not found in %s(%d)", id.data(), __FILE__, __LINE__);
+    delete e;
+  }
+}
+
 void kMyMoneyAccountCombo::setSelected(const MyMoneyAccount& acc)
 {
   m_selector->setSelected(acc.id());
