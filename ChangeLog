@@ -9,6 +9,9 @@
   * optimized space for items in search register
   * added full search functionality
   * fixed bug in font handling of register code
+  * added possibility to create scheduled transaction from ledger view
+    based on existing transaction
+  * added button icons to find transaction dialog
 
 2003-09-04 Michael Edwardes <mte@users.sourceforge.net>
   * Fix bug in KEditScheduleDlg::slotSplitClicked() and
