@@ -40,6 +40,8 @@
 #include "kaccountselectdlg.h"
 #include "knewaccountwizard.h"
 #include "knewaccountdlg.h"
+#include "knewbankdlg.h"
+#include "../mymoney/mymoneyinstitution.h"
 #include "../mymoney/mymoneyfile.h"
 
 KAccountSelectDlg::KAccountSelectDlg(const KMyMoneyUtils::categoryTypeE accountType, const QString& purpose, QWidget *parent, const char *name )
@@ -152,6 +154,26 @@ void KAccountSelectDlg::addCategories(QStringList& strList, const QCString& id, 
   }
 }
 
+void KAccountSelectDlg::slotCreateInstitution(void)
+{
+  MyMoneyInstitution institution;
+
+  KNewBankDlg dlg(institution, false, this, "newbankdlg");
+  if (dlg.exec()) {
+    try {
+      MyMoneyFile* file = MyMoneyFile::instance();
+
+      institution = dlg.institution();
+
+      file->addInstitution(institution);
+    } catch (MyMoneyException *e) {
+      KMessageBox::information(this, i18n("Cannot add institution: ")+e->what());
+      delete e;
+      return;
+    }
+  }
+}
+
 void KAccountSelectDlg::slotCreateAccount(void)
 {
   MyMoneyAccount newAccount;
@@ -165,6 +187,8 @@ void KAccountSelectDlg::slotCreateAccount(void)
   && !isCategory) {
     // wizard selected
     KNewAccountWizard wizard(0);
+    connect(&wizard, SIGNAL(newInstitutionClicked()), this, SLOT(slotCreateInstitution()));
+    
     wizard.setAccountName(m_account.name());
     wizard.setAccountType(m_account.accountType());
     wizard.setOpeningBalance(m_account.openingBalance());
@@ -207,7 +231,13 @@ void KAccountSelectDlg::slotCreateAccount(void)
       
       file->addAccount(newAccount, parentAccount);
 
-      m_accountComboBox->setCurrentText(newAccount.name());
+      // reload widget with new accounts
+      loadAccounts();
+      
+      if(isCategory)
+        m_accountComboBox->setCurrentItem(file->accountToCategory(newAccount.id()));
+      else
+        m_accountComboBox->setCurrentItem(newAccount.name());
       accept();
     }
     catch (MyMoneyException *e)

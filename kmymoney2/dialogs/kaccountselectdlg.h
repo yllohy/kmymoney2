@@ -32,11 +32,11 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 
-#include <kcombobox.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
 
+#include "../widgets/kmymoneycombo.h"
 #include "../dialogs/kaccountselectdlgdecl.h"
 #include "../mymoney/mymoneyobserver.h"
 #include "../mymoney/mymoneyaccount.h"
@@ -130,6 +130,11 @@ protected slots:
     */
   void slotCreateAccount(void);
 
+  /**
+    * This slot is used to fire up the new institution dialog
+    */
+  void slotCreateInstitution(void);
+  
   /**
     * This slot is used to react on the abort button
     */
