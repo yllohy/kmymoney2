@@ -212,6 +212,11 @@ void KLedgerViewCheckings::slotTypeSelected(int type)
       break;
   }
 
+  KConfig *config = KGlobal::config();
+  config->setGroup("General Options");
+  if(config->readBoolEntry("AlwaysShowNrField", false) == true)
+    formTable->setText(0, 3, i18n("Nr"));
+
   if(!m_form->tabBar()->signalsBlocked())
     slotNew();
 }
@@ -644,6 +649,7 @@ void KLedgerViewCheckings::fillForm(void)
     m_split = MyMoneySplit();
     m_split.setAccountId(accountId());
     m_split.setAction(m_action);
+
     m_transaction.addSplit(m_split);
 
     // transaction empty, clean out space
@@ -844,6 +850,18 @@ void KLedgerViewCheckings::loadEditWidgets(int& transType)
     transType = m_form->tabBar()->currentTab();
 
     try {
+      if(m_editNr != 0) {
+        // if the CopyTypeToNr switch is set, we copy the m_action string
+        // into the nr field of this transaction.
+        KConfig *config = KGlobal::config();
+        config->setGroup("General Options");
+        if(config->readBoolEntry("CopyTypeToNr", false) == true) {
+          m_split.setNumber(m_action);
+          m_transaction.modifySplit(m_split);
+          m_editNr->loadText(m_split.number());
+        }
+      }
+
       // setup a new transaction with the defaults
       switch(transType) {
         case Transfer: // Transfer
@@ -914,6 +932,10 @@ void KLedgerViewCheckings::arrangeEditWidgetsInForm(QWidget*& focusWidget, const
       fromRow = 0,
       toRow = 1,
       nrRow = 0;
+
+  KConfig *config = KGlobal::config();
+  config->setGroup("General Options");
+
   switch(transType) {
     case Check: // Check
     case ATM: // ATM
@@ -925,7 +947,9 @@ void KLedgerViewCheckings::arrangeEditWidgetsInForm(QWidget*& focusWidget, const
 
     case Deposit: // Deposit
     case Withdrawal: // Withdrawal
-      fromRow = toRow = nrRow = -1;
+      fromRow = toRow = -1;
+      if(config->readBoolEntry("AlwaysShowNrField", false) == false)
+        nrRow = -1;
       break;
 
     case Transfer: // Transfer
@@ -934,7 +958,8 @@ void KLedgerViewCheckings::arrangeEditWidgetsInForm(QWidget*& focusWidget, const
 
       payeeRow = 2;
       categoryRow = -1;
-      nrRow = -1;
+      if(config->readBoolEntry("AlwaysShowNrField", false) == false)
+        nrRow = -1;
 
       focusWidget = m_editTo;
       // m_form->table()->setEditable(0, 1);
@@ -987,8 +1012,6 @@ void KLedgerViewCheckings::arrangeEditWidgetsInForm(QWidget*& focusWidget, const
       m_tabOrderWidgets.append(m_editCategory);
       m_tabOrderWidgets.append(m_editSplit);
       m_tabOrderWidgets.append(m_editMemo);
-      if(m_editNr != 0)
-        m_tabOrderWidgets.append(m_editNr);
       break;
 
     case Deposit: // Deposit
@@ -1007,6 +1030,8 @@ void KLedgerViewCheckings::arrangeEditWidgetsInForm(QWidget*& focusWidget, const
       break;
   }
 
+  if(m_editNr != 0)
+    m_tabOrderWidgets.append(m_editNr);
   m_tabOrderWidgets.append(m_editDate->focusWidget());
   m_tabOrderWidgets.append(m_editAmount);
 }
