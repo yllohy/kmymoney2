@@ -1931,3 +1931,17 @@ void KLedgerView::slotCreateSchedule(void)
     delete m_keditscheddlg;
   }
 }
+
+const bool KLedgerView::transfersPossible(void) const
+{
+  QValueList<MyMoneyAccount> list = MyMoneyFile::instance()->accountList();
+  QValueList<MyMoneyAccount>::ConstIterator it_a;
+  int cnt = 0;
+  
+  for(it_a = list.begin(); cnt < 2 && it_a != list.end(); ++it_a) {
+    if((*it_a).accountGroup() == MyMoneyAccount::Asset
+    || (*it_a).accountGroup() == MyMoneyAccount::Liability)
+      ++cnt;
+  }
+  return (cnt >= 2) ? true : false;
+}

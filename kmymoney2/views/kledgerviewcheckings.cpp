@@ -70,6 +70,8 @@ KLedgerViewCheckings::KLedgerViewCheckings(QWidget *parent, const char *name )
   ledgerLayout->addLayout(m_summaryLayout);
 
   createForm();
+  // make sure, transfers are disabled if required
+  m_tabTransfer->setEnabled(transfersPossible());
   ledgerLayout->addWidget(m_form);
 
   formLayout->addLayout( ledgerLayout, 0, 0);
@@ -115,6 +117,8 @@ void KLedgerViewCheckings::refreshView(void)
     m_lastReconciledLabel->setText(i18n("Reconciled: %1").arg(KGlobal::locale()->formatDate(date, true)));
   else
     m_lastReconciledLabel->setText(QString());
+
+  m_tabTransfer->setEnabled(transfersPossible());
 }
 
 void KLedgerViewCheckings::resizeEvent(QResizeEvent* /* ev */)

@@ -141,7 +141,8 @@ void kMyMoneyCategory::focusOutEvent(QFocusEvent *ev)
     emit newCategory(text());
   }
   
-  if(text() != m_text) {
+  if(!text().isEmpty() && !m_text.isEmpty()
+  && text() != m_text) {
     emit categoryChanged(text());
   }
   // now call base class

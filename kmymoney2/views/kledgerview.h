@@ -695,6 +695,15 @@ protected:
 
   virtual void reloadEditWidgets(const MyMoneyTransaction& t) = 0;
 
+  /**
+    * This method checks if transfer transactions are possible (the
+    * engine contains more than one asset/liability account).
+    *
+    * @retval true if transfer transactions are possible
+    * @retval false if transfer transactions are not (yet) possible
+    */
+  const bool transfersPossible(void) const;
+  
 protected:
   /**
     * This member keeps a pointer to the specific info stack for the account
