@@ -63,6 +63,9 @@ MyMoneyQifReader::MyMoneyQifReader()
   m_processingData = false;
   m_userAbort = false;
   m_autoCreatePayee = false;
+  m_warnedInvestment = false;
+  m_warnedSecurity = false;
+  m_warnedPrice = false;
 
   connect(&m_filter, SIGNAL(wroteStdin(KProcess*)), this, SLOT(slotSendDataToFilter()));
   connect(&m_filter, SIGNAL(receivedStdout(KProcess*, char*, int)), this, SLOT(slotReceivedDataFromFilter(KProcess*, char*, int)));
@@ -114,7 +117,7 @@ void MyMoneyQifReader::slotReceivedErrorFromFilter(KProcess* /* proc */, char *b
 {
   QByteArray data;
   data.duplicate(buff, len);
-  qWarning(data);
+  qWarning("%s",static_cast<const char*>(data));
 }
 
 void MyMoneyQifReader::slotReceivedDataFromFilter(KProcess* /* proc */, char *buff, int len)
@@ -131,6 +134,7 @@ void MyMoneyQifReader::slotReceivedDataFromFilter(KProcess* /* proc */, char *bu
 
 void MyMoneyQifReader::slotProcessBuffers(void)
 {
+#if 0
   QValueList<QByteArray>::Iterator it;
 
   while(!m_userAbort && !m_data.isEmpty()) {
@@ -152,6 +156,27 @@ void MyMoneyQifReader::slotProcessBuffers(void)
     m_data.remove(it);
   }
   m_data.clear();
+#else
+  QValueList<QByteArray>::Iterator it = m_data.begin();
+  while(!m_userAbort && it != m_data.end()) {
+    unsigned int i;
+
+    // parse this buffer
+    for(i = 0; !m_userAbort && i < (*it).size(); ++i) {
+      QChar c((*it).at(i));
+      if(c == '\r')
+        continue;
+      if(c == '\n') {
+        processQifLine();
+        m_qifLine = QString();
+      } else
+        m_qifLine += c;
+    }
+    ++it;
+  }
+  m_data.clear();
+
+#endif
 
 #ifndef DEBUG_IMPORT
   emit importFinished();
@@ -290,8 +315,17 @@ const bool MyMoneyQifReader::finishImport(void)
   return rc;
 }
 
+#include <kdebug.h>
+
 void MyMoneyQifReader::processQifEntry(void)
 {
+  // This method processes a 'QIF Entry' which is everything between two caret
+  // signs
+  //
+  // FIXME I think that's not strictly true to say that an entry is everything
+  // between carets.  An exclamation-point-started line should not be considered
+  // part of an entry.
+
   int exclamationCnt = 1;
 
   try {
@@ -325,6 +359,25 @@ void MyMoneyQifReader::processQifEntry(void)
           } else if(category == "Memorized") {
             m_entryType = EntryMemorizedTransaction;
 
+          } else if(category == "Security") {
+            m_entryType = EntrySecurity;
+            processSecurityEntry();
+          } else if(category == "Invst") {
+
+            // Warn the user
+            if ( ! m_warnedInvestment )
+            {
+              m_warnedInvestment = true;
+              if ( KMessageBox::warningContinueCancel (qApp->mainWidget(), i18n("This file contains investment entries.  These are not currently supported by the QIF importer."), i18n("Unable to import"), KStdGuiItem::cont(), "QIFCantImportInvestment") == KMessageBox::Cancel )
+                throw new MYMONEYEXCEPTION("USERABORT");
+            }
+          
+            m_entryType = EntryInvestmentTransaction;
+            processMSAccountEntry(MyMoneyAccount::Investment);
+
+          } else if(category == "Prices") {
+            m_entryType = EntryPrice;
+            processPriceEntry();
           } else
             qWarning("Unknown '!Type:%s' category", category.latin1());
 
@@ -362,9 +415,21 @@ void MyMoneyQifReader::processQifEntry(void)
           processTransactionEntry();
           break;
 
+        case EntryInvestmentTransaction:
+          processInvestmentTransactionEntry();
+          break;
+
         case EntryAccount:
           m_account = MyMoneyAccount();
           processAccountEntry();
+          break;
+          
+        case EntrySecurity:
+          processSecurityEntry();
+          break;
+
+        case EntryPrice:
+          processPriceEntry();
           break;
 
         default:
@@ -405,6 +470,8 @@ const QString MyMoneyQifReader::extractLine(const QChar id, int cnt)
 
 void MyMoneyQifReader::processMSAccountEntry(const MyMoneyAccount::accountTypeE accountType)
 {
+  // FIXME Handle this like any regular transaction.  I suspect we can just kill it, and
+  // move "P" == "Opening Balance" into processTransactionEntry() as a special case
   if(extractLine('P') == m_qifProfile.openingBalanceText()) {
     m_account = MyMoneyAccount();
     m_account.setAccountType(accountType);
@@ -447,7 +514,6 @@ void MyMoneyQifReader::processMSAccountEntry(const MyMoneyAccount::accountTypeE 
     // lines 7-11 are the leadin for the next account. So we check here if
     // the !Type:xxx record also contains an !Account line and process the
     // entry as required.
-    //
     int exclamationCnt = 1;
     QString category;
     do {
@@ -459,7 +525,10 @@ void MyMoneyQifReader::processMSAccountEntry(const MyMoneyAccount::accountTypeE 
       processAccountEntry();
     } else {
       selectOrCreateAccount(Select, m_account);
-      processTransactionEntry();
+      if ( m_entryType == EntryInvestmentTransaction )
+        processInvestmentTransactionEntry();
+      else
+        processTransactionEntry();
     }
   }
 }
@@ -757,6 +826,11 @@ void MyMoneyQifReader::processTransactionEntry(void)
 
 }
 
+void MyMoneyQifReader::processInvestmentTransactionEntry()
+{
+  kdDebug(2) << "Investment Transaction:" << m_qifEntry.count() << " lines" << endl;
+}
+
 const QCString MyMoneyQifReader::checkCategory(const QString& name, const MyMoneyMoney value, const MyMoneyMoney value2)
 {
   QCString accountId;
@@ -994,3 +1068,57 @@ void MyMoneyQifReader::signalProgress(int current, int total, const QString& msg
     (*m_progressCallback)(current, total, msg);
 }
 
+void MyMoneyQifReader::processPriceEntry(void)
+{
+  // Warn the user
+  if ( ! m_warnedPrice )
+  {
+    m_warnedPrice = true;
+    if ( KMessageBox::warningContinueCancel (qApp->mainWidget(), i18n("This file contains price entries.  These are not currently supported by the QIF importer."), i18n("Unable to import"), KStdGuiItem::cont(), "QIFCantImportPrice") == KMessageBox::Cancel )
+      throw new MYMONEYEXCEPTION("USERABORT");
+  }
+
+  QStringList::const_iterator it_line = m_qifEntry.begin();
+
+  // Get past the "!Type: Price" line
+  if ( it_line != m_qifEntry.end() )
+    ++it_line;
+
+  // Make a price for each line
+  while ( it_line != m_qifEntry.end() )
+  {
+    QStringList columns = QStringList::split(",",*it_line,true);
+    kdDebug(2) << "Price:" << columns[0] << " / " << columns[1] << " / " << columns[2] << endl;
+  
+    // TODO Add this price
+
+    ++it_line;
+  }  
+}
+
+void MyMoneyQifReader::processSecurityEntry(void)
+{
+  // Warn the user
+  if ( ! m_warnedSecurity )
+  {
+    m_warnedSecurity = true;
+    if ( KMessageBox::warningContinueCancel (qApp->mainWidget(), i18n("This file contains security entries.  These are not currently supported by the QIF importer."), i18n("Unable to import"), KStdGuiItem::cont(), "QIFCantImportSecurity") == KMessageBox::Cancel )
+      throw new MYMONEYEXCEPTION("USERABORT");
+  }
+  
+  // TODO Implement security
+  QString type = extractLine('T');
+  QString name = extractLine('N');
+  QString symbol = extractLine('S');
+  
+  kdDebug(2) << "Security (" << type << "): " << name << " (" << symbol << ")" << endl;
+
+  /*
+  !Type:Security      throw new MYMONEYEXCEPTION("USERABORT");
+
+  NVANGUARD 500 INDEX
+  SVFINX
+  TMutual Fund
+  ^
+  */
+}

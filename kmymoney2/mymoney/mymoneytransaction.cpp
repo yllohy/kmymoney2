@@ -262,6 +262,9 @@ const unsigned long MyMoneyTransaction::hash(const QString& txt) const
   return h;
 }
 
+// FIXME: Unfortunately, this is not enough.  A duplicate transaction also should
+// consider some other things like check number and payee
+
 const bool MyMoneyTransaction::isDuplicate(const MyMoneyTransaction& r) const
 {
   bool rc = true;

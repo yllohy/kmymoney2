@@ -166,6 +166,24 @@ private:
   void processTransactionEntry(void);
 
   /**
+    * This method scans the m_qifEntry object as an investment transaction
+    * record specified by Quicken.
+    */
+  void processInvestmentTransactionEntry(void);
+  
+  /**
+    * This method scans the m_qifEntry object as a price record specified
+    * by Quicken.
+    */
+  void processPriceEntry(void);
+
+  /**
+    * This method scans the m_qifEntry object as a security record specified
+    * by Quicken.
+    */
+  void processSecurityEntry(void);
+
+  /**
     * This method processes the lines previously collected in
     * the member variable m_qifEntry. If further information
     * by the user is required to process the entry it will
@@ -272,7 +290,10 @@ private:
      EntryAccount,
      EntryTransaction,
      EntryCategory,
-     EntryMemorizedTransaction
+     EntryMemorizedTransaction,
+     EntryInvestmentTransaction,
+     EntrySecurity,
+     EntryPrice
   };
 
   KProcess                m_filter;
@@ -294,6 +315,9 @@ private:
   bool                    m_userAbort;
   bool                    m_autoCreatePayee;
   unsigned long           m_pos;
+  bool                    m_warnedInvestment;
+  bool                    m_warnedSecurity;
+  bool                    m_warnedPrice;
 
   QValueList<QByteArray>  m_data;
           
