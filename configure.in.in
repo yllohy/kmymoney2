@@ -3,6 +3,12 @@
 AM_INIT_AUTOMAKE(kmymoney2,0.5.1)
 
 dnl
+dnl check for atoll and strtoll
+dnl
+AC_FUNC_CHECK(atoll, [AC_DEFINE_UNQUOTED(HAVE_ATOLL, 1, [define if you have atoll])])
+AC_FUNC_CHECK(strtoll, [AC_DEFINE_UNQUOTED(HAVE_STRTOLL, 1, [define if you have strtoll])])
+
+dnl
 dnl add checks for cppunit
 dnl
 AM_PATH_CPPUNIT(1.8.0,
@@ -29,15 +35,9 @@ dnl check for libxml++
 dnl
 AM_LIBXMLPP(
 	AM_CONDITIONAL(LIBXMLPP, test x = x)
-	AC_DEFINE_UNQUOTED(HAVE_LIBXMLPP, 1, [Define if you have libxml++])
+	AC_DEFINE_UNQUOTED(HAVE_LIBXMLPP, 1, [Define if you have libxml++]),
 	AM_CONDITIONAL(LIBXMLPP, test x = y)
 	)
-
-dnl
-dnl check for atoll and strtoll
-dnl
-AC_FUNC_CHECK(atoll, [AC_DEFINE_UNQUOTED(HAVE_ATOLL, 1, [define if you have atoll])])
-AC_FUNC_CHECK(strtoll, [AC_DEFINE_UNQUOTED(HAVE_STRTOLL, 1, [define if you have strtoll])])
 
 dnl CXXFLAGS="$NOOPT_CXXFLAGS" dnl __kdevelop[noopt]__
 CXXFLAGS="$CXXFLAGS $USE_EXCEPTIONS" dnl __kdevelop[exc]__
