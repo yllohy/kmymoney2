@@ -7,6 +7,9 @@
   * don't try to compile test code, if CPPUNIT is not present
   * added chapter about unit testing and example code to the PHB
   * minor spelling modifications in the PHB
+  * Added payeeList() method
+  * Fixed ambiguity error in KBanksView
+  * Return value for KMyMoneyView::isopen()
 
 2002-06-14 Michael Edwardes <mte@users.sourceforge.net>
   * Improved the 'file open' logic.
