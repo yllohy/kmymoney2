@@ -188,6 +188,10 @@ void KLedgerViewInvestments::fillForm()
   tableItem = formTable->item(MEMO_ROW, MEMO_DATA_COL);
   if(tableItem)
     tableItem->setSpan(MEMO_DATA_COL, 2);
+  // fee category
+  tableItem = formTable->item(CATEGORY_ROW, CATEGORY_DATA_COL);
+  if(tableItem)
+    tableItem->setSpan(CATEGORY_DATA_COL, 2);
   // price per share
   tableItem = formTable->item(PRICE_ROW, PRICE_DATA_COL);
   if(tableItem)
@@ -509,6 +513,7 @@ QWidget* KLedgerViewInvestments::arrangeEditWidgetsInForm(void)
   m_editTotalAmount->setPalette(palette);
   m_editFees->setPalette(palette);
   m_editType->setPalette(palette);
+  m_editFeeCategory->setPalette(palette);
   m_editCashAccount->setPalette(palette);
 
 
@@ -654,6 +659,7 @@ void KLedgerViewInvestments::createEditWidgets()
     m_editType->insertItem(i18n("Yield"), Yield);
     m_editType->insertItem(i18n("Add Shares"), AddShares);
     m_editType->insertItem(i18n("Remove Shares"), RemoveShares);
+    connect(m_editType, SIGNAL(activated(int)), this, SLOT(slotUpdateTotalAmount()));
   }
 
   if(!m_editCashAccount) {
@@ -663,7 +669,7 @@ void KLedgerViewInvestments::createEditWidgets()
   }
 
   if(!m_editFeeCategory) {
-    m_editFeeCategory = new kMyMoneyCategory(0, "editFeeCategory", KMyMoneyUtils::liability);
+    m_editFeeCategory = new kMyMoneyCategory(0, "editFeeCategory", KMyMoneyUtils::expense);
     m_editFeeCategory->setFocusPolicy(QWidget::StrongFocus);
   }
 }
@@ -1038,43 +1044,41 @@ void KLedgerViewInvestments::slotEndEdit()
   int currentAction = m_editType->currentItem();
   qDebug("Current action is %d", currentAction);
 
-  //compute the total amount for this transaction
-  MyMoneyMoney total;
-  total += m_editFees->getMoneyValue();
-  total += (m_editPPS->getMoneyValue() * m_editShares->getMoneyValue());
-  qDebug("Total amount = %s", total.toString().data());
+  MyMoneyMoney total, fees, shares, value;
+  switch(currentAction) {
+    case COMBO_BUY_SHARES:
+    case COMBO_SELL_SHARES:
+      shares = m_editShares->getMoneyValue();
+      m_split.setAction(MyMoneySplit::ActionBuyShares);
+      if(currentAction == COMBO_SELL_SHARES) {
+        shares = -shares;
+      }
+      // setup stock account split
+      m_split.setValue((m_editPPS->getMoneyValue() * shares));
+      m_split.setShares(shares);
+      m_split.setAccountId(m_editStockAccount->selectedAccounts().first());
+      m_split.setId(QCString());
 
+      //set up the fee split now
+      fees = m_editFees->getMoneyValue();
+      m_feeSplit.setValue(fees);
+      m_feeSplit.setShares(fees);
+      m_feeSplit.setAccountId(m_editFeeCategory->selectedAccountId());
+      m_feeSplit.setId(QCString());
 
-  if(currentAction == COMBO_BUY_SHARES)
-  {
-    //set up the split for the money that is sourcing this transaction
-    m_accountSplit.setAccountId(accountId);
-    m_accountSplit.setValue(-total);
-    m_accountSplit.setShares(-total);
-    m_accountSplit.setId(QCString());
+      //set up the split for the money that is sourcing this transaction
+      total = -(-shares - fees);
+      m_accountSplit.setAccountId(accountId);
+      m_accountSplit.setValue(-total);
+      m_accountSplit.setShares(-total);
+      m_accountSplit.setId(QCString());
 
-    //set up the fee split now
-    m_feeSplit.setValue(m_editFees->getMoneyValue());
-    m_feeSplit.setShares(m_editFees->getMoneyValue());
-    m_feeSplit.setAccountId(m_editFeeCategory->selectedAccountId());
-    m_feeSplit.setId(QCString());
-
-    m_split.setValue((m_editPPS->getMoneyValue() * m_editShares->getMoneyValue()));
-    m_split.setShares(m_editShares->getMoneyValue());
-    m_split.setAction(MyMoneySplit::ActionBuyShares);
-    m_split.setAccountId(m_editStockAccount->selectedAccounts().first());
-    m_split.setId(QCString());
-
-    m_transaction.addSplit(m_accountSplit);
-    m_transaction.addSplit(m_split);
-    if(m_feeSplit.value() != 0)
-      m_transaction.addSplit(m_feeSplit);
+      m_transaction.addSplit(m_accountSplit);
+      m_transaction.addSplit(m_split);
+      if(m_feeSplit.value() != 0)
+        m_transaction.addSplit(m_feeSplit);
+      break;
   }
-  else if(currentAction == COMBO_SELL_SHARES)
-  {
-
-  }
-
 
   //the first split item is for the cash account
 
@@ -1410,10 +1414,18 @@ void KLedgerViewInvestments::refreshView(const bool transactionFormVisible)
 
 void KLedgerViewInvestments::slotUpdateTotalAmount()
 {
-  MyMoneyMoney total;
-  total = m_editFees->getMoneyValue();
-  total = total + (m_editPPS->getMoneyValue() * m_editShares->getMoneyValue());
-  m_editTotalAmount->loadText(total.formatMoney("", 2));
+  if(m_editTotalAmount) {
+    MyMoneyMoney total;
+    switch(m_editType->currentItem()) {
+      case COMBO_BUY_SHARES:
+      case COMBO_SELL_SHARES:
+        total = m_editFees->getMoneyValue();
+        if(m_editType->currentItem() == COMBO_SELL_SHARES)
+          total = -total;
+        total = total + (m_editPPS->getMoneyValue() * m_editShares->getMoneyValue());
+        m_editTotalAmount->loadText(total.formatMoney("", 2));
+        break;
+    }
+  }
 }
 
-  
