@@ -73,14 +73,14 @@ QWidget* kMyMoneyTable::createEditor(int row, int col, bool replace) const
     case 5:   // deposit
     case 8:   // number
     case 9:   // category
-    case 11:  // enter
-    case 12:  // cancel
       return QTable::createEditor(row, col, replace);
       break;
     case 3:   // reconcile-flag
     case 6:   // balance
     case 7:   // empty
-    case 10:  // empty
+    case 10:  // empty split?
+    case 11:  // enter
+    case 12:  // cancel
     case 13:  // delete
       break;
     default:
