@@ -51,7 +51,8 @@ public:
 protected slots:
   void slotOkClicked();
 
-public slots: // Public slots
+  void slotSetProgress(int progress);
+
   /** No descriptions */
   void slotBrowse();
 };

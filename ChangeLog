@@ -1,3 +1,6 @@
+2001-08-19 Michael Edwardes <mte@users.sourceforge.net>
+  * Export QIF now has a progress bar.
+
 2001-08-18 Michael Edwardes <mte@users.sourceforge.net>
   * Moved the QIF read & write methods into MyMoneyAccount.
 

@@ -19,6 +19,7 @@
 
 #include <qstring.h>
 #include <qlist.h>
+#include <qobject.h>
 #include "mymoneytransaction.h"
 #include "mymoneymoney.h"
 #include "mymoneyscheduled.h"
@@ -33,11 +34,13 @@ class MyMoneyBank;
   * @see MyMoneyTransaction
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: mymoneyaccount.h,v 1.12 2001/08/18 19:37:40 mte Exp $
+  * $Id: mymoneyaccount.h,v 1.13 2001/08/19 14:30:42 mte Exp $
   *
   * @short Representation of an account which holds transactions.
 **/
-class MyMoneyAccount {
+class MyMoneyAccount : public QObject {
+  Q_OBJECT
+
 public:
   /**
     Account types currently supported.
@@ -49,7 +52,7 @@ public:
   };
 
 private:
-	MyMoneyBank *m_parent;
+  MyMoneyBank *m_parent;
   // Account details
   QString m_accountName;
   QString m_accountNumber;
@@ -76,18 +79,18 @@ public:
   /**
     * The default constructor which loads default values into the attributes.
   **/
-	MyMoneyAccount();
+  MyMoneyAccount();
 
-	/**
-	  * The most commonly used constructor.  Initialises all the attributes to the
-	  * supplied arguments.
-	  *
-	  * @param name The account name.
-	  * @param number The account number.
-	  * @param type The account type either savings or current at the moment
-	  * @param description A description of the account. Unlimited in length.
-	  * @param lastReconcile TODO: remove this param, *why* is it here ?
-	**/
+  /**
+    * The most commonly used constructor.  Initialises all the attributes to the
+    * supplied arguments.
+    *
+    * @param name The account name.
+    * @param number The account number.
+    * @param type The account type either savings or current at the moment
+    * @param description A description of the account. Unlimited in length.
+    * @param lastReconcile TODO: remove this param, *why* is it here ?
+  **/
   MyMoneyAccount(MyMoneyBank *parent, const QString& name, const QString& number, accountTypeE type,
     const QString& description, const QDate openingDate, const MyMoneyMoney openingBal,
     const QDate& lastReconcile);
@@ -95,7 +98,7 @@ public:
   /**
     * Standard destructor.
   **/
-	~MyMoneyAccount();
+  ~MyMoneyAccount();
 
   /**
     * Simple get operation.
@@ -228,64 +231,72 @@ public:
     * @return The found transaction or 0 if not found.
   **/
   MyMoneyTransaction* transaction(const MyMoneyTransaction& transaction);
-	
-	/**
-	  * Gets the first transaction in the list.
-	  * Typically used in for statements such as:
-	  * for (transaction=transactionFirst(); transaction; transaction=transactionNext()) {
-	  *  ...
-	  * }
-	  *
-	  * @return The first transaction in the list or 0 if no transactions exist.
-	  *
-	  * @see transactionNext
-	  * @see transactionLast
-	**/
-	MyMoneyTransaction* transactionFirst(void);
-	
-	/**
-	  * Gets the next transaction in the list.  You must have called transactionFirst to get the
-	  * next !
-	  * Typically used in for statements such as:
-	  * for (transaction=transactionFirst(); transaction; transaction=transactionNext()) {
-	  *  ...
-	  * }
-	  *
-	  * @return The next transaction in the list or 0 if at end or no transactions.
-	  *
-	  * @see transactionFirst
-	  * @see transactionLast
-	**/
-	MyMoneyTransaction* transactionNext(void);
-	
-	/**
-	  * Gets the last transaction in the list.
-	  *
-	  * @return The last transaction in the list or 0 if no transactions.
-	  *
-	  * @see transactionFirst
-	  * @see transactionNext
-	**/
-	MyMoneyTransaction* transactionLast(void);
-	
-	/**
-	  * Get a transaction from a specific index in the list.
-	  * TODO: Why do we have this, I can't remember putting it in ??  Isn't it
-	  * a bit error prone.  It doesn't even use the argument it just gets
-	  * the last indexed transaction ?? - Michael 15-March-2001.
-	  *
-	  * @param index The index into the list (Not Used??)
-	  *
-	  * @return The current transaction
-	**/
-//	MyMoneyTransaction* transactionAt(int index);
-	
+  
+  /**
+    * Gets the first transaction in the list.
+    * Typically used in for statements such as:
+    * for (transaction=transactionFirst(); transaction; transaction=transactionNext()) {
+    *  ...
+    * }
+    *
+    * @return The first transaction in the list or 0 if no transactions exist.
+    *
+    * @see transactionNext
+    * @see transactionLast
+  **/
+  MyMoneyTransaction* transactionFirst(void);
+  
+  /**
+    * Gets the next transaction in the list.  You must have called transactionFirst to get the
+    * next !
+    * Typically used in for statements such as:
+    * for (transaction=transactionFirst(); transaction; transaction=transactionNext()) {
+    *  ...
+    * }
+    *
+    * @return The next transaction in the list or 0 if at end or no transactions.
+    *
+    * @see transactionFirst
+    * @see transactionLast
+  **/
+  MyMoneyTransaction* transactionNext(void);
+  
+  /**
+    * Gets the last transaction in the list.
+    *
+    * @return The last transaction in the list or 0 if no transactions.
+    *
+    * @see transactionFirst
+    * @see transactionNext
+  **/
+  MyMoneyTransaction* transactionLast(void);
+  
+  /**
+    * Get a transaction from a specific index in the list.
+    * TODO: Why do we have this, I can't remember putting it in ??  Isn't it
+    * a bit error prone.  It doesn't even use the argument it just gets
+    * the last indexed transaction ?? - Michael 15-March-2001.
+    *
+    * @param index The index into the list (Not Used??)
+    *
+    * @return The current transaction
+  **/
+//  MyMoneyTransaction* transactionAt(int index);
+  
   /**
     * Retrieve the number of transactions held in this account.
     *
     * @return The total number of transactions.
   **/
   unsigned int transactionCount(void) const;
+
+  /**
+    * Retrieve the number of transactions held in this account between the
+    * specified dates.
+    *
+    * @return The total number of transactions between the two dates.
+  **/
+  unsigned int MyMoneyAccount::transactionCount(const QDate start, const QDate end);
 
   /**
     * Removes a specific transaction from the list.
@@ -360,14 +371,19 @@ public:
   /** No descriptions */
   QList<MyMoneyTransaction> * getTransactionList();
 
-	MyMoneyBank *bank(void) { return m_parent; }
+  MyMoneyBank *bank(void) { return m_parent; }
 
   /** No descriptions */
   bool readQIFFile(const QString& name, const QString& dateFormat);
 
   /** No descriptions */
   bool writeQIFFile(const QString& name, const QString& dateFormat, bool expCat,bool expAcct,
-										QDate startDate, QDate endDate);
+                    QDate startDate, QDate endDate, int& transCount, int& catCount);
+
+signals:
+  void signalQIFWriteCount(int);
+  void signalQIFWriteTransaction(int);
+
 };
 
 #endif
