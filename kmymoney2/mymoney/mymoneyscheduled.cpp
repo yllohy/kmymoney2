@@ -627,6 +627,10 @@ bool MyMoneySchedule::isFinished() const
 {
   if (m_endDate.isValid() && m_lastPayment >= m_endDate)
     return true;
+
+  // Check to see if its a once off payment
+  if (m_occurence == MyMoneySchedule::OCCUR_ONCE && m_lastPayment.isValid())
+    return true;
     
   return false;
 }
