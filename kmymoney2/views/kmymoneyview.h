@@ -55,6 +55,8 @@ class QFile;
 
 
 
+
+
 #include "../mymoney/storage/mymoneyseqaccessmgr.h"
 class IMyMoneyStorageFormat;
 
@@ -65,7 +67,7 @@ class IMyMoneyStorageFormat;
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.26 2002/12/06 20:30:50 ipwizard Exp $
+  * $Id: kmymoneyview.h,v 1.27 2002/12/08 16:17:42 ipwizard Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -121,11 +123,24 @@ private:
   
   
   // The schedule view
-//  KScheduleView *m_scheduledView;
-  /**  */
-  //QList<MyMoneyTransaction> m_transactionList;
+  // KScheduleView *m_scheduledView;
 
-  void loadDefaultCategories(void);  // Loads catgegories from default_categories.dat
+  /**
+    * This method gets a filename from the user for the template
+    * of accounts to be used when the file is created. The directory
+    * where the dialog is positioned first is $KDEDIR/share/apps/kmymoney2
+    * It uses readDefaultCategories() to actually process the file.
+    */
+  void loadDefaultCategories(void);
+
+  /**
+    * This method loads the accounts specified in the file @p filename
+    * into the KMyMoney engine.
+    *
+    * @param filename absolute filename of the file to be loaded
+    */
+  void readDefaultCategories(const QString& filename);
+
   // Parses a line in the default categories file
   bool parseDefaultCategory(QString& line, bool& income, QString& name, QStringList& minors);
   void viewAccountList(const QCString& selectAccount); // Show the accounts view
@@ -301,6 +316,12 @@ public slots:
 
 //  void slotAccountImportQIF(void);
 //  void slotAccountExportQIF(void);
+
+  /**
+    * This slot cancels any edit activity in any view. It will
+    * be called e.g. before entering the settings dialog.
+    */
+  void slotCancelEdit(void) const;
 
 protected slots:
   void viewTransactionList(void);  // Show the transaction view

@@ -23,6 +23,7 @@
 #include <qlabel.h>
 #include <qfile.h>
 #include <qtextstream.h>
+#include <qprogressdialog.h>
 
 #if QT_VERSION > 300
 #include <qcursor.h>
@@ -515,7 +516,7 @@ bool KMyMoneyView::readFile(const KURL& url)
   // update all views
   m_categoriesView->refreshView();
   accountsView->refreshView();
-  // FIXME: m_ledgerView->update();
+  m_ledgerView->reloadView();
   return true;
 }
 
@@ -893,8 +894,21 @@ void KMyMoneyView::viewPersonal(void)
 
 void KMyMoneyView::loadDefaultCategories(void)
 {
-  QString filename = KGlobal::dirs()->findResource("appdata", "default_accounts.dat");
+  KFileDialog* dialog = new KFileDialog(KGlobal::dirs()->findResourceDir("appdata", "default_accounts.dat"),
+                                        i18n("*.dat|Account templates"),
+                                        this, i18n("Select account template"),
+                                        true);
+  dialog->setMode(KFile::File | KFile::ExistingOnly | KFile::LocalOnly);
+  if(dialog->exec()) {
+    readDefaultCategories(dialog->selectedFile());
+  }
+  delete dialog;
+  accountsView->refreshView();
+  m_categoriesView->refreshView();
+}
 
+void KMyMoneyView::readDefaultCategories(const QString& filename)
+{
   if (filename == QString::null) {
     KMessageBox::error(this, i18n("Cannot find the data file containing the default categories"));
     return;
@@ -903,6 +917,8 @@ void KMyMoneyView::loadDefaultCategories(void)
   m_categoriesView->suspendUpdate(true);
   QFile f(filename);
   if (f.open(IO_ReadOnly) ) {
+    QProgressDialog progress(i18n("Loading default accounts"),
+                             i18n("Continue"), f.size(), 0, 0, true);
     QTextStream t(&f);
     QString s;
     QMap<QString, MyMoneyAccount> accounts;
@@ -910,9 +926,13 @@ void KMyMoneyView::loadDefaultCategories(void)
     while ( !t.eof() ) {        // until end of file...
       s = t.readLine();       // line of text excluding '\n'
       ++line;
+
+      // update progress bar every ten lines
+      if(!(line % 10))
+        progress.setProgress(f.at());
+
       if (!s.isEmpty() && s[0]!='#') {
         MyMoneyAccount account, parentAccount;
-        bool l_income=false;
         QString type, parent, child;
         QString msg;
         int pos1, pos2;
@@ -924,7 +944,7 @@ void KMyMoneyView::loadDefaultCategories(void)
         pos1 = s.find(':');
         pos2 = s.findRev(':');
         if(pos1 == -1 || pos2 == -1) {
-          qDebug("Format error in line %d of default_accounts.dat", line);
+          qWarning("Format error in line %d of %s", line, filename.latin1());
           continue;
         }
         type = s.left(pos1).lower();
@@ -937,8 +957,8 @@ void KMyMoneyView::loadDefaultCategories(void)
           parentAccount = MyMoneyFile::instance()->expense();
         } else {
           QString msg("Unknown type '");
-          msg += type + "' in line %d of defaults_account.dat";
-          qDebug(msg, line);
+          msg += type + "' in line %d of " + filename;
+          qWarning(msg, line);
           continue;
         }
 
@@ -949,8 +969,8 @@ void KMyMoneyView::loadDefaultCategories(void)
           it = accounts.find(parent);
           if(it == accounts.end()) {
             QString msg("Unknown parent account '");
-            msg += parent + "' in line %d of defaults_account.dat";
-            qDebug(msg, line);
+            msg += parent + "' in line %d of " + filename;
+            qWarning(msg, line);
             continue;
           }
           parentAccount = *it;
@@ -961,11 +981,6 @@ void KMyMoneyView::loadDefaultCategories(void)
         try {
           MyMoneyFile::instance()->addAccount(account, parentAccount);
           accounts[parent + ":" + child] = account;
-      /*
-          QString msg("Added '");
-          msg += child + "'";
-          qDebug(msg);
-      */
 
         } catch(MyMoneyException *e) {
 
@@ -977,6 +992,7 @@ void KMyMoneyView::loadDefaultCategories(void)
         }
       }
     }
+    progress.setProgress(f.size());
     f.close();
   }
   m_categoriesView->suspendUpdate(false);
@@ -1170,71 +1186,6 @@ void KMyMoneyView::settingsLists()
   accountsView->refreshView();
   m_categoriesView->refreshView();
   m_ledgerView->refreshView();
-/*
-  bool bankSuccess=false, accountSuccess=false;
-  MyMoneyBank *pBank;
-  MyMoneyAccount *pAccount;
-
-  pBank = m_file.bank(accountsView->currentBank(bankSuccess));
-  if (!pBank || !bankSuccess) {
-    qDebug("KMyMoneyView::settingsLists: Unable to get the current bank");
-    return;
-  }
-  pAccount = pBank->account(accountsView->currentAccount(accountSuccess));
-  if (!pAccount || !accountSuccess) {
-    qDebug("KMyMoneyView::settingsLists: Unable to grab the current account");
-    return;
-  }
-
-  KConfig *config = KGlobal::config();
-  QDateTime defaultDate = QDate::currentDate();
-  QDate qdateStart;
-
-  // See which list we are viewing and then refresh it
-  switch(m_showing) {
-    case KMyMoneyView::BankList:
-      accountsView->refresh(m_file);
-      break;
-    case KMyMoneyView::TransactionList:
-
-      qdateStart = config->readDateTimeEntry("StartDate", &defaultDate).date();
-
-      if (qdateStart != defaultDate.date())
-      {
-
-        MyMoneyTransaction *transaction;
-        m_transactionList.clear();
-        for ( transaction=pAccount->transactionFirst(); transaction; transaction=pAccount->transactionNext()) {
-          if (transaction->date() >= qdateStart)
-          {
-            m_transactionList.append(new MyMoneyTransaction(
-              pAccount,
-              transaction->id(),
-              transaction->method(),
-              transaction->number(),
-              transaction->memo(),
-              transaction->amount(),
-              transaction->date(),
-              transaction->categoryMajor(),
-              transaction->categoryMinor(),
-              transaction->atmBankName(),
-              transaction->payee(),
-              transaction->accountFrom(),
-              transaction->accountTo(),
-              transaction->state()));
-          }
-        }
-
-        transactionView->init(&m_file, *pBank, *pAccount, &m_transactionList, KTransactionView::SUBSET);
-        viewTransactionList();
-      }
-      else
-        transactionView->refresh();
-      break;
-    default:
-      break;
-  }
-*/
 }
 
 void KMyMoneyView::accountFind()
@@ -1620,4 +1571,10 @@ void KMyMoneyView::memoryDump()
   MyMoneyStorageDump dumper;
   dumper.writeStream(st, m_file->storage());
   g.close();
+}
+
+void KMyMoneyView::slotCancelEdit(void) const
+{
+  if(m_ledgerView != 0)
+    m_ledgerView->slotCancelEdit();
 }
