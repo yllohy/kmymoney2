@@ -147,6 +147,8 @@ private:
   QCString m_action;
 
   kMyMoneyLineEdit *m_editQuantity;
+	kMyMoneyEdit *m_editPPS;
+	kMyMoneyLineEdit *m_editSymbolName;
 /*
   KTextBrowser *textBrowser;
   QGridLayout *mainGrid;

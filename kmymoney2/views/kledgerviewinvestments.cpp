@@ -128,12 +128,12 @@ void KLedgerViewInvestments::fillFormStatics(void)
 
   // common elements
   formTable->setText(SYMBOL_ROW, SYMBOL_TXT_COL, i18n("Symbol Name"));
-  formTable->setText(QUANTITY_ROW, QUANTITY_TXT_COL, i18n("Quantity"));
+  formTable->setText(QUANTITY_ROW, QUANTITY_TXT_COL, i18n("Shares"));
   formTable->setText(MEMO_ROW, MEMO_TXT_COL, i18n("Memo"));
   formTable->setText(PRICE_ROW, PRICE_TXT_COL, i18n("Price Per Share"));
   formTable->setText(DATE_ROW, DATE_TXT_COL, i18n("Date"));
-  formTable->setText(AMOUNT_ROW, AMOUNT_TXT_COL, i18n("Amount"));
-  formTable->setText(FEES_ROW, FEES_TXT_COL, i18n("Fees"));
+  formTable->setText(AMOUNT_ROW, AMOUNT_TXT_COL, i18n("Total Amount"));
+  formTable->setText(FEES_ROW, FEES_TXT_COL, i18n("Commission"));
 
   switch(transactionType(m_transaction, m_split)) {
     case Transfer:
@@ -187,8 +187,10 @@ void KLedgerViewInvestments::showWidgets()
 
   if(table)
   {
-    table->setCellWidget(2, 1, m_editMemo);
-    table->setCellWidget(0, 4, m_editDate);
+    table->setCellWidget(MEMO_ROW, MEMO_DATA_COL, m_editMemo);
+    table->setCellWidget(DATE_ROW, DATE_DATA_COL, m_editDate);
+		//table->setCellWidget(PRICE_ROW, PRICE_DATA_COL, m_editPPS);
+		//table->setCellWidget(SYMBOL_ROW, SYMBOL_DATA_COL, m_editSymbolName);
   }
 }
 
@@ -219,6 +221,7 @@ void KLedgerViewInvestments::hideWidgets()
   m_editDeposit = 0;
 
   m_editQuantity = 0;
+	m_editPPS = 0;
 
   m_form->table()->clearEditable();
   m_form->tabBar()->setEnabled(true);
@@ -258,6 +261,13 @@ void KLedgerViewInvestments::createEditWidgets()
   if(!m_editQuantity) {
     m_editQuantity = new kMyMoneyLineEdit(0, "editQuanity", AlignLeft|AlignVCenter);
   }
+	if(!m_editPPS) {
+    m_editPPS = new kMyMoneyEdit(0, "editPPS");
+  }
+	if(!m_editSymbolName) {
+    m_editSymbolName = new kMyMoneyLineEdit(0, "editSymbolName", AlignLeft|AlignVCenter);
+  }
+	
 
   if(!m_editType) {
     m_editType = new kMyMoneyCombo(0, "editType");
