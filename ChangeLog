@@ -1,3 +1,6 @@
+2004-10-21 Ace Jones <acejones@users.sourceforge.net>
+  * Added settings tab for online quotes
+  
 2004-10-17 Ace Jones <acejones@users.sourceforge.net>
   * Automatically close all report tabs when the file closes
   * Added right-click access to on-line price updating in investment view

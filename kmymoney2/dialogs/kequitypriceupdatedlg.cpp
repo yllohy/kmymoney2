@@ -161,16 +161,22 @@ void KEquityPriceUpdateDlg::slotCancelClicked()
   reject();
 }
 
+#include <kconfig.h>
+
 bool KEquityPriceUpdateDlg::fetchUpdate(const QString& _symbol,QPair<QDate,MyMoneyMoney>& _result)
 {
   bool gotprice = false;
   bool gotdate = false;
 
-  // TODO: Make these user-configurable  
-  QString source("http://finance.yahoo.com/d/quotes.csv?s=%1&f=sl1d1");
-  QRegExp symbolRegExp("\"([^,\"]*)\",.*");
-  QRegExp dateRegExp("[^,]*,[^,]*,\"([^\"]*)\"");
-  QRegExp priceRegExp("[^,]*,([^,]*),.*");
+  // TODO: Find a better way to handle these defaults so they're not 
+  // duplicated in 2 places
+  
+  KConfig *kconfig = KGlobal::config();
+  kconfig->setGroup("Online Quotes Options");
+  QString source(kconfig->readEntry("URL","http://finance.yahoo.com/d/quotes.csv?s=%1&f=sl1d1"));
+  QRegExp symbolRegExp(kconfig->readEntry("SymbolRegex","\"([^,\"]*)\",.*"));
+  QRegExp dateRegExp(kconfig->readEntry("PriceRegex","[^,]*,[^,]*,\"([^\"]*)\""));
+  QRegExp priceRegExp(kconfig->readEntry("DateRegex","[^,]*,([^,]*),.*"));
   
   QString url = source.arg(_symbol);
   logStatusMessage(QString("Searching URL <%1>...").arg(url));
@@ -223,12 +229,12 @@ void KEquityPriceUpdateDlg::slotUpdateSelectedClicked()
 
   //m_pPriceUpdate->
 #else
-  prgOnlineProgress->setTotalSteps(2);
-  prgOnlineProgress->setProgress(1);
-
   QListViewItem* item = lvEquityList->selectedItem();
   if ( item )
   {
+    prgOnlineProgress->setTotalSteps(2);
+    prgOnlineProgress->setProgress(1);
+  
     QString symbol = item->text(0);
     QPair<QDate,MyMoneyMoney> update;
     if ( fetchUpdate(symbol,update) )
@@ -241,8 +247,8 @@ void KEquityPriceUpdateDlg::slotUpdateSelectedClicked()
       item->setText(2,"Error");
       item->setText(3,"Unable to update");
     }
+    prgOnlineProgress->advance(1);
   }
-  prgOnlineProgress->advance(1);
 #endif
 }
 

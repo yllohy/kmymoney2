@@ -41,6 +41,7 @@ class KIntNumInput;
 class KListView;
 class KPushButton;
 class QTabWidget;
+class kMyMoneyOnlineQuoteConfig;
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -59,7 +60,7 @@ class QTabWidget;
   * @see KDialogBase
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: ksettingsdlg.h,v 1.19 2004/10/06 15:53:40 ipwizard Exp $
+  * $Id: ksettingsdlg.h,v 1.20 2004/10/22 04:29:04 acejones Exp $
   *
   * @short A class to manipulate the settings needed for running KMyMoney2
 **/
@@ -118,6 +119,9 @@ private:
   QRadioButton *m_qradiobuttonPerTransaction;
   QRadioButton *m_qradiobuttonOtherRow;
 
+  /* Online quotes configuration widget */
+  kMyMoneyOnlineQuoteConfig* m_onlineQuotesWidget;
+  
   /** Restrict options */
   kMyMoneyDateInput *m_dateinputStart;
 
@@ -162,6 +166,8 @@ private:
   /** Set font options */
   void setPageFont();
 
+  /** Set online quote options */
+  void setPageOnlineQuotes();
 
   /** Write settings */
   void configWrite();

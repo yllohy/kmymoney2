@@ -54,6 +54,7 @@
 // Project Includes
 #include "ksettingsdlg.h"
 #include "../kmymoneyutils.h"
+#include "../widgets/kmymoneyonlinequoteconfig.h"
 
 #include <libkgpgfile/kgpgfile.h>
 
@@ -74,6 +75,7 @@ KSettingsDlg::KSettingsDlg(QWidget *parent, const char *name, bool modal)
   setPageSecurity();
   setPageColour();
   setPageFont();
+  setPageOnlineQuotes();
 
   configRead();
 
@@ -506,6 +508,14 @@ void KSettingsDlg::configRead()
   m_intSchedulePreview->setEnabled(m_bTempCheckSchedule);
   m_iTempSchedulePreview = kconfig->readNumEntry("CheckSchedulePreview", 0);
   m_intSchedulePreview->setValue(m_iTempSchedulePreview);
+  
+  // TODO: Find a better way to handle these defaults so they're not 
+  // duplicated in 2 places
+  kconfig->setGroup("Online Quotes Options");
+  m_onlineQuotesWidget->m_editURL->setText(kconfig->readEntry("URL","http://finance.yahoo.com/d/quotes.csv?s=%1&f=sl1d1"));
+  m_onlineQuotesWidget->m_editSymbol->setText(kconfig->readEntry("SymbolRegex","\"([^,\"]*)\",.*"));
+  m_onlineQuotesWidget->m_editPrice->setText(kconfig->readEntry("PriceRegex","[^,]*,[^,]*,\"([^\"]*)\""));
+  m_onlineQuotesWidget->m_editDate->setText(kconfig->readEntry("DateRegex","[^,]*,([^,]*),.*"));
 }
 
 /** Write out all the settings to the global KConfig object.
@@ -553,6 +563,12 @@ void KSettingsDlg::configWrite()
   kconfig->writeEntry("CheckSchedules", m_qradiobuttonCheckSchedules->isChecked());
   kconfig->writeEntry("CheckSchedulePreview", m_intSchedulePreview->value());
 
+  kconfig->setGroup("Online Quotes Options");
+  kconfig->writeEntry("URL",m_onlineQuotesWidget->m_editURL->text());
+  kconfig->writeEntry("SymbolRegex", m_onlineQuotesWidget->m_editSymbol->text());
+  kconfig->writeEntry("PriceRegex", m_onlineQuotesWidget->m_editPrice->text());
+  kconfig->writeEntry("DateRegex", m_onlineQuotesWidget->m_editDate->text());
+  
   kconfig->sync();
 }
 
@@ -879,3 +895,13 @@ void KSettingsDlg::setPageFont()
   m_fontTabWidget->changeTab( tab, i18n( "Header Font" ) );
   m_fontTabWidget->changeTab( tab_2, i18n( "Cell Font" ) );
 }
+
+void KSettingsDlg::setPageOnlineQuotes(void)
+{
+  // Create the main frame to hold the widgets
+  QVBox *qvboxMainFrame = addVBoxPage( i18n("Online Quotes"), i18n("Online Quote Settings"),
+    DesktopIcon("network_local"));
+
+  m_onlineQuotesWidget = new kMyMoneyOnlineQuoteConfig(qvboxMainFrame,"online_quotes");
+}
+
