@@ -61,7 +61,6 @@ public:
   KGlobalLedgerView(QWidget *parent=0, const char *name=0);
   ~KGlobalLedgerView();
 
-  void reloadView(void);
   void refreshView(void);
 
   /**
@@ -78,6 +77,8 @@ public:
   void suspendUpdate(const bool suspend);
 
 public slots:
+  void reloadView(void);
+  
   /**
     * This slot calls the hide() slot of all known specific ledger views
     */

@@ -380,7 +380,10 @@ void KLedgerView::updateView(void)
 {
   KConfig *config = KGlobal::config();
   config->setGroup("List Options");
-
+  QCString id;
+  if(m_transactionPtr != 0)
+    id = m_transactionPtr->id();
+    
   QDateTime defaultDate;
   m_dateStart = config->readDateTimeEntry("StartDate", &defaultDate).date();
 
@@ -389,6 +392,10 @@ void KLedgerView::updateView(void)
   slotShowTransactionForm(m_transactionFormActive);
 
   m_register->setTransactionCount(m_transactionPtrVector.count()+1);
+  
+  if(!id.isEmpty())
+    selectTransaction(id);
+    
   resizeEvent(NULL);
 }
 

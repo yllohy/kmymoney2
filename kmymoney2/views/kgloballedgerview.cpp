@@ -27,6 +27,7 @@
 #include <qtooltip.h>
 #include <qwhatsthis.h>
 #include <qcstring.h>
+#include <qtimer.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -162,14 +163,15 @@ KGlobalLedgerView::~KGlobalLedgerView()
 
 void KGlobalLedgerView::show()
 {
-  loadAccounts();
-  selectAccount(m_accountId, "", false, true);
-
+  QWidget::show();
+  
+  if(m_accountId == "")
+    QTimer::singleShot(0, this, SLOT(reloadView()));
+    
   // only show selection box if filled with at least one account
   m_accountComboBox->setEnabled(m_accountComboBox->count() > 0);
-
+  
   emit signalViewActivated();
-  QWidget::show();
 }
 
 void KGlobalLedgerView::hide()
@@ -182,11 +184,11 @@ void KGlobalLedgerView::hide()
 
 void KGlobalLedgerView::reloadView(void)
 {
-  // force reloading during the next show() operation
-  m_accountId = "";
-
-  if(isVisible())
-    show();
+  loadAccounts();
+  selectAccount(m_accountId, "", false, true);
+  
+  // only show selection box if filled with at least one account
+  m_accountComboBox->setEnabled(m_accountComboBox->count() > 0);
 }
 
 void KGlobalLedgerView::refreshView(void)

@@ -616,14 +616,15 @@ bool KMyMoneyView::readFile(const KURL& url)
   } else {
     page = pageIndex(m_homeViewFrame);
   }
+
+  // update all views
+  slotRefreshViews();
+
   // if we currently see a different page, then select the right one
   if(page != activePageIndex()) {
     showPage(page);
   }
 
-  // reload and update all views
-  m_ledgerView->reloadView();
-  slotRefreshViews();
   return true;
 }
 
