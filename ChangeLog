@@ -1,3 +1,20 @@
+2004-09-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed memory leak in KEditEquityEntryDlg
+  * Added icons to buttons in KEditEquityEntryDlg
+  * removed compile warnings in KEditEquityEntryDlg
+  * disable edit/remove button when no entry is selected
+
+2004-09-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Use QGuardedPtr for pointers to widgets
+  * Renamed hideWidgets() into destroyWidgets()
+  * Don't re-create edit widgets when changing type of investment
+    transaction. This solved the misterious crash.
+  * Use highest compression rate for man pages
+
+2004-09-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Applied patch for FreeBSD supplied by Alec
+  * Added feature request #929127 (new transaction default based on payee)
+
 2004-09-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * added buttons to register edit mode
   * revised the string comparison in operator == of our objects
