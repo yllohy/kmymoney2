@@ -25,13 +25,13 @@ type=DATA
 [Config for BinMakefileAm]
 addcxxflags=
 bin_program=kmymoney2
-cxxflags=\s-O2 -g3 -Wall
+cxxflags=\s-O0 -g3 -Wall
 ldadd=\s$(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT)
 ldflags=
 path_to_bin_program=kmymoney2
 
 [General]
-AMChanged=true
+AMChanged=false
 author=Michael Edwardes
 configure_args=--prefix=/opt/kde2
 dir_where_make_will_be_called=
@@ -39,7 +39,7 @@ email=mte@users.sourceforge.net
 kdevprj_version=1.3
 lfv_open_groups=GNU,User Interface
 make_options=\s-j1
-makefiles=Makefile.am,kmymoney2/Makefile.am,doc/Makefile.am,doc/en/Makefile.am,po/Makefile.am,kmymoney2/widgets/Makefile.am,kmymoney2/mymoney/Makefile.am,kmymoney2/pics/Makefile.am,kmymoney2/dialogs/Makefile.am,kmymoney2/icons/hicolor/22x22/actions/Makefile.am,kmymoney2/icons/hicolor/22x22/Makefile.am,kmymoney2/icons/hicolor/Makefile.am,kmymoney2/icons/Makefile.am,kmymoney2/icons/hicolor/16x16/actions/Makefile.am,kmymoney2/icons/hicolor/16x16/Makefile.am,doc/images/Makefile.am,developer-doc/Makefile.am,developer-doc/phb/Makefile.am
+makefiles=Makefile.am,kmymoney2/Makefile.am,doc/Makefile.am,doc/en/Makefile.am,po/Makefile.am,kmymoney2/mymoney/Makefile.am,kmymoney2/pics/Makefile.am,kmymoney2/dialogs/Makefile.am,kmymoney2/widgets/Makefile.am,kmymoney2/icons/hicolor/22x22/actions/Makefile.am,kmymoney2/icons/hicolor/22x22/Makefile.am,kmymoney2/icons/hicolor/Makefile.am,kmymoney2/icons/Makefile.am,kmymoney2/icons/hicolor/16x16/actions/Makefile.am,kmymoney2/icons/hicolor/16x16/Makefile.am,doc/images/Makefile.am,developer-doc/Makefile.am,developer-doc/phb/Makefile.am
 modifyMakefiles=true
 project_name=KMyMoney2
 project_type=normal_kde2
@@ -299,7 +299,7 @@ type=DATA
 
 [kmymoney2/Makefile.am]
 files=kmymoney2/main.cpp,kmymoney2/kmymoney2.cpp,kmymoney2/kmymoney2.h,kmymoney2/kmymoney2ui.rc,kmymoney2/kmymoney2.desktop,kmymoney2/kbanklistitem.cpp,kmymoney2/kbanklistitem.h,kmymoney2/kbanksview.cpp,kmymoney2/kbanksview.h,kmymoney2/kcategoriesdlg.cpp,kmymoney2/kcategoriesdlg.h,kmymoney2/kcategorylistitem.cpp,kmymoney2/kcategorylistitem.h,kmymoney2/kendingbalancedlg.cpp,kmymoney2/kendingbalancedlg.h,kmymoney2/kfileinfodlg.cpp,kmymoney2/kfileinfodlg.h,kmymoney2/kfindtransactiondlg.cpp,kmymoney2/kfindtransactiondlg.h,kmymoney2/kmainview.cpp,kmymoney2/kmainview.h,kmymoney2/kmymoneyview.cpp,kmymoney2/kmymoneyview.h,kmymoney2/knewaccountdlg.cpp,kmymoney2/knewaccountdlg.h,kmymoney2/knewbankdlg.cpp,kmymoney2/knewbankdlg.h,kmymoney2/knewbillwizardimpl.cpp,kmymoney2/knewbillwizardimpl.h,kmymoney2/knewcategorydlg.cpp,kmymoney2/knewcategorydlg.h,kmymoney2/knewfiledlg.cpp,kmymoney2/knewfiledlg.h,kmymoney2/kpayeedlg.cpp,kmymoney2/kreconciledlg.cpp,kmymoney2/kreconciledlg.h,kmymoney2/kreconcilelistitem.cpp,kmymoney2/kreconcilelistitem.h,kmymoney2/kschedulelistitem.cpp,kmymoney2/kschedulelistitem.h,kmymoney2/kscheduleview.cpp,kmymoney2/kscheduleview.h,kmymoney2/ksettingsdlg.cpp,kmymoney2/ksettingsdlg.h,kmymoney2/kstartdlg.cpp,kmymoney2/kstartdlg.h,kmymoney2/kstartuplogo.cpp,kmymoney2/kstartuplogo.h,kmymoney2/ktransactionview.cpp,kmymoney2/ktransactionview.h,kmymoney2/kbankviewdecl.ui,kmymoney2/kcategorydlgdecl.ui,kmymoney2/knewbillwizard.ui,kmymoney2/kpayeedlgdecl.ui,kmymoney2/kreconciledlgdecl.ui,kmymoney2/kscheduleviewdecl.ui,kmymoney2/default_categories.dat,kmymoney2/kendingbalancedlgdecl.ui,kmymoney2/knewcategorydlgdecl.ui,kmymoney2/knewaccountdlgdecl.ui,kmymoney2/knewbankdlgdecl.ui,kmymoney2/knewfiledlgdecl.ui,kmymoney2/kfileinfodlgdecl.ui,kmymoney2/kfindtransactiondlgdecl.ui,kmymoney2/ktransactionviewdecl.ui,kmymoney2/lo16-app-kmymoney2.png,kmymoney2/lo32-app-kmymoney2.png,kmymoney2/kmymoney_wizard.png,kmymoney2/mimetype_kmy_16x16.png,kmymoney2/mimetype_kmy_32x32.png,kmymoney2/mimetype_kmy_48x48.png,kmymoney2/x-kmymoney2.desktop,kmymoney2/kpayeedlg.h,kmymoney2/hi16-app-kmymoney2.png,kmymoney2/hi32-app-kmymoney2.png
-sub_dirs=widgets,mymoney,pics,dialogs,icons
+sub_dirs=mymoney,pics,dialogs,icons,widgets
 type=prog_main
 
 [kmymoney2/default_categories.dat]
@@ -309,7 +309,7 @@ install_location=$(kde_datadir)/kmymoney2/default_categories.dat
 type=DATA
 
 [kmymoney2/dialogs/Makefile.am]
-files=kmymoney2/dialogs/kbackupdlg.cpp,kmymoney2/dialogs/kbackupdlg.h,kmymoney2/dialogs/kbackupdlgdecl.ui,kmymoney2/dialogs/kchooseimportexportdlg.cpp,kmymoney2/dialogs/kchooseimportexportdlg.h,kmymoney2/dialogs/kchooseimportexportdlgdecl.ui,kmymoney2/dialogs/kcsvprogressdlgdecl.ui,kmymoney2/dialogs/kcsvprogressdlg.cpp,kmymoney2/dialogs/kcsvprogressdlg.h,kmymoney2/dialogs/kexportdlg.cpp,kmymoney2/dialogs/kexportdlg.h,kmymoney2/dialogs/kexportdlgdecl.ui,kmymoney2/dialogs/kimportdlg.cpp,kmymoney2/dialogs/kimportdlg.h,kmymoney2/dialogs/kimportdlgdecl.ui
+files=kmymoney2/dialogs/kbackupdlg.cpp,kmymoney2/dialogs/kbackupdlg.h,kmymoney2/dialogs/kbackupdlgdecl.ui,kmymoney2/dialogs/kchooseimportexportdlg.cpp,kmymoney2/dialogs/kchooseimportexportdlg.h,kmymoney2/dialogs/kchooseimportexportdlgdecl.ui,kmymoney2/dialogs/kcsvprogressdlgdecl.ui,kmymoney2/dialogs/kcsvprogressdlg.cpp,kmymoney2/dialogs/kcsvprogressdlg.h,kmymoney2/dialogs/kexportdlg.cpp,kmymoney2/dialogs/kexportdlg.h,kmymoney2/dialogs/kexportdlgdecl.ui,kmymoney2/dialogs/kimportdlg.cpp,kmymoney2/dialogs/kimportdlg.h,kmymoney2/dialogs/kimportdlgdecl.ui,kmymoney2/dialogs/ksplittransactiondlgdecl.ui,kmymoney2/dialogs/ksplittransactiondlg.cpp,kmymoney2/dialogs/ksplittransactiondlg.h
 sub_dirs=
 type=static_library
 
@@ -398,6 +398,24 @@ install_location=
 type=HEADER
 
 [kmymoney2/dialogs/kimportdlgdecl.ui]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[kmymoney2/dialogs/ksplittransactiondlg.cpp]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[kmymoney2/dialogs/ksplittransactiondlg.h]
+dist=true
+install=false
+install_location=
+type=HEADER
+
+[kmymoney2/dialogs/ksplittransactiondlgdecl.ui]
 dist=true
 install=false
 install_location=
@@ -1018,7 +1036,7 @@ install_location=$(kde_icondir)/hicolor/48x48/mimetypes/kmy.png
 type=DATA
 
 [kmymoney2/mymoney/Makefile.am]
-files=kmymoney2/mymoney/mymoneyaccount.cpp,kmymoney2/mymoney/mymoneyaccount.h,kmymoney2/mymoney/mymoneybank.cpp,kmymoney2/mymoney/mymoneybank.h,kmymoney2/mymoney/mymoneycategory.cpp,kmymoney2/mymoney/mymoneycategory.h,kmymoney2/mymoney/mymoneyfile.cpp,kmymoney2/mymoney/mymoneyfile.h,kmymoney2/mymoney/mymoneymoney.cpp,kmymoney2/mymoney/mymoneymoney.h,kmymoney2/mymoney/mymoneypayee.cpp,kmymoney2/mymoney/mymoneypayee.h,kmymoney2/mymoney/mymoneyscheduled.cpp,kmymoney2/mymoney/mymoneyscheduled.h,kmymoney2/mymoney/mymoneytransaction.cpp,kmymoney2/mymoney/mymoneytransaction.h,kmymoney2/mymoney/readme-mymoney.txt,kmymoney2/mymoney/mymoney_config.h
+files=kmymoney2/mymoney/mymoneyaccount.cpp,kmymoney2/mymoney/mymoneyaccount.h,kmymoney2/mymoney/mymoneybank.cpp,kmymoney2/mymoney/mymoneybank.h,kmymoney2/mymoney/mymoneycategory.cpp,kmymoney2/mymoney/mymoneycategory.h,kmymoney2/mymoney/mymoneyfile.cpp,kmymoney2/mymoney/mymoneyfile.h,kmymoney2/mymoney/mymoneymoney.cpp,kmymoney2/mymoney/mymoneymoney.h,kmymoney2/mymoney/mymoneypayee.cpp,kmymoney2/mymoney/mymoneypayee.h,kmymoney2/mymoney/mymoneyscheduled.cpp,kmymoney2/mymoney/mymoneyscheduled.h,kmymoney2/mymoney/mymoneytransaction.cpp,kmymoney2/mymoney/mymoneytransaction.h,kmymoney2/mymoney/readme-mymoney.txt,kmymoney2/mymoney/mymoney_config.h,kmymoney2/mymoney/mymoneysplittransaction.cpp,kmymoney2/mymoney/mymoneysplittransaction.h,kmymoney2/mymoney/mymoneytransactionbase.cpp,kmymoney2/mymoney/mymoneytransactionbase.h
 sub_dirs=
 type=static_library
 
@@ -1112,6 +1130,18 @@ install=false
 install_location=
 type=HEADER
 
+[kmymoney2/mymoney/mymoneysplittransaction.cpp]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[kmymoney2/mymoney/mymoneysplittransaction.h]
+dist=true
+install=false
+install_location=
+type=HEADER
+
 [kmymoney2/mymoney/mymoneytransaction.cpp]
 dist=true
 install=false
@@ -1119,6 +1149,18 @@ install_location=
 type=SOURCE
 
 [kmymoney2/mymoney/mymoneytransaction.h]
+dist=true
+install=false
+install_location=
+type=HEADER
+
+[kmymoney2/mymoney/mymoneytransactionbase.cpp]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[kmymoney2/mymoney/mymoneytransactionbase.h]
 dist=true
 install=false
 install_location=
@@ -1256,7 +1298,7 @@ install_location=$(kde_datadir)/kmymoney2/pics/view_info.png
 type=DATA
 
 [kmymoney2/widgets/Makefile.am]
-files=kmymoney2/widgets/kdatepik.cpp,kmymoney2/widgets/kdatepik.h,kmymoney2/widgets/kmymoneydateinput.cpp,kmymoney2/widgets/kmymoneydateinput.h,kmymoney2/widgets/kmymoneyedit.cpp,kmymoney2/widgets/kmymoneyedit.h,kmymoney2/widgets/kmymoneytable.cpp,kmymoney2/widgets/kmymoneytable.h,kmymoney2/widgets/kmymoneylineedit.cpp,kmymoney2/widgets/kmymoneylineedit.h,kmymoney2/widgets/kmymoneyhlayout.cpp,kmymoney2/widgets/kmymoneyhlayout.h,kmymoney2/widgets/kmymoneycombo.cpp,kmymoney2/widgets/kmymoneycombo.h
+files=kmymoney2/widgets/kdatepik.cpp,kmymoney2/widgets/kdatepik.h,kmymoney2/widgets/kmymoneydateinput.cpp,kmymoney2/widgets/kmymoneydateinput.h,kmymoney2/widgets/kmymoneyedit.cpp,kmymoney2/widgets/kmymoneyedit.h,kmymoney2/widgets/kmymoneytable.cpp,kmymoney2/widgets/kmymoneytable.h,kmymoney2/widgets/kmymoneylineedit.cpp,kmymoney2/widgets/kmymoneylineedit.h,kmymoney2/widgets/kmymoneyhlayout.cpp,kmymoney2/widgets/kmymoneyhlayout.h,kmymoney2/widgets/kmymoneycombo.cpp,kmymoney2/widgets/kmymoneycombo.h,kmymoney2/widgets/kmymoneysplittable.cpp,kmymoney2/widgets/kmymoneysplittable.h
 sub_dirs=
 type=static_library
 
@@ -1327,6 +1369,18 @@ install_location=
 type=SOURCE
 
 [kmymoney2/widgets/kmymoneylineedit.h]
+dist=true
+install=false
+install_location=
+type=HEADER
+
+[kmymoney2/widgets/kmymoneysplittable.cpp]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[kmymoney2/widgets/kmymoneysplittable.h]
 dist=true
 install=false
 install_location=
