@@ -1,19 +1,32 @@
+2001-12-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * fixed debug output of QIF import (result message of date conversion)
+  * commented debug messages in QIF import
+  * read and write memo field during QIF import/export
+  * shrunk export dialog - this was way tooo big for my notebook
+  * update transaction count during QIF export every ten iterations
+  * added german date formats to QIF export (monetaryDecimalSymbol to be done)
+  * close QIF export dialog when done
+  * allow QIF export with only categories or account data selected
+  * MyMoneyMoney supports local money formats
+  * KBanksView honors locale settings
+  * removed unused variables in kcsvprogressdlg.cpp
+
 2001-12-13 Kevin Tambascio <ktambascio@yahoo.com>
   * Fixed export dialogs to always add the appropriate file extension.
 
-2001-12-12 Thomas Baumgart  <ipwizard@users.sourceforge.net>
+2001-12-12 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * updated project handbook files in developer-doc/phb
   * added selection of monetaryDecimalSymbol in QIF import
   * collect memo during QIF import
 
-2001-12-11 Thomas Baumgart  <ipwizard@users.sourceforge.net>
+2001-12-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * fixed display of transaction view for large amount of transactions
   * leave more room for scroll bar on the right side of transaction view
     to avoid horizontal scroll bar
   * fixed loading of payment method combo-box in transaction view
   * added german date handling to QIF import
 
-2001-12-10 Thomas Baumgart  <ipwizard@users.sourceforge.net>
+2001-12-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * modified acinclude.m4.in to work with autoconf 2.50
 
 2001-12-09 Michael Edwardes <mte@users.sourceforge.net>
@@ -36,7 +49,7 @@
 2001-12-08 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
   * Fixed Pixmap Crash on Exit error.
 
-2001-12-08  Thomas Baumgart  <ipwizard@users.sourceforge.net>
+2001-12-08  Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Update flags when refreshing banksview
   * Fixed date of previous entry
 
