@@ -28,20 +28,20 @@ bin_program=kmymoney2
 cflags=
 cppflags=
 cxxflags=\s-O0 -g3 -Wall
-ldadd=\s$(LIB_KFILE) $(LIB_KHTML) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT)
-ldflags=\s
+ldadd=\s$(LIB_KHTML) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT)
+ldflags=\s     \s
 path_to_bin_program=kmymoney2
 
 [General]
 AMChanged=false
 author=Michael Edwardes
-configure_args=
+configure_args=--prefix=/opt/kde3\s
 dir_where_make_will_be_called=
 email=mte@users.sourceforge.net
 kdevprj_version=1.3
 lfv_open_groups=GNU
 make_options=\s-j1
-makefiles=Makefile.am,kmymoney2/Makefile.am,doc/Makefile.am,doc/en/Makefile.am,po/Makefile.am,kmymoney2/mymoney/Makefile.am,kmymoney2/pics/Makefile.am,kmymoney2/dialogs/Makefile.am,kmymoney2/widgets/Makefile.am,kmymoney2/icons/hicolor/22x22/actions/Makefile.am,kmymoney2/icons/hicolor/22x22/Makefile.am,kmymoney2/icons/hicolor/Makefile.am,kmymoney2/icons/Makefile.am,kmymoney2/icons/hicolor/16x16/actions/Makefile.am,kmymoney2/icons/hicolor/16x16/Makefile.am,doc/images/Makefile.am,developer-doc/Makefile.am,developer-doc/phb/Makefile.am,kmymoney2/views/Makefile.am,kmymoney2/html/Makefile.am
+makefiles=Makefile.am,kmymoney2/Makefile.am,doc/Makefile.am,doc/en/Makefile.am,po/Makefile.am,kmymoney2/views/Makefile.am,kmymoney2/pics/Makefile.am,kmymoney2/dialogs/Makefile.am,kmymoney2/widgets/Makefile.am,kmymoney2/icons/hicolor/22x22/actions/Makefile.am,kmymoney2/icons/hicolor/22x22/Makefile.am,kmymoney2/icons/hicolor/Makefile.am,kmymoney2/icons/Makefile.am,kmymoney2/icons/hicolor/16x16/actions/Makefile.am,kmymoney2/icons/hicolor/16x16/Makefile.am,doc/images/Makefile.am,developer-doc/Makefile.am,developer-doc/phb/Makefile.am,kmymoney2/mymoney/Makefile.am,kmymoney2/html/Makefile.am
 modifyMakefiles=true
 project_name=KMyMoney2
 project_type=normal_kde2
@@ -301,7 +301,7 @@ type=DATA
 
 [kmymoney2/Makefile.am]
 files=kmymoney2/main.cpp,kmymoney2/kmymoney2.cpp,kmymoney2/kmymoney2.h,kmymoney2/kmymoney2ui.rc,kmymoney2/kmymoney2.desktop,kmymoney2/kstartuplogo.cpp,kmymoney2/kstartuplogo.h,kmymoney2/default_categories.dat,kmymoney2/lo16-app-kmymoney2.png,kmymoney2/lo32-app-kmymoney2.png,kmymoney2/kmymoney_wizard.png,kmymoney2/mimetype_kmy_16x16.png,kmymoney2/mimetype_kmy_32x32.png,kmymoney2/mimetype_kmy_48x48.png,kmymoney2/x-kmymoney2.desktop,kmymoney2/hi16-app-kmymoney2.png,kmymoney2/hi32-app-kmymoney2.png
-sub_dirs=dialogs,views,mymoney,pics,icons,widgets,html
+sub_dirs=dialogs,views,widgets,mymoney,pics,icons,html
 type=prog_main
 
 [kmymoney2/default_categories.dat]
