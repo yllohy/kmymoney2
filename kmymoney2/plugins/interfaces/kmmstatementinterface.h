@@ -1,9 +1,9 @@
 /***************************************************************************
-                          kjobview.cpp  -  description
+                          kmmstatementinterface.h
                              -------------------
-    begin                : Thu Aug 26 2004
-    copyright            : (C) 2004 Martin Preuss
-    email                : aquamaniac@users.sourceforge.net
+    begin                : Wed Jan 5 2005
+    copyright            : (C) 2005 Thomas Baumgart
+    email                : ipwizard@users.sourceforge.net
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,56 +15,47 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef KMMSTATEMENTINTERFACE_H
+#define KMMSTATEMENTINTERFACE_H
+
 #ifdef HAVE_CONFIG_H
-# include <config.h>
+#include <config.h>
 #endif
 
 // ----------------------------------------------------------------------------
 // QT Includes
-#include <qlayout.h>
-#include <qdatetime.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
-#include <kglobal.h>
-#include <klocale.h>
-#include <kstandarddirs.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
-#include "kjobview.h"
-#include "../kmymoneyutils.h"
-#include "../kmymoney2.h"
-#include "../converter/mymoneybanking.h"
 
+class KMyMoney2App;
+#include "../statementinterface.h"
 
-KJobView::KJobView(QWidget *parent, const char *name )
- : QWidget(parent,name)
+namespace KMyMoneyPlugin {
+
+/**
+  * This class represents the implementation of the
+  * StatementInterface.
+  */
+class KMMStatementInterface : public StatementInterface
 {
-  // this view should only be added when banking is available
-  m_qvboxlayoutPage = new QVBoxLayout(this);
-  m_qvboxlayoutPage->setSpacing( 6 );
-  m_qvboxlayoutPage->setMargin( 11 );
+  Q_OBJECT
 
-  m_qvboxlayoutPage->addWidget(KMyMoneyBanking::instance()->createJobView(this, "JobView"));
-}
+public:
+  KMMStatementInterface(KMyMoney2App* app, QObject* parent, const char* name = 0);
+  ~KMMStatementInterface() {};
 
-KJobView::~KJobView()
-{
-}
+  /**
+    * This method imports a MyMoneyStatement into the engine
+    */
+  bool import(MyMoneyStatement& s);
 
-void KJobView::show()
-{
-  slotRefreshView();
-  QWidget::show();
-  emit signalViewActivated();
-}
+private:
+  KMyMoney2App*    m_app;
+};
 
-
-void KJobView::slotRefreshView(void)
-{
-  KMyMoneyBanking::instance()->updateJobView();
-}
-
-
-
+}; // namespace
+#endif

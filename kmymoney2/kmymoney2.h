@@ -164,16 +164,6 @@ protected slots:
 
   void slotQifProfileEditor(void);
 
-  /**
-   * This slot modifies the AqBanking settings
-   */
-  void slotBankingSettings(void);
-
-  /**
-   * This slot invokes the AqBanking import wizard
-   */
-  void slotBankingImport(void);
-
   void slotShowPreviousView(void);
 
   void slotShowNextView(void);
@@ -253,6 +243,18 @@ protected:
    * file
    */
   void saveOptions();
+
+  /**
+    * Creates the interfaces necessary for the plugins to work. Therefore,
+    * this method must be called prior to loadPlugins().
+    */
+  void createInterfaces(void);
+
+  /**
+    * load all available plugins. Make sure you have called createInterfaces()
+    * before you call this one.
+    */
+  void loadPlugins(void);
 
   /** read general Options again and initialize all variables like the recent file list
    */
@@ -514,6 +516,8 @@ private:
 
   KToolBarPopupAction*  m_previousViewButton;
   KToolBarPopupAction*  m_nextViewButton;
+
+  QObject*              m_pluginInterface;
 };
 
 extern  KMyMoney2App *kmymoney2;

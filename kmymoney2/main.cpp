@@ -44,7 +44,6 @@
 #include "kapptest.h"
 #include "kmymoneyutils.h"
 #include "converter/mymoneyofxstatement.h"
-#include "converter/mymoneybanking.h"
 
 static const char *description =
   I18N_NOOP("KMyMoney, the Personal Finance Manager for KDE.\n\nPlease consider contributing to this project with code and or suggestions.");
@@ -217,13 +216,6 @@ int main(int argc, char *argv[])
   }
 
   DESTROY_TEST_CONTAINER();
-
-  if(KMyMoneyBanking::instance()->isAvailable()) {
-    if (KMyMoneyBanking::instance()->fini()) {
-      qWarning("Could not deinitialize banking interface");
-    }
-  }
-  delete KMyMoneyBanking::instance();
 
   delete a;
   KAccountListItem::cleanCache();

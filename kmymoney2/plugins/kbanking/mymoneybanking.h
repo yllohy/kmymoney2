@@ -14,12 +14,124 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef KMYMONEYBANKING_H
-#define KMYMONEYBANKING_H
+#ifndef MYMONEYBANKING_H
+#define MYMONEYBANKING_H
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
+// ----------------------------------------------------------------------------
+// QT Includes
+
+// ----------------------------------------------------------------------------
+// KDE Includes
+
+class KAction;
+class KBanking;
+
+// ----------------------------------------------------------------------------
+// Project Includes
+
+#include "../kmymoneyplugin.h"
+#include "../../mymoney/mymoneyaccount.h"
+#include <kbanking/kbanking.h>
+
+/**
+  * This class represents the KBanking plugin towards KMymoney.
+  * All GUI related issues are handled in this object.
+  */
+class KBankingPlugin : public KMyMoneyPlugin::Plugin
+{
+  Q_OBJECT
+public:
+  KBankingPlugin(QObject* parent, const char* name, const QStringList&);
+  virtual ~KBankingPlugin();
+
+  bool importStatement(MyMoneyStatement& s);
+
+protected:
+  void createJobView(void);
+  void createActions(void);
+  void createContextMenu(void);
+
+protected slots:
+  void slotSettings(void);
+  void slotImport(void);
+
+  /**
+    * Called when an account has been selected by the application
+    * and the context menu has to be adjusted.
+    */
+  void slotAccountSelected(const MyMoneyAccount& acc);
+
+  /**
+    * Called by the context menu created in createContextMenu().
+    * Calls KBanking to set up HBCI mappings.
+    */
+  void slotAccountOnlineMap(void);
+
+  /**
+    * Called by the context menu created in createContextMenu().  Calls KBanking to update
+    * the account.  Only valid if the account is mapped for HBCI.
+    */
+  void slotAccountOnlineUpdate(void);
+
+private:
+  MyMoneyAccount        m_account;
+  KAction*              m_configAction;
+  KAction*              m_importAction;
+  KBanking*             m_kbanking;
+  KPopupMenu*           m_accountMenu;
+  int                   m_menuMapId;
+  int                   m_menuUpdateId;
+};
+
+/**
+  * This class is the special implementation to glue the KBanking class
+  * with the KMyMoneyPlugin structure.
+  */
+class KMyMoneyBanking : public KBanking
+{
+
+public:
+  KMyMoneyBanking(KBankingPlugin* parent, const char* appname, const char* fname = 0);
+  virtual ~KMyMoneyBanking() {};
+
+  bool importAccountInfo(AB_IMEXPORTER_ACCOUNTINFO *ai);
+
+protected:
+  const AB_ACCOUNT_STATUS* _getAccountStatus(AB_IMEXPORTER_ACCOUNTINFO *ai);
+
+private:
+  KBankingPlugin* m_parent;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#if 0
+
+
+
+
 
 #ifdef HAVE_KBANKING
 #  include <kbanking/kbanking.h>
@@ -93,5 +205,6 @@ private:
 #endif
 
 };
+#endif // #if 0
 
 #endif

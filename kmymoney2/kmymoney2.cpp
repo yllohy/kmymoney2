@@ -33,6 +33,7 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 
+#include <kdebug.h>
 #include <kapplication.h>
 #include <kshortcut.h>
 #include <kiconloader.h>
@@ -51,6 +52,7 @@
 #include <kio/netaccess.h>
 #include <dcopclient.h>
 #include <kstartupinfo.h>
+#include <kparts/componentfactory.h>
 
 #if !KDE_IS_VERSION(3,2,0)
 #include <kwin.h>
@@ -86,7 +88,10 @@
 #include "converter/mymoneystatementreader.h"
 #include "converter/mymoneytemplate.h"
 #include "converter/mymoneyofxstatement.h"
-#include "converter/mymoneybanking.h"
+
+#include "plugins/kmymoneyplugin.h"
+#include "plugins/interfaces/kmmviewinterface.h"
+#include "plugins/interfaces/kmmstatementinterface.h"
 
 #include "kmymoneyutils.h"
 #include "kdecompat.h"
@@ -121,6 +126,10 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name)
   initStatusBar();
   initActions();
   readOptions();
+
+  // now initialize the plugin structure
+  createInterfaces();
+  loadPlugins();
 
   setCentralWidget(frame);
 
@@ -204,11 +213,6 @@ void KMyMoney2App::initActions()
   actionGncImport = new KAction(i18n("Gnucash ..."), "", 0, this, SLOT(slotGncImport()), actionCollection(), "file_import_gnc");
   actionStatementImport = new KAction(i18n("Statement file ..."), "", 0, this, SLOT(slotStatementImport()), actionCollection(), "file_import_statement");
 
-  actionAqbImport=0;
-  if(KMyMoneyBanking::instance()->isAvailable()) {
-    actionAqbImport = new KAction(i18n("AqBanking importer ..."), "", 0, this, SLOT(slotBankingImport()), actionCollection(), "file_import_aqb");
-  }
-
   actionLoadTemplate = new KAction(i18n("Account Template ..."), "", 0, this, SLOT(slotLoadAccountTemplates()), actionCollection(), "file_import_template");
   actionQifExport = new KAction(i18n("QIF ..."), "", 0, this, SLOT(slotQifExport()), actionCollection(), "file_export_qif");
   new KAction(i18n("Consistency Check"), "", 0, this, SLOT(slotFileConsitencyCheck()), actionCollection(), "file_consistency_check");
@@ -222,7 +226,6 @@ void KMyMoney2App::initActions()
   // The Settings Menu
   settingsKey = KStdAction::keyBindings(this, SLOT(slotKeySettings()), actionCollection());
   settings = KStdAction::preferences(this, SLOT( slotSettings() ), actionCollection());
-  new KAction(i18n("Configure Online &Banking..."), "configure", 0, this, SLOT(slotBankingSettings()), actionCollection(), "banking_settings");
   new KAction(i18n("Enable all messages"), "", 0, this, SLOT(slotEnableMessages()), actionCollection(), "enable_messages");
 
   // The Bank Menu
@@ -1067,17 +1070,6 @@ void KMyMoney2App::slotQifExport()
   slotStatusMsg(prevMsg);
 }
 
-void KMyMoney2App::slotBankingSettings()
-{
-  KMyMoneyBanking* kbanking = KMyMoneyBanking::instance();
-
-  if (kbanking && kbanking->isAvailable()) {
-    kbanking->settingsDialog(this);
-  } else {
-    KMessageBox::information( this, QString("<p>")+i18n("Online banking settings is unavailable.  This version of <b>KMyMoney</b> was built without <b>KBanking</b> support."), i18n("Function not available"));
-  }
-}
-
 void KMyMoney2App::slotSettings()
 {
   KSettingsDlg dlg( this, "Settings");
@@ -1726,17 +1718,6 @@ void KMyMoney2App::ofxWebConnect(const QString& url, const QCString& asn_id)
 
 }
 
-void KMyMoney2App::slotBankingImport()
-{
-  KMyMoneyBanking* kbanking = KMyMoneyBanking::instance();
-
-  if (kbanking->isAvailable()) {
-    if (!kbanking->interactiveImport()) {
-      qWarning("Error on ini of import dialog.");
-    }
-  }
-}
-
 void KMyMoney2App::slotEnableMessages(void)
 {
   KMessageBox::enableAllMessages();
@@ -1747,4 +1728,37 @@ void KMyMoney2App::slotSecurityEditor(void)
 {
   KSecurityListEditor dlg(this, "KSecurityListEditor");
   dlg.exec();
+}
+
+void KMyMoney2App::createInterfaces(void)
+{
+  // Sets up the plugin interface, and load the plugins
+  m_pluginInterface = new QObject( this, "_pluginInterface" );
+
+  new KMyMoneyPlugin::KMMViewInterface(this, myMoneyView, m_pluginInterface, "view interface");
+  new KMyMoneyPlugin::KMMStatementInterface(this, m_pluginInterface, "statement interface");
+}
+
+void KMyMoney2App::loadPlugins(void)
+{
+  KTrader::OfferList offers = KTrader::self()->query("KMyMoneyPlugin");
+
+  KTrader::OfferList::ConstIterator iter;
+  for(iter = offers.begin(); iter != offers.end(); ++iter) {
+    KService::Ptr service = *iter;
+    int errCode = 0;
+
+    KMyMoneyPlugin::Plugin* plugin =
+      KParts::ComponentFactory::createInstanceFromService<KMyMoneyPlugin::Plugin>
+      ( service, m_pluginInterface, service->name(), QStringList(), &errCode);
+    // here we ought to check the error code.
+
+    if (plugin) {
+      guiFactory()->addClient(plugin);
+      kdDebug() << "Loaded '"
+                << plugin->name() << "' plugin" << endl;
+    } else {
+      kdDebug() << KLibLoader::self()->lastErrorMessage() << endl;
+    }
+  }
 }

@@ -1,4 +1,4 @@
-# $Id: kbanking.m4,v 1.3 2004/12/28 20:08:46 ipwizard Exp $
+# $Id: kbanking.m4,v 1.4 2005/01/11 20:10:13 ipwizard Exp $
 # (c) 2004 Martin Preuss<martin@libchipcard.de>
 # This function checks for KBanking
 
@@ -14,6 +14,7 @@ dnl          kbanking_libs
 dnl          kbanking_data
 dnl          kbanking_includes
 dnl          have_kbanking
+dnl          kbanking_plugin
 
 if test -z "$1"; then vma="0"; else vma="$1"; fi
 if test -z "$2"; then vmi="1"; else vmi="$2"; fi
@@ -32,6 +33,7 @@ kbanking_dir=""
 kbanking_data=""
 kbanking_libs=""
 kbanking_includes=""
+kbanking_plugin=""
 if test "$enable_kbanking" != "no"; then
   AC_MSG_CHECKING(for kbanking)
   AC_ARG_WITH(kbanking-dir, [  --with-kbanking-dir=DIR
@@ -94,10 +96,12 @@ if test "$enable_kbanking" != "no"; then
         fi
       fi
       have_kbanking="yes"
+      kbanking_plugin="kbanking"
       #AC_MSG_RESULT(yes)
       AC_DEFINE_UNQUOTED(HAVE_KBANKING, 1, [Defines if your system has the kbanking package])
     else
       have_kbanking="yes"
+      kbanking_plugin="kbanking"
       AC_MSG_RESULT(assuming yes)
       AC_DEFINE_UNQUOTED(HAVE_KBANKING, 1, [Defines if your system has the kbanking package])
     fi
@@ -109,4 +113,5 @@ AC_SUBST(kbanking_dir)
 AC_SUBST(kbanking_libs)
 AC_SUBST(kbanking_data)
 AC_SUBST(kbanking_includes)
+AC_SUBST(kbanking_plugin)
 ])

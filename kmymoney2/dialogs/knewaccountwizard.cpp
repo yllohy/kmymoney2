@@ -481,7 +481,7 @@ void KNewAccountWizard::slotAccountType(const QString& sel)
 
   if(sel == KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Checkings)) {
     txt += i18n(
-      "Use the checkings account type to manage "
+      "Use the checking account type to manage "
       "activities on your checkings account e.g. payments, cheques and cash card "
       "purchases."
     );

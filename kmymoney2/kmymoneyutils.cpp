@@ -62,7 +62,7 @@ const QString KMyMoneyUtils::accountTypeToString(const MyMoneyAccount::accountTy
   switch (accountType)
   {
     case MyMoneyAccount::Checkings:
-      returnString = i18n("Checkings");
+      returnString = i18n("Checking");
       break;
     case MyMoneyAccount::Savings:
       returnString = i18n("Savings");
@@ -121,7 +121,7 @@ const MyMoneyAccount::accountTypeE KMyMoneyUtils::stringToAccountType(const QStr
   MyMoneyAccount::accountTypeE rc = MyMoneyAccount::UnknownAccountType;
   QString tmp = type.lower();
 
-  if(tmp == i18n("Checkings").lower())
+  if(tmp == i18n("Checking").lower())
     rc = MyMoneyAccount::Checkings;
   else if(tmp == i18n("Savings").lower())
     rc = MyMoneyAccount::Savings;

@@ -1,0 +1,15 @@
+Makefile
+Makefile.in
+.deps
+.libs
+.pics
+*_meta_unload.cpp
+*.moc
+*.moc.cpp
+*.o
+*decl.cpp
+*decl.h
+*~
+*.kidl
+*_skel.*
+*_stub.*

@@ -1,0 +1,68 @@
+/***************************************************************************
+                          kmmviewinterface.h
+                             -------------------
+    begin                : Wed Jan 5 2005
+    copyright            : (C) 2005 Thomas Baumgart
+    email                : ipwizard@users.sourceforge.net
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#ifndef KMMVIEWINTERFACE_H
+#define KMMVIEWINTERFACE_H
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+// ----------------------------------------------------------------------------
+// QT Includes
+
+// ----------------------------------------------------------------------------
+// KDE Includes
+
+class KMyMoney2App;
+class KMyMoneyView;
+
+// ----------------------------------------------------------------------------
+// Project Includes
+
+#include "../viewinterface.h"
+
+namespace KMyMoneyPlugin {
+
+/**
+  * This class represents the implementation of the
+  * ViewInterface.
+  */
+class KMMViewInterface : public ViewInterface {
+  Q_OBJECT
+
+public:
+  KMMViewInterface(KMyMoney2App* app, KMyMoneyView* view, QObject* parent, const char* name = 0);
+  ~KMMViewInterface() {};
+
+  /**
+    * This method returns a pointer to the account context menu
+    * which is opened when right clicking on an account.
+    *
+    * @return pointer to KPopupMenu
+    */
+  KPopupMenu*   accountContextMenu();
+
+  QFrame* addPage(const QString& item, const QString& header, const QPixmap& pixmap);
+
+private:
+  KMyMoney2App*    m_app;
+  KMyMoneyView*    m_view;
+};
+
+}; // namespace
+#endif

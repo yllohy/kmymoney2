@@ -23,107 +23,210 @@
 // QT Includes
 
 #include <qmessagebox.h>
+#include <qlayout.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
 
 #include <klocale.h>
+#include <kmessagebox.h>
+#include <kgenericfactory.h>
+#include <kaction.h>
+#include <kglobal.h>
+#include <kstandarddirs.h>
+#include <kpopupmenu.h>
+#include <kiconloader.h>
 
 // ----------------------------------------------------------------------------
 // Library Includes
 
-#ifdef HAVE_KBANKING
 #include <aqbanking/imexporter.h>
 #include <gwenhywfar/logger.h>
 #include <gwenhywfar/debug.h>
 #include <kbanking/settings.h>
-#endif
+#include <kbanking/jobview.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
 
 #include "mymoneybanking.h"
-#include "../kmymoney2.h"
-#include "../mymoney/mymoneystatement.h"
+#include "../mymoney/mymoneyfile.h"
 
-static KMyMoneyBanking* _instance = 0;
-static bool _available = 0;
+K_EXPORT_COMPONENT_FACTORY( kmm_kbanking,
+                            KGenericFactory<KBankingPlugin>( "kmm_kbanking" ) )
 
-KMyMoneyBanking::KMyMoneyBanking(const char *appname, const char *fname)
-  : KBanking(appname, fname)
+KBankingPlugin::KBankingPlugin(QObject *parent, const char* name, const QStringList&) :
+  KMyMoneyPlugin::Plugin(parent, name )
 {
-}
-
-KMyMoneyBanking::~KMyMoneyBanking()
-{
-  _instance = 0;
-}
-
-KMyMoneyBanking* KMyMoneyBanking::instance(void)
-{
-  if(!_instance) {
-#ifdef HAVE_KBANKING
+  m_kbanking = new KMyMoneyBanking(this, "kmymoney");
+  if(m_kbanking) {
     GWEN_Logger_SetLevel(0, GWEN_LoggerLevelInfo);
     GWEN_Logger_SetLevel(AQBANKING_LOGDOMAIN, GWEN_LoggerLevelInfo);
-#endif
+    if(m_kbanking->init() == 0) {
+      // Tell the host application to load my GUI component
+      setInstance(KGenericFactory<KBankingPlugin>::instance());
+      setXMLFile("kmm_kbanking.rc");
 
-    _instance = new KMyMoneyBanking("kmymoney");
-    _available = false;
-    Q_CHECK_PTR(_instance);
+      // create view
+      createJobView();
 
-#ifdef HAVE_KBANKING
-    if(_instance->init()) {
-      qWarning("Could not initialize KBanking online banking interface");
+      // create actions
+      createActions();
+
+      // create context menu entries
+      createContextMenu();
+
     } else {
-      _available = true;
+      kdWarning() << "Could not initialize KBanking online banking interface" << endl;
+      delete m_kbanking;
+      m_kbanking = 0;
     }
-    _instance->m_jobView = 0;
-#endif
   }
-  return _instance;
 }
 
-const bool KMyMoneyBanking::isAvailable(void) const
+KBankingPlugin::~KBankingPlugin()
 {
-  return _available;
+  if(m_kbanking) {
+    m_kbanking->fini();
+    delete m_kbanking;
+  }
 }
 
-void KMyMoneyBanking::settingsDialog(QWidget* parent, const char* name, QWidget::WFlags fl)
+void KBankingPlugin::createJobView(void)
 {
-#ifdef HAVE_KBANKING
-  KBankingSettings bs(this, parent, name, fl);
+  QFrame* frm = viewInterface()->addPage(i18n("Outbox"), i18n("Outbox"),DesktopIcon("outbox"));
+  QVBoxLayout* layout = new QVBoxLayout(frm);
+  layout->setSpacing( 6 );
+  layout->setMargin( 0 );
+  layout->addWidget(new JobView(m_kbanking, frm, "JobView"));
 
-  if (bs.init()) {
-    qWarning("Error on ini of settings dialog.");
-  } else {
+  connect(viewInterface(), SIGNAL(viewStateChanged(bool)), frm, SLOT(setEnabled(bool)));
+}
+
+void KBankingPlugin::createActions(void)
+{
+  m_configAction = new KAction(i18n("Configure Online &Banking..."), "configure", 0, this, SLOT(slotSettings()), actionCollection(), "banking_settings");
+  m_importAction = new KAction(i18n("AqBanking importer ..."), "", 0, this, SLOT(slotImport()), actionCollection(), "file_import_aqb");
+
+  connect(viewInterface(), SIGNAL(viewStateChanged(bool)), m_importAction, SLOT(setEnabled(bool)));
+}
+
+void KBankingPlugin::createContextMenu(void)
+{
+  m_accountMenu = viewInterface()->accountContextMenu();
+  if(m_accountMenu) {
+    KIconLoader *il = KGlobal::iconLoader();
+    m_accountMenu->insertSeparator();
+    m_menuMapId = m_accountMenu->insertItem(il->loadIcon("account", KIcon::Small),
+                          i18n("Map to HBCI account..."),
+                          this, SLOT(slotAccountOnlineMap()), 0);
+    m_menuUpdateId = m_accountMenu->insertItem(il->loadIcon("account", KIcon::Small),
+                          i18n("Online update using HBCI..."),
+                          this, SLOT(slotAccountOnlineUpdate()), 0);
+
+    // make sure we receive a notification whenever an account is selected
+    connect(viewInterface(), SIGNAL(accountSelectedForContextMenu(const MyMoneyAccount&)), this, SLOT(slotAccountSelected(const MyMoneyAccount&)));
+  }
+}
+
+void KBankingPlugin::slotSettings(void)
+{
+  KBankingSettings bs(m_kbanking);
+  if(bs.init())
+    kdWarning() << "Error on ini of settings dialog." << endl;
+  else {
     bs.exec();
-    if (!bs.fini()) {
-      qWarning("Error on fini of settings dialog.");
+    if(bs.fini())
+      kdWarning() << "Error on fini of settings dialog." << endl;
+  }
+}
+
+void KBankingPlugin::slotAccountOnlineMap(void)
+{
+  if(!m_account.id().isEmpty()) {
+    MyMoneyFile* file = MyMoneyFile::instance();
+
+    const MyMoneyInstitution &bank = file->institution(m_account.institutionId());
+    if (bank.sortcode().isEmpty()) {
+      KMessageBox::information(0,
+        i18n("In order to map this account to an HBCI account, the account's institution "
+        "must have a bank code assigned.  Please assign one before continuing."));
+      return;
+    }
+    if (m_account.number().isEmpty()) {
+      KMessageBox::information(0,
+        i18n("In order to map this account to an HBCI account, this account "
+        "must have an account number assigned."));
+      return;
+    }
+
+    // open map dialog
+    if (!m_kbanking->askMapAccount(m_account.id(),
+                                  bank.sortcode().latin1(),
+                                  m_account.number())) {
+      // TODO: flash result
+    }
+    else {
+      // TODO: flash result
     }
   }
-#endif
 }
 
-QWidget* KMyMoneyBanking::createJobView(QWidget* parent, const char *name)
+void KBankingPlugin::slotAccountOnlineUpdate(void)
 {
-#ifdef HAVE_KBANKING
-  m_jobView = new JobView(this, parent, name);
-  return m_jobView;
-#else
-  return new QWidget(parent, name);
-#endif
+  if(!m_account.id().isEmpty()) {
+
+    // TODO: get last statement date
+    if(m_kbanking->requestBalance(m_account.id())) {
+      if(m_kbanking->requestTransactions(m_account.id(), QDate(), QDate())) {
+        // TODO: flash status
+      }
+    }
+  }
 }
 
-void KMyMoneyBanking::updateJobView(void)
+void KBankingPlugin::slotAccountSelected(const MyMoneyAccount& acc)
 {
-#ifdef HAVE_KBANKING
-  if(m_jobView)
-    m_jobView->slotQueueUpdated();
-#endif
+  bool state = false;
+  m_account = acc;
+
+  if(!MyMoneyFile::instance()->isStandardAccount(acc.id())) {
+    switch(m_account.accountGroup()) {
+      case MyMoneyAccount::Asset:
+      case MyMoneyAccount::Liability:
+        if(!acc.institutionId().isEmpty())
+          state = true;
+        break;
+
+      default:
+        break;
+    }
+  }
+  m_accountMenu->setItemEnabled(m_menuMapId, state);
+  m_accountMenu->setItemEnabled(m_menuUpdateId, state);
+}
+
+void KBankingPlugin::slotImport(void)
+{
+  if(!m_kbanking->interactiveImport())
+    kdWarning() << "Error on import dialog" << endl;
+}
+
+bool KBankingPlugin::importStatement(MyMoneyStatement& s)
+{
+  return statementInterface()->import(s);
 }
 
 
-#ifdef HAVE_KBANKING
+
+
+
+KMyMoneyBanking::KMyMoneyBanking(KBankingPlugin* parent, const char* appname, const char* fname) :
+  KBanking(appname, fname),
+  m_parent(parent)
+{
+}
+
 const AB_ACCOUNT_STATUS* KMyMoneyBanking::_getAccountStatus(AB_IMEXPORTER_ACCOUNTINFO *ai)
 {
   const AB_ACCOUNT_STATUS *ast;
@@ -161,7 +264,6 @@ const AB_ACCOUNT_STATUS* KMyMoneyBanking::_getAccountStatus(AB_IMEXPORTER_ACCOUN
     }
     ast=AB_ImExporterAccountInfo_GetNextAccountStatus(ai);
   } /* while */
-
   return best;
 }
 
@@ -328,7 +430,7 @@ bool KMyMoneyBanking::importAccountInfo(AB_IMEXPORTER_ACCOUNTINFO *ai)
   }
 
   // import it
-  if (!kmymoney2->slotStatementImport(ks)) {
+  if(!m_parent->importStatement(ks)) {
     if (QMessageBox::critical(0,
                               i18n("Critical Error"),
                               i18n("Error importing statement."),
@@ -340,7 +442,3 @@ bool KMyMoneyBanking::importAccountInfo(AB_IMEXPORTER_ACCOUNTINFO *ai)
   }
   return true;
 }
-
-#endif
-
-

@@ -12,8 +12,6 @@
       <Action name="file_import_ofx"/>
       <Action name="file_import_gnc"/>
       <Separator/>
-      <Action name="file_import_aqb"/>
-      <Separator/>
       <Action name="file_import_template"/>
     </Menu>
     <Menu name="export" icon="fileexport" append="save_merge"><text>E&amp;xport</text>
@@ -26,7 +24,7 @@
 
   <Menu name="settings">
     <Action name="show_transaction_detail" append="show_merge"/>
-    <Action name="banking_settings" append="configure_merge"/>
+    <!-- <Action name="banking_settings" append="configure_merge"/> -->
     <Action name="enable_messages" append="show_merge"/>
   </Menu>
 

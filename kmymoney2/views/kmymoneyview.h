@@ -55,7 +55,6 @@ class IMyMoneyStorageFormat;
 class MyMoneyTransaction;
 class KInvestmentView;
 class KReportsView;
-class KJobView;
 
 /**
   * This class represents the view of the MyMoneyFile which contains
@@ -107,7 +106,6 @@ private:
   KInvestmentView *m_investmentView;
   KReportsView* m_reportsView;
   KFindTransactionDlg* m_searchDlg;
-  KJobView *m_jobView;
 
   QVBox* m_homeViewFrame;
   QVBox* m_accountsViewFrame;
@@ -118,7 +116,6 @@ private:
   QVBox* m_ledgerViewFrame;
   QVBox* m_investmentViewFrame;
   QVBox* m_reportsViewFrame;
-  QVBox* m_jobViewFrame;
 
   bool m_fileOpen;
 
@@ -289,6 +286,8 @@ public:
     */
   void enableViews(int state = -1);
 
+  KPopupMenu* accountContextMenu(void) const { return m_accountMenu; };
+
 public slots:
   /**
     * This slot writes information about the page passed as argument @p widget
@@ -456,18 +455,6 @@ protected slots:
   void slotAccountDelete();
 
   /**
-    * Called by the context menu created in slotAccountRightMouse.  Calls KBanking to set up
-    * HBCI mappings
-    */
-  void slotAccountOnlineMap();
-
-  /**
-    * Called by the context menu created in slotAccountRightMouse.  Calls KBanking to update
-    * the account.  Only valid if the account is mapped for HBCI.
-    */
-  void slotAccountOnlineUpdate();
-
-  /**
     * Called by the context menu created in slotAccountRightMouse.  Connects to the users
     * bank via OFX.  Only valid if ofxConnectionSettings have been set in the institution.
     */
@@ -526,6 +513,10 @@ signals:
     * The parameter @p view is identified as one of KMyMoneyView::viewID.
     */
   void viewActivated(int view);
+
+  void accountSelectedForContextMenu(const MyMoneyAccount& acc);
+
+  void viewStateChanged(bool enabled);
 };
 
 #endif

@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=KBanking
+Comment=Add online banking to KMyMoney
+ServiceTypes=KMyMoneyPlugin
+Type=Service
+X-KDE-Library=kmm_kbanking
+

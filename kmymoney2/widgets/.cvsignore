@@ -9,4 +9,5 @@ Makefile.in
 *~
 kschedulebriefwidget.cpp
 kschedulebriefwidget.h
-*decl.*
+*decl.h
+*decl.cpp
