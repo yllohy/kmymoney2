@@ -50,7 +50,7 @@ KBanksView::~KBanksView()
 {
 }
 
-void KBanksView::slotListRightMouse(QListViewItem* item, const QPoint& point, int col)
+void KBanksView::slotListRightMouse(QListViewItem* item, const QPoint& , int col)
 {
   MyMoneyBank returnBank;
   if (item==0 || col==-1) {

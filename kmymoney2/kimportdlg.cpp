@@ -25,10 +25,16 @@
 
 KImportDlg::KImportDlg():KImportDlgDecl(0,0,TRUE)
 {
-	comboDateFormat->insertItem("MM/DD'YY");
+	comboDateFormat->insertItem("MM/DD\'YY");
 	comboDateFormat->insertItem("MM/DD/YYYY");
 	comboDateFormat->setEditable(false);
+
   readConfig();
+
+	if (m_qstringLastFormat == "MM/DD\'YY")
+		comboDateFormat->setCurrentItem(0);
+	else
+		comboDateFormat->setCurrentItem(1);
 
   connect( btnBrowse, SIGNAL( clicked() ), this, SLOT( slotBrowse() ) );
   connect(buttonOk, SIGNAL(clicked()), this, SLOT(slotOkClicked()));
@@ -63,6 +69,7 @@ void KImportDlg::readConfig(void)
   KConfig *config = KGlobal::config();
   config->setGroup("Last Use Settings");
   txtFileImport->setText(config->readEntry("KImportDlg_LastFile"));
+	m_qstringLastFormat = config->readEntry("KImportDlg_LastFormat");
 }
 
 void KImportDlg::writeConfig(void)
@@ -70,5 +77,6 @@ void KImportDlg::writeConfig(void)
   KConfig *config = KGlobal::config();
   config->setGroup("Last Use Settings");
   config->writeEntry("KImportDlg_LastFile", txtFileImport->text());
+	config->writeEntry("KImportDlg_LastFormat", comboDateFormat->currentText());
   config->sync();
 }

@@ -26,10 +26,16 @@
 
 KExportDlg::KExportDlg():KExportDlgDecl(0,0,TRUE)
 {
-	comboDateFormat->insertItem("MM/DD'YY");
+	comboDateFormat->insertItem("MM/DD\'YY");
 	comboDateFormat->insertItem("MM/DD/YYYY");
 	comboDateFormat->setEditable(false);
-  	readConfig();
+
+ 	readConfig();
+
+	if (m_qstringLastFormat == "MM/DD\'YY")
+		comboDateFormat->setCurrentItem(0);
+	else
+		comboDateFormat->setCurrentItem(1);
 
   connect( btnBrowse, SIGNAL( clicked() ), this, SLOT( slotBrowse() ) );
   connect(buttonOk, SIGNAL(clicked()), this, SLOT(slotOkClicked()));
@@ -64,6 +70,7 @@ void KExportDlg::readConfig(void)
   cbxCategories->setChecked(config->readBoolEntry("KExportDlg_CatOpt", true));
   dateStartDate->setDate(config->readDateTimeEntry("KExportDlg_StartDate").date());
   dateEndDate->setDate(config->readDateTimeEntry("KExportDlg_EndDate").date());
+	m_qstringLastFormat = config->readEntry("KExportDlg_LastFormat");
 }
 
 void KExportDlg::writeConfig(void)
@@ -75,6 +82,7 @@ void KExportDlg::writeConfig(void)
   config->writeEntry("KExportDlg_CatOpt", cbxCategories->isChecked());
   config->writeEntry("KExportDlg_StartDate", QDateTime(dateStartDate->getQDate()));
   config->writeEntry("KExportDlg_EndDate", QDateTime(dateEndDate->getQDate()));
+	config->writeEntry("KExportDlg_LastFormat", comboDateFormat->currentText());
 
   config->sync();
 }

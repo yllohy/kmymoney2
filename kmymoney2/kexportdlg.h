@@ -16,21 +16,30 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
 #ifndef KEXPORTDLG_H
 #define KEXPORTDLG_H
 
+// ----------------------------------------------------------------------------
+// QT Headers
+#include <qstring.h>
+
+// ----------------------------------------------------------------------------
+// KDE Headers
+
+// ----------------------------------------------------------------------------
+// Project Headers
 #include "kexportdlgdecl.h"
 
 /**
   *@author Michael Edwardes
   */
-
 class KExportDlg : public KExportDlgDecl  {
 	Q_OBJECT
 private:
   void readConfig(void);
   void writeConfig(void);
+
+	QString m_qstringLastFormat;
 
 public:
 	KExportDlg();

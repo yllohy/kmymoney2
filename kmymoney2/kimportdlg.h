@@ -16,10 +16,18 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
 #ifndef KIMPORTDLG_H
 #define KIMPORTDLG_H
 
+// ----------------------------------------------------------------------------
+// QT Headers
+#include <qstring.h>
+
+// ----------------------------------------------------------------------------
+// KDE Headers
+
+// ----------------------------------------------------------------------------
+// Project Headers
 #include "kimportdlgdecl.h"
 
 /**
@@ -31,6 +39,8 @@ class KImportDlg : public KImportDlgDecl  {
 private:
   void readConfig(void);
   void writeConfig(void);
+
+	QString m_qstringLastFormat;
 
 public:
 	KImportDlg();
