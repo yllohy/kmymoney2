@@ -39,6 +39,7 @@ private:
   MyMoneyAccount m_account;
   MyMoneyAccount m_parentAccount;
   MyMoneyFile *m_file;
+  bool m_bSelectedParentAccount;
 
   void initParentWidget();
   void showSubAccounts(QCStringList accounts, KAccountListItem *parentItem, MyMoneyFile *file);
@@ -54,6 +55,8 @@ protected:
 
 protected slots:
   void okClicked();
+  void slotSelectionChanged(QListViewItem *item);
+  void slotSubAccountsToggled(bool on);
 };
 
 #endif

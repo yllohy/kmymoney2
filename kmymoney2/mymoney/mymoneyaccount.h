@@ -106,7 +106,7 @@ public:
     Liability,            /**< Denotes a generic liability account.*/
     Currency,             /**< Denotes a currency trading account. */
     Income,               /**< Denotes an income account*/
-    Expense,              /**< Denotes an expense account*/
+    Expense              /**< Denotes an expense account*/
   };
 
   /**
@@ -459,3 +459,4 @@ private:
 };
 
 #endif
+

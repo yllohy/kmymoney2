@@ -38,6 +38,7 @@
 #include <klistview.h>
 #include <kconfig.h>
 #include <qcheckbox.h>
+#include "../mymoney/mymoneyexception.h"
 
 KNewAccountDlg::KNewAccountDlg(MyMoneyAccount& account, MyMoneyFile* file, QWidget *parent,
     const char *name, const char *title)
@@ -56,6 +57,8 @@ KNewAccountDlg::KNewAccountDlg(MyMoneyAccount& account, MyMoneyFile* file, QWidg
 	m_qlistviewParentAccounts->header()->setResizeEnabled(false);
 	m_qlistviewParentAccounts->setColumnWidthMode(0, QListView::Manual);
   m_qlistviewParentAccounts->setEnabled(false);
+
+  m_qcheckboxSubAccount->setText(i18n("Is a sub account"));
 
 	KConfig *config = KGlobal::config();
   QFont defaultFont = QFont("helvetica", 12);
@@ -86,7 +89,9 @@ KNewAccountDlg::KNewAccountDlg(MyMoneyAccount& account, MyMoneyFile* file, QWidg
 
   connect(cancelButton, SIGNAL(clicked()), SLOT(reject()));
   connect(createButton, SIGNAL(clicked()), this, SLOT(okClicked()));
-  connect(m_qcheckboxSubAccount, SIGNAL(toggled(bool)), m_qlistviewParentAccounts, SLOT(setEnabled(bool)));
+  connect(m_qcheckboxSubAccount, SIGNAL(toggled(bool)), this, SLOT(slotSubAccountsToggled(bool)));
+  connect(m_qlistviewParentAccounts, SIGNAL(selectionChanged(QListViewItem*)),
+    this, SLOT(slotSelectionChanged(QListViewItem*)));
 }
 
 KNewAccountDlg::~KNewAccountDlg()
@@ -161,25 +166,30 @@ MyMoneyAccount KNewAccountDlg::account(void)
 
 const MyMoneyAccount KNewAccountDlg::parentAccount(void)
 {
-//  return m_parentAccount;
-  MyMoneyAccount account;
-  switch (m_file->accountGroup(m_account.accountType()))
+  if (m_bSelectedParentAccount)
   {
-    case MyMoneyAccount::Asset:
-      account = m_file->asset();
-      break;
-    case MyMoneyAccount::Liability:
-      account = m_file->liability();
-      break;
-    case MyMoneyAccount::Income:
-      account = m_file->income();
-      break;
-    case MyMoneyAccount::Expense:
-      account = m_file->expense();
-      break;
+    return m_parentAccount;
   }
-
-  return account;
+  else  // Build the parent for them, force parent...
+  {
+    MyMoneyAccount account;
+    switch (m_file->accountGroup(m_account.accountType()))
+    {
+      case MyMoneyAccount::Asset:
+        account = m_file->asset();
+        break;
+      case MyMoneyAccount::Liability:
+        account = m_file->liability();
+        break;
+      case MyMoneyAccount::Income:
+        account = m_file->income();
+        break;
+      case MyMoneyAccount::Expense:
+        account = m_file->expense();
+        break;
+    }
+    return account;
+  }
 }
 
 void KNewAccountDlg::initParentWidget()
@@ -294,4 +304,39 @@ void KNewAccountDlg::resizeEvent(QResizeEvent* e)
 
 	// call base class resizeEvent()
 	KNewAccountDlgDecl::resizeEvent(e);
+}
+
+void KNewAccountDlg::slotSelectionChanged(QListViewItem *item)
+{
+  KAccountListItem *accountItem = (KAccountListItem*)item;
+  m_bSelectedParentAccount = true;
+  try
+  {
+    qDebug("Selected account id: %s", accountItem->accountID().data());
+    qDebug("asset acount id: %s", m_file->asset().id().data());
+    m_parentAccount = m_file->account(accountItem->accountID());
+    QString theText(i18n("Is a sub account of "));
+    theText += m_parentAccount.name();
+    m_qcheckboxSubAccount->setText(theText);
+  }
+  catch (MyMoneyException *e)
+  {
+    qDebug("This shouldn't happen!");
+    delete e;
+  }
+}
+
+void KNewAccountDlg::slotSubAccountsToggled(bool on)
+{
+  m_qlistviewParentAccounts->setEnabled(on);
+  if (on)
+  {
+    QString theText(i18n("Is a sub account of "));
+    theText += m_parentAccount.name();
+    m_qcheckboxSubAccount->setText(theText);
+  }
+  else
+  {
+    m_qcheckboxSubAccount->setText(i18n("Is a sub account"));
+  }
 }

@@ -30,7 +30,7 @@
 
 // ----------------------------------------------------------------------------
 // Project Includes
-
+#include "storage/mymoneyseqaccessmgr.h"
 #include "mymoneyfile.h"
 #ifndef HAVE_CONFIG_H
 #define VERSION "UNKNOWN"
@@ -170,6 +170,20 @@ const MyMoneyInstitution& MyMoneyFile::institution(const QCString& id) const
 
 const MyMoneyAccount& MyMoneyFile::account(const QCString& id) const
 {
+	MyMoneyAccount account;
+  if (m_storage->isStandardAccount(id))
+	{
+	  if (id == STD_ACC_LIABILITY)
+		  account = liability();
+		else if (id == STD_ACC_ASSET)
+			account = asset();
+		else if (id == STD_ACC_EXPENSE)
+			account = expense();
+	  else if (id == STD_ACC_INCOME)
+			account = income();
+		return account;
+	}
+	
   return m_storage->account(id);
 }
 
