@@ -355,6 +355,28 @@ void KReportsViewTest::testTest()
     CPPUNIT_ASSERT(networth.m_grid["Asset"].m_total[4]==((moCanOpening-moCanTransaction-moCanTransaction-moCanTransaction)*moCanPrice)+((moJpyOpening-moJpyTransaction-moJpyTransaction-moJpyTransaction)*moJpyPrice));
     CPPUNIT_ASSERT(networth.m_grid["Asset"].m_total[5]==((moCanOpening-moCanTransaction-moCanTransaction-moCanTransaction)*moCanPrice)+((moJpyOpening-moJpyTransaction-moJpyTransaction-moJpyTransaction)*moJpyPrice2)+moCheckingOpen);
   }
-    
+
+  {
+    // test filter
+    QCString acChecking = makeAccount(QString("Checking Account"),
+                                      MyMoneyAccount::Checkings,
+                                      moCheckingOpen,
+                                      QDate(2004,5,15),
+                                      acAsset);
+    QCString acSolo = makeAccount(QString("Solo"),
+                                  MyMoneyAccount::Expense,
+                                  0,
+                                  QDate(2004,1,11),
+                                  acExpense);
+
+    makeTransaction(QDate(2004,10,31), MyMoneySplit::ActionWithdrawal, moSolo, acChecking, acSolo);
+
+    MyMoneyTransactionFilter filter;
+    filter.setDateFilter(QDate(2004,9,1), QDate(2005,1,1).addDays(-1));
+    filter.addCategory(acSolo);
+    filter.setReportAllSplits(false);
+
+    CPPUNIT_ASSERT(file->transactionList(filter).count() == 1);
+  }
 }
  
