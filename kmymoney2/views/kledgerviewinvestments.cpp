@@ -103,6 +103,9 @@
 #define VALUE_TXT_COL     3
 #define VALUE_DATA_COL    (VALUE_TXT_COL+1)
 
+#define COMBO_BUY_SHARES  0
+#define COMBO_SELL_SHARES 1
+
 
 KLedgerViewInvestments::KLedgerViewInvestments(QWidget *parent, const char *name) :
   KLedgerView(parent, name)
@@ -247,9 +250,15 @@ void KLedgerViewInvestments::fillForm()
       case BuyShares:
       case SellShares:
         if(transType == BuyShares)
+        {
           formTable->setText(ACTIVITY_ROW, ACTIVITY_DATA_COL, i18n("Buy Shares"));
+          m_editType->setCurrentItem(COMBO_BUY_SHARES);
+        }
         else
+        {
           formTable->setText(ACTIVITY_ROW, ACTIVITY_DATA_COL, i18n("Sell Shares"));
+          m_editType->setCurrentItem(COMBO_SELL_SHARES);
+        }
 
         formTable->setText(CATEGORY_ROW, CATEGORY_DATA_COL, fee);
         formTable->setText(ACCOUNT_ROW, ACCOUNT_DATA_COL, accName);
@@ -660,6 +669,8 @@ void KLedgerViewInvestments::createEditWidgets()
   if(!m_editType) {
     m_editType = new kMyMoneyCombo(0, "editType");
     m_editType->setFocusPolicy(QWidget::StrongFocus);
+    m_editType->insertItem(QString("Buy Shares"), 0);
+    m_editType->insertItem(QString("Sell Shares"), 1);
   }
   
   if(!m_editCashAccount) {
@@ -1026,6 +1037,42 @@ void KLedgerViewInvestments::slotEndEdit()
 
   // remember date for next new transaction
   m_lastPostDate = m_transaction.postDate();
+  
+  //grab the source account id for this transaction
+  QCStringList accountIdList = m_editCashAccount->selectedAccounts();
+  QCString accountId = accountIdList.first();
+  qDebug("Source account id = %s", accountId.data());
+  
+  //determine the transaction type
+  int currentAction = m_editType->currentItem();
+  qDebug("Current action is %d", currentAction);
+  
+  //compute the total amount for this transaction
+  MyMoneyMoney total;
+  total += m_editFees->getMoneyValue();
+  total += (m_editPPS->getMoneyValue() * m_editShares->getMoneyValue());
+  qDebug("Total amount = %s", total.toString().data());
+  
+
+  if(currentAction == COMBO_BUY_SHARES)
+  {
+    //set the action type
+    m_accountSplit.setAction(MyMoneySplit::ActionAddShares);
+    
+    //set up the split for the money that is sourcing this transaction
+    m_accountSplit.setAccountId(accountId);
+    m_accountSplit.setValue(total);
+    
+    //set up the fee split now
+    m_feeSplit.setValue(m_editFees->getMoneyValue());
+  }
+  else if(currentAction == COMBO_SELL_SHARES)
+  {
+  
+  }
+  
+  //the first split item is for the cash account
+  
 
     // If there are any differences, we need to update the storage.
     // All splits with no account id will be removed here. These splits
