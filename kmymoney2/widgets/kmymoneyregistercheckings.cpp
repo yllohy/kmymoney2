@@ -122,8 +122,7 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
                 txt = QString(i18n("Splitted transaction"));
               else {
                 MyMoneySplit split = m_transaction->split(m_view->accountId(), false);
-                MyMoneyAccount account = MyMoneyFile::instance()->account(split.accountId());
-                txt = account.name();
+                txt = MyMoneyFile::instance()->accountToCategory(split.accountId());
               }
             } catch(MyMoneyException *e) {
               delete e;
@@ -175,8 +174,20 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
       break;
     case 3:
       if(txt.isEmpty()) {
+        txt = " ";
         switch(m_transactionRow) {
           case 0:
+            switch(m_split.reconcileFlag()) {
+              case MyMoneySplit::Cleared:
+                txt = i18n("C");
+                break;
+              case MyMoneySplit::Reconciled:
+              case MyMoneySplit::Frozen:
+                txt = i18n("R");
+                break;
+              case MyMoneySplit::NotReconciled:
+                break;
+            }
             break;
         }
       }

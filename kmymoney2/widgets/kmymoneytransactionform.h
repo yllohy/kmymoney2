@@ -90,16 +90,23 @@ public:
   void addTab(QTab *tab) { m_tabBar->addTab(tab); };
   QTable* table(void) { return formTable; };
   QTabBar* tabBar(void) { return m_tabBar; };
+  KPushButton* newButton(void) const { return buttonNew; };
+  KPushButton* editButton(void) const { return buttonEdit; };
+  KPushButton* enterButton(void) const { return buttonEnter; };
+  KPushButton* cancelButton(void) const { return buttonCancel; };
+  KPushButton* moreButton(void) const { return buttonMore; };
 
 protected:
   QTabBar* m_tabBar;
   QFrame* formFrame;
+  kMyMoneyTransactionFormTable* formTable;
+
   KPushButton* buttonNew;
   KPushButton* buttonEdit;
   KPushButton* buttonEnter;
   KPushButton* buttonCancel;
   KPushButton* buttonMore;
-  kMyMoneyTransactionFormTable* formTable;
+
 
 protected:
   QVBoxLayout* formLayout;
