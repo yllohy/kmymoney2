@@ -637,3 +637,19 @@ const QValueList<MyMoneyPayee> MyMoneyFile::payeeList(void) const
 
   return m_storage->payeeList();
 }
+
+const QString MyMoneyFile::accountToCategory(const QCString& accountId) const
+{
+  MyMoneyAccount acc;
+  QString rc;
+
+  acc = account(accountId);
+  do {
+    if(!rc.isEmpty())
+      rc = QString(":") + rc;
+    rc = acc.name() + rc;
+    acc = account(acc.parentAccountId());
+  } while(!isStandardAccount(acc.id()));
+
+  return rc;
+}

@@ -1157,3 +1157,9 @@ void MyMoneyFileTest::testAttachStorage() {
 	delete store;
 	delete file;
 }
+
+void MyMoneyFileTest::testAccount2Category() {
+	testReparentAccount();
+	CPPUNIT_ASSERT(m->accountToCategory("A000001") == "Account2:Account1");
+	CPPUNIT_ASSERT(m->accountToCategory("A000002") == "Account2");
+}

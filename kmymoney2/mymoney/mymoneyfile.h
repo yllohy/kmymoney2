@@ -520,6 +520,18 @@ public:
   const QValueList<MyMoneyAccount> accountList(void) const;
 
   /**
+    * This method is used to convert an account id to a string representation
+    * of the names which can be used as a category description. If the account
+    * is part of a hierarchy, the category name will be the concatenation of
+    * the single account names seperated by colons.
+    *
+    * @param id const QCString reference of the account's id
+    *
+    * @return QString of the constructed name.
+    */
+  const QString accountToCategory(const QCString& accountId) const;
+
+  /**
     * This method is used to attach an observer to a subject
     * represented by it's id. Whenever the object represented
     * by the id changes it's state, the observers method
