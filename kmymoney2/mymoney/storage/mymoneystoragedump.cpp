@@ -53,6 +53,11 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
   QTextStream s(_s.device());
   IMyMoneyStorage* storage = dynamic_cast<IMyMoneyStorage *> (_storage);
 
+  s << "File-Info\n";
+  s << "---------\n";
+  s << "username = " << storage->userName() << "\n";
+  s << "usercity = " << storage->userTown() << "\n";
+
   s << "Institutions\n";
   s << "------------\n";
 

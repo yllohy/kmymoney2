@@ -990,10 +990,12 @@ void MyMoneySeqAccessMgrTest::testPayeeName() {
 void MyMoneySeqAccessMgrTest::testEquality() {
 	testAddTransactions();
 
+	m->setUserName("Thomas");
+
 	MyMoneySeqAccessMgr test = *m;
 	MyMoneySeqAccessMgr *t = &test;
 
-	CPPUNIT_ASSERT( m->m_userName == t->m_userName);
+	CPPUNIT_ASSERT( t->m_userName == "Thomas");
 	CPPUNIT_ASSERT( m->m_userStreet == t->m_userStreet);
 	CPPUNIT_ASSERT( m->m_userTown == t->m_userTown);
 	CPPUNIT_ASSERT( m->m_userCounty == t->m_userCounty);

@@ -52,8 +52,8 @@ class MyMoneyTransactionFilter;
   */
 class IMyMoneyStorage {
 public: 
-	IMyMoneyStorage();
-	virtual ~IMyMoneyStorage();
+  IMyMoneyStorage();
+  virtual ~IMyMoneyStorage();
 
   // general get functions
   virtual const QString& userName(void) const = 0;
