@@ -109,7 +109,7 @@ void MyMoneyFile::addInstitution(MyMoneyInstitution& institution)
 
   // automatically notify all observers once this routine is done
   MyMoneyNotifier notifier(this);
-  
+
   m_storage->addInstitution(institution);
 
   addNotification(NotifyClassInstitution);
@@ -134,7 +134,7 @@ void MyMoneyFile::modifyTransaction(const MyMoneyTransaction& transaction)
 
   const MyMoneyTransaction* t = &transaction;
   MyMoneyTransaction tCopy;
-  
+
   // now check the splits
   bool loanAccountAffected = false;
   QValueList<MyMoneySplit>::ConstIterator it_s;
@@ -216,7 +216,7 @@ void MyMoneyFile::modifyAccount(const MyMoneyAccount& account)
   if(acc.institutionId() != account.institutionId()) {
     addNotification(acc.institutionId());
     addNotification(account.institutionId());
-    addNotification(NotifyClassInstitution);      
+    addNotification(NotifyClassInstitution);
   }
 
   m_storage->modifyAccount(account);
@@ -286,20 +286,20 @@ const MyMoneyAccount& MyMoneyFile::account(const QCString& id) const
 {
 /*  It would be nice if this works, but it causes a seg fault.
     because we're returning a reference to a temporary.
-	MyMoneyAccount account;
+  MyMoneyAccount account;
   if (m_storage->isStandardAccount(id))
-	{
-	  if (id == STD_ACC_LIABILITY)
-		  account = liability();
-		else if (id == STD_ACC_ASSET)
-			account = asset();
-		else if (id == STD_ACC_EXPENSE)
-			account = expense();
-	  else if (id == STD_ACC_INCOME)
-			account = income();
-		return account;
-	}
-*/	
+  {
+    if (id == STD_ACC_LIABILITY)
+      account = liability();
+    else if (id == STD_ACC_ASSET)
+      account = asset();
+    else if (id == STD_ACC_EXPENSE)
+      account = expense();
+    else if (id == STD_ACC_INCOME)
+      account = income();
+    return account;
+  }
+*/
   checkStorage();
 
   return m_storage->account(id);
@@ -395,9 +395,9 @@ void MyMoneyFile::removeInstitution(const MyMoneyInstitution& institution)
   MyMoneyNotifier notifier(this);
 
   addNotification(institution.id());
-  
+
   m_storage->removeInstitution(institution);
-  
+
   addNotification(NotifyClassInstitution);
 }
 
@@ -437,6 +437,7 @@ void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
   // get a copy of the current data
   MyMoneyFile::account(parent.id());
 
+#if 0
   // make sure that no account with the same name and type exist
   // asset andliability as well as income and expense are considered
   // the same type in this aspect.
@@ -454,6 +455,7 @@ void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
         throw new MYMONEYEXCEPTION("Account with that name already exists");
       break;
   }
+#endif
 
   // FIXME: make sure, that the parent has the same type
   // I left it out here because I don't know, if there is
@@ -528,7 +530,7 @@ void MyMoneyFile::addTransaction(MyMoneyTransaction& transaction)
     for(it_s = transaction.splits().begin(); it_s != transaction.splits().end(); ++it_s) {
       if((*it_s).action() == MyMoneySplit::ActionTransfer) {
         MyMoneyAccount acc = MyMoneyFile::account((*it_s).accountId());
-        
+
         if(acc.accountGroup() == MyMoneyAccount::Asset
         || acc.accountGroup() == MyMoneyAccount::Liability) {
           MyMoneySplit s = (*it_s);
@@ -875,9 +877,9 @@ void MyMoneyFile::notify(void)
 
     if(m_notificationList.count() > 0)
       notify(NotifyClassAnyChange);
-      
+
     clearNotification();
-  }  
+  }
 }
 
 void MyMoneyFile::notifyAccountTree(const QCString& id)
@@ -1087,21 +1089,21 @@ const QStringList MyMoneyFile::consistencyCheck(void)
   QValueList<MyMoneyAccount>::Iterator it_a;
   QCStringList accountRebuild;
   QCStringList::ConstIterator it_c;
-  
+
   MyMoneyAccount parent;
   MyMoneyAccount child;
   MyMoneyAccount toplevel;
   MyMoneyAccount::accountTypeE group;
-  
+
   QCString parentId;
   QStringList rc;
 
   int problemCount = 0;
   QString problemAccount;
-        
+
   // check that we have a storage object
   checkStorage();
-  
+
   // automatically notify all observers once this routine is done
   MyMoneyNotifier notifier(this);
 
@@ -1112,13 +1114,13 @@ const QStringList MyMoneyFile::consistencyCheck(void)
   list << MyMoneyFile::instance()->liability();
   list << MyMoneyFile::instance()->income();
   list << MyMoneyFile::instance()->expense();
-    
+
   for(it_a = list.begin(); it_a != list.end(); ++it_a) {
     // no more checks for standard accounts
     if(isStandardAccount((*it_a).id())) {
       continue;
     }
-    
+
     group = accountGroup((*it_a).accountType());
     switch(group) {
       case MyMoneyAccount::Asset:
@@ -1137,7 +1139,7 @@ const QStringList MyMoneyFile::consistencyCheck(void)
         qWarning("%s:%d This should never happen!", __FILE__ , __LINE__);
         break;
     }
-      
+
     // check that the parent exists
     parentId = (*it_a).parentAccountId();
     try {
@@ -1175,9 +1177,9 @@ const QStringList MyMoneyFile::consistencyCheck(void)
       rc << QString("  * The parent with id %1 does not exist anymore.").arg(parentId);
       rc << QString("    New parent account is the top level account '%1'.").arg(toplevel.name());
       (*it_a).setParentAccountId(toplevel.id());
-      
+
       addNotification((*it_a).id());
-            
+
       // make sure to rebuild the sub-accounts of the top account
       if(accountRebuild.contains(toplevel.id()) == 0)
         accountRebuild << toplevel.id();
@@ -1228,8 +1230,8 @@ const QStringList MyMoneyFile::consistencyCheck(void)
       }
     }
   }
-  
-  // reconstruct the lists  
+
+  // reconstruct the lists
   for(it_a = list.begin(); it_a != list.end(); ++it_a) {
     QValueList<MyMoneyAccount>::Iterator it;
     parentId = (*it_a).parentAccountId();
@@ -1258,15 +1260,15 @@ const QStringList MyMoneyFile::consistencyCheck(void)
 
   addNotification(NotifyClassAccount);
   addNotification(NotifyClassAccountHierarchy);
-  
+
   // add more checks here
-  
+
   if(problemCount == 0)
     rc << "Finish! Data is consistent.";
   else
     rc << QString("Finish! %1 problems corrected. Data is consistent.")
             .arg(QString::number(problemCount));
-    
+
   return rc;
 }
 
@@ -1274,10 +1276,10 @@ QCString MyMoneyFile::createCategory(const MyMoneyAccount& base, const QString& 
 {
   MyMoneyAccount parent = base;
   QString categoryText;
-  
+
   if(base.id() != expense().id() && base.id() != income().id())
     throw MYMONEYEXCEPTION("Invalid base category");
-    
+
   QStringList subAccounts = QStringList::split(CATEGORY_SEPERATOR, name);
   QStringList::Iterator it;
   for (it = subAccounts.begin(); it != subAccounts.end(); ++it)
@@ -1334,7 +1336,7 @@ void MyMoneyFile::suspendNotify(const bool state)
 {
   bool prevState = m_suspendNotify;
   m_suspendNotify = state;
-  
+
   if(state == false && prevState == true)
     notify();
   // qDebug("Notification turned %s", state ? "off" : "on");
