@@ -61,7 +61,7 @@
 #include "dialogs/kimportdlg.h"
 
 #include "mymoney/mymoneyutils.h"
-#include "converter/mymoneyqifprofileeditor.h"
+#include "dialogs/mymoneyqifprofileeditor.h"
 #include "converter/mymoneyqifwriter.h"
 #include "converter/mymoneyqifreader.h"
 
@@ -240,6 +240,7 @@ void KMyMoney2App::initActions()
   fileNewWindow->setStatusText(i18n("Creates a new window"));
   fileOpen->setStatusText(i18n("Opens an existing document"));
   fileOpenRecent->setStatusText(i18n("Opens a recently used file"));
+
   fileSave->setStatusText(i18n("Saves the actual document"));
   fileSaveAs->setStatusText(i18n("Saves the actual document as..."));
   fileClose->setStatusText(i18n("Closes the actual document"));
@@ -393,6 +394,7 @@ void KMyMoney2App::slotFileNew()
   slotStatusMsg(prevMsg);
 }
 
+
 // General open
 void KMyMoney2App::slotFileOpen()
 {
@@ -483,6 +485,7 @@ void KMyMoney2App::slotFileSaveAs()
       strTemp = newName.left(nLoc + 1);
       strExt = newName.right(newName.length() - (nLoc + 1));
       if(strExt.find("kmy", 0, FALSE) == -1)
+
       {
         strTemp.append("kmy");
 

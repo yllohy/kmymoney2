@@ -43,7 +43,7 @@
 
 #include "kexportdlg.h"
 #include "../mymoney/mymoneycategory.h"
-#include "../converter/mymoneyqifprofileeditor.h"
+#include "../dialogs/mymoneyqifprofileeditor.h"
 #include "../mymoney/mymoneyfile.h"
 
 KExportDlg::KExportDlg(QWidget *parent)
