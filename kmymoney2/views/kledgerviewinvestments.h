@@ -81,11 +81,19 @@ protected slots:
 protected:
   virtual void createEditWidgets();
   virtual void fillForm();
+  /**
+    * This method updates the static text areas within the transaction form
+    * according to the currently loaded values in m_transaction and m_split.
+    */
+  virtual void fillFormStatics(void);
+
   virtual void fillSummary();
   virtual void showWidgets();
   virtual void hideWidgets();
   virtual void reloadEditWidgets(const MyMoneyTransaction& t);
   virtual void updateTabBar(const MyMoneyTransaction& t, const MyMoneySplit& s);
+
+  void resizeEvent(QResizeEvent*);
 
 private:
   /**
@@ -137,8 +145,8 @@ private:
        //*m_tabWithdrawal, *m_tabAtm;
 
   QCString m_action;
-	
-	kMyMoneyLineEdit *m_editQuantity; 
+
+  kMyMoneyLineEdit *m_editQuantity;
 /*
   KTextBrowser *textBrowser;
   QGridLayout *mainGrid;

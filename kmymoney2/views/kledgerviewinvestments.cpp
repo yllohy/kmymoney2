@@ -60,6 +60,30 @@
 #include "../widgets/kmymoneyregistercheckings.h"
 #include "../widgets/kmymoneytransactionform.h"
 
+
+#define SYMBOL_ROW        0
+#define QUANTITY_ROW      1
+#define MEMO_ROW          2
+#define PRICE_ROW         3
+#define DATE_ROW          0
+#define AMOUNT_ROW        1
+#define FEES_ROW          2
+
+#define SYMBOL_TXT_COL    0
+#define SYMBOL_DATA_COL   (SYMBOL_TXT_COL+1)
+#define QUANTITY_TXT_COL  0
+#define QUANTITY_DATA_COL (QUANTITY_TXT_COL+1)
+#define MEMO_TXT_COL      0
+#define MEMO_DATA_COL     (MEMO_TXT_COL+1)
+#define PRICE_TXT_COL     0
+#define PRICE_DATA_COL    (PRICE_TXT_COL+1)
+#define DATE_TXT_COL      3
+#define DATE_DATA_COL     (DATE_TXT_COL+1)
+#define AMOUNT_TXT_COL    3
+#define AMOUNT_DATA_COL   (AMOUNT_TXT_COL+1)
+#define FEES_TXT_COL      3
+#define FEES_DATA_COL     (FEES_TXT_COL+1)
+
 KLedgerViewInvestments::KLedgerViewInvestments(QWidget *parent, const char *name) : KLedgerView(parent, name)
 {
   QGridLayout* formLayout = new QGridLayout( this, 1, 2, 11, 6, "InvestmentFormLayout");
@@ -78,9 +102,6 @@ KLedgerViewInvestments::KLedgerViewInvestments(QWidget *parent, const char *name
   ledgerLayout->addWidget(m_form);
 
   formLayout->addLayout( ledgerLayout, 0, 0);
-
-  qDebug("Creating KLedgerViewInvestments for accound id = %s, name=%s", m_account.id().data(),m_account.name().data());
-
 }
 
 KLedgerViewInvestments::~KLedgerViewInvestments()
@@ -90,7 +111,67 @@ KLedgerViewInvestments::~KLedgerViewInvestments()
 
 void KLedgerViewInvestments::fillForm()
 {
+  fillFormStatics();
+}
 
+void KLedgerViewInvestments::fillFormStatics(void)
+{
+  QTable* formTable = m_form->table();
+
+  // clear complete table, but leave the cell widgets while editing
+  for(int r = 0; r < formTable->numRows(); ++r) {
+    for(int c = 0; c < formTable->numCols(); ++c) {
+      if(formTable->cellWidget(r, c) == 0)
+        formTable->setText(r, c, " ");
+    }
+  }
+
+  // common elements
+  formTable->setText(SYMBOL_ROW, SYMBOL_TXT_COL, i18n("Symbol Name"));
+  formTable->setText(QUANTITY_ROW, QUANTITY_TXT_COL, i18n("Quantity"));
+  formTable->setText(MEMO_ROW, MEMO_TXT_COL, i18n("Memo"));
+  formTable->setText(PRICE_ROW, PRICE_TXT_COL, i18n("Price Per Share"));
+  formTable->setText(DATE_ROW, DATE_TXT_COL, i18n("Date"));
+  formTable->setText(AMOUNT_ROW, AMOUNT_TXT_COL, i18n("Amount"));
+  formTable->setText(FEES_ROW, FEES_TXT_COL, i18n("Fees"));
+
+  switch(transactionType(m_transaction, m_split)) {
+    case Transfer:
+#if 0
+      switch( transactionDirection(m_split) ){
+        case Credit:
+        case UnknownDirection:
+          // formTable->setText(PAYEE_ROW, PAYEE_TXT_COL, i18n("Payer"));
+          //formTable->setText(CATEGORY_ROW, CATEGORY_TXT_COL, i18n("From"));
+          break;
+        case Debit:
+          formTable->setText(PAYEE_ROW, PAYEE_TXT_COL, i18n("Receiver"));
+          formTable->setText(CATEGORY_ROW, CATEGORY_TXT_COL, i18n("To"));
+          break;
+      }
+#endif
+      break;
+
+    default:
+#if 0
+      formTable->setText(CATEGORY_ROW, CATEGORY_TXT_COL, i18n("Category"));
+      switch( transactionDirection(m_split) ){
+        case Credit:
+        case UnknownDirection:
+          formTable->setText(PAYEE_ROW, PAYEE_TXT_COL, i18n("Payer"));
+          break;
+        case Debit:
+          formTable->setText(PAYEE_ROW, PAYEE_TXT_COL, i18n("Receiver"));
+          break;
+      }
+#endif
+      break;
+  }
+
+#if 0
+  if(showNrField(m_transaction, m_split))
+    formTable->setText(NR_ROW, NR_TXT_COL, i18n("Nr"));
+#endif
 }
 
 void KLedgerViewInvestments::fillSummary()
@@ -101,18 +182,31 @@ void KLedgerViewInvestments::fillSummary()
 void KLedgerViewInvestments::showWidgets()
 {
   createEditWidgets();
-	
-	kMyMoneyTransactionFormTable* table = m_form->table();
 
-	if(table)
-	{
-		table->setCellWidget(2, 1, m_editMemo);
-		table->setCellWidget(0, 4, m_editDate);
-	}
+  kMyMoneyTransactionFormTable* table = m_form->table();
+
+  if(table)
+  {
+    table->setCellWidget(2, 1, m_editMemo);
+    table->setCellWidget(0, 4, m_editDate);
+  }
 }
 
 void KLedgerViewInvestments::hideWidgets()
 {
+  for(int i=0; i < m_form->table()->numRows(); ++i) {
+    m_form->table()->clearCellWidget(i, 1);
+    m_form->table()->clearCellWidget(i, 2);
+    m_form->table()->clearCellWidget(i, 4);
+  }
+
+  int   firstRow = m_register->currentTransactionIndex() * m_register->rpt();
+  for(int i = 0; i < m_register->maxRpt(); ++i) {
+    for(int j = 0; j < m_register->numCols(); ++j) {
+      m_register->clearCellWidget(firstRow+i, j);
+    }
+  }
+
   m_editPayee = 0;
   m_editCategory = 0;
   m_editMemo = 0;
@@ -120,6 +214,14 @@ void KLedgerViewInvestments::hideWidgets()
   m_editNr = 0;
   m_editDate = 0;
   m_editSplit = 0;
+  m_editType = 0;
+  m_editPayment = 0;
+  m_editDeposit = 0;
+
+  m_editQuantity = 0;
+
+  m_form->table()->clearEditable();
+  m_form->tabBar()->setEnabled(true);
 }
 
 void KLedgerViewInvestments::reloadEditWidgets(const MyMoneyTransaction& t)
@@ -141,30 +243,40 @@ void KLedgerViewInvestments::slotNew()
 
 void KLedgerViewInvestments::createEditWidgets()
 {
-  m_editPayee = new kMyMoneyPayee(0, "editPayee");
-  m_editCategory = new kMyMoneyCategory(0, "editCategory");
-  m_editMemo = new kMyMoneyLineEdit(0, "editMemo", AlignLeft|AlignVCenter);
-  m_editAmount = new kMyMoneyEdit(0, "editAmount");
-  m_editDate = new kMyMoneyDateInput(0, "editDate");
-  m_editNr = new kMyMoneyLineEdit(0, "editNr");
-	
-	m_editQuantity = new kMyMoneyLineEdit(0, "editQuanity", AlignLeft|AlignVCenter);
-	
-	
-  // m_editFrom = new kMyMoneyCategory(0, "editFrom", static_cast<KMyMoneyUtils::categoryTypeE> (KMyMoneyUtils::asset | KMyMoneyUtils::liability));
-  // m_editTo = new kMyMoneyCategory(0, "editTo", static_cast<KMyMoneyUtils::categoryTypeE> (KMyMoneyUtils::asset | KMyMoneyUtils::liability));
-  m_editSplit = new KPushButton("Split", 0, "editSplit");
-  m_editPayment = new kMyMoneyEdit(0, "editPayment");
-  m_editDeposit = new kMyMoneyEdit(0, "editDeposit");
-  m_editType = new kMyMoneyCombo(0, "editType");
-  m_editType->setFocusPolicy(QWidget::StrongFocus);
+  if(!m_editPayee) {
+    m_editPayee = new kMyMoneyPayee(0, "editPayee");
+  }
+  if(!m_editMemo) {
+    m_editMemo = new kMyMoneyLineEdit(0, "editMemo", AlignLeft|AlignVCenter);
+  }
+  if(!m_editAmount) {
+    m_editAmount = new kMyMoneyEdit(0, "editAmount");
+  }
+  if(!m_editDate) {
+    m_editDate = new kMyMoneyDateInput(0, "editDate");
+  }
+  if(!m_editQuantity) {
+    m_editQuantity = new kMyMoneyLineEdit(0, "editQuanity", AlignLeft|AlignVCenter);
+  }
 
+  if(!m_editType) {
+    m_editType = new kMyMoneyCombo(0, "editType");
+    m_editType->setFocusPolicy(QWidget::StrongFocus);
+  }
 }
 
 void KLedgerViewInvestments::createForm(void)
 {
-  m_form = new kMyMoneyTransactionForm(this, NULL, 0, 4, 5);
+  // determine the height of the objects in the table
+  kMyMoneyDateInput dateInput(0, "editDate");
+  KPushButton splitButton(i18n("Split"), 0, "editSplit");
+  kMyMoneyCategory category(0, "category");
 
+  // extract the maximal sizeHint height and subtract 8
+  int h = QMAX(dateInput.sizeHint().height(), splitButton.sizeHint().height());
+  h = QMAX(h, category.sizeHint().height())-8;
+
+  m_form = new kMyMoneyTransactionForm(this, NULL, 0, 4, 5, h);
 
   m_tabAddShares = new QTab(action2str(MyMoneySplit::ActionAddShares, true));
   m_tabRemoveShares = new QTab(action2str(MyMoneySplit::ActionRemoveShares, true));
@@ -184,6 +296,7 @@ void KLedgerViewInvestments::createForm(void)
 
   // adjust size of form table
   m_form->table()->setMaximumHeight(m_form->table()->rowHeight(0)*m_form->table()->numRows());
+  m_form->table()->setMinimumHeight(m_form->table()->rowHeight(0)*m_form->table()->numRows());
 
   // connections
   connect(m_form->tabBar(), SIGNAL(selected(int)), this, SLOT(slotTypeSelected(int)));
@@ -194,8 +307,8 @@ void KLedgerViewInvestments::createForm(void)
   connect(m_form->newButton(), SIGNAL(clicked()), this, SLOT(slotNew()));
 
   m_form->enterButton()->setDefault(true);
-	
-	slotTypeSelected(KLedgerViewInvestments::AddShares);
+
+  // slotTypeSelected(KLedgerViewInvestments::AddShares);
 }
 
 void KLedgerViewInvestments::createInfoStack(void)
@@ -293,10 +406,10 @@ void KLedgerViewInvestments::slotTypeSelected(int type)
   formTable->setText(0, 0, i18n("Symbol Name"));
   formTable->setText(1, 0, i18n("Quantity"));
   formTable->setText(2, 0, i18n("Memo"));
-	formTable->setText(3, 0, i18n("Price Per Share"));
+  formTable->setText(3, 0, i18n("Price Per Share"));
   formTable->setText(0, 3, i18n("Date"));
   formTable->setText(1, 3, i18n("Amount"));
-	formTable->setText(2, 3, i18n("Fees"));
+  formTable->setText(2, 3, i18n("Fees"));
 
   m_action = transactionType(type);
 
@@ -431,4 +544,74 @@ const QCString KLedgerViewInvestments::transactionType(int type) const
 
 void KLedgerViewInvestments::updateTabBar(const MyMoneyTransaction& /* t */, const MyMoneySplit& /* s */)
 {
+}
+
+void KLedgerViewInvestments::resizeEvent(QResizeEvent* /* ev */)
+{
+  // resize the register
+  int w = m_register->visibleWidth();
+
+  // check which space we need
+  m_register->adjustColumn(0);
+  m_register->adjustColumn(4);
+  m_register->adjustColumn(5);
+  m_register->adjustColumn(6);
+
+  // make amount columns all the same size
+  int width = m_register->columnWidth(4);
+  if(width < m_register->columnWidth(5))
+    width = m_register->columnWidth(5);
+  if(width < m_register->columnWidth(6))
+    width = m_register->columnWidth(6);
+
+  m_register->setColumnWidth(4, width);
+  m_register->setColumnWidth(5, width);
+  m_register->setColumnWidth(6, width);
+
+  // Resize the date field to either
+  // a) the size required by the input widget if no transaction form is shown
+  // b) the adjusted value for the date if the transaction form is visible
+  if(!m_transactionFormActive) {
+    kMyMoneyDateInput* datefield = new kMyMoneyDateInput();
+    datefield->setFont(m_register->cellFont());
+    m_register->setColumnWidth(1, datefield->minimumSizeHint().width());
+    delete datefield;
+  } else {
+    m_register->adjustColumn(1);
+  }
+
+  m_register->setColumnWidth(3, 20);
+
+  for(int i = 0; i < m_register->numCols(); ++i) {
+    switch(i) {
+      default:
+        w -= m_register->columnWidth(i);
+        break;
+      case 2:     // skip the one, we want to set
+        break;
+    }
+  }
+  m_register->setColumnWidth(2, w);
+
+  // now resize the form
+  kMyMoneyDateInput dateInput(0, "editDate");
+  KPushButton splitButton(i18n("Split"), 0, "editSplit");
+
+  kMyMoneyTransactionFormTable* table = static_cast<kMyMoneyTransactionFormTable *>(m_form->table());
+  table->adjustColumn(0);
+  table->setColumnWidth(2, splitButton.sizeHint().width());
+  table->adjustColumn(3);
+  table->adjustColumn(4, dateInput.minimumSizeHint().width()+10);
+
+  w = table->visibleWidth();
+  for(int i = 0; i < table->numCols(); ++i) {
+    switch(i) {
+      default:
+        w -= table->columnWidth(i);
+        break;
+      case 1:     // skip the one, we want to set
+        break;
+    }
+  }
+  table->setColumnWidth(1, w);
 }
