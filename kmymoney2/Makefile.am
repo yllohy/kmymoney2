@@ -61,7 +61,7 @@ uninstall-local:
 INCLUDES= $(all_includes)
 
 #BUG FIX
-kmymoney2_LDADD   = ./dialogs/libdialogs.a ./views/libviews.a ./mymoney/libmymoney.a  ./widgets/libwidgets.a   $(LIB_KFILE) $(LIB_KHTML) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT) $(LIBSOCKET)
+kmymoney2_LDADD   = ./views/libviews.a ./dialogs/libdialogs.a ./mymoney/libmymoney.a  ./widgets/libwidgets.a   $(LIB_KFILE) $(LIB_KHTML) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT) $(LIBSOCKET)
 SUBDIRS = dialogs mymoney pics icons widgets views html
 #END BUG FIX
 
