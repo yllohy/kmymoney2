@@ -1,3 +1,6 @@
+2001-06-23 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
+  * Payee ComboBox now populates from PayeeList also
+
 2001-06-22 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
   * Fixed Payee List Bug
   * Added Edit Transaction Button to Reconcile Dialog

@@ -258,7 +258,7 @@ void KTransactionView::loadPayees()
 		{
 			if((*it).latin1() == payee)
 			{
-       	inPayee = true;
+       			inPayee = true;
 			}     	
 		}
 		if(inPayee == false)
@@ -266,6 +266,25 @@ void KTransactionView::loadPayees()
     	payeelist.append(payee); 	
 		}
 	}
+	// Load Payees from the Payee List
+ 	 QListIterator<MyMoneyPayee> payeeit = m_filePointer->payeeIterator();
+  	for ( ; payeeit.current(); ++payeeit) {
+   		QString payee = payeeit.current()->name();
+		bool inPayee = false;
+    	for(QStringList::Iterator it = payeelist.begin(); it != payeelist.end(); ++it)
+		{
+			if((*it).latin1() == payee)
+			{
+       			inPayee = true;
+			}     	
+		}
+		if(inPayee == false)
+		{
+    	payeelist.append(payee); 	
+		}
+
+  	}
+
 	payeelist.sort();
 	m_payee->clear();
   m_payee->insertStringList(payeelist);
