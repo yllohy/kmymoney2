@@ -445,6 +445,8 @@ void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
     case MyMoneyAccount::Expense:
       if(!categoryToAccount(account.name()).isEmpty())
         throw new MYMONEYEXCEPTION("Account with that name already exists");
+      // for now, we only support income/expense accounts in the base currency
+      account.setCurrencyId(baseCurrency().id());
       break;
 
     default:
