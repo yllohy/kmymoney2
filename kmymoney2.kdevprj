@@ -35,7 +35,7 @@ path_to_bin_program=kmymoney2
 [General]
 AMChanged=false
 author=Michael Edwardes
-configure_args=\s--build=i386-linux --host=i386-linux --target=i386-linux --prefix=/opt/kde2\s
+configure_args=
 dir_where_make_will_be_called=
 email=mte@users.sourceforge.net
 kdevprj_version=1.3
@@ -785,9 +785,15 @@ sub_dirs=actions
 type=normal
 
 [kmymoney2/icons/hicolor/16x16/actions/Makefile.am]
-files=kmymoney2/icons/hicolor/16x16/actions/bank.png,kmymoney2/icons/hicolor/16x16/actions/categories.png,kmymoney2/icons/hicolor/16x16/actions/pay_edit.png,kmymoney2/icons/hicolor/16x16/actions/transaction_export.png,kmymoney2/icons/hicolor/16x16/actions/transaction_find.png,kmymoney2/icons/hicolor/16x16/actions/transaction_import.png,kmymoney2/icons/hicolor/16x16/actions/reconcile.png
+files=kmymoney2/icons/hicolor/16x16/actions/bank.png,kmymoney2/icons/hicolor/16x16/actions/categories.png,kmymoney2/icons/hicolor/16x16/actions/pay_edit.png,kmymoney2/icons/hicolor/16x16/actions/transaction_export.png,kmymoney2/icons/hicolor/16x16/actions/transaction_find.png,kmymoney2/icons/hicolor/16x16/actions/transaction_import.png,kmymoney2/icons/hicolor/16x16/actions/reconcile.png,kmymoney2/icons/hicolor/16x16/actions/backup.png,kmymoney2/icons/hicolor/16x16/actions/close_window.png,kmymoney2/icons/hicolor/16x16/actions/delete.png,kmymoney2/icons/hicolor/16x16/actions/personal_data.png,kmymoney2/icons/hicolor/16x16/actions/transaction.png,kmymoney2/icons/hicolor/16x16/actions/view_info.png
 sub_dirs=
 type=normal
+
+[kmymoney2/icons/hicolor/16x16/actions/backup.png]
+dist=true
+install=true
+install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions/backup.png
+type=DATA
 
 [kmymoney2/icons/hicolor/16x16/actions/bank.png]
 dist=true
@@ -801,16 +807,40 @@ install=true
 install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions/categories.png
 type=DATA
 
+[kmymoney2/icons/hicolor/16x16/actions/close_window.png]
+dist=true
+install=true
+install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions/close_window.png
+type=DATA
+
+[kmymoney2/icons/hicolor/16x16/actions/delete.png]
+dist=true
+install=true
+install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions/delete.png
+type=DATA
+
 [kmymoney2/icons/hicolor/16x16/actions/pay_edit.png]
 dist=true
 install=true
 install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions/pay_edit.png
 type=DATA
 
+[kmymoney2/icons/hicolor/16x16/actions/personal_data.png]
+dist=true
+install=true
+install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions/personal_data.png
+type=DATA
+
 [kmymoney2/icons/hicolor/16x16/actions/reconcile.png]
 dist=true
 install=true
 install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions/reconcile.png
+type=DATA
+
+[kmymoney2/icons/hicolor/16x16/actions/transaction.png]
+dist=true
+install=true
+install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions/transaction.png
 type=DATA
 
 [kmymoney2/icons/hicolor/16x16/actions/transaction_export.png]
@@ -829,6 +859,12 @@ type=DATA
 dist=true
 install=true
 install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions/transaction_import.png
+type=DATA
+
+[kmymoney2/icons/hicolor/16x16/actions/view_info.png]
+dist=true
+install=true
+install_location=$$(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions/view_info.png
 type=DATA
 
 [kmymoney2/icons/hicolor/22x22/Makefile.am]
