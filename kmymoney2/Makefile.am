@@ -10,7 +10,7 @@ kmymoney2_LDADD   = ./views/libviews.a ./converter/libconverter.a ./dialogs/libd
 
 SUBDIRS = widgets dialogs views converter mymoney pics icons html 
 
-EXTRA_DIST = main.cpp kmymoney2.cpp kmymoney2.h kmymoney2ui.rc kmymoney2.desktop kstartuplogo.cpp kstartuplogo.h lo16-app-kmymoney2.png lo32-app-kmymoney2.png kmymoney_wizard.png mimetype_kmy_16x16.png mimetype_kmy_32x32.png mimetype_kmy_48x48.png x-kmymoney2.desktop hi16-app-kmymoney2.png hi32-app-kmymoney2.png tips default_accounts_de.dat kmymoneyutils.cpp kmymoneyutils.h default_accounts_enGB.dat 
+EXTRA_DIST = main.cpp kmymoney2.cpp kmymoney2.h kmymoney2ui.rc kmymoney2.desktop kstartuplogo.cpp kstartuplogo.h lo16-app-kmymoney2.png lo32-app-kmymoney2.png kmymoney_wizard.png mimetype_kmy_16x16.png mimetype_kmy_32x32.png mimetype_kmy_48x48.png x-kmymoney2.desktop hi16-app-kmymoney2.png hi32-app-kmymoney2.png tips default_accounts_de.dat kmymoneyutils.cpp kmymoneyutils.h default_accounts_enGB.dat comptes_par_defaut_fr.dat 
 
 install-data-local:
 	$(mkinstalldirs) $(kde_datadir)/kmymoney2/

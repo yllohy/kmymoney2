@@ -1,0 +1,174 @@
+# Les lignes comme celle-ci sont des commentaires.
+
+# Les lignes blanches comme celle ci-dessus sont ignorées
+
+# Les données commencent ici et sont dans ce format
+# expense|income:compte[:sous-compte]*
+# Les sous-catégories doivent être séparées par deux-points
+
+# catégories de dépense d'abord
+expense:Alimentation
+expense:Alimentation:Restaurant
+expense:Alimentation:Epicerie
+expense:Alimentation:Supermarché
+expense:Alimentation:Cantine
+expense:Animaux
+expense:Animaux:Alimentation
+expense:Animaux:Fournitures
+expense:Animaux:Vétérinaire
+expense:Animaux:Toilettage
+expense:Assurance
+expense:Assurance:Automobile
+expense:Assurance:Habitation
+expense:Assurance:Responsabilité civile
+expense:Assurance:Santé
+expense:Assurance:Vie
+expense:Automobile
+expense:Automobile:Achat
+expense:Automobile:Amendes
+expense:Automobile:Assurance
+expense:Automobile:Carburant
+expense:Automobile:Contrôle technique
+expense:Automobile:Péage
+expense:Automobile:Réparations
+expense:Automobile:Stationnement
+expense:Dépenses professionelles
+expense:Dépenses professionelles:Non-remboursées
+expense:Dépenses professionelles:Remboursées
+expense:Dons
+expense:Dons:Cadeaux
+expense:Dons:Donations
+expense:Dons:Caritatif
+expense:Education
+expense:Education:Frais scolaires
+expense:Education:Leçons
+expense:Education:Fournitures
+expense:Enfants
+expense:Enfants:Crêche et nourrice
+expense:Frais bancaires
+expense:Frais bancaires:Intérêts
+expense:Frais bancaires:Services bancaires
+expense:Frais bancaires:Pénalités bancaires
+expense:Frais généraux
+expense:Frais généraux:Charges de loyer
+expense:Frais généraux:Chauffage
+expense:Frais généraux:Eau
+expense:Frais généraux:Electricité
+expense:Frais généraux:Gaz
+expense:Frais généraux:Internet
+expense:Frais généraux:Loyer
+expense:Frais généraux:Rembousement de prêt
+expense:Frais généraux:Téléphone
+expense:Frais généraux:Téléphone portable
+expense:Frais généraux:Câble et satellite
+expense:Soins
+expense:Soins:Coiffeur
+expense:Soins:Esthétique
+expense:Soins:Habillement
+expense:Loisirs
+expense:Loisirs:Billard
+expense:Loisirs:Bowling
+expense:Loisirs:Cassettes & CDs
+expense:Loisirs:Cinéma
+expense:Loisirs:Discothèque
+expense:Loisirs:Divertissement
+expense:Loisirs:Equipements sportifs
+expense:Loisirs:Informatique
+expense:Loisirs:Jeux et jouets
+expense:Loisirs:Livres & Magazines
+expense:Loisirs:Musées et expositions
+expense:Loisirs:Parc d'attraction
+expense:Loisirs:Spectacles
+expense:Loisirs:Sport
+expense:Loisirs:Vidéo
+expense:Maison
+expense:Maison:Ameublement
+expense:Maison:Entretien
+expense:Maison:Equipement
+expense:Maison:Jardinage
+expense:Maison:Personnel de maison
+expense:Maison:Travaux
+expense:Prêt
+expense:Prêt:Intérêts de prêt
+expense:Prêt:Amortissement de prêt
+expense:Prêt:Remboursement anticipé de prêt
+expense:Prêt:Frais de remboursement anticipé
+expense:Prêt:Assurance
+expense:Prêt:Frais de dossier
+expense:Retrait d'espèces
+expense:Santé
+expense:Santé:Dentiste
+expense:Santé:Hôpital
+expense:Santé:Médecin généraliste
+expense:Santé:Médecin spécialiste
+expense:Santé:Opticien
+expense:Santé:Pharmacie
+expense:Taxes et impôts
+expense:Taxes et impôts:Autres taxes
+expense:Taxes et impôts:Intérêts de retard
+expense:Taxes et impôts:Impôts sur le revenu
+expense:Taxes et impôts:Redevance télévisuelle
+expense:Taxes et impôts:Taxe foncière
+expense:Taxes et impôts:Taxe d'habitation
+expense:Taxes et impôts:ISF
+expense:Transport
+expense:Transport:Train
+expense:Transport:Transports en commun
+expense:Vacances
+expense:Vacances:Logement
+expense:Vacances:Frais divers
+expense:Vacances:Voyage
+expense:Retenues sur salaire
+expense:Retenues sur salaire:Véhicule de fonction
+expense:Retenues sur salaire:Chèques déjeuner
+expense:Retenues sur salaire:Autres avantages en nature
+expense:Retenues sur salaire:Remboursement d'acompte
+expense:Retenues sur salaire:Remboursement d'avance
+expense:Retenues sur salaire:Saisie Opposition
+expense:Autres dépenses
+expense:Autres dépenses:Cadeaux
+
+# et maintenant les catégories de revenus
+income:Revenus du travail
+income:Revenus du travail:Salaire brut
+income:Revenus du travail:Salaire net
+income:Revenus du travail:Commissions
+income:Revenus du travail:Prime
+income:Revenus du travail:Avance sur paie
+income:Revenus du travail:Acompte sur paie
+income:Revenus du travail:Heures supplémentaires
+income:Revenus du travail:Participation aux bénéfices
+income:Revenus du travail:Participation aux résultats
+income:Revenus du travail:Plus-values de Stock-Options
+income:Revenus du travail:Remboursements de frais professionnels
+income:Rentes et pensions
+income:Rentes et pensions:Retraite du régime général
+income:Rentes et pensions:Retraite complémentaire
+income:Rentes et pensions:Rentes viagères
+income:Rentes et pensions:Rentes temporaires
+income:Allocations et Sécurité sociale
+income:Allocations et Sécurité sociale:Remboursement de frais de santé
+income:Allocations et Sécurité sociale:Allocations familiales
+income:Allocations et Sécurité sociale:ASSEDICs
+income:Allocations et Sécurité sociale:Indemnités Journalières
+income:Allocations et Sécurité sociale:Veuvage
+income:Allocations et Sécurité sociale:Invalidité
+income:Allocations et Sécurité sociale:Bourses d'étude
+income:Allocations et Sécurité sociale:Allocations de logement
+income:Allocations et Sécurité sociale:Prêts d'honneur
+income:Revenus d'investissement
+income:Revenus d'investissement:Plus-values Boursières
+income:Revenus d'investissement:Intérêts de livret A et Bleu
+income:Revenus d'investissement:Intérêts de livret B
+income:Revenus d'investissement:Intérêts de CoDevI
+income:Revenus d'investissement:Intérêts de LEP
+income:Revenus d'investissement:Intérêts de livrets bancaires
+income:Revenus d'investissement:Coupon
+income:Revenus d'investissement:Dividende
+income:Revenus d'investissement:Prime d'Etat sur Epargne Logement
+income:Autres revenus
+income:Autres revenus:Cadeaux recus
+income:Autres revenus:Déblocage de prêt
+income:Autres revenus:Gains aux jeux
+income:Autres revenus:Crédits d'impôts
+
