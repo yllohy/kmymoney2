@@ -50,6 +50,7 @@ public:
 	MyMoneyAccount currentAccount(bool&);
 	void refresh(MyMoneyFile file, MyMoneyAccount *selectAccount=NULL, MyMoneyBank *selectBank=NULL);
 	void clear(void);
+  void show();
 
 protected:
   void resizeEvent(QResizeEvent*);
@@ -77,6 +78,7 @@ signals:
   void accountDoubleClick();
   void bankSelected();
   void accountSelected();
+  void signalViewActivated();
 };
 
 #endif

@@ -48,10 +48,12 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   QVBox *qvboxMainFrame1 = addVBoxPage( i18n("Home"), i18n("Home"),
     DesktopIcon("home"));
   m_homeView = new KHomeView(qvboxMainFrame1);
+  connect(m_homeView, SIGNAL(signalViewActivated()), this, SLOT(slotActivatedHomePage()));
 
   QVBox *qvboxMainFrame2 = addVBoxPage( i18n("Accounts"), i18n("Insitutions/Accounts"),
     DesktopIcon("bank"));
   banksView = new KBanksView(qvboxMainFrame2, "banksView");
+  connect(banksView, SIGNAL(signalViewActivated()), this, SLOT(slotActivatedAccountsView()));
   transactionView = new KTransactionView(qvboxMainFrame2, "transactionsView");
 
   QVBox *qvboxMainFrame3 = addVBoxPage( i18n("Bills & Reminders"), i18n("Bills & Reminders"),
@@ -68,7 +70,9 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
 
   m_investmentView = new KInvestmentView(qvboxMainFrame2, "investmentView");
 
-  banksView->hide();
+  // Need to show it, although the user wont see it.
+  // At the bottom of this method we choose what to show.
+  banksView->show();
   transactionView->hide();
   m_investmentView->hide();
 
@@ -107,6 +111,9 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   m_accountId = m_bankMenu->insertItem(kiconloader->loadIcon("account", KIcon::Small), i18n("New Account..."), this, SLOT(slotAccountNew()));
   m_editId = m_bankMenu->insertItem(kiconloader->loadIcon("bank", KIcon::Small), i18n("Edit..."), this, SLOT(slotBankEdit()));
   m_deleteId = m_bankMenu->insertItem(kiconloader->loadIcon("delete", KIcon::Small), i18n("Delete..."), this, SLOT(slotBankDelete()));
+
+  m_realShowing = HomeView;
+  showPage(0);
 }
 
 KMyMoneyView::~KMyMoneyView()
@@ -332,7 +339,7 @@ bool KMyMoneyView::readFile(QString filename)
     return false;
   }
   else {
-    viewBankList();
+//    viewBankList();  // Might not want to see accounts view straight away.
     banksView->refresh(m_file);
     emit bankOperations(true);
     m_file.init();
@@ -591,7 +598,7 @@ void KMyMoneyView::newFile(void)
     m_file.init();
     emit bankOperations(true);
     m_file.setDirty(true);
-    viewBankList();
+//    viewBankList();  // They might not want to create an institution/account right away.
   }
 }
 
@@ -763,6 +770,9 @@ void KMyMoneyView::viewUp(void)
 
 void KMyMoneyView::viewBankList(MyMoneyAccount *selectAccount, MyMoneyBank *selectBank)
 {
+  if (m_realShowing != AccountsView)
+    showPage(1);
+
   banksView->show();
   transactionView->hide();
   m_showing = BankList;
@@ -1224,4 +1234,14 @@ MyMoneyAccount* KMyMoneyView::getAccount(void)
   }
 
   return mymoneyaccount;
+}
+
+void KMyMoneyView::slotActivatedHomePage()
+{
+  m_realShowing = HomeView;
+}
+
+void KMyMoneyView::slotActivatedAccountsView()
+{
+  m_realShowing = AccountsView;
 }

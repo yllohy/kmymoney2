@@ -19,17 +19,41 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+// ----------------------------------------------------------------------------
+// QT Includes
+#include <qlayout.h>
+
+// ----------------------------------------------------------------------------
+// KDE Includes
 #include <kglobal.h>
 #include <kstddirs.h>
+#include <khtmlview.h>
+
+// ----------------------------------------------------------------------------
+// Project Includes
 #include "khomeview.h"
 
 KHomeView::KHomeView(QWidget *parent, const char *name )
- : KHTMLPart(parent,name)
+ : QWidget(parent,name)
 {
+  QVBoxLayout *qvboxlayoutPage = new QVBoxLayout(this);
+  qvboxlayoutPage->setSpacing( 6 );
+  qvboxlayoutPage->setMargin( 11 );
+
+  m_part = new KHTMLPart(this, "htmlpart_km2");
+  qvboxlayoutPage->addWidget(m_part->view());
+
   QString filename = KGlobal::dirs()->findResource("appdata", "html/home.html");
-  openURL(filename);
+  m_part->openURL(filename);
 }
 
 KHomeView::~KHomeView()
 {
+}
+
+void KHomeView::show()
+{
+  emit signalViewActivated();
+  QWidget::show();
 }

@@ -53,7 +53,7 @@
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.6 2002/02/03 17:18:55 ktambascio Exp $
+  * $Id: kmymoneyview.h,v 1.7 2002/02/07 23:46:41 mte Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -62,6 +62,7 @@ class KMyMoneyView : public KJanusWidget {
 
 public:
   enum viewType { None, BankList, TransactionList, InvestmentList };
+  enum viewShowing { AccountsView, HomeView, PayeeView, CategoryView, ScheduledView };
 
 private:
   KHomeView *m_homeView;
@@ -73,6 +74,7 @@ private:
 	KInvestmentView *m_investmentView;
 	
   viewType m_showing;
+  viewShowing m_realShowing;
 
   MyMoneyFile m_file;  // The interface to the transaction code
   bool m_inReconciliation;  // True if the reconciliaton dialog needs updating when the user adds/deletes transactions
@@ -373,6 +375,21 @@ protected slots:
     * @see KTFindResultsDlg
   **/
   void doTransactionSearch();
+
+  /**
+    * Called when the user clicks on the homepage button.
+    *
+    * @see KHomeView
+  **/
+  void slotActivatedHomePage();
+
+  /**
+    * Called when the user clicks on the accounts button
+    *
+    * @see KBanksView
+  **/
+  void slotActivatedAccountsView();
+
 
 signals:
   /**

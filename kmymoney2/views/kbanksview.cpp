@@ -204,3 +204,9 @@ void KBanksView::slotSelectionChanged(QListViewItem *item)
     emit accountSelected();
   }
 }
+
+void KBanksView::show()
+{
+  emit signalViewActivated();
+  QWidget::show();
+}
