@@ -1,3 +1,9 @@
+2005-03-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed a crash on startup when compiled w/o debug options
+  * Fixed behaviour of briefScheduleWidget
+  * Fixed layout of briefScheduleWidget
+  * Made widgets inside briefScheduleWidget more readable
+
 2005-03-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added cancel button to new file dialog
   * Hide load button for address data if no data is found for the owner
