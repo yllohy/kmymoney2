@@ -174,7 +174,11 @@ bool kMyMoneyCategory::eventFilter(QObject* o, QEvent* e)
               if(acc.name() == txt)
                 newAccount = false;
             }
+          } else {
+            slotSelectAccount(QCString());
+            newAccount = false;
           }
+
           if(newAccount) {
             m_inCreation = true;
 
@@ -221,10 +225,14 @@ bool kMyMoneyCategory::eventFilter(QObject* o, QEvent* e)
 
 void kMyMoneyCategory::slotSelectAccount(const QCString& id)
 {
-  setText(MyMoneyFile::instance()->accountToCategory(id));
+  if(!id.isEmpty())
+    setText(MyMoneyFile::instance()->accountToCategory(id));
+  else
+    setText("");
+
   if(m_id != id) {
-    emit categoryChanged(id);
     m_id = id;
+    emit categoryChanged(id);
   }
   m_accountSelector->hide();
 }
