@@ -13,7 +13,7 @@ EXTRA_DIST = mymoneyaccount.cpp mymoneyaccount.h mymoneybank.cpp mymoneybank.h m
 
 ####### kdevelop will overwrite this part!!! (end)############
 
-CXXFLAGS += -fexceptions
+CXXFLAGS = -fexceptions
 
 TESTS = autotest
 check_PROGRAMS = $(TESTS)
