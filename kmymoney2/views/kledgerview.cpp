@@ -892,7 +892,7 @@ void KLedgerView::createSecondSplit(void)
     split.setAction(m_split.action());
     split.setPayeeId(m_split.payeeId());
     split.setMemo(m_split.memo());
-    split.setValue(-split.value());
+    split.setValue(-m_split.value());
     m_transaction.addSplit(split);
   }
 }
