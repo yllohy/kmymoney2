@@ -106,3 +106,4 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
   s << "\n";
 
 }
+

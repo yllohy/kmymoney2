@@ -478,9 +478,7 @@ void testReadOldMyMoneyFileEx() {
  * things that need to be added
  * ----------------------------
  * - adding, removing payee
- * - adding, removing category
  * - last access date
- * - persistant data handling (read/write to file) 
  */
 
 };

@@ -141,7 +141,7 @@ void MyMoneyStorageBin::readStream(QDataStream& s, IMyMoneySerialize* storage)
 }
 
 void MyMoneyStorageBin::addCategory(IMyMoneySerialize* storage,
-                                    QMap<QString, QString>& categories,
+                                    QMap<QString, QCString>& categories,
                                     const QString& majorName,
                                     const QString& minorName,
                                     const MyMoneyAccount::accountTypeE type)
@@ -171,7 +171,7 @@ void MyMoneyStorageBin::addCategory(IMyMoneySerialize* storage,
     name += ":" + minorName;
     if(!categories.contains(name)) {
       MyMoneyAccount minorCat;
-      QString id = categories[majorName];
+      QCString id = categories[majorName];
       QValueList<MyMoneyAccount> list = storage->accountList();
       QValueList<MyMoneyAccount>::Iterator it;
       for(it = list.begin(); it != list.end(); ++it) {
@@ -189,8 +189,8 @@ void MyMoneyStorageBin::addCategory(IMyMoneySerialize* storage,
 
 void MyMoneyStorageBin::readOldFormat(QDataStream& s, IMyMoneySerialize* storage)
 {
-  QMap<QString, QString> categoryConversion;
-  QMap<QString, QString> accountConversion;
+  QMap<QString, QCString> categoryConversion;
+  QMap<QString, QCString> accountConversion;
   QValueList<MyMoneyTransaction> transactionList;
 
   QDate lastModificationDate;
@@ -326,7 +326,7 @@ void MyMoneyStorageBin::readOldFormat(QDataStream& s, IMyMoneySerialize* storage
         if(tmp != "")
           category += ":" + tmp;
         // for now, we keep it as it is and convert sp2.account later on
-        sp2.setAccountId(category);
+        sp2.setAccountId(static_cast<QCString> (category));
         s >> tmp; // ATM bank name
         s >> tmp; // account from
         s >> tmp; // account to

@@ -25,6 +25,8 @@
 MyMoneySplit::MyMoneySplit()
 {
   m_reconcileFlag = NotReconciled;
+  m_account =
+  m_memo = "";
 }
 
 MyMoneySplit::~MyMoneySplit()
@@ -43,7 +45,7 @@ bool MyMoneySplit::operator == (const MyMoneySplit& right) const
     m_value == right.m_value;
 }
 
-void MyMoneySplit::setAccountId(const QString& account)
+void MyMoneySplit::setAccountId(const QCString& account)
 {
   m_account = account;
 }

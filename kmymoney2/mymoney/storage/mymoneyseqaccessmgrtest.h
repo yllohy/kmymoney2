@@ -484,10 +484,11 @@ void testAddTransactions() {
 		CPPUNIT_ASSERT(t2.splitCount() == 4);
 		CPPUNIT_ASSERT(m->transactionCount() == 2);
 
-		QMap<QString, QString>::ConstIterator it_k;
-		QMap<QString, MyMoneyTransaction>::ConstIterator it_t;
+		QMap<QCString, QCString>::ConstIterator it_k;
+		QMap<QCString, MyMoneyTransaction>::ConstIterator it_t;
 		it_k = m->m_transactionKeys.begin();
 		it_t = m->m_transactionList.begin();
+
 		CPPUNIT_ASSERT((*it_k) == "2002-05-10-T000000000000000001");
 		CPPUNIT_ASSERT((*it_t).id() == "T000000000000000002");
 		++it_k;
@@ -571,8 +572,8 @@ void testModifyTransaction() {
 		CPPUNIT_ASSERT(m->balance("A000006") == 100000-12600);
 		CPPUNIT_ASSERT(m->totalBalance("A000001") == 1600);
 
-		QMap<QString, QString>::ConstIterator it_k;
-		QMap<QString, MyMoneyTransaction>::ConstIterator it_t;
+		QMap<QCString, QCString>::ConstIterator it_k;
+		QMap<QCString, MyMoneyTransaction>::ConstIterator it_t;
 		it_k = m->m_transactionKeys.begin();
 		it_t = m->m_transactionList.begin();
 		CPPUNIT_ASSERT((*it_k) == "2002-05-10-T000000000000000001");

@@ -21,6 +21,7 @@
 // QT Includes
 
 #include <qstring.h>
+#include <qcstring.h>
 #include <qdatetime.h>
 #include <qvaluelist.h>
 #include <qstringlist.h>
@@ -29,12 +30,13 @@
 // Project Includes
 
 #include "mymoneyexception.h"
-#include "mymoneyutils.h"
 #include "mymoneymoney.h"
+#include "mymoneyutils.h"
 
 class MyMoneyTransaction;
 class MyMoneyInstitution;
 class MyMoneyFile;
+
 
 /**
   * A representation of an account.
@@ -57,15 +59,15 @@ public:
   {
   public:
     Transaction() {};
-    Transaction(const QString& transaction, const MyMoneyMoney& balance) {
+    Transaction(const QCString& transaction, const MyMoneyMoney& balance) {
       m_transaction = transaction;
       m_balance = balance;
     };
-    const QString& transactionID(void) const { return m_transaction; };
+    const QCString& transactionID(void) const { return m_transaction; };
     const MyMoneyMoney& balance(void) const { return m_balance; };
 
   private:
-    QString m_transaction;
+    QCString m_transaction;
     MyMoneyMoney m_balance;
   };
 
@@ -104,7 +106,7 @@ public:
     * @param right account definition
     */
   // MyMoneyAccount(MyMoneyFile* file, const QString& ID, const QString& parent, const MyMoneyAccount& right);
-  MyMoneyAccount(const QString& id, const MyMoneyAccount& right);
+  MyMoneyAccount(const QCString& id, const MyMoneyAccount& right);
   /**
     * This is the destructor for any MyMoneyAccount object
     */
@@ -117,7 +119,7 @@ public:
     * @return ID as QString. If the ID is unknown, an empty QString is returned.
     * @see setID()
     */
-  const QString id(void) const { return m_id; }
+  const QCString id(void) const { return m_id; }
 
   /**
     * This method returns the pointer to MyMoneyFile object this account
@@ -134,7 +136,7 @@ public:
     *         an internal account
     * @see setInstitution
     */
-  const QString institutionId(void) const { return m_institution; }
+  const QCString institutionId(void) const { return m_institution; }
 
   /**
     * This method returns the name of the account
@@ -191,7 +193,7 @@ public:
     *
     * @return number of transactions in the account
     */
-  const unsigned int transactionCount(void) const { return m_transactionList.count(); }
+  const int transactionCount(void) const { return m_transactionList.count(); }
 
   /**
     * This method returns the current total balance of this account's
@@ -205,7 +207,7 @@ public:
     * This method is used to return the ID of the parent account
     * @return QString with the ID of the parent of this account
     */
-  const QString parentAccountId(void) const { return m_parentAccount; };
+  const QCString parentAccountId(void) const { return m_parentAccount; };
 
   /**
     * This method is used to return the transaction id and balance
@@ -241,26 +243,26 @@ public:
     * subordinate accounts
     * @return QStringList account ids
     */
-  const QStringList accountList(void) const { return m_accountList; };
+  const QCStringList accountList(void) const { return m_accountList; };
 
   /**
     * This method returns the number of entries in the m_accountList
     * @return number of entries in the accountList
     */
-  const unsigned int accountCount(void) const { return m_accountList.count(); };
+  const int accountCount(void) const { return m_accountList.count(); };
 
   /**
     * This method is used to add an account id as sub-ordinate account
     * @param account const QString reference to account ID
     */
-  void addAccountId(const QString& account);
+  void addAccountId(const QCString& account);
 
   /**
     * This method is used to remove an account from the list of
     * sub-ordinate accounts.
     * @param account const QString reference to account ID to be removed
     */
-  void removeAccountId(const QString& account);
+  void removeAccountId(const QCString& account);
 
   /**
     * This method is used to modify the date of the last
@@ -299,7 +301,7 @@ public:
     * @param id id of the institution this account belongs to
     * @see institution
     */
-  void setInstitutionId(const QString& id);
+  void setInstitutionId(const QCString& id);
 
   /**
     * This method is used to set the opening date information of an
@@ -339,7 +341,7 @@ public:
     * This method is used to set a new parent account id
     * @param parent QString reference to new parent account
     */
-  void setParentAccountId(const QString& parent);
+  void setParentAccountId(const QCString& parent);
 
   /**
     * This method is used to update m_lastModified to the current date
@@ -367,13 +369,13 @@ private:
     * This member variable keeps the ID of the MyMoneyInstitution object
     * that this object belongs to.
     */
-  QString m_institution;
+  QCString m_institution;
 
   /**
     * This member variable keeps the ID of the institution under which it
     * is known inside the MyMoneyFile.
     */
-  QString  m_id;
+  QCString  m_id;
 
   /**
     * This member variable keeps the name of the account
@@ -430,12 +432,13 @@ private:
   /**
     * This member holds the ID's of all sub-ordinate accounts
     */
-  QStringList m_accountList;
+  QCStringList m_accountList;
 
   /**
     * This member contains the ID of the parent account
     */
   QCString m_parentAccount;
+
 };
 
 #endif

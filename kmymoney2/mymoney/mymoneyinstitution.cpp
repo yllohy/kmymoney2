@@ -39,7 +39,7 @@ MyMoneyInstitution::MyMoneyInstitution()
 }
 
 // MyMoneyInstitution::MyMoneyInstitution(MyMoneyFile *file, const QString id, const MyMoneyInstitution& right)
-MyMoneyInstitution::MyMoneyInstitution(const QString id, const MyMoneyInstitution& right)
+MyMoneyInstitution::MyMoneyInstitution(const QCString id, const MyMoneyInstitution& right)
 {
   *this = right;
   m_id = id;
@@ -85,17 +85,17 @@ MyMoneyInstitution::~MyMoneyInstitution()
 {
 }
 
-void MyMoneyInstitution::addAccountId(const QString& account)
+void MyMoneyInstitution::addAccountId(const QCString& account)
 {
   // only add this account if it is not yet presently in the list
   if(m_accountList.contains(account) == 0)
     m_accountList.append(account);
 }
 
-QString MyMoneyInstitution::removeAccountId(const QString& account)
+QCString MyMoneyInstitution::removeAccountId(const QCString& account)
 {
-  QStringList::Iterator pos;
-  QString rc = "";
+  QCStringList::Iterator pos;
+  QCString rc = "";
 
   pos = m_accountList.find(account);
   if(pos != m_accountList.end()) {

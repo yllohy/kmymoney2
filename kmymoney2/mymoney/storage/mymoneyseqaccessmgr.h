@@ -77,7 +77,7 @@ public:
     * @return reference to MyMoneyAccount object. An exception is thrown
     *         if the id is unknown
     */
-  const MyMoneyAccount& account(const QString id) const;
+  const MyMoneyAccount& account(const QCString id) const;
 
   /**
     * This method is used to check whether a given
@@ -86,7 +86,7 @@ public:
     * @param id account id
     * @return true if account-id is one of the standards, false otherwise
     */
-  const bool isStandardAccount(const QString& id) const;
+  const bool isStandardAccount(const QCString& id) const;
 
   /**
     * This method is used to create a new account
@@ -220,7 +220,7 @@ public:
     * @param id id of transaction as QString.
     * @return reference to the requested transaction
     */
-  const MyMoneyTransaction& transaction(const QString& id) const;
+  const MyMoneyTransaction& transaction(const QCString& id) const;
 
   /**
     * This method is used to extract a transaction from the file global
@@ -230,7 +230,7 @@ public:
     * @param idx number of transaction in this account
     * @return reference to MyMoneyTransaction object
     */
-  const MyMoneyTransaction& transaction(const QString& account, const int idx) const;
+  const MyMoneyTransaction& transaction(const QCString& account, const int idx) const;
 
   /**
     * This method is used to determince, if the account with the
@@ -239,7 +239,7 @@ public:
     * @param id id of the account to be checked for
     * @return true if account is referenced, false otherwise
     */
-  const bool hasActiveSplits(const QString& id) const;
+  const bool hasActiveSplits(const QCString& id) const;
 
   /**
     * This method is used to return the actual balance of an account
@@ -248,7 +248,7 @@ public:
     * @param account id of the account in question
     * @return balance of the account as MyMoneyMoney object
     */
-  const MyMoneyMoney balance(const QString& id) const;
+  const MyMoneyMoney balance(const QCString& id) const;
 
   /**
     * This method is used to return the actual balance of an account
@@ -257,7 +257,7 @@ public:
     * @param account id of the account in question
     * @return balance of the account as MyMoneyMoney object
     */
-  const MyMoneyMoney totalBalance(const QString& id) const;
+  const MyMoneyMoney totalBalance(const QCString& id) const;
 
   /**
     * Returns the institution of a given ID
@@ -266,7 +266,7 @@ public:
     * @return MyMoneyInstitution object filled with data. If the institution
     *         could not be found, an exception will be thrown
     */
-  const MyMoneyInstitution& institution(const QString& id) const;
+  const MyMoneyInstitution& institution(const QCString& id) const;
 
   /**
     * This method returns an indicator if the storage object has been
@@ -372,7 +372,7 @@ private:
     * @param transaction reference to the transaction
     * @return key as QString
     */
-  const QString transactionKey(const MyMoneyTransaction& transaction) const;
+  const QCString transactionKey(const MyMoneyTransaction& transaction) const;
 
   /**
     * This method is used to set the dirty flag and update the
@@ -386,7 +386,7 @@ private:
     *
     * @param acc iterator to the m_accountList
     */
-  void refreshAccountTransactionList(QMap<QString, MyMoneyAccount>::Iterator acc) const;
+  void refreshAccountTransactionList(QMap<QCString, MyMoneyAccount>::Iterator acc) const;
 
   /**
     * This member variable keeps the name of the User
@@ -455,27 +455,27 @@ private:
     * The member variable m_institutionList is the container for the
     * institutions known within this file.
     */
-  QMap<QString, MyMoneyInstitution> m_institutionList;
+  QMap<QCString, MyMoneyInstitution> m_institutionList;
 
   /**
     * The member variable m_accountList is the container for the accounts
     * known within this file.
     */
-  QMap<QString, MyMoneyAccount> m_accountList;
+  QMap<QCString, MyMoneyAccount> m_accountList;
 
   /**
     * The member variable m_transactionList is the container for all
     * transactions within this file.
     * @see m_transactionKeys
     */
-  QMap<QString, MyMoneyTransaction> m_transactionList;
+  QMap<QCString, MyMoneyTransaction> m_transactionList;
 
   /**
     * The member variable m_transactionKeys is used to convert
     * transaction id's into the corresponding key used in m_transactionList.
     * @see m_transactionList;
     */
-  QMap<QString, QString> m_transactionKeys;
+  QMap<QCString, QCString> m_transactionKeys;
 
   /**
     * A list containing all the payees that have been used
@@ -504,19 +504,19 @@ private:
     * This method is used to get the next valid ID for a institution
     * @return id for a institution
     */
-  const QString nextInstitutionID(void);
+  const QCString nextInstitutionID(void);
 
   /**
     * This method is used to get the next valid ID for an account
     * @return id for an account
     */
-  const QString nextAccountID(void);
+  const QCString nextAccountID(void);
 
   /**
     * This method is used to get the next valid ID for a transaction
     * @return id for a transaction
     */
-  const QString nextTransactionID(void);
+  const QCString nextTransactionID(void);
 
   /**
     * This method re-parents an existing account

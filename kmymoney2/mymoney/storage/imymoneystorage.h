@@ -118,7 +118,7 @@ public:
     * @return reference to MyMoneyAccount object. An exception is thrown
     *         if the id is unknown
     */
-  virtual const MyMoneyAccount& account(const QString id) const = 0;
+  virtual const MyMoneyAccount& account(const QCString id) const = 0;
 
   /**
     * This method is used to check whether a given
@@ -129,7 +129,7 @@ public:
     * @param id account id
     * @return true if account-id is one of the standards, false otherwise
     */
-  virtual const bool isStandardAccount(const QString& id) const = 0;
+  virtual const bool isStandardAccount(const QCString& id) const = 0;
 
   /**
     * Adds an institution to the storage. A
@@ -166,7 +166,7 @@ public:
     * @param id id of the account to be checked for
     * @return true if account is referenced, false otherwise
     */
-  virtual const bool hasActiveSplits(const QString& id) const = 0;
+  virtual const bool hasActiveSplits(const QCString& id) const = 0;
 
   /**
     * This method is used to return the actual balance of an account
@@ -175,7 +175,7 @@ public:
     * @param account id of the account in question
     * @return balance of the account as MyMoneyMoney object
     */
-  virtual const MyMoneyMoney balance(const QString& id) const = 0;
+  virtual const MyMoneyMoney balance(const QCString& id) const = 0;
 
   /**
     * This method is used to return the actual balance of an account
@@ -184,7 +184,7 @@ public:
     * @param account id of the account in question
     * @return balance of the account as MyMoneyMoney object
     */
-  virtual const MyMoneyMoney totalBalance(const QString& id) const = 0;
+  virtual const MyMoneyMoney totalBalance(const QCString& id) const = 0;
 
   /**
     * Returns the institution of a given ID
@@ -193,7 +193,7 @@ public:
     * @return MyMoneyInstitution object filled with data. If the institution
     *         could not be found, an exception will be thrown
     */
-  virtual const MyMoneyInstitution& institution(const QString& id) const = 0;
+  virtual const MyMoneyInstitution& institution(const QCString& id) const = 0;
 
   /**
     * This method returns an indicator if the storage object has been
@@ -314,7 +314,7 @@ public:
     * @param id id of transaction as QString.
     * @return reference to the requested transaction
     */
-  virtual const MyMoneyTransaction& transaction(const QString& id) const = 0;
+  virtual const MyMoneyTransaction& transaction(const QCString& id) const = 0;
 
   /**
     * This method is used to extract a transaction from the file global
@@ -324,7 +324,7 @@ public:
     * @param idx number of transaction in this account
     * @return reference to MyMoneyTransaction object
     */
-  virtual const MyMoneyTransaction& transaction(const QString& account, const int idx) const = 0;
+  virtual const MyMoneyTransaction& transaction(const QCString& account, const int idx) const = 0;
 
   /**
     * This method returns the number of institutions currently known to file

@@ -22,6 +22,8 @@
 
 #include "mymoneyutils.h"
 
+#ifdef _CHECK_MEMORY
+
 #include <cstdio>
 #include <cstdarg>
 #include <cstdlib>
@@ -300,6 +302,8 @@ void operator delete [] (void *p)
   if(enable==true) chkmem.table.DeleteAt(p);
   free(p);
 }
+
+#endif // _CHECK_MEMORY
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 /**

@@ -182,7 +182,7 @@ void testInequality () {
 
 void testAccountIDList () {
 	MyMoneyInstitution institution;
-	QStringList list;
+	QCStringList list;
 	QString id;
 
 	// list must be empty

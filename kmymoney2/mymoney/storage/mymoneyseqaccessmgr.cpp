@@ -71,7 +71,7 @@ MyMoneySeqAccessMgr::~MyMoneySeqAccessMgr()
 {
 }
 
-const bool MyMoneySeqAccessMgr::isStandardAccount(const QString& id) const
+const bool MyMoneySeqAccessMgr::isStandardAccount(const QCString& id) const
 {
   return id == STD_ACC_LIABILITY
       || id == STD_ACC_ASSET
@@ -80,9 +80,9 @@ const bool MyMoneySeqAccessMgr::isStandardAccount(const QString& id) const
 }
 
 
-const MyMoneyAccount& MyMoneySeqAccessMgr::account(const QString id) const
+const MyMoneyAccount& MyMoneySeqAccessMgr::account(const QCString id) const
 {
-  QMap<QString, MyMoneyAccount>::ConstIterator pos;
+  QMap<QCString, MyMoneyAccount>::ConstIterator pos;
 
   // locate the account and if present, return it's data
   pos = m_accountList.find(id);
@@ -97,7 +97,7 @@ const MyMoneyAccount& MyMoneySeqAccessMgr::account(const QString id) const
 const QValueList<MyMoneyAccount> MyMoneySeqAccessMgr::accountList(void) const
 {
   QValueList<MyMoneyAccount> list;
-  QMap<QString, MyMoneyAccount>::ConstIterator it;
+  QMap<QCString, MyMoneyAccount>::ConstIterator it;
 
   for(it = m_accountList.begin(); it != m_accountList.end(); ++it) {
     if(!isStandardAccount((*it).id()))
@@ -117,8 +117,8 @@ void MyMoneySeqAccessMgr::newAccount(MyMoneyAccount& account)
 
 void MyMoneySeqAccessMgr::addAccount(MyMoneyAccount& parent, MyMoneyAccount& account)
 {
-  QMap<QString, MyMoneyAccount>::Iterator theParent;
-  QMap<QString, MyMoneyAccount>::Iterator theChild;
+  QMap<QCString, MyMoneyAccount>::Iterator theParent;
+  QMap<QCString, MyMoneyAccount>::Iterator theChild;
 
   theParent = m_accountList.find(parent.id());
   if(theParent == m_accountList.end()) {
@@ -145,8 +145,8 @@ void MyMoneySeqAccessMgr::addAccount(MyMoneyAccount& parent, MyMoneyAccount& acc
 
 void MyMoneySeqAccessMgr::addAccount(MyMoneyInstitution& institution, MyMoneyAccount& account)
 {
-  QMap<QString, MyMoneyInstitution>::Iterator theInstitution;
-  QMap<QString, MyMoneyAccount>::Iterator theAccount;
+  QMap<QCString, MyMoneyInstitution>::Iterator theInstitution;
+  QMap<QCString, MyMoneyAccount>::Iterator theAccount;
 
   theInstitution = m_institutionList.find(institution.id());
   theAccount = m_accountList.find(account.id());
@@ -195,24 +195,27 @@ const unsigned int MyMoneySeqAccessMgr::accountCount(void) const
 }
 
 
-const QString MyMoneySeqAccessMgr::nextInstitutionID(void)
+const QCString MyMoneySeqAccessMgr::nextInstitutionID(void)
 {
-  QString id = "I";
-  id += QString::number(++m_nextInstitutionID).rightJustify(INSTITUTION_ID_SIZE, '0');
+  QCString id;
+  id.setNum(++m_nextInstitutionID);
+  id = "I" + id.rightJustify(INSTITUTION_ID_SIZE, '0');
   return id;
 }
 
-const QString MyMoneySeqAccessMgr::nextAccountID(void)
+const QCString MyMoneySeqAccessMgr::nextAccountID(void)
 {
-  QString id = "A";
-  id += QString::number(++m_nextAccountID).rightJustify(ACCOUNT_ID_SIZE, '0');
+  QCString id;
+  id.setNum(++m_nextAccountID);
+  id = "A" + id.rightJustify(ACCOUNT_ID_SIZE, '0');
   return id;
 }
 
-const QString MyMoneySeqAccessMgr::nextTransactionID(void)
+const QCString MyMoneySeqAccessMgr::nextTransactionID(void)
 {
-  QString id = "T";
-  id += QString::number(++m_nextTransactionID).rightJustify(TRANSACTION_ID_SIZE, '0');
+  QCString id;
+  id.setNum(++m_nextTransactionID);
+  id = "T" + id.rightJustify(TRANSACTION_ID_SIZE, '0');
   return id;
 }
 
@@ -232,7 +235,7 @@ void MyMoneySeqAccessMgr::addTransaction(MyMoneyTransaction& transaction, const 
     throw new MYMONEYEXCEPTION("invalid transaction to be added");
 
   MyMoneyTransaction newTransaction(nextTransactionID(), transaction);
-  QString key = transactionKey(newTransaction);
+  QCString key = transactionKey(newTransaction);
 
   m_transactionList[key] = newTransaction;
   m_transactionKeys[newTransaction.id()] = key;
@@ -247,7 +250,7 @@ void MyMoneySeqAccessMgr::addTransaction(MyMoneyTransaction& transaction, const 
     // to this transaction
     QValueList<MyMoneySplit>::ConstIterator it;
     for(it = transaction.splits().begin(); it != transaction.splits().end(); ++it) {
-      QMap<QString, MyMoneyAccount>::Iterator acc;
+      QMap<QCString, MyMoneyAccount>::Iterator acc;
       acc = m_accountList.find((*it).accountId());
       if(acc != m_accountList.end()) {
         (*acc).touch();
@@ -257,15 +260,15 @@ void MyMoneySeqAccessMgr::addTransaction(MyMoneyTransaction& transaction, const 
   }
 }
 
-const QString MyMoneySeqAccessMgr::transactionKey(const MyMoneyTransaction& t) const
+const QCString MyMoneySeqAccessMgr::transactionKey(const MyMoneyTransaction& t) const
 {
-  QString key;
+  QCString year, month, day;
 
-  key = QString::number(t.postDate().year()).rightJustify(YEAR_SIZE, '0') + "-" +
-  QString::number(t.postDate().month()).rightJustify(MONTH_SIZE, '0') + "-" +
-  QString::number(t.postDate().day()).rightJustify(DAY_SIZE, '0') + "-" + t.id();
+  year = year.setNum(t.postDate().year()).rightJustify(YEAR_SIZE, '0');
+  month = month.setNum(t.postDate().month()).rightJustify(MONTH_SIZE, '0');
+  day = day.setNum(t.postDate().day()).rightJustify(DAY_SIZE, '0');
 
-  return key;
+  return year + "-" + month + "-" + day + "-" + t.id();
 }
 
 void MyMoneySeqAccessMgr::touch(void)
@@ -276,8 +279,8 @@ void MyMoneySeqAccessMgr::touch(void)
 
 void MyMoneySeqAccessMgr::refreshAllAccountTransactionLists(void)
 {
-  QMap<QString, MyMoneyTransaction>::ConstIterator it_t;
-  QMap<QString, MyMoneyAccount>::Iterator it_a;
+  QMap<QCString, MyMoneyTransaction>::ConstIterator it_t;
+  QMap<QCString, MyMoneyAccount>::Iterator it_a;
   QValueList<MyMoneySplit>::ConstIterator it_s;
 
   for(it_a = m_accountList.begin(); it_a != m_accountList.end(); ++it_a)
@@ -294,9 +297,9 @@ void MyMoneySeqAccessMgr::refreshAllAccountTransactionLists(void)
   }
 }
 
-void MyMoneySeqAccessMgr::refreshAccountTransactionList(QMap<QString, MyMoneyAccount>::Iterator acc) const
+void MyMoneySeqAccessMgr::refreshAccountTransactionList(QMap<QCString, MyMoneyAccount>::Iterator acc) const
 {
-  QMap<QString, MyMoneyTransaction>::ConstIterator it_t;
+  QMap<QCString, MyMoneyTransaction>::ConstIterator it_t;
   QValueList<MyMoneySplit>::ConstIterator it_s;
 
   (*acc).clearTransactions();
@@ -314,9 +317,9 @@ void MyMoneySeqAccessMgr::refreshAccountTransactionList(QMap<QString, MyMoneyAcc
   }
 }
 
-const bool MyMoneySeqAccessMgr::hasActiveSplits(const QString& id) const
+const bool MyMoneySeqAccessMgr::hasActiveSplits(const QCString& id) const
 {
-  QMap<QString, MyMoneyTransaction>::ConstIterator it;
+  QMap<QCString, MyMoneyTransaction>::ConstIterator it;
 
   for(it = m_transactionList.begin(); it != m_transactionList.end(); ++it) {
     if((*it).accountReferenced(id)) {
@@ -326,9 +329,9 @@ const bool MyMoneySeqAccessMgr::hasActiveSplits(const QString& id) const
   return false;
 }
 
-const MyMoneyInstitution& MyMoneySeqAccessMgr::institution(const QString& id) const
+const MyMoneyInstitution& MyMoneySeqAccessMgr::institution(const QCString& id) const
 {
-  QMap<QString, MyMoneyInstitution>::ConstIterator pos;
+  QMap<QCString, MyMoneyInstitution>::ConstIterator pos;
 
   pos = m_institutionList.find(id);
   if(pos != m_institutionList.end())
@@ -339,7 +342,7 @@ const MyMoneyInstitution& MyMoneySeqAccessMgr::institution(const QString& id) co
 const QValueList<MyMoneyInstitution> MyMoneySeqAccessMgr::institutionList(void) const
 {
   QValueList<MyMoneyInstitution> list;
-  QMap<QString, MyMoneyInstitution>::ConstIterator it;
+  QMap<QCString, MyMoneyInstitution>::ConstIterator it;
 
   for(it = m_institutionList.begin(); it != m_institutionList.end(); ++it) {
     list.append(*it);
@@ -349,7 +352,7 @@ const QValueList<MyMoneyInstitution> MyMoneySeqAccessMgr::institutionList(void) 
 
 void MyMoneySeqAccessMgr::modifyAccount(const MyMoneyAccount& account)
 {
-  QMap<QString, MyMoneyAccount>::Iterator pos;
+  QMap<QCString, MyMoneyAccount>::Iterator pos;
 
   // locate the account in the file global pool
   pos = m_accountList.find(account.id());
@@ -365,7 +368,7 @@ void MyMoneySeqAccessMgr::modifyAccount(const MyMoneyAccount& account)
         if(account.institutionId() != "")
           institution(account.institutionId());
 
-        QMap<QString, MyMoneyInstitution>::Iterator oldInst, newInst;
+        QMap<QCString, MyMoneyInstitution>::Iterator oldInst, newInst;
         oldInst = m_institutionList.find((*pos).institutionId());
         newInst = m_institutionList.find(account.institutionId());
 
@@ -390,7 +393,7 @@ void MyMoneySeqAccessMgr::modifyAccount(const MyMoneyAccount& account)
 
 void MyMoneySeqAccessMgr::modifyInstitution(const MyMoneyInstitution& institution)
 {
-  QMap<QString, MyMoneyInstitution>::Iterator pos;
+  QMap<QCString, MyMoneyInstitution>::Iterator pos;
 
   // locate the institution in the file global pool
   pos = m_institutionList.find(institution.id());
@@ -406,7 +409,7 @@ void MyMoneySeqAccessMgr::modifyInstitution(const MyMoneyInstitution& institutio
 
 void MyMoneySeqAccessMgr::modifyTransaction(const MyMoneyTransaction& transaction)
 {
-  QMap<QString, bool> modifiedAccounts;
+  QMap<QCString, bool> modifiedAccounts;
 
   // perform some checks to see that the transaction stuff is OK. For
   // now we assume that
@@ -434,11 +437,11 @@ void MyMoneySeqAccessMgr::modifyTransaction(const MyMoneyTransaction& transactio
   if(!m_transactionKeys.contains(transaction.id()))
     throw new MYMONEYEXCEPTION("invalid transaction id");
 
-  QString oldKey = m_transactionKeys[transaction.id()];
+  QCString oldKey = m_transactionKeys[transaction.id()];
   if(!m_transactionList.contains(oldKey))
     throw new MYMONEYEXCEPTION("invalid transaction key");
 
-  QMap<QString, MyMoneyTransaction>::Iterator it_t;
+  QMap<QCString, MyMoneyTransaction>::Iterator it_t;
 
   it_t = m_transactionList.find(oldKey);
   if(it_t == m_transactionList.end())
@@ -457,7 +460,7 @@ void MyMoneySeqAccessMgr::modifyTransaction(const MyMoneyTransaction& transactio
   m_transactionList.remove(it_t);
 
   // add new transaction to lists
-  QString newKey = transactionKey(transaction);
+  QCString newKey = transactionKey(transaction);
   m_transactionList[newKey] = transaction;
   m_transactionKeys[transaction.id()] = newKey;
 
@@ -465,9 +468,9 @@ void MyMoneySeqAccessMgr::modifyTransaction(const MyMoneyTransaction& transactio
   touch();
 
   // now update the accounts
-  QMap<QString, bool>::ConstIterator it_a;
+  QMap<QCString, bool>::ConstIterator it_a;
   for(it_a = modifiedAccounts.begin(); it_a != modifiedAccounts.end(); ++it_a) {
-    QMap<QString, MyMoneyAccount>::Iterator acc;
+    QMap<QCString, MyMoneyAccount>::Iterator acc;
     acc = m_accountList.find(it_a.key());
     if(acc != m_accountList.end()) {
       (*acc).touch();
@@ -483,9 +486,9 @@ void MyMoneySeqAccessMgr::reparentAccount(MyMoneyAccount &account, MyMoneyAccoun
 
 void MyMoneySeqAccessMgr::reparentAccount(MyMoneyAccount &account, MyMoneyAccount& parent, const bool sendNotification)
 {
-  QMap<QString, MyMoneyAccount>::Iterator oldParent;
-  QMap<QString, MyMoneyAccount>::Iterator newParent;
-  QMap<QString, MyMoneyAccount>::Iterator childAccount;
+  QMap<QCString, MyMoneyAccount>::Iterator oldParent;
+  QMap<QCString, MyMoneyAccount>::Iterator newParent;
+  QMap<QCString, MyMoneyAccount>::Iterator childAccount;
 
   // verify that accounts exist. If one does not,
   // an exception is thrown
@@ -510,14 +513,14 @@ void MyMoneySeqAccessMgr::reparentAccount(MyMoneyAccount &account, MyMoneyAccoun
 
 void MyMoneySeqAccessMgr::removeTransaction(const MyMoneyTransaction& transaction)
 {
-  QMap<QString, bool> modifiedAccounts;
+  QMap<QCString, bool> modifiedAccounts;
 
   // first perform all the checks
   if(transaction.id() == "")
     throw new MYMONEYEXCEPTION("invalid transaction to be deleted");
 
-  QMap<QString, QString>::Iterator it_k;
-  QMap<QString, MyMoneyTransaction>::Iterator it_t;
+  QMap<QCString, QCString>::Iterator it_k;
+  QMap<QCString, MyMoneyTransaction>::Iterator it_t;
 
   it_k = m_transactionKeys.find(transaction.id());
   if(it_k == m_transactionKeys.end())
@@ -540,9 +543,9 @@ void MyMoneySeqAccessMgr::removeTransaction(const MyMoneyTransaction& transactio
   m_transactionKeys.remove(it_k);
 
   // now update all the accounts that were referenced
-  QMap<QString, bool>::ConstIterator it_a;
+  QMap<QCString, bool>::ConstIterator it_a;
   for(it_a = modifiedAccounts.begin(); it_a != modifiedAccounts.end(); ++it_a) {
-    QMap<QString, MyMoneyAccount>::Iterator acc;
+    QMap<QCString, MyMoneyAccount>::Iterator acc;
     acc = m_accountList.find(it_a.key());
     if(acc != m_accountList.end()) {
       (*acc).touch();
@@ -574,7 +577,7 @@ void MyMoneySeqAccessMgr::removeAccount(const MyMoneyAccount& account)
   // re-parent all sub-ordinate accounts to the parent of the account
   // to be deleted. First round check that all accounts exist, second
   // round do the re-parenting.
-  QStringList::ConstIterator it;
+  QCStringList::ConstIterator it;
   for(it = account.accountList().begin(); it != account.accountList().end(); ++it) {
     MyMoneySeqAccessMgr::account(*it);
   }
@@ -582,7 +585,7 @@ void MyMoneySeqAccessMgr::removeAccount(const MyMoneyAccount& account)
   // if one of the accounts did not exist, an exception had been
   // thrown and we would not make it until here.
 
-  QMap<QString, MyMoneyAccount>::Iterator it_a;
+  QMap<QCString, MyMoneyAccount>::Iterator it_a;
 
   // locate the account in the file global pool
 
@@ -611,7 +614,7 @@ void MyMoneySeqAccessMgr::removeAccount(const MyMoneyAccount& account)
     m_accountList.remove(it_a);
 
     // remove account from institution's list
-    QMap<QString, MyMoneyInstitution>::Iterator theInstitution;
+    QMap<QCString, MyMoneyInstitution>::Iterator theInstitution;
 
     theInstitution = m_institutionList.find(account.institutionId());
     if(theInstitution != m_institutionList.end()) {
@@ -625,13 +628,13 @@ void MyMoneySeqAccessMgr::removeAccount(const MyMoneyAccount& account)
 
 void MyMoneySeqAccessMgr::removeInstitution(const MyMoneyInstitution& institution)
 {
-  QMap<QString, MyMoneyInstitution>::Iterator it_i;
+  QMap<QCString, MyMoneyInstitution>::Iterator it_i;
 
   it_i = m_institutionList.find(institution.id());
   if(it_i != m_institutionList.end()) {
     if((*it_i).accountCount() != 0) {
-      QStringList accounts = (*it_i).accountList();
-      QStringList::Iterator it_a;
+      QCStringList accounts = (*it_i).accountList();
+      QCStringList::Iterator it_a;
       for(it_a = accounts.begin(); it_a != accounts.end(); ++it_a) {
         MyMoneyAccount acc = account(*it_a);
         acc.setInstitutionId("");
@@ -654,7 +657,7 @@ void MyMoneySeqAccessMgr::removeInstitution(const MyMoneyInstitution& institutio
 const QValueList<MyMoneyTransaction> MyMoneySeqAccessMgr::transactionList(void) const
 {
   QValueList<MyMoneyTransaction> list;
-  QMap<QString, MyMoneyTransaction>::ConstIterator it_t;
+  QMap<QCString, MyMoneyTransaction>::ConstIterator it_t;
 
   for(it_t = m_transactionList.begin(); it_t != m_transactionList.end(); ++it_t) {
     list.append(*it_t);
@@ -663,7 +666,7 @@ const QValueList<MyMoneyTransaction> MyMoneySeqAccessMgr::transactionList(void) 
   return list;
 }
 
-const MyMoneyTransaction& MyMoneySeqAccessMgr::transaction(const QString& id) const
+const MyMoneyTransaction& MyMoneySeqAccessMgr::transaction(const QCString& id) const
 {
   // get the full key of this transaction, throw exception
   // if it's invalid (unknown)
@@ -671,16 +674,16 @@ const MyMoneyTransaction& MyMoneySeqAccessMgr::transaction(const QString& id) co
     throw new MYMONEYEXCEPTION("invalid transaction id");
 
   // check if this key is in the list, throw exception if not
-  QString key = m_transactionKeys[id];
+  QCString key = m_transactionKeys[id];
   if(!m_transactionList.contains(key))
     throw new MYMONEYEXCEPTION("invalid transaction key");
 
   return m_transactionList[key];
 }
 
-const MyMoneyTransaction& MyMoneySeqAccessMgr::transaction(const QString& account, const int idx) const
+const MyMoneyTransaction& MyMoneySeqAccessMgr::transaction(const QCString& account, const int idx) const
 {
-  QMap<QString, MyMoneyAccount>::ConstIterator acc;
+  QMap<QCString, MyMoneyAccount>::ConstIterator acc;
 
   // find account object in list, throw exception if unknown
   acc = m_accountList.find(account);
@@ -694,7 +697,7 @@ const MyMoneyTransaction& MyMoneySeqAccessMgr::transaction(const QString& accoun
   return transaction(t.transactionID());
 }
 
-const MyMoneyMoney MyMoneySeqAccessMgr::balance(const QString& id) const
+const MyMoneyMoney MyMoneySeqAccessMgr::balance(const QCString& id) const
 {
   MyMoneyAccount acc;
 
@@ -702,10 +705,10 @@ const MyMoneyMoney MyMoneySeqAccessMgr::balance(const QString& id) const
   return acc.balance();
 }
 
-const MyMoneyMoney MyMoneySeqAccessMgr::totalBalance(const QString& id) const
+const MyMoneyMoney MyMoneySeqAccessMgr::totalBalance(const QCString& id) const
 {
-  QStringList accounts;
-  QStringList::ConstIterator it_a;
+  QCStringList accounts;
+  QCStringList::ConstIterator it_a;
 
   MyMoneyMoney result(balance(id));
 

@@ -67,9 +67,9 @@ void testEmptyConstructor() {
 }
 
 void testConstructor() {
-	QString id = "A000001";
+	QCString id = "A000001";
 	QString institutionid = "B000001";
-	QString parent = "Parent";
+	QCString parent = "Parent";
 	MyMoneyAccount r;
 	r.setAccountType(MyMoneyAccount::Asset);
 	r.setOpeningDate(QDate::currentDate());
@@ -122,9 +122,9 @@ void testSetFunctions() {
 
 void testCopyConstructor() {
 	MyMoneyAccount::Transaction ta("Trans1", 1000);
-	QString id = "A000001";
-	QString institutionid = "B000001";
-	QString parent = "ParentAccount";
+	QCString id = "A000001";
+	QCString institutionid = "B000001";
+	QCString parent = "ParentAccount";
 	MyMoneyAccount r;
 	r.setAccountType(MyMoneyAccount::Expense);
 	r.setOpeningDate(QDate::currentDate());

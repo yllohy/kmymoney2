@@ -34,7 +34,7 @@ MyMoneyTransaction::MyMoneyTransaction()
 }
 
 // MyMoneyTransaction::MyMoneyTransaction(MyMoneyFile *file,
-MyMoneyTransaction::MyMoneyTransaction(const QString id,
+MyMoneyTransaction::MyMoneyTransaction(const QCString id,
                                        const MyMoneyTransaction& transaction)
 {
   *this = transaction;
@@ -57,7 +57,7 @@ bool MyMoneyTransaction::operator == (const MyMoneyTransaction& right) const
       (m_postDate == right.m_postDate) );
 }
 
-const bool MyMoneyTransaction::accountReferenced(const QString& id) const
+const bool MyMoneyTransaction::accountReferenced(const QCString& id) const
 {
   QValueList<MyMoneySplit>::ConstIterator it;
 

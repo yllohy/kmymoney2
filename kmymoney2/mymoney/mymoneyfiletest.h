@@ -30,11 +30,11 @@ class TestObserverSet : public MyMoneyObserver
 {
 public:
         TestObserverSet() { m_updated.clear(); }
-        void update(const QString& id) { m_updated.append(id); };
-        const QStringList& updated(void) { return m_updated; };
+        void update(const QCString& id) { m_updated.append(id); };
+        const QCStringList& updated(void) { return m_updated; };
         void reset(void) { m_updated.clear(); };
 private:
-        QStringList m_updated;
+        QCStringList m_updated;
 };
 
 

@@ -223,7 +223,7 @@ public:
     *
     * @return the number of modified splits
     */
-  const unsigned int moveSplits(const QString& oldAccount, const QString& newAccount);
+  const unsigned int moveSplits(const QCString& oldAccount, const QCString& newAccount);
 
   /**
     * This method is used to determince, if the account with the
@@ -232,7 +232,7 @@ public:
     * @param id id of the account to be checked for
     * @return true if account is referenced, false otherwise
     */
-  const bool hasActiveSplits(const QString& id) const;
+  const bool hasActiveSplits(const QCString& id) const;
 
   /**
     * This method is used to check whether a given
@@ -243,7 +243,7 @@ public:
     * @param id account id
     * @return true if account-id is one of the standards, false otherwise
     */
-  const bool isStandardAccount(const QString& id) const;
+  const bool isStandardAccount(const QCString& id) const;
 
   /**
     * Deletes an existing account from the file global account pool
@@ -285,7 +285,7 @@ public:
     * @param id id of transaction as QString.
     * @return reference to the requested transaction
     */
-  const MyMoneyTransaction& transaction(const QString& id) const;
+  const MyMoneyTransaction& transaction(const QCString& id) const;
 
   /**
     * This method is used to extract a transaction from the file global
@@ -295,7 +295,7 @@ public:
     * @param idx number of transaction in this account
     * @return reference to MyMoneyTransaction object
     */
-  const MyMoneyTransaction& transaction(const QString& account, const int idx) const;
+  const MyMoneyTransaction& transaction(const QCString& account, const int idx) const;
 
   /**
     * This method is used to remove a transaction from the transaction
@@ -312,7 +312,7 @@ public:
     * @param account id of the account in question
     * @return balance of the account as MyMoneyMoney object
     */
-  const MyMoneyMoney balance(const QString& id) const;
+  const MyMoneyMoney balance(const QCString& id) const;
 
   /**
     * This method is used to return the actual balance of an account
@@ -321,7 +321,7 @@ public:
     * @param account id of the account in question
     * @return balance of the account as MyMoneyMoney object
     */
-  const MyMoneyMoney totalBalance(const QString& id) const;
+  const MyMoneyMoney totalBalance(const QCString& id) const;
 
   /**
     * This method returns the number of transactions currently known to file
@@ -354,7 +354,7 @@ public:
     * @return MyMoneyInstitution object filled with data. If the institution
     *         could not be found, an exception will be thrown
     */
-  const MyMoneyInstitution& institution(const QString& id) const;
+  const MyMoneyInstitution& institution(const QCString& id) const;
 
   /**
     * This method returns a list of the institutions
@@ -371,7 +371,7 @@ public:
     * @return reference to MyMoneyAccount object. An exception is thrown
     *         if the id is unknown
     */
-  const MyMoneyAccount& account(const QString& id) const;
+  const MyMoneyAccount& account(const QCString& id) const;
 
   /**
     * This method returns a list of the accounts
@@ -399,7 +399,7 @@ public:
     *
     * @see detach
     */
-  void attach(const QString& id, MyMoneyObserver* observer);
+  void attach(const QCString& id, MyMoneyObserver* observer);
 
   /**
     * This method is used to detach an observer from a subject
@@ -412,7 +412,7 @@ public:
     *
     * @see attach
     */
-  void detach(const QString& id, MyMoneyObserver* observer);
+  void detach(const QCString& id, MyMoneyObserver* observer);
 
   // Payee operations
   void addPayee(const QString& newPayee, const QString& address=QString::null, const QString& postcode=QString::null, const QString& telephone=QString::null, const QString& email=QString::null);
@@ -426,7 +426,7 @@ private:
     * @param id id of object to be notified
     * @see attach, detach
     */
-  void addNotification(const QString& id);
+  void addNotification(const QCString& id);
 
   /**
     * This method is used to clear the notification list
@@ -437,7 +437,7 @@ private:
     * This method is used to notify the objects observing
     * a specific id
     */
-  void notify(const QString& id) const;
+  void notify(const QCString& id) const;
 
   /**
     * This method is used to notify all objects observing
@@ -451,7 +451,7 @@ private:
     *
     * @param id account's id
     */
-  void notifyAccountTree(const QString& id);
+  void notifyAccountTree(const QCString& id);
 
   /**
     * This member points to the storage strategy
@@ -462,13 +462,13 @@ private:
     * This member variable keeps a set of all subjects known to
     * the object (accounts, institutions, etc)
     */
-  QMap<QString, MyMoneyFileSubject> m_subjects;
+  QMap<QCString, MyMoneyFileSubject> m_subjects;
 
   /**
     * This member keeps a list of ids to notify after an
     * operation is completed.
     */
-  QMap<QString, bool> m_notificationList;
+  QMap<QCString, bool> m_notificationList;
 
 };
 #endif

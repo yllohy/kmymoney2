@@ -24,9 +24,11 @@
 #define _MYMONEYUTILS_H_
 
 #include <qstring.h>
+#include <qcstring.h>
+#include <qvaluelist.h>
 
-#include <kglobal.h>
-#include <klocale.h>
+//#include <kglobal.h>
+//#include <klocale.h>
 
 
 #if 0
@@ -47,10 +49,14 @@ typedef std::string String;
 #else
 
 typedef QString String;
-#endif
+#endif // 0
 
 //typedef for data type to store currency with.
 typedef long long DLONG;
+
+// typedef for id lists
+typedef QValueList<QCString> QCStringList;
+
 
 //class that has utility functions to use throughout the application.
 class MyMoneyUtils
@@ -62,6 +68,8 @@ public:
 	//static function to add the correct file extension at the end of the file name
 	static bool appendCorrectFileExt(String& str, const String strExtToUse);
 };
+
+#ifdef _CHECK_MEMORY
 
 #include <cstddef>
 #define _CHECK_MEMORYPP_FILENAME_SIZE 256
@@ -139,4 +147,5 @@ void _CheckMemory_End();
 #define _CheckMemory_Leak(freeall) chkmem.CheckMemoryLeak(freeall)
 #define _CheckMemory_FreeAll() chkmem.FreeAll()
 
+#endif // _CHECK_MEMORY
 #endif

@@ -26,7 +26,7 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
-#include <qstring.h>
+#include <qcstring.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -43,7 +43,7 @@ class MyMoneySubject;
 class MyMoneyObserver {
 public: 
 	virtual ~MyMoneyObserver();
-  virtual void update(const QString& id) = 0;
+  virtual void update(const QCString& id) = 0;
 
 protected:
 	MyMoneyObserver();

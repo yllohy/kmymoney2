@@ -25,11 +25,11 @@ class TestObserver : public MyMoneyObserver
 {
 public:
 	TestObserver() { m_updated = ""; }
-	void update(const QString& id) { m_updated = id; };
-	const QString& updated(void) { return m_updated; };
+	void update(const QCString& id) { m_updated = id; };
+	const QCString& updated(void) { return m_updated; };
 	void reset(void) { m_updated = ""; };
 private:
-	QString m_updated;
+	QCString m_updated;
 };
 
 class TestSubject : public MyMoneySubject

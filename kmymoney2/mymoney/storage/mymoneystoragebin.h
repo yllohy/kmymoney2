@@ -69,7 +69,7 @@ private:
   void readOldFormat(QDataStream& s, IMyMoneySerialize* storage);
   void readNewFormat(QDataStream& s, IMyMoneySerialize* storage);
   void addCategory(IMyMoneySerialize* storage,
-                   QMap<QString, QString>& categories,
+                   QMap<QString, QCString>& categories,
                    const QString& majorName,
                    const QString& minorName,
                    const MyMoneyAccount::accountTypeE type);

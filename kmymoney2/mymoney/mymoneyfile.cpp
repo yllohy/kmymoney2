@@ -165,12 +165,12 @@ void MyMoneyFile::reparentAccount(MyMoneyAccount &account, MyMoneyAccount& paren
     throw new MYMONEYEXCEPTION("Unable to reparent to different account type");
 }
 
-const MyMoneyInstitution& MyMoneyFile::institution(const QString& id) const
+const MyMoneyInstitution& MyMoneyFile::institution(const QCString& id) const
 {
   return m_storage->institution(id);
 }
 
-const MyMoneyAccount& MyMoneyFile::account(const QString& id) const
+const MyMoneyAccount& MyMoneyFile::account(const QCString& id) const
 {
   return m_storage->account(id);
 }
@@ -193,12 +193,12 @@ void MyMoneyFile::removeTransaction(const MyMoneyTransaction& transaction)
 }
 
 
-const bool MyMoneyFile::hasActiveSplits(const QString& id) const
+const bool MyMoneyFile::hasActiveSplits(const QCString& id) const
 {
   return m_storage->hasActiveSplits(id);
 }
 
-const bool MyMoneyFile::isStandardAccount(const QString& id) const
+const bool MyMoneyFile::isStandardAccount(const QCString& id) const
 {
   return m_storage->isStandardAccount(id);
 }
@@ -225,7 +225,7 @@ void MyMoneyFile::removeAccount(const MyMoneyAccount& account)
   MyMoneyNotifier notifier(this);
 
   // collect all sub-ordinate accounts for notification
-  QStringList::ConstIterator it;
+  QCStringList::ConstIterator it;
   for(it = acc.accountList().begin(); it != acc.accountList().end(); ++it)
     notifyAccountTree(*it);
   notifyAccountTree(parent.id());
@@ -330,12 +330,12 @@ void MyMoneyFile::addTransaction(MyMoneyTransaction& transaction)
   }
 }
 
-const MyMoneyTransaction& MyMoneyFile::transaction(const QString& id) const
+const MyMoneyTransaction& MyMoneyFile::transaction(const QCString& id) const
 {
   return m_storage->transaction(id);
 }
 
-const MyMoneyTransaction& MyMoneyFile::transaction(const QString& account, const int idx) const
+const MyMoneyTransaction& MyMoneyFile::transaction(const QCString& account, const int idx) const
 {
   return m_storage->transaction(account, idx);
 }
@@ -687,19 +687,19 @@ const unsigned int MyMoneyFile::institutionCount(void) const
   return m_storage->institutionCount();
 }
 
-const MyMoneyMoney MyMoneyFile::balance(const QString& id) const
+const MyMoneyMoney MyMoneyFile::balance(const QCString& id) const
 {
   return m_storage->balance(id);
 }
 
-const MyMoneyMoney MyMoneyFile::totalBalance(const QString& id) const
+const MyMoneyMoney MyMoneyFile::totalBalance(const QCString& id) const
 {
   return m_storage->totalBalance(id);
 }
 
-void MyMoneyFile::attach(const QString& id, MyMoneyObserver* observer)
+void MyMoneyFile::attach(const QCString& id, MyMoneyObserver* observer)
 {
-  QMap<QString, MyMoneyFileSubject>::Iterator it_s;
+  QMap<QCString, MyMoneyFileSubject>::Iterator it_s;
 
   // make sure an entry for the subject with the id exists
   m_subjects[id];
@@ -708,18 +708,18 @@ void MyMoneyFile::attach(const QString& id, MyMoneyObserver* observer)
   (*it_s).attach(observer);
 }
 
-void MyMoneyFile::detach(const QString& id, MyMoneyObserver* observer)
+void MyMoneyFile::detach(const QCString& id, MyMoneyObserver* observer)
 {
-  QMap<QString, MyMoneyFileSubject>::Iterator it_s;
+  QMap<QCString, MyMoneyFileSubject>::Iterator it_s;
 
   it_s = m_subjects.find(id);
   if(it_s != m_subjects.end())
     (*it_s).detach(observer);
 }
 
-void MyMoneyFile::notify(const QString& id) const
+void MyMoneyFile::notify(const QCString& id) const
 {
-  QMap<QString, MyMoneyFileSubject>::ConstIterator it_s;
+  QMap<QCString, MyMoneyFileSubject>::ConstIterator it_s;
 
   it_s = m_subjects.find(id);
   if(it_s != m_subjects.end())
@@ -728,16 +728,16 @@ void MyMoneyFile::notify(const QString& id) const
 
 void MyMoneyFile::notify(void)
 {
-  QMap<QString, bool>::ConstIterator it;
+  QMap<QCString, bool>::ConstIterator it;
   for(it = m_notificationList.begin(); it != m_notificationList.end(); ++it)
     notify(it.key());
 
   clearNotification();
 }
 
-void MyMoneyFile::notifyAccountTree(const QString& id)
+void MyMoneyFile::notifyAccountTree(const QCString& id)
 {
-  QString accId = id;
+  QCString accId = id;
   MyMoneyAccount acc;
 
   do {
@@ -748,7 +748,7 @@ void MyMoneyFile::notifyAccountTree(const QString& id)
   } while(accId != "");
 }
 
-void MyMoneyFile::addNotification(const QString& id)
+void MyMoneyFile::addNotification(const QCString& id)
 {
   if(id != "")
     m_notificationList[id] = true;

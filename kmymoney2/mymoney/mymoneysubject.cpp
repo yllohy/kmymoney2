@@ -42,7 +42,7 @@ void MyMoneySubject::detach (MyMoneyObserver* o)
   _observers.remove(o);
 }
 
-void MyMoneySubject::notify(const QString& id) const
+void MyMoneySubject::notify(const QCString& id) const
 {
   QPtrList<MyMoneyObserver> ptrList = _observers;
   MyMoneyObserver* i;

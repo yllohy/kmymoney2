@@ -40,7 +40,7 @@ class MyMoneyTransaction {
 public:
 	MyMoneyTransaction();
   // MyMoneyTransaction(MyMoneyFile *file, const QString id,
-  MyMoneyTransaction(const QString id,
+  MyMoneyTransaction(const QCString id,
                              const MyMoneyTransaction& transaction);
 	~MyMoneyTransaction();
 
@@ -51,7 +51,7 @@ public:
   // Simple get operations
   const QDate entryDate(void) const { return m_entryDate; };
   const QDate postDate(void) const { return m_postDate; };
-  const QString id(void) const { return m_id; };
+  const QCString id(void) const { return m_id; };
   const QString memo(void) const { return m_memo; };
   const QValueList<MyMoneySplit> splits(void) const { return m_splits; };
   const unsigned int splitCount(void) const { return m_splits.count(); };
@@ -68,7 +68,7 @@ public:
     *
     * @param id reference to id
     */
-  const bool accountReferenced(const QString& id) const;
+  const bool accountReferenced(const QCString& id) const;
 
   /// Returns a pointer to the file this transaction belongs to
   /// @return pointer to MyMoneyFile
@@ -111,7 +111,7 @@ private:
   /**
     * This member contains the transaction id
     */
-  QString m_id;
+  QCString m_id;
 
   /**
     * This member keeps the memo text associated with this transaction

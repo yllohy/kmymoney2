@@ -38,7 +38,7 @@ MyMoneyAccount::~MyMoneyAccount()
 {
 }
 
-MyMoneyAccount::MyMoneyAccount(const QString& id, const MyMoneyAccount& right)
+MyMoneyAccount::MyMoneyAccount(const QCString& id, const MyMoneyAccount& right)
 {
   *this = right;
   m_id = id;
@@ -59,7 +59,7 @@ void MyMoneyAccount::setDescription(const QString& desc)
   m_description = desc;
 }
 
-void MyMoneyAccount::setInstitutionId(const QString& id)
+void MyMoneyAccount::setInstitutionId(const QCString& id)
 {
   m_institution = id;
 }
@@ -95,7 +95,7 @@ void MyMoneyAccount::setLastReconciliationDate(const QDate& date)
   m_lastReconciliationDate = date;
 }
 
-void MyMoneyAccount::setParentAccountId(const QString& parent)
+void MyMoneyAccount::setParentAccountId(const QCString& parent)
 {
   m_parentAccount = parent;
 }
@@ -150,15 +150,15 @@ const MyMoneyMoney MyMoneyAccount::balance(void) const
   return result;
 }
 
-void MyMoneyAccount::addAccountId(const QString& account)
+void MyMoneyAccount::addAccountId(const QCString& account)
 {
   if(!m_accountList.contains(account))
     m_accountList += account;
 }
 
-void MyMoneyAccount::removeAccountId(const QString& account)
+void MyMoneyAccount::removeAccountId(const QCString& account)
 {
-  QStringList::Iterator it;
+  QCStringList::Iterator it;
 
   it = m_accountList.find(account);
   if(it != m_accountList.end())

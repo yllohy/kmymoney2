@@ -19,6 +19,7 @@
 #include <iostream>
 
 #ifdef HAVE_LIBCPPUNIT
+
 #include "cppunit/TextTestRunner.h"
 #include "cppunit/TextTestResult.h"
 #include "cppunit/TestSuite.h"
@@ -78,8 +79,10 @@ int
 main(int argc, char** argv)
 {
 #ifdef HAVE_LIBCPPUNIT
-#define THB CPPUNIT_TEST_SUITE_REGISTRATION( fixture )
+
+#ifdef _CHECK_MEMORY
   _CheckMemory_Init(0);
+#endif
 
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyExceptionTest); 
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyMoneyTest); 
@@ -105,11 +108,14 @@ main(int argc, char** argv)
 
   delete runner;
 
+#ifdef _CHECK_MEMORY
   chkmem.CheckMemoryLeak( true );
   _CheckMemory_End();
+#endif // _CHECK_MEMORY
+
 #else
   std::cout << "libcppunit not installed. no automatic tests available."
 		 << std::endl;
-#endif
+#endif // HAVE_LIBCPPUNIT
   return 0;
 }

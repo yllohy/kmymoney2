@@ -27,7 +27,7 @@
 // QT Includes
 
 #include <qptrlist.h>
-#include <qstring.h>
+#include <qcstring.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -46,7 +46,7 @@ public:
 	virtual ~MyMoneySubject();
   virtual void attach(MyMoneyObserver*);
   virtual void detach(MyMoneyObserver*);
-  virtual void notify(const QString& id) const;
+  virtual void notify(const QCString& id) const;
 
 protected:
 	MyMoneySubject();

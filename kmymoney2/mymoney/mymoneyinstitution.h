@@ -28,7 +28,6 @@
 // Project Includes
 
 #include "mymoneyutils.h"
-// #include "mymoneyfile.h"
 
 /**
   *@author Thomas Baumgart
@@ -70,7 +69,7 @@ public:
     * @param right institution definition
     */
   //MyMoneyInstitution(MyMoneyFile *file, const QString ID, const MyMoneyInstitution& right);
-  MyMoneyInstitution(const QString ID, const MyMoneyInstitution& right);
+  MyMoneyInstitution(const QCString ID, const MyMoneyInstitution& right);
 
   const QString& manager(void) const { return m_manager; }
   const QString& name(void) const { return m_name; }
@@ -97,7 +96,7 @@ public:
     *
     * @param account id of the account to be added
     */
-  void addAccountId(const QString& account);
+  void addAccountId(const QCString& account);
 
   /**
     * This method deletes the id of an account from the account list
@@ -106,14 +105,14 @@ public:
     * @param account id of the account to be deleted
     * @return id of account deleted, otherwise empty string
     */
-  QString removeAccountId(const QString& account);
+  QCString removeAccountId(const QCString& account);
 
   /**
     * This method is used to return the set of accounts known to
     * this institution
     * return QStringList of account ids
     */
-  QStringList accountList(void) const { return m_accountList; }
+  QCStringList accountList(void) const { return m_accountList; }
 
   /**
     * This method returns the number of accounts known to
@@ -128,7 +127,7 @@ public:
     *
     * @return ID as QString. If the ID is unknown, an empty QString is returned.
     */
-  const QString id(void) const { return m_id; }
+  const QCString id(void) const { return m_id; }
 
   /**
     * This method returns a pointer to the MyMoneyFile object this
@@ -156,7 +155,7 @@ private:
     * This member variable keeps the ID of the institution under which it
     * is known inside the MyMoneyFile.
     */
-  QString  m_id;
+  QCString  m_id;
 
   // Bank 'fields'
   /**
@@ -201,7 +200,7 @@ private:
     * This member variable keeps the sorted list of the account ids
     * available at this institution
     */
-  QStringList m_accountList;
+  QCStringList m_accountList;
 
 };
 
