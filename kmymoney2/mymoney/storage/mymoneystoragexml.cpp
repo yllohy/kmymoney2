@@ -22,6 +22,7 @@
 
 #include "config.h"
 
+#ifdef _COMPILE_XML
 #if HAVE_LIBXMLPP
 
 // ----------------------------------------------------------------------------
@@ -292,3 +293,4 @@ void MyMoneyStorageXML::ChangeParseState(eParseState state)
 
 
 #endif // HAVE_LIBXMLPP
+#endif

@@ -23,6 +23,8 @@
 #ifndef MYMONEYSTORAGEXML_H
 #define MYMONEYSTORAGEXML_H
 
+#ifdef _COMPILE_XML
+
 #include <xml++.h>
 
 // ----------------------------------------------------------------------------
@@ -157,4 +159,5 @@ private:
   
 };
 
+#endif
 #endif
