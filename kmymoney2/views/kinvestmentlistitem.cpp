@@ -37,6 +37,12 @@
 KInvestmentListItem::KInvestmentListItem(KListView* parent, const MyMoneyAccount& account)
   : KListViewItem(parent)
 {
+  bColumn5Negative = false;
+  bColumn6Negative = false;
+  bColumn7Negative = false;
+  bColumn8Negative = false;
+  bColumn9Negative = false;
+  
   m_account = account;
   m_listView = parent;
   update(account.id());
@@ -53,26 +59,27 @@ KInvestmentListItem::~KInvestmentListItem()
 
 const QString KInvestmentListItem::calculate1WeekGain(const equity_price_history& history)
 {
-  return calculateGain(history, -7, 0, false);
+  return calculateGain(history, -7, 0, false, bColumn6Negative);
 }
 
 const QString KInvestmentListItem::calculate4WeekGain(const equity_price_history& history)
 {
-  return calculateGain(history, -28, 0, false);
+  return calculateGain(history, -28, 0, false, bColumn7Negative);
 }
 
 const QString KInvestmentListItem::calculate3MonthGain(const equity_price_history& history)
 {
-  return calculateGain(history, 0, -3, false);
+  return calculateGain(history, 0, -3, false, bColumn8Negative);
 }
 
 const QString KInvestmentListItem::calculateYTDGain(const equity_price_history& history)
 {
-  return calculateGain(history, 0, 0, true);
+  return calculateGain(history, 0, 0, true, bColumn9Negative);
 }
 
-const QString KInvestmentListItem::calculateGain(const equity_price_history& history, int dayDifference, int monthDifference, bool YTD)
+const QString KInvestmentListItem::calculateGain(const equity_price_history& history, int dayDifference, int monthDifference, bool YTD, bool& bNegative)
 {
+  bNegative = false;
   if(history.isEmpty())
   {
     return QString("0.0%");
@@ -140,6 +147,11 @@ const QString KInvestmentListItem::calculateGain(const equity_price_history& his
     {
       double result = (currentValue.toDouble() / comparisonValue.toDouble()) * 100.0;
       result -= 100.0;
+      if(result < 0.0)
+      {
+        bNegative = true;
+      }
+      
       QString ds = QString("%1%").arg(result, 0, 'f', 3);
       return ds;
       
@@ -155,7 +167,28 @@ const QString KInvestmentListItem::calculateGain(const equity_price_history& his
 
 void KInvestmentListItem::paintCell(QPainter * p, const QColorGroup & cg, int column, int width, int align)
 {
-  QListViewItem::paintCell(p, cg, column, width, align);
+  bool bPaintRed = false;
+  if((column == COLUMN_RAWGAIN_INDEX && bColumn5Negative) ||
+     (column == COLUMN_1WEEKGAIN_INDEX && bColumn6Negative) ||
+     (column == COLUMN_4WEEKGAIN_INDEX && bColumn7Negative) ||
+     (column == COLUMN_3MONGAIN_INDEX && bColumn8Negative) ||
+     (column == COLUMN_YTDGAIN_INDEX && bColumn9Negative))
+  {
+    bPaintRed = true;
+  }
+  
+  if(bPaintRed)
+  {
+    QColorGroup _cg( cg );
+    QColor c = _cg.text();
+    _cg.setColor(QColorGroup::Text, Qt::red);
+    QListViewItem::paintCell(p, _cg, column, width, align);
+    _cg.setColor(QColorGroup::Text, c);
+  }
+  else
+  {
+    QListViewItem::paintCell(p, cg, column, width, align);
+  }
 }
 
 void KInvestmentListItem::update(const QCString& id)
@@ -179,7 +212,7 @@ void KInvestmentListItem::update(const QCString& id)
     setText(COLUMN_QUANTITY_INDEX, file->balance(m_account.id()).formatMoney("", 2));
 
     //column 3 is the current price
-    setText(COLUMN_CURRPRICE_INDEX, equity.price(QDate::currentDate()).formatMoney());
+    setText(COLUMN_CURRVALUE_INDEX, equity.price(QDate::currentDate()).formatMoney());
 
     //column 4 (COLUMN_COSTBASIS_INDEX) is the cost basis
     if(transactionList.isEmpty())

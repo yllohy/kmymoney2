@@ -43,7 +43,7 @@
 #define COLUMN_NAME_INDEX       0
 #define COLUMN_SYMBOL_INDEX     1
 #define COLUMN_QUANTITY_INDEX   2
-#define COLUMN_CURRPRICE_INDEX  3
+#define COLUMN_CURRVALUE_INDEX  3
 #define COLUMN_COSTBASIS_INDEX  4
 #define COLUMN_RAWGAIN_INDEX    5
 #define COLUMN_1WEEKGAIN_INDEX  6
@@ -72,11 +72,12 @@ private:
   const QString calculate4WeekGain(const equity_price_history& history);
   const QString calculate3MonthGain(const equity_price_history& history);
   const QString calculateYTDGain(const equity_price_history& history);
-  const QString calculateGain(const equity_price_history& history, int dayDifference, int monthDifference, bool YTD=false);
+  const QString calculateGain(const equity_price_history& history, int dayDifference, int monthDifference, bool YTD, bool& bNegative);
 
 private:
   KListView*        m_listView;
   MyMoneyAccount    m_account;
+  bool bColumn5Negative, bColumn6Negative, bColumn7Negative, bColumn8Negative, bColumn9Negative;
 };
 
 #endif

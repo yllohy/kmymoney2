@@ -129,11 +129,11 @@ void KInvestmentView::initSummaryTab(void)
   investmentTable->addColumn(i18n("Name"));
   investmentTable->addColumn(i18n("Symbol"));
   investmentTable->addColumn(i18n("Quantity"));
-  investmentTable->addColumn(i18n("Current Price"));
-  investmentTable->addColumn(i18n("Original Price"));
+  investmentTable->addColumn(i18n("Current Value"));
+  investmentTable->addColumn(i18n("Cost Basis"));
   investmentTable->addColumn(i18n("$ Gain"));
-  investmentTable->addColumn(i18n("1 week %"));
-  investmentTable->addColumn(i18n("4 weeks %"));
+  investmentTable->addColumn(i18n("1 Week %"));
+  investmentTable->addColumn(i18n("4 Weeks %"));
   investmentTable->addColumn(i18n("3 Months %"));
   investmentTable->addColumn(i18n("YTD %"));
 
