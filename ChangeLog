@@ -1,5 +1,7 @@
 2001-12-17 Michael Edwardes <mte@users.sourceforge.net>
   * Fixed bug no 490015.
+  * Updated admin directory to kdelibs-2.2.2 whilst preserving
+    the autoconf-2.50 changes so we can use --enable-objprelink.
 
 2001-12-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * fixed Bug #490442
