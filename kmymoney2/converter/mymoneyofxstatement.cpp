@@ -44,6 +44,22 @@
 
 #include <libofx/libofx.h>
 
+// In libofx 0.6.6 these defines are inside OfxTransactionData, while in the
+// new version they are in the global scope.
+#if !defined(HAVE_NEW_OFX)
+#define OFX_BUYDEBT OfxTransactionData::OFX_BUYDEBT 
+#define OFX_BUYMF OfxTransactionData::OFX_BUYMF 
+#define OFX_BUYOPT OfxTransactionData::OFX_BUYOPT 
+#define OFX_BUYOTHER OfxTransactionData::OFX_BUYOTHER 
+#define OFX_BUYSTOCK OfxTransactionData::OFX_BUYSTOCK 
+#define OFX_REINVEST OfxTransactionData::OFX_REINVEST 
+#define OFX_SELLDEBT OfxTransactionData::OFX_SELLDEBT 
+#define OFX_SELLMF OfxTransactionData::OFX_SELLMF 
+#define OFX_SELLOPT OfxTransactionData::OFX_SELLOPT 
+#define OFX_SELLOTHER OfxTransactionData::OFX_SELLOTHER 
+#define OFX_SELLSTOCK OfxTransactionData::OFX_SELLSTOCK 
+#endif
+
 int ofxTransactionCallback(struct OfxTransactionData data, void * pv)
 {
   MyMoneyOfxStatement* ps = reinterpret_cast<MyMoneyOfxStatement*>(pv);
@@ -147,13 +163,6 @@ int ofxTransactionCallback(struct OfxTransactionData data, void * pv)
     case OFX_SELLSTOCK:
       t.m_eAction = MyMoneyStatement::Transaction::eaSell;
       break;
-    case OFX_CLOSUREOPT:
-    case OFX_INCOME:
-    case OFX_INVEXPENSE:
-    case OFX_JRNLFUND:
-    case OFX_MARGININTEREST:
-    case OFX_RETOFCAP:
-    case OFX_SPLIT:
     default:
       // the importer does not support this kind of action
       break;
