@@ -18,3 +18,6 @@ kmymoney2.doxygen
 kmymoney2-api
 make-ui.sh
 *~
+configure.in
+subdirs
+configure.files

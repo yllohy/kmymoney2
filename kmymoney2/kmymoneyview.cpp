@@ -33,18 +33,22 @@
 #include "kmymoneyview.h"
 
 KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
- : KTabCtl(parent,name)
+//  : KTabCtl(parent,name)
+  : QVBox(parent, name)
 {
   m_mainView = new KMainView(this);
-  m_scheduledView = new KScheduleView(this);
+//  m_mainView->show();
 
+//  m_scheduledView = new KScheduleView(this);  // Future
+
+/*  Future
   addTab(m_mainView, i18n("Accounts"));
   addTab(m_scheduledView, i18n("Bills & Deposits"));
   QLabel *reportsLabel = new QLabel(i18n("Sorry, Reports not available yet"), this);
   addTab(reportsLabel, i18n("Reports"));
   QLabel *pluginsLabel = new QLabel(i18n("Sorry, Plugins not yet available"), this);
   addTab(pluginsLabel, i18n("Plugins"));
-
+*/
   connect(m_mainView, SIGNAL(transactionListChanged()), this, SLOT(slotTransactionListChanged()));
 
   connect(m_mainView, SIGNAL(accountRightMouseClick(const MyMoneyAccount, bool)), this, SLOT(slotAccountRightMouse(const MyMoneyAccount, bool)));

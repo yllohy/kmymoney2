@@ -1,10 +1,19 @@
 2001-07-08 Michael Edwardes <mte@users.sourceforge.net>
-	* Standardized most of the dialogs in respect to the OK and
-		Cancel buttons.
-	* MyMoneyFile now updates the dirty flag when needed.
-	* All classes now have a 'parent' pointer and update the
-		dirty flag when needed.  (e.g transactions now know which
-		account/bank they are in).
+  * Start dialog only shows files that exist.
+  * Fixed bug in MyMoneyFile class that didn't delete the payee list
+    and didn't delete the category list properly on close/reset.
+  * Removed subdirs, configure.in  and configure.files from cvs because
+    they are generated.  Updated .cvsignore to ignore those files.
+  * Temporarily hidden all the not implemented stuff ready for the next
+    0.4 stable release.  It's still there but the user can't see it.
+
+2001-07-08 Michael Edwardes <mte@users.sourceforge.net>
+  * Standardized most of the dialogs in respect to the OK and
+    Cancel buttons.
+  * MyMoneyFile now updates the dirty flag when needed.
+  * All classes now have a 'parent' pointer and update the
+    dirty flag when needed.  (e.g transactions now know which
+    account/bank they are in).
 
 2001-07-06 Michael Edwardes <mte@users.sourceforge.net>
   * Added the ability to customize the key definitions.

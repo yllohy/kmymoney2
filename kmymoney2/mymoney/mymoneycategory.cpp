@@ -165,3 +165,8 @@ QDataStream &operator>>(QDataStream &s, MyMoneyCategory &category)
 
   return s;
 }
+
+void MyMoneyCategory::clear(void)
+{
+  m_minorCategories.clear();
+}

@@ -60,9 +60,11 @@ KMyMoney2App::KMyMoney2App(QWidget* , const char* name):KMainWindow(0, name)
 
   ///////////////////////////////////////////////////////////////////
   // disable actions at startup
+/* Future
   editCut->setEnabled(false);
   editCopy->setEnabled(false);
   editPaste->setEnabled(false);
+*/
 
   setCentralWidget(myMoneyView);
   connect(myMoneyView, SIGNAL(fileOperations(bool)), this, SLOT(enableFileOperations(bool)));
@@ -95,16 +97,19 @@ void KMyMoney2App::initActions()
   fileOpenRecent = KStdAction::openRecent(this, SLOT(slotFileOpenRecent(const KURL&)), actionCollection());
   fileSave = KStdAction::save(this, SLOT(slotFileSave()), actionCollection());
   fileSaveAs = KStdAction::saveAs(this, SLOT(slotFileSaveAs()), actionCollection());
+/* Future
   filePrint = KStdAction::print(this, SLOT(slotFilePrint()), actionCollection());
+*/
   fileClose = KStdAction::close(this, SLOT(slotFileClose()), actionCollection());
   fileCloseWindow = new KAction(i18n("&Close Window"), 0, 0, this, SLOT(slotFileCloseWindow()), actionCollection(), "file_close_window");
 
   fileQuit = KStdAction::quit(this, SLOT(slotFileQuit()), actionCollection());
 
+/*  Future
   editCut = KStdAction::cut(this, SLOT(slotEditCut()), actionCollection());
   editCopy = KStdAction::copy(this, SLOT(slotEditCopy()), actionCollection());
   editPaste = KStdAction::paste(this, SLOT(slotEditPaste()), actionCollection());
-
+*/
   viewToolBar = KStdAction::showToolbar(this, SLOT(slotViewToolBar()), actionCollection());
   viewStatusBar = KStdAction::showStatusbar(this, SLOT(slotViewStatusBar()), actionCollection());
 
@@ -116,11 +121,15 @@ void KMyMoney2App::initActions()
   fileSaveAs->setStatusText(i18n("Saves the actual document as..."));
   fileClose->setStatusText(i18n("Closes the actual document"));
   fileCloseWindow->setStatusText(i18n("Closes the actual window"));
+/* Future
   filePrint ->setStatusText(i18n("Prints out the actual document"));
+*/
   fileQuit->setStatusText(i18n("Quits the application"));
+/* Future
   editCut->setStatusText(i18n("Cuts the selected section and puts it to the clipboard"));
   editCopy->setStatusText(i18n("Copies the selected section to the clipboard"));
   editPaste->setStatusText(i18n("Pastes the clipboard contents to actual position"));
+*/
   viewToolBar->setStatusText(i18n("Enables/disables the toolbar"));
   viewStatusBar->setStatusText(i18n("Enables/disables the statusbar"));
 
@@ -162,6 +171,7 @@ void KMyMoney2App::initActions()
   accountExport->setStatusText(i18n("Export to tab delimited text"));
 
   // The Bill Menu
+/* Future
   billsAdd = new KAction(i18n("Add Bill/Deposit..."), 0, 0, this, SLOT(slotBillsAdd()), actionCollection(), "bills_add");
   billsAdd->setStatusText(i18n("Add a new Bill or Deposit"));
 
@@ -176,7 +186,7 @@ void KMyMoney2App::initActions()
   pluginUnload->setStatusText(i18n("Unlaod a plugin disabling that feature"));
   pluginList = new KAction(i18n("List plugins..."), 0, 0, this, SLOT(slotPluginList()), actionCollection(), "plugin_list");
   pluginList->setStatusText(i18n("View all plugins and/or add new ones"));
-
+*/
   // For the toolbar only
 //  viewUp = new KAction(i18n("Move view up..."), QIconSet(QPixmap(KGlobal::dirs()->findResource("appdata", "toolbar/kmymoney_up.xpm"))), 0, this, SLOT(slotViewUp()), actionCollection(), "view_up");
   viewUp = KStdAction::back(this, SLOT(slotViewUp()), actionCollection());
@@ -583,11 +593,15 @@ void KMyMoney2App::enableFileOperations(bool enable)
   fileClose->setEnabled(enable);
   fileSave->setEnabled(enable);
   fileSaveAs->setEnabled(enable);
+/* Future
   filePrint->setEnabled(enable);
+*/
   fileViewInfo->setEnabled(enable);
   filePersonalData->setEnabled(enable);
+/* Future
   billsAdd->setEnabled(enable);
   reportBasic->setEnabled(enable);
+*/
   categoriesEdit->setEnabled(enable);
   categoriesPayees->setEnabled(enable);
   settings->setEnabled(enable);

@@ -9,10 +9,6 @@ checked the others.
 
 Random crashes on exit ?
 
-Payee list doesn't get cleared on close.
-
-Start dialog should not show files that don't exist.
-
 Autocomplete should not put the last amount in deposit when entering a
 withdrawal.  (Does it do the same the other way around).  (Last transaction
 using the payee was a deposit).

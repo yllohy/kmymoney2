@@ -51,6 +51,8 @@ public:
 	bool addMinorCategory(QStringList values);
 	bool removeAllMinors(void);
 	QString firstMinor(void);
+
+	void clear(void);
 	
   // Copy constructors
   MyMoneyCategory(const MyMoneyCategory&);

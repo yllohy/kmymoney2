@@ -1,2 +1,4 @@
 Rather than have to cancel before adding a new category, some way of adding
 the new category to the combo list.
+
+MyMoneyFile needs to support urls other than "file://".

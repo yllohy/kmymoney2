@@ -37,14 +37,15 @@ class KStartDlg : public KDialogBase  {
 public:
 	KStartDlg( QWidget *parent=0, const char *name=0, bool modal=true );
 	~KStartDlg();
-  //NOTE: filename argument in KStarDlg is not necessary. This can be set in recent documents.
   bool isNewFile(void)          { return isnewfile;           }
   bool isOpenFile(void)         { return !kurlrequest->url().isEmpty();          }
   QString getFileName(void)     { return kurlrequest->url();  }
   QString getTemplateName(void) { return templatename;    }
-public:
-  /*NOTE: I change this to getFileName(void)*/   QString m_filename;
+
 private: // Private methods
+  QString m_filename;
+	bool fileExists(KURL url);
+
   void setPage_Template();
   void setPage_Documents();
   /** misc widgets */

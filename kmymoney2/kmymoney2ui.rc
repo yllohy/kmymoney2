@@ -30,7 +30,7 @@
     <Action name="account_import"/>
     <Action name="account_export"/>
   </Menu>
-
+<!--
   <Menu name="bills"><text>&amp;Bills/Deposits</text>
     <Action name="bills_add"/>
   </Menu>
@@ -44,6 +44,7 @@
     <Action name="plugin_unload"/>
     <Action name="plugin_list"/>
   </Menu>
+-->
 </MenuBar>
 <ToolBar name="mainToolBar" >
   <Action name="categories_edit"/>

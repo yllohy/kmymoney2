@@ -327,7 +327,15 @@ void MyMoneyFile::resetAllData(void)
   m_createdDate = QDate::currentDate();
   m_lastAccess = QDate::currentDate();
   m_lastModify = QDate::currentDate();
+
+  QListIterator<MyMoneyCategory> it2(m_categoryList);
+  for ( ; it2.current(); ++it2 ) {
+    MyMoneyCategory *cat = it2.current();
+    cat->clear();
+  }
   m_categoryList.clear();
+
+	m_payeeList.clear();
   m_initialised = m_containsBanks = m_containsAccounts = m_containsTransactions = false;
 	m_dirty = false;
 }

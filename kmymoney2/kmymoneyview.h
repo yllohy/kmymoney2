@@ -21,6 +21,7 @@
 #include <qwidget.h>
 #include <ktabctl.h>
 #include <qmessagebox.h>
+#include <qvbox.h>
 
 #include "kmainview.h"
 #include "kreconciledlg.h"
@@ -36,11 +37,12 @@
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.12 2001/07/07 15:28:50 mte Exp $
+  * $Id: kmymoneyview.h,v 1.13 2001/07/08 22:23:11 mte Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
-class KMyMoneyView : public KTabCtl  {
+//class KMyMoneyView : public KTabCtl  {  // Future
+class KMyMoneyView : public QVBox {
    Q_OBJECT
 
 private:

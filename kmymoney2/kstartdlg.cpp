@@ -31,7 +31,7 @@
 #include <kurlrequester.h>
 #include <kfile.h>
 
-KStartDlg::KStartDlg(QWidget *parent, const char *name, bool modal) : KDialogBase(IconList,i18n("Start KMyMoney 2"),Help|Ok|Cancel,Ok, parent, name, modal, true)
+KStartDlg::KStartDlg(QWidget *parent, const char *name, bool modal) : KDialogBase(IconList,i18n("Start Dialog"),Help|Ok|Cancel,Ok, parent, name, modal, true)
 {
 	setPage_Template();
   setPage_Documents();
@@ -71,6 +71,8 @@ void KStartDlg::setPage_Documents()
   view_recent = new KIconView( mainFrame, "view_recent" );
   connect( view_recent, SIGNAL( executed(QIconViewItem *) ), this, SLOT( slotRecentClicked(QIconViewItem *) ) );
   mainLayout->addWidget( view_recent );
+  view_recent->setArrangement(KIconView::TopToBottom);
+  view_recent->setItemTextPos(KIconView::Right);
 }
 
 void KStartDlg::slotTemplateClicked(QIconViewItem *item)
@@ -104,7 +106,7 @@ void KStartDlg::readConfig()
 	{
 		key = QString( "File%1" ).arg( i );
 		value = config->readEntry( key, QString::null );
-		if( !value.isNull() )
+		if( !value.isNull() && fileExists(value) )
 			(void)new QIconViewItem( view_recent, value, QPixmap( locate("icon","hicolor/48x48/mimetypes/kmy.png") ) );
 		i++;
 	}
@@ -144,4 +146,17 @@ void KStartDlg::slotOk()
 {
 	writeConfig();
 	this->accept();	
+}
+
+bool KStartDlg::fileExists(KURL url)
+{
+	if (url.isLocalFile()) {
+		// Lets make sure it exists first
+		QFile f(url.directory(false,true)+url.fileName());
+		return f.exists();
+	}
+	// We don't bother checking URL's or showing them
+	// because at the moment MyMoneyFile can't read them
+	// anyway
+	return false;
 }
