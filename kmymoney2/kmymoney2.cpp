@@ -132,40 +132,6 @@ void KMyMoney2App::initActions()
   viewToolBar = KStdAction::showToolbar(this, SLOT(slotViewToolBar()), actionCollection());
   viewStatusBar = KStdAction::showStatusbar(this, SLOT(slotViewStatusBar()), actionCollection());
 
-#if QT_VERSION < 300
-  fileNew->setStatusText(i18n("Creates a new document"));
-  fileNewWindow->setStatusText(i18n("Creates a new window"));
-  fileOpen->setStatusText(i18n("Opens an existing document"));
-  fileOpenRecent->setStatusText(i18n("Opens a recently used file"));
-  fileSave->setStatusText(i18n("Saves the actual document"));
-  fileSaveAs->setStatusText(i18n("Saves the actual document as..."));
-  fileClose->setStatusText(i18n("Closes the actual document"));
-  fileCloseWindow->setStatusText(i18n("Closes the actual window"));
-/* Future
-  filePrint ->setStatusText(i18n("Prints out the actual document"));
-*/
-  fileQuit->setStatusText(i18n("Quits the application"));
-/* Future
-  editCut->setStatusText(i18n("Cuts the selected section and puts it to the clipboard"));
-  editCopy->setStatusText(i18n("Copies the selected section to the clipboard"));
-  editPaste->setStatusText(i18n("Pastes the clipboard contents to actual position"));
-*/
-  viewToolBar->setStatusText(i18n("Enables/disables the toolbar"));
-  viewStatusBar->setStatusText(i18n("Enables/disables the statusbar"));
-
-  fileViewInfo->setStatusText(i18n("View information about the file"));
-  filePersonalData->setStatusText(i18n("Lets you view/edit your personal data"));
-  fileBackup->setStatusText(i18n("Lets you backup your file to a removeable drive"));
-  categoriesEdit->setStatusText(i18n("Edit and create categories or sub-categories"));
-  categoriesPayees->setStatusText(i18n("View and edit Payees"));
-  bankAdd->setStatusText(i18n("Lets you create a new institution"));
-  accountOpen->setStatusText(i18n("View the account register"));
-  accountAdd->setStatusText(i18n("Lets you create a new account"));
-  accountReconcile->setStatusText(i18n("Balance your account"));
-  accountFind->setStatusText(i18n("Find transactions"));
-  accountImport->setStatusText(i18n("Import transactions"));
-  accountExport->setStatusText(i18n("Export transactions"));
-#endif
   // Additions to the file menu
   fileViewInfo = new KAction(i18n("View Info..."), "view_info", 0, this, SLOT(slotFileFileInfo()), actionCollection(), "file_view_info");
   filePersonalData = new KAction(i18n("Personal Data..."), "personal_data", 0, this, SLOT(slotFileViewPersonal()), actionCollection(), "file_personal_data");
@@ -211,6 +177,41 @@ void KMyMoney2App::initActions()
 //  viewUp = new KAction(i18n("Move view up..."), QIconSet(QPixmap(KGlobal::dirs()->findResource("appdata", "toolbar/kmymoney_up.xpm"))), 0, this, SLOT(slotViewUp()), actionCollection(), "view_up");
   viewUp = KStdAction::back(this, SLOT(slotViewUp()), actionCollection());
 
+#if QT_VERSION < 300
+  fileNew->setStatusText(i18n("Creates a new document"));
+  fileNewWindow->setStatusText(i18n("Creates a new window"));
+  fileOpen->setStatusText(i18n("Opens an existing document"));
+  fileOpenRecent->setStatusText(i18n("Opens a recently used file"));
+  fileSave->setStatusText(i18n("Saves the actual document"));
+  fileSaveAs->setStatusText(i18n("Saves the actual document as..."));
+  fileClose->setStatusText(i18n("Closes the actual document"));
+  fileCloseWindow->setStatusText(i18n("Closes the actual window"));
+/* Future
+  filePrint ->setStatusText(i18n("Prints out the actual document"));
+*/
+  fileQuit->setStatusText(i18n("Quits the application"));
+/* Future
+  editCut->setStatusText(i18n("Cuts the selected section and puts it to the clipboard"));
+  editCopy->setStatusText(i18n("Copies the selected section to the clipboard"));
+  editPaste->setStatusText(i18n("Pastes the clipboard contents to actual position"));
+*/
+  viewToolBar->setStatusText(i18n("Enables/disables the toolbar"));
+  viewStatusBar->setStatusText(i18n("Enables/disables the statusbar"));
+
+  fileViewInfo->setStatusText(i18n("View information about the file"));
+  filePersonalData->setStatusText(i18n("Lets you view/edit your personal data"));
+  fileBackup->setStatusText(i18n("Lets you backup your file to a removeable drive"));
+  categoriesEdit->setStatusText(i18n("Edit and create categories or sub-categories"));
+  categoriesPayees->setStatusText(i18n("View and edit Payees"));
+  bankAdd->setStatusText(i18n("Lets you create a new institution"));
+  accountOpen->setStatusText(i18n("View the account register"));
+  accountAdd->setStatusText(i18n("Lets you create a new account"));
+  accountReconcile->setStatusText(i18n("Balance your account"));
+  accountFind->setStatusText(i18n("Find transactions"));
+  accountImport->setStatusText(i18n("Import transactions"));
+  accountExport->setStatusText(i18n("Export transactions"));
+#endif
+
   // use the absolute path to your kmymoney2ui.rc file for testing purpose in createGUI();
   createGUI();
 }
@@ -225,7 +226,7 @@ void KMyMoney2App::initStatusBar()
 }
 
 void KMyMoney2App::saveOptions()
-{	
+{
   config->setGroup("General Options");
   config->writeEntry("Geometry", size());
   config->writeEntry("Show Toolbar", viewToolBar->isChecked());
