@@ -1,3 +1,12 @@
+2005-01-05 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Gnucash import - complete rewrite
+    * Uses Qt SAX2 XML Parser; simpler interface, more structured code
+    * Uses imymoneystorage interface rather than imymoneyserialize
+    * Separates XML reading and conversion code
+    * More user options on Schedules and Investments (selection dialog to be written)
+    * Better exception handling and reporting
+    * Conversion code tidied up considerably
+    
 2005-01-04 Ace Jones <acejones@users.sourceforge.net>
   * Hooked up multiple sources for online quotes
   * Moved online quote logic out of KEquityPriceUpdateDlg and into the new 
