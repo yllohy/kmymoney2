@@ -51,7 +51,7 @@ public:
     *
     * @return MyMoneyAccount filled with information by the user
     */
-  const MyMoneyAccount account(void) const;
+  const MyMoneyAccount account(void) const { return m_account; };
 
   /**
     * This method returns the parent account selected that is appropriate
@@ -59,7 +59,7 @@ public:
     *
     * @return MyMoneyAccount with information about standard account
     */
-  const MyMoneyAccount parentAccount(void) const;
+  const MyMoneyAccount parentAccount(void) const { return m_parent; };
 
   /**
     * This method is used to preset the name of the account in the wizard
@@ -124,6 +124,8 @@ private:
   MyMoneyAccount::accountTypeE m_accountType;
   QValueList<MyMoneyAccount> m_accountList;
   QString m_accountPaymentPageTitle;
+  MyMoneyAccount m_account;
+  MyMoneyAccount m_parent;
 };
 
 #endif

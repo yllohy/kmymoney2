@@ -112,6 +112,37 @@ void KNewAccountWizard::accept()
   if(appropriate(accountNumberPage) == false)
     accountNumber->setText("");
 
+  // setup account
+  m_account.setAccountType(m_accountType);
+  m_account.setName(accountName->text());
+  m_account.setNumber(accountNumber->text());
+
+  if(institutionComboBox->currentText() != "") {
+    QValueList<MyMoneyInstitution> list;
+    QValueList<MyMoneyInstitution>::ConstIterator it;
+
+    list = MyMoneyFile::instance()->institutionList();
+    for(it = list.begin(); it != list.end(); ++it)
+      if((*it).name() == institutionComboBox->currentText())
+        m_account.setInstitutionId((*it).id());
+  }
+  m_account.setOpeningBalance(MyMoneyMoney(openingBalance->text()));
+  m_account.setOpeningDate(openingDate->getQDate());
+  if(preferredAccount->isChecked())
+    m_account.setValue("PreferredAccount", "Yes");
+
+  // setup parent account
+  MyMoneyAccount::accountTypeE type = MyMoneyFile::instance()->accountGroup(m_accountType);
+  switch(type) {
+    default:
+    case MyMoneyAccount::Asset:
+      m_parent = MyMoneyFile::instance()->asset();
+      break;
+    case MyMoneyAccount::Liability:
+      m_parent = MyMoneyFile::instance()->liability();
+      break;
+  }
+
   KNewAccountWizardDecl::accept();
 }
 
@@ -302,46 +333,6 @@ void KNewAccountWizard::slotAccountType(const QString& sel)
     m_accountType = MyMoneyAccount::UnknownAccountType;
   }
   explanationTextBox->setText(txt);
-}
-
-const MyMoneyAccount KNewAccountWizard::account(void) const
-{
-  MyMoneyAccount account;
-  account.setAccountType(m_accountType);
-  account.setName(accountName->text());
-  account.setNumber(accountNumber->text());
-
-  if(institutionComboBox->currentText() != "") {
-    QValueList<MyMoneyInstitution> list;
-    QValueList<MyMoneyInstitution>::ConstIterator it;
-
-    list = MyMoneyFile::instance()->institutionList();
-    for(it = list.begin(); it != list.end(); ++it)
-      if((*it).name() == institutionComboBox->currentText())
-        account.setInstitutionId((*it).id());
-  }
-  account.setOpeningBalance(MyMoneyMoney(openingBalance->text()));
-  account.setOpeningDate(openingDate->getQDate());
-  if(preferredAccount->isChecked())
-    account.setValue("PreferredAccount", "Yes");
-  
-  return account;
-}
-
-const MyMoneyAccount KNewAccountWizard::parentAccount(void) const
-{
-  MyMoneyAccount::accountTypeE type = MyMoneyFile::instance()->accountGroup(m_accountType);
-  MyMoneyAccount parent;
-  switch(type) {
-    default:
-    case MyMoneyAccount::Asset:
-      parent = MyMoneyFile::instance()->asset();
-      break;
-    case MyMoneyAccount::Liability:
-      parent = MyMoneyFile::instance()->liability();
-      break;
-  }
-  return parent;
 }
 
 void KNewAccountWizard::setAccountName(const QString& name)
