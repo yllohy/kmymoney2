@@ -84,6 +84,8 @@ void kMyMoneyTransactionFormTable::setNumRows(int r)
 {
   resizeEditable(r, numCols());
   QTable::setNumRows(r);
+  for(int i = 0; i < r; ++i)
+    QTable::setRowHeight(i, 22);
 }
 
 void kMyMoneyTransactionFormTable::resizeEditable(int r, int c)
