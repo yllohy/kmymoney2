@@ -37,7 +37,7 @@
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.16 2001/07/12 22:55:56 mte Exp $
+  * $Id: kmymoneyview.h,v 1.17 2001/07/14 02:47:59 frodriguez Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -201,9 +201,9 @@ public:
   QString currentAccountName(void);
 
   /** No descriptions */
-  void readQIFFile(const QString& name, MyMoneyAccount *account);
+  void readQIFFile(const QString& name, const QString& dateFormat, MyMoneyAccount *account);
   /** No descriptions */
-  void writeQIFFile(const QString& name, MyMoneyAccount *account,bool expCat,bool expAcct,
+  void writeQIFFile(const QString& name, const QString& dateFormat, MyMoneyAccount *account,bool expCat,bool expAcct,
 										QDate startDate, QDate endDate);
 
 public slots:

@@ -20,10 +20,14 @@
 #include <kmessagebox.h>
 #include "kimportdlg.h"
 #include <qlineedit.h>
+#include <qcombobox.h>
 #include <kfiledialog.h>
 
 KImportDlg::KImportDlg():KImportDlgDecl(0,0,TRUE)
 {
+	comboDateFormat->insertItem("MM/DD'YY");
+	comboDateFormat->insertItem("MM/DD/YYYY");
+	comboDateFormat->setEditable(false);
   readConfig();
 
   connect( btnBrowse, SIGNAL( clicked() ), this, SLOT( slotBrowse() ) );

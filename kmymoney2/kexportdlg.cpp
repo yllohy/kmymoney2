@@ -20,12 +20,16 @@
 #include "kexportdlg.h"
 #include <qlineedit.h>
 #include <qcheckbox.h>
+#include <qcombobox.h>
 #include "widgets/kmymoneydateinput.h"
 #include <kfiledialog.h>
 
 KExportDlg::KExportDlg():KExportDlgDecl(0,0,TRUE)
 {
-  readConfig();
+	comboDateFormat->insertItem("MM/DD'YY");
+	comboDateFormat->insertItem("MM/DD/YYYY");
+	comboDateFormat->setEditable(false);
+  	readConfig();
 
   connect( btnBrowse, SIGNAL( clicked() ), this, SLOT( slotBrowse() ) );
   connect(buttonOk, SIGNAL(clicked()), this, SLOT(slotOkClicked()));

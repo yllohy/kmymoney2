@@ -532,7 +532,7 @@ void KMyMoneyView::slotAccountImportQIF(void)
 
 	if(returncode)
 	{
-		readQIFFile(importDlg->txtFileImport->text(),pAccount);
+		readQIFFile(importDlg->txtFileImport->text(),importDlg->comboDateFormat->currentText(),pAccount);
     m_mainView->refreshTransactionView();
 	}
 
@@ -568,7 +568,8 @@ void KMyMoneyView::slotAccountExportQIF(void)
  		expCat = exportDlg->cbxCategories->isChecked();
 		QDate startDate = exportDlg->dateStartDate->getQDate();
 		QDate endDate = exportDlg->dateEndDate->getQDate();
-		writeQIFFile(exportDlg->txtFileExport->text(),pAccount,expCat,expAcct,startDate,endDate);
+		writeQIFFile(exportDlg->txtFileExport->text(), exportDlg->comboDateFormat->currentText(),
+								pAccount,expCat,expAcct,startDate,endDate);
 	}
 
 	delete exportDlg;
@@ -1137,7 +1138,7 @@ QString KMyMoneyView::currentAccountName(void)
 }
 
 /** No descriptions */
-void KMyMoneyView::readQIFFile(const QString& name, MyMoneyAccount *account){
+void KMyMoneyView::readQIFFile(const QString& name, const QString& dateFormat, MyMoneyAccount *account){
 
 	bool catmode = false;
   bool transmode = false;
@@ -1237,22 +1238,41 @@ void KMyMoneyView::readQIFFile(const QString& name, MyMoneyAccount *account){
 							int apost = -1;
 							int checknum = 0;
 							bool isnumber = false;
+							int intyear = 0;
+							int intmonth = 0;
+							int intday = 0;
 							QString checknumber = "";
 							MyMoneyTransaction::transactionMethod transmethod;
-							slash = date.find("/");							
-							apost = date.find("'");
-							QString month = date.left(slash);
-							QString day = date.mid(slash + 1,2);
-							day = day.stripWhiteSpace();
-							QString year = date.mid(apost + 1,2);
-							year = year.stripWhiteSpace();
-							int intyear = year.toInt();
-							if(intyear > 80)
-								intyear = 1900 + year.toInt();
-							else
-								intyear = 2000 + year.toInt();
-							int intmonth = month.toInt();
-							int intday = day.toInt();
+							if(dateFormat == "MM/DD'YY")
+							{
+								slash = date.find("/");							
+								apost = date.find("'");
+								QString month = date.left(slash);
+								QString day = date.mid(slash + 1,2);
+								day = day.stripWhiteSpace();
+								QString year = date.mid(apost + 1,2);
+								year = year.stripWhiteSpace();
+								intyear = year.toInt();
+								if(intyear > 80)
+									intyear = 1900 + year.toInt();
+								else
+									intyear = 2000 + year.toInt();
+								intmonth = month.toInt();
+								intday = day.toInt();
+							}
+							else if(dateFormat == "MM/DD/YYYY")
+							{
+								slash = date.find("/");							
+								apost = date.findRev("/");
+								QString month = date.left(slash);
+								QString day = date.mid(slash + 1,2);
+								day = day.stripWhiteSpace();
+								QString year = date.mid(apost + 1,4);
+								year = year.stripWhiteSpace();
+								intyear = year.toInt();
+								intmonth = month.toInt();
+								intday = day.toInt();
+							}			
 							checknum = type.toInt(&isnumber);
 							if(isnumber == false)
 							{
@@ -1421,7 +1441,7 @@ void KMyMoneyView::readQIFFile(const QString& name, MyMoneyAccount *account){
 
 }
 /** No descriptions */
-void KMyMoneyView::writeQIFFile(const QString& name, MyMoneyAccount *account,bool expCat,bool expAcct,
+void KMyMoneyView::writeQIFFile(const QString& name, const QString& dateFormat, MyMoneyAccount *account,bool expCat,bool expAcct,
 																QDate startDate, QDate endDate){
 	int numcat = 0;
 	int numtrans = 0;
@@ -1463,10 +1483,13 @@ void KMyMoneyView::writeQIFFile(const QString& name, MyMoneyAccount *account,boo
         	if((transaction->date() >= startDate) && (transaction->date() <= endDate))
 					{
           	int year = transaction->date().year();
-			if(year >=2000)
-            	year -= 2000;
-			else
-				year -= 1900;
+						if(dateFormat == "MM/DD'YY")
+						{
+							if(year >=2000)
+            					year -= 2000;
+							else
+								year -= 1900;
+						}
 						int month = transaction->date().month();
 						int day = transaction->date().day();
 						double amount = transaction->amount().amount();
@@ -1490,8 +1513,14 @@ void KMyMoneyView::writeQIFFile(const QString& name, MyMoneyAccount *account,boo
 						else
 							Category = transaction->categoryMajor() + ":" + transaction->categoryMinor();
 							
-
-						t << "D" << month << "/" << day << "'" << year << endl;
+						if(dateFormat == "MM/DD'YY")
+						{
+							t << "D" << month << "/" << day << "'" << year << endl;
+						}
+						if(dateFormat == "MM/DD/YYYY")
+						{
+							t << "D" << month << "/" << day << "/" << year << endl;
+						}
 						t << "U" << amount << endl;
 						t << "T" << amount << endl;
 						if(transaction->state() == MyMoneyTransaction::Reconciled)
