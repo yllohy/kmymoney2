@@ -1,3 +1,6 @@
+2001-12-11 Thomas Baumgart  <ipwizard@users.sourceforge.net>
+  * fixed display of transaction view for large amount of transactions
+
 2001-12-10 Thomas Baumgart  <ipwizard@users.sourceforge.net>
   * modified acinclude.m4.in to work with autoconf 2.50
 
