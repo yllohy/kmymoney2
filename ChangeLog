@@ -4,6 +4,8 @@
   * added feature to select the last page viewed when starting the application
   * use QPushButton::setPopup for the MORE button in the transaction form
   * use the british english spelling Cheque
+  * fixed compile error in MyMoneyStorageBin
+  * fixed crash when exiting the startup dialog with 'Cancel'
 
 2003-07-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added concept of preferred account
