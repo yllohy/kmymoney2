@@ -276,9 +276,6 @@ void KMyMoney2App::readOptions()
   fileOpenRecent->loadEntries(config,"Recent Files");
 
   QSize size=config->readSizeEntry("Geometry");
-
-
-
   if(!size.isEmpty())
   {
     resize(size);
@@ -288,6 +285,9 @@ void KMyMoney2App::readOptions()
   m_startDialog = config->readBoolEntry("StartDialog", true);
   if (!m_startDialog)
     fileName = config->readEntry("LastFile");
+
+  config->setGroup("Schedule Options");
+  m_bCheckSchedules = config->readBoolEntry("CheckSchedules", true);
 }
 
 bool KMyMoney2App::queryClose()
@@ -388,6 +388,9 @@ void KMyMoney2App::slotFileOpenRecent(const KURL& url)
 
   myMoneyView->readFile(fileName);
 
+  // Check the schedules
+  slotCheckSchedules();
+
   slotStatusMsg(prevMsg);
   updateCaption();
   
@@ -479,6 +482,7 @@ void KMyMoney2App::slotFileCloseWindow()
 void KMyMoney2App::slotFileClose()
 {
   // no update status here, as we might delete the status too early.
+
   if (myMoneyView->dirty()) {
     int answer = KMessageBox::warningYesNoCancel(this, i18n("The file has been changed, save it ?"));
     if (answer == KMessageBox::Cancel)
@@ -501,6 +505,7 @@ void KMyMoney2App::slotFileQuit()
   KMainWindow* w = 0;
 
   if(memberList) {
+
     for(w=memberList->first(); w!=0; w=memberList->next()) {
       // only close the window if the closeEvent is accepted. If the user presses Cancel on the saveModified() dialog,
       // the window and the application stay open.
@@ -899,6 +904,7 @@ void KMyMoney2App::slotProcessExited()
           proc << mountpoint;
           m_backupState = BACKUP_UNMOUNTING;
           proc.start();
+
         } else {
           m_backupState = BACKUP_IDLE;
           progressCallback(-1, -1, i18n("Ready."));
@@ -1010,4 +1016,80 @@ void KMyMoney2App::slotFileConsitencyCheck(void)
   
   slotStatusMsg(prevMsg);
   updateCaption();
+}
+
+void KMyMoney2App::slotCheckSchedules(void)
+{
+  QString prevMsg = slotStatusMsg(i18n("Checking for overdue schedules..."));
+
+  MyMoneyFile *file = MyMoneyFile::instance();
+
+  QValueList<MyMoneySchedule> scheduleList =  file->scheduleList();
+  QValueList<MyMoneySchedule>::Iterator it;
+
+  for (it=scheduleList.begin(); it!=scheduleList.end(); ++it)
+  {
+    MyMoneySchedule schedule = *it;
+
+    if (schedule.nextPayment(schedule.lastPayment()) == QDate::currentDate() &&
+          schedule.autoEnter())
+    {
+      //qDebug("Auto Entering schedule: %s", schedule.name().latin1());
+      //qDebug("\tAuto enter date: %s",
+      //  schedule.nextPayment(schedule.lastPayment()).toString().latin1());
+      slotCommitTransaction(schedule, QDate());
+    }
+    else if (m_bCheckSchedules && (schedule.isOverdue() ||
+        schedule.nextPayment(schedule.lastPayment()) == QDate::currentDate()))
+    {
+      // Do nothing.  The user can see overdue and todays payments in
+      // the home view.
+      //
+      // TODO: Maybe we should force the user to view the home page/
+    }    
+  }
+
+  slotStatusMsg(prevMsg);
+  updateCaption();
+}
+
+void KMyMoney2App::slotCommitTransaction(const MyMoneySchedule& sched, const QDate& date)
+{
+  MyMoneySchedule schedule = sched;
+  QDate schedDate;
+  
+  if (date.isValid())
+    schedDate = date;
+  else
+    schedDate = schedule.nextPayment(schedule.lastPayment());
+
+  try
+  {
+    MyMoneyTransaction transaction = schedule.transaction();
+
+    if (schedDate > schedule.nextPayment(schedule.lastPayment()))
+      schedule.recordPayment(schedDate);
+    else
+      schedule.setLastPayment(schedDate);
+
+    transaction.setEntryDate(QDate::currentDate());
+    transaction.setPostDate(schedDate);
+
+    MyMoneyFile::instance()->addTransaction(transaction);
+
+    try
+    {
+      MyMoneyFile::instance()->modifySchedule(schedule);
+    }
+    catch (MyMoneyException *e)
+    {
+      KMessageBox::error(this, i18n("Unable to modify schedule: ") + e->what());
+      delete e;
+    }
+  }
+  catch (MyMoneyException *e)
+  {
+    KMessageBox::error(this, i18n("Unable to add transaction: ") + e->what());
+    delete e;
+  }
 }

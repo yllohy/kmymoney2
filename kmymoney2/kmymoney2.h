@@ -44,6 +44,7 @@
 // Project Includes
 
 #include "mymoney/mymoneyobserver.h"
+#include "mymoney/mymoneyscheduled.h"
 
 class KProgress;
 class KStartupLogo;
@@ -74,7 +75,7 @@ class IMyMoneyStorage;
   * @see KMyMoneyView
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: kmymoney2.h,v 1.36 2003/08/31 19:36:26 ipwizard Exp $
+  * $Id: kmymoney2.h,v 1.37 2003/09/17 12:01:51 mte Exp $
   *
   * @short Main application class.
 **/
@@ -206,6 +207,8 @@ protected:
     * It set's the caption to "filename [modified] - KMyMoney".
     */
   void updateCaption(void);
+
+  void slotCheckSchedules(void);
   
 public slots:
   /** */
@@ -275,6 +278,7 @@ public slots:
 
 private:
   bool verifyImportedData(void);
+  void slotCommitTransaction(const MyMoneySchedule& schedule, const QDate&);
 
 signals:
   /**
@@ -362,6 +366,8 @@ private:
 
   IMyMoneyStorage*  m_engineBackup;
   MyMoneyQifReader* m_reader;
+
+  bool m_bCheckSchedules;
 };
 
 extern  KMyMoney2App *kmymoney2;
