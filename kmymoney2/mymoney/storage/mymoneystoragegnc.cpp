@@ -1006,7 +1006,7 @@ void MyMoneyStorageGNC::convertTransaction (const GncTransaction *gtx) {
   tx.setEntryDate (gtx->dateEntered());
   tx.setPostDate (gtx->datePosted());
   m_txDatePosted = tx.postDate(); // save for use in splits
-  tx.setCommodity (static_cast<QCString>(gtx->currency()));
+  tx.setCommodity (static_cast<const QCString>(gtx->currency()));
   m_txCommodity = tx.commodity(); // save in storage, maybe needed for Orphan accounts
   // process splits
   for (i = 0; i < gtx->splitCount(); i++) {
@@ -1163,7 +1163,7 @@ MyMoneyTransaction MyMoneyStorageGNC::convertTemplateTransaction (const QString 
   tx.setEntryDate(gtx->dateEntered());
   tx.setPostDate(gtx->datePosted());
   m_txDatePosted = tx.postDate();
-  tx.setCommodity (static_cast<QCString>(gtx->currency()));
+  tx.setCommodity (static_cast<const QCString>(gtx->currency()));
   m_txCommodity = tx.commodity(); // save for possible use in orphan account
   // process splits
   for (i = 0; i < gtx->splitCount(); i++) {
