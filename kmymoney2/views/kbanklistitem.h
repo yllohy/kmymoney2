@@ -62,6 +62,9 @@ class MyMoneyInstitution;
   */
 class KAccountListItem : public QListViewItem, MyMoneyObserver  {
 public:
+
+  KAccountListItem(KListView *parent, const QString& txt);
+  
   /**
     * Constructor to be used to construct an institution entry
     * object.

@@ -85,6 +85,12 @@ void KAccountListItem::newAccount(const MyMoneyAccount& account)
   update(m_accountID);
 }
 
+KAccountListItem::KAccountListItem(KListView *parent, const QString& txt)
+  : QListViewItem(parent), m_accountID(QCString()), m_bViewNormal(true)
+{
+  setText(0, txt);  
+}
+
 KAccountListItem::KAccountListItem(KListView *parent, const MyMoneyInstitution& institution)
   : QListViewItem(parent), m_accountID(institution.id()), m_bViewNormal(true)
 {
@@ -177,7 +183,7 @@ KAccountIconItem::~KAccountIconItem()
   MyMoneyFile::instance()->detach(m_accountID, this);
 }
 
-void KAccountIconItem::update(const QCString& id)
+void KAccountIconItem::update(const QCString& /* id */)
 {
 }
 
