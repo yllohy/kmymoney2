@@ -1,3 +1,6 @@
+2002-12-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Force static linking of libxml++ if present
+
 2002-12-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added missing admin/am_edit to source distribution
   * Added some tips
