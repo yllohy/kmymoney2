@@ -512,6 +512,15 @@ void MyMoneyStorageBin::readNewFormat(QDataStream&s, IMyMoneySerialize* storage)
   readInstitutions(s, storage);
   readPayees(s, storage);
   readAccounts(s, storage);
+
+  QValueList<MyMoneyAccount> list = storage->accountList();
+  QValueList<MyMoneyAccount>::ConstIterator it;
+  m_accountList.clear();
+  for(it = list.begin(); it != list.end(); ++it) {
+    m_accountList[(*it).id()] = *it;
+  }
+  list.clear();
+
   readTransactions(s, storage);
 
   if(s.atEnd())
@@ -1000,6 +1009,17 @@ const MyMoneySplit MyMoneyStorageBin::readSplit(QDataStream& s)
   s >> tmp_m; sp.setShares(tmp_m);
   s >> tmp_m; sp.setValue(tmp_m);
 
+  // make sure, that the payeeId for non-asset and non-liability
+  // account references is empty
+  MyMoneyAccount acc = m_accountList[sp.accountId()];
+  switch(MyMoneyAccount::accountGroup(acc.accountType())) {
+    case MyMoneyAccount::Asset:
+    case MyMoneyAccount::Liability:
+      break;
+    default:
+      sp.setPayeeId("");
+      break;
+  }
   return sp;
 }
 

@@ -28,6 +28,7 @@
 
 #include <qobject.h>
 #include <qdatastream.h>
+#include <qmap.h>
 class QIODevice;
 
 // ----------------------------------------------------------------------------
@@ -173,6 +174,13 @@ private:
     * encrypted on the permanent storage device
     */
   bool m_encrypted;
+
+  /**
+    * This holds a list of accounts for faster access during
+    * reading. It is filled by readNewFormat() after readAccounts()
+    * has read all accounts into the engine.
+    */
+  QMap<QCString, MyMoneyAccount> m_accountList;
 
   void (*m_progressCallback)(int, int, const QString&);
 };
