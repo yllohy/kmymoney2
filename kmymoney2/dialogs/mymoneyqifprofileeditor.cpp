@@ -347,6 +347,10 @@ void MyMoneyQifProfileEditor::slotOk(void)
     m_isDirty = true;
 
   m_profile.saveProfile();
+  
+  KConfig* config = KGlobal::config();
+  config->sync();
+  
   m_isAccepted = true;
   accept();
 }
