@@ -257,26 +257,28 @@ void KMyMoneyView::slotAccountRightMouse()
     try {
       MyMoneyFile* file = MyMoneyFile::instance();
       MyMoneyAccount account = file->account(acc);
-      if(!file->isStandardAccount(acc)) {
-        switch(file->accountGroup(account.accountType())) {
-          case MyMoneyAccount::Asset:
-          case MyMoneyAccount::Liability:
+      switch(file->accountGroup(account.accountType())) {
+        case MyMoneyAccount::Asset:
+        case MyMoneyAccount::Liability:
+          if(!file->isStandardAccount(acc)) {
             m_accountMenu->setItemEnabled(AccountOpen, true);
             m_accountMenu->setItemEnabled(AccountReconcile, true);
-            m_accountMenu->changeItem(AccountNew, i18n("New account..."));
-            m_accountMenu->connectItem(AccountNew, this, SLOT(slotAccountNew()));
-            break;
-          case MyMoneyAccount::Income:
-          case MyMoneyAccount::Expense:
+          }
+          m_accountMenu->changeItem(AccountNew, i18n("New account..."));
+          m_accountMenu->connectItem(AccountNew, this, SLOT(slotAccountNew()));
+          break;
+        case MyMoneyAccount::Income:
+        case MyMoneyAccount::Expense:
+          if(!file->isStandardAccount(acc)) {
             m_accountMenu->setItemEnabled(AccountEdit, true);
             m_accountMenu->setItemEnabled(AccountDelete, true);
-            m_accountMenu->changeItem(AccountNew, i18n("New category..."));
-            m_accountMenu->connectItem(AccountNew, this, SLOT(slotCategoryNew()));
-            break;
-            
-          default:
-            break;
-        }
+          }
+          m_accountMenu->changeItem(AccountNew, i18n("New category..."));
+          m_accountMenu->connectItem(AccountNew, this, SLOT(slotCategoryNew()));
+          break;
+
+        default:
+          break;
       }
     } catch(MyMoneyException *e) {
       qDebug("Unexpected exception in KMyMoneyView::slotAccountRightMouse");
@@ -776,7 +778,23 @@ void KMyMoneyView::accountNew(const bool createCategory)
     // regular dialog selected
     MyMoneyAccount account;
     QString title;
-    
+    QCString accId;
+    bool ok;
+            
+    if(pageIndex(m_accountsViewFrame) == activePageIndex())
+      accId = accountsView->currentAccount(ok);
+    else if(pageIndex(m_categoriesViewFrame) == activePageIndex())
+      accId = m_categoriesView->currentAccount(ok);
+
+    if(ok) {
+      try {
+        MyMoneyFile* file = MyMoneyFile::instance();
+        account = file->account(accId);
+      } catch(MyMoneyException *e) {
+        delete e;
+      }
+    }
+            
     if(createCategory == false)
       title = i18n("Create a new Account");
     else

@@ -127,6 +127,7 @@ void KAccountListItem::update(const QCString& accountId)
     }
 
   } catch(MyMoneyException *e) {
+    qDebug("Trying to get account info that does not exist anymore");
     // try to get account info that does not exist anymore
     delete e;
   }

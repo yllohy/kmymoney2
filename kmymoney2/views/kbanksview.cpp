@@ -364,6 +364,7 @@ KAccountsView::KAccountsView(QWidget *parent, const char *name)
   MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAccount, this);
   MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassInstitution, this);
 
+  refresh("");
 }
 
 KAccountsView::~KAccountsView()
@@ -412,6 +413,7 @@ void KAccountsView::slotListDoubleClicked(QListViewItem* item, const QPoint& pos
 
 void KAccountsView::slotIconDoubleClicked(QIconViewItem* item)
 {
+
   KAccountIconItem *accountItem = static_cast<KAccountIconItem*> (item);
 
   if(accountItem) {
@@ -604,7 +606,6 @@ void KAccountsView::fillAccountMap(void)
   QValueList<MyMoneyAccount>::ConstIterator it_a;
   for(it_a = accountList.begin(); it_a != accountList.end(); ++it_a)
     m_accountMap[(*it_a).id()] = *it_a;
-
 }
 
 
@@ -822,6 +823,7 @@ void KAccountsView::resizeEvent(QResizeEvent* e)
 {
 
   //accountListView->setColumnWidth(0, 400);
+
   //accountListView->setColumnWidth(1,150);
   //int totalWidth=accountListView->width();
   // accountListView->setColumnWidth(2, totalWidth-550-5);
