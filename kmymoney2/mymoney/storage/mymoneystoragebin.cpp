@@ -361,12 +361,12 @@ void MyMoneyStorageBin::readOldFormat(QDataStream& s, IMyMoneySerialize* storage
         // 'deposits' (1). We correct that here and setup the
         // amount in the splits.
         if(method != 1) {
-          amount = amount * (-1);
+          amount = -amount;
         }
         sp1.setShares(amount);
         sp1.setValue(amount);
-        sp2.setShares(amount * (-1));
-        sp2.setValue(amount * (-1));
+        sp2.setShares(-amount);
+        sp2.setValue(-amount);
         //sp1.setPayeeId(payeeConversion[payee]);
         //sp2.setPayeeId(payeeConversion[payee]);
 

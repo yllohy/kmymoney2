@@ -102,6 +102,7 @@ public:
   MyMoneyMoney operator-( signed64 AmountInPence ) const;
   MyMoneyMoney operator-( long ldAmountInPence ) const;
   MyMoneyMoney operator-( int iAmountInPence ) const;
+  MyMoneyMoney operator-( ) const;
 
   MyMoneyMoney operator*( MyMoneyMoney&	AmountInPence ) const;
   MyMoneyMoney operator*( signed64 AmountInPence ) const;
@@ -793,6 +794,21 @@ inline MyMoneyMoney MyMoneyMoney::operator-(const MyMoneyMoney& AmountInPence) c
 {
   MyMoneyMoney result(*this);
   result.m_64Value -= AmountInPence.m_64Value;
+  return result;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//      Name: operator-
+//   Purpose: Unary operator - returns the negative value from the object
+//   Returns: The current object
+//    Throws: Nothing.
+// Arguments: None
+//
+////////////////////////////////////////////////////////////////////////////////
+inline MyMoneyMoney MyMoneyMoney::operator-() const
+{
+  MyMoneyMoney result(*this);
+  result.m_64Value = -result.m_64Value;
   return result;
 }
 

@@ -33,6 +33,7 @@ class MyMoneyMoneyTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST(testMultiplication);
 	CPPUNIT_TEST(testFormatMoney);
 	CPPUNIT_TEST(testRelation);
+	CPPUNIT_TEST(testUnaryMinus);
 	CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -202,6 +203,17 @@ void testRelation()
 
 	CPPUNIT_ASSERT(m1 <= m3);
 	CPPUNIT_ASSERT(m3 >= m1);
+}
+
+void testUnaryMinus()
+{
+	MyMoneyMoney m1(100);
+	MyMoneyMoney m2;
+
+	m2 = -m1;
+
+	CPPUNIT_ASSERT(m1 == 100);
+	CPPUNIT_ASSERT(m2 == -100);
 }
 
 };
