@@ -96,6 +96,7 @@ private:
   void writeFile(QIODevice* s, IMyMoneySerialize* storage);
 
   void writeKeyValuePairs(QDomDocument *pDoc, QDomElement& account, const QMap<QCString, QString> pairs);
+  void readKeyValuePairs(QDomElement& element, QMap<QCString, QString> pairs);
 
   void readUserInformation(QDomDocument* pDoc, QDomElement userElement, IMyMoneySerialize* storage);
   /** No descriptions */
@@ -103,6 +104,12 @@ private:
   void readInstitutions(QDomDocument *pDoc, QDomElement& childElement, IMyMoneySerialize* storage);
   MyMoneyInstitution readInstitution(const QDomElement& institution);
 
+  void readPayees(QDomDocument *pDoc, QDomElement& payees, IMyMoneySerialize* storage);
+  MyMoneyPayee readPayee(const QDomElement& payee);
+
+  void readAccounts(QDomDocument* pDoc, QDomElement& accounts, IMyMoneySerialize* storage);
+  MyMoneyAccount readAccount(const QDomElement& account);
+  
   QDomElement findChildElement(const QString& name, const QDomElement& root);
 private:
   /**
