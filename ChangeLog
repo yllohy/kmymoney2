@@ -1,3 +1,13 @@
+2002-11-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed return code of kMyMoneyLedgerViewCheckings::focusNextPrevChild()
+  * Improved KLedgerView::focusNextPrevChild to handle invisible and
+    disabled widgets
+  * Added ledger lens to show all rows of the selected transaction
+    in the ledger. This is the default when the transaction form
+    is turned off.
+  * Added settings options for the ledger lens and the transaction form
+  * Added the new icons to the settings dialog
+
 2002-10-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added parameter name to constructor of kMyMoneyLineEdit
   * Added kMyMoneyDateEdit::focusWidget()
