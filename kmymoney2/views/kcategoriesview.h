@@ -59,6 +59,7 @@ private:
   void writeConfig(void);
   void update(const QCString& id);
   const bool showSubAccounts(const QCStringList& accounts, KAccountListItem *parentItem, const QString&);
+  void refreshProfits(void);
 
 protected:
   void resizeEvent(QResizeEvent *);

@@ -86,12 +86,14 @@ KCategoriesView::KCategoriesView(QWidget *parent, const char *name )
 
   m_suspendUpdate = false;
 
+  MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAccount, this);
   MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAccountHierarchy, this);
 }
 
 KCategoriesView::~KCategoriesView()
 {
   MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassAccountHierarchy, this);
+  MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassAccount, this);
   writeConfig();
 }
 
@@ -180,6 +182,8 @@ void KCategoriesView::slotRefreshView(void)
     qDebug("Exception in assets account refresh: %s", e->what().latin1());
     delete e;
   }
+
+  refreshProfits();
 
   // free some memory (we don't need this map anymore)
   m_accountMap.clear();
@@ -333,7 +337,7 @@ void KCategoriesView::writeConfig(void)
   config->sync();
 }
 
-void KCategoriesView::update(const QCString& /* id */)
+void KCategoriesView::update(const QCString& id)
 {
   // to avoid constant update when a lot of accounts are added
   // (e.g. during creation of a new MyMoneyFile object when the
@@ -341,6 +345,8 @@ void KCategoriesView::update(const QCString& /* id */)
   // updates in this phase. The switch is controlled with suspendUpdate().
   if(m_suspendUpdate == false) {
     slotRefreshView();
+    if(id == MyMoneyFile::NotifyClassAccount)
+      refreshProfits();
   }
 }
 
@@ -380,4 +386,23 @@ void KCategoriesView::slotListRightMouse(QListViewItem* item, const QPoint& , in
     categoryListView->setSelected(item, true);
     emit categoryRightMouseClick();
   }
+}
+
+void KCategoriesView::refreshProfits(void)
+{
+  MyMoneyMoney profit;
+  MyMoneyFile* file = MyMoneyFile::instance();
+
+  MyMoneyAccount expenseAccount = file->expense();
+  MyMoneyAccount incomeAccount = file->income();
+
+  profit = -(file->totalBalance(incomeAccount.id()) +
+             file->totalBalance(expenseAccount.id()));
+
+  totalProfitsLabel->setFont(KMyMoneyUtils::cellFont());
+  if(profit < 0)
+    totalProfitsLabel->setText(i18n("Loss: %1").arg((-profit).formatMoney()));
+  else
+    totalProfitsLabel->setText(i18n("Profit: %1").arg(profit.formatMoney()));
+
 }

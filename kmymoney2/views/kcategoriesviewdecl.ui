@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
 <class>kCategoriesViewDecl</class>
 <widget class="QWidget">
     <property name="name">
@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>610</width>
-            <height>554</height>
+            <height>452</height>
         </rect>
     </property>
     <property name="caption">
@@ -30,10 +30,59 @@
                 <cstring>categoryListView</cstring>
             </property>
         </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>Layout3</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <spacer>
+                    <property name="name">
+                        <cstring>Spacer1</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>426</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>totalProfitsLabel</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>150</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>Total Profits:</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                    <property name="hAlign" stdset="0">
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
     </vbox>
 </widget>
 <layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>klistview.h</includehint>
-</includehints>
 </UI>
