@@ -20,8 +20,20 @@
  *                                                                         *
  ***************************************************************************/
 
+
 #ifndef KUPDATESTOCKPRICEDLG_H
 #define KUPDATESTOCKPRICEDLG_H
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include <kdialogbase.h>
+
+#include <klocale.h>
+#include <kpushbutton.h>
+
+#include <qstring.h>
 
 #include "kupdatestockpricedlgdecl.h"
 
@@ -35,11 +47,12 @@ class KUpdateStockPriceDlg : public kUpdateStockPriceDecl
   
 public: 
 	KUpdateStockPriceDlg(QWidget* parent = NULL,  const char* name = NULL);
-  KUpdateStockPriceDlg(const QString& strDate, const QString& strPrice, QWidget* parent = NULL,  const char* name = NULL);
+  KUpdateStockPriceDlg(const QString&, const QString&, QWidget* parent = NULL,  const char* name = NULL);
 	~KUpdateStockPriceDlg();
 
 protected:
   void init();
+  
   QString m_date, m_price;
 
 protected slots:

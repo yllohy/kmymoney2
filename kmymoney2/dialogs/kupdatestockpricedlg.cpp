@@ -20,18 +20,18 @@
  *                                                                         *
  ***************************************************************************/
 
- #include <kpushbutton.h>
+#include <qstring.h>
+
+#include <kpushbutton.h>
  
 #include "kupdatestockpricedlg.h"
 
-KUpdateStockPriceDlg::KUpdateStockPriceDlg(QWidget* parent,  const char* name)
-	: kUpdateStockPriceDecl(parent,name,TRUE)
+KUpdateStockPriceDlg::KUpdateStockPriceDlg(QWidget* parent,  const char* name) : kUpdateStockPriceDecl(parent,name,TRUE)
 {
   init();  
 }
 
-KUpdateStockPriceDlg::KUpdateStockPriceDlg(const QString& strDate, const QString& strPrice, QWidget* parent,  const char* name)
-	: kUpdateStockPriceDecl(parent,name,TRUE)
+KUpdateStockPriceDlg::KUpdateStockPriceDlg(const QString& strDate, const QString& strPrice, QWidget* parent,  const char* name) : kUpdateStockPriceDecl(parent,name,TRUE)
 {
   m_date = strDate;
   m_price = strPrice;
@@ -61,4 +61,40 @@ void KUpdateStockPriceDlg::slotCancelClicked()
 
 
 
-  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
