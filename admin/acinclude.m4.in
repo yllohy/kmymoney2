@@ -5039,7 +5039,11 @@ main()
      ifelse([$3], , :, [$3])
   fi
   AC_SUBST(XML_CFLAGS)
+  CPPFLAGS="$XML_CFLAGS $CPPFLAGS"
   AC_SUBST(XML_LIBS)
+  LDFLAGS="$LDFLAGS $XML_LIBS"
+
+
   rm -f conf.xmltest
 ])
 
@@ -5056,6 +5060,8 @@ if xml++-config --libs print > /dev/null 2>&1; then
     LIBXMLPP_LIBS=`xml++-config --libs`
     AC_SUBST(LIBXMLPP_CFLAGS)
     AC_SUBST(LIBXMLPP_LIBS)
+    CPPFLAGS="$LIBXMLPP_CFLAGS $CPPFLAGS"
+    LDFLAGS="$LDFLAGS $LIBXMLPP_LIBS"
     ifelse([$1], , :, [$1])
 else
     AC_MSG_RESULT(no)
