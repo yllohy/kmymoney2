@@ -1,3 +1,14 @@
+2002-12-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Dynamically allocate application object to cover more code with
+    memory leakage checker
+  * Added method to clean static objects in KAccountListItem
+  * Fixed progress bar when reading old format files
+  * Fixed memory leak in KMyMoneyFile, KNewAccountDlg, KNewFileDlg,
+    KEndingBalanceDlg, KBackupDlg, KChooseImportExportDlg, KCsvProgressDlg,
+    KExportDlg, KFindTransactionDlg, KImportDlg
+  * Including XML support needs special compiler option
+  * Updated a couple of Makefile.am for the RPM distribution
+
 2002-12-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated PHB to contain information about building RPMs
   * Fixed compilation with _CHECK_MEMORY defined
