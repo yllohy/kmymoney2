@@ -396,7 +396,7 @@ your KMyMoney file.</string>
                         <cstring>okBtn</cstring>
                     </property>
                     <property name="text">
-                        <string>ok</string>
+                        <string>&amp;Ok</string>
                     </property>
                 </widget>
                 <widget class="KPushButton">
@@ -404,7 +404,7 @@ your KMyMoney file.</string>
                         <cstring>cancelBtn</cstring>
                     </property>
                     <property name="text">
-                        <string>cancel</string>
+                        <string>&amp;Cancel</string>
                     </property>
                 </widget>
             </hbox>

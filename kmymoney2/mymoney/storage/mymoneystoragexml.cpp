@@ -38,6 +38,9 @@
 #include "mymoneystoragexml.h"
 #include "../../kmymoneyutils.h"
 
+unsigned int MyMoneyStorageXML::fileVersionRead = 0;
+unsigned int MyMoneyStorageXML::fileVersionWrite = 0;
+
 MyMoneyStorageXML::MyMoneyStorageXML()
 {
   m_storage = NULL;
@@ -52,6 +55,8 @@ MyMoneyStorageXML::~MyMoneyStorageXML()
 //Function to read in the file, send to XML parser.
 void MyMoneyStorageXML::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
 {
+  Q_CHECK_PTR(storage);
+  Q_CHECK_PTR(pDevice);
   if(!storage)
   {
     return;
@@ -59,6 +64,7 @@ void MyMoneyStorageXML::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
   m_storage = storage;
   
   m_doc = new QDomDocument;
+  Q_CHECK_PTR(m_doc);
   if(m_doc->setContent(pDevice, FALSE))
   {
     QDomElement rootElement = m_doc->documentElement();
@@ -67,40 +73,41 @@ void MyMoneyStorageXML::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
       qDebug("XMLREADER: Root element of this file is %s\n", rootElement.tagName().data());
 
       QDomNode child = rootElement.firstChild();
-      while(!child.isNull())
+      while(!child.isNull() && child.isElement())
       {
-        if(child.isElement())
+        QDomElement childElement = child.toElement();
+        qDebug("XMLREADER: Processing child node %s", childElement.tagName().data());
+        if(QString("FILEINFO") == childElement.tagName())
         {
-          QDomElement childElement = child.toElement();
-          qDebug("XMLREADER: Processing child node %s", childElement.tagName().data());
-          if(QString("USER") == childElement.tagName())
-          {
-            readUserInformation(childElement);
-          }
-          else if(QString("INSTITUTIONS") == childElement.tagName())
-          {
-            readInstitutions(childElement);
-          }
-          else if(QString("PAYEES") == childElement.tagName())
-          {
-            readPayees(childElement);
-          }
-          else if(QString("ACCOUNTS") == childElement.tagName())
-          {
-            readAccounts(childElement);
-          }
-          else if(QString("TRANSACTIONS") == childElement.tagName())
-          {
-            readTransactions(childElement);
-          }
-          else if(QString("KEYVALPAIRS") == childElement.tagName())
-          {
-            m_storage->setPairs(readKeyValuePairs(childElement));
-          }
-          else if(QString("SCHEDULES") == childElement.tagName())
-          {
-            readSchedules(childElement);
-          }
+          readFileInformation(childElement);
+        }
+        else if(QString("USER") == childElement.tagName())
+        {
+          readUserInformation(childElement);
+        }
+        else if(QString("INSTITUTIONS") == childElement.tagName())
+        {
+          readInstitutions(childElement);
+        }
+        else if(QString("PAYEES") == childElement.tagName())
+        {
+          readPayees(childElement);
+        }
+        else if(QString("ACCOUNTS") == childElement.tagName())
+        {
+          readAccounts(childElement);
+        }
+        else if(QString("TRANSACTIONS") == childElement.tagName())
+        {
+          readTransactions(childElement);
+        }
+        else if(QString("KEYVALPAIRS") == childElement.tagName())
+        {
+          m_storage->setPairs(readKeyValuePairs(childElement));
+        }
+        else if(QString("SCHEDULES") == childElement.tagName())
+        {
+          readSchedules(childElement);
         }
         child = child.nextSibling();
       }
@@ -122,6 +129,8 @@ void MyMoneyStorageXML::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
 
 void MyMoneyStorageXML::writeFile(QIODevice* qf, IMyMoneySerialize* storage)
 {
+  Q_CHECK_PTR(qf);
+  Q_CHECK_PTR(storage);
   if(!storage)
   {
     return;
@@ -130,12 +139,17 @@ void MyMoneyStorageXML::writeFile(QIODevice* qf, IMyMoneySerialize* storage)
 
   qDebug("XMLWRITER: Starting file write");
   m_doc = new QDomDocument("KMYMONEY-FILE");
+  Q_CHECK_PTR(m_doc);
   QDomProcessingInstruction instruct = m_doc->createProcessingInstruction(QString("xml"), QString("version=\"1.0\" encoding=\"utf-8\""));
   m_doc->appendChild(instruct);
 
   QDomElement mainElement = m_doc->createElement("KMYMONEY-FILE");
   m_doc->appendChild(mainElement);
 
+  QDomElement fileInfo = m_doc->createElement("FILEINFO");
+  writeFileInformation(fileInfo);
+  mainElement.appendChild(fileInfo);
+  
   QDomElement userInfo = m_doc->createElement("USER");
   writeUserInformation(userInfo);
   mainElement.appendChild(userInfo);
@@ -178,6 +192,45 @@ void MyMoneyStorageXML::writeFile(QIODevice* qf, IMyMoneySerialize* storage)
   m_storage->setLastModificationDate(m_storage->lastModificationDate());
 
   m_storage = NULL;
+}
+
+void MyMoneyStorageXML::readFileInformation(QDomElement fileInfo)
+{
+  QDomElement temp = findChildElement(QString("CREATION_DATE"), fileInfo);
+  QString strDate = temp.attribute("date");
+  m_storage->setCreationDate(getDate(strDate));
+
+  temp = findChildElement(QString("LAST_MODIFIED_DATE"), fileInfo);
+  strDate = temp.attribute("date");
+  m_storage->setLastModificationDate(getDate(strDate));
+
+  temp = findChildElement(QString("VERSION"), fileInfo);
+  QString strVersion = temp.attribute("id");
+  fileVersionRead = strVersion.toUInt(NULL, 16);
+  fileVersionWrite = fileVersionRead;
+}
+
+void MyMoneyStorageXML::writeFileInformation(QDomElement& fileInfo)
+{
+  QDomElement creationDate = m_doc->createElement("CREATION_DATE");
+  creationDate.setAttribute(QString("date"), getString(m_storage->creationDate()));
+  fileInfo.appendChild(creationDate);
+  
+  QDomElement lastModifiedDate = m_doc->createElement("LAST_MODIFIED_DATE");
+  lastModifiedDate.setAttribute(QString("date"), getString(m_storage->lastModificationDate()));
+  fileInfo.appendChild(lastModifiedDate);
+  
+  QDomElement version = m_doc->createElement("VERSION");
+
+  //if we haven't written a file yet, write using the default version.
+  if(!fileVersionWrite)
+  {
+    fileVersionWrite = VERSION_0_60_XML;
+  }
+  QString strVersion;
+  strVersion.setNum(fileVersionWrite, 16);
+  version.setAttribute(QString("id"), strVersion);
+  fileInfo.appendChild(version);
 }
 
 void MyMoneyStorageXML::writeUserInformation(QDomElement& userInfo)
@@ -245,9 +298,6 @@ void MyMoneyStorageXML::writeInstitutions(QDomElement& institutions)
   QValueList<MyMoneyInstitution> list;
   QValueList<MyMoneyInstitution>::ConstIterator it;
 
-  //set the nextid attribute of the INSTITUTIONS element.
-  institutions.setAttribute(QString("nextid"), list.count());
-
   list = m_storage->institutionList();
   for(it = list.begin(); it != list.end(); ++it)
   {
@@ -275,6 +325,10 @@ MyMoneyInstitution MyMoneyStorageXML::readInstitution(const QDomElement& institu
     i.setPostcode(address.attribute(QString("zip")));
     i.setTelephone(address.attribute(QString("telephone")));
   }
+  else
+  {
+    qWarning("XMLREADER: Institution %s does not have an address section.", i.name().data());
+  }
 
   QDomElement accounts = findChildElement(QString("ACCOUNTIDS"), institution);
   if(!accounts.isNull() && accounts.isElement())
@@ -292,6 +346,10 @@ MyMoneyInstitution MyMoneyStorageXML::readInstitution(const QDomElement& institu
       }
       child = child.nextSibling();
     }
+  }
+  else
+  {
+    qWarning("XMLREADER: Institution %s does not have an accountids section.", i.name().data());
   }
     
   return MyMoneyInstitution(id, i);
@@ -358,8 +416,7 @@ void MyMoneyStorageXML::writePayees(QDomElement& payees)
   QValueList<MyMoneyPayee>::ConstIterator it;
 
   list = m_storage->payeeList();
-  payees.setAttribute(QString("nextid"), list.count());
-
+  
   for(it = list.begin(); it != list.end(); ++it)
   {
     QDomElement payee = m_doc->createElement("PAYEE");
@@ -378,6 +435,7 @@ MyMoneyPayee MyMoneyStorageXML::readPayee(const QDomElement& payee)
   p.setEmail(payee.attribute(QString("email")));
 
   id = payee.attribute(QString("id"));
+  Q_ASSERT(id.size());
 
   QDomElement address = findChildElement(QString("ADDRESS"), payee);
   if(!address.isNull() && address.isElement())
@@ -387,6 +445,10 @@ MyMoneyPayee MyMoneyStorageXML::readPayee(const QDomElement& payee)
     p.setPostcode(address.attribute(QString("postcode")));
     p.setState(address.attribute(QString("state")));
     p.setTelephone(address.attribute(QString("telephone")));
+  }
+  else
+  {
+    qWarning("XMLREADER: Institution %s does not have an address section.", p.name().data());
   }
 
   //create actual object to return to add into the engine's list of objects.
@@ -443,8 +505,6 @@ void MyMoneyStorageXML::writeAccounts(QDomElement& accounts)
 
   list = m_storage->accountList();
 
-  accounts.setAttribute(QString("nextid"), list.count() + 4);
-
   QDomElement asset, liability, expense, income;
 
   asset = m_doc->createElement("ACCOUNT");
@@ -499,12 +559,16 @@ MyMoneyAccount MyMoneyStorageXML::readAccount(const QDomElement& account)
   {
     acc.setAccountType(static_cast<MyMoneyAccount::accountTypeE>(type));
   }
-  
+  else
+  {
+    qWarning("XMLREADER: Account %s had invalid or no account type information.", acc.name().data());
+  }
+      
   acc.setOpeningBalance(MyMoneyMoney(account.attribute(QString("openingbalance"))));
   acc.setDescription(account.attribute(QString("description")));
   
   id = account.attribute(QString("id"));
-
+  Q_ASSERT(id.size());
   qDebug("Account %s has id of %s, type of %d, parent is %s.", acc.name().data(), id.data(), type, acc.parentAccountId().data());
 
   /////////////////////////////////////////////////////////////////////////////////////////
@@ -607,7 +671,6 @@ void MyMoneyStorageXML::writeTransactions(QDomElement& transactions)
   MyMoneyTransactionFilter filter;
 
   list = m_storage->transactionList(filter);
-  transactions.setAttribute(QString("nextid"), list.count());
   
   //signalProgress(0, list.count(), QObject::tr("Saving transactions..."));
 
@@ -631,7 +694,7 @@ MyMoneyTransaction MyMoneyStorageXML::readTransaction(QDomElement& transaction)
   t.setMemo(transaction.attribute(QString("memo")));
 
   id = transaction.attribute(QString("id"));
-
+  Q_ASSERT(id.size());
   qDebug("Transaction has id of %s", id.data());
 
 
@@ -660,7 +723,6 @@ void MyMoneyStorageXML::writeTransaction(QDomElement& transaction, const MyMoney
 
   QDomElement splits = m_doc->createElement("SPLITS");
   QValueList<MyMoneySplit> splitList = tx.splits();
-  splits.setAttribute(QString("nextid"), tx.splitCount());
 
   writeSplits(splits, splitList);
   transaction.appendChild(splits);
@@ -683,7 +745,7 @@ void MyMoneyStorageXML::readSchedules(QDomElement& schedules)
       {
         MyMoneySchedule schedule = readSchedule(childElement);
 
-        //tell the storage objects we have a new institution.
+        //tell the storage objects we have a new schedule.
         m_storage->loadSchedule(schedule);
         
         id = extractId(schedule.id().data());
@@ -703,7 +765,6 @@ void MyMoneyStorageXML::writeSchedules(QDomElement& scheduled)
   QValueList<MyMoneySchedule>::ConstIterator it;
 
   list = m_storage->scheduleList();
-  scheduled.setAttribute(QString("nextid"), list.count());
 
   for(it = list.begin(); it != list.end(); ++it)
   {
@@ -739,6 +800,7 @@ MyMoneySchedule MyMoneyStorageXML::readSchedule(QDomElement& schedule)
         if(QString("PAYMENT") == childElement.tagName())
         {
           QDate date = getDate(childElement.attribute(QString("date")));
+          Q_ASSERT(date.isValid());
           sc.recordPayment(date);
         }
       }

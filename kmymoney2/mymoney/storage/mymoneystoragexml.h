@@ -39,6 +39,10 @@ class QIODevice;
 /**
   *@author Kevin Tambascio (ktambascio@users.sourceforge.net)
   */
+
+#define VERSION_0_60_XML  0x10000010    // Version 0.5 file version info
+#define VERSION_0_61_XML  0x10000011    // use 8 bytes for MyMoneyMoney objects
+   
 class MyMoneyStorageXML : public IMyMoneyStorageFormat
 {
 public: 
@@ -83,6 +87,10 @@ private:
     *
     * @see
     */
+
+  void readFileInformation(QDomElement fileInfo);
+  void writeFileInformation(QDomElement& fileInfo);
+
   void writeUserInformation(QDomElement& userInfo);
   
   void writeInstitution(QDomElement& institutions, const MyMoneyInstitution& i);
@@ -131,6 +139,7 @@ private:
   MyMoneySchedule readSchedule(QDomElement& schedule);
   
   QDomElement findChildElement(const QString& name, const QDomElement& root);
+  
 private:
   /**
     * This member is used to store the file version information
