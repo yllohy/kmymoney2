@@ -217,9 +217,14 @@ void KInvestmentView::slotAddPrice()
       calc.m_updateButton->setChecked(true);
       calc.m_updateButton->hide();
       calc.exec();
-      // FIXME here we have to insert the currency calculator
 
-      MyMoneyPrice price(dlg.m_commodity->security().id(), dlg.m_currency->security().id(), dlg.date(), MyMoneyMoney(1,1));
+      MyMoneyPrice price(dlg.m_commodity->security().id(), dlg.m_currency->security().id(), dlg.date(), calc.price(), i18n("User"));
+      try {
+        MyMoneyFile::instance()->addPrice(price);
+      } catch(MyMoneyException *e) {
+        delete e;
+        qDebug("Cannot add price entry");
+      }
     }
   }
 }
