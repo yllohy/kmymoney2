@@ -9,9 +9,12 @@ libmymoney_a_SOURCES = mymoneykeyvaluecontainer.cpp mymoneyobserver.cpp mymoneys
 
 SUBDIRS = storage 
 
-EXTRA_DIST = mymoneyaccount.cpp mymoneyaccount.h mymoneycategory.cpp mymoneycategory.h mymoneyfile.cpp mymoneyfile.h mymoneymoney.cpp mymoneymoney.h mymoneypayee.cpp mymoneypayee.h mymoneyscheduled.cpp mymoneyscheduled.h mymoneytransaction.cpp mymoneytransaction.h readme-mymoney.txt mymoney_config.h mymoneyequity.cpp mymoneyequity.h mymoneyutils.h mymoneyutils.cpp mymoneyequitylist.cpp mymoneyequitylist.h mymoneyinvesttransaction.cpp mymoneyinvesttransaction.h mymoneyexception.cpp mymoneyexception.h mymoneyinstitution.cpp mymoneyinstitution.h mymoneysplit.cpp mymoneysplit.h mymoneysubject.cpp mymoneysubject.h mymoneyobserver.cpp mymoneyobserver.h mymoneykeyvaluecontainer.cpp mymoneykeyvaluecontainer.h 
+EXTRA_DIST = mymoneyaccount.cpp mymoneyaccount.h mymoneycategory.cpp mymoneycategory.h mymoneyfile.cpp mymoneyfile.h mymoneymoney.cpp mymoneymoney.h mymoneypayee.cpp mymoneypayee.h mymoneyscheduled.cpp mymoneyscheduled.h mymoneytransaction.cpp mymoneytransaction.h mymoneyequity.cpp mymoneyequity.h mymoneyutils.h mymoneyutils.cpp mymoneyequitylist.cpp mymoneyequitylist.h mymoneyinvesttransaction.cpp mymoneyinvesttransaction.h mymoneyexception.cpp mymoneyexception.h mymoneyinstitution.cpp mymoneyinstitution.h mymoneysplit.cpp mymoneysplit.h mymoneysubject.cpp mymoneysubject.h mymoneyobserver.cpp mymoneyobserver.h mymoneykeyvaluecontainer.cpp mymoneykeyvaluecontainer.h 
 
 ####### kdevelop will overwrite this part!!! (end)############
+
+DISTCLEANFILES=autotest
+
 TESTS = autotest
 check_PROGRAMS = $(TESTS)
 
