@@ -195,7 +195,7 @@ int ofx_proc_account_cb(struct OfxAccountData data, void *)
   return 0;
 }
 
-#endif
+#endif // HAVE_NEW_OFX
 
 
 
@@ -247,26 +247,6 @@ MyMoneyOfxStatement::MyMoneyOfxStatement(const QString& filename):
 
 MyMoneyOfxStatement::~MyMoneyOfxStatement()
 {
-}
-
-bool MyMoneyOfxStatement::isOfxFile(const QString& filename)
-{
-  // filename is an Ofx file if it contains the tag "<OFX>" somewhere.
-  bool result = false;
-
-  QFile f( filename );
-  if ( f.open( IO_ReadOnly ) )
-  {
-    QTextStream ts( &f );
-
-    while ( !ts.atEnd() && !result )
-      if ( ts.readLine().contains("<OFX>",false) )
-        result = true;
-
-    f.close();
-  }
-
-  return result;
 }
 
 //
@@ -419,7 +399,35 @@ int ofx_proc_account_cb(struct OfxAccountData data)
   return 0;
 }
 
-#endif
+#endif // #ifdef HAVE_LIBOFX
+
+/* __________________________________________________________________________
+ * AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+ *
+ * The following part is compiled for all versions of LibOFX.
+ *
+ * YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
+ */
+
+bool MyMoneyOfxStatement::isOfxFile(const QString& filename)
+{
+  // filename is an Ofx file if it contains the tag "<OFX>" somewhere.
+  bool result = false;
+
+  QFile f( filename );
+  if ( f.open( IO_ReadOnly ) )
+  {
+    QTextStream ts( &f );
+
+    while ( !ts.atEnd() && !result )
+      if ( ts.readLine().contains("<OFX>",false) )
+        result = true;
+
+    f.close();
+  }
+
+  return result;
+}
 
 
 
