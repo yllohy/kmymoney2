@@ -162,10 +162,10 @@ void KTransactionView::createInputWidgets()
 	m_date = new kMyMoneyDateInput(transactionsTable, 0 );
 	m_method = new kMyMoneyMethodCombo();
   m_payee = new kMyMoneyPayeeCombo();
-  m_payment = new KLineEdit(0);
-  m_withdrawal = new KLineEdit(0);
-	m_number = new KLineEdit(0);
-	m_category = new KComboBox(0,"");
+  m_payment = new kMyMoneyLineEdit();
+  m_withdrawal = new kMyMoneyLineEdit();
+	m_number = new kMyMoneyLineEdit();
+	m_category = new kMyMoneyCategoryCombo();
   m_enter = new KPushButton("Enter",0);
   m_cancel = new KPushButton("Cancel",0);
   m_delete = new KPushButton("Delete",0);
@@ -218,6 +218,14 @@ void KTransactionView::createInputWidgets()
           this, SLOT(slotMethodCompleted()));
   connect(m_payee, SIGNAL(signalFocusOut()),
           this, SLOT(slotPayeeCompleted()));
+	connect(m_payment,SIGNAL(signalEnter()),
+				  this, SLOT(enterClicked()));
+	connect(m_withdrawal,SIGNAL(signalEnter()),
+				  this, SLOT(enterClicked()));
+	connect(m_number,SIGNAL(signalEnter()),
+				  this, SLOT(enterClicked()));
+	connect(m_category,SIGNAL(signalEnter()),
+				  this, SLOT(enterClicked()));
 	connect(m_cancel, SIGNAL(clicked()),this,SLOT(cancelClicked()));
 	connect(m_enter, SIGNAL(clicked()),this,SLOT(enterClicked()));
 	connect(m_delete, SIGNAL(clicked()),this,SLOT(deleteClicked()));
@@ -670,6 +678,7 @@ void KTransactionView::enterClicked()
 	useall = false;
   usedate = true;
   userow = false;
+  m_filePointer->setDirty(true);
   updateTransactionList(-1, -1);
 	emit transactionListChanged();
 }

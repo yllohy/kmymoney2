@@ -34,6 +34,8 @@
 #include "widgets/kmymoneydateinput.h"
 #include "widgets/kmymoneymethodcombo.h"
 #include "widgets/kmymoneypayeecombo.h"
+#include "widgets/kmymoneylineedit.h"
+#include "widgets/kmymoneycategorycombo.h"
 
 #include "ktransactionviewdecl.h"
 

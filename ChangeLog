@@ -1,3 +1,7 @@
+2001-05-09 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
+  * Can now Enter a transaction by pressing enter from a 
+    data entry widget
+
 2001-05-08 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
   * Implemented automatic cheque numbering
   * Transactions now autocompletes after selecting Payee/Memo
