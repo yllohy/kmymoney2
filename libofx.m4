@@ -31,6 +31,14 @@ AS_VAR_POPDEF([ac_Lib])dnl
 AC_DEFUN([AC_LIBOFX],
 [
   AC_CHECK_HEADER([OpenSP/macros.h], [
-AC_CHECK_LIB_WPROLOGUE(ofx, ofx_proc_file, [], [], [], [[void ofx_proc_security_cb() {} void ofx_proc_transaction_cb() {} void ofx_proc_statement_cb() {} void ofx_proc_status_cb() {} void ofx_proc_account_cb() {}]]) ], [], [])
+    AC_CHECK_LIB(ofx, libofx_proc_file,[have_new_ofx="yes"], [have_new_ofx="no"])
+
+    if test "$have_new_ofx" != "yes"; then
+      AC_CHECK_LIB_WPROLOGUE(ofx, ofx_proc_file, [], [], [], [[void ofx_proc_security_cb() {} void ofx_proc_transaction_cb() {} void ofx_proc_statement_cb() {} void ofx_proc_status_cb() {} void ofx_proc_account_cb() {}]])
+    else
+      AC_DEFINE_UNQUOTED(HAVE_NEW_OFX, "1", [whether new OFX is present])
+      LIBS="-lofx $LIBS"
+    fi
+ ], [], [])
 ])
 

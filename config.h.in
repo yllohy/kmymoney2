@@ -36,6 +36,9 @@
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
 
+/* whether new OFX is present */
+#undef HAVE_NEW_OFX
+
 /* Define to 1 if you have the <pthread/linuxthreads/pthread.h> header file.
    */
 #undef HAVE_PTHREAD_LINUXTHREADS_PTHREAD_H

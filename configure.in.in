@@ -40,6 +40,9 @@ dnl
 dnl check for kbanking
 dnl
 AC_KBANKING()
+if test "$have_kbanking" = "yes"; then
+  all_includes="$all_includes $kbanking_includes"
+fi
 
 dnl
 dnl check for libofx

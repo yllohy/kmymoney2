@@ -1,4 +1,4 @@
-# $Id: kbanking.m4,v 1.1 2004/08/28 13:27:32 ipwizard Exp $
+# $Id: kbanking.m4,v 1.2 2004/09/05 18:34:31 ipwizard Exp $
 # (c) 2004 Martin Preuss<martin@libchipcard.de>
 # This function checks for KBanking
 
@@ -22,9 +22,9 @@ if test -z "$4"; then vbld="0"; else vbld="$4"; fi
 
 AC_MSG_CHECKING(if kbanking support desired)
 AC_ARG_ENABLE(kbanking,
-  [  --enable-kbanking       enable kbanking support (default=no)],
+  [  --enable-kbanking       enable kbanking support (default=detect)],
   enable_kbanking="$enableval",
-  enable_kbanking="no")
+  enable_kbanking="yes")
 AC_MSG_RESULT($enable_kbanking)
 
 have_kbanking="no"
@@ -43,68 +43,64 @@ if test "$enable_kbanking" != "no"; then
              /"])
 
   for li in $lcc_dir; do
-      if test -x "$li/bin/kbanking-config"; then
-          kbanking_dir="$li";
-          break
-      fi
+    if test -x "$li/bin/kbanking-config"; then
+      kbanking_dir="$li";
+      break
+    fi
   done
   if test -z "$kbanking_dir"; then
-      AC_MSG_RESULT([not found ])
-      AC_MSG_ERROR([
-*** The library KBanking was not found. Obtain it from 
-*** http://www.aquamaniac.de. 
-*** If it is already installed (including the -devel package), 
-*** you might need to specify the location with the 
-*** option --with-kbanking-dir=DIR.])
+    AC_MSG_RESULT([not found ])
+    have_kbanking="no"
   else
-      AC_MSG_RESULT($kbanking_dir)
-      AC_MSG_CHECKING(for kbanking libs)
-      kbanking_libs="`$kbanking_dir/bin/kbanking-config --libraries`"
-      AC_MSG_RESULT($kbanking_libs)
-      AC_MSG_CHECKING(for kbanking includes)
-      kbanking_includes="`$kbanking_dir/bin/kbanking-config --includes`"
-      AC_MSG_RESULT($kbanking_includes)
-      AC_MSG_CHECKING(for kbanking data)
-      kbanking_data="`$kbanking_dir/bin/kbanking-config --data`"
-      AC_MSG_RESULT($kbanking_data)
-  fi
-  AC_MSG_CHECKING(if kbanking test desired)
-  AC_ARG_ENABLE(kbanking,
-    [  --enable-kbanking-test  enable kbanking-test (default=yes)],
-     enable_kbanking_test="$enableval",
-     enable_kbanking_test="yes")
-  AC_MSG_RESULT($enable_kbanking_test)
-  AC_MSG_CHECKING(for KBanking version >=$vma.$vmi.$vpl.$vbld)
-  if test "$enable_kbanking_test" != "no"; then
-    kbanking_versionstring="`$kbanking_dir/bin/kbanking-config --vstring`.`$kbanking_dir/bin/kbanking-config --vbuild`"
-    AC_MSG_RESULT([found $kbanking_versionstring])
-    if test "$vma" -gt "`$kbanking_dir/bin/kbanking-config --vmajor`"; then
-      AC_MSG_ERROR([Your KBanking version is way too old.
-      Please update from http://www.aquamaniac.de/kbanking/])
-    elif test "$vma" = "`$kbanking_dir/bin/kbanking-config --vmajor`"; then
-      if test "$vmi" -gt "`$kbanking_dir/bin/kbanking-config --vminor`"; then
-        AC_MSG_ERROR([Your KBanking version is too old.
-          Please update from http://www.aquamaniac.de/kbanking/])
-      elif test "$vmi" = "`$kbanking_dir/bin/kbanking-config --vminor`"; then
+    AC_MSG_RESULT($kbanking_dir)
+    AC_MSG_CHECKING(for kbanking libs)
+    kbanking_libs="`$kbanking_dir/bin/kbanking-config --libraries`"
+    AC_MSG_RESULT($kbanking_libs)
+    AC_MSG_CHECKING(for kbanking includes)
+    kbanking_includes="`$kbanking_dir/bin/kbanking-config --includes`"
+    AC_MSG_RESULT($kbanking_includes)
+    AC_MSG_CHECKING(for kbanking data)
+    kbanking_data="`$kbanking_dir/bin/kbanking-config --data`"
+    AC_MSG_RESULT($kbanking_data)
+
+    AC_MSG_CHECKING(if kbanking test desired)
+    AC_ARG_ENABLE(kbanking,
+        [  --enable-kbanking-test  enable kbanking-test (default=yes)],
+         enable_kbanking_test="$enableval",
+         enable_kbanking_test="yes")
+    AC_MSG_RESULT($enable_kbanking_test)
+    AC_MSG_CHECKING(for KBanking version >=$vma.$vmi.$vpl.$vbld)
+    if test "$enable_kbanking_test" != "no"; then
+      kbanking_versionstring="`$kbanking_dir/bin/kbanking-config --vstring`.`$kbanking_dir/bin/kbanking-config --vbuild`"
+      AC_MSG_RESULT([found $kbanking_versionstring])
+      if test "$vma" -gt "`$kbanking_dir/bin/kbanking-config --vmajor`"; then
+        AC_MSG_ERROR([Your KBanking version is way too old.
+        Please update from http://www.aquamaniac.de/kbanking/])
+      elif test "$vma" = "`$kbanking_dir/bin/kbanking-config --vmajor`"; then
+        if test "$vmi" -gt "`$kbanking_dir/bin/kbanking-config --vminor`"; then
+          AC_MSG_ERROR([Your KBanking version is too old.
+              Please update from http://www.aquamaniac.de/kbanking/])
+        elif test "$vmi" = "`$kbanking_dir/bin/kbanking-config --vminor`"; then
           if test "$vpl" -gt "`$kbanking_dir/bin/kbanking-config --vpatchlevel`"; then
             AC_MSG_ERROR([Your KBanking version is a little bit too old.
-            Please update from http://www.aquamaniac.de/kbanking/])
+                Please update from http://www.aquamaniac.de/kbanking/])
           elif test "$vpl" = "`$kbanking_dir/bin/kbanking-config --vpatchlevel`"; then
             if test "$vbld" -gt "`$kbanking_dir/bin/kbanking-config --vbuild`"; then
-              AC_MSG_ERROR([Your KBanking version is a little bit too old. 
-  Please update to the latest CVS version. Instructions for accessing 
-  CVS can be found on http://www.aquamaniac.de/kbanking/])
-             fi
-           fi
+              AC_MSG_ERROR([Your KBanking version is a little bit too old.
+      Please update to the latest CVS version. Instructions for accessing
+      CVS can be found on http://www.aquamaniac.de/kbanking/])
+            fi
+          fi
+        fi
       fi
+      have_kbanking="yes"
+      #AC_MSG_RESULT(yes)
+      AC_DEFINE_UNQUOTED(HAVE_KBANKING, 1, [Defines if your system has the kbanking package])
+    else
+      have_kbanking="yes"
+      AC_MSG_RESULT(assuming yes)
+      AC_DEFINE_UNQUOTED(HAVE_KBANKING, 1, [Defines if your system has the kbanking package])
     fi
-    have_kbanking="yes"
-    #AC_MSG_RESULT(yes)
-    AC_DEFINE_UNQUOTED(HAVE_KBANKING, 1, [Defines if your system has the kbanking package])
-  else
-    have_kbanking="yes"
-    AC_MSG_RESULT(assuming yes)
-    AC_DEFINE_UNQUOTED(HAVE_KBANKING, 1, [Defines if your system has the kbanking package])
   fi
 dnl end of "if enable-kbanking"
 fi
