@@ -87,8 +87,8 @@ public:
   void ChangeParseState(eParseState state);
 
 private:
+  IMyMoneySerialize* m_pStorage;
   std::string getPropertyValue(std::string str, XMLPropertyMap p);
-  MyMoneyStorageXML *m_pXMLFile;
   eParseState m_parseState;
   eParseState m_previousParseState;
 
@@ -112,7 +112,7 @@ private:
   void readFile(QIODevice* s, IMyMoneySerialize* storage);
   void writeFile(QIODevice* s, IMyMoneySerialize* storage);
   /** No descriptions */
-  void setUserName(std::string s);
+
 
 private:
   MyMoneyXMLParser *m_parser;

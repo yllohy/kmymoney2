@@ -44,7 +44,7 @@
 MyMoneyStorageXML::MyMoneyStorageXML()
 {
   m_parser = NULL;
-//  m_callback = NULL;
+  m_pStorage = NULL;
 }
 
 MyMoneyStorageXML::~MyMoneyStorageXML()
@@ -67,6 +67,7 @@ void MyMoneyStorageXML::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
   //
   if(pDevice && storage)
   {
+    m_pStorage = storage;
     Q_LONG totalSize = 0;
     char buf[1000];
     Q_LONG readSize = 0;
@@ -92,6 +93,9 @@ void MyMoneyStorageXML::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
       delete m_parser;
       m_parser = NULL;
     }
+
+    //don't use this pointer after the function has exited...
+    m_pStorage = NULL;
 
     qDebug("XMLREADER: %d total file size", totalSize);
     
@@ -127,12 +131,6 @@ bool MyMoneyStorageXML::CreateXMLParser()
   return false;
 }
 
-/** No descriptions */
-void MyMoneyStorageXML::setUserName(std::string s)
-{
-  
-}
-
 void MyMoneyStorageXML::start_document(void)
 {
   qDebug("XMLREADER:  start_document() called");
@@ -150,10 +148,10 @@ void MyMoneyStorageXML::start_element(const std::string &n, const XMLPropertyMap
   if(!n.find("USER"))
   {
     ChangeParseState(PARSE_USERINFO);
-    if(m_pXMLFile)
+    if(m_pStorage)
     {
       std::string strUserName = getPropertyValue(std::string("name"), p);
-      m_pXMLFile->setUserName(strUserName);
+      m_pStorage->setUserName(QString(strUserName.data()));
     }
   }
 
@@ -241,6 +239,31 @@ void MyMoneyStorageXML::characters(const std::string &s)
 {
   qDebug("XMLREADER:  Character data = %s", s.data());
   qDebug("   length = %d", s.size());
+
+  if(m_pStorage)
+  {
+    const QString strData(s.data());
+    if(m_parseState == PARSE_USERINFO_ADDRESS_STREET)
+    {
+      m_pStorage->setUserStreet(strData);
+    }
+    else if(m_parseState == PARSE_USERINFO_ADDRESS_CITY)
+    {
+      m_pStorage->setUserTown(strData);
+    }
+    else if(m_parseState == PARSE_USERINFO_ADDRESS_STATE)
+    {
+      m_pStorage->setUserCounty(strData);
+    }
+    else if(m_parseState == PARSE_USERINFO_ADDRESS_ZIPCODE)
+    {
+      m_pStorage->setUserPostcode(strData);
+    }
+    else if(m_parseState == PARSE_USERINFO_ADDRESS_TELEPHONE)
+    {
+      m_pStorage->setUserTelephone(strData);
+    }
+  }
 }
 
 void MyMoneyStorageXML::comment(const std::string &s)
