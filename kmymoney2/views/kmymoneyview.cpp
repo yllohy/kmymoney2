@@ -629,6 +629,14 @@ bool KMyMoneyView::readFile(const KURL& url)
   QIODevice *qfile = 0;
   bool rc = true;
 
+  // There's a problem with the KFilterDev and KGPGFile classes:
+  // One supports the at(n) member but not ungetch() together with
+  // readBlock() and the other does not provide an at(n) method but
+  // supports readBlock() that considers the ungetch() buffer. QFile
+  // supports everything so this is not a problem. We solve the problem
+  // for now by keeping track of which method can be used.
+  bool haveAt = true;
+
   if(file.open(IO_ReadOnly)) {
     QByteArray hdr(2);
     int cnt;
@@ -639,9 +647,10 @@ bool KMyMoneyView::readFile(const KURL& url)
       if(QString(hdr) == QString("\037\213")) {         // gzipped?
         qfile = KFilterDev::deviceForFile(filename, COMPRESSION_MIME_TYPE);
       } else if(QString(hdr) == QString("--")){         // PGP ASCII armored?
-        if(KGPGFile::GPGAvailable())
+        if(KGPGFile::GPGAvailable()) {
           qfile = new KGPGFile(filename);
-        else {
+          haveAt = false;
+        } else {
           KMessageBox::sorry(this, i18n("GPG is not available for decryption of file '%1'").arg(filename));
           qfile = new QFile(file.name());
         }
@@ -654,7 +663,11 @@ bool KMyMoneyView::readFile(const KURL& url)
         try {
           hdr.resize(8);
           if(qfile->readBlock(hdr.data(), 8) == 8) {
-            ungetString(qfile, hdr.data(), 8);
+            if(haveAt)
+              qfile->at(0);
+            else
+              ungetString(qfile, hdr.data(), 8);
+
             // Ok, we got the first block of 8 bytes. Read in the two
             // unsigned long int's by preserving endianess. This is
             // achieved by reading them through a QDataStream object
@@ -684,7 +697,10 @@ bool KMyMoneyView::readFile(const KURL& url)
               // contains no valid data and we reject it anyway.
               hdr.resize(70);
               if(qfile->readBlock(hdr.data(), 70) == 70) {
-                ungetString(qfile, hdr.data(), 70);
+                if(haveAt)
+                  qfile->at(0);
+                else
+                  ungetString(qfile, hdr.data(), 70);
                 QRegExp kmyexp("<!DOCTYPE KMYMONEY-FILE>");
                 QRegExp gncexp("<gnc-v(\\d+)>");
                 QCString txt(hdr);
