@@ -256,6 +256,13 @@ void kMyMoneyCalculator::percentClicked(void)
 	}
 }
 
+const QString kMyMoneyCalculator::result(void) const
+{
+	QString txt = m_result;
+	txt.replace(QRegExp("\\."), m_comma);
+  return txt;
+}
+
 void kMyMoneyCalculator::changeDisplay(const QString& str)
 {
 	QString txt = str;
@@ -325,6 +332,8 @@ void kMyMoneyCalculator::setInitialValues(const QString& value, QKeyEvent* ev)
   // setup operand
   operand = value;
 	operand.replace(QRegExp(QString("\\")+m_comma), ".");
+  if(operand == "")
+    operand = "0";
 	changeDisplay(operand);
 
   // and operation

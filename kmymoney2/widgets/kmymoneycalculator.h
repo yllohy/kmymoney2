@@ -64,17 +64,19 @@ public:
 
   /**
     * This methods is used to extract the result of the last
-    * calculation
+    * calculation. The fractional part is separated from the
+    * integral part by the character setup using setComma().
     *
-    * @return reference to QString representing the result of the
+    * @return QString representing the result of the
     *         last operation
     */
-	const QString& result(void) const { return m_result; };
+	const QString result(void) const;
 
   /**
     * This method is used to set the character to be used
     * as the separator between the integer and fractional part
-    * of an operand
+    * of an operand. Upon creation of the object, m_comma is
+    * set to the current locale setting of KDE's decimalSymbol.
     *
     * @param ch QChar representing the character to be used
     */

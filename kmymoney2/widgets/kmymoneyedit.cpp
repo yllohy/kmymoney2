@@ -150,6 +150,12 @@ bool kMyMoneyEdit::eventFilter(QObject *o , QEvent *e )
 
       case Qt::Key_Plus:
       case Qt::Key_Minus:
+        if(text().length() == 0) {
+          rc = false;
+          break;
+        }
+        // otherwise, tricky fall through here!
+
       case Qt::Key_Slash:
       case Qt::Key_Asterisk:
       case Qt::Key_Percent:
