@@ -541,15 +541,15 @@ QWidget* KLedgerViewInvestments::arrangeEditWidgetsInForm(void)
   m_tabOrderWidgets.append(m_form->cancelButton());
   m_tabOrderWidgets.append(m_form->moreButton());
   m_tabOrderWidgets.append(m_editType);
-  m_tabOrderWidgets.append(m_editStockAccount);
   m_tabOrderWidgets.append(m_editDate);
+  m_tabOrderWidgets.append(m_editStockAccount);
   m_tabOrderWidgets.append(m_editShares);
-  m_tabOrderWidgets.append(m_editTotalAmount);
   m_tabOrderWidgets.append(m_editMemo);
-  m_tabOrderWidgets.append(m_editFees);
   m_tabOrderWidgets.append(m_editPPS);
-  m_tabOrderWidgets.append(m_editCashAccount);
   m_tabOrderWidgets.append(m_editFeeCategory);
+  m_tabOrderWidgets.append(m_editFees);
+  m_tabOrderWidgets.append(m_editCashAccount);
+  m_tabOrderWidgets.append(m_editTotalAmount);
 
   return m_editStockAccount;
 }
@@ -626,9 +626,11 @@ void KLedgerViewInvestments::createEditWidgets()
   }
   if(!m_editShares) {
     m_editShares = new kMyMoneyEdit(0, "editShares");
+    connect(m_editShares, SIGNAL(valueChanged(const QString& )), this, SLOT(slotUpdateTotalAmount()));
   }
   if(!m_editPPS) {
     m_editPPS = new kMyMoneyEdit(0, "editPPS");
+    connect(m_editPPS, SIGNAL(valueChanged(const QString& )), this, SLOT(slotUpdateTotalAmount()));
   }
   if(!m_editStockAccount) {
     m_editStockAccount = new kMyMoneyAccountCombo(0, "editStockAccount");
@@ -639,6 +641,7 @@ void KLedgerViewInvestments::createEditWidgets()
   }
   if(!m_editFees) {
     m_editFees = new kMyMoneyEdit(0, "editFees");
+    connect(m_editFees, SIGNAL(valueChanged(const QString& )), this, SLOT(slotUpdateTotalAmount()));
   }
 
   if(!m_editType) {
@@ -1404,3 +1407,13 @@ void KLedgerViewInvestments::refreshView(const bool transactionFormVisible)
 
   updateView(transactionId);
 }
+
+void KLedgerViewInvestments::slotUpdateTotalAmount()
+{
+  MyMoneyMoney total;
+  total = m_editFees->getMoneyValue();
+  total = total + (m_editPPS->getMoneyValue() * m_editShares->getMoneyValue());
+  m_editTotalAmount->loadText(total.formatMoney("", 2));
+}
+
+  

@@ -84,6 +84,7 @@ protected slots:
   virtual void slotStartEdit();
   virtual void slotEndEdit();
   virtual void slotEquityChanged(const QCString& id);
+  virtual void slotUpdateTotalAmount();
 
 protected:
   virtual void createEditWidgets();
