@@ -44,6 +44,7 @@ class MyMoneyTransactionTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST(testInequality);
 	CPPUNIT_TEST(testExtractSplit);
 	CPPUNIT_TEST(testSplitSum);
+	CPPUNIT_TEST(testIsLoanPayment);
         CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -67,5 +68,6 @@ public:
 	void testExtractSplit();
 	void testDeleteAllSplits();
 	void testSplitSum();
+	void testIsLoanPayment();
 };
 #endif

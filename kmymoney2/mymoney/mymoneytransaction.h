@@ -142,6 +142,20 @@ public:
     */
   const MyMoneyMoney splitSum(void) const;
 
+  /**
+    * This method returns information if the transaction 
+    * contains information of a loan payment or not.
+    * Loan payment transactions have at least one
+    * split that is identified with a MyMoneySplit::action() of type
+    * MyMoneySplit::ActionAmortization.
+    *
+    * @retval false transaction is no loan payment transaction
+    * @retval true  transaction is a loan payment transaction
+    *
+    * @note Upon internal failures, the return value @p false will be used.
+    */
+  const bool isLoanPayment(void) const;
+  
 private:
   static const int SPLIT_ID_SIZE = 4;
 

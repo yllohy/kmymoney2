@@ -271,3 +271,27 @@ void MyMoneyTransactionTest::testSplitSum() {
 	m->modifySplit(s1);
 	CPPUNIT_ASSERT(m->splitSum() == 4444);
 }
+
+void MyMoneyTransactionTest::testIsLoanPayment() {
+	testAddSplits();
+	CPPUNIT_ASSERT(m->isLoanPayment() == false);
+
+	MyMoneySplit s1, s2;
+	s1 = m->splits()[0];
+	s2 = m->splits()[1];
+
+	s1.setAction(MyMoneySplit::ActionAmortization);
+	m->modifySplit(s1);
+	CPPUNIT_ASSERT(m->isLoanPayment() == true);
+	s1.setAction(MyMoneySplit::ActionWithdrawal);
+	m->modifySplit(s1);
+	CPPUNIT_ASSERT(m->isLoanPayment() == false);
+
+	s2.setAction(MyMoneySplit::ActionAmortization);
+	m->modifySplit(s2);
+	CPPUNIT_ASSERT(m->isLoanPayment() == true);
+	s2.setAction(MyMoneySplit::ActionWithdrawal);
+	m->modifySplit(s2);
+	CPPUNIT_ASSERT(m->isLoanPayment() == false);
+}
+

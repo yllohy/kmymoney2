@@ -21,6 +21,7 @@
 
 // ----------------------------------------------------------------------------
 // Project Includes
+
 #include "mymoneytransaction.h"
 
 MyMoneyTransaction::MyMoneyTransaction()
@@ -164,82 +165,21 @@ const MyMoneyMoney MyMoneyTransaction::splitSum(void) const
   return result;
 }
 
-#if 0
-QDataStream &operator<<(QDataStream &s, const MyMoneyTransaction &trans)
-{
-  return s << (Q_UINT32)trans.m_id
-    << trans.m_number
-    << trans.m_payee
-    << trans.m_amount
-    << trans.m_date
-    << (Q_UINT32)trans.m_method
-    << trans.m_categoryMajor
-    << trans.m_categoryMinor
-    << trans.m_atmBankName
-    << trans.m_accountFrom
-    << trans.m_accountTo
-    << trans.m_memo
-    << (Q_INT32)trans.m_state;
-  // no need to save m_index as its just an internal counter
-}
-
-QDataStream &operator>>(QDataStream &s, MyMoneyTransaction &trans)
-{
-  s >> (Q_UINT32 &)trans.m_id
-    >> trans.m_number
-    >> trans.m_payee
-    >> trans.m_amount
-    >> trans.m_date
-    >> (Q_UINT32 &)trans.m_method
-    >> trans.m_categoryMajor
-    >> trans.m_categoryMinor
-    >> trans.m_atmBankName
-    >> trans.m_accountFrom
-    >> trans.m_accountTo
-    >> trans.m_memo
-    >> (Q_INT32 &)trans.m_state;
-    return s;
-}
-
-bool MyMoneyTransaction::readAllData(int version, QDataStream& stream)
-{
-  // ignore version for now.
-  stream >> (Q_UINT32 &)m_id
-    >> m_number
-    >> m_payee
-    >> m_amount
-    >> m_date
-    >> (Q_UINT32 &)m_method
-    >> m_categoryMajor
-    >> m_categoryMinor
-    >> m_atmBankName
-    >> m_accountFrom
-    >> m_accountTo
-    >> m_memo
-    >> (Q_INT32 &)m_state;
-    return true;
-}
-#endif
-
 void MyMoneyTransaction::setPostDate(const QDate& date) { m_postDate = date; }
 void MyMoneyTransaction::setEntryDate(const QDate& date) { m_entryDate = date; }
 void MyMoneyTransaction::setMemo(const QString& memo) { m_memo = memo; }
 
-#if 0
-MyMoneyTransaction::transactionMethod MyMoneyTransaction::stringToMethod(const char *method)
+const bool MyMoneyTransaction::isLoanPayment(void) const
 {
-  if ((strcmp(method, "Deposit"))==0)
-    return Deposit;
-  else if ((strcmp(method, "Cheque"))==0)
-    return Cheque;
-  else if ((strcmp(method, "Transfer"))==0)
-    return Transfer;
-  else if ((strcmp(method, "Withdrawal"))==0)
-    return Withdrawal;
-  else if ((strcmp(method, "ATM"))==0)
-    return ATM;
-  qDebug("Invalid transaction method '%s'. Use ATM instead.", method);
-  return ATM;
-}
+  try {
+    QValueList<MyMoneySplit>::ConstIterator it;
 
-#endif
+    for(it = m_splits.begin(); it != m_splits.end(); ++it) {
+      if((*it).isAmortizationSplit())
+        return true;
+    }
+  } catch (MyMoneyException *e) {
+    delete e;
+  }
+  return false;
+}
