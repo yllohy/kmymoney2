@@ -925,9 +925,9 @@ void KEnterScheduleDialog::calculateInterest(void)
       // FIXME: for now we only support compounding frequency == payment frequency
       calc.setCF(KMyMoneyUtils::occurenceToFrequency(m_schedule.occurence()));
       
-      calc.setPv(balance.value());
-      calc.setIr(static_cast<FCALC_DOUBLE> (acc.interestRate(dueDate).abs().value()) / 100.0);
-      calc.setPmt(acc.periodicPayment().value());
+      calc.setPv(balance.toDouble());
+      calc.setIr(static_cast<FCALC_DOUBLE> (acc.interestRate(dueDate).abs().toDouble()) / 100.0);
+      calc.setPmt(acc.periodicPayment().toDouble());
 
       MyMoneyMoney interest(calc.interestDue()/100.0), amortization;
       interest = interest.abs();    // make sure it's positive for now

@@ -706,26 +706,26 @@ int KNewLoanWizard::calculateLoan(void)
 
 
   if(!m_loanAmountEdit->text().isEmpty()) {
-    val = static_cast<long double> (m_loanAmountEdit->getMoneyValue().abs().value());
+    val = static_cast<long double> (m_loanAmountEdit->getMoneyValue().abs().toDouble());
     if(m_borrowButton->isChecked())
       val = -val;
     calc.setPv(val);
   }
   
   if(!m_interestRateEdit->text().isEmpty()) {
-    val = static_cast<long double> (m_interestRateEdit->getMoneyValue().abs().value()) / 100.0;
+    val = static_cast<long double> (m_interestRateEdit->getMoneyValue().abs().toDouble()) / 100.0;
     calc.setIr(val);
   }
   
   if(!m_paymentEdit->text().isEmpty()) {
-    val = static_cast<long double> (m_paymentEdit->getMoneyValue().abs().value());
+    val = static_cast<long double> (m_paymentEdit->getMoneyValue().abs().toDouble());
     if(m_lendButton->isChecked())
       val = -val;
     calc.setPmt(val);
   }
   
   if(!m_finalPaymentEdit->text().isEmpty()) {
-    val = static_cast<long double> (m_finalPaymentEdit->getMoneyValue().abs().value());
+    val = static_cast<long double> (m_finalPaymentEdit->getMoneyValue().abs().toDouble());
     if(m_lendButton->isChecked())
       val = -val;
     calc.setFv(val);
@@ -799,14 +799,14 @@ int KNewLoanWizard::calculateLoan(void)
 
       if((m_borrowButton->isChecked() && val < 0)
       || (m_lendButton->isChecked() && val > 0)) {
-        qDebug("Future Value is %lld", refVal.value());
+        qDebug("Future Value is %f", refVal.toDouble());
         throw new MYMONEYEXCEPTION("incorrect fincancial calculation");
       }
       result = i18n("KMyMoney has calculated a final payment of %1 for this loan.")
                         .arg(refVal.abs().formatMoney());
                         
       if(!m_finalPaymentEdit->text().isEmpty()) {
-        if((m_finalPaymentEdit->getMoneyValue().abs() - refVal.abs()).abs().value() > 100) {
+        if((m_finalPaymentEdit->getMoneyValue().abs() - refVal.abs()).abs().toDouble() > 1) {
           throw new MYMONEYEXCEPTION("incorrect fincancial calculation");
         }
         result = i18n("KMyMoney has successfully verified your loan information.");
