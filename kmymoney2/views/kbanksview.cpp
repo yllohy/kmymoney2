@@ -50,6 +50,7 @@ KAccountsView::KAccountsView(QWidget *parent, const char *name)
   accountListView->addColumn(i18n("Type"));
   accountListView->addColumn(i18n("Balance"));
 
+
   accountListView->setMultiSelection(false);
 
   accountListView->setColumnWidthMode(0, QListView::Maximum);
@@ -68,7 +69,12 @@ KAccountsView::KAccountsView(QWidget *parent, const char *name)
 
   connect(accountListView, SIGNAL(selectionChanged(QListViewItem*)),
     this, SLOT(slotSelectionChanged(QListViewItem*)));
-  connect(accountListView, SIGNAL(rightButtonClicked(QListViewItem* , const QPoint&, int)),
+
+  // somehow, the rightButtonClicked signal does not make it, we use
+  // rightButtonPressed instead to show the context menu
+  // connect(accountListView, SIGNAL(rightButtonClicked(QListViewItem* , const QPoint&, int)),
+  //   this, SLOT(slotListRightMouse(QListViewItem*, const QPoint&, int)));
+  connect(accountListView, SIGNAL(rightButtonPressed(QListViewItem* , const QPoint&, int)),
     this, SLOT(slotListRightMouse(QListViewItem*, const QPoint&, int)));
   connect(accountListView, SIGNAL(doubleClicked(QListViewItem*, const QPoint&, int)),
     this, SLOT(slotListDoubleClicked(QListViewItem*, const QPoint&, int)));
