@@ -184,7 +184,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
 
   m_accountMenu = new KPopupMenu(this);
   m_accountMenu->insertTitle(kiconloader->loadIcon("account", KIcon::MainToolbar), i18n("Account Options"));
-  m_accountMenu->insertItem(kiconloader->loadIcon("account", KIcon::Small), i18n("New..."), this, SLOT(slotAccountNew()), 0, AccountNew);
+  m_accountMenu->insertItem(kiconloader->loadIcon("account", KIcon::Small), i18n("New account..."), this, SLOT(slotAccountNew()), 0, AccountNew);
   m_accountMenu->insertItem(kiconloader->loadIcon("account_open", KIcon::Small), i18n("Open..."), this, SLOT(slotAccountDoubleClick()), 0, AccountOpen);
   m_accountMenu->insertSeparator();
   m_accountMenu->insertItem(kiconloader->loadIcon("reconcile", KIcon::Small), i18n("Reconcile..."), this, SLOT(slotAccountReconcile()), 0, AccountReconcile);
@@ -250,19 +250,30 @@ void KMyMoneyView::slotAccountRightMouse()
   m_accountMenu->setItemEnabled(AccountReconcile, false);
   m_accountMenu->setItemEnabled(AccountDelete, false);
 
+  m_accountMenu->disconnectItem(AccountNew, this, SLOT(slotAccountNew()));
+  m_accountMenu->disconnectItem(AccountNew, this, SLOT(slotCategoryNew()));
+  
   if(ok == true) {
     try {
       MyMoneyFile* file = MyMoneyFile::instance();
       MyMoneyAccount account = file->account(acc);
       if(!file->isStandardAccount(acc)) {
-        m_accountMenu->setItemEnabled(AccountEdit, true);
-        m_accountMenu->setItemEnabled(AccountDelete, true);
         switch(file->accountGroup(account.accountType())) {
           case MyMoneyAccount::Asset:
           case MyMoneyAccount::Liability:
             m_accountMenu->setItemEnabled(AccountOpen, true);
             m_accountMenu->setItemEnabled(AccountReconcile, true);
+            m_accountMenu->changeItem(AccountNew, i18n("New account..."));
+            m_accountMenu->connectItem(AccountNew, this, SLOT(slotAccountNew()));
             break;
+          case MyMoneyAccount::Income:
+          case MyMoneyAccount::Expense:
+            m_accountMenu->setItemEnabled(AccountEdit, true);
+            m_accountMenu->setItemEnabled(AccountDelete, true);
+            m_accountMenu->changeItem(AccountNew, i18n("New category..."));
+            m_accountMenu->connectItem(AccountNew, this, SLOT(slotCategoryNew()));
+            break;
+            
           default:
             break;
         }
@@ -731,12 +742,21 @@ void KMyMoneyView::slotBankNew(void)
   }
 }
 
+void KMyMoneyView::slotCategoryNew(void)
+{
+  accountNew(true);
+}
+
 void KMyMoneyView::slotAccountNew(void)
+{
+  accountNew(false);
+}
+
+void KMyMoneyView::accountNew(const bool createCategory)
 {
 
   if (!fileOpen())
     return;
-
 
   MyMoneyAccount newAccount;
   MyMoneyAccount parentAccount;
@@ -744,7 +764,7 @@ void KMyMoneyView::slotAccountNew(void)
 
   KConfig *config = KGlobal::config();
   config->setGroup("General Options");
-  if(config->readBoolEntry("NewAccountWizard", true) == true) {
+  if(config->readBoolEntry("NewAccountWizard", true) == true && createCategory == false) {
     // wizard selected
     m_newAccountWizard->setAccountName("");
     m_newAccountWizard->setOpeningBalance(0);
@@ -755,7 +775,13 @@ void KMyMoneyView::slotAccountNew(void)
   } else {
     // regular dialog selected
     MyMoneyAccount account;
-    KNewAccountDlg dialog(account, false, false, 0, "hi", i18n("Create a new Account"));
+    QString title;
+    
+    if(createCategory == false)
+      title = i18n("Create a new Account");
+    else
+      title = i18n("Create a new Category");
+    KNewAccountDlg dialog(account, false, createCategory, 0, "hi", title);
 
     if((dialogResult = dialog.exec()) == QDialog::Accepted) {
       newAccount = dialog.account();
@@ -1289,7 +1315,7 @@ void KMyMoneyView::slotRefreshViews()
   m_payeesView->refreshView();
 }
 
-void KMyMoneyView::accountFind()
+void KMyMoneyView::slotAccountFind()
 {
 /*
   if (!transactionFindDlg) {

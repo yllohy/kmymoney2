@@ -62,7 +62,7 @@ class IMyMoneyStorageFormat;
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.33 2003/06/20 12:05:21 ipwizard Exp $
+  * $Id: kmymoneyview.h,v 1.34 2003/06/30 19:43:02 ipwizard Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -80,7 +80,8 @@ private:
     AccountOpen,
     AccountReconcile,
     AccountEdit,
-    AccountDelete
+    AccountDelete,
+    CategoryNew
   };
 
   KHomeView *m_homeView;
@@ -288,9 +289,8 @@ public slots:
   /**
     * Brings up a dialog to let the user search for specific transaction(s).  It then
     * opens a results window to display those transactions.
-
     */
-  void accountFind();
+  void slotAccountFind();
 
   /**
     * Called whenever the user 'executes' an account. This operation opens the account
@@ -344,6 +344,18 @@ public slots:
   void slotAccountNew(void);
 
   /**
+    * Called whenever the user wishes to create a new category.  Brings up the input
+    * dialog and saves the information.
+    *
+    * @see KBanksView
+    * @see KNewAccountDlg
+
+    * @see MyMoneyFile
+    * @see MyMoneyAccount
+  **/
+  void slotCategoryNew(void);
+
+  /**
     * Called whenever the user wishes to reconcile the open account.  It first get some
     * required input and then opens the reconciliation dialog.  The user can edit transactions
     * as normal in the main view because this dialog is modeless and is updated whenever the
@@ -386,6 +398,7 @@ protected slots:
     * a context menu.  TODO: move the context menu into kmymoney2ui.rc, move
     * this method into KBanksView, remove the param inList.
     *
+
     * @param account The account which has been clicked on.
     * @param inList Whether the click was on an account (REDUNDANT).
   **/
@@ -494,6 +507,11 @@ private:
     */
   void saveToLocalFile(QFile* qf, IMyMoneyStorageFormat* writer);
 
+  /**
+    * Internal method used by slotAccountNew() and slotAccountCategory().
+    */
+  void accountNew(const bool createCategory);
+  
 signals:
   /**
     * This signal is emitted whenever the bank actions needs enabling or disabling.
