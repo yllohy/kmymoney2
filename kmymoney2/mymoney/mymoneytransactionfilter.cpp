@@ -645,3 +645,95 @@ const bool MyMoneyTransactionFilter::textFilter(QRegExp& exp) const
   exp = m_text;
   return m_filterSet.singleFilter.textFilter == 1;
 }
+
+void MyMoneyTransactionFilter::setDateFilter(unsigned range)
+{
+  QDate from, to;
+  if ( translateDateRange(range,from,to) )
+    setDateFilter(from,to);
+}
+
+const bool MyMoneyTransactionFilter::translateDateRange(int range, QDate& start, QDate& end)
+{
+  int result = true;
+  int yr, mon, day;
+  yr = QDate::currentDate().year();
+  mon = QDate::currentDate().month();
+  day = QDate::currentDate().day();
+
+  switch(range)
+  {
+    case allDates:
+      start = QDate();
+      end = QDate();
+      break;
+    case untilToday:
+      start = QDate();
+      end =  QDate::currentDate();
+      break;
+    case currentMonth:
+      start = QDate(yr,mon,1);
+      end = QDate(yr,mon,1).addMonths(1).addDays(-1);
+      break;
+    case currentYear:
+      start = QDate(yr,1,1);
+      end = QDate(yr,12,31);
+      break;
+    case monthToDate:
+      start = QDate(yr,mon,1);
+      end = QDate::currentDate();
+      break;
+    case yearToDate:
+      start = QDate(yr,1,1);
+      end = QDate::currentDate();
+      break;
+    case lastMonth:
+      start = QDate(yr,mon,1).addMonths(-1);
+      end = QDate(yr,mon,1).addDays(-1);
+      break;
+    case lastYear:
+      start = QDate(yr,1,1).addYears(-1);
+      end = QDate(yr,12,31).addYears(-1);
+      break;
+    case last30Days:
+      start = QDate::currentDate().addDays(-30);
+      end = QDate::currentDate();
+      break;
+    case last3Months:
+      start = QDate::currentDate().addMonths(-3);
+      end = QDate::currentDate();
+      break;
+    case last6Months:
+      start = QDate::currentDate().addMonths(-6);
+      end = QDate::currentDate();
+      break;
+    case last12Months:
+      start = QDate::currentDate().addMonths(-12);
+      end = QDate::currentDate();
+      break;
+    case next30Days:
+      start = QDate::currentDate();
+      end = QDate::currentDate().addDays(30);
+      break;
+    case next3Months:
+      start = QDate::currentDate();
+      end = QDate::currentDate().addMonths(3);
+      break;
+    case next6Months:
+      start = QDate::currentDate();
+      end = QDate::currentDate().addMonths(6);
+      break;
+    case next12Months:
+      start = QDate::currentDate();
+      end = QDate::currentDate().addMonths(12);
+      break;
+    case userDefined:
+      start = QDate();
+      end = QDate();
+      break;
+    default:
+      result = false;
+  }
+  return result;
+}
+// vim:cin:si:ai:et:ts=2:sw=2:
