@@ -42,7 +42,7 @@ class QVBoxLayout;
   * quicken and m$-money.
   *
   * @author Michael Edwardes
-  * $Id: khomeview.h,v 1.3 2003/07/26 12:32:51 ipwizard Exp $
+  * $Id: khomeview.h,v 1.4 2003/07/29 19:08:09 ipwizard Exp $
   *
   * @short A view containing the home page for kmymoney2.
 **/
@@ -52,6 +52,7 @@ class KHomeView : public QWidget  {
 private:
   KHTMLPart *m_part;
   QVBoxLayout *m_qvboxlayoutPage;
+  QString m_filename;
   
 signals:
   void signalViewActivated();

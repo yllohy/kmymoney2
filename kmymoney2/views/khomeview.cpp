@@ -54,8 +54,20 @@ KHomeView::KHomeView(QWidget *parent, const char *name )
 
   m_part = new KHTMLPart(this, "htmlpart_km2");
   m_qvboxlayoutPage->addWidget(m_part->view());
-  QString filename = KGlobal::dirs()->findResource("appdata", "html/home.html");
-  m_part->openURL(filename);
+  QString language = KGlobal::locale()->language();
+  QString country = KGlobal::locale()->country();
+
+  m_filename = KGlobal::dirs()->findResource("appdata", QString("html/home_%1.%2.html").arg(country).arg(language));
+  if(m_filename.isEmpty()) {
+    qDebug(QString("html/home_%1.%2.html not found").arg(country).arg(language).latin1());
+    m_filename = KGlobal::dirs()->findResource("appdata", QString("html/home_%1.html").arg(country));
+  }
+  if(m_filename.isEmpty()) {
+    qDebug(QString("html/home_%1.html not found").arg(country).latin1());
+    m_filename = KGlobal::dirs()->findResource("appdata", "html/home.html");
+  }
+    
+  m_part->openURL(m_filename);
   connect(m_part->browserExtension(), SIGNAL(openURLRequest(const KURL&, const KParts::URLArgs&)),
           this, SLOT(slotOpenURL(const KURL&, const KParts::URLArgs&)));
 }
@@ -67,8 +79,7 @@ KHomeView::~KHomeView()
 void KHomeView::show()
 {
   if(MyMoneyFile::instance()->accountList().count() == 0) {
-    QString filename = KGlobal::dirs()->findResource("appdata", "html/home.html");
-    m_part->openURL(filename);
+    m_part->openURL(m_filename);
   } else {
     QString filename = KGlobal::dirs()->findResource("appdata", "html/kmymoney2.css");
     QString header = QString("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\">\n") +
