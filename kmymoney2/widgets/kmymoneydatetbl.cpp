@@ -168,7 +168,11 @@ kMyMoneyDateTbl::paintCell(QPainter *painter, int row, int col)
         year);
 #else
       // FIXME: include code to display the same as for KDE >= 3.0.5
-      headerText = "42";
+      QString weekStr = QString::number(weekNumber(date, &year));
+      QString yearStr = QString::number(year);
+      headerText = i18n("Week %1 for year %2.")
+        .arg(weekStr)
+        .arg(yearStr);
 #endif        
 
       painter->drawText(0, 0, w, h-1, AlignCenter, headerText, -1, &rect);
@@ -640,3 +644,48 @@ void kMyMoneyDateTbl::contentsMouseMoveEvent(QMouseEvent* e)
   
   QGridView::contentsMouseMoveEvent(e);
 }
+
+#if QT_VERSION <= 0x030005
+// The following code is borrowed from QT 3.2 QDate::weekNumber()
+// and slightly modified
+int kMyMoneyDateTbl::weekNumber(const QDate& date, int *yearNumber) const
+{
+     if ( !date.isValid() )
+        return 0;
+
+    int dow = date.dayOfWeek();
+    int doy = date.dayOfYear();
+    int currYear = date.year();
+    int jan1WeekDay = QDate( currYear, 1, 1 ).dayOfWeek();
+    int yearNum;
+    int weekNum;
+
+    if ( doy <= (8 - jan1WeekDay) && jan1WeekDay > 4 ) {
+        yearNum = currYear - 1;
+        weekNum = 52;
+        if ( jan1WeekDay == 5 ||
+             (jan1WeekDay == 6 && QDate::leapYear(yearNum)) )
+            weekNum++;
+    } else {
+        int totalDays = 365;
+        if ( QDate::leapYear(currYear) )
+            totalDays++;
+
+        if ( (totalDays - doy < 4 - dow)
+             || (jan1WeekDay == 7 && totalDays - doy < 3) ) {
+            yearNum = currYear + 1;
+            weekNum = 1;
+        } else {
+            int j = doy + ( 7 - dow ) + ( jan1WeekDay - 1 );
+            yearNum = currYear;
+            weekNum = j / 7;
+            if ( jan1WeekDay > 4 )
+                weekNum--;
+        }
+    }
+    if ( yearNumber )
+        *yearNumber = yearNum;
+    return weekNum;
+ 
+}
+#endif

@@ -172,6 +172,11 @@ protected:
 
     ///
     QDate m_drawDateOrig;
+
+private:
+#if QT_VERSION <= 0x030005
+    int weekNumber(const QDate&, int *yr) const;
+#endif
 };
 
 #endif
