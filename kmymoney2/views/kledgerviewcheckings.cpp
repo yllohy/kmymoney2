@@ -36,9 +36,13 @@
 // Project Includes
 
 #include "kledgerviewcheckings.h"
+#include "../widgets/kmymoneytransactionform.h"
+#include "../widgets/kmymoneyedit.h"
+#include "../widgets/kmymoneydateinput.h"
 #include "../widgets/kmymoneypayee.h"
 #include "../widgets/kmymoneycategory.h"
 #include "../widgets/kmymoneylineedit.h"
+#include "../widgets/kmymoneyregistercheckings.h"
 
 KLedgerViewCheckings::KLedgerViewCheckings(QWidget *parent, const char *name )
   : KLedgerView(parent,name)

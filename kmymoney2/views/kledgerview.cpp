@@ -35,6 +35,13 @@
 // Project Includes
 
 #include "kledgerview.h"
+#include "../widgets/kmymoneyregister.h"
+#include "../widgets/kmymoneytransactionform.h"
+#include "../widgets/kmymoneypayee.h"
+#include "../widgets/kmymoneycategory.h"
+#include "../widgets/kmymoneyedit.h"
+#include "../widgets/kmymoneylineedit.h"
+#include "../widgets/kmymoneydateinput.h"
 
 KLedgerView::KLedgerView(QWidget *parent, const char *name )
   : QWidget(parent,name)

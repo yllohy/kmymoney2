@@ -46,6 +46,7 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
+#include "../mymoney/mymoneyfile.h"
 #include "../views/kmymoneyfile.h"
 #include "../dialogs/knewaccountdlg.h"
 #include "kcategoriesview.h"
@@ -62,9 +63,15 @@ KCategoriesView::KCategoriesView(QWidget *parent, const char *name )
   categoryListView->addColumn(i18n("Balance"));
 
   categoryListView->setMultiSelection(false);
-  categoryListView->setColumnWidthMode(0, QListView::Manual);
-  categoryListView->header()->setResizeEnabled(false);
+  categoryListView->setColumnWidthMode(0, QListView::Maximum);
+  categoryListView->setColumnWidthMode(1, QListView::Maximum);
+  categoryListView->setColumnWidthMode(2, QListView::Maximum);
+  categoryListView->header()->setResizeEnabled(true);
+
   categoryListView->setAllColumnsShowFocus(true);
+
+  categoryListView->setColumnAlignment(2, Qt::AlignRight);
+  categoryListView->setResizeMode(QListView::AllColumns);
 
   // never show a horizontal scroll bar
   categoryListView->setHScrollBarMode(QScrollView::AlwaysOff);
@@ -92,6 +99,11 @@ KCategoriesView::~KCategoriesView()
   writeConfig();
 }
 
+void KCategoriesView::refreshView(void)
+{
+  refresh();
+}
+
 void KCategoriesView::refresh(void)
 {
   KConfig *config = KGlobal::config();
@@ -100,7 +112,7 @@ void KCategoriesView::refresh(void)
   categoryListView->header()->setFont(config->readFontEntry("listHeaderFont", &defaultFont));
 
   categoryListView->clear();
-  accountMap.clear();
+  m_accountMap.clear();
 
   MyMoneyFile *file = MyMoneyFile::instance();
 
@@ -112,7 +124,7 @@ void KCategoriesView::refresh(void)
 
     QValueList<MyMoneyAccount>::ConstIterator it_a;
     for(it_a = list.begin(); it_a != list.end(); ++it_a)
-      accountMap[(*it_a).id()] = *it_a;
+      m_accountMap[(*it_a).id()] = *it_a;
 
     MyMoneyAccount expenseAccount = file->expense();
     MyMoneyAccount incomeAccount = file->income();
@@ -126,9 +138,9 @@ void KCategoriesView::refresh(void)
           ++it )
     {
       KAccountListItem *accountItem = new KAccountListItem(incomeTopLevelAccount,
-            accountMap[*it]);
+            m_accountMap[*it]);
 
-      QCStringList subAccounts = accountMap[*it].accountList();
+      QCStringList subAccounts = m_accountMap[*it].accountList();
       if (subAccounts.count() >= 1)
       {
         showSubAccounts(subAccounts, accountItem, file, i18n("Income"));
@@ -144,9 +156,9 @@ void KCategoriesView::refresh(void)
           ++it )
     {
       KAccountListItem *accountItem = new KAccountListItem(expenseTopLevelAccount,
-            accountMap[*it]);
+            m_accountMap[*it]);
 
-      QCStringList subAccounts = accountMap[*it].accountList();
+      QCStringList subAccounts = m_accountMap[*it].accountList();
       if (subAccounts.count() >= 1)
       {
         showSubAccounts(subAccounts, accountItem, file, i18n("Expense"));
@@ -163,7 +175,7 @@ void KCategoriesView::refresh(void)
   }
 
   // free some memory (we don't need this map anymore)
-  accountMap.clear();
+  m_accountMap.clear();
 }
 
 void KCategoriesView::showSubAccounts(QCStringList accounts, KAccountListItem *parentItem, MyMoneyFile *file,
@@ -172,8 +184,8 @@ void KCategoriesView::showSubAccounts(QCStringList accounts, KAccountListItem *p
   for ( QCStringList::ConstIterator it = accounts.begin(); it != accounts.end(); ++it )
   {
     KAccountListItem *accountItem  = new KAccountListItem(parentItem,
-                                                          accountMap[*it]);
-    QCStringList subAccounts = accountMap[*it].accountList();
+                                                          m_accountMap[*it]);
+    QCStringList subAccounts = m_accountMap[*it].accountList();
     if (subAccounts.count() >= 1)
     {
       showSubAccounts(subAccounts, accountItem, file, typeName);
@@ -189,19 +201,13 @@ void KCategoriesView::show()
 
 void KCategoriesView::resizeEvent(QResizeEvent* e)
 {
-  categoryListView->setColumnWidth(0, categoryListView->width()-185);
-  categoryListView->setColumnWidth(1, 100);
-  categoryListView->setColumnWidth(2, 70);
+  // categoryListView->setColumnWidth(0, categoryListView->width()-185);
+  // categoryListView->setColumnWidth(1, 100);
+  // categoryListView->setColumnWidth(2, 70);
 
   // call base class resizeEvent()
 
   kCategoriesViewDecl::resizeEvent(e);
-/*
-  accountListView->setColumnWidth(0, 400);
-  accountListView->setColumnWidth(1,150);
-  int totalWidth=accountListView->width();
-  accountListView->setColumnWidth(2, totalWidth-550-5);
-*/
 }
 
 void KCategoriesView::slotNewClicked()

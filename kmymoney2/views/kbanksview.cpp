@@ -34,7 +34,7 @@
 
 #include "kbanksview.h"
 #include "kbanklistitem.h"
-#include "kmymoneyfile.h"
+#include "../mymoney/mymoneyfile.h"
 
 KAccountsView::KAccountsView(QWidget *parent, const char *name)
  : KBankViewDecl(parent,name)
@@ -45,14 +45,22 @@ KAccountsView::KAccountsView(QWidget *parent, const char *name)
 
   accountListView->setRootIsDecorated(true);
   accountListView->setAllColumnsShowFocus(true);
-//  if (m_bViewNormalAccountsView)
-//    accountListView->addColumn(i18n("Institution"));
+
   accountListView->addColumn(i18n("Account"));
   accountListView->addColumn(i18n("Type"));
   accountListView->addColumn(i18n("Balance"));
   accountListView->setMultiSelection(false);
-  accountListView->header()->setResizeEnabled(false);
-  accountListView->setColumnWidthMode(0, QListView::Manual);
+
+  accountListView->setColumnWidthMode(0, QListView::Maximum);
+  accountListView->setColumnWidthMode(1, QListView::Maximum);
+  accountListView->setColumnWidthMode(2, QListView::Maximum);
+
+  accountListView->setColumnAlignment(2, Qt::AlignRight);
+
+  accountListView->setResizeMode(QListView::AllColumns);
+
+  accountListView->header()->setResizeEnabled(true);
+
 
   QFont defaultFont = QFont("helvetica", 12);
   accountListView->header()->setFont(config->readFontEntry("listHeaderFont", &defaultFont));
@@ -66,17 +74,25 @@ KAccountsView::KAccountsView(QWidget *parent, const char *name)
 
   m_bSelectedAccount=false;
   m_bSelectedInstitution=false;
-  m_bSignals=true;
+  // m_bSignals=true;
 
   accountIconView->clear();
   accountIconView->setSorting(true);
 
   // never show a horizontal scroll bar
   //accountListView->setHScrollBarMode(QScrollView::AlwaysOff);
+
+  MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAccountHierarchy, this);
+  MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAccount, this);
+  MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassInstitution, this);
+
 }
 
 KAccountsView::~KAccountsView()
 {
+  MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassAccountHierarchy, this);
+  MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassAccount, this);
+  MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassInstitution, this);
 }
 
 void KAccountsView::slotListDoubleClicked(QListViewItem* pItem, const QPoint& pos, int c)
@@ -131,6 +147,8 @@ void KAccountsView::slotListRightMouse(QListViewItem* item, const QPoint& , int 
         m_bSelectedAccount=false;
         m_bSelectedInstitution=true;
         // FIXME: Change KAccountListItem::accountID to id.
+
+
         m_selectedInstitution = accountItem->accountID();
 
         emit bankRightMouseClick();
@@ -151,6 +169,42 @@ QCString KAccountsView::currentInstitution(bool& success)
   return (success) ? m_selectedInstitution : QCString("");
 }
 
+void KAccountsView::update(const QCString& id)
+{
+  if(id == MyMoneyFile::NotifyClassAccountHierarchy
+  || (id == MyMoneyFile::NotifyClassInstitution && m_bViewNormalAccountsView == true))
+    refresh(id);
+  if(id == MyMoneyFile::NotifyClassAccount)
+    refreshTotalProfit();
+}
+
+void KAccountsView::refreshView(void)
+{
+  refresh(m_selectedAccount);
+}
+
+void KAccountsView::refreshTotalProfit(void)
+{
+  KConfig *config = KGlobal::config();
+  config->setGroup("List Options");
+  QFont defaultFont = QFont("helvetica", 12);
+
+  MyMoneyMoney totalProfit;
+  MyMoneyFile* file = MyMoneyFile::instance();
+
+  MyMoneyAccount liabilityAccount = file->liability();
+  MyMoneyAccount assetAccount = file->asset();
+
+  totalProfit = file->totalBalance(assetAccount.id()) +
+                file->totalBalance(liabilityAccount.id());
+
+  QString s(i18n("Total Profits: "));
+  s += totalProfit.formatMoney();
+
+  totalProfitsLabel->setFont(config->readFontEntry("listCellFont", &defaultFont));
+  totalProfitsLabel->setText(s);
+}
+
 void KAccountsView::refresh(const QCString& selectAccount)
 {
   KConfig *config = KGlobal::config();
@@ -161,17 +215,27 @@ void KAccountsView::refresh(const QCString& selectAccount)
 
   clear();
 
-  MyMoneyMoney totalProfit;
-
   m_selectedAccount = selectAccount;
 
   MyMoneyFile *file = MyMoneyFile::instance();
 
   MyMoneyAccount liabilityAccount = file->liability();
   MyMoneyAccount assetAccount = file->asset();
+  MyMoneyAccount expenseAccount = file->expense();
+  MyMoneyAccount incomeAccount = file->income();
+
+  QValueList<MyMoneyAccount> accountList;
+  accountList = file->accountList();
+  m_accountMap.clear();
+
+  QValueList<MyMoneyAccount>::ConstIterator it_a;
+  for(it_a = accountList.begin(); it_a != accountList.end(); ++it_a)
+    m_accountMap[(*it_a).id()] = *it_a;
 
   if (m_bViewNormalAccountsView)
   {
+    accountListView->header()->setLabel(0, i18n("Institution"));
+
     try
     {
       QValueList<MyMoneyInstitution> list = file->institutionList();
@@ -179,7 +243,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
       for (institutionIterator = list.begin(); institutionIterator != list.end(); ++institutionIterator)
       {
         KAccountListItem *topLevelInstitution = new KAccountListItem(accountListView,
-                      (*institutionIterator).name(), (*institutionIterator).id());
+                      *institutionIterator);
 
         QCStringList accountList = (*institutionIterator).accountList();
         for ( QCStringList::ConstIterator it = accountList.begin();
@@ -187,17 +251,14 @@ void KAccountsView::refresh(const QCString& selectAccount)
               ++it )
         {
           KAccountListItem *accountItem = new KAccountListItem(topLevelInstitution,
-              file->account(*it).name(), file->account(*it).id(),
-              KMyMoneyFile::accountTypeToString(file->account(*it).accountType()),
-              file->totalBalance(*it).formatMoney());
-
+              m_accountMap[*it]);
           QIconViewItem* accountIcon = new QIconViewItem(accountIconView,
               file->account(*it).name());
 
-          QCStringList subAccounts = file->account(*it).accountList();
+          QCStringList subAccounts = m_accountMap[*it].accountList();
           if (subAccounts.count() >= 1)
           {
-            showSubAccounts(subAccounts, accountItem, file);
+            showSubAccounts(subAccounts, accountItem, i18n(""));
           }
         }
 
@@ -211,160 +272,121 @@ void KAccountsView::refresh(const QCString& selectAccount)
   }
   else  // Show new 'advanced' view
   {
-      MyMoneyAccount expenseAccount = file->expense();
-      MyMoneyAccount incomeAccount = file->income();
+    accountListView->header()->setLabel(0, i18n("Account"));
+    // Do all 4 account roots
+    try
+    {
+      // Asset
+      KAccountListItem *assetTopLevelAccount = new KAccountListItem(accountListView,
+            assetAccount);
 
-      // Do all 4 account roots
-      try
+      for ( QCStringList::ConstIterator it = assetAccount.accountList().begin();
+            it != assetAccount.accountList().end();
+            ++it )
       {
-        // Asset
-        KAccountListItem *assetTopLevelAccount = new KAccountListItem(accountListView,
-              assetAccount.name(), assetAccount.id(),
-              KMyMoneyFile::accountTypeToString(assetAccount.accountType()),
-              file->totalBalance(assetAccount.id()).formatMoney());
+        KAccountListItem *accountItem = new KAccountListItem(assetTopLevelAccount,
+            m_accountMap[*it]);
 
-        for ( QCStringList::ConstIterator it = file->asset().accountList().begin();
-              it != file->asset().accountList().end();
-              ++it )
+        QIconViewItem* accountIcon = new QIconViewItem(accountIconView,
+            m_accountMap[*it].name());
+
+        QCStringList subAccounts = m_accountMap[*it].accountList();
+        if (subAccounts.count() >= 1)
         {
-          KAccountListItem *accountItem = new KAccountListItem(assetTopLevelAccount,
-              file->account(*it).name(), file->account(*it).id(),
-              KMyMoneyFile::accountTypeToString(file->account(*it).accountType()),
-              file->totalBalance(*it).formatMoney());
+          showSubAccounts(subAccounts, accountItem, i18n("Asset"));
 
-          QIconViewItem* accountIcon = new QIconViewItem(accountIconView,
-              file->account(*it).name());
 
-          QCStringList subAccounts = file->account(*it).accountList();
-          if (subAccounts.count() >= 1)
-          {
-            showSubAccounts(subAccounts, accountItem, file);
-
-          }
         }
-
-        // Liability
-        KAccountListItem *liabilityTopLevelAccount = new KAccountListItem(accountListView,
-              liabilityAccount.name(), liabilityAccount.id(),
-              KMyMoneyFile::accountTypeToString(liabilityAccount.accountType()),
-              file->totalBalance(liabilityAccount.id()).formatMoney());
-
-        for ( QCStringList::ConstIterator it = file->liability().accountList().begin();
-              it != file->liability().accountList().end();
-              ++it )
-        {
-          KAccountListItem *accountItem = new KAccountListItem(liabilityTopLevelAccount,
-              file->account(*it).name(), file->account(*it).id(),
-
-              KMyMoneyFile::accountTypeToString(file->account(*it).accountType()),
-              file->totalBalance(*it).formatMoney());
-
-          QIconViewItem* accountIcon = new QIconViewItem(accountIconView,
-              file->account(*it).name());
-
-          QCStringList subAccounts = file->account(*it).accountList();
-          if (subAccounts.count() >= 1)
-          {
-            showSubAccounts(subAccounts, accountItem, file);
-          }
-        }
-
-        // Income
-        KAccountListItem *incomeTopLevelAccount = new KAccountListItem(accountListView,
-              incomeAccount.name(), incomeAccount.id(),
-              KMyMoneyFile::accountTypeToString(incomeAccount.accountType()),
-              file->totalBalance(incomeAccount.id()).formatMoney());
-
-
-        for ( QCStringList::ConstIterator it = file->income().accountList().begin();
-              it != file->income().accountList().end();
-              ++it )
-        {
-          KAccountListItem *accountItem = new KAccountListItem(incomeTopLevelAccount,
-              file->account(*it).name(), file->account(*it).id(),
-              KMyMoneyFile::accountTypeToString(file->account(*it).accountType()),
-              file->totalBalance(*it).formatMoney());
-
-          QCStringList subAccounts = file->account(*it).accountList();
-          if (subAccounts.count() >= 1)
-          {
-            showSubAccounts(subAccounts, accountItem, file);
-          }
-        }
-
-        // Expense
-        KAccountListItem *expenseTopLevelAccount = new KAccountListItem(accountListView,
-              expenseAccount.name(), expenseAccount.id(),
-              KMyMoneyFile::accountTypeToString(expenseAccount.accountType()),
-              file->totalBalance(expenseAccount.id()).formatMoney());
-
-        for ( QCStringList::ConstIterator it = file->expense().accountList().begin();
-              it != file->expense().accountList().end();
-              ++it )
-        {
-          KAccountListItem *accountItem = new KAccountListItem(expenseTopLevelAccount,
-              file->account(*it).name(), file->account(*it).id(),
-              KMyMoneyFile::accountTypeToString(file->account(*it).accountType()),
-              file->totalBalance(*it).formatMoney());
-
-          QCStringList subAccounts = file->account(*it).accountList();
-          if (subAccounts.count() >= 1)
-          {
-            showSubAccounts(subAccounts, accountItem, file);
-          }
-        }
-
-
       }
-      catch (MyMoneyException *e)
+
+      // Liability
+      KAccountListItem *liabilityTopLevelAccount = new KAccountListItem(accountListView,
+            liabilityAccount);
+
+      for ( QCStringList::ConstIterator it = liabilityAccount.accountList().begin();
+            it != liabilityAccount.accountList().end();
+            ++it )
       {
-        qDebug("Exception in assets account refresh: %s", e->what().latin1());
-        delete e;
+        KAccountListItem *accountItem = new KAccountListItem(liabilityTopLevelAccount,
+            m_accountMap[*it]);
+
+        QIconViewItem* accountIcon = new QIconViewItem(accountIconView,
+            m_accountMap[*it].name());
+
+        QCStringList subAccounts = m_accountMap[*it].accountList();
+        if (subAccounts.count() >= 1)
+        {
+          showSubAccounts(subAccounts, accountItem, i18n("Liability"));
+        }
       }
+
+      // Income
+      KAccountListItem *incomeTopLevelAccount = new KAccountListItem(accountListView,
+            incomeAccount);
+
+      for ( QCStringList::ConstIterator it = incomeAccount.accountList().begin();
+            it != incomeAccount.accountList().end();
+            ++it )
+      {
+        KAccountListItem *accountItem = new KAccountListItem(incomeTopLevelAccount,
+            m_accountMap[*it]);
+
+        QCStringList subAccounts = m_accountMap[*it].accountList();
+        if (subAccounts.count() >= 1)
+
+        {
+          showSubAccounts(subAccounts, accountItem, i18n("Income"));
+        }
+      }
+
+      // Expense
+      KAccountListItem *expenseTopLevelAccount = new KAccountListItem(accountListView,
+            expenseAccount);
+
+      for ( QCStringList::ConstIterator it = expenseAccount.accountList().begin();
+            it != expenseAccount.accountList().end();
+            ++it )
+      {
+        KAccountListItem *accountItem = new KAccountListItem(expenseTopLevelAccount,
+
+            m_accountMap[*it]);
+
+        QCStringList subAccounts = m_accountMap[*it].accountList();
+
+        if (subAccounts.count() >= 1)
+        {
+          showSubAccounts(subAccounts, accountItem, i18n("Expense"));
+        }
+      }
+    }
+    catch (MyMoneyException *e)
+    {
+      qDebug("Exception in assets account refresh: %s", e->what().latin1());
+      delete e;
+    }
   }
+
+  m_accountMap.clear();
+
+  refreshTotalProfit();
 
 /*
-  QValueList<MyMoneyAccount> accountList = m->accountList();
-  QValueList<MyMoneyAccount>::ConstIterator it;
-  for (it = list.begin(); it != list.end(); ++it)
-  {
-    KAccountListItem *item0 = new KAccountListItem(accountListView, (*it));
-
-    if((*it) == m_selectedAccount)
-    {
-      m_bSelectedAccount = true;
-      item = item0;
-      }
-      totalProfit += account->balance();
-    }
-    accountListView->setOpen(item0, true);
-  }
-
-  QString s(i18n("Total Profits: "));
-  s += KGlobal::locale()->formatMoney(totalProfit.amount(), "",
-                                      KGlobal::locale()->fracDigits());
-
-  totalProfitsLabel->setFont(config->readFontEntry("listCellFont", &defaultFont));
-  totalProfitsLabel->setText(s);
-
   if (m_bSelectedBank || m_bSelectedAccount)
     accountListView->setSelected(item, true);
 */
 }
 
-void KAccountsView::showSubAccounts(QCStringList accounts, KAccountListItem *parentItem, MyMoneyFile *file)
+void KAccountsView::showSubAccounts(const QCStringList& accounts, KAccountListItem *parentItem, const QString& group)
 {
   for ( QCStringList::ConstIterator it = accounts.begin(); it != accounts.end(); ++it )
   {
     KAccountListItem *accountItem  = new KAccountListItem(parentItem,
-          file->account(*it).name(), file->account(*it).id(),
-          KMyMoneyFile::accountTypeToString(file->account(*it).accountType()),
-          file->totalBalance(*it).formatMoney());
+          m_accountMap[*it]);
 
-    QCStringList subAccounts = file->account(*it).accountList();
+    QCStringList subAccounts = m_accountMap[*it].accountList();
     if (subAccounts.count() >= 1)
     {
-      showSubAccounts(subAccounts, accountItem, file);
+      showSubAccounts(subAccounts, accountItem, group);
     }
   }
 }
@@ -379,10 +401,10 @@ void KAccountsView::clear(void)
 
 void KAccountsView::resizeEvent(QResizeEvent* e)
 {
-  accountListView->setColumnWidth(0, 400);
-  accountListView->setColumnWidth(1,150);
-  int totalWidth=accountListView->width();
-  accountListView->setColumnWidth(2, totalWidth-550-5);
+  //accountListView->setColumnWidth(0, 400);
+  //accountListView->setColumnWidth(1,150);
+  //int totalWidth=accountListView->width();
+  // accountListView->setColumnWidth(2, totalWidth-550-5);
 
   // call base class resizeEvent()
   //KBankViewDecl::resizeEvent(e);
@@ -417,13 +439,7 @@ void KAccountsView::slotSelectionChanged(QListViewItem *item)
 
 void KAccountsView::show()
 {
-  if (m_bSignals)
+  emit signalViewActivated();
 
-    emit signalViewActivated();
   QWidget::show();
-}
-
-void KAccountsView::setSignals(bool enable)
-{
-  m_bSignals=enable;
 }

@@ -41,13 +41,12 @@
 
 #include "../mymoney/mymoneyutils.h"
 #include "../mymoney/mymoneyaccount.h"
-#include "kledgerview.h"
 
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
 class KComboBox;
-class KTransactionView;
+class KLedgerView;
 
 /**
   *@author Thomas Baumgart

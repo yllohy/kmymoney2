@@ -213,12 +213,15 @@ void KMyMoneyView::slotBankEdit()
   {
     MyMoneyFile* file = MyMoneyFile::instance();
     MyMoneyInstitution institution = file->institution(accountsView->currentInstitution(bankSuccess));
+
+
+
     // bankSuccess is not checked anymore because m_file->institution will throw anyway
     KNewBankDlg dlg(institution, true, this, "edit_bank");
     if (dlg.exec())
     {
       file->modifyInstitution(dlg.institution());
-      accountsView->refresh("");
+      // FIXME: remove accountsView->refresh("");
     }
   }
   catch(MyMoneyException *e)
@@ -248,7 +251,7 @@ void KMyMoneyView::slotBankDelete()
     if ((KMessageBox::questionYesNo(this, msg))==KMessageBox::No)
       return;
     file->removeInstitution(institution);
-    accountsView->refresh("");
+    // FIXME: remove accountsView->refresh("");
   }
   catch (MyMoneyException *e)
   {
@@ -280,7 +283,7 @@ void KMyMoneyView::slotAccountEdit()
     if (dlg.exec())
     {
       file->modifyAccount(dlg.account());
-      accountsView->refresh("");
+      // FIXME: remove  accountsView->refresh("");
     }
   }
   catch (MyMoneyException *e)
@@ -319,7 +322,7 @@ void KMyMoneyView::slotAccountDelete()
 
     file->removeAccount(account);
   
-    accountsView->refresh("");
+    // FIXME: remove  accountsView->refresh("");
   }
   catch (MyMoneyException *e)
   {
@@ -379,9 +382,10 @@ bool KMyMoneyView::readFile(QString filename)
   }
   delete binaryReader;
 
-  accountsView->refresh("");
-  m_categoriesView->update("");
-
+  // update all views
+  accountsView->refreshView();
+  m_categoriesView->refreshView();
+  // FIXME: m_ledgerView->update();
   return true;
 }
 
@@ -426,7 +430,7 @@ void KMyMoneyView::slotBankNew(void)
       institution = dlg.institution();
 
       file->addInstitution(institution);
-      accountsView->refresh("");
+      // FIXME:  remove accountsView->refresh("");
     }
     catch (MyMoneyException *e)
     {
@@ -442,6 +446,7 @@ void KMyMoneyView::slotAccountNew(void)
 
   if (!fileOpen())
     return;
+
 
   MyMoneyAccount newAccount;
   MyMoneyAccount parentAccount;
@@ -506,6 +511,7 @@ void KMyMoneyView::slotAccountReconcile(void)
   pAccount = pBank->account(accountsView->currentAccount(accountSuccess));
   if (!pAccount || !accountSuccess) {
     qDebug("KMyMoneyView::slotAccountReconcile: Unable to grab the current account");
+
 
     return;
   }
@@ -628,7 +634,7 @@ void KMyMoneyView::newFile(void)
     //m_file->setCreateDate(QDate::currentDate() );  // This doesn't seem to exist.  Do we want it anymore, im not bothered.
 
     loadDefaultCategories();
-    accountsView->refresh("");
+    // FIXME: remove  accountsView->refresh("");
   }
 }
 
@@ -734,6 +740,7 @@ void KMyMoneyView::loadDefaultCategories(void)
       */
 
         } catch(MyMoneyException *e) {
+
           QString msg("Unable to add account '");
           msg += account.name() + ": " + e->what();
           qDebug(msg);
@@ -807,6 +814,7 @@ bool KMyMoneyView::parseDefaultCategory(QString& line, bool& income, QString& na
             else if (buffer.upper() == "FALSE")
 
               income = false;
+
             else
               return false;
 
@@ -876,7 +884,7 @@ void KMyMoneyView::viewAccountList(const QCString& selectAccount)
 
   if (fileOpen())
   {
-    accountsView->refresh(selectAccount);
+    // FIXME: remove accountsView->refresh(selectAccount);
   }
 
 }
@@ -931,7 +939,8 @@ void KMyMoneyView::viewTransactionList(void)
 
 void KMyMoneyView::settingsLists()
 {
-  // accountsView->refresh("");
+  accountsView->refreshView();
+  m_categoriesView->refreshView();
   m_ledgerView->refreshView();
 /*
   bool bankSuccess=false, accountSuccess=false;
@@ -1194,6 +1203,7 @@ bool KMyMoneyView::checkTransactionDescription(const MyMoneyTransaction *transac
 
 bool KMyMoneyView::checkTransactionNumber(const MyMoneyTransaction *transaction, const bool enabled, const QString number, const bool isRegExp)
 {
+
 /*
   if (!enabled)
     return true;
@@ -1322,44 +1332,6 @@ void KMyMoneyView::slotActivatedAccountsView()
 {
   m_realShowing = AccountsView;
 
-/*******************************************************
-
- *  DAMNED AWFUL HACK
-.* If anybody can think of an elegant way round this please
- * email mte@users.sourceforge.net.  09/02/2002.
-*******************************************************/
-accountsView->setSignals(false);
-transactionView->setSignals(false);
-
-  if (m_realShowing != AccountsView)
-    showPage(1);
-
-  if (m_showing == KMyMoneyView::TransactionList || m_showing == KMyMoneyView::InvestmentList)
-  {
-    accountsView->hide();
-    if (m_showing == KMyMoneyView::TransactionList)
-      transactionView->hide();
-    else
-      m_investmentView->hide();
-  }
- else
-  {
-    transactionView->hide();
-    m_investmentView->hide();
-    accountsView->show();
-    if (fileOpen())
-    {
-      accountsView->refresh("");
-    }
-    m_showing = BankList;
-  }
-
-accountsView->setSignals(true);
-transactionView->setSignals(true);
-/******************************************************
- * END OF AWFUL HACK
-*******************************************************/
-
   emit signalAccountsView();
 }
 
@@ -1381,6 +1353,7 @@ void KMyMoneyView::slotActivatedCategoriesView()
 {
 
   m_realShowing = CategoryView;
+
   emit signalCategoryView();
 }
 

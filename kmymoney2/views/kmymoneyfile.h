@@ -23,9 +23,8 @@
 #ifndef KMYMONEYFILE_H
 #define KMYMONEYFILE_H
 
-#include "../mymoney/mymoneyfile.h"
 #include "../mymoney/mymoneyaccount.h"
-#include "../mymoney/storage/mymoneyseqaccessmgr.h"
+class MyMoneySeqAccessMgr;
 
 /**
   *@author Michael Edwardes

@@ -138,6 +138,8 @@ void KGlobalLedgerView::refresh(void)
 
 void KGlobalLedgerView::refreshView(void)
 {
+  // FIXME: this should actually call all views on the stack not
+  //        only the current selected view
   if(m_currentView != 0)
     m_currentView->refreshView();
 }

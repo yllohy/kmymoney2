@@ -41,28 +41,7 @@
 // Project Includes
 
 #include "kbanklistitem.h"
-
-KAccountListItem::KAccountListItem(KListView *parent, const QString& accountName,
-  const QCString& accountID, const QString& typeName, const QString& balString)
-  : QListViewItem(parent), m_accountID(accountID)
-{
-  setPixmap(0, QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/22x22/actions/account.png")));
-  setText(0, accountName);
-  setText(1, typeName);
-  if (balString.length() >= 1)
-    setText(2, balString);
-}
-
-KAccountListItem::KAccountListItem(KAccountListItem *parent, const QString& accountName,
-  const QCString& accountID, const QString& typeName, const QString& balString)
-  : QListViewItem(parent), m_accountID(accountID)
-{
-  setPixmap(0, QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/22x22/actions/account.png")));
-  setText(0, accountName);
-  setText(1, typeName);
-  if (balString.length() >= 1)
-    setText(2, balString);
-}
+#include "../mymoney/mymoneyfile.h"
 
 KAccountListItem::KAccountListItem(KListView *parent, const MyMoneyAccount& account)
   : QListViewItem(parent)
@@ -75,7 +54,6 @@ KAccountListItem::KAccountListItem(KAccountListItem *parent, const MyMoneyAccoun
 {
   newAccount(account);
 }
-
 
 void KAccountListItem::newAccount(const MyMoneyAccount& account)
 {
@@ -96,10 +74,10 @@ void KAccountListItem::newAccount(const MyMoneyAccount& account)
   }
 }
 
-KAccountListItem::KAccountListItem(KListView *parent, const QString& institutionName, const QCString& institutionID)
-  : QListViewItem(parent), m_accountID(institutionID), m_bViewNormal(true)
+KAccountListItem::KAccountListItem(KListView *parent, const MyMoneyInstitution& institution)
+  : QListViewItem(parent), m_accountID(institution.id()), m_bViewNormal(true)
 {
-  setText(0, institutionName);
+  setText(0, institution.name());
 }
 
 KAccountListItem::~KAccountListItem()
@@ -130,7 +108,7 @@ void KAccountListItem::update(const QCString& accountId)
   }
 }
 
-QCString KAccountListItem::accountID(void)
+const QCString KAccountListItem::accountID(void) const
 {
   return m_accountID;
 }
@@ -154,5 +132,5 @@ void KAccountListItem::paintCell(QPainter *p, const QColorGroup & cg, int column
   }
   else
 */
-    QListViewItem::paintCell(p, cg, column, width, align);
+  QListViewItem::paintCell(p, cg, column, width, align);
 }

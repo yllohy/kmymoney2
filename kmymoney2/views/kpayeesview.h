@@ -23,10 +23,20 @@
 #ifndef KPAYEESVIEW_H
 #define KPAYEESVIEW_H
 
-#include <qwidget.h>
-#include "kpayeesviewdecl.h"
+// ----------------------------------------------------------------------------
+// QT Includes
 
-#include "../mymoney/mymoneyfile.h"
+#include <qwidget.h>
+
+// ----------------------------------------------------------------------------
+// KDE Includes
+
+// ----------------------------------------------------------------------------
+// Project Includes
+
+#include "kpayeesviewdecl.h"
+#include "../mymoney/mymoneyobserver.h"
+#include "../mymoney/mymoneypayee.h"
 
 /**
   *@author Michael Edwardes

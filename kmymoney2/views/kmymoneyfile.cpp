@@ -19,10 +19,11 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <klocale.h>
-#include "kmymoneyfile.h"
 
-// KMyMoneyFile *KMyMoneyFile::_instance = 0;
+#include <klocale.h>
+
+#include "kmymoneyfile.h"
+#include "../mymoney/storage/mymoneyseqaccessmgr.h"
 
 KMyMoneyFile::KMyMoneyFile()
 {

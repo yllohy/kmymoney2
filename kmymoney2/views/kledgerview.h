@@ -40,19 +40,18 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "../widgets/kmymoneyregister.h"
-#include "../widgets/kmymoneytransactionform.h"
-#include "../widgets/kmymoneypayee.h"
-#include "../widgets/kmymoneycategory.h"
-#include "../widgets/kmymoneyedit.h"
-#include "../widgets/kmymoneylineedit.h"
-#include "../widgets/kmymoneydateinput.h"
+class kMyMoneyRegister;
+class kMyMoneyTransactionForm;
+class kMyMoneyPayee;
+class kMyMoneyCategory;
+class kMyMoneyEdit;
+class kMyMoneyLineEdit;
+class kMyMoneyDateInput;
 
 #include "../mymoney/mymoneyaccount.h"
 #include "../mymoney/mymoneytransaction.h"
 #include "../mymoney/mymoneyobserver.h"
 
-class kMyMoneyRegister;
 
 /**
   *@author Thomas Baumgart

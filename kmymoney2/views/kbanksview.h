@@ -17,47 +17,71 @@
 #ifndef KBANKSVIEW_H
 #define KBANKSVIEW_H
 
+// ----------------------------------------------------------------------------
+// QT Includes
+
 #include <qwidget.h>
 #include <qlabel.h>
-
-#include <klocale.h>
 #include <qwidget.h>
 #include <qevent.h>
 #include <qsize.h>
 
+// ----------------------------------------------------------------------------
+// KDE Includes
+
+#include <klocale.h>
 #include <klistview.h>
 
-#include "../mymoney/mymoneyfile.h"
+// ----------------------------------------------------------------------------
+// Project Includes
+
+#include "../mymoney/mymoneyobserver.h"
+#include "../mymoney/mymoneyaccount.h"
 #include "kbankviewdecl.h"
 #include "kbanklistitem.h"
 
-// This class handles the bank 'view'.
-// It handles the resize event, the totals widgets
-// and the KBankListView itself
-class KAccountsView : public KBankViewDecl  {
+/**
+  *@author Michael Edwardes, Thomas Baumgart
+  */
+
+/**
+  * This class handles the bank and account hierarchical 'view'.
+  * It handles the resize event, the totals widgets
+  * and the KAccountListView itself
+  */
+class KAccountsView : public KBankViewDecl, MyMoneyObserver  {
    Q_OBJECT
 private:
   bool m_bSelectedAccount;
   QCString m_selectedAccount;
-  bool m_bSignals;
+  // bool m_bSignals;
   bool m_bViewNormalAccountsView;
   QCString m_selectedInstitution;
   bool m_bSelectedInstitution;
 
-  void showSubAccounts(QCStringList accounts, KAccountListItem *parentItem, MyMoneyFile* file);
+  void refresh(const QCString& selectAccount);
+  void refreshTotalProfit(void);
+  void showSubAccounts(const QCStringList& accounts, KAccountListItem *parentItem, const QString& group);
+
+  QMap<QCString, MyMoneyAccount> m_accountMap;
 
 public: 
   KAccountsView(QWidget *parent=0, const char *name=0);
   ~KAccountsView();
   QCString currentAccount(bool&);
   QCString currentInstitution(bool&);
-  void refresh(const QCString& selectAccount);
   void clear(void);
   void show();
 
-  /* NEVER USE unless you know what you're doing. */
-  /* Contact mte@users.sourceforge.net for more info */
-  void setSignals(bool enable);
+  void refreshView(void);
+
+  /**
+    * This method is called by the MyMoneyFile object, whenever the
+    * account hierarchy changes within the MyMoneyFile engine.
+    *
+    * @param id reference to QCString of the id
+    */
+  void update(const QCString& id);
 
 protected:
   void resizeEvent(QResizeEvent*);
@@ -77,7 +101,7 @@ protected slots:
   void slotListRightMouse(QListViewItem* item, const QPoint& point, int);
 
   void slotSelectionChanged(QListViewItem *item);
-  
+
 signals:
   void accountRightMouseClick();
   void accountDoubleClick();
@@ -85,6 +109,7 @@ signals:
   void signalViewActivated();
   void bankRightMouseClick();
   void rightMouseClick();
+
 };
 
 #endif

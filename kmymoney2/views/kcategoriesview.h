@@ -36,7 +36,7 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "../mymoney/mymoneyfile.h"
+#include "../mymoney/mymoneyaccount.h"
 #include "../mymoney/mymoneyobserver.h"
 #include "kcategoriesviewdecl.h"
 #include "kbanklistitem.h"
@@ -51,11 +51,12 @@ private:
 	QString m_lastCat;
 	bool m_suspendUpdate;
 
-  QMap<QCString, MyMoneyAccount> accountMap;
+  QMap<QCString, MyMoneyAccount> m_accountMap;
 
   void readConfig(void);
   void writeConfig(void);
   void refresh(void);
+  void update(const QCString& id);
   void showSubAccounts(QCStringList accounts, KAccountListItem *parentItem, MyMoneyFile *file, const QString&);
 
 protected:
@@ -75,7 +76,8 @@ public:
 	~KCategoriesView();
   void show();
 
-  void update(const QCString& id);
+
+  void refreshView(void);
 
   /**
     * This method is used to suppress updates for specific times

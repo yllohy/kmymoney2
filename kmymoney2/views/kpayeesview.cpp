@@ -19,27 +19,36 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+
+// ----------------------------------------------------------------------------
+// QT Includes
+#include <qpushbutton.h>
+#include <qcombobox.h>
+#include <qlineedit.h>
+#include <qlabel.h>
+#include <qmultilineedit.h>
+#include <qpixmap.h>
+
+// ----------------------------------------------------------------------------
+// KDE Includes
+
 #include <kglobal.h>
 #include <klocale.h>
+#include <kconfig.h>
+#include <kmessagebox.h>
+
 #if QT_VERSION > 300
 #include <kstandarddirs.h>
 #else
 #include <kstddirs.h>
 #endif
 
-#include <qpixmap.h>
-
-#include <kglobal.h>
-#include <kconfig.h>
-#include <klocale.h>
-#include <kmessagebox.h>
-#include <qpushbutton.h>
-#include <qcombobox.h>
-#include <qlineedit.h>
-#include <qlabel.h>
-#include <qmultilineedit.h>
+// ----------------------------------------------------------------------------
+// Project Includes
 
 #include "kpayeesview.h"
+#include "../mymoney/mymoneyfile.h"
 
 KPayeesView::KPayeesView(QWidget *parent, const char *name )
   : kPayeesViewDecl(parent,name)

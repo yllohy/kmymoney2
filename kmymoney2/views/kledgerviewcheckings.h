@@ -36,7 +36,6 @@
 // Project Includes
 
 #include "kledgerview.h"
-#include "../widgets/kmymoneyregistercheckings.h"
 
 /**
   *@author Thomas Baumgart
