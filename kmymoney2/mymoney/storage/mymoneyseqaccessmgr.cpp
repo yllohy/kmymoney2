@@ -1108,7 +1108,7 @@ void MyMoneySeqAccessMgr::loadInstitution(const MyMoneyInstitution& inst)
   it = m_institutionList.find(inst.id());
   if(it != m_institutionList.end()) {
     QString msg = "Duplicate institution  '";
-    msg += inst.id() + "' during loadInsitution()";
+    msg += inst.id() + "' during loadInstitution()";
     throw new MYMONEYEXCEPTION(msg);
   }
   m_institutionList[inst.id()] = inst;

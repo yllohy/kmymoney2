@@ -175,7 +175,7 @@ public:
     *
     * An exception will be thrown upon error conditions.
     *
-    * @param institution MyMoneyInsitution the account should be added to
+    * @param institution MyMoneyInstitution the account should be added to
     * @param account MyMoneyAccount to be added
     */
   virtual void addAccount(MyMoneyInstitution& institution, MyMoneyAccount& account) = 0;

@@ -230,7 +230,7 @@ public:
     *
     * An exception will be thrown upon error conditions.
     *
-    * @param institution MyMoneyInsitution the account should be added to
+    * @param institution MyMoneyInstitution the account should be added to
     * @param account MyMoneyAccount to be added
     *
     * @deprecated This method is only provided as long as we provide

@@ -433,7 +433,7 @@ revision history. (see installation appendix comment) -->
 
 <sect2 id="newbankid"><title id="newbankid.title">Creating a new institution.</title>
 <para>
-  To create a new institution choose either <guimenu>Insitution</guimenu>
+  To create a new institution choose either <guimenu>Institution</guimenu>
   <guimenuitem>Add new..</guimenuitem> or click on the
   <guiicon><inlinemediaobject>
   <imageobject>
