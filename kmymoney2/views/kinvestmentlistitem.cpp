@@ -140,7 +140,7 @@ const QString KInvestmentListItem::calculateGain(const equity_price_history& his
       return QString("0.0%");
     }
 
-    qDebug("Current date/value to use is %s/%s, Previous is %s/%s", tempDate.toString().data(), currentValue.toString().data(), comparisonDate.toString().data(), comparisonValue.toString().data());
+    //qDebug("Current date/value to use is %s/%s, Previous is %s/%s", tempDate.toString().data(), currentValue.toString().data(), comparisonDate.toString().data(), comparisonValue.toString().data());
 
     //compute the percentage difference
     if(comparisonValue != currentValue)
