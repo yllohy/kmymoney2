@@ -508,12 +508,11 @@ void QueryTable::constructTransactionTable(void)
 
             // This final screening level includes the check to exclude non-tax categories
             // in a tax report.  This is something of a hack, although it functions fine.
-            // Better would be to handle this at the category selector level with a "Tax
+            //
+            // TODO: handle this at the category selector level with a "Tax
             // Categories" button.  But then we'd need to persist that selection in the
             // filter so that newly changed tax categories get updated, similiar to the
             // 'date lock'.  Until we do that, the current way will work.
-            //
-            // TODO: Do this!
 
             // if this is a transfer
             if (
@@ -561,6 +560,107 @@ skip_addsplit:
   }
 }
 
+void QueryTable::constructPerformanceRow( const MyMoneyAccount& account, TableRow& result ) const
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
+  MyMoneySecurity security = MyMoneyFile::instance()->security(account.currencyId());
+  
+  result["equitytype"] = KMyMoneyUtils::securityTypeToString(security.securityType());
+
+  //
+  // Calculate performance
+  //
+
+  // The following columns are created:
+  //    Account, Value on <Opening>, Buys, Sells, Income, Value on <Closing>, Return%
+
+  MyMoneyReport report = m_config;
+  QDate startingDate = report.fromDate();
+  QDate endingDate = report.toDate();
+  
+  report.validDateRange( startingDate, endingDate );
+
+  MyMoneyMoney startingBal = file->balance(account.id(),startingDate) * file->price(security.id(), QCString(), startingDate).rate();
+  MyMoneyMoney endingBal = file->balance((account).id(),endingDate) * file->price(security.id(), QCString(), endingDate).rate();
+  CashFlowList buys;
+  CashFlowList sells;
+  CashFlowList reinvestincome;
+  CashFlowList cashincome;
+
+  report.setReportAllSplits(false);
+  report.setConsiderCategory(true);
+  report.clearAccountFilter();
+  report.addAccount((account).id());
+  QValueList<MyMoneyTransaction> transactions = file->transactionList( report );
+  QValueList<MyMoneyTransaction>::const_iterator it_transaction = transactions.begin();
+  while ( it_transaction != transactions.end() )
+  {
+    // s is the split for the stock account
+    MyMoneySplit s = (*it_transaction).splitByAccount((account).id());
+
+    const QCString& action = s.action();
+    if ( action == MyMoneySplit::ActionBuyShares )
+    {
+      if ( s.value().isPositive() )
+        buys += CashFlowListItem( (*it_transaction).postDate(), -s.value() );
+      else
+        sells += CashFlowListItem( (*it_transaction).postDate(), -s.value() );
+    }
+    else if ( action == MyMoneySplit::ActionReinvestDividend )
+    {
+      reinvestincome += CashFlowListItem( (*it_transaction).postDate(), s.value() );
+    }
+    else if ( action == MyMoneySplit::ActionDividend )
+    {
+      // find the split with the category, which has the actual amount of the dividend
+      QValueList<MyMoneySplit> splits = (*it_transaction).splits();
+      QValueList<MyMoneySplit>::const_iterator it_split = splits.begin();
+      bool found = false;
+      while( it_split != splits.end() )
+      {
+        QCString accid = (*it_split).accountId();
+        MyMoneyAccount acc = file->account(accid);
+        if ( acc.accountType() == MyMoneyAccount::Income || acc.accountType() == MyMoneyAccount::Expense )
+        {
+          found = true;
+          break;
+        }
+        ++it_split;
+      }
+
+      if ( found )
+        cashincome += CashFlowListItem( (*it_transaction).postDate(), -(*it_split).value() );
+    }
+    ++it_transaction;
+  }
+
+  CashFlowList all;
+  all += buys;
+  all += sells;
+  //we do not inclue the reinvested dividends, because these do not represent a cash flow event.
+  //all += reinvestincome;
+  all += cashincome;
+  all += CashFlowListItem(startingDate,-startingBal);
+  all += CashFlowListItem(endingDate,endingBal);
+
+  try
+  {
+    result["return"] = MyMoneyMoney(all.IRR(),10000).toString();
+  }
+  catch (QString e)
+  {
+    kdDebug(2) << e << endl;
+  }
+
+  result["buys"] = (-(buys.total())).toString();
+  result["sells"] = (-(sells.total())).toString();
+  result["cashincome"] = cashincome.total().toString();
+  result["reinvestincome"] = reinvestincome.total().toString();
+  result["startingbal"] = startingBal.toString();
+  result["endingbal"] = endingBal.toString();
+
+}
+
 void QueryTable::constructAccountTable(void)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
@@ -579,9 +679,48 @@ void QueryTable::constructAccountTable(void)
     {
       TableRow qaccountrow;
 
+      //
+      // Handle currency conversion
+      //
+      
+      // accountcurrency is the final underlying currency of the account.  It must
+      // be an actual currency, not an investment.
+      MyMoneySecurity accountcurrency = MyMoneyFile::instance()->security((*it_account).currencyId());
+      
+      // accurrencyprice is the price of the account's currency in the DISPLAY 
+      // currency.  display currency is the file's base currency if the
+      // "convert to base currency" property is set in the report, or the
+      // account currency itself otherwise.
+      MyMoneyMoney accountcurrencyprice = 1.0;
+      
+      // stockprice is the price of the account's underlying stock in the stock's
+      // underlying currency, or 1.0 if there is no underlying stock
+      MyMoneyMoney stockprice = 1.0;
+      
+      // if the underlying security of this account is NOT a currency, then we have to find the
+      // underlying currency of THAT
+      if ( ! accountcurrency.isCurrency() )
+      {
+        MyMoneySecurity stockcurrency = MyMoneyFile::instance()->security(accountcurrency.tradingCurrency());
+        stockprice = file->price(accountcurrency.id(),stockcurrency.id(),QDate::currentDate()).rate();
+        accountcurrency = stockcurrency;        
+      }
+
+      if ( m_config.isConvertCurrency() )
+      {
+        // display currency is base currency, so set the accountcurrencyprice
+        if ( accountcurrency.id() != file->baseCurrency().id() )
+          accountcurrencyprice = file->price(accountcurrency.id(),file->baseCurrency().id(),m_config.toDate(),false).rate();
+      }
+      else
+      {
+        // display currency is the account currency.  display this fact in the report
+        qaccountrow["currency"] = accountcurrency.tradingSymbol();
+      }
+
       qaccountrow["account"] = (*it_account).name();
       qaccountrow["accountid"] = (*it_account).id();
-
+      
       // Find the top-most parent account
       QCString topaccountid = (*it_account).id();
       QCString parentid = file->account(topaccountid).parentAccountId();
@@ -595,10 +734,8 @@ void QueryTable::constructAccountTable(void)
       MyMoneyMoney shares = file->balance((*it_account).id(),m_config.toDate());
       qaccountrow["shares"] = shares.toString();
 
-      MyMoneySecurity security = MyMoneyFile::instance()->security((*it_account).currencyId());
-      MyMoneyMoney price = file->price(security.id(),file->baseCurrency().id(),m_config.toDate(),false).rate();
-      qaccountrow["price"] = price.toString();
-      qaccountrow["value"] = ( price * shares ).toString();
+      qaccountrow["price"] = ( stockprice * accountcurrencyprice ).toString();
+      qaccountrow["value"] = ( stockprice * accountcurrencyprice * shares ).toString();
 
       QCString iid = (*it_account).institutionId();
       if ( iid.isEmpty() )
@@ -608,132 +745,11 @@ void QueryTable::constructAccountTable(void)
 
       qaccountrow["type"] = KMyMoneyUtils::accountTypeToString((*it_account).accountType());
 
+      // TODO: Only do this if the report we're making really needs performance.  Otherwise
+      // it's an expensive calculation done for no reason
       if ( (*it_account).accountType() == MyMoneyAccount::Stock )
       {
-        qaccountrow["equitytype"] = KMyMoneyUtils::securityTypeToString(security.securityType());
-
-        //
-        // Calculate return
-        //
-        // This is done all the time now.  A performance improvement would be to calculate this
-        // only for reports that will actually use it.
-        //
-
-        //  Columns are Account, Value on <Opening>, Buys, Sells, Income, Value on <Closing>, Return%
-
-        MyMoneyReport report = m_config;
-        QDate startingDate = report.fromDate();
-        QDate endingDate = report.toDate();
-
-        // if either begin or end date are invalid we have one of the following
-        // possible date filters:
-        //
-        // a) begin date not set - first transaction until given end date
-        // b) end date not set   - from given date until last transaction
-        // c) both not set       - first transaction until last transaction
-        //
-        // If there is no transaction in the engine at all, we use the current
-        // year as the filter criteria.
-
-        if ( !startingDate.isValid() || !endingDate.isValid()) {
-          QValueList<MyMoneyTransaction> list = file->transactionList(report);
-          QDate tmpBegin, tmpEnd;
-
-          if(!list.isEmpty()) {
-            qHeapSort(list);
-            tmpBegin = list.front().postDate();
-            tmpEnd = list.back().postDate();
-          } else {
-            tmpBegin = QDate(QDate::currentDate().year(),1,1); // the first date in the file
-            tmpEnd = QDate(QDate::currentDate().year(),12,31);// the last date in the file
-          }
-          if(!startingDate.isValid())
-            startingDate = tmpBegin;
-          if(!endingDate.isValid())
-            endingDate = tmpEnd;
-        }
-        if ( startingDate > endingDate )
-          startingDate = endingDate;
-
-        MyMoneySecurity equity = file->security( (*it_account).currencyId() );
-        MyMoneyMoney startingBal = file->balance((*it_account).id(),startingDate) * file->price(equity.id(), QCString(), startingDate).rate();
-        MyMoneyMoney endingBal = file->balance((*it_account).id(),endingDate) * file->price(equity.id(), QCString(), endingDate).rate();
-        CashFlowList buys;
-        CashFlowList sells;
-        CashFlowList reinvestincome;
-        CashFlowList cashincome;
-
-        report.setReportAllSplits(false);
-        report.setConsiderCategory(true);
-        report.clearAccountFilter();
-        report.addAccount((*it_account).id());
-        QValueList<MyMoneyTransaction> transactions = file->transactionList( report );
-        QValueList<MyMoneyTransaction>::const_iterator it_transaction = transactions.begin();
-        while ( it_transaction != transactions.end() )
-        {
-          // s is the split for the stock account
-          MyMoneySplit s = (*it_transaction).splitByAccount((*it_account).id());
-
-          const QCString& action = s.action();
-          if ( action == MyMoneySplit::ActionBuyShares )
-          {
-            if ( s.value().isPositive() )
-              buys += CashFlowListItem( (*it_transaction).postDate(), -s.value() );
-            else
-              sells += CashFlowListItem( (*it_transaction).postDate(), -s.value() );
-          }
-          else if ( action == MyMoneySplit::ActionReinvestDividend )
-          {
-            reinvestincome += CashFlowListItem( (*it_transaction).postDate(), s.value() );
-          }
-          else if ( action == MyMoneySplit::ActionDividend )
-          {
-            // find the split with the category, which has the actual amount of the dividend
-            QValueList<MyMoneySplit> splits = (*it_transaction).splits();
-            QValueList<MyMoneySplit>::const_iterator it_split = splits.begin();
-            bool found = false;
-            while( it_split != splits.end() )
-            {
-              QCString accid = (*it_split).accountId();
-              MyMoneyAccount acc = file->account(accid);
-              if ( acc.accountType() == MyMoneyAccount::Income || acc.accountType() == MyMoneyAccount::Expense )
-              {
-                found = true;
-                break;
-              }
-              ++it_split;
-            }
-
-            if ( found )
-              cashincome += CashFlowListItem( (*it_transaction).postDate(), -(*it_split).value() );
-          }
-          ++it_transaction;
-        }
-
-        CashFlowList all;
-        all += buys;
-        all += sells;
-        //we do not inclue the reinvested dividends, because these do not represent a cash flow event.
-        //all += reinvestincome;
-        all += cashincome;
-        all += CashFlowListItem(startingDate,-startingBal);
-        all += CashFlowListItem(endingDate,endingBal);
-
-        try
-        {
-          qaccountrow["return"] = MyMoneyMoney(all.IRR(),10000).toString();
-        }
-        catch (QString e)
-        {
-          kdDebug(2) << e << endl;
-        }
-
-        qaccountrow["buys"] = (-(buys.total())).toString();
-        qaccountrow["sells"] = (-(sells.total())).toString();
-        qaccountrow["cashincome"] = cashincome.total().toString();
-        qaccountrow["reinvestincome"] = reinvestincome.total().toString();
-        qaccountrow["startingbal"] = startingBal.toString();
-        qaccountrow["endingbal"] = endingBal.toString();
+        constructPerformanceRow( *it_account, qaccountrow );
       }
       else
         qaccountrow["equitytype"] = QString();

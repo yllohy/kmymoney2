@@ -1,4 +1,8 @@
 2005-02-05 Ace Jones <acejones@users.sourceforge.net>
+  * Fixed account query reports to handle foreign stocks
+  * Minor clean-ups in query reports
+  * Really fixed report unit tests to deal with changes in handling of
+    opening balances
   * Updated artwork supplied by Robert Wadley
   * Added Tony Bloomfield to the credits
 

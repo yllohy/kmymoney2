@@ -1308,44 +1308,48 @@ void KReportsViewTest::testQueryBasics()
     XMLandback(filter);
     QueryTable qtbl_1(filter);
 
-    //writeTabletoHTML(qtbl_1,"Transactions by Category.html");   
+    writeTabletoHTML(qtbl_1,"Transactions by Category.html");   
     CPPUNIT_ASSERT(qtbl_1.m_transactions.count() == 14);
-    CPPUNIT_ASSERT(qtbl_1.m_transactions[0]["categorytype"]=="Expense");
-    CPPUNIT_ASSERT(qtbl_1.m_transactions[0]["category"]=="Parent");
-    CPPUNIT_ASSERT(qtbl_1.m_transactions[0]["postdate"]=="2004-02-01");
-    CPPUNIT_ASSERT(qtbl_1.m_transactions[11]["categorytype"]=="Expense");
-    CPPUNIT_ASSERT(qtbl_1.m_transactions[11]["category"]=="Solo");
-    CPPUNIT_ASSERT(qtbl_1.m_transactions[11]["postdate"]=="2005-01-01");
+    CPPUNIT_ASSERT(qtbl_1.m_transactions[0]["categorytype"]=="Equity");
+    CPPUNIT_ASSERT(qtbl_1.m_transactions[0]["category"]=="Opening Balances");
+    CPPUNIT_ASSERT(qtbl_1.m_transactions[0]["postdate"]=="2004-05-15");
+    CPPUNIT_ASSERT(qtbl_1.m_transactions[2]["categorytype"]=="Expense");
+    CPPUNIT_ASSERT(qtbl_1.m_transactions[2]["category"]=="Parent");
+    CPPUNIT_ASSERT(qtbl_1.m_transactions[2]["postdate"]=="2004-02-01");
+    CPPUNIT_ASSERT(qtbl_1.m_transactions[13]["categorytype"]=="Expense");
+    CPPUNIT_ASSERT(qtbl_1.m_transactions[13]["category"]=="Solo");
+    CPPUNIT_ASSERT(qtbl_1.m_transactions[13]["postdate"]=="2005-01-01");
 
     QString html = qtbl_1.renderHTML();
     CPPUNIT_ASSERT( searchHTML(html,i18n("Total")+" Parent") == -(moParent1 + moParent2) * 3 );
     CPPUNIT_ASSERT( searchHTML(html,i18n("Total")+" Parent: Child") == -(moChild) * 3 );
     CPPUNIT_ASSERT( searchHTML(html,i18n("Total")+" Solo") == -(moSolo) * 3 );
     CPPUNIT_ASSERT( searchHTML(html,i18n("Total")+" Expense") == -(moParent1 + moParent2 + moSolo + moChild) * 3 );
-    CPPUNIT_ASSERT( searchHTML(html,i18n("Grand Total")) == -(moParent1 + moParent2 + moSolo + moChild) * 3 );
+    CPPUNIT_ASSERT( searchHTML(html,i18n("Grand Total")) == -(moParent1 + moParent2 + moSolo + moChild) * 3 + moCheckingOpen + moCreditOpen );
     filter.setRowType( MyMoneyReport::eTopCategory );
     cols = MyMoneyReport::eQCnumber | MyMoneyReport::eQCpayee | MyMoneyReport::eQCaccount;
     filter.setQueryColumns( static_cast<MyMoneyReport::EQueryColumns>(cols) ); // 
+    filter.setName("Transactions by Top Category");
     XMLandback(filter);
     QueryTable qtbl_2(filter);
    
-    //writeTabletoHTML(qtbl_2,"Transactions by Top Category.html");   
+    writeTabletoHTML(qtbl_2,"Transactions by Top Category.html");   
     CPPUNIT_ASSERT(qtbl_2.m_transactions.count() == 14);
-    CPPUNIT_ASSERT(qtbl_2.m_transactions[0]["categorytype"]=="Expense");
-    CPPUNIT_ASSERT(qtbl_2.m_transactions[0]["topcategory"]=="Parent");
-    CPPUNIT_ASSERT(qtbl_2.m_transactions[0]["postdate"]=="2004-02-01");
-    CPPUNIT_ASSERT(qtbl_2.m_transactions[8]["categorytype"]=="Expense");
-    CPPUNIT_ASSERT(qtbl_2.m_transactions[8]["topcategory"]=="Parent");
-    CPPUNIT_ASSERT(qtbl_2.m_transactions[8]["postdate"]=="2005-09-01");
-    CPPUNIT_ASSERT(qtbl_2.m_transactions[11]["categorytype"]=="Expense");
-    CPPUNIT_ASSERT(qtbl_2.m_transactions[11]["topcategory"]=="Solo");
-    CPPUNIT_ASSERT(qtbl_2.m_transactions[11]["postdate"]=="2005-01-01");
+    CPPUNIT_ASSERT(qtbl_2.m_transactions[2]["categorytype"]=="Expense");
+    CPPUNIT_ASSERT(qtbl_2.m_transactions[2]["topcategory"]=="Parent");
+    CPPUNIT_ASSERT(qtbl_2.m_transactions[2]["postdate"]=="2004-02-01");
+    CPPUNIT_ASSERT(qtbl_2.m_transactions[10]["categorytype"]=="Expense");
+    CPPUNIT_ASSERT(qtbl_2.m_transactions[10]["topcategory"]=="Parent");
+    CPPUNIT_ASSERT(qtbl_2.m_transactions[10]["postdate"]=="2005-09-01");
+    CPPUNIT_ASSERT(qtbl_2.m_transactions[13]["categorytype"]=="Expense");
+    CPPUNIT_ASSERT(qtbl_2.m_transactions[13]["topcategory"]=="Solo");
+    CPPUNIT_ASSERT(qtbl_2.m_transactions[13]["postdate"]=="2005-01-01");
 
     html = qtbl_2.renderHTML();
     CPPUNIT_ASSERT( searchHTML(html,i18n("Total")+" Parent") == -(moParent1 + moParent2 + moChild) * 3 );
     CPPUNIT_ASSERT( searchHTML(html,i18n("Total")+" Solo") == -(moSolo) * 3 );
     CPPUNIT_ASSERT( searchHTML(html,i18n("Total")+" Expense") == -(moParent1 + moParent2 + moSolo + moChild) * 3 );
-    CPPUNIT_ASSERT( searchHTML(html,i18n("Grand Total")) == -(moParent1 + moParent2 + moSolo + moChild) * 3 );
+    CPPUNIT_ASSERT( searchHTML(html,i18n("Grand Total")) == -(moParent1 + moParent2 + moSolo + moChild) * 3 + moCheckingOpen + moCreditOpen);
     
     filter.setRowType( MyMoneyReport::eAccount );
     filter.setName("Transactions by Account");
@@ -1354,19 +1358,19 @@ void KReportsViewTest::testQueryBasics()
     XMLandback(filter);
     QueryTable qtbl_3(filter);
     
-    //writeTabletoHTML(qtbl_3,"Transactions by Account.html");   
+    writeTabletoHTML(qtbl_3,"Transactions by Account.html");   
     CPPUNIT_ASSERT(qtbl_3.m_transactions.count() == 14);
     CPPUNIT_ASSERT(qtbl_3.m_transactions[0]["account"]=="Checking Account");
     CPPUNIT_ASSERT(qtbl_3.m_transactions[0]["category"]=="Solo");
     CPPUNIT_ASSERT(qtbl_3.m_transactions[0]["postdate"]=="2004-01-01");
-    CPPUNIT_ASSERT(qtbl_3.m_transactions[11]["account"]=="Credit Card");
-    CPPUNIT_ASSERT(qtbl_3.m_transactions[11]["category"]=="Parent");
-    CPPUNIT_ASSERT(qtbl_3.m_transactions[11]["postdate"]=="2005-09-01");
+    CPPUNIT_ASSERT(qtbl_3.m_transactions[13]["account"]=="Credit Card");
+    CPPUNIT_ASSERT(qtbl_3.m_transactions[13]["category"]=="Parent");
+    CPPUNIT_ASSERT(qtbl_3.m_transactions[13]["postdate"]=="2005-09-01");
 
     html = qtbl_3.renderHTML();
-    CPPUNIT_ASSERT( searchHTML(html,i18n("Total")+" Checking Account") == -(moSolo) * 3 );
-    CPPUNIT_ASSERT( searchHTML(html,i18n("Total")+" Credit Card") == -(moParent1 + moParent2 + moChild) * 3 );
-    CPPUNIT_ASSERT( searchHTML(html,i18n("Grand Total")) == -(moParent1 + moParent2 + moSolo + moChild) * 3 );
+    CPPUNIT_ASSERT( searchHTML(html,i18n("Total")+" Checking Account") == -(moSolo) * 3 + moCheckingOpen);
+    CPPUNIT_ASSERT( searchHTML(html,i18n("Total")+" Credit Card") == -(moParent1 + moParent2 + moChild) * 3 + moCreditOpen );
+    CPPUNIT_ASSERT( searchHTML(html,i18n("Grand Total")) == -(moParent1 + moParent2 + moSolo + moChild) * 3 + moCheckingOpen + moCreditOpen);
     
     filter.setRowType( MyMoneyReport::ePayee );
     filter.setName("Transactions by Payee");
@@ -1375,7 +1379,7 @@ void KReportsViewTest::testQueryBasics()
     XMLandback(filter);
     QueryTable qtbl_4(filter);
 
-    //writeTabletoHTML(qtbl_4,"Transactions by Payee.html");   
+    writeTabletoHTML(qtbl_4,"Transactions by Payee.html");   
     CPPUNIT_ASSERT(qtbl_4.m_transactions.count() == 14);
     CPPUNIT_ASSERT(qtbl_4.m_transactions[0]["payee"]=="Test Payee");
     CPPUNIT_ASSERT(qtbl_4.m_transactions[0]["category"]=="Solo");
@@ -1386,10 +1390,13 @@ void KReportsViewTest::testQueryBasics()
     CPPUNIT_ASSERT(qtbl_4.m_transactions[11]["payee"]=="Test Payee");
     CPPUNIT_ASSERT(qtbl_4.m_transactions[11]["category"]=="Parent");
     CPPUNIT_ASSERT(qtbl_4.m_transactions[11]["postdate"]=="2005-09-01");
+    CPPUNIT_ASSERT(qtbl_4.m_transactions[13]["payee"]=="[Empty Payee]");
+    CPPUNIT_ASSERT(qtbl_4.m_transactions[13]["category"]=="Opening Balances");
+    CPPUNIT_ASSERT(qtbl_4.m_transactions[13]["postdate"]=="2004-07-15");
 
     html = qtbl_4.renderHTML();
     CPPUNIT_ASSERT( searchHTML(html,i18n("Total")+" Test Payee") == -(moParent1 + moParent2 + moSolo + moChild) * 3 );
-    CPPUNIT_ASSERT( searchHTML(html,i18n("Grand Total")) == -(moParent1 + moParent2 + moSolo + moChild) * 3 );
+    CPPUNIT_ASSERT( searchHTML(html,i18n("Grand Total")) == -(moParent1 + moParent2 + moSolo + moChild) * 3 + moCheckingOpen + moCreditOpen);
 
     filter.setRowType( MyMoneyReport::eMonth );
     filter.setName("Transactions by Month");
@@ -1398,23 +1405,23 @@ void KReportsViewTest::testQueryBasics()
     XMLandback(filter);
     QueryTable qtbl_5(filter);
     
-    //writeTabletoHTML(qtbl_5,"Transactions by Month.html");
+    writeTabletoHTML(qtbl_5,"Transactions by Month.html");
     CPPUNIT_ASSERT(qtbl_5.m_transactions.count() == 14);
     CPPUNIT_ASSERT(qtbl_5.m_transactions[0]["payee"]=="Test Payee");
     CPPUNIT_ASSERT(qtbl_5.m_transactions[0]["category"]=="Solo");
     CPPUNIT_ASSERT(qtbl_5.m_transactions[0]["postdate"]=="2004-01-01");
-    CPPUNIT_ASSERT(qtbl_5.m_transactions[8]["payee"]=="Test Payee");
-    CPPUNIT_ASSERT(qtbl_5.m_transactions[8]["category"]=="Parent: Child");
-    CPPUNIT_ASSERT(qtbl_5.m_transactions[8]["postdate"]=="2004-11-07");
-    CPPUNIT_ASSERT(qtbl_5.m_transactions[11]["payee"]=="Test Payee");
-    CPPUNIT_ASSERT(qtbl_5.m_transactions[11]["category"]=="Parent");
-    CPPUNIT_ASSERT(qtbl_5.m_transactions[11]["postdate"]=="2005-09-01");
+    CPPUNIT_ASSERT(qtbl_5.m_transactions[10]["payee"]=="Test Payee");
+    CPPUNIT_ASSERT(qtbl_5.m_transactions[10]["category"]=="Parent: Child");
+    CPPUNIT_ASSERT(qtbl_5.m_transactions[10]["postdate"]=="2004-11-07");
+    CPPUNIT_ASSERT(qtbl_5.m_transactions[13]["payee"]=="Test Payee");
+    CPPUNIT_ASSERT(qtbl_5.m_transactions[13]["category"]=="Parent");
+    CPPUNIT_ASSERT(qtbl_5.m_transactions[13]["postdate"]=="2005-09-01");
 
     html = qtbl_5.renderHTML();
     CPPUNIT_ASSERT( searchHTML(html,i18n("Total")+" Month of 2004-01-01") == -moSolo );
     CPPUNIT_ASSERT( searchHTML(html,i18n("Total")+" Month of 2004-11-01") == -(moChild) * 3 );
-    CPPUNIT_ASSERT( searchHTML(html,i18n("Total")+" Month of 2005-05-01") == -moParent1 );
-    CPPUNIT_ASSERT( searchHTML(html,i18n("Grand Total")) == -(moParent1 + moParent2 + moSolo + moChild) * 3 );
+    CPPUNIT_ASSERT( searchHTML(html,i18n("Total")+" Month of 2004-05-01") == -moParent1 + moCheckingOpen );
+    CPPUNIT_ASSERT( searchHTML(html,i18n("Grand Total")) == -(moParent1 + moParent2 + moSolo + moChild) * 3 + moCheckingOpen + moCreditOpen);
 
     filter.setRowType( MyMoneyReport::eWeek );
     filter.setName("Transactions by Week");
@@ -1423,23 +1430,23 @@ void KReportsViewTest::testQueryBasics()
     XMLandback(filter);
     QueryTable qtbl_6(filter);
     
-    //writeTabletoHTML(qtbl_6,"Transactions by Week.html");
+    writeTabletoHTML(qtbl_6,"Transactions by Week.html");
     CPPUNIT_ASSERT(qtbl_6.m_transactions.count() == 14);
     CPPUNIT_ASSERT(qtbl_6.m_transactions[0]["payee"]=="Test Payee");
     CPPUNIT_ASSERT(qtbl_6.m_transactions[0]["category"]=="Solo");
     CPPUNIT_ASSERT(qtbl_6.m_transactions[0]["postdate"]=="2004-01-01");
-    CPPUNIT_ASSERT(qtbl_6.m_transactions[8]["payee"]=="Test Payee");
-    CPPUNIT_ASSERT(qtbl_6.m_transactions[8]["category"]=="Parent: Child");
-    CPPUNIT_ASSERT(qtbl_6.m_transactions[8]["postdate"]=="2004-11-07");
-    CPPUNIT_ASSERT(qtbl_6.m_transactions[11]["payee"]=="Test Payee");
-    CPPUNIT_ASSERT(qtbl_6.m_transactions[11]["category"]=="Parent");
-    CPPUNIT_ASSERT(qtbl_6.m_transactions[11]["postdate"]=="2005-09-01");
+    CPPUNIT_ASSERT(qtbl_6.m_transactions[7]["payee"]=="[Empty Payee]");
+    CPPUNIT_ASSERT(qtbl_6.m_transactions[7]["category"]=="Opening Balances");
+    CPPUNIT_ASSERT(qtbl_6.m_transactions[7]["postdate"]=="2004-07-15");
+    CPPUNIT_ASSERT(qtbl_6.m_transactions[13]["payee"]=="Test Payee");
+    CPPUNIT_ASSERT(qtbl_6.m_transactions[13]["category"]=="Parent");
+    CPPUNIT_ASSERT(qtbl_6.m_transactions[13]["postdate"]=="2005-09-01");
 
     html = qtbl_6.renderHTML();
     CPPUNIT_ASSERT( searchHTML(html,i18n("Total")+" Week of 2003-12-29") == -moSolo );
     CPPUNIT_ASSERT( searchHTML(html,i18n("Total")+" Week of 2004-11-01") == -(moChild) * 3 );
     CPPUNIT_ASSERT( searchHTML(html,i18n("Total")+" Week of 2005-08-29") == -moParent2 );
-    CPPUNIT_ASSERT( searchHTML(html,i18n("Grand Total")) == -(moParent1 + moParent2 + moSolo + moChild) * 3 );
+    CPPUNIT_ASSERT( searchHTML(html,i18n("Grand Total")) == -(moParent1 + moParent2 + moSolo + moChild) * 3 + moCheckingOpen + moCreditOpen);
   }
   catch(MyMoneyException *e)
   {
@@ -1514,12 +1521,13 @@ void KReportsViewTest::testAccountQuery()
     XMLandback(filter);
     QueryTable qtbl_1(filter);
 
+    writeTabletoHTML(qtbl_1,"Accounts by Institution (No transactions).html");
     CPPUNIT_ASSERT(qtbl_1.m_transactions.count() == 2);
     CPPUNIT_ASSERT(qtbl_1.m_transactions[0]["account"]=="Checking Account");
-    CPPUNIT_ASSERT(qtbl_1.m_transactions[0]["value"]==moCheckingOpen.toString());
+    CPPUNIT_ASSERT(MyMoneyMoney(qtbl_1.m_transactions[0]["value"])==moCheckingOpen);
     CPPUNIT_ASSERT(qtbl_1.m_transactions[0]["equitytype"].isEmpty());
     CPPUNIT_ASSERT(qtbl_1.m_transactions[1]["account"]=="Credit Card");
-    CPPUNIT_ASSERT(qtbl_1.m_transactions[1]["value"]==moCreditOpen.toString());
+    CPPUNIT_ASSERT(MyMoneyMoney(qtbl_1.m_transactions[1]["value"])==moCreditOpen);
     CPPUNIT_ASSERT(qtbl_1.m_transactions[1]["equitytype"].isEmpty());
 
     QString html = qtbl_1.renderHTML();
@@ -1552,9 +1560,9 @@ void KReportsViewTest::testAccountQuery()
 
     CPPUNIT_ASSERT(qtbl_2.m_transactions.count() == 2);
     CPPUNIT_ASSERT(qtbl_2.m_transactions[0]["account"]=="Checking Account");
-    CPPUNIT_ASSERT(qtbl_2.m_transactions[0]["value"]==(moCheckingOpen-moSolo*3).toString());
+    CPPUNIT_ASSERT(MyMoneyMoney(qtbl_2.m_transactions[0]["value"])==(moCheckingOpen-moSolo*3));
     CPPUNIT_ASSERT(qtbl_2.m_transactions[1]["account"]=="Credit Card");
-    CPPUNIT_ASSERT(qtbl_2.m_transactions[1]["value"]==(moCreditOpen-(moParent1 + moParent2 + moChild) * 3).toString());
+    CPPUNIT_ASSERT(MyMoneyMoney(qtbl_2.m_transactions[1]["value"])==(moCreditOpen-(moParent1 + moParent2 + moChild) * 3));
 
     html = qtbl_2.renderHTML();
     CPPUNIT_ASSERT( searchHTML(html,i18n("Grand Total")) == moCheckingOpen+moCreditOpen-(moParent1 + moParent2 + moSolo + moChild) * 3 );
@@ -1570,9 +1578,9 @@ void KReportsViewTest::testAccountQuery()
 
     CPPUNIT_ASSERT(qtbl_3.m_transactions.count() == 2);
     CPPUNIT_ASSERT(qtbl_3.m_transactions[0]["account"]=="Checking Account");
-    CPPUNIT_ASSERT(qtbl_3.m_transactions[0]["value"]==(moCheckingOpen-moSolo*3).toString());
+    CPPUNIT_ASSERT(MyMoneyMoney(qtbl_3.m_transactions[0]["value"])==(moCheckingOpen-moSolo*3));
     CPPUNIT_ASSERT(qtbl_3.m_transactions[1]["account"]=="Credit Card");
-    CPPUNIT_ASSERT(qtbl_3.m_transactions[1]["value"]==(moCreditOpen-(moParent1 + moParent2 + moChild) * 3).toString());
+    CPPUNIT_ASSERT(MyMoneyMoney(qtbl_3.m_transactions[1]["value"])==(moCreditOpen-(moParent1 + moParent2 + moChild) * 3));
 
     html = qtbl_3.renderHTML();
     CPPUNIT_ASSERT( searchHTML(html,i18n("Total")+" "+i18n("Checking")) == moCheckingOpen-moSolo*3 );
@@ -1800,7 +1808,7 @@ void KReportsViewTest::testOfxImport(void)
     CPPUNIT_ASSERT(s.m_dateEnd == QDate::currentDate() );
     CPPUNIT_ASSERT(s.m_eType == MyMoneyStatement::etCheckings );
     CPPUNIT_ASSERT(s.m_strCurrency == "USD" );
-    CPPUNIT_ASSERT(s.m_listTransactions.count() == 4);
+    CPPUNIT_ASSERT(s.m_listTransactions.count() == 5);
     
     MyMoneyStatement::Transaction& t1 = s.m_listTransactions.front();
     MyMoneyStatement::Transaction& t4 = s.m_listTransactions.back();
@@ -1865,7 +1873,7 @@ void KReportsViewTest::testOfxImport(void)
     CPPUNIT_ASSERT(s.m_dateEnd == QDate::currentDate() );
     CPPUNIT_ASSERT(s.m_eType == MyMoneyStatement::etCreditCard );
     CPPUNIT_ASSERT(s.m_strCurrency == "USD" );
-    CPPUNIT_ASSERT(s.m_listTransactions.count() == 4);
+    CPPUNIT_ASSERT(s.m_listTransactions.count() == 5);
     
     MyMoneyStatement::Transaction& t1 = s.m_listTransactions.front();
     MyMoneyStatement::Transaction& t4 = s.m_listTransactions.back();

@@ -155,6 +155,23 @@ public:
   void updateDateFilter(void) { if (m_dateLock != userDefined) MyMoneyTransactionFilter::setDateFilter(m_dateLock); }
 
   /**
+    * Retrieves a VALID beginning & ending date for this report.
+    *
+    * The underlying date filter can return en empty QDate() for either the 
+    * begin or end date or both.  This is typically unacceptable for reports,
+    * which need the REAL begin and end date.
+    *
+    * This function gets the underlying date filter range, and if either is
+    * an empty QDate(), it determines the missing date from looking at all
+    * the transactions which match the underlying filter, and returning the
+    * date of the first or last transaction (as appropriate).
+    *
+    * @param _db The inclusive begin date of the date range
+    * @param _de The inclusive end date of the date range
+    */
+  void validDateRange(QDate& _db, QDate& _de);
+  
+  /**
     * This method writes this report to the DOM element @p e,
     * within the DOM document @doc.
     *

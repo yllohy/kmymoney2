@@ -62,12 +62,12 @@ MyMoneyReport::MyMoneyReport(ERowType _rt, EColumnType _ct, const QDate& _db, co
     m_columnType(_ct),
     m_queryColumns(eQCnone),
     m_dateLock(userDefined)
-  {
-    setDateFilter(_db,_de);
-    
-    if ( static_cast<size_t>(_rt) > sizeof(kTypeArray)/sizeof(EReportType) || m_reportType == eNoReport )
-      throw new MYMONEYEXCEPTION("Invalid report type");
-  }
+{
+  setDateFilter(_db,_de);
+  
+  if ( static_cast<size_t>(_rt) > sizeof(kTypeArray)/sizeof(EReportType) || m_reportType == eNoReport )
+    throw new MYMONEYEXCEPTION("Invalid report type");
+}
   
 MyMoneyReport::MyMoneyReport(ERowType _rt, unsigned _ct, unsigned _dl, bool _ss, const QString& _name, const QString& _comment ):
     m_name(_name),
@@ -80,18 +80,54 @@ MyMoneyReport::MyMoneyReport(ERowType _rt, unsigned _ct, unsigned _dl, bool _ss,
     m_reportType(kTypeArray[_rt]),
     m_rowType(_rt),
     m_dateLock(_dl)
-  {
-    if ( m_reportType == ePivotTable )
-      m_columnType = static_cast<EColumnType>(_ct);
-    if ( m_reportType == eQueryTable )
-      m_queryColumns = static_cast<EQueryColumns>(_ct);
-    setDateFilter(_dl);
+{
+  if ( m_reportType == ePivotTable )
+    m_columnType = static_cast<EColumnType>(_ct);
+  if ( m_reportType == eQueryTable )
+    m_queryColumns = static_cast<EQueryColumns>(_ct);
+  setDateFilter(_dl);
 
-    if ( static_cast<size_t>(_rt) > sizeof(kTypeArray)/sizeof(EReportType) || m_reportType == eNoReport )
-      throw new MYMONEYEXCEPTION("Invalid report type");
-      
+  if ( static_cast<size_t>(_rt) > sizeof(kTypeArray)/sizeof(EReportType) || m_reportType == eNoReport )
+    throw new MYMONEYEXCEPTION("Invalid report type");
+    
+}
+
+void MyMoneyReport::validDateRange(QDate& _db, QDate& _de)
+{
+  _db = fromDate();
+  _de = toDate();
+
+  // if either begin or end date are invalid we have one of the following
+  // possible date filters:
+  //
+  // a) begin date not set - first transaction until given end date
+  // b) end date not set   - from given date until last transaction
+  // c) both not set       - first transaction until last transaction
+  //
+  // If there is no transaction in the engine at all, we use the current
+  // year as the filter criteria.
+
+  if ( !_db.isValid() || !_de.isValid()) {
+    QValueList<MyMoneyTransaction> list = MyMoneyFile::instance()->transactionList(*this);
+    QDate tmpBegin, tmpEnd;
+
+    if(!list.isEmpty()) {
+      qHeapSort(list);
+      tmpBegin = list.front().postDate();
+      tmpEnd = list.back().postDate();
+    } else {
+      tmpBegin = QDate(QDate::currentDate().year(),1,1); // the first date in the file
+      tmpEnd = QDate(QDate::currentDate().year(),12,31);// the last date in the file
+    }
+    if(!_db.isValid())
+      _db = tmpBegin;
+    if(!_de.isValid())
+      _de = tmpEnd;
   }
-
+  if ( _db > _de )
+    _db = _de;
+} 
+  
 void MyMoneyReport::write(QDomElement& e, QDomDocument *doc, bool anonymous) const
 {
   // No matter what changes, be sure to have a 'type' attribute.  Only change

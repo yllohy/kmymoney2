@@ -381,39 +381,7 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
     m_accounttypes.append(MyMoneyAccount::Income);
   }
 
-  m_beginDate = m_config_f.fromDate();
-  m_endDate = m_config_f.toDate();
-
-
-  // if either begin or end date are invalid we have one of the following
-  // possible date filters:
-  //
-  // a) begin date not set - first transaction until given end date
-  // b) end date not set   - from given date until last transaction
-  // c) both not set       - first transaction until last transaction
-  //
-  // If there is no transaction in the engine at all, we use the current
-  // year as the filter criteria.
-
-  if ( !m_beginDate.isValid() || !m_endDate.isValid()) {
-    QValueList<MyMoneyTransaction> list = file->transactionList(m_config_f);
-    QDate tmpBegin, tmpEnd;
-
-    if(!list.isEmpty()) {
-      qHeapSort(list);
-      tmpBegin = list.front().postDate();
-      tmpEnd = list.back().postDate();
-    } else {
-      tmpBegin = QDate(QDate::currentDate().year(),1,1); // the first date in the file
-      tmpEnd = QDate(QDate::currentDate().year(),12,31);// the last date in the file
-    }
-    if(!m_beginDate.isValid())
-      m_beginDate = tmpBegin;
-    if(!m_endDate.isValid())
-      m_endDate = tmpEnd;
-  }
-  if ( m_beginDate > m_endDate )
-    m_beginDate = m_endDate;
+  m_config_f.validDateRange( m_beginDate, m_endDate );
 
   // strip out the 'days' component of the begin and end dates.
   // we're only using these variables to contain year and month.
@@ -429,7 +397,7 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
 
   if ( m_config_f.isRunningSum() )
     calculateOpeningBalances();
-
+  
   //
   // Populate all transactions into the row/column pivot grid
   //
@@ -716,6 +684,7 @@ void PivotTable::calculateOpeningBalances( void )
     ++it_account;
   }
 }
+
 
 void PivotTable::calculateRunningSums( void )
 {

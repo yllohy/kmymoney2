@@ -82,6 +82,7 @@ protected:
   void render( QString&, QString& ) const;
   void constructAccountTable(void);
   void constructTransactionTable(void);
+  void constructPerformanceRow( const MyMoneyAccount& account, TableRow& result ) const;
 
 private:
   QValueList<TableRow> m_transactions;
