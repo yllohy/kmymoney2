@@ -70,6 +70,7 @@ KPayeesView::KPayeesView(QWidget *parent, const char *name )
   m_transactionView->setHScrollBarMode(QScrollView::AlwaysOff);
 
   connect(payeeCombo, SIGNAL(activated(const QString&)), this, SLOT(payeeHighlighted(const QString&)));
+  connect(payeeCombo, SIGNAL(highlighted(const QString&)), this, SLOT(payeeHighlighted(const QString&)));
   connect(addButton, SIGNAL(clicked()), this, SLOT(slotAddClicked()));
   connect(payeeEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotPayeeTextChanged(const QString&)));
   connect(updateButton, SIGNAL(clicked()), this, SLOT(slotUpdateClicked()));
@@ -271,15 +272,17 @@ void KPayeesView::slotAddClicked()
 
     try {
       m_payee.setName(payeeEdit->text());
-      MyMoneyFile::instance()->addPayee(m_payee);
-
-      payeeEdit->setText("");
       m_lastPayee = m_payee.name();
-
+      MyMoneyFile::instance()->addPayee(m_payee);
+      payeeEdit->setText("");
+      
     } catch(MyMoneyException *e) {
       KMessageBox::detailedSorry(0, i18n("Unable to add payee"),
         (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
       delete e;
+
+      // Keep the old payee
+      m_lastPayee = payeeCombo->currentText();
     }
   }
 }

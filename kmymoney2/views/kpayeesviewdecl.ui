@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
 <class>KPayeesViewDecl</class>
 <widget class="QWidget">
     <property name="name">
@@ -78,17 +78,11 @@
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>Layout9</cstring>
+                <cstring>layout12</cstring>
             </property>
             <hbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
-                </property>
-                <property name="margin">
-                    <number>0</number>
-                </property>
-                <property name="spacing">
-                    <number>6</number>
                 </property>
                 <widget class="QLabel">
                     <property name="name">
@@ -117,39 +111,6 @@
                         <cstring>payeeEdit</cstring>
                     </property>
                 </widget>
-            </hbox>
-        </widget>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>Layout8</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <property name="margin">
-                    <number>0</number>
-                </property>
-                <property name="spacing">
-                    <number>6</number>
-                </property>
-                <spacer>
-                    <property name="name">
-                        <cstring>Spacer7</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>20</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                </spacer>
                 <widget class="QPushButton">
                     <property name="name">
                         <cstring>addButton</cstring>
@@ -163,6 +124,23 @@
                 </widget>
             </hbox>
         </widget>
+        <spacer>
+            <property name="name">
+                <cstring>Spacer7</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>694</width>
+                    <height>16</height>
+                </size>
+            </property>
+        </spacer>
         <widget class="QLayoutWidget">
             <property name="name">
                 <cstring>Layout12</cstring>
@@ -616,7 +594,7 @@
                                         <property name="clickable">
                                             <bool>true</bool>
                                         </property>
-                                        <property name="resizeable">
+                                        <property name="resizable">
                                             <bool>true</bool>
                                         </property>
                                     </column>
@@ -627,7 +605,7 @@
                                         <property name="clickable">
                                             <bool>true</bool>
                                         </property>
-                                        <property name="resizeable">
+                                        <property name="resizable">
                                             <bool>true</bool>
                                         </property>
                                     </column>
@@ -638,7 +616,7 @@
                                         <property name="clickable">
                                             <bool>true</bool>
                                         </property>
-                                        <property name="resizeable">
+                                        <property name="resizable">
                                             <bool>true</bool>
                                         </property>
                                     </column>
@@ -649,7 +627,7 @@
                                         <property name="clickable">
                                             <bool>true</bool>
                                         </property>
-                                        <property name="resizeable">
+                                        <property name="resizable">
                                             <bool>true</bool>
                                         </property>
                                     </column>
@@ -686,12 +664,15 @@
             </property>
             <property name="sizeHint">
                 <size>
-                    <width>0</width>
-                    <height>39</height>
+                    <width>16</width>
+                    <height>16</height>
                 </size>
             </property>
         </spacer>
     </vbox>
 </widget>
 <layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>klistview.h</includehint>
+</includehints>
 </UI>
