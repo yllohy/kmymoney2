@@ -156,8 +156,8 @@ bool KInvestmentView::init(const MyMoneyAccount& account)
 
   if(qdateStart != defaultDate.date())
   {
-    MyMoneyInvestTransaction *pInvestTransaction = NULL;
-    MyMoneyTransaction *transaction = NULL;
+//    MyMoneyInvestTransaction *pInvestTransaction = NULL;
+//    MyMoneyTransaction *transaction = NULL;
 //    m_transactionList.clear();
 
 //    for(transaction=pAccount->transactionFirst(); transaction; transaction=pAccount->transactionNext())
@@ -204,7 +204,7 @@ void KInvestmentView::updateDisplay()
   }
 }
 
-void KInvestmentView::slotItemDoubleClicked(QListViewItem* pItem, const QPoint& pos, int c)
+void KInvestmentView::slotItemDoubleClicked(QListViewItem* pItem, const QPoint& /*pos*/, int /*c*/)
 {
   KInvestmentListItem *pInvestListItem = dynamic_cast<KInvestmentListItem*>(pItem);
   if(pInvestListItem)
@@ -309,7 +309,7 @@ void KInvestmentView::displayNewEquity(MyMoneyEquity* /*pEntry*/)
 
 void KInvestmentView::slotEditInvestment()
 {
-
+  slotItemDoubleClicked(investmentTable->selectedItem(), QPoint(), 0);
 }
 
 void KInvestmentView::slotUpdatePrice()
@@ -324,7 +324,7 @@ void KInvestmentView::slotUpdatePrice()
 */
 }
 
-void KInvestmentView::slotListRightMouse(QListViewItem* item, const QPoint& point, int x)
+void KInvestmentView::slotListRightMouse(QListViewItem* item, const QPoint& /*point*/, int /*x*/)
 {
   int newId, editId, updateId;
 
@@ -439,7 +439,7 @@ void KInvestmentView::loadAccounts(void)
   slotSelectAccount(acc.id());
 }
 
-const bool KInvestmentView::slotSelectAccount(const QCString& id, const QCString& transactionId, const bool reconciliation)
+const bool KInvestmentView::slotSelectAccount(const QCString& id, const QCString& transactionId, const bool /* reconciliation*/)
 {
   bool    rc = false;
 
