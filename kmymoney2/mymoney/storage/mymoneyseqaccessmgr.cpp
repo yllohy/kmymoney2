@@ -140,7 +140,7 @@ const MyMoneyAccount MyMoneySeqAccessMgr::account(const QCString id) const
   throw new MYMONEYEXCEPTION(msg);
 }
 
-const QValueList<MyMoneyAccount> MyMoneySeqAccessMgr::accountList(const QCStringList& idlist) const
+const QValueList<MyMoneyAccount> MyMoneySeqAccessMgr::accountList(const QCStringList& idlist, const bool recursive) const
 {
   QValueList<MyMoneyAccount> list;
   QMap<QCString, MyMoneyAccount>::ConstIterator it;
@@ -149,6 +149,9 @@ const QValueList<MyMoneyAccount> MyMoneySeqAccessMgr::accountList(const QCString
     if(!isStandardAccount((*it).id())) {
       if(idlist.isEmpty() || idlist.findIndex((*it).id()) != -1) {
         list.append(*it);
+        if(!idlist.isEmpty() && recursive == true) {
+          list += accountList((*it).accountList());
+        }
       }
     }
   }
@@ -157,7 +160,18 @@ const QValueList<MyMoneyAccount> MyMoneySeqAccessMgr::accountList(const QCString
 
 void MyMoneySeqAccessMgr::addAccount(MyMoneyAccount& account)
 {
-  // create the account
+  // we do not allow an opening balance different from 0 anymore
+  // This used to work in older releases
+  if(!account.openingBalance().isZero()) {
+    // FIXME we should really generate an exception here. For now,
+    // we only print a warning and hope that only old binary files
+    // still have this feature. Once we get rid of the binary
+    // reader we can safely throw the exception
+    // throw new MYMONEYEXCEPTION("Cannot create account with opening balance != 0");
+    qWarning("Createing accounts with opening balance != 0 in the engine is deprecated!");
+  }
+
+  // create the account.
   MyMoneyAccount newAccount(nextAccountID(), account);
   m_accountList[newAccount.id()] = newAccount;
   touch();
@@ -526,6 +540,9 @@ void MyMoneySeqAccessMgr::modifyAccount(const MyMoneyAccount& account, const boo
 {
   QMap<QCString, MyMoneyAccount>::Iterator pos;
 
+  if(!account.openingBalance().isZero())
+    throw new MYMONEYEXCEPTION("Cannot modify account with opening balance != 0");
+
   // locate the account in the file global pool
   pos = m_accountList.find(account.id());
   if(pos != m_accountList.end()) {
@@ -843,7 +860,7 @@ void MyMoneySeqAccessMgr::removeInstitution(const MyMoneyInstitution& institutio
         try {
           modifyAccount(acc);
         } catch(MyMoneyException *e) {
-          qDebug(e->what());
+          qDebug("%s", e->what().data());
           delete e;
         }
       }
