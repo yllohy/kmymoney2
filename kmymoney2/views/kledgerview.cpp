@@ -1206,7 +1206,7 @@ void KLedgerView::slotTypeChanged(const QCString& action)
       if(KMessageBox::warningContinueCancel(0,
           i18n("Changing the transaction type in the selected direction will delete all information about categories and accounts. "
                 "If you press continue, this information will be lost!"),
-          i18n("Transaction Type Change")) == KMessageBox::Continue) {
+          i18n("Transaction Type Change"),KStdGuiItem::cont(),"TransactionTypeChange") == KMessageBox::Continue) {
         // we have to remove all other splits as they are not valid anymore
         MyMoneySplit split;
         try {
@@ -1870,7 +1870,7 @@ void KLedgerView::createMoreMenu(void)
 
 void KLedgerView::markSplit(MyMoneySplit::reconcileFlagE flag)
 {
-  if(m_transactionPtr != 0) {
+  if(m_transactionPtr != 0 || isEditMode()) {
     try {
       m_split.setReconcileFlag(flag);
       if(flag == MyMoneySplit::Reconciled)
