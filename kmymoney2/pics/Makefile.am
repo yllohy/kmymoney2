@@ -19,7 +19,7 @@ install-data-local:
 	$(mkinstalldirs) $(kde_datadir)/kmymoney2/pics/
 	$(INSTALL_DATA) $(srcdir)/dlg_csv_import.png $(kde_datadir)/kmymoney2/pics/dlg_csv_import.png
 	$(mkinstalldirs) $(kde_datadir)/kmymoney2/pics/
-	$(INSTALL_DATA) $(srcdir)/dlg_edit_categories.png $(kde_datadir)/kmymoney2/pics/dlg_edit_categories.png]
+	$(INSTALL_DATA) $(srcdir)/dlg_edit_categories.png $(kde_datadir)/kmymoney2/pics/dlg_edit_categories.png
 	$(mkinstalldirs) $(kde_datadir)/kmymoney2/pics/
 	$(INSTALL_DATA) $(srcdir)/dlg_edit_category.png $(kde_datadir)/kmymoney2/pics/dlg_edit_category.png
 	$(mkinstalldirs) $(kde_datadir)/kmymoney2/pics/
@@ -51,7 +51,7 @@ uninstall-local:
 	-rm -f $(kde_datadir)/kmymoney2/pics/view_info.png
 	-rm -f $(kde_datadir)/kmymoney2/pics/dlg_backup.png
 	-rm -f $(kde_datadir)/kmymoney2/pics/dlg_csv_import.png
-	-rm -f $(kde_datadir)/kmymoney2/pics/dlg_edit_categories.png]
+	-rm -f $(kde_datadir)/kmymoney2/pics/dlg_edit_categories.png
 	-rm -f $(kde_datadir)/kmymoney2/pics/dlg_edit_category.png
 	-rm -f $(kde_datadir)/kmymoney2/pics/dlg_edit_file.png
 	-rm -f $(kde_datadir)/kmymoney2/pics/dlg_ending_balance.png
