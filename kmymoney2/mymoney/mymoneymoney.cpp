@@ -176,10 +176,12 @@ const QString MyMoneyMoney::formatMoney(const QString currency, const int prec) 
   while((0 < (pos -= 3)) && thousandSeparator())
     res.insert(pos, thousandSeparator());
 
-  if(decimalSeparator())
-    res += decimalSeparator();
+  if(prec > 0) {
+    if(decimalSeparator())
+      res += decimalSeparator();
 
-  res += QString("%1").arg(right).rightJustify(prec, '0', true);
+    res += QString("%1").arg(right).rightJustify(prec, '0', true);
+  }
 
   signPosition signpos = bNegative ? _negativeMonetarySignPosition : _positiveMonetarySignPosition;
   QString sign = bNegative ? "-" : "";
