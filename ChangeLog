@@ -1,5 +1,6 @@
 2002-03-19 Arni Ingimundarson <arniing@users.sourceforge.net>
-  * Fixed backup dialog choose->cancel  bug (490427)
+  * Fixed file dialog choose->cancel bug (490427)
+    in kbackupdlg.cpp, kexportdlg.cpp and kimportdlg.cpp
 
 2002-03-14 Michael Edwardes <mte@users.sourceforge.net>
   * Fixed disappearing categories bug.

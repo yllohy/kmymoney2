@@ -127,7 +127,8 @@ KImportDlg::~KImportDlg()
 void KImportDlg::slotBrowse()
 {
   QString qstring(KFileDialog::getOpenFileName(QString::null,"*.QIF"));
-  m_qlineeditFile->setText(qstring);
+  if (!qstring.isEmpty())
+    m_qlineeditFile->setText(qstring);
 }
 
 void KImportDlg::slotDateFormatChanged(const QString& selectedDateFormat)

@@ -121,8 +121,9 @@ KExportDlg::~KExportDlg()
 void KExportDlg::slotBrowse()
 {
   QString newName(KFileDialog::getSaveFileName(QString::null,"*.QIF"));
-	appendCorrectFileExt(newName, QString("qif"));
-  m_qlineeditFile->setText(newName);
+  appendCorrectFileExt(newName, QString("qif"));
+  if (!newName.isEmpty())
+    m_qlineeditFile->setText(newName);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
