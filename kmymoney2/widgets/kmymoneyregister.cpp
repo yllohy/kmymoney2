@@ -180,14 +180,12 @@ void kMyMoneyRegister::paintCell(QPainter *p, int row, int col, const QRect& r,
     }
   }
 
-  if(m_transactionIndex != m_lastTransactionIndex) {
-    m_transaction = m_view->transaction(m_transactionIndex);
-    if(m_transaction != NULL) {
-      m_split = m_transaction->split(m_view->accountId());
-      m_balance = m_view->balance(m_transactionIndex);
-    }
-    m_lastTransactionIndex = m_transactionIndex;
+  m_transaction = m_view->transaction(m_transactionIndex);
+  if(m_transaction != NULL) {
+    m_split = m_transaction->split(m_view->accountId());
+    m_balance = m_view->balance(m_transactionIndex);
   }
+  m_lastTransactionIndex = m_transactionIndex;
 
   if(m_transactionIndex == m_currentTransactionIndex) {
     QBrush backgroundBrush(m_cg.highlight());
@@ -304,6 +302,10 @@ bool kMyMoneyRegister::eventFilter(QObject* o, QEvent* e)
     QKeyEvent *k = static_cast<QKeyEvent *> (e);
     rc = true;
     switch(k->key()) {
+      case Qt::Key_Space:
+        emit signalSpace();
+        break;
+
       case Qt::Key_Return:
       case Qt::Key_Enter:
         emit signalEnter();

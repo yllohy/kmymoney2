@@ -275,6 +275,11 @@ signals:
     */
   void signalEsc();
 
+  /**
+    * This signal is emitted when the user presses SPACE
+    */
+  void signalSpace();
+
 };
 
 #endif
