@@ -158,14 +158,19 @@ const QString KMyMoneyUtils::equityTypeToString(const MyMoneyEquity::eEQUITYTYPE
   {
   case MyMoneyEquity::ETYPE_STOCK:
     returnString = i18n("Stock");
+    break;
   case MyMoneyEquity::ETYPE_MUTUALFUND:
     returnString = i18n("Mutual Fund");
+    break;
   case MyMoneyEquity::ETYPE_BOND:
     returnString = i18n("Bond");
+    break;
   case MyMoneyEquity::ETYPE_CURRENCY:
     returnString = i18n("Currency");
+    break;
   case MyMoneyEquity::ETYPE_NONE:
     returnString = i18n("None");
+    break;
   default:  
     returnString = i18n("Unknown");
   }
