@@ -509,7 +509,45 @@ void KMyMoneyView::slotAccountImportAscii(void)
 
 void KMyMoneyView::slotAccountExportAscii(void)
 {
-  KMessageBox::information(this, "slotAccountExportAscii: Placement holder for future addition...\nPlease wait, I'm on it.\nMichael (mte@users.sourceforge.net.");
+  bool bankSuccess=false, accountSuccess=false;
+  MyMoneyBank *pBank;
+  MyMoneyAccount *pAccount;
+
+	pBank = m_file.bank(m_mainView->currentBank(bankSuccess));
+	if (!pBank || !bankSuccess) {
+    qDebug("KMyMoneyView::slotAccountReconcile: Unable to get the current bank");
+    return;
+  }
+  pAccount = pBank->account(m_mainView->currentAccount(accountSuccess));
+  if (!pAccount || !accountSuccess) {
+    qDebug("KMyMoneyView::slotAccountReconcile: Unable to grab the current account");
+    return;
+  }
+
+  KExportDlg *exportDlg = new KExportDlg();
+  connect( exportDlg->btnBrowse, SIGNAL( clicked() ), exportDlg, SLOT( slotBrowse() ) );
+
+	int returncode = exportDlg->exec();
+
+	if(returncode)
+	{
+		bool expCat, expAcct;
+
+    expAcct = exportDlg->cbxAccount->isChecked();
+ 		expCat = exportDlg->cbxCategories->isChecked();
+		QDate startDate = exportDlg->dateStartDate->getQDate();
+		QDate endDate = exportDlg->dateEndDate->getQDate();
+		writeQIFFile(exportDlg->txtFileExport->text(),pAccount,expCat,expAcct,startDate,endDate);
+    qDebug("OK Pressed");
+	}
+	else
+	{
+   	qDebug("Cancel Pressed");
+	}
+
+
+	delete exportDlg;
+
 }
 
 void KMyMoneyView::editCategories(void)
@@ -1341,4 +1379,86 @@ void KMyMoneyView::readQIFFile(const QString& name, MyMoneyAccount *account){
     }
 
 
+}
+/** No descriptions */
+void KMyMoneyView::writeQIFFile(const QString& name, MyMoneyAccount *account,bool expCat,bool expAcct,
+																QDate startDate, QDate endDate){
+
+    QFile f(name);
+    if ( f.open(IO_WriteOnly) ) {    // file opened successfully
+      QTextStream t( &f );        // use a text stream
+
+			if(expCat)
+			{
+				t << "!Type:Cat" << endl;
+  			QListIterator<MyMoneyCategory> it = m_file.categoryIterator();
+  			for ( ; it.current(); ++it ) {
+    			MyMoneyCategory *data = it.current();
+						t << "N" + data->name() << endl;
+						if(data->isIncome())
+							t << "I" << endl;
+						else
+							t << "E" << endl;
+						t << "^" << endl;
+    				for ( QStringList::Iterator it2 = data->minorCategories().begin(); it2 != data->minorCategories().end(); ++it2 ) {
+								t << "N" << data->name() << ":" << *it2 << endl;
+								if(data->isIncome())
+									t << "I" << endl;
+								else
+									t << "E" << endl;
+								t << "^" << endl;
+						}
+  			}       		
+			}
+			if(expAcct)
+			{
+				t << "!Type:Bank" << endl;
+				MyMoneyTransaction *transaction;
+    		for ( transaction = account->transactionFirst(); transaction; transaction=account->transactionNext())
+        {
+        	if((transaction->date() >= startDate) && (transaction->date() <= endDate))
+					{
+          	int year = transaction->date().year();
+            year -= 2000;
+						int month = transaction->date().month();
+						int day = transaction->date().day();
+						double amount = transaction->amount().amount();
+						if(transaction->type() == MyMoneyTransaction::Debit)
+						  amount = amount * -1;
+						QString transmethod;
+						if(transaction->method() == MyMoneyTransaction::ATM)
+							transmethod = "ATM";
+						if(transaction->method() == MyMoneyTransaction::Deposit)
+							transmethod = "DEP";
+						if(transaction->method() == MyMoneyTransaction::Transfer)
+							transmethod = "TXFR";
+						if(transaction->method() == MyMoneyTransaction::Withdrawal)
+							transmethod = "WTHD";
+						if(transaction->method() == MyMoneyTransaction::Cheque)
+							transmethod = transaction->number();
+						QString Payee = transaction->payee();
+						QString Category;
+						if(transaction->categoryMinor() == "")
+							Category = transaction->categoryMajor();
+						else
+							Category = transaction->categoryMajor() + ":" + transaction->categoryMinor();
+							
+
+						t << "D" << month << "/" << day << "'" << year << endl;
+						t << "U" << amount << endl;
+						t << "T" << amount << endl;
+						if(transaction->state() == MyMoneyTransaction::Reconciled)
+							t << "CX" << endl;
+						t << "N" << transmethod << endl;
+						t << "P" << Payee << endl;
+						t << "L" << Category << endl;
+						t << "^" << endl;
+
+													
+					}
+				}
+       	qDebug("Account Exported");
+			}
+      f.close();
+		}
 }

@@ -1,7 +1,7 @@
 /***************************************************************************
-                          kimportdlg.cpp  -  description
+                          kexportdlg.h  -  description
                              -------------------
-    begin                : Wed May 16 2001
+    begin                : Tue May 22 2001
     copyright            : (C) 2001 by Michael Edwardes
     email                : mte@users.sourceforge.net
                              Javier Campos Morales <javi_c@ctv.es>
@@ -17,23 +17,23 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "kimportdlg.h"
-#include <qlineedit.h>
-#include <kfiledialog.h>
+#ifndef KEXPORTDLG_H
+#define KEXPORTDLG_H
 
-KImportDlg::KImportDlg():KImportDlgDecl(0,0,TRUE){
+#include "kexportdlgdecl.h"
 
- // connect( &btnBrowse, SIGNAL( clicked() ), this, SLOT( slotBrowse() ) );
+/**
+  *@author Michael Edwardes
+  */
 
-}
-KImportDlg::~KImportDlg(){
-}
-/** No descriptions */
-void KImportDlg::slotBrowse(){
+class KExportDlg : public KExportDlgDecl  {
+	Q_OBJECT
+public: 
+	KExportDlg();
+	~KExportDlg();
+public slots: // Public slots
+  /** No descriptions */
+  void slotBrowse();
+};
 
-	//KFileDialog *browseFile = new KFileDialog();
-	QString s(KFileDialog::getOpenFileName(QString::null,"*.QIF"));
-  //delete browseFile;
-	txtFileImport->setText(s);
-		
-}
+#endif
