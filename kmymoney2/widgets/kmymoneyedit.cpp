@@ -331,16 +331,21 @@ void kMyMoneyEdit::calculatorOpen(QKeyEvent* k)
   m_calculator->setInitialValues(m_edit->text(), k);
 
   int h = m_calculatorFrame->height();
+  int w = m_calculatorFrame->width();
 
   // usually, the calculator widget is shown underneath the MoneyEdit widget
   // if it does not fit on the screen, we show it above this widget
-
   QPoint p = mapToGlobal(QPoint(0,0));
-  if(p.y() + h > QApplication::desktop()->height()) {
+  if(p.y() + h > QApplication::desktop()->height())
     p.setY(p.y() - h);
-  } else {
+  else
     p.setY(p.y() + height());
-  }
+
+  // usually, it is shown left aligned. If it does not fit, we align it
+  // to the right edge of the widget
+  if(p.x() + w > QApplication::desktop()->width())
+    p.setX(p.x() + width() - w);
+
   QRect r = m_calculator->geometry();
   r.moveTopLeft(p);
   m_calculatorFrame->setGeometry(r);
