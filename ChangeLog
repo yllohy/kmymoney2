@@ -1,3 +1,17 @@
+2002-10-xx Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Modified name of member variable in KCategoryView
+  * Added checks for atoll and strtoll to configure.in.in
+  * Replace atoll with strtoll in mymoneymoney.h
+  * Reduced number of arguments for KAccountListItem constructors
+  * Added documentation to KAccountListItem
+  * Eliminated the ugly hack in KAccountsView that Michael wanted a
+    solution for
+  * Fixed resizeing of CategoryView and AccountView
+  * Replaced includes with forward class references where applicable
+  * Added kMyMoneyCalculator widget to kMyMoneyEdit
+  * Improved performance when building account trees
+  * Added missing mymoney/autotest.h file to the repository
+
 2002-10-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added notification classes for payees, institutions, accounts
     and account-hierarchy to MyMoneyFile
