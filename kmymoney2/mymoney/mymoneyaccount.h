@@ -29,7 +29,6 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "mymoneyexception.h"
 #include "mymoneymoney.h"
 #include "mymoneyutils.h"
 

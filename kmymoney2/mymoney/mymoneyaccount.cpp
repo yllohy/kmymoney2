@@ -16,10 +16,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "mymoneyaccount.h"
-#include "mymoneyfile.h"
+// ----------------------------------------------------------------------------
+// QT Includes
 
-#include <iostream>
+// ----------------------------------------------------------------------------
+// Project Includes
+
+#include "mymoneyexception.h"
+#include "mymoneyaccount.h"
+
+// uncomment the next line for debug purposes only
+// #include <iostream>
 
 MyMoneyAccount::MyMoneyAccount()
 {
