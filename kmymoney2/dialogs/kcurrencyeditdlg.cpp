@@ -91,6 +91,7 @@ KCurrencyEditDlg::KCurrencyEditDlg(QWidget *parent, const char *name ) :
   // FIXME: currently, no online help available
   buttonHelp->hide();
 
+  resize(width()-1, height()-1);
   QTimer::singleShot(10, this, SLOT(timerDone()));
 }
 
