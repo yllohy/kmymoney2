@@ -28,17 +28,21 @@
 #include <qvaluevector.h>
 #include <qwidget.h>
 class QVBoxLayout;
-class QTabWidget;
+class QListViewItem;
 
 // ----------------------------------------------------------------------------
 // KDE Includes
 #include <khtml_part.h>
+#include <klistview.h>
+class KTabWidget;
 
 // ----------------------------------------------------------------------------
 // Project Includes
 
 #include "../mymoney/mymoneyscheduled.h"
 #include "../mymoney/mymoneyaccount.h"
+class MyMoneyReport;
+
 #include "pivottable.h"
 
 /**
@@ -50,15 +54,64 @@ class QTabWidget;
 **/
 class KReportsView : public QWidget  {
    Q_OBJECT
+  
+public:
+  /**
+    * Helper class for KReportView.
+    *
+    * Associates a report id with a list view item.
+    *
+    * @author Ace Jones
+    */
+  
+  class KReportListItem: public KListViewItem
+  {
+  private:
+    QCString m_id;
+    
+  public:
+    KReportListItem( KListView* parent, const MyMoneyReport& report ): 
+      KListViewItem( parent, report.name() ), 
+      m_id( report.id() )
+    {}
+    const QCString& id(void) const { return m_id; }
+  };
+  
+  /**
+    * Helper class for KReportView.
+    *
+    * This is the widget which displays a single report in the TabWidget that comprises this view.
+    *
+    * @author Ace Jones
+    */
+  
+  class KReportTab: public QWidget
+  {
+  private:
+    KHTMLPart* m_part;
+    QVBoxLayout* m_layout;
+    QCString m_reportId;
+    bool m_deleteMe;
+    
+  public:
+    KReportTab(KTabWidget* parent, const MyMoneyReport& report );
+    const QCString& id(void) const { return m_reportId; }
+    void print(void);
+    void copyToClipboard(void);
+    void saveAs( const QString& filename );
+    void updateReport(void);
+    QString createTable(const QString& links=QString());
+    KParts::BrowserExtension* browserExtension(void) const { return m_part->browserExtension(); }
+    bool isReadyToDelete(void) const { return m_deleteMe; }
+    void setReadyToDelete(bool f) { m_deleteMe = f; }
+  };
 
 private:
-  QValueVector<QWidget*> m_tab;
-  QValueVector<KHTMLPart*> m_part;
-  QValueVector<QVBoxLayout*> m_tabLayout;
-  QValueVector<QCString> m_reportid;
   QVBoxLayout *m_qvboxlayoutPage;
-  QTabWidget* m_reportTabWidget;
-  bool m_boolShowSubAccounts;
+  KTabWidget* m_reportTabWidget;
+  KListView* m_reportListView;
+  QWidget* m_listTab;
+  QVBoxLayout* m_listTabLayout;
 
 public:
   /**
@@ -90,8 +143,7 @@ public:
   void show();
 
 protected:
-  static const QString linkfull(const QString& view, const QString& query, const QString& label);
-  const QString createTable(int page, const QString& links = QString()) const;
+  void addReportTab(const MyMoneyReport&);
   
 public slots:
   void slotOpenURL(const KURL &url, const KParts::URLArgs& args);
@@ -103,6 +155,9 @@ public slots:
   void slotReloadView(void) { slotRefreshView(); };
   void slotConfigure(void);
   void slotDuplicate(void);
+  void slotReportDoubleClicked(QListViewItem*);
+  void slotCloseCurrent(void);
+  void slotClose(QWidget*);
 
 signals:
   /**

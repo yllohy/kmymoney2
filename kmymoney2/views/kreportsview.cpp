@@ -34,6 +34,7 @@
 #include <qfile.h>
 #include <qtabwidget.h>
 #include <qtimer.h>
+#include <qiconset.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -51,6 +52,8 @@
 #include <kdebug.h>
 #include <kfiledialog.h>
 #include <kmessagebox.h>
+#include <klistview.h>
+#include <ktabwidget.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -67,6 +70,105 @@ using namespace reports;
 #define VIEW_HOME           "home"
 #define VIEW_REPORTS        "reports"
 
+/**
+  * KReportsView::KReportTab Implementation
+  */
+
+KReportsView::KReportTab::KReportTab(KTabWidget* parent, const MyMoneyReport& report ): 
+  QWidget( parent, "reporttab" ), 
+  m_part( new KHTMLPart( this, "reporttabpart" ) ),
+  m_layout( new QVBoxLayout( this, 11, 6, "reporttablayout" ) ),
+  m_reportId( report.id() ),
+  m_deleteMe( false )
+{
+  m_layout->addWidget( m_part->view() );
+  QIconSet icons(QPixmap("/usr/share/icons/default.kde/16x16/mimetypes/spreadsheet.png"));
+  
+  // I like this icon...
+  QString icon = KGlobal::dirs()->findResource("icon", "default.kde/16x16/mimetypes/spreadsheet.png");
+  // but if it's not there, we'll use ye ol' standard icon
+  if ( icon == QString::null )
+    icon = KGlobal::dirs()->findResource("icon", "hicolor/16x16/apps/kmymoney2.png");
+
+  parent->insertTab( this, QIconSet(QPixmap(icon)), report.name() );
+  parent->setTabEnabled( this, true );
+}
+
+void KReportsView::KReportTab::print(void)
+{
+  KHTMLPart part(this, "htmlpart_km2");
+
+  part.begin();
+  part.write(createTable());
+  part.end();
+
+  part.view()->print();
+}
+
+void KReportsView::KReportTab::copyToClipboard(void)
+{
+  QTextDrag* pdrag =  new QTextDrag( createTable() );
+  pdrag->setSubtype("html");
+  QApplication::clipboard()->setData(pdrag);
+}
+
+void KReportsView::KReportTab::saveAs( const QString& filename )
+{
+  QFile file( filename );
+  if ( file.open( IO_WriteOnly ) ) {
+    QTextStream(&file) <<  createTable();
+    file.close();
+  }
+}
+
+void KReportsView::KReportTab::updateReport(void)
+{
+  QString links;
+
+  links += QString("<a href=\"/%1?command=configure\">%2</a>").arg(VIEW_REPORTS).arg(i18n("Configure This Report"));
+  links += "&nbsp;|&nbsp;";
+  links += QString("<a href=\"/%1?command=duplicate\">%2</a>").arg(VIEW_REPORTS).arg(i18n("Create New Report"));
+  links += "&nbsp;|&nbsp;";
+  links += QString("<a href=\"/%1?command=copy\">%2</a>").arg(VIEW_REPORTS).arg(i18n("Copy to Clipboard"));
+  links += "&nbsp;|&nbsp;";
+  links += QString("<a href=\"/%1?command=save\">%2</a>").arg(VIEW_REPORTS).arg(i18n("Save to File"));
+  links += "&nbsp;|&nbsp;";
+  links += QString("<a href=\"/%1?command=close\">%2</a>").arg(VIEW_REPORTS).arg(i18n("Close"));
+    
+  m_part->begin();
+  m_part->write(createTable(links));
+  m_part->end();
+}
+
+QString KReportsView::KReportTab::createTable(const QString& links)
+{
+  QString filename = KGlobal::dirs()->findResource("appdata", "html/kmymoney2.css");
+  QString header = QString("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\">\n") +
+    QString("<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"%1\">").arg(filename);
+  header += "</head><body>\n";
+
+  QString footer = "</body></html>\n";
+
+  QString html;
+  try {
+    html += header;
+    html += links;
+    html += PivotTable( MyMoneyFile::instance()->report(m_reportId) ).renderHTML();
+    html += footer;
+  }
+  catch(MyMoneyException *e) 
+  {
+    kdDebug(2) << "KReportsView::KReportTab::createTable(): ERROR " << e->what() << endl;
+    delete e;
+  }
+  return html;
+
+}
+
+/**
+  * KReportsView Implementation
+  */
+
 KReportsView::KReportsView(QWidget *parent, const char *name )
  : QWidget(parent,name)
 {
@@ -74,8 +176,23 @@ KReportsView::KReportsView(QWidget *parent, const char *name )
   m_qvboxlayoutPage->setSpacing( 6 );
   m_qvboxlayoutPage->setMargin( 11 );
 
-  m_reportTabWidget = new QTabWidget( this, "reportTabWidget" );
+  m_reportTabWidget = new KTabWidget( this, "m_reportTabWidget" );
   m_qvboxlayoutPage->addWidget( m_reportTabWidget );
+  m_reportTabWidget->setHoverCloseButton( true );
+
+  m_listTab = (new QWidget( m_reportTabWidget, "indextab" ));
+  m_listTabLayout = ( new QVBoxLayout( m_listTab, 11, 6, "indextabLayout") );
+  m_reportListView = new KListView( m_listTab, "m_reportListView" );
+  m_listTabLayout->addWidget( m_reportListView );
+  m_reportTabWidget->insertTab( m_listTab, "Reports" );
+  
+  m_reportListView->addColumn(i18n("Report"));
+  m_reportListView->setResizeMode(QListView::AllColumns);
+
+  connect( m_reportTabWidget, SIGNAL(closeRequest(QWidget*)), 
+    this, SLOT(slotClose(QWidget*)) );
+  connect(m_reportListView, SIGNAL(doubleClicked(QListViewItem*)),
+    this, SLOT(slotReportDoubleClicked(QListViewItem*)));
 }
 
 KReportsView::~KReportsView()
@@ -89,168 +206,39 @@ void KReportsView::show()
   emit signalViewActivated();
 }
 
-const QString KReportsView::createTable(int page, const QString& links) const
-{
-  DEBUG_ENTER("KReportsView::createTable()");
-  
-  QString filename = KGlobal::dirs()->findResource("appdata", "html/kmymoney2.css");
-  QString header = QString("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\">\n") +
-    QString("<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"%1\">").arg(filename);
-  header += "</head><body>\n";
-
-  QString footer = "</body></html>\n";
-
-  QString html;
-  html += header;
-  html += links;
-  html += PivotTable( MyMoneyFile::instance()->report(m_reportid[page]) ).renderHTML();
-  html += footer;
-
-  return html;
-}
-
 void KReportsView::slotRefreshView(void)
 {
   QValueList<MyMoneyReport> reports = MyMoneyFile::instance()->reportList();
-  
-  // Delete unnecessary tabs
-  while ( reports.count() < m_tab.count() )
-  {
-    delete m_tab.back();
-    m_tab.pop_back();
-    m_tabLayout.pop_back();
-    m_part.pop_back();
-  }
-  
-  // Add additional tabs as needed
-  while ( m_tab.count() < reports.count() )
-  {
-    m_tab.push_back(new QWidget( m_reportTabWidget, "tab" ));
-    m_tabLayout.push_back( new QVBoxLayout( m_tab.back(), 11, 6, "tabLayout") );
-    m_part.push_back(new KHTMLPart( m_tab.back(), "htmlpart_km2") );
-    m_tabLayout.back()->addWidget( m_part.back()->view() );
-    m_reportTabWidget->insertTab( m_tab.back(), "" );
-    m_reportTabWidget->setTabEnabled( m_tab.back(),true );
 
-    connect( m_part.back()->browserExtension(), SIGNAL(openURLRequest(const KURL&, const KParts::URLArgs&)),
-            this, SLOT(slotOpenURL(const KURL&, const KParts::URLArgs&)) );
-  }
-
-  // Set the name and ID's of each tab
-  m_reportid.clear();
+  //
+  // Rebuild the list page
+  //
+  
+  m_reportListView->clear();
   QValueList<MyMoneyReport>::const_iterator it_report = reports.begin();
-  QValueVector<QWidget*>::iterator it_tab = m_tab.begin();
   while( it_report != reports.end() )
   {
-    m_reportid.push_back((*it_report).id());
-    m_reportTabWidget->changeTab( *it_tab, (*it_report).name() );
-    
+    new KReportListItem( m_reportListView, *it_report );
     ++it_report;
-    ++it_tab;
   }
-  QString links;
 
-  links += linkfull(VIEW_REPORTS, QString("?command=configure&target=1"),i18n("Configure This Report"));
-  links += "&nbsp;|&nbsp;";
-  links += linkfull(VIEW_REPORTS, QString("?command=duplicate&target=1"),i18n("Create New Report"));
-  links += "&nbsp;|&nbsp;";
-  links += linkfull(VIEW_REPORTS, QString("?command=copy&target=1"),i18n("Copy to Clipboard"));
-  links += "&nbsp;|&nbsp;";
-  links += linkfull(VIEW_REPORTS, QString("?command=save&target=1"),i18n("Save to File"));
+  //
+  // Update all the reports, or delete them if needed
+  //
   
-  // run each report and assign the contents into the html part
-  unsigned index = 0;
-  while ( index < reports.count() )
+  int index = 1;
+  while ( index < m_reportTabWidget->count() )
   {
-    m_part[index]->begin();
-    m_part[index]->write(createTable(index,links));
-    m_part[index]->end();
-    ++index;
-  }
-}
-
-void KReportsView::slotPrintView(void)
-{
-  int page = m_reportTabWidget->currentPageIndex();
-
-  KHTMLPart part(this, "htmlpart_km2");
-
-  part.begin();
-  part.write(createTable(page));
-  part.end();
-
-  part.view()->print();
-}
-
-void KReportsView::slotCopyView(void)
-{
-  int page = m_reportTabWidget->currentPageIndex();
-
-  QTextDrag* pdrag =  new QTextDrag( createTable(page) );
-  pdrag->setSubtype("html");
-  QApplication::clipboard()->setData(pdrag);
-}
-
-void KReportsView::slotSaveView(void)
-{
-  int page = m_reportTabWidget->currentPageIndex();
-
-  QString newName=KFileDialog::getSaveFileName(KGlobalSettings::documentPath(),
-                                               i18n("*.html|HTML files\n""*.*|All files"), this, i18n("Save as..."));
-
-  if(!newName.isEmpty())
-  {
-    if(newName.findRev('.') == -1)
-      newName.append(".html");
-
-    QFile file( newName );
-    if ( file.open( IO_WriteOnly ) ) {
-      QTextStream stream( &file );
-      stream <<  createTable(page);
-      file.close();
+    KReportTab* tab = dynamic_cast<KReportTab*>(m_reportTabWidget->page(index));
+    if ( tab->isReadyToDelete() || ! reports.count() )
+    {
+      delete tab;
+      --index;
     }
+    else
+      tab->updateReport();  
+    ++index;  
   }
-}
-
-void KReportsView::slotConfigure(void)
-{
-  int page = m_reportTabWidget->currentPageIndex();
-
-  KReportConfigurationFilterDlg dlg(MyMoneyFile::instance()->report(m_reportid[page]));
-
-  if (dlg.exec())
-  {
-    MyMoneyFile::instance()->modifyReport(dlg.getConfig());
-    slotRefreshView();
-    
-    // NOTE: This is only valid as long as we aren't deleting or adding pages here!!
-    m_reportTabWidget->setCurrentPage(page);
-    
-  }
-}
-
-void KReportsView::slotDuplicate(void)
-{
-  int page = m_reportTabWidget->currentPageIndex();
-  
-  MyMoneyReport dupe = MyMoneyFile::instance()->report(m_reportid[page]);
-  dupe.setName( QString("Copy of %1").arg(dupe.name()) );
-  dupe.setId(QCString());
-  MyMoneyFile::instance()->addReport(dupe);
-  
-  kdDebug(2) << "KReportsView::slotDuplicate(): Added report " << dupe.id() << endl;
-  
-  KReportConfigurationFilterDlg dlg(dupe);
-  if (dlg.exec())
-    MyMoneyFile::instance()->modifyReport(dlg.getConfig());
-  
-  slotRefreshView();
-  m_reportTabWidget->setCurrentPage(MyMoneyFile::instance()->countReports()-1);
-}
-
-const QString KReportsView::linkfull(const QString& view, const QString& query, const QString& label)
-{
-  return QString("<a href=\"/") + view + query + "\">" + label + "</a>";
 }
 
 void KReportsView::slotOpenURL(const KURL &url, const KParts::URLArgs& /* args */)
@@ -273,6 +261,8 @@ void KReportsView::slotOpenURL(const KURL &url, const KParts::URLArgs& /* args *
       slotConfigure();
     else if ( command == "duplicate" )
       slotDuplicate();
+    else if ( command == "close" )
+      slotCloseCurrent();
     else
       qDebug("Unknown command '%s' in KReportsView::slotOpenURL()", static_cast<const char*>(command));
 
@@ -280,4 +270,112 @@ void KReportsView::slotOpenURL(const KURL &url, const KParts::URLArgs& /* args *
     qDebug("Unknown view '%s' in KReportsView::slotOpenURL()", view.latin1());
   }
 }
+
+void KReportsView::slotPrintView(void)
+{
+  KReportTab* tab = dynamic_cast<KReportTab*>(m_reportTabWidget->currentPage());
+  tab->print();
+}
+
+void KReportsView::slotCopyView(void)
+{
+  KReportTab* tab = dynamic_cast<KReportTab*>(m_reportTabWidget->currentPage());
+  tab->copyToClipboard();
+}
+
+void KReportsView::slotSaveView(void)
+{
+  KReportTab* tab = dynamic_cast<KReportTab*>(m_reportTabWidget->currentPage());
+  QString newName=KFileDialog::getSaveFileName(KGlobalSettings::documentPath(),i18n("*.html|HTML files\n""*.*|All files"), this, i18n("Save as..."));
+
+  if(!newName.isEmpty())
+  {
+    if(newName.findRev('.') == -1)
+      newName.append(".html");
+    
+    tab->saveAs( newName );
+  }
+}
+
+void KReportsView::slotConfigure(void)
+{
+  KReportTab* tab = dynamic_cast<KReportTab*>(m_reportTabWidget->currentPage());
+  KReportConfigurationFilterDlg dlg(MyMoneyFile::instance()->report(tab->id()));
+
+  if (dlg.exec())
+  {
+    MyMoneyReport report = dlg.getConfig();
+    MyMoneyFile::instance()->modifyReport(report);
+    slotRefreshView();
+    
+    m_reportTabWidget->changeTab( tab, report.name() );
+    m_reportTabWidget->showPage(tab);
+  }
+}
+
+void KReportsView::slotDuplicate(void)
+{
+  KReportTab* tab = dynamic_cast<KReportTab*>(m_reportTabWidget->currentPage());
+
+  MyMoneyReport dupe = MyMoneyFile::instance()->report(tab->id());
+  dupe.setName( QString("Copy of %1").arg(dupe.name()) );
+  dupe.setId(QCString());
+  MyMoneyFile::instance()->addReport(dupe);
+  
+  KReportConfigurationFilterDlg dlg(dupe);
+  if (dlg.exec())
+    MyMoneyFile::instance()->modifyReport(dlg.getConfig());
+  
+  new KReportListItem( m_reportListView, dupe );
+  addReportTab(dupe);
+}
+
+void KReportsView::slotReportDoubleClicked(QListViewItem* item)
+{  
+  KReportListItem *reportItem = dynamic_cast<KReportListItem*> (item);
+  KReportTab* page = NULL;
+
+  // Find the tab which contains the report indicated by this list item  
+  int index = 1;
+  while ( index < m_reportTabWidget->count() )
+  {
+    KReportTab* current = dynamic_cast<KReportTab*>(m_reportTabWidget->page(index));
+    if ( current->id() == reportItem->id() )
+    {
+      page = current;
+      break;
+    }
+    ++index;
+  }
+  
+  // Show the tab, or create a new one, as needed
+  if ( page )
+    m_reportTabWidget->showPage( page );
+  else
+    addReportTab(MyMoneyFile::instance()->report(reportItem->id()));
+}
+
+void KReportsView::slotCloseCurrent(void)
+{
+  slotClose(m_reportTabWidget->currentPage());
+}
+
+void KReportsView::slotClose(QWidget* w)
+{
+  KReportTab* tab = dynamic_cast<KReportTab*>(w);
+  m_reportTabWidget->removePage(tab);  
+  tab->setReadyToDelete(true);
+}
+
+void KReportsView::addReportTab(const MyMoneyReport& report)
+{
+  KReportTab* tab = new KReportTab(m_reportTabWidget,report);
+  connect( tab->browserExtension(), SIGNAL(openURLRequest(const KURL&, const KParts::URLArgs&)),
+          this, SLOT(slotOpenURL(const KURL&, const KParts::URLArgs&)) );
+        
+  slotRefreshView();
+  
+  m_reportTabWidget->showPage(tab);
+  
+};
 
