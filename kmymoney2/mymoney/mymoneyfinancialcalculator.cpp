@@ -22,6 +22,9 @@
 
 #include <math.h>
 #include <stdio.h>
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 // ----------------------------------------------------------------------------
 // QT Includes
@@ -36,10 +39,9 @@
 #include "mymoneyfinancialcalculator.h"
 #include "mymoneyexception.h"
 
-static inline FCALC_DOUBLE dabs(const FCALC_DOUBLE x)
-{
-  return (x >= 0.0) ? x : -x;
-}
+#ifndef HAVE_ROUND
+#undef roundl
+#define roundl(a)  rnd(a)
 
 const FCALC_DOUBLE MyMoneyFinancialCalculator::rnd(const FCALC_DOUBLE x) const
 {
@@ -58,6 +60,12 @@ const FCALC_DOUBLE MyMoneyFinancialCalculator::rnd(const FCALC_DOUBLE x) const
     r = x;
   return r;
 }
+#endif
+
+static inline FCALC_DOUBLE dabs(const FCALC_DOUBLE x)
+{
+  return (x >= 0.0) ? x : -x;
+}
 
 MyMoneyFinancialCalculator::MyMoneyFinancialCalculator()
 {
@@ -66,7 +74,7 @@ MyMoneyFinancialCalculator::MyMoneyFinancialCalculator()
   setCF();
   setBep();
   setDisc();
-  
+
   setNpp(0.0);
   setIr(0.0);
   setPv(0.0);
@@ -180,7 +188,7 @@ const FCALC_DOUBLE MyMoneyFinancialCalculator::presentValue(void)
   FCALC_DOUBLE eint = eff_int();
   FCALC_DOUBLE AA = _Ax(eint);
   FCALC_DOUBLE CC = _Cx(eint);
-  
+
   m_pv = roundl(-(m_fv + (AA * CC)) / (AA + 1.0));
 
   m_mask |= PV_SET;
@@ -240,7 +248,7 @@ const FCALC_DOUBLE MyMoneyFinancialCalculator::interestRate(void)
     while (ri);
   }
   m_mask |= IR_SET;
-  m_ir = rnd(nom_int(eint) * 100.0);
+  m_ir = roundl(nom_int(eint) * 100.0);
   return m_ir;
 }
 
@@ -287,17 +295,17 @@ const FCALC_DOUBLE MyMoneyFinancialCalculator::eff_int(void) const
   if(m_disc) {              // periodically compound?
     if(m_CF == m_PF) {      // same frequency?
       eint = nint / static_cast<FCALC_DOUBLE>(m_CF);
-      
+
     } else {
       eint = powl((static_cast<FCALC_DOUBLE>(1.0) + nint / static_cast<FCALC_DOUBLE>(m_CF)),
                   (static_cast<FCALC_DOUBLE>(m_CF) / static_cast<FCALC_DOUBLE>(m_PF))) - 1.0;
-      
+
     }
-    
+
   } else {
     eint = expl(nint / static_cast<FCALC_DOUBLE>(m_PF)) - 1.0;
   }
-  
+
   return eint;
 }
 
@@ -308,7 +316,7 @@ const FCALC_DOUBLE MyMoneyFinancialCalculator::nom_int(const FCALC_DOUBLE eint) 
   if(m_disc) {
     if(m_CF == m_PF) {
       nint = m_CF * eint;
-      
+
     } else {
       nint = m_CF * (powl ((eint + 1.0), (static_cast<FCALC_DOUBLE>(m_PF) / static_cast<FCALC_DOUBLE>(m_CF))) - 1.0);
     }
@@ -321,7 +329,7 @@ const FCALC_DOUBLE MyMoneyFinancialCalculator::nom_int(const FCALC_DOUBLE eint) 
 const FCALC_DOUBLE MyMoneyFinancialCalculator::interestDue(void) const
 {
   FCALC_DOUBLE eint = eff_int();
-  
+
   return (m_pv + (m_bep ? m_pmt : 0.0)) * eint;
 }
 
