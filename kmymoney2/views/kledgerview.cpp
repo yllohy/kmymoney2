@@ -1904,8 +1904,9 @@ void KLedgerView::slotCreateSchedule(void)
     MyMoneyTransaction t;
     try {
       t = m_transaction;
+      QValueList<MyMoneySplit> list = t.splits();
       QValueList<MyMoneySplit>::ConstIterator it_s;
-      for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s) {
+      for(it_s = list.begin(); it_s != list.end(); ++it_s) {
         MyMoneySplit s = *it_s;
         s.setReconcileDate(QDate());
         s.setReconcileFlag(MyMoneySplit::NotReconciled);
