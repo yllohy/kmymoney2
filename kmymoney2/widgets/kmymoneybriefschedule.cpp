@@ -36,6 +36,7 @@
 // Project Includes
 #include "kmymoneybriefschedule.h"
 #include "../mymoney/mymoneyscheduled.h"
+#include "../kmymoneyutils.h"
 
 KMyMoneyBriefSchedule::KMyMoneyBriefSchedule(QWidget *parent, const char *name )
   : kScheduleBriefWidget(parent,name)
@@ -71,12 +72,12 @@ void KMyMoneyBriefSchedule::loadSchedule(unsigned int index)
       MyMoneySchedule sched = m_scheduleList[index];
       m_indexLabel->setText(QString::number(m_index+1) + i18n(" of ") + QString::number(m_scheduleList.count()));
       m_name->setText(sched.name());
-      m_type->setText(sched.typeToString());
-      m_account->setText(MyMoneyFile::instance()->account(sched.accountId()).name());
+      m_type->setText(KMyMoneyUtils::scheduleTypeToString(sched.type()));
+      m_account->setText(sched.account().name());
       QString text(i18n("Next payment on "));
       text += sched.nextPayment().toString();
       text += i18n(" for ");
-      MyMoneyMoney amount = sched.transaction().split(sched.accountId()).value();
+      MyMoneyMoney amount = sched.transaction().split(sched.account().id()).value();
       if (amount < 0)
         amount = -amount;
       text += amount.formatMoney();
@@ -87,7 +88,7 @@ void KMyMoneyBriefSchedule::loadSchedule(unsigned int index)
         text += i18n(" transactions remaining ");
       }
       text += i18n(" occuring ");
-      text += sched.occurenceToString();
+      text += KMyMoneyUtils::occurenceToString(sched.occurence());
       text += ".";
       m_details->setText(text);
 

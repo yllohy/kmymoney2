@@ -173,7 +173,7 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int row, int 
           QCStringList::Iterator it;
           for (it=m_filterAccounts.begin(); it != m_filterAccounts.end(); ++it)
           {
-            if ((*it) == (*schedit).accountId())
+            if ((*it) == (*schedit).account().id())
             {
               toDelete.append(*schedit);
               break;
@@ -251,7 +251,7 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int row, int 
             QCStringList::Iterator it;
             for (it=m_filterAccounts.begin(); it != m_filterAccounts.end(); ++it)
             {
-              if ((*it) == (*schedit).accountId())
+              if ((*it) == (*schedit).account().id())
               {
                 toDelete.append(*schedit);
                 break;
@@ -289,7 +289,7 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int row, int 
             QCStringList::Iterator it;
             for (it=m_filterAccounts.begin(); it != m_filterAccounts.end(); ++it)
             {
-              if ((*it) == (*schedit).accountId())
+              if ((*it) == (*schedit).account().id())
               {
                 toDelete.append(*schedit);
                 break;
@@ -328,7 +328,7 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int row, int 
             QCStringList::Iterator it;
             for (it=m_filterAccounts.begin(); it != m_filterAccounts.end(); ++it)
             {
-              if ((*it) == (*schedit).accountId())
+              if ((*it) == (*schedit).account().id())
               {
                 toDelete.append(*schedit);
                 break;
@@ -518,7 +518,7 @@ void kMyMoneyScheduledDateTbl::contentsMouseMoveEvent(QMouseEvent* e)
         QCStringList::Iterator it;
         for (it=m_filterAccounts.begin(); it != m_filterAccounts.end(); ++it)
         {
-          if ((*it) == (*schedit).accountId())
+          if ((*it) == (*schedit).account().id())
           {
             toDelete.append(*schedit);
             break;

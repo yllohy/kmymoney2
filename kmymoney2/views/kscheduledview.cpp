@@ -69,6 +69,7 @@ KScheduledView::KScheduledView(QWidget *parent, const char *name )
   // never show a horizontal scroll bar
   m_qlistviewScheduled->setHScrollBarMode(QScrollView::AlwaysOff);
   m_qlistviewScheduled->setSorting(-1);
+  m_qlistviewScheduled->setColumnAlignment(3, Qt::AlignRight);
 
   KIconLoader *kiconloader = KGlobal::iconLoader();
   KPopupMenu* kpopupmenuNew = new KPopupMenu(this);
@@ -160,7 +161,7 @@ void KScheduledView::refresh(bool full, const QCString schedId)
       QCStringList::iterator accIt;
       for (accIt=m_filterAccounts.begin(); accIt!=m_filterAccounts.end(); ++accIt)
       {
-        if (*accIt == schedData.accountId())
+        if (*accIt == schedData.account().id())
         {
           bContinue=false; // Filter it out
           break;
