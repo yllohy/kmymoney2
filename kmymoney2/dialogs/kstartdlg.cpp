@@ -75,7 +75,7 @@ void KStartDlg::setPage_Template()
   KIconLoader *ic = KGlobal::iconLoader();
   templateMainFrame = addVBoxPage( i18n("Templates"), i18n("Select templates"), DesktopIcon("wizard"));
   view_wizard = new KIconView( templateMainFrame, "view_options" );
-  (void)new QIconViewItem( view_wizard, i18n("Blank Document"), ic->loadIcon("mime_empty.png", KIcon::Desktop, KIcon::SizeLarge)/*QPixmap( locate("icon","hicolor/48x48/mimetypes/mime_empty.png") )*/ );
+  (void)new QIconViewItem( view_wizard, i18n("New KMyMoney document"), ic->loadIcon("mime_empty.png", KIcon::Desktop, KIcon::SizeLarge)/*QPixmap( locate("icon","hicolor/48x48/mimetypes/mime_empty.png") )*/ );
   connect( view_wizard, SIGNAL( executed(QIconViewItem *) ), this, SLOT( slotTemplateClicked(QIconViewItem *) ) );
   connect(view_wizard, SIGNAL(selectionChanged(QIconViewItem*)),
     this, SLOT(slotTemplateSelectionChanged(QIconViewItem*)));
@@ -113,13 +113,13 @@ void KStartDlg::slotTemplateClicked(QIconViewItem *item)
   if(!item) return;
 
   // If the item is the blank document turn isnewfile variable true, else is template or wizard
-  if( item->text() == i18n("Blank Document") )
+  if( item->text() == i18n("New KMyMoney document") )
      isnewfile = true;
-     else
+   else
      templatename = item->text();
 
   isopenfile = false;
-  // Close the window if the user press an icon
+  // Close the window if the user pressed an icon
   slotOk();
 }
 
@@ -153,8 +153,12 @@ void KStartDlg::readConfig()
   this->resize( config->readSizeEntry("Geometry", defaultSize ) );
 
   // Restore the last page viewed
-  // default to the recent files page if no entry exists
-  this->showPage(config->readNumEntry("LastPage", this->pageIndex(recentMainFrame)));
+  // default to the recent files page if no entry exists but files have been found
+  // otherwise, default to template page
+  if(view_recent->count() > 0)
+    this->showPage(config->readNumEntry("LastPage", this->pageIndex(recentMainFrame)));
+  else
+    this->showPage(config->readNumEntry("LastPage", this->pageIndex(templateMainFrame)));
 }
 
 /** Write config window */
