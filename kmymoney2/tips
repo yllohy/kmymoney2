@@ -30,7 +30,7 @@ register by selecting the 'ledger lens' feature in the settings dialog?
 <tip category="KMyMoney|Ledger">
 <html>
 <p>...that transactions with no category assigned or splitted
-transactions with unassigned value blink in 
+transactions with unassigned values blink in 
 <font color="red">red</font> in the register?
 </html>
 
@@ -60,6 +60,58 @@ in the accounts view?
 <p>...you can use your own external filter program to convert any
 import format to QIF on the fly? See the QIF profile editor for
 more details.
+</html>
+</tip>
+
+<tip category="KMyMoney|General">
+<html>
+<p>...you have the option to configure KMyMoney so that it opens
+the last opened file automatically when started? See the "General"
+page of the "Configure" dialog for that option. 
+</html>
+</tip>
+
+<tip category="KMyMoney|Ledger">
+<html>
+<p>...that you can create a scheduled transaction from an existing
+one by selecting the context menu on a transaction in the ledger
+or the "More..."-menu in the transaction form?
+</html>
+</tip>
+
+<tip category="KMyMoney|Ledger">
+<html>
+<p>...that you can switch to the payee of a transaction
+by selecting the context menu on a transaction in the ledger
+or the "More..."-menu in the transaction form?
+</html>
+</tip>
+
+<tip category="KMyMoney|General">
+<html>
+<p>...that you can modify the colors and fonts used for the ledgers
+via <i>Configure/Register/...</i>?
+</html>
+</tip>
+
+<tip category="KMyMoney|General">
+<html>
+<p>...that you can hide transactions prior to a specific date?
+The date can be modified via <i>Configure/Register/Filter</i>.
+</html>
+</tip>
+
+<tip category="KMyMoney|General">
+<html>
+<p>...that you can customize the "Home-Page"
+via <i>Configure/Home</i>?
+</html>
+</tip>
+
+<tip category="KMyMoney|Ledger">
+<html>
+<p>...that you can enter new transactions even while reconciling
+an account? You can also make the transaction form visible.
 </html>
 </tip>
 
