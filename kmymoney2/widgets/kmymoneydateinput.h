@@ -69,6 +69,7 @@ signals:
 protected:
   /** Overriding QWidget::keyPressEvent */
   void keyPressEvent(QKeyEvent * k);
+  void resizeEvent(QResizeEvent*);
 
 protected slots:
   void slotDateChosen(QDate date);

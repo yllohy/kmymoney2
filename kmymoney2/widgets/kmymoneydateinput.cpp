@@ -25,12 +25,17 @@
 #if QT_VERSION > 300
 #include <qstyle.h>
 #endif
+#include <qlayout.h>
+#include <qapplication.h>
+#include <qdesktopwidget.h>
+#include <qpixmap.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
 
 #include <kglobal.h>
 #include <klocale.h>
+#include <kstandarddirs.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -45,7 +50,7 @@ kMyMoneyDateInput::kMyMoneyDateInput(QWidget *parent, const char *name, Qt::Alig
 
   dateEdit = new QDateEdit(m_date, this, "dateEdit");
 	setFocusProxy(dateEdit);
-	
+
   m_dateFrame = new QVBox(0,0,WType_Popup);
 	m_dateFrame->setFrameStyle(QFrame::PopupPanel | QFrame::Raised);
   m_dateFrame->setFixedSize(200,200);
@@ -63,7 +68,7 @@ kMyMoneyDateInput::kMyMoneyDateInput(QWidget *parent, const char *name, Qt::Alig
       break;
   }
 
-  // see if we find a know format. If it's unknown, then we use YMD (international)
+  // see if we find a known format. If it's unknown, then we use YMD (international)
   if(order == "mdy") {
     dateEdit->setOrder(QDateEdit::MDY);
   } else if(order == "dmy") {
@@ -76,9 +81,11 @@ kMyMoneyDateInput::kMyMoneyDateInput(QWidget *parent, const char *name, Qt::Alig
   dateEdit->setSeparator(separator);
 
 	m_datePicker = new KDatePicker(m_dateFrame, m_date);
-	
-	m_dateButton = new QPushButton(this);
-	
+
+  // the next line is a try to add an icon to the button
+	m_dateButton = new QPushButton(QIconSet(QPixmap( locate("icon","hicolor/16x16/apps/korganizer.png"))), QString(""), this);
+	// m_dateButton = new QPushButton(this);
+
 	connect(m_dateButton,SIGNAL(clicked()),SLOT(toggleDatePicker()));
   connect(dateEdit, SIGNAL(valueChanged(const QDate&)), this, SLOT(slotDateChosenRef(const QDate&)));
 	connect(m_datePicker, SIGNAL(dateSelected(QDate)), this, SLOT(slotDateChosen(QDate)));
@@ -100,6 +107,14 @@ void kMyMoneyDateInput::toggleDatePicker()
 	else
 	{
     QPoint tmpPoint = mapToGlobal(m_dateButton->geometry().bottomRight());
+
+    // usually, the datepicker widget is shown underneath the dateEdit widget
+    // if it does not fit on the screen, we show it above this widget
+
+    if(tmpPoint.y() + 200 > QApplication::desktop()->height()) {
+      tmpPoint.setY(tmpPoint.y() - 200 - m_dateButton->height());
+    }
+
     if (m_qtalignment == Qt::AlignRight)
 		{
 	    m_dateFrame->setGeometry(tmpPoint.x(), tmpPoint.y(), 200, 200);
@@ -122,6 +137,17 @@ void kMyMoneyDateInput::toggleDatePicker()
 		m_dateFrame->show();
   }
 }
+
+
+void kMyMoneyDateInput::resizeEvent(QResizeEvent* ev)
+{
+  m_dateButton->setMaximumHeight(ev->size().height());
+  m_dateButton->setMaximumWidth(ev->size().height());
+  dateEdit->setMaximumHeight(ev->size().height());
+
+  // qDebug("Received resize-event %d,%d", ev->size().width(), ev->size().height());
+}
+
 
 /** Overriding QWidget::keyPressEvent
   *
