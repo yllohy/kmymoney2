@@ -1117,6 +1117,21 @@ void MyMoneySeqAccessMgr::loadPayee(const MyMoneyPayee& payee)
   m_payeeList[payee.id()] = payee;
 }
 
+void MyMoneySeqAccessMgr::loadEquity(const MyMoneyEquity& equity)
+{
+  QMap<QCString, MyMoneyEquity>::ConstIterator it;
+
+  it = m_equitiesList.find(equity.id());
+  if(it != m_equitiesList.end())
+  {
+    QString msg = "Duplicate equity  '";
+    msg += equity.id() + "' during loadEquity()";
+    throw new MYMONEYEXCEPTION(msg);
+  }
+  m_equitiesList[equity.id()] = equity;
+  qDebug("loadEquity: Equity list size is %d, this=0x%08X", m_equitiesList.size(), this);
+}
+
 void MyMoneySeqAccessMgr::loadAccountId(const unsigned long id)
 {
   m_nextAccountID = id;
@@ -1135,6 +1150,11 @@ void MyMoneySeqAccessMgr::loadPayeeId(const unsigned long id)
 void MyMoneySeqAccessMgr::loadInstitutionId(const unsigned long id)
 {
   m_nextInstitutionID = id;
+}
+
+void MyMoneySeqAccessMgr::loadEquityId(const unsigned long id)
+{
+  m_nextEquityID = id;
 }
 
 const QString MyMoneySeqAccessMgr::value(const QCString& key) const
@@ -1394,6 +1414,7 @@ const MyMoneyEquity MyMoneySeqAccessMgr::equity(const QCString& id) const
 
 const QValueList<MyMoneyEquity> MyMoneySeqAccessMgr::equityList(void) const
 {
+  qDebug("equityList: Equity list size is %d, this=0x%08X", m_equitiesList.size(), this);
   QValueList<MyMoneyEquity> list;
   QMap<QCString, MyMoneyEquity>::ConstIterator it;
   for(it = m_equitiesList.begin(); it != m_equitiesList.end(); ++it)

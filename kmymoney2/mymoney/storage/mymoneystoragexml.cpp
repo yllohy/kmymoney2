@@ -109,6 +109,10 @@ void MyMoneyStorageXML::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
         {
           readSchedules(childElement);
         }
+        else if(QString("EQUITIES") == childElement.tagName())
+        {
+          readEquities(childElement);
+        }
         child = child.nextSibling();
       }
     }
@@ -981,12 +985,60 @@ void MyMoneyStorageXML::writeEquity(QDomElement& equityElement, const MyMoneyEqu
 
 void MyMoneyStorageXML::readEquities(QDomElement& equities)
 {
+  unsigned long id = 0;
+  QDomNode child = equities.firstChild();
+  while(!child.isNull() && child.isElement())
+  {
+    QDomElement childElement = child.toElement();
+    if(QString("EQUITY") == childElement.tagName())
+    {
+      MyMoneyEquity equity = readEquity(childElement);
 
+      //tell the storage objects we have a new equity object.
+      m_storage->loadEquity(equity);
+
+      id = extractId(equity.id().data());
+      if(id > m_storage->equityId())
+      {
+        m_storage->loadEquityId(id);
+      }
+    }
+    child = child.nextSibling();
+  }
 }
 
 MyMoneyEquity MyMoneyStorageXML::readEquity(QDomElement& equityElement)
 {
-  return MyMoneyEquity();
+  QCString id;
+  MyMoneyEquity e;
+
+  e.setEquityName(QStringEmpty(equityElement.attribute(QString("name"))));
+  e.setEquitySymbol(QStringEmpty(equityElement.attribute(QString("symbol"))));
+  e.setEquityType(static_cast<MyMoneyEquity::eEQUITYTYPE>(equityElement.attribute(QString("type")).toInt()));
+
+  id = QStringEmpty(equityElement.attribute(QString("id")));
+
+  QDomElement history = findChildElement(QString("HISTORY"), equityElement);
+  if(!history.isNull() && history.isElement())
+  {
+    QDomNode child = history.firstChild();
+    while(!child.isNull())
+    {
+      if(child.isElement())
+      {
+        QDomElement childElement = child.toElement();
+        if(QString("ENTRY") == childElement.tagName())
+        {
+          QDate date = getDate(QStringEmpty(childElement.attribute(QString("date"))));
+          MyMoneyMoney money(QStringEmpty(childElement.attribute(QString("price"))));
+          e.addPriceHistory(date, money);
+        }
+      }
+      child = child.nextSibling();
+    }
+  }
+  
+  return MyMoneyEquity(id, e);
 }
 
 const unsigned long MyMoneyStorageXML::extractId(const QCString& txt) const

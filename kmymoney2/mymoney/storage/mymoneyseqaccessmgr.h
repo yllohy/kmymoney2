@@ -516,12 +516,14 @@ public:
   virtual void loadInstitution(const MyMoneyInstitution& inst);
   virtual void loadPayee(const MyMoneyPayee& payee);
   virtual void loadSchedule(const MyMoneySchedule& sched);
+  virtual void loadEquity(const MyMoneyEquity& equity);
   
   virtual void loadAccountId(const unsigned long id);
   virtual void loadTransactionId(const unsigned long id);
   virtual void loadPayeeId(const unsigned long id);
   virtual void loadInstitutionId(const unsigned long id);
   virtual void loadScheduleId(const unsigned long id);
+  virtual void loadEquityId(const unsigned long id);
   
   virtual const unsigned long accountId(void) { return m_nextAccountID; };
   virtual const unsigned long transactionId(void) { return m_nextTransactionID; };
@@ -529,6 +531,7 @@ public:
   virtual const unsigned long institutionId(void) { return m_nextInstitutionID; };
   virtual const unsigned long scheduleId(void) { return m_nextScheduleID; };
   virtual const unsigned long equityId(void) { return m_nextEquityID; };
+  
   
   /**
     * This method is used to extract a value from 

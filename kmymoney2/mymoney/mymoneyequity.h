@@ -79,9 +79,7 @@ private:
   QCString m_id;
   QString m_name;
 	QString m_symbol;
-	QString m_market;
 	eEQUITYTYPE m_equityType;
-	MyMoneyMoney m_currentPrice;
   equity_price_history m_priceHistory;
 };
 

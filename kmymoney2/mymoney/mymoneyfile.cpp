@@ -1251,3 +1251,10 @@ const MyMoneyEquity MyMoneyFile::equity(const QCString& id) const
   return MyMoneyEquity();
 }
 
+const QValueList<MyMoneyEquity> MyMoneyFile::equityList(void) const
+{
+  checkStorage();
+
+  return m_storage->equityList();
+}
+

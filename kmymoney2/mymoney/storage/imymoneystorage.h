@@ -524,17 +524,24 @@ public:
   virtual void removeEquity(const MyMoneyEquity& equity) = 0;
 
   /**
-    * This method is used to retrieve a single MyMoneySchedule object.
+    * This method is used to retrieve a single MyMoneyEquity object.
     * The id of the object must be supplied in the parameter @p id.
     *
     * An exception will be thrown upon erronous situations.
     *
-    * @param id QCString containing the id of the MyMoneySchedule object
-    * @return MyMoneySchedule object
+    * @param id QCString containing the id of the MyMoneyEquity object
+    * @return MyMoneyEquity object
     */
   virtual const MyMoneyEquity equity(const QCString& id) const = 0;
 
- 
+  /**
+    * This method returns a list of the equity objects
+    * inside a MyMoneyStorage object
+    *
+    * @return QValueList<MyMoneyEquity> containing objects
+    */
+  virtual const QValueList<MyMoneyEquity> equityList(void) const = 0;
+
   /**
     * This method is used to add a scheduled transaction to the engine.
     * It must be sure, that the id of the object is not filled. When the

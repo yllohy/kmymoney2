@@ -951,6 +951,8 @@ public:
     */
   const MyMoneyEquity equity(const QCString& id) const;
 
+  const QValueList<MyMoneyEquity> equityList(void) const;
+
   
 protected:
   /**
