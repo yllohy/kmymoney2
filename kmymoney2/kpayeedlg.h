@@ -38,6 +38,7 @@ protected slots:
   void slotAddClicked();
   void slotPayeeTextChanged(const QString& text);
   void slotUpdateClicked();
+  void slotDeleteClicked();
 
 private:
   MyMoneyFile *m_file;

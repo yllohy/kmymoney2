@@ -11,7 +11,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>390</width>
+            <width>419</width>
             <height>462</height>
         </rect>
     </property>
@@ -636,7 +636,7 @@ information when viewing the payee details.</string>
                     <class>QLayoutWidget</class>
                     <property stdset="1">
                         <name>name</name>
-                        <cstring>Layout10</cstring>
+                        <cstring>Layout11</cstring>
                     </property>
                     <hbox>
                         <property stdset="1">
@@ -668,6 +668,21 @@ information when viewing the payee details.</string>
                                 </size>
                             </property>
                         </spacer>
+                        <widget>
+                            <class>QPushButton</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>deleteButton</cstring>
+                            </property>
+                            <property stdset="1">
+                                <name>enabled</name>
+                                <bool>false</bool>
+                            </property>
+                            <property stdset="1">
+                                <name>text</name>
+                                <string>&amp;Delete Payee</string>
+                            </property>
+                        </widget>
                         <widget>
                             <class>QPushButton</class>
                             <property stdset="1">
