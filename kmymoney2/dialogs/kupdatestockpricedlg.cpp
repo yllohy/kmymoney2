@@ -20,12 +20,14 @@
  *                                                                         *
  ***************************************************************************/
 
+ #include <kpushbutton.h>
+ 
 #include "kupdatestockpricedlg.h"
 
 KUpdateStockPriceDlg::KUpdateStockPriceDlg(QWidget* parent,  const char* name)
 	: kUpdateStockPriceDecl(parent,name,TRUE)
 {
-
+  init();  
 }
 
 KUpdateStockPriceDlg::KUpdateStockPriceDlg(const QString& strDate, const QString& strPrice, QWidget* parent,  const char* name)
@@ -33,9 +35,30 @@ KUpdateStockPriceDlg::KUpdateStockPriceDlg(const QString& strDate, const QString
 {
   m_date = strDate;
   m_price = strPrice;
+  init();
 }
 
 KUpdateStockPriceDlg::~KUpdateStockPriceDlg()
 {
 
 }
+
+void KUpdateStockPriceDlg::init()
+{
+  connect(btnOK, SIGNAL(clicked()), this, SLOT(slotOkClicked()));
+  connect(btnCancel, SIGNAL(clicked()), this, SLOT(slotCancelClicked()));
+}
+
+void KUpdateStockPriceDlg::slotOkClicked()
+{
+  accept();
+}
+
+void KUpdateStockPriceDlg::slotCancelClicked()
+{
+  reject();
+}
+
+
+
+  

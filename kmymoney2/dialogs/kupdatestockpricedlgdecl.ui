@@ -73,39 +73,39 @@
             <string>Price:</string>
         </property>
     </widget>
-    <widget class="QPushButton">
+    <widget class="KPushButton">
         <property name="name">
-            <cstring>pushButton7</cstring>
+            <cstring>btnOK</cstring>
         </property>
         <property name="geometry">
             <rect>
-                <x>30</x>
+                <x>50</x>
                 <y>120</y>
-                <width>80</width>
+                <width>70</width>
                 <height>29</height>
             </rect>
         </property>
         <property name="text">
             <string>OK</string>
         </property>
-        <property name="default">
-            <bool>true</bool>
-        </property>
     </widget>
-    <widget class="QPushButton">
+    <widget class="KPushButton">
         <property name="name">
-            <cstring>pushButton8</cstring>
+            <cstring>btnCancel</cstring>
         </property>
         <property name="geometry">
             <rect>
                 <x>130</x>
                 <y>120</y>
-                <width>80</width>
+                <width>70</width>
                 <height>29</height>
             </rect>
         </property>
         <property name="text">
             <string>Cancel</string>
+        </property>
+        <property name="default">
+            <bool>true</bool>
         </property>
     </widget>
 </widget>
@@ -156,5 +156,7 @@
 <includehints>
     <includehint>kmymoneydateinput.h</includehint>
     <includehint>kmymoneylineedit.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kpushbutton.h</includehint>
 </includehints>
 </UI>

@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
 <class>kEditEquityEntryDecl</class>
 <author>Kevin Tambascio </author>
 <widget class="QDialog">
@@ -28,14 +28,6 @@
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QLabel" row="3" column="0">
-                    <property name="name">
-                        <cstring>lblCurrentPrice</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Current Price:</string>
-                    </property>
-                </widget>
                 <widget class="KLineEdit" row="0" column="1">
                     <property name="name">
                         <cstring>edtEquityName</cstring>
@@ -55,37 +47,6 @@
                     </property>
                     <property name="text">
                         <string>Market Symbol:</string>
-                    </property>
-                </widget>
-                <widget class="KComboBox" row="4" column="1">
-                    <item>
-                        <property name="text">
-                            <string>NYSE</string>
-                        </property>
-                    </item>
-                    <item>
-                        <property name="text">
-                            <string>NASDAQ</string>
-                        </property>
-                    </item>
-                    <item>
-                        <property name="text">
-                            <string>AMEX</string>
-                        </property>
-                    </item>
-                    <property name="name">
-                        <cstring>cmbMarket</cstring>
-                    </property>
-                    <property name="editable">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="4" column="0">
-                    <property name="name">
-                        <cstring>lblMarket</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Trading Market:</string>
                     </property>
                 </widget>
                 <widget class="QLabel" row="2" column="0">
@@ -114,11 +75,6 @@
                     </item>
                     <property name="name">
                         <cstring>cmbInvestmentType</cstring>
-                    </property>
-                </widget>
-                <widget class="kMyMoneyEdit" row="3" column="1">
-                    <property name="name">
-                        <cstring>dblCurrentPrice</cstring>
                     </property>
                 </widget>
                 <widget class="KLineEdit" row="1" column="1">
@@ -268,36 +224,10 @@
         </widget>
     </vbox>
 </widget>
-<customwidgets>
-    <customwidget>
-        <class>kMyMoneyEdit</class>
-        <header location="local">../widgets/kmymoneyedit.h</header>
-        <sizehint>
-            <width>90</width>
-            <height>25</height>
-        </sizehint>
-        <container>0</container>
-        <sizepolicy>
-            <hordata>1</hordata>
-            <verdata>1</verdata>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-        </sizepolicy>
-        <pixmap>image0</pixmap>
-    </customwidget>
-</customwidgets>
-<images>
-    <image name="image0">
-        <data format="XPM.GZ" length="646">789c6dd2c10ac2300c00d07bbf2234b7229d1be245fc04c5a3201e4615f430059d0711ff5ddb2e6bb236ec90eed134cb5a19d8ef36602af5ecdbfeeac05dda0798d3abebde87e3faa374d3807fa0d633a52d38d8de6f679fe33fc776e196f53cd010188256a3600a292882096246517815ca99884606e18044a3a40d91824820924265a7923a2e8bcd05f33db1173e002913175f2a6be6d3294871a2d95fa00e8a94ee017b69d339d90df1e77c57ea072ede6758</data>
-    </image>
-</images>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
     <includehint>klineedit.h</includehint>
     <includehint>kcombobox.h</includehint>
-    <includehint>klineedit.h</includehint>
-    <includehint>kcombobox.h</includehint>
-    <includehint>kmymoneyedit.h</includehint>
     <includehint>klineedit.h</includehint>
     <includehint>klistview.h</includehint>
     <includehint>kpushbutton.h</includehint>

@@ -31,13 +31,20 @@
 
 class KUpdateStockPriceDlg : public kUpdateStockPriceDecl
 {
+  Q_OBJECT
+  
 public: 
 	KUpdateStockPriceDlg(QWidget* parent = NULL,  const char* name = NULL);
   KUpdateStockPriceDlg(const QString& strDate, const QString& strPrice, QWidget* parent = NULL,  const char* name = NULL);
 	~KUpdateStockPriceDlg();
 
 protected:
+  void init();
   QString m_date, m_price;
+
+protected slots:
+  void slotOkClicked();
+  void slotCancelClicked();
 
 public:
   QString getDate() const { return m_date; }

@@ -121,7 +121,11 @@ void KEditEquityEntryDlg::slotEquitySymbolChanged(const QString& str)
 void KEditEquityEntryDlg::slotAddPriceClicked()
 {
   KUpdateStockPriceDlg *pDlg = new KUpdateStockPriceDlg(this);
-  pDlg->exec();
+  if(pDlg->exec() == QDialog::Accepted)
+  {
+    KListViewItem *pItem = new KListViewItem(lvPriceHistory, pDlg->getDate(), pDlg->getPrice());
+    lvPriceHistory->insertItem(pItem);
+  }
 }
 
 void KEditEquityEntryDlg::slotEditPriceClicked()
