@@ -161,6 +161,23 @@ void KAccountSelectDlg::slotCreateAccount(void)
       // keep a possible description field
       newAccount.setDescription(m_account.description());
       parentAccount = wizard->parentAccount();
+      
+      MyMoneyFile* file = MyMoneyFile::instance();
+      MyMoneySchedule newSchedule = wizard->schedule();
+      try {
+        file->schedule(newSchedule.id());
+        file->modifySchedule(newSchedule);
+        newAccount.setValue("schedule", newSchedule.id());
+      } catch (MyMoneyException *e) {
+        try {
+          file->addSchedule(newSchedule);
+          newAccount.setValue("schedule", newSchedule.id());
+        } catch (MyMoneyException *f) {
+          qDebug("Cannot add schedule: '%s'", f->what().data());
+          delete f;
+        }
+        delete e;
+      }
     }
     delete wizard;
   } else {
