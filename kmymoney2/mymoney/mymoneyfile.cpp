@@ -1229,3 +1229,25 @@ void MyMoneyFile::suspendNotify(const bool state)
     notify();
   // qDebug("Notification turned %s", state ? "off" : "on");
 }
+
+
+void MyMoneyFile::addEquity(MyMoneyEquity& equity)
+{
+
+}
+
+void MyMoneyFile::modifyEquity(const MyMoneyEquity& equity)
+{
+
+}
+
+void MyMoneyFile::removeEquity(const MyMoneyEquity& equity)
+{
+
+}
+
+const MyMoneyEquity MyMoneyFile::equity(const QCString& id) const
+{
+  return MyMoneyEquity();
+}
+

@@ -37,9 +37,10 @@
 #include "mymoneyobserver.h"
 #include "mymoneysubject.h"
 #include "mymoneykeyvaluecontainer.h"
+#include "mymoneyequity.h"
 
 /**
-  * @author Thomas Baumgart, Michael Edwardes
+  * @author Thomas Baumgart, Michael Edwardes, Kevin Tambascio
   */
 
 class IMyMoneyStorage;
@@ -907,6 +908,49 @@ public:
                                               int schedulePaymentTypes,
                                               QDate startDate,
                                               const QCStringList& accounts=QCStringList()) const;
+
+  /**
+    * This method is used to add a new equity object to the engine.
+    * The ID of the object is the trading symbol, so there is no need for an additional
+    * ID since the symbol is guaranteed to be unique.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param equity reference to the MyMoneyEquity object
+    */
+  void addEquity(MyMoneyEquity& equity);
+
+  /**
+    * This method is used to modify an existing MyMoneySchedule
+    * object.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param equity reference to the MyMoneyEquity object to be updated
+    */
+  void modifyEquity(const MyMoneyEquity& equity);
+
+  /**
+    * This method is used to remove an existing MyMoneyEquity object
+    * from the engine.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param equity reference to the MyMoneyEquity object to be removed
+    */
+  void removeEquity(const MyMoneyEquity& equity);
+
+  /**
+    * This method is used to retrieve a single MyMoneySchedule object.
+    * The id of the object must be supplied in the parameter @p id.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param id QCString containing the id of the MyMoneySchedule object
+    * @return MyMoneySchedule object
+    */
+  const MyMoneyEquity equity(const QCString& id) const;
+
   
 protected:
   /**

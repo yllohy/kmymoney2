@@ -39,6 +39,7 @@
 #include "../mymoneyscheduled.h"
 #include "../mymoneyobserver.h"
 #include "../mymoneytransactionfilter.h"
+#include "../mymoneyequity.h"
 
 /**
   * @author Thomas Baumgart
@@ -490,6 +491,49 @@ public:
     * @return MyMoneyAccount income account(group)
     */
   virtual const MyMoneyAccount income(void) const = 0;
+
+  /**
+    * This method is used to add a new equity object to the engine.
+    * The ID of the object is the trading symbol, so there is no need for an additional
+    * ID since the symbol is guaranteed to be unique.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param equity reference to the MyMoneyEquity object
+    */
+  virtual void addEquity(MyMoneyEquity& equity) = 0;
+
+  /**
+    * This method is used to modify an existing MyMoneySchedule
+    * object.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param equity reference to the MyMoneyEquity object to be updated
+    */
+  virtual void modifyEquity(const MyMoneyEquity& equity) = 0;
+
+  /**
+    * This method is used to remove an existing MyMoneyEquity object
+    * from the engine.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param equity reference to the MyMoneyEquity object to be removed
+    */
+  virtual void removeEquity(const MyMoneyEquity& equity) = 0;
+
+  /**
+    * This method is used to retrieve a single MyMoneySchedule object.
+    * The id of the object must be supplied in the parameter @p id.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param id QCString containing the id of the MyMoneySchedule object
+    * @return MyMoneySchedule object
+    */
+  virtual const MyMoneyEquity equity(const QCString& id) const = 0;
+
 
   /**
     * This method is used to add a scheduled transaction to the engine.

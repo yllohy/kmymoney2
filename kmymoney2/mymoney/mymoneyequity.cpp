@@ -33,6 +33,25 @@ MyMoneyEquity::~MyMoneyEquity()
 {
 }
 
+void MyMoneyEquity::editPriceHistory(QDate& date,MyMoneyMoney& money)
+{
+  m_priceHistory[date] = money;
+}
+
+void MyMoneyEquity::addPriceHistory(QDate& date, MyMoneyMoney& money)
+{
+  m_priceHistory[date] = money;
+}
+
+void MyMoneyEquity::removePriceHistory(QDate& date)
+{
+  equity_price_history::Iterator i = m_priceHistory.find(date);
+  if(i != m_priceHistory.end())
+  {
+    m_priceHistory.erase(i);
+  }
+}
+  
 
 #if 0
 /** No descriptions */

@@ -37,6 +37,8 @@
 #include <qdatetime.h>
 #include <qmap.h>
 
+typedef QMap<QDate,MyMoneyMoney> equity_price_history;
+
 class MyMoneyEquity
 {
 public: 
@@ -45,10 +47,10 @@ public:
 
 public:
   typedef enum {
-    ETYPE_NONE,
     ETYPE_STOCK,
     ETYPE_MUTUALFUND,
-    ETYPE_BOND
+    ETYPE_BOND,
+    ETYPE_NONE
   } eEQUITYTYPE;
 
   QString   getEquityName()                       { return m_name; }
@@ -67,6 +69,12 @@ public:
 	void            setCurrentPrice(const MyMoneyMoney& m)  { m_currentPrice = m; }
   /** No descriptions */
   void setEquityType(const String& str);
+
+  const equity_price_history& getConstPriceHistory() const { return m_priceHistory; }
+
+  void  editPriceHistory(QDate& date,MyMoneyMoney& money);
+  void  addPriceHistory(QDate& date, MyMoneyMoney& money);
+  void  removePriceHistory(QDate& date);
 	
 private:
 	QString m_name;
@@ -74,7 +82,7 @@ private:
 	QString m_market;
 	eEQUITYTYPE m_equityType;
 	MyMoneyMoney m_currentPrice;
-  QMap<QDate,MyMoneyMoney> m_priceHistory;
+  equity_price_history m_priceHistory;
 };
 
 #endif
