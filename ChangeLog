@@ -1,3 +1,15 @@
+2002-12-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Speedup load operation by filling the balance cache while loading
+  * Added some more tips
+  * Replaced progress dialog with global progress bar in status line
+  * Added progress callback to MyMoneyStorageBin, MyMoneyStorageXML
+    and IMyMoneyFormat
+  * Corrected display of status message in status bar
+  * Moved tip of the day logic to main()
+  * Close the splash screen upon the first call to the application
+    (startWithDialog())
+  * Revised startup code in main() and KMyMoney2App()
+
 2002-12-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added mark of current date in ledger view if it's sorted by posting date
   * Removed a few unused member variables from kMyMoneyRegister
