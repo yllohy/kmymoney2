@@ -22,6 +22,14 @@
 kMyMoneyTable::kMyMoneyTable(QWidget *parent, const char *name )
  : QTable(parent,name)
 {
+  KConfig *config = KGlobal::config();
+  config->setGroup("List Options");
+  QColor defaultColor = Qt::white;
+	
+  QPalette pal = palette();
+  pal.setColor(QColorGroup::Base, config->readColorEntry("listColor", &defaultColor));
+  setPalette(pal);
+
 	setFocusPolicy(QWidget::NoFocus);
 	m_nLastRow = 0;
 }
@@ -32,15 +40,12 @@ kMyMoneyTable::~kMyMoneyTable()
 
 void kMyMoneyTable::paintEmptyArea(QPainter *p, int cx, int cy, int cw, int ch)
 {
-  KConfig *config = KGlobal::config();
-  config->setGroup("List Options");
-  QColor defaultColor = Qt::white;
-	
-  QPalette pal = palette();
-  pal.setColor(QColorGroup::Base, config->readColorEntry("listColor", &defaultColor));
-  setPalette(pal);
+  // calling the base class version of paintEmptyArea here causes
+  // some problems in the middle of a large table. I have no idea
+  // why, but not calling the base class function solves the problem.
+  // ipwizard@users.sourceforge.net   12/11/2001
 
-  QTable::paintEmptyArea(p, cx, cy, cw, ch);
+  // QTable::paintEmptyArea(p, cx, cy, cw, ch);
 }
 
 QWidget* kMyMoneyTable::beginEdit(int row, int col, bool replace)
