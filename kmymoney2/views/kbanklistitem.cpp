@@ -147,3 +147,24 @@ void KAccountListItem::paintCell(QPainter *p, const QColorGroup & cg, int column
 */
   QListViewItem::paintCell(p, cg, column, width, align);
 }
+
+
+
+KAccountIconItem::KAccountIconItem(QIconView* parent, const MyMoneyAccount& account, const QPixmap& pixmap )
+  : KIconViewItem(parent, account.name(), pixmap)
+{
+  MyMoneyFile*  file = MyMoneyFile::instance();
+
+  m_accountID = account.id();
+
+  file->attach(m_accountID, this);
+}
+
+KAccountIconItem::~KAccountIconItem()
+{
+  MyMoneyFile::instance()->detach(m_accountID, this);
+}
+
+void KAccountIconItem::update(const QCString& id)
+{
+}

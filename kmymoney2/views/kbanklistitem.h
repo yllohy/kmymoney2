@@ -21,11 +21,12 @@
 // QT Includes
 
 #include <qwidget.h>
-#include <klistview.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
 
+#include <klistview.h>
+#include <kiconview.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -123,4 +124,42 @@ private:
   static  QPixmap* accountPixmap;
 };
 
+
+/**
+  * This class represents an item in the account icon view. It is used
+  * by the KAccountsView to select between the accounts using icons.
+  */
+class KAccountIconItem : public KIconViewItem, MyMoneyObserver  {
+public:
+  /**
+    * Constructor to be used to construct an account icon object.
+    *
+    * @param parent pointer to the KIconView object this entry should be
+    *               added to.
+    * @param account const reference to MyMoneyAccount for which
+    *               the KIconView entry is constructed
+    * @param pixmap const reference to QPixmap with the icon to be used
+    */
+  KAccountIconItem(QIconView *parent, const MyMoneyAccount& account, const QPixmap& pixmap);
+	~KAccountIconItem();
+
+  /**
+    * This method returns the account's id for this object
+    *
+    * @return const QCString of the Id
+    */
+	const QCString accountID(void) const { return m_accountID; };
+
+  /**
+    * This method is called by the MyMoneyFile object, whenever the
+    * account that is represented by this object changes within the
+    * MyMoneyFile engine.
+    *
+    * @param id reference to QCString of the account's id
+    */
+  void update(const QCString& id);
+
+private:
+  QCString m_accountID;
+};
 #endif
