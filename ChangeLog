@@ -1,4 +1,7 @@
 2002-01-29 Kevin Tambascio <ktambascio@users.sourceforge.net>
+  * Added a dialog for entering information about a new stock or mutual fund.
+
+2002-01-29 Kevin Tambascio <ktambascio@users.sourceforge.net>
   * Added MyMoneyEquity and MyMoneyEquityList classes, to store information about stocks, mutul funds.
   * Added MyMoneyUtil.cpp and .h to put global/static utility functions, typedefs.
   * Added STL support for the MyMoneyUtil class.  Just include "mymoneyutils.h" to access STL.
