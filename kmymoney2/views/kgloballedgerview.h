@@ -76,6 +76,8 @@ public slots:
   /**
     * Called when the user changes the visibility
     * setting of the transaction form
+    *
+    * @param show if true, the transaction form will be shown
     */
   void slotShowTransactionForm(bool show);
 

@@ -98,10 +98,75 @@ public slots:
 protected:
   void resizeEvent(QResizeEvent*);
 
+  /**
+    * This method creates, loads, arranges and shows the widgets required
+    * to edit a transaction. See createEditWidgets(), loadEditWidgets(),
+    * arrangeEditWidgetsInForm() and arrangeEditWidgetsInRegister() for details.
+    */
   void showWidgets(void);
+
+  /**
+    * This destroys and hides the widgets used to edit a transaction.
+    */
   void hideWidgets(void);
 
+  /**
+    * This method is called to determine the next widget that receives focus
+    * upon a Tab or Back-Tab event.
+    * The parameter @p next defines the search direction.
+    *
+    * @param next if true, searches forward, if false searches backward
+    * @return true if widget could be found, false otherwise.
+    */
   virtual bool focusNextPrevChild(bool next);
+
+private:
+  /**
+    * This method creates all widgets that allow a view to edit
+    * a transaction. If different widgets are required for in-register
+    * and in-form editing, both will be created. They can be destroyed
+    * later on. See arrangeEditWidgetsInForm() or arrangeEditWidgetsInRegister().
+    */
+  void createEditWidgets(void);
+
+  /**
+    * This method loads the data of the current transaction into the
+    * widgets created with createEditWidgets(). If different widgets are
+    * required for in-register and in-form editing, all widgets will be filled.
+    * This method also analyses the data of the transaction and determines
+    * the transaction type which is returned in the parameter @p transType.
+    *
+    * @param transType reference to transaction type. The method will set this
+    *                  value upon return to the caller.
+    * @return The return value is passed in the variable referenced by @p transType
+    */
+  void loadEditWidgets(int& transType);
+
+  /**
+    * This method arranges the widgets required for in-form editing in the
+    * form according to the transaction type passed by @p transType. It destroys
+    * all widgets that have been created specifically for in-register editing.
+    * Depending on the transaction type, the @p focusWidget will be selected.
+    *
+    * @param focusWidget reference to pointer which will point to the widget
+    *                    that should receive focus when editing starts.
+    * @param transType type of transaction as determined by loadEditWidgets()
+    * @return The return value is passed in the variable referenced by @p focusWidget.
+    */
+  void arrangeEditWidgetsInForm(QWidget*& focusWidget, const int transType);
+
+  /**
+    * This method arranges the widgets required for in-register editing in the
+    * register according to the transaction type passed by @p transType. It destroys
+    * all widgets that have been created specifically for in-form editing.
+    * Depending on the transaction type, the @p focusWidget will be selected.
+    *
+    * @param focusWidget reference to pointer which will point to the widget
+    *                    that should receive focus when editing starts.
+    * @param transType type of transaction as determined by loadEditWidgets()
+    * @return The return value is passed in the variable referenced by @p focusWidget.
+    */
+  void arrangeEditWidgetsInRegister(QWidget*& focusWidget, const int transType);
 
 private:
   QTab* m_tabCheck;

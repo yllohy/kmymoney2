@@ -272,7 +272,12 @@ void KLedgerView::slotRegisterClicked(int row, int col, int button, const QPoint
 
 void KLedgerView::slotNextTransaction(void)
 {
-  if(m_register->currentTransactionIndex() + 1 < m_transactionPtrVector.count()) {
+  // up and down movement is not allowed when editing inline
+  if(!m_transactionFormActive && m_editDate && m_editDate->isVisible())
+    return;
+
+  if(m_register->currentTransactionIndex() + 1 <= m_transactionPtrVector.count()) {
+    slotCancelEdit();
     m_register->setCurrentTransactionIndex(m_register->currentTransactionIndex()+1);
     m_register->ensureTransactionVisible();
     m_register->repaintContents();
@@ -283,7 +288,12 @@ void KLedgerView::slotNextTransaction(void)
 
 void KLedgerView::slotPreviousTransaction(void)
 {
+  // up and down movement is not allowed when editing inline
+  if(!m_transactionFormActive && m_editDate && m_editDate->isVisible())
+    return;
+
   if(m_register->currentTransactionIndex() > 0) {
+    slotCancelEdit();
     m_register->setCurrentTransactionIndex(m_register->currentTransactionIndex()-1);
     m_register->ensureTransactionVisible();
     m_register->repaintContents();
@@ -374,8 +384,8 @@ void KLedgerView::slotAmountChanged(const QString& value)
   s = m_split;
 
   try {
+    m_split.setValue(MyMoneyMoney(value));
     m_editAmount->loadText(value);
-    m_split.setValue(MyMoneyMoney(value.toDouble()));
     switch(transactionType(m_split)) {
       case Deposit:
         break;
@@ -390,6 +400,72 @@ void KLedgerView::slotAmountChanged(const QString& value)
       split.setValue(-m_split.value());
       m_transaction.modifySplit(split);
     }
+  } catch(MyMoneyException *e) {
+    KMessageBox::detailedSorry(0, i18n("Unable to modify amount"),
+        (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+    delete e;
+    m_editAmount->resetText();
+    m_transaction = t;
+    m_split = s;
+  }
+}
+
+void KLedgerView::slotPaymentChanged(const QString& value)
+{
+  if(!m_editPayment)
+    return;
+
+  MyMoneyTransaction t;
+  MyMoneySplit s;
+
+  t = m_transaction;
+  s = m_split;
+
+  try {
+    m_split.setValue(-MyMoneyMoney(value));
+    m_editPayment->loadText(value);
+    m_editDeposit->loadText("");
+
+    m_transaction.modifySplit(m_split);
+    if(m_transaction.splitCount() == 2) {
+      MyMoneySplit split = m_transaction.split(accountId(), false);
+      split.setValue(-m_split.value());
+      m_transaction.modifySplit(split);
+    }
+
+  } catch(MyMoneyException *e) {
+    KMessageBox::detailedSorry(0, i18n("Unable to modify amount"),
+        (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+    delete e;
+    m_editAmount->resetText();
+    m_transaction = t;
+    m_split = s;
+  }
+}
+
+void KLedgerView::slotDepositChanged(const QString& value)
+{
+  if(!m_editPayment)
+    return;
+
+  MyMoneyTransaction t;
+  MyMoneySplit s;
+
+  t = m_transaction;
+  s = m_split;
+
+  try {
+    m_split.setValue(MyMoneyMoney(value));
+    m_editDeposit->loadText(value);
+    m_editPayment->loadText("");
+
+    m_transaction.modifySplit(m_split);
+    if(m_transaction.splitCount() == 2) {
+      MyMoneySplit split = m_transaction.split(accountId(), false);
+      split.setValue(-m_split.value());
+      m_transaction.modifySplit(split);
+    }
+
   } catch(MyMoneyException *e) {
     KMessageBox::detailedSorry(0, i18n("Unable to modify amount"),
         (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
@@ -663,7 +739,7 @@ void KLedgerView::slotShowTransactionForm(bool visible)
     m_register->setTransactionCount(m_transactionPtrVector.size()+1);
 
     // inform widget, if inline editing should be available or not
-    m_register->setInlineEditingAvailable(!visible);
+    // m_register->setInlineEditingMode(!visible);
 
     // make sure, full transaction is visible
     resizeEvent(NULL);
@@ -788,6 +864,10 @@ void KLedgerView::slotNew(void)
   m_form->newButton()->setEnabled(false);
 
   showWidgets();
+
+  disconnect(m_register, SIGNAL(signalEnter()), this, SLOT(slotStartEdit()));
+  if(!m_transactionFormActive)
+    m_register->setInlineEditingMode(true);
 }
 
 void KLedgerView::slotStartEdit(void)
@@ -801,6 +881,10 @@ void KLedgerView::slotStartEdit(void)
   m_form->editButton()->setEnabled(false);
 
   showWidgets();
+
+  disconnect(m_register, SIGNAL(signalEnter()), this, SLOT(slotStartEdit()));
+  if(!m_transactionFormActive)
+    m_register->setInlineEditingMode(true);
 }
 
 void KLedgerView::slotCancelEdit(void)
@@ -815,6 +899,9 @@ void KLedgerView::slotCancelEdit(void)
   }
 
   hideWidgets();
+
+  connect(m_register, SIGNAL(signalEnter()), this, SLOT(slotStartEdit()));
+  m_register->setInlineEditingMode(false);
   m_register->setFocus();
 }
 
@@ -883,6 +970,10 @@ void KLedgerView::slotEndEdit(void)
   }
 
   hideWidgets();
+
+  connect(m_register, SIGNAL(signalEnter()), this, SLOT(slotStartEdit()));
+  m_register->setInlineEditingMode(false);
+  m_register->setFocus();
 }
 
 bool KLedgerView::focusNextPrevChild(bool next)
@@ -916,3 +1007,4 @@ bool KLedgerView::focusNextPrevChild(bool next)
 
   return rc;
 }
+

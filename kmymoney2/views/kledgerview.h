@@ -319,6 +319,22 @@ public slots:
   virtual void slotAmountChanged(const QString& amount);
 
   /**
+    * Called when the payment field has been changed by the user.
+    * m_transaction and m_split will be updated accordingly.
+    *
+    * @param amount const reference to the amount value
+    */
+  virtual void slotPaymentChanged(const QString& amount);
+
+  /**
+    * Called when the deposit field has been changed by the user.
+    * m_transaction and m_split will be updated accordingly.
+    *
+    * @param amount const reference to the amount value
+    */
+  virtual void slotDepositChanged(const QString& amount);
+
+  /**
     * Called when the nr field has been changed by the user.
     * m_transaction and m_split will be updated accordingly.
     *
@@ -381,7 +397,8 @@ public slots:
     * Called when editing a transaction is done and changes should be stored.
     * This will ensure, that
     * @li the changes made to the transaction are logically correct,
-    * @li the changes are written back to the engine (see MyMoneyFile::modifyTransaction())
+    * @li the changes are written back to the engine (see MyMoneyFile::modifyTransaction()
+    *     and MyMoneyFile::addTransaction())
     * @li the state of the buttons is updated
     * @li the edit widgets are removed (see hideWidget())
     */
@@ -528,15 +545,17 @@ protected:
   kMyMoneyCategory*     m_editCategory;   ///< pointer to category edit widget
   kMyMoneyLineEdit*     m_editMemo;       ///< pointer to memo edit widget
   kMyMoneyEdit*         m_editAmount;     ///< pointer to amount edit widget
+  kMyMoneyEdit*         m_editPayment;    ///< pointer to payment edit widget
+  kMyMoneyEdit*         m_editDeposit;    ///< pointer to deposit edit widget
   kMyMoneyLineEdit*     m_editNr;         ///< pointer to number edit widget
   kMyMoneyDateInput*    m_editDate;       ///< pointer to date edit widget
   kMyMoneyCategory*     m_editFrom;       ///< pointer to 'from account' edit widget
   kMyMoneyCategory*     m_editTo;         ///< pointer to 'to account' edit widget
   KPushButton*          m_editSplit;      ///< pointer to split button
 
-  /*
-   * This member keeps the tab order for the above widgets
-   */
+  /**
+    * This member keeps the tab order for the above widgets
+    */
   QWidgetList   m_tabOrderWidgets;
 
   /**
