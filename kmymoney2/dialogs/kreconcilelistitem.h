@@ -30,9 +30,15 @@ class KReconcileListItem : public QListViewItem  {
   MyMoneyTransaction *m_transaction;
 public:
   KReconcileListItem(QListView *parent, MyMoneyTransaction *transaction );
-	~KReconcileListItem();
-	MyMoneyTransaction* transaction(void);
+  ~KReconcileListItem();
+  MyMoneyTransaction* transaction(void);
   void setReconciled(bool rec);
+
+/**
+  * Overrides QListViewItem::key(int, bool)
+  */
+  QString key(int column, bool ascending) const;
+
 };
 
 #endif

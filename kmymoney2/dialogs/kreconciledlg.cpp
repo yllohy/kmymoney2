@@ -359,16 +359,16 @@ void KReconcileDlg::reloadLists()
 
   QListIterator<MyMoneyTransaction> it(m_debitsQList);
   for ( ; it.current(); ++it) {
-	bool transactionFound = inTransactions(it.current());
-	if(transactionFound == false)
-		m_debitsQList.remove(it.current());
+  bool transactionFound = inTransactions(it.current());
+  if(transactionFound == false)
+    m_debitsQList.remove(it.current());
   }
 
   QListIterator<MyMoneyTransaction> it2(m_creditsQList);
   for ( ; it2.current(); ++it2) {
-	bool transactionFound = inTransactions(it2.current());
-	if(transactionFound == false)
-		m_debitsQList.remove(it2.current());
+  bool transactionFound = inTransactions(it2.current());
+  if(transactionFound == false)
+    m_creditsQList.remove(it2.current());
   }
 }
 
