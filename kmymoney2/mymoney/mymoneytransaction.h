@@ -54,6 +54,7 @@ public:
   const QCString id(void) const { return m_id; };
   const QString memo(void) const { return m_memo; };
   const QValueList<MyMoneySplit> splits(void) const { return m_splits; };
+  const MyMoneySplit split(const QCString& accountId) const;
   const unsigned int splitCount(void) const { return m_splits.count(); };
 
   // Simple set operations

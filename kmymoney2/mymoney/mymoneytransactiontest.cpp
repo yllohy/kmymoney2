@@ -189,3 +189,26 @@ void MyMoneyTransactionTest::testDeleteSplits() {
 	}
 }
 
+void MyMoneyTransactionTest::testExtractSplit() {
+	testAddSplits();
+	MyMoneySplit split;
+
+	// this one should fail, as the account is not referenced by
+	// any split in the transaction
+	try {
+		split = m->split("A000003");
+		CPPUNIT_FAIL("Exception expected");
+	} catch(MyMoneyException *e) {
+		delete e;
+	}
+
+	// this one should be found
+	try {
+		split = m->split("A000002");
+		CPPUNIT_ASSERT(split.id() == "S0002");
+
+	} catch(MyMoneyException *e) {
+		CPPUNIT_FAIL("Unexpected exception!");
+		delete e;
+	}
+}

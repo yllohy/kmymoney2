@@ -40,6 +40,7 @@ class MyMoneyTransactionTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST(testDeleteSplits);
 	CPPUNIT_TEST(testEquality);
 	CPPUNIT_TEST(testInequality);
+	CPPUNIT_TEST(testExtractSplit);
         CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -60,6 +61,6 @@ public:
 	void testAddSplits();
 	void testModifySplits();
 	void testDeleteSplits();
-
+	void testExtractSplit();
 };
 #endif

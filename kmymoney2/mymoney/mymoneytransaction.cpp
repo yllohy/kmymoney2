@@ -104,6 +104,17 @@ void MyMoneyTransaction::removeSplit(const MyMoneySplit& split)
     throw new MYMONEYEXCEPTION("Invalid split id");
 }
 
+const MyMoneySplit MyMoneyTransaction::split(const QCString& accountId) const
+{
+  QValueList<MyMoneySplit>::ConstIterator it;
+
+  for(it = m_splits.begin(); it != m_splits.end(); ++it) {
+    if((*it).accountId() == accountId)
+      return *it;
+  }
+  throw new MYMONEYEXCEPTION(QString("Split not found for account") + QString(accountId));
+}
+
 const QCString MyMoneyTransaction::nextSplitID()
 {
   QCString id;
