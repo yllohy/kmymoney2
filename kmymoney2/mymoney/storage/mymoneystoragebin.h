@@ -107,6 +107,17 @@ private:
   const QValueList<MyMoneySplit> readSplits(QDataStream& s);
   const MyMoneySplit readSplit(QDataStream& s);
 
+
+  /**
+    * This is a helper method to extract the numeric value from an @p id.
+    * Id's inside the MyMoneySeqAccessMgr object are formatted using a
+    * non-numeric leadin of 1 or more characters and a numeric value.
+    *
+    * @param id const reference to QCString containing the id
+    * @return numeric value of the id as unsigned long
+    */
+  const unsigned long extractId(const QCString& txt) const;
+
   /**
     * This member is used to store the file version information
     * obtained while reading a file.

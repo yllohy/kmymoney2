@@ -28,6 +28,7 @@
 #include <qvaluelist.h>
 #include <qstringlist.h>
 #include <qiodevice.h>
+#include <qregexp.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -561,12 +562,18 @@ void MyMoneyStorageBin::readInstitutions(QDataStream&s, IMyMoneySerialize *stora
 {
   Q_INT32 version;
   Q_INT32 cnt;
+  unsigned long id;
+
   s >> version;
 
   s >> cnt;
   for(int i = 0; i < cnt; ++i) {
     MyMoneyInstitution inst = readInstitution(s);
     storage->loadInstitution(inst);
+
+    id = extractId(inst.id().data());
+    if(id > storage->institutionId())
+      storage->loadInstitutionId(id);
   }
 }
 
@@ -633,12 +640,18 @@ void MyMoneyStorageBin::readPayees(QDataStream& s, IMyMoneySerialize *storage)
 {
   Q_INT32 version;
   Q_INT32 cnt;
+  unsigned long id;
+
   s >> version;
 
   s >> cnt;
   for(int i = 0; i < cnt; ++i) {
     MyMoneyPayee p = readPayee(s);
     storage->loadPayee(p);
+
+    id = extractId(p.id().data());
+    if(id > storage->payeeId())
+      storage->loadPayeeId(id);
   }
 }
 
@@ -703,12 +716,18 @@ void MyMoneyStorageBin::readAccounts(QDataStream& s, IMyMoneySerialize *storage)
 {
   Q_INT32 version;
   Q_INT32 cnt;
+  unsigned long id;
+
   s >> version;
 
   s >> cnt;
   for(int i = 0; i < cnt; ++i) {
     MyMoneyAccount acc = readAccount(s);
     storage->loadAccount(acc);
+
+    id = extractId(acc.id().data());
+    if(id > storage->accountId())
+      storage->loadAccountId(id);
   }
 }
 
@@ -795,12 +814,18 @@ void MyMoneyStorageBin::readTransactions(QDataStream& s, IMyMoneySerialize* stor
 {
   Q_INT32 version;
   Q_INT32 cnt;
+  unsigned long id;
+
   s >> version;
 
   s >> cnt;
   for(int i = 0; i < cnt; ++i) {
     MyMoneyTransaction t = readTransaction(s);
     storage->loadTransaction(t);
+
+    id = extractId(t.id().data());
+    if(id > storage->transactionId())
+      storage->loadTransactionId(id);
   }
 }
 
@@ -886,4 +911,16 @@ const MyMoneySplit MyMoneyStorageBin::readSplit(QDataStream& s)
   s >> tmp_m; sp.setValue(tmp_m);
 
   return sp;
+}
+
+const unsigned long MyMoneyStorageBin::extractId(const QCString& txt) const
+{
+  int pos;
+  unsigned long rc = 0;
+
+  pos = txt.find(QRegExp("\\d+"), 0);
+  if(pos != -1) {
+    rc = atol(txt.mid(pos));
+  }
+  return rc;
 }

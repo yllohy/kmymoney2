@@ -458,6 +458,16 @@ public:
   virtual void loadInstitution(const MyMoneyInstitution& inst);
   virtual void loadPayee(const MyMoneyPayee& payee);
 
+  virtual void loadAccountId(const unsigned long id);
+  virtual void loadTransactionId(const unsigned long id);
+  virtual void loadPayeeId(const unsigned long id);
+  virtual void loadInstitutionId(const unsigned long id);
+
+  virtual const unsigned long accountId(void) { return m_nextAccountID; };
+  virtual const unsigned long transactionId(void) { return m_nextTransactionID; };
+  virtual const unsigned long payeeId(void) { return m_nextPayeeID; };
+  virtual const unsigned long institutionId(void) { return m_nextInstitutionID; };
+
 private:
 
   static const int INSTITUTION_ID_SIZE = 6;

@@ -1091,4 +1091,22 @@ void MyMoneySeqAccessMgr::loadPayee(const MyMoneyPayee& payee)
   m_payeeList[payee.id()] = payee;
 }
 
+void MyMoneySeqAccessMgr::loadAccountId(const unsigned long id)
+{
+  m_nextAccountID = id;
+}
 
+void MyMoneySeqAccessMgr::loadTransactionId(const unsigned long id)
+{
+  m_nextTransactionID = id;
+}
+
+void MyMoneySeqAccessMgr::loadPayeeId(const unsigned long id)
+{
+  m_nextPayeeID = id;
+}
+
+void MyMoneySeqAccessMgr::loadInstitutionId(const unsigned long id)
+{
+  m_nextInstitutionID = id;
+}

@@ -229,6 +229,16 @@ public:
   virtual void loadTransaction(const MyMoneyTransaction& tr) = 0;
   virtual void loadInstitution(const MyMoneyInstitution& inst) = 0;
   virtual void loadPayee(const MyMoneyPayee& payee) = 0;
+
+  virtual const unsigned long accountId(void) = 0;
+  virtual const unsigned long transactionId(void) = 0;
+  virtual const unsigned long payeeId(void) = 0;
+  virtual const unsigned long institutionId(void) = 0;
+
+  virtual void loadAccountId(const unsigned long id) = 0;
+  virtual void loadTransactionId(const unsigned long id) = 0;
+  virtual void loadPayeeId(const unsigned long id) = 0;
+  virtual void loadInstitutionId(const unsigned long id) = 0;
 };
 
 #endif
