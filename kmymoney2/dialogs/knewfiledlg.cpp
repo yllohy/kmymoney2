@@ -67,12 +67,22 @@ KNewFileDlg::KNewFileDlg(QString userName, QString userStreet,
 
 void KNewFileDlg::init(const char* title)
 {
+  bool showLoadButton = false;
   okBtn->setGuiItem(KStdGuiItem::ok());
   cancelBtn->setGuiItem(KStdGuiItem::cancel());
 
-  okBtn->setName("KPushButton_Ok");
   if (title)
     setCaption(title);
+
+#if KDE_IS_VERSION( 3, 1, 90 )
+  KABC::StdAddressBook *ab = static_cast<KABC::StdAddressBook*>
+    ( KABC::StdAddressBook::self() );
+  if ( ab && !ab->whoAmI().isEmpty() )
+      showLoadButton = true;
+#endif
+
+  if(!showLoadButton)
+    kabcBtn->hide();
 
   userNameEdit->setFocus();
 
@@ -106,8 +116,10 @@ void KNewFileDlg::loadFromKABC(void)
     return;
 
   KABC::Addressee addr = ab->whoAmI();
-  if ( addr.isEmpty() )
-   return;
+  if ( addr.isEmpty() ) {
+    KMessageBox::sorry(this, i18n("Unable to load data, because no contact has been associated with the onwer of the standard addressbook."), i18n("Addressbook import"));
+    return;
+  }
 
   userNameEdit->setText( addr.formattedName() );
   emailEdit->setText( addr.preferredEmail() );
