@@ -19,6 +19,7 @@
 #include <qdir.h>
 #include <qprinter.h>
 #include <qpainter.h>
+#include <qlayout.h>
 
 // include files for KDE
 #include <kshortcut.h>
@@ -39,7 +40,7 @@
 #include <kkeydialog.h>
 
 #include <stdio.h>
-#include <stream.h>
+#include <iostream>
 // application specific includes
 #include "kmymoney2.h"
 #include "dialogs/kstartdlg.h"
@@ -53,7 +54,8 @@
 
 #define ID_STATUS_MSG 1
 
-KMyMoney2App::KMyMoney2App(QWidget* , const char* name):KMainWindow(0, name)
+KMyMoney2App::KMyMoney2App(QWidget *parent , const char* name)
+ : KMainWindow(0, name)
 {
   KStartupLogo *start_logo = new KStartupLogo;
   config=kapp->config();
@@ -64,7 +66,13 @@ KMyMoney2App::KMyMoney2App(QWidget* , const char* name):KMainWindow(0, name)
   if(bViewSplash)
     start_logo->show();
 
-  myMoneyView = new KMyMoneyView(this);
+  QFrame* frame = new QFrame(this);
+  frame->setFrameStyle(QFrame::NoFrame);
+  // values for margin (11) and spacing(6) taken from KDialog implementation
+  QBoxLayout* layout = new QBoxLayout(frame, QBoxLayout::TopToBottom, 11, 6);
+
+  myMoneyView = new KMyMoneyView(frame);
+  layout->addWidget(myMoneyView, 10);
 
   ///////////////////////////////////////////////////////////////////
   // call inits to invoke all other construction parts
@@ -80,7 +88,8 @@ KMyMoney2App::KMyMoney2App(QWidget* , const char* name):KMainWindow(0, name)
   editPaste->setEnabled(false);
 */
 
-  setCentralWidget(myMoneyView);
+  // setCentralWidget(myMoneyView);
+  setCentralWidget(frame);
 /*
   connect(myMoneyView, SIGNAL(fileOperations(bool)), this, SLOT(enableFileOperations(bool)));
   connect(myMoneyView, SIGNAL(bankOperations(bool)), this, SLOT(enableBankOperations(bool)));
