@@ -191,6 +191,15 @@ void KLedgerView::slotRegisterClicked(int row, int col, int button, const QPoint
   fillForm();
 }
 
+void KLedgerView::slotShowTransactionForm(bool visible)
+{
+  if(m_form != 0)
+    if(visible)
+      m_form->show();
+    else
+      m_form->hide();
+}
+
 const QCString KLedgerView::str2action(const QString &action) const
 {
   if(action == i18n("Check"))

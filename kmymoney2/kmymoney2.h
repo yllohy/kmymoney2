@@ -57,7 +57,7 @@
   * @see KMyMoneyView
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: kmymoney2.h,v 1.20 2002/06/13 18:06:21 mte Exp $
+  * $Id: kmymoney2.h,v 1.21 2002/08/07 12:07:56 ipwizard Exp $
   *
   * @short Main application class.
 **/
@@ -357,6 +357,7 @@ protected slots:
     KAction* editPaste;
     KToggleAction* viewToolBar;
     KToggleAction* viewStatusBar;
+    KToggleAction* viewTransactionForm;
 
     KAction *fileViewInfo;
     KAction *filePersonalData;

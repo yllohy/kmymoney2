@@ -21,6 +21,7 @@
 #include <qpainter.h>
 
 // include files for KDE
+#include <kshortcut.h>
 #include <kiconloader.h>
 #include <kmessagebox.h>
 #include <kfiledialog.h>
@@ -135,6 +136,9 @@ void KMyMoney2App::initActions()
 */
   viewToolBar = KStdAction::showToolbar(this, SLOT(slotViewToolBar()), actionCollection());
   viewStatusBar = KStdAction::showStatusbar(this, SLOT(slotViewStatusBar()), actionCollection());
+  viewTransactionForm = new KToggleAction(i18n("Show Transaction Form"), KShortcut("Ctrl+T"), actionCollection(), "show_transaction_form");
+  viewTransactionForm->setChecked(true);
+  connect(viewTransactionForm, SIGNAL(toggled(bool)), myMoneyView, SLOT(slotShowTransactionForm(bool)));
 
   // Additions to the file menu
   fileViewInfo = new KAction(i18n("Dump Memory..."), "view_info", 0, this, SLOT(slotFileFileInfo()), actionCollection(), "file_view_info");

@@ -56,7 +56,7 @@ class KTransactionView;
 class KGlobalLedgerView : public QWidget
 {
    Q_OBJECT
-public: 
+public:
 	KGlobalLedgerView(QWidget *parent=0, const char *name=0);
 	~KGlobalLedgerView();
 
@@ -64,9 +64,12 @@ public:
 
   void refreshView(void);
 
-protected slots:
-  void slotAccountSelected(const QString&);
-
+public slots:
+  /**
+    * Called when the user changes the visibility
+    * setting of the transaction form
+    */
+  void slotShowTransactionForm(bool show);
 
 protected:
   KComboBox* accountComboBox;
@@ -75,6 +78,9 @@ protected:
 
   void loadAccounts(void);
   void selectAccount(const QCString& id);
+
+protected slots:
+  void slotAccountSelected(const QString&);
 
 private:
   void refresh(void);

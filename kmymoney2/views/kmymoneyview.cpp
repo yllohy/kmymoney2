@@ -1360,6 +1360,11 @@ void KMyMoneyView::slotActivatedPayeeView()
   emit signalPayeeView();
 }
 
+void KMyMoneyView::slotShowTransactionForm(bool show)
+{
+  if(m_ledgerView != 0)
+    m_ledgerView->slotShowTransactionForm(show);
+}
 
 void KMyMoneyView::memoryDump()
 {

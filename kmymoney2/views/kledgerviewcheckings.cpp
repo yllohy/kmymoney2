@@ -109,6 +109,13 @@ KLedgerViewCheckings::KLedgerViewCheckings(QWidget *parent, const char *name )
   // adjust size of form table
   m_form->table()->setMaximumHeight(m_form->table()->rowHeight(0)*m_form->table()->numRows());
 
+  // for now, show the form upon program start. We should
+  // make this a config setting and keep it in the rc file
+  slotShowTransactionForm(true);
+
+  // and the register has the focus
+  m_register->setFocus();
+
   // connections
   connect(m_form->tabBar(), SIGNAL(selected(int)), this, SLOT(slotTypeSelected(int)));
   connect(m_register, SIGNAL(clicked(int, int, int, const QPoint&)), this, SLOT(slotRegisterClicked(int, int, int, const QPoint&)));

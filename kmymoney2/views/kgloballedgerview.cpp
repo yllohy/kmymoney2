@@ -69,7 +69,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
 
   m_accountStack = new QWidgetStack(this, "Stack");
   // Checkings account
-  m_specificView[MyMoneyAccount::Checkings] = new KLedgerViewCheckings();
+  m_specificView[MyMoneyAccount::Checkings] = new KLedgerViewCheckings(this);
   m_accountStack->addWidget(m_specificView[MyMoneyAccount::Checkings],
                                  MyMoneyAccount::Checkings);
 
@@ -166,5 +166,13 @@ void KGlobalLedgerView::slotAccountSelected(const QString& account)
 
   if(it_s != acc.accountList().end()) {
     selectAccount(*it_s);
+  }
+}
+
+void KGlobalLedgerView::slotShowTransactionForm(bool show)
+{
+  for(int i = 0; i < MyMoneyAccount::MaxAccountTypes; ++i) {
+    if(m_specificView[i] != 0)
+      m_specificView[i]->slotShowTransactionForm(show);
   }
 }

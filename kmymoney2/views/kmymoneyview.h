@@ -58,7 +58,7 @@
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.16 2002/07/21 17:43:38 ipwizard Exp $
+  * $Id: kmymoneyview.h,v 1.17 2002/08/07 12:07:56 ipwizard Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -361,6 +361,12 @@ protected slots:
   void slotActivatedPayeeView();
 
   void slotActivatedAccountView();
+
+  /**
+    * Called when the user changes the visibility
+    * setting of the transaction form
+    */
+  void slotShowTransactionForm(bool show);
 
 signals:
   /**

@@ -115,6 +115,12 @@ public slots:
   virtual void refreshView(void);
   void slotRegisterClicked(int row, int col, int button, const QPoint &mousePos);
 
+  /**
+    * Called when the user changes the visibility
+    * setting of the transaction form
+    */
+  void slotShowTransactionForm(bool show);
+
 protected:
   void loadAccount(void);
   void filterTransactions(void);
