@@ -322,6 +322,8 @@ const MyMoneyAccount KNewAccountWizard::account(void) const
   }
   account.setOpeningBalance(MyMoneyMoney(openingBalance->text()));
   account.setOpeningDate(openingDate->getQDate());
+  if(preferredAccount->isChecked())
+    account.setValue("PreferredAccount", "Yes");
   
   return account;
 }
