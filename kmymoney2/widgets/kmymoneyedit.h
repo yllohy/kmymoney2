@@ -17,6 +17,8 @@
 #ifndef KMYMONEYEDIT_H
 #define KMYMONEYEDIT_H
 
+#include "kdecompat.h"
+
 // ----------------------------------------------------------------------------
 // QT Includes
 
@@ -34,6 +36,10 @@
 
 class MyMoneyMoney;
 class kMyMoneyCalculator;
+
+#if KDE_VERSION <= KDE_MAKE_VERSION(3,1,0)
+  #define KDoubleValidator QDoubleValidator
+#endif
 
 // This class is derived from KDoubleValidator and uses
 // the monetary symbols instead of the numeric symbols.

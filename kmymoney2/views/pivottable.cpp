@@ -1094,7 +1094,7 @@ QString PivotTable::renderHTML( void ) const
 
   unsigned column = 1;
   while ( column < m_numColumns )
-    result += QString("<th>%1</th>").arg(QString(m_columnHeadings[column++]).replace(" ","<br>"));
+    result += QString("<th>%1</th>").arg(QString(m_columnHeadings[column++]).replace(QRegExp(" "),"<br>"));
 
   if ( m_config_f.isShowingRowTotals() )
     result += QString("<th>%1</th>").arg(i18n("Total"));

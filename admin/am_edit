@@ -1096,7 +1096,7 @@ sub tag_UIFILES ()
                     $dep_lines .= "\techo '#include <klocale.h>' > $source.$cxxsuffix\n";
                     my ($mangled_source) = $source;
                     $mangled_source =~ s/[^A-Za-z0-9]/_/g;  # get rid of garbage
-                    $dep_lines .= "\t\$(UIC) -tr \${UIC_TR} -i $source.h $sourcedir$source.ui | sed -e \"s,\${UIC_TR}( \\\"\\\" ),QString::null,g\" | sed -e \"s,\${UIC_TR}( \\\"\\\"\\, \\\"\\\" ),QString::null,g\" | sed -e \"s,image\\([0-9][0-9]*\\)_data,img\\1_" . $mangled_source . ",g\" >> $source.$cxxsuffix || rm -f $source.$cxxsuffix\n";
+                    $dep_lines .= "\t\$(UIC) -tr \${UIC_TR} -i $source.h $sourcedir$source.ui | sed -e \"s,\${UIC_TR}( \\\"\\\" ),QString::null,g\" | sed -e \"s,\${UIC_TR}( \\\"\\\"\\, \\\"\\\" ),QString::null,g\" | sed -e \"s,image\\([0-9][0-9]*\\)_data,img\\1_" . $mangled_source . ",g\" | sed -e \"s,static const unsigned char const,static const unsigned char,g\" >> $source.$cxxsuffix || rm -f $source.$cxxsuffix\n";
                 } else {
                     $dep_lines .= "\t\$(UIC) -i $source.h $sourcedir$source.ui > $source.$cxxsuffix || rm -f $source.$cxxsuffix\n";
                 }
@@ -1926,7 +1926,7 @@ sub updateMakefile ()
     open (FILEOUT, "> $makefile")
                         || die "Could not create $makefile: $!\n";
 
-    print FILEOUT "\# $progId - " . '$Revision: 1.6 $ '  . "\n";
+    print FILEOUT "\# $progId - " . '$Revision: 1.7 $ '  . "\n";
     $MakefileData =~ s/\034/\\\n\t/g;    # Restore continuation lines
     print FILEOUT $MakefileData;
     close FILEOUT;

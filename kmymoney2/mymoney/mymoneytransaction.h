@@ -73,6 +73,8 @@ public:
   bool operator == (const MyMoneyTransaction&) const;
   inline bool operator != (const MyMoneyTransaction& r) const { return !(*this == r); };
   bool operator< (const MyMoneyTransaction& r) const { return postDate() < r.postDate(); };
+  bool operator<= (const MyMoneyTransaction& r) const { return postDate() <= r.postDate(); };
+  bool operator> (const MyMoneyTransaction& r) const { return postDate() > r.postDate(); };
 
   /**
     * This method is used to extract a split for a given accountId

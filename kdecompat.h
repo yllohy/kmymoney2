@@ -24,7 +24,7 @@
 #endif
 
 #ifndef KDE_IS_VERSION
-#define KDE_IS_VERSION(a,b,c) (KDE_VERSION => KDE_MAKE_VERSION(a,b,c))
+#define KDE_IS_VERSION(a,b,c) (KDE_VERSION >= KDE_MAKE_VERSION(a,b,c))
 #endif
 
 #if KDE_VERSION < KDE_MAKE_VERSION(3,2,0)
