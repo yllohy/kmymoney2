@@ -1,3 +1,8 @@
+2004-04-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Close dialog after the default currency has been selected
+  * Allow to override opening balance of existing account when
+    importing QIF file
+
 2004-04-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed layout of initial import dialog
   * Fixed #906749 (Hang in loop on QIF import)
