@@ -75,20 +75,52 @@
 #define AMOUNT_TXT_COL    3
 #define AMOUNT_DATA_COL   (AMOUNT_TXT_COL+1)
 
+KLedgerViewCheckingsSummaryLine::KLedgerViewCheckingsSummaryLine(QWidget* parent, const char* name) :
+  QFrame(parent, name)
+{
+  QHBoxLayout* summaryLayout = new QHBoxLayout(this, 0, 6, "SummaryLayout");
+
+  m_date = new QLabel("", this);
+  summaryLayout->addWidget(m_date);
+
+  QSpacerItem* spacer = new QSpacerItem( 20, 1, QSizePolicy::Expanding, QSizePolicy::Minimum );
+  summaryLayout->addItem(spacer);
+
+  m_balance = new QLabel(this);
+
+  summaryLayout->addWidget(m_balance);
+}
+
+void KLedgerViewCheckingsSummaryLine::setBalance(const QString& txt)
+{
+  m_balance->setText(txt);
+}
+
+void KLedgerViewCheckingsSummaryLine::setReconciliationDate(const QString& txt)
+{
+  m_date->setText(txt);
+}
+
+void KLedgerViewCheckingsSummaryLine::clear(void)
+{
+  m_balance->setText("");
+  m_date->setText("");
+}
+
 KLedgerViewCheckings::KLedgerViewCheckings(QWidget *parent, const char *name )
   : KLedgerView(parent,name)
 {
   QGridLayout* formLayout = new QGridLayout( this, 1, 2, 11, 6, "FormLayout");
   QVBoxLayout* ledgerLayout = new QVBoxLayout( 6, "LedgerLayout");
 
-  createInfoStack();
-  formLayout->addWidget(m_infoStack, 0, 1 );
-
   createRegister();
   ledgerLayout->addWidget(m_register, 3);
 
   createSummary();
-  ledgerLayout->addLayout(m_summaryLayout);
+  ledgerLayout->addWidget(m_summaryLine);
+
+  createReconciliationFrame();
+  ledgerLayout->addWidget(m_reconciliationFrame);
 
   createForm();
   // make sure, transfers are disabled if required
@@ -100,8 +132,9 @@ KLedgerViewCheckings::KLedgerViewCheckings(QWidget *parent, const char *name )
   // create the context menu that is accessible via RMB
   createContextMenu();
 
-  // create the context menu that is accessible via the MORE Button
+  // create the context menus that are accessible via transaction form buttons
   createMoreMenu();
+  createAccountMenu();
 
   connect(m_contextMenu, SIGNAL(aboutToShow()), SLOT(slotConfigureContextMenu()));
   connect(m_moreMenu, SIGNAL(aboutToShow()), SLOT(slotConfigureMoreMenu()));
@@ -118,7 +151,7 @@ KLedgerViewCheckings::KLedgerViewCheckings(QWidget *parent, const char *name )
   m_register->setFocus();
 
   // setup a 1:1 action index
-  for(int i = 0; i < sizeof(m_actionIdx); ++i)
+  for(unsigned int i = 0; i < sizeof(m_actionIdx); ++i)
     m_actionIdx[i] = i;
 }
 
@@ -137,11 +170,13 @@ void KLedgerViewCheckings::refreshView(void)
   QDate date;
   if(!m_account.value("lastStatementDate").isEmpty())
     date = QDate::fromString(m_account.value("lastStatementDate"), Qt::ISODate);
-
+// FIXME: move to fillSummary()
+#if 0
   if(date.isValid())
     m_lastReconciledLabel->setText(i18n("Reconciled: %1").arg(KGlobal::locale()->formatDate(date, true)));
   else
     m_lastReconciledLabel->setText(QString());
+#endif
 
   m_tabTransfer->setEnabled(transfersPossible());
 }
@@ -159,26 +194,34 @@ void KLedgerViewCheckings::resizeEvent(QResizeEvent* /* ev */)
 
   // make amount columns all the same size
   int width = m_register->columnWidth(4);
-  if(width < m_register->columnWidth(5))
-    width = m_register->columnWidth(5);
-  if(width < m_register->columnWidth(6))
-    width = m_register->columnWidth(6);
+  int width1 = m_register->columnWidth(5);
+  int width2 = m_register->columnWidth(6);
 
-  m_register->setColumnWidth(4, width);
-  m_register->setColumnWidth(5, width);
-  m_register->setColumnWidth(6, width);
+  if(width < width1)
+    width = width1;
+  if(width < width2)
+    width = width2;
 
-  // Resize the date field to either
+  // Resize the date and money fields to either
   // a) the size required by the input widget if no transaction form is shown
-  // b) the adjusted value for the date if the transaction form is visible
+  // b) the adjusted value for the input widget if the transaction form is visible
   if(!m_transactionFormActive) {
     kMyMoneyDateInput* datefield = new kMyMoneyDateInput();
     datefield->setFont(m_register->cellFont());
     m_register->setColumnWidth(1, datefield->minimumSizeHint().width());
     delete datefield;
+    kMyMoneyEdit* valfield = new kMyMoneyEdit();
+    valfield->setMinimumWidth(width);
+    width = valfield->minimumSizeHint().width();
+    delete valfield;
   } else {
     m_register->adjustColumn(1);
   }
+
+  m_register->setColumnWidth(4, width);
+  m_register->setColumnWidth(5, width);
+  m_register->setColumnWidth(6, width);
+
 
   m_register->setColumnWidth(3, 20);
 
@@ -218,8 +261,6 @@ void KLedgerViewCheckings::resizeEvent(QResizeEvent* /* ev */)
 
 void KLedgerViewCheckings::enableWidgets(const bool enable)
 {
-  m_detailsButton->setEnabled(enable);
-  m_reconcileButton->setEnabled(enable);
   KLedgerView::enableWidgets(enable);
 }
 
@@ -359,6 +400,14 @@ void KLedgerViewCheckings::createRegister(void)
   connect(m_register->horizontalHeader(), SIGNAL(clicked(int)), this, SLOT(slotRegisterHeaderClicked(int)));
 }
 
+void KLedgerViewCheckings::createAccountMenu(void)
+{
+  // get the basic entries for all ledger views
+  KLedgerView::createAccountMenu();
+
+  m_form->accountButton()->setPopup(m_accountMenu);
+}
+
 void KLedgerViewCheckings::createMoreMenu(void)
 {
   // get the basic entries for all ledger views
@@ -448,14 +497,63 @@ void KLedgerViewCheckings::createForm(void)
   connect(m_form->cancelButton(), SIGNAL(clicked()), this, SLOT(slotCancelEdit()));
   connect(m_form->enterButton(), SIGNAL(clicked()), this, SLOT(slotEndEdit()));
   connect(m_form->newButton(), SIGNAL(clicked()), this, SLOT(slotNew()));
+}
 
-  m_form->enterButton()->setDefault(true);
+void KLedgerViewCheckings::createReconciliationFrame(void)
+{
+  m_reconciliationFrame = new QFrame(this);
+  QVBoxLayout* vlayout = new QVBoxLayout(m_reconciliationFrame, 0, 6, "ReconcileLayout");
+  QGridLayout* llayout = new QGridLayout(2, 3, 6, "LabelReconcileLayout");
+  QHBoxLayout* blayout = new QHBoxLayout(6, "ButtonReconcileLayout");
 
+  m_statementLabel = new QLabel(m_reconciliationFrame, 0);
+  llayout->addWidget(m_statementLabel, 0, 0, Qt::AlignLeft);
+  m_clearedLabel = new QLabel(m_reconciliationFrame, 0);
+  llayout->addWidget(m_clearedLabel, 0, 1, Qt::AlignHCenter);
+  m_differenceLabel = new QLabel(m_reconciliationFrame, 0);
+  llayout->addWidget(m_differenceLabel, 0, 2, Qt::AlignRight);
+
+  m_transactionCheckBox = new QCheckBox(i18n("Show transactionform"), m_reconciliationFrame, "showBox");
+  blayout->addWidget(m_transactionCheckBox);
+
+  QSpacerItem* spacer = new QSpacerItem( 20, 1, QSizePolicy::Expanding, QSizePolicy::Minimum );
+  blayout->addItem(spacer);
+
+  KIconLoader *il = KGlobal::iconLoader();
+  KPushButton* m_finishButton = new KPushButton(m_reconciliationFrame, "FinishButton");
+  KGuiItem finishButtenItem( i18n("&Finish"),
+                    QIconSet(il->loadIcon("player_end", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Finialize reconciliation"),
+                    i18n("Use this to finish reconciling your account against the bank statement."));
+  m_finishButton->setGuiItem(finishButtenItem);
+  blayout->addWidget(m_finishButton);
+
+  connect(m_finishButton, SIGNAL(clicked()), this, SLOT(slotEndReconciliation()));
+
+  KPushButton* m_postponeButton = new KPushButton(m_reconciliationFrame, "PostponeButton");
+  KGuiItem postponeButtenItem( i18n("&Postpone"),
+                    QIconSet(il->loadIcon("player_pause", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Postpone reconciliation"),
+                    i18n("Use this to postpone reconciling your account against the bank statement to a later point in time."));
+  m_postponeButton->setGuiItem(postponeButtenItem);
+  blayout->addWidget(m_postponeButton);
+
+  connect(m_postponeButton, SIGNAL(clicked()), this, SLOT(slotPostponeReconciliation()));
+  // initially, this part is hidden
+  m_reconciliationFrame->hide();
+
+  vlayout->addLayout(llayout);
+  vlayout->addLayout(blayout);
 }
 
 void KLedgerViewCheckings::createSummary(void)
 {
+  m_summaryLine = new KLedgerViewCheckingsSummaryLine(this, 0);
+/*
   m_summaryLayout = new QHBoxLayout(6, "SummaryLayout");
+
+  m_lastReconciledLabel = new QLabel("", this);
+  m_summaryLayout->addWidget(m_lastReconciledLabel);
 
   QSpacerItem* spacer = new QSpacerItem( 20, 1, QSizePolicy::Expanding, QSizePolicy::Minimum );
   m_summaryLayout->addItem(spacer);
@@ -463,8 +561,10 @@ void KLedgerViewCheckings::createSummary(void)
   m_summaryLine = new QLabel(this);
 
   m_summaryLayout->addWidget(m_summaryLine);
+*/
 }
 
+#if 0
 void KLedgerViewCheckings::createInfoStack(void)
 {
   // create the widget stack first
@@ -511,11 +611,11 @@ void KLedgerViewCheckings::createInfoStack(void)
   m_infoStack->addWidget(frame, KLedgerView::TransactionEdit);
 
 
-
   // Second page reconciliation info
   frame = new QFrame(m_infoStack, "ReconcileFrame");
 
   QVBoxLayout* reconcileLayout = new QVBoxLayout( frame, 0, 6, "ReconcileLayout");
+#if 0
 
   frame->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding,
                                      QSizePolicy::Minimum,
@@ -612,13 +712,13 @@ void KLedgerViewCheckings::createInfoStack(void)
   txt->setFont(defaultFont);
   innerLayout->addWidget(txt);
 
-  m_transactionCheckBox = new QCheckBox(i18n("Show\ntransactionform"), innerFrame, "showBox");
+  m_transactionCheckBox = new QCheckBox(i18n("Show transactionform"), innerFrame, "showBox");
   m_transactionCheckBox->setFont(defaultFont);
   innerLayout->addWidget(m_transactionCheckBox);
 
 
   reconcileLayout->addWidget(innerFrame);
-
+#endif
 
   KPushButton* m_finishButton = new KPushButton(frame, "FinishButton");
   m_finishButton->setText(i18n("&Finish"));
@@ -640,29 +740,40 @@ void KLedgerViewCheckings::createInfoStack(void)
 
   // Initially show the page with the buttons
   m_infoStack->raiseWidget(KLedgerView::TransactionEdit);
+  m_infoStack->hide();
 }
+#endif
 
 void KLedgerViewCheckings::fillSummary(void)
 {
   MyMoneyMoney balance;
   MyMoneyFile* file = MyMoneyFile::instance();
 
-  QLabel *summary = static_cast<QLabel *> (m_summaryLine);
+  KLedgerViewCheckingsSummaryLine* summary = dynamic_cast<KLedgerViewCheckingsSummaryLine*>(m_summaryLine);
+  if(summary) {
+    summary->clear();
 
-  if(accountId().length() > 0) {
-    try {
-      balance = file->balance(accountId());
-      QString txt = balance.formatMoney(file->currency(m_account.currencyId()).tradingSymbol());
-      if(balance < 0)
-        txt = "<font color=\"red\"><b>" + txt + "</b></font>";
-      txt = "<nobr>"+ i18n("Current balance: ") + txt + "</nobr>";
+    if(accountId().length() > 0) {
+      try {
+        balance = file->balance(accountId());
+        QString txt = balance.formatMoney(file->currency(m_account.currencyId()).tradingSymbol());
+        if(balance < 0)
+          txt = "<font color=\"red\"><b>" + txt + "</b></font>";
+        txt = "<nobr>"+ i18n("Current balance: ") + txt + "</nobr>";
 
-      summary->setText(txt);
-    } catch(MyMoneyException *e) {
-        qDebug("Unexpected exception in KLedgerViewCheckings::fillSummary");
+        summary->setBalance(txt);
+
+        QDate date;
+        if(!m_account.value("lastStatementDate").isEmpty())
+          date = QDate::fromString(m_account.value("lastStatementDate"), Qt::ISODate);
+        if(date.isValid())
+          summary->setReconciliationDate(i18n("Reconciled: %1").arg(KGlobal::locale()->formatDate(date, true)));
+
+      } catch(MyMoneyException *e) {
+          qDebug("Unexpected exception in KLedgerViewCheckings::fillSummary");
+      }
     }
-  } else
-    summary->setText("");
+  }
 }
 
 void KLedgerViewCheckings::fillFormStatics(void)
@@ -946,9 +1057,10 @@ void KLedgerViewCheckings::reloadEditWidgets(const MyMoneyTransaction& t)
     if(m_transaction.isLoanPayment()) {
       // Make sure that we do not allow the user to modify the category
       // directly, but only through the split edit dialog
-      connect(m_editCategory, SIGNAL(signalFocusIn()), this, SLOT(slotOpenSplitDialog()));
-      if(m_editCategory != 0)
+      if(m_editCategory != 0) {
+        connect(m_editCategory, SIGNAL(signalFocusIn()), this, SLOT(slotOpenSplitDialog()));
         m_editCategory->loadText(i18n("Loan payment"));
+      }
     } else {
       switch(t.splitCount()) {
         case 2:
@@ -965,9 +1077,10 @@ void KLedgerViewCheckings::reloadEditWidgets(const MyMoneyTransaction& t)
         default:
           // Make sure that we do not allow the user to modify the category
           // directly, but only through the split edit dialog
-          connect(m_editCategory, SIGNAL(signalFocusIn()), this, SLOT(slotOpenSplitDialog()));
-          if(m_editCategory != 0)
+          if(m_editCategory != 0) {
+            connect(m_editCategory, SIGNAL(signalFocusIn()), this, SLOT(slotOpenSplitDialog()));
             m_editCategory->loadText(i18n("Split transaction"));
+          }
           break;
       }
     }
@@ -1120,7 +1233,7 @@ QWidget* KLedgerViewCheckings::arrangeEditWidgetsInForm(void)
   if(m_editNr != 0)
     m_tabOrderWidgets.append(m_editNr);
   m_tabOrderWidgets.append(m_editDate->focusWidget());
-  m_tabOrderWidgets.append(m_editAmount);
+  m_tabOrderWidgets.append(m_editAmount->focusWidget());
 
   return m_editPayee;
 }
@@ -1256,9 +1369,9 @@ void KLedgerViewCheckings::slotReconciliation(void)
       }
     }
 
-    m_infoStack->raiseWidget(KLedgerView::Reconciliation);
     m_inReconciliation = true;
     m_summaryLine->hide();
+    m_reconciliationFrame->show();
     m_transactionFormActive = false;
 
     m_prevBalance = dlg.previousBalance();
@@ -1270,6 +1383,7 @@ void KLedgerViewCheckings::slotReconciliation(void)
 
     // allow SPACE to be used to toggle the clear state
     connect(m_register, SIGNAL(signalSpace()), this, SLOT(slotToggleClearFlag()));
+
     m_transactionCheckBox->setChecked(false);
     slotShowTransactionForm(false);
     connect(m_transactionCheckBox, SIGNAL(toggled(bool)), this, SLOT(slotShowTransactionForm(bool)));
@@ -1286,10 +1400,9 @@ void KLedgerViewCheckings::fillReconcileData(void)
     if(sp.reconcileFlag() == MyMoneySplit::Cleared)
       cleared += sp.value();
   }
-
-  m_clearedLabel->setText(cleared.formatMoney());
-  m_statementLabel->setText(m_endingBalance.formatMoney());
-  m_differenceLabel->setText((cleared - m_endingBalance).formatMoney());
+  m_clearedLabel->setText(i18n("Cleared: %1").arg(cleared.formatMoney()));
+  m_statementLabel->setText(i18n("Statement: %1").arg(m_endingBalance.formatMoney()));
+  m_differenceLabel->setText(i18n("Difference: %1").arg((cleared - m_endingBalance).formatMoney()));
 }
 
 void KLedgerViewCheckings::slotRegisterClicked(int row, int col, int button, const QPoint &mousePos)
@@ -1440,8 +1553,8 @@ void KLedgerViewCheckings::endReconciliation(void)
   KConfig *config = KGlobal::config();
   config->setGroup("General Options");
 
-  m_infoStack->raiseWidget(KLedgerView::TransactionEdit);
   m_inReconciliation = false;
+  m_reconciliationFrame->hide();
   m_summaryLine->show();
   m_transactionFormActive = config->readBoolEntry("TransactionForm", true);
 

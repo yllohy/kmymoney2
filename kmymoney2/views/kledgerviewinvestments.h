@@ -123,19 +123,10 @@ private:
     */
   void createSummary(void);
 
-  /**
-    * This method is used by the constructor to create the info stack on
-    * the right of the register widget. The stack widget itself is created
-    * by the base class member of this function.
-    */
-  void createInfoStack(void);
-
 protected:
   int actionTab(const MyMoneyTransaction& t, const MyMoneySplit& split) const;
 
 protected:
-  KPushButton*  m_detailsButton;
-  KPushButton*  m_reconcileButton;
 
 private:
   /**

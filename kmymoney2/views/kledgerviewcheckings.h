@@ -44,7 +44,7 @@ class KPushButton;
 class kMyMoneyTransactionFormTable;
 
 /**
-  *@author Thomas Baumgart
+  * @author Thomas Baumgart
   */
 
 /**
@@ -54,71 +54,67 @@ class kMyMoneyTransactionFormTable;
   *
   * @code
   *
-  * +------------------------------------------------------------------------------+
-  * | formLayout                                                                   |
-  * |                                                                              |
-  * | +---------------------------------------------------+   +------------------+ |
-  * | | ledgerLayout                                      |   | buttonLayout     | |
-  * | |                                                   |   |                  | |
-  * | | +-----------------------------------------------+ |   | +--------------+ | |
-  * | | | kMyMoneyRegisterCheckings                     | |   | | KPushButton  | | |
-  * | | |                                               | |   | +--------------+ | |
-  * | | |                                               | |   |                  | |
-  * | | |                                               | |   | +--------------+ | |
-  * | | |                                               | |   | | KPushButton  | | |
-  * | | |                                               | |   | +--------------+ | |
-  * | | |                                               | |   |                  | |
-  * | | |                                               | |   |                  | |
-  * | | +-----------------------------------------------+ |   |       -----      | |
-  * | | +-----------------------------------------------+ |   |         |        | |
-  * | | | Summary Line                                  | |   |         |        | |
-  * | | +-----------------------------------------------+ |   |       -----      | |
-  * | | +-----------------------------------------------+ |   |   QSpacerItem    | |
-  * | | | kMyMoneyTransactionForm                       | |   |                  | |
-  * | | |                                               | |   |                  | |
-  * | | |                                               | |   |                  | |
-  * | | |                                               | |   |                  | |
-  * | | |                                               | |   |                  | |
-  * | | |                                               | |   |                  | |
-  * | | +-----------------------------------------------+ |   |                  | |
-  * | +---------------------------------------------------+   +------------------+ |
-  * +------------------------------------------------------------------------------+
+  * +---------------------------------------------------------+
+  * | formLayout                                              |
+  * |                                                         |
+  * | +---------------------------------------------------+   |
+  * | | ledgerLayout                                      |   |
+  * | |                                                   |   |
+  * | | +-----------------------------------------------+ |   |
+  * | | | kMyMoneyRegisterCheckings                     | |   |
+  * | | |                                               | |   |
+  * | | |                                               | |   |
+  * | | |                                               | |   |
+  * | | |                                               | |   |
+  * | | |                                               | |   |
+  * | | |                                               | |   |
+  * | | |                                               | |   |
+  * | | +-----------------------------------------------+ |   |
+  * | | +-----------------------------------------------+ |   |
+  * | | | Summary Line                                  | |   |
+  * | | +-----------------------------------------------+ |   |
+  * | | +-----------------------------------------------+ |   |
+  * | | | kMyMoneyTransactionForm                       | |   |
+  * | | |                                               | |   |
+  * | | |                                               | |   |
+  * | | |                                               | |   |
+  * | | |                                               | |   |
+  * | | |                                               | |   |
+  * | | +-----------------------------------------------+ |   |
+  * | +---------------------------------------------------+   |
+  * +---------------------------------------------------------+
 
   * @endcode
   *
   * The register is provided by kMyMoneyRegisterCheckings. The form
   * is based on a kMyMoneyTransactionForm object. The various parts
   * are created in createRegister(), createSummary() and createForm().
-  * The above diagram shows the standard layout. The buttonLayout is
-  * actually contained as one page in the QWidgetStack m_infoStack.
-  * The widgets therein are created in the createInfoStack() method which
-  * is called by the constructor. A second page exists, which is used by
-  * the reconciliation code.
+  * The above diagram shows the standard layout.
   *
   * The transaction form itself has the following layout:
   *
   * @code
   *
-  * +------------------------------------------------------------------------------+
-  * | formLayout                                                                   |
-  * | +--------------------------------------------------------------------------+ +
-  * | | tabbar                                                                   | |
-  * | |                                                                          | |
-  * | +--------------------------------------------------------------------------+ +
-  * | +--------------------------------------------------------------------------+ +
-  * | | formFrame                                                                | |
-  * | | +----------------------------------------------------------------------+ | |
-  * | | | buttons                                                              | | |
-  * | | +----------------------------------------------------------------------+ | |
-  * | | +----------------------------------------------------------------------+ | |
-  * | | | kMyMoneyTransactionFormTable                                         | | |
-  * | | |                                                                      | | |
-  * | | |                                                                      | | |
-  * | | |                                                                      | | |
-  * | | |                                                                      | | |
-  * | | +----------------------------------------------------------------------+ | |
-  * | +--------------------------------------------------------------------------+ +
-  * +------------------------------------------------------------------------------+
+  * +---------------------------------------------------------+
+  * | formLayout                                              |
+  * | +-----------------------------------------------------+ +
+  * | | tabbar                                              | |
+  * | |                                                     | |
+  * | +-----------------------------------------------------+ +
+  * | +-----------------------------------------------------+ +
+  * | | formFrame                                           | |
+  * | | +-------------------------------------------------+ | |
+  * | | | buttons                                         | | |
+  * | | +-------------------------------------------------+ | |
+  * | | +-------------------------------------------------+ | |
+  * | | | kMyMoneyTransactionFormTable                    | | |
+  * | | |                                                 | | |
+  * | | |                                                 | | |
+  * | | |                                                 | | |
+  * | | |                                                 | | |
+  * | | +-------------------------------------------------+ | |
+  * | +-----------------------------------------------------+ +
+  * +---------------------------------------------------------+
 
   * @endcode
   *
@@ -258,7 +254,13 @@ protected:
     */
   virtual void createMoreMenu(void);
 
-    /**
+  /**
+    * This method creates the context menu that is accessible via the
+    * Account... button in the transaction form.
+    */
+  virtual void createAccountMenu(void);
+
+  /**
     * This method enables or disables widgets who's availability depends
     * on a selected account. These are:
     *
@@ -354,17 +356,16 @@ private:
   void createSummary(void);
 
   /**
-    * This method is used by the constructor to create the info stack on
-    * the right of the register widget. The stack widget itself is created
-    * by the base class member of this function.
-    */
-  void createInfoStack(void);
-
-  /**
     * This method is used by the constructor to create the transaction form
     * provided by the view.
     */
   void createForm(void);
+
+  /**
+    * This method is used to construct the reconciliation frame shown underneath
+    * the summary line during reconciliation.
+    */
+  void createReconciliationFrame(void);
 
   /**
     * This method updates the respective data shown on the right of the
@@ -412,9 +413,6 @@ protected:
   QTab* m_tabWithdrawal;
   QTab* m_tabAtm;
 
-  KPushButton*  m_detailsButton;
-  KPushButton*  m_reconcileButton;
-
   /**
     * This attribute stores the current selected transaction type
     * which is used for new transactions.
@@ -426,9 +424,12 @@ protected:
     * which is located underneath the register. The
     * widget itself is created in createSummary()
     */
-  QLabel          *m_summaryLine;
+  QWidget*        m_summaryLine;
 
-  QHBoxLayout*    m_summaryLayout;
+  /**
+    * This member keeps a pointer to the reconciliation specific information
+    */
+  QFrame*         m_reconciliationFrame;
 
   short           m_actionIdx[5];
 
@@ -444,8 +445,35 @@ private:
   QLabel*         m_differenceLabel;
 
   QCheckBox*      m_transactionCheckBox;
-
-  QLabel*         m_lastReconciledLabel;
 };
+
+/**
+  * This class implements the summary line widget. It comprises
+  * of two labels and a spacer in between.
+  *
+  * @code
+  *
+  * +----------------------------------------------------+
+  * | Reconcile-Label      <-spacer->      Balance-Label |
+  * +----------------------------------------------------+
+  *
+  * @endcode
+  */
+class KLedgerViewCheckingsSummaryLine : public QFrame
+{
+  Q_OBJECT
+public:
+  KLedgerViewCheckingsSummaryLine(QWidget* parent, const char *name);
+  virtual ~KLedgerViewCheckingsSummaryLine() {};
+
+  void setBalance(const QString& txt);
+  void setReconciliationDate(const QString& txt);
+  void clear(void);
+
+private:
+  QLabel*    m_balance;
+  QLabel*    m_date;
+};
+
 
 #endif

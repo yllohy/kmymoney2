@@ -168,7 +168,8 @@ private:
   * Each KLedgerView is devided into three parts:
   *
   * - a @b register specific to the account type
-  * - a set of @b buttons to control the dialog
+  * - a @b summary line shown beneath the register
+  * - a @b reconciliation widget
   * - a @b transaction-form specific to the account type
   *
   * If the specific account provides multiple transaction types, the
@@ -187,6 +188,7 @@ private:
   * - cancel editing (Cancel)
   * - end editing (Enter)
   * - selecting additional functions (More)
+  * - accessing special account options (Account)
   *
   * The buttons are provided by the kMyMoneyTransactionForm class.
   *
@@ -477,6 +479,11 @@ public slots:
   virtual void slotReconciliation(void) = 0;
 
   /**
+    * Calling this slot enters the account edit mode.
+    */
+  virtual void slotAccountDetail(void) = 0;
+
+  /**
     * This method selects the next transaction if not
     * at the end of the ledger.
     */
@@ -684,15 +691,6 @@ protected slots:
 
 protected:
   /**
-    * This method is called to create the widget stack for the
-    * specific ledger view. It is the responsability of the
-    * derived object to fill the stack with widgets and panes.
-    * This method simply creates the object and attaches it
-    * to m_infoStack.
-    */
-  void createInfoStack(void);
-
-  /**
     * This method is called to fill the transaction form
     * with the data of the currently selected transaction
     * in m_register. It must be overridden by any derived
@@ -776,6 +774,8 @@ protected:
 
   virtual void createContextMenu(void);
 
+  virtual void createAccountMenu(void);
+
   virtual void createMoreMenu(void);
 
   virtual void reloadEditWidgets(const MyMoneyTransaction& t) = 0;
@@ -804,11 +804,6 @@ protected:
 
 protected:
   /**
-    * This member keeps a pointer to the specific info stack for the account
-    */
-  QWidgetStack     *m_infoStack;
-
-  /**
     * This member keeps a pointer to the specific register for the account
     */
   kMyMoneyRegister *m_register;
@@ -828,7 +823,7 @@ protected:
     * If it is true, the user is in reconciliation mode, otherwise
     * he's in edit mode
     */
-  bool            m_inReconciliation;
+  bool m_inReconciliation;
 
   /**
     * This member holds the date from which on transactions should be shown
@@ -911,9 +906,14 @@ protected:
   bool          m_ledgerLens;
 
   /**
-    * This member keeps a pointer to the popup-menu
+    * This member keeps a pointer to the context popup-menu
     */
   KPopupMenu*   m_contextMenu;
+
+  /**
+    * This member keeps a pointer to the account popup menu
+    */
+  KPopupMenu*   m_accountMenu;
 
   /**
     * This member keeps a pointer to the sort-menu

@@ -160,22 +160,30 @@ void KLedgerViewCreditCard::fillSummary(void)
 {
   MyMoneyMoney balance;
   MyMoneyFile* file = MyMoneyFile::instance();
-  QLabel *summary = static_cast<QLabel *> (m_summaryLine);
+  KLedgerViewCheckingsSummaryLine* summary = dynamic_cast<KLedgerViewCheckingsSummaryLine*>(m_summaryLine);
 
-  if(!accountId().isEmpty()) {
-    try {
-      balance = file->balance(accountId());
-      summary->setText(i18n("You currently owe: ") + (-balance).formatMoney(file->currency(m_account.currencyId()).tradingSymbol()));
-/* the fancy version. don't know, if we should use it
-      if(balance < 0)
-        summary->setText(i18n("You currently owe: ") + (-balance).formatMoney());
-      else
-        summary->setText(i18n("Current balance: ") + balance.formatMoney());
-*/
+  if(summary) {
+    summary->clear();
 
-    } catch(MyMoneyException *e) {
-        qDebug("Unexpected exception in KLedgerViewCreditCard::fillSummary");
+    if(!accountId().isEmpty()) {
+      try {
+        balance = file->balance(accountId());
+        summary->setBalance(i18n("You currently owe: ") + (-balance).formatMoney(file->currency(m_account.currencyId()).tradingSymbol()));
+  /* the fancy version. don't know, if we should use it
+        if(balance < 0)
+          summary->setText(i18n("You currently owe: ") + (-balance).formatMoney());
+        else
+          summary->setText(i18n("Current balance: ") + balance.formatMoney());
+  */
+
+        QDate date;
+        if(!m_account.value("lastStatementDate").isEmpty())
+          date = QDate::fromString(m_account.value("lastStatementDate"), Qt::ISODate);
+        if(date.isValid())
+          summary->setReconciliationDate(i18n("Reconciled: %1").arg(KGlobal::locale()->formatDate(date, true)));
+      } catch(MyMoneyException *e) {
+          qDebug("Unexpected exception in KLedgerViewCreditCard::fillSummary");
+      }
     }
-  } else
-    summary->setText("");
+  }
 }

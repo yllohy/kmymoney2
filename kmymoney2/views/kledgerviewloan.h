@@ -123,6 +123,12 @@ protected:
     */
   virtual void createMoreMenu(void);
 
+  /**
+    * This method creates the context menu that is accessible via the
+    * Account... button in the transaction form.
+    */
+  virtual void createAccountMenu(void);
+
     /**
     * This method enables or disables widgets who's availability depends
     * on a selected account. These are:
@@ -205,13 +211,6 @@ private:
   void createSummary(void);
 
   /**
-    * This method is used by the constructor to create the info stack on
-    * the right of the register widget. The stack widget itself is created
-    * by the base class member of this function.
-    */
-  void createInfoStack(void);
-
-  /**
     * This method is used by the constructor to create the transaction form
     * provided by the view.
     */
@@ -233,24 +232,12 @@ private slots:
   void slotConfigureMoreMenu(void);
 
 protected:
-
-  KPushButton*  m_detailsButton;
-  KPushButton*  m_reconcileButton;
-  KPushButton*  m_interestButton;
-  KPushButton*  m_loanDetailsButton;
-
   /**
     * This member keeps a pointer to the summary line
     * which is located underneath the register. The
     * widget itself is created in createSummary()
     */
-  QLabel          *m_summaryLine;
-
-  QHBoxLayout*    m_summaryLayout;
-
-private:
-
-  QLabel*         m_lastReconciledLabel;
+  QWidget*        m_summaryLine;
 };
 
 #endif

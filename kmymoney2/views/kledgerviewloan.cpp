@@ -40,6 +40,8 @@
 // Project Includes
 
 #include "kledgerviewloan.h"
+#include "kledgerviewcheckings.h"
+
 #include "../widgets/kmymoneytransactionform.h"
 #include "../widgets/kmymoneyedit.h"
 #include "../widgets/kmymoneydateinput.h"
@@ -83,14 +85,11 @@ KLedgerViewLoan::KLedgerViewLoan(QWidget *parent, const char *name ) :
   QGridLayout* formLayout = new QGridLayout( this, 1, 2, 11, 6, "FormLayout");
   QVBoxLayout* ledgerLayout = new QVBoxLayout( 6, "LedgerLayout");
 
-  createInfoStack();
-  formLayout->addWidget(m_infoStack, 0, 1 );
-
   createRegister();
   ledgerLayout->addWidget(m_register, 3);
 
   createSummary();
-  ledgerLayout->addLayout(m_summaryLayout);
+  ledgerLayout->addWidget(m_summaryLine);
 
   createForm();
   ledgerLayout->addWidget(m_form);
@@ -102,6 +101,7 @@ KLedgerViewLoan::KLedgerViewLoan(QWidget *parent, const char *name ) :
 
   // create the context menu that is accessible via the MORE Button
   createMoreMenu();
+  createAccountMenu();
 
   connect(m_contextMenu, SIGNAL(aboutToShow()), SLOT(slotConfigureContextMenu()));
   connect(m_moreMenu, SIGNAL(aboutToShow()), SLOT(slotConfigureMoreMenu()));
@@ -129,19 +129,17 @@ void KLedgerViewLoan::refreshView(void)
   QDate date;
   if(!m_account.value("lastStatementDate").isEmpty())
     date = QDate::fromString(m_account.value("lastStatementDate"), Qt::ISODate);
-
+// FIXME: move to fillSummary()
+#if 0
   if(date.isValid())
     m_lastReconciledLabel->setText(i18n("Reconciled: %1").arg(KGlobal::locale()->formatDate(date, true)));
   else
     m_lastReconciledLabel->setText(QString());
+#endif
 }
 
 void KLedgerViewLoan::enableWidgets(const bool enable)
 {
-  m_detailsButton->setEnabled(enable);
-/*
-  m_reconcileButton->setEnabled(enable);
-*/
   KLedgerView::enableWidgets(enable);
 }
 
@@ -156,26 +154,33 @@ void KLedgerViewLoan::resizeEvent(QResizeEvent* /* ev */)
   m_register->adjustColumn(5);
 
   int width = m_register->columnWidth(3);
-  if(width < m_register->columnWidth(4))
-    width = m_register->columnWidth(4);
-  if(width < m_register->columnWidth(5))
-    width = m_register->columnWidth(5);
+  int width1 = m_register->columnWidth(4);
+  int width2 = m_register->columnWidth(5);
 
-  m_register->setColumnWidth(3, width);
-  m_register->setColumnWidth(4, width);
-  m_register->setColumnWidth(5, width);
+  if(width < width1)
+    width = width1;
+  if(width < width2)
+    width = width2;
 
-  // Resize the date field to either
+  // Resize the date and money fields to either
   // a) the size required by the input widget if no transaction form is shown
-  // b) the adjusted value for the date if the transaction form is visible
+  // b) the adjusted value for the input widget if the transaction form is visible
   if(!m_transactionFormActive) {
     kMyMoneyDateInput* datefield = new kMyMoneyDateInput();
     datefield->setFont(m_register->cellFont());
     m_register->setColumnWidth(0, datefield->minimumSizeHint().width());
     delete datefield;
+    kMyMoneyEdit* valfield = new kMyMoneyEdit();
+    valfield->setMinimumWidth(width);
+    width = valfield->minimumSizeHint().width();
+    delete valfield;
   } else {
     m_register->adjustColumn(0);
   }
+
+  m_register->setColumnWidth(3, width);
+  m_register->setColumnWidth(4, width);
+  m_register->setColumnWidth(5, width);
 
   for(int i = 0; i < m_register->numCols(); ++i) {
     switch(i) {
@@ -211,83 +216,6 @@ void KLedgerViewLoan::resizeEvent(QResizeEvent* /* ev */)
   table->setColumnWidth(1, w);
 }
 
-void KLedgerViewLoan::createInfoStack(void)
-{
-  // create the widget stack first
-  KLedgerView::createInfoStack();
-
-  // First page buttons inside a frame with layout
-  QFrame* frame = new QFrame(m_infoStack, "ButtonFrame");
-
-  frame->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding,
-                                     QSizePolicy::Minimum,
-                                     0, 0,
-                                     frame->sizePolicy().hasHeightForWidth() ) );
-
-  QVBoxLayout* buttonLayout = new QVBoxLayout( frame, 0, 6, "ButtonLayout");
-
-  KIconLoader* il = KGlobal::iconLoader();
-
-  m_detailsButton = new KPushButton(frame, "detailsButton" );
-  KGuiItem detailsButtenItem( i18n("&Account Details"),
-                    QIconSet(il->loadIcon("viewmag", KIcon::Small, KIcon::SizeSmall)),
-                    i18n("Modify the loan details for this loan"),
-                    i18n("Use this to start a wizard that allows changing the details for this loan."));
-  m_detailsButton->setGuiItem(detailsButtenItem);
-  buttonLayout->addWidget(m_detailsButton);
-
-  m_reconcileButton = new KPushButton(frame, "reconcileButton");
-  KGuiItem reconcileButtenItem( i18n("&Reconcile ..."),
-                    QIconSet(il->loadIcon("reconcile", KIcon::Small, KIcon::SizeSmall)),
-                    i18n("Start the account reconciliation"),
-                    i18n("Use this to reconcile your account against the bank statement."));
-  m_reconcileButton->setGuiItem(reconcileButtenItem);
-  buttonLayout->addWidget(m_reconcileButton);
-
-  m_lastReconciledLabel = new QLabel("", frame);
-  buttonLayout->addWidget(m_lastReconciledLabel);
-
-/*
-  // FIXME: This should not be required anymore as this
-  //        this type of stuff is handled in the KEditLoanWizard
-  m_interestButton = new KPushButton(frame, "interestButton");
-  KGuiItem interestButtonItem( i18n("&Modify interest..."),
-                    QIconSet(il->loadIcon("edit", KIcon::Small, KIcon::SizeSmall)),
-                    i18n("Modify the interest rate for this loan"),
-                    i18n("Use this to start a wizard that allows changing the interest rate."));
-  m_interestButton->setGuiItem(interestButtonItem);
-  buttonLayout->addWidget(m_interestButton);
-
-  m_loanDetailsButton = new KPushButton(frame, "loanDetailsButton");
-  KGuiItem loanDetailsButtonItem( i18n("&Modify loan details..."),
-                    QIconSet(il->loadIcon("configure", KIcon::Small, KIcon::SizeSmall)),
-                    i18n("Modify the loan details for this loan"),
-                    i18n("Use this to start a wizard that allows changing the details for this loan."));
-  m_loanDetailsButton->setGuiItem(loanDetailsButtonItem);
-  buttonLayout->addWidget(m_loanDetailsButton);
-
-  connect(m_reconcileButton, SIGNAL(clicked()), this, SLOT(slotReconciliation()));
-  connect(m_detailsButton, SIGNAL(clicked()), this, SLOT(slotLoanAccountDetail()));
-  // connect(m_loanDetailsButton, SIGNAL(clicked()), this, SLOT(slotLoanAccountDetail()));
-
-  // FIXME: add functionality to modify interest rate etc.
-  // For now just show the proposed functionality
-  m_interestButton->setEnabled(false);
-  m_loanDetailsButton->setEnabled(false);
-*/
-  connect(m_detailsButton, SIGNAL(clicked()), this, SLOT(slotLoanAccountDetail()));
-  connect(m_reconcileButton, SIGNAL(clicked()), this, SLOT(slotReconciliation()));
-
-  QSpacerItem* spacer = new QSpacerItem( 20, 20,
-                   QSizePolicy::Minimum, QSizePolicy::Expanding );
-  buttonLayout->addItem( spacer );
-
-  m_infoStack->addWidget(frame, KLedgerView::TransactionEdit);
-
-  // Initially show the page with the buttons
-  m_infoStack->raiseWidget(KLedgerView::TransactionEdit);
-}
-
 void KLedgerViewLoan::slotRegisterDoubleClicked(int /* row */,
                                                 int /* col */,
                                                 int /* button */,
@@ -313,6 +241,14 @@ void KLedgerViewLoan::createRegister(void)
   connect(m_register, SIGNAL(signalSelectTransaction(const QCString&)), this, SLOT(selectTransaction(const QCString&)));
 
   connect(m_register->horizontalHeader(), SIGNAL(clicked(int)), this, SLOT(slotRegisterHeaderClicked(int)));
+}
+
+void KLedgerViewLoan::createAccountMenu(void)
+{
+  // get the basic entries for all ledger views
+  KLedgerView::createAccountMenu();
+
+  m_form->accountButton()->setPopup(m_accountMenu);
 }
 
 void KLedgerViewLoan::createMoreMenu(void)
@@ -375,42 +311,41 @@ void KLedgerViewLoan::createForm(void)
 
   // for now, we don't allow to enter new transactions here.
   m_form->newButton()->hide();
-
-  m_form->enterButton()->setDefault(true);
 }
 
 void KLedgerViewLoan::createSummary(void)
 {
-  m_summaryLayout = new QHBoxLayout(6, "SummaryLayout");
-
-  QSpacerItem* spacer = new QSpacerItem( 20, 1, QSizePolicy::Expanding, QSizePolicy::Minimum );
-  m_summaryLayout->addItem(spacer);
-
-  m_summaryLine = new QLabel(this);
-
-  m_summaryLayout->addWidget(m_summaryLine);
+  m_summaryLine = new KLedgerViewCheckingsSummaryLine(this, 0);
 }
 
 void KLedgerViewLoan::fillSummary(void)
 {
   MyMoneyMoney balance;
   MyMoneyFile* file = MyMoneyFile::instance();
-  QLabel *summary = static_cast<QLabel *> (m_summaryLine);
+  KLedgerViewCheckingsSummaryLine* summary = dynamic_cast<KLedgerViewCheckingsSummaryLine*>(m_summaryLine);
 
-  if(!accountId().isEmpty()) {
-    try {
-      balance = file->balance(accountId());
-      QString txt = balance.formatMoney();
-      if(m_account.accountType() == MyMoneyAccount::Loan)
-        summary->setText(i18n("You currently owe: ") + (-balance).formatMoney(file->currency(m_account.currencyId()).tradingSymbol()));
-      else
-        summary->setText(i18n("Current balance: ") + balance.formatMoney(file->currency(m_account.currencyId()).tradingSymbol()));
+  if(summary) {
+    summary->clear();
+    if(!accountId().isEmpty()) {
+      try {
+        balance = file->balance(accountId());
+        QString txt = balance.formatMoney();
+        if(m_account.accountType() == MyMoneyAccount::Loan)
+          summary->setBalance(i18n("You currently owe: ") + (-balance).formatMoney(file->currency(m_account.currencyId()).tradingSymbol()));
+        else
+          summary->setBalance(i18n("Current balance: ") + balance.formatMoney(file->currency(m_account.currencyId()).tradingSymbol()));
 
-    } catch(MyMoneyException *e) {
-        qDebug("Unexpected exception in KLedgerViewLoan::fillSummary");
+        QDate date;
+        if(!m_account.value("lastStatementDate").isEmpty())
+          date = QDate::fromString(m_account.value("lastStatementDate"), Qt::ISODate);
+        if(date.isValid())
+          summary->setReconciliationDate(i18n("Reconciled: %1").arg(KGlobal::locale()->formatDate(date, true)));
+
+      } catch(MyMoneyException *e) {
+          qDebug("Unexpected exception in KLedgerViewLoan::fillSummary");
+      }
     }
-  } else
-    summary->setText("");
+  }
 }
 
 void KLedgerViewLoan::fillFormStatics(void)
@@ -1036,6 +971,7 @@ void KLedgerViewLoan::slotStartEditSplit(void)
 
 void KLedgerViewLoan::slotAccountDetail(void)
 {
+  slotLoanAccountDetail();
 /*
   KNewAccountDlg dlg(m_account, true, false, this, "hi", i18n("Edit an Account"));
 

@@ -273,7 +273,6 @@ KLedgerView::KLedgerView(QWidget *parent, const char *name )
   m_editDeposit = 0;
   m_editType = 0;
 
-  m_infoStack = 0;
   m_inReconciliation = false;
 
   m_blinkTimer.start(500);       // setup blink frequency to one hertz
@@ -285,9 +284,6 @@ KLedgerView::KLedgerView(QWidget *parent, const char *name )
 
 KLedgerView::~KLedgerView()
 {
-  if(m_infoStack != 0)
-    delete m_infoStack;
-
   MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassAccountHierarchy, this);
 
   // the following observer could have been attached by slotSelectAccount(),
@@ -1311,7 +1307,6 @@ void KLedgerView::slotEndEdit(void)
 
   MyMoneyFile* file = MyMoneyFile::instance();
 
-  qDebug("KLedgerView::slotEndEdit()");
   try {
 
     // make sure, the post date is valid
@@ -1550,18 +1545,21 @@ bool KLedgerView::focusNextPrevChild(bool next)
   return rc;
 }
 
-void KLedgerView::createInfoStack(void)
+void KLedgerView::createAccountMenu(void)
 {
-  if(m_infoStack != 0)
-    delete m_infoStack;
+  Q_CHECK_PTR(m_register);
 
-  m_infoStack = new QWidgetStack(this, "InfoStack");
+  KIconLoader *kiconloader = KGlobal::iconLoader();
+
+  m_accountMenu = new KPopupMenu(this);
+  m_accountMenu->insertTitle(i18n("Account Options"));
+  m_accountMenu->insertItem(kiconloader->loadIcon("viewmag", KIcon::Small), i18n("Account Details ..."), this, SLOT(slotAccountDetail()));
+  m_accountMenu->insertItem(kiconloader->loadIcon("reconcile", KIcon::Small), i18n("Reconcile ..."), this, SLOT(slotReconciliation()));
 }
 
 void KLedgerView::createContextMenu(void)
 {
-  if(m_register == 0)
-    qFatal("KLedgerView::createContextMenu called before register was created!");
+  Q_CHECK_PTR(m_register);
 
   KIconLoader *kiconloader = KGlobal::iconLoader();
 
@@ -1586,6 +1584,7 @@ void KLedgerView::createContextMenu(void)
 
   m_sortMenu->insertTitle(i18n("Select sort order"));
   m_sortMenu->insertItem(i18n("Post date"), KTransactionPtrVector::SortPostDate);
+
   m_sortMenu->insertItem(i18n("Entry date"), KTransactionPtrVector::SortEntryDate);
   m_sortMenu->insertSeparator();
   m_sortMenu->insertItem(i18n("Type, number"), KTransactionPtrVector::SortTypeNr);

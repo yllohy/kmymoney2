@@ -96,9 +96,6 @@ KLedgerViewInvestments::KLedgerViewInvestments(QWidget *parent, const char *name
   QGridLayout* formLayout = new QGridLayout( this, 1, 2, 11, 6, "InvestmentFormLayout");
   QVBoxLayout* ledgerLayout = new QVBoxLayout(this, 5, 6, "InvestmentLedgerLayout");
 
-  createInfoStack();
-  formLayout->addWidget(m_infoStack, 0, 1 );
-
   createRegister();
   ledgerLayout->addWidget(m_register, 3);
 
@@ -745,11 +742,12 @@ void KLedgerViewInvestments::createForm(void)
   connect(m_form->enterButton(), SIGNAL(clicked()), this, SLOT(slotEndEdit()));
   connect(m_form->newButton(), SIGNAL(clicked()), this, SLOT(slotNew()));
 
-  m_form->enterButton()->setDefault(true);
+  // m_form->enterButton()->setDefault(true);
 
   // slotTypeSelected(KLedgerViewInvestments::AddShares);
 }
 
+#if 0
 void KLedgerViewInvestments::createInfoStack(void)
 {
   // create the widget stack first
@@ -826,6 +824,7 @@ void KLedgerViewInvestments::createInfoStack(void)
   // Initially show the page with the buttons
   m_infoStack->raiseWidget(KLedgerView::TransactionEdit);
 }
+#endif
 
 void KLedgerViewInvestments::slotTypeSelected(int type)
 {
@@ -992,26 +991,33 @@ void KLedgerViewInvestments::resizeEvent(QResizeEvent* /* ev */)
 
   // make amount columns all the same size
   int width = m_register->columnWidth(4);
-  if(width < m_register->columnWidth(5))
-    width = m_register->columnWidth(5);
-  if(width < m_register->columnWidth(6))
-    width = m_register->columnWidth(6);
+  int width1 = m_register->columnWidth(5);
+  int width2 = m_register->columnWidth(6);
 
-  m_register->setColumnWidth(4, width);
-  m_register->setColumnWidth(5, width);
-  m_register->setColumnWidth(6, width);
+  if(width < width1)
+    width = width1;
+  if(width < width2)
+    width = width2;
 
-  // Resize the date field to either
+  // Resize the date and money fields to either
   // a) the size required by the input widget if no transaction form is shown
-  // b) the adjusted value for the date if the transaction form is visible
+  // b) the adjusted value for the input widget if the transaction form is visible
   if(!m_transactionFormActive) {
     kMyMoneyDateInput* datefield = new kMyMoneyDateInput();
     datefield->setFont(m_register->cellFont());
     m_register->setColumnWidth(1, datefield->minimumSizeHint().width());
     delete datefield;
+    kMyMoneyEdit* valfield = new kMyMoneyEdit();
+    valfield->setMinimumWidth(width);
+    width = valfield->minimumSizeHint().width();
+    delete valfield;
   } else {
     m_register->adjustColumn(1);
   }
+
+  m_register->setColumnWidth(4, width);
+  m_register->setColumnWidth(5, width);
+  m_register->setColumnWidth(6, width);
 
   m_register->setColumnWidth(3, 20);
 
