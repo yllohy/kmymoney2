@@ -85,17 +85,19 @@ void KMyMoneyView::slotTransactionListChanged()
 */
 void KMyMoneyView::slotAccountRightMouse(const MyMoneyAccount, bool/* inList*/)
 {
+  KIconLoader *kiconloader = KGlobal::iconLoader();
+
   KPopupMenu menu(this);
-  menu.insertTitle(QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/22x22/actions/account.png")), i18n("Account Options"));
-  menu.insertItem(i18n("Open..."), this, SLOT(slotAccountDoubleClick()));
+  menu.insertTitle(kiconloader->loadIcon("account", KIcon::MainToolbar), i18n("Account Options"));
+  menu.insertItem(kiconloader->loadIcon("account_open", KIcon::Small), i18n("Open..."), this, SLOT(slotAccountDoubleClick()));
   menu.insertSeparator();
-  /*int id1 = */menu.insertItem(QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/16x16/actions/reconcile.png")), i18n("Reconcile..."), this, SLOT(slotAccountReconcile()));
+  /*int id1 = */menu.insertItem(kiconloader->loadIcon("reconcile", KIcon::Small), i18n("Reconcile..."), this, SLOT(slotAccountReconcile()));
   menu.insertSeparator();
-  /*int id3 = */menu.insertItem(QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/16x16/actions/account.png")), i18n("Edit..."), this, SLOT(slotAccountEdit()));
-  /*int id4 = */menu.insertItem(i18n("Delete..."), this, SLOT(slotAccountDelete()));
+  /*int id3 = */menu.insertItem(kiconloader->loadIcon("account", KIcon::Small), i18n("Edit..."), this, SLOT(slotAccountEdit()));
+  /*int id4 = */menu.insertItem(kiconloader->loadIcon("delete", KIcon::Small), i18n("Delete..."), this, SLOT(slotAccountDelete()));
   menu.insertSeparator();
-  /*int id5 = */menu.insertItem(QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/16x16/actions/transaction_import.png")), i18n("Import ascii..."), this, SLOT(slotAccountImportAscii()));
-  /*int id6 = */menu.insertItem(QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/16x16/actions/transaction_export.png")), i18n("Export ascii..."), this, SLOT(slotAccountExportAscii()));
+  /*int id5 = */menu.insertItem(kiconloader->loadIcon("transaction_import", KIcon::Small), i18n("Import ascii..."), this, SLOT(slotAccountImportAscii()));
+  /*int id6 = */menu.insertItem(kiconloader->loadIcon("transaction_export", KIcon::Small), i18n("Export ascii..."), this, SLOT(slotAccountExportAscii()));
 /*
   if (!inList) {
     menu.setItemEnabled(id1, false);
@@ -115,12 +117,14 @@ void KMyMoneyView::slotAccountDoubleClick(void)
 
 void KMyMoneyView::slotBankRightMouse(const MyMoneyBank, bool inList)
 {
+  KIconLoader *kiconloader = KGlobal::iconLoader();
+
   KPopupMenu menu(this);
-  menu.insertTitle(QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/22x22/actions/bank.png")), i18n("Institution Options"));
-  int id1 = menu.insertItem(QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/16x16/actions/bank.png")), i18n("New Institution..."), this, SLOT(slotBankNew()));
-  int id2 = menu.insertItem(QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/16x16/actions/account.png")), i18n("New Account..."), this, SLOT(slotAccountNew()));
-  int id3 = menu.insertItem(QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/16x16/actions/bank.png")), i18n("Edit..."), this, SLOT(slotBankEdit()));
-  int id4 = menu.insertItem(i18n("Delete..."), this, SLOT(slotBankDelete()));
+  menu.insertTitle(kiconloader->loadIcon("bank", KIcon::MainToolbar), i18n("Institution Options"));
+  int id1 = menu.insertItem(kiconloader->loadIcon("bank", KIcon::Small), i18n("New Institution..."), this, SLOT(slotBankNew()));
+  int id2 = menu.insertItem(kiconloader->loadIcon("account", KIcon::Small), i18n("New Account..."), this, SLOT(slotAccountNew()));
+  int id3 = menu.insertItem(kiconloader->loadIcon("bank", KIcon::Small), i18n("Edit..."), this, SLOT(slotBankEdit()));
+  int id4 = menu.insertItem(kiconloader->loadIcon("delete", KIcon::Small), i18n("Delete..."), this, SLOT(slotBankDelete()));
   if (!inList) {
     menu.setItemEnabled(id2, false);
     menu.setItemEnabled(id3, false);

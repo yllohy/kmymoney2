@@ -1,3 +1,12 @@
+2001-09-26 Michael Edwardes <mte@users.sourceforge.net>
+  * Added icons where-ever I think they should be.  Have a look and see if they
+    are placed appropriately.  The icons don't actually depict anything, that
+    still needs to be done!
+  * Improved icon handling in the right menu(s) by using the KIconLoader class.
+    We have now just the 22x22 icons and KIconLoader does all the hardwork of
+    resizing to 16x16.
+  * Added default hi-color versions of the application icons.
+
 2001-09-25 Michael Edwardes <mte@users.sourceforge.net>
   * Bumped version up to 0.3.8.
   * Removed some old icons and added some new ones.  Please be aware that

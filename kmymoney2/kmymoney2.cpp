@@ -101,7 +101,7 @@ void KMyMoney2App::initActions()
   filePrint = KStdAction::print(this, SLOT(slotFilePrint()), actionCollection());
 */
   fileClose = KStdAction::close(this, SLOT(slotFileClose()), actionCollection());
-  fileCloseWindow = new KAction(i18n("&Close Window"), 0, 0, this, SLOT(slotFileCloseWindow()), actionCollection(), "file_close_window");
+  fileCloseWindow = new KAction(i18n("&Close Window"), "close_window", 0, this, SLOT(slotFileCloseWindow()), actionCollection(), "file_close_window");
 
   fileQuit = KStdAction::quit(this, SLOT(slotFileQuit()), actionCollection());
 
@@ -134,11 +134,11 @@ void KMyMoney2App::initActions()
   viewStatusBar->setStatusText(i18n("Enables/disables the statusbar"));
 
   // Additions to the file menu
-  fileViewInfo = new KAction(i18n("View Info..."), 0, 0, this, SLOT(slotFileFileInfo()), actionCollection(), "file_view_info");
+  fileViewInfo = new KAction(i18n("View Info..."), "view_info", 0, this, SLOT(slotFileFileInfo()), actionCollection(), "file_view_info");
   fileViewInfo->setStatusText(i18n("View information about the file"));
-  filePersonalData = new KAction(i18n("Personal Data..."), 0, 0, this, SLOT(slotFileViewPersonal()), actionCollection(), "file_personal_data");
+  filePersonalData = new KAction(i18n("Personal Data..."), "personal_data", 0, this, SLOT(slotFileViewPersonal()), actionCollection(), "file_personal_data");
   filePersonalData->setStatusText(i18n("Lets you view/edit your personal data"));
-  fileBackup = new KAction(i18n("Backup..."),0,0,this,SLOT(slotFileBackup()),actionCollection(),"file_backup");
+  fileBackup = new KAction(i18n("Backup..."), "backup",0,this,SLOT(slotFileBackup()),actionCollection(),"file_backup");
   fileBackup->setStatusText(i18n("Lets you backup your file to a removeable drive"));
 
 
