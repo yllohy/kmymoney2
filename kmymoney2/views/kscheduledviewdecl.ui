@@ -11,7 +11,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>584</width>
+            <width>580</width>
             <height>480</height>
         </rect>
     </property>
@@ -39,7 +39,7 @@
             <class>QLayoutWidget</class>
             <property stdset="1">
                 <name>name</name>
-                <cstring>Layout1</cstring>
+                <cstring>Layout2</cstring>
             </property>
             <hbox>
                 <property stdset="1">
@@ -72,14 +72,35 @@
                     </property>
                 </spacer>
                 <widget>
-                    <class>QPushButton</class>
+                    <class>QToolButton</class>
                     <property stdset="1">
                         <name>name</name>
                         <cstring>m_qbuttonNew</cstring>
                     </property>
                     <property stdset="1">
+                        <name>sizePolicy</name>
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                        </sizepolicy>
+                    </property>
+                    <property stdset="1">
+                        <name>minimumSize</name>
+                        <size>
+                            <width>70</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property stdset="1">
+                        <name>maximumSize</name>
+                        <size>
+                            <width>70</width>
+                            <height>32767</height>
+                        </size>
+                    </property>
+                    <property stdset="1">
                         <name>text</name>
-                        <string>&amp;New...</string>
+                        <string>New...</string>
                     </property>
                 </widget>
                 <widget>
@@ -87,6 +108,20 @@
                     <property stdset="1">
                         <name>name</name>
                         <cstring>m_qbuttonEdit</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>sizePolicy</name>
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                        </sizepolicy>
+                    </property>
+                    <property stdset="1">
+                        <name>maximumSize</name>
+                        <size>
+                            <width>70</width>
+                            <height>32767</height>
+                        </size>
                     </property>
                     <property stdset="1">
                         <name>text</name>
@@ -98,6 +133,27 @@
                     <property stdset="1">
                         <name>name</name>
                         <cstring>m_qbuttonDelete</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>sizePolicy</name>
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                        </sizepolicy>
+                    </property>
+                    <property stdset="1">
+                        <name>minimumSize</name>
+                        <size>
+                            <width>0</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property stdset="1">
+                        <name>maximumSize</name>
+                        <size>
+                            <width>70</width>
+                            <height>32767</height>
+                        </size>
                     </property>
                     <property stdset="1">
                         <name>text</name>

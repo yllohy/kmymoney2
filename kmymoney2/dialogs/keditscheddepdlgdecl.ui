@@ -11,8 +11,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>518</width>
-            <height>375</height>
+            <width>553</width>
+            <height>401</height>
         </rect>
     </property>
     <property stdset="1">
@@ -68,7 +68,7 @@
                 <name>title</name>
                 <string>Payee Details</string>
             </property>
-            <hbox>
+            <vbox>
                 <property stdset="1">
                     <name>margin</name>
                     <number>11</number>
@@ -81,7 +81,7 @@
                     <class>QLayoutWidget</class>
                     <property stdset="1">
                         <name>name</name>
-                        <cstring>Layout1</cstring>
+                        <cstring>Layout32</cstring>
                     </property>
                     <hbox>
                         <property stdset="1">
@@ -121,19 +121,19 @@
                             </property>
                             <property stdset="1">
                                 <name>text</name>
-                                <string>Payee:</string>
+                                <string>From:</string>
                             </property>
                         </widget>
                         <widget>
-                            <class>QLineEdit</class>
+                            <class>kMyMoneyCombo</class>
                             <property stdset="1">
                                 <name>name</name>
-                                <cstring>m_qlineeditPay1</cstring>
+                                <cstring>m_kcomboPayee</cstring>
                             </property>
                         </widget>
                     </hbox>
                 </widget>
-            </hbox>
+            </vbox>
         </widget>
         <widget>
             <class>QGroupBox</class>
@@ -158,7 +158,7 @@
                     <class>QLayoutWidget</class>
                     <property stdset="1">
                         <name>name</name>
-                        <cstring>Layout7</cstring>
+                        <cstring>Layout15</cstring>
                     </property>
                     <grid>
                         <property stdset="1">
@@ -169,31 +169,6 @@
                             <name>spacing</name>
                             <number>6</number>
                         </property>
-                        <widget row="1"  column="2" >
-                            <class>QLabel</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>TextLabel7</cstring>
-                            </property>
-                            <property stdset="1">
-                                <name>text</name>
-                                <string>Frequency:</string>
-                            </property>
-                        </widget>
-                        <widget row="0"  column="1" >
-                            <class>QLineEdit</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>m_qlineeditPay2</cstring>
-                            </property>
-                        </widget>
-                        <widget row="1"  column="3" >
-                            <class>kMyMoneyCombo</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>m_kcomboFreq</cstring>
-                            </property>
-                        </widget>
                         <widget row="0"  column="2" >
                             <class>QLabel</class>
                             <property stdset="1">
@@ -210,20 +185,6 @@
                             <property stdset="1">
                                 <name>name</name>
                                 <cstring>m_kdateinputDue</cstring>
-                            </property>
-                        </widget>
-                        <widget row="1"  column="1" >
-                            <class>kMyMoneyCombo</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>m_kcomboMethod</cstring>
-                            </property>
-                            <property stdset="1">
-                                <name>sizePolicy</name>
-                                <sizepolicy>
-                                    <hsizetype>3</hsizetype>
-                                    <vsizetype>5</vsizetype>
-                                </sizepolicy>
                             </property>
                         </widget>
                         <widget row="1"  column="0" >
@@ -258,6 +219,45 @@
                                 <string>Method:</string>
                             </property>
                         </widget>
+                        <widget row="1"  column="1" >
+                            <class>kMyMoneyCombo</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>m_kcomboMethod</cstring>
+                            </property>
+                            <property stdset="1">
+                                <name>sizePolicy</name>
+                                <sizepolicy>
+                                    <hsizetype>3</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                </sizepolicy>
+                            </property>
+                        </widget>
+                        <widget row="0"  column="1" >
+                            <class>kMyMoneyCombo</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>m_kcomboDepositAccount</cstring>
+                            </property>
+                        </widget>
+                        <widget row="1"  column="2" >
+                            <class>QLabel</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>TextLabel7</cstring>
+                            </property>
+                            <property stdset="1">
+                                <name>text</name>
+                                <string>Frequency:</string>
+                            </property>
+                        </widget>
+                        <widget row="1"  column="3" >
+                            <class>kMyMoneyCombo</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>m_kcomboFreq</cstring>
+                            </property>
+                        </widget>
                         <widget row="0"  column="0" >
                             <class>QLabel</class>
                             <property stdset="1">
@@ -287,7 +287,7 @@
                             </property>
                             <property stdset="1">
                                 <name>text</name>
-                                <string>From:</string>
+                                <string>Deposit to:</string>
                             </property>
                         </widget>
                     </grid>
@@ -417,7 +417,7 @@
                             <class>QPushButton</class>
                             <property stdset="1">
                                 <name>name</name>
-                                <cstring>q_qbuttonSplit</cstring>
+                                <cstring>m_qbuttonSplit</cstring>
                             </property>
                             <property stdset="1">
                                 <name>minimumSize</name>
@@ -497,6 +497,102 @@
                     </hbox>
                 </widget>
             </vbox>
+        </widget>
+        <widget>
+            <class>QCheckBox</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>m_qcheckboxAuto</cstring>
+            </property>
+            <property stdset="1">
+                <name>text</name>
+                <string>Enter this into the register automatically</string>
+            </property>
+        </widget>
+        <widget>
+            <class>QCheckBox</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>m_qcheckboxEnd</cstring>
+            </property>
+            <property stdset="1">
+                <name>text</name>
+                <string>This series will end at some time</string>
+            </property>
+        </widget>
+        <widget>
+            <class>QLayoutWidget</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>Layout7_2</cstring>
+            </property>
+            <hbox>
+                <property stdset="1">
+                    <name>margin</name>
+                    <number>0</number>
+                </property>
+                <property stdset="1">
+                    <name>spacing</name>
+                    <number>6</number>
+                </property>
+                <spacer>
+                    <property>
+                        <name>name</name>
+                        <cstring>Spacer3_2</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>orientation</name>
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property stdset="1">
+                        <name>sizeType</name>
+                        <enum>Fixed</enum>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget>
+                    <class>QLabel</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>TextLabel1</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>Number of transactions remaining:</string>
+                    </property>
+                </widget>
+                <widget>
+                    <class>QLineEdit</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>m_qlineeditRemaining</cstring>
+                    </property>
+                </widget>
+                <widget>
+                    <class>QLabel</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>TextLabel2_2</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>Date of final transaction:</string>
+                    </property>
+                </widget>
+                <widget>
+                    <class>kMyMoneyDateInput</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>m_kdateinputFinal</cstring>
+                    </property>
+                </widget>
+            </hbox>
         </widget>
         <spacer>
             <property>

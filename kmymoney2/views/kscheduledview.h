@@ -34,6 +34,9 @@
 // Project Includes
 #include "kscheduledviewdecl.h"
 #include "../mymoney/mymoneyfile.h"
+#include "../dialogs/keditscheduledbilldlg.h"
+#include "../dialogs/keditscheduleddepositdlg.h"
+#include "../dialogs/keditscheduledtransferdlg.h"
 
 /**
   * Contains all the scheduled transactions be they bills or deposits.
@@ -41,7 +44,7 @@
   * Used by the KMyMoneyView class to show the view.
   *
   * @author Michael Edwardes 2000-2002
-  * $Id: kscheduledview.h,v 1.2 2002/02/09 18:16:58 mte Exp $
+  * $Id: kscheduledview.h,v 1.3 2002/02/17 22:26:01 mte Exp $
   *
   * @short A class to encapsulate recurring transaction operations.
   */
@@ -62,9 +65,11 @@ protected:
 protected slots:
   // Called on appropriate signals
   void slotEditClicked();
-  void slotNewClicked();
   void slotDeleteClicked();
   void slotSelectionChanged(QListViewItem*);
+  void slotNewBill();
+  void slotNewDeposit();
+  void slotNewTransfer();
 
 signals:
   void signalViewActivated();

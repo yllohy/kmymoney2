@@ -1,5 +1,7 @@
 2002-02-17 Michael Edwardes <mte@users.sourceforge.net>
   * New <template> dialogs for scheduled transactions.
+  * Changed the scheduled view to use a tool button.
+  * Improved functionality in the dialogs.
 
 2002-02-14 Michael Edwardes <mte@users.sourceforge.net>
   * Made the source fully KDE3 compatable.

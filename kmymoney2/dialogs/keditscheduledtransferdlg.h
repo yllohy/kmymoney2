@@ -19,21 +19,46 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
 #ifndef KEDITSCHEDULEDTRANSFERDLG_H
 #define KEDITSCHEDULEDTRANSFERDLG_H
 
+// ----------------------------------------------------------------------------
+// QT Includes
 #include <qwidget.h>
+
+// ----------------------------------------------------------------------------
+// KDE Includes
+
+// ----------------------------------------------------------------------------
+// Project Includes
+#include "../mymoney/mymoneyfile.h"
 #include "keditschedtransdlgdecl.h"
 
 /**
-  *@author Michael Edwardes
-  */
-
+  * This class provides a dialog to edit the details pertaining to
+  * a scheduled transfer.
+  *
+  * @author Michael Edwardes
+  * $Id: keditscheduledtransferdlg.h,v 1.2 2002/02/17 22:26:01 mte Exp $
+  *
+  * @short Edit details for a scheduled transfer.
+**/
 class KEditScheduledTransferDlg : public kEditScheduledTransferDlgDecl  {
    Q_OBJECT
-public: 
-	KEditScheduledTransferDlg(QWidget *parent=0, const char *name=0);
+private:
+  MyMoneyFile *m_mymoneyfile;
+  QString m_lastPayee;
+  MyMoneyTransaction *m_transaction;
+
+  void reloadFromFile(void);
+  void readConfig(void);
+  void writeConfig(void);
+
+protected slots:
+  void slotSplitClicked();
+
+public:
+	KEditScheduledTransferDlg(MyMoneyFile *file, QWidget *parent=0, const char *name=0);
 	~KEditScheduledTransferDlg();
 };
 

@@ -19,21 +19,46 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
 #ifndef KEDITSCHEDULEDBILLDLG_H
 #define KEDITSCHEDULEDBILLDLG_H
 
+// ----------------------------------------------------------------------------
+// QT Includes
 #include <qwidget.h>
+
+// ----------------------------------------------------------------------------
+// KDE Includes
+
+// ----------------------------------------------------------------------------
+// Project Includes
 #include "keditschedbilldlgdecl.h"
+#include "../mymoney/mymoneyfile.h"
 
 /**
-  *@author Michael Edwardes
-  */
-
+  * This class provides a dialog to edit the details pertaining to
+  * a scheduled bill.
+  *
+  * @author Michael Edwardes
+  * $Id: keditscheduledbilldlg.h,v 1.2 2002/02/17 22:26:01 mte Exp $
+  *
+  * @short Edit details for a scheduled bill.
+**/
 class KEditScheduledBillDlg : public kEditScheduledBillDlgDecl  {
    Q_OBJECT
+private:
+  MyMoneyFile *m_mymoneyfile;
+  QString m_lastPayee;
+  MyMoneyTransaction *m_transaction;
+
+  void reloadFromFile(void);
+  void readConfig(void);
+  void writeConfig(void);
+
+protected slots:
+  void slotSplitClicked();
+
 public: 
-	KEditScheduledBillDlg(QWidget *parent=0, const char *name=0);
+	KEditScheduledBillDlg(MyMoneyFile *file, QWidget *parent=0, const char *name=0);
 	~KEditScheduledBillDlg();
 };
 
