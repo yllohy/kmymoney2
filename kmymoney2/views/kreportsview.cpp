@@ -43,15 +43,11 @@
 
 // ----------------------------------------------------------------------------
 // KDE Includes
+
 #include <kglobal.h>
 #include <kglobalsettings.h>
 #include <klocale.h>
-#if QT_VERSION > 300
 #include <kstandarddirs.h>
-#else
-#include <kstddirs.h>
-#endif
-
 #include <khtmlview.h>
 #include <kconfig.h>
 #include <kdebug.h>
@@ -68,6 +64,8 @@
 #include "../mymoney/mymoneyreport.h"
 #include "../dialogs/kreportconfigurationfilterdlg.h"
 #include "../widgets/kmymoneytitlelabel.h"
+#include "../kmymoneyutils.h"
+
 using namespace reports;
 
 #define VIEW_LEDGER         "ledger"
@@ -153,6 +151,9 @@ QString KReportsView::KReportTab::createTable(const QString& links)
   QString filename = KGlobal::dirs()->findResource("appdata", "html/kmymoney2.css");
   QString header = QString("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\">\n") +
     QString("<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"%1\">").arg(filename);
+
+  header += KMyMoneyUtils::variableCSS();
+
   header += "</head><body>\n";
 
   QString footer = "</body></html>\n";

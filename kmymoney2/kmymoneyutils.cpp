@@ -563,12 +563,17 @@ void KMyMoneyUtils::newPayee(QWidget* parent, kMyMoneyPayee* payeeEdit, const QS
 
 const QColor KMyMoneyUtils::defaultBackgroundColour(void)
 {
-  return QColor(255,255,204);
+  return KGlobalSettings::baseColor();
+  // return QColor(255,255,204);
 }
 
 const QColor KMyMoneyUtils::defaultListColour(void)
 {
-  return QColor(255,255,238);
+  QColor color = KGlobalSettings::alternateBackgroundColor();
+  if(!color.isValid())
+    color = defaultBackgroundColour();
+  return color;
+  // return QColor(255,255,238);
 }
 
 const QColor KMyMoneyUtils::defaultGridColour(void)
@@ -616,4 +621,18 @@ void KMyMoneyUtils::checkConstants(void)
   Q_ASSERT(static_cast<int>(KLocale::AfterQuantityMoney) == static_cast<int>(MyMoneyMoney::AfterQuantityMoney));
   Q_ASSERT(static_cast<int>(KLocale::BeforeMoney) == static_cast<int>(MyMoneyMoney::BeforeMoney));
   Q_ASSERT(static_cast<int>(KLocale::AfterMoney) == static_cast<int>(MyMoneyMoney::AfterMoney));
+}
+
+QString KMyMoneyUtils::variableCSS(void)
+{
+  QColor tcolor = KGlobalSettings::textColor();
+
+  QString css;
+  css += "<style type=\"text/css\">\n<!--\n";
+
+  css += QString(".row-even { font-family: verdana, arial, helvetica; background-color: %1; color: %2; padding-top: 2px; padding-left: 20px; }\n").arg(backgroundColour().name()).arg(tcolor.name());
+  css += QString(".row-odd { font-family: verdana, arial, helvetica; background-color: %1; color: %2; padding-top: 2px; padding-left: 20px; }\n").arg(listColour().name()).arg(tcolor.name());
+
+  css += "-->\n</style>\n";
+  return css;
 }

@@ -305,6 +305,8 @@ public:
 
   static bool isExpertMode(void) { return _expertMode; };
 
+  static QString variableCSS(void);
+
 private:
   static QColor _backgroundColour;
   static QColor _listColour;
