@@ -1,3 +1,9 @@
+2004-03-13 Kevin Tambascio <ktambascio@users.sourceforge.net>
+  * A good chunk of functionality for investments is checked in.  Includes support for
+    reading/writing MyMoneyEquity objects.  Can add investment accounts through
+    the new account wizard.  Can use the investment view to view all your investment
+    accounts.  XML reader/writer will read and persist the new objects.
+
 2004-03-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added investment view and started integration of it
 
