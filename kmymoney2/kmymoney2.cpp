@@ -418,11 +418,10 @@ void KMyMoney2App::slotFileSaveAs()
   QString prevMsg = slotStatusMsg(i18n("Saving file with a new filename..."));
 
   QString newName=KFileDialog::getSaveFileName(KGlobalSettings::documentPath(),
-                                               i18n("*.kmy|KMyMoney files\n"
+                                               i18n("*.kmy|KMyMoney files\n""*.xml|XML Files\n"
 
                                                "*.*|All files"), this, i18n("Save as..."));
-
-
+ 
   //
   // If there is no file extension, then append a .kmy at the end of the file name.
   // If there is a file extension, make sure it is .kmy, delete any others.
@@ -436,8 +435,7 @@ void KMyMoney2App::slotFileSaveAs()
       QString strExt, strTemp;
       strTemp = newName.left(nLoc + 1);
       strExt = newName.right(newName.length() - (nLoc + 1));
-      if(strExt.find("kmy", 0, FALSE) == -1)
-
+      if((strExt.find("kmy", 0, FALSE) == -1) && (strExt.find("xml", 0, FALSE) == -1))
       {
 
         strTemp.append("kmy");
@@ -482,6 +480,7 @@ void KMyMoney2App::slotFileCloseWindow()
 void KMyMoney2App::slotFileClose()
 {
   // no update status here, as we might delete the status too early.
+
 
 
   if (myMoneyView->dirty()) {
@@ -605,6 +604,7 @@ void KMyMoney2App::progressCallback(int current, int total, const QString& msg)
   if(!msg.isEmpty())
     kmymoney2->slotStatusMsg(msg);
 
+
   kmymoney2->slotStatusProgressBar(current, total);
 }
 
@@ -627,6 +627,7 @@ void KMyMoney2App::slotFileFileInfo()
 {
   if ( !myMoneyView->fileOpen() ) {
     KMessageBox::information(this, i18n("No MyMoneyFile open"));
+
     return;
   }
 
@@ -810,6 +811,7 @@ void KMyMoney2App::slotFileBackup()
       proc << "echo";
       proc.start();
     }
+
   }
 
   delete backupDlg;

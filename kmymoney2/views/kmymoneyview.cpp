@@ -554,15 +554,11 @@ bool KMyMoneyView::readFile(const KURL& url)
 
   QString strFileExtension = MyMoneyUtils::getFileExtension(url.path());
 
-#ifdef _COMPILE_XML
-#if HAVE_LIBXMLPP
   if(strFileExtension.find("XML") != -1)
   {
     pReader = new MyMoneyStorageXML;
   }
   else
-#endif
-#endif
   {
     // Use the binary reader 
     pReader = new MyMoneyStorageBin;
@@ -708,16 +704,11 @@ void KMyMoneyView::saveFile(const KURL& url)
 
   QString strFileExtension = MyMoneyUtils::getFileExtension(filename);
 
-#ifdef _COMPILE_XML
-#if HAVE_LIBXMLPP
   if(strFileExtension.find("XML") != -1)
   {
     pWriter = new MyMoneyStorageXML;
   }
   else
-#endif
-#endif
-
   {
     // Use the binary reader 
     pWriter = new MyMoneyStorageBin;
