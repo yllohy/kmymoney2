@@ -789,10 +789,6 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter)
 
 const bool KMyMoneyView::saveFile(const KURL& url)
 {
-  // check if we have nothing to do
-  if(!MyMoneyFile::instance()->dirty())
-    return true;
-    
   QString filename = url.path();
 
   if (!fileOpen()) {
