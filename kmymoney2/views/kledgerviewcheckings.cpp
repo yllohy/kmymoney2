@@ -103,7 +103,7 @@ void KLedgerViewCheckings::refreshView(void)
   KLedgerView::refreshView();
 }
 
-void KLedgerViewCheckings::resizeEvent(QResizeEvent* ev)
+void KLedgerViewCheckings::resizeEvent(QResizeEvent* /* ev */)
 {
   
   // resize the register
@@ -232,7 +232,10 @@ void KLedgerViewCheckings::slotTypeSelected(int type)
     slotNew();
 }
 
-void KLedgerViewCheckings::slotRegisterDoubleClicked(int row, int col, int button, const QPoint &mousePos)
+void KLedgerViewCheckings::slotRegisterDoubleClicked(int /* row */,
+                                                     int /* col */,
+                                                     int /* button */,
+                                                     const QPoint & /* mousePos */)
 {
   slotStartEdit();
 }
@@ -1062,7 +1065,7 @@ void KLedgerViewCheckings::arrangeEditWidgetsInForm(QWidget*& focusWidget, const
   m_tabOrderWidgets.append(m_editAmount);
 }
 
-void KLedgerViewCheckings::arrangeEditWidgetsInRegister(QWidget*& focusWidget, const int transType)
+void KLedgerViewCheckings::arrangeEditWidgetsInRegister(QWidget*& focusWidget, const int /* transType */)
 {
   delete m_editAmount; m_editAmount = 0;
 

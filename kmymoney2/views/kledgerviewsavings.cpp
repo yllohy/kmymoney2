@@ -58,7 +58,7 @@ KLedgerViewSavings::~KLedgerViewSavings()
 {
 }
 
-void KLedgerViewSavings::resizeEvent(QResizeEvent* ev)
+void KLedgerViewSavings::resizeEvent(QResizeEvent* /* ev */)
 {
   // resize the register
   int w = m_register->visibleWidth();
