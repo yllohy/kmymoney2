@@ -29,6 +29,7 @@
 #include <qwidget.h>
 #include <qpainter.h>
 #include <qtable.h>
+// #include <qfontmetric.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -102,6 +103,7 @@ protected:
 
   QColorGroup m_cg;
   QColor m_color;
+  QColor m_textColor;
   QColor m_bgColor;
   QColor m_gridColor;
 
@@ -115,6 +117,7 @@ protected:
   int    m_transactionIndex;
   int    m_transactionRow;
   int    m_currentDateRow;
+  int    m_currentTransactionRow;
 
   MyMoneyTransaction const * m_transaction;
   MyMoneyMoney m_balance;

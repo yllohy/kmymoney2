@@ -38,6 +38,8 @@ kMyMoneyRegister::kMyMoneyRegister(QWidget *parent, const char *name )
   readConfig();
   m_currentDateRow = -1;
   m_lastTransactionIndex = -1;
+  m_currentTransactionRow = 0;
+  setSelectionMode(QTable::SingleRow);
 }
 
 kMyMoneyRegister::~kMyMoneyRegister()
@@ -129,10 +131,6 @@ void kMyMoneyRegister::paintCell(QPainter *p, int row, int col, const QRect& r,
   m_textRect.setWidth(columnWidth(col)-4);
   m_textRect.setHeight(rowHeight(row));
 
-  QBrush backgroundBrush(m_cg.base());
-  p->fillRect(m_cellRect,backgroundBrush);
-  p->setPen(m_cg.foreground());
-
   m_transactionIndex = row/m_rpt;
   m_transactionRow = row%m_rpt;
   if(m_transactionIndex != m_lastTransactionIndex) {
@@ -141,4 +139,16 @@ void kMyMoneyRegister::paintCell(QPainter *p, int row, int col, const QRect& r,
     m_balance = m_view->balance(m_transactionIndex);
     m_lastTransactionIndex = m_transactionIndex;
   }
+
+  if(m_transactionIndex == m_currentTransactionRow) {
+    QBrush backgroundBrush(m_cg.highlight());
+    p->fillRect(m_cellRect,backgroundBrush);
+    m_textColor = m_cg.highlightedText();
+
+  } else {
+    QBrush backgroundBrush(m_cg.base());
+    p->fillRect(m_cellRect,backgroundBrush);
+    m_textColor = m_cg.text();
+  }
+  p->setPen(m_textColor);
 }

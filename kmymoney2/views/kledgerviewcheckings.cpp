@@ -74,7 +74,6 @@ KLedgerViewCheckings::KLedgerViewCheckings(QWidget *parent, const char *name )
 	m_register->horizontalHeader()->setLabel(4, i18n("Payment"));
 	m_register->horizontalHeader()->setLabel(5, i18n("Deposit"));
 	m_register->horizontalHeader()->setLabel(6, i18n("Balance"));
-	m_register->setSelectionMode(QTable::NoSelection);
  	m_register->setLeftMargin(0);
 	m_register->verticalHeader()->hide();
   m_register->setColumnStretchable(0, false);

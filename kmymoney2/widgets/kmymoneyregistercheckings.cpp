@@ -113,7 +113,7 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
         p->drawLine(m_cellRect.x(), 0, m_cellRect.x(), m_cellRect.height()-1);
         if(lastLine)
           p->drawLine(m_cellRect.x(), m_cellRect.height()-1, m_cellRect.width(), m_cellRect.height()-1);
-        p->setPen(m_cg.foreground());
+        p->setPen(m_textColor);
       }
 /*
       if(m_transactionRow > 0 && col == 2) {
@@ -139,7 +139,7 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
       if(row == m_currentDateRow) {
         p->setPen(m_gridColor);
         p->drawLine(m_cellRect.x(), 1, m_cellRect.width(), 1);
-        p->setPen(m_cg.foreground());
+        p->setPen(m_textColor);
       }
       break;
     case 3:
@@ -148,7 +148,7 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
         p->drawLine(m_cellRect.x(), 0, m_cellRect.x(), m_cellRect.height()-1);
         if(lastLine)
           p->drawLine(m_cellRect.x(), m_cellRect.height()-1, m_cellRect.width(), m_cellRect.height()-1);
-        p->setPen(m_cg.foreground());
+        p->setPen(m_textColor);
       }
       if(txt.isEmpty()) {
         switch(m_transactionRow) {
@@ -160,7 +160,7 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
       if(row == m_currentDateRow) {
         p->setPen(m_gridColor);
         p->drawLine(m_cellRect.x(), 1, m_cellRect.width(), 1);
-        p->setPen(m_cg.foreground());
+        p->setPen(m_textColor);
       }
       break;
 
@@ -216,13 +216,13 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
         if(lastLine)
           p->drawLine(m_cellRect.x(), m_cellRect.height()-1, m_cellRect.width(), m_cellRect.height()-1);
         p->drawLine(m_cellRect.x()+m_cellRect.width(), 0, m_cellRect.x()+m_cellRect.width(), m_cellRect.height()-1);
-        p->setPen(m_cg.foreground());
+        p->setPen(m_textColor);
       }
       p->drawText(m_textRect, Qt::AlignRight | Qt::AlignVCenter, txt);
       if(row == m_currentDateRow) {
         p->setPen(m_gridColor);
         p->drawLine(m_cellRect.x(), 1, m_cellRect.width(), 1);
-        p->setPen(m_cg.foreground());
+        p->setPen(m_textColor);
       }
       break;
   }
@@ -231,6 +231,7 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
 void kMyMoneyRegisterCheckings::adjustColumn(int col)
 {
   QHeader *topHeader = horizontalHeader();
+  QFontMetrics fontMetrics(m_font);
 
   int w = topHeader->fontMetrics().width( topHeader->label( col ) ) + 10;
   if ( topHeader->iconSet( col ) )
@@ -245,8 +246,9 @@ void kMyMoneyRegisterCheckings::adjustColumn(int col)
 
       case 1:
         QString txt;
-        txt = KGlobal::locale()->formatDate(m_view->transaction(i)->postDate(), true);
-        w = QMAX( w, fontMetrics().width(txt) );
+        txt = KGlobal::locale()->formatDate(m_view->transaction(i)->postDate(), true)+"  ";
+        int nw = fontMetrics.width(txt);
+        w = QMAX( w, nw );
         break;
     }
   }
