@@ -654,15 +654,35 @@ void MyMoneySeqAccessMgr::removeInstitution(const MyMoneyInstitution& institutio
     throw new MYMONEYEXCEPTION("invalid institution");
 }
 
-const QValueList<MyMoneyTransaction> MyMoneySeqAccessMgr::transactionList(void) const
+const QValueList<MyMoneyTransaction> MyMoneySeqAccessMgr::transactionList(const QCString& account) const
 {
   QValueList<MyMoneyTransaction> list;
   QMap<QCString, MyMoneyTransaction>::ConstIterator it_t;
+  QValueList<MyMoneySplit>::ConstIterator it_s;
 
+  // scan all transactions
   for(it_t = m_transactionList.begin(); it_t != m_transactionList.end(); ++it_t) {
-    list.append(*it_t);
-  }
+    bool append = true;
 
+    if(account.length() != 0) {
+      // scan all splits of this transaction
+      for(it_s = (*it_t).splits().begin(); it_s != (*it_t).splits().end(); ++it_s) {
+        // is it a split in our account?
+        if((*it_s).accountId() == account) {
+          // since a transaction can only have one split referencing
+          // each account, we're done with the splits here!
+          break;
+        }
+      }
+      // reset flag, if no split contains the account id
+      if(it_s == (*it_t).splits().end())
+        append = false;
+
+    }
+
+    if(append == true)
+      list.append(*it_t);
+  }
   return list;
 }
 

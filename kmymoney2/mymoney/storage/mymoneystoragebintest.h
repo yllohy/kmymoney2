@@ -467,6 +467,7 @@ void testReadOldMyMoneyFileEx() {
   MyMoneyStorageDump dumper;
   dumper.writeStream(st, &storage);
   g.close();
+
 }
 
 

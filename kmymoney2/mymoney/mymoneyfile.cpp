@@ -21,11 +21,12 @@
 
 #include <qstring.h>
 #include <qdatetime.h>
+#include <qvaluelist.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
 
-#include <kdebug.h>
+// #include <kdebug.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -39,9 +40,6 @@
 
 // include the following line to get a 'cout' for debug purposes
 // #include <iostream>
-
-// unsigned int MyMoneyFile::fileVersionRead;
-// unsigned int MyMoneyFile::fileVersionWrite;
 
 MyMoneyFile::MyMoneyFile(IMyMoneyStorage *storage)
 {
@@ -760,3 +758,7 @@ void MyMoneyFile::clearNotification()
   m_notificationList.clear();
 }
 
+const QValueList<MyMoneyTransaction> MyMoneyFile::transactionList(const QCString& account) const
+{
+  return m_storage->transactionList(account);
+}

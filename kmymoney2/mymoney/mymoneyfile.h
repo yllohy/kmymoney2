@@ -42,6 +42,7 @@
   */
 
 class IMyMoneyStorage;
+class MyMoneyTransactionFilter;
 
 /**
   * This class represents the interface to the MyMoney engine. For historical
@@ -296,6 +297,21 @@ public:
     * @return reference to MyMoneyTransaction object
     */
   const MyMoneyTransaction& transaction(const QCString& account, const int idx) const;
+
+  /**
+    * This method is used to pull a list of transactions from the file
+    * global transaction pool. It returns either the whole journal or
+    * the set of transaction referenced by a specific account depending
+    * on the argument given.
+    *
+    * @param account QCString reference to account id. If account equals ""
+    +                all transactions (the journal) is returned. If account
+    *                is not equal to "" it returns the set of transactions
+    *                that have splits in this account.
+    *
+    * @return set of transactions in form of a QValueList<MyMoneyTransaction>
+    */
+  const QValueList<MyMoneyTransaction> transactionList(const QCString& account = "") const;
 
   /**
     * This method is used to remove a transaction from the transaction

@@ -41,6 +41,7 @@ class MyMoneySeqAccessMgrTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST(testRemoveUsedAccount);
 	CPPUNIT_TEST(testRemoveInstitution);
 	CPPUNIT_TEST(testRemoveTransaction);
+	CPPUNIT_TEST(testTransactionList);
 	CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -721,6 +722,26 @@ void testRemoveTransaction() {
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception");
 	}
+}
+
+void testTransactionList() {
+	testAddTransactions();
+
+	QValueList<MyMoneyTransaction> list;
+
+	list = m->transactionList("A000006");
+	CPPUNIT_ASSERT(list.count() == 2);
+	CPPUNIT_ASSERT((*(list.at(0))).id() == "T000000000000000002");
+	CPPUNIT_ASSERT((*(list.at(1))).id() == "T000000000000000001");
+
+	list = m->transactionList("A000003");
+	CPPUNIT_ASSERT(list.count() == 1);
+	CPPUNIT_ASSERT((*(list.at(0))).id() == "T000000000000000002");
+
+	list = m->transactionList("");
+	CPPUNIT_ASSERT(list.count() == 2);
+	CPPUNIT_ASSERT((*(list.at(0))).id() == "T000000000000000002");
+	CPPUNIT_ASSERT((*(list.at(1))).id() == "T000000000000000001");
 }
 
 };

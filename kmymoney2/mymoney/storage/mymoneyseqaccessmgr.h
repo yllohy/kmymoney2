@@ -31,10 +31,12 @@
 
 #include "imymoneystorage.h"
 #include "imymoneyserialize.h"
-// #include "../mymoneysubject.h"
+
 /**
   *@author Thomas Baumgart
   */
+
+class MyMoneyTransactionFilter;
 
 class MyMoneySeqAccessMgr : public IMyMoneyStorage, public IMyMoneySerialize  {
 public:
@@ -293,12 +295,19 @@ public:
   const QValueList<MyMoneyAccount> accountList(void) const;
 
   /**
-    * This method returns a list of the transactions
-    * inside a MyMoneyStorage object
+    * This method is used to pull a list of transactions from the file
+    * global transaction pool. It returns either the whole journal or
+    * the set of transaction referenced by a specific account depending
+    * on the argument given.
     *
-    * @return QValueList<MyMoneyTransaction> with transactions
+    * @param account QCString reference to account id. If account equals ""
+    +                all transactions (the journal) is returned. If account
+    *                is not equal to "" it returns the set of transactions
+    *                that have splits in this account.
+    *
+    * @return set of transactions in form of a QValueList<MyMoneyTransaction>
     */
-  const QValueList<MyMoneyTransaction> transactionList(void) const;
+  const QValueList<MyMoneyTransaction> transactionList(const QCString& account = "") const;
 
   /**
     * This method returns the number of transactions currently known to file

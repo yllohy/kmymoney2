@@ -100,12 +100,19 @@ public:
   virtual const QValueList<MyMoneyInstitution> institutionList(void) const = 0;
 
   /**
-    * This method returns a list of the transactions
-    * inside a MyMoneyStorage object
+    * This method is used to pull a list of transactions from the file
+    * global transaction pool. It returns either the whole journal or
+    * the set of transaction referenced by a specific account depending
+    * on the argument given.
     *
-    * @return QValueList<MyMoneyTransaction> with transactions
+    * @param account QCString reference to account id. If account equals ""
+    +                all transactions (the journal) is returned. If account
+    *                is not equal to "" it returns the set of transactions
+    *                that have splits in this account.
+    *
+    * @return set of transactions in form of a QValueList<MyMoneyTransaction>
     */
-  virtual const QValueList<MyMoneyTransaction> transactionList(void) const = 0;
+  virtual const QValueList<MyMoneyTransaction> transactionList(const QCString& account = "") const = 0;
 
   /**
     * This method is used to return the standard liability account
