@@ -1,3 +1,6 @@
+2001-12-10 Thomas Baumgart  <ipwizard@users.sourceforge.net>
+  * modified acinclude.m4.in to work with autoconf 2.50
+
 2001-12-09 Michael Edwardes <mte@users.sourceforge.net>
   * Changed the csv export format so each record is on one line.
   * Created the csv file import method in mymoneyaccount.

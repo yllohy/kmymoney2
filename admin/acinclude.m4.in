@@ -2491,36 +2491,6 @@ AC_DEFUN(AM_LC_MESSAGES,
     fi
   fi])
 
-dnl From Jim Meyering.
-dnl FIXME: migrate into libit.
-
-AC_DEFUN(AM_FUNC_OBSTACK,
-[AC_CACHE_CHECK([for obstacks], am_cv_func_obstack,
- [AC_TRY_LINK([#include "obstack.h"],
-	      [struct obstack *mem;obstack_free(mem,(char *) 0)],
-	      am_cv_func_obstack=yes,
-	      am_cv_func_obstack=no)])
- if test $am_cv_func_obstack = yes; then
-   AC_DEFINE(HAVE_OBSTACK)
- else
-   LIBOBJS="$LIBOBJS obstack.o"
- fi
-])
-
-dnl From Jim Meyering.  Use this if you use the GNU error.[ch].
-dnl FIXME: Migrate into libit
-
-AC_DEFUN(AM_FUNC_ERROR_AT_LINE,
-[AC_CACHE_CHECK([for error_at_line], am_cv_lib_error_at_line,
- [AC_TRY_LINK([],[error_at_line(0, 0, "", 0, "");],
-              am_cv_lib_error_at_line=yes,
-	      am_cv_lib_error_at_line=no)])
- if test $am_cv_lib_error_at_line = no; then
-   LIBOBJS="$LIBOBJS error.o"
- fi
- AC_SUBST(LIBOBJS)dnl
-])
-
 # Macro to add for using GNU gettext.
 # Ulrich Drepper <drepper@cygnus.com>, 1995.
 
