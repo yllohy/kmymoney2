@@ -1,3 +1,6 @@
+2004-10-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Updated splash screen handling. Using KSplashScreen on KDE >= 3.2.0
+
 2004-10-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed #1043892 (crash when changing action in checkings view)
   * Fixed #1040653 (GNC import doesn't handle equity accounts correctly)
