@@ -1,3 +1,6 @@
+2001-12-27 Michael Edwardes <mte@users.sourceforge.net>
+  * Fixed bug #490434 - Account operations (2).
+  
 2001-12-26 Michael Edwardes <mte@users.sourceforge.net>
   * Fixed bug #490019 - Toolbar icon out of sync.
   * Fixed bug #490424 - New institution dialog tab order.

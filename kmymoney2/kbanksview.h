@@ -48,7 +48,7 @@ public:
 	~KBanksView();
 	MyMoneyBank currentBank(bool&);
 	MyMoneyAccount currentAccount(bool&);
-	void refresh(MyMoneyFile file);
+	void refresh(MyMoneyFile file, MyMoneyAccount *selectAccount=NULL, MyMoneyBank *selectBank=NULL);
 	void clear(void);
 
 protected:

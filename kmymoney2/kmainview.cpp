@@ -73,9 +73,9 @@ void KMainView::clear(void)
   m_showing=None;
 }
 
-void KMainView::refreshBankView(MyMoneyFile file)
+void KMainView::refreshBankView(MyMoneyFile file, MyMoneyAccount *selectAccount, MyMoneyBank *selectBank)
 {
-  banksView->refresh(file);
+  banksView->refresh(file, selectAccount, selectBank);
 }
 
 void KMainView::refreshTransactionView(void)

@@ -548,7 +548,7 @@ QListIterator<MyMoneyPayee> MyMoneyFile::payeeIterator(void)
   return it;
 }
 
-bool MyMoneyFile::addBank(const QString& name, const QString& sortCode, const QString& city,
+MyMoneyBank *MyMoneyFile::addBank(const QString& name, const QString& sortCode, const QString& city,
   const QString& street, const QString& postcode, const QString& telephone, const QString& manager)
 {
   MyMoneyBank *bank = new MyMoneyBank(this, name, sortCode, city, street, postcode, telephone, manager);
@@ -556,7 +556,7 @@ bool MyMoneyFile::addBank(const QString& name, const QString& sortCode, const QS
 	m_dirty=true;
   if (m_containsBanks==false)
     m_containsBanks=true;
-  return true;
+  return bank;
 }
 
 MyMoneyFile::MyMoneyFile(const MyMoneyFile& right)

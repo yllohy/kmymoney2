@@ -39,7 +39,7 @@ public:
 	KMainView(QWidget *parent=0, const char *name=0);
 	~KMainView();
 	void clear(void);
-	void refreshBankView(MyMoneyFile file);
+	void refreshBankView(MyMoneyFile file, MyMoneyAccount *selectAccount=NULL, MyMoneyBank *selectBank=NULL);
 	void refreshTransactionView(void);
 	MyMoneyBank currentBank(bool& success);
 	MyMoneyAccount currentAccount(bool& success);

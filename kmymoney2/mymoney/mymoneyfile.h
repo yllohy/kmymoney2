@@ -38,7 +38,7 @@
   * @see MyMoneyBank
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: mymoneyfile.h,v 1.8 2001/08/29 22:57:16 mte Exp $
+  * $Id: mymoneyfile.h,v 1.9 2001/12/27 01:50:18 mte Exp $
   *
   * @short A representation of the file format used by KMyMoney2.
 **/
@@ -131,7 +131,7 @@ public:
     *
     * @see MyMoneyBank
   **/
-  bool addBank(const QString& name, const QString& sortCode, const QString& city, const QString& street,
+  MyMoneyBank *addBank(const QString& name, const QString& sortCode, const QString& city, const QString& street,
     const QString& postcode, const QString& telephone, const QString& manager);
 
   /**

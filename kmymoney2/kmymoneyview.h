@@ -45,7 +45,7 @@
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.22 2001/12/15 16:36:33 ipwizard Exp $
+  * $Id: kmymoneyview.h,v 1.23 2001/12/27 01:50:18 mte Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -77,7 +77,7 @@ private:
   void loadDefaultCategories(void);  // Loads catgegories from default_categories.dat
   // Parses a line in the default categories file
   bool parseDefaultCategory(QString& line, bool& income, QString& name, QStringList& minors);
-  void viewBankList(void); // Show the bank view
+  void viewBankList(MyMoneyAccount *selectAccount=NULL, MyMoneyBank *selectBank=NULL); // Show the bank view
 
   // Some utility functions for the KFindTransactionDlg calls in doTransactionSearch()
   bool checkTransactionDates(const MyMoneyTransaction *transaction, const bool enabled, const QDate start, const QDate end);

@@ -85,7 +85,6 @@ void KBanksView::slotListRightMouse(QListViewItem* item, const QPoint& , int col
   if (item==0 || col==-1) {
     m_bSelectedBank = m_bSelectedAccount = false;
     emit bankRightMouseClick(returnBank, false);
-
     return;
   }
 
@@ -117,7 +116,7 @@ MyMoneyAccount KBanksView::currentAccount(bool& success)
   return m_selectedAccount;
 }
 
-void KBanksView::refresh(MyMoneyFile file)
+void KBanksView::refresh(MyMoneyFile file, MyMoneyAccount *selectAccount, MyMoneyBank *selectBank)
 {
 	KConfig *config = KGlobal::config();
   QFont defaultFont = QFont("helvetica", 12);
@@ -127,17 +126,36 @@ void KBanksView::refresh(MyMoneyFile file)
   MyMoneyMoney totalProfit;
   MyMoneyBank *bank;
 
+  if (selectAccount != NULL)
+  {
+    m_selectedAccount = *selectAccount;
+  }
+  else if (selectBank != NULL)
+  {
+    m_selectedBank = *selectBank;
+  }
+
+
+  KBankListItem *item;
+
   for ( bank=file.bankFirst(); bank; bank=file.bankNext() ) {
     KBankListItem *item0 = new KBankListItem(bankListView, *bank);
     // if this bank is identical to the selected bank, update flag
     if(item0->bank() == m_selectedBank)
+    {
       m_bSelectedBank = true;
+      item = item0;
+    }
+
     MyMoneyAccount *account;
     for (account=bank->accountFirst(); account; account=bank->accountNext()) {
-      new KBankListItem(item0, *bank, *account);
+      KBankListItem *itemAccount = new KBankListItem(item0, *bank, *account);
       // if this account is identical to the selected account, update flag
       if(*account == m_selectedAccount)
+      {
         m_bSelectedAccount = true;
+        item = itemAccount;
+      }
       totalProfit += account->balance();
     }
     bankListView->setOpen(item0, true);
@@ -149,6 +167,9 @@ void KBanksView::refresh(MyMoneyFile file)
 
   totalProfitsLabel->setFont(config->readFontEntry("listCellFont", &defaultFont));
   totalProfitsLabel->setText(s);
+
+  if (m_bSelectedBank || m_bSelectedAccount)
+    bankListView->setSelected(item, true);
 }
 
 void KBanksView::clear(void)

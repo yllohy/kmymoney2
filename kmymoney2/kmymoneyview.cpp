@@ -126,7 +126,7 @@ void KMyMoneyView::slotAccountDoubleClick(void)
 
 void KMyMoneyView::slotBankRightMouse(const MyMoneyBank, bool inList)
 {
-//  emit bankOperations(false);
+  emit bankOperations(true);
 
   // enable and disable items according to position of right-click
   m_bankMenu->setItemEnabled(m_bankId, !inList);
@@ -376,10 +376,13 @@ void KMyMoneyView::slotBankNew(void)
   if (dlg.exec()) {
     m_mainView->clear();
 
-    m_file.addBank(dlg.m_name, dlg.m_sortCode, dlg.m_city, dlg.m_street, dlg.m_postcode, dlg.m_telephone, dlg.m_managerName);
-    m_mainView->refreshBankView(m_file);
-    viewBankList();
-    emit bankOperations(true);
+    MyMoneyBank *mymoneybank = m_file.addBank(dlg.m_name, dlg.m_sortCode, dlg.m_city, dlg.m_street, dlg.m_postcode, dlg.m_telephone, dlg.m_managerName);
+    if (mymoneybank)
+    {
+      m_mainView->refreshBankView(m_file);
+      viewBankList(NULL, mymoneybank);
+      emit bankOperations(true);
+    }
   }
 }
 
@@ -440,7 +443,7 @@ void KMyMoneyView::slotAccountNew(void)
           "", "", "", "", "", "",
           MyMoneyTransaction::Unreconciled );
     }
-    viewBankList();
+    viewBankList(pAccount);
     emit accountOperations(true);
   }
 }
@@ -828,12 +831,12 @@ void KMyMoneyView::viewUp(void)
   }
 }
 
-void KMyMoneyView::viewBankList(void)
+void KMyMoneyView::viewBankList(MyMoneyAccount *selectAccount, MyMoneyBank *selectBank)
 {
   if (!m_file.isInitialised())
     return;
 
-  m_mainView->refreshBankView(m_file);
+  m_mainView->refreshBankView(m_file, selectAccount, selectBank);
   m_mainView->viewBankList();
   emit bankOperations(true);
 }
