@@ -2,6 +2,16 @@
 
 AM_INIT_AUTOMAKE(kmymoney2,0.5.1)
 
+dnl
+dnl add checks for cppunit
+dnl
+AM_PATH_CPPUNIT(1.8.0,
+	AM_CONDITIONAL(CPPUNIT, test "x$no_cppunit" = x)
+	AC_DEFINE_UNQUOTED(HAVE_LIBCPPUNIT, 1, [Define if you have libcppunit])
+	AC_SUBST(CPPUNIT_LIBS),
+	AC_SUBST(CPPUNIT_LIBS)
+	)
+
 dnl CXXFLAGS="$NOOPT_CXXFLAGS" dnl __kdevelop[noopt]__
 CXXFLAGS="$CXXFLAGS $USE_EXCEPTIONS" dnl __kdevelop[exc]__
 

@@ -10,7 +10,7 @@ all:
 	   exit 1 ;\
 	fi
 	# apply a patch to add checks for CPPUNIT
-	@grep LIB_CPPUNIT admin/acinclude.m4.in > /dev/null || patch -p0 admin/acinclude.m4.in < admin/cppunit.patch
+	@grep AM_PATH_CPPUNIT admin/acinclude.m4.in > /dev/null || patch -p0 admin/acinclude.m4.in < admin/cppunit.patch
 	$(MAKE) -f admin/Makefile.common cvs
 
 .SILENT:
