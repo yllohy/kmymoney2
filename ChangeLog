@@ -1,16 +1,26 @@
+2004-01-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * added info about mandir setting in README
+  * added man page found in MEPIS distro
+
 2004-01-05 Kevin Tambascio <ktambascio@users.sourceforge.net>
   * added support for the progress bar during read operations.
-	* added QStringEmpty and QCStringEmpty functions to properly handle empty strings from the XML file.
-	* removed the bold when you hover over a link in the HTML view (seemed to look strange when using it).
-	
+  * added QStringEmpty and QCStringEmpty functions to properly handle
+    empty strings from the XML file.
+  * removed the bold when you hover over a link in the HTML view
+    (seemed to look strange when using it).
+
 2004-01-04 Kevin Tambascio <ktambascio@users.sourceforge.net>
   * removed the "nextid" attribute from some of the top-level XML attributes.
-	* added qWarnings and qError statements when irregularities in the file are found.
-  * personal data dialog box had lower case "O" and "C" for the ok and cancel buttons, which is inconsistent.
-	* added some Q_CHECK_PTR() functions to check for invalid pointer values, which issues a warning to stderr.
-	* added some Q_ASSERT checks in various places in the XML Reader/Writer code.
-	* added a version field to keep track of different XML file versions, in a similar fashion to the binary reader/writer.
-	
+  * added qWarnings and qError statements when irregularities in the file
+    are found.
+  * personal data dialog box had lower case "O" and "C" for the
+    ok and cancel buttons, which is inconsistent.
+  * added some Q_CHECK_PTR() functions to check for invalid pointer values,
+    which issues a warning to stderr.
+  * added some Q_ASSERT checks in various places in the XML Reader/Writer code.
+  * added a version field to keep track of different XML file versions,
+    in a similar fashion to the binary reader/writer.
+
 2004-01-04 Michael Edwardes <mte@users.sourceforge.net>
   * Added button icons to KEnterScheduleDialog.
   * Fixed handling of lastPayment in KEnterScheduleDialog.
@@ -24,6 +34,7 @@
     so that it will be maintained over the next regeneration of
     widgets/Makefile.am by KDevelop
   * show correct icons in account's icon view
+  * fixed category assignment
 
 2004-01-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * suppress standard F2 handling while in ledger's inline-edit-mode
