@@ -55,13 +55,26 @@ protected:
   void resizeEvent(QResizeEvent*);
 
 protected slots:
+	
+	/**
+	* This slot receives the signal from the listview control that an item was double-clicked,
+	* if this item was a bank account, try to show the list of transactions for that bank.
+	*/
+  void slotListDoubleClicked(QListViewItem* pItem, const QPoint& pos, int c);
+
+	/**
+	* This slot receives the signal from the listview control that an item was right-clicked,
+	* Pass this signal along to the main view to display the RMB menu.
+	*/
   void slotListRightMouse(QListViewItem* item, const QPoint& point, int);
+
   void slotSelectionChanged(QListViewItem *item);
 
 signals:
   void bankRightMouseClick(const MyMoneyBank, bool inList);
 //  void bankDoubleClick(const MyMoneyBank, bool inList);
   void accountRightMouseClick(const MyMoneyAccount, bool inList);
+  void accountDoubleClick();
   void bankSelected();
   void accountSelected();
 };

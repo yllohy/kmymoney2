@@ -45,7 +45,7 @@
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.20 2001/08/17 20:07:41 mte Exp $
+  * $Id: kmymoneyview.h,v 1.21 2001/12/08 22:02:27 ktambascio Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -225,6 +225,8 @@ public slots:
     * @param account The account which was 'executed'.
   **/
   void slotAccountDoubleClick(void);
+
+  //void slotAccountDoubleClick(const MyMoneyAccount);
 
   /**
     * Called whenever the user wishes to create a new bank.  Brings up the input

@@ -26,7 +26,7 @@ KMainView::KMainView(QWidget *parent, const char *name )
 
   connect(banksView, SIGNAL(bankRightMouseClick(const MyMoneyBank, bool)), this, SLOT(slotBRightMouseClick(const MyMoneyBank, bool)));
   connect(banksView, SIGNAL(accountRightMouseClick(const MyMoneyAccount, bool)), this, SLOT(slotARightMouseClick(const MyMoneyAccount, bool)));
-
+  connect(banksView, SIGNAL(accountDoubleClick()), this, SLOT(slotADoubleClick()));
   connect(banksView, SIGNAL(bankSelected()), this, SLOT(slotBankSelected()));
   connect(banksView, SIGNAL(accountSelected()), this, SLOT(slotAccountSelected()));
 
@@ -49,6 +49,11 @@ void KMainView::slotBRightMouseClick(const MyMoneyBank bank, bool inList)
 void KMainView::slotARightMouseClick(const MyMoneyAccount account, bool inList)
 {
   emit accountRightMouseClick(account, inList);
+}
+
+void KMainView::slotADoubleClick()
+{
+  emit accountDoubleClick();
 }
 
 void KMainView::slotTransactionListChanged()

@@ -60,10 +60,12 @@ protected slots:
   void slotTransactionListChanged();
   void slotBankSelected();
   void slotAccountSelected();
+	void slotADoubleClick();
 
 signals:
   void bankRightMouseClick(const MyMoneyBank, bool);
   void accountRightMouseClick(const MyMoneyAccount, bool);
+  void accountDoubleClick();
 //  void enterBtnClicked(const MyMoneyTransaction&, bool);
   void transactionListChanged();
   void bankSelected();

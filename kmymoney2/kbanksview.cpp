@@ -42,12 +42,38 @@ KBanksView::KBanksView(QWidget *parent, const char *name)
     this, SLOT(slotSelectionChanged(QListViewItem*)));
   connect(bankListView, SIGNAL(rightButtonClicked(QListViewItem* , const QPoint&, int)),
     this, SLOT(slotListRightMouse(QListViewItem*, const QPoint&, int)));
+  connect(bankListView, SIGNAL(doubleClicked(QListViewItem*, const QPoint&, int)),
+    this, SLOT(slotListDoubleClicked(QListViewItem*, const QPoint&, int)));
+
   m_bSelectedBank=false;
   m_bSelectedAccount=false;
 }
 
 KBanksView::~KBanksView()
 {
+}
+
+void KBanksView::slotListDoubleClicked(QListViewItem* pItem, const QPoint& pos, int c)
+{
+  if(pItem)
+  {
+    KBankListItem *bankItem = (KBankListItem*)pItem;
+    if(bankItem->isBank())
+    {
+      m_bSelectedBank=true;
+      m_selectedBank = bankItem->bank();
+      m_bSelectedAccount=false;
+    }
+    else
+    {
+      m_bSelectedBank = true;
+      m_selectedBank = bankItem->bank();
+      m_bSelectedAccount=true;
+      m_selectedAccount = bankItem->account();
+
+      emit accountDoubleClick();
+    }
+  }
 }
 
 void KBanksView::slotListRightMouse(QListViewItem* item, const QPoint& , int col)

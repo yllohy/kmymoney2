@@ -56,7 +56,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
 //  connect(m_mainView, SIGNAL(transactionListChanged()), this, SLOT(slotTransactionListChanged()));
 
   connect(m_mainView, SIGNAL(accountRightMouseClick(const MyMoneyAccount, bool)), this, SLOT(slotAccountRightMouse(const MyMoneyAccount, bool)));
-//  connect(m_mainView, SIGNAL(accountDoubleClick(const MyMoneyAccount)), this, SLOT(slotAccountDoubleClick(const MyMoneyAccount)));
+  connect(m_mainView, SIGNAL(accountDoubleClick()), this, SLOT(slotAccountDoubleClick()));
 
   connect(m_mainView, SIGNAL(bankRightMouseClick(const MyMoneyBank, bool)), this, SLOT(slotBankRightMouse(const MyMoneyBank, bool)));
   connect(m_mainView, SIGNAL(bankSelected()), this, SLOT(slotBankSelected()));
@@ -83,6 +83,7 @@ void KMyMoneyView::slotTransactionListChanged()
 	  //reconcileDlg->updateData();
 }
 */
+
 void KMyMoneyView::slotAccountRightMouse(const MyMoneyAccount, bool/* inList*/)
 {
   KIconLoader *kiconloader = KGlobal::iconLoader();
@@ -114,6 +115,11 @@ void KMyMoneyView::slotAccountDoubleClick(void)
 {
   viewTransactionList();
 }
+
+/*void KMyMoneyView::slotAccountDoubleClick(const MyMoneyAccount)
+{
+  viewTransactionList();
+} */
 
 void KMyMoneyView::slotBankRightMouse(const MyMoneyBank, bool inList)
 {
