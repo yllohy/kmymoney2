@@ -71,6 +71,8 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
   }
   else
   {
+    TextLabel1_3->setEnabled(true);
+    m_kcomboTo->setEnabled(true);
     setCaption(i18n("Edit Transfer Schedule"));
   }
 
@@ -184,13 +186,16 @@ void KEditScheduleDialog::slotSplitClicked()
       split1.setValue(m_kmoneyeditAmount->getMoneyValue());
       m_transaction.addSplit(split1);
 
-      MyMoneySplit split2;
-      split2.setAccountId(m_kcomboTo->currentAccountId());
-      split2.setAction(m_actionType);
-      split2.setPayeeId(split1.payeeId());
-      split2.setMemo(split1.memo());
-      split2.setValue(-split1.value());
-      m_transaction.addSplit(split2);
+      if (m_actionType == MyMoneySplit::ActionTransfer)
+      {
+        MyMoneySplit split2;
+        split2.setAccountId(m_kcomboTo->currentAccountId());
+        split2.setAction(m_actionType);
+        split2.setPayeeId(split1.payeeId());
+        split2.setMemo(split1.memo());
+        split2.setValue(-split1.value());
+        m_transaction.addSplit(split2);
+      }
     }
 
     MyMoneyAccount acc = MyMoneyFile::instance()->account(m_accountCombo->currentAccountId());
@@ -436,6 +441,28 @@ void KEditScheduleDialog::okClicked()
         MyMoneySplit split2;
         split2.setAccountId(m_kcomboTo->currentAccountId());
         split2.setAction(m_actionType);
+        split2.setPayeeId(split1.payeeId());
+        split2.setMemo(split1.memo());
+        split2.setValue(-split1.value());
+        m_transaction.addSplit(split2);
+      }
+      else
+      {
+        MyMoneySplit split2;
+
+        // Cribbed from KLedgerView::slotCategoryChanged
+        QString category = m_category->text();
+        QCString id = MyMoneyFile::instance()->categoryToAccount(category);
+        if(id == "" && category != "") {
+          // FIXME:
+          /// Todo: Add account (hierarchy) upon new category
+          KMessageBox::sorry(0, i18n("Direct creation of new account not yet implemented"));
+          m_category->resetText();
+          m_category->setFocus();
+          return;
+        }
+
+        split2.setAccountId(id);
         split2.setPayeeId(split1.payeeId());
         split2.setMemo(split1.memo());
         split2.setValue(-split1.value());
