@@ -1,3 +1,10 @@
+2002-02-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added current date mark in transaction view
+  * Modified exit handling
+  * Setup m_viewType first and then emit signals in
+    KTransactionView::viewTypeActivated
+  * Removed locale error messages
+
 2002-02-04 Kevin Tambascio <ktambascio@users.sourceforge.net>
   * More stock transaction work.
 
