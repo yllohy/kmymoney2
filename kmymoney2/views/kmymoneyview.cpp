@@ -101,7 +101,6 @@
 
 #include "../kmymoney2.h"
 #include "../kmymoneyutils.h"
-#include "../kapptest.h"
 
 #include <libkgpgfile/kgpgfile.h>
 
@@ -125,7 +124,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   // Page 0
   m_homeViewFrame = addVBoxPage( i18n("Home"), i18n("Home"),
     DesktopIcon("home"));
-  m_homeView = new KHomeView(m_homeViewFrame, KAppTest::widgetName(this, "KHomeView"));
+  m_homeView = new KHomeView(m_homeViewFrame, "HomeView");
   signalMap->setMapping(m_homeView, HomeView);
   connect(m_homeView, SIGNAL(signalViewActivated()), signalMap, SLOT(map()));
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_homeView, SLOT(slotReloadView()));
@@ -133,7 +132,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   // Page 1
   m_institutionsViewFrame = addVBoxPage( i18n("Institutions"), i18n("Institutions"),
     DesktopIcon("institutions"));
-  m_institutionsView = new KAccountsView(m_institutionsViewFrame, KAppTest::widgetName(this, "KInstitutionsView"), true);
+  m_institutionsView = new KAccountsView(m_institutionsViewFrame, "InstitutionsView", true);
   signalMap->setMapping(m_institutionsView, InstitutionsView);
   connect(m_institutionsView, SIGNAL(signalViewActivated()), signalMap, SLOT(map()));
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_institutionsView, SLOT(slotReloadView()));
@@ -141,7 +140,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   // Page 2
   m_accountsViewFrame = addVBoxPage( i18n("Accounts"), i18n("Accounts"),
     DesktopIcon("accounts"));
-  m_accountsView = new KAccountsView(m_accountsViewFrame, KAppTest::widgetName(this, "KAccountsView"));
+  m_accountsView = new KAccountsView(m_accountsViewFrame, "AccountsView");
   signalMap->setMapping(m_accountsView, AccountsView);
   connect(m_accountsView, SIGNAL(signalViewActivated()), signalMap, SLOT(map()));
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_accountsView, SLOT(slotReloadView()));
@@ -149,7 +148,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   // Page 3
   m_scheduleViewFrame = addVBoxPage( i18n("Schedule"), i18n("Bills & Reminders"),
     DesktopIcon("schedule"));
-  m_scheduledView = new KScheduledView(m_scheduleViewFrame, KAppTest::widgetName(this, "KScheduledView"));
+  m_scheduledView = new KScheduledView(m_scheduleViewFrame, "ScheduledView");
   signalMap->setMapping(m_scheduledView, SchedulesView);
   connect(m_scheduledView, SIGNAL(signalViewActivated()), signalMap, SLOT(map()));
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_scheduledView, SLOT(slotReloadView()));
@@ -157,7 +156,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   // Page 4
   m_categoriesViewFrame = addVBoxPage( i18n("Categories"), i18n("Categories"),
     DesktopIcon("categories"));
-  m_categoriesView = new KCategoriesView(m_categoriesViewFrame, KAppTest::widgetName(this, "KCategoriesView"));
+  m_categoriesView = new KCategoriesView(m_categoriesViewFrame, "CategoriesView");
   signalMap->setMapping(m_categoriesView, CategoriesView);
   connect(m_categoriesView, SIGNAL(signalViewActivated()), signalMap, SLOT(map()));
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_categoriesView, SLOT(slotReloadView()));
@@ -165,7 +164,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   // Page 5
   m_payeesViewFrame = addVBoxPage( i18n("Payees"), i18n("Payees"),
     DesktopIcon("payee"));
-  m_payeesView = new KPayeesView(m_payeesViewFrame, KAppTest::widgetName(this, "KPayeesView"));
+  m_payeesView = new KPayeesView(m_payeesViewFrame, "PayeesView");
   signalMap->setMapping(m_payeesView, PayeesView);
   connect(m_payeesView, SIGNAL(signalViewActivated()), signalMap, SLOT(map()));
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_payeesView, SLOT(slotReloadView()));
@@ -173,7 +172,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   // Page 6
   m_ledgerViewFrame = addVBoxPage( i18n("Ledgers"), i18n("Ledgers"),
     DesktopIcon("ledger"));
-  m_ledgerView = new KGlobalLedgerView(m_ledgerViewFrame, KAppTest::widgetName(this, "KGlobalLedgerView"));
+  m_ledgerView = new KGlobalLedgerView(m_ledgerViewFrame, "GlobalLedgerView");
   // the next line causes the ledgers to get a hide() signal to be able
   // to end any pending edit activities
   connect(this, SIGNAL(aboutToShowPage(QWidget*)), m_ledgerView, SLOT(slotCancelEdit()));
@@ -187,7 +186,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   m_investmentViewFrame = addVBoxPage( i18n("Investments"), i18n("Investments"),
     DesktopIcon("investments"));
 
-  m_investmentView = new KInvestmentView(m_investmentViewFrame, KAppTest::widgetName(this, "KInvestmentView"));
+  m_investmentView = new KInvestmentView(m_investmentViewFrame, "InvestmentView");
   connect(this, SIGNAL(aboutToShowPage(QWidget*)), m_investmentView, SLOT(slotCancelEdit()));
   signalMap->setMapping(m_investmentView, InvestmentsView);
   connect(m_investmentView, SIGNAL(signalViewActivated()), signalMap, SLOT(map()));
@@ -198,7 +197,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   // Page 8
   m_reportsViewFrame = addVBoxPage(i18n("Reports"), i18n("Reports"),
     DesktopIcon("report"));
-  m_reportsView = new KReportsView(m_reportsViewFrame, KAppTest::widgetName(this, "KReportsView"));
+  m_reportsView = new KReportsView(m_reportsViewFrame, "ReportsView");
   signalMap->setMapping(m_reportsView, ReportsView);
   connect(m_reportsView, SIGNAL(signalViewActivated()), signalMap, SLOT(map()));
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_reportsView, SLOT(slotReloadView()));
@@ -360,7 +359,7 @@ void KMyMoneyView::slotAccountRightMouse()
             m_accountMenu->setItemEnabled(AccountOpen, true);
             m_accountMenu->setItemEnabled(AccountReconcile, true);
             m_accountMenu->setItemEnabled(AccountEdit, true);
-            m_accountMenu->setItemEnabled(AccountDelete, true);
+            m_accountMenu->setItemEnabled(AccountDelete, file->transactionCount(account.id())==0);
 
             QCString iid = account.institutionId();
             if ( !iid.isEmpty() )
@@ -378,7 +377,7 @@ void KMyMoneyView::slotAccountRightMouse()
         case MyMoneyAccount::Expense:
           if(!file->isStandardAccount(acc)) {
             m_accountMenu->setItemEnabled(AccountEdit, true);
-            m_accountMenu->setItemEnabled(AccountDelete, true);
+            m_accountMenu->setItemEnabled(AccountDelete, file->transactionCount(account.id())==0);
           }
           m_accountMenu->changeItem(AccountNew, i18n("New category..."));
           m_accountMenu->connectItem(AccountNew, this, SLOT(slotCategoryNew()));
@@ -517,7 +516,7 @@ void KMyMoneyView::slotBankEdit()
     MyMoneyInstitution institution = file->institution(pView->currentInstitution(bankSuccess));
 
     // bankSuccess is not checked anymore because m_file->institution will throw anyway
-    KNewBankDlg dlg(institution, true, this, KAppTest::widgetName(this, "KNewBankDlg"));
+    KNewBankDlg dlg(institution, true, this, "NewBankDlg");
     if (dlg.exec())
     {
       file->modifyInstitution(dlg.institution());
@@ -1141,7 +1140,7 @@ void KMyMoneyView::slotBankNew(void)
 
   MyMoneyInstitution institution;
 
-  KNewBankDlg dlg(institution, false, this, KAppTest::widgetName(this, "KNewBankDlg"));
+  KNewBankDlg dlg(institution, false, this, "NewBankDlg");
   if (dlg.exec())
   {
     try
@@ -1231,7 +1230,7 @@ void KMyMoneyView::accountNew(const bool createCategory)
       title = i18n("Create a new Account");
     else
       title = i18n("Create a new Category");
-    KNewAccountDlg dialog(account, false, createCategory, 0, KAppTest::widgetName(this, "KNewAccountDlg"), title);
+    KNewAccountDlg dialog(account, false, createCategory, 0, "NewAccountDlg", title);
 
     if((dialogResult = dialog.exec()) == QDialog::Accepted) {
       newAccount = dialog.account();
@@ -1429,7 +1428,7 @@ void KMyMoneyView::newFile(const bool createEmtpyFile)
   MyMoneyFile *file = MyMoneyFile::instance();
 
   if(!createEmtpyFile) {
-    KNewFileDlg newFileDlg(this, KAppTest::widgetName(this, "KNewFileDlg"), i18n("Create new KMyMoney file"));
+    KNewFileDlg newFileDlg(this, "NewFileDlg", i18n("Create new KMyMoney file"));
     newFileDlg.cancelButton()->hide();
 
     newFileDlg.exec();
@@ -1478,7 +1477,7 @@ void KMyMoneyView::viewPersonal(void)
 
   KNewFileDlg newFileDlg(file->userName(), file->userStreet(),
     file->userTown(), file->userCounty(), file->userPostcode(), file->userTelephone(),
-    file->userEmail(), this, KAppTest::widgetName(this, "KNewFileDlg"), i18n("Edit Personal Data"));
+    file->userEmail(), this, "NewFileDlg", i18n("Edit Personal Data"));
 
   if (newFileDlg.exec())
   {
@@ -1498,7 +1497,7 @@ void KMyMoneyView::selectBaseCurrency(void)
 
   // check if we have a base currency. If not, we need to select one
   if(file->baseCurrency().id().isEmpty()) {
-    KCurrencyEditDlg dlg(this, KAppTest::widgetName(this, "KCurrencyEditDlg"));
+    KCurrencyEditDlg dlg(this, "CurrencyEditDlg");
     dlg.exec();
   }
 

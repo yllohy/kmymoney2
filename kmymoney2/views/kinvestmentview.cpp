@@ -66,8 +66,6 @@
 #include "../widgets/kmymoneyaccountcombo.h"
 #include "../widgets/kmymoneycurrencyselector.h"
 
-#include "../kapptest.h"
-
 #include "kinvestmentview.h"
 #include "kinvestmentlistitem.h"
 #include "kledgerviewinvestments.h"
@@ -175,7 +173,7 @@ void KInvestmentView::slotItemDoubleClicked(QListViewItem* pItem, const QPoint& 
   KInvestmentListItem *pInvestListItem = dynamic_cast<KInvestmentListItem*>(pItem);
   if(pInvestListItem)
   {
-    KNewInvestmentWizard dlg(pInvestListItem->account(), this, KAppTest::widgetName(this, "KNewInvestmentWizard"));
+    KNewInvestmentWizard dlg(pInvestListItem->account(), this, "InvestmentWizard");
     if(dlg.exec() == QDialog::Accepted) {
       dlg.createObjects(m_account.id());
     }
@@ -185,9 +183,25 @@ void KInvestmentView::slotItemDoubleClicked(QListViewItem* pItem, const QPoint& 
 
 void KInvestmentView::slotNewInvestment(void)
 {
-  KNewInvestmentWizard dlg(this, KAppTest::widgetName(this, "KNewInvestmentWizard"));
+  KNewInvestmentWizard dlg(this, "InvestmentWizard");
   if(dlg.exec() == QDialog::Accepted) {
     dlg.createObjects(m_account.id());
+  }
+}
+
+void KInvestmentView::slotRemoveInvestment()
+{
+  KInvestmentListItem *pItem = dynamic_cast<KInvestmentListItem*>(investmentTable->selectedItem());
+  if(pItem)
+  {
+    if(KMessageBox::questionYesNo(this, i18n("Do you really want to delete the selected investment?"), i18n("Delete investment"), KStdGuiItem::yes(), KStdGuiItem::no(), "DeleteInvestment") == KMessageBox::Yes) {
+      try {
+        MyMoneyFile::instance()->removeAccount(pItem->account());
+      } catch(MyMoneyException *e) {
+        qDebug("Cannot delete investment: %s", e->what().latin1());
+        delete e;
+      }
+    }
   }
 }
 
@@ -233,7 +247,7 @@ void KInvestmentView::slotAddPrice()
 
 void KInvestmentView::slotListRightMouse(QListViewItem* item, const QPoint& /*point*/, int /*x*/)
 {
-  int newId, editId, updateId, addId;
+  int newId, editId, updateId, addId, delId;
 
   // setup the context menu
   KIconLoader *kiconloader = KGlobal::iconLoader();
@@ -243,15 +257,15 @@ void KInvestmentView::slotListRightMouse(QListViewItem* item, const QPoint& /*po
   editId = m_popMenu->insertItem(kiconloader->loadIcon("edit", KIcon::Small), i18n("Edit ..."), this, SLOT(slotEditInvestment()));
   addId = m_popMenu->insertItem(i18n("Manual Price Update..."), this, SLOT(slotAddPrice()));
   updateId = m_popMenu->insertItem(kiconloader->loadIcon("edit", KIcon::Small), i18n("On-line Price Update ..."), this, SLOT(slotUpdatePrice()));
-#if 0
   delId = m_popMenu->insertItem(kiconloader->loadIcon("delete", KIcon::Small),
                         i18n("Delete ..."),
-                        this, SLOT(slotDeleteSplitTransaction()));
-#endif
+                        this, SLOT(slotRemoveInvestment()));
+
   if(!item) {
     m_popMenu->setItemEnabled(editId, false);
     m_popMenu->setItemEnabled(updateId, false);
     m_popMenu->setItemEnabled(addId, false);
+    m_popMenu->setItemEnabled(delId, false);
   } else {
     m_popMenu->setItemEnabled(updateId, false);
     KInvestmentListItem *pItem = dynamic_cast<KInvestmentListItem*>(item);
@@ -260,6 +274,8 @@ void KInvestmentView::slotListRightMouse(QListViewItem* item, const QPoint& /*po
         MyMoneySecurity security = MyMoneyFile::instance()->security(pItem->securityId());
         if(!security.value("kmm-online-source").isEmpty())
           m_popMenu->setItemEnabled(updateId, true);
+        m_popMenu->setItemEnabled(delId, MyMoneyFile::instance()->transactionCount(pItem->account().id()) == 0);
+
       } catch(MyMoneyException *e) {
         qDebug("Caught exception in KInvestmentView::slotListRightMouse thrown in %s(%ld)): %s", e->file().data(), e->line(), e->what().data());
         delete e;
