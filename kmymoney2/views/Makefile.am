@@ -19,3 +19,4 @@ check_LIBRARIES = libviewstest.a
 
 libviewstest_a_SOURCES = kreportsviewtest.cpp
 endif
+noinst_HEADERS =  queryreport.h
