@@ -33,7 +33,7 @@ ldflags=\s         \s
 path_to_bin_program=kmymoney2
 
 [General]
-AMChanged=true
+AMChanged=false
 author=Michael Edwardes
 configure_args=--prefix=/opt/kde3\s
 dir_where_make_will_be_called=
@@ -41,7 +41,7 @@ email=mte@users.sourceforge.net
 kdevprj_version=1.3
 lfv_open_groups=
 make_options=\s-j1
-makefiles=Makefile.am,kmymoney2/Makefile.am,doc/Makefile.am,doc/en/Makefile.am,po/Makefile.am,kmymoney2/views/Makefile.am,kmymoney2/pics/Makefile.am,kmymoney2/dialogs/Makefile.am,kmymoney2/widgets/Makefile.am,kmymoney2/icons/hicolor/22x22/actions/Makefile.am,kmymoney2/icons/hicolor/22x22/Makefile.am,kmymoney2/icons/hicolor/Makefile.am,kmymoney2/icons/Makefile.am,kmymoney2/icons/hicolor/16x16/actions/Makefile.am,kmymoney2/icons/hicolor/16x16/Makefile.am,doc/images/Makefile.am,developer-doc/Makefile.am,developer-doc/phb/Makefile.am,kmymoney2/html/Makefile.am,kmymoney2/mymoney/storage/Makefile.am,kmymoney2/mymoney/Makefile.am,kmymoney2/icons/hicolor/48x48/apps/Makefile.am,kmymoney2/icons/hicolor/48x48/Makefile.am
+makefiles=Makefile.am,kmymoney2/Makefile.am,doc/Makefile.am,doc/en/Makefile.am,po/Makefile.am,kmymoney2/views/Makefile.am,kmymoney2/pics/Makefile.am,kmymoney2/dialogs/Makefile.am,kmymoney2/widgets/Makefile.am,kmymoney2/icons/hicolor/22x22/actions/Makefile.am,kmymoney2/icons/hicolor/22x22/Makefile.am,kmymoney2/icons/hicolor/Makefile.am,kmymoney2/icons/Makefile.am,kmymoney2/icons/hicolor/16x16/actions/Makefile.am,kmymoney2/icons/hicolor/16x16/Makefile.am,doc/images/Makefile.am,developer-doc/Makefile.am,developer-doc/phb/Makefile.am,kmymoney2/html/Makefile.am,kmymoney2/mymoney/storage/Makefile.am,kmymoney2/mymoney/Makefile.am,kmymoney2/icons/hicolor/48x48/apps/Makefile.am,kmymoney2/icons/hicolor/48x48/Makefile.am,kmymoney2/converter/Makefile.am
 modifyMakefiles=true
 project_name=KMyMoney2
 project_type=normal_kde2
@@ -77,7 +77,7 @@ User Interface=*.kdevdlg,*.ui,*.rc,
 groups=Headers,Sources,User Interface,Translations,GNU,Others,
 
 [Makefile.am]
-files=kmymoney2.kdevprj,AUTHORS,COPYING,ChangeLog,INSTALL,README,TODO,ChangeLog.original
+files=kmymoney2.kdevprj,AUTHORS,COPYING,ChangeLog,INSTALL,README,TODO,ChangeLog.original,configure.in.in
 sub_dirs=kmymoney2,po,doc,developer-doc
 type=normal
 
@@ -100,6 +100,12 @@ header_file=
 openfiles=
 show_outputview=false
 show_treeview=true
+
+[configure.in.in]
+dist=true
+install=false
+install_location=
+type=DATA
 
 [developer-doc/Makefile.am]
 files=developer-doc/code-standards.html,developer-doc/coding-cpp.html,developer-doc/coding-gen.html,developer-doc/coding-h.html,developer-doc/copyright.html,developer-doc/example-cpp.html,developer-doc/example-h.html,developer-doc/index.html,developer-doc/kmymoney2.css
@@ -313,8 +319,57 @@ type=DATA
 
 [kmymoney2/Makefile.am]
 files=kmymoney2/main.cpp,kmymoney2/kmymoney2.cpp,kmymoney2/kmymoney2.h,kmymoney2/kmymoney2ui.rc,kmymoney2/kmymoney2.desktop,kmymoney2/kstartuplogo.cpp,kmymoney2/kstartuplogo.h,kmymoney2/lo16-app-kmymoney2.png,kmymoney2/lo32-app-kmymoney2.png,kmymoney2/kmymoney_wizard.png,kmymoney2/mimetype_kmy_16x16.png,kmymoney2/mimetype_kmy_32x32.png,kmymoney2/mimetype_kmy_48x48.png,kmymoney2/x-kmymoney2.desktop,kmymoney2/hi16-app-kmymoney2.png,kmymoney2/hi32-app-kmymoney2.png,kmymoney2/default_accounts.dat,kmymoney2/tips,kmymoney2/default_accounts_de.dat
-sub_dirs=dialogs,views,widgets,mymoney,pics,icons,html
+sub_dirs=converter,dialogs,views,widgets,mymoney,pics,icons,html
 type=prog_main
+
+[kmymoney2/converter/Makefile.am]
+files=kmymoney2/converter/mymoneyqifprofileeditordecl.ui,kmymoney2/converter/mymoneyqifprofile.h,kmymoney2/converter/mymoneyqifprofileeditor.h,kmymoney2/converter/mymoneyqifprofile.cpp,kmymoney2/converter/mymoneyqifprofileeditor.cpp,kmymoney2/converter/mymoneyqifwriter.cpp,kmymoney2/converter/mymoneyqifwriter.h
+sharedlib_LDFLAGS=-version-info 0:0:0
+sharedlib_rootname=converter
+sub_dirs=
+type=static_library
+
+[kmymoney2/converter/mymoneyqifprofile.cpp]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[kmymoney2/converter/mymoneyqifprofile.h]
+dist=true
+install=false
+install_location=
+type=HEADER
+
+[kmymoney2/converter/mymoneyqifprofileeditor.cpp]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[kmymoney2/converter/mymoneyqifprofileeditor.h]
+dist=true
+install=false
+install_location=
+type=HEADER
+
+[kmymoney2/converter/mymoneyqifprofileeditordecl.ui]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[kmymoney2/converter/mymoneyqifwriter.cpp]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[kmymoney2/converter/mymoneyqifwriter.h]
+dist=true
+install=false
+install_location=
+type=HEADER
 
 [kmymoney2/default_accounts.dat]
 dist=true
