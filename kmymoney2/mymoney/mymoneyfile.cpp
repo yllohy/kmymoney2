@@ -84,7 +84,7 @@ void MyMoneyFile::attachStorage(IMyMoneyStorage* const storage)
   m_storage = storage;
 }
 
-void MyMoneyFile::detachStorage(IMyMoneyStorage* const storage)
+void MyMoneyFile::detachStorage(IMyMoneyStorage* const /* storage */)
 {
   m_storage = 0;
 }
