@@ -34,12 +34,32 @@ public:
 	~kMyMoneyCombo();
   /** No descriptions */
   virtual bool eventFilter(QObject *, QEvent *);
+
+  // return the id of the entry identified by str or -1 if not found
+  // @param str reference to the string to be searched for in the list
+  // if the item is not found, the first item of the list will be selected
+  void setCurrentItem(const QString& str);
+
+  // override the base class variant
+  void setCurrentItem(int i) { KComboBox::setCurrentItem(i); }
+
+private:
+  /// perform initialization required for all constructors
+  void init(void);
+
+protected slots:
+  void slotCheckValidSelection(int id);
+
 signals: // Signals
   /** No descriptions */
   void signalFocusOut();
   void signalEnter();
   /** No descriptions */
   void signalNextTransaction();
+  /** signal is sent, when the tab key is pressed */
+  void signalTab();
+  /** signal is sent, when the Back-tab (Shift-Tab) key is pressed */
+  void signalBackTab();
 };
 
 #endif
