@@ -83,13 +83,10 @@ public:
     m_paymentType = STYPE_ANY;
     m_fixed = false;
     m_willEnd = false;
-    m_transactionsRemaining = 0;
     m_autoEnter = false;
     m_startDate = QDate(1900, 1, 1);
     m_lastPayment = QDate(1900, 1, 1);
     m_id = "";
-    m_accountId = "";
-    m_transferAccount = "";
   }
 
   /**
@@ -99,7 +96,7 @@ public:
     * MUST be set before it can be used.
     */
   MyMoneySchedule(const QString& name, typeE type, occurenceE occurence, paymentTypeE paymentType,
-        QDate startDate, bool willEnd, bool fixed, bool autoEnter, const QCString& accountId) {
+        QDate startDate, bool willEnd, bool fixed, bool autoEnter) {
     // Set up the default values
     m_name = name;
     m_occurence = occurence;
@@ -107,13 +104,10 @@ public:
     m_paymentType = paymentType;
     m_fixed = fixed;
     m_willEnd = willEnd;
-    m_transactionsRemaining = 0;
     m_autoEnter = autoEnter;
     m_startDate = startDate;
     m_lastPayment = m_startDate;
     m_id = "";
-    m_accountId = accountId;
-    m_transferAccount = "";
   }
 
   /**
@@ -170,7 +164,7 @@ public:
     *
     * @return int The number of transactions remaining for the instance.
     */
-  int transactionsRemaining(void) const { return m_transactionsRemaining; }
+  int transactionsRemaining(void) const;
 
   /**
     * Simple get method that returns the schedule end date.
@@ -207,13 +201,6 @@ public:
     * @retun QDate The last payment for the instance.
     */
   QDate lastPayment(void) const { return m_lastPayment; }
-
-  /**
-    * The account id for the transaction.
-    *
-    * @return QCString The account id
-  **/
-  QCString accountId(void) const { return m_accountId; }
 
   /**
     * Simple method that sets the frequency for the schedule.
@@ -277,15 +264,6 @@ public:
     */
   void setWillEnd(bool willEnd)
     { m_willEnd = willEnd; }
-
-  /**
-    * Simple method that sets the number of transactions remaining for the schedule.
-    *
-    * @param type The new type.
-    * @return none
-    */
-  void setTransactionsRemaining(int remaining)
-    { m_transactionsRemaining = remaining; }
 
   /**
     * Simple set method to set the end date for the schedule.
@@ -403,18 +381,11 @@ public:
   **/
   QString typeToString(void) const;
 
-  /**
-    * Sets the account id
-    *
-    * @param The new account id
-    * @return none
-  **/
-  void setAccountId(const QCString& accountId) { m_accountId = accountId; }
-
   bool operator ==(const MyMoneySchedule& right);
 
-  QCString transferAccount(void) const { return m_transferAccount; }
-  void setTransferAccount(const QCString& accountId) { m_transferAccount = accountId; }
+  QCString accountId(void) const;
+  QCString transferAccountId(void) const;
+  QDate dateAfter(int transactions) const;
 
 private:
   /// Its occurence
@@ -438,9 +409,6 @@ private:
   /// Will the schedule end at some time
   bool m_willEnd;
 
-  /// How many transactions remaining if the schedule does end at a fixed date
-  int m_transactionsRemaining;
-
   /// The last transaction date if the schedule does end at a fixed date
   QDate m_endDate;
 
@@ -455,12 +423,6 @@ private:
 
   /// The name
   QString m_name;
-
-  /// The account id
-  QCString m_accountId;
-
-  /// The transfer account
-  QCString m_transferAccount;
 };
 
 #endif

@@ -86,8 +86,7 @@ void MyMoneyScheduleTest::testConstructor() {
 				QDate::currentDate(),
 				false,
 				true,
-				true,
-				"invalid");
+				true);
 
 	CPPUNIT_ASSERT(s.type() == MyMoneySchedule::TYPE_BILL);
 	CPPUNIT_ASSERT(s.occurence() == MyMoneySchedule::OCCUR_WEEKLY);

@@ -1,3 +1,6 @@
+2003-07-22 Michael Edwardes <mte@users.sourceforge.net>
+  * Removed unnecessary atributes from MyMoneySchedule.
+
 2003-07-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * always select a transaction in the ledger view if one's available
 

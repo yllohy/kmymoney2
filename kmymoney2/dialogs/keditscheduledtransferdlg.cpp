@@ -145,11 +145,19 @@ void KEditScheduledTransferDlg::slotSplitClicked()
       }
 
       split1.setAccountId(m_accountCombo->currentAccountId());
-      split1.setAction(split1.ActionWithdrawal);
+      split1.setAction(split1.ActionTransfer);
       split1.setPayeeId(payeeId);
       split1.setMemo(m_qlineeditMemo->text());
       split1.setValue(m_kmoneyeditAmount->getMoneyValue());
       m_transaction.addSplit(split1);
+
+      MyMoneySplit split2;
+      split2.setAccountId(m_kcomboTo->currentAccountId());
+      split2.setAction(MyMoneySplit::ActionTransfer);
+      split2.setPayeeId(split1.payeeId());
+      split2.setMemo(split1.memo());
+      split2.setValue(-split1.value());
+      m_transaction.addSplit(split2);
     }
 
     MyMoneyAccount acc = MyMoneyFile::instance()->account(m_accountCombo->currentAccountId());
@@ -412,12 +420,8 @@ void KEditScheduledTransferDlg::okClicked()
     if (m_schedule.willEnd())
     {
       m_schedule.setEndDate(m_kdateinputFinal->getQDate());
-      m_schedule.setTransactionsRemaining(m_qlineeditRemaining->text().toInt());
     }
     m_schedule.setName(m_scheduleName->text());
-
-    m_schedule.setAccountId(m_accountCombo->currentAccountId());
-    m_schedule.setTransferAccount(m_kcomboTo->currentAccountId());
   } catch (MyMoneyException *e)
   {
     KMessageBox::detailedError(this, i18n("Unable to add transfer"), e->what());
@@ -432,6 +436,7 @@ void KEditScheduledTransferDlg::loadWidgetsFromSchedule(void)
   try
   {
     m_accountCombo->setCurrentText(MyMoneyFile::instance()->account(m_schedule.accountId()).name());
+    m_kcomboTo->setCurrentText(MyMoneyFile::instance()->account(m_schedule.transferAccountId()).name());
     m_kcomboPayTo->loadText(MyMoneyFile::instance()->payee(m_schedule.transaction().split(m_accountCombo->currentAccountId()).payeeId()).name());
     m_kdateinputDue->setDate(m_schedule.startDate());
 

@@ -49,8 +49,7 @@ void MyMoneySchedule::validate(bool id_check) const
         m_type == TYPE_ANY ||
         m_startDate.year() == 1900 ||
         m_paymentType == STYPE_ANY ||
-        (m_willEnd && m_lastPayment.year() == 1900) ||
-        m_accountId == "")
+        (m_willEnd && m_lastPayment.year() == 1900))
     throw new MYMONEYEXCEPTION("Default values not allowed");
 
   if(m_transaction.splitCount() == 0)
@@ -86,8 +85,8 @@ void MyMoneySchedule::validate(bool id_check) const
   // Check the transactions remaining
   if (m_willEnd)
   {
-    if (!m_endDate.isValid() && (m_transactionsRemaining == 0))
-      throw new MYMONEYEXCEPTION(QString("m_endDate invalid or m_transactionsRemaining not set in %1").arg(m_name));
+    if (!m_endDate.isValid())
+      throw new MYMONEYEXCEPTION(QString("m_endDate invalid in %1").arg(m_name));
   }
 }
 
@@ -419,13 +418,122 @@ bool MyMoneySchedule::operator ==(const MyMoneySchedule& right)
         m_fixed == right.m_fixed &&
         m_transaction == right.m_transaction &&
         m_willEnd == right.m_willEnd &&
-        m_transactionsRemaining == right.m_transactionsRemaining &&
         m_endDate == right.m_endDate &&
         m_autoEnter == right.m_autoEnter &&
         m_id == right.m_id &&
         m_lastPayment == right.m_lastPayment &&
-        m_name == right.m_name &&
-        m_accountId == right.m_accountId)
+        m_name == right.m_name)
     return true;
   return false;
+}
+
+int MyMoneySchedule::transactionsRemaining(void) const
+{
+  int counter=0;
+
+  if (m_willEnd && m_endDate.isValid())
+  {
+    QValueList<QDate> dates = paymentDates(m_lastPayment, m_endDate);
+    counter = dates.count();
+  }
+  return counter;
+}
+
+QCString MyMoneySchedule::accountId(void) const
+{
+  QValueList<MyMoneySplit> splits = m_transaction.splits();
+  if (splits.count() > 0)
+  {
+    return splits[0].accountId();
+  }
+  
+  return QCString("");
+}
+
+QCString MyMoneySchedule::transferAccountId(void) const
+{
+  QValueList<MyMoneySplit> splits = m_transaction.splits();
+  if (splits.count() >= 1)
+  {
+    return splits[1].accountId();
+  }
+
+  return QCString("");
+}
+
+QDate MyMoneySchedule::dateAfter(int transactions) const
+{
+  int counter=0;
+  QDate theDate(1900, 1, 1);
+  QDate paymentDate(m_startDate);
+
+  if (transactions<=0)
+    return theDate;
+
+  switch (m_occurence)
+  {
+    case OCCUR_ONCE:
+      break;
+
+    case OCCUR_DAILY:
+      while (counter < transactions)
+        theDate = paymentDate.addDays(1);
+      break;
+
+    case OCCUR_WEEKLY:
+      while (counter < transactions)
+        theDate = paymentDate.addDays(7);
+      break;
+
+    case OCCUR_FORTNIGHTLY:
+    case OCCUR_EVERYOTHERWEEK:
+      while (counter < transactions)
+        theDate = paymentDate.addDays(14);
+      break;
+
+    case OCCUR_EVERYFOURWEEKS:
+      while (counter < transactions)
+        theDate = paymentDate.addDays(28);
+      break;
+
+    case OCCUR_MONTHLY:
+      while (counter < transactions)
+        theDate = paymentDate.addMonths(1);
+      break;
+
+    case OCCUR_EVERYOTHERMONTH:
+      while (counter < transactions)
+        theDate = paymentDate.addMonths(2);
+      break;
+
+    case OCCUR_EVERYTHREEMONTHS:
+      while (counter < transactions)
+        theDate = paymentDate.addMonths(3);
+      break;
+
+    case OCCUR_QUARTERLY:
+    case OCCUR_EVERYFOURMONTHS:
+      while (counter < transactions)
+        theDate = paymentDate.addMonths(4);
+      break;
+
+    case OCCUR_TWICEYEARLY:
+      while (counter < transactions)
+        theDate = paymentDate.addMonths(6);
+      break;
+
+    case OCCUR_YEARLY:
+      while (counter < transactions)
+        theDate = paymentDate.addYears(1);
+      break;
+
+    case OCCUR_EVERYOTHERYEAR:
+      while (counter < transactions)
+        theDate = paymentDate.addYears(2);
+      break;
+    case OCCUR_ANY:
+      break;
+  }
+
+  return theDate;
 }

@@ -1088,8 +1088,7 @@ void MyMoneySeqAccessMgrTest::testAddSchedule() {
 				 QDate(2003,7,10),
 				 false,
 				 true,
-				 false,
-				 "invalid_wont_work_later");
+				 false);
 	schedule.setTransaction(t1);
 
 		m->addSchedule(schedule);
@@ -1098,7 +1097,6 @@ void MyMoneySeqAccessMgrTest::testAddSchedule() {
 		CPPUNIT_ASSERT(schedule.id() == "SCH000001");
 		CPPUNIT_ASSERT(m->m_scheduleList["SCH000001"].id() == "SCH000001");
 	} catch(MyMoneyException *e) {
-		qDebug("Error: %s", e->what().latin1());
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception");
 	}
@@ -1111,8 +1109,7 @@ void MyMoneySeqAccessMgrTest::testAddSchedule() {
 					 QDate(2003,7,10),
 					 false,
 					 true,
-					 false,
-					 "invalid_wont_work_later");
+					 false);
 		m->addSchedule(schedule);
 		CPPUNIT_FAIL("Exception expected");
 	} catch(MyMoneyException *e) {
@@ -1204,8 +1201,7 @@ void MyMoneySeqAccessMgrTest::testScheduleList() {
 				 notOverdue,
 				 false,
 				 false,
-				 false,
-				 "invalid_wont_work_later");
+				 false);
 	schedule1.setTransaction(t1);
 
 	MyMoneyTransaction t2;
@@ -1221,8 +1217,7 @@ void MyMoneySeqAccessMgrTest::testScheduleList() {
 				 notOverdue.addDays(1),
 				 false,
 				 false,
-				 false,
-				 "invalid_wont_work_later");
+				 false);
 	schedule2.setTransaction(t2);
 
 	MyMoneyTransaction t3;
@@ -1238,8 +1233,7 @@ void MyMoneySeqAccessMgrTest::testScheduleList() {
 				 notOverdue.addDays(2),
 				 false,
 				 false,
-				 false,
-				 "invalid_wont_work_later");
+				 false);
 	schedule3.setTransaction(t3);
 
 	MyMoneyTransaction t4;
@@ -1255,8 +1249,7 @@ void MyMoneySeqAccessMgrTest::testScheduleList() {
 				 overdue.addDays(-7),
 				 true,
 				 false,
-				 false,
-				 "invalid_wont_work_later");
+				 false);
 	schedule4.setTransaction(t4);
 	schedule4.setEndDate(notOverdue.addMonths(1));
 

@@ -413,11 +413,9 @@ void KEditScheduledBillDlg::okClicked()
     if (m_schedule.willEnd())
     {
       m_schedule.setEndDate(m_kdateinputFinal->getQDate());
-      m_schedule.setTransactionsRemaining(m_qlineeditRemaining->text().toInt());
     }
 
     m_schedule.setName(m_scheduleName->text());
-    m_schedule.setAccountId(m_accountCombo->currentAccountId());
   } catch (MyMoneyException *e)
   {
     KMessageBox::detailedError(this, i18n("Unable to add bill"), e->what());

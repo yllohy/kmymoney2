@@ -1078,7 +1078,7 @@ void MyMoneyStorageBin::signalProgress(int current, int total, const QString& ms
 void MyMoneyStorageBin::writeSchedule(QDataStream&s, const MyMoneySchedule& sc)
 {
   Q_INT32 tmp;
-  tmp = 1;    // version
+  tmp = 2;    // version
   s << tmp;
 
   s << sc.occurence();
@@ -1087,14 +1087,11 @@ void MyMoneyStorageBin::writeSchedule(QDataStream&s, const MyMoneySchedule& sc)
   s << sc.paymentType();
   s << sc.isFixed();
   s << sc.willEnd();
-  s << sc.transactionsRemaining();
   s << sc.endDate();
   s << sc.autoEnter();
   s << sc.id();
   s << sc.lastPayment();
   s << sc.name();
-  s << sc.accountId();
-  s << sc.transferAccount();
   writeTransaction(s, sc.transaction());
 }
 
@@ -1114,14 +1111,26 @@ const MyMoneySchedule MyMoneyStorageBin::readSchedule(QDataStream& s)
   s >> tmp_n; sc.setPaymentType((MyMoneySchedule::paymentTypeE)tmp_n);
   s >> tmp_n; sc.setFixed(tmp_n);
   s >> tmp_n; sc.setWillEnd(tmp_n);
-  s >> tmp_n; sc.setTransactionsRemaining(tmp_n);
-  s >> tmp_d; sc.setEndDate(tmp_d);
+  if (version == 1)
+  {
+    s >> tmp_n; /* sc.setTransactionsRemaining(tmp_n); */
+    s >> tmp_d; sc.setEndDate(tmp_d);
+  }
+  else
+  {
+    s >> tmp_d; sc.setEndDate(tmp_d);
+  }
   s >> tmp_n; sc.setAutoEnter(tmp_n);
   s >> id; sc.setId(id);
   s >> tmp_d; sc.setLastPayment(tmp_d);
   s >> tmp_s; sc.setName(tmp_s);
-  s >> id; sc.setAccountId(id);
-  s >> id; sc.setTransferAccount(id);
+  if (version == 1)
+  {
+    // Discard the old account id's
+    s >> id;
+    s >> id;
+  }
+  
   MyMoneyTransaction t = readTransaction(s);
   sc.setTransaction(t);
 
