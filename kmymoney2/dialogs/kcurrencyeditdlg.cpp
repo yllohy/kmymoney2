@@ -218,9 +218,6 @@ void KCurrencyEditDlg::slotSetBaseCurrency(void)
     if(KMessageBox::questionYesNo(this, question, i18n("Select base currency")) == KMessageBox::Yes) {
       file->setBaseCurrency(file->currency(p->id()));
       accept();
-      // loadCurrencies();
-      // checkBaseCurrency();
-      // QTimer::singleShot(10, this, SLOT(timerDone()));
     }
   }  
 }
