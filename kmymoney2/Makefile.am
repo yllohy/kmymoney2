@@ -11,13 +11,13 @@ kmymoney2_LDADD = $(top_builddir)/kmymoney2/views/libviews.a $(top_builddir)/kmy
 
 SUBDIRS = widgets dialogs views converter mymoney pics icons html templates plugins reports
 
-EXTRA_DIST = main.cpp kmymoney2.cpp kmymoney2.h kmymoney2ui.rc kmymoney2.desktop kstartuplogo.cpp kstartuplogo.h lo16-app-kmymoney2.png lo32-app-kmymoney2.png kmymoney_wizard.png mimetype_kmy_16x16.png mimetype_kmy_32x32.png mimetype_kmy_48x48.png x-kmymoney2.desktop hi16-app-kmymoney2.png hi32-app-kmymoney2.png tips default_accounts_de.dat kmymoneyutils.cpp kmymoneyutils.h default_accounts_enGB.dat comptes_par_defaut_fr.dat default_accounts_enC.dat default_accounts_enUS.dat default_accounts_br.dat kapptest.cpp kapptest.h
+EXTRA_DIST = main.cpp kmymoney2.cpp kmymoney2.h kmymoney2ui.rc kmymoney2.desktop kstartuplogo.cpp kstartuplogo.h lo16-app-kmymoney2.png lo32-app-kmymoney2.png kmymoney_wizard.png mimetype_kmy_16x16.png mimetype_kmy_32x32.png mimetype_kmy_48x48.png x-kmymoney2.desktop hi16-app-kmymoney2.png hi32-app-kmymoney2.png tips kmymoneyutils.cpp kmymoneyutils.h kapptest.cpp kapptest.h
 
 install-data-local:
 	$(mkinstalldirs) $(kde_datadir)/kmymoney2/
 	$(INSTALL_DATA) $(srcdir)/kmymoney2ui.rc $(kde_datadir)/kmymoney2/kmymoney2ui.rc
 	$(mkinstalldirs) $(kde_appsdir)/Applications/
-	$(INSTALL_DATA) $(srcdir)/kmymoney2.desktop $(kde_appsdir)/Applications/kmymoney2.desktop
+	$(INSTALL_DATA) $(srcdir)/kmymoney2.desktop $(xdg_appsdir)/kmymoney2.desktop
 	$(mkinstalldirs) $(kde_icondir)/locolor/16x16/apps/
 	$(INSTALL_DATA) $(srcdir)/lo16-app-kmymoney2.png $(kde_icondir)/locolor/16x16/apps/kmymoney2.png
 	$(mkinstalldirs) $(kde_icondir)/locolor/32x32/apps/
@@ -48,7 +48,7 @@ install-data-local:
 
 uninstall-local:
 	-rm -f $(kde_datadir)/kmymoney2/kmymoney2ui.rc
-	-rm -f $(kde_appsdir)/Applications/kmymoney2.desktop
+	-rm -f $(xdg_appsdir)/kmymoney2.desktop
 	-rm -f $(kde_icondir)/locolor/16x16/apps/kmymoney2.png
 	-rm -f $(kde_icondir)/locolor/32x32/apps/kmymoney2.png
 	-rm -f $(kde_icondir)/hicolor/16x16/mimetypes/kmy.png
