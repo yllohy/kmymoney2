@@ -114,8 +114,6 @@ void kMyMoneyEdit::ensureFractionalPart(void)
 
 void kMyMoneyEdit::focusOutEvent(QFocusEvent *e)
 {
-  ensureFractionalPart();
-  
   if(MyMoneyMoney(text()) != MyMoneyMoney(m_text)) {
     emit valueChanged(text());
     m_text = text();
