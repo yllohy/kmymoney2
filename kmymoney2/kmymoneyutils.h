@@ -254,10 +254,27 @@ public:
     */
   static void updateSettings(void);
 
-  static const QColor& backgroundColour(void) { return _backgroundColour; };
-  static const QColor& listColour(void) { return _listColour; };
-  static const QColor& gridColour(void) { return _gridColour; };
+  static const QColor backgroundColour(void) {
+    if (_backgroundColour == QColor())
+      return defaultBackgroundColour();
+    else
+      return _backgroundColour;
+  }
 
+  static const QColor listColour(void) {
+    if (_listColour == QColor())
+      return defaultListColour();
+    else
+      return _listColour;
+  }
+    
+  static const QColor gridColour(void) {
+    if (_gridColour == QColor())
+      return defaultGridColour();
+    else
+      return _gridColour;
+  }
+  
   static const QFont& cellFont(void) { return _cellFont; };
   static const QFont& headerFont(void) { return _headerFont; };
 

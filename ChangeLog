@@ -9,6 +9,7 @@
    (I think its a bug...)
  * Call refresh properly in KScheduleView::slotNewXX.
  * Set the icons for the new file dialog in both constructors.
+ * Make KBankListItem, KMyMoneySplitTable, KMyMoneyRegister honour the list colours option.
 
 2004-01-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed #881136 (No warning when filesave fails)

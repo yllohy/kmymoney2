@@ -65,9 +65,9 @@ void kMyMoneySplitTable::paintCell(QPainter *p, int row, int col, const QRect& r
   config->setGroup("List Options");
   const bool bShowGrid = config->readBoolEntry("ShowGrid", true);
 
-  QColor defaultColor = KMyMoneyUtils::defaultListColour();
-  QColor defaultBGColor = KMyMoneyUtils::defaultBackgroundColour();
-  QColor defaultGridColor = KMyMoneyUtils::defaultGridColour();
+  QColor defaultColor = KMyMoneyUtils::listColour();
+  QColor defaultBGColor = KMyMoneyUtils::backgroundColour();
+  QColor defaultGridColor = KMyMoneyUtils::gridColour();
 
   QColorGroup g = colorGroup();
   QColor textColor;

@@ -236,7 +236,7 @@ public:
   /**
     * use my own backgroundColor method
     */
-  const QColor& backgroundColor();
+  const QColor backgroundColor();
   
 private:
   QCString m_transactionId;

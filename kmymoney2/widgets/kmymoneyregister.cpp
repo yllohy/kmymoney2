@@ -92,9 +92,9 @@ void kMyMoneyRegister::readConfig(void)
   KConfig *config = KGlobal::config();
   config->setGroup("List Options");
 
-  m_color = KMyMoneyUtils::defaultListColour();
-  m_bgColor = KMyMoneyUtils::defaultBackgroundColour();
-  m_gridColor = KMyMoneyUtils::defaultGridColour();
+  m_color = KMyMoneyUtils::listColour();
+  m_bgColor = KMyMoneyUtils::backgroundColour();
+  m_gridColor = KMyMoneyUtils::gridColour();
   m_importColor = Qt::yellow;
   
   QFont cellFont = KMyMoneyUtils::cellFont();

@@ -183,8 +183,8 @@ void KAccountListItem::paintCell(QPainter *p, const QColorGroup & cg, int column
 {
   p->setFont(KMyMoneyUtils::cellFont());
 
-  QColor colour = KMyMoneyUtils::defaultListColour();;
-  QColor bgColour = KMyMoneyUtils::defaultBackgroundColour();
+  QColor colour = KMyMoneyUtils::listColour();
+  QColor bgColour = KMyMoneyUtils::backgroundColour();
   
   QColorGroup cg2(cg);
 
@@ -308,9 +308,11 @@ void KTransactionListItem::paintCell(QPainter *p, const QColorGroup &cg, int col
   QListViewItem::paintCell(p, _cg, column, width, alignment);
 }
 
-const QColor& KTransactionListItem::backgroundColor()
+const QColor KTransactionListItem::backgroundColor()
 {
-  return isAlternate() ? KMyMoneyUtils::backgroundColour() : KMyMoneyUtils::listColour();
+  QColor bgColour = KMyMoneyUtils::backgroundColour();
+  QColor listColour = KMyMoneyUtils::listColour();
+  return isAlternate() ? bgColour : listColour;
 }
 
 void KAccountListItem::paintBranches(QPainter* /* p */, const QColorGroup& /* cg */, int /* w */, int /* y */, int /* h */)
