@@ -551,9 +551,9 @@ void KFindTransactionDlg::slotSearch(void)
   }
   
   // Account tab
-  if(!m_accountsView->allAccountsSelected()) {
+  // if(!m_accountsView->allAccountsSelected()) {
     m_filter.addAccount(m_accountsView->selectedAccounts());
-  }
+  //}
 
   // Date tab
   if(m_dateRange->currentItem() != 0) {
@@ -715,8 +715,11 @@ const QCString KFindTransactionDlg::accountId(const MyMoneyTransaction * const t
   return QCString();  
 }
 
-void KFindTransactionDlg::resizeEvent(QResizeEvent* /* ev */)
+void KFindTransactionDlg::resizeEvent(QResizeEvent* ev)
 {
+  // don't forget the resizer
+  KFindTransactionDlgDecl::resizeEvent(ev);
+  
   if(!m_register->isVisible())
     return;
     
