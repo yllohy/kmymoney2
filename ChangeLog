@@ -1,3 +1,7 @@
+2004-05-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Enable more button even if transaction is not edited
+  * Keep the payee id for transfer transactions
+
 2004-05-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Allow arbitrary category/account selection in category field
   * Reworked the ledger view code to support new features
