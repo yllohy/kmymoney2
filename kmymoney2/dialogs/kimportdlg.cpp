@@ -64,6 +64,8 @@ KImportDlg::KImportDlg(MyMoneyAccount *account, QWidget *parent)
   m_qcomboboxDateFormat->insertItem("%d/%mmm/%yyyy");
   m_qcomboboxDateFormat->insertItem("%d/%m%yy");
   m_qcomboboxDateFormat->insertItem("%d/%mmm%yy");
+  m_qcomboboxDateFormat->insertItem("%d.%m.%yy");
+  m_qcomboboxDateFormat->insertItem("%d.%m.%yyyy");
 
   // Typical US formats
   m_qcomboboxDateFormat->insertItem("%m/%d/%yy");
@@ -126,9 +128,9 @@ void KImportDlg::slotBrowse()
 void KImportDlg::slotDateFormatChanged(const QString& selectedDateFormat)
 {
 	// activate the apostrophe handling buttons when a
-	// slashed two digit year format is selected
-	if(selectedDateFormat.find("/%yy") != -1
-	&& selectedDateFormat.find("%yyyy") == -1) {
+	// slashed or dotted two digit year format is selected
+	if((selectedDateFormat.find("/%yy") != -1 || selectedDateFormat.find(".%yy") != -1)
+   && selectedDateFormat.find("%yyyy") == -1) {
 		m_qApostropheGroup->setEnabled(true);
 	} else
 		m_qApostropheGroup->setDisabled(true);

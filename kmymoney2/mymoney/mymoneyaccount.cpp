@@ -804,9 +804,10 @@ int MyMoneyAccount::convertQIFDate(const QString buffer, const QString format, c
           }
           break;
         default:
-          // must match exactly or / is required and ' is found
+          // must match exactly or / or . is required and ' is found
           if (format[nFormatCount]==buffer[buf_count]
-          || (format[nFormatCount] == '/' && buffer[buf_count] == '\'')) {
+          || ((format[nFormatCount] == '/' || format[nFormatCount] == '.')
+              && buffer[buf_count] == '\'')) {
             delimiter = buffer[buf_count];
             buf_count++;
             nFormatCount++;
@@ -1016,7 +1017,7 @@ int MyMoneyAccount::to_year(const QString buffer, int ycount, char delimiter, in
           switch(apostrophe) {
             case 0:   // ' is 1901-1949, / is 1950-2026
               if((result < 50 && delimiter == '\'')
-              || (delimiter == '/' && result > 49))
+              || ((delimiter == '/' || delimiter == '.') && result > 49))
                 qstringConv = "19";
               else
                 qstringConv = "20";
