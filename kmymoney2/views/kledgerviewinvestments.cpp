@@ -32,6 +32,7 @@
 #include <kiconloader.h>
 #include <kguiitem.h>
 #include <kmessagebox.h>
+#include <kpopupmenu.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -107,6 +108,18 @@ KLedgerViewInvestments::KLedgerViewInvestments(QWidget *parent, const char *name
 
   formLayout->addLayout( ledgerLayout, 0, 0);
 
+  // create the context menu that is accessible via RMB
+  createContextMenu();
+
+  // create the context menus that are accessible via transaction form buttons
+  createMoreMenu();
+  createAccountMenu();
+
+  // If the context menus ever implement some dynamic behaviour, here's
+  // where to connect the signals to the slots
+  // connect(m_contextMenu, SIGNAL(aboutToShow()), SLOT(slotConfigureContextMenu()));
+  // connect(m_moreMenu, SIGNAL(aboutToShow()), SLOT(slotConfigureMoreMenu()));
+
   m_editPPS = 0;
   m_editShares = 0;
   m_editStockAccount = 0;
@@ -125,6 +138,54 @@ KLedgerViewInvestments::KLedgerViewInvestments(QWidget *parent, const char *name
 KLedgerViewInvestments::~KLedgerViewInvestments()
 {
 
+}
+
+void KLedgerViewInvestments::createAccountMenu(void)
+{
+  // get the basic entries for all ledger views
+  KLedgerView::createAccountMenu();
+
+  m_form->accountButton()->setPopup(m_accountMenu);
+}
+
+void KLedgerViewInvestments::createMoreMenu(void)
+{
+  // get the basic entries for all ledger views
+  KLedgerView::createMoreMenu();
+#if 0
+  // and now the specific entries for checkings/savings etc.
+  KIconLoader *kiconloader = KGlobal::iconLoader();
+  m_moreMenu->insertItem(i18n("Edit splits ..."), this, SLOT(slotStartEditSplit()),
+      QKeySequence(), -1, 1);
+  m_moreMenu->insertItem(kiconloader->loadIcon("goto", KIcon::Small),
+                         i18n("Goto payee/receiver"), this, SLOT(slotPayeeSelected()),
+                         QKeySequence(), -1, 2);
+  m_moreMenu->insertItem(kiconloader->loadIcon("bookmark_add", KIcon::Small),
+                         i18n("Create schedule..."), this, SLOT(slotCreateSchedule()),
+                         QKeySequence(), -1, 3);
+#endif
+
+  m_form->moreButton()->setPopup(m_moreMenu);
+}
+
+void KLedgerViewInvestments::createContextMenu(void)
+{
+  // get the basic entries for all ledger views
+  KLedgerView::createContextMenu();
+
+  // and now the specific entries for checkings/savings etc.
+  KIconLoader *kiconloader = KGlobal::iconLoader();
+
+#if 0
+  m_contextMenu->insertItem(i18n("Edit splits ..."), this, SLOT(slotStartEditSplit()),
+      QKeySequence(), -1, 2);
+  m_contextMenu->insertItem(kiconloader->loadIcon("goto", KIcon::Small),
+                            i18n("Goto payee/receiver"), this, SLOT(slotPayeeSelected()),
+                            QKeySequence(), -1, 3);
+  m_contextMenu->insertItem(kiconloader->loadIcon("bookmark_add", KIcon::Small),
+                            i18n("Create schedule..."), this, SLOT(slotCreateSchedule()),
+                            QKeySequence(), -1, 4);
+#endif
 }
 
 int KLedgerViewInvestments::actionTab(const MyMoneyTransaction& t, const MyMoneySplit& split) const
@@ -395,13 +456,13 @@ void KLedgerViewInvestments::fillForm()
                  m_split.value(m_transaction.commodity(), m_account.currencyId()).abs().formatMoney());
     item->setAlignment(kMyMoneyTransactionFormTableItem::right);
     //formTable->setItem(AMOUNT_ROW, AMOUNT_DATA_COL, item);
-
+*/
     m_form->newButton()->setEnabled(true);
     m_form->editButton()->setEnabled(true);
     m_form->enterButton()->setEnabled(false);
     m_form->cancelButton()->setEnabled(false);
     m_form->moreButton()->setEnabled(true);
-*/
+
   } else {
     m_transaction = MyMoneyTransaction();
     m_split = MyMoneySplit();
@@ -481,11 +542,62 @@ void KLedgerViewInvestments::fillFormStatics(void)
 
 void KLedgerViewInvestments::fillSummary()
 {
-
+  // TODO: write out the summary line (whatever it will contain)
 }
 
 QWidget* KLedgerViewInvestments::arrangeEditWidgetsInRegister(void)
 {
+  int firstRow = m_register->currentTransactionIndex() * m_register->rpt();
+
+  // arrange common widgets
+  setRegisterCellWidget(firstRow, 0, m_editDate);
+  setRegisterCellWidget(firstRow, 1, m_editStockAccount);
+  setRegisterCellWidget(firstRow, 2, m_editType);
+  setRegisterCellWidget(firstRow+3, 2, m_editMemo);
+
+  // arrange variable widgets
+  setRegisterCellWidget(firstRow, 4, m_editShares);
+  setRegisterCellWidget(firstRow, 5, m_editPPS);
+  setRegisterCellWidget(firstRow+1, 4, m_editFees);
+  setRegisterCellWidget(firstRow+1, 2, m_editFeeCategory);
+  setRegisterCellWidget(firstRow+2, 2, m_editCashAccount);
+
+  // show all variable widgets, we hide the ones we
+  // don't need for the current case later on again
+  m_editPPS->show();
+  m_editShares->show();
+  m_editFees->show();
+  m_editCashAccount->show();
+  m_editFeeCategory->show();
+
+  switch(m_editType->currentItem()) {
+    case ReinvestDividend:
+      m_editCashAccount->loadList(static_cast<KMyMoneyUtils::categoryTypeE>(KMyMoneyUtils::income));
+      // tricky fall through here
+
+    case BuyShares:
+    case SellShares:
+      break;
+
+    case Dividend:
+    case Yield:
+      m_editShares->hide();
+      m_editPPS->hide();
+      break;
+
+    case AddShares:
+    case RemoveShares:
+      m_editPPS->hide();
+      m_editFees->hide();
+      m_editFeeCategory->hide();
+      m_editCashAccount->hide();
+      break;
+  }
+
+  m_tabOrderWidgets.append(m_editDate);
+  m_tabOrderWidgets.append(m_editStockAccount);
+
+  return m_editDate;
 }
 
 QWidget* KLedgerViewInvestments::arrangeEditWidgetsInForm(void)
@@ -1198,14 +1310,14 @@ void KLedgerViewInvestments::resizeEvent(QResizeEvent* /* ev */)
   if(!m_transactionFormActive) {
     kMyMoneyDateInput* datefield = new kMyMoneyDateInput();
     datefield->setFont(m_register->cellFont());
-    m_register->setColumnWidth(1, datefield->minimumSizeHint().width());
+    m_register->setColumnWidth(0, datefield->minimumSizeHint().width());
     delete datefield;
     kMyMoneyEdit* valfield = new kMyMoneyEdit();
     valfield->setMinimumWidth(width);
     width = valfield->minimumSizeHint().width();
     delete valfield;
   } else {
-    m_register->adjustColumn(1);
+    m_register->adjustColumn(0);
   }
 
   m_register->setColumnWidth(4, width);

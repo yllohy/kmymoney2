@@ -76,22 +76,78 @@ protected slots:
   const bool slotDataChanged(void);
 
 protected:
+  /**
+    * This method creates all widgets that allow a view to edit
+    * a transaction. All signal/slot connections of the created
+    * widgets will be setup also in this method.
+    *
+    * If different widgets are required for in-register
+    * and in-form editing, both will be created. They can be destroyed
+    * later on. See arrangeEditWidgetsInForm() or arrangeEditWidgetsInRegister().
+    */
   virtual void createEditWidgets();
+
+  /**
+    * This method creates the context menu that is accessible via the
+    * right mouse button while pointing on a transaction in the register
+    */
+  virtual void createContextMenu(void);
+
+  /**
+    * This method creates the context menu that is accessible via the
+    * More... button in the transaction form.
+    */
+  virtual void createMoreMenu(void);
+
+  /**
+    * This method creates the context menu that is accessible via the
+    * Account... button in the transaction form.
+    */
+  virtual void createAccountMenu(void);
+
+  /**
+    * This method updates the variable areas within the transaction form
+    * according to the currently loaded values in m_transaction and m_split.
+    */
   virtual void fillForm();
+
   /**
     * This method updates the static text areas within the transaction form
     * according to the currently loaded values in m_transaction and m_split.
     */
   virtual void fillFormStatics(void);
 
+  /**
+    * This method updates the summary line with the actual values.
+    */
   virtual void fillSummary();
+
+  /**
+    * This destroys and hides the widgets used to edit a transaction.
+    */
   virtual void hideWidgets();
+
   virtual void reloadEditWidgets(const MyMoneyTransaction& t);
   virtual void updateTabBar(const MyMoneyTransaction& t, const MyMoneySplit& s);
 
   void resizeEvent(QResizeEvent*);
 
+  /**
+    * This method arranges the widgets required for in-form editing. It destroys
+    * all widgets that have been created specifically for in-register editing.
+    * A pointer to the widget that should receive the focus is returned.
+    *
+    * @return pointer to the widget that should receive focus when editing starts.
+    */
   QWidget* arrangeEditWidgetsInForm(void);
+
+  /**
+    * This method arranges the widgets required for in-register editing. It destroys
+    * all widgets that have been created specifically for in-form editing.
+    * A pointer to the widget that should receive the focus is returned.
+    *
+    * @return pointer to the widget that should receive focus when editing starts.
+    */
   QWidget* arrangeEditWidgetsInRegister(void);
 
   void updateTotalAmount(void);

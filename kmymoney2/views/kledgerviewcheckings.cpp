@@ -1189,12 +1189,9 @@ QWidget* KLedgerViewCheckings::arrangeEditWidgetsInForm(void)
 
   table->clearEditable();
 
-  if(table->cellWidget(MEMO_ROW, MEMO_DATA_COL) == 0)
-    table->setCellWidget(MEMO_ROW, MEMO_DATA_COL, m_editMemo);
-  if(table->cellWidget(DATE_ROW, DATE_DATA_COL) == 0)
-    table->setCellWidget(DATE_ROW, DATE_DATA_COL, m_editDate);
-  if(table->cellWidget(AMOUNT_ROW, AMOUNT_DATA_COL) == 0)
-    table->setCellWidget(AMOUNT_ROW, AMOUNT_DATA_COL, m_editAmount);
+  setFormCellWidget(MEMO_ROW, MEMO_DATA_COL, m_editMemo);
+  setFormCellWidget(DATE_ROW, DATE_DATA_COL, m_editDate);
+  setFormCellWidget(AMOUNT_ROW, AMOUNT_DATA_COL, m_editAmount);
 
   table->setEditable(PAYEE_ROW, PAYEE_DATA_COL);
   table->setEditable(CATEGORY_ROW, CATEGORY_DATA_COL);
@@ -1204,8 +1201,7 @@ QWidget* KLedgerViewCheckings::arrangeEditWidgetsInForm(void)
 
   if(showNrField(m_transaction, m_split)) {
     table->setEditable(NR_ROW, NR_DATA_COL);
-    if(table->cellWidget(NR_ROW, NR_DATA_COL) == 0)
-      table->setCellWidget(NR_ROW, NR_DATA_COL, m_editNr);
+    setFormCellWidget(NR_ROW, NR_DATA_COL, m_editNr);
   } else {
     if(m_editNr != 0) {
       table->clearCellWidget(NR_ROW, NR_DATA_COL);
@@ -1214,12 +1210,9 @@ QWidget* KLedgerViewCheckings::arrangeEditWidgetsInForm(void)
     }
   }
 
-  if(table->cellWidget(PAYEE_ROW, PAYEE_DATA_COL) == 0)
-    table->setCellWidget(PAYEE_ROW, PAYEE_DATA_COL, m_editPayee);
-  if(table->cellWidget(CATEGORY_ROW, CATEGORY_DATA_COL) == 0) {
-    table->setCellWidget(CATEGORY_ROW, CATEGORY_DATA_COL, m_editCategory);
-    table->setCellWidget(CATEGORY_ROW, CATEGORY_DATA_COL+1, m_editSplit);
-  }
+  setFormCellWidget(PAYEE_ROW, PAYEE_DATA_COL, m_editPayee);
+  setFormCellWidget(CATEGORY_ROW, CATEGORY_DATA_COL, m_editCategory);
+  setFormCellWidget(CATEGORY_ROW, CATEGORY_DATA_COL+1, m_editSplit);
 
   // now setup the tab order
   m_tabOrderWidgets.clear();
@@ -1245,22 +1238,15 @@ QWidget* KLedgerViewCheckings::arrangeEditWidgetsInRegister(void)
   delete m_editAmount; m_editAmount = 0;
 
   int firstRow = m_register->currentTransactionIndex() * m_register->rpt();
-  if(m_editNr != 0 && m_register->cellWidget(firstRow, 0) == 0)
-    m_register->setCellWidget(firstRow, 0, m_editNr);
-  if(m_register->cellWidget(firstRow, 1) == 0)
-    m_register->setCellWidget(firstRow, 1, m_editDate);
-  if(m_register->cellWidget(firstRow+1, 1) == 0)
-    m_register->setCellWidget(firstRow+1, 1, m_editType);
-  if(m_register->cellWidget(firstRow, 2) == 0)
-    m_register->setCellWidget(firstRow, 2, m_editPayee);
-  if(m_register->cellWidget(firstRow+1, 2) == 0)
-    m_register->setCellWidget(firstRow+1, 2, m_editCategory);
-  if(m_register->cellWidget(firstRow+2, 2) == 0)
-    m_register->setCellWidget(firstRow+2, 2, m_editMemo);
-  if(m_register->cellWidget(firstRow, 4) == 0)
-    m_register->setCellWidget(firstRow, 4, m_editPayment);
-  if(m_register->cellWidget(firstRow, 5) == 0)
-    m_register->setCellWidget(firstRow, 5, m_editDeposit);
+  if(m_editNr != 0)
+    setRegisterCellWidget(firstRow, 0, m_editNr);
+  setRegisterCellWidget(firstRow, 1, m_editDate);
+  setRegisterCellWidget(firstRow+1, 1, m_editType);
+  setRegisterCellWidget(firstRow, 2, m_editPayee);
+  setRegisterCellWidget(firstRow+1, 2, m_editCategory);
+  setRegisterCellWidget(firstRow+2, 2, m_editMemo);
+  setRegisterCellWidget(firstRow, 4, m_editPayment);
+  setRegisterCellWidget(firstRow, 5, m_editDeposit);
 
   // now setup the tab order
   m_tabOrderWidgets.clear();

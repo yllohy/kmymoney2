@@ -564,8 +564,8 @@ void KLedgerView::slotRegisterClicked(int row, int /* col */, int button, const 
     if(button == Qt::RightButton) {
       if(static_cast<unsigned> (m_register->currentTransactionIndex()) != m_transactionList.count()) {
         slotCancelEdit();
-        if ( m_contextMenu )
-          m_contextMenu->exec(QCursor::pos());
+        Q_CHECK_PTR(m_contextMenu);
+        m_contextMenu->exec(QCursor::pos());
       }
     }
   }

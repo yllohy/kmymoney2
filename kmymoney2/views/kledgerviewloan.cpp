@@ -723,20 +723,13 @@ QWidget* KLedgerViewLoan::arrangeEditWidgetsInForm(void)
   table->setText(AMOUNT_ROW, AMOUNT_DATA_COL, " ");
 
   table->clearEditable();
-  if(!table->cellWidget(MEMO_ROW, MEMO_DATA_COL))
-    table->setCellWidget(MEMO_ROW, MEMO_DATA_COL, m_editMemo);
-  if(!table->cellWidget(DATE_ROW, DATE_DATA_COL))
-    table->setCellWidget(DATE_ROW, DATE_DATA_COL, m_editDate);
-  if(!table->cellWidget(AMORTIZATION_ROW, AMORTIZATION_DATA_COL))
-    table->setCellWidget(AMORTIZATION_ROW, AMORTIZATION_DATA_COL, m_editAmount);
-  if(table->cellWidget(NR_ROW, NR_DATA_COL) == 0)
-    table->setCellWidget(NR_ROW, NR_DATA_COL, m_editNr);
-  if(table->cellWidget(CATEGORY_ROW, CATEGORY_DATA_COL) == 0) {
-    table->setCellWidget(CATEGORY_ROW, CATEGORY_DATA_COL, m_editCategory);
-    table->setCellWidget(CATEGORY_ROW, CATEGORY_DATA_COL+1, m_editSplit);
-  }
-  if(table->cellWidget(PAYEE_ROW, PAYEE_DATA_COL) == 0)
-    table->setCellWidget(PAYEE_ROW, PAYEE_DATA_COL, m_editPayee);
+  setFormCellWidget(MEMO_ROW, MEMO_DATA_COL, m_editMemo);
+  setFormCellWidget(DATE_ROW, DATE_DATA_COL, m_editDate);
+  setFormCellWidget(AMORTIZATION_ROW, AMORTIZATION_DATA_COL, m_editAmount);
+  setFormCellWidget(NR_ROW, NR_DATA_COL, m_editNr);
+  setFormCellWidget(CATEGORY_ROW, CATEGORY_DATA_COL, m_editCategory);
+  setFormCellWidget(CATEGORY_ROW, CATEGORY_DATA_COL+1, m_editSplit);
+  setFormCellWidget(PAYEE_ROW, PAYEE_DATA_COL, m_editPayee);
 
   table->setEditable(PAYEE_ROW, PAYEE_DATA_COL);
   table->setEditable(CATEGORY_ROW, CATEGORY_DATA_COL);
@@ -764,18 +757,13 @@ QWidget* KLedgerViewLoan::arrangeEditWidgetsInForm(void)
 QWidget* KLedgerViewLoan::arrangeEditWidgetsInRegister(void)
 {
   int   firstRow = m_register->currentTransactionIndex() * m_register->rpt();
-  if(!m_register->cellWidget(firstRow, 0))
-    m_register->setCellWidget(firstRow, 0, m_editDate);
-  if(!m_register->cellWidget(firstRow, 1))
-    m_register->setCellWidget(firstRow, 1, m_editNr);
-  if(!m_register->cellWidget(firstRow, 2))
-    m_register->setCellWidget(firstRow, 2, m_editPayee);
-  if(!m_register->cellWidget(firstRow+1, 2))
-    m_register->setCellWidget(firstRow+1, 2, m_editCategory);
-  if(!m_register->cellWidget(firstRow+2, 2))
-    m_register->setCellWidget(firstRow+2, 2, m_editMemo);
-  if(!m_register->cellWidget(firstRow, 4))
-    m_register->setCellWidget(firstRow, 4, m_editAmount);
+
+  setRegisterCellWidget(firstRow, 0, m_editDate);
+  setRegisterCellWidget(firstRow, 1, m_editNr);
+  setRegisterCellWidget(firstRow, 2, m_editPayee);
+  setRegisterCellWidget(firstRow+1, 2, m_editCategory);
+  setRegisterCellWidget(firstRow+2, 2, m_editMemo);
+  setRegisterCellWidget(firstRow, 4, m_editAmount);
 
   // now setup the tab order
   m_tabOrderWidgets.clear();
