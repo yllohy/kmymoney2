@@ -39,6 +39,8 @@
 #include <kio/netaccess.h>
 #include <kmessagebox.h>
 
+#include "krecentfileitem.h"
+
 KStartDlg::KStartDlg(QWidget *parent, const char *name, bool modal) : KDialogBase(IconList,i18n("Start Dialog"),Help|Ok|Cancel,Ok, parent, name, modal, true)
 {
 	setPage_Template();
@@ -115,6 +117,7 @@ void KStartDlg::readConfig()
 	QString value = "";
 
 	KConfig *config = KGlobal::config();
+  KIconLoader *il = KGlobal::iconLoader();
 
 	config->setGroup("Recent Files");
 
@@ -127,7 +130,7 @@ void KStartDlg::readConfig()
 		if( !value.isNull() && fileExists(value) )
     {
       QString file_name = value.mid(value.findRev('/')+1);
-			(void)new QIconViewItem( view_recent, file_name, QPixmap( locate("icon","hicolor/48x48/mimetypes/kmy.png") ) );
+			(void)new KRecentFileItem( value, view_recent, file_name, il->loadIcon("kmy", KIcon::Desktop, KIcon::SizeLarge));
   		i++;
     }
 	}
@@ -156,10 +159,11 @@ void KStartDlg::writeConfig()
 /** slot to recent view */
 void KStartDlg::slotRecentClicked(QIconViewItem *item)
 {
-  if(!item) return;
+  KRecentFileItem *kitem = (KRecentFileItem*)item;
+  if(!kitem) return;
 
   isopenfile = true;
-	kurlrequest->setURL( item->text() );
+	kurlrequest->setURL( kitem->fileURL() );
   // Close the window if the user press an icon
 	slotOk();
 }
@@ -194,12 +198,13 @@ void KStartDlg::slotTemplateSelectionChanged(QIconViewItem* item)
   
 void KStartDlg::slotRecentSelectionChanged(QIconViewItem* item)
 {
-  if(!item) return;
+  KRecentFileItem *kitem = (KRecentFileItem*)item;
+  if(!kitem) return;
 
   // Clear the other selection
   view_wizard->clearSelection();
 
   isnewfile = false;
   isopenfile = true;
-  kurlrequest->setURL( item->text() );
+  kurlrequest->setURL( kitem->fileURL() );
 }

@@ -70,9 +70,9 @@ KScheduledView::KScheduledView(QWidget *parent, const char *name )
 
   KIconLoader *kiconloader = KGlobal::iconLoader();
   KPopupMenu* kpopupmenuNew = new KPopupMenu(this);
-  kpopupmenuNew->insertItem(kiconloader->loadIcon("new_bill", KIcon::Small), i18n("Bill"), this, SLOT(slotNewBill()));
-  kpopupmenuNew->insertItem(kiconloader->loadIcon("new_deposit", KIcon::Small), i18n("Deposit"), this, SLOT(slotNewDeposit()));
-  kpopupmenuNew->insertItem(kiconloader->loadIcon("new_transfer", KIcon::Small), i18n("Transfer"), this, SLOT(slotNewTransfer()));
+  kpopupmenuNew->insertItem(KMyMoneyUtils::billScheduleIcon(KIcon::SizeSmall), i18n("Bill"), this, SLOT(slotNewBill()));
+  kpopupmenuNew->insertItem(KMyMoneyUtils::depositScheduleIcon(KIcon::SizeSmall), i18n("Deposit"), this, SLOT(slotNewDeposit()));
+  kpopupmenuNew->insertItem(KMyMoneyUtils::transferScheduleIcon(KIcon::SizeSmall), i18n("Transfer"), this, SLOT(slotNewTransfer()));
   m_qbuttonNew->setPopup(kpopupmenuNew);
 
   m_kaccPopup = new KPopupMenu(this);
@@ -84,8 +84,8 @@ KScheduledView::KScheduledView(QWidget *parent, const char *name )
   m_accountsCombo->setGuiItem(KMyMoneyUtils::accountsFilterGuiItem());
 
   KIconLoader *il = KGlobal::iconLoader();
-  m_tabWidget->setTabIconSet(listTab, QIconSet(il->loadIcon("schedulelisttab", KIcon::Small, KIcon::SizeSmall)));
-  m_tabWidget->setTabIconSet(calendarTab, QIconSet(il->loadIcon("calendartab", KIcon::Small, KIcon::SizeSmall)));
+  m_tabWidget->setTabIconSet(listTab, QIconSet(il->loadIcon("contents", KIcon::Small, KIcon::SizeSmall)));
+  m_tabWidget->setTabIconSet(calendarTab, QIconSet(il->loadIcon("calendartab", KIcon::User, KIcon::SizeSmall)));
 
   readConfig();
 

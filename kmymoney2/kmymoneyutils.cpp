@@ -251,7 +251,7 @@ KGuiItem KMyMoneyUtils::scheduleNewGuiItem(void)
   KIconLoader *ic = KGlobal::iconLoader();
 
   KGuiItem splitGuiItem(  i18n("&New Schedule..."),
-                          QIconSet(ic->loadIcon("newschedule", KIcon::User, KIcon::SizeSmall)),
+                          QIconSet(ic->loadIcon("filenew", KIcon::Small, KIcon::SizeSmall)),
                           i18n("Create a new schedule."),
                           i18n("Use this to create a new schedule."));
 
@@ -263,7 +263,7 @@ KGuiItem KMyMoneyUtils::accountsFilterGuiItem(void)
   KIconLoader *ic = KGlobal::iconLoader();
 
   KGuiItem splitGuiItem(  i18n("&Filter"),
-                          QIconSet(ic->loadIcon("accountfilter", KIcon::User, KIcon::SizeSmall)),
+                          QIconSet(ic->loadIcon("filter", KIcon::Small, KIcon::SizeSmall)),
                           i18n("Filter out accounts"),
                           i18n("Use this to filter out accounts"));
 

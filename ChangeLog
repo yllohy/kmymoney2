@@ -1,3 +1,6 @@
+2003-07-31 Michael Edwardes <mte@users.sourceforge.net>
+  * Fix the nasty bug i introduced into the start dialog.
+
 2003-07-30 Michael Edwardes <mte@users.sourceforge.net>
   * Removed duplicate entries from default_accounts.dat.
   * Renamed default_accounts.dat to default_accounts_enGB.dat
