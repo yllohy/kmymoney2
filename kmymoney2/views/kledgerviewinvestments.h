@@ -22,6 +22,7 @@
 
 // ----------------------------------------------------------------------------
 // QT Includes
+#include <qtabbar.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -32,7 +33,7 @@
 #ifndef KLEDGERVIEWINVESTMENTS_H
 #define KLEDGERVIEWINVESTMENTS_H
 
-#include <kledgerview.h>
+#include "kledgerview.h"
 
 /**
   *@author Kevin Tambascio
@@ -49,11 +50,17 @@ protected slots:
   virtual void slotReconciliation();
 
 protected:
+  void createRegister(void);
+  void createForm();
   virtual void fillForm();
   virtual void fillSummary();
   virtual void showWidgets();
   virtual void hideWidgets();
   virtual void reloadEditWidgets(const MyMoneyTransaction& t);
+
+private:
+  QTab *m_SummaryTab,
+       *m_TransactionTab;
 };
 
 #endif
