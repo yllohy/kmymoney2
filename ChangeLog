@@ -1,4 +1,10 @@
 2001-03-22  Felix Rodriguez <frodriguez@wesleyan.edu>
+  * Moved the Reconcile Column from column 4 to column 3 of the table
+  * Fixed problem after clicking cancel if you click on same transaction
+    row, Input widgets did not appear.
+  * Moved Ending Balance Box to appear directly under balance column
+
+2001-03-21  Felix Rodriguez <frodriguez@wesleyan.edu>
   * Added two lines per transaction in the transaction view
   * Added Data Entry Widgets and buttons to appear on
     transaction rows.
