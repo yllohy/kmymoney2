@@ -195,3 +195,13 @@ void MyMoneyMoneyTest::testUnaryMinus()
 	CPPUNIT_ASSERT(m2 == -100);
 }
 
+void MyMoneyMoneyTest::testDoubleConstructor()
+{
+	for(int i = -123456; i < 123456; ++i) {
+		double d = i;
+		MyMoneyMoney r(i);
+		d /= 100;
+		MyMoneyMoney t(d);
+		CPPUNIT_ASSERT(t == r);
+	}
+}

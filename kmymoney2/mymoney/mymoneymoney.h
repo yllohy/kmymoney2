@@ -40,6 +40,7 @@ public:
   MyMoneyMoney( signed64 AmountInPence );
   MyMoneyMoney( long ldAmountInPence );
   MyMoneyMoney( int iAmountInPence );
+  MyMoneyMoney( double dAmountInPence );
 
   // copy constructor
   MyMoneyMoney( const MyMoneyMoney& AmountInPence );
@@ -173,6 +174,20 @@ inline MyMoneyMoney::MyMoneyMoney(const QString& pszAmountInPence)
 inline MyMoneyMoney::MyMoneyMoney(signed64 AmountInPence)
 {
   m_64Value = AmountInPence;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//      Name: MyMoneyMoney
+//   Purpose: Constructor - constructs object from an amount in a double value
+//   Returns: None
+//    Throws: Nothing.
+// Arguments: dAmountInPence - double object containing amount in pence
+//
+////////////////////////////////////////////////////////////////////////////////
+inline MyMoneyMoney::MyMoneyMoney(const double dAmountInPence)
+{
+  double adj = dAmountInPence < 0 ? -0.5 : 0.5;
+  m_64Value = static_cast<signed64> (dAmountInPence * 100 + adj);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

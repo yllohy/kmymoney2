@@ -17,9 +17,6 @@
 #ifndef __MYMONEYMONEYTEST_H__
 #define __MYMONEYMONEYTEST_H__
 
-#include <cppunit/TestCaller.h>
-#include <cppunit/TestCase.h>
-#include <cppunit/TestSuite.h>
 #include <cppunit/extensions/HelperMacros.h>
 
 #define private public
@@ -39,6 +36,7 @@ class MyMoneyMoneyTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST(testFormatMoney);
 	CPPUNIT_TEST(testRelation);
 	CPPUNIT_TEST(testUnaryMinus);
+	CPPUNIT_TEST(testDoubleConstructor);
 	CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -59,7 +57,7 @@ public:
 	void testFormatMoney();
 	void testRelation();
 	void testUnaryMinus();
-
+	void testDoubleConstructor();
 };
 
 #endif
