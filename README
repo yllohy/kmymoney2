@@ -48,6 +48,7 @@ from.
      ---------------+-------------------------+---------------------------
      SuSE 8.1       |  omit this parameter    | /opt/kde3
      Mandrake 9.0   |  omit this parameter    | /usr
+     Slackware 9.0  |  omit this parameter    | /opt/kde
 
      so for SuSE 8.1 the command is:
 
