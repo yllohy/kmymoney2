@@ -245,7 +245,7 @@ bool KMyMoneyBanking::importAccountInfo(AB_IMEXPORTER_ACCOUNTINFO *ai)
         s=p;
       }
     }
-    kt.m_strPayee=s;
+    kt.m_strPayee=QString::fromUtf8(s);
 
     // memo
     s="";
@@ -263,7 +263,7 @@ bool KMyMoneyBanking::importAccountInfo(AB_IMEXPORTER_ACCOUNTINFO *ai)
         se=GWEN_StringListEntry_Next(se);
       } // while
     }
-    kt.m_strMemo=s;
+    kt.m_strMemo=QString::fromUtf8(s);
 
     // date
     ti=AB_Transaction_GetDate(t);
