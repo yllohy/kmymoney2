@@ -13,33 +13,46 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <kfiledialog.h>
-#include <kglobal.h>
-#if QT_VERSION > 300
-#include <kstandarddirs.h>
-#else
-#include <kstddirs.h>
-#endif
 
-#include <kmessagebox.h>
-#include <../dialogs/knewaccountwizard.h>
+// #include <stdio.h>
+
+
+// ----------------------------------------------------------------------------
+// QT Includes
+
 #include <qlabel.h>
 #include <qfile.h>
 #include <qtextstream.h>
 
 #if QT_VERSION > 300
 #include <qcursor.h>
+#include <qregexp.h>
 #endif
 
-#include <stdio.h>
+// ----------------------------------------------------------------------------
+// KDE Includes
+
+#include <kfiledialog.h>
+#include <kglobal.h>
+#if QT_VERSION > 300
+#include <kstandarddirs.h>
+#include <kicontheme.h>
+#include <kiconloader.h>
+#else
+#include <kstddirs.h>
+#endif
+
+#include <kmessagebox.h>
+
+// ----------------------------------------------------------------------------
+// Project Includes
+
+#include <../dialogs/knewaccountwizard.h>
 
 #include "../dialogs/knewbankdlg.h"
 #include "../dialogs/knewaccountdlg.h"
 #include "../dialogs/kendingbalancedlg.h"
-//#include "../dialogs/kcategoriesdlg.h"
-//#include "../dialogs/kpayeedlg.h"
 #include "../dialogs/knewfiledlg.h"
-#include "kmymoneyview.h"
 #include "../dialogs/kchooseimportexportdlg.h"
 #include "../dialogs/kcsvprogressdlg.h"
 #include "../dialogs/kimportdlg.h"
@@ -49,12 +62,7 @@
 #include "../mymoney/mymoneyexception.h"
 #include "../mymoney/storage/mymoneystoragedump.h"
 
-#if QT_VERSION > 300
-#include <kicontheme.h>
-#include <kiconloader.h>
-#include <qregexp.h>
-#endif
-
+#include "kmymoneyview.h"
 #include "kmymoneyfile.h"
 
 KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
@@ -65,11 +73,13 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   MyMoneyFile* engine = MyMoneyFile::instance();
   engine->attachStorage(m_file->storage());
 
+  // Page 0
   QVBox *qvboxMainFrame1 = addVBoxPage( i18n("Home"), i18n("Home"),
     DesktopIcon("home"));
   m_homeView = new KHomeView(qvboxMainFrame1);
   connect(m_homeView, SIGNAL(signalViewActivated()), this, SLOT(slotActivatedHomePage()));
 
+  // Page 1
   QVBox *qvboxMainFrame2 = addVBoxPage( i18n("Accounts"), i18n("Insitutions/Accounts"),
     DesktopIcon("bank"));
   accountsView = new KAccountsView(qvboxMainFrame2, "accountsView");
@@ -78,21 +88,25 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   transactionView = new KTransactionView(qvboxMainFrame2, "transactionsView");
   connect(transactionView, SIGNAL(signalViewActivated()), this, SLOT(slotActivatedAccountsView()));
 
+  // Page 2
   QVBox *qvboxMainFrame3 = addVBoxPage( i18n("Bills & Reminders"), i18n("Bills & Reminders"),
     DesktopIcon("scheduled"));
   m_scheduledView = new KScheduledView(qvboxMainFrame3, "scheduledView");
   connect(m_scheduledView, SIGNAL(signalViewActivated()), this, SLOT(slotActivatedScheduledView()));
 
+  // Page 3
   QVBox *qvboxMainFrame4 = addVBoxPage( i18n("Categories"), i18n("Categories"),
     DesktopIcon("categories"));
   m_categoriesView = new KCategoriesView(qvboxMainFrame4, "categoriesView");
   connect(m_categoriesView, SIGNAL(signalViewActivated()), this, SLOT(slotActivatedCategoriesView()));
 
+  // Page 4
   QVBox *qvboxMainFrame5 = addVBoxPage( i18n("Payees"), i18n("Payees"),
     DesktopIcon("pay_edit"));
   m_payeesView = new KPayeesView(qvboxMainFrame5, "payeesView");
   connect(m_payeesView, SIGNAL(signalViewActivated()), this, SLOT(slotActivatedPayeeView()));
 
+  // Page 5
   QVBox *qvboxMainFrame6 = addVBoxPage( i18n("Ledgers"), i18n("Ledgers"),
     DesktopIcon(""));
   m_ledgerView = new KGlobalLedgerView(qvboxMainFrame6, "ledgerView");
@@ -173,7 +187,15 @@ void KMyMoneyView::slotAccountRightMouse()
 
 void KMyMoneyView::slotAccountDoubleClick(void)
 {
-  viewTransactionList();
+  bool  ok = false;
+  QCString acc;
+
+  acc = accountsView->currentAccount(ok);
+  if(ok == true) {
+    showPage(5);
+    m_ledgerView->selectAccount(acc);
+  }
+  // viewTransactionList();
 }
 
 void KMyMoneyView::slotBankRightMouse()
@@ -358,6 +380,7 @@ bool KMyMoneyView::readFile(QString filename)
   delete binaryReader;
 
   accountsView->refresh("");
+  m_categoriesView->update("");
 
   return true;
 }
@@ -401,6 +424,7 @@ void KMyMoneyView::slotBankNew(void)
       MyMoneyFile* file = MyMoneyFile::instance();
 
       institution = dlg.institution();
+
       file->addInstitution(institution);
       accountsView->refresh("");
     }
@@ -448,10 +472,11 @@ void KMyMoneyView::slotAccountNew(void)
     // An exception will be thrown on the next line instead.
     try
     {
-      qDebug("new %s, parent %s, name %s, %s", newAccount.id().data(), parentAccount.id().data(), newAccount.name().latin1(), parentAccount.name().latin1());
-
       MyMoneyFile::instance()->addAccount(newAccount, parentAccount);
-      accountsView->refresh("");
+
+      qDebug("new-id'%s', parent-id '%s', new-name '%s', parent-name '%s'", newAccount.id().data(), parentAccount.id().data(), newAccount.name().latin1(), parentAccount.name().latin1());
+
+      // accountsView->refresh("");
       viewAccountList(newAccount.id());
     }
     catch (MyMoneyException *e)
@@ -460,7 +485,6 @@ void KMyMoneyView::slotAccountNew(void)
       message += e->what();
       KMessageBox::information(this, message);
       delete e;
-
     }
   }
 }
@@ -734,6 +758,7 @@ bool KMyMoneyView::parseDefaultCategory(QString& line, bool& income, QString& na
   unsigned int count=0;
   int tokenCount=0;
   bool done1=false, done2=false, done3=false, b_inEnclosed=false;
+
   QChar commentChar('#');
 
   QChar encloseChar('\"');
@@ -858,6 +883,7 @@ void KMyMoneyView::viewAccountList(const QCString& selectAccount)
 
 void KMyMoneyView::viewTransactionList(void)
 {
+/*
   bool accountSuccess=false;
 
   try
@@ -900,6 +926,7 @@ void KMyMoneyView::viewTransactionList(void)
     delete e;
 
   }
+*/
 }
 
 void KMyMoneyView::settingsLists()
@@ -1079,6 +1106,7 @@ bool KMyMoneyView::checkTransactionAmount(const MyMoneyTransaction *transaction,
 {
 /*
   if (!enabled)
+
     return true;
 
   if (id==i18n("At least")) {
@@ -1141,6 +1169,7 @@ bool KMyMoneyView::checkTransactionStatus(const MyMoneyTransaction *transaction,
 }
 
 bool KMyMoneyView::checkTransactionDescription(const MyMoneyTransaction *transaction, const bool enabled, const QString description, const bool isRegExp)
+
 {
 /*
   if (!enabled)
@@ -1215,6 +1244,7 @@ bool KMyMoneyView::checkTransactionPayee(const MyMoneyTransaction *transaction, 
 
 bool KMyMoneyView::checkTransactionCategory(const MyMoneyTransaction *transaction, const bool enabled, const QString category)
 {
+
 /*
   if (!enabled)
     return true;
@@ -1365,6 +1395,7 @@ void KMyMoneyView::slotShowTransactionForm(bool show)
   if(m_ledgerView != 0)
     m_ledgerView->slotShowTransactionForm(show);
 }
+
 
 void KMyMoneyView::memoryDump()
 {

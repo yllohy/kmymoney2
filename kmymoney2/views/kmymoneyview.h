@@ -52,13 +52,14 @@
 #include "../mymoney/storage/mymoneyseqaccessmgr.h"
 
 /**
+
   * This class represents the view of the MyMoneyFile which contains
   * Banks/Accounts/Transactions, Recurring transactions (or Bills & Deposits)
   * and scripts (yet to be implemented).  Each different aspect of the file
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.17 2002/08/07 12:07:56 ipwizard Exp $
+  * $Id: kmymoneyview.h,v 1.18 2002/10/15 09:31:00 ipwizard Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -298,6 +299,7 @@ protected slots:
   void slotRightMouse();
 
 
+
   /**
     * Called by the context menu created in slotAccountRightMouse.  Brings up
     * a dialog which allows the user to edit the account details.  TODO: move this
@@ -402,6 +404,7 @@ signals:
   //void transactionOperations(bool);
 
   void signalEnableKMyMoneyOperations(bool);
+
 
   void signalHomeView();
   void signalAccountsView();
