@@ -657,11 +657,43 @@ void MyMoneyQifReader::selectOrCreateAccount(const SelectCreateMode mode, MyMone
   QCString accountId;
   QString msg;
   QString typeStr;
+  QString leadIn;
   KMyMoneyUtils::categoryTypeE type;
 
   QMap<QString, QCString>::ConstIterator it;
   
-  it = m_accountTranslation.find(account.name());
+  type = KMyMoneyUtils::none;
+  switch(file->accountGroup(account.accountType())) {
+    default:
+      type = KMyMoneyUtils::asset;
+      // tricky fall through here
+
+    case MyMoneyAccount::Liability:
+      type = (KMyMoneyUtils::categoryTypeE) (type | KMyMoneyUtils::liability);
+      typeStr = i18n("account");
+      leadIn = i18n("liability");
+      break;
+
+    case MyMoneyAccount::Asset:
+      type = KMyMoneyUtils::asset;
+      typeStr = i18n("account");
+      leadIn = i18n("asset");
+      break;
+
+    case MyMoneyAccount::Income:
+      type = KMyMoneyUtils::income;
+      typeStr = i18n("category");
+      leadIn = i18n("income");
+      break;
+
+    case MyMoneyAccount::Expense:
+      type = KMyMoneyUtils::expense;
+      typeStr = i18n("category");
+      leadIn = i18n("expense");
+      break;
+  }
+
+  it = m_accountTranslation.find(leadIn + ":" + account.name());
   if(it != m_accountTranslation.end()) {
     try {
       account = file->account(*it);
@@ -675,48 +707,24 @@ void MyMoneyQifReader::selectOrCreateAccount(const SelectCreateMode mode, MyMone
     }
   }
 
-  type = KMyMoneyUtils::none;
-  switch(file->accountGroup(account.accountType())) {
-    default:
-      type = KMyMoneyUtils::asset;
-      // tricky fall through here
-
-    case MyMoneyAccount::Liability:
-      type = (KMyMoneyUtils::categoryTypeE) (type | KMyMoneyUtils::liability);
-      typeStr = i18n("account");
-      break;
-      
-    case MyMoneyAccount::Asset:
-      type = KMyMoneyUtils::asset;
-      typeStr = i18n("account");
-      break;
-      
-    case MyMoneyAccount::Income:
-      type = KMyMoneyUtils::income;
-      typeStr = i18n("category");
-      break;
-      
-    case MyMoneyAccount::Expense:
-      type = KMyMoneyUtils::expense;
-      typeStr = i18n("category");
-      break;
-  }
-
   KAccountSelectDlg accountSelect(type,"QifImport", kmymoney2);
   
   if(m_account.name().length() != 0) {
-    accountId = file->nameToAccount(account.name());
+    if(type & (KMyMoneyUtils::income | KMyMoneyUtils::expense)) {
+      accountId = file->categoryToAccount(account.name());
+    } else {
+      accountId = file->nameToAccount(account.name());
+    }
+    
     if(mode == Create) {
       if(accountId.length() != 0) {
-        if(mode == Create) {
-          account = file->account(accountId);
-          return;
-        }
+        account = file->account(accountId);
+        return;
 
       } else {
         switch(KMessageBox::questionYesNo(0,
-                  i18n("The account '%1' does not exist. Do you "
-                       "want to create it?").arg(account.name()))) {
+                  i18n("The %1 '%2' does not exist. Do you "
+                       "want to create it?").arg(typeStr).arg(account.name()))) {
           case KMessageBox::Yes:
             break;
           case KMessageBox::No:
@@ -752,13 +760,16 @@ void MyMoneyQifReader::selectOrCreateAccount(const SelectCreateMode mode, MyMone
   if(accountSelect.exec() == QDialog::Accepted) {
     if((type & KMyMoneyUtils::asset)
     || (type & KMyMoneyUtils::liability)) {
+      leadIn = (type & KMyMoneyUtils::asset) ? i18n("asset") : i18n("liability");
       accountId = file->nameToAccount(accountSelect.selectedAccount());
       
     } else if((type & KMyMoneyUtils::income)
            || (type & KMyMoneyUtils::expense)) {
+      leadIn = (type & KMyMoneyUtils::income) ? i18n("income") : i18n("expense");
       accountId = file->categoryToAccount(accountSelect.selectedAccount());
     } else {
         qWarning("No account selected!!!!");
+        leadIn = "";
     }
     
     if(accountId.length() != 0) {
