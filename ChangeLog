@@ -1,3 +1,6 @@
+2004-09-10 Ace Jones <acejones@users.sourceforge.net>
+  * Added patch from Martin Preuss to import files via AqBanking
+
 2004-09-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * More investment view work (mainly register based editing)
 

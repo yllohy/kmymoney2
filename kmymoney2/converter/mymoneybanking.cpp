@@ -1,5 +1,5 @@
 /***************************************************************************
-                          kjobview.h  -  description
+                          mymoneybanking.cpp
                              -------------------
     begin                : Thu Aug 26 2004
     copyright            : (C) 2004 Martin Preuss
@@ -21,16 +21,28 @@
 
 #ifdef HAVE_KBANKING
 
+// ----------------------------------------------------------------------------
+// QT Includes
+
 #include <qmessagebox.h>
+
+// ----------------------------------------------------------------------------
+// KDE Includes
 
 #include <klocale.h>
 
-#include "mymoneybanking.h"
-#include "../kmymoney2.h"
+// ----------------------------------------------------------------------------
+// Library Includes
 
 #include <aqbanking/imexporter.h>
 #include <gwenhywfar/debug.h>
 
+// ----------------------------------------------------------------------------
+// Project Includes
+
+#include "mymoneybanking.h"
+#include "../kmymoney2.h"
+#include "../mymoney/mymoneystatement.h"
 
 KMyMoneyBanking::KMyMoneyBanking(const char *appname,
                                  const char *fname)
@@ -38,12 +50,8 @@ KMyMoneyBanking::KMyMoneyBanking(const char *appname,
 
 }
 
-
-
 KMyMoneyBanking::~KMyMoneyBanking(){
 }
-
-
 
 const AB_ACCOUNT_STATUS*
 KMyMoneyBanking::_getAccountStatus(AB_IMEXPORTER_ACCOUNTINFO *ai){
@@ -86,192 +94,179 @@ KMyMoneyBanking::_getAccountStatus(AB_IMEXPORTER_ACCOUNTINFO *ai){
   return best;
 }
 
+bool KMyMoneyBanking::importAccountInfo(AB_IMEXPORTER_ACCOUNTINFO *ai){
+  QString s;
+  const char *p;
+  AB_TRANSACTION *t;
+  MyMoneyStatement ks;
+  const GWEN_TIME *startTime;
+  const AB_ACCOUNT_STATUS *ast;
+  const AB_VALUE *val;
+  const GWEN_TIME *ti;
 
+  startTime=0;
 
-bool KMyMoneyBanking::importContext(AB_IMEXPORTER_CONTEXT *ctx){
-  AB_IMEXPORTER_ACCOUNTINFO *ai;
+  DBG_NOTICE(0, "Importing account...");
 
-  ai=AB_ImExporterContext_GetFirstAccountInfo(ctx);
-  while(ai) {
-    QString s;
-    const char *p;
-    AB_TRANSACTION *t;
-    MyMoneyStatement ks;
-    const GWEN_TIME *startTime;
-    const AB_ACCOUNT_STATUS *ast;
-    const AB_VALUE *val;
-    const GWEN_TIME *ti;
+  // account number
+  p=AB_ImExporterAccountInfo_GetAccountNumber(ai);
+  if (p)
+    ks.m_strAccountNumber=p;
 
-    startTime=0;
+  // account name
+  p=AB_ImExporterAccountInfo_GetAccountName(ai);
+  if (p)
+    ks.m_strAccountName=p;
 
-    DBG_NOTICE(0, "Importing account...");
+  // account status
+  ast=_getAccountStatus(ai);
+  if (ast) {
+    const AB_BALANCE *bal;
 
-    // account number
-    p=AB_ImExporterAccountInfo_GetAccountNumber(ai);
-    if (p)
-      ks.m_strAccountNumber=p;
-
-    // account name
-    p=AB_ImExporterAccountInfo_GetAccountName(ai);
-    if (p)
-      ks.m_strAccountName=p;
-
-    // account status
-    ast=_getAccountStatus(ai);
-    if (ast) {
-      const AB_BALANCE *bal;
-
-      bal=AB_AccountStatus_GetBookedBalance(ast);
-      if (!bal)
-	bal=AB_AccountStatus_GetNotedBalance(ast);
-      if (bal) {
-	val=AB_Balance_GetValue(bal);
-	if (val) {
-          DBG_NOTICE(0, "Importing balance");
-	  ks.m_moneyClosingBalance=AB_Value_GetValue(val);
-	  p=AB_Value_GetCurrency(val);
-          if (p)
-            ks.m_strCurrency=p;
-	}
-	ti=AB_Balance_GetTime(bal);
-	if (ti) {
-	  int year, month, day;
-
-	  if (!GWEN_Time_GetBrokenDownDate(ti, &day, &month, &year))
-	    ks.m_dateEnd=QDate(year, month+1, day);
-        }
-        else {
-          DBG_WARN(0, "No time for balance");
-        }
-      }
-      else {
-        DBG_WARN(0, "No account balance");
-      }
-    }
-    else {
-      DBG_WARN(0, "No account status");
-    }
-
-    // get all transactions
-    t=AB_ImExporterAccountInfo_GetFirstTransaction(ai);
-    while(t) {
-      MyMoneyStatement::Transaction kt;
-      const GWEN_STRINGLIST *sl;
-
-      // payee
-      s="";
-      sl=AB_Transaction_GetRemoteName(t);
-      if (sl) {
-	GWEN_STRINGLISTENTRY *se;
-
-	se=GWEN_StringList_FirstEntry(sl);
-	if (se) {
-	  p=GWEN_StringListEntry_Data(se);
-	  assert(p);
-          s=p;
-	}
-      }
-      kt.m_strPayee=s;
-
-      // memo
-      s="";
-      sl=AB_Transaction_GetPurpose(t);
-      if (sl) {
-	GWEN_STRINGLISTENTRY *se;
-
-	se=GWEN_StringList_FirstEntry(sl);
-	while (se) {
-	  p=GWEN_StringListEntry_Data(se);
-	  assert(p);
-	  if (!s.isEmpty())
-	    s+=" ";
-	  s+=p;
-          se=GWEN_StringListEntry_Next(se);
-	} // while
-      }
-      kt.m_strMemo=s;
-
-      // date
-      ti=AB_Transaction_GetDate(t);
-      if (!ti)
-	ti=AB_Transaction_GetValutaDate(t);
-      if (ti) {
-	int year, month, day;
-
-	if (!startTime)
-	  startTime=ti;
-	else {
-	  if (GWEN_Time_Diff(ti, startTime)<0)
-            startTime=ti;
-	}
-	if (!GWEN_Time_GetBrokenDownDate(ti, &day, &month, &year))
-          kt.m_datePosted=QDate(year, month+1, day);
-      }
-      else {
-        DBG_WARN(0, "No date for transaction");
-      }
-
-      // value
-      val=AB_Transaction_GetValue(t);
+    bal=AB_AccountStatus_GetBookedBalance(ast);
+    if (!bal)
+      bal=AB_AccountStatus_GetNotedBalance(ast);
+    if (bal) {
+      val=AB_Balance_GetValue(bal);
       if (val) {
-	if (ks.m_strCurrency.isEmpty()) {
-	  p=AB_Value_GetCurrency(val);
-	  if (p)
-            ks.m_strCurrency=p;
-	}
-	else {
-	  p=AB_Value_GetCurrency(val);
-	  if (p)
-            s=p;
-	  if (ks.m_strCurrency.lower()!=s.lower()) {
-	    // TODO: handle currency difference
-	    DBG_ERROR(0, "Mixed currencies currently not allowed");
-	    break;
-	  }
-	}
+        DBG_NOTICE(0, "Importing balance");
+        ks.m_moneyClosingBalance=AB_Value_GetValue(val);
+        p=AB_Value_GetCurrency(val);
+        if (p)
+          ks.m_strCurrency=p;
+      }
+      ti=AB_Balance_GetTime(bal);
+      if (ti) {
+        int year, month, day;
 
-	kt.m_moneyAmount=AB_Value_GetValue(val);
+        if (!GWEN_Time_GetBrokenDownDate(ti, &day, &month, &year))
+          ks.m_dateEnd=QDate(year, month+1, day);
       }
       else {
-        DBG_WARN(0, "No value for transaction");
+        DBG_WARN(0, "No time for balance");
       }
-      // store transaction
-      DBG_NOTICE(0, "Adding transaction");
-      ks.m_listTransactions+=kt;
-
-      t=AB_ImExporterAccountInfo_GetNextTransaction(ai);
-    } /* while */
-
-    if (startTime) {
-      int year, month, day;
-
-      if (!GWEN_Time_GetBrokenDownDate(startTime, &day, &month, &year))
-	ks.m_dateBegin=QDate(year, month+1, day);
     }
     else {
-      DBG_WARN(0, "No start date");
-      ks.m_dateBegin=ks.m_dateEnd;
+      DBG_WARN(0, "No account balance");
     }
-
-    // import it
-    if (!kmymoney2->slotStatementImport(ks)) {
-      if (QMessageBox::critical(0,
-				i18n("Critical Error"),
-				i18n("Error importing statement."),
-				i18n("Continue"),
-				i18n("Abort"), 0, 0)!=0) {
-	DBG_ERROR(0, "User aborted");
-        return false;
-      }
-    }
-
-    ai=AB_ImExporterContext_GetNextAccountInfo(ctx);
+  }
+  else {
+    DBG_WARN(0, "No account status");
   }
 
+  // get all transactions
+  t=AB_ImExporterAccountInfo_GetFirstTransaction(ai);
+  while(t) {
+    MyMoneyStatement::Transaction kt;
+    const GWEN_STRINGLIST *sl;
+
+    // payee
+    s="";
+    sl=AB_Transaction_GetRemoteName(t);
+    if (sl) {
+      GWEN_STRINGLISTENTRY *se;
+
+      se=GWEN_StringList_FirstEntry(sl);
+      if (se) {
+        p=GWEN_StringListEntry_Data(se);
+        assert(p);
+        s=p;
+      }
+    }
+    kt.m_strPayee=s;
+
+    // memo
+    s="";
+    sl=AB_Transaction_GetPurpose(t);
+    if (sl) {
+      GWEN_STRINGLISTENTRY *se;
+
+      se=GWEN_StringList_FirstEntry(sl);
+      while (se) {
+        p=GWEN_StringListEntry_Data(se);
+        assert(p);
+        if (!s.isEmpty())
+          s+=" ";
+        s+=p;
+        se=GWEN_StringListEntry_Next(se);
+      } // while
+    }
+    kt.m_strMemo=s;
+
+    // date
+    ti=AB_Transaction_GetDate(t);
+    if (!ti)
+      ti=AB_Transaction_GetValutaDate(t);
+    if (ti) {
+      int year, month, day;
+
+      if (!startTime)
+        startTime=ti;
+      else {
+        if (GWEN_Time_Diff(ti, startTime)<0)
+          startTime=ti;
+      }
+      if (!GWEN_Time_GetBrokenDownDate(ti, &day, &month, &year))
+        kt.m_datePosted=QDate(year, month+1, day);
+    }
+    else {
+      DBG_WARN(0, "No date for transaction");
+    }
+
+    // value
+    val=AB_Transaction_GetValue(t);
+    if (val) {
+      if (ks.m_strCurrency.isEmpty()) {
+        p=AB_Value_GetCurrency(val);
+        if (p)
+          ks.m_strCurrency=p;
+      }
+      else {
+        p=AB_Value_GetCurrency(val);
+        if (p)
+          s=p;
+        if (ks.m_strCurrency.lower()!=s.lower()) {
+          // TODO: handle currency difference
+          DBG_ERROR(0, "Mixed currencies currently not allowed");
+          break;
+        }
+      }
+
+      kt.m_moneyAmount=AB_Value_GetValue(val);
+    }
+    else {
+      DBG_WARN(0, "No value for transaction");
+    }
+    // store transaction
+    DBG_NOTICE(0, "Adding transaction");
+    ks.m_listTransactions+=kt;
+
+    t=AB_ImExporterAccountInfo_GetNextTransaction(ai);
+  } /* while */
+
+  if (startTime) {
+    int year, month, day;
+
+    if (!GWEN_Time_GetBrokenDownDate(startTime, &day, &month, &year))
+      ks.m_dateBegin=QDate(year, month+1, day);
+  }
+  else {
+    DBG_WARN(0, "No start date");
+    ks.m_dateBegin=ks.m_dateEnd;
+  }
+
+  // import it
+  if (!kmymoney2->slotStatementImport(ks)) {
+    if (QMessageBox::critical(0,
+                              i18n("Critical Error"),
+                              i18n("Error importing statement."),
+                              i18n("Continue"),
+                              i18n("Abort"), 0, 0)!=0) {
+      DBG_ERROR(0, "User aborted");
+      return false;
+    }
+  }
   return true;
 }
-
-
-
 
 #endif

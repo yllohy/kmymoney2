@@ -1,5 +1,5 @@
 /***************************************************************************
-                          kjobview.h  -  description
+                          mymoneybanking.h
                              -------------------
     begin                : Thu Aug 26 2004
     copyright            : (C) 2004 Martin Preuss
@@ -17,25 +17,15 @@
 #ifndef KMYMONEYBANKING_H
 #define KMYMONEYBANKING_H
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
-#ifdef HAVE_KBANKING
-
-#include <kbanking/settings.h>
 #include <kbanking/kbanking.h>
-#include <aqbanking/imexporter.h>
-
-#include "../mymoney/mymoneystatement.h"
 
 class KMyMoneyBanking: public KBanking {
 public:
   KMyMoneyBanking(const char *appname,
 		  const char *fname=0);
-  ~KMyMoneyBanking();
+  virtual ~KMyMoneyBanking();
 
-  bool importContext(AB_IMEXPORTER_CONTEXT *ctx);
+  virtual bool importAccountInfo(AB_IMEXPORTER_ACCOUNTINFO *ai);
 
 private:
   const AB_ACCOUNT_STATUS *_getAccountStatus(AB_IMEXPORTER_ACCOUNTINFO *ai);
@@ -43,5 +33,5 @@ private:
 };
 
 
-#endif // HAVE_KBANKING
+
 #endif

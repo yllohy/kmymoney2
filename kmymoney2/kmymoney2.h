@@ -161,6 +161,11 @@ protected slots:
    */
   void slotBankingSettings(void);
 
+  /**
+   * This slot invokes the AqBanking import wizard
+   */
+  void slotBankingImport(void);
+
   void slotShowPreviousView(void);
 
   void slotShowNextView(void);
@@ -404,6 +409,8 @@ private:
   KAction *actionFindTransaction;
   KAction *actionOfxImport;
   KAction *actionGncImport;
+  KAction *actionStatementImport;
+  KAction *actionAqbImport;
   KAction *actionLoadTemplate;
 
   enum backupStateE {

@@ -23,9 +23,9 @@
 #include <iostream>
 
 #ifdef HAVE_KBANKING
-#include <converter/mymoneybanking.h>
+#include "converter/mymoneybanking.h"
+#include <kbanking/settings.h>
 #endif
-
 
 // ----------------------------------------------------------------------------
 // QT Includes
@@ -205,7 +205,14 @@ void KMyMoney2App::initActions()
   actionQifImport = new KAction(i18n("QIF ..."), "", 0, this, SLOT(slotQifImport()), actionCollection(), "file_import_qif");
   actionOfxImport = new KAction(i18n("OFX ..."), "", 0, this, SLOT(slotOfxImport()), actionCollection(), "file_import_ofx");
   actionGncImport = new KAction(i18n("Gnucash ..."), "", 0, this, SLOT(slotGncImport()), actionCollection(), "file_import_gnc");
-  actionGncImport = new KAction(i18n("Statement file ..."), "", 0, this, SLOT(slotStatementImport()), actionCollection(), "file_import_statement");
+  actionStatementImport = new KAction(i18n("Statement file ..."), "", 0, this, SLOT(slotStatementImport()), actionCollection(), "file_import_statement");
+  actionAqbImport=0;
+#ifdef HAVE_KBANKING
+  if (kbanking) {
+    actionAqbImport = new KAction(i18n("AqBanking importer ..."), "", 0, this, SLOT(slotBankingImport()), actionCollection(), "file_import_aqb");
+  }
+#endif
+
   actionLoadTemplate = new KAction(i18n("Account Template ..."), "", 0, this, SLOT(slotLoadAccountTemplates()), actionCollection(), "file_import_template");
   actionQifExport = new KAction(i18n("QIF ..."), "", 0, this, SLOT(slotQifExport()), actionCollection(), "file_export_qif");
   new KAction(i18n("Consistency Check"), "", 0, this, SLOT(slotFileConsitencyCheck()), actionCollection(), "file_consistency_check");
@@ -992,8 +999,6 @@ void KMyMoney2App::slotQifExport()
   slotStatusMsg(prevMsg);
 }
 
-
-
 void KMyMoney2App::slotBankingSettings() {
 #ifdef HAVE_KBANKING
   KBankingSettings bs(kbanking, 0, "BankingSettings");
@@ -1012,8 +1017,6 @@ void KMyMoney2App::slotBankingSettings() {
   KMessageBox::information( this, QString("<p>")+i18n("Banking settings is unavailable.  This version of <b>KMyMoney</b> was built without <b>KBanking</b> support."), i18n("Function not available"));
 #endif
 }
-
-
 
 void KMyMoney2App::slotSettings()
 {
@@ -1640,3 +1643,17 @@ void KMyMoney2App::ofxWebConnect(const QString& url, const QCString& asn_id)
 #endif
 
 }
+
+
+void KMyMoney2App::slotBankingImport() {
+#ifdef HAVE_KBANKING
+  if (kbanking) {
+    if (!kbanking->interactiveImport()) {
+      qWarning("Error on ini of import dialog.");
+    }
+  }
+#endif
+}
+
+
+
