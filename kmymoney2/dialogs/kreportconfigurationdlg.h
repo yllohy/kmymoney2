@@ -51,6 +51,13 @@ public:
   KReportConfigurationDlg(const reports::ReportConfiguration& config, QWidget *parent=0, const char *name=0, const char *title=0);
   const reports::ReportConfiguration& getResult(void);
 
+public slots:
+    virtual void updateDateRange( const QString & range );
+    virtual void butCategoriesAll_pressed();
+    virtual void butCategoriesNone_pressed();
+    virtual void butAccountsAll_pressed();
+    virtual void butAccountsNone_pressed();
+  
 };
 
 #endif //KREPORTCONFIGURATIONDLG_H

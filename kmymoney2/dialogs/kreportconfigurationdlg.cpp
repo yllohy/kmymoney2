@@ -28,6 +28,7 @@
 #include <qdatetimeedit.h>
 #include <qradiobutton.h>
 #include <qlistview.h>
+#include <qpushbutton.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -37,6 +38,8 @@
 // Project Includes
 #include "kreportconfigurationdlg.h"
 #include "../views/pivottable.h"
+#include "../widgets/kmymoneydateinput.h"
+
 using namespace reports;
 
 KReportConfigurationDlg::KReportConfigurationDlg(const reports::ReportConfiguration& config, QWidget *parent, const char *name, const char */*title*/):
@@ -45,8 +48,8 @@ KReportConfigurationDlg::KReportConfigurationDlg(const reports::ReportConfigurat
 {
   editReportname->setText( config.getName() );
   comboDateRange->setCurrentText( "Custom..." );
-  DateEditStart->setDate( config.getStart() );
-  DateEditEnd->setDate( config.getEnd() );
+  DateEditStart->loadDate( config.getStart() );
+  DateEditEnd->loadDate( config.getEnd() );
 
   if ( config.getShowSubAccounts() )
     radioCategoriesAll->setChecked(true);
@@ -77,18 +80,23 @@ KReportConfigurationDlg::KReportConfigurationDlg(const reports::ReportConfigurat
 
     if ( m_currentConfiguration.includesAccount( (*it_account).id()) )
       item->setSelected(true);
-      
+
     ++it_account;
   }
 
-  init();
+  connect( comboDateRange, SIGNAL( activated(const QString&) ), this, SLOT( updateDateRange(const QString&) ) );
+  connect( comboDateRange, SIGNAL( textChanged(const QString&) ), this, SLOT( updateDateRange(const QString&) ) );
+  connect( butCategoriesAll, SIGNAL( pressed() ), this, SLOT( butCategoriesAll_pressed() ) );
+  connect( butCategoriesNone, SIGNAL( pressed() ), this, SLOT( butCategoriesNone_pressed() ) );
+  connect( butAccountsAll, SIGNAL( pressed() ), this, SLOT( butAccountsAll_pressed() ) );
+  connect( butAccountsNone, SIGNAL( pressed() ), this, SLOT( butAccountsNone_pressed() ) );
 }
 
 const ReportConfiguration& KReportConfigurationDlg::getResult(void)
 {
   m_currentConfiguration.setShowSubAccounts( radioCategoriesAll->isChecked() );
   m_currentConfiguration.setName( editReportname->text() );
-  m_currentConfiguration.setDateRange( DateEditStart->date(), DateEditEnd->date() );
+  m_currentConfiguration.setDateRange( DateEditStart->getQDate(), DateEditEnd->getQDate() );
 
   if ( radioRowsIE->isChecked() )
     m_currentConfiguration.setRowFilter(ReportConfiguration::eExpense|ReportConfiguration::eIncome);
@@ -139,7 +147,91 @@ const ReportConfiguration& KReportConfigurationDlg::getResult(void)
     }
     it = next;
   }
-        
+
   return m_currentConfiguration;
 }
 
+void KReportConfigurationDlg::updateDateRange( const QString & range )
+{
+    if ( range == "Custom...")
+    {
+  DateEditStart->setEnabled(true);
+  DateEditEnd->setEnabled(true);
+    }
+    else
+    {
+  DateEditStart->setEnabled(false);
+  DateEditEnd->setEnabled(false);
+
+  const QDate& currentdate = QDate::currentDate();
+  int year = currentdate.year();
+  int month = currentdate.month();
+  int quarter = month - ((month-1)%3);
+
+  if ( range == "Current Year")
+  {
+      DateEditStart->setDate(QDate(year,1,1));
+      DateEditEnd->setDate(QDate(year+1,1,1).addDays(-1));
+  }
+  else if ( range == "Previous Year" )
+  {
+      DateEditStart->setDate(QDate(year-1,1,1));
+      DateEditEnd->setDate(QDate(year,1,1).addDays(-1));
+  }
+  else if ( range == "Current Quarter" )
+  {
+      DateEditStart->setDate(QDate(year,quarter,1));
+      DateEditEnd->setDate(QDate(year,quarter+3,1).addDays(-1));
+  }
+  else if ( range == "Previous Quarter" )
+  {
+      DateEditEnd->setDate(QDate(year,quarter,1).addDays(-1));
+      if ( quarter == 1 )
+      {
+    year--;
+    quarter+=12;
+      }
+      DateEditStart->setDate(QDate(year,quarter-3,1));
+  }
+  else if ( range == "Current Month" )
+  {
+      DateEditStart->setDate(QDate(year,month,1));
+      DateEditEnd->setDate(QDate(year,month+1,1).addDays(-1));
+  }
+  else if ( range == "Previous Month" )
+  {
+      DateEditEnd->setDate(QDate(year,month,1).addDays(-1));
+      if ( month == 1 )
+      {
+    year--;
+    month+=12;
+      }
+      DateEditStart->setDate(QDate(year,month-1,1));
+  }
+    }
+}
+
+
+
+void KReportConfigurationDlg::butCategoriesAll_pressed()
+{
+    lvCategories->selectAll(true);
+}
+
+
+void KReportConfigurationDlg::butCategoriesNone_pressed()
+{
+    lvCategories->selectAll(false);
+}
+
+
+void KReportConfigurationDlg::butAccountsAll_pressed()
+{
+    lvAccounts->selectAll(true);
+}
+
+
+void KReportConfigurationDlg::butAccountsNone_pressed()
+{
+    lvAccounts->selectAll(false);
+}
