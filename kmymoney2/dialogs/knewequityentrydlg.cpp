@@ -48,6 +48,9 @@
 #include <kmessagebox.h>
 #include <kconfig.h>
 #include <knuminput.h>
+#include <kcombobox.h>
+#include <klineedit.h>
+#include <kpushbutton.h>
 
 #include "knewequityentrydlg.h"
 
@@ -71,14 +74,15 @@ void KNewEquityEntryDlg::onCancelClicked()
 {
   reject();
 }
-/** No descriptions */
-double KNewEquityEntryDlg::getStockPrice()
-{
-  return dblCurrentPrice->text().toDouble();
-}
 
 void KNewEquityEntryDlg::setSymbolName(const QString& str)
 {
   m_strSymbolName = str;
   edtMarketSymbol->setText(m_strSymbolName); 
+}
+
+void KNewEquityEntryDlg::setName(const QString& str)
+{
+  m_strName = str;
+  edtEquityName->setText(m_strName);
 }

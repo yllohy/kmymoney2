@@ -54,6 +54,7 @@
 #include "kledgerviewinvestments.h"
 
 #include "../mymoney/mymoneyfile.h"
+#include "../mymoney/storage/imymoneystorage.h"
 
 #include "../dialogs/knewaccountdlg.h"
 #include "../dialogs/knewequityentrydlg.h"
@@ -208,9 +209,6 @@ void KLedgerViewInvestments::showWidgets()
   focusWidget->setFocus();
 #endif
 
-
-
-
   createEditWidgets();
 
   kMyMoneyTransactionFormTable* table = m_form->table();
@@ -233,9 +231,7 @@ void KLedgerViewInvestments::showWidgets()
     table->setEditable(AMOUNT_ROW, AMOUNT_DATA_COL, false);
     table->setEditable(FEES_ROW, FEES_DATA_COL);
   }
-  
-  
-  
+    
   // now setup the tab order
   m_tabOrderWidgets.clear();
   m_tabOrderWidgets.append(m_form->enterButton());
@@ -477,13 +473,14 @@ void KLedgerViewInvestments::slotTypeSelected(int type)
   }
 
   // common elements
-  formTable->setText(0, 0, i18n("Symbol Name"));
-  formTable->setText(1, 0, i18n("Quantity"));
-  formTable->setText(2, 0, i18n("Memo"));
-  formTable->setText(3, 0, i18n("Price Per Share"));
-  formTable->setText(0, 3, i18n("Date"));
-  formTable->setText(1, 3, i18n("Amount"));
-  formTable->setText(2, 3, i18n("Fees"));
+  formTable->setText(SYMBOL_ROW, SYMBOL_TXT_COL, i18n("Symbol Name"));
+  formTable->setText(QUANTITY_ROW, QUANTITY_TXT_COL, i18n("Shares"));
+  formTable->setText(MEMO_ROW, MEMO_TXT_COL, i18n("Memo"));
+  formTable->setText(PRICE_ROW, PRICE_TXT_COL, i18n("Price Per Share"));
+  formTable->setText(DATE_ROW, DATE_TXT_COL, i18n("Date"));
+  formTable->setText(AMOUNT_ROW, AMOUNT_TXT_COL, i18n("Total Amount"));
+  formTable->setText(FEES_ROW, FEES_TXT_COL, i18n("Commission"));
+
 
   m_action = transactionType(type);
 
@@ -496,8 +493,8 @@ void KLedgerViewInvestments::slotTypeSelected(int type)
       break;
 
     case KLedgerViewInvestments::RemoveShares:
-      formTable->setText(1, 0, i18n("Payee"));
-      formTable->setText(2, 0, i18n("Category"));
+      //formTable->setText(1, 0, i18n("Payee"));
+      //formTable->setText(2, 0, i18n("Category"));
       break;
 
     /*case 2:   // Transfer
@@ -692,7 +689,8 @@ void KLedgerViewInvestments::resizeEvent(QResizeEvent* /* ev */)
 
 void KLedgerViewInvestments::slotStartEdit()
 {
-
+  //QString name = m_editSymbolName->text();
+  //qDebug("Symbol name is %s", name.data());
 }
 
 void KLedgerViewInvestments::slotEndEdit()
@@ -700,10 +698,42 @@ void KLedgerViewInvestments::slotEndEdit()
   QString name = m_editSymbolName->text();
   qDebug("Symbol name is %s", name.data());
   
-  KNewEquityEntryDlg *pDlg = new KNewEquityEntryDlg(this, name.data());
-  pDlg->setSymbolName(name);
-  if(pDlg->exec())
+  MyMoneyFile* file = MyMoneyFile::instance();
+  if(file)
   {
-  
+    const QValueList<MyMoneyEquity> list = file->equityList();
+    bool bKnownEquity = false;
+    for(QValueList<MyMoneyEquity>::ConstIterator it = list.begin(); it != list.end(); ++it)
+    {
+      if((*it).name() == name)
+      {
+        bKnownEquity = true;
+        break;
+      }
+    }
+    
+    //if we don't know about this equity, throw up a dialog box to collect the basic information about it.
+    if(!bKnownEquity)
+    {
+      KNewEquityEntryDlg *pDlg = new KNewEquityEntryDlg(this, name.data());
+      pDlg->setSymbolName(name);
+      if(pDlg->exec())
+      {
+        //create the new Equity object, and give it its ID.        
+        MyMoneyEquity newEquity;
+        IMyMoneyStorage *storage = file->storage();
+        if(storage)
+        {
+          storage->newEquity(newEquity);
+          
+          //fill in the fields.
+          newEquity.setTradingSymbol(pDlg->symbolName());
+          newEquity.setName(pDlg->name());
+          
+          //add it to the list of equity objects.
+          storage->addEquity(newEquity);      
+        }
+      }
+    }
   }
 }

@@ -9,28 +9,12 @@
             <x>0</x>
             <y>0</y>
             <width>281</width>
-            <height>252</height>
+            <height>184</height>
         </rect>
     </property>
     <property name="caption">
         <string>Add New Investment</string>
     </property>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>lblCurrentPrice</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>10</x>
-                <y>130</y>
-                <width>85</width>
-                <height>21</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Current Price:</string>
-        </property>
-    </widget>
     <widget class="QLabel">
         <property name="name">
             <cstring>lblType</cstring>
@@ -79,23 +63,7 @@
             <string>Equity Name:</string>
         </property>
     </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>lblMarket</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>10</x>
-                <y>170</y>
-                <width>97</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Trading Market:</string>
-        </property>
-    </widget>
-    <widget class="QLineEdit">
+    <widget class="KLineEdit">
         <property name="name">
             <cstring>edtMarketSymbol</cstring>
         </property>
@@ -114,7 +82,7 @@
             <string>Trading Symbol of the stock or mutual fund, not required.</string>
         </property>
     </widget>
-    <widget class="QLineEdit">
+    <widget class="KLineEdit">
         <property name="name">
             <cstring>edtEquityName</cstring>
         </property>
@@ -133,7 +101,7 @@
             <string>Name of the company, or mutual fund.</string>
         </property>
     </widget>
-    <widget class="QComboBox">
+    <widget class="KComboBox">
         <item>
             <property name="text">
                 <string>Stock</string>
@@ -157,64 +125,18 @@
                 <x>120</x>
                 <y>90</y>
                 <width>150</width>
-                <height>30</height>
+                <height>20</height>
             </rect>
         </property>
     </widget>
-    <widget class="QLineEdit">
-        <property name="name">
-            <cstring>dblCurrentPrice</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>120</x>
-                <y>130</y>
-                <width>150</width>
-                <height>22</height>
-            </rect>
-        </property>
-    </widget>
-    <widget class="QComboBox">
-        <item>
-            <property name="text">
-                <string>NYSE</string>
-            </property>
-        </item>
-        <item>
-            <property name="text">
-                <string>NASDAQ</string>
-            </property>
-        </item>
-        <item>
-            <property name="text">
-                <string>AMEX</string>
-            </property>
-        </item>
-        <item>
-            <property name="text">
-                <string></string>
-            </property>
-        </item>
-        <property name="name">
-            <cstring>cmbMarket</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>120</x>
-                <y>170</y>
-                <width>150</width>
-                <height>30</height>
-            </rect>
-        </property>
-    </widget>
-    <widget class="QPushButton">
+    <widget class="KPushButton">
         <property name="name">
             <cstring>btnCancel</cstring>
         </property>
         <property name="geometry">
             <rect>
-                <x>150</x>
-                <y>210</y>
+                <x>140</x>
+                <y>140</y>
                 <width>80</width>
                 <height>30</height>
             </rect>
@@ -223,14 +145,14 @@
             <string>Cancel</string>
         </property>
     </widget>
-    <widget class="QPushButton">
+    <widget class="KPushButton">
         <property name="name">
             <cstring>btnOK</cstring>
         </property>
         <property name="geometry">
             <rect>
                 <x>50</x>
-                <y>210</y>
+                <y>140</y>
                 <width>80</width>
                 <height>30</height>
             </rect>
@@ -244,9 +166,15 @@
     <tabstop>edtEquityName</tabstop>
     <tabstop>edtMarketSymbol</tabstop>
     <tabstop>cmbInvestmentType</tabstop>
-    <tabstop>cmbMarket</tabstop>
     <tabstop>btnOK</tabstop>
     <tabstop>btnCancel</tabstop>
 </tabstops>
 <layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>klineedit.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>kcombobox.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+</includehints>
 </UI>

@@ -42,11 +42,12 @@ class KNewEquityEntryDlg : public kNewEquityEntryDecl
 public:
   KNewEquityEntryDlg(QWidget *parent = NULL, const char *name = NULL);
   ~KNewEquityEntryDlg();
-  /** No descriptions */
-  double getStockPrice();
-
+ 
   void setSymbolName(const QString& str);
   QString symbolName() const  { return m_strSymbolName; }
+  
+  void setName(const QString& str);
+  QString name() const  { return m_strName; }
   
 protected slots:
   void onOKClicked();
@@ -54,6 +55,7 @@ protected slots:
   
 private:
   QString m_strSymbolName;
+  QString m_strName;
   
 };
 
