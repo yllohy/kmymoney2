@@ -11,8 +11,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>519</width>
-            <height>288</height>
+            <width>393</width>
+            <height>352</height>
         </rect>
     </property>
     <property stdset="1">
@@ -33,6 +33,42 @@
             <number>6</number>
         </property>
         <widget>
+            <class>QLabel</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>TextLabel1</cstring>
+            </property>
+            <property stdset="1">
+                <name>text</name>
+                <string>Editing categories.
+
+To create a new category please click on the new button. 
+To edit a category click on the edit button after selecting an item.
+
+Deleting a category is as easy as selecting the category you wish to
+delete and pressing the delete button.</string>
+            </property>
+        </widget>
+        <widget>
+            <class>Line</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>Line1</cstring>
+            </property>
+            <property stdset="1">
+                <name>frameShadow</name>
+                <enum>Raised</enum>
+            </property>
+            <property stdset="1">
+                <name>lineWidth</name>
+                <number>3</number>
+            </property>
+            <property stdset="1">
+                <name>orientation</name>
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+        <widget>
             <class>KListView</class>
             <property stdset="1">
                 <name>name</name>
@@ -43,7 +79,7 @@
             <class>QLayoutWidget</class>
             <property stdset="1">
                 <name>name</name>
-                <cstring>Layout3</cstring>
+                <cstring>Layout2</cstring>
             </property>
             <hbox>
                 <property stdset="1">
@@ -82,8 +118,37 @@
                         <cstring>buttonNew</cstring>
                     </property>
                     <property stdset="1">
+                        <name>maximumSize</name>
+                        <size>
+                            <width>70</width>
+                            <height>32767</height>
+                        </size>
+                    </property>
+                    <property stdset="1">
                         <name>text</name>
-                        <string>New</string>
+                        <string>&amp;New</string>
+                    </property>
+                </widget>
+                <widget>
+                    <class>QPushButton</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>buttonEdit</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>enabled</name>
+                        <bool>false</bool>
+                    </property>
+                    <property stdset="1">
+                        <name>maximumSize</name>
+                        <size>
+                            <width>70</width>
+                            <height>32767</height>
+                        </size>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>&amp;Edit</string>
                     </property>
                 </widget>
                 <widget>
@@ -93,8 +158,19 @@
                         <cstring>buttonDelete</cstring>
                     </property>
                     <property stdset="1">
+                        <name>enabled</name>
+                        <bool>false</bool>
+                    </property>
+                    <property stdset="1">
+                        <name>maximumSize</name>
+                        <size>
+                            <width>70</width>
+                            <height>32767</height>
+                        </size>
+                    </property>
+                    <property stdset="1">
                         <name>text</name>
-                        <string>Delete</string>
+                        <string>&amp;Delete</string>
                     </property>
                 </widget>
                 <widget>
@@ -104,8 +180,15 @@
                         <cstring>buttonOk</cstring>
                     </property>
                     <property stdset="1">
+                        <name>maximumSize</name>
+                        <size>
+                            <width>70</width>
+                            <height>32767</height>
+                        </size>
+                    </property>
+                    <property stdset="1">
                         <name>text</name>
-                        <string>Close</string>
+                        <string>&amp;Close</string>
                     </property>
                     <property stdset="1">
                         <name>autoDefault</name>
@@ -120,22 +203,6 @@
         </widget>
     </vbox>
 </widget>
-<customwidgets>
-    <customwidget>
-        <class>KListView</class>
-        <header location="global">klistview.h</header>
-        <sizehint>
-            <width>330</width>
-            <height>100</height>
-        </sizehint>
-        <container>0</container>
-        <sizepolicy>
-            <hordata>5</hordata>
-            <verdata>5</verdata>
-        </sizepolicy>
-        <pixmap>image0</pixmap>
-    </customwidget>
-</customwidgets>
 <connections>
     <connection>
         <sender>buttonOk</sender>

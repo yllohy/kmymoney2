@@ -271,8 +271,13 @@ void KMyMoney2App::readOptions()
 
 bool KMyMoney2App::queryClose()
 {
-  if (myMoneyView->dirty())
-    myMoneyView->saveFile(fileName);
+  if (myMoneyView->dirty()) {
+    int ans = KMessageBox::warningYesNoCancel(this, i18n("KMyMoney file needs saving.  Save ?"));
+    if (ans==KMessageBox::Cancel)
+      return false;
+    else if (ans==KMessageBox::Yes)
+      myMoneyView->saveFile(fileName);
+  }
   return true;
 }
 

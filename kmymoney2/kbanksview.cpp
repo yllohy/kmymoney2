@@ -32,6 +32,7 @@ KBanksView::KBanksView(QWidget *parent, const char *name)
 	bankListView->addColumn(i18n("Balance"));
 	bankListView->setMultiSelection(false);
 	bankListView->header()->setResizeEnabled(false);
+	bankListView->setColumnWidthMode(0, QListView::Manual);
 
   KMyMoneySettings *p_settings = KMyMoneySettings::singleton();
   if (p_settings)
@@ -137,10 +138,10 @@ void KBanksView::clear(void)
 
 void KBanksView::resizeEvent(QResizeEvent* e)
 {
-	bankListView->setColumnWidth(0,200);
-	bankListView->setColumnWidth(1,200);
+	bankListView->setColumnWidth(0,400);
+	bankListView->setColumnWidth(1,150);
 	int totalWidth=bankListView->width();
-	bankListView->setColumnWidth(2, totalWidth-400-5);
+	bankListView->setColumnWidth(2, totalWidth-550-5);
 }
 
 void KBanksView::slotSelectionChanged(QListViewItem *item)

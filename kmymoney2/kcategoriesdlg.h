@@ -34,12 +34,14 @@ public:
 	~KCategoriesDlg();
   void refresh(void);
 
+protected:
+  void resizeEvent(QResizeEvent*);
+
 protected slots:
+  void slotEditClicked();
   void slotNewClicked();
   void slotDeleteClicked();
-
-  // Observes the KDE single/double click rules
-  void categoryExecuted(QListViewItem *item);
+  void slotSelectionChanged(QListViewItem*);
 
 private:
 	MyMoneyFile *m_file;

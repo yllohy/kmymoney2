@@ -53,5 +53,7 @@
 	<Separator/>
   <Action name="account_reconcile"/>
   <Action name="account_find"/>
+  <Action name="account_import"/>
+  <Action name="account_export"/>
 </ToolBar>
 </kpartgui>

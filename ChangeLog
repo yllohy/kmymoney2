@@ -1,3 +1,11 @@
+2001-06-18 Michael Edwardes <mte@users.sourceforge.net>
+  * KAbout data updated.
+  * More GUI improvements focusing on the Categories dialog.
+  * Transaction view shows numbers instead of the currency prefix.
+  * Fixed bug in KMyMoney2App that didn't prompt to save file
+    on exit.
+  * BUGS file updated.
+
 2001-06-17 Michael Edwardes <mte@users.sourceforge.net>
   * Fixed a bug in the MyMoneyAccount copy constructor.
   * Changed the 'up' icon to use a standard back action but

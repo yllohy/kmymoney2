@@ -51,10 +51,12 @@ public:
 	void refresh(MyMoneyFile file);
 	void clear(void);
 
+protected:
+  void resizeEvent(QResizeEvent*);
+
 protected slots:
   void slotListRightMouse(QListViewItem* item, const QPoint& point, int);
   void slotListDoubleClick(QListViewItem* item, const QPoint& point, int col);
-  void resizeEvent(QResizeEvent* e);
   void slotSelectionChanged(QListViewItem *item);
 
 signals:

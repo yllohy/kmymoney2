@@ -914,14 +914,14 @@ void KTransactionView::updateTransactionList(int row, int col)
 	    transactionsTable->setItem(rowCount + 1, 3, item55);
 
       KTransactionTableItem *item6;
-      item6 = new KTransactionTableItem(transactionsTable, QTableItem::Never, ((transaction->type()==MyMoneyTransaction::Credit) ? KGlobal::locale()->formatMoney(transaction->amount().amount()) : QString("")));
+      item6 = new KTransactionTableItem(transactionsTable, QTableItem::Never, ((transaction->type()==MyMoneyTransaction::Credit) ? KGlobal::locale()->formatNumber(transaction->amount().amount()) : QString("")));
       transactionsTable->setItem(rowCount, 5, item6);
 
       KTransactionTableItem *item66 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
     	transactionsTable->setItem(rowCount + 1, 4, item66);
 
       KTransactionTableItem *item7;
-      item7 = new KTransactionTableItem(transactionsTable, QTableItem::Never, ((transaction->type()==MyMoneyTransaction::Debit) ? KGlobal::locale()->formatMoney(transaction->amount().amount()) : QString("")));
+      item7 = new KTransactionTableItem(transactionsTable, QTableItem::Never, ((transaction->type()==MyMoneyTransaction::Debit) ? KGlobal::locale()->formatNumber(transaction->amount().amount()) : QString("")));
       transactionsTable->setItem(rowCount, 4, item7);
 
 	    KTransactionTableItem *item77;
@@ -929,7 +929,7 @@ void KTransactionView::updateTransactionList(int row, int col)
     	transactionsTable->setItem(rowCount + 1, 5, item77);
 
 
-      KTransactionTableItem *item8 = new KTransactionTableItem(transactionsTable, QTableItem::Never, KGlobal::locale()->formatMoney(balance.amount()));
+      KTransactionTableItem *item8 = new KTransactionTableItem(transactionsTable, QTableItem::Never, KGlobal::locale()->formatNumber(balance.amount()));
       transactionsTable->setItem(rowCount, 6, item8);
 
     	KTransactionTableItem *item88 = new KTransactionTableItem(transactionsTable, QTableItem::Never, "");
@@ -1064,10 +1064,10 @@ void KTransactionView::updateTransactionList(int row, int col)
         }
         break;
       case 3:
-        transactionsTable->setText(realrow, col, KGlobal::locale()->formatMoney(m_transactions.at(transrow)->amount().amount()));
+        transactionsTable->setText(realrow, col, KGlobal::locale()->formatNumber(m_transactions.at(transrow)->amount().amount()));
         break;
       case 5:
-        transactionsTable->setText(realrow, col, KGlobal::locale()->formatMoney(m_transactions.at(transrow)->amount().amount()));
+        transactionsTable->setText(realrow, col, KGlobal::locale()->formatNumber(m_transactions.at(transrow)->amount().amount()));
         break;
     }
   }

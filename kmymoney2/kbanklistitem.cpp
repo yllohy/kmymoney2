@@ -17,6 +17,7 @@
 #include <klocale.h>
 #include <kstddirs.h>
 #include <qpixmap.h>
+#include <qcolor.h>
 
 #include "kbanklistitem.h"
 #include "kmymoneysettings.h"
@@ -33,7 +34,7 @@ KBankListItem::KBankListItem(QListView *parent, MyMoneyBank bank )
   MyMoneyAccount *account;
   for (account=bank.accountFirst(); account; account=bank.accountNext())
     balance += account->balance();
-  setText(2, KGlobal::locale()->formatMoney(balance.amount()));
+  setText(2, KGlobal::locale()->formatNumber(balance.amount()));
   m_isBank=true;
 }
 
@@ -46,7 +47,7 @@ KBankListItem::KBankListItem(KBankListItem *parent, MyMoneyBank bank, MyMoneyAcc
   setText(0, m_account.name());
   setPixmap(0, QPixmap(KGlobal::dirs()->findResource("appdata", "pics/account-folder.xpm")));
   setText(1, "Current"); // dynamic in future...
-  setText(2, KGlobal::locale()->formatMoney(m_account.balance().amount()));
+  setText(2, KGlobal::locale()->formatNumber(m_account.balance().amount()));
 
   m_isBank=false;
 }
@@ -75,8 +76,18 @@ void KBankListItem::paintCell(QPainter *p, const QColorGroup & cg, int column, i
   KMyMoneySettings *p_settings = KMyMoneySettings::singleton();
   if (p_settings)
     p->setFont(p_settings->lists_cellFont());
-  if (column==2)
+
+  if (column==2) {
+    QFont font = p->font();
+    if (isBank())
+      font.setBold(true);
+    else {
+      if (m_account.balance().amount()<0)
+        font.setItalic(true);
+    }
+    p->setFont(font);
     QListViewItem::paintCell(p, cg, column, width, 2);
+  }
   else
     QListViewItem::paintCell(p, cg, column, width, align);
 }

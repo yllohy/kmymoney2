@@ -15,6 +15,7 @@
  ***************************************************************************/
 #include <kmessagebox.h>
 #include <qpushbutton.h>
+#include <qheader.h>
 
 #include "kcategoriesdlg.h"
 #include "kcategorylistitem.h"
@@ -29,21 +30,16 @@ KCategoriesDlg::KCategoriesDlg(MyMoneyFile *file, QWidget *parent, const char *n
 	categoryListView->addColumn(i18n("Category"));
 	categoryListView->addColumn(i18n("Type"));
 	categoryListView->setMultiSelection(false);
-	categoryListView->setColumnWidthMode(0, QListView::Maximum);
+	categoryListView->setColumnWidthMode(0, QListView::Manual);
+	categoryListView->header()->setResizeEnabled(false);
 	
-	// resize the columns in the list view to accomodate all space
-	// there must be a better way of doing this !
-	QFontMetrics met(categoryListView->fontMetrics());
-	int w = (met.boundingRect("Expense").width());
-	//categoryListView->setColumnWidth(1, w+5);
-	//categoryListView->setColumnWidth(0, categoryListView->width()-5-(categoryListView->columnWidth(1)));
-
   refresh();
 
-	connect(categoryListView, SIGNAL(executed(QListViewItem*)), this, SLOT(categoryExecuted(QListViewItem*)));
+	connect(categoryListView, SIGNAL(selectionChanged(QListViewItem*)),
+	  this, SLOT(slotSelectionChanged(QListViewItem*)));
+	connect(buttonEdit, SIGNAL(clicked()), this, SLOT(slotEditClicked()));
 	connect(buttonNew, SIGNAL(clicked()), this, SLOT(slotNewClicked()));
   connect(buttonDelete, SIGNAL(clicked()), this, SLOT(slotDeleteClicked()));
-//  connect(okBtn, SIGNAL(clicked()), this, SLOT(accept()));
 }
 
 KCategoriesDlg::~KCategoriesDlg(){
@@ -101,23 +97,44 @@ void KCategoriesDlg::slotDeleteClicked()
   refresh();
 }
 
-void KCategoriesDlg::categoryExecuted(QListViewItem *item)
+void KCategoriesDlg::resizeEvent(QResizeEvent*)
 {
-  // Might change this slot to be called only when an item selected
+	categoryListView->setColumnWidth(0, categoryListView->width()-105);
+  categoryListView->setColumnWidth(1, 100);
+}
+
+void KCategoriesDlg::slotSelectionChanged(QListViewItem* item)
+{
   KCategoryListItem *kitem = (KCategoryListItem *)item;
-  if (!kitem)
+  if (!kitem) {
+    buttonEdit->setEnabled(false);
+    buttonDelete->setEnabled(false);
+  }
+  else if (kitem->major()) {
+    buttonEdit->setEnabled(true);
+    buttonDelete->setEnabled(true);
+  } else {
+    buttonEdit->setEnabled(false);
+    buttonDelete->setEnabled(true);
+  }
+}
+
+void KCategoriesDlg::slotEditClicked()
+{
+  KCategoryListItem *item = (KCategoryListItem *)categoryListView->selectedItem();
+  if (!item)
     return;
 
-  if (!kitem->major())
-    return;
+  QString prompt;
+  if (item->major()) {
+    MyMoneyCategory category(item->income(), item->text(0), item->minors());
 
-  MyMoneyCategory category(kitem->income(), kitem->text(0), kitem->minors());
+    KNewCategoryDlg dlg(&category, this);
+    if (!dlg.exec())
+      return;
 
-  KNewCategoryDlg dlg(&category, this);
-  if (!dlg.exec())
-    return;
-
-  m_file->addCategory(category.isIncome(), category.name(), category.minorCategories());
-  categoryListView->clear();
-  refresh();
+    m_file->addCategory(category.isIncome(), category.name(), category.minorCategories());
+    categoryListView->clear();
+    refresh();
+  }
 }

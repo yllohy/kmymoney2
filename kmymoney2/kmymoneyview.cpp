@@ -73,14 +73,16 @@ void KMyMoneyView::slotTransactionListChanged()
 
 void KMyMoneyView::slotAccountRightMouse(const MyMoneyAccount, bool inList)
 {
-  KPopupMenu menu(i18n("Account Options"), this);
-  int id1 = menu.insertItem(i18n("Reconcile..."), this, SLOT(slotAccountReconcile()));
+  KPopupMenu menu(this);
+  menu.insertTitle(QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/22x22/actions/account.png")), i18n("Account Options"));
+
+  int id1 = menu.insertItem(QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/16x16/actions/reconcile.png")), i18n("Reconcile..."), this, SLOT(slotAccountReconcile()));
   menu.insertSeparator();
-  int id3 = menu.insertItem(i18n("Edit..."), this, SLOT(slotAccountEdit()));
+  int id3 = menu.insertItem(QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/16x16/actions/account.png")), i18n("Edit..."), this, SLOT(slotAccountEdit()));
   int id4 = menu.insertItem(i18n("Delete..."), this, SLOT(slotAccountDelete()));
   menu.insertSeparator();
-  int id5 = menu.insertItem(i18n("Import ascii..."), this, SLOT(slotAccountImportAscii()));
-  int id6 = menu.insertItem(i18n("Export ascii..."), this, SLOT(slotAccountExportAscii()));
+  int id5 = menu.insertItem(QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/16x16/actions/transaction_import.png")), i18n("Import ascii..."), this, SLOT(slotAccountImportAscii()));
+  int id6 = menu.insertItem(QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/16x16/actions/transaction_export.png")), i18n("Export ascii..."), this, SLOT(slotAccountExportAscii()));
   if (!inList) {
     menu.setItemEnabled(id1, false);
     menu.setItemEnabled(id3, false);
@@ -98,17 +100,16 @@ void KMyMoneyView::slotAccountDoubleClick(const MyMoneyAccount)
     return;
   }
 
-  qDebug("In account double click in kmymoneyview");
   viewTransactionList();
 }
 
 void KMyMoneyView::slotBankRightMouse(const MyMoneyBank, bool inList)
 {
-  qDebug("Creating menu");
-  KPopupMenu menu(i18n("Institution Options"), this);
-  int id1 = menu.insertItem(i18n("New Institution..."), this, SLOT(slotBankNew()));
-  int id2 = menu.insertItem(i18n("New Account..."), this, SLOT(slotAccountNew()));
-  int id3 = menu.insertItem(i18n("Edit..."), this, SLOT(slotBankEdit()));
+  KPopupMenu menu(this);
+  menu.insertTitle(QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/22x22/actions/bank.png")), i18n("Institution Options"));
+  int id1 = menu.insertItem(QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/16x16/actions/bank.png")), i18n("New Institution..."), this, SLOT(slotBankNew()));
+  int id2 = menu.insertItem(QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/16x16/actions/account.png")), i18n("New Account..."), this, SLOT(slotAccountNew()));
+  int id3 = menu.insertItem(QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/16x16/actions/bank.png")), i18n("Edit..."), this, SLOT(slotBankEdit()));
   int id4 = menu.insertItem(i18n("Delete..."), this, SLOT(slotBankDelete()));
   if (!inList) {
     menu.setItemEnabled(id2, false);

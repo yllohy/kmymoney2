@@ -35,10 +35,11 @@ int main(int argc, char *argv[])
 {
 	KAboutData aboutData( "kmymoney2", I18N_NOOP("KMyMoney2"),
 		VERSION, description, KAboutData::License_GPL,
-		"(c) 2000, Michael Edwardes", 0, "kmymoney2.sourceforge.net");
-	aboutData.addAuthor("Michael Edwardes", I18N_NOOP("Main Developer"), "mte@users.sourceforge.net");
-	aboutData.addAuthor("Javier Campos Morales", I18N_NOOP("Developer & Artist"), "javi_c@ctv.es");
-	aboutData.addAuthor("Felix Rodriguez", I18N_NOOP("Developer"), "frodriguez@mail.wesleyan.edu");
+		"(c) 2000, Michael Edwardes", 0, "http://kmymoney2.sourceforge.net");
+	aboutData.addAuthor("Michael Edwardes", I18N_NOOP("Project Manager"), "mte@users.sourceforge.net");
+	aboutData.addAuthor("Felix Rodriguez", I18N_NOOP("Project Admin"), "frodriguez@users.sourceforge.net");
+	aboutData.addAuthor("Javier Campos Morales", I18N_NOOP("Developer & Artist"), "javi_c@users.sourceforge.net");
+	aboutData.addAuthor("John C", I18N_NOOP("Developer"), "tacoturtle@users.sourceforge.net");
 	KCmdLineArgs::init( argc, argv, &aboutData );
 	KCmdLineArgs::addCmdLineOptions( options ); // Add our own options.
 
