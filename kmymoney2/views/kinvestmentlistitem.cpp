@@ -1,7 +1,7 @@
 /***************************************************************************
-                          knewequityentrydlg.h  -  description
+                          kinvestmentlistitem.cpp  -  description
                              -------------------
-    begin                : Tue Jan 29 2002
+    begin                : Wed Feb 6 2002
     copyright            : (C) 2000-2002 by Michael Edwardes
     email                : mte@users.sourceforge.net
                            Javier Campos Morales <javi_c@users.sourceforge.net>
@@ -20,33 +20,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef KNEWEQUITYENTRY_H
-#define KNEWEQUITYENTRY_H
+#include <klistview.h>
+#include "kinvestmentlistitem.h"
 
-#include <qdialog.h>
-#include <klocale.h>
-
-#include "knewequityentrydecl.h"
-
-/**
-	*
-	* Dialog to allow user to enter all data for a stock or mutual fund investment type.
-  *
-  * @author Kevin Tambascio
-  *
-  */
-
-class KNewEquityEntryDlg : public kNewEquityEntryDecl
+KInvestmentListItem::KInvestmentListItem(KListView* parent, MyMoneyAccount *pAccount)
+	: KListViewItem(parent)
 {
-	Q_OBJECT
-public:
-	KNewEquityEntryDlg(QWidget *parent = NULL, const char *name = NULL);
-	~KNewEquityEntryDlg();
 
-protected slots:
-  void onOKClicked();
-	void onCancelClicked();	
-	
-};
+}
 
-#endif
+KInvestmentListItem::~KInvestmentListItem()
+{
+
+}

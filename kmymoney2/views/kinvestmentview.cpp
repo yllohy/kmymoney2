@@ -25,13 +25,19 @@
 #include <kiconloader.h>
 #include <klistview.h>
 #include <kpopupmenu.h>
+#include <kmessagebox.h>
+#include <knuminput.h>
 
 #include <qpushbutton.h>
 #include <kcombobox.h>
 #include <qtabwidget.h>
 #include <qtable.h>
 #include <qinputdialog.h>
+#include <qlineedit.h>
 
+#include "../mymoney/mymoneyfile.h"
+#include "../mymoney/mymoneyutils.h"
+#include "../mymoney/mymoneyequity.h"
 #include "../mymoney/mymoneytransaction.h"
 #include "../mymoney/mymoneyinvesttransaction.h"
 #include "../widgets/kmymoneytable.h"
@@ -44,9 +50,9 @@ KInvestmentView::KInvestmentView(QWidget *parent, const char *name)
 {
 	m_pAccount 	= NULL;
 	m_popMenu		= NULL;
-	
+
 	qDebug("KInvestmentView::KInvestmentView: Investment View starting up");
-	
+
 	investmentTable->setRootIsDecorated(true);
 	investmentTable->setColumnText(0, QString(i18n("Symbol")));
   investmentTable->addColumn(i18n("Name"));
@@ -84,9 +90,9 @@ bool KInvestmentView::init(MyMoneyAccount *pAccount)
 	{
 		return false;
 	}
-	
+
 	m_pAccount = pAccount;
-  KConfig *config = KGlobal::config();
+//  KConfig *config = KGlobal::config();
   QDateTime defaultDate = QDate::currentDate();
   QDate qdateStart = QDate::currentDate();//config->readDateTimeEntry("StartDate", &defaultDate).date();
 
@@ -123,12 +129,12 @@ bool KInvestmentView::init(MyMoneyAccount *pAccount)
     }
 	}
 
-	
-		
+
+
 	return true;
 }
 /** No descriptions */
-void KInvestmentView::UpdateDisplay()
+void KInvestmentView::updateDisplay()
 {
 	//for(emp=list.first(); emp != 0; emp=list.next())
 	//{
@@ -138,12 +144,49 @@ void KInvestmentView::UpdateDisplay()
 
 void KInvestmentView::slotNewInvestment()
 {
+	MyMoneyEquity *pEquity = NULL;
 	KNewEquityEntryDlg *pDlg = new KNewEquityEntryDlg(this);
 	pDlg->exec();
 	int nResult = pDlg->result();
 	if(nResult)
 	{
+		pEquity = new MyMoneyEquity;
+    if(pEquity)
+    {
+			//populate this equity entry with information from the dialog.
+			pEquity->setEquityName(String(pDlg->edtEquityName->text()));
+			pEquity->setEquitySymbol(String(pDlg->edtMarketSymbol->text()));
+			pEquity->setEquityType(String(pDlg->cmbInvestmentType->currentText()));
+    	MyMoneyMoney money(pDlg->dblCurrentPrice->value());
+    	pEquity->setCurrentPrice(&money);
+    	addEquityEntry(pEquity);
+    }
 	}
+}
+
+void KInvestmentView::addEquityEntry(MyMoneyEquity *pEntry)
+{
+	if(m_pAccount)
+	{
+		MyMoneyBank *pBank = m_pAccount->bank();
+		if(pBank)
+		{
+			MyMoneyFile *pFile = pBank->file();
+			if(pFile)
+			{
+				pFile->addEquityEntry(pEntry);
+			}
+		}
+	}
+}
+
+void KInvestmentView::displayNewEquity(const MyMoneyEquity *pEntry)
+{
+}
+
+void KInvestmentView::slotEditInvestment()
+{
+	
 }
 
 void KInvestmentView::slotListDoubleClicked(QListViewItem* pItem, const QPoint& pos, int c)
@@ -157,7 +200,9 @@ void KInvestmentView::slotListRightMouse(QListViewItem* item, const QPoint& poin
   m_popMenu = new KPopupMenu(this);
   m_popMenu->insertTitle(kiconloader->loadIcon("transaction", KIcon::MainToolbar), i18n("Transaction Options"));
   m_popMenu->insertItem(kiconloader->loadIcon("edit", KIcon::Small), i18n("New Investment"), this, SLOT(slotNewInvestment()));
-  //m_popMenu = m_contextMenu->insertItem(kiconloader->loadIcon("delete", KIcon::Small),
+  m_popMenu->insertItem(kiconloader->loadIcon("edit", KIcon::Small), i18n("Edit Investment Properties"), this, SLOT(slotEditInvestment()));
+
+	//m_popMenu = m_contextMenu->insertItem(kiconloader->loadIcon("delete", KIcon::Small),
   //                      i18n("Delete ..."),
   //                      this, SLOT(slotDeleteSplitTransaction()));
   if(m_popMenu)

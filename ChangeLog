@@ -1,3 +1,6 @@
+2002-02-07 Kevin Tambascio <ktambascio@users.sourceforge.net>
+  * More changes for stock transactions.
+
 2002-02-07 Michael Edwardes <mte@users.sourceforge.net>
   * Some views now emit activated signals.
   * KMyMoneyView prepped for new toolbar/menu entry enabling code
@@ -701,6 +704,7 @@
 	* Added .cvsignore in all project.
 
  
+
 
 
 

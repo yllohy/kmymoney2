@@ -31,6 +31,7 @@
   *@author Kevin Tambascio
   */
 
+#include "mymoneymoney.h"
 #include "mymoneyutils.h"
 
 class MyMoneyEquity
@@ -59,12 +60,17 @@ public:
 	String 	getEquityMarket() 											{ return m_strEquityMarket; }
 	void			setEquityMarket(const String& str)		{ m_strEquityMarket = str; }
 
+	MyMoneyMoney		getCurrentPrice()								{ return m_CurrentPrice; }
+	void						setCurrentPrice(const MyMoneyMoney *m)	{ m_CurrentPrice = *m; }
+  /** No descriptions */
+  void setEquityType(const String& str);
+	
 private:
 	String m_strEquityName;
 	String m_strEquitySymbol;
 	String m_strEquityMarket;
 	eEQUITYTYPE m_equityType;
-	DLONG	m_lCurrentPrice;
+	MyMoneyMoney m_CurrentPrice;
 };
 
 #endif

@@ -15,6 +15,9 @@
 /* Define if you have the res_init function.  */
 #undef HAVE_RES_INIT
 
+/* Define if you have libcppunit */
+#undef HAVE_LIBCPPUNIT
+
 /* Name of package */
 #undef PACKAGE
 

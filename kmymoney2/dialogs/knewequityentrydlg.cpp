@@ -46,9 +46,10 @@
 #include "knewequityentrydlg.h"
 
 KNewEquityEntryDlg::KNewEquityEntryDlg(QWidget *parent, const char *name)
-	: kNewEquityEntryDecl(parent, name)
+	: kNewEquityEntryDecl(parent, name, TRUE)
 {
-	connect(btnOK, SIGNAL(clicked()), this, SLOT(slotOKClicked()));
+	connect(btnOK, SIGNAL(clicked()), this, SLOT(onOKClicked()));
+	connect(btnCancel, SIGNAL(clicked()), this, SLOT(onCancelClicked()));
 }
 
 KNewEquityEntryDlg::~KNewEquityEntryDlg()
@@ -57,5 +58,10 @@ KNewEquityEntryDlg::~KNewEquityEntryDlg()
 /** No descriptions */
 void KNewEquityEntryDlg::onOKClicked()
 {
-	done(1);
+	accept();
+}
+
+void KNewEquityEntryDlg::onCancelClicked()
+{
+	reject();
 }

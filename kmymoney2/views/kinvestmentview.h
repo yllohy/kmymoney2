@@ -25,6 +25,7 @@
 
 #include <qlist.h>
 #include <kpopupmenu.h>
+#include "../mymoney/mymoneyequity.h"
 #include "kinvestmentviewdecl.h"
 
 class MyMoneyAccount;
@@ -41,10 +42,18 @@ class KInvestmentView : public kInvestmentViewDecl
 public: 
 	KInvestmentView(QWidget *parent=0, const char *name=0);
 	~KInvestmentView();
+
   /** No descriptions */
   bool init(MyMoneyAccount *pAccount);
+
   /** No descriptions */
-  void UpdateDisplay();
+  void updateDisplay();
+
+  /** No description */
+  void displayNewEquity(const MyMoneyEquity *pEntry);
+
+  /** No description */
+  void addEquityEntry(MyMoneyEquity *pEntry);
 
 protected slots:
 	/**
@@ -57,6 +66,7 @@ protected slots:
 	*/
   void slotListRightMouse(QListViewItem* item, const QPoint& point, int);
   void slotNewInvestment();
+	void slotEditInvestment();
 
 private:
 	KPopupMenu* m_popMenu;

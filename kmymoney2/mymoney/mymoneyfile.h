@@ -25,6 +25,8 @@
 #include "mymoneybank.h"
 #include "mymoneypayee.h"
 #include "mymoneycategory.h"
+#include "mymoneyequity.h"
+#include "mymoneyequitylist.h"
 
 /**
   * This class is used by the GUI to interrogate the transaction engine.  It is not
@@ -38,7 +40,7 @@
   * @see MyMoneyBank
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: mymoneyfile.h,v 1.10 2002/01/14 06:42:30 ipwizard Exp $
+  * $Id: mymoneyfile.h,v 1.11 2002/02/07 23:56:58 ktambascio Exp $
   *
   * @short A representation of the file format used by KMyMoney2.
 **/
@@ -88,7 +90,8 @@ private:
   QList<MyMoneyCategory> m_categoryList;
   bool findBankPosition(const MyMoneyBank& bank, unsigned int&);
 
-
+	MyMoneyEquityList m_equityList;
+	
 public:
   /**
     * Standard constructor.  Just sets up some default values.
@@ -263,6 +266,9 @@ public:
   MyMoneyFile& operator = (const MyMoneyFile&);
 
   int categoryCount(void);
+
+  /** No descriptions */
+  void addEquityEntry(MyMoneyEquity *pEntry);
 };
 
 #endif

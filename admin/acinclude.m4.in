@@ -595,6 +595,7 @@ AC_DEFUN(KDE_MISC_TESTS,
 [
    AC_LANG_C
    dnl Checks for libraries.
+   AC_REQUIRE([AC_FIND_CPPUNIT])
    AC_CHECK_LIB(util, main, [LIBUTIL="-lutil"]) dnl for *BSD 
    AC_SUBST(LIBUTIL)
    AC_CHECK_LIB(compat, main, [LIBCOMPAT="-lcompat"]) dnl for *BSD
@@ -2022,6 +2023,41 @@ Disabling JPEG support.
 fi
 
 AC_SUBST(LIBJPEG)
+])
+
+AC_DEFUN(AC_FIND_CPPUNIT,
+[
+AC_REQUIRE([KDE_CHECK_EXTRA_LIBS])
+AC_MSG_CHECKING([for libcppunit])
+AC_CACHE_VAL(ac_cv_lib_cppunit,
+[
+AC_LANG_SAVE
+AC_LANG_CPLUSPLUS
+kde_save_LIBS="$LIBS"
+LIBS="$all_libraries $USER_LDFLAGS -lcppunit $LIBSOCKET"
+kde_save_CFLAGS="$CFLAGS"
+CFLAGS="$CFLAGS $all_includes $USER_INCLUDES"
+AC_TRY_LINK(dnl
+[
+#include<cppunit/TestSuite.h>
+],
+            [ CppUnit::TestSuite suite; ],
+            eval "ac_cv_lib_cppunit='-lcppunit'",
+            eval "ac_cv_lib_cppunit=no")
+LIBS="$kde_save_LIBS"
+CFLAGS="$kde_save_CFLAGS"
+])dnl
+if test ! "$ac_cv_lib_cppunit" = no; then
+  AC_DEFINE_UNQUOTED(HAVE_LIBCPPUNIT, 1, [Define if you have libcppunit])
+  LIB_CPPUNIT="$ac_cv_lib_cppunit"
+  AC_SUBST(LIB_CPPUNIT)
+  AC_MSG_RESULT($ac_cv_lib_cppunit)
+else
+  AC_MSG_WARN(not found. Automatic tests will be disabled)
+  LIB_CPPUNIT=""
+  AC_SUBST(LIB_CPPUNIT)
+fi
+AC_LANG_RESTORE
 ])
 
 AC_DEFUN(AC_FIND_ZLIB,

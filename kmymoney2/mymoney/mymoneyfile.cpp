@@ -29,8 +29,10 @@
 #include <qdatastream.h>
 
 #include "mymoneyaccount.h"
-
 #include "mymoney_config.h"
+#include "mymoneyequity.h"
+#include "mymoneyequitylist.h"
+
 
 MyMoneyFile::MyMoneyFile(void)
 {
@@ -678,4 +680,9 @@ void MyMoneyFile::removePayee(const QString name)
 int MyMoneyFile::categoryCount(void)
 {
   return m_categoryList.count();
+}
+
+void MyMoneyFile::addEquityEntry(MyMoneyEquity *pEntry)
+{
+	m_equityList.addEquity(pEntry);
 }

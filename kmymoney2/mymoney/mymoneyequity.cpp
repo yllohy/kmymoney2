@@ -26,9 +26,32 @@
 MyMoneyEquity::MyMoneyEquity()
 {
 	m_equityType = ETYPE_NONE;
-	m_lCurrentPrice = 0;
+	//m_lCurrentPrice = 0;
 }
 
 MyMoneyEquity::~MyMoneyEquity()
 {
+}
+/** No descriptions */
+void MyMoneyEquity::setEquityType(const String& str)
+{
+	if(str.size())
+	{
+		if(!str.find(i18n("Stock")))
+		{
+			setEquityType(ETYPE_STOCK);
+		}
+		else if(!str.find(i18n("Mutual Fund")))
+		{
+			setEquityType(ETYPE_MUTUALFUND);
+		}
+		else if(!str.find(i18n("Bond")))
+		{
+			setEquityType(ETYPE_BOND);
+		}
+		else
+		{
+			setEquityType(ETYPE_NONE);
+		}
+	}
 }
