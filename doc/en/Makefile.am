@@ -6,5 +6,6 @@ EXTRA_DIST = index.docbook
 ####### kdevelop will overwrite this part!!! (end)############
 
 KDE_LANG = en
-KDE_DOCS = AUTO
+KDE_DOCS = kmymoney2
+
 
