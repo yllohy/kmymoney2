@@ -55,8 +55,8 @@ public:
   };
 
 protected:
-   void          setProgressCallback(void(*callback)(int, int, const QString&)) {};
-
+   void          setProgressCallback(void(*callback)(int, int, const QString&));
+   void          signalProgress(int current, int total, const QString& = "");
 private:
   IMyMoneySerialize *m_storage;
   QDomDocument *m_doc;
@@ -141,6 +141,7 @@ private:
   QDomElement findChildElement(const QString& name, const QDomElement& root);
   
 private:
+  void (*m_progressCallback)(int, int, const QString&);
   /**
     * This member is used to store the file version information
     * obtained while reading a file.
@@ -174,6 +175,9 @@ private:
   const unsigned long extractId(const QCString& txt) const;
   QDate getDate(const QString& strText) const;
   QString getString(const QDate& date) const;
+  const QCString QCStringEmpty(const QString& val) const;
+  const QString QStringEmpty(const QString& val) const;
+  const uint getChildCount(const QDomElement& element) const;
 };
 
 #endif

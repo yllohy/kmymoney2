@@ -2,7 +2,7 @@ A.el { text-decoration: none; }
 A.elRef { font-weight: bold }
 A.code { text-decoration: none; font-weight: normal; color: #4C59A6 }
 A.codeRef { font-weight: normal; color: #4C59A6 }
-A:hover { text-decoration: none; font-weight: bold; color: #4C59A6 }
+A:hover { text-decoration: none; font-weight: normal; color: #4C59A6 }
 
 td
 {
