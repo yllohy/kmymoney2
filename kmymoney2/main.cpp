@@ -60,17 +60,28 @@ int main(int argc, char *argv[])
   a.setMainWidget( kmymoney2 );
   kmymoney2->show();
 
+  int rc = 0;
+
+#ifdef _CHECK_MEMORY
+  _CheckMemory_Init(0);
+#endif
+
 	if (kmymoney2->startWithDialog()) {
 	  if (kmymoney2->initWizard()) {
   		args->clear();
-	  return  a.exec();
+      rc = a.exec();
 	  }
 	} else {
 		args->clear();
-	  return a.exec();
+	  rc = a.exec();
 	}
 
-  return 0;
+#ifdef _CHECK_MEMORY
+  chkmem.CheckMemoryLeak( false );
+  _CheckMemory_End();
+#endif
+
+  return rc;
 }
 
 void timetrace(char *txt)
