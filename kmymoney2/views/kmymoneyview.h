@@ -61,7 +61,7 @@ class MyMoneyTransaction;
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.41 2003/09/15 16:47:06 mte Exp $
+  * $Id: kmymoneyview.h,v 1.42 2003/09/26 13:37:12 mte Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -116,7 +116,8 @@ private:
   
   // The schedule view
   // KScheduleView *m_scheduledView;
-
+  bool m_bankRightClick;
+  MyMoneyInstitution m_accountsInstitution;
 private:
   /**
     * This method gets a filename from the user for the template
@@ -211,6 +212,7 @@ public:
   /**
 
     * Creates a new file first making sure that one isn't open already.  Opens
+
     * up a KNewFileDlg to input the new details.
     *
     * @see MyMoneyFile
@@ -344,6 +346,21 @@ public slots:
     * @see MyMoneyAccount
   **/
   void slotAccountNew(void);
+
+  /**
+    * Called whenever the user wishes to create a new account by right clicking on
+    * an institution.  Brings up the input dialog and saves the information.
+    *
+    * This exists so that the institution can be pre-set in the account wizard.
+    *
+    * @see KBanksView
+    * @see KNewAccountDlg
+
+
+    * @see MyMoneyFile
+    * @see MyMoneyAccount
+  **/
+  void slotBankAccountNew(void);
 
   /**
     * Called whenever the user wishes to create a new category.  Brings up the input

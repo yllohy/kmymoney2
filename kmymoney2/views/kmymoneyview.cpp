@@ -94,7 +94,8 @@
 KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   : KJanusWidget(parent, name, KJanusWidget::IconList),
   m_searchDlg(0),
-  m_fileOpen(false)
+  m_fileOpen(false),
+  m_bankRightClick(false)
 {
   // the global variable kmymoney2 is not yet assigned. So we construct it here
   QObject* kmymoney2 = parent->parent();
@@ -217,7 +218,8 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
 
   m_bankMenu = new KPopupMenu(this);
   m_bankMenu->insertTitle(kiconloader->loadIcon("bank", KIcon::MainToolbar), i18n("Institution Options"));
-  m_bankMenu->insertItem(kiconloader->loadIcon("account", KIcon::Small), i18n("New Account..."), this, SLOT(slotAccountNew()));
+  // Use a proxy slot
+  m_bankMenu->insertItem(kiconloader->loadIcon("account", KIcon::Small), i18n("New Account..."), this, SLOT(slotBankAccountNew()));
   m_bankMenu->insertItem(kiconloader->loadIcon("bank", KIcon::Small), i18n("Edit..."), this, SLOT(slotBankEdit()));
   m_bankMenu->insertItem(kiconloader->loadIcon("delete", KIcon::Small), i18n("Delete..."), this, SLOT(slotBankDelete()));
   
@@ -780,11 +782,13 @@ void KMyMoneyView::slotBankNew(void)
 
 void KMyMoneyView::slotCategoryNew(void)
 {
+  m_bankRightClick=false;
   accountNew(true);
 }
 
 void KMyMoneyView::slotAccountNew(void)
 {
+  m_bankRightClick=false;
   accountNew(false);
 }
 
@@ -804,6 +808,11 @@ void KMyMoneyView::accountNew(const bool createCategory)
     // wizard selected
     m_newAccountWizard->setAccountName("");
     m_newAccountWizard->setOpeningBalance(0);
+
+    // Preselect the institution if we right clicked on a bank
+    if (m_bankRightClick)
+      m_newAccountWizard->setInstitution(m_accountsInstitution);
+      
     if((dialogResult = m_newAccountWizard->exec()) == QDialog::Accepted) {
       newAccount = m_newAccountWizard->account();
       parentAccount = m_newAccountWizard->parentAccount();
@@ -1517,4 +1526,18 @@ void KMyMoneyView::slotRememberPage(QWidget* w)
   config->setGroup("Last Use Settings");
   config->writeEntry("LastViewSelected", pageIndex(w));
   config->sync();
+}
+
+void KMyMoneyView::slotBankAccountNew()
+{
+  m_bankRightClick = true;
+  try
+  {
+    m_accountsInstitution = MyMoneyFile::instance()->institution(m_accountsView->currentInstitution(m_bankRightClick));
+  }
+  catch (MyMoneyException *e)
+  {
+    delete e;
+  }
+  accountNew(false);
 }
