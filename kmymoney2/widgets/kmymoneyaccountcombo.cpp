@@ -59,7 +59,6 @@ kMyMoneyAccountCombo::~kMyMoneyAccountCombo()
 
 void kMyMoneyAccountCombo::slotButtonPressed(void)
 {
-  m_selector->loadList();
   m_selector->show();
 }
 
@@ -152,3 +151,22 @@ int kMyMoneyAccountCombo::loadList(KMyMoneyUtils::categoryTypeE typeMask)
   return m_selector->loadList(typeList);
 }
 
+void kMyMoneyAccountCombo::keyPressEvent(QKeyEvent* k)
+{
+  KPushButton::keyPressEvent(k);
+
+  switch(k->key()) {
+    case Qt::Key_Return:
+    case Qt::Key_Enter:
+      emit signalEnter();
+      break;
+
+    case Qt::Key_Escape:
+      emit signalEsc();
+      break;
+
+    case Qt::Key_Tab:
+      break;
+  }
+  return;
+}

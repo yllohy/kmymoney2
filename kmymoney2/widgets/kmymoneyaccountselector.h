@@ -378,6 +378,8 @@ protected slots:
 protected:
   KListView*                m_listView;
   QValueList<int>           m_typeList;
+  QCStringList              m_accountList;
+  QString                   m_baseName;
   // KMyMoneyUtils::categoryTypeE m_typeMask;
   KPushButton*              m_allAccountsButton;
   KPushButton*              m_noAccountButton;

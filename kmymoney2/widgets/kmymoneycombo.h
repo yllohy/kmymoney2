@@ -38,7 +38,7 @@
 
 class kMyMoneyCombo : public KComboBox
 {
-	Q_OBJECT
+  Q_OBJECT
 public:
   kMyMoneyCombo(QWidget *w, const char *name=0);
   kMyMoneyCombo(bool rw, QWidget *w, const char *name=0);
@@ -77,6 +77,8 @@ public:
     * @return QCString The account id or QCString() if not found
   **/
   QCString currentAccountId(void);
+
+  virtual void keyPressEvent(QKeyEvent* e);
 
 private:
   /// perform initialization required for all constructors

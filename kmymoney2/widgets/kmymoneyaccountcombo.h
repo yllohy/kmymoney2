@@ -79,6 +79,8 @@ public:
     */
   const QCStringList selectedAccounts(void) const { return m_selector->selectedAccounts(); };
 
+  virtual void keyPressEvent(QKeyEvent* e);
+
 public slots:
   void slotButtonPressed(void);
 
@@ -87,6 +89,17 @@ protected slots:
 
 signals:
   void accountSelected(const QCString&);
+
+  /**
+    * This signal is emitted when the user presses RETURN while this widget has the focus
+    */
+  void signalEnter();
+
+  /**
+    * This signal is emitted when the user presses ESC while this widget has the focus
+    */
+  void signalEsc();
+
 
 protected:
   void drawButton(QPainter *p);

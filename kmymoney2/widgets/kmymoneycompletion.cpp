@@ -65,6 +65,10 @@ void kMyMoneyCompletion::adjustSize(const int count)
   if(m_parent && w < m_parent->width())
     w = m_parent->width();
 
+  QFontMetrics fm(font());
+  if(w < fm.maxWidth()*15)
+    w = fm.maxWidth()*15;
+
   QListViewItem* item = m_lv->firstChild();
   int h = item->height() * (count > MAX_ITEMS ? MAX_ITEMS : count);
 

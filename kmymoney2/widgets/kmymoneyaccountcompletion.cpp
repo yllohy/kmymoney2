@@ -70,7 +70,7 @@ const int kMyMoneyAccountCompletion::loadList(const QString& baseName, const QVa
   m_baseName = baseName;
   m_accountIdList = accountIdList;
 
-  return m_accountSelector->loadList(baseName, accountIdList);
+  return m_accountSelector->loadList(baseName, accountIdList, clear);
 }
 
 void kMyMoneyAccountCompletion::show(void)
@@ -105,9 +105,10 @@ void kMyMoneyAccountCompletion::show(void)
     if((m_typeList.contains(MyMoneyAccount::Expense)) > 0)
       ++count;
 
-    if(!m_id.isEmpty())
-      m_accountSelector->setSelected(m_id);
   }
+  if(!m_id.isEmpty())
+    m_accountSelector->setSelected(m_id);
+
   adjustSize(count);
 
   kMyMoneyCompletion::show();

@@ -304,6 +304,7 @@ const int kMyMoneyAccountSelector::loadList(QValueList<int> typeList)
   MyMoneyFile* file = MyMoneyFile::instance();
   int count = 0;
   int typeMask = 0;
+  m_baseName = QString();
 
   if((typeList.contains(MyMoneyAccount::Checkings)
     + typeList.contains(MyMoneyAccount::Savings)
@@ -394,6 +395,9 @@ const int kMyMoneyAccountSelector::loadList(const QString& baseName, const QValu
   MyMoneyFile* file = MyMoneyFile::instance();
   int count = 0;
   kMyMoneyCheckListItem* item = 0;
+  m_typeList.clear();
+  m_baseName = baseName;
+  m_accountList = accountIdList;
 
   if(clear)
     m_listView->clear();
@@ -720,7 +724,11 @@ void kMyMoneyAccountSelector::update(const QCString& /* id */)
   QCStringList list = selectedAccounts();
   QCStringList::Iterator it;
 
-  loadList(m_typeList);
+  if(!m_typeList.isEmpty())
+    loadList(m_typeList);
+  else if(!m_baseName.isEmpty()) {
+    loadList(m_baseName, m_accountList);
+  }
 
   // because loadList() sets all accounts selected, we have to
   // clear the selection and only turn on those, that were on

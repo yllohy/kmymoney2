@@ -49,6 +49,26 @@ kMyMoneyCombo::~kMyMoneyCombo()
 {
 }
 
+void kMyMoneyCombo::keyPressEvent(QKeyEvent* k)
+{
+  KComboBox::keyPressEvent(k);
+
+  switch(k->key()) {
+    case Qt::Key_Return:
+    case Qt::Key_Enter:
+      emit signalEnter();
+      break;
+
+    case Qt::Key_Escape:
+      emit signalEsc();
+      break;
+
+    case Qt::Key_Tab:
+      break;
+  }
+  return;
+}
+
 bool kMyMoneyCombo::eventFilter(QObject *o, QEvent *e)
 {
   bool rc = KComboBox::eventFilter(o, e);
