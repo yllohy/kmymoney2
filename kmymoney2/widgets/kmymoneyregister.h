@@ -76,6 +76,7 @@ public:
 
   void clearCellWidget(int row, int col) {};
   QWidget* cellWidget(int row, int col) const { return NULL; };
+  QWidget* createEditor(int row, int col, bool initFromCell) const;
 
   /**
     * Return the number of table rows displayed per transaction
@@ -97,8 +98,19 @@ public:
     * transaction in the register.
     *
     * @param idx index into transaction table
+    * @return true if a different transaction is selected,
+    *         false otherwise.
     */
-  void setCurrentTransactionIndex(int idx);
+  bool setCurrentTransactionIndex(int idx);
+
+  /**
+    * This method is used to set the inline editing availability
+    *
+    * @param editing bool flag. if set, inline editing in the register
+    *                is available, if reset, cells of the register are
+    *                read-only.
+    */
+  void setInlineEditingAvailable(const bool editing);
 
 public slots:
   /**
@@ -158,6 +170,12 @@ protected:
   MyMoneyTransaction const * m_transaction;
   MyMoneyMoney m_balance;
   MyMoneySplit m_split;
+
+  /**
+    * This member is set, if editing inside the register is available.
+    * If reset, the cells of the register are read-only
+    */
+  bool m_inlineEditAvailable;
 };
 
 #endif

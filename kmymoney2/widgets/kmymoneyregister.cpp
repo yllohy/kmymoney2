@@ -171,10 +171,24 @@ void kMyMoneyRegister::contentsMouseReleaseEvent( QMouseEvent* e )
 */
 }
 
-void kMyMoneyRegister::setCurrentTransactionIndex(int idx)
+bool kMyMoneyRegister::setCurrentTransactionIndex(int idx)
 {
   if(idx < 0)
     idx = 0;
 
+  bool rc = (idx != m_currentTransactionIndex);
+
   m_currentTransactionIndex = idx;
+
+  return rc;
+}
+
+QWidget* kMyMoneyRegister::createEditor(int row, int col, bool initFromCell) const
+{
+  return QTable::createEditor(row, col, initFromCell);
+}
+
+void kMyMoneyRegister::setInlineEditingAvailable(const bool editing)
+{
+  m_inlineEditAvailable = editing;
 }

@@ -295,3 +295,10 @@ void kMyMoneyRegisterCheckings::adjustColumn(int col)
   setColumnWidth( col, w );
 }
 
+QWidget* kMyMoneyRegisterCheckings::createEditor(int row, int col, bool initFromCell) const
+{
+  if(!m_inlineEditAvailable)
+    return 0;
+
+  return kMyMoneyRegister::createEditor(row, col, initFromCell);
+}

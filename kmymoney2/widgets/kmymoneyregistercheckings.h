@@ -47,6 +47,8 @@ public:
 	kMyMoneyRegisterCheckings(QWidget *parent=0, const char *name=0);
 	~kMyMoneyRegisterCheckings();
 
+  QWidget* createEditor(int row, int col, bool initFromCell) const;
+
 public slots:
   void adjustColumn(int col);
 

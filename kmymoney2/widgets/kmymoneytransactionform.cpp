@@ -45,7 +45,7 @@
 
 #include "kmymoneytransactionform.h"
 
-kMyMoneyTransactionFormTable::kMyMoneyTransactionFormTable( QWidget* parent = 0, const char* name = 0)
+kMyMoneyTransactionFormTable::kMyMoneyTransactionFormTable( QWidget* parent, const char* name)
   : QTable(parent, name)
 {
 }
@@ -171,6 +171,7 @@ kMyMoneyTransactionForm::kMyMoneyTransactionForm( QWidget* parent,  const char* 
   QColorGroup cg = palette.active();
   cg.setBrush(QColorGroup::Base, cg.brush(QColorGroup::Background));
   palette.setActive(cg);
+  palette.setInactive(cg);
   formTable->setPalette(palette);
 
   formLayout->addWidget( formFrame );
