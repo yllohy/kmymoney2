@@ -11,9 +11,12 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifdef HAVE_CONFIG_H
 #include "config.h"
+#endif
 
-#include "kstartdlg.h"
+// ----------------------------------------------------------------------------
+// QT Includes
 
 #include <qvbox.h>
 #include <qlayout.h>
@@ -22,6 +25,9 @@
 #include <qpixmap.h>
 #include <qtextview.h>
 #include <qlabel.h>
+
+// ----------------------------------------------------------------------------
+// KDE Includes
 
 #if QT_VERSION > 300
 #include <kstandarddirs.h>
@@ -39,17 +45,23 @@
 #include <kio/netaccess.h>
 #include <kmessagebox.h>
 
+// ----------------------------------------------------------------------------
+// Project Includes
+
+#include "kstartdlg.h"
 #include "krecentfileitem.h"
+
+#include <qtooltip.h>
 
 KStartDlg::KStartDlg(QWidget *parent, const char *name, bool modal) : KDialogBase(IconList,i18n("Start Dialog"),Help|Ok|Cancel,Ok, parent, name, modal, true)
 {
-	setPage_Template();
+  setPage_Template();
   setPage_Documents();
 
-	isnewfile = false;
-	isopenfile = false;
+  isnewfile = false;
+  isopenfile = false;
 
-	readConfig();
+  readConfig();
 }
 
 KStartDlg::~KStartDlg()
@@ -60,7 +72,7 @@ KStartDlg::~KStartDlg()
 void KStartDlg::setPage_Template()
 {
   KIconLoader *ic = KGlobal::iconLoader();
-	templateMainFrame = addVBoxPage( i18n("Templates"), i18n("Select templates"), DesktopIcon("wizard"));
+  templateMainFrame = addVBoxPage( i18n("Templates"), i18n("Select templates"), DesktopIcon("wizard"));
   view_wizard = new KIconView( templateMainFrame, "view_options" );
   (void)new QIconViewItem( view_wizard, i18n("Blank Document"), ic->loadIcon("mime_empty.png", KIcon::Desktop, KIcon::SizeLarge)/*QPixmap( locate("icon","hicolor/48x48/mimetypes/mime_empty.png") )*/ );
   connect( view_wizard, SIGNAL( executed(QIconViewItem *) ), this, SLOT( slotTemplateClicked(QIconViewItem *) ) );
@@ -71,20 +83,20 @@ void KStartDlg::setPage_Template()
 /** Set the Misc options Page of the preferences dialog */
 void KStartDlg::setPage_Documents()
 {
-	recentMainFrame = addPage( i18n("Open"), i18n("Open a KMyMoney document"), DesktopIcon("fileopen"));
+  recentMainFrame = addPage( i18n("Open"), i18n("Open a KMyMoney document"), DesktopIcon("fileopen"));
   QVBoxLayout *mainLayout = new QVBoxLayout( recentMainFrame );
 
   kurlrequest = new KURLRequester( recentMainFrame, "kurlrequest" );
 
-	//allow user to select either a .kmy file, or any generic file.
+  //allow user to select either a .kmy file, or any generic file.
   kurlrequest->fileDialog()->setFilter( i18n("%1|KMyMoney files (*.kmy)\n" "%2|All files (*.*)").arg("*.kmy").arg("*.*") );
   kurlrequest->fileDialog()->setMode(KFile::File || KFile::ExistingOnly);
   kurlrequest->fileDialog()->setURL(KURL(KGlobalSettings::documentPath()));
   mainLayout->addWidget( kurlrequest );
 
-	QLabel *label1 = new QLabel( recentMainFrame, "label1" );
-	label1->setText( i18n("Recent Files") );
-	mainLayout->addWidget( label1 );
+  QLabel *label1 = new QLabel( recentMainFrame, "label1" );
+  label1->setText( i18n("Recent Files") );
+  mainLayout->addWidget( label1 );
   view_recent = new KIconView( recentMainFrame, "view_recent" );
   connect( view_recent, SIGNAL( executed(QIconViewItem *) ), this, SLOT( slotRecentClicked(QIconViewItem *) ) );
   mainLayout->addWidget( view_recent );
@@ -107,42 +119,41 @@ void KStartDlg::slotTemplateClicked(QIconViewItem *item)
 
   isopenfile = false;
   // Close the window if the user press an icon
-	slotOk();
+  slotOk();
 }
 
 /** Read config window */
 void KStartDlg::readConfig()
 {
-	QString key;
-	QString value = "";
+  QString value;
+  unsigned int i = 1;
 
-	KConfig *config = KGlobal::config();
+  KConfig *config = KGlobal::config();
   KIconLoader *il = KGlobal::iconLoader();
 
-	config->setGroup("Recent Files");
-
-	// read file list
-	uint i=1;
-	while( !value.isNull() )
-	{
-		key = QString( "File%1" ).arg( i );
-		value = config->readEntry( key, QString::null );
-		if( !value.isNull() && fileExists(value) )
+  // read file list
+  do {
+    // for some reason, I had to setup the group to get reasonable results
+    // after program startup. If the wizard was opened the second time,
+    // it does not make a difference, if you call setGroup() outside of
+    // this loop. The first time it does make a difference!
+    config->setGroup("Recent Files");
+    value = config->readEntry( QString( "File%1" ).arg( i ), QString::null );
+    if( !value.isNull() && fileExists(value) )
     {
       QString file_name = value.mid(value.findRev('/')+1);
-			(void)new KRecentFileItem( value, view_recent, file_name, il->loadIcon("kmy", KIcon::Desktop, KIcon::SizeLarge));
-  		i++;
+      (void)new KRecentFileItem( value, view_recent, file_name, il->loadIcon("kmy", KIcon::Desktop, KIcon::SizeLarge));
     }
-	}
+    i++;
+  } while( !value.isNull() );
 
-	config->setGroup("Start Dialog");
-	QSize *defaultSize = new QSize(400,300);
-	this->resize( config->readSizeEntry("Geometry", defaultSize ) );
+  config->setGroup("Start Dialog");
+  QSize *defaultSize = new QSize(400,300);
+  this->resize( config->readSizeEntry("Geometry", defaultSize ) );
 
   // Restore the last page viewed
   // default to the recent files page if no entry exists
   this->showPage(config->readNumEntry("LastPage", this->pageIndex(recentMainFrame)));
-
 }
 
 /** Write config window */
@@ -163,16 +174,16 @@ void KStartDlg::slotRecentClicked(QIconViewItem *item)
   if(!kitem) return;
 
   isopenfile = true;
-	kurlrequest->setURL( kitem->fileURL() );
+  kurlrequest->setURL( kitem->fileURL() );
   // Close the window if the user press an icon
-	slotOk();
+  slotOk();
 }
 
 /** No descriptions */
 void KStartDlg::slotOk()
 {
-	writeConfig();
-	this->accept();	
+  writeConfig();
+  this->accept();	
 }
 
 bool KStartDlg::fileExists(KURL url)
@@ -187,9 +198,10 @@ void KStartDlg::slotTemplateSelectionChanged(QIconViewItem* item)
   // Clear the other selection
   view_recent->clearSelection();
 
-  // If the item is the blank document turn isnewfile variable true, else is template or wizard
+  // If the item is the blank document turn isnewfile
+  // variable true, else is template or wizard
   if( item->text() == i18n("Blank Document") )
-     isnewfile = true;
+    isnewfile = true;
   else
     templatename = item->text();
 
