@@ -42,14 +42,15 @@
 //indexes for the various columns on the summary view
 #define COLUMN_NAME_INDEX       0
 #define COLUMN_SYMBOL_INDEX     1
-#define COLUMN_QUANTITY_INDEX   2
-#define COLUMN_CURRVALUE_INDEX  3
-#define COLUMN_COSTBASIS_INDEX  4
-#define COLUMN_RAWGAIN_INDEX    5
-#define COLUMN_1WEEKGAIN_INDEX  6
-#define COLUMN_4WEEKGAIN_INDEX  7
-#define COLUMN_3MONGAIN_INDEX   8
-#define COLUMN_YTDGAIN_INDEX    9
+#define COLUMN_VALUE_INDEX      2
+#define COLUMN_QUANTITY_INDEX   3
+#define COLUMN_PRICE_INDEX      4
+#define COLUMN_COSTBASIS_INDEX  5
+#define COLUMN_RAWGAIN_INDEX    6
+#define COLUMN_1WEEKGAIN_INDEX  7
+#define COLUMN_4WEEKGAIN_INDEX  8
+#define COLUMN_3MONGAIN_INDEX   9
+#define COLUMN_YTDGAIN_INDEX    10
 
 /**
   *@author Kevin Tambascio

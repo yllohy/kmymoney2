@@ -1,6 +1,8 @@
 2004-10-13 Ace Jones <acejones@users.sourceforge.net>
   * Added investment fields to transaction reports (action, shares, price)
-
+  * Added 'value' field to investment summary.  This displays the net value of
+    each holding.  Renamed previous 'current value' to 'price'
+    
 2004-10-11 Ace Jones <acejones@users.sourceforge.net>
   * Implemented "Edit..." from context menu in investment view summary
 

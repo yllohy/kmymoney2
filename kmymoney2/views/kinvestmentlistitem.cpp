@@ -191,7 +191,7 @@ void KInvestmentListItem::paintCell(QPainter * p, const QColorGroup & cg, int co
   }
 }
 
-void KInvestmentListItem::update(const QCString& id)
+void KInvestmentListItem::update(const QCString& /*id*/)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
 
@@ -208,12 +208,15 @@ void KInvestmentListItem::update(const QCString& id)
     //column 1 (COLUMN_SYMBOL_INDEX) is the ticker symbol
     setText(COLUMN_SYMBOL_INDEX, equity.tradingSymbol());
 
-    //column 2 (COLUMN_QUANTITY_INDEX) is the quantity of shares owned
+    //column 2 is the net value (price * quantity owned)
+    setText(COLUMN_VALUE_INDEX, (file->balance(m_account.id()) * equity.price(QDate::currentDate())).formatMoney());
+
+    //column 3 (COLUMN_QUANTITY_INDEX) is the quantity of shares owned
     int prec = MyMoneyMoney::denomToPrec(equity.smallestAccountFraction());
     setText(COLUMN_QUANTITY_INDEX, file->balance(m_account.id()).formatMoney("", prec));
 
-    //column 3 is the current price
-    setText(COLUMN_CURRVALUE_INDEX, equity.price(QDate::currentDate()).formatMoney());
+    //column 4 is the current price
+    setText(COLUMN_PRICE_INDEX, equity.price(QDate::currentDate()).formatMoney());
 
     //column 4 (COLUMN_COSTBASIS_INDEX) is the cost basis
     if(transactionList.isEmpty())
