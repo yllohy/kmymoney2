@@ -1,5 +1,5 @@
 ####### kdevelop will overwrite this part!!! (begin)##########
 
-SUBDIRS = 22x22 16x16 48x48 
+SUBDIRS = apps 
 
 ####### kdevelop will overwrite this part!!! (end)############
