@@ -18,6 +18,7 @@
 
 // ----------------------------------------------------------------------------
 // QT Includes
+
 #include <qcheckbox.h>
 #include <qradiobutton.h>
 #include <qbuttongroup.h>
@@ -27,14 +28,10 @@
 
 // ----------------------------------------------------------------------------
 // KDE Includes
+
 #include <kdialogbase.h>
 #include <kfontdialog.h>
-#if QT_VERSION > 300
 #include <kcolorbutton.h>
-#else
-#include <kcolorbtn.h>
-#endif
-
 #include <klineedit.h>
 
 class KIntNumInput;
@@ -42,6 +39,7 @@ class KListView;
 class KPushButton;
 class QTabWidget;
 class kMyMoneyOnlineQuoteConfig;
+class kMyMoneyGPGConfig;
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -122,6 +120,9 @@ private:
 
   /* Online quotes configuration widget */
   kMyMoneyOnlineQuoteConfig* m_onlineQuotesWidget;
+
+  /* GPG encryption configuration widget */
+  kMyMoneyGPGConfig* m_encryptionWidget;
 
   /** Restrict options */
   kMyMoneyDateInput *m_dateinputStart;

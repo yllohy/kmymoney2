@@ -22,6 +22,7 @@
 #include <qevent.h>
 #include <qdragobject.h>
 #include <qtimer.h>
+#include <qcursor.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -67,40 +68,44 @@ bool kMyMoneyAccountTree::acceptDrag(QDropEvent* event) const
         accFrom = MyMoneyFile::instance()->account(id);
         // it does not make sense to reparent an account to oneself
         // or to reparent it to it's current parent
-        if(accTo.id() == accFrom.id()
-        || accFrom.parentAccountId() == accTo.id())
-          return false;
+        if(accTo.id() != accFrom.id()
+        && accFrom.parentAccountId() != accTo.id()) {
+
+          rc = accTo.accountGroup() == accFrom.accountGroup();
+          if(rc) {
+            if(accTo.accountType() == MyMoneyAccount::Investment
+            && accFrom.accountType() != MyMoneyAccount::Stock)
+              rc = false;
+            else if(accFrom.accountType() == MyMoneyAccount::Stock
+            && accTo.accountType() != MyMoneyAccount::Investment)
+              rc = false;
+          } else {
+            if(accFrom.accountGroup() == MyMoneyAccount::Income
+            && accTo.accountGroup() == MyMoneyAccount::Expense)
+              rc = true;
+
+            if(accFrom.accountGroup() == MyMoneyAccount::Expense
+            && accTo.accountGroup() == MyMoneyAccount::Income)
+              rc = true;
+
+          }
+        }
+
       } catch(MyMoneyException *e) {
         delete e;
         try {
           MyMoneyFile::instance()->institution(p->accountID());
-          return true;
+          rc = true;
         } catch(MyMoneyException *e) {
           delete e;
-          return p->accountID().isEmpty();
+          rc = p->accountID().isEmpty();
         }
       }
 
-      rc = accTo.accountGroup() == accFrom.accountGroup();
-      if(rc) {
-        if(accTo.accountType() == MyMoneyAccount::Investment
-        && accFrom.accountType() != MyMoneyAccount::Stock)
-          rc = false;
-        else if(accFrom.accountType() == MyMoneyAccount::Stock
-        && accTo.accountType() != MyMoneyAccount::Investment)
-          rc = false;
-      } else {
-        if(accFrom.accountGroup() == MyMoneyAccount::Income
-        && accTo.accountGroup() == MyMoneyAccount::Expense)
-          rc = true;
-
-        if(accFrom.accountGroup() == MyMoneyAccount::Expense
-        && accTo.accountGroup() == MyMoneyAccount::Income)
-          rc = true;
-
-      }
     }
   }
+
+  // QWidget::setCursor(rc ? Qt::pointingHandCursor : Qt::forbiddenCursor);
 
   return rc;
 }
@@ -137,7 +142,6 @@ void kMyMoneyAccountTree::slotObjectDropped(QDropEvent* event, QListViewItem* pa
   else
     newParent = dynamic_cast<KAccountListItem*>(parent);
 
-  qDebug("dropped on %s", newParent->text(0).data());
   QCString id(event->encodedData("text/plain"));
   try {
     MyMoneyAccount accTo, accFrom;

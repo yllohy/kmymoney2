@@ -16,6 +16,7 @@
 
 // ----------------------------------------------------------------------------
 // QT Includes
+
 #include <qapplication.h>
 #include <qlayout.h>
 #include <qvbox.h>
@@ -29,20 +30,10 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 #include <klocale.h>
-#if QT_VERSION > 300
 #include <kstandarddirs.h>
-#else
-#include <kstddirs.h>
-#endif
-
 #include <kiconloader.h>
 #include <kconfig.h>
-#if QT_VERSION > 300
 #include <kcolorbutton.h>
-#else
-#include <kcolorbtn.h>
-#endif
-
 #include <kmessagebox.h>
 #include <klistview.h>
 #include <kpushbutton.h>
@@ -52,11 +43,13 @@
 
 // ----------------------------------------------------------------------------
 // Project Includes
+
 #include "ksettingsdlg.h"
 #include "../kmymoneyutils.h"
 #include "../widgets/kmymoneyonlinequoteconfig.h"
+#include "../widgets/kmymoneygpgconfig.h"
 
-#include <libkgpgfile/kgpgfile.h>
+// #include <libkgpgfile/kgpgfile.h>
 
 /** Standard constructor for the class.
   * The constructor passes some additional parameters to the base class KDialogBase
@@ -528,6 +521,7 @@ void KSettingsDlg::configRead()
   m_intSchedulePreview->setValue(m_iTempSchedulePreview);
 
   m_onlineQuotesWidget->readConfig();
+  m_encryptionWidget->readConfig();
 #if 0
   // TODO: Find a better way to handle these defaults so they're not
   // duplicated in 2 places
@@ -588,6 +582,7 @@ void KSettingsDlg::configWrite()
   kconfig->writeEntry("DateRegex", m_onlineQuotesWidget->m_editDate->text());
 #endif
   m_onlineQuotesWidget->writeConfig();
+  m_encryptionWidget->writeConfig();
 
   kconfig->sync();
 }
@@ -648,6 +643,7 @@ void KSettingsDlg::slotCancel()
   kconfig->setGroup("Homepage Options");
   kconfig->writeEntry("Itemlist", m_tempHomePageItems);
   m_onlineQuotesWidget->resetConfig();
+  m_encryptionWidget->resetConfig();
 
   kconfig->sync();
 
@@ -691,6 +687,7 @@ void KSettingsDlg::slotUser1()
   KMyMoneyUtils::addDefaultHomePageItems(list);
   fillHomePageItems(list);
   m_onlineQuotesWidget->resetConfig();
+  m_encryptionWidget->resetConfig();
 }
 
 void KSettingsDlg::slotNrFieldToggled(bool state)
@@ -791,6 +788,7 @@ void KSettingsDlg::slotMoveDown(void)
 
 void KSettingsDlg::setPageSecurity(void)
 {
+#if 0
   // Create the main frame to hold the widgets
   QVBox *qvboxMainFrame = addVBoxPage( i18n("Security"), i18n("Security settings"),
     DesktopIcon("kgpg"));
@@ -799,6 +797,12 @@ void KSettingsDlg::setPageSecurity(void)
   groupBox1->setTitle( i18n( "Encryption options" ) );
 
   groupBox1->setEnabled(KGPGFile::GPGAvailable());
+#endif
+  // Create the main frame to hold the widgets
+  QVBox *qvboxMainFrame = addVBoxPage( i18n("Security"), i18n("Data Encryption Settings"),
+    DesktopIcon("kgpg"));
+
+  m_encryptionWidget = new kMyMoneyGPGConfig(qvboxMainFrame,"encryption settings");
 }
 
 void KSettingsDlg::setPageSchedule()

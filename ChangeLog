@@ -1,3 +1,11 @@
+2005-01-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * added currency New Turkish Lira (YTL) for newly created files
+  * reassigned id of New Israeli Shekel from ILS to NIS for newly created files
+  * added configuration dialog for data encryption
+  * added support for gpg-agent in libkgpgfile
+  * updated drag&drop support
+  * Added README.Fileformats
+
 2005-01-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Show preferred investment accounts on home page
   * Added tip on anonymous save

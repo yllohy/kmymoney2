@@ -7,8 +7,8 @@ found there.
 KMyMoney is a true KDE application and therefor requires the KDE as well as
 QT libraries. If you want to compile the application yourself, you have to
 make sure to have the development relevant parts (include files, link
-libraries) of these two projects.  KMyMoney is based on min QT 3.0
-and KDE 3.0
+libraries) of these two projects.  KMyMoney is based on min QT 3.2
+and KDE 3.2
 
 ---------------------------------
 Compiling and installing KMyMoney
@@ -113,6 +113,26 @@ AND/OR
 Get KDevelop and use the supplied kmymoney2.kdevprj located in the
 base directory.  For more information on KDevelop please visit
 http://www.kdevelop.org.
+
+---------------------------------
+More documentation
+---------------------------------
+
+There are several other pieces of information. For some information
+about the file handling and the various supported formats as well
+as an introduction on howto encrypt your financial files, please
+see the README.Fileformats file.
+
+If you are interested on the rules we have for this project, please
+feel free to read the project handbook at
+
+  http://kmymoney2.sourceforge.net/phb/index.html
+
+And for the really brave there's the source ...
+
+---------------------------------
+Final comments
+---------------------------------
 
 If you find this program useful in any way or wish to contribute please
 send an email to the developers list at

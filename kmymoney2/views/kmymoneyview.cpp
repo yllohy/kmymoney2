@@ -109,6 +109,7 @@
 #include <libkgpgfile/kgpgfile.h>
 
 #define COMPRESSION_MIME_TYPE "application/x-gzip"
+#define RECOVER_KEY_ID        "0xD2B08440"
 
 KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   : KJanusWidget(parent, name, KJanusWidget::IconList),
@@ -1108,33 +1109,33 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter,
   KConfig *config = KGlobal::config();
   config->setGroup("General Options");
 
-  // FIXME: we should generate this address dynamically to harden
-  //        the process of simple patching of this address
-  //        For now we leave it this way.
-  static char recoverUserId[] = "kmymoney-recover@users.sourceforge.net";
-
   bool encryptedOk = true;
   bool encryptRecover = false;
-  if(config->readEntry("WriteDataEncrypted", false) != false) {
+  if(config->readBoolEntry("WriteDataEncrypted", false) != false) {
     if(!KGPGFile::GPGAvailable()) {
       KMessageBox::sorry(this, i18n("GPG does not seem to be installed on your system. Please make sure, that GPG can be found using the standard search path. This time, encryption is disabled."), i18n("GPG not found"));
       encryptedOk = false;
     }
 
-    if(config->readEntry("EncryptRecover", false) != false) {
+    if(config->readBoolEntry("EncryptRecover", false) != false) {
       encryptRecover = true;
-      if(!KGPGFile::keyAvailable(QString(recoverUserId))) {
-        KMessageBox::sorry(this, i18n("<p>You have selected to encrypt your data for backup purposes also with the KMyMoney recover key, but the key for the user-id</p><p><center><b>%1</b></center></p>has not been found in your keyring. Please make sure to import the key for this user-id. You can find it on the <a href=\"http://kmymoney2.sourceforge.net/\">KMyMoney web-site</a>. This time your data will not be encrypted with the KMyMoney recover key.").arg(recoverUserId), i18n("GPG-Key not found"));
+      if(!KGPGFile::keyAvailable(QString(RECOVER_KEY_ID))) {
+        KMessageBox::sorry(this, QString("<p>")+i18n("You have selected to encrypt your data also with the KMyMoney recover key, but the key with id</p><p><center><b>%1</b></center></p>has not been found in your keyring at this time. Please make sure to import this key into your keyring. You can find it on the <a href=\"http://kmymoney2.sourceforge.net/\">KMyMoney web-site</a>. This time your data will not be encrypted with the KMyMoney recover key.").arg(RECOVER_KEY_ID), i18n("GPG-Key not found"));
         encryptRecover = false;
       }
     }
-    if(!KGPGFile::keyAvailable(config->readEntry("GPG-Recipient"))) {
-      KMessageBox::sorry(this, i18n("<p>You have specified to encrypt your data for the user-id</p><p><center><b>%1</b>.</center></p>Unfortunately, a valid key for this user-id was not found in your keyring. Please make sure to import a valid key for this user-id. This time, encryption is disabled.").arg(config->readEntry("GPG-Recipient")), i18n("GPG-Key not found"));
+    if(config->readEntry("GPG-Recipient").length() > 0) {
+      if(!KGPGFile::keyAvailable(config->readEntry("GPG-Recipient"))) {
+        KMessageBox::sorry(this, QString("<p>")+i18n("You have specified to encrypt your data for the user-id</p><p><center><b>%1</b>.</center></p>Unfortunately, a valid key for this user-id was not found in your keyring. Please make sure to import a valid key for this user-id. This time, encryption is disabled.").arg(config->readEntry("GPG-Recipient")), i18n("GPG-Key not found"));
+        encryptedOk = false;
+      }
+    } else {
+      KMessageBox::sorry(this, QString("<p>")+i18n("You have specified to encrypt your data but you have not  provided a user-id. Please make sure to setup a valid user id. This time, encryption is disabled.").arg(config->readEntry("GPG-Recipient")), i18n("GPG-Key not found"));
       encryptedOk = false;
     }
 
     if(encryptedOk == true) {
-      QString msg = i18n("Do you want to store your data encrypted by GPG? Please be aware, that this is a brand new feature which is yet untested. Make sure, you have the necessary understanding that you might loose all your data if you store it encrypted and cannot decrypt it later on! If unsure, answer 'No'.");
+      QString msg = QString("<p>") + i18n("You have configured to save your data in encrypted form using GPG. Please be aware, that this is a brand new feature which is yet untested. Make sure, you have the necessary understanding that you might loose all your data if you store it encrypted and cannot decrypt it later on! If unsure, answer <b>No</b>.");
 
       if(KMessageBox::questionYesNo(this, msg, i18n("Store GPG encrypted"), KStdGuiItem::yes(), KStdGuiItem::no(), "StoreEncrypted") == KMessageBox::No) {
         encryptedOk = false;
@@ -1150,7 +1151,7 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter,
     if(kgpg) {
       kgpg->addRecipient(config->readEntry("GPG-Recipient").latin1());
       if(encryptRecover) {
-        kgpg->addRecipient(recoverUserId);
+        kgpg->addRecipient(RECOVER_KEY_ID);
       }
     }
     dev = kgpg;
@@ -1725,7 +1726,7 @@ void KMyMoneyView::loadDefaultCurrencies(void)
     file->addCurrency(MyMoneySecurity("IDR", i18n("Indonesian Rupiah"),      "IDR", 100, 1));
     file->addCurrency(MyMoneySecurity("IRR", i18n("Iranian Rial"),           "IRR", 1, 1));
     file->addCurrency(MyMoneySecurity("IQD", i18n("Iraqi Dinar"),            "IQD", 1000, 1000));
-    file->addCurrency(MyMoneySecurity("ILS", i18n("Israeli New Shekel"),     QChar(0x20AA)));
+    file->addCurrency(MyMoneySecurity("NIS", i18n("Israeli New Shekel"),     QChar(0x20AA)));
     file->addCurrency(MyMoneySecurity("JMD", i18n("Jamaican Dollar"),        "$"));
     file->addCurrency(MyMoneySecurity("JPY", i18n("Japanese Yen"),           QChar(0x00A5), 100, 1));
     file->addCurrency(MyMoneySecurity("JOD", i18n("Jordanian Dinar"),        "JOD", 1000, 1000));
@@ -1802,6 +1803,7 @@ void KMyMoneyView::loadDefaultCurrencies(void)
     file->addCurrency(MyMoneySecurity("TTD", i18n("Trinidad and Tobago Dollar"), "$"));
     file->addCurrency(MyMoneySecurity("TND", i18n("Tunisian Dinar"),         "TND", 1000, 1000));
     file->addCurrency(MyMoneySecurity("TRL", i18n("Turkish Lira")));
+    file->addCurrency(MyMoneySecurity("YTL", i18n("Turkish Lira (new)")));
     file->addCurrency(MyMoneySecurity("TMM", i18n("Turkmenistan Manat")));
     file->addCurrency(MyMoneySecurity("USD", i18n("US Dollar"),              "$"));
     file->addCurrency(MyMoneySecurity("UGX", i18n("Uganda Shilling")));
