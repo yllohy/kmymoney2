@@ -28,6 +28,7 @@
 #include <qcursor.h>
 #include <qapplication.h>
 #include <qtimer.h>
+#include <qlayout.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -38,6 +39,8 @@
 #include <kiconloader.h>
 #include <kmessagebox.h>
 #include <kcompletionbox.h>
+#include <kpushbutton.h>
+#include <kpopupmenu.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -101,23 +104,23 @@ kMyMoneySplitTable::~kMyMoneySplitTable()
 {
 }
 
+const QColor kMyMoneySplitTable::rowBackgroundColor(const int row) const
+{
+  return (row % 2) ? KMyMoneyUtils::listColour() : KMyMoneyUtils::backgroundColour();
+}
+
 void kMyMoneySplitTable::paintCell(QPainter *p, int row, int col, const QRect& r, bool /*selected*/)
 {
   KConfig *config = KGlobal::config();
   config->setGroup("List Options");
   const bool bShowGrid = config->readBoolEntry("ShowGrid", true);
 
-  QColor defaultColor = KMyMoneyUtils::listColour();
-  QColor defaultBGColor = KMyMoneyUtils::backgroundColour();
   QColor defaultGridColor = KMyMoneyUtils::gridColour();
 
   QColorGroup g = colorGroup();
   QColor textColor;
 
-  if (row % 2)
-    g.setColor(QColorGroup::Base, defaultColor);
-  else
-    g.setColor(QColorGroup::Base, defaultBGColor);
+  g.setColor(QColorGroup::Base, rowBackgroundColor(row));
 
   p->setFont(KMyMoneyUtils::cellFont());
 
@@ -393,6 +396,9 @@ void kMyMoneySplitTable::contentsMouseDoubleClickEvent( QMouseEvent *e )
   if(editWidget) {
     editWidget->setFocus();
     editWidget->selectAll();
+    // we need to call setFocus on the edit widget from the
+    // main loop again to get the keyboard focus to the widget also
+    QTimer::singleShot(0, editWidget, SLOT(setFocus()));
   }
 }
 
@@ -625,6 +631,7 @@ void kMyMoneySplitTable::destroyEditWidgets(void)
   clearCellWidget(m_currentRow, 0);
   clearCellWidget(m_currentRow, 1);
   clearCellWidget(m_currentRow, 2);
+  clearCellWidget(m_currentRow+1, 0);
   m_editMode = false;
 }
 
@@ -638,15 +645,38 @@ void kMyMoneySplitTable::createEditWidgets(void)
   // create the widgets
   m_editAmount = new kMyMoneyEdit(0);
   m_editAmount->setFont(cellFont);
-  addToTabOrder(m_editAmount);
 
   m_editCategory = new kMyMoneyCategory(0);
   m_editCategory->setFont(cellFont);
-  addToTabOrder(m_editCategory);
 
   m_editMemo = new kMyMoneyLineEdit(0, 0, AlignLeft|AlignVCenter);
   m_editMemo->setFont(cellFont);
+
+  // create buttons for the mouse users
+  KIconLoader *il = KGlobal::iconLoader();
+  m_registerButtonFrame = new QFrame(this, "buttonFrame");
+  QPalette palette = m_registerButtonFrame->palette();
+  palette.setColor(QColorGroup::Background, rowBackgroundColor(m_currentRow+1) );
+  m_registerButtonFrame->setPalette(palette);
+
+  QHBoxLayout* l = new QHBoxLayout(m_registerButtonFrame);
+  m_registerEnterButton = new KPushButton(il->loadIcon("button_ok", KIcon::Small, KIcon::SizeSmall), QString(), m_registerButtonFrame, "EnterButton");
+
+  m_registerCancelButton = new KPushButton(il->loadIcon("button_cancel", KIcon::Small, KIcon::SizeSmall), QString(), m_registerButtonFrame, "CancelButton");
+
+  l->addWidget(m_registerEnterButton);
+  l->addWidget(m_registerCancelButton);
+  l->addStretch(2);
+
+  connect(m_registerEnterButton, SIGNAL(clicked()), this, SLOT(slotEndEdit()));
+  connect(m_registerCancelButton, SIGNAL(clicked()), this, SLOT(slotCancelEdit()));
+
+  // setup tab order
+  addToTabOrder(m_editCategory);
   addToTabOrder(m_editMemo);
+  addToTabOrder(m_editAmount);
+  addToTabOrder(m_registerEnterButton);
+  addToTabOrder(m_registerCancelButton);
 
   if(!m_split.accountId().isEmpty()) {
     m_editCategory->slotSelectAccount(m_split.accountId());
@@ -674,6 +704,7 @@ void kMyMoneySplitTable::createEditWidgets(void)
   setCellWidget(m_currentRow, 0, m_editCategory);
   setCellWidget(m_currentRow, 1, m_editMemo);
   setCellWidget(m_currentRow, 2, m_editAmount);
+  setCellWidget(m_currentRow+1, 0, m_registerButtonFrame);
 
   // setup the keyboard filter for all widgets
   for(QWidget* w = m_tabOrderWidgets.first(); w; w = m_tabOrderWidgets.next()) {

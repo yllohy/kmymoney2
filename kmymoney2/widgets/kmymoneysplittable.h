@@ -34,7 +34,8 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 
-#include <kpopupmenu.h>
+class KPopupMenu;
+class KPushButton;
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -119,6 +120,14 @@ protected:
     * @return true if inline edit mode is on, false otherwise
     */
   const bool isEditMode(void) const;
+
+  /**
+    * This method retuns the background color for a given @p row.
+    *
+    * @param row the row in question
+    * @return the color as QColor object
+    */
+  const QColor rowBackgroundColor(const int row) const;
 
 public slots:
   /** No descriptions */
@@ -215,6 +224,9 @@ private:
     */
   QWidgetList         m_tabOrderWidgets;
 
+  QGuardedPtr<QFrame>           m_registerButtonFrame;
+  QGuardedPtr<KPushButton>      m_registerEnterButton;
+  QGuardedPtr<KPushButton>      m_registerCancelButton;
 };
 
 #endif
