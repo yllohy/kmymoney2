@@ -191,6 +191,7 @@ void MyMoneyStorageBin::readOldFormat(QDataStream& s, IMyMoneySerialize* storage
 {
   QMap<QString, QCString> categoryConversion;
   QMap<QString, QCString> accountConversion;
+  QMap<QString, QCString> payeeConversion;
   QValueList<MyMoneyTransaction> transactionList;
 
   QDate lastModificationDate;
@@ -239,12 +240,18 @@ void MyMoneyStorageBin::readOldFormat(QDataStream& s, IMyMoneySerialize* storage
   }
 
   // read list of payees
-  MyMoneyPayee payee;
   s >> cnt;
   for (int i=0; i < cnt; i++) {
-    s >> payee;
-    // FIXME: Payee's are yet unknown !!!!! HELP HELP HELP
-    // addPayee(payee.name(), payee.address(), payee.postcode(), payee.telephone(), payee.email());
+    MyMoneyPayee payee;
+    s >> tmp; payee.setName(tmp);
+    s >> tmp; // address
+    s >> tmp; // postcode
+    s >> tmp; // telephone
+    s >> tmp; // email
+
+    // payee.setReference("");
+    // storage->addPayee(payee);
+    // payeeConversion[payee.name()] = payee.id();
   }
 
   // read list of institutions and create new objects for them
@@ -307,12 +314,13 @@ void MyMoneyStorageBin::readOldFormat(QDataStream& s, IMyMoneySerialize* storage
         MyMoneySplit sp1, sp2;
         MyMoneyMoney amount;
         QString category;
+        QString payee;
         Q_INT32 method;
 
         sp1.setAccountId(acc.id());
         s >> tmp_int32;   // id
         s >> tmp; // FIXME: sp1.setNumber(tmp);
-        s >> tmp; // FIXME: payee must be stored
+        s >> payee;
 
         // converting from a double to a MyMoneyMoney object is not that
         // trivial. I tried 1.23 to convert and ended up with 122.
@@ -359,6 +367,8 @@ void MyMoneyStorageBin::readOldFormat(QDataStream& s, IMyMoneySerialize* storage
         sp1.setValue(amount);
         sp2.setShares(amount * (-1));
         sp2.setValue(amount * (-1));
+        //sp1.setPayeeId(payeeConversion[payee]);
+        //sp2.setPayeeId(payeeConversion[payee]);
 
         tr.addSplit(sp1);
         tr.addSplit(sp2);
