@@ -1780,3 +1780,7 @@ void KLedgerView::show()
   resizeEvent(NULL);
 }
 
+void KLedgerView::slotCreateSchedule(void)
+{
+  
+}

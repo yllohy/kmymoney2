@@ -597,6 +597,12 @@ protected slots:
     */
   virtual void slotSortOrderChanged(int orderId);
 
+  /**
+    * This method will fill the edit schedule dialog with the current
+    * transaction data and creates a scheduled transaction this way.
+    */
+  void slotCreateSchedule(void);
+  
 protected:
   /**
     * This method is called to create the widget stack for the

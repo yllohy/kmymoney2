@@ -256,10 +256,15 @@ void KLedgerViewCheckings::createMoreMenu(void)
   KLedgerView::createMoreMenu();
 
   // and now the specific entries for checkings/savings etc.
+  KIconLoader *kiconloader = KGlobal::iconLoader();
   m_moreMenu->insertItem(i18n("Edit splits ..."), this, SLOT(slotStartEditSplit()),
       QKeySequence(), -1, 1);
-  m_moreMenu->insertItem(i18n("Goto payee/receiver"), this, SLOT(slotPayeeSelected()),
-      QKeySequence(), -1, 2);
+  m_moreMenu->insertItem(kiconloader->loadIcon("goto", KIcon::Small),
+                         i18n("Goto payee/receiver"), this, SLOT(slotPayeeSelected()),
+                         QKeySequence(), -1, 2);
+  m_moreMenu->insertItem(kiconloader->loadIcon("bookmark_add", KIcon::Small),
+                         i18n("Create schedule..."), this, SLOT(slotCreateSchedule()),
+                         QKeySequence(), -1, 3);
 
   m_form->moreButton()->setPopup(m_moreMenu);
 }
@@ -270,10 +275,16 @@ void KLedgerViewCheckings::createContextMenu(void)
   KLedgerView::createContextMenu();
 
   // and now the specific entries for checkings/savings etc.
+  KIconLoader *kiconloader = KGlobal::iconLoader();
+  
   m_contextMenu->insertItem(i18n("Edit splits ..."), this, SLOT(slotStartEditSplit()),
       QKeySequence(), -1, 2);
-  m_contextMenu->insertItem(i18n("Goto payee/receiver"), this, SLOT(slotPayeeSelected()),
-      QKeySequence(), -1, 3);
+  m_contextMenu->insertItem(kiconloader->loadIcon("goto", KIcon::Small),
+                            i18n("Goto payee/receiver"), this, SLOT(slotPayeeSelected()),
+                            QKeySequence(), -1, 3);
+  m_contextMenu->insertItem(kiconloader->loadIcon("bookmark_add", KIcon::Small),
+                            i18n("Create schedule..."), this, SLOT(slotCreateSchedule()),
+                            QKeySequence(), -1, 4);
 }
 
 void KLedgerViewCheckings::createForm(void)
@@ -1247,7 +1258,7 @@ void KLedgerViewCheckings::slotConfigureContextMenu(void)
 {
   int splitEditId = m_contextMenu->idAt(2);
   int gotoPayeeId = m_contextMenu->idAt(3);
-  int deleteId = m_contextMenu->idAt(8);
+  int deleteId = m_contextMenu->idAt(9);
   MyMoneyFile* file = MyMoneyFile::instance();
 
   m_contextMenu->disconnectItem(splitEditId, this, SLOT(slotStartEditSplit()));
