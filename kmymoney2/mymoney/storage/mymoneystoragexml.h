@@ -54,7 +54,8 @@ protected:
    void          setProgressCallback(void(*callback)(int, int, const QString&)) {};
 
 private:
-  IMyMoneySerialize*  m_pStorage;
+  IMyMoneySerialize *m_storage;
+  QDomDocument *m_doc;
   
   /**
     * This method returns the version of the underlying file. It
@@ -72,51 +73,61 @@ private:
     */
   static unsigned int fileVersion(fileVersionDirectionType dir = Reading);
 
-  void writeUserInformation(QDomDocument *pDoc, QDomElement& userInfo, IMyMoneySerialize* storage);
+  /**
+    * A parameter is used to determine the direction.
+    *
+    * @param pDoc: pointer to the entire DOM document
+    * @param userInfo: DOM Element to write the user information to.  
+    *
+    * @return void
+    *
+    * @see
+    */
+  void writeUserInformation(QDomElement& userInfo);
   
-  void writeInstitution(QDomDocument *pDoc, QDomElement& institutions, const MyMoneyInstitution& i);
-  void writeInstitutions(QDomDocument *pDoc, QDomElement& institutions, IMyMoneySerialize* storage);
+  void writeInstitution(QDomElement& institutions, const MyMoneyInstitution& i);
+  void writeInstitutions(QDomElement& institutions);
 
-  void writePayees(QDomDocument *pDoc, QDomElement& payees, IMyMoneySerialize* storage);
-  void writePayee(QDomDocument *pDoc, QDomElement& payees, const MyMoneyPayee& p);
+  void writePayees(QDomElement& payees);
+  void writePayee(QDomElement& payees, const MyMoneyPayee& p);
   
-  void writeAccounts(QDomDocument *pDoc, QDomElement& accounts, IMyMoneySerialize* storage);
-  void writeAccount(QDomDocument *pDoc, QDomElement& accounts, const MyMoneyAccount& p);
+  void writeAccounts(QDomElement& accounts);
+  void writeAccount(QDomElement& accounts, const MyMoneyAccount& p);
 
-  void writeTransactions(QDomDocument *pDoc, QDomElement& transactions, IMyMoneySerialize* storage);
-  void writeTransaction(QDomDocument *pDoc, QDomElement& transactions, const MyMoneyTransaction& tx);
+  void writeTransactions(QDomElement& transactions);
+  void writeTransaction(QDomElement& transactions, const MyMoneyTransaction& tx);
 
-  void writeSchedules(QDomDocument *pDoc, QDomElement& scheduled, IMyMoneySerialize* storage);
-  void writeSchedule(QDomDocument *pDoc, QDomElement& scheduledTx, const MyMoneySchedule& tx);
+  void writeSchedules(QDomElement& scheduled);
+  void writeSchedule(QDomElement& scheduledTx, const MyMoneySchedule& tx);
 
-  void writeSplits(QDomDocument *pDoc, QDomElement& splits, const QValueList<MyMoneySplit> splitList);
-  void writeSplit(QDomDocument *pDoc, QDomElement& splitElement, const MyMoneySplit& split);
+  void writeSplits(QDomElement& splits, const QValueList<MyMoneySplit> splitList);
+  void writeSplit(QDomElement& splitElement, const MyMoneySplit& split);
     
   void readFile(QIODevice* s, IMyMoneySerialize* storage);
   void writeFile(QIODevice* s, IMyMoneySerialize* storage);
 
-  void writeKeyValuePairs(QDomDocument *pDoc, QDomElement& account, const QMap<QCString, QString> pairs);
+  void writeKeyValuePairs(QDomElement& account, const QMap<QCString, QString> pairs);
   void readKeyValuePairs(QDomElement& element, QMap<QCString, QString> pairs);
 
-  void readUserInformation(QDomDocument* pDoc, QDomElement userElement, IMyMoneySerialize* storage);
+  void readUserInformation(QDomElement userElement);
   /** No descriptions */
 
-  void readInstitutions(QDomDocument *pDoc, QDomElement& childElement, IMyMoneySerialize* storage);
+  void readInstitutions(QDomElement& childElement);
   MyMoneyInstitution readInstitution(const QDomElement& institution);
 
-  void readPayees(QDomDocument *pDoc, QDomElement& payees, IMyMoneySerialize* storage);
+  void readPayees(QDomElement& payees);
   MyMoneyPayee readPayee(const QDomElement& payee);
 
-  void readAccounts(QDomDocument* pDoc, QDomElement& accounts, IMyMoneySerialize* storage);
+  void readAccounts(QDomElement& accounts);
   MyMoneyAccount readAccount(const QDomElement& account);
 
   MyMoneySplit readSplit(QDomElement& splitElement);
   void readSplits(MyMoneyTransaction& t, QDomElement& splits);
 
-  void readTransactions(QDomDocument *pDoc, QDomElement& transactions, IMyMoneySerialize* storage);
+  void readTransactions(QDomElement& transactions);
   MyMoneyTransaction readTransaction(QDomElement& transaction);
 
-  void readSchedules(QDomDocument *pDoc, QDomElement& schedules, IMyMoneySerialize* storage);
+  void readSchedules(QDomElement& schedules);
   MyMoneySchedule readSchedule(QDomElement& schedule);
   
   QDomElement findChildElement(const QString& name, const QDomElement& root);
