@@ -51,6 +51,7 @@
 #include "../widgets/kmymoneylineedit.h"
 #include "../widgets/kmymoneydateinput.h"
 #include "../widgets/kmymoneycombo.h"
+#include "../mymoney/mymoneyfile.h"
 
 int KTransactionPtrVector::compareItems(const QCString& s1, const QCString& s2) const
 {

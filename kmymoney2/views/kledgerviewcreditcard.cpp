@@ -42,13 +42,13 @@
 #include "../widgets/kmymoneydateinput.h"
 #include "../widgets/kmymoneyregister.h"
 #include "../widgets/kmymoneytransactionform.h"
-
+#include "../mymoney/mymoneyfile.h"
 
 KLedgerViewCreditCard::KLedgerViewCreditCard(QWidget *parent, const char *name )
   : KLedgerViewCheckings(parent,name)
 {
-	m_register->horizontalHeader()->setLabel(4, i18n("Charge"));
-	m_register->horizontalHeader()->setLabel(5, i18n("Payment"));
+  m_register->horizontalHeader()->setLabel(4, i18n("Charge"));
+  m_register->horizontalHeader()->setLabel(5, i18n("Payment"));
 
   m_form->tabBar()->removeTab(m_tabCheck);
   m_form->tabBar()->removeTab(m_tabAtm);
