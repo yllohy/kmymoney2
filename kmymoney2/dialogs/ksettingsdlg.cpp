@@ -593,9 +593,9 @@ void KSettingsDlg::configRead()
   kconfig->setGroup("List Options");
 
   QFont qfontDefault = QFont("helvetica", 12);
-  QColor qcolorDefault = Qt::white;
-  QColor qcolorDefaultBG = Qt::gray;
-  QColor qcolorDefaultGrid = Qt::black;
+  QColor qcolorDefault = KMyMoneyUtils::defaultListColour();
+  QColor qcolorDefaultBG = KMyMoneyUtils::defaultBackgroundColour();
+  QColor qcolorDefaultGrid = KMyMoneyUtils::defaultGridColour();
 
   m_qcolorTempList = kconfig->readColorEntry("listColor", &qcolorDefault);
   m_kcolorbuttonList->setColor(m_qcolorTempList);

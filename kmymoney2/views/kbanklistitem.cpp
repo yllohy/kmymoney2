@@ -20,7 +20,7 @@
 #include <qpixmap.h>
 #include <qcolor.h>
 #include <qstyle.h>
-#include <qapplication.h>
+#include <qglobal.h>
 
 #if QT_VERSION > 300
 #include <qpainter.h>
@@ -44,6 +44,7 @@
 
 #include "kbanklistitem.h"
 #include "../mymoney/mymoneyfile.h"
+#include "../kmymoneyutils.h"
 
 QPixmap* KAccountListItem::accountPixmap = 0;
 
@@ -172,16 +173,13 @@ void KAccountListItem::paintCell(QPainter *p, const QColorGroup & cg, int column
   QFont defaultFont = QFont("helvetica", 12);
   p->setFont(config->readFontEntry("listCellFont", &defaultFont));
 
-  QColor colour = Qt::white;
-  QColor bgColour = QColor(224, 253, 182); // Same as for home view
-  QColor textColour;
+  QColor colour = KMyMoneyUtils::defaultListColour();;
+  QColor bgColour = KMyMoneyUtils::defaultBackgroundColour();
   
   bgColour = config->readColorEntry("listBGColor", &bgColour);
   colour = config->readColorEntry("listColor", &colour);
-  // textColour = config->readColorEntry("listGridColor", &textColour);
 
   QColorGroup cg2(cg);
-  // cg2.setColor(QColorGroup::Text, textColour);
 
   if (isAlternate())
     cg2.setColor(QColorGroup::Base, colour);
