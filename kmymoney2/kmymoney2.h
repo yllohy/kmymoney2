@@ -74,7 +74,7 @@ class IMyMoneyStorage;
   * @see KMyMoneyView
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: kmymoney2.h,v 1.33 2003/07/31 15:28:53 mte Exp $
+  * $Id: kmymoney2.h,v 1.34 2003/08/11 05:37:52 ipwizard Exp $
   *
   * @short Main application class.
 **/
@@ -300,6 +300,7 @@ private:
   KAction *accountAdd;
   KAction *actionQifImport;
   KAction *actionQifExport;
+  KAction *actionFindTransaction;
 
   enum backupStateE {
     BACKUP_IDLE = 0,

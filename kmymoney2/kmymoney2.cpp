@@ -157,7 +157,13 @@ void KMyMoney2App::initActions()
   fileQuit = KStdAction::quit(this, SLOT(slotFileQuit()), actionCollection());
   viewToolBar = KStdAction::showToolbar(this, SLOT(slotViewToolBar()), actionCollection());
   viewStatusBar = KStdAction::showStatusbar(this, SLOT(slotViewStatusBar()), actionCollection());
-
+  
+  actionFindTransaction = new KAction(i18n("Find transaction..."),
+                                      "find",
+                                      KShortcut("Ctrl+F"),
+                                      myMoneyView, SLOT(slotFindTransaction()),
+                                      actionCollection(), "account_find");
+  
   // Setup transaction detail switch
   viewTransactionForm = new KToggleAction(i18n("Show Transaction Detail"), KShortcut("Ctrl+T"), actionCollection(), "show_transaction_detail");
   config->setGroup("List Options");
@@ -186,7 +192,7 @@ void KMyMoney2App::initActions()
 
   // The tool menu
   new KAction(i18n("QIF Profile Editor..."), "edit", 0, this, SLOT(slotQifProfileEditor()), actionCollection(), "qif_editor");
-
+  
   // The help menu
   new KAction(i18n("&Show tip of the day"), "idea", 0, this, SLOT(slotShowTipOfTheDay()), actionCollection(), "show_tip");
 
@@ -300,6 +306,7 @@ bool KMyMoney2App::queryClose()
 bool KMyMoney2App::queryExit()
 {
   saveOptions();
+
   return true;
 }
 
@@ -609,6 +616,7 @@ void KMyMoney2App::slotFileFileInfo()
   int answer = KMessageBox::warningYesNoCancel(this, i18n("This function is used by the developers to\n\nperform a dump of the engine's data in memory."));
   if (answer == KMessageBox::Cancel || answer == KMessageBox::No)
     return;
+
 
   myMoneyView->memoryDump();
 }

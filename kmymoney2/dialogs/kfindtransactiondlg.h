@@ -1,8 +1,8 @@
 /***************************************************************************
                           kfindtransactiondlg.h
                              -------------------
-    copyright            : (C) 2000 by Michael Edwardes
-    email                : mte@users.sourceforge.net
+    copyright            : (C) 2003 by Thomas Baumgart
+    email                : ipwizard@users.sourceforge.net
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,7 +17,16 @@
 #ifndef KFINDTRANSACTIONDLG_H
 #define KFINDTRANSACTIONDLG_H
 
-//Generated area. DO NOT EDIT!!!(begin)
+// ----------------------------------------------------------------------------
+// QT Includes
+
+// ----------------------------------------------------------------------------
+// KDE Includes
+
+// ----------------------------------------------------------------------------
+// Project Includes
+
+#if 0
 #include <qwidget.h>
 #include <qgroupbox.h>
 #include <qlabel.h>
@@ -25,70 +34,38 @@
 #include <qcombobox.h>
 #include <qlineedit.h>
 #include <qpushbutton.h>
-//Generated area. DO NOT EDIT!!!(end)
 
 #include <klocale.h>
 #include <qdialog.h>
 
 #include "../widgets/kmymoneyedit.h"
+#include "../widgets/kmymoneylineedit.h"
 #include "../widgets/kmymoneydateinput.h"
 #include "../mymoney/mymoneyfile.h"
+#endif
 
 #include "kfindtransactiondlgdecl.h"
 
 /**
-  *@author Michael Edwardes
+  * @author Thomas Baumgart
   */
 
 class KFindTransactionDlg : public KFindTransactionDlgDecl  {
    Q_OBJECT
+public:
+  KFindTransactionDlg(QWidget *parent=0, const char *name=0);
+  ~KFindTransactionDlg();
+
+protected slots:
+  
+signals:
+
+private:
+
 private:
   void readConfig(void);
   void writeConfig(void);
 
-public:
-	KFindTransactionDlg(MyMoneyFile *file, QWidget *parent=0, const char *name=0);
-	~KFindTransactionDlg();
-  void data(
-  	bool& doDate,
-  	bool& doAmount,
-  	bool& doCredit,
-  	bool& doStatus,
-  	bool& doDescription,
-  	bool& doNumber,
-  	bool& doPayee,
-  	bool& doCategory,
-  	QString& amountID,
-  	QString& creditID,
-  	QString& statusID,
-  	QString& description,
-  	QString& number,
-    MyMoneyMoney& money,
-    QDate& startDate,
-    QDate& endDate,
-    QString& payee,
-    QString& category,
-    bool& descriptionRegExp,
-    bool& numberRegExp,
-    bool& payeeRegExp );
-
-protected slots:
-  void closeClicked();
-  void dateToggled(bool on);
-  void amountToggled(bool on);
-  void creditToggled(bool on);
-  void statusToggled(bool on);
-  void descriptionToggled(bool on);
-  void numberToggled(bool on);
-  void searchClicked();
-  void payeeToggled(bool on);
-  void categoryToggled(bool on);
-
-signals:
-  void searchReady();
-
-private:
-  MyMoneyFile *m_filePointer;
 };
 
 #endif
