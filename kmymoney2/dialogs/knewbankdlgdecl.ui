@@ -74,6 +74,9 @@
 The only required field is the name, which can be the name of a bank
 like Woolwhich, or a descriptive name like Family Cash Accounts.</string>
                     </property>
+                    <property name="alignment">
+                        <set>WordBreak|AlignVCenter</set>
+                    </property>
                 </widget>
             </hbox>
         </widget>
