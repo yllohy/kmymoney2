@@ -409,6 +409,11 @@ QString MyMoneySchedule::typeToString(void) const
   }
 }
 
+bool MyMoneySchedule::operator <(const MyMoneySchedule& right)
+{
+  return nextPayment(m_lastPayment) < right.nextPayment(right.m_lastPayment);  
+}
+
 bool MyMoneySchedule::operator ==(const MyMoneySchedule& right)
 {
   if (  m_occurence == right.m_occurence &&

@@ -382,6 +382,8 @@ public:
   QString typeToString(void) const;
 
   bool operator ==(const MyMoneySchedule& right);
+  
+  bool operator <(const MyMoneySchedule& right);
 
   QCString accountId(void) const;
   QCString transferAccountId(void) const;
