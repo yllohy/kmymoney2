@@ -78,6 +78,11 @@ int main(int argc, char *argv[])
 
   KApplication a;
 	KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
+
+  // setup the MyMoneyMoney locale settings according to the KDE settings
+  MyMoneyMoney::setThousandSeparator(*(KGlobal::locale()->thousandsSeparator().latin1()));
+  MyMoneyMoney::setDecimalSeparator(*(KGlobal::locale()->decimalSymbol().latin1()));
+
 	KMyMoney2App *kmymoney2 = new KMyMoney2App();
   a.setMainWidget( kmymoney2 );
   kmymoney2->show();
@@ -87,10 +92,6 @@ int main(int argc, char *argv[])
 #ifdef _CHECK_MEMORY
   _CheckMemory_Init(0);
 #endif
-
-  // setup the MyMoneyMoney locale settings according to the KDE settings
-  MyMoneyMoney::setThousandSeparator(*(KGlobal::locale()->thousandsSeparator().latin1()));
-  MyMoneyMoney::setDecimalSeparator(*(KGlobal::locale()->decimalSymbol().latin1()));
 
 	if (kmymoney2->startWithDialog()) {
 	  if (kmymoney2->initWizard()) {
