@@ -16,7 +16,7 @@ EXTRA_DIST = main.cpp kmymoney2.cpp kmymoney2.h kmymoney2ui.rc kmymoney2.desktop
 install-data-local:
 	$(mkinstalldirs) $(kde_datadir)/kmymoney2/
 	$(INSTALL_DATA) $(srcdir)/kmymoney2ui.rc $(kde_datadir)/kmymoney2/kmymoney2ui.rc
-	$(mkinstalldirs) $(kde_appsdir)/Applications/
+	$(mkinstalldirs) $(xdg_appsdir)
 	$(INSTALL_DATA) $(srcdir)/kmymoney2.desktop $(xdg_appsdir)/kmymoney2.desktop
 	$(mkinstalldirs) $(kde_icondir)/locolor/16x16/apps/
 	$(INSTALL_DATA) $(srcdir)/lo16-app-kmymoney2.png $(kde_icondir)/locolor/16x16/apps/kmymoney2.png
