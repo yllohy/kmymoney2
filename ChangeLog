@@ -1,3 +1,10 @@
+2004-01-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * suppress standard F2 handling while in ledger's inline-edit-mode
+  * fix problem when to-account is empty and more button is pressed for
+    transfer transactions
+  * clear the transaction list in payees view if required
+  * overhauled some i18n stuff
+
 2003-12-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Update search result when data in engine is changed
   * Fixed all (but one) compiler warnings
