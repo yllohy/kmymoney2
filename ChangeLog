@@ -1,3 +1,9 @@
+2003-07-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed testcases for MyMoneySchedule related tests in
+    MyMoneySeqAccessMgrTest
+  * modified construction of transfer transactions in
+    keditscheduledtransferdlg.cpp
+
 2003-07-18 Michael Edwardes <mte@users.sourceforge.net>
   * Added the equality operator to MyMoneySchedule.
   * List and calendar view honour the account filter.
@@ -11,7 +17,7 @@
   * Fixed occurence of schedules.
   * Fixed tab order in new schedule dialogs.
   * Show the accounts that can be filtered on.
-  
+
 2003-07-17 Michael Edwardes <mte@users.sourceforge.net>
   * Use MyMoneySchedule::validate() when adding schedules.
     (validate() will be fully implemented later).
