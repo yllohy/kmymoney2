@@ -1,6 +1,6 @@
 am_min_maj := 1
-am_min_min := 7
-am_min_rel := 9
+am_min_min := 6
+am_min_rel := 3
 
 am_ver := '$(shell automake --version | head -n 1)'
 am_ver_maj := $(shell echo ${am_ver} | sed 's/.*\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\1/')
