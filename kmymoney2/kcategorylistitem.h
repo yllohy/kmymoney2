@@ -28,7 +28,7 @@ public:
   KCategoryListItem( QListView *parent, QString text, QStringList minors, bool income, bool major, QString majorName=QString::null );
   KCategoryListItem( KCategoryListItem *parent, QString text, bool income, bool major, QString majorName=QString::null );
 	~KCategoryListItem();
-	bool major(void);
+	bool isMajor(void);
   QString majorName(void);
   bool income(void);
   QStringList minors(void);
