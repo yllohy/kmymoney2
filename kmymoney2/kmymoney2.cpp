@@ -69,6 +69,7 @@
 #include "converter/mymoneyqifwriter.h"
 #include "converter/mymoneyqifreader.h"
 
+#include "kmymoneyutils.h"
 
 #define ID_STATUS_MSG 1
 
@@ -330,6 +331,7 @@ void KMyMoney2App::slotFileNew()
 // General open
 void KMyMoney2App::slotFileOpen()
 
+
 {
   QString prevMsg = slotStatusMsg(i18n("Open a document."));
 
@@ -445,6 +447,7 @@ void KMyMoney2App::slotFileCloseWindow()
   QString prevMsg = slotStatusMsg(i18n("Closing window..."));
 
   if (myMoneyView->dirty()) {
+
 
     int answer = KMessageBox::warningYesNoCancel(this, i18n("The file has been changed, save it ?"));
     if (answer == KMessageBox::Cancel)
@@ -754,6 +757,7 @@ void KMyMoney2App::slotFileBackup()
       slotFileSave();
 
 
+
   }
 
   KBackupDlg *backupDlg = new KBackupDlg(this,0/*,true*/);
@@ -767,16 +771,17 @@ void KMyMoney2App::slotFileBackup()
     proc.clearArguments();
     m_backupState = BACKUP_MOUNTING;
     mountpoint = backupDlg->txtMountPoint->text();
+    
     if (m_backupMount) {
-      
+      progressCallback(0, 300, i18n("Mounting %1").arg(mountpoint));
       proc << "mount";
       proc << mountpoint;
-      qDebug("Mounting '%s'", mountpoint.latin1());
       proc.start();
       
     } else {
       // If we don't have to mount a device, we just issue
       // a dummy command to start the copy operation
+      progressCallback(0, 300, "");
       proc << "echo";
       proc.start();
     }
@@ -795,8 +800,12 @@ void KMyMoney2App::slotProcessExited()
       if(proc.normalExit() && proc.exitStatus() == 0) {
         proc.clearArguments();
         QString today;
-        today.sprintf("-%d-%d-%d.kmy",QDate::currentDate().day(), QDate::currentDate().month(), QDate::currentDate().year());
-        QString backupfile = mountpoint + "/" + fileName.fileName(false) + today;
+        today.sprintf("-%04d-%02d-%02d.kmy",
+          QDate::currentDate().year(),
+          QDate::currentDate().month(),
+          QDate::currentDate().day());
+        QString backupfile = mountpoint + "/" + fileName.fileName(false);
+        KMyMoneyUtils::appendCorrectFileExt(backupfile, today);
 
         // check if file already exists and ask what to do
         m_backupResult = 0;
@@ -805,20 +814,23 @@ void KMyMoney2App::slotProcessExited()
           int answer = KMessageBox::warningContinueCancel(this, i18n("Backup file for today exists on that device.  Replace ?"), i18n("Backup"), i18n("&Replace"));
           if (answer == KMessageBox::Cancel) {
             m_backupResult = 1;
+
             if (m_backupMount) {
+              progressCallback(250, 0, i18n("Unmounting %1").arg(mountpoint));
               proc.clearArguments();
               proc << "umount";
               proc << mountpoint;
               m_backupState = BACKUP_UNMOUNTING;
               proc.start();
-            } else
+            } else {
               m_backupState = BACKUP_IDLE;
-
+              progressCallback(-1, -1, i18n("Ready."));
+            }
           }
         }
 
-
         if(m_backupResult == 0) {
+          progressCallback(50, 0, i18n("Writing %1").arg(backupfile));
           proc << "cp" << "-f" << fileName.path(0) << backupfile;
           m_backupState = BACKUP_COPYING;
           proc.start();
@@ -828,57 +840,67 @@ void KMyMoney2App::slotProcessExited()
         KMessageBox::information(this, i18n("Error mounting device"), i18n("Backup"));
         m_backupResult = 1;
         if (m_backupMount) {
-          proc.clearArguments();
-          proc << "umount";
-          proc << mountpoint;
-          m_backupState = BACKUP_UNMOUNTING;
-          proc.start();
-        } else
-          m_backupState = BACKUP_IDLE;
-      }
-      break;
-        
-    case BACKUP_COPYING:
-      if(proc.normalExit() && proc.exitStatus() == 0) {
-        if (m_backupMount) {
+          progressCallback(250, 0, i18n("Unmounting %1").arg(mountpoint));
           proc.clearArguments();
           proc << "umount";
           proc << mountpoint;
           m_backupState = BACKUP_UNMOUNTING;
           proc.start();
         } else {
-          KMessageBox::information(this, i18n("File successfully backed up"), i18n("Backup"));
-
           m_backupState = BACKUP_IDLE;
+          progressCallback(-1, -1, i18n("Ready."));
         }
-      } else {
-        qDebug("Exit status is %d", proc.exitStatus());
-        m_backupResult = 1;
-        KMessageBox::information(this, i18n("Error copying file to device"), i18n("Backup"));
+      }
+      break;
+        
+    case BACKUP_COPYING:
+      if(proc.normalExit() && proc.exitStatus() == 0) {
         if (m_backupMount) {
+          progressCallback(250, 0, i18n("Unmounting %1").arg(mountpoint));
           proc.clearArguments();
           proc << "umount";
           proc << mountpoint;
-          qDebug("Unmounting '%s'", mountpoint.latin1());
           m_backupState = BACKUP_UNMOUNTING;
           proc.start();
-        } else
+        } else {
+          progressCallback(300, 0, i18n("Done"));
+          KMessageBox::information(this, i18n("File successfully backed up"), i18n("Backup"));
           m_backupState = BACKUP_IDLE;
+          progressCallback(-1, -1, i18n("Ready."));
+        }
+      } else {
+        qDebug("cp exit status is %d", proc.exitStatus());
+        m_backupResult = 1;
+        KMessageBox::information(this, i18n("Error copying file to device"), i18n("Backup"));
+        if (m_backupMount) {
+          progressCallback(250, 0, i18n("Unmounting %1").arg(mountpoint));
+          proc.clearArguments();
+          proc << "umount";
+          proc << mountpoint;
+          m_backupState = BACKUP_UNMOUNTING;
+          proc.start();
+        } else {
+          m_backupState = BACKUP_IDLE;
+          progressCallback(-1, -1, i18n("Ready."));
+        }
       }
       break;
 
     case BACKUP_UNMOUNTING:
       if(proc.normalExit() && proc.exitStatus() == 0) {
+        progressCallback(300, 0, i18n("Done"));
         if(m_backupResult == 0)
           KMessageBox::information(this, i18n("File successfully backed up"), i18n("Backup"));
       } else {
         KMessageBox::information(this, i18n("Error unmounting device"), i18n("Backup"));
       }
       m_backupState = BACKUP_IDLE;
+      progressCallback(-1, -1, i18n("Ready."));
       break;
       
     default:
       qWarning("Unknown state for backup operation!");
+      progressCallback(-1, -1, i18n("Ready."));
       break;
   }
 }

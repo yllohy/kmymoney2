@@ -349,7 +349,10 @@ bool KMyMoneyUtils::appendCorrectFileExt(QString& str, const QString& strExtToUs
       strTemp = str.left(nLoc + 1);
       strExt = str.right(str.length() - (nLoc + 1));
       if(strExt.find(strExtToUse, 0, FALSE) == -1) {
-        //append to make complete file name
+        // if the extension given contains a period, we remove our's
+        if(strExtToUse.find('.') != -1)
+          strTemp = strTemp.left(strTemp.length()-1);
+        //append extension to make complete file name
         strTemp.append(strExtToUse);
         str = strTemp;
         rc = true;

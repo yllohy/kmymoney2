@@ -166,6 +166,7 @@ public:
   /**
     * This method adds the file extension passed as argument @p extension
     * to the end of the file name passed as argument @name if it is not present.
+    * If @p name contains an extension it will be removed.
     *
     * @param str filename to be checked
     * @param extension extension to be added (w/o the dot)
