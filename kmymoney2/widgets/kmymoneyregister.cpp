@@ -65,7 +65,7 @@ void kMyMoneyRegister::setTransactionCount(const int r, const bool setTransactio
   QTable::setNumRows(irows);
 
   QFontMetrics fm( m_cellFont );
-  int height = fm.lineSpacing()+2;
+  int height = fm.lineSpacing()+6;
 
   verticalHeader()->setUpdatesEnabled(false);
 

@@ -181,6 +181,13 @@ public:
     */
   const int maxRpt(void) const { return m_maxRpt; };
 
+  /**
+    * This method returns the currently selected cell font for the register.
+    *
+    * @return QFont of the cell font
+    */
+  QFont cellFont(void) const { return m_cellFont; };
+
 public slots:
   /**
     * This method is used to inform the widget about the number

@@ -3,6 +3,7 @@
                              -------------------
     copyright            : (C) 2000 by Michael Edwardes
     email                : mte@users.sourceforge.net
+                           ipwizard@users.sourceforge.net
  ***************************************************************************/
 
 /***************************************************************************
@@ -29,6 +30,7 @@
 #include <qapplication.h>
 #include <qdesktopwidget.h>
 #include <qpixmap.h>
+#include <qtimer.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -53,7 +55,6 @@ kMyMoneyDateInput::kMyMoneyDateInput(QWidget *parent, const char *name, Qt::Alig
 
   m_dateFrame = new QVBox(0,0,WType_Popup);
 	m_dateFrame->setFrameStyle(QFrame::PopupPanel | QFrame::Raised);
-  m_dateFrame->setFixedSize(200,200);
   m_dateFrame->setLineWidth(3);
   m_dateFrame->hide();
 
@@ -84,6 +85,7 @@ kMyMoneyDateInput::kMyMoneyDateInput(QWidget *parent, const char *name, Qt::Alig
 
   // the next line is a try to add an icon to the button
 	m_dateButton = new QPushButton(QIconSet(QPixmap( locate("icon","hicolor/16x16/apps/korganizer.png"))), QString(""), this);
+  m_dateButton->setMinimumWidth(30);
 	// m_dateButton = new QPushButton(this);
 
 	connect(m_dateButton,SIGNAL(clicked()),SLOT(toggleDatePicker()));
@@ -93,6 +95,29 @@ kMyMoneyDateInput::kMyMoneyDateInput(QWidget *parent, const char *name, Qt::Alig
 	connect(m_datePicker, SIGNAL(dateSelected(QDate)), m_dateFrame, SLOT(hide()));
 }
 
+void kMyMoneyDateInput::show(void)
+{
+  // don't forget the standard behaviour  ;-)
+  QHBox::show();
+
+  // If the widget is shown, the size must be fixed a little later
+  // to be appropriate. I saw this in some other places and the only
+  // way to solve this problem is to postpone the setup of the size
+  // to the time when the widget is on the screen.
+  QTimer::singleShot(50, this, SLOT(fixSize()));
+}
+
+void kMyMoneyDateInput::fixSize(void)
+{
+  // According to a hint in the documentation of KDatePicker::sizeHint()
+  // 28 pixels should be added in each direction to obtain a better
+  // display of the month button. I decided, (22,14) is good
+  // enough and save some space on the screen (ipwizard)
+  m_dateFrame->setFixedSize(m_datePicker->sizeHint() + QSize(22, 14));
+
+  dateEdit->setMinimumWidth(dateEdit->minimumSizeHint().width() + 6);
+}
+
 kMyMoneyDateInput::~kMyMoneyDateInput()
 {
   delete m_dateFrame;
@@ -100,6 +125,9 @@ kMyMoneyDateInput::~kMyMoneyDateInput()
 
 void kMyMoneyDateInput::toggleDatePicker()
 {
+  int w = m_dateFrame->width();
+  int h = m_dateFrame->height();
+
   if(m_dateFrame->isVisible())
 	{
 		m_dateFrame->hide();
@@ -111,18 +139,18 @@ void kMyMoneyDateInput::toggleDatePicker()
     // usually, the datepicker widget is shown underneath the dateEdit widget
     // if it does not fit on the screen, we show it above this widget
 
-    if(tmpPoint.y() + 200 > QApplication::desktop()->height()) {
-      tmpPoint.setY(tmpPoint.y() - 200 - m_dateButton->height());
+    if(tmpPoint.y() + h > QApplication::desktop()->height()) {
+      tmpPoint.setY(tmpPoint.y() - h - m_dateButton->height());
     }
 
     if (m_qtalignment == Qt::AlignRight)
 		{
-	    m_dateFrame->setGeometry(tmpPoint.x(), tmpPoint.y(), 200, 200);
+	    m_dateFrame->setGeometry(tmpPoint.x(), tmpPoint.y(), w, h);
 		}
 		else
 		{
-			tmpPoint.setX(tmpPoint.x() - m_datePicker->width());
-	    m_dateFrame->setGeometry(tmpPoint.x(), tmpPoint.y(), 200, 200);
+			tmpPoint.setX(tmpPoint.x() - w);
+	    m_dateFrame->setGeometry(tmpPoint.x(), tmpPoint.y(), w, h);
 		}
 
     QDate date = dateEdit->date();

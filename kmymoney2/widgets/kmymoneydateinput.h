@@ -39,7 +39,14 @@
 // Respective authors are credited.
 // Some ideas/code have been borrowed from Calendar-0.13 (phoenix.bmedesign.com/~qt)
 
-class kMyMoneyDateInput : public QHBox  {
+/**
+  * This class provides the general widget used for date selection
+  * throughout the KMyMoney project. It provides an QDateEdit widget
+  * which is based on an edit field with spin boxes and adds a QPushButton
+  * to open a KDatePicker.
+  */
+class kMyMoneyDateInput : public QHBox
+{
    Q_OBJECT
 
 public: 
@@ -52,6 +59,9 @@ public:
   void loadDate(const QDate& date);
   void resetDate(void);
   QWidget* focusWidget(void) const;
+
+public slots:
+  virtual void show(void);
 
 signals:
   void dateChanged(const QDate& date);
@@ -77,6 +87,7 @@ protected slots:
 
 private slots:
   void slotDateChosenRef(const QDate& date);
+  void fixSize(void);
 
 private:
   QDateEdit *dateEdit;
