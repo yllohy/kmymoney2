@@ -45,7 +45,10 @@
 
 KNewAccountDlg::KNewAccountDlg(MyMoneyAccount& account, bool isEditing, bool categoryEditor, QWidget *parent,
     const char *name, const char *title)
-  : KNewAccountDlgDecl(parent,name,true), m_account(account), m_categoryEditor(categoryEditor), m_bSelectedParentAccount(false)
+  : KNewAccountDlgDecl(parent,name,true),
+    m_account(account),
+    m_bSelectedParentAccount(false),
+    m_categoryEditor(categoryEditor)
 {
   QCString pngFile = ( (categoryEditor) ? "pics/dlg_edit_category.png" : "pics/dlg_new_account.png" );
   QString columnName = ( (categoryEditor) ? i18n("Categories") : i18n("Accounts") );
@@ -388,7 +391,7 @@ void KNewAccountDlg::initParentWidget(const QString& name)
     {
       // Asset
       KAccountListItem *assetTopLevelAccount = new KAccountListItem(m_qlistviewParentAccounts,
-                        assetAccount.name(), STD_ACC_ASSET, false, "");
+                        assetAccount.name(), assetAccount.id(), "", "");
 
       if (name.length()>=1 && name == assetAccount.name())
       {
@@ -401,7 +404,7 @@ void KNewAccountDlg::initParentWidget(const QString& name)
             ++it )
       {
         KAccountListItem *accountItem = new KAccountListItem(assetTopLevelAccount,
-            file->account(*it).name(), file->account(*it).id(), false, "");
+            file->account(*it).name(), file->account(*it).id(), "", "");
 
         if (name.length()>=1 && name == file->account(*it).name())
         {
@@ -418,7 +421,7 @@ void KNewAccountDlg::initParentWidget(const QString& name)
 
       // Liability
       KAccountListItem *liabilityTopLevelAccount = new KAccountListItem(m_qlistviewParentAccounts,
-                        liabilityAccount.name(), STD_ACC_LIABILITY, false, "");
+                        liabilityAccount.name(), liabilityAccount.id(), "", "");
 
       if (name.length()>=1 && name == liabilityAccount.name())
       {
@@ -431,7 +434,7 @@ void KNewAccountDlg::initParentWidget(const QString& name)
             ++it )
       {
         KAccountListItem *accountItem = new KAccountListItem(liabilityTopLevelAccount,
-            file->account(*it).name(), file->account(*it).id(), false, "");
+            file->account(*it).name(), file->account(*it).id(), "", "");
 
         if (name.length()>=1 && name == file->account(*it).name())
         {
@@ -449,7 +452,7 @@ void KNewAccountDlg::initParentWidget(const QString& name)
 
     // Income
     KAccountListItem *incomeTopLevelAccount = new KAccountListItem(m_qlistviewParentAccounts,
-                      incomeAccount.name(), STD_ACC_INCOME, false, "");
+                      incomeAccount.name(), incomeAccount.id(), "", "");
 
     if (name.length()>=1 && name == incomeAccount.name())
     {
@@ -462,7 +465,7 @@ void KNewAccountDlg::initParentWidget(const QString& name)
           ++it )
     {
       KAccountListItem *accountItem = new KAccountListItem(incomeTopLevelAccount,
-          file->account(*it).name(), file->account(*it).id(), false, "");
+          file->account(*it).name(), file->account(*it).id(), "", "");
 
       if (name.length()>=1 && name == file->account(*it).name())
       {
@@ -479,7 +482,7 @@ void KNewAccountDlg::initParentWidget(const QString& name)
 
     // Expense
     KAccountListItem *expenseTopLevelAccount = new KAccountListItem(m_qlistviewParentAccounts,
-                      expenseAccount.name(), STD_ACC_EXPENSE, false, "");
+                      expenseAccount.name(), expenseAccount.id(), "", "");
 
     if (name.length()>=1 && name == expenseAccount.name())
     {
@@ -492,7 +495,7 @@ void KNewAccountDlg::initParentWidget(const QString& name)
           ++it )
     {
       KAccountListItem *accountItem = new KAccountListItem(expenseTopLevelAccount,
-          file->account(*it).name(), file->account(*it).id(), false, "");
+          file->account(*it).name(), file->account(*it).id(), "", "");
 
       if (name.length()>=1 && name == file->account(*it).name())
       {
@@ -547,7 +550,7 @@ void KNewAccountDlg::showSubAccounts(QCStringList accounts, KAccountListItem *pa
   for ( QCStringList::ConstIterator it = accounts.begin(); it != accounts.end(); ++it )
   {
     KAccountListItem *accountItem  = new KAccountListItem(parentItem,
-          file->account(*it).name(), file->account(*it).id(), false, "");
+          file->account(*it).name(), file->account(*it).id(), "", "");
 
       if (name.length()>=1 && name == file->account(*it).name())
       {
