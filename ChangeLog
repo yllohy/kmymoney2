@@ -5,6 +5,13 @@
   * added icon to reset button in settings dialog
   * added logic for customization of home page to settings dialog
     it is not yet used in the home page logic
+  * use KDE settings for font calculation in settings dialog
+  * allow setting of Preferred attribute in KNewAccountWizard
+  * removed reference to unknown signals/slots in KMyMoney2App::slotQifExport
+  * added button icons to QIF export dialog
+  * added button icons to QIF import dialog
+  * cleaned up QIF import code from leftovers of old implementation
+  * added button icons to QIF profile editor
 
 2003-07-31 Michael Edwardes <mte@users.sourceforge.net>
   * Fix the nasty bug i introduced into the start dialog.
