@@ -77,6 +77,8 @@ void kMyMoneyRegister::setTransactionCount(const int r, const bool setTransactio
 
   if(setTransaction) {
     setCurrentTransactionIndex(r);
+  } else if(m_currentTransactionIndex > (r-1)) {
+    setCurrentTransactionIndex(r-1);
   }
 
   // add or remove scrollbars as required
