@@ -1,4 +1,19 @@
 2002-08-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added MyMoneySeqAccessMgr::payeeByName() and MyMoneyFile::payeeByName()
+  * Added MyMoneyTransaction::splitSum()
+  * Added MyMoneyFile::categoryToAccount() and MyMoneyFile::nameToAccount()
+  * Added testcase for the above functions
+  * Fixed bug in MyMoneySplit::operator ==
+  * Changed interface to MyMoneyTransaction::addSplit to use reference
+  * Added MyMoneyTransaction::splitSum() and testcases
+  * Added some details to exceptions in MyMoneyTransaction
+  * Added central function to display info about unexpected exceptions
+    in autotest.cpp
+  * Added logic to fill checkings form and to add/modify transactions
+  * Fixed kmymoney2/Makefile.am to be able to extract the i18n messages
+  * Added new startup logo customized for version 0.5
+
+2002-08-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed configure problem when CPPUNIT is not installed
   * Fixed MyMoneyMoney::format() to return fractional part for value 0
 
