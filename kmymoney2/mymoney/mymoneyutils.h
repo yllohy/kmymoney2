@@ -56,6 +56,8 @@ typedef long long DLONG;
 // typedef for id lists
 typedef QValueList<QCString> QCStringList;
 
+void timetrace(char *);
+
 //class that has utility functions to use throughout the application.
 class MyMoneyUtils
 {
