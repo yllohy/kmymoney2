@@ -44,6 +44,7 @@
 
 // ----------------------------------------------------------------------------
 // QT Includes
+#include <qglobal.h>
 #include <qdatetime.h>
 #include <qstring.h>
 #include <qpen.h>
@@ -68,6 +69,9 @@
 kMyMoneyDateTbl::kMyMoneyDateTbl(QWidget *parent, QDate date_, const char* name, WFlags f)
   : QGridView(parent, name, f)
 {
+  // call this first to make sure that member variables are initialized
+  setType(MONTHLY);
+  
   setFontSize(10);
 
   if(!date_.isValid())
@@ -77,7 +81,6 @@ kMyMoneyDateTbl::kMyMoneyDateTbl(QWidget *parent, QDate date_, const char* name,
   }
   setFocusPolicy( QWidget::StrongFocus );
 
-  setType(MONTHLY);
 
   viewport()->setEraseColor(KGlobalSettings::baseColor());
   
@@ -104,7 +107,7 @@ kMyMoneyDateTbl::paintCell(QPainter *painter, int row, int col)
   font.setPointSize(fontsize);
   
 #if KDE_VERSION < 310
-  int firstweekDay = KGlobal::locale()->weekStartsMonday() ? 1 : 0;
+  int firstWeekDay = KGlobal::locale()->weekStartsMonday() ? 1 : 0;
 #else
   int firstWeekDay = KGlobal::locale()->weekStartDay();
 #endif
@@ -158,9 +161,15 @@ kMyMoneyDateTbl::paintCell(QPainter *painter, int row, int col)
 
       int year=date.year();
       QString headerText;
+#if QT_VERSION > 0x030005
+      // FIXME: Shouldn't that be i18n()'ed as well
       headerText.sprintf("Week %d for year %d.",
         date.weekNumber(&year),
         year);
+#else
+      // FIXME: include code to display the same as for KDE >= 3.0.5
+      headerText = "42";
+#endif        
 
       painter->drawText(0, 0, w, h-1, AlignCenter, headerText, -1, &rect);
 
@@ -563,7 +572,7 @@ void kMyMoneyDateTbl::contentsMouseMoveEvent(QMouseEvent* e)
   }
 
 #if KDE_VERSION < 310
-  int firstweekDay = KGlobal::locale()->weekStartsMonday() ? 1 : 0;
+  int firstWeekDay = KGlobal::locale()->weekStartsMonday() ? 1 : 0;
 #else
   int firstWeekDay = KGlobal::locale()->weekStartDay();
 #endif
