@@ -7,3 +7,5 @@ Makefile.in
 *.o
 *_meta_unload.cpp
 *~
+backupdlgdecl.cpp
+backupdlgdecl.cpp
