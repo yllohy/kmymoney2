@@ -201,3 +201,42 @@ void kMyMoneyRegister::ensureTransactionVisible(void)
   ensureCellVisible((currentTransactionIndex()) * rpt(), 0);
   ensureCellVisible((currentTransactionIndex() * rpt()) + rpt()-1, 0);
 }
+
+bool kMyMoneyRegister::eventFilter(QObject* o, QEvent* e)
+{
+  bool rc = false;
+
+  if(e->type() == QEvent::KeyRelease) {
+    QKeyEvent *k = static_cast<QKeyEvent *> (e);
+    rc = true;
+    switch(k->key()) {
+      case Qt::Key_Return:
+      case Qt::Key_Enter:
+        emit signalEnter();
+        break;
+
+      case Qt::Key_Escape:
+        emit signalEsc();
+        break;
+
+      case Qt::Key_Up:
+        emit signalPreviousTransaction();
+        break;
+
+      case Qt::Key_Down:
+        emit signalNextTransaction();
+        break;
+
+      default:
+        rc = false;
+        break;
+    }
+  }
+
+  // if the key has not been processed here, forward it to
+  // the base class implementation
+  if(rc == false)
+    rc = QTable::eventFilter(o, e);
+
+  return rc;
+}

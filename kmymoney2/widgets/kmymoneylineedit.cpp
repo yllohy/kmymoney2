@@ -28,7 +28,8 @@
 
 #include "kmymoneylineedit.h"
 
-kMyMoneyLineEdit::kMyMoneyLineEdit(QWidget *w):KLineEdit(w)
+kMyMoneyLineEdit::kMyMoneyLineEdit(QWidget *w, const char* name)
+  : KLineEdit(w, name)
 {
 	setAlignment(AlignRight | AlignVCenter);
 }
@@ -40,26 +41,41 @@ kMyMoneyLineEdit::~kMyMoneyLineEdit()
 /** No descriptions */
 bool kMyMoneyLineEdit::eventFilter(QObject *o , QEvent *e )
 {
-  if(e->type() == QEvent::KeyRelease) {
-    QKeyEvent *k = static_cast<QKeyEvent *> (e);
-    if((k->key() == Qt::Key_Return) ||
-       (k->key() == Qt::Key_Enter)) {
-      emit signalEnter();
-      emit signalNextTransaction();
-    }
+  bool rc = KLineEdit::eventFilter(o, e);
 
-  } else if(e->type() == QEvent::KeyPress) {
-    QKeyEvent *k = static_cast<QKeyEvent *> (e);
-    if(k->key() == Qt::Key_Backtab ||
-       (k->key() == Qt::Key_Tab &&
-       (k->state() & Qt::ShiftButton)) ) {
-      emit signalBackTab();
+  if(rc == false) {
+    if(e->type() == QEvent::KeyPress) {
+      QKeyEvent *k = static_cast<QKeyEvent *> (e);
+      rc = true;
+      switch(k->key()) {
+        case Qt::Key_Return:
+        case Qt::Key_Enter:
+          emit signalEnter();
+          break;
 
-    } else if(k->key() == Qt::Key_Tab) {
-      emit signalTab();
+        case Qt::Key_Escape:
+          emit signalEsc();
+          break;
+
+        case Qt::Key_Tab:
+          rc = false;
+          if(k->state() & Qt::ShiftButton)
+            emit signalBackTab();
+          else
+            emit signalTab();
+          break;
+
+        case Qt::Key_Backtab:
+          rc = false;
+          emit signalBackTab();
+          break;
+
+        default:
+          rc = false;
+      }
     }
   }
-  return KLineEdit::eventFilter(o,e);
+  return rc;
 }
 
 void kMyMoneyLineEdit::resetText(void)

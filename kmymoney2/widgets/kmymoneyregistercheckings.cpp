@@ -69,7 +69,6 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
     return;
 
   // now the specific stuff for checking accounts
-  QRect rr3 = r;
 
   QString txt;
 
@@ -302,4 +301,11 @@ QWidget* kMyMoneyRegisterCheckings::createEditor(int row, int col, bool initFrom
     return 0;
 
   return kMyMoneyRegister::createEditor(row, col, initFromCell);
+}
+
+// This must be implemented here, as QTable::eventFilter is not virtual :-(
+
+bool kMyMoneyRegisterCheckings::eventFilter(QObject* o, QEvent* e)
+{
+  return kMyMoneyRegister::eventFilter(o, e);
 }

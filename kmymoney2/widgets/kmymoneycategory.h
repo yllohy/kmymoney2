@@ -51,6 +51,8 @@ public:
     */
   void resetText(void);
 
+  virtual bool eventFilter(QObject * , QEvent * );
+
 signals:
   /**
     * This signal is emitted, when a new category name has been
@@ -63,6 +65,16 @@ signals:
     * This signal is emitted when the user selected a different category.
     */
   void categoryChanged(const QString& category);
+
+  /**
+    * This signal is emitted when the user presses RETURN while editing
+    */
+  void signalEnter();
+
+  /**
+    * This signal is emitted when the user presses ESC while editing
+    */
+  void signalEsc();
 
 protected:
   void focusOutEvent(QFocusEvent *ev);

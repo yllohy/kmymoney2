@@ -49,6 +49,8 @@ public:
 
   QWidget* createEditor(int row, int col, bool initFromCell) const;
 
+  bool eventFilter(QObject* o, QEvent* e);
+
 public slots:
   void adjustColumn(int col);
 

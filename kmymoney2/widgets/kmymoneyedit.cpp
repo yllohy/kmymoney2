@@ -109,37 +109,43 @@ void kMyMoneyEdit::focusOutEvent(QFocusEvent *e)
 
 bool kMyMoneyEdit::eventFilter(QObject *o , QEvent *e )
 {
-  if(e->type() == QEvent::KeyRelease) {
+  if(e->type() == QEvent::KeyPress) {
     QKeyEvent *k = static_cast<QKeyEvent *> (e);
-    if((k->key() == Qt::Key_Return) ||
-       (k->key() == Qt::Key_Enter)) {
-      emit signalEnter();
-      emit signalNextTransaction();
-    }
+    switch(k->key()) {
+      case Qt::Key_Return:
+      case Qt::Key_Enter:
+        emit signalEnter();
+        break;
 
-  } else if(e->type() == QEvent::KeyPress) {
-    QKeyEvent *k = static_cast<QKeyEvent *> (e);
-    if(k->key() == Qt::Key_Backtab ||
-       (k->key() == Qt::Key_Tab &&
-       (k->state() & Qt::ShiftButton)) ) {
-      emit signalBackTab();
+      case Qt::Key_Escape:
+        emit signalEsc();
+        break;
 
-    } else if(k->key() == Qt::Key_Tab) {
-      emit signalTab();
+      case Qt::Key_Tab:
+        if(k->state() & Qt::ShiftButton)
+          emit signalBackTab();
+        else
+          emit signalTab();
+        break;
 
-    } else if(k->key() == Qt::Key_Plus
-      || k->key() == Qt::Key_Minus
-      || k->key() == Qt::Key_Slash
-      || k->key() == Qt::Key_Asterisk
-      || k->key() == Qt::Key_Percent) {
-      m_calculator->setInitialValues(text(), k);
+      case Qt::Key_Backtab:
+        emit signalBackTab();
+        break;
 
-      QPoint p = mapToGlobal(QPoint(0,0));
-      QRect r = m_calculator->geometry();
-      r.moveTopLeft(p);
+      case Qt::Key_Plus:
+      case Qt::Key_Minus:
+      case Qt::Key_Slash:
+      case Qt::Key_Asterisk:
+      case Qt::Key_Percent:
+        m_calculator->setInitialValues(text(), k);
 
-      m_calculatorFrame->setGeometry(r);
-      m_calculatorFrame->show();
+        QPoint p = mapToGlobal(QPoint(0,0));
+        QRect r = m_calculator->geometry();
+        r.moveTopLeft(p);
+
+        m_calculatorFrame->setGeometry(r);
+        m_calculatorFrame->show();
+        break;
     }
   }
   return KLineEdit::eventFilter(o,e);

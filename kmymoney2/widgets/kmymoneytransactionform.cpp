@@ -44,10 +44,12 @@
 // Project Includes
 
 #include "kmymoneytransactionform.h"
+#include "../views/kledgerview.h"
 
-kMyMoneyTransactionFormTable::kMyMoneyTransactionFormTable( QWidget* parent, const char* name)
+kMyMoneyTransactionFormTable::kMyMoneyTransactionFormTable( KLedgerView* view, QWidget* parent, const char* name)
   : QTable(parent, name)
 {
+  m_view = view;
 }
 
 /** Override the QTable member function to avoid display of focus */
@@ -109,6 +111,17 @@ bool kMyMoneyTransactionFormTable::eventFilter( QObject * o, QEvent * e)
 
 }
 
+bool kMyMoneyTransactionFormTable::focusNextPrevChild(bool next)
+{
+  return m_view->focusNextPrevChild(next);
+}
+
+
+
+/* -------------------------------------------------------------------------------*/
+/* -------------------------------------------------------------------------------*/
+
+
 kMyMoneyTransactionFormTableItem::kMyMoneyTransactionFormTableItem(QTable* table, EditType ed, const QString& str)
   : QTableItem(table, ed, str)
 {
@@ -141,13 +154,21 @@ void kMyMoneyTransactionFormTableItem::setAlignment(alignmentTypeE type)
 {
   m_alignment = type;
 }
+
+
+/* -------------------------------------------------------------------------------*/
+/*                             kMyMoneyTransactionForm                            */
+/* -------------------------------------------------------------------------------*/
+
+
 /*
  *  Constructs a kMyMoneyTransactionForm which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-kMyMoneyTransactionForm::kMyMoneyTransactionForm( QWidget* parent,  const char* name, WFlags fl, const int rows, const int cols)
+kMyMoneyTransactionForm::kMyMoneyTransactionForm( KLedgerView* parent,  const char* name, WFlags fl, const int rows, const int cols)
     : QWidget( parent, name, fl )
 {
+  m_view = parent;
   formLayout = new QVBoxLayout( this, 0, 0, "formLayout");
 
   m_tabBar = new QTabBar( this, "tabBar" );
@@ -165,12 +186,12 @@ kMyMoneyTransactionForm::kMyMoneyTransactionForm( QWidget* parent,  const char* 
 
   buttonNew = new KPushButton( formFrame, "buttonNew" );
   buttonNew->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)3, (QSizePolicy::SizeType)0, 0, 0, buttonNew->sizePolicy().hasHeightForWidth() ) );
-  buttonNew->setText( i18n( "New" ) );
+  buttonNew->setText( i18n( "&New" ) );
   buttonLayout->addWidget( buttonNew );
 
   buttonEdit = new KPushButton( formFrame, "buttonEdit" );
   buttonEdit->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)3, (QSizePolicy::SizeType)0, 0, 0, buttonEdit->sizePolicy().hasHeightForWidth() ) );
-  buttonEdit->setText( i18n( "Edit" ) );
+  buttonEdit->setText( i18n( "&Edit" ) );
   buttonLayout->addWidget( buttonEdit );
 
   buttonEnter = new KPushButton( formFrame, "buttonEnter" );
@@ -180,12 +201,12 @@ kMyMoneyTransactionForm::kMyMoneyTransactionForm( QWidget* parent,  const char* 
 
   buttonCancel = new KPushButton( formFrame, "buttonCancel" );
   buttonCancel->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)3, (QSizePolicy::SizeType)0, 0, 0, buttonCancel->sizePolicy().hasHeightForWidth() ) );
-  buttonCancel->setText( i18n( "Cancel" ) );
+  buttonCancel->setText( i18n( "&Cancel" ) );
   buttonLayout->addWidget( buttonCancel );
 
   buttonMore = new KPushButton( formFrame, "buttonMore" );
   buttonMore->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)3, (QSizePolicy::SizeType)0, 0, 0, buttonMore->sizePolicy().hasHeightForWidth() ) );
-  buttonMore->setText( i18n( "More" ) );
+  buttonMore->setText( i18n( "&More" ) );
   buttonLayout->addWidget( buttonMore );
   QSpacerItem* spacer = new QSpacerItem( 20, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
   buttonLayout->addItem( spacer );
@@ -193,7 +214,7 @@ kMyMoneyTransactionForm::kMyMoneyTransactionForm( QWidget* parent,  const char* 
   formFrameLayout->addLayout( buttonLayout, 0, 0 );
 
 
-  formTable = new kMyMoneyTransactionFormTable( formFrame, "formTable" );
+  formTable = new kMyMoneyTransactionFormTable( m_view, formFrame, "formTable" );
   formTable->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)5, (QSizePolicy::SizeType)5, 0, 0, formTable->sizePolicy().hasHeightForWidth() ) );
   formTable->setBackgroundOrigin(QTable::WindowOrigin);
   formTable->setFrameShape( QTable::NoFrame );

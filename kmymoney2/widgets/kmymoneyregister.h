@@ -120,6 +120,8 @@ public:
     */
   void ensureTransactionVisible(void);
 
+  bool eventFilter(QObject* o, QEvent* e);
+
 public slots:
   /**
     * This method is used to inform the widget about the number
@@ -184,6 +186,22 @@ protected:
     * If reset, the cells of the register are read-only
     */
   bool m_inlineEditAvailable;
+
+signals:
+  void signalPreviousTransaction();
+  void signalNextTransaction();
+
+  /**
+    * This signal is emitted when the user presses RETURN
+    */
+  void signalEnter();
+
+  /**
+    * This signal is emitted when the user presses ESC
+    */
+  void signalEsc();
+
+
 };
 
 #endif

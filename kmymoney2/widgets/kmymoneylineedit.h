@@ -38,7 +38,7 @@
 class kMyMoneyLineEdit : public KLineEdit  {
 	Q_OBJECT
 public: 
-	kMyMoneyLineEdit(QWidget *w);
+	kMyMoneyLineEdit(QWidget *w, const char* name = 0);
 	~kMyMoneyLineEdit();
   /** No descriptions */
   virtual bool eventFilter(QObject * , QEvent * );
@@ -55,10 +55,18 @@ public slots:
 signals: // Signals
   void lineChanged(const QString& str);
 
-  /** No descriptions */
+  /**
+    * This signal is emitted when the user presses RETURN while editing
+    */
   void signalEnter();
+
+  /**
+    * This signal is emitted when the user presses ESC while editing
+    */
+  void signalEsc();
+
   /** No descriptions */
-  void signalNextTransaction();
+  // void signalNextTransaction();
   /** signal is sent, when the tab key is pressed */
   void signalTab();
   /** signal is sent, when the Back-tab (Shift-Tab) key is pressed */

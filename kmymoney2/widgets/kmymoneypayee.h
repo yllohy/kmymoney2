@@ -59,6 +59,8 @@ public:
     */
   void resetText(void);
 
+  virtual bool eventFilter(QObject * , QEvent * );
+
 public slots:
   /**
     * This slot is used to load the local text copy and the widget with
@@ -83,6 +85,16 @@ signals:
     * the new payee is possibly available in the MyMoneyFile object.
     */
   void payeeChanged(const QString& payee);
+
+  /**
+    * This signal is emitted when the user presses RETURN while editing
+    */
+  void signalEnter();
+
+  /**
+    * This signal is emitted when the user presses ESC while editing
+    */
+  void signalEsc();
 
 protected:
   void focusOutEvent(QFocusEvent *ev);

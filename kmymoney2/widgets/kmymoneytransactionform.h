@@ -44,6 +44,7 @@ class QGridLayout;
 class KPushButton;
 class QFrame;
 class QTable;
+class KLedgerView;
 
 /**
   *@author Thomas Baumgart
@@ -54,7 +55,7 @@ class kMyMoneyTransactionFormTable : public QTable
   Q_OBJECT
 
 public:
-  kMyMoneyTransactionFormTable( QWidget* parent = 0, const char* name = 0);
+  kMyMoneyTransactionFormTable( KLedgerView* view, QWidget* parent = 0, const char* name = 0);
   ~kMyMoneyTransactionFormTable() {};
 
   void paintFocus(QPainter *p, const QRect &cr);
@@ -69,12 +70,15 @@ public slots:
   virtual void setNumCols(int c);
   virtual void setNumRows(int r);
 
+protected:
+  bool focusNextPrevChild(bool next);
+
 private:
   void resizeEditable(int r, int c);
 
 private:
   QBitArray m_editable;
-
+  KLedgerView*  m_view;
 };
 
 class kMyMoneyTransactionFormTableItem : public QTableItem
@@ -100,7 +104,7 @@ class kMyMoneyTransactionForm : public QWidget
   Q_OBJECT
 
 public:
-  kMyMoneyTransactionForm( QWidget* parent = 0, const char* name = 0, WFlags fl = 0, const int rows = 4, const int cols = 4 );
+  kMyMoneyTransactionForm( KLedgerView* parent = 0, const char* name = 0, WFlags fl = 0, const int rows = 4, const int cols = 4 );
   ~kMyMoneyTransactionForm();
 
   void addTab(QTab *tab) { m_tabBar->addTab(tab); };
@@ -123,6 +127,7 @@ protected:
   KPushButton* buttonCancel;
   KPushButton* buttonMore;
 
+  KLedgerView*  m_view;
 
 protected:
   QVBoxLayout* formLayout;
