@@ -2,7 +2,7 @@ AC_DEFUN([AC_LIBOFX],
 [
 AC_MSG_CHECKING(if OFX support is desired)
 AC_ARG_ENABLE(ofx,
-  [  --enable-ofx            enable OFX support (default=detect)],
+  [  --enable-ofx            enable OFX support (default=disabled)],
   enable_ofx="$enableval",
   enable_ofx="no")
 AC_MSG_RESULT($enable_ofx)
