@@ -30,7 +30,9 @@
 #include <qmap.h>
 
 // ----------------------------------------------------------------------------
-// Third party Includes
+// KDE Includes
+
+#include <kdeversion.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -49,7 +51,7 @@ MyMoneyStorageXML::MyMoneyStorageXML()
 
 MyMoneyStorageXML::~MyMoneyStorageXML()
 {
-  
+
 }
 
 //Function to read in the file, send to XML parser.
@@ -62,7 +64,7 @@ void MyMoneyStorageXML::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
     return;
   }
   m_storage = storage;
-  
+
   m_doc = new QDomDocument;
   Q_CHECK_PTR(m_doc);
   if(m_doc->setContent(pDevice, FALSE))
@@ -120,7 +122,7 @@ void MyMoneyStorageXML::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
         child = child.nextSibling();
       }
     }
-    
+
     delete m_doc;
     m_doc = NULL;
 
@@ -160,7 +162,7 @@ void MyMoneyStorageXML::writeFile(QIODevice* qf, IMyMoneySerialize* storage)
   QDomElement fileInfo = m_doc->createElement("FILEINFO");
   writeFileInformation(fileInfo);
   mainElement.appendChild(fileInfo);
-  
+
   QDomElement userInfo = m_doc->createElement("USER");
   writeUserInformation(userInfo);
   mainElement.appendChild(userInfo);
@@ -197,9 +199,14 @@ void MyMoneyStorageXML::writeFile(QIODevice* qf, IMyMoneySerialize* storage)
   mainElement.appendChild(currencies);
 
   QTextStream stream(qf);
+#if KDE_IS_VERSION(3,2,0)
+  stream.setEncoding(QTextStream::UnicodeUTF8);
+  stream << m_doc->toString();
+#else
   //stream.setEncoding(QTextStream::Locale);
   QCString temp = m_doc->toCString();
   stream << temp.data();
+#endif
 
   // qDebug("File contains %s", temp.data());
 
@@ -216,17 +223,17 @@ void MyMoneyStorageXML::writeFile(QIODevice* qf, IMyMoneySerialize* storage)
 void MyMoneyStorageXML::readFileInformation(QDomElement fileInfo)
 {
   signalProgress(0, 3, QObject::tr("Loading file information..."));
-  
+
   QDomElement temp = findChildElement(QString("CREATION_DATE"), fileInfo);
   QString strDate = QStringEmpty(temp.attribute("date"));
   m_storage->setCreationDate(getDate(strDate));
   signalProgress(1, 0);
-  
+
   temp = findChildElement(QString("LAST_MODIFIED_DATE"), fileInfo);
   strDate = QStringEmpty(temp.attribute("date"));
   m_storage->setLastModificationDate(getDate(strDate));
   signalProgress(2, 0);
-  
+
   temp = findChildElement(QString("VERSION"), fileInfo);
   QString strVersion = QStringEmpty(temp.attribute("id"));
   fileVersionRead = strVersion.toUInt(NULL, 16);
@@ -239,11 +246,11 @@ void MyMoneyStorageXML::writeFileInformation(QDomElement& fileInfo)
   QDomElement creationDate = m_doc->createElement("CREATION_DATE");
   creationDate.setAttribute(QString("date"), getString(m_storage->creationDate()));
   fileInfo.appendChild(creationDate);
-  
+
   QDomElement lastModifiedDate = m_doc->createElement("LAST_MODIFIED_DATE");
   lastModifiedDate.setAttribute(QString("date"), getString(m_storage->lastModificationDate()));
   fileInfo.appendChild(lastModifiedDate);
-  
+
   QDomElement version = m_doc->createElement("VERSION");
 
   //if we haven't written a file yet, write using the default version.
@@ -317,7 +324,7 @@ void MyMoneyStorageXML::readInstitutions(QDomElement& institutions)
         {
           m_storage->loadInstitutionId(id);
         }
-        
+
         //return childElement;
       }
 
@@ -385,7 +392,7 @@ MyMoneyInstitution MyMoneyStorageXML::readInstitution(const QDomElement& institu
   {
     qWarning("XMLREADER: Institution %s does not have an accountids section.", i.name().data());
   }
-    
+
   return MyMoneyInstitution(id, i);
 }
 
@@ -423,7 +430,7 @@ void MyMoneyStorageXML::readPayees(QDomElement& payees)
   QDomNode child = payees.firstChild();
   int x = 0;
   signalProgress(0, getChildCount(payees), QObject::tr("Loading payees..."));
-  
+
   while(!child.isNull())
   {
     if(child.isElement())
@@ -454,7 +461,7 @@ void MyMoneyStorageXML::writePayees(QDomElement& payees)
   QValueList<MyMoneyPayee>::ConstIterator it;
 
   list = m_storage->payeeList();
-  
+
   for(it = list.begin(); it != list.end(); ++it)
   {
     QDomElement payee = m_doc->createElement("PAYEE");
@@ -515,7 +522,7 @@ void MyMoneyStorageXML::readAccounts(QDomElement& accounts)
   QDomNode child = accounts.firstChild();
   int x = 0;
   signalProgress(0, getChildCount(accounts), QObject::tr("Loading accounts..."));
-  
+
   while(!child.isNull() && child.isElement())
   {
     QDomElement childElement = child.toElement();
@@ -581,11 +588,11 @@ MyMoneyAccount MyMoneyStorageXML::readAccount(const QDomElement& account)
   MyMoneyAccount acc;
   QCString id;
   QString tmp;
-  
+
   acc.setName(account.attribute(QString("name")));
 
   // qDebug("Reading information for account %s", acc.name().data());
-  
+
   acc.setParentAccountId(QCStringEmpty(account.attribute(QString("parentaccount"))));
   acc.setLastModified(getDate(QStringEmpty(account.attribute(QString("lastmodified")))));
   acc.setLastReconciliationDate(getDate(QStringEmpty(account.attribute(QString("lastreconciled")))));
@@ -605,10 +612,10 @@ MyMoneyAccount MyMoneyStorageXML::readAccount(const QDomElement& account)
   {
     qWarning("XMLREADER: Account %s had invalid or no account type information.", acc.name().data());
   }
-      
+
   acc.setOpeningBalance(MyMoneyMoney(account.attribute(QString("openingbalance"))));
   acc.setDescription(account.attribute(QString("description")));
-  
+
   id = QCStringEmpty(account.attribute(QString("id")));
   Q_ASSERT(id.size());
   // qDebug("Account %s has id of %s, type of %d, parent is %s.", acc.name().data(), id.data(), type, acc.parentAccountId().data());
@@ -626,11 +633,11 @@ MyMoneyAccount MyMoneyStorageXML::readAccount(const QDomElement& account)
         QDomElement childElement = child.toElement();
         if(QString("SUBACCOUNT") == childElement.tagName())
         {
-          acc.addAccountId(QCString(childElement.attribute(QString("id")))); 
+          acc.addAccountId(QCString(childElement.attribute(QString("id"))));
         }
       }
       child = child.nextSibling();
-    }  
+    }
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////
@@ -640,12 +647,12 @@ MyMoneyAccount MyMoneyStorageXML::readAccount(const QDomElement& account)
   {
     acc.setPairs(readKeyValuePairs(keyValPairs));
   }
-  
+
   return MyMoneyAccount(id, acc);
 }
 
 void MyMoneyStorageXML::writeAccount(QDomElement& account, const MyMoneyAccount& p)
-{   
+{
   account.setAttribute(QString("parentaccount"), p.parentAccountId());
   account.setAttribute(QString("lastreconciled"), getString(p.lastReconciliationDate()));
   account.setAttribute(QString("lastmodified"), getString(p.lastModified()));
@@ -653,7 +660,7 @@ void MyMoneyStorageXML::writeAccount(QDomElement& account, const MyMoneyAccount&
   account.setAttribute(QString("opened"), getString(p.openingDate()));
   account.setAttribute(QString("number"), p.number());
   account.setAttribute(QString("openingbalance"), p.openingBalance().toString());
-  account.setAttribute(QString("type"), p.accountType());  
+  account.setAttribute(QString("type"), p.accountType());
   account.setAttribute(QString("id"), p.id());
   account.setAttribute(QString("name"), p.name());
   account.setAttribute(QString("description"), p.description());
@@ -677,7 +684,7 @@ void MyMoneyStorageXML::writeAccount(QDomElement& account, const MyMoneyAccount&
   }
 
   //Add in Key-Value Pairs for accounts.
-  QDomElement keyValPairs = writeKeyValuePairs(p.pairs()); 
+  QDomElement keyValPairs = writeKeyValuePairs(p.pairs());
   account.appendChild(keyValPairs);
 }
 
@@ -716,7 +723,7 @@ void MyMoneyStorageXML::writeTransactions(QDomElement& transactions)
   MyMoneyTransactionFilter filter;
 
   list = m_storage->transactionList(filter);
-  
+
   //signalProgress(0, list.count(), QObject::tr("Saving transactions..."));
 
   int i = 0;
@@ -788,7 +795,7 @@ void MyMoneyStorageXML::readSchedules(QDomElement& schedules)
   QDomNode child = schedules.firstChild();
   int x = 0;
   signalProgress(0, getChildCount(schedules), QObject::tr("Loading schedules..."));
-  
+
   while(!child.isNull() && child.isElement())
   {
     QDomElement childElement = child.toElement();
@@ -824,7 +831,7 @@ void MyMoneyStorageXML::writeSchedules(QDomElement& scheduled)
     scheduled.appendChild(schedTx);
   }
 }
- 
+
 MyMoneySchedule MyMoneyStorageXML::readSchedule(QDomElement& schedule)
 {
   MyMoneySchedule sc;
@@ -867,7 +874,7 @@ MyMoneySchedule MyMoneyStorageXML::readSchedule(QDomElement& schedule)
     sc.setTransaction(t);
   }
 
-  return sc;  
+  return sc;
 }
 
 void MyMoneyStorageXML::writeSchedule(QDomElement& scheduledTx, const MyMoneySchedule& tx)
@@ -933,7 +940,7 @@ MyMoneySplit MyMoneyStorageXML::readSplit(QDomElement& splitElement)
 {
   MyMoneySplit split;
   QString strTmp;
-  
+
   split.setPayeeId(QCStringEmpty(splitElement.attribute(QString("payee"))));
   split.setReconcileDate(getDate(QStringEmpty(splitElement.attribute(QString("reconciledate")))));
   split.setAction(QCStringEmpty(splitElement.attribute(QString("action"))));
@@ -943,7 +950,7 @@ MyMoneySplit MyMoneyStorageXML::readSplit(QDomElement& splitElement)
   split.setShares(MyMoneyMoney(QStringEmpty(splitElement.attribute(QString("shares")))));
   split.setAccountId(QCStringEmpty(splitElement.attribute(QString("account"))));
   split.setNumber(QStringEmpty(splitElement.attribute(QString("number"))));
- 
+
   return split;
 }
 
@@ -973,7 +980,7 @@ void MyMoneyStorageXML::writeEquities(QDomElement& equities)
       equities.appendChild(equity);
     }
   }
-  
+
 }
 
 void MyMoneyStorageXML::writeEquity(QDomElement& equityElement, const MyMoneyEquity& equity)
@@ -984,7 +991,7 @@ void MyMoneyStorageXML::writeEquity(QDomElement& equityElement, const MyMoneyEqu
   equityElement.setAttribute(QString("id"), equity.id());
 
   QDomElement history = m_doc->createElement("HISTORY");
-  
+
   equity_price_history priceHistory = equity.priceHistory();
   if(priceHistory.size())
   {
@@ -1067,7 +1074,7 @@ void MyMoneyStorageXML::readCurrencies(QDomElement& currencies)
 const MyMoneyCurrency MyMoneyStorageXML::readCurrency(QDomElement& currencyElement)
 {
   MyMoneyCurrency c(readEquity(currencyElement));
-  
+
   c.setPartsPerUnit(currencyElement.attribute(QString("ppu")).toInt());
   c.setSmallestCashFraction(currencyElement.attribute(QString("scf")).toInt());
   c.setSmallestAccountFraction(currencyElement.attribute(QString("saf")).toInt());
@@ -1105,7 +1112,7 @@ MyMoneyEquity MyMoneyStorageXML::readEquity(QDomElement& equityElement)
       child = child.nextSibling();
     }
   }
-  
+
   return MyMoneyEquity(id, e);
 }
 
@@ -1186,7 +1193,7 @@ QDomElement MyMoneyStorageXML::writeKeyValuePairs(const QMap<QCString, QString> 
     }
     return keyValPairs;
   }
-  return QDomElement();  
+  return QDomElement();
 }
 
 QMap<QCString, QString> MyMoneyStorageXML::readKeyValuePairs(QDomElement& element)
