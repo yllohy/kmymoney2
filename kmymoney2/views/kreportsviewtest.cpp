@@ -142,6 +142,23 @@ void writeRCFtoXMLDoc( const MyMoneyReport& filter, QDomDocument* doc )
 
 }
 
+void writeTabletoHTML( const PivotTable& table, const QString& _filename = QString() )
+{
+  static unsigned filenumber = 1;
+  QString filename = _filename;
+  if ( filename.isEmpty() )
+  {
+    filename = QString("report-%1%2.html").arg((filenumber<10)?"0":"").arg(filenumber);
+    ++filenumber;
+  }
+    
+  QFile g( filename );
+  g.open( IO_WriteOnly );
+  QTextStream(&g) << table.renderHTML();
+  g.close();
+    
+}
+
 void writeTabletoCSV( const PivotTable& table, const QString& _filename = QString() )
 {
   static unsigned filenumber = 1;
@@ -1012,6 +1029,18 @@ void KReportsViewTest::testColumnType()
 
 }
 
+inline int RANDOM( int lo, int hi )
+{
+  return ( lo + static_cast<int>( static_cast<double>(hi-lo)*rand()/RAND_MAX ) );
+}
+
+inline double RANDOM( double lo, double hi )
+{
+  return ( lo + (hi-lo)*rand()/RAND_MAX );
+}
+
+#include "../mymoney/mymoneystatement.h"
+
 void KReportsViewTest::testXMLWrite()
 {
   // test writing a report configuration object to XML.
@@ -1052,6 +1081,47 @@ void KReportsViewTest::testXMLWrite()
   CPPUNIT_ASSERT(filters[0].columnType() == megafilter.columnType());
   // TODO: Add more checks here
   
+  // FIXME: remove this, and make a mymoneystatementtest class.  This is just a
+  // temporary place to stash this.  
+  
+  // Test data generator for investment data
+  int transactions = 25;
+  QStringList equities = QStringList::split(",","TEST1 Test 1,TEST2 Test 2,TEST3 Test 3");
+  QDate date = QDate::currentDate();
+  double price = 100.0;
+  QValueList<MyMoneyStatement::Transaction::EAction> actions;
+  actions.push_back( MyMoneyStatement::Transaction::eaBuy );
+  actions.push_back( MyMoneyStatement::Transaction::eaSell );
+  actions.push_back( MyMoneyStatement::Transaction::eaReinvestDividend );
+  QStringList wordlist = QStringList::split(" ","during the last weeks I was thinking about the requirements for the budget support. I like to wrap them up here and throw them out for further discussion. I am by far not a financial expert and look at the issues as a personal user. If I am missing something, you have more requirements or have other ideas, please feel free to send them to the mailing list. Now's the time to discuss all this. Requirements: What is a budget? In my eyes, a budget is the plan for a certain amount of time (usually one year or one quarter) about your earnings and spendings. So we deal with expense and income accounts exclusively. There are three thinks we can do with a budget: a) setup/modify the budget. Obviously, we have to get some plan at some time. b) constantly check if we are still in bounds of our own budget over time c) generate reports how the real life compares to the budget I think, a) can be based on different sources: a1) manual entry 2) take scheduled transactions as the base a3) income and expense of the previous budget period (e.g. last year) a4) use a previous budget Certainly, a3) and a4) are only available after some time of usage of the program or with imported historical data.  Nevertheless, a1) should be available once a budget has been setup using any other method to modify and adapt it. a1) therefore should provide mechanisms to enter a value based on  individual months (12 separate values), a quarter (4 separate values) and a year (1 value). If quarters or year is selected, the value should be evenly distributed among the months. b) can be started automatically in the background after a transaction has been entered/modified. A warning should pop up, if you reach a certain user definable threshold in any expense category. It pops up after a transaction has been entered. The values for this comparison should be based on the YTD values. This allows to re-use unused budgets of previous months.");
+
+  srand(time(0));
+  MyMoneyStatement s;
+  s.m_eType = MyMoneyStatement::etInvestment;
+  
+  while ( transactions-- )
+  {
+    MyMoneyStatement::Transaction t;
+    
+    t.m_strSecurity = equities[RANDOM(0,equities.count())];
+    t.m_dShares = RANDOM(1000.0,1000000.0)/1000.0;
+    t.m_moneyAmount = price * t.m_dShares;
+    price = price * RANDOM(90.0,110.0)/100.0;
+    t.m_strBankID = QString::number(RANDOM(0,INT_MAX));
+    t.m_datePosted = date;
+    date = date.addDays( - RANDOM(0,60) );
+    t.m_eAction = actions[RANDOM(0,actions.count())];
+    t.m_strNumber = QString::number(RANDOM(0,10000));
+    
+    int words = RANDOM(1,50);
+    while ( words-- )
+      t.m_strMemo += wordlist[RANDOM(1,wordlist.count())] + " ";
+    
+    s.m_listTransactions += t;
+  }
+  
+  MyMoneyStatement::writeXMLFile( s, "investments.xml" );
+ 
 }
 
 void KReportsViewTest::testQueryBasics()
