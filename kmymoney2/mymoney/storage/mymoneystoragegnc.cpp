@@ -236,7 +236,8 @@ void MyMoneyStorageGNC::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
             }
             ii = ii + ("It is advisable to run a consistency check (Tools menu) for a more thorough analysis");
             QMessageBox::information (0, "KMyMoney2", ii);
-            
+            if (gncdebug) qDebug(ii);
+	    
             // clear up the various maps and lists
             m_currencyCounter.clear();
             m_mapIds.clear();
@@ -258,6 +259,8 @@ void MyMoneyStorageGNC::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
     else {
         throw new MYMONEYEXCEPTION(QObject::tr("File was not parsable!"));
     }  // end set content
+    if (gncdebug) qDebug ("Exiting gnucash importer");
+    return;
 } // end read file
 
 //****************************** readCommodity *******************************
@@ -356,6 +359,8 @@ void MyMoneyStorageGNC::readPrice(const QDomElement& priceElement) {
                             QDomText ctext = ctemp.firstChild().toText();
                             if(QString("cmdty:id") == ctemp.tagName())  {
                                 gncPriceCommodityId = QStringEmpty(ctext.nodeValue());
+                            } else if (QString("cmdty:space") == ctemp.tagName()) {
+                                gncPriceCommoditySpace = QStringEmpty(ctext.nodeValue());
                             }
                         }
                     }
@@ -367,8 +372,6 @@ void MyMoneyStorageGNC::readPrice(const QDomElement& priceElement) {
                             QDomText utext = utemp.firstChild().toText();
                             if(QString("cmdty:id") == utemp.tagName()) {
                                 gncPriceCurrencyId = QStringEmpty(utext.nodeValue());
-                            } else if (QString("cmdty:space") == utemp.tagName()) {
-                                gncPriceCommoditySpace = QStringEmpty(utext.nodeValue());
                             }
                         }
                     }
@@ -552,7 +555,12 @@ void MyMoneyStorageGNC::readAccount(const QDomElement& account) {
             acc.setAccountType(MyMoneyAccount::Expense);
             if (!bHasParent)
                 acc.setParentAccountId(QCString(m_mainName[m_mainExpenseId]));
-        }
+        } else { // we have here an account type we can't currently handle
+            QString em =
+                (QObject::tr(QString().sprintf("Current importer cannot handle GnuCash account type %s", gncType.latin1())));
+	    throw new MYMONEYEXCEPTION (em);
+	}
+	
         
         // all the details from the file about the account should be known by now.
         // calling new account should automatically fill in the account ID.
@@ -569,8 +577,8 @@ void MyMoneyStorageGNC::readAccount(const QDomElement& account) {
     // assign the gnucash id as the key into the map to find our id
     m_mapIds[QCString(gncAccountId)] = QCString(id);
     
-    if (gncdebug) qDebug("Account %s has id of %s, type of %d, parent is %s",
-                         acc.name().data(), id.data(), acc.accountType(), acc.parentAccountId().data());
+    if (gncdebug) qDebug("Gnucash account %s has id of %s, type of %d, parent is %s",
+                         gncAccountId.latin1(), id.data(), acc.accountType(), acc.parentAccountId().data());
     
 }
 
@@ -675,7 +683,6 @@ void MyMoneyStorageGNC::readTransaction(QDomElement& transaction, const bool wit
     tx.setMemo(m_txMemo);
     // commodity, saved earlier
     tx.setCommodity(QCString(m_txCommodity));
-    
     m_storage->addTransaction(tx, true);
 }
 
@@ -749,7 +756,7 @@ void MyMoneyStorageGNC::saveSplits (MyMoneyTransaction& tx, MyMoneySplit s) {
     //we need a IMyMoneyStorage pointer, since m_storage is IMyMoneySerialize.
     IMyMoneyStorage* pStoragePtr = dynamic_cast<IMyMoneyStorage*>(m_storage);
     MyMoneyEquity e;
-    MyMoneyMoney price;
+    MyMoneyMoney price, newPrice;
     
     switch (m_splitAccount.accountType())   {
         // asset types
@@ -785,14 +792,16 @@ void MyMoneyStorageGNC::saveSplits (MyMoneyTransaction& tx, MyMoneySplit s) {
         s.value() == MyMoneyMoney(0) ?
                 s.setAction (MyMoneySplit::ActionAddShares)  : // free shares?
                 s.setAction (MyMoneySplit::ActionBuyShares);
-        //qDebug ("Type %s, value %d, qty %d", s.action().data(), s.shares().toDouble(), s.value().toDouble());
         m_potentialTransfer = false;
         m_splitList.append (s);
         // add a price history entry
         //we need a IMyMoneyStorage pointer, since m_storage is IMyMoneySerialize.
         e = pStoragePtr->equity(m_splitAccount.currencyId());
+        // newPrice fix supplied by Phil Longstaff
         price = s.value() / s.shares();
-        e.addPriceHistory(tx.postDate(), price);
+        #define NEW_DENOM 10000
+        newPrice = MyMoneyMoney ( price.toDouble(), (signed64)NEW_DENOM );
+        e.addPriceHistory(m_txDatePosted, newPrice);
         if (gncdebug) qDebug ("added price for %s, %s date %s",
                 e.name().latin1(), price.toString().latin1(), tx.postDate().toString(Qt::ISODate).latin1());
         pStoragePtr->modifyEquity(e);
@@ -803,8 +812,8 @@ void MyMoneyStorageGNC::saveSplits (MyMoneyTransaction& tx, MyMoneySplit s) {
     }
     // backdate the account opening date if necessary
     if (m_txDatePosted < m_splitAccount.openingDate()) {
-        if (gncdebug) qDebug ("changing opening date for %s from %s to %s",
-          m_splitAccount.name().latin1(), m_splitAccount.openingDate().toString(Qt::ISODate).latin1(), m_txDatePosted.toString(Qt::ISODate).latin1());
+        //if (gncdebug) qDebug ("changing opening date for %s from %s to %s",
+          //m_splitAccount.name().latin1(), m_splitAccount.openingDate().toString(Qt::ISODate).latin1(), m_txDatePosted.toString(Qt::ISODate).latin1());
         m_splitAccount.setOpeningDate(m_txDatePosted);
         // we need a IMyMoneyStorage pointer, since m_storage is IMyMoneySerialize.
         IMyMoneyStorage* pStoragePtr = dynamic_cast<IMyMoneyStorage*>(m_storage);
@@ -850,21 +859,46 @@ MyMoneySplit MyMoneyStorageGNC::readSplit(MyMoneyTransaction& tx, QDomElement& s
                     gncSplitQuantity = QStringEmpty(text.nodeValue());
                 } else if(QString("split:account") == temp.tagName()) {
                     gncSplitAccount = QStringEmpty(text.nodeValue());
-                    
-                    map_accountIds::Iterator id = m_mapIds.find(QCString(gncSplitAccount));
-                    if(id != m_mapIds.end()) {
-                        if (gncdebug) qDebug("Split:  Swapping account id %s's with our account id %s", gncSplitAccount.data(), id.data().data());
-                        gncSplitAccount = id.data();
-                    }
                 }
             }
         }
     }
     
+    // find the kmm account id coresponding to the gnc id
+    QCString MyAccountId;
+    map_accountIds::Iterator id = m_mapIds.find(QCString(gncSplitAccount));
+    if(id != m_mapIds.end()) {
+        MyAccountId = id.data();
+    } else { // for the case where the acs not found (which shouldn't happen?), create an account with gnc name
+        MyMoneyAccount acc;
+
+        acc.setName(gncSplitAccount);
+        acc.setDescription(gncSplitAccount);
+        
+        QDate currentDate = QDate::currentDate();
+        
+        acc.setOpeningDate(currentDate);
+        acc.setLastModified(currentDate);
+        acc.setLastReconciliationDate(currentDate);
+        acc.setCurrencyId (QCString(m_txCommodity));
+        acc.setAccountType(MyMoneyAccount::Asset);
+        acc.setParentAccountId(QCString(m_mainName[m_mainAssetId]));
+        // all the details from the file about the account should be known by now.
+        // calling new account should automatically fill in the account ID.
+        m_storage->addAccount(acc);
+        MyAccountId = acc.id();
+        // assign the gnucash id as the key into the map to find our id
+        m_mapIds[QCString(gncSplitAccount)] = MyAccountId;
+        if (gncdebug) qDebug("Created unknown asset account %s with id of %s", acc.name().data(), MyAccountId.data());
+    }
+    // print some data so we can maybe identify this split later
+    //if (gncdebug) qDebug ("Split data - gncid %s, kmmid %s, memo %s, value %s, recon date %s", 
+               //gncSplitAccount.latin1(), MyAccountId.data(), gncSplitMemo.latin1(), gncSplitValue.latin1(), gncDateReconciled.latin1());
+    
     // convert gnucash data to native format
     // payee id
     split.setPayeeId(QCString(m_txPayeeId));
-    // reconcile state and date
+    // reconciled state and date
     if(QString("n") == gncSplitReconciledState) {
         split.setReconcileFlag(MyMoneySplit::NotReconciled);
     } else if(QString("c") == gncSplitReconciledState) {
@@ -878,64 +912,39 @@ MyMoneySplit MyMoneyStorageGNC::readSplit(MyMoneyTransaction& tx, QDomElement& s
         QString firstField = fields.first();
         QDate reconciledDate = getDate(firstField);
         split.setReconcileDate(reconciledDate);
-        if (gncdebug) qDebug("Recon Date is %s", reconciledDate.toString().data());
     }
     // memo
-    // Arbitrarily, set the tx memo to the first non-null split memo
-    // I think this is necessary because gnc txs with just 2 splits (the majority)
+    split.setMemo(gncSplitMemo);
+    // Arbitrarily, save the first non-null split memo as the memo for the whole tx
+    // I think this is necessary because txs with just 2 splits (the majority)
     // are not viewable as split transactions in kmm so the split memo is not seen
     if ((m_txMemo.isEmpty()) && (!gncSplitMemo.isEmpty()))
         m_txMemo = gncSplitMemo;
-    split.setMemo(gncSplitMemo);
     
+    // number
+    if (!m_txChequeNumber.isEmpty()) {
+        split.setNumber(m_txChequeNumber);
+    }
+    // accountId
+    split.setAccountId (MyAccountId);
     // value and quantity
     MyMoneyMoney splitValue(gncSplitValue);
     MyMoneyMoney splitQuantity(gncSplitQuantity);
-    /*  if(splitValue.isNegative())
-  {
-    split.setAction(MyMoneySplit::ActionWithdrawal);
-  }
-  else
-  {
-    split.setAction(MyMoneySplit::ActionDeposit);
-  } */
-    // number
-    if (!m_txChequeNumber.isEmpty()) {
-        split.setNumber(m_txChequeNumber); /*
-    bool isNumeric;
-    m_txChequeNumber.toLong(&isNumeric);    // No QString.isNumeric()??
-    if ((split.action() == MyMoneySplit::ActionWithdrawal) &&
-        (isNumeric))
-      split.setAction (MyMoneySplit::ActionCheck); */
-    }
-    // accountId
-    split.setAccountId (QCString(gncSplitAccount));
+    split.setValue (splitValue);
+    split.setShares (splitQuantity);
     
-    // now we need to check if there is some form of currency conversion between the split
-    // account and the tx
-    // first, find the account type
-    // doc says following returns a qmap, but it appears not. pity.
+    // find the account pointer and save for later
     QValueList<MyMoneyAccount> accList = m_storage->accountList();
     QValueList<MyMoneyAccount>::iterator it;
     for ( it = accList.begin(); it != accList.end(); ++it ) {
-        if ((*it).id() ==  QCString(gncSplitAccount)) {
+        if ((*it).id() ==  MyAccountId) {
             break;
         }
     }
-    if (it == accList.end()) //
-        throw new MYMONEYEXCEPTION (QObject::tr("Can't find split account in readSplit"));
+    if (it == accList.end()) {
+        throw new MYMONEYEXCEPTION (QObject::tr("readSplit - Can't find account %s in list", MyAccountId.data()));
+    }
     m_splitAccount = *it;  // save for later
-    
-    /*//FIXME - handling of investments still to be determined
-  if ((*it).currencyId() != QCString(m_txCommodity))
-  {
-    split.setValue(splitQuantity, QCString(m_txCommodity), (*it).currencyId()); // actually setShares?
-    split.setValue(splitValue);
-  } else {
-    split.setValue(splitValue);
-  } */
-    split.setValue (splitValue);
-    split.setShares (splitQuantity);
     
     return split;
 }
@@ -1238,18 +1247,38 @@ bool MyMoneyStorageGNC::convertSplitSlot(MyMoneySplit& split, QDomElement& slot)
         bRc = true;
     
     // now convert data to native format
+ // find the kmm account id coresponding to the gnc id
+    QCString MyAccountId;
     map_accountIds::Iterator id = m_mapIds.find(QCString(gncAccountId));
     if(id != m_mapIds.end()) {
-        if (gncdebug) qDebug("Split slot:  Swapping account id %s's with our account id %s", gncAccountId.data(), id.data().data());
-        gncAccountId = id.data();
+        MyAccountId = id.data();
+    } else { // for the case where the acs not found (which shouldn't happen?), create an account with gnc name
+        MyMoneyAccount acc;
+
+        acc.setName(gncAccountId);
+        acc.setDescription(gncAccountId);
+        
+        QDate currentDate = QDate::currentDate();
+        
+        acc.setOpeningDate(currentDate);
+        acc.setLastModified(currentDate);
+        acc.setLastReconciliationDate(currentDate);
+        acc.setCurrencyId (QCString(m_txCommodity));
+        acc.setAccountType(MyMoneyAccount::Asset);
+        acc.setParentAccountId(QCString(m_mainName[m_mainAssetId]));
+        // all the details from the file about the account should be known by now.
+        // calling new account should automatically fill in the account ID.
+        m_storage->addAccount(acc);
+        MyAccountId = acc.id();
+        // assign the gnucash id as the key into the map to find our id
+        m_mapIds[QCString(gncAccountId)] = MyAccountId;
+        if (gncdebug) qDebug("Created unknown asset account %s with id of %s", acc.name().data(), MyAccountId.data());
     }
-    split.setAccountId(QCString(gncAccountId));
+    split.setAccountId(MyAccountId);
     // payee id
     split.setPayeeId(QCString(m_txPayeeId));
     
-    // now we need to check if there is some form of currency conversion between the split
-    // account and the tx
-    // doc says following returns a qmap, but it appears not. pity.
+    // find the account details for later
     QValueList<MyMoneyAccount> accList = m_storage->accountList();
     QValueList<MyMoneyAccount>::iterator it;
     for ( it = accList.begin(); it != accList.end(); ++it ) {
@@ -1258,8 +1287,9 @@ bool MyMoneyStorageGNC::convertSplitSlot(MyMoneySplit& split, QDomElement& slot)
         }
     }
     if (it == accList.end())
-        throw new MYMONEYEXCEPTION (QObject::tr("Can't find split account in readSplit"));
+        throw new MYMONEYEXCEPTION (QObject::tr("readSplitSlot - Can't find split account %s in accList", split.accountId().data()));
     m_splitAccount = *it;
+    
     if (!gncCreditFormula.isEmpty()) {
         split.setValue(MyMoneyMoney("-" + gncCreditFormula));
     } else if (!gncDebitFormula.isEmpty()) {
