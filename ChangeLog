@@ -1,3 +1,6 @@
+2001-09-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed two uninitialized variable bugs
+
 2001-08-29 Michael Edwardes <mte@users.sourceforge.net>
   * Made the category list be alphabetical in the two different groups.
   * KTransactionView now loads an alphabetical category list.
