@@ -1,8 +1,15 @@
+2004-09-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Moved m_smallestAccountFraction from MyMoneyCurrency to MyMoneyEquity
+  * Added fraction field to equity object
+  * Added icons to buttons in equity dialogs
+  * Added edit field for totals in investment ledger
+  * Revised calculation of values (e.g. total) in investment ledger
+
 2004-09-15 Ace Jones <acejones@users.sourceforge.net>
   * Applied latest patch from Martin Preuss: Imported data is UTF8.
   * Reversed sign on OFX statement import when transactions are
     investment transactions.  I haven't figured out yet why this is needed.
-    
+
 2004-09-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Turned KMyMoneyBanking into a singleton object
   * Reduced dependency of KBanking down to converter/mymoneybanking
