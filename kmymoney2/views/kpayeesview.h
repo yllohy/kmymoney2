@@ -51,6 +51,7 @@ public:
 	~KPayeesView();
   void show();
   void update(const QCString &id);
+  void refreshView(void) { refresh(); };
 
 public slots:
   void slotSelectPayeeAndTransaction(const QCString& payeeId, const QCString& accountId, const QCString& transactionId);
