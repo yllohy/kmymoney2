@@ -47,6 +47,10 @@
 
 class IMyMoneyReader : public QObject
 {
+public:
+  IMyMoneyReader() {}
+  virtual ~IMyMoneyReader() {}
+  
   Q_OBJECT
 	
 	/**
@@ -76,8 +80,9 @@ class IMyMoneyReader : public QObject
     * into the MyMoney engine.
     *
     * This method also starts the user defined import filter program
-    * defined in the QIF profile. If none is defined, the file is read
-    * as is (actually the UNIX command 'cat -' is used as the filter).
+    * defined in the QIF profile(when a QIF file is selected). If none is
+    * defined, the file is read as is (actually the UNIX command
+    * 'cat -' is used as the filter).
     *
     * If data from the filter program is available, the slot
     * slotReceivedDataFromFilter() will be called.
@@ -119,7 +124,7 @@ class IMyMoneyReader : public QObject
   virtual const MyMoneyAccount& account() const { return m_account; };
   virtual void setProgressCallback(void(*callback)(int, int, const QString&)) { m_progressCallback = callback; }
 	
-public:
+private:
 	MyMoneyAccount          m_account;
 	void (*m_progressCallback)(int, int, const QString&);
 	QString                 m_filename;
