@@ -69,10 +69,13 @@ private:
     */
   void signalProgress(int current, int total, const QString& = QString());
 
-  
+public slots:
+  int exec(void);
+    
 protected slots:
   void slotOkClicked(void);
-  
+  void slotShowIntroduction(void) const;
+    
 private:
   MyMoneyAccount m_account;
   void (*m_progressCallback)(int, int, const QString&);

@@ -112,10 +112,10 @@ void KAccountSelectDlg::setHeader(const QString& msg)
   m_headerLabel->setText(msg);
 }
 
-void KAccountSelectDlg::setAccount(const MyMoneyAccount& account)
+void KAccountSelectDlg::setAccount(const MyMoneyAccount& account, const QCString& id)
 {
   m_account = account;
-  m_accountSelector->setSelected(account.id());
+  m_accountSelector->setSelected(id);
 }
 
 void KAccountSelectDlg::slotCreateInstitution(void)

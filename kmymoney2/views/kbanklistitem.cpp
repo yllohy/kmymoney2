@@ -294,6 +294,18 @@ KTransactionListItem::~KTransactionListItem()
 {
 }
 
+void KTransactionListItem::paintCell(QPainter *p, const QColorGroup &cg, int column, int width, int alignment)
+{
+  QColorGroup _cg = cg;
+  _cg.setColor(QColorGroup::Base, backgroundColor());
+  QListViewItem::paintCell(p, _cg, column, width, alignment);
+}
+
+const QColor& KTransactionListItem::backgroundColor()
+{
+  return isAlternate() ? KMyMoneyUtils::backgroundColour() : KMyMoneyUtils::listColour();
+}
+
 void KAccountListItem::paintBranches(QPainter* /* p */, const QColorGroup& /* cg */, int /* w */, int /* y */, int /* h */)
 {
 }

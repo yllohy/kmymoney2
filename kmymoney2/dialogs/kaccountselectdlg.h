@@ -78,8 +78,9 @@ public:
     * selection combo box and during account creation.
     *
     * @param account MyMoneyAccount filled with the relevant and available information
+    * @param id account id to be used.
     */
-  void setAccount(const MyMoneyAccount& account);
+  void setAccount(const MyMoneyAccount& account, const QCString& id);
 
   /**
     * This method returns the name of the selected account in the combo box.

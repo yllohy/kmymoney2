@@ -24,6 +24,7 @@
 // QT Includes
 
 #include <qpushbutton.h>
+#include <qtimer.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -32,6 +33,7 @@
 #include <kiconloader.h>
 #include <kguiitem.h>
 #include <kpushbutton.h>
+#include <kmessagebox.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -107,3 +109,25 @@ void KImportVerifyDlg::signalProgress(int current, int total, const QString& msg
     (*m_progressCallback)(current, total, msg);
 }
 
+int KImportVerifyDlg::exec(void)
+{
+  // force popup of message in 100ms so that the dialog is already visible
+  QTimer::singleShot(100, this, SLOT(slotShowIntroduction(void)));
+  
+  return KImportVerifyDlgDecl::exec();
+}
+
+void KImportVerifyDlg::slotShowIntroduction(void) const
+{
+  // explain the user what's happening next
+  KMessageBox::information(0, i18n(
+                  "The imported data is displayed together with the "
+                  "data already stored in the file. Imported transactions "
+                  "are shown with a yellow background. Pressing \"OK\" will accept "
+                  "all transactions, \"Cancel\" will remove all imported transactions.\n"
+                  "You may modify the transactions - if need to - before you press \"OK\" "
+                  "or even delete transactions that have been imported "
+                  "incorrectly (e.g. duplicate transactions)."),
+                  i18n("Import verification"),
+                  "ImportVerificationIntroduction");
+}

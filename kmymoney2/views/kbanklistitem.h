@@ -228,6 +228,16 @@ public:
 
   const QCString& transactionId(void) const { return m_transactionId; };
 
+  /**
+    * use my own paint method
+    */
+  void paintCell(QPainter *p, const QColorGroup &cg, int column, int width, int alignment);
+  
+  /**
+    * use my own backgroundColor method
+    */
+  const QColor& backgroundColor();
+  
 private:
   QCString m_transactionId;
 };

@@ -89,6 +89,7 @@
 #include "kgloballedgerview.h"
 
 #include "../kmymoney2.h"
+#include "../kmymoneyutils.h"
 
 #define COMPRESSION_MIME_TYPE "application/x-gzip"
 
@@ -1280,6 +1281,9 @@ void KMyMoneyView::viewAccountList(const QCString& /*selectAccount*/)
 
 void KMyMoneyView::slotRefreshViews()
 {
+  // force update of settings
+  KMyMoneyUtils::updateSettings();
+  
   m_accountsView->slotRefreshView();
   m_categoriesView->slotRefreshView();
   m_ledgerView->slotRefreshView();
