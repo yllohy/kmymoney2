@@ -172,6 +172,8 @@ public slots:
     */
   void setTransactionCount(const int transactions, const bool setCurrentTransaction = true);
 
+  void slotSetErrorColor(const bool on);
+
   virtual void setNumRows(int r);
 
   /**
@@ -215,6 +217,7 @@ protected:
   QColor m_textColor;
   QColor m_bgColor;
   QColor m_gridColor;
+  QColor m_errorColor;
 
   bool   m_showGrid;
   bool   m_colorPerTransaction;

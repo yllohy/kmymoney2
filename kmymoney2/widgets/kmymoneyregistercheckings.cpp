@@ -62,7 +62,6 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
     p->drawLine(m_cellRect.x(), 0, m_cellRect.x(), m_cellRect.height()-1);
     if(lastLine)
       p->drawLine(m_cellRect.x(), m_cellRect.height()-1, m_cellRect.width(), m_cellRect.height()-1);
-    p->setPen(m_textColor);
   }
 
   // if we paint something, that we don't know (yet), we're done
@@ -70,6 +69,14 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
   // shows an empty line for new transactions to be added.
   if(m_transaction == NULL)
     return;
+
+  QColor textColor(m_textColor);
+  // if it's an erronous transaction, set it to error color (which toggles ;-)  )
+  if(m_transaction->splitCount() < 2
+  || m_transaction->splitSum() != 0) {
+    textColor = m_errorColor;
+  }
+  p->setPen(textColor);
 
   // now the specific stuff for checking accounts
 
@@ -172,7 +179,7 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
       if(row == m_currentDateRow) {
         p->setPen(m_gridColor);
         p->drawLine(m_cellRect.x(), 1, m_cellRect.width(), 1);
-        p->setPen(m_textColor);
+        p->setPen(textColor);
       }
       break;
     case 3:
@@ -198,7 +205,7 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
       if(row == m_currentDateRow) {
         p->setPen(m_gridColor);
         p->drawLine(m_cellRect.x(), 1, m_cellRect.width(), 1);
-        p->setPen(m_textColor);
+        p->setPen(textColor);
       }
       break;
 
@@ -240,6 +247,8 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
         switch(m_transactionRow) {
           case 0:
             txt = m_balance.formatMoney();
+            if(m_balance < 0)
+              p->setPen(QColor(255, 0, 0));
             break;
 
           case 1:
@@ -262,7 +271,7 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
       if(row == m_currentDateRow) {
         p->setPen(m_gridColor);
         p->drawLine(m_cellRect.x(), 1, m_cellRect.width(), 1);
-        p->setPen(m_textColor);
+        p->setPen(textColor);
       }
       break;
   }

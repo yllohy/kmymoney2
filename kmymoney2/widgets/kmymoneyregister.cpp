@@ -331,8 +331,13 @@ bool kMyMoneyRegister::eventFilter(QObject* o, QEvent* e)
 
   // if the key has not been processed here, forward it to
   // the base class implementation
-  if(rc == false)
-    rc = QTable::eventFilter(o, e);
+  if(rc == false) {
+    if(e->type() == QEvent::KeyPress
+    || e->type() == QEvent::KeyRelease) {
+      rc = false;
+    } else
+      rc = QTable::eventFilter(o, e);
+  }
 
   return rc;
 }
@@ -439,4 +444,12 @@ void kMyMoneyRegister::updateHeaders(void)
   horizontalHeader()->setMinimumHeight(height);
   horizontalHeader()->setMaximumHeight(height);
   horizontalHeader()->setFont(m_headerFont);
+}
+
+void kMyMoneyRegister::slotSetErrorColor(const bool state)
+{
+  if(state == false)
+    m_errorColor = m_textColor;
+  else
+    m_errorColor = QColor(255, 0, 0);
 }
