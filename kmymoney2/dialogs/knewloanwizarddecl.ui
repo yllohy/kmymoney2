@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
 <class>KNewLoanWizardDecl</class>
 <widget class="QWizard">
     <property name="name">
@@ -1750,6 +1750,9 @@ If KMyMoney should calculate this value for you, then leave the field blank.</st
                 <property name="text">
                     <string>
 Please enter the interest rate or leave the field empty to calculate it.</string>
+                </property>
+                <property name="alignment">
+                    <set>WordBreak|AlignTop</set>
                 </property>
             </widget>
             <spacer>
@@ -5293,7 +5296,7 @@ This page summarizes the data you entered. If you need to modify anything, pleas
         <class>kMyMoneyDateInput</class>
         <header location="local">../widgets/kmymoneydateinput.h</header>
         <sizehint>
-            <width>120</width>
+            <width>90</width>
             <height>25</height>
         </sizehint>
         <container>0</container>
@@ -5327,7 +5330,23 @@ This page summarizes the data you entered. If you need to modify anything, pleas
         <header location="local">../widgets/kmymoneycombo.h</header>
         <sizehint>
             <width>-1</width>
-            <height>25</height>
+            <height>-1</height>
+        </sizehint>
+        <container>0</container>
+        <sizepolicy>
+            <hordata>5</hordata>
+            <verdata>5</verdata>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+        <pixmap>image0</pixmap>
+    </customwidget>
+    <customwidget>
+        <class>kMyMoneyPayee</class>
+        <header location="local">../widgets/kmymoneypayee.h</header>
+        <sizehint>
+            <width>-1</width>
+            <height>-1</height>
         </sizehint>
         <container>0</container>
         <sizepolicy>
@@ -5343,22 +5362,6 @@ This page summarizes the data you entered. If you need to modify anything, pleas
         <header location="local">../widgets/kmymoneylineedit.h</header>
         <sizehint>
             <width>90</width>
-            <height>25</height>
-        </sizehint>
-        <container>0</container>
-        <sizepolicy>
-            <hordata>5</hordata>
-            <verdata>5</verdata>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-        </sizepolicy>
-        <pixmap>image1</pixmap>
-    </customwidget>
-    <customwidget>
-        <class>kMyMoneyPayee</class>
-        <header location="local">../widgets/kmymoneypayee.h</header>
-        <sizehint>
-            <width>-1</width>
             <height>25</height>
         </sizehint>
         <container>0</container>
@@ -5396,4 +5399,29 @@ This page summarizes the data you entered. If you need to modify anything, pleas
     </image>
 </images>
 <layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>kmymoneydateinput.h</includehint>
+    <includehint>kmymoneylineedit.h</includehint>
+    <includehint>kmymoneypayee.h</includehint>
+    <includehint>kmymoneydateinput.h</includehint>
+    <includehint>kintnuminput.h</includehint>
+    <includehint>knuminput.h</includehint>
+    <includehint>kmymoneycombo.h</includehint>
+    <includehint>kmymoneyedit.h</includehint>
+    <includehint>kmymoneyedit.h</includehint>
+    <includehint>kmymoneydateinput.h</includehint>
+    <includehint>kcombobox.h</includehint>
+    <includehint>kmymoneyedit.h</includehint>
+    <includehint>kmymoneyedit.h</includehint>
+    <includehint>kintnuminput.h</includehint>
+    <includehint>knuminput.h</includehint>
+    <includehint>kmymoneycombo.h</includehint>
+    <includehint>kmymoneyedit.h</includehint>
+    <includehint>kmymoneyedit.h</includehint>
+    <includehint>kmymoneyaccountselector.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kmymoneyaccountselector.h</includehint>
+    <includehint>kmymoneydateinput.h</includehint>
+</includehints>
 </UI>
