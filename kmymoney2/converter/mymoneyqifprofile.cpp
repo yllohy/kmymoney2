@@ -373,7 +373,7 @@ const QDate MyMoneyQifProfile::date(const QString& datein) const
   delim = 0;
   bool prevWasChar = false;
   for(i = 0; i < datein.length(); ++i) {
-    switch(datein[i].latin1()) {
+   switch(datein[i].latin1()) {
       case '/':
       case '.':
       case '\'':
@@ -386,7 +386,7 @@ const QDate MyMoneyQifProfile::date(const QString& datein) const
         ++part;
         prevWasChar = false;
         break;
-        
+
       default:
         if(prevWasChar && datein[i].isDigit()) {
           ++part;
@@ -394,7 +394,8 @@ const QDate MyMoneyQifProfile::date(const QString& datein) const
         }
         if(datein[i].isLetter())
           prevWasChar = true;
-        scannedParts[part] += datein[i];
+        // replace blank with 0
+        scannedParts[part] += (datein[i] == ' ') ? QChar('0') : datein[i];
         break;
     }
   }
@@ -482,7 +483,8 @@ const QDate MyMoneyQifProfile::date(const QString& datein) const
             ok = true;
           }
         } else {
-          msg = "Length of year does not match expected length.";
+          msg = QString("Length of year (%1) does not match expected length (%2).")
+                .arg(scannedParts[i].length()).arg(formatParts[i].length());
         }
         break;
     }
