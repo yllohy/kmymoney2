@@ -25,6 +25,7 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 #include <qwidget.h>
+class QVBoxLayout;
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -33,12 +34,15 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
+#include "../mymoney/mymoneyscheduled.h"
+#include "../mymoney/mymoneyaccount.h"
+
 /**
   * Displays a 'home page' for the user.  Similar to concepts used in
   * quicken and m$-money.
   *
   * @author Michael Edwardes
-  * $Id: khomeview.h,v 1.2 2002/02/07 23:46:41 mte Exp $
+  * $Id: khomeview.h,v 1.3 2003/07/26 12:32:51 ipwizard Exp $
   *
   * @short A view containing the home page for kmymoney2.
 **/
@@ -47,9 +51,12 @@ class KHomeView : public QWidget  {
 
 private:
   KHTMLPart *m_part;
-
+  QVBoxLayout *m_qvboxlayoutPage;
+  
 signals:
   void signalViewActivated();
+  void ledgerSelected(const QCString& id, const QCString& transaction);
+
 
 public:
   /**
@@ -79,6 +86,17 @@ public:
     * @return Nothing.
   **/
   void show();
+
+protected:
+  void showPayments(void);
+  void showPaymentEntry(const MyMoneySchedule&);
+  void showAccounts(void);
+  void showAccountEntry(const MyMoneyAccount&);
+  const QString link(const QString& view, const QString& query) const;
+  const QString linkend(void) const;
+  
+public slots:
+  void slotOpenURL(const KURL &url, const KParts::URLArgs& args);
 };
 
 #endif
