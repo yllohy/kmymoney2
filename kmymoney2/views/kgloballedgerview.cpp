@@ -193,6 +193,9 @@ void KGlobalLedgerView::reloadView(void)
 
 void KGlobalLedgerView::refreshView(void)
 {
+  if(m_accountId == "")
+    QTimer::singleShot(0, this, SLOT(reloadView()));
+
   for(int i = 0; i < MyMoneyAccount::MaxAccountTypes; ++i) {
     if(m_specificView[i] != 0)
       m_specificView[i]->refreshView();
@@ -230,6 +233,7 @@ void KGlobalLedgerView::selectAccount(const QCString& accountId, const QCString&
       KMessageBox::sorry(0, msg, "Implementation problem");
     }
   } else {
+    m_accountId = "";
     m_accountStack->raiseWidget(MyMoneyAccount::Checkings);
     if(m_specificView[MyMoneyAccount::Checkings] != 0) {
       m_currentView = m_specificView[MyMoneyAccount::Checkings];
@@ -267,7 +271,8 @@ void KGlobalLedgerView::slotAccountSelected(const QString& account, const bool r
 
   if(it_s != acc.accountList().end()) {
     selectAccount(*it_s, "", reconciliation);
-  }
+  } else
+    selectAccount("", "", false);
 }
 
 void KGlobalLedgerView::slotShowTransactionForm(bool show)

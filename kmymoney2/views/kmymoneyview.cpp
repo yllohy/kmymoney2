@@ -510,6 +510,7 @@ void KMyMoneyView::closeFile(void)
   m_fileOpen = false;
 
   // update all views
+  m_ledgerView->slotAccountSelected("");      // force cleanup of internal caches
   slotRefreshViews();
 }
 

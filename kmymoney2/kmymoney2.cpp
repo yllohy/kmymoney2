@@ -223,6 +223,7 @@ void KMyMoney2App::initActions()
 
 
 
+
   // use the absolute path to your kmymoney2ui.rc file for testing purpose in createGUI();
   createGUI();
 }
@@ -282,6 +283,7 @@ void KMyMoney2App::readOptions()
   fileOpenRecent->loadEntries(config,"Recent Files");
 
   QSize size=config->readSizeEntry("Geometry");
+
 
 
   if(!size.isEmpty())
@@ -384,10 +386,10 @@ void KMyMoney2App::slotFileOpenRecent(const KURL& url)
     slotFileClose();
   }
 
-  myMoneyView->readFile( url );
   fileName = url;
   fileOpenRecent->addURL( url );
-
+  readFile();
+  
   slotStatusMsg(prevMsg);
 }
 
@@ -638,6 +640,7 @@ void KMyMoney2App::slotQifImport()
       slotStatusMsg(i18n("Importing file..."));
       m_reader = new MyMoneyQifReader;
       connect(m_reader, SIGNAL(importFinished()), this, SLOT(slotQifImportFinished()));
+
       
 
       myMoneyView->suspendUpdate(true);
@@ -871,6 +874,7 @@ void KMyMoney2App::slotProcessExited()
         
     case BACKUP_COPYING:
       if(proc.normalExit() && proc.exitStatus() == 0) {
+
         if (m_backupMount) {
           progressCallback(250, 0, i18n("Unmounting %1").arg(mountpoint));
           proc.clearArguments();
@@ -962,6 +966,7 @@ void KMyMoney2App::slotShowTipOfTheDay(void)
 void KMyMoney2App::slotQifProfileEditor(void)
 {
   MyMoneyQifProfileEditor* editor = new MyMoneyQifProfileEditor(true, this, "QIF Profile Editor");
+
 
   editor->exec();
 

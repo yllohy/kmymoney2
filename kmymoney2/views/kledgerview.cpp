@@ -303,6 +303,7 @@ void KLedgerView::setCurrentAccount(const QCString& accountId, const bool force)
     file->detach(m_account.id(), this);
     m_transactionList.clear();
     m_transactionPtrVector.clear();
+    m_transactionPtr = 0;
     m_account = MyMoneyAccount();
     m_register->setTransactionCount(1);
     refreshView();
