@@ -21,7 +21,6 @@
 #include <qpoint.h>
 #include <qvalidator.h>
 
-#include "kdatetbl.h"
 #include "kmymoneydateinput.h"
 
 #if QT_VERSION > 300
@@ -32,38 +31,36 @@ kMyMoneyDateInput::kMyMoneyDateInput(QWidget *parent, const char *name, Qt::Alig
  : QWidget(parent,name)
 {
   m_qtalignment = flags;
+  m_date = QDate::currentDate();
 
-  dateEdit = new KDateEdit(this, "sniff");
+  dateEdit = new QDateEdit(m_date, this, "dateEdit");
   connect(dateEdit, SIGNAL(returnPressed()), this, SLOT(slotEnterPressed()));
 
   // I use KTempDatePicker so I can use the WType_Popup flag in the constructor
-  datePicker = new KTempDatePicker(parent, QDate::currentDate(), "datePicker", WType_Popup);
+  datePicker = new KDatePicker(parent, m_date, "datePicker"); //, WType_Popup);
   datePicker->resize(datePicker->sizeHint());
   datePicker->hide();
 
   connect(datePicker, SIGNAL(dateSelected(QDate)), this, SLOT(slotDateChosen(QDate)));
   connect(datePicker, SIGNAL(dateEntered(QDate)), this, SLOT(slotDateChosen(QDate)));
-
-  slotDateChosen(QDate::currentDate());
 }
 
 kMyMoneyDateInput::kMyMoneyDateInput(QWidget *parent, const QDate& date, Qt::AlignmentFlags flags)
  : QWidget(parent)
 {
   m_qtalignment = flags;
+  m_date = date;
 
-  dateEdit = new KDateEdit(this, "sniff");
+  dateEdit = new QDateEdit(m_date, this, "dateEdit");
   connect(dateEdit, SIGNAL(returnPressed()), this, SLOT(slotEnterPressed()));
 
   // I use KTempDatePicker so I can use the WType_Popup flag in the constructor
-  datePicker = new KTempDatePicker(parent, date, "datePicker", WType_Popup);
+  datePicker = new KDatePicker(parent, m_date, "datePicker"); //, WType_Popup);
   datePicker->resize(datePicker->sizeHint());
   datePicker->hide();
 
   connect(datePicker, SIGNAL(dateSelected(QDate)), this, SLOT(slotDateChosen(QDate)));
   connect(datePicker, SIGNAL(dateEntered(QDate)), this, SLOT(slotDateChosen(QDate)));
-
-  slotDateChosen(QDate::currentDate());
 }
 
 kMyMoneyDateInput::~kMyMoneyDateInput()
@@ -123,11 +120,9 @@ void kMyMoneyDateInput::mousePressEvent(QMouseEvent* qme)
 void kMyMoneyDateInput::keyPressEvent(QKeyEvent * k)
 {
   if (k->key()==Key_Plus) {
-    datePicker->nextDay();
-    slotDateChosen(datePicker->getDate());
+     slotDateChosen(m_date.addDays(1));
   } else if (k->key()==Key_Minus) {
-    datePicker->prevDay();
-    slotDateChosen(datePicker->getDate());
+     slotDateChosen(m_date.addDays(-1));
   } else if (k->key()==Key_PageDown) {
      QPoint point = mapToGlobal(rect().bottomRight());
      if (m_qtalignment == Qt::AlignRight)
@@ -143,15 +138,14 @@ void kMyMoneyDateInput::keyPressEvent(QKeyEvent * k)
 
 void kMyMoneyDateInput::slotDateChosen(QDate date)
 {
-  dateEdit->setText(KGlobal::locale()->formatDate(date, true));
+  dateEdit->setDate(date);
   m_date=date;
   datePicker->hide();
 }
 
 void kMyMoneyDateInput::slotEnterPressed()
 {
-  m_date = KGlobal::locale()->readDate(dateEdit->text());
-  dateEdit->setText(KGlobal::locale()->formatDate(m_date, true));
+  dateEdit->setDate(m_date);
   datePicker->setDate(m_date);
 }
 

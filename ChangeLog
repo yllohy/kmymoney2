@@ -1,3 +1,7 @@
+2002-04-26 Arni Ingimundarson <arniing@users.sourceforge.net>
+  * Got rid of KTempDatePicker and used the standar kde 
+    KDatePicker.  A popup problem still remains.
+
 2002-03-27 Michael Edwardes <mte@users.sourceforge.net>
   * Fixed bug #535840.  'Annoying window refresh'.
 

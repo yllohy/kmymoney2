@@ -17,11 +17,13 @@
 #ifndef KMYMONEYDATEINPUT_H
 #define KMYMONEYDATEINPUT_H
 
-#include "./kdatepik.h"
+#include <kdatepicker.h>
 
 #include <qwidget.h>
 #include <qlineedit.h>
 #include <qdatetime.h>
+#include <qdatetimeedit.h>
+
 
 // This class replaces the DateInput class I was using from
 // Calendar-0.13.
@@ -59,8 +61,8 @@ protected slots:
   void slotEnterPressed();
 
 private:
-  KDateEdit *dateEdit;
-  KTempDatePicker *datePicker;
+  QDateEdit *dateEdit;
+  KDatePicker *datePicker;
   QDate m_date;  // The date !
   Qt::AlignmentFlags m_qtalignment;
 };
