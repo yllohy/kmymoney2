@@ -91,8 +91,8 @@
 
 KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name)
  : KMainWindow(0, name),
- myMoneyView(0),
- DCOPObject("kmymoney2app")
+ DCOPObject("kmymoney2app"),
+ myMoneyView(0)
 {
   updateCaption(true);
 
@@ -397,7 +397,11 @@ void KMyMoney2App::slotFileOpenRecent(const KURL& url)
 
   if(!duplicate) {
 
+#if KDE_IS_VERSION(3,2,0)
+    if(url.isValid() && KIO::NetAccess::exists(url, true, this)) {
+#else
     if(url.isValid() && KIO::NetAccess::exists(url)) {
+#endif
       slotFileClose();
       if(!myMoneyView->fileOpen()) {
         if(myMoneyView->readFile(url)) {
@@ -795,7 +799,6 @@ void KMyMoney2App::slotQifImportFinished(void)
 void KMyMoney2App::slotOfxImport(void)
 {
 #if defined(HAVE_LIBOFX) || defined(HAVE_NEW_OFX)
-  bool result = false;
   QString prevMsg = slotStatusMsg(i18n("Importing a statement from OFX"));
 
   KFileDialog* dialog = new KFileDialog(KGlobalSettings::documentPath(),
@@ -1246,8 +1249,12 @@ void KMyMoney2App::slotFileNewWindow()
 void KMyMoney2App::slotKeySettings()
 {
 
+#if KDE_IS_VERSION(3,2,0)
+  KKeyDialog::configure( actionCollection() );
+#else
   QString path = KGlobal::dirs()->findResource("appdata", "kmymoney2ui.rc");
   KKeyDialog::configureKeys(actionCollection(), path);
+#endif
 }
 
 void KMyMoney2App::slotSetViewSpecificActions(int view)
