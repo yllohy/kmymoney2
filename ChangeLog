@@ -1,3 +1,7 @@
+2005-03-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Set all values when entering scheduled transactions
+  * Don't show 'More ...' in home view, if there are no more scheduled tx
+
 2005-03-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a crash on startup when compiled w/o debug options
   * Fixed behaviour of briefScheduleWidget
