@@ -127,7 +127,7 @@ void KLedgerViewSavings::resizeEvent(QResizeEvent* /* ev */)
 
   kMyMoneyTransactionFormTable* table = static_cast<kMyMoneyTransactionFormTable *>(m_form->table());
   table->adjustColumn(0);
-  table->adjustColumn(2, splitButton.sizeHint().width());
+  table->setColumnWidth(2, splitButton.sizeHint().width());
   table->adjustColumn(3);
   table->adjustColumn(4, dateInput.minimumSizeHint().width()+10);
 
@@ -211,7 +211,7 @@ void KLedgerViewSavings::createEditWidgets(void)
   if(m_editType == 0) {
     m_editType = new kMyMoneyCombo(0, "editType");
     m_editType->setFocusPolicy(QWidget::StrongFocus);
-    connect(m_editType, SIGNAL(selectionChanged(int)), this, SLOT(slotTypeChanged(int)));
+    connect(m_editType, SIGNAL(selectionChanged(int)), this, SLOT(slotActionSelected(int)));
     connect(m_editType, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
     connect(m_editType, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   }

@@ -140,7 +140,7 @@ void KLedgerViewLiability::createEditWidgets(void)
   if(m_editType == 0) {
     m_editType = new kMyMoneyCombo(0, "editType");
     m_editType->setFocusPolicy(QWidget::StrongFocus);
-    connect(m_editType, SIGNAL(selectionChanged(int)), this, SLOT(slotTypeChanged(int)));
+    connect(m_editType, SIGNAL(selectionChanged(int)), this, SLOT(slotActionSelected(int)));
     connect(m_editType, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
     connect(m_editType, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   }

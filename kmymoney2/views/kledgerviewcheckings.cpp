@@ -1507,26 +1507,20 @@ void KLedgerViewCheckings::slotEndReconciliation(void)
 
 void KLedgerViewCheckings::slotOpenSplitDialog(void)
 {
-  bool isDeposit = false;
   bool isValidAmount = false;
 
   if(m_transactionFormActive) {
-    isDeposit = transactionType(m_transaction) == Credit;
     isValidAmount = m_editAmount->text().length() != 0;
   } else {
-    if(m_editPayment->text().length() != 0) {
-      isDeposit = false;
-      isValidAmount = true;
-    }
-    if(m_editDeposit->text().length() != 0) {
-      isDeposit = true;
+    if(m_editPayment->text().length() != 0
+    || m_editDeposit->text().length() != 0) {
       isValidAmount = true;
     }
   }
   KSplitTransactionDlg* dlg = new KSplitTransactionDlg(m_transaction,
                                                        m_account,
                                                        isValidAmount,
-                                                       isDeposit,
+                                                       transactionDirection(m_split) == Credit,
                                                        0,
                                                        this);
 

@@ -206,7 +206,6 @@ protected:
 
 
 private:
-  // kMyMoneyCombo* m_accountComboBox;
   kMyMoneyAccountCombo* m_accountComboBox;
 
   /**

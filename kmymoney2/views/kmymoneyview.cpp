@@ -1656,6 +1656,7 @@ void KMyMoneyView::slotRefreshViews()
   m_ledgerView->slotRefreshView();
   m_payeesView->slotRefreshView();
   m_homeView->slotRefreshView();
+  m_investmentView->slotRefreshView();
 
   m_scheduledView->slotReloadView();
 }

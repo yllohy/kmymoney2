@@ -97,6 +97,8 @@ protected:
 
   void resizeEvent(QResizeEvent*);
 
+  QWidget* arrangeEditWidgetsInForm(void);
+
 private:
   /**
     * This method is used by the constructor to create the necessary widgets

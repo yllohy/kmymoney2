@@ -74,9 +74,8 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
 
   QHBoxLayout* Layout2 = new QHBoxLayout( 0, 0, 6, "Layout2");
 
-  // m_accountComboBox = new kMyMoneyCombo(false, this, "accountComboBox" );
   m_accountComboBox = new kMyMoneyAccountCombo(this, "accountComboBox" );
-  m_accountComboBox->setMinimumSize( QSize( 240, 0 ) );
+  // m_accountComboBox->setMinimumSize( QSize( 240, 0 ) );
   Layout2->addWidget( m_accountComboBox );
   QSpacerItem* spacer = new QSpacerItem( 20, 20,
                                          QSizePolicy::Expanding,
@@ -250,9 +249,10 @@ void KGlobalLedgerView::loadAccounts(void)
     }
   }
 
-  if(!acc.id().isEmpty()) {
+//  if(!acc.id().isEmpty()) {
     slotSelectAccount(acc.id());
-  }
+//  } else {
+//  }
 }
 
 const bool KGlobalLedgerView::slotSelectAccount(const QCString& id)
@@ -303,6 +303,7 @@ const bool KGlobalLedgerView::slotSelectAccount(const QCString& id, const bool r
       m_accountStack->raiseWidget(MyMoneyAccount::Checkings);
       m_currentView = m_specificView[MyMoneyAccount::Checkings];
       m_currentView->slotSelectAccount(id);
+      m_accountComboBox->setText("");
 
       // keep this as the current account
       m_accountId = id;

@@ -120,6 +120,28 @@ KLedgerViewInvestments::~KLedgerViewInvestments()
 void KLedgerViewInvestments::fillForm()
 {
   fillFormStatics();
+
+  // make sure, fields can use all available space
+  // by spanning items over multiple cells if necessary
+  QTable* formTable = m_form->table();
+  QTableItem* item;
+  // symbol
+  item = formTable->item(SYMBOL_ROW, SYMBOL_DATA_COL);
+  if(item)
+    item->setSpan(SYMBOL_DATA_COL, 2);
+  // quantity
+  item = formTable->item(QUANTITY_ROW, QUANTITY_DATA_COL);
+  if(item)
+    item->setSpan(QUANTITY_DATA_COL, 2);
+  // memo
+  item = formTable->item(MEMO_ROW, MEMO_DATA_COL);
+  if(item)
+    item->setSpan(MEMO_DATA_COL, 2);
+  // price per share
+  item = formTable->item(PRICE_ROW, PRICE_DATA_COL);
+  if(item)
+    item->setSpan(PRICE_DATA_COL, 2);
+
 }
 
 void KLedgerViewInvestments::fillFormStatics(void)
@@ -208,30 +230,56 @@ void KLedgerViewInvestments::showWidgets()
   m_tabOrderWidgets.find(focusWidget);
   focusWidget->setFocus();
 #endif
+  QWidget* focusWidget = m_editSymbolName;
 
   createEditWidgets();
 
+  if(m_transactionFormActive) {
+    focusWidget = arrangeEditWidgetsInForm();
+  } else {
+    // focusWidget = arrangeEditWidgetsInRegister();
+  }
+
+  // make sure, size of all form columns are correct
+  resizeEvent(0);
+
+  m_tabOrderWidgets.find(focusWidget);
+  focusWidget->setFocus();
+}
+
+QWidget* KLedgerViewInvestments::arrangeEditWidgetsInForm(void)
+{
   kMyMoneyTransactionFormTable* table = m_form->table();
 
-  if(table)
-  {
-    table->setCellWidget(MEMO_ROW, MEMO_DATA_COL, m_editMemo);
-    table->setCellWidget(DATE_ROW, DATE_DATA_COL, m_editDate);
-    table->setCellWidget(PRICE_ROW, PRICE_DATA_COL, m_editPPS);
-    table->setCellWidget(SYMBOL_ROW, SYMBOL_DATA_COL, m_editSymbolName);
-    table->setCellWidget(QUANTITY_ROW, QUANTITY_DATA_COL, m_editShares);
-    table->setCellWidget(AMOUNT_ROW, AMOUNT_DATA_COL, m_editTotalAmount);
-    table->setCellWidget(FEES_ROW, FEES_DATA_COL, m_editFees);
-    
-    table->setEditable(MEMO_ROW, MEMO_DATA_COL);
-    table->setEditable(DATE_ROW, DATE_DATA_COL);
-    table->setEditable(PRICE_ROW, PRICE_DATA_COL);
-    table->setEditable(SYMBOL_ROW, SYMBOL_DATA_COL);
-    table->setEditable(QUANTITY_ROW, QUANTITY_DATA_COL);
-    table->setEditable(AMOUNT_ROW, AMOUNT_DATA_COL, false);
-    table->setEditable(FEES_ROW, FEES_DATA_COL);
-  }
-    
+  Q_CHECK_PTR(table != 0);
+
+  // make sure, we're using the right palette
+  QPalette palette = m_register->palette();
+  m_editMemo->setPalette(palette);
+  m_editDate->setPalette(palette);
+  m_editPPS->setPalette(palette);
+  m_editSymbolName->setPalette(palette);
+  m_editShares->setPalette(palette);
+  m_editTotalAmount->setPalette(palette);
+  m_editFees->setPalette(palette);
+
+  table->setCellWidget(MEMO_ROW, MEMO_DATA_COL, m_editMemo);
+  table->setCellWidget(DATE_ROW, DATE_DATA_COL, m_editDate);
+  table->setCellWidget(PRICE_ROW, PRICE_DATA_COL, m_editPPS);
+  table->setCellWidget(SYMBOL_ROW, SYMBOL_DATA_COL, m_editSymbolName);
+  table->setCellWidget(QUANTITY_ROW, QUANTITY_DATA_COL, m_editShares);
+  table->setCellWidget(AMOUNT_ROW, AMOUNT_DATA_COL, m_editTotalAmount);
+  table->setCellWidget(FEES_ROW, FEES_DATA_COL, m_editFees);
+
+  table->clearEditable();
+  table->setEditable(MEMO_ROW, MEMO_DATA_COL);
+  table->setEditable(DATE_ROW, DATE_DATA_COL);
+  table->setEditable(PRICE_ROW, PRICE_DATA_COL);
+  table->setEditable(SYMBOL_ROW, SYMBOL_DATA_COL);
+  table->setEditable(QUANTITY_ROW, QUANTITY_DATA_COL);
+  table->setEditable(AMOUNT_ROW, AMOUNT_DATA_COL, false);
+  table->setEditable(FEES_ROW, FEES_DATA_COL);
+
   // now setup the tab order
   m_tabOrderWidgets.clear();
   m_tabOrderWidgets.append(m_form->enterButton());
@@ -244,6 +292,8 @@ void KLedgerViewInvestments::showWidgets()
   m_tabOrderWidgets.append(m_editMemo);
   m_tabOrderWidgets.append(m_editFees);
   m_tabOrderWidgets.append(m_editPPS);
+
+  return m_editSymbolName;
 }
 
 void KLedgerViewInvestments::hideWidgets()
@@ -301,9 +351,11 @@ void KLedgerViewInvestments::slotNew()
 
 void KLedgerViewInvestments::createEditWidgets()
 {
+#if 0
   if(!m_editPayee) {
     m_editPayee = new kMyMoneyPayee(0, "editPayee");
   }
+#endif
   if(!m_editMemo) {
     m_editMemo = new kMyMoneyLineEdit(0, "editMemo", AlignLeft|AlignVCenter);
   }
@@ -697,7 +749,7 @@ void KLedgerViewInvestments::slotEndEdit()
 {
   QString name = m_editSymbolName->text();
   qDebug("Symbol name is %s", name.data());
-  
+
   MyMoneyFile* file = MyMoneyFile::instance();
   if(file)
   {
@@ -711,7 +763,7 @@ void KLedgerViewInvestments::slotEndEdit()
         break;
       }
     }
-    
+
     //if we don't know about this equity, throw up a dialog box to collect the basic information about it.
     if(!bKnownEquity)
     {
@@ -719,19 +771,19 @@ void KLedgerViewInvestments::slotEndEdit()
       pDlg->setSymbolName(name);
       if(pDlg->exec())
       {
-        //create the new Equity object, and give it its ID.        
+        //create the new Equity object, and give it its ID.
         MyMoneyEquity newEquity;
         IMyMoneyStorage *storage = file->storage();
         if(storage)
         {
           storage->newEquity(newEquity);
-          
+
           //fill in the fields.
           newEquity.setTradingSymbol(pDlg->symbolName());
           newEquity.setName(pDlg->name());
-          
+
           //add it to the list of equity objects.
-          storage->addEquity(newEquity);      
+          storage->addEquity(newEquity);
         }
       }
     }

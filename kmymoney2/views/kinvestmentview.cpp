@@ -392,7 +392,13 @@ void KInvestmentView::slotRefreshView(void)
     m_ledgerView->refreshView();
   }
 
+  // Enable selection widget if we have at least one account
   m_accountComboBox->setEnabled(m_accountComboBox->count() > 0);
+
+  // Enable rest of view only, if we have at least one investment account
+  QValueList<MyMoneyAccount::accountTypeE> typeList;
+  typeList << MyMoneyAccount::Investment;
+  m_tab->setEnabled(m_accountComboBox->accountList(typeList).count() > 0);
 }
 
 void KInvestmentView::loadAccounts(void)
@@ -460,11 +466,7 @@ const bool KInvestmentView::slotSelectAccount(const QCString& id, const bool rec
       rc = true;
     }
   } else {
-    //MyMoneyAccount acc = MyMoneyFile::instance()->account(id);
-    //m_accountComboBox->setCurrentItem(acc.name());
-    //    rc = true;
-
-    //    m_account = acc;
+    m_accountComboBox->setText("");
   }
 
   // keep this as the current account
