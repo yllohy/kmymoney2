@@ -38,7 +38,7 @@ class KPushButton;
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include <../kmymoneyutils.h>
+#include "../kmymoneyutils.h"
 
 /**
   * @author Thomas Baumgart
