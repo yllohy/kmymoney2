@@ -20,6 +20,7 @@
 #include <kiconloader.h>
 #include <kconfig.h>
 #include <kcolorbutton.h>
+#include <kmessagebox.h>
 
 #include <qlayout.h>
 #include <qvbox.h>
@@ -171,6 +172,12 @@ void KSettingsDlg::configWrite()
 /** Slot ok */
 void KSettingsDlg::slotOk()
 {
+	int nCount = m_klineeditRowCount->text().toInt();
+	if (nCount <= 0 || nCount >= 4) {
+	  KMessageBox::information(this, "The row count has to be between 1 and 3");
+	  m_klineeditRowCount->setFocus();
+	  return;
+	}
 	configWrite();
 	this->accept();
 }

@@ -36,6 +36,7 @@
 #include "widgets/kmymoneylineedit.h"
 #include "widgets/kmymoneycombo.h"
 #include "widgets/kmymoneyedit.h"
+#include "widgets/kmymoneytable.h"
 
 #include "ktransactionviewdecl.h"
 #include "widgets/kmymoneyhlayout.h"
@@ -67,16 +68,16 @@ private:
 
 
 	kMyMoneyDateInput*  m_date;
-	KComboBox* m_method;
-	KLineEdit* m_number;
-  QComboBox* m_payee;
+	kMyMoneyCombo* m_method;
+	kMyMoneyLineEdit* m_number;
+  kMyMoneyCombo* m_payee;
   kMyMoneyEdit* m_payment;
 	kMyMoneyEdit* m_withdrawal;
-  KComboBox* m_category;
+  kMyMoneyCombo* m_category;
 	KPushButton* m_enter;
   KPushButton* m_cancel;
 	KPushButton* m_delete;
-	KLineEdit* m_memo;
+	kMyMoneyLineEdit* m_memo;
 //	kMyMoneyHLayout*	m_hlayout;
 
   QList<MyMoneyTransaction> *m_transactions;

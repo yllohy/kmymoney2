@@ -19,20 +19,31 @@
 
 #include "kmymoneycombo.h"
 
-kMyMoneyCombo::kMyMoneyCombo(QWidget *w):KComboBox(w){
-
-
+kMyMoneyCombo::kMyMoneyCombo(QWidget *w)
+  : KComboBox(w)
+{
 }
-kMyMoneyCombo::~kMyMoneyCombo(){
+
+kMyMoneyCombo::~kMyMoneyCombo()
+{
 }
+
 /** No descriptions */
-bool kMyMoneyCombo::eventFilter(QObject *o, QEvent *e){
-
-	if(e->type() == QEvent::FocusOut)
-	{
+bool kMyMoneyCombo::eventFilter(QObject *o, QEvent *e)
+{
+  if(e->type() == QEvent::FocusOut)
+  {
     emit signalFocusOut();
-	}
-	return KComboBox::eventFilter(o,e);
-	
-
+  }
+  else if(e->type() == QEvent::KeyRelease)
+  {
+    QKeyEvent *k = (QKeyEvent *) e;
+    if((k->key() == Qt::Key_Return) ||
+      (k->key() == Qt::Key_Enter))
+    {
+      emit signalEnter();
+      emit signalNextTransaction();
+    }
+  }
+  return KComboBox::eventFilter(o,e);
 }

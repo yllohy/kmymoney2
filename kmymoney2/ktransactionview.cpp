@@ -27,10 +27,6 @@
 #include "ktransactionview.h"
 #include "knewcategorydlg.h"
 #include <kmessagebox.h>
-#include "widgets/kmymoneyedit.h"
-#include "widgets/kmymoneydateinput.h"
-//#include "ktransactiontableitem.h"
-#include "widgets/kmymoneytable.h"
 
 KTransactionView::KTransactionView(QWidget *parent, const char *name)
  : KTransactionViewDecl(parent,name)
@@ -195,7 +191,7 @@ void KTransactionView::createInputWidgets()
   m_enter = new KPushButton("Enter",0);
   m_cancel = new KPushButton("Cancel",0);
   m_delete = new KPushButton("Delete",0);
-  m_method->setEditable(true);
+  m_method->setEditable(false);
   m_method->setAutoCompletion(true);
   KCompletion *methodcomp = m_method->completionObject();
   connect(m_method,SIGNAL(returnPressed(const QString&)),methodcomp,SLOT(addItem(const QString&)));
@@ -254,7 +250,6 @@ void KTransactionView::createInputWidgets()
 
 void KTransactionView::loadPayees()
 {
-  MyMoneyBank *bank;
   MyMoneyAccount *account;
 
 	account = getAccount();
@@ -398,6 +393,7 @@ void KTransactionView::slotFocusChange(int row, int col, int button, const QPoin
     m_index = transrow;
 
     if (button>=2) {
+      m_index=transrow;
       KPopupMenu setAsMenu(i18n("Set As..."), this);
       setAsMenu.insertItem(i18n("Unreconciled (default)"), this, SLOT(slotTransactionUnReconciled()));
       setAsMenu.insertItem(i18n("Cleared"), this, SLOT(slotTransactionCleared()));
@@ -482,9 +478,14 @@ void KTransactionView::slotTransactionDelete()
 
 void KTransactionView::slotTransactionUnReconciled()
 {
-  MyMoneyBank *pBank;
   MyMoneyAccount *pAccount;
 
+  KConfig *config = KGlobal::config();
+  config->setGroup("List Options");
+  QFont defaultFont = QFont("helvetica", 12);
+  transactionsTable->horizontalHeader()->setFont(config->readFontEntry("listHeaderFont", &defaultFont));
+  const int NO_ROWS = (config->readEntry("RowCount", "2").toInt());
+	
 	pAccount = getAccount();
 	if(pAccount == 0)
 		return;
@@ -494,15 +495,20 @@ void KTransactionView::slotTransactionUnReconciled()
     return;
 
   transaction->setState(MyMoneyTransaction::Unreconciled);
-  updateTransactionList(m_index, 5);
+  updateTransactionList(m_index*NO_ROWS, 3);
   m_filePointer->setDirty(true);
 }
 
 void KTransactionView::slotTransactionCleared()
 {
-  MyMoneyBank *pBank;
   MyMoneyAccount *pAccount;
 
+  KConfig *config = KGlobal::config();
+  config->setGroup("List Options");
+  QFont defaultFont = QFont("helvetica", 12);
+  transactionsTable->horizontalHeader()->setFont(config->readFontEntry("listHeaderFont", &defaultFont));
+  const int NO_ROWS = (config->readEntry("RowCount", "2").toInt());
+	
 	pAccount = getAccount();
 	if(pAccount == 0)
 		return;
@@ -512,7 +518,7 @@ void KTransactionView::slotTransactionCleared()
     return;
 
   transaction->setState(MyMoneyTransaction::Cleared);
-  updateTransactionList(m_index, 5);
+  updateTransactionList(m_index*NO_ROWS, 3);
   m_filePointer->setDirty(true);
 }
 
@@ -989,41 +995,36 @@ void KTransactionView::updateTransactionList(int row, int col)
 //    transactionsTable->setEnabled(true);
 
   } else { // We are just updating a section of it
-    qDebug("is this ever called ???");
     QString txt;
     if (row<0 || row>transactionsTable->numRows()-1)
       return;
     if (col<0 || col>transactionsTable->numCols()-1)
       return;
-    int realrow;
-    if((row % NO_ROWS) == 0)
-			realrow = row;
- 		else
-			realrow = row - 1;
-		int transrow;
-		transrow = row / NO_ROWS;
+		int transrow = row / NO_ROWS;
+		
     switch (col) {
+      case 0:
+        transactionsTable->setText(row, col, KGlobal::locale()->formatDate(m_transactions->at(transrow)->date()));
+        break;
+
       case 1:
         switch (m_transactions->at(transrow)->method()) {
           case MyMoneyTransaction::Cheque:
-            transactionsTable->setText(realrow, col, i18n("Cheque"));
+            transactionsTable->setText(row, col, i18n("Cheque"));
             break;
           case MyMoneyTransaction::Deposit:
-            transactionsTable->setText(realrow, col, i18n("Deposit"));
+            transactionsTable->setText(row, col, i18n("Deposit"));
             break;
           case MyMoneyTransaction::Transfer:
-            transactionsTable->setText(realrow, col, i18n("Transfer"));
+            transactionsTable->setText(row, col, i18n("Transfer"));
             break;
           case MyMoneyTransaction::Withdrawal:
-            transactionsTable->setText(realrow, col, i18n("Withdrawal"));
+            transactionsTable->setText(row, col, i18n("Withdrawal"));
             break;
           case MyMoneyTransaction::ATM:
-            transactionsTable->setText(realrow, col, i18n("ATM"));
+            transactionsTable->setText(row, col, i18n("ATM"));
             break;
         }
-        break;
-      case 0:
-        transactionsTable->setText(realrow, col, KGlobal::locale()->formatDate(m_transactions->at(transrow)->date()));
         break;
 
 /*      case 2:
@@ -1043,24 +1044,24 @@ void KTransactionView::updateTransactionList(int row, int col)
 				}
 */
 				break;
-      case 4:
+      case 3:
         switch (m_transactions->at(transrow)->state()) {
           case MyMoneyTransaction::Unreconciled:
-            transactionsTable->setText(realrow, col, "");
+            transactionsTable->setText(row, col, "");
             break;
           case MyMoneyTransaction::Cleared:
-            transactionsTable->setText(realrow, col, "C");
+            transactionsTable->setText(row, col, "C");
             break;
           case MyMoneyTransaction::Reconciled:
-            transactionsTable->setText(realrow, col, "R");
+            transactionsTable->setText(row, col, "R");
             break;
         }
         break;
-      case 3:
-        transactionsTable->setText(realrow, col, KGlobal::locale()->formatNumber(m_transactions->at(transrow)->amount().amount()));
+      case 4:
+        transactionsTable->setText(row, col, KGlobal::locale()->formatNumber(m_transactions->at(transrow)->amount().amount()));
         break;
       case 5:
-        transactionsTable->setText(realrow, col, KGlobal::locale()->formatNumber(m_transactions->at(transrow)->amount().amount()));
+        transactionsTable->setText(row, col, KGlobal::locale()->formatNumber(m_transactions->at(transrow)->amount().amount()));
         break;
     }
   }

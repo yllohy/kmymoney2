@@ -51,7 +51,7 @@ KReconcileDlg::KReconcileDlg(const MyMoneyMoney previousBal, const MyMoneyMoney 
 	debitListView->setRootIsDecorated(false);
 	debitListView->addColumn(i18n("Date"));
 	debitListView->addColumn(i18n("Number"));
-	debitListView->addColumn(i18n("Description"));
+	debitListView->addColumn(i18n("Payee"));
 	debitListView->addColumn(i18n("Amount"));
 	debitListView->addColumn(i18n("C"));
 	debitListView->setMultiSelection(true);
@@ -60,7 +60,7 @@ KReconcileDlg::KReconcileDlg(const MyMoneyMoney previousBal, const MyMoneyMoney 
 	creditListView->setRootIsDecorated(false);
 	creditListView->addColumn(i18n("Date"));
 	creditListView->addColumn(i18n("Number"));
-	creditListView->addColumn(i18n("Description"));
+	creditListView->addColumn(i18n("Payee"));
 	creditListView->addColumn(i18n("Amount"));
 	creditListView->addColumn(i18n("C"));
 	creditListView->setMultiSelection(true);
