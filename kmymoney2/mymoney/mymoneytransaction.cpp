@@ -38,7 +38,8 @@ MyMoneyTransaction::MyMoneyTransaction(const QCString id,
 {
   *this = transaction;
   m_id = id;
-  m_entryDate = QDate::currentDate();
+  if(m_entryDate == QDate())
+    m_entryDate = QDate::currentDate();
 }
 
 MyMoneyTransaction::~MyMoneyTransaction()
