@@ -1,3 +1,11 @@
+2003-12-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * display correct action strings for credit card accounts in ledger
+  * support i18n of action strings in ledger
+  * added tip(s)
+  * fixed action assignment during QIF import
+  * changed QIF import to use KProcess instead of QProcess.
+  * added more automatic fixes after 'file open'
+
 2003-12-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * resized starting size of split dialog
   * use different icons for loan accounts in the account icon view
