@@ -115,6 +115,11 @@
         </sizepolicy>
         <pixmap>image0</pixmap>
     </customwidget>
+    <customwidget>
+        <class>KListView</class>
+        <header location="global">klistview.h</header>
+        <pixmap>image0</pixmap>
+    </customwidget>
 </customwidgets>
 <images>
     <image>

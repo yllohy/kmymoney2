@@ -203,6 +203,12 @@ delete and pressing the delete button.</string>
         </widget>
     </vbox>
 </widget>
+<customwidgets>
+    <customwidget>
+        <class>KListView</class>
+        <header location="global">klistview.h</header>
+    </customwidget>
+</customwidgets>
 <connections>
     <connection>
         <sender>buttonOk</sender>
