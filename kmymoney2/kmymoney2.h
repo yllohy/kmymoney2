@@ -52,7 +52,7 @@
   * @see KMyMoneyView
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: kmymoney2.h,v 1.9 2001/06/17 17:44:19 mte Exp $
+  * $Id: kmymoney2.h,v 1.10 2001/06/21 20:34:39 mte Exp $
   *
   * @short Main application class.
 **/
@@ -271,6 +271,9 @@ protected slots:
     virtual bool queryExit();
 
   public slots:
+    /** */
+    void slotAccountOpen();
+
     /** Open a new window */
     void slotFileNewWindow();
 
@@ -341,6 +344,7 @@ protected slots:
     KConfig *config;
 
     // KAction pointers to enable/disable actions
+    KAction *fileNewWindow;
     KAction* fileNew;
     KAction* fileOpen;
     KRecentFilesAction* fileOpenRecent;
@@ -367,6 +371,7 @@ protected slots:
 
     KAction *bankAdd;
 
+    KAction *accountOpen;
     KAction *accountAdd;
     KAction *accountReconcile;
     KAction *accountFind;

@@ -87,14 +87,13 @@ KMyMoney2App::~KMyMoney2App()
 
 void KMyMoney2App::initActions()
 {
-//  fileNew = KStdAction::openNew(this, SLOT(slotFileNewWindow()), actionCollection());
-  fileNew = new KAction(i18n("New &Window"), "filenew", 0, this, SLOT(slotFileNewWindow()), actionCollection(), "file_new_window");
+  fileNew = KStdAction::openNew(this, SLOT(slotFileNew()), actionCollection());
+  fileNewWindow = new KAction(i18n("New &Window"), "filenew", 0, this, SLOT(slotFileNewWindow()), actionCollection(), "file_new_window");
   fileOpen = KStdAction::open(this, SLOT(slotFileOpen()), actionCollection());
   fileOpenRecent = KStdAction::openRecent(this, SLOT(slotFileOpenRecent(const KURL&)), actionCollection());
   fileSave = KStdAction::save(this, SLOT(slotFileSave()), actionCollection());
   fileSaveAs = KStdAction::saveAs(this, SLOT(slotFileSaveAs()), actionCollection());
   filePrint = KStdAction::print(this, SLOT(slotFilePrint()), actionCollection());
-//  fileClose = KStdAction::close(this, SLOT(slotFileClose()), actionCollection());
   fileClose = KStdAction::close(this, SLOT(slotFileClose()), actionCollection());
   fileCloseWindow = new KAction(i18n("&Close Window"), 0, 0, this, SLOT(slotFileCloseWindow()), actionCollection(), "file_close_window");
 
@@ -107,7 +106,8 @@ void KMyMoney2App::initActions()
   viewToolBar = KStdAction::showToolbar(this, SLOT(slotViewToolBar()), actionCollection());
   viewStatusBar = KStdAction::showStatusbar(this, SLOT(slotViewStatusBar()), actionCollection());
 
-  fileNew->setStatusText(i18n("Creates a new window"));
+  fileNew->setStatusText(i18n("Creates a new document"));
+  fileNewWindow->setStatusText(i18n("Creates a new window"));
   fileOpen->setStatusText(i18n("Opens an existing document"));
   fileOpenRecent->setStatusText(i18n("Opens a recently used file"));
   fileSave->setStatusText(i18n("Saves the actual document"));
@@ -145,6 +145,8 @@ void KMyMoney2App::initActions()
   bankAdd->setStatusText(i18n("Lets you create a new bank"));
 
   // The Account Menu
+  accountOpen = new KAction(i18n("Open account register..."), 0, this, SLOT(slotAccountOpen()), actionCollection(), "account_open");
+  accountOpen->setStatusText(i18n("View the account register"));
   accountAdd = new KAction(i18n("Add new account..."), QIconSet(QPixmap(KGlobal::dirs()->findResource("appdata", "toolbar/kmymoney_newacc.xpm"))), 0, this, SLOT(slotAccountAdd()), actionCollection(), "account_add");
   accountAdd->setStatusText(i18n("Lets you create a new account"));
   accountReconcile = new KAction(i18n("Reconcile account..."), "reconcile", 0, this, SLOT(slotAccountReconcile()), actionCollection(), "account_reconcile");
@@ -293,6 +295,7 @@ bool KMyMoney2App::queryExit()
 void KMyMoney2App::slotFileNew()
 {
   slotStatusMsg(i18n("Creating new document..."));
+  fileName="";
   myMoneyView->newFile();
   slotStatusMsg(i18n("Ready."));
 }
@@ -301,6 +304,7 @@ void KMyMoney2App::slotFileNew()
 void KMyMoney2App::slotFileOpen()
 {
   slotStatusMsg(i18n("Open a document."));
+  fileName="";
 	initWizard();
   slotStatusMsg(i18n("Ready."));
 }
@@ -313,7 +317,7 @@ void KMyMoney2App::slotFileOpenRecent(const KURL& url)
       return;
     }
     else {
-      myMoneyView->close();
+      slotFileClose();
     }
   }
 
@@ -321,6 +325,7 @@ void KMyMoney2App::slotFileOpenRecent(const KURL& url)
 
   myMoneyView->readFile( url.directory(false,true)+url.fileName() );
 	fileOpenRecent->addURL( url );
+  fileName = url.directory(false,true)+url.fileName();
 
   slotStatusMsg(i18n("Ready."));
 }
@@ -383,6 +388,7 @@ void KMyMoney2App::slotFileClose()
   }
 
   myMoneyView->closeFile();
+  fileName="";
 
   slotStatusMsg(i18n("Ready."));
 }
@@ -602,9 +608,14 @@ void KMyMoney2App::enableBankOperations(bool enable)
     enableTransactionOperations(false);
   }
 
+  // Make sure there is a bank selected before enabling
+  // accountAdd
+  if (myMoneyView->currentBankName()=="Unknown Institution")
+    accountAdd->setEnabled(false);
+  else
+    accountAdd->setEnabled(enable);
+
   bankAdd->setEnabled(enable);
-  accountAdd->setEnabled(enable);
-  viewUp->setEnabled(!enable);
   setCaption(myMoneyView->currentBankName());
 }
 
@@ -612,11 +623,16 @@ void KMyMoney2App::enableAccountOperations(bool enable)
 {
   if (enable) {
     enableFileOperations(true);
-    enableBankOperations(false);
+    enableBankOperations(true);
     enableTransactionOperations(false);
   }
 
-  viewUp->setEnabled(enable);
+  accountAdd->setEnabled(true);
+  accountReconcile->setEnabled(enable);
+  accountFind->setEnabled(enable);
+  accountImport->setEnabled(enable);
+  accountExport->setEnabled(enable);
+
   QString caption;
   caption.sprintf("%s : %s", myMoneyView->currentBankName().latin1(), myMoneyView->currentAccountName().latin1());
   setCaption(caption);
@@ -632,13 +648,9 @@ void KMyMoney2App::enableTransactionOperations(bool enable)
   if (enable) {
     enableFileOperations(true);
     enableBankOperations(false);
-    enableAccountOperations(false);
+    enableAccountOperations(true);
   }
 
-  accountReconcile->setEnabled(enable);
-  accountFind->setEnabled(enable);
-  accountImport->setEnabled(enable);
-  accountExport->setEnabled(enable);
   viewUp->setEnabled(enable);
 
   QString caption;
@@ -789,4 +801,9 @@ void KMyMoney2App::slotFileNewWindow()
 {
   KMyMoney2App *newWin = new KMyMoney2App;
   newWin->show();
+}
+
+void KMyMoney2App::slotAccountOpen()
+{
+  myMoneyView->slotAccountDoubleClick();
 }

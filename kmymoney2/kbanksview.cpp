@@ -40,8 +40,6 @@ KBanksView::KBanksView(QWidget *parent, const char *name)
 
   connect(bankListView, SIGNAL(selectionChanged(QListViewItem*)),
     this, SLOT(slotSelectionChanged(QListViewItem*)));
-  connect(bankListView, SIGNAL(executed(QListViewItem*, const QPoint&, int)),
-    this, SLOT(slotListDoubleClick(QListViewItem*, const QPoint&, int)));
   connect(bankListView, SIGNAL(rightButtonClicked(QListViewItem* , const QPoint&, int)),
     this, SLOT(slotListRightMouse(QListViewItem*, const QPoint&, int)));
   m_bSelectedBank=false;
@@ -75,20 +73,6 @@ void KBanksView::slotListRightMouse(QListViewItem* item, const QPoint& point, in
     m_selectedAccount = bankItem->account();
 
     emit accountRightMouseClick(bankItem->account(), true);
-  }
-}
-
-void KBanksView::slotListDoubleClick(QListViewItem* item, const QPoint& point, int col)
-{
-  if (item!=0 && col!=-1) {
-    KBankListItem *bankItem = (KBankListItem*)item;
-    if (!bankItem->isBank()) {
-      m_bSelectedBank = true;
-      m_selectedBank = bankItem->bank();
-      m_bSelectedAccount=true;
-      m_selectedAccount = bankItem->account();
-      emit accountDoubleClick(bankItem->account());
-    }
   }
 }
 
@@ -153,5 +137,11 @@ void KBanksView::slotSelectionChanged(QListViewItem *item)
     m_bSelectedBank = true;
     m_selectedBank = bankItem->bank();
     emit bankSelected();
+  } else {
+    m_bSelectedBank = true;
+    m_selectedBank = bankItem->bank();
+    m_bSelectedAccount = true;
+    m_selectedAccount = bankItem->account();
+    emit accountSelected();
   }
 }

@@ -37,7 +37,7 @@
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.8 2001/06/17 17:44:19 mte Exp $
+  * $Id: kmymoneyview.h,v 1.9 2001/06/21 20:34:39 mte Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -207,6 +207,17 @@ public:
 										QDate startDate, QDate endDate);
 
 public slots:
+  /** */
+  void slotAccountSelected();
+
+  /**
+    * Called whenever the user 'executes' an account. This operation opens the account
+    * and shows the register view.  MOVE INTO KBanksView.
+    *
+    * @param account The account which was 'executed'.
+  **/
+  void slotAccountDoubleClick(void);
+
   /**
     * Called whenever the user wishes to create a new bank.  Brings up the input
     * dialog and saves the information.  It then enables the banks view.
@@ -269,14 +280,6 @@ protected slots:
     * @param inList Whether the click was on an account (REDUNDANT).
   **/
   void slotAccountRightMouse(const MyMoneyAccount account, bool inList);
-
-  /**
-    * Called whenever the user 'executes' an account. This operation opens the account
-    * and shows the register view.  MOVE INTO KBanksView.
-    *
-    * @param account The account which was 'executed'.
-  **/
-  void slotAccountDoubleClick(const MyMoneyAccount account);
 
   /**
     * Called whenever the user right clicks on a bank.  It brings up

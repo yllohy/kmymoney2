@@ -1,3 +1,14 @@
+2001-06-21 Michael Edwardes <mte@users.sourceforge.net>
+  * Fixed missing addPayee call in reading qif files.
+  * Fixed bug in filename handling code when closing/opening
+    files.
+  * Added missing File New action.
+  * Added new action - Account open and changed behaviour
+    of account list view.  It now lets you select an account
+    and then open it or perform other operations.
+  * You can now perform menu operations on the account, (not
+    just by right clicking on the account).
+
 2001-06-20 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
   * Fixed Reconciliation Bugs when editing transactions
     during reconciliation.

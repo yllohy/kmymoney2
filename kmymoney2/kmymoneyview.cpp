@@ -49,10 +49,11 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(m_mainView, SIGNAL(transactionListChanged()), this, SLOT(slotTransactionListChanged()));
 
   connect(m_mainView, SIGNAL(accountRightMouseClick(const MyMoneyAccount, bool)), this, SLOT(slotAccountRightMouse(const MyMoneyAccount, bool)));
-  connect(m_mainView, SIGNAL(accountDoubleClick(const MyMoneyAccount)), this, SLOT(slotAccountDoubleClick(const MyMoneyAccount)));
+//  connect(m_mainView, SIGNAL(accountDoubleClick(const MyMoneyAccount)), this, SLOT(slotAccountDoubleClick(const MyMoneyAccount)));
 
   connect(m_mainView, SIGNAL(bankRightMouseClick(const MyMoneyBank, bool)), this, SLOT(slotBankRightMouse(const MyMoneyBank, bool)));
   connect(m_mainView, SIGNAL(bankSelected()), this, SLOT(slotBankSelected()));
+  connect(m_mainView, SIGNAL(accountSelected()), this, SLOT(slotAccountSelected()));
 
   m_inReconciliation=false;
   m_reconcileInited=false;
@@ -75,7 +76,8 @@ void KMyMoneyView::slotAccountRightMouse(const MyMoneyAccount, bool inList)
 {
   KPopupMenu menu(this);
   menu.insertTitle(QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/22x22/actions/account.png")), i18n("Account Options"));
-
+  int id0 = menu.insertItem(i18n("Open..."), this, SLOT(slotAccountDoubleClick()));
+  menu.insertSeparator();
   int id1 = menu.insertItem(QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/16x16/actions/reconcile.png")), i18n("Reconcile..."), this, SLOT(slotAccountReconcile()));
   menu.insertSeparator();
   int id3 = menu.insertItem(QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/16x16/actions/account.png")), i18n("Edit..."), this, SLOT(slotAccountEdit()));
@@ -93,13 +95,8 @@ void KMyMoneyView::slotAccountRightMouse(const MyMoneyAccount, bool inList)
   menu.exec(QCursor::pos());
 }
 
-void KMyMoneyView::slotAccountDoubleClick(const MyMoneyAccount)
+void KMyMoneyView::slotAccountDoubleClick(void)
 {
-  if (!m_file.isInitialised()) {
-    KMessageBox::error(this, i18n("Tried to access a file when it's not open"));
-    return;
-  }
-
   viewTransactionList();
 }
 
@@ -1273,7 +1270,7 @@ void KMyMoneyView::readQIFFile(const QString& name, MyMoneyAccount *account){
 							QString majorcat = "";
 							QString minorcat = "";
 							int catindex = category.find(":");
-							if(catindex == -1)
+							if(catindex == -1)				
 								majorcat = category;
 							else
 							{
@@ -1288,6 +1285,8 @@ void KMyMoneyView::readQIFFile(const QString& name, MyMoneyAccount *account){
 							else
 								transcleared = MyMoneyTransaction::Unreconciled;
 
+              if (!payee.isEmpty())
+                m_file.addPayee(payee);
               account->addTransaction(transmethod, checknumber, payee,
                                       moneyamount, transdate, majorcat, minorcat, "",payee,
                                       "", "", transcleared);
@@ -1477,4 +1476,9 @@ void KMyMoneyView::fileBackup(){
 void KMyMoneyView::slotBankSelected()
 {
   emit bankOperations(true);
+}
+
+void KMyMoneyView::slotAccountSelected()
+{
+  emit accountOperations(true);
 }
