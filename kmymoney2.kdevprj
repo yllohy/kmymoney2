@@ -1661,7 +1661,7 @@ install_location=
 type=SOURCE
 
 [kmymoney2/widgets/Makefile.am]
-files=kmymoney2/widgets/kmymoneydateinput.cpp,kmymoney2/widgets/kmymoneydateinput.h,kmymoney2/widgets/kmymoneyedit.cpp,kmymoney2/widgets/kmymoneyedit.h,kmymoney2/widgets/kmymoneytable.cpp,kmymoney2/widgets/kmymoneytable.h,kmymoney2/widgets/kmymoneylineedit.cpp,kmymoney2/widgets/kmymoneylineedit.h,kmymoney2/widgets/kmymoneyhlayout.cpp,kmymoney2/widgets/kmymoneyhlayout.h,kmymoney2/widgets/kmymoneycombo.cpp,kmymoney2/widgets/kmymoneycombo.h,kmymoney2/widgets/kmymoneysplittable.cpp,kmymoney2/widgets/kmymoneysplittable.h,kmymoney2/widgets/kmymoneyregister.cpp,kmymoney2/widgets/kmymoneyregister.h,kmymoney2/widgets/kmymoneyregistercheckings.cpp,kmymoney2/widgets/kmymoneyregistercheckings.h
+files=kmymoney2/widgets/kmymoneydateinput.cpp,kmymoney2/widgets/kmymoneydateinput.h,kmymoney2/widgets/kmymoneyedit.cpp,kmymoney2/widgets/kmymoneyedit.h,kmymoney2/widgets/kmymoneytable.cpp,kmymoney2/widgets/kmymoneytable.h,kmymoney2/widgets/kmymoneylineedit.cpp,kmymoney2/widgets/kmymoneylineedit.h,kmymoney2/widgets/kmymoneyhlayout.cpp,kmymoney2/widgets/kmymoneyhlayout.h,kmymoney2/widgets/kmymoneycombo.cpp,kmymoney2/widgets/kmymoneycombo.h,kmymoney2/widgets/kmymoneysplittable.cpp,kmymoney2/widgets/kmymoneysplittable.h,kmymoney2/widgets/kmymoneyregister.cpp,kmymoney2/widgets/kmymoneyregister.h,kmymoney2/widgets/kmymoneyregistercheckings.cpp,kmymoney2/widgets/kmymoneyregistercheckings.h,kmymoney2/widgets/kmymoneytransactionform.h,kmymoney2/widgets/kmymoneytransactionform.cpp
 sub_dirs=
 type=static_library
 
@@ -1768,6 +1768,18 @@ install_location=
 type=SOURCE
 
 [kmymoney2/widgets/kmymoneytable.h]
+dist=true
+install=false
+install_location=
+type=HEADER
+
+[kmymoney2/widgets/kmymoneytransactionform.cpp]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[kmymoney2/widgets/kmymoneytransactionform.h]
 dist=true
 install=false
 install_location=
