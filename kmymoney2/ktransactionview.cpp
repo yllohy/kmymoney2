@@ -426,8 +426,8 @@ void KTransactionView::slotTransactionDelete()
   m_filePointer->setDirty(true);
 
   useall = false;
-  usedate = false;
-  userow = true;
+  usedate = true;
+  userow = false;
   updateTransactionList(-1, -1);
   emit transactionListChanged();
 }

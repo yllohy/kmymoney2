@@ -1,3 +1,6 @@
+2001-06-21 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
+  * Fixed Transaction Deletion Bug
+
 2001-06-21 Michael Edwardes <mte@users.sourceforge.net>
   * Fixed missing addPayee call in reading qif files.
   * Fixed bug in filename handling code when closing/opening
