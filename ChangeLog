@@ -1,9 +1,13 @@
+2001-03-11  Javier Campos Morales  <javi@DarkStar>
+
+	* Insert new startuplogo
+
 2001-03-08  Javier Campos Morales  <javi@DarkStar>
 
-  * Fixed kmymoney2 repository
-  * Remove compile.sh and mkui.sh
-  * Modify the project to complain with kdevelop 1.4
-  * Added directory icons with a few icons for the future
+	* Fixed kmymoney2 repository
+	* Remove compile.sh and mkui.sh
+	* Modify the project to complain with kdevelop 1.4
+	* Added directory icons with a few icons for the future
 	* Added readConfig and writeConfig to KStartDlg
 	* Delete KMyMoney2App::openDocumentFile(const KURL& ulr) - Method not used
 	* Added kstartdlg recent action. Now works.

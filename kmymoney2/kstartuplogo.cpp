@@ -24,7 +24,7 @@
 KStartupLogo::KStartupLogo(QWidget *parent, const char *name )
   : QFrame(parent, name, WStyle_NoBorder | WStyle_Customize)
 { 	
-  QString filename = KGlobal::dirs()->findResource("appdata", "pics/kmymoney_logo.png");
+  QString filename = KGlobal::dirs()->findResource("appdata", "pics/startlogo.png");
   QPixmap pm(filename);
   setBackgroundPixmap(pm);
   setFrameShape( QFrame::StyledPanel );

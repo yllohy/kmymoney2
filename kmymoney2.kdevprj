@@ -32,7 +32,7 @@ configure_args=
 dir_where_make_will_be_called=
 email=Michael.Edwardes@students.dmu.ac.uk
 kdevprj_version=1.3
-lfv_open_groups=User Interface
+lfv_open_groups=Others,User Interface
 make_options=-j2
 makefiles=Makefile.am,kmymoney2/Makefile.am,doc/Makefile.am,doc/en/Makefile.am,po/Makefile.am,kmymoney2/widgets/Makefile.am,kmymoney2/mymoney/Makefile.am,kmymoney2/pics/Makefile.am,kmymoney2/pics/toolbar/Makefile.am,
 modifyMakefiles=true
@@ -96,7 +96,7 @@ type=normal
 [doc/en/index.docbook]
 dist=true
 install=false
-install_location=$(kde_icondir)/small/locolor/apps/kmymoney2.xpm
+install_location=(kde_icondir)/small/locolor/apps/kmymoney2.xpm
 type=DATA
 [kmymoney2.kdevprj]
 dist=true
@@ -114,7 +114,7 @@ install=false
 install_location=
 type=DATA
 [kmymoney2/Makefile.am]
-files=kmymoney2/main.cpp,kmymoney2/kmymoney2.cpp,kmymoney2/kmymoney2.h,kmymoney2/kmymoney2ui.rc,kmymoney2/kmymoney2.desktop,kmymoney2/kbanklistitem.cpp,kmymoney2/kbanklistitem.h,kmymoney2/kbanksview.cpp,kmymoney2/kbanksview.h,kmymoney2/kcategoriesdlg.cpp,kmymoney2/kcategoriesdlg.h,kmymoney2/kcategorylistitem.cpp,kmymoney2/kcategorylistitem.h,kmymoney2/kendingbalancedlg.cpp,kmymoney2/kendingbalancedlg.h,kmymoney2/kfileinfodlg.cpp,kmymoney2/kfileinfodlg.h,kmymoney2/kfindtransactiondlg.cpp,kmymoney2/kfindtransactiondlg.h,kmymoney2/klistsettingsdlg.cpp,kmymoney2/klistsettingsdlg.h,kmymoney2/kmainview.cpp,kmymoney2/kmainview.h,kmymoney2/kmymoneysettings.cpp,kmymoney2/kmymoneysettings.h,kmymoney2/kmymoneyview.cpp,kmymoney2/kmymoneyview.h,kmymoney2/knewaccountdlg.cpp,kmymoney2/knewaccountdlg.h,kmymoney2/knewbankdlg.cpp,kmymoney2/knewbankdlg.h,kmymoney2/knewbillwizardimpl.cpp,kmymoney2/knewbillwizardimpl.h,kmymoney2/knewcategorydlg.cpp,kmymoney2/knewcategorydlg.h,kmymoney2/knewfiledlg.cpp,kmymoney2/knewfiledlg.h,kmymoney2/kpayeedlg.cpp,kmymoney2/kreconciledlg.cpp,kmymoney2/kreconciledlg.h,kmymoney2/kreconcilelistitem.cpp,kmymoney2/kreconcilelistitem.h,kmymoney2/kschedulelistitem.cpp,kmymoney2/kschedulelistitem.h,kmymoney2/kscheduleview.cpp,kmymoney2/kscheduleview.h,kmymoney2/ksettingsdlg.cpp,kmymoney2/ksettingsdlg.h,kmymoney2/kstartdlg.cpp,kmymoney2/kstartdlg.h,kmymoney2/kstartuplogo.cpp,kmymoney2/kstartuplogo.h,kmymoney2/ktfindresultsdlg.cpp,kmymoney2/ktfindresultsdlg.h,kmymoney2/ktfindresultsdlgdecl.ui,kmymoney2/ktransactionview.cpp,kmymoney2/ktransactionview.h,kmymoney2/kbankviewdecl.ui,kmymoney2/kcategorydlgdecl.ui,kmymoney2/knewbillwizard.ui,kmymoney2/kpayeedlgdecl.ui,kmymoney2/kreconciledlgdecl.ui,kmymoney2/kscheduleviewdecl.ui,kmymoney2/default_categories.dat,kmymoney2/klistsettingsdlgdecl.ui,kmymoney2/ksettingsdlgdecl.ui,kmymoney2/kendingbalancedlgdecl.ui,kmymoney2/knewcategorydlgdecl.ui,kmymoney2/knewaccountdlgdecl.ui,kmymoney2/knewbankdlgdecl.ui,kmymoney2/knewfiledlgdecl.ui,kmymoney2/kfileinfodlgdecl.ui,kmymoney2/kfindtransactiondlgdecl.ui,kmymoney2/ktransactionviewdecl.ui,kmymoney2/kmethodtableitem.cpp,kmymoney2/kmethodtableitem.h,kmymoney2/kdatetableitem.cpp,kmymoney2/kdatetableitem.h,kmymoney2/knumbertableitem.cpp,kmymoney2/knumbertableitem.h,kmymoney2/kmemotableitem.cpp,kmymoney2/kmemotableitem.h,kmymoney2/kcategorytableitem.cpp,kmymoney2/kcategorytableitem.h,kmymoney2/lo16-app-kmymoney2.png,kmymoney2/lo32-app-kmymoney2.png,kmymoney2/kmoneytableitem.cpp,kmymoney2/kmoneytableitem.h,kmymoney2/kreconciledtableitem.cpp,kmymoney2/kreconciledtableitem.h,kmymoney2/kmymoney_wizard.png,kmymoney2/kmymoney_logo.png,kmymoney2/mimetype_kmy_16x16.png,kmymoney2/mimetype_kmy_32x32.png,kmymoney2/mimetype_kmy_48x48.png,kmymoney2/x-kmymoney2.desktop
+files=kmymoney2/main.cpp,kmymoney2/kmymoney2.cpp,kmymoney2/kmymoney2.h,kmymoney2/kmymoney2ui.rc,kmymoney2/kmymoney2.desktop,kmymoney2/kbanklistitem.cpp,kmymoney2/kbanklistitem.h,kmymoney2/kbanksview.cpp,kmymoney2/kbanksview.h,kmymoney2/kcategoriesdlg.cpp,kmymoney2/kcategoriesdlg.h,kmymoney2/kcategorylistitem.cpp,kmymoney2/kcategorylistitem.h,kmymoney2/kendingbalancedlg.cpp,kmymoney2/kendingbalancedlg.h,kmymoney2/kfileinfodlg.cpp,kmymoney2/kfileinfodlg.h,kmymoney2/kfindtransactiondlg.cpp,kmymoney2/kfindtransactiondlg.h,kmymoney2/klistsettingsdlg.cpp,kmymoney2/klistsettingsdlg.h,kmymoney2/kmainview.cpp,kmymoney2/kmainview.h,kmymoney2/kmymoneysettings.cpp,kmymoney2/kmymoneysettings.h,kmymoney2/kmymoneyview.cpp,kmymoney2/kmymoneyview.h,kmymoney2/knewaccountdlg.cpp,kmymoney2/knewaccountdlg.h,kmymoney2/knewbankdlg.cpp,kmymoney2/knewbankdlg.h,kmymoney2/knewbillwizardimpl.cpp,kmymoney2/knewbillwizardimpl.h,kmymoney2/knewcategorydlg.cpp,kmymoney2/knewcategorydlg.h,kmymoney2/knewfiledlg.cpp,kmymoney2/knewfiledlg.h,kmymoney2/kpayeedlg.cpp,kmymoney2/kreconciledlg.cpp,kmymoney2/kreconciledlg.h,kmymoney2/kreconcilelistitem.cpp,kmymoney2/kreconcilelistitem.h,kmymoney2/kschedulelistitem.cpp,kmymoney2/kschedulelistitem.h,kmymoney2/kscheduleview.cpp,kmymoney2/kscheduleview.h,kmymoney2/ksettingsdlg.cpp,kmymoney2/ksettingsdlg.h,kmymoney2/kstartdlg.cpp,kmymoney2/kstartdlg.h,kmymoney2/kstartuplogo.cpp,kmymoney2/kstartuplogo.h,kmymoney2/ktfindresultsdlg.cpp,kmymoney2/ktfindresultsdlg.h,kmymoney2/ktfindresultsdlgdecl.ui,kmymoney2/ktransactionview.cpp,kmymoney2/ktransactionview.h,kmymoney2/kbankviewdecl.ui,kmymoney2/kcategorydlgdecl.ui,kmymoney2/knewbillwizard.ui,kmymoney2/kpayeedlgdecl.ui,kmymoney2/kreconciledlgdecl.ui,kmymoney2/kscheduleviewdecl.ui,kmymoney2/default_categories.dat,kmymoney2/klistsettingsdlgdecl.ui,kmymoney2/ksettingsdlgdecl.ui,kmymoney2/kendingbalancedlgdecl.ui,kmymoney2/knewcategorydlgdecl.ui,kmymoney2/knewaccountdlgdecl.ui,kmymoney2/knewbankdlgdecl.ui,kmymoney2/knewfiledlgdecl.ui,kmymoney2/kfileinfodlgdecl.ui,kmymoney2/kfindtransactiondlgdecl.ui,kmymoney2/ktransactionviewdecl.ui,kmymoney2/kmethodtableitem.cpp,kmymoney2/kmethodtableitem.h,kmymoney2/kdatetableitem.cpp,kmymoney2/kdatetableitem.h,kmymoney2/knumbertableitem.cpp,kmymoney2/knumbertableitem.h,kmymoney2/kmemotableitem.cpp,kmymoney2/kmemotableitem.h,kmymoney2/kcategorytableitem.cpp,kmymoney2/kcategorytableitem.h,kmymoney2/lo16-app-kmymoney2.png,kmymoney2/lo32-app-kmymoney2.png,kmymoney2/kmoneytableitem.cpp,kmymoney2/kmoneytableitem.h,kmymoney2/kreconciledtableitem.cpp,kmymoney2/kreconciledtableitem.h,kmymoney2/kmymoney_wizard.png,kmymoney2/mimetype_kmy_16x16.png,kmymoney2/mimetype_kmy_32x32.png,kmymoney2/mimetype_kmy_48x48.png,kmymoney2/x-kmymoney2.desktop
 sub_dirs=widgets,mymoney,pics,
 type=prog_main
 [kmymoney2/default_categories.dat]
@@ -311,11 +311,6 @@ type=HEADER
 dist=true
 install=false
 install_location=
-type=DATA
-[kmymoney2/kmymoney_logo.png]
-dist=true
-install=true
-install_location=$(kde_datadir)/kmymoney2/pics/kmymoney_logo.png
 type=DATA
 [kmymoney2/kmymoney_wizard.png]
 dist=true
@@ -687,7 +682,7 @@ install=false
 install_location=
 type=DATA
 [kmymoney2/pics/Makefile.am]
-files=kmymoney2/pics/account-folder.xpm,kmymoney2/pics/bank-folder.xpm
+files=kmymoney2/pics/account-folder.xpm,kmymoney2/pics/bank-folder.xpm,kmymoney2/pics/startlogo.png
 sub_dirs=toolbar,
 type=normal
 [kmymoney2/pics/account-folder.xpm]
@@ -699,6 +694,11 @@ type=DATA
 dist=true
 install=true
 install_location=$(kde_datadir)/kmymoney2/pics/bank-folder.xpm
+type=DATA
+[kmymoney2/pics/startlogo.png]
+dist=true
+install=true
+install_location=$(kde_datadir)/kmymoney2/pics/startlogo.png
 type=DATA
 [kmymoney2/pics/toolbar/Makefile.am]
 files=kmymoney2/pics/toolbar/kmymoney_accfind.xpm,kmymoney2/pics/toolbar/kmymoney_editPay.xpm,kmymoney2/pics/toolbar/kmymoney_editcat.xpm,kmymoney2/pics/toolbar/kmymoney_newacc.xpm,kmymoney2/pics/toolbar/kmymoney_newbank.xpm,kmymoney2/pics/toolbar/kmymoney_recon.xpm,kmymoney2/pics/toolbar/kmymoney_up.xpm,
