@@ -5151,7 +5151,7 @@ msgstr ""
 
 #: _tips.cpp:24
 msgid ""
-"<p>...that transactions with no category assigned or splitted\n"
+"<p>...that transactions with no category assigned or split\n"
 "transactions with unassigned values blink in \n"
 "<font color=\"red\">red</font> in the register?\n"
 msgstr ""

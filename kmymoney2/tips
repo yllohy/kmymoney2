@@ -29,7 +29,7 @@ register by selecting the 'ledger lens' feature in the settings dialog?
 
 <tip category="KMyMoney|Ledger">
 <html>
-<p>...that transactions with no category assigned or splitted
+<p>...that transactions with no category assigned or split
 transactions with unassigned values blink in 
 <font color="red">red</font> in the register?
 </html>
