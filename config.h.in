@@ -25,9 +25,6 @@
  */
 #undef ksize_t
 
-/* Define if the C++ compiler supports BOOL */
-#undef HAVE_BOOL
-
 /* Define if you have libz */
 #undef HAVE_LIBZ
 

@@ -16,11 +16,11 @@ cvs:
 	@aclocal
 	@echo "*** Scanning for include statements"
 	@autoheader
-	@echo "*** Building Makefile templates (step one)"
+	@echo "*** Building Makefile templates"
 	@automake
 	@echo "*** Scanning for moc files and kde tags"
 	@perl admin/am_edit
-	@echo "*** Building Makefile templates (step two)"
+	@echo "*** Building configure"
 	@autoconf
 	@if test -r configure.in.in ; then \
 	  perl -pi -e 'print "if test \"x\$$with_fast_perl\" = \"xyes\" ;\
@@ -78,27 +78,27 @@ dist:
 
 cvs-clean:
 	@if test ! -d CVS; then \
-	  echo "you don't have a toplevel CVS directory."; \
+	  echo "You don't have a toplevel CVS directory."; \
 	  echo "You most certainly didn't use cvs to get these sources."; \
-	  echo "But this function depends on cvs's informations."; \
+	  echo "But this function depends on cvs's information."; \
 	  exit 1 ;\
 	fi;\
 	pwd=`pwd` ;\
 	dirs=`find . -type d | grep -v CVS | sed -e "s#^./##"` ;\
 	for i in $$dirs; do \
-	  if test ! -d $$pwd/$$i/CVS; then \
+	  if test ! -d "$$pwd/$$i/CVS"; then \
 	    echo "D $$i" ;\
-	    rm -rf $$pwd/$$i; \
+	    rm -rf "$$pwd/$$i"; \
 	    continue; \
 	  fi ;\
 	  cd $$pwd/$$i ;\
 	  for f in * .*; do \
-	    if test ! -d $$f; then \
+	    if test ! -d "$$f"; then \
 	      if grep "^/$$f/" CVS/Entries > /dev/null; then \
 		a="b"; \
-              else \
+	      else \
 	        echo "F $$i/$$f"; \
-		rm -f $$pwd/$$i/$$f; \
+		rm -f "$$pwd/$$i/$$f"; \
 	      fi; \
 	    fi ; \
 	  done; \
@@ -112,7 +112,7 @@ configure.in: configure.files $(shell test -f configure.files && cat configure.f
 	cat `cat configure.files | egrep -v "^configure.in.bot"` >> configure.in.new ;\
 	echo "KDE_CREATE_SUBDIRSLIST" >> configure.in.new ;\
 	echo "AC_OUTPUT( \\" >> configure.in.new ;\
-	mfs=`find . -type d -print | sed -e "s#\./##" -e "/^debian/d" | sort`; \
+	mfs=`find . -type d -print | fgrep -v "/." | sed -e "s#\./##" -e "/^debian/d" | sort`; \
 	for i in $$mfs; do \
 	  topleveldir=`echo $$i| sed -e "s#/.*##"`; \
 	  if test -f $$topleveldir/configure.in; then \
@@ -121,7 +121,7 @@ configure.in: configure.files $(shell test -f configure.files && cat configure.f
 	  if test ! -f $$i/Makefile.am; then \
 		continue; \
 	  fi ;\
-          if test -s inst-apps; then \
+	  if test -s inst-apps; then \
 	    if test -z "`grep \"^$$topleveldir\" inst-apps`"; then \
 		continue; \
 	    fi ;\
@@ -132,18 +132,21 @@ configure.in: configure.files $(shell test -f configure.files && cat configure.f
 	echo ")" >> configure.in.new 
 	@modulename= ;\
 	if test -f configure.in.in; then \
-	   line=`egrep "^AM_INIT_AUTOMAKE\(" configure.in.in` ;\
-	   if test -n "$$line"; then \
-		modulename=`echo $$line | sed -e "s#AM_INIT_AUTOMAKE(\([^,]*\),.*#\1#"` ;\
-		VERSION=`echo $$line | sed -e "s#AM_INIT_AUTOMAKE([^,]*, *\([^)]*\)).*#\1#"` ;\
+	   if head -2 configure.in.in | egrep "^#MIN_CONFIG$$" > /dev/null; then \
+	      line=`egrep "^AM_INIT_AUTOMAKE\(" configure.in.in` ;\
+	      if test -n "$$line"; then \
+		  modulename=`echo $$line | sed -e "s#AM_INIT_AUTOMAKE(\([^,]*\),.*#\1#"` ;\
+		  VERSION=`echo $$line | sed -e "s#AM_INIT_AUTOMAKE([^,]*, *\([^)]*\)).*#\1#"` ;\
+	       fi ;\
+	      sed -e "s#AM_INIT_AUTOMAKE([^@].*#dnl PACKAGE set before#" configure.in.new > configure.in \
+		  && mv configure.in configure.in.new ;\
 	   fi ;\
-	   sed -e "s#AM_INIT_AUTOMAKE([^@].*#dnl PACKAGE set before#" configure.in.new > configure.in && mv configure.in configure.in.new ;\
 	fi ;\
 	if test -z "$$modulename" || test "$$modulename" = "@MODULENAME@"; then \
 	   modulename=`pwd`; modulename=`basename $$modulename`; \
 	fi ;\
 	if test -z "$$VERSION" || test "$$VERSION" = "@VERSION@"; then \
-	     VERSION="2.0";  \
+	     VERSION="\"2.1 beta 2\"";  \
 	fi ;\
 	sed -e "s#@MODULENAME@#$$modulename#" configure.in.new | \
 		sed -e "s#@VERSION@#$$VERSION#" > configure.in
@@ -204,7 +207,7 @@ package-merge:
 	msgmerge -o $$cat.new $$cat $(PACKAGE).pot ; \
 	if test -s $$cat.new; then \
 	  grep -v "\"POT-Creation" $$cat.new > $$cat.new.2 ; \
-          grep -v "\"POT-Creation" $$cat >> $$cat.new.1; \
+	  grep -v "\"POT-Creation" $$cat >> $$cat.new.1; \
 	  if diff $$cat.new.1 $$cat.new.2; then \
 		rm $$cat.new;  \
 	  else  \
@@ -227,7 +230,7 @@ package-messages:
 	@podir=$${podir:-$$PWD/po} ;\
 	files=`find . -name Makefile.am | xargs egrep -l '^messages:' `; \
 	dirs=`for i in $$files; do echo \`dirname $$i\`; done`; \
-	tmpname='/tmp/messages.log' ;\
+	tmpname="$$PWD/messages.log" ;\
 	for subdir in $$dirs; do \
 	  test -z "$$VERBOSE" || echo "Making messages in $$subdir"; \
 	  (cd $$subdir ;\
@@ -239,9 +242,22 @@ package-messages:
 		    echo "$$subdir has *.rc or *.ui files, but not correct messages line" ;\
 		fi ;\
 	   fi ;\
-	   $(MAKE) -f Makefile.am podir=$$podir XGETTEXT="$${XGETTEXT:-xgettext} -C -ki18n -kI18N_NOOP -ktranslate -kaliasLocale -x $${includedir:-$$KDEDIR/include}/kde.pot" messages > $$tmpname 2>&1 ) || cat $$tmpname; \
+	   if test -n "`grep -r KAboutData *.c* *.C* 2>/dev/null`"; then \
+		echo -e 'i18n("_: NAME OF TRANSLATORS\\n"\n"Your names")\ni18n("_: EMAIL OF TRANSLATORS\\n"\n"Your emails")' > _translatorinfo.cpp ;\
+	   else echo " " > _translatorinfo.cpp ;\
+	   fi; \
+	   perl -e '$$mes=0; while (<STDIN>) { if (/^messages:/) { $$mes=1; print $$_; next; } if ($$mes) { if (/$$\\(XGETTEXT\)/ && / -o/) { s/ -o \$$\(podir\)/ _translatorinfo.cpp -o \$$\(podir\)/ } print $$_; } else { print $$_; } }' < Makefile.am > _transMakefile ;\
+	   $(MAKE) -s -f _transMakefile podir=$$podir \
+	   XGETTEXT="$${XGETTEXT:-xgettext} -C -ki18n \
+	   -kI18N_NOOP -ktranslate -kaliasLocale \
+	   -x $${includedir:-$$KDEDIR/include}/kde.pot" \
+	   messages ) >$$tmpname 2>&1 ;\
+	   test -s $$tmpname && (echo $$subdir ; cat $$tmpname) ;\
 	   test ! -f $$subdir/rc.cpp || rm -f $$subdir/rc.cpp ;\
+	   rm -f $$subdir/_translatorinfo.cpp ;\
+	   rm -f $$subdir/_transMakefile ;\
 	done
+	rm -f $$tmpname
 	@for i in `ls -1 po.backup/*.pot 2>/dev/null | sed -e "s#po.backup/##" | egrep -v '^backup_'`; do \
 	  if test ! -f po/$$i; then echo "disappeared: $$i"; fi ;\
 	done
@@ -264,5 +280,7 @@ package-messages:
 	@rm -f temp.pot
 	@rm -rf po.backup
 
+test:
+	perl -e '$$mes=0; while (<STDIN>) { if (/^messages:/) { $$mes=1; print $$_; next; } if ($$mes) { if (! /^\t/) { exit(0); } if (/$$\\(XGETTEXT\)/ && / -o/) { s/ -o/ _translatorinfo.cpp -o/ } print $$_;  } }' < Makefile.am 
 
 .SILENT:

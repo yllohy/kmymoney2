@@ -1,4 +1,4 @@
-# KDE tags expanded automatically by am_edit - $Revision: 1.1 $ 
+# KDE tags expanded automatically by am_edit - $Revision: 1.2 $ 
 # Makefile.in generated automatically by automake 1.4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
@@ -74,6 +74,7 @@ ARTSCCONFIG = @ARTSCCONFIG@
 AS = @AS@
 AUTODIRS = @AUTODIRS@
 CC = @CC@
+CONF_FILES = @CONF_FILES@
 CPP = @CPP@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
@@ -92,6 +93,7 @@ GMSGFMT = @GMSGFMT@
 IDL = @IDL@
 IDL_DEPENDENCIES = @IDL_DEPENDENCIES@
 KDB2HTML = @KDB2HTML@
+KDECONFIG = @KDECONFIG@
 KDE_CXXFLAGS = @KDE_CXXFLAGS@
 KDE_EXTRA_RPATH = @KDE_EXTRA_RPATH@
 KDE_INCLUDES = @KDE_INCLUDES@
@@ -151,6 +153,7 @@ PAMLIBPATHS = @PAMLIBPATHS@
 PAMLIBS = @PAMLIBS@
 PYTHONINC = @PYTHONINC@
 PYTHONLIB = @PYTHONLIB@
+PYTHONMODDIR = @PYTHONMODDIR@
 QT_INCLUDES = @QT_INCLUDES@
 QT_LDFLAGS = @QT_LDFLAGS@
 RANLIB = @RANLIB@
@@ -182,8 +185,11 @@ kde_htmldir = @kde_htmldir@
 kde_icondir = @kde_icondir@
 kde_includes = @kde_includes@
 kde_libraries = @kde_libraries@
+kde_libs_htmldir = @kde_libs_htmldir@
+kde_libs_prefix = @kde_libs_prefix@
 kde_locale = @kde_locale@
 kde_mimedir = @kde_mimedir@
+kde_moduledir = @kde_moduledir@
 kde_servicesdir = @kde_servicesdir@
 kde_servicetypesdir = @kde_servicetypesdir@
 kde_sounddir = @kde_sounddir@
@@ -209,19 +215,19 @@ ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/admin/mkinstalldirs
 CONFIG_HEADER = config.h
 CONFIG_CLEAN_FILES = 
-DIST_COMMON =  README ./stamp-h.in AUTHORS COPYING INSTALL Makefile.am \
-Makefile.in TODO acinclude.m4 aclocal.m4 config.h.in configure \
-configure.in
+DIST_COMMON =  README ./stamp-h.in AUTHORS COPYING ChangeLog INSTALL \
+Makefile.am Makefile.in TODO acinclude.m4 aclocal.m4 config.h.in \
+configure configure.in
 
 
 #>- DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 #>+ 4
-KDE_DIST=readme-overview.txt Makefile.dist configure.in.in kmymoney2.kdevprj Changelog compile.sh mk-ui.sh 
+KDE_DIST=readme-overview.txt Makefile.dist configure.in.in kmymoney2.kdevprj 
 
 DISTFILES= $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST) $(KDE_DIST)
 
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 #>- all: all-redirect
 #>+ 1
