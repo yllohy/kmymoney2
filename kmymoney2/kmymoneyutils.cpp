@@ -96,32 +96,33 @@ const QString KMyMoneyUtils::accountTypeToString(const MyMoneyAccount::accountTy
 const MyMoneyAccount::accountTypeE KMyMoneyUtils::stringToAccountType(const QString& type)
 {
   MyMoneyAccount::accountTypeE rc = MyMoneyAccount::UnknownAccountType;
-
-  if(type == i18n("Checkings"))
+  QString tmp = type.lower();
+  
+  if(tmp == i18n("checkings"))
     rc = MyMoneyAccount::Checkings;
-  else if(type == i18n("Savings"))
+  else if(tmp == i18n("savings"))
     rc = MyMoneyAccount::Savings;
-  else if(type == i18n("Credit Card"))
+  else if(tmp == i18n("credit card"))
     rc = MyMoneyAccount::CreditCard;
-  else if(type == i18n("Cash"))
+  else if(tmp == i18n("cash"))
     rc = MyMoneyAccount::Cash;
-  else if(type == i18n("Loan"))
+  else if(tmp == i18n("loan"))
     rc = MyMoneyAccount::Loan;
-  else if(type == i18n("Certificate of Deposit"))
+  else if(tmp == i18n("certificate of deposit"))
     rc = MyMoneyAccount::CertificateDep;
-  else if(type == i18n("Investment"))
+  else if(tmp == i18n("investment"))
     rc = MyMoneyAccount::Investment;
-  else if(type == i18n("Money Market"))
+  else if(tmp == i18n("money market"))
     rc = MyMoneyAccount::MoneyMarket;
-  else if(type == i18n("Asset"))
+  else if(tmp == i18n("asset"))
     rc = MyMoneyAccount::Asset;
-  else if(type == i18n("Liability"))
+  else if(tmp == i18n("liability"))
     rc = MyMoneyAccount::Liability;
-  else if(type == i18n("Currency"))
+  else if(tmp == i18n("currency"))
     rc = MyMoneyAccount::Currency;
-  else if(type == i18n("Income"))
+  else if(tmp == i18n("income"))
     rc = MyMoneyAccount::Income;
-  else if(type == i18n("Expense"))
+  else if(tmp == i18n("expense"))
     rc = MyMoneyAccount::Expense;
 
   return rc;

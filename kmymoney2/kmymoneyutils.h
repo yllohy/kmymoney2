@@ -42,6 +42,7 @@ class KMyMoneyUtils
 {
 public:
   enum categoryTypeE {
+    none =       0x00,
     liability =  0x01,
     asset =      0x02,
     expense =    0x04,
