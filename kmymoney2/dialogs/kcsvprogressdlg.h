@@ -38,7 +38,7 @@
   * types which would reimplement performImport/performExport.
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: kcsvprogressdlg.h,v 1.3 2001/12/14 05:04:02 ktambascio Exp $
+  * $Id: kcsvprogressdlg.h,v 1.4 2003/08/06 18:42:25 ipwizard Exp $
   *
   * @short A class to show the progress of a CSV import or export.
 **/
@@ -49,7 +49,6 @@ private:
   int m_nType;
 
 protected:
-	bool appendCorrectFileExt(QString& str, const QString strExtToUse);
   void performExport(void);
   void performImport(void);
   void readConfig(void);

@@ -163,6 +163,18 @@ public:
   **/
   static KGuiItem accountsFilterGuiItem(void);
 
+  /**
+    * This method adds the file extension passed as argument @p extension
+    * to the end of the file name passed as argument @name if it is not present.
+    *
+    * @param str filename to be checked
+    * @param extension extension to be added (w/o the dot)
+    *
+    * @retval true if @p name was changed
+    * @retval false if @p name remained unchanged
+    */
+  static bool appendCorrectFileExt(QString& name, const QString& extension);
+
   static QPixmap billScheduleIcon(int size);
   static QPixmap depositScheduleIcon(int size);
   static QPixmap transferScheduleIcon(int size);

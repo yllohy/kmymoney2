@@ -48,6 +48,7 @@
 // Project Includes
 #include "kcsvprogressdlg.h"
 #include "../widgets/kmymoneydateinput.h"
+#include "../kmymoneyutils.h"
 
 /** Simple constructor */
 KCsvProgressDlg::KCsvProgressDlg(int type, MyMoneyAccount *account, QWidget *parent, const char *name )
@@ -85,54 +86,6 @@ KCsvProgressDlg::~KCsvProgressDlg()
   writeConfig();
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////
-/**
-*	Adds the file extension to the end of the file name.
-*
-*	@return		bool
-*						- true if name was changed
-*						- false if it wasn't.
-*
-*	@todo			This function should be moved to a separate file, or utility file somewhere
-*						in the library files, because it appears in numerous places.
-*/
-///////////////////////////////////////////////////////////////////////////////////////////////
-bool KCsvProgressDlg::appendCorrectFileExt(QString& str, const QString strExtToUse)
-{
-	if(!str.isEmpty())
-  {
-		//find last . delminator
-		int nLoc = str.findRev('.');
-    if(nLoc != -1)
-		{
-			QString strExt, strTemp;
-      strTemp = str.left(nLoc + 1);
-			strExt = str.right(str.length() - (nLoc + 1));
-			if(strExt.find(strExtToUse, 0, FALSE) == -1)
-			{
-				//append to make complete file name
-				strTemp.append(strExtToUse);
-				str = strTemp;
-			}
-			else
-			{
-				return false;
-			}
-		}
-		else
-		{
-			str.append(".");
-			str.append(strExtToUse);
-		}
-	}
-	else
-	{
-		return false;
-	}
-
-	return true;
-}
-
 /** Perform the export process */
 void KCsvProgressDlg::performExport(void)
 {
@@ -144,9 +97,9 @@ void KCsvProgressDlg::performExport(void)
     return;
   }
 
-	QString strFile = m_qlineeditFile->text();
-	if(appendCorrectFileExt(strFile, QString("csv")))
-		m_qlineeditFile->setText(strFile);
+  QString strFile = m_qlineeditFile->text();
+  if(KMyMoneyUtils::appendCorrectFileExt(strFile, QString("csv")))
+    m_qlineeditFile->setText(strFile);
 
   if (m_kmymoneydateEnd->getQDate() < m_kmymoneydateStart->getQDate()) {
     KMessageBox::information(this, i18n("Please enter a start date lower than the end date."));
@@ -238,11 +191,11 @@ void KCsvProgressDlg::slotBrowseClicked()
 {
   QString newName = KFileDialog::getSaveFileName(QString::null,"*.CSV");
   if (!newName.isEmpty())
- 	{
-  	m_qlineeditFile->setText(newName);
+  {
+    m_qlineeditFile->setText(newName);
     m_qbuttonRun->setEnabled(true);
-	}
-	else
+  }
+  else
     m_qbuttonRun->setEnabled(false);
 }
 

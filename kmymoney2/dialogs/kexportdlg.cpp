@@ -46,6 +46,7 @@
 #include "../mymoney/mymoneycategory.h"
 #include "../dialogs/mymoneyqifprofileeditor.h"
 #include "../mymoney/mymoneyfile.h"
+#include "../kmymoneyutils.h"
 
 KExportDlg::KExportDlg(QWidget *parent)
   : KExportDlgDecl(parent, 0, true)
@@ -96,12 +97,12 @@ KExportDlg::KExportDlg(QWidget *parent)
   connect(m_qlineeditFile, SIGNAL(textChanged(const QString&)), this, SLOT(checkData()));
   connect(m_qcheckboxAccount, SIGNAL(toggled(bool)), this, SLOT(checkData()));
   connect(m_qcheckboxCategories, SIGNAL(toggled(bool)), this, SLOT(checkData()));
-  connect(m_accountComboBox, SIGNAL(highlighted(int)), this, SLOT(checkData()));
+  connect(m_accountComboBox, SIGNAL(highlighted(const QString&)), this, SLOT(checkData(const QString&)));
   connect(m_profileComboBox, SIGNAL(highlighted(int)), this, SLOT(checkData()));
   connect(m_kmymoneydateStart, SIGNAL(dateChanged(const QDate&)), this, SLOT(checkData()));
   connect(m_kmymoneydateEnd, SIGNAL(dateChanged(const QDate&)), this, SLOT(checkData()));
 
-  checkData();
+  checkData(m_accountComboBox->currentText());
 }
 
 KExportDlg::~KExportDlg()
@@ -111,7 +112,7 @@ KExportDlg::~KExportDlg()
 void KExportDlg::slotBrowse()
 {
   QString newName(KFileDialog::getSaveFileName(QString::null,"*.QIF"));
-  appendCorrectFileExt(newName, QString("qif"));
+  KMyMoneyUtils::appendCorrectFileExt(newName, QString("qif"));
   if (!newName.isEmpty())
     m_qlineeditFile->setText(newName);
 }
@@ -150,54 +151,6 @@ void KExportDlg::loadProfiles(const bool selectLast)
     m_profileComboBox->setCurrentText(current);
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////
-/**
-*	Adds the file extension to the end of the file name.
-*
-*	@return		bool
-*						- true if name was changed
-*						- false if it wasn't.
-*
-*	@todo			This function should be moved to a separate file, or utility file somewhere
-*						in the library files, because it appears in numerous places.
-*/
-///////////////////////////////////////////////////////////////////////////////////////////////
-bool KExportDlg::appendCorrectFileExt(QString& str, const QString strExtToUse)
-{
-	if(!str.isEmpty())
-  {
-		//find last . delminator
-		int nLoc = str.findRev('.');
-    if(nLoc != -1)
-		{
-			QString strExt, strTemp;
-      strTemp = str.left(nLoc + 1);
-			strExt = str.right(str.length() - (nLoc + 1));
-			if(strExt.find(strExtToUse, 0, FALSE) == -1)
-			{
-				//append to make complete file name
-				strTemp.append(strExtToUse);
-				str = strTemp;
-			}
-			else
-			{
-				return false;
-			}
-		}
-		else
-		{
-			str.append(".");
-			str.append(strExtToUse);
-		}
-	}
-	else
-	{
-		return false;
-	}
-
-	return true;
-}
-
 void KExportDlg::slotOkClicked()
 {
   // Make sure we save the last used settings for use next time,
@@ -232,16 +185,30 @@ void KExportDlg::writeConfig(void)
   kconfig->sync();
 }
 
-void KExportDlg::checkData(void)
+void KExportDlg::checkData(const QString& account)
 {
   bool  okEnabled = false;
 
   if(!m_qlineeditFile->text().isEmpty()) {
     QString strFile(m_qlineeditFile->text());
-    if(appendCorrectFileExt(strFile, QString("qif")))
+    if(KMyMoneyUtils::appendCorrectFileExt(strFile, QString("qif")))
       m_qlineeditFile->setText(strFile);
   }
 
+  if(m_lastAccount != account) {
+    MyMoneyFile* file = MyMoneyFile::instance();
+    QValueList<MyMoneyTransaction> list = file->transactionList(accountId(account));
+    QValueList<MyMoneyTransaction>::Iterator it;
+    if(!list.isEmpty()) {
+      it = list.begin();
+      m_kmymoneydateStart->loadDate((*it).postDate());
+      it = list.end();
+      --it;
+      m_kmymoneydateEnd->loadDate((*it).postDate());
+    }
+    m_lastAccount = account;
+  }
+  
   if(!m_qlineeditFile->text().isEmpty()
   && !m_accountComboBox->currentText().isEmpty()
   && !m_profileComboBox->currentText().isEmpty()
@@ -300,6 +267,10 @@ void KExportDlg::addCategories(QStringList& strList, const QCString& id, const Q
 
 const QCString KExportDlg::accountId() const
 {
-  return MyMoneyFile::instance()->nameToAccount(m_accountComboBox->currentText());
+  return accountId(m_accountComboBox->currentText());
 }
 
+const QCString KExportDlg::accountId(const QString& account) const
+{
+  return MyMoneyFile::instance()->nameToAccount(account);
+}

@@ -122,12 +122,17 @@ protected slots:
     * This slot checks whether all data is correct to enable
     * the 'Export' button. The enable state of the 'Export' button
     * is updated appropriately.
+    *
+    * If the parameter @p account is not empty, then it is assumed
+    * a new account is selected and the date fields will be loaded
+    * with the date of the first and last transaction within this
+    * account.
+    *
+    * @param account The name of the selected account.
     */
-  void checkData(void);
+  void checkData(const QString& account = "");
 
 private:
-  bool appendCorrectFileExt(QString& str, const QString strExtToUse);
-
   void readConfig(void);
   void writeConfig(void);
 
@@ -158,6 +163,18 @@ private:
     * @param leadIn constant leadin to be added in front of the account name
     */
   void addCategories(QStringList& strList, const QCString& id, const QString& leadIn) const;
+
+  /**
+    * This method is used to return the account id of a given account name
+    *
+    * @param account name of the account
+    * @return the ID of the account will be returned.
+    *         See MyMoneyFile::nameToAccount() for details.
+    */
+  const QCString accountId(const QString& account) const;
+  
+private:
+  QString   m_lastAccount;
 };
 
 #endif

@@ -209,54 +209,6 @@ void operator delete [] (void *p) throw()
 
 #endif // _CHECK_MEMORY
 
-///////////////////////////////////////////////////////////////////////////////////////////////
-/**
-*	Adds the file extension to the end of the file name.
-*
-*	@return		bool
-*						- true if name was changed
-*						- false if it wasn't.
-*
-*	@todo			This function should be moved to a separate file, or utility file somewhere
-*						in the library files, because it appears in numerous places.
-*/
-///////////////////////////////////////////////////////////////////////////////////////////////
-bool MyMoneyUtils::appendCorrectFileExt(String& /* str */, const String /* strExtToUse */)
-{
-	/*if(!str.isEmpty())
-  {
-		//find last . delminator
-		int nLoc = str.findRev('.');
-    if(nLoc != -1)
-		{
-			QString strExt, strTemp;
-      strTemp = str.left(nLoc + 1);
-			strExt = str.right(str.length() - (nLoc + 1));
-			if(strExt.find(strExtToUse, 0, FALSE) == -1)
-			{
-				//append to make complete file name
-				strTemp.append(strExtToUse);
-				str = strTemp;
-			}
-			else
-			{
-				return false;
-			}
-		}
-		else
-		{
-			str.append(".");
-			str.append(strExtToUse);
-		}
-	}
-	else
-	{
-		return false;
-	}
-  */
-	return true;
-}
-
 QString MyMoneyUtils::getFileExtension(QString strFileName)
 {
   QString strTemp;

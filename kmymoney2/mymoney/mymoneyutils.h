@@ -63,7 +63,6 @@ public:
   ~MyMoneyUtils() {};
 
   //static function to add the correct file extension at the end of the file name
-  static bool appendCorrectFileExt(String& str, const String strExtToUse);
   static QString getFileExtension(QString strFileName);
   
 };

@@ -336,3 +336,30 @@ const void KMyMoneyUtils::addDefaultHomePageItems(QStringList& list)
     list.append(QString::number(i));
   }
 }
+
+bool KMyMoneyUtils::appendCorrectFileExt(QString& str, const QString& strExtToUse)
+{
+  bool rc = false;
+  
+  if(!str.isEmpty()) {
+    //find last . delminator
+    int nLoc = str.findRev('.');
+    if(nLoc != -1) {
+      QString strExt, strTemp;
+      strTemp = str.left(nLoc + 1);
+      strExt = str.right(str.length() - (nLoc + 1));
+      if(strExt.find(strExtToUse, 0, FALSE) == -1) {
+        //append to make complete file name
+        strTemp.append(strExtToUse);
+        str = strTemp;
+        rc = true;
+      }
+    } else {
+      str.append(".");
+      str.append(strExtToUse);
+      rc = true;
+    }
+  }
+  return rc;
+}
+
