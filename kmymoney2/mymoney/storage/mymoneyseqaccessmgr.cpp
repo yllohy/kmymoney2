@@ -1361,3 +1361,23 @@ QValueList<MyMoneySchedule> MyMoneySeqAccessMgr::scheduleListEx(int scheduleType
   
   return list;  
 }
+
+void MyMoneySeqAccessMgr::addEquity(MyMoneyEquity& equity)
+{
+
+}
+
+void MyMoneySeqAccessMgr::modifyEquity(const MyMoneyEquity& equity)
+{
+
+}
+
+void MyMoneySeqAccessMgr::removeEquity(const MyMoneyEquity& equity)
+{
+
+}
+
+const MyMoneyEquity MyMoneySeqAccessMgr::equity(const QCString& id) const
+{
+  return MyMoneyEquity();
+}

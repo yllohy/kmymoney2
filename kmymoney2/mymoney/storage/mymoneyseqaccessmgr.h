@@ -606,6 +606,48 @@ public:
   const MyMoneySchedule schedule(const QCString& id) const;
 
   /**
+    * This method is used to add a new equity object to the engine.
+    * The ID of the object is the trading symbol, so there is no need for an additional
+    * ID since the symbol is guaranteed to be unique.  
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param equity reference to the MyMoneyEquity object
+    */
+  void addEquity(MyMoneyEquity& equity);
+
+  /**
+    * This method is used to modify an existing MyMoneySchedule
+    * object. 
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param equity reference to the MyMoneyEquity object to be updated
+    */
+  void modifyEquity(const MyMoneyEquity& equity);
+
+  /**
+    * This method is used to remove an existing MyMoneyEquity object
+    * from the engine. 
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param equity reference to the MyMoneyEquity object to be removed
+    */
+  void removeEquity(const MyMoneyEquity& equity);
+
+  /**
+    * This method is used to retrieve a single MyMoneySchedule object.
+    * The id of the object must be supplied in the parameter @p id.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param id QCString containing the id of the MyMoneySchedule object
+    * @return MyMoneySchedule object
+    */
+  const MyMoneyEquity equity(const QCString& id) const;
+
+  /**
     * This method is used to extract a list of scheduled transactions
     * according to the filter criteria passed as arguments.
     *
@@ -797,6 +839,15 @@ private:
     * A list containing all the scheduled transactions
     */
   QMap<QCString, MyMoneySchedule> m_scheduleList;
+
+  /**
+    * A list containing all the equity information objects.  Each object
+    * can represent a stock, bond, or mutual fund.  It contains a price
+    * history that a user can add entries to.  The price history will be used
+    * to determine the cost basis for sales, as well as the source of
+    * information for reports in a equity account.
+    */
+  QMap<QCString, MyMoneyEquity> m_equitiesList;
   
   /**
     * This member signals if the file has been modified or not

@@ -39,6 +39,7 @@
 #include "../mymoneypayee.h"
 #include "../mymoneyscheduled.h"
 #include "../mymoneytransactionfilter.h"
+#include "../mymoneyequity.h"
 
 /**
   * @author Thomas Baumgart
