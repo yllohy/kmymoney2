@@ -30,7 +30,7 @@ MyMoneyMoney::MyMoneyMoney(const double amount)
 MyMoneyMoney::MyMoneyMoney(const QString& amount)
 {
   bool ok;
-  m_amount = KGlobal::locale()->readNumber(amount, &ok);
+  m_amount = KGlobal::locale()->readMoney(amount, &ok);
   if (!ok) {
     qDebug("cannot convert %s to a number", amount.latin1());
   }
@@ -60,7 +60,7 @@ MyMoneyMoney& MyMoneyMoney::operator = (const double& right)
 MyMoneyMoney& MyMoneyMoney::operator = (const QString& right)
 {
   bool ok;
-  m_amount = KGlobal::locale()->readNumber(right, &ok);
+  m_amount = KGlobal::locale()->readMoney(right, &ok);
   if (!ok) {
     qDebug("cannot convert %s to a number", right.latin1());
   }
