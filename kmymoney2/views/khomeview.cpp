@@ -182,11 +182,13 @@ void KHomeView::showPayments(void)
   }
 
   QString tmp;
-  tmp = "<div class=\"itemheader\">" + i18n("Payments") +
-        "</div>\n<div class=\"gap\">&nbsp;</div>\n";
-
+  tmp = "<div class=\"itemheader\">" + i18n("Payments") + "</div>\n";
   m_part->write(tmp);
+  
   if(overdues.count() > 0) {
+    tmp = "<div class=\"gap\">&nbsp;</div>\n";
+    m_part->write(tmp);
+
     qBubbleSort(overdues);
     QValueList<MyMoneySchedule>::Iterator it;
     QValueList<MyMoneySchedule>::Iterator it_f;
