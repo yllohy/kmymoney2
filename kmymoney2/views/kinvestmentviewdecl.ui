@@ -1,7 +1,7 @@
 <!DOCTYPE UI><UI>
 <class>kInvestmentViewDecl</class>
 <widget>
-    <class>QDialog</class>
+    <class>QWidget</class>
     <property stdset="1">
         <name>name</name>
         <cstring>kInvestmentViewDecl</cstring>

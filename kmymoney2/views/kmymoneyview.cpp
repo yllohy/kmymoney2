@@ -791,19 +791,21 @@ void KMyMoneyView::viewTransactionList(void)
     return;
   }
 
-  if(pAccount->accountType() == MyMoneyAccount::Investment)
+	if(pAccount->accountType() == MyMoneyAccount::Investment)
   {
   	banksView->hide();
+  	transactionView->hide();
   	m_investmentView->show();
   }
   else
   {
-     banksView->hide();
-     transactionView->show();
-     m_showing = TransactionList;
+    m_investmentView->hide();	
+		banksView->hide();
+    transactionView->show();
+    m_showing = TransactionList;
 
-     if (!m_file.isInitialised())
-       return;
+    if (!m_file.isInitialised())
+      return;
 
 /*  bool bankSuccess=false, accountSuccess=false;
   MyMoneyBank *pBank;
