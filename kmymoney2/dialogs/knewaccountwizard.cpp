@@ -55,7 +55,6 @@
 #include "../mymoney/mymoneyfile.h"
 
 #include "../kmymoneyutils.h"
-#include "../kapptest.h"
 
 #include "ieditscheduledialog.h"
 #include "knewaccountwizard.h"
@@ -279,7 +278,7 @@ void KNewAccountWizard::accept()
     }
 
     MyMoneySplit s1, s2;
-    s1.setValue(m_amount->getMoneyValue());
+    s1.setValue(m_amount->value());
     s2.setValue(-s1.value());
     s1.setAction(MyMoneySplit::ActionTransfer);
     s2.setAction(MyMoneySplit::ActionTransfer);
@@ -630,7 +629,7 @@ void KNewAccountWizard::slotCurrencyChanged(int)
 
 void KNewAccountWizard::slotPriceUpdate(void)
 {
-  KCurrencyEditDlg dlg(this, KAppTest::widgetName(this, "KCurrencyEditDlg"));
+  KCurrencyEditDlg dlg(this, "KCurrencyEditDlg");
   dlg.slotSelectCurrency(m_currencyComboBox->security().id());
   dlg.exec();
 }

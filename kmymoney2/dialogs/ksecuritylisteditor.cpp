@@ -39,7 +39,6 @@
 #include "../mymoney/mymoneysecurity.h"
 #include "../mymoney/mymoneyfile.h"
 #include "../dialogs/knewinvestmentwizard.h"
-#include "../kapptest.h"
 
 #include "../kmymoneyutils.h"
 
@@ -162,7 +161,7 @@ void KSecurityListEditor::slotEditSecurity(void)
   if(item) {
     MyMoneySecurity security = MyMoneyFile::instance()->security(item->text(ID_COL).latin1());
 
-    KNewInvestmentWizard dlg(security, this, KAppTest::widgetName(this, "KNewInvestmentWizard"));
+    KNewInvestmentWizard dlg(security, this, "KNewInvestmentWizard");
     if(dlg.exec() == QDialog::Accepted) {
       dlg.createObjects(QCString());
       security = MyMoneyFile::instance()->security(item->text(ID_COL).latin1());

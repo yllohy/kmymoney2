@@ -42,7 +42,6 @@
 // Project Includes
 
 #include "knewfiledlg.h"
-#include "../kapptest.h"
 
 KNewFileDlg::KNewFileDlg(QWidget *parent, const char *name, const char *title)
   : KNewFileDlgDecl(parent,name,true)
@@ -71,7 +70,7 @@ void KNewFileDlg::init(const char* title)
   okBtn->setGuiItem(KStdGuiItem::ok());
   cancelBtn->setGuiItem(KStdGuiItem::cancel());
 
-  okBtn->setName(KAppTest::widgetName(this, "KPushButton/Ok"));
+  okBtn->setName("KPushButton_Ok");
   if (title)
     setCaption(title);
 
