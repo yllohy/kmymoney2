@@ -1,3 +1,10 @@
+2004-09-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * added buttons to register edit mode
+  * revised the string comparison in operator == of our objects
+  * fixed bug in MyMoneyMoney::operator -(int)
+  * added option to re-enable all (don't show again) messages
+  * added setting (not in GUI yet) do suppress display of calculator button
+
 2004-09-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated investment logic to support change of action during edit
   * Generalized tab order handling in ledger view
@@ -6,6 +13,7 @@
   * Added more investment logic (register based input)
   * Cancel investment edit when focus is lost
   * Fixed logic of account combo box
+  * Updated interface to MyMoneyEquity::hasPrice()
 
 2004-09-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Update investment summary when different account is selected
