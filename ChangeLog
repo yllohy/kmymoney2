@@ -2,6 +2,7 @@
   * Fixed #1043892 (crash when changing action in checkings view)
   * Fixed #1040653 (GNC import doesn't handle equity accounts correctly)
     as provided by Tony Bloomfield
+  * Allow double click in investment view on any column
 
 2004-10-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Reworked keyboard event handler
