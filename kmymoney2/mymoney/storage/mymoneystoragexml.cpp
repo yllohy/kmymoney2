@@ -33,7 +33,7 @@
 // ----------------------------------------------------------------------------
 // Third party Includes
 
-#include <xml++.h>
+#include <libxml++-1.0/libxml++/libxml++.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -42,9 +42,11 @@
 //#include "mymoneystoragexmlcallback.h"
 #include "mymoneystoragexml.h"
 
+using namespace xmlpp;
+
 MyMoneyStorageXML::MyMoneyStorageXML()
 {
-  m_parser = NULL;
+  //m_parser = NULL;
   m_pStorage = NULL;
 }
 
@@ -80,20 +82,28 @@ void MyMoneyStorageXML::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
       {
         qDebug("XMLREADER: %ld chars read", readSize);
         std::string parseString(buf);
-        m_parser->parse_chunk(parseString);
+        try
+        {
+          parse_memory(parseString);
+        }
+        catch(xmlpp::parse_error* e)
+        {
+          qDebug("XMLREADER: EXCEPTION while parsing buffer");
+        }
+        //m_parser->parse_chunk(parseString);
       }
       else
       {
-        m_parser->finish();
+        //m_parser->finish();
         break;
       }
     }
 
-    if(m_parser)
+    /*if(m_parser)
     {
       delete m_parser;
       m_parser = NULL;
-    }
+    }*/
 
     //don't use this pointer after the function has exited...
     m_pStorage = NULL;
@@ -110,7 +120,8 @@ void MyMoneyStorageXML::writeFile(QIODevice* qf, IMyMoneySerialize* storage)
 
 bool MyMoneyStorageXML::CreateXMLParser()
 {
-  if(m_parser)
+  return true;
+  /*if(m_parser)
   {
     qDebug("XMLREADER:  XML++ parser already created");
     return true;
@@ -128,24 +139,31 @@ bool MyMoneyStorageXML::CreateXMLParser()
     }
   }
 
-  qDebug("XMLREADER:  Failed to create XML++ Parser");
-  return false;
+  qDebug("XMLREADER:  Failed to create XML++ Parser");   */
+  //return false;
 }
 
-void MyMoneyStorageXML::start_document(void)
+void MyMoneyStorageXML::on_start_document(void)
 {
   qDebug("XMLREADER:  start_document() called");
+  ChangeParseState(PARSE_NEXTIDS);
 }
 
-void MyMoneyStorageXML::end_document(void)
+void MyMoneyStorageXML::on_end_document(void)
 {
   qDebug("XMLREADER:  end_document() called");
 }
 
-void MyMoneyStorageXML::start_element(const std::string &n, const XMLPropertyMap &p)
+void MyMoneyStorageXML::on_start_element(const std::string &n, const Element::AttributeMap& p)
 {
   qDebug("XMLREADER:  start_element called, %s", n.data());
 
+  
+
+  if(!n.find("NEXTIDS"))
+  {
+
+  }
   if(!n.find("USER"))
   {
     ChangeParseState(PARSE_USERINFO);
@@ -156,7 +174,16 @@ void MyMoneyStorageXML::start_element(const std::string &n, const XMLPropertyMap
     }
   }
 
-  if(m_parseState == PARSE_USERINFO)
+  if(getCurrentParseState() == PARSE_NEXTIDS)
+  {
+      parseNextIDS(n, p);
+  }
+  else if(getCurrentParseState() == PARSE_USERINFO)
+  {
+
+  }
+  
+  /*if(m_parseState == PARSE_USERINFO)
   {
     if(!n.find("ADDRESS"))
     {
@@ -208,35 +235,35 @@ void MyMoneyStorageXML::start_element(const std::string &n, const XMLPropertyMap
 
   if(m_parseState != PARSE_STATE_UNKNOWN)
   {
-    for(XMLPropertyMap::const_iterator i = p.begin(); i != p.end(); ++i)
-    {
+    //for(XMLPropertyMap::const_iterator i = p.begin(); i != p.end(); ++i)
+    //{
 
-    }
-  }
+    //}
+  }    */
 }
 
-std::string MyMoneyStorageXML::getPropertyValue(std::string str, XMLPropertyMap p)
+std::string MyMoneyStorageXML::getPropertyValue(std::string str, const Element::AttributeMap& p)
 {
   //for(XMLPropertyMap::const_iterator i = p.begin(); i != p.end(); ++i)
   //{
   //  qDebug("XMLPropertyMap str=%s, first=%s",str.data(), ((*i).first).data());
   //}
-  XMLPropertyMap::const_iterator i = p.find(str.data());
+  Element::AttributeMap::const_iterator i = p.find(str.data());
   if(i != p.end())
   {
-    XMLProperty* pProperty = (*i).second;
-    return pProperty->value();
+    const Attribute* pProperty = (*i).second;
+    return pProperty->get_value();
   }
 
   return std::string("");
 }
 
-void MyMoneyStorageXML::end_element(const std::string &n)
+void MyMoneyStorageXML::on_end_element(const std::string &n)
 {
   m_parseState = m_previousParseState;
 }
 
-void MyMoneyStorageXML::characters(const std::string &s)
+void MyMoneyStorageXML::on_characters(const std::string &s)
 {
   qDebug("XMLREADER:  Character data = %s", s.data());
   qDebug("   length = %d", s.size());
@@ -244,51 +271,83 @@ void MyMoneyStorageXML::characters(const std::string &s)
   if(m_pStorage)
   {
     const QString strData(s.data());
-    if(m_parseState == PARSE_USERINFO_ADDRESS_STREET)
+
+    if(getCurrentParseState() == PARSE_USERINFO_ADDRESS)
     {
-      m_pStorage->setUserStreet(strData);
-    }
-    else if(m_parseState == PARSE_USERINFO_ADDRESS_CITY)
-    {
-      m_pStorage->setUserTown(strData);
-    }
-    else if(m_parseState == PARSE_USERINFO_ADDRESS_STATE)
-    {
-      m_pStorage->setUserCounty(strData);
-    }
-    else if(m_parseState == PARSE_USERINFO_ADDRESS_ZIPCODE)
-    {
-      m_pStorage->setUserPostcode(strData);
-    }
-    else if(m_parseState == PARSE_USERINFO_ADDRESS_TELEPHONE)
-    {
-      m_pStorage->setUserTelephone(strData);
+      if(m_addressParseState == ADDRESS_STREET)
+      {
+        m_pStorage->setUserStreet(strData);
+      }
+      else if(m_addressParseState == ADDRESS_CITY)
+      {
+        m_pStorage->setUserTown(strData);
+      }
+      else if(m_addressParseState == ADDRESS_STATE)
+      {
+        m_pStorage->setUserCounty(strData);
+      }
+      else if(m_addressParseState == ADDRESS_ZIPCODE)
+      {
+        m_pStorage->setUserPostcode(strData);
+      }
+      else if(m_addressParseState == ADDRESS_TELEPHONE)
+      {
+        m_pStorage->setUserTelephone(strData);
+      }
     }
   }
 }
 
-void MyMoneyStorageXML::comment(const std::string &s)
+void MyMoneyStorageXML::on_comment(const std::string &s)
 {
 
 }
 
-void MyMoneyStorageXML::warning(const std::string &s)
+void MyMoneyStorageXML::on_warning(const std::string &s)
 {
 }
 
-void MyMoneyStorageXML::error(const std::string &s)
+void MyMoneyStorageXML::on_error(const std::string &s)
 {
 
 }
 
-void MyMoneyStorageXML::fatal_error(const std::string &s)
+void MyMoneyStorageXML::on_fatal_error(const std::string &s)
 {
 }
 
+
+ 
 void MyMoneyStorageXML::ChangeParseState(eParseState state)
 {
   m_previousParseState = m_parseState;
   m_parseState = state;
+}
+
+void MyMoneyStorageXML::parseNextIDS(const std::string &n, const Element::AttributeMap& p)
+{
+  std::string strValue;
+  
+  if(!n.find("ACCOUNTID"))
+  {
+    strValue = getPropertyValue(std::string("value"), p);
+  }
+  else if(!n.find("INSTITUTIONID"))
+  {
+
+  }
+	else if(!n.find("TRANSACTIONID"))
+  {
+
+  }
+	else if(!n.find("PAYEEID"))
+  {
+
+  }
+  else
+  {
+
+  }
 }
 
 

@@ -25,7 +25,7 @@
 
 #ifdef _COMPILE_XML
 
-#include <xml++.h>
+#include <libxml++-1.0/libxml++/libxml++.h>
 
 // ----------------------------------------------------------------------------
 // QT Includes
@@ -38,25 +38,59 @@ class QIODevice;
 
 #include "imymoneyserialize.h"
 #include "imymoneystorageformat.h"
-#include "mymoneyxmlparser.h"
+//#include "mymoneyxmlparser.h"
 //#include "mymoneystoragexmlcallback.h"
 
 typedef enum {
     PARSE_NEXTIDS,
     PARSE_USERINFO,
     PARSE_USERINFO_ADDRESS,
-    PARSE_USERINFO_ADDRESS_STREET,
-    PARSE_USERINFO_ADDRESS_CITY,
-    PARSE_USERINFO_ADDRESS_STATE,
-    PARSE_USERINFO_ADDRESS_ZIPCODE,
-    PARSE_USERINFO_ADDRESS_COUNTY,
-    PARSE_USERINFO_ADDRESS_COUNTRY,
-    PARSE_USERINFO_ADDRESS_TELEPHONE,
     PARSE_ACCOUNTS,
+    PARSE_ACCOUNT,
     PARSE_INSTITUTIONS,
+    PARSE_INSTITUTION,
     PARSE_PAYEES,
     PARSE_STATE_UNKNOWN
   }eParseState;
+
+typedef enum {
+    ADDRESS_STREET,
+    ADDRESS_CITY,
+    ADDRESS_STATE,
+    ADDRESS_ZIPCODE,
+    ADDRESS_COUNTY,
+    ADDRESS_COUNTRY,
+    ADDRESS_TELEPHONE
+  }eAddressParseState;
+
+typedef enum {
+    ACCOUNT_TYPE,
+    ACCOUNT_NAME,
+    ACCOUNT_DESCRIPTION,
+    ACCOUNT_INSTITUTION,
+    ACCOUNT_NUMBER,
+    ACCOUNT_OPENED,
+    ACCOUNT_OPENINGBALANCE,
+    ACCOUNT_LASTMODIFIED,
+    ACCOUNT_LASTRECONCILED,
+    ACCOUNT_TRANSACTIONS
+  }eAccountParseState;
+
+typedef enum {
+    TX_MEMO,
+    TX_ENTRYDATE,
+    TX_POSTDATE,
+    TX_SPLITS
+  }eTxParseState;
+
+typedef enum {
+    SPLIT_ACCOUNT,
+    SPLIT_ACTION,
+    SPLIT_MEMO,
+    SPLIT_PAYEE,
+    SPLIT_VALUE,
+    SPLIT_RECONCILE
+  }eSplitParseState;
 
 using namespace xmlpp;
 
@@ -65,7 +99,7 @@ using namespace xmlpp;
   */
 
                             
-class MyMoneyStorageXML : public IMyMoneyStorageFormat, public xmlpp::XMLParserCallback
+class MyMoneyStorageXML : public IMyMoneyStorageFormat, public xmlpp::SaxParser
 {
 public: 
 	MyMoneyStorageXML();
@@ -76,26 +110,29 @@ public:
     Writing = 1           /**< version to be used when writing a file */
   };
 
-  void start_document(void);
-  void end_document(void);
-  void start_element(const std::string &n, const xmlpp::XMLPropertyMap &p);
-  void end_element(const std::string &n);
-  void characters(const std::string &s);
-  void comment(const std::string &s);
-  void warning(const std::string &s);
-  void error(const std::string &s);
-  void fatal_error(const std::string &s);
-
-  void ChangeParseState(eParseState state);
-
-  void setProgressCallback(void(*callback)(int, int, const QString&)) {};
+protected:
+  virtual void  on_start_document();
+  virtual void  on_end_document();
+  virtual void  on_start_element(const std::string& name, const Element::AttributeMap& attributes);
+  virtual void  on_end_element(const std::string& name);
+  virtual void  on_characters(const std::string& characters);
+  virtual void  on_comment(const std::string& text);
+  virtual void  on_warning(const std::string& text);
+  virtual void  on_error(const std::string& text);
+  virtual void  on_fatal_error(const std::string& text);
+  void          ChangeParseState(eParseState state);
+  void          setProgressCallback(void(*callback)(int, int, const QString&)) {};
 
 private:
-  IMyMoneySerialize* m_pStorage;
-  std::string getPropertyValue(std::string str, XMLPropertyMap p);
-  eParseState m_parseState;
-  eParseState m_previousParseState;
-
+  IMyMoneySerialize*  m_pStorage;
+  std::string         getPropertyValue(std::string str, const Element::AttributeMap& p);
+  eParseState         m_parseState;
+  eParseState         m_previousParseState;
+  eAddressParseState  m_addressParseState;
+  eAccountParseState  m_accountParseState;
+  eTxParseState       m_txParseState;
+  eParseState         getCurrentParseState() const { return m_parseState; }
+  void                parseNextIDS(const std::string &n, const Element::AttributeMap& p);
 
   /**
     * This method returns the version of the underlying file. It
@@ -119,7 +156,7 @@ private:
 
 
 private:
-  MyMoneyXMLParser *m_parser;
+  //MyMoneyXMLParser *m_parser;
   //MyMoneyStorageXMLCallback* m_callback;
   /**
     * Instantiates the XML parser if it hasn't been created already.
