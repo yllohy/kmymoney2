@@ -147,9 +147,12 @@ void KCsvProgressDlg::performExport(void)
           break;
       }
 
-      qstringBuffer = QString::number(nCount)
+      qstringBuffer =
+          /*
+          QString::number(nCount)
           + ","
-          + KGlobal::locale()->formatDate(mymoneytransaction->date(), true)
+          */
+          KGlobal::locale()->formatDate(mymoneytransaction->date(), true)
           + ","
           + qstringTmpBuf1
           + ","
