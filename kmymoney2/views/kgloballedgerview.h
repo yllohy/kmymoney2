@@ -91,6 +91,15 @@ protected:
 protected slots:
   void slotAccountSelected(const QString&);
 
+  /**
+    * This slot can be used to popup a specific transaction for a
+    * specific account. Both entities are defined by the corresponding Id's.
+    *
+    * @param accountId const QCString reference to the account id
+    * @param transactionId const QCString reference to the transaction id
+    */
+  void slotSelectAccountAndTransaction(const QCString& accountId, const QCString& transactionId);
+
 private:
   void refresh(void);
 

@@ -26,6 +26,7 @@
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
+#include <qcstring.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -49,6 +50,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   : QWidget(parent,name)
 {
   m_currentView = 0;
+  KLedgerView* view;
 
   for(int i = 0; i < MyMoneyAccount::MaxAccountTypes; ++i)
     m_specificView[i] = 0;
@@ -72,14 +74,16 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
 
   m_accountStack = new QWidgetStack(this, "Stack");
   // Checkings account
-  m_specificView[MyMoneyAccount::Checkings] = new KLedgerViewCheckings(this);
-  m_accountStack->addWidget(m_specificView[MyMoneyAccount::Checkings],
-                                 MyMoneyAccount::Checkings);
+  view = m_specificView[MyMoneyAccount::Checkings] = new KLedgerViewCheckings(this);
+  m_accountStack->addWidget(view, MyMoneyAccount::Checkings);
+  connect(view, SIGNAL(accountAndTransactionSelected(const QCString&, const QCString&)),
+    this, SLOT(slotSelectAccountAndTransaction(const QCString&, const QCString&)));
 
   // Savings account
-  m_specificView[MyMoneyAccount::Savings] = new KLedgerViewSavings(this);
-  m_accountStack->addWidget(m_specificView[MyMoneyAccount::Savings],
-                                 MyMoneyAccount::Savings);
+  view = m_specificView[MyMoneyAccount::Savings] = new KLedgerViewSavings(this);
+  m_accountStack->addWidget(view, MyMoneyAccount::Savings);
+  connect(view, SIGNAL(accountAndTransactionSelected(const QCString&, const QCString&)),
+    this, SLOT(slotSelectAccountAndTransaction(const QCString&, const QCString&)));
 
   // Credit card account
   KPushButton* creditCardAccount = new KPushButton("Credit Card account", m_accountStack);
@@ -149,6 +153,12 @@ void KGlobalLedgerView::refreshView(void)
     if(m_specificView[i] != 0)
       m_specificView[i]->refreshView();
   }
+}
+
+void KGlobalLedgerView::slotSelectAccountAndTransaction(const QCString& accountId, const QCString& transactionId)
+{
+  selectAccount(accountId);
+  m_currentView->selectTransaction(transactionId);
 }
 
 void KGlobalLedgerView::selectAccount(const QCString& accountId)
