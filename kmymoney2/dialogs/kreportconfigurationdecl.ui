@@ -1,0 +1,794 @@
+<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
+<class>KReportConfigurationDecl</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>KReportConfigurationDecl</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>528</width>
+            <height>372</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Report Configuration</string>
+    </property>
+    <property name="sizeGripEnabled">
+        <bool>true</bool>
+    </property>
+    <widget class="QLayoutWidget">
+        <property name="name">
+            <cstring>Layout1</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>11</x>
+                <y>335</y>
+                <width>506</width>
+                <height>26</height>
+            </rect>
+        </property>
+        <hbox>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <property name="margin">
+                <number>0</number>
+            </property>
+            <property name="spacing">
+                <number>6</number>
+            </property>
+            <widget class="QPushButton">
+                <property name="name">
+                    <cstring>buttonHelp</cstring>
+                </property>
+                <property name="text">
+                    <string>Help</string>
+                </property>
+                <property name="accel">
+                    <number>4144</number>
+                </property>
+                <property name="autoDefault">
+                    <bool>true</bool>
+                </property>
+            </widget>
+            <spacer>
+                <property name="name">
+                    <cstring>Horizontal Spacing2</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Horizontal</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>20</width>
+                        <height>0</height>
+                    </size>
+                </property>
+            </spacer>
+            <widget class="QPushButton">
+                <property name="name">
+                    <cstring>buttonOk</cstring>
+                </property>
+                <property name="text">
+                    <string>OK</string>
+                </property>
+                <property name="accel">
+                    <number>0</number>
+                </property>
+                <property name="autoDefault">
+                    <bool>true</bool>
+                </property>
+                <property name="default">
+                    <bool>true</bool>
+                </property>
+            </widget>
+            <widget class="QPushButton">
+                <property name="name">
+                    <cstring>buttonCancel</cstring>
+                </property>
+                <property name="text">
+                    <string>Cancel</string>
+                </property>
+                <property name="accel">
+                    <number>0</number>
+                </property>
+                <property name="autoDefault">
+                    <bool>true</bool>
+                </property>
+            </widget>
+        </hbox>
+    </widget>
+    <widget class="QTabWidget">
+        <property name="name">
+            <cstring>tabWidget</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>10</y>
+                <width>506</width>
+                <height>318</height>
+            </rect>
+        </property>
+        <property name="tabPosition">
+            <enum>Top</enum>
+        </property>
+        <property name="tabShape">
+            <enum>Rounded</enum>
+        </property>
+        <widget class="QWidget">
+            <property name="name">
+                <cstring>dates</cstring>
+            </property>
+            <attribute name="title">
+                <string>&amp;Dates</string>
+            </attribute>
+            <widget class="QGroupBox">
+                <property name="name">
+                    <cstring>GroupBox4</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>11</x>
+                        <y>11</y>
+                        <width>195</width>
+                        <height>137</height>
+                    </rect>
+                </property>
+                <property name="title">
+                    <string>Date Range</string>
+                </property>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>Layout12</cstring>
+                    </property>
+                    <property name="geometry">
+                        <rect>
+                            <x>13</x>
+                            <y>27</y>
+                            <width>170</width>
+                            <height>90</height>
+                        </rect>
+                    </property>
+                    <vbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <property name="margin">
+                            <number>0</number>
+                        </property>
+                        <property name="spacing">
+                            <number>6</number>
+                        </property>
+                        <widget class="QComboBox">
+                            <item>
+                                <property name="text">
+                                    <string>Current Year</string>
+                                </property>
+                            </item>
+                            <item>
+                                <property name="text">
+                                    <string>Previous Year</string>
+                                </property>
+                            </item>
+                            <item>
+                                <property name="text">
+                                    <string>Current Quarter</string>
+                                </property>
+                            </item>
+                            <item>
+                                <property name="text">
+                                    <string>Previous Quarter</string>
+                                </property>
+                            </item>
+                            <item>
+                                <property name="text">
+                                    <string>Current Month</string>
+                                </property>
+                            </item>
+                            <item>
+                                <property name="text">
+                                    <string>Previous Month</string>
+                                </property>
+                            </item>
+                            <item>
+                                <property name="text">
+                                    <string>Custom...</string>
+                                </property>
+                            </item>
+                            <property name="name">
+                                <cstring>comboDateRange</cstring>
+                            </property>
+                        </widget>
+                        <widget class="QLayoutWidget">
+                            <property name="name">
+                                <cstring>Layout10</cstring>
+                            </property>
+                            <hbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <property name="margin">
+                                    <number>0</number>
+                                </property>
+                                <property name="spacing">
+                                    <number>6</number>
+                                </property>
+                                <widget class="QLabel">
+                                    <property name="name">
+                                        <cstring>TextLabel3</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Start</string>
+                                    </property>
+                                </widget>
+                                <widget class="QDateEdit">
+                                    <property name="name">
+                                        <cstring>DateEditStart</cstring>
+                                    </property>
+                                </widget>
+                            </hbox>
+                        </widget>
+                        <widget class="QLayoutWidget">
+                            <property name="name">
+                                <cstring>Layout9</cstring>
+                            </property>
+                            <hbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <property name="margin">
+                                    <number>0</number>
+                                </property>
+                                <property name="spacing">
+                                    <number>6</number>
+                                </property>
+                                <widget class="QLabel">
+                                    <property name="name">
+                                        <cstring>TextLabel3_2</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Finish</string>
+                                    </property>
+                                </widget>
+                                <widget class="QDateEdit">
+                                    <property name="name">
+                                        <cstring>DateEditEnd</cstring>
+                                    </property>
+                                </widget>
+                            </hbox>
+                        </widget>
+                    </vbox>
+                </widget>
+            </widget>
+            <widget class="QButtonGroup">
+                <property name="name">
+                    <cstring>ButtonGroup2</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>212</x>
+                        <y>11</y>
+                        <width>127</width>
+                        <height>137</height>
+                    </rect>
+                </property>
+                <property name="title">
+                    <string>Columns</string>
+                </property>
+                <widget class="QRadioButton">
+                    <property name="name">
+                        <cstring>radioMonthCols</cstring>
+                    </property>
+                    <property name="geometry">
+                        <rect>
+                            <x>10</x>
+                            <y>30</y>
+                            <width>80</width>
+                            <height>21</height>
+                        </rect>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Months</string>
+                    </property>
+                    <property name="checked">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QRadioButton">
+                    <property name="name">
+                        <cstring>radioQuarterCols</cstring>
+                    </property>
+                    <property name="geometry">
+                        <rect>
+                            <x>11</x>
+                            <y>58</y>
+                            <width>80</width>
+                            <height>21</height>
+                        </rect>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Quarters</string>
+                    </property>
+                </widget>
+                <widget class="QRadioButton">
+                    <property name="name">
+                        <cstring>radioYearCols</cstring>
+                    </property>
+                    <property name="geometry">
+                        <rect>
+                            <x>11</x>
+                            <y>85</y>
+                            <width>80</width>
+                            <height>21</height>
+                        </rect>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Years</string>
+                    </property>
+                </widget>
+            </widget>
+        </widget>
+        <widget class="QWidget">
+            <property name="name">
+                <cstring>accounts</cstring>
+            </property>
+            <attribute name="title">
+                <string>&amp;Accounts</string>
+            </attribute>
+            <widget class="QGroupBox">
+                <property name="name">
+                    <cstring>GroupBox7_2</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>10</x>
+                        <y>0</y>
+                        <width>490</width>
+                        <height>271</height>
+                    </rect>
+                </property>
+                <property name="title">
+                    <string>Asset/Liability Accounts</string>
+                </property>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>Layout5</cstring>
+                    </property>
+                    <property name="geometry">
+                        <rect>
+                            <x>380</x>
+                            <y>20</y>
+                            <width>94</width>
+                            <height>56</height>
+                        </rect>
+                    </property>
+                    <vbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <property name="margin">
+                            <number>0</number>
+                        </property>
+                        <property name="spacing">
+                            <number>6</number>
+                        </property>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>butAccountsAll</cstring>
+                            </property>
+                            <property name="text">
+                                <string>&amp;Select All</string>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>butAccountsNone</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Select &amp;None</string>
+                            </property>
+                        </widget>
+                    </vbox>
+                </widget>
+                <widget class="QListView">
+                    <column>
+                        <property name="text">
+                            <string>Account</string>
+                        </property>
+                        <property name="clickable">
+                            <bool>true</bool>
+                        </property>
+                        <property name="resizeable">
+                            <bool>true</bool>
+                        </property>
+                    </column>
+                    <property name="name">
+                        <cstring>lvAccounts</cstring>
+                    </property>
+                    <property name="geometry">
+                        <rect>
+                            <x>10</x>
+                            <y>20</y>
+                            <width>361</width>
+                            <height>241</height>
+                        </rect>
+                    </property>
+                    <property name="selectionMode">
+                        <enum>Extended</enum>
+                    </property>
+                    <property name="allColumnsShowFocus">
+                        <bool>true</bool>
+                    </property>
+                    <property name="rootIsDecorated">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+            </widget>
+        </widget>
+        <widget class="QWidget">
+            <property name="name">
+                <cstring>categories</cstring>
+            </property>
+            <attribute name="title">
+                <string>&amp;Categories</string>
+            </attribute>
+            <widget class="QLayoutWidget">
+                <property name="name">
+                    <cstring>Layout4</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>10</x>
+                        <y>0</y>
+                        <width>490</width>
+                        <height>280</height>
+                    </rect>
+                </property>
+                <vbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <property name="margin">
+                        <number>0</number>
+                    </property>
+                    <property name="spacing">
+                        <number>6</number>
+                    </property>
+                    <widget class="QGroupBox">
+                        <property name="name">
+                            <cstring>GroupBox7</cstring>
+                        </property>
+                        <property name="title">
+                            <string>Income/Expense Categories</string>
+                        </property>
+                        <widget class="QLayoutWidget">
+                            <property name="name">
+                                <cstring>Layout6</cstring>
+                            </property>
+                            <property name="geometry">
+                                <rect>
+                                    <x>380</x>
+                                    <y>20</y>
+                                    <width>94</width>
+                                    <height>56</height>
+                                </rect>
+                            </property>
+                            <vbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <property name="margin">
+                                    <number>0</number>
+                                </property>
+                                <property name="spacing">
+                                    <number>6</number>
+                                </property>
+                                <widget class="QPushButton">
+                                    <property name="name">
+                                        <cstring>butCategoriesAll</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>&amp;Select All</string>
+                                    </property>
+                                </widget>
+                                <widget class="QPushButton">
+                                    <property name="name">
+                                        <cstring>butCategoriesNone</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Select &amp;None</string>
+                                    </property>
+                                </widget>
+                            </vbox>
+                        </widget>
+                        <widget class="QListView">
+                            <column>
+                                <property name="text">
+                                    <string>Category</string>
+                                </property>
+                                <property name="clickable">
+                                    <bool>true</bool>
+                                </property>
+                                <property name="resizeable">
+                                    <bool>true</bool>
+                                </property>
+                            </column>
+                            <property name="name">
+                                <cstring>lvCategories</cstring>
+                            </property>
+                            <property name="geometry">
+                                <rect>
+                                    <x>10</x>
+                                    <y>20</y>
+                                    <width>361</width>
+                                    <height>190</height>
+                                </rect>
+                            </property>
+                            <property name="selectionMode">
+                                <enum>Extended</enum>
+                            </property>
+                            <property name="allColumnsShowFocus">
+                                <bool>true</bool>
+                            </property>
+                            <property name="rootIsDecorated">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                    </widget>
+                    <widget class="QButtonGroup">
+                        <property name="name">
+                            <cstring>ButtonGroup3_3</cstring>
+                        </property>
+                        <property name="title">
+                            <string>Show</string>
+                        </property>
+                        <widget class="QRadioButton">
+                            <property name="name">
+                                <cstring>radioCategoriesTop</cstring>
+                            </property>
+                            <property name="geometry">
+                                <rect>
+                                    <x>10</x>
+                                    <y>20</y>
+                                    <width>210</width>
+                                    <height>21</height>
+                                </rect>
+                            </property>
+                            <property name="text">
+                                <string>&amp;Top-Level Categories Only</string>
+                            </property>
+                            <property name="checked">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                        <widget class="QRadioButton">
+                            <property name="name">
+                                <cstring>radioCategoriesAll</cstring>
+                            </property>
+                            <property name="geometry">
+                                <rect>
+                                    <x>240</x>
+                                    <y>20</y>
+                                    <width>240</width>
+                                    <height>21</height>
+                                </rect>
+                            </property>
+                            <property name="text">
+                                <string>&amp;All Categories</string>
+                            </property>
+                        </widget>
+                    </widget>
+                </vbox>
+            </widget>
+        </widget>
+        <widget class="QWidget">
+            <property name="name">
+                <cstring>tab</cstring>
+            </property>
+            <attribute name="title">
+                <string>&amp;Basics</string>
+            </attribute>
+            <widget class="QLayoutWidget">
+                <property name="name">
+                    <cstring>Layout3</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>10</x>
+                        <y>50</y>
+                        <width>212</width>
+                        <height>130</height>
+                    </rect>
+                </property>
+                <vbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <property name="margin">
+                        <number>0</number>
+                    </property>
+                    <property name="spacing">
+                        <number>6</number>
+                    </property>
+                    <widget class="QButtonGroup">
+                        <property name="name">
+                            <cstring>rows_ie</cstring>
+                        </property>
+                        <property name="title">
+                            <string>Rows</string>
+                        </property>
+                        <widget class="QRadioButton">
+                            <property name="name">
+                                <cstring>radioRowsAL</cstring>
+                            </property>
+                            <property name="geometry">
+                                <rect>
+                                    <x>10</x>
+                                    <y>50</y>
+                                    <width>180</width>
+                                    <height>21</height>
+                                </rect>
+                            </property>
+                            <property name="text">
+                                <string>Assets/&amp;Liabilities</string>
+                            </property>
+                        </widget>
+                        <widget class="QRadioButton">
+                            <property name="name">
+                                <cstring>radioRowsIE</cstring>
+                            </property>
+                            <property name="geometry">
+                                <rect>
+                                    <x>10</x>
+                                    <y>20</y>
+                                    <width>180</width>
+                                    <height>21</height>
+                                </rect>
+                            </property>
+                            <property name="text">
+                                <string>&amp;Income/Expenses</string>
+                            </property>
+                            <property name="checked">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                    </widget>
+                    <widget class="QButtonGroup">
+                        <property name="name">
+                            <cstring>ButtonGroup7</cstring>
+                        </property>
+                        <property name="title">
+                            <string>Currency</string>
+                        </property>
+                        <widget class="QCheckBox">
+                            <property name="name">
+                                <cstring>checkConvertCurrency</cstring>
+                            </property>
+                            <property name="geometry">
+                                <rect>
+                                    <x>10</x>
+                                    <y>20</y>
+                                    <width>190</width>
+                                    <height>21</height>
+                                </rect>
+                            </property>
+                            <property name="text">
+                                <string>Convert to &amp;Base Currency</string>
+                            </property>
+                            <property name="checked">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                    </widget>
+                </vbox>
+            </widget>
+            <widget class="QLayoutWidget">
+                <property name="name">
+                    <cstring>Layout7</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>10</x>
+                        <y>10</y>
+                        <width>480</width>
+                        <height>26</height>
+                    </rect>
+                </property>
+                <hbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <property name="margin">
+                        <number>0</number>
+                    </property>
+                    <property name="spacing">
+                        <number>6</number>
+                    </property>
+                    <widget class="QLabel">
+                        <property name="name">
+                            <cstring>TextLabel4</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Report Name</string>
+                        </property>
+                    </widget>
+                    <widget class="QLineEdit">
+                        <property name="name">
+                            <cstring>editReportname</cstring>
+                        </property>
+                    </widget>
+                </hbox>
+            </widget>
+        </widget>
+    </widget>
+</widget>
+<connections>
+    <connection>
+        <sender>buttonOk</sender>
+        <signal>clicked()</signal>
+        <receiver>KReportConfigurationDecl</receiver>
+        <slot>accept()</slot>
+    </connection>
+    <connection>
+        <sender>buttonCancel</sender>
+        <signal>clicked()</signal>
+        <receiver>KReportConfigurationDecl</receiver>
+        <slot>reject()</slot>
+    </connection>
+    <connection>
+        <sender>comboDateRange</sender>
+        <signal>activated(const QString&amp;)</signal>
+        <receiver>KReportConfigurationDecl</receiver>
+        <slot>updateDateRange(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>comboDateRange</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>KReportConfigurationDecl</receiver>
+        <slot>updateDateRange(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>butCategoriesAll</sender>
+        <signal>pressed()</signal>
+        <receiver>KReportConfigurationDecl</receiver>
+        <slot>butCategoriesAll_pressed()</slot>
+    </connection>
+    <connection>
+        <sender>butCategoriesNone</sender>
+        <signal>pressed()</signal>
+        <receiver>KReportConfigurationDecl</receiver>
+        <slot>butCategoriesNone_pressed()</slot>
+    </connection>
+    <connection>
+        <sender>butAccountsAll</sender>
+        <signal>pressed()</signal>
+        <receiver>KReportConfigurationDecl</receiver>
+        <slot>butAccountsAll_pressed()</slot>
+    </connection>
+    <connection>
+        <sender>butAccountsNone</sender>
+        <signal>pressed()</signal>
+        <receiver>KReportConfigurationDecl</receiver>
+        <slot>butAccountsNone_pressed()</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="local" impldecl="in implementation">kreportconfigurationdecl.ui.h</include>
+</includes>
+<slots>
+    <slot>init( void )</slot>
+    <slot>updateDateRange( const QString &amp; range )</slot>
+    <slot>butCategoriesAll_pressed()</slot>
+    <slot>butCategoriesNone_pressed()</slot>
+    <slot>butAccountsAll_pressed()</slot>
+    <slot>butAccountsNone_pressed()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
