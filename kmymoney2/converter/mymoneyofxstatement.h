@@ -24,7 +24,7 @@
 #ifndef MYMONEYOFXSTATEMENT_H
 #define MYMONEYOFXSTATEMENT_H
 
-#include <qvaluelist.h>
+#include <qstringlist.h>
 #include "../mymoney/mymoneystatement.h"
 
 /**
@@ -40,10 +40,19 @@ public:
     void addnew(void) { push_back(MyMoneyStatement()); }
     bool isValid(void) const { return m_valid; }
     void setValid(void) { m_valid = true; }
+    void addInfo(const QString& _msg ) { m_infos+=_msg; }
+    void addWarning(const QString& _msg )  { m_warnings+=_msg; }
+    void addError(const QString& _msg )  { m_errors+=_msg; }
+    const QStringList& infos(void) const { return m_infos; }
+    const QStringList& warnings(void) const { return m_warnings; }
+    const QStringList& errors(void) const { return m_errors; }
 
     static bool isOfxFile(const QString&);
 private:
   bool m_valid;
+  QStringList m_infos;
+  QStringList m_warnings;
+  QStringList m_errors;
 
 };
 

@@ -925,14 +925,27 @@ bool KMyMoney2App::slotOfxStatementImport(const MyMoneyOfxStatement& ofx)
 {
   bool hasstatements = (ofx.begin() != ofx.end());
   bool ok = true;
+  bool abort = false;
+  
+  if ( ofx.errors().count() )
+  {
+    if ( KMessageBox::warningContinueCancelList(this,i18n("The following errors were returned from your bank"),ofx.errors(),i18n("OFX Errors")) == KMessageBox::Cancel )
+      abort = true;
+  }
+  
+  if ( ofx.warnings().count() )
+  {
+    if ( KMessageBox::warningContinueCancelList(this,i18n("The following warnings were returned from your bank"),ofx.warnings(),i18n("OFX Warnings"),KStdGuiItem::cont(),"ofxwarnings") == KMessageBox::Cancel )
+      abort = true;
+  }
   
   QValueList<MyMoneyStatement>::const_iterator it_s = ofx.begin();
-  while ( it_s != ofx.end() )
+  while ( it_s != ofx.end() && !abort )
   {
     ok = ok && slotStatementImport(*it_s);
     ++it_s;
   }
-  return hasstatements && ok;  
+  return hasstatements && ok && !abort;
 }
 
 bool KMyMoney2App::slotOfxStatementImport(const QString& url)

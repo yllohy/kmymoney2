@@ -1,5 +1,6 @@
 2004-11-27 Ace Jones <acejones@users.sourceforge.net>
   * More test cases for transaction reports
+  * Added error-checking in OFX import/download  
   * Fixed bug where grand total was getting too large when multiple
     levels of subtotalling were in effect.
     

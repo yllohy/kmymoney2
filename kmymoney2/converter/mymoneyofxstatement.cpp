@@ -252,6 +252,43 @@ int ofxAccountCallback(struct OfxAccountData data, void * pv)
   return 0;
 }
 
+int ofxStatusCallback(struct OfxStatusData data, void * pv)
+{
+  MyMoneyOfxStatement* pofx = reinterpret_cast<MyMoneyOfxStatement*>(pv);
+  QString message;  
+
+  // Having any status at all makes an ofx statement valid
+  pofx->setValid();
+    
+  if(data.ofx_element_name_valid==true)
+    message.prepend(QString("%1: ").arg(data.ofx_element_name));
+  
+  if(data.code_valid==true)
+    message += QString("%1 (Code %2): %3").arg(data.name).arg(data.code).arg(data.description);
+  
+  if(data.server_message_valid==true)
+    message += QString(" (%1)").arg(data.server_message);
+  
+  if(data.severity_valid==true){
+    switch(data.severity){
+    case OfxStatusData::INFO:
+      pofx->addInfo( message );
+      break;
+    case OfxStatusData::ERROR: 
+      pofx->addError( message );
+      break;
+    case OfxStatusData::WARN: 
+      pofx->addWarning( message );
+      break;
+    default:
+      pofx->addWarning( message );
+      pofx->addWarning( "Previous message was an unknown type.  'WARNING' was assumed.");
+      break;
+    }
+  }
+  return 0;
+}
+
 #endif 
 
 
@@ -285,6 +322,7 @@ MyMoneyOfxStatement::MyMoneyOfxStatement(const QString& filename):
   ofx_set_transaction_cb(ctx, ofxTransactionCallback, this);
   ofx_set_statement_cb(ctx, ofxStatementCallback, this);
   ofx_set_account_cb(ctx, ofxAccountCallback, this);
+  ofx_set_status_cb(ctx, ofxStatusCallback, this);
   libofx_proc_file(ctx, filename_deep, AUTODETECT);
   libofx_free_context(ctx);
 }
@@ -341,9 +379,9 @@ MyMoneyOfxStatement::MyMoneyOfxStatement(const QString& filename):
 // be in the global scope, and named as such.
 //
 
-int ofx_proc_status_cb(struct OfxStatusData /*data*/)
+int ofx_proc_status_cb(struct OfxStatusData data)
 {
-  return 0;
+  return ofxStatusCallback(data,pgCurrentStatement);
 }
 
 int ofx_proc_security_cb(struct OfxSecurityData /*data*/)
@@ -400,11 +438,6 @@ bool MyMoneyOfxStatement::isOfxFile(const QString& filename)
 MyMoneyOfxStatement::~MyMoneyOfxStatement()
 {
 }
-
-
-
-
-
 
 
 
