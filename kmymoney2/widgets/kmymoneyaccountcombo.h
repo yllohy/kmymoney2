@@ -89,7 +89,8 @@ signals:
   void accountSelected(const QCString&);
 
 protected:
-  void paintEvent( QPaintEvent * );
+  void drawButton(QPainter *p);
+  void drawButtonLabel( QPainter *p ) { drawButton(p); };
 
 private:
   kMyMoneyAccountCompletion*    m_selector;
