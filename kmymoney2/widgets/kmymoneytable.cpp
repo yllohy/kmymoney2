@@ -32,6 +32,9 @@ kMyMoneyTable::kMyMoneyTable(QWidget *parent, const char *name )
 
 	setFocusPolicy(QWidget::NoFocus);
 	m_nLastRow = 0;
+
+  // never show a horizontal scroll bar
+  setHScrollBarMode(QScrollView::AlwaysOff);
 }
 
 kMyMoneyTable::~kMyMoneyTable()
@@ -205,7 +208,7 @@ void kMyMoneyTable::paintCell(QPainter *p, int row, int col, const QRect& r, boo
     case 1:
     case 2:
       if (bShowGrid) {
-        p->drawLine(rr.x(), 0, rr.x(), rr.height());
+        p->drawLine(rr.x(), 0, rr.x(), rr.height()-1);
         p->drawLine(rr.x(), rr.y(), rr.width(), 0);
         if(intPos > -1)
         {
@@ -214,7 +217,7 @@ void kMyMoneyTable::paintCell(QPainter *p, int row, int col, const QRect& r, boo
           rr3.setY(0);
           rr3.setWidth(intMemoStart);
           p->drawText(rr3,Qt::AlignLeft,qstringCategory);
-          p->drawLine(intMemoStart,0,intMemoStart,rr.height());
+          p->drawLine(intMemoStart,0,intMemoStart,rr.height()-1);
           rr3.setX(intMemoStart + 1);
           rr3.setWidth(rr.width());
           p->drawText(rr3,Qt::AlignLeft,qstringMemo);
@@ -244,7 +247,7 @@ void kMyMoneyTable::paintCell(QPainter *p, int row, int col, const QRect& r, boo
       break;
     case 3:
       if (bShowGrid) {
-        p->drawLine(rr.x(), 0, rr.x(), rr.height());
+        p->drawLine(rr.x(), 0, rr.x(), rr.height()-1);
         p->drawLine(rr.x(), rr.y(), rr.width(), 0);
         p->drawText(rr, Qt::AlignCenter,firsttext);
       } else
@@ -254,9 +257,9 @@ void kMyMoneyTable::paintCell(QPainter *p, int row, int col, const QRect& r, boo
     case 5:
     case 6:
       if (bShowGrid) {
-        p->drawLine(rr.x(), 0, rr.x(), rr.height());
+        p->drawLine(rr.x(), 0, rr.x(), rr.height()-1);
         p->drawLine(rr.x(), rr.y(), rr.width(), 0);
-        p->drawLine(rr.x()+rr.width(), 0, rr.x()+rr.width(), rr.height());
+        p->drawLine(rr.x()+rr.width(), 0, rr.x()+rr.width(), rr.height()-1);
         p->drawText(rr, Qt::AlignRight,firsttext);
       } else
         p->drawText(rr2, Qt::AlignRight,firsttext);
