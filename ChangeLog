@@ -1,3 +1,11 @@
+2003-12-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * fixed some bugs in handling w/o inline editing (no transaction form)
+  * Some marketing on the about page
+  * Store balances and dates in a locale-neutral form with accounts
+  * Make Home and End button work in ledger views and find transaction dialog
+  * fixed #859083 (false right alignment of input widgets based on
+    kMyMoneyLineEdit)
+
 2003-12-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * don't crash when closing file in ledger view showing loan account
   * newly entered transaction becomes the current selected transaction
