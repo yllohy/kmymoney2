@@ -1,3 +1,7 @@
+2001-07-12 Michael Edwardes <mte@users.sourceforge.net>
+  * Improved import & export process.  Now prompts for more than
+    one type of export (at the moment, QIF and CSV).
+
 2001-07-11 Michael Edwardes <mte@users.sourceforge.net>
   * Improved reconciliation process, mostly GUI improvements.
   * Backup dialog remembers the state of the mount check box.

@@ -31,7 +31,7 @@ ldflags=
 path_to_bin_program=kmymoney2
 
 [General]
-AMChanged=false
+AMChanged=true
 author=Michael Edwardes
 configure_args=
 dir_where_make_will_be_called=
@@ -197,7 +197,7 @@ install_location=$$(kde_datadir)/kmymoney2/default_categories.dat
 type=DATA
 
 [kmymoney2/dialogs/Makefile.am]
-files=kmymoney2/dialogs/kbackupdlg.cpp,kmymoney2/dialogs/kbackupdlg.h,kmymoney2/dialogs/kbackupdlgdecl.ui
+files=kmymoney2/dialogs/kbackupdlg.cpp,kmymoney2/dialogs/kbackupdlg.h,kmymoney2/dialogs/kbackupdlgdecl.ui,kmymoney2/dialogs/kchooseimportexportdlg.cpp,kmymoney2/dialogs/kchooseimportexportdlg.h,kmymoney2/dialogs/kchooseimportexportdlgdecl.ui
 sub_dirs=
 type=static_library
 
@@ -214,6 +214,24 @@ install_location=
 type=HEADER
 
 [kmymoney2/dialogs/kbackupdlgdecl.ui]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[kmymoney2/dialogs/kchooseimportexportdlg.cpp]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[kmymoney2/dialogs/kchooseimportexportdlg.h]
+dist=true
+install=false
+install_location=
+type=HEADER
+
+[kmymoney2/dialogs/kchooseimportexportdlgdecl.ui]
 dist=true
 install=false
 install_location=

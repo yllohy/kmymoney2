@@ -31,6 +31,7 @@
 #include "knewfiledlg.h"
 #include "kfileinfodlg.h"
 #include "kmymoneyview.h"
+#include "dialogs/kchooseimportexportdlg.h"
 
 KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
 //  : KTabCtl(parent,name)
@@ -487,6 +488,24 @@ void KMyMoneyView::slotAccountReconcile(void)
 
 void KMyMoneyView::slotAccountImportAscii(void)
 {
+  KChooseImportExportDlg dlg(0, this);
+  if (dlg.exec()) {
+    if (dlg.importExportType()=="QIF")
+      slotAccountImportQIF();
+  }
+}
+
+void KMyMoneyView::slotAccountExportAscii(void)
+{
+  KChooseImportExportDlg dlg(1, this);
+  if (dlg.exec()) {
+    if (dlg.importExportType()=="QIF")
+      slotAccountExportQIF();
+  }
+}
+
+void KMyMoneyView::slotAccountImportQIF(void)
+{
   bool bankSuccess=false, accountSuccess=false;
   MyMoneyBank *pBank;
   MyMoneyAccount *pAccount;
@@ -511,17 +530,12 @@ void KMyMoneyView::slotAccountImportAscii(void)
 	{
 		readQIFFile(importDlg->txtFileImport->text(),pAccount);
     m_mainView->refreshTransactionView();
-    qDebug("OK Pressed");
-	}
-	else
-	{
-   	qDebug("Cancel Pressed");
 	}
 
 	delete importDlg;
 }
 
-void KMyMoneyView::slotAccountExportAscii(void)
+void KMyMoneyView::slotAccountExportQIF(void)
 {
   bool bankSuccess=false, accountSuccess=false;
   MyMoneyBank *pBank;
@@ -552,13 +566,7 @@ void KMyMoneyView::slotAccountExportAscii(void)
 		QDate startDate = exportDlg->dateStartDate->getQDate();
 		QDate endDate = exportDlg->dateEndDate->getQDate();
 		writeQIFFile(exportDlg->txtFileExport->text(),pAccount,expCat,expAcct,startDate,endDate);
-    qDebug("OK Pressed");
 	}
-	else
-	{
-   	qDebug("Cancel Pressed");
-	}
-
 
 	delete exportDlg;
 

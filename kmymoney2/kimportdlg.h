@@ -31,6 +31,9 @@ class KImportDlg : public KImportDlgDecl  {
 public: 
 	KImportDlg();
 	~KImportDlg();
+protected slots:
+  void slotOkClicked();
+
 public slots: // Public slots
   /** No descriptions */
   void slotBrowse();

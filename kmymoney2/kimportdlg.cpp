@@ -16,7 +16,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
+#include <kmessagebox.h>
 #include "kimportdlg.h"
 #include <qlineedit.h>
 #include <kfiledialog.h>
@@ -24,7 +24,7 @@
 KImportDlg::KImportDlg():KImportDlgDecl(0,0,TRUE){
 
  // connect( &btnBrowse, SIGNAL( clicked() ), this, SLOT( slotBrowse() ) );
-
+  connect(buttonOk, SIGNAL(clicked()), this, SLOT(okClicked()));
 }
 KImportDlg::~KImportDlg(){
 }
@@ -36,4 +36,14 @@ void KImportDlg::slotBrowse(){
   //delete browseFile;
 	txtFileImport->setText(s);
 		
+}
+
+void KImportDlg::slotOkClicked()
+{
+  if (txtFileImport->text().isEmpty()) {
+    KMessageBox::information(this, "Please enter the path to the QIF file", "Import");
+    txtFileImport->setFocus();
+    return;
+  }
+  accept();
 }

@@ -16,12 +16,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
+#include <kmessagebox.h>
 #include "kexportdlg.h"
 #include <qlineedit.h>
 #include <kfiledialog.h>
 
 KExportDlg::KExportDlg():KExportDlgDecl(0,0,TRUE){
+  connect(buttonOk, SIGNAL(clicked()), this, SLOT(slotOkClicked()));
 }
 KExportDlg::~KExportDlg(){
 }
@@ -30,6 +31,14 @@ void KExportDlg::slotBrowse(){
 
 	QString s(KFileDialog::getSaveFileName(QString::null,"*.QIF"));
   txtFileExport->setText(s);
+}
 
-
+void KExportDlg::slotOkClicked()
+{
+  if (txtFileExport->text().isEmpty()) {
+    KMessageBox::information(this, "Please enter the path to the QIF file", "Export");
+    txtFileExport->setFocus();
+    return;
+  }
+  accept();
 }

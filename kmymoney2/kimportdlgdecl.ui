@@ -11,178 +11,187 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>599</width>
-            <height>134</height>
+            <width>527</width>
+            <height>205</height>
         </rect>
     </property>
     <property stdset="1">
         <name>caption</name>
-        <string>QIF File Import</string>
+        <string>QIF Import</string>
     </property>
     <property stdset="1">
         <name>sizeGripEnabled</name>
         <bool>true</bool>
     </property>
-    <widget>
-        <class>QLabel</class>
+    <vbox>
         <property stdset="1">
-            <name>name</name>
-            <cstring>lblImportFile</cstring>
+            <name>margin</name>
+            <number>11</number>
         </property>
         <property stdset="1">
-            <name>geometry</name>
-            <rect>
-                <x>10</x>
-                <y>10</y>
-                <width>120</width>
-                <height>21</height>
-            </rect>
+            <name>spacing</name>
+            <number>6</number>
         </property>
-        <property stdset="1">
-            <name>text</name>
-            <string>QIF File to Import:</string>
-        </property>
-    </widget>
-    <widget>
-        <class>QLineEdit</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>txtFileImport</cstring>
-        </property>
-        <property stdset="1">
-            <name>geometry</name>
-            <rect>
-                <x>10</x>
-                <y>40</y>
-                <width>361</width>
-                <height>22</height>
-            </rect>
-        </property>
-    </widget>
-    <widget>
-        <class>QLayoutWidget</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>Layout5</cstring>
-        </property>
-        <property stdset="1">
-            <name>geometry</name>
-            <rect>
-                <x>500</x>
-                <y>10</y>
-                <width>90</width>
-                <height>105</height>
-            </rect>
-        </property>
-        <vbox>
+        <widget>
+            <class>QLabel</class>
             <property stdset="1">
-                <name>margin</name>
-                <number>0</number>
+                <name>name</name>
+                <cstring>TextLabel1</cstring>
             </property>
             <property stdset="1">
-                <name>spacing</name>
-                <number>6</number>
+                <name>text</name>
+                <string>From this dialog you are able to import transactions from a quicken compatable file, (known as
+a QIF file, because of the extension).   Please enter the path to the QIF file or select it by
+clicking on the Browse button.
+
+Once you have the file's path press the OK button and KMyMoney2 will import all the
+transactions, categories and payees it finds.  A message box will appear once the import has
+completed detailing how many transactions, categories and payees have been entered.</string>
             </property>
-            <widget>
-                <class>QPushButton</class>
+        </widget>
+        <widget>
+            <class>Line</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>Line1</cstring>
+            </property>
+            <property stdset="1">
+                <name>frameShadow</name>
+                <enum>Raised</enum>
+            </property>
+            <property stdset="1">
+                <name>orientation</name>
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+        <widget>
+            <class>QLayoutWidget</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>Layout4</cstring>
+            </property>
+            <hbox>
                 <property stdset="1">
-                    <name>name</name>
-                    <cstring>buttonOk</cstring>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>&amp;OK</string>
-                </property>
-                <property stdset="1">
-                    <name>autoDefault</name>
-                    <bool>true</bool>
-                </property>
-                <property stdset="1">
-                    <name>default</name>
-                    <bool>true</bool>
-                </property>
-            </widget>
-            <widget>
-                <class>QPushButton</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>buttonCancel</cstring>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>&amp;Cancel</string>
+                    <name>margin</name>
+                    <number>0</number>
                 </property>
                 <property stdset="1">
-                    <name>autoDefault</name>
-                    <bool>true</bool>
+                    <name>spacing</name>
+                    <number>6</number>
                 </property>
-            </widget>
-            <widget>
-                <class>QPushButton</class>
+                <widget>
+                    <class>QLabel</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>lblImportFile</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>sizePolicy</name>
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>1</vsizetype>
+                        </sizepolicy>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>QIF File to Import:</string>
+                    </property>
+                </widget>
+                <widget>
+                    <class>QLineEdit</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>txtFileImport</cstring>
+                    </property>
+                </widget>
+                <widget>
+                    <class>QPushButton</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>btnBrowse</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>Browse...</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget>
+            <class>QLayoutWidget</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>Layout2</cstring>
+            </property>
+            <hbox>
                 <property stdset="1">
-                    <name>name</name>
-                    <cstring>buttonHelp</cstring>
+                    <name>margin</name>
+                    <number>0</number>
                 </property>
                 <property stdset="1">
-                    <name>text</name>
-                    <string>&amp;Help</string>
+                    <name>spacing</name>
+                    <number>6</number>
                 </property>
-                <property stdset="1">
-                    <name>autoDefault</name>
-                    <bool>true</bool>
-                </property>
-            </widget>
-            <spacer>
-                <property>
-                    <name>name</name>
-                    <cstring>Spacer1</cstring>
-                </property>
-                <property stdset="1">
-                    <name>orientation</name>
-                    <enum>Vertical</enum>
-                </property>
-                <property stdset="1">
-                    <name>sizeType</name>
-                    <enum>Expanding</enum>
-                </property>
-                <property>
-                    <name>sizeHint</name>
-                    <size>
-                        <width>20</width>
-                        <height>20</height>
-                    </size>
-                </property>
-            </spacer>
-        </vbox>
-    </widget>
-    <widget>
-        <class>QPushButton</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>btnBrowse</cstring>
-        </property>
-        <property stdset="1">
-            <name>geometry</name>
-            <rect>
-                <x>390</x>
-                <y>30</y>
-                <width>91</width>
-                <height>31</height>
-            </rect>
-        </property>
-        <property stdset="1">
-            <name>text</name>
-            <string>Browse...</string>
-        </property>
-    </widget>
+                <spacer>
+                    <property>
+                        <name>name</name>
+                        <cstring>Spacer2</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>orientation</name>
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property stdset="1">
+                        <name>sizeType</name>
+                        <enum>Expanding</enum>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget>
+                    <class>QPushButton</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>buttonOk</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>&amp;OK</string>
+                    </property>
+                    <property stdset="1">
+                        <name>autoDefault</name>
+                        <bool>true</bool>
+                    </property>
+                    <property stdset="1">
+                        <name>default</name>
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget>
+                    <class>QPushButton</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>buttonCancel</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>&amp;Cancel</string>
+                    </property>
+                    <property stdset="1">
+                        <name>autoDefault</name>
+                        <bool>true</bool>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+    </vbox>
 </widget>
 <connections>
-    <connection>
-        <sender>buttonOk</sender>
-        <signal>clicked()</signal>
-        <receiver>KImportDlgDecl</receiver>
-        <slot>accept()</slot>
-    </connection>
     <connection>
         <sender>buttonCancel</sender>
         <signal>clicked()</signal>

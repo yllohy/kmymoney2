@@ -31,6 +31,9 @@ class KExportDlg : public KExportDlgDecl  {
 public: 
 	KExportDlg();
 	~KExportDlg();
+protected slots:
+  void slotOkClicked();
+
 public slots: // Public slots
   /** No descriptions */
   void slotBrowse();

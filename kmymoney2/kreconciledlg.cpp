@@ -158,6 +158,8 @@ void KReconcileDlg::insertTransactions(void)
   for ( ; it2.current(); ++it2) {
     (void) new KReconcileListItem(creditListView, it2.current());
   }
+
+  resizeEvent(0);
 }
 
 void KReconcileDlg::slotDebitSelected(QListViewItem* item, const QPoint&/*p*/, int/* col*/)
@@ -429,11 +431,11 @@ void KReconcileDlg::resizeEvent(QResizeEvent*)
     - debitListView->columnWidth(0)
     - debitListView->columnWidth(1)
     - debitListView->columnWidth(3)
-    - debitListView->columnWidth(4) );
+    - debitListView->columnWidth(4) - 5);
 
   creditListView->setColumnWidth( 2, creditListView->width()
     - creditListView->columnWidth(0)
     - creditListView->columnWidth(1)
     - creditListView->columnWidth(3)
-    - creditListView->columnWidth(4) );
+    - creditListView->columnWidth(4) - 5);
 }
