@@ -1437,9 +1437,11 @@ void KMyMoney2App::updateCaption(const bool skipActions)
     modified = false;
   }
 
+#ifdef KMM_DEBUG
   QString sizeMsg;
   sizeMsg.sprintf(" (%d x %d)", width(), height());
   caption += sizeMsg;
+#endif
 
   caption = kapp->makeStdCaption(caption, false, modified);
   if(caption.length() > 0)
