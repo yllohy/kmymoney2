@@ -8,14 +8,14 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>599</width>
+            <width>641</width>
             <height>420</height>
         </rect>
     </property>
     <property name="caption">
         <string>Form1</string>
     </property>
-    <vbox>
+    <grid>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
@@ -25,12 +25,7 @@
         <property name="spacing">
             <number>6</number>
         </property>
-        <widget class="KListView">
-            <property name="name">
-                <cstring>accountListView</cstring>
-            </property>
-        </widget>
-        <widget class="QLayoutWidget">
+        <widget class="QLayoutWidget" row="1" column="0">
             <property name="name">
                 <cstring>Layout1</cstring>
             </property>
@@ -45,7 +40,7 @@
                     <number>6</number>
                 </property>
                 <spacer>
-                    <property name="name">
+                    <property name="name" stdset="0">
                         <cstring>Spacer1</cstring>
                     </property>
                     <property name="orientation">
@@ -53,6 +48,12 @@
                     </property>
                     <property name="sizeType">
                         <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
                     </property>
                 </spacer>
                 <widget class="QLabel">
@@ -76,7 +77,128 @@
                 </widget>
             </hbox>
         </widget>
-    </vbox>
+        <widget class="QTabWidget" row="0" column="0">
+            <property name="name">
+                <cstring>TabWidget2</cstring>
+            </property>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>tab</cstring>
+                </property>
+                <attribute name="title">
+                    <string>List</string>
+                </attribute>
+                <vbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <property name="margin">
+                        <number>11</number>
+                    </property>
+                    <property name="spacing">
+                        <number>6</number>
+                    </property>
+                    <widget class="KListView">
+                        <property name="name">
+                            <cstring>accountListView</cstring>
+                        </property>
+                    </widget>
+                </vbox>
+            </widget>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>tab</cstring>
+                </property>
+                <attribute name="title">
+                    <string>Icons</string>
+                </attribute>
+                <vbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <property name="margin">
+                        <number>11</number>
+                    </property>
+                    <property name="spacing">
+                        <number>6</number>
+                    </property>
+                    <widget class="QIconView">
+                        <item>
+                            <property name="text">
+                                <string>Asset</string>
+                            </property>
+                            <property name="pixmap">
+                                <pixmap>image0</pixmap>
+                            </property>
+                        </item>
+                        <item>
+                            <property name="text">
+                                <string>Cash</string>
+                            </property>
+                            <property name="pixmap">
+                                <pixmap>image1</pixmap>
+                            </property>
+                        </item>
+                        <item>
+                            <property name="text">
+                                <string>Credit Card</string>
+                            </property>
+                            <property name="pixmap">
+                                <pixmap>image2</pixmap>
+                            </property>
+                        </item>
+                        <item>
+                            <property name="text">
+                                <string>Checkings</string>
+                            </property>
+                            <property name="pixmap">
+                                <pixmap>image3</pixmap>
+                            </property>
+                        </item>
+                        <item>
+                            <property name="text">
+                                <string>Investment</string>
+                            </property>
+                            <property name="pixmap">
+                                <pixmap>image4</pixmap>
+                            </property>
+                        </item>
+                        <item>
+                            <property name="text">
+                                <string>Loan</string>
+                            </property>
+                            <property name="pixmap">
+                                <pixmap>image5</pixmap>
+                            </property>
+                        </item>
+                        <property name="name">
+                            <cstring>accountIconView</cstring>
+                        </property>
+                    </widget>
+                </vbox>
+            </widget>
+        </widget>
+    </grid>
 </widget>
+<images>
+    <image name="image0">
+        <data format="XPM.GZ" length="1331">789c8dd4cd4ac4301007f07b9f22ecdc8a74dd2d0b15f111148f827868a74df5b00aba1e447c7733994cf3b9d6610ff34f7e9d4da1645bab87fb5b556fab8f537f7a4185cffdbbaac7cfe3f1ebf1e9e6bbdab47b657e576ab7b9a8368d4275f7f63a510fa6874b5b147b895a531c3976bbaea58814bb56a2a68807dce381e24c516b193571a4058a83449edcac546a60dd405f40b131a4802263c05040a12132145060981490374272b4184f3224262429722626096293921859939308d96fa9076300c0bd3b705c10cf41bb388aa1c6ac6168d09a51ccc8c654fc5e05d34473d824e711111ad996f6ac99f4b46af4a441e601fc3507662e383f4788a0c2992130f61f533367e50d2c23fc1cee00e51b432e301be890ebbc71651e25c9e5bad4346655db5df45d7627a01de08736f99dc0478bbb7fdd2d3fd7d52f335d30f0</data>
+    </image>
+    <image name="image1">
+        <data format="XPM.GZ" length="1286">789c8594cf4ec3300cc6ef7d8a68be55a863ab862a211e01c4110971486c101c362418078478776ce79fdbad25eda238fef2fb126fd9ba750ff7b7ae5d379f477f7c4387affec3b5f4b5df7f3f3eddfc34ab7eebf8bd729bd545b3ea1cbabbf7c3b38c81c770a94d422fe1d00f9b18620e875e42921077b8c59d8441c2176e51dcfdd31634206d51c3791fbc8ae63400c1ebc3aa594d92b008271a280335d27ea201cc224d07158e340014281e85bd7447dc590d27a9d30f442f3dbbf1d298780d84c8122f69c52bd70288384fca620c792a5ea6169142da8fbc4c2d846158d5cbd442386356f12ab550ce8855bc4a2d80024d59d92bef4f1386a5f5ca5ea916414d2287522d8a57aa85ac8bb948940ece7829217d779553bd7452f690198553bdd2d2c2a033e72a8932c89cea951370c231e73ae1204ebd70c26145bc3bf6f7846838aa48f70b9397cea90aaa22df4154af3c27aaaaa8f714d14cf21a13ccdd532b59fadfa89adfebe60fb5bd2807</data>
+    </image>
+    <image name="image2">
+        <data format="XPM.GZ" length="1301">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade6523236520022730543251d2e253d856405bffcbc54103b11c856360003103709c6b53006715361dcb434103705c2b53084c82683b816c630ae32889b0606605b088021a84619ac26111f809893a88c0f2442d524e106ca89c983534d4a2a4e0857835b492a2dcc51564e55564627d1ccc154a0ac4c3bf7a0031a850fde34964c38ad2643d37c321e30e8f220716a6aadb900db815062</data>
+    </image>
+    <image name="image3">
+        <data format="XPM.GZ" length="1286">789c85d2cd4a033110c0f1fb3e45d8b92dd25a1764417c04a5c7827848b22e7a6805ad0729be7b33997c4c32a94d0bbb537efd07b2bb1ed46efba48675f77dd4c70fabecbbfe52c3fcb3dfffbebc3e9eba7ebc53ee7baf36fd4dd7af9455cf9f8737bc07770fb77ee168e2b82c386a1aa7cd34e268719cc638ce382e7ef96c5800b06aadc268d3548531dae886aa3af8114a741aad4647b4b8e188b74a6318caad8b1dd62a8c40d4aa8c11e87a474be31ed9f50e58807f3b00b343b66895c6095ca40a144d1059b1cdc87891196f451345adc2599381f98202dc8c8cad150485cc1ba0ff140aa20203dee0ae52d1041a42079fb050bce3b7d5552b9d0075dc11d2796495cfc85dd3b3285ba9e1aefc99f256beafdf0dde0a0df93ea7566a340c6fa59f8421c584337f0fdd1944e33194</data>
+    </image>
+    <image name="image4">
+        <data format="XPM.GZ" length="1271">789cb594cd0a82401485f7f314176727a1a90842f40845cb205accdc8a5a5850b688e8dd9b6b190df327640719e6c0e1e343d03486e5620671ca2e8d680e08b817678837d7babeadd6d33b8b8a1cd45342168d589400c2fc74dcd29dab3b1fb7a12aa856459555055549154bccb1a48a54772aaf711248cb17c36db84a702391cbd0066578d397e390d238740439762983e3db7c38a694c931a52c1c43cace716c748e26e5e0683017e75bea574e27e5e3746fcacb794b8538f21f1c15693b9281bf417fda8df027e9fbdf086e1e13f604451a0d54</data>
+    </image>
+    <image name="image5">
+        <data format="XPM.GZ" length="1316">789ca591cf4ac4301087ef7d8ad0b915e9ba5b160ae223281e05f1d09d24e86115743d88f8eecee44f33c9267b7152427f93af5f4ab219d4e3c39d1a36dde76939bda2c297e5430dfaeb78fc7e7abefde9fa69a7e899d5b6bfeafa51a1ba7f7f33fc0ef40ed7ae381e62b496e3e2e3bc9d278ec8719e62341c718f3bdc73b41c2d9557e918bd6ae482668d89590ef5019818d7d079714f32eeabb26a9eca908c6ed40506313cff645a7b21d2912543d50360ac01b8c090c2b801d0da8b1d96f632ce55f17807cf347957c14407cfce125c622f6a69b710fe27b9da1ee98a0cf0b9e87317f7207998a2efccea727ce9912e4f68d7cc3dc915cf1b2b9ee05a1d754f708906044612eeee45408c77915120032dae77daf0648ca0202332265119513081828c38633c9511158628c8882a3316c8d8ffde747fdc8b5838</data>
+    </image>
+</images>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

@@ -13,15 +13,27 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "kbanksview.h"
-#include "kbanklistitem.h"
+
+// ----------------------------------------------------------------------------
+// QT Includes
+
 #include <qheader.h>
+#include <qtooltip.h>
+#include <qiconview.h>
+
+// ----------------------------------------------------------------------------
+// KDE Includes
+
 #include <kglobal.h>
 #include <klocale.h>
-#include <qtooltip.h>
 #include <klistview.h>
 #include <kconfig.h>
 
+// ----------------------------------------------------------------------------
+// Project Includes
+
+#include "kbanksview.h"
+#include "kbanklistitem.h"
 #include "kmymoneyfile.h"
 
 KAccountsView::KAccountsView(QWidget *parent, const char *name)
@@ -56,6 +68,9 @@ KAccountsView::KAccountsView(QWidget *parent, const char *name)
   m_bSelectedInstitution=false;
   m_bSignals=true;
 
+  accountIconView->clear();
+  accountIconView->setSorting(true);
+
   // never show a horizontal scroll bar
   //accountListView->setHScrollBarMode(QScrollView::AlwaysOff);
 }
@@ -69,6 +84,7 @@ void KAccountsView::slotListDoubleClicked(QListViewItem* pItem, const QPoint& po
   KAccountListItem *accountItem = (KAccountListItem*)pItem;
   if(accountItem)
   {
+
     // Only emit the signal if its an account
     MyMoneyFile *file = MyMoneyFile::instance();
 
@@ -175,6 +191,9 @@ void KAccountsView::refresh(const QCString& selectAccount)
               KMyMoneyFile::accountTypeToString(file->account(*it).accountType()),
               file->totalBalance(*it).formatMoney());
 
+          QIconViewItem* accountIcon = new QIconViewItem(accountIconView,
+              file->account(*it).name());
+
           QCStringList subAccounts = file->account(*it).accountList();
           if (subAccounts.count() >= 1)
           {
@@ -213,6 +232,9 @@ void KAccountsView::refresh(const QCString& selectAccount)
               KMyMoneyFile::accountTypeToString(file->account(*it).accountType()),
               file->totalBalance(*it).formatMoney());
 
+          QIconViewItem* accountIcon = new QIconViewItem(accountIconView,
+              file->account(*it).name());
+
           QCStringList subAccounts = file->account(*it).accountList();
           if (subAccounts.count() >= 1)
           {
@@ -237,6 +259,9 @@ void KAccountsView::refresh(const QCString& selectAccount)
               KMyMoneyFile::accountTypeToString(file->account(*it).accountType()),
               file->totalBalance(*it).formatMoney());
 
+          QIconViewItem* accountIcon = new QIconViewItem(accountIconView,
+              file->account(*it).name());
+
           QCStringList subAccounts = file->account(*it).accountList();
           if (subAccounts.count() >= 1)
           {
@@ -249,6 +274,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
               incomeAccount.name(), incomeAccount.id(),
               KMyMoneyFile::accountTypeToString(incomeAccount.accountType()),
               file->totalBalance(incomeAccount.id()).formatMoney());
+
 
         for ( QCStringList::ConstIterator it = file->income().accountList().begin();
               it != file->income().accountList().end();
@@ -346,6 +372,7 @@ void KAccountsView::showSubAccounts(QCStringList accounts, KAccountListItem *par
 void KAccountsView::clear(void)
 {
   accountListView->clear();
+  accountIconView->clear();
   m_bSelectedAccount = false;
   m_bSelectedInstitution=false;
 }

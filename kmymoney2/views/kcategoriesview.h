@@ -23,17 +23,26 @@
 #ifndef KCATEGORIESVIEW_H
 #define KCATEGORIESVIEW_H
 
+// ----------------------------------------------------------------------------
+// QT Includes
+
 #include <qwidget.h>
 #include <qcstring.h>
-#include "kcategoriesviewdecl.h"
-//#include "../dialogs/kcategorylistitem.h"
-#include "kbanklistitem.h"
+
+// ----------------------------------------------------------------------------
+// KDE Includes
+
+
+// ----------------------------------------------------------------------------
+// Project Includes
 
 #include "../mymoney/mymoneyfile.h"
 #include "../mymoney/mymoneyobserver.h"
+#include "kcategoriesviewdecl.h"
+#include "kbanklistitem.h"
 
 /**
-  *@author Michael Edwardes
+  *@author Michael Edwardes, Thomas Baumgart
   */
 
 class KCategoriesView : public kCategoriesViewDecl, MyMoneyObserver  {
@@ -41,6 +50,8 @@ class KCategoriesView : public kCategoriesViewDecl, MyMoneyObserver  {
 private:
 	QString m_lastCat;
 	bool m_suspendUpdate;
+
+  QMap<QCString, MyMoneyAccount> accountMap;
 
   void readConfig(void);
   void writeConfig(void);
@@ -63,7 +74,24 @@ public:
 	KCategoriesView(QWidget *parent=0, const char *name=0);
 	~KCategoriesView();
   void show();
+
   void update(const QCString& id);
+
+  /**
+    * This method is used to suppress updates for specific times
+    * (e.g. during creation of a new MyMoneyFile object when the
+    * default accounts are loaded). The behaviour of update() is
+    * controlled with the parameter.
+    *
+    * @param suspend Suspend updates or not. Possible values are
+    *
+    * @li true updates are suspended
+    * @li false updates will be performed immediately
+    *
+    * When a true/false transition of the parameter between
+    * calls to this method is detected,
+    * refresh() will be invoked once automatically.
+    */
   void suspendUpdate(const bool suspend);
 };
 

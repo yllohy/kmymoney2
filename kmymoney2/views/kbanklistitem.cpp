@@ -13,6 +13,20 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+// ----------------------------------------------------------------------------
+// QT Includes
+
+#include <qpixmap.h>
+#include <qcolor.h>
+
+#if QT_VERSION > 300
+#include <qpainter.h>
+#endif
+
+// ----------------------------------------------------------------------------
+// KDE Includes
+
 #include <kglobal.h>
 #include <kconfig.h>
 #include <klocale.h>
@@ -21,15 +35,12 @@
 #else
 #include <kstddirs.h>
 #endif
+#include <kmessagebox.h>
 
-#include <qpixmap.h>
-#include <qcolor.h>
+// ----------------------------------------------------------------------------
+// Project Includes
 
 #include "kbanklistitem.h"
-
-#if QT_VERSION > 300
-#include <qpainter.h>
-#endif
 
 KAccountListItem::KAccountListItem(KListView *parent, const QString& accountName,
   const QCString& accountID, const QString& typeName, const QString& balString)
@@ -53,6 +64,38 @@ KAccountListItem::KAccountListItem(KAccountListItem *parent, const QString& acco
     setText(2, balString);
 }
 
+KAccountListItem::KAccountListItem(KListView *parent, const MyMoneyAccount& account)
+  : QListViewItem(parent)
+{
+  newAccount(account);
+}
+
+KAccountListItem::KAccountListItem(KAccountListItem *parent, const MyMoneyAccount& account)
+  : QListViewItem(parent)
+{
+  newAccount(account);
+}
+
+
+void KAccountListItem::newAccount(const MyMoneyAccount& account)
+{
+  MyMoneyFile*  file = MyMoneyFile::instance();
+
+  m_accountID = account.id();
+
+  setPixmap(0, QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/22x22/actions/account.png")));
+  setText(0, account.name());
+  // setText(1, typeName);
+  try {
+    setText(2, file->totalBalance(m_accountID).formatMoney());
+    file->attach(m_accountID, this);
+  } catch(MyMoneyException *e) {
+    KMessageBox::detailedSorry(0, i18n("Unable to retrieve account balance"),
+        (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+    delete e;
+  }
+}
+
 KAccountListItem::KAccountListItem(KListView *parent, const QString& institutionName, const QCString& institutionID)
   : QListViewItem(parent), m_accountID(institutionID), m_bViewNormal(true)
 {
@@ -61,6 +104,30 @@ KAccountListItem::KAccountListItem(KListView *parent, const QString& institution
 
 KAccountListItem::~KAccountListItem()
 {
+  MyMoneyFile::instance()->detach(m_accountID, this);
+}
+
+void KAccountListItem::update(const QCString& accountId)
+{
+  MyMoneyFile*  file = MyMoneyFile::instance();
+
+  try {
+    MyMoneyAccount acc = file->account(accountId);
+
+    try {
+
+      setText(0, acc.name());
+      setText(2, file->totalBalance(m_accountID).formatMoney());
+    } catch(MyMoneyException *e) {
+      KMessageBox::detailedSorry(0, i18n("Unable to retrieve account information"),
+          (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+      delete e;
+    }
+
+  } catch(MyMoneyException *e) {
+    // try to get account info that does not exist anymore
+    delete e;
+  }
 }
 
 QCString KAccountListItem::accountID(void)

@@ -19,6 +19,18 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+// ----------------------------------------------------------------------------
+// QT Includes
+
+#include <qheader.h>
+#include <qpushbutton.h>
+#include <qlabel.h>
+#include <qdatetime.h>
+
+// ----------------------------------------------------------------------------
+// KDE Includes
+
 #include <klistview.h>
 #include <klocale.h>
 #include <kglobal.h>
@@ -31,15 +43,12 @@
 #include <kmessagebox.h>
 #include <kconfig.h>
 
-#include <qheader.h>
-#include <qpushbutton.h>
-#include <qlabel.h>
+// ----------------------------------------------------------------------------
+// Project Includes
 
-#include "kcategoriesview.h"
-//#include "../dialogs/kcategorylistitem.h"
-//#include "../dialogs/knewcategorydlg.h"
 #include "../views/kmymoneyfile.h"
 #include "../dialogs/knewaccountdlg.h"
+#include "kcategoriesview.h"
 #include "kbanklistitem.h"
 
 KCategoriesView::KCategoriesView(QWidget *parent, const char *name )
@@ -72,22 +81,14 @@ KCategoriesView::KCategoriesView(QWidget *parent, const char *name )
 	connect(buttonNew, SIGNAL(clicked()), this, SLOT(slotNewClicked()));
   connect(buttonDelete, SIGNAL(clicked()), this, SLOT(slotDeleteClicked()));
 
-  MyMoneyAccount acc;
-  acc = MyMoneyFile::instance()->income();
-  MyMoneyFile::instance()->attach(acc.id(), this);
-  acc = MyMoneyFile::instance()->expense();
-  MyMoneyFile::instance()->attach(acc.id(), this);
-
   m_suspendUpdate = false;
+
+  MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAccountHierarchy, this);
 }
 
 KCategoriesView::~KCategoriesView()
 {
-  MyMoneyAccount acc;
-  acc = MyMoneyFile::instance()->income();
-  MyMoneyFile::instance()->detach(acc.id(), this);
-  acc = MyMoneyFile::instance()->expense();
-  MyMoneyFile::instance()->detach(acc.id(), this);
+  MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassAccountHierarchy, this);
   writeConfig();
 }
 
@@ -99,30 +100,35 @@ void KCategoriesView::refresh(void)
   categoryListView->header()->setFont(config->readFontEntry("listHeaderFont", &defaultFont));
 
   categoryListView->clear();
+  accountMap.clear();
 
   MyMoneyFile *file = MyMoneyFile::instance();
 
+  QValueList<MyMoneyAccount> list;
+
   try
   {
+    list = file->accountList();
+
+    QValueList<MyMoneyAccount>::ConstIterator it_a;
+    for(it_a = list.begin(); it_a != list.end(); ++it_a)
+      accountMap[(*it_a).id()] = *it_a;
+
     MyMoneyAccount expenseAccount = file->expense();
     MyMoneyAccount incomeAccount = file->income();
 
     // Income
     KAccountListItem *incomeTopLevelAccount = new KAccountListItem(categoryListView,
-              incomeAccount.name(), incomeAccount.id(),
-              KMyMoneyFile::accountTypeToString(incomeAccount.accountType()),
-              file->totalBalance(incomeAccount.id()).formatMoney());
+              incomeAccount);
 
-    for ( QCStringList::ConstIterator it = file->income().accountList().begin();
-          it != file->income().accountList().end();
+    for ( QCStringList::ConstIterator it = incomeAccount.accountList().begin();
+          it != incomeAccount.accountList().end();
           ++it )
     {
       KAccountListItem *accountItem = new KAccountListItem(incomeTopLevelAccount,
-            file->account(*it).name(), file->account(*it).id(),
-            KMyMoneyFile::accountTypeToString(file->account(*it).accountType()),
-            file->totalBalance(*it).formatMoney());
+            accountMap[*it]);
 
-      QCStringList subAccounts = file->account(*it).accountList();
+      QCStringList subAccounts = accountMap[*it].accountList();
       if (subAccounts.count() >= 1)
       {
         showSubAccounts(subAccounts, accountItem, file, i18n("Income"));
@@ -131,20 +137,16 @@ void KCategoriesView::refresh(void)
 
     // Expense
     KAccountListItem *expenseTopLevelAccount = new KAccountListItem(categoryListView,
-              expenseAccount.name(), expenseAccount.id(),
-              KMyMoneyFile::accountTypeToString(expenseAccount.accountType()),
-              file->totalBalance(expenseAccount.id()).formatMoney());
+              expenseAccount);
 
-    for ( QCStringList::ConstIterator it = file->expense().accountList().begin();
-          it != file->expense().accountList().end();
+    for ( QCStringList::ConstIterator it = expenseAccount.accountList().begin();
+          it != expenseAccount.accountList().end();
           ++it )
     {
       KAccountListItem *accountItem = new KAccountListItem(expenseTopLevelAccount,
-          file->account(*it).name(), file->account(*it).id(),
-          KMyMoneyFile::accountTypeToString(file->account(*it).accountType()),
-          file->totalBalance(*it).formatMoney());
+            accountMap[*it]);
 
-      QCStringList subAccounts = file->account(*it).accountList();
+      QCStringList subAccounts = accountMap[*it].accountList();
       if (subAccounts.count() >= 1)
       {
         showSubAccounts(subAccounts, accountItem, file, i18n("Expense"));
@@ -159,6 +161,9 @@ void KCategoriesView::refresh(void)
     qDebug("Exception in assets account refresh: %s", e->what().latin1());
     delete e;
   }
+
+  // free some memory (we don't need this map anymore)
+  accountMap.clear();
 }
 
 void KCategoriesView::showSubAccounts(QCStringList accounts, KAccountListItem *parentItem, MyMoneyFile *file,
@@ -167,11 +172,8 @@ void KCategoriesView::showSubAccounts(QCStringList accounts, KAccountListItem *p
   for ( QCStringList::ConstIterator it = accounts.begin(); it != accounts.end(); ++it )
   {
     KAccountListItem *accountItem  = new KAccountListItem(parentItem,
-          file->account(*it).name(), file->account(*it).id(),
-          KMyMoneyFile::accountTypeToString(file->account(*it).accountType()),
-          file->totalBalance(*it).formatMoney());
-
-    QCStringList subAccounts = file->account(*it).accountList();
+                                                          accountMap[*it]);
+    QCStringList subAccounts = accountMap[*it].accountList();
     if (subAccounts.count() >= 1)
     {
       showSubAccounts(subAccounts, accountItem, file, typeName);
@@ -181,7 +183,6 @@ void KCategoriesView::showSubAccounts(QCStringList accounts, KAccountListItem *p
 
 void KCategoriesView::show()
 {
-  refresh();
   emit signalViewActivated();
   QWidget::show();
 }
@@ -218,8 +219,8 @@ void KCategoriesView::slotNewClicked()
       MyMoneyAccount newAccount = dialog.account();
       MyMoneyAccount parentAccount = dialog.parentAccount();
       file->addAccount(newAccount, parentAccount);
-      categoryListView->clear();
-      refresh();
+//      categoryListView->clear();
+//      refresh();
     }
     catch (MyMoneyException *e)
     {
@@ -249,8 +250,8 @@ void KCategoriesView::slotDeleteClicked()
       MyMoneyFile *file = MyMoneyFile::instance();
 
       file->removeAccount(file->account(item->accountID()));
-      categoryListView->clear();
-      refresh();
+//      categoryListView->clear();
+//      refresh();
     }
     catch (MyMoneyException *e)
     {
@@ -325,6 +326,10 @@ void KCategoriesView::writeConfig(void)
 
 void KCategoriesView::update(const QCString& id)
 {
+  // to avoid constant update when a lot of accounts are added
+  // (e.g. during creation of a new MyMoneyFile object when the
+  // default accounts are loaded) a switch is supported to suppress
+  // updates in this phase. The switch is controlled with suspendUpdate().
   if(m_suspendUpdate == false) {
     qDebug("KCategoriesView::update() called");
     refresh();
