@@ -25,7 +25,11 @@
 #include "../../config.h"
 #endif
 
+#include <qfile.h>
+#include <qtextstream.h>
 
+#include "../mymoney/mymoneyexception.h"
+#include "mymoneyofxstatement.h"
 
 #ifdef HAVE_NEW_OFX
 
@@ -38,9 +42,7 @@
  * YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
  */
 
-
 #include "../mymoney/mymoneyexception.h"
-#include "mymoneyofxstatement.h"
 
 #include <libofx/libofx.h>
 
@@ -214,13 +216,7 @@ int ofx_proc_account_cb(struct OfxAccountData data, void *)
  *
  * YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
  */
-#include <qfile.h>
-#include <qtextstream.h>
-
 #include <libofx/libofx.h>
-
-#include "../mymoney/mymoneyexception.h"
-#include "mymoneyofxstatement.h"
 
 MyMoneyOfxStatement* pgCurrentStatement = NULL;
 

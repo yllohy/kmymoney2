@@ -1637,7 +1637,7 @@ void KMyMoney2App::ofxWebConnect(const QString& url, const QCString& asn_id)
   }
 
 #else
-  QMessageBox::critical( this, i18n("Critical Error"), i18n("OFX import is unavailable.  This version of KMyMoney was built without OFX support."), QMessageBox::Ok, 0 );
+  KMessageBox::information( this, QString("<p>")+i18n("<b>OFX</b> import is unavailable.  This version of <b>KMyMoney</b> was built without <b>OFX</b> support."), i18n("Function not available"));
 #endif
 
 }

@@ -2,6 +2,9 @@
   * Changed the way the program raised itself to the forefront when
     receiving an ofxWebConnect DCOP call.  This method was suggested by 
     Lubos Lunak <l.lunak@suse.cz> of the KDE core development team.
+  * Fixed compile problems when neither HAVE_NEW_OFX or HAVE_LIB_OFX
+    are defined.
+  * Copied new "OFX not available" message to the other place it's used.    
 
 2004-09-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added KBanking support supplied by Martin Preuss
