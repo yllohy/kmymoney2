@@ -109,7 +109,7 @@ const QString accountTypeToString(const MyMoneyAccount::accountTypeE accountType
 }
 
 QString Tester::m_sTabs;
-bool Tester::m_sEnabled = true;
+bool Tester::m_sEnabled = DEBUG_ENABLED_BY_DEFAULT;
 
 Tester::Tester( const QString& _name ): m_methodName( _name ), m_enabled( m_sEnabled )
 {
@@ -245,12 +245,22 @@ bool AccountDescriptor::operator<(const AccountDescriptor& second) const
   return result;
 }
 
-QString AccountDescriptor::htmlTabbedName( void ) const
+QString AccountDescriptor::htmlTabbedName( bool showcurrency ) const
 {
   QString result = m_names.back();
-  int tabs = m_names.size() - 1;
+  unsigned tabs = m_names.size() - 1;
   while ( tabs-- )
     result.prepend("&nbsp;&nbsp;");
+
+  if ( showcurrency )
+  {
+    MyMoneyAccount account = m_file->account(m_account);
+    if ( account.currencyId() != m_file->baseCurrency().id() )
+      if(account.accountType() == MyMoneyAccount::Stock)
+        result.append(QString(" (%1)").arg(m_file->equity(account.currencyId()).tradingSymbol()));
+      else
+        result.append(QString(" (%1)").arg(m_file->currency(account.currencyId()).tradingSymbol()));
+  }
   result.replace(QRegExp(" "),QString("&nbsp;"));
 
   return result;
@@ -279,7 +289,7 @@ QString AccountDescriptor::getTopLevel( void ) const
 PivotTable::PivotTable( const ReportConfigurationFilter& _config_f ):
   m_config_f( _config_f )
 {
-  DEBUG_ENTER("PivotTable::PivotTable(ERowFilter,MyMoneyTransactionFilter&)");
+  DEBUG_ENTER("PivotTable::PivotTable()");
 
   //
   // Initialize locals
@@ -305,6 +315,7 @@ PivotTable::PivotTable( const ReportConfigurationFilter& _config_f ):
   m_beginDate = m_config_f.fromDate();
   m_endDate = m_config_f.toDate();
 
+
   // if either begin or end date are invalid we have one of the following
   // possible date filters:
   //
@@ -316,16 +327,13 @@ PivotTable::PivotTable( const ReportConfigurationFilter& _config_f ):
   // year as the filter criteria.
 
   if ( !m_beginDate.isValid() || !m_endDate.isValid()) {
-    MyMoneyTransactionFilter filter;
-    QValueList<MyMoneyTransaction> list = file->transactionList(filter);
-    QValueList<MyMoneyTransaction>::Iterator it;
+    QValueList<MyMoneyTransaction> list = file->transactionList(m_config_f);
     QDate tmpBegin, tmpEnd;
 
     if(!list.isEmpty()) {
-      it = list.begin();
-      tmpBegin = (*it).postDate();
-      it = list.end(); --it;
-      tmpEnd = (*it).postDate();
+      qHeapSort(list);
+      tmpBegin = list.front().postDate();
+      tmpEnd = list.back().postDate();
     } else {
       tmpBegin = QDate(QDate::currentDate().year(),1,1); // the first date in the file
       tmpEnd = QDate(QDate::currentDate().year(),12,31);// the last date in the file
@@ -335,31 +343,15 @@ PivotTable::PivotTable( const ReportConfigurationFilter& _config_f ):
     if(!m_endDate.isValid())
       m_endDate = tmpEnd;
   }
-
   if ( m_beginDate > m_endDate )
     m_beginDate = m_endDate;
 
   // strip out the 'days' component of the begin and end dates.
-  // we're only concerned about the month & year.
+  // we're only using these variables to contain year and month.
   m_beginDate =  QDate( m_beginDate.year(), m_beginDate.month(), 1 );
-  m_endDate = QDate( m_endDate.year(), m_endDate.month(), 1 ).addMonths(1);
+  m_endDate = QDate( m_endDate.year(), m_endDate.month(), 1 );
 
-  //
-  // Determine column headings
-  //
-
-  // one column for the opening balance
-  m_columnHeadings.append( "Opening" );
-
-  // one for each month in the date range
-  QDate columndate = m_beginDate;
-  while ( columndate < m_endDate )
-  {
-    m_columnHeadings.append( QDate::shortMonthName(columndate.month()) );
-    columndate = columndate.addMonths( 1 );
-  }
-
-  m_numColumns =  m_columnHeadings.size();
+  m_numColumns = m_endDate.year() * 12 + m_endDate.month() - m_beginDate.year() * 12 - m_beginDate.month() + 2;
 
   //
   // Get opening balances
@@ -377,13 +369,13 @@ PivotTable::PivotTable( const ReportConfigurationFilter& _config_f ):
   m_config_f.setConsiderCategory(true);
   QValueList<MyMoneyTransaction> transactions = file->transactionList(m_config_f);
   QValueList<MyMoneyTransaction>::const_iterator it_transaction = transactions.begin();
-  int colofs = m_beginDate.year() * 12 + m_beginDate.month() - 1;
+  unsigned colofs = m_beginDate.year() * 12 + m_beginDate.month() - 1;
 
   DEBUG_OUTPUT(QString("Matched %1 transactions").arg(transactions.count()));
   while ( it_transaction != transactions.end() )
   {
     QDate postdate = (*it_transaction).postDate();
-    int column = postdate.year() * 12 + postdate.month() - colofs;
+    unsigned column = postdate.year() * 12 + postdate.month() - colofs;
 
     QValueList<MyMoneySplit> splits = (*it_transaction).splits();
     QValueList<MyMoneySplit>::const_iterator it_split = splits.begin();
@@ -428,7 +420,21 @@ PivotTable::PivotTable( const ReportConfigurationFilter& _config_f ):
   // Convert all values to the base currency
   //
 
-  convertToBaseCurrency();
+  if ( m_config_f.getConvertCurrency() )
+    convertToBaseCurrency();
+
+  //
+  // Collapse columns to match column type
+  //
+
+  if ( m_config_f.getColumnType() != ReportConfigurationFilter::eMonths )
+    collapseColumns();
+
+  //
+  // Determine column headings
+  //
+
+  calculateColumnHeadings();
 
   //
   // Calculate row and column totals
@@ -436,6 +442,122 @@ PivotTable::PivotTable( const ReportConfigurationFilter& _config_f ):
 
   calculateTotals();
 
+}
+
+void PivotTable::collapseColumns(void)
+{
+  unsigned columnpitch = m_config_f.getColumnPitch();
+  if ( columnpitch != 1 )
+  {
+    unsigned sourcemonth = m_beginDate.year() * 12 + m_beginDate.month();
+    unsigned sourcecolumn = 1;
+    unsigned destcolumn = 1;
+    while ( sourcecolumn < m_numColumns )
+    {
+      if ( sourcecolumn != destcolumn )
+      {
+        // TODO: Clean up this rather inefficient kludge. We really should jump by an entire
+        // destcolumn at a time on RS reports, and calculate the proper sourcecolumn to use,
+        // allowing us to clear and accumulate only ONCE per destcolumn
+        if ( m_config_f.getRunningSum() )
+          clearColumn(destcolumn);
+
+        accumulateColumn(destcolumn,sourcecolumn);
+      }
+
+      ++sourcecolumn;
+
+      // increment the source month, and test if it crosses a segment boundary AND it's still a valid column
+      if ( ( ((sourcemonth-1)/columnpitch) != ((++sourcemonth-1)/columnpitch) ) && sourcecolumn < m_numColumns )
+      {
+        ++destcolumn;
+        if ( sourcecolumn != destcolumn )
+          clearColumn(destcolumn);
+      }
+    }
+    m_numColumns = destcolumn + 1;
+  }
+}
+
+void PivotTable::accumulateColumn(unsigned destcolumn, unsigned sourcecolumn)
+{
+  // iterate over outer groups
+  TGrid::iterator it_outergroup = m_grid.begin();
+  while ( it_outergroup != m_grid.end() )
+  {
+    // iterate over inner groups
+    TOuterGroup::iterator it_innergroup = (*it_outergroup).begin();
+    while ( it_innergroup != (*it_outergroup).end() )
+    {
+      // iterator over rows
+      TInnerGroup::iterator it_row = (*it_innergroup).begin();
+      while ( it_row != (*it_innergroup).end() )
+      {
+        (*it_row)[destcolumn] += (*it_row)[sourcecolumn];
+        ++it_row;
+      }
+
+      ++it_innergroup;
+    }
+    ++it_outergroup;
+  }
+}
+
+void PivotTable::clearColumn(unsigned column)
+{
+  // iterate over outer groups
+  TGrid::iterator it_outergroup = m_grid.begin();
+  while ( it_outergroup != m_grid.end() )
+  {
+    // iterate over inner groups
+    TOuterGroup::iterator it_innergroup = (*it_outergroup).begin();
+    while ( it_innergroup != (*it_outergroup).end() )
+    {
+      // iterator over rows
+      TInnerGroup::iterator it_row = (*it_innergroup).begin();
+      while ( it_row != (*it_innergroup).end() )
+        (*it_row++)[column] = 0;
+
+      ++it_innergroup;
+    }
+    ++it_outergroup;
+  }
+}
+
+void PivotTable::calculateColumnHeadings(void)
+{
+  // one column for the opening balance
+  m_columnHeadings.append( "Opening" );
+
+  unsigned columnpitch = m_config_f.getColumnPitch();
+  if ( columnpitch == 12 )
+  {
+    unsigned year = m_beginDate.year();
+    unsigned column = 1;
+    while ( column++ < m_numColumns )
+      m_columnHeadings.append(QString::number(year++));
+  }
+  else
+  {
+    unsigned year = m_beginDate.year();
+    bool includeyear = ( m_beginDate.year() != m_endDate.year() );
+    unsigned segment = ( m_beginDate.month() - 1 ) / columnpitch;
+    unsigned column = 1;
+    while ( column++ < m_numColumns )
+    {
+      QString heading = QDate::shortMonthName(1+segment*columnpitch);
+      if ( columnpitch != 1 )
+        heading += "-" + QDate::shortMonthName((1+segment)*columnpitch);
+      if ( includeyear )
+        heading += " " + QString::number(year);
+      m_columnHeadings.append( heading);
+      if ( ++segment >= 12/columnpitch )
+      {
+        segment -= 12/columnpitch;
+        ++year;
+      }
+    }
+  }
 }
 
 void PivotTable::calculateOpeningBalances( void )
@@ -458,16 +580,15 @@ void PivotTable::calculateOpeningBalances( void )
       MyMoneyMoney value = file->balance((*it_account).id(), m_beginDate.addDays(-1));
 
       // place into the 'opening' column...
-      int column = 0;
+      QDate opendate = (*it_account).openingDate();
+      unsigned column = 0;
 
       // unless the account was opened after the start of the report period
-      QDate opendate = (*it_account).openingDate();
       if ( opendate >= m_beginDate )
       {
-        if ( opendate < m_endDate ) {
+        if ( opendate <= m_endDate ) {
           // in which case it should be placed in the correct column
           column = opendate.year() * 12 + opendate.month() - m_beginDate.year() * 12 - m_beginDate.month() + 1;
-
         } else
           // or disregarded if the account was opened after the end of the
           // report period
@@ -502,7 +623,7 @@ void PivotTable::calculateRunningSums( void )
       while ( it_row != (*it_innergroup).end() )
       {
         MyMoneyMoney runningsum = it_row.data()[0];
-        int column = 1;
+        unsigned column = 1;
         while ( column < m_numColumns )
         {
           runningsum = ( it_row.data()[column] += runningsum );
@@ -531,7 +652,7 @@ void PivotTable::convertToBaseCurrency( void )
       while ( it_row != (*it_innergroup).end() )
       {
         QDate valuedate = m_beginDate.addMonths(1).addDays(-1);
-        int column = 1;
+        unsigned column = 1;
         while ( column < m_numColumns )
         {
           // (acejones) Would be nice to have
@@ -592,7 +713,7 @@ void PivotTable::calculateTotals( void )
         // Columns
         //
 
-        int column = 0;
+        unsigned column = 0;
         while ( column < m_numColumns )
         {
           MyMoneyMoney value = it_row.data()[column];
@@ -608,7 +729,7 @@ void PivotTable::calculateTotals( void )
       // Inner Row Group Totals
       //
 
-      int column = 0;
+      unsigned column = 0;
       while ( column < m_numColumns )
       {
         MyMoneyMoney value = (*it_innergroup).m_total[column];
@@ -625,7 +746,7 @@ void PivotTable::calculateTotals( void )
     // Outer Row Group Totals
     //
 
-    int column = 0;
+    unsigned column = 0;
     while ( column < m_numColumns )
     {
       MyMoneyMoney value = (*it_outergroup).m_total[column];
@@ -642,7 +763,7 @@ void PivotTable::calculateTotals( void )
   // Report Totals
   //
 
-  int totalcolumn = 0;
+  unsigned totalcolumn = 0;
   while ( totalcolumn < m_numColumns )
   {
     MyMoneyMoney value = m_grid.m_total[totalcolumn];
@@ -653,7 +774,7 @@ void PivotTable::calculateTotals( void )
 
 }
 
-void PivotTable::assignCell( const QString& outergroup, const AccountDescriptor& row, int column, MyMoneyMoney value )
+void PivotTable::assignCell( const QString& outergroup, const AccountDescriptor& row, unsigned column, MyMoneyMoney value )
 {
   DEBUG_ENTER("PivotTable::assignCell");
   DEBUG_OUTPUT(QString("Parameters: %1,%2,%3,%4").arg(outergroup).arg(row.debugName()).arg(column).arg(value.toDouble()));
@@ -729,7 +850,10 @@ QString PivotTable::renderHTML( void ) const
 
   QString result = QString("<h2 class=\"report\">%1</h2>\n").arg(m_config_f.getName());
   result += QString("<div class=\"subtitle\">");
-  result += i18n("All currencies converted to %1").arg(MyMoneyFile::instance()->baseCurrency().name());
+  if ( m_config_f.getConvertCurrency() )
+    result += i18n("All currencies converted to %1").arg(MyMoneyFile::instance()->baseCurrency().name());
+  else
+    result += i18n("All values shown in %1 unless otherwise noted").arg(MyMoneyFile::instance()->baseCurrency().name());
   result += QString("</div>\n");
   result += QString("<div class=\"gap\">&nbsp;</div>\n");
 
@@ -740,9 +864,9 @@ QString PivotTable::renderHTML( void ) const
   result += QString("\n\n<table class=\"report\" cellspacing=\"0\">"
       "<tr class=\"itemheader\">\n<th>%1</th>").arg(i18n("Account"));
 
-  int column = 1;
+  unsigned column = 1;
   while ( column < m_numColumns )
-    result += QString("<th>%1</th>").arg(m_columnHeadings[column++]);
+    result += QString("<th>%1</th>").arg(QString(m_columnHeadings[column++]).replace(" ","<br>"));
 
   if ( m_config_f.getShowRowTotals() )
     result += QString("<th>%1</th>").arg(i18n("Total"));
@@ -768,7 +892,7 @@ QString PivotTable::renderHTML( void ) const
     //
 
     TOuterGroup::const_iterator it_innergroup = (*it_outergroup).begin();
-    int rownum = 0;
+    unsigned rownum = 0;
     while ( it_innergroup != (*it_outergroup).end() )
     {
       //
@@ -784,7 +908,7 @@ QString PivotTable::renderHTML( void ) const
         //
 
         QString rowdata;
-        int column = 1;
+        unsigned column = 1;
         while ( column < m_numColumns )
           rowdata += QString("<td>%1</td>").arg(it_row.data()[column++].formatMoney());
 
@@ -801,7 +925,7 @@ QString PivotTable::renderHTML( void ) const
           .arg(rownum & 0x01 ? "even" : "odd")
           .arg(rowname.isTopLevel() ? " id=\"topparent\"" : "")
           .arg((*it_row).m_total == 0 ? colspan : "")
-          .arg(rowname.htmlTabbedName());
+          .arg(rowname.htmlTabbedName(!m_config_f.getConvertCurrency()));
 
         if ( (*it_row).m_total != 0 )
           innergroupdata += rowdata;
@@ -815,34 +939,44 @@ QString PivotTable::renderHTML( void ) const
       // Inner Row Group Totals
       //
 
-      if (  m_config_f.getShowSubAccounts() && ((*it_innergroup).size() > 1 ))
+      bool finishrow = true;
+      if ( m_config_f.getShowSubAccounts() && ((*it_innergroup).size() > 1 ))
       {
         // Print the individual rows
         result += innergroupdata;
 
-        // Print the TOTALS row
-        result += QString("<tr class=\"row-%1\" id=\"subtotal\"><td class=\"left\">&nbsp;&nbsp;%2</td>")
-          .arg(rownum & 0x01 ? "even" : "odd")
-          .arg(i18n("Total"));
+        if ( m_config_f.getShowColumnTotals() )
+        {
+          // Start the TOTALS row
+          result += QString("<tr class=\"row-%1\" id=\"subtotal\"><td class=\"left\">&nbsp;&nbsp;%2</td>")
+            .arg(rownum & 0x01 ? "even" : "odd")
+            .arg(i18n("Total"));
+        }
+        else
+          finishrow = false;
       }
       else
       {
-        // this is an INDIVIDUAL ACCOUNT row
+        // Start the single INDIVIDUAL ACCOUNT row
         AccountDescriptor rowname = (*it_innergroup).begin().key();
         result += QString("<tr class=\"row-%1\"%2><td class=\"left\">%3</td>")
           .arg(rownum & 0x01 ? "even" : "odd")
           .arg( m_config_f.getShowSubAccounts() ? "id=\"solo\"" : "" )
-          .arg(rowname.htmlTabbedName());
+          .arg(rowname.htmlTabbedName(!m_config_f.getConvertCurrency()));
       }
 
-      int column = 1;
-      while ( column < m_numColumns )
-        result += QString("<td>%1</td>").arg((*it_innergroup).m_total[column++].formatMoney());
+      // Finish the row started above, unless told not to
+      if ( finishrow )
+      {
+        unsigned column = 1;
+        while ( column < m_numColumns )
+          result += QString("<td>%1</td>").arg((*it_innergroup).m_total[column++].formatMoney());
 
-      if (  m_config_f.getShowRowTotals() )
-        result += QString("<td>%1</td>").arg((*it_innergroup).m_total.m_total.formatMoney());
+        if (  m_config_f.getShowRowTotals() )
+          result += QString("<td>%1</td>").arg((*it_innergroup).m_total.m_total.formatMoney());
 
-      result += "</tr>\n";
+        result += "</tr>\n";
+      }
 
       ++rownum;
       ++it_innergroup;
@@ -852,16 +986,18 @@ QString PivotTable::renderHTML( void ) const
     // Outer Row Group Totals
     //
 
-    result += QString("<tr class=\"sectionfooter\"><td class=\"left\">%1&nbsp;%2</td>").arg(i18n("Total")).arg(it_outergroup.key());
-    int column = 1;
-    while ( column < m_numColumns )
-      result += QString("<td>%1</td>").arg((*it_outergroup).m_total[column++].formatMoney());
+    if ( m_config_f.getShowColumnTotals() )
+    {
+      result += QString("<tr class=\"sectionfooter\"><td class=\"left\">%1&nbsp;%2</td>").arg(i18n("Total")).arg(it_outergroup.key());
+      unsigned column = 1;
+      while ( column < m_numColumns )
+        result += QString("<td>%1</td>").arg((*it_outergroup).m_total[column++].formatMoney());
 
-    if (  m_config_f.getShowRowTotals() )
-      result += QString("<td>%1</td>").arg((*it_outergroup).m_total.m_total.formatMoney());
+      if (  m_config_f.getShowRowTotals() )
+        result += QString("<td>%1</td>").arg((*it_outergroup).m_total.m_total.formatMoney());
 
-    result += "</tr>\n";
-
+      result += "</tr>\n";
+    }
     ++it_outergroup;
   }
 
@@ -869,16 +1005,19 @@ QString PivotTable::renderHTML( void ) const
   // Report Totals
   //
 
-  result += QString("<tr class=\"spacer\"><td>&nbsp;</td></tr>\n");
-  result += QString("<tr class=\"reportfooter\"><td class=\"left\">%1</td>").arg(i18n("Grand Total"));
-  int totalcolumn = 1;
-  while ( totalcolumn < m_numColumns )
-    result += QString("<td>%1</td>").arg(m_grid.m_total[totalcolumn++].formatMoney());
+  if ( m_config_f.getShowColumnTotals() )
+  {
+    result += QString("<tr class=\"spacer\"><td>&nbsp;</td></tr>\n");
+    result += QString("<tr class=\"reportfooter\"><td class=\"left\">%1</td>").arg(i18n("Grand Total"));
+    unsigned totalcolumn = 1;
+    while ( totalcolumn < m_numColumns )
+      result += QString("<td>%1</td>").arg(m_grid.m_total[totalcolumn++].formatMoney());
 
-  if (  m_config_f.getShowRowTotals() )
-    result += QString("<td>%1</td>").arg(m_grid.m_total.m_total.formatMoney());
+    if (  m_config_f.getShowRowTotals() )
+      result += QString("<td>%1</td>").arg(m_grid.m_total.m_total.formatMoney());
 
-  result += "</tr>\n";
+    result += "</tr>\n";
+  }
 
   result += QString("<tr class=\"spacer\"><td>&nbsp;</td></tr>\n");
   result += QString("<tr class=\"spacer\"><td>&nbsp;</td></tr>\n");

@@ -77,7 +77,7 @@ KReportConfigurationFilterDlg::KReportConfigurationFilterDlg(
     m_searchButton->setText( tr2i18n( "OK" ) );
 
     delete m_closeButton;
-    
+
     //
     // bgrpShow
     //
@@ -103,7 +103,7 @@ KReportConfigurationFilterDlg::KReportConfigurationFilterDlg(
     //
     // labelREportName
     //
-    
+
     reportLayout67 = new QHBoxLayout( 0, 0, 6, "reportLayout67");
 
     labelReportName = new QLabel( m_reportFrame, "labelReportName" );
@@ -121,7 +121,7 @@ KReportConfigurationFilterDlg::KReportConfigurationFilterDlg(
     //
     // bgrpRows
     //
-    
+
     bgrpRows = new QButtonGroup( m_reportFrame, "bgrpRows" );
     bgrpRows->setTitle( tr2i18n( "Rows" ) );
     QWhatsThis::add( bgrpRows, tr2i18n( "<b>Rows</b>\n""<br>\n""Choose what is displayed in the rows of this report." ) );
@@ -149,10 +149,10 @@ KReportConfigurationFilterDlg::KReportConfigurationFilterDlg(
     bgrpCurrency->setTitle( tr2i18n( "Currency" ) );
 
     reportLayout76 = new QVBoxLayout( bgrpCurrency, 20, 6, "reportLayout76");
-    
+
     checkConvertCurrency = new QCheckBox( bgrpCurrency, "checkConvertCurrency" );
-    checkConvertCurrency->setEnabled( FALSE );
-    //checkConvertCurrency->setGeometry( QRect( 10, 20, 190, 21 ) );
+    // checkConvertCurrency->setEnabled( FALSE );
+    // checkConvertCurrency->setGeometry( QRect( 10, 20, 190, 21 ) );
     checkConvertCurrency->setText( tr2i18n( "Convert to &Base Currency" ) );
     checkConvertCurrency->setChecked( TRUE );
     QWhatsThis::add( checkConvertCurrency, tr2i18n( "<b>Convert to Base Currency</b>\n""<br>\n""Choose whether all values should be converted to the file's base currency.  Column totals will only be shown if this option is checked.\n""<br><br>\n""This option is not yet implemented." ) );
@@ -163,7 +163,7 @@ KReportConfigurationFilterDlg::KReportConfigurationFilterDlg(
     //
     // bgrpColumns
     //
-    
+
     bgrpColumns = new QButtonGroup( m_reportFrame, "bgrpColumns" );
     bgrpColumns->setTitle( tr2i18n( "Columns" ) );
     QWhatsThis::add( bgrpColumns, tr2i18n( "<b>Columns</b>\n""<br>\n""Choose what range of data should be included in each column of this report." ) );
@@ -176,7 +176,7 @@ KReportConfigurationFilterDlg::KReportConfigurationFilterDlg(
     reportLayout12 = new QVBoxLayout( 0, 0, 6, "reportLayout12");
 
     radioMonthCols = new QRadioButton( bgrpColumns, "radioMonthCols" );
-    radioMonthCols->setEnabled( FALSE );
+    // radioMonthCols->setEnabled( FALSE );
     radioMonthCols->setText( tr2i18n( "&Monthly" ) );
     radioMonthCols->setChecked( TRUE );
     QToolTip::add( radioMonthCols, QString::null );
@@ -184,19 +184,19 @@ KReportConfigurationFilterDlg::KReportConfigurationFilterDlg(
     reportLayout12->addWidget( radioMonthCols );
 
     radioBimonthCols = new QRadioButton( bgrpColumns, "radioBimonthCols" );
-    radioBimonthCols->setEnabled( FALSE );
+    // radioBimonthCols->setEnabled( FALSE );
     radioBimonthCols->setText( tr2i18n( "&Bi-Monthly" ) );
     QWhatsThis::add( radioBimonthCols, tr2i18n( "<b>Bi-Monthly</b>\n""<br>\n""Sets the report to display one column for every 2 months in the date range.\n""<br><br>\n""This option is not yet implemented." ) );
     reportLayout12->addWidget( radioBimonthCols );
 
     radioQuarterCols = new QRadioButton( bgrpColumns, "radioQuarterCols" );
-    radioQuarterCols->setEnabled( FALSE );
+    // radioQuarterCols->setEnabled( FALSE );
     radioQuarterCols->setText( tr2i18n( "&Quarterly" ) );
     QWhatsThis::add( radioQuarterCols, tr2i18n( "<b>Quarterly</b>\n""<br>\n""Sets the report to display one column for each quarter in the date range.\n""<br><br>\n""This option is not yet implemented." ) );
     reportLayout12->addWidget( radioQuarterCols );
 
     radioYearCols = new QRadioButton( bgrpColumns, "radioYearCols" );
-    radioYearCols->setEnabled( FALSE );
+    // radioYearCols->setEnabled( FALSE );
     radioYearCols->setText( tr2i18n( "&Yearly" ) );
     QWhatsThis::add( radioYearCols, tr2i18n( "<b>Yearly</b>\n""<br>\n""Sets the report to display one column for each year in the date range.\n""<br><br>\n""This option is not yet implemented." ) );
     reportLayout12->addWidget( radioYearCols );
@@ -232,7 +232,7 @@ void KReportConfigurationFilterDlg::slotSearch()
   m_currentState.setName( editReportname->text() );
   m_currentState.setRowType( radioRowsAL->isChecked() ? ReportConfigurationFilter::eAssetLiability : ReportConfigurationFilter::eExpenseIncome );
   m_currentState.setConvertCurrency( checkConvertCurrency->isChecked() );
-  
+
   if ( radioMonthCols->isChecked() )
     m_currentState.setColumnType( ReportConfigurationFilter::eMonths );
   else if ( radioBimonthCols->isChecked() )
@@ -241,7 +241,7 @@ void KReportConfigurationFilterDlg::slotSearch()
     m_currentState.setColumnType( ReportConfigurationFilter::eQuarters );
   else if ( radioYearCols->isChecked() )
     m_currentState.setColumnType( ReportConfigurationFilter::eYears );
-  
+
   done(true);
 }
 
@@ -250,11 +250,11 @@ void KReportConfigurationFilterDlg::slotReset(void)
   //
   // Set up the widget from the initial filter
   //
-  
+
   //
   // Report Properties
   //
-  
+
   editReportname->setText( m_initialState.getName() );
   radioCategoriesAll->setChecked( m_initialState.getShowSubAccounts() );
   checkConvertCurrency->setChecked( m_initialState.getConvertCurrency() );
@@ -264,23 +264,23 @@ void KReportConfigurationFilterDlg::slotReset(void)
   radioBimonthCols->setChecked( m_initialState.getColumnType() == ReportConfigurationFilter::eBiMonths );
   radioQuarterCols->setChecked( m_initialState.getColumnType() == ReportConfigurationFilter::eQuarters );
   radioYearCols->setChecked( m_initialState.getColumnType() == ReportConfigurationFilter::eYears );
-  
+
   //
   // Text Filter
   //
-    
+
   QRegExp textfilter;
   if ( m_initialState.textFilter(textfilter))
   {
     m_textEdit->setText(textfilter.pattern());
-    m_caseSensitive->setChecked(textfilter.caseSensitive());                    
+    m_caseSensitive->setChecked(textfilter.caseSensitive());
     m_regExp->setChecked(!textfilter.wildcard());
   }
 
   //
   // Type & State Filters
   //
-  
+
   int type;
   if ( m_initialState.firstType(type) )
     m_typeBox->setCurrentItem(type);
@@ -292,7 +292,7 @@ void KReportConfigurationFilterDlg::slotReset(void)
   //
   // Number Filter
   //
-    
+
   QString nrFrom, nrTo;
   if ( m_initialState.numberFilter(nrFrom, nrTo) )
   {
@@ -376,7 +376,7 @@ void KReportConfigurationFilterDlg::slotReset(void)
   //
   // Payees Filter
   //
-  
+
   QCStringList payees;
   if ( m_initialState.payees(payees) )
   {
@@ -386,19 +386,19 @@ void KReportConfigurationFilterDlg::slotReset(void)
     }
     else
     {
-      selectAllItems(m_payeesView, false);             
-      selectItems(m_payeesView,payees,true);             
+      selectAllItems(m_payeesView, false);
+      selectItems(m_payeesView,payees,true);
     }
   }
   else
   {
-    selectAllItems(m_payeesView, true);             
+    selectAllItems(m_payeesView, true);
   }
 
   //
   // Accounts Filter
   //
-  
+
   QCStringList accounts;
   if ( m_initialState.accounts(accounts) )
   {
@@ -411,7 +411,7 @@ void KReportConfigurationFilterDlg::slotReset(void)
   //
   // Categories Filter
   //
-        
+
   if ( m_initialState.categories(accounts) )
   {
     m_categoriesView->selectAllAccounts(false);
@@ -419,11 +419,11 @@ void KReportConfigurationFilterDlg::slotReset(void)
   }
   else
     m_categoriesView->selectAllAccounts(true);
-    
+
   //
   // Date Filter
   //
-    
+
   // the following call implies a call to slotUpdateSelections,
   // that's why we call it last
 
@@ -433,7 +433,7 @@ void KReportConfigurationFilterDlg::slotReset(void)
     m_dateRange->setCurrentItem(userDefined);
     m_fromDate->setDate(dateFrom);
     m_toDate->setDate(dateTo);
-    slotDateRangeChanged(allDates);
+    slotDateChanged();
   }
   else
   {

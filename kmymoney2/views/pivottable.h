@@ -44,6 +44,7 @@ namespace reports {
 // define to enable massive debug logging to stderr
 #undef DEBUG_REPORTS
 //#define DEBUG_REPORTS
+#define DEBUG_ENABLED_BY_DEFAULT false
 
 #ifdef DEBUG_REPORTS
 #define DEBUG_ENTER(x) Tester ___TEST(x)
@@ -74,11 +75,10 @@ class ReportConfigurationFilter: public MyMoneyTransactionFilter
 {
 public:
   enum ERowType { eNoRows = 0x0, eAsset = 0x1, eLiability = 0x2, eAssetLiability = 0x3, eExpense = 0x4, eIncome = 0x8, eExpenseIncome = 0xc };
-  enum EColumnType { eNoColumns = 0, eMonths, eBiMonths, eQuarters, eYears };
+  enum EColumnType { eNoColumns = 0, eMonths = 1, eBiMonths = 2, eQuarters = 3, eYears = 12 };
 private:
   QString m_name;
   bool m_showSubAccounts;
-  bool m_showRowTotals;
   bool m_convertCurrency;
   enum ERowType m_rowType;
   enum EColumnType m_columnType;
@@ -109,12 +109,13 @@ public:
   void assignFilter(const MyMoneyTransactionFilter& _filter);
   const QString& getName(void) const { return m_name; }
   bool getShowSubAccounts(void) const { return m_showSubAccounts; }
-  bool getShowRowTotals(void) const { return m_showRowTotals; }
+  bool getShowRowTotals(void) const { return ((m_rowType & eExpense) || (m_rowType & eIncome)); }
   ERowType getRowType(void) const { return m_rowType; }
   EColumnType getColumnType(void) const { return m_columnType; }
   bool getRunningSum(void) const { return ((m_rowType & eAsset) || (m_rowType & eLiability)); }
   bool getConvertCurrency(void) const { return m_convertCurrency; }
-
+  unsigned getColumnPitch(void) const { return static_cast<unsigned>(m_columnType); }
+  bool getShowColumnTotals(void) const { return m_convertCurrency; }
 };
 
   /**
@@ -184,9 +185,10 @@ public:
     * need a more general-case display of the full hierarchy, a different
     * method will be needed.
     *
+    * @param showcurrency True if the currency of this account should be included. Note this flag is only considered if the account is not in the file's base currency.
     * @return QString The account's full hierarchy (suitable for printing)
     */
-  QString htmlTabbedName( void ) const;
+  QString htmlTabbedName( bool showcurrency ) const;
 
   /**
     * The entire hierarchy of this account descriptor, suitable for displaying
@@ -274,7 +276,7 @@ private:
     QValueList<MyMoneyAccount::accountTypeE> m_accounttypes;
 
     QStringList m_columnHeadings;
-    int m_numColumns;
+    unsigned m_numColumns;
     QDate m_beginDate;
     QDate m_endDate;
     
@@ -322,7 +324,7 @@ protected:
     * @param column The column
     * @param value The value to be added in
     */
-    inline void assignCell( const QString& outergroup, const AccountDescriptor& row, int column, MyMoneyMoney value );
+    inline void assignCell( const QString& outergroup, const AccountDescriptor& row, unsigned column, MyMoneyMoney value );
 
   /**
     * Determines whether this is an income/expense category
@@ -374,6 +376,13 @@ protected:
     *
     */
     void convertToBaseCurrency( void );
+    
+    void collapseColumns(void);
+    void calculateColumnHeadings(void);
+    
+    void accumulateColumn(unsigned destcolumn, unsigned sourcecolumn);
+    void clearColumn(unsigned column);
+    
 };
 
 }

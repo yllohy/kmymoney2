@@ -448,6 +448,19 @@ void KReportsViewTest::testMultipleCurrencies()
   CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Foreign"].m_total[2]==(-moJpyTransaction*moJpyPrice-moCanTransaction*moCanPrice));
   CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Foreign"].m_total.m_total==(-moJpyTransaction*moJpyPrice-moCanTransaction*moCanPrice-moJpyTransaction*moJpyPrice-moCanTransaction*moCanPrice-moJpyTransaction*moJpyPrice-moCanTransaction*moCanPrice));
   
+  // Test the report type where we DO NOT convert the currency
+  filter.setConvertCurrency(false);
+  filter.setShowSubAccounts(true);
+  PivotTable spending_fnc( filter );
+  
+  CPPUNIT_ASSERT(spending_fnc.m_grid["Expense"]["Foreign"][acCanCash][2]==(-moCanTransaction));
+  CPPUNIT_ASSERT(spending_fnc.m_grid["Expense"]["Foreign"][acCanCash][3]==(-moCanTransaction));
+  CPPUNIT_ASSERT(spending_fnc.m_grid["Expense"]["Foreign"][acCanCash][4]==(-moCanTransaction));
+  CPPUNIT_ASSERT(spending_fnc.m_grid["Expense"]["Foreign"][acJpyCash][2]==(-moJpyTransaction));
+  CPPUNIT_ASSERT(spending_fnc.m_grid["Expense"]["Foreign"][acJpyCash][3]==(-moJpyTransaction));
+  CPPUNIT_ASSERT(spending_fnc.m_grid["Expense"]["Foreign"][acJpyCash][4]==(-moJpyTransaction));
+  
+  filter.setConvertCurrency(true);
   filter.clear();
   filter.setRowType(ReportConfigurationFilter::eAssetLiability);
   filter.setDateFilter(QDate(2004,1,1),QDate(2005,1,1).addDays(-1));
@@ -480,7 +493,7 @@ void KReportsViewTest::testMultipleCurrencies()
 void KReportsViewTest::testAdvancedFilter()
 {
   // test more advanced filtering capabilities
-  
+
   // amount
   {
     TransactionHelper t1( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moParent1, acCredit, acParent );
@@ -558,6 +571,7 @@ void KReportsViewTest::testAdvancedFilter()
     CPPUNIT_ASSERT(spending_f3.m_grid.m_total.m_total == moZero);
     
     filter.setRowType(ReportConfigurationFilter::eAssetLiability);
+    filter.setDateFilter( QDate(2004,1,1), QDate(2004,12,31) );
     PivotTable networth_f4( filter );
 
     CPPUNIT_ASSERT(networth_f4.m_grid["Asset"].m_total[11] == moCheckingOpen + moChild);
@@ -651,4 +665,111 @@ void KReportsViewTest::testAdvancedFilter()
     PivotTable spending_f( filter );
     CPPUNIT_ASSERT(spending_f.m_grid.m_total.m_total==-moSolo-moParent1-moParent2);
   }
+  
+  // blank dates
+  {
+    TransactionHelper t1y1( QDate(2003,10,1), MyMoneySplit::ActionWithdrawal, moSolo, acChecking, acSolo );
+    TransactionHelper t2y1( QDate(2003,11,1), MyMoneySplit::ActionWithdrawal, moParent1, acCredit, acParent );
+    TransactionHelper t3y1( QDate(2003,12,1), MyMoneySplit::ActionWithdrawal, moParent2, acCredit, acParent );
+  
+    TransactionHelper t1y2( QDate(2004,4,1), MyMoneySplit::ActionWithdrawal, moSolo, acChecking, acSolo );
+    TransactionHelper t2y2( QDate(2004,5,1), MyMoneySplit::ActionWithdrawal, moParent1, acCredit, acParent );
+    TransactionHelper t3y2( QDate(2004,6,1), MyMoneySplit::ActionWithdrawal, moParent2, acCredit, acParent );
+  
+    TransactionHelper t1y3( QDate(2005,1,1), MyMoneySplit::ActionWithdrawal, moSolo, acChecking, acSolo );
+    TransactionHelper t2y3( QDate(2005,5,1), MyMoneySplit::ActionWithdrawal, moParent1, acCredit, acParent );
+    TransactionHelper t3y3( QDate(2005,9,1), MyMoneySplit::ActionWithdrawal, moParent2, acCredit, acParent );
+  
+    ReportConfigurationFilter filter( ReportConfigurationFilter::eExpenseIncome );
+    filter.setDateFilter(QDate(),QDate(2004,7,1));
+    PivotTable spending_f( filter );
+    CPPUNIT_ASSERT(spending_f.m_grid.m_total.m_total==-moSolo-moParent1-moParent2-moSolo-moParent1-moParent2);
+        
+    filter.clear();
+    PivotTable spending_f2( filter );
+    CPPUNIT_ASSERT(spending_f2.m_grid.m_total.m_total==-moSolo-moParent1-moParent2-moSolo-moParent1-moParent2-moSolo-moParent1-moParent2);
+    
+  }
+
 }
+
+void KReportsViewTest::testColumnType()
+{
+  // test column type values of other than 'month'
+  
+  TransactionHelper t1q1( QDate(2004,1,1), MyMoneySplit::ActionWithdrawal, moSolo, acChecking, acSolo );
+  TransactionHelper t2q1( QDate(2004,2,1), MyMoneySplit::ActionWithdrawal, moParent1, acCredit, acParent );
+  TransactionHelper t3q1( QDate(2004,3,1), MyMoneySplit::ActionWithdrawal, moParent2, acCredit, acParent );
+
+  TransactionHelper t1q2( QDate(2004,4,1), MyMoneySplit::ActionWithdrawal, moSolo, acChecking, acSolo );
+  TransactionHelper t2q2( QDate(2004,5,1), MyMoneySplit::ActionWithdrawal, moParent1, acCredit, acParent );
+  TransactionHelper t3q2( QDate(2004,6,1), MyMoneySplit::ActionWithdrawal, moParent2, acCredit, acParent );
+
+  TransactionHelper t1y2( QDate(2005,1,1), MyMoneySplit::ActionWithdrawal, moSolo, acChecking, acSolo );
+  TransactionHelper t2y2( QDate(2005,5,1), MyMoneySplit::ActionWithdrawal, moParent1, acCredit, acParent );
+  TransactionHelper t3y2( QDate(2005,9,1), MyMoneySplit::ActionWithdrawal, moParent2, acCredit, acParent );
+
+  ReportConfigurationFilter filter( ReportConfigurationFilter::eExpenseIncome );
+  filter.setDateFilter(QDate(2003,12,31),QDate(2005,12,31));
+  filter.setRowType( ReportConfigurationFilter::eExpenseIncome );
+  filter.setColumnType(ReportConfigurationFilter::eBiMonths);
+  PivotTable spending_b( filter );
+
+  CPPUNIT_ASSERT(spending_b.m_grid.m_total[1] == moZero);
+  CPPUNIT_ASSERT(spending_b.m_grid.m_total[2] == -moParent1-moSolo);
+  CPPUNIT_ASSERT(spending_b.m_grid.m_total[3] == -moParent2-moSolo);
+  CPPUNIT_ASSERT(spending_b.m_grid.m_total[4] == -moParent);
+  CPPUNIT_ASSERT(spending_b.m_grid.m_total[5] == moZero);
+  CPPUNIT_ASSERT(spending_b.m_grid.m_total[6] == moZero);
+  CPPUNIT_ASSERT(spending_b.m_grid.m_total[7] == moZero);
+  CPPUNIT_ASSERT(spending_b.m_grid.m_total[8] == -moSolo);
+  CPPUNIT_ASSERT(spending_b.m_grid.m_total[9] == moZero);
+  CPPUNIT_ASSERT(spending_b.m_grid.m_total[10] == -moParent1);
+  CPPUNIT_ASSERT(spending_b.m_grid.m_total[11] == moZero);
+  CPPUNIT_ASSERT(spending_b.m_grid.m_total[12] == -moParent2);
+  CPPUNIT_ASSERT(spending_b.m_grid.m_total[13] == moZero);
+    
+  filter.setColumnType(ReportConfigurationFilter::eQuarters);
+  PivotTable spending_q( filter );
+
+  CPPUNIT_ASSERT(spending_q.m_grid.m_total[1] == moZero);
+  CPPUNIT_ASSERT(spending_q.m_grid.m_total[2] == -moSolo-moParent);
+  CPPUNIT_ASSERT(spending_q.m_grid.m_total[3] == -moSolo-moParent);
+  CPPUNIT_ASSERT(spending_q.m_grid.m_total[4] == moZero);
+  CPPUNIT_ASSERT(spending_q.m_grid.m_total[5] == moZero);
+  CPPUNIT_ASSERT(spending_q.m_grid.m_total[6] == -moSolo);
+  CPPUNIT_ASSERT(spending_q.m_grid.m_total[7] == -moParent1);
+  CPPUNIT_ASSERT(spending_q.m_grid.m_total[8] == -moParent2);
+  CPPUNIT_ASSERT(spending_q.m_grid.m_total[9] == moZero);
+  
+  filter.setRowType( ReportConfigurationFilter::eAssetLiability );
+  PivotTable networth_q( filter );
+
+  CPPUNIT_ASSERT(networth_q.m_grid.m_total[1] == moZero);
+  CPPUNIT_ASSERT(networth_q.m_grid.m_total[2] == -moSolo-moParent);
+  CPPUNIT_ASSERT(networth_q.m_grid.m_total[3] == -moSolo-moParent-moSolo-moParent+moCheckingOpen);
+  CPPUNIT_ASSERT(networth_q.m_grid.m_total[4] == -moSolo-moParent-moSolo-moParent+moCheckingOpen+moCreditOpen);
+  CPPUNIT_ASSERT(networth_q.m_grid.m_total[5] == -moSolo-moParent-moSolo-moParent+moCheckingOpen+moCreditOpen);
+  CPPUNIT_ASSERT(networth_q.m_grid.m_total[6] == -moSolo-moSolo-moParent-moSolo-moParent+moCheckingOpen+moCreditOpen);
+  CPPUNIT_ASSERT(networth_q.m_grid.m_total[7] == -moParent1-moSolo-moSolo-moParent-moSolo-moParent+moCheckingOpen+moCreditOpen);
+  CPPUNIT_ASSERT(networth_q.m_grid.m_total[8] == -moParent2-moParent1-moSolo-moSolo-moParent-moSolo-moParent+moCheckingOpen+moCreditOpen);
+  CPPUNIT_ASSERT(networth_q.m_grid.m_total[9] == -moParent2-moParent1-moSolo-moSolo-moParent-moSolo-moParent+moCheckingOpen+moCreditOpen);
+  
+  filter.setRowType( ReportConfigurationFilter::eExpenseIncome );
+  filter.setColumnType(ReportConfigurationFilter::eYears);
+  PivotTable spending_y( filter );
+  
+  CPPUNIT_ASSERT(spending_y.m_grid.m_total[1] == moZero);
+  CPPUNIT_ASSERT(spending_y.m_grid.m_total[2] == -moSolo-moParent-moSolo-moParent);
+  CPPUNIT_ASSERT(spending_y.m_grid.m_total[3] == -moSolo-moParent);
+  CPPUNIT_ASSERT(spending_y.m_grid.m_total.m_total == -moSolo-moParent-moSolo-moParent-moSolo-moParent);
+
+  filter.setRowType( ReportConfigurationFilter::eAssetLiability );
+  PivotTable networth_y( filter );
+
+  CPPUNIT_ASSERT(networth_y.m_grid.m_total[1] == moZero);
+  CPPUNIT_ASSERT(networth_y.m_grid.m_total[2] == -moSolo-moParent-moSolo-moParent+moCheckingOpen+moCreditOpen);
+  CPPUNIT_ASSERT(networth_y.m_grid.m_total[3] == -moSolo-moParent-moSolo-moParent-moSolo-moParent+moCheckingOpen+moCreditOpen);
+
+}
+
