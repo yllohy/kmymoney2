@@ -78,7 +78,7 @@ User Interface=*.kdevdlg,*.ui,*.rc,
 groups=Headers,Sources,User Interface,Translations,GNU,Others,
 
 [Makefile.am]
-files=kmymoney2.kdevprj,AUTHORS,COPYING,ChangeLog,INSTALL,README,TODO,ChangeLog.original,configure.in.in
+files=kmymoney2.kdevprj,AUTHORS,COPYING,ChangeLog,INSTALL,README,TODO,ChangeLog.original,configure.in.in,kdecompat.h
 sub_dirs=kmymoney2,po,doc,developer-doc
 type=normal
 
@@ -318,6 +318,12 @@ type=DATA
 files=
 sub_dirs=
 type=normal
+
+[kdecompat.h]
+dist=true
+install=false
+install_location=
+type=HEADER
 
 [kmymoney2.kdevprj]
 dist=true
