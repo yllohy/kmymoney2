@@ -61,6 +61,7 @@ public:
 	KGlobalLedgerView(QWidget *parent=0, const char *name=0);
 	~KGlobalLedgerView();
 
+  void reloadView(void);
   void refreshView(void);
 
   /**
@@ -92,6 +93,11 @@ public slots:
     */
   void slotShowTransactionForm(bool show);
 
+  /**
+    * This slot cancels any edit session in the ledger views when called.
+    */
+  void slotCancelEdit(void);
+
 protected:
   KComboBox* accountComboBox;
   QVBoxLayout* Form1Layout;
@@ -117,11 +123,7 @@ protected slots:
     */
   void slotSelectAccountAndTransaction(const QCString& accountId, const QCString& transactionId);
 
-  void slotCancelEdit(void);
-
 private:
-  void refresh(void);
-
   /**
     * This member holds the id of the currently selected account
     */

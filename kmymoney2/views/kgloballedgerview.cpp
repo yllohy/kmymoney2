@@ -151,7 +151,7 @@ KGlobalLedgerView::~KGlobalLedgerView()
 
 void KGlobalLedgerView::show()
 {
-  refresh();
+  loadAccounts();
   // only show selection box if filled with at least one account
   accountComboBox->setEnabled(accountComboBox->count() > 0);
 
@@ -167,10 +167,16 @@ void KGlobalLedgerView::hide()
   }
 }
 
-
-void KGlobalLedgerView::refresh(void)
+void KGlobalLedgerView::reloadView(void)
 {
+  m_accountId = "";
+  for(int i = 0; i < MyMoneyAccount::MaxAccountTypes; ++i) {
+    if(m_specificView[i] != 0)
+      m_specificView[i]->setCurrentAccount("");
+  }
   loadAccounts();
+  accountComboBox->setEnabled(accountComboBox->count() > 0);
+  refreshView();
 }
 
 void KGlobalLedgerView::refreshView(void)
@@ -192,10 +198,10 @@ void KGlobalLedgerView::selectAccount(const QCString& accountId, const bool reco
   slotCancelEdit();
   if(accountId != "") {
     MyMoneyAccount acc = MyMoneyFile::instance()->account(accountId);
-    m_accountStack->raiseWidget(acc.accountType());
     if(m_specificView[acc.accountType()] != 0) {
       m_currentView = m_specificView[acc.accountType()];
       m_currentView->setCurrentAccount(accountId);
+      m_accountStack->raiseWidget(acc.accountType());
       m_accountId = accountId;
       accountComboBox->setCurrentText(acc.name());
     } else {
