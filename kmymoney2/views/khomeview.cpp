@@ -99,19 +99,21 @@ void KHomeView::slotRefreshView(void)
   if(MyMoneyFile::instance()->accountList().count() == 0) {
     m_part->openURL(m_filename);
 
+#if 0
     // test out the anchor replacement
     DOM::Element e = m_part->document().getElementById("test");
     if ( e.isNull() )
     {
-      qDebug("Element not found\n");
+      qDebug("Element id=test not found\n");
     }
     else
     {
-      qDebug("Element found!\n");
+      qDebug("Element id=test found!\n");
       QString tagname = e.tagName().string();
       qDebug("%s\n",tagname.latin1());
       qDebug("%s id=%s\n",e.tagName().string().latin1(),e.getAttribute("id").string().latin1());
     }
+#endif
   } else {
     QString filename = KGlobal::dirs()->findResource("appdata", "html/kmymoney2.css");
     QString header = QString("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\">\n") +
