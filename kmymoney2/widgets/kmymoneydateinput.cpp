@@ -249,7 +249,8 @@ void kMyMoneyDateInput::loadDate(const QDate& date)
   m_date = m_prevDate = date;
 
   blockSignals(true);
-  slotDateChosen(date);
+  dateEdit->setDate(date);
+  m_date = date;
   blockSignals(false);
 }
 
