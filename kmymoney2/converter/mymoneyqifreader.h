@@ -29,12 +29,12 @@
 #include <qobject.h>
 #include <qstring.h>
 #include <qstringlist.h>
-#include <qprocess.h>
 
 // ----------------------------------------------------------------------------
 // KDE Headers
 
 #include <ktempfile.h>
+#include <kprocess.h>
 
 // ----------------------------------------------------------------------------
 // Project Headers
@@ -253,8 +253,10 @@ signals:
   
 private slots:
   void slotSendDataToFilter(void);
-  void slotReceivedDataFromFilter(void);
-  void slotReceivedErrorFromFilter(void);
+  void slotReceivedDataFromFilter(KProcess* /* proc */, char *buff, int len);
+  void slotReceivedErrorFromFilter(KProcess* /* proc */, char *buff, int len);
+  // void slotReceivedDataFromFilter(void);
+  // void slotReceivedErrorFromFilter(void);
   void slotProcessBuffers(void);
   
   /**
@@ -273,7 +275,7 @@ private:
      EntryMemorizedTransaction
   };
 
-  QProcess                m_filter;
+  KProcess                m_filter;
   QString                 m_filename;
   MyMoneyQifProfile       m_qifProfile;
   MyMoneyAccount          m_account;

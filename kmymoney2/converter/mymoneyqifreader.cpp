@@ -54,11 +54,11 @@ MyMoneyQifReader::MyMoneyQifReader()
   m_processingData = false;
   m_userAbort = false;
   m_autoCreatePayee = false;
-  
-  connect(&m_filter, SIGNAL(wroteToStdin()), this, SLOT(slotSendDataToFilter()));
-  connect(&m_filter, SIGNAL(readyReadStdout()), this, SLOT(slotReceivedDataFromFilter()));
-  connect(&m_filter, SIGNAL(processExited()), this, SLOT(slotImportFinished()));
-  connect(&m_filter, SIGNAL(readyReadStderr()), this, SLOT(slotReceivedErrorFromFilter()));
+
+  connect(&m_filter, SIGNAL(wroteStdin(KProcess*)), this, SLOT(slotSendDataToFilter()));
+  connect(&m_filter, SIGNAL(receivedStdout(KProcess*, char*, int)), this, SLOT(slotReceivedDataFromFilter(KProcess*, char*, int)));
+  connect(&m_filter, SIGNAL(processExited(KProcess*)), this, SLOT(slotImportFinished()));
+  connect(&m_filter, SIGNAL(receivedStderr(KProcess*, char*, int)), this, SLOT(slotReceivedErrorFromFilter(KProcess*, char*, int)));
 }
 
 MyMoneyQifReader::~MyMoneyQifReader()
@@ -85,41 +85,39 @@ void MyMoneyQifReader::setProfile(const QString& profile)
 void MyMoneyQifReader::slotSendDataToFilter(void)
 {
   Q_LONG len;
-  QByteArray data(0);
 
   if(m_file->atEnd()) {
-    m_filter.flushStdin();
+    // m_filter.flushStdin();
     m_filter.closeStdin();
   } else {
     len = m_file->readBlock(m_buffer, sizeof(m_buffer));
     if(len == -1) {
       qWarning("Failed to read block from QIF import file");
-      m_filter.kill();
       m_filter.closeStdin();
+      m_filter.kill();
     } else {
-      data.setRawData(m_buffer, len);
-      m_filter.writeToStdin(data);
-      m_filter.flushStdin();
-      data.resetRawData(m_buffer, len);
+      m_filter.writeStdin(m_buffer, len);
     }
   }
 }
 
-void MyMoneyQifReader::slotReceivedErrorFromFilter(void)
+void MyMoneyQifReader::slotReceivedErrorFromFilter(KProcess* /* proc */, char *buff, int len)
 {
-  QString errmsg;
-
-  while(m_filter.canReadLineStderr()) {
-    errmsg = m_filter.readLineStderr();
-    qWarning(errmsg);
-  }
+  QByteArray data;
+  data.duplicate(buff, len);
+  qWarning(data);
 }
 
-void MyMoneyQifReader::slotReceivedDataFromFilter(void)
+void MyMoneyQifReader::slotReceivedDataFromFilter(KProcess* /* proc */, char *buff, int len)
 {
+  QByteArray data;
+  data.duplicate(buff, len);
+
+  // if the list of received data blocks is empty, start the processor  
   if(m_data.count() == 0)
     QTimer::singleShot(10, this, SLOT(slotProcessBuffers()));
-  m_data.append(m_filter.readStdout());
+
+  m_data.append(data);
 }
 
 void MyMoneyQifReader::slotProcessBuffers(void)
@@ -174,8 +172,8 @@ void MyMoneyQifReader::processQifLine(void)
 
 void MyMoneyQifReader::slotImportFinished(void)
 {
-  slotReceivedDataFromFilter();
-  slotReceivedErrorFromFilter();
+  // slotReceivedDataFromFilter();
+  // slotReceivedErrorFromFilter();
 }
 
 const bool MyMoneyQifReader::startImport(void)
@@ -191,19 +189,19 @@ const bool MyMoneyQifReader::startImport(void)
 
   m_file = new QFile(m_filename);
   if(m_file->open(IO_ReadOnly)) {
-    m_filter.setCommunication(QProcess::Stdin | QProcess::Stdout | QProcess::Stderr);
     
     // start filter process, use 'cat -' as the default filter
     m_filter.clearArguments();
     if(m_qifProfile.filterScriptImport().isEmpty()) {
-      m_filter.addArgument("cat");
-      m_filter.addArgument("-");
+      m_filter << "cat";
+      m_filter << "-";
     } else {
-      m_filter.setArguments(QStringList::split(" ", m_qifProfile.filterScriptImport(), true));
+      m_filter << QStringList::split(" ", m_qifProfile.filterScriptImport(), true);
     }
     m_entryType = EntryUnknown;
     
-    if(m_filter.start()) {
+    if(m_filter.start(KProcess::NotifyOnExit, KProcess::All)) {
+      m_filter.resume();
       signalProgress(0, m_file->size(), "Importing QIF ...");
       slotSendDataToFilter();
       rc = true;
@@ -327,8 +325,8 @@ void MyMoneyQifReader::processQifEntry(void)
     if(e->what() != "USERABORT") {
       qWarning("This shouldn't happen! : %s", e->what().latin1());
     } else {
-      m_filter.tryTerminate();
-      QTimer::singleShot(1000, &m_filter, SLOT(kill()));
+      m_filter.closeStdin();
+      m_filter.kill();
       m_userAbort = true;
     }
     delete e;
@@ -516,22 +514,16 @@ void MyMoneyQifReader::processTransactionEntry(void)
   }
   
   tmp = extractLine('C');
-  if(tmp == "X")
+  if(tmp == "X") {
     s1.setReconcileFlag(MyMoneySplit::Reconciled);
-  else if(tmp == "*")
+    s1.setReconcileDate(t.postDate());
+  } else if(tmp == "*")
     s1.setReconcileFlag(MyMoneySplit::Cleared);
 
-  if(m_account.accountGroup() == MyMoneyAccount::Asset) {
-    if(s1.value() >= 0)
-      s1.setAction(MyMoneySplit::ActionDeposit);
-    else
-      s1.setAction(MyMoneySplit::ActionWithdrawal);
-  } else {
-    if(s1.value() >= 0)
-      s1.setAction(MyMoneySplit::ActionWithdrawal);
-    else
-      s1.setAction(MyMoneySplit::ActionDeposit);
-  }
+  if(s1.value() >= 0)
+    s1.setAction(MyMoneySplit::ActionDeposit);
+  else
+    s1.setAction(MyMoneySplit::ActionWithdrawal);
   s1.setMemo(extractLine('M'));
   
   t.addSplit(s1);
