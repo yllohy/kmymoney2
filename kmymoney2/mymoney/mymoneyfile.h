@@ -638,12 +638,18 @@ public:
   const MyMoneyAccount& account(const QCString& id) const;
 
   /**
-    * This method returns a list of the accounts
-    * inside a MyMoneyFile object
+    * This method returns a list of accounts inside a MyMoneyFile object.
+    * An optional parameter is a list of id's. If this list is emtpy (the default)
+    * the returned list contains all accounts, otherwise only those referenced
+    * in the id-list.
+    *
+    * @param idlist QCStringList of account ids of those accounts that
+    *        should be returned. If this list is empty, all accounts
+    *        currently known will be returned.
     *
     * @return QValueList containing the account objects
     */
-  const QValueList<MyMoneyAccount> accountList(void) const;
+  const QValueList<MyMoneyAccount> accountList(const QCStringList& idlist = QCStringList()) const;
 
   /**
     * This method is used to convert an account id to a string representation
@@ -970,7 +976,7 @@ public:
     * is a special id that will be notified whenever any report is changed
     */
   static const QCString NotifyClassReport;
-  
+
   /**
     * createCategory creates a category from a text name.
     *
@@ -1152,7 +1158,7 @@ public:
     * @return QValueList of all MyMoneyReport objects.
     */
   const QValueList<MyMoneyReport> reportList( void ) const;
-  
+
   /**
     * Adds a report to the file-global institution pool. A
     * respective report-ID will be generated for this object.
@@ -1164,7 +1170,7 @@ public:
     *        MyMoneyReport object
     */
   void addReport( MyMoneyReport& report );
-  
+
   /**
     * Modifies an already existing report in the file global
     * report pool.
@@ -1174,7 +1180,7 @@ public:
     * @param report The complete new report information
     */
   void modifyReport( const MyMoneyReport& report );
-  
+
   /**
     * This method returns the number of reports currently known to file
     * in the range 0..MAXUINT
@@ -1182,7 +1188,7 @@ public:
     * @return number of reports known to file
     */
   unsigned countReports( void ) const;
-  
+
   /**
     * This method is used to retrieve a single MyMoneyReport object.
     * The id of the object must be supplied in the parameter @p id.
@@ -1193,7 +1199,7 @@ public:
     * @return MyMoneyReport object
     */
   MyMoneyReport report( const QCString& id ) const;
-    
+
   /**
     * This method is used to remove an existing MyMoneyReport object
     * from the engine. The id attribute of the object must be set.
