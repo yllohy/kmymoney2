@@ -124,36 +124,171 @@ KLedgerViewInvestments::~KLedgerViewInvestments()
 
 }
 
+int KLedgerViewInvestments::actionTab(const MyMoneyTransaction& t, const MyMoneySplit& split) const
+{
+  if(KLedgerView::transactionType(t) == Transfer) {
+    return 2;
+  } else if(transactionDirection(split) == Credit) {
+    return 1;
+  } else if( split.action() == MyMoneySplit::ActionCheck){
+    return 0;
+  } else if(split.action() == MyMoneySplit::ActionATM) {
+    return 4;
+  }
+  return 3;
+}
+
 void KLedgerViewInvestments::fillForm()
 {
+  QTable* formTable = m_form->table();
+  m_transactionPtr = transaction(m_register->currentTransactionIndex());
+
+  if(m_transactionPtr != 0)
+  {
+    // get my local copy of the selected transaction
+    m_transaction = *m_transactionPtr;
+    m_split = m_transaction.splitByAccount(accountId());
+
+    fillFormStatics();
+
+    kMyMoneyTransactionFormTableItem* item;
+
+    // setup the fields first
+    m_form->tabBar()->blockSignals(true);
+    m_form->tabBar()->setCurrentTab(actionTab(m_transaction, m_split));
+    m_form->tabBar()->blockSignals(false);
+
+    // fill in common fields
+    formTable->setText(MEMO_ROW, MEMO_DATA_COL, m_split.memo());
+
+    // make sure, that the date is aligned to the right of the cell
+    item = new kMyMoneyTransactionFormTableItem(formTable, QTableItem::Never, KGlobal::locale()->formatDate(m_transaction.postDate(), true));
+    item->setAlignment(kMyMoneyTransactionFormTableItem::right);
+    formTable->setItem(DATE_ROW, DATE_DATA_COL, item);
+
+    // collect values
+    QString payee;
+    try {
+      payee = MyMoneyFile::instance()->payee(m_split.payeeId()).name();
+    } catch (MyMoneyException *e) {
+      delete e;
+      payee = " ";
+    }
+
+    QString category;
+    try {
+      MyMoneySplit s;
+      switch(m_transaction.splitCount()) {
+        case 2:
+          if(m_transaction.isLoanPayment())
+            category = i18n("Loan Payment");
+          else {
+            s = m_transaction.splitByAccount(accountId(), false);
+            category = MyMoneyFile::instance()->accountToCategory(s.accountId());
+          }
+          break;
+
+        case 1:
+          category = " ";
+          break;
+
+        default:
+          if(m_transaction.isLoanPayment())
+            category = i18n("Loan Payment");
+          else
+            category = i18n("Split transaction");
+          break;
+      }
+    } catch (MyMoneyException *e) {
+      delete e;
+      category = " ";
+    }
+
+    QString from;
+    try {
+      from = MyMoneyFile::instance()->accountToCategory(m_account.id());
+    } catch (MyMoneyException *e) {
+      delete e;
+      from = " ";
+    }
+
+//    formTable->setText(PAYEE_ROW, PAYEE_DATA_COL, payee);
+ //   formTable->setText(CATEGORY_ROW, CATEGORY_DATA_COL, category);
+    switch( actionTab(m_transaction, m_split) ){
+      case 0:      // check
+      case 4:      // ATM
+        item = new kMyMoneyTransactionFormTableItem(formTable, QTableItem::Never, m_split.number());
+        item->setAlignment(kMyMoneyTransactionFormTableItem::right);
+//        formTable->setItem(NR_ROW, NR_DATA_COL, item);
+        break;
+
+      default:
+        break;
+    }
+
+    MyMoneyMoney amount = m_split.value(m_transaction.commodity(), m_account.currencyId()).abs();
+
+    item = new kMyMoneyTransactionFormTableItem(formTable, QTableItem::Never,
+                 m_split.value(m_transaction.commodity(), m_account.currencyId()).abs().formatMoney());
+    item->setAlignment(kMyMoneyTransactionFormTableItem::right);
+    //formTable->setItem(AMOUNT_ROW, AMOUNT_DATA_COL, item);
+
+    m_form->newButton()->setEnabled(true);
+    m_form->editButton()->setEnabled(true);
+    m_form->enterButton()->setEnabled(false);
+    m_form->cancelButton()->setEnabled(false);
+    m_form->moreButton()->setEnabled(true);
+  } else {
+    m_transaction = MyMoneyTransaction();
+    m_split = MyMoneySplit();
+    m_split.setAccountId(accountId());
+    m_split.setAction(m_action);
+
+    m_transaction.addSplit(m_split);
+    m_transaction.setCommodity(m_account.currencyId());
+
+    fillFormStatics();
+
+    m_form->newButton()->setEnabled(true);
+    m_form->editButton()->setEnabled(false);
+    m_form->enterButton()->setEnabled(false);
+    m_form->cancelButton()->setEnabled(false);
+    m_form->moreButton()->setEnabled(false);
+  }
+
+
+ 
+  
   fillFormStatics();
 
   // make sure, fields can use all available space
   // by spanning items over multiple cells if necessary
-  QTable* formTable = m_form->table();
-  QTableItem* item;
+  formTable = m_form->table();
+  QTableItem* tableItem;
   // symbol
-  item = formTable->item(SYMBOL_ROW, SYMBOL_DATA_COL);
-  if(item)
-    item->setSpan(SYMBOL_DATA_COL, 2);
+  tableItem = formTable->item(SYMBOL_ROW, SYMBOL_DATA_COL);
+  if(tableItem)
+    tableItem->setSpan(SYMBOL_DATA_COL, 2);
   // quantity
-  item = formTable->item(QUANTITY_ROW, QUANTITY_DATA_COL);
-  if(item)
-    item->setSpan(QUANTITY_DATA_COL, 2);
+  tableItem = formTable->item(QUANTITY_ROW, QUANTITY_DATA_COL);
+  if(tableItem)
+    tableItem->setSpan(QUANTITY_DATA_COL, 2);
   // memo
-  item = formTable->item(MEMO_ROW, MEMO_DATA_COL);
-  if(item)
-    item->setSpan(MEMO_DATA_COL, 2);
+  tableItem = formTable->item(MEMO_ROW, MEMO_DATA_COL);
+  if(tableItem)
+    tableItem->setSpan(MEMO_DATA_COL, 2);
   // price per share
-  item = formTable->item(PRICE_ROW, PRICE_DATA_COL);
-  if(item)
-    item->setSpan(PRICE_DATA_COL, 2);
+  tableItem = formTable->item(PRICE_ROW, PRICE_DATA_COL);
+  if(tableItem)
+    tableItem->setSpan(PRICE_DATA_COL, 2);
+  
+  
 
 }
 
 void KLedgerViewInvestments::fillFormStatics(void)
 {
-  QTable* formTable = m_form->table();
+  /*QTable* formTable = m_form->table();
 
   // clear complete table, but leave the cell widgets while editing
   for(int r = 0; r < formTable->numRows(); ++r) {
@@ -208,7 +343,7 @@ void KLedgerViewInvestments::fillFormStatics(void)
 #if 0
   if(showNrField(m_transaction, m_split))
     formTable->setText(NR_ROW, NR_TXT_COL, i18n("Nr"));
-#endif
+#endif*/
 }
 
 void KLedgerViewInvestments::fillSummary()
@@ -412,13 +547,13 @@ void KLedgerViewInvestments::createForm(void)
 
   m_tabAddShares = new QTab(action2str(MyMoneySplit::ActionAddShares, true));
   m_tabRemoveShares = new QTab(action2str(MyMoneySplit::ActionRemoveShares, true));
-  //m_tabTransfer = new QTab(action2str(MyMoneySplit::ActionTransfer, true));
+  m_tabTransfer = new QTab(action2str(MyMoneySplit::ActionTransfer, true));
   //m_tabWithdrawal = new QTab(action2str(MyMoneySplit::ActionWithdrawal, true));
   //m_tabAtm = new QTab(action2str(MyMoneySplit::ActionATM, true));
 
   m_form->addTab(m_tabAddShares);
   m_form->addTab(m_tabRemoveShares);
-  //m_form->addTab(m_tabTransfer);
+  m_form->addTab(m_tabTransfer);
   //m_form->addTab(m_tabWithdrawal);
   //m_form->addTab(m_tabAtm);
 
@@ -535,36 +670,34 @@ void KLedgerViewInvestments::slotTypeSelected(int type)
   }
 
   // common elements
-  formTable->setText(SYMBOL_ROW, SYMBOL_TXT_COL, i18n("Symbol Name"));
-  formTable->setText(QUANTITY_ROW, QUANTITY_TXT_COL, i18n("Shares"));
-  formTable->setText(MEMO_ROW, MEMO_TXT_COL, i18n("Memo"));
-  formTable->setText(PRICE_ROW, PRICE_TXT_COL, i18n("Price Per Share"));
+  
   formTable->setText(DATE_ROW, DATE_TXT_COL, i18n("Date"));
   formTable->setText(AMOUNT_ROW, AMOUNT_TXT_COL, i18n("Total Amount"));
-  formTable->setText(FEES_ROW, FEES_TXT_COL, i18n("Commission"));
-
-
+  
   m_action = transactionType(type);
+  qDebug("TransactionType = %d", type);
 
   // specific elements (in the order of the tabs)
   switch(type) {
     case KLedgerViewInvestments::AddShares:
-      //formTable->setText(1, 0, i18n("Symbol Name"));
-      //formTable->setText(2, 0, i18n("Category"));
-      //formTable->setText(0, 3, i18n("Nr"));
-      break;
-
     case KLedgerViewInvestments::RemoveShares:
-      //formTable->setText(1, 0, i18n("Payee"));
-      //formTable->setText(2, 0, i18n("Category"));
+    {
+      formTable->setText(SYMBOL_ROW, SYMBOL_TXT_COL, i18n("Symbol Name"));
+      formTable->setText(QUANTITY_ROW, QUANTITY_TXT_COL, i18n("Shares"));
+      formTable->setText(MEMO_ROW, MEMO_TXT_COL, i18n("Memo"));
+      formTable->setText(PRICE_ROW, PRICE_TXT_COL, i18n("Price Per Share"));
+      formTable->setText(FEES_ROW, FEES_TXT_COL, i18n("Commission"));
       break;
+    }
 
-    /*case 2:   // Transfer
-      formTable->setText(0, 0, i18n("From"));
+    case KLedgerViewInvestments::Transfer: 
+    { 
+      formTable->setText(SYMBOL_ROW, SYMBOL_TXT_COL, i18n("From"));
       formTable->setText(1, 0, i18n("To"));
-      formTable->setText(2, 0, i18n("Payee"));
+      formTable->setText(MEMO_ROW, MEMO_TXT_COL, i18n("Payee"));
       break;
-
+    }
+/*
     case 3:   // Withdrawal
       formTable->setText(1, 0, i18n("Receiver"));
       formTable->setText(2, 0, i18n("Category"));
@@ -604,7 +737,7 @@ void KLedgerViewInvestments::createRegister(void)
   m_register->setAction(QCString(MyMoneySplit::ActionRemoveShares), i18n("Remove Shares"));
   //m_register->setAction(QCString(MyMoneySplit::ActionDeposit), i18n("Deposit"));
   //m_register->setAction(QCString(MyMoneySplit::ActionWithdrawal), i18n("Withdrawal"));
-  //m_register->setAction(QCString(MyMoneySplit::ActionTransfer), i18n("Transfer"));
+  m_register->setAction(QCString(MyMoneySplit::ActionTransfer), i18n("Transfer"));
 
   connect(m_register, SIGNAL(clicked(int, int, int, const QPoint&)), this, SLOT(slotRegisterClicked(int, int, int, const QPoint&)));
   connect(m_register, SIGNAL(doubleClicked(int, int, int, const QPoint&)), this, SLOT(slotRegisterDoubleClicked(int, int, int, const QPoint&)));
@@ -757,6 +890,213 @@ void KLedgerViewInvestments::slotStartEdit()
 
 void KLedgerViewInvestments::slotEndEdit()
 {
+  MyMoneyFile* file = MyMoneyFile::instance();
+  
+  // make sure, the post date is valid
+  if(!m_transaction.postDate().isValid())
+    m_transaction.setPostDate(QDate::currentDate());
+    
+  // remember date for next new transaction
+  m_lastPostDate = m_transaction.postDate();
+
+    // If there are any differences, we need to update the storage.
+    // All splits with no account id will be removed here. These splits
+    // are refused by the engine, so it's better to discard them before.
+    // Then we check for the following things and warn the user if we
+    // find a mismatch:
+    //
+    // a) transaction should have 2 or more splits
+    // b) the sum of all split amounts should be zero
+
+    QValueList<MyMoneySplit> list = m_transaction.splits();
+    QValueList<MyMoneySplit>::Iterator it;
+
+    // Fix the payeeId. For non-asset and non-liability accounts,
+    // the payeeId will be cleared. If a transfer has one split
+    // with an empty payeeId the other one will be copied.
+    //
+    // Splits not referencing any account will be removed.
+    // Price information for other currencies will be collected
+
+   /* QMap<QCString, MyMoneyMoney> priceInfo;
+    for(it = list.begin(); it != list.end(); ++it) {
+      if((*it).accountId().isEmpty()) {
+        m_transaction.removeSplit(*it);
+        continue;
+      }
+      MyMoneyAccount acc = file->account((*it).accountId());
+      MyMoneyCurrency currency(file->currency(m_account.currencyId()));
+      int fract = currency.smallestAccountFraction();
+      if(acc.accountType() == MyMoneyAccount::Cash)
+        fract = currency.smallestCashFraction();
+
+      MyMoneyAccount::accountTypeE accType = file->accountGroup(acc.accountType());
+      switch(accType) {
+        case MyMoneyAccount::Asset:
+        case MyMoneyAccount::Liability:
+          break;
+
+        default:
+          (*it).setPayeeId(QCString());
+          m_transaction.modifySplit(*it);
+          break;
+      }
+
+      if(m_transaction.commodity() != acc.currencyId()) {
+        // different currencies, try to find recent price info
+        QMap<QCString, MyMoneyMoney>::Iterator it_p;
+        QCString key = m_transaction.commodity() + "-" + acc.currencyId();
+        it_p = priceInfo.find(key);
+
+        // if it's not found, then collect it from the user first
+        MyMoneyMoney price;
+        if(it_p == priceInfo.end()) {
+          MyMoneyCurrency fromCurrency, toCurrency;
+          MyMoneyMoney fromValue, toValue;
+          if(m_transaction.commodity() != m_account.currencyId()) {
+            toCurrency = file->currency(m_transaction.commodity());
+            fromCurrency = file->currency(acc.currencyId());
+            toValue = (*it).value();
+            fromValue = (*it).shares();
+          } else {
+            fromCurrency = file->currency(m_transaction.commodity());
+            toCurrency = file->currency(acc.currencyId());
+            fromValue = (*it).value();
+            toValue = (*it).shares();
+          }
+
+          KCurrencyCalculator calc(fromCurrency,
+                                   toCurrency,
+                                   fromValue,
+                                   toValue,
+                                   m_transaction.postDate(),
+                                   fract,
+                                   this, "currencyCalculator");
+          if(calc.exec() == QDialog::Rejected) {
+            return;
+          }
+          price = calc.price();
+          priceInfo[key] = price;
+        } else {
+          price = (*it_p);
+        }
+
+        // update shares if the transaction commodity is the currency
+        // of the current selected account
+        if(m_transaction.commodity() == m_account.currencyId()) {
+          (*it).setShares(((*it).value() / price).convert(fract));
+        }
+
+        // now update the split
+        m_transaction.modifySplit(*it);
+      } else {
+        if((*it).shares() != (*it).value()) {
+          (*it).setShares((*it).value());
+          m_transaction.modifySplit(*it);
+        }
+      }
+    }*/
+
+ /*   if(transactionType(m_transaction) == Transfer && !m_split.payeeId().isEmpty()) {
+      for(it = list.begin(); it != list.end(); ++it) {
+        if((*it).id() == m_split.id())
+          continue;
+
+        if((*it).payeeId().isEmpty()) {
+          (*it).setPayeeId(m_split.payeeId());
+          m_transaction.modifySplit(*it);
+        }
+      }
+    }*/
+
+    // check if this is a transfer to/from loan account and
+    // mark it as amortization in this case
+    /*if(m_transaction.splitCount() == 2) {
+      bool isAmortization = false;
+      for(it = list.begin(); !isAmortization && it != list.end(); ++it) {
+        if((*it).action() == MyMoneySplit::ActionTransfer) {
+          MyMoneyAccount acc = file->account((*it).accountId());
+          if(acc.accountType() == MyMoneyAccount::Loan
+          || acc.accountType() == MyMoneyAccount::AssetLoan)
+            isAmortization = true;
+        }
+      }
+
+      if(isAmortization) {
+        for(it = list.begin(); it != list.end(); ++it) {
+          (*it).setAction(MyMoneySplit::ActionAmortization);
+          m_transaction.modifySplit(*it);
+        }
+      }
+    }
+  } catch(MyMoneyException *e) {
+    KMessageBox::detailedSorry(0, i18n("Unable to add/modify transaction"),
+      (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+    delete e;
+    return;
+  }*/
+
+
+  // switch the context to enable refreshView() to work
+  m_form->newButton()->setEnabled(true);
+  m_form->enterButton()->setEnabled(false);
+  m_form->cancelButton()->setEnabled(false);
+  m_form->moreButton()->setEnabled(false);
+
+  if(transaction(m_register->currentTransactionIndex()) != 0) {
+    m_form->editButton()->setEnabled(true);
+  }
+
+  hideWidgets();
+
+  MyMoneyTransaction t;
+
+  // so, we now have to save something here.
+  // if an existing transaction has been changed, we take it as the base
+  if(m_transactionPtr != 0) {
+    t = *m_transactionPtr;
+  }
+
+  if(!(t == m_transaction)) {
+    try {
+      // differentiate between add and modify
+      QCString id;
+      if(m_transactionPtr == 0) {
+        // in the add case, we don't have an ID yet. So let's get one
+        // and use it down the line
+
+        // From here on, we need to use a local copy of the transaction
+        // because m_transaction will be reassigned during the update
+        // once the transaction has been entered into the engine. If this
+        // happens, we have no idea about the id of the new transaction.
+        MyMoneyTransaction t = m_transaction;
+        file->addTransaction(t);
+        id = t.id();
+
+      } else {
+        // in the modify case, we have to keep the id. The call to
+        // modifyTransaction might change m_transaction due to some
+        // callbacks.
+        id = m_transaction.id();
+        file->modifyTransaction(m_transaction);
+      }
+
+      // make sure the transaction stays selected. It's position might
+      // have changed within the register (e.g. date changed)
+      selectTransaction(id);
+
+    } catch(MyMoneyException *e) {
+      KMessageBox::detailedSorry(0, i18n("Unable to add/modify transaction"),
+        (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+      delete e;
+    }
+  }
+
+ // connect(m_register, SIGNAL(signalEnter()), this, SLOT(slotStartEdit()));
+ // m_register->setInlineEditingMode(false);
+//  m_register->setFocus();
+
+#if 0  
   if(m_editSymbolName)
   {
     QString name = m_editSymbolName->text();
@@ -764,7 +1104,7 @@ void KLedgerViewInvestments::slotEndEdit()
 
     MyMoneyFile* file = MyMoneyFile::instance();
 
-#if 0
+
     // I moved this logic to kMyMoneyEquity. We can remove it here, I guess (ipwizard)
 
     const QValueList<MyMoneyEquity> list = file->equityList();
@@ -801,7 +1141,7 @@ void KLedgerViewInvestments::slotEndEdit()
       }
     }
 #endif
-  }
+  //}
 }
 
 void KLedgerViewInvestments::slotEquityChanged(const QCString& id)

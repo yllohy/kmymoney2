@@ -62,8 +62,9 @@ class KLedgerViewInvestments : public KLedgerView
 public:
 
   enum investTransactionTypeE {
-    AddShares = 100,
+    AddShares = 0,
     RemoveShares,
+    Transfer,
     Deposit,
     Withdrawal
   };
@@ -133,6 +134,7 @@ private:
   void createInfoStack(void);
 
 protected:
+  int actionTab(const MyMoneyTransaction& t, const MyMoneySplit& split) const;
   int transactionType(const MyMoneyTransaction& t, const MyMoneySplit& split) const;
   const QCString transactionType(int type) const;
 
@@ -152,7 +154,7 @@ private:
 
   QLabel*         m_lastReconciledLabel;
 
-  QTab *m_tabAddShares, *m_tabRemoveShares;//, *m_tabTransfer,
+  QTab *m_tabAddShares, *m_tabRemoveShares, *m_tabTransfer;//,
        //*m_tabWithdrawal, *m_tabAtm;
 
   QCString m_action;
