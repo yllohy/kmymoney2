@@ -457,18 +457,18 @@ void MyMoneyStorageBin::readOldFormat(QDataStream& s, IMyMoneySerialize* storage
       accname = accname.mid(1, accname.length()-2);
       sp.setAccountId(accountConversion[accname]);
     } else {
-     	int colonindex = accname.find(":");
-     	QString catmajor;
-    	QString catminor;
+      int colonindex = accname.find(":");
+      QString catmajor;
+      QString catminor;
       if(colonindex == -1) {
-       	catmajor = accname;
-    		catminor = "";
-      }	else {
-    		int len = accname.length();
-    		len--;
-       	catmajor = accname.left(colonindex);
-    		catminor = accname.right(len - colonindex);
-    	}
+        catmajor = accname;
+        catminor = "";
+      } else {
+        int len = accname.length();
+        len--;
+        catmajor = accname.left(colonindex);
+        catminor = accname.right(len - colonindex);
+      }
       addCategory(storage, categoryConversion, catmajor, catminor,
            sp.value() >= 0 ? MyMoneyAccount::Expense : MyMoneyAccount::Income);
       sp.setAccountId(categoryConversion[accname]);
@@ -477,7 +477,6 @@ void MyMoneyStorageBin::readOldFormat(QDataStream& s, IMyMoneySerialize* storage
     storage->addTransaction(*it, true);
   }
 
-  storage->refreshAllAccountTransactionLists();
   storage->setLastModificationDate(lastModificationDate);
 
 }
@@ -585,7 +584,8 @@ void MyMoneyStorageBin::writeStream(QDataStream& s, IMyMoneySerialize* storage)
   s << storage->institutionList().count() +
        storage->payeeList().count() +
        storage->accountList().count() +
-       storage->transactionList().count();
+       storage->transactionList().count() +
+       storage->scheduleList().count();
 
   writeInstitutions(s, storage);
   writePayees(s, storage);

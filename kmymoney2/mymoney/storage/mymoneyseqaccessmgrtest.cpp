@@ -44,10 +44,15 @@ void MyMoneySeqAccessMgrTest::testEmptyConstructor()
 	CPPUNIT_ASSERT(m->m_nextInstitutionID == 0);
 	CPPUNIT_ASSERT(m->m_nextAccountID == 0);
 	CPPUNIT_ASSERT(m->m_nextTransactionID == 0);
+	CPPUNIT_ASSERT(m->m_nextPayeeID == 0);
+	CPPUNIT_ASSERT(m->m_nextScheduleID == 0);
 	CPPUNIT_ASSERT(m->m_institutionList.count() == 0);
 	CPPUNIT_ASSERT(m->m_accountList.count() == 4);
 	CPPUNIT_ASSERT(m->m_transactionList.count() == 0);
 	CPPUNIT_ASSERT(m->m_transactionKeys.count() == 0);
+	CPPUNIT_ASSERT(m->m_payeeList.count() == 0);
+	CPPUNIT_ASSERT(m->m_scheduleList.count() == 0);
+
 	CPPUNIT_ASSERT(m->m_dirty == false);
 	CPPUNIT_ASSERT(m->m_creationDate == QDate::currentDate());
 
@@ -89,6 +94,20 @@ void MyMoneySeqAccessMgrTest::testSetFunctions() {
 	CPPUNIT_ASSERT(m->userPostcode() == "Postcode");
 	CPPUNIT_ASSERT(m->userTelephone() == "Telephone");
 	CPPUNIT_ASSERT(m->userEmail() == "Email");
+}
+
+void MyMoneySeqAccessMgrTest::testSupportFunctions()
+{
+	CPPUNIT_ASSERT(m->nextInstitutionID() == "I000001");
+	CPPUNIT_ASSERT(m->m_nextInstitutionID == 1);
+	CPPUNIT_ASSERT(m->nextAccountID() == "A000001");
+	CPPUNIT_ASSERT(m->m_nextAccountID == 1);
+	CPPUNIT_ASSERT(m->nextTransactionID() == "T000000000000000001");
+	CPPUNIT_ASSERT(m->m_nextTransactionID == 1);
+	CPPUNIT_ASSERT(m->nextPayeeID() == "P000001");
+	CPPUNIT_ASSERT(m->m_nextPayeeID == 1);
+	CPPUNIT_ASSERT(m->nextScheduleID() == "SCH000001");
+	CPPUNIT_ASSERT(m->m_nextScheduleID == 1);
 }
 
 void MyMoneySeqAccessMgrTest::testIsStandardAccount()
@@ -1009,6 +1028,7 @@ void MyMoneySeqAccessMgrTest::testEquality(const MyMoneySeqAccessMgr *t)
 	CPPUNIT_ASSERT( m->m_nextAccountID == t->m_nextAccountID);
 	CPPUNIT_ASSERT( m->m_nextTransactionID == t->m_nextTransactionID);
 	CPPUNIT_ASSERT( m->m_nextPayeeID == t->m_nextPayeeID);
+	CPPUNIT_ASSERT( m->m_nextScheduleID == t->m_nextScheduleID);
 	CPPUNIT_ASSERT( m->m_dirty == t->m_dirty);
 	CPPUNIT_ASSERT( m->m_creationDate == t->m_creationDate);
 	CPPUNIT_ASSERT( m->m_lastModificationDate == t->m_lastModificationDate);
@@ -1029,12 +1049,243 @@ void MyMoneySeqAccessMgrTest::testEquality(const MyMoneySeqAccessMgr *t)
 	CPPUNIT_ASSERT(m->m_transactionList.values() == t->m_transactionList.values()); 
 	CPPUNIT_ASSERT(m->m_balanceCache.keys() == t->m_balanceCache.keys()); 
 	CPPUNIT_ASSERT(m->m_balanceCache.values() == t->m_balanceCache.values()); 
+
+//	CPPUNIT_ASSERT(m->m_scheduleList.keys() == t->m_scheduleList.keys());
+//	CPPUNIT_ASSERT(m->m_scheduleList.values() == t->m_scheduleList.values());
 }
 
 void MyMoneySeqAccessMgrTest::testDuplicate() {
 	const MyMoneySeqAccessMgr* t;
 
+	testModifyTransaction();
+
 	t = m->duplicate();
 	testEquality(t);
 	delete t;
+}
+
+void MyMoneySeqAccessMgrTest::testAddSchedule() {
+	CPPUNIT_ASSERT(m->m_scheduleList.count() == 0);
+
+	MyMoneySchedule schedule("Sched-Name",
+				 MyMoneySchedule::TYPE_DEPOSIT,
+				 MyMoneySchedule::OCCUR_DAILY,
+				 MyMoneySchedule::STYPE_MANUALDEPOSIT,
+				 QDate(2003,7,10),
+				 true,
+				 true,
+				 false);
+
+	try {
+		m->addSchedule(schedule);
+
+		CPPUNIT_ASSERT(m->m_scheduleList.count() == 1);
+		CPPUNIT_ASSERT(schedule.id() == "SCH000001");
+		CPPUNIT_ASSERT(m->m_scheduleList["SCH000001"].id() == "SCH000001");
+	} catch(MyMoneyException *e) {
+		delete e;
+		CPPUNIT_FAIL("Unexpected exception");
+	}
+
+	try {
+		m->addSchedule(schedule);
+		CPPUNIT_FAIL("Exception expected");
+	} catch(MyMoneyException *e) {
+		delete e;
+	}
+}
+
+void MyMoneySeqAccessMgrTest::testSchedule() {
+	testAddSchedule();
+	MyMoneySchedule sched;
+
+	sched = m->schedule("SCH000001");
+	CPPUNIT_ASSERT(sched.name() == "Sched-Name");
+	CPPUNIT_ASSERT(sched.id() == "SCH000001");
+
+	try {
+		m->schedule("SCH000002");
+		CPPUNIT_FAIL("Exception expected");
+	} catch(MyMoneyException *e) {
+		delete e;
+	}
+}
+
+void MyMoneySeqAccessMgrTest::testModifySchedule() {
+	testAddSchedule();
+	MyMoneySchedule sched;
+
+	sched = m->schedule("SCH000001");
+	sched.setId("SCH000002");
+	try {
+		m->modifySchedule(sched);
+		CPPUNIT_FAIL("Exception expected");
+	} catch(MyMoneyException *e) {
+		delete e;
+	}
+
+	sched = m->schedule("SCH000001");
+	sched.setName("New Sched-Name");
+	try {
+		m->modifySchedule(sched);
+		CPPUNIT_ASSERT(m->m_scheduleList.count() == 1);
+		CPPUNIT_ASSERT(m->m_scheduleList["SCH000001"].name() == "New Sched-Name");
+		
+	} catch(MyMoneyException *e) {
+		delete e;
+		CPPUNIT_FAIL("Unexpected exception");
+	}
+	
+}
+
+void MyMoneySeqAccessMgrTest::testRemoveSchedule() {
+	testAddSchedule();
+	MyMoneySchedule sched;
+
+	sched = m->schedule("SCH000001");
+	sched.setId("SCH000002");
+	try {
+		m->removeSchedule(sched);
+		CPPUNIT_FAIL("Exception expected");
+	} catch(MyMoneyException *e) {
+		delete e;
+	}
+
+	sched = m->schedule("SCH000001");
+	try {
+		m->removeSchedule(sched);
+		CPPUNIT_ASSERT(m->m_scheduleList.count() == 0);
+		
+	} catch(MyMoneyException *e) {
+		delete e;
+		CPPUNIT_FAIL("Unexpected exception");
+	}
+}
+
+void MyMoneySeqAccessMgrTest::testScheduleList() {
+	QDate	notOverdue = QDate::currentDate().addDays(2);
+	QDate	overdue = QDate::currentDate().addDays(-2);
+
+	MyMoneyTransaction t;
+	MyMoneySplit s1, s2;
+
+	s1.setAccountId("A000001");
+	t.addSplit(s1);
+	s2.setAccountId("A000002");
+	t.addSplit(s2);
+
+	MyMoneySchedule schedule1("Schedule 1",
+				 MyMoneySchedule::TYPE_BILL,
+				 MyMoneySchedule::OCCUR_ONCE,
+				 MyMoneySchedule::STYPE_DIRECTDEBIT,
+				 notOverdue,
+				 false,
+				 false,
+				 false);
+	schedule1.setTransaction(t);
+
+	MyMoneySchedule schedule2("Schedule 2",
+				 MyMoneySchedule::TYPE_DEPOSIT,
+				 MyMoneySchedule::OCCUR_DAILY,
+				 MyMoneySchedule::STYPE_DIRECTDEPOSIT,
+				 notOverdue.addDays(1),
+				 false,
+				 false,
+				 false);
+	MyMoneySchedule schedule3("Schedule 3",
+				 MyMoneySchedule::TYPE_TRANSFER,
+				 MyMoneySchedule::OCCUR_WEEKLY,
+				 MyMoneySchedule::STYPE_OTHER,
+				 notOverdue.addDays(2),
+				 false,
+				 false,
+				 false);
+	MyMoneySchedule schedule4("Schedule 4",
+				 MyMoneySchedule::TYPE_BILL,
+				 MyMoneySchedule::OCCUR_WEEKLY,
+				 MyMoneySchedule::STYPE_WRITECHEQUE,
+				 overdue.addDays(-7),
+				 true,
+				 false,
+				 false);
+	schedule4.setEndDate(notOverdue.addMonths(1));
+
+	m->addSchedule(schedule1);
+	m->addSchedule(schedule2);
+	m->addSchedule(schedule3);
+	m->addSchedule(schedule4);
+
+	QValueList<MyMoneySchedule> list;
+
+	// no filter
+	list = m->scheduleList();
+	CPPUNIT_ASSERT(list.count() == 4);
+
+	// filter by type
+	list = m->scheduleList("", MyMoneySchedule::TYPE_BILL);
+	CPPUNIT_ASSERT(list.count() == 2);
+	CPPUNIT_ASSERT(list[0].name() == "Schedule 1");
+	CPPUNIT_ASSERT(list[1].name() == "Schedule 4");
+
+	// filter by occurence
+	list = m->scheduleList("", MyMoneySchedule::TYPE_ANY,
+				MyMoneySchedule::OCCUR_DAILY);
+	CPPUNIT_ASSERT(list.count() == 1);
+	CPPUNIT_ASSERT(list[0].name() == "Schedule 2");
+
+	// filter by payment type
+	list = m->scheduleList("", MyMoneySchedule::TYPE_ANY,
+				MyMoneySchedule::OCCUR_ANY,
+				MyMoneySchedule::STYPE_DIRECTDEPOSIT);
+	CPPUNIT_ASSERT(list.count() == 1);
+	CPPUNIT_ASSERT(list[0].name() == "Schedule 2");
+
+	// filter by account
+	list = m->scheduleList("A01");
+	CPPUNIT_ASSERT(list.count() == 0);
+	list = m->scheduleList("A000001");
+	CPPUNIT_ASSERT(list.count() == 1);
+	list = m->scheduleList("A000002");
+	CPPUNIT_ASSERT(list.count() == 1);
+
+	// filter by start date
+	list = m->scheduleList("", MyMoneySchedule::TYPE_ANY,
+				MyMoneySchedule::OCCUR_ANY,
+				MyMoneySchedule::STYPE_ANY,
+				notOverdue.addMonths(1));
+	CPPUNIT_ASSERT(list.count() == 3);
+	CPPUNIT_ASSERT(list[0].name() == "Schedule 2");
+	CPPUNIT_ASSERT(list[1].name() == "Schedule 3");
+	CPPUNIT_ASSERT(list[2].name() == "Schedule 4");
+
+	// filter by end date
+	list = m->scheduleList("", MyMoneySchedule::TYPE_ANY,
+				MyMoneySchedule::OCCUR_ANY,
+				MyMoneySchedule::STYPE_ANY,
+				QDate(),
+				notOverdue.addDays(1));
+	CPPUNIT_ASSERT(list.count() == 3);
+	CPPUNIT_ASSERT(list[0].name() == "Schedule 1");
+	CPPUNIT_ASSERT(list[1].name() == "Schedule 2");
+	CPPUNIT_ASSERT(list[2].name() == "Schedule 4");
+
+	// filter by start and end date
+	list = m->scheduleList("", MyMoneySchedule::TYPE_ANY,
+				MyMoneySchedule::OCCUR_ANY,
+				MyMoneySchedule::STYPE_ANY,
+				notOverdue.addDays(-1),
+				notOverdue.addDays(1));
+	CPPUNIT_ASSERT(list.count() == 2);
+	CPPUNIT_ASSERT(list[0].name() == "Schedule 1");
+	CPPUNIT_ASSERT(list[1].name() == "Schedule 2");
+
+	// filter by overdue status
+	list = m->scheduleList("", MyMoneySchedule::TYPE_ANY,
+				MyMoneySchedule::OCCUR_ANY,
+				MyMoneySchedule::STYPE_ANY,
+				QDate(),
+				QDate(),
+				true);
+	CPPUNIT_ASSERT(list.count() == 1);
+	CPPUNIT_ASSERT(list[0].name() == "Schedule 4");
 }

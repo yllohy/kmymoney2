@@ -87,6 +87,7 @@ public:
     m_autoEnter = false;
     m_startDate = QDate(1900, 1, 1);
     m_lastPayment = QDate(1900, 1, 1);
+    m_id = "";
   }
 
   /**
@@ -98,6 +99,7 @@ public:
   MyMoneySchedule(const QString& name, typeE type, occurenceE occurence, paymentTypeE paymentType,
         QDate startDate, bool willEnd, bool fixed, bool autoEnter) {
     // Set up the default values
+    m_name = name;
     m_occurence = occurence;
     m_type = type;
     m_paymentType = paymentType;
@@ -107,6 +109,7 @@ public:
     m_autoEnter = autoEnter;
     m_startDate = startDate;
     m_lastPayment = m_startDate;
+    m_id = "";
   }
 
   /**
@@ -192,7 +195,7 @@ public:
     *
     * @return QString The instances id.
     */
-  QString id(void) const { return m_id; }
+  QCString id(void) const { return m_id; }
 
   /**
     * Simple method that returns the schedule last payment.
@@ -297,7 +300,7 @@ public:
     * @param id The instances id.
     * @return none
     */
-  void setId(const QString& id)
+  void setId(const QCString& id)
     { m_id = id; }
 
   /**
@@ -323,9 +326,11 @@ public:
     *
     * The date 1/1/1900 is returned if an error occurs.
     *
+    * @param refDate the reference date from which the next payment
+    *                date will be calculated (defaults to current date)
     * @return QDate The date the next payment is due
     */
-  QDate nextPayment(void) const;
+  QDate nextPayment(const QDate refDate = QDate::currentDate()) const;
 
   /**
     * Calculates the dates of the payment over a certain period of time.
@@ -334,7 +339,7 @@ public:
     *
     * @param startDate The start date for the range calculations
     * @param endDate The end date for the range calculations.
-    * @return QList<Qdate> The dates on which the payments are due.
+    * @return QValueList<QDate> The dates on which the payments are due.
     */
   QValueList<QDate> paymentDates(const QDate& startDate, const QDate& endDate) const;
 
@@ -410,7 +415,7 @@ private:
   bool m_autoEnter;
 
   /// The internal id.
-  QString m_id;
+  QCString m_id;
 
   /// Internal date used for calculations
   QDate m_lastPayment;

@@ -44,6 +44,7 @@ const QCString MyMoneyFile::NotifyClassAccount = "MyMoneyFile::NotifyAccount";
 const QCString MyMoneyFile::NotifyClassPayee = "MyMoneyFile::NotifyPayee";
 const QCString MyMoneyFile::NotifyClassInstitution = "MyMoneyFile::NotifyInstitution";
 const QCString MyMoneyFile::NotifyClassAccountHierarchy = "MyMoneyFile::NotifyAccountHierarchy";
+const QCString MyMoneyFile::NotifyClassSchedule = "MyMoneyFile::NotifySchedule";
 
 // include the following line to get a 'cout' for debug purposes
 // #include <iostream>
@@ -785,3 +786,59 @@ void MyMoneyFile::deletePair(const QCString& key)
   m_storage->deletePair(key);
 }
 
+void MyMoneyFile::addSchedule(MyMoneySchedule& sched)
+{
+  checkStorage();
+
+  // automatically notify all observers once this routine is done
+  MyMoneyNotifier notifier(this);
+
+  m_storage->addSchedule(sched);
+
+  addNotification(NotifyClassSchedule);
+}
+
+void MyMoneyFile::modifySchedule(const MyMoneySchedule& sched)
+{
+  checkStorage();
+
+  // automatically notify all observers once this routine is done
+  MyMoneyNotifier notifier(this);
+
+  m_storage->modifySchedule(sched);
+
+  addNotification(NotifyClassSchedule);
+}
+
+void MyMoneyFile::removeSchedule(const MyMoneySchedule& sched)
+{
+  checkStorage();
+
+  // automatically notify all observers once this routine is done
+  MyMoneyNotifier notifier(this);
+
+  m_storage->removeSchedule(sched);
+
+  addNotification(NotifyClassSchedule);
+}
+
+const MyMoneySchedule MyMoneyFile::schedule(const QCString& id) const
+{
+  checkStorage();
+
+  return m_storage->schedule(id);
+}
+
+const QValueList<MyMoneySchedule> MyMoneyFile::scheduleList(
+                          const QCString& accountId,
+                          const MyMoneySchedule::typeE type,
+                          const MyMoneySchedule::occurenceE occurence,
+                          const MyMoneySchedule::paymentTypeE paymentType,
+                          const QDate& startDate,
+                          const QDate& endDate,
+                          const bool overdue) const
+{
+  checkStorage();
+
+  return m_storage->scheduleList(accountId, type, occurence, paymentType, startDate, endDate, overdue);
+}

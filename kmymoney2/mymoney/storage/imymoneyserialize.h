@@ -48,8 +48,8 @@
   */
 class IMyMoneySerialize {
 public: 
-	IMyMoneySerialize();
-	virtual ~IMyMoneySerialize();
+  IMyMoneySerialize();
+  virtual ~IMyMoneySerialize();
 
   // general get functions
   virtual const QString& userName(void) const = 0;
@@ -121,6 +121,19 @@ public:
     */
   virtual const QValueList<MyMoneyPayee> payeeList(void) const = 0;
 
+  /**
+    * This method returns a list of the scheduled transactions
+    * inside a MyMoneyStorage object. In order to retrieve a complete
+    * list of the transactions, all arguments should be used with their
+    * default arguments.
+    */
+  virtual const QValueList<MyMoneySchedule> scheduleList(const QCString& = "",
+                                     const MyMoneySchedule::typeE = MyMoneySchedule::TYPE_ANY,
+                                     const MyMoneySchedule::occurenceE = MyMoneySchedule::OCCUR_ANY,
+                                     const MyMoneySchedule::paymentTypeE = MyMoneySchedule::STYPE_ANY,
+                                     const QDate& = QDate(),
+                                     const QDate& = QDate(),
+                                     const bool = false) const = 0;
   /**
     * This method is used to return the standard liability account
     * @return MyMoneyAccount liability account(group)
@@ -217,28 +230,23 @@ public:
     */
   virtual void addTransaction(MyMoneyTransaction& transaction, const bool skipAccountUpdate = false) = 0;
 
-  /**
-    * This method reconstructs the transaction list of all accounts
-    * in the m_accountList.
-    *
-    * @param acc iterator to the m_accountList
-    */
-  virtual void refreshAllAccountTransactionLists(void) = 0;
-
   virtual void loadAccount(const MyMoneyAccount& acc) = 0;
   virtual void loadTransaction(const MyMoneyTransaction& tr) = 0;
   virtual void loadInstitution(const MyMoneyInstitution& inst) = 0;
   virtual void loadPayee(const MyMoneyPayee& payee) = 0;
+  virtual void loadSchedule(const MyMoneySchedule& sched) = 0;
 
   virtual const unsigned long accountId(void) = 0;
   virtual const unsigned long transactionId(void) = 0;
   virtual const unsigned long payeeId(void) = 0;
   virtual const unsigned long institutionId(void) = 0;
+  virtual const unsigned long scheduleId(void) = 0;
 
   virtual void loadAccountId(const unsigned long id) = 0;
   virtual void loadTransactionId(const unsigned long id) = 0;
   virtual void loadPayeeId(const unsigned long id) = 0;
   virtual void loadInstitutionId(const unsigned long id) = 0;
+  virtual void loadScheduleId(const unsigned long id) = 0;
 
   /**
     * This method is used to retrieve the whole set of key/value pairs

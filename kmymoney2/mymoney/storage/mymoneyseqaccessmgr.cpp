@@ -34,6 +34,7 @@ MyMoneySeqAccessMgr::MyMoneySeqAccessMgr()
   m_nextInstitutionID = 0;
   m_nextTransactionID = 0;
   m_nextPayeeID = 0;
+  m_nextScheduleID = 0;
   m_userName =
   m_userStreet =
   m_userTown =
@@ -390,6 +391,14 @@ const QCString MyMoneySeqAccessMgr::nextTransactionID(void)
   return id;
 }
 
+const QCString MyMoneySeqAccessMgr::nextScheduleID(void)
+{
+  QCString id;
+  id.setNum(++m_nextScheduleID);
+  id = "SCH" + id.rightJustify(SCHEDULE_ID_SIZE, '0');
+  return id;
+}
+
 void MyMoneySeqAccessMgr::addTransaction(MyMoneyTransaction& transaction, const bool skipAccountUpdate)
 {
   // perform some checks to see that the transaction stuff is OK. For
@@ -434,7 +443,6 @@ void MyMoneySeqAccessMgr::addTransaction(MyMoneyTransaction& transaction, const 
       acc = m_accountList.find((*it).accountId());
       if(acc != m_accountList.end()) {
         (*acc).touch();
-        refreshAccountTransactionList(acc);
         invalidateBalanceCache((*acc).id());
       }
     }
@@ -456,50 +464,6 @@ void MyMoneySeqAccessMgr::touch(void)
 {
   m_dirty = true;
   m_lastModificationDate = QDate::currentDate();
-}
-
-void MyMoneySeqAccessMgr::refreshAllAccountTransactionLists(void)
-{
-/* removed with MyMoneyAccount::Transaction
-  QMap<QCString, MyMoneyTransaction>::ConstIterator it_t;
-  QMap<QCString, MyMoneyAccount>::Iterator it_a;
-  QValueList<MyMoneySplit>::ConstIterator it_s;
-
-  for(it_a = m_accountList.begin(); it_a != m_accountList.end(); ++it_a)
-    (*it_a).clearTransactions();
-
-  // scan all transactions
-  for(it_t = m_transactionList.begin(); it_t != m_transactionList.end(); ++it_t) {
-    // scan all splits of this transaction
-    for(it_s = (*it_t).splits().begin(); it_s != (*it_t).splits().end(); ++it_s) {
-      MyMoneyAccount::Transaction val((*it_t).id() ,(*it_s).value());
-      it_a = m_accountList.find((*it_s).accountId());
-      (*it_a).addTransaction(val);
-    }
-  }
-*/
-}
-
-void MyMoneySeqAccessMgr::refreshAccountTransactionList(QMap<QCString, MyMoneyAccount>::Iterator acc) const
-{
-/* removed with MyMoneyAccount::Transaction
-  QMap<QCString, MyMoneyTransaction>::ConstIterator it_t;
-  QValueList<MyMoneySplit>::ConstIterator it_s;
-
-  (*acc).clearTransactions();
-
-  // scan all transactions
-  for(it_t = m_transactionList.begin(); it_t != m_transactionList.end(); ++it_t) {
-    // scan all splits of this transaction
-    for(it_s = (*it_t).splits().begin(); it_s != (*it_t).splits().end(); ++it_s) {
-      // is it a split in our account?
-      if((*it_s).accountId() == (*acc).id()) {
-        MyMoneyAccount::Transaction val((*it_t).id() ,(*it_s).value());
-        (*acc).addTransaction(val);
-      }
-    }
-  }
-*/
 }
 
 const bool MyMoneySeqAccessMgr::hasActiveSplits(const QCString& id) const
@@ -665,7 +629,6 @@ void MyMoneySeqAccessMgr::modifyTransaction(const MyMoneyTransaction& transactio
     acc = m_accountList.find(it_a.key());
     if(acc != m_accountList.end()) {
       (*acc).touch();
-      refreshAccountTransactionList(acc);
       invalidateBalanceCache((*acc).id());
     }
   }
@@ -676,7 +639,7 @@ void MyMoneySeqAccessMgr::reparentAccount(MyMoneyAccount &account, MyMoneyAccoun
   reparentAccount(account, parent, true);
 }
 
-void MyMoneySeqAccessMgr::reparentAccount(MyMoneyAccount &account, MyMoneyAccount& parent, const bool sendNotification)
+void MyMoneySeqAccessMgr::reparentAccount(MyMoneyAccount &account, MyMoneyAccount& parent, const bool /* sendNotification */)
 {
   QMap<QCString, MyMoneyAccount>::Iterator oldParent;
   QMap<QCString, MyMoneyAccount>::Iterator newParent;
@@ -745,7 +708,6 @@ void MyMoneySeqAccessMgr::removeTransaction(const MyMoneyTransaction& transactio
     acc = m_accountList.find(it_a.key());
     if(acc != m_accountList.end()) {
       (*acc).touch();
-      refreshAccountTransactionList(acc);
       invalidateBalanceCache((*acc).id());
     }
   }
@@ -1174,4 +1136,148 @@ QMap<QCString, QString> MyMoneySeqAccessMgr::pairs(void) const
 void MyMoneySeqAccessMgr::setPairs(const QMap<QCString, QString>& list)
 {
   MyMoneyKeyValueContainer::setPairs(list);
+}
+
+void MyMoneySeqAccessMgr::addSchedule(MyMoneySchedule& sched)
+{
+  // first perform all the checks
+  if(sched.id() != "")
+    throw new MYMONEYEXCEPTION("schedule already contains an id");
+
+  sched.setId(nextScheduleID());
+
+  m_scheduleList[sched.id()] = sched;
+
+  // mark file as changed
+  touch();
+}
+
+void MyMoneySeqAccessMgr::modifySchedule(const MyMoneySchedule& sched)
+{
+  QMap<QCString, MyMoneySchedule>::Iterator it;
+
+  it = m_scheduleList.find(sched.id());
+  if(it == m_scheduleList.end()) {
+    QString msg = "Unknown schedule '" + sched.id() + "'";
+    throw new MYMONEYEXCEPTION(msg);
+  }
+
+  *it = sched;
+  // mark file as changed
+  touch();
+}
+
+void MyMoneySeqAccessMgr::removeSchedule(const MyMoneySchedule& sched)
+{
+  QMap<QCString, MyMoneySchedule>::Iterator it;
+
+  it = m_scheduleList.find(sched.id());
+  if(it == m_scheduleList.end()) {
+    QString msg = "Unknown schedule '" + sched.id() + "'";
+    throw new MYMONEYEXCEPTION(msg);
+  }
+
+  m_scheduleList.remove(it);
+  touch();
+}
+
+const MyMoneySchedule MyMoneySeqAccessMgr::schedule(const QCString& id) const
+{
+  QMap<QCString, MyMoneySchedule>::ConstIterator pos;
+
+  // locate the schedule and if present, return it's data
+  pos = m_scheduleList.find(id);
+  if(pos != m_scheduleList.end())
+    return (*pos);
+
+  // throw an exception, if it does not exist
+  QString msg = "Unknown schedule id '" + id + "'";
+  throw new MYMONEYEXCEPTION(msg);
+}
+
+const QValueList<MyMoneySchedule> MyMoneySeqAccessMgr::scheduleList(
+                          const QCString& accountId,
+                          const MyMoneySchedule::typeE type,
+                          const MyMoneySchedule::occurenceE occurence,
+                          const MyMoneySchedule::paymentTypeE paymentType,
+                          const QDate& startDate,
+                          const QDate& endDate,
+                          const bool overdue) const
+{
+  QMap<QCString, MyMoneySchedule>::ConstIterator pos;
+  QValueList<MyMoneySchedule> list;
+
+  // qDebug("scheduleList()");
+  
+  for(pos = m_scheduleList.begin(); pos != m_scheduleList.end(); ++pos) {
+    if(type != MyMoneySchedule::TYPE_ANY) {
+      if(type != (*pos).type())
+        continue;
+    }
+    
+    if(occurence != MyMoneySchedule::OCCUR_ANY) {
+      if(occurence != (*pos).occurence())
+        continue;
+    }
+    
+    if(paymentType != MyMoneySchedule::STYPE_ANY) {
+      if(paymentType != (*pos).paymentType())
+        continue;
+    }
+    
+    if(!accountId.isEmpty()) {
+      MyMoneyTransaction t = (*pos).transaction();
+      QValueList<MyMoneySplit>::ConstIterator it;
+      QValueList<MyMoneySplit> splits;
+      splits = t.splits();
+      for(it = splits.begin(); it != splits.end(); ++it) {
+        if((*it).accountId() == accountId)
+          break;
+      }
+      if(it == splits.end())
+        continue;
+    }
+
+    if(startDate.isValid() && endDate.isValid()) {
+      if((*pos).paymentDates(startDate, endDate).count() == 0)
+        continue;
+    }
+    
+    if(startDate.isValid() && !endDate.isValid()) {
+      if((*pos).paymentDates(startDate, QDate(2150,1,1)).count() == 0)
+        continue;
+    }
+    
+    if(!startDate.isValid() && endDate.isValid()) {
+      if((*pos).paymentDates(QDate(1900,1,1), endDate).count() == 0)
+        continue;
+    }
+
+    if(overdue) {
+      if((*pos).nextPayment((*pos).lastPayment()) >= QDate::currentDate())
+        continue;
+    }
+
+    // qDebug("Adding '%s'", (*pos).name().latin1());
+    list << *pos;
+  }
+  return list;
+}
+
+void MyMoneySeqAccessMgr::loadSchedule(const MyMoneySchedule& sched)
+{
+  QMap<QCString, MyMoneySchedule>::ConstIterator it;
+
+  it = m_scheduleList.find(sched.id());
+  if(it != m_scheduleList.end()) {
+    QString msg = "Duplicate scheduled '";
+    msg += sched.id() + "' during loadSchedule()";
+    throw new MYMONEYEXCEPTION(msg);
+  }
+  m_scheduleList[sched.id()] = sched;
+}
+
+void MyMoneySeqAccessMgr::loadScheduleId(const unsigned long id)
+{
+  m_nextScheduleID = id;
 }

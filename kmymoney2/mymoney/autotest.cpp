@@ -82,7 +82,7 @@ void unexpectedException(MyMoneyException *e)
 #endif // HAVE_LIBCPPUNIT
 
 int
-main(int argc, char** argv)
+main(int /* argc */, char** /* argv */ )
 {
 #ifdef HAVE_LIBCPPUNIT
 

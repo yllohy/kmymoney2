@@ -95,6 +95,7 @@ void MyMoneyScheduleTest::testConstructor() {
 	CPPUNIT_ASSERT(s.willEnd() == false);
 	CPPUNIT_ASSERT(s.isFixed() == true);
 	CPPUNIT_ASSERT(s.autoEnter() == true);
+	CPPUNIT_ASSERT(s.name() == "A Name");
 }
 
 void MyMoneyScheduleTest::testSetFunctions() {

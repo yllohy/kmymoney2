@@ -485,29 +485,24 @@ public:
     */
   const MyMoneyAccount income(void) const { return account(STD_ACC_INCOME); };
 
-  /**
-    * This method reconstructs the transaction list of all accounts
-    * in the m_accountList.
-    *
-    * @see refreshAccountTransactionList, addTransaction
-    */
-  void refreshAllAccountTransactionLists(void);
-
   virtual void loadAccount(const MyMoneyAccount& acc);
   virtual void loadTransaction(const MyMoneyTransaction& tr);
   virtual void loadInstitution(const MyMoneyInstitution& inst);
   virtual void loadPayee(const MyMoneyPayee& payee);
-
+  virtual void loadSchedule(const MyMoneySchedule& sched);
+  
   virtual void loadAccountId(const unsigned long id);
   virtual void loadTransactionId(const unsigned long id);
   virtual void loadPayeeId(const unsigned long id);
   virtual void loadInstitutionId(const unsigned long id);
-
+  virtual void loadScheduleId(const unsigned long id);
+  
   virtual const unsigned long accountId(void) { return m_nextAccountID; };
   virtual const unsigned long transactionId(void) { return m_nextTransactionID; };
   virtual const unsigned long payeeId(void) { return m_nextPayeeID; };
   virtual const unsigned long institutionId(void) { return m_nextInstitutionID; };
-
+  virtual const unsigned long scheduleId(void) { return m_nextScheduleID; };
+  
   /**
     * This method is used to extract a value from 
     * KeyValueContainer. For details see MyMoneyKeyValueContainer::value().
@@ -541,12 +536,90 @@ public:
   // documented in IMyMoneySerialize base class
   void setPairs(const QMap<QCString, QString>& list);
 
+  /**
+    * This method is used to add a scheduled transaction to the engine.
+    * It must be sure, that the id of the object is not filled. When the
+    * method returns to the caller, the id will be filled with the
+    * newly created object id value.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param sched reference to the MyMoneySchedule object
+    */
+  void addSchedule(MyMoneySchedule& sched);
+
+  /**
+    * This method is used to modify an existing MyMoneySchedule
+    * object. Therefor, the id attribute of the object must be set.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param sched const reference to the MyMoneySchedule object to be updated
+    */
+  void modifySchedule(const MyMoneySchedule& sched);
+
+  /**
+    * This method is used to remove an existing MyMoneySchedule object
+    * from the engine. The id attribute of the object must be set.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param sched const reference to the MyMoneySchedule object to be updated
+    */
+  void removeSchedule(const MyMoneySchedule& sched);
+
+  /**
+    * This method is used to retrieve a single MyMoneySchedule object.
+    * The id of the object must be supplied in the parameter @p id.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param id QCString containing the id of the MyMoneySchedule object
+    * @return MyMoneySchedule object
+    */
+  const MyMoneySchedule schedule(const QCString& id) const;
+
+  /**
+    * This method is used to extract a list of scheduled transactions
+    * according to the filter criteria passed as arguments.
+    *
+    * @param accountId only search for scheduled transactions that reference
+    *                  accound @p accountId. If accountId is the empty string,
+    *                  this filter is off. Default is @p "".
+    * @param type      only schedules of type @p type are searched for.
+    *                  See MyMoneySchedule::typeE for details.
+    *                  Default is MyMoneySchedule::TYPE_ANY
+    * @param occurance only schedules of occurance type @p occurance are searched for.
+    *                  See MyMoneySchedule::occuranceE for details.
+    *                  Default is MyMoneySchedule::OCCUR_ANY
+    * @param paymentType only schedules of payment method @p paymentType
+    *                  are searched for.
+    *                  See MyMoneySchedule::paymentTypeE for details.
+    *                  Default is MyMoneySchedule::STYPE_ANY
+    * @param startDate only schedules with payment dates after @p startDate
+    *                  are searched for. Default is all dates (QDate()).
+    * @param endDate   only schedules with payment dates ending prior to @p endDate
+    *                  are searched for. Default is all dates (QDate()).
+    * @param overdue   if true, only those schedules that are overdue are
+    *                  searched for. Default is false (all schedules will be returned).
+    *
+    * @return const QValueList<MyMoneySchedule> list of schedule objects.
+    */
+  const QValueList<MyMoneySchedule> scheduleList(const QCString& = "",
+                                     const MyMoneySchedule::typeE = MyMoneySchedule::TYPE_ANY,
+                                     const MyMoneySchedule::occurenceE = MyMoneySchedule::OCCUR_ANY,
+                                     const MyMoneySchedule::paymentTypeE = MyMoneySchedule::STYPE_ANY,
+                                     const QDate& = QDate(),
+                                     const QDate& = QDate(),
+                                     const bool = false) const;
+    
 private:
 
   static const int INSTITUTION_ID_SIZE = 6;
   static const int ACCOUNT_ID_SIZE = 6;
   static const int TRANSACTION_ID_SIZE = 18;
   static const int PAYEE_ID_SIZE = 6;
+  static const int SCHEDULE_ID_SIZE = 6;
 
   static const int YEAR_SIZE = 4;
   static const int MONTH_SIZE = 2;
@@ -573,14 +646,6 @@ private:
     * @param account id of the account in question
     */
   void invalidateBalanceCache(const QCString& id);
-
-  /**
-    * This method reconstructs the transaction list of an account
-    * in the m_accountList.
-    *
-    * @param acc iterator to the m_accountList
-    */
-  void refreshAccountTransactionList(QMap<QCString, MyMoneyAccount>::Iterator acc) const;
 
   /**
     * This member variable keeps the name of the User
@@ -653,6 +718,13 @@ private:
   unsigned long m_nextPayeeID;
 
   /**
+    * The member variable m_nextScheduleID keeps the number that will be
+    * assigned to the next schedule created. It is maintained by
+    * nextScheduleID()
+    */
+  unsigned long m_nextScheduleID;
+
+  /**
     * The member variable m_institutionList is the container for the
     * institutions known within this file.
     */
@@ -689,6 +761,11 @@ private:
     */
   QMap<QCString, MyMoneyPayee> m_payeeList;
 
+  /**
+    * A list containing all the scheduled transactions
+    */
+  QMap<QCString, MyMoneySchedule> m_scheduleList;
+  
   /**
     * This member signals if the file has been modified or not
     */
@@ -727,9 +804,15 @@ private:
 
   /**
     * This method is used to get the next valid ID for a payee
-    * @return id for a transaction
+    * @return id for a payee
     */
   const QCString nextPayeeID(void);
+
+  /**
+    * This method is used to get the next valid ID for a scheduled transaction
+    * @return id for a scheduled transaction
+    */
+  const QCString nextScheduleID(void);
 
   /**
     * This method re-parents an existing account

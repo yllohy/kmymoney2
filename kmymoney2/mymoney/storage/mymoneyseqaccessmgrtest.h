@@ -32,6 +32,7 @@ class MyMoneySeqAccessMgrTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST_SUITE(MyMoneySeqAccessMgrTest);
 	CPPUNIT_TEST(testEmptyConstructor);
 	CPPUNIT_TEST(testSetFunctions);
+	CPPUNIT_TEST(testSupportFunctions);
 	CPPUNIT_TEST(testIsStandardAccount);
 	CPPUNIT_TEST(testNewAccount);
 	CPPUNIT_TEST(testAddNewAccount);
@@ -58,6 +59,11 @@ class MyMoneySeqAccessMgrTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST(testRemoveAccountFromTree);
 	CPPUNIT_TEST(testAssignment);
 	CPPUNIT_TEST(testDuplicate);
+	CPPUNIT_TEST(testAddSchedule);
+	CPPUNIT_TEST(testModifySchedule);
+	CPPUNIT_TEST(testRemoveSchedule);
+	CPPUNIT_TEST(testSchedule);
+	CPPUNIT_TEST(testScheduleList);
 	CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -98,6 +104,12 @@ public:
 	void testAssignment();
 	void testEquality(const MyMoneySeqAccessMgr* t);
 	void testDuplicate();
+	void testAddSchedule();
+	void testSchedule();
+	void testModifySchedule();
+	void testRemoveSchedule();
+	void testSupportFunctions();
+	void testScheduleList();
 };
 
 #endif

@@ -708,6 +708,83 @@ public:
     */
   void deletePair(const QCString& key);
 
+  /**
+    * This method is used to add a scheduled transaction to the engine.
+    * It must be sure, that the id of the object is not filled. When the
+    * method returns to the caller, the id will be filled with the
+    * newly created object id value.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param sched reference to the MyMoneySchedule object
+    */
+  void addSchedule(MyMoneySchedule& sched);
+
+  /**
+    * This method is used to modify an existing MyMoneySchedule
+    * object. Therefor, the id attribute of the object must be set.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param sched const reference to the MyMoneySchedule object to be updated
+    */
+  void modifySchedule(const MyMoneySchedule& sched);
+
+  /**
+    * This method is used to remove an existing MyMoneySchedule object
+    * from the engine. The id attribute of the object must be set.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param sched const reference to the MyMoneySchedule object to be updated
+    */
+  void removeSchedule(const MyMoneySchedule& sched);
+
+  /**
+    * This method is used to retrieve a single MyMoneySchedule object.
+    * The id of the object must be supplied in the parameter @p id.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param id QCString containing the id of the MyMoneySchedule object
+    * @return MyMoneySchedule object
+    */
+  const MyMoneySchedule schedule(const QCString& id) const;
+
+  /**
+    * This method is used to extract a list of scheduled transactions
+    * according to the filter criteria passed as arguments.
+    *
+    * @param accountId only search for scheduled transactions that reference
+    *                  accound @p accountId. If accountId is the empty string,
+    *                  this filter is off. Default is @p "".
+    * @param type      only schedules of type @p type are searched for.
+    *                  See MyMoneySchedule::typeE for details.
+    *                  Default is MyMoneySchedule::TYPE_ANY
+    * @param occurance only schedules of occurance type @p occurance are searched for.
+    *                  See MyMoneySchedule::occuranceE for details.
+    *                  Default is MyMoneySchedule::OCCUR_ANY
+    * @param paymentType only schedules of payment method @p paymentType
+    *                  are searched for.
+    *                  See MyMoneySchedule::paymentTypeE for details.
+    *                  Default is MyMoneySchedule::STYPE_ANY
+    * @param startDate only schedules with payment dates after @p startDate
+    *                  are searched for. Default is all dates (QDate()).
+    * @param endDate   only schedules with payment dates ending prior to @p endDate
+    *                  are searched for. Default is all dates (QDate()).
+    * @param overdue   if true, only those schedules that are overdue are
+    *                  searched for. Default is false (all schedules will be returned).
+    *
+    * @return const QValueList<MyMoneySchedule> list of schedule objects.
+    */
+  const QValueList<MyMoneySchedule> scheduleList(const QCString& = "",
+                                     const MyMoneySchedule::typeE = MyMoneySchedule::TYPE_ANY,
+                                     const MyMoneySchedule::occurenceE = MyMoneySchedule::OCCUR_ANY,
+                                     const MyMoneySchedule::paymentTypeE = MyMoneySchedule::STYPE_ANY,
+                                     const QDate& = QDate(),
+                                     const QDate& = QDate(),
+                                     const bool = false) const;
+  
 public:
   /**
     * MyMoneyFile::NotifyClassAccount
@@ -750,6 +827,11 @@ public:
     */
   static const QCString NotifyClassInstitution;
 
+  /**
+    * MyMoneyFile::NotifyClassSchedule
+    * is a special id that will be notified whenever any schedule is changed
+    */
+  static const QCString NotifyClassSchedule;
 
 protected:
   /**
