@@ -1,3 +1,9 @@
+2004-10-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed crash when creating new categories while entering transactions
+  * Added "Don't ask again" switch to question if new category should be
+    created.
+  * Removed unused tabs in new account dialog rather than disableing them
+
 2004-10-16 Ace Jones <acejones@users.sourceforge.net>
   * Added online price updating for equities  
   * Added "Favorite Reports" to the home page.
@@ -10,7 +16,7 @@
     if only one of the accounts is included in the filter.
   * Added cash flow analysis tools for future investment reports
   * Cleaned up random investment data generator (in KReportsViewTest)
-  
+
 2004-10-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added VAT handling
   * Added MyMoneyMoney::isZero()
