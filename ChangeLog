@@ -1,12 +1,17 @@
+2005-03-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Improved future payment display in financial overview page
+  * Revised KDE menu integration
+
 2005-03-09 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Gnucash import
     - Fix handling of credit card accounts
+
 2005-03-08 Ace Jones <acejones@users.sourceforge.net>
   * Fixed a crash in checking ledger when attempting to edit the splits of
     an investment transaction
   * Added memos in the case of split transactions to transaction reports
     (Submitted by Andy Thaller <gandy@users.sourceforge.net>    
-    
+
 2005-03-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added duplicate split feature
   * Added menu dynamics to the HBCI plugin
