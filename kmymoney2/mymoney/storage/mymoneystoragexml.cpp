@@ -77,7 +77,7 @@ void MyMoneyStorageXML::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
       totalSize += readSize;
       if(readSize > 0)
       {
-        qDebug("XMLREADER: %d chars read", readSize);
+        qDebug("XMLREADER: %ld chars read", readSize);
         std::string parseString(buf);
         m_parser->parse_chunk(parseString);
       }
@@ -97,7 +97,7 @@ void MyMoneyStorageXML::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
     //don't use this pointer after the function has exited...
     m_pStorage = NULL;
 
-    qDebug("XMLREADER: %d total file size", totalSize);
+    qDebug("XMLREADER: %ld total file size", totalSize);
     
   }
 }
