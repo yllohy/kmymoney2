@@ -57,7 +57,7 @@ private:
   void writeConfig(void);
   void refresh(void);
   void update(const QCString& id);
-  void showSubAccounts(QCStringList accounts, KAccountListItem *parentItem, MyMoneyFile *file, const QString&);
+  void showSubAccounts(const QCStringList& accounts, KAccountListItem *parentItem, const QString&);
 
 protected:
   void resizeEvent(QResizeEvent *);

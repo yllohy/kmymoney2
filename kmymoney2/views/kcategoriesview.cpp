@@ -76,7 +76,7 @@ KCategoriesView::KCategoriesView(QWidget *parent, const char *name )
   // never show a horizontal scroll bar
   categoryListView->setHScrollBarMode(QScrollView::AlwaysOff);
 
-  categoryListView->setSorting(-1);
+  categoryListView->setSorting(0);
 
   readConfig();
 
@@ -143,7 +143,7 @@ void KCategoriesView::refresh(void)
       QCStringList subAccounts = m_accountMap[*it].accountList();
       if (subAccounts.count() >= 1)
       {
-        showSubAccounts(subAccounts, accountItem, file, i18n("Income"));
+        showSubAccounts(subAccounts, accountItem, i18n("Income"));
       }
     }
 
@@ -161,7 +161,7 @@ void KCategoriesView::refresh(void)
       QCStringList subAccounts = m_accountMap[*it].accountList();
       if (subAccounts.count() >= 1)
       {
-        showSubAccounts(subAccounts, accountItem, file, i18n("Expense"));
+        showSubAccounts(subAccounts, accountItem, i18n("Expense"));
       }
     }
 
@@ -178,7 +178,7 @@ void KCategoriesView::refresh(void)
   m_accountMap.clear();
 }
 
-void KCategoriesView::showSubAccounts(QCStringList accounts, KAccountListItem *parentItem, MyMoneyFile *file,
+void KCategoriesView::showSubAccounts(const QCStringList& accounts, KAccountListItem *parentItem,
   const QString& typeName)
 {
   for ( QCStringList::ConstIterator it = accounts.begin(); it != accounts.end(); ++it )
@@ -188,7 +188,7 @@ void KCategoriesView::showSubAccounts(QCStringList accounts, KAccountListItem *p
     QCStringList subAccounts = m_accountMap[*it].accountList();
     if (subAccounts.count() >= 1)
     {
-      showSubAccounts(subAccounts, accountItem, file, typeName);
+      showSubAccounts(subAccounts, accountItem, typeName);
     }
   }
 }
@@ -337,7 +337,6 @@ void KCategoriesView::update(const QCString& id)
   // default accounts are loaded) a switch is supported to suppress
   // updates in this phase. The switch is controlled with suspendUpdate().
   if(m_suspendUpdate == false) {
-    qDebug("KCategoriesView::update() called");
     refresh();
   }
 }
