@@ -79,7 +79,7 @@ private:
 	kMyMoneyLineEdit* m_memo;
     kMyMoneyHLayout*	m_hlayout;
 
-  QList<MyMoneyTransaction> m_transactions;
+  QList<MyMoneyTransaction> *m_transactions;
 
   void updateTransactionList(int start, int col=-1);
 
@@ -97,7 +97,7 @@ public:
 	KTransactionView(QWidget *parent=0, const char *name=0);
 	~KTransactionView();
 
-	void init(MyMoneyFile *file, MyMoneyBank bank, MyMoneyAccount account, QList<MyMoneyTransaction>& transList, viewingType type);
+	void init(MyMoneyFile *file, MyMoneyBank bank, MyMoneyAccount account, QList<MyMoneyTransaction> *transList, viewingType type);
 	void clear(void);
   void refresh(void);
 
