@@ -49,7 +49,12 @@ private:
 
 protected:
   void focusOutEvent(QFocusEvent *e);
-
+  /**
+    * This method ensures that the text version contains a
+    * fractional part.
+    */
+  void ensureFractionalPart(void);
+  
 protected slots:
   void theTextChanged(const QString & text);
   void slotCalculatorResult();

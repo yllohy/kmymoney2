@@ -68,14 +68,16 @@ const bool kMyMoneyEdit::isValid(void) const
 
 MyMoneyMoney kMyMoneyEdit::getMoneyValue(void)
 {
+  ensureFractionalPart();
   MyMoneyMoney money(text());
   return money;
 }
 
-void kMyMoneyEdit::loadText(const QString& text)
+void kMyMoneyEdit::loadText(const QString& txt)
 {
-  m_text = text;
-  setText(text);
+  setText(txt);
+  ensureFractionalPart();
+  m_text = text();
 }
 
 void kMyMoneyEdit::resetText(void)
@@ -94,7 +96,7 @@ void kMyMoneyEdit::theTextChanged(const QString & theText)
     previousText = l_text;
 }
 
-void kMyMoneyEdit::focusOutEvent(QFocusEvent *e)
+void kMyMoneyEdit::ensureFractionalPart(void)
 {
   KLocale* locale = KGlobal::locale();
   // If text contains no 'monetaryDecimalSymbol' then add it
@@ -108,9 +110,17 @@ void kMyMoneyEdit::focusOutEvent(QFocusEvent *e)
       setText(s);
     }
   }
-  if(MyMoneyMoney(text()) != MyMoneyMoney(m_text))
-    emit valueChanged(text());
+}
 
+void kMyMoneyEdit::focusOutEvent(QFocusEvent *e)
+{
+  ensureFractionalPart();
+  
+  if(MyMoneyMoney(text()) != MyMoneyMoney(m_text)) {
+    emit valueChanged(text());
+    m_text = text();
+  }
+  
   QLineEdit::focusOutEvent(e);
 }
 
