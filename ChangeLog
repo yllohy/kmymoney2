@@ -1,3 +1,17 @@
+2002-11-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Balance of accounts in accounts and category view did not get updated
+  * Show liablities also as positive values in accounts view
+  * Summary line shows balance in red if negative
+  * Exit any pending edit activities in ledger views when switching to
+    a different view (e.g. payees or schedule view)
+  * Added Credit Card ledgerview
+  * Added automatic preset of from/to account if opposite is not
+    the current selected account
+  * Update split.action() when a negative amount is entered
+  * Handle from/to account of transfer when entering negative amounts
+  * Made the finish button the default for the split dialog
+  * Made Enter button the default button in transaction form
+
 2002-11-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added RBM context menu to the ledger view
   * Saving the file in binary format now clears the dirty flag
