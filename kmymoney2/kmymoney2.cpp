@@ -61,6 +61,9 @@
 #include <kio/netaccess.h>
 #include <dcopclient.h>
 #include <kstartupinfo.h>
+#if !KDE_IS_VERSION(3,2,0)
+#include <kwin.h>
+#endif
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -218,9 +221,11 @@ void KMyMoney2App::initActions()
   new KAction(i18n("Consistency Check"), "", 0, this, SLOT(slotFileConsitencyCheck()), actionCollection(), "file_consistency_check");
   new KAction(i18n("Currencies ..."), "", 0, this, SLOT(slotCurrencyDialog()), actionCollection(), "tool_currency_dialog");
   new KAction(i18n("Update Stock and Currency Prices..."), "", 0, this, SLOT(slotEquityPriceUpdate()), actionCollection(), "equity_price_update");
+  
   // The Settings Menu
   settingsKey = KStdAction::keyBindings(this, SLOT(slotKeySettings()), actionCollection());
   settings = KStdAction::preferences(this, SLOT( slotSettings() ), actionCollection());
+  new KAction(i18n("Configure Online &Banking..."), "configure", 0, this, SLOT(slotBankingSettings()), actionCollection(), "banking_settings");
 
   // The Bank Menu
   bankAdd = new KAction(i18n("Add new institution..."), "bank", 0, myMoneyView, SLOT(slotBankNew()), actionCollection(), "bank_add");
@@ -230,7 +235,6 @@ void KMyMoney2App::initActions()
 
   // The tool menu
   new KAction(i18n("QIF Profile Editor..."), "edit", 0, this, SLOT(slotQifProfileEditor()), actionCollection(), "qif_editor");
-  new KAction(i18n("Banking Settings..."), "edit", 0, this, SLOT(slotBankingSettings()), actionCollection(), "banking_settings");
 
   // The help menu
   new KAction(i18n("&Show tip of the day"), "idea", 0, this, SLOT(slotShowTipOfTheDay()), actionCollection(), "show_tip");
@@ -1014,7 +1018,7 @@ void KMyMoney2App::slotBankingSettings() {
     }
   }
 #else
-  KMessageBox::information( this, QString("<p>")+i18n("Banking settings is unavailable.  This version of <b>KMyMoney</b> was built without <b>KBanking</b> support."), i18n("Function not available"));
+  KMessageBox::information( this, QString("<p>")+i18n("Online banking settings is unavailable.  This version of <b>KMyMoney</b> was built without <b>KBanking</b> support."), i18n("Function not available"));
 #endif
 }
 
@@ -1620,30 +1624,39 @@ void KMyMoney2App::ofxWebConnect(const QString& url, const QCString& asn_id)
 {
   // Bring this window to the forefront.  This method was suggested by
   // Lubos Lunak <l.lunak@suse.cz> of the KDE core development team.
-  // Still have to figure out how to do it on earlier versions of KDE
 
 #if KDE_IS_VERSION(3,2,0)
   KStartupInfo::setNewStartupId(this,asn_id);
+#else
+  KWin::activateWindow( winId() );
 #endif
 
 #if defined(HAVE_LIBOFX) || defined(HAVE_NEW_OFX)
-  QString prevMsg = slotStatusMsg(i18n("Importing a statement from OFX"));
+  // Make sure we have an open file
+  if ( ! myMoneyView->fileOpen() &&   
+    KMessageBox::warningContinueCancel(kmymoney2, i18n("You must first select a KMyMoney file before you can import a statement.")) == KMessageBox::Continue )
+      kmymoney2->slotFileOpen();
 
-  MyMoneyOfxStatement s( url );
-  if ( s.isValid() )
-    slotStatementImport(s);
-  else
+  // only continue if the user really did open a file.
+  if ( myMoneyView->fileOpen() )
   {
-    QMessageBox::critical( this, i18n("Invalid OFX"), i18n("Error importing %1: This file is not a valid OFX file.").arg(url), QMessageBox::Ok, 0 );
-    slotStatusMsg(prevMsg);
+    QString prevMsg = slotStatusMsg(i18n("Importing a statement from OFX"));
+  
+    MyMoneyOfxStatement s( url );
+    if ( s.isValid() )
+      slotStatementImport(s);
+    else
+    {
+      QMessageBox::critical( this, i18n("Invalid OFX"), i18n("Error importing %1: This file is not a valid OFX file.").arg(url), QMessageBox::Ok, 0 );
+      slotStatusMsg(prevMsg);
+    }
   }
-
+  
 #else
   KMessageBox::information( this, QString("<p>")+i18n("<b>OFX</b> import is unavailable.  This version of <b>KMyMoney</b> was built without <b>OFX</b> support."), i18n("Function not available"));
 #endif
 
 }
-
 
 void KMyMoney2App::slotBankingImport() {
 #ifdef HAVE_KBANKING
@@ -1654,6 +1667,4 @@ void KMyMoney2App::slotBankingImport() {
   }
 #endif
 }
-
-
 

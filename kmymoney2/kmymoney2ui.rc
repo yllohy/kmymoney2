@@ -26,6 +26,7 @@
 
   <Menu name="settings">
     <Action name="show_transaction_detail" append="show_merge"/>
+    <Action name="banking_settings" append="configure_merge"/>
   </Menu>
 
   <Menu name="bank"><text>&amp;Institution</text>
@@ -45,7 +46,6 @@
     <Action name="tool_currency_dialog"/>
     <Action name="file_consistency_check"/>
     <Action name="equity_price_update"/>
-    <Action name="banking_settings"/>
   </Menu>
 
   <Menu name="help">

@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
   aboutData.addAuthor("John C", I18N_NOOP("Developer"), "tacoturtle@users.sourceforge.net");
   aboutData.addAuthor("Thomas Baumgart", I18N_NOOP("Developer & Release Manager"), "ipwizard@users.sourceforge.net");
   aboutData.addAuthor("Kevin Tambascio", I18N_NOOP("Developer"), "ktambascio@users.sourceforge.net");
-  aboutData.addAuthor("Ace Jones", I18N_NOOP("Developer of reporting logic"), "");
+  aboutData.addAuthor("Ace Jones", I18N_NOOP("Developer of reporting logic"), "acejones@users.sourceforge.net");
   aboutData.addCredit("Arni Ingimundarson", I18N_NOOP("Developer"), "arniing@users.sourceforge.net");
   KCmdLineArgs::init( argc, argv, &aboutData );
   KCmdLineArgs::addCmdLineOptions( options ); // Add our own options.
@@ -136,7 +136,7 @@ int main(int argc, char *argv[])
   kbanking=new KMyMoneyBanking("kmymoney");
   int rv=kbanking->init();
   if (rv) {
-    qWarning("Could not initialize banking interface");
+    qWarning("Could not initialize KBanking online banking interface");
     delete kbanking;
     kbanking=0;
   }
@@ -226,9 +226,6 @@ int main(int argc, char *argv[])
     // kmymoney2->createInitialAccount();
     KTipDialog::showTip(kmymoney2, "", false);
   }
-  
-  // TODO: Handle the case where the user launches with an importable file
-  // but DOES NOT have a 'last used file' set.
   
   if ( ! importfile.isEmpty() )
     kmymoney2->ofxWebConnect( importfile, kapp->startupId() );
