@@ -23,65 +23,67 @@
 #include "../mymoney/storage/mymoneyseqaccessmgr.h"
 
 class KReportsViewTest : public CppUnit::TestFixture  {
-        CPPUNIT_TEST_SUITE(KReportsViewTest);
-	CPPUNIT_TEST(testNetWorthSingle);
-	CPPUNIT_TEST(testNetWorthOfsetting);
-	CPPUNIT_TEST(testNetWorthOpeningPrior);
-	CPPUNIT_TEST(testNetWorthDateFilter);
-	CPPUNIT_TEST(testSpendingEmpty);
-	CPPUNIT_TEST(testSingleTransaction);
-	CPPUNIT_TEST(testSubAccount);
-	CPPUNIT_TEST(testFilterIEvsIE);
-	CPPUNIT_TEST(testFilterALvsAL);
-	CPPUNIT_TEST(testFilterALvsIE);
-	CPPUNIT_TEST(testFilterAllvsIE);
-	CPPUNIT_TEST(testFilterBasics);
-	CPPUNIT_TEST(testMultipleCurrencies);
-	CPPUNIT_TEST(testAdvancedFilter);
-	CPPUNIT_TEST(testColumnType);
-	CPPUNIT_TEST(testXMLWrite);
-	CPPUNIT_TEST(testQueryBasics);
-	CPPUNIT_TEST(testCashFlowAnalysis);
-	CPPUNIT_TEST(testAccountQuery);
-	CPPUNIT_TEST(testInvestment);
-        CPPUNIT_TEST(testOfxImport);
-        CPPUNIT_TEST(testWebQuotes);
-        CPPUNIT_TEST(testDateFormat);
-	CPPUNIT_TEST_SUITE_END();
+  CPPUNIT_TEST_SUITE(KReportsViewTest);
+  CPPUNIT_TEST(testNetWorthSingle);
+  CPPUNIT_TEST(testNetWorthOfsetting);
+  CPPUNIT_TEST(testNetWorthOpeningPrior);
+  CPPUNIT_TEST(testNetWorthDateFilter);
+  CPPUNIT_TEST(testSpendingEmpty);
+  CPPUNIT_TEST(testSingleTransaction);
+  CPPUNIT_TEST(testSubAccount);
+  CPPUNIT_TEST(testFilterIEvsIE);
+  CPPUNIT_TEST(testFilterALvsAL);
+  CPPUNIT_TEST(testFilterALvsIE);
+  CPPUNIT_TEST(testFilterAllvsIE);
+  CPPUNIT_TEST(testFilterBasics);
+  CPPUNIT_TEST(testMultipleCurrencies);
+  CPPUNIT_TEST(testAdvancedFilter);
+  CPPUNIT_TEST(testColumnType);
+  CPPUNIT_TEST(testXMLWrite);
+  CPPUNIT_TEST(testQueryBasics);
+  CPPUNIT_TEST(testCashFlowAnalysis);
+  CPPUNIT_TEST(testAccountQuery);
+  CPPUNIT_TEST(testInvestment);
+#ifdef HAVE_NEW_OFX
+  CPPUNIT_TEST(testOfxImport);
+#endif
+  CPPUNIT_TEST(testWebQuotes);
+  CPPUNIT_TEST(testDateFormat);
+  CPPUNIT_TEST_SUITE_END();
 
 private:
-	MyMoneyAccount	*m;
+  MyMoneyAccount  *m;
 
   MyMoneySeqAccessMgr* storage;
   MyMoneyFile* file;
-  
+
 public:
-	KReportsViewTest();
-	void setUp ();
-	void tearDown ();
-	void testNetWorthSingle();
-	void testNetWorthOfsetting();
-	void testNetWorthOpeningPrior();
-	void testNetWorthDateFilter();
-	void testSpendingEmpty();
-	void testSingleTransaction();
-	void testSubAccount();
-	void testFilterIEvsIE();
-	void testFilterALvsAL();
-	void testFilterALvsIE();
-	void testFilterAllvsIE();
-	void testFilterBasics();
-	void testMultipleCurrencies();
-	void testAdvancedFilter();
-	void testColumnType();
-        void testXMLWrite();
-        void testQueryBasics();
-        void testCashFlowAnalysis();
-	void testAccountQuery();
-        void testOfxImport();
-        void testInvestment();
-        void testWebQuotes();
-        void testDateFormat();
+  KReportsViewTest();
+  void setUp ();
+  void tearDown ();
+  void testNetWorthSingle();
+  void testNetWorthOfsetting();
+  void testNetWorthOpeningPrior();
+  void testNetWorthDateFilter();
+  void testSpendingEmpty();
+  void testSingleTransaction();
+  void testSubAccount();
+  void testFilterIEvsIE();
+  void testFilterALvsAL();
+  void testFilterALvsIE();
+  void testFilterAllvsIE();
+  void testFilterBasics();
+  void testMultipleCurrencies();
+  void testAdvancedFilter();
+  void testColumnType();
+  void testXMLWrite();
+  void testQueryBasics();
+  void testCashFlowAnalysis();
+  void testAccountQuery();
+  void testOfxImport();
+  void testInvestment();
+  void testWebQuotes();
+  void testDateFormat();
 };
 
 #endif
