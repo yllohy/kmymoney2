@@ -1,3 +1,8 @@
+2004-06-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Replaced KLineEditDlg with KInputDialog for KDE >= 3.2.0
+  * Replaced some deprecated methods in KDE >= 3.2.0
+  * Fixed #968338 (Quarterly schedules are not calculated correctly)
+
 2004-06-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed problem in find transaction logic
   * Fixed problem with scheduled payments when payment is on 29th-31st but
