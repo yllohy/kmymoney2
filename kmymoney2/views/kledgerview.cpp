@@ -1669,6 +1669,8 @@ void KLedgerView::slotMoveToAccount(void)
 
 void KLedgerView::slotDeleteTransaction(void)
 {
+  Q_CHECK_PTR(m_register);
+
   int answer;
   if(m_transactionPtr != 0) {
     answer = KMessageBox::warningContinueCancel (NULL,
@@ -1697,6 +1699,7 @@ void KLedgerView::slotDeleteTransaction(void)
       }
     }
   }
+  m_register->setFocus();
 }
 
 void KLedgerView::slotGotoOtherSideOfTransfer(void)
