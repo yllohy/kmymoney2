@@ -39,8 +39,6 @@
 #include "../mymoney/mymoneyfile.h"
 #include "../kmymoneyutils.h"
 
-QPixmap* KAccountListItem::accountPixmap = 0;
-
 void KCategoryListItem::update(const QCString& accountId)
 {
   if(m_suspendUpdate == true)
@@ -133,34 +131,37 @@ KAccountListItem::KAccountListItem(KAccountListItem *parent, const MyMoneyAccoun
   newAccount(account);
 }
 
-void KAccountListItem::loadCache(void)
-{
-  if(accountPixmap == 0) {
-    accountPixmap = new QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/22x22/actions/account.png"));
-  }
-}
-
-void KAccountListItem::cleanCache(void)
-{
-  if(accountPixmap != 0) {
-    delete accountPixmap;
-    accountPixmap = 0;
-  }
-}
-
 void KAccountListItem::newAccount(const MyMoneyAccount& account)
 {
   m_suspendUpdate = false;
   m_valueValid = true;
 
-  loadCache();
   MyMoneyFile*  file = MyMoneyFile::instance();
 
   setAccountID(account.id());
   setAccountType(account.accountType());
-
+ 
   file->attach(account.id(), this);
-  setPixmap(0, *accountPixmap);
+
+  QString icon;
+  switch (MyMoneyAccount::accountGroup(accountType()))
+  {
+    case MyMoneyAccount::Income:
+      icon = "account-types_income";
+      break;
+    case MyMoneyAccount::Expense:
+      icon = "account-types_expense";
+      break;
+    case MyMoneyAccount::Liability:
+      icon = "account-types_liability";
+      break;
+    case MyMoneyAccount::Asset:
+      icon = "account-types_asset";
+      break;
+    default:
+      icon = "account";
+  }
+  setPixmap(0, QPixmap(KGlobal::dirs()->findResource("appdata",QString( "icons/hicolor/22x22/actions/%1.png").arg(icon))));
 
   // fill the columns with inital data
   update(account.id());

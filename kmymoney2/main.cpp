@@ -221,7 +221,6 @@ int main(int argc, char *argv[])
   DESTROY_TEST_CONTAINER();
 
   delete a;
-  KAccountListItem::cleanCache();
 
 #ifdef _CHECK_MEMORY
   chkmem.CheckMemoryLeak( false );

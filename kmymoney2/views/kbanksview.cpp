@@ -43,261 +43,9 @@
 #include "../widgets/kmymoneytitlelabel.h"
 #include "../mymoney/mymoneyfile.h"
 #include "../dialogs/knewaccountdlg.h"
-#include "../kmymoneyutils.h"
 #include "../dialogs/knewbankdlg.h"
+#include "../kmymoneyutils.h"
 #include "../kapptest.h"
-
-static const char* const assetIconImage[] = {
-"32 32 9 1",
-". c None",
-"# c #000000",
-"a c #0000ff",
-"d c #008183",
-"c c #838183",
-"f c #c5c2c5",
-"g c #ff0000",
-"e c #ffff00",
-"b c #ffffff",
-"................................",
-"............#...................",
-"...........#a#..................",
-"..........#a#a#.................",
-".........#a#b#a#................",
-"........#a#bbb#a#...............",
-".......#a#bbbbb#a#..............",
-"......#a#bbbbbbb#a#.............",
-".....#a#bbbbbbbbb#a#............",
-"....#a#bbbbbbbbbbb#a#...........",
-"...#a#bbbbbbbbbbbbb#a#..........",
-"..#a#bbbbbbbbbbbbbbb#a#.........",
-".#a#bbbbbbbbbbbbbbbbb#a#........",
-"#a##bb####bbbbb####bb##a#.......",
-".#c#bb##d#bbbbb##d#bb#c#c.......",
-".cc#bb#dd#bbbbb#dd#bb#cccc......",
-"...#bb#dd#bbbbb#dd#bb#c.c.......",
-"...#bb####bbbbb####bb#c.........",
-"...#bbbbbb#####bbbbbb#c.........",
-"...#bbbbbb#efe#bbbbbb#c.........",
-"...#bbbbbb#fef#bbb#######.......",
-"...#bbbbbb#efe#bb#ggggggg#......",
-"...#bbbbbb#fef#b#ggggggggg#.....",
-"...#bbbbbb#######ggggggggg#####.",
-"...#bbbbbb##gggggggggggggggggg#.",
-"...#########gg###ggggggg###ggg#c",
-"....ccccccc#g##c##ggggg##c##gg#c",
-"...........###ccc#######ccc####c",
-"............c##f##ccccc##f##cccc",
-".............c###cc.....###cc...",
-"...............ccc.......ccc....",
-"................................"};
-
-static const char* const cashIconImage[] = {
-"32 32 6 1",
-". c None",
-"# c #000000",
-"a c #838100",
-"c c #838183",
-"d c #c5c2c5",
-"b c #ffff00",
-"................................",
-".......................#####....",
-".....................###aba##...",
-"....................##bababab##.",
-"....................#babababab#c",
-"...........#........#aba###aba#c",
-"..........#c#.......##abababa##c",
-"........##dbd##.....#b##bab##b#c",
-"......##.d.#.d.##...#ab#####ba#c",
-"...#####db#c#bdbd##.##abbbbba##c",
-".###aba###ddd##d.d.##b##dad##b#c",
-"##bababab##bdbd##ddbd#######ba#c",
-"#babababab#d.d.dd##d.d.##bbba##c",
-"#aba###aba#bdbdbdbd##ddbd####b#c",
-"##abababa##d.d.d.d.dd##d.d.##a#c",
-"#b##bab##b##dbdbdbdbdbd##ddbd##c",
-"#ab#####ba#d##dd.d.d.d.dd###.d.#",
-"##abbbbba##bdd##dbdbdbdd##ddd##c",
-"#b##dad##b##.d.d##dddd##dd.##dd#",
-"#ab#####ba#d##dbdd####dbd##dd##c",
-"##abbbbba###dd##.d.#dd.##dd##dd#",
-"#b##dad##b#d##dd##dbd##dd##dd##c",
-"#ab#####ba##dd##dd###dd##dd##dd#",
-"##abbbbba##d##dd##d#d##dd##dd##c",
-"#b##dad##b##dd##dd###dd##dd##ccc",
-"#ab#####ba#c##dd##d#d##dd##ccc..",
-"##abbbbba##ccc##dd###dd##ccc....",
-".c##dad##ccc..cc##d#d##ccc......",
-"..c#####cc......cc###ccc........",
-"....ccccc.........c#cc..........",
-"...................cc...........",
-"................................"};
-
-static const char* const creditCardIconImage[] = {
-"32 32 7 1",
-". c None",
-"a c #000000",
-"b c #000083",
-"e c #0000ff",
-"d c #008183",
-"c c #838183",
-"# c #ffffff",
-"................................",
-"................................",
-"................................",
-"................................",
-"................................",
-"...............................#",
-".aaaaaaaaaaaaaaaaaaaaaaaaaaaaa..",
-"a#############################a.",
-"a#bbbbbbbbbbbbbbbbbbbbbbbbbbb#ac",
-"a#bbbbbbbbbbbbbbbbbbbbbbbbbbb#ac",
-"a#bbbbbbbbbbbbbbbbbbbbbbbbbbb#ac",
-"a#bbbbbbbbbbbbbbbbbbbbbbbbbbb#ac",
-"a#bbbbbbbbbbbbbbbbbbbbbbbbbbb#ac",
-"a#dededededededededededededed#ac",
-"a#ededededededededededededede#ac",
-"a#dededededededededededededed#ac",
-"a#ededededededededededededede#ac",
-"a#ded##e##d##e##d##e##d##eded#ac",
-"a#ede##d##e##d##e##d##e##dede#ac",
-"a#dededededededededededededed#ac",
-"a#ededededededededededededede#ac",
-"a#ded##################ededed#ac",
-"a#ededededededededededededede#ac",
-"a#dededededededededededededed#ac",
-"a#############################ac",
-".aaaaaaaaaaaaaaaaaaaaaaaaaaaaac.",
-"..cccccccccccccccccccccccccccc..",
-"................................",
-"................................",
-"................................",
-"................................",
-"................................"};
-
-static const char* const checkingsIconImage[] = {
-"32 32 6 1",
-". c None",
-"# c #000000",
-"b c #0000ff",
-"a c #008183",
-"c c #838183",
-"d c #ffffff",
-"........###.....................",
-"........#ab##...................",
-"........#baba##.................",
-"........#ababab##...............",
-"........#babababa##.............",
-"........#ababababab##...........",
-".........#abababababa##.........",
-".........#babababababab##.......",
-".........#abababababababa##.....",
-"..........#abababababababab##...",
-"..........#babababababababab#...",
-"..........#ababababababababa#...",
-"...........##bababababababab#...",
-"..........##c##ababababababa#...",
-"........##d##cc##bababababab#...",
-"......##ddddd##cc##ababababab#..",
-"....##ddddddddd##cc##babababa#..",
-"..##ddd##dddddddd##cc##ababab#..",
-".#ddd##dd##dddddddd##cc##baba##.",
-".##dddd##dd##dddddddd##cc###ba#.",
-".#c##dddd##dd##dddd#ddd##ccc###.",
-"###cc##dddd##dd##ddd##ddd##cc#b#",
-"#ba##cc##dddd##dd##ddd#dddd###a#",
-"###ab##cc##dddd##dd##dddd##cc#b#",
-"ccc##aa##cc##dddd##dddd##cc##aa#",
-"...cc##ab##cc##dddddd##cc##ab##c",
-".....cc##aa##cc##dd##cc##aa##cc.",
-".......cc##ab##cc##cc##ab##cc...",
-".........cc##aa##cc##aa##cc.....",
-"...........cc##ab##ab##cc.......",
-".............cc##aa##cc.........",
-"...............cc##cc..........."};
-
-static const char* const liabilityIconImage[] = {
-"32 32 5 1",
-". c None",
-"# c #000000",
-"a c #838183",
-"b c #c5c2c5",
-"c c #ffff00",
-"................................",
-"#a..............................",
-"#a..............................",
-"#a..####........................",
-"#a..#bc#b.......................",
-"#a..#cb#b.......................",
-"#a..#bc#b.......................",
-"#a..#cb#b####...................",
-"#a..#bc#b#bc#...................",
-"#a..#cb#b#cb#b..................",
-"#a..#bc#b#bc#b..................",
-"#a..#cb#b#cb#b####..............",
-"#a..#bc#b#bc#b#bc#..............",
-"#a..#cb#b#cb#b#cb#b.............",
-"#a..#bc#b#bc#b#bc#b.............",
-"#a..#cb#b#cb#b#cb#b####.........",
-"#a..#bc#b#bc#b#bc#b#bc#b........",
-"#a..#cb#b#cb#b#cb#b#cb#b........",
-"#a..#bc#b#bc#b#bc#b#bc#b........",
-"#a..#cb#b#cb#b#cb#b#cb#b####....",
-"#a..#bc#b#bc#b#bc#b#bc#b#bc#....",
-"#a..#cb#b#cb#b#cb#b#cb#b#cb#b...",
-"#a..#bc#b#bc#b#bc#b#bc#b#bc#b...",
-"#a..#cb#b#cb#b#cb#b#cb#b#cb#b...",
-"#a..#bc#b#bc#b#bc#b#bc#b#bc#b...",
-"#a..####b####b####b####b####b...",
-"#a..............................",
-"#a..............................",
-"###############################.",
-"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.",
-"................................",
-"................................"};
-
-static const char* const loanIconImage[] = {
-"32 32 8 1",
-". c None",
-"# c #000000",
-"b c #0000ff",
-"a c #008183",
-"c c #838183",
-"e c #c5c2c5",
-"f c #ffff00",
-"d c #ffffff",
-".....##########################.",
-".....#abababababababababababab#c",
-".....#bababdddddddddddddddbaba#c",
-".....#ababaaaaaaaaaaaaaaaaabab#c",
-".....#babababababababababababa#c",
-".....#dddddddddddddddddddddddd#c",
-".....#dddddddddddddddccdccdccd#c",
-".....#dddddddddddddddccdccdccd#c",
-".....#dddddddddddddddddddddddd#c",
-".....#dddcc###dccdccdccdccdccd#c",
-".....#ddd##efe##cdccdccdccdccd#c",
-".....#d##dededed##dddddddddddd#c",
-".....##efef###eefe##dccdccdccd#c",
-"...##dede##dee##eded##cdccdccd#c",
-".##efef##efefefe##eefe##dddddd#c",
-"#eede##eededededee##eded##dccd#c",
-".##efef##efefefefefe##eefe##cd#c",
-"#cc##dede##eededededee###ded#d#c",
-".##cc##efee##efefefee##eee##cd#c",
-"#cc##cc##dede##eeee##eed##cc#d#c",
-".##cc##cc##efee####efe##cc##cd#c",
-"#cc##cc##cc##ded#eed##cc##cc#d#c",
-".##cc##cc##cc##efe##cc##cc##c##c",
-".cc##cc##cc##cc###cc##cc##cc#ccc",
-"...cc##cc##cc##c#c##cc##cc##c...",
-".....cc##cc##cc###cc##cc##ccc...",
-".......cc##cc##c#c##cc##ccc.....",
-".........cc##cc###cc##ccc.......",
-"...........cc##c#c##ccc.........",
-".............cc###ccc...........",
-"...............c#cc.............",
-"................cc.............."};
-
 
 KAccountsView::KAccountsView(QWidget *parent, const char *name, bool bInstitutionView)
  : KBankViewDecl(parent,name),
@@ -610,31 +358,37 @@ const QPixmap KAccountsView::accountImage(const MyMoneyAccount::accountTypeE typ
   switch(type) {
     default:
       if(MyMoneyFile::instance()->accountGroup(type) == MyMoneyAccount::Asset)
-        rc = QPixmap(assetIconImage);
+        rc = DesktopIcon("account-types_asset");
       else
-        rc = QPixmap(liabilityIconImage);
+        rc = DesktopIcon("account-types_liability");
       break;
 
+    case MyMoneyAccount::Investment:
+      rc = DesktopIcon("account-types_investments");
+      break;
+    
     case MyMoneyAccount::Checkings:
+      rc = DesktopIcon("account-types_checking");
+      break;
     case MyMoneyAccount::Savings:
-      rc = QPixmap(checkingsIconImage);
+      rc = DesktopIcon("account-types_savings");
       break;
 
+    case MyMoneyAccount::AssetLoan:
     case MyMoneyAccount::Loan:
-      rc = QPixmap(loanIconImage);
+      rc = DesktopIcon("account-types_loan");
       break;
 
     case MyMoneyAccount::CreditCard:
-      rc = QPixmap(creditCardIconImage);
+      rc = DesktopIcon("account-types_credit-card");
       break;
 
     case MyMoneyAccount::Asset:
-    case MyMoneyAccount::AssetLoan:
-      rc = QPixmap(assetIconImage);
+      rc = DesktopIcon("account-types_asset");
       break;
 
     case MyMoneyAccount::Cash:
-      rc = QPixmap(cashIconImage);
+      rc = DesktopIcon("account-types_cash");
       break;
   }
 

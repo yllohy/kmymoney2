@@ -132,7 +132,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
 
   // Page 1
   m_institutionsViewFrame = addVBoxPage( i18n("Institutions"), i18n("Institutions"),
-    DesktopIcon("kfm_home"));
+    DesktopIcon("institutions"));
   m_institutionsView = new KAccountsView(m_institutionsViewFrame, KAppTest::widgetName(this, "KInstitutionsView"), true);
   signalMap->setMapping(m_institutionsView, InstitutionsView);
   connect(m_institutionsView, SIGNAL(signalViewActivated()), signalMap, SLOT(map()));
@@ -140,7 +140,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
 
   // Page 2
   m_accountsViewFrame = addVBoxPage( i18n("Accounts"), i18n("Accounts"),
-    DesktopIcon("kmy"));
+    DesktopIcon("accounts"));
   m_accountsView = new KAccountsView(m_accountsViewFrame, KAppTest::widgetName(this, "KAccountsView"));
   signalMap->setMapping(m_accountsView, AccountsView);
   connect(m_accountsView, SIGNAL(signalViewActivated()), signalMap, SLOT(map()));
@@ -185,7 +185,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
 
   // Page 7
   m_investmentViewFrame = addVBoxPage( i18n("Investments"), i18n("Investments"),
-    DesktopIcon("categories"));
+    DesktopIcon("investments"));
 
   m_investmentView = new KInvestmentView(m_investmentViewFrame, KAppTest::widgetName(this, "KInvestmentView"));
   connect(this, SIGNAL(aboutToShowPage(QWidget*)), m_investmentView, SLOT(slotCancelEdit()));
@@ -239,7 +239,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
 
   m_accountMenu = new KPopupMenu(this);
   m_accountMenu->insertTitle(kiconloader->loadIcon("account", KIcon::MainToolbar), i18n("Account Options"));
-  m_accountMenu->insertItem(kiconloader->loadIcon("account", KIcon::Small), i18n("New account..."), this, SLOT(slotAccountNew()), 0, AccountNew);
+  m_accountMenu->insertItem(kiconloader->loadIcon("account_add", KIcon::Small), i18n("New account..."), this, SLOT(slotAccountNew()), 0, AccountNew);
   m_accountMenu->insertItem(kiconloader->loadIcon("account_open", KIcon::Small), i18n("Open..."), this, SLOT(slotAccountDoubleClick()), 0, AccountOpen);
   m_accountMenu->insertSeparator();
   m_accountMenu->insertItem(kiconloader->loadIcon("reconcile", KIcon::Small), i18n("Reconcile..."), this, SLOT(slotAccountReconcile()), 0, AccountReconcile);
@@ -255,7 +255,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   m_bankMenu = new KPopupMenu(this);
   m_bankMenu->insertTitle(kiconloader->loadIcon("bank", KIcon::MainToolbar), i18n("Institution Options"));
   // Use a proxy slot
-  m_bankMenu->insertItem(kiconloader->loadIcon("account", KIcon::Small), i18n("New Account..."), this, SLOT(slotBankAccountNew()));
+  m_bankMenu->insertItem(kiconloader->loadIcon("account_add", KIcon::Small), i18n("New Account..."), this, SLOT(slotBankAccountNew()));
   m_bankMenu->insertItem(kiconloader->loadIcon("bank", KIcon::Small), i18n("Edit..."), this, SLOT(slotBankEdit()));
   m_bankMenu->insertItem(kiconloader->loadIcon("delete", KIcon::Small), i18n("Delete..."), this, SLOT(slotBankDelete()));
 

@@ -194,7 +194,7 @@ void KMyMoney2App::initActions()
   viewStatusBar = KStdAction::showStatusbar(this, SLOT(slotViewStatusBar()), actionCollection());
 
   actionFindTransaction = new KAction(i18n("Find transaction..."),
-                                      "find",
+                                      "transaction_find",
                                       KShortcut("Ctrl+F"),
                                       myMoneyView, SLOT(slotFindTransaction()),
                                       actionCollection(), "account_find");
@@ -210,7 +210,7 @@ void KMyMoney2App::initActions()
 
   // Additions to the file menu
   fileViewInfo = new KAction(i18n("Dump Memory..."), "", 0, this, SLOT(slotFileFileInfo()), actionCollection(), "file_view_info");
-  filePersonalData = new KAction(i18n("Personal Data..."), "info", 0, this, SLOT(slotFileViewPersonal()), actionCollection(), "file_personal_data");
+  filePersonalData = new KAction(i18n("Personal Data..."), "personal_data", 0, this, SLOT(slotFileViewPersonal()), actionCollection(), "file_personal_data");
   fileBackup = new KAction(i18n("Backup..."), "backup",0,this,SLOT(slotFileBackup()),actionCollection(),"file_backup");
   actionQifImport = new KAction(i18n("QIF ..."), "", 0, this, SLOT(slotQifImport()), actionCollection(), "file_import_qif");
   actionOfxImport = new KAction(i18n("OFX ..."), "", 0, this, SLOT(slotOfxImport()), actionCollection(), "file_import_ofx");
@@ -233,10 +233,10 @@ void KMyMoney2App::initActions()
   new KAction(i18n("Enable all messages"), "", 0, this, SLOT(slotEnableMessages()), actionCollection(), "enable_messages");
 
   // The Bank Menu
-  bankAdd = new KAction(i18n("Add new institution..."), "bank", 0, myMoneyView, SLOT(slotBankNew()), actionCollection(), "bank_add");
+  bankAdd = new KAction(i18n("Add new institution..."), "institution_add", 0, myMoneyView, SLOT(slotBankNew()), actionCollection(), "bank_add");
 
   // The Account Menu
-  accountAdd = new KAction(i18n("Add new account..."), "account"/*QIconSet(QPixmap(KGlobal::dirs()->findResource("appdata", "toolbar/kmymoney_newacc.xpm")))*/, 0, myMoneyView, SLOT(slotAccountNew()), actionCollection(), "account_add");
+  accountAdd = new KAction(i18n("Add new account..."), "account_add"/*QIconSet(QPixmap(KGlobal::dirs()->findResource("appdata", "toolbar/kmymoney_newacc.xpm")))*/, 0, myMoneyView, SLOT(slotAccountNew()), actionCollection(), "account_add");
 
   // The tool menu
   new KAction(i18n("QIF Profile Editor..."), "edit", 0, this, SLOT(slotQifProfileEditor()), actionCollection(), "qif_editor");

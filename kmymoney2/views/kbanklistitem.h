@@ -161,13 +161,6 @@ public:
   void update(const QCString& id);
 
   /**
-    * This function can be called to clean the cache at a defined
-    * location during program execution. It will be used by main()
-    * to avoid false error reports by the memory leakage checker.
-    */
-  static void cleanCache(void);
-
-  /**
     */
   void suspendUpdate(const bool suspend) { m_suspendUpdate = suspend; };
 
@@ -189,12 +182,6 @@ private:
     */
   void newAccount(const MyMoneyAccount& account);
 
-  /**
-    * This function can be called to preload the cache at a defined
-    * location during program execution. It will be used by newAccount().
-    */
-  void loadCache(void);
-
 protected:
   bool m_suspendUpdate;
   bool m_valueValid;
@@ -203,8 +190,6 @@ private:
   bool m_bViewNormal;
   int m_nAccountColumn;
   int m_nInstitutionColumn;
-
-  static  QPixmap* accountPixmap;
 };
 
 

@@ -30,6 +30,15 @@ install-data-local:
 	$(INSTALL_DATA) $(srcdir)/transaction.png $(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions/transaction.png
 	$(mkinstalldirs) $(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions/
 	$(INSTALL_DATA) $(srcdir)/view_info.png $(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions/view_info.png
+	$(INSTALL_DATA) $(srcdir)/account_add.png $(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions
+	$(INSTALL_DATA) $(srcdir)/account_open.png $(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions
+	$(INSTALL_DATA) $(srcdir)/account.png $(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions
+	$(INSTALL_DATA) $(srcdir)/account-type_asset.png $(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions
+	$(INSTALL_DATA) $(srcdir)/account-type_liability.png $(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions
+	$(INSTALL_DATA) $(srcdir)/account-type_expense.png $(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions
+	$(INSTALL_DATA) $(srcdir)/account-type_income.png $(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions
+	$(INSTALL_DATA) $(srcdir)/institution_add.png $(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions
+	$(INSTALL_DATA) $(srcdir)/unreconciled.png $(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions
 
 uninstall-local:
 	-rm -f $(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions/bank.png
@@ -45,5 +54,14 @@ uninstall-local:
 	-rm -f $(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions/personal_data.png
 	-rm -f $(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions/transaction.png
 	-rm -f $(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions/view_info.png
+	-rm -f $(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions/account_add.png
+	-rm -f $(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions/account_open.png
+	-rm -f $(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions/account.png
+	-rm -f $(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions/account-type_asset.png
+	-rm -f $(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions/account-type_liability.png
+	-rm -f $(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions/account-type_expense.png
+	-rm -f $(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions/account-type_income.png
+	-rm -f $(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions/institution_add.png
+	-rm -f $(kde_datadir)/kmymoney2/icons/hicolor/16x16/actions/unreconciled.png
 
 ####### kdevelop will overwrite this part!!! (end)############
