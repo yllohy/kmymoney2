@@ -43,21 +43,21 @@ from.
      Below, please find a table of values for the above for several
      distributions:
 
-     Distribution   | --with-qt-dir           | --prefix
-     ---------------+-------------------------+---------------------------
-     SuSE 8.1       |  omit this parameter    | /opt/kde3
-     Mandrake 9.0   |  omit this parameter    | /usr
-     Slackware 9.0  |  omit this parameter    | /opt/kde
-     MEPIS          |  omit this parameter    | /usr
-     RedHat 8/9     |  omit this parameter    | /usr
-     Fedora 1/2	    |  omit this parameter    | /usr
+     Distribution      | --with-qt-dir           | --prefix
+     ------------------+-------------------------+---------------------------
+     SuSE >= 8.1       |  omit this parameter    | /opt/kde3
+     Mandrake 9.0      |  omit this parameter    | /usr
+     Slackware >= 9.0  |  omit this parameter    | /opt/kde
+     MEPIS             |  omit this parameter    | /usr
+     RedHat 8/9        |  omit this parameter    | /usr
+     Fedora 1/2	       |  omit this parameter    | /usr
      
-     Distribution   | --man-dir               | --program-prefix
-     ---------------+-------------------------+---------------------------
-     SuSE 8.1       |  /usr/share/man         | ""
-     Mandrake 9.0   |  ???                    | 
-     Slackware 9.0  |  ???                    | 
-     MEPIS          |  omit this parameter    | omit this parameter
+     Distribution      | --man-dir               | --program-prefix
+     ------------------+-------------------------+---------------------------
+     SuSE >= 8.1       |  /usr/share/man         | ""
+     Mandrake 9.0      |  ???                    | 
+     Slackware >= 9.0  |  /usr/share/man         | 
+     MEPIS             |  omit this parameter    | omit this parameter
 
      so for SuSE 8.1 the command is:
 
