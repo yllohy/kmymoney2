@@ -521,16 +521,19 @@ void MyMoneyStorageBin::readNewFormat(QDataStream&s, IMyMoneySerialize* storage)
 
   readTransactions(s, storage);
 
-  if(s.atEnd())
-    return;
-
-  // for now, we don't read the scheduled transactions back, as there
-  // might be files out there that don't have it.
-  readScheduledTransactions(s, storage);
+  // if we're at the end of file here, then we deal with an old file
+  // and stop processing. Else we continue as long as we can.
   if(s.atEnd())
     return;
 
   storage->setPairs(readKeyValueContainer(s));
+  if(s.atEnd())
+    return;
+    
+  readScheduledTransactions(s, storage);
+  if(s.atEnd())
+    return;
+
 }
 
 void MyMoneyStorageBin::writeFile(QIODevice* qfile, IMyMoneySerialize* storage)
@@ -585,6 +588,7 @@ void MyMoneyStorageBin::writeStream(QDataStream& s, IMyMoneySerialize* storage)
        storage->payeeList().count() +
        storage->accountList().count() +
        storage->transactionList().count() +
+       storage->pairs().count() +
        storage->scheduleList().count();
 
   writeInstitutions(s, storage);
@@ -594,6 +598,8 @@ void MyMoneyStorageBin::writeStream(QDataStream& s, IMyMoneySerialize* storage)
   writeKeyValueContainer(s, storage->pairs());
   writeScheduledTransactions(s, storage);
 
+  // add new items to be saved in front of this line
+  
   // this seems to be nonsense, but it clears the dirty flag
   // as a side-effect.
   storage->setLastModificationDate(storage->lastModificationDate());
@@ -1033,12 +1039,9 @@ void MyMoneyStorageBin::readScheduledTransactions(QDataStream& s, IMyMoneySerial
   Q_INT32 cnt;
   unsigned long id;
 
-  Q_INT32 t;
-  s >> t; // Eat an extra byte?
-
   s >> version;
-
   s >> cnt;
+  
   signalProgress(0, cnt, QObject::tr("Loading schedules..."));
   for(int i = 0; i < cnt; ++i) {
     MyMoneySchedule sched = readSchedule(s);
@@ -1114,12 +1117,8 @@ const MyMoneySchedule MyMoneyStorageBin::readSchedule(QDataStream& s)
   if (version == 1)
   {
     s >> tmp_n; /* sc.setTransactionsRemaining(tmp_n); */
-    s >> tmp_d; sc.setEndDate(tmp_d);
   }
-  else
-  {
-    s >> tmp_d; sc.setEndDate(tmp_d);
-  }
+  s >> tmp_d; sc.setEndDate(tmp_d);
   s >> tmp_n; sc.setAutoEnter(tmp_n);
   s >> id; sc.setId(id);
   s >> tmp_d; sc.setLastPayment(tmp_d);
