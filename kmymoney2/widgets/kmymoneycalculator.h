@@ -214,7 +214,9 @@ private:
 		PLUSMINUS,
 		PERCENT,
 		CLEAR,
-		CLEARALL
+		CLEARALL,
+    /* insert new buttons before this line */
+    MAX_BUTTONS
 	};
 };
 

@@ -125,8 +125,15 @@ kMyMoneyCalculator::kMyMoneyCalculator(QWidget* parent, const char *name)
 	connect(buttons[CLEAR], SIGNAL(clicked()), SLOT(clearClicked()));
 	connect(buttons[CLEARALL], SIGNAL(clicked()), SLOT(clearAllClicked()));
 
-	setMinimumSize(133, 133);
-	setMaximumSize(133, 133);
+  for(int i = 0; i < MAX_BUTTONS; ++i) {
+    buttons[i]->setMinimumSize(40, 30);
+    buttons[i]->setMaximumSize(40, 30);
+  }
+  int height = 4 * (buttons[0]->minimumHeight()+6) + 15;
+  int width = 5 * (buttons[0]->minimumWidth()+6);
+
+	setMinimumSize(width, height);
+	setMaximumSize(width, height);
 
 	show();
 }
