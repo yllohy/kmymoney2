@@ -109,15 +109,6 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int row, int 
       painter->setBrush(KGlobalSettings::baseColor());
       painter->setPen(KGlobalSettings::baseColor());
     }
-/*
-    QDate cur_date = QDate::currentDate();
-    if ( (date.year()  == cur_date.year()) &&
-      (date.month() == cur_date.month()) &&
-      (firstday+cur_date.day()-1 == pos) )
-    {
-      painter->setPen(lightGray);
-    }
-*/
     painter->drawRect(0, 0, w, h);
     painter->setPen(pen);
     text = QString::number(theDate.day());
@@ -174,9 +165,65 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int row, int 
 
     painter->drawText(0, 0, w-2, h, AlignRight, QDate::shortDayName(theDate.month()) + " " + text, -1, &rect);
 
+    MyMoneyScheduled *scheduled;
+    QStringList billSchedules;
+    QStringList depositSchedules;
+    QStringList transferSchedules;
+    try
+    {
+      scheduled = MyMoneyScheduled::instance();
+
+/*
+  QStringList getScheduled(const QCString& accountId, const QDate& startDate, const QDate& endDate,
+    const MyMoneySchedule::typeE type=MyMoneySchedule::TYPE_ANY,
+    const MyMoneySchedule::paymentTypeE paymentType=MyMoneySchedule::STYPE_ANY,
+    const MyMoneySchedule::occurenceE occurence=MyMoneySchedule::OCCUR_ANY);
+*/
+      text = "";
+      billSchedules = scheduled->getScheduled(
+          m_accountId,
+          theDate,
+          theDate,
+          MyMoneySchedule::TYPE_BILL);
+      if (billSchedules.count() >= 1)
+      {
+        text += QString::number(billSchedules.count());
+        text += " Bills.  ";
+      }
+      
+      depositSchedules = scheduled->getScheduled(
+          m_accountId,
+          theDate,
+          theDate,
+          MyMoneySchedule::TYPE_DEPOSIT);
+      if (depositSchedules.count() >= 1)
+      {
+        text += QString::number(depositSchedules.count());
+        text += " Deposits.  ";
+      }
+
+      transferSchedules = scheduled->getScheduled(
+          m_accountId,
+          theDate,
+          theDate,
+          MyMoneySchedule::TYPE_TRANSFER);
+      if (transferSchedules.count() >= 1)
+      {
+        text += QString::number(transferSchedules.count());
+        text += " Transfers.";
+      }
+
+    }
+    catch (MyMoneyException*)
+    {
+      // SAfe to ignore here, cause no schedules might exist
+      // for the selected account
+    }
+
     painter->setPen(darkGray);
     painter->setFont(fontLarge);
-    painter->drawText(0, 0, w, h, AlignCenter, "4", -1, &rect);
+    painter->drawText(0, 0, w, h, AlignCenter, text,
+          -1, &rect);
   }
   else if (m_type == QUARTERLY)
   {

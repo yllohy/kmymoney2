@@ -46,7 +46,7 @@
   * Used by the KMyMoneyView class to show the view.
   *
   * @author Michael Edwardes 2000-2002
-  * $Id: kscheduledview.h,v 1.7 2003/07/04 14:57:07 mte Exp $
+  * $Id: kscheduledview.h,v 1.8 2003/07/05 16:16:30 mte Exp $
   *
   * @short A class to encapsulate recurring transaction operations.
   */
@@ -101,11 +101,6 @@ protected slots:
   void slotDeleteClicked();
 
   /**
-    * The selection has changed in the list view.
-    */
-  void slotSelectionChanged(QListViewItem*);
-
-  /**
     * New Bill chosen.
     */
   void slotNewBill();
@@ -137,6 +132,9 @@ protected slots:
     * @return none
   **/
   void slotListViewContextMenu(QListViewItem *item, const QPoint& pos, int col);
+
+  void slotListItemExecuted(QListViewItem*);
+
 
 private:
   /// The account currently selected via the accounts view

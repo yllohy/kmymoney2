@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>608</width>
-            <height>457</height>
+            <width>675</width>
+            <height>480</height>
         </rect>
     </property>
     <property name="caption">
@@ -21,17 +21,11 @@
         </property>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>Layout2</cstring>
+                <cstring>layout3</cstring>
             </property>
             <hbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
-                </property>
-                <property name="margin">
-                    <number>0</number>
-                </property>
-                <property name="spacing">
-                    <number>6</number>
                 </property>
                 <widget class="QComboBox">
                     <property name="name">
@@ -56,11 +50,55 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>30</width>
-                            <height>0</height>
+                            <width>50</width>
+                            <height>16</height>
                         </size>
                     </property>
                 </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>m_qbuttonNew</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>32767</width>
+                            <height>32767</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>New Schedule...</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>m_qbuttonForecast</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>32767</width>
+                            <height>32767</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>Forecast...</string>
+                    </property>
+                </widget>
             </hbox>
         </widget>
         <widget class="QTabWidget">
@@ -78,143 +116,10 @@
                     <property name="name">
                         <cstring>unnamed</cstring>
                     </property>
-                    <property name="margin">
-                        <number>11</number>
-                    </property>
-                    <property name="spacing">
-                        <number>6</number>
-                    </property>
-                    <widget class="QListView">
+                    <widget class="KListView">
                         <property name="name">
                             <cstring>m_qlistviewScheduled</cstring>
                         </property>
-                    </widget>
-                    <widget class="QLayoutWidget">
-                        <property name="name">
-                            <cstring>Layout13</cstring>
-                        </property>
-                        <hbox>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <property name="margin">
-                                <number>0</number>
-                            </property>
-                            <property name="spacing">
-                                <number>6</number>
-                            </property>
-                            <spacer>
-                                <property name="name">
-                                    <cstring>Spacer1</cstring>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Horizontal</enum>
-                                </property>
-                                <property name="sizeType">
-                                    <enum>Expanding</enum>
-                                </property>
-                                <property name="sizeHint">
-                                    <size>
-                                        <width>242</width>
-                                        <height>0</height>
-                                    </size>
-                                </property>
-                            </spacer>
-                            <widget class="QPushButton">
-                                <property name="name">
-                                    <cstring>m_qbuttonNew</cstring>
-                                </property>
-                                <property name="sizePolicy">
-                                    <sizepolicy>
-                                        <hsizetype>0</hsizetype>
-                                        <vsizetype>0</vsizetype>
-                                        <horstretch>0</horstretch>
-                                        <verstretch>0</verstretch>
-                                    </sizepolicy>
-                                </property>
-                                <property name="maximumSize">
-                                    <size>
-                                        <width>70</width>
-                                        <height>32767</height>
-                                    </size>
-                                </property>
-                                <property name="text">
-                                    <string>New...</string>
-                                </property>
-                            </widget>
-                            <widget class="QPushButton">
-                                <property name="name">
-                                    <cstring>m_qbuttonEdit</cstring>
-                                </property>
-                                <property name="sizePolicy">
-                                    <sizepolicy>
-                                        <hsizetype>0</hsizetype>
-                                        <vsizetype>0</vsizetype>
-                                        <horstretch>0</horstretch>
-                                        <verstretch>0</verstretch>
-                                    </sizepolicy>
-                                </property>
-                                <property name="maximumSize">
-                                    <size>
-                                        <width>70</width>
-                                        <height>32767</height>
-                                    </size>
-                                </property>
-                                <property name="text">
-                                    <string>&amp;Edit...</string>
-                                </property>
-                            </widget>
-                            <widget class="QPushButton">
-                                <property name="name">
-                                    <cstring>m_qbuttonDelete</cstring>
-                                </property>
-                                <property name="sizePolicy">
-                                    <sizepolicy>
-                                        <hsizetype>0</hsizetype>
-                                        <vsizetype>0</vsizetype>
-                                        <horstretch>0</horstretch>
-                                        <verstretch>0</verstretch>
-                                    </sizepolicy>
-                                </property>
-                                <property name="minimumSize">
-                                    <size>
-                                        <width>0</width>
-                                        <height>0</height>
-                                    </size>
-                                </property>
-                                <property name="maximumSize">
-                                    <size>
-                                        <width>70</width>
-                                        <height>32767</height>
-                                    </size>
-                                </property>
-                                <property name="text">
-                                    <string>&amp;Delete...</string>
-                                </property>
-                            </widget>
-                            <widget class="QPushButton">
-                                <property name="name">
-                                    <cstring>m_qbuttonForecast</cstring>
-                                </property>
-                                <property name="sizePolicy">
-                                    <sizepolicy>
-                                        <hsizetype>0</hsizetype>
-                                        <vsizetype>0</vsizetype>
-                                        <horstretch>0</horstretch>
-                                        <verstretch>0</verstretch>
-                                    </sizepolicy>
-                                </property>
-                                <property name="maximumSize">
-                                    <size>
-                                        <width>70</width>
-                                        <height>32767</height>
-                                    </size>
-                                </property>
-                                <property name="text">
-                                    <string>Forecast...</string>
-                                </property>
-                            </widget>
-                        </hbox>
                     </widget>
                 </vbox>
             </widget>
@@ -265,6 +170,7 @@
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
     <includehint>qwidget.h</includehint>
+    <includehint>klistview.h</includehint>
     <includehint>kmymoneyscheduledcalendar.h</includehint>
 </includehints>
 </UI>

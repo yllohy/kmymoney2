@@ -36,6 +36,7 @@
 #include <kpopupmenu.h>
 #include <kiconloader.h>
 #include <kmessagebox.h>
+#include <klistview.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -69,17 +70,12 @@ KScheduledView::KScheduledView(QWidget *parent, const char *name )
   kpopupmenuNew->insertItem(kiconloader->loadIcon("new_transfer", KIcon::Small), i18n("Transfer"), this, SLOT(slotNewTransfer()));
   m_qbuttonNew->setPopup(kpopupmenuNew);
 
-  m_qbuttonEdit->setEnabled(false);
-  m_qbuttonDelete->setEnabled(false);
-
-  connect(m_qlistviewScheduled, SIGNAL(selectionChanged(QListViewItem*)),
-    this, SLOT(slotSelectionChanged(QListViewItem*)));
   connect(m_qlistviewScheduled, SIGNAL(contextMenuRequested(QListViewItem*, const QPoint&, int)),
     this, SLOT(slotListViewContextMenu(QListViewItem*, const QPoint&, int)));
-  connect(m_qbuttonEdit, SIGNAL(clicked()), this, SLOT(slotEditClicked()));
-  connect(m_qbuttonDelete, SIGNAL(clicked()), this, SLOT(slotDeleteClicked()));
   connect(m_accountsCombo, SIGNAL(activated(const QString&)),
     this, SLOT(slotAccountSelected(const QString&)));
+  connect(m_qlistviewScheduled, SIGNAL(executed(QListViewItem*)),
+    this, SLOT(slotListItemExecuted(QListViewItem*)));
 }
 
 KScheduledView::~KScheduledView()
@@ -161,8 +157,6 @@ void KScheduledView::show()
   {
     // disable operations if no accounts exist
     m_qbuttonNew->setEnabled(false);
-    m_qbuttonDelete->setEnabled(false);
-    m_qbuttonEdit->setEnabled(false);
     m_accountsCombo->setEnabled(false);
     m_tabWidget->setEnabled(false);
   }
@@ -210,21 +204,6 @@ void KScheduledView::slotDeleteClicked()
       KMessageBox::detailedSorry(this, i18n("Unable to remove schedule"), e->what());
       delete e;
     }
-  }
-}
-
-void KScheduledView::slotSelectionChanged(QListViewItem* item)
-{
-  if (item)
-  {
-    m_qbuttonDelete->setEnabled(true);
-    m_qbuttonEdit->setEnabled(true);
-    m_selectedSchedule = ((KScheduledListItem*)item)->scheduleId();
-  }
-  else
-  {
-    m_qbuttonDelete->setEnabled(false);
-    m_qbuttonEdit->setEnabled(false);
   }
 }
 
@@ -513,4 +492,28 @@ void KScheduledView::slotListViewContextMenu(QListViewItem *item, const QPoint& 
     listViewMenu->insertItem(kiconloader->loadIcon("new_transfer", KIcon::Small), i18n("New Transfer..."), this, SLOT(slotNewTransfer()));
     listViewMenu->popup(pos);
   }
+}
+
+void KScheduledView::slotListItemExecuted(QListViewItem* item)
+{
+  KScheduledListItem* scheduleItem = (KScheduledListItem*)item;
+  if (!scheduleItem)
+    return;
+
+  try
+  {
+    QString scheduleId = scheduleItem->scheduleId();
+
+    if (scheduleId != "") // Top level item
+    {
+      MyMoneySchedule schedule = MyMoneyScheduled::instance()->getSchedule(m_accountId, scheduleId);
+
+      m_calendar->setDate(schedule.nextPayment());
+      m_tabWidget->showPage(calendarTab);
+    }
+  } catch (MyMoneyException *e)
+  {
+    KMessageBox::detailedSorry(this, i18n("Error executing item"), e->what());
+    delete e;
+  }  
 }

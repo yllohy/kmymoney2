@@ -11,6 +11,14 @@
     view.
   * The date for the current cell to be painted is passed to the
     drawCellContents method.
+  *
+  * Changed the list view widget in KScheduleView to a KListView so I can use
+    the executed signal.
+  * Implemented an executed slot on a schedule list item that shows the next
+    payment date in the calendar.
+  * Removed the edit and delete buttons.  These are accessed via a right mouse
+    click on the item.
+  * Removed the selection signal from the schedule list view.
 
 2003-07-04 Michael Edwardes <mte@users.sourceforge.net>
   * More work on the calendar view, including deriving a new class from
