@@ -36,10 +36,11 @@
 #include <qlabel.h>
 
 #include "kcategoriesview.h"
-#include "../dialogs/kcategorylistitem.h"
+//#include "../dialogs/kcategorylistitem.h"
 //#include "../dialogs/knewcategorydlg.h"
 #include "../views/kmymoneyfile.h"
 #include "../dialogs/knewaccountdlg.h"
+#include "kbanklistitem.h"
 
 KCategoriesView::KCategoriesView(QWidget *parent, const char *name )
   : kCategoriesViewDecl(parent,name)
@@ -47,6 +48,10 @@ KCategoriesView::KCategoriesView(QWidget *parent, const char *name )
   categoryListView->setRootIsDecorated(true);
   categoryListView->addColumn(i18n("Category"));
   categoryListView->addColumn(i18n("Type"));
+
+  // FIXME: We could make this configurable
+  categoryListView->addColumn(i18n("Balance"));
+
   categoryListView->setMultiSelection(false);
   categoryListView->setColumnWidthMode(0, QListView::Manual);
   categoryListView->header()->setResizeEnabled(false);
@@ -90,15 +95,19 @@ void KCategoriesView::refresh(void)
     MyMoneyAccount incomeAccount = file->income();
 
     // Income
-    KCategoryListItem *incomeTopLevelAccount = new KCategoryListItem(categoryListView,
-                      incomeAccount.name(), incomeAccount.id(), i18n("Income"));
+    KAccountListItem *incomeTopLevelAccount = new KAccountListItem(categoryListView,
+              incomeAccount.name(), incomeAccount.id(),
+              KMyMoneyFile::accountTypeToString(incomeAccount.accountType()),
+              incomeAccount.balance().formatMoney());
 
     for ( QCStringList::ConstIterator it = file->income().accountList().begin();
           it != file->income().accountList().end();
           ++it )
     {
-      KCategoryListItem *accountItem = new KCategoryListItem(incomeTopLevelAccount,
-          file->account(*it).name(), file->account(*it).id(), i18n("Income"));
+      KAccountListItem *accountItem = new KAccountListItem(incomeTopLevelAccount,
+            file->account(*it).name(), file->account(*it).id(),
+            KMyMoneyFile::accountTypeToString(file->account(*it).accountType()),
+            file->account(*it).balance().formatMoney());
 
       QCStringList subAccounts = file->account(*it).accountList();
       if (subAccounts.count() >= 1)
@@ -108,15 +117,19 @@ void KCategoriesView::refresh(void)
     }
 
     // Expense
-    KCategoryListItem *expenseTopLevelAccount = new KCategoryListItem(categoryListView,
-                      expenseAccount.name(), expenseAccount.id(), i18n("Expense"));
+    KAccountListItem *expenseTopLevelAccount = new KAccountListItem(categoryListView,
+              expenseAccount.name(), expenseAccount.id(),
+              KMyMoneyFile::accountTypeToString(expenseAccount.accountType()),
+              expenseAccount.balance().formatMoney());
 
     for ( QCStringList::ConstIterator it = file->expense().accountList().begin();
           it != file->expense().accountList().end();
           ++it )
     {
-      KCategoryListItem *accountItem = new KCategoryListItem(expenseTopLevelAccount,
-          file->account(*it).name(), file->account(*it).id(), i18n("Expense"));
+      KAccountListItem *accountItem = new KAccountListItem(expenseTopLevelAccount,
+          file->account(*it).name(), file->account(*it).id(),
+          KMyMoneyFile::accountTypeToString(file->account(*it).accountType()),
+          file->account(*it).balance().formatMoney());
 
       QCStringList subAccounts = file->account(*it).accountList();
       if (subAccounts.count() >= 1)
@@ -135,13 +148,15 @@ void KCategoriesView::refresh(void)
   }
 }
 
-void KCategoriesView::showSubAccounts(QCStringList accounts, KCategoryListItem *parentItem, MyMoneyFile *file,
+void KCategoriesView::showSubAccounts(QCStringList accounts, KAccountListItem *parentItem, MyMoneyFile *file,
   const QString& typeName)
 {
   for ( QCStringList::ConstIterator it = accounts.begin(); it != accounts.end(); ++it )
   {
-    KCategoryListItem *accountItem  = new KCategoryListItem(parentItem,
-          file->account(*it).name(), file->account(*it).id(), typeName);
+    KAccountListItem *accountItem  = new KAccountListItem(parentItem,
+          file->account(*it).name(), file->account(*it).id(),
+          KMyMoneyFile::accountTypeToString(file->account(*it).accountType()),
+          file->account(*it).balance().formatMoney());
 
     QCStringList subAccounts = file->account(*it).accountList();
     if (subAccounts.count() >= 1)
@@ -160,11 +175,19 @@ void KCategoriesView::show()
 
 void KCategoriesView::resizeEvent(QResizeEvent* e)
 {
-  categoryListView->setColumnWidth(0, categoryListView->width()-105);
+  categoryListView->setColumnWidth(0, categoryListView->width()-185);
   categoryListView->setColumnWidth(1, 100);
+  categoryListView->setColumnWidth(2, 70);
 
   // call base class resizeEvent()
+
   kCategoriesViewDecl::resizeEvent(e);
+/*
+  accountListView->setColumnWidth(0, 400);
+  accountListView->setColumnWidth(1,150);
+  int totalWidth=accountListView->width();
+  accountListView->setColumnWidth(2, totalWidth-550-5);
+*/
 }
 
 void KCategoriesView::slotNewClicked()
@@ -199,7 +222,7 @@ void KCategoriesView::slotNewClicked()
 
 void KCategoriesView::slotDeleteClicked()
 {
-  KCategoryListItem *item = (KCategoryListItem *)categoryListView->selectedItem();
+  KAccountListItem *item = (KAccountListItem *)categoryListView->selectedItem();
   if (!item)
     return;
 
@@ -228,7 +251,7 @@ void KCategoriesView::slotDeleteClicked()
 
 void KCategoriesView::slotSelectionChanged(QListViewItem* item)
 {
-  KCategoryListItem *kitem = (KCategoryListItem *)item;
+  KAccountListItem *kitem = (KAccountListItem *)item;
   if (!kitem)
   {
     buttonEdit->setEnabled(false);
@@ -243,7 +266,7 @@ void KCategoriesView::slotSelectionChanged(QListViewItem* item)
 
 void KCategoriesView::slotEditClicked()
 {
-  KCategoryListItem *item = (KCategoryListItem *)categoryListView->selectedItem();
+  KAccountListItem *item = (KAccountListItem *)categoryListView->selectedItem();
   if (!item)
     return;
 
@@ -277,7 +300,7 @@ void KCategoriesView::readConfig(void)
 
 void KCategoriesView::writeConfig(void)
 {
-  KCategoryListItem *item = (KCategoryListItem *)categoryListView->selectedItem();
+  KAccountListItem *item = (KAccountListItem *)categoryListView->selectedItem();
   if (!item)
     return;
 

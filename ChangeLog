@@ -2,6 +2,8 @@
   * Right click on accounts view now works.
   * Editing/deleting an institution works.
   * Types and balances are shown again in the accounts view.
+  * Categories view updated.
+  * KCategoryListItem removed.
 
 2002-06-11 Michael Edwardes <mte@users.sourceforge.net>
   * Categories view now works as before.

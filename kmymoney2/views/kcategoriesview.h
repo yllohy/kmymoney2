@@ -25,8 +25,9 @@
 
 #include <qwidget.h>
 #include <qcstring.h>
-#include "../dialogs/kcategorylistitem.h"
 #include "kcategoriesviewdecl.h"
+//#include "../dialogs/kcategorylistitem.h"
+#include "kbanklistitem.h"
 
 #include "../mymoney/mymoneyfile.h"
 
@@ -42,7 +43,7 @@ private:
   void readConfig(void);
   void writeConfig(void);
   void refresh(void);
-  void showSubAccounts(QCStringList accounts, KCategoryListItem *parentItem, MyMoneyFile *file, const QString&);
+  void showSubAccounts(QCStringList accounts, KAccountListItem *parentItem, MyMoneyFile *file, const QString&);
 
 protected:
   void resizeEvent(QResizeEvent *);
