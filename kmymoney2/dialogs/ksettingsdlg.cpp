@@ -458,25 +458,25 @@ void KSettingsDlg::configRead()
 
   kconfig->setGroup("List Options");
 
-  QFont qfontDefault = QFont("helvetica", 12);
-  QColor qcolorDefault = KMyMoneyUtils::defaultListColour();
-  QColor qcolorDefaultBG = KMyMoneyUtils::defaultBackgroundColour();
-  QColor qcolorDefaultGrid = KMyMoneyUtils::defaultGridColour();
-
-  m_qcolorTempList = kconfig->readColorEntry("listColor", &qcolorDefault);
+  m_qcolorTempList = KMyMoneyUtils::defaultListColour();
   m_kcolorbuttonList->setColor(m_qcolorTempList);
 
-  m_qcolorTempListBG = kconfig->readColorEntry("listBGColor", &qcolorDefaultBG);
+  m_qcolorTempListBG = KMyMoneyUtils::defaultBackgroundColour();
   m_kcolorbuttonBack->setColor(m_qcolorTempListBG);
 
-  m_qcolorTempListGrid = kconfig->readColorEntry("listGridColor", &qcolorDefaultGrid);
+  m_qcolorTempListGrid = KMyMoneyUtils::defaultGridColour();
   m_kcolorbuttonGrid->setColor(m_qcolorTempListGrid);
 
+  QFont qfontDefault = KMyMoneyUtils::headerFont();
   m_qfontTempHeader = kconfig->readFontEntry("listHeaderFont", &qfontDefault);
   m_kfontchooserHeader->setFont(m_qfontTempHeader);
 
+  qfontDefault = KMyMoneyUtils::cellFont();
   m_qfontTempCell = kconfig->readFontEntry("listCellFont", &qfontDefault);
   m_kfontchooserCell->setFont(m_qfontTempCell);
+
+  m_bTempUseSystemFont = kconfig->readBoolEntry("useSystemFont", true);
+  m_systemFont->setChecked(m_bTempUseSystemFont);
 
   m_bTempShowGrid = kconfig->readBoolEntry("ShowGrid", true);
   m_qcheckboxShowGrid->setChecked(m_bTempShowGrid);
@@ -522,6 +522,8 @@ void KSettingsDlg::configWrite()
   kconfig->writeEntry("listGridColor", m_kcolorbuttonGrid->color());
   kconfig->writeEntry("listHeaderFont", m_kfontchooserHeader->font());
   kconfig->writeEntry("listCellFont", m_kfontchooserCell->font());
+  kconfig->writeEntry("useSystemFont", m_systemFont->isChecked());
+
   // kconfig->writeEntry("RowCount", m_klineeditRowCount->text());
   kconfig->writeEntry("ShowGrid", m_qcheckboxShowGrid->isChecked());
   // kconfig->writeEntry("ColourPerTransaction", m_qradiobuttonPerTransaction->isChecked());
@@ -630,6 +632,7 @@ void KSettingsDlg::slotUser1()
   m_kcolorbuttonBack->setColor(m_qcolorTempListBG);
   m_kfontchooserHeader->setFont(m_qfontTempHeader);
   m_kfontchooserCell->setFont(m_qfontTempCell);
+  m_systemFont->setChecked(m_bTempUseSystemFont);
   m_qcheckboxShowGrid->setChecked(m_bTempShowGrid);
   m_qcheckboxHideCategory->setChecked(m_bTempHideCategory);
   m_dateinputStart->setDate(m_qdateTempStart);
@@ -714,6 +717,11 @@ void KSettingsDlg::fillHomePageItems(QStringList& list)
   m_homePageList->setMinimumWidth(w+30);
   m_homePageList->setMaximumWidth(w+30);
   m_homePageList->setColumnWidth(0, w+28);
+}
+
+void KSettingsDlg::slotSystemFontToggled(bool state)
+{
+  m_fontTabWidget->setEnabled(!state);
 }
 
 void KSettingsDlg::slotSelectHomePageItem(QListViewItem *item)
@@ -848,22 +856,26 @@ void KSettingsDlg::setPageFont()
   QVBox *qvboxMainFrame = addVBoxPage( i18n("Fonts"), i18n("Font settings"),
     DesktopIcon("font"));
 
-  QTabWidget* tabWidget2 = new QTabWidget( qvboxMainFrame, "tabWidget2" );
+  m_systemFont = new QCheckBox(qvboxMainFrame, "systemFont");
+  m_systemFont->setText(i18n("Use system fonts"));
+  connect(m_systemFont, SIGNAL(toggled(bool)), this, SLOT(slotSystemFontToggled(bool)));
 
-  QWidget* tab = new QWidget( tabWidget2, "tab" );
+  m_fontTabWidget = new QTabWidget( qvboxMainFrame, "tabWidget2" );
+
+  QWidget* tab = new QWidget( m_fontTabWidget, "tab" );
   QVBoxLayout* tabLayout = new QVBoxLayout( tab, 11, 6, "tabLayout");
 
   m_kfontchooserHeader = new KFontChooser(tab, "m_kfontchooserHeader" );
   tabLayout->addWidget( m_kfontchooserHeader );
-  tabWidget2->insertTab( tab, QString("") );
+  m_fontTabWidget->insertTab( tab, QString("") );
 
-  QWidget* tab_2 = new QWidget( tabWidget2, "tab_2" );
+  QWidget* tab_2 = new QWidget( m_fontTabWidget, "tab_2" );
   QVBoxLayout* tabLayout_2 = new QVBoxLayout( tab_2, 11, 6, "tabLayout_2");
 
   m_kfontchooserCell = new KFontChooser( tab_2, "m_kfontchooserCell" );
   tabLayout_2->addWidget( m_kfontchooserCell );
-  tabWidget2->insertTab( tab_2, QString("") );
+  m_fontTabWidget->insertTab( tab_2, QString("") );
 
-  tabWidget2->changeTab( tab, i18n( "Header Font" ) );
-  tabWidget2->changeTab( tab_2, i18n( "Cell Font" ) );
+  m_fontTabWidget->changeTab( tab, i18n( "Header Font" ) );
+  m_fontTabWidget->changeTab( tab_2, i18n( "Cell Font" ) );
 }

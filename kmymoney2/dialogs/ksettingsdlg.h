@@ -40,6 +40,7 @@
 class KIntNumInput;
 class KListView;
 class KPushButton;
+class QTabWidget;
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -58,7 +59,7 @@ class KPushButton;
   * @see KDialogBase
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: ksettingsdlg.h,v 1.18 2004/08/02 21:12:12 ipwizard Exp $
+  * $Id: ksettingsdlg.h,v 1.19 2004/10/06 15:53:40 ipwizard Exp $
   *
   * @short A class to manipulate the settings needed for running KMyMoney2
 **/
@@ -85,6 +86,9 @@ private:
   KFontChooser *m_kfontchooserHeader;
   /** Font cell setting */
   KFontChooser *m_kfontchooserCell;
+  /** Prefer system font */
+  QCheckBox* m_systemFont;
+  QTabWidget* m_fontTabWidget;
 
   /** No rows to show in register */
   // KLineEdit *m_klineeditRowCount;
@@ -187,6 +191,7 @@ private:
   bool m_bTempShowNrField;
   bool m_bTempStartPage;
   bool m_bTempCheckSchedule;
+  bool m_bTempUseSystemFont;
   int  m_iTempSchedulePreview;
   QStringList m_tempHomePageItems;
 
@@ -205,6 +210,9 @@ private slots:
 
   /** Called when 'Always show nr field' is toggled */
   void slotNrFieldToggled(bool state);
+
+  /** Called when 'Use system font' is toggled */
+  void slotSystemFontToggled(bool state);
 
   void slotSelectHomePageItem(QListViewItem *);
 

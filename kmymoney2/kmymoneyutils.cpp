@@ -536,10 +536,17 @@ void KMyMoneyUtils::updateSettings(void)
   _gridColour = config->readColorEntry("listGridColor", &c);
 
   f = KGlobalSettings::generalFont();
-  _cellFont = config->readFontEntry("listCellFont", &f);
+  if(config->readBoolEntry("useSystemFont", true) == false)
+    _cellFont = config->readFontEntry("listCellFont", &f);
+  else
+    _cellFont = f;
 
-  f = KGlobalSettings::windowTitleFont();
-  _headerFont = config->readFontEntry("listHeaderFont", &f);
+  f = KGlobalSettings::generalFont();
+  f.setBold(true);
+  if(config->readBoolEntry("useSystemFont", true) == false)
+    _headerFont = config->readFontEntry("listHeaderFont", &f);
+  else
+    _headerFont = f;
 }
 
 void KMyMoneyUtils::checkConstants(void)
