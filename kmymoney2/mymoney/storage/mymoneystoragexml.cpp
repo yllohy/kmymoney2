@@ -286,7 +286,7 @@ void MyMoneyStorageXML::on_start_element(const std::string &n, const Element::At
         m_pCurrentAccount->setNumber(QString(strTemp.data()));
 
         strTemp = getPropertyValue(std::string("opened"), p);
-        QDate openingDate = QDate::fromString(QString(strTemp.data()), Qt::TextDate);
+        QDate openingDate = QDate::fromString(QString(strTemp.data()), Qt::ISODate);
         m_pCurrentAccount->setOpeningDate(openingDate);
 
         strTemp = getPropertyValue(std::string("openingbalance"), p);
@@ -294,11 +294,11 @@ void MyMoneyStorageXML::on_start_element(const std::string &n, const Element::At
         m_pCurrentAccount->setOpeningBalance(openBalance);
 
         strTemp = getPropertyValue(std::string("lastmodified"), p);
-        QDate lastModified = QDate::fromString(QString(strTemp.data()), Qt::TextDate);
+        QDate lastModified = QDate::fromString(QString(strTemp.data()), Qt::ISODate);
         m_pCurrentAccount->setLastModified(lastModified);
 
         strTemp = getPropertyValue(std::string("lastreconciled"), p);
-        QDate lastReconciled = QDate::fromString(QString(strTemp.data()), Qt::TextDate);
+        QDate lastReconciled = QDate::fromString(QString(strTemp.data()), Qt::ISODate);
         m_pCurrentAccount->setLastReconciliationDate(lastReconciled);
       }
     }
