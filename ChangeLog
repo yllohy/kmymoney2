@@ -1,5 +1,10 @@
 2004-04-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed some problems around multi currency and account/category creation
+  * KUpdateStockPriceDlg now uses kMyMoneyEdit for price field
+  * Revised interface of KUpdateStockPriceDlg
+  * Enabled Return/Esc handling for KUpdateStockPriceDlg
+  * Fixed problems with inline documentation
+  * Fixed layout of amount tab in find transaction dialog
 
 2004-04-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Revised view activation signalling
