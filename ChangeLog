@@ -1,3 +1,10 @@
+2005-01-28 Ace Jones <acejones@users.sourceforge.net>
+  * Fixed a subtle bug in reports that caused a crash if you double-clicked on 
+    empty areas.
+  * Relaxed MyMoneyStorageANON::writeSecurity to pass through the trading 
+    symbol, trading currency, and quote source for securities.  This is useful 
+    for debugging online quotes problems.
+
 2005-01-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Changed open balances handling to be transaction based
   * Show balance per institution in institution view
