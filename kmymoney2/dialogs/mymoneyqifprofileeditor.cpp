@@ -21,6 +21,7 @@
 #include <qpushbutton.h>
 #include <qlistbox.h>
 #include <qlistview.h>
+#include <qcheckbox.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -141,6 +142,8 @@ MyMoneyQifProfileEditor::MyMoneyQifProfileEditor(const bool edit, QWidget *paren
 
   connect(m_editOutputFilterLocation, SIGNAL(textChanged(const QString&)), &m_profile, SLOT(setFilterScriptExport(const QString&)));
   connect(m_editOutputFilterLocation, SIGNAL(urlSelected(const QString&)), m_editOutputFilterLocation, SLOT(setURL(const QString&)));
+
+  connect(m_attemptMatch, SIGNAL(toggled(bool)), &m_profile, SLOT(setAttemptMatchDuplicates(bool)));
 }
 
 MyMoneyQifProfileEditor::~MyMoneyQifProfileEditor()
@@ -212,7 +215,7 @@ void MyMoneyQifProfileEditor::loadWidgets(void)
   m_editVoidMark->setEnabled(m_inEdit);
   m_editInputFilterLocation->setEnabled(m_inEdit);
   m_editOutputFilterLocation->setEnabled(m_inEdit);
-
+  
   if(!m_inEdit) {
     m_renameButton->hide();
     m_deleteButton->hide();
@@ -300,6 +303,8 @@ void MyMoneyQifProfileEditor::showProfile(void)
 
   m_editDateFormat->setCurrentText(m_profile.dateFormat());
   m_editApostrophe->setCurrentText(m_profile.apostropheFormat());
+
+  m_attemptMatch->setChecked(m_profile.attemptMatchDuplicates()); 
 
   QListViewItem* item;
   QListViewItemIterator it(m_editAmounts);

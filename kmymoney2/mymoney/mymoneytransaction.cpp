@@ -262,9 +262,6 @@ const unsigned long MyMoneyTransaction::hash(const QString& txt) const
   return h;
 }
 
-// FIXME: Unfortunately, this is not enough.  A duplicate transaction also should
-// consider some other things like check number and payee
-
 const bool MyMoneyTransaction::isDuplicate(const MyMoneyTransaction& r) const
 {
   bool rc = true;
@@ -276,26 +273,31 @@ const bool MyMoneyTransaction::isDuplicate(const MyMoneyTransaction& r) const
     } else {
       unsigned long accHash[2];
       unsigned long valHash[2];
+      unsigned long numHash[2];
       for(int i = 0; i < 2; ++i)
-        accHash[i] = valHash[i] = 0;
+        accHash[i] = valHash[i] = numHash[i] = 0;
 
       QValueList<MyMoneySplit>::ConstIterator it;
       for(it = splits().begin(); it != splits().end(); ++it) {
         accHash[0] += hash((*it).accountId());
         valHash[0] += hash((*it).value().formatMoney("", 4));
+        numHash[0] += hash((*it).number());
       }
       for(it = r.splits().begin(); it != r.splits().end(); ++it) {
         accHash[1] += hash((*it).accountId());
         valHash[1] += hash((*it).value().formatMoney("", 4));
+        numHash[1] += hash((*it).number());
       }
 
       if(accHash[0] != accHash[1]
-      || valHash[0] != valHash[1]) {
+      || valHash[0] != valHash[1]
+      || numHash[0] != numHash[1]
+      ) {
         rc = false;
       }
     }
   }
-
+  
   return rc;
 }
 

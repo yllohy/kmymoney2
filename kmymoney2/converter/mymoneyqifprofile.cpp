@@ -76,6 +76,8 @@ void MyMoneyQifProfile::clear(void)
   m_profileName = "";
   m_profileDescription = "";
   m_profileType = "Bank";
+  
+  m_attemptMatchDuplicates = true;
 }
 
 void MyMoneyQifProfile::loadProfile(const QString& name)
@@ -95,6 +97,8 @@ void MyMoneyQifProfile::loadProfile(const QString& name)
   m_voidMark = config->readEntry("VoidMark", m_voidMark);
   m_filterScriptImport = config->readEntry("FilterScriptImport", m_filterScriptImport);
   m_filterScriptExport = config->readEntry("FilterScriptExport", m_filterScriptExport);
+  
+  m_attemptMatchDuplicates = config->readBoolEntry("AttemptMatchDuplicates", m_attemptMatchDuplicates);
 
   // make sure, we remove any old stuff for now
   config->deleteEntry("FilterScript");
@@ -135,6 +139,7 @@ void MyMoneyQifProfile::saveProfile(void)
     config->writeEntry("VoidMark", m_voidMark);
     config->writeEntry("FilterScriptImport", m_filterScriptImport);
     config->writeEntry("FilterScriptExport", m_filterScriptExport);
+    config->writeEntry("AttemptMatchDuplicates", m_attemptMatchDuplicates);
 
     QString tmp;
 
@@ -578,4 +583,12 @@ void MyMoneyQifProfile::setFilterScriptExport(const QString& script)
     m_isDirty = true;
 
   m_filterScriptExport = script;
+}
+
+void MyMoneyQifProfile::setAttemptMatchDuplicates(bool f)
+{
+  if ( m_attemptMatchDuplicates != f )
+    m_isDirty = true;
+  
+  m_attemptMatchDuplicates = f;    
 }

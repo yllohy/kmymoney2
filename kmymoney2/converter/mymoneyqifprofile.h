@@ -70,6 +70,7 @@ public:
   const QString& voidMark(void) const { return m_voidMark; };
   const QString& filterScriptImport(void) const { return m_filterScriptImport; };
   const QString& filterScriptExport(void) const { return m_filterScriptExport; };
+  bool attemptMatchDuplicates(void) const { return m_attemptMatchDuplicates; }
 
   /**
     * This method presets the member variables with the default values.
@@ -93,6 +94,7 @@ public slots:
   void setVoidMark(const QString& txt);
   void setFilterScriptImport(const QString& txt);
   void setFilterScriptExport(const QString& txt);
+  void setAttemptMatchDuplicates(bool);
 
 private:
   const QString twoDigitYear(const QChar delim, int yr) const;
@@ -112,6 +114,7 @@ private:
   QString   m_filterScriptExport;
   QMap<QChar, QChar> m_decimal;
   QMap<QChar, QChar> m_thousands;
+  bool      m_attemptMatchDuplicates;
 };
 
 #endif

@@ -27,6 +27,7 @@
 #include <qstringlist.h>
 #include <qtimer.h>
 #include <qtextedit.h>
+#include <qregexp.h>
 
 // ----------------------------------------------------------------------------
 // KDE Headers
@@ -803,20 +804,31 @@ void MyMoneyQifReader::processTransactionEntry(void)
 
   // Add the transaction
   try {
-    // First, do the duplicate check
-    QValueList<MyMoneyTransaction> list;
-    MyMoneyTransactionFilter filter;
-    filter.setDateFilter(t.postDate().addDays(-4), t.postDate().addDays(4));
-    list = file->transactionList(filter);
+    bool oktoadd = false;
+    
+    if ( m_qifProfile.attemptMatchDuplicates() )
+    {
+      // First, do the duplicate check
+      QValueList<MyMoneyTransaction> list;
+      MyMoneyTransactionFilter filter;
+      filter.setDateFilter(t.postDate().addDays(-4), t.postDate().addDays(4));
+      list = file->transactionList(filter);
+  
+      QValueList<MyMoneyTransaction>::Iterator it;
+      for(it = list.begin(); it != list.end(); ++it) {
+        if(t.isDuplicate(*it))
+          break;
+      }
+      if(it == list.end()) {
+        oktoadd = true;
+      }
+    }
+    else
+      oktoadd = true;
 
-    QValueList<MyMoneyTransaction>::Iterator it;
-    for(it = list.begin(); it != list.end(); ++it) {
-      if(t.isDuplicate(*it))
-        break;
-    }
-    if(it == list.end()) {
+    if ( oktoadd )     
       file->addTransaction(t);
-    }
+    
   } catch (MyMoneyException *e) {
     QString message(i18n("Problem adding imported transaction: "));
     message += e->what();
@@ -829,6 +841,27 @@ void MyMoneyQifReader::processTransactionEntry(void)
 void MyMoneyQifReader::processInvestmentTransactionEntry()
 {
   kdDebug(2) << "Investment Transaction:" << m_qifEntry.count() << " lines" << endl;
+  /*
+  Items for Investment Accounts
+  Field 	Indicator Explanation
+  D 	Date
+  N 	Action
+  Y 	Security (NAME, not symbol)
+  I 	Price
+  Q 	Quantity (number of shares or split ratio)
+  T 	Transaction amount
+  C 	Cleared status
+  P 	Text in the first line for transfers and reminders (Payee)
+  M 	Memo
+  O 	Commission
+  L 	Account for the transfer
+  $ 	Amount transferred
+  ^ 	End of the entry
+  
+  It will be presumed all transactions are to the associated cash account, if 
+  one exists, unless otherwise noted by the 'L' field.
+  
+  */
 }
 
 const QCString MyMoneyQifReader::checkCategory(const QString& name, const MyMoneyMoney value, const MyMoneyMoney value2)
@@ -897,16 +930,16 @@ void MyMoneyQifReader::processAccountEntry(void)
   if(tmp.length() > 0)
     m_account.setValue("lastStatementDate", m_qifProfile.date(tmp).toString("yyyy-MM-dd"));
 
-  QString type = extractLine('T');
-  if(type == m_qifProfile.profileType()) {
+  QString type = extractLine('T').lower().remove(QRegExp("\\s+"));
+  if(type == m_qifProfile.profileType().lower().remove(QRegExp("\\s+"))) {
     m_account.setAccountType(MyMoneyAccount::Checkings);
-  } else if(type == "CCard") {
+  } else if(type == "ccard" || type == "creditcard") {
     m_account.setAccountType(MyMoneyAccount::CreditCard);
-  } else if(type == "Cash") {
+  } else if(type == "cash") {
     m_account.setAccountType(MyMoneyAccount::Cash);
-  } else if(type == "Oth A") {
+  } else if(type == "otha") {
     m_account.setAccountType(MyMoneyAccount::Asset);
-  } else if(type == "Oth L") {
+  } else if(type == "othl") {
     m_account.setAccountType(MyMoneyAccount::Liability);
   } else {
     m_account.setAccountType(MyMoneyAccount::Checkings);

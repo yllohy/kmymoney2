@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>650</width>
-            <height>317</height>
+            <width>736</width>
+            <height>298</height>
         </rect>
     </property>
     <property name="caption">
@@ -30,7 +30,7 @@
         </property>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>layout44</cstring>
+                <cstring>layout10</cstring>
             </property>
             <hbox>
                 <property name="name">
@@ -74,7 +74,7 @@
                             </property>
                             <widget class="QLayoutWidget">
                                 <property name="name">
-                                    <cstring>layout27</cstring>
+                                    <cstring>layout9</cstring>
                                 </property>
                                 <grid>
                                     <property name="name">
@@ -94,19 +94,23 @@
                                             <string>Void mark</string>
                                         </property>
                                     </widget>
-                                    <widget class="KLineEdit" row="0" column="1">
+                                    <widget class="QLabel" row="2" column="0">
                                         <property name="name">
-                                            <cstring>m_editDescription</cstring>
+                                            <cstring>TextLabel2_2</cstring>
+                                        </property>
+                                        <property name="minimumSize">
+                                            <size>
+                                                <width>140</width>
+                                                <height>0</height>
+                                            </size>
+                                        </property>
+                                        <property name="text">
+                                            <string>Opening Balance text</string>
                                         </property>
                                     </widget>
-                                    <widget class="KLineEdit" row="1" column="1">
+                                    <widget class="KLineEdit" row="2" column="1">
                                         <property name="name">
-                                            <cstring>m_editType</cstring>
-                                        </property>
-                                    </widget>
-                                    <widget class="KLineEdit" row="3" column="1">
-                                        <property name="name">
-                                            <cstring>m_editAccountDelimiter</cstring>
+                                            <cstring>m_editOpeningBalance</cstring>
                                         </property>
                                     </widget>
                                     <widget class="QLabel" row="1" column="0">
@@ -123,9 +127,14 @@
                                             <string>Type field text</string>
                                         </property>
                                     </widget>
-                                    <widget class="KLineEdit" row="2" column="1">
+                                    <widget class="KLineEdit" row="3" column="1">
                                         <property name="name">
-                                            <cstring>m_editOpeningBalance</cstring>
+                                            <cstring>m_editAccountDelimiter</cstring>
+                                        </property>
+                                    </widget>
+                                    <widget class="KLineEdit" row="4" column="1">
+                                        <property name="name">
+                                            <cstring>m_editVoidMark</cstring>
                                         </property>
                                     </widget>
                                     <widget class="QLabel" row="3" column="0">
@@ -142,18 +151,14 @@
                                             <string>Account delimiter</string>
                                         </property>
                                     </widget>
-                                    <widget class="QLabel" row="2" column="0">
+                                    <widget class="KLineEdit" row="1" column="1">
                                         <property name="name">
-                                            <cstring>TextLabel2_2</cstring>
+                                            <cstring>m_editType</cstring>
                                         </property>
-                                        <property name="minimumSize">
-                                            <size>
-                                                <width>140</width>
-                                                <height>0</height>
-                                            </size>
-                                        </property>
-                                        <property name="text">
-                                            <string>Opening Balance text</string>
+                                    </widget>
+                                    <widget class="KLineEdit" row="0" column="1">
+                                        <property name="name">
+                                            <cstring>m_editDescription</cstring>
                                         </property>
                                     </widget>
                                     <widget class="QLabel" row="0" column="0">
@@ -170,12 +175,15 @@
                                             <string>Description</string>
                                         </property>
                                     </widget>
-                                    <widget class="KLineEdit" row="4" column="1">
-                                        <property name="name">
-                                            <cstring>m_editVoidMark</cstring>
-                                        </property>
-                                    </widget>
                                 </grid>
+                            </widget>
+                            <widget class="QCheckBox">
+                                <property name="name">
+                                    <cstring>m_attemptMatch</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Attempt to match similiar transactions</string>
+                                </property>
                             </widget>
                             <spacer>
                                 <property name="name">
@@ -189,8 +197,8 @@
                                 </property>
                                 <property name="sizeHint">
                                     <size>
-                                        <width>16</width>
-                                        <height>22</height>
+                                        <width>20</width>
+                                        <height>20</height>
                                     </size>
                                 </property>
                             </spacer>
@@ -837,5 +845,47 @@
         </widget>
     </vbox>
 </widget>
+<customwidgets>
+</customwidgets>
+<tabstops>
+    <tabstop>m_profileListBox</tabstop>
+    <tabstop>profileTabs</tabstop>
+    <tabstop>m_editDescription</tabstop>
+    <tabstop>m_editType</tabstop>
+    <tabstop>m_editOpeningBalance</tabstop>
+    <tabstop>m_editAccountDelimiter</tabstop>
+    <tabstop>m_editVoidMark</tabstop>
+    <tabstop>m_helpButton</tabstop>
+    <tabstop>m_newButton</tabstop>
+    <tabstop>m_deleteButton</tabstop>
+    <tabstop>m_renameButton</tabstop>
+    <tabstop>m_resetButton</tabstop>
+    <tabstop>m_okButton</tabstop>
+    <tabstop>m_cancelButton</tabstop>
+    <tabstop>m_editDateFormat</tabstop>
+    <tabstop>m_editApostrophe</tabstop>
+    <tabstop>m_decimalBox</tabstop>
+    <tabstop>m_thousandsBox</tabstop>
+    <tabstop>m_editAmounts</tabstop>
+    <tabstop>m_editInputFilterLocation</tabstop>
+    <tabstop>m_editOutputFilterLocation</tabstop>
+</tabstops>
 <layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>klineedit.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>kcombobox.h</includehint>
+    <includehint>kcombobox.h</includehint>
+    <includehint>kcombobox.h</includehint>
+    <includehint>kcombobox.h</includehint>
+    <includehint>kurlrequester.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kurlrequester.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+</includehints>
 </UI>
