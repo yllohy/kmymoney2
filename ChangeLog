@@ -1,3 +1,10 @@
+2002-11-14 Kevin Tambascio <ktambascio@yahoo.com>
+  * Modified kmymoneyview.cpp, to allow XML files to be passed to the right
+    file parser.
+  * Added mymoneyxmlparser.h, which extends the xml++.h class.
+  * removed mymoneystoragexmlcallback files, because they weren't needed.
+  * more work on the XML Reader code.
+
 2002-11-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added MyMoneyKeyValueContainer class to have the ability to
     add a variable number of arguments to an engine object
