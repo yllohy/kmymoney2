@@ -301,7 +301,7 @@ type=DATA
 
 [kmymoney2/Makefile.am]
 files=kmymoney2/main.cpp,kmymoney2/kmymoney2.cpp,kmymoney2/kmymoney2.h,kmymoney2/kmymoney2ui.rc,kmymoney2/kmymoney2.desktop,kmymoney2/kstartuplogo.cpp,kmymoney2/kstartuplogo.h,kmymoney2/default_categories.dat,kmymoney2/lo16-app-kmymoney2.png,kmymoney2/lo32-app-kmymoney2.png,kmymoney2/kmymoney_wizard.png,kmymoney2/mimetype_kmy_16x16.png,kmymoney2/mimetype_kmy_32x32.png,kmymoney2/mimetype_kmy_48x48.png,kmymoney2/x-kmymoney2.desktop,kmymoney2/hi16-app-kmymoney2.png,kmymoney2/hi32-app-kmymoney2.png
-sub_dirs=views,dialogs,mymoney,pics,icons,widgets,html
+sub_dirs=dialogs,views,mymoney,pics,icons,widgets,html
 type=prog_main
 
 [kmymoney2/default_categories.dat]
