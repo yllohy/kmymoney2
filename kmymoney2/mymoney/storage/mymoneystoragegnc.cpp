@@ -70,7 +70,7 @@ void MyMoneyStorageGNC::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
     QDomElement rootElement = m_doc->documentElement();
     if(!rootElement.isNull())
     {
-      qDebug("XMLREADER: Root element of this file is %s\n", rootElement.tagName().data());
+      qDebug("GNCREADER: Root element of this file is %s\n", rootElement.tagName().data());
 
       if(QString("gnc-v2") == rootElement.tagName())
       {
@@ -80,7 +80,7 @@ void MyMoneyStorageGNC::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
         while(!child.isNull() && child.isElement())
         {
           QDomElement childElement = child.toElement();
-          qDebug("XMLREADER: Processing child node %s", childElement.tagName().data());
+          qDebug("GNCREADER: Processing child node %s", childElement.tagName().data());
           
           QDomNodeList nodeList = childElement.childNodes();
           if(nodeList.count())
@@ -90,7 +90,7 @@ void MyMoneyStorageGNC::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
             for(int x = 0; x < nodeList.count(); x++)
             {
               QDomElement temp = nodeList.item(x).toElement();
-              qDebug("Dealing with %s\n", temp.tagName().data());
+              qDebug("GNCREADER: Dealing with %s\n", temp.tagName().data());
               if(QString("gnc:account") == temp.tagName())
               {
                 MyMoneyAccount account = readAccount(temp);
@@ -98,11 +98,11 @@ void MyMoneyStorageGNC::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
                 //tell the storage objects we have a new institution.
                 //m_storage->loadAccount(account);
 
-                //id = extractId(account.id().data());
-                //if(id > m_storage->accountId())
-                //{
-                //  m_storage->loadAccountId(id);
-                //}
+                unsigned long id = extractId(account.id().data());
+                if(id > m_storage->accountId())
+                {
+                  m_storage->loadAccountId(id);
+                }
               }
               if(QString("gnc:transaction") == temp.tagName())
               {
@@ -143,194 +143,6 @@ void MyMoneyStorageGNC::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
   }
 }
 
-
-void MyMoneyStorageGNC::readFileInformation(QDomElement fileInfo)
-{
-  signalProgress(0, 3, QObject::tr("Loading file information..."));
-  
-  QDomElement temp = findChildElement(QString("CREATION_DATE"), fileInfo);
-  QString strDate = QStringEmpty(temp.attribute("date"));
-  m_storage->setCreationDate(getDate(strDate));
-  signalProgress(1, 0);
-  
-  temp = findChildElement(QString("LAST_MODIFIED_DATE"), fileInfo);
-  strDate = QStringEmpty(temp.attribute("date"));
-  m_storage->setLastModificationDate(getDate(strDate));
-  signalProgress(2, 0);
-  
-  temp = findChildElement(QString("VERSION"), fileInfo);
-  QString strVersion = QStringEmpty(temp.attribute("id"));
-  fileVersionRead = strVersion.toUInt(NULL, 16);
-  fileVersionWrite = fileVersionRead;
-  signalProgress(3, 0);
-}
-
-
-void MyMoneyStorageGNC::readUserInformation(QDomElement userElement)
-{
-  signalProgress(0, 1, QObject::tr("Loading user information..."));
-
-  m_storage->setUserName(QStringEmpty(userElement.attribute(QString("name"))));
-  m_storage->setUserEmail(QStringEmpty(userElement.attribute(QString("email"))));
-
-  QDomElement addressNode = findChildElement(QString("ADDRESS"), userElement);
-  if(!addressNode.isNull())
-  {
-    m_storage->setUserStreet(QStringEmpty(addressNode.attribute(QString("street"))));
-    m_storage->setUserTown(QStringEmpty(addressNode.attribute(QString("city"))));
-    m_storage->setUserCounty(QStringEmpty(addressNode.attribute(QString("county"))));
-    m_storage->setUserPostcode(QStringEmpty(addressNode.attribute(QString("zipcode"))));
-    m_storage->setUserTelephone(QStringEmpty(addressNode.attribute(QString("telephone"))));
-  }
-
-  signalProgress(1, 0);
-}
-
-void MyMoneyStorageGNC::readInstitutions(QDomElement& institutions)
-{
-  unsigned long id = 0;
-  QDomNode child = institutions.firstChild();
-  uint nCount = getChildCount(institutions);
-  int x = 0;
-  signalProgress(0, nCount, QObject::tr("Loading institutions..."));
-
-  while(!child.isNull())
-  {
-    if(child.isElement())
-    {
-      QDomElement childElement = child.toElement();
-      if(QString("INSTITUTION") == childElement.tagName())
-      {
-        MyMoneyInstitution inst = readInstitution(childElement);
-
-        //tell the storage objects we have a new institution.
-        m_storage->loadInstitution(inst);
-
-        id = extractId(inst.id().data());
-        if(id > m_storage->institutionId())
-        {
-          m_storage->loadInstitutionId(id);
-        }
-        
-        //return childElement;
-      }
-
-      signalProgress(x++, 0);
-    }
-    child = child.nextSibling();
-  }
-}
-
-MyMoneyInstitution MyMoneyStorageGNC::readInstitution(const QDomElement& institution)
-{
-  MyMoneyInstitution i;
-  QCString id;
-
-  i.setName(QStringEmpty(institution.attribute(QString("name"))));
-  i.setManager(QStringEmpty(institution.attribute(QString("manager"))));
-  i.setSortcode(QStringEmpty(institution.attribute(QString("sortcode"))));
-  id = QStringEmpty(institution.attribute(QString("id")));
-
-  QDomElement address = findChildElement(QString("ADDRESS"), institution);
-  if(!address.isNull() && address.isElement())
-  {
-    i.setStreet(QStringEmpty(address.attribute(QString("street"))));
-    i.setCity(QStringEmpty(address.attribute(QString("city"))));
-    i.setPostcode(QStringEmpty(address.attribute(QString("zip"))));
-    i.setTelephone(QStringEmpty(address.attribute(QString("telephone"))));
-  }
-  else
-  {
-    qWarning("XMLREADER: Institution %s does not have an address section.", i.name().data());
-  }
-
-  QDomElement accounts = findChildElement(QString("ACCOUNTIDS"), institution);
-  if(!accounts.isNull() && accounts.isElement())
-  {
-    QDomNode child = accounts.firstChild();
-    while(!child.isNull())
-    {
-      if(child.isElement())
-      {
-        QDomElement childElement = child.toElement();
-        if(QString("ACCOUNTID") == childElement.tagName())
-        {
-          i.addAccountId(QCStringEmpty(childElement.attribute(QString("id"))));
-        }
-      }
-      child = child.nextSibling();
-    }
-  }
-  else
-  {
-    qWarning("XMLREADER: Institution %s does not have an accountids section.", i.name().data());
-  }
-    
-  return MyMoneyInstitution(id, i);
-}
-
-
-void MyMoneyStorageGNC::readPayees(QDomElement& payees)
-{
-  unsigned long id = 0;
-  QDomNode child = payees.firstChild();
-  int x = 0;
-  signalProgress(0, getChildCount(payees), QObject::tr("Loading payees..."));
-  
-  while(!child.isNull())
-  {
-    if(child.isElement())
-    {
-      QDomElement childElement = child.toElement();
-      if(QString("PAYEE") == childElement.tagName())
-      {
-        MyMoneyPayee p = readPayee(childElement);
-
-        //tell the storage objects we have a new institution.
-        m_storage->loadPayee(p);
-
-        id = extractId(p.id().data());
-        if(id > m_storage->payeeId())
-          m_storage->loadPayeeId(id);
-
-        //return childElement;
-      }
-    }
-    child = child.nextSibling();
-    signalProgress(x++, 0);
-  }
-}
-
-MyMoneyPayee MyMoneyStorageGNC::readPayee(const QDomElement& payee)
-{
-  MyMoneyPayee p;
-  QCString id;
-
-  p.setName(QStringEmpty(payee.attribute(QString("name"))));
-  p.setReference(QStringEmpty(payee.attribute(QString("reference"))));
-  p.setEmail(QStringEmpty(payee.attribute(QString("email"))));
-
-  id = QStringEmpty(payee.attribute(QString("id")));
-  Q_ASSERT(id.size());
-
-  QDomElement address = findChildElement(QString("ADDRESS"), payee);
-  if(!address.isNull() && address.isElement())
-  {
-    p.setAddress(QStringEmpty(address.attribute(QString("street"))));
-    p.setCity(QStringEmpty(address.attribute(QString("city"))));
-    p.setPostcode(QStringEmpty(address.attribute(QString("postcode"))));
-    p.setState(QStringEmpty(address.attribute(QString("state"))));
-    p.setTelephone(QStringEmpty(address.attribute(QString("telephone"))));
-  }
-  else
-  {
-    qWarning("XMLREADER: Institution %s does not have an address section.", p.name().data());
-  }
-
-  //create actual object to return to add into the engine's list of objects.
-  return MyMoneyPayee(id, p);
-}
-
 void MyMoneyStorageGNC::readAccounts(QDomElement& accounts)
 {
   unsigned long id = 0;
@@ -345,7 +157,7 @@ void MyMoneyStorageGNC::readAccounts(QDomElement& accounts)
     {
       MyMoneyAccount account = readAccount(childElement);
 
-      //tell the storage objects we have a new institution.
+      //tell the storage objects we have a new account.
       m_storage->loadAccount(account);
 
       id = extractId(account.id().data());
@@ -361,84 +173,132 @@ void MyMoneyStorageGNC::readAccounts(QDomElement& accounts)
   }
 }
 
-
 MyMoneyAccount MyMoneyStorageGNC::readAccount(const QDomElement& account)
 {
   MyMoneyAccount acc;
   QCString id;
   QString tmp;
- 
-  QDomNodeList nodeList = account.childNodes();
-  qDebug("Account has %d children\n", nodeList.count());
-  for(int x = 0; x < nodeList.count(); x++)
-  {
-    QDomElement temp = nodeList.item(x).toElement();
-    
-    if(nodeList.item(x).isCharacterData())
-    {
-      qDebug("Child node has character data\n");
-    }
-    qDebug("Account child name is %s\n", temp.tagName().data());
-  }
-  //acc.setName(account.attribute(QString("name")));
-
-  // qDebug("Reading information for account %s", acc.name().data());
+  QString gncName, gncAccountId, gncType, gncDescription, gncParent;
+  bool bHasParent = false;
   
-  //acc.setParentAccountId(QCStringEmpty(account.attribute(QString("parentaccount"))));
-  //acc.setLastModified(getDate(QStringEmpty(account.attribute(QString("lastmodified")))));
-  //acc.setLastReconciliationDate(getDate(QStringEmpty(account.attribute(QString("lastreconciled")))));
-  //acc.setInstitutionId(QCStringEmpty(account.attribute(QString("institution"))));
-  //acc.setNumber(QStringEmpty(account.attribute(QString("number"))));
-  //acc.setOpeningDate(getDate(QStringEmpty(account.attribute(QString("opened")))));
+  QString gncVersion = account.attributes().namedItem(QString("version")).nodeValue();
+  qDebug("Version of this account object is %s\n", gncVersion.data());
 
-  //tmp = QStringEmpty(account.attribute(QString("type")));
-  //bool bOK = false;
-  //int type = tmp.toInt(&bOK);
-  //if(bOK)
-  /*{
-    acc.setAccountType(static_cast<MyMoneyAccount::accountTypeE>(type));
-  }
-  else
+  if(QString("2.0.0") == gncVersion)
   {
-    qWarning("XMLREADER: Account %s had invalid or no account type information.", acc.name().data());
-  }
-      
-  acc.setOpeningBalance(MyMoneyMoney(account.attribute(QString("openingbalance"))));
-  acc.setDescription(account.attribute(QString("description")));
-  
-  id = QCStringEmpty(account.attribute(QString("id")));
-  Q_ASSERT(id.size());
-  // qDebug("Account %s has id of %s, type of %d, parent is %s.", acc.name().data(), id.data(), type, acc.parentAccountId().data());
-
-  /////////////////////////////////////////////////////////////////////////////////////////
-  //  Process any Sub-Account information found inside the account entry.
-  QDomElement subAccounts = findChildElement(QString("SUBACCOUNTS"), account);
-  if(!subAccounts.isNull() && subAccounts.isElement())
-  {
-    QDomNode child = subAccounts.firstChild();
-    while(!child.isNull())
+    QDomNodeList nodeList = account.childNodes();
+    qDebug("Account has %d children\n", nodeList.count());
+    for(int x = 0; x < nodeList.count(); x++)
     {
-      if(child.isElement())
+      QDomElement temp = nodeList.item(x).toElement();
+
+      if(getChildCount(temp))
       {
-        QDomElement childElement = child.toElement();
-        if(QString("SUBACCOUNT") == childElement.tagName())
+        QDomText text = temp.firstChild().toText();
+
+        if(QString("act:id") == temp.tagName())
         {
-          acc.addAccountId(QCString(childElement.attribute(QString("id")))); 
+          gncAccountId = QStringEmpty(text.nodeValue());
+          qDebug("gnucash account id = %s\n", gncAccountId.data());
+        }
+        else if(QString("act:name") == temp.tagName())
+        {
+          gncName = QStringEmpty(text.nodeValue());
+        }
+        else if(QString("act:description") == temp.tagName())
+        {
+          gncDescription = QStringEmpty(text.nodeValue());
+        }
+        else if(QString("act:type") == temp.tagName())
+        {
+          gncType = QStringEmpty(text.nodeValue());
+        }
+        else if(QString("act:parent") == temp.tagName())
+        {
+          bHasParent = true;
+          gncParent = QStringEmpty(text.nodeValue());
         }
       }
-      child = child.nextSibling();
-    }  
+
+      //if(getChildCount(temp))
+      //{
+      //  qDebug("Account child node child count is %d\n", getChildCount(temp));
+      //  qDebug("Child node has character data, %s\n", text.nodeValue().data());
+      //}
+      //qDebug("Account child name is %s\n", temp.tagName().data());
+    }
+
+    //this is the top-level asset account.  We don't have to create an account for this, because it
+    //is already created by the engine at this point.
+    if(QString("ASSET") == gncType && !bHasParent)
+    {
+      m_mainAssetId = gncAccountId;
+    }
+    else
+    {
+    
+      //all the details from the file about the account should be known by now.
+      //calling new account should automatically fill in the account ID.
+      m_storage->newAccount(acc);
+      acc.setName(gncName);
+      acc.setDescription(gncDescription);
+      acc.setOpeningDate(getDate(QStringEmpty(account.attribute(QString("opened")))));
+      acc.setLastModified(getDate(QStringEmpty(account.attribute(QString("lastmodified")))));
+      acc.setLastReconciliationDate(getDate(QStringEmpty(account.attribute(QString("lastreconciled")))));
+      //acc.setInstitutionId(QCStringEmpty(account.attribute(QString("institution"))));
+      //acc.setOpeningBalance(MyMoneyMoney(account.attribute(QString("openingbalance"))));
+
+      acc.setValue(QCString(GNUCASH_ID_KEY), gncAccountId);
+      
+      id = acc.id();
+  
+      if(QString("BANK") == gncType)
+      {
+        acc.setAccountType(MyMoneyAccount::Checkings);
+        acc.setParentAccountId(findGNCParentAccount(QCString(gncParent)));
+        //acc.setValue(QCString(GNUCASH_ID_KEY), gncAccountId);
+      }
+      else if(QString("ASSET") == gncType)
+      {
+        //if this is a second-level asset account, set the parent id to be the asset account's id.
+        if(gncParent == m_mainAssetId)
+    		{
+  			  acc.setParentAccountId(m_storage->asset().id());
+          //acc.setValue(QCString(GNUCASH_ID_KEY), gncAccountId);
+  			}
+        else
+        {
+          acc.setParentAccountId(findGNCParentAccount(QCString(gncParent)));
+          //acc.setValue(QCString(GNUCASH_ID_KEY), gncAccountId);
+        }
+      }
+    }   
+  }
+  
+  qDebug("Account %s has id of %s, type of %d, parent is %s.", acc.name().data(), id.data(), acc.accountType(), acc.parentAccountId().data());
+
+  
+  return MyMoneyAccount(id, acc);
+}
+
+QCString MyMoneyStorageGNC::findGNCParentAccount(QCString gnuCashParentAccountId)
+{
+  QValueList<MyMoneyAccount> list;
+  QValueList<MyMoneyAccount>::ConstIterator it;
+
+  list = m_storage->accountList();
+
+  for(it = list.begin(); it != list.end(); ++it)
+  {
+    QString temp = (*it).value(QCString(GNUCASH_ID_KEY));
+    qDebug("GNUCASH id = %s, passed in id = %s\n", temp.data(), gnuCashParentAccountId.data());
+    if(QCString(temp) == gnuCashParentAccountId)
+    {
+      return (*it).id();
+    }
   }
 
-  /////////////////////////////////////////////////////////////////////////////////////////
-  //  Process any KeyValue pairs information found inside the account entry.
-  QDomElement keyValPairs = findChildElement(QString("KEYVALUEPAIRS"), account);
-  if(!keyValPairs.isNull() && keyValPairs.isElement())
-  {
-    acc.setPairs(readKeyValuePairs(keyValPairs));
-  }
-  */
-  return MyMoneyAccount(id, acc);
+  return QCStringEmpty("");
 }
 
 

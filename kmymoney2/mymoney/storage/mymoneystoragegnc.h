@@ -43,6 +43,8 @@ class QIODevice;
 
 #define VERSION_0_60_XML  0x10000010    // Version 0.5 file version info
 #define VERSION_0_61_XML  0x10000011    // use 8 bytes for MyMoneyMoney objects
+
+#define GNUCASH_ID_KEY "GNUCASH_ID"
    
 class MyMoneyStorageGNC : public IMyMoneyStorageFormat
 {
@@ -89,8 +91,6 @@ private:
     * @see
     */
 
-  void readFileInformation(QDomElement fileInfo);
-  
   void readFile(QIODevice* s, IMyMoneySerialize* storage);
   void writeFile(QIODevice* s, IMyMoneySerialize* storage) {};
 
@@ -98,12 +98,6 @@ private:
 
   void readUserInformation(QDomElement userElement);
   /** No descriptions */
-
-  void readInstitutions(QDomElement& childElement);
-  MyMoneyInstitution readInstitution(const QDomElement& institution);
-
-  void readPayees(QDomElement& payees);
-  MyMoneyPayee readPayee(const QDomElement& payee);
 
   void readAccounts(QDomElement& accounts);
   MyMoneyAccount readAccount(const QDomElement& account);
@@ -157,6 +151,8 @@ private:
   const QCString QCStringEmpty(const QString& val) const;
   const QString QStringEmpty(const QString& val) const;
   const uint getChildCount(const QDomElement& element) const;
+	QCString findGNCParentAccount(QCString gnuCashParentAccountId);
+	QString m_mainAssetId;
 };
 
 #endif
