@@ -852,9 +852,17 @@ public:
 
   /**
     * MyMoneyFile::NotifyClassPayee
-    * is a special id that will be notified whenever any account is changed
+    * is a special id that will be notified whenever any account is add,
+    * changed or removed from the engine
     */
   static const QCString NotifyClassPayee;
+
+  /**
+    * MyMoneyFile::NotifyClassPayeeSet
+    * is a special id that will be notified whenever any account is add
+    * or removed from the engine
+    */
+  static const QCString NotifyClassPayeeSet;
 
   /**
     * MyMoneyFile::NotifyClassPayee

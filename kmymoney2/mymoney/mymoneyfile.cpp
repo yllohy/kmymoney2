@@ -42,6 +42,7 @@
 
 const QCString MyMoneyFile::NotifyClassAccount = "MyMoneyFile::NotifyAccount";
 const QCString MyMoneyFile::NotifyClassPayee = "MyMoneyFile::NotifyPayee";
+const QCString MyMoneyFile::NotifyClassPayeeSet = "MyMoneyFile::NotifyPayeeSet";
 const QCString MyMoneyFile::NotifyClassInstitution = "MyMoneyFile::NotifyInstitution";
 const QCString MyMoneyFile::NotifyClassAccountHierarchy = "MyMoneyFile::NotifyAccountHierarchy";
 const QCString MyMoneyFile::NotifyClassSchedule = "MyMoneyFile::NotifySchedule";
@@ -173,6 +174,10 @@ void MyMoneyFile::modifyTransaction(const MyMoneyTransaction& transaction)
   // and mark all accounts that are referenced
   for(it_s = tr.splits().begin(); it_s != tr.splits().end(); ++it_s) {
     notifyAccountTree((*it_s).accountId());
+    if(!(*it_s).payeeId().isEmpty()) {
+      addNotification((*it_s).payeeId());
+      addNotification(NotifyClassPayee);
+    }
   }
 
   // perform modification
@@ -181,6 +186,10 @@ void MyMoneyFile::modifyTransaction(const MyMoneyTransaction& transaction)
   // and mark all accounts that are referenced
   for(it_s = t->splits().begin(); it_s != t->splits().end(); ++it_s) {
     notifyAccountTree((*it_s).accountId());
+    if(!(*it_s).payeeId().isEmpty()) {
+      addNotification((*it_s).payeeId());
+      addNotification(NotifyClassPayee);
+    }
   }
   addNotification(NotifyClassAccount);
 }
@@ -308,6 +317,10 @@ void MyMoneyFile::removeTransaction(const MyMoneyTransaction& transaction)
   // and mark all accounts that are referenced
   for(it_s = tr.splits().begin(); it_s != tr.splits().end(); ++it_s) {
     notifyAccountTree((*it_s).accountId());
+    if(!(*it_s).payeeId().isEmpty()) {
+      addNotification((*it_s).payeeId());
+      addNotification(NotifyClassPayee);
+    }
   }
   addNotification(NotifyClassAccount);
 
@@ -528,6 +541,10 @@ void MyMoneyFile::addTransaction(MyMoneyTransaction& transaction)
   // scan the splits again to update notification list
   for(it_s = transaction.splits().begin(); it_s != transaction.splits().end(); ++it_s) {
     notifyAccountTree((*it_s).accountId());
+    if(!(*it_s).payeeId().isEmpty()) {
+      addNotification((*it_s).payeeId());
+      addNotification(NotifyClassPayee);
+    }
   }
   addNotification(NotifyClassAccount);
 }
@@ -556,6 +573,7 @@ void MyMoneyFile::addPayee(MyMoneyPayee& payee)
   m_storage->addPayee(payee);
 
   addNotification(NotifyClassPayee);
+  addNotification(NotifyClassPayeeSet);
 }
 
 const MyMoneyPayee MyMoneyFile::payee(const QCString& id) const
@@ -594,6 +612,7 @@ void MyMoneyFile::removePayee(const MyMoneyPayee& payee)
   m_storage->removePayee(payee);
 
   addNotification(NotifyClassPayee);
+  addNotification(NotifyClassPayeeSet);
 }
 
 
