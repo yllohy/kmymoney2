@@ -1,15 +1,9 @@
 /***************************************************************************
-                          querytable.h  -  description
-                             -------------------
+                          querytable.h
+                         -------------------
     begin                : Fri Jul 23 2004
-    copyright            : (C) 2000-2004 by Michael Edwardes
-    email                : mte@users.sourceforge.net
-                           Javier Campos Morales <javi_c@users.sourceforge.net>
-                           Felix Rodriguez <frodriguez@users.sourceforge.net>
-                           John C <thetacoturtle@users.sourceforge.net>
-                           Thomas Baumgart <ipwizard@users.sourceforge.net>
-                           Kevin Tambascio <ktambascio@users.sourceforge.net>
-                           Ace Jones <ace.j@hotpop.com>
+    copyright            : (C) 2004-2005 by Ace Jones
+    email                :  acejones@users.sourceforge.net
  ***************************************************************************/
 
 /***************************************************************************
@@ -82,7 +76,7 @@ protected:
   void render( QString&, QString& ) const;
   void constructAccountTable(void);
   void constructTransactionTable(void);
-  void constructPerformanceRow( const MyMoneyAccount& account, TableRow& result ) const;
+  void constructPerformanceRow( const ReportAccount& account, TableRow& result ) const;
 
 private:
   QValueList<TableRow> m_transactions;

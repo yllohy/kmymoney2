@@ -515,7 +515,8 @@ void KReportsViewTest::testNetWorthSingle()
 {
   try
   {
-    MyMoneyReport filter( MyMoneyReport::eAssetLiability );
+    MyMoneyReport filter;
+    filter.setRowType( MyMoneyReport::eAssetLiability );
     filter.setDateFilter(QDate(2004,1,1),QDate(2004,7,1).addDays(-1));
     XMLandback(filter);
     PivotTable networth_f(filter);
@@ -542,7 +543,8 @@ void KReportsViewTest::testNetWorthOfsetting()
   // accounts opened during the period of the report, one asset & one liability.  Test
   // that it calculates the totals correctly.
 
-  MyMoneyReport filter( MyMoneyReport::eAssetLiability );
+  MyMoneyReport filter;
+  filter.setRowType( MyMoneyReport::eAssetLiability );
   filter.setDateFilter(QDate(2004,1,1),QDate(2005,1,1).addDays(-1));
   XMLandback(filter);
   PivotTable networth_f( filter );
@@ -557,7 +559,8 @@ void KReportsViewTest::testNetWorthOpeningPrior()
   // Test the net worth report to make sure it's picking up opening balances PRIOR to
   // the period of the report.
 
-  MyMoneyReport filter( MyMoneyReport::eAssetLiability );
+  MyMoneyReport filter;
+  filter.setRowType( MyMoneyReport::eAssetLiability );
   filter.setDateFilter(QDate(2005,8,1),QDate(2005,12,31));
   filter.setName("Net Worth Opening Prior 1");
   XMLandback(filter);
@@ -589,7 +592,8 @@ void KReportsViewTest::testNetWorthDateFilter()
   // Test a net worth report whose period is prior to the time any accounts are open,
   // so the report should be zero.
 
-  MyMoneyReport filter( MyMoneyReport::eAssetLiability );
+  MyMoneyReport filter;
+  filter.setRowType( MyMoneyReport::eAssetLiability );
   filter.setDateFilter(QDate(2004,1,1),QDate(2004,2,1).addDays(-1));
   XMLandback(filter);
   PivotTable networth_f( filter );
@@ -601,11 +605,11 @@ void KReportsViewTest::testSpendingEmpty()
 {
   // test a spending report with no entries
 
-  MyMoneyReport filter( MyMoneyReport::eExpenseIncome );
+  MyMoneyReport filter;
+  filter.setRowType( MyMoneyReport::eExpenseIncome );
   XMLandback(filter);
   PivotTable spending_f1( filter );
   CPPUNIT_ASSERT(spending_f1.m_grid.m_total.m_total==moZero);
-  writeTabletoCSV(spending_f1);
 
   filter.setDateFilter(QDate(2004,9,1),QDate(2005,1,1).addDays(-1));
   PivotTable spending_f2( filter );
@@ -617,10 +621,13 @@ void KReportsViewTest::testSingleTransaction()
   // Test a single transaction
   TransactionHelper t( QDate(2004,10,31), MyMoneySplit::ActionWithdrawal,moSolo, acChecking, acSolo );
 
-  MyMoneyReport filter( MyMoneyReport::eExpenseIncome );
+  MyMoneyReport filter;
+  filter.setRowType( MyMoneyReport::eExpenseIncome );
   filter.setDateFilter(QDate(2004,9,1),QDate(2005,1,1).addDays(-1));
+  filter.setName("Spending with Single Transaction.html");
   XMLandback(filter);
   PivotTable spending_f( filter );
+  writeTabletoHTML(spending_f,"Spending with Single Transaction.html");
 
   CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Solo"][acSolo][2]==(-moSolo));
   CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Solo"].m_total[2]==(-moSolo));
@@ -644,12 +651,14 @@ void KReportsViewTest::testSubAccount()
   TransactionHelper t2( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moParent2, acCredit, acParent );
   TransactionHelper t3( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moChild, acCredit, acChild );
 
-  MyMoneyReport filter( MyMoneyReport::eExpenseIncome );
+  MyMoneyReport filter;
+  filter.setRowType( MyMoneyReport::eExpenseIncome );
   filter.setDateFilter(QDate(2004,9,1),QDate(2005,1,1).addDays(-1));
   filter.setShowSubAccounts(true);
+  filter.setName("Spending with Sub-Account");
   XMLandback(filter);
   PivotTable spending_f( filter );
-  writeTabletoCSV(spending_f);
+  writeTabletoHTML(spending_f,"Spending with Sub-Account.html");
 
   CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Parent"][acParent][3]==(-moParent));
   CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Parent"][acChild][3]==(-moChild));
@@ -662,8 +671,10 @@ void KReportsViewTest::testSubAccount()
   filter.clear();
   filter.setRowType(MyMoneyReport::eAssetLiability);
   filter.setDateFilter(QDate(2004,9,1),QDate(2005,1,1).addDays(-1));
+  filter.setName("Net Worth with Sub-Account");
   XMLandback(filter);
   PivotTable networth_f( filter );
+  writeTabletoHTML(networth_f,"Net Worth with Sub-Account.html");
   CPPUNIT_ASSERT(networth_f.m_grid["Liability"]["Credit Card"].m_total[3]==-moParent-moChild+moCreditOpen );
   CPPUNIT_ASSERT(networth_f.m_grid.m_total[4] == -moParent-moChild+moCreditOpen+moCheckingOpen );
 
@@ -676,7 +687,8 @@ void KReportsViewTest::testFilterIEvsIE()
   TransactionHelper t2( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moParent1, acCredit, acParent );
   TransactionHelper t3( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moChild, acCredit, acChild );
 
-  MyMoneyReport filter( MyMoneyReport::eExpenseIncome );
+  MyMoneyReport filter;
+  filter.setRowType( MyMoneyReport::eExpenseIncome );
   filter.setDateFilter(QDate(2004,9,1),QDate(2005,1,1).addDays(-1));
   filter.addCategory(acChild);
   filter.addCategory(acSolo);
@@ -696,7 +708,8 @@ void KReportsViewTest::testFilterALvsAL()
   TransactionHelper t2( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moParent1, acCredit, acParent );
   TransactionHelper t3( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moChild, acCredit, acChild );
 
-  MyMoneyReport filter( MyMoneyReport::eAssetLiability );
+  MyMoneyReport filter;
+  filter.setRowType( MyMoneyReport::eAssetLiability );
   filter.setDateFilter(QDate(2004,9,1),QDate(2005,1,1).addDays(-1));
   filter.addAccount(acChecking);
   filter.addCategory(acChild);
@@ -713,7 +726,8 @@ void KReportsViewTest::testFilterALvsIE()
   TransactionHelper t2( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moParent1, acCredit, acParent );
   TransactionHelper t3( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moChild, acCredit, acChild );
 
-  MyMoneyReport filter(MyMoneyReport::eExpenseIncome);
+  MyMoneyReport filter;
+  filter.setRowType( MyMoneyReport::eExpenseIncome );
   filter.setDateFilter(QDate(2004,9,1),QDate(2005,1,1).addDays(-1));
   filter.addAccount(acChecking);
   CPPUNIT_ASSERT(file->transactionList(filter).count() == 1);
@@ -734,7 +748,8 @@ void KReportsViewTest::testFilterAllvsIE()
   TransactionHelper t2( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moParent1, acCredit, acParent );
   TransactionHelper t3( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moChild, acCredit, acChild );
 
-  MyMoneyReport filter( MyMoneyReport::eExpenseIncome );
+  MyMoneyReport filter;
+  filter.setRowType( MyMoneyReport::eExpenseIncome );
   filter.setDateFilter(QDate(2004,9,1),QDate(2005,1,1).addDays(-1));
   filter.addAccount(acCredit);
   filter.addCategory(acChild);
@@ -778,7 +793,6 @@ void KReportsViewTest::testFilterBasics()
   filter.setConsiderCategory(true);
 
   CPPUNIT_ASSERT(file->transactionList(filter).count() == 2);
-
 }
 
 void KReportsViewTest::testMultipleCurrencies()
@@ -810,7 +824,7 @@ void KReportsViewTest::testMultipleCurrencies()
   TransactionHelper t4( QDate(2004,2,20), MyMoneySplit::ActionWithdrawal,MyMoneyMoney(moCanTransaction), acCanChecking, acCanCash, "CAD" );
   TransactionHelper t5( QDate(2004,3,20), MyMoneySplit::ActionWithdrawal,MyMoneyMoney(moCanTransaction), acCanChecking, acCanCash, "CAD" );
   TransactionHelper t6( QDate(2004,4,20), MyMoneySplit::ActionWithdrawal,MyMoneyMoney(moCanTransaction), acCanChecking, acCanCash, "CAD" );
-  
+
 #if 0
   QFile g( "multicurrencykmy.xml" );
   g.open( IO_WriteOnly );
@@ -819,8 +833,9 @@ void KReportsViewTest::testMultipleCurrencies()
   interface.writeFile(&g, dynamic_cast<IMyMoneySerialize*> (MyMoneyFile::instance()->storage()));
   g.close();
 #endif  
-  
-  MyMoneyReport filter( MyMoneyReport::eExpenseIncome );
+
+  MyMoneyReport filter;
+  filter.setRowType( MyMoneyReport::eExpenseIncome );
   filter.setDateFilter(QDate(2004,1,1),QDate(2005,1,1).addDays(-1));
   filter.setShowSubAccounts(true);
   filter.setName("Multiple Currency Spending Rerport (with currency conversion)");
@@ -898,7 +913,9 @@ void KReportsViewTest::testAdvancedFilter()
   {
     TransactionHelper t1( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moParent1, acCredit, acParent );
     TransactionHelper t2( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moChild, acCredit, acChild );
-    MyMoneyReport filter( MyMoneyReport::eExpenseIncome );
+  
+    MyMoneyReport filter;
+    filter.setRowType( MyMoneyReport::eExpenseIncome );
     filter.setDateFilter(QDate(2004,1,1),QDate(2005,1,1).addDays(-1));
     filter.setAmountFilter(moChild,moChild);
     XMLandback(filter);
@@ -912,11 +929,16 @@ void KReportsViewTest::testAdvancedFilter()
     TransactionHelper t2( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moParent1, acCredit, acParent );
     TransactionHelper t3( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moChild, acCredit, acChild );
     TransactionHelper t4( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moThomas, acCredit, acParent, QCString(), "Thomas Baumgart" );
-    MyMoneyReport filter( MyMoneyReport::eExpenseIncome );
+    
+    MyMoneyReport filter;
+    filter.setRowType( MyMoneyReport::eExpenseIncome );
     filter.setDateFilter(QDate(2004,1,1),QDate(2005,1,1).addDays(-1));
     filter.addPayee(MyMoneyFile::instance()->payeeByName("Thomas Baumgart").id());
+    filter.setName("Spending with Payee Filter");
     XMLandback(filter);
     PivotTable spending_f( filter );
+    writeTabletoHTML(spending_f,"Spending with Payee Filter.html");
+    
     CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Parent"][acParent][11]==-moThomas);
     CPPUNIT_ASSERT(spending_f.m_grid.m_total.m_total==-moThomas);
   }
@@ -927,7 +949,8 @@ void KReportsViewTest::testAdvancedFilter()
     TransactionHelper t3( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moChild, acCredit, acChild );
     TransactionHelper t4( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moNoPayee, acCredit, acParent, QCString(), QString() );
 
-    MyMoneyReport filter( MyMoneyReport::eExpenseIncome );
+    MyMoneyReport filter;
+    filter.setRowType( MyMoneyReport::eExpenseIncome );
     filter.setDateFilter(QDate(2004,1,1),QDate(2005,1,1).addDays(-1));
     filter.addPayee(QCString());
     XMLandback(filter);
@@ -943,7 +966,8 @@ void KReportsViewTest::testAdvancedFilter()
     TransactionHelper t3( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moChild, acCredit, acChild );
     TransactionHelper t4( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moThomas, acCredit, acParent, QCString(), "Thomas Baumgart" );
 
-    MyMoneyReport filter( MyMoneyReport::eExpenseIncome );
+    MyMoneyReport filter;
+    filter.setRowType( MyMoneyReport::eExpenseIncome );
     filter.setDateFilter(QDate(2004,1,1),QDate(2005,1,1).addDays(-1));
     filter.setTextFilter(QRegExp("Thomas"));
     XMLandback(filter);
@@ -956,7 +980,8 @@ void KReportsViewTest::testAdvancedFilter()
     TransactionHelper t2( QDate(2004,2,1), MyMoneySplit::ActionDeposit, -moParent1, acCredit, acParent );
     TransactionHelper t3( QDate(2004,11,1), MyMoneySplit::ActionTransfer, moChild, acCredit, acChecking );
 
-    MyMoneyReport filter( MyMoneyReport::eExpenseIncome );
+    MyMoneyReport filter;
+    filter.setRowType( MyMoneyReport::eExpenseIncome );
     filter.addType(MyMoneyTransactionFilter::payments);
     XMLandback(filter);
     PivotTable spending_f( filter );
@@ -1010,7 +1035,8 @@ void KReportsViewTest::testAdvancedFilter()
     t2.modifySplit(splits[1]);
     t2.update();
 
-    MyMoneyReport filter( MyMoneyReport::eExpenseIncome );
+    MyMoneyReport filter;
+    filter.setRowType( MyMoneyReport::eExpenseIncome );
     filter.setDateFilter(QDate(2004,1,1),QDate(2005,1,1).addDays(-1));
     filter.addState(MyMoneyTransactionFilter::cleared);
     XMLandback(filter);
@@ -1070,7 +1096,8 @@ void KReportsViewTest::testAdvancedFilter()
     t4.modifySplit(splits[1]);
     t4.update();
 
-    MyMoneyReport filter( MyMoneyReport::eExpenseIncome );
+    MyMoneyReport filter;
+    filter.setRowType( MyMoneyReport::eExpenseIncome );
     filter.setDateFilter(QDate(2004,1,1),QDate(2005,1,1).addDays(-1));
     filter.setNumberFilter("1","3");
     XMLandback(filter);
@@ -1092,7 +1119,8 @@ void KReportsViewTest::testAdvancedFilter()
     TransactionHelper t2y3( QDate(2005,5,1), MyMoneySplit::ActionWithdrawal, moParent1, acCredit, acParent );
     TransactionHelper t3y3( QDate(2005,9,1), MyMoneySplit::ActionWithdrawal, moParent2, acCredit, acParent );
 
-    MyMoneyReport filter( MyMoneyReport::eExpenseIncome );
+    MyMoneyReport filter;
+    filter.setRowType( MyMoneyReport::eExpenseIncome );
     filter.setDateFilter(QDate(),QDate(2004,7,1));
     XMLandback(filter);
     PivotTable spending_f( filter );
@@ -1123,7 +1151,8 @@ void KReportsViewTest::testColumnType()
   TransactionHelper t2y2( QDate(2005,5,1), MyMoneySplit::ActionWithdrawal, moParent1, acCredit, acParent );
   TransactionHelper t3y2( QDate(2005,9,1), MyMoneySplit::ActionWithdrawal, moParent2, acCredit, acParent );
 
-  MyMoneyReport filter( MyMoneyReport::eExpenseIncome );
+  MyMoneyReport filter;
+  filter.setRowType( MyMoneyReport::eExpenseIncome );
   filter.setDateFilter(QDate(2003,12,31),QDate(2005,12,31));
   filter.setRowType( MyMoneyReport::eExpenseIncome );
   filter.setColumnType(MyMoneyReport::eBiMonths);
@@ -1159,8 +1188,10 @@ void KReportsViewTest::testColumnType()
   CPPUNIT_ASSERT(spending_q.m_grid.m_total[9] == moZero);
 
   filter.setRowType( MyMoneyReport::eAssetLiability );
+  filter.setName( "Net Worth by Quarter" );
   XMLandback(filter);
   PivotTable networth_q( filter );
+  writeTabletoHTML( networth_q, "Net Worth by Quarter.html" );
 
   CPPUNIT_ASSERT(networth_q.m_grid.m_total[1] == moZero);
   CPPUNIT_ASSERT(networth_q.m_grid.m_total[2] == -moSolo-moParent);
@@ -1209,7 +1240,8 @@ void KReportsViewTest::testXMLWrite()
   // XMLandback() calls everywhere else, but we'll leave it here
   // just in case we want to special-case test a few things.
 
-  MyMoneyReport megafilter( MyMoneyReport::eExpenseIncome );
+  MyMoneyReport megafilter;
+  megafilter.setRowType( MyMoneyReport::eExpenseIncome );
   megafilter.setDateFilter(QDate(2004,1,1),QDate(2005,1,1).addDays(-1));
   megafilter.setAmountFilter(moZero,moChild);
   megafilter.setTextFilter(QRegExp("Thomas"));
@@ -1719,7 +1751,8 @@ void KReportsViewTest::testInvestment(void)
   // Net Worth Report (with investments)
   //
 
-  MyMoneyReport networth_r( MyMoneyReport::eAssetLiability );
+  MyMoneyReport networth_r;
+  networth_r.setRowType( MyMoneyReport::eAssetLiability );
   networth_r.setDateFilter(QDate(2004,1,1),QDate(2004,12,31).addDays(-1));
   XMLandback(networth_r);
   PivotTable networth(networth_r);

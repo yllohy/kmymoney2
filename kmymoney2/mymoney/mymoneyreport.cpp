@@ -1,15 +1,9 @@
 /***************************************************************************
-                          imymoneystoragestream.cpp  -  description
+                          mymoneyreport.cpp
                              -------------------
     begin                : Sun July 4 2004
-    copyright            : (C) 2000-2004 by Michael Edwardes
-    email                : mte@users.sourceforge.net
-                           Javier Campos Morales <javi_c@users.sourceforge.net>
-                           Felix Rodriguez <frodriguez@users.sourceforge.net>
-                           John C <thetacoturtle@users.sourceforge.net>
-                           Thomas Baumgart <ipwizard@users.sourceforge.net>
-                           Kevin Tambascio <ktambascio@users.sourceforge.net>
-                           Ace Jones <ace.j@hotpop.com>
+    copyright            : (C) 2004-2005 by Ace Jones
+    email                : acejones@users.sourceforge.net
  ***************************************************************************/
 
 /***************************************************************************
@@ -49,24 +43,22 @@ const MyMoneyReport::EReportType MyMoneyReport::kTypeArray[] = { eNoReport, ePiv
 static const QStringList kTypeText = QStringList::split(",","all,payments,deposits,transfers,none");
 static const QStringList kStateText = QStringList::split(",","all,notreconciled,cleared,reconciled,frozen,none");
 static const QStringList kDateLockText = QStringList::split(",", "alldates,untiltoday,currentmonth,currentyear,monthtodate,yeartodate,lastmonth,lastyear,last30days,last3months,last6months,last12months,next30days,next3months,next6months,next12months,userdefined");
+static const QStringList kAccountTypeText = QStringList::split(",","unknown,checkings,savings,cash,creditcard,loan,certificatedep,investment,moneymarket,asset,liability,currency,income,expense,assetloan,stock,equity,invalid");
 
-MyMoneyReport::MyMoneyReport(ERowType _rt, EColumnType _ct, const QDate& _db, const QDate& _de):
+MyMoneyReport::MyMoneyReport(void):
     m_name("Unconfigured Pivot Table Report"),
     m_showSubAccounts(false),
     m_convertCurrency(true),
     m_favorite(false),
     m_tax(false),
     m_investments(false),
-    m_reportType(kTypeArray[_rt]),
-    m_rowType(_rt),
-    m_columnType(_ct),
+    m_reportType(kTypeArray[eExpenseIncome]),
+    m_rowType(eExpenseIncome),
+    m_columnType(eMonths),
     m_queryColumns(eQCnone),
-    m_dateLock(userDefined)
+    m_dateLock(userDefined),
+    m_accountGroupFilter(false)
 {
-  setDateFilter(_db,_de);
-  
-  if ( static_cast<size_t>(_rt) > sizeof(kTypeArray)/sizeof(EReportType) || m_reportType == eNoReport )
-    throw new MYMONEYEXCEPTION("Invalid report type");
 }
   
 MyMoneyReport::MyMoneyReport(ERowType _rt, unsigned _ct, unsigned _dl, bool _ss, const QString& _name, const QString& _comment ):
@@ -79,7 +71,8 @@ MyMoneyReport::MyMoneyReport(ERowType _rt, unsigned _ct, unsigned _dl, bool _ss,
     m_investments(false),
     m_reportType(kTypeArray[_rt]),
     m_rowType(_rt),
-    m_dateLock(_dl)
+    m_dateLock(_dl),
+    m_accountGroupFilter(false)
 {
   if ( m_reportType == ePivotTable )
     m_columnType = static_cast<EColumnType>(_ct);
@@ -89,7 +82,25 @@ MyMoneyReport::MyMoneyReport(ERowType _rt, unsigned _ct, unsigned _dl, bool _ss,
 
   if ( static_cast<size_t>(_rt) > sizeof(kTypeArray)/sizeof(EReportType) || m_reportType == eNoReport )
     throw new MYMONEYEXCEPTION("Invalid report type");
-    
+
+  if ( _rt == MyMoneyReport::eAssetLiability )
+  {
+    addAccountGroup(MyMoneyAccount::Asset);
+    addAccountGroup(MyMoneyAccount::Liability);
+  }
+  if ( _rt == MyMoneyReport::eExpenseIncome )
+  {
+    addAccountGroup(MyMoneyAccount::Expense);
+    addAccountGroup(MyMoneyAccount::Income);
+  }
+}
+
+void MyMoneyReport::clear(void)
+{
+  m_accountGroupFilter = false;
+  m_accountGroups.clear();
+
+  MyMoneyTransactionFilter::clear();
 }
 
 void MyMoneyReport::validDateRange(QDate& _db, QDate& _de)
@@ -127,7 +138,90 @@ void MyMoneyReport::validDateRange(QDate& _db, QDate& _de)
   if ( _db > _de )
     _db = _de;
 } 
+
+void MyMoneyReport::setRowType(ERowType _rt)
+{
+  m_rowType = _rt;
+  m_reportType = kTypeArray[_rt];
+
+  m_accountGroupFilter = false;
+  m_accountGroups.clear();
   
+  if ( _rt == MyMoneyReport::eAssetLiability )
+  {
+    addAccountGroup(MyMoneyAccount::Asset);
+    addAccountGroup(MyMoneyAccount::Liability);
+  }
+  if ( _rt == MyMoneyReport::eExpenseIncome )
+  {
+    addAccountGroup(MyMoneyAccount::Expense);
+    addAccountGroup(MyMoneyAccount::Income);
+  }
+}
+
+const bool MyMoneyReport::accountGroups(QValueList<MyMoneyAccount::accountTypeE>& list) const
+{
+  bool result = m_accountGroupFilter;
+
+  if ( result )
+  {
+    QValueList<MyMoneyAccount::accountTypeE>::const_iterator it_group = m_accountGroups.begin();
+    while ( it_group != m_accountGroups.end() )
+    {
+      list += (*it_group);
+      ++it_group;
+    }
+  }
+  return result;
+}
+
+void MyMoneyReport::addAccountGroup(MyMoneyAccount::accountTypeE type)
+{
+  if(!m_accountGroups.isEmpty() && type != MyMoneyAccount::UnknownAccountType) {
+    if(m_accountGroups.contains(type))
+      return;
+  }
+  m_accountGroupFilter = true;
+  if(type != MyMoneyAccount::UnknownAccountType)
+    m_accountGroups.push_back(type);
+}
+
+const bool MyMoneyReport::includesAccountGroup( MyMoneyAccount::accountTypeE type ) const
+{
+  bool result = (! m_accountGroupFilter) || m_accountGroups.contains( type );
+
+  return result;
+}
+
+const bool MyMoneyReport::includes( const MyMoneyAccount& acc ) const
+{
+  bool result = false;
+
+  if ( includesAccountGroup( acc.accountGroup() ) )
+  {
+    switch ( acc.accountGroup() )
+    {
+    case MyMoneyAccount::Income:
+    case MyMoneyAccount::Expense:
+      if ( isTax() )
+        result = ( acc.value("Tax") == "Yes" ) && includesCategory( acc.id() );
+      else
+        result = includesCategory( acc.id() );
+      break;
+    case MyMoneyAccount::Asset:
+    case MyMoneyAccount::Liability:
+      if ( isInvestmentsOnly() )
+        result = (acc.accountType() == MyMoneyAccount::Stock) && includesAccount( acc.id() );
+      else
+        result = includesAccount( acc.id() );
+      break;
+    default:
+      result = includesAccount( acc.id() );
+    }
+  }
+  return result;
+}
+
 void MyMoneyReport::write(QDomElement& e, QDomDocument *doc, bool anonymous) const
 {
   // No matter what changes, be sure to have a 'type' attribute.  Only change
@@ -137,7 +231,7 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc, bool anonymous) con
 
   if ( m_reportType == ePivotTable )
   {
-    e.setAttribute("type","pivottable 1.6");
+    e.setAttribute("type","pivottable 1.7");
     
     if ( anonymous )
     {
@@ -162,7 +256,7 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc, bool anonymous) con
   }
   else if ( m_reportType == eQueryTable )
   {
-    e.setAttribute("type","querytable 1.6");
+    e.setAttribute("type","querytable 1.7");
     if ( anonymous )
     {
       e.setAttribute("name", m_id);
@@ -296,6 +390,25 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc, bool anonymous) con
   }
 
   //
+  // Account Groups Filter
+  //
+  
+  QValueList<MyMoneyAccount::accountTypeE> accountgrouplist;
+  if ( accountGroups(accountgrouplist) )
+  {
+    // iterate over accounts, and add each one
+    QValueList<MyMoneyAccount::accountTypeE>::const_iterator it_group = accountgrouplist.begin();
+    while ( it_group != accountgrouplist.end() )
+    {
+      QDomElement p = doc->createElement("ACCOUNTGROUP");
+      p.setAttribute("group", kAccountTypeText[*it_group]);
+      e.appendChild(p);
+      
+      ++it_group;
+    }      
+  }
+
+  //
   // Accounts Filter
   //
   
@@ -372,6 +485,7 @@ bool MyMoneyReport::read(const QDomElement& e)
   )      
   {
     result = true;
+    clear();
 
     int i;
     m_name = e.attribute("name");
@@ -455,10 +569,10 @@ bool MyMoneyReport::read(const QDomElement& e)
       }
       if(QString("DATES") == c.tagName())
       {
-	QDate from, to;
-	if ( c.hasAttribute("from") )
+        QDate from, to;
+        if ( c.hasAttribute("from") )
           from = QDate::fromString(c.attribute("from"),Qt::ISODate);
-	if ( c.hasAttribute("to") )
+        if ( c.hasAttribute("to") )
           to = QDate::fromString(c.attribute("to"),Qt::ISODate);
         MyMoneyTransactionFilter::setDateFilter(from,to);
       }
@@ -473,6 +587,12 @@ bool MyMoneyReport::read(const QDomElement& e)
       if(QString("ACCOUNT") == c.tagName() && c.hasAttribute("id"))
       {
         addAccount(c.attribute("id").latin1());
+      }
+      if(QString("ACCOUNTGROUP") == c.tagName() && c.hasAttribute("group"))
+      {
+        i = kAccountTypeText.findIndex(c.attribute("group"));
+        if ( i != -1 )
+          addAccountGroup(static_cast<MyMoneyAccount::accountTypeE>(i));
       }
       child = child.nextSibling();
     }

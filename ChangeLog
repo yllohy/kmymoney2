@@ -1,4 +1,12 @@
-2005-02-14 Ace Jones <acejones@users.sourceforge.net>
+2005-02-12 Ace Jones <acejones@users.sourceforge.net>
+  * Refactored PivotTable::AccountDescriptor into ReportAccount, which is now
+    a subclass of MyMoneyAccount, with hierarchy, currency, and other convenience
+    methods.
+  * Propagated ReportAccount throughout the entire reporting engine.  The
+    reporting engine should never ever use a MyMoneyAccount.
+  * Numerous object logic cleanups throughout reports.  I moved each method to
+    the proper object upon which it acted.  Should improve readability.  This
+    involved pushing a lot of functionality into the MyMoneyReport class.
   * Fixed pivot table reports to handle foreign stocks
   * Fixed report unit test helpers to deal with foreign currencies better
   * Fixed MyMoneyMoney multiplication overflow in account query reports
@@ -10,8 +18,6 @@
 
 2005-02-07 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Gnucash import - anonymizer changes, restore Ace's credit
-
-2005-02-07 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Fix editing of some frequencies (e.g. Quarterly)
 
 2005-02-05 Ace Jones <acejones@users.sourceforge.net>

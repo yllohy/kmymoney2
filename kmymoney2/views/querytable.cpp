@@ -2,8 +2,8 @@
                           querytable.cpp
                          -------------------
     begin                : Fri Jul 23 2004
-    copyright            : (C) 2004 by Ace Jones
-    email                : ace.j@hotpop.com
+    copyright            : (C) 2004-2005 by Ace Jones
+    email                :  acejones@users.sourceforge.net
  ***************************************************************************/
 
 /***************************************************************************
@@ -47,9 +47,13 @@ static const QStringList kReconcileTextChar = QStringList::split(",","N,C,R,F,no
 
 QStringList QueryTable::TableRow::m_sortCriteria;
 
+// ****************************************************************************
 //
-// Cash Flow analysis tools for investment reports
+// CashFlowListItem implementation
 //
+//   Cash flow analysis tools for investment reports
+//
+// ****************************************************************************
 
 QDate CashFlowListItem::m_sToday = QDate::currentDate();
 
@@ -62,6 +66,14 @@ MyMoneyMoney CashFlowListItem::NPV( double _rate ) const
 
   return result;
 }
+
+// ****************************************************************************
+//
+// CashFlowList implementation
+//
+//   Cash flow analysis tools for investment reports
+//
+// ****************************************************************************
 
 const CashFlowListItem& CashFlowList::mostRecent(void) const
 {
@@ -194,9 +206,53 @@ void CashFlowList::dumpDebug(void) const
     ++it_item;
   }
 }
+
+// ****************************************************************************
+//
+// Group Iterator
+//
+// ****************************************************************************
+
+class GroupIterator
+{
+public:
+  GroupIterator(const QString& _group, const QString& _subtotal, unsigned _depth): m_depth(_depth), m_groupField(_group), m_subtotalField(_subtotal) {}
+  GroupIterator(void) {}
+  void update(const QueryTable::TableRow& _row)
+  {
+    m_previousGroup = m_currentGroup;
+    m_currentGroup = _row[m_groupField];
+    if ( isSubtotal() )
+    {
+      m_previousSubtotal = m_currentSubtotal;
+      m_currentSubtotal = MyMoneyMoney();
+    }
+    m_currentSubtotal += _row[m_subtotalField];
+  }
+
+  bool isNewHeader(void) const { return (m_currentGroup != m_previousGroup); }
+  bool isSubtotal(void) const { return (m_currentGroup != m_previousGroup) && (!m_previousGroup.isEmpty()); }
+  const MyMoneyMoney& subtotal(void) const { return m_previousSubtotal; }
+  const unsigned depth(void) const { return m_depth; }
+  const QString& name(void) const { return m_currentGroup; }
+  const QString& oldName(void) const { return m_previousGroup; }
+  const QString& groupField(void) const { return m_groupField; }
+  const QString& subtotalField(void) const { return m_subtotalField; }
+private:
+  MyMoneyMoney m_currentSubtotal;
+  MyMoneyMoney m_previousSubtotal;
+  unsigned m_depth;
+  QString m_currentGroup;
+  QString m_previousGroup;
+  QString m_groupField;
+  QString m_subtotalField;
+};
+
+// ****************************************************************************
 //
 // QueryTable implementation
 //
+// ****************************************************************************
 
 bool QueryTable::TableRow::operator<( const TableRow& _compare ) const
 {
@@ -231,6 +287,7 @@ bool QueryTable::TableRow::operator>( const TableRow& _compare ) const
 {
   return ( _compare < *this );
 }
+
 /**
   * TODO
   *
@@ -376,20 +433,31 @@ void QueryTable::constructTransactionTable(void)
     // based report.  With pivots, values are reported in the ACCOUNT's
     // currency, because it's an account-based report.
 
-    MyMoneyMoney currencyfactor(1.0);
+    // displayprice is the price of the transaction currency in the DISPLAY
+    // currency.  That is, if we are converting currency then it's the price
+    // of the transaction currency in base currency.  If we're not converting,
+    // then the display currency IS the transaction currency so it's 1.0
+    MyMoneyMoney displayprice(1.0);
     if ( report.isConvertCurrency() )
     {
       if((*it_transaction).commodity() != file->baseCurrency().id())
       {
-        // I have no idea how to deal with stock accounts quite yet (acejones)
         MyMoneySecurity currency = file->currency((*it_transaction).commodity());
-        currencyfactor = file->price(currency.id(),file->baseCurrency().id(),QDate::currentDate()).rate();
+        displayprice = file->price(currency.id(),file->baseCurrency().id(),QDate::currentDate()).rate();
       }
     }
     else
       if((*it_transaction).commodity() != file->baseCurrency().id())
         qtransactionrow["currency"] = (*it_transaction).commodity();
 
+    // -----------
+    // FIXME: transaction currency is currently broken in case of foreign stocks.
+    // Once that's fixed, this code should work as-written.  Prior to that,
+    // I may want to write a version of this that works for investments WITHOUT
+    // the transaction price.  However, I'm not sure if it's broken so much I
+    // won't even be able to do that
+    // -----------
+        
     // A table row ALWAYS has one asset/liability account.  A transaction
     // will generate one table row for each A/L account.
     //
@@ -409,19 +477,12 @@ void QueryTable::constructTransactionTable(void)
     QValueList<MyMoneySplit>::const_iterator it_split = splits.begin();
     while ( it_split != splits.end() )
     {
-      QCString splitaccountid = (*it_split).accountId();
-      MyMoneyAccount splitaccount = file->account(splitaccountid);
+      ReportAccount splitaccount = (*it_split).accountId();
       // Loop through the splits once for every asset/liability account.
       // Create one table row for each such account
       // But skip the account if it is not present in the filter.
       // Also skip the account if we only want investments & it's not an investmet account
-      if (
-          ( splitaccount.accountGroup() == MyMoneyAccount::Asset || splitaccount.accountGroup() == MyMoneyAccount::Liability )
-          &&
-          m_config.includesAccount( splitaccountid )
-          &&
-          (!m_config.isInvestmentsOnly() || splitaccount.accountType() == MyMoneyAccount::Stock)
-         )
+      if ( splitaccount.isAssetLiability() && m_config.includes(splitaccount) )
       {
         TableRow qaccountrow = qtransactionrow;
 
@@ -439,23 +500,25 @@ void QueryTable::constructTransactionTable(void)
         qaccountrow["memo"] = (*it_split).memo();
 
         // handle investments
-        if ( file->account((*it_split).accountId()).accountType() == MyMoneyAccount::Stock )
+        if ( splitaccount.accountType() == MyMoneyAccount::Stock )
         {
           MyMoneyMoney shares = (*it_split).shares();
           qaccountrow["shares"] = shares.toString();
           if ( ! shares.isZero() )
-            qaccountrow["price"] = (((*it_split).value())*currencyfactor / shares).toString();
+            qaccountrow["price"] = ((*it_split).value()*displayprice / shares).toString();
           else
             qaccountrow["price"] = MyMoneyMoney().toString();
           if ( (*it_split).action() == MyMoneySplit::ActionBuyShares && shares.isNegative() )
             // note this is not localized because neither is MyMoneySplit::action()
             qaccountrow["action"] = "Sell";
-          qaccountrow["investaccount"] = file->account(splitaccount.parentAccountId()).name();
+          qaccountrow["investaccount"] = splitaccount.parent().name();
         }
 
         QValueList<MyMoneySplit>::const_iterator it_split2 = splits.begin();
         while ( it_split2 != splits.end() )
         {
+          ReportAccount split2account = (*it_split2).accountId();
+        
           // Only process this split if it is not the A/L account we're working with anyway
           if ( (*it_split2).accountId() != (*it_split).accountId() )
           {
@@ -467,21 +530,11 @@ void QueryTable::constructTransactionTable(void)
             TableRow qsplitrow = qaccountrow;
             qsplitrow["account"] = splitaccount.name();
             qsplitrow["accountid"] = splitaccount.id();
-
-            // Find the top-most parent account
-            QCString topaccountid = (*it_split).accountId();
-            QCString parentid = file->account(topaccountid).parentAccountId();
-            while (! file->isStandardAccount(parentid) )
-            {
-              topaccountid = parentid;
-              parentid = file->account(topaccountid).parentAccountId();
-            }
-            qsplitrow["topaccount"] = file->account(topaccountid).name();
+            qsplitrow["topaccount"] = splitaccount.topParentName();
 
             // retrieve the value in the transaction's currency, and convert
             // to the base currency if needed
-            //qsplitrow["value"] = ((-(*it_split2).value())*currencyfactor).formatMoney();
-            qsplitrow["value"] = ((-(*it_split2).value())*currencyfactor).toString();
+            qsplitrow["value"] = ((-(*it_split2).value())*displayprice).toString();
             qsplitrow["id"] = (*it_split2).id();
 
             // handle cash dividends.  these little fellas require very special handling.
@@ -490,13 +543,15 @@ void QueryTable::constructTransactionTable(void)
             // only concerned with the transfer account, and we will NOT show the income
             // account.  (This may have to be changed later if we feel we need it.)
 
-            if ( ( file->account((*it_split).accountId()).accountType() == MyMoneyAccount::Stock )
-            &&   ( (*it_split).action() == MyMoneySplit::ActionDividend ) )
+            if (
+              ( splitaccount.accountType() == MyMoneyAccount::Stock )
+              &&
+              ( (*it_split).action() == MyMoneySplit::ActionDividend )
+              &&
+              ( split2account.isIncomeExpense() )
+            )
             {
-              // if this is the transfer split
-              if ( ( file->account((*it_split2).accountId()).accountGroup() == MyMoneyAccount::Income || file->account((*it_split2).accountId()).accountGroup() == MyMoneyAccount::Expense ) )
-                // skip it
-                goto skip_addsplit;
+              goto skip_addsplit;
             }
 
             // handle sub-categories.  the 'category' field contains the
@@ -504,50 +559,21 @@ void QueryTable::constructTransactionTable(void)
             // the 'topparent' field contains just the top-most parent, in this
             // example "Computers"
 
-            PivotTable::AccountDescriptor acd = (*it_split2).accountId();
-
-            // This final screening level includes the check to exclude non-tax categories
-            // in a tax report.  This is something of a hack, although it functions fine.
-            //
-            // TODO: handle this at the category selector level with a "Tax
-            // Categories" button.  But then we'd need to persist that selection in the
-            // filter so that newly changed tax categories get updated, similiar to the
-            // 'date lock'.  Until we do that, the current way will work.
-
-            // if this is a transfer
-            if (
-              ( file->account((*it_split2).accountId()).accountGroup() == MyMoneyAccount::Asset || file->account((*it_split2).accountId()).accountGroup() == MyMoneyAccount::Liability  )
-              &&
-              ! m_config.isTax()
-            )
+            // if this is a transfer (note that in tax reports, we don't want to see transfers)
+            if ( split2account.isAssetLiability() && ! m_config.isTax() )
             {
-              // skip this split if we have removed the target of the transfer
-              // *** Or not *** Lately, I've been thinking that the A/L filter should
-              // only remove transactions at the *it_split level.
-              //if ( m_config.includesAccount( (*it_split2).accountId() ) )
-              {
-                QString fromto = ((*it_split2).value().isNegative())?"from":"to";
-                qsplitrow["category"] = i18n("Transfer %1 %2").arg(fromto).arg(acd.fullName());
-                qsplitrow["topcategory"] = acd.getTopLevel();
-                qsplitrow["categorytype"] = i18n("Transfer");
-                m_transactions += qsplitrow;
-              }
+              QString fromto = ((*it_split2).value().isNegative())?"from":"to";
+              qsplitrow["category"] = i18n("Transfer %1 %2").arg(fromto).arg(split2account.fullName());
+              qsplitrow["topcategory"] = split2account.topParentName();
+              qsplitrow["categorytype"] = i18n("Transfer");
+              m_transactions += qsplitrow;
             }
-            else
+            else if ( m_config.includes( split2account ) )
             {
-              if (
-                m_config.includesCategory( (*it_split2).accountId() )
-                &&
-                (
-                  ! m_config.isTax() || (file->account((*it_split2).accountId()).value("Tax") == "Yes")
-                )
-              )
-              {
-                qsplitrow["category"] = acd.fullName();
-                qsplitrow["topcategory"] = acd.getTopLevel();
-                qsplitrow["categorytype"] = accountTypeToString(file->account((*it_split2).accountId()).accountGroup());
-                m_transactions += qsplitrow;
-              }
+              qsplitrow["category"] = split2account.fullName();
+              qsplitrow["topcategory"] = split2account.topParentName();
+              qsplitrow["categorytype"] = accountTypeToString(split2account.accountGroup());
+              m_transactions += qsplitrow;
             }
           }
 skip_addsplit:
@@ -560,10 +586,10 @@ skip_addsplit:
   }
 }
 
-void QueryTable::constructPerformanceRow( const MyMoneyAccount& account, TableRow& result ) const
+void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow& result ) const
 {
   MyMoneyFile* file = MyMoneyFile::instance();
-  MyMoneySecurity security = MyMoneyFile::instance()->security(account.currencyId());
+  MyMoneySecurity security = file->security(account.currencyId());
   
   result["equitytype"] = KMyMoneyUtils::securityTypeToString(security.securityType());
 
@@ -590,13 +616,13 @@ void QueryTable::constructPerformanceRow( const MyMoneyAccount& account, TableRo
   report.setReportAllSplits(false);
   report.setConsiderCategory(true);
   report.clearAccountFilter();
-  report.addAccount((account).id());
+  report.addAccount(account.id());
   QValueList<MyMoneyTransaction> transactions = file->transactionList( report );
   QValueList<MyMoneyTransaction>::const_iterator it_transaction = transactions.begin();
   while ( it_transaction != transactions.end() )
   {
     // s is the split for the stock account
-    MyMoneySplit s = (*it_transaction).splitByAccount((account).id());
+    MyMoneySplit s = (*it_transaction).splitByAccount(account.id());
 
     const QCString& action = s.action();
     if ( action == MyMoneySplit::ActionBuyShares )
@@ -618,9 +644,8 @@ void QueryTable::constructPerformanceRow( const MyMoneyAccount& account, TableRo
       bool found = false;
       while( it_split != splits.end() )
       {
-        QCString accid = (*it_split).accountId();
-        MyMoneyAccount acc = file->account(accid);
-        if ( acc.accountType() == MyMoneyAccount::Income || acc.accountType() == MyMoneyAccount::Expense )
+        ReportAccount acc = (*it_split).accountId();
+        if ( acc.isIncomeExpense() )
         {
           found = true;
           break;
@@ -634,11 +659,11 @@ void QueryTable::constructPerformanceRow( const MyMoneyAccount& account, TableRo
     ++it_transaction;
   }
 
+  // Note that reinvested dividends are not included , because these do not
+  // represent a cash flow event.
   CashFlowList all;
   all += buys;
   all += sells;
-  //we do not inclue the reinvested dividends, because these do not represent a cash flow event.
-  //all += reinvestincome;
   all += cashincome;
   all += CashFlowListItem(startingDate,-startingBal);
   all += CashFlowListItem(endingDate,endingBal);
@@ -658,7 +683,6 @@ void QueryTable::constructPerformanceRow( const MyMoneyAccount& account, TableRo
   result["reinvestincome"] = reinvestincome.total().toString();
   result["startingbal"] = startingBal.toString();
   result["endingbal"] = endingBal.toString();
-
 }
 
 void QueryTable::constructAccountTable(void)
@@ -671,79 +695,39 @@ void QueryTable::constructAccountTable(void)
   QValueList<MyMoneyAccount>::const_iterator it_account = accounts.begin();
   while ( it_account != accounts.end() )
   {
-    if (
-        ( (*it_account).accountGroup() == MyMoneyAccount::Asset || (*it_account).accountGroup() == MyMoneyAccount::Liability )
-        &&
-        m_config.includesAccount( (*it_account).id() )
-        &&
-        (!m_config.isInvestmentsOnly() || (*it_account).accountType() == MyMoneyAccount::Stock)
-        )
+    ReportAccount account = *it_account;
+    
+    if ( account.isAssetLiability() && m_config.includes(account) )
     {
       TableRow qaccountrow;
 
       //
       // Handle currency conversion
       //
-      
-      // accountcurrency is the final underlying currency of the account.  It must
-      // be an actual currency, not an investment.
-      MyMoneySecurity accountcurrency = MyMoneyFile::instance()->security((*it_account).currencyId());
-      
-      // accurrencyprice is the price of the account's currency in the DISPLAY 
-      // currency.  display currency is the file's base currency if the
-      // "convert to base currency" property is set in the report, or the
-      // account currency itself otherwise.
-      MyMoneyMoney accountcurrencyprice = 1.0;
-      
-      // stockprice is the price of the account's underlying stock in the stock's
-      // underlying currency, or 1.0 if there is no underlying stock
-      MyMoneyMoney stockprice = 1.0;
-      
-      // if the underlying security of this account is NOT a currency, then we have to find the
-      // underlying currency of THAT
-      if ( ! accountcurrency.isCurrency() )
-      {
-        MyMoneySecurity stockcurrency = MyMoneyFile::instance()->security(accountcurrency.tradingCurrency());
-        stockprice = file->price(accountcurrency.id(),stockcurrency.id(),QDate::currentDate())
-          .rate()
-          .reduce();
-        accountcurrency = stockcurrency;        
-      }
 
+      MyMoneyMoney displayprice(1.0);
       if ( m_config.isConvertCurrency() )
       {
-        // display currency is base currency, so set the accountcurrencyprice
-        if ( accountcurrency.id() != file->baseCurrency().id() )
-          accountcurrencyprice = file->price(accountcurrency.id(),file->baseCurrency().id(),m_config.toDate(),false)
-            .rate()
-            .reduce();
+        // display currency is base currency, so set the price
+        if ( account.isForiegnCurrency() )
+          displayprice = account.baseCurrencyPrice(m_config.toDate()).reduce();
       }
       else
       {
-        // display currency is the account currency.  display this fact in the report
-        qaccountrow["currency"] = accountcurrency.tradingSymbol();
+        // display currency is the account's deep currency.  display this fact in the report
+        qaccountrow["currency"] = account.currency();
       }
       
-      MyMoneyMoney netprice = (stockprice * accountcurrencyprice).reduce();
+      qaccountrow["account"] = account.name();
+      qaccountrow["accountid"] = account.id();
+      qaccountrow["topaccount"] = account.topParentName();
 
-      qaccountrow["account"] = (*it_account).name();
-      qaccountrow["accountid"] = (*it_account).id();
-      
-      // Find the top-most parent account
-      QCString topaccountid = (*it_account).id();
-      QCString parentid = file->account(topaccountid).parentAccountId();
-      while (! file->isStandardAccount(parentid) )
-      {
-        topaccountid = parentid;
-        parentid = file->account(topaccountid).parentAccountId();
-      }
-      qaccountrow["topaccount"] = file->account(topaccountid).name();
-
-      MyMoneyMoney shares = file->balance((*it_account).id(),m_config.toDate());
+      MyMoneyMoney shares = file->balance(account.id(),m_config.toDate());
       qaccountrow["shares"] = shares.toString();
 
-      qaccountrow["price"] = ( netprice ).toString();
-      qaccountrow["value"] = ( netprice * shares.reduce() ).toString();
+      MyMoneyMoney netprice = account.deepCurrencyPrice(m_config.toDate()).reduce() * displayprice;
+      qaccountrow["price"] = ( netprice.reduce() ).toString();
+      qaccountrow["value"] = ( netprice.reduce() * shares.reduce() ).toString();
 
       DEBUG_OUTPUT(QString("shares=%1 price=%2 value=%3").arg(qaccountrow["shares"],qaccountrow["price"],qaccountrow["value"]));
 
@@ -757,9 +741,9 @@ void QueryTable::constructAccountTable(void)
 
       // TODO: Only do this if the report we're making really needs performance.  Otherwise
       // it's an expensive calculation done for no reason
-      if ( (*it_account).accountType() == MyMoneyAccount::Stock )
+      if ( account.accountType() == MyMoneyAccount::Stock )
       {
-        constructPerformanceRow( *it_account, qaccountrow );
+        constructPerformanceRow( account, qaccountrow );
       }
       else
         qaccountrow["equitytype"] = QString();
@@ -770,41 +754,6 @@ void QueryTable::constructAccountTable(void)
     ++it_account;
   }
 }
-
-class GroupIterator
-  {
-  public:
-    GroupIterator(const QString& _group, const QString& _subtotal, unsigned _depth): m_depth(_depth), m_groupField(_group), m_subtotalField(_subtotal) {}
-    GroupIterator(void) {}
-    void update(const QueryTable::TableRow& _row)
-    {
-      m_previousGroup = m_currentGroup;
-      m_currentGroup = _row[m_groupField];
-      if ( isSubtotal() )
-      {
-        m_previousSubtotal = m_currentSubtotal;
-        m_currentSubtotal = MyMoneyMoney();
-      }
-      m_currentSubtotal += _row[m_subtotalField];
-    }
-
-    bool isNewHeader(void) const { return (m_currentGroup != m_previousGroup); }
-    bool isSubtotal(void) const { return (m_currentGroup != m_previousGroup) && (!m_previousGroup.isEmpty()); }
-    const MyMoneyMoney& subtotal(void) const { return m_previousSubtotal; }
-    const unsigned depth(void) const { return m_depth; }
-    const QString& name(void) const { return m_currentGroup; }
-    const QString& oldName(void) const { return m_previousGroup; }
-    const QString& groupField(void) const { return m_groupField; }
-    const QString& subtotalField(void) const { return m_subtotalField; }
-  private:
-    MyMoneyMoney m_currentSubtotal;
-    MyMoneyMoney m_previousSubtotal;
-    unsigned m_depth;
-    QString m_currentGroup;
-    QString m_previousGroup;
-    QString m_groupField;
-    QString m_subtotalField;
-  };
 
 void QueryTable::render( QString& result, QString& csv ) const
 {

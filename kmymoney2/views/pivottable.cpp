@@ -141,78 +141,85 @@ void Tester::output( const QString& _text )
     qDebug( "%s%s(): %s", m_sTabs.latin1(), m_methodName.latin1(), _text.latin1() );
 }
 
-PivotTable::AccountDescriptor::AccountDescriptor( void )
+//////////////////////////////////////////////////////////////////////
+
+ReportAccount::ReportAccount( void )
 {
-  //DEBUG_ENTER("AccountDescriptor::AccountDescriptor( void )");
-  m_file = MyMoneyFile::instance();
 }
 
-PivotTable::AccountDescriptor::AccountDescriptor( const AccountDescriptor& copy ):
-  m_account( copy.m_account ), m_names( copy.m_names )
+ReportAccount::ReportAccount( const ReportAccount& copy ):
+  MyMoneyAccount( copy ), m_nameHierarchy( copy.m_nameHierarchy )
 {
   // NOTE: I implemented the copy constructor solely for debugging reasons
 
-  DEBUG_ENTER("AccountDescriptor::AccountDescriptor( const AccountDescriptor&  )");
-  m_file = MyMoneyFile::instance();
+  DEBUG_ENTER(__PRETTY_FUNCTION__);
 }
 
-PivotTable::AccountDescriptor::AccountDescriptor( const QCString& accountid ): m_account( accountid )
+ReportAccount::ReportAccount( const QCString& accountid ):
+  MyMoneyAccount( MyMoneyFile::instance()->account(accountid) )
 {
-  DEBUG_ENTER("AccountDescriptor::AccountDescriptor( account )");
+  DEBUG_ENTER(__PRETTY_FUNCTION__);
   DEBUG_OUTPUT(QString("Account %1").arg(accountid));
-  m_file = MyMoneyFile::instance();
   calculateAccountHierarchy();
 }
 
-void PivotTable::AccountDescriptor::calculateAccountHierarchy( void )
+ReportAccount::ReportAccount( const MyMoneyAccount& account ):
+  MyMoneyAccount( account )
 {
-  DEBUG_ENTER("AccountDescriptor::calculateAccountHierarchy");
+  DEBUG_ENTER(__PRETTY_FUNCTION__);
+  DEBUG_OUTPUT(QString("Account %1").arg(account.id()));
+  calculateAccountHierarchy();
+}
 
-  QCString resultid = m_account;
-  QCString parentid = m_file->account(resultid).parentAccountId();
+void ReportAccount::calculateAccountHierarchy( void )
+{
+  DEBUG_ENTER(__PRETTY_FUNCTION__);
+
+  MyMoneyFile* file = MyMoneyFile::instance();
+  QCString resultid = id();
+  QCString parentid = parentAccountId();
 
 #ifdef DEBUG_HIDE_SENSITIVE
-  m_names.prepend(m_file->account(resultid).id());
+  m_nameHierarchy.prepend(file->account(resultid).id());
 #else
-  m_names.prepend(m_file->account(resultid).name());
+  m_nameHierarchy.prepend(file->account(resultid).name());
 #endif
-  while (!m_file->isStandardAccount(parentid))
+  while (!file->isStandardAccount(parentid))
   {
     // take on the identity of our parent
     resultid = parentid;
 
     // and try again
-    parentid = m_file->account(resultid).parentAccountId();
+    parentid = file->account(resultid).parentAccountId();
 #ifdef DEBUG_HIDE_SENSITIVE
-    m_names.prepend(m_file->account(resultid).id());
+    m_nameHierarchy.prepend(file->account(resultid).id());
 #else
-    m_names.prepend(m_file->account(resultid).name());
+    m_nameHierarchy.prepend(file->account(resultid).name());
 #endif
   }
 }
 
-
-MyMoneyMoney PivotTable::AccountDescriptor::deepCurrencyPrice( const QDate& date ) const
+MyMoneyMoney ReportAccount::deepCurrencyPrice( const QDate& date ) const
 {
   DEBUG_ENTER(__PRETTY_FUNCTION__);
   
   MyMoneyMoney result(1, 1);
-  MyMoneyAccount account = m_file->account(m_account);
+  MyMoneyFile* file = MyMoneyFile::instance();
   
-  MyMoneySecurity undersecurity = m_file->security( account.currencyId() );
+  MyMoneySecurity undersecurity = file->security( currencyId() );
   if ( ! undersecurity.isCurrency() )
   {
     // FIXME: If there is no price for this date, our method will return a 1.0,
     // which will be confusing for the user. We should report an error back to the report.
     // This will require an error-handling mechanism, which I don't have right now.   
-    MyMoneyPrice price = m_file->price(undersecurity.id(),undersecurity.tradingCurrency(),date);
+    MyMoneyPrice price = file->price(undersecurity.id(),undersecurity.tradingCurrency(),date);
     if ( price.isValid() )
     {
       result = price.rate();
   
       DEBUG_OUTPUT(QString("Converting under %1 to deep %2, price on %3 is %4")
         .arg(undersecurity.name())
-        .arg(m_file->security(undersecurity.tradingCurrency()).name())
+        .arg(file->security(undersecurity.tradingCurrency()).name())
         .arg(date.toString())
         .arg(result.toDouble()));
     }
@@ -220,7 +227,7 @@ MyMoneyMoney PivotTable::AccountDescriptor::deepCurrencyPrice( const QDate& date
     {
       DEBUG_OUTPUT(QString("No price to convert under %1 to deep %2 on %3")
         .arg(undersecurity.name())
-        .arg(m_file->security(undersecurity.tradingCurrency()).name())
+        .arg(file->security(undersecurity.tradingCurrency()).name())
         .arg(date.toString()));
     }
   }
@@ -228,7 +235,7 @@ MyMoneyMoney PivotTable::AccountDescriptor::deepCurrencyPrice( const QDate& date
   return result;
 }
 
-MyMoneyMoney PivotTable::AccountDescriptor::baseCurrencyPrice( const QDate& date ) const
+MyMoneyMoney ReportAccount::baseCurrencyPrice( const QDate& date ) const
 {
   // Note that whether or not the user chooses to convert to base currency, all the values
   // for a given account/category are converted to the currency for THAT account/category
@@ -242,37 +249,32 @@ MyMoneyMoney PivotTable::AccountDescriptor::baseCurrencyPrice( const QDate& date
   // currency.  This confused me for a while, which is why I wrote this comment.
   //    --acejones
 
-  DEBUG_ENTER("AccountDescriptor::baseCurrencyPrice");
+  DEBUG_ENTER(__PRETTY_FUNCTION__);
 
   MyMoneyMoney result(1, 1);
-  MyMoneyAccount account = m_file->account(m_account);
-
-  // First, get the deep currency
-  MyMoneySecurity deepcurrency = m_file->security( account.currencyId() );
-  if ( ! deepcurrency.isCurrency() )
-    deepcurrency = m_file->security( deepcurrency.tradingCurrency() );
+  MyMoneyFile* file = MyMoneyFile::instance();
   
-  if(deepcurrency.id() != m_file->baseCurrency().id()) 
+  if(isForiegnCurrency())
   {
     // FIXME: If there is no price for this date, our method will return a 1.0,
     // which will be confusing for the user. We should report an error back to the report.
     // This will require an error-handling mechanism, which I don't have right now.   
-    MyMoneyPrice price = m_file->price(deepcurrency.id(), m_file->baseCurrency().id(), date);
+    MyMoneyPrice price = file->price(currency(), file->baseCurrency().id(), date);
     if(price.isValid())
     {
       result = price.rate();
     
       DEBUG_OUTPUT(QString("Converting deep %1 to base %2, price on %3 is %4")
-        .arg(deepcurrency.name())
-        .arg(m_file->baseCurrency().name())
+        .arg(file->currency(currency()).name())
+        .arg(file->baseCurrency().name())
         .arg(date.toString())
         .arg(result.toDouble()));
     }
     else
     {
       DEBUG_OUTPUT(QString("No price to convert deep %1 to base %2 on %3")
-        .arg(deepcurrency.name())
-        .arg(m_file->baseCurrency().name())
+        .arg(file->currency(currency()).name())
+        .arg(file->baseCurrency().name())
         .arg(date.toString()));
     }
   }
@@ -280,18 +282,47 @@ MyMoneyMoney PivotTable::AccountDescriptor::baseCurrencyPrice( const QDate& date
   return result;
 }
 
-bool PivotTable::AccountDescriptor::operator<(const AccountDescriptor& second) const
+/**
+  * Fetch the trading symbol of this account's currency
+  *
+  * @return QCString The account's currency trading symbol
+  */
+QCString ReportAccount::currency( void ) const
 {
-//   DEBUG_ENTER("AccountDescriptor::operator<");
+  MyMoneyFile* file = MyMoneyFile::instance();
+  
+  // First, get the deep currency
+  MyMoneySecurity deepcurrency = file->security( currencyId() );
+  if ( ! deepcurrency.isCurrency() )
+    deepcurrency = file->security( deepcurrency.tradingCurrency() );
+  
+  // Return the deep currency's ID
+  return deepcurrency.id();
+}
+
+/**
+  * Determine if this account's deep currency is different from the file's
+  * base currency
+  *
+  * @return bool True if this account is in a foreign currency
+  */
+bool ReportAccount::isForiegnCurrency( void ) const
+{
+  return ( currency() != MyMoneyFile::instance()->baseCurrency().id() );
+}
+
+bool ReportAccount::operator<(const ReportAccount& second) const
+{
+//   DEBUG_ENTER(__PRETTY_FUNCTION__);
 
   bool result = false;
   bool haveresult = false;
-  QStringList::const_iterator it_first = m_names.begin();
-  QStringList::const_iterator it_second = second.m_names.begin();
-  while ( it_first != m_names.end() )
+  QStringList::const_iterator it_first = m_nameHierarchy.begin();
+  QStringList::const_iterator it_second = second.m_nameHierarchy.begin();
+  while ( it_first != m_nameHierarchy.end() )
   {
     // The first string is longer than the second, but otherwise identical
-    if ( it_second == second.m_names.end() )
+    if ( it_second == second.m_nameHierarchy.end() )
     {
       result = false;
       haveresult = true;
@@ -316,46 +347,11 @@ bool PivotTable::AccountDescriptor::operator<(const AccountDescriptor& second) c
   }
 
   // The second string is longer than the first, but otherwise identical
-  if ( !haveresult && ( it_second != second.m_names.end() ) )
+  if ( !haveresult && ( it_second != second.m_nameHierarchy.end() ) )
     result = true;
 
 //   DEBUG_OUTPUT(QString("%1 < %2 is %3").arg(debugName(),second.debugName()).arg(result));
   return result;
-}
-
-/**
-  * Fetch the trading symbol of this account's currency
-  *
-  * @return QString The account's currency trading symbol
-  */
-QString PivotTable::AccountDescriptor::currency( void ) const
-{
-  MyMoneyAccount account = m_file->account(m_account);
-  
-  // First, get the deep currency
-  MyMoneySecurity deepcurrency = m_file->security( account.currencyId() );
-  if ( ! deepcurrency.isCurrency() )
-    deepcurrency = m_file->security( deepcurrency.tradingCurrency() );
-  
-  // Return the deep currency's ID
-  return deepcurrency.id();
-}
-
-/**
-  * Determine if this account's deep currency is different from the file's
-  * base currency
-  *
-  * @return bool True if this account is in a foreign currency
-  */
-bool PivotTable::AccountDescriptor::isForiegnCurrency( void ) const
-{
-  MyMoneyAccount account = m_file->account(m_account);
-  // First, get the deep currency
-  MyMoneySecurity deepcurrency = m_file->security( account.currencyId() );
-  if ( ! deepcurrency.isCurrency() )
-    deepcurrency = m_file->security( deepcurrency.tradingCurrency() );
-  
-  return ( deepcurrency.id() != m_file->baseCurrency().id() );
 }
 
 /**
@@ -365,49 +361,79 @@ bool PivotTable::AccountDescriptor::isForiegnCurrency( void ) const
   *
   * @return QString The account's name
   */
-QString PivotTable::AccountDescriptor::name( void ) const
+QString ReportAccount::name( void ) const
 {
-  return m_names.back();
+  return m_nameHierarchy.back();
 }
 
 // MyMoneyAccount:fullHierarchyDebug()
-QString PivotTable::AccountDescriptor::debugName( void ) const
+QString ReportAccount::debugName( void ) const
 {
-  return m_names.join("|");
+  return m_nameHierarchy.join("|");
 }
 
 // MyMoneyAccount:fullHierarchy()
-QString PivotTable::AccountDescriptor::fullName( void ) const
+QString ReportAccount::fullName( void ) const
 {
-  return m_names.join(": ");
+  return m_nameHierarchy.join(": ");
 }
 
 // MyMoneyAccount:isTopCategory()
-bool PivotTable::AccountDescriptor::isTopLevel( void ) const
+bool ReportAccount::isTopLevel( void ) const
 {
-  return ( m_names.size() == 1 );
+  return ( m_nameHierarchy.size() == 1 );
 }
 
 // MyMoneyAccount:hierarchyDepth()
-unsigned PivotTable::AccountDescriptor::hierarchyDepth( void ) const
+unsigned ReportAccount::hierarchyDepth( void ) const
 {
-  return ( m_names.size() );
+  return ( m_nameHierarchy.size() );
 }
 
-PivotTable::AccountDescriptor PivotTable::AccountDescriptor::getParent( void ) const
+ReportAccount ReportAccount::parent( void ) const
 {
-  return AccountDescriptor( m_file->account(m_account).parentAccountId() );
+  return ReportAccount( parentAccountId() );
 }
 
-QString PivotTable::AccountDescriptor::getTopLevel( void ) const
+ReportAccount ReportAccount::topParent( void ) const
 {
-  return m_names.first();
+  DEBUG_ENTER(__PRETTY_FUNCTION__);
+
+  MyMoneyFile* file = MyMoneyFile::instance();
+  QCString resultid = id();
+  QCString parentid = parentAccountId();
+
+  while (!file->isStandardAccount(parentid))
+  {
+    // take on the identity of our parent
+    resultid = parentid;
+
+    // and try again
+    parentid = file->account(resultid).parentAccountId();
+  }
+
+  return ReportAccount( resultid );
 }
+
+QString ReportAccount::topParentName( void ) const
+{
+  return m_nameHierarchy.first();
+}
+
+bool ReportAccount::isIncomeExpense(void) const
+{
+  return (accountGroup() == MyMoneyAccount::Income || accountGroup() == MyMoneyAccount::Expense);
+}                         
+
+bool ReportAccount::isAssetLiability(void) const
+{
+  return (accountGroup() == MyMoneyAccount::Asset || accountGroup() == MyMoneyAccount::Liability);
+}                         
 
 PivotTable::PivotTable( const MyMoneyReport& _config_f ):
   m_config_f( _config_f )
 {
-  DEBUG_ENTER("PivotTable::PivotTable()");
+  DEBUG_ENTER(__PRETTY_FUNCTION__);
 
   //
   // Initialize locals
@@ -418,17 +444,6 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
   //
   // Initialize member variables
   //
-
-  if ( m_config_f.rowType() == MyMoneyReport::eAssetLiability )
-  {
-    m_accounttypes.append(MyMoneyAccount::Asset);
-    m_accounttypes.append(MyMoneyAccount::Liability);
-  }
-  if ( m_config_f.rowType() == MyMoneyReport::eExpenseIncome )
-  {
-    m_accounttypes.append(MyMoneyAccount::Expense);
-    m_accounttypes.append(MyMoneyAccount::Income);
-  }
 
   m_config_f.validDateRange( m_beginDate, m_endDate );
 
@@ -467,18 +482,14 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
     QValueList<MyMoneySplit>::const_iterator it_split = splits.begin();
     while ( it_split != splits.end() )
     {
-      MyMoneyAccount splitAccount = file->account((*it_split).accountId());
+      ReportAccount splitAccount = (*it_split).accountId();
 
-      // Include this split only if the accounts is included in the configuration filter
-      // AND if its account group is included in this report type
-      if ( includesAccount( splitAccount ) )
+      // Each split must be further filtered, because if even one split matches,
+      // the ENTIRE transaction is returned with all splits (even non-matching ones)
+      if ( m_config_f.includes( splitAccount ) )
       {
-        // the row itself is the account
-        AccountDescriptor row( splitAccount.id() );
-
         // reverse sign to match common notation for cash flow direction, only for expense/income splits
-        MyMoneyMoney reverse((splitAccount.accountGroup() == MyMoneyAccount::Income) |
-                          (splitAccount.accountGroup() == MyMoneyAccount::Expense) ? -1 : 1, 1);
+        MyMoneyMoney reverse(splitAccount.isIncomeExpense() ? -1 : 1, 1);
 
         // retrieve the value in the account's underlying currency
         MyMoneyMoney value = (*it_split).shares() * reverse;
@@ -487,7 +498,7 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
         QString outergroup = accountTypeToString(splitAccount.accountGroup());
 
         // add the value to its correct position in the pivot table
-        assignCell( outergroup, row, column, value );
+        assignCell( outergroup, splitAccount, column, value );
 
       }
       ++it_split;
@@ -540,7 +551,7 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
 
 void PivotTable::collapseColumns(void)
 {
-  DEBUG_ENTER("PivotTable::collapseColumns");
+  DEBUG_ENTER(__PRETTY_FUNCTION__);
 
   unsigned columnpitch = m_config_f.columnPitch();
   if ( columnpitch != 1 )
@@ -578,7 +589,7 @@ void PivotTable::collapseColumns(void)
 
 void PivotTable::accumulateColumn(unsigned destcolumn, unsigned sourcecolumn)
 {
-  DEBUG_ENTER("PivotTable::accumulateColumn");
+  DEBUG_ENTER(__PRETTY_FUNCTION__);
   DEBUG_OUTPUT(QString("From Column %1 to %2").arg(sourcecolumn).arg(destcolumn));
 
   // iterate over outer groups
@@ -610,7 +621,7 @@ void PivotTable::accumulateColumn(unsigned destcolumn, unsigned sourcecolumn)
 
 void PivotTable::clearColumn(unsigned column)
 {
-  DEBUG_ENTER("PivotTable::clearColumn");
+  DEBUG_ENTER(__PRETTY_FUNCTION__);
   DEBUG_OUTPUT(QString("Column %1").arg(column));
 
   // iterate over outer groups
@@ -639,7 +650,7 @@ void PivotTable::clearColumn(unsigned column)
 
 void PivotTable::calculateColumnHeadings(void)
 {
-  DEBUG_ENTER("PivotTable::calculateColumnHeadings");
+  DEBUG_ENTER(__PRETTY_FUNCTION__);
 
   // one column for the opening balance
   m_columnHeadings.append( "Opening" );
@@ -677,7 +688,7 @@ void PivotTable::calculateColumnHeadings(void)
 
 void PivotTable::calculateOpeningBalances( void )
 {
-  DEBUG_ENTER("PivotTable::calculateOpeningBalances");
+  DEBUG_ENTER(__PRETTY_FUNCTION__);
 
   // First, determine the inclusive dates of the report.  Normally, that's just
   // the begin & end dates of m_config_f.  However, if either of those dates are
@@ -697,44 +708,44 @@ void PivotTable::calculateOpeningBalances( void )
 
   while ( it_account != accounts.end() )
   {
+    ReportAccount account = *it_account;
+
     // only include this item if its account group is included in this report
     // and if the report includes this account
-    if ( includesAccount( *it_account ) )
+    if ( m_config_f.includes( *it_account ) )
     {
-      DEBUG_OUTPUT(QString("Includes account %1").arg((*it_account).name()));
+      DEBUG_OUTPUT(QString("Includes account %1").arg(account.name()));
 
       // the row group is the account class (major account type)
-      QString outergroup = accountTypeToString((*it_account).accountGroup());
-
-      // the row itself is the account
-      AccountDescriptor row( (*it_account).id() );
+      QString outergroup = accountTypeToString(account.accountGroup());
 
       // extract the balance of the account for the given begin date, which is
       // the opening balance plus the sum of all transactions prior to the begin
       // date
+      
       // this is in the underlying currency
-      MyMoneyMoney value = file->balance((*it_account).id(), from.addDays(-1));
+      MyMoneyMoney value = file->balance(account.id(), from.addDays(-1));
 
       // remove the opening balance from the figure, if necessary
-      QDate opendate = (*it_account).openingDate();
+      QDate opendate = account.openingDate();
       if ( opendate >= from )
-        value -= (*it_account).openingBalance();
+        value -= account.openingBalance();
 
       // place into the 'opening' column...
-      assignCell( outergroup, row, 0, value );
+      assignCell( outergroup, account, 0, value );
 
       if ( ( opendate >= from ) && ( opendate <= to ) )
       {
         // get the opening value
-        MyMoneyMoney value = (*it_account).openingBalance();
+        MyMoneyMoney value = account.openingBalance();
         // place in the correct column
         unsigned column = opendate.year() * 12 + opendate.month() - m_beginDate.year() * 12 - m_beginDate.month() + 1;
-        assignCell( outergroup, row, column, value );
+        assignCell( outergroup, account, column, value );
       }
     }
     else
     {
-      DEBUG_OUTPUT(QString("DOES NOT INCLUDE account %1").arg((*it_account).name()));
+      DEBUG_OUTPUT(QString("DOES NOT INCLUDE account %1").arg(account.name()));
     }
 
     ++it_account;
@@ -744,7 +755,7 @@ void PivotTable::calculateOpeningBalances( void )
 
 void PivotTable::calculateRunningSums( void )
 {
-  DEBUG_ENTER("PivotTable::calculateRunningSums");
+  DEBUG_ENTER(__PRETTY_FUNCTION__);
 
   TGrid::iterator it_outergroup = m_grid.begin();
   while ( it_outergroup != m_grid.end() )
@@ -965,16 +976,16 @@ void PivotTable::calculateTotals( void )
 
 }
 
-void PivotTable::assignCell( const QString& outergroup, const PivotTable::AccountDescriptor& row, unsigned column, MyMoneyMoney value )
+void PivotTable::assignCell( const QString& outergroup, const ReportAccount& row, unsigned column, MyMoneyMoney value )
 {
-  DEBUG_ENTER("PivotTable::assignCell");
+  DEBUG_ENTER(__PRETTY_FUNCTION__);
   DEBUG_OUTPUT(QString("Parameters: %1,%2,%3,%4").arg(outergroup).arg(row.debugName()).arg(column).arg(DEBUG_SENSITIVE(value.toDouble())));
 
   // ensure the row already exists (and its parental hierarchy)
   createRow( outergroup, row, true );
 
   // Determine the inner group from the top-most parent account
-  QString innergroup( row.getTopLevel() );
+  QString innergroup( row.topParentName() );
 
   if ( m_numColumns <= column )
     throw new MYMONEYEXCEPTION(QString("Column %1 out of m_numColumns range (%2) in PivotTable::assignCell").arg(column).arg(m_numColumns));
@@ -986,12 +997,12 @@ void PivotTable::assignCell( const QString& outergroup, const PivotTable::Accoun
 
 }
 
-void PivotTable::createRow( const QString& outergroup, const PivotTable::AccountDescriptor& row, bool recursive )
+void PivotTable::createRow( const QString& outergroup, const ReportAccount& row, bool recursive )
 {
-  DEBUG_ENTER("PivotTable::createRow");
+  DEBUG_ENTER(__PRETTY_FUNCTION__);
 
   // Determine the inner group from the top-most parent account
-  QString innergroup( row.getTopLevel() );
+  QString innergroup( row.topParentName() );
 
   // fill the row list with blanks if it doesn't already exist.
   if ( m_grid[outergroup][innergroup][row].isEmpty() )
@@ -1005,38 +1016,13 @@ void PivotTable::createRow( const QString& outergroup, const PivotTable::Account
     m_grid.m_total.insert( m_grid.m_total.end(), m_numColumns, 0 );
 
     if ( recursive && !row.isTopLevel() )
-        createRow( outergroup, row.getParent(), recursive );
+        createRow( outergroup, row.parent(), recursive );
   }
-}
-
-bool PivotTable::isCategory(const MyMoneyAccount& account)
-{
-  return ( (account.accountGroup() == MyMoneyAccount::Income) || (account.accountGroup() == MyMoneyAccount::Expense) );
-
-}
-
-bool PivotTable::includesAccount( const MyMoneyAccount& account ) const
-{
-  bool result = false;
-
-  if
-  (
-    m_accounttypes.contains(account.accountGroup())
-    &&
-    (
-      ( isCategory(account) && m_config_f.includesCategory(account.id()) )
-      ||
-      ( !isCategory(account) && m_config_f.includesAccount(account.id()) )
-    )
-  )
-    result = true;
-
-  return result;
 }
 
 QString PivotTable::renderCSV( void ) const
 {
-  DEBUG_ENTER("PivotTable::renderCSV");
+  DEBUG_ENTER(__PRETTY_FUNCTION__);
 
   char saveseparator = MyMoneyMoney::thousandSeparator();
   MyMoneyMoney::setThousandSeparator('\0');
@@ -1112,12 +1098,12 @@ QString PivotTable::renderCSV( void ) const
         // Row Header
         //
 
-        AccountDescriptor rowname = it_row.key();
+        ReportAccount rowname = it_row.key();
 
         innergroupdata += "\"" + QString().fill(' ',rowname.hierarchyDepth() - 1) + rowname.name();
 
         if (m_config_f.isConvertCurrency() || !rowname.isForiegnCurrency() )
-          innergroupdata += QString(" (%1)").arg(rowname.currency());
+          innergroupdata += QString(" (%1)").arg(rowname.currencyId());
 
         innergroupdata += "\"";
 
@@ -1150,11 +1136,11 @@ QString PivotTable::renderCSV( void ) const
       else
       {
         // Start the single INDIVIDUAL ACCOUNT row
-        AccountDescriptor rowname = (*it_innergroup).begin().key();
+        ReportAccount rowname = (*it_innergroup).begin().key();
 
         result += "\"" + QString().fill(' ',rowname.hierarchyDepth() - 1) + rowname.name();
         if (m_config_f.isConvertCurrency() || !rowname.isForiegnCurrency() )
-          result += QString(" (%1)").arg(rowname.currency());
+          result += QString(" (%1)").arg(rowname.currencyId());
         result += "\"";
 
       }
@@ -1219,10 +1205,7 @@ QString PivotTable::renderCSV( void ) const
 
 QString PivotTable::renderHTML( void ) const
 {
-  DEBUG_ENTER("PivotTable::renderHTML");
-
-/*  MyMoneyMoney::signPosition savesignpos = MyMoneyMoney::negativeMonetarySignPosition();
-  MyMoneyMoney::setNegativeMonetarySignPosition(MyMoneyMoney::ParensAround);*/
+  DEBUG_ENTER(__PRETTY_FUNCTION__);
 
   QString colspan = QString(" colspan=\"%1\"").arg(m_numColumns + 1 + (m_config_f.isShowingRowTotals() ? 1 : 0) );
 
@@ -1301,7 +1284,7 @@ QString PivotTable::renderHTML( void ) const
         // Row Header
         //
 
-        AccountDescriptor rowname = it_row.key();
+        ReportAccount rowname = it_row.key();
 
         innergroupdata += QString("<tr class=\"row-%1\"%2><td%3 class=\"left%4\">%5%6</td>")
           .arg(rownum & 0x01 ? "even" : "odd")
@@ -1309,7 +1292,7 @@ QString PivotTable::renderHTML( void ) const
           .arg((*it_row).m_total.isZero() ? colspan : "")
           .arg(rowname.hierarchyDepth() - 1)
           .arg(rowname.name().replace(QRegExp(" "), "&nbsp;"))
-          .arg((m_config_f.isConvertCurrency() || !rowname.isForiegnCurrency() )?QString():QString(" (%1)").arg(rowname.currency()));
+          .arg((m_config_f.isConvertCurrency() || !rowname.isForiegnCurrency() )?QString():QString(" (%1)").arg(rowname.currencyId()));
 
         if ( !(*it_row).m_total.isZero() )
           innergroupdata += rowdata;
@@ -1346,13 +1329,13 @@ QString PivotTable::renderHTML( void ) const
         // of classes I can define in the .CSS file, and the user can theoretically nest deeper.
         // The right solution is to use style=Xem, and calculate X.  Let's see if anyone complains
         // first :)  Also applies to the row header case above.
-        AccountDescriptor rowname = (*it_innergroup).begin().key();
+        ReportAccount rowname = (*it_innergroup).begin().key();
         result += QString("<tr class=\"row-%1\"%2><td class=\"left%3\">%4%5</td>")
           .arg(rownum & 0x01 ? "even" : "odd")
           .arg( m_config_f.isShowingSubAccounts() ? "id=\"solo\"" : "" )
           .arg(rowname.hierarchyDepth() - 1)
           .arg(rowname.name().replace(QRegExp(" "), "&nbsp;"))
-          .arg((m_config_f.isConvertCurrency() || !rowname.isForiegnCurrency() )?QString():QString(" (%1)").arg(rowname.currency()));
+          .arg((m_config_f.isConvertCurrency() || !rowname.isForiegnCurrency() )?QString():QString(" (%1)").arg(rowname.currencyId()));
       }
 
       // Finish the row started above, unless told not to

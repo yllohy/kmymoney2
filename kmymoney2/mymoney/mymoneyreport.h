@@ -1,15 +1,9 @@
 /***************************************************************************
-                          mymoneystoragexml.h  -  description
+                          mymoneyreport.h
                              -------------------
-    begin                : Thu Oct 24 2002
-    copyright            : (C) 2000-2002 by Michael Edwardes
-    email                : mte@users.sourceforge.net
-                           Javier Campos Morales <javi_c@users.sourceforge.net>
-                           Felix Rodriguez <frodriguez@users.sourceforge.net>
-                           John C <thetacoturtle@users.sourceforge.net>
-                           Thomas Baumgart <ipwizard@users.sourceforge.net>
-                           Kevin Tambascio <ktambascio@users.sourceforge.net>
-                           Ace Jones <ace.j@hotpop.com>
+    begin                : Sun July 4 2004
+    copyright            : (C) 2004-2005 by Ace Jones
+    email                : acejones@users.sourceforge.net
  ***************************************************************************/
 
 /***************************************************************************
@@ -52,7 +46,7 @@ class QDomDocument;
   * generation and presentation of the report itself are left to higher
   * level classes.
   *
-  * @author Ace Jones <ace.j@hotpop.com>
+  * @author Ace Jones <acejones@users.sourceforge.net>
   */
 
 class MyMoneyReport: public MyMoneyTransactionFilter
@@ -70,8 +64,7 @@ public:
   static const EReportType kTypeArray[];
   
 public:
-  MyMoneyReport(ERowType _rt = eExpenseIncome, EColumnType _ct = eMonths, const QDate& _db = QDate(), const QDate& _de = QDate());
-  
+  MyMoneyReport(void);
   MyMoneyReport(ERowType _rt, unsigned _ct, unsigned _dl, bool _ss, const QString& _name, const QString& _comment );
 
   // Simple get operations
@@ -97,7 +90,7 @@ public:
   void setName(const QString& _s) { m_name = _s; }
   void setShowSubAccounts(bool _f) { m_showSubAccounts = _f; }
   void setConvertCurrency(bool _f) { m_convertCurrency = _f; }
-  void setRowType(ERowType _rt) { m_rowType = _rt; m_reportType = kTypeArray[_rt]; }
+  void setRowType(ERowType _rt);
   void setColumnType(EColumnType _ct) { m_columnType = _ct; }
   void setComment( const QString& _comment ) { m_comment = _comment; }
   void setGroup( const QString& _group ) { m_group = _group; }
@@ -106,6 +99,11 @@ public:
   void setId( const QCString& _id ) { m_id = _id; }
   void setTax(bool _f) { m_tax = _f; }
   void setInvestmentsOnly(bool _f) { m_investments = _f; }
+
+  /**
+    * This method allows you to clear the underlying transaction filter
+    */
+  void clear(void);
 
   /**
     * This method allows you to set the underlying transaction filter
@@ -170,7 +168,51 @@ public:
     * @param _de The inclusive end date of the date range
     */
   void validDateRange(QDate& _db, QDate& _de);
+
+  /**
+    * This method turns on the account group filter and adds the
+    * @p type to the list of allowed groups.
+    *
+    * Note that account group filtering is handled differently
+    * than all the filters of the underlying class.  This filter
+    * is meant to be applied to individual splits of matched
+    * transactions AFTER the underlying filter is used to find
+    * the matching transactions.
+    *
+    * @param type the account group to add to the allowed groups list
+    */
+  void addAccountGroup(MyMoneyAccount::accountTypeE type);
   
+  /**
+    * This method returns whether an account group filter has been set,
+    * and if so, it returns all the account groups set in the filter.
+    *
+    * @param list list to append account groups into
+    * @return return true if an account group filter has been set
+    */
+  const bool accountGroups(QValueList<MyMoneyAccount::accountTypeE>& list) const;
+
+  /**
+    * This method returns whether the specified account group
+    * is allowed by the account groups filter.
+    *
+    * @param list list to append account groups into
+    * @return return true if an account group filter has been set
+    */
+  const bool includesAccountGroup( MyMoneyAccount::accountTypeE type ) const;
+
+  /**
+    * This method is used to test whether a specific account
+    * passes the accountGroup test and either the Account or
+    * Category test, depending on which sort of Account it is.
+    *
+    * The m_tax and m_investments properties are also considered.
+    *
+    * @param acc the account in question
+    * @return true if account is in filter set, false otherwise
+    */
+  const bool includes( const MyMoneyAccount& acc ) const;
+
   /**
     * This method writes this report to the DOM element @p e,
     * within the DOM document @doc.
@@ -264,6 +306,17 @@ private:
     * manually by calling updateDateFilter() before generating the report
     */
   unsigned m_dateLock;
+  /**
+    * Which account groups should be included in the report.  This filter
+    * is applied to the individual splits AFTER a transaction has been
+    * matched using the underlying filter.
+    */
+  QValueList<MyMoneyAccount::accountTypeE> m_accountGroups;
+  /**
+    * Whether an account group filter has been set (see m_accountGroups)
+    */
+  bool m_accountGroupFilter;
+  
 };
 
 #endif // MYMONEYREPORT_H  
