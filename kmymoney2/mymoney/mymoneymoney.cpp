@@ -125,10 +125,8 @@ MyMoneyMoney::MyMoneyMoney(const QString& pszAmount)
     m_num = atoll( res );
 }
 
-const QString MyMoneyMoney::formatMoney(/*QString locale="C", bool addPrefixPostfix=false*/void) const
+const QString MyMoneyMoney::formatMoney(const QString currency, const int prec) const
 {
-  QString currency = "";        // should become an argument of this method
-  unsigned int prec = 2;        // should become an argument of this method
   QString res;
   QString tmpCurrency = currency;
   unsigned int tmpPrec = prec;

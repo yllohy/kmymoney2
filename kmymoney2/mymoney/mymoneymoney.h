@@ -94,7 +94,19 @@ public:
 
   // signed64 value(const int prec = 2) const;
   const MyMoneyMoney abs(void) const { return m_num < 0 ? -(*this) : *this; };
-  const QString formatMoney(/*QString locale="C", bool addPrefixPostfix=false*/void) const;
+
+  /**
+    * This method returns a formatted string according to the settings
+    * of _thousandSeparator, _decimalSeparator, _negativeMonetarySignPosition,
+    * _positiveMonetaryPosition, _negativePrefixCurrencySymbol and
+    * _positivePrefixCurrencySymbol. Those values can be modified using
+    * the appropriate set-methods.
+    *
+    * @param currency The currency symbol (default "")
+    * @param prec The number of fractional digits (default 2)
+    */
+  const QString formatMoney(const QString currency = QString(), const int prec = 2) const;
+
   const QString toString(void) const;
   void fromString(const QString& str);
   const MyMoneyMoney convert(const signed64 denom = 100, const roundingMethod how = RndRound) const;
