@@ -23,10 +23,6 @@
 #include <kaboutdata.h>
 #include <klocale.h>
 #include <ktip.h>
-// ---%<---
-#include <kstandarddirs.h>
-#include <kicontheme.h>
-// ---%<---
 
 #include "kmymoney2.h"
 #include "kstartuplogo.h"
@@ -90,23 +86,6 @@ int main(int argc, char *argv[])
   // setup the MyMoneyMoney locale settings according to the KDE settings
   MyMoneyMoney::setThousandSeparator(*(KGlobal::locale()->thousandsSeparator().latin1()));
   MyMoneyMoney::setDecimalSeparator(*(KGlobal::locale()->decimalSymbol().latin1()));
-
-  // ---%<---
-  QStringList list = KGlobal::dirs()->resourceDirs("icon");
-  QStringList::Iterator it;
-  for(it = list.begin(); it != list.end(); ++it)
-    qDebug("icon resource dir: %s", (*it).latin1());
-
-  list = KIconTheme::list();
-  for(it = list.begin(); it != list.end(); ++it)
-    qDebug("icon theme: %s", (*it).latin1());
-
-  KIconTheme theme = KIconTheme(QString::fromLatin1("hicolor"), KGlobal::instance()->instanceName());
-  qDebug("theme.isValid(%s,%s) = %d",
-    QString::fromLatin1("hicolor").latin1(),
-    KGlobal::instance()->instanceName().data(),
-    theme.isValid());
-  // ---%<---
 
 	kmymoney2 = new KMyMoney2App();
   a.setMainWidget( kmymoney2 );
