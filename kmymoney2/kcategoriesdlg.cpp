@@ -43,6 +43,9 @@ KCategoriesDlg::KCategoriesDlg(MyMoneyFile *file, QWidget *parent, const char *n
 	categoryListView->setMultiSelection(false);
 	categoryListView->setColumnWidthMode(0, QListView::Manual);
 	categoryListView->header()->setResizeEnabled(false);
+
+  // never show a horizontal scroll bar
+  categoryListView->setHScrollBarMode(QScrollView::AlwaysOff);
 	
   readConfig();
 

@@ -47,6 +47,9 @@ KBanksView::KBanksView(QWidget *parent, const char *name)
 
   m_bSelectedBank=false;
   m_bSelectedAccount=false;
+
+  // never show a horizontal scroll bar
+  bankListView->setHScrollBarMode(QScrollView::AlwaysOff);
 }
 
 KBanksView::~KBanksView()
