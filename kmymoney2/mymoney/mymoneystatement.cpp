@@ -61,12 +61,12 @@ void MyMoneyStatement::write(QDomElement& _root,QDomDocument* _doc) const
     p.setAttribute("payee", (*it_t).m_strPayee);
     p.setAttribute("memo", (*it_t).m_strMemo);
     p.setAttribute("number", (*it_t).m_strNumber);
-    p.setAttribute("amount", QString::number((*it_t).m_moneyAmount));
+    p.setAttribute("amount", QString::number((*it_t).m_moneyAmount,'f',20));
     p.setAttribute("bankid", (*it_t).m_strBankID);
     
     if (m_eType == etInvestment)
     {
-      p.setAttribute("shares", QString::number((*it_t).m_dShares));
+      p.setAttribute("shares", QString::number((*it_t).m_dShares,'f', 10));
       p.setAttribute("action", kActionText[(*it_t).m_eAction]);
       p.setAttribute("security", (*it_t).m_strSecurity);
     }
