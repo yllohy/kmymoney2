@@ -1,0 +1,186 @@
+/***************************************************************************
+                          kmymoneytransactionform.cpp  -  description
+                             -------------------
+    begin                : Thu Jul 25 2002
+    copyright            : (C) 2002 by Michael Edwardes
+    email                : mte@users.sourceforge.net
+                           Javier Campos Morales <javi_c@users.sourceforge.net>
+                           Felix Rodriguez <frodriguez@users.sourceforge.net>
+                           John C <thetacoturtle@users.sourceforge.net>
+                           Thomas Baumgart <ipwizard@users.sourceforge.net>
+                           Kevin Tambascio <ktambascio@users.sourceforge.net>
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+// ----------------------------------------------------------------------------
+// QT Includes
+
+// #include <qvariant.h>
+#include <qframe.h>
+#include <qtabbar.h>
+#include <qtable.h>
+#include <qlayout.h>
+#include <qtooltip.h>
+#include <qwhatsthis.h>
+// #include <qimage.h>
+// #include <qpixmap.h>
+
+// ----------------------------------------------------------------------------
+// KDE Includes
+
+#include <klocale.h>
+#include <kglobal.h>
+#include <kpushbutton.h>
+
+// ----------------------------------------------------------------------------
+// Project Includes
+
+#include "kmymoneytransactionform.h"
+
+kMyMoneyTransactionFormTable::kMyMoneyTransactionFormTable( QWidget* parent = 0, const char* name = 0)
+  : QTable(parent, name)
+{
+}
+
+/** Override the QTable member function to avoid display of focus */
+void kMyMoneyTransactionFormTable::paintFocus(QPainter *p, const QRect &cr)
+{
+}
+
+QWidget* kMyMoneyTransactionFormTable::createEditor(int row, int col, bool initFromCell) const
+{
+  switch(col) {
+    case 0:
+    case 2:
+      return 0;
+  }
+  return QTable::createEditor(row, col, initFromCell);
+}
+
+kMyMoneyTransactionFormTableItem::kMyMoneyTransactionFormTableItem(QTable* table, EditType ed, const QString& str)
+  : QTableItem(table, ed, str)
+{
+  m_alignment = standard;
+}
+
+kMyMoneyTransactionFormTableItem::~kMyMoneyTransactionFormTableItem()
+{
+}
+
+int kMyMoneyTransactionFormTableItem::alignment() const
+{
+  int rc;
+
+  switch(m_alignment) {
+    default:
+      rc = QTableItem::alignment();
+      break;
+    case left:
+      rc = AlignLeft | AlignVCenter;
+      break;
+    case right:
+      rc = AlignRight | AlignVCenter;
+      break;
+  }
+  return rc;
+}
+
+void kMyMoneyTransactionFormTableItem::setAlignment(alignmentTypeE type)
+{
+  m_alignment = type;
+}
+/*
+ *  Constructs a kMyMoneyTransactionForm which is a child of 'parent', with the
+ *  name 'name' and widget flags set to 'f'.
+ */
+kMyMoneyTransactionForm::kMyMoneyTransactionForm( QWidget* parent,  const char* name, WFlags fl, const int rows, const int cols)
+    : QWidget( parent, name, fl )
+{
+  formLayout = new QVBoxLayout( this, 0, 0, "formLayout");
+
+  m_tabBar = new QTabBar( this, "tabBar" );
+  m_tabBar->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)5, (QSizePolicy::SizeType)0, 0, 0, m_tabBar->sizePolicy().hasHeightForWidth() ) );
+  formLayout->addWidget( m_tabBar );
+
+  formFrame = new QFrame( this, "formFrame" );
+  formFrame->setGeometry( QRect( 12, 44, 462, 170 ));
+  formFrame->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)5, (QSizePolicy::SizeType)1, 0, 0, formFrame->sizePolicy().hasHeightForWidth() ) );
+  formFrame->setFrameShape( QFrame::StyledPanel );
+  formFrame->setFrameShadow( QFrame::Raised );
+  formFrameLayout = new QGridLayout( formFrame, 1, 1, 11, 6, "formFrameLayout");
+
+  buttonLayout = new QHBoxLayout( 0, 0, 10, "buttonLayout");
+
+  buttonNew = new KPushButton( formFrame, "buttonNew" );
+  buttonNew->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)3, (QSizePolicy::SizeType)0, 0, 0, buttonNew->sizePolicy().hasHeightForWidth() ) );
+  buttonNew->setText( i18n( "New" ) );
+  buttonLayout->addWidget( buttonNew );
+
+  buttonEdit = new KPushButton( formFrame, "buttonEdit" );
+  buttonEdit->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)3, (QSizePolicy::SizeType)0, 0, 0, buttonEdit->sizePolicy().hasHeightForWidth() ) );
+  buttonEdit->setText( i18n( "Edit" ) );
+  buttonLayout->addWidget( buttonEdit );
+
+  buttonEnter = new KPushButton( formFrame, "buttonEnter" );
+  buttonEnter->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)3, (QSizePolicy::SizeType)0, 0, 0, buttonEnter->sizePolicy().hasHeightForWidth() ) );
+  buttonEnter->setText( i18n( "Enter" ) );
+  buttonLayout->addWidget( buttonEnter );
+
+  buttonCancel = new KPushButton( formFrame, "buttonCancel" );
+  buttonCancel->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)3, (QSizePolicy::SizeType)0, 0, 0, buttonCancel->sizePolicy().hasHeightForWidth() ) );
+  buttonCancel->setText( i18n( "Cancel" ) );
+  buttonLayout->addWidget( buttonCancel );
+
+  buttonMore = new KPushButton( formFrame, "buttonMore" );
+  buttonMore->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)3, (QSizePolicy::SizeType)0, 0, 0, buttonMore->sizePolicy().hasHeightForWidth() ) );
+  buttonMore->setText( i18n( "More" ) );
+  buttonLayout->addWidget( buttonMore );
+  QSpacerItem* spacer = new QSpacerItem( 20, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
+  buttonLayout->addItem( spacer );
+
+  formFrameLayout->addLayout( buttonLayout, 0, 0 );
+
+
+  formTable = new kMyMoneyTransactionFormTable( formFrame, "formTable" );
+  formTable->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)5, (QSizePolicy::SizeType)5, 0, 0, formTable->sizePolicy().hasHeightForWidth() ) );
+  formTable->setBackgroundOrigin(QTable::WindowOrigin);
+  formTable->setFrameShape( QTable::NoFrame );
+  formTable->setFrameShadow( QTable::Plain );
+  formTable->setNumCols( cols );
+  formTable->setNumRows( rows );
+  formTable->setShowGrid( FALSE );
+  formTable->setSelectionMode( QTable::NoSelection );
+  formTable->verticalHeader()->hide();
+  formTable->horizontalHeader()->hide();
+  formTable->setLeftMargin(0);
+  formTable->setTopMargin(0);
+
+  formFrameLayout->addWidget( formTable, 1, 0 );
+
+  // make sure, that the table is 'invisible'
+
+  QPalette palette = formTable->palette();
+  QColorGroup cg = palette.active();
+  cg.setBrush(QColorGroup::Base, cg.brush(QColorGroup::Background));
+  palette.setActive(cg);
+  formTable->setPalette(palette);
+
+  formLayout->addWidget( formFrame );
+}
+
+/*  
+ *  Destroys the object and frees any allocated resources
+ */
+kMyMoneyTransactionForm::~kMyMoneyTransactionForm()
+{
+    // no need to delete child widgets, Qt does it all for us
+}
+
