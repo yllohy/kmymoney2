@@ -552,7 +552,7 @@ void KReportsView::slotOpenReport(QListViewItem* item)
     else
       addReportTab(reportItem->report());
   }
-  else
+  else if (item)
   {
     // this is not a KReportListItem, so it's a regular QListViewItem, which
     // means its a header.
