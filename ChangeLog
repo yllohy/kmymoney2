@@ -1,3 +1,6 @@
+2002-02-04 Kevin Tambascio <ktambascio@users.sourceforge.net>
+  * More stock transaction work.
+
 2002-02-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated project file to include all new files
   * Fixed a missing semicolon
@@ -680,6 +683,7 @@
 	* Added .cvsignore in all project.
 
  
+
 
 
 

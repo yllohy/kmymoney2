@@ -57,4 +57,5 @@ KNewEquityEntryDlg::~KNewEquityEntryDlg()
 /** No descriptions */
 void KNewEquityEntryDlg::onOKClicked()
 {
+	done(1);
 }

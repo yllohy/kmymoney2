@@ -24,6 +24,7 @@
 #include <klocale.h>
 #include <kiconloader.h>
 #include <klistview.h>
+#include <kpopupmenu.h>
 
 #include <qpushbutton.h>
 #include <kcombobox.h>
@@ -36,10 +37,14 @@
 #include "../widgets/kmymoneytable.h"
 #include "../mymoney/mymoneyaccount.h"
 #include "kinvestmentview.h"
+#include "../dialogs/knewequityentrydlg.h"
 
 KInvestmentView::KInvestmentView(QWidget *parent, const char *name)
  :  kInvestmentViewDecl(parent,name)
 {
+	m_pAccount 	= NULL;
+	m_popMenu		= NULL;
+	
 	qDebug("KInvestmentView::KInvestmentView: Investment View starting up");
 	
 	investmentTable->setRootIsDecorated(true);
@@ -64,11 +69,14 @@ KInvestmentView::KInvestmentView(QWidget *parent, const char *name)
 
   investmentTable->setSorting(-1);
 
+  connect(investmentTable, SIGNAL(rightButtonClicked(QListViewItem* , const QPoint&, int)),
+    this, SLOT(slotListRightMouse(QListViewItem*, const QPoint&, int)));
 }
 
 KInvestmentView::~KInvestmentView()
 {
 }
+
 /** No descriptions */
 bool KInvestmentView::init(MyMoneyAccount *pAccount)
 {
@@ -77,6 +85,7 @@ bool KInvestmentView::init(MyMoneyAccount *pAccount)
 		return false;
 	}
 	
+	m_pAccount = pAccount;
   KConfig *config = KGlobal::config();
   QDateTime defaultDate = QDate::currentDate();
   QDate qdateStart = QDate::currentDate();//config->readDateTimeEntry("StartDate", &defaultDate).date();
@@ -115,5 +124,44 @@ bool KInvestmentView::init(MyMoneyAccount *pAccount)
 	}
 
 	
+		
 	return true;
+}
+/** No descriptions */
+void KInvestmentView::UpdateDisplay()
+{
+	//for(emp=list.first(); emp != 0; emp=list.next())
+	//{
+		//printf( "%s earns %d\n", emp->name().latin1(), emp->salary() );
+	//}
+}
+
+void KInvestmentView::slotNewInvestment()
+{
+	KNewEquityEntryDlg *pDlg = new KNewEquityEntryDlg(this);
+	pDlg->exec();
+	int nResult = pDlg->result();
+	if(nResult)
+	{
+	}
+}
+
+void KInvestmentView::slotListDoubleClicked(QListViewItem* pItem, const QPoint& pos, int c)
+{
+}
+
+void KInvestmentView::slotListRightMouse(QListViewItem* item, const QPoint& point, int)
+{
+  // setup the context menu
+  KIconLoader *kiconloader = KGlobal::iconLoader();
+  m_popMenu = new KPopupMenu(this);
+  m_popMenu->insertTitle(kiconloader->loadIcon("transaction", KIcon::MainToolbar), i18n("Transaction Options"));
+  m_popMenu->insertItem(kiconloader->loadIcon("edit", KIcon::Small), i18n("New Investment"), this, SLOT(slotNewInvestment()));
+  //m_popMenu = m_contextMenu->insertItem(kiconloader->loadIcon("delete", KIcon::Small),
+  //                      i18n("Delete ..."),
+  //                      this, SLOT(slotDeleteSplitTransaction()));
+  if(m_popMenu)
+  {
+  	m_popMenu->exec(QCursor::pos());
+  }
 }

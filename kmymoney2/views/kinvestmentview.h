@@ -24,6 +24,7 @@
 #define KINVESTMENTVIEW_H
 
 #include <qlist.h>
+#include <kpopupmenu.h>
 #include "kinvestmentviewdecl.h"
 
 class MyMoneyAccount;
@@ -42,8 +43,24 @@ public:
 	~KInvestmentView();
   /** No descriptions */
   bool init(MyMoneyAccount *pAccount);
+  /** No descriptions */
+  void UpdateDisplay();
+
+protected slots:
+	/**
+	* This slot receives the signal from the listview control that an item was double-clicked,
+	*/
+  void slotListDoubleClicked(QListViewItem* pItem, const QPoint& pos, int c);
+
+	/**
+	* This slot receives the signal from the listview control that an item was right-clicked,
+	*/
+  void slotListRightMouse(QListViewItem* item, const QPoint& point, int);
+  void slotNewInvestment();
 
 private:
+	KPopupMenu* m_popMenu;
+	MyMoneyAccount *m_pAccount;
 	QList<MyMoneyTransaction> m_transactionList;
 };
 
