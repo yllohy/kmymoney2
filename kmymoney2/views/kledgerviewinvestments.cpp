@@ -252,12 +252,14 @@ void KLedgerViewInvestments::fillForm()
         if(transType == BuyShares)
         {
           formTable->setText(ACTIVITY_ROW, ACTIVITY_DATA_COL, i18n("Buy Shares"));
-          m_editType->setCurrentItem(COMBO_BUY_SHARES);
+          if(m_editType)
+            m_editType->setCurrentItem(COMBO_BUY_SHARES);
         }
         else
         {
           formTable->setText(ACTIVITY_ROW, ACTIVITY_DATA_COL, i18n("Sell Shares"));
-          m_editType->setCurrentItem(COMBO_SELL_SHARES);
+          if(m_editType)
+            m_editType->setCurrentItem(COMBO_SELL_SHARES);
         }
 
         formTable->setText(CATEGORY_ROW, CATEGORY_DATA_COL, fee);
