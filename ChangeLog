@@ -1,3 +1,17 @@
+2004-01-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed #881136 (No warning when filesave fails)
+  * Fixed #878380 (initial font setting)
+  * Fixed #879317 (missing word-wrap for a label field)
+  * Fixed #883778 (Maximum number of editable splits)
+  * Fixed #884190 (Transaction containing two splits referencing same account)
+  * Fixed #877819 (i18n of standard account names)
+  * Fixed #882330 (Account button does not show correct account)
+  * Fixed #879002 (account button does not get updated)
+  * Fixed #884226 (Cannot edit loan transaction)
+  * Fixed #882290 (Default accounts only support ISO8859-1 charset)
+  * Fixed #884224 (Transaction details missing in search dialog)
+  * added russian homepage, default accounts and po file
+
 2004-01-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated integration into KDE (desktop files)
   * Fixed installation location for x-kmymoney2.desktop
