@@ -80,6 +80,9 @@ void MyMoneySchedule::setFixed(bool fixed)
 void MyMoneySchedule::setTransaction(const MyMoneyTransaction& transaction)
 {
   m_transaction = transaction;
+  // make sure that the transaction does not have an id so that we can enter
+  // it into the engine
+  m_transaction.setId(QCString());
 }
 
 void MyMoneySchedule::setEndDate(const QDate& date)
