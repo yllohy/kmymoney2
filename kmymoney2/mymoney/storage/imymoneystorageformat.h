@@ -47,6 +47,8 @@ public:
 
   virtual void readStream(QDataStream& s, IMyMoneySerialize* storage) = 0;
 
+  virtual void writeStream(QDataStream& s, IMyMoneySerialize* storage) = 0;
+
   /**
     * This member is used to store the file version information
     * obtained while reading a file.

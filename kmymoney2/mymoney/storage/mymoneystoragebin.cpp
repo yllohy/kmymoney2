@@ -135,7 +135,7 @@ void MyMoneyStorageBin::readStream(QDataStream& s, IMyMoneySerialize* storage)
       readOldFormat(s, storage);
       break;
     case VERSION_0_5_0:
-      // readNewFormat(s, storage);
+      readNewFormat(s, storage);
       break;
   }
 }
@@ -446,4 +446,411 @@ void MyMoneyStorageBin::readOldFormat(QDataStream& s, IMyMoneySerialize* storage
   storage->refreshAllAccountTransactionLists();
   storage->setLastModificationDate(lastModificationDate);
 
+}
+
+void MyMoneyStorageBin::readNewFormat(QDataStream&s, IMyMoneySerialize* storage)
+{
+  QString tmp_s;
+  QDate date;
+  Q_INT32 tmp;
+
+  s >> tmp_s; storage->setUserName(tmp_s);
+  s >> tmp_s; storage->setUserStreet(tmp_s);
+  s >> tmp_s; storage->setUserTown(tmp_s);
+  s >> tmp_s; storage->setUserCounty(tmp_s);
+  s >> tmp_s; storage->setUserPostcode(tmp_s);
+  s >> tmp_s; storage->setUserTelephone(tmp_s);
+  s >> tmp_s; storage->setUserEmail(tmp_s);
+  s >> date; storage->setCreationDate(date);
+  s >> date; storage->setLastModificationDate(date);
+
+  s >> tmp;     // estimated number of items that follow
+
+  readInstitutions(s, storage);
+  readPayees(s, storage);
+  readAccounts(s, storage);
+  readTransactions(s, storage);
+}
+
+void MyMoneyStorageBin::writeStream(QDataStream& s, IMyMoneySerialize* storage)
+{
+  Q_INT32 magic;
+  QString pwd;
+
+  // write header
+  magic = MAGIC_0_50;
+  s << magic;
+  magic = MAGIC_0_51;
+  s << magic;
+  magic = VERSION_0_5_0;
+  s << magic;
+
+  Q_INT32 tmp;
+  tmp = 0;
+  s << tmp;       // no password
+  s << tmp;       // not encrypted
+
+  s << pwd;
+
+  // so much for the common header, now get the specific 0.5 stuff
+
+  s << storage->userName();
+  s << storage->userStreet();
+  s << storage->userTown();
+  s << storage->userCounty();
+  s << storage->userPostcode();
+  s << storage->userTelephone();
+  s << storage->userEmail();
+  s << storage->creationDate();
+  s << storage->lastModificationDate();
+
+  // leave an estimate on the number of items that follow
+  s << storage->institutionList().count() +
+       storage->payeeList().count() +
+       storage->accountList().count() +
+       storage->transactionList().count();
+
+  writeInstitutions(s, storage);
+  writePayees(s, storage);
+  writeAccounts(s, storage);
+  writeTransactions(s, storage);
+}
+
+void MyMoneyStorageBin::writeInstitutions(QDataStream& s, IMyMoneySerialize* storage)
+{
+  Q_INT32 tmp;
+  QValueList<MyMoneyInstitution> list;
+  QValueList<MyMoneyInstitution>::ConstIterator it;
+
+  tmp = 1;      // version
+  s << tmp;
+
+  list = storage->institutionList();
+  s << list.count();
+  for(it = list.begin(); it != list.end(); ++it) {
+    writeInstitution(s, *it);
+  }
+}
+
+void MyMoneyStorageBin::readInstitutions(QDataStream&s, IMyMoneySerialize *storage)
+{
+  Q_INT32 version;
+  Q_INT32 cnt;
+  s >> version;
+
+  s >> cnt;
+  for(int i = 0; i < cnt; ++i) {
+    MyMoneyInstitution inst = readInstitution(s);
+    storage->loadInstitution(inst);
+  }
+}
+
+void MyMoneyStorageBin::writeInstitution(QDataStream&s, const MyMoneyInstitution& i)
+{
+  Q_INT32 tmp;
+  tmp = 1;    // version
+  s << tmp;
+
+  s << i.id();
+  s << i.name();
+  s << i.city();
+  s << i.street();
+  s << i.postcode();
+  s << i.telephone();
+  s << i.manager();
+  s << i.sortcode();
+  s << i.accountList();
+}
+
+const MyMoneyInstitution MyMoneyStorageBin::readInstitution(QDataStream& s)
+{
+  QCString id;
+  MyMoneyInstitution  i;
+  Q_INT32 version;
+  QString tmp_s;
+
+  s >> version;
+  s >> id;
+  s >> tmp_s; i.setName(tmp_s);
+  s >> tmp_s; i.setCity(tmp_s);
+  s >> tmp_s; i.setStreet(tmp_s);
+  s >> tmp_s; i.setPostcode(tmp_s);
+  s >> tmp_s; i.setTelephone(tmp_s);
+  s >> tmp_s; i.setManager(tmp_s);
+  s >> tmp_s; i.setSortcode(tmp_s);
+
+  QCStringList list;
+  s >> list;
+  QCStringList::ConstIterator it;
+  for(it = list.begin(); it != list.end(); ++it)
+    i.addAccountId(*it);
+
+  return MyMoneyInstitution(id, i);
+}
+
+void MyMoneyStorageBin::writePayees(QDataStream& s, IMyMoneySerialize *storage)
+{
+  Q_INT32 tmp;
+  QValueList<MyMoneyPayee> list;
+  QValueList<MyMoneyPayee>::ConstIterator it;
+
+  tmp = 1;      // version
+  s << tmp;
+
+  list = storage->payeeList();
+  s << list.count();
+  for(it = list.begin(); it != list.end(); ++it) {
+    writePayee(s, *it);
+  }
+}
+
+void MyMoneyStorageBin::readPayees(QDataStream& s, IMyMoneySerialize *storage)
+{
+  Q_INT32 version;
+  Q_INT32 cnt;
+  s >> version;
+
+  s >> cnt;
+  for(int i = 0; i < cnt; ++i) {
+    MyMoneyPayee p = readPayee(s);
+    storage->loadPayee(p);
+  }
+}
+
+void MyMoneyStorageBin::writePayee(QDataStream& s, const MyMoneyPayee& p)
+{
+  Q_INT32 tmp;
+  tmp = 1;    // version
+  s << tmp;
+
+  s << p.id();
+  s << p.name();
+  s << p.address();
+  s << p.email();
+  s << p.postcode();
+  s << p.telephone();
+  s << p.reference();
+}
+
+const MyMoneyPayee MyMoneyStorageBin::readPayee(QDataStream& s)
+{
+  Q_INT32 tmp;
+  QString tmp_s;
+  QCString id;
+
+  MyMoneyPayee p;
+
+  s >> tmp;
+  s >> id;
+  s >> tmp_s; p.setName(tmp_s);
+  s >> tmp_s; p.setAddress(tmp_s);
+  s >> tmp_s; p.setEmail(tmp_s);
+  s >> tmp_s; p.setPostcode(tmp_s);
+  s >> tmp_s; p.setTelephone(tmp_s);
+  s >> tmp_s; p.setReference(tmp_s);
+
+  return MyMoneyPayee(id, p);
+}
+
+void MyMoneyStorageBin::writeAccounts(QDataStream& s, IMyMoneySerialize *storage)
+{
+  Q_INT32 tmp;
+  QValueList<MyMoneyAccount> list;
+  QValueList<MyMoneyAccount>::ConstIterator it;
+
+  tmp = 1;      // version
+  s << tmp;
+
+  list = storage->accountList();
+
+  s << list.count()+4;
+  writeAccount(s, storage->asset());
+  writeAccount(s, storage->liability());
+  writeAccount(s, storage->expense());
+  writeAccount(s, storage->income());
+
+  for(it = list.begin(); it != list.end(); ++it) {
+    writeAccount(s, *it);
+  }
+}
+
+void MyMoneyStorageBin::readAccounts(QDataStream& s, IMyMoneySerialize *storage)
+{
+  Q_INT32 version;
+  Q_INT32 cnt;
+  s >> version;
+
+  s >> cnt;
+  for(int i = 0; i < cnt; ++i) {
+    MyMoneyAccount acc = readAccount(s);
+    storage->loadAccount(acc);
+  }
+}
+
+void MyMoneyStorageBin::writeAccount(QDataStream& s, const MyMoneyAccount& acc)
+{
+  Q_INT32 tmp;
+  tmp = 1;    // version
+  s << tmp;
+
+  s << acc.id();
+  s << acc.name();
+  s << acc.description();
+  s << acc.accountType();
+  s << acc.institutionId();
+  s << acc.lastModified();
+  s << acc.lastReconciliationDate();
+  s << acc.number();
+  s << acc.openingBalance();
+  s << acc.openingDate();
+  s << acc.parentAccountId();
+  s << acc.accountList();
+}
+
+const MyMoneyAccount MyMoneyStorageBin::readAccount(QDataStream& s)
+{
+  Q_INT32 tmp;
+  QString tmp_s;
+  QDate tmp_d;
+  QCString tmp_c;
+  MyMoneyMoney tmp_m;
+  QCString id;
+
+  MyMoneyAccount acc;
+
+  s >> tmp;
+  s >> id;
+  s >> tmp_s; acc.setName(tmp_s);
+  s >> tmp_s; acc.setDescription(tmp_s);
+  s >> tmp;   acc.setAccountType(static_cast<MyMoneyAccount::accountTypeE> (tmp));
+  s >> tmp_c; acc.setInstitutionId(tmp_c);
+  s >> tmp_d; acc.setLastModified(tmp_d);
+  s >> tmp_d; acc.setLastReconciliationDate(tmp_d);
+  s >> tmp_s; acc.setNumber(tmp_s);
+  s >> tmp_m; acc.setOpeningBalance(tmp_m);
+  s >> tmp_d; acc.setOpeningDate(tmp_d);
+  s >> tmp_c; acc.setParentAccountId(tmp_c);
+
+  QCStringList list;
+  s >> list;
+  QCStringList::ConstIterator it;
+  for(it = list.begin(); it != list.end(); ++it)
+    acc.addAccountId(*it);
+
+  return MyMoneyAccount(id, acc);
+}
+
+void MyMoneyStorageBin::writeTransactions(QDataStream& s, IMyMoneySerialize* storage)
+{
+  Q_INT32 tmp;
+  QValueList<MyMoneyTransaction> list;
+  QValueList<MyMoneyTransaction>::ConstIterator it;
+
+  tmp = 1;      // version
+  s << tmp;
+
+  list = storage->transactionList();
+
+  s << list.count();
+
+  for(it = list.begin(); it != list.end(); ++it) {
+    writeTransaction(s, *it);
+  }
+}
+
+void MyMoneyStorageBin::readTransactions(QDataStream& s, IMyMoneySerialize* storage)
+{
+  Q_INT32 version;
+  Q_INT32 cnt;
+  s >> version;
+
+  s >> cnt;
+  for(int i = 0; i < cnt; ++i) {
+    MyMoneyTransaction t = readTransaction(s);
+    storage->loadTransaction(t);
+  }
+}
+
+void MyMoneyStorageBin::writeTransaction(QDataStream& s, const MyMoneyTransaction& t)
+{
+  Q_INT32 tmp;
+
+  tmp = 1;      // version
+  s << tmp;
+
+  s << t.id();
+  s << t.entryDate();
+  s << t.postDate();
+  s << t.memo();
+  tmp = t.splits().count();
+  s << tmp;
+  for(int i = 0; i < tmp; ++i) {
+    writeSplit(s, t.splits()[i]);
+  }
+}
+
+const MyMoneyTransaction MyMoneyStorageBin::readTransaction(QDataStream& s)
+{
+  Q_INT32 tmp;
+  QString tmp_s;
+  QDate tmp_d;
+  QCString tmp_c;
+  QCString id;
+
+  MyMoneyTransaction t;
+
+  s >> tmp;
+  s >> id;
+  s >> tmp_d; t.setEntryDate(tmp_d);
+  s >> tmp_d; t.setPostDate(tmp_d);
+  s >> tmp_s; t.setMemo(tmp_s);
+  s >> tmp;
+  for(int i = 0; i < tmp; ++i) {
+    MyMoneySplit sp = readSplit(s);
+    t.addSplit(sp);
+  }
+
+  return MyMoneyTransaction(id, t);
+}
+
+void MyMoneyStorageBin::writeSplit(QDataStream& s, const MyMoneySplit& sp)
+{
+  Q_INT32 tmp;
+
+  tmp = 1;      // version
+  s << tmp;
+
+  s << sp.accountId();
+  s << sp.action();
+  s << sp.memo();
+  s << sp.number();
+  s << sp.payeeId();
+  s << sp.reconcileDate();
+  s << sp.reconcileFlag();
+  s << sp.shares();
+  s << sp.value();
+}
+
+const MyMoneySplit MyMoneyStorageBin::readSplit(QDataStream& s)
+{
+  Q_INT32 tmp;
+  QString tmp_s;
+  QDate tmp_d;
+  QCString tmp_c;
+  MyMoneyMoney tmp_m;
+
+  MyMoneySplit sp;
+
+  s >> tmp;
+  s >> tmp_c; sp.setAccountId(tmp_c);
+  s >> tmp_c; sp.setAction(tmp_c);
+  s >> tmp_s; sp.setMemo(tmp_s);
+  s >> tmp_s; sp.setNumber(tmp_s);
+  s >> tmp_c; sp.setPayeeId(tmp_c);
+  s >> tmp_d; sp.setReconcileDate(tmp_d);
+  s >> tmp;   sp.setReconcileFlag(static_cast<MyMoneySplit::reconcileFlagE> (tmp));
+  s >> tmp_m; sp.setShares(tmp_m);
+  s >> tmp_m; sp.setValue(tmp_m);
+
+  return sp;
 }

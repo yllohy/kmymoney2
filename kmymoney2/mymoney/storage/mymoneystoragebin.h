@@ -68,6 +68,8 @@ public:
 
   void readStream(QDataStream& s, IMyMoneySerialize* storage);
 
+  void writeStream(QDataStream& s, IMyMoneySerialize* storage);
+
 private:
   void readOldFormat(QDataStream& s, IMyMoneySerialize* storage);
   void readNewFormat(QDataStream& s, IMyMoneySerialize* storage);
@@ -76,6 +78,31 @@ private:
                    const QString& majorName,
                    const QString& minorName,
                    const MyMoneyAccount::accountTypeE type);
+
+  void writeInstitutions(QDataStream& s, IMyMoneySerialize* storage);
+  void writeInstitution(QDataStream&s, const MyMoneyInstitution& i);
+  void readInstitutions(QDataStream&s, IMyMoneySerialize *storage);
+  const MyMoneyInstitution readInstitution(QDataStream& s);
+
+  void writePayees(QDataStream& s, IMyMoneySerialize* storage);
+  void writePayee(QDataStream& s, const MyMoneyPayee& p);
+  void readPayees(QDataStream& s, IMyMoneySerialize* storage);
+  const MyMoneyPayee readPayee(QDataStream& s);
+
+  void writeAccounts(QDataStream& s, IMyMoneySerialize* storage);
+  void writeAccount(QDataStream& s, const MyMoneyAccount& p);
+  void readAccounts(QDataStream& s, IMyMoneySerialize* storage);
+  const MyMoneyAccount readAccount(QDataStream& s);
+
+  void writeTransactions(QDataStream& s, IMyMoneySerialize* storage);
+  void writeTransaction(QDataStream& s, const MyMoneyTransaction& t);
+  void readTransactions(QDataStream& s, IMyMoneySerialize* storage);
+  const MyMoneyTransaction readTransaction(QDataStream& s);
+
+  void writeSplits(QDataStream& s, const MyMoneyTransaction& t);
+  void writeSplit(QDataStream& s, const MyMoneySplit& s);
+  const QValueList<MyMoneySplit> readSplits(QDataStream& s);
+  const MyMoneySplit readSplit(QDataStream& s);
 
   /**
     * This member is used to store the file version information
