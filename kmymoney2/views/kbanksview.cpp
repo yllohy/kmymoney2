@@ -128,13 +128,13 @@ void KAccountsView::slotListRightMouse(QListViewItem* item, const QPoint& , int 
 QCString KAccountsView::currentAccount(bool& success)
 {
   success=m_bSelectedAccount;
-  return (success)?m_selectedAccount:"";
+  return (success) ? m_selectedAccount : QCString("");
 }
 
 QCString KAccountsView::currentInstitution(bool& success)
 {
   success=m_bSelectedInstitution;
-  return (success)?m_selectedInstitution:"";
+  return (success) ? m_selectedInstitution : QCString("");
 }
 
 void KAccountsView::refresh(const QCString& selectAccount)
