@@ -46,6 +46,8 @@ unsigned char MyMoneyMoney::decimalSeparator(void)
 
 MyMoneyMoney::MyMoneyMoney(const QString& pszAmountInPence)
 {
+  m_64Value = 0;
+
   QString res = pszAmountInPence;
   int pos;
   while((pos = res.find(_thousandSeparator)) != -1)
@@ -53,7 +55,8 @@ MyMoneyMoney::MyMoneyMoney(const QString& pszAmountInPence)
   if((pos = res.find(_decimalSeparator)) != -1)
     res.remove(pos, 1);
 
-  m_64Value = atoll( res );
+  if(res.length() > 0)
+    m_64Value = atoll( res );
 }
 
 const QString MyMoneyMoney::formatMoney(/*QString locale="C", bool addPrefixPostfix=false*/void) const
