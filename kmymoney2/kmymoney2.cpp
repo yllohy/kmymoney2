@@ -670,6 +670,7 @@ void KMyMoney2App::enableTransactionOperations(bool enable)
 void KMyMoney2App::slotSettings()
 {
 	KSettingsDlg dlg( this, "Settings");
+	connect(&dlg, SIGNAL(signalApply()), myMoneyView, SLOT(settingsLists()));
 	if( dlg.exec() )
 	{
 		myMoneyView->settingsLists();

@@ -37,7 +37,7 @@
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.17 2001/07/14 02:47:59 frodriguez Exp $
+  * $Id: kmymoneyview.h,v 1.18 2001/07/22 00:37:49 mte Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -179,14 +179,6 @@ public:
   void fileInfo(void);
 
   /**
-    * Brings up a dialog to change the list(s) settings and saves them into the
-    * class KMyMoneySettings (a singleton).
-    *
-    * @see KListSettingsDlg
-  **/
-  void settingsLists();
-
-  /**
     * Utility method to retrieve the currently selected bank name.
     *
     * @return The currently selected bank name.
@@ -207,6 +199,14 @@ public:
 										QDate startDate, QDate endDate);
 
 public slots:
+  /**
+    * Brings up a dialog to change the list(s) settings and saves them into the
+    * class KMyMoneySettings (a singleton).
+    *
+    * @see KListSettingsDlg
+  **/
+  void settingsLists();
+
   /**
     * Brings up a dialog to let the user search for specific transaction(s).  It then
     * opens a results window to display those transactions.

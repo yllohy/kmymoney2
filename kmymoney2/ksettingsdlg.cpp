@@ -30,7 +30,8 @@
 #include <qvalidator.h>
 
 KSettingsDlg::KSettingsDlg(QWidget *parent, const char *name, bool modal)
- : KDialogBase(IconList, i18n("Configure"), Ok|Cancel, Ok, parent, name, modal, true)
+ : KDialogBase(IconList, i18n("Configure"), Ok|Cancel|Apply|User1, Ok, parent, name, modal, true,
+    "&Reset")
 {
 	setPageGeneral();
 	setPageList();
@@ -153,7 +154,8 @@ void KSettingsDlg::configRead()
 	this->resize( config->readSizeEntry("Geometry", defaultSize ) );
 
 	config->setGroup("General Options");
-	start_prompt->setChecked(config->readBoolEntry("StartDialog", true));
+	m_bStartPrompt = config->readBoolEntry("StartDialog", true);
+	start_prompt->setChecked(m_bStartPrompt);
 	
   config->setGroup("List Options");
 
@@ -161,13 +163,26 @@ void KSettingsDlg::configRead()
   QColor defaultColor = Qt::white;
   QColor defaultBGColor = Qt::gray;
 	
-	color_list->setColor(config->readColorEntry("listColor", &defaultColor));
-	color_back->setColor(config->readColorEntry("listBGColor", &defaultBGColor));
-	font_header->setFont(config->readFontEntry("listHeaderFont", &defaultFont));
-	font_cell->setFont(config->readFontEntry("listCellFont", &defaultFont));
-	m_klineeditRowCount->setText(config->readEntry("RowCount", "2"));
-	m_qcheckboxShowGrid->setChecked(config->readBoolEntry("ShowGrid", true));
-  if (config->readBoolEntry("ColourPerTransaction", true)) {
+	m_tempListColour = config->readColorEntry("listColor", &defaultColor);
+	color_list->setColor(m_tempListColour);
+	
+	m_tempListBG = config->readColorEntry("listBGColor", &defaultBGColor);
+	color_back->setColor(m_tempListBG);
+	
+	m_tempFontHeader = config->readFontEntry("listHeaderFont", &defaultFont);
+	font_header->setFont(m_tempFontHeader);
+	
+	m_tempFontCell = config->readFontEntry("listCellFont", &defaultFont);
+	font_cell->setFont(m_tempFontCell);
+	
+	m_tempRowCount = config->readEntry("RowCount", "2");
+	m_klineeditRowCount->setText(m_tempRowCount);
+	
+	m_tempShowGrid = config->readBoolEntry("ShowGrid", true);
+	m_qcheckboxShowGrid->setChecked(m_tempShowGrid);
+	
+  m_tempColourPerTransaction = config->readBoolEntry("ColourPerTransaction", true);
+  if (m_tempColourPerTransaction) {
     m_qradiobuttonPerTransaction->setChecked(true);
     m_qradiobuttonOtherRow->setChecked(false);
   } else {
@@ -209,4 +224,59 @@ void KSettingsDlg::slotOk()
 	}
 	configWrite();
 	this->accept();
+}
+
+void KSettingsDlg::slotApply()
+{
+	int nCount = m_klineeditRowCount->text().toInt();
+	if (nCount <= 0 || nCount >= 4) {
+	  KMessageBox::information(this, "The row count has to be between 1 and 3");
+	  m_klineeditRowCount->setFocus();
+	  return;
+	}
+  m_bDoneApply = true;
+  configWrite();
+  emit signalApply();
+}
+
+void KSettingsDlg::slotCancel()
+{
+  // make sure the config object is the same as we left it
+  KConfig *config = KGlobal::config();
+  config->setGroup("List Options");
+	config->writeEntry("listColor", m_tempListColour);
+	config->writeEntry("listBGColor", m_tempListBG);
+	config->writeEntry("listHeaderFont", m_tempFontHeader);
+	config->writeEntry("listCellFont", m_tempFontCell);
+	config->writeEntry("RowCount", m_tempRowCount);
+	config->writeEntry("ShowGrid", m_tempShowGrid);
+	config->writeEntry("ColourPerTransaction", m_tempColourPerTransaction);
+	
+	config->setGroup("General Options");
+	config->writeEntry("StartDialog", m_bStartPrompt);
+
+  config->sync();
+
+  if (m_bDoneApply)
+    accept();
+  else
+    reject();
+}
+
+void KSettingsDlg::slotUser1()
+{
+	start_prompt->setChecked(m_bStartPrompt);
+	color_list->setColor(m_tempListColour);
+	color_back->setColor(m_tempListBG);
+	font_header->setFont(m_tempFontHeader);
+	font_cell->setFont(m_tempFontCell);
+	m_klineeditRowCount->setText(m_tempRowCount);
+	m_qcheckboxShowGrid->setChecked(m_tempShowGrid);
+  if (m_tempColourPerTransaction) {
+    m_qradiobuttonPerTransaction->setChecked(true);
+    m_qradiobuttonOtherRow->setChecked(false);
+  } else {
+    m_qradiobuttonPerTransaction->setChecked(false);
+    m_qradiobuttonOtherRow->setChecked(true);
+  }
 }

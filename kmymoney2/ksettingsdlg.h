@@ -25,6 +25,8 @@
 #include <klineedit.h>
 #include <qradiobutton.h>
 #include <qbuttongroup.h>
+#include <qcolor.h>
+#include <qfont.h>
 
 // This dialog lets the user change the program settings.
 // Doesn't do much at the moment !
@@ -42,6 +44,17 @@ private: // Private methods
   void configWrite();
   /** Read settings */
   void configRead();
+
+	QColor m_tempListColour;
+	QColor m_tempListBG;
+	QFont m_tempFontHeader;
+	QFont m_tempFontCell;
+	QString m_tempRowCount;
+	bool m_tempShowGrid;
+  bool m_tempColourPerTransaction;
+  bool m_bStartPrompt;
+  bool m_bDoneApply;
+
 private: // Private attributes
   /** Start prompt dialog */
   QCheckBox *start_prompt;
@@ -64,6 +77,15 @@ private: // Private attributes
 private slots: // Private slots
   /** Slot ok */
   void slotOk();
+
+  void slotApply();
+
+  void slotCancel();
+
+  void slotUser1();
+
+signals:
+  void signalApply();
 };
 
 #endif

@@ -1,3 +1,7 @@
+2001-07-22 Michael Edwardes <mte@users.sourceforge.net>
+  * Added an apply button to the settings dialog.
+  * Added a reset button to the settings dialog.
+
 2001-07-21 Michael Edwardes <mte@users.sourceforge.net>
   * Implemented the colour painting option.
   * Fixed the bug when resizing the transaction view.
