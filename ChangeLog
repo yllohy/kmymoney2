@@ -1,3 +1,6 @@
+2002-03-14 Michael Edwardes <mte@users.sourceforge.net>
+  * Fixed disappearing categories bug.
+
 2002-03-14 Arni Ingimundarson <arniing@users.sourceforge.net>
   * Fixed a sorting bug in KReconcileDlg
 

@@ -992,12 +992,12 @@ void KTransactionView::updateInputLists(void)
   QStringList qstringlistIncome;
   QStringList qstringlistExpense;
   QStringList qstringlistAccount;
-  bool bDoneInsert = false;
 
   QString theText;
   if (m_filePointer) {
     QListIterator<MyMoneyCategory> categoryIterator = m_filePointer->categoryIterator();
     for ( ; categoryIterator.current(); ++categoryIterator) {
+      bool bDoneInsert = false;
       MyMoneyCategory *category = categoryIterator.current();
 
       theText = category->name();
