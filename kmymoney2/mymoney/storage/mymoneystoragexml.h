@@ -86,6 +86,9 @@ private:
   void writeTransactions(QDomDocument *pDoc, QDomElement& transactions, IMyMoneySerialize* storage);
   void writeTransaction(QDomDocument *pDoc, QDomElement& transactions, const MyMoneyTransaction& tx);
 
+  void writeSchedules(QDomDocument *pDoc, QDomElement& scheduled, IMyMoneySerialize* storage);
+  void writeSchedule(QDomDocument *pDoc, QDomElement& scheduledTx, const MyMoneySchedule& tx);
+
   void writeSplits(QDomDocument *pDoc, QDomElement& splits, const QValueList<MyMoneySplit> splitList);
   void writeSplit(QDomDocument *pDoc, QDomElement& splitElement, const MyMoneySplit& split);
     
@@ -93,6 +96,8 @@ private:
   void writeFile(QIODevice* s, IMyMoneySerialize* storage);
 
   void writeKeyValuePairs(QDomDocument *pDoc, QDomElement& account, const QMap<QCString, QString> pairs);
+
+  void readUserInformation(QDomDocument* pDoc, QDomElement userElement, IMyMoneySerialize* storage);
   /** No descriptions */
 
 

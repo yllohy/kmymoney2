@@ -51,43 +51,67 @@ MyMoneyStorageXML::~MyMoneyStorageXML()
 //Function to read in the file, send to XML parser.
 void MyMoneyStorageXML::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
 {
+  //QTextStream stream(pDevice);
+  //QString strEntireFile = stream.read();
+  //qDebug("XMLREADER: entire file is %s\n", strEntireFile.data());
+    
   QDomDocument *pDoc = new QDomDocument;
   if(pDoc->setContent(pDevice, FALSE))
   {
-/*    readUserInformation(pDoc, storage);
-    readInstitutions(pDoc, storage);
-    readPayees(pDoc, storage);
-    readAccounts(pDoc, storage);
-    readTransactions(pDoc, storage);
-    readSchedules(pDoc, storage);     */
+    QDomElement rootElement = pDoc->documentElement();
+    if(!rootElement.isNull())
+    {
+      qDebug("XMLREADER: Root element of this file is %s\n", rootElement.tagName().data());
+
+      QDomNode child = rootElement.firstChild();
+      while(!child.isNull())
+      {
+        if(child.isElement())
+        {
+          QDomElement childElement = child.toElement();
+          qDebug("XMLREADER: Processing child node %s", childElement.tagName().data());
+          if(QString("USER") == childElement.tagName())
+          {
+            readUserInformation(pDoc, childElement, storage);
+          }
+          else if(QString("INSTITUTIONS") == childElement.tagName())
+          {
+            //readInstitutions(pDoc, childElement, storage);
+          }
+          else if(QString("PAYEES") == childElement.tagName())
+          {
+            //readPayees(pDoc, childElement, storage);
+          }
+          else if(QString("ACCOUNTS") == childElement.tagName())
+          {
+            //readAccounts(pDoc, childElement, storage);
+          }
+          else if(QString("TRANSACTIONS") == childElement.tagName())
+          {
+            //readTransactions(pDoc, childElement, storage);
+          }
+          else if(QString("KEYVALPAIRS") == childElement.tagName())
+          {
+
+          }
+          else if(QString("SCHEDULES") == childElement.tagName())
+          {
+            //readSchedules(pDoc, childElement, storage);
+          }
+        }
+        child = child.nextSibling();
+      }
+    }
   }
   else
   {
     throw new MYMONEYEXCEPTION("File was not parsable!");
   }
-  /*if(pDevice && storage)
-  {
-    m_pStorage = storage;
+}
 
-    //reads the contents of the entire file into this buffer.
-    QTextStream stream(pDevice);
-    QString strEntireFile = stream.read();
-    qDebug("XMLREADER: entire file is %s\n", strEntireFile.data());
-    try
-    {
-      parse_memory(strEntireFile);
-    }
-    catch(xmlpp::parse_error* e)
-    {
-      qDebug("XMLREADER: EXCEPTION while parsing buffer");
-    }
-
-    //don't use this pointer after the function has exited...
-    m_pStorage = NULL;
-
-    //qDebug("XMLREADER: %ld total file size", totalSize);
-  } */
-  
+void MyMoneyStorageXML::readUserInformation(QDomDocument* pDoc, QDomElement userElement, IMyMoneySerialize* storage)
+{
+  storage->setUserName(userElement.attribute(QString("name")));
 }
 
 void MyMoneyStorageXML::writeFile(QIODevice* qf, IMyMoneySerialize* storage)
@@ -125,10 +149,10 @@ void MyMoneyStorageXML::writeFile(QIODevice* qf, IMyMoneySerialize* storage)
   mainElement.appendChild(keyvalpairs);
   
   QDomElement schedules = pDoc->createElement("SCHEDULES");
-  //writeSchedules(pDoc, schedules, storage);
+  writeSchedules(pDoc, schedules, storage);
   mainElement.appendChild(schedules);
 
-  QDataStream stream(qf);
+  QTextStream stream(qf);
   //stream.setEncoding(QTextStream::Locale);
   QString temp = pDoc->toString();
   stream << temp.data();
@@ -349,6 +373,34 @@ void MyMoneyStorageXML::writeSplit(QDomDocument *pDoc, QDomElement& splitElement
   splitElement.setAttribute(QString("memo"), split.memo());
   splitElement.setAttribute(QString("id"), split.id());
   splitElement.setAttribute(QString("account"), split.accountId());
+}
+
+void MyMoneyStorageXML::writeSchedules(QDomDocument *pDoc, QDomElement& scheduled, IMyMoneySerialize* storage)
+{
+  QValueList<MyMoneySchedule> list;
+  QValueList<MyMoneySchedule>::ConstIterator it;
+
+  list = storage->scheduleList();
+  scheduled.setAttribute(QString("nextid"), list.count());
+  
+  for(it = list.begin(); it != list.end(); ++it)
+  {
+    QDomElement schedTx = pDoc->createElement("SCHEDULED_TX");
+    writeSchedule(pDoc, schedTx, *it);
+    scheduled.appendChild(schedTx);
+  }
+}
+
+void MyMoneyStorageXML::writeSchedule(QDomDocument *pDoc, QDomElement& scheduledTx, const MyMoneySchedule& tx)
+{
+  scheduledTx.setAttribute(QString("name"), tx.name());
+  scheduledTx.setAttribute(QString("type"), tx.type());
+  scheduledTx.setAttribute(QString("occurence"), tx.occurence());
+  scheduledTx.setAttribute(QString("paymentType"), tx.paymentType());
+  scheduledTx.setAttribute(QString("startDate"), tx.startDate().toString());
+  scheduledTx.setAttribute(QString("endDate"), tx.endDate().toString());
+  scheduledTx.setAttribute(QString("fixed"), tx.isFixed());
+  scheduledTx.setAttribute(QString("autoEnter"), tx.autoEnter());
 }
 
 /*void MyMoneyStorageXML::getTransactionDetails(const AttributeMap& p)
