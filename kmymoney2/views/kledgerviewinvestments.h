@@ -106,6 +106,13 @@ protected:
 
 private:
   /**
+    * This method loads the data of the current transaction into the
+    * widgets created with createEditWidgets(). If different widgets are
+    * required for in-register and in-form editing, all widgets will be filled.
+    */
+  void loadEditWidgets(void);
+
+  /**
     * This method is used by the constructor to create the necessary widgets
     * for the register of the view and set it up.
     */

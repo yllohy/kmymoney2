@@ -269,7 +269,7 @@ public:
   };
 
   enum investTransactionTypeE {
-    UnknownTransactionType = 0,
+    UnknownTransactionType = -1,
     BuyShares,
     SellShares,
     Dividend,

@@ -171,6 +171,10 @@ void KLedgerViewInvestments::fillForm()
   // by spanning items over multiple cells if necessary
   formTable = m_form->table();
   QTableItem* tableItem;
+  // activity
+  tableItem = formTable->item(ACTIVITY_ROW, ACTIVITY_DATA_COL);
+  if(tableItem)
+    tableItem->setSpan(ACTIVITY_DATA_COL, 2);
   // symbol
   tableItem = formTable->item(SYMBOL_ROW, SYMBOL_DATA_COL);
   if(tableItem)
@@ -187,6 +191,10 @@ void KLedgerViewInvestments::fillForm()
   tableItem = formTable->item(PRICE_ROW, PRICE_DATA_COL);
   if(tableItem)
     tableItem->setSpan(PRICE_DATA_COL, 2);
+  // account
+  tableItem = formTable->item(ACCOUNT_ROW, ACCOUNT_DATA_COL);
+  if(tableItem)
+    tableItem->setSpan(ACCOUNT_DATA_COL, 2);
 
   if(m_transactionPtr != 0)
   {
@@ -250,17 +258,9 @@ void KLedgerViewInvestments::fillForm()
       case BuyShares:
       case SellShares:
         if(transType == BuyShares)
-        {
           formTable->setText(ACTIVITY_ROW, ACTIVITY_DATA_COL, i18n("Buy Shares"));
-          if(m_editType)
-            m_editType->setCurrentItem(COMBO_BUY_SHARES);
-        }
         else
-        {
           formTable->setText(ACTIVITY_ROW, ACTIVITY_DATA_COL, i18n("Sell Shares"));
-          if(m_editType)
-            m_editType->setCurrentItem(COMBO_SELL_SHARES);
-        }
 
         formTable->setText(CATEGORY_ROW, CATEGORY_DATA_COL, fee);
         formTable->setText(ACCOUNT_ROW, ACCOUNT_DATA_COL, accName);
@@ -485,28 +485,10 @@ void KLedgerViewInvestments::fillSummary()
 
 void KLedgerViewInvestments::showWidgets()
 {
-#if 0
-  // the code found in KLedgerViewCheckings
-  QWidget* focusWidget;
-
-  createEditWidgets();
-  loadEditWidgets();
-
-  if(m_transactionFormActive) {
-    focusWidget = arrangeEditWidgetsInForm();
-  } else {
-    focusWidget = arrangeEditWidgetsInRegister();
-  }
-
-  // make sure, size of all form columns are correct
-  resizeEvent(0);
-
-  m_tabOrderWidgets.find(focusWidget);
-  focusWidget->setFocus();
-#endif
   QWidget* focusWidget = m_editSymbolName;
 
   createEditWidgets();
+  loadEditWidgets();
 
   if(m_transactionFormActive) {
     focusWidget = arrangeEditWidgetsInForm();
@@ -538,7 +520,7 @@ QWidget* KLedgerViewInvestments::arrangeEditWidgetsInForm(void)
   m_editFees->setPalette(palette);
   m_editType->setPalette(palette);
   m_editCashAccount->setPalette(palette);
-  
+
 
   table->setCellWidget(MEMO_ROW, MEMO_DATA_COL, m_editMemo);
   table->setCellWidget(DATE_ROW, DATE_DATA_COL, m_editDate);
@@ -560,7 +542,7 @@ QWidget* KLedgerViewInvestments::arrangeEditWidgetsInForm(void)
   table->setEditable(FEES_ROW, FEES_DATA_COL);
   table->setEditable(ACTIVITY_ROW, ACTIVITY_DATA_COL);
   table->setEditable(ACCOUNT_ROW, ACCOUNT_DATA_COL);
-  
+
   // now setup the tab order
   m_tabOrderWidgets.clear();
   m_tabOrderWidgets.append(m_form->enterButton());
@@ -621,6 +603,10 @@ void KLedgerViewInvestments::reloadEditWidgets(const MyMoneyTransaction& t)
 
 }
 
+void KLedgerViewInvestments::loadEditWidgets(void)
+{
+}
+
 void KLedgerViewInvestments::slotReconciliation(void)
 {
 
@@ -635,11 +621,6 @@ void KLedgerViewInvestments::slotNew()
 
 void KLedgerViewInvestments::createEditWidgets()
 {
-#if 0
-  if(!m_editPayee) {
-    m_editPayee = new kMyMoneyPayee(0, "editPayee");
-  }
-#endif
   if(!m_editMemo) {
     m_editMemo = new kMyMoneyLineEdit(0, "editMemo", AlignLeft|AlignVCenter);
   }
@@ -671,12 +652,18 @@ void KLedgerViewInvestments::createEditWidgets()
   if(!m_editType) {
     m_editType = new kMyMoneyCombo(0, "editType");
     m_editType->setFocusPolicy(QWidget::StrongFocus);
-    m_editType->insertItem(QString("Buy Shares"), 0);
-    m_editType->insertItem(QString("Sell Shares"), 1);
+    m_editType->insertItem(i18n("Buy Shares"), BuyShares);
+    m_editType->insertItem(i18n("Sell Shares"), SellShares);
+    m_editType->insertItem(i18n("Dividend"), Dividend);
+    m_editType->insertItem(i18n("Reinvest Dividend"), ReinvestDividend);
+    m_editType->insertItem(i18n("Yield"), Yield);
+    m_editType->insertItem(i18n("Add Shares"), AddShares);
+    m_editType->insertItem(i18n("Remove Shares"), RemoveShares);
   }
-  
+
   if(!m_editCashAccount) {
     m_editCashAccount = new kMyMoneyAccountCombo(0, "editCashAccount");
+    m_editCashAccount->loadList(static_cast<KMyMoneyUtils::categoryTypeE>(KMyMoneyUtils::asset | KMyMoneyUtils::liability));
     m_editCashAccount->setFocusPolicy(QWidget::StrongFocus);
   }
 }
@@ -935,16 +922,19 @@ int KLedgerViewInvestments::transactionType(const MyMoneyTransaction& t, const M
       return AddShares;
     return RemoveShares;
   }
-  if(split.action() == MyMoneySplit::ActionBuyShares) {
+  else if(split.action() == MyMoneySplit::ActionBuyShares) {
     if(split.value() >= 0)
       return BuyShares;
     return SellShares;
   }
-  if(split.action() == MyMoneySplit::ActionDividend) {
+  else if(split.action() == MyMoneySplit::ActionDividend) {
     return Dividend;
   }
-  if(split.action() == MyMoneySplit::ActionReinvestDividend) {
+  else if(split.action() == MyMoneySplit::ActionReinvestDividend) {
     return ReinvestDividend;
+  }
+  else if(split.action() == MyMoneySplit::ActionYield) {
+    return Yield;
   }
   return BuyShares;
 }
@@ -1039,42 +1029,42 @@ void KLedgerViewInvestments::slotEndEdit()
 
   // remember date for next new transaction
   m_lastPostDate = m_transaction.postDate();
-  
+
   //grab the source account id for this transaction
   QCStringList accountIdList = m_editCashAccount->selectedAccounts();
   QCString accountId = accountIdList.first();
   qDebug("Source account id = %s", accountId.data());
-  
+
   //determine the transaction type
   int currentAction = m_editType->currentItem();
   qDebug("Current action is %d", currentAction);
-  
+
   //compute the total amount for this transaction
   MyMoneyMoney total;
   total += m_editFees->getMoneyValue();
   total += (m_editPPS->getMoneyValue() * m_editShares->getMoneyValue());
   qDebug("Total amount = %s", total.toString().data());
-  
+
 
   if(currentAction == COMBO_BUY_SHARES)
   {
     //set the action type
     m_accountSplit.setAction(MyMoneySplit::ActionAddShares);
-    
+
     //set up the split for the money that is sourcing this transaction
     m_accountSplit.setAccountId(accountId);
     m_accountSplit.setValue(total);
-    
+
     //set up the fee split now
     m_feeSplit.setValue(m_editFees->getMoneyValue());
   }
   else if(currentAction == COMBO_SELL_SHARES)
   {
-  
+
   }
-  
+
   //the first split item is for the cash account
-  
+
 
     // If there are any differences, we need to update the storage.
     // All splits with no account id will be removed here. These splits
