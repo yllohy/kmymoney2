@@ -44,6 +44,23 @@ class MyMoneyFile;
   * institution as well as the accounts used for double entry
   * accounting.
   *
+  * Currently, the following account types are known:
+  *
+  * @li  UnknownAccountType
+  * @li  Checkings
+  * @li  Savings
+  * @li  Cash
+  * @li  CreditCard
+  * @li  Loan
+  * @li  CertificateDep
+  * @li  Investment
+  * @li  MoneyMarket
+  * @li  Currency
+  * @li  Asset
+  * @li  Liability
+  * @li  Income
+  * @li  Expense
+  *
   * @see MyMoneyInstitution
   * @see MyMoneyFile
   *

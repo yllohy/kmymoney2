@@ -20,6 +20,12 @@
 #include <cppunit/TestCaller.h>
 #include <cppunit/TestCase.h>
 #include <cppunit/TestSuite.h>
+#include <cppunit/extensions/HelperMacros.h>
+
+#define private public
+#include "mymoneyutils.h"
+#include "mymoneyexception.h"
+#undef private
 
 class MyMoneyExceptionTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST_SUITE(MyMoneyExceptionTest);
@@ -29,35 +35,16 @@ class MyMoneyExceptionTest : public CppUnit::TestFixture  {
 
 protected:
 public:
-	MyMoneyExceptionTest() {};
+	MyMoneyExceptionTest();
 
 
-void setUp()
-{
-}
+	void setUp();
 
-void tearDown()
-{
-}
+	void tearDown();
 
-void testDefaultConstructor()
-{
-	MyMoneyException *e = new MYMONEYEXCEPTION("Message");
-	CPPUNIT_ASSERT(e->what() == "Message");
-	CPPUNIT_ASSERT(e->line() == __LINE__-2);
-	CPPUNIT_ASSERT(e->file() == __FILE__);
-	delete e;
-}
+	void testDefaultConstructor();
 
-void testConstructor()
-{
-	MyMoneyException *e = new MyMoneyException("New message",
-						 "Joe's file", 1234);
-	CPPUNIT_ASSERT(e->what() == "New message");
-	CPPUNIT_ASSERT(e->line() == 1234);
-	CPPUNIT_ASSERT(e->file() == "Joe's file");
-	delete e;
-}
+	void testConstructor();
 
 };
 #endif

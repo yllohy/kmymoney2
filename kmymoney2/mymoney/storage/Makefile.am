@@ -11,3 +11,9 @@ libstorage_a_SOURCES = mymoneystoragedump.cpp mymoneystoragebin.cpp mymoneyseqac
 EXTRA_DIST = imymoneyserialize.cpp imymoneyserialize.h imymoneystorage.cpp imymoneystorage.h mymoneyseqaccessmgr.cpp mymoneyseqaccessmgr.h mymoneystoragebin.cpp mymoneystoragebin.h mymoneystoragedump.cpp mymoneystoragedump.h 
 
 ####### kdevelop will overwrite this part!!! (end)############
+
+noinst_LIBRARIES += libstoragetest.a
+
+libstoragetest_a_METASOURCES = AUTO
+
+libstoragetest_a_SOURCES = mymoneyseqaccessmgrtest.cpp mymoneystoragebintest.cpp

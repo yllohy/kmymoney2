@@ -1,5 +1,6 @@
+
 /***************************************************************************
-                          mymoneysplittest.h
+                          mymoneyexceptiontest.cpp
                           -------------------
     copyright            : (C) 2002 by Thomas Baumgart
     email                : ipwizard@users.sourceforge.net
@@ -14,43 +15,37 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __MYMONEYSPLITTEST_H__
-#define __MYMONEYSPLITTEST_H__
+#include "mymoneyexceptiontest.h"
 
-#include <cppunit/TestCaller.h>
-#include <cppunit/TestCase.h>
-#include <cppunit/TestSuite.h>
-#include <cppunit/extensions/HelperMacros.h>
+MyMoneyExceptionTest::MyMoneyExceptionTest()
+{
+}
 
-#define private public
-#include "mymoneysplit.h"
-#undef private
 
-class MyMoneySplitTest : public CppUnit::TestFixture  {
-        CPPUNIT_TEST_SUITE(MyMoneySplitTest);
-	CPPUNIT_TEST(testEmptyConstructor);
-	CPPUNIT_TEST(testSetFunctions);
-	CPPUNIT_TEST(testCopyConstructor);
-	CPPUNIT_TEST(testAssignmentConstructor);
-	CPPUNIT_TEST(testEquality);
-	CPPUNIT_TEST(testInequality);
-        CPPUNIT_TEST_SUITE_END();
+void MyMoneyExceptionTest::setUp()
+{
+}
 
-protected:
-	MyMoneySplit *m;
+void MyMoneyExceptionTest::tearDown()
+{
+}
 
-public:
-	MyMoneySplitTest ();
+void MyMoneyExceptionTest::testDefaultConstructor()
+{
+	MyMoneyException *e = new MYMONEYEXCEPTION("Message");
+	CPPUNIT_ASSERT(e->what() == "Message");
+	CPPUNIT_ASSERT(e->line() == __LINE__-2);
+	CPPUNIT_ASSERT(e->file() == __FILE__);
+	delete e;
+}
 
-	void setUp ();
-	void tearDown ();
-	void testEmptyConstructor();
-	void testSetFunctions();
-	void testCopyConstructor();
-	void testAssignmentConstructor();
-	void testEquality();
-	void testInequality();
+void MyMoneyExceptionTest::testConstructor()
+{
+	MyMoneyException *e = new MyMoneyException("New message",
+						 "Joe's file", 1234);
+	CPPUNIT_ASSERT(e->what() == "New message");
+	CPPUNIT_ASSERT(e->line() == 1234);
+	CPPUNIT_ASSERT(e->file() == "Joe's file");
+	delete e;
+}
 
-};
-
-#endif
