@@ -1471,6 +1471,9 @@ void KLedgerViewCheckings::slotToggleClearFlag(void)
 
 void KLedgerViewCheckings::slotPostponeReconciliation(void)
 {
+  // force any pending
+  slotCancelEdit();
+
   if(m_inReconciliation == true) {
     m_account.setValue("lastReconciledBalance", m_prevBalance.toString());
     m_account.setValue("statementBalance", m_endingBalance.toString());
@@ -1506,6 +1509,9 @@ void KLedgerViewCheckings::endReconciliation(void)
 
 void KLedgerViewCheckings::slotEndReconciliation(void)
 {
+  // force any pending
+  slotCancelEdit();
+
   if(m_inReconciliation == true) {
     m_account.setValue("lastStatementBalance", m_endingBalance.toString());
     m_account.setValue("lastStatementDate", m_endingDate.toString(Qt::ISODate));
@@ -1541,6 +1547,12 @@ void KLedgerViewCheckings::slotEndReconciliation(void)
 
 void KLedgerViewCheckings::slotOpenSplitDialog(void)
 {
+  // force focus change to update all data
+  if(m_editSplit)
+    m_editSplit->setFocus();
+  else if(m_registerMoreButton)
+    m_registerMoreButton->setFocus();
+
   bool isValidAmount = false;
 
   if(m_transactionFormActive) {
