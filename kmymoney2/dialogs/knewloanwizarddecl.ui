@@ -1576,7 +1576,7 @@ Select the date when the interest rate for this loan will be modified and the fr
                 </property>
                 <property name="text">
                     <string>
-Please enter the amount you pay for interest and amortization or leave the field emtpy to calculate it.</string>
+Please enter the amount you pay for interest and amortization or leave the field empty to calculate it.</string>
                 </property>
                 <property name="alignment">
                     <set>WordBreak|AlignTop</set>
@@ -3174,7 +3174,7 @@ Please enter the term of this loan or leave the field empty to calculate it. The
                 </property>
                 <property name="text">
                     <string>
-Please enter the amount you pay for interest and amortization or leave the field emtpy to calculate it.</string>
+Please enter the amount you pay for interest and amortization or leave the field empty to calculate it.</string>
                 </property>
                 <property name="alignment">
                     <set>WordBreak|AlignTop</set>

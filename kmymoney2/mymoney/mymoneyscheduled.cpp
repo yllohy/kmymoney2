@@ -306,7 +306,7 @@ QValueList<QDate> MyMoneySchedule::paymentDates(const QDate& startDate, const QD
   QValueList<QDate> theDates;
 
   // if the period specified by the parameters and the period
-  // defined for this schedule, then the list remains emtpy
+  // defined for this schedule, then the list remains empty
   if ((willEnd() && m_endDate < startDate)
   || m_startDate > endDate)
     return theDates;

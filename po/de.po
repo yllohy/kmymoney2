@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
-"POT-Creation-Date: 2004-01-08 21:31+0100\n"
+"POT-Creation-Date: 2004-01-11 17:51+0100\n"
 "PO-Revision-Date: 2004-01-08 21:27+0100\n"
 "Last-Translator: Thomas Baumgart <thb@net-bembel.de>\n"
 "Language-Team:  <en@li.org>\n"
@@ -796,7 +796,7 @@ msgstr ""
 "%1 Einträge der Buchung wurden gegenüber der geplanten Fassung geändert."
 
 #: dialogs/kenterscheduledialog.cpp:485 dialogs/kenterscheduledialog.cpp:613
-#: kmymoney2.cpp:1149
+#: kmymoney2.cpp:1150
 msgid "Unable to modify schedule: "
 msgstr "Kann geplante Zahlungen nicht ändern:"
 
@@ -823,7 +823,7 @@ msgstr ""
 "Dieser Eintrag liegt %1 Tage in der Zukunft. Sind Sie sicher, dass Sie ihn "
 "erstellen wollen?"
 
-#: dialogs/kenterscheduledialog.cpp:619 kmymoney2.cpp:1156
+#: dialogs/kenterscheduledialog.cpp:619 kmymoney2.cpp:1157
 msgid "Unable to add transaction: "
 msgstr "Kann Buchung nicht hinzufügen:"
 
@@ -1175,10 +1175,11 @@ msgid "Date of next interest change"
 msgstr "Datum der nächsten Zinsänderung"
 
 #: dialogs/knewloanwizarddecl.cpp:1983 dialogs/knewloanwizarddecl.cpp:2063
+#, fuzzy
 msgid ""
 "\n"
 "Please enter the amount you pay for interest and amortization or leave the "
-"field emtpy to calculate it."
+"field empty to calculate it."
 msgstr ""
 "\n"
 "Bitte geben Sie den Betrag an, den Sie für Zinsen und Tilgung zahlen, oder "
@@ -4775,7 +4776,7 @@ msgstr "Kann Kategorie nicht entfernen:"
 msgid "Edit a category"
 msgstr "Kategorie editieren"
 
-#: kmymoney2.cpp:141 kmymoney2.cpp:233 kmymoney2.cpp:744 kmymoney2.cpp:901
+#: kmymoney2.cpp:141 kmymoney2.cpp:233 kmymoney2.cpp:745 kmymoney2.cpp:901
 #: kmymoney2.cpp:926 kmymoney2.cpp:945 kmymoney2.cpp:962 kmymoney2.cpp:976
 #: kmymoney2.cpp:981
 msgid "Ready."
@@ -4949,31 +4950,31 @@ msgstr "Speichern unter ..."
 msgid "Closing window..."
 msgstr "Schließe Fenster..."
 
-#: kmymoney2.cpp:493 kmymoney2.cpp:510
+#: kmymoney2.cpp:493 kmymoney2.cpp:511
 msgid "The file has been changed, save it ?"
 msgstr "Die Datei wurde bearbeitet; Änderungen speichern?"
 
-#: kmymoney2.cpp:526
+#: kmymoney2.cpp:527
 msgid "Exiting..."
 msgstr "Beende..."
 
-#: kmymoney2.cpp:549
+#: kmymoney2.cpp:550
 msgid "Toggling toolbar..."
 msgstr "Aktiviere/deaktiviere Werkzeugleiste..."
 
-#: kmymoney2.cpp:566
+#: kmymoney2.cpp:567
 msgid "Toggle the statusbar..."
 msgstr "Aktiviere/deaktiviere Statusanzeige..."
 
-#: kmymoney2.cpp:643
+#: kmymoney2.cpp:644
 msgid "Viewing personal data..."
 msgstr "Zeige persönliche Daten..."
 
-#: kmymoney2.cpp:648 kmymoney2.cpp:661
+#: kmymoney2.cpp:649 kmymoney2.cpp:662
 msgid "No MyMoneyFile open"
 msgstr "Keine MyMoney Datei geöffnet"
 
-#: kmymoney2.cpp:666
+#: kmymoney2.cpp:667
 msgid ""
 "This function is used by the developers to\n"
 "\n"
@@ -4983,33 +4984,31 @@ msgstr ""
 "\n"
 "um eine Ausgabe der speicherresidenten Engine-Daten zu machen."
 
-#: kmymoney2.cpp:682
+#: kmymoney2.cpp:683
 msgid "Importing file..."
 msgstr "Importiere Datei..."
 
-#: kmymoney2.cpp:752
+#: kmymoney2.cpp:753
 msgid "Exporting file..."
 msgstr "Exportiere Datei..."
 
-#: kmymoney2.cpp:817
+#: kmymoney2.cpp:818
 msgid "The file must be saved first "
 msgstr "Die Datei muss erst gespeichert werden"
 
-#: kmymoney2.cpp:818
+#: kmymoney2.cpp:819
 msgid "before it can be backed up.  Do you want to continue?"
 msgstr "bevor sie gesichert werden kann. Fortfahren?"
 
-#: kmymoney2.cpp:831
-msgid "The current immplementation of the backup functionality "
-msgstr "Die aktuelle Implementierung der Sicherungsfunktion"
-
 #: kmymoney2.cpp:832
-msgid "only supports local files as source files! "
-msgstr "unterstützt nur lokale Dateien als Quellcode Dateien!"
-
-#: kmymoney2.cpp:833
-msgid "Your current source file is '%1'.)"
-msgstr "Die aktuelle Quellcode Datei ist '%1'.)"
+#, fuzzy
+msgid ""
+"The current implementation of the backup functionality only supports local "
+"files as source files! Your current source file is '%1'."
+msgstr ""
+"Die aktuelle Implementierung der Sicherungsfunktionunterstützt nur lokale "
+"Dateien als Quelldateien!Der Pfad auf die aktuelle Datei lautet allerdings: "
+"'%1'."
 
 #: kmymoney2.cpp:834
 msgid "Local files only"
@@ -5057,19 +5056,19 @@ msgstr "Fehler beim Kopieren der Datei zum Gerät"
 msgid "Error unmounting device"
 msgstr "Fehler beim Lösen der Geräteeinbindung"
 
-#: kmymoney2.cpp:1069
+#: kmymoney2.cpp:1070
 msgid "Running consitency check..."
 msgstr "Führe Konsistenzprüfung durch..."
 
-#: kmymoney2.cpp:1073
+#: kmymoney2.cpp:1074
 msgid "Consitency check result"
 msgstr "Ergebnisse der Konsistenzprüfung"
 
-#: kmymoney2.cpp:1085
+#: kmymoney2.cpp:1086
 msgid "Checking for overdue schedules..."
 msgstr "Suche nach fälligen Zahlungen..."
 
-#: kmymoney2.cpp:1205
+#: kmymoney2.cpp:1206
 msgid ""
 "The currently opened KMyMoney document does not contain a single asset "
 "account. In order to maintain your finances you need at least one asset "
@@ -5081,7 +5080,7 @@ msgstr ""
 "Ihr Girokonto). KMyMoney startet nun den Assistenten zum Erstellen eines "
 "neuen Kontos mit welchem Sie Ihr erstes Anlagenkonto erstellen können."
 
-#: kmymoney2.cpp:1207
+#: kmymoney2.cpp:1208
 msgid "No asset account"
 msgstr "Kein Anlagekonto"
 
@@ -5554,12 +5553,3 @@ msgstr "Weitere Funktionen..."
 #: widgets/kmymoneytransactionform.cpp:246
 msgid "Use this to access special functions"
 msgstr "Drücken, um weitere Funktionen auszuwählen"
-
-#~ msgid "ok"
-#~ msgstr "OK"
-
-#~ msgid "cancel"
-#~ msgstr "Abbrechen"
-
-#~ msgid "KMyMoney2"
-#~ msgstr "KMyMoney2"
