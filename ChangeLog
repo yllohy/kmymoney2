@@ -1,3 +1,6 @@
+2002-03-27 Michael Edwardes <mte@users.sourceforge.net>
+  * Fixed bug #535840.  'Annoying window refresh'.
+
 2002-03-22 Arni Ingimundarson <arniing@users.sourceforge.net>
   * Added support for keyboard input in kMyMoneyDateInput
     +/- now works and PgDn popsup the DatePickerWidget.

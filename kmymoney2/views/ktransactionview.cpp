@@ -87,6 +87,8 @@ KTransactionView::KTransactionView(QWidget *parent, const char *name)
 
   m_index = -1;
 
+  m_bEditingTransaction=false;
+
   // create context menu
   KIconLoader *kiconloader = KGlobal::iconLoader();
 
@@ -444,10 +446,12 @@ void KTransactionView::slotFocusChange(int row, int col, int button, const QPoin
       updateInputLists();
       if(m_transactions->count() > transrow)
       {
+        m_bEditingTransaction=true;
 	      setInputData(*m_transactions->at(transrow));
 			}
 			else
 			{
+			  m_bEditingTransaction=false;
        	clearInputData();
 			}
     }
@@ -1263,7 +1267,10 @@ void KTransactionView::updateTransactionList(int row, int col)
       transactionsTable->setCurrentDateRow(-1);
 
 		if (m_viewType==NORMAL) {
-      transactionsTable->ensureCellVisible(rowCount+1, 0);
+		  if (!m_bEditingTransaction)
+        transactionsTable->ensureCellVisible(rowCount+1, 0);
+      else
+        m_bEditingTransaction=false;
 
       if (config->readBoolEntry("TextPrompt", true)) {
         transactionsTable->setText(rowCount, 0, i18n("Date"));

@@ -87,6 +87,8 @@ private:
 
   KPopupMenu* m_contextMenu;
 
+  bool m_bEditingTransaction;
+
   /// List of all transactions in an account
   QList<MyMoneyTransaction> *m_transactions;
 
