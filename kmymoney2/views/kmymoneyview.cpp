@@ -133,7 +133,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   // Page 1
   m_institutionsViewFrame = addVBoxPage( i18n("Institutions"), i18n("Institutions"),
     DesktopIcon("kfm_home"));
-  m_institutionsView = new KAccountsView(m_institutionsViewFrame, KAppTest::widgetName(this, "KAccountsView"), true);
+  m_institutionsView = new KAccountsView(m_institutionsViewFrame, KAppTest::widgetName(this, "KInstitutionsView"), true);
   signalMap->setMapping(m_institutionsView, InstitutionsView);
   connect(m_institutionsView, SIGNAL(signalViewActivated()), signalMap, SLOT(map()));
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_institutionsView, SLOT(slotReloadView()));
@@ -592,7 +592,7 @@ void KMyMoneyView::slotAccountEdit()
         switch(MyMoneyAccount::accountGroup(account.accountType())) {
           case MyMoneyAccount::Asset:
           case MyMoneyAccount::Liability:
-            m_accountsView->slotEditClicked();
+            pView->slotEditClicked();
             break;
           case MyMoneyAccount::Income:
           case MyMoneyAccount::Expense:
@@ -644,7 +644,7 @@ void KMyMoneyView::slotAccountDelete()
         switch(MyMoneyAccount::accountGroup(account.accountType())) {
           case MyMoneyAccount::Asset:
           case MyMoneyAccount::Liability:
-            m_accountsView->slotDeleteClicked();
+            pView->slotDeleteClicked();
             break;
           case MyMoneyAccount::Income:
           case MyMoneyAccount::Expense:
