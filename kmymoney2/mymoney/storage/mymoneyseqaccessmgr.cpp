@@ -922,12 +922,12 @@ const MyMoneyTransaction& MyMoneySeqAccessMgr::transaction(const QCString& accou
   return transaction(list[idx].id());
 }
 
-const MyMoneyMoney MyMoneySeqAccessMgr::balance(const QCString& id)
+const MyMoneyMoney MyMoneySeqAccessMgr::balance(const QCString& id, const QDate& date)
 {
   MyMoneyMoney result(0);
   MyMoneyAccount acc;
 
-  if(m_balanceCache[id].valid == true)
+  if(m_balanceCache[id].valid == true && !date.isValid())
     result = m_balanceCache[id].balance;
 
   else {
@@ -944,6 +944,7 @@ const MyMoneyMoney MyMoneySeqAccessMgr::balance(const QCString& id)
     QValueList<MyMoneyTransaction>::ConstIterator it;
     MyMoneySplit split;
     MyMoneyTransactionFilter filter(id);
+    filter.setDateFilter(QDate(), date);
     list = transactionList(filter);
 
     for(it = list.begin(); it != list.end(); ++it) {
@@ -957,18 +958,20 @@ const MyMoneyMoney MyMoneySeqAccessMgr::balance(const QCString& id)
       }
     }
 
-    MyMoneyBalanceCacheItem balance(result);
-    m_balanceCache[id] = balance;
+    if(!date.isValid()) {
+      MyMoneyBalanceCacheItem balance(result);
+      m_balanceCache[id] = balance;
+    }
   }
   return result;
 }
 
-const MyMoneyMoney MyMoneySeqAccessMgr::totalBalance(const QCString& id)
+const MyMoneyMoney MyMoneySeqAccessMgr::totalBalance(const QCString& id, const QDate& date)
 {
   QCStringList accounts;
   QCStringList::ConstIterator it_a;
 
-  MyMoneyMoney result(balance(id));
+  MyMoneyMoney result(balance(id, date));
 
   MyMoneyAccount acc;
 
@@ -976,7 +979,7 @@ const MyMoneyMoney MyMoneySeqAccessMgr::totalBalance(const QCString& id)
   accounts = acc.accountList();
 
   for(it_a = accounts.begin(); it_a != accounts.end(); ++it_a) {
-    result += totalBalance(*it_a);
+    result += totalBalance(*it_a, date);
   }
 
   return result;
@@ -1089,7 +1092,7 @@ void MyMoneySeqAccessMgr::loadTransaction(const MyMoneyTransaction& tr)
   for(it_s = list.begin(); it_s != list.end(); ++it_s) {
     QCString id = (*it_s).accountId();
     MyMoneyAccount acc = account(id);
-    m_balanceCache[id] = MyMoneyBalanceCacheItem(balance(id) + (*it_s).value(tr.commodity(), acc.currencyId()));
+    m_balanceCache[id] = MyMoneyBalanceCacheItem(balance(id, QDate()) + (*it_s).value(tr.commodity(), acc.currencyId()));
   }
 }
 

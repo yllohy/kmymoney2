@@ -735,18 +735,18 @@ const unsigned int MyMoneyFile::institutionCount(void) const
   return m_storage->institutionCount();
 }
 
-const MyMoneyMoney MyMoneyFile::balance(const QCString& id) const
+const MyMoneyMoney MyMoneyFile::balance(const QCString& id, const QDate& date) const
 {
   checkStorage();
 
-  return m_storage->balance(id);
+  return m_storage->balance(id, date);
 }
 
-const MyMoneyMoney MyMoneyFile::totalBalance(const QCString& id) const
+const MyMoneyMoney MyMoneyFile::totalBalance(const QCString& id, const QDate& date) const
 {
   checkStorage();
 
-  return m_storage->totalBalance(id);
+  return m_storage->totalBalance(id, date);
 }
 
 const bool MyMoneyFile::accountValueValid(const QCString& id) const

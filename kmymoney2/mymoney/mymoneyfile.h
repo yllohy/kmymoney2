@@ -498,21 +498,29 @@ public:
 
   /**
     * This method is used to return the actual balance of an account
-    * without it's sub-ordinate accounts
+    * without it's sub-ordinate accounts. If a @p date is presented,
+    * the balance at the beginning of this date (not including any
+    * transaction on this date) is returned. Otherwise all recorded
+    * transactions are included in the balance.
     *
     * @param id id of the account in question
+    * @param date return balance for specific date (default = QDate())
     * @return balance of the account as MyMoneyMoney object
     */
-  const MyMoneyMoney balance(const QCString& id) const;
+  const MyMoneyMoney balance(const QCString& id, const QDate& date = QDate()) const;
 
   /**
     * This method is used to return the actual balance of an account
-    * including it's sub-ordinate accounts
+    * including it's sub-ordinate accounts. If a @p date is presented,
+    * the balance at the beginning of this date (not including any
+    * transaction on this date) is returned. Otherwise all recorded
+    * transactions are included in the balance.
     *
     * @param id id of the account in question
+    * @param date return balance for specific date (default = QDate())
     * @return balance of the account as MyMoneyMoney object
     */
-  const MyMoneyMoney totalBalance(const QCString& id) const;
+  const MyMoneyMoney totalBalance(const QCString& id, const QDate& date = QDate()) const;
 
   /**
     * This method is used to return the actual value of an account

@@ -252,21 +252,29 @@ public:
 
   /**
     * This method is used to return the actual balance of an account
-    * without it's sub-ordinate accounts
+    * without it's sub-ordinate accounts. If a @p date is presented,
+    * the balance at the beginning of this date (not including any
+    * transaction on this date) is returned. Otherwise all recorded
+    * transactions are included in the balance.
     *
     * @param id id of the account in question
+    * @param date return balance for specific date
     * @return balance of the account as MyMoneyMoney object
     */
-  virtual const MyMoneyMoney balance(const QCString& id) = 0;
+  virtual const MyMoneyMoney balance(const QCString& id, const QDate& date)= 0;
 
   /**
     * This method is used to return the actual balance of an account
-    * including it's sub-ordinate accounts
+    * including it's sub-ordinate accounts. If a @p date is presented,
+    * the balance at the beginning of this date (not including any
+    * transaction on this date) is returned. Otherwise all recorded
+    * transactions are included in the balance.
     *
     * @param id id of the account in question
+    * @param date return balance for specific date
     * @return balance of the account as MyMoneyMoney object
     */
-  virtual const MyMoneyMoney totalBalance(const QCString& id) = 0;
+  virtual const MyMoneyMoney totalBalance(const QCString& id, const QDate& date) = 0;
 
   /**
     * Returns the institution of a given ID
