@@ -1059,10 +1059,12 @@ const QString KLedgerView::action2str(const QCString &action, const bool showHot
     rc = i18n("&Withdrawal");
   else if(action == MyMoneySplit::ActionATM)
     rc = i18n("AT&M");
+#if 0
   else if(action == MyMoneySplit::ActionAddShares)
     rc = i18n("&Add Shares");
   else if(action == MyMoneySplit::ActionRemoveShares)
     rc = i18n("&Remove Shares");
+#endif
 
   if(rc.isEmpty()) {
     qDebug("Unsupported action string %s, set to check", static_cast<const char *>(action));
@@ -1085,12 +1087,29 @@ int KLedgerView::transactionDirection(const MyMoneySplit& split)
   return (split.value() == 0) ? UnknownDirection: ((split.value() > 0) ? Credit : Debit);
 }
 
+const MyMoneySplit KLedgerView::stockSplit(const MyMoneyTransaction& t)
+{
+  QValueList<MyMoneySplit>::ConstIterator it_s;
+  for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s) {
+    if(!(*it_s).accountId().isEmpty()) {
+      MyMoneyAccount acc = MyMoneyFile::instance()->account((*it_s).accountId());
+      if(acc.accountType() == MyMoneyAccount::Stock) {
+        return *it_s;
+      }
+    }
+  }
+  return MyMoneySplit();
+}
+
 int KLedgerView::transactionType(const MyMoneyTransaction& t)
 {
+  if(!stockSplit(t).id().isEmpty())
+    return InvestmentTransaction;
+
   if(t.splitCount() < 2) {
     return Unknown;
   } else if(t.splitCount() > 2) {
-    // FIXME check for loan and investment transaction here
+    // FIXME check for loan transaction here
     return SplitTransaction;
   }
   QCString ida, idb;
@@ -1112,6 +1131,7 @@ int KLedgerView::transactionType(const MyMoneyTransaction& t)
 
 const QCString KLedgerView::transactionType(int type) const
 {
+  qDebug("Usage of KLedgerView::transactionType(int type) is deprecated!");
   switch(type) {
     default:
       qWarning("Unknown transaction type used in KLedgerView::transactionType(int)");
@@ -1165,6 +1185,16 @@ void KLedgerView::slotNew(void)
 
 void KLedgerView::slotStartEdit(void)
 {
+  // make sure, the view supports the type of transaction
+  if(transactionType(m_transaction) == InvestmentTransaction
+  && !inherits("KLedgerViewInvestment")) {
+    if(KMessageBox::questionYesNo(0, i18n("An investment transaction can only be modified in the transaction view. Do you want to change to the investment view?")) == KMessageBox::Yes) {
+
+      emit accountAndTransactionSelected(stockSplit(m_transaction).accountId(), m_transaction.id());
+    }
+    return;
+  }
+
   // this is not available when we have no account
   if(m_account.id().isEmpty())
     return;

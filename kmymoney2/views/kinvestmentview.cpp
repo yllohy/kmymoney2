@@ -392,8 +392,6 @@ void KInvestmentView::slotTabSelected(QWidget *pWidget)
 
 void KInvestmentView::slotReloadView(void)
 {
-  updateDisplay();
-
   // make sure to determine the current account from scratch
   m_account = MyMoneyAccount();
 

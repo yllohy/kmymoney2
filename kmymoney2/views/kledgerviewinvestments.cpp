@@ -51,7 +51,6 @@
 // Project Includes
 
 #include "kledgerview.h"
-#include "kledgerviewcheckings.h"
 #include "kledgerviewinvestments.h"
 
 #include "../mymoney/mymoneyfile.h"
@@ -60,7 +59,7 @@
 #include "../dialogs/knewaccountdlg.h"
 #include "../dialogs/knewequityentrydlg.h"
 
-#include "../widgets/kmymoneyregistercheckings.h"
+#include "../widgets/kmymoneyregisterinvestment.h"
 #include "../widgets/kmymoneytransactionform.h"
 #include "../widgets/kmymoneydateinput.h"
 #include "../widgets/kmymoneyedit.h"
@@ -70,30 +69,43 @@
 #include "../widgets/kmymoneypayee.h"
 #include "../widgets/kmymoneyequity.h"
 
-#define SYMBOL_ROW        0
+#include "../kapptest.h"
+
+#define ACTIVITY_ROW      0
+#define DATE_ROW          0
+#define SYMBOL_ROW        1
 #define QUANTITY_ROW      1
 #define MEMO_ROW          2
-#define PRICE_ROW         3
-#define DATE_ROW          0
-#define AMOUNT_ROW        1
-#define FEES_ROW          2
+#define PRICE_ROW         2
+#define FEES_ROW          3
+#define CATEGORY_ROW      3
+#define ACCOUNT_ROW       4
+#define VALUE_ROW         4
 
+#define ACTIVITY_TXT_COL  0
+#define ACTIVITY_DATA_COL (ACTIVITY_TXT_COL+1)
+#define DATE_TXT_COL      3
+#define DATE_DATA_COL     (DATE_TXT_COL+1)
 #define SYMBOL_TXT_COL    0
 #define SYMBOL_DATA_COL   (SYMBOL_TXT_COL+1)
-#define QUANTITY_TXT_COL  0
+#define QUANTITY_TXT_COL  3
 #define QUANTITY_DATA_COL (QUANTITY_TXT_COL+1)
 #define MEMO_TXT_COL      0
 #define MEMO_DATA_COL     (MEMO_TXT_COL+1)
-#define PRICE_TXT_COL     0
+#define PRICE_TXT_COL     3
 #define PRICE_DATA_COL    (PRICE_TXT_COL+1)
-#define DATE_TXT_COL      3
-#define DATE_DATA_COL     (DATE_TXT_COL+1)
-#define AMOUNT_TXT_COL    3
-#define AMOUNT_DATA_COL   (AMOUNT_TXT_COL+1)
+#define CATEGORY_TXT_COL  0
+#define CATEGORY_DATA_COL (CATEGORY_TXT_COL+1)
 #define FEES_TXT_COL      3
 #define FEES_DATA_COL     (FEES_TXT_COL+1)
+#define ACCOUNT_TXT_COL   0
+#define ACCOUNT_DATA_COL  (ACCOUNT_TXT_COL+1)
+#define VALUE_TXT_COL     3
+#define VALUE_DATA_COL    (VALUE_TXT_COL+1)
 
-KLedgerViewInvestments::KLedgerViewInvestments(QWidget *parent, const char *name) : KLedgerView(parent, name)
+
+KLedgerViewInvestments::KLedgerViewInvestments(QWidget *parent, const char *name) :
+  KLedgerView(parent, name)
 {
   QGridLayout* formLayout = new QGridLayout( this, 1, 2, 11, 6, "InvestmentFormLayout");
   QVBoxLayout* ledgerLayout = new QVBoxLayout(this, 5, 6, "InvestmentLedgerLayout");
@@ -117,6 +129,13 @@ KLedgerViewInvestments::KLedgerViewInvestments(QWidget *parent, const char *name
   m_editSymbolName = 0;
   m_editTotalAmount = 0;
   m_editFees = 0;
+
+  // setup the form to be visible or not
+  slotShowTransactionForm(m_transactionFormActive);
+
+  // and the register has the focus
+  m_register->setFocus();
+
 }
 
 KLedgerViewInvestments::~KLedgerViewInvestments()
@@ -140,25 +159,69 @@ int KLedgerViewInvestments::actionTab(const MyMoneyTransaction& t, const MyMoney
 
 void KLedgerViewInvestments::fillForm()
 {
+  MyMoneyFile* file = MyMoneyFile::instance();
   QTable* formTable = m_form->table();
   m_transactionPtr = transaction(m_register->currentTransactionIndex());
+
+  // make sure, fields can use all available space
+  // by spanning items over multiple cells if necessary
+  formTable = m_form->table();
+  QTableItem* tableItem;
+  // symbol
+  tableItem = formTable->item(SYMBOL_ROW, SYMBOL_DATA_COL);
+  if(tableItem)
+    tableItem->setSpan(SYMBOL_DATA_COL, 2);
+  // quantity
+  tableItem = formTable->item(QUANTITY_ROW, QUANTITY_DATA_COL);
+  if(tableItem)
+    tableItem->setSpan(QUANTITY_DATA_COL, 2);
+  // memo
+  tableItem = formTable->item(MEMO_ROW, MEMO_DATA_COL);
+  if(tableItem)
+    tableItem->setSpan(MEMO_DATA_COL, 2);
+  // price per share
+  tableItem = formTable->item(PRICE_ROW, PRICE_DATA_COL);
+  if(tableItem)
+    tableItem->setSpan(PRICE_DATA_COL, 2);
 
   if(m_transactionPtr != 0)
   {
     // get my local copy of the selected transaction
     m_transaction = *m_transactionPtr;
-    m_split = m_transaction.splitByAccount(accountId());
+    m_split = MyMoneySplit();
+
+    // find the split that references the stock account
+    QValueList<MyMoneySplit>::ConstIterator it_s;
+    for(it_s = m_transaction.splits().begin(); it_s != m_transaction.splits().end(); ++it_s) {
+      MyMoneyAccount acc = file->account((*it_s).accountId());
+      if(acc.accountType() == MyMoneyAccount::Stock) {
+        m_split = *it_s;
+      } else if(acc.accountGroup() == MyMoneyAccount::Expense) {
+        m_feeSplit = *it_s;
+      } else if(acc.accountGroup() == MyMoneyAccount::Income) {
+        m_interestSplit = *it_s;
+      } else if(acc.accountGroup() == MyMoneyAccount::Asset
+             || acc.accountGroup() == MyMoneyAccount::Liability) {
+        m_accountSplit = *it_s;
+      }
+    }
 
     fillFormStatics();
 
     kMyMoneyTransactionFormTableItem* item;
 
+/*
     // setup the fields first
     m_form->tabBar()->blockSignals(true);
     m_form->tabBar()->setCurrentTab(actionTab(m_transaction, m_split));
     m_form->tabBar()->blockSignals(false);
+*/
 
     // fill in common fields
+
+    MyMoneyAccount acc = file->account(m_split.accountId());
+    MyMoneyEquity equity = file->equity(acc.currencyId());
+    formTable->setText(SYMBOL_ROW, SYMBOL_DATA_COL, equity.tradingSymbol());
     formTable->setText(MEMO_ROW, MEMO_DATA_COL, m_split.memo());
 
     // make sure, that the date is aligned to the right of the cell
@@ -166,6 +229,98 @@ void KLedgerViewInvestments::fillForm()
     item->setAlignment(kMyMoneyTransactionFormTableItem::right);
     formTable->setItem(DATE_ROW, DATE_DATA_COL, item);
 
+    QString fee, interest, accName;
+    if(!m_feeSplit.id().isEmpty()) {
+      fee = file->accountToCategory(m_feeSplit.accountId());
+    }
+    if(!m_interestSplit.id().isEmpty()) {
+      interest = file->accountToCategory(m_interestSplit.accountId());
+    }
+    if(!m_accountSplit.id().isEmpty()) {
+      accName = file->accountToCategory(m_accountSplit.accountId());
+    }
+
+    MyMoneyMoney amount, shares;
+    int transType = transactionType(m_transaction, m_split);
+    switch(transType) {
+      case BuyShares:
+      case SellShares:
+        if(transType == BuyShares)
+          formTable->setText(ACTIVITY_ROW, ACTIVITY_DATA_COL, i18n("Buy Shares"));
+        else
+          formTable->setText(ACTIVITY_ROW, ACTIVITY_DATA_COL, i18n("Sell Shares"));
+
+        formTable->setText(CATEGORY_ROW, CATEGORY_DATA_COL, fee);
+        formTable->setText(ACCOUNT_ROW, ACCOUNT_DATA_COL, accName);
+
+        // total amount
+        amount = m_accountSplit.value(m_transaction.commodity(), m_account.currencyId()).abs();
+        item = new kMyMoneyTransactionFormTableItem(formTable, QTableItem::Never,
+                 amount.formatMoney());
+        item->setAlignment(kMyMoneyTransactionFormTableItem::right);
+        formTable->setItem(VALUE_ROW, VALUE_DATA_COL, item);
+
+        // shares
+        shares = m_split.shares().abs();
+        item = new kMyMoneyTransactionFormTableItem(formTable, QTableItem::Never,
+                 shares.formatMoney());
+        item->setAlignment(kMyMoneyTransactionFormTableItem::right);
+        formTable->setItem(QUANTITY_ROW, QUANTITY_DATA_COL, item);
+
+        // price
+        item = new kMyMoneyTransactionFormTableItem(formTable, QTableItem::Never,
+                 (m_split.value(m_transaction.commodity(), m_account.currencyId())/m_split.shares()).formatMoney());
+        item->setAlignment(kMyMoneyTransactionFormTableItem::right);
+        formTable->setItem(PRICE_ROW, PRICE_DATA_COL, item);
+
+        // fees
+        item = new kMyMoneyTransactionFormTableItem(formTable, QTableItem::Never,
+                 m_feeSplit.value(m_transaction.commodity(), m_account.currencyId()).abs().formatMoney());
+        item->setAlignment(kMyMoneyTransactionFormTableItem::right);
+        formTable->setItem(FEES_ROW, FEES_DATA_COL, item);
+
+        break;
+
+      case ReinvestDividend:
+        formTable->setText(ACTIVITY_ROW, ACTIVITY_DATA_COL, i18n("Reinvest Dividend"));
+        break;
+
+      case Dividend:
+      case Yield:
+        if(transType == Dividend)
+          formTable->setText(ACTIVITY_ROW, ACTIVITY_DATA_COL, i18n("Dividend"));
+        else
+          formTable->setText(ACTIVITY_ROW, ACTIVITY_DATA_COL, i18n("Yield"));
+
+        formTable->setText(CATEGORY_ROW, CATEGORY_DATA_COL, interest);
+        formTable->setText(ACCOUNT_ROW, ACCOUNT_DATA_COL, accName);
+
+        // total amount
+        amount = m_accountSplit.value(m_transaction.commodity(), m_account.currencyId()).abs();
+        item = new kMyMoneyTransactionFormTableItem(formTable, QTableItem::Never,
+                 amount.formatMoney());
+        item->setAlignment(kMyMoneyTransactionFormTableItem::right);
+        formTable->setItem(VALUE_ROW, VALUE_DATA_COL, item);
+
+        break;
+
+      case AddShares:
+      case RemoveShares:
+        if(transType == AddShares)
+          formTable->setText(ACTIVITY_ROW, ACTIVITY_DATA_COL, i18n("Add Shares"));
+        else
+          formTable->setText(ACTIVITY_ROW, ACTIVITY_DATA_COL, i18n("Remove Shares"));
+
+        // shares
+        item = new kMyMoneyTransactionFormTableItem(formTable, QTableItem::Never,
+                 m_split.shares().abs().formatMoney());
+        item->setAlignment(kMyMoneyTransactionFormTableItem::right);
+        formTable->setItem(QUANTITY_ROW, QUANTITY_DATA_COL, item);
+
+        break;
+    }
+
+/*
     // collect values
     QString payee;
     try {
@@ -238,6 +393,7 @@ void KLedgerViewInvestments::fillForm()
     m_form->enterButton()->setEnabled(false);
     m_form->cancelButton()->setEnabled(false);
     m_form->moreButton()->setEnabled(true);
+*/
   } else {
     m_transaction = MyMoneyTransaction();
     m_split = MyMoneySplit();
@@ -255,40 +411,11 @@ void KLedgerViewInvestments::fillForm()
     m_form->cancelButton()->setEnabled(false);
     m_form->moreButton()->setEnabled(false);
   }
-
-
- 
-  
-  fillFormStatics();
-
-  // make sure, fields can use all available space
-  // by spanning items over multiple cells if necessary
-  formTable = m_form->table();
-  QTableItem* tableItem;
-  // symbol
-  tableItem = formTable->item(SYMBOL_ROW, SYMBOL_DATA_COL);
-  if(tableItem)
-    tableItem->setSpan(SYMBOL_DATA_COL, 2);
-  // quantity
-  tableItem = formTable->item(QUANTITY_ROW, QUANTITY_DATA_COL);
-  if(tableItem)
-    tableItem->setSpan(QUANTITY_DATA_COL, 2);
-  // memo
-  tableItem = formTable->item(MEMO_ROW, MEMO_DATA_COL);
-  if(tableItem)
-    tableItem->setSpan(MEMO_DATA_COL, 2);
-  // price per share
-  tableItem = formTable->item(PRICE_ROW, PRICE_DATA_COL);
-  if(tableItem)
-    tableItem->setSpan(PRICE_DATA_COL, 2);
-  
-  
-
 }
 
 void KLedgerViewInvestments::fillFormStatics(void)
 {
-  /*QTable* formTable = m_form->table();
+  QTable* formTable = m_form->table();
 
   // clear complete table, but leave the cell widgets while editing
   for(int r = 0; r < formTable->numRows(); ++r) {
@@ -299,51 +426,44 @@ void KLedgerViewInvestments::fillFormStatics(void)
   }
 
   // common elements
-  formTable->setText(SYMBOL_ROW, SYMBOL_TXT_COL, i18n("Symbol Name"));
-  formTable->setText(QUANTITY_ROW, QUANTITY_TXT_COL, i18n("Shares"));
-  formTable->setText(MEMO_ROW, MEMO_TXT_COL, i18n("Memo"));
-  formTable->setText(PRICE_ROW, PRICE_TXT_COL, i18n("Price Per Share"));
+  formTable->setText(ACTIVITY_ROW, ACTIVITY_TXT_COL, i18n("Activity"));
   formTable->setText(DATE_ROW, DATE_TXT_COL, i18n("Date"));
-  formTable->setText(AMOUNT_ROW, AMOUNT_TXT_COL, i18n("Total Amount"));
-  formTable->setText(FEES_ROW, FEES_TXT_COL, i18n("Commission"));
+  formTable->setText(SYMBOL_ROW, SYMBOL_TXT_COL, i18n("Symbol Name"));
+  formTable->setText(MEMO_ROW, MEMO_TXT_COL, i18n("Memo"));
 
   switch(transactionType(m_transaction, m_split)) {
-    case Transfer:
-#if 0
-      switch( transactionDirection(m_split) ){
-        case Credit:
-        case UnknownDirection:
-          // formTable->setText(PAYEE_ROW, PAYEE_TXT_COL, i18n("Payer"));
-          //formTable->setText(CATEGORY_ROW, CATEGORY_TXT_COL, i18n("From"));
-          break;
-        case Debit:
-          formTable->setText(PAYEE_ROW, PAYEE_TXT_COL, i18n("Receiver"));
-          formTable->setText(CATEGORY_ROW, CATEGORY_TXT_COL, i18n("To"));
-          break;
-      }
-#endif
+    case BuyShares:
+    case SellShares:
+      formTable->setText(QUANTITY_ROW, QUANTITY_TXT_COL, i18n("Shares"));
+      formTable->setText(PRICE_ROW, PRICE_TXT_COL, i18n("Price per share"));
+      formTable->setText(VALUE_ROW, VALUE_TXT_COL, i18n("Total Amount"));
+      formTable->setText(FEES_ROW, FEES_TXT_COL, i18n("Fees"));
+      formTable->setText(CATEGORY_ROW, CATEGORY_TXT_COL, i18n("Commission"));
+      formTable->setText(ACCOUNT_ROW, ACCOUNT_TXT_COL, i18n("Account"));
       break;
 
-    default:
-#if 0
-      formTable->setText(CATEGORY_ROW, CATEGORY_TXT_COL, i18n("Category"));
-      switch( transactionDirection(m_split) ){
-        case Credit:
-        case UnknownDirection:
-          formTable->setText(PAYEE_ROW, PAYEE_TXT_COL, i18n("Payer"));
-          break;
-        case Debit:
-          formTable->setText(PAYEE_ROW, PAYEE_TXT_COL, i18n("Receiver"));
-          break;
-      }
-#endif
+    case ReinvestDividend:
+      formTable->setText(QUANTITY_ROW, QUANTITY_TXT_COL, i18n("Shares"));
+      formTable->setText(PRICE_ROW, PRICE_TXT_COL, i18n("Price per share"));
+      formTable->setText(VALUE_ROW, VALUE_TXT_COL, i18n("Total Amount"));
+      formTable->setText(FEES_ROW, FEES_TXT_COL, i18n("Fees"));
+      formTable->setText(CATEGORY_ROW, CATEGORY_TXT_COL, i18n("Commission"));
+      formTable->setText(ACCOUNT_ROW, ACCOUNT_TXT_COL, i18n("Interest"));
+      break;
+
+    case Dividend:
+    case Yield:
+      formTable->setText(CATEGORY_ROW, CATEGORY_TXT_COL, i18n("Interest"));
+      formTable->setText(ACCOUNT_ROW, ACCOUNT_TXT_COL, i18n("Account"));
+      formTable->setText(VALUE_ROW, VALUE_TXT_COL, i18n("Total Amount"));
+      break;
+
+    case AddShares:
+    case RemoveShares:
+      formTable->setText(QUANTITY_ROW, QUANTITY_TXT_COL, i18n("Shares"));
       break;
   }
-
-#if 0
-  if(showNrField(m_transaction, m_split))
-    formTable->setText(NR_ROW, NR_TXT_COL, i18n("Nr"));
-#endif*/
+  resizeEvent(0);
 }
 
 void KLedgerViewInvestments::fillSummary()
@@ -410,7 +530,7 @@ QWidget* KLedgerViewInvestments::arrangeEditWidgetsInForm(void)
   table->setCellWidget(PRICE_ROW, PRICE_DATA_COL, m_editPPS);
   table->setCellWidget(SYMBOL_ROW, SYMBOL_DATA_COL, m_editSymbolName);
   table->setCellWidget(QUANTITY_ROW, QUANTITY_DATA_COL, m_editShares);
-  table->setCellWidget(AMOUNT_ROW, AMOUNT_DATA_COL, m_editTotalAmount);
+  table->setCellWidget(VALUE_ROW, VALUE_DATA_COL, m_editTotalAmount);
   table->setCellWidget(FEES_ROW, FEES_DATA_COL, m_editFees);
 
   table->clearEditable();
@@ -419,7 +539,7 @@ QWidget* KLedgerViewInvestments::arrangeEditWidgetsInForm(void)
   table->setEditable(PRICE_ROW, PRICE_DATA_COL);
   table->setEditable(SYMBOL_ROW, SYMBOL_DATA_COL);
   table->setEditable(QUANTITY_ROW, QUANTITY_DATA_COL);
-  table->setEditable(AMOUNT_ROW, AMOUNT_DATA_COL, false);
+  table->setEditable(VALUE_ROW, VALUE_DATA_COL, false);
   table->setEditable(FEES_ROW, FEES_DATA_COL);
 
   // now setup the tab order
@@ -543,17 +663,17 @@ void KLedgerViewInvestments::createForm(void)
   int h = QMAX(dateInput.sizeHint().height(), splitButton.sizeHint().height());
   h = QMAX(h, category.sizeHint().height())-8;
 
-  m_form = new kMyMoneyTransactionForm(this, NULL, 0, 4, 5, h);
+  m_form = new kMyMoneyTransactionForm(this, NULL, 0, 5, 5, h);
 
-  m_tabAddShares = new QTab(action2str(MyMoneySplit::ActionAddShares, true));
-  m_tabRemoveShares = new QTab(action2str(MyMoneySplit::ActionRemoveShares, true));
-  m_tabTransfer = new QTab(action2str(MyMoneySplit::ActionTransfer, true));
+  // m_tabAddShares = new QTab(action2str(MyMoneySplit::ActionAddShares, true));
+  // m_tabRemoveShares = new QTab(action2str(MyMoneySplit::ActionRemoveShares, true));
+  // m_tabTransfer = new QTab(action2str(MyMoneySplit::ActionTransfer, true));
   //m_tabWithdrawal = new QTab(action2str(MyMoneySplit::ActionWithdrawal, true));
   //m_tabAtm = new QTab(action2str(MyMoneySplit::ActionATM, true));
 
-  m_form->addTab(m_tabAddShares);
-  m_form->addTab(m_tabRemoveShares);
-  m_form->addTab(m_tabTransfer);
+  // m_form->addTab(m_tabAddShares);
+  // m_form->addTab(m_tabRemoveShares);
+  // m_form->addTab(m_tabTransfer);
   //m_form->addTab(m_tabWithdrawal);
   //m_form->addTab(m_tabAtm);
 
@@ -660,8 +780,9 @@ void KLedgerViewInvestments::slotTypeSelected(int type)
   if(!m_form->tabBar()->signalsBlocked())
     slotCancelEdit();
 
-  QTable* formTable = m_form->table();
 
+#if 0
+  QTable* formTable = m_form->table();
   // clear complete table
   for(int r = 0; r < formTable->numRows(); ++r) {
     for(int c = 0; c < formTable->numCols(); ++c) {
@@ -670,10 +791,10 @@ void KLedgerViewInvestments::slotTypeSelected(int type)
   }
 
   // common elements
-  
+
   formTable->setText(DATE_ROW, DATE_TXT_COL, i18n("Date"));
   formTable->setText(AMOUNT_ROW, AMOUNT_TXT_COL, i18n("Total Amount"));
-  
+
   m_action = transactionType(type);
   qDebug("TransactionType = %d", type);
 
@@ -690,8 +811,8 @@ void KLedgerViewInvestments::slotTypeSelected(int type)
       break;
     }
 
-    case KLedgerViewInvestments::Transfer: 
-    { 
+    case KLedgerViewInvestments::Transfer:
+    {
       formTable->setText(SYMBOL_ROW, SYMBOL_TXT_COL, i18n("From"));
       formTable->setText(1, 0, i18n("To"));
       formTable->setText(MEMO_ROW, MEMO_TXT_COL, i18n("Payee"));
@@ -714,6 +835,7 @@ void KLedgerViewInvestments::slotTypeSelected(int type)
   config->setGroup("General Options");
   if(config->readBoolEntry("AlwaysShowNrField", false) == true)
     formTable->setText(0, 3, i18n("Nr"));
+#endif
 
   if(!m_form->tabBar()->signalsBlocked())
     slotNew();
@@ -730,14 +852,14 @@ void KLedgerViewInvestments::slotRegisterDoubleClicked(int /* row */,
 
 void KLedgerViewInvestments::createRegister(void)
 {
-  m_register = new kMyMoneyRegisterCheckings(this, "Investments");
+  m_register = new kMyMoneyRegisterInvestment(this, KAppTest::widgetName(this, "kMyMoneyRegisterInvestment"));
   m_register->setParent(this);
 
-  m_register->setAction(QCString(MyMoneySplit::ActionAddShares), i18n("Add Shares"));
-  m_register->setAction(QCString(MyMoneySplit::ActionRemoveShares), i18n("Remove Shares"));
+  // m_register->setAction(QCString(MyMoneySplit::ActionAddShares), i18n("Add Shares"));
+  // m_register->setAction(QCString(MyMoneySplit::ActionRemoveShares), i18n("Remove Shares"));
   //m_register->setAction(QCString(MyMoneySplit::ActionDeposit), i18n("Deposit"));
   //m_register->setAction(QCString(MyMoneySplit::ActionWithdrawal), i18n("Withdrawal"));
-  m_register->setAction(QCString(MyMoneySplit::ActionTransfer), i18n("Transfer"));
+  // m_register->setAction(QCString(MyMoneySplit::ActionTransfer), i18n("Transfer"));
 
   connect(m_register, SIGNAL(clicked(int, int, int, const QPoint&)), this, SLOT(slotRegisterClicked(int, int, int, const QPoint&)));
   connect(m_register, SIGNAL(doubleClicked(int, int, int, const QPoint&)), this, SLOT(slotRegisterDoubleClicked(int, int, int, const QPoint&)));
@@ -779,33 +901,23 @@ void KLedgerViewInvestments::slotAccountDetail(void)
 
 int KLedgerViewInvestments::transactionType(const MyMoneyTransaction& t, const MyMoneySplit& split) const
 {
-  qDebug("logic of KLedgerViewInvestments::transactionType should go to KLedgerView::transactionType");
-  if(split.action() == MyMoneySplit::ActionAddShares)
-    return KLedgerViewInvestments::AddShares;
-  else if(split.action() == MyMoneySplit::ActionRemoveShares)
-    return KLedgerViewInvestments::RemoveShares;
-  else
-    return KLedgerView::transactionType(t);
-
-  //qDebug("Unknown transaction type in KLedgerView::transactionType, Check assumed");
-  //return Check;
-}
-
-const QCString KLedgerViewInvestments::transactionType(int type) const
-{
-  switch(type) {
-    default:
-      qWarning("Unknown transaction type used in KLedgerView::transactionType(int)");
-      // Tricky fall through here!
-
-    case KLedgerViewInvestments::AddShares: // Check
-      return MyMoneySplit::ActionAddShares;
-
-    case KLedgerViewInvestments::RemoveShares: // Deposit
-      return MyMoneySplit::ActionRemoveShares;
+  if(split.action() == MyMoneySplit::ActionAddShares) {
+    if(split.shares() >= 0)
+      return AddShares;
+    return RemoveShares;
   }
-
-  return KLedgerView::transactionType(type);
+  if(split.action() == MyMoneySplit::ActionBuyShares) {
+    if(split.value() >= 0)
+      return BuyShares;
+    return SellShares;
+  }
+  if(split.action() == MyMoneySplit::ActionDividend) {
+    return Dividend;
+  }
+  if(split.action() == MyMoneySplit::ActionReinvestDividend) {
+    return ReinvestDividend;
+  }
+  return Yield;
 }
 
 void KLedgerViewInvestments::updateTabBar(const MyMoneyTransaction& /* t */, const MyMoneySplit& /* s */)
@@ -891,11 +1003,11 @@ void KLedgerViewInvestments::slotStartEdit()
 void KLedgerViewInvestments::slotEndEdit()
 {
   MyMoneyFile* file = MyMoneyFile::instance();
-  
+
   // make sure, the post date is valid
   if(!m_transaction.postDate().isValid())
     m_transaction.setPostDate(QDate::currentDate());
-    
+
   // remember date for next new transaction
   m_lastPostDate = m_transaction.postDate();
 
@@ -1096,7 +1208,7 @@ void KLedgerViewInvestments::slotEndEdit()
  // m_register->setInlineEditingMode(false);
 //  m_register->setFocus();
 
-#if 0  
+#if 0
   if(m_editSymbolName)
   {
     QString name = m_editSymbolName->text();
@@ -1161,4 +1273,66 @@ void KLedgerViewInvestments::slotEquityChanged(const QCString& id)
     m_transaction = t;
     m_split = s;
   }
+}
+
+void KLedgerViewInvestments::refreshView(const bool transactionFormVisible)
+{
+  // if we're currently editing a transaction, we don't refresh the view
+  // this will screw us, if someone creates a category on the fly, as this
+  // will come here when the notifications by the engine are send out.
+  if(isEditMode())
+    return;
+
+  m_transactionFormActive = transactionFormVisible;
+
+  // if a transaction is currently selected, keep the id
+  QCString transactionId;
+  if(m_transactionPtr != 0)
+    transactionId = m_transactionPtr->id();
+  m_transactionPtr = 0;
+  m_transactionPtrVector.clear();
+
+  // read in the configuration parameters for this view
+  KConfig *config = KGlobal::config();
+  config->setGroup("General Options");
+  m_ledgerLens = config->readBoolEntry("LedgerLens", true);
+
+  config->setGroup("List Options");
+  QDateTime defaultDate;
+  m_dateStart = config->readDateTimeEntry("StartDate", &defaultDate).date();
+
+  m_register->readConfig();
+
+  // in case someone changed the account info and we are called here
+  // via the observer's update function, we just reload ourselves.
+  MyMoneyFile* file = MyMoneyFile::instance();
+  try {
+    m_account = file->account(m_account.id());
+    // setup the filter to select the transactions we want to display
+    MyMoneyTransactionFilter filter;
+    filter.addAccount(m_account.accountList());
+
+    if(m_inReconciliation == true) {
+      filter.addState(MyMoneyTransactionFilter::notReconciled);
+      filter.addState(MyMoneyTransactionFilter::cleared);
+    } else
+      filter.setDateFilter(m_dateStart, QDate());
+
+    // get the list of transactions
+    QValueList<MyMoneyTransaction> list = file->transactionList(filter);
+    QValueList<MyMoneyTransaction>::ConstIterator it;
+    m_transactionList.clear();
+    for(it = list.begin(); it != list.end(); ++it) {
+      KMyMoneyTransaction k(*it);
+      k.setSplitId((*it).splits()[0].id());
+      m_transactionList.append(k);
+    }
+
+  } catch(MyMoneyException *e) {
+    delete e;
+    m_account = MyMoneyAccount();
+    m_transactionList.clear();
+  }
+
+  updateView(transactionId);
 }

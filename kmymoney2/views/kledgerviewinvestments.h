@@ -62,11 +62,14 @@ class KLedgerViewInvestments : public KLedgerView
 public:
 
   enum investTransactionTypeE {
-    AddShares = 0,
-    RemoveShares,
-    Transfer,
-    Deposit,
-    Withdrawal
+    UnknownTransactionType = 0,
+    BuyShares,
+    SellShares,
+    Dividend,
+    ReinvestDividend,
+    Yield,
+    AddShares,
+    RemoveShares
   };
 
   KLedgerViewInvestments(QWidget *parent = NULL, const char *name = NULL);
@@ -74,6 +77,8 @@ public:
 
 public slots:
   void slotRegisterDoubleClicked(int row, int col, int button, const QPoint &mousePos);
+
+  virtual void refreshView(const bool transactionFormVisible);
 
 protected slots:
   /**
@@ -136,7 +141,6 @@ private:
 protected:
   int actionTab(const MyMoneyTransaction& t, const MyMoneySplit& split) const;
   int transactionType(const MyMoneyTransaction& t, const MyMoneySplit& split) const;
-  const QCString transactionType(int type) const;
 
 protected:
   KPushButton*  m_detailsButton;
@@ -154,13 +158,15 @@ private:
 
   QLabel*         m_lastReconciledLabel;
 
-  QTab *m_tabAddShares, *m_tabRemoveShares, *m_tabTransfer;//,
-       //*m_tabWithdrawal, *m_tabAtm;
-
-  QCString m_action;
+  QCString        m_action;
 
   kMyMoneyEdit *m_editShares, *m_editPPS, *m_editTotalAmount, *m_editFees;
   kMyMoneyEquity *m_editSymbolName;
+
+  MyMoneySplit    m_accountSplit;
+  MyMoneySplit    m_feeSplit;
+  MyMoneySplit    m_interestSplit;
+
 /*
   KTextBrowser *textBrowser;
   QGridLayout *mainGrid;

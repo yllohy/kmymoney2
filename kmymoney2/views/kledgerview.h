@@ -262,7 +262,7 @@ public:
 
     /**
       * This transaction denotes a specific transaction where
-      * a an investment is involved. Ususally, a special dialog
+      * an investment is involved. Ususally, a special dialog
       * is used to modify this transaction.
       */
     InvestmentTransaction
@@ -770,6 +770,17 @@ protected:
   const bool transfersPossible(void) const;
 
   virtual void updateTabBar(const MyMoneyTransaction& t, const MyMoneySplit& s) = 0;
+
+  /**
+    * This method returns the split referencing a stock account if
+    * one exists in the transaction passed as @p t. If none is present
+    * in @p t, an empty MyMoneySplit() object will be returned.
+    *
+    * @param t transaction to be checked for a stock account
+    * @return MyMoneySplit object referencing a stock account or an
+    *         empty MyMoneySplit object.
+    */
+  static const MyMoneySplit stockSplit(const MyMoneyTransaction& t);
 
 protected:
   /**
