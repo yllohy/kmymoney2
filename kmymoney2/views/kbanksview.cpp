@@ -49,6 +49,7 @@ KAccountsView::KAccountsView(QWidget *parent, const char *name)
   accountListView->addColumn(i18n("Account"));
   accountListView->addColumn(i18n("Type"));
   accountListView->addColumn(i18n("Balance"));
+
   accountListView->setMultiSelection(false);
 
   accountListView->setColumnWidthMode(0, QListView::Maximum);
@@ -77,7 +78,8 @@ KAccountsView::KAccountsView(QWidget *parent, const char *name)
   // m_bSignals=true;
 
   accountIconView->clear();
-  accountIconView->setSorting(true);
+  accountIconView->setSorting(-1);
+  accountListView->setSorting(0);
 
   // never show a horizontal scroll bar
   //accountListView->setHScrollBarMode(QScrollView::AlwaysOff);
@@ -142,6 +144,7 @@ void KAccountsView::slotListRightMouse(QListViewItem* item, const QPoint& , int 
 
         emit accountRightMouseClick();
       }
+
       catch (MyMoneyException *e)
       {
         m_bSelectedAccount=false;
@@ -201,6 +204,7 @@ void KAccountsView::refreshTotalProfit(void)
   QString s(i18n("Total Profits: "));
   s += totalProfit.formatMoney();
 
+
   totalProfitsLabel->setFont(config->readFontEntry("listCellFont", &defaultFont));
   totalProfitsLabel->setText(s);
 }
@@ -218,11 +222,6 @@ void KAccountsView::refresh(const QCString& selectAccount)
   m_selectedAccount = selectAccount;
 
   MyMoneyFile *file = MyMoneyFile::instance();
-
-  MyMoneyAccount liabilityAccount = file->liability();
-  MyMoneyAccount assetAccount = file->asset();
-  MyMoneyAccount expenseAccount = file->expense();
-  MyMoneyAccount incomeAccount = file->income();
 
   QValueList<MyMoneyAccount> accountList;
   accountList = file->accountList();
@@ -277,6 +276,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
     try
     {
       // Asset
+      MyMoneyAccount assetAccount = file->asset();
       KAccountListItem *assetTopLevelAccount = new KAccountListItem(accountListView,
             assetAccount);
 
@@ -300,6 +300,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
       }
 
       // Liability
+      MyMoneyAccount liabilityAccount = file->liability();
       KAccountListItem *liabilityTopLevelAccount = new KAccountListItem(accountListView,
             liabilityAccount);
 
@@ -321,6 +322,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
       }
 
       // Income
+      MyMoneyAccount incomeAccount = file->income();
       KAccountListItem *incomeTopLevelAccount = new KAccountListItem(accountListView,
             incomeAccount);
 
@@ -340,6 +342,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
       }
 
       // Expense
+      MyMoneyAccount expenseAccount = file->expense();
       KAccountListItem *expenseTopLevelAccount = new KAccountListItem(accountListView,
             expenseAccount);
 
