@@ -26,6 +26,16 @@ h2
   text-align: right;
 }
 
+h2.report {
+  font-size: 18px;
+  font-family: verdana, arial;
+  margin-right: 10px;
+  margin-left: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
 .itemheader
 {
   color: white;
@@ -104,4 +114,43 @@ body  {
 body.highlighted  {
   background-color: #308169;
   color: #FFFFFF;
+}
+
+table.report th {
+  padding: 0.5em 0;
+}
+
+table.report td {
+  font-size: 9pt;
+  padding: 0 0.5em;
+  text-align: right;
+}
+
+table.report td.left {
+  text-align: left;
+}
+
+table.report tr.sectionheader td {
+  font-weight: bold;
+  padding: 0.5em 0.5em 0 0.5em;
+}
+
+table.report tr.sectionfooter td {
+  border-top: 1px solid black;
+  padding: 0 0.5em 0.5em 0.5em;
+}
+
+table.report tr.reportfooter td {
+  border-bottom: 1px solid black;
+  border-top: 1px solid black;
+  padding: 0 0.5em 0 0.5em;
+}
+
+table.report tr.reportfooter td.left {
+  font-weight: bold;
+}
+
+table.report tr.spacer td {
+  font-size: 4pt;
+  padding: 1em 0;
 }
