@@ -1,3 +1,6 @@
+2001-12-08 Kevin Tambascio <ktambascio@yahoo.com>
+	* When you double-click on an account in the bank view, you will see the transaction list.
+
 2001-12-08 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
   * Fixed Pixmap Crash on Exit error.
 
