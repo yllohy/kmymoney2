@@ -34,6 +34,8 @@
   *@author Kevin Tambascio (ktambascio@yahoo.com)
   */
 
+using namespace xmlpp;
+  
 class MyMoneyStorageXMLCallback : public XMLParserCallback
 {
 public: 
@@ -48,13 +50,13 @@ public:
 
   void start_document(void);
   void end_document(void);
-  void start_element(const string &n, const XMLPropertyMap &p);
-  void end_element(const string &n);
-  void characters(const string &s);
-  void comment(const string &s);
-  void warning(const string &s);
-  void error(const string &s);
-  void fatal_error(const string &s);
+  void start_element(const std::string &n, const xmlpp::XMLPropertyMap &p);
+  void end_element(const std::string &n);
+  void characters(const std::string &s);
+  void comment(const std::string &s);
+  void warning(const std::string &s);
+  void error(const std::string &s);
+  void fatal_error(const std::string &s);
 
   void ChangeParseState(eParseState state);
 

@@ -20,9 +20,11 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "config.h" 
 #include "mymoneystoragexmlcallback.h"
 
 #if HAVE_LIBXMLPP
+
 MyMoneyStorageXMLCallback::MyMoneyStorageXMLCallback()
 {
   m_parseState          = PARSE_STATE_UNKNOWN;
@@ -43,7 +45,7 @@ void MyMoneyStorageXMLCallback::end_document(void)
 
 }
 
-void MyMoneyStorageXMLCallback::start_element(const string &n, const XMLPropertyMap &p)
+void MyMoneyStorageXMLCallback::start_element(const std::string &n, const XMLPropertyMap &p)
 {
   if(m_parseState == PARSE_STATE_UNKNOWN)
   {
@@ -64,32 +66,32 @@ void MyMoneyStorageXMLCallback::start_element(const string &n, const XMLProperty
   }
 }
 
-void MyMoneyStorageXMLCallback::end_element(const string &n)
+void MyMoneyStorageXMLCallback::end_element(const std::string &n)
 {
   m_parseState = m_previousParseState;
 }
 
-void MyMoneyStorageXMLCallback::characters(const string &s)
+void MyMoneyStorageXMLCallback::characters(const std::string &s)
 {
   //cout << "Character data = " << s.data() << endl;
   //cout << "length = " << s.size() << endl;
 }
 
-void MyMoneyStorageXMLCallback::comment(const string &s)
+void MyMoneyStorageXMLCallback::comment(const std::string &s)
 {
 
 }
 
-void MyMoneyStorageXMLCallback::warning(const string &s)
+void MyMoneyStorageXMLCallback::warning(const std::string &s)
 {
 }
 
-void MyMoneyStorageXMLCallback::error(const string &s)
+void MyMoneyStorageXMLCallback::error(const std::string &s)
 {
 
 }
 
-void MyMoneyStorageXMLCallback::fatal_error(const string &s)
+void MyMoneyStorageXMLCallback::fatal_error(const std::string &s)
 {
 }
 

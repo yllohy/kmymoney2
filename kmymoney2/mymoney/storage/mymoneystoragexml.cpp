@@ -30,7 +30,7 @@
 
 MyMoneyStorageXML::MyMoneyStorageXML()
 {
-  XMLParser<MyMoneyStorageXMLCallback> *parser = new XMLParser<MyMoneyStorageXMLCallback>;
+  xmlpp::XMLParser<MyMoneyStorageXMLCallback> *parser = new xmlpp::XMLParser<MyMoneyStorageXMLCallback>;
   if(parser)
   {
     //cout << "Able to create XML++ parser" << endl;
