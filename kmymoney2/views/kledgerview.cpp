@@ -350,16 +350,9 @@ void KLedgerView::loadAccount(void)
 void KLedgerView::refreshView(void)
 {
   KConfig *config = KGlobal::config();
-  config->setGroup("List Options");
-
-  QDateTime defaultDate;
-
-  m_dateStart = config->readDateTimeEntry("StartDate", &defaultDate).date();
-
   config->setGroup("General Options");
   m_ledgerLens = config->readBoolEntry("LedgerLens", true);
   m_transactionFormActive = config->readBoolEntry("TransactionForm", true);
-
   m_register->readConfig();
 
   updateView();
@@ -367,6 +360,12 @@ void KLedgerView::refreshView(void)
 
 void KLedgerView::updateView(void)
 {
+  KConfig *config = KGlobal::config();
+  config->setGroup("List Options");
+
+  QDateTime defaultDate;
+  m_dateStart = config->readDateTimeEntry("StartDate", &defaultDate).date();
+
   filterTransactions();
 
   slotShowTransactionForm(m_transactionFormActive);
