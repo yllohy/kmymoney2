@@ -16,9 +16,9 @@
 <h2 class="highlighted">Example source file for use by KMyMoney2</h2>
 <pre>
 /***************************************************************************
-                          mymoneyfile.cpp
+                          ksettingsdlg.cpp
                              -------------------
-    copyright            : (C) 2000 by Michael Edwardes
+    copyright            : (C) 2000,2001 by Michael Edwardes
     email                : mte@users.sourceforge.net
  ***************************************************************************/
 
@@ -30,158 +30,351 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-//-----------------------------------------------------------------------------
-// QT Headers
-#include &lt;qfile.h&gt;
-#include &lt;qdatastream.h&gt;
 
-//-----------------------------------------------------------------------------
-// KDE Headers
+// ----------------------------------------------------------------------------
+// QT Includes
+#include &lt;qlayout.h&gt;
+#include &lt;qvbox.h&gt;
+#include &lt;qlabel.h&gt;
+#include &lt;qgroupbox.h&gt;
+#include &lt;qtabwidget.h&gt;
+#include &lt;qvalidator.h&gt;
 
-//-----------------------------------------------------------------------------
-// Project Headers
-#include &lt;string.h&gt;
-#include &lt;stdio.h&gt;
-#include &lt;ctype.h&gt;
-#include &lt;stdlib.h&gt;
+// ----------------------------------------------------------------------------
+// KDE Includes
+#include &lt;klocale.h&gt;
+#include &lt;kstddirs.h&gt;
+#include &lt;kiconloader.h&gt;
+#include &lt;kconfig.h&gt;
+#include &lt;kcolorbutton.h&gt;
+#include &lt;kmessagebox.h&gt;
 
-#include "mymoneybank.h"
-#include "mymoneypayee.h"
-#include "mymoneycategory.h"
-#include "mymoneyaccount.h"
-#include "mymoneyfile.h"
-#include "mymoney_config.h"
+// ----------------------------------------------------------------------------
+// Project Includes
+#include "ksettingsdlg.h"
 
-#ifndef HAVE_CONFIG_H
-#define VERSION "UNKNOWN"
-#else
-#include "config.h"
-#endif
-
-MyMoneyFile::MyMoneyFile(void)
+/** Standard constructor for the class.
+  * The constructor passes some additional parameters to the base class KDialogBase
+  * to set the buttons to be showed and the type of dialog to be shown.
+**/
+KSettingsDlg::KSettingsDlg(QWidget *parent, const char *name, bool modal)
+ : KDialogBase(IconList, i18n("Configure"), Ok|Cancel|Apply|User1, Ok, parent,
+    name, modal, true, "&Reset")
 {
-  m_qdateCreatedDate = QDate::currentDate();
-  m_qdateLastAccess = QDate::currentDate();
-  m_qdateLastModify = QDate::currentDate();
-  m_bDirty = false;
-  m_bInitialised = m_bContainsBanks = m_bContainsAccounts = m_bContainsTransactions = false;
+  // Setup the pages and then read the configuration object.
+  setPageGeneral();
+  setPageList();
+  configRead();
+  m_bDoneApply=false;
 }
 
-MyMoneyFile::MyMoneyFile(const QString& usern, const QString& userStreet,
- const QString& userTown, const QString& userCounty, const QString& userPostcode, const QString& userTelephone,
- const QString& userEmail, const QDate& createDate)
-{
-  m_qstringUserName = usern;
-  m_qstringUserStreet = userStreet;
-  m_qstringUserTown = userTown;
-  m_qstringUserCounty = userCounty;
-  m_qstringUserPostcode = userPostcode;
-  m_qstringUserTelephone = userTelephone;
-  m_qstringUserEmail = userEmail;
-  m_qdateCreatedDate = createDate;
-  m_qdateLastAccess = createDate;
-  m_qdateLastModify = createDate;
-  m_bDirty = false;
-  m_bPasswordProtected=false;
-  m_bEncrypted=false;
-  m_bInitialised = m_bContainsBanks = m_bContainsAccounts = m_bContainsTransactions = false;
-}
-
-MyMoneyFile::~MyMoneyFile()
+/** Standard destructor for the class.
+**/
+KSettingsDlg::~KSettingsDlg()
 {
 }
 
-QString MyMoneyFile::userAddress(void)
+/** Called to create the General page to be shown in the dialog.
+**/
+void KSettingsDlg::setPageGeneral()
 {
-  // Return an address containing concatenated strings
-  QString qstringUserAddress;
-  qstringUserAddress = m_qstringUserStreet + "\n";
-  qstringUserAddress += m_qstringUserTown + "\n";
-  qstringUserAddress += m_qstringUserCounty + "\n";
-  qstringUserAddress += m_qstringUserPostcode + "\n";
-  qstringUserAddress += m_qstringUserTelephone + "\n";
-  qstringUserAddress += m_qstringUserEmail + "\n";
-  return qstringUserAddress;
+  // Create the main frame to hold the widgets
+  QVBox *qvboxMainFrame = addVBoxPage( i18n("General"), i18n("General settings"),
+    DesktopIcon("misc"));
+
+  // Create a group box to hold the available options
+  QButtonGroup *qbuttongroup = new QButtonGroup(qvboxMainFrame, "GroupBox1");
+  qbuttongroup-&gt;setTitle( i18n( "Startup options" ) );
+  qbuttongroup-&gt;setColumnLayout(0, Qt::Vertical );
+  qbuttongroup-&gt;layout()-&gt;setSpacing( 0 );
+  qbuttongroup-&gt;layout()-&gt;setMargin( 0 );
+
+  // Create a layout to organize the widgets.
+  QVBoxLayout *qvboxlayout = new QVBoxLayout(qbuttongroup-&gt;layout());
+  qvboxlayout-&gt;setAlignment( Qt::AlignTop );
+  qvboxlayout-&gt;setSpacing( 6 );
+  qvboxlayout-&gt;setMargin( 11 );
+
+  // Create a check box to be in the group box
+  m_qradiobuttonStartPrompt = new QRadioButton("start_prompt", qbuttongroup);
+  m_qradiobuttonStartPrompt-&gt;setText( i18n( "Start with dialog prompt (default)" ) );
+  qvboxlayout-&gt;addWidget(m_qradiobuttonStartPrompt);
+
+  // Create another check box to the group box
+  m_qradiobuttonStartFile = new QRadioButton("start_file", qbuttongroup);
+  m_qradiobuttonStartFile-&gt;setText( i18n( "Start with last file used" ) );
+  qvboxlayout-&gt;addWidget(m_qradiobuttonStartFile);
 }
 
-int MyMoneyFile::saveAllData(const QString& fileName)
+/** Called to create the Main List page shown in the dialog.
+**/
+void KSettingsDlg::setPageList()
 {
-  QFile qfile( fileName );
-  qfile.open( IO_WriteOnly );
-  QDataStream qdatastream( &qfile );
+  // Create the page.
+  QVBox *qvboxMainFrame = addVBoxPage( i18n("Main List"), i18n("List settings"),
+    locate("appdata", "pics/setting_list.png"));
 
-  // Write a header with a "magic number" and a version
-  QString qstringVer(VERSION);
-  qdatastream &lt;&lt; qstringVer;
-  qdatastream &lt;&lt; (Q_INT32)MAGIC;
-  if (m_bPasswordProtected)
-    qdatastream &lt;&lt; (Q_INT32)1;
+  // Create the tab widget
+  QTabWidget *qtabwidget = new QTabWidget(qvboxMainFrame, "TabWidget2");
+
+  // Create the first page
+  QWidget *qwidgetPage = new QWidget(this);
+
+  // Create the layout for the page
+  QVBoxLayout *qvboxlayoutPage = new QVBoxLayout(qwidgetPage);
+  qvboxlayoutPage-&gt;setSpacing( 6 );
+  qvboxlayoutPage-&gt;setMargin( 11 );
+
+  // Create a horizontal layout to hold two widgets
+  QHBoxLayout *qhboxlayout = new QHBoxLayout;
+  qhboxlayout-&gt;setSpacing( 6 );
+  qhboxlayout-&gt;setMargin( 0 );
+
+  // Create the first widget
+  QLabel *qlabel = new QLabel(i18n("Number of lines in the register view:"), qwidgetPage);
+  qhboxlayout-&gt;addWidget(qlabel);
+
+  // Create the second widget
+  m_klineeditRowCount = new KLineEdit(qwidgetPage);
+  QIntValidator *qintvalidator = new QIntValidator(1, 3, m_klineeditRowCount);
+  m_klineeditRowCount-&gt;setValidator(qintvalidator);
+  qhboxlayout-&gt;addWidget(m_klineeditRowCount);
+
+  // Add the horizontal layout
+  qvboxlayoutPage-&gt;addLayout(qhboxlayout);
+
+  // Ceate another widget
+  m_qcheckboxShowGrid = new QCheckBox(i18n("Show a grid in the register view"), qwidgetPage);
+  qvboxlayoutPage-&gt;addWidget(m_qcheckboxShowGrid);
+
+  // Create a group to hold two radio buttons
+  QButtonGroup *qbuttongroup = new QButtonGroup(qwidgetPage, "ButtonGroup1");
+  qbuttongroup-&gt;setTitle(i18n("Row Colour options"));
+  qbuttongroup-&gt;setColumnLayout(0, Qt::Vertical );
+  qbuttongroup-&gt;layout()-&gt;setSpacing( 0 );
+  qbuttongroup-&gt;layout()-&gt;setMargin( 0 );
+
+  // Create a layout
+  QVBoxLayout *qvboxlayout = new QVBoxLayout(qbuttongroup-&gt;layout());
+  qvboxlayout-&gt;setAlignment( Qt::AlignTop );
+  qvboxlayout-&gt;setSpacing( 6 );
+  qvboxlayout-&gt;setMargin( 11 );
+
+  // Add the first radio button
+  m_qradiobuttonPerTransaction = new QRadioButton(qbuttongroup, "m_per_trans");
+  m_qradiobuttonPerTransaction-&gt;setText( i18n("Use one colour per transaction") );
+  qvboxlayout-&gt;addWidget(m_qradiobuttonPerTransaction);
+
+  // Add the second radio button
+  m_qradiobuttonOtherRow = new QRadioButton(qbuttongroup, "m_every_other");
+  m_qradiobuttonOtherRow-&gt;setText( i18n( "Change colour every other row" ) );
+  qvboxlayout-&gt;addWidget(m_qradiobuttonOtherRow);
+  qvboxlayoutPage-&gt;addWidget(qbuttongroup);
+
+  // Add a vertical spacer to take up the remaining available space
+  QSpacerItem* spacer = new QSpacerItem( 20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding );
+  qvboxlayoutPage-&gt;addItem( spacer );
+
+  // Add the page to the tab
+  qtabwidget-&gt;insertTab(qwidgetPage, i18n("General"));
+
+  // Create a new tab for the colour options
+  QWidget *qwidgetColour = new QWidget(qtabwidget, "tab");
+
+  // Create a vertical layout
+  QVBoxLayout *qvboxlayoutColour = new QVBoxLayout(qwidgetColour);
+  qvboxlayoutColour-&gt;setSpacing( 6 );
+  qvboxlayoutColour-&gt;setMargin( 11 );
+
+  // Create a horizontal layout to include the label and button
+  QHBoxLayout *qhboxlayoutColour = new QHBoxLayout;
+  qhboxlayoutColour-&gt;setSpacing( 6 );
+  qhboxlayoutColour-&gt;setMargin( 0 );
+
+  // Add the label and button
+  QLabel *qlabelListColour = new QLabel(i18n( "List view colour :" ), qwidgetColour);
+  qhboxlayoutColour-&gt;addWidget(qlabelListColour);
+  m_kcolorbuttonList = new KColorButton(qwidgetColour, "colour_list");
+  qhboxlayoutColour-&gt;addWidget(m_kcolorbuttonList);
+
+  // Add the horizontal layout
+  qvboxlayoutColour-&gt;addLayout(qhboxlayoutColour);
+
+  // Create another horizontal layout to include the label and button
+  QHBoxLayout *qhboxlayoutBGColour = new QHBoxLayout;
+  qhboxlayoutBGColour-&gt;setSpacing( 6 );
+  qhboxlayoutBGColour-&gt;setMargin( 0 );
+
+  // Add the label and button
+  QLabel *qlabelListBGColour = new QLabel(i18n( "List background colour :" ), qwidgetColour);
+  qhboxlayoutBGColour-&gt;addWidget(qlabelListBGColour);
+  m_kcolorbuttonBack = new KColorButton(qwidgetColour, "colour_back");
+  qhboxlayoutBGColour-&gt;addWidget(m_kcolorbuttonBack);
+
+  // Add the horizontal layout
+  qvboxlayoutColour-&gt;addLayout(qhboxlayoutBGColour);
+
+  // Add a vertical spacer to take up the remaining available space
+  QSpacerItem* qspaceritemColour = new QSpacerItem( 20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding );
+  qvboxlayoutColour-&gt;addItem( qspaceritemColour );
+
+  // Add the page to the tab widget
+  qtabwidget-&gt;insertTab(qwidgetColour, i18n( "Color"));
+
+  // Create another tab adding a font chooser widget
+  QVBox *qvboxInsideTab1 = new QVBox( this, "tab1" );
+  qvboxInsideTab1-&gt;setSpacing( 6 );
+  qvboxInsideTab1-&gt;setMargin( 11 );
+  m_kfontchooserHeader = new KFontChooser(qvboxInsideTab1);
+  qtabwidget-&gt;insertTab(qvboxInsideTab1, i18n("Header Font"));
+
+  // Create another tab adding a font chooser widget
+  QVBox *qvboxInsideTab2 = new QVBox( this, "tab2" );
+  qvboxInsideTab2-&gt;setSpacing( 6 );
+  qvboxInsideTab2-&gt;setMargin( 11 );
+  m_kfontchooserCell = new KFontChooser(qvboxInsideTab2);
+  qtabwidget-&gt;addTab(qvboxInsideTab2, "Cell Font");
+}
+
+/** Read all the settings in from the global KConfig object and set all the
+  * widgets appropriately.
+**/
+void KSettingsDlg::configRead()
+{
+  KConfig *kconfig = KGlobal::config();
+  kconfig-&gt;setGroup("Settings Dialog");
+  QSize *qsizeDefaultSize = new QSize(470,470);
+  this-&gt;resize(kconfig-&gt;readSizeEntry("Geometry", qsizeDefaultSize));
+
+  kconfig-&gt;setGroup("General Options");
+  m_bTempStartPrompt = kconfig-&gt;readBoolEntry("StartDialog", true);
+  m_qradiobuttonStartPrompt-&gt;setChecked(m_bTempStartPrompt);
+  m_qradiobuttonStartFile-&gt;setChecked(!m_bTempStartPrompt);
+
+  kconfig-&gt;setGroup("List Options");
+
+  QFont qfontDefault = QFont("helvetica", 12);
+  QColor qcolorDefault = Qt::white;
+  QColor qcolorDefaultBG = Qt::gray;
+
+  m_qcolorTempList = kconfig-&gt;readColorEntry("listColor", &qcolorDefault);
+  m_kcolorbuttonList-&gt;setColor(m_qcolorTempList);
+
+  m_qcolorTempListBG = kconfig-&gt;readColorEntry("listBGColor", &qcolorDefaultBG);
+  m_kcolorbuttonBack-&gt;setColor(m_qcolorTempListBG);
+
+  m_qfontTempHeader = kconfig-&gt;readFontEntry("listHeaderFont", &qfontDefault);
+  m_kfontchooserHeader-&gt;setFont(m_qfontTempHeader);
+
+  m_qfontTempCell = kconfig-&gt;readFontEntry("listCellFont", &qfontDefault);
+  m_kfontchooserCell-&gt;setFont(m_qfontTempCell);
+
+  m_qstringTempRowCount = kconfig-&gt;readEntry("RowCount", "2");
+  m_klineeditRowCount-&gt;setText(m_qstringTempRowCount);
+
+  m_bTempShowGrid = kconfig-&gt;readBoolEntry("ShowGrid", true);
+  m_qcheckboxShowGrid-&gt;setChecked(m_bTempShowGrid);
+
+  m_bTempColourPerTransaction = kconfig-&gt;readBoolEntry("ColourPerTransaction", true);
+  m_qradiobuttonPerTransaction-&gt;setChecked(m_bTempColourPerTransaction);
+  m_qradiobuttonOtherRow-&gt;setChecked(!m_bTempColourPerTransaction);
+}
+
+/** Write out all the settings to the global KConfig object.
+**/
+void KSettingsDlg::configWrite()
+{
+  KConfig *kconfig = KGlobal::config();
+  kconfig-&gt;setGroup("Settings Dialog");
+  kconfig-&gt;writeEntry("Geometry", this-&gt;size() );
+
+  kconfig-&gt;setGroup("List Options");
+  kconfig-&gt;writeEntry("listColor", m_kcolorbuttonList-&gt;color());
+  kconfig-&gt;writeEntry("listBGColor", m_kcolorbuttonBack-&gt;color());
+  kconfig-&gt;writeEntry("listHeaderFont", m_kfontchooserHeader-&gt;font());
+  kconfig-&gt;writeEntry("listCellFont", m_kfontchooserCell-&gt;font());
+  kconfig-&gt;writeEntry("RowCount", m_klineeditRowCount-&gt;text());
+  kconfig-&gt;writeEntry("ShowGrid", m_qcheckboxShowGrid-&gt;isChecked());
+  kconfig-&gt;writeEntry("ColourPerTransaction", m_qradiobuttonPerTransaction-&gt;isChecked());
+
+  kconfig-&gt;setGroup("General Options");
+  kconfig-&gt;writeEntry("StartDialog", m_qradiobuttonStartPrompt-&gt;isChecked());
+
+  kconfig-&gt;sync();
+}
+
+/** Called on OK being pressed */
+void KSettingsDlg::slotOk()
+{
+  int nCount = m_klineeditRowCount-&gt;text().toInt();
+  if (nCount &lt;= 0 || nCount &gt;= 4) {
+    KMessageBox::information(this, "The row count has to be between 1 and 3");
+    m_klineeditRowCount-&gt;setFocus();
+    return;
+  }
+  configWrite();
+  this-&gt;accept();
+}
+
+/** Called on Apply being pressed */
+void KSettingsDlg::slotApply()
+{
+  int nCount = m_klineeditRowCount-&gt;text().toInt();
+  if (nCount &lt;= 0 || nCount &gt;= 4) {
+    KMessageBox::information(this, "The row count has to be between 1 and 3");
+    m_klineeditRowCount-&gt;setFocus();
+    return;
+  }
+  m_bDoneApply = true;
+  configWrite();
+  emit signalApply();
+}
+
+/** Called on Cancel being pressed.
+  * It writes out all the original settings read when it was created.
+**/
+void KSettingsDlg::slotCancel()
+{
+  // make sure the config object is the same as we left it
+  KConfig *kconfig = KGlobal::config();
+  kconfig-&gt;setGroup("List Options");
+  kconfig-&gt;writeEntry("listColor", m_qcolorTempList);
+  kconfig-&gt;writeEntry("listBGColor", m_qcolorTempListBG);
+  kconfig-&gt;writeEntry("listHeaderFont", m_qfontTempHeader);
+  kconfig-&gt;writeEntry("listCellFont", m_qfontTempCell);
+  kconfig-&gt;writeEntry("RowCount", m_qstringTempRowCount);
+  kconfig-&gt;writeEntry("ShowGrid", m_bTempShowGrid);
+  kconfig-&gt;writeEntry("ColourPerTransaction", m_bTempColourPerTransaction);
+
+  kconfig-&gt;setGroup("General Options");
+  kconfig-&gt;writeEntry("StartDialog", m_bTempStartPrompt);
+
+  kconfig-&gt;sync();
+
+  if (m_bDoneApply)
+    accept();
   else
-    qdatastream &lt;&lt; (Q_INT32)0;
-  if (m_bEncrypted)
-    qdatastream &lt;&lt; (Q_INT32)1;
-  else
-    qdatastream &lt;&lt; (Q_INT32)0;
-  qdatastream &lt;&lt; m_qstringPassword;
+    reject();
+}
 
-  // Is updated if the user chooses to save the file
-  m_bLastModify = QDate::currentDate();
-
-  // Simple Data
-  qdatastream &lt;&lt; m_userName
-    &lt;&lt; m_userStreet
-    &lt;&lt; m_userTown
-    &lt;&lt; m_userCounty
-    &lt;&lt; m_userPostcode
-    &lt;&lt; m_userTelephone
-    &lt;&lt; m_userEmail
-    &lt;&lt; m_createdDate
-    &lt;&lt; m_lastAccess
-    &lt;&lt; m_lastModify;
-
-  // Read through the three lists writing the count and then the objects
-  // in turn
-  qdatastream &lt;&lt; m_qlistBankNames.count();
-  for (QStringList::Iterator it = m_qlistBankNames.begin(); it != m_qlistBankNames.end(); ++it)
-    qdatastream &lt;&lt; (*it);
-
-  qdatastream &lt;&lt; m_qlistCategoryList.count();
-  MyMoneyCategory *mymoneyCategory;
-  for (mymoneyCategory=m_qlistCategoryList.first(); mymoneyCategory != 0; mymoneyCategory = m_qlistCategoryList.next()) {
-    qdatastream &lt;&lt; *mymoneyCategory;
-  }
-
-  qdatastream &lt;&lt; m_qlistPayeeList.count();
-  MyMoneyPayee *mymoneypayee;
-  for ( mymoneypayee=m_qlistPayeeList.first(); mymoneypayee!=0; mymoneypayee=m_qlistPayeeList.next()) {
-    qdatastream &lt;&lt; *mymoneypayee;
-  }
-
-  qdatastream &lt;&lt; (Q_INT32)bankCount();
-  MyMoneyBank *mymoneybank;
-  for (mymoneybank=bankFirst(); mymoneybank!=0; mymoneybank=bankNext()) {
-    qdatastream &lt;&lt; *mymoneybank;
-
-    qdatastream &lt;&lt; (Q_INT32)mymoneybank-&gt;accountCount();
-    MyMoneyAccount *mymoneyaccount;
-    for (mymoneyaccount=mymoneybank-&gt;accountFirst(); mymoneyaccount!=0; mymoneyaccount=mymoneybank-&gt;accountNext()) {
-      qdatastream &lt;&lt; *mymoneyaccount;
-
-      qdatastream &lt;&lt; (Q_INT32)mymoneyaccount-&gt;transactionCount();
-      MyMoneyTransaction *mymoneytransaction;
-      for (mymoneytransaction=mymoneyaccount-&gt;transactionFirst(); mymoneytransaction!=0; mymoneytransaction=mymoneyaccount-&gt;transactionNext()) {
-        qdatastream &lt;&lt; *mymoneytransaction;
-      }
-    }
-  }
-
-  qfile.close();
-  m_bDirty = false;
-  return 0;
+/** Called when the user presses the User1 button.  In our case that is the
+  * reset button.
+  *
+  * It just resets all the attributes to the values read on creation.
+**/
+void KSettingsDlg::slotUser1()
+{
+  m_qradiobuttonStartPrompt-&gt;setChecked(m_bTempStartPrompt);
+  m_kcolorbuttonList-&gt;setColor(m_qcolorTempList);
+  m_kcolorbuttonBack-&gt;setColor(m_qcolorTempListBG);
+  m_kfontchooserHeader-&gt;setFont(m_qfontTempHeader);
+  m_kfontchooserCell-&gt;setFont(m_qfontTempCell);
+  m_klineeditRowCount-&gt;setText(m_qstringTempRowCount);
+  m_qcheckboxShowGrid-&gt;setChecked(m_bTempShowGrid);
+  m_qradiobuttonPerTransaction-&gt;setChecked(m_bTempColourPerTransaction);
+  m_qradiobuttonOtherRow-&gt;setChecked(!m_bTempColourPerTransaction);
 }
 </pre>
-
-<p>Implementation for mymoneyfile.cpp continues...</p>
 
 <hr>
 <table width="100%">

@@ -28,14 +28,14 @@
 KChooseImportExportDlg::KChooseImportExportDlg(int type, QWidget *parent, const char *name )
  : KChooseImportExportDlgDecl(parent,name, true)
 {
-  if (type==0) { // QIF
+  if (type==0) { // import
     topLabel->setText("Please choose the type of import you wish to perform.   A simple explanation\n"
         "of the import type is available at the bottom of the screen and is updated when\n"
         "you select an item from the choice box."
         "\n\nOnce you have chosen an import type please press the OK button." );
     promptLabel->setText("Choose import type:");
     setCaption("Choose Import Type Dialog");
-  } else {
+  } else { // export
     topLabel->setText("Please choose the type of export you wish to perform.   A simple explanation\n"
         "of the export type is available at the bottom of the screen and is updated when\n"
         "you select an item from the choice box."
@@ -46,6 +46,7 @@ KChooseImportExportDlg::KChooseImportExportDlg(int type, QWidget *parent, const 
 
   readConfig();
   slotTypeActivated(m_lastType);
+  typeCombo->setCurrentItem(((m_lastType=="QIF") ? 0 : 1));
 
   connect(typeCombo, SIGNAL(activated(const QString&)), this, SLOT(slotTypeActivated(const QString&)));
   connect(okButton, SIGNAL(clicked()), this, SLOT(accept()));

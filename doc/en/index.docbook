@@ -158,7 +158,7 @@ revision history. (see installation appendix comment) -->
   Cash, Credit Card etc.
 </para>
 <para>
-  Data stored in account is as follows:
+  Data stored in an account is as follows:
   <itemizedlist>
   <listitem>
     <para>The name of the account.</para>
@@ -323,7 +323,7 @@ revision history. (see installation appendix comment) -->
   <screenshot>
   	<mediaobject>
 	    <imageobject>
-	      <imagedata fileref="startdialog.png" format="PNG">
+	      <imagedata fileref="../../images/startdialog.png" format="PNG">
   	  </imageobject>
 	  </mediaobject>
   </screenshot>
@@ -337,7 +337,7 @@ revision history. (see installation appendix comment) -->
   To create a new file, click on the
   <guiicon><inlinemediaobject>
   <imageobject>
-    <imagedata fileref="blank_icon.png" format="PNG">
+    <imagedata fileref="../../images/blank_icon.png" format="PNG">
   </imageobject>
   <textobject>
     <phrase>Blank</phrase>
@@ -356,7 +356,7 @@ revision history. (see installation appendix comment) -->
   <screenshot>
   	<mediaobject>
 	    <imageobject>
-	      <imagedata fileref="mainwindow.png" format="PNG">
+	      <imagedata fileref="../../images/mainwindow.png" format="PNG">
   	  </imageobject>
 	  </mediaobject>
   </screenshot>
@@ -381,7 +381,7 @@ revision history. (see installation appendix comment) -->
   <guimenuitem>Add new..</guimenuitem> or click on the
   <guiicon><inlinemediaobject>
   <imageobject>
-    <imagedata fileref="newbank_icon.png" format="PNG">
+    <imagedata fileref="../../images/newbank_icon.png" format="PNG">
   </imageobject>
   <textobject>
     <phrase>New Bank</phrase>
@@ -394,7 +394,7 @@ revision history. (see installation appendix comment) -->
   <screenshot>
   	<mediaobject>
 	    <imageobject>
-	      <imagedata fileref="newbank.png" format="PNG">
+	      <imagedata fileref="../../images/newbank.png" format="PNG">
   	  </imageobject>
 	  </mediaobject>
   </screenshot>
@@ -414,7 +414,7 @@ revision history. (see installation appendix comment) -->
   <guimenuitem>Add new account..</guimenuitem> or click on the
   <guiicon><inlinemediaobject>
   <imageobject>
-    <imagedata fileref="newaccount_icon.png" format="PNG">
+    <imagedata fileref="../../images/newaccount_icon.png" format="PNG">
   </imageobject>
   <textobject>
     <phrase>New Account</phrase>
@@ -427,7 +427,7 @@ revision history. (see installation appendix comment) -->
   <screenshot>
   	<mediaobject>
 	    <imageobject>
-	      <imagedata fileref="newaccount.png" format="PNG">
+	      <imagedata fileref="../../images/newaccount.png" format="PNG">
   	  </imageobject>
 	  </mediaobject>
   </screenshot>
@@ -492,7 +492,7 @@ revision history. (see installation appendix comment) -->
   <guimenuitem>Open register...</guimenuitem> or click on the
   <guiicon><inlinemediaobject>
   <imageobject>
-    <imagedata fileref="openaccount_icon.png" format="PNG">
+    <imagedata fileref="../../images/openaccount_icon.png" format="PNG">
   </imageobject>
   <textobject>
     <phrase>Open Account</phrase>
@@ -507,7 +507,7 @@ revision history. (see installation appendix comment) -->
   <screenshot>
   	<mediaobject>
 	    <imageobject>
-	      <imagedata fileref="transwindow.png" format="PNG">
+	      <imagedata fileref="../../images/transwindow.png" format="PNG">
   	  </imageobject>
 	  </mediaobject>
   </screenshot>

@@ -1,3 +1,6 @@
+2001-07-29 Michael Edwardes <mte@users.sourceforge.net>
+  * Improved the CSV import/export process.
+
 2001-07-28 Michael Edwardes <mte@users.sourceforge.net>
   * Quick fix to the kmymoneyview class for Mandrake 7.2.
 

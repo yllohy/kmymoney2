@@ -17,18 +17,28 @@
 #ifndef KMYMONEYVIEW_H
 #define KMYMONEYVIEW_H
 
-#include <kpopupmenu.h>
+// ----------------------------------------------------------------------------
+// QT Includes
 #include <qwidget.h>
-#include <ktabctl.h>
 #include <qmessagebox.h>
 #include <qvbox.h>
 
+// ----------------------------------------------------------------------------
+// KDE Includes
+#include <ktabctl.h>
+#include <kpopupmenu.h>
+
+
+// ----------------------------------------------------------------------------
+// Project Includes
+#include "mymoney/mymoneyaccount.h"
 #include "kmainview.h"
 #include "kreconciledlg.h"
 #include "kfindtransactiondlg.h"
 #include "kscheduleview.h"
 #include "kimportdlg.h"
 #include "kexportdlg.h"
+#include "dialogs/kcsvprogressdlg.h"
 
 /**
   * This class represents the view of the MyMoneyFile which contains
@@ -37,7 +47,7 @@
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.18 2001/07/22 00:37:49 mte Exp $
+  * $Id: kmymoneyview.h,v 1.19 2001/07/29 20:58:01 mte Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -74,8 +84,7 @@ private:
   bool checkTransactionPayee(const MyMoneyTransaction *transaction, const bool enabled, const QString payee, const bool isRegExp);
   bool checkTransactionCategory(const MyMoneyTransaction *transaction, const bool enabled, const QString category);
 
-  void accountImportCSV(void);
-  void accountExportCSV(void);
+  MyMoneyAccount* getAccount(void);
 
 public:
   /**

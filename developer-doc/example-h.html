@@ -16,9 +16,9 @@
 <h2 class="highlighted">Example header file for use by KMyMoney2</h2>
 <pre>
 /***************************************************************************
-                          mymoneyfile.h
+                          ksettingsdlg.h
                              -------------------
-    copyright            : (C) 2000 by Michael Edwardes
+    copyright            : (C) 2000,2001 by Michael Edwardes
     email                : mte@users.sourceforge.net
  ***************************************************************************/
 
@@ -30,208 +30,137 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#ifndef KSETTINGSDLG_H
+#define KSETTINGSDLG_H
 
-#ifndef MYMONEYFILE_H
-#define MYMONEYFILE_H
+// ----------------------------------------------------------------------------
+// QT Includes
+#include &lt;qcheckbox.h&gt;
+#include &lt;qradiobutton.h&gt;
+#include &lt;qbuttongroup.h&gt;
+#include &lt;qcolor.h&gt;
+#include &lt;qfont.h&gt;
 
-//-----------------------------------------------------------------------------
-// QT Headers
-#include &lt;qstring.h&gt;
-#include &lt;qlist.h&gt;
-#include &lt;qdatetime.h&gt;
-#include &lt;stdio.h&gt;
-#include &lt;qstringlist.h&gt;
+// ----------------------------------------------------------------------------
+// KDE Includes
+#include &lt;kdialogbase.h&gt;
+#include &lt;kfontdialog.h&gt;
+#include &lt;kcolorbutton.h&gt;
+#include &lt;klineedit.h&gt;
 
-//-----------------------------------------------------------------------------
-// KDE Headers
-
-//-----------------------------------------------------------------------------
-// Project Headers
-#include "mymoneybank.h"
-#include "mymoneypayee.h"
-#include "mymoneycategory.h"
-#include "mymoneyaccount.h"
+// ----------------------------------------------------------------------------
+// Project Includes
 
 /**
-  * This class is used by the GUI to interrogate the transaction engine.  It is not
-  * library independant at the moment and still relies upon QT for many of it's
-  * attributes and method calls.  Eventually this code will be separated from QT
-  * and could be usable from other GUI toolkits such as gtk as used by the GNOME
-  * desktop environment.
+  * This class is used to manipulate all the settings available for KMyMoney2.
+  * It currently stores the values for the list settings and whether to show
+  * the start dialog when KMyMoney2 starts.
   *
-  * TODO: Remove all QT dependance e.g QString, QList etc.
+  * It uses KDialogBase to implement it's interface.
   *
-  * @see MyMoneyBank
+  * It uses the global KConfig object to read and write the application
+  * settings.
+  *
+  * @see KDialogBase
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: example-h.html,v 1.1 2001/07/16 20:25:08 mte Exp $
+  * $Id: example-h.html,v 1.2 2001/07/29 20:58:01 mte Exp $
   *
-  * @short A representation of the file format used by KMyMoney2.
+  * @short A class to manipulate the settings needed for running KMyMoney2
 **/
-class MyMoneyFile {
+class KSettingsDlg : public KDialogBase  {
+   Q_OBJECT
+
 private:
-  // File 'fields'
-  QString m_qstringUserName;
-  QString m_qstringUserStreet;
-  QString m_qstringUserTown;
-  QString m_qstringUserCounty;
-  QString m_qstringUserPostcode;
-  QString m_qstringUserTelephone;
-  QString m_qstringUserEmail;
-  QDate m_qdateCreatedDate;
-  QDate m_qdateLastAccess;
-  QDate m_qdateLastModify;
-  bool m_bDirty;
-  bool m_bPasswordProtected;  // Not used yet
-  bool m_bEncrypted;  // Not used yet
-  QString m_qstringPassword;  // Not used yet
+  /** Start prompt dialog */
+  QRadioButton *m_qradiobuttonStartPrompt;
+  /** Start file */
+  QRadioButton *m_qradiobuttonStartFile;
+  /** Color list */
+  KColorButton *m_kcolorbuttonList;
+  /** Color background */
+  KColorButton *m_kcolorbuttonBack;
+  /** Select font header */
+  KFontChooser *m_kfontchooserHeader;
+  /** Font cell setting */
+  KFontChooser *m_kfontchooserCell;
 
-  // 'Helper' variables and methods
-  bool m_bInitialised;
-  bool m_bContainsBanks, m_bContainsAccounts, m_bContainsTransactions;
+  /** No rows to show in register */
+  KLineEdit *m_klineeditRowCount;
 
-  // A list containing the banks
-  QList&lt;MyMoneyBank&gt; m_qlistBanks;
+  /** Show grid in register ? */
+  QCheckBox *m_qcheckboxShowGrid;
 
-  // A list containing the list of banks that ATM knows about
-  // Not used yet.
-  QStringList m_qstringlistBankNames;
+  QRadioButton *m_qradiobuttonPerTransaction;
+  QRadioButton *m_qradiobuttonOtherRow;
 
-  // A list containing all the payees that have been used
-  QList&lt;MyMoneyPayee&gt; m_qlistPayeeList;
+  /** Set page general */
+  void setPageGeneral();
+  /** Set page list settings */
+  void setPageList();
+  /** Write settings */
+  void configWrite();
+  /** Read settings */
+  void configRead();
 
-  // A list containing all the categories that have been used.
-  // When a new file is created the list is read in from
-  // &lt;kde2dir&gt;/share/apps/kmymoney2/default_categories.dat
-  QList&lt;MyMoneyCategory&gt; m_qlistCategoryList;
+  /** Attributes to store the variables so they can be undone when cancelling
+    * the apply.
+  **/
+  QColor m_qcolorTempList;
+  QColor m_qcolorTempListBG;
+  QFont m_qfontTempHeader;
+  QFont m_qfontTempCell;
+  QString m_qstringTempRowCount;
+  bool m_bTempShowGrid;
+  bool m_bTempColourPerTransaction;
+  bool m_bTempStartPrompt;
+  bool m_bDoneApply;
 
-  bool findBankPosition(const MyMoneyBank& bank, unsigned int&);
 
 private slots:
+  /** Called when OK pressed */
+  void slotOk();
 
-protected:
+  /** Called when Apply pressed */
+  void slotApply();
 
-protected slots:
+  /** Called when Cancel pressed */
+  void slotCancel();
+
+  /** Called when Reset pressed */
+  void slotUser1();
 
 public:
   /**
-    * Standard constructor.  Just sets up some default values.
-  **/
-  MyMoneyFile();
-
-  /**
-    * This is the constructor usually used.  The passed parameters are used to
-    * initialise the attributes of this class.
+    * Standard constructor.
     *
-    * @param username The users name.
-    * @param userStreet Part of the users address.
-    * @param userTown Part of the users address.
-    * @param userCounty Part of the users address.
-    * @param userPostcode Part of the users address.
-    * @param userTelephone The users telephone number.
-    * @param userEmail The users email address.
-    * @param createDate TODO: remove this and use QDate::currentDate() in the constructor.
+    * @param parent The QWidget this is used in.
+    * @param name The QT name.
+    * @param modal True if we want the dialog to be application modal.
+    *
+    * @return An object of type KSettingsDlg.
+    *
+    * @see ~KSettingsDlg
   **/
-  MyMoneyFile(const QString& username, const QString& userStreet,
-    const QString& userTown, const QString& userCounty, const QString& userPostcode, const QString& userTelephone,
-    const QString& userEmail, const QDate& createDate);
+  KSettingsDlg(QWidget *parent=0, const char *name=0, bool modal=true);
 
   /**
     * Standard destructor.
+    *
+    * @return Nothing.
+    *
+    * @see KSettingsDlg
   **/
-  ~MyMoneyFile();
+  ~KSettingsDlg();
 
+signals:
   /**
-    * Adds a bank to the underlying data structures.  The parameters passed are used
-    * to create the bank which is then added.
+    * Emitted when the Apply button is clicked to allow the application to
+    * show the changes without having to close the dialog.
     *
-    * @param name The banks name.
-    * @param sortCode The banks sort code.
-    * @param city Part of the banks address.
-    * @param street Part of the banks address.
-    * @param postcode Part of the banks address.
-    * @param telephone The banks telephone number.
-    * @param manager The bank managers name.
-    *
-    * @see MyMoneyBank
+    * @return Nothing
   **/
-  bool addBank(const QString& name, const QString& sortCode, const QString& city, const QString& street,
-    const QString& postcode, const QString& telephone, const QString& manager);
-
-  /**
-    * Finds the bank in the list that matches the supplied argument.
-    *
-    * @param bank The bank to look for.
-    *
-    * @return A pointer to the bank if found, O otherwise.
-    *
-    * @see MyMoneyBank
-  **/
-  MyMoneyBank* bank(const MyMoneyBank& bank);
-
-  /**
-    * Returns the first bank stored.  Typically used in for
-    * statements as follows:
-    * MyMoneyBank *bank;
-    * for (bank=bankFirst(); bank; bank=bankNext()) {
-    *   // Do something with the bank
-    * }
-    *
-    * @return The first bank in the list or 0 if no banks are present.
-    *
-    * @see MyMoneyBank
-  **/
-  MyMoneyBank* bankFirst(void);
-
-  /**
-    * Returns the 'next' bank stored.  Typically used in for
-    * statements as follows:
-    * MyMoneyBank *bank;
-    * for (bank=bankFirst(); bank; bank=bankNext()) {
-    *   // Do something with the bank
-    * }
-    *
-    * @return The next bank in the list or 0 if no banks are present or there is no next.
-    *
-    * @see MyMoneyBank
-  **/
-  MyMoneyBank* bankNext(void);
-
-  /**
-    * Returns the first bank stored.  Typically used in while
-    * statements as follows:
-    * MyMoneyBank *bank = bankFirst();
-    * while (bank != bankLast()) {
-    *   // Do something with the bank
-    * }
-    *
-    * @return The first bank in the list or 0 if no banks are present.
-    *
-    * @see MyMoneyBank
-  **/
-  MyMoneyBank* bankLast(void);
-
-  /**
-    * Returns the number of banks held in the file.
-    *
-    * @return The bank count.
-    *
-    * @see MyMoneyBank
-  **/
-  unsigned int bankCount(void);
-
-  /**
-    * Removes a bank from the list that matches the parameter.
-    *
-    * @param bank A copy of the bank to remove.
-    *
-    * @return Whether the remove was succesfull.
-    *
-    * @see MyMoneyBank
-  **/
-  bool removeBank(const MyMoneyBank& bank);
-
-  ... file abbreviated.
+  void signalApply();
 };
 
 #endif
