@@ -1,3 +1,15 @@
+2004-10-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Reworked keyboard event handler
+  * Removed signalEnter() and signalEsc() signals
+  * Fixed initial size of cash account completion box
+  * Avoid some of the register flickering introduced in investment stuff
+  * Fixed a problem in reinvest dividend transactions when a fee was
+    assigned to an interest account
+  * Fixed switching to investment view when start editing an investment
+    transaction in a different view
+  * Reduced min version for autoconf to 2.53
+  * Maintain 3.0 backward compatibility
+
 2004-10-09 Ace Jones <acejones@users.sourceforge.net>
   * Fixed a bug in collapsed-column net worth reports (quarterly, yearly, etc)
     where currency conversion was involved.  The wrong price was being used.
