@@ -52,7 +52,8 @@ void MyMoneyQifProfile::clear(void)
   m_dateFormat = "%d.%m.%yyyy";
   m_apostropheFormat = "2000-2099";
   m_valueMode = "";
-  m_filterScript = "";
+  m_filterScriptImport = "";
+  m_filterScriptExport = "";
 
   m_decimal.clear();
   m_decimal['$'] =
@@ -92,8 +93,12 @@ void MyMoneyQifProfile::loadProfile(const QString& name)
   m_accountDelimiter = config->readEntry("AccountDelimiter", m_accountDelimiter);
   m_openingBalanceText = config->readEntry("OpeningBalance", m_openingBalanceText);
   m_voidMark = config->readEntry("VoidMark", m_voidMark);
-  m_filterScript = config->readEntry("FilterScript", m_filterScript);
+  m_filterScriptImport = config->readEntry("FilterScriptImport", m_filterScriptImport);
+  m_filterScriptExport = config->readEntry("FilterScriptExport", m_filterScriptExport);
 
+  // make sure, we remove any old stuff for now
+  config->deleteEntry("FilterScript");
+  
   QString tmp = QString(m_decimal['Q']) + m_decimal['T'] + m_decimal['I'] +
                 m_decimal['$'] + m_decimal['O'];
   tmp = config->readEntry("Decimal", tmp);
@@ -128,7 +133,8 @@ void MyMoneyQifProfile::saveProfile(void)
     config->writeEntry("AccountDelimiter", m_accountDelimiter);
     config->writeEntry("OpeningBalance", m_openingBalanceText);
     config->writeEntry("VoidMark", m_voidMark);
-    config->writeEntry("FilterScript", m_filterScript);
+    config->writeEntry("FilterScriptImport", m_filterScriptImport);
+    config->writeEntry("FilterScriptExport", m_filterScriptExport);
 
     QString tmp;
 
@@ -330,8 +336,6 @@ const QDate MyMoneyQifProfile::date(const QString& datein) const
   int delim;
   unsigned int i;
 
-  qDebug("Converting '%s' with format '%s'", datein.latin1(), m_dateFormat.latin1());
-  
   part = -1;
   delim = 0;
   for(i = 0; i < m_dateFormat.length(); ++i) {
@@ -550,7 +554,18 @@ const MyMoneyMoney MyMoneyQifProfile::value(const QChar& def, const QString& val
   return res;
 }
 
-void MyMoneyQifProfile::setFilterScript(const QString& script)
+void MyMoneyQifProfile::setFilterScriptImport(const QString& script)
 {
-  m_filterScript = script;
+  if(m_filterScriptImport != script)
+    m_isDirty = true;
+    
+  m_filterScriptImport = script;
+}
+
+void MyMoneyQifProfile::setFilterScriptExport(const QString& script)
+{
+  if(m_filterScriptExport != script)
+    m_isDirty = true;
+
+  m_filterScriptExport = script;
 }

@@ -68,7 +68,8 @@ public:
   const QString& openingBalanceText(void) const { return m_openingBalanceText; };
   const QString accountDelimiter(void) const;
   const QString& voidMark(void) const { return m_voidMark; };
-  const QString& filterScript(void) const { return m_filterScript; };
+  const QString& filterScriptImport(void) const { return m_filterScriptImport; };
+  const QString& filterScriptExport(void) const { return m_filterScriptExport; };
 
   /**
     * This method presets the member variables with the default values.
@@ -90,7 +91,8 @@ public slots:
   void setAccountDelimiter(const QString& delim);
   void setOpeningBalanceText(const QString& text);
   void setVoidMark(const QString& txt);
-  void setFilterScript(const QString& txt);
+  void setFilterScriptImport(const QString& txt);
+  void setFilterScriptExport(const QString& txt);
 
 private:
   const QString twoDigitYear(const QChar delim, int yr) const;
@@ -106,7 +108,8 @@ private:
   QString   m_openingBalanceText;
   QString   m_voidMark;
   QString   m_accountDelimiter;
-  QString   m_filterScript;
+  QString   m_filterScriptImport;
+  QString   m_filterScriptExport;
   QMap<QChar, QChar> m_decimal;
   QMap<QChar, QChar> m_thousands;
 };

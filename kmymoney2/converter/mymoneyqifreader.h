@@ -29,6 +29,7 @@
 #include <qobject.h>
 #include <qstring.h>
 #include <qstringlist.h>
+#include <qprocess.h>
 
 // ----------------------------------------------------------------------------
 // KDE Headers
@@ -76,26 +77,40 @@ public:
   void setProfile(const QString& name);
 
   /**
-    * This method actually imports the data from the selected file
-    * into the MyMoney engine. If further data is required by the
-    * user (e.g. categories, accounts, payees etc. are missing)
-    * appropriate dialogs will show up.
+    * This method actually starts the import of data from the selected file
+    * into the MyMoney engine.
     *
-    * Progress during the reading of the file is shown in the
-    * via the callback function registered with setProgressCallback()
+    * This method also starts the user defined import filter program
+    * defined in the QIF profile. If none is defined, the file is read
+    * as is (actually the UNIX command 'cat -' is used as the filter).
     *
-    * @retval true the import was finished
-    * @retval false the import was aborted by the user before the end
-    *               of the input file
+    * If data from the filter program is available, the slot
+    * slotReceivedDataFromFilter() will be called.
+    *
+    * Make sure to connect the signal importFinished() to detect when
+    * the import actually ended. Call the method finishImport() to clean
+    * things up and get the overall result of the import.
+    *
+    * @retval true the import was started successfully
+    * @retval false the import could not be started.
     */
-  const bool import(void);
-  
-  const QString scanFileForAccount(void);
+  const bool startImport(void);
 
+  /**
+    * This method must be called once the signal importFinished() has
+    * been emitted. It will clean up the reader state and determines
+    * the actual return code of the import.
+    *
+    * @retval true Import was successful.
+    * @retval false Import failed because the filter program terminated
+    *               abnormally or the user aborted the import process.
+    */
+  const bool finishImport(void);
+    
   const MyMoneyAccount& account() const { return m_account; };
 
   void setProgressCallback(void(*callback)(int, int, const QString&));
-  
+
 private:
   /**
     * This method is used to update the progress information. It
@@ -105,8 +120,6 @@ private:
     */
   void signalProgress(int current, int total, const QString& = "");
 
-  void runFilter(void);
-
   /**
     * This method scans a transaction contained in
     * a QIF file formatted as an account record. This
@@ -114,48 +127,38 @@ private:
     * is not found, then the data in the entry is treated
     * as a transaction. In this case, the user will be asked to
     * specify the account to which the transactions should be imported.
+    * The entry data is found in m_qifEntry.
     *
-    * @param lines A list of all the lines for this transaction
     * @param accountType see MyMoneyAccount() for details. Defaults to MyMoneyAccount::Checkings
     */
-  void processMSAccountEntry(const QStringList& lines, const MyMoneyAccount::accountTypeE accountType = MyMoneyAccount::Checkings);
+  void processMSAccountEntry(const MyMoneyAccount::accountTypeE accountType = MyMoneyAccount::Checkings);
 
   /**
-    * This method scans an account record as specified
+    * This method scans the m_qifEntry object as an account record specified
     * by Quicken.
-    *
-    * @param lines A list of all the lines for this account
     */
-  void processAccountEntry(const QStringList& lines);
+  void processAccountEntry(void);
 
   /**
-    * This method scans a category record as specified
+    * This method scans the m_qifEntry object as a category record specified
     * by Quicken.
-    *
-    * @param lines A list of all the lines for this category
     */
-  void processCategoryEntry(const QStringList& lines);
+  void processCategoryEntry(void);
   
   /**
-    * This method scans a transaction record as specified
+    * This method scans the m_qifEntry object as a transaction record specified
     * by Quicken.
-    *
-    * @param lines A list of all the lines for this category
     */
-  void processTransactionEntry(const QStringList& lines);
+  void processTransactionEntry(void);
 
   /**
-    * This method reads lines from the QTextStream @p s into
-    * a QStringList object until it encounters a line
-    * containing a caret (^) as the first character or EOF.
-    * The collected lines are returned.
-    *
-    * @param s QTextStream to read from
-    *
-    * @return QStringList containing the lines read
+    * This method processes the lines previously collected in
+    * the member variable m_qifEntry. If further information
+    * by the user is required to process the entry it will
+    * be collected.
     */
-  const QStringList readEntry(QTextStream& s) const;
-
+  void processQifEntry(void);
+  
   /**
     * This method is used to get the account id of the split for
     * a transaction from the text found in the QIF $ or L record.
@@ -173,17 +176,16 @@ private:
 
   /**
     * This method extracts the line beginning with the letter @p id
-    * from the lines contained in the QStringList object @p lines.
+    * from the lines contained in the QStringList object @p m_qifEntry.
     * An empty QString is returned, if the line is not found.
     *
     * @param id QChar containing the letter to be found
-    * @param lines QStringList containing the lines
     * @param cnt return cnt'th of occurance of id in lines. cnt defaults to 1.
     *
     * @return QString with the remainder of the line or empty if
     *         @p id is not found in @p lines
     */
-  const QString extractLine(const QChar id, const QStringList& lines, int cnt = 1) const;
+  const QString extractLine(const QChar id, int cnt = 1) const;
 
   enum SelectCreateMode {
     Create = 0,
@@ -226,18 +228,51 @@ private:
     */
   void selectOrCreateAccount(const SelectCreateMode mode, MyMoneyAccount& account);
 
+signals:
+  /**
+    * This signal will be emitted when the import is finished.
+    */
+  void importFinished(void);
+  
+private slots:
+  void slotSendDataToFilter(void);
+  void slotReceivedDataFromFilter(void);
+  void slotReceivedErrorFromFilter(void);
+
+  /**
+    * This slot is used to be informed about the end of the filtering process.
+    * It emits the signal importFinished()
+    */
+  void slotImportFinished(void);
+
+
 private:
-  QString                 m_originalFilename;
+  enum QifEntryType {
+     EntryUnknown = 0,
+     EntryAccount,
+     EntryTransaction,
+     EntryCategory,
+     EntryMemorizedTransaction
+  };
+
+  QProcess                m_filter;
   QString                 m_filename;
   MyMoneyQifProfile       m_qifProfile;
-  KTempFile               m_tempFile;
   MyMoneyAccount          m_account;
   bool                    m_skipAccount;
   unsigned long           m_transactionsSkipped;
   unsigned long           m_transactionsProcessed;
   QStringList             m_dontAskAgain;
   QMap<QString, QCString> m_accountTranslation;
-
+  QFile                   *m_file;
+  char                    m_buffer[1024];
+  QStringList             m_qifEntry;
+  QString                 m_qifLine;
+  int                     m_entryType;
+  bool                    m_processingData;
+  bool                    m_userAbort;
+  unsigned long           m_pos;
+    
   void (*m_progressCallback)(int, int, const QString&);
 };
 
