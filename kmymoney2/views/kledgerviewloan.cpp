@@ -256,12 +256,32 @@ void KLedgerViewLoan::createMoreMenu(void)
 {
   // get the basic entries for all ledger views
   KLedgerView::createMoreMenu();
+
+  // and now the specific entries for checkings/savings etc.
+  KIconLoader *kiconloader = KGlobal::iconLoader();
+
+  m_moreMenu->insertItem(i18n("Edit splits ..."), this, SLOT(slotStartEditSplit()),
+      QKeySequence(), -1, 1);
+  m_moreMenu->insertItem(kiconloader->loadIcon("goto", KIcon::Small),
+                            i18n("Goto payee/receiver"), this, SLOT(slotPayeeSelected()),
+                            QKeySequence(), -1, 2);
+                            
+  m_form->moreButton()->setPopup(m_moreMenu);
 }
 
 void KLedgerViewLoan::createContextMenu(void)
 {
   // get the basic entries for all ledger views
   KLedgerView::createContextMenu();
+
+  // and now the specific entries for checkings/savings etc.
+  KIconLoader *kiconloader = KGlobal::iconLoader();
+
+  m_contextMenu->insertItem(i18n("Edit splits ..."), this, SLOT(slotStartEditSplit()),
+      QKeySequence(), -1, 2);
+  m_contextMenu->insertItem(kiconloader->loadIcon("goto", KIcon::Small),
+                            i18n("Goto payee/receiver"), this, SLOT(slotPayeeSelected()),
+                            QKeySequence(), -1, 3);
 }
 
 void KLedgerViewLoan::createForm(void)
@@ -848,33 +868,31 @@ void KLedgerViewLoan::arrangeEditWidgetsInForm(QWidget*& focusWidget, const int 
 
 void KLedgerViewLoan::arrangeEditWidgetsInRegister(QWidget*& focusWidget, const int /* transType */)
 {
-/*
   delete m_editAmount; m_editAmount = 0;
 
   int   firstRow = m_register->currentTransactionIndex() * m_register->rpt();
+  m_register->setCellWidget(firstRow, 0, m_editDate);
   if(m_editNr != 0)
-    m_register->setCellWidget(firstRow, 0, m_editNr);
-  m_register->setCellWidget(firstRow, 1, m_editDate);
+    m_register->setCellWidget(firstRow, 1, m_editNr);
   // m_register->setCellWidget(firstRow+1, 1, m_editType);
   m_register->setCellWidget(firstRow, 2, m_editPayee);
   m_register->setCellWidget(firstRow+1, 2, m_editCategory);
   m_register->setCellWidget(firstRow+2, 2, m_editMemo);
   m_register->setCellWidget(firstRow, 4, m_editPayment);
-  m_register->setCellWidget(firstRow, 5, m_editDeposit);
+  // m_register->setCellWidget(firstRow, 5, m_editDeposit);
 
-  if(m_editNr != 0) {
-    m_tabOrderWidgets.append(m_editNr);
-    focusWidget = m_editNr;
-  } else
-    focusWidget = m_editDate;
-
+  focusWidget = m_editDate;
   m_tabOrderWidgets.append(m_editDate->focusWidget());
-  m_tabOrderWidgets.append(m_editType);
+  
+  if(m_editNr != 0)
+    m_tabOrderWidgets.append(m_editNr);
+
+  // m_tabOrderWidgets.append(m_editType);
   m_tabOrderWidgets.append(m_editPayee);
   m_tabOrderWidgets.append(m_editCategory);
   m_tabOrderWidgets.append(m_editMemo);
   m_tabOrderWidgets.append(m_editPayment);
-  m_tabOrderWidgets.append(m_editDeposit);
+  // m_tabOrderWidgets.append(m_editDeposit);
 
   if(m_editFrom) {
     delete m_editFrom;
@@ -888,7 +906,6 @@ void KLedgerViewLoan::arrangeEditWidgetsInRegister(QWidget*& focusWidget, const 
     delete m_editSplit;
     m_editSplit = 0;
   }
-*/
 }
 
 void KLedgerViewLoan::showWidgets(void)
@@ -952,24 +969,18 @@ bool KLedgerViewLoan::focusNextPrevChild(bool next)
 
 void KLedgerViewLoan::slotRegisterClicked(int row, int col, int button, const QPoint &mousePos)
 {
-/*
   if(!m_account.id().isEmpty()) {
     KLedgerView::slotRegisterClicked(row, col, button, mousePos);
-
-    if(m_inReconciliation == true
-    && col == 3) {    // reconcileFlag column
-      slotToggleClearFlag();
-    }
   }
-*/
 }
 
 void KLedgerViewLoan::slotConfigureMoreMenu(void)
 {
-/*
   MyMoneyFile* file = MyMoneyFile::instance();
   int splitEditId = m_moreMenu->idAt(1);
   int gotoPayeeId = m_moreMenu->idAt(2);
+  int markAsId = m_moreMenu->idAt(4);
+  int moveToId = m_moreMenu->idAt(5);
   m_moreMenu->disconnectItem(splitEditId, this, SLOT(slotStartEditSplit()));
   m_moreMenu->disconnectItem(splitEditId, this, SLOT(slotGotoOtherSideOfTransfer()));
 
@@ -1003,15 +1014,18 @@ void KLedgerViewLoan::slotConfigureMoreMenu(void)
   } else {
     m_moreMenu->setItemEnabled(splitEditId, false);
   }
-*/
+  
+  m_moreMenu->setItemEnabled(markAsId, false);
+  m_moreMenu->setItemEnabled(moveToId, false);
 }
 
 void KLedgerViewLoan::slotConfigureContextMenu(void)
 {
-/*
   int splitEditId = m_contextMenu->idAt(2);
   int gotoPayeeId = m_contextMenu->idAt(3);
-  int deleteId = m_contextMenu->idAt(9);
+  int markAsId = m_contextMenu->idAt(5);
+  int moveToId = m_contextMenu->idAt(6);
+  int deleteId = m_contextMenu->idAt(8);
   MyMoneyFile* file = MyMoneyFile::instance();
 
   m_contextMenu->disconnectItem(splitEditId, this, SLOT(slotStartEditSplit()));
@@ -1019,7 +1033,7 @@ void KLedgerViewLoan::slotConfigureContextMenu(void)
 
   m_contextMenu->changeItem(splitEditId, i18n("Edit splits ..."));
   if(m_transactionPtr != 0) {
-    if(!m_split.payeeId().isEmpty() && !m_split.accountId().isEmpty() && m_transaction.id().isEmpty()) {
+    if(!m_split.payeeId().isEmpty() && !m_split.accountId().isEmpty() && !m_transaction.id().isEmpty()) {
       MyMoneyPayee payee = file->payee(m_split.payeeId());
       QString name = payee.name();
       name.replace(QRegExp("&(?!&)"), "&&");
@@ -1050,7 +1064,9 @@ void KLedgerViewLoan::slotConfigureContextMenu(void)
     m_contextMenu->setItemEnabled(splitEditId, false);
     m_contextMenu->setItemEnabled(deleteId, false);
   }
-*/
+  
+  m_contextMenu->setItemEnabled(markAsId, false);
+  m_contextMenu->setItemEnabled(moveToId, false);
 }
 
 void KLedgerViewLoan::slotOpenSplitDialog(void)
@@ -1058,6 +1074,11 @@ void KLedgerViewLoan::slotOpenSplitDialog(void)
   bool isDeposit = false;
   bool isValidAmount = false;
 
+  if(m_split.value() >= 0) {
+    isDeposit = true;
+  }
+  
+#if 0  
   if(m_transactionFormActive) {
     isDeposit = transactionType(m_split) == Deposit;
     isValidAmount = m_editAmount->text().length() != 0;
@@ -1071,6 +1092,7 @@ void KLedgerViewLoan::slotOpenSplitDialog(void)
       isValidAmount = true;
     }
   }
+#endif  
   KSplitTransactionDlg* dlg = new KSplitTransactionDlg(m_transaction,
                                                        m_account,
                                                        isValidAmount,
