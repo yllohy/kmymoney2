@@ -727,6 +727,8 @@ void KMyMoneyView::slotAccountNew(void)
   config->setGroup("General Options");
   if(config->readBoolEntry("NewAccountWizard", true) == true) {
     // wizard selected
+    m_newAccountWizard->setAccountName("");
+    m_newAccountWizard->setOpeningBalance(0);
     if((dialogResult = m_newAccountWizard->exec()) == QDialog::Accepted) {
       newAccount = m_newAccountWizard->account();
       parentAccount = m_newAccountWizard->parentAccount();
