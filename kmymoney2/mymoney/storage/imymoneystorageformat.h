@@ -31,12 +31,13 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
-#include <qfile.h>
+class QIODevice;
+class QProgressDialog;
 
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "imymoneyserialize.h"
+class IMyMoneySerialize;
   
 
 class IMyMoneyStorageFormat
