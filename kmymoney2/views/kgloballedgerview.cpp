@@ -49,6 +49,7 @@
 #include "../mymoney/mymoneyaccount.h"
 #include "../mymoney/mymoneyfile.h"
 #include "../widgets/kmymoneycombo.h"
+#include "../kmymoneyutils.h"
 
 KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   : QWidget(parent,name)
@@ -220,16 +221,10 @@ void KGlobalLedgerView::selectAccount(const QCString& accountId, const QCString&
       m_currentView->setCurrentAccount(accountId, forceLoad);
       m_accountId = accountId;
       m_accountComboBox->setCurrentItem(acc.name());
-      if(transaction != "") {
-        try {
-          m_currentView->selectTransaction(transaction);
-        } catch(MyMoneyException *e) {
-          delete e;
-        }
-      }
+      m_currentView->selectTransaction(transaction);
     } else {
-      QString msg = "Specific ledger view for account type " +
-        QString::number(acc.accountType()) + " not yet implemented";
+      QString msg = "Specific ledger view for account type '" +
+        KMyMoneyUtils::accountTypeToString(acc.accountType()) + "' not yet implemented";
       KMessageBox::sorry(0, msg, "Implementation problem");
     }
   } else {

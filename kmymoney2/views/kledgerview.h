@@ -214,6 +214,16 @@ public:
   virtual ~KLedgerView();
 
   /**
+    * This method is the overridden version of the QWidget method. It
+    * checks that a transaction is selected if transactions are visible
+    * and if no transaction is selected selects the last one available.
+    *
+    * If form is available, it is filled with the data of the selected
+    * transaction by calling fillForm().
+    */
+  void show();
+
+  /**
     * This method is called by KGlobalLedgerView::selectAccount to set
     * the current account to @p accountId. It calls
     * loadAccount() to do the actual loading of data from the engine.
@@ -311,10 +321,13 @@ public:
   const QString action2str(const QCString& action, const bool showHotkey = false) const;
 
   /**
-    * This method is used to select a specific transaction
+    * This method is used to select a specific transaction. If @p id is equal
+    * to "", then the last available transaction will be selected.
     *
     * @param id const reference to the ID of the transaction to be selected
-    * @return true if the transaction was found and selected, false otherwise.
+    * @retval true the selected transaction was found and selected
+    * @retval false the selected transaction does not exist or is currently not
+    *               visible
     */
   bool selectTransaction(const QCString& id);
 

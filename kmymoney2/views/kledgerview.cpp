@@ -460,7 +460,7 @@ void KLedgerView::filterTransactions(void)
 }
 
 
-void KLedgerView::update(const QCString& accountId)
+void KLedgerView::update(const QCString& /* accountId */)
 {
   if(m_suspendUpdate == false) {
     try {
@@ -504,7 +504,7 @@ const MyMoneyMoney KLedgerView::balance(const int idx) const
   return bal;
 }
 
-void KLedgerView::slotRegisterClicked(int row, int col, int button, const QPoint &mousePos)
+void KLedgerView::slotRegisterClicked(int row, int /* col */, int button, const QPoint& /* mousePos */)
 {
   if(!(m_account.id().isEmpty())) {
     // only redraw the register and form, when a different
@@ -574,19 +574,31 @@ void KLedgerView::slotPreviousTransaction(void)
 bool KLedgerView::selectTransaction(const QCString& transactionId)
 {
   bool  rc = false;
-
-  for(unsigned i = 0; i < m_transactionPtrVector.size(); ++i) {
-    if(m_transactionPtrVector[i]->id() == transactionId) {
-      m_register->setCurrentTransactionIndex(i);
-      m_register->ensureTransactionVisible();
-      m_register->repaintContents(false);
-      fillForm();
-      fillSummary();
-      emit transactionSelected();
-      rc = true;
-      break;
+  int   idx = -1;
+  
+  if(!transactionId.isEmpty()) {
+    for(unsigned i = 0; i < m_transactionPtrVector.count(); ++i) {
+      if(m_transactionPtrVector[i]->id() == transactionId) {
+        idx = i;
+        break;
+      }
+    }
+  } else {
+    if(m_transactionPtrVector.count() > 0) {
+      idx = m_transactionPtrVector.count()-1;
     }
   }
+
+  if(idx != -1) {
+    m_register->setCurrentTransactionIndex(idx);
+    m_register->ensureTransactionVisible();
+    m_register->repaintContents(false);
+    fillForm();
+    fillSummary();
+    emit transactionSelected();
+    rc = true;
+  }
+
   return rc;
 }
 
@@ -1747,7 +1759,7 @@ void KLedgerView::hide(void)
   QWidget::hide();
 }
 
-void KLedgerView::slotRegisterHeaderClicked(int col)
+void KLedgerView::slotRegisterHeaderClicked(int /* col */)
 {
 }
 
@@ -1771,3 +1783,24 @@ const bool KLedgerView::isEditMode(void) const
 {
   return m_editDate != 0 && m_editDate->isVisible();
 }
+
+void KLedgerView::show()
+{
+  // make sure, we have a transaction selected if at least one is available
+  if(m_transactionPtr == 0 && m_transactionPtrVector.count() > 0) {
+    m_register->setCurrentTransactionIndex(m_transactionPtrVector.count()-1);
+  }
+  
+  // make sure, the QTabbar does not send out it's selected() signal
+  // which would drive us crazy here. fillForm calls slotTypeSelected()
+  // later on anyway.
+  if(m_form)
+    m_form->tabBar()->blockSignals(true);
+  QWidget::show();
+  if(m_form)
+    m_form->tabBar()->blockSignals(false);
+
+  fillForm();
+  resizeEvent(NULL);
+}
+

@@ -158,19 +158,6 @@ void KLedgerViewCheckings::resizeEvent(QResizeEvent* /* ev */)
   table->setColumnWidth(1, w);
 }
 
-void KLedgerViewCheckings::show()
-{
-  // make sure, the QTabbar does not send out it's selected() signal
-  // which would drive us crazy here. fillForm calls slotTypeSelected()
-  // later on anyway.
-  m_form->tabBar()->blockSignals(true);
-  KLedgerView::show();
-  m_form->tabBar()->blockSignals(false);
-
-  fillForm();
-  resizeEvent(NULL);
-}
-
 void KLedgerViewCheckings::enableWidgets(const bool enable)
 {
   m_detailsButton->setEnabled(enable);

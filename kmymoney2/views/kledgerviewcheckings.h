@@ -129,8 +129,6 @@ public:
 	KLedgerViewCheckings(QWidget *parent=0, const char *name=0);
 	~KLedgerViewCheckings();
 
-  void show();
-
 public slots:
   /**
     * refresh the current view
