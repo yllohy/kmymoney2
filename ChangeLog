@@ -1,3 +1,9 @@
+2005-03-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed INT64_MIN, INT64_MAX definition problem
+  * Fixed initial startup behaviour
+  * Added tabs for personal information and transaction history in payees view
+  * Remove symlinks to header files before (re-)creating them during configure
+
 2005-03-29 Ace Jones <acejones@users.sourceforge.net>
   * Added new welcome and whats new screens
     (Submitted by Robert Wadley <rob@robntina.fastmail.us>)
@@ -10,13 +16,17 @@
   * Fixed #1171039 (Made spaces in value amounts non-breaking in home view)
   * Fixed a bug in QIF import.  When a transfer transaction was imported,
     the remainder of the transactions were imported into that account.
-  
+
+2005-03-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Remove window size display from caption when compiled w/o debug support
+
 2005-03-25 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Avoid inadvertent overwrite of foreign file types
 
 2005-03-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Removed unused files
   * Added missing header file to support 'make bcheck'
+  * Remove symlinks to header files before re-creating them
 
 2005-03-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fix mymoneymoneytest.cpp to work with 64 bit systems
