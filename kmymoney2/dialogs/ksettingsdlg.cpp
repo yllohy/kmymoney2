@@ -420,8 +420,8 @@ void KSettingsDlg::configWrite()
 void KSettingsDlg::slotOk()
 {
   int nCount = m_klineeditRowCount->text().toInt();
-  if (nCount <= 0 || nCount >= 3) {
-    KMessageBox::information(this, i18n("The row count has to be between 1 and 2"));
+  if (nCount <= 0 || nCount >= 4) {
+    KMessageBox::information(this, i18n("The row count has to be between 1 and 3"));
     m_klineeditRowCount->setFocus();
     return;
   }
@@ -433,8 +433,8 @@ void KSettingsDlg::slotOk()
 void KSettingsDlg::slotApply()
 {
   int nCount = m_klineeditRowCount->text().toInt();
-  if (nCount <= 0 || nCount >= 3) {
-    KMessageBox::information(this, i18n("The row count has to be between 1 and 2"));
+  if (nCount <= 0 || nCount >= 4) {
+    KMessageBox::information(this, i18n("The row count has to be between 1 and 3"));
     m_klineeditRowCount->setFocus();
     return;
   }
