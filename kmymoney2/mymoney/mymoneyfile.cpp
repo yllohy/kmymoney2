@@ -549,7 +549,17 @@ QCString MyMoneyFile::openingBalanceTransaction(const MyMoneyAccount& acc) const
   QCString result;
 
   MyMoneySecurity currency = security(acc.currencyId());
-  MyMoneyAccount openAcc = openingBalanceAccount(currency);
+  MyMoneyAccount openAcc;
+  
+  try
+  {
+    openAcc = openingBalanceAccount(currency);
+  }
+  catch(MyMoneyException *e)
+  {
+    delete e;
+    return result;
+  } 
 
   // Iterate over all the opening balance transactions for this currency
   MyMoneyTransactionFilter filter;
@@ -572,6 +582,7 @@ QCString MyMoneyFile::openingBalanceTransaction(const MyMoneyAccount& acc) const
     {
       // If not, keep searching
       ++it_t;
+      delete e;
     }
   }
 
