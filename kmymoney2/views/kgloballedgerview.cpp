@@ -43,6 +43,8 @@
 #include "kledgerviewcheckings.h"
 #include "kledgerviewsavings.h"
 #include "kledgerviewcreditcard.h"
+#include "kledgerviewasset.h"
+#include "kledgerviewcash.h"
 
 #include "../mymoney/mymoneyaccount.h"
 #include "../mymoney/mymoneyfile.h"
@@ -89,6 +91,18 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   // Credit card account
   view = m_specificView[MyMoneyAccount::CreditCard] = new KLedgerViewCreditCard(this);
   m_accountStack->addWidget(view, MyMoneyAccount::CreditCard);
+  connect(view, SIGNAL(accountAndTransactionSelected(const QCString&, const QCString&)),
+    this, SLOT(slotSelectAccountAndTransaction(const QCString&, const QCString&)));
+
+  // Cash account
+  view = m_specificView[MyMoneyAccount::Cash] = new KLedgerViewCash(this);
+  m_accountStack->addWidget(view, MyMoneyAccount::Cash);
+  connect(view, SIGNAL(accountAndTransactionSelected(const QCString&, const QCString&)),
+    this, SLOT(slotSelectAccountAndTransaction(const QCString&, const QCString&)));
+
+  // Asset account
+  view = m_specificView[MyMoneyAccount::Asset] = new KLedgerViewAsset(this);
+  m_accountStack->addWidget(view, MyMoneyAccount::Asset);
   connect(view, SIGNAL(accountAndTransactionSelected(const QCString&, const QCString&)),
     this, SLOT(slotSelectAccountAndTransaction(const QCString&, const QCString&)));
 
@@ -175,6 +189,7 @@ void KGlobalLedgerView::slotSelectAccountAndTransaction(const QCString& accountI
 
 void KGlobalLedgerView::selectAccount(const QCString& accountId)
 {
+  slotCancelEdit();
   if(accountId != "") {
     MyMoneyAccount acc = MyMoneyFile::instance()->account(accountId);
     m_accountStack->raiseWidget(acc.accountType());
@@ -225,5 +240,13 @@ void KGlobalLedgerView::slotShowTransactionForm(bool show)
   for(int i = 0; i < MyMoneyAccount::MaxAccountTypes; ++i) {
     if(m_specificView[i] != 0)
       m_specificView[i]->slotShowTransactionForm(show);
+  }
+}
+
+void KGlobalLedgerView::slotCancelEdit(void)
+{
+  for(int i = 0; i < MyMoneyAccount::MaxAccountTypes; ++i) {
+    if(m_specificView[i] != 0)
+      m_specificView[i]->slotCancelEdit();
   }
 }

@@ -45,6 +45,8 @@
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
+class QPopupMenu;
+
 class KComboBox;
 class KLedgerView;
 
@@ -104,6 +106,8 @@ protected slots:
     * @param transactionId const QCString reference to the transaction id
     */
   void slotSelectAccountAndTransaction(const QCString& accountId, const QCString& transactionId);
+
+  void slotCancelEdit(void);
 
 private:
   void refresh(void);
