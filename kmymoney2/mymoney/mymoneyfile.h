@@ -202,7 +202,7 @@ public:
     *              if @p false, notifications will be send out.
     */
   void suspendNotify(const bool state);
-  
+
   /**
     * This method is used to attach a storage to the MyMoneyFile object
     * Without an attached storage object, the MyMoneyFile object is
@@ -278,7 +278,7 @@ public:
     * to a local temp file was OK.
     */
   void setDirty(void) const;
-  
+
   /**
     * Adds an institution to the file-global institution pool. A
     * respective institution-ID will be generated for this object.
@@ -581,7 +581,7 @@ public:
     * @retval true value returned by accountValue(const QCString&) is correct
     */
   const bool accountValueValid(const QCString& id) const;
-  
+
   /**
     * This method returns the number of transactions currently known to file
     * in the range 0..MAXUINT
@@ -702,7 +702,7 @@ public:
     * @return parent name (full account name excluding the last part)
     */
   const QString parentName(const QString& name) const;
-  
+
   /**
     * This method is used to attach an observer to a subject
     * represented by it's id. Whenever the object represented
@@ -902,7 +902,7 @@ public:
                                      const bool overdue = false) const;
 
   const QStringList consistencyCheck(void);
-    
+
   /**
     * MyMoneyFile::NotifyClassAccount
     * is a special id that will be notified whenever any account is changed.
@@ -965,10 +965,16 @@ public:
   static const QCString NotifyClassAnyChange;
 
   /**
-    * MyMoneyFile::NotifyClassSchedule
+    * MyMoneyFile::NotifyClassCurrency
     * is a special id that will be notified whenever any currency is changed
     */
   static const QCString NotifyClassCurrency;
+
+  /**
+    * MyMoneyFile::NotifyClassEquity
+    * is a special id that will be notified whenever any equity is changed
+    */
+  static const QCString NotifyClassEquity;
 
   /**
     * createCategory creates a category from a text name.
@@ -1130,7 +1136,7 @@ public:
     * @return price found as MyMoneyMoney object
     */
   const MyMoneyMoney currencyPrice(const QCString& currencyId, const QDate date = QDate::currentDate()) const;
-  
+
 protected:
   /**
     * This is the constructor for a new empty file description
@@ -1206,7 +1212,7 @@ private:
   /**
     */
   bool m_suspendNotify;
-  
+
   static MyMoneyFile* _instance;
 };
 #endif

@@ -49,6 +49,7 @@ const QCString MyMoneyFile::NotifyClassAccountHierarchy = "MyMoneyFile::NotifyAc
 const QCString MyMoneyFile::NotifyClassSchedule = "MyMoneyFile::NotifySchedule";
 const QCString MyMoneyFile::NotifyClassAnyChange = "MyMoneyFile::NotifyAnyChange";
 const QCString MyMoneyFile::NotifyClassCurrency = "MyMoneyFile::NotifyCurrency";
+const QCString MyMoneyFile::NotifyClassEquity = "MyMoneyFile::NotifyEquity";
 
 // include the following line to get a 'cout' for debug purposes
 // #include <iostream>
@@ -1346,19 +1347,34 @@ void MyMoneyFile::suspendNotify(const bool state)
 void MyMoneyFile::addEquity(MyMoneyEquity& equity)
 {
   checkStorage();
+
+  // automatically notify all observers once this routine is done
+  MyMoneyNotifier notifier(this);
+
   m_storage->addEquity(equity);
+  addNotification(NotifyClassEquity);
 }
 
 void MyMoneyFile::modifyEquity(const MyMoneyEquity& equity)
 {
   checkStorage();
+
+  // automatically notify all observers once this routine is done
+  MyMoneyNotifier notifier(this);
+
   m_storage->modifyEquity(equity);
+  addNotification(NotifyClassEquity);
 }
 
 void MyMoneyFile::removeEquity(const MyMoneyEquity& equity)
 {
   checkStorage();
+
+  // automatically notify all observers once this routine is done
+  MyMoneyNotifier notifier(this);
+
   m_storage->removeEquity(equity);
+  addNotification(NotifyClassEquity);
 }
 
 const MyMoneyEquity MyMoneyFile::equity(const QCString& id) const
