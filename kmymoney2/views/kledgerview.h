@@ -776,6 +776,14 @@ protected:
     */
   MyMoneySplit m_split;
 
+  /**
+    * This member keeps the date that was used as the last posting date.
+    * It will be updated whenever the user modifies the @ref m_editDate member
+    * and is used to preset the posting date when new transactions are set.
+    * This member is initialised to the current date when the program is started.
+    */
+  QDate         m_lastPostDate;
+  
   /*
    * The following members are pointers to the edit widgets
    */

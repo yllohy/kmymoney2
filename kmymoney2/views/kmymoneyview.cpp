@@ -621,7 +621,8 @@ bool KMyMoneyView::readFile(const KURL& url)
     showPage(page);
   }
 
-  // update all views
+  // reload and update all views
+  m_ledgerView->reloadView();
   slotRefreshViews();
   return true;
 }

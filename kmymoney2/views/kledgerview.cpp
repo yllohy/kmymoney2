@@ -223,6 +223,7 @@ void KTransactionPtrVector::setPayeeId(const QCString& id)
 
 KLedgerView::KLedgerView(QWidget *parent, const char *name )
   : QWidget(parent,name),
+  m_lastPostDate(QDate::currentDate()),
   m_contextMenu(0),
   m_blinkTimer(parent),
   m_suspendUpdate(false)
@@ -1549,6 +1550,8 @@ void KLedgerView::slotEndEdit(void)
         // and use it down the line
         if(!m_transaction.postDate().isValid())
           m_transaction.setPostDate(QDate::currentDate());
+        // remember date for next new transaction
+        m_lastPostDate = m_transaction.postDate();
         file->addTransaction(m_transaction);
         id = m_transaction.id();
       } else {

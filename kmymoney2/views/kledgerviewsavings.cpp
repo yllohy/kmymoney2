@@ -116,7 +116,7 @@ void KLedgerViewSavings::createEditWidgets(void)
 {
   m_editPayee = new kMyMoneyPayee(0, "editPayee");
   m_editCategory = new kMyMoneyCategory(0, "editCategory");
-  m_editMemo = new kMyMoneyLineEdit(0, "editMemo");
+  m_editMemo = new kMyMoneyLineEdit(0, "editMemo", AlignLeft | AlignVCenter);
   m_editAmount = new kMyMoneyEdit(0, "editAmount");
   m_editDate = new kMyMoneyDateInput(0, "editDate");
 

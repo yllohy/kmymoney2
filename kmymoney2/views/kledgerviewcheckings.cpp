@@ -694,7 +694,7 @@ void KLedgerViewCheckings::createEditWidgets(void)
 {
   m_editPayee = new kMyMoneyPayee(0, "editPayee");
   m_editCategory = new kMyMoneyCategory(0, "editCategory");
-  m_editMemo = new kMyMoneyLineEdit(0, "editMemo");
+  m_editMemo = new kMyMoneyLineEdit(0, "editMemo", AlignLeft|AlignVCenter);
   m_editAmount = new kMyMoneyEdit(0, "editAmount");
   m_editDate = new kMyMoneyDateInput(0, "editDate");
   m_editNr = new kMyMoneyLineEdit(0, "editNr");
@@ -870,7 +870,7 @@ void KLedgerViewCheckings::loadEditWidgets(int& transType)
     reloadEditWidgets(*m_transactionPtr);
     transType = transactionType(m_split);
   } else {
-    m_editDate->setDate(QDate::currentDate());
+    m_editDate->setDate(m_lastPostDate);
     transType = m_form->tabBar()->currentTab();
 
     try {
@@ -1308,7 +1308,7 @@ void KLedgerViewCheckings::slotConfigureContextMenu(void)
         dest = acc.name();
       } catch(MyMoneyException *e) {
         delete e;
-        dest = "opposite account";
+        dest = i18n("opposite account");
       }
       m_contextMenu->changeItem(splitEditId, i18n("Goto '%1'").arg(dest));
       m_contextMenu->connectItem(splitEditId, this, SLOT(slotGotoOtherSideOfTransfer()));
