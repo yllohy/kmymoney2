@@ -74,7 +74,7 @@ KAccountSelectDlg::KAccountSelectDlg(const KMyMoneyUtils::categoryTypeE accountT
   KGuiItem okButtenItem( i18n("&Ok" ),
                     QIconSet(il->loadIcon("button_ok", KIcon::Small, KIcon::SizeSmall)),
                     i18n("Accepts the selected action and continues"),
-                    i18n("Use this to accept accept the selection and continue processing the transaction"));
+                    i18n("Use this to accept the selection and continue processing the transaction"));
   m_qbuttonOk->setGuiItem(okButtenItem);
   
   KGuiItem abortButtenItem( i18n("&Abort" ),

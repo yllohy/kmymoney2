@@ -285,7 +285,7 @@ void KSplitTransactionDlg::slotFinishClicked()
     KGuiItem okButtenItem( i18n("&Ok" ),
                       QIconSet(il->loadIcon("button_ok", KIcon::Small, KIcon::SizeSmall)),
                       i18n("Accepts the selected action and continues"),
-                      i18n("Use this to accept accept the action and perform it"));
+                      i18n("Use this to accept the action and perform it"));
     dlg->okBtn->setGuiItem(okButtenItem);
 
     KGuiItem cancelButtenItem( i18n( "&Cancel" ),

@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>539</width>
-            <height>320</height>
+            <height>329</height>
         </rect>
     </property>
     <property name="maximumSize">
@@ -3844,7 +3844,7 @@ KMyMoney has calculated the loan as shown in the overview below. You can accept 
                 </property>
                 <property name="text">
                     <string>
-In the following steps, KMyMoney supports you in setting up categories and schedules for you loan payments.</string>
+In the following steps, KMyMoney supports you in setting up categories and schedules for your loan payments.</string>
                 </property>
                 <property name="alignment">
                     <set>WordBreak|AlignTop</set>

@@ -53,7 +53,7 @@ KNewBankDlg::KNewBankDlg(MyMoneyInstitution& institution,  bool /*isEditing*/, Q
   KGuiItem okButtenItem( i18n("&Ok" ),
                     QIconSet(il->loadIcon("button_ok", KIcon::Small, KIcon::SizeSmall)),
                     i18n("Accepts the entered data and stores it"),
-                    i18n("Use this to accept accept the data."));
+                    i18n("Use this to accept the data."));
   okBtn->setGuiItem(okButtenItem);
 
   KGuiItem cancelButtenItem( i18n( "&Cancel" ),
