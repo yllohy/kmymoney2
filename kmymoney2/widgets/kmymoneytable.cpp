@@ -36,6 +36,7 @@ kMyMoneyTable::kMyMoneyTable(QWidget *parent, const char *name )
 
 	setFocusPolicy(QWidget::NoFocus);
 	m_nLastRow = 0;
+  m_rowOffset = 0;
 
   // never show a horizontal scroll bar
   setHScrollBarMode(QScrollView::AlwaysOff);
@@ -62,30 +63,82 @@ QWidget* kMyMoneyTable::beginEdit(int row, int col, bool replace)
 
 }
 
-void kMyMoneyTable::insertWidget(int /*row*/,int col, QWidget* w)
+QWidget* kMyMoneyTable::createEditor(int row, int col, bool replace) const
 {
-  if(col == 0)
-    m_col0 = w;
-  if(col == 1)
-    m_col1 = w;
-  if(col == 2)
-    m_col2 = w;
-  if(col == 3)
-    m_col3 = w;
-  if(col == 4)
-    m_col4 = w;
-  if(col == 5)
-    m_col5 = w;
-  if(col == 6)
-    m_col6 = w;
-  if(col == 7)
-    m_col7 = w;
-  if(col == 8)
-    m_col8 = w;
-  if(col == 9)
-    m_col9 = w;
-  if(col == 10)
-    m_col10 = w;
+  switch(((row - m_rowOffset) % 2) * numCols() + col) {
+    case 0:   // date
+    case 1:   // type
+    case 2:   // payee
+    case 4:   // payment
+    case 5:   // deposit
+    case 8:   // number
+    case 9:   // category
+    case 11:  // enter
+    case 12:  // cancel
+      return QTable::createEditor(row, col, replace);
+      break;
+    case 3:   // reconcile-flag
+    case 6:   // balance
+    case 7:   // empty
+    case 10:  // empty
+    case 13:  // delete
+      break;
+    default:
+      qDebug("Unknown widget for KMyMoneyTable::createEditor in row %d and col %d", row, col);
+      break;
+  }
+  return NULL;
+}
+
+void kMyMoneyTable::insertWidget(int row, int col, QWidget* w)
+{
+  switch(((row - m_rowOffset) % 2) * numCols() + col) {
+    case 0:   // date
+      m_col0 = w;
+      break;
+    case 1:   // type
+      m_col1 = w;
+      break;
+    case 2:   // payee
+      m_col2 = w;
+      break;
+    case 3:   // reconcile-flag
+      m_col3 = w;
+      break;
+    case 4:   // payment
+      m_col4 = w;
+      break;
+    case 5:   // deposit
+      m_col5 = w;
+      break;
+    case 6:   // balance
+      m_col6 = w;
+      break;
+    case 7:   // empty
+      m_col7 = w;
+      break;
+    case 8:   // number
+      m_col8 = w;
+      break;
+    case 9:   // category
+      m_col9 = w;
+      break;
+    case 10:  // empty
+      m_col10 = w;
+      break;
+    case 11:  // enter
+      m_col11 = w;
+      break;
+    case 12:  // cancel
+      m_col12 = w;
+      break;
+    case 13:  // delete
+      m_col13 = w;
+      break;
+    default:
+      qDebug("Unknown widget for KMyMoneyTable::insertWidget in row %d and col %d", row, col);
+      break;
+  }
 }
 
 void kMyMoneyTable::columnWidthChanged(int col)
@@ -94,30 +147,57 @@ void kMyMoneyTable::columnWidthChanged(int col)
     updateCell(i, col);
 }
 
-QWidget* kMyMoneyTable::cellWidget(int /*row*/, int col)const
+QWidget* kMyMoneyTable::cellWidget(int row, int col)const
 {
-  if(col == 0)
-    return m_col0;
-  if(col == 1)
-    return m_col1;
-  if(col == 2)
-    return m_col2;
-  if(col == 3)
-    return m_col3;
-  if(col == 4)
-    return m_col4;
-  if(col == 5)
-    return m_col5;
-  if(col == 6)
-    return m_col6;
-  if(col == 7)
-    return m_col7;
-  if(col == 8)
-    return m_col8;
-  if(col == 9)
-    return m_col9;
-  if(col == 10)
-    return m_col10;
+  if(row >= 0 && col >= 0) {
+    switch(((row - m_rowOffset) % 2) * numCols() + col) {
+      case 0:
+        return m_col0;
+        break;
+      case 1:
+        return m_col1;
+        break;
+      case 2:
+        return m_col2;
+        break;
+      case 3:
+        return m_col3;
+        break;
+      case 4:
+        return m_col4;
+        break;
+      case 5:
+        return m_col5;
+        break;
+      case 6:
+        return m_col6;
+        break;
+      case 7:
+        return m_col7;
+        break;
+      case 8:
+        return m_col8;
+        break;
+      case 9:
+        return m_col9;
+        break;
+      case 10:
+        return m_col10;
+        break;
+      case 11:
+        return m_col11;
+        break;
+      case 12:
+        return m_col12;
+        break;
+      case 13:
+        return m_col13;
+        break;
+      default:
+        qDebug("Unknown widget for KMyMoneyTable::cellWidget in row %d and col %d", row, col);
+        break;
+    }
+  }
   return (QWidget*)0;
 }
 
@@ -131,15 +211,14 @@ void kMyMoneyTable::setCurrentCell(int row, int col){
 	clicked(row,col,m_button,m_point);
 }
 /** No descriptions */
-bool kMyMoneyTable::eventFilter(QObject *o, QEvent *e){
-
-	if(e->type() == QEvent::MouseButtonPress)
-	{
-     	QMouseEvent *m = (QMouseEvent *) e ;
-		m_point = m->pos();
-		m_button = m->button();
-	}
-	return QTable::eventFilter(o,e);
+bool kMyMoneyTable::eventFilter(QObject *o, QEvent *e)
+{
+  if(e->type() == QEvent::MouseButtonPress) {
+    QMouseEvent *m = (QMouseEvent *) e ;
+    m_point = m->pos();
+    m_button = m->button();
+  }
+  return QTable::eventFilter(o,e);
 }
 
 void kMyMoneyTable::paintCell(QPainter *p, int row, int col, const QRect& r, bool /*selected*/)
@@ -214,48 +293,30 @@ void kMyMoneyTable::paintCell(QPainter *p, int row, int col, const QRect& r, boo
       if (bShowGrid) {
         p->drawLine(rr.x(), 0, rr.x(), rr.height()-1);
         p->drawLine(rr.x(), rr.y(), rr.width(), 0);
-        if(intPos > -1)
-        {
-          int intMemoStart = rr.width() / 2;
-          rr3.setX(0);
-          rr3.setY(0);
-          rr3.setWidth(intMemoStart);
-          p->drawText(rr3,Qt::AlignLeft,qstringCategory);
+      }
+      if(intPos > -1) {
+        int intMemoStart = rr.width() / 2;
+        rr3.setX(0);
+        rr3.setY(0);
+        rr3.setWidth(intMemoStart);
+        rr3.setHeight(rowHeight(row));
+        p->drawText(rr3,Qt::AlignLeft | Qt::AlignVCenter,qstringCategory);
+        if(bShowGrid)
           p->drawLine(intMemoStart,0,intMemoStart,rr.height()-1);
-          rr3.setX(intMemoStart + 1);
-          rr3.setWidth(rr.width());
-          p->drawText(rr3,Qt::AlignLeft,qstringMemo);
-        }
-        else
-        {
-          p->drawText(rr, Qt::AlignLeft,firsttext);
-        }
-      } else
-      {
-        if(intPos > -1)
-        {
-          int intMemoStart = rr.width() / 2;
-          rr3.setX(0);
-          rr3.setY(0);
-          rr3.setWidth(intMemoStart);
-          p->drawText(rr3,Qt::AlignLeft,qstringCategory);
-          rr3.setX(intMemoStart + 1);
-          rr3.setWidth(rr.width());
-          p->drawText(rr3,Qt::AlignLeft,qstringMemo);
-        }
-        else
-        {
-          p->drawText(rr2, Qt::AlignLeft,firsttext);
-        }
+        rr3.setX(intMemoStart + 1);
+        rr3.setWidth(intMemoStart);
+        p->drawText(rr3,Qt::AlignLeft | Qt::AlignVCenter,qstringMemo);
+
+      } else {
+        p->drawText(rr, Qt::AlignLeft | Qt::AlignVCenter,firsttext);
       }
       break;
     case 3:
       if (bShowGrid) {
         p->drawLine(rr.x(), 0, rr.x(), rr.height()-1);
         p->drawLine(rr.x(), rr.y(), rr.width(), 0);
-        p->drawText(rr, Qt::AlignCenter,firsttext);
-      } else
-        p->drawText(rr2, Qt::AlignCenter,firsttext);
+      }
+      p->drawText(rr, Qt::AlignCenter | Qt::AlignVCenter,firsttext);
       break;
     case 4:
     case 5:
@@ -264,9 +325,13 @@ void kMyMoneyTable::paintCell(QPainter *p, int row, int col, const QRect& r, boo
         p->drawLine(rr.x(), 0, rr.x(), rr.height()-1);
         p->drawLine(rr.x(), rr.y(), rr.width(), 0);
         p->drawLine(rr.x()+rr.width(), 0, rr.x()+rr.width(), rr.height()-1);
-        p->drawText(rr, Qt::AlignRight,firsttext);
-      } else
-        p->drawText(rr2, Qt::AlignRight,firsttext);
+      }
+      p->drawText(rr, Qt::AlignRight | Qt::AlignVCenter,firsttext);
       break;
   }
+}
+
+void kMyMoneyTable::setRowOffset(int row)
+{
+  m_rowOffset = row;
 }

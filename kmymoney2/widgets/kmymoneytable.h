@@ -40,10 +40,14 @@ private:
   QWidget* m_col8;
   QWidget* m_col9;
   QWidget* m_col10;
+  QWidget* m_col11;
+  QWidget* m_col12;
+  QWidget* m_col13;
   int m_button;
   QPoint m_point;
   QString m_qstringSecondItem;
   int m_nLastRow;
+  int m_rowOffset;
 
 protected:
   void paintCell(QPainter *p, int row, int col, const QRect& r, bool selected);
@@ -57,6 +61,8 @@ public:
   void insertWidget(int row, int col, QWidget* w);
   QWidget* cellWidget(int row,int col) const;
 	void clearCellWidget(int row, int col);
+  QWidget* createEditor(int row, int col, bool initFromCell) const;
+  void setRowOffset(int row);
 
 	QString cellEditedOriginalText(void) { return m_orig; }
 	

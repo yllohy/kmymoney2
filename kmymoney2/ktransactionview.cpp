@@ -78,6 +78,9 @@ KTransactionView::KTransactionView(QWidget *parent, const char *name)
   connect(transactionsTable, SIGNAL(clicked(int, int, int, const QPoint&)),
     this, SLOT(slotFocusChange(int, int, int, const QPoint&)));
 
+  connect(transactionsTable, SIGNAL(pressed(int, int, int ,const QPoint&)),
+    this, SLOT(slotContextMenu(int, int, int, const QPoint&)));
+
   connect(viewTypeCombo, SIGNAL(activated(int)), this, SLOT(viewTypeActivated(int)));
 
   m_index = -1;
@@ -227,6 +230,7 @@ void KTransactionView::createInputWidgets()
   m_enter = new KPushButton(i18n("Enter"),0);
   m_cancel = new KPushButton(i18n("Cancel"),0);
   m_delete = new KPushButton(i18n("Delete"),0);
+
   m_payee->setEditable(true);
   m_payee->setAutoCompletion(true);
   m_number->setHandleSignals(false);
@@ -357,15 +361,31 @@ void KTransactionView::slotFocusChange(int row, int col, int button, const QPoin
   // Can't add transactions in search mode
   if (m_date->isVisible() || (m_viewType!=NORMAL && (transrow >= m_transactions->count())))
     return;
-	
-	if (row > (transactionsTable->numRows()-2))  // make sure there is room for the input widgets
-	  return;
+
+  // make sure, realrow points to the first line of the transaction
+  // it might be off by 1, if there's a single line per transaction
+  // and the click went into the bottom line of a new transaction
+  if(realrow == transactionsTable->numRows()-1)
+    --realrow;
+
+  // make sure the input widgets will be on the screen
+  transactionsTable->ensureCellVisible(realrow, col);
+  transactionsTable->ensureCellVisible(realrow+1, col);
+  transactionsTable->setRowOffset(realrow);
 	
 	m_currentrow = realrow;
 	m_currentcol = col;
 	m_currentbutton = button;
 	m_currentpos = point;
-  if ((transrow != static_cast<unsigned> (transactionsTable->numRows())-1)
+
+//  if ((transrow != static_cast<unsigned> (transactionsTable->numRows())-1)
+
+  // figure out, if the click was inside a transaction or not
+  int lastY = transactionsTable->cellGeometry(transactionsTable->numRows()-1, 0).bottom();
+
+  // Make sure to use the right coordinate system.
+  // Check the online help on QScrollView for details.
+  if(lastY >= (transactionsTable->viewportToContents(point).y())
   && (transactionsTable->numRows()>=1)) {
 		if(button == 1) {
       if(m_transactions->count() > transrow)
@@ -410,6 +430,7 @@ void KTransactionView::slotFocusChange(int row, int col, int button, const QPoin
       m_cancel->show();
       transactionsTable->setCellWidget(realrow + 1 ,6,m_delete);
       m_delete->show();
+
       updateInputLists();
       if(m_transactions->count() > transrow)
       {
@@ -422,12 +443,51 @@ void KTransactionView::slotFocusChange(int row, int col, int button, const QPoin
     }
     m_index = transrow;
 
-    if (button>=2) {
-      m_contextMenu->exec(QCursor::pos());
-    }
   } else
     m_index=-1;
+}
 
+void KTransactionView::slotContextMenu(int row, int col, int button, const QPoint&  point)
+{
+  if(button == Qt::RightButton) {
+    KConfig *config = KGlobal::config();
+    config->setGroup("List Options");
+    const int NO_ROWS = (config->readEntry("RowCount", "2").toInt());
+    unsigned transrow = row / NO_ROWS;
+
+    int realrow = transrow * NO_ROWS;
+
+    // Can't add transactions in search mode
+    if (m_date->isVisible() || (m_viewType!=NORMAL && (transrow >= m_transactions->count())))
+      return;
+
+    // make sure, realrow points to the first line of the transaction
+    // it might be off by 1, if there's a single line per transaction
+    // and the click went into the bottom line of a new transaction
+    if(realrow == transactionsTable->numRows()-1)
+      --realrow;
+
+    // make sure the input widgets will be on the screen
+    transactionsTable->ensureCellVisible(realrow, col);
+    transactionsTable->ensureCellVisible(realrow+1, col);
+    transactionsTable->setRowOffset(realrow);
+  	
+  	m_currentrow = realrow;
+  	m_currentcol = col;
+  	m_currentbutton = button;
+  	m_currentpos = point;
+
+    // figure out, if the click was inside a transaction or not
+    int lastY = transactionsTable->cellGeometry(transactionsTable->numRows()-3, 0).bottom();
+
+    // Make sure to use the right coordinate system.
+    // Check the online help on QScrollView for details.
+    if(lastY >= point.y()
+    && (transactionsTable->numRows()>=1)) {
+      m_index = transrow;
+      m_contextMenu->exec(QCursor::pos());
+    }
+  }
 }
 
 void KTransactionView::slotTransactionDelete()
@@ -504,8 +564,6 @@ void KTransactionView::slotTransactionUnReconciled()
 
   KConfig *config = KGlobal::config();
   config->setGroup("List Options");
-  QFont defaultFont = QFont("helvetica", 12);
-  transactionsTable->horizontalHeader()->setFont(config->readFontEntry("listHeaderFont", &defaultFont));
   const int NO_ROWS = (config->readEntry("RowCount", "2").toInt());
 	
 	pAccount = getAccount();
@@ -527,8 +585,6 @@ void KTransactionView::slotTransactionCleared()
 
   KConfig *config = KGlobal::config();
   config->setGroup("List Options");
-  QFont defaultFont = QFont("helvetica", 12);
-  transactionsTable->horizontalHeader()->setFont(config->readFontEntry("listHeaderFont", &defaultFont));
   const int NO_ROWS = (config->readEntry("RowCount", "2").toInt());
 	
 	pAccount = getAccount();
@@ -1152,8 +1208,12 @@ void KTransactionView::updateTransactionList(int row, int col)
         transactionsTable->setText(rowCount, 4, i18n("Amount"));
         transactionsTable->setText(rowCount, 5, i18n("Amount"));
         transactionsTable->setText(rowCount, 6, "");
+        transactionsTable->setText(rowCount+1, 0, "");
         transactionsTable->setText(rowCount+1, 1, i18n("Number"));
         transactionsTable->setText(rowCount+1, 2, i18n("Category|Description"));
+        transactionsTable->setText(rowCount+1, 3, i18n(""));
+        transactionsTable->setText(rowCount+1, 4, i18n(""));
+        transactionsTable->setText(rowCount+1, 5, i18n(""));
       }
 
   		lblBalanceAmt->setText(currentBalance);

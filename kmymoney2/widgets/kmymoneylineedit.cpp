@@ -19,8 +19,11 @@
 
 #include "kmymoneylineedit.h"
 
-kMyMoneyLineEdit::kMyMoneyLineEdit(QWidget *w):KLineEdit(w){
+kMyMoneyLineEdit::kMyMoneyLineEdit(QWidget *w):KLineEdit(w)
+{
+	setAlignment(AlignRight | AlignVCenter);
 }
+
 kMyMoneyLineEdit::~kMyMoneyLineEdit(){
 }
 /** No descriptions */

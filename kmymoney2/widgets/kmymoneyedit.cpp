@@ -26,7 +26,7 @@ kMyMoneyEdit::kMyMoneyEdit(QWidget *parent, const char *name )
 	KFloatValidator *validator = new KFloatValidator(this);
 	validator->setAcceptLocalizedNumbers(true);
 	setValidator(validator);
-	setAlignment(AlignRight);
+	setAlignment(AlignRight | AlignVCenter);
   connect(this, SIGNAL(textChanged(const QString&)), this, SLOT(theTextChanged(const QString&)));
 }
 

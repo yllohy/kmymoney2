@@ -1,3 +1,9 @@
+2001-12-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed bug #490440 - extra edit boxes in register
+  * display all text in register with centered vertical alignment
+  * Fixed bug #497902 - memo text is not displayed
+  * Fixed bug #497903 - context menu does not open on right click
+
 2001-12-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated project handbook (fixed tag naming conventions)
 
