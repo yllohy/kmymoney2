@@ -39,6 +39,8 @@
 #include "ksettingsdlg.h"
 #include "kmymoneysettings.h"
 #include "kstartuplogo.h"
+#include "dialogs/kbackupdlg.h"
+
 
 #define ID_STATUS_MSG 1
 
@@ -72,6 +74,10 @@ KMyMoney2App::KMyMoney2App(QWidget* , const char* name):KMainWindow(0, name)
   enableBankOperations(false);
   enableAccountOperations(false);
   enableTransactionOperations(false);
+  connect(&proc,SIGNAL(processExited(KProcess *)),this,SLOT(slotProcessExited()));
+  mountbackup = false;
+  copybackup = false;
+  unmountbackup = false;
 }
 
 KMyMoney2App::~KMyMoney2App()
@@ -113,6 +119,9 @@ void KMyMoney2App::initActions()
   fileViewInfo->setStatusText(i18n("View information about the file"));
   filePersonalData = new KAction(i18n("Personal Data..."), 0, 0, this, SLOT(slotFileViewPersonal()), actionCollection(), "file_personal_data");
   filePersonalData->setStatusText(i18n("Lets you view/edit your personal data"));
+  fileBackup = new KAction(i18n("Backup..."),0,0,this,SLOT(slotFileBackup()),actionCollection(),"file_backup");
+  fileBackup->setStatusText(i18n("Lets you backup your file to a removeable drive"));
+
 
   // The Settings Menu
   settingsGeneral = new KAction(i18n("General settings..."), 0, 0, this, SLOT(slotSettingsGeneral()), actionCollection(), "settings_general");
@@ -197,6 +206,7 @@ void KMyMoney2App::saveOptions()
 	config->writeEntry("listBGColor", p_settings->lists_BGColor());
 	config->writeEntry("listHeaderFont", p_settings->lists_headerFont());
 	config->writeEntry("listCellFont", p_settings->lists_cellFont());
+	config->writeEntry("BackupMountPoint",mountpoint);
 }
 
 
@@ -257,6 +267,7 @@ void KMyMoney2App::readOptions()
      	l_listBGColor,
      	l_listHeaderFont,
      	l_listCellFont );
+  mountpoint = config->readEntry("BackupMountPoint");
 }
 
 bool KMyMoney2App::queryClose()
@@ -670,4 +681,100 @@ bool KMyMoney2App::initWizard()
       fprintf(stderr, "cancelling the application\n");
 			return false;
     }
+}
+/** No descriptions */
+void KMyMoney2App::slotFileBackup(){
+
+  	KBackupDlg *backupDlg = new KBackupDlg(this,0,true);
+	connect(backupDlg->btnOK,SIGNAL(clicked()),backupDlg,SLOT(accept()));
+	connect(backupDlg->btnCancel,SIGNAL(clicked()),backupDlg,SLOT(reject()));
+    backupDlg->txtMountPoint->setText(mountpoint);
+	int returncode = backupDlg->exec();
+
+	if(returncode)
+	{
+		mountbackup = true;
+	    copybackup = false;
+       unmountbackup = false;
+		mountpoint = backupDlg->txtMountPoint->text();
+		proc.clearArguments();
+		proc << "mount";
+    	proc << mountpoint;
+		proc.start();
+	    qDebug("OK Pressed");
+	}
+	else
+	{
+   	qDebug("Cancel Pressed");
+	}
+
+	delete backupDlg;
+
+}
+/** No descriptions */
+void KMyMoney2App::slotProcessExited(){
+
+	if(mountbackup)
+   {
+		if(proc.normalExit())
+		{
+			if(proc.exitStatus() == 0)
+			{
+				QString backupfile;
+				backupfile = mountpoint + fileName.mid(fileName.findRev("/"));
+				proc.clearArguments();
+				proc << "cp";
+    			proc << fileName << backupfile;
+				proc.start();
+				mountbackup = false;
+       			copybackup = true;
+				unmountbackup = false;
+			}
+			else
+			{
+    			QMessageBox::information(this,"Backup","Error Mounting Device");
+				mountbackup = false;
+       			copybackup = false;
+				unmountbackup = false;
+			}
+		}
+	}
+	else if(copybackup)
+	{
+			if(proc.exitStatus() == 0)
+			{
+				proc.clearArguments();
+				proc << "umount";
+    			proc << mountpoint;
+				proc.start();
+				mountbackup = false;
+       			copybackup = false;
+				unmountbackup = true;
+			}
+			else
+			{
+    			QMessageBox::information(this,"Backup","Error Copying File to Device");
+				mountbackup = false;
+       			copybackup = false;
+				unmountbackup = false;
+			}
+	}
+	else if(unmountbackup)
+	{
+			if(proc.exitStatus() == 0)
+			{
+    			QMessageBox::information(this,"Backup","File Successfully Backed up");
+				mountbackup = false;
+       			copybackup = false;
+				unmountbackup = false;
+			}
+			else
+			{
+    			QMessageBox::information(this,"Backup","Error  unmounting device");
+				mountbackup = false;
+       			copybackup = false;
+				unmountbackup = false;
+			}
+	}
+
 }

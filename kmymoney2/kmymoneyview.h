@@ -20,6 +20,7 @@
 #include <kpopupmenu.h>
 #include <qwidget.h>
 #include <ktabctl.h>
+#include <qmessagebox.h>
 
 #include "kmainview.h"
 #include "kreconciledlg.h"
@@ -36,7 +37,7 @@
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.5 2001/05/26 00:27:58 frodriguez Exp $
+  * $Id: kmymoneyview.h,v 1.6 2001/06/07 23:26:30 frodriguez Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -251,6 +252,8 @@ public slots:
   // Not implemented, not documented!
   void slotAccountImportAscii(void);
   void slotAccountExportAscii(void);
+  /** No descriptions */
+  void fileBackup();
 	
 protected slots:
   /**

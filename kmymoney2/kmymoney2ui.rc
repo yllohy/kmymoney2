@@ -4,6 +4,7 @@
   <Menu name="file"><text>&amp;File</text>
     <Action name="file_view_info"/>
     <Action name="file_personal_data"/>
+    <Action name="file_backup"/>
   </Menu>
 
   <Menu name="settings"><text>&amp;Settings</text>

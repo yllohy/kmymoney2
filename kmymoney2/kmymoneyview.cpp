@@ -1116,6 +1116,8 @@ void KMyMoneyView::readQIFFile(const QString& name, MyMoneyAccount *account){
 	bool writecat = false;
 	bool writetrans = false;
   bool cleared = false;
+	int numcat = 0;
+	int numtrans = 0;
   QString catname = "";
 	QString expense = "";
 	QString date = "";
@@ -1140,8 +1142,8 @@ void KMyMoneyView::readQIFFile(const QString& name, MyMoneyAccount *account){
 						else if(s.left(10) == "!Type:Bank")
 						{
 							qDebug("Found Bank Type");
-             	transmode = true;
-						  catmode = false;
+             				transmode = true;
+						  	catmode = false;
 						}
 						else if(s.left(5) == "!Type")
 						{
@@ -1170,17 +1172,17 @@ void KMyMoneyView::readQIFFile(const QString& name, MyMoneyAccount *account){
 						}
 					  else if(transmode)
 						{
-             	if(s.left(1) == "^")
+             				if(s.left(1) == "^")
 							{
-               	writetrans = true;
+               				writetrans = true;
 							}
 							if(s.left(1) == "D")
 							{
-			         	date = s.mid(1);
+			         			date = s.mid(1);
 							}
 							if(s.left(1) == "T")
 							{
-               	amount = s.mid(1);
+               				amount = s.mid(1);
 							}
 							if(s.left(1) == "N")
 							{
@@ -1188,15 +1190,15 @@ void KMyMoneyView::readQIFFile(const QString& name, MyMoneyAccount *account){
 							}
 							if(s.left(1) == "P")
 							{
-		           	payee = s.mid(1);
+		           			payee = s.mid(1);
 							}
 							if(s.left(1) == "L")
 							{
-               	category = s.mid(1);
+               				category = s.mid(1);
 							}
 							if(s.left(1) == "C")
 							{
-               	cleared = true;
+               				cleared = true;
 							}
 						}
 						
@@ -1222,38 +1224,38 @@ void KMyMoneyView::readQIFFile(const QString& name, MyMoneyAccount *account){
 							checknum = type.toInt(&isnumber);
 							if(isnumber == false)
 							{
-               	if(type == "ATM")
+               				if(type == "ATM")
 								{
 								  if(amount.find("-") > -1)
-                 		transmethod = MyMoneyTransaction::ATM;
+                 					transmethod = MyMoneyTransaction::ATM;
 									else
 										transmethod = MyMoneyTransaction::Deposit;
 								}
 								else if(type == "DEP")
 								{
 									if(amount.find("-") == -1)
-                 		transmethod = MyMoneyTransaction::Deposit;
+                 						transmethod = MyMoneyTransaction::Deposit;
 									else
 										transmethod = MyMoneyTransaction::Withdrawal;
 								}
 								else if(type == "TXFR")
 								{
 									if(amount.find("-") > -1)
-                 		transmethod = MyMoneyTransaction::Transfer;
+                 						transmethod = MyMoneyTransaction::Transfer;
 									else
 										transmethod = MyMoneyTransaction::Deposit;
 								}
 								else if(type == "WTHD")
 								{
 									if(amount.find("-") > -1)
-                 		transmethod = MyMoneyTransaction::Withdrawal;
+                 						transmethod = MyMoneyTransaction::Withdrawal;
 									else
 										transmethod = MyMoneyTransaction::Deposit;
 								}
 								else
 								{
 									if(amount.find("-") > -1)
-                 		transmethod = MyMoneyTransaction::Withdrawal;
+                 						transmethod = MyMoneyTransaction::Withdrawal;
 									else
 										transmethod = MyMoneyTransaction::Deposit;
 								}
@@ -1262,13 +1264,13 @@ void KMyMoneyView::readQIFFile(const QString& name, MyMoneyAccount *account){
 							else
 							{
 									if(amount.find("-") > -1)
-               			transmethod = MyMoneyTransaction::Cheque;
+               						transmethod = MyMoneyTransaction::Cheque;
 									else
 										transmethod = MyMoneyTransaction::Deposit;
 									checknumber=type;
 							}
 							QDate transdate(intyear,intmonth,intday);
-              int commaindex = amount.find(",");
+             				 int commaindex = amount.find(",");
 							double dblamount = 0;
 		          if(commaindex != -1)
 			          dblamount = amount.remove(commaindex,1).toDouble();
@@ -1311,6 +1313,7 @@ void KMyMoneyView::readQIFFile(const QString& name, MyMoneyAccount *account){
               category = "";
               cleared = false;
 							writetrans = false;
+							numtrans += 1;
 						}
 						if(catmode && writecat)
 						{
@@ -1323,29 +1326,29 @@ void KMyMoneyView::readQIFFile(const QString& name, MyMoneyAccount *account){
 								majorcat = catname;
 							else
 							{
-               	majorcat = catname.left(catindex);
+               				majorcat = catname.left(catindex);
 								minorcat = catname.mid(catindex + 1);
 							}
-  						QListIterator<MyMoneyCategory> it = m_file.categoryIterator();
-  						for ( ; it.current(); ++it ) {
-    						MyMoneyCategory *data = it.current();
+  							QListIterator<MyMoneyCategory> it = m_file.categoryIterator();
+  							for ( ; it.current(); ++it ) {
+    							MyMoneyCategory *data = it.current();
 								if((majorcat == data->name()) && (minorcat == ""))
 								{
 									majorcatexists = true;
-                  minorcatexists = true;
+                  					minorcatexists = true;
 								}
 								else if(majorcat == data->name())
 								{
 									oldcategory = it.current();
 									majorcatexists = true;
-    							for ( QStringList::Iterator it2 = data->minorCategories().begin(); it2 != data->minorCategories().end(); ++it2 ) {
-                   if((*it2) == minorcat)
-									 {
-									  minorcatexists = true;
-									 }
+    								for ( QStringList::Iterator it2 = data->minorCategories().begin(); it2 != data->minorCategories().end(); ++it2 ) {
+                  						 if((*it2) == minorcat)
+									 	{
+									 		 minorcatexists = true;
+									 	}
 									}
 
-    						}
+    							}
   						}
 
   						MyMoneyCategory category;
@@ -1360,6 +1363,7 @@ void KMyMoneyView::readQIFFile(const QString& name, MyMoneyAccount *account){
 								{
 									category.addMinorCategory(minorcat);
 									oldcategory->addMinorCategory(minorcat);
+									numcat += 1;
 								}
 							}
 							else
@@ -1367,7 +1371,7 @@ void KMyMoneyView::readQIFFile(const QString& name, MyMoneyAccount *account){
 								if(minorcat != "")
 									category.addMinorCategory(minorcat);
 								m_file.addCategory(category.isIncome(), category.name(), category.minorCategories());
-               	
+               	           numcat += 1;
 							}
 							catname = "";
 							expense = "";
@@ -1377,12 +1381,16 @@ void KMyMoneyView::readQIFFile(const QString& name, MyMoneyAccount *account){
         }
         f.close();
     }
-
+	QString importmsg;
+	importmsg.sprintf("%d Categories imported.\n%d Transactions imported.",numcat,numtrans);
+    QMessageBox::information(this,"QIF Import",importmsg);
 
 }
 /** No descriptions */
 void KMyMoneyView::writeQIFFile(const QString& name, MyMoneyAccount *account,bool expCat,bool expAcct,
 																QDate startDate, QDate endDate){
+	int numcat = 0;
+	int numtrans = 0;
 
     QFile f(name);
     if ( f.open(IO_WriteOnly) ) {    // file opened successfully
@@ -1400,6 +1408,7 @@ void KMyMoneyView::writeQIFFile(const QString& name, MyMoneyAccount *account,boo
 						else
 							t << "E" << endl;
 						t << "^" << endl;
+						numcat += 1;
     				for ( QStringList::Iterator it2 = data->minorCategories().begin(); it2 != data->minorCategories().end(); ++it2 ) {
 								t << "N" << data->name() << ":" << *it2 << endl;
 								if(data->isIncome())
@@ -1407,6 +1416,7 @@ void KMyMoneyView::writeQIFFile(const QString& name, MyMoneyAccount *account,boo
 								else
 									t << "E" << endl;
 								t << "^" << endl;
+								numcat += 1;
 						}
   			}       		
 			}
@@ -1453,12 +1463,22 @@ void KMyMoneyView::writeQIFFile(const QString& name, MyMoneyAccount *account,boo
 						t << "P" << Payee << endl;
 						t << "L" << Category << endl;
 						t << "^" << endl;
+						numtrans += 1;
 
 													
 					}
 				}
-       	qDebug("Account Exported");
 			}
       f.close();
 		}
+	QString exportmsg;
+	exportmsg.sprintf("%d Categories exported.\n%d Transactions exported.",numcat,numtrans);
+    QMessageBox::information(this,"QIF Export",exportmsg);
+
+}
+/** No descriptions */
+void KMyMoneyView::fileBackup(){
+
+
+
 }

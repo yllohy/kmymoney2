@@ -25,6 +25,7 @@
 #include <kmainwindow.h>
 #include <kaccel.h>
 #include <kaction.h>
+#include <kprocess.h>
 
 #include "kmymoneyview.h"
 
@@ -51,7 +52,7 @@
   * @see KMyMoneyView
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: kmymoney2.h,v 1.5 2001/04/18 21:49:35 mte Exp $
+  * $Id: kmymoney2.h,v 1.6 2001/06/07 23:26:30 frodriguez Exp $
   *
   * @short Main application class.
 **/
@@ -59,6 +60,7 @@ class KMyMoney2App : public KMainWindow
 {
   Q_OBJECT
 private:
+   KProcess proc;
   // A pointer to the view holding the tabs.
 	KMyMoneyView *myMoneyView;
 	// The filename currently being edited when open.
@@ -243,6 +245,8 @@ protected slots:
     * @see KTransactionView
   **/
   void slotViewUp();
+  /** No descriptions */
+  void slotFileBackup();
 
   public:
     /** construtor of KMyMoney2App, calls all init functions to create the application.
@@ -346,6 +350,8 @@ protected slots:
      * @param text the text that is displayed in the statusbar
      */
     void slotStatusMsg(const QString &text);
+  /** No descriptions */
+  void slotProcessExited();
 
   private:
     /** the configuration object of the application */
@@ -357,6 +363,7 @@ protected slots:
     KRecentFilesAction* fileOpenRecent;
     KAction* fileSave;
     KAction* fileSaveAs;
+	KAction* fileBackup;
     KAction* fileClose;
     KAction* filePrint;
     KAction* fileQuit;
@@ -394,6 +401,14 @@ protected slots:
     KAction *pluginList;
 
     KAction *viewUp;
+  /**  */
+  bool mountbackup;
+  /**  */
+  bool copybackup;
+  /**  */
+  bool unmountbackup;
+  /**  */
+  QString mountpoint;
 };
  
 #endif // KMYMONEY2_H
