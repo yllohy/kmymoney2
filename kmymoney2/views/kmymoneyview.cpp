@@ -745,7 +745,7 @@ bool KMyMoneyView::readFile(const KURL& url)
     // run the above loop.
     selectBaseCurrency();
   }
-  
+
   // See whether we have any reports, and if not, load the defaults.
   if ( ! MyMoneyFile::instance()->countReports() )
     loadDefaultReports();
@@ -1249,7 +1249,7 @@ void KMyMoneyView::loadDefaultReports(void)
   spending_f.setShowSubAccounts(true);
   spending_f.setRowType( MyMoneyReport::eExpenseIncome );
   MyMoneyFile::instance()->addReport(spending_f);
-  
+
   MyMoneyReport networth_f;
   networth_f.setName(i18n("Net Worth Over Time"));
   networth_f.setComment(i18n("Default Report"));
@@ -2052,6 +2052,9 @@ void KMyMoneyView::fixTransactions(void)
 
     // Check for correct actions in transactions referencing credit cards
     bool needModify = false;
+#if 0
+    // The action fields are actually not used anymore in the ledger view logic
+    // so we might as well skip this whole thing here!
     for(it_s = splits.begin(); needModify == false && it_s != splits.end(); ++it_s) {
       MyMoneyAccount acc = file->account((*it_s).accountId());
       MyMoneyMoney val = (*it_s).value();
@@ -2062,6 +2065,7 @@ void KMyMoneyView::fixTransactions(void)
           needModify = true;
       }
     }
+#endif
     if(needModify == true) {
       for(it_s = splits.begin(); it_s != splits.end(); ++it_s) {
         (*it_s).setAction(defaultAction);
