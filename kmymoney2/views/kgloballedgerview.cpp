@@ -161,7 +161,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   
   m_accountId = QCString();
 
-  MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAccountHierarchy, this);
+  MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAccount, this);
   
   // setup connections
   connect(m_accountComboBox, SIGNAL(activated(const QString&)),
@@ -170,7 +170,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
 
 KGlobalLedgerView::~KGlobalLedgerView()
 {
-  MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassAccountHierarchy, this);
+  MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassAccount, this);
   delete m_formLayout;
 }
 
