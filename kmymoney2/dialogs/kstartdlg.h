@@ -16,7 +16,9 @@
 #ifndef KSTARTDLG_H
 #define KSTARTDLG_H
 
+#ifdef HAVE_CONFIG_H
 #include "config.h"
+#endif
 
 #include <kdialogbase.h>
 
