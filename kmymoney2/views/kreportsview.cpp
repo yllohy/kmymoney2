@@ -81,93 +81,314 @@
 class PivotTable
 {
 private:
-    typedef QValueList<MyMoneyMoney> TGridLine;
-    typedef QMap<QString,TGridLine> TGrid;
+    typedef QValueList<MyMoneyMoney> TGridRow;
+    typedef QMap<QString,TGridRow> TRowGroup;
+    typedef QMap<QString,TRowGroup> TGrid;
 
-    QMap<QString,TGrid> m_grid;
+    TGrid m_grid;
+    QStringList m_columnHeadings;
+    bool m_displayRowTotals;
+    int m_numColumns;
 
 public:
-    PivotTable( const MyMoneyFile* );
+  /**
+    * Create a Pivot table style report
+    *
+    * @param file Pointer to the current MyMoneyFile
+    * @param begindate First date of the reporting range (only month and year are used, day is assumed to be '1').
+    * @param enddate One day past the reporting range (only month and year are used, day is assumed to be '1').
+    * @param accounttypes Which account types to include.  Valid values are major account types: MyMoneyAccount::Asset, Liability, Income, Expense.
+    * @param runningsum Whether the table entries should be sums of all transactions to date (true) or only for the single month (false)
+    */
+    PivotTable( const MyMoneyFile* file,const QDate& begindate, const QDate& enddate, const QValueList<MyMoneyAccount::accountTypeE>& accounttypes, bool runningsum );
+
+  /**
+    * Render the report to an HTML stream.
+    *
+    * @return QString HTML string representing the report
+    */
     QString renderHTML( void ) const;
 
 protected:
-    QString getType( const QCString&, QCString& ) const;
+  /**
+    * Returns the top level account
+    *
+    * For example, if 'Hotel' is a subcategory of the 'Travel' expense
+    * account, this method will return the accountid for 'Travel'.
+    *
+    * @param accountid ID for the account in question
+    * @return QCString ID for the top level account
+    */
+    QCString topLevelAccount( const QCString& accountid ) const;
+
+  /**
+    * Record the opening balances of all qualifying accounts into the grid.
+    *
+    * For accounts opened before the report period, places the balance into the '0' column.
+    * For those opened during the report period, places the balance into the appropriate column
+    * for the month when it was opened.
+    *
+    * @param file Pointer to the current MyMoneyFile
+    * @param begindate First date of the range to include transactions (only month and year are used, day is assumed to be '1').
+    * @param enddate One date past the range to include transactions (only month and year are used, day is assumed to be '1').
+    * @param accounttypes Which account types to include.  Valid values are major account types: MyMoneyAccount::Asset, Liability, Income, Expense.
+    */
+    void calculateOpeningBalances( const MyMoneyFile* file, const QDate& begindate, const QDate& enddate, const QValueList<MyMoneyAccount::accountTypeE>& accounttypes );
+
+  /**
+    * Calculate the running sums.
+    *
+    * After calling this method, each cell of the report will contain the running sum of all
+    * the cells in its row in this and earlier columns.
+    *
+    * For example, consider a row with these values:
+    *   01 02 03 04 05 06 07 08 09 10
+    *
+    * After calling this function, the row will look like this:
+    *   01 03 06 10 15 21 28 36 45 55
+    */
+    void calculateRunningSums( void );
+
+  /**
+    * Convert an amount in a possible different currency to the base value
+    * using the price for a given date. If the currency of the account
+    * is already the base currency, then the amount is returned unchanged.
+    *
+    * @param file pointer to MyMoneyFile object
+    * @param amount original amount in possible foreign currency
+    * @param acc the account for which the conversion should be performed
+    * @param date the date for which the conversion should be performed
+    *
+    * @return MyMoneyMoney object containing the converted value
+    */
+  const MyMoneyMoney baseValue(const MyMoneyFile* file, const MyMoneyMoney& amount, const MyMoneyAccount& acc, const QDate& date) const;
 
 };
 
-PivotTable::PivotTable( const MyMoneyFile* file )
+PivotTable::PivotTable( const MyMoneyFile* file, const QDate& _begindate, const QDate& _enddate, const QValueList<MyMoneyAccount::accountTypeE>& accounttypes, bool runningsum )
 {
-  int currentyear = QDate::currentDate().year();
+  // strip out the 'days' component of the begin and end dates.
+  // we're only concerned about the month & year.
+  QDate begindate( _begindate.year(), _begindate.month(), 1 );
+  QDate enddate( _enddate.year(), _enddate.month(), 1 );
+
+  m_displayRowTotals = !runningsum;
+
+  //
+  // Determine column headings
+  //
+
+  // one column for the opening balance
+  m_columnHeadings.append( "Opening" );
+
+  // one for each month in the date range 
+  QDate columndate = begindate;
+  while ( columndate < enddate )
+  {
+    m_columnHeadings.append( QDate::shortMonthName(columndate.month()) );
+    columndate = columndate.addMonths( 1 );
+  }
+
+  m_numColumns =  m_columnHeadings.size();
+    
+  //
+  // Get opening balances
+  // (for running sum reports only)
+  // 
+ 
+  if ( runningsum )
+    calculateOpeningBalances( file, begindate, enddate, accounttypes );
+
+  //
+  // Populate all transactions into the row/column pivot grid
+  //
+
   MyMoneyTransactionFilter filter;
-  filter.setDateFilter(QDate(currentyear,1,1),QDate(currentyear,12,31));
   filter.setReportAllSplits(false);
+  filter.setDateFilter(begindate, enddate);
   QValueList<MyMoneyTransaction> transactions = file->transactionList(filter);
   QValueList<MyMoneyTransaction>::const_iterator it_transaction = transactions.begin();
+  int colofs = begindate.year() * 12 + begindate.month() - 1;
   
   while ( it_transaction != transactions.end() )
   {
-    int column = (*it_transaction).postDate().month() - 1;
+    int column;
+
+    QDate postdate = (*it_transaction).postDate();
+
+    column = postdate.year() * 12 + postdate.month() - colofs;
 
     QValueList<MyMoneySplit> splits = (*it_transaction).splits();
     QValueList<MyMoneySplit>::const_iterator it_split = splits.begin();
     while ( it_split != splits.end() )
     {
-      // determine the type of transaction, which will become the row group
-      QCString accountid = (*it_split).accountId();
-      QCString parentid;
-      MyMoneyAccount account = file->account(accountid);
-      
-      // reverse sign to match common notation for cash flow direction
-      MyMoneyMoney value = - (*it_split).value((*it_transaction).commodity(), account.currencyId());
-      
-      QString rowgroup = getType( accountid, parentid );
-      // roll up subcategories into top level categories
-      while ( rowgroup == "Subcategory" )
+      MyMoneyAccount splitAccount = file->account((*it_split).accountId());
+      // only reverse sign for expense/income splits
+      MyMoneyMoney reverse((splitAccount.accountGroup() == MyMoneyAccount::Income) |
+                           (splitAccount.accountGroup() == MyMoneyAccount::Expense) ? -1 : 1, 1);
+
+      // TODO: Make this a protected method
+
+      // only include this item if its account group is included in this report
+      if ( accounttypes.contains(splitAccount.accountGroup()) )
       {
-        accountid = parentid;
-        rowgroup = getType( accountid, parentid );
-      }
+        // reverse sign to match common notation for cash flow direction
+        MyMoneyMoney value = (*it_split).value((*it_transaction).commodity(), splitAccount.currencyId())*reverse;
 
-      // read the account info of the top level account
-      account = file->account(accountid);
+        // always use the last of the current month as the date to calculate the value
+        QDate valuedate = QDate(postdate.year(), postdate.month(), 1);
+        valuedate.addMonths(1);
+        valuedate.addDays(-1);
 
-      // the row itself is the account name
-      QString row = account.name();
+        // extract the topmost parent (excluding the standard accounts)
+        //
+        // Ideally I would like this method to live in MyMoneyAccount (ace jones)
+        // maybe in MyMoneyFile, as MyMoneyAccount does not know anything about
+        // the special standard accounts (asset, ...) (thomas baumgart)
+        MyMoneyAccount account = file->account(topLevelAccount(splitAccount.id()));
 
-      // filter out undesirable row groups
-      if ( rowgroup == "Income" || rowgroup == "Expense" )
-      {
+        // the row group is the account group (major account type)
+        QString rowgroup = KMyMoneyUtils::accountTypeToString(account.accountGroup());
+
+        // the row is the account name
+        QString row = account.name();
+
+        // fill the row list with blanks if it doesn't already exist.
         if ( m_grid[rowgroup][row].isEmpty() )
-          m_grid[rowgroup][row].insert( m_grid[rowgroup][row].end(), 12, 0 );
+          m_grid[rowgroup][row].insert( m_grid[rowgroup][row].end(), m_numColumns, 0 );
 
-        m_grid[rowgroup][row][column] += value;
+        // add the value to its correct position in the pivot table
+        m_grid[rowgroup][row][column] += baseValue(file, value, splitAccount, valuedate);
 
       }
       ++it_split;
     }
     ++it_transaction;
   }
+
+  //
+  // Calculate the running sums
+  // (for running sum reports only)
+  //
+   
+  if ( runningsum )
+    calculateRunningSums();
+  
 }
 
-QString PivotTable::getType( const QCString& accountid, QCString& parentid ) const
+QCString PivotTable::topLevelAccount( const QCString& accountid ) const
 {
-  QString result;
   MyMoneyFile* file = MyMoneyFile::instance();
+  QCString resultid = accountid;
+  QCString parentid = file->account(resultid).parentAccountId();
 
-  parentid = file->account(accountid).parentAccountId();
+  while (!file->isStandardAccount(parentid))
+  {
+    // take on the identity of our parent
+    resultid = parentid;
+    
+    // and try again
+    parentid = file->account(resultid).parentAccountId();
+  }
+  
+  return resultid;
+}
 
-  if ( parentid == file->asset().id() )
-    result = "Asset";
-  else if ( parentid == file->liability().id() )
-    result = "Liability";
-  else if ( parentid == file->income().id() )
-    result = "Income";
-  else if ( parentid == file->expense().id() )
-    result = "Expense";
-  else
-    result = "Subcategory";
+void PivotTable::calculateOpeningBalances( const MyMoneyFile* file, const QDate& begindate, const QDate& enddate, const QValueList<MyMoneyAccount::accountTypeE>& accounttypes )
+{
+  QValueList<MyMoneyAccount> accounts = file->accountList();
+  QValueList<MyMoneyAccount>::const_iterator it_account = accounts.begin();
 
-  return result;
+  while ( it_account != accounts.end() )
+  {
+    // only include this item if its account group is included in this report
+    if ( accounttypes.contains((*it_account).accountGroup()) )
+    {
+      // extract the balance of the account for the given begin date
+      MyMoneyMoney value = file->balance((*it_account).id(), begindate.addDays(-1));
+      
+      // place into the 'opening' column...
+      int column = 0;
+
+      // unless the account was opened after the start of the report period
+      QDate opendate = (*it_account).openingDate();
+      QDate valuedate = begindate.addDays(-1);
+      if ( opendate >= begindate )
+      {
+        if ( opendate < enddate ) {
+          // in which case it should be placed in the correct column
+          column = opendate.year() * 12 + opendate.month() - begindate.year() * 12 - begindate.month() + 1;
+          // make the value date the last of the month
+          valuedate = opendate;
+
+        } else
+          // or disregarded if the account was opened after the end of the
+          // report period
+          value = 0;
+      }
+
+      // always use the last of the current month as the date to calculate the value
+      valuedate = QDate(valuedate.year(), valuedate.month(), 1);
+      valuedate.addMonths(1);
+      valuedate.addDays(-1);
+
+      // extract the topmost parent (excluding the standard accounts)
+      //
+      // Ideally I would like this method to live in MyMoneyAccount (ace jones)
+      // maybe in MyMoneyFile, as MyMoneyAccount does not know anything about
+      // the special standard accounts (asset, ...) (thomas baumgart)
+      MyMoneyAccount account = file->account(topLevelAccount((*it_account).id()));
+
+      // the row group is the account group (major account type)
+      QString rowgroup = KMyMoneyUtils::accountTypeToString(account.accountGroup());
+
+      // the row is the account name
+      QString row = account.name();
+
+      // fill the row list with blanks if it doesn't already exist.
+      if ( m_grid[rowgroup][row].isEmpty() )
+        m_grid[rowgroup][row].insert( m_grid[rowgroup][row].end(), m_numColumns, 0 );
+
+      // add the value to its correct position in the pivot table
+      m_grid[rowgroup][row][column] += baseValue(file, value, *it_account, valuedate);
+
+    }
+    ++it_account;
+  }
+}
+
+const MyMoneyMoney PivotTable::baseValue(const MyMoneyFile* file, const MyMoneyMoney& amount, const MyMoneyAccount& acc, const QDate& date) const
+{
+  MyMoneyMoney value(amount);
+  
+  if(acc.currencyId() != file->baseCurrency().id()) {
+    MyMoneyCurrency currency = file->currency(acc.currencyId());
+    value = currency.price(date);
+  }
+  
+  return value;
+}
+
+void PivotTable::calculateRunningSums( void )
+{
+  TGrid::iterator it_rowgroup = m_grid.begin();
+  while ( it_rowgroup != m_grid.end() )
+  {
+    TRowGroup::iterator it_row = (*it_rowgroup).begin();
+    while ( it_row != (*it_rowgroup).end() )
+    {
+      MyMoneyMoney runningsum = it_row.data()[0];
+      int column = 1;
+      while ( column < m_numColumns )
+      {
+        runningsum = ( it_row.data()[column] += runningsum );
+
+        ++column;
+      }
+      ++it_row;
+    }
+    ++it_rowgroup;
+  }
 }
 
 QString PivotTable::renderHTML( void ) const
@@ -178,25 +399,29 @@ QString PivotTable::renderHTML( void ) const
 
   QString result = QString("<table class=\"report\" cellspacing=\"0\">"
       "<tr class=\"itemheader\"><th>%1</th>").arg(i18n("Account"));
+  
+  int column = 1;
+  while ( column < m_numColumns )
+  {
+    result += QString("<th>%1</th>").arg(m_columnHeadings[column]);
+    ++column;
+  }
 
-  // TODO: Remove the fixed # of columns and column meanings from the code.
-  // This should be in the grid data.
-  int month = 0;
-  while ( ++month <= 12 )
-    result += QString("<th>%1</th>").arg(QDate::shortMonthName(month));
+  if ( m_displayRowTotals )
+    result += QString("<th>%1</th>").arg(i18n("Total"));
 
-  result += QString("<th>%1</th></tr>").arg(i18n("Total"));
-
+  result += "</tr>";
+    
   // calculate the column grand totals along the way
   QValueList<MyMoneyMoney> columngrandtotal;
-  columngrandtotal.insert( columngrandtotal.end(), 12, MyMoneyMoney() );
+  columngrandtotal.insert( columngrandtotal.end(), m_numColumns, MyMoneyMoney() );
 
   //
   // Row groups
   //
 
   // iterate over row groups
-  QMap<QString,TGrid>::const_iterator it_rowgroup = m_grid.begin();
+  TGrid::const_iterator it_rowgroup = m_grid.begin();
   while ( it_rowgroup != m_grid.end() )
   {
     //
@@ -206,13 +431,13 @@ QString PivotTable::renderHTML( void ) const
     result += QString("<tr class=\"sectionheader\"><td class=\"left\" colspan=\"0\">%1</td></tr>").arg(it_rowgroup.key());
 
     QValueList<MyMoneyMoney> columntotal;
-    columntotal.insert( columntotal.end(), 12, MyMoneyMoney() );
+    columntotal.insert( columntotal.end(), m_numColumns, MyMoneyMoney() );
 
     //
     // Rows
     //
 
-    TGrid::const_iterator it_row = (*it_rowgroup).begin();
+    TRowGroup::const_iterator it_row = (*it_rowgroup).begin();
     int rownum = 0;
     while ( it_row != (*it_rowgroup).end() )
     {
@@ -230,9 +455,9 @@ QString PivotTable::renderHTML( void ) const
       // Columns
       //
 
-      int column = 0;
+      int column = 1;
       MyMoneyMoney rowtotal;
-      while ( column < 12 )
+      while ( column < m_numColumns )
       {
         MyMoneyMoney value = it_row.data()[column];
         columntotal[column] += value;
@@ -245,7 +470,10 @@ QString PivotTable::renderHTML( void ) const
       //
       // Row Total
       //
-      result += QString("<td>%1</td></tr>").arg(rowtotal.formatMoney());
+      if ( m_displayRowTotals )
+        result += QString("<td>%1</td>").arg(rowtotal.formatMoney());
+
+      result += "</tr>";
 
       ++it_row;
     }
@@ -255,9 +483,9 @@ QString PivotTable::renderHTML( void ) const
     //
 
     result += QString("<tr class=\"sectionfooter\"><td class=\"left\">%1&nbsp;%1</td>").arg(i18n("Total")).arg(it_rowgroup.key());
-    int column = 0;
+    int column = 1;
     MyMoneyMoney rowgrouptotal;
-    while ( column < 12 )
+    while ( column < m_numColumns )
     {
       MyMoneyMoney value = columntotal[column];
       columngrandtotal[column] += value;
@@ -266,7 +494,11 @@ QString PivotTable::renderHTML( void ) const
 
       ++column;
     }
-    result += QString("<td>%1</td></tr>").arg(rowgrouptotal.formatMoney());
+
+    if ( m_displayRowTotals )
+      result += QString("<td>%1</td>").arg(rowgrouptotal.formatMoney());
+
+    result += "</tr>";
 
     ++it_rowgroup;
   }
@@ -277,9 +509,9 @@ QString PivotTable::renderHTML( void ) const
 
   result += QString("<tr class=\"spacer\"><td></td></tr>");
   result += QString("<tr class=\"reportfooter\"><td class=\"left\">%1</td>").arg(i18n("Grand Total"));
-  int totalcolumn = 0;
+  int totalcolumn = 1;
   MyMoneyMoney grandtotal;
-  while ( totalcolumn < 12 )
+  while ( totalcolumn < m_numColumns )
   {
     MyMoneyMoney value = columngrandtotal[totalcolumn];
     grandtotal += value;
@@ -288,9 +520,11 @@ QString PivotTable::renderHTML( void ) const
     ++totalcolumn;
   }
 
-  MyMoneyMoney value = grandtotal;
-  result += QString("<td>%1</td></tr>").arg(value.formatMoney());
+  if ( m_displayRowTotals )
+    result += QString("<td>%1</td>").arg(grandtotal.formatMoney());
 
+  result += "</tr>";
+    
   result += QString("<tr class=\"spacer\"><td></td></tr>");
   result += QString("<tr class=\"spacer\"><td></td></tr>");
   result += "</table>";
@@ -325,29 +559,42 @@ void KReportsView::show()
   emit signalViewActivated();
 }
 
-/* TODO:
-  - Remove the fixed # of columns and column meanings from the code.
-    This should be in the grid data.
-*/
-
 const QString KReportsView::createTable(const QString& links) const
 {
   QString filename = KGlobal::dirs()->findResource("appdata", "html/kmymoney2.css");
   QString header = QString("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\">\n") +
-    QString("<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"%1\"></head>\n").arg(filename);
+    QString("<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"%1\"></head><body>\n").arg(filename);
   QString footer = "</body></html>\n";
 
-  PivotTable pivot( MyMoneyFile::instance() );
+  int currentyear = QDate::currentDate().year();
+  QValueList<MyMoneyAccount::accountTypeE> accounttypes;
 
   QString html;
   html += header;
   html += QString("<h2 class=\"report\">%1</h2>").arg(i18n("Monthly Income & Expenses"));
-  html += QString("<center>") + i18n("All currencies converted to %1")
+  html += QString("<div class=\"subtitle\">") + i18n("All currencies converted to %1")
                                 .arg(MyMoneyFile::instance()->baseCurrency().name())
-       + QString("</center>");
+       + QString("</div>");
   html += QString("<div class=\"gap\">&nbsp;</div>\n");
 
-  html += pivot.renderHTML();
+  accounttypes.clear();
+  accounttypes.append(MyMoneyAccount::Expense);
+  accounttypes.append(MyMoneyAccount::Income);  
+  PivotTable expensereport( MyMoneyFile::instance(), QDate(currentyear,1,1),QDate(currentyear+1,1,1),accounttypes, false );
+  html += expensereport.renderHTML();
+
+  html += QString("<h2 class=\"report\">%1</h2>").arg(i18n("Net Worth Over Time"));
+  html += QString("<div class=\"subtitle\">") + i18n("All currencies converted to %1")
+                                .arg(MyMoneyFile::instance()->baseCurrency().name())
+       + QString("</div>");
+  html += QString("<div class=\"gap\">&nbsp;</div>\n");
+
+  accounttypes.clear();
+  accounttypes.append(MyMoneyAccount::Asset);
+  accounttypes.append(MyMoneyAccount::Liability);
+  PivotTable networthreport( MyMoneyFile::instance(), QDate(currentyear,1,1),QDate(currentyear+1,1,1),accounttypes, true );
+  html += networthreport.renderHTML();
+    
   html += links;
   html += footer;
 
