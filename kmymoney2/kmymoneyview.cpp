@@ -400,7 +400,7 @@ void KMyMoneyView::slotAccountNew(void)
                             );
     m_mainView->refreshBankView(m_file);
 
-    MyMoneyAccount accountTmp(dialog.accountNameText,
+    MyMoneyAccount accountTmp(pBank, dialog.accountNameText,
                           dialog.accountNoText,
                           dialog.type,
                           dialog.descriptionText,
@@ -608,14 +608,6 @@ void KMyMoneyView::slotReconcileFinished(bool success)
 
 void KMyMoneyView::newFile(void)
 {
-  if (m_file.isInitialised()) {
-    if ((KMessageBox::questionYesNo(this, i18n("Money file already open\nClose ?")))==KMessageBox::No) {
-      return;
-    }
-    closeFile();
-    m_file.init();
-    m_file.resetAllData();
-  }
    // create the money file
   KNewFileDlg newFileDlg(this, "e", i18n("Create new KMyMoneyFile"));
   if (newFileDlg.exec()) {
@@ -933,6 +925,7 @@ void KMyMoneyView::doTransactionSearch()
       checkTransactionCategory(transaction, doCategory, category )) {
 
       m_transactionList.append(new MyMoneyTransaction(
+				pAccount,
         transaction->id(),
         transaction->method(),
         transaction->number(),

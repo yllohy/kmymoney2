@@ -11,8 +11,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>268</width>
-            <height>141</height>
+            <width>286</width>
+            <height>186</height>
         </rect>
     </property>
     <property stdset="1">
@@ -28,6 +28,45 @@
             <name>spacing</name>
             <number>6</number>
         </property>
+        <widget>
+            <class>QLabel</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>TextLabel1_2</cstring>
+            </property>
+            <property stdset="1">
+                <name>text</name>
+                <string>This dialog shows some useful information about
+how the file has been used.</string>
+            </property>
+        </widget>
+        <widget>
+            <class>Line</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>Line1</cstring>
+            </property>
+            <property stdset="1">
+                <name>frameShadow</name>
+                <enum>Raised</enum>
+            </property>
+            <property stdset="1">
+                <name>lineWidth</name>
+                <number>1</number>
+            </property>
+            <property stdset="1">
+                <name>margin</name>
+                <number>0</number>
+            </property>
+            <property stdset="1">
+                <name>midLineWidth</name>
+                <number>1</number>
+            </property>
+            <property stdset="1">
+                <name>orientation</name>
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
         <widget>
             <class>QLayoutWidget</class>
             <property stdset="1">
@@ -50,15 +89,15 @@
                         <cstring>TextLabel1</cstring>
                     </property>
                     <property stdset="1">
-                        <name>text</name>
-                        <string>Created date:</string>
-                    </property>
-                    <property stdset="1">
                         <name>minimumSize</name>
                         <size>
                             <width>75</width>
                             <height>0</height>
                         </size>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>Created date:</string>
                     </property>
                 </widget>
                 <widget>
@@ -68,11 +107,11 @@
                         <cstring>createdEdit</cstring>
                     </property>
                     <property stdset="1">
-                        <name>edited</name>
+                        <name>enabled</name>
                         <bool>false</bool>
                     </property>
                     <property stdset="1">
-                        <name>enabled</name>
+                        <name>edited</name>
                         <bool>false</bool>
                     </property>
                 </widget>
@@ -100,15 +139,15 @@
                         <cstring>TextLabel2</cstring>
                     </property>
                     <property stdset="1">
-                        <name>text</name>
-                        <string>Last access:</string>
-                    </property>
-                    <property stdset="1">
                         <name>minimumSize</name>
                         <size>
                             <width>75</width>
                             <height>0</height>
                         </size>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>Last access:</string>
                     </property>
                 </widget>
                 <widget>
@@ -146,15 +185,15 @@
                         <cstring>TextLabel3</cstring>
                     </property>
                     <property stdset="1">
-                        <name>text</name>
-                        <string>Last modify:</string>
-                    </property>
-                    <property stdset="1">
                         <name>minimumSize</name>
                         <size>
                             <width>75</width>
                             <height>0</height>
                         </size>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>Last modify:</string>
                     </property>
                 </widget>
                 <widget>
@@ -205,13 +244,6 @@
                             <height>20</height>
                         </size>
                     </property>
-                    <property>
-                        <name>sizeHint</name>
-                        <size>
-                            <width>20</width>
-                            <height>20</height>
-                        </size>
-                    </property>
                 </spacer>
                 <widget>
                     <class>QPushButton</class>
@@ -221,7 +253,11 @@
                     </property>
                     <property stdset="1">
                         <name>text</name>
-                        <string>OK</string>
+                        <string>&amp;OK</string>
+                    </property>
+                    <property stdset="1">
+                        <name>default</name>
+                        <bool>true</bool>
                     </property>
                 </widget>
             </hbox>

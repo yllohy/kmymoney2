@@ -45,7 +45,7 @@ void KSettingsDlg::setPageGeneral()
 	QVBox *mainFrame = addVBoxPage( i18n("General"), i18n("General settings"), DesktopIcon("misc"));
 
 	QGroupBox *GroupBox1 = new QGroupBox( mainFrame, "GroupBox1" );
-	GroupBox1->setTitle( tr( "Startup options" ) );
+	GroupBox1->setTitle( i18n( "Startup options" ) );
 	GroupBox1->setColumnLayout(0, Qt::Vertical );
 	GroupBox1->layout()->setSpacing( 0 );
 	GroupBox1->layout()->setMargin( 0 );
@@ -55,7 +55,7 @@ void KSettingsDlg::setPageGeneral()
 	GroupBox1Layout->setMargin( 11 );
 
 	start_prompt = new QCheckBox( "start_prompt", GroupBox1 );
-	start_prompt->setText( tr( "Start with dialog prompt (default)" ) );
+	start_prompt->setText( i18n( "Start with dialog prompt (default)" ) );
 	start_prompt->setChecked( TRUE );
 	GroupBox1Layout->addWidget( start_prompt );
 }
@@ -72,11 +72,11 @@ void KSettingsDlg::setPageList()
 	tabLayout->setSpacing( 6 );
 	tabLayout->setMargin( 11 );
 	QLabel *TextLabel1_2 = new QLabel( tab, "TextLabel1_2" );
-	TextLabel1_2->setText( tr( "List view colour :" ) );
+	TextLabel1_2->setText( i18n( "List view colour :" ) );
 	TextLabel1_2->setAlignment( int( QLabel::AlignVCenter | QLabel::AlignRight ) );
 	tabLayout->addWidget( TextLabel1_2, 0, 0 );
 	QLabel *TextLabel2_2 = new QLabel( tab, "TextLabel2_2" );
-	TextLabel2_2->setText( tr( "List background color :" ) );
+	TextLabel2_2->setText( i18n( "List background color :" ) );
 	TextLabel2_2->setAlignment( int( QLabel::AlignVCenter | QLabel::AlignRight ) );
 	tabLayout->addWidget( TextLabel2_2, 1, 0 );
 	color_list = new KColorButton( tab, "color_list" );

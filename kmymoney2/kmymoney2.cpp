@@ -270,6 +270,15 @@ bool KMyMoney2App::queryExit()
 void KMyMoney2App::slotFileNew()
 {
   slotStatusMsg(i18n("Creating new document..."));
+
+  if (myMoneyView->fileOpen()) {
+    int answer = KMessageBox::warningContinueCancel(this, i18n("KMyMoney file already open.  Close it ?"), "Close File", "Close", "dont_ask_again");
+		if (answer==KMessageBox::Cancel) {
+      slotStatusMsg(i18n("Ready"));
+      return;
+    }
+    slotFileClose();
+  }
   fileName="";
   myMoneyView->newFile();
   slotStatusMsg(i18n("Ready."));
@@ -279,6 +288,15 @@ void KMyMoney2App::slotFileNew()
 void KMyMoney2App::slotFileOpen()
 {
   slotStatusMsg(i18n("Open a document."));
+
+  if (myMoneyView->fileOpen()) {
+    int answer = KMessageBox::warningContinueCancel(this, i18n("KMyMoney file already open.  Close it ?"), "Close File", "Close", "dont_ask_again");
+		if (answer==KMessageBox::Cancel) {
+      slotStatusMsg(i18n("Ready"));
+      return;
+    }
+    slotFileClose();
+  }
   fileName="";
 	initWizard();
   slotStatusMsg(i18n("Ready."));
@@ -286,17 +304,17 @@ void KMyMoney2App::slotFileOpen()
 
 void KMyMoney2App::slotFileOpenRecent(const KURL& url)
 {
+  slotStatusMsg(i18n("Opening file..."));
+
   if (myMoneyView->fileOpen()) {
-    if ((KMessageBox::questionYesNo(this, i18n("KMyMoney file already open.  Close ?")))==KMessageBox::No) {
+    int answer = KMessageBox::warningContinueCancel(this, i18n("KMyMoney file already open.  Close it ?"), "Close File", "Close", "dont_ask_again");
+		if (answer==KMessageBox::Cancel) {
       slotStatusMsg(i18n("Ready"));
       return;
     }
-    else {
-      slotFileClose();
-    }
+    slotFileClose();
   }
 
-  slotStatusMsg(i18n("Opening file..."));
 
   myMoneyView->readFile( url.directory(false,true)+url.fileName() );
 	fileOpenRecent->addURL( url );
@@ -344,7 +362,10 @@ void KMyMoney2App::slotFileCloseWindow()
   slotStatusMsg(i18n("Closing window..."));
 
   if (myMoneyView->dirty()) {
-    if (KMessageBox::questionYesNo(this, i18n("The file has been changed, save it ?"))==KMessageBox::Yes)
+    int answer = KMessageBox::warningYesNoCancel(this, i18n("The file has been changed, save it ?"));
+		if (answer == KMessageBox::Cancel)
+			return;
+		else if (answer == KMessageBox::Yes)
       slotFileSave();
   }
 
@@ -358,7 +379,10 @@ void KMyMoney2App::slotFileClose()
   slotStatusMsg(i18n("Closing file..."));
 
   if (myMoneyView->dirty()) {
-    if (KMessageBox::questionYesNo(this, i18n("The file has been changed, save it ?"))==KMessageBox::Yes)
+    int answer = KMessageBox::warningYesNoCancel(this, i18n("The file has been changed, save it ?"));
+		if (answer == KMessageBox::Cancel)
+			return;
+		else if (answer == KMessageBox::Yes)
       slotFileSave();
   }
 

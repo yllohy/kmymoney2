@@ -53,7 +53,7 @@ To add minor categories enter the name and press the Add button.</string>
             </property>
             <property stdset="1">
                 <name>lineWidth</name>
-                <number>3</number>
+                <number>1</number>
             </property>
             <property stdset="1">
                 <name>orientation</name>
@@ -319,7 +319,7 @@ To add minor categories enter the name and press the Add button.</string>
             <class>QLayoutWidget</class>
             <property stdset="1">
                 <name>name</name>
-                <cstring>Layout1</cstring>
+                <cstring>Layout5</cstring>
             </property>
             <hbox>
                 <property stdset="1">
@@ -355,17 +355,6 @@ To add minor categories enter the name and press the Add button.</string>
                     <class>QPushButton</class>
                     <property stdset="1">
                         <name>name</name>
-                        <cstring>cancelBtn</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>text</name>
-                        <string>&amp;Cancel</string>
-                    </property>
-                </widget>
-                <widget>
-                    <class>QPushButton</class>
-                    <property stdset="1">
-                        <name>name</name>
                         <cstring>okBtn</cstring>
                     </property>
                     <property stdset="1">
@@ -375,6 +364,17 @@ To add minor categories enter the name and press the Add button.</string>
                     <property stdset="1">
                         <name>default</name>
                         <bool>true</bool>
+                    </property>
+                </widget>
+                <widget>
+                    <class>QPushButton</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>cancelBtn</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>&amp;Cancel</string>
                     </property>
                 </widget>
             </hbox>

@@ -12,7 +12,7 @@
             <x>0</x>
             <y>0</y>
             <width>464</width>
-            <height>429</height>
+            <height>392</height>
         </rect>
     </property>
     <property stdset="1">
@@ -54,7 +54,7 @@ Click on Search to perform the search.</string>
             </property>
             <property stdset="1">
                 <name>lineWidth</name>
-                <number>3</number>
+                <number>1</number>
             </property>
             <property stdset="1">
                 <name>margin</name>
@@ -975,7 +975,7 @@ Click on Search to perform the search.</string>
             <class>QLayoutWidget</class>
             <property stdset="1">
                 <name>name</name>
-                <cstring>Layout14</cstring>
+                <cstring>Layout10</cstring>
             </property>
             <hbox>
                 <property stdset="1">
@@ -989,7 +989,7 @@ Click on Search to perform the search.</string>
                 <spacer>
                     <property>
                         <name>name</name>
-                        <cstring>Spacer11</cstring>
+                        <cstring>Spacer12</cstring>
                     </property>
                     <property stdset="1">
                         <name>orientation</name>
@@ -1022,44 +1022,6 @@ Click on Search to perform the search.</string>
                         <bool>true</bool>
                     </property>
                 </widget>
-            </hbox>
-        </widget>
-        <widget>
-            <class>QLayoutWidget</class>
-            <property stdset="1">
-                <name>name</name>
-                <cstring>Layout13</cstring>
-            </property>
-            <hbox>
-                <property stdset="1">
-                    <name>margin</name>
-                    <number>0</number>
-                </property>
-                <property stdset="1">
-                    <name>spacing</name>
-                    <number>6</number>
-                </property>
-                <spacer>
-                    <property>
-                        <name>name</name>
-                        <cstring>Spacer12</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>orientation</name>
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property stdset="1">
-                        <name>sizeType</name>
-                        <enum>Expanding</enum>
-                    </property>
-                    <property>
-                        <name>sizeHint</name>
-                        <size>
-                            <width>20</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
                 <widget>
                     <class>QPushButton</class>
                     <property stdset="1">

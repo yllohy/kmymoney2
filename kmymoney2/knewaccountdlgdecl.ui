@@ -133,7 +133,7 @@ My Current Account.</string>
             </property>
             <property stdset="1">
                 <name>lineWidth</name>
-                <number>3</number>
+                <number>1</number>
             </property>
             <property stdset="1">
                 <name>orientation</name>
@@ -522,17 +522,6 @@ My Current Account.</string>
                     <class>QPushButton</class>
                     <property stdset="1">
                         <name>name</name>
-                        <cstring>cancelButton</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>text</name>
-                        <string>&amp;Cancel</string>
-                    </property>
-                </widget>
-                <widget>
-                    <class>QPushButton</class>
-                    <property stdset="1">
-                        <name>name</name>
                         <cstring>createButton</cstring>
                     </property>
                     <property stdset="1">
@@ -542,6 +531,17 @@ My Current Account.</string>
                     <property stdset="1">
                         <name>default</name>
                         <bool>true</bool>
+                    </property>
+                </widget>
+                <widget>
+                    <class>QPushButton</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>cancelButton</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>&amp;Cancel</string>
                     </property>
                 </widget>
             </hbox>

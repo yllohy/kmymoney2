@@ -1,3 +1,11 @@
+2001-07-08 Michael Edwardes <mte@users.sourceforge.net>
+	* Standardized most of the dialogs in respect to the OK and
+		Cancel buttons.
+	* MyMoneyFile now updates the dirty flag when needed.
+	* All classes now have a 'parent' pointer and update the
+		dirty flag when needed.  (e.g transactions now know which
+		account/bank they are in).
+
 2001-07-06 Michael Edwardes <mte@users.sourceforge.net>
   * Added the ability to customize the key definitions.
   * Fixed the ability to load the last file edited automatically.
