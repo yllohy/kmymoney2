@@ -56,18 +56,18 @@
 class KUpdateStockPriceDlg : public kUpdateStockPriceDecl
 {
   Q_OBJECT
-  
-public: 
+
+public:
   KUpdateStockPriceDlg(QWidget* parent = NULL,  const char* name = NULL);
   KUpdateStockPriceDlg(const QDate& date, const QString& strPrice, QWidget* parent = NULL,  const char* name = NULL);
   ~KUpdateStockPriceDlg();
 
   const QDate getDate() const { return dateInput->getQDate(); };
-  const MyMoneyMoney getPrice() const { return priceInput->getMoneyValue(); };
+  const MyMoneyMoney getPrice() const { return priceInput->value(); };
 
 private:
   void init();
-  
+
 };
 
 #endif
