@@ -391,6 +391,9 @@ void KSettingsDlg::setPageList()
   m_qcheckboxFocusChangeEnter = new QCheckBox(i18n("Keep changes when selecting a different transaction/split"), qwidgetPage);
   qvboxlayoutPage->addWidget(m_qcheckboxFocusChangeEnter);
 
+  m_qcheckboxAutoFillTransaction = new QCheckBox(i18n("Auto fill with previous transaction data"), qwidgetPage);
+  qvboxlayoutPage->addWidget(m_qcheckboxAutoFillTransaction);
+
   // Add a vertical spacer to take up the remaining available space
   QSpacerItem* spacer = new QSpacerItem( 20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding );
   qvboxlayoutPage->addItem( spacer );
@@ -474,6 +477,9 @@ void KSettingsDlg::configRead()
 
   m_bTempFocusChangeEnter = kconfig->readBoolEntry("FocusChangeIsEnter", false);
   m_qcheckboxFocusChangeEnter->setChecked(m_bTempFocusChangeEnter);
+
+  m_bTempAutoFillTransaction = kconfig->readBoolEntry("AutoFillTransaction", false);
+  m_qcheckboxAutoFillTransaction->setChecked(m_bTempAutoFillTransaction);
 
   kconfig->setGroup("List Options");
 
@@ -566,6 +572,7 @@ void KSettingsDlg::configWrite()
   kconfig->writeEntry("AlwaysShowNrField", m_qcheckboxShowNrField->isChecked());
   kconfig->writeEntry("PricePrecision", m_qIntPricePrecision->text());
   kconfig->writeEntry("FocusChangeIsEnter", m_qcheckboxFocusChangeEnter->isChecked());
+  kconfig->writeEntry("AutoFillTransaction", m_qcheckboxAutoFillTransaction->isChecked());
 
   kconfig->setGroup("Homepage Options");
   kconfig->writeEntry("Itemlist", homePageItems());
@@ -667,6 +674,7 @@ void KSettingsDlg::slotUser1()
   m_qcheckboxTypeToNr->setChecked(m_bTempTypeToNr);
   m_qcheckboxShowNrField->setChecked(m_bTempShowNrField);
   m_qcheckboxFocusChangeEnter->setChecked(m_bTempFocusChangeEnter);
+  m_qcheckboxAutoFillTransaction->setChecked(m_bTempAutoFillTransaction);
   m_qradiobuttonStartLast->setChecked(m_bTempStartPage);
   m_qradiobuttonStartHome->setChecked(!m_bTempStartPage);
   m_qradiobuttonCheckSchedules->setChecked(m_bTempCheckSchedule);

@@ -117,6 +117,9 @@ private:
   /* keep changes when selecting different transaction / split */
   QCheckBox* m_qcheckboxFocusChangeEnter;
 
+  /* auto prefill a transaction with previous data of the same payee */
+  QCheckBox* m_qcheckboxAutoFillTransaction;
+
   /** colour options */
   QRadioButton *m_qradiobuttonPerTransaction;
   QRadioButton *m_qradiobuttonOtherRow;
@@ -206,6 +209,7 @@ private:
   bool m_bTempCheckSchedule;
   bool m_bTempUseSystemFont;
   bool m_bTempFocusChangeEnter;
+  bool m_bTempAutoFillTransaction;
   int  m_iTempSchedulePreview;
   QStringList m_tempHomePageItems;
 

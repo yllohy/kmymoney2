@@ -681,9 +681,12 @@ void KLedgerView::slotPayeeChanged(const QString& name)
       // memo available, we search for the last transaction of this payee
       // in the account.
       if(m_transaction.splitCount() == 2) {
+        KConfig* kconfig = KGlobal::config();
+        kconfig->setGroup("General Options");
         if(sp.accountId().isEmpty()
         && m_split.memo().isEmpty()
-        && m_split.value().isZero()) {
+        && m_split.value().isZero()
+        && kconfig->readBoolEntry("AutoFillTransaction", false) == true) {
           MyMoneyTransactionFilter filter(m_account.id());
           filter.addPayee(payee.id());
           QValueList<MyMoneyTransaction> list = MyMoneyFile::instance()->transactionList(filter);
