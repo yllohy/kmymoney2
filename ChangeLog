@@ -1,3 +1,6 @@
+2001-11-21 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
+  * Commented out delete of widgets in KTransactionView
+
 2001-09-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Update bank view after import
   * Added apostrophe selection to QIF import

@@ -1,10 +1,10 @@
 /* config.h.in.  Generated automatically from configure.in by autoheader.  */
 
-/* The number of bytes in a char *.  */
-#undef SIZEOF_CHAR_P
-
 /* The number of bytes in a char.  */
 #undef SIZEOF_CHAR
+
+/* The number of bytes in a char *.  */
+#undef SIZEOF_CHAR_P
 
 /* The number of bytes in a int.  */
 #undef SIZEOF_INT

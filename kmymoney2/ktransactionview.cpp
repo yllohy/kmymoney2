@@ -80,6 +80,7 @@ KTransactionView::KTransactionView(QWidget *parent, const char *name)
 
 KTransactionView::~KTransactionView()
 {
+/*
 	delete m_date;
 	delete m_method;
     delete m_payee;
@@ -91,7 +92,7 @@ KTransactionView::~KTransactionView()
     delete m_enter;
     delete m_cancel;
     delete m_delete;
-
+ */
 }
 
 void KTransactionView::slotPayeeCompleted()
