@@ -107,14 +107,16 @@ KEquityPriceUpdateDlg::KEquityPriceUpdateDlg(QWidget *parent, const QCString& se
   }
 
   // Second, add each price pair that we know about
-  // typedef QMap<MyMoneySecurityPair, MyMoneyPriceEntries> MyMoneyPriceList;
   MyMoneyPriceList prices = file->priceList();
   for(MyMoneyPriceList::ConstIterator it_price = prices.begin(); it_price != prices.end(); ++it_price)
   {
-    // typedef QPair<QCString, QCString> MyMoneySecurityPair;
     MyMoneySecurityPair pair = it_price.key();
     
-    if ( file->security( pair.first ).isCurrency() )
+    // send in securityId == "XXXYYY" to get a single-shot update for XXX to YYY.
+    if ( 
+          file->security( pair.first ).isCurrency() 
+          && ( securityId.isEmpty() || ( pair.first + pair.second == securityId ) )
+       )
     {
       KListViewItem* item = new KListViewItem(lvEquityList, 
         QString("%1 > %2").arg(pair.first,pair.second),
