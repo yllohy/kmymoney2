@@ -36,7 +36,7 @@
 #include "../views/kledgerview.h"
 
 kMyMoneyRegisterCheckings::kMyMoneyRegisterCheckings(QWidget *parent, const char *name )
-  : kMyMoneyRegister(parent,name)
+  : kMyMoneyRegister(3, parent,name)
 {
 }
 
@@ -271,7 +271,7 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
 void kMyMoneyRegisterCheckings::adjustColumn(int col)
 {
   QHeader *topHeader = horizontalHeader();
-  QFontMetrics fontMetrics(m_font);
+  QFontMetrics fontMetrics(m_headerFont);
 
   int w = topHeader->fontMetrics().width( topHeader->label( col ) ) + 10;
   if ( topHeader->iconSet( col ) )
@@ -296,14 +296,6 @@ void kMyMoneyRegisterCheckings::adjustColumn(int col)
     }
   }
   setColumnWidth( col, w );
-}
-
-QWidget* kMyMoneyRegisterCheckings::createEditor(int row, int col, bool initFromCell) const
-{
-  if(!m_inlineEditAvailable)
-    return 0;
-
-  return kMyMoneyRegister::createEditor(row, col, initFromCell);
 }
 
 // This must be implemented here, as QTable::eventFilter is not virtual :-(

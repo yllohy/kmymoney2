@@ -32,15 +32,19 @@
 #include "kmymoneyregister.h"
 #include "../views/kledgerview.h"
 
-kMyMoneyRegister::kMyMoneyRegister(QWidget *parent, const char *name )
+kMyMoneyRegister::kMyMoneyRegister(int maxRpt, QWidget *parent, const char *name )
   : QTable(parent, name),
-    m_ledgerLens(true)
+    m_ledgerLens(true),
+    m_maxRpt(maxRpt)
 {
   readConfig();
   m_currentDateRow = -1;
   m_lastTransactionIndex = -1;
   m_currentTransactionIndex = 0;
+  m_inlineEditMode = false;
   setSelectionMode(QTable::SingleRow);
+
+  m_editWidgets.clear();
 }
 
 kMyMoneyRegister::~kMyMoneyRegister()
@@ -51,9 +55,9 @@ void kMyMoneyRegister::setNumRows(int r)
 {
 }
 
-void kMyMoneyRegister::setTransactionCount(int r)
+void kMyMoneyRegister::setTransactionCount(const int r, const bool setTransaction)
 {
-  setUpdatesEnabled( false );
+  //setUpdatesEnabled( false );
 
   int irows = r * m_rpt;
 
@@ -62,19 +66,16 @@ void kMyMoneyRegister::setTransactionCount(int r)
   }
   QTable::setNumRows(irows);
 
-/*
-  // the following code fragment resizes the rows to match the current
-  // font height. Unfortunately, this slows down the display process
-  // significantly when displaying 1500+ transactions.
+  QFontMetrics fm( m_cellFont );
+  int height = fm.lineSpacing()+6;
 
-  QFontMetrics fm( m_font );
-  int height = fm.height()+4;
+  verticalHeader()->setUpdatesEnabled(false);
 
   for(int i = 0; i < irows; ++i)
     verticalHeader()->resizeSection(i, height);
-*/
 
-  setUpdatesEnabled( true );
+  verticalHeader()->setUpdatesEnabled(true);
+  //setUpdatesEnabled( true );
 
   // add or remove scrollbars as required
   updateScrollBars();
@@ -92,7 +93,7 @@ void kMyMoneyRegister::readConfig(void)
   KConfig *config = KGlobal::config();
   config->setGroup("List Options");
 
-  m_font = QFont("helvetica", 8);
+  m_cellFont = QFont("helvetica", 10);
   m_color = Qt::white;
   m_bgColor = Qt::gray;
   m_gridColor = Qt::black;
@@ -101,9 +102,23 @@ void kMyMoneyRegister::readConfig(void)
   m_color = config->readColorEntry("listColor", &m_color);
   m_gridColor = config->readColorEntry("listGridColor", &m_gridColor);
 
-  m_font = config->readFontEntry("listCellFont", &m_font);
+  m_cellFont = config->readFontEntry("listCellFont", &m_cellFont);
+  setFont(m_cellFont);
+  m_headerFont = config->readFontEntry("listHeaderFont", &m_headerFont);
+  updateHeaders();
 
-  m_rpt = config->readEntry("RowCount", "1").toInt();
+  // force loading of new font into all cells
+  int rows = numRows();
+  QTable::setNumRows(0);
+  QTable::setNumRows(rows);
+
+  // m_rpt = config->readEntry("RowCount", "1").toInt();
+  config->deleteEntry("RowCount");
+  if(config->readBoolEntry("ShowRegisterDetailed", false))
+    m_rpt = m_maxRpt;
+  else
+    m_rpt = 1;
+
   m_showGrid = config->readBoolEntry("ShowGrid", true);
   m_colorPerTransaction = config->readBoolEntry("ColourPerTransaction", true);
 }
@@ -138,7 +153,7 @@ void kMyMoneyRegister::paintCell(QPainter *p, int row, int col, const QRect& r,
       m_cg.setColor(QColorGroup::Base, m_bgColor);
   }
 
-  p->setFont(m_font);
+  p->setFont(m_cellFont);
 
   m_cellRect = r;
   m_cellRect.setX(0);
@@ -185,6 +200,14 @@ void kMyMoneyRegister::paintCell(QPainter *p, int row, int col, const QRect& r,
     m_textColor = m_cg.text();
   }
   p->setPen(m_textColor);
+}
+
+void kMyMoneyRegister::contentsMouseDoubleClickEvent( QMouseEvent *e)
+{
+  int tmpRow = rowAt( e->pos().y() );
+  int tmpCol = columnAt( e->pos().x() );
+
+  emit doubleClicked( tmpRow, tmpCol, e->button(), e->pos() );
 }
 
 void kMyMoneyRegister::contentsMouseReleaseEvent( QMouseEvent* e )
@@ -237,12 +260,15 @@ bool kMyMoneyRegister::setCurrentTransactionIndex(int idx)
 
 QWidget* kMyMoneyRegister::createEditor(int row, int col, bool initFromCell) const
 {
+  if(!cellWidget(row, col))
+    return 0;
+
   return QTable::createEditor(row, col, initFromCell);
 }
 
-void kMyMoneyRegister::setInlineEditingAvailable(const bool editing)
+void kMyMoneyRegister::setInlineEditingMode(const bool editing)
 {
-  m_inlineEditAvailable = editing;
+  m_inlineEditMode = editing;
 }
 
 void kMyMoneyRegister::ensureTransactionVisible(void)
@@ -274,7 +300,7 @@ bool kMyMoneyRegister::eventFilter(QObject* o, QEvent* e)
 {
   bool rc = false;
 
-  if(e->type() == QEvent::KeyRelease) {
+  if(e->type() == QEvent::KeyPress && !m_inlineEditMode) {
     QKeyEvent *k = static_cast<QKeyEvent *> (e);
     rc = true;
     switch(k->key()) {
@@ -312,4 +338,103 @@ bool kMyMoneyRegister::eventFilter(QObject* o, QEvent* e)
 void kMyMoneyRegister::setLedgerLens(const bool enabled)
 {
   m_ledgerLens = enabled;
+}
+
+void kMyMoneyRegister::insertWidget(int row, int col, QWidget* w)
+{
+  int   myRow;
+
+  if(row < 0 || col < 0 || row >= numRows() || col >= numCols())
+    return;
+
+  if(row < m_currentTransactionIndex * m_rpt)
+    return;
+
+  if(m_ledgerLens) {
+    if(row >= (m_currentTransactionIndex * m_rpt) + maxRpt())
+      return;
+    myRow = row % maxRpt();
+  } else {
+    if(row >= (m_currentTransactionIndex * (m_rpt+1)))
+      return;
+    myRow = row % m_rpt;
+  }
+  m_editWidgets.insert(indexOf(myRow, col), w);
+}
+
+QWidget* kMyMoneyRegister::cellWidget(int row, int col) const
+{
+  int   myRow;
+
+  if(row < 0 || col < 0 || row >= numRows() || col >= numCols())
+    return 0;
+
+  if(row < m_currentTransactionIndex * m_rpt)
+    return 0;
+
+  if(m_ledgerLens) {
+    if(row >= (m_currentTransactionIndex * m_rpt) + maxRpt())
+      return 0;
+    myRow = row % maxRpt();
+  } else {
+    if(row >= (m_currentTransactionIndex * (m_rpt+1)))
+      return 0;
+    myRow = row % m_rpt;
+  }
+
+  return m_editWidgets[indexOf(myRow, col)];
+}
+
+
+void kMyMoneyRegister::clearCellWidget(int row, int col)
+{
+  int   myRow;
+
+  if(row < 0 || col < 0 || row >= numRows() || col >= numCols())
+    return;
+
+  if(row < m_currentTransactionIndex * m_rpt)
+    return;
+
+  if(m_ledgerLens) {
+    if(row >= (m_currentTransactionIndex * m_rpt) + maxRpt())
+      return;
+    myRow = row % maxRpt();
+  } else {
+    if(row >= (m_currentTransactionIndex * (m_rpt+1)))
+      return;
+    myRow = row % m_rpt;
+  }
+  QWidget* w = cellWidget(row, col);
+
+  if( w ) {
+    w->removeEventFilter(this);
+    w->deleteLater();
+  }
+  m_editWidgets.setAutoDelete(false);
+  m_editWidgets.remove(indexOf(myRow, col));
+  m_editWidgets.setAutoDelete(true);
+}
+
+void kMyMoneyRegister::setNumCols(int c)
+{
+  m_editWidgets.resize(maxRpt() * c);
+
+  for(int i=0; i < maxRpt(); ++i)
+    for(int j=0; j < c; ++j)
+      m_editWidgets.insert(indexOf(i, j), 0);
+
+  QTable::setNumCols(c);
+
+  updateHeaders();
+}
+
+void kMyMoneyRegister::updateHeaders(void)
+{
+  QFontMetrics fm( m_headerFont );
+  int height = fm.lineSpacing()+6;
+
+  horizontalHeader()->setMinimumHeight(height);
+  horizontalHeader()->setMaximumHeight(height);
+  horizontalHeader()->setFont(m_headerFont);
 }

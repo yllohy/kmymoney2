@@ -60,7 +60,7 @@ class kMyMoneyRegister : public QTable
   friend class QTableHeader;
 
 public:
-	kMyMoneyRegister(QWidget *parent=0, const char *name=0);
+	kMyMoneyRegister(int maxRpt, QWidget *parent=0, const char *name=0);
 	virtual ~kMyMoneyRegister();
 
   void paintFocus(QPainter* p, const QRect& cr );
@@ -85,12 +85,12 @@ public:
     */
   void setLedgerLens(const bool enabled);
 
-  void clearCell(int row, int col) {};
+  void clearCell(int row, int col) {} ;
   void setItem(int row, int col, QTableItem *) {};
   QTableItem* item(int row, int col) const  { return NULL; };
 
-  void clearCellWidget(int row, int col) {};
-  QWidget* cellWidget(int row, int col) const { return NULL; };
+  void clearCellWidget(int row, int col);
+  QWidget* cellWidget(int row, int col) const;
   QWidget* createEditor(int row, int col, bool initFromCell) const;
 
   /**
@@ -131,13 +131,17 @@ public:
   bool setCurrentTransactionRow(const int row);
 
   /**
-    * This method is used to set the inline editing availability
+    * This method is used to set the inline editing mode
     *
     * @param editing bool flag. if set, inline editing in the register
-    *                is available, if reset, cells of the register are
-    *                read-only.
+    *                is performed, if reset, cells of the register are
+    *                read-only. When the object is constructed, the
+    *                value of the setting is false.
+    *
+    * @note If not set, certain events are filtered and not passed
+    *       to child widgets. See the source of eventFilter() for details.
     */
-  void setInlineEditingAvailable(const bool editing);
+  void setInlineEditingMode(const bool editing);
 
   /**
     * This method is used to make sure that the current selected
@@ -147,16 +151,36 @@ public:
 
   bool eventFilter(QObject* o, QEvent* e);
 
+  /**
+    * This method returns the maximum number a register can provide
+    * for a specific register.
+    *
+    * @return integer containing the maximum number of lines the
+    *         register provides for a single transaction
+    */
+  const int maxRpt(void) const { return m_maxRpt; };
+
 public slots:
   /**
     * This method is used to inform the widget about the number
     * of transactions to be displayed.
     *
     * @param transactions number of transactions in this account
+    * @param setCurrentTransaction the last transaction will be selected
+    *                       as the current transaction if this flag is
+    *                       set to true. Default is true.
     */
-  void setTransactionCount(int transactions);
+  void setTransactionCount(const int transactions, const bool setCurrentTransaction = true);
 
-  void setNumRows(int r);
+  virtual void setNumRows(int r);
+
+  /**
+    * This method sets the number of columns the register supports.
+    * It resizes the widget array used to manage the edit widgets.
+    * The old values of m_editWidgets are not saved. Therefor, this
+    * method should only be called when not editing a transaction.
+    */
+  virtual void setNumCols(int r);
 
 protected:
   void paintCell(QPainter *p, int row, int col, const QRect& r, bool selected, const QColorGroup& cg);
@@ -167,33 +191,24 @@ protected:
     */
   void resizeData(int len) {};
 
-  void insertWidget(int row, int col, QWidget *) {};
+  void insertWidget(int row, int col, QWidget *);
 
+  void contentsMouseDoubleClickEvent( QMouseEvent* e );
   void contentsMouseReleaseEvent( QMouseEvent* e );
 /*
   void contentsMousePressEvent( QMouseEvent* e );
-  void contentsMouseDoubleClickEvent( QMouseEvent* e );
   bool eventFilter(QObject *o, QEvent *e);
   void keyPressEvent(QKeyEvent *k);
 */
 
-  /**
-    * This method returns the maximum number a register can provide
-    * for a specific register. It has to be provided by the derived
-    * classes.
-    *
-    * @return integer containing the maximum number of lines the
-    *         register provides for a single transaction
-    */
-  virtual const int maxRpt(void) const = 0;
-
 protected:
-  int    m_rpt;     // rows per transaction
+  int    m_rpt;     // current rows per transaction
   bool   m_ledgerLens;
 
   KLedgerView*  m_view;
 
-  QFont  m_font;
+  QFont  m_cellFont;
+  QFont  m_headerFont;
 
   QColorGroup m_cg;
   QColor m_color;
@@ -219,10 +234,32 @@ protected:
   MyMoneySplit m_split;
 
   /**
-    * This member is set, if editing inside the register is available.
-    * If reset, the cells of the register are read-only
+    * This vector keeps pointers to the widgets used to edit the data
+    *
     */
-  bool m_inlineEditAvailable;
+  QPtrVector<QWidget>  m_editWidgets;
+
+private:
+  /**
+    * This method is used to update all horizontal headers to the
+    * selected m_headerFont settings
+    */
+  void updateHeaders(void);
+
+private:
+  /**
+    * This member is set, if the view currently uses editing inside
+    * the register is available. The view must set this using
+    * setInlineEditingMode().
+    */
+  bool m_inlineEditMode;
+
+  /**
+    * This member keeps the number of rows this transaction
+    * uses when full detail is shown. It can only be set during
+    * construction. See kMyMoneyRegister::kMyMoneyRegister.
+    */
+  int    m_maxRpt;
 
 signals:
   void signalPreviousTransaction();
@@ -237,7 +274,6 @@ signals:
     * This signal is emitted when the user presses ESC
     */
   void signalEsc();
-
 
 };
 

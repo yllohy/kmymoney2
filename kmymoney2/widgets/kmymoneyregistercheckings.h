@@ -47,17 +47,15 @@ public:
 	kMyMoneyRegisterCheckings(QWidget *parent=0, const char *name=0);
 	~kMyMoneyRegisterCheckings();
 
-  QWidget* createEditor(int row, int col, bool initFromCell) const;
-
   bool eventFilter(QObject* o, QEvent* e);
+
+  virtual const int maxRpt(void) const { return 3; };
 
 public slots:
   void adjustColumn(int col);
 
 protected:
   void paintCell(QPainter *p, int row, int col, const QRect& r, bool selected, const QColorGroup& cg);
-
-  virtual const int maxRpt(void) const { return 3; };
 };
 
 #endif
