@@ -607,6 +607,7 @@ bool KMyMoneyView::readFile(const KURL& url)
   accountsView->refreshView();
   m_ledgerView->reloadView();
   m_payeesView->refreshView();
+  m_scheduledView->refreshView();
   return true;
 }
 
@@ -1331,6 +1332,7 @@ void KMyMoneyView::slotRefreshViews()
   m_categoriesView->refreshView();
   m_ledgerView->refreshView();
   m_payeesView->refreshView();
+  m_scheduledView->refreshView();
 }
 
 void KMyMoneyView::slotAccountFind()
