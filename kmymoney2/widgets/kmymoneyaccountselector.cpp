@@ -360,11 +360,13 @@ void kMyMoneyAccountSelector::selectAllAccounts(const bool state)
   QListViewItem* it_v;
 
   for(it_v = m_listView->firstChild(); it_v != 0; it_v = it_v->nextSibling()) {
-    QCheckListItem* it_c = static_cast<QCheckListItem*>(it_v);
-    if(it_c->type() == QCheckListItem::CheckBox) {
-      it_c->setOn(state);
+    if(it_v->rtti() == 1) {
+      QCheckListItem* it_c = static_cast<QCheckListItem*>(it_v);
+      if(it_c->type() == QCheckListItem::CheckBox) {
+        it_c->setOn(state);
+      }
+      selectAllSubAccounts(it_v, state);
     }
-    selectAllSubAccounts(it_v, state);
   }
   emit stateChanged();
 }
@@ -374,8 +376,13 @@ void kMyMoneyAccountSelector::selectAllSubAccounts(QListViewItem* item, const bo
   QListViewItem* it_v;
 
   for(it_v = item->firstChild(); it_v != 0; it_v = it_v->nextSibling()) {
-    static_cast<QCheckListItem*>(it_v)->setOn(state);
-    selectAllSubAccounts(it_v, state);
+    if(it_v->rtti() == 1) {
+      QCheckListItem* it_c = static_cast<QCheckListItem*>(it_v);
+      if(it_c->type() == QCheckListItem::CheckBox) {
+        it_c->setOn(state);
+      }
+      selectAllSubAccounts(it_v, state);
+    }
   }
 }
 
