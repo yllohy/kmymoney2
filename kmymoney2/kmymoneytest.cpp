@@ -54,37 +54,37 @@
 
 class MyProgressListener : public CppUnit::TextTestProgressListener
 {
-	void startTest(CppUnit::Test *test) {
-		QString name = test->getName().c_str();
-		if(name.find('.') != -1) {		// in CPPUNIT 1.8.0
-			name = name.mid(2);		// cut off first 2 chars
-			name = name.left(name.find('.'));
-		} else if(name.find("::") != -1) {	// in CPPUNIT 1.9.14
-			name = name.left(name.find("::"));
-		}
-		if(m_name != name) {
-			if(m_name != "")
-				std::cout << std::endl;
-			std::cout << "Running: " << name << std::endl;
-			m_name = name;
-		}
-	}
+  void startTest(CppUnit::Test *test) {
+    QString name = test->getName().c_str();
+    if(name.find('.') != -1) {    // in CPPUNIT 1.8.0
+      name = name.mid(2);   // cut off first 2 chars
+      name = name.left(name.find('.'));
+    } else if(name.find("::") != -1) {  // in CPPUNIT 1.9.14
+      name = name.left(name.find("::"));
+    }
+    if(m_name != name) {
+      if(m_name != "")
+        std::cout << std::endl;
+      std::cout << "Running: " << name << std::endl;
+      m_name = name;
+    }
+  }
 private:
-	QString m_name;
+  QString m_name;
 };
 
 void unexpectedException(MyMoneyException *e)
 {
-	std::string msg = "Unexpected exception: ";
-	msg += e->what().latin1();
-	msg += " thrown in ";
-	msg += e->file().latin1();
-	msg += ":";
-	char line[8];
-	sprintf(line, "%ld", e->line());
-	msg += line;
-	delete e;
-	CPPUNIT_FAIL(msg);
+  std::string msg = "Unexpected exception: ";
+  msg += e->what().latin1();
+  msg += " thrown in ";
+  msg += e->file().latin1();
+  msg += ":";
+  char line[8];
+  sprintf(line, "%ld", e->line());
+  msg += line;
+  delete e;
+  CPPUNIT_FAIL(msg);
 }
 
 #endif // HAVE_LIBCPPUNIT
@@ -100,10 +100,10 @@ main(int /* argc */, char** /* argv */ )
 #endif
 
   // mymoney tests
-  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyExceptionTest); 
+  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyExceptionTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyKeyValueContainerTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyObserverTest);
-  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyMoneyTest); 
+  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyMoneyTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneySplitTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyTransactionTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyFinancialCalculatorTest);
@@ -132,7 +132,7 @@ main(int /* argc */, char** /* argv */ )
 
   runner->eventManager().addListener(&progress);
   runner->eventManager().addListener(&result);
- 
+
   runner->run();
   std::cout << "Tests were run with CPPUNIT version " CPPUNIT_VERSION << std::endl;
 
@@ -150,7 +150,7 @@ main(int /* argc */, char** /* argv */ )
 
 #else
   std::cout << "libcppunit not installed. no automatic tests available."
-		 << std::endl;
+     << std::endl;
 #endif // HAVE_LIBCPPUNIT
   return rc;
 }
@@ -160,10 +160,10 @@ main(int /* argc */, char** /* argv */ )
 // these symbols are needed when linking with libofx because it requires
 // these global symbols as part of its callback interface
 extern "C" {
-void ofx_proc_security_cb() {}
-void ofx_proc_transaction_cb() {}
-void ofx_proc_statement_cb() {}
-void ofx_proc_status_cb() {}
-void ofx_proc_account_cb() {}
+  void ofx_proc_security_cb() {}
+  void ofx_proc_transaction_cb() {}
+  void ofx_proc_statement_cb() {}
+  void ofx_proc_status_cb() {}
+  void ofx_proc_account_cb() {}
 }
 #endif
