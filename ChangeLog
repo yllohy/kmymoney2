@@ -1,3 +1,7 @@
+2002-01-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added section in the PHB about files to be checked in and
+    files that should not be checked in
+
 2002-01-27 Michael Edwardes <mte@users.sourceforge.net>
   * Added support for specifying the start date in viewing transactions.
   * Added the view for recurring transactions.
