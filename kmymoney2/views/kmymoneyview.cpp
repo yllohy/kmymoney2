@@ -156,6 +156,12 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(m_categoriesView, SIGNAL(categoryRightMouseClick()),
     this, SLOT(slotAccountRightMouse()));
 
+
+  connect(m_payeesView, SIGNAL(transactionSelected(const QCString&, const QCString&)),
+          this, SLOT(slotLedgerSelected(const QCString&, const QCString&)));
+  connect(m_ledgerView, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
+          this, SLOT(slotPayeeSelected(const QCString&, const QCString&, const QCString&)));
+
 /*
   connect(transactionView, SIGNAL(viewTypeSearchActivated()),
     this, SLOT(accountFind()));
@@ -252,6 +258,18 @@ void KMyMoneyView::slotAccountRightMouse()
     }
   }
   m_accountMenu->exec(QCursor::pos());
+}
+
+void KMyMoneyView::slotLedgerSelected(const QCString& acc, const QCString& transaction)
+{
+  showPage(pageIndex(m_ledgerViewFrame));
+  m_ledgerView->slotSelectAccountAndTransaction(acc, transaction);
+}
+
+void KMyMoneyView::slotPayeeSelected(const QCString& payee, const QCString& account, const QCString& transaction)
+{
+  showPage(pageIndex(m_payeesViewFrame));
+  m_payeesView->slotSelectPayeeAndTransaction(payee, account, transaction);
 }
 
 void KMyMoneyView::slotAccountDoubleClick(void)
@@ -758,7 +776,7 @@ void KMyMoneyView::slotAccountReconcile(void)
 
   if(ok == true) {
     showPage(pageIndex(m_ledgerViewFrame));
-    m_ledgerView->selectAccount(acc, true);
+    m_ledgerView->selectAccount(acc, "", true);
   }
 
 /*

@@ -81,30 +81,40 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   m_accountStack->addWidget(view, MyMoneyAccount::Checkings);
   connect(view, SIGNAL(accountAndTransactionSelected(const QCString&, const QCString&)),
     this, SLOT(slotSelectAccountAndTransaction(const QCString&, const QCString&)));
+  connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
+    SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
 
   // Savings account
   view = m_specificView[MyMoneyAccount::Savings] = new KLedgerViewSavings(this);
   m_accountStack->addWidget(view, MyMoneyAccount::Savings);
   connect(view, SIGNAL(accountAndTransactionSelected(const QCString&, const QCString&)),
     this, SLOT(slotSelectAccountAndTransaction(const QCString&, const QCString&)));
+  connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
+    SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
 
   // Credit card account
   view = m_specificView[MyMoneyAccount::CreditCard] = new KLedgerViewCreditCard(this);
   m_accountStack->addWidget(view, MyMoneyAccount::CreditCard);
   connect(view, SIGNAL(accountAndTransactionSelected(const QCString&, const QCString&)),
     this, SLOT(slotSelectAccountAndTransaction(const QCString&, const QCString&)));
+  connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
+    SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
 
   // Cash account
   view = m_specificView[MyMoneyAccount::Cash] = new KLedgerViewCash(this);
   m_accountStack->addWidget(view, MyMoneyAccount::Cash);
   connect(view, SIGNAL(accountAndTransactionSelected(const QCString&, const QCString&)),
     this, SLOT(slotSelectAccountAndTransaction(const QCString&, const QCString&)));
+  connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
+    SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
 
   // Asset account
   view = m_specificView[MyMoneyAccount::Asset] = new KLedgerViewAsset(this);
   m_accountStack->addWidget(view, MyMoneyAccount::Asset);
   connect(view, SIGNAL(accountAndTransactionSelected(const QCString&, const QCString&)),
     this, SLOT(slotSelectAccountAndTransaction(const QCString&, const QCString&)));
+  connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
+    SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
 
 
   Form1Layout->addWidget(m_accountStack);
@@ -130,7 +140,7 @@ void KGlobalLedgerView::loadAccounts(void)
   for(it_s = acc.accountList().begin(); it_s != acc.accountList().end(); ++it_s) {
     accountComboBox->insertItem(file->account(*it_s).name());
     if(m_accountId == "") {
-      selectAccount(*it_s, false, true);
+      selectAccount(*it_s, "", false, true);
       accountComboBox->setCurrentText(file->account(*it_s).name());
     }
   }
@@ -186,11 +196,10 @@ void KGlobalLedgerView::refreshView(void)
 
 void KGlobalLedgerView::slotSelectAccountAndTransaction(const QCString& accountId, const QCString& transactionId)
 {
-  selectAccount(accountId);
-  m_currentView->selectTransaction(transactionId);
+  selectAccount(accountId, transactionId);
 }
 
-void KGlobalLedgerView::selectAccount(const QCString& accountId, const bool reconciliation, const bool forceLoad)
+void KGlobalLedgerView::selectAccount(const QCString& accountId, const QCString& transaction, const bool reconciliation, const bool forceLoad)
 {
   slotCancelEdit();
   if(accountId != "") {
@@ -201,6 +210,13 @@ void KGlobalLedgerView::selectAccount(const QCString& accountId, const bool reco
       m_currentView->setCurrentAccount(accountId, forceLoad);
       m_accountId = accountId;
       accountComboBox->setCurrentText(acc.name());
+      if(transaction != "") {
+        try {
+          m_currentView->selectTransaction(transaction);
+        } catch(MyMoneyException *e) {
+          delete e;
+        }
+      }
     } else {
       QString msg = "Specific ledger view for account type " +
         QString::number(acc.accountType()) + " not yet implemented";

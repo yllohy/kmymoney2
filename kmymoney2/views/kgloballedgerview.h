@@ -68,15 +68,19 @@ public:
     * This method is used to open the account with the specified id
     * in the ledger view. The respective view for this account type
     * will be selected and the account data loaded.
+    * If a transaction ID is given in @p transaction, the specified
+    * transaction will be selected and shown. If transaction is empty,
+    * then the last transaction will be selected.
     * The parameter @p reconciliation determines, if the reconciliation
     * mode is started or not.
     *
     * @param id id of the account in the MyMoneyFile object
+    * @param transaction ID of the transaction to be selected
     * @param reconciliation if false (default), the standard ledger is
     *                       opened, if true, the reconciliation mode is entered
     * @param forceLoad if set to true, the account is reloaded into the view in any case
     */
-  void selectAccount(const QCString& id, const bool reconciliation = false, const bool forceLoad = false);
+  void selectAccount(const QCString& id, const QCString& transaction = "", const bool reconciliation = false, const bool forceLoad = false);
 
 public slots:
   /**
@@ -99,6 +103,15 @@ public slots:
     */
   void slotCancelEdit(void);
 
+  /**
+    * This slot can be used to popup a specific transaction for a
+    * specific account. Both entities are defined by the corresponding Id's.
+    *
+    * @param accountId const QCString reference to the account id
+    * @param transactionId const QCString reference to the transaction id
+    */
+  void slotSelectAccountAndTransaction(const QCString& accountId, const QCString& transactionId);
+
 protected:
   KComboBox* accountComboBox;
   QVBoxLayout* Form1Layout;
@@ -114,15 +127,6 @@ protected slots:
     * @param id const QCString reference to the account's id
     */
   void slotAccountSelected(const QString& id);
-
-  /**
-    * This slot can be used to popup a specific transaction for a
-    * specific account. Both entities are defined by the corresponding Id's.
-    *
-    * @param accountId const QCString reference to the account id
-    * @param transactionId const QCString reference to the transaction id
-    */
-  void slotSelectAccountAndTransaction(const QCString& accountId, const QCString& transactionId);
 
 private:
   /**
@@ -142,6 +146,10 @@ private:
 
 signals:
   void signalViewActivated();
+
+  /**
+    */
+  void payeeSelected(const QCString& payeeId, const QCString& accountId, const QCString& transactionId);
 
 };
 

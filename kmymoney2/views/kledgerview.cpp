@@ -77,8 +77,18 @@ int KTransactionPtrVector::compareItems(KTransactionPtrVector::Item d1, KTransac
   MyMoneyTransaction* t2 = static_cast<MyMoneyTransaction*>(d2);
 
   try {
-    MyMoneySplit s1(t1->split(m_accountId));
-    MyMoneySplit s2(t2->split(m_accountId));
+    MyMoneySplit s1;
+    MyMoneySplit s2;
+    switch(m_idMode) {
+      case AccountMode:
+        s1 = t1->split(m_id);
+        s2 = t2->split(m_id);
+        break;
+      case PayeeMode:
+        s1 = t1->splitByPayee(m_id);
+        s2 = t2->splitByPayee(m_id);
+        break;
+    }
     QString p1, p2;
 
     switch(m_sortType) {
@@ -200,7 +210,14 @@ void KTransactionPtrVector::setSortType(const TransactionSortE type)
 
 void KTransactionPtrVector::setAccountId(const QCString& id)
 {
-  m_accountId = id;
+  m_id = id;
+  m_idMode = AccountMode;
+}
+
+void KTransactionPtrVector::setPayeeId(const QCString& id)
+{
+  m_id = id;
+  m_idMode = PayeeMode;
 }
 
 KLedgerView::KLedgerView(QWidget *parent, const char *name )
@@ -1404,32 +1421,68 @@ void KLedgerView::slotEndEdit(void)
   }
 
   if(!(t == m_transaction)) {
-    // If there are any differences, we need to update the storage.
-    // All splits with no account id will be removed here. These splits
-    // are refused by the engine, so it's better to discard them before.
-    // Then we check for the following things and warn the user if we
-    // find a mismatch:
-    //
-    // a) transaction should have 2 or more splits
-    // b) the sum of all split amounts should be zero
-
-    QValueList<MyMoneySplit> list = m_transaction.splits();
-    QValueList<MyMoneySplit>::ConstIterator it;
-
-    for(it = list.begin(); it != list.end(); ++it) {
-      if((*it).accountId() == "") {
-        m_transaction.removeSplit(*it);
-      }
-    }
-
-    if(m_transaction.splitCount() < 2) {
-      qDebug("Transaction has less than 2 splits");
-    }
-    if(m_transaction.splitSum() != 0) {
-      qDebug("Splits of transaction do not sum up to 0");
-    }
-
     try {
+      MyMoneyFile* file = MyMoneyFile::instance();
+
+      // If there are any differences, we need to update the storage.
+      // All splits with no account id will be removed here. These splits
+      // are refused by the engine, so it's better to discard them before.
+      // Then we check for the following things and warn the user if we
+      // find a mismatch:
+      //
+      // a) transaction should have 2 or more splits
+      // b) the sum of all split amounts should be zero
+
+      QValueList<MyMoneySplit> list = m_transaction.splits();
+      QValueList<MyMoneySplit>::Iterator it;
+
+      // Fix the payeeId. For non-asset and non-liability accounts,
+      // the payeeId will be cleared. If a transfer has one split
+      // with an empty payeeId the other one will be copied.
+      //
+      // Splits not referencing any account will be removed.
+
+      QCString payeeId = "";
+      for(it = list.begin(); it != list.end(); ++it) {
+        if((*it).accountId() == "") {
+          m_transaction.removeSplit(*it);
+          continue;
+        }
+        MyMoneyAccount acc = file->account((*it).accountId());
+        MyMoneyAccount::accountTypeE accType = file->accountGroup(acc.accountType());
+        switch(accType) {
+          case MyMoneyAccount::Asset:
+          case MyMoneyAccount::Liability:
+            break;
+
+          default:
+            (*it).setPayeeId("");
+            m_transaction.modifySplit(*it);
+            break;
+        }
+        if((*it).action() == MyMoneySplit::ActionTransfer
+        && payeeId == "" && (*it).payeeId() != "")
+          payeeId = (*it).payeeId();
+      }
+
+      if(m_transaction.splitCount() == 2 && payeeId != "") {
+        for(it = list.begin(); it != list.end(); ++it) {
+          if((*it).action() == MyMoneySplit::ActionTransfer
+          && (*it).payeeId() == "") {
+            (*it).setPayeeId(payeeId);
+            m_transaction.modifySplit(*it);
+          }
+        }
+      }
+
+
+      if(m_transaction.splitCount() < 2) {
+        qDebug("Transaction has less than 2 splits");
+      }
+      if(m_transaction.splitSum() != 0) {
+        qDebug("Splits of transaction do not sum up to 0");
+      }
+  
       // differentiate between add and modify
       QCString id;
       if(m_transactionPtr == 0) {
@@ -1437,14 +1490,14 @@ void KLedgerView::slotEndEdit(void)
         // and use it down the line
         if(!m_transaction.postDate().isValid())
           m_transaction.setPostDate(QDate::currentDate());
-        MyMoneyFile::instance()->addTransaction(m_transaction);
+        file->addTransaction(m_transaction);
         id = m_transaction.id();
       } else {
         // in the modify case, we have to keep the id. The call to
         // modifyTransaction might change m_transaction due to some
         // callbacks.
         id = m_transaction.id();
-        MyMoneyFile::instance()->modifyTransaction(m_transaction);
+        file->modifyTransaction(m_transaction);
       }
 
       // make sure the transaction stays selected. It's position might

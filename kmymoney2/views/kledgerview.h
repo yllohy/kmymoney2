@@ -125,6 +125,13 @@ public:
     */
   void setAccountId(const QCString& id);
 
+  /**
+    * This method is used to set the payee id to have a chance to
+    * get information about the split referencing the current payee
+    * during the sort phase.
+    */
+  void setPayeeId(const QCString& id);
+
 protected:
   int compareItems(KTransactionPtrVector::Item d1, KTransactionPtrVector::Item d2);
 
@@ -133,7 +140,12 @@ private:
   int compareItems(const QString& s1, const QString& s2) const;
 
 private:
-  QCString          m_accountId;
+  enum {
+    AccountMode = 0,
+    PayeeMode
+  };
+  short             m_idMode;
+  QCString          m_id;
   TransactionSortE  m_sortType;
 };
 
@@ -823,6 +835,19 @@ signals:
     * @param transactionId const QCString reference to transaction to be selected
     */
   void accountAndTransactionSelected(const QCString& accountId, const QCString& transactionId);
+
+  /**
+    * The signal payeeSelected() is emitted, when a the user selects the
+    * 'Goto payee/receiver' option. It will be routed by the KGlobalLedgerView()
+    * to the KMyMoneyView() for further processing. The parameters @payeeId,
+    * @p accountId and @p transactionId specify some options for the initial
+    * display of the payee view.
+    *
+    * @param payeeId const QCString reference to id of payee to be shown
+    * @param accountId const QCString reference to id of account to be shown
+    * @param transactionId const QCString reference to id of transaction to be selected
+    */
+  void payeeSelected(const QCString& payeeId, const QCString& accountId, const QCString& transactionId);
 };
 
 #endif

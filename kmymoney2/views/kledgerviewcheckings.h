@@ -252,6 +252,8 @@ protected slots:
 
   void reloadEditWidgets(const MyMoneyTransaction& t);
 
+  void slotPayeeSelected(void);
+
 private:
   /**
     * This method loads the data of the current transaction into the
@@ -344,7 +346,8 @@ private slots:
     * is connected to the more menu's aboutToShow() signal.
     */
   void slotConfigureMoreMenu(void);
-  
+
+signals:
 protected:
   QTab* m_tabCheck;
   QTab* m_tabDeposit;

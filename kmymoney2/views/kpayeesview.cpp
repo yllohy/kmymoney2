@@ -37,6 +37,7 @@
 #include <klocale.h>
 #include <kconfig.h>
 #include <kmessagebox.h>
+#include <klistview.h>
 
 #if QT_VERSION > 300
 #include <kstandarddirs.h>
@@ -48,10 +49,11 @@
 // Project Includes
 
 #include "kpayeesview.h"
+#include "kbanklistitem.h"
 #include "../mymoney/mymoneyfile.h"
 
 KPayeesView::KPayeesView(QWidget *parent, const char *name )
-  : kPayeesViewDecl(parent,name)
+  : KPayeesViewDecl(parent,name)
 {
 //  QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_payees.png");
 //  QPixmap *pm = new QPixmap(filename);
@@ -59,11 +61,21 @@ KPayeesView::KPayeesView(QWidget *parent, const char *name )
 
   readConfig();
 
+  m_transactionView->setSorting(-1);
+  m_transactionView->setAllColumnsShowFocus(true);
+  m_transactionView->setColumnWidthMode(2, QListView::Manual);
+  m_transactionView->setColumnAlignment(3, Qt::AlignRight);
+  // never show horizontal scroll bars
+  m_transactionView->setHScrollBarMode(QScrollView::AlwaysOff);
+
   connect(payeeCombo, SIGNAL(activated(const QString&)), this, SLOT(payeeHighlighted(const QString&)));
   connect(addButton, SIGNAL(clicked()), this, SLOT(slotAddClicked()));
   connect(payeeEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotPayeeTextChanged(const QString&)));
   connect(updateButton, SIGNAL(clicked()), this, SLOT(slotUpdateClicked()));
   connect(deleteButton, SIGNAL(clicked()), this, SLOT(slotDeleteClicked()));
+
+  connect(m_transactionView, SIGNAL(doubleClicked(QListViewItem*)),
+          this, SLOT(slotTransactionDoubleClicked(QListViewItem*)));
 
   MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassPayee, this);
 
@@ -85,10 +97,13 @@ void KPayeesView::update(const QCString &id)
 void KPayeesView::payeeHighlighted(const QString& text)
 {
   try {
-    m_payee = MyMoneyFile::instance()->payeeByName(text);
+    MyMoneyFile* file = MyMoneyFile::instance();
+
+    m_payee = file->payeeByName(text);
     m_lastPayee = m_payee.name();
 
     nameLabel->setText(m_payee.name());
+
     addressEdit->setEnabled(true);
     addressEdit->setText(m_payee.address());
     postcodeEdit->setEnabled(true);
@@ -100,12 +115,107 @@ void KPayeesView::payeeHighlighted(const QString& text)
     updateButton->setEnabled(true);
     deleteButton->setEnabled(true);
 
+    showTransactions();
   } catch(MyMoneyException *e) {
     m_payee = MyMoneyPayee();
     updateButton->setEnabled(false);
     deleteButton->setEnabled(false);
     delete e;
   }
+}
+
+void KPayeesView::showTransactions(void)
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
+  unsigned int   i;
+
+  KConfig *config = KGlobal::config();
+  config->setGroup("List Options");
+  QDateTime defaultDate;
+  QDate dateStart = config->readDateTimeEntry("StartDate", &defaultDate).date();
+
+  // setup the list and the pointer vector
+  m_transactionList = file->transactionList();
+  m_transactionPtrVector.clear();
+  m_transactionPtrVector.resize(m_transactionList.size());
+  m_transactionPtrVector.setPayeeId(m_payee.id());
+  m_transactionPtrVector.setSortType(KTransactionPtrVector::SortPostDate);
+
+  MyMoneyMoney balance(0);
+
+  QValueList<MyMoneyTransaction>::ConstIterator it_t;
+  for(i = 0, it_t = m_transactionList.begin(); it_t != m_transactionList.end(); ++it_t) {
+    // only show those transactions, that are posted after the configured start date
+    if((*it_t).postDate() < dateStart)
+      continue;
+
+    // add more filters before this line ;-)
+    QValueList<MyMoneySplit> list = (*it_t).splits();
+    QValueList<MyMoneySplit>::Iterator it_s;
+
+    int sp_cnt = 0;
+    for(it_s = list.begin(); it_s != list.end(); ++it_s) {
+      if((*it_s).payeeId() == m_payee.id()) {
+        balance += (*it_s).value();
+        ++sp_cnt;
+      }
+    }
+    if(sp_cnt == 0)
+      continue;
+
+    // Wow, we made it through all the filters. Guess we have to show this one
+    m_transactionPtrVector.insert(i, &(*it_t));
+    ++i;
+
+    // Now check the amount of this transaction. If it's a transfer,
+  }
+  m_transactionPtrVector.resize(i);
+
+  // sort the transactions
+  m_transactionPtrVector.sort();
+
+  // and fill the m_transactionView
+  m_transactionView->clear();
+  KTransactionListItem *item = 0;
+  for(i = 0; i < m_transactionPtrVector.size(); ++i) {
+    MyMoneyTransaction* t = m_transactionPtrVector[i];
+
+    QValueList<MyMoneySplit> list = t->splits();
+    QValueList<MyMoneySplit>::Iterator it_s;
+    for(it_s = list.begin(); it_s != list.end(); ++it_s) {
+      if((*it_s).payeeId() == m_payee.id()) {
+        item = new KTransactionListItem(m_transactionView, item, (*it_s).accountId(), t->id());
+        item->setText(0, (*it_s).number());
+        item->setText(1, KGlobal::locale()->formatDate(t->postDate(), true));
+
+        QString txt;
+        if((*it_s).action() == MyMoneySplit::ActionTransfer) {
+          MyMoneyAccount acc = file->account((*it_s).accountId());
+          if((*it_s).value() >= 0) {
+            txt = i18n("Transfer to %1").arg(acc.name());
+          } else {
+            txt = i18n("Transfer from %1").arg(acc.name());
+          }
+        } else if(t->splitCount() > 2) {
+          txt = i18n("Splitted transaction");
+        } else {
+          MyMoneySplit s = t->split((*it_s).accountId(), false);
+          txt = MyMoneyFile::instance()->accountToCategory(s.accountId());
+        }
+        item->setText(2, txt);
+        item->setText(3, (*it_s).value().formatMoney());
+      }
+    }
+  }
+  m_balanceLabel->setText(i18n("Balance: %1").arg(balance.formatMoney()));
+
+  // Trick: it seems, that the initial sizing of the view does
+  // not work correctly. At least, the columns do not get displayed
+  // correct. Reason: the return value of m_transactionView->visibleWidth()
+  // is incorrect. If the widget is visible, resizing works correctly.
+  // So, we let the dialog show up and resize it then. It's not really
+  // clean, but the only way I got the damned thing working.
+  QTimer::singleShot(50, this, SLOT(rearrange()));
 }
 
 void KPayeesView::slotAddClicked()
@@ -227,9 +337,61 @@ void KPayeesView::refresh(void)
 
   payeeCombo->insertStringList(payees);
 
-
   if(found == true) {
     payeeCombo->setCurrentText(m_lastPayee);
     payeeHighlighted(payeeCombo->currentText());
   }
 }
+
+void KPayeesView::rearrange(void)
+{
+  resizeEvent(0);
+}
+
+void KPayeesView::resizeEvent(QResizeEvent* ev)
+{
+  // resize the register
+  int w = m_transactionView->visibleWidth();
+  w -= m_transactionView->columnWidth(0);
+  w -= m_transactionView->columnWidth(1);
+  w -= m_transactionView->columnWidth(3);
+  m_transactionView->setColumnWidth(2, w);
+
+  KPayeesViewDecl::resizeEvent(ev);
+}
+
+void KPayeesView::slotTransactionDoubleClicked(QListViewItem* i)
+{
+  KTransactionListItem* item = static_cast<KTransactionListItem *>(i);
+  emit transactionSelected(item->accountId(), item->transactionId());
+}
+
+void KPayeesView::slotSelectPayeeAndTransaction(const QCString& payeeId, const QCString& accountId, const QCString& transactionId)
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
+  MyMoneyPayee payee;
+
+  try {
+    payee = file->payee(payeeId);
+    m_lastPayee = payee.name();
+    refresh();
+
+    KTransactionListItem* item = static_cast<KTransactionListItem*> (m_transactionView->firstChild());
+    while(item != 0) {
+      if(item->accountId() == accountId && item->transactionId() == transactionId)
+        break;
+      item = static_cast<KTransactionListItem*> (item->nextSibling());
+    }
+    if(!item) {
+      item = static_cast<KTransactionListItem*> (m_transactionView->firstChild());
+    }
+    if(item) {
+      m_transactionView->setSelected(item, true);
+      m_transactionView->ensureItemVisible(item);
+    }
+  } catch(MyMoneyException *e) {
+    qWarning("Unexpected exception in KPayeesView::slotSelectPayeeAndTransaction");
+    delete e;
+  }
+}
+

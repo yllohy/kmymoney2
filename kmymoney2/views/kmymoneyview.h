@@ -63,7 +63,7 @@ class IMyMoneyStorageFormat;
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.28 2002/12/13 13:53:25 ipwizard Exp $
+  * $Id: kmymoneyview.h,v 1.29 2002/12/30 09:42:11 ipwizard Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -260,11 +260,10 @@ public slots:
   /**
     * Brings up a dialog to let the user search for specific transaction(s).  It then
     * opens a results window to display those transactions.
-  **/
+    */
   void accountFind();
 
   /**
-
     * Called whenever the user 'executes' an account. This operation opens the account
     * and shows the register view.
     *
@@ -272,8 +271,25 @@ public slots:
   **/
   void slotAccountDoubleClick(void);
 
-  //void slotAccountDoubleClick(const MyMoneyAccount);
+  /**
+    * Called, whenever the ledger view should pop up and a specific
+    * transaction in an account should be shown. If @p transaction
+    * is empty, the last transaction should be selected
+    *
+    * @param acc The ID of the account to be shown
+    * @param transaction The ID of the transaction to be selected
+    */
+  void slotLedgerSelected(const QCString& acc, const QCString& transaction = "");
 
+  /**
+    * Called, whenever the payees view should pop up and a specific
+    * transaction in an account should be shown. 
+    *
+    * @param payee The ID of the payee to be shown
+    * @param account The ID of the account to be shown
+    * @param transaction The ID of the transaction to be selected
+    */
+  void slotPayeeSelected(const QCString& payeeId, const QCString& accountId, const QCString& transactionId);
 
   /**
     * Called whenever the user wishes to create a new bank.  Brings up the input

@@ -35,6 +35,7 @@
 // Project Includes
 
 #include "kpayeesviewdecl.h"
+#include "kledgerview.h"
 #include "../mymoney/mymoneyobserver.h"
 #include "../mymoney/mymoneypayee.h"
 
@@ -42,7 +43,8 @@
   *@author Michael Edwardes
   */
 
-class KPayeesView : public kPayeesViewDecl, MyMoneyObserver  {
+class KPayeesView : public KPayeesViewDecl, MyMoneyObserver
+{
    Q_OBJECT
 public: 
 	KPayeesView(QWidget *parent=0, const char *name=0);
@@ -50,17 +52,33 @@ public:
   void show();
   void update(const QCString &id);
 
+public slots:
+  void slotSelectPayeeAndTransaction(const QCString& payeeId, const QCString& accountId, const QCString& transactionId);
+
+protected:
+  void resizeEvent(QResizeEvent*);
+
 protected slots:
+  /**
+    * This method loads the m_transactionList, clears
+    * the m_TransactionPtrVector and rebuilds and sorts
+    * it according to the current settings. Then it
+    * loads the m_transactionView with the transaction data.
+    */
+  void showTransactions(void);
+
   void payeeHighlighted(const QString&);
   void slotAddClicked();
   void slotPayeeTextChanged(const QString& text);
   void slotUpdateClicked();
   void slotDeleteClicked();
 
-private:
-  MyMoneyPayee m_payee;
-  QString m_lastPayee;
+  void slotTransactionDoubleClicked(QListViewItem *);
 
+private slots:
+  void rearrange(void);
+
+private:
   void readConfig(void);
   void writeConfig(void);
 
@@ -68,6 +86,23 @@ private:
 
 signals:
   void signalViewActivated();
+  void transactionSelected(const QCString& accountId, const QCString& transactionId);
+
+private:
+  MyMoneyPayee m_payee;
+  QString m_lastPayee;
+
+  /**
+    * This member holds a list of all transactions
+    */
+  QValueList<MyMoneyTransaction> m_transactionList;
+
+  /**
+    * This member keeps a vector of pointers to all visible (filtered)
+    * transaction in m_transactionList in sorted order. Sorting is done
+    * in KTransactionPtrVector::compareItems
+    */
+  KTransactionPtrVector m_transactionPtrVector;
 
 };
 

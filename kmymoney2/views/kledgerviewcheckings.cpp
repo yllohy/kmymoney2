@@ -279,6 +279,8 @@ void KLedgerViewCheckings::createMoreMenu(void)
   // and now the specific entries for checkings/savings etc.
   m_moreMenu->insertItem(i18n("Edit splits ..."), this, SLOT(slotStartEditSplit()),
       QKeySequence(), -1, 1);
+  m_moreMenu->insertItem(i18n("Goto payee/receiver"), this, SLOT(slotPayeeSelected()),
+      QKeySequence(), -1, 2);
 
   connect(m_form->moreButton(), SIGNAL(clicked()), this, SLOT(slotMorePressed()));
 }
@@ -291,6 +293,8 @@ void KLedgerViewCheckings::createContextMenu(void)
   // and now the specific entries for checkings/savings etc.
   m_contextMenu->insertItem(i18n("Edit splits ..."), this, SLOT(slotStartEditSplit()),
       QKeySequence(), -1, 2);
+  m_contextMenu->insertItem(i18n("Goto payee/receiver"), this, SLOT(slotPayeeSelected()),
+      QKeySequence(), -1, 3);
 }
 
 void KLedgerViewCheckings::createForm(void)
@@ -1216,19 +1220,30 @@ void KLedgerViewCheckings::slotRegisterClicked(int row, int col, int button, con
 
 void KLedgerViewCheckings::slotConfigureMoreMenu(void)
 {
+  MyMoneyFile* file = MyMoneyFile::instance();
   int splitEditId = m_moreMenu->idAt(1);
+  int gotoPayeeId = m_moreMenu->idAt(2);
   m_moreMenu->disconnectItem(splitEditId, this, SLOT(slotStartEditSplit()));
   m_moreMenu->disconnectItem(splitEditId, this, SLOT(slotGotoOtherSideOfTransfer()));
 
   m_moreMenu->changeItem(splitEditId, i18n("Edit splits ..."));
   if(m_transactionPtr != 0) {
+    if(m_split.payeeId() != "" && m_split.accountId() != "" && m_transaction.id() != "") {
+      MyMoneyPayee payee = file->payee(m_split.payeeId());
+      m_moreMenu->changeItem(gotoPayeeId, i18n("Goto '%1'").arg(payee.name()));
+      m_moreMenu->setItemEnabled(gotoPayeeId, true);
+    } else {
+      m_moreMenu->changeItem(gotoPayeeId, i18n("Goto payee/receiver"));
+      m_moreMenu->setItemEnabled(gotoPayeeId, false);
+    }
+
     if(transactionType(m_split) != Transfer) {
       m_moreMenu->connectItem(splitEditId, this, SLOT(slotStartEditSplit()));
     } else {
       QString dest = "";
       try {
         MyMoneySplit split = m_transaction.split(m_account.id(), false);
-        MyMoneyAccount acc = MyMoneyFile::instance()->account(split.accountId());
+        MyMoneyAccount acc = file->account(split.accountId());
         dest = acc.name();
       } catch(MyMoneyException *e) {
         delete e;
@@ -1246,12 +1261,23 @@ void KLedgerViewCheckings::slotConfigureMoreMenu(void)
 void KLedgerViewCheckings::slotConfigureContextMenu(void)
 {
   int splitEditId = m_contextMenu->idAt(2);
-  int deleteId = m_contextMenu->idAt(7);
+  int gotoPayeeId = m_contextMenu->idAt(3);
+  int deleteId = m_contextMenu->idAt(8);
+  MyMoneyFile* file = MyMoneyFile::instance();
+
   m_contextMenu->disconnectItem(splitEditId, this, SLOT(slotStartEditSplit()));
   m_contextMenu->disconnectItem(splitEditId, this, SLOT(slotGotoOtherSideOfTransfer()));
 
   m_contextMenu->changeItem(splitEditId, i18n("Edit splits ..."));
   if(m_transactionPtr != 0) {
+    if(m_split.payeeId() != "" && m_split.accountId() != "" && m_transaction.id() != "") {
+      MyMoneyPayee payee = file->payee(m_split.payeeId());
+      m_contextMenu->changeItem(gotoPayeeId, i18n("Goto '%1'").arg(payee.name()));
+      m_contextMenu->setItemEnabled(gotoPayeeId, true);
+    } else {
+      m_contextMenu->changeItem(gotoPayeeId, i18n("Goto payee/receiver"));
+      m_contextMenu->setItemEnabled(gotoPayeeId, false);
+    }
     if(transactionType(m_split) != Transfer) {
       m_contextMenu->connectItem(splitEditId, this, SLOT(slotStartEditSplit()));
     } else {
@@ -1434,4 +1460,11 @@ void KLedgerViewCheckings::slotAccountDetail(void)
 void KLedgerViewCheckings::slotMorePressed(void)
 {
   m_moreMenu->exec(m_form->moreButton()->mapToGlobal(QPoint(0,0)));
+}
+
+void KLedgerViewCheckings::slotPayeeSelected(void)
+{
+  slotCancelEdit();
+  if(m_split.payeeId() != "" && m_split.accountId() != "" && m_transaction.id() != "")
+    emit payeeSelected(m_split.payeeId(), m_split.accountId(), m_transaction.id());
 }
