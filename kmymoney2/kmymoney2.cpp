@@ -1104,7 +1104,7 @@ void KMyMoney2App::slotCheckSchedules(void)
       // Get the copy in the file because it might be modified by commitTransaction
       MyMoneySchedule schedule = file->schedule((*it).id());
 
-      if (schedule.autoEnter() && !schedule.isFixed())
+      if (schedule.autoEnter() && schedule.isFixed())
       {
         while ((schedule.nextPayment(schedule.lastPayment()) < checkDate) && !schedule.isFinished())
         {
