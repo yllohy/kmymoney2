@@ -1,6 +1,8 @@
 2004-01-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated integration into KDE (desktop files)
   * Fixed installation location for x-kmymoney2.desktop
+  * Updated home pages
+  * Added German home page
 
 2004-01-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Make sure tips are included in pot file
