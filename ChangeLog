@@ -1,3 +1,6 @@
+2002-05-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added transactionList(const QCString& acc) to engine interface
+
 2002-05-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added unary minus operator to MyMoneyMoney
 
