@@ -274,8 +274,13 @@ public:
     * An exception will be thrown upon error conditions.
     *
     * @param account reference to the new account information
+    * @param skipCheck if @p true, skips the built in consistency check for
+    *                  the object to be updated. Do not set this parameter
+    *                  to true. This is only used for the MyMoneyFile::consistencyCheck()
+    *                  procedure to be able to reload accounts. The default
+    *                  setting of this parameter is @p false.
     */
-  void modifyAccount(const MyMoneyAccount& account);
+  void modifyAccount(const MyMoneyAccount& account, const bool skipCheck = false);
 
   /**
     * Modifies an already existing institution in the file global

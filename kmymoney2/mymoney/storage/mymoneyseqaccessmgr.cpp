@@ -499,7 +499,7 @@ const QValueList<MyMoneyInstitution> MyMoneySeqAccessMgr::institutionList(void) 
   return list;
 }
 
-void MyMoneySeqAccessMgr::modifyAccount(const MyMoneyAccount& account)
+void MyMoneySeqAccessMgr::modifyAccount(const MyMoneyAccount& account, const bool skipCheck)
 {
   QMap<QCString, MyMoneyAccount>::Iterator pos;
 
@@ -510,7 +510,8 @@ void MyMoneySeqAccessMgr::modifyAccount(const MyMoneyAccount& account)
     // this is the case, when the file and the id
     // as well as the type are equal.
     if((*pos).parentAccountId() == account.parentAccountId()
-    && (*pos).accountType() == account.accountType()) {
+    && (*pos).accountType() == account.accountType()
+    || skipCheck == true) {
       // if it points to a different institution, then update both
       if((*pos).institutionId() != account.institutionId()) {
         // check if new institution exists
@@ -663,6 +664,9 @@ void MyMoneySeqAccessMgr::reparentAccount(MyMoneyAccount &account, MyMoneyAccoun
   (*newParent).addAccountId(account.id());
   (*childAccount).setParentAccountId(parent.id());
 
+  // make sure the type is the same as the new parent
+  (*childAccount).setAccountType((*newParent).accountType());
+  
   parent = *newParent;
   account = *childAccount;
 

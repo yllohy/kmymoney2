@@ -307,8 +307,9 @@ public:
     * An exception will be thrown upon error conditions.
     *
     * @param account reference to the new account information
+    * @param skipCheck allows to skip the builtin consistency checks
     */
-  virtual void modifyAccount(const MyMoneyAccount& account) = 0;
+  virtual void modifyAccount(const MyMoneyAccount& account, const bool skipCheck = false) = 0;
 
   /**
     * Modifies an already existing institution in the file global
