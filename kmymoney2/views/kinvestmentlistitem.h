@@ -72,6 +72,7 @@ private:
   const QString calculate4WeekGain(const equity_price_history& history);
   const QString calculate3MonthGain(const equity_price_history& history);
   const QString calculateYTDGain(const equity_price_history& history);
+  const QString calculateGain(const equity_price_history& history, int dayDifference, int monthDifference, bool YTD=false);
 
 private:
   KListView*        m_listView;
