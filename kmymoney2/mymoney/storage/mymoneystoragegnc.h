@@ -30,6 +30,8 @@
 #include <qdom.h>
 #include <qdatastream.h>
 class QIODevice;
+#include <qmessagebox.h>
+#include <qobject.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -49,7 +51,31 @@ typedef map_accountIds::const_iterator map_accountIds_citer;
 #define VERSION_0_61_XML  0x10000011    // use 8 bytes for MyMoneyMoney objects
 
 #define GNUCASH_ID_KEY "GNUCASH_ID"
-   
+
+/* private class to handle sched-xaction frequency spec in
+   nearly incomprehensible gnucash format */
+class gncFreqSpec
+{
+public:
+  bool suspectFlag;
+  QString name; // for debug purposes only
+  QString intvlType;
+  QString intvlInterval;
+  QString intvlOffset;
+  QString intvlDay;
+};
+
+/**
+  * private class for template txs, also holds suspect flag
+  */
+class gncTemplateTx
+{
+public:
+  bool suspectFlag;
+  MyMoneyTransaction t;
+};
+
+
 class MyMoneyStorageGNC : public IMyMoneyStorageFormat
 {
 public: 
@@ -102,18 +128,28 @@ private:
 
   void readUserInformation(QDomElement userElement);
   /** No descriptions */
+  void readCommodity(const QDomElement& cmdty);
+  void readPrices(const QDomElement& pricedb);
+  void readPrice(const QDomElement& price);
 
   void readAccount(const QDomElement& account);
 
-  MyMoneySplit readSplit(QDomElement& splitElement);
-  void readSplits(MyMoneyTransaction& t, QDomElement& splits);
-
   void readTransaction(QDomElement& transaction, const bool withinSchedule = false);
 
-  void readSchedules(QDomElement& schedules);
-  MyMoneySchedule readSchedule(QDomElement& schedule);
-  
-  QDomElement findChildElement(const QString& name, const QDomElement& root);
+  MyMoneySplit readSplit(MyMoneyTransaction& t, QDomElement& splitElement);
+  void readSplits(MyMoneyTransaction& t, QDomElement& splits);
+  void saveSplits (MyMoneySplit);
+  QString createPayee(QString gncDescription);
+
+  void readSchedule(QDomElement& schedule);
+  void readTemplates(QDomElement& templates);
+  gncTemplateTx readTemplate(QDomElement& templatetx);
+  MyMoneySplit readTemplateSplit(gncTemplateTx& t, QDomElement& splitElement);
+  void readTemplateSplits(gncTemplateTx& t, QDomElement& splits);
+  bool readSplitSlots(MyMoneySplit &split, QDomElement& slots);
+  bool convertSplitSlot(MyMoneySplit &split, QDomElement& slots);
+  void readFreqSpec (gncFreqSpec&, QDomElement& fs, bool isComposite);
+  QDate incrDate (QDate lastDate, unsigned char interval, unsigned int intervalCount);
   
 private:
   void (*m_progressCallback)(int, int, const QString&);
@@ -146,20 +182,60 @@ private:
     * encrypted on the permanent storage device
     */
   bool m_encrypted;
-
+  /**
+    * Internal utility functions
+    */
   const unsigned long extractId(const QCString& txt) const;
   QDate getDate(const QString& strText) const;
   QString getString(const QDate& date) const;
   const QCString QCStringEmpty(const QString& val) const;
   const QString QStringEmpty(const QString& val) const;
   const uint getChildCount(const QDomElement& element) const;
-	QString m_mainAssetId;
+  QDomElement findChildElement(const QString& name, const QDomElement& root);
+  
+  /**
+    * Standard Id strings
+    */
+  QString m_mainAssetId;
   QString m_mainLiabilityId;
   QString m_mainIncomeId;
   QString m_mainExpenseId;
   QString m_mainEquityId;
-
+  
+  /**
+    * Map gnucash vs. Kmm ids for accounts, equities, schedules
+    */
+  
   QMap<QCString, QCString> m_mapIds;
+  QMap<QCString, QCString> m_mapEquities;
+  QMap<QCString, QCString> m_mapSchedules;
+
+  /**
+    * Temporary storage areas for transaction processing
+    */
+  QString m_txChequeNumber; // gnc holds at tx level, we need it in split
+  QString m_txCommodity;    // pretty much the same
+  QString m_txPayeeId;      // and again
+  QString m_txMemo;         // pretty much the opposite
+  QString m_templateId;     // id in splits in templates
+  
+  /** In kmm, the order of splits is critical to some operations. These
+    * areas will hold the splits until we've read them all
+    */
+  QValueList<MyMoneySplit> m_splitList;
+  MyMoneyAccount m_splitAccount;
+  bool m_potentialTransfer;       // to determine whether this might be a transfer
+  bool m_assetFound;              // split0 is an asset
+  const char *m_splitActionType;        // deposit or withdrawal
+  
+  /**
+    * A holding area for template txs while we're waiting for the schedules
+    */
+  QValueList<gncTemplateTx> m_templateList;
+  /**
+    * To maintain a count of currency usage
+    */
+  QMap<QString, unsigned long> m_currencyCounter;
 };
 
 #endif
