@@ -188,7 +188,15 @@ QueryTable::QueryTable(const MyMoneyReport& _report): m_config(_report)
         qaccountrow["reconciledate"] = (*it_split).reconcileDate().toString(Qt::ISODate);
         qaccountrow["reconcileflag"] = kReconcileTextChar[(*it_split).reconcileFlag()];
         qaccountrow["number"] = (*it_split).number();
-
+        qaccountrow["action"] = (*it_split).action();
+        
+        // handle investments
+        if ( file->account((*it_split).accountId()).accountType() == MyMoneyAccount::Stock )
+        {
+          qaccountrow["shares"] = (*it_split).shares().toString();
+          qaccountrow["price"] = ((-(*it_split).value())*currencyfactor / (*it_split).shares()).toString();
+        }
+        
         QValueList<MyMoneySplit>::const_iterator it_split2 = splits.begin();
         while ( it_split2 != splits.end() )
         {
@@ -202,7 +210,6 @@ QueryTable::QueryTable(const MyMoneyReport& _report): m_config(_report)
 
             TableRow qsplitrow = qaccountrow;
             qsplitrow["account"] = file->account((*it_split).accountId()).name();
-            qsplitrow["action"] = (*it_split2).action();
 
             // retrieve the value in the transaction's currency, and convert
             // to the base currency if needed
@@ -210,7 +217,7 @@ QueryTable::QueryTable(const MyMoneyReport& _report): m_config(_report)
             qsplitrow["value"] = ((-(*it_split2).value())*currencyfactor).toString();
             qsplitrow["memo"] = (*it_split2).memo();
             qsplitrow["id"] = (*it_split2).id();
-
+            
             // handle sub-categories.  the 'category' field contains the
             // fully-qualified category hierarchy, e.g. "Computers: Hardware: CPUs"
             // the 'topparent' field contains just the top-most parent, in this
@@ -289,6 +296,12 @@ QueryTable::QueryTable(const MyMoneyReport& _report): m_config(_report)
     m_columns += ",reconcileflag";
   if ( qc & MyMoneyReport::eQCmemo )
     m_columns += ",memo";
+  if ( qc & MyMoneyReport::eQCaction )
+    m_columns += ",action";
+  if ( qc & MyMoneyReport::eQCshares )
+    m_columns += ",shares";
+  if ( qc & MyMoneyReport::eQCaction )
+    m_columns += ",price";
 
   // eCategory, eTopCategory, eAccount, ePayee, eMonth, eWeek
   switch ( m_config.rowType() )
@@ -407,6 +420,12 @@ void QueryTable::render( QString& result, QString& csv ) const
   i18nHeaders["month"] = i18n("Month");
   i18nHeaders["week"] = i18n("Week");
   i18nHeaders["reconcileflag"] = i18n("R");
+  i18nHeaders["action"] = i18n("Action");
+  i18nHeaders["shares"] = i18n("Shares");
+  i18nHeaders["price"] = i18n("Price");
+  
+  // the list of columns which represent money, so we can display them correctly
+  QStringList moneyColumns = QStringList::split(",","value,shares,price");
 
   result += "<table class=\"report\">\n<tr class=\"itemheader\">";
 
@@ -515,7 +534,8 @@ void QueryTable::render( QString& result, QString& csv ) const
     while ( it_column != columns.end() )
     {
       QString data = (*it_row)[(*it_column)];
-      if ( *it_column=="value" )
+      //if ( *it_column=="value" )
+      if ( moneyColumns.contains(*it_column) )
       {
         MyMoneyMoney::setNegativeMonetarySignPosition(MyMoneyMoney::ParensAround);
 

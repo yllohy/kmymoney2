@@ -56,6 +56,7 @@ namespace reports {
 #define DEBUG_OUTPUT(x) ___TEST.output(x)
 #define DEBUG_OUTPUT_IF(x,y) { if (x) ___TEST.output(y); }
 #define DEBUG_ENABLE(x) Tester::enable(x)
+#define DEBUG_ENABLE_KEY(x) Tester::setEnableKey(x)
 #ifdef DEBUG_HIDE_SENSITIVE
 #define DEBUG_SENSITIVE(x) QString("hidden")
 #else
@@ -77,11 +78,13 @@ class Tester
   static QString m_sTabs;
   static bool m_sEnabled;
   bool m_enabled;
+  static QString m_sEnableKey;
 public:
   Tester( const QString& _name );
   ~Tester();
   void output( const QString& _text );
   static void enable( bool _e ) { m_sEnabled = _e; }
+  static void setEnableKey( const QString& _s ) { m_sEnableKey = _s; }
 };
 
 class KReportChartView: public QCanvasView 
