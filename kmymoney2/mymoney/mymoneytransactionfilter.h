@@ -241,7 +241,6 @@ public:
     */
   void setReportAllSplits(const bool report = true);
 
-
   void setConsiderCategory(const bool check = true);
 
   /**
@@ -263,6 +262,46 @@ public:
     *       and MyMoneyTransactionFilter(const QCString&) for details.
     */
   const QValueList<MyMoneySplit> matchingSplits(void) const;
+
+  /**
+    * This method returns the from date set in the filter. If
+    * no value has been set up for this filter, then QDate() is
+    * returned.
+    *
+    * @return returns m_fromDate
+    */
+  const QDate fromDate(void) const { return m_fromDate; };
+
+  /**
+    * This method returns the to date set in the filter. If
+    * no value has been set up for this filter, then QDate() is
+    * returned.
+    *
+    * @return returns m_toDate
+    */
+  const QDate toDate(void) const { return m_toDate; };
+
+  /**
+    * This method is used to return information about the
+    * presence of a specific category in the category filter.
+    * The category in question is included in the filter set,
+    * if it has been set or no category filter is set.
+    *
+    * @param cat id of category in question
+    * @return true if category is in filter set, false otherwise
+    */
+  const bool includesCategory( const QCString& cat ) const;
+
+  /**
+    * This method is used to return information about the
+    * presence of a specific account in the account filter.
+    * The account in question is included in the filter set,
+    * if it has been set or no account filter is set.
+    *
+    * @param cat id of account in question
+    * @return true if account is in filter set, false otherwise
+    */
+  const bool includesAccount( const QCString& acc ) const;
 
 private:
   /**

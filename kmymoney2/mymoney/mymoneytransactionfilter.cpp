@@ -493,8 +493,15 @@ const MyMoneyTransactionFilter::validityOptionE MyMoneyTransactionFilter::validT
   for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s) {
     val += (*it_s).value();
   }
-  if(val != MyMoneyMoney(0,1)) {
-    qDebug("%s is invalid", t.id().data());
-  }
   return (val == MyMoneyMoney(0,1)) ? valid : invalid;
+}
+
+const bool MyMoneyTransactionFilter::includesCategory( const QCString& cat ) const
+{
+  return (! m_filterSet.singleFilter.categoryFilter) || m_categories.find( cat );
+}
+
+const bool MyMoneyTransactionFilter::includesAccount( const QCString& acc ) const
+{
+  return (! m_filterSet.singleFilter.accountFilter) || m_accounts.find( acc );
 }
