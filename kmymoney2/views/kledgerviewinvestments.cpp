@@ -129,6 +129,7 @@ KLedgerViewInvestments::KLedgerViewInvestments(QWidget *parent, const char *name
   m_editSymbolName = 0;
   m_editTotalAmount = 0;
   m_editFees = 0;
+  m_editCashAccount = 0;
 
   // setup the form to be visible or not
   slotShowTransactionForm(m_transactionFormActive);
@@ -438,7 +439,7 @@ void KLedgerViewInvestments::fillFormStatics(void)
       formTable->setText(PRICE_ROW, PRICE_TXT_COL, i18n("Price per share"));
       formTable->setText(VALUE_ROW, VALUE_TXT_COL, i18n("Total Amount"));
       formTable->setText(FEES_ROW, FEES_TXT_COL, i18n("Fees"));
-      formTable->setText(CATEGORY_ROW, CATEGORY_TXT_COL, i18n("Commission"));
+      //formTable->setText(CATEGORY_ROW, CATEGORY_TXT_COL, i18n("Commission"));
       formTable->setText(ACCOUNT_ROW, ACCOUNT_TXT_COL, i18n("Account"));
       break;
 
@@ -447,7 +448,7 @@ void KLedgerViewInvestments::fillFormStatics(void)
       formTable->setText(PRICE_ROW, PRICE_TXT_COL, i18n("Price per share"));
       formTable->setText(VALUE_ROW, VALUE_TXT_COL, i18n("Total Amount"));
       formTable->setText(FEES_ROW, FEES_TXT_COL, i18n("Fees"));
-      formTable->setText(CATEGORY_ROW, CATEGORY_TXT_COL, i18n("Commission"));
+      //formTable->setText(CATEGORY_ROW, CATEGORY_TXT_COL, i18n("Commission"));
       formTable->setText(ACCOUNT_ROW, ACCOUNT_TXT_COL, i18n("Interest"));
       break;
 
@@ -524,6 +525,9 @@ QWidget* KLedgerViewInvestments::arrangeEditWidgetsInForm(void)
   m_editShares->setPalette(palette);
   m_editTotalAmount->setPalette(palette);
   m_editFees->setPalette(palette);
+  m_editType->setPalette(palette);
+  m_editCashAccount->setPalette(palette);
+  
 
   table->setCellWidget(MEMO_ROW, MEMO_DATA_COL, m_editMemo);
   table->setCellWidget(DATE_ROW, DATE_DATA_COL, m_editDate);
@@ -532,6 +536,8 @@ QWidget* KLedgerViewInvestments::arrangeEditWidgetsInForm(void)
   table->setCellWidget(QUANTITY_ROW, QUANTITY_DATA_COL, m_editShares);
   table->setCellWidget(VALUE_ROW, VALUE_DATA_COL, m_editTotalAmount);
   table->setCellWidget(FEES_ROW, FEES_DATA_COL, m_editFees);
+  table->setCellWidget(ACTIVITY_ROW, ACTIVITY_DATA_COL, m_editType);
+  table->setCellWidget(ACCOUNT_ROW, ACCOUNT_DATA_COL, m_editCashAccount);
 
   table->clearEditable();
   table->setEditable(MEMO_ROW, MEMO_DATA_COL);
@@ -541,12 +547,15 @@ QWidget* KLedgerViewInvestments::arrangeEditWidgetsInForm(void)
   table->setEditable(QUANTITY_ROW, QUANTITY_DATA_COL);
   table->setEditable(VALUE_ROW, VALUE_DATA_COL, false);
   table->setEditable(FEES_ROW, FEES_DATA_COL);
-
+  table->setEditable(ACTIVITY_ROW, ACTIVITY_DATA_COL);
+  table->setEditable(ACCOUNT_ROW, ACCOUNT_DATA_COL);
+  
   // now setup the tab order
   m_tabOrderWidgets.clear();
   m_tabOrderWidgets.append(m_form->enterButton());
   m_tabOrderWidgets.append(m_form->cancelButton());
   m_tabOrderWidgets.append(m_form->moreButton());
+  m_tabOrderWidgets.append(m_editType);
   m_tabOrderWidgets.append(m_editSymbolName);
   m_tabOrderWidgets.append(m_editDate);
   m_tabOrderWidgets.append(m_editShares);
@@ -554,6 +563,7 @@ QWidget* KLedgerViewInvestments::arrangeEditWidgetsInForm(void)
   m_tabOrderWidgets.append(m_editMemo);
   m_tabOrderWidgets.append(m_editFees);
   m_tabOrderWidgets.append(m_editPPS);
+  m_tabOrderWidgets.append(m_editCashAccount);
 
   return m_editSymbolName;
 }
@@ -589,6 +599,7 @@ void KLedgerViewInvestments::hideWidgets()
   m_editSymbolName = 0;
   m_editTotalAmount = 0;
   m_editFees = 0;
+  m_editCashAccount = 0;
 
   m_form->table()->clearEditable();
   m_form->tabBar()->setEnabled(true);
@@ -649,6 +660,11 @@ void KLedgerViewInvestments::createEditWidgets()
   if(!m_editType) {
     m_editType = new kMyMoneyCombo(0, "editType");
     m_editType->setFocusPolicy(QWidget::StrongFocus);
+  }
+  
+  if(!m_editCashAccount) {
+    m_editCashAccount = new kMyMoneyAccountCombo(0, "editCashAccount");
+    m_editCashAccount->setFocusPolicy(QWidget::StrongFocus);
   }
 }
 
@@ -917,7 +933,7 @@ int KLedgerViewInvestments::transactionType(const MyMoneyTransaction& t, const M
   if(split.action() == MyMoneySplit::ActionReinvestDividend) {
     return ReinvestDividend;
   }
-  return Yield;
+  return BuyShares;
 }
 
 void KLedgerViewInvestments::updateTabBar(const MyMoneyTransaction& /* t */, const MyMoneySplit& /* s */)

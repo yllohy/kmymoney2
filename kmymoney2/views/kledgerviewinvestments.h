@@ -47,6 +47,7 @@ class QLabel;
 #include "../widgets/kmymoneypayee.h"
 #endif
 
+#include "../widgets/kmymoneyaccountcombo.h"
 #include "kledgerview.h"
 
 class kMyMoneyEdit;
@@ -156,6 +157,7 @@ private:
   MyMoneySplit    m_accountSplit;
   MyMoneySplit    m_feeSplit;
   MyMoneySplit    m_interestSplit;
+  kMyMoneyAccountCombo  *m_editCashAccount;
 
 /*
   KTextBrowser *textBrowser;
