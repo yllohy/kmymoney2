@@ -1,3 +1,7 @@
+2002-02-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Updated project file to include all new files
+  * Fixed a missing semicolon
+
 2002-02-03 Kevin Tambascio <ktambascio@users.sourceforge.net>
   * Added MyMoneyInvestTransaction class to hold transaction information for investments.
   * Made some more progress with the stock transactions.
