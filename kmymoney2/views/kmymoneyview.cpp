@@ -642,7 +642,11 @@ bool KMyMoneyView::readFile(const KURL& url)
     delete e;
     return false;
   }
-  
+
+  // if there's no asset account, then automatically start the
+  // new account wizard
+  kmymoney2->createInitialAccount();
+    
   // if we currently see a different page, then select the right one
   if(page != activePageIndex()) {
     showPage(page);
@@ -1059,7 +1063,7 @@ void KMyMoneyView::readDefaultCategories(const QString& filename)
     return;
   }
 
-  m_categoriesView->suspendUpdate(true);
+  MyMoneyFile::instance()->suspendNotify(true);
   QFile f(filename);
   if (f.open(IO_ReadOnly) ) {
     kmymoney2->slotStatusMsg(i18n("Loading default accounts"));
@@ -1142,7 +1146,7 @@ void KMyMoneyView::readDefaultCategories(const QString& filename)
     kmymoney2->slotStatusProgressBar(-1, -1);
     f.close();
   }
-  m_categoriesView->suspendUpdate(false);
+  MyMoneyFile::instance()->suspendNotify(false);
 }
 
 bool KMyMoneyView::parseDefaultCategory(QString& line, bool& income, QString& name, QStringList& minors)
