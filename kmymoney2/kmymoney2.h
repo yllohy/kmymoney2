@@ -86,7 +86,6 @@ protected slots:
     ~KMyMoney2App();
     /** opens a file specified by conmandline option
      */
-    void openDocumentFile(const KURL& url=0);
   /** Init wizard dialog */
   bool initWizard();
 

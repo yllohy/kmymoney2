@@ -32,7 +32,7 @@
 #include <kstddirs.h>
 
 #include <stdio.h>
-
+#include <stream.h>
 // application specific includes
 #include "kmymoney2.h"
 #include "kstartdlg.h"
@@ -178,27 +178,6 @@ void KMyMoney2App::initStatusBar()
   statusBar()->insertItem(i18n("Ready."), ID_STATUS_MSG);
 }
 
-void KMyMoney2App::openDocumentFile(const KURL& url)
-{
-/*
-  slotStatusMsg(i18n("Opening file..."));
-  if (myMoneyView->fileOpen()) {
-    if ((KMessageBox::questionYesNo(this, i18n("KMyMoney file already open.  Close ?")))==KMessageBox::No) {
-      slotStatusMsg(i18n("Ready"));
-      return;
-    }
-    else {
-      myMoneyView->close();
-    }
-  }
-
-  myMoneyView->readFile(url.filename());
-
-  fileOpenRecent->addURL( url );
-  slotStatusMsg(i18n("Ready."));
-*/
-}
-
 void KMyMoney2App::saveOptions()
 {	
   config->setGroup("General Options");
@@ -308,32 +287,11 @@ void KMyMoney2App::slotFileNew()
   slotStatusMsg(i18n("Ready."));
 }
 
+// General open
 void KMyMoney2App::slotFileOpen()
 {
-  slotStatusMsg(i18n("Opening file..."));
-  bool close=false;
-  if (myMoneyView->fileOpen()) {
-    if ((KMessageBox::questionYesNo(this, i18n("KMyMoney file already open.  Close ?")))==KMessageBox::No) {
-      slotStatusMsg(i18n("Ready"));
-      return;
-    }
-    else {
-      // reset the data later in case they cancel the file open
-      close=true;
-    }
-  }
-  slotStatusMsg(i18n("Opening file..."));
-
-  fileName=KFileDialog::getOpenFileName(QDir::homeDirPath(),
-                                                    i18n("*.kmy|KMyMoney files (*.kmy)"
-                                                    "\n*.*|All files (*.*)"), this, i18n("Open File..."));
-
-  if(!fileName.isEmpty()) {
-    if (close) {
-      myMoneyView->closeFile();
-    }
-    myMoneyView->readFile(fileName);
-  }
+  slotStatusMsg(i18n("Open a document."));
+	initWizard();
   slotStatusMsg(i18n("Ready."));
 }
 
@@ -351,7 +309,8 @@ void KMyMoney2App::slotFileOpenRecent(const KURL& url)
 
   slotStatusMsg(i18n("Opening file..."));
 
-  myMoneyView->readFile(url.filename());
+  myMoneyView->readFile( url.directory(false,true)+url.fileName() );
+	fileOpenRecent->addURL( url );
 
   slotStatusMsg(i18n("Ready."));
 }
@@ -688,27 +647,23 @@ void KMyMoney2App::slotShowInputBox()
 /** Init wizard dialog */
 bool KMyMoney2App::initWizard()
 {
-//  if (m_startDialog) {
     KStartDlg start(fileName, this);
     if (start.exec()) {
       if (start.isNewFile()) {
         fprintf(stderr, "isNewFile\n");
-        fileName = start.m_filename;
         slotFileNew();
       } else if (start.isOpenFile()) {
-        fileName = start.m_filename;
-        myMoneyView->readFile(fileName);
+        fileName = start.getFileName();
+				cout << fileName;
+        this->slotFileOpenRecent( fileName );
       } else { // Wizard / Template
-        fileName = start.m_filename;
+        fileName = start.getFileName();
+				cout << fileName;
       }
 			return true;
     } else {
       // cancel clicked so post an exit call
       fprintf(stderr, "cancelling the application\n");
 			return false;
-      kapp->quit();
     }
-//  } else { // m_openLastFile
-//    myMoneyView->readFile(fileName);
-//  }
 }
