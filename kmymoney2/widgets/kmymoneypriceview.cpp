@@ -150,7 +150,8 @@ const QMap<QDate, MyMoneyMoney> kMyMoneyPriceView::history(void) const
   QMap<QDate, MyMoneyMoney> list;
   QListViewItem* it;
   for(it = m_priceHistory->firstChild(); it; it = it->nextSibling()) {
-    kMyMoneyPriceItem* item = static_cast<kMyMoneyPriceItem*>(it);
+    kMyMoneyPriceItem* item = dynamic_cast<kMyMoneyPriceItem*>(it);
+    Q_CHECK_PTR(item);
     list[item->date()] = item->price();
   }
   return list;
@@ -180,7 +181,8 @@ void kMyMoneyPriceView::slotAddPrice(void)
   if(dlg.exec()) {
     QListViewItem* it;
     for(it = m_priceHistory->firstChild(); it; it = it->nextSibling()) {
-      kMyMoneyPriceItem* item = static_cast<kMyMoneyPriceItem*>(it);
+      kMyMoneyPriceItem* item = dynamic_cast<kMyMoneyPriceItem*>(it);
+      Q_CHECK_PTR(item);
       if(item->date() == dlg.getDate()) {
         item->setPrice(dlg.getPrice());
         break;
@@ -195,7 +197,7 @@ void kMyMoneyPriceView::slotAddPrice(void)
 
 void kMyMoneyPriceView::slotEditPrice(void)
 {
-  kMyMoneyPriceItem* item = static_cast<kMyMoneyPriceItem*>(m_priceHistory->selectedItem());
+  kMyMoneyPriceItem* item = dynamic_cast<kMyMoneyPriceItem*>(m_priceHistory->selectedItem());
   if(item) {
     KConfig *kconfig = KGlobal::config();
     kconfig->setGroup("General Options");
@@ -212,9 +214,10 @@ void kMyMoneyPriceView::slotEditPrice(void)
 
 void kMyMoneyPriceView::slotDeletePrice(void)
 {
-  kMyMoneyPriceItem* item = static_cast<kMyMoneyPriceItem*>(m_priceHistory->selectedItem());
+  kMyMoneyPriceItem* item = dynamic_cast<kMyMoneyPriceItem*>(m_priceHistory->selectedItem());
   if(item) {
     m_priceHistory->removeItem(item);
+    delete item;
     m_dirty = true;
   }
 }
