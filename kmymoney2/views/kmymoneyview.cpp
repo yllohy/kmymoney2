@@ -359,7 +359,13 @@ void KMyMoneyView::slotAccountRightMouse()
             m_accountMenu->setItemEnabled(AccountOpen, true);
             m_accountMenu->setItemEnabled(AccountReconcile, true);
             m_accountMenu->setItemEnabled(AccountEdit, true);
-            m_accountMenu->setItemEnabled(AccountDelete, file->transactionCount(account.id())==0);
+            bool enabled;
+            if(account.accountType() == MyMoneyAccount::Investment) {
+              enabled = (file->transactionCount(account.id())==0 && account.accountList().count() == 0);
+            } else {
+              enabled = (file->transactionCount(account.id())==0);
+            }
+            m_accountMenu->setItemEnabled(AccountDelete, enabled);
 
             QCString iid = account.institutionId();
             if ( !iid.isEmpty() )
