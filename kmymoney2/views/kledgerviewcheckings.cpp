@@ -1376,7 +1376,8 @@ void KLedgerViewCheckings::slotConfigureMoreMenu(void)
       m_moreMenu->setItemEnabled(gotoPayeeId, false);
     }
 
-    if(transactionType(*m_transactionPtr) != Transfer) {
+    int type = transactionType(*m_transactionPtr);
+    if ( ( type != Transfer) && ( type != InvestmentTransaction) ) {
       m_moreMenu->connectItem(splitEditId, this, SLOT(slotStartEditSplit()));
     } else {
       QString dest;
@@ -1419,7 +1420,8 @@ void KLedgerViewCheckings::slotConfigureContextMenu(void)
       m_contextMenu->changeItem(gotoPayeeId, i18n("Goto payer/receiver"));
       m_contextMenu->setItemEnabled(gotoPayeeId, false);
     }
-    if(transactionType(*m_transactionPtr) != Transfer) {
+    int type = transactionType(*m_transactionPtr);
+    if ( ( type != Transfer) && ( type != InvestmentTransaction) ) {
       m_contextMenu->connectItem(splitEditId, this, SLOT(slotStartEditSplit()));
     } else {
       QString dest;
@@ -1558,8 +1560,8 @@ void KLedgerViewCheckings::slotOpenSplitDialog(void)
   if(m_transactionFormActive) {
     isValidAmount = m_editAmount->text().length() != 0;
   } else {
-    if(m_editPayment->text().length() != 0
-    || m_editDeposit->text().length() != 0) {
+    if ( (m_editPayment && m_editPayment->text().length() != 0)
+    || (m_editDeposit && m_editDeposit->text().length() != 0)) {
       isValidAmount = true;
     }
   }
@@ -1576,7 +1578,8 @@ void KLedgerViewCheckings::slotOpenSplitDialog(void)
 
   delete dlg;
 
-  m_editMemo->setFocus();
+  if ( m_editMemo )
+    m_editMemo->setFocus();
 }
 
 void KLedgerViewCheckings::slotStartEditSplit(void)
