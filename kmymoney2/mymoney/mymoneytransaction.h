@@ -54,7 +54,6 @@ public:
   const QCString id(void) const { return m_id; };
   const QString memo(void) const { return m_memo; };
   const QValueList<MyMoneySplit> splits(void) const { return m_splits; };
-  const MyMoneySplit split(const QCString& accountId) const;
   const unsigned int splitCount(void) const { return m_splits.count(); };
 
   // Simple set operations
@@ -62,6 +61,20 @@ public:
   void setMemo(const QString& memo);
 
   bool operator == (const MyMoneyTransaction&) const;
+
+  /**
+    * This method is used to extract a split for a given accountId
+    * from a transaction. A parameter controls, whether the accountId
+    * should match or not. In case of 'not match', the first not-matching
+    * split is returned.
+    *
+    * @param accountId the account to look for
+    * @param match if true, the account Id must match
+    *              if false, the account Id must not match
+    *
+    * @return reference to split within the transaction is returned
+    */
+  const MyMoneySplit& split(const QCString& accountId, const bool match = true) const;
 
   /**
     * This method is used to check if the given account is used

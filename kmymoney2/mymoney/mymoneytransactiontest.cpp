@@ -211,4 +211,13 @@ void MyMoneyTransactionTest::testExtractSplit() {
 		CPPUNIT_FAIL("Unexpected exception!");
 		delete e;
 	}
+
+	// this one should be found also
+	try {
+		split = m->split("A000002", false);
+		CPPUNIT_ASSERT(split.id() == "S0001");
+	} catch(MyMoneyException *e) {
+		CPPUNIT_FAIL("Unexpected exception!");
+		delete e;
+	}
 }
