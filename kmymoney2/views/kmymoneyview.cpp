@@ -635,12 +635,22 @@ bool KMyMoneyView::readFile(const KURL& url)
     page = pageIndex(m_homeViewFrame);
   }
 
-  try {
-    // Check if we have to modify the file before we allow to work with it
-    fixFile();
-  } catch(MyMoneyException *e) {
-    delete e;
-    return false;
+  // For debugging purposes, we can turn off the automatic fix manually
+  // by setting the entry in kmymoney2rc to true
+  config->setGroup("General Options");
+  if(config->readBoolEntry("SkipFix", false) != true) {
+    MyMoneyFile::instance()->suspendNotify(true);
+    try {
+      // Check if we have to modify the file before we allow to work with it
+      fixFile();
+    } catch(MyMoneyException *e) {
+      delete e;
+      MyMoneyFile::instance()->suspendNotify(false);
+      return false;
+    }
+    MyMoneyFile::instance()->suspendNotify(false);
+  } else {
+    qDebug("Skipping automatic transaction fix!");
   }
 
   // if there's no asset account, then automatically start the
@@ -1430,7 +1440,7 @@ void KMyMoneyView::fixFile(void)
   QValueList<MyMoneyAccount>::Iterator it_a;
   QValueList<MyMoneySchedule> scheduleList = file->scheduleList();
   QValueList<MyMoneySchedule>::Iterator it_s;
-    
+
   for(it_a = accountList.begin(); it_a != accountList.end(); ++it_a) {
     if((*it_a).accountType() == MyMoneyAccount::Loan
     || (*it_a).accountType() == MyMoneyAccount::AssetLoan) {
@@ -1600,17 +1610,99 @@ void KMyMoneyView::fixTransactions(void)
   // scan the transactions and modify loan transactions
   QValueList<MyMoneyTransaction>::Iterator it_t;
   for(it_t = transactionList.begin(); it_t != transactionList.end(); ++it_t) {
+    const char *defaultAction = 0;
     QValueList<MyMoneySplit> splits = (*it_t).splits();
     QValueList<MyMoneySplit>::Iterator it_s;
+    
+    bool isLoan = false;
+    // Determine default action
+    if((*it_t).splitCount() == 2) {
+      // check for transfer
+      int accountCount = 0;
+      MyMoneyMoney val;
+      for(it_s = splits.begin(); it_s != splits.end(); ++it_s) {
+        MyMoneyAccount acc = file->account((*it_s).accountId());
+        if(acc.accountGroup() == MyMoneyAccount::Asset
+        || acc.accountGroup() == MyMoneyAccount::Liability) {
+          val = (*it_s).value();
+          accountCount++;
+          if(acc.accountType() == MyMoneyAccount::Loan
+          || acc.accountType() == MyMoneyAccount::AssetLoan)
+            isLoan = true;
+        } else
+          break;
+      }
+      if(accountCount == 2) {
+        if(isLoan)
+          defaultAction = MyMoneySplit::ActionAmortization;
+        else
+          defaultAction = MyMoneySplit::ActionTransfer;
+      } else {
+        if(val < 0)
+          defaultAction = MyMoneySplit::ActionWithdrawal;
+        else
+          defaultAction = MyMoneySplit::ActionDeposit;
+      }
+    }
+
+    isLoan = false;    
+    for(it_s = splits.begin(); defaultAction == 0 && it_s != splits.end(); ++it_s) {
+      MyMoneyAccount acc = file->account((*it_s).accountId());
+      MyMoneyMoney val = (*it_s).value();
+      if(acc.accountGroup() == MyMoneyAccount::Asset
+      || acc.accountGroup() == MyMoneyAccount::Liability) {
+        if(val <= 0)
+          defaultAction = MyMoneySplit::ActionWithdrawal;
+        else
+          defaultAction = MyMoneySplit::ActionDeposit;
+      }
+    }
+
+    // Check for correct actions in transactions referencing credit cards
+    bool needModify = false;
+    for(it_s = splits.begin(); needModify == false && it_s != splits.end(); ++it_s) {
+      MyMoneyAccount acc = file->account((*it_s).accountId());
+      MyMoneyMoney val = (*it_s).value();
+      if(acc.accountType() == MyMoneyAccount::CreditCard) {
+        if(val < 0 && (*it_s).action() != MyMoneySplit::ActionWithdrawal)
+          needModify = true;
+        if(val >= 0 && (*it_s).action() != MyMoneySplit::ActionDeposit)
+          needModify = true;
+      }
+    }
+    if(needModify == true) {
+      for(it_s = splits.begin(); it_s != splits.end(); ++it_s) {
+        (*it_s).setAction(defaultAction);
+        (*it_t).modifySplit(*it_s);
+        file->modifyTransaction(*it_t);
+      }
+      splits = (*it_t).splits();    // update local copy
+      qDebug("Fixed credit card assignment in %s", (*it_t).id().data());
+    }
+    
+    // Check for correct assignment of ActionInterest in all splits
     for(it_s = splits.begin(); it_s != splits.end(); ++it_s) {
+      // if this split references an interest account, the action
+      // must be of type ActionInterest
       if(interestAccounts.contains((*it_s).accountId())) {
         if((*it_s).action() != MyMoneySplit::ActionInterest) {
           (*it_s).setAction(MyMoneySplit::ActionInterest);
           (*it_t).modifySplit(*it_s);
           file->modifyTransaction(*it_t);
+          qDebug("Fixed interest action in %s", (*it_t).id().data());
+        }
+      // if it does not reference an interest account, it must not be
+      // of type ActionInterest
+      } else {
+        if((*it_s).action() == MyMoneySplit::ActionInterest) {
+          (*it_s).setAction(defaultAction);
+          (*it_t).modifySplit(*it_s);
+          file->modifyTransaction(*it_t);
+          qDebug("Fixed interest action in %s", (*it_t).id().data());
         }
       }
     }
+
     ++cnt;
     if(!(cnt % 10))
       kmymoney2->slotStatusProgressBar(cnt);
