@@ -152,8 +152,7 @@ void MyMoneyStorageXML::writeFile(QIODevice* qf, IMyMoneySerialize* storage)
   writeTransactions(transactions);
   mainElement.appendChild(transactions);
 
-  QDomElement keyvalpairs = m_doc->createElement("KEYVALPAIRS");
-  writeKeyValuePairs(keyvalpairs, m_storage->pairs());
+  QDomElement keyvalpairs = writeKeyValuePairs(m_storage->pairs());
   mainElement.appendChild(keyvalpairs);
 
   QDomElement schedules = m_doc->createElement("SCHEDULES");
@@ -162,7 +161,7 @@ void MyMoneyStorageXML::writeFile(QIODevice* qf, IMyMoneySerialize* storage)
 
   QTextStream stream(qf);
   //stream.setEncoding(QTextStream::Locale);
-  QString temp = m_doc->toString();
+  QCString temp = m_doc->toCString();
   stream << temp.data();
 
   qDebug("File contains %s", temp.data());
@@ -534,9 +533,10 @@ void MyMoneyStorageXML::writeAccount(QDomElement& account, const MyMoneyAccount&
 
     account.appendChild(subAccounts);
   }
-  
-  writeKeyValuePairs(account, p.pairs());
- 
+
+  //Add in Key-Value Pairs for accounts.
+  QDomElement keyValPairs = writeKeyValuePairs(p.pairs()); 
+  account.appendChild(keyValPairs);
 }
 
 void MyMoneyStorageXML::readTransactions(QDomElement& transactions)
@@ -607,6 +607,13 @@ MyMoneyTransaction MyMoneyStorageXML::readTransaction(QDomElement& transaction)
     readSplits(t, splits);
   }
 
+  //Process any KeyValue pairs information found inside the transaction entry.
+  QDomElement keyValPairs = findChildElement(QString("KEYVALUEPAIRS"), transaction);
+  if(!keyValPairs.isNull() && keyValPairs.isElement())
+  {
+    t.setPairs(readKeyValuePairs(keyValPairs));
+  }
+
   return MyMoneyTransaction(id, t);
 }
 
@@ -622,8 +629,11 @@ void MyMoneyStorageXML::writeTransaction(QDomElement& transaction, const MyMoney
   splits.setAttribute(QString("nextid"), tx.splitCount());
 
   writeSplits(splits, splitList);
-
   transaction.appendChild(splits);
+
+  //Add in Key-Value Pairs for transactions.
+  QDomElement keyValPairs = writeKeyValuePairs(tx.pairs());
+  transaction.appendChild(keyValPairs);
 }
 
 void MyMoneyStorageXML::readSchedules(QDomElement& schedules)
@@ -862,16 +872,23 @@ QDomElement MyMoneyStorageXML::findChildElement(const QString& name, const QDomE
   return QDomElement();
 }
 
-void MyMoneyStorageXML::writeKeyValuePairs(QDomElement& keyPair, const QMap<QCString, QString> pairs)
+QDomElement MyMoneyStorageXML::writeKeyValuePairs(const QMap<QCString, QString> pairs)
 {
-  QMap<QCString, QString>::const_iterator it;
-  for(it = pairs.begin(); it != pairs.end(); ++it)
+  if(m_doc)
   {
-    QDomElement pair = m_doc->createElement("PAIR");
-    pair.setAttribute(QString("Key"), it.key());
-    pair.setAttribute(QString("Value"), it.data());
-    keyPair.appendChild(pair);
+    QDomElement keyValPairs = m_doc->createElement("KEYVALUEPAIRS");
+
+    QMap<QCString, QString>::const_iterator it;
+    for(it = pairs.begin(); it != pairs.end(); ++it)
+    {
+      QDomElement pair = m_doc->createElement("PAIR");
+      pair.setAttribute(QString("Key"), it.key());
+      pair.setAttribute(QString("Value"), it.data());
+      keyValPairs.appendChild(pair);
+    }
+    return keyValPairs;
   }
+  return QDomElement();  
 }
 
 QMap<QCString, QString> MyMoneyStorageXML::readKeyValuePairs(QDomElement& element)

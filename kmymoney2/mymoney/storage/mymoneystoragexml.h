@@ -106,7 +106,7 @@ private:
   void readFile(QIODevice* s, IMyMoneySerialize* storage);
   void writeFile(QIODevice* s, IMyMoneySerialize* storage);
 
-  void writeKeyValuePairs(QDomElement& keyPair, const QMap<QCString, QString> pairs);
+  QDomElement writeKeyValuePairs(const QMap<QCString, QString> pairs);
   QMap<QCString, QString> readKeyValuePairs(QDomElement& element);
 
   void readUserInformation(QDomElement userElement);
