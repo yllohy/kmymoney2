@@ -155,14 +155,14 @@ void KScheduledListItem::paintCell(QPainter* p, const QColorGroup& cg, int colum
   KConfig *config = KGlobal::config();
   config->setGroup("List Options");
 
-  QColor colour = Qt::white;
-  QColor bgColour = QColor(224, 253, 182); // Same as for home view
+  QColor colour = KMyMoneyUtils::defaultListColour();
+  QColor bgColour = KMyMoneyUtils::defaultBackgroundColour();
   QColor textColour;
   QFont cellFont(p->font());
 
   bgColour = config->readColorEntry("listBGColor", &bgColour);
   colour = config->readColorEntry("listColor", &colour);
-  textColour = config->readColorEntry("listGridColor", &textColour);
+  // textColour = config->readColorEntry("listGridColor", &textColour);
   cellFont = config->readFontEntry("listCellFont", &cellFont);
 
   if (m_schedule.isFinished())
