@@ -27,6 +27,7 @@
 
 #include <qfile.h>
 #include <qdom.h>
+#include <qmap.h>
 
 // ----------------------------------------------------------------------------
 // Third party Includes
@@ -93,6 +94,8 @@ void MyMoneyStorageXML::writeFile(QIODevice* qf, IMyMoneySerialize* storage)
 {
   qDebug("XMLWRITER: Starting file write");
   QDomDocument *pDoc = new QDomDocument("KMYMONEY-FILE");
+  QDomProcessingInstruction instruct = pDoc->createProcessingInstruction(QString("xml"), QString("version=\"1.0\" encoding=\"utf-8\""));
+  pDoc->appendChild(instruct);
 
   QDomElement mainElement = pDoc->createElement("KMYMONEY-FILE");
   pDoc->appendChild(mainElement);
@@ -110,7 +113,7 @@ void MyMoneyStorageXML::writeFile(QIODevice* qf, IMyMoneySerialize* storage)
   mainElement.appendChild(payees);
 
   QDomElement accounts = pDoc->createElement("ACCOUNTS");
-  //writeAccounts(pDoc, accounts, storage);
+  writeAccounts(pDoc, accounts, storage);
   mainElement.appendChild(accounts);
 
   QDomElement transactions = pDoc->createElement("TRANSACTIONS");
@@ -194,12 +197,75 @@ void MyMoneyStorageXML::writePayee(QDomDocument *pDoc, QDomElement& payee, const
 
 void MyMoneyStorageXML::writeAccounts(QDomDocument *pDoc, QDomElement& accounts, IMyMoneySerialize* storage)
 {
+  Q_INT32 tmp;
+  QValueList<MyMoneyAccount> list;
+  QValueList<MyMoneyAccount>::ConstIterator it;
 
+  list = storage->accountList();
+
+  accounts.setAttribute(QString("nextid"), list.count() + 4);
+
+  QDomElement asset, liability, expense, income;
+
+  asset = pDoc->createElement("ACCOUNT");
+  writeAccount(pDoc, asset, storage->asset());
+  accounts.appendChild(asset);
+
+  liability = pDoc->createElement("ACCOUNT");
+  writeAccount(pDoc, liability, storage->liability());
+  accounts.appendChild(liability);
+
+  expense = pDoc->createElement("ACCOUNT");
+  writeAccount(pDoc, expense, storage->expense());
+  expense.appendChild(liability);
+
+  income = pDoc->createElement("ACCOUNT");
+  writeAccount(pDoc, income, storage->income());
+  accounts.appendChild(income);
+
+  //signalProgress(0, list.count(), QObject::tr("Saving accounts..."));
+  int i = 0;
+  for(it = list.begin(); it != list.end(); ++it, ++i)
+  {
+    QDomElement account = pDoc->createElement("ACCOUNT");
+    writeAccount(pDoc, account, *it);
+    accounts.appendChild(account);
+
+    //signalProgress(i, 0);
+  }
 }
 
 void MyMoneyStorageXML::writeAccount(QDomDocument *pDoc, QDomElement& account, const MyMoneyAccount& p)
-{
+{   
+  account.setAttribute(QString("parentaccount"), p.parentAccountId());
+  account.setAttribute(QString("lastreconciled"), p.lastReconciliationDate().toString());
+  account.setAttribute(QString("lastmodified"), p.lastModified().toString());
+  account.setAttribute(QString("institution"), p.institutionId());
+  account.setAttribute(QString("opened"), p.openingDate().toString());
+  account.setAttribute(QString("number"), p.number());
+  account.setAttribute(QString("openingbalance"), p.openingBalance().formatMoney());
+  account.setAttribute(QString("type"), p.accountType());  
+  account.setAttribute(QString("id"), p.id());
+  account.setAttribute(QString("name"), p.name());
+  account.setAttribute(QString("description"), p.description());
 
+  writeKeyValuePairs(pDoc, account, p.pairs());
+ 
+}
+
+void MyMoneyStorageXML::writeKeyValuePairs(QDomDocument *pDoc, QDomElement& account, const QMap<QCString, QString> pairs)
+{
+  QMap<QCString, QString>::const_iterator it;
+  QDomElement keyPair = pDoc->createElement("KEYVALPAIRS");
+  for(it = pairs.begin(); it != pairs.end(); ++it)
+  {
+    QDomElement pair = pDoc->createElement("PAIR");
+    pair.setAttribute(QString("Key"), it.key());
+    pair.setAttribute(QString("Value"), it.data());
+    keyPair.appendChild(pair);
+  }
+
+  account.appendChild(keyPair);
 }
 
 void MyMoneyStorageXML::writeTransactions(QDomDocument *pDoc, QDomElement& transactions, IMyMoneySerialize* storage)
