@@ -17,10 +17,16 @@
 #ifndef MYMONEYCATEGORY_H
 #define MYMONEYCATEGORY_H
 
+// ----------------------------------------------------------------------------
+// QT Includes
+
 #include <qstring.h>
 #include <qstringlist.h>
 
-// This class represents an Income or Expense category
+/**
+  * @deprecated This class represents an Income or Expense category. Please don't
+  *             use it anymore, as it will be removed sooner or later.
+  */
 class MyMoneyCategory {
   bool m_income; // if false, m_income == expense
   QString m_name;
