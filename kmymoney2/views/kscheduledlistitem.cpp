@@ -86,7 +86,13 @@ KScheduledListItem::KScheduledListItem(KScheduledListItem *parent, const MyMoney
       amount = -amount;
     setText(3, amount.formatMoney());
     // Do the real next payment like ms-money etc
-    setText(4, schedule.nextPayment(schedule.lastPayment()).toString());
+    if (schedule.isFinished())
+    {
+      setText(4, i18n("Finished"));
+    }
+    else
+      setText(4, schedule.nextPayment(schedule.lastPayment()).toString());
+      
     setText(5, KMyMoneyUtils::occurenceToString(schedule.occurence()));
     setText(6, KMyMoneyUtils::paymentMethodToString(schedule.paymentType()));
   }
