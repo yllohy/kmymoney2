@@ -237,6 +237,7 @@ public:
 
   bool isNegative() const { return (m_num < 0) ? true : false; }
   bool isPositive() const { return !isNegative(); }
+  bool isZero() const { return m_num == 0; }
 
 private:
   signed64 m_num;
