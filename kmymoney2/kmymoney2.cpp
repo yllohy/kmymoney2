@@ -1624,7 +1624,7 @@ void KMyMoney2App::ofxWebConnect(const QString& url, const QCString& asn_id)
   KStartupInfo::setNewStartupId(this,asn_id);
 #endif
 
-#ifdef HAVE_LIBOFX
+#if defined(HAVE_LIBOFX) || defined(HAVE_NEW_OFX)
   QString prevMsg = slotStatusMsg(i18n("Importing a statement from OFX"));
 
   MyMoneyOfxStatement s( url );

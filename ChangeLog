@@ -4,7 +4,10 @@
     Lubos Lunak <l.lunak@suse.cz> of the KDE core development team.
   * Fixed compile problems when neither HAVE_NEW_OFX or HAVE_LIB_OFX
     are defined.
-  * Copied new "OFX not available" message to the other place it's used.    
+  * Copied new "OFX not available" message to the other place it's used.   
+  * Unified the 2 interfaces to LibOFX (pre-0.7 and post-0.7).  They now
+    share the same code for processing the data, the only differences are
+    in how it interacts with the library.
 
 2004-09-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added KBanking support supplied by Martin Preuss

@@ -31,64 +31,22 @@
 #include "../mymoney/mymoneyexception.h"
 #include "mymoneyofxstatement.h"
 
-#ifdef HAVE_NEW_OFX
+
+#if defined(HAVE_LIBOFX) || defined(HAVE_NEW_OFX)
 
 /* __________________________________________________________________________
  * AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
  *
- * The following part is only compiled if a newer version of LibOFX is used
- * (0.7 and higher). The second half of this file contains the old code.
+ * The following part is compiled for ANY version of LibOFX.
  *
  * YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
  */
 
-#include "../mymoney/mymoneyexception.h"
-
 #include <libofx/libofx.h>
 
-int ofx_proc_transaction_cb(struct OfxTransactionData data, void *);
-int ofx_proc_statement_cb(struct OfxStatementData data, void *);
-int ofx_proc_account_cb(struct OfxAccountData data, void *);
-
-
-MyMoneyOfxStatement* pgCurrentStatement = NULL;
-
-//
-// MyMoneyOfxStatement Implementation
-//
-
-MyMoneyOfxStatement::MyMoneyOfxStatement(const QString& filename):
-  m_valid( false )
+int ofxTransactionCallback(struct OfxTransactionData data, void * pv)
 {
-  if ( pgCurrentStatement )
-    throw new MYMONEYEXCEPTION("Ofx import already in progress. Only ONE ofx import can be processed at once!");
-
-  pgCurrentStatement = this;
-
-  QCString filename_deep( filename.utf8() );
-
-  LibofxContextPtr ctx;
-
-  ctx=libofx_get_new_context();
-  ofx_set_transaction_cb(ctx, ofx_proc_transaction_cb, 0);
-  ofx_set_statement_cb(ctx, ofx_proc_statement_cb, 0);
-  ofx_set_account_cb(ctx, ofx_proc_account_cb, 0);
-  libofx_proc_file(ctx, filename_deep, AUTODETECT);
-  pgCurrentStatement = NULL;
-  libofx_free_context(ctx);
-}
-
-MyMoneyOfxStatement::~MyMoneyOfxStatement()
-{
-}
-
-//
-// These global _cb functions are callbacks from libofx.  They are required to
-// be in the global scope, and named as such.
-//
-
-int ofx_proc_transaction_cb(struct OfxTransactionData data, void *)
-{
+  MyMoneyOfxStatement* ps = reinterpret_cast<MyMoneyOfxStatement*>(pv);
 
   MyMoneyStatement::Transaction t;
 
@@ -108,180 +66,7 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void *)
   {
     t.m_strNumber = data.check_number;
   }
-  else if(data.fi_id_valid==true)
-  {
-    t.m_strNumber = QString("ID ") + data.fi_id;
-  }
-  else if(data.reference_number_valid==true)
-  {
-    t.m_strNumber = QString("REF ") + data.reference_number;
-  }
-
-  if(data.payee_id_valid==true)
-  {
-    t.m_strPayee = data.payee_id;
-  }
-  else if(data.name_valid==true)
-  {
-    t.m_strPayee = data.name;
-  }
-
-  if(data.memo_valid==true){
-    t.m_strMemo = data.memo;
-  }
-
-  // If the payee or memo fields are blank, set them to
-  // the other one which is NOT blank.
-  if ( t.m_strPayee.isEmpty() )
-  {
-    if ( ! t.m_strMemo.isEmpty() )
-      t.m_strPayee = t.m_strMemo;
-  }
-  else
-  {
-    if ( t.m_strMemo.isEmpty() )
-      t.m_strMemo = t.m_strPayee;
-  }
-
-  pgCurrentStatement->m_listTransactions += t;
-
-  return 0;
-}
-
-int ofx_proc_statement_cb(struct OfxStatementData data, void *)
-{
-  pgCurrentStatement->setValid();
-
-  if(data.currency_valid==true)
-  {
-    pgCurrentStatement->m_strCurrency = data.currency;
-  }
-  if(data.account_id_valid==true)
-  {
-    pgCurrentStatement->m_strAccountNumber = data.account_id;
-  }
-  if(data.date_start_valid==true)
-  {
-    QDateTime dt;
-    dt.setTime_t(data.date_start);
-    pgCurrentStatement->m_dateBegin = dt.date();
-  }
-
-  if(data.date_end_valid==true)
-  {
-    QDateTime dt;
-    dt.setTime_t(data.date_end);
-    pgCurrentStatement->m_dateEnd = dt.date();
-  }
-
-  if(data.ledger_balance_valid==true)
-  {
-    pgCurrentStatement->m_moneyClosingBalance = static_cast<double>(data.ledger_balance);
-  }
-
-  return 0;
-}
-
-int ofx_proc_account_cb(struct OfxAccountData data, void *)
-{
-  if(data.account_id_valid==true)
-  {
-    pgCurrentStatement->m_strAccountName = data.account_name;
-    pgCurrentStatement->m_strAccountNumber = data.account_id;
-  }
-  if(data.currency_valid==true)
-  {
-    pgCurrentStatement->m_strCurrency = data.currency;
-  }
-
-  return 0;
-}
-
-#endif // HAVE_NEW_OFX
-
-
-
-
-
-
-
-
-
-#ifdef HAVE_LIBOFX
-/* __________________________________________________________________________
- * AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
- *
- * The following part is only compiled if an older version of LibOFX is used
- * (up to 0.6.6)
- *
- * YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
- */
-#include <libofx/libofx.h>
-
-MyMoneyOfxStatement* pgCurrentStatement = NULL;
-
-//
-// MyMoneyOfxStatement Implementation
-//
-
-MyMoneyOfxStatement::MyMoneyOfxStatement(const QString& filename):
-  m_valid( false )
-{
-  if ( pgCurrentStatement )
-    throw new MYMONEYEXCEPTION("Ofx import already in progress. Only ONE ofx import can be processed at once!");
-
-  pgCurrentStatement = this;
-
-  QCString filename_deep( filename.utf8() );
-  const char* argv[2];
-  argv[0] = "KMyMoney2";
-  argv[1] = filename_deep;
-  ofx_proc_file(2, const_cast<char**>(argv));
-
-  pgCurrentStatement = NULL;
-}
-
-MyMoneyOfxStatement::~MyMoneyOfxStatement()
-{
-}
-
-//
-// These global _cb functions are callbacks from libofx.  They are required to
-// be in the global scope, and named as such.
-//
-
-int ofx_proc_status_cb(struct OfxStatusData /*data*/)
-{
-  return 0;
-}
-
-int ofx_proc_security_cb(struct OfxSecurityData /*data*/)
-{
-  return 0;
-}
-
-int ofx_proc_transaction_cb(struct OfxTransactionData data)
-{
-
-  MyMoneyStatement::Transaction t;
-
-  if(data.date_posted_valid==true)
-  {
-    QDateTime dt;
-    dt.setTime_t(data.date_posted);
-    t.m_datePosted = dt.date();
-  }
-
-  if(data.amount_valid==true)
-  {
-    t.m_moneyAmount = data.amount;
-  }
-
-  if(data.check_number_valid==true)
-  {
-    t.m_strNumber = data.check_number;
-  }
-
+  
   if(data.fi_id_valid==true)
   {
     t.m_strBankID = QString("ID ") + data.fi_id;
@@ -317,82 +102,170 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data)
       t.m_strMemo = t.m_strPayee;
   }
 
-  pgCurrentStatement->m_listTransactions += t;
+  ps->m_listTransactions += t;
 
   return 0;
 }
 
-int ofx_proc_statement_cb(struct OfxStatementData data)
+int ofxStatementCallback(struct OfxStatementData data, void* pv)
 {
-  pgCurrentStatement->setValid();
+  MyMoneyOfxStatement* ps = reinterpret_cast<MyMoneyOfxStatement*>(pv);
+
+  ps->setValid();
 
   if(data.currency_valid==true)
   {
-    pgCurrentStatement->m_strCurrency = data.currency;
+    ps->m_strCurrency = data.currency;
   }
   if(data.account_id_valid==true)
   {
-    pgCurrentStatement->m_strAccountNumber = data.account_id;
+    ps->m_strAccountNumber = data.account_id;
   }
   if(data.date_start_valid==true)
   {
     QDateTime dt;
     dt.setTime_t(data.date_start);
-    pgCurrentStatement->m_dateBegin = dt.date();
+    ps->m_dateBegin = dt.date();
   }
 
   if(data.date_end_valid==true)
   {
     QDateTime dt;
     dt.setTime_t(data.date_end);
-    pgCurrentStatement->m_dateEnd = dt.date();
+    ps->m_dateEnd = dt.date();
   }
 
   if(data.ledger_balance_valid==true)
   {
-    pgCurrentStatement->m_moneyClosingBalance = static_cast<double>(data.ledger_balance);
+    ps->m_moneyClosingBalance = static_cast<double>(data.ledger_balance);
   }
 
   return 0;
 }
 
-int ofx_proc_account_cb(struct OfxAccountData data)
+int ofxAccountCallback(struct OfxAccountData data, void * pv)
 {
+  MyMoneyOfxStatement* ps = reinterpret_cast<MyMoneyOfxStatement*>(pv);
+  
   if(data.account_id_valid==true)
   {
-    pgCurrentStatement->m_strAccountName = data.account_name;
-    pgCurrentStatement->m_strAccountNumber = data.account_id;
+    ps->m_strAccountName = data.account_name;
+    ps->m_strAccountNumber = data.account_id;
   }
   if(data.currency_valid==true)
   {
-    pgCurrentStatement->m_strCurrency = data.currency;
-  }
-
-  if(data.account_type_valid==true)
-  {
-    switch(data.account_type){
-    case OfxAccountData::OFX_CHECKING:
-      pgCurrentStatement->m_eType = MyMoneyStatement::etCheckings;
-      break;
-    case OfxAccountData::OFX_SAVINGS:
-      pgCurrentStatement->m_eType = MyMoneyStatement::etSavings;
-      break;
-    case OfxAccountData::OFX_INVESTMENT:
-    case OfxAccountData::OFX_MONEYMRKT:
-      pgCurrentStatement->m_eType = MyMoneyStatement::etInvestment;
-      break;
-    case OfxAccountData::OFX_CREDITCARD:
-    case OfxAccountData::OFX_CREDITLINE:
-      pgCurrentStatement->m_eType = MyMoneyStatement::etCreditCard;
-      break;
-    case OfxAccountData::OFX_CMA:
-    default:
-      // unsupported account type, treat as NO ACCOUNT SPECIFIED
-      break;
-    }
+    ps->m_strCurrency = data.currency;
   }
 
   return 0;
+}
+
+#endif 
+
+
+
+
+ 
+
+#ifdef HAVE_NEW_OFX
+
+/* __________________________________________________________________________
+ * AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+ *
+ * The following part is only compiled if a newer version of LibOFX is used
+ * (0.7 and higher). The second half of this file contains the old code.
+ *
+ * YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
+ */
+
+//
+// MyMoneyOfxStatement Implementation
+//
+
+MyMoneyOfxStatement::MyMoneyOfxStatement(const QString& filename):
+  m_valid( false )
+{
+  QCString filename_deep( filename.utf8() );
+
+  LibofxContextPtr ctx = libofx_get_new_context();
+  Q_CHECK_PTR(ctx);
+  
+  ofx_set_transaction_cb(ctx, ofxTransactionCallback, this);
+  ofx_set_statement_cb(ctx, ofxStatementCallback, this);
+  ofx_set_account_cb(ctx, ofxAccountCallback, this);
+  libofx_proc_file(ctx, filename_deep, AUTODETECT);
+  libofx_free_context(ctx);
+}
+
+#endif // HAVE_NEW_OFX
+
+
+
+
+
+
+
+#ifdef HAVE_LIBOFX
+/* __________________________________________________________________________
+ * AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+ *
+ * The following part is only compiled if an older version of LibOFX is used
+ * (up to 0.6.6)
+ *
+ * YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
+ */
+
+MyMoneyOfxStatement* pgCurrentStatement = NULL;
+
+//
+// MyMoneyOfxStatement Implementation
+//
+
+MyMoneyOfxStatement::MyMoneyOfxStatement(const QString& filename):
+  m_valid( false )
+{
+  if ( pgCurrentStatement )
+    throw new MYMONEYEXCEPTION("Ofx import already in progress. Only ONE ofx import can be processed at once!");
+
+  pgCurrentStatement = this;
+
+  QCString filename_deep( filename.utf8() );
+  const char* argv[2];
+  argv[0] = "KMyMoney2";
+  argv[1] = filename_deep;
+  ofx_proc_file(2, const_cast<char**>(argv));
+
+  pgCurrentStatement = NULL;
+}
+
+//
+// These global _cb functions are callbacks from libofx.  They are required to
+// be in the global scope, and named as such.
+//
+
+int ofx_proc_status_cb(struct OfxStatusData /*data*/)
+{
+  return 0;
+}
+
+int ofx_proc_security_cb(struct OfxSecurityData /*data*/)
+{
+  return 0;
+}
+
+int ofx_proc_transaction_cb(struct OfxTransactionData data)
+{
+  return ofxTransactionCallback(data,pgCurrentStatement);
+}
+
+int ofx_proc_statement_cb(struct OfxStatementData data)
+{
+  return ofxStatementCallback(data,pgCurrentStatement);
+}
+
+int ofx_proc_account_cb(struct OfxAccountData data)
+{
+  return ofxAccountCallback(data, pgCurrentStatement);
 }
 
 #endif // #ifdef HAVE_LIBOFX
@@ -400,7 +273,8 @@ int ofx_proc_account_cb(struct OfxAccountData data)
 /* __________________________________________________________________________
  * AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
  *
- * The following part is compiled for all versions of LibOFX.
+ * The following part is compiled whether or not there is a version of LibOFX 
+ * available.
  *
  * YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
  */
@@ -423,6 +297,10 @@ bool MyMoneyOfxStatement::isOfxFile(const QString& filename)
   }
 
   return result;
+}
+
+MyMoneyOfxStatement::~MyMoneyOfxStatement()
+{
 }
 
 
