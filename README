@@ -1,35 +1,118 @@
 KMyMoney 2.  (covered by the GNU license - see COPYING)
 
-Homepage - kmymoney2.sourceforge.net
+If you need some more information, please make sure to visit the projects
+homepage at http://kmymoney2.sourceforge.net/  A lot of information is
+found there.
 
-The two most important libraries are QT-3.0.* and above available from www.trolltech.com and
-KDE 3 from www.kde.org.  At least version 3.0 of KDE is required to run KMyMoney2.
+KMyMoney is a true KDE application and therefor requires the KDE as well as
+QT libraries. If you want to compile the application yourself, you have to
+make sure to have the development relevant parts (include files, link
+libraries) of these two projects.  KMyMoney2 is based on min QT 3.0
+and KDE 3.0
 
-To compile use this general sequence:
+We also rely on some other libs that are listed here:
 
-  tar --bzip2 -xvf kmymoney2-0.5.[version].tar.bz2
-  cd kmymoney-0.5.[version]
-  ./configure --with-qt-dir=[your location of qt3] --prefix=[your location of kde3]
-  su # to gain root permissions to install
-  make install
-  exit # to revert to normal user
+- libxml2 : this should be installed with KDE as KDE requires it
+- libxml++: Make sure, you have version 0.14pre2 installed on your system
+            Newer version are known to fail compiling with the current
+            version of KMyMoney2
 
-  If you got the sources from CVS you will need to type:
-    make -f Makefile.dist
-  before running configure.
+----------------------------------
+Compiling and installing KMyMoney2
+----------------------------------
 
-  Please read INSTALL for generic instructions on how to use configure.
+1a)  If you got the sources from CVS you will need to type:
+
+        make -f Makefile.dist
+
+     before you proceed. If you installed from a source tar-ball, you
+     don't have to run this command.
+
+1b)  If you got the sources from a tar-ball you will need to type:
+
+        tar -xvjf kmymoney2-0.5.[version].tar.bz2    or
+        tar -xvzf kmymoney2-0.5.[version].tar.gz
+
+     depending if the packages was made with bzip2 or gzip compression.
+     Change into the directory with
+
+        cd kmymoney2-0.5.[version]
+
+
+
+The following steps have to be performed no matter where you got the source
+from.
+
+2)   Run configure to tell the project about your local environment
+
+           ./configure --with-qt-dir=[your location of qt3] \
+                       --prefix=[your location of kde3]
+
+     Below, please find a table of values for the above for several
+     distributions:
+
+     Distribution   | --with-qt-dir           | --prefix
+     ---------------+-------------------------+---------------------------
+     SuSE 8.1       |  omit this parameter    | /opt/kde3
+     Mandrake 9.0   |  omit this parameter    | /usr
+
+     so for SuSE 8.1 the command is:
+
+           ./configure --prefix=/opt/kde3
+
+     Please tell us the values for other distributions, so we can add
+     them to this list. Send an e-mail to the developers mailing list.
+     See the address below.
+
+3)   Gain root permissions to install the application
+
+     Type the command
+
+           su
+
+     and provide the necessary password to become 'root'.
+
+4)   Install the application
+
+     Run the command
+
+           make install
+
+     to populate the directories in the KDE directory tree.
+
+5)   Revert to normal user
+
+     Type
+
+           exit
+
+     to become the normal user again. This concludes the installation
+     process of KMyMoney2.
+
+
+Please read INSTALL for generic instructions on how to use configure.
 
 AND/OR
 
-  Get KDevelop and use the supplied kmymoney2.kdevprj located in the base directory.
-  For more information on KDevelop please contact www.kdevelop.org.
+Get KDevelop and use the supplied kmymoney2.kdevprj located in the
+base directory.  For more information on KDevelop please visit
+http://www.kdevelop.org.
 
-If you find this program useful in any way or wish to contribute please send an email to
-the developers list at kmymoney2-developer@lists.sourceforge.net.
+If you find this program useful in any way or wish to contribute please
+send an email to the developers list at
 
-The latest version of KMyMoney2 can always be found at kymoney2.sourceforge.net
-and the cvs at cvs.kmymoney2.sourceforge.net:/cvsroot/kmymoney2 module kmymoney2.
+   kmymoney2-developer@lists.sourceforge.net
 
-For more information on the cvs interface, ftp interface or web interface, please see the
-wonderful sourceforge.net or the homepage at kmymoney2.sourceforge.net.
+The latest version of KMyMoney2 can always be found at 
+
+   http://kymoney2.sourceforge.net/
+
+and the CVS versions are available at
+
+   cvs.kmymoney2.sourceforge.net:/cvsroot/kmymoney2 module kmymoney2
+
+via anonymous CVS access using the pserver protocol.
+
+For more information on the CVS interface, FTP interface or WEB interface,
+please see the wonderful http://sourceforge.net or the projects homepage
+at http://kmymoney2.sourceforge.net.
