@@ -1,3 +1,8 @@
+2003-09-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * fixed visibility of new institution dialog when import a QIF file
+  * use current date as opening date for new accounts if the date
+    passed from e.g. a QIF source is invalid
+
 2003-09-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * added kMyMoneyEdit::isValid()
   * added MyMoneyAccount::accountGroup(void)
