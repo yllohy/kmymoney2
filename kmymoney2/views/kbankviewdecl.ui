@@ -79,7 +79,7 @@
         </widget>
         <widget class="QTabWidget" row="0" column="0">
             <property name="name">
-                <cstring>TabWidget2</cstring>
+                <cstring>accountTabWidget</cstring>
             </property>
             <widget class="QWidget">
                 <property name="name">

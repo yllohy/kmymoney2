@@ -21,6 +21,7 @@
 #include <qtooltip.h>
 #include <qiconview.h>
 #include <qpixmap.h>
+#include <qtabwidget.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -317,9 +318,12 @@ KAccountsView::KAccountsView(QWidget *parent, const char *name)
 
   accountListView->header()->setResizeEnabled(true);
 
-
   QFont defaultFont = QFont("helvetica", 12);
   accountListView->header()->setFont(config->readFontEntry("listHeaderFont", &defaultFont));
+
+  // select the type the user viewed last
+  config->setGroup("Last Use Settings");
+  accountTabWidget->setCurrentPage(config->readNumEntry("KAccountsView_LastType", 0));
 
   connect(accountListView, SIGNAL(selectionChanged(QListViewItem*)),
     this, SLOT(slotSelectionChanged(QListViewItem*)));
@@ -337,6 +341,9 @@ KAccountsView::KAccountsView(QWidget *parent, const char *name)
     this, SLOT(slotListDoubleClicked(QListViewItem*, const QPoint&, int)));
   connect(accountIconView, SIGNAL(doubleClicked(QIconViewItem*)),
     this, SLOT(slotIconDoubleClicked(QIconViewItem*)));
+
+  connect(accountTabWidget, SIGNAL(currentChanged(QWidget*)),
+    this, SLOT(slotViewSelected(QWidget*)));
 
   m_bSelectedAccount=false;
   m_bSelectedInstitution=false;
@@ -757,4 +764,12 @@ void KAccountsView::show()
   emit signalViewActivated();
 
   QWidget::show();
+}
+
+void KAccountsView::slotViewSelected(QWidget* view)
+{
+  KConfig *config = KGlobal::config();
+  config->setGroup("Last Use Settings");
+  config->writeEntry("KAccountsView_LastType", accountTabWidget->currentPageIndex());
+  config->sync();
 }

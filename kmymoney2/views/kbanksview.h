@@ -114,6 +114,8 @@ protected slots:
 
   void slotSelectionChanged(QListViewItem *item);
 
+  void slotViewSelected(QWidget* view);
+
 private:
   /**
     * This method returns an icon according to the account type
