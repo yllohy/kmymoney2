@@ -821,7 +821,7 @@ void MyMoneyQifReader::selectOrCreateAccount(const SelectCreateMode mode, MyMone
   }
 
   accountSelect.setDescription(msg);
-  accountSelect.setAccount(account);
+  accountSelect.setAccount(account, accountId);
   accountSelect.setMode(mode == Create);
   accountSelect.showAbortButton(true);
 
