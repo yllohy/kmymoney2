@@ -1508,7 +1508,13 @@ void KMyMoneyView::selectBaseCurrency(void)
     for(it = list.begin(); it != list.end(); ++it) {
       if((*it).currencyId().isEmpty() || (*it).currencyId().length() == 0) {
         (*it).setCurrencyId(file->baseCurrency().id());
-        file->modifyAccount(*it);
+        try {
+          fixOpeningBalance(*it);
+          file->modifyAccount(*it);
+        } catch(MyMoneyException *e) {
+          qDebug("Unable to setup base currency in account %s (%s): %s", (*it).name().latin1(), (*it).id().data(), e->what().latin1());
+          delete e;
+        }
       }
     }
   }
@@ -2105,7 +2111,7 @@ void KMyMoneyView::fixFile(void)
   fixTransactions();
 }
 
-void KMyMoneyView::fixOpeningBalance(MyMoneyAccount acc)
+void KMyMoneyView::fixOpeningBalance(MyMoneyAccount& acc)
 {
   if(!acc.openingBalance().isZero()) {
     try {
