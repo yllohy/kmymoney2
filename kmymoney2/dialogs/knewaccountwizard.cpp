@@ -84,6 +84,8 @@ KNewAccountWizard::KNewAccountWizard(QWidget *parent, const char *name )
   // always select the first item and show the appropriate note
   accountTypeListBox->setCurrentItem(0);
 
+  m_name->setFocus();
+
   // FIXME: we don't have currency support, so we hide the two widgets
   // that have been prepared for this support
   m_currencyLabel->hide();
