@@ -57,7 +57,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
     setName( "Account register" );
 
   setCaption( i18n( "Account register" ) );
-  Form1Layout = new QVBoxLayout( this, 11, 6, "Form1Layout");
+  Form1Layout = new QVBoxLayout( this, 0, 6, "Form1Layout");
 
   Layout2 = new QHBoxLayout( 0, 0, 6, "Layout2");
 
