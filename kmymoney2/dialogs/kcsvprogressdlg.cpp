@@ -42,6 +42,7 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 #include "kcsvprogressdlg.h"
+#include "../widgets/kmymoneydateinput.h"
 
 /** Simple constructor */
 KCsvProgressDlg::KCsvProgressDlg(int type, MyMoneyAccount *account, QWidget *parent, const char *name )
@@ -53,11 +54,8 @@ KCsvProgressDlg::KCsvProgressDlg(int type, MyMoneyAccount *account, QWidget *par
 
   m_nType = type;
   m_mymoneyaccount = account;
-  m_bStopFlag = false;
-  m_bProcessStarted = false;
 
   m_qbuttonOk->setText(i18n("C&lose"));
-  m_qbuttonOk->setEnabled(false);
 
   readConfig();
 
@@ -66,7 +64,6 @@ KCsvProgressDlg::KCsvProgressDlg(int type, MyMoneyAccount *account, QWidget *par
   connect(m_qlineeditFile, SIGNAL(textChanged(const QString&)), this,
     SLOT(slotFileTextChanged(const QString&)));
   connect(m_qbuttonOk, SIGNAL(clicked()), this, SLOT(accept()));
-  connect(m_qbuttonCancel, SIGNAL(clicked()), this, SLOT(slotCancelClicked()));
 }
 
 /** Simple destructor */
@@ -78,123 +75,54 @@ KCsvProgressDlg::~KCsvProgressDlg()
 /** Perform the export process */
 void KCsvProgressDlg::performExport(void)
 {
-  if (!m_mymoneyaccount)
+  // Do some validation on the inputs.
+  if (m_qlineeditFile->text().isEmpty()) {
+    KMessageBox::information(this, i18n("Please enter the path to the CSV file"), i18n("Export CSV"));
+    m_qlineeditFile->setFocus();
     return;
+  }
 
-  QString qstringName = m_qlineeditFile->text();
-  if (qstringName.isEmpty())
+  if (m_kmymoneydateEnd->getQDate() < m_kmymoneydateStart->getQDate()) {
+    KMessageBox::information(this, i18n("Please enter a start date lower than the end date."));
     return;
+  }
 
-  QString qstringBuffer;
+  QFile qfile(m_qlineeditFile->text());
+  if (!qfile.open(IO_WriteOnly)) {
+    KMessageBox::error(this, i18n("Unable to open export file for writing."));
+    return;
+  }
+  qfile.close();
+
+  int nErrorReturn = 0;
 
   m_qlabelAccount->setText(m_mymoneyaccount->name());
   m_qlabelTransaction->setText(QString("0") + i18n(" of ") + QString::number(m_mymoneyaccount->transactionCount()));
   m_qprogressbar->setTotalSteps(m_mymoneyaccount->transactionCount());
 
-  m_bProcessStarted = true;
+  // Make sure we have an account to operate on
+  if (m_mymoneyaccount) {
+    // Connect to the provided signals in MyMoneyAccount
+    // These signals will be emitted at appropriate times.
+    connect(m_mymoneyaccount, SIGNAL(signalProgressCount(int)), m_qprogressbar, SLOT(setTotalSteps(int)));
+    connect(m_mymoneyaccount, SIGNAL(signalProgress(int)), this, SLOT(slotSetProgress(int)));
 
-  // Write header line(s) first
-  QFile qfile(qstringName);
-  if (qfile.open(IO_WriteOnly)) {
-    QTextStream qtextstream(&qfile);
+    int nTransCount = 0;
 
-    QString qstringTmpBuf1, qstringTmpBuf2;
-    MyMoneyTransaction *mymoneytransaction;
-
-    int nCount = 0;
-    for (nCount=1, mymoneytransaction = m_mymoneyaccount->transactionFirst();
-        mymoneytransaction; mymoneytransaction=m_mymoneyaccount->transactionNext(), nCount++) {
-
-      // Check the stop flag, (true when the user clicks cancel
-      if (m_bStopFlag)
-        break;
-
-      m_qlabelTransaction->setText(QString::number(nCount) + i18n(" of ") + QString::number(m_mymoneyaccount->transactionCount()));
-
-      switch (mymoneytransaction->type()) {
-        case MyMoneyTransaction::Cheque:
-          qstringTmpBuf1 = i18n("Cheque");
-          break;
-        case MyMoneyTransaction::Deposit:
-          qstringTmpBuf1 = i18n("Deposit");
-          break;
-        case MyMoneyTransaction::ATM:
-          qstringTmpBuf1 = i18n("ATM");
-          break;
-        case MyMoneyTransaction::Withdrawal:
-          qstringTmpBuf1 = i18n("Withdrawal");
-          break;
-        case MyMoneyTransaction::Transfer:
-          qstringTmpBuf1 = i18n("Transfer");
-          break;
-        default:
-          qstringTmpBuf1 = i18n("Unknown");
-          break;
-      }
-
-      switch (mymoneytransaction->state()) {
-        case MyMoneyTransaction::Reconciled:
-          qstringTmpBuf2 = i18n("Reconciled");
-          break;
-        case MyMoneyTransaction::Cleared:
-          qstringTmpBuf2 = i18n("Cleared");
-          break;
-        case MyMoneyTransaction::Unreconciled:
-          qstringTmpBuf2 = i18n("Unreconciled");
-          break;
-        default:
-          qstringTmpBuf2 = i18n("Unknown");
-          break;
-      }
-
-      qstringBuffer =
-          /*
-          QString::number(nCount)
-          + ","
-          */
-          KGlobal::locale()->formatDate(mymoneytransaction->date(), true)
-          + ","
-          + qstringTmpBuf1
-          + ","
-          + mymoneytransaction->payee()
-          + ","
-          + qstringTmpBuf2
-          + ","
-          + ((mymoneytransaction->type()==MyMoneyTransaction::Credit) ?
-            QString::number(mymoneytransaction->amount().amount()) :
-            QString(""))
-          + ","
-          + ((mymoneytransaction->type()==MyMoneyTransaction::Credit) ?
-            QString("") :
-            QString::number(mymoneytransaction->amount().amount()))
-          + ","
-          + "\n"
-          + ",,"
-          + mymoneytransaction->number()
-          + ","
-          + (mymoneytransaction->categoryMajor() + ":" + mymoneytransaction->categoryMinor())
-          + ","
-          + mymoneytransaction->memo()
-          + ",,\n";
-      qtextstream << qstringBuffer;
-
-      m_qprogressbar->setProgress(nCount);
+    // Do the actual write
+    if (!m_mymoneyaccount->writeCSVFile(m_qlineeditFile->text(), m_kmymoneydateStart->getQDate(),
+          m_kmymoneydateEnd->getQDate(), nTransCount)) {
+      KMessageBox::error(this, i18n("Error occurred whilst exporting to csv file."), i18n("Export CSV"));
     }
-    qfile.close();
-    m_qbuttonOk->setEnabled(true);
-    m_qbuttonCancel->setEnabled(false);
-  } else {
-    KMessageBox::error(this, i18n("Unable to open export file for writing."));
+    else {
+      QString qstringPrompt = i18n("Export finished successfully.\n\n");
+      qstringPrompt += i18n("Number of transactions exported ");
+      qstringPrompt += QString::number(nTransCount);
+      qstringPrompt += ".";
+      KMessageBox::information(this, qstringPrompt, i18n("Export CSv"));
+    }
   }
-}
-
-/** Cancel the import or export process */
-void KCsvProgressDlg::slotCancelClicked()
-{
-  if (m_bProcessStarted)
-    m_bStopFlag = true;
-  else
-    accept();
+//  accept();
 }
 
 /** perform the import process */
@@ -203,8 +131,6 @@ void KCsvProgressDlg::performImport(void)
   KMessageBox::sorry(this, i18n("Sorry, Import for CSV files has not been implemented."));
   m_qprogressbar->setTotalSteps(m_mymoneyaccount->transactionCount());
   m_qprogressbar->setProgress(m_mymoneyaccount->transactionCount());
-  m_qbuttonOk->setEnabled(true);
-  m_qbuttonCancel->setEnabled(false);
 }
 
 /** Called when the user clicks on the Browser button */
@@ -242,6 +168,8 @@ void KCsvProgressDlg::readConfig(void)
 {
   KConfig *kconfig = KGlobal::config();
   kconfig->setGroup("Last Use Settings");
+  m_kmymoneydateStart->setDate(kconfig->readDateTimeEntry("KCsvProgressDlg_StartDate").date());
+  m_kmymoneydateEnd->setDate(kconfig->readDateTimeEntry("KCsvProgressDlg_EndDate").date());
   m_qlineeditFile->setText(kconfig->readEntry("KCsvProgressDlg_LastFile", ""));
   if (m_qlineeditFile->text().length()>=1)
     m_qbuttonRun->setEnabled(true);
@@ -254,5 +182,17 @@ void KCsvProgressDlg::writeConfig(void)
   KConfig *kconfig = KGlobal::config();
   kconfig->setGroup("Last Use Settings");
   kconfig->writeEntry("KCsvProgressDlg_LastFile", m_qlineeditFile->text());
+  kconfig->writeEntry("KCsvProgressDlg_StartDate", QDateTime(m_kmymoneydateStart->getQDate()));
+  kconfig->writeEntry("KCsvProgressDlg_EndDate", QDateTime(m_kmymoneydateEnd->getQDate()));
   kconfig->sync();
+}
+
+/** Update the progress bar, and update the transaction count indicator. */
+void KCsvProgressDlg::slotSetProgress(int progress)
+{
+  m_qprogressbar->setProgress(progress);
+  QString qstring = QString::number(progress);
+  qstring += i18n(" of ");
+  qstring += QString::number(m_qprogressbar->totalSteps());
+  m_qlabelTransaction->setText(qstring);
 }

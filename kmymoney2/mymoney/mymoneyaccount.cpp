@@ -20,6 +20,7 @@
 
 // ----------------------------------------------------------------------------
 // KDE Includes
+#include <kglobal.h>
 #include <klocale.h>
 
 // ----------------------------------------------------------------------------
@@ -1153,4 +1154,95 @@ int MyMoneyAccount::QDateToQIFDate(const QDate date, QString& buffer, const char
 
   buffer += "\0";
   return result;
+}
+
+bool MyMoneyAccount::writeCSVFile(const char *filename, QDate startDate, QDate endDate, int& transCount)
+{
+  QString qstringBuffer, qstringTmpBuf1, qstringTmpBuf2;
+  int numtrans = 0;
+  emit signalProgressCount(transactionCount(startDate, endDate));
+
+  QFile f(filename);
+  if ( f.open(IO_WriteOnly) ) {    // file opened successfully
+    QTextStream qtextstream( &f );        // use a text stream
+
+    MyMoneyTransaction *mymoneytransaction;
+    for ( mymoneytransaction = transactionFirst(); mymoneytransaction; mymoneytransaction=transactionNext())
+    {
+      if((mymoneytransaction->date() >= startDate) && (mymoneytransaction->date() <= endDate))
+      {
+        switch (mymoneytransaction->type()) {
+          case MyMoneyTransaction::Cheque:
+            qstringTmpBuf1 = i18n("Cheque");
+            break;
+          case MyMoneyTransaction::Deposit:
+            qstringTmpBuf1 = i18n("Deposit");
+            break;
+          case MyMoneyTransaction::ATM:
+            qstringTmpBuf1 = i18n("ATM");
+            break;
+          case MyMoneyTransaction::Withdrawal:
+            qstringTmpBuf1 = i18n("Withdrawal");
+            break;
+          case MyMoneyTransaction::Transfer:
+            qstringTmpBuf1 = i18n("Transfer");
+            break;
+          default:
+            qstringTmpBuf1 = i18n("Unknown");
+            break;
+        }
+
+        switch (mymoneytransaction->state()) {
+          case MyMoneyTransaction::Reconciled:
+            qstringTmpBuf2 = i18n("Reconciled");
+            break;
+          case MyMoneyTransaction::Cleared:
+            qstringTmpBuf2 = i18n("Cleared");
+            break;
+          case MyMoneyTransaction::Unreconciled:
+            qstringTmpBuf2 = i18n("Unreconciled");
+            break;
+          default:
+            qstringTmpBuf2 = i18n("Unknown");
+            break;
+        }
+
+        qstringBuffer =
+            /*
+            QString::number(nCount)
+            + ","
+            */
+            KGlobal::locale()->formatDate(mymoneytransaction->date(), true)
+            + ","
+            + qstringTmpBuf1
+            + ","
+            + mymoneytransaction->payee()
+            + ","
+            + qstringTmpBuf2
+            + ","
+            + ((mymoneytransaction->type()==MyMoneyTransaction::Credit) ?
+              QString::number(mymoneytransaction->amount().amount()) :
+              QString(""))
+            + ","
+            + ((mymoneytransaction->type()==MyMoneyTransaction::Credit) ?
+              QString("") :
+              QString::number(mymoneytransaction->amount().amount()))
+            + ","
+            + "\n"
+            + ",,"
+            + mymoneytransaction->number()
+            + ","
+            + (mymoneytransaction->categoryMajor() + ":" + mymoneytransaction->categoryMinor())
+            + ","
+            + mymoneytransaction->memo()
+            + ",,\n";
+        qtextstream << qstringBuffer;
+        numtrans++;
+        emit signalProgress(numtrans);
+      }
+    } // End for loop
+    f.close();
+    transCount = numtrans;
+  }
+  return true;
 }

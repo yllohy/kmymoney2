@@ -38,7 +38,7 @@
   * types which would reimplement performImport/performExport.
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: kcsvprogressdlg.h,v 1.1 2001/07/29 20:59:18 mte Exp $
+  * $Id: kcsvprogressdlg.h,v 1.2 2001/12/09 18:21:33 mte Exp $
   *
   * @short A class to show the progress of a CSV import or export.
 **/
@@ -47,8 +47,6 @@ class KCsvProgressDlg : public KCsvProgressDlgDecl  {
 private:
   MyMoneyAccount *m_mymoneyaccount;
   int m_nType;
-  bool m_bStopFlag;
-  bool m_bProcessStarted;
 
 protected:
   void performExport(void);
@@ -57,10 +55,10 @@ protected:
   void writeConfig(void);
 
 protected slots:
-  void slotCancelClicked();
   void slotBrowseClicked();
   void slotRunClicked();
   void slotFileTextChanged(const QString& text);
+  void slotSetProgress(int progress);
 
 public:
   KCsvProgressDlg(int type, MyMoneyAccount *account, QWidget *parent=0, const char *name=0);
