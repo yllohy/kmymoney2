@@ -151,12 +151,20 @@
                                         <bool>true</bool>
                                     </property>
                                 </widget>
-                                <widget class="QCheckBox">
+                                 <widget class="QCheckBox">
                                     <property name="name">
                                         <cstring>m_qcheckboxPreferred</cstring>
                                     </property>
                                     <property name="text">
                                         <string>Preferred Account</string>
+                                    </property>
+                                </widget>
+                                <widget class="QCheckBox">
+                                    <property name="name">
+                                        <cstring>m_qcheckboxTax</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Include on Tax Reports</string>
                                     </property>
                                 </widget>
                             </vbox>

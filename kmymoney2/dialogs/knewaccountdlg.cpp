@@ -134,6 +134,9 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
     m_currency->setEnabled(false);
     m_equityText->hide();
     m_equity->hide();
+    
+    m_qcheckboxTax->setChecked(account.value("Tax") == "Yes");
+
   }
   else
   {
@@ -228,6 +231,8 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
       m_equityText->hide();
       m_equity->hide();
     }
+    
+    m_qcheckboxTax->hide();
   }
 
   // Load the institutions
@@ -423,6 +428,14 @@ void KNewAccountDlg::okClicked()
     if(kconfig->readBoolEntry("HideUnusedCategory", false) == true) {
       KMessageBox::information(this, i18n("You have selected to suppress the display of unused categories in the KMyMoney configuration dialog. The category you just created will therefore only be shown if it is used. Otherwise, it will be hidden in the accounts/categories view."), i18n("Hidden categories"), "NewHiddenCategory");
     }
+  }
+  
+  if (m_categoryEditor)
+  {
+    if ( m_qcheckboxTax->isChecked())
+      m_account.setValue("Tax","Yes");
+    else
+      m_account.deletePair("Tax");
   }
 
   accept();

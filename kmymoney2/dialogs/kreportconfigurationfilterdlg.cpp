@@ -172,6 +172,9 @@ void KReportConfigurationFilterDlg::slotSearch()
       qc |= MyMoneyReport::eQCreconciled;
       
     m_currentState.setQueryColumns(static_cast<MyMoneyReport::EQueryColumns>(qc));
+    
+    m_currentState.setTax( m_tab3->m_checkTax->isChecked() );
+
   }
   
   // setup the date lock
@@ -257,6 +260,8 @@ void KReportConfigurationFilterDlg::slotReset(void)
     m_tab3->m_checkMemo->setChecked(qc & MyMoneyReport::eQCmemo);
     m_tab3->m_checkAccount->setChecked(qc & MyMoneyReport::eQCaccount);
     m_tab3->m_checkReconciled->setChecked(qc & MyMoneyReport::eQCreconciled);
+    
+    m_tab3->m_checkTax->setChecked( m_initialState.isTax() );
   }
       
   //
@@ -470,6 +475,7 @@ void KReportConfigurationFilterDlg::slotHelp(void)
     text += "<h1>" + m_tab3->caption() + "</h1>" + QWhatsThis::textFor( m_tab3 );  
     text += "<h3>" + m_tab3->textLabel3->text() + "</h3>" + QToolTip::textFor( m_tab3->m_comboOrganizeBy );
     text += "<h3>" + m_tab3->buttonGroup1->title() + "</h3>" + QToolTip::textFor( m_tab3->buttonGroup1 );
+    text += "<h3>" + m_tab3->m_checkTax->text() + "</h3>" + QToolTip::textFor( m_tab3->m_checkTax );
   }
       
   te.setText(text);

@@ -59,13 +59,14 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc) const
 
   if ( m_reportType == ePivotTable )
   {
-    e.setAttribute("type","pivottable 1.4");
+    e.setAttribute("type","pivottable 1.5");
     e.setAttribute("name", m_name);
     e.setAttribute("comment", m_comment);
     e.setAttribute("group", m_group);
     e.setAttribute("showsubaccounts", m_showSubAccounts);
     e.setAttribute("convertcurrency", m_convertCurrency);
     e.setAttribute("favorite", m_favorite);
+    e.setAttribute("tax", m_tax);
     e.setAttribute("rowtype", kRowTypeText[m_rowType]);
     e.setAttribute("columntype", kColumnTypeText[m_columnType]);
     e.setAttribute("id", m_id);
@@ -73,12 +74,13 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc) const
   }
   else if ( m_reportType == eQueryTable )
   {
-    e.setAttribute("type","querytable 1.3");
+    e.setAttribute("type","querytable 1.5");
     e.setAttribute("name", m_name);
     e.setAttribute("comment", m_comment);
     e.setAttribute("group", m_group);
     e.setAttribute("convertcurrency", m_convertCurrency);
     e.setAttribute("favorite", m_favorite);
+    e.setAttribute("tax", m_tax);
     e.setAttribute("rowtype", kRowTypeText[m_rowType]);
     e.setAttribute("id", m_id);
     e.setAttribute("datelock", kDateLockText[m_dateLock]);
@@ -287,6 +289,7 @@ bool MyMoneyReport::read(const QDomElement& e)
     m_showSubAccounts = e.attribute("showsubaccounts","0").toUInt();
     m_convertCurrency = e.attribute("convertcurrency","1").toUInt();
     m_favorite = e.attribute("favorite","0").toUInt();
+    m_tax = e.attribute("tax","0").toUInt();
     
     QString datelockstr = e.attribute("datelock","userdefined");
     // Handle the pivot 1.2/query 1.1 case where the values were saved as

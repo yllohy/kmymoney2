@@ -206,38 +206,58 @@ QueryTable::QueryTable(const MyMoneyReport& _report): m_config(_report)
 
             // retrieve the value in the transaction's currency, and convert
             // to the base currency if needed
-            qsplitrow["value"] = ((*it_split2).value()*currencyfactor).formatMoney();
+            qsplitrow["value"] = ((-(*it_split2).value())*currencyfactor).formatMoney();
             qsplitrow["memo"] = (*it_split2).memo();
             qsplitrow["id"] = (*it_split2).id();
 
-      // handle sub-categories.  the 'category' field contains the
-      // fully-qualified category hierarchy, e.g. "Computers: Hardware: CPUs"
-      // the 'topparent' field contains just the top-most parent, in this
-      // example "Computers"
+            // handle sub-categories.  the 'category' field contains the
+            // fully-qualified category hierarchy, e.g. "Computers: Hardware: CPUs"
+            // the 'topparent' field contains just the top-most parent, in this
+            // example "Computers"
+      
+            PivotTable::AccountDescriptor acd = (*it_split2).accountId();
 
-      PivotTable::AccountDescriptor acd = (*it_split2).accountId();
-
+            // This final screening level includes the check to exclude non-tax categories
+            // in a tax report.  This is something of a hack, although it functions fine.
+            // Better would be to handle this at the category selector level with a "Tax
+            // Categories" button.  But then we'd need to persist that selection in the
+            // filter so that newly changed tax categories get updated, similiar to the
+            // 'date lock'.  Until we do that, the current way will work.
+            //
+            // TODO: Do this!
+            
             // if this is a transfer
-            if ( file->account((*it_split2).accountId()).accountGroup() == MyMoneyAccount::Asset || file->account((*it_split2).accountId()).accountGroup() == MyMoneyAccount::Liability )
+            if ( 
+              ( file->account((*it_split2).accountId()).accountGroup() == MyMoneyAccount::Asset || file->account((*it_split2).accountId()).accountGroup() == MyMoneyAccount::Liability  )
+              &&
+              ! m_config.isTax()
+            )
             {
               // skip this split if we have removed the target of the transfer
-        if ( m_config.includesAccount( (*it_split2).accountId() ) )
-        {
-                qsplitrow["category"] = QString(i18n("Transfer to %1")).arg(acd.fullName());
-                qsplitrow["topcategory"] = QString(i18n("Transfer to %1")).arg(acd.getTopLevel());
+              if ( m_config.includesAccount( (*it_split2).accountId() ) )
+              {
+                QString fromto = ((*it_split2).value()<0)?"from":"to";
+                qsplitrow["category"] = QString(i18n("Transfer %1 %2")).arg(fromto,acd.fullName());
+                qsplitrow["topcategory"] = acd.getTopLevel();
                 qsplitrow["categorytype"] = i18n("Transfer");
                 m_transactions += qsplitrow;
-        }
+              }
             }
             else
             {
-        if ( m_config.includesCategory( (*it_split2).accountId() ) )
-        {
-          qsplitrow["category"] = acd.fullName();
+              if ( 
+                m_config.includesCategory( (*it_split2).accountId() ) 
+                &&
+                (
+                  ! m_config.isTax() || (file->account((*it_split2).accountId()).value("Tax") == "Yes")
+                )
+              )
+              {
+                qsplitrow["category"] = acd.fullName();
                 qsplitrow["topcategory"] = acd.getTopLevel();
                 qsplitrow["categorytype"] = accountTypeToString(file->account((*it_split2).accountId()).accountGroup());
                 m_transactions += qsplitrow;
-        }
+              }
             }
           }
           ++it_split2;

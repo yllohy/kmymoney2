@@ -1,3 +1,14 @@
+2004-08-14 Ace Jones <acejones@users.sourceforge.net>
+  * Added an initial Tax Transactions report.  Still more work needed
+    to make it fully-featured.
+  * Added "Include on Tax Reports" property in category edit dialog
+  * Added Tax notation in default accounts
+  * Commented MyMoneyReport class
+  * More information on "Unexpected exception in KLedgerView::
+    setupPointerAndBalanceArrays"
+  * Inverted sign of values in Transactions reports to match standard
+    cash flow notation.
+
 2004-08-11 Ace Jones <acejones@users.sourceforge.net>
   * Added stock accounts to kMyMoneyAccountSelector
 

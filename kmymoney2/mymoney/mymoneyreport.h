@@ -37,7 +37,22 @@ class QDomDocument;
 #include "mymoneytransactionfilter.h"
 
 /**
-  *@author Ace Jones <ace.j@hotpop.com>
+  * This class defines a report within the MyMoneyEngine.  The report class 
+  * contains all the configuration parameters needed to run a report, plus
+  * XML serialization.
+  *
+  * A report is a transactionfilter, so any report can specify which 
+  * transactions it's interested down to the most minute level of detail.
+  * It extends the transactionfilter by providing identification (name,
+  * comments, group type, etc) as well as layout information (what kind
+  * of layout should be used, how the rows & columns should be presented,
+  * currency converted, etc.)
+  *
+  * As noted above, this class only provides a report DEFINITION.  The 
+  * generation and presentation of the report itself are left to higher
+  * level classes.
+  *
+  * @author Ace Jones <ace.j@hotpop.com>
   */
 
 class MyMoneyReport: public MyMoneyTransactionFilter
@@ -59,6 +74,7 @@ public:
     m_showSubAccounts(false),
     m_convertCurrency(true),
     m_favorite(false),
+    m_tax(false),
     m_reportType(kTypeArray[_rt]),
     m_rowType(_rt),
     m_columnType(_ct),
@@ -74,6 +90,7 @@ public:
     m_showSubAccounts(_ss),
     m_convertCurrency(true),
     m_favorite(false),
+    m_tax(false),
     m_reportType(kTypeArray[_rt]),
     m_rowType(_rt),
     m_dateLock(_dl)
@@ -84,13 +101,8 @@ public:
       m_queryColumns = static_cast<EQueryColumns>(_ct);
     setDateFilter(_dl);
   }
-  
-  void setName(const QString& _s) { m_name = _s; }
-  void setShowSubAccounts(bool _f) { m_showSubAccounts = _f; }
-  void setConvertCurrency(bool _f) { m_convertCurrency = _f; }
-  void setRowType(ERowType _rt) { m_rowType = _rt; m_reportType = kTypeArray[_rt]; }
-  void setColumnType(EColumnType _ct) { m_columnType = _ct; }
-  void assignFilter(const MyMoneyTransactionFilter& _filter) { MyMoneyTransactionFilter::operator=(_filter); }
+
+  // Simple get operations
   const QString& name(void) const { return m_name; }
   bool isShowingSubAccounts(void) const { return m_showSubAccounts; }
   bool isShowingRowTotals(void) const { return (m_rowType==eExpenseIncome); }
@@ -101,34 +113,159 @@ public:
   bool isConvertCurrency(void) const { return m_convertCurrency; }
   unsigned columnPitch(void) const { return static_cast<unsigned>(m_columnType); }
   bool isShowingColumnTotals(void) const { return m_convertCurrency; }
-  void setId( const QCString& _id ) { m_id = _id; }
   QCString id(void) const { return m_id; }
-  void write(QDomElement& e, QDomDocument *doc) const;
-  bool read(const QDomElement& e);
-  void setComment( const QString& _comment ) { m_comment = _comment; }
   const QString& comment( void ) const { return m_comment; }
-  void setQueryColumns( EQueryColumns _qc ) { m_queryColumns = _qc; }
   EQueryColumns queryColumns(void) const { return m_queryColumns; }
-  void setDateFilter(unsigned _u) { m_dateLock = _u; if (_u != userDefined) MyMoneyTransactionFilter::setDateFilter( _u ); }
-  void setDateFilter(const QDate& _db,const QDate& _de) { MyMoneyTransactionFilter::setDateFilter( _db,_de ); }
-  void updateDateFilter(void) { if (m_dateLock != userDefined) MyMoneyTransactionFilter::setDateFilter(m_dateLock); }
-  void setGroup( const QString& _group ) { m_group = _group; }
   const QString& group( void ) const { return m_group; }
-  void setFavorite(bool _f) { m_favorite = _f; }
   bool isFavorite(void) const { return m_favorite; }
+  bool isTax(void) const { return m_tax; }
+    
+  // Simple set operations
+  void setName(const QString& _s) { m_name = _s; }
+  void setShowSubAccounts(bool _f) { m_showSubAccounts = _f; }
+  void setConvertCurrency(bool _f) { m_convertCurrency = _f; }
+  void setRowType(ERowType _rt) { m_rowType = _rt; m_reportType = kTypeArray[_rt]; }
+  void setColumnType(EColumnType _ct) { m_columnType = _ct; }
+  void setComment( const QString& _comment ) { m_comment = _comment; }
+  void setGroup( const QString& _group ) { m_group = _group; }
+  void setFavorite(bool _f) { m_favorite = _f; }
+  void setQueryColumns( EQueryColumns _qc ) { m_queryColumns = _qc; }
+  void setId( const QCString& _id ) { m_id = _id; }
+  void setTax(bool _f) { m_tax = _f; }
+
+  /**
+    * This method allows you to set the underlying transaction filter
+    *
+    * @param _filter The filter which should replace the existing transaction
+    * filter.
+    */
+  void assignFilter(const MyMoneyTransactionFilter& _filter) { MyMoneyTransactionFilter::operator=(_filter); }
   
+  /**
+    * Set the underlying date filter and LOCK that filter to the specified
+    * range.  For example, if @p _u is "CurrentMonth", this report should always
+    * be updated to the current month no matter when the report is run.
+    *
+    * This updating is not entirely automatic, you should update it yourself by
+    * calling updateDateFilter.  
+    *
+    * @param _u The date range constant (MyMoneyTransactionFilter::dateRangeE)
+    *          which this report should be locked to.
+    */
+  
+  void setDateFilter(unsigned _u) { m_dateLock = _u; if (_u != userDefined) MyMoneyTransactionFilter::setDateFilter( _u ); }
+  
+  /**
+    * Set the underlying date filter using the start and end dates provided.
+    * Note that this does not LOCK to any range like setDateFilter(unsigned)
+    * above.  It is just a reimplementation of the MyMoneyTransactionFilter
+    * version.
+    *
+    * @param _db The inclusive begin date of the date range
+    * @param _de The inclusive end date of the date range
+    */
+  
+  void setDateFilter(const QDate& _db,const QDate& _de) { MyMoneyTransactionFilter::setDateFilter( _db,_de ); }
+  
+  /**
+    * Set the underlying date filter using the 'date lock' property.
+    *
+    * Always call this function before executing the report to be sure that
+    * the date filters properly match the plain-language 'date lock'.
+    *
+    * For example, if the report is date-locked to "Current Month", and the
+    * last time you loaded or ran the report was in August, but it's now
+    * September, this function will update the date range to be September,
+    * as is proper.
+    */
+  void updateDateFilter(void) { if (m_dateLock != userDefined) MyMoneyTransactionFilter::setDateFilter(m_dateLock); }
+
+  /**
+    * This method writes this report to the DOM element @p e,
+    * within the DOM document @doc.
+    *
+    * @param e The element which should be populated with info from this report
+    * @param doc The document which we can use to create new sub-elements
+    *              if needed
+    */
+  void write(QDomElement& e, QDomDocument *doc) const;
+  
+  /**
+    * This method reads a report from the DOM element @p e, and
+    * populates this report with the results.
+    *
+    * @param e The element from which the report should be read
+    *
+    * @return bool True if a report was successfully loaded from the 
+    *    element @p e.  If false is returned, the contents of this report 
+    *    object are undefined.
+    */
+  bool read(const QDomElement& e);
+    
 private:
+  /**
+    * The engine-assigned ID of the report.  Do not set this yourself!!
+    */
   QCString m_id;
+  /**
+    * The user-assigned name of the report
+    */
   QString m_name;
+  /**
+    * The user-assigned comment for the report, in case they want to make
+    * additional notes for themselves about the report.
+    */
   QString m_comment;
+  /**
+    * Where to group this report amongst the others in the UI view.  This
+    * should be assigned by the UI system.
+    */
   QString m_group;
+  /**
+    * Whether to show all aub-accounts (true) or only top-level accounts (false)
+    */
   bool m_showSubAccounts;
+  /**
+    * Whether to convert all currencies to the base currency of the file (true).
+    * If this is false, it's up to the report generator to decide how to handle
+    * the currency.
+    */
   bool m_convertCurrency;
+  /**
+    * Whether this is one of the users' favorite reports
+    */
   bool m_favorite;
+  /**
+    * Whether this report should only include categories marked as "Tax Reports"="Yes"
+    */
+  bool m_tax;
+  /**
+    * What sort of algorithm should be used to run the report
+    */
   enum EReportType m_reportType;
+  /**
+    * What sort of values should show up on the ROWS of this report
+    */
   enum ERowType m_rowType;
+  /**
+    * What sort of values should show up on the COLUMNS of this report,
+    * in the case of a 'PivotTable' report
+    */
   enum EColumnType m_columnType;
+  /**
+    * What sort of values should show up on the COLUMNS of this report,
+    * in the case of a 'QueryTable' report
+    */
   enum EQueryColumns m_queryColumns;
+  /**
+    * The plain-language description of what the date range should be locked
+    * to.  'userDefined' means NO locking, in any other case, the report
+    * will be adjusted to match the date lock.  So if the date lock is 
+    * 'currentMonth', the start and end dates of the underlying filter will
+    * be updated to whatever the current month is.  This updating happens
+    * automatically when the report is loaded, and should also be done
+    * manually by calling updateDateFilter() before generating the report
+    */
   unsigned m_dateLock;
 };
 

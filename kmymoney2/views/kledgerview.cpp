@@ -484,7 +484,7 @@ void KLedgerView::setupPointerAndBalanceArrays(void)
 
   } catch(MyMoneyException *e) {
     if(!accountId().isEmpty())
-      qDebug("Unexpected exception in KLedgerView::setupPointerAndBalanceArrays");
+      qDebug("Unexpected exception in KLedgerView::setupPointerAndBalanceArrays: " + e->what());
     delete e;
   }
 }

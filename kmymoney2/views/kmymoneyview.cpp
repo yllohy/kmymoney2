@@ -1508,6 +1508,11 @@ void KMyMoneyView::readDefaultCategories(const QString& filename)
         kmymoney2->slotStatusProgressBar(f.at());
 
       if (!s.isEmpty() && s[0]!='#') {
+        // first strip off any flags, which are delimited by "::"
+        QStringList flags = QStringList::split("::",s);
+        s = flags.front();
+        flags.pop_front();
+        
         MyMoneyAccount account, parentAccount;
         QString type, parent, child;
         QString msg;
@@ -1563,6 +1568,15 @@ void KMyMoneyView::readDefaultCategories(const QString& filename)
 
         child = s.mid(pos2+1);
         account.setName(child);
+        
+        // process flags
+        QStringList::const_iterator it_flag = flags.begin();
+        while ( it_flag != flags.end() )
+        {
+          account.setValue((*it_flag).utf8(),"Yes");
+          ++it_flag;
+        }
+        
         try {
           MyMoneyFile::instance()->addAccount(account, parentAccount);
           accounts[parent + ":" + child] = account;
