@@ -3,6 +3,7 @@
     OFX Direct Connect and the OFX importer test cases
   * Reworked Web Connect to work on ANY plugin-handled file, not just
     OFX.
+  * Removed "stripped.txt" from being output during online quote retrieval
     
 2005-03-12 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added option to control whether selecting a different transaction/split

@@ -185,14 +185,17 @@ void WebPriceQuote::slotParseQuote(const QString& _quotedata)
     
     // Extra white space
     quotedata = quotedata.simplifyWhiteSpace();      
-        
+
+#if 0
+    // Enable to get a look at the data coming back from the source after it's stripped
     QFile file("stripped.txt");
     if ( file.open( IO_WriteOnly ) )
     {
       QTextStream( &file ) << quotedata;
       file.close();
     }
-      
+#endif
+
     QRegExp symbolRegExp(m_source.m_sym);
     QRegExp dateRegExp(m_source.m_date);
     QRegExp priceRegExp(m_source.m_price);
