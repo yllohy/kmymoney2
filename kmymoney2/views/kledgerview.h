@@ -213,9 +213,12 @@ public:
     * Any previously registered observer will be detached.
     *
     * @param accountId id of the account to be loaded.
+    * @param force if true, the account is loaded independant if the
+    *              account is already loaded or not
+    *
     * @see update
     */
-  void setCurrentAccount(const QCString& accountId);
+  void setCurrentAccount(const QCString& accountId, const bool force=false);
 
   /**
     * This is the observer function called by the MyMoneyFile notify

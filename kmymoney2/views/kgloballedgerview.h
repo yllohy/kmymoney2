@@ -74,8 +74,9 @@ public:
     * @param id id of the account in the MyMoneyFile object
     * @param reconciliation if false (default), the standard ledger is
     *                       opened, if true, the reconciliation mode is entered
+    * @param forceLoad if set to true, the account is reloaded into the view in any case
     */
-  void selectAccount(const QCString& id, const bool reconciliation = false);
+  void selectAccount(const QCString& id, const bool reconciliation = false, const bool forceLoad = false);
 
 public slots:
   /**

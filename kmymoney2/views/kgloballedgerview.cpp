@@ -130,7 +130,7 @@ void KGlobalLedgerView::loadAccounts(void)
   for(it_s = acc.accountList().begin(); it_s != acc.accountList().end(); ++it_s) {
     accountComboBox->insertItem(file->account(*it_s).name());
     if(m_accountId == "") {
-      selectAccount(*it_s);
+      selectAccount(*it_s, false, true);
       accountComboBox->setCurrentText(file->account(*it_s).name());
     }
   }
@@ -169,14 +169,11 @@ void KGlobalLedgerView::hide()
 
 void KGlobalLedgerView::reloadView(void)
 {
+  // force reloading during the next show() operation
   m_accountId = "";
-  for(int i = 0; i < MyMoneyAccount::MaxAccountTypes; ++i) {
-    if(m_specificView[i] != 0)
-      m_specificView[i]->setCurrentAccount("");
-  }
-  loadAccounts();
-  accountComboBox->setEnabled(accountComboBox->count() > 0);
-  refreshView();
+
+  if(isVisible())
+    show();
 }
 
 void KGlobalLedgerView::refreshView(void)
@@ -193,15 +190,15 @@ void KGlobalLedgerView::slotSelectAccountAndTransaction(const QCString& accountI
   m_currentView->selectTransaction(transactionId);
 }
 
-void KGlobalLedgerView::selectAccount(const QCString& accountId, const bool reconciliation)
+void KGlobalLedgerView::selectAccount(const QCString& accountId, const bool reconciliation, const bool forceLoad)
 {
   slotCancelEdit();
   if(accountId != "") {
     MyMoneyAccount acc = MyMoneyFile::instance()->account(accountId);
     if(m_specificView[acc.accountType()] != 0) {
-      m_currentView = m_specificView[acc.accountType()];
-      m_currentView->setCurrentAccount(accountId);
       m_accountStack->raiseWidget(acc.accountType());
+      m_currentView = m_specificView[acc.accountType()];
+      m_currentView->setCurrentAccount(accountId, forceLoad);
       m_accountId = accountId;
       accountComboBox->setCurrentText(acc.name());
     } else {
