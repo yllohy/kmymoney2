@@ -999,8 +999,10 @@ bool KEnterScheduleDialog::checkDateInPeriod(const QDate& date)
 
   if (date < firstDate || date > nextDate)
   {
-    KMessageBox::error(this, i18n("The date must lie in the range %1 to %2").arg(firstDate.addDays(1).toString()).arg(nextDate.toString()));
-    return false;
+    // let the user continue anyway as the calculation is not always correct
+    // proper fix will be available in 0.7/0.9.
+    if (KMessageBox::warningContinueCancel(this, i18n("The date must lie in the range %1 to %2").arg(firstDate.addDays(1).toString()).arg(nextDate.toString())) != KMessageBox::Continue)
+      return false;
   }
 
   return true;

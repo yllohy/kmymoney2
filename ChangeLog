@@ -1,4 +1,11 @@
 2004-12-28 Michael Edwardes <mte@users.sourceforge.net>
+  * Fixed #944780 (Schedule Brief Widget)
+  * Fixed # 972028 (Does not honour Scheduled Method)
+  * Fixed #987465 (cant edit scheduled transactions)
+  * Fixed #1012273 (Cant enter overdue payments at real date)
+  * Fixed #1035730 (No number edit in enter schedule dialog)
+
+2004-12-28 Michael Edwardes <mte@users.sourceforge.net>
   * 64bit fixes for MyMoneyMoney
 
 2004-12-28 Tony Bloomfield <tonybloom@users.sourceforge.net>

@@ -70,9 +70,9 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
   m_schedule = schedule;
   m_transaction = schedule.transaction();
   // override the the action type if we have a scheduled transaction
-  if(m_transaction.splitCount() > 0) {
-    m_actionType = m_transaction.splits()[0].action();
-  }
+//  if(m_transaction.splitCount() > 0) {
+//    m_actionType = m_transaction.splits()[0].action();
+//  }
 
   KIntValidator *validator = new KIntValidator(1, 32768, this);
   m_qlineeditRemaining->setValidator(validator);
@@ -189,18 +189,36 @@ void KEditScheduleDialog::reloadFromFile(void)
     m_kcomboMethod->insertItem(i18n("Manual Deposit"));
     m_kcomboMethod->insertItem(i18n("Write Cheque"));
     m_kcomboMethod->insertItem(i18n("Other"));
+    
+    if (m_actionType == MyMoneySplit::ActionAmortization)
+    {
+      m_paymentMethod->setHidden(true);
+    }
+    else
+    {
+      m_paymentMethod->insertItem("Transfer");
+    }
   }
   else if (m_actionType == MyMoneySplit::ActionDeposit)
   {
     m_kcomboMethod->insertItem(i18n("Direct Deposit"));
     m_kcomboMethod->insertItem(i18n("Manual Deposit"));
     m_kcomboMethod->insertItem(i18n("Other"));
+  
+    m_paymentMethod->insertItem(i18n("Cheque"));
+    m_paymentMethod->insertItem(i18n("Deposit"));
+    m_paymentMethod->insertItem(i18n("Transfer"));    
   }
   else // Withdrawal
   {
     m_kcomboMethod->insertItem(i18n("Direct Debit"));
     m_kcomboMethod->insertItem(i18n("Write Cheque"));
     m_kcomboMethod->insertItem(i18n("Other"));
+  
+    m_paymentMethod->insertItem(i18n("Cheque"));
+    m_paymentMethod->insertItem(i18n("Transfer"));
+    m_paymentMethod->insertItem(i18n("Withdrawal"));
+    m_paymentMethod->insertItem(i18n("ATM"));
   }
 
   m_kcomboFreq->insertItem(i18n("Once"));
@@ -454,6 +472,30 @@ void KEditScheduleDialog::okClicked()
       break;
   }
 
+  // Change the transaction action if one is specified
+  if (m_paymentMethod->currentText().length()>0)
+  {
+    for (int i=0; i<m_transaction.splitCount(); i++)
+    {
+      MyMoneySplit split = m_transaction.splits()[i];
+      QString s = m_paymentMethod->currentText();
+      if (s == i18n("Cheque"))
+        split.setAction(MyMoneySplit::ActionCheck);
+      else if (s == i18n("Deposit"))
+        split.setAction(MyMoneySplit::ActionDeposit);
+      else if (s == i18n("Transfer"))
+        split.setAction(MyMoneySplit::ActionTransfer);
+      else if (s == i18n("Withdrawal"))
+        split.setAction(MyMoneySplit::ActionWithdrawal);
+      else if (s == i18n("ATM"))
+        split.setAction(MyMoneySplit::ActionATM);
+      else
+        split.setAction(QCString(s));
+        
+      m_transaction.modifySplit(split);
+    }
+  }
+  
   // Just reset the schedules transaction here.
   m_schedule.setTransaction(m_transaction);
 
@@ -483,7 +525,14 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
   {
     if (m_schedule.account().name().isEmpty())
       return;
-   // for (int i = 0; i < m_transaction.splitCount(); i++) dumpSplit (i, m_transaction.splits()[i]);
+   
+    // always disable the date field if editing
+    m_kdateinputDue->setEnabled(false);
+    m_kdateinputFinal->setEnabled(false);
+    m_qlineeditRemaining->setEnabled(false);
+    m_qcheckboxEnd->setEnabled(false);
+      
+    // for (int i = 0; i < m_transaction.splitCount(); i++) dumpSplit (i, m_transaction.splits()[i]);
     if (m_actionType == MyMoneySplit::ActionTransfer)
     {
       // Jiggle the splits to how we want them
@@ -702,6 +751,15 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
         break;
     }
 
+    for (int i=0; i < m_paymentMethod->count(); i++)
+    {
+      if (QString(m_paymentMethod->text(i)) == i18n(m_schedule.transaction().splits()[0].action()))
+      {
+        m_paymentMethod->setCurrentItem(i);
+        break;
+      }
+    }
+    
     // Quick hack
     slotFrequencyChanged(frequency);
     slotMethodChanged(method);

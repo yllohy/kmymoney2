@@ -363,113 +363,116 @@ void kMyMoneyScheduledDateTbl::contentsMouseMoveEvent(QMouseEvent* e)
   int row, col, pos;
   QPoint mouseCoord;
 
-  mouseCoord = e->pos();
-  row = rowAt(mouseCoord.y());
-  col = columnAt(mouseCoord.x());
-  if (row<1 || col<0)
+  if (isActiveWindow())
   {
-    return;
-  }
-
-#if KDE_VERSION < 310
-  int firstWeekDay = KGlobal::locale()->weekStartsMonday() ? 1 : 0;
-#else
-  int firstWeekDay = KGlobal::locale()->weekStartDay();
-#endif
-
-  QDate drawDate(date);
-  QString text;
-
-  if (m_type == MONTHLY)
-  {
-    pos=7*(row-1)+col;
-    if ( firstWeekDay < 4 )
-      pos += firstWeekDay;
-    else
-      pos += firstWeekDay - 7;
-
-    if (pos<firstday || (firstday+numdays<=pos))
-    { // we are either
-      //  painting a day of the previous month or
-      //  painting a day of the following month
-
-      if (pos<firstday)
-      { // previous month
-        drawDate = drawDate.addMonths(-1);
-        text.setNum(numDaysPrevMonth+pos-firstday+1);
-        drawDate.setYMD(drawDate.year(), drawDate.month(), text.toInt());
-      } else { // following month
-        drawDate = drawDate.addMonths(1);
-        text.setNum(pos-firstday-numdays+1);
+    mouseCoord = e->pos();
+    row = rowAt(mouseCoord.y());
+    col = columnAt(mouseCoord.x());
+    if (row<1 || col<0)
+    {
+      return;
+    }
+  
+  #if KDE_VERSION < 310
+    int firstWeekDay = KGlobal::locale()->weekStartsMonday() ? 1 : 0;
+  #else
+    int firstWeekDay = KGlobal::locale()->weekStartDay();
+  #endif
+  
+    QDate drawDate(date);
+    QString text;
+  
+    if (m_type == MONTHLY)
+    {
+      pos=7*(row-1)+col;
+      if ( firstWeekDay < 4 )
+        pos += firstWeekDay;
+      else
+        pos += firstWeekDay - 7;
+  
+      if (pos<firstday || (firstday+numdays<=pos))
+      { // we are either
+        //  painting a day of the previous month or
+        //  painting a day of the following month
+  
+        if (pos<firstday)
+        { // previous month
+          drawDate = drawDate.addMonths(-1);
+          text.setNum(numDaysPrevMonth+pos-firstday+1);
+          drawDate.setYMD(drawDate.year(), drawDate.month(), text.toInt());
+        } else { // following month
+          drawDate = drawDate.addMonths(1);
+          text.setNum(pos-firstday-numdays+1);
+          drawDate.setYMD(drawDate.year(), drawDate.month(), text.toInt());
+        }
+      } else { // paint a day of the current month
+        text.setNum(pos-firstday+1);
         drawDate.setYMD(drawDate.year(), drawDate.month(), text.toInt());
       }
-    } else { // paint a day of the current month
-      text.setNum(pos-firstday+1);
-      drawDate.setYMD(drawDate.year(), drawDate.month(), text.toInt());
     }
-  }
-  else if (m_type == WEEKLY)
-  {
-    // TODO: Handle other start weekdays than Monday
-    text = QDate::shortDayName(row);
-    text += " ";
-
-    int dayOfWeek = date.dayOfWeek();
-    int diff;
-
-    if (row < dayOfWeek)
+    else if (m_type == WEEKLY)
     {
-      diff = -(dayOfWeek - row);
+      // TODO: Handle other start weekdays than Monday
+      text = QDate::shortDayName(row);
+      text += " ";
+  
+      int dayOfWeek = date.dayOfWeek();
+      int diff;
+  
+      if (row < dayOfWeek)
+      {
+        diff = -(dayOfWeek - row);
+      }
+      else
+      {
+        diff = row - dayOfWeek;
+      }
+  
+      drawDate = date.addDays(diff);
     }
-    else
+    else if (m_type == QUARTERLY)
     {
-      diff = row - dayOfWeek;
     }
-
-    drawDate = date.addDays(diff);
-  }
-  else if (m_type == QUARTERLY)
-  {
-  }
-
-  m_drawDateOrig = drawDate;
-  MyMoneyFile *file = MyMoneyFile::instance();
-  QValueList<MyMoneySchedule> schedules;
-
-  try
-  {
-    int types=0;
-
-    if (!m_filterBills)
+  
+    m_drawDateOrig = drawDate;
+    MyMoneyFile *file = MyMoneyFile::instance();
+    QValueList<MyMoneySchedule> schedules;
+  
+    try
     {
-      types |= MyMoneySchedule::TYPE_BILL;
+      int types=0;
+  
+      if (!m_filterBills)
+      {
+        types |= MyMoneySchedule::TYPE_BILL;
+      }
+  
+      if (!m_filterDeposits)
+      {
+        types |= MyMoneySchedule::TYPE_DEPOSIT;
+      }
+  
+      if (!m_filterTransfers)
+      {
+        types |= MyMoneySchedule::TYPE_TRANSFER;
+      }
+  
+  
+      schedules = file->scheduleListEx( types,
+                                        MyMoneySchedule::OCCUR_ANY,
+                                        MyMoneySchedule::STYPE_ANY,
+                                        drawDate,
+                                        m_filterAccounts);
     }
-
-    if (!m_filterDeposits)
+    catch ( MyMoneyException* e)
     {
-      types |= MyMoneySchedule::TYPE_DEPOSIT;
+      // SAfe to ignore here, cause no schedules might exist
+      // for the selected account
+      delete e;
     }
-
-    if (!m_filterTransfers)
-    {
-      types |= MyMoneySchedule::TYPE_TRANSFER;
-    }
-
-
-    schedules = file->scheduleListEx( types,
-                                      MyMoneySchedule::OCCUR_ANY,
-                                      MyMoneySchedule::STYPE_ANY,
-                                      drawDate,
-                                      m_filterAccounts);
+  
+    emit hoverSchedules(schedules, drawDate);
   }
-  catch ( MyMoneyException* e)
-  {
-    // SAfe to ignore here, cause no schedules might exist
-    // for the selected account
-    delete e;
-  }
-
-  emit hoverSchedules(schedules, drawDate);
 }
 
 void kMyMoneyScheduledDateTbl::filterBills(bool enable)
