@@ -2,6 +2,9 @@
   * fixed Bug #490442
   * removed currency text from reconcile dialog elements
   * fixed memory leaks in KReconcileListItem
+  * replaced formatNumber with formatMoney
+  * fixed KMyMoneyEdit::getMoneyValue() to support localized money formats
+    with full rounding to selected fraction size.
 
 2001-12-16 Kevin Tambascio <ktambascio@yahoo.com>
   * Fixed Bug #490016 File filter in open dialog
