@@ -39,13 +39,7 @@
 #include <kcombobox.h>
 #include <klistview.h>
 #include <kconfig.h>
-
-#if QT_VERSION > 300
 #include <kstandarddirs.h>
-#else
-#include <kstddirs.h>
-#endif
-
 #include <kiconloader.h>
 #include <kguiitem.h>
 #include <kpushbutton.h>
@@ -68,10 +62,7 @@
 #include "../kmymoneyutils.h"
 
 #define TAB_GENERAL      0
-#define TAB_INSTITUTION  1
-#define TAB_CURRENCY     2
-#define TAB_TAX          3
-#define TAB_OPENINGBAL   4
+#define TAB_TAX          1
 
 KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bool categoryEditor, QWidget *parent,
     const char *name, const char *title)
@@ -105,31 +96,12 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
 
   if (categoryEditor)
   {
-    QWidget* tab;
-    // delete higher indexes prior to lower ones. Otherwise,
-    // you have to maintain the offset.
-    if(isEditing) {
-      tab = m_tab->page(TAB_OPENINGBAL);
-      if(tab) {
-        m_tab->removePage(tab);
-      }
-    }
-    tab = m_tab->page(TAB_CURRENCY);
-    if(tab) {
-      m_tab->removePage(tab);
-    }
-    tab = m_tab->page(TAB_INSTITUTION);
-    if(tab) {
-      m_tab->removePage(tab);
-    }
 
     m_qlistviewParentAccounts->setEnabled(true);
     startDateEdit->setEnabled(false);
-    startBalanceEdit->setEnabled(false);
     accountNoEdit->setEnabled(false);
 
-    m_qcomboboxInstitutions->hide();
-    m_qbuttonNew->hide();
+    m_institutionBox->hide();
 
     typeCombo->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Income));
     typeCombo->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Expense));
@@ -209,8 +181,7 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
         typeCombo->setCurrentItem(7);
         break;
       case MyMoneyAccount::Stock:
-        m_qcomboboxInstitutions->hide();
-        m_qbuttonNew->hide();
+        m_institutionBox->hide();
         typeCombo->setCurrentItem(8);
         break;
 /*
@@ -230,7 +201,6 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
       m_account.setOpeningDate(QDate::currentDate());
 
     startDateEdit->setDate(m_account.openingDate());
-    startBalanceEdit->setText(account.openingBalance().formatMoney());
     accountNoEdit->setText(account.number());
     m_qcheckboxPreferred->setChecked(account.value("PreferredAccount") == "Yes");
 
@@ -467,7 +437,6 @@ void KNewAccountDlg::okClicked()
 
   if (!m_categoryEditor)
   {
-    m_account.setOpeningBalance(startBalanceEdit->value());
     m_account.setOpeningDate(startDateEdit->getQDate());
     if(m_account.accountType() == MyMoneyAccount::Stock) {
       m_account.setCurrencyId(m_equity->id());
@@ -539,8 +508,11 @@ const MyMoneyAccount& KNewAccountDlg::parentAccount(void)
       case MyMoneyAccount::Expense:
         m_parentAccount = file->expense();
         break;
+      case MyMoneyAccount::Equity:
+        m_parentAccount = file->equity();
+        break;
       default:
-        qDebug("Seems we have an account that hasn't been mapped to the top four");
+        qDebug("Seems we have an account that hasn't been mapped to the top five");
         if(m_categoryEditor)
           m_parentAccount = file->income();
         else
@@ -558,6 +530,7 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
   MyMoneyAccount assetAccount = file->asset();
   MyMoneyAccount expenseAccount = file->expense();
   MyMoneyAccount incomeAccount = file->income();
+  MyMoneyAccount equityAccount = file->equity();
 
   m_parentItem = 0;
   m_accountItem = 0;
