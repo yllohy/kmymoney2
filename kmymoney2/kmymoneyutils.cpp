@@ -127,3 +127,108 @@ const MyMoneyAccount::accountTypeE KMyMoneyUtils::stringToAccountType(const QStr
 
   return rc;
 }
+
+const QString KMyMoneyUtils::occurenceToString(MyMoneySchedule::occurenceE occurence)
+{
+  QString text;
+
+  switch (occurence)
+  {
+    case MyMoneySchedule::OCCUR_ONCE:
+      text = i18n("Once");
+      break;
+    case MyMoneySchedule::OCCUR_DAILY:
+      text = i18n("Daily");
+      break;
+    case MyMoneySchedule::OCCUR_WEEKLY:
+      text = i18n("Weekly");
+      break;
+    case MyMoneySchedule::OCCUR_FORTNIGHTLY:
+      text = i18n("Fortnightly");
+      break;
+    case MyMoneySchedule::OCCUR_EVERYOTHERWEEK:
+      text = i18n("Every other week");
+      break;
+    case MyMoneySchedule::OCCUR_EVERYFOURWEEKS:
+      text = i18n("Every four weeks");
+      break;
+    case MyMoneySchedule::OCCUR_MONTHLY:
+      text = i18n("Monthly");
+      break;
+    case MyMoneySchedule::OCCUR_EVERYOTHERMONTH:
+      text = i18n("Every other month");
+      break;
+    case MyMoneySchedule::OCCUR_EVERYTHREEMONTHS:
+      text = i18n("Every three months");
+      break;
+    case MyMoneySchedule::OCCUR_QUARTERLY:
+      text = i18n("Quarterly");
+      break;
+    case MyMoneySchedule::OCCUR_EVERYFOURMONTHS:
+      text = i18n("Every four months");
+      break;
+    case MyMoneySchedule::OCCUR_TWICEYEARLY:
+      text = i18n("Twice yearly");
+      break;
+    case MyMoneySchedule::OCCUR_YEARLY:
+      text = i18n("Yearly");
+      break;
+    case MyMoneySchedule::OCCUR_EVERYOTHERYEAR:
+      text = i18n("Every other year");
+      break;
+    case MyMoneySchedule::OCCUR_ANY:
+      text = i18n("Any (Error)");
+      break;
+  }
+  return text;
+}
+
+const QString KMyMoneyUtils::paymentMethodToString(MyMoneySchedule::paymentTypeE paymentType)
+{
+  QString text;
+
+  switch (paymentType)
+  {
+    case MyMoneySchedule::STYPE_DIRECTDEBIT:
+      text = i18n("Direct debit");
+      break;
+    case MyMoneySchedule::STYPE_DIRECTDEPOSIT:
+      text = i18n("Direct deposit");
+      break;
+    case MyMoneySchedule::STYPE_MANUALDEPOSIT:
+      text = i18n("Manual deposit");
+      break;
+    case MyMoneySchedule::STYPE_OTHER:
+      text = i18n("Other");
+      break;
+    case MyMoneySchedule::STYPE_WRITECHEQUE:
+      text = i18n("Write cheque");
+      break;
+    case MyMoneySchedule::STYPE_ANY:
+      text = i18n("Any (Error)");
+      break;
+  }
+  return text;
+}
+
+const QString KMyMoneyUtils::scheduleTypeToString(MyMoneySchedule::typeE type)
+{
+  QString text;
+  
+  switch (type)
+  {
+    case MyMoneySchedule::TYPE_BILL:
+      text = i18n("Bill");
+      break;
+    case MyMoneySchedule::TYPE_DEPOSIT:
+      text = i18n("Deposit");
+      break;
+    case MyMoneySchedule::TYPE_TRANSFER:
+      text = i18n("Transfer");
+      break;
+    case MyMoneySchedule::TYPE_ANY:
+    default:
+      text = i18n("Unknown");
+  }
+  return text;
+}

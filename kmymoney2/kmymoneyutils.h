@@ -33,6 +33,7 @@
 // Project Includes
 
 #include "mymoney/mymoneyaccount.h"
+#include "mymoney/mymoneyscheduled.h"
 
 /**
   * @author Thomas Baumgart
@@ -72,6 +73,38 @@ public:
     */
   static const MyMoneyAccount::accountTypeE stringToAccountType(const QString& type);
 
+  /**
+    * This method is used to convert the occurence type from it's
+    * internal representation into a human readable format.
+    *
+    * @param occurence numerical representation of the MyMoneySchedule
+    *                  occurence type
+    *
+    * @return QString representing the human readable format
+    */
+  static const QString occurenceToString(MyMoneySchedule::occurenceE occurence);
+
+  /**
+    * This method is used to convert the payment type from it's
+    * internal representation into a human readable format.
+    *
+    * @param occurence numerical representation of the MyMoneySchedule
+    *                  payment type
+    *
+    * @return QString representing the human readable format
+    */
+  static const QString paymentMethodToString(MyMoneySchedule::paymentTypeE paymentType);
+
+  /**
+    * This method is used to convert the schedule type from it's
+    * internal representation into a human readable format.
+    *
+    * @param occurence numerical representation of the MyMoneySchedule
+    *                  schedule type
+    *
+    * @return QString representing the human readable format
+    */
+  static const QString scheduleTypeToString(MyMoneySchedule::typeE type);
 };
 
 #endif
