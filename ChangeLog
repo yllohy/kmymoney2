@@ -1,3 +1,6 @@
+2002-02-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added framework for automated regression testing to mymoney modules
+
 2002-02-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added current date mark in transaction view
   * Modified exit handling
