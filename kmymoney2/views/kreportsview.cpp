@@ -128,6 +128,9 @@ PivotTable::PivotTable( const MyMoneyFile* file )
         rowgroup = getType( accountid, parentid );
       }
 
+      // read the account info of the top level account
+      account = file->account(accountid);
+
       // the row itself is the account name
       QString row = account.name();
 
