@@ -1,5 +1,6 @@
 2002-04-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed compile and link order problem
+  * Updated developer list in About window
 
 2002-04-26 Arni Ingimundarson <arniing@users.sourceforge.net>
   * Got rid of KTempDatePicker and used the standar kde 
