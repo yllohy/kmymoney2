@@ -11,7 +11,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>994</width>
+            <width>877</width>
             <height>548</height>
         </rect>
     </property>
@@ -23,20 +23,105 @@
         <name>sizeGripEnabled</name>
         <bool>true</bool>
     </property>
-    <vbox>
+    <widget>
+        <class>QLayoutWidget</class>
         <property stdset="1">
-            <name>margin</name>
-            <number>11</number>
+            <name>name</name>
+            <cstring>Layout11</cstring>
         </property>
         <property stdset="1">
-            <name>spacing</name>
-            <number>6</number>
+            <name>geometry</name>
+            <rect>
+                <x>11</x>
+                <y>178</y>
+                <width>860</width>
+                <height>36</height>
+            </rect>
+        </property>
+        <hbox>
+            <property stdset="1">
+                <name>margin</name>
+                <number>0</number>
+            </property>
+            <property stdset="1">
+                <name>spacing</name>
+                <number>6</number>
+            </property>
+            <widget>
+                <class>QLabel</class>
+                <property stdset="1">
+                    <name>name</name>
+                    <cstring>lblFileExport</cstring>
+                </property>
+                <property stdset="1">
+                    <name>sizePolicy</name>
+                    <sizepolicy>
+                        <hsizetype>0</hsizetype>
+                        <vsizetype>1</vsizetype>
+                    </sizepolicy>
+                </property>
+                <property stdset="1">
+                    <name>text</name>
+                    <string>QIF file to Export to:</string>
+                </property>
+            </widget>
+            <widget>
+                <class>QLineEdit</class>
+                <property stdset="1">
+                    <name>name</name>
+                    <cstring>m_qlineeditFile</cstring>
+                </property>
+            </widget>
+            <widget>
+                <class>QPushButton</class>
+                <property stdset="1">
+                    <name>name</name>
+                    <cstring>m_qbuttonBrowse</cstring>
+                </property>
+                <property stdset="1">
+                    <name>text</name>
+                    <string>Browse...</string>
+                </property>
+            </widget>
+        </hbox>
+    </widget>
+    <widget>
+        <class>QGroupBox</class>
+        <property stdset="1">
+            <name>name</name>
+            <cstring>m_qgroupbox</cstring>
+        </property>
+        <property stdset="1">
+            <name>enabled</name>
+            <bool>true</bool>
+        </property>
+        <property stdset="1">
+            <name>geometry</name>
+            <rect>
+                <x>10</x>
+                <y>396</y>
+                <width>861</width>
+                <height>99</height>
+            </rect>
+        </property>
+        <property stdset="1">
+            <name>title</name>
+            <string>Progress Info</string>
         </property>
         <widget>
             <class>QLayoutWidget</class>
             <property stdset="1">
                 <name>name</name>
-                <cstring>Layout9</cstring>
+                <cstring>Layout13</cstring>
+            </property>
+            <property stdset="1">
+                <name>geometry</name>
+                <rect>
+                    <x>12</x>
+                    <y>20</y>
+                    <width>840</width>
+                    <height>22</height>
+                </rect>
             </property>
             <hbox>
                 <property stdset="1">
@@ -51,540 +136,17 @@
                     <class>QLabel</class>
                     <property stdset="1">
                         <name>name</name>
-                        <cstring>m_qpixmaplabel</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>sizePolicy</name>
-                        <sizepolicy>
-                            <hsizetype>0</hsizetype>
-                            <vsizetype>0</vsizetype>
-                        </sizepolicy>
-                    </property>
-                    <property stdset="1">
-                        <name>minimumSize</name>
-                        <size>
-                            <width>200</width>
-                            <height>150</height>
-                        </size>
+                        <cstring>TextLabel2_2</cstring>
                     </property>
                     <property stdset="1">
                         <name>text</name>
-                        <string>TextLabel1</string>
+                        <string>Processing Account:</string>
                     </property>
                 </widget>
-                <widget>
-                    <class>QLabel</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>TextLabel2</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>frameShape</name>
-                        <enum>MShape</enum>
-                    </property>
-                    <property stdset="1">
-                        <name>frameShadow</name>
-                        <enum>MShadow</enum>
-                    </property>
-                    <property stdset="1">
-                        <name>text</name>
-                        <string>From this dialog you are able to export transactions to a quicken compatable file, (known as a QIF file, because of the extension).   Please enter the path to the QIF
-file or select it by clicking on the Browse button.
-
-Once you have the file's path you can choose which transactions to export by date (start &amp; and end).  Choose Account to export all the transactions between the
-specified dates or just categories.  Once you have pressed the Export button a message box will appear when the export has completed detailing how many transactions,
-categories and payees were exported.</string>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget>
-            <class>Line</class>
-            <property stdset="1">
-                <name>name</name>
-                <cstring>Line2</cstring>
-            </property>
-            <property>
-                <name>frameShape</name>
-                <enum>HLine</enum>
-            </property>
-            <property stdset="1">
-                <name>frameShadow</name>
-                <enum>Raised</enum>
-            </property>
-            <property stdset="1">
-                <name>orientation</name>
-                <enum>Horizontal</enum>
-            </property>
-            <property>
-                <name>frameShape</name>
-                <enum>HLine</enum>
-            </property>
-        </widget>
-        <widget>
-            <class>QLayoutWidget</class>
-            <property stdset="1">
-                <name>name</name>
-                <cstring>Layout11</cstring>
-            </property>
-            <hbox>
-                <property stdset="1">
-                    <name>margin</name>
-                    <number>0</number>
-                </property>
-                <property stdset="1">
-                    <name>spacing</name>
-                    <number>6</number>
-                </property>
-                <widget>
-                    <class>QLabel</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>lblFileExport</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>sizePolicy</name>
-                        <sizepolicy>
-                            <hsizetype>0</hsizetype>
-                            <vsizetype>1</vsizetype>
-                        </sizepolicy>
-                    </property>
-                    <property stdset="1">
-                        <name>text</name>
-                        <string>QIF file to Export to:</string>
-                    </property>
-                </widget>
-                <widget>
-                    <class>QLineEdit</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>m_qlineeditFile</cstring>
-                    </property>
-                </widget>
-                <widget>
-                    <class>QPushButton</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>m_qbuttonBrowse</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>text</name>
-                        <string>Browse...</string>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget>
-            <class>QLayoutWidget</class>
-            <property stdset="1">
-                <name>name</name>
-                <cstring>Layout17</cstring>
-            </property>
-            <hbox>
-                <property stdset="1">
-                    <name>margin</name>
-                    <number>0</number>
-                </property>
-                <property stdset="1">
-                    <name>spacing</name>
-                    <number>6</number>
-                </property>
-                <widget>
-                    <class>QGroupBox</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>m_qgroupboxDates</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>title</name>
-                        <string>Between These Dates</string>
-                    </property>
-                    <vbox>
-                        <property stdset="1">
-                            <name>margin</name>
-                            <number>11</number>
-                        </property>
-                        <property stdset="1">
-                            <name>spacing</name>
-                            <number>6</number>
-                        </property>
-                        <widget>
-                            <class>QLayoutWidget</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>Layout8</cstring>
-                            </property>
-                            <hbox>
-                                <property stdset="1">
-                                    <name>margin</name>
-                                    <number>0</number>
-                                </property>
-                                <property stdset="1">
-                                    <name>spacing</name>
-                                    <number>6</number>
-                                </property>
-                                <widget>
-                                    <class>QLabel</class>
-                                    <property stdset="1">
-                                        <name>name</name>
-                                        <cstring>lblStartDate</cstring>
-                                    </property>
-                                    <property stdset="1">
-                                        <name>sizePolicy</name>
-                                        <sizepolicy>
-                                            <hsizetype>0</hsizetype>
-                                            <vsizetype>1</vsizetype>
-                                        </sizepolicy>
-                                    </property>
-                                    <property stdset="1">
-                                        <name>minimumSize</name>
-                                        <size>
-                                            <width>50</width>
-                                            <height>0</height>
-                                        </size>
-                                    </property>
-                                    <property stdset="1">
-                                        <name>text</name>
-                                        <string>Start on:</string>
-                                    </property>
-                                </widget>
-                                <widget>
-                                    <class>kMyMoneyDateInput</class>
-                                    <property stdset="1">
-                                        <name>name</name>
-                                        <cstring>m_kmymoneydateStart</cstring>
-                                    </property>
-                                    <property stdset="1">
-                                        <name>sizePolicy</name>
-                                        <sizepolicy>
-                                            <hsizetype>3</hsizetype>
-                                            <vsizetype>1</vsizetype>
-                                        </sizepolicy>
-                                    </property>
-                                </widget>
-                            </hbox>
-                        </widget>
-                        <widget>
-                            <class>QLayoutWidget</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>Layout7</cstring>
-                            </property>
-                            <hbox>
-                                <property stdset="1">
-                                    <name>margin</name>
-                                    <number>0</number>
-                                </property>
-                                <property stdset="1">
-                                    <name>spacing</name>
-                                    <number>6</number>
-                                </property>
-                                <widget>
-                                    <class>QLabel</class>
-                                    <property stdset="1">
-                                        <name>name</name>
-                                        <cstring>lblEndDate</cstring>
-                                    </property>
-                                    <property stdset="1">
-                                        <name>sizePolicy</name>
-                                        <sizepolicy>
-                                            <hsizetype>0</hsizetype>
-                                            <vsizetype>1</vsizetype>
-                                        </sizepolicy>
-                                    </property>
-                                    <property stdset="1">
-                                        <name>minimumSize</name>
-                                        <size>
-                                            <width>50</width>
-                                            <height>0</height>
-                                        </size>
-                                    </property>
-                                    <property stdset="1">
-                                        <name>text</name>
-                                        <string>End on:</string>
-                                    </property>
-                                </widget>
-                                <widget>
-                                    <class>kMyMoneyDateInput</class>
-                                    <property stdset="1">
-                                        <name>name</name>
-                                        <cstring>m_kmymoneydateEnd</cstring>
-                                    </property>
-                                    <property stdset="1">
-                                        <name>sizePolicy</name>
-                                        <sizepolicy>
-                                            <hsizetype>3</hsizetype>
-                                            <vsizetype>1</vsizetype>
-                                        </sizepolicy>
-                                    </property>
-                                </widget>
-                            </hbox>
-                        </widget>
-                    </vbox>
-                </widget>
-                <widget>
-                    <class>QGroupBox</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>m_qgroupboxContents</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>title</name>
-                        <string>Contents to Export</string>
-                    </property>
-                    <vbox>
-                        <property stdset="1">
-                            <name>margin</name>
-                            <number>11</number>
-                        </property>
-                        <property stdset="1">
-                            <name>spacing</name>
-                            <number>6</number>
-                        </property>
-                        <widget>
-                            <class>QCheckBox</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>m_qcheckboxAccount</cstring>
-                            </property>
-                            <property stdset="1">
-                                <name>text</name>
-                                <string>Account</string>
-                            </property>
-                        </widget>
-                        <widget>
-                            <class>QCheckBox</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>m_qcheckboxCategories</cstring>
-                            </property>
-                            <property stdset="1">
-                                <name>text</name>
-                                <string>Categories</string>
-                            </property>
-                        </widget>
-                    </vbox>
-                </widget>
-                <widget>
-                    <class>QGroupBox</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>m_qgroupboxFormats</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>title</name>
-                        <string>Date Format</string>
-                    </property>
-                    <grid>
-                        <property stdset="1">
-                            <name>margin</name>
-                            <number>11</number>
-                        </property>
-                        <property stdset="1">
-                            <name>spacing</name>
-                            <number>6</number>
-                        </property>
-                        <spacer row="1"  column="0" >
-                            <property>
-                                <name>name</name>
-                                <cstring>Spacer3</cstring>
-                            </property>
-                            <property stdset="1">
-                                <name>orientation</name>
-                                <enum>Vertical</enum>
-                            </property>
-                            <property stdset="1">
-                                <name>sizeType</name>
-                                <enum>Expanding</enum>
-                            </property>
-                            <property>
-                                <name>sizeHint</name>
-                                <size>
-                                    <width>20</width>
-                                    <height>20</height>
-                                </size>
-                            </property>
-                        </spacer>
-                        <widget row="0"  column="0" >
-                            <class>QComboBox</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>m_qcomboboxDateFormat</cstring>
-                            </property>
-                            <property stdset="1">
-                                <name>minimumSize</name>
-                                <size>
-                                    <width>150</width>
-                                    <height>0</height>
-                                </size>
-                            </property>
-                        </widget>
-                        <widget row="0"  column="1"  rowspan="2"  colspan="1" >
-                            <class>QLabel</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>TextLabel1_2</cstring>
-                            </property>
-                            <property stdset="1">
-                                <name>text</name>
-                                <string>The Date format is represented as follows:
-
-d = Day Number
-m = Month Number
-mmm = Month Name (abbreviated to three letters)
-yy = Year Number (last two digits)
-yyyy = Year Number
-
-To use the awful 'yy use a format like %d/%m%yy e.g for  1/2'01.</string>
-                            </property>
-                        </widget>
-                    </grid>
-                </widget>
-            </hbox>
-        </widget>
-        <widget>
-            <class>QGroupBox</class>
-            <property stdset="1">
-                <name>name</name>
-                <cstring>m_qgroupbox</cstring>
-            </property>
-            <property stdset="1">
-                <name>enabled</name>
-                <bool>true</bool>
-            </property>
-            <property stdset="1">
-                <name>title</name>
-                <string>Progress Info</string>
-            </property>
-            <vbox>
-                <property stdset="1">
-                    <name>margin</name>
-                    <number>11</number>
-                </property>
-                <property stdset="1">
-                    <name>spacing</name>
-                    <number>6</number>
-                </property>
-                <widget>
-                    <class>QLayoutWidget</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>Layout8</cstring>
-                    </property>
-                    <hbox>
-                        <property stdset="1">
-                            <name>margin</name>
-                            <number>0</number>
-                        </property>
-                        <property stdset="1">
-                            <name>spacing</name>
-                            <number>6</number>
-                        </property>
-                        <widget>
-                            <class>QLabel</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>TextLabel2_2</cstring>
-                            </property>
-                            <property stdset="1">
-                                <name>text</name>
-                                <string>Processing Account:</string>
-                            </property>
-                        </widget>
-                        <widget>
-                            <class>QLabel</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>m_qlabelAccount</cstring>
-                            </property>
-                            <property stdset="1">
-                                <name>text</name>
-                                <string>Unknown</string>
-                            </property>
-                            <property stdset="1">
-                                <name>alignment</name>
-                                <set>AlignVCenter|AlignRight</set>
-                            </property>
-                            <property>
-                                <name>hAlign</name>
-                            </property>
-                        </widget>
-                    </hbox>
-                </widget>
-                <widget>
-                    <class>QLayoutWidget</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>Layout1</cstring>
-                    </property>
-                    <hbox>
-                        <property stdset="1">
-                            <name>margin</name>
-                            <number>0</number>
-                        </property>
-                        <property stdset="1">
-                            <name>spacing</name>
-                            <number>6</number>
-                        </property>
-                        <widget>
-                            <class>QLabel</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>TextLabel3</cstring>
-                            </property>
-                            <property stdset="1">
-                                <name>text</name>
-                                <string>Processing Transaction:</string>
-                            </property>
-                        </widget>
-                        <widget>
-                            <class>QLabel</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>m_qlabelTransaction</cstring>
-                            </property>
-                            <property stdset="1">
-                                <name>text</name>
-                                <string>0 of 0</string>
-                            </property>
-                            <property stdset="1">
-                                <name>alignment</name>
-                                <set>AlignVCenter|AlignRight</set>
-                            </property>
-                            <property>
-                                <name>hAlign</name>
-                            </property>
-                        </widget>
-                    </hbox>
-                </widget>
-                <widget>
-                    <class>QProgressBar</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>m_qprogressbar</cstring>
-                    </property>
-                </widget>
-            </vbox>
-        </widget>
-        <widget>
-            <class>QLayoutWidget</class>
-            <property stdset="1">
-                <name>name</name>
-                <cstring>Layout6</cstring>
-            </property>
-            <hbox>
-                <property stdset="1">
-                    <name>margin</name>
-                    <number>0</number>
-                </property>
-                <property stdset="1">
-                    <name>spacing</name>
-                    <number>6</number>
-                </property>
                 <spacer>
                     <property>
                         <name>name</name>
-                        <cstring>Spacer5</cstring>
+                        <cstring>Spacer3_2</cstring>
                     </property>
                     <property stdset="1">
                         <name>orientation</name>
@@ -603,42 +165,547 @@ To use the awful 'yy use a format like %d/%m%yy e.g for  1/2'01.</string>
                     </property>
                 </spacer>
                 <widget>
-                    <class>QPushButton</class>
+                    <class>QLabel</class>
                     <property stdset="1">
                         <name>name</name>
-                        <cstring>m_qbuttonOk</cstring>
+                        <cstring>m_qlabelAccount</cstring>
                     </property>
                     <property stdset="1">
                         <name>text</name>
-                        <string>&amp;Export</string>
+                        <string>Unknown</string>
                     </property>
                     <property stdset="1">
-                        <name>autoDefault</name>
-                        <bool>true</bool>
+                        <name>alignment</name>
+                        <set>AlignVCenter|AlignRight</set>
                     </property>
-                    <property stdset="1">
-                        <name>default</name>
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget>
-                    <class>QPushButton</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>m_qbuttonCancel</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>text</name>
-                        <string>&amp;Close</string>
-                    </property>
-                    <property stdset="1">
-                        <name>autoDefault</name>
-                        <bool>true</bool>
+                    <property>
+                        <name>hAlign</name>
                     </property>
                 </widget>
             </hbox>
         </widget>
-    </vbox>
+        <widget>
+            <class>QLabel</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>TextLabel3</cstring>
+            </property>
+            <property stdset="1">
+                <name>geometry</name>
+                <rect>
+                    <x>12</x>
+                    <y>43</y>
+                    <width>563</width>
+                    <height>16</height>
+                </rect>
+            </property>
+            <property stdset="1">
+                <name>text</name>
+                <string>Processing Transaction:</string>
+            </property>
+        </widget>
+        <widget>
+            <class>QLabel</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>m_qlabelTransaction</cstring>
+            </property>
+            <property stdset="1">
+                <name>geometry</name>
+                <rect>
+                    <x>640</x>
+                    <y>40</y>
+                    <width>210</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property stdset="1">
+                <name>text</name>
+                <string>0 of 0</string>
+            </property>
+            <property stdset="1">
+                <name>alignment</name>
+                <set>AlignVCenter|AlignRight</set>
+            </property>
+            <property>
+                <name>hAlign</name>
+            </property>
+        </widget>
+        <widget>
+            <class>QProgressBar</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>m_qprogressbar</cstring>
+            </property>
+            <property stdset="1">
+                <name>geometry</name>
+                <rect>
+                    <x>11</x>
+                    <y>65</y>
+                    <width>840</width>
+                    <height>23</height>
+                </rect>
+            </property>
+        </widget>
+    </widget>
+    <widget>
+        <class>QLayoutWidget</class>
+        <property stdset="1">
+            <name>name</name>
+            <cstring>Layout14</cstring>
+        </property>
+        <property stdset="1">
+            <name>geometry</name>
+            <rect>
+                <x>10</x>
+                <y>500</y>
+                <width>851</width>
+                <height>36</height>
+            </rect>
+        </property>
+        <hbox>
+            <property stdset="1">
+                <name>margin</name>
+                <number>0</number>
+            </property>
+            <property stdset="1">
+                <name>spacing</name>
+                <number>6</number>
+            </property>
+            <spacer>
+                <property>
+                    <name>name</name>
+                    <cstring>Spacer5</cstring>
+                </property>
+                <property stdset="1">
+                    <name>orientation</name>
+                    <enum>Horizontal</enum>
+                </property>
+                <property stdset="1">
+                    <name>sizeType</name>
+                    <enum>Expanding</enum>
+                </property>
+                <property>
+                    <name>sizeHint</name>
+                    <size>
+                        <width>20</width>
+                        <height>20</height>
+                    </size>
+                </property>
+            </spacer>
+            <widget>
+                <class>QPushButton</class>
+                <property stdset="1">
+                    <name>name</name>
+                    <cstring>m_qbuttonOk</cstring>
+                </property>
+                <property stdset="1">
+                    <name>text</name>
+                    <string>&amp;Export</string>
+                </property>
+                <property stdset="1">
+                    <name>autoDefault</name>
+                    <bool>true</bool>
+                </property>
+                <property stdset="1">
+                    <name>default</name>
+                    <bool>true</bool>
+                </property>
+            </widget>
+            <widget>
+                <class>QPushButton</class>
+                <property stdset="1">
+                    <name>name</name>
+                    <cstring>m_qbuttonCancel</cstring>
+                </property>
+                <property stdset="1">
+                    <name>text</name>
+                    <string>&amp;Close</string>
+                </property>
+                <property stdset="1">
+                    <name>autoDefault</name>
+                    <bool>true</bool>
+                </property>
+            </widget>
+        </hbox>
+    </widget>
+    <widget>
+        <class>QLabel</class>
+        <property stdset="1">
+            <name>name</name>
+            <cstring>TextLabel2</cstring>
+        </property>
+        <property stdset="1">
+            <name>geometry</name>
+            <rect>
+                <x>218</x>
+                <y>12</y>
+                <width>650</width>
+                <height>150</height>
+            </rect>
+        </property>
+        <property stdset="1">
+            <name>frameShape</name>
+            <enum>MShape</enum>
+        </property>
+        <property stdset="1">
+            <name>frameShadow</name>
+            <enum>MShadow</enum>
+        </property>
+        <property stdset="1">
+            <name>text</name>
+            <string>From this dialog you are able to export transactions to a quicken compatable file, (known as a QIF file, because of the extension).  Please enter the path to the QIF file or select it by clicking on the Browse button.
+
+Once you have the file's path you can choose which transactions to export by date (start &amp; and end).  Choose Account to export all the transactions between the specified dates or just categories.  Once you have pressed the Export button a message box will appear when the export has completed detailing how many transactions,
+categories and payees were exported.</string>
+        </property>
+        <property stdset="1">
+            <name>alignment</name>
+            <set>WordBreak|AlignVCenter|AlignLeft</set>
+        </property>
+        <property>
+            <name>wordwrap</name>
+        </property>
+    </widget>
+    <widget>
+        <class>Line</class>
+        <property stdset="1">
+            <name>name</name>
+            <cstring>Line2</cstring>
+        </property>
+        <property stdset="1">
+            <name>geometry</name>
+            <rect>
+                <x>10</x>
+                <y>160</y>
+                <width>861</width>
+                <height>18</height>
+            </rect>
+        </property>
+        <property>
+            <name>frameShape</name>
+            <enum>HLine</enum>
+        </property>
+        <property stdset="1">
+            <name>frameShadow</name>
+            <enum>Raised</enum>
+        </property>
+        <property stdset="1">
+            <name>orientation</name>
+            <enum>Horizontal</enum>
+        </property>
+        <property>
+            <name>frameShape</name>
+            <enum>HLine</enum>
+        </property>
+    </widget>
+    <widget>
+        <class>QGroupBox</class>
+        <property stdset="1">
+            <name>name</name>
+            <cstring>m_qgroupboxDates</cstring>
+        </property>
+        <property stdset="1">
+            <name>geometry</name>
+            <rect>
+                <x>10</x>
+                <y>220</y>
+                <width>180</width>
+                <height>90</height>
+            </rect>
+        </property>
+        <property stdset="1">
+            <name>title</name>
+            <string>Between These Dates</string>
+        </property>
+        <widget>
+            <class>QLayoutWidget</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>Layout7</cstring>
+            </property>
+            <property stdset="1">
+                <name>geometry</name>
+                <rect>
+                    <x>12</x>
+                    <y>20</y>
+                    <width>160</width>
+                    <height>29</height>
+                </rect>
+            </property>
+            <hbox>
+                <property stdset="1">
+                    <name>margin</name>
+                    <number>0</number>
+                </property>
+                <property stdset="1">
+                    <name>spacing</name>
+                    <number>6</number>
+                </property>
+                <widget>
+                    <class>QLabel</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>lblStartDate</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>sizePolicy</name>
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>1</vsizetype>
+                        </sizepolicy>
+                    </property>
+                    <property stdset="1">
+                        <name>minimumSize</name>
+                        <size>
+                            <width>50</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>Start on:</string>
+                    </property>
+                </widget>
+                <widget>
+                    <class>kMyMoneyDateInput</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>m_kmymoneydateStart</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>sizePolicy</name>
+                        <sizepolicy>
+                            <hsizetype>3</hsizetype>
+                            <vsizetype>1</vsizetype>
+                        </sizepolicy>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget>
+            <class>QLayoutWidget</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>Layout10</cstring>
+            </property>
+            <property stdset="1">
+                <name>geometry</name>
+                <rect>
+                    <x>12</x>
+                    <y>53</y>
+                    <width>160</width>
+                    <height>29</height>
+                </rect>
+            </property>
+            <hbox>
+                <property stdset="1">
+                    <name>margin</name>
+                    <number>0</number>
+                </property>
+                <property stdset="1">
+                    <name>spacing</name>
+                    <number>6</number>
+                </property>
+                <widget>
+                    <class>QLabel</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>lblEndDate</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>sizePolicy</name>
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>1</vsizetype>
+                        </sizepolicy>
+                    </property>
+                    <property stdset="1">
+                        <name>minimumSize</name>
+                        <size>
+                            <width>50</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>End on:</string>
+                    </property>
+                </widget>
+                <widget>
+                    <class>kMyMoneyDateInput</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>m_kmymoneydateEnd</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>sizePolicy</name>
+                        <sizepolicy>
+                            <hsizetype>3</hsizetype>
+                            <vsizetype>1</vsizetype>
+                        </sizepolicy>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+    </widget>
+    <widget>
+        <class>QGroupBox</class>
+        <property stdset="1">
+            <name>name</name>
+            <cstring>m_qgroupboxContents</cstring>
+        </property>
+        <property stdset="1">
+            <name>geometry</name>
+            <rect>
+                <x>10</x>
+                <y>310</y>
+                <width>180</width>
+                <height>84</height>
+            </rect>
+        </property>
+        <property stdset="1">
+            <name>title</name>
+            <string>Contents to Export</string>
+        </property>
+        <vbox>
+            <property stdset="1">
+                <name>margin</name>
+                <number>11</number>
+            </property>
+            <property stdset="1">
+                <name>spacing</name>
+                <number>6</number>
+            </property>
+            <widget>
+                <class>QCheckBox</class>
+                <property stdset="1">
+                    <name>name</name>
+                    <cstring>m_qcheckboxAccount</cstring>
+                </property>
+                <property stdset="1">
+                    <name>text</name>
+                    <string>Account</string>
+                </property>
+            </widget>
+            <widget>
+                <class>QCheckBox</class>
+                <property stdset="1">
+                    <name>name</name>
+                    <cstring>m_qcheckboxCategories</cstring>
+                </property>
+                <property stdset="1">
+                    <name>text</name>
+                    <string>Categories</string>
+                </property>
+            </widget>
+        </vbox>
+    </widget>
+    <widget>
+        <class>QGroupBox</class>
+        <property stdset="1">
+            <name>name</name>
+            <cstring>m_qgroupboxFormats</cstring>
+        </property>
+        <property stdset="1">
+            <name>geometry</name>
+            <rect>
+                <x>330</x>
+                <y>220</y>
+                <width>542</width>
+                <height>175</height>
+            </rect>
+        </property>
+        <property stdset="1">
+            <name>title</name>
+            <string>Date Format</string>
+        </property>
+        <widget>
+            <class>QLabel</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>TextLabel1_2</cstring>
+            </property>
+            <property stdset="1">
+                <name>geometry</name>
+                <rect>
+                    <x>167</x>
+                    <y>19</y>
+                    <width>364</width>
+                    <height>138</height>
+                </rect>
+            </property>
+            <property stdset="1">
+                <name>text</name>
+                <string>The Date format is represented as follows:
+
+d = Day Number
+m = Month Number
+mmm = Month Name (abbreviated to three letters)
+yy = Year Number (last two digits)
+yyyy = Year Number
+
+To use the awful 'yy use a format like %d/%m%yy e.g for  1/2'01.</string>
+            </property>
+        </widget>
+        <widget>
+            <class>QComboBox</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>m_qcomboboxDateFormat</cstring>
+            </property>
+            <property stdset="1">
+                <name>geometry</name>
+                <rect>
+                    <x>11</x>
+                    <y>19</y>
+                    <width>150</width>
+                    <height>27</height>
+                </rect>
+            </property>
+            <property stdset="1">
+                <name>minimumSize</name>
+                <size>
+                    <width>150</width>
+                    <height>0</height>
+                </size>
+            </property>
+        </widget>
+    </widget>
+    <widget>
+        <class>QLabel</class>
+        <property stdset="1">
+            <name>name</name>
+            <cstring>m_qpixmaplabel</cstring>
+        </property>
+        <property stdset="1">
+            <name>geometry</name>
+            <rect>
+                <x>12</x>
+                <y>12</y>
+                <width>200</width>
+                <height>150</height>
+            </rect>
+        </property>
+        <property stdset="1">
+            <name>sizePolicy</name>
+            <sizepolicy>
+                <hsizetype>0</hsizetype>
+                <vsizetype>0</vsizetype>
+            </sizepolicy>
+        </property>
+        <property stdset="1">
+            <name>minimumSize</name>
+            <size>
+                <width>200</width>
+                <height>150</height>
+            </size>
+        </property>
+        <property stdset="1">
+            <name>text</name>
+            <string>TextLabel1</string>
+        </property>
+    </widget>
 </widget>
 <customwidgets>
     <customwidget>
