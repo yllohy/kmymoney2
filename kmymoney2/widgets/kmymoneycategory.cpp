@@ -118,7 +118,9 @@ void kMyMoneyCategory::loadText(const QString& text)
 {
   m_displayOnly = true;
   m_id = QCString();
+  blockSignals(true);
   KLineEdit::setText(text);
+  blockSignals(false);
 }
 
 void kMyMoneyCategory::focusInEvent(QFocusEvent *ev)
