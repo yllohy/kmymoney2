@@ -38,6 +38,8 @@
 
 
 #include "../mymoney/mymoneyaccount.h"
+#include "../kmymoneyutils.h"
+
 /**
   *@author Thomas Baumgart
   */
@@ -46,17 +48,10 @@ class kMyMoneyCategory : public KLineEdit
 {
    Q_OBJECT
 public:
-  enum categoryTypeE {
-    liability =  0x01,
-    asset =      0x02,
-    expense =    0x04,
-    income =     0x08
-  };
+  kMyMoneyCategory(QWidget *parent=0, const char *name=0, const KMyMoneyUtils::categoryTypeE = static_cast<KMyMoneyUtils::categoryTypeE>(KMyMoneyUtils::expense | KMyMoneyUtils::income));
+  ~kMyMoneyCategory();
 
-	kMyMoneyCategory(QWidget *parent=0, const char *name=0, const categoryTypeE type = static_cast<categoryTypeE>(expense | income));
-	~kMyMoneyCategory();
-
-  void loadList(const categoryTypeE type);
+  void loadList(const KMyMoneyUtils::categoryTypeE type);
 
   /**
     */

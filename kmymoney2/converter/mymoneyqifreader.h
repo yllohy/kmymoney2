@@ -186,7 +186,6 @@ private:
     */
   void selectOrCreateAccount(SelectCreateMode mode);
 
-  
 private:
   QString           m_originalFilename;
   QString           m_filename;

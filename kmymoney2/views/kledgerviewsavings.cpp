@@ -127,8 +127,8 @@ void KLedgerViewSavings::createEditWidgets(void)
   else
     m_editNr = new kMyMoneyLineEdit(0, "editNr");
 
-  m_editFrom = new kMyMoneyCategory(0, "editFrom", static_cast<kMyMoneyCategory::categoryTypeE> (kMyMoneyCategory::asset | kMyMoneyCategory::liability));
-  m_editTo = new kMyMoneyCategory(0, "editTo", static_cast<kMyMoneyCategory::categoryTypeE> (kMyMoneyCategory::asset | kMyMoneyCategory::liability));
+  m_editFrom = new kMyMoneyCategory(0, "editFrom", static_cast<KMyMoneyUtils::categoryTypeE> (KMyMoneyUtils::asset | KMyMoneyUtils::liability));
+  m_editTo = new kMyMoneyCategory(0, "editTo", static_cast<KMyMoneyUtils::categoryTypeE> (KMyMoneyUtils::asset | KMyMoneyUtils::liability));
   m_editSplit = new KPushButton("Split", 0, "editSplit");
   m_editPayment = new kMyMoneyEdit(0, "editPayment");
   m_editDeposit = new kMyMoneyEdit(0, "editDeposit");

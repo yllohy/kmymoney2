@@ -402,7 +402,28 @@ void MyMoneyQifReader::selectOrCreateAccount(SelectCreateMode mode)
   
   QCString accountId;
   QString msg;
-  KAccountSelectDlg accountSelect("QifImport");
+  KMyMoneyUtils::categoryTypeE type;
+
+  switch(file->accountGroup(m_account.accountType())) {
+    case MyMoneyAccount::Liability:
+      type = KMyMoneyUtils::liability;
+      break;
+      
+    default:
+    case MyMoneyAccount::Asset:
+      type = KMyMoneyUtils::asset;
+      break;
+      
+    case MyMoneyAccount::Income:
+      type = KMyMoneyUtils::income;
+      break;
+      
+    case MyMoneyAccount::Expense:
+      type = KMyMoneyUtils::expense;
+      break;
+  }
+  
+  KAccountSelectDlg accountSelect(type,"QifImport");
   
   if(m_account.name().length() != 0) {
     accountId = file->nameToAccount(m_account.name());
@@ -457,3 +478,4 @@ void MyMoneyQifReader::selectOrCreateAccount(SelectCreateMode mode)
   } else
     m_account = MyMoneyAccount();
 }
+

@@ -37,9 +37,10 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include <../dialogs/kaccountselectdlgdecl.h>
-#include <../mymoney/mymoneyobserver.h>
-#include <../mymoney/mymoneyaccount.h>
+#include "../dialogs/kaccountselectdlgdecl.h"
+#include "../mymoney/mymoneyobserver.h"
+#include "../mymoney/mymoneyaccount.h"
+#include "../kmymoneyutils.h"
 
 /**
   * @author Thomas Baumgart
@@ -49,7 +50,7 @@ class KAccountSelectDlg : public KAccountSelectDlgDecl, MyMoneyObserver
 {
    Q_OBJECT
 public: 
-  KAccountSelectDlg(const QString& purpose = "General", QWidget *parent=0, const char *name=0);
+  KAccountSelectDlg(const KMyMoneyUtils::categoryTypeE type, const QString& purpose = "General", QWidget *parent=0, const char *name=0);
   ~KAccountSelectDlg();
 
   /**
@@ -139,6 +140,7 @@ private:
   QString         m_purpose;
   MyMoneyAccount  m_account;
   int             m_mode;       // 0 - select or create, 1 - create only
+  KMyMoneyUtils::categoryTypeE   m_accountType;
 };
 
 #endif

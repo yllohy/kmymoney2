@@ -736,7 +736,7 @@ void KMyMoneyView::slotAccountNew(void)
   } else {
     // regular dialog selected
     MyMoneyAccount account;
-    KNewAccountDlg dialog(account, false, false, this, "hi", i18n("Create a new Account"));
+    KNewAccountDlg dialog(account, false, false, 0, "hi", i18n("Create a new Account"));
 
     if((dialogResult = dialog.exec()) == QDialog::Accepted) {
       newAccount = dialog.account();

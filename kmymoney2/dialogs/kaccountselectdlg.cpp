@@ -38,11 +38,13 @@
 
 #include "kaccountselectdlg.h"
 #include "knewaccountwizard.h"
+#include "knewaccountdlg.h"
 #include "../mymoney/mymoneyfile.h"
 
-KAccountSelectDlg::KAccountSelectDlg(const QString& purpose, QWidget *parent, const char *name )
+KAccountSelectDlg::KAccountSelectDlg(const KMyMoneyUtils::categoryTypeE accountType, const QString& purpose, QWidget *parent, const char *name )
  : KAccountSelectDlgDecl(parent,name),
-   m_purpose(purpose)
+   m_purpose(purpose),
+   m_accountType(accountType)
 {
   loadAccounts();
   MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAccount, this);
@@ -96,8 +98,17 @@ void KAccountSelectDlg::loadAccounts(void)
     MyMoneyFile *file = MyMoneyFile::instance();
 
     // read all account items from the MyMoneyFile objects and add them to the listbox
-    addCategories(strList, file->liability().id(), "");
-    addCategories(strList, file->asset().id(), "");
+    if(m_accountType & KMyMoneyUtils::liability)
+      addCategories(strList, file->liability().id(), "");
+
+    if(m_accountType & KMyMoneyUtils::asset)
+      addCategories(strList, file->asset().id(), "");
+
+    if(m_accountType & KMyMoneyUtils::expense)
+      addCategories(strList, file->expense().id(), "");
+
+    if(m_accountType & KMyMoneyUtils::income)
+      addCategories(strList, file->income().id(), "");
 
   } catch (MyMoneyException *e) {
     qDebug("Exception '%s' thrown in %s, line %ld caught in KAccountSelectDlg::loadAccounts:%d",
@@ -137,6 +148,57 @@ void KAccountSelectDlg::addCategories(QStringList& strList, const QCString& id, 
 
 void KAccountSelectDlg::slotCreateAccount(void)
 {
+  MyMoneyAccount newAccount;
+  MyMoneyAccount parentAccount;
+  int dialogResult;
+  const bool isCategory = m_accountType & (KMyMoneyUtils::expense | KMyMoneyUtils::income);
+
+  KConfig *config = KGlobal::config();
+  config->setGroup("General Options");
+  if(config->readBoolEntry("NewAccountWizard", true) == true
+  && !isCategory) {
+    // wizard selected
+    KNewAccountWizard wizard(0);
+    wizard.setAccountName(m_account.name());
+    wizard.setAccountType(m_account.accountType());
+    wizard.setOpeningBalance(m_account.openingBalance());
+    wizard.setOpeningDate(m_account.openingDate());
+    if((dialogResult = wizard.exec()) == QDialog::Accepted) {
+      newAccount = wizard.account();
+      parentAccount = wizard.parentAccount();
+    }
+  } else {
+    // regular dialog selected
+    MyMoneyAccount account;
+    KNewAccountDlg dialog(account, false, isCategory, 0, "hi", i18n("Create a new Account"));
+
+    if((dialogResult = dialog.exec()) == QDialog::Accepted) {
+      newAccount = dialog.account();
+      parentAccount = dialog.parentAccount();
+    }
+  }
+
+  if(dialogResult == QDialog::Accepted) {
+
+    // The dialog/wizard doesn't check the parent.
+    // An exception will be thrown on the next line instead.
+    try
+    {
+      MyMoneyFile::instance()->addAccount(newAccount, parentAccount);
+
+      m_accountComboBox->setCurrentText(newAccount.name());
+      accept();
+    }
+    catch (MyMoneyException *e)
+    {
+      QString message("Unable to add account: ");
+      message += e->what();
+      KMessageBox::information(this, message);
+      delete e;
+    }
+  }
+
+/*  
   KNewAccountWizard wizard(0);
   
   wizard.setAccountName(m_account.name());
@@ -164,6 +226,7 @@ void KAccountSelectDlg::slotCreateAccount(void)
       delete e;
     }
   }
+*/
 }
 
 void KAccountSelectDlg::setMode(const int mode)

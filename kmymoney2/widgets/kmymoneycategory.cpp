@@ -32,7 +32,7 @@
 #include "kmymoneycategory.h"
 #include "../mymoney/mymoneyfile.h"
 
-kMyMoneyCategory::kMyMoneyCategory(QWidget *parent, const char *name, const categoryTypeE categoryType)
+kMyMoneyCategory::kMyMoneyCategory(QWidget *parent, const char *name, const KMyMoneyUtils::categoryTypeE categoryType)
   : KLineEdit(parent,name)
 {
   // make sure, the completion object exists
@@ -93,7 +93,7 @@ void kMyMoneyCategory::addCategories(QStringList& strList, const QCString& id, c
   }
 }
 
-void kMyMoneyCategory::loadList(const categoryTypeE type)
+void kMyMoneyCategory::loadList(const KMyMoneyUtils::categoryTypeE type)
 {
   QStringList strList;
 
@@ -103,16 +103,16 @@ void kMyMoneyCategory::loadList(const categoryTypeE type)
     // read all account items from the MyMoneyFile objects and add them to the listbox
     m_accountList = file->accountList();
 
-    if(type & liability)
+    if(type & KMyMoneyUtils::liability)
       addCategories(strList, file->liability().id(), "");
 
-    if(type & asset)
+    if(type & KMyMoneyUtils::asset)
       addCategories(strList, file->asset().id(), "");
 
-    if(type & expense)
+    if(type & KMyMoneyUtils::expense)
       addCategories(strList, file->expense().id(), "");
 
-    if(type & income)
+    if(type & KMyMoneyUtils::income)
       addCategories(strList, file->income().id(), "");
 
   } catch (MyMoneyException *e) {

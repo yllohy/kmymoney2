@@ -40,7 +40,14 @@
 
 class KMyMoneyUtils
 {
-public: 
+public:
+  enum categoryTypeE {
+    liability =  0x01,
+    asset =      0x02,
+    expense =    0x04,
+    income =     0x08
+  };
+
   KMyMoneyUtils();
   ~KMyMoneyUtils();
 

@@ -1114,9 +1114,9 @@ void KLedgerView::slotTypeChanged(const QCString& action)
 
     } else {
       if(m_split.action() == MyMoneySplit::ActionTransfer) {
-        m_editCategory->loadList(static_cast<kMyMoneyCategory::categoryTypeE> (kMyMoneyCategory::asset | kMyMoneyCategory::liability));
+        m_editCategory->loadList(static_cast<KMyMoneyUtils::categoryTypeE> (KMyMoneyUtils::asset | KMyMoneyUtils::liability));
       } else {
-        m_editCategory->loadList(static_cast<kMyMoneyCategory::categoryTypeE> (kMyMoneyCategory::income | kMyMoneyCategory::expense));
+        m_editCategory->loadList(static_cast<KMyMoneyUtils::categoryTypeE> (KMyMoneyUtils::income | KMyMoneyUtils::expense));
       }
     }
 
