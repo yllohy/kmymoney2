@@ -1,0 +1,197 @@
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<class>kMyMoneyGPGConfigDecl</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>kMyMoneyGPGConfigDecl</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>600</width>
+            <height>490</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>GPG encryption settings</string>
+    </property>
+    <property name="whatsThis" stdset="0">
+        <string>This page allows you to set the parameters for encrypted file storage of your &lt;b&gt;KMyMoney&lt;/b&gt; data based on &lt;b&gt;GPG&lt;/b&gt;.&lt;p&gt;
+Acces to the settings is disabled if &lt;b&gt;GPG&lt;/b&gt; could not be detected on your system. In this case, please make sure that &lt;b&gt;GPG&lt;/b&gt; is function properly for the current user.&lt;p&gt;
+The &lt;i&gt;Recovery encryption&lt;/i&gt; group is only accessible, if the necessary key for &lt;b&gt;kmymoney-recover@users.sourceforge.net&lt;/b&gt; with id 0x8AFDDC8E is found.</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QCheckBox">
+            <property name="name">
+                <cstring>m_useEncryption</cstring>
+            </property>
+            <property name="text">
+                <string>Use GPG encryption</string>
+            </property>
+        </widget>
+        <widget class="QGroupBox">
+            <property name="name">
+                <cstring>m_idGroup</cstring>
+            </property>
+            <property name="title">
+                <string>User identification</string>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Enter the id of the key you want to use for data encryption. This can either be an e-mail address or the hexadecimal key id. In case of the key id don't forget the leading &lt;i&gt;0x&lt;/i&gt;.</string>
+                    </property>
+                    <property name="textFormat">
+                        <enum>RichText</enum>
+                    </property>
+                    <property name="alignment">
+                        <set>WordBreak|AlignTop</set>
+                    </property>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout7</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel1</cstring>
+                            </property>
+                            <property name="text">
+                                <string>User ID</string>
+                            </property>
+                        </widget>
+                        <widget class="KLineEdit">
+                            <property name="name">
+                                <cstring>m_userId</cstring>
+                            </property>
+                        </widget>
+                        <widget class="KLed">
+                            <property name="name">
+                                <cstring>m_userKeyFound</cstring>
+                            </property>
+                            <property name="shape">
+                                <enum>Circular</enum>
+                            </property>
+                            <property name="look">
+                                <enum>Sunken</enum>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>This symbol denotes, if the key for the given user id has been found in your keyring. It is green when found, dark otherwise.</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+            </vbox>
+        </widget>
+        <widget class="QGroupBox">
+            <property name="name">
+                <cstring>m_recoveryGroup</cstring>
+            </property>
+            <property name="title">
+                <string>Recovery encryption</string>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout8</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QCheckBox">
+                            <property name="name">
+                                <cstring>m_recover</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Also encrypt with kmymoney-recover key</string>
+                            </property>
+                        </widget>
+                        <spacer>
+                            <property name="name">
+                                <cstring>spacer6</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>51</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <widget class="KLed">
+                            <property name="name">
+                                <cstring>m_recoverKeyFound</cstring>
+                            </property>
+                            <property name="shape">
+                                <enum>Circular</enum>
+                            </property>
+                            <property name="look">
+                                <enum>Sunken</enum>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>This symbol denotes, if the KMyMoney recovery key has been found in your keyring. It is green when found, dark otherwise.</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel3</cstring>
+                    </property>
+                    <property name="text">
+                        <string>You can specify to encrypt the data also with the KMyMoney recover key. Only the core KMyMoney developers are in posession of the respective private key required to read back such encrypted data.&lt;p&gt;
+
+This mechanism is provided for the case that you have lost your key and cannot access your data anymore. With this option activated, the KMyMoney developers can decrypt the data and supply you with it in a readable form. Please be prepared, that you have to answer a few detailed questions about the contents of your data before we will send it out..</string>
+                    </property>
+                    <property name="textFormat">
+                        <enum>RichText</enum>
+                    </property>
+                    <property name="alignment">
+                        <set>WordBreak|AlignTop</set>
+                    </property>
+                </widget>
+            </vbox>
+        </widget>
+        <spacer>
+            <property name="name">
+                <cstring>spacer5</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>21</width>
+                    <height>16</height>
+                </size>
+            </property>
+        </spacer>
+    </vbox>
+</widget>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
