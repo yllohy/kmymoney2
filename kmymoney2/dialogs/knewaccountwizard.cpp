@@ -321,7 +321,8 @@ const MyMoneyAccount KNewAccountWizard::account(void) const
         account.setInstitutionId((*it).id());
   }
   account.setOpeningBalance(MyMoneyMoney(openingBalance->text()));
-
+  account.setOpeningDate(openingDate->getQDate());
+  
   return account;
 }
 
