@@ -69,16 +69,7 @@ void KAccountListItem::newAccount(const MyMoneyAccount& account)
   m_accountID = account.id();
 
   setPixmap(0, *accountPixmap);
-  setText(0, account.name());
-  // setText(1, typeName);
-  try {
-    setText(2, file->totalBalance(m_accountID).formatMoney());
-    file->attach(m_accountID, this);
-  } catch(MyMoneyException *e) {
-    KMessageBox::detailedSorry(0, i18n("Unable to retrieve account balance"),
-        (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
-    delete e;
-  }
+  update(m_accountID);
 }
 
 KAccountListItem::KAccountListItem(KListView *parent, const MyMoneyInstitution& institution)
@@ -100,9 +91,20 @@ void KAccountListItem::update(const QCString& accountId)
     MyMoneyAccount acc = file->account(accountId);
 
     try {
+      MyMoneyMoney balance = file->totalBalance(m_accountID);
 
       setText(0, acc.name());
-      setText(2, file->totalBalance(m_accountID).formatMoney());
+
+      // since income is negative, we reverse the sign
+      switch(file->accountGroup(acc.accountType())) {
+        case MyMoneyAccount::Income:
+          balance = -balance;
+          break;
+        default:
+          break;
+      }
+      setText(2, balance.formatMoney());
+
     } catch(MyMoneyException *e) {
       KMessageBox::detailedSorry(0, i18n("Unable to retrieve account information"),
           (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
