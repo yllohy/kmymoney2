@@ -1,3 +1,7 @@
+2001-03-23  Felix Rodriguez <frodriguez@wesleyan.edu>
+  * Fixed Category Combo Box to include Minor Categories
+  * Fixed Category Dialog Box ListView WidthMode to Maximum
+
 2001-03-22  Felix Rodriguez <frodriguez@wesleyan.edu>
   * Moved the Reconcile Column from column 4 to column 3 of the table
   * Fixed problem after clicking cancel if you click on same transaction

@@ -177,7 +177,7 @@ void KTransactionView::slotFocusChange(int row, int, int button, const QPoint& /
       m_cancel->show();
       transactionsTable->setCellWidget(realrow + 1 ,6,m_delete);
       m_delete->show();
-
+      updateInputLists();
       if(m_transactions.count() > transrow)
       {
 	      setInputData(*m_transactions.at(transrow));
@@ -351,22 +351,34 @@ void KTransactionView::enterClicked()
   double dblnewamount;
   QDate newdate = m_date->getQDate();
 	QString newcategory = m_category->currentText();
+  int commaindex;
 
+
+	qDebug("Before Payment Text");
 	if(m_payment->text() == "")
 	{
-		dblnewamount = m_withdrawal->text().toDouble();
+    commaindex = m_withdrawal->text().find(",");
+		if(commaindex != -1)
+			dblnewamount = m_withdrawal->text().remove(commaindex,1).toDouble();
+		else
+			dblnewamount = m_withdrawal->text().toDouble();
   	dblnewamount = dblnewamount;
 	}
   else if(m_withdrawal->text() == "")
 	{
-		dblnewamount = m_payment->text().toDouble();
+		commaindex = m_payment->text().find(",");
+		if(commaindex != -1)
+			dblnewamount = m_payment->text().remove(commaindex,1).toDouble();
+		else
+			dblnewamount = m_payment->text().toDouble();
+
   	dblnewamount = dblnewamount;
 	}
 	else
 	{
    	dblnewamount = 0;
 	}
-
+  qDebug("After Payment Text");
 
   MyMoneyMoney newamount(dblnewamount);
 	MyMoneyTransaction::stateE newstate;
@@ -395,7 +407,21 @@ void KTransactionView::enterClicked()
 	{
    	 newmethod = MyMoneyTransaction::Cheque;
 	}
-
+  int colonindex = m_category->currentText().find(":");
+  QString catmajor;
+	QString catminor;
+  if(colonindex == -1)
+	{
+   	catmajor = m_category->currentText();
+		catminor = "";
+	}
+	else
+	{
+		int len = m_category->currentText().length();
+		len--;
+   	catmajor = m_category->currentText().left(colonindex);
+		catminor = m_category->currentText().right(len - colonindex);
+	}
 
 	if(m_index < m_transactions.count())
 	{
@@ -403,16 +429,16 @@ void KTransactionView::enterClicked()
 		newstate = m_transactions.at(m_index)->state();
    	account->removeCurrentTransaction(m_index);
   	account->addTransaction(newmethod, "", m_payee->currentText(),
-                            newamount, newdate, m_category->currentText(), "", "",
+                            newamount, newdate, catmajor, catminor, "",
   													"", "", "", newstate);
-
+    qDebug("Major = %s, Minor = %s",catmajor.latin1(), catminor.latin1());
 	}
 	else
   {
 		qDebug("m_index == -1");
 		newstate = MyMoneyTransaction::Unreconciled;
   	account->addTransaction(newmethod, "", m_payee->currentText(),
-                            newamount, newdate, m_category->currentText(), "", "",
+                            newamount, newdate, catmajor, catminor, "",
   													"", "", "", newstate);
 	}
 	
@@ -447,7 +473,16 @@ void KTransactionView::setInputData(const MyMoneyTransaction transaction)
   for(int i = 0; i < m_category->count(); i++)
   {
 		QString theText;
-		theText.sprintf("%s", transaction.categoryMajor().latin1());
+		if(transaction.categoryMinor() == "")
+		{
+			theText.sprintf("%s", transaction.categoryMajor().latin1());
+			qDebug("No Minor Category");
+		}
+		else
+		{
+			theText.sprintf("%s:%s",transaction.categoryMajor().latin1(),transaction.categoryMinor().latin1());
+			qDebug("Has Minor Category");
+		}
    	if(m_category->text(i) == theText)
 		{
 			m_category->setCurrentItem(i);
@@ -475,11 +510,12 @@ void KTransactionView::updateInputLists(void)
       theText.sprintf("%s", category->name().latin1());
       categoryList.append(theText);
       for ( QStringList::Iterator it = category->minorCategories().begin(); it != category->minorCategories().end(); ++it ) {
-        theText.sprintf("     %s",(*it).latin1());
+        theText.sprintf("%s:%s",category->name().latin1(),(*it).latin1());
         categoryList.append(theText);
       }
     }
   }
+	m_category->clear();
   m_category->insertStringList(categoryList);
 
 
@@ -592,7 +628,16 @@ void KTransactionView::updateTransactionList(int row, int col)
 */
 
       QString txt;
-      txt.sprintf("%s", transaction->categoryMajor().latin1());
+			if(transaction->categoryMinor() == "")
+			{
+      	txt.sprintf("%s", transaction->categoryMajor().latin1());
+        qDebug("No Minor Category UpdateTransactionList");
+			}
+			else
+			{
+				txt.sprintf("%s:%s", transaction->categoryMajor().latin1(),transaction->categoryMinor().latin1());
+				qDebug("Has Minor Category UpdateTransactionList %s",transaction->categoryMinor().latin1());
+			}
       KMemoTableItem *item4;
       item4 = new KMemoTableItem(transactionsTable, QTableItem::Never, txt);
       transactionsTable->setItem(rowCount + 1, 2, item4);

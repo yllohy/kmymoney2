@@ -29,14 +29,14 @@ KCategoriesDlg::KCategoriesDlg(MyMoneyFile *file, QWidget *parent, const char *n
 	categoryListView->addColumn(i18n("Category"));
 	categoryListView->addColumn(i18n("Type"));
 	categoryListView->setMultiSelection(false);
-	categoryListView->setColumnWidthMode(0, QListView::Manual);
+	categoryListView->setColumnWidthMode(0, QListView::Maximum);
 	
 	// resize the columns in the list view to accomodate all space
 	// there must be a better way of doing this !
 	QFontMetrics met(categoryListView->fontMetrics());
 	int w = (met.boundingRect("Expense").width());
-	categoryListView->setColumnWidth(1, w+5);
-	categoryListView->setColumnWidth(0, categoryListView->width()-5-(categoryListView->columnWidth(1)));
+	//categoryListView->setColumnWidth(1, w+5);
+	//categoryListView->setColumnWidth(0, categoryListView->width()-5-(categoryListView->columnWidth(1)));
 
   refresh();
 
