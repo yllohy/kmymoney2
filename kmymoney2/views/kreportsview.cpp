@@ -9,7 +9,7 @@
                            John C <thetacoturtle@users.sourceforge.net>
                            Thomas Baumgart <ipwizard@users.sourceforge.net>
                            Kevin Tambascio <ktambascio@users.sourceforge.net>
-                           Ace Jones <ace.jones@hotpop.com>
+                           Ace Jones <ace.j@hotpop.com>
  ***************************************************************************/
 
 /***************************************************************************
@@ -49,11 +49,13 @@
 #include <kconfig.h>
 #include <kdebug.h>
 #include <kfiledialog.h>
+#include <kmessagebox.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
 #include "kreportsview.h"
 #include "../mymoney/mymoneyfile.h"
+#include "../dialogs/kreportconfigurationfilterdlg.h"
 #include "pivottable.h"
 using namespace reports;
 
@@ -67,20 +69,20 @@ KReportsView::KReportsView(QWidget *parent, const char *name )
  : QWidget(parent,name)
 {
 
-  ReportConfiguration spending;
-  spending.setName(i18n("Monthly Income and Expenses"));
-  spending.setDateRange(QDate(QDate::currentDate().year(),1,1),QDate::currentDate());
-  spending.setShowSubAccounts(true);
-  spending.setRowFilter( ReportConfiguration::eExpense | ReportConfiguration::eIncome );
-  m_reports.push_back(spending);
-
-  ReportConfiguration networth;
-  networth.setName(i18n("Net Worth Over Time"));
-  networth.setDateRange(QDate(QDate::currentDate().year(),1,1),QDate::currentDate());
-  networth.setShowSubAccounts(false);
-  networth.setRowFilter( ReportConfiguration::eAsset | ReportConfiguration::eLiability );
-  m_reports.push_back(networth);
-
+  ReportConfigurationFilter spending_f;
+  spending_f.setName(i18n("Monthly Income and Expenses"));
+  spending_f.setDateFilter(QDate(QDate::currentDate().year(),1,1),QDate::currentDate());
+  spending_f.setShowSubAccounts(true);
+  spending_f.setRowType( ReportConfigurationFilter::eExpenseIncome );
+  m_reports_f.push_back(spending_f);
+  
+  ReportConfigurationFilter networth_f;
+  networth_f.setName(i18n("Net Worth Over Time"));
+  networth_f.setDateFilter(QDate(QDate::currentDate().year(),1,1),QDate::currentDate());
+  networth_f.setShowSubAccounts(false);
+  networth_f.setRowType( ReportConfigurationFilter::eAssetLiability );
+  m_reports_f.push_back(networth_f);
+  
   m_qvboxlayoutPage = new QVBoxLayout(this);
   m_qvboxlayoutPage->setSpacing( 6 );
   m_qvboxlayoutPage->setMargin( 11 );
@@ -91,7 +93,7 @@ KReportsView::KReportsView(QWidget *parent, const char *name )
   m_tabLayout.push_back(new QVBoxLayout( m_tab[0], 11, 6, "tabLayout[0]"));
   m_part.push_back(new KHTMLPart(m_tab[0], "htmlpart_km2[0]"));
   m_tabLayout[0]->addWidget( m_part[0]->view() );
-  m_reportTabWidget->insertTab( m_tab[0], m_reports[0].getName() );
+  m_reportTabWidget->insertTab( m_tab[0], m_reports_f[0].getName() );
   connect(m_part[0]->browserExtension(), SIGNAL(openURLRequest(const KURL&, const KParts::URLArgs&)),
           this, SLOT(slotOpenURL(const KURL&, const KParts::URLArgs&)));
 
@@ -99,7 +101,7 @@ KReportsView::KReportsView(QWidget *parent, const char *name )
   m_tabLayout.push_back(new QVBoxLayout( m_tab[1], 11, 6, "tabLayout[1]"));
   m_part.push_back( new KHTMLPart(m_tab[1], "htmlpart_km2[1]"));
   m_tabLayout[1]->addWidget( m_part[1]->view() );
-  m_reportTabWidget->insertTab( m_tab[1], m_reports[1].getName() );
+  m_reportTabWidget->insertTab( m_tab[1], m_reports_f[1].getName() );
   connect(m_part[1]->browserExtension(), SIGNAL(openURLRequest(const KURL&, const KParts::URLArgs&)),
           this, SLOT(slotOpenURL(const KURL&, const KParts::URLArgs&)));
   
@@ -117,7 +119,7 @@ void KReportsView::show()
   emit signalViewActivated();
 }
 
-const QString KReportsView::createTable(const ReportConfiguration& report, const QString& links) const
+const QString KReportsView::createTable(int page, const QString& links) const
 {
   DEBUG_ENTER("KReportsView::createTable()");
   
@@ -131,7 +133,7 @@ const QString KReportsView::createTable(const ReportConfiguration& report, const
   QString html;
   html += header;
   html += links;
-  html += PivotTable( report ).renderHTML();
+  html += PivotTable( m_reports_f[page] ).renderHTML();
   html += footer;
 
   return html;
@@ -148,11 +150,11 @@ void KReportsView::slotRefreshView(void)
   links += linkfull(VIEW_REPORTS, QString("?command=save&target=1"),i18n("Save to File"));
   
   m_part[0]->begin();
-  m_part[0]->write(createTable(m_reports[0],links));
+  m_part[0]->write(createTable(0,links));
   m_part[0]->end();
 
   m_part[1]->begin();
-  m_part[1]->write(createTable(m_reports[1],links));
+  m_part[1]->write(createTable(1,links));
   m_part[1]->end();
 }
 
@@ -163,7 +165,7 @@ void KReportsView::slotPrintView(void)
   KHTMLPart part(this, "htmlpart_km2");
 
   part.begin();
-  part.write(createTable(m_reports[page]));
+  part.write(createTable(page));
   part.end();
 
   part.view()->print();
@@ -173,7 +175,7 @@ void KReportsView::slotCopyView(void)
 {
   int page = m_reportTabWidget->currentPageIndex();
 
-  QTextDrag* pdrag =  new QTextDrag( createTable(m_reports[page]) );
+  QTextDrag* pdrag =  new QTextDrag( createTable(page) );
   pdrag->setSubtype("html");
   QApplication::clipboard()->setData(pdrag);
 }
@@ -193,25 +195,22 @@ void KReportsView::slotSaveView(void)
     QFile file( newName );
     if ( file.open( IO_WriteOnly ) ) {
       QTextStream stream( &file );
-      stream <<  createTable(m_reports[page]);
+      stream <<  createTable(page);
       file.close();
     }
   }
 }
 
-#include <kmessagebox.h>
-#include "../dialogs/kreportconfigurationdlg.h"
-
 void KReportsView::slotConfigure(void)
 {
   int page = m_reportTabWidget->currentPageIndex();
 
-  KReportConfigurationDlg dlg(m_reports[page]);
+  KReportConfigurationFilterDlg dlg(m_reports_f[page]);
 
   if (dlg.exec())
   {
-    m_reports[page] = dlg.getResult();
-    m_reportTabWidget->changeTab( m_tab[page], m_reports[page].getName() );
+    m_reports_f[page] = dlg.getConfig();
+    m_reportTabWidget->changeTab( m_tab[page], m_reports_f[page].getName() );
 
     slotRefreshView();
   }

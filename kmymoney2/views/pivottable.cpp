@@ -48,9 +48,6 @@
 // Project Includes
 #include "pivottable.h"
 
-// (Ace) The reports are starting to proliferate helper classes, and clutter the
-// views class tree.  So I created a separate namespace for them.
-
 namespace reports {
 
 const QString accountTypeToString(const MyMoneyAccount::accountTypeE accountType)
@@ -109,22 +106,31 @@ const QString accountTypeToString(const MyMoneyAccount::accountTypeE accountType
 }
 
 QString Tester::m_sTabs;
+bool Tester::m_sEnabled = true;
 
-Tester::Tester( const QString& _name ): m_methodName( _name )
+Tester::Tester( const QString& _name ): m_methodName( _name ), m_enabled( m_sEnabled )
 {
-  qDebug( "%s%s(): ENTER", m_sTabs.latin1(), m_methodName.latin1() );
-  m_sTabs.append("  ");
+  if (m_enabled)
+  {
+    qDebug( "%s%s(): ENTER", m_sTabs.latin1(), m_methodName.latin1() );
+    m_sTabs.append("  ");
+
+  }
 }
 
 Tester::~Tester()
 {
-  m_sTabs.remove(0,2);
-  qDebug( "%s%s(): EXIT", m_sTabs.latin1(), m_methodName.latin1() );
+  if ( m_enabled )
+  {
+    m_sTabs.remove(0,2);
+    qDebug( "%s%s(): EXIT", m_sTabs.latin1(), m_methodName.latin1() );
+  }
 }
 
 void Tester::output( const QString& _text )
 {
-  qDebug( "%s%s(): %s", m_sTabs.latin1(), m_methodName.latin1(), _text.latin1() );
+  if ( m_enabled )
+    qDebug( "%s%s(): %s", m_sTabs.latin1(), m_methodName.latin1(), _text.latin1() );
 }
 
 AccountDescriptor::AccountDescriptor( void )
@@ -166,6 +172,12 @@ void AccountDescriptor::calculateAccountHierarchy( void )
     parentid = m_file->account(resultid).parentAccountId();
     m_names.prepend(m_file->account(resultid).name());
   }
+}
+
+void ReportConfigurationFilter::assignFilter(const MyMoneyTransactionFilter& copy)
+{
+  DEBUG_ENTER("ReportConfigurationFilter::assignFilter");
+  MyMoneyTransactionFilter::operator=(copy);
 }
 
 MyMoneyMoney AccountDescriptor::currencyPrice(const QDate& date) const
@@ -253,8 +265,8 @@ QString AccountDescriptor::getTopLevel( void ) const
   return m_names.first();
 }
 
-PivotTable::PivotTable( ReportConfiguration::ERowFilter _type, const MyMoneyTransactionFilter& _filter ):
-  m_filter( _filter ), m_usingFilter( true )
+PivotTable::PivotTable( const ReportConfigurationFilter& _config_f ):
+  m_config_f( _config_f )
 {
   DEBUG_ENTER("PivotTable::PivotTable(ERowFilter,MyMoneyTransactionFilter&)");
 
@@ -268,41 +280,58 @@ PivotTable::PivotTable( ReportConfiguration::ERowFilter _type, const MyMoneyTran
   // Initialize member variables
   //
 
-  m_displayRowTotals = (_type == ReportConfiguration::eAssetLiability);
-  m_showSubCategories = true; // config.getShowSubAccounts();
-  m_name = "Filter report rewrite in progress";  //config.getName();
-
-  if ( _type == ReportConfiguration::eAssetLiability )
+  if ( m_config_f.getRowType() == ReportConfigurationFilter::eAssetLiability )
   {
     m_accounttypes.append(MyMoneyAccount::Asset);
     m_accounttypes.append(MyMoneyAccount::Liability);
   }
-  if ( _type == ReportConfiguration::eExpenseIncome )
+  if ( m_config_f.getRowType() == ReportConfigurationFilter::eExpenseIncome )
   {
     m_accounttypes.append(MyMoneyAccount::Expense);
     m_accounttypes.append(MyMoneyAccount::Income);
   }
 
-  m_beginDate = m_filter.fromDate();
-  m_endDate = m_filter.toDate();
+  m_beginDate = m_config_f.fromDate();
+  m_endDate = m_config_f.toDate();
 
-  // if begin and end date are invalid, the filter is not set at all
-  if ( !(m_beginDate.isValid() || m_endDate.isValid())) {
-    m_beginDate = QDate(QDate::currentDate().year(),1,1);
-    m_endDate = QDate(QDate::currentDate().year()+1,1,1).addDays(-1);
+  // if either begin or end date are invalid we have one of the following
+  // possible date filters:
+  //
+  // a) begin date not set - first transaction until given end date
+  // b) end date not set   - from given date until last transaction
+  // c) both not set       - first transaction until last transaction
+  //
+  // If there is no transaction in the engine at all, we use the current
+  // year as the filter criteria.
+
+  if ( !m_beginDate.isValid() || !m_endDate.isValid()) {
+    MyMoneyTransactionFilter filter;
+    QValueList<MyMoneyTransaction> list = file->transactionList(filter);
+    QValueList<MyMoneyTransaction>::Iterator it;
+    QDate tmpBegin, tmpEnd;
+
+    if(!list.isEmpty()) {
+      it = list.begin();
+      tmpBegin = (*it).postDate();
+      it = list.end(); --it;
+      tmpEnd = (*it).postDate();
+    } else {
+      tmpBegin = QDate(QDate::currentDate().year(),1,1); // the first date in the file
+      tmpEnd = QDate(QDate::currentDate().year(),12,31);// the last date in the file
+    }
+    if(!m_beginDate.isValid())
+      m_beginDate = tmpBegin;
+    if(!m_endDate.isValid())
+      m_endDate = tmpEnd;
   }
 
   if ( m_beginDate > m_endDate )
     m_beginDate = m_endDate;
 
-  // TODO: Reconsider this.  In the long-term it's probably not
-  // reasonable to only allow reports to consider full months.
-
   // strip out the 'days' component of the begin and end dates.
   // we're only concerned about the month & year.
   m_beginDate =  QDate( m_beginDate.year(), m_beginDate.month(), 1 );
-  QDate e = m_endDate.addDays(1);
-  m_endDate = QDate( e.year(), e.month(), 1 );
+  m_endDate = QDate( m_endDate.year(), m_endDate.month(), 1 ).addMonths(1);
 
   //
   // Determine column headings
@@ -326,17 +355,16 @@ PivotTable::PivotTable( ReportConfiguration::ERowFilter _type, const MyMoneyTran
   // (for running sum reports only)
   //
 
-  // TODO: Reconsider this coupling.  Should ALL asset/liability reports have running sums?
-  if ( _type == ReportConfiguration::eAssetLiability )
+  if ( m_config_f.getRunningSum() )
     calculateOpeningBalances();
 
   //
   // Populate all transactions into the row/column pivot grid
   //
 
-  m_filter.setReportAllSplits(false);
-  m_filter.setConsiderCategory(true);
-  QValueList<MyMoneyTransaction> transactions = file->transactionList(m_filter);
+  m_config_f.setReportAllSplits(false);
+  m_config_f.setConsiderCategory(true);
+  QValueList<MyMoneyTransaction> transactions = file->transactionList(m_config_f);
   QValueList<MyMoneyTransaction>::const_iterator it_transaction = transactions.begin();
   int colofs = m_beginDate.year() * 12 + m_beginDate.month() - 1;
 
@@ -382,8 +410,7 @@ PivotTable::PivotTable( ReportConfiguration::ERowFilter _type, const MyMoneyTran
   // (for running sum reports only)
   //
 
-  // TODO: Reconsider this coupling.  Should ALL asset/liability reports have running sums?
-  if ( _type == ReportConfiguration::eAssetLiability )
+  if ( m_config_f.getRunningSum() )
     calculateRunningSums();
 
   //
@@ -398,157 +425,6 @@ PivotTable::PivotTable( ReportConfiguration::ERowFilter _type, const MyMoneyTran
 
   calculateTotals();
 
-}
-
-PivotTable::PivotTable( const ReportConfiguration& config ):
-  m_config( config ), m_usingFilter( false )
-{
-  DEBUG_ENTER("PivotTable::PivotTable");
-
-  // TODO: Merge the reportconfiguration class into the pivottable class
-
-  //
-  // Initialize member variables
-  //
-
-  // strip out the 'days' component of the begin and end dates.
-  // we're only concerned about the month & year.
-  m_beginDate =  QDate( config.getStart().year(), config.getStart().month(), 1 );
-  QDate e = config.getEnd().addDays(1);
-  m_endDate = QDate( e.year(), e.month(), 1 );
-
-  m_displayRowTotals = !config.getRunningSum();
-  m_showSubCategories = config.getShowSubAccounts();
-  m_name = config.getName();
-
-  //
-  // Initialize locals
-  //
-
-  MyMoneyFile* file = MyMoneyFile::instance();
-
-  unsigned int configaccounts = config.getRowFilter();
-  if ( configaccounts == ReportConfiguration::eAssetLiability )
-  {
-    m_accounttypes.append(MyMoneyAccount::Asset);
-    m_accounttypes.append(MyMoneyAccount::Liability);
-  }
-  if ( configaccounts == ReportConfiguration::eExpenseIncome )
-  {
-    m_accounttypes.append(MyMoneyAccount::Expense);
-    m_accounttypes.append(MyMoneyAccount::Income);
-  }
-
-  //
-  // Determine column headings
-  //
-
-  // one column for the opening balance
-  m_columnHeadings.append( "Opening" );
-
-  // one for each month in the date range
-  QDate columndate = m_beginDate;
-  while ( columndate < m_endDate )
-  {
-    m_columnHeadings.append( QDate::shortMonthName(columndate.month()) );
-    columndate = columndate.addMonths( 1 );
-  }
-
-  m_numColumns =  m_columnHeadings.size();
-
-  //
-  // Get opening balances
-  // (for running sum reports only)
-  //
-
-  if ( config.getRunningSum() )
-    calculateOpeningBalances( );
-
-  //
-  // Populate all transactions into the row/column pivot grid
-  //
-
-  MyMoneyTransactionFilter filter;
-  filter.setReportAllSplits(false);
-  filter.setDateFilter(m_beginDate, m_endDate);
-  QValueList<MyMoneyTransaction> transactions = file->transactionList(filter);
-  QValueList<MyMoneyTransaction>::const_iterator it_transaction = transactions.begin();
-  int colofs = m_beginDate.year() * 12 + m_beginDate.month() - 1;
-
-  while ( it_transaction != transactions.end() )
-  {
-    QDate postdate = (*it_transaction).postDate();
-    int column = postdate.year() * 12 + postdate.month() - colofs;
-
-    // Include this transaction if ANY of the asset/liability
-    // accounts are included in the configuration filter.
-    QValueList<MyMoneySplit> splits = (*it_transaction).splits();
-    QValueList<MyMoneySplit>::const_iterator it_split = splits.begin();
-    bool include = false;
-    while ( it_split != splits.end() )
-    {
-      MyMoneyAccount splitAccount = file->account((*it_split).accountId());
-      if ( ( ( splitAccount.accountGroup() == MyMoneyAccount::Asset) ||
-            ( splitAccount.accountGroup() == MyMoneyAccount::Liability) )
-          && m_config.includesAccount(splitAccount.id()) )
-      {
-        include = true;
-        break;
-      }
-      ++it_split;
-    }
-
-    if ( include )
-    {
-      it_split = splits.begin();
-      while ( it_split != splits.end() )
-      {
-        MyMoneyAccount splitAccount = file->account((*it_split).accountId());
-
-        // Include this split only if the accounts is included in the configuration filter.
-        // only include this item if its account group is included in this report
-        if ( includesAccount( splitAccount ) )
-        {
-          // reverse sign to match common notation for cash flow direction, only for expense/income splits
-          MyMoneyMoney reverse((splitAccount.accountGroup() == MyMoneyAccount::Income) |
-                             (splitAccount.accountGroup() == MyMoneyAccount::Expense) ? -1 : 1, 1);
-          MyMoneyMoney value = (*it_split).value((*it_transaction).commodity(), splitAccount.currencyId())*reverse;
-
-          // the outer group is the account class (major account type)
-          QString outergroup = accountTypeToString(splitAccount.accountGroup());
-
-          // the row itself is the account
-          AccountDescriptor row( splitAccount.id() );
-
-          // add the value to its correct position in the pivot table
-          assignCell( outergroup, row, column, value );
-
-        }
-        ++it_split;
-      }
-    }
-    ++it_transaction;
-  }
-
-  //
-  // Calculate the running sums
-  // (for running sum reports only)
-  //
-
-  if ( config.getRunningSum() )
-    calculateRunningSums();
-
-  //
-  // Convert all values to the base currency
-  //
-
-  convertToBaseCurrency();
-
-  //
-  // Calculate row and column totals
-  //
-
-  calculateTotals();
 }
 
 void PivotTable::calculateOpeningBalances( void )
@@ -815,25 +691,17 @@ bool PivotTable::includesAccount( const MyMoneyAccount& account ) const
 {
   bool result = false;
 
-  if ( m_usingFilter )
-  {
-    if
+  if
+  (
+    m_accounttypes.contains(account.accountGroup())
+    &&
     (
-      m_accounttypes.contains(account.accountGroup())
-      &&
-      (
-        ( isCategory(account) && m_filter.includesCategory(account.id()) )
-        ||
-        ( !isCategory(account) && m_filter.includesAccount(account.id()) )
-      )
+      ( isCategory(account) && m_config_f.includesCategory(account.id()) )
+      ||
+      ( !isCategory(account) && m_config_f.includesAccount(account.id()) )
     )
-      result = true;
-  }
-  else
-  {
-    if ( m_accounttypes.contains(account.accountGroup()) && m_config.includesAccount(account.id()) )
-      result = true;
-  }
+  )
+    result = true;
 
   return result;
 }
@@ -842,13 +710,13 @@ QString PivotTable::renderHTML( void ) const
 {
   DEBUG_ENTER("PivotTable::renderHTML");
 
-  QString colspan = QString(" colspan=\"%1\"").arg(m_numColumns + 1 + (m_displayRowTotals ? 1 : 0) );
+  QString colspan = QString(" colspan=\"%1\"").arg(m_numColumns + 1 + (m_config_f.getShowRowTotals() ? 1 : 0) );
 
   //
   // Report Title
   //
 
-  QString result = QString("<h2 class=\"report\">%1</h2>\n").arg(m_name);
+  QString result = QString("<h2 class=\"report\">%1</h2>\n").arg(m_config_f.getName());
   result += QString("<div class=\"subtitle\">");
   result += i18n("All currencies converted to %1").arg(MyMoneyFile::instance()->baseCurrency().name());
   result += QString("</div>\n");
@@ -865,7 +733,7 @@ QString PivotTable::renderHTML( void ) const
   while ( column < m_numColumns )
     result += QString("<th>%1</th>").arg(m_columnHeadings[column++]);
 
-  if ( m_displayRowTotals )
+  if ( m_config_f.getShowRowTotals() )
     result += QString("<th>%1</th>").arg(i18n("Total"));
 
   result += "</tr>\n";
@@ -909,7 +777,7 @@ QString PivotTable::renderHTML( void ) const
         while ( column < m_numColumns )
           rowdata += QString("<td>%1</td>").arg(it_row.data()[column++].formatMoney());
 
-        if ( m_displayRowTotals )
+        if ( m_config_f.getShowRowTotals() )
           rowdata += QString("<td>%1</td>").arg((*it_row).m_total.formatMoney());
 
         //
@@ -936,7 +804,7 @@ QString PivotTable::renderHTML( void ) const
       // Inner Row Group Totals
       //
 
-      if ( m_showSubCategories && ((*it_innergroup).size() > 1 ))
+      if (  m_config_f.getShowSubAccounts() && ((*it_innergroup).size() > 1 ))
       {
         // Print the individual rows
         result += innergroupdata;
@@ -952,7 +820,7 @@ QString PivotTable::renderHTML( void ) const
         AccountDescriptor rowname = (*it_innergroup).begin().key();
         result += QString("<tr class=\"row-%1\"%2><td class=\"left\">%3</td>")
           .arg(rownum & 0x01 ? "even" : "odd")
-          .arg(m_showSubCategories ? "id=\"solo\"" : "" )
+          .arg( m_config_f.getShowSubAccounts() ? "id=\"solo\"" : "" )
           .arg(rowname.htmlTabbedName());
       }
 
@@ -960,7 +828,7 @@ QString PivotTable::renderHTML( void ) const
       while ( column < m_numColumns )
         result += QString("<td>%1</td>").arg((*it_innergroup).m_total[column++].formatMoney());
 
-      if ( m_displayRowTotals )
+      if (  m_config_f.getShowRowTotals() )
         result += QString("<td>%1</td>").arg((*it_innergroup).m_total.m_total.formatMoney());
 
       result += "</tr>\n";
@@ -978,7 +846,7 @@ QString PivotTable::renderHTML( void ) const
     while ( column < m_numColumns )
       result += QString("<td>%1</td>").arg((*it_outergroup).m_total[column++].formatMoney());
 
-    if ( m_displayRowTotals )
+    if (  m_config_f.getShowRowTotals() )
       result += QString("<td>%1</td>").arg((*it_outergroup).m_total.m_total.formatMoney());
 
     result += "</tr>\n";
@@ -996,7 +864,7 @@ QString PivotTable::renderHTML( void ) const
   while ( totalcolumn < m_numColumns )
     result += QString("<td>%1</td>").arg(m_grid.m_total[totalcolumn++].formatMoney());
 
-  if ( m_displayRowTotals )
+  if (  m_config_f.getShowRowTotals() )
     result += QString("<td>%1</td>").arg(m_grid.m_total.m_total.formatMoney());
 
   result += "</tr>\n";

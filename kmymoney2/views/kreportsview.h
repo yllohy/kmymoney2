@@ -60,7 +60,7 @@ private:
   QTabWidget* m_reportTabWidget;
   bool m_boolShowSubAccounts;
 
-  QValueVector<reports::ReportConfiguration> m_reports;
+  QValueVector<reports::ReportConfigurationFilter> m_reports_f;
     
 public:
   /**
@@ -93,7 +93,7 @@ public:
 
 protected:
   static const QString linkfull(const QString& view, const QString& query, const QString& label);
-  const QString createTable(const reports::ReportConfiguration& report, const QString& links = QString()) const;
+  const QString createTable(int page, const QString& links = QString()) const;
   
 public slots:
   void slotOpenURL(const KURL &url, const KParts::URLArgs& args);

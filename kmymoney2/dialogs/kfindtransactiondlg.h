@@ -117,7 +117,7 @@ public:
     *       is not shown in the find transaction dialog but the method
     *       must be provided as part of the IMyMoneyRegisterParent interface.
     */
-  const MyMoneyMoney balance(const int idx) const { return 0; };
+  const MyMoneyMoney balance(const int /*idx*/) const { return 0; };
 
   /**
     * This method is called by the engine whenever a required notification
@@ -167,7 +167,7 @@ private slots:
 signals:
   void transactionSelected(const QCString& accountId, const QCString& transactionId);
   
-private:
+protected:
   enum opTypeE {
     addAccountToFilter = 0,
     addCategoryToFilter,
@@ -180,9 +180,13 @@ private:
   void setupAmountPage(void);
   void setupPayeesPage(void);
   void setupDetailsPage(void);
+  
+  void setupFilter(void);
     
   void selectAllItems(QListView* view, const bool state);  
   void selectAllSubItems(QListViewItem* item, const bool state);
+  void selectItems(QListView* view, const QCStringList& list, const bool state);  
+  void selectSubItems(QListViewItem* item, const QCStringList& list, const bool state);
   
   void readConfig(void);
   void writeConfig(void);
@@ -207,11 +211,11 @@ private:
   const bool allItemsSelected(const QListView* view) const;
   const bool allItemsSelected(const QListViewItem *item) const;
 
-  void scanCheckListItems(QListView* view, const opTypeE op);
-  void scanCheckListItems(QListViewItem* item, const opTypeE op);
+  void scanCheckListItems(const QListView* view, const opTypeE op);
+  void scanCheckListItems(const QListViewItem* item, const opTypeE op);
   void addItemToFilter(const opTypeE op, const QCString& id);
 
-private:
+protected:
   QDate                m_startDates[dateOptionCount];
   QDate                m_endDates[dateOptionCount];
 

@@ -9,7 +9,7 @@
                            John C <thetacoturtle@users.sourceforge.net>
                            Thomas Baumgart <ipwizard@users.sourceforge.net>
                            Kevin Tambascio <ktambascio@users.sourceforge.net>
-                           Ace Jones <ace.jones@hotpop.com>
+                           Ace Jones <ace.j@hotpop.com>
  ***************************************************************************/
 
 /***************************************************************************
@@ -35,6 +35,7 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 #include "../mymoney/mymoneyfile.h"
+#include "../mymoney/mymoneytransactionfilter.h"
 
 class MyMoneyTransactionFilter;
 
@@ -48,72 +49,71 @@ namespace reports {
 #define DEBUG_ENTER(x) Tester ___TEST(x)
 #define DEBUG_OUTPUT(x) ___TEST.output(x)
 #define DEBUG_OUTPUT_IF(x,y) { if (x) ___TEST.output(y); }
+#define DEBUG_ENABLE(x) Tester::enable(x)
 #else
 #define DEBUG_ENTER(x)
 #define DEBUG_OUTPUT(x)
 #define DEBUG_OUTPUT_IF(x,y)
+#define DEBUG_ENABLE(x) 
 #endif
 
 class Tester
 {
   QString m_methodName;
   static QString m_sTabs;
+  static bool m_sEnabled;
+  bool m_enabled;
 public:
   Tester( const QString& _name );
   ~Tester();
   void output( const QString& _text );
+  static void enable( bool _e ) { m_sEnabled = _e; }
 };
 
-class ReportConfiguration
+class ReportConfigurationFilter: public MyMoneyTransactionFilter
 {
 public:
-  enum ERowFilter { eNone = 0x0, eAsset = 0x1, eLiability = 0x2, eAssetLiability = 0x3, eExpense = 0x4, eIncome = 0x8, eExpenseIncome = 0xc };
+  enum ERowType { eNoRows = 0x0, eAsset = 0x1, eLiability = 0x2, eAssetLiability = 0x3, eExpense = 0x4, eIncome = 0x8, eExpenseIncome = 0xc };
+  enum EColumnType { eNoColumns = 0, eMonths, eBiMonths, eQuarters, eYears };
 private:
   QString m_name;
-  QDate m_beginDate;
-  QDate m_endDate;
   bool m_showSubAccounts;
   bool m_showRowTotals;
   bool m_convertCurrency;
-  bool m_includesAllAccounts;
-  enum ERowFilter m_rowFilter;
-  QValueList<QString> m_accounts;
+  enum ERowType m_rowType;
+  enum EColumnType m_columnType;
 
 public:
-  ReportConfiguration(void):
+  ReportConfigurationFilter(ERowType _rt = eExpenseIncome, EColumnType _ct = eMonths):
     m_name("Unconfigured Report"),
-    m_beginDate(QDate::currentDate().addDays(-365)),
-    m_endDate(QDate::currentDate()),
     m_showSubAccounts(false),
     m_convertCurrency(true),
-    m_includesAllAccounts(true),
-    m_rowFilter(eExpenseIncome)
-  {}
-  ReportConfiguration(ERowFilter _rf, const QDate& _db, const QDate& _de):
+    m_rowType(_rt),
+    m_columnType(_ct)
+  {
+  }
+  ReportConfigurationFilter(ERowType _rt, EColumnType _ct, const QDate& _db, const QDate& _de):
     m_name("Unconfigured Report"),
-    m_beginDate(_db),
-    m_endDate(_de),
     m_showSubAccounts(false),
     m_convertCurrency(true),
-    m_includesAllAccounts(true),
-    m_rowFilter(_rf)
-  {}
+    m_rowType(_rt),
+    m_columnType(_ct)
+  {
+    setDateFilter(_db,_de);
+  }
   void setName(const QString& _s) { m_name = _s; }
-  void setDateRange(const QDate& _db, const QDate& _de) { m_beginDate = _db; m_endDate = _de; }
   void setShowSubAccounts(bool _f) { m_showSubAccounts = _f; }
-  void setShowRowTotals(bool _f) { m_showRowTotals = _f; }
   void setConvertCurrency(bool _f) { m_convertCurrency = _f; }
-  void setRowFilter(unsigned int _e) { m_rowFilter = static_cast<ERowFilter>(_e); }
-  const QDate& getStart(void) const { return m_beginDate; }
-  const QDate& getEnd(void) const { return m_endDate; }
+  void setRowType(ERowType _rt) { m_rowType = _rt; }
+  void setColumnType(EColumnType _ct) { m_columnType = _ct; }
+  void assignFilter(const MyMoneyTransactionFilter& _filter);
   const QString& getName(void) const { return m_name; }
   bool getShowSubAccounts(void) const { return m_showSubAccounts; }
   bool getShowRowTotals(void) const { return m_showRowTotals; }
-  unsigned int getRowFilter(void) const { return m_rowFilter; }
-  bool getRunningSum(void) const { return ((m_rowFilter & eAsset) || (m_rowFilter & eLiability)); }
-  bool includesAccount(const QString& id ) const { if ( m_includesAllAccounts ) return true; else return (m_accounts.contains(id) > 0); }
-  void setIncludesAccount(const QString& id, bool in) { m_includesAllAccounts = false; m_accounts.remove(id); if (in) m_accounts.append(id); }
-  void setIncludesAccount(const QCString& id, bool in) { setIncludesAccount(QString(id),in); }
+  ERowType getRowType(void) const { return m_rowType; }
+  EColumnType getColumnType(void) const { return m_columnType; }
+  bool getRunningSum(void) const { return ((m_rowType & eAsset) || (m_rowType & eLiability)); }
+  bool getConvertCurrency(void) const { return m_convertCurrency; }
 
 };
 
@@ -274,25 +274,19 @@ private:
     QValueList<MyMoneyAccount::accountTypeE> m_accounttypes;
 
     QStringList m_columnHeadings;
-    bool m_displayRowTotals;
     int m_numColumns;
     QDate m_beginDate;
     QDate m_endDate;
-    bool m_showSubCategories;
-    QString m_name;
-    ReportConfiguration m_config;
-    MyMoneyTransactionFilter m_filter;
-    bool m_usingFilter;
+    
+    ReportConfigurationFilter m_config_f;
 
 public:
   /**
     * Create a Pivot table style report
     *
-    * @param ReportConfiguration The configuration parameters for this report
+    * @param ReportConfigurationFilter The configuration parameters for this report
     */
-    PivotTable( const ReportConfiguration& _config );
-    PivotTable( ReportConfiguration::ERowFilter _type, const MyMoneyTransactionFilter& _filter );
-
+    PivotTable( const ReportConfigurationFilter& _config_f );
 
   /**
     * Render the report to an HTML stream.

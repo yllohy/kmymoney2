@@ -460,6 +460,39 @@ void kMyMoneyAccountSelector::selectAllAccounts(const bool state)
   emit stateChanged();
 }
 
+void kMyMoneyAccountSelector::selectAccounts(const QCStringList& accountlist, const bool state)
+{
+  QListViewItem* it_v;
+
+  for(it_v = m_listView->firstChild(); it_v != 0; it_v = it_v->nextSibling()) {
+    if(it_v->rtti() == 1) {
+      // TOM, why were you using static_cast for these? (ace)
+      kMyMoneyCheckListItem* it_c = dynamic_cast<kMyMoneyCheckListItem*>(it_v);
+      if(it_c->type() == QCheckListItem::CheckBox && accountlist.contains(it_c->id())) {
+        it_c->setOn(state);
+      }
+      selectSubAccounts(it_v, accountlist, state);
+    }
+  }
+  emit stateChanged();
+}
+
+void kMyMoneyAccountSelector::selectSubAccounts(QListViewItem* item, const QCStringList& accountlist, const bool state)
+{
+  QListViewItem* it_v;
+
+  for(it_v = item->firstChild(); it_v != 0; it_v = it_v->nextSibling()) {
+    if(it_v->rtti() == 1) {
+      // TOM, why were you using static_cast for these? (ace)
+      kMyMoneyCheckListItem* it_c = dynamic_cast<kMyMoneyCheckListItem*>(it_v);
+      if(it_c->type() == QCheckListItem::CheckBox && accountlist.contains(it_c->id())) {
+        it_c->setOn(state);
+      }
+      selectSubAccounts(it_v, accountlist, state);
+    }
+  }
+}
+
 void kMyMoneyAccountSelector::selectAllSubAccounts(QListViewItem* item, const bool state)
 {
   QListViewItem* it_v;
@@ -617,6 +650,7 @@ void kMyMoneyAccountSelector::setSelected(QListViewItem* item, const QCString& i
     setSelected(it_v, id, state);
   }
 }
+
 
 void kMyMoneyAccountSelector::ensureItemVisible(const QListViewItem *it_v)
 {

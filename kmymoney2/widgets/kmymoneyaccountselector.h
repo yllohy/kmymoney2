@@ -236,6 +236,25 @@ public:
     */
   const QCStringList accountList(const QValueList<MyMoneyAccount::accountTypeE>& list = QValueList<MyMoneyAccount::accountTypeE>()) const;
 
+  /**
+    * This method selects/deselects all items that
+    * are currently in the account list according
+    * to the parameter @p state.
+    *
+    * @param state select items if @p true, deselect otherwise
+    */
+  void selectAllAccounts(const bool state);
+  
+  /**
+    * This method selects/deselects all items that
+    * are currently in this object's account list AND are present in the supplied
+    * @p list of accounts to select, according to the @p state.
+    *
+    * @param list list of accounts to apply @p state to
+    * @param state select items if @p true, deselect otherwise
+    */
+  void selectAccounts(const QCStringList& accountlist, const bool state);
+  
 public slots:
   /**
     * This slot selects all items that are currently in
@@ -296,19 +315,15 @@ protected:
   const int loadSubAccounts(QListViewItem* parent, const QCStringList& list);
 
   /**
-    * This method selects/deselects all items that
-    * are currently in the account list according
-    * to the parameter @p state.
-    *
-    * @param state select items if @p true, deselect otherwise
-    */
-  void selectAllAccounts(const bool state);
-
-  /**
     * This is a helper method for selectAllItems().
     */
   void selectAllSubAccounts(QListViewItem* item, const bool state);
 
+  /**
+    * This is a helper method for selectAccounts().
+    */
+  void selectSubAccounts(QListViewItem* item, const QCStringList& accountlist, const bool state);
+  
   /**
     * This is a helper method for selectAllIncomeCategories()
     * and selectAllExpenseCategories().

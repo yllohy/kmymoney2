@@ -306,6 +306,21 @@ void KFindTransactionDlg::selectAllItems(QListView* view, const bool state)
   slotUpdateSelections();
 }
 
+void KFindTransactionDlg::selectItems(QListView* view, const QCStringList& list, const bool state)
+{
+  QListViewItem* it_v;
+
+  for(it_v = view->firstChild(); it_v != 0; it_v = it_v->nextSibling()) {
+    kMyMoneyCheckListItem* it_c = static_cast<kMyMoneyCheckListItem*>(it_v);
+    if(it_c->type() == QCheckListItem::CheckBox && list.contains(it_c->id())) {
+      it_c->setOn(state);
+    }
+    selectSubItems(it_v, list, state);
+  }
+
+  slotUpdateSelections();
+}
+
 void KFindTransactionDlg::setupCategoriesPage(void)
 {
   m_categoriesView->setSelectionMode(QListView::Multi);
@@ -324,6 +339,18 @@ void KFindTransactionDlg::selectAllSubItems(QListViewItem* item, const bool stat
   }
 }
 
+void KFindTransactionDlg::selectSubItems(QListViewItem* item, const QCStringList& list, const bool state)
+{
+  QListViewItem* it_v;
+
+  for(it_v = item->firstChild(); it_v != 0; it_v = it_v->nextSibling()) {
+    kMyMoneyCheckListItem* it_c = static_cast<kMyMoneyCheckListItem*>(it_v);
+    if(list.contains(it_c->id()))
+      it_c->setOn(state);
+    selectSubItems(it_v, list, state);
+  }
+}
+
 void KFindTransactionDlg::setupDatePage(void)
 {
   int yr, mon, day;
@@ -332,7 +359,7 @@ void KFindTransactionDlg::setupDatePage(void)
   day = QDate::currentDate().day();
 
   m_startDates[allDates] = QDate();
-  m_startDates[untilToday] = QDate();
+  m_startDates[untilToday] = QDate();  // earliest date representable with Qt
   m_startDates[currentMonth] = QDate(yr,mon,1);
   m_startDates[currentYear] = QDate(yr,1,1);
   m_startDates[monthToDate] = QDate(yr,mon,1);
@@ -516,7 +543,7 @@ void KFindTransactionDlg::addItemToFilter(const opTypeE op, const QCString& id)
   }
 }
 
-void KFindTransactionDlg::scanCheckListItems(QListViewItem* item, const opTypeE op)
+void KFindTransactionDlg::scanCheckListItems(const QListViewItem* item, const opTypeE op)
 {
   QListViewItem* it_v;
 
@@ -532,7 +559,7 @@ void KFindTransactionDlg::scanCheckListItems(QListViewItem* item, const opTypeE 
   }
 }
 
-void KFindTransactionDlg::scanCheckListItems(QListView* view, const opTypeE op)
+void KFindTransactionDlg::scanCheckListItems(const QListView* view, const opTypeE op)
 {
   QListViewItem* it_v;
 
@@ -548,9 +575,8 @@ void KFindTransactionDlg::scanCheckListItems(QListView* view, const opTypeE op)
   }
 }
 
-void KFindTransactionDlg::slotSearch(void)
+void KFindTransactionDlg::setupFilter(void)
 {
-  // setup the filter from the dialog widgets
   m_filter.clear();
 
   // Text tab
@@ -560,9 +586,10 @@ void KFindTransactionDlg::slotSearch(void)
   }
 
   // Account tab
-  // if(!m_accountsView->allAccountsSelected()) {
+  // TOM: Why was this commented out? (Ace)
+  if(!m_accountsView->allAccountsSelected()) {
     m_filter.addAccount(m_accountsView->selectedAccounts());
-  //}
+  }
 
   // Date tab
   if(m_dateRange->currentItem() != 0) {
@@ -616,6 +643,12 @@ void KFindTransactionDlg::slotSearch(void)
      && (!m_nrFromEdit->text().isEmpty() || !m_nrToEdit->text().isEmpty())) {
     m_filter.setNumberFilter(m_nrFromEdit->text(), m_nrToEdit->text());
   }
+}
+
+void KFindTransactionDlg::slotSearch(void)
+{
+  // setup the filter from the dialog widgets
+  setupFilter();
 
   // filter is setup, now fill the register
   slotRefreshView();

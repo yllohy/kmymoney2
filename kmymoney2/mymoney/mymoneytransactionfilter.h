@@ -303,6 +303,101 @@ public:
     */
   const bool includesAccount( const QCString& acc ) const;
 
+  /**
+    * This method is used to return information about the
+    * presence of a specific payee in the account filter.
+    * The payee in question is included in the filter set,
+    * if it has been set or no account filter is set.
+    *
+    * @param pye id of payee in question
+    * @return true if payee is in filter set, false otherwise
+    */
+  const bool includesPayee( const QCString& pye ) const;
+
+  /**
+    * This method is used to return information about the
+    * presence of a date filter.  
+    *
+    * @param from result value for the beginning of the date range
+    * @param to result value for the end of the date range
+    * @return true if an amount filter is set
+    */
+  const bool dateFilter( QDate& from, QDate& to ) const;
+  
+  /**
+    * This method is used to return information about the
+    * presence of an amount filter.  
+    *
+    * @param from result value for the low end of the amount range
+    * @param to result value for the high end of the amount range
+    * @return true if an amount filter is set
+    */
+  const bool amountFilter( MyMoneyMoney& from, MyMoneyMoney& to ) const;
+  
+  /**
+    * This method is used to return information about the
+    * presence of an number filter.  
+    *
+    * @param from result value for the low end of the number range
+    * @param to result value for the high end of the number range
+    * @return true if a number filter is set
+    */
+  const bool numberFilter( QString& from, QString& to ) const;
+  
+  /**
+    * This method returns whether a payee filter has been set,
+    * and if so, it returns all the payees set in the filter.
+    *
+    * @param list list to append payees into
+    * @return return true if a payee filter has been set
+    */
+  const bool payees(QCStringList& list) const;
+  
+  /**
+    * This method returns whether an account filter has been set,
+    * and if so, it returns all the accounts set in the filter.
+    *
+    * @param list list to append accounts into
+    * @return return true if an account filter has been set
+    */
+  const bool accounts(QCStringList& list) const;
+  
+  /**
+    * This method returns whether a category filter has been set,
+    * and if so, it returns all the categories set in the filter.
+    *
+    * @param list list to append categories into
+    * @return return true if a category filter has been set
+    */
+  const bool categories(QCStringList& list) const;
+  
+  /**
+    * This method returns whether a type filter has been set,
+    * and if so, it returns the first type in the filter.
+    *
+    * @param int int to replace with first type filter, untouched otherwise
+    * @return return true if a type filter has been set
+    */
+  const bool firstType(int& i) const;
+  
+  /**
+    * This method returns whether a state filter has been set,
+    * and if so, it returns the first state in the filter.
+    *
+    * @param int int to replace with first state filter, untouched otherwise
+    * @return return true if a state filter has been set
+    */
+  const bool firstState(int& i) const;
+  
+  /**
+    * This method returns whether a text filter has been set,
+    * and if so, it returns the text filter.
+    *
+    * @param text regexp to replace with text filter, or blank if none set
+    * @return return true if a text filter has been set
+    */
+  const bool textFilter(QRegExp& text) const;
+  
 private:
   /**
     * This is a conversion tool from MyMoneySplit::reconcileFlagE
@@ -336,7 +431,7 @@ private:
     */
   const validityOptionE validTransaction(const MyMoneyTransaction& transaction) const;
 
-private:
+protected:
   union FilterSet {
     unsigned  allFilter;
     struct {
