@@ -2091,6 +2091,7 @@ void KMyMoneyView::fixFile(void)
   QValueList<MyMoneySchedule>::Iterator it_s;
 
   for(it_a = accountList.begin(); it_a != accountList.end(); ++it_a) {
+    fixOpeningBalance(*it_a);
     if((*it_a).accountType() == MyMoneyAccount::Loan
     || (*it_a).accountType() == MyMoneyAccount::AssetLoan) {
       fixLoanAccount(*it_a);
@@ -2102,6 +2103,20 @@ void KMyMoneyView::fixFile(void)
   }
 
   fixTransactions();
+}
+
+void KMyMoneyView::fixOpeningBalance(MyMoneyAccount acc)
+{
+  if(!acc.openingBalance().isZero()) {
+    try {
+      MyMoneyFile::instance()->createOpeningBalanceTransaction(acc, acc.openingBalance());
+      acc.setOpeningBalance(MyMoneyMoney(0, 1));
+      MyMoneyFile::instance()->modifyAccount(acc);
+    } catch(MyMoneyException *e) {
+      qWarning("Unable to create opening balance transaction: %s", e->what().latin1());
+      delete e;
+    }
+  }
 }
 
 void KMyMoneyView::fixSchedule(MyMoneySchedule sched)

@@ -166,6 +166,10 @@ private:
 
   /**
     */
+  void fixOpeningBalance(MyMoneyAccount acc);
+
+  /**
+    */
   void fixTransactions(void);
   void fixSchedule(MyMoneySchedule sched);
   void fixDuplicateAccounts(MyMoneyTransaction& t);
