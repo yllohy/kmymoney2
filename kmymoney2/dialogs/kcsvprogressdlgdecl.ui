@@ -11,8 +11,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>593</width>
-            <height>419</height>
+            <width>668</width>
+            <height>388</height>
         </rect>
     </property>
     <property stdset="1">
@@ -118,7 +118,7 @@ You can cancel the process at any time by clicking on the Cancel button.</string
                     </property>
                     <property stdset="1">
                         <name>text</name>
-                        <string>Choose a file to export to:</string>
+                        <string>Choose the csv file:</string>
                     </property>
                 </widget>
                 <widget>
