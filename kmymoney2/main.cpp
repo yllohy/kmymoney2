@@ -128,12 +128,14 @@ int main(int argc, char *argv[])
       KTipDialog::showTip(kmymoney2, "", false);
       args->clear();
       rc = a->exec();
+    } else {
+      delete kmymoney2;
     }
   } else {
     KTipDialog::showTip(kmymoney2, "", false);
     kmymoney2->readFile();
     args->clear();
-      rc = a->exec();
+    rc = a->exec();
   }
 
   delete a;
