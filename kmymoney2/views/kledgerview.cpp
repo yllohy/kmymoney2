@@ -464,7 +464,8 @@ void KLedgerView::setupPointerAndBalanceArrays(void)
 
     while(--i >= 0) {
       m_balance[i] = balance;
-      balance -= m_transactionPtrVector[i]->splitByAccount(accountId()).value();
+      MyMoneySplit split = m_transactionPtrVector[i]->splitByAccount(accountId());
+      balance -= split.value(m_transactionPtrVector[i]->commodity(), m_account.currencyId());
       if(m_transactionPtrVector.sortType() == KTransactionPtrVector::SortPostDate) {
         if(m_transactionPtrVector[i]->postDate() > QDate::currentDate()) {
           m_register->setCurrentDateIndex(i+1);
@@ -1630,6 +1631,7 @@ void KLedgerView::slotEndEdit(void)
             fromValue = (*it).value();
             toValue = (*it).shares();
           }
+
           KCurrencyCalculator calc(fromCurrency,
                                    toCurrency,
                                    fromValue,
