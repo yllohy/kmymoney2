@@ -186,6 +186,7 @@ void KMyMoney2App::initActions()
   filePersonalData = new KAction(i18n("Personal Data..."), "info", 0, this, SLOT(slotFileViewPersonal()), actionCollection(), "file_personal_data");
   fileBackup = new KAction(i18n("Backup..."), "backup",0,this,SLOT(slotFileBackup()),actionCollection(),"file_backup");
   actionQifImport = new KAction(i18n("QIF ..."), "", 0, this, SLOT(slotQifImport()), actionCollection(), "file_import_qif");
+  actionOfxImport = new KAction(i18n("OFX ..."), "", 0, this, SLOT(slotOfxImport()), actionCollection(), "file_import_ofx");
   actionQifExport = new KAction(i18n("QIF ..."), "", 0, this, SLOT(slotQifExport()), actionCollection(), "file_export_qif");
   new KAction(i18n("Consistency Check"), "", 0, this, SLOT(slotFileConsitencyCheck()), actionCollection(), "file_consistency_check");
   
@@ -712,6 +713,11 @@ void KMyMoney2App::slotQifImportFinished(void)
   setEnabled(true);  
 }
 
+void KMyMoney2App::slotOfxImport()
+{
+
+}
+
 void KMyMoney2App::slotQifExport()
 {
   QString prevMsg = slotStatusMsg(i18n("Exporting file..."));
@@ -1057,6 +1063,7 @@ void KMyMoney2App::updateCaption(const bool skipActions)
     actionFindTransaction->setEnabled(myMoneyView->fileOpen());
     actionQifExport->setEnabled(myMoneyView->fileOpen());
     actionQifImport->setEnabled(myMoneyView->fileOpen());
+    actionOfxImport->setEnabled(myMoneyView->fileOpen());
     bankAdd->setEnabled(myMoneyView->fileOpen());
     accountAdd->setEnabled(myMoneyView->fileOpen());
   }

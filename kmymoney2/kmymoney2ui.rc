@@ -9,6 +9,7 @@
   <Menu name="file">
     <Menu name="import" icon="fileimport" append="save_merge"><text>&amp;Import</text>
       <Action name="file_import_qif"/>
+      <Action name="file_import_ofx"/>
     </Menu>
     <Menu name="export" icon="fileexport" append="save_merge"><text>E&amp;xport</text>
       <Action name="file_export_qif"/>

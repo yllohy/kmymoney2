@@ -109,6 +109,8 @@ protected slots:
     * Called when a QIF import is finished.
     */
   void slotQifImportFinished(void);
+
+  void slotOfxImport();
   
   /**
     * Called when the user wishes to export some transaction to a
@@ -343,6 +345,7 @@ private:
   KAction *actionQifImport;
   KAction *actionQifExport;
   KAction *actionFindTransaction;
+  KAction *actionOfxImport;
 
 
   enum backupStateE {
