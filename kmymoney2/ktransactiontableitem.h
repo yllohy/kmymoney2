@@ -32,6 +32,8 @@ class KTransactionTableItem : public QTableItem  {
 public:
 	KTransactionTableItem(QTable *t, EditType et, const QString &txt);
   void paint(QPainter *p, const QColorGroup &cg, const QRect &cr, bool selected);
+  /** No descriptions */
+  virtual void setContentFromEditor(QWidget* w);
 };
 
 #endif

@@ -19,14 +19,14 @@
 
 #include "kmymoneylineedit.h"
 
-kMyMoneyLineEdit::kMyMoneyLineEdit():KLineEdit(){
+kMyMoneyLineEdit::kMyMoneyLineEdit(QWidget *w):KLineEdit(w){
 }
 kMyMoneyLineEdit::~kMyMoneyLineEdit(){
 }
 /** No descriptions */
 bool kMyMoneyLineEdit::eventFilter(QObject *o , QEvent *e ){
 
-	if(e->type() == QEvent::KeyPress)
+	if(e->type() == QEvent::KeyRelease)
 	{
 		QKeyEvent *k = (QKeyEvent *) e;
     if((k->key() == Qt::Key_Return) ||

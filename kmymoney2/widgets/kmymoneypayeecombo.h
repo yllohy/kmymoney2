@@ -29,7 +29,7 @@
 class kMyMoneyPayeeCombo : public QComboBox  {
 	Q_OBJECT
 public: 
-	kMyMoneyPayeeCombo();
+	kMyMoneyPayeeCombo(QWidget *w);
 	~kMyMoneyPayeeCombo();
   /** No descriptions */
   virtual bool eventFilter(QObject *, QEvent *);

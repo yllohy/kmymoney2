@@ -19,7 +19,7 @@
 
 #include "kmymoneymethodcombo.h"
 
-kMyMoneyMethodCombo::kMyMoneyMethodCombo():KComboBox(){
+kMyMoneyMethodCombo::kMyMoneyMethodCombo(QWidget *w):KComboBox(w){
 
 	
 }

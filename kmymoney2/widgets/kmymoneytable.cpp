@@ -21,6 +21,7 @@
 kMyMoneyTable::kMyMoneyTable(QWidget *parent, const char *name )
  : QTable(parent,name)
 {
+	setFocusPolicy(QWidget::NoFocus);
 }
 
 kMyMoneyTable::~kMyMoneyTable()
@@ -43,6 +44,7 @@ QWidget* kMyMoneyTable::beginEdit(int row, int col, bool replace)
 {
   m_orig = text(row, col);
   return QTable::beginEdit(row, col, replace);
+
 }
 
 void kMyMoneyTable::insertWidget(int row,int col, QWidget* w)
@@ -112,3 +114,19 @@ void kMyMoneyTable::clearCellWidget(int row, int col)
 
 }
 
+/** No descriptions */
+void kMyMoneyTable::setCurrentCell(int row, int col){
+
+	clicked(row,col,m_button,m_point);
+}
+/** No descriptions */
+bool kMyMoneyTable::eventFilter(QObject *o, QEvent *e){
+
+	if(e->type() == QEvent::MouseButtonPress)
+	{
+     	QMouseEvent *m = (QMouseEvent *) e ;
+		m_point = m->pos();
+		m_button = m->button();
+	}
+	return QTable::eventFilter(o,e);
+}

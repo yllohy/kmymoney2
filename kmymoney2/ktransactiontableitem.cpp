@@ -39,3 +39,7 @@ void KTransactionTableItem::paint(QPainter *p, const QColorGroup &cg, const QRec
     p->setFont(p_settings->lists_cellFont());
   QTableItem::paint(p, g, cr, selected);
 }
+/** No descriptions */
+void KTransactionTableItem::setContentFromEditor(QWidget* w){
+
+}

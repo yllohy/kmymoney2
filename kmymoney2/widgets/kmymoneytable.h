@@ -40,6 +40,8 @@ private:
   QWidget* m_col8;
   QWidget* m_col9;
   QWidget* m_col10;
+  int m_button;
+  QPoint m_point;
 
 protected:
   void paintEmptyArea(QPainter *p, int cx, int cy, int cw, int ch);
@@ -55,9 +57,14 @@ public:
 
 
 	QString cellEditedOriginalText(void) { return m_orig; }
+public slots:
+  /** No descriptions */
+  virtual void setCurrentCell(int row, int col);
 
 protected slots:
 	virtual void columnWidthChanged(int col);
+  /** No descriptions */
+  bool eventFilter(QObject *o, QEvent *e);
 
 };
 

@@ -29,7 +29,7 @@
 class kMyMoneyLineEdit : public KLineEdit  {
 	Q_OBJECT
 public: 
-	kMyMoneyLineEdit();
+	kMyMoneyLineEdit(QWidget *w);
 	~kMyMoneyLineEdit();
   /** No descriptions */
   virtual bool eventFilter(QObject * , QEvent * );

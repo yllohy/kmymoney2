@@ -159,13 +159,13 @@ void KTransactionView::slotMethodCompleted()
 void KTransactionView::createInputWidgets()
 {
 
-	m_date = new kMyMoneyDateInput(transactionsTable, 0 );
-	m_method = new kMyMoneyMethodCombo();
-  m_payee = new kMyMoneyPayeeCombo();
-  m_payment = new kMyMoneyLineEdit();
-  m_withdrawal = new kMyMoneyLineEdit();
-	m_number = new kMyMoneyLineEdit();
-	m_category = new kMyMoneyCategoryCombo();
+	m_date = new kMyMoneyDateInput(0,QDate::currentDate());
+	m_method = new kMyMoneyMethodCombo(0);
+  m_payee = new kMyMoneyPayeeCombo(0);
+  m_payment = new kMyMoneyLineEdit(0);
+  m_withdrawal = new kMyMoneyLineEdit(0);
+	m_number = new kMyMoneyLineEdit(0);
+	m_category = new kMyMoneyCategoryCombo(0);
   m_enter = new KPushButton("Enter",0);
   m_cancel = new KPushButton("Cancel",0);
   m_delete = new KPushButton("Delete",0);
@@ -268,6 +268,8 @@ void KTransactionView::loadPayees()
 
 void KTransactionView::slotFocusChange(int row, int, int button, const QPoint& /*point*/)
 {
+   if(m_date->isVisible())
+		return;
 	int transrow = row / 2;
   int realrow = transrow * 2;
   if ((transrow != transactionsTable->numRows()-1) && (transactionsTable->numRows()>=1)) {
@@ -293,24 +295,34 @@ void KTransactionView::slotFocusChange(int row, int, int button, const QPoint& /
       	}
 			}
       transactionsTable->setCellWidget(realrow, 0,m_date);
+	  //m_date->setGeometry(transactionsTable->cellGeometry(realrow,0));
       m_date->show();
       transactionsTable->setCellWidget(realrow ,1,m_method);
+	  //m_method->setGeometry(transactionsTable->cellGeometry(realrow,1));
       m_method->show();
       transactionsTable->setCellWidget(realrow ,2,m_payee);
+	  //m_payee->setGeometry(transactionsTable->cellGeometry(realrow,2));
       m_payee->show();
       transactionsTable->setCellWidget(realrow ,4,m_payment);
+	  //m_payment->setGeometry(transactionsTable->cellGeometry(realrow,4));
       m_payment->show();
       transactionsTable->setCellWidget(realrow ,5,m_withdrawal);
+	  //m_withdrawal->setGeometry(transactionsTable->cellGeometry(realrow,5));
       m_withdrawal->show();
       transactionsTable->setCellWidget(realrow + 1 ,1,m_number);
+	  //m_number->setGeometry(transactionsTable->cellGeometry(realrow + 1,1));
       m_number->show();
       transactionsTable->setCellWidget(realrow + 1 ,2,m_category);
+	  //m_category->setGeometry(transactionsTable->cellGeometry(realrow + 1,2));
       m_category->show();
       transactionsTable->setCellWidget(realrow + 1 ,4,m_enter);
+	  //m_enter->setGeometry(transactionsTable->cellGeometry(realrow + 1,4));
       m_enter->show();
       transactionsTable->setCellWidget(realrow + 1 ,5,m_cancel);
+	  //m_cancel->setGeometry(transactionsTable->cellGeometry(realrow + 1,5));
       m_cancel->show();
       transactionsTable->setCellWidget(realrow + 1 ,6,m_delete);
+	  //m_delete->setGeometry(transactionsTable->cellGeometry(realrow + 1,6));
       m_delete->show();
       updateInputLists();
       if(m_transactions.count() > transrow)
@@ -681,6 +693,7 @@ void KTransactionView::enterClicked()
   m_filePointer->setDirty(true);
   updateTransactionList(-1, -1);
 	emit transactionListChanged();
+
 }
 
 void KTransactionView::clearInputData()
@@ -698,7 +711,6 @@ void KTransactionView::clearInputData()
 
 void KTransactionView::setInputData(const MyMoneyTransaction transaction)
 {
-
 	m_date->setDate(transaction.date());
 	m_payee->setEditText(transaction.payee());
 	m_number->setText(transaction.number());
@@ -1064,7 +1076,7 @@ void KTransactionView::cancelClicked()
 	m_enter->hide();
 	m_cancel->hide();
 	m_delete->hide();
-
+	
 }
 
 void KTransactionView::deleteClicked()

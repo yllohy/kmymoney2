@@ -1,3 +1,6 @@
+2001-05-28 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
+  * Fixed problems caused working with QT in RedHat 7.1
+
 2001-05-25 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
   * Added QIF export of categories and transactions
 

@@ -19,14 +19,14 @@
 
 #include "kmymoneycategorycombo.h"
 
-kMyMoneyCategoryCombo::kMyMoneyCategoryCombo():KComboBox(){
+kMyMoneyCategoryCombo::kMyMoneyCategoryCombo(QWidget *w):KComboBox(w){
 }
 kMyMoneyCategoryCombo::~kMyMoneyCategoryCombo(){
 }
 /** No descriptions */
 bool kMyMoneyCategoryCombo::eventFilter( QObject *o , QEvent *e ){
 
-	if(e->type() == QEvent::KeyPress)
+	if(e->type() == QEvent::KeyRelease)
 	{
 		QKeyEvent *k = (QKeyEvent *) e;
     if((k->key() == Qt::Key_Return) ||
