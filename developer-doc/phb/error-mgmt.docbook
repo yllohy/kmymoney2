@@ -1,0 +1,191 @@
+<chapter id="problem-mgmt">
+<title>Problem Management</title>
+<para>
+This chapter is a first draft. It contains some ideas that have to be 
+validated by the developer community.
+</para>
+
+<sect1 id="problem-reporting">
+<title>Reporting problems</title>
+<para>
+Problems (that covers errors, enhancement request, etc.) concerning the
+&app; project are maintained
+using the SourceForge.net platform. This is the sole location, where
+problems have to be reported. The source for such a problem report can be
+one of the developers or any other user of &app;.
+</para>
+
+<sect2 id="problem-reference">
+<title>Referencing problems</title>
+<para>
+Once added to the database, the problem will be assigned a unique problem
+number. This number must be mentioned whenever the problem is referenced
+(e.g. in the subject of a mail to the developer mailing-list, a checkin
+comment or an entry in the ChangeLog file). To allow searches for the number,
+a specific format has to be used for these references.
+
+The format is
+<command>#<emphasis>assigned-number</emphasis></command>, e.g. #481229.
+</para>
+</sect2>
+</sect1>
+
+
+<sect1 id="problem-attributes">
+<title>Problem attributes</title>
+<para>
+Besides the fixed problem number which is created when the report is filed,
+ each
+problem has a couple of attributes that might change during the
+life-cycle of the problem. They will be described in the following
+chapters.
+</para>
+
+<sect2 id="problem-reported-by">
+<title>Reported By</title>
+<para>
+As the problem number, this field is fix. It represents the SourceForge
+username of the individual who filed the report.
+</para>
+</sect2>
+
+<sect2 id="problem-severity-level">
+<title>Severity level</title>
+<para>
+The SourceForge.net platform allows to assign a severity level to each
+problem. It ranges from 1 to 10. The meaning in our project and the
+consequences are defined as follows:
+
+<orderedlist>
+<listitem>
+<para>
+TBD!
+</para>
+</listitem>
+
+<listitem>
+<para>
+TBD!
+</para>
+</listitem>
+
+<listitem>
+<para>
+TBD!
+</para>
+</listitem>
+
+<listitem>
+<para>
+TBD!
+</para>
+</listitem>
+
+<listitem>
+<para>
+TBD!
+</para>
+</listitem>
+
+<listitem>
+<para>
+TBD!
+</para>
+</listitem>
+
+<listitem>
+<para>
+TBD!
+</para>
+</listitem>
+
+<listitem>
+<para>
+TBD!
+</para>
+</listitem>
+
+<listitem>
+<para>
+TBD!
+</para>
+</listitem>
+
+<listitem>
+<para>
+TBD!
+</para>
+</listitem>
+
+</orderedlist>
+</para>
+</sect2>
+
+<sect2 id="problem-area">
+<title>Area</title>
+<para>
+TBD!
+</para>
+</sect2>
+
+<sect2 id="problem-assigned-to">
+<title>Assigned To</title>
+<para>
+This field represents the SourceForge.net username of the individual
+working on the problem. Each developer should pick problems he feels
+competent to work on. The possibility to assign another developer to a
+problem should be used only to gather a comment from this developer. This
+should be clearly marked as comment with the report.
+</para>
+
+<note>
+<para>
+The number of unassigned problem reports should be 0 most of the time to
+give clear signal to the world that the developers are working on the
+project!
+</para>
+</note>
+</sect2>
+
+<sect2 id="problem-status">
+<title>Status</title>
+<para>
+Each problem has a status. Right after filing a report, it will be assigned
+the status 'open' automatically by the SourceForge.net platform. Whenever a
+developer is working on the problem, he will have to modifiy the value of
+this field to reflect the current status. The following values are
+available and have the associated meaning:
+
+<table>
+<title>Available problem status values</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Status</entry>
+<entry>Meaning</entry>
+</row>
+</thead>
+
+<tbody>
+<row>
+<entry>open</entry>
+<entry>
+The problem is not yet fixed. A developer might be working on it.
+</entry>
+</row>
+
+<row>
+<entry>OTHER</entry>
+<entry>
+Have to be described!
+</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+
+</para>
+</sect2>
+</sect1>
+</chapter>

@@ -39,7 +39,7 @@ SourcForge.net.
 <title>Filling the sandbox for the first time</title>
 <screen>
 
-  <prompt>% </prompt><userinput>cvs -d <emphasis>username</emphasis>@kmymoney2.sourceforge.net:kmymoney2 co kmymoney2</userinput>
+  <prompt>thb:~&gt; </prompt><userinput>cvs -d <emphasis>username</emphasis>@kmymoney2.sourceforge.net:kmymoney2 co kmymoney2</userinput>
 
 
 </screen>
@@ -63,6 +63,15 @@ This stage is sometimes referred to as the <quote>latest-and-greatest</quote>
 and is the latest development stage.
 </para>
 
+<note>
+<para>
+If you plan to keep two or more branches of the project on your machine,
+please see the chapter <emphasis>
+<link linkend="multiple-branches">Keeping different
+branches on the same machine</link></emphasis> for details.
+</para>
+</note>
+
 <para>
 If for some reason, you need to checkout a version of the project that is
 different from the development stage (e.g. you want to fix a bug in a
@@ -74,7 +83,7 @@ as parameter to the checkout command.
 <title>Filling the sandbox for the first time with a specific version</title>
 <screen>
 
-  <prompt>% </prompt><userinput>cvs -d <emphasis>username</emphasis>@kmymoney2.sourceforge.net:kmymoney2 -r <emphasis>version-tag</emphasis> co kmymoney2</userinput>
+  <prompt>thb:~&gt; </prompt><userinput>cvs -d <emphasis>username</emphasis>@kmymoney2.sourceforge.net:kmymoney2 -r <emphasis>version-tag</emphasis> co kmymoney2</userinput>
 
 
 </screen>
@@ -195,10 +204,10 @@ changes made by other people.
  
 <screen>
 
-  <prompt>% </prompt><userinput>cvs -q upd</userinput>
+  <prompt>thb:~&gt; </prompt><userinput>cvs -q upd</userinput>
   U README
   M knewbankdlg.cpp
-  <prompt>% </prompt>
+  <prompt>thb:~&gt; </prompt>
 
 
 </screen>
@@ -222,7 +231,7 @@ As the next step, one should check what has been changed in the file
 
 <screen>
 
-  <prompt>% </prompt><userinput>cvs -q diff knewbankdlg.cpp</userinput>
+  <prompt>thb:~&gt; </prompt><userinput>cvs -q diff knewbankdlg.cpp</userinput>
   74,75d73
   <     return;
   <   }
@@ -246,7 +255,7 @@ As the next step, one should check what has been changed in the file
   >     m_sortCode = sortCodeEdit->text();
   >     accept();
   >   }
-  <prompt>% </prompt>
+  <prompt>thb:~&gt; </prompt>
 
 
 </screen>
@@ -259,14 +268,13 @@ started, which is checking the changes back into the repository.
 </para>
 <screen>
 
-  <prompt>% </prompt><userinput>cvs -q ci -m "Avoid return in the middle of a function" knewbankdlg.cpp</userinput>
+  <prompt>thb:~&gt; </prompt><userinput>cvs -q ci -m "Avoid return in the middle of a function" knewbankdlg.cpp</userinput>
   Checking in knewbankdlg.cpp;
   kmymoney2/kmymoney2/knewbankdlg.cpp,v  <--  knewbankdlg.cpp
   new revision: 1.10; previous revision: 1.9
   done
-  <prompt>% </prompt>
+  <prompt>thb:~&gt; </prompt>
 
-FIXME: Hope this is right.
 
 </screen>
 
@@ -340,10 +348,10 @@ the sandbox.
 
 <screen>
 
-  <prompt>% </prompt><userinput>cvs -q upd</userinput>
+  <prompt>thb:~&gt; </prompt><userinput>cvs -q upd</userinput>
   U README
   M knewbankdlg.cpp
-  <prompt>% </prompt>
+  <prompt>thb:~&gt; </prompt>
 
 
 </screen>
@@ -367,9 +375,9 @@ If you run the same command again, the output will change, as the file
 
 <screen>
 
-  <prompt>% </prompt><userinput>cvs -q upd</userinput>
+  <prompt>thb:~&gt; </prompt><userinput>cvs -q upd</userinput>
   M knewbankdlg.cpp
-  <prompt>% </prompt>
+  <prompt>thb:~&gt; </prompt>
 
 
 </screen>
@@ -387,10 +395,10 @@ can be accomplished by using the -n option to the update command.
 <title>Checking the status of files in the sandbox</title>
 <screen>
 
-  <prompt>% </prompt><userinput>cvs -nq upd</userinput>
+  <prompt>thb:~&gt; </prompt><userinput>cvs -nq upd</userinput>
   U README
   M knewbankdlg.cpp
-  <prompt>% </prompt>
+  <prompt>thb:~&gt; </prompt>
 
 
 </screen>
@@ -425,13 +433,13 @@ be dismissed. The following commands perform this operation:
 <title>Reverting changes made to the sandbox</title>
 <screen>
 
-  <prompt>% </prompt><userinput>cvs -q upd</userinput>
+  <prompt>thb:~&gt; </prompt><userinput>cvs -q upd</userinput>
   M knewbankdlg.cpp
-  <prompt>% </prompt><userinput>rm knewbankdlg.cpp</userinput>
-  <prompt>% </prompt><userinput>cvs -q upd</userinput>
+  <prompt>thb:~&gt; </prompt><userinput>rm knewbankdlg.cpp</userinput>
+  <prompt>thb:~&gt; </prompt><userinput>cvs -q upd</userinput>
   U knewbankdlg.cpp
-  <prompt>% </prompt><userinput>cvs -q upd</userinput>
-  <prompt>% </prompt>
+  <prompt>thb:~&gt; </prompt><userinput>cvs -q upd</userinput>
+  <prompt>thb:~&gt; </prompt>
 
 
 </screen>
@@ -439,12 +447,240 @@ be dismissed. The following commands perform this operation:
 
 </section>
 
-<section id="change-branch">
-<title>Changing to a different branch/version</title>
+<section id="multiple-branches">
+<title>Keeping different branches on the same machine</title>
 <para>
-FIXME: to be done!
+Whenever a configuration manager of the project decides to create a new
+stable release, the developers face a problem: they are not allowed to add
+new features to the software, only bug-fixes can be checked into the
+repository. Until the configuration manager opens the sources for further
+development, the developers are stuck.
 </para>
+
+<para>
+To avoid this dilemma, the configuration manager creates a branch off the
+main development line when he creates the new stable release. Fixes will be
+made to the release-branch, new developments will be made to the main
+branch. This eliminates two problems: the configuration manager does not
+have to lock the current stage and the developers can continue with the
+implementation of features planned for the next release. Nevertheless, the
+stable version can be changed (fixes can be applied) and those fixes can be
+transferred to the main development branch so that they do not show up in
+future releases of the software.
+</para>
+
+<para>
+Since in our project the developers will work on both, bug fixes and new
+development at the same time, it is convenient to have two sandboxes on the
+development machine. For the following examples, I have two subdirectories
+in my $HOME for the project. One is for the release and the other for the
+develepment branch. I name them <command>stable</command> for the release
+branch and
+<command>devel</command> for the development branch.
+</para>
+
+<para><command>The development branch</command></para>
+<para>
+The development branch is the same as you use it today. Just move it from
+it's current location to $HOME/devel. I kept it directly in my $HOME
+directory so I did it as follows:
+
+<example>
+<title>Keeping stable and development branch on one machine</title>
+<screen>
+
+  <prompt>thb:~&gt; </prompt><userinput>md devel</userinput>
+  <prompt>thb:~&gt; </prompt><userinput>md stable</userinput>
+  <prompt>thb:~&gt; </prompt><userinput>mv kmymoney2 devel</userinput>
+  <prompt>thb:~&gt; </prompt>
+
+
+</screen>
+</example>
+Now the development sources are found in ~/devel/kmymoney2/. It is
+important to move all the CVS directories as well. If you start from
+scratch, the you just follow the instructions on how to checkout the
+project and do that in the <command>devel</command> subdirectory. See the
+chapter <emphasis>
+<link linkend="cvs-checkout">Checking out from the repository</link>
+</emphasis> for an example.
+</para>
+
+<para><command>The release branch</command></para>
+<para>
+As soon as a release branch has been created by the configuration manager,
+you should get it to the stable directory. You do this by checking it out
+with the tag that has been assigned. The conventions have been defined in
+the chapter about <link linkend="version-mgmt">Version management</link>.
+For this example, I assume that a release branch for version 0.4 exists in
+the repository.
+
+<footnote>
+<para>Guess when I am wrote this chapter ;-)</para>
+</footnote>
+</para>
+
+<example>
+<title>Checking out the stable branch for the first time</title>
+<screen>
+
+  <prompt>thb:~&gt; </prompt><userinput>cd stable</userinput>
+  <prompt>thb:~/stable&gt; </prompt><userinput>mv kmymoney2 devel</userinput>
+  <prompt>thb:~/stable&gt; </prompt><userinput>cvs -d <emphasis>username</emphasis>@kmymoney2.sourceforge.net:kmymoney2 \ <footnote>
+<para>
+The back-slash is inserted here to break the line for readability. For real usage, the command has to be entered on a single line. 
+</para>
+</footnote>
+                -r <emphasis>0-4-branch</emphasis> co kmymoney2</userinput>
+  <prompt>thb:~/stable&gt; </prompt>
+
+
+</screen>
+</example>
+
+<para>
+At this point it is important to use the <emphasis>branch-tag</emphasis> to
+be able to modifiy the files and check them back into the repository. If
+you are in the subdirectory containing the release-branch and you perform a
+<command>cvs update</command>, you will only get those changes, that were
+made on the branch. Also, changes are checked back into the release branch
+and do <emphasis>NOT</emphasis> show up on the development branch.
+</para>
+
+<note>
+<para>
+If you want to keep more than one stable branch on your development
+machine, you can add the version number to the stable directory (e.g.
+stable-0.4, etc.)
+</para>
+</note>
 </section>
 
+<section id="promoting-changes">
+<title>Promoting bug-fixes to the main branch</title>
+<para>
+Usually, changes made to the release-branch fix a problem. In many cases the
+problem still exists in the development branch. Therefor, it is
+necessary to promote the changes made on the release branch back to the 
+development branch. 
+</para>
+
+<para>
+In most cases, it is very easy to promote the changes. The developer must
+be very careful though, as the fix might not be applicable in it's form to
+the development branch anymore as things might have changed drastically due
+to new features.
+<footnote>
+<para>
+This is one of the reasons, why I suggest to apply the fix to the release
+branch and promote it to the developer branch, as the fix as it works on
+the release branch might
+break things and broken software is definitly something we do not want
+ to happen on the stable branch.
+</footnote>
+</para>
+
+<para>
+In this example, I assume changes were made to the single file README.
+<footnote>
+<para>
+Fortunately, the error found was a documentation problem ;-)
+</para>
+</footnote>
+
+A complex fix
+could cover many files. The procedure described in the following is then
+required for each of them seperately. Further on, I assume that the change
+has been checked in and that the revision was 1.14.2.1 before the fix and
+is now 1.14.2.2.
+</para>
+
+<example>
+<title>Promoting a change from the release to the development branch</title>
+<screen>
+
+  <prompt>thb:~&gt; </prompt><userinput>cd devel/kmymoney2</userinput>
+  <prompt>thb:~/devel/kmymoney2&gt; </prompt><userinput>cvs -q upd -j 1.14.2.1 -j 1.14.2.2 README</userinput>
+  <prompt>thb:~/devel/kmymoney2&gt; </prompt><userinput>vi README</userinput>
+  <prompt>thb:~/devel/kmymoney2&gt; </prompt><userinput>cvs ci -m "Included fix #493920" README</userinput>
+  <prompt>thb:~/devel/kmymoney2&gt; </prompt>
+
+
+</screen>
+</example>
+
+<para>
+First, I go into the devel directory. Then I promote the changes to the
+README file in the development branch from the repository, verify the
+changes made (and possibly correct them) and checkin the changes to the
+development branch. That's it!
+<footnote>
+<para>
+ Of course, a fix to a source code file would
+be followed by a visual inspection (that's where <command>vi</command> or
+<command>kdevelop</command> come into play) and a compile run with further
+testing before the change is checked back into the repository.
+</para>
+</footnote>
+
+</para>
+
+<note>
+<para>
+It's important to perform this procedure for every file affected by the fix
+seperatly, as the revision numbers usually differ significantly between
+the files. Also, I suggest to fix each problem seperately. This reduces
+further problems while promoting the changes back to the development
+branch (e.g. one can leave out a fix completely if it does not apply at all
+to the development branch). 
+</para>
+<para>
+If the fix is very simple, it can certainly be promoted manually to the
+development directory tree by merely re-typing it.
+</para>
+</note>
+</section>
+
+<section id="create-stable-example">
+<title>Creating a new stable release</title>
+<para>
+The procedure that needs to be followed is defined in a <link
+linkend="create-stable-procedure">previous chapter</link>.
+On the first glimpse, it seems rather complecated but it is not.
+</para>
+
+<para>
+If you follow the procedure as it has been defined, you will understand the
+commands in our example. I assume to have a current unstable version of
+0.3.x which will result in the stable version 0.4 and the next development
+version of 0.5.x. Further on, I assume, that I already differentiate
+between development and release directories.
+</para>
+
+<example>
+<title>Creating a new stable branch</title>
+
+<screen>
+
+  <prompt>thb:~&gt; </prompt><userinput>cd devel/kmymoney2</userinput>
+  <prompt>thb:~/devel/kmymoney2&gt; </prompt><userinput>cvs tag 0-4-pre1</userinput>
+  <prompt>thb:~/devel/kmymoney2&gt; </prompt><userinput>cvs tag 0-5-base</userinput>
+  <prompt>thb:~/devel/kmymoney2&gt; </prompt><userinput>cvs tag -b 0-4-branch</userinput>
+  <prompt>thb:~/devel/kmymoney2&gt; </prompt>
+
+
+</screen>
+</example>
+
+<tip>
+<para>
+Because I know, that I will need the branch sooner or later to fix some
+problems, I continue to check it out into the stable directory. See <link
+linkend="multiple-branches">Keeping different branches on the same
+machine</link> for details.
+</para>
+</tip>
+
+</section>
 </appendix>
 

@@ -2,7 +2,7 @@ all: index.html phb.pdf
 
 SRC_FILES= phb.docbook cfg-mgmt.docbook coding.docbook \
 	cvs-examples.docbook  src-examples.docbook \
-	licence.docbook
+	licence.docbook error-mgmt.docbook
 
 index.html:	$(SRC_FILES)
 	-docbook2html --cat /usr/share/sgml/CATALOG.docbk41 phb.docbook
