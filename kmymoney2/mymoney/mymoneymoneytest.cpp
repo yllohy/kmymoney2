@@ -18,6 +18,13 @@
 #include "mymoneymoneytest.h"
 #include <stdint.h>
 
+// make sure, we have the correct suffix
+#if SIZEOF_LONG == 8
+#define LLCONST(a) a ## L
+#else
+#define LLCONST(a) a ## LL
+#endif
+
 MyMoneyMoneyTest::MyMoneyMoneyTest()
 {
 }
@@ -106,38 +113,38 @@ void MyMoneyMoneyTest::testAssignment()
 void MyMoneyMoneyTest::testStringConstructor()
 {
   MyMoneyMoney *m1 = new MyMoneyMoney("-999666555444");
-  CPPUNIT_ASSERT(m1->m_num == -999666555444LL);
+  CPPUNIT_ASSERT(m1->m_num == LLCONST(-999666555444));
   CPPUNIT_ASSERT(m1->m_denom == 1);
 
   MyMoneyMoney *m2 = new MyMoneyMoney("4445556669.99");
-  CPPUNIT_ASSERT(m2->m_num == 444555666999LL);
+  CPPUNIT_ASSERT(m2->m_num == LLCONST(444555666999));
   CPPUNIT_ASSERT(m2->m_denom == 100);
 
   delete m1;
   delete m2;
 
   m1 = new MyMoneyMoney("");
-  CPPUNIT_ASSERT(m1->m_num == 0LL);
+  CPPUNIT_ASSERT(m1->m_num == LLCONST(0));
   CPPUNIT_ASSERT(m1->m_denom == 1);
   delete m1;
 
   m1 = new MyMoneyMoney("1,123.");
-  CPPUNIT_ASSERT(m1->m_num == 1123LL);
+  CPPUNIT_ASSERT(m1->m_num == LLCONST(1123));
   CPPUNIT_ASSERT(m1->m_denom == 1);
   delete m1;
 
   m1 = new MyMoneyMoney("123.1");
-  CPPUNIT_ASSERT(m1->m_num == 1231LL);
+  CPPUNIT_ASSERT(m1->m_num == LLCONST(1231));
   CPPUNIT_ASSERT(m1->m_denom == 10);
   delete m1;
 
   m1 = new MyMoneyMoney("123.456");
-  CPPUNIT_ASSERT(m1->m_num == 123456LL);
+  CPPUNIT_ASSERT(m1->m_num == LLCONST(123456));
   CPPUNIT_ASSERT(m1->m_denom == 1000);
   delete m1;
 
   m1 = new MyMoneyMoney("12345/100");
-  CPPUNIT_ASSERT(m1->m_num == 12345LL);
+  CPPUNIT_ASSERT(m1->m_num == LLCONST(12345));
   CPPUNIT_ASSERT(m1->m_denom == 100);
   delete m1;
 
@@ -145,12 +152,12 @@ void MyMoneyMoneyTest::testStringConstructor()
   MyMoneyMoney::setThousandSeparator('.');
   MyMoneyMoney::setNegativeMonetarySignPosition(MyMoneyMoney::ParensAround);
   m1 = new MyMoneyMoney("x1.234,567 EUR");
-  CPPUNIT_ASSERT(m1->m_num == 1234567LL);
+  CPPUNIT_ASSERT(m1->m_num == LLCONST(1234567));
   CPPUNIT_ASSERT(m1->m_denom == 1000);
   delete m1;
 
   m1 = new MyMoneyMoney("x(1.234,567) EUR");
-  CPPUNIT_ASSERT(m1->m_num == -1234567LL);
+  CPPUNIT_ASSERT(m1->m_num == LLCONST(-1234567));
   CPPUNIT_ASSERT(m1->m_denom == 1000);
   delete m1;
 }
@@ -184,12 +191,12 @@ void MyMoneyMoneyTest::testEquality()
   CPPUNIT_ASSERT (*m_1 == *m_1);
   CPPUNIT_ASSERT (!(*m_1 == *m_0));
 
-  MyMoneyMoney m1(999666555444LL);
-  MyMoneyMoney m2(999666555444LL);
+  MyMoneyMoney m1(LLCONST(999666555444));
+  MyMoneyMoney m2(LLCONST(999666555444));
   CPPUNIT_ASSERT(m1 == m2);
 
-  MyMoneyMoney m3(-999666555444LL);
-  MyMoneyMoney m4(-999666555444LL);
+  MyMoneyMoney m3(LLCONST(-999666555444));
+  MyMoneyMoney m4(LLCONST(-999666555444));
   CPPUNIT_ASSERT(m3 == m4);
 
   MyMoneyMoney m5(1230,100);
@@ -206,12 +213,12 @@ void MyMoneyMoneyTest::testInequality()
   CPPUNIT_ASSERT (*m_1 != *m_0);
   CPPUNIT_ASSERT (!(*m_1 != *m_1));
 
-  MyMoneyMoney m1(999666555444LL);
-  MyMoneyMoney m2(-999666555444LL);
+  MyMoneyMoney m1(LLCONST(999666555444));
+  MyMoneyMoney m2(LLCONST(-999666555444));
   CPPUNIT_ASSERT(m1 != m2);
 
-  MyMoneyMoney m3(-999666555444LL);
-  MyMoneyMoney m4(999666555444LL);
+  MyMoneyMoney m3(LLCONST(-999666555444));
+  MyMoneyMoney m4(LLCONST(999666555444));
   CPPUNIT_ASSERT(m3 != m4);
 
   CPPUNIT_ASSERT(m4 != QString("999666555444"));
@@ -431,17 +438,17 @@ void MyMoneyMoneyTest::testFromString()
   MyMoneyMoney m;
 
   m.fromString("-100/100");
-  CPPUNIT_ASSERT(m.m_num == -100LL);
-  CPPUNIT_ASSERT(m.m_denom == 100LL);
+  CPPUNIT_ASSERT(m.m_num == LLCONST(-100));
+  CPPUNIT_ASSERT(m.m_denom == LLCONST(100));
   m.fromString("1234/100");
-  CPPUNIT_ASSERT(m.m_num == 1234LL);
-  CPPUNIT_ASSERT(m.m_denom == 100LL);
+  CPPUNIT_ASSERT(m.m_num == LLCONST(1234));
+  CPPUNIT_ASSERT(m.m_denom == LLCONST(100));
   m.fromString("1234/10");
-  CPPUNIT_ASSERT(m.m_num == 1234LL);
-  CPPUNIT_ASSERT(m.m_denom == 10LL);
+  CPPUNIT_ASSERT(m.m_num == LLCONST(1234));
+  CPPUNIT_ASSERT(m.m_denom == LLCONST(10));
   m.fromString("1234/2");
-  CPPUNIT_ASSERT(m.m_num == 1234LL);
-  CPPUNIT_ASSERT(m.m_denom == 2LL);
+  CPPUNIT_ASSERT(m.m_num == LLCONST(1234));
+  CPPUNIT_ASSERT(m.m_denom == LLCONST(2));
 }
 
 void MyMoneyMoneyTest::testNegativeSignPos(void)
