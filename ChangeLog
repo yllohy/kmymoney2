@@ -1,3 +1,7 @@
+2002-06-13 Michael Edwardes <mte@users.sourceforge.net>
+  * Right click on accounts view now works.
+  * Editing/deleting an institution works.
+
 2002-06-11 Michael Edwardes <mte@users.sourceforge.net>
   * Categories view now works as before.
   * Made the new account dialog also serve as a new category dialog.

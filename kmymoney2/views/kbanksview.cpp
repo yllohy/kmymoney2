@@ -31,16 +31,16 @@ KAccountsView::KAccountsView(QWidget *parent, const char *name)
   config->setGroup("List Options");
   m_bViewNormalAccountsView = config->readBoolEntry("NormalAccountsView", true);
 
-	accountListView->setRootIsDecorated(true);
-	accountListView->setAllColumnsShowFocus(true);
+  accountListView->setRootIsDecorated(true);
+  accountListView->setAllColumnsShowFocus(true);
 //  if (m_bViewNormalAccountsView)
 //    accountListView->addColumn(i18n("Institution"));
-	accountListView->addColumn(i18n("Account"));
-	accountListView->addColumn(i18n("Type"));
-	accountListView->addColumn(i18n("Balance"));
-	accountListView->setMultiSelection(false);
-	accountListView->header()->setResizeEnabled(false);
-	accountListView->setColumnWidthMode(0, QListView::Manual);
+  accountListView->addColumn(i18n("Account"));
+  accountListView->addColumn(i18n("Type"));
+  accountListView->addColumn(i18n("Balance"));
+  accountListView->setMultiSelection(false);
+  accountListView->header()->setResizeEnabled(false);
+  accountListView->setColumnWidthMode(0, QListView::Manual);
 
   QFont defaultFont = QFont("helvetica", 12);
   accountListView->header()->setFont(config->readFontEntry("listHeaderFont", &defaultFont));
@@ -53,6 +53,7 @@ KAccountsView::KAccountsView(QWidget *parent, const char *name)
     this, SLOT(slotListDoubleClicked(QListViewItem*, const QPoint&, int)));
 
   m_bSelectedAccount=false;
+  m_bSelectedInstitution=false;
   m_bSignals=true;
 
   // never show a horizontal scroll bar
@@ -65,37 +66,75 @@ KAccountsView::~KAccountsView()
 
 void KAccountsView::slotListDoubleClicked(QListViewItem* pItem, const QPoint& pos, int c)
 {
-  if(pItem)
+  KAccountListItem *accountItem = (KAccountListItem*)pItem;
+  if(accountItem)
   {
-    KAccountListItem *accountItem = (KAccountListItem*)pItem;
-    {
-      m_bSelectedAccount=true;
-      m_selectedAccount = accountItem->accountID();
+    // Only emit the signal if its an account
+    MyMoneyFile *file = KMyMoneyFile::instance()->file();
 
+    try
+    {
+      MyMoneyAccount account = file->account(accountItem->accountID());
+      m_bSelectedAccount=true;
+      m_bSelectedInstitution=false;
+      m_selectedAccount = accountItem->accountID();
       emit accountDoubleClick();
+    }
+    catch (MyMoneyException *e)
+    {
+      // Probably clicked on the institution in normal view
+      delete e;
     }
   }
 }
 
 void KAccountsView::slotListRightMouse(QListViewItem* item, const QPoint& , int col)
 {
-  if (item==0 || col==-1) {
-    return;
-  }
-
-  KAccountListItem *accountItem = (KAccountListItem*)item;
+  if (item==0 || col==-1)
   {
-    m_bSelectedAccount=true;
-    m_selectedAccount = accountItem->accountID();
+    emit rightMouseClick();
+  }
+  else
+  {
+    KAccountListItem *accountItem = (KAccountListItem*)item;
+    if (accountItem)
+    {
+      try
+      {
+        MyMoneyFile *file = KMyMoneyFile::instance()->file();
+        MyMoneyAccount account = file->account(accountItem->accountID());
+        
+        m_bSelectedAccount=true;
+        m_bSelectedInstitution=false;
+        m_selectedAccount = accountItem->accountID();
+        qDebug("Setting selected acc to %s", accountItem->accountID().data());
 
-    emit accountRightMouseClick(accountItem->accountID(), true);
+        emit accountRightMouseClick();
+      }
+      catch (MyMoneyException *e)
+      {
+        m_bSelectedAccount=false;
+        m_bSelectedInstitution=true;
+        // FIXME: Change KAccountListItem::accountID to id.
+        qDebug("Setting selected inst to %s", accountItem->accountID().data());
+        m_selectedInstitution = accountItem->accountID();
+
+        emit bankRightMouseClick();
+      }
+    }
   }
 }
 
 QCString KAccountsView::currentAccount(bool& success)
 {
   success=m_bSelectedAccount;
-  return m_selectedAccount;
+  return (success)?m_selectedAccount:"";
+}
+
+QCString KAccountsView::currentInstitution(bool& success)
+{
+  success=m_bSelectedInstitution;
+  return (success)?m_selectedInstitution:"";
 }
 
 void KAccountsView::refresh(const QCString& selectAccount)
@@ -275,7 +314,6 @@ void KAccountsView::showSubAccounts(QCStringList accounts, KAccountListItem *par
   {
     KAccountListItem *accountItem  = new KAccountListItem(parentItem,
           file->account(*it).name(), file->account(*it).id(), "");
-    //qDebug("acco: %s, %s", file->account(*it).name().latin1(), file->account(*it).id().data());
 
     QCStringList subAccounts = file->account(*it).accountList();
     if (subAccounts.count() >= 1)
@@ -289,25 +327,47 @@ void KAccountsView::clear(void)
 {
   accountListView->clear();
   m_bSelectedAccount = false;
+  m_bSelectedInstitution=false;
 }
 
 void KAccountsView::resizeEvent(QResizeEvent* e)
 {
-	accountListView->setColumnWidth(0, 400);
-	accountListView->setColumnWidth(1,150);
-	int totalWidth=accountListView->width();
-	accountListView->setColumnWidth(2, totalWidth-550-5);
+  accountListView->setColumnWidth(0, 400);
+  accountListView->setColumnWidth(1,150);
+  int totalWidth=accountListView->width();
+  accountListView->setColumnWidth(2, totalWidth-550-5);
 
-	// call base class resizeEvent()
-	//KBankViewDecl::resizeEvent(e);
+  // call base class resizeEvent()
+  //KBankViewDecl::resizeEvent(e);
 }
 
 void KAccountsView::slotSelectionChanged(QListViewItem *item)
 {
   KAccountListItem *accountItem = (KAccountListItem*)item;
-  m_bSelectedAccount = true;
-  m_selectedAccount = accountItem->accountID();
-  //emit accountSelected();
+  if (accountItem)
+  {
+    MyMoneyFile *file = KMyMoneyFile::instance()->file();
+
+    try
+    {
+      MyMoneyAccount account = file->account(accountItem->accountID());
+      m_bSelectedAccount=true;
+      m_selectedAccount = accountItem->accountID();
+      qDebug("2: Setting acc to %s", accountItem->accountID().data());
+      //emit accountSelected();
+    }
+    catch (MyMoneyException *e)
+    {
+      // Probably clicked on the institution in normal view
+      m_bSelectedAccount=false;
+      m_bSelectedInstitution=true;
+      // FIXME: Change KAccountListItem::accountID to id.
+      qDebug("2: Setting inst to %s", accountItem->accountID().data());
+      m_selectedInstitution = accountItem->accountID();
+
+      delete e;
+    }
+  }
 }
 
 void KAccountsView::show()

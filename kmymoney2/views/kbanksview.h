@@ -41,15 +41,18 @@ private:
   QCString m_selectedAccount;
   bool m_bSignals;
   bool m_bViewNormalAccountsView;
+  QCString m_selectedInstitution;
+  bool m_bSelectedInstitution;
 
   void showSubAccounts(QCStringList accounts, KAccountListItem *parentItem, MyMoneyFile* file);
 
 public: 
-	KAccountsView(QWidget *parent=0, const char *name=0);
-	~KAccountsView();
-	QCString currentAccount(bool&);
-	void refresh(const QCString& selectAccount);
-	void clear(void);
+  KAccountsView(QWidget *parent=0, const char *name=0);
+  ~KAccountsView();
+  QCString currentAccount(bool&);
+  QCString currentInstitution(bool&);
+  void refresh(const QCString& selectAccount);
+  void clear(void);
   void show();
 
   /* NEVER USE unless you know what you're doing. */
@@ -60,26 +63,28 @@ protected:
   void resizeEvent(QResizeEvent*);
 
 protected slots:
-	
-	/**
-	* This slot receives the signal from the listview control that an item was double-clicked,
-	* if this item was a bank account, try to show the list of transactions for that bank.
-	*/
+  
+  /**
+  * This slot receives the signal from the listview control that an item was double-clicked,
+  * if this item was a bank account, try to show the list of transactions for that bank.
+  */
   void slotListDoubleClicked(QListViewItem* pItem, const QPoint& pos, int c);
 
-	/**
-	* This slot receives the signal from the listview control that an item was right-clicked,
-	* Pass this signal along to the main view to display the RMB menu.
-	*/
+  /**
+  * This slot receives the signal from the listview control that an item was right-clicked,
+  * Pass this signal along to the main view to display the RMB menu.
+  */
   void slotListRightMouse(QListViewItem* item, const QPoint& point, int);
 
   void slotSelectionChanged(QListViewItem *item);
-
+  
 signals:
-  void accountRightMouseClick(const QCString&, bool inList);
+  void accountRightMouseClick();
   void accountDoubleClick();
   //void accountSelected();
   void signalViewActivated();
+  void bankRightMouseClick();
+  void rightMouseClick();
 };
 
 #endif

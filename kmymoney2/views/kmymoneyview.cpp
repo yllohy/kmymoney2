@@ -95,10 +95,14 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   transactionView->hide();
   m_investmentView->hide();
 
-  connect(accountsView, SIGNAL(accountRightMouseClick(const QCString&, bool)),
-    this, SLOT(slotAccountRightMouse(const QCString&, bool)));
+  connect(accountsView, SIGNAL(accountRightMouseClick()),
+    this, SLOT(slotAccountRightMouse()));
   connect(accountsView, SIGNAL(accountDoubleClick()), this, SLOT(slotAccountDoubleClick()));
   //connect(accountsView, SIGNAL(accountSelected()), this, SLOT(slotAccountSelected()));
+  connect(accountsView, SIGNAL(bankRightMouseClick()),
+    this, SLOT(slotBankRightMouse()));
+  connect(accountsView, SIGNAL(rightMouseClick()),
+    this, SLOT(slotRightMouse()));
 
   connect(transactionView, SIGNAL(viewTypeSearchActivated()),
     this, SLOT(accountFind()));
@@ -122,14 +126,16 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   m_accountMenu->insertItem(kiconloader->loadIcon("account", KIcon::Small), i18n("Edit..."), this, SLOT(slotAccountEdit()));
   m_accountMenu->insertItem(kiconloader->loadIcon("delete", KIcon::Small), i18n("Delete..."), this, SLOT(slotAccountDelete()));
 
-/*  We can paste this somewhere else later
   m_bankMenu = new KPopupMenu(this);
   m_bankMenu->insertTitle(kiconloader->loadIcon("bank", KIcon::MainToolbar), i18n("Institution Options"));
-  m_bankId = m_bankMenu->insertItem(kiconloader->loadIcon("bank", KIcon::Small), i18n("New Institution..."), this, SLOT(slotBankNew()));
-  m_accountId = m_bankMenu->insertItem(kiconloader->loadIcon("account", KIcon::Small), i18n("New Account..."), this, SLOT(slotAccountNew()));
-  m_editId = m_bankMenu->insertItem(kiconloader->loadIcon("bank", KIcon::Small), i18n("Edit..."), this, SLOT(slotBankEdit()));
-  m_deleteId = m_bankMenu->insertItem(kiconloader->loadIcon("delete", KIcon::Small), i18n("Delete..."), this, SLOT(slotBankDelete()));
-*/
+  m_bankMenu->insertItem(kiconloader->loadIcon("account", KIcon::Small), i18n("New Account..."), this, SLOT(slotAccountNew()));
+  m_bankMenu->insertItem(kiconloader->loadIcon("bank", KIcon::Small), i18n("Edit..."), this, SLOT(slotBankEdit()));
+  m_bankMenu->insertItem(kiconloader->loadIcon("delete", KIcon::Small), i18n("Delete..."), this, SLOT(slotBankDelete()));
+  
+  m_rightMenu = new KPopupMenu(this);
+  m_rightMenu->insertTitle(kiconloader->loadIcon("bank", KIcon::MainToolbar), i18n("KMyMoney Options"));
+  m_rightMenu->insertItem(kiconloader->loadIcon("bank", KIcon::Small), i18n("New Institution..."), this, SLOT(slotBankNew()));
+  
   m_realShowing = HomeView;
   showPage(0);
 }
@@ -138,7 +144,12 @@ KMyMoneyView::~KMyMoneyView()
 {
 }
 
-void KMyMoneyView::slotAccountRightMouse(const QCString&, bool/* inList*/)
+void KMyMoneyView::slotRightMouse()
+{
+  m_rightMenu->exec(QCursor::pos()); 
+}
+
+void KMyMoneyView::slotAccountRightMouse()
 {
   m_accountMenu->exec(QCursor::pos());
 }
@@ -148,68 +159,57 @@ void KMyMoneyView::slotAccountDoubleClick(void)
   viewTransactionList();
 }
 
-/*  Keep this here for now in case we need to cut&paste in elsewhere
-    We'll keep the menu entry and toolbar entry but no right click
-void KMyMoneyView::slotBankRightMouse(const MyMoneyBank, bool inList)
+void KMyMoneyView::slotBankRightMouse()
 {
-  emit bankOperations(true);
-
-  // enable and disable items according to position of right-click
-  m_bankMenu->setItemEnabled(m_bankId, !inList);
-  m_bankMenu->setItemEnabled(m_accountId, inList);
-  m_bankMenu->setItemEnabled(m_editId, inList);
-  m_bankMenu->setItemEnabled(m_deleteId, inList);
-
   m_bankMenu->exec(QCursor::pos());
 }
 
-
 void KMyMoneyView::slotBankEdit()
 {
-  if (!m_file)
+  if (!fileOpen())
     return;
 
   bool bankSuccess=false;
   try
   {
-    MyMoneyInstitution institution = m_file->institution(banksView->currentInstitution(bankSuccess)->id());
+    MyMoneyFile* file = KMyMoneyFile::instance()->file();
+    MyMoneyInstitution institution = file->institution(accountsView->currentInstitution(bankSuccess));
     // bankSuccess is not checked anymore because m_file->institution will throw anyway
-    KNewBankDlg dlg(institution, i18n("Edit Institution"), this);
+    KNewBankDlg dlg(institution, true, this, "edit_bank");
     if (dlg.exec())
     {
-      m_file.modifyInstitution(dlg->institution());
-      banksView->refresh(m_file);
+      file->modifyInstitution(dlg.institution());
+      accountsView->refresh("");
     }
   }
   catch(MyMoneyException *e)
   {
-    delete e;
     if (bankSuccess)  // we got the bank but unable to modify
-      KMessageBox::information(this, i18n("Unable to edit institution"));
-    return;
+    {
+      QString message(i18n("Unable to edit institution: "));
+      message += e->what();
+      KMessageBox::information(this, message);
+    }
+    delete e;
   }
 }
 
 void KMyMoneyView::slotBankDelete()
 {
-  if (!m_file)
+  if (!fileOpen())
     return;
 
   bool bankSuccess=false;
   try
   {
-    MyMoneyInstitution institution = m_file->institution(banksView->currentInstitution(bankSuccess)->id());
+    MyMoneyFile *file = KMyMoneyFile::instance()->file();
+    MyMoneyInstitution institution = file->institution(accountsView->currentInstitution(bankSuccess));
     QString msg = i18n("Really delete this institution: ");
     msg += institution.name();
     if ((KMessageBox::questionYesNo(this, msg))==KMessageBox::No)
       return;
-
-    m_file->removeInstitution(institution);
-
-    if (m_file->institutionCount()==0)  // If no more banks exist
-      emit bankOperations(false);
-
-    banksView->refresh(m_file);
+    file->removeInstitution(institution);
+    accountsView->refresh("");
   }
   catch (MyMoneyException *e)
   {
@@ -220,10 +220,8 @@ void KMyMoneyView::slotBankDelete()
       KMessageBox::information(this, errorString);
     }
     delete e;
-    return;
   }
 }
-*/
 
 void KMyMoneyView::slotAccountEdit()
 {
@@ -266,6 +264,7 @@ void KMyMoneyView::slotAccountDelete()
 
   bool accountSuccess=false;
 
+
   try
   {
     MyMoneyFile* file = KMyMoneyFile::instance()->file();
@@ -296,11 +295,13 @@ void KMyMoneyView::slotAccountDelete()
 
 bool KMyMoneyView::fileOpen(void)
 {
+  // FIXME
   return true;
 }
 
 void KMyMoneyView::closeFile(void)
 {
+  // FIXME
   if (fileOpen()) {
     KMyMoneyFile::instance()->reset();
   }
@@ -311,7 +312,9 @@ void KMyMoneyView::closeFile(void)
 }
 
 bool KMyMoneyView::readFile(QString filename)
+
 {
+  // FIXME
   KMyMoneyFile *kfile = KMyMoneyFile::instance();
   if (fileOpen())
   {
@@ -334,12 +337,14 @@ bool KMyMoneyView::readFile(QString filename)
 
 void KMyMoneyView::saveFile(QString filename)
 {
+/*
   if (!fileOpen()) {
     KMessageBox::error(this, i18n("Tried to access a file when it's not open"));
     return;
   }
 
-//  m_file.saveAllData(filename);
+  m_file.saveAllData(filename);
+*/
 }
 
 bool KMyMoneyView::dirty(void)
@@ -349,17 +354,6 @@ bool KMyMoneyView::dirty(void)
 
   return KMyMoneyFile::instance()->file()->dirty();
 }
-
-/*
-void KMyMoneyView::setDirty(bool dirty)
-{
-  if (!fileOpen()) {
-    KMessageBox::error(this, i18n("Tried to access a file when it's not open"));
-    return;
-  }
-  m_file.setDirty(dirty);
-}
-*/
 
 void KMyMoneyView::slotBankNew(void)
 {
@@ -441,6 +435,7 @@ void KMyMoneyView::slotAccountReconcile(void)
   pAccount = pBank->account(accountsView->currentAccount(accountSuccess));
   if (!pAccount || !accountSuccess) {
     qDebug("KMyMoneyView::slotAccountReconcile: Unable to grab the current account");
+
     return;
   }
 
@@ -553,229 +548,6 @@ void KMyMoneyView::newFile(void)
     //m_file->setCreateDate(QDate::currentDate() );  // This doesn't seem to exist.  Do we want it anymore, im not bothered.
 
     loadDefaultCategories();
-/*
-  MyMoneyAccount l = m_file->liability();
-  MyMoneyAccount a = m_file->asset();
-  MyMoneyAccount ia = m_file->income();
-  MyMoneyAccount e = m_file->expense();
-
-  // TESTING
-	try
-	{
-
-  // To Test the normal view set this to true
-  // otherwise set it to false.
-  // Dont forget to change the same variable in
-  // KAccountsView::refresh otherwise it just
-  // gets ignored.  Eventually this variable
-  // will be read in by KConfig.
-  bool bShowingNormalAccountsView = true;
-  MyMoneyInstitution lI;
-  lI.setName("Inst Liability");
-  MyMoneyInstitution aI;
-  aI.setName("Inst Asset");
-  MyMoneyInstitution iI;
-  iI.setName("Inst Income");
-  MyMoneyInstitution eI;
-  eI.setName("Inst Expense");
-
-  if (bShowingNormalAccountsView)
-  {
-    m_file->addInstitution(lI);
-    m_file->addInstitution(aI);
-    m_file->addInstitution(iI);
-    m_file->addInstitution(eI);
-  }
-
-	int i=0, j=0, k=0;
-	for (i=0; i<4; i++)
-	{
-		MyMoneyAccount account;
-		QString name("Lia: AccountNo: ");
-		name += QString::number(i);
-		account.setName(name);
-    account.setAccountType(MyMoneyAccount::Checkings);
-		m_file->addAccount(account, l);
-    if (bShowingNormalAccountsView)
-    {
-      lI.addAccountId(account.id());
-      m_file->modifyInstitution(lI);
-    }
-
-		for (j=0; j<3; j++)
-		{
-			MyMoneyAccount subAccount;
-			QString name("Lia: SubAccountNo: ");
-			name += QString::number(j);
-			subAccount.setName(name);
-      subAccount.setAccountType(MyMoneyAccount::Checkings);
-			m_file->addAccount(subAccount, account);
-      if (bShowingNormalAccountsView)
-      {
-        lI.addAccountId(subAccount.id());
-        m_file->modifyInstitution(lI);
-      }
-
-			for (k=0; k<2; k++)
-			{
-				MyMoneyAccount subSubAccount;
-				QString name("Lia: SubSubAccountNo: ");
-				name += QString::number(k);
-				subSubAccount.setName(name);
-        subSubAccount.setAccountType(MyMoneyAccount::Checkings);
-				m_file->addAccount(subSubAccount, subAccount);
-        if (bShowingNormalAccountsView)
-        {
-          lI.addAccountId(subSubAccount.id());
-          m_file->modifyInstitution(lI);
-        }
-			}
-		}
-	}
-
-	for (i=0; i<4; i++)
-	{
-		MyMoneyAccount account;
-		QString name("Ass: AccountNo: ");
-		name += QString::number(i);
-		account.setName(name);
-    account.setAccountType(MyMoneyAccount::Checkings);
-		m_file->addAccount(account, a);
-    if (bShowingNormalAccountsView)
-    {
-      aI.addAccountId(account.id());
-      m_file->modifyInstitution(aI);
-    }
-
-		for (j=0; j<3; j++)
-		{
-			MyMoneyAccount subAccount;
-			QString name("Ass: SubAccountNo: ");
-			name += QString::number(j);
-			subAccount.setName(name);
-      subAccount.setAccountType(MyMoneyAccount::Checkings);
-			m_file->addAccount(subAccount, account);
-      if (bShowingNormalAccountsView)
-      {
-        aI.addAccountId(subAccount.id());
-        m_file->modifyInstitution(aI);
-      }
-
-			for (k=0; k<2; k++)
-			{
-				MyMoneyAccount subSubAccount;
-				QString name("Ass: SubSubAccountNo: ");
-				name += QString::number(k);
-				subSubAccount.setName(name);
-        subSubAccount.setAccountType(MyMoneyAccount::Checkings);
-				m_file->addAccount(subSubAccount, subAccount);
-        if (bShowingNormalAccountsView)
-        {
-          aI.addAccountId(subSubAccount.id());
-          m_file->modifyInstitution(aI);
-        }
-			}
-		}
-	}
-
-	for (i=0; i<4; i++)
-	{
-		MyMoneyAccount account;
-		QString name("Exp: AccountNo: ");
-		name += QString::number(i);
-		account.setName(name);
-    account.setAccountType(MyMoneyAccount::Checkings);
-		m_file->addAccount(account, e);
-    if (bShowingNormalAccountsView)
-    {
-      eI.addAccountId(account.id());
-      m_file->modifyInstitution(eI);
-    }
-
-		for (j=0; j<3; j++)
-		{
-			MyMoneyAccount subAccount;
-			QString name("Exp: SubAccountNo: ");
-			name += QString::number(j);
-			subAccount.setName(name);
-      subAccount.setAccountType(MyMoneyAccount::Checkings);
-			m_file->addAccount(subAccount, account);
-      if (bShowingNormalAccountsView)
-      {
-        eI.addAccountId(subAccount.id());
-        m_file->modifyInstitution(eI);
-      }
-
-			for (k=0; k<2; k++)
-			{
-				MyMoneyAccount subSubAccount;
-				QString name("Exp: SubSubAccountNo: ");
-				name += QString::number(k);
-				subSubAccount.setName(name);
-        subSubAccount.setAccountType(MyMoneyAccount::Checkings);
-				m_file->addAccount(subSubAccount, subAccount);
-        if (bShowingNormalAccountsView)
-        {
-          eI.addAccountId(subSubAccount.id());
-          m_file->modifyInstitution(eI);
-        }
-			}
-		}
-	}
-
-	for (i=0; i<4; i++)
-	{
-		MyMoneyAccount account;
-		QString name("Inc: AccountNo: ");
-		name += QString::number(i);
-		account.setName(name);
-    account.setAccountType(MyMoneyAccount::Checkings);
-		m_file->addAccount(account, ia);
-    if (bShowingNormalAccountsView)
-    {
-      iI.addAccountId(account.id());
-      m_file->modifyInstitution(iI);
-    }
-
-		for (j=0; j<3; j++)
-		{
-			MyMoneyAccount subAccount;
-			QString name("Inc: SubAccountNo: ");
-			name += QString::number(j);
-			subAccount.setName(name);
-      subAccount.setAccountType(MyMoneyAccount::Checkings);
-			m_file->addAccount(subAccount, account);
-      if (bShowingNormalAccountsView)
-      {
-        iI.addAccountId(subAccount.id());
-        m_file->modifyInstitution(iI);
-      }
-
-			for (k=0; k<2; k++)
-			{
-				MyMoneyAccount subSubAccount;
-				QString name("Inc: SubSubAccountNo: ");
-				name += QString::number(k);
-				subSubAccount.setName(name);
-        subSubAccount.setAccountType(MyMoneyAccount::Checkings);
-				m_file->addAccount(subSubAccount, subAccount);
-        if (bShowingNormalAccountsView)
-        {
-          iI.addAccountId(subSubAccount.id());
-          m_file->modifyInstitution(iI);
-        }
-			}
-		}
-	}
-	}
-	catch (MyMoneyException *e)
-	{
-    QString message("adding all the accounts failed: ");
-    message += e->what();
-		qDebug(message);
-    delete e;
-	}
-*/
     accountsView->refresh("");
   }
 }
@@ -783,7 +555,7 @@ void KMyMoneyView::newFile(void)
 void KMyMoneyView::viewPersonal(void)
 {
   if (!fileOpen()) {
-    KMessageBox::information(this, i18n("Cannot start wizard on an unopened file"));
+    KMessageBox::information(this, i18n("Cannot edit personal data"));
     return;
   }
 
@@ -793,7 +565,8 @@ void KMyMoneyView::viewPersonal(void)
     file->userTown(), file->userCounty(), file->userPostcode(), file->userTelephone(),
     file->userEmail(), this, "e", i18n("Edit Personal Data"));
 
-  if (newFileDlg.exec()) {
+  if (newFileDlg.exec())
+  {
     file->setUserName(newFileDlg.userNameText);
     file->setUserStreet(newFileDlg.userStreetText);
     file->setUserTown(newFileDlg.userTownText);
@@ -1035,14 +808,6 @@ void KMyMoneyView::viewTransactionList(void)
 */
 }
 
-/*
-void KMyMoneyView::fileInfo(void)
-{
-  KFileInfoDlg dlg(m_file->createdDate(), m_file->lastAccessDate(), m_file->lastModifyDate(), this);
-  dlg.exec();
-}
-*/
-
 void KMyMoneyView::settingsLists()
 {
 /*
@@ -1112,12 +877,14 @@ void KMyMoneyView::settingsLists()
 
 void KMyMoneyView::accountFind()
 {
+/*
   if (!transactionFindDlg) {
     transactionFindDlg = new KFindTransactionDlg(0);
     connect(transactionFindDlg, SIGNAL(searchReady()), this, SLOT(doTransactionSearch()));
   }
 
   transactionFindDlg->show();
+*/
 }
 
 void KMyMoneyView::doTransactionSearch()
@@ -1386,48 +1153,25 @@ QString KMyMoneyView::currentAccountName(void)
     }
     catch (MyMoneyException *e)
     {
-      // When we dont catch the exception we crash.
-      // We dont need to do anything with it though.
+      // Try an instiution
+      MyMoneyFile* file = KMyMoneyFile::instance()->file();
+
+      try
+      {
+        MyMoneyInstitution institution = file->institution(accountsView->currentInstitution(accountSuccess));
+        if (accountSuccess)
+          return institution.name();
+      }
+      catch (MyMoneyException *ex)
+      {
+        delete ex;
+      }
       delete e;
     }
 
   return i18n("Unknown Account");
 }
 
-void KMyMoneyView::fileBackup(){
-}
-/*
-void KMyMoneyView::slotBankSelected()
-{
-  emit bankOperations(true);
-}
-
-void KMyMoneyView::slotAccountSelected()
-{
-  emit accountOperations(true);
-}
-
-
-MyMoneyAccount* KMyMoneyView::getAccount(void)
-{
-  bool bBankSuccess=false, bAccountSuccess=false;
-  MyMoneyBank *mymoneybank;
-  MyMoneyAccount *mymoneyaccount;
-
-  mymoneybank = m_file.bank(banksView->currentBank(bBankSuccess));
-  if (!mymoneybank || !bBankSuccess) {
-    qDebug("KMyMoneyView::getAccount: Unable to get the current bank");
-    return 0;
-  }
-  mymoneyaccount = mymoneybank->account(banksView->currentAccount(bAccountSuccess));
-  if (!mymoneyaccount || !bAccountSuccess) {
-    qDebug("KMyMoneyView::getAccount: Unable to get the current account");
-    return 0;
-  }
-
-  return mymoneyaccount;
-}
-*/
 void KMyMoneyView::slotActivatedHomePage()
 {
   m_realShowing = HomeView;

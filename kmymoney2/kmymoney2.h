@@ -57,7 +57,7 @@
   * @see KMyMoneyView
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: kmymoney2.h,v 1.19 2002/06/10 22:29:05 mte Exp $
+  * $Id: kmymoney2.h,v 1.20 2002/06/13 18:06:21 mte Exp $
   *
   * @short Main application class.
 **/

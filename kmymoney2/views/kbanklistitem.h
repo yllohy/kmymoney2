@@ -27,7 +27,6 @@
 
 class KAccountListItem : public QListViewItem  {
   QCString m_accountID;
-  QCString m_institutionID;
   bool m_bViewNormal;
   int m_nAccountColumn;
   int m_nInstitutionColumn;

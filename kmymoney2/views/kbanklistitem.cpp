@@ -49,7 +49,7 @@ KAccountListItem::KAccountListItem(KAccountListItem *parent, const QString& acco
 }
 
 KAccountListItem::KAccountListItem(KListView *parent, const QString& institutionName, const QCString& institutionID)
-  : QListViewItem(parent), m_institutionID(institutionID), m_bViewNormal(true)
+  : QListViewItem(parent), m_accountID(institutionID), m_bViewNormal(true)
 {
   setText(0, institutionName);
 }
