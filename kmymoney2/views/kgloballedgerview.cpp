@@ -219,6 +219,19 @@ void KGlobalLedgerView::slotRefreshView(void)
   } else
     qFatal("Houston: we have a problem in KGlobalLedgerView::slotRefreshView()");
 
+  // Enable rest of view only, if we have at least one account out of this group
+  QValueList<MyMoneyAccount::accountTypeE> typeList;
+  typeList << MyMoneyAccount::Checkings;
+  typeList << MyMoneyAccount::Savings;
+  typeList << MyMoneyAccount::Cash;
+  typeList << MyMoneyAccount::CreditCard;
+  typeList << MyMoneyAccount::Loan;
+  typeList << MyMoneyAccount::Asset;
+  typeList << MyMoneyAccount::Liability;
+  typeList << MyMoneyAccount::Currency;
+  typeList << MyMoneyAccount::AssetLoan;
+  m_accountStack->setEnabled(m_accountComboBox->accountList(typeList).count() > 0);
+
   m_accountComboBox->setEnabled(m_accountComboBox->count() > 0);
 }
 
@@ -278,8 +291,11 @@ const bool KGlobalLedgerView::slotSelectAccount(const QCString& id, const bool r
         m_currentView = m_specificView[acc.accountType()];
         m_currentView->slotSelectAccount(id);
         m_accountComboBox->setSelected(acc);
-        rc = true;
 
+        // keep this as the current account
+        m_accountId = id;
+
+        rc = true;
       } else {
         // let's see, if someone else can handle this request
         emit accountSelected(id, QCString());
@@ -306,7 +322,7 @@ const bool KGlobalLedgerView::slotSelectAccount(const QCString& id, const bool r
       m_accountComboBox->setText("");
 
       // keep this as the current account
-      m_accountId = id;
+      m_accountId = QCString();
 
       if(reconciliation == true && m_currentView)
         m_currentView->slotReconciliation();
@@ -362,10 +378,12 @@ void KGlobalLedgerView::hide()
 
 void KGlobalLedgerView::update(const QCString& /* id */)
 {
-  QCString lastUsed = m_accountId;
-  loadAccounts();
-  if(m_accountId != lastUsed) {
-    m_accountId = lastUsed;
-    slotRefreshView();
+  if(m_accountStack->isEnabled()) {
+    QCString lastUsed = m_accountId;
+    loadAccounts();
+    if(m_accountId != lastUsed) {
+      m_accountId = lastUsed;
+      slotRefreshView();
+    }
   }
 }
