@@ -62,12 +62,16 @@ public:
   QWidget* cellWidget(int row,int col) const;
 	void clearCellWidget(int row, int col);
   QWidget* createEditor(int row, int col, bool initFromCell) const;
+
+  /** Override the QTable member function to avoid display of focus */
+  void paintFocus(QPainter *p, const QRect &cr);
+
   void setRowOffset(int row);
 
 	QString cellEditedOriginalText(void) { return m_orig; }
 	
 	void setItem2(const QString& text) { m_qstringSecondItem=text; }
-	
+
 public slots:
   /** No descriptions */
   virtual void setCurrentCell(int row, int col);

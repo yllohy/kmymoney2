@@ -229,6 +229,7 @@ void kMyMoneyTable::paintCell(QPainter *p, int row, int col, const QRect& r, boo
   QFont defaultFont = QFont("helvetica", 12);
   QColor defaultColor = Qt::white;
   QColor defaultBGColor = Qt::gray;
+  QColor defaultGridColor = Qt::black;
 	
   const int NO_ROWS = (config->readEntry("RowCount", "2").toInt());
   const bool bShowGrid = config->readBoolEntry("ShowGrid", true);
@@ -248,6 +249,8 @@ void kMyMoneyTable::paintCell(QPainter *p, int row, int col, const QRect& r, boo
     else
       g.setColor(QColorGroup::Base, config->readColorEntry("listBGColor", &defaultBGColor));
   }
+
+  defaultGridColor = config->readColorEntry("listGridColor", &defaultGridColor);
 
   p->setFont(config->readFontEntry("listCellFont", &defaultFont));
   bool bLastTransaction = (row >= numRows()-2);
@@ -279,9 +282,9 @@ void kMyMoneyTable::paintCell(QPainter *p, int row, int col, const QRect& r, boo
   rr.setHeight(rowHeight(row));
 
   rr2.setX(2);
-  rr2.setY(2);
-  rr2.setWidth(columnWidth(col)-2);
-  rr2.setHeight(rowHeight(row)-2);
+  rr2.setY(0);
+  rr2.setWidth(columnWidth(col)-4);
+  rr2.setHeight(rowHeight(row));
 
   QBrush backgroundBrush(g.base());
   p->setPen(g.foreground());
@@ -291,42 +294,51 @@ void kMyMoneyTable::paintCell(QPainter *p, int row, int col, const QRect& r, boo
     case 1:
     case 2:
       if (bShowGrid) {
+        p->setPen(defaultGridColor);
         p->drawLine(rr.x(), 0, rr.x(), rr.height()-1);
         p->drawLine(rr.x(), rr.y(), rr.width(), 0);
+        p->setPen(g.foreground());
       }
       if(intPos > -1) {
         int intMemoStart = rr.width() / 2;
-        rr3.setX(0);
+        rr3.setX(2);
         rr3.setY(0);
-        rr3.setWidth(intMemoStart);
+        rr3.setWidth(intMemoStart-4);
         rr3.setHeight(rowHeight(row));
         p->drawText(rr3,Qt::AlignLeft | Qt::AlignVCenter,qstringCategory);
-        if(bShowGrid)
+        if(bShowGrid) {
+          p->setPen(defaultGridColor);
           p->drawLine(intMemoStart,0,intMemoStart,rr.height()-1);
-        rr3.setX(intMemoStart + 1);
-        rr3.setWidth(intMemoStart);
+          p->setPen(g.foreground());
+        }
+        rr3.setX(intMemoStart + 2);
+        rr3.setWidth(intMemoStart-4);
         p->drawText(rr3,Qt::AlignLeft | Qt::AlignVCenter,qstringMemo);
 
       } else {
-        p->drawText(rr, Qt::AlignLeft | Qt::AlignVCenter,firsttext);
+        p->drawText(rr2, Qt::AlignLeft | Qt::AlignVCenter,firsttext);
       }
       break;
     case 3:
       if (bShowGrid) {
+        p->setPen(defaultGridColor);
         p->drawLine(rr.x(), 0, rr.x(), rr.height()-1);
         p->drawLine(rr.x(), rr.y(), rr.width(), 0);
+        p->setPen(g.foreground());
       }
-      p->drawText(rr, Qt::AlignCenter | Qt::AlignVCenter,firsttext);
+      p->drawText(rr2, Qt::AlignCenter | Qt::AlignVCenter,firsttext);
       break;
     case 4:
     case 5:
     case 6:
       if (bShowGrid) {
+        p->setPen(defaultGridColor);
         p->drawLine(rr.x(), 0, rr.x(), rr.height()-1);
         p->drawLine(rr.x(), rr.y(), rr.width(), 0);
         p->drawLine(rr.x()+rr.width(), 0, rr.x()+rr.width(), rr.height()-1);
+        p->setPen(g.foreground());
       }
-      p->drawText(rr, Qt::AlignRight | Qt::AlignVCenter,firsttext);
+      p->drawText(rr2, Qt::AlignRight | Qt::AlignVCenter,firsttext);
       break;
   }
 }
@@ -334,4 +346,8 @@ void kMyMoneyTable::paintCell(QPainter *p, int row, int col, const QRect& r, boo
 void kMyMoneyTable::setRowOffset(int row)
 {
   m_rowOffset = row;
+}
+/** Override the QTable member function to avoid display of focus */
+void kMyMoneyTable::paintFocus(QPainter *p, const QRect &cr)
+{
 }
