@@ -46,6 +46,10 @@
 #include "kmymoneytransactionform.h"
 #include "../views/kledgerview.h"
 
+/* -------------------------------------------------------------------------------*/
+/*                           kMyMoneyTransactionFormTable                         */
+/* -------------------------------------------------------------------------------*/
+
 kMyMoneyTransactionFormTable::kMyMoneyTransactionFormTable( KLedgerView* view, QWidget* parent, const char* name)
   : QTable(parent, name)
 {
@@ -119,6 +123,7 @@ bool kMyMoneyTransactionFormTable::focusNextPrevChild(bool next)
 
 
 /* -------------------------------------------------------------------------------*/
+/*                         kMyMoneyTransactionFormTableItem                       */
 /* -------------------------------------------------------------------------------*/
 
 
@@ -177,7 +182,10 @@ kMyMoneyTransactionForm::kMyMoneyTransactionForm( KLedgerView* parent,  const ch
 
   formFrame = new QFrame( this, "formFrame" );
   formFrame->setGeometry( QRect( 12, 44, 462, 170 ));
-  formFrame->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)5, (QSizePolicy::SizeType)1, 0, 0, formFrame->sizePolicy().hasHeightForWidth() ) );
+  formFrame->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding,
+                                         QSizePolicy::Minimum,
+                                         0, 0,
+                                         formFrame->sizePolicy().hasHeightForWidth() ) );
   formFrame->setFrameShape( QFrame::StyledPanel );
   formFrame->setFrameShadow( QFrame::Raised );
   formFrameLayout = new QGridLayout( formFrame, 1, 1, 11, 6, "formFrameLayout");
