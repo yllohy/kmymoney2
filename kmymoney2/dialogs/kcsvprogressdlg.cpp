@@ -155,8 +155,6 @@ void KCsvProgressDlg::performExport(void)
   }
   qfile.close();
 
-  int nErrorReturn = 0;
-
   m_qlabelAccount->setText(m_mymoneyaccount->name());
   m_qlabelTransaction->setText(QString("0") + i18n(" of ") + QString::number(m_mymoneyaccount->transactionCount()));
   m_qprogressbar->setTotalSteps(m_mymoneyaccount->transactionCount());
@@ -202,8 +200,6 @@ void KCsvProgressDlg::performImport(void)
     return;
   }
   qfile.close();
-
-  int nErrorReturn = 0;
 
   m_qlabelAccount->setText(m_mymoneyaccount->name());
 
