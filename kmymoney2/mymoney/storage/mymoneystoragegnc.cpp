@@ -338,7 +338,7 @@ void MyMoneyStorageGNC::readPrices(const QDomElement& pricedb) {
 
 void MyMoneyStorageGNC::readPrice(const QDomElement& priceElement) {
     
-    QString gncPriceCommodityId, gncPriceCurrencyId, gncPriceDate, gncPriceValue;
+    QString gncPriceCommodityId, gncPriceCommoditySpace, gncPriceCurrencyId, gncPriceDate, gncPriceValue;
     
     if(priceElement.hasChildNodes())
     {
@@ -367,6 +367,8 @@ void MyMoneyStorageGNC::readPrice(const QDomElement& priceElement) {
                             QDomText utext = utemp.firstChild().toText();
                             if(QString("cmdty:id") == utemp.tagName()) {
                                 gncPriceCurrencyId = QStringEmpty(utext.nodeValue());
+                            } else if (QString("cmdty:space") == utemp.tagName()) {
+                                gncPriceCommoditySpace = QStringEmpty(utext.nodeValue());
                             }
                         }
                     }
@@ -387,6 +389,8 @@ void MyMoneyStorageGNC::readPrice(const QDomElement& priceElement) {
             }
         }
     }
+    // temporarily, ignore currency exchange rates
+    if (gncPriceCommoditySpace == QString("ISO4217")) return;
     
     // now add this price to the price history
     //we need a IMyMoneyStorage pointer, since m_storage is IMyMoneySerialize.
@@ -499,7 +503,7 @@ void MyMoneyStorageGNC::readAccount(const QDomElement& account) {
             acc.setAccountType(MyMoneyAccount::Cash);
             if (!bHasParent)
                 acc.setParentAccountId(QCString(m_mainName[m_mainAssetId]));
-        } else if(QString("STOCK") == gncType || QString("MUTUAL") == gncType || QString("EQUITY") == gncType ) {
+        } else if(QString("STOCK") == gncType || QString("MUTUAL") == gncType ) {
 	    #ifdef INVACCT
 	    if (!m_invAcctStored) {
 	        MyMoneyAccount iacc = acc;
@@ -532,7 +536,7 @@ void MyMoneyStorageGNC::readAccount(const QDomElement& account) {
             if (gncdebug) qDebug ("Acct equity search, key = %s, found id = %s",
                                   gncCurrencyId.latin1(), e.id().data());
             acc.setCurrencyId (e.id());
-        } else if(QString("LIABILITY") == gncType) {
+        } else if(QString("LIABILITY") == gncType  || QString("EQUITY") == gncType) {
             acc.setAccountType(MyMoneyAccount::Liability);
             if (!bHasParent)
                 acc.setParentAccountId(QCString(m_mainName[m_mainLiabilityId]));
