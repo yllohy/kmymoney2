@@ -107,6 +107,7 @@ KInvestmentView::~KInvestmentView()
 /** No descriptions */
 bool KInvestmentView::init(MyMoneyAccount *pAccount)
 {
+/*
 	if(!pAccount)
 	{
 		return false;
@@ -151,7 +152,7 @@ bool KInvestmentView::init(MyMoneyAccount *pAccount)
 	}
 
 
-
+*/
 	return true;
 }
 /** No descriptions */
@@ -165,6 +166,7 @@ void KInvestmentView::updateDisplay()
 
 void KInvestmentView::slotNewInvestment()
 {
+/*
 	MyMoneyEquity *pEquity = NULL;
 	KNewEquityEntryDlg *pDlg = new KNewEquityEntryDlg(this);
 	pDlg->exec();
@@ -200,10 +202,12 @@ void KInvestmentView::slotNewInvestment()
     	displayNewEquity(pEquity);
     }
 	}
+*/
 }
 
 void KInvestmentView::addEquityEntry(MyMoneyEquity *pEntry)
 {
+/*
 	if(m_pAccount)
 	{
 		MyMoneyBank *pBank = m_pAccount->bank();
@@ -216,6 +220,7 @@ void KInvestmentView::addEquityEntry(MyMoneyEquity *pEntry)
 			}
 		}
 	}
+*/
 }
 
 void KInvestmentView::displayNewEquity(MyMoneyEquity *pEntry)

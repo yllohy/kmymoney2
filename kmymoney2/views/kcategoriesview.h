@@ -55,7 +55,7 @@ signals:
   void signalViewActivated();
 
 public:
-	KCategoriesView(MyMoneyFile *file, QWidget *parent=0, const char *name=0);
+	KCategoriesView(QWidget *parent=0, const char *name=0);
 	~KCategoriesView();
   void show();
 };

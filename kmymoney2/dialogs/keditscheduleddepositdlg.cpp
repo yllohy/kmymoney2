@@ -32,7 +32,7 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 #include "../widgets/kmymoneycombo.h"
-#include "../mymoney/mymoneybank.h"
+#include "../mymoney/mymoneyinstitution.h"
 #include "../mymoney/mymoneyaccount.h"
 #include "../mymoney/mymoneypayee.h"
 #include "keditscheduleddepositdlg.h"
@@ -74,6 +74,7 @@ void KEditScheduledDepositDlg::writeConfig(void)
 
 void KEditScheduledDepositDlg::reloadFromFile(void)
 {
+/*
   int pos=0, k=0;
   QListIterator<MyMoneyPayee> it = m_mymoneyfile->payeeIterator();
   for ( ; it.current(); ++it, k++) {
@@ -213,6 +214,7 @@ void KEditScheduledDepositDlg::reloadFromFile(void)
 	categoryList += qstringlistAccounts;
 
   m_kcomboCategory->insertStringList(categoryList);
+*/
 }
 
 /*
@@ -220,6 +222,7 @@ void KEditScheduledDepositDlg::reloadFromFile(void)
 */
 void KEditScheduledDepositDlg::slotSplitClicked()
 {
+/*
   MyMoneyMoney amount;
 
   bool amountSet = true;
@@ -234,16 +237,6 @@ void KEditScheduledDepositDlg::slotSplitClicked()
   }
 
   // Build up the global transaction
-/*
-  m_transaction.setNumber();
-  m_transaction.setDate();
-  m_transaction.setMethod();
-  m_transaction.setAtmBankName();
-  m_transaction.setPayee();
-  m_transaction.setAccountFrom();
-  m_transaction.setAccountTo();
-  m_transaction.setState();
-*/
 
   QString qstringBankName =
     m_kcomboDepositAccount->currentText().mid(1, m_kcomboDepositAccount->currentText().find(':')-1);
@@ -305,4 +298,5 @@ void KEditScheduledDepositDlg::slotSplitClicked()
     m_kcomboCategory->setCurrentItem("Split");
   }
   delete dlg;
+*/
 }

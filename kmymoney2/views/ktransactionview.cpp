@@ -128,6 +128,7 @@ KTransactionView::~KTransactionView()
 
 void KTransactionView::slotPayeeCompleted()
 {
+/*
 	if(m_payee->currentText() != "")
 	{
    QString payee = m_payee->currentText();
@@ -178,11 +179,12 @@ void KTransactionView::slotPayeeCompleted()
 			}
 		}		
 	}
-
+*/
 }
 
 void KTransactionView::slotMethodCompleted()
 {
+/*
 	if(m_method->currentText() == i18n("Cheque"))
 	{
 
@@ -218,11 +220,12 @@ void KTransactionView::slotMethodCompleted()
 		m_number->setText(number);
 		
 	}
-
+*/
 }
 
 void KTransactionView::createInputWidgets()
 {
+/*
   m_date = new kMyMoneyDateInput(0,QDate::currentDate(), Qt::AlignRight);
   m_method = new kMyMoneyCombo(0);
   m_payee = new kMyMoneyCombo(true,0);
@@ -304,10 +307,12 @@ void KTransactionView::createInputWidgets()
   connect(m_split, SIGNAL(clicked()),this,SLOT(slotEditSplit()));
 	
 	connect(m_category, SIGNAL(activated(int)), this, SLOT(slotCategoryActivated(int)));
+*/
 }
 
 void KTransactionView::loadPayees()
 {
+/*
   MyMoneyAccount *account;
 
 	account = getAccount();
@@ -358,10 +363,12 @@ void KTransactionView::loadPayees()
   m_payee->insertStringList(payeelist);
   KCompletion *payeecomp = m_payee->completionObject();
   payeecomp->setItems(payeelist);
+*/
 }
 
 void KTransactionView::slotFocusChange(int row, int col, int button, const QPoint&  point)
 {
+/*
   KConfig *config = KGlobal::config();
   config->setGroup("List Options");
   const int NO_ROWS = (config->readEntry("RowCount", "2").toInt());
@@ -459,10 +466,12 @@ void KTransactionView::slotFocusChange(int row, int col, int button, const QPoin
 
   } else
     m_index=-1;
+*/
 }
 
 void KTransactionView::slotContextMenu(int row, int col, int button, const QPoint&  point)
 {
+/*
   if(button == Qt::RightButton) {
     KConfig *config = KGlobal::config();
     config->setGroup("List Options");
@@ -502,10 +511,12 @@ void KTransactionView::slotContextMenu(int row, int col, int button, const QPoin
       m_contextMenu->exec(QCursor::pos());
     }
   }
+*/
 }
 
 void KTransactionView::slotTransactionDelete()
 {
+/*
   MyMoneyAccount *pAccount;
 
 	pAccount = getAccount();
@@ -570,10 +581,12 @@ void KTransactionView::slotTransactionDelete()
   userow = false;
   updateTransactionList(-1, -1);
   emit transactionListChanged();
+*/
 }
 
 void KTransactionView::slotTransactionUnReconciled()
 {
+/*
   MyMoneyAccount *pAccount;
 
   KConfig *config = KGlobal::config();
@@ -591,10 +604,12 @@ void KTransactionView::slotTransactionUnReconciled()
   transaction->setState(MyMoneyTransaction::Unreconciled);
   updateTransactionList(m_index*NO_ROWS, 3);
   m_filePointer->setDirty(true);
+*/
 }
 
 void KTransactionView::slotTransactionCleared()
 {
+/*
   MyMoneyAccount *pAccount;
 
   KConfig *config = KGlobal::config();
@@ -612,10 +627,12 @@ void KTransactionView::slotTransactionCleared()
   transaction->setState(MyMoneyTransaction::Cleared);
   updateTransactionList(m_index*NO_ROWS, 3);
   m_filePointer->setDirty(true);
+*/
 }
 
 void KTransactionView::slotEditSplit()
 {
+/*
   MyMoneyAccount *pAccount;
   KConfig *config = KGlobal::config();
   config->setGroup("List Options");
@@ -674,11 +691,13 @@ void KTransactionView::slotEditSplit()
     m_category->setCurrentItem("Split");
   }
   delete dlg;
+*/
 }
 
-void KTransactionView::init(MyMoneyFile *file, MyMoneyBank bank, MyMoneyAccount account,
+void KTransactionView::init(MyMoneyFile *file, MyMoneyAccount account,
   QList<MyMoneyTransaction> *transList, viewingType type)
 {
+/*
   m_filePointer = file;
   m_bankIndex = bank;
   m_accountIndex = account;
@@ -707,15 +726,17 @@ void KTransactionView::init(MyMoneyFile *file, MyMoneyBank bank, MyMoneyAccount 
   transactionsTable->setFocus();
 
   updateTransactionList(-1);
+*/
 }
 
 void KTransactionView::clear(void)
 {
-  transactionsTable->setNumRows(0);
+  //transactionsTable->setNumRows(0);
 }
 
 void KTransactionView::enterClicked()
 {
+/*
 	hideWidgets();
   if (!m_filePointer)
     return;
@@ -951,10 +972,12 @@ void KTransactionView::enterClicked()
   m_filePointer->setDirty(true);
   updateTransactionList(-1, -1);
 	emit transactionListChanged();
+*/
 }
 
 void KTransactionView::clearInputData()
 {
+/*
 	m_date->setDate(QDate::currentDate());
   m_method->setCurrentItem(0);
 	m_number->setText(QString(""));
@@ -964,11 +987,13 @@ void KTransactionView::clearInputData()
   m_category->setCurrentItem(0);
 	m_memo->setText(QString(""));
 	m_delete->hide();
+*/
 }
 
 
 void KTransactionView::setInputData(const MyMoneyTransaction transaction)
 {
+/*
   // keep a copy of the transaction for the case the user cancels
   m_originalTransaction = transaction;
 
@@ -988,10 +1013,12 @@ void KTransactionView::setInputData(const MyMoneyTransaction transaction)
     theText += transaction.categoryMinor();
   }
   m_category->setCurrentItem(theText);
+*/
 }
 
 void KTransactionView::updateInputLists(void)
 {
+/*
   QStringList categoryList;
   QStringList qstringlistIncome;
   QStringList qstringlistExpense;
@@ -1108,10 +1135,12 @@ void KTransactionView::updateInputLists(void)
   m_category->insertStringList(categoryList);
 
   loadPayees();
+*/
 }
 
 void KTransactionView::updateTransactionList(int row, int col)
 {
+/*
   if (!m_filePointer)
     return;
 
@@ -1366,15 +1395,18 @@ void KTransactionView::updateTransactionList(int row, int col)
 
   // setup new size values
   resizeEvent(NULL);
+*/
 }
 
 void KTransactionView::cancelClicked()
 {
+/*
 	hideWidgets();
 	if(m_index < static_cast<long> (m_transactions->count())) {
     MyMoneyTransaction *transaction = m_transactions->at(m_index);
     *transaction = m_originalTransaction;
   }
+*/
 }
 
 void KTransactionView::deleteClicked()
@@ -1431,7 +1463,7 @@ void KTransactionView::refresh(void)
 
 /** gets a pointer to the current Account */
 MyMoneyAccount* KTransactionView::getAccount(){
-
+/*
   MyMoneyBank *bank;
   MyMoneyAccount *account;
 
@@ -1448,7 +1480,7 @@ MyMoneyAccount* KTransactionView::getAccount(){
   }
 
 	return account;
-
+*/
 }
 
 /** No descriptions */
@@ -1499,6 +1531,7 @@ void KTransactionView::resizeEvent(QResizeEvent*)
 /** No descriptions */
 void KTransactionView::hideWidgets()
 {
+/*
   m_date->hide();
   m_method->hide();
   m_number->hide();
@@ -1510,6 +1543,7 @@ void KTransactionView::hideWidgets()
   m_cancel->hide();
   m_delete->hide();
   m_split->hide();
+*/
 }
 
 /**
@@ -1518,15 +1552,7 @@ void KTransactionView::hideWidgets()
 */
 void KTransactionView::slotCategoryActivated(int pos)
 {
-/* FIXME: not required anymore, can be removed
-  QString qstringText = m_category->text(pos);
-  if ( qstringText == i18n("--- Income ---") ||
-      qstringText == i18n("--- Expense ---") ||
-      qstringText == i18n("--- Special ---") ) {
-    KMessageBox::error(this, i18n("Please do not choose the type options (--- ??? ---)"));
-    m_category->setFocus(); // Don't think this will work anyway
-  }
-*/
+/*
   MyMoneyTransaction* transaction = m_transactions->at(m_index);
   if(transaction == NULL) {
     qDebug("transaction == NULL in slotCategoryActivated");
@@ -1554,11 +1580,12 @@ void KTransactionView::slotCategoryActivated(int pos)
       m_category->setCurrentItem("Split");
     }
   }
+*/
 }
 
 /** gets a pointer to the current Account */
-MyMoneyBank* KTransactionView::getBank(void){
-
+//MyMoneyBank* KTransactionView::getBank(void){
+/*
   MyMoneyBank *bank;
 
   bank = m_filePointer->bank(m_bankIndex);
@@ -1566,7 +1593,8 @@ MyMoneyBank* KTransactionView::getBank(void){
     qDebug("unable to find bank in updateData");
 
   return bank;
-}
+*/
+//}
 
 /** Setup initial width for the amount fields */
 void KTransactionView::initAmountWidth(void)

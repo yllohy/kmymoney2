@@ -46,6 +46,8 @@
 #include "kscheduledview.h"
 #include "kinvestmentview.h"
 
+#include "../mymoney/storage/mymoneyseqaccessmgr.h"
+
 /**
   * This class represents the view of the MyMoneyFile which contains
   * Banks/Accounts/Transactions, Recurring transactions (or Bills & Deposits)
@@ -53,7 +55,7 @@
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.8 2002/02/09 18:16:58 mte Exp $
+  * $Id: kmymoneyview.h,v 1.9 2002/06/04 19:05:16 mte Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -66,7 +68,7 @@ public:
 
 private:
   KHomeView *m_homeView;
-  KBanksView *banksView;
+  KAccountsView *accountsView;
   KTransactionView *transactionView;
   KCategoriesView *m_categoriesView;
   KPayeesView *m_payeesView;
@@ -76,7 +78,9 @@ private:
   viewType m_showing;
   viewShowing m_realShowing;
 
-  MyMoneyFile m_file;  // The interface to the transaction code
+  MyMoneyFile *m_file;  // The interface to the transaction code
+	MyMoneySeqAccessMgr *m_storage;
+
   bool m_inReconciliation;  // True if the reconciliaton dialog needs updating when the user adds/deletes transactions
   bool m_reconcileInited;  // True if a reconciliation has already been completed this execution
   KReconcileDlg *reconcileDlg;  // These exists during app run time ?
@@ -85,20 +89,23 @@ private:
 
   KPopupMenu* m_accountMenu;
   KPopupMenu* m_bankMenu;
+	
+	/*
   int m_bankId,
       m_accountId,
       m_editId,
       m_deleteId;
-
+	*/
+	
   // The schedule view
 //  KScheduleView *m_scheduledView;
   /**  */
-  QList<MyMoneyTransaction> m_transactionList;
+  //QList<MyMoneyTransaction> m_transactionList;
 
   void loadDefaultCategories(void);  // Loads catgegories from default_categories.dat
   // Parses a line in the default categories file
   bool parseDefaultCategory(QString& line, bool& income, QString& name, QStringList& minors);
-  void viewBankList(MyMoneyAccount *selectAccount=NULL, MyMoneyBank *selectBank=NULL); // Show the bank view
+  void viewAccountList(const QCString& selectAccount); // Show the accounts view
 
   // Some utility functions for the KFindTransactionDlg calls in doTransactionSearch()
   bool checkTransactionDates(const MyMoneyTransaction *transaction, const bool enabled, const QDate start, const QDate end);
@@ -110,7 +117,7 @@ private:
   bool checkTransactionPayee(const MyMoneyTransaction *transaction, const bool enabled, const QString payee, const bool isRegExp);
   bool checkTransactionCategory(const MyMoneyTransaction *transaction, const bool enabled, const QString category);
 
-  MyMoneyAccount* getAccount(void);
+  //MyMoneyAccount* getAccount(void);
 
 public:
   /**
@@ -211,14 +218,14 @@ public:
   /**
     * Brings up a dialog that displays information about the MyMoneyFile.
   **/
-  void fileInfo(void);
+  //void fileInfo(void);
 
   /**
     * Utility method to retrieve the currently selected bank name.
     *
     * @return The currently selected bank name.
   **/
-  QString currentBankName(void);
+  //QString currentBankName(void);
 
   /**
     * Utility method to retrieve the currently selected account name.
@@ -265,7 +272,7 @@ public slots:
     * @see MyMoneyFile
     * @see MyMoneyBank
   **/
-  void slotBankNew(void);
+  //void slotBankNew(void);
 
   /**
     * Called whenever the user wishes to create a new account.  Brings up the input
@@ -304,7 +311,7 @@ protected slots:
   void viewTransactionList(void);  // Show the transaction view
 
   /** */
-  void slotBankSelected();
+  //void slotBankSelected();
 
   /**
     * This slot is called whenever the transaction list is changed and is used
@@ -322,17 +329,8 @@ protected slots:
     * @param account The account which has been clicked on.
     * @param inList Whether the click was on an account (REDUNDANT).
   **/
-  void slotAccountRightMouse(const MyMoneyAccount account, bool inList);
+  void slotAccountRightMouse(const QCString& accountID, bool inList);
 
-  /**
-    * Called whenever the user right clicks on a bank.  It brings up
-    * a context menu.  TODO: move the context menu into kmymoney2ui.rc, move
-    * this method into KBanksView, remove the param inList.
-    *
-    * @param bank The bank which has been clicked on.
-    * @param inList Whether the click was on a bank (REDUNDANT).
-  **/
-  void slotBankRightMouse(const MyMoneyBank bank, bool inList);
 
   /**
     * Called by the context menu created in slotAccountRightMouse.  Brings up
@@ -352,13 +350,13 @@ protected slots:
     * a dialog which allows the user to edit the bank details.  TODO: move this
     * method into KBanksView.
   **/
-  void slotBankEdit();
+  //void slotBankEdit();
 
   /**
     * Called by the context menu created in slotBankRightMouse.  Deletes the currently
     * selected bank. TODO: move this method into KBanksView.
   **/
-  void slotBankDelete();
+  //void slotBankDelete();
 
   /**
     * This is connected to KReconcileDlg::reconcileFinished in slotAccountReconcile.

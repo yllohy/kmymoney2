@@ -31,38 +31,22 @@
 
 #include "knewbankdlg.h"
 
-KNewBankDlg::KNewBankDlg(QWidget *parent, const char *name)
-  : KNewBankDlgDecl(parent,name,true)
+KNewBankDlg::KNewBankDlg(MyMoneyInstitution& institution, QWidget *parent, const char *name)
+  : KNewBankDlgDecl(parent,name,true), m_institution(institution)
 {
   QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_new_institution.png");
   QPixmap pm(filename);
   m_qpixmaplabel->setPixmap(pm);
 
   nameEdit->setFocus();
-	connect(okBtn, SIGNAL(clicked()), SLOT(okClicked()));
-	connect(cancelBtn, SIGNAL(clicked()), SLOT(reject()));
-}
+	nameEdit->setText(institution.name());
+	cityEdit->setText(institution.city());
+	streetEdit->setText(institution.street());
+	postcodeEdit->setText(institution.postcode());
+	telephoneEdit->setText(institution.telephone());
+	managerEdit->setText(institution.manager());
+	sortCodeEdit->setText(institution.sortcode());
 
-KNewBankDlg::KNewBankDlg(QString b_name, QString b_sortCode, QString b_city,
-  QString b_street, QString b_postcode, QString b_telephone, QString b_manager,
-  QString title, QWidget *parent, const char *name)
-  : KNewBankDlgDecl(parent, name, true)
-{
-  QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_new_institution.png");
-  QPixmap *pm = new QPixmap(filename);
-  m_qpixmaplabel->setPixmap(*pm);
-	setCaption(title);
-
-	nameEdit->setText(b_name);
-	streetEdit->setText(b_street);
-	cityEdit->setText(b_city);
-	postcodeEdit->setText(b_postcode);
-	telephoneEdit->setText(b_telephone);
-        sortCodeEdit->setText(b_sortCode);
-
-	managerEdit->setText(b_manager);
-
-  nameEdit->setFocus();
 	connect(okBtn, SIGNAL(clicked()), SLOT(okClicked()));
 	connect(cancelBtn, SIGNAL(clicked()), SLOT(reject()));
 }
@@ -79,12 +63,19 @@ void KNewBankDlg::okClicked()
     return;
   }
 
-  m_name = nameEdit->text();
-  m_city = cityEdit->text();
-  m_street = streetEdit->text();
-  m_postcode = postcodeEdit->text();
-  m_telephone = telephoneEdit->text();
-  m_managerName = managerEdit->text();
-  m_sortCode = sortCodeEdit->text();
+	m_institution.setName(nameEdit->text());
+	m_institution.setTown(cityEdit->text());
+	m_institution.setStreet(streetEdit->text());
+	m_institution.setPostcode(postcodeEdit->text());
+	m_institution.setTelephone(telephoneEdit->text());
+	m_institution.setManager(managerEdit->text());
+	m_institution.setSortcode(sortCodeEdit->text());
+
   accept();
 }
+
+MyMoneyInstitution KNewBankDlg::institution(void)
+{
+  return m_institution;
+}
+

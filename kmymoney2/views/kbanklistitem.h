@@ -14,29 +14,30 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef KBANKLISTITEM_H
-#define KBANKLISTITEM_H
+#ifndef KACCOUNTLISTITEM_H
+#define KACCOUNTLISTITEM_H
 
 #include <qwidget.h>
-#include <qlistview.h>
-#include "../mymoney/mymoneybank.h"
+#include <klistview.h>
 #include "../mymoney/mymoneyaccount.h"
 
 /**
   *@author Michael Edwardes
   */
 
-class KBankListItem : public QListViewItem  {
-  MyMoneyBank m_bank;
-  MyMoneyAccount m_account;
-  bool m_isBank;
+class KAccountListItem : public QListViewItem  {
+  QCString m_accountID;
+  QCString m_institutionID;
+  bool m_bViewNormal;
+  int m_nAccountColumn;
+  int m_nInstitutionColumn;
+
 public:
-  KBankListItem(QListView *parent, MyMoneyBank bank );
-  KBankListItem(KBankListItem *parent, MyMoneyBank bank, MyMoneyAccount account);
-	~KBankListItem();
-	MyMoneyBank bank(void);
-	MyMoneyAccount account(void);
-	bool isBank(void);
+  KAccountListItem(KListView *parent, const QString& accountName, const QCString& accountID, bool viewNormal);
+  KAccountListItem(KAccountListItem *parent, const QString& accountName, const QCString& accountID, bool viewNormal);
+  KAccountListItem(KListView *parent, const QString& institutionName, const QCString& institutionID);
+	~KAccountListItem();
+	QCString accountID(void);
   void paintCell(QPainter *p, const QColorGroup & cg, int column, int width, int align);
 };
 

@@ -35,7 +35,6 @@
 #include <kpopupmenu.h>
 
 #include "../mymoney/mymoneyfile.h"
-#include "../mymoney/mymoneybank.h"
 #include "../mymoney/mymoneyaccount.h"
 #include "../mymoney/mymoneytransaction.h"
 

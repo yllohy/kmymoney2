@@ -25,31 +25,30 @@
 #include <qevent.h>
 #include <qsize.h>
 
-//#include <qdbt/qdbttabular.h>
 #include <klistview.h>
-//#include <qlistview.h>
 
 #include "../mymoney/mymoneyfile.h"
-//#include "kbanklistview.h"
 #include "kbankviewdecl.h"
+#include "kbanklistitem.h"
 
 // This class handles the bank 'view'.
 // It handles the resize event, the totals widgets
 // and the KBankListView itself
-class KBanksView : public KBankViewDecl  {
+class KAccountsView : public KBankViewDecl  {
    Q_OBJECT
 private:
-  bool m_bSelectedBank, m_bSelectedAccount;
-  MyMoneyBank m_selectedBank;
-  MyMoneyAccount m_selectedAccount;
+  bool m_bSelectedAccount;
+  QCString m_selectedAccount;
   bool m_bSignals;
+  bool m_bViewNormalAccountsView;
+
+  void showSubAccounts(QCStringList accounts, KAccountListItem *parentItem, MyMoneyFile* file);
 
 public: 
-	KBanksView(QWidget *parent=0, const char *name=0);
-	~KBanksView();
-	MyMoneyBank currentBank(bool&);
-	MyMoneyAccount currentAccount(bool&);
-	void refresh(MyMoneyFile file, MyMoneyAccount *selectAccount=NULL, MyMoneyBank *selectBank=NULL);
+	KAccountsView(QWidget *parent=0, const char *name=0);
+	~KAccountsView();
+	QCString currentAccount(bool&);
+	void refresh(MyMoneyFile* file, const QCString& selectAccount);
 	void clear(void);
   void show();
 
@@ -77,11 +76,8 @@ protected slots:
   void slotSelectionChanged(QListViewItem *item);
 
 signals:
-  void bankRightMouseClick(const MyMoneyBank, bool inList);
-//  void bankDoubleClick(const MyMoneyBank, bool inList);
-  void accountRightMouseClick(const MyMoneyAccount, bool inList);
+  void accountRightMouseClick(const QCString&, bool inList);
   void accountDoubleClick();
-  void bankSelected();
   void accountSelected();
   void signalViewActivated();
 };

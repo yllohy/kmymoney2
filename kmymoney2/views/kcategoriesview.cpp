@@ -39,14 +39,14 @@
 #include "../dialogs/kcategorylistitem.h"
 #include "../dialogs/knewcategorydlg.h"
 
-KCategoriesView::KCategoriesView(MyMoneyFile *file, QWidget *parent, const char *name )
+KCategoriesView::KCategoriesView(QWidget *parent, const char *name )
   : kCategoriesViewDecl(parent,name)
 {
 //  QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_edit_categories.png");
 //  QPixmap *pm = new QPixmap(filename);
 //  m_qpixmaplabel->setPixmap(*pm);
 
-  m_file = file;
+  m_file = 0L;
   categoryListView->setRootIsDecorated(true);
   categoryListView->addColumn(i18n("Category"));
   categoryListView->addColumn(i18n("Type"));
@@ -76,6 +76,7 @@ KCategoriesView::~KCategoriesView()
 
 void KCategoriesView::refresh(void)
 {
+/*
   categoryListView->clear();
 
   KCategoryListItem *saveptr=0;
@@ -95,6 +96,7 @@ void KCategoriesView::refresh(void)
   }
   if (saveptr)
     categoryListView->setCurrentItem(saveptr);
+*/
 }
 
 void KCategoriesView::show()
@@ -115,6 +117,7 @@ void KCategoriesView::resizeEvent(QResizeEvent* e)
 
 void KCategoriesView::slotNewClicked()
 {
+/*
   // Uses the class KNewCategoryDlg
   MyMoneyCategory category;
   KNewCategoryDlg dlg(&category, this);
@@ -124,10 +127,12 @@ void KCategoriesView::slotNewClicked()
   m_file->addCategory(category.isIncome(), category.name(), category.minorCategories());
   categoryListView->clear();
   refresh();
+*/
 }
 
 void KCategoriesView::slotDeleteClicked()
 {
+/*
   KCategoryListItem *item = (KCategoryListItem *)categoryListView->selectedItem();
   if (!item)
     return;
@@ -151,6 +156,7 @@ void KCategoriesView::slotDeleteClicked()
   }
   categoryListView->clear();
   refresh();
+*/
 }
 
 void KCategoriesView::slotSelectionChanged(QListViewItem* item)
@@ -171,6 +177,7 @@ void KCategoriesView::slotSelectionChanged(QListViewItem* item)
 
 void KCategoriesView::slotEditClicked()
 {
+/*
   KCategoryListItem *item = (KCategoryListItem *)categoryListView->selectedItem();
   if (!item)
     return;
@@ -188,6 +195,7 @@ void KCategoriesView::slotEditClicked()
     categoryListView->clear();
     refresh();
   }
+*/
 }
 
 void KCategoriesView::readConfig(void)

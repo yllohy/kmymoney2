@@ -35,7 +35,7 @@
 class KPayeesView : public kPayeesViewDecl  {
    Q_OBJECT
 public: 
-	KPayeesView(MyMoneyFile *file, QWidget *parent=0, const char *name=0);
+	KPayeesView(QWidget *parent=0, const char *name=0);
 	~KPayeesView();
   void show();
 

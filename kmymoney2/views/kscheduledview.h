@@ -44,7 +44,7 @@
   * Used by the KMyMoneyView class to show the view.
   *
   * @author Michael Edwardes 2000-2002
-  * $Id: kscheduledview.h,v 1.3 2002/02/17 22:26:01 mte Exp $
+  * $Id: kscheduledview.h,v 1.4 2002/06/04 19:05:17 mte Exp $
   *
   * @short A class to encapsulate recurring transaction operations.
   */
@@ -75,7 +75,7 @@ signals:
   void signalViewActivated();
 
 public:
-  KScheduledView(MyMoneyFile *file, QWidget *parent=0, const char *name=0);
+  KScheduledView(QWidget *parent=0, const char *name=0);
   ~KScheduledView();
   void show();
 };

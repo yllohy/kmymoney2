@@ -27,9 +27,9 @@
 #include <kiconloader.h>
 
 #include "../mymoney/mymoneymoney.h"
-#include "../mymoney/mymoneysplittransaction.h"
+//#include "../mymoney/mymoneysplittransaction.h"
 #include "../mymoney/mymoneyfile.h"
-#include "../mymoney/mymoneybank.h"
+#include "../mymoney/mymoneyinstitution.h"
 #include "../mymoney/mymoneyaccount.h"
 #include "../widgets/kmymoneycombo.h"
 #include "../widgets/kmymoneyedit.h"
@@ -47,22 +47,22 @@ class KSplitTransactionDlg : public kSplitTransactionDlgDecl  {
 public: 
 	KSplitTransactionDlg( QWidget* parent,  const char* name,
                         MyMoneyFile* const filePointer,
-                        MyMoneyBank* const bankPointer,
+                        MyMoneyInstitution* const bankPointer,
                         MyMoneyAccount* const accountPointer,
                         MyMoneyMoney* amount, const bool amountValid = false);
 	~KSplitTransactionDlg();
 
   /// get a pointer to the first split transaction
   /// @return pointer to the first MyMoneySplitTransaction in the list
-  MyMoneySplitTransaction* firstTransaction(void);
+  //MyMoneySplitTransaction* firstTransaction(void);
 
   /// get a pointer to the next split transaction
   /// @return pointer to the next MyMoneySplitTransaction in the list
-  MyMoneySplitTransaction* nextTransaction(void);
+  //MyMoneySplitTransaction* nextTransaction(void);
 
   /// add a MyMoneySplitTransaction to the dialog
   /// @param split pointer to split transaction
-  void addTransaction(MyMoneySplitTransaction* const split);
+  //void addTransaction(MyMoneySplitTransaction* const split);
 
 protected:
   void resizeEvent(QResizeEvent*);
@@ -85,10 +85,10 @@ private:
   ///
   /// @param start row to be updated. -1 (default) will update all rows
   /// @param col the column to be updated. -1 (default) will update all cols
-  void updateTransactionList(int start = -1, int col = -1);
+  //void updateTransactionList(int start = -1, int col = -1);
 
   /// updates a single transaction with the values of the input widgets
-  void updateTransaction(MyMoneySplitTransaction *);
+  //void updateTransaction(MyMoneySplitTransaction *);
 
   /// enable (default) or disable input widgets
   /// @param show true will enable, false will disable the widgets
@@ -174,7 +174,7 @@ private:
   MyMoneyFile*  const m_filePointer;
 
   /// keeps a pointer to the currently selected bank
-  MyMoneyBank* const m_bankPointer;
+  MyMoneyInstitution* const m_bankPointer;
 
   /// keeps a pointer to the currently selected account
   MyMoneyAccount* const m_accountPointer;
@@ -206,7 +206,7 @@ private:
   kMyMoneyEdit*  m_amount;
 
   /// the dialog local list of splits
-  QList<MyMoneySplitTransaction> m_splitList;
+  //QList<MyMoneySplitTransaction> m_splitList;
 
   /// flag that is set if a new split has been created and can
   /// be removed when discarded

@@ -30,10 +30,10 @@
 class KReconcileDlg : public KReconcileDlgDecl  {
    Q_OBJECT
 public: 
-	KReconcileDlg(const MyMoneyMoney previousBal, const MyMoneyMoney endingBal, const QDate endingDate, const MyMoneyBank bankIndex, MyMoneyAccount *accountIndex, const MyMoneyFile file, QWidget *parent=0, const char *name=0);
+	KReconcileDlg(const MyMoneyMoney previousBal, const MyMoneyMoney endingBal, const QDate endingDate, MyMoneyAccount *accountIndex, const MyMoneyFile* file, QWidget *parent=0, const char *name=0);
 	~KReconcileDlg();
 //  void updateData(void);
-  void resetData(const MyMoneyMoney previousBal, const MyMoneyMoney endingBal, const QDate endingDate, const MyMoneyBank bankIndex, MyMoneyAccount *accountIndex, const MyMoneyFile file);
+  void resetData(const MyMoneyMoney previousBal, const MyMoneyMoney endingBal, const QDate endingDate, MyMoneyAccount *accountIndex, const MyMoneyFile* file);
   /** No descriptions */
 
 protected:
@@ -57,8 +57,8 @@ private:
   MyMoneyMoney m_debitBalance;
   MyMoneyMoney m_creditBalance;
 	
-	MyMoneyFile m_file;
-	MyMoneyBank m_bankIndex;
+	MyMoneyFile* m_file;
+	//MyMoneyBank m_bankIndex;
 	MyMoneyAccount *m_accountIndex;
 
   QList<MyMoneyTransaction> m_debitsQList;

@@ -137,6 +137,7 @@ bool KCsvProgressDlg::appendCorrectFileExt(QString& str, const QString strExtToU
 /** Perform the export process */
 void KCsvProgressDlg::performExport(void)
 {
+/*
   // Do some validation on the inputs.
   if (m_qlineeditFile->text().isEmpty()) {
     KMessageBox::information(this, i18n("Please enter the path to the CSV file"), i18n("Export CSV"));
@@ -186,12 +187,13 @@ void KCsvProgressDlg::performExport(void)
       KMessageBox::information(this, qstringPrompt, i18n("Export CSV"));
     }
   }
-//  accept();
+*/
 }
 
 /** perform the import process */
 void KCsvProgressDlg::performImport(void)
 {
+/*
   // Do some validation on the inputs.
   if (m_qlineeditFile->text().isEmpty()) {
     KMessageBox::information(this, i18n("Please enter the path to the CSV file"), i18n("Import CSV"));
@@ -229,6 +231,7 @@ void KCsvProgressDlg::performImport(void)
       KMessageBox::information(this, qstringPrompt, i18n("Import CSV"));
     }
   }
+*/
 }
 
 /** Called when the user clicks on the Browser button */

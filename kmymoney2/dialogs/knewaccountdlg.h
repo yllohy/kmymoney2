@@ -20,6 +20,7 @@
 #include <qdialog.h>
 #include <klocale.h>
 
+#include "../mymoney/mymoneyfile.h"
 #include "../mymoney/mymoneyaccount.h"
 #include "../mymoney/mymoneymoney.h"
 #include "../widgets/kmymoneyedit.h"
@@ -31,25 +32,21 @@
 // Use the second constructor to edit an account.
 class KNewAccountDlg : public KNewAccountDlgDecl  {
    Q_OBJECT
-public:
-	KNewAccountDlg(QString institution, QWidget *parent=0, const char *name=0, const char *title=0);
-  KNewAccountDlg(QString institution, QString m_name, QString no,
-    MyMoneyAccount::accountTypeE type, QString description,
-    QDate openingDate, MyMoneyMoney openingBalance,
-    QWidget *parent, const char *name, const char *title);
-	~KNewAccountDlg();
+
+private:
+  MyMoneyAccount m_account;
+  MyMoneyAccount m_parentAccount;
+  MyMoneyFile *m_file;
 
 public:
-  // Read from these to get the new values.
-  QString accountNameText;
-  QString accountNoText;
-  MyMoneyAccount::accountTypeE type;
-  QString descriptionText;
-  MyMoneyMoney startBalance;
-  QDate startDate;
+	KNewAccountDlg(MyMoneyAccount& account, MyMoneyFile* file, QWidget *parent=0, const char *name=0, const char *title=0);
+	~KNewAccountDlg();
+  MyMoneyAccount account(void);
+  MyMoneyAccount parentAccount(void);
 
 protected slots:
   void okClicked();
 };
 
 #endif
+

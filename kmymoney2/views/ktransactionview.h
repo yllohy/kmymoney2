@@ -29,7 +29,7 @@
 #include <kpopupmenu.h>
 
 #include "../mymoney/mymoneyfile.h"
-#include "../mymoney/mymoneybank.h"
+#include "../mymoney/mymoneyinstitution.h"
 #include "../mymoney/mymoneyaccount.h"
 #include "../mymoney/mymoneytransaction.h"
 
@@ -53,7 +53,7 @@ public:
           };
 private:
   MyMoneyFile *m_filePointer;
-  MyMoneyBank m_bankIndex;
+  //MyMoneyBank m_bankIndex;
   MyMoneyAccount m_accountIndex;
   long m_index;
   bool useall;
@@ -113,7 +113,7 @@ private:
   void hideWidgets();
 
   /** Need descriptions !*/
-  MyMoneyBank *getBank(void);
+//  MyMoneyBank *getBank(void);
   /** Setup initial width for the amount fields */
   void initAmountWidth(void);
 
@@ -121,7 +121,7 @@ public:
 	KTransactionView(QWidget *parent=0, const char *name=0);
 	~KTransactionView();
 
-	void init(MyMoneyFile *file, MyMoneyBank bank, MyMoneyAccount account, QList<MyMoneyTransaction> *transList, viewingType type);
+	void init(MyMoneyFile *file, MyMoneyAccount account, QList<MyMoneyTransaction> *transList, viewingType type);
 	void clear(void);
   void refresh(void);
   void show(void);

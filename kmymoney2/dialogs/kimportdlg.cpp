@@ -49,6 +49,7 @@
 KImportDlg::KImportDlg(MyMoneyAccount *account, QWidget *parent)
   : KImportDlgDecl(parent,0,TRUE)
 {
+/*
   QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_qif_import.png");
   QPixmap *pm = new QPixmap(filename);
   m_qpixmaplabel->setPixmap(*pm);
@@ -111,11 +112,14 @@ KImportDlg::KImportDlg(MyMoneyAccount *account, QWidget *parent)
     SLOT(slotFileTextChanged(const QString&)));
 
   connect(m_qbuttonBrowse, SIGNAL( clicked() ), this, SLOT( slotBrowse() ) );
+*/
   connect(m_qbuttonOk, SIGNAL(clicked()), this, SLOT(slotOkClicked()));
+/*
   connect(m_qbuttonCancel, SIGNAL(clicked()), this, SLOT(reject()));
 
 	connect(m_qcomboboxDateFormat, SIGNAL( activated(const QString &)), this,
 		SLOT(slotDateFormatChanged(const QString&)));
+*/
 }
 
 KImportDlg::~KImportDlg()
@@ -145,6 +149,7 @@ void KImportDlg::slotDateFormatChanged(const QString& selectedDateFormat)
 /** Main work horse of the dialog. */
 void KImportDlg::slotOkClicked()
 {
+/*
   if (m_qlineeditFile->text().isEmpty()) {
     KMessageBox::information(this, i18n("Please enter the path to the QIF file"), i18n("Import QIF"));
     m_qlineeditFile->setFocus();
@@ -188,7 +193,7 @@ void KImportDlg::slotOkClicked()
       KMessageBox::information(this, qstringPrompt, i18n("Import QIF"));
     }
   }
-
+*/
   // leave dialog directly
   accept();
 }

@@ -38,10 +38,10 @@
 #include "kscheduledview.h"
 #include "kscheduledlistitem.h"
 
-KScheduledView::KScheduledView(MyMoneyFile *file, QWidget *parent, const char *name )
+KScheduledView::KScheduledView(QWidget *parent, const char *name )
  : kScheduledViewDecl(parent,name, false)
 {
-  m_file = file;
+  m_file = 0L;
   m_qlistviewScheduled->setRootIsDecorated(true);
   m_qlistviewScheduled->addColumn(i18n("Type"));
   m_qlistviewScheduled->addColumn(i18n("Payee"));
@@ -140,28 +140,34 @@ void KScheduledView::writeConfig(void)
 
 void KScheduledView::slotNewBill()
 {
+/*
   KEditScheduledBillDlg *m_keditschedbilldlg = new KEditScheduledBillDlg(m_file, this);
   if (m_keditschedbilldlg->exec() == QDialog::Accepted)
   {
-//    MyMoneyTransaction *scheduledTransaction = m_keditschedbilldlg->transaction();
-//    if (scheduledTransaction)
-//    {
-//   }
+    MyMoneyTransaction *scheduledTransaction = m_keditschedbilldlg->transaction();
+    if (scheduledTransaction)
+    {
+   }
   }
 
   delete m_keditschedbilldlg;
+*/
 }
 
 void KScheduledView::slotNewDeposit()
 {
+/*
   KEditScheduledDepositDlg *m_keditscheddepdlg = new KEditScheduledDepositDlg(m_file, this);
   m_keditscheddepdlg->exec();
   delete m_keditscheddepdlg;
+*/
 }
 
 void KScheduledView::slotNewTransfer()
 {
+/*
   KEditScheduledTransferDlg *m_keditschedtransdlg = new KEditScheduledTransferDlg(m_file, this);
   m_keditschedtransdlg->exec();
   delete m_keditschedtransdlg;
+*/
 }

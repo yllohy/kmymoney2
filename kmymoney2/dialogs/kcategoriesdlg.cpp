@@ -37,6 +37,7 @@
 KCategoriesDlg::KCategoriesDlg(MyMoneyFile *file, QWidget *parent, const char *name)
  : KCategoryDlgDecl(parent,name,true)
 {
+/*
   QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_edit_categories.png");
   QPixmap *pm = new QPixmap(filename);
   m_qpixmaplabel->setPixmap(*pm);
@@ -62,6 +63,7 @@ KCategoriesDlg::KCategoriesDlg(MyMoneyFile *file, QWidget *parent, const char *n
 	connect(buttonEdit, SIGNAL(clicked()), this, SLOT(slotEditClicked()));
 	connect(buttonNew, SIGNAL(clicked()), this, SLOT(slotNewClicked()));
   connect(buttonDelete, SIGNAL(clicked()), this, SLOT(slotDeleteClicked()));
+*/
 }
 
 KCategoriesDlg::~KCategoriesDlg()
@@ -71,6 +73,7 @@ KCategoriesDlg::~KCategoriesDlg()
 
 void KCategoriesDlg::refresh(void)
 {
+/*
   KCategoryListItem *saveptr=0;
 
   QListIterator<MyMoneyCategory> it = m_file->categoryIterator();
@@ -88,10 +91,12 @@ void KCategoriesDlg::refresh(void)
   }
   if (saveptr)
     categoryListView->setCurrentItem(saveptr);
+*/
 }
 
 void KCategoriesDlg::slotNewClicked()
 {
+/*
   // Uses the class KNewCategoryDlg
   MyMoneyCategory category;
   KNewCategoryDlg dlg(&category, this);
@@ -101,10 +106,12 @@ void KCategoriesDlg::slotNewClicked()
   m_file->addCategory(category.isIncome(), category.name(), category.minorCategories());
   categoryListView->clear();
   refresh();
+*/
 }
 
 void KCategoriesDlg::slotDeleteClicked()
 {
+/*
   KCategoryListItem *item = (KCategoryListItem *)categoryListView->selectedItem();
   if (!item)
     return;
@@ -128,19 +135,23 @@ void KCategoriesDlg::slotDeleteClicked()
   }
   categoryListView->clear();
   refresh();
+*/
 }
 
 void KCategoriesDlg::resizeEvent(QResizeEvent* e)
 {
+/*
   categoryListView->setColumnWidth(0, categoryListView->width()-105);
   categoryListView->setColumnWidth(1, 100);
 
   // call base class resizeEvent()
   KCategoryDlgDecl::resizeEvent(e);
+*/
 }
 
 void KCategoriesDlg::slotSelectionChanged(QListViewItem* item)
 {
+/*
   KCategoryListItem *kitem = (KCategoryListItem *)item;
   if (!kitem) {
     buttonEdit->setEnabled(false);
@@ -153,10 +164,12 @@ void KCategoriesDlg::slotSelectionChanged(QListViewItem* item)
     buttonEdit->setEnabled(false);
     buttonDelete->setEnabled(true);
   }
+*/
 }
 
 void KCategoriesDlg::slotEditClicked()
 {
+/*
   KCategoryListItem *item = (KCategoryListItem *)categoryListView->selectedItem();
   if (!item)
     return;
@@ -174,6 +187,7 @@ void KCategoriesDlg::slotEditClicked()
     categoryListView->clear();
     refresh();
   }
+*/
 }
 
 void KCategoriesDlg::readConfig(void)

@@ -22,3 +22,4 @@ configure.in
 subdirs
 configure.files
 kmymoney2.kdevses
+autom4te-2.5x.cache

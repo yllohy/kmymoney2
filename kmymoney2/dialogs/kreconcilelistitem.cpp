@@ -20,6 +20,7 @@
 KReconcileListItem::KReconcileListItem(QListView *parent, MyMoneyTransaction *transaction )
  : QListViewItem(parent)
 {
+/*
   QString colText;
 
   m_transaction = transaction;
@@ -42,6 +43,7 @@ KReconcileListItem::KReconcileListItem(QListView *parent, MyMoneyTransaction *tr
       break;
   }
   setText(4, tmp);
+*/
 }
 
 KReconcileListItem::~KReconcileListItem()
@@ -50,6 +52,7 @@ KReconcileListItem::~KReconcileListItem()
 
 void KReconcileListItem::setReconciled(bool rec)
 {
+/*
   QString temp = " ";
   if(rec == true) {
     m_transaction->setState(MyMoneyTransaction::Reconciled);
@@ -58,6 +61,7 @@ void KReconcileListItem::setReconciled(bool rec)
     m_transaction->setState(MyMoneyTransaction::Unreconciled);
   }
   setText(4,temp);
+*/
 }
 
 MyMoneyTransaction* KReconcileListItem::transaction(void)
@@ -67,6 +71,7 @@ MyMoneyTransaction* KReconcileListItem::transaction(void)
 
 QString KReconcileListItem::key(int column, bool ascending) const
 {
+/*
   QString tmp = "";
   switch (column ) {
     case 0:
@@ -79,5 +84,6 @@ QString KReconcileListItem::key(int column, bool ascending) const
       break;
   }
   return tmp;
+*/
 }
 

@@ -31,76 +31,89 @@
 #include <qpainter.h>
 #endif
 
-KBankListItem::KBankListItem(QListView *parent, MyMoneyBank bank )
- : QListViewItem(parent)
+KAccountListItem::KAccountListItem(KListView *parent, const QString& accountName, const QCString& accountID, bool viewNormal)
+  : QListViewItem(parent), m_accountID(accountID), m_bViewNormal(viewNormal)
 {
-  m_bank = bank;
+  if (m_bViewNormal)
+  {
+    m_nAccountColumn = 1;
+    m_nInstitutionColumn = 0;
+  }
+  else
+  {
+    m_nAccountColumn = 0;
+    m_nInstitutionColumn = -1;
+  }
 
-  setText(0, m_bank.name());
-  setPixmap(0, QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/22x22/actions/bank.png")));
-  setText(1, i18n("Bank"));  // dynamic in future, depending on institution type
-  MyMoneyMoney balance;
-  MyMoneyAccount *account;
-  for (account=bank.accountFirst(); account; account=bank.accountNext())
-    balance += account->balance();
-  setText(2, KGlobal::locale()->formatMoney(balance.amount(), "",
-                                            KGlobal::locale()->fracDigits()));
-  m_isBank=true;
+  setText(m_nAccountColumn, accountName);
+  // setPixmap(1, QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/22x22/actions/account.png")));
+  //setText(1, m_account.getTypeName());
+	//setText(2, KGlobal::locale()->formatMoney(m_account.balance().amount(), "",
+  //                                          KGlobal::locale()->fracDigits()));
 }
 
-KBankListItem::KBankListItem(KBankListItem *parent, MyMoneyBank bank, MyMoneyAccount account)
-  : QListViewItem(parent)
+KAccountListItem::KAccountListItem(KAccountListItem *parent, const QString& accountName, const QCString& accountID, bool viewNormal)
+  : QListViewItem(parent), m_accountID(accountID), m_bViewNormal(viewNormal)
 {
-  m_bank = bank;
-  m_account = account;
+  if (m_bViewNormal)
+  {
+    m_nAccountColumn = 1;
+    m_nInstitutionColumn = 0;
+  }
+  else
+  {
+    m_nAccountColumn = 0;
+    m_nInstitutionColumn = -1;
+  }
 
-  setText(0, m_account.name());
-  setPixmap(0, QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/22x22/actions/account.png")));
-  //setText(1, i18n("Current")); // dynamic in future...
-  setText(1, m_account.getTypeName());
-	setText(2, KGlobal::locale()->formatMoney(m_account.balance().amount(), "",
-                                            KGlobal::locale()->fracDigits()));
-
-  m_isBank=false;
+  setText(m_nAccountColumn, accountName);
+  //setPixmap(0, QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/22x22/actions/account.png")));
 }
 
-KBankListItem::~KBankListItem()
+KAccountListItem::KAccountListItem(KListView *parent, const QString& institutionName, const QCString& institutionID)
+  : QListViewItem(parent), m_institutionID(institutionID), m_bViewNormal(true)
+{
+  if (m_bViewNormal)
+  {
+    m_nAccountColumn = 1;
+    m_nInstitutionColumn = 0;
+  }
+  else
+  {
+    m_nAccountColumn = 0;
+    m_nInstitutionColumn = -1;
+  }
+
+  setText(m_nInstitutionColumn, institutionName);
+}
+
+KAccountListItem::~KAccountListItem()
 {
 }
 
-MyMoneyBank KBankListItem::bank(void)
+QCString KAccountListItem::accountID(void)
 {
-  return m_bank;
+  return m_accountID;
 }
 
-MyMoneyAccount KBankListItem::account(void)
-{
-  return m_account;
-}
-
-bool KBankListItem::isBank(void)
-{
-  return m_isBank;
-}
-
-void KBankListItem::paintCell(QPainter *p, const QColorGroup & cg, int column, int width, int align)
+void KAccountListItem::paintCell(QPainter *p, const QColorGroup & cg, int column, int width, int align)
 {
 	KConfig *config = KGlobal::config();
   config->setGroup("List Options");
   QFont defaultFont = QFont("helvetica", 12);
   p->setFont(config->readFontEntry("listCellFont", &defaultFont));
 
-  if (column==2) {
+/*
+  if (column==2)
+  {
     QFont font = p->font();
-    if (isBank())
-      font.setBold(true);
-    else {
-      if (m_account.balance().amount()<0)
-        font.setItalic(true);
-    }
+    if (m_account.balance().amount()<0)
+      font.setItalic(true);
+
     p->setFont(font);
     QListViewItem::paintCell(p, cg, column, width, 2);
   }
   else
+*/
     QListViewItem::paintCell(p, cg, column, width, align);
 }

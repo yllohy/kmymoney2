@@ -577,20 +577,18 @@ void KMyMoney2App::slotFileFileInfo()
     return;
   }
 
-  myMoneyView->fileInfo();
+//  myMoneyView->fileInfo();
+  KMessageBox::information(this, i18n("This is going to be removed."));
 }
 
 void KMyMoney2App::slotBankAdd()
 {
-  myMoneyView->slotBankNew();
+  //myMoneyView->slotBankNew();
+  KMessageBox::information(this, i18n("Temporarily disabled."));
 }
 
 void KMyMoney2App::slotAccountAdd()
 {
-  if (myMoneyView->currentBankName()==i18n("Unknown Institution")) {
-    KMessageBox::information(this, i18n("Please select an institution first."), i18n("Create New Account"));
-    return;
-  }
   myMoneyView->slotAccountNew();
 }
 
@@ -682,14 +680,13 @@ void KMyMoney2App::enableBankOperations(bool enable)
 
   // Make sure there is a bank selected before enabling
   // accountAdd
-  if (myMoneyView->currentBankName()==i18n("Unknown Institution") &&
-      myMoneyView->currentAccountName() == i18n("Unknown Account"))
+  if (myMoneyView->currentAccountName() == i18n("Unknown Account"))
     accountAdd->setEnabled(false);
   else
     accountAdd->setEnabled(enable);
 
   bankAdd->setEnabled(enable);
-  setCaption(myMoneyView->currentBankName());
+  //setCaption(myMoneyView->currentBankName());
 }
 
 void KMyMoney2App::enableAccountOperations(bool enable)
@@ -707,9 +704,7 @@ void KMyMoney2App::enableAccountOperations(bool enable)
   accountExport->setEnabled(enable);
   accountFind->setEnabled(enable);
 
-  QString caption = myMoneyView->currentBankName();
-  caption += " : ";
-  caption += myMoneyView->currentAccountName();
+  QString caption = myMoneyView->currentAccountName();
   setCaption(caption);
 }
 
@@ -732,9 +727,7 @@ void KMyMoney2App::enableTransactionOperations(bool enable)
 
   viewUp->setEnabled(enable);
 
-  QString caption = myMoneyView->currentBankName();
-  caption += " : ";
-  caption += myMoneyView->currentAccountName();
+  QString caption = myMoneyView->currentAccountName();
   setCaption(caption);
 }
 

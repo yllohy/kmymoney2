@@ -20,7 +20,7 @@
 #include <klocale.h>
 #include <qdialog.h>
 
-#include "../mymoney/mymoneymoney.h"
+#include "../mymoney/mymoneyinstitution.h"
 
 #include "knewbankdlgdecl.h"
 
@@ -30,20 +30,13 @@
 class KNewBankDlg : public KNewBankDlgDecl  {
    Q_OBJECT
 
-public:
-	KNewBankDlg(QWidget *parent=0, const char *name=0);
-  KNewBankDlg(QString b_name, QString b_sortCode, QString b_city,
-    QString b_street, QString b_postcode, QString b_telephone, QString b_manager,
-    QString title, QWidget *parent=0, const char *name=0);
-	~KNewBankDlg();
+private:
+  MyMoneyInstitution m_institution;
 
-	QString m_name;
-	QString m_street;
-	QString m_city;
-	QString m_postcode;
-	QString m_telephone;
-	QString m_managerName;
-        QString m_sortCode;
+public:
+  KNewBankDlg(MyMoneyInstitution& institution, QWidget *parent, const char *name);
+	~KNewBankDlg();
+  MyMoneyInstitution KNewBankDlg::institution(void);
 
 protected slots:
   void okClicked();

@@ -57,6 +57,7 @@
 KExportDlg::KExportDlg(MyMoneyAccount *account, QWidget *parent)
   : KExportDlgDecl(parent,0,TRUE)
 {
+/*
   QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_qif_export.png");
   QPixmap *pm = new QPixmap(filename);
   m_qpixmaplabel->setPixmap(*pm);
@@ -109,6 +110,7 @@ KExportDlg::KExportDlg(MyMoneyAccount *account, QWidget *parent)
     SLOT(slotFileTextChanged(const QString&)));
 
   connect(m_qbuttonBrowse, SIGNAL( clicked() ), this, SLOT( slotBrowse() ) );
+*/
   connect(m_qbuttonOk, SIGNAL(clicked()), this, SLOT(slotOkClicked()));
 }
 
@@ -120,10 +122,12 @@ KExportDlg::~KExportDlg()
 
 void KExportDlg::slotBrowse()
 {
+/*
   QString newName(KFileDialog::getSaveFileName(QString::null,"*.QIF"));
   appendCorrectFileExt(newName, QString("qif"));
   if (!newName.isEmpty())
     m_qlineeditFile->setText(newName);
+*/
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -178,6 +182,7 @@ bool KExportDlg::appendCorrectFileExt(QString& str, const QString strExtToUse)
 /** Perform the real processing when OK is clicked */
 void KExportDlg::slotOkClicked()
 {
+/*
   // Do some validation on the inputs.
   if (m_qlineeditFile->text().isEmpty()) {
     KMessageBox::information(this, i18n("Please enter the path to the QIF file"), i18n("Export QIF"));
@@ -237,6 +242,7 @@ void KExportDlg::slotOkClicked()
       KMessageBox::information(this, qstringPrompt, i18n("Export QIF"));
     }
   }
+*/
   accept();
 }
 

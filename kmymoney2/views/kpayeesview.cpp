@@ -41,13 +41,13 @@
 
 #include "kpayeesview.h"
 
-KPayeesView::KPayeesView(MyMoneyFile *file, QWidget *parent, const char *name )
+KPayeesView::KPayeesView(QWidget *parent, const char *name )
   : kPayeesViewDecl(parent,name)
 {
 //  QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_payees.png");
 //  QPixmap *pm = new QPixmap(filename);
 //  m_qpixmaplabel->setPixmap(*pm);
-	m_file = file;
+	m_file = 0L;
 
   readConfig();
 
@@ -65,6 +65,7 @@ KPayeesView::~KPayeesView()
 
 void KPayeesView::payeeHighlighted(const QString& text)
 {
+/*
   MyMoneyPayee *payee=0;
   QListIterator<MyMoneyPayee> it = m_file->payeeIterator();
   for ( ; it.current(); ++it) {
@@ -83,10 +84,12 @@ void KPayeesView::payeeHighlighted(const QString& text)
       deleteButton->setEnabled(true);
     }
   }
+*/
 }
 
 void KPayeesView::slotAddClicked()
 {
+/*
   m_file->addPayee(payeeEdit->text());
   QListIterator<MyMoneyPayee> it = m_file->payeeIterator();
   payeeCombo->clear();
@@ -100,6 +103,7 @@ void KPayeesView::slotAddClicked()
   payeeEdit->setText("");
   payeeCombo->setCurrentItem(pos);
   payeeHighlighted(payeeCombo->currentText());
+*/
 }
 
 void KPayeesView::slotPayeeTextChanged(const QString& text)
@@ -112,6 +116,7 @@ void KPayeesView::slotPayeeTextChanged(const QString& text)
 
 void KPayeesView::slotUpdateClicked()
 {
+/*
   MyMoneyPayee *payee;
   QListIterator<MyMoneyPayee> it = m_file->payeeIterator();
   for ( ; it.current(); ++it) {
@@ -123,10 +128,12 @@ void KPayeesView::slotUpdateClicked()
       payee->setEmail(emailEdit->text());
     }
   }
+*/
 }
 
 void KPayeesView::slotDeleteClicked()
 {
+/*
   QString prompt(i18n("Remove this payee: "));
   prompt += nameLabel->text();
 
@@ -139,6 +146,7 @@ void KPayeesView::slotDeleteClicked()
   for ( ; it.current(); ++it)
     payeeCombo->insertItem(it.current()->name());
   payeeHighlighted(payeeCombo->currentText());
+*/
 }
 
 void KPayeesView::readConfig(void)
@@ -165,6 +173,7 @@ void KPayeesView::show()
 
 void KPayeesView::refresh(void)
 {
+/*
   payeeCombo->clear();
 
   int pos=0, k=0;
@@ -177,4 +186,5 @@ void KPayeesView::refresh(void)
   payeeCombo->setCurrentItem(pos);
 
   payeeHighlighted(payeeCombo->currentText());
+*/
 }

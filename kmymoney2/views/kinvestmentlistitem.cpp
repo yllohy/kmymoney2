@@ -31,15 +31,15 @@ KInvestmentListItem::KInvestmentListItem(KListView* parent, MyMoneyEquity *pEqui
 	m_pListView = parent;
 	
 	//column 0 is the name of the stock
-	setText(0, QString(pEquity->getEquityName().data()));
+	//setText(0, QString(pEquity->getEquityName().data()));
 	
 	//column 1 is the ticker symbol
-	setText(1, QString(pEquity->getEquitySymbol().data()));
+	//setText(1, QString(pEquity->getEquitySymbol().data()));
 	
 	//column 3 is the current price, using the QString translator to get a string value.
 	QString strValue;
-	const double price = pEquity->getCurrentPrice().amount();
-	strValue.setNum(price);
+	//const double price = pEquity->getCurrentPrice().amount();
+	//strValue.setNum(price);
 	//strValue = tr("%1", arg(pEquity->getCurrentPrice().amount()));
 	setText(3, strValue);
 }

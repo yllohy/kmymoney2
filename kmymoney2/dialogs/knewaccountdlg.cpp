@@ -32,48 +32,28 @@
 #include <kcombobox.h>
 #include "knewaccountdlg.h"
 
-KNewAccountDlg::KNewAccountDlg(QString institution, QWidget *parent, const char *name, const char *title)
-  : KNewAccountDlgDecl(parent,name,true)
+KNewAccountDlg::KNewAccountDlg(MyMoneyAccount& account, MyMoneyFile* file, QWidget *parent,
+    const char *name, const char *title)
+  : KNewAccountDlgDecl(parent,name,true), m_account(account)
 {
-  QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_new_account.png");
-  QPixmap pm(filename);
-  m_qpixmaplabel->setPixmap(pm);
-	if (title)
-	  setCaption(title);
+  m_file = file;
 
-  institutionNameLabel->setText(institution);
-  accountNameEdit->setFocus();
-
-  connect(cancelButton, SIGNAL(clicked()), SLOT(reject()));
-  connect(createButton, SIGNAL(clicked()), this, SLOT(okClicked()));
-}
-
-KNewAccountDlg::KNewAccountDlg(QString institution, QString m_name, QString no,
-  MyMoneyAccount::accountTypeE/* type*/, QString description,
-  QDate openingDate, MyMoneyMoney openingBalance,
-  QWidget *parent, const char *name, const char *title)
-  : KNewAccountDlgDecl(parent,name,true)
-{
   QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_new_account.png");
   QPixmap *pm = new QPixmap(filename);
   m_qpixmaplabel->setPixmap(*pm);
 
-  institutionNameLabel->setText(institution);
-
-  accountNameEdit->setText(m_name);
-  accountNoEdit->setText(no);
-
-	if (title)
-	  setCaption(title);
-
-  descriptionEdit->setText(description);
-
+  institutionNameLabel->setText(m_file->institution(account.institutionId()).name());
+  accountNameEdit->setText(account.name());
+  accountNoEdit->setText(account.number());
+  descriptionEdit->setText(account.description());
+  startDateEdit->setDate(account.openingDate());
+  startBalanceEdit->setText(account.openingBalance().formatMoney());
+  //parentAccountWidget->setParentAccount(account.parentAccountId());
+  
   accountNameEdit->setFocus();
-
-  startDateEdit->setDate(openingDate);
-  startDateEdit->setEnabled(false);
-  startBalanceEdit->setText(KGlobal::locale()->formatMoney(openingBalance.amount(),""));
-  startBalanceEdit->setEnabled(false);
+	
+  if (title)
+	  setCaption(title);
 
   connect(cancelButton, SIGNAL(clicked()), SLOT(reject()));
   connect(createButton, SIGNAL(clicked()), this, SLOT(okClicked()));
@@ -85,23 +65,36 @@ KNewAccountDlg::~KNewAccountDlg()
 
 void KNewAccountDlg::okClicked()
 {
-  accountNameText = accountNameEdit->text();
-  if (accountNameText.isEmpty()) {
+  // KMyMoneyView will check that the parent exists
+  // when adding the account.
+  //m_parentAccount = parentAccountWidget->parentAccount();
+
+  QString accountNameText = accountNameEdit->text();
+  if (accountNameText.isEmpty())
+  {
     KMessageBox::error(this, i18n("You have not specified a name.\nPlease fill in this field"));
     accountNameEdit->setFocus();
     return;
   }
-  accountNoText = accountNoEdit->text();
 
-	//set account type based on the combo box setting
-	if(typeCombo)
-	{
-		int currentItem = typeCombo->currentItem();
-		type = static_cast<MyMoneyAccount::accountTypeE>(currentItem);
-	}
+  m_account.setName(accountNameText);
+  m_account.setNumber(accountNoEdit->text());
+	int currentItem = typeCombo->currentItem();
+	m_account.setAccountType(static_cast<MyMoneyAccount::accountTypeE>(currentItem));
+  m_account.setDescription(descriptionEdit->text());
+  m_account.setOpeningBalance(startBalanceEdit->getMoneyValue());
+  m_account.setOpeningDate(startDateEdit->getQDate());
 
-  descriptionText = descriptionEdit->text();
-  startBalance = startBalanceEdit->getMoneyValue();
-  startDate = startDateEdit->getQDate();
   accept();
 }
+
+MyMoneyAccount KNewAccountDlg::account(void)
+{
+  return m_account;
+}
+
+MyMoneyAccount KNewAccountDlg::parentAccount(void)
+{
+  return m_parentAccount;
+}
+

@@ -36,7 +36,8 @@ kMyMoneyEdit::~kMyMoneyEdit()
 
 MyMoneyMoney kMyMoneyEdit::getMoneyValue(void)
 {
-  MyMoneyMoney money(KGlobal::locale()->readMoney(text()));
+#warning "FIXME:"
+  MyMoneyMoney money((long)(text().toDouble()*100));
   return money;
 }
 

@@ -31,6 +31,7 @@
 KEndingBalanceDlg::KEndingBalanceDlg(MyMoneyMoney& prevBal, MyMoneyMoney& endingGuess, QWidget *parent, const char *name)
  : KEndingBalanceDlgDecl(parent,name,true)
 {
+/*
 //	initDialog();
    //QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_ending_balance.png");
   QPixmap *pm = new QPixmap(KGlobal::dirs()->findResource("appdata", "pics/dlg_ending_balance.png"));
@@ -44,6 +45,7 @@ KEndingBalanceDlg::KEndingBalanceDlg(MyMoneyMoney& prevBal, MyMoneyMoney& ending
 	
 	connect(cancelBtn, SIGNAL(clicked()), SLOT(reject()));
 	connect(okBtn, SIGNAL(clicked()), SLOT(okClicked()));
+*/
 }
 
 KEndingBalanceDlg::~KEndingBalanceDlg()

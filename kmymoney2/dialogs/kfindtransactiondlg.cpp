@@ -104,6 +104,7 @@ void KFindTransactionDlg::payeeToggled(bool on)
 
 void KFindTransactionDlg::categoryToggled(bool on)
 {
+/*
   categoryCombo->clear();
   QString theText;
   QListIterator<MyMoneyCategory> categoryIterator = m_filePointer->categoryIterator();
@@ -119,6 +120,7 @@ void KFindTransactionDlg::categoryToggled(bool on)
     }
   }
   categoryCombo->setEnabled(on);
+*/
 }
 
 void KFindTransactionDlg::searchClicked()

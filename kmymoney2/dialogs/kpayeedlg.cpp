@@ -33,6 +33,7 @@
 KPayeeDlg::KPayeeDlg(MyMoneyFile *file, QWidget *parent, const char *name)
  : KPayeeDlgDecl(parent,name,true)
 {
+/*
   QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_payees.png");
   QPixmap *pm = new QPixmap(filename);
   m_qpixmaplabel->setPixmap(*pm);
@@ -56,6 +57,7 @@ KPayeeDlg::KPayeeDlg(MyMoneyFile *file, QWidget *parent, const char *name)
   connect(payeeEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotPayeeTextChanged(const QString&)));
   connect(updateButton, SIGNAL(clicked()), this, SLOT(slotUpdateClicked()));
   connect(deleteButton, SIGNAL(clicked()), this, SLOT(slotDeleteClicked()));
+*/
 }
 
 KPayeeDlg::~KPayeeDlg()
@@ -65,6 +67,7 @@ KPayeeDlg::~KPayeeDlg()
 
 void KPayeeDlg::payeeHighlighted(const QString& text)
 {
+/*
   MyMoneyPayee *payee=0;
   QListIterator<MyMoneyPayee> it = m_file->payeeIterator();
   for ( ; it.current(); ++it) {
@@ -83,10 +86,12 @@ void KPayeeDlg::payeeHighlighted(const QString& text)
       deleteButton->setEnabled(true);
     }
   }
+*/
 }
 
 void KPayeeDlg::slotAddClicked()
 {
+/*
   m_file->addPayee(payeeEdit->text());
   QListIterator<MyMoneyPayee> it = m_file->payeeIterator();
   payeeCombo->clear();
@@ -100,6 +105,7 @@ void KPayeeDlg::slotAddClicked()
   payeeEdit->setText("");
   payeeCombo->setCurrentItem(pos);
   payeeHighlighted(payeeCombo->currentText());
+*/
 }
 
 void KPayeeDlg::slotPayeeTextChanged(const QString& text)
@@ -112,6 +118,7 @@ void KPayeeDlg::slotPayeeTextChanged(const QString& text)
 
 void KPayeeDlg::slotUpdateClicked()
 {
+/*
   MyMoneyPayee *payee;
   QListIterator<MyMoneyPayee> it = m_file->payeeIterator();
   for ( ; it.current(); ++it) {
@@ -123,10 +130,12 @@ void KPayeeDlg::slotUpdateClicked()
       payee->setEmail(emailEdit->text());
     }
   }
+*/
 }
 
 void KPayeeDlg::slotDeleteClicked()
 {
+/*
   QString prompt(i18n("Remove this payee: "));
   prompt += nameLabel->text();
 
@@ -139,6 +148,7 @@ void KPayeeDlg::slotDeleteClicked()
   for ( ; it.current(); ++it)
     payeeCombo->insertItem(it.current()->name());
   payeeHighlighted(payeeCombo->currentText());
+*/
 }
 
 void KPayeeDlg::readConfig(void)

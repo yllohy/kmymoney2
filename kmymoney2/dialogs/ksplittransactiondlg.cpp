@@ -39,14 +39,14 @@
 #endif
 
 #include "ksplittransactiondlg.h"
-#include "../mymoney/mymoneysplittransaction.h"
+//#include "../mymoney/mymoneysplittransaction.h"
 #include "../widgets/kmymoneysplittable.h"
 #include "../mymoney/mymoneycategory.h"
 #include "../dialogs/ksplitcorrectiondlg.h"
 
 KSplitTransactionDlg::KSplitTransactionDlg(QWidget* parent,  const char* name,
                                            MyMoneyFile* const filePointer,
-                                           MyMoneyBank* const bankPointer,
+                                           MyMoneyInstitution* const bankPointer,
                                            MyMoneyAccount* const accountPointer,
                                            MyMoneyMoney* amount, const bool amountValid) :
   kSplitTransactionDlgDecl(parent, name, true),
@@ -59,6 +59,7 @@ KSplitTransactionDlg::KSplitTransactionDlg(QWidget* parent,  const char* name,
   m_createdNewSplit(false),
   m_skipStartEdit(false)
 {
+/*
   // setup the transactions table
   transactionsTable->setNumRows(1);
   transactionsTable->setNumCols(3);
@@ -146,6 +147,7 @@ KSplitTransactionDlg::KSplitTransactionDlg(QWidget* parent,  const char* name,
   // So, we let the dialog show up and resize it then. It's not really
   // clean, but the only way I got the damned thing working.
   QTimer::singleShot( 10, this, SLOT(initSize()) );
+*/
 }
 
 void KSplitTransactionDlg::createInputWidgets(void)
@@ -187,6 +189,7 @@ void KSplitTransactionDlg::initAmountWidth(void)
 
 void KSplitTransactionDlg::slotFinishClicked()
 {
+/*
   if(m_category->isVisible()) {         // still in edit mode?
     // we need to end edit mode first
     endEdit(false);
@@ -245,6 +248,7 @@ void KSplitTransactionDlg::slotFinishClicked()
     delete dlg;
 
   } else
+*/
     accept();
 }
 
@@ -255,6 +259,7 @@ void KSplitTransactionDlg::slotCancelClicked()
 
 void KSplitTransactionDlg::slotClearAllClicked()
 {
+/*
   int answer;
 #if QT_VERSION > 300
   answer = KMessageBox::warningContinueCancel (NULL,
@@ -262,7 +267,7 @@ void KSplitTransactionDlg::slotClearAllClicked()
           "Do you really want to continue?"),
      i18n("KMyMoney2"),
      i18n("Continue")
-     /*false*/);
+     );
 #else
   answer = KMessageBox::warningContinueCancel (NULL,
      i18n("You are about to delete all splits of this transaction. "
@@ -279,10 +284,12 @@ void KSplitTransactionDlg::slotClearAllClicked()
     updateTransactionTableSize();
     updateTransactionList();
   }
+*/
 }
 
 void KSplitTransactionDlg::updateSums(void)
 {
+/*
   MyMoneyMoney splits(splitsAmount());
 
   if(m_amountTransaction == NULL) {
@@ -297,10 +304,12 @@ void KSplitTransactionDlg::updateSums(void)
   splitSum->setText("<b>" + KGlobal::locale()->formatMoney(splits.amount(), "") + " ");
   splitUnassigned->setText("<b>" + KGlobal::locale()->formatMoney(diffAmount().amount(), "") + " ");
   transactionAmount->setText("<b>" + KGlobal::locale()->formatMoney(m_amountTransaction->amount(), "") + " ");
+*/
 }
 
 MyMoneyMoney KSplitTransactionDlg::splitsAmount(void)
 {
+/*
   MyMoneySplitTransaction* transaction;
   MyMoneyMoney splits(0.0);
 
@@ -309,20 +318,24 @@ MyMoneyMoney KSplitTransactionDlg::splitsAmount(void)
     splits += transaction->amount();
   }
   return splits;
+*/
 }
 
 MyMoneyMoney KSplitTransactionDlg::diffAmount(void)
 {
+/*
   MyMoneyMoney diff(0.0);
   // if there is an amount specified in the transaction, we need to calculate the
   // difference, otherwise we display the difference as 0 and display the same sum.
   if(m_amountValid)
     diff = *m_amountTransaction - splitsAmount();
   return diff;
+*/
 }
 
 void KSplitTransactionDlg::updateTransactionTableSize(void)
 {
+/*
   // get current size of transactions table
   int rowHeight = transactionsTable->cellGeometry(0, 0).height();
   int tableHeight = transactionsTable->height();
@@ -334,10 +347,12 @@ void KSplitTransactionDlg::updateTransactionTableSize(void)
 
   transactionsTable->setNumRows(m_splitList.count() + m_numExtraLines);
   transactionsTable->setMaxRows(m_splitList.count());
+*/
 }
-
+/*
 void KSplitTransactionDlg::updateTransactionList(int row, int col)
 {
+
   unsigned long rowCount=0;
   MyMoneySplitTransaction *transaction;
 
@@ -413,10 +428,12 @@ void KSplitTransactionDlg::updateTransactionList(int row, int col)
 
   // setup new size values
   resizeEvent(NULL);
-}
 
+}
+*/
 void KSplitTransactionDlg::createSplitTransaction(int row)
 {
+/*
   MyMoneySplitTransaction* transaction = new MyMoneySplitTransaction;
   transaction->setAmount(diffAmount());
   m_splitList.append(transaction);
@@ -429,6 +446,7 @@ void KSplitTransactionDlg::createSplitTransaction(int row)
        KGlobal::locale()->formatMoney(transaction->amount().amount(), ""));
   }
   updateTransactionTableSize();
+*/
 }
 
 void KSplitTransactionDlg::slotDeleteSplitTransaction(void)
@@ -438,6 +456,7 @@ void KSplitTransactionDlg::slotDeleteSplitTransaction(void)
 
 void KSplitTransactionDlg::slotDeleteSplitTransaction(int row)
 {
+/*
   int answer;
 
   if(row < static_cast<int> (m_splitList.count())) {
@@ -447,7 +466,7 @@ void KSplitTransactionDlg::slotDeleteSplitTransaction(int row)
             "Do you really want to continue?"),
        i18n("KMyMoney2"),
        i18n("Continue")
-       /*false*/);
+       );
 #else
     answer = KMessageBox::warningContinueCancel (NULL,
        i18n("You are about to delete this part of the transaction. "
@@ -461,11 +480,12 @@ void KSplitTransactionDlg::slotDeleteSplitTransaction(int row)
       updateTransactionList();
     }
   }
+*/
 }
 
 void KSplitTransactionDlg::deleteSplitTransaction(int row)
 {
-  m_splitList.remove(row);
+  //m_splitList.remove(row);
 
   // FIXME: handle transfers (see updateTransaction() for an example)
 
@@ -484,6 +504,7 @@ void KSplitTransactionDlg::slotStartEdit(void)
 
 void KSplitTransactionDlg::slotStartEdit(int row, int col, int button, const QPoint&  point)
 {
+/*
   // only start editing if inside used area
   if(row <= static_cast<int> (m_splitList.count())) {
     // make sure the row will be on the screen
@@ -498,6 +519,7 @@ void KSplitTransactionDlg::slotStartEdit(int row, int col, int button, const QPo
       m_category->setFocus();
     }
   }
+*/
 }
 
 void KSplitTransactionDlg::endEdit(bool skipNextStart)
@@ -510,6 +532,7 @@ void KSplitTransactionDlg::endEdit(bool skipNextStart)
 
 void KSplitTransactionDlg::slotQuitEdit(void)
 {
+/*
   int   row = transactionsTable->currentRow();
 
   if(m_category->isVisible()) {         // in edit mode?
@@ -529,10 +552,12 @@ void KSplitTransactionDlg::slotQuitEdit(void)
   transactionsTable->setCurrentRow(row);
   updateTransactionList(prev);
   updateTransactionList(row);
+*/
 }
 
 void KSplitTransactionDlg::slotNavigationKey(int key)
 {
+/*
   int row = transactionsTable->currentRow();
 
   switch(key) {
@@ -552,10 +577,12 @@ void KSplitTransactionDlg::slotNavigationKey(int key)
       break;
   }
   slotFocusChange(row, 0, Qt::LeftButton, QPoint(0, 0));
+*/
 }
 
 void KSplitTransactionDlg::slotFocusChange(int realrow, int col, int button, const QPoint&  point)
 {
+/*
   int   row = realrow;
 
   // adjust row to used area
@@ -609,10 +636,12 @@ void KSplitTransactionDlg::slotFocusChange(int realrow, int col, int button, con
       m_contextMenu->exec(QCursor::pos());
     }
   }
+*/
 }
-
+/*
 void KSplitTransactionDlg::updateTransaction(MyMoneySplitTransaction *transaction)
 {
+
   transaction->setMemo(m_memo->text());
   transaction->setAmount(m_amount->getMoneyValue());
 
@@ -630,7 +659,7 @@ void KSplitTransactionDlg::updateTransaction(MyMoneySplitTransaction *transactio
 // FIXME: Remove if completely empty
 
 
-/* FIXME: add support for transfers
+// FIXME: add support for transfers
 
 // the following code is just copied from KTransactionView and
 // needs to be adapted
@@ -678,9 +707,8 @@ void KSplitTransactionDlg::updateTransaction(MyMoneySplitTransaction *transactio
 			  }
 		  }		
 	  }
-*/
 }
-
+*/
 void KSplitTransactionDlg::showWidgets(int row, bool show)
 {
   if(show == true) {
@@ -706,6 +734,7 @@ void KSplitTransactionDlg::showWidgets(int row, bool show)
 
 void KSplitTransactionDlg::updateInputLists(void)
 {
+/*
   QStringList categoryList;
   QStringList qstringlistIncome;
   QStringList qstringlistExpense;
@@ -818,16 +847,18 @@ void KSplitTransactionDlg::updateInputLists(void)
 	categoryList += qstringlistAccount;
 
   m_category->insertStringList(categoryList);
+*/
 }
 
+/*
 MyMoneySplitTransaction* KSplitTransactionDlg::firstTransaction(void)
 {
-  return m_splitList.first();
+  //return m_splitList.first();
 }
 
 MyMoneySplitTransaction* KSplitTransactionDlg::nextTransaction(void)
 {
-  return m_splitList.next();
+  //return m_splitList.next();
 }
 
 void KSplitTransactionDlg::addTransaction(MyMoneySplitTransaction* const split)
@@ -835,3 +866,4 @@ void KSplitTransactionDlg::addTransaction(MyMoneySplitTransaction* const split)
   m_splitList.append(split);
   updateTransactionList(m_splitList.count()-1);
 }
+*/
