@@ -257,6 +257,9 @@ KLedgerView::KLedgerView(QWidget *parent, const char *name )
 
 KLedgerView::~KLedgerView()
 {
+  if(m_timer != 0)
+    delete m_timer;
+    
   if(m_infoStack != 0)
     delete m_infoStack;
 
