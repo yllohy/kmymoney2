@@ -1,12 +1,21 @@
+2004-06-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Don't show investment accounts in category selector widget
+  * Added general test environment for automated application tests
+  * Allow three digit fractional part for loan interest rates
+
 2004-06-27 Kevin Tambascio <ktambascio@users.sourceforge.net>
   * Added widgets to the online stock price update dialog
   * added placeholder dialog for the config options for the online update feature.
-  * added a class in the engine to handle price updates from the online updater.  This will allow dialogs to expose that feature, without burying logic to update the engine objects in the dialog.
+  * added a class in the engine to handle price updates from the online updater.
+    This will allow dialogs to expose that feature, without burying logic to update
+    the engine objects in the dialog.
   * some work on the investment view feature 
 
 2004-06-23 Kevin Tambascio <ktambascio@users.sourceforge.net>
-  * Added new dialog (doesn't do anythign yet) as a placeholder for the online stock/currency price update features.
-  * Added a menu item under the Tools menu to access this.  It will also be available in the investment view.
+  * Added new dialog (doesn't do anything yet) as a placeholder for the online
+    stock/currency price update features.
+  * Added a menu item under the Tools menu to access this.  It will also be
+    available in the investment view.
 
 2004-06-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Applied patch(es) supplied by Ace Jones
