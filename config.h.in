@@ -37,6 +37,9 @@
 /* Define if you have the res_init function */
 #undef HAVE_RES_INIT
 
+/* define if you have round */
+#undef HAVE_ROUND
+
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
 

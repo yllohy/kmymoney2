@@ -7,6 +7,8 @@ dnl check for atoll and strtoll
 dnl
 AC_FUNC_CHECK(atoll, [AC_DEFINE_UNQUOTED(HAVE_ATOLL, 1, [define if you have atoll])])
 AC_FUNC_CHECK(strtoll, [AC_DEFINE_UNQUOTED(HAVE_STRTOLL, 1, [define if you have strtoll])])
+AC_CHECK_LIB(m, round, [AC_DEFINE_UNQUOTED(HAVE_ROUND, 1, [define if you have round])]
+)
 
 dnl
 dnl add checks for cppunit
