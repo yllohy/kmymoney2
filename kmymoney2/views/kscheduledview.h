@@ -48,7 +48,7 @@ class KPopupMenu;
   * Used by the KMyMoneyView class to show the view.
   *
   * @author Michael Edwardes 2000-2002
-  * $Id: kscheduledview.h,v 1.20 2003/10/03 08:02:49 ipwizard Exp $
+  * $Id: kscheduledview.h,v 1.21 2003/12/08 21:25:56 ipwizard Exp $
   *
   * @short A class to encapsulate recurring transaction operations.
   */
@@ -177,6 +177,7 @@ private:
   bool m_openBills;
   bool m_openDeposits;
   bool m_openTransfers;
+  bool m_openLoans;
 };
 
 #endif

@@ -61,7 +61,7 @@ class MyMoneyTransaction;
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.43 2003/10/03 08:02:49 ipwizard Exp $
+  * $Id: kmymoneyview.h,v 1.44 2003/12/08 21:25:56 ipwizard Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -154,6 +154,20 @@ private:
 
   static void progressCallback(int current, int total, const QString&);
 
+  /**
+    */
+  void fixFile(void);
+  
+  /**
+    */
+  void fixLoanAccount(MyMoneyAccount acc);
+
+  /**
+    */
+  void fixTransactions(void);
+    
+  void createSchedule(MyMoneySchedule s, MyMoneyAccount& a);
+    
 public:
   /**
     * The constructor for KMyMoneyView. Just creates all the tabs for the
@@ -399,12 +413,11 @@ public slots:
   /**
     * This slot cancels any edit activity in any view. It will
     * be called e.g. before entering the settings dialog.
+
     */
   void slotCancelEdit(void) const;
 
 protected slots:
-  void viewTransactionList(void);  // Show the transaction view
-
   /**
     * This slot is called whenever the transaction list is changed and is used
     * in the reconciliation process to update the view.
@@ -515,6 +528,7 @@ private:
     * @param qf pointer to QFile representing the opened file
     * @param writer pointer to the formatter
     *
+
     * @note This method will close the file when it is written.
     */
   void saveToLocalFile(QFile* qf, IMyMoneyStorageFormat* writer);

@@ -36,6 +36,8 @@
 #endif
 
 #include <klineedit.h>
+
+class KIntNumInput;
 class KListView;
 class KPushButton;
 
@@ -56,7 +58,7 @@ class KPushButton;
   * @see KDialogBase
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: ksettingsdlg.h,v 1.14 2003/09/17 11:57:55 mte Exp $
+  * $Id: ksettingsdlg.h,v 1.15 2003/12/08 21:25:55 ipwizard Exp $
   *
   * @short A class to manipulate the settings needed for running KMyMoney2
 **/
@@ -122,7 +124,7 @@ private:
   QRadioButton *m_qradiobuttonAccountWizard;
 
   QCheckBox *m_qradiobuttonCheckSchedules;
-
+  KIntNumInput* m_intSchedulePreview;
 
   KListView*    m_homePageList;
   KPushButton*  m_upButton;
@@ -168,6 +170,8 @@ private:
   bool m_bTempTypeToNr;
   bool m_bTempShowNrField;
   bool m_bTempStartPage;
+  bool m_bTempCheckSchedule;
+  int  m_iTempSchedulePreview;
   QStringList m_tempHomePageItems;
 
 private slots:

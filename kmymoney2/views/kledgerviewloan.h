@@ -142,6 +142,12 @@ protected:
 
 protected slots:
   /**
+    * Calling this slot opens the edit loan account wizard for the current
+    * selected account.
+    */
+  virtual void slotLoanAccountDetail(void);
+  
+  /**
     * Calling this slot opens the account edit dialog for the current
     * selected account.
     */
@@ -247,6 +253,7 @@ protected:
   KPushButton*  m_detailsButton;
   KPushButton*  m_reconcileButton;
   KPushButton*  m_interestButton;
+  KPushButton*  m_loanDetailsButton;
   
   /**
     * This member keeps a pointer to the summary line

@@ -1481,6 +1481,7 @@ void KLedgerViewCheckings::slotOpenSplitDialog(void)
                                                        m_account,
                                                        isValidAmount,
                                                        isDeposit,
+                                                       0,
                                                        this);
 
   if(dlg->exec()) {

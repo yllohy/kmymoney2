@@ -19,6 +19,8 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
+#include <qregexp.h>
+
 // ----------------------------------------------------------------------------
 // Project Includes
 
@@ -236,5 +238,185 @@ const bool MyMoneyAccount::operator == (const MyMoneyAccount& right) const
 const MyMoneyAccount::accountTypeE MyMoneyAccount::accountGroup(void) const
 {
   return accountGroup(m_accountType);  
+}
+
+
+MyMoneyAccountLoan::MyMoneyAccountLoan(const MyMoneyAccount& acc)
+ : MyMoneyAccount(acc)
+{
+}
+
+const MyMoneyMoney MyMoneyAccountLoan::loanAmount(void) const
+{
+  return MyMoneyMoney(value("loan-amount"));
+}
+
+void MyMoneyAccountLoan::setLoanAmount(const MyMoneyMoney& amount)
+{
+  setValue("loan-amount", amount.toString());
+}
+
+const MyMoneyMoney MyMoneyAccountLoan::interestRate(const QDate& date) const
+{
+  MyMoneyMoney rate;
+  QCString key;
+  QString val;
+
+  if(!date.isValid())
+    return rate;
+      
+  key.sprintf("ir-%04d-%02d-%02d", date.year(), date.month(), date.day());
+  
+  QRegExp regExp("ir-(\\d{4})-(\\d{2})-(\\d{2})");
+  
+  QMap<QCString, QString>::ConstIterator it;
+
+  for(it = pairs().begin(); it != pairs().end(); ++it) {
+    if(regExp.search(it.key()) > -1) {
+      if(qstrcmp(it.key(),key) <= 0)
+        val = *it;
+      else
+        break;
+        
+    } else if(!val.isEmpty())
+      break;
+  }
+
+  if(!val.isEmpty()) {
+    rate = MyMoneyMoney(val);
+  }
+    
+  return rate;
+}
+
+void MyMoneyAccountLoan::setInterestRate(const QDate& date, const MyMoneyMoney& value)
+{
+  if(!date.isValid())
+    return;
+    
+  QCString key;
+  key.sprintf("ir-%04d-%02d-%02d", date.year(), date.month(), date.day());
+  setValue(key, value.toString());
+}
+
+const MyMoneyAccountLoan::interestDueE MyMoneyAccountLoan::interestCalculation(void) const
+{
+  QString payTime(value("interest-calculation"));
+  if(payTime == QString("paymentDue"))
+    return paymentDue;
+  return paymentReceived;
+}
+
+void MyMoneyAccountLoan::setInterestCalculation(const MyMoneyAccountLoan::interestDueE onReception)
+{
+  if(onReception == paymentDue)
+    setValue("interest-calculation", "paymentDue");
+  else
+    setValue("interest-calculation", "paymentReceived");
+}
+
+const QDate MyMoneyAccountLoan::nextInterestChange(void) const
+{
+  QDate rc;
+  
+  QRegExp regExp("(\\d{4})-(\\d{2})-(\\d{2})");
+  if(regExp.search(value("interest-nextchange")) != -1) {
+    rc.setYMD(regExp.cap(1).toInt(), regExp.cap(2).toInt(), regExp.cap(3).toInt());
+  }
+  return rc;
+}
+
+void MyMoneyAccountLoan::setNextInterestChange(const QDate& date)
+{
+  setValue("interest-nextchange", date.toString(Qt::ISODate));
+}
+
+const int MyMoneyAccountLoan::interestChangeFrequency(int* unit) const
+{
+  int rc = -1;
+  
+  if(unit)
+    *unit = 1;
+  
+  QRegExp regExp("(\\d+)/(\\d{1})");
+  if(regExp.search(value("interest-changefrequency")) != -1) {
+    rc = regExp.cap(1).toInt();
+    if(unit != 0) {
+      *unit = regExp.cap(2).toInt();
+    }
+  }
+  return rc;
+}
+
+void MyMoneyAccountLoan::setInterestChangeFrequency(const int amount, const int unit)
+{
+  QString val;
+  val.sprintf("%d/%d", amount, unit);
+  setValue("interest-changeFrequency", val);
+}
+
+const QCString MyMoneyAccountLoan::schedule(void) const
+{
+  return QCString(value("schedule").latin1());
+}
+
+void MyMoneyAccountLoan::setSchedule(const QCString& sched)
+{
+  setValue("schedule", sched);
+}
+
+const bool MyMoneyAccountLoan::fixedInterestRate(void) const
+{
+  // make sure, that an empty kvp element returns true
+  return !(value("fixed-interest") == "no");
+}
+
+void MyMoneyAccountLoan::setFixedInterestRate(const bool fixed)
+{
+  setValue("fixed-interest", fixed ? "yes" : "no");
+  if(fixed) {
+    deletePair("interest-nextchange");
+    deletePair("interest-changeFrequency");
+  }
+}
+
+const MyMoneyMoney MyMoneyAccountLoan::finalPayment(void) const
+{
+  return MyMoneyMoney(value("final-payment"));
+}
+
+void MyMoneyAccountLoan::setFinalPayment(const MyMoneyMoney& finalPayment)
+{
+  setValue("final-payment", finalPayment.toString());
+}
+
+const unsigned int MyMoneyAccountLoan::term(void) const
+{
+  return value("term").toUInt();  
+}
+
+void MyMoneyAccountLoan::setTerm(const unsigned int payments)
+{
+  setValue("term", QString::number(payments));
+}
+
+const MyMoneyMoney MyMoneyAccountLoan::periodicPayment(void) const
+{
+  return MyMoneyMoney(value("periodic-payment"));
+}
+
+void MyMoneyAccountLoan::setPeriodicPayment(const MyMoneyMoney& payment)
+{
+  setValue("periodic-payment", payment.toString());
+}
+
+const QCString MyMoneyAccountLoan::payee(void) const
+{
+  return QCString(value("payee").latin1());
+}
+
+void MyMoneyAccountLoan::setPayee(const QCString& payee)
+{
+  setValue("payee", payee);
 }
 

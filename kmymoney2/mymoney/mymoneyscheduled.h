@@ -63,7 +63,7 @@ public:
   /**
     * This enum is used to describe the schedule type.
     */
-  enum typeE {  TYPE_ANY=0, TYPE_BILL=1, TYPE_DEPOSIT=2, TYPE_TRANSFER=4 };
+  enum typeE {  TYPE_ANY=0, TYPE_BILL=1, TYPE_DEPOSIT=2, TYPE_TRANSFER=4, TYPE_LOANPAYMENT=5 };
 
   /**
     * This enum is used to describe the schedule's payment type.

@@ -1,3 +1,23 @@
+2003-12-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * emit stateChanged in kMyMoneyAccountSelector in single selection mode
+    when selection changed
+  * added missing pages to the loan wizard
+  * fixed crash in settings dialog
+  * don't show 'unknown institution' if no account w/o institution is found
+  * added account's kvp to memory dump
+  * fixed 'file/open...' handling
+  * added testcases for them
+  * added wizard to modify loan data
+  * added ActionInterest
+  * added testcases for large values to MyMoneyMoneyTest::testFormatMoney()
+  * fixed MyMoneyMoney::formatMoney() for large values
+  * added new type for loan schedules
+  * updated the enter schedule dialogs to reflect loan payments
+  * don't show number of transactions in accountsview for standard accounts
+    (asset, income, etc.)
+  * added field to setup the number of days before the actual occurence of a
+    scheduled transaction it will be shown (functionality not implemented)
+
 2003-11-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * added conversion to l10n free form for MyMoneyMoney objects
   * removed KDE specific code from engine code

@@ -41,6 +41,14 @@
   * @author Thomas Baumgart
   */
 
+/**
+  * This class implementes a wizard for the creation of loan accounts.
+  * The user is asked a set of questions and according to the answers
+  * the respective MyMoneyAccount object can be requested from the
+  * wizard when accept() has been called. A MyMoneySchedule is also
+  * available to create a schedule entry for the payments to the newly
+  * created loan.
+  */
 class KNewLoanWizard : public KNewLoanWizardDecl
 {
   Q_OBJECT
@@ -48,15 +56,37 @@ public:
   KNewLoanWizard(QWidget *parent=0, const char *name=0);
   ~KNewLoanWizard();
 
+  /**
+    * This method returns a MyMoneyAccount object with all data
+    * filled out as provided by the wizard. The institution reference
+    * will be empty.
+    *
+    * @return MyMoneyAccount object to be used to create a new account
+    */
+  const MyMoneyAccount account(void) const;
+  
+  /**
+    * This method returns the schedule for the payments. The account
+    * where the amortization should be transferred to is the one
+    * we currently try to create with this wizard. The appropriate split
+    * will be returned as the first split of the transaction inside
+    * 
+    * as parameter @p accountId as this is the account that was created
+    * after this wizard was left via the accept() method.
+    *
+    * @return MyMoneySchedule object for payments
+    */
+  const MyMoneySchedule schedule(void) const;
+
+  void loadWidgets(const MyMoneyAccount& acc);
+      
 public slots:
   void next();
 
 protected slots:
   void slotLiabilityLoan(void);
   void slotAssetLoan(void);
-  void slotFixedInterestRate(void);
-  void slotVariableInterestRate(void);
-  void slotCheckPageFinished(void);
+  virtual void slotCheckPageFinished(void);
   void slotPaymentsMade(void);
   void slotNoPaymentsMade(void);
   void slotRecordAllPayments(void);
@@ -66,7 +96,7 @@ protected slots:
   void slotCreateCategory(void);
   void slotAdditionalFees(void);
     
-private:
+protected:
   void loadComboBoxes(void);
   void loadAccountList(void);
   void resetCalculator(void);
@@ -78,9 +108,10 @@ private:
   void updateLoanInfo(void);
   const QString updateTermWidgets(const long double v);
   void updatePeriodicPayment(void);
+  void updateSummary(void);
   int calculateLoan(void);
-  int occurenceToFrequency(const MyMoneySchedule::occurenceE occurence) const;
   int occurenceToPeriod(const MyMoneySchedule::occurenceE occurence) const;
+  int term(void) const;
 
 };
 

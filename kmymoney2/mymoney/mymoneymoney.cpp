@@ -128,7 +128,7 @@ const QString MyMoneyMoney::formatMoney(/*QString locale="C", bool addPrefixPost
     }
 
     if(left & 0xFFFFFFFF00000000LL) {
-      signed64 tmp = m_64Value;
+      signed64 tmp = left;
 
       // QString.sprintf("%Ld") did not work :-(,  so I had to
       // do it the old ugly way.
@@ -169,12 +169,8 @@ const QString MyMoneyMoney::formatMoney(/*QString locale="C", bool addPrefixPost
 
 const QString MyMoneyMoney::toString(void) const
 {
-  signed64 tmp = m_64Value;
+  signed64 tmp = abs().value();
   QString  res;
-
-  if(tmp < 0) {
-    tmp = -tmp;
-  }
 
   // QString.sprintf("%Ld") did not work :-(,  so I had to
   // do it the old ugly way.  

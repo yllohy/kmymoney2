@@ -30,49 +30,51 @@
 
 // ----------------------------------------------------------------------------
 // Project Includes
+
 #include "keditschedtransdlgdecl.h"
 #include "../mymoney/mymoneyfile.h"
 #include "../mymoney/mymoneyscheduled.h"
 
 
 /**
-  *@author Michael Edwardes
+  * @author Michael Edwardes, Thomas Baumgart
   */
 
-class KEditScheduleDialog : public kEditScheduledTransferDlgDecl {
-   Q_OBJECT
+class KEditScheduleDialog : public kEditScheduledTransferDlgDecl
+{
+  Q_OBJECT
 public:
   /**
     * Standard QWidget constructor.
-  **/
-	KEditScheduleDialog(const QCString& action, const MyMoneySchedule& schedule, QWidget *parent=0, const char *name=0);
+    **/
+  KEditScheduleDialog(const QCString& action, const MyMoneySchedule& schedule, QWidget *parent=0, const char *name=0);
 
   /**
     * Standard destructor.
-  **/
-	~KEditScheduleDialog();
+    **/
+  ~KEditScheduleDialog();
 
   /**
     * Returns the edited schedule.
     *
     * @return MyMoneySchedule The schedule details.
-  **/
+    **/
   MyMoneySchedule schedule(void);
 
 protected slots:
   /**
     * Called when the split button is clicked
-  **/
+    **/
   void slotSplitClicked();
 
   /**
     * Called when the 'will end at some time' check box is clicked.
-  **/
+    **/
   void slotWillEndToggled(bool on);
 
   /**
     * Called when the OK button is clicked.
-  **/
+    **/
   void okClicked();
 
   void slotRemainingChanged(const QString& text);
@@ -107,22 +109,22 @@ private:
 
   /**
     * Sets up the widgets based on whats in MyMoneyFile.
-  */
+    */
   void reloadFromFile(void);
 
   /**
     * Read stored settings.
-  **/
+    **/
   void readConfig(void);
 
   /**
     * Write setting to config file.
-  **/
+    **/
   void writeConfig(void);
 
   /**
     * Reloads the qidgets from the global schedule.
-  **/
+    **/
   void loadWidgetsFromSchedule(void);
 
   MyMoneySchedule::occurenceE comboToOccurence(void);

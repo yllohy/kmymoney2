@@ -59,7 +59,11 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
   m_actionType = action;
   m_schedule = schedule;
   m_transaction = schedule.transaction();
-
+  // override the the action type if we have a scheduled transaction
+  if(m_transaction.splitCount() > 0) {
+    m_actionType = m_transaction.splits()[0].action();
+  }
+  
   KIntValidator *validator = new KIntValidator(1, 32768, this);
   m_qlineeditRemaining->setValidator(validator);
 
@@ -69,29 +73,46 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
 
   if (m_actionType == MyMoneySplit::ActionTransfer)
   {
-      m_accountCombo->setEnabled(true);
-      m_qlabelPay2->setEnabled(true);
-      TextLabel1_3->setEnabled(true);
-      m_kcomboTo->setEnabled(true);
-      m_category->setEnabled(false);
-      m_qbuttonSplit->setEnabled(false);
-      setCaption(i18n("Edit Transfer Schedule"));
+    m_accountCombo->setEnabled(true);
+    m_qlabelPay2->setEnabled(true);
+    TextLabel1_3->setEnabled(true);
+    m_kcomboTo->setEnabled(true);
+    m_category->setEnabled(false);
+    m_qbuttonSplit->setEnabled(false);
+    setCaption(i18n("Edit Transfer Schedule"));
   }
+  else if (m_actionType == MyMoneySplit::ActionAmortization)
+  {
+    m_accountCombo->setEnabled(true);
+    m_qlabelPay2->setEnabled(true);
+    TextLabel1_3->setEnabled(false);
+    m_kcomboTo->setEnabled(false);
+    TextLabel5->setEnabled(false);
+    m_kmoneyeditAmount->setEnabled(false);
+    TextLabel6->setEnabled(false);
+    m_kdateinputDue->setEnabled(false);
+    TextLabel7->setEnabled(false);
+    m_kcomboFreq->setEnabled(false);
+    m_category->setEnabled(false);
+    m_qbuttonSplit->setEnabled(true);
+    m_qcheckboxEnd->setEnabled(false);
+    setCaption(i18n("Edit Loan Payment Schedule"));
+  }  
   else if (m_actionType == MyMoneySplit::ActionDeposit)
   {
-      m_accountCombo->setEnabled(false);
-      m_qlabelPay2->setEnabled(false);
-      TextLabel1_3->setEnabled(true);
-      m_kcomboTo->setEnabled(true);
-      setCaption(i18n("Edit Deposit Schedule"));
+    m_accountCombo->setEnabled(false);
+    m_qlabelPay2->setEnabled(false);
+    TextLabel1_3->setEnabled(true);
+    m_kcomboTo->setEnabled(true);
+    setCaption(i18n("Edit Deposit Schedule"));
   }
   else
   {
-      m_accountCombo->setEnabled(true);
-      m_qlabelPay2->setEnabled(true);
-      TextLabel1_3->setEnabled(false);
-      m_kcomboTo->setEnabled(false);
-      setCaption(i18n("Edit Bill Schedule"));
+    m_accountCombo->setEnabled(true);
+    m_qlabelPay2->setEnabled(true);
+    TextLabel1_3->setEnabled(false);
+    m_kcomboTo->setEnabled(false);
+    setCaption(i18n("Edit Bill Schedule"));
   }
 
   connect(m_qbuttonCancel, SIGNAL(clicked()), this, SLOT(reject()));
@@ -102,7 +123,7 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
     this, SLOT(slotRemainingChanged(const QString&)));
   connect(m_kdateinputFinal, SIGNAL(dateChanged(const QDate&)),
     this, SLOT(slotEndDateChanged(const QDate&)));
-  connect(m_kmoneyeditAmount, SIGNAL(textChanged(const QString&)),
+  connect(m_kmoneyeditAmount, SIGNAL(valueChanged(const QString&)),
     this, SLOT(slotAmountChanged(const QString&)));
   connect(m_accountCombo, SIGNAL(activated(const QString&)),
     this, SLOT(slotAccountChanged(const QString&)));
@@ -150,7 +171,8 @@ void KEditScheduleDialog::writeConfig(void)
 
 void KEditScheduleDialog::reloadFromFile(void)
 {
-  if (m_actionType == MyMoneySplit::ActionTransfer)
+  if (m_actionType == MyMoneySplit::ActionTransfer
+  ||  m_actionType == MyMoneySplit::ActionAmortization)
   {
     m_kcomboMethod->insertItem(i18n("Direct Debit"));
     m_kcomboMethod->insertItem(i18n("Direct Deposit"));
@@ -184,21 +206,23 @@ void KEditScheduleDialog::reloadFromFile(void)
   m_kcomboFreq->insertItem(i18n("Yearly"));
   m_kcomboFreq->insertItem(i18n("Every other year"));
 
-  if (m_actionType == MyMoneySplit::ActionTransfer ||
-      m_actionType == MyMoneySplit::ActionWithdrawal)
+  m_accountCombo->blockSignals(true);
+  m_kcomboTo->blockSignals(true);
+  if (m_actionType == MyMoneySplit::ActionTransfer
+  ||  m_actionType == MyMoneySplit::ActionWithdrawal
+  ||  m_actionType == MyMoneySplit::ActionAmortization
+      )
   {
-    m_accountCombo->blockSignals(true);
     m_accountCombo->loadAccounts(true, false);
-    m_accountCombo->blockSignals(false);
   }
 
   if (m_actionType == MyMoneySplit::ActionDeposit ||
       m_actionType == MyMoneySplit::ActionTransfer)
   {
-    m_kcomboTo->blockSignals(true);
     m_kcomboTo->loadAccounts(true, false);
-    m_kcomboTo->blockSignals(false);
   }
+  m_accountCombo->blockSignals(false);
+  m_kcomboTo->blockSignals(false);
 
   // Fire off the activated signals.
   if (m_schedule.name().isEmpty() && m_transaction.splitCount() == 0)
@@ -207,10 +231,12 @@ void KEditScheduleDialog::reloadFromFile(void)
     slotFrequencyChanged(0);
     slotMethodChanged(0);
     if (m_actionType == MyMoneySplit::ActionTransfer ||
+        m_actionType == MyMoneySplit::ActionAmortization ||
         m_actionType == MyMoneySplit::ActionWithdrawal)
       slotAccountChanged(0);
 
     if (m_actionType == MyMoneySplit::ActionDeposit ||
+        m_actionType == MyMoneySplit::ActionAmortization ||
         m_actionType == MyMoneySplit::ActionTransfer)
       slotToChanged(0);
   }
@@ -243,13 +269,37 @@ void KEditScheduleDialog::slotSplitClicked()
     checkPayee();
 
     MyMoneyAccount acc  = MyMoneyFile::instance()->account(theAccountId());
+    
+    // theAccountId() returned the account that this schedule is attached
+    // to. In case of a loan payment, we need to find the account that
+    // the amortization goes to. This account contains a member that gives
+    // us the fixed amount used for the calculated values of amortization
+    // and interest which we have to pass to KSplitTransactionDlg().
+
+    MyMoneyMoney calculatedValue(0);
+    QValueList<MyMoneySplit>::ConstIterator it_s;
+    for(it_s = m_transaction.splits().begin(); it_s != m_transaction.splits().end(); ++it_s) {
+      if((*it_s).accountId() == theAccountId())
+        continue;
+      MyMoneyAccount tmpacc = MyMoneyFile::instance()->account((*it_s).accountId());
+      if(tmpacc.accountType() == MyMoneyAccount::Loan
+      || tmpacc.accountType() == MyMoneyAccount::AssetLoan) {
+        MyMoneyAccountLoan lacc(tmpacc);
+        calculatedValue = lacc.periodicPayment();
+        if(tmpacc.accountType() == MyMoneyAccount::AssetLoan) {
+          calculatedValue = -calculatedValue;
+        }
+        break;
+      }
+    }
 
     m_category->blockSignals(true);
-    
+
     KSplitTransactionDlg* dlg = new KSplitTransactionDlg(m_transaction,
                                                          acc,
                                                          isValidAmount,
                                                          isDeposit,
+                                                         calculatedValue,
                                                          this);
 
     // Avoid focusIn() events.
@@ -262,20 +312,18 @@ void KEditScheduleDialog::slotSplitClicked()
       MyMoneySplit s;
       QString category;
       
+      disconnect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
       switch(m_transaction.splitCount())
       {
         case 2:
           s = m_transaction.splits()[0];
           category = MyMoneyFile::instance()->accountToCategory(s.accountId());
-          disconnect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
           break;
         case 1:
           category = QString();
           m_transaction.removeSplits();
-          disconnect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
           break;
         case 0:
-          disconnect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
           break;
         default:
           category = i18n("Splitted Transaction");
@@ -434,7 +482,8 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
     else
       m_kcomboTo->setCurrentText(MyMoneyFile::instance()->account(m_transaction.splits()[0].accountId()).name());
 
-    if (m_actionType == MyMoneySplit::ActionTransfer)
+    if (m_actionType == MyMoneySplit::ActionTransfer
+    ||  m_actionType == MyMoneySplit::ActionAmortization)
     {
       m_kcomboTo->setCurrentText(
         MyMoneyFile::instance()->account(m_transaction.splits()[1].accountId()).name());
@@ -444,7 +493,8 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
     m_kdateinputDue->setDate(m_schedule.nextPayment(m_schedule.lastPayment())/*m_schedule.startDate()*/);
 
     int method=0;
-    if (m_actionType == MyMoneySplit::ActionTransfer)
+    if (m_actionType == MyMoneySplit::ActionTransfer
+    ||  m_actionType == MyMoneySplit::ActionAmortization)
     {
       switch (m_schedule.paymentType())
       {
@@ -580,6 +630,10 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
       {
         m_category->loadText(i18n("Splitted Transaction"));
         connect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
+      }
+      else if(m_actionType == MyMoneySplit::ActionAmortization)
+      {
+        m_category->loadText(i18n("Loan payment"));
       }
       else
         m_category->loadText(MyMoneyFile::instance()->instance()->accountToCategory(m_schedule.transaction().splitByAccount(theAccountId(), false).accountId()));
@@ -774,7 +828,8 @@ void KEditScheduleDialog::slotScheduleNameChanged(const QString& text)
 
 void KEditScheduleDialog::slotToChanged(const QString&)
 {
-  if (m_actionType == MyMoneySplit::ActionTransfer)
+  if (m_actionType == MyMoneySplit::ActionTransfer
+  ||  m_actionType == MyMoneySplit::ActionAmortization)
   {
     int count = m_transaction.splitCount();
     if (count == 0)
@@ -928,6 +983,7 @@ void KEditScheduleDialog::slotEstimateChanged()
 {
   if (m_qcheckboxAuto->isChecked())
   {
+
     if (m_qcheckboxEstimate->isChecked())
     {
       KMessageBox::error(this, i18n("The amount must not be an estimate to be automatically entered"));
@@ -1168,6 +1224,7 @@ void KEditScheduleDialog::checkPayee()
 QCString KEditScheduleDialog::theAccountId()
 {
   if (m_actionType == MyMoneySplit::ActionTransfer ||
+      m_actionType == MyMoneySplit::ActionAmortization ||
       m_actionType == MyMoneySplit::ActionWithdrawal)
   {
     return m_accountCombo->currentAccountId();

@@ -61,6 +61,7 @@ KSplitTransactionDlg::KSplitTransactionDlg(const MyMoneyTransaction& t,
                                            const MyMoneyAccount& acc,
                                            const bool amountValid,
                                            const bool deposit,
+                                           const MyMoneyMoney& calculatedValue,
                                            QWidget* parent, const char* name)
   : kSplitTransactionDlgDecl(parent, name, true),
   m_transaction(t),
@@ -69,7 +70,8 @@ KSplitTransactionDlg::KSplitTransactionDlg(const MyMoneyTransaction& t,
   m_amountValid(amountValid),
   m_numExtraLines(0),
   m_editRow(-1),
-  m_isDeposit(deposit)
+  m_isDeposit(deposit),
+  m_calculatedValue(calculatedValue)
 {
   // setup the transactions table
   transactionsTable->setInlineEditingMode(false);
@@ -197,6 +199,11 @@ void KSplitTransactionDlg::createInputWidgets(const int row)
   m_editCategory->loadText(transactionsTable->text(row, 0));
   m_editMemo->loadText(transactionsTable->text(row, 1));
   m_editAmount->loadText(m_split.value().formatMoney());
+  // don't allow automatically calculated values to be modified
+  if(m_split.value() == MyMoneyMoney::minValue+1) {
+    m_editAmount->setEnabled(false);
+    m_editAmount->loadText("will be calculated");
+  }
 
   transactionsTable->setCellWidget(row, 0, m_editCategory);
   transactionsTable->setCellWidget(row, 1, m_editMemo);
@@ -403,13 +410,14 @@ void KSplitTransactionDlg::updateSums(void)
 
 MyMoneyMoney KSplitTransactionDlg::splitsValue(void)
 {
-  MyMoneyMoney splitsValue(0);
+  MyMoneyMoney splitsValue(m_calculatedValue);
   QValueList<MyMoneySplit> list = getSplits();
   QValueList<MyMoneySplit>::ConstIterator it;
 
   // calculate the current sum of all split parts
   for(it = list.begin(); it != list.end(); ++it) {
-    splitsValue += (*it).value();
+    if((*it).value() != MyMoneyMoney::minValue+1)
+      splitsValue += (*it).value();
   }
 
   return splitsValue;
@@ -493,6 +501,10 @@ void KSplitTransactionDlg::updateSplit(int row, int /* col */)
         }
       }
       QString amountTxt = value.formatMoney();
+      if(value == MyMoneyMoney::minValue+1) {
+        amountTxt = i18n("will be calculated");
+      }
+
       if(colText.isEmpty() && (*it).memo().isEmpty() && value == 0)
         amountTxt = QString();
 
@@ -531,6 +543,9 @@ void KSplitTransactionDlg::updateSplit(int row, int /* col */)
         }
       }
       QString amountTxt = value.formatMoney();
+      if(value == MyMoneyMoney::minValue+1) {
+        amountTxt = i18n("will be calculated");
+      }
       if(colText.isEmpty() && s.memo().isEmpty() && value == 0)
         amountTxt = QString();
 
@@ -610,9 +625,10 @@ void KSplitTransactionDlg::slotStartEdit(int row, int col, int button, const QPo
 
       showWidgets(row);
       // if it's a loan payment transfer, we don't allow to modify the category ;-)
-      if(m_split.action() == MyMoneySplit::ActionAmortization) {
+      if(m_split.action() == MyMoneySplit::ActionAmortization
+      || m_split.action() == MyMoneySplit::ActionInterest) {
         m_editCategory->setEnabled(false);
-        m_editMemo->setFocus();        
+        m_editMemo->setFocus();
       } else {
         m_editCategory->setFocus();
       }

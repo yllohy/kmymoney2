@@ -46,6 +46,8 @@ KScheduledListItem::KScheduledListItem(KListView *parent, const char *name)
     setPixmap(0, KMyMoneyUtils::depositScheduleIcon(KIcon::Small));
   else if (name == i18n("Transfers"))
     setPixmap(0, KMyMoneyUtils::transferScheduleIcon(KIcon::Small));
+  else if (name == i18n("Loans"))
+    setPixmap(0, KMyMoneyUtils::transferScheduleIcon(KIcon::Small));
 }
 
 KScheduledListItem::KScheduledListItem(KScheduledListItem *parent, const MyMoneySchedule& schedule/*, bool even*/)
@@ -61,14 +63,52 @@ KScheduledListItem::KScheduledListItem(KScheduledListItem *parent, const MyMoney
     MyMoneyTransaction transaction = schedule.transaction();
     MyMoneySplit s1 = transaction.splits()[0];
     MyMoneySplit s2 = transaction.splits()[1];
+    QValueList<MyMoneySplit>::ConstIterator it_s;
     MyMoneySplit split;
 
+    switch(schedule.type()) {
+      case MyMoneySchedule::TYPE_DEPOSIT:
+        if (s1.value() >= 0)
+          split = s1;
+        else
+          split = s2;
+        break;
+        
+      case MyMoneySchedule::TYPE_LOANPAYMENT:
+        for(it_s = transaction.splits().begin(); it_s != transaction.splits().end(); ++it_s) {
+          MyMoneyAccount acc = MyMoneyFile::instance()->account((*it_s).accountId());
+          if(acc.accountGroup() == MyMoneyAccount::Asset
+          || acc.accountGroup() == MyMoneyAccount::Liability) {
+            if(acc.accountType() != MyMoneyAccount::Loan
+            && acc.accountType() != MyMoneyAccount::AssetLoan) {
+              split = *it_s;
+              break;
+            }
+          }
+        }
+        if(it_s == transaction.splits().end()) {
+          qFatal("Split for payment account not found in %s:%d.", __FILE__, __LINE__);
+        }
+        break;
+        
+      default:
+        if (s1.value() < 0)
+          split = s1;
+        else
+          split = s2;
+        break;
+    }
+/*
     if (schedule.type() == MyMoneySchedule::TYPE_DEPOSIT)
     {
       if (s1.value() >= 0)
         split = s1;
       else
         split = s2;
+    }
+    else if(schedule.type() == MyMoneySchedule::TYPE_LOANPAYMENT)
+    {
+      
     }
     else
     {
@@ -77,8 +117,7 @@ KScheduledListItem::KScheduledListItem(KScheduledListItem *parent, const MyMoney
       else
         split = s2;
     }
-    
-    
+*/
     setText(0, schedule.name());
     setText(1, MyMoneyFile::instance()->account(split.accountId()).name());
     setText(2, MyMoneyFile::instance()->payee(split.payeeId()).name());

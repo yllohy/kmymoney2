@@ -99,6 +99,8 @@ kMyMoneyAccountSelector::kMyMoneyAccountSelector(QWidget *parent, const char *na
   // m_listView->header()->setClickEnabled( FALSE, m_listView->header()->count() - 1 );
   // m_listView->header()->setResizeEnabled( FALSE, m_listView->header()->count() - 1 );
   m_listView->header()->hide();
+  m_listView->header()->setStretchEnabled(true, -1);
+  m_listView->header()->adjustHeaderSize();
   
   layout->addWidget( m_listView );
 
@@ -147,13 +149,15 @@ void kMyMoneyAccountSelector::setSelectionMode(const QListView::SelectionMode mo
     // make sure, it's either Multi or Single
     if(mode != QListView::Multi) {
       m_selMode = QListView::Single;
-
+      connect(m_listView, SIGNAL(selectionChanged(void)), this, SIGNAL(stateChanged(void)));
+      
       m_allAccountsButton->hide();
       m_noAccountButton->hide();
       m_incomeCategoriesButton->hide();
       m_expenseCategoriesButton->hide();
 
     } else {
+      disconnect(m_listView, SIGNAL(selectionChanged(void)), this, SIGNAL(stateChanged(void)));
       m_allAccountsButton->show();
       m_noAccountButton->show();
       m_incomeCategoriesButton->show();

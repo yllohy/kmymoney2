@@ -533,5 +533,48 @@ private:
   QCString m_parentAccount;
 };
 
+/**
+  * This class is a convenience class to access data for loan accounts.
+  * It does contain the same member variables as a MyMoneyAccount object,
+  * but serves a set of getter/setter methods to ease the access to
+  * laon relevant data stored in the key value container of the MyMoneyAccount
+  * object.
+  */
+class MyMoneyAccountLoan : public MyMoneyAccount
+{
+public:
+  enum interestDueE {
+    paymentDue = 0,
+    paymentReceived
+  };
+  
+  MyMoneyAccountLoan() {};
+  MyMoneyAccountLoan(const MyMoneyAccount&);
+  ~MyMoneyAccountLoan() {};
+
+  const MyMoneyMoney loanAmount(void) const;
+  void setLoanAmount(const MyMoneyMoney& amount);
+  const MyMoneyMoney interestRate(const QDate& date) const;
+  void setInterestRate(const QDate& date, const MyMoneyMoney& rate);
+  const interestDueE interestCalculation(void) const;
+  void setInterestCalculation(const interestDueE onReception);
+  const QDate nextInterestChange(void) const;
+  void setNextInterestChange(const QDate& date);
+  const QCString schedule(void) const;
+  void setSchedule(const QCString& sched);
+  const bool fixedInterestRate(void) const;
+  void setFixedInterestRate(const bool fixed);
+  const MyMoneyMoney finalPayment(void) const;
+  void setFinalPayment(const MyMoneyMoney& finalPayment);
+  const unsigned int term(void) const;
+  void setTerm(const unsigned int payments);
+  const int interestChangeFrequency(int* unit = 0) const;
+  void setInterestChangeFrequency(const int amount, const int unit);
+  const MyMoneyMoney periodicPayment(void) const;
+  void setPeriodicPayment(const MyMoneyMoney& payment);
+  const QCString payee(void) const;
+  void setPayee(const QCString& payee);
+};
+
 #endif
 

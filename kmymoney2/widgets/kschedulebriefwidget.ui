@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
 <class>kScheduleBriefWidget</class>
 <widget class="QWidget">
     <property name="name">
@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>393</width>
-            <height>313</height>
+            <width>341</width>
+            <height>339</height>
         </rect>
     </property>
     <property name="caption">
@@ -18,6 +18,12 @@
     <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
+            <number>1</number>
+        </property>
+        <property name="spacing">
+            <number>6</number>
         </property>
         <widget class="QFrame">
             <property name="name">
@@ -42,6 +48,12 @@
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
+                <property name="margin">
+                    <number>11</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
                 <widget class="QLayoutWidget">
                     <property name="name">
                         <cstring>layout5</cstring>
@@ -49,6 +61,12 @@
                     <hbox>
                         <property name="name">
                             <cstring>unnamed</cstring>
+                        </property>
+                        <property name="margin">
+                            <number>0</number>
+                        </property>
+                        <property name="spacing">
+                            <number>6</number>
                         </property>
                         <widget class="QToolButton">
                             <property name="name">
@@ -71,7 +89,7 @@
                             <property name="sizeHint">
                                 <size>
                                     <width>40</width>
-                                    <height>20</height>
+                                    <height>0</height>
                                 </size>
                             </property>
                         </spacer>
@@ -96,7 +114,7 @@
                             <property name="sizeHint">
                                 <size>
                                     <width>70</width>
-                                    <height>20</height>
+                                    <height>0</height>
                                 </size>
                             </property>
                         </spacer>
@@ -117,6 +135,12 @@
                     <hbox>
                         <property name="name">
                             <cstring>unnamed</cstring>
+                        </property>
+                        <property name="margin">
+                            <number>0</number>
+                        </property>
+                        <property name="spacing">
+                            <number>6</number>
                         </property>
                         <widget class="QLabel">
                             <property name="name">
@@ -158,6 +182,12 @@
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
+                        <property name="margin">
+                            <number>0</number>
+                        </property>
+                        <property name="spacing">
+                            <number>6</number>
+                        </property>
                         <widget class="QLabel">
                             <property name="name">
                                 <cstring>textLabel1</cstring>
@@ -195,6 +225,12 @@
                     <hbox>
                         <property name="name">
                             <cstring>unnamed</cstring>
+                        </property>
+                        <property name="margin">
+                            <number>0</number>
+                        </property>
+                        <property name="spacing">
+                            <number>6</number>
                         </property>
                         <widget class="QLabel">
                             <property name="name">
@@ -243,30 +279,91 @@
                         <bool>true</bool>
                     </property>
                 </widget>
-                <widget class="KPushButton">
+                <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>m_buttonEnter</cstring>
+                        <cstring>Layout6</cstring>
                     </property>
-                    <property name="text">
-                        <string>Enter...</string>
-                    </property>
-                </widget>
-                <widget class="KPushButton">
-                    <property name="name">
-                        <cstring>m_closeButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Close</string>
-                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <property name="margin">
+                            <number>0</number>
+                        </property>
+                        <property name="spacing">
+                            <number>6</number>
+                        </property>
+                        <spacer>
+                            <property name="name">
+                                <cstring>Spacer3</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>35</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <widget class="QLayoutWidget">
+                            <property name="name">
+                                <cstring>Layout5</cstring>
+                            </property>
+                            <vbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <property name="margin">
+                                    <number>0</number>
+                                </property>
+                                <property name="spacing">
+                                    <number>6</number>
+                                </property>
+                                <widget class="KPushButton">
+                                    <property name="name">
+                                        <cstring>m_buttonEnter</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Enter...</string>
+                                    </property>
+                                </widget>
+                                <widget class="KPushButton">
+                                    <property name="name">
+                                        <cstring>m_closeButton</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>&amp;Close</string>
+                                    </property>
+                                </widget>
+                            </vbox>
+                        </widget>
+                        <spacer>
+                            <property name="name">
+                                <cstring>Spacer4</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>43</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                        </spacer>
+                    </hbox>
                 </widget>
             </vbox>
         </widget>
     </vbox>
 </widget>
 <layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>qwidget.h</includehint>
-    <includehint>kpushbutton.h</includehint>
-    <includehint>kpushbutton.h</includehint>
-</includehints>
 </UI>

@@ -129,8 +129,7 @@ void KPayeesView::payeeHighlighted(const QString& text)
     showTransactions();
     writeConfig();
   } catch(MyMoneyException *e) {
-    qDebug("exception during display of payee");
-    qDebug("%s at %s:%d", e->what().latin1(), e->file().latin1(), e->line());
+    qDebug("exception during display of payee: %s at %s:%ld", e->what().latin1(), e->file().latin1(), e->line());
     m_transactionView->clear();
     m_payee = MyMoneyPayee();
     updateButton->setEnabled(false);

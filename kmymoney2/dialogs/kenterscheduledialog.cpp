@@ -22,21 +22,25 @@
 
 // ----------------------------------------------------------------------------
 // QT Includes
+
 #include <qlabel.h>
 #include <qpushbutton.h>
 #include <qradiobutton.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
+
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kpushbutton.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
+
 #include "kenterscheduledialog.h"
 #include "../widgets/kmymoneyedit.h"
 #include "../mymoney/mymoneyfile.h"
+#include "../mymoney/mymoneyfinancialcalculator.h"
 #include "../kmymoneyutils.h"
 #include "../widgets/kmymoneycombo.h"
 #include "../widgets/kmymoneypayee.h"
@@ -51,7 +55,12 @@ KEnterScheduleDialog::KEnterScheduleDialog(QWidget *parent, const MyMoneySchedul
 {
   m_schedule = schedule;
   m_transaction = schedule.transaction();
+
+  // initWidgets must be called before calculateInterst, because
+  // the internals of initWidgets require the unmodified splits
+  // with the setting of automatically calculated values
   initWidgets();
+  calculateInterest();
 
   connect(m_splitButton, SIGNAL(clicked()), this, SLOT(slotSplitClicked()));
   connect(buttonOk, SIGNAL(clicked()), this, SLOT(slotOK()));
@@ -61,11 +70,14 @@ KEnterScheduleDialog::KEnterScheduleDialog(QWidget *parent, const MyMoneySchedul
     this, SLOT(slotToActivated(int)));
 }
 
-KEnterScheduleDialog::~KEnterScheduleDialog(){
+KEnterScheduleDialog::~KEnterScheduleDialog()
+{
 }
 
 void KEnterScheduleDialog::initWidgets()
 {
+  kMyMoneyCombo* loanAccount = 0;
+  
   // Work around backwards transfers
   try
   {
@@ -86,7 +98,7 @@ void KEnterScheduleDialog::initWidgets()
         m_transaction = transaction;
       }
     }
-    else
+    else if(m_schedule.type() != MyMoneySchedule::TYPE_LOANPAYMENT)
     {
       if (s1.value() > 0)
       {
@@ -107,11 +119,43 @@ void KEnterScheduleDialog::initWidgets()
 
   m_splitButton->setGuiItem(KMyMoneyUtils::splitGuiItem());
 
-  if (m_schedule.type() != MyMoneySchedule::TYPE_DEPOSIT)
+  if (m_schedule.type() != MyMoneySchedule::TYPE_DEPOSIT
+  &&  m_schedule.type() != MyMoneySchedule::TYPE_LOANPAYMENT)
     m_from->loadAccounts(true, false);
-    
-  if (m_schedule.type() == MyMoneySchedule::TYPE_TRANSFER ||
-      m_schedule.type() == MyMoneySchedule::TYPE_DEPOSIT)
+
+  if (m_schedule.type() == MyMoneySchedule::TYPE_LOANPAYMENT)
+  {
+    MyMoneySplit amortizationSplit;
+    QValueList<MyMoneySplit>::ConstIterator it_s;
+    for(it_s = m_transaction.splits().begin(); it_s != m_transaction.splits().end(); ++it_s) {
+      if((*it_s).value() == MyMoneyMoney::minValue+1
+      && (*it_s).action() == MyMoneySplit::ActionAmortization) {
+        MyMoneyAccount acc = MyMoneyFile::instance()->account((*it_s).accountId());
+        switch(acc.accountType()) {
+          case MyMoneyAccount::Loan:
+            m_from->setEnabled(true);
+            m_to->setEnabled(false);
+            m_from->loadAccounts(true, false);
+            loanAccount = m_from;
+            break;
+
+          case MyMoneyAccount::AssetLoan:
+            m_from->setEnabled(false);
+            m_to->setEnabled(true);
+            m_to->loadAccounts(true, false);
+            loanAccount = m_to;
+            break;
+
+          default:
+            qFatal("invalid account type in %s:%d", __FILE__, __LINE__);
+            break;
+        } 
+        break;
+      }
+    }    
+  }
+  else if (m_schedule.type() == MyMoneySchedule::TYPE_TRANSFER
+       ||  m_schedule.type() == MyMoneySchedule::TYPE_DEPOSIT)
   {
     if (m_schedule.type() == MyMoneySchedule::TYPE_DEPOSIT)
       m_from->setEnabled(false);
@@ -124,12 +168,11 @@ void KEnterScheduleDialog::initWidgets()
     m_to->setEnabled(true);
     m_to->loadAccounts(true, false);
   }
-    
+
   try
   {
     if (m_schedule.account().name().isEmpty())
       return;
-
 
     if (m_schedule.type() == MyMoneySchedule::TYPE_TRANSFER)
     {
@@ -139,6 +182,11 @@ void KEnterScheduleDialog::initWidgets()
     }
     else if (m_schedule.type() == MyMoneySchedule::TYPE_DEPOSIT)
       m_to->setCurrentText(m_schedule.account().name());
+      
+    else if (m_schedule.type() == MyMoneySchedule::TYPE_LOANPAYMENT)
+    {
+      loanAccount->setCurrentText(m_schedule.account().name());
+    }
     else
     {
       m_from->setCurrentText(m_schedule.account().name());
@@ -198,8 +246,11 @@ void KEnterScheduleDialog::slotSplitClicked()
   {
     if (m_schedule.type() == MyMoneySchedule::TYPE_DEPOSIT)
       isDeposit = true;
-    else
+    else if(m_schedule.type() != MyMoneySchedule::TYPE_LOANPAYMENT)
       isDeposit = false;
+    else {
+      isDeposit = m_to->isEnabled();
+    }
     isValidAmount = true;
   }
 
@@ -225,11 +276,12 @@ void KEnterScheduleDialog::slotSplitClicked()
     m_category->blockSignals(true);
 
     MyMoneyAccount acc = MyMoneyFile::instance()->account(theAccountId());
-
+    
     KSplitTransactionDlg* dlg = new KSplitTransactionDlg(m_transaction,
                                                          acc,
                                                          isValidAmount,
                                                          isDeposit,
+                                                         0,
                                                          this);
 
     // Avoid focusIn() events.
@@ -303,8 +355,8 @@ bool KEnterScheduleDialog::checkData(void)
     if (m_payee->text() != payeeName)
     {
       noItemsChanged++;
-      messageDetail += QString(i18n("<font size=\"-1\">Payee changed.  Old: %1, New: %2</font><br>"))
-        .arg(payeeName).arg(m_payee->text());
+      messageDetail += QString(i18n("Payee changed.  Old: \"%1\", New: \"%2\""))
+        .arg(payeeName).arg(m_payee->text()) + QString("\n");
     }
 
     if (  (m_schedule.type() == MyMoneySchedule::TYPE_TRANSFER ||
@@ -312,25 +364,25 @@ bool KEnterScheduleDialog::checkData(void)
           m_from->currentText() != m_schedule.account().name())
     {
       noItemsChanged++;
-      messageDetail += QString(i18n("<font size=\"-1\">Account changed.  Old: %1, New: %2</font><br>"))
-        .arg(m_schedule.account().name()).arg(m_from->currentText());
+      messageDetail += QString(i18n("Account changed.  Old: \"%1\", New: \"%2\""))
+        .arg(m_schedule.account().name()).arg(m_from->currentText()) + QString("\n");
     }
 
     if (  m_schedule.type() == MyMoneySchedule::TYPE_DEPOSIT &&
           m_to->currentText() != m_schedule.account().name())
     {
       noItemsChanged++;
-      messageDetail += QString(i18n("<font size=\"-1\">Account changed.  Old: %1, New: %2</font><br>"))
-        .arg(m_schedule.account().name()).arg(m_to->currentText());
+      messageDetail += QString(i18n("Account changed.  Old: \"%1\", New: \"%2\""))
+        .arg(m_schedule.account().name()).arg(m_to->currentText()) + QString("\n");
     }
 
     if (  m_schedule.type() == MyMoneySchedule::TYPE_TRANSFER &&
           m_to->currentText() != MyMoneyFile::instance()->account(m_schedule.transaction().splits()[1].accountId()).name())
     {
       noItemsChanged++;
-      messageDetail += QString(i18n("<font size=\"-1\">Transfer account changed.  Old: %1, New: %2</font><br>"))
+      messageDetail += QString(i18n("Transfer account changed.  Old: \"%1\", New: \"%2\""))
         .arg(MyMoneyFile::instance()->account(m_schedule.transaction().splits()[1].accountId()).name())
-        .arg(m_to->currentText());
+        .arg(m_to->currentText()) + QString("\n");
     }
 
     if (m_schedule.type() != MyMoneySchedule::TYPE_TRANSFER)
@@ -345,39 +397,54 @@ bool KEnterScheduleDialog::checkData(void)
       if (category != m_category->text())
       {
         noItemsChanged++;
-        messageDetail += QString(i18n("<font size=\"-1\">Category changed.  Old: %1, New: %2</font><br>"))
-          .arg(category).arg(m_category->text());
+        messageDetail += QString(i18n("Category changed.  Old: \"%1\", New: \"%2\""))
+          .arg(category).arg(m_category->text()) + QString("\n");
       }
     }
 
     QString memo = m_schedule.transaction().splitByAccount(m_schedule.account().id()).memo();
-    if (memo != m_memo->text())
+    if (!memo.isEmpty() || !m_memo->text().isEmpty())
     {
-      noItemsChanged++;
-      messageDetail += QString(i18n("<font size=\"-1\">Memo changed.  Old: %1, New: %2</font><br>"))
-        .arg(memo).arg(m_memo->text());
+      if(memo != m_memo->text())
+      {
+        noItemsChanged++;
+        messageDetail += QString(i18n("Memo changed.  Old: \"%1\", New: \"%2\""))
+          .arg(memo).arg(m_memo->text()) + QString("\n");
+      }
     }
-
+    
     MyMoneyMoney amount = m_schedule.transaction().splitByAccount(m_schedule.account().id()).value();
     if (amount < 0)
       amount = -amount;
     if (amount != m_amount->getMoneyValue())
     {
       noItemsChanged++;
-      messageDetail += QString(i18n("<font size=\"-1\">Amount changed.  Old: %1, New: %2</font><br>"))
-        .arg(amount.formatMoney()).arg(m_amount->getMoneyValue().formatMoney());
+      messageDetail += QString(i18n("Amount changed.  Old: \"%1\", New: \"%2\""))
+        .arg(amount.formatMoney()).arg(m_amount->getMoneyValue().formatMoney()) + QString("\n");
     }
 
     if (noItemsChanged > 0)
     {
-      QString header = QString(
-        i18n("<b><font size=\"+1\"><p>%1 items of the details for the transaction have changed.</p></font></b>"))
+      QString header = QString("\n") +
+        i18n("%1 items of the details for the transaction have changed.")
         .arg(noItemsChanged);
         
       KConfirmManualEnterDialog dlg(this, "kconfirmmanualenterdlg");
       dlg.m_message->setText(header);
       dlg.m_details->setText(messageDetail);
       dlg.m_onceRadio->setChecked(true);
+      
+      // for loan payments, we do not allow to override the
+      // stored transaction as this would destroy the automatic
+      // amortization/interest calculation. Also, we cannot use
+      // the stored transaction directly. So for now, we don't
+      // allow these two options.
+      if(m_schedule.type() == MyMoneySchedule::TYPE_LOANPAYMENT)
+      {
+        dlg.m_SetRadio->setEnabled(false);
+        dlg.m_discardRadio->setEnabled(false);
+      }
+      
       if (dlg.exec())
       {
         if (dlg.m_onceRadio->isChecked())
@@ -616,32 +683,20 @@ void KEnterScheduleDialog::setAmount()
     {
       if (m_schedule.type() == MyMoneySchedule::TYPE_DEPOSIT)
         s.setValue(m_amount->getMoneyValue());
-      else
+      else if(m_schedule.type() != MyMoneySchedule::TYPE_LOANPAYMENT)
         s.setValue(-m_amount->getMoneyValue());
+        
       m_transaction.modifySplit(s);
 
-      if (m_schedule.type() == MyMoneySchedule::TYPE_TRANSFER)
+      // if we have exactly two splits, we can update the 'other' side
+      // of the transaction. If we have more than two splits, then
+      // we need to check before we enter if the sum of the splits
+      // equals 0 and if not warn the user to modify the splits.
+      if(m_transaction.splitCount() == 2)
       {
         MyMoneySplit s2 = m_transaction.splits()[1];
         s2.setValue(-s.value());
         m_transaction.modifySplit(s2);
-      }
-      else
-      {
-        if (count >= 3)
-        {
-          KMessageBox::information(this, i18n("All split data lost.  Please re-enter splits"));
-          disconnect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
-          m_transaction.removeSplits();
-          m_category->setText(QString());
-          m_category->setFocus();
-        }
-        else  // Must be two
-        {
-          MyMoneySplit s2 = m_transaction.splits()[1];
-          s2.setValue(-s.value());
-          m_transaction.modifySplit(s2);
-        }
       }
     }
   }
@@ -714,6 +769,14 @@ void KEnterScheduleDialog::createSplits()
 
 QCString KEnterScheduleDialog::theAccountId()
 {
+  if( m_schedule.type() == MyMoneySchedule::TYPE_LOANPAYMENT) {
+    if(m_from->isEnabled())
+      return m_from->currentAccountId();
+    if(m_to->isEnabled())
+      return m_to->currentAccountId();
+    qFatal("This should never happen %s:%d", __FILE__, __LINE__);
+  }
+  
   if (m_schedule.type() != MyMoneySchedule::TYPE_DEPOSIT)
     return m_from->currentAccountId();
   else
@@ -741,5 +804,87 @@ void KEnterScheduleDialog::slotToActivated(int)
     MyMoneySplit s = m_transaction.splits()[0];
     s.setAccountId(m_to->currentAccountId());
     m_transaction.modifySplit(s);
+  }
+}
+
+void KEnterScheduleDialog::calculateInterest(void)
+{
+  if (m_schedule.type() == MyMoneySchedule::TYPE_LOANPAYMENT) {
+    MyMoneySplit interestSplit, amortizationSplit;
+    QValueList<MyMoneySplit>::ConstIterator it_s;
+    for(it_s = m_transaction.splits().begin(); it_s != m_transaction.splits().end(); ++it_s) {
+      if((*it_s).value() == MyMoneyMoney::minValue+1) {
+        if((*it_s).action() == MyMoneySplit::ActionAmortization) {
+          amortizationSplit = (*it_s);
+        } else if((*it_s).action() == MyMoneySplit::ActionInterest) {
+          interestSplit = (*it_s);
+        }
+      }
+    }
+
+    if(!amortizationSplit.id().isEmpty() && !interestSplit.id().isEmpty()) {
+      MyMoneyAccountLoan acc(MyMoneyFile::instance()->account(amortizationSplit.accountId()));
+      MyMoneyFinancialCalculator calc;
+      QDate dueDate;
+
+      // FIXME: setup dueDate according to when the interest should be calculated
+      // current implementation: take the date of the next payment according to
+      // the schedule. If the calculation is based on the payment reception, and
+      // the payment is overdue then take the current date
+      dueDate = m_schedule.nextPayment(m_schedule.lastPayment());
+      if(acc.interestCalculation() == MyMoneyAccountLoan::paymentReceived) {
+        if(dueDate < QDate::currentDate())
+          dueDate = QDate::currentDate();
+      }
+
+      // we need to calculate the balance at the time the payment is due
+      MyMoneyMoney balance = acc.openingBalance();
+
+      QValueList<MyMoneyTransaction> list;
+      QValueList<MyMoneyTransaction>::ConstIterator it;
+      MyMoneySplit split;
+      MyMoneyTransactionFilter filter(acc.id());
+
+      filter.setDateFilter(QDate(), dueDate.addDays(-1));
+      list = MyMoneyFile::instance()->transactionList(filter);
+
+      for(it = list.begin(); it != list.end(); ++it) {
+        try {
+          split = (*it).splitByAccount(acc.id());
+          balance += split.value();
+
+        } catch(MyMoneyException *e) {
+          // account is not referenced within this transaction
+          delete e;
+        }
+      }
+      
+      // FIXME: for now, we only support interest calculation at the end of the period
+      calc.setBep();
+      // FIXME: for now, we only support periodic compounding
+      calc.setDisc();
+
+      calc.setPF(KMyMoneyUtils::occurenceToFrequency(m_schedule.occurence()));
+      // FIXME: for now we only support compounding frequency == payment frequency
+      calc.setCF(KMyMoneyUtils::occurenceToFrequency(m_schedule.occurence()));
+      
+      calc.setPv(balance.value());
+      calc.setIr(static_cast<FCALC_DOUBLE> (acc.interestRate(dueDate).abs().value()) / 100.0);
+      calc.setPmt(acc.periodicPayment().value());
+
+      MyMoneyMoney interest(calc.interestDue()/100.0), amortization;
+      interest = interest.abs();    // make sure it's positive for now
+      amortization = acc.periodicPayment() - interest;
+      
+      if(acc.accountType() == MyMoneyAccount::AssetLoan) {
+        interest = -interest;
+        amortization = -amortization;
+      }
+      amortizationSplit.setValue(amortization);
+      interestSplit.setValue(interest);
+
+      m_transaction.modifySplit(amortizationSplit);
+      m_transaction.modifySplit(interestSplit);
+    }
   }
 }

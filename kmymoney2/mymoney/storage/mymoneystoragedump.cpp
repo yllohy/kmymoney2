@@ -285,6 +285,9 @@ const QString MyMoneyStorageDump::scheduleTypeToString(MyMoneySchedule::typeE ty
     case MyMoneySchedule::TYPE_TRANSFER:
       text = i18n("Transfer");
       break;
+    case MyMoneySchedule::TYPE_LOANPAYMENT:
+      text = i18n("Loan payment");
+      break;
     case MyMoneySchedule::TYPE_ANY:
     default:
       text = i18n("Unknown");

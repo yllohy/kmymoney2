@@ -51,6 +51,7 @@
 #include "../dialogs/kendingbalancedlg.h"
 #include "../dialogs/ksplittransactiondlg.h"
 #include "../dialogs/knewaccountdlg.h"
+#include "../dialogs/keditloanwizard.h"
 #include "../mymoney/mymoneyfile.h"
 
 KLedgerViewLoan::KLedgerViewLoan(QWidget *parent, const char *name ) :
@@ -189,8 +190,8 @@ void KLedgerViewLoan::createInfoStack(void)
   m_detailsButton = new KPushButton(frame, "detailsButton" );
   KGuiItem detailsButtenItem( i18n("&Account Details"),
                     QIconSet(il->loadIcon("viewmag", KIcon::Small, KIcon::SizeSmall)),
-                    i18n("Open the account dialog"),
-                    i18n("Use this view and modify the account details."));
+                    i18n("Modify the loan details for this loan"),
+                    i18n("Use this to start a wizard that allows changing the details for this loan."));
   m_detailsButton->setGuiItem(detailsButtenItem);
   buttonLayout->addWidget(m_detailsButton);
 
@@ -201,22 +202,36 @@ void KLedgerViewLoan::createInfoStack(void)
                     i18n("Use this to reconcile your account against the bank statement."));
   m_reconcileButton->setGuiItem(reconcileButtenItem);
   buttonLayout->addWidget(m_reconcileButton);
-
+  
+/*
+  // FIXME: This should not be required anymore as this
+  //        this type of stuff is handled in the KEditLoanWizard
   m_interestButton = new KPushButton(frame, "interestButton");
-  KGuiItem interestButtonItem( i18n("&Update interest..."),
-                    QIconSet(il->loadIcon("reconcile", KIcon::Small, KIcon::SizeSmall)),
-                    i18n("Start the account reconciliation"),
-                    i18n("Use this to reconcile your account against the bank statement."));
+  KGuiItem interestButtonItem( i18n("&Modify interest..."),
+                    QIconSet(il->loadIcon("edit", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Modify the interest rate for this loan"),
+                    i18n("Use this to start a wizard that allows changing the interest rate."));
   m_interestButton->setGuiItem(interestButtonItem);
   buttonLayout->addWidget(m_interestButton);
                       
-/*
-  // FIXME: add buttons to show account details, modify interest rate etc.
-*/
+  m_loanDetailsButton = new KPushButton(frame, "loanDetailsButton");
+  KGuiItem loanDetailsButtonItem( i18n("&Modify loan details..."),
+                    QIconSet(il->loadIcon("configure", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Modify the loan details for this loan"),
+                    i18n("Use this to start a wizard that allows changing the details for this loan."));
+  m_loanDetailsButton->setGuiItem(loanDetailsButtonItem);
+  buttonLayout->addWidget(m_loanDetailsButton);
+
   connect(m_reconcileButton, SIGNAL(clicked()), this, SLOT(slotReconciliation()));
-  connect(m_detailsButton, SIGNAL(clicked()), this, SLOT(slotAccountDetail()));
+  connect(m_detailsButton, SIGNAL(clicked()), this, SLOT(slotLoanAccountDetail()));
+  // connect(m_loanDetailsButton, SIGNAL(clicked()), this, SLOT(slotLoanAccountDetail()));
+
+  // FIXME: add functionality to modify interest rate etc.
   // For now just show the proposed functionality
   m_interestButton->setEnabled(false);
+  m_loanDetailsButton->setEnabled(false);
+*/      
+  connect(m_detailsButton, SIGNAL(clicked()), this, SLOT(slotLoanAccountDetail()));
   
   QSpacerItem* spacer = new QSpacerItem( 20, 20,
                    QSizePolicy::Minimum, QSizePolicy::Expanding );
@@ -1097,6 +1112,7 @@ void KLedgerViewLoan::slotOpenSplitDialog(void)
                                                        m_account,
                                                        isValidAmount,
                                                        isDeposit,
+                                                       0,
                                                        this);
 
   if(dlg->exec()) {
@@ -1133,4 +1149,11 @@ void KLedgerViewLoan::slotPayeeSelected(void)
   slotCancelEdit();
   if(!m_split.payeeId().isEmpty() && !m_split.accountId().isEmpty() && !m_transaction.id().isEmpty())
     emit payeeSelected(m_split.payeeId(), m_split.accountId(), m_transaction.id());
+}
+
+void KLedgerViewLoan::slotLoanAccountDetail(void)
+{
+  KEditLoanWizard* wizard = new KEditLoanWizard(m_account);
+  wizard->exec();
+  delete wizard;
 }

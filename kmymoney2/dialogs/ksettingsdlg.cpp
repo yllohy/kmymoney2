@@ -48,6 +48,7 @@
 #include <kpushbutton.h>
 #include <kguiitem.h>
 #include <kglobalsettings.h>
+#include <knuminput.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -167,7 +168,23 @@ void KSettingsDlg::setPageGeneral()
   // Create a check box to be in the group box
   m_qradiobuttonCheckSchedules = new QCheckBox("check_schedules", qschedulebuttongroup);
   m_qradiobuttonCheckSchedules->setText( i18n( "Check schedules upon startup" ) );
+
   qvboxschedulelayout->addWidget(m_qradiobuttonCheckSchedules);
+
+  // Create a number input field in the group box
+  QHBoxLayout *qhboxschedulelayout = new QHBoxLayout(qvboxschedulelayout, 6);
+  qhboxschedulelayout->setAlignment( Qt::AlignTop );
+  qhboxschedulelayout->setMargin( 1 );
+  
+  m_intSchedulePreview = new KIntNumInput(qschedulebuttongroup);
+  m_intSchedulePreview->setLabel(i18n("Enter transactions this number of days in advance"));
+  m_intSchedulePreview->setRange(0, INT_MAX, 1, false);
+  qhboxschedulelayout->addWidget(m_intSchedulePreview);
+  
+  QSpacerItem* spacer = new QSpacerItem( 0, 80, QSizePolicy::Minimum, QSizePolicy::Expanding );
+  qhboxschedulelayout->addItem(spacer);
+
+  connect(m_qradiobuttonCheckSchedules, SIGNAL(toggled(bool)), m_intSchedulePreview, SLOT(setEnabled(bool)));
 }
 
 void KSettingsDlg::setPageAccountsView()
@@ -567,6 +584,12 @@ void KSettingsDlg::configRead()
     m_qcheckboxTypeToNr->setEnabled(false);
   }
 
+  m_bTempCheckSchedule = kconfig->readBoolEntry("CheckSchedule");
+  m_qradiobuttonCheckSchedules->setChecked(m_bTempCheckSchedule);
+  m_intSchedulePreview->setEnabled(m_bTempCheckSchedule);
+  m_iTempSchedulePreview = kconfig->readNumEntry("CheckSchedulePreview", 0);
+  m_intSchedulePreview->setValue(m_iTempSchedulePreview);
+  
   kconfig->setGroup("List Options");
 
   QFont qfontDefault = QFont("helvetica", 12);
@@ -655,11 +678,13 @@ void KSettingsDlg::configWrite()
   kconfig->setGroup("General Options");
   kconfig->writeEntry("StartDialog", m_qradiobuttonStartPrompt->isChecked());
   kconfig->writeEntry("StartLastViewSelected", m_qradiobuttonStartLast->isChecked());
-  kconfig->writeEntry("NewAccountWizard", m_qradiobuttonAccountWizard->isChecked());
+  // kconfig->writeEntry("NewAccountWizard", true);
   kconfig->writeEntry("LedgerLens", m_qcheckboxLedgerLens->isChecked());
   kconfig->writeEntry("TransactionForm", m_qcheckboxTransactionForm->isChecked());
   kconfig->writeEntry("CopyTypeToNr", m_qcheckboxTypeToNr->isChecked());
   kconfig->writeEntry("AlwaysShowNrField", m_qcheckboxShowNrField->isChecked());
+  kconfig->writeEntry("CheckSchedule", m_qradiobuttonCheckSchedules->isChecked());
+  kconfig->writeEntry("CheckSchedulePreview", m_intSchedulePreview->value());  
 
   kconfig->setGroup("Homepage Options");
   kconfig->writeEntry("Itemlist", homePageItems());
@@ -728,12 +753,14 @@ void KSettingsDlg::slotCancel()
   kconfig->setGroup("General Options");
   kconfig->writeEntry("StartDialog", m_bTempStartPrompt);
   kconfig->writeEntry("StartLastViewSelected", m_bTempStartPage);
-  kconfig->writeEntry("NewAccountWizard", m_bTempAccountWizard);
+  // kconfig->writeEntry("NewAccountWizard", m_bTempAccountWizard);
   kconfig->writeEntry("LedgerLens", m_bTempLedgerLens);
   kconfig->writeEntry("TransactionForm", m_bTempTransactionForm);
   kconfig->writeEntry("CopyTypeToNr", m_bTempTypeToNr);
   kconfig->writeEntry("AlwaysShowNrField", m_bTempShowNrField);
-
+  kconfig->writeEntry("CheckSchedule", m_bTempCheckSchedule);
+  kconfig->writeEntry("CheckSchedulePreview", m_iTempSchedulePreview);
+  
   kconfig->setGroup("Homepage Options");
   kconfig->writeEntry("Itemlist", m_tempHomePageItems);
   kconfig->sync();
@@ -775,6 +802,9 @@ void KSettingsDlg::slotUser1()
   m_qcheckboxShowNrField->setChecked(m_bTempShowNrField);
   m_qradiobuttonStartLast->setChecked(m_bTempStartPage);
   m_qradiobuttonStartHome->setChecked(!m_bTempStartPage);
+  m_qradiobuttonCheckSchedules->setChecked(m_bTempCheckSchedule);
+  m_intSchedulePreview->setEnabled(m_bTempCheckSchedule);
+  m_intSchedulePreview->setValue(m_iTempSchedulePreview);
   
   QStringList list = m_tempHomePageItems;
   KMyMoneyUtils::addDefaultHomePageItems(list);

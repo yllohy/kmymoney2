@@ -8,18 +8,21 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>455</width>
-            <height>310</height>
+            <width>539</width>
+            <height>320</height>
         </rect>
     </property>
     <property name="maximumSize">
         <size>
-            <width>500</width>
+            <width>800</width>
             <height>32767</height>
         </size>
     </property>
     <property name="caption">
         <string>New Loan Wizard</string>
+    </property>
+    <property name="sizeGripEnabled">
+        <bool>true</bool>
     </property>
     <property name="titleFont">
         <font>
@@ -27,7 +30,7 @@
     </property>
     <widget class="QWidget">
         <property name="name">
-            <cstring>introPage</cstring>
+            <cstring>m_newIntroPage</cstring>
         </property>
         <attribute name="title">
             <string></string>
@@ -145,7 +148,113 @@ Please make sure that you have the relevant information handy. You usually get t
     </widget>
     <widget class="QWidget">
         <property name="name">
-            <cstring>page</cstring>
+            <cstring>m_editIntroPage</cstring>
+        </property>
+        <attribute name="title">
+            <string></string>
+        </attribute>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>Layout2_2</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>12</x>
+                    <y>12</y>
+                    <width>505</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <spacer>
+                    <property name="name">
+                        <cstring>Spacer2_2</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>98</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>TextLabel1_1_2</cstring>
+                    </property>
+                    <property name="font">
+                        <font>
+                            <family>Helvetica</family>
+                            <pointsize>16</pointsize>
+                            <bold>1</bold>
+                        </font>
+                    </property>
+                    <property name="text">
+                        <string>Edit Loan Account Wizard</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignTop|AlignHCenter</set>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>Spacer3_2</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>119</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                </spacer>
+            </hbox>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>TextLabel1_2_2</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>12</x>
+                    <y>38</y>
+                    <width>505</width>
+                    <height>94</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>
+Welcome to the Edit Loan Account Wizard. Please use this wizard to modify information about your loan account.
+
+Please make sure that you have the relevant information handy. You usually get the information out of your contract and the last statement.</string>
+            </property>
+            <property name="alignment">
+                <set>WordBreak|AlignTop</set>
+            </property>
+        </widget>
+    </widget>
+    <widget class="QWidget">
+        <property name="name">
+            <cstring>m_newGeneralInfoPage</cstring>
         </property>
         <attribute name="title">
             <string>General Information</string>
@@ -318,6 +427,274 @@ In the first step, KMyMoney will ask you some general information about the loan
     </widget>
     <widget class="QWidget">
         <property name="name">
+            <cstring>m_editSelectionPage</cstring>
+        </property>
+        <attribute name="title">
+            <string>Edit selection</string>
+        </attribute>
+        <vbox>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <property name="margin">
+                <number>11</number>
+            </property>
+            <property name="spacing">
+                <number>6</number>
+            </property>
+            <widget class="QLabel">
+                <property name="name">
+                    <cstring>TextLabel2_2_1</cstring>
+                </property>
+                <property name="text">
+                    <string>
+Please select, which data of the loan you want to modify.</string>
+                </property>
+                <property name="alignment">
+                    <set>WordBreak|AlignTop</set>
+                </property>
+            </widget>
+            <spacer>
+                <property name="name">
+                    <cstring>Spacer64</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>0</width>
+                        <height>48</height>
+                    </size>
+                </property>
+            </spacer>
+            <widget class="QLayoutWidget">
+                <property name="name">
+                    <cstring>Layout33</cstring>
+                </property>
+                <hbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <property name="margin">
+                        <number>0</number>
+                    </property>
+                    <property name="spacing">
+                        <number>6</number>
+                    </property>
+                    <spacer>
+                        <property name="name">
+                            <cstring>Spacer67_4</cstring>
+                        </property>
+                        <property name="orientation">
+                            <enum>Horizontal</enum>
+                        </property>
+                        <property name="sizeType">
+                            <enum>Expanding</enum>
+                        </property>
+                        <property name="sizeHint">
+                            <size>
+                                <width>93</width>
+                                <height>0</height>
+                            </size>
+                        </property>
+                    </spacer>
+                    <widget class="QButtonGroup">
+                        <property name="name">
+                            <cstring>m_selectionButtonGroup</cstring>
+                        </property>
+                        <property name="frameShape">
+                            <enum>NoFrame</enum>
+                        </property>
+                        <property name="title">
+                            <string></string>
+                        </property>
+                        <property name="exclusive">
+                            <bool>true</bool>
+                        </property>
+                        <vbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <property name="margin">
+                                <number>11</number>
+                            </property>
+                            <property name="spacing">
+                                <number>6</number>
+                            </property>
+                            <widget class="QRadioButton">
+                                <property name="name">
+                                    <cstring>m_editInterestRateButton</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Modify the interest rate</string>
+                                </property>
+                            </widget>
+                            <widget class="QRadioButton">
+                                <property name="name">
+                                    <cstring>m_editOtherCostButton</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Modify additional fees</string>
+                                </property>
+                            </widget>
+                            <widget class="QRadioButton">
+                                <property name="name">
+                                    <cstring>m_editOtherInfoButton</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Modify other loan information</string>
+                                </property>
+                            </widget>
+                        </vbox>
+                    </widget>
+                    <spacer>
+                        <property name="name">
+                            <cstring>Spacer66</cstring>
+                        </property>
+                        <property name="orientation">
+                            <enum>Horizontal</enum>
+                        </property>
+                        <property name="sizeType">
+                            <enum>Expanding</enum>
+                        </property>
+                        <property name="sizeHint">
+                            <size>
+                                <width>108</width>
+                                <height>0</height>
+                            </size>
+                        </property>
+                    </spacer>
+                </hbox>
+            </widget>
+            <spacer>
+                <property name="name">
+                    <cstring>Spacer65</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>0</width>
+                        <height>47</height>
+                    </size>
+                </property>
+            </spacer>
+        </vbox>
+    </widget>
+    <widget class="QWidget">
+        <property name="name">
+            <cstring>m_effectiveDatePage</cstring>
+        </property>
+        <attribute name="title">
+            <string>Effective date</string>
+        </attribute>
+        <vbox>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <property name="margin">
+                <number>11</number>
+            </property>
+            <property name="spacing">
+                <number>6</number>
+            </property>
+            <widget class="QLabel">
+                <property name="name">
+                    <cstring>m_effectiveDateLabel</cstring>
+                </property>
+                <property name="text">
+                    <string>1</string>
+                </property>
+                <property name="alignment">
+                    <set>WordBreak|AlignTop</set>
+                </property>
+            </widget>
+            <widget class="QLabel">
+                <property name="name">
+                    <cstring>m_effectiveDateNoteLabel</cstring>
+                </property>
+                <property name="text">
+                    <string>1</string>
+                </property>
+                <property name="alignment">
+                    <set>WordBreak|AlignTop</set>
+                </property>
+            </widget>
+            <spacer>
+                <property name="name">
+                    <cstring>Spacer68_3</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>0</width>
+                        <height>30</height>
+                    </size>
+                </property>
+            </spacer>
+            <widget class="QLayoutWidget">
+                <property name="name">
+                    <cstring>Layout34</cstring>
+                </property>
+                <hbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <property name="margin">
+                        <number>0</number>
+                    </property>
+                    <property name="spacing">
+                        <number>6</number>
+                    </property>
+                    <widget class="QLabel">
+                        <property name="name">
+                            <cstring>TextLabel1_7</cstring>
+                        </property>
+                        <property name="text">
+                            <string>When should the changes become active?</string>
+                        </property>
+                    </widget>
+                    <widget class="kMyMoneyDateInput">
+                        <property name="name">
+                            <cstring>m_effectiveChangeDateEdit</cstring>
+                        </property>
+                    </widget>
+                </hbox>
+            </widget>
+            <spacer>
+                <property name="name">
+                    <cstring>Spacer69_2</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>0</width>
+                        <height>87</height>
+                    </size>
+                </property>
+            </spacer>
+        </vbox>
+    </widget>
+    <widget class="QWidget">
+        <property name="name">
             <cstring>m_lendBorrowPage</cstring>
         </property>
         <attribute name="title">
@@ -358,13 +735,13 @@ Do you borrow or lend money?</string>
                 <property name="sizeHint">
                     <size>
                         <width>0</width>
-                        <height>55</height>
+                        <height>61</height>
                     </size>
                 </property>
             </spacer>
             <widget class="QLayoutWidget">
                 <property name="name">
-                    <cstring>Layout10</cstring>
+                    <cstring>Layout38</cstring>
                 </property>
                 <hbox>
                     <property name="name">
@@ -376,16 +753,25 @@ Do you borrow or lend money?</string>
                     <property name="spacing">
                         <number>6</number>
                     </property>
-                    <widget class="QLayoutWidget">
+                    <widget class="QButtonGroup">
                         <property name="name">
-                            <cstring>Layout8</cstring>
+                            <cstring>ButtonGroup1</cstring>
+                        </property>
+                        <property name="frameShape">
+                            <enum>NoFrame</enum>
+                        </property>
+                        <property name="title">
+                            <string></string>
+                        </property>
+                        <property name="exclusive">
+                            <bool>true</bool>
                         </property>
                         <vbox>
                             <property name="name">
                                 <cstring>unnamed</cstring>
                             </property>
                             <property name="margin">
-                                <number>0</number>
+                                <number>11</number>
                             </property>
                             <property name="spacing">
                                 <number>6</number>
@@ -395,7 +781,7 @@ Do you borrow or lend money?</string>
                                     <cstring>m_borrowButton</cstring>
                                 </property>
                                 <property name="text">
-                                    <string>Borrowing money</string>
+                                    <string>I am borrowing money</string>
                                 </property>
                             </widget>
                             <widget class="QRadioButton">
@@ -403,7 +789,7 @@ Do you borrow or lend money?</string>
                                     <cstring>m_lendButton</cstring>
                                 </property>
                                 <property name="text">
-                                    <string>Lending money</string>
+                                    <string>I am lending money</string>
                                 </property>
                             </widget>
                         </vbox>
@@ -420,7 +806,7 @@ Do you borrow or lend money?</string>
                         </property>
                         <property name="sizeHint">
                             <size>
-                                <width>122</width>
+                                <width>299</width>
                                 <height>0</height>
                             </size>
                         </property>
@@ -440,7 +826,7 @@ Do you borrow or lend money?</string>
                 <property name="sizeHint">
                     <size>
                         <width>0</width>
-                        <height>54</height>
+                        <height>60</height>
                     </size>
                 </property>
             </spacer>
@@ -488,7 +874,7 @@ How do you want to call this loan? Examples for names are 'car loan', 'school lo
                 <property name="sizeHint">
                     <size>
                         <width>0</width>
-                        <height>17</height>
+                        <height>52</height>
                     </size>
                 </property>
             </spacer>
@@ -534,7 +920,7 @@ How do you want to call this loan? Examples for names are 'car loan', 'school lo
                 <property name="sizeHint">
                     <size>
                         <width>0</width>
-                        <height>15</height>
+                        <height>53</height>
                     </size>
                 </property>
             </spacer>
@@ -588,7 +974,7 @@ How do you want to call this loan? Examples for names are 'car loan', 'school lo
                 <property name="sizeHint">
                     <size>
                         <width>0</width>
-                        <height>18</height>
+                        <height>52</height>
                     </size>
                 </property>
             </spacer>
@@ -596,7 +982,7 @@ How do you want to call this loan? Examples for names are 'car loan', 'school lo
     </widget>
     <widget class="QWidget">
         <property name="name">
-            <cstring>page</cstring>
+            <cstring>m_interestTypePage</cstring>
         </property>
         <attribute name="title">
             <string>Type of interest</string>
@@ -636,13 +1022,13 @@ Is the interest of this loan fixed over a period of time or is it adapted from t
                 <property name="sizeHint">
                     <size>
                         <width>0</width>
-                        <height>38</height>
+                        <height>53</height>
                     </size>
                 </property>
             </spacer>
             <widget class="QLayoutWidget">
                 <property name="name">
-                    <cstring>Layout34</cstring>
+                    <cstring>Layout39</cstring>
                 </property>
                 <hbox>
                     <property name="name">
@@ -654,16 +1040,25 @@ Is the interest of this loan fixed over a period of time or is it adapted from t
                     <property name="spacing">
                         <number>6</number>
                     </property>
-                    <widget class="QLayoutWidget">
+                    <widget class="QButtonGroup">
                         <property name="name">
-                            <cstring>Layout33</cstring>
+                            <cstring>ButtonGroup2</cstring>
+                        </property>
+                        <property name="frameShape">
+                            <enum>NoFrame</enum>
+                        </property>
+                        <property name="title">
+                            <string></string>
+                        </property>
+                        <property name="exclusive">
+                            <bool>true</bool>
                         </property>
                         <vbox>
                             <property name="name">
                                 <cstring>unnamed</cstring>
                             </property>
                             <property name="margin">
-                                <number>0</number>
+                                <number>11</number>
                             </property>
                             <property name="spacing">
                                 <number>6</number>
@@ -698,7 +1093,7 @@ Is the interest of this loan fixed over a period of time or is it adapted from t
                         </property>
                         <property name="sizeHint">
                             <size>
-                                <width>269</width>
+                                <width>286</width>
                                 <height>0</height>
                             </size>
                         </property>
@@ -718,7 +1113,7 @@ Is the interest of this loan fixed over a period of time or is it adapted from t
                 <property name="sizeHint">
                     <size>
                         <width>0</width>
-                        <height>38</height>
+                        <height>53</height>
                     </size>
                 </property>
             </spacer>
@@ -766,13 +1161,13 @@ Were there any payments for this loan whether they are entered into KMyMoney or 
                 <property name="sizeHint">
                     <size>
                         <width>0</width>
-                        <height>16</height>
+                        <height>32</height>
                     </size>
                 </property>
             </spacer>
             <widget class="QLayoutWidget">
                 <property name="name">
-                    <cstring>Layout32</cstring>
+                    <cstring>Layout40</cstring>
                 </property>
                 <hbox>
                     <property name="name">
@@ -784,16 +1179,25 @@ Were there any payments for this loan whether they are entered into KMyMoney or 
                     <property name="spacing">
                         <number>6</number>
                     </property>
-                    <widget class="QLayoutWidget">
+                    <widget class="QButtonGroup">
                         <property name="name">
-                            <cstring>Layout31</cstring>
+                            <cstring>ButtonGroup3</cstring>
+                        </property>
+                        <property name="frameShape">
+                            <enum>NoFrame</enum>
+                        </property>
+                        <property name="title">
+                            <string></string>
+                        </property>
+                        <property name="exclusive">
+                            <bool>true</bool>
                         </property>
                         <vbox>
                             <property name="name">
                                 <cstring>unnamed</cstring>
                             </property>
                             <property name="margin">
-                                <number>0</number>
+                                <number>11</number>
                             </property>
                             <property name="spacing">
                                 <number>6</number>
@@ -828,7 +1232,7 @@ Were there any payments for this loan whether they are entered into KMyMoney or 
                         </property>
                         <property name="sizeHint">
                             <size>
-                                <width>197</width>
+                                <width>202</width>
                                 <height>0</height>
                             </size>
                         </property>
@@ -848,7 +1252,7 @@ Were there any payments for this loan whether they are entered into KMyMoney or 
                 <property name="sizeHint">
                     <size>
                         <width>0</width>
-                        <height>17</height>
+                        <height>32</height>
                     </size>
                 </property>
             </spacer>
@@ -876,7 +1280,7 @@ Were there any payments for this loan whether they are entered into KMyMoney or 
                 <property name="sizeHint">
                     <size>
                         <width>0</width>
-                        <height>20</height>
+                        <height>32</height>
                     </size>
                 </property>
             </spacer>
@@ -905,7 +1309,7 @@ Were there any payments for this loan whether they are entered into KMyMoney or 
                 </property>
                 <property name="text">
                     <string>
-Do you want to record all payments of this loan to be recorded with KMyMoney?</string>
+Do you want to record all payments of this loan with KMyMoney?</string>
                 </property>
                 <property name="alignment">
                     <set>WordBreak|AlignTop</set>
@@ -924,13 +1328,13 @@ Do you want to record all payments of this loan to be recorded with KMyMoney?</s
                 <property name="sizeHint">
                     <size>
                         <width>0</width>
-                        <height>67</height>
+                        <height>69</height>
                     </size>
                 </property>
             </spacer>
             <widget class="QLayoutWidget">
                 <property name="name">
-                    <cstring>Layout10_2_2_2</cstring>
+                    <cstring>Layout41</cstring>
                 </property>
                 <hbox>
                     <property name="name">
@@ -942,16 +1346,25 @@ Do you want to record all payments of this loan to be recorded with KMyMoney?</s
                     <property name="spacing">
                         <number>6</number>
                     </property>
-                    <widget class="QLayoutWidget">
+                    <widget class="QButtonGroup">
                         <property name="name">
-                            <cstring>Layout8_2_2_2</cstring>
+                            <cstring>ButtonGroup4</cstring>
+                        </property>
+                        <property name="frameShape">
+                            <enum>NoFrame</enum>
+                        </property>
+                        <property name="title">
+                            <string></string>
+                        </property>
+                        <property name="exclusive">
+                            <bool>true</bool>
                         </property>
                         <vbox>
                             <property name="name">
                                 <cstring>unnamed</cstring>
                             </property>
                             <property name="margin">
-                                <number>0</number>
+                                <number>11</number>
                             </property>
                             <property name="spacing">
                                 <number>6</number>
@@ -986,7 +1399,7 @@ Do you want to record all payments of this loan to be recorded with KMyMoney?</s
                         </property>
                         <property name="sizeHint">
                             <size>
-                                <width>53</width>
+                                <width>137</width>
                                 <height>0</height>
                             </size>
                         </property>
@@ -1006,7 +1419,7 @@ Do you want to record all payments of this loan to be recorded with KMyMoney?</s
                 <property name="sizeHint">
                     <size>
                         <width>0</width>
-                        <height>66</height>
+                        <height>69</height>
                     </size>
                 </property>
             </spacer>
@@ -1142,7 +1555,350 @@ Select the date when the interest rate for this loan will be modified and the fr
     </widget>
     <widget class="QWidget">
         <property name="name">
-            <cstring>page</cstring>
+            <cstring>m_paymentEditPage</cstring>
+        </property>
+        <attribute name="title">
+            <string>Payment</string>
+        </attribute>
+        <vbox>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <property name="margin">
+                <number>11</number>
+            </property>
+            <property name="spacing">
+                <number>6</number>
+            </property>
+            <widget class="QLabel">
+                <property name="name">
+                    <cstring>TextLabel8_2_2</cstring>
+                </property>
+                <property name="text">
+                    <string>
+Please enter the amount you pay for interest and amortization or leave the field emtpy to calculate it.</string>
+                </property>
+                <property name="alignment">
+                    <set>WordBreak|AlignTop</set>
+                </property>
+            </widget>
+            <spacer>
+                <property name="name">
+                    <cstring>Spacer70_2</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>0</width>
+                        <height>21</height>
+                    </size>
+                </property>
+            </spacer>
+            <widget class="QLayoutWidget">
+                <property name="name">
+                    <cstring>Layout39</cstring>
+                </property>
+                <hbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <property name="margin">
+                        <number>0</number>
+                    </property>
+                    <property name="spacing">
+                        <number>6</number>
+                    </property>
+                    <spacer>
+                        <property name="name">
+                            <cstring>Spacer76</cstring>
+                        </property>
+                        <property name="orientation">
+                            <enum>Horizontal</enum>
+                        </property>
+                        <property name="sizeType">
+                            <enum>Expanding</enum>
+                        </property>
+                        <property name="sizeHint">
+                            <size>
+                                <width>100</width>
+                                <height>0</height>
+                            </size>
+                        </property>
+                    </spacer>
+                    <widget class="QLayoutWidget">
+                        <property name="name">
+                            <cstring>Layout35</cstring>
+                        </property>
+                        <grid>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <property name="margin">
+                                <number>0</number>
+                            </property>
+                            <property name="spacing">
+                                <number>6</number>
+                            </property>
+                            <widget class="kMyMoneyEdit" row="0" column="1">
+                                <property name="name">
+                                    <cstring>m_newPaymentEdit</cstring>
+                                </property>
+                            </widget>
+                            <widget class="QLabel" row="1" column="0">
+                                <property name="name">
+                                    <cstring>TextLabel2_4</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Current amount</string>
+                                </property>
+                            </widget>
+                            <widget class="QLabel" row="1" column="1">
+                                <property name="name">
+                                    <cstring>m_paymentLabel</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>1</string>
+                                </property>
+                            </widget>
+                            <widget class="QLabel" row="0" column="0">
+                                <property name="name">
+                                    <cstring>TextLabel1_5</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Amortization and interest</string>
+                                </property>
+                            </widget>
+                        </grid>
+                    </widget>
+                    <spacer>
+                        <property name="name">
+                            <cstring>Spacer75</cstring>
+                        </property>
+                        <property name="orientation">
+                            <enum>Horizontal</enum>
+                        </property>
+                        <property name="sizeType">
+                            <enum>Expanding</enum>
+                        </property>
+                        <property name="sizeHint">
+                            <size>
+                                <width>100</width>
+                                <height>0</height>
+                            </size>
+                        </property>
+                    </spacer>
+                </hbox>
+            </widget>
+            <spacer>
+                <property name="name">
+                    <cstring>Spacer71</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>0</width>
+                        <height>19</height>
+                    </size>
+                </property>
+            </spacer>
+            <widget class="QLabel">
+                <property name="name">
+                    <cstring>TextLabel4_5</cstring>
+                </property>
+                <property name="text">
+                    <string>KMyMoney either calculates the new interest rate or the amount for amortization and interest. If you know the amount for amortization and interest then enter it here.
+
+If KMyMoney should calculate this value for you, then leave the field blank.</string>
+                </property>
+                <property name="alignment">
+                    <set>WordBreak|AlignVCenter</set>
+                </property>
+            </widget>
+        </vbox>
+    </widget>
+    <widget class="QWidget">
+        <property name="name">
+            <cstring>m_interestEditPage</cstring>
+        </property>
+        <attribute name="title">
+            <string>Interest Rate</string>
+        </attribute>
+        <vbox>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <property name="margin">
+                <number>11</number>
+            </property>
+            <property name="spacing">
+                <number>6</number>
+            </property>
+            <widget class="QLabel">
+                <property name="name">
+                    <cstring>TextLabel5_4</cstring>
+                </property>
+                <property name="text">
+                    <string>
+Please enter the interest rate or leave the field empty to calculate it.</string>
+                </property>
+            </widget>
+            <spacer>
+                <property name="name">
+                    <cstring>Spacer72</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>0</width>
+                        <height>29</height>
+                    </size>
+                </property>
+            </spacer>
+            <widget class="QLayoutWidget">
+                <property name="name">
+                    <cstring>Layout40</cstring>
+                </property>
+                <hbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <property name="margin">
+                        <number>0</number>
+                    </property>
+                    <property name="spacing">
+                        <number>6</number>
+                    </property>
+                    <spacer>
+                        <property name="name">
+                            <cstring>Spacer77</cstring>
+                        </property>
+                        <property name="orientation">
+                            <enum>Horizontal</enum>
+                        </property>
+                        <property name="sizeType">
+                            <enum>Expanding</enum>
+                        </property>
+                        <property name="sizeHint">
+                            <size>
+                                <width>101</width>
+                                <height>0</height>
+                            </size>
+                        </property>
+                    </spacer>
+                    <widget class="QLayoutWidget">
+                        <property name="name">
+                            <cstring>Layout36</cstring>
+                        </property>
+                        <grid>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <property name="margin">
+                                <number>0</number>
+                            </property>
+                            <property name="spacing">
+                                <number>6</number>
+                            </property>
+                            <widget class="kMyMoneyEdit" row="0" column="1">
+                                <property name="name">
+                                    <cstring>m_newInterestRateEdit</cstring>
+                                </property>
+                            </widget>
+                            <widget class="QLabel" row="1" column="1">
+                                <property name="name">
+                                    <cstring>m_interestRateLabel</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>1</string>
+                                </property>
+                            </widget>
+                            <widget class="QLabel" row="1" column="0">
+                                <property name="name">
+                                    <cstring>TextLabel7_3</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Current rate</string>
+                                </property>
+                            </widget>
+                            <widget class="QLabel" row="0" column="0">
+                                <property name="name">
+                                    <cstring>TextLabel6_5</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Interest rate</string>
+                                </property>
+                            </widget>
+                        </grid>
+                    </widget>
+                    <spacer>
+                        <property name="name">
+                            <cstring>Spacer78</cstring>
+                        </property>
+                        <property name="orientation">
+                            <enum>Horizontal</enum>
+                        </property>
+                        <property name="sizeType">
+                            <enum>Expanding</enum>
+                        </property>
+                        <property name="sizeHint">
+                            <size>
+                                <width>101</width>
+                                <height>0</height>
+                            </size>
+                        </property>
+                    </spacer>
+                </hbox>
+            </widget>
+            <spacer>
+                <property name="name">
+                    <cstring>Spacer73</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>0</width>
+                        <height>29</height>
+                    </size>
+                </property>
+            </spacer>
+            <widget class="QLabel">
+                <property name="name">
+                    <cstring>TextLabel9_4</cstring>
+                </property>
+                <property name="text">
+                    <string>KMyMoney either calculates the new interest rate or the amount for amortization and interest. If you know the interest rate then enter it here.
+
+If KMyMoney should calculate this value for you, then leave the field blank.</string>
+                </property>
+                <property name="alignment">
+                    <set>WordBreak|AlignTop</set>
+                </property>
+            </widget>
+        </vbox>
+    </widget>
+    <widget class="QWidget">
+        <property name="name">
+            <cstring>m_firstPaymentPage</cstring>
         </property>
         <attribute name="title">
             <string>Date of first payment</string>
@@ -1157,14 +1913,6 @@ Select the date when the interest rate for this loan will be modified and the fr
             <property name="spacing">
                 <number>6</number>
             </property>
-            <widget class="QLabel">
-                <property name="name">
-                    <cstring>TextLabel1_5</cstring>
-                </property>
-                <property name="text">
-                    <string></string>
-                </property>
-            </widget>
             <widget class="QLabel">
                 <property name="name">
                     <cstring>m_firstPaymentLabel</cstring>
@@ -1189,7 +1937,7 @@ Select the date when the interest rate for this loan will be modified and the fr
                 <property name="sizeHint">
                     <size>
                         <width>0</width>
-                        <height>36</height>
+                        <height>78</height>
                     </size>
                 </property>
             </spacer>
@@ -1235,7 +1983,7 @@ Select the date when the interest rate for this loan will be modified and the fr
                 <property name="sizeHint">
                     <size>
                         <width>0</width>
-                        <height>54</height>
+                        <height>28</height>
                     </size>
                 </property>
             </spacer>
@@ -1254,7 +2002,7 @@ Select the date when the interest rate for this loan will be modified and the fr
     </widget>
     <widget class="QWidget">
         <property name="name">
-            <cstring>page</cstring>
+            <cstring>m_newCalculateLoanPage</cstring>
         </property>
         <attribute name="title">
             <string>Calculate Loan</string>
@@ -1437,7 +2185,7 @@ You have successfully entered the general information about your loan. Next, KMy
     </widget>
     <widget class="QWidget">
         <property name="name">
-            <cstring>page</cstring>
+            <cstring>m_paymentFrequencyPage</cstring>
         </property>
         <attribute name="title">
             <string>Payment frequency</string>
@@ -1557,7 +2305,7 @@ How often will there be payments made to this loan?</string>
     </widget>
     <widget class="QWidget">
         <property name="name">
-            <cstring>page</cstring>
+            <cstring>m_interestCalculationPage</cstring>
         </property>
         <attribute name="title">
             <string>Interest calculation</string>
@@ -1597,13 +2345,13 @@ When does the actual interest rate get calculated?</string>
                 <property name="sizeHint">
                     <size>
                         <width>0</width>
-                        <height>54</height>
+                        <height>69</height>
                     </size>
                 </property>
             </spacer>
             <widget class="QLayoutWidget">
                 <property name="name">
-                    <cstring>Layout30</cstring>
+                    <cstring>Layout42</cstring>
                 </property>
                 <hbox>
                     <property name="name">
@@ -1615,16 +2363,25 @@ When does the actual interest rate get calculated?</string>
                     <property name="spacing">
                         <number>6</number>
                     </property>
-                    <widget class="QLayoutWidget">
+                    <widget class="QButtonGroup">
                         <property name="name">
-                            <cstring>Layout29</cstring>
+                            <cstring>ButtonGroup5</cstring>
+                        </property>
+                        <property name="frameShape">
+                            <enum>NoFrame</enum>
+                        </property>
+                        <property name="title">
+                            <string></string>
+                        </property>
+                        <property name="exclusive">
+                            <bool>true</bool>
                         </property>
                         <vbox>
                             <property name="name">
                                 <cstring>unnamed</cstring>
                             </property>
                             <property name="margin">
-                                <number>0</number>
+                                <number>11</number>
                             </property>
                             <property name="spacing">
                                 <number>6</number>
@@ -1659,7 +2416,7 @@ When does the actual interest rate get calculated?</string>
                         </property>
                         <property name="sizeHint">
                             <size>
-                                <width>212</width>
+                                <width>296</width>
                                 <height>0</height>
                             </size>
                         </property>
@@ -1679,7 +2436,7 @@ When does the actual interest rate get calculated?</string>
                 <property name="sizeHint">
                     <size>
                         <width>0</width>
-                        <height>54</height>
+                        <height>69</height>
                     </size>
                 </property>
             </spacer>
@@ -1702,14 +2459,6 @@ When does the actual interest rate get calculated?</string>
             <property name="spacing">
                 <number>6</number>
             </property>
-            <widget class="QLabel">
-                <property name="name">
-                    <cstring>TextLabel2_4</cstring>
-                </property>
-                <property name="text">
-                    <string></string>
-                </property>
-            </widget>
             <widget class="QLabel">
                 <property name="name">
                     <cstring>m_balanceLabel</cstring>
@@ -2183,7 +2932,7 @@ Please enter the interest rate or leave the field empty to calculate it.</string
                 </property>
                 <property name="text">
                     <string>
-Please enter the term of this loan or leave the field empty to calculate it.</string>
+Please enter the term of this loan or leave the field empty to calculate it. The term is the time that is required to fully repay the loan. This time might be different from the time your loan contract is signed for.</string>
                 </property>
                 <property name="alignment">
                     <set>WordBreak|AlignTop</set>
@@ -3074,7 +3823,7 @@ KMyMoney has calculated the loan as shown in the overview below. You can accept 
     </widget>
     <widget class="QWidget">
         <property name="name">
-            <cstring>page</cstring>
+            <cstring>m_newPaymentsPage</cstring>
         </property>
         <attribute name="title">
             <string>Payments</string>
@@ -3260,7 +4009,7 @@ In the following steps, KMyMoney supports you in setting up categories and sched
     </widget>
     <widget class="QWidget">
         <property name="name">
-            <cstring>page</cstring>
+            <cstring>m_interestCategoryPage</cstring>
         </property>
         <attribute name="title">
             <string>Interest category</string>
@@ -3371,7 +4120,7 @@ Please select the category you want to assign the interest payments to or create
     </widget>
     <widget class="QWidget">
         <property name="name">
-            <cstring>page</cstring>
+            <cstring>m_additionalFeesPage</cstring>
         </property>
         <attribute name="title">
             <string>Additional Fees</string>
@@ -3573,6 +4322,955 @@ If your regular payment contains any additional fees, click on the button "Addit
             <spacer>
                 <property name="name">
                     <cstring>Spacer60</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>0</width>
+                        <height>16</height>
+                    </size>
+                </property>
+            </spacer>
+        </vbox>
+    </widget>
+    <widget class="QWidget">
+        <property name="name">
+            <cstring>m_schedulePage</cstring>
+        </property>
+        <attribute name="title">
+            <string>Schedule</string>
+        </attribute>
+        <vbox>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <property name="margin">
+                <number>11</number>
+            </property>
+            <property name="spacing">
+                <number>6</number>
+            </property>
+            <widget class="QLabel">
+                <property name="name">
+                    <cstring>TextLabel22_2</cstring>
+                </property>
+                <property name="text">
+                    <string>
+KMyMoney will create a schedule for this payment and reminds you whenever a payment must be made.</string>
+                </property>
+                <property name="alignment">
+                    <set>WordBreak|AlignTop</set>
+                </property>
+            </widget>
+            <spacer>
+                <property name="name">
+                    <cstring>Spacer67_3</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>0</width>
+                        <height>23</height>
+                    </size>
+                </property>
+            </spacer>
+            <widget class="QLayoutWidget">
+                <property name="name">
+                    <cstring>Layout49</cstring>
+                </property>
+                <grid>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <property name="margin">
+                        <number>0</number>
+                    </property>
+                    <property name="spacing">
+                        <number>6</number>
+                    </property>
+                    <widget class="kMyMoneyAccountSelector" row="1" column="1">
+                        <property name="name">
+                            <cstring>m_paymentAccountEdit</cstring>
+                        </property>
+                    </widget>
+                    <widget class="kMyMoneyDateInput" row="0" column="1">
+                        <property name="name">
+                            <cstring>m_nextDueDateEdit</cstring>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="0" column="0">
+                        <property name="name">
+                            <cstring>TextLabel1_6</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Next payment due on:</string>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="1" column="0">
+                        <property name="name">
+                            <cstring>TextLabel2_5</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Make payment from/to:</string>
+                        </property>
+                        <property name="alignment">
+                            <set>AlignTop</set>
+                        </property>
+                    </widget>
+                </grid>
+            </widget>
+            <spacer>
+                <property name="name">
+                    <cstring>Spacer68_2</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>0</width>
+                        <height>24</height>
+                    </size>
+                </property>
+            </spacer>
+        </vbox>
+    </widget>
+    <widget class="QWidget">
+        <property name="name">
+            <cstring>m_summaryEditPage</cstring>
+        </property>
+        <attribute name="title">
+            <string>Summary</string>
+        </attribute>
+        <vbox>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <property name="margin">
+                <number>11</number>
+            </property>
+            <property name="spacing">
+                <number>6</number>
+            </property>
+            <widget class="QLabel">
+                <property name="name">
+                    <cstring>TextLabel10_4</cstring>
+                </property>
+                <property name="text">
+                    <string>
+KMyMoney has calculated the loan as shown below. If you want to accept these values use the "Finish" button to update your account, otherwise use the "Back" button to modify your settings.</string>
+                </property>
+                <property name="alignment">
+                    <set>WordBreak|AlignTop</set>
+                </property>
+            </widget>
+            <spacer>
+                <property name="name">
+                    <cstring>Spacer74_3</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>0</width>
+                        <height>23</height>
+                    </size>
+                </property>
+            </spacer>
+            <widget class="QFrame">
+                <property name="name">
+                    <cstring>Frame3_2_2_2_2_2_2</cstring>
+                </property>
+                <property name="frameShape">
+                    <enum>StyledPanel</enum>
+                </property>
+                <property name="frameShadow">
+                    <enum>Raised</enum>
+                </property>
+                <grid>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <property name="margin">
+                        <number>11</number>
+                    </property>
+                    <property name="spacing">
+                        <number>6</number>
+                    </property>
+                    <widget class="QLabel" row="0" column="0">
+                        <property name="name">
+                            <cstring>TextLabel6_3_2_2_2_2_2</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Amortization + Interest:</string>
+                        </property>
+                        <property name="alignment">
+                            <set>WordBreak|AlignVCenter|AlignRight</set>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="1" column="0">
+                        <property name="name">
+                            <cstring>TextLabel8_3_2_2_2_2_2</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Additional fees:</string>
+                        </property>
+                        <property name="alignment">
+                            <set>AlignVCenter|AlignRight</set>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="2" column="0">
+                        <property name="name">
+                            <cstring>TextLabel9_2_2_2_2_2_2</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Total payment:</string>
+                        </property>
+                        <property name="alignment">
+                            <set>AlignVCenter|AlignRight</set>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="3" column="0">
+                        <property name="name">
+                            <cstring>TextLabel10_2_2_2_2_2_2</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Interest rate:</string>
+                        </property>
+                        <property name="alignment">
+                            <set>AlignVCenter|AlignRight</set>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="4" column="0">
+                        <property name="name">
+                            <cstring>TextLabel11_3_2_2_2_2_2</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Valid from:</string>
+                        </property>
+                        <property name="alignment">
+                            <set>AlignVCenter|AlignRight</set>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="5" column="0">
+                        <property name="name">
+                            <cstring>TextLabel11_3_2_2_2_2_2_2</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Affected payments:</string>
+                        </property>
+                        <property name="alignment">
+                            <set>AlignVCenter|AlignRight</set>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="0" column="1">
+                        <property name="name">
+                            <cstring>m_payment7</cstring>
+                        </property>
+                        <property name="font">
+                            <font>
+                                <bold>1</bold>
+                            </font>
+                        </property>
+                        <property name="text">
+                            <string>1</string>
+                        </property>
+                        <property name="textFormat">
+                            <enum>PlainText</enum>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="1" column="1">
+                        <property name="name">
+                            <cstring>m_additionalFees7</cstring>
+                        </property>
+                        <property name="font">
+                            <font>
+                                <bold>1</bold>
+                            </font>
+                        </property>
+                        <property name="text">
+                            <string>1</string>
+                        </property>
+                        <property name="textFormat">
+                            <enum>PlainText</enum>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="2" column="1">
+                        <property name="name">
+                            <cstring>m_totalPayment7</cstring>
+                        </property>
+                        <property name="font">
+                            <font>
+                                <bold>1</bold>
+                            </font>
+                        </property>
+                        <property name="text">
+                            <string>1</string>
+                        </property>
+                        <property name="textFormat">
+                            <enum>PlainText</enum>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="3" column="1">
+                        <property name="name">
+                            <cstring>m_interestRate7</cstring>
+                        </property>
+                        <property name="font">
+                            <font>
+                                <bold>1</bold>
+                            </font>
+                        </property>
+                        <property name="text">
+                            <string>1</string>
+                        </property>
+                        <property name="textFormat">
+                            <enum>PlainText</enum>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="4" column="1">
+                        <property name="name">
+                            <cstring>m_startDateChanges</cstring>
+                        </property>
+                        <property name="font">
+                            <font>
+                                <bold>1</bold>
+                            </font>
+                        </property>
+                        <property name="text">
+                            <string>1</string>
+                        </property>
+                        <property name="textFormat">
+                            <enum>PlainText</enum>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="5" column="1">
+                        <property name="name">
+                            <cstring>m_affectedPayments</cstring>
+                        </property>
+                        <property name="font">
+                            <font>
+                                <bold>1</bold>
+                            </font>
+                        </property>
+                        <property name="text">
+                            <string>1</string>
+                        </property>
+                        <property name="textFormat">
+                            <enum>PlainText</enum>
+                        </property>
+                    </widget>
+                </grid>
+            </widget>
+        </vbox>
+    </widget>
+    <widget class="QWidget">
+        <property name="name">
+            <cstring>m_summaryPage</cstring>
+        </property>
+        <attribute name="title">
+            <string>Summary</string>
+        </attribute>
+        <vbox>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <property name="margin">
+                <number>11</number>
+            </property>
+            <property name="spacing">
+                <number>6</number>
+            </property>
+            <widget class="QLabel">
+                <property name="name">
+                    <cstring>TextLabel22_2_2</cstring>
+                </property>
+                <property name="text">
+                    <string>
+This page summarizes the data you entered. If you need to modify anything, please use the "Back" button to go to respective page. Otherwise use the "Finish" button to create the account.</string>
+                </property>
+                <property name="alignment">
+                    <set>WordBreak|AlignTop</set>
+                </property>
+            </widget>
+            <spacer>
+                <property name="name">
+                    <cstring>Spacer69</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>0</width>
+                        <height>16</height>
+                    </size>
+                </property>
+            </spacer>
+            <widget class="QLayoutWidget">
+                <property name="name">
+                    <cstring>Layout61</cstring>
+                </property>
+                <hbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <property name="margin">
+                        <number>0</number>
+                    </property>
+                    <property name="spacing">
+                        <number>6</number>
+                    </property>
+                    <widget class="QLayoutWidget">
+                        <property name="name">
+                            <cstring>Layout60</cstring>
+                        </property>
+                        <vbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <property name="margin">
+                                <number>0</number>
+                            </property>
+                            <property name="spacing">
+                                <number>6</number>
+                            </property>
+                            <widget class="QGroupBox">
+                                <property name="name">
+                                    <cstring>GroupBox3</cstring>
+                                </property>
+                                <property name="title">
+                                    <string>General</string>
+                                </property>
+                                <vbox>
+                                    <property name="name">
+                                        <cstring>unnamed</cstring>
+                                    </property>
+                                    <property name="margin">
+                                        <number>1</number>
+                                    </property>
+                                    <property name="spacing">
+                                        <number>1</number>
+                                    </property>
+                                    <widget class="QLayoutWidget">
+                                        <property name="name">
+                                            <cstring>Layout52</cstring>
+                                        </property>
+                                        <grid>
+                                            <property name="name">
+                                                <cstring>unnamed</cstring>
+                                            </property>
+                                            <property name="margin">
+                                                <number>1</number>
+                                            </property>
+                                            <property name="spacing">
+                                                <number>1</number>
+                                            </property>
+                                            <widget class="QLabel" row="2" column="0">
+                                                <property name="name">
+                                                    <cstring>TextLabel5_3</cstring>
+                                                </property>
+                                                <property name="text">
+                                                    <string>Payee:</string>
+                                                </property>
+                                                <property name="alignment">
+                                                    <set>AlignVCenter|AlignRight</set>
+                                                </property>
+                                            </widget>
+                                            <widget class="QLabel" row="0" column="1">
+                                                <property name="name">
+                                                    <cstring>m_summaryLoanType</cstring>
+                                                </property>
+                                                <property name="font">
+                                                    <font>
+                                                        <bold>1</bold>
+                                                    </font>
+                                                </property>
+                                                <property name="text">
+                                                    <string>1</string>
+                                                </property>
+                                                <property name="textFormat">
+                                                    <enum>PlainText</enum>
+                                                </property>
+                                            </widget>
+                                            <widget class="QLabel" row="2" column="1">
+                                                <property name="name">
+                                                    <cstring>m_summaryPayee</cstring>
+                                                </property>
+                                                <property name="font">
+                                                    <font>
+                                                        <bold>1</bold>
+                                                    </font>
+                                                </property>
+                                                <property name="text">
+                                                    <string>1</string>
+                                                </property>
+                                                <property name="textFormat">
+                                                    <enum>PlainText</enum>
+                                                </property>
+                                            </widget>
+                                            <widget class="QLabel" row="1" column="0">
+                                                <property name="name">
+                                                    <cstring>TextLabel4_4</cstring>
+                                                </property>
+                                                <property name="text">
+                                                    <string>First payment:</string>
+                                                </property>
+                                                <property name="alignment">
+                                                    <set>AlignVCenter|AlignRight</set>
+                                                </property>
+                                            </widget>
+                                            <widget class="QLabel" row="1" column="1">
+                                                <property name="name">
+                                                    <cstring>m_summaryFirstPayment</cstring>
+                                                </property>
+                                                <property name="font">
+                                                    <font>
+                                                        <bold>1</bold>
+                                                    </font>
+                                                </property>
+                                                <property name="text">
+                                                    <string>1</string>
+                                                </property>
+                                                <property name="textFormat">
+                                                    <enum>PlainText</enum>
+                                                </property>
+                                            </widget>
+                                            <widget class="QLabel" row="0" column="0">
+                                                <property name="name">
+                                                    <cstring>TextLabel3_5</cstring>
+                                                </property>
+                                                <property name="text">
+                                                    <string>Amount is:</string>
+                                                </property>
+                                                <property name="alignment">
+                                                    <set>AlignVCenter|AlignRight</set>
+                                                </property>
+                                            </widget>
+                                        </grid>
+                                    </widget>
+                                </vbox>
+                            </widget>
+                            <widget class="QGroupBox">
+                                <property name="name">
+                                    <cstring>GroupBox2</cstring>
+                                </property>
+                                <property name="title">
+                                    <string>Loan calculation</string>
+                                </property>
+                                <vbox>
+                                    <property name="name">
+                                        <cstring>unnamed</cstring>
+                                    </property>
+                                    <property name="margin">
+                                        <number>1</number>
+                                    </property>
+                                    <property name="spacing">
+                                        <number>1</number>
+                                    </property>
+                                    <widget class="QLayoutWidget">
+                                        <property name="name">
+                                            <cstring>Layout57</cstring>
+                                        </property>
+                                        <grid>
+                                            <property name="name">
+                                                <cstring>unnamed</cstring>
+                                            </property>
+                                            <property name="margin">
+                                                <number>1</number>
+                                            </property>
+                                            <property name="spacing">
+                                                <number>1</number>
+                                            </property>
+                                            <widget class="QLabel" row="3" column="1">
+                                                <property name="name">
+                                                    <cstring>m_summaryTotalPeriodicPayment</cstring>
+                                                </property>
+                                                <property name="font">
+                                                    <font>
+                                                        <bold>1</bold>
+                                                    </font>
+                                                </property>
+                                                <property name="text">
+                                                    <string>1</string>
+                                                </property>
+                                                <property name="textFormat">
+                                                    <enum>PlainText</enum>
+                                                </property>
+                                            </widget>
+                                            <widget class="QLabel" row="5" column="1">
+                                                <property name="name">
+                                                    <cstring>m_summaryPaymentAccount</cstring>
+                                                </property>
+                                                <property name="font">
+                                                    <font>
+                                                        <bold>1</bold>
+                                                    </font>
+                                                </property>
+                                                <property name="text">
+                                                    <string>1</string>
+                                                </property>
+                                                <property name="textFormat">
+                                                    <enum>PlainText</enum>
+                                                </property>
+                                            </widget>
+                                            <widget class="QLabel" row="2" column="1">
+                                                <property name="name">
+                                                    <cstring>m_summaryAdditionalFees</cstring>
+                                                </property>
+                                                <property name="font">
+                                                    <font>
+                                                        <bold>1</bold>
+                                                    </font>
+                                                </property>
+                                                <property name="text">
+                                                    <string>1</string>
+                                                </property>
+                                                <property name="textFormat">
+                                                    <enum>PlainText</enum>
+                                                </property>
+                                            </widget>
+                                            <widget class="QLabel" row="3" column="0">
+                                                <property name="name">
+                                                    <cstring>TextLabel15</cstring>
+                                                </property>
+                                                <property name="text">
+                                                    <string>Periodic Payment:</string>
+                                                </property>
+                                                <property name="alignment">
+                                                    <set>AlignVCenter|AlignRight</set>
+                                                </property>
+                                            </widget>
+                                            <widget class="QLabel" row="1" column="0" rowspan="2" colspan="1">
+                                                <property name="name">
+                                                    <cstring>TextLabel14</cstring>
+                                                </property>
+                                                <property name="text">
+                                                    <string>Additional Fees:</string>
+                                                </property>
+                                                <property name="alignment">
+                                                    <set>AlignVCenter|AlignRight</set>
+                                                </property>
+                                            </widget>
+                                            <widget class="QLabel" row="0" column="0">
+                                                <property name="name">
+                                                    <cstring>TextLabel13</cstring>
+                                                </property>
+                                                <property name="text">
+                                                    <string>Interest category:</string>
+                                                </property>
+                                                <property name="alignment">
+                                                    <set>AlignVCenter|AlignRight</set>
+                                                </property>
+                                            </widget>
+                                            <widget class="QLabel" row="5" column="0">
+                                                <property name="name">
+                                                    <cstring>TextLabel17</cstring>
+                                                </property>
+                                                <property name="text">
+                                                    <string>Payment from:</string>
+                                                </property>
+                                                <property name="alignment">
+                                                    <set>AlignVCenter|AlignRight</set>
+                                                </property>
+                                            </widget>
+                                            <widget class="QLabel" row="0" column="1" rowspan="2" colspan="1">
+                                                <property name="name">
+                                                    <cstring>m_summaryInterestCategory</cstring>
+                                                </property>
+                                                <property name="font">
+                                                    <font>
+                                                        <bold>1</bold>
+                                                    </font>
+                                                </property>
+                                                <property name="text">
+                                                    <string>1</string>
+                                                </property>
+                                                <property name="textFormat">
+                                                    <enum>PlainText</enum>
+                                                </property>
+                                            </widget>
+                                            <widget class="QLabel" row="4" column="1">
+                                                <property name="name">
+                                                    <cstring>m_summaryNextPayment</cstring>
+                                                </property>
+                                                <property name="font">
+                                                    <font>
+                                                        <bold>1</bold>
+                                                    </font>
+                                                </property>
+                                                <property name="text">
+                                                    <string>1</string>
+                                                </property>
+                                                <property name="textFormat">
+                                                    <enum>PlainText</enum>
+                                                </property>
+                                            </widget>
+                                            <widget class="QLabel" row="4" column="0">
+                                                <property name="name">
+                                                    <cstring>TextLabel16_3</cstring>
+                                                </property>
+                                                <property name="text">
+                                                    <string>Next due date:</string>
+                                                </property>
+                                                <property name="alignment">
+                                                    <set>AlignVCenter|AlignRight</set>
+                                                </property>
+                                            </widget>
+                                        </grid>
+                                    </widget>
+                                </vbox>
+                            </widget>
+                        </vbox>
+                    </widget>
+                    <widget class="QGroupBox">
+                        <property name="name">
+                            <cstring>GroupBox1</cstring>
+                        </property>
+                        <property name="title">
+                            <string>Payment</string>
+                        </property>
+                        <vbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <property name="margin">
+                                <number>1</number>
+                            </property>
+                            <property name="spacing">
+                                <number>1</number>
+                            </property>
+                            <widget class="QLayoutWidget">
+                                <property name="name">
+                                    <cstring>Layout59</cstring>
+                                </property>
+                                <grid>
+                                    <property name="name">
+                                        <cstring>unnamed</cstring>
+                                    </property>
+                                    <property name="margin">
+                                        <number>1</number>
+                                    </property>
+                                    <property name="spacing">
+                                        <number>1</number>
+                                    </property>
+                                    <widget class="QLabel" row="3" column="1">
+                                        <property name="name">
+                                            <cstring>m_summaryInterestRate</cstring>
+                                        </property>
+                                        <property name="font">
+                                            <font>
+                                                <bold>1</bold>
+                                            </font>
+                                        </property>
+                                        <property name="text">
+                                            <string>1</string>
+                                        </property>
+                                        <property name="textFormat">
+                                            <enum>PlainText</enum>
+                                        </property>
+                                    </widget>
+                                    <widget class="QLabel" row="4" column="0">
+                                        <property name="name">
+                                            <cstring>TextLabel10_3</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>Term:</string>
+                                        </property>
+                                        <property name="alignment">
+                                            <set>AlignVCenter|AlignRight</set>
+                                        </property>
+                                    </widget>
+                                    <widget class="QLabel" row="5" column="1">
+                                        <property name="name">
+                                            <cstring>m_summaryPeriodicPayment</cstring>
+                                        </property>
+                                        <property name="font">
+                                            <font>
+                                                <bold>1</bold>
+                                            </font>
+                                        </property>
+                                        <property name="text">
+                                            <string>1</string>
+                                        </property>
+                                        <property name="textFormat">
+                                            <enum>PlainText</enum>
+                                        </property>
+                                    </widget>
+                                    <widget class="QLabel" row="3" column="0">
+                                        <property name="name">
+                                            <cstring>TextLabel9_3</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>Interest rate:</string>
+                                        </property>
+                                        <property name="alignment">
+                                            <set>AlignVCenter|AlignRight</set>
+                                        </property>
+                                    </widget>
+                                    <widget class="QLabel" row="1" column="1">
+                                        <property name="name">
+                                            <cstring>m_summaryPaymentFrequency</cstring>
+                                        </property>
+                                        <property name="font">
+                                            <font>
+                                                <bold>1</bold>
+                                            </font>
+                                        </property>
+                                        <property name="text">
+                                            <string>1</string>
+                                        </property>
+                                        <property name="textFormat">
+                                            <enum>PlainText</enum>
+                                        </property>
+                                    </widget>
+                                    <widget class="QLabel" row="6" column="0">
+                                        <property name="name">
+                                            <cstring>TextLabel12</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>Final Payment:</string>
+                                        </property>
+                                        <property name="alignment">
+                                            <set>AlignVCenter|AlignRight</set>
+                                        </property>
+                                    </widget>
+                                    <widget class="QLabel" row="4" column="1">
+                                        <property name="name">
+                                            <cstring>m_summaryTerm</cstring>
+                                        </property>
+                                        <property name="font">
+                                            <font>
+                                                <bold>1</bold>
+                                            </font>
+                                        </property>
+                                        <property name="text">
+                                            <string>1</string>
+                                        </property>
+                                        <property name="textFormat">
+                                            <enum>PlainText</enum>
+                                        </property>
+                                    </widget>
+                                    <widget class="QLabel" row="0" column="0">
+                                        <property name="name">
+                                            <cstring>TextLabel6_4</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>Interest is due:</string>
+                                        </property>
+                                        <property name="alignment">
+                                            <set>AlignVCenter|AlignRight</set>
+                                        </property>
+                                    </widget>
+                                    <widget class="QLabel" row="2" column="1">
+                                        <property name="name">
+                                            <cstring>m_summaryAmount</cstring>
+                                        </property>
+                                        <property name="font">
+                                            <font>
+                                                <bold>1</bold>
+                                            </font>
+                                        </property>
+                                        <property name="text">
+                                            <string>1</string>
+                                        </property>
+                                        <property name="textFormat">
+                                            <enum>PlainText</enum>
+                                        </property>
+                                    </widget>
+                                    <widget class="QLabel" row="5" column="0">
+                                        <property name="name">
+                                            <cstring>TextLabel11_4</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>Amortization + Interest:</string>
+                                        </property>
+                                        <property name="alignment">
+                                            <set>AlignVCenter|AlignRight</set>
+                                        </property>
+                                    </widget>
+                                    <widget class="QLabel" row="6" column="1">
+                                        <property name="name">
+                                            <cstring>m_summaryBalloonPayment</cstring>
+                                        </property>
+                                        <property name="font">
+                                            <font>
+                                                <bold>1</bold>
+                                            </font>
+                                        </property>
+                                        <property name="text">
+                                            <string>1</string>
+                                        </property>
+                                        <property name="textFormat">
+                                            <enum>PlainText</enum>
+                                        </property>
+                                    </widget>
+                                    <widget class="QLabel" row="2" column="0">
+                                        <property name="name">
+                                            <cstring>TextLabel8_4</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>Loan amount:</string>
+                                        </property>
+                                        <property name="alignment">
+                                            <set>AlignVCenter|AlignRight</set>
+                                        </property>
+                                    </widget>
+                                    <widget class="QLabel" row="1" column="0">
+                                        <property name="name">
+                                            <cstring>TextLabel7</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>Payment frequency:</string>
+                                        </property>
+                                        <property name="alignment">
+                                            <set>AlignVCenter|AlignRight</set>
+                                        </property>
+                                    </widget>
+                                    <widget class="QLabel" row="0" column="1">
+                                        <property name="name">
+                                            <cstring>m_summaryInterestDue</cstring>
+                                        </property>
+                                        <property name="font">
+                                            <font>
+                                                <bold>1</bold>
+                                            </font>
+                                        </property>
+                                        <property name="text">
+                                            <string>1</string>
+                                        </property>
+                                        <property name="textFormat">
+                                            <enum>PlainText</enum>
+                                        </property>
+                                    </widget>
+                                </grid>
+                            </widget>
+                        </vbox>
+                    </widget>
+                </hbox>
+            </widget>
+            <spacer>
+                <property name="name">
+                    <cstring>Spacer70</cstring>
                 </property>
                 <property name="orientation">
                     <enum>Vertical</enum>

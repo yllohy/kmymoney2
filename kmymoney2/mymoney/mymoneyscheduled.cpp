@@ -483,12 +483,15 @@ const MyMoneyAccount MyMoneySchedule::account(int cnt) const
       case MyMoneyAccount::Asset:
         --cnt;
         break;
+        
       default:
         break;
     }
+    if(!cnt)
+      return acc;
   }
 
-  return it != splits.end() ? acc : MyMoneyAccount();
+  return MyMoneyAccount();
 }
 
 QDate MyMoneySchedule::dateAfter(int transactions) const

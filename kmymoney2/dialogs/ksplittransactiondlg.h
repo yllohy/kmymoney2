@@ -57,6 +57,7 @@ public:
                        const MyMoneyAccount& acc,
                        const bool amountValid,
                        const bool deposit,
+                       const MyMoneyMoney& calculatedValue = 0,
                        QWidget* parent = 0, const char* name = 0);
 
   virtual ~KSplitTransactionDlg();
@@ -338,6 +339,12 @@ private:
     * deposit (true) or withdrawal (false).
     */
   bool  m_isDeposit;
+
+  /**
+    * This member keeps the amount that will be assigned to all the
+    * splits that are marked 'will be calculated'.
+    */
+  MyMoneyMoney m_calculatedValue;
 };
 
 #endif

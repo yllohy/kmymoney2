@@ -135,7 +135,10 @@ void KAccountListItem::update(const QCString& accountId)
       MyMoneyMoney balance = file->totalBalance(accountId);
 
       setText(0, acc.name());
-      setText(1, QString::number(file->transactionCount(accountId)));
+      if(!acc.parentAccountId().isEmpty())
+        setText(1, QString::number(file->transactionCount(accountId)));
+      else
+        setText(1, QString(" "));
       
       // since income and liabilities are usually negative,
       // we reverse the sign for display purposes

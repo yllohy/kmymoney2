@@ -186,23 +186,8 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(m_homeView, SIGNAL(scheduleSelected(const QCString&)),
     this, SLOT(slotScheduleSelected(const QCString&)));
   
-/*
-  connect(transactionView, SIGNAL(viewTypeSearchActivated()),
-    this, SLOT(accountFind()));
-  connect(transactionView, SIGNAL(viewTypeNormalActivated()),
-    this, SLOT(viewTransactionList()));
-*/
-
-/*
-  m_inReconciliation=false;
-  m_reconcileInited=false;
-  reconcileDlg=0;
-  transactionFindDlg=0;
-*/
   m_newAccountWizard = new KNewAccountWizard(this, "NewAccountWizard");
   connect(m_newAccountWizard, SIGNAL(newInstitutionClicked()), this, SLOT(slotBankNew()));
-
-
 
   // construct account context menu
   KIconLoader *kiconloader = KGlobal::iconLoader();
@@ -650,6 +635,14 @@ bool KMyMoneyView::readFile(const KURL& url)
     page = pageIndex(m_homeViewFrame);
   }
 
+  try {
+    // Check if we have to modify the file before we allow to work with it
+    fixFile();
+  } catch(MyMoneyException *e) {
+    delete e;
+    return false;
+  }
+  
   // if we currently see a different page, then select the right one
   if(page != activePageIndex()) {
     showPage(page);
@@ -894,30 +887,9 @@ void KMyMoneyView::accountNew(const bool createCategory)
             
       MyMoneyFile::instance()->addAccount(newAccount, parentAccount);
 
-      // Add the credit card schedule only if one exists
       // We MUST add the schedule AFTER adding the account because
       // otherwise an unknown account will be thrown.
-      //
-      // Remember to modify the first split to to reference the newly created account
-      MyMoneySchedule newSchedule = m_newAccountWizard->schedule();
-      if (!newSchedule.name().isEmpty())
-      {
-        try
-        {
-          // We can guarantee 2 splits.
-          MyMoneyTransaction t = newSchedule.transaction();
-          MyMoneySplit s1 = t.splits()[0];
-          s1.setAccountId(MyMoneyFile::instance()->nameToAccount(newAccount.name()));
-          t.modifySplit(s1);          
-          newSchedule.setTransaction(t);
-          
-          MyMoneyFile::instance()->addSchedule(newSchedule);
-        } catch (MyMoneyException *e)
-        {
-          KMessageBox::information(this, i18n("Unable to add schedule: "), e->what());
-          delete e;
-        }
-      }
+      createSchedule(m_newAccountWizard->schedule(), newAccount);
         
       viewAccountList(newAccount.id());
     }
@@ -1292,54 +1264,6 @@ void KMyMoneyView::viewAccountList(const QCString& /*selectAccount*/)
   m_accountsView->show();
 }
 
-void KMyMoneyView::viewTransactionList(void)
-{
-/*
-  bool accountSuccess=false;
-
-  try
-  {
-    MyMoneyAccount account = MyMoneyFile::instance()->account(
-        accountsView->currentAccount(accountSuccess));
-
-    //set up stock account view
-    if(account.accountType() == MyMoneyAccount::Investment)
-    {
-      accountsView->hide();
-      transactionView->hide();
-      m_investmentView->show();
-      m_showing = InvestmentList;
-      //m_investmentView->init(account.id());
-    }
-    else
-    {
-      m_showing = TransactionList;
-
-
-      m_investmentView->hide();
-
-      accountsView->hide();
-      transactionView->show();
-
-      bool readOnly=false;
-      MyMoneyAccount::accountTypeE type = MyMoneyFile::instance()->accountGroup(account.accountType());
-      if (type == MyMoneyAccount::Income || type == MyMoneyAccount::Expense)
-        readOnly = true;
-      transactionView->init(account.id(), readOnly);
-    }
-  }
-  catch (MyMoneyException *e)
-  {
-    if (accountSuccess)
-    {
-      KMessageBox::information(this, i18n("Unable to query account to view the transaction list"));
-    }
-    delete e;
-
-  }
-*/
-}
-
 void KMyMoneyView::slotRefreshViews()
 {
   m_accountsView->slotRefreshView();
@@ -1368,80 +1292,6 @@ void KMyMoneyView::slotCloseSearchDialog(void)
   if(m_searchDlg)
     m_searchDlg->deleteLater();
   m_searchDlg = 0;
-/*
-  bool bankSuccess=false, accountSuccess=false;
-  MyMoneyBank *pBank;
-  MyMoneyAccount *pAccount;
-
-  pBank = m_file.bank(accountsView->currentBank(bankSuccess));
-  if (!pBank || !bankSuccess) {
-    qDebug("KMyMoneyView::doTransactionSearch: Unable to get the current bank");
-    return;
-  }
-  pAccount = pBank->account(accountsView->currentAccount(accountSuccess));
-  if (!pAccount || !accountSuccess) {
-    qDebug("KMyMoneyView::doTransactionSearch: Unable to grab the current account");
-    return;
-  }
-
-   bool doDate, doAmount, doCredit, doStatus, doDescription, doNumber, doPayee, doCategory;
-   QString amountID, creditID, statusID, description, number, payee, category;
-  MyMoneyMoney money;
-  QDate startDate;
-  QDate endDate;
-  bool descriptionRegExp, numberRegExp, payeeRegExp;
-
-  transactionFindDlg->data(doDate, doAmount, doCredit, doStatus, doDescription, doNumber, doPayee, doCategory,
-    amountID,
-    creditID,
-    statusID,
-    description,
-    number,
-    money,
-    startDate,
-    endDate,
-    payee,
-    category,
-    descriptionRegExp,
-
-    numberRegExp,
-    payeeRegExp );
-
-
-  MyMoneyTransaction *transaction;
-  m_transactionList.clear();
-  for ( transaction=pAccount->transactionFirst(); transaction; transaction=pAccount->transactionNext()) {
-    if (checkTransactionDates(transaction, doDate, startDate, endDate) &&
-      checkTransactionAmount(transaction, doAmount, amountID, money) &&
-      checkTransactionCredit(transaction, doCredit, creditID) &&
-      checkTransactionStatus(transaction, doStatus, statusID) &&
-      checkTransactionDescription(transaction, doDescription, description, descriptionRegExp) &&
-      checkTransactionNumber(transaction, doNumber, number, numberRegExp) &&
-      checkTransactionPayee(transaction, doPayee, payee, payeeRegExp) &&
-      checkTransactionCategory(transaction, doCategory, category )) {
-
-      m_transactionList.append(new MyMoneyTransaction(
-        pAccount,
-        transaction->id(),
-        transaction->method(),
-        transaction->number(),
-        transaction->memo(),
-        transaction->amount(),
-        transaction->date(),
-        transaction->categoryMajor(),
-        transaction->categoryMinor(),
-        transaction->atmBankName(),
-        transaction->payee(),
-        transaction->accountFrom(),
-        transaction->accountTo(),
-        transaction->state()));
-    }
-  }
-
-  transactionView->init(&m_file, *pBank, *pAccount, &m_transactionList, KTransactionView::SUBSET);
-  viewTransactionList();
-  emit transactionOperations(true);
-*/
 }
 
 QString KMyMoneyView::currentAccountName(void)
@@ -1507,15 +1357,6 @@ void KMyMoneyView::slotActivatedPayeeView()
   emit signalPayeeView();
 }
 
-#if 0
-void KMyMoneyView::slotShowTransactionForm(bool show)
-{
-// FIXME: For what is this used anyway?
-  if(m_ledgerView != 0)
-    m_ledgerView->slotShowTransactionForm(show);
-}
-#endif
-
 void KMyMoneyView::slotShowTransactionDetail(bool detailed)
 {
   KConfig *config = KGlobal::config();
@@ -1576,4 +1417,163 @@ void KMyMoneyView::slotBankAccountNew()
     delete e;
   }
   accountNew(false);
+}
+
+void KMyMoneyView::fixFile(void)
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
+  QValueList<MyMoneyAccount> accountList = file->accountList();
+  QValueList<MyMoneyAccount>::Iterator it_a;
+  
+  for(it_a = accountList.begin(); it_a != accountList.end(); ++it_a) {
+    if((*it_a).accountType() == MyMoneyAccount::Loan
+    || (*it_a).accountType() == MyMoneyAccount::AssetLoan) {
+      fixLoanAccount(*it_a);
+    }
+  }
+
+  fixTransactions();
+}
+
+void KMyMoneyView::fixLoanAccount(MyMoneyAccount acc)
+{
+  if(acc.value("final-payment").isEmpty()
+  || acc.value("term").isEmpty()
+  || acc.value("periodic-payment").isEmpty()
+  || acc.value("payee").isEmpty()
+  || acc.value("loan-amount").isEmpty()
+  || acc.value("interest-calculation").isEmpty()
+  || acc.value("schedule").isEmpty()
+  || acc.value("fixed-interest").isEmpty()) {
+    KMessageBox::information(this,
+        i18n("The account \"%1\" was previously created as loan account but some information "
+             "is missing. The new loan wizard will be started to collect all relevant "
+             "information. If you cancel the wizard, then the file will be "
+             "closed.").arg(acc.name()),
+        i18n("Account problem"));
+    KNewLoanWizard* wiz = new KNewLoanWizard(this);
+    wiz->loadWidgets(acc);
+    if(wiz->exec() == QDialog::Accepted) {
+      MyMoneyAccount newAcc = wiz->account();
+      acc.setAccountType(newAcc.accountType());
+      acc.setName(newAcc.name());
+      acc.setNumber(QString());
+      acc.setOpeningBalance(newAcc.openingBalance());
+      acc.setOpeningDate(newAcc.openingDate());
+      acc.setPairs(newAcc.pairs());
+
+      try {
+        MyMoneyFile::instance()->modifyAccount(acc);
+        createSchedule(wiz->schedule(), acc);
+        
+      } catch(MyMoneyException *e) {
+        delete e;
+        qDebug("Unable to update loan account and/or create schedule");
+      }
+    } else
+      throw new MYMONEYEXCEPTION("Fix failed");
+    delete wiz;
+  }
+}
+
+void KMyMoneyView::createSchedule(MyMoneySchedule newSchedule, MyMoneyAccount& newAccount)
+{
+  // Add the schedule only if one exists
+  //
+  // Remember to modify the first split to to reference the newly created account
+  if (!newSchedule.name().isEmpty())
+  {
+    try
+    {
+      // We assume at least 2 splits in the transaction
+      MyMoneyTransaction t = newSchedule.transaction();
+      if(t.splitCount() < 2) {
+        throw new MYMONEYEXCEPTION("Transaction for schedule has less than 2 splits!");
+      }
+      // now search the split that does not have an account reference
+      // and set it up to be the one of the account we just added
+      // to the account pool. Note: the schedule code used to leave
+      // this always the first split, but the loan code leaves it as
+      // the second one. So I thought, searching is a good alternative ....
+      QValueList<MyMoneySplit>::ConstIterator it_s;
+      for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s) {
+        if((*it_s).accountId().isEmpty()) {
+          MyMoneySplit s = (*it_s);
+          s.setAccountId(newAccount.id());
+          t.modifySplit(s);
+          break;
+        }
+      }
+      newSchedule.setTransaction(t);
+
+      MyMoneyFile::instance()->addSchedule(newSchedule);
+
+      // in case of a loan account, we keep a reference to this
+      // schedule in the account
+      if(newAccount.accountType() == MyMoneyAccount::Loan
+      || newAccount.accountType() == MyMoneyAccount::AssetLoan) {
+        newAccount.setValue("schedule", newSchedule.id());
+        MyMoneyFile::instance()->modifyAccount(newAccount);
+      }
+    }
+    catch (MyMoneyException *e)
+    {
+      KMessageBox::information(this, i18n("Unable to add schedule: "), e->what());
+      delete e;
+    }
+  }
+}
+
+void KMyMoneyView::fixTransactions(void)
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
+  
+  QValueList<MyMoneySchedule> scheduleList = file->scheduleList();
+  MyMoneyTransactionFilter filter;
+  QValueList<MyMoneyTransaction> transactionList = file->transactionList(filter);
+
+  QValueList<MyMoneySchedule>::Iterator it_x;
+  QCStringList interestAccounts;
+
+  kmymoney2->slotStatusMsg(i18n("Fix transactions"));
+  kmymoney2->slotStatusProgressBar(0, scheduleList.count() + transactionList.count());
+
+  int cnt = 0;  
+  // scan the schedules to find interest accounts
+  for(it_x = scheduleList.begin(); it_x != scheduleList.end(); ++it_x) {
+    MyMoneyTransaction t = (*it_x).transaction();
+    QValueList<MyMoneySplit>::ConstIterator it_s;
+    for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s) {
+      if((*it_s).action() == MyMoneySplit::ActionInterest) {
+        if(interestAccounts.contains((*it_s).accountId()) == 0) {
+          interestAccounts << (*it_s).accountId();
+        }
+      }
+    }
+    ++cnt;
+    if(!(cnt % 10))
+      kmymoney2->slotStatusProgressBar(cnt);
+  }
+
+  // scan the transactions and modify loan transactions
+  QValueList<MyMoneyTransaction>::Iterator it_t;
+  for(it_t = transactionList.begin(); it_t != transactionList.end(); ++it_t) {
+    QValueList<MyMoneySplit> splits = (*it_t).splits();
+    QValueList<MyMoneySplit>::Iterator it_s;
+    for(it_s = splits.begin(); it_s != splits.end(); ++it_s) {
+      if(interestAccounts.contains((*it_s).accountId())) {
+        if((*it_s).action() != MyMoneySplit::ActionInterest) {
+          (*it_s).setAction(MyMoneySplit::ActionInterest);
+          (*it_t).modifySplit(*it_s);
+          file->modifyTransaction(*it_t);
+        }
+      }
+    }
+    ++cnt;
+    if(!(cnt % 10))
+      kmymoney2->slotStatusProgressBar(cnt);
+  }
+  
+  kmymoney2->slotStatusProgressBar(-1, -1);
+  kmymoney2->slotStatusMsg(i18n("Ready"));
 }

@@ -1,7 +1,7 @@
 /***************************************************************************
-                          kenterscheduledialog.h  -  description
+                          keditloanwizard.h  -  description
                              -------------------
-    begin                : Mon Sep 1 2003
+    begin                : Wed Nov 12 2003
     copyright            : (C) 2000-2003 by Michael Edwardes
     email                : mte@users.sourceforge.net
                            Javier Campos Morales <javi_c@users.sourceforge.net>
@@ -20,8 +20,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef KENTERSCHEDULEDIALOG_H
-#define KENTERSCHEDULEDIALOG_H
+#ifndef KEDITLOANWIZARD_H
+#define KEDITLOANWIZARD_H
 
 // ----------------------------------------------------------------------------
 // QT Includes
@@ -34,49 +34,54 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "kenterscheduledialogdecl.h"
-#include "../mymoney/mymoneyscheduled.h"
-
+#include <../dialogs/knewloanwizard.h>
+#include <../mymoney/mymoneyaccount.h>
 
 /**
-  * @author Michael Edwardes, Thomas Baumgart
+  * @author Thomas Baumgart
   */
 
-class KEnterScheduleDialog : public kEnterScheduleDialogDecl
+class KEditLoanWizard : public KNewLoanWizard
 {
   Q_OBJECT
 public: 
-  KEnterScheduleDialog(QWidget *parent, const MyMoneySchedule& schedule, const QDate& date=QDate());
-  ~KEnterScheduleDialog();
-
-protected slots:
-  void slotOK();
-  void slotSplitClicked();
-  void slotFromActivated(int);
-  void slotToActivated(int);
-
-private:
-  MyMoneySchedule m_schedule;
-  MyMoneyTransaction m_transaction;
-  QDate m_schedDate;
+  KEditLoanWizard(const MyMoneyAccount& account, QWidget *parent=0, const char *name=0);
+  ~KEditLoanWizard();
 
   /**
-    * This method is used to determine the amount of amortization
-    * and interest in a loan payment transaction.
+    * This method returns the schedule for the payments. The account
+    * where the amortization should be transferred to is the one
+    * we currently edited with this wizard.
+    *
+    * @return MyMoneySchedule object for payments
     */
-  void calculateInterest(void);
-  void initWidgets();
-  bool checkData(void);
-  void checkCategory();
-  void setPayee();
-  void setTo();
-  void setFrom();
-  void setCategory();
-  void setMemo();
-  void setAmount();
-  void createSplits();
-  void commitTransaction();
-  QCString theAccountId();
+  const MyMoneySchedule schedule(void) const;
+
+  /**
+    * This method returns a MyMoneyAccount object with all data
+    * filled out as provided by the wizard.
+    *
+    * @return updated MyMoneyAccount object
+    */
+  const MyMoneyAccount account(void) const;
+
+  
+  void loadWidgets(const MyMoneyAccount& acc);
+  
+public slots:
+  void next();
+
+protected slots:
+  virtual void slotCheckPageFinished(void);
+
+protected:
+  void updateEditSummary(void);
+    
+private:
+  MyMoneyAccountLoan  m_account;
+  MyMoneySchedule     m_schedule;
+  int                 m_lastSelection;
+  bool                m_fullyRepayLoan;
 };
 
 #endif

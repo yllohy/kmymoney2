@@ -14,7 +14,11 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <iostream>
 #include "mymoneymoneytest.h"
+
+#define __STDC_LIMIT_MACROS         // force definition of min and max values 
+#include <stdint.h>
 
 MyMoneyMoneyTest::MyMoneyMoneyTest()
 {
@@ -224,6 +228,12 @@ void MyMoneyMoneyTest::testFormatMoney()
 
 	m1 = 100000;
 	CPPUNIT_ASSERT(m1.formatMoney() == QString("1,000.00"));
+
+	m1 = INT64_MAX;
+	CPPUNIT_ASSERT(m1.formatMoney() == QString("92,233,720,368,547,758.07"));
+
+	m1 = INT64_MIN;
+	CPPUNIT_ASSERT(m1.formatMoney() == QString("-92,233,720,368,547,758.08"));
 }
 
 void MyMoneyMoneyTest::testRelation()

@@ -562,6 +562,8 @@ void KAccountsView::refreshTotalProfit(void)
   totalProfitsLabel->setText(s);
 }
 
+
+
 const QPixmap KAccountsView::accountImage(const MyMoneyAccount::accountTypeE type) const
 {
   QPixmap rc;
@@ -649,7 +651,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
     try {
       // scan for all asset/liability accounts w/o an institution
       KAccountListItem *topLevelInstitution = new KAccountListItem(accountListView,
-                       i18n("Unknown institution"));
+                       i18n("Accounts with no institution assigned"));
       QValueList<MyMoneyAccount> acclist = file->accountList();
       QValueList<MyMoneyAccount>::ConstIterator accountIterator;
       for(accountIterator = acclist.begin();
@@ -671,6 +673,12 @@ void KAccountsView::refresh(const QCString& selectAccount)
           default:
             break;
         }
+      }
+      
+      // in case there is no account w/o reference to an institution
+      // we can safely remove this entry to avoid user's confusion
+      if(topLevelInstitution->childCount() == 0) {
+        delete topLevelInstitution;
       }
       
       QValueList<MyMoneyInstitution> list = file->institutionList();
@@ -821,6 +829,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
   refreshTotalProfit();
 
 /*
+
   if (m_bSelectedBank || m_bSelectedAccount)
     accountListView->setSelected(item, true);
 */

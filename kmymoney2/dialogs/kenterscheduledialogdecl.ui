@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
 <class>kEnterScheduleDialogDecl</class>
 <widget class="QDialog">
     <property name="name">
@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>720</width>
-            <height>420</height>
+            <height>421</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -29,6 +29,12 @@
     <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
+            <number>11</number>
+        </property>
+        <property name="spacing">
+            <number>6</number>
         </property>
         <widget class="QLabel">
             <property name="name">
@@ -63,6 +69,12 @@
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
+                <property name="margin">
+                    <number>11</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
                 <widget class="QLayoutWidget">
                     <property name="name">
                         <cstring>layout6</cstring>
@@ -70,6 +82,12 @@
                     <hbox>
                         <property name="name">
                             <cstring>unnamed</cstring>
+                        </property>
+                        <property name="margin">
+                            <number>0</number>
+                        </property>
+                        <property name="spacing">
+                            <number>6</number>
                         </property>
                         <widget class="QLabel">
                             <property name="name">
@@ -141,6 +159,23 @@
                         </widget>
                     </hbox>
                 </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>Spacer81</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Vertical</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>0</width>
+                            <height>1</height>
+                        </size>
+                    </property>
+                </spacer>
             </vbox>
         </widget>
         <widget class="QGroupBox">
@@ -154,6 +189,12 @@
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
+                <property name="margin">
+                    <number>11</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
                 <widget class="QLayoutWidget">
                     <property name="name">
                         <cstring>layout6</cstring>
@@ -162,6 +203,12 @@
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
+                        <property name="margin">
+                            <number>0</number>
+                        </property>
+                        <property name="spacing">
+                            <number>6</number>
+                        </property>
                         <widget class="kMyMoneyCombo" row="1" column="1">
                             <property name="name">
                                 <cstring>m_from</cstring>
@@ -169,26 +216,10 @@
                             <property name="enabled">
                                 <bool>true</bool>
                             </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>3</hsizetype>
-                                    <vsizetype>5</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
                         </widget>
                         <widget class="kMyMoneyPayee" row="0" column="1">
                             <property name="name">
                                 <cstring>m_payee</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>3</hsizetype>
-                                    <vsizetype>5</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
                             </property>
                         </widget>
                         <widget class="QLabel" row="0" column="0">
@@ -220,14 +251,6 @@
                             <property name="enabled">
                                 <bool>true</bool>
                             </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>3</hsizetype>
-                                    <vsizetype>1</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
                         </widget>
                         <widget class="kMyMoneyCombo" row="2" column="1">
                             <property name="name">
@@ -235,14 +258,6 @@
                             </property>
                             <property name="enabled">
                                 <bool>false</bool>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>3</hsizetype>
-                                    <vsizetype>5</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
                             </property>
                         </widget>
                         <widget class="QLabel" row="2" column="2">
@@ -270,9 +285,6 @@
                         <widget class="kMyMoneyDateInput" row="1" column="3">
                             <property name="name">
                                 <cstring>m_date</cstring>
-                            </property>
-                            <property name="enabled">
-                                <bool>false</bool>
                             </property>
                         </widget>
                         <widget class="QLabel" row="1" column="2">
@@ -351,6 +363,12 @@
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
+                        <property name="margin">
+                            <number>0</number>
+                        </property>
+                        <property name="spacing">
+                            <number>6</number>
+                        </property>
                         <widget class="QLabel">
                             <property name="name">
                                 <cstring>textLabel6</cstring>
@@ -377,14 +395,6 @@
                             <property name="name">
                                 <cstring>m_category</cstring>
                             </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>3</hsizetype>
-                                    <vsizetype>5</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
                         </widget>
                         <widget class="KPushButton">
                             <property name="name">
@@ -403,6 +413,12 @@
                     <hbox>
                         <property name="name">
                             <cstring>unnamed</cstring>
+                        </property>
+                        <property name="margin">
+                            <number>0</number>
+                        </property>
+                        <property name="spacing">
+                            <number>6</number>
                         </property>
                         <widget class="QLabel">
                             <property name="name">
@@ -432,8 +448,8 @@
                             </property>
                             <property name="sizePolicy">
                                 <sizepolicy>
-                                    <hsizetype>3</hsizetype>
-                                    <vsizetype>0</vsizetype>
+                                    <hsizetype>7</hsizetype>
+                                    <vsizetype>1</vsizetype>
                                     <horstretch>0</horstretch>
                                     <verstretch>0</verstretch>
                                 </sizepolicy>
@@ -441,6 +457,23 @@
                         </widget>
                     </hbox>
                 </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>Spacer82</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Vertical</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>0</width>
+                            <height>30</height>
+                        </size>
+                    </property>
+                </spacer>
             </vbox>
         </widget>
         <spacer>
@@ -455,8 +488,8 @@
             </property>
             <property name="sizeHint">
                 <size>
-                    <width>20</width>
-                    <height>40</height>
+                    <width>0</width>
+                    <height>16</height>
                 </size>
             </property>
         </spacer>
@@ -482,7 +515,7 @@
                         <string>&amp;Help</string>
                     </property>
                     <property name="accel">
-                        <string>F1</string>
+                        <number>4144</number>
                     </property>
                     <property name="autoDefault">
                         <bool>true</bool>
@@ -501,7 +534,7 @@
                     <property name="sizeHint">
                         <size>
                             <width>20</width>
-                            <height>20</height>
+                            <height>0</height>
                         </size>
                     </property>
                 </spacer>
@@ -513,7 +546,7 @@
                         <string>&amp;OK</string>
                     </property>
                     <property name="accel">
-                        <string></string>
+                        <number>0</number>
                     </property>
                     <property name="autoDefault">
                         <bool>true</bool>
@@ -530,7 +563,7 @@
                         <string>&amp;Cancel</string>
                     </property>
                     <property name="accel">
-                        <string></string>
+                        <number>0</number>
                     </property>
                     <property name="autoDefault">
                         <bool>true</bool>
@@ -538,6 +571,23 @@
                 </widget>
             </hbox>
         </widget>
+        <spacer>
+            <property name="name">
+                <cstring>Spacer83</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>0</width>
+                    <height>16</height>
+                </size>
+            </property>
+        </spacer>
     </vbox>
 </widget>
 <customwidgets>
@@ -545,7 +595,7 @@
         <class>kMyMoneyDateInput</class>
         <header location="local">../widgets/kmymoneydateinput.h</header>
         <sizehint>
-            <width>90</width>
+            <width>120</width>
             <height>25</height>
         </sizehint>
         <container>0</container>
@@ -579,7 +629,7 @@
         <header location="local">../widgets/kmymoneycombo.h</header>
         <sizehint>
             <width>-1</width>
-            <height>-1</height>
+            <height>25</height>
         </sizehint>
         <container>0</container>
         <sizepolicy>
@@ -588,14 +638,14 @@
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
         </sizepolicy>
-        <pixmap>image0</pixmap>
+        <pixmap>image1</pixmap>
     </customwidget>
     <customwidget>
         <class>kMyMoneyPayee</class>
         <header location="local">../widgets/kmymoneypayee.h</header>
         <sizehint>
             <width>-1</width>
-            <height>-1</height>
+            <height>25</height>
         </sizehint>
         <container>0</container>
         <sizepolicy>
@@ -611,7 +661,7 @@
         <header location="local">../widgets/kmymoneycategory.h</header>
         <sizehint>
             <width>-1</width>
-            <height>-1</height>
+            <height>25</height>
         </sizehint>
         <container>0</container>
         <sizepolicy>
@@ -640,14 +690,4 @@
     </connection>
 </connections>
 <layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>kmymoneycombo.h</includehint>
-    <includehint>kmymoneypayee.h</includehint>
-    <includehint>kmymoneyedit.h</includehint>
-    <includehint>kmymoneycombo.h</includehint>
-    <includehint>kmymoneydateinput.h</includehint>
-    <includehint>kmymoneycategory.h</includehint>
-    <includehint>kpushbutton.h</includehint>
-    <includehint>klineedit.h</includehint>
-</includehints>
 </UI>

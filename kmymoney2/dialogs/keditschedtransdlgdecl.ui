@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
 <class>kEditScheduledTransferDlgDecl</class>
 <widget class="QDialog">
     <property name="name">
@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>654</width>
-            <height>478</height>
+            <height>401</height>
         </rect>
     </property>
     <property name="caption">
@@ -25,34 +25,6 @@
         <property name="spacing">
             <number>6</number>
         </property>
-        <widget class="QLabel">
-            <property name="name">
-                <cstring>TextLabel2</cstring>
-            </property>
-            <property name="text">
-                <string>Editing Scheduled Transaction</string>
-            </property>
-        </widget>
-        <widget class="Line">
-            <property name="name">
-                <cstring>Line1</cstring>
-            </property>
-            <property name="frameShape">
-                <enum>HLine</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <property name="lineWidth">
-                <number>2</number>
-            </property>
-            <property name="midLineWidth">
-                <number>0</number>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-        </widget>
         <widget class="QLayoutWidget">
             <property name="name">
                 <cstring>layout10</cstring>
@@ -60,6 +32,12 @@
             <hbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
                 </property>
                 <widget class="QLabel">
                     <property name="name">
@@ -100,6 +78,12 @@
                     <grid>
                         <property name="name">
                             <cstring>unnamed</cstring>
+                        </property>
+                        <property name="margin">
+                            <number>0</number>
+                        </property>
+                        <property name="spacing">
+                            <number>6</number>
                         </property>
                         <widget class="QLabel" row="0" column="2">
                             <property name="name">
@@ -346,6 +330,12 @@
                     <hbox>
                         <property name="name">
                             <cstring>unnamed</cstring>
+                        </property>
+                        <property name="margin">
+                            <number>0</number>
+                        </property>
+                        <property name="spacing">
+                            <number>6</number>
                         </property>
                         <widget class="QLabel">
                             <property name="name">
@@ -620,11 +610,31 @@
             </property>
             <property name="sizeHint">
                 <size>
-                    <width>16</width>
-                    <height>16</height>
+                    <width>0</width>
+                    <height>56</height>
                 </size>
             </property>
         </spacer>
+        <widget class="Line">
+            <property name="name">
+                <cstring>Line1</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="lineWidth">
+                <number>2</number>
+            </property>
+            <property name="midLineWidth">
+                <number>0</number>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
         <widget class="QLayoutWidget">
             <property name="name">
                 <cstring>layout10</cstring>
@@ -632,6 +642,12 @@
             <hbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
                 </property>
                 <widget class="KPushButton">
                     <property name="name">
@@ -654,7 +670,7 @@
                     <property name="sizeHint">
                         <size>
                             <width>280</width>
-                            <height>20</height>
+                            <height>0</height>
                         </size>
                     </property>
                 </spacer>
@@ -683,7 +699,7 @@
         <class>kMyMoneyDateInput</class>
         <header location="local">../widgets/kmymoneydateinput.h</header>
         <sizehint>
-            <width>90</width>
+            <width>120</width>
             <height>25</height>
         </sizehint>
         <container>0</container>
@@ -717,7 +733,7 @@
         <header location="local">../widgets/kmymoneycombo.h</header>
         <sizehint>
             <width>-1</width>
-            <height>-1</height>
+            <height>25</height>
         </sizehint>
         <container>0</container>
         <sizepolicy>
@@ -726,14 +742,14 @@
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
         </sizepolicy>
-        <pixmap>image0</pixmap>
+        <pixmap>image1</pixmap>
     </customwidget>
     <customwidget>
         <class>kMyMoneyPayee</class>
         <header location="local">../widgets/kmymoneypayee.h</header>
         <sizehint>
             <width>-1</width>
-            <height>-1</height>
+            <height>25</height>
         </sizehint>
         <container>0</container>
         <sizepolicy>
@@ -749,7 +765,7 @@
         <header location="local">../widgets/kmymoneycategory.h</header>
         <sizehint>
             <width>-1</width>
-            <height>-1</height>
+            <height>25</height>
         </sizehint>
         <container>0</container>
         <sizepolicy>
@@ -787,19 +803,4 @@
     <tabstop>m_kdateinputFinal</tabstop>
 </tabstops>
 <layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>kmymoneydateinput.h</includehint>
-    <includehint>kmymoneycombo.h</includehint>
-    <includehint>kmymoneycombo.h</includehint>
-    <includehint>kmymoneycombo.h</includehint>
-    <includehint>kmymoneycombo.h</includehint>
-    <includehint>kmymoneypayee.h</includehint>
-    <includehint>kmymoneyedit.h</includehint>
-    <includehint>kmymoneycategory.h</includehint>
-    <includehint>kpushbutton.h</includehint>
-    <includehint>kmymoneydateinput.h</includehint>
-    <includehint>kpushbutton.h</includehint>
-    <includehint>kpushbutton.h</includehint>
-    <includehint>kpushbutton.h</includehint>
-</includehints>
 </UI>

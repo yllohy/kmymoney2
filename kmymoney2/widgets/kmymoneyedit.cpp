@@ -76,7 +76,8 @@ MyMoneyMoney kMyMoneyEdit::getMoneyValue(void)
 void kMyMoneyEdit::loadText(const QString& txt)
 {
   setText(txt);
-  ensureFractionalPart();
+  if(isEnabled())
+    ensureFractionalPart();
   m_text = text();
 }
 
@@ -89,11 +90,13 @@ void kMyMoneyEdit::theTextChanged(const QString & theText)
 {
   QString l_text = theText;
   int i = 0;
-  QValidator::State state =  this->validator()->validate( l_text, i);
-  if (state==QValidator::Invalid || state==QValidator::Intermediate && (!l_text.isEmpty() && (l_text!="-"))) {
-    setText(previousText);
-  } else
-    previousText = l_text;
+  if(isEnabled()) {
+    QValidator::State state =  this->validator()->validate( l_text, i);
+    if (state==QValidator::Invalid || state==QValidator::Intermediate && (!l_text.isEmpty() && (l_text!="-"))) {
+      setText(previousText);
+    } else
+      previousText = l_text;
+  }
 }
 
 void kMyMoneyEdit::ensureFractionalPart(void)
@@ -114,6 +117,8 @@ void kMyMoneyEdit::ensureFractionalPart(void)
 
 void kMyMoneyEdit::focusOutEvent(QFocusEvent *e)
 {
+  ensureFractionalPart();
+  
   if(MyMoneyMoney(text()) != MyMoneyMoney(m_text)) {
     emit valueChanged(text());
     m_text = text();

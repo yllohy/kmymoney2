@@ -269,6 +269,9 @@ const QString KMyMoneyUtils::scheduleTypeToString(MyMoneySchedule::typeE type)
     case MyMoneySchedule::TYPE_TRANSFER:
       text = i18n("Transfer");
       break;
+    case MyMoneySchedule::TYPE_LOANPAYMENT:
+      text = i18n("Loan payment");
+      break;
     case MyMoneySchedule::TYPE_ANY:
     default:
       text = i18n("Unknown");
@@ -405,5 +408,50 @@ bool KMyMoneyUtils::appendCorrectFileExt(QString& str, const QString& strExtToUs
       rc = true;
     }
   }
+  return rc;
+}
+
+int KMyMoneyUtils::occurenceToFrequency(const MyMoneySchedule::occurenceE occurence)
+{
+  int rc = 0;
+
+  switch(occurence) {
+    case MyMoneySchedule::OCCUR_DAILY:
+      rc = 365;
+      break;
+    case MyMoneySchedule::OCCUR_WEEKLY:
+      rc = 52;
+      break;
+    case MyMoneySchedule::OCCUR_FORTNIGHTLY:
+      rc = 24;
+      break;
+    case MyMoneySchedule::OCCUR_EVERYOTHERWEEK:
+      rc = 26;
+      break;
+    case MyMoneySchedule::OCCUR_EVERYFOURWEEKS:
+      rc = 13;
+      break;
+    case MyMoneySchedule::OCCUR_MONTHLY:
+      rc = 12;
+      break;
+    case MyMoneySchedule::OCCUR_EVERYOTHERMONTH:
+      rc = 6;
+      break;
+    case MyMoneySchedule::OCCUR_QUARTERLY:
+      rc = 4;
+      break;
+    case MyMoneySchedule::OCCUR_EVERYFOURMONTHS:
+      rc = 3;
+      break;
+    case MyMoneySchedule::OCCUR_TWICEYEARLY:
+      rc = 2;
+      break;
+    case MyMoneySchedule::OCCUR_YEARLY:
+      rc = 1;
+      break;
+    default:
+      qWarning("Occurence not supported by financial calculator");
+  }
+
   return rc;
 }

@@ -32,6 +32,17 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
+#ifndef HAVE_LONG_DOUBLE
+#define HAVE_LONG_DOUBLE  0
+#endif
+
+#if HAVE_LONG_DOUBLE
+#define FCALC_DOUBLE  long double
+#else
+#define FCALC_DOUBLE  double
+#define modfl(a,b)    modf(a,b)
+#define roundl(a)     round(a)
+#endif
 
 /**
   * @author Thomas Baumgart
@@ -58,7 +69,7 @@ public:
     * @exception If one of the required values is not set, a MyMoneyException
     *             will be thrown
     */
-  const long double numPayments();
+  const FCALC_DOUBLE numPayments();
   
   /**
     * This method calculates the amount of the payment (amortization and interest)
@@ -70,7 +81,7 @@ public:
     * @exception If one of the required values is not set, a MyMoneyException
     *             will be thrown
     */
-  const long double payment();
+  const FCALC_DOUBLE payment();
 
   /**
     * This method calculates the present value
@@ -82,7 +93,7 @@ public:
     * @exception If one of the required values is not set, a MyMoneyException
     *             will be thrown
     */
-  const long double presentValue();
+  const FCALC_DOUBLE presentValue();
 
   /**
     * This method calculates the future value
@@ -94,7 +105,7 @@ public:
     * @exception If one of the required values is not set, a MyMoneyException
     *             will be thrown
     */
-  const long double futureValue();
+  const FCALC_DOUBLE futureValue();
 
   /**
     * This method calculates the nominal interest rate
@@ -106,8 +117,34 @@ public:
     * @exception If one of the required values is not set, a MyMoneyException
     *             will be thrown
     */
-  const long double interestRate();
+  const FCALC_DOUBLE interestRate();
 
+  /**
+    * This method calculates the interest due for the next payment according
+    * to the equation
+    *
+    *   id[n] = (pv[n-1] + (X * pmt)) * i
+    *
+    *   with
+    *
+    *   - pv[n-1]\n
+    *     the present value at the end of the last period
+    *   - X\n
+    *     0 for end of period payments, 1 for beginning of period payments
+    *   - pmt\n
+    *     the periodic payment amount and
+    *   - i\n
+    *     the effective interest rate
+    *
+    * pv[n-1] will be the value as set with setPv(), i will be calculated
+    * from the nominal interest rate as set with setIr(), pmt will be the
+    * value as set with setPmt() and X is determined by the argument to
+    * setBep().
+    *
+    * @return the interest amount
+    */
+  const FCALC_DOUBLE interestDue(void) const;
+  
   /**
     * This method sets the rounding precision to @p prec fractional
     * digits. The default of @p is 2. Rounding is applied to pv, pmt
@@ -124,9 +161,9 @@ public:
     *
     * @param npp number of payment periods
     */
-  void setNpp(const long double npp);
+  void setNpp(const FCALC_DOUBLE npp);
 
-  const long double npp(void) const { return m_npp; };
+  const FCALC_DOUBLE npp(void) const { return m_npp; };
   
   /**
     * This method sets the payment frequency. The parameter @p PF
@@ -192,9 +229,9 @@ public:
     *
     * @param ir nominal interest rate
     */
-  void setIr(const long double ir);
+  void setIr(const FCALC_DOUBLE ir);
 
-  const long double ir(void) const { return m_ir; };
+  const FCALC_DOUBLE ir(void) const { return m_ir; };
     
   /**
     * This method sets the present value to the value passed
@@ -202,9 +239,9 @@ public:
     *
     * @param pv present value
     */
-  void setPv(const long double pv);
+  void setPv(const FCALC_DOUBLE pv);
 
-  const long double pv(void) const { return m_pv; };
+  const FCALC_DOUBLE pv(void) const { return m_pv; };
 
   /**
     * This method sets the payment amount to the value passed
@@ -212,9 +249,9 @@ public:
     *
     * @param pmt payment amount
     */
-  void setPmt(const long double pmt);
+  void setPmt(const FCALC_DOUBLE pmt);
 
-  const long double pmt(void) const { return m_pmt; };
+  const FCALC_DOUBLE pmt(void) const { return m_pmt; };
 
   /**
     * This method sets the future value to the value passed
@@ -222,27 +259,27 @@ public:
     *
     * @param fv future value
     */
-  void setFv(const long double fv);
+  void setFv(const FCALC_DOUBLE fv);
 
-  const long double fv(void) const { return m_fv; };
+  const FCALC_DOUBLE fv(void) const { return m_fv; };
 
 private:
-  const long double eff_int(void) const;
-  const long double nom_int(const long double eint) const;
-  const long double rnd(const long double x) const;
+  const FCALC_DOUBLE eff_int(void) const;
+  const FCALC_DOUBLE nom_int(const FCALC_DOUBLE eint) const;
+  const FCALC_DOUBLE rnd(const FCALC_DOUBLE x) const;
   
-  const long double _A(const long double eint) const;
-  const long double _B(const long double eint) const;
-  const long double _C(const long double eint) const;
-  const long double _fi(const long double eint) const;
-  const long double _fip(const long double eint) const;
+  const FCALC_DOUBLE _A(const FCALC_DOUBLE eint) const;
+  const FCALC_DOUBLE _B(const FCALC_DOUBLE eint) const;
+  const FCALC_DOUBLE _C(const FCALC_DOUBLE eint) const;
+  const FCALC_DOUBLE _fi(const FCALC_DOUBLE eint) const;
+  const FCALC_DOUBLE _fip(const FCALC_DOUBLE eint) const;
         
 private:
-  long double           m_ir;   // nominal interest rate
-  long double           m_pv;   // present value
-  long double           m_pmt;  // periodic payment
-  long double           m_fv;   // future value
-  long double           m_npp;  // number of payment periods
+  FCALC_DOUBLE          m_ir;   // nominal interest rate
+  FCALC_DOUBLE          m_pv;   // present value
+  FCALC_DOUBLE          m_pmt;  // periodic payment
+  FCALC_DOUBLE          m_fv;   // future value
+  FCALC_DOUBLE          m_npp;  // number of payment periods
   
   unsigned short        m_CF;   // compounding frequency
   unsigned short        m_PF;   // payment frequency

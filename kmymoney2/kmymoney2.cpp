@@ -366,6 +366,7 @@ void KMyMoney2App::slotFileOpen()
   }
   
 #else
+  slotFileClose();
   if(myMoneyView->fileOpen())
     return;
 #endif
@@ -618,15 +619,8 @@ void KMyMoney2App::slotStatusProgressBar(const int current, const int total)
 
 void KMyMoney2App::progressCallback(int current, int total, const QString& msg)
 {
-
-
-
-
-
-
   if(!msg.isEmpty())
     kmymoney2->slotStatusMsg(msg);
-
 
   kmymoney2->slotStatusProgressBar(current, total);
 }
@@ -1073,38 +1067,42 @@ void KMyMoney2App::slotFileConsitencyCheck(void)
 
 void KMyMoney2App::slotCheckSchedules(void)
 {
-  QString prevMsg = slotStatusMsg(i18n("Checking for overdue schedules..."));
+  KConfig *kconfig = KGlobal::config();
+  kconfig->setGroup("General Options");
+  if(kconfig->readBoolEntry("CheckSchedule", false) == true) {
 
+    QString prevMsg = slotStatusMsg(i18n("Checking for overdue schedules..."));
+    MyMoneyFile *file = MyMoneyFile::instance();
+    QDate checkDate = QDate::currentDate().addDays(kconfig->readNumEntry("CheckSchedulePreview", 0));
+    
+    QValueList<MyMoneySchedule> scheduleList =  file->scheduleList();
+    QValueList<MyMoneySchedule>::Iterator it;
 
-  MyMoneyFile *file = MyMoneyFile::instance();
-
-  QValueList<MyMoneySchedule> scheduleList =  file->scheduleList();
-  QValueList<MyMoneySchedule>::Iterator it;
-
-  for (it=scheduleList.begin(); it!=scheduleList.end(); ++it)
-  {
-    MyMoneySchedule schedule = *it;
-
-    if (schedule.nextPayment(schedule.lastPayment()) == QDate::currentDate() &&
-          schedule.autoEnter())
+    for (it=scheduleList.begin(); it!=scheduleList.end(); ++it)
     {
-      //qDebug("Auto Entering schedule: %s", schedule.name().latin1());
-      //qDebug("\tAuto enter date: %s",
-      //  schedule.nextPayment(schedule.lastPayment()).toString().latin1());
-      slotCommitTransaction(schedule, QDate());
+      MyMoneySchedule schedule = *it;
+
+      if (schedule.nextPayment(schedule.lastPayment()) <= QDate::currentDate() &&
+            schedule.autoEnter())
+      {
+        //qDebug("Auto Entering schedule: %s", schedule.name().latin1());
+        //qDebug("\tAuto enter date: %s",
+
+        //  schedule.nextPayment(schedule.lastPayment()).toString().latin1());
+        slotCommitTransaction(schedule, QDate());
+      }
+      else if (m_bCheckSchedules && (schedule.isOverdue() ||
+          schedule.nextPayment(schedule.lastPayment()) <= checkDate))
+      {
+        // Do nothing.  The user can see overdue and todays payments in
+        // the home view.
+        //
+        // TODO: Maybe we should force the user to view the home page/
+      }
     }
-    else if (m_bCheckSchedules && (schedule.isOverdue() ||
-        schedule.nextPayment(schedule.lastPayment()) == QDate::currentDate()))
-    {
-      // Do nothing.  The user can see overdue and todays payments in
-      // the home view.
-      //
-      // TODO: Maybe we should force the user to view the home page/
-    }    
+    slotStatusMsg(prevMsg);
+    updateCaption();
   }
-
-  slotStatusMsg(prevMsg);
-  updateCaption();
 }
 
 void KMyMoney2App::slotCommitTransaction(const MyMoneySchedule& sched, const QDate& date)
@@ -1144,6 +1142,7 @@ void KMyMoney2App::slotCommitTransaction(const MyMoneySchedule& sched, const QDa
   catch (MyMoneyException *e)
   {
     KMessageBox::error(this, i18n("Unable to add transaction: ") + e->what());
+
     delete e;
   }
 }
