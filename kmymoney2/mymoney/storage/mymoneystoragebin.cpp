@@ -137,7 +137,7 @@ void MyMoneyStorageBin::readStream(QDataStream& s, IMyMoneySerialize* storage)
 
   // Simple Data
   if(fileVersionRead == VERSION_0_3_3) {
-    qDebug("\nConverting from old 0.3.3 release\n\tRemoving old file::name field");
+    //qDebug("\nConverting from old 0.3.3 release\n\tRemoving old file::name field");
     QString temp_delete;
     s >> temp_delete;
   }
