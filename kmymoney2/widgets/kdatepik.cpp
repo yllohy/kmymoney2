@@ -30,6 +30,7 @@
 #include <kapplication.h>
 #else
 #include <kapp.h>
+#endif
 
 #include <klocale.h>
 #include <kiconloader.h>

@@ -23,6 +23,7 @@
 #include <kapplication.h>
 #else
 #include <kapp.h>
+#endif
 
 
 // Simple class that just shows a picture

@@ -25,6 +25,7 @@
 #include <kapplication.h>
 #else
 #include <kapp.h>
+#endif
 
 #include <kmainwindow.h>
 #include <kaccel.h>
@@ -56,7 +57,7 @@
   * @see KMyMoneyView
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: kmymoney2.h,v 1.16 2002/02/14 01:57:23 mte Exp $
+  * $Id: kmymoney2.h,v 1.17 2002/02/14 02:00:49 mte Exp $
   *
   * @short Main application class.
 **/
