@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>604</width>
-            <height>330</height>
+            <width>655</width>
+            <height>415</height>
         </rect>
     </property>
     <property name="caption">
@@ -30,7 +30,7 @@
         </property>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>Layout11</cstring>
+                <cstring>Layout20</cstring>
             </property>
             <hbox>
                 <property name="name">
@@ -86,9 +86,9 @@
                             </property>
                             <widget class="QLayoutWidget">
                                 <property name="name">
-                                    <cstring>Layout13</cstring>
+                                    <cstring>Layout26</cstring>
                                 </property>
-                                <vbox>
+                                <hbox>
                                     <property name="name">
                                         <cstring>unnamed</cstring>
                                     </property>
@@ -98,200 +98,184 @@
                                     <property name="spacing">
                                         <number>6</number>
                                     </property>
-                                    <widget class="QLayoutWidget">
+                                    <widget class="QLabel">
                                         <property name="name">
-                                            <cstring>Layout26</cstring>
+                                            <cstring>TextLabel1</cstring>
                                         </property>
-                                        <hbox>
-                                            <property name="name">
-                                                <cstring>unnamed</cstring>
-                                            </property>
-                                            <property name="margin">
-                                                <number>0</number>
-                                            </property>
-                                            <property name="spacing">
-                                                <number>6</number>
-                                            </property>
-                                            <widget class="QLabel">
-                                                <property name="name">
-                                                    <cstring>TextLabel1</cstring>
-                                                </property>
-                                                <property name="minimumSize">
-                                                    <size>
-                                                        <width>140</width>
-                                                        <height>0</height>
-                                                    </size>
-                                                </property>
-                                                <property name="text">
-                                                    <string>Description</string>
-                                                </property>
-                                            </widget>
-                                            <widget class="KLineEdit">
-                                                <property name="name">
-                                                    <cstring>m_editDescription</cstring>
-                                                </property>
-                                            </widget>
-                                        </hbox>
-                                    </widget>
-                                    <widget class="QLayoutWidget">
-                                        <property name="name">
-                                            <cstring>Layout27</cstring>
-                                        </property>
-                                        <hbox>
-                                            <property name="name">
-                                                <cstring>unnamed</cstring>
-                                            </property>
-                                            <property name="margin">
-                                                <number>0</number>
-                                            </property>
-                                            <property name="spacing">
-                                                <number>6</number>
-                                            </property>
-                                            <widget class="QLabel">
-                                                <property name="name">
-                                                    <cstring>TextLabel2</cstring>
-                                                </property>
-                                                <property name="minimumSize">
-                                                    <size>
-                                                        <width>140</width>
-                                                        <height>0</height>
-                                                    </size>
-                                                </property>
-                                                <property name="text">
-                                                    <string>Type field text</string>
-                                                </property>
-                                            </widget>
-                                            <widget class="KLineEdit">
-                                                <property name="name">
-                                                    <cstring>m_editType</cstring>
-                                                </property>
-                                            </widget>
-                                        </hbox>
-                                    </widget>
-                                    <widget class="QLayoutWidget">
-                                        <property name="name">
-                                            <cstring>Layout27_2</cstring>
-                                        </property>
-                                        <hbox>
-                                            <property name="name">
-                                                <cstring>unnamed</cstring>
-                                            </property>
-                                            <property name="margin">
-                                                <number>0</number>
-                                            </property>
-                                            <property name="spacing">
-                                                <number>6</number>
-                                            </property>
-                                            <widget class="QLabel">
-                                                <property name="name">
-                                                    <cstring>TextLabel2_2</cstring>
-                                                </property>
-                                                <property name="minimumSize">
-                                                    <size>
-                                                        <width>140</width>
-                                                        <height>0</height>
-                                                    </size>
-                                                </property>
-                                                <property name="text">
-                                                    <string>Opening Balance text</string>
-                                                </property>
-                                            </widget>
-                                            <widget class="KLineEdit">
-                                                <property name="name">
-                                                    <cstring>m_editOpeningBalance</cstring>
-                                                </property>
-                                            </widget>
-                                        </hbox>
-                                    </widget>
-                                    <widget class="QLayoutWidget">
-                                        <property name="name">
-                                            <cstring>Layout27_2_2</cstring>
-                                        </property>
-                                        <hbox>
-                                            <property name="name">
-                                                <cstring>unnamed</cstring>
-                                            </property>
-                                            <property name="margin">
-                                                <number>0</number>
-                                            </property>
-                                            <property name="spacing">
-                                                <number>6</number>
-                                            </property>
-                                            <widget class="QLabel">
-                                                <property name="name">
-                                                    <cstring>TextLabel2_2_2</cstring>
-                                                </property>
-                                                <property name="minimumSize">
-                                                    <size>
-                                                        <width>140</width>
-                                                        <height>0</height>
-                                                    </size>
-                                                </property>
-                                                <property name="text">
-                                                    <string>Account delimiter</string>
-                                                </property>
-                                            </widget>
-                                            <widget class="KLineEdit">
-                                                <property name="name">
-                                                    <cstring>m_editAccountDelimiter</cstring>
-                                                </property>
-                                            </widget>
-                                        </hbox>
-                                    </widget>
-                                    <widget class="QLayoutWidget">
-                                        <property name="name">
-                                            <cstring>Layout27_2_2_2</cstring>
-                                        </property>
-                                        <hbox>
-                                            <property name="name">
-                                                <cstring>unnamed</cstring>
-                                            </property>
-                                            <property name="margin">
-                                                <number>0</number>
-                                            </property>
-                                            <property name="spacing">
-                                                <number>6</number>
-                                            </property>
-                                            <widget class="QLabel">
-                                                <property name="name">
-                                                    <cstring>TextLabel2_2_3</cstring>
-                                                </property>
-                                                <property name="minimumSize">
-                                                    <size>
-                                                        <width>140</width>
-                                                        <height>0</height>
-                                                    </size>
-                                                </property>
-                                                <property name="text">
-                                                    <string>Void mark</string>
-                                                </property>
-                                            </widget>
-                                            <widget class="KLineEdit">
-                                                <property name="name">
-                                                    <cstring>m_editVoidMark</cstring>
-                                                </property>
-                                            </widget>
-                                        </hbox>
-                                    </widget>
-                                    <spacer>
-                                        <property name="name">
-                                            <cstring>Spacer12</cstring>
-                                        </property>
-                                        <property name="orientation">
-                                            <enum>Vertical</enum>
-                                        </property>
-                                        <property name="sizeType">
-                                            <enum>Expanding</enum>
-                                        </property>
-                                        <property name="sizeHint">
+                                        <property name="minimumSize">
                                             <size>
-                                                <width>0</width>
-                                                <height>66</height>
+                                                <width>140</width>
+                                                <height>0</height>
                                             </size>
                                         </property>
-                                    </spacer>
-                                </vbox>
+                                        <property name="text">
+                                            <string>Description</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="KLineEdit">
+                                        <property name="name">
+                                            <cstring>m_editDescription</cstring>
+                                        </property>
+                                    </widget>
+                                </hbox>
                             </widget>
+                            <widget class="QLayoutWidget">
+                                <property name="name">
+                                    <cstring>Layout27</cstring>
+                                </property>
+                                <hbox>
+                                    <property name="name">
+                                        <cstring>unnamed</cstring>
+                                    </property>
+                                    <property name="margin">
+                                        <number>0</number>
+                                    </property>
+                                    <property name="spacing">
+                                        <number>6</number>
+                                    </property>
+                                    <widget class="QLabel">
+                                        <property name="name">
+                                            <cstring>TextLabel2</cstring>
+                                        </property>
+                                        <property name="minimumSize">
+                                            <size>
+                                                <width>140</width>
+                                                <height>0</height>
+                                            </size>
+                                        </property>
+                                        <property name="text">
+                                            <string>Type field text</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="KLineEdit">
+                                        <property name="name">
+                                            <cstring>m_editType</cstring>
+                                        </property>
+                                    </widget>
+                                </hbox>
+                            </widget>
+                            <widget class="QLayoutWidget">
+                                <property name="name">
+                                    <cstring>Layout27_2</cstring>
+                                </property>
+                                <hbox>
+                                    <property name="name">
+                                        <cstring>unnamed</cstring>
+                                    </property>
+                                    <property name="margin">
+                                        <number>0</number>
+                                    </property>
+                                    <property name="spacing">
+                                        <number>6</number>
+                                    </property>
+                                    <widget class="QLabel">
+                                        <property name="name">
+                                            <cstring>TextLabel2_2</cstring>
+                                        </property>
+                                        <property name="minimumSize">
+                                            <size>
+                                                <width>140</width>
+                                                <height>0</height>
+                                            </size>
+                                        </property>
+                                        <property name="text">
+                                            <string>Opening Balance text</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="KLineEdit">
+                                        <property name="name">
+                                            <cstring>m_editOpeningBalance</cstring>
+                                        </property>
+                                    </widget>
+                                </hbox>
+                            </widget>
+                            <widget class="QLayoutWidget">
+                                <property name="name">
+                                    <cstring>Layout27_2_2</cstring>
+                                </property>
+                                <hbox>
+                                    <property name="name">
+                                        <cstring>unnamed</cstring>
+                                    </property>
+                                    <property name="margin">
+                                        <number>0</number>
+                                    </property>
+                                    <property name="spacing">
+                                        <number>6</number>
+                                    </property>
+                                    <widget class="QLabel">
+                                        <property name="name">
+                                            <cstring>TextLabel2_2_2</cstring>
+                                        </property>
+                                        <property name="minimumSize">
+                                            <size>
+                                                <width>140</width>
+                                                <height>0</height>
+                                            </size>
+                                        </property>
+                                        <property name="text">
+                                            <string>Account delimiter</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="KLineEdit">
+                                        <property name="name">
+                                            <cstring>m_editAccountDelimiter</cstring>
+                                        </property>
+                                    </widget>
+                                </hbox>
+                            </widget>
+                            <widget class="QLayoutWidget">
+                                <property name="name">
+                                    <cstring>Layout27_2_2_2</cstring>
+                                </property>
+                                <hbox>
+                                    <property name="name">
+                                        <cstring>unnamed</cstring>
+                                    </property>
+                                    <property name="margin">
+                                        <number>0</number>
+                                    </property>
+                                    <property name="spacing">
+                                        <number>6</number>
+                                    </property>
+                                    <widget class="QLabel">
+                                        <property name="name">
+                                            <cstring>TextLabel2_2_3</cstring>
+                                        </property>
+                                        <property name="minimumSize">
+                                            <size>
+                                                <width>140</width>
+                                                <height>0</height>
+                                            </size>
+                                        </property>
+                                        <property name="text">
+                                            <string>Void mark</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="KLineEdit">
+                                        <property name="name">
+                                            <cstring>m_editVoidMark</cstring>
+                                        </property>
+                                    </widget>
+                                </hbox>
+                            </widget>
+                            <spacer>
+                                <property name="name">
+                                    <cstring>Spacer12</cstring>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Vertical</enum>
+                                </property>
+                                <property name="sizeType">
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>0</width>
+                                        <height>125</height>
+                                    </size>
+                                </property>
+                            </spacer>
                         </vbox>
                     </widget>
                     <widget class="QWidget">
@@ -883,6 +867,115 @@
                                     <size>
                                         <width>0</width>
                                         <height>115</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                        </vbox>
+                    </widget>
+                    <widget class="QWidget">
+                        <property name="name">
+                            <cstring>tabFilter</cstring>
+                        </property>
+                        <attribute name="title">
+                            <string>Filter</string>
+                        </attribute>
+                        <vbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <property name="margin">
+                                <number>11</number>
+                            </property>
+                            <property name="spacing">
+                                <number>6</number>
+                            </property>
+                            <widget class="QLayoutWidget">
+                                <property name="name">
+                                    <cstring>Layout14</cstring>
+                                </property>
+                                <hbox>
+                                    <property name="name">
+                                        <cstring>unnamed</cstring>
+                                    </property>
+                                    <property name="margin">
+                                        <number>0</number>
+                                    </property>
+                                    <property name="spacing">
+                                        <number>6</number>
+                                    </property>
+                                    <widget class="QLabel">
+                                        <property name="name">
+                                            <cstring>TextLabel1_4</cstring>
+                                        </property>
+                                        <property name="minimumSize">
+                                            <size>
+                                                <width>140</width>
+                                                <height>0</height>
+                                            </size>
+                                        </property>
+                                        <property name="text">
+                                            <string>Input filter location</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="KURLRequester">
+                                        <property name="name">
+                                            <cstring>m_editInputFilterLocation</cstring>
+                                        </property>
+                                    </widget>
+                                </hbox>
+                            </widget>
+                            <widget class="QLayoutWidget">
+                                <property name="name">
+                                    <cstring>Layout14_2</cstring>
+                                </property>
+                                <hbox>
+                                    <property name="name">
+                                        <cstring>unnamed</cstring>
+                                    </property>
+                                    <property name="margin">
+                                        <number>0</number>
+                                    </property>
+                                    <property name="spacing">
+                                        <number>6</number>
+                                    </property>
+                                    <widget class="QLabel">
+                                        <property name="name">
+                                            <cstring>TextLabel1_4_2</cstring>
+                                        </property>
+                                        <property name="minimumSize">
+                                            <size>
+                                                <width>140</width>
+                                                <height>0</height>
+                                            </size>
+                                        </property>
+                                        <property name="text">
+                                            <string>Output filter location</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="KURLRequester">
+                                        <property name="name">
+                                            <cstring>m_editOutputFilterLocation</cstring>
+                                        </property>
+                                        <property name="enabled">
+                                            <bool>false</bool>
+                                        </property>
+                                    </widget>
+                                </hbox>
+                            </widget>
+                            <spacer>
+                                <property name="name">
+                                    <cstring>Spacer9_2</cstring>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Vertical</enum>
+                                </property>
+                                <property name="sizeType">
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>0</width>
+                                        <height>216</height>
                                     </size>
                                 </property>
                             </spacer>

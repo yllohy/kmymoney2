@@ -32,6 +32,7 @@
 #include <klineeditdlg.h>
 #include <kmessagebox.h>
 #include <kcombobox.h>
+#include <kurlrequester.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -94,6 +95,12 @@ MyMoneyQifProfileEditor::MyMoneyQifProfileEditor(const bool edit, QWidget *paren
   connect(m_editAmounts, SIGNAL(selectionChanged(QListViewItem*)), this, SLOT(slotAmountTypeSelected(QListViewItem*)));
   connect(m_decimalBox, SIGNAL(activated(const QString&)), this, SLOT(slotDecimalChanged(const QString&)));
   connect(m_thousandsBox, SIGNAL(activated(const QString&)), this, SLOT(slotThousandsChanged(const QString&)));
+
+  connect(m_editInputFilterLocation, SIGNAL(textChanged(const QString&)), &m_profile, SLOT(setFilterScriptImport(const QString&)));
+  connect(m_editInputFilterLocation, SIGNAL(urlSelected(const QString&)), m_editInputFilterLocation, SLOT(setURL(const QString&)));
+  
+  connect(m_editOutputFilterLocation, SIGNAL(textChanged(const QString&)), &m_profile, SLOT(setFilterScriptExport(const QString&)));
+  connect(m_editOutputFilterLocation, SIGNAL(urlSelected(const QString&)), m_editOutputFilterLocation, SLOT(setURL(const QString&)));
 }
 
 MyMoneyQifProfileEditor::~MyMoneyQifProfileEditor()
@@ -140,7 +147,9 @@ void MyMoneyQifProfileEditor::loadWidgets(void)
   m_editOpeningBalance->setEnabled(m_inEdit);
   m_editAccountDelimiter->setEnabled(m_inEdit);
   m_editVoidMark->setEnabled(m_inEdit);
-
+  m_editInputFilterLocation->setEnabled(m_inEdit);
+  m_editOutputFilterLocation->setEnabled(m_inEdit);
+  
   if(!m_inEdit) {
     m_renameButton->hide();
     m_deleteButton->hide();
@@ -223,7 +232,9 @@ void MyMoneyQifProfileEditor::showProfile(void)
   m_editOpeningBalance->setText(m_profile.openingBalanceText());
   m_editAccountDelimiter->setText(m_profile.accountDelimiter());
   m_editVoidMark->setText(m_profile.voidMark());
-
+  m_editInputFilterLocation->setURL(m_profile.filterScriptImport());
+  m_editOutputFilterLocation->setURL(m_profile.filterScriptExport());
+  
   m_editDateFormat->setCurrentText(m_profile.dateFormat());
   m_editApostrophe->setCurrentText(m_profile.apostropheFormat());
 
