@@ -426,7 +426,7 @@ void KSettingsDlg::configWrite()
   // kconfig->writeEntry("RowCount", m_klineeditRowCount->text());
   // kconfig->writeEntry("ShowGrid", m_qcheckboxShowGrid->isChecked());
   kconfig->writeEntry("ColourPerTransaction", m_qradiobuttonPerTransaction->isChecked());
-  kconfig->writeEntry("TextPrompt", m_qcheckboxTextPrompt->isChecked());
+  // kconfig->writeEntry("TextPrompt", m_qcheckboxTextPrompt->isChecked());
 #if QT_VERSION > 300
   kconfig->writeEntry("StartDate", QDateTime(m_dateinputStart->getQDate()));
 #else

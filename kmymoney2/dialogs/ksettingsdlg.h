@@ -53,7 +53,7 @@
   * @see KDialogBase
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: ksettingsdlg.h,v 1.7 2002/11/05 20:45:44 ipwizard Exp $
+  * $Id: ksettingsdlg.h,v 1.8 2002/11/27 15:25:49 ipwizard Exp $
   *
   * @short A class to manipulate the settings needed for running KMyMoney2
 **/
@@ -83,7 +83,7 @@ private:
   QCheckBox *m_qcheckboxShowGrid;
 
   /** Show text in register ? */
-  QCheckBox *m_qcheckboxTextPrompt;
+  // QCheckBox *m_qcheckboxTextPrompt;
 
   /** Show lens over a transaction in ledger ? */
   QCheckBox *m_qcheckboxLedgerLens;
