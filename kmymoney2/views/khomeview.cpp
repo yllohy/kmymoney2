@@ -342,14 +342,14 @@ void KHomeView::slotOpenURL(const KURL &url, const KParts::URLArgs& /* args */)
   QString view = url.fileName(false);
   QCString id = url.queryItem("id").data();
   
-  // qDebug("view = '%s'", url.fileName(false).latin1());
-  // qDebug("id = '%s'", url.queryItem("id").latin1());
+  //qDebug("view = '%s'", url.fileName(false).latin1());
+  //qDebug("id = '%s'", url.queryItem("id").latin1());
   
   if(view == VIEW_LEDGER) {
     emit ledgerSelected(id, "");
     
   } else if(view == VIEW_SCHEDULE) {
-    
+    emit scheduleSelected(id);
   } else {
     qDebug("Unknown view '%s' in KHomeView::slotOpenURL()", view.latin1());
   }

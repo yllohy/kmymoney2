@@ -42,7 +42,7 @@ class QVBoxLayout;
   * quicken and m$-money.
   *
   * @author Michael Edwardes
-  * $Id: khomeview.h,v 1.6 2003/08/31 19:31:49 ipwizard Exp $
+  * $Id: khomeview.h,v 1.7 2003/09/01 17:50:34 mte Exp $
   *
   * @short A view containing the home page for kmymoney2.
 **/
@@ -57,6 +57,7 @@ private:
 signals:
   void signalViewActivated();
   void ledgerSelected(const QCString& id, const QCString& transaction);
+  void scheduleSelected(const QCString& id);
 
 
 public:
