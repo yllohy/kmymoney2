@@ -764,6 +764,10 @@ void KMyMoneyView::slotBankNew(void)
       institution = dlg.institution();
 
       file->addInstitution(institution);
+
+      // Set the institution member of KNewAccountWizard
+      if (m_newAccountWizard->isVisible())
+        m_newAccountWizard->setInstitution(institution);
     }
     catch (MyMoneyException *e)
     {

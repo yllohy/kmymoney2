@@ -313,7 +313,11 @@ void KNewAccountWizard::loadInstitutionList(void)
   institutionComboBox->insertItem("");
   list = MyMoneyFile::instance()->institutionList();
   for(it = list.begin(); it != list.end(); ++it)
+  {
     institutionComboBox->insertItem((*it).name());
+  }
+
+  institutionComboBox->setCurrentText(m_institution.name());
 }
 
 void KNewAccountWizard::loadSubAccountList(KListView* parent, const QCString& accountId)

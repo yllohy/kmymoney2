@@ -35,6 +35,7 @@
 #include "knewaccountwizarddecl.h"
 #include "../mymoney/mymoneyaccount.h"
 #include "../mymoney/mymoneyscheduled.h"
+#include "../mymoney/mymoneyinstitution.h"
 #include "../views/kbanklistitem.h"
 
 /**
@@ -96,6 +97,13 @@ public:
     * If the schedule has not been created name() should be empty.
   **/
   MyMoneySchedule schedule(void) const { return m_schedule; }
+
+  /**
+    * This method is used to preset the institution.
+    *
+    * @param institution The institution
+  **/
+  void setInstitution(const MyMoneyInstitution& institution) { m_institution = institution; }
     
 protected:
   /**
@@ -141,6 +149,7 @@ private:
   MyMoneyAccount m_account;
   MyMoneyAccount m_parent;
   MyMoneySchedule m_schedule;
+  MyMoneyInstitution m_institution;
 };
 
 #endif

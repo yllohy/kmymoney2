@@ -1,3 +1,6 @@
+2003-09-26 Michael Edwardes <mte@users.sourceforge.net>
+  * Select the new institution in KNewAccountWizard.
+
 2003-09-25 Kevin Tambascio <ktambascio@yahoo.com>
   * Able to write out files in XML with all the categories present in the new engine.
   * Started the code for reading the XML files.
