@@ -1,3 +1,7 @@
+2003-07-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added support for scheduled transactions to the MyMoney engine code
+    GUI code does not use it yet, but testcases do
+
 2003-07-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * cleanup in headerfile includes
   * refresh schedule view upon loading of a new file
