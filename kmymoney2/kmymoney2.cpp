@@ -1465,7 +1465,9 @@ void KMyMoney2App::updateCaption(const bool skipActions)
     fileClose->setEnabled(fileOpen);
     filePersonalData->setEnabled(fileOpen);
     fileBackup->setEnabled(fileOpen);
+#if KMM_DEBUG
     fileViewInfo->setEnabled(fileOpen);
+#endif
 
     actionFindTransaction->setEnabled(fileOpen);
     actionQifExport->setEnabled(fileOpen);
