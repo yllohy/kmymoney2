@@ -45,16 +45,22 @@ int main(int argc, char *argv[])
 {
   QString feature;
 
+#if _COMPILE_XML
 #if HAVE_LIBXMLPP
   feature += "\t- XML support\n";
 #else
   feature += "\t- no XML support\n";
 #endif
+#else // _COMPILE_XML
+  feature += "\t- no XML support\n";
+#endif
+
 #if HAVE_LIBCPPUNIT
   feature += "\t- Automatic regression testing\n";
 #else
   feature += "\t- Automatic regression testing disabled\n";
 #endif
+
 #ifdef _CHECK_MEMORY
   feature += "\t- Memory leakage detection\n";
 #else
