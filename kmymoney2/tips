@@ -1,12 +1,5 @@
 <tip category="KMyMoney|Ledger">
 <html>
-<p>...that you can switch between an overview mode and a detail mode in the
-ledger view with Ctrl-T?
-</html>
-</tip>
-
-<tip category="KMyMoney|Ledger">
-<html>
 <p>...that you can change the sort order of ledger entries by
 right-clicking the header of the ledger view?
 </html>
@@ -43,8 +36,8 @@ transactions with unassigned value blink in red in the register?
 <tip category="KMyMoney|Ledger">
 <html>
 <p>...that you can show all details of the transactions in the register
-by typeing <Ctrl-T> or selecting the 'Settings/Show Transaction Detail'
-menu entry? You can this feature off the same way.
+by typeing &lt;Ctrl-T&gt; or selecting the 'Settings/Show Transaction Detail'
+menu entry? You can turn this feature off the same way.
 </html>
 
 <tip category="KMyMoney|General">
