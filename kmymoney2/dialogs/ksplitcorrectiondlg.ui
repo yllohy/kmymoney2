@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>kSplitCorrectionDlgDecl</class>
 <widget class="QDialog">
     <property name="name">
@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>434</width>
-            <height>214</height>
+            <width>514</width>
+            <height>270</height>
         </rect>
     </property>
     <property name="minimumSize">
@@ -33,9 +33,9 @@
         </property>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>Layout11</cstring>
+                <cstring>Layout3</cstring>
             </property>
-            <hbox>
+            <vbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
@@ -45,202 +45,195 @@
                 <property name="spacing">
                     <number>6</number>
                 </property>
-                <widget class="QLayoutWidget">
+                <widget class="QLabel">
                     <property name="name">
-                        <cstring>Layout3</cstring>
+                        <cstring>explanation</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>5</hsizetype>
+                            <vsizetype>3</vsizetype>
+                            <horstretch>5</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="frameShape">
+                        <enum>MShape</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Raised</enum>
+                    </property>
+                    <property name="text">
+                        <string>The total amount of this transaction is %1 while the sum of the splits is %2. The remaining %3 are unassigned.</string>
+                    </property>
+                    <property name="alignment">
+                        <set>WordBreak|AlignTop|AlignLeft</set>
+                    </property>
+                    <property name="vAlign" stdset="0">
+                    </property>
+                    <property name="wordwrap" stdset="0">
+                    </property>
+                </widget>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>question</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>true</bool>
+                    </property>
+                    <property name="text">
+                        <string>What should happen with the difference?</string>
+                    </property>
+                </widget>
+                <widget class="QButtonGroup">
+                    <property name="name">
+                        <cstring>buttonGroup</cstring>
+                    </property>
+                    <property name="frameShape">
+                        <enum>NoFrame</enum>
+                    </property>
+                    <property name="title">
+                        <string></string>
                     </property>
                     <vbox>
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
                         <property name="margin">
-                            <number>0</number>
+                            <number>11</number>
                         </property>
                         <property name="spacing">
                             <number>6</number>
                         </property>
-                        <widget class="QLabel">
+                        <widget class="QRadioButton">
                             <property name="name">
-                                <cstring>explanation</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>5</hsizetype>
-                                    <vsizetype>5</vsizetype>
-                                    <horstretch>5</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="frameShape">
-                                <enum>MShape</enum>
-                            </property>
-                            <property name="frameShadow">
-                                <enum>Raised</enum>
+                                <cstring>continueBtn</cstring>
                             </property>
                             <property name="text">
-                                <string>The total amount of this transaction is %1 while the sum of the splits is %2. The remaining %3 are unassigned.</string>
+                                <string>Continue to &amp;edit splits</string>
                             </property>
-                            <property name="alignment">
-                                <set>WordBreak|AlignTop|AlignLeft</set>
-                            </property>
-                            <property name="vAlign" stdset="0">
-                            </property>
-                            <property name="wordwrap" stdset="0">
-                            </property>
-                        </widget>
-                        <widget class="QLabel">
-                            <property name="name">
-                                <cstring>question</cstring>
-                            </property>
-                            <property name="enabled">
+                            <property name="checked">
                                 <bool>true</bool>
                             </property>
+                        </widget>
+                        <widget class="QRadioButton">
+                            <property name="name">
+                                <cstring>changeBtn</cstring>
+                            </property>
                             <property name="text">
-                                <string>What should happen with the difference?</string>
+                                <string>&amp;Change transaction amount into %2</string>
                             </property>
                         </widget>
-                        <widget class="QButtonGroup">
+                        <widget class="QRadioButton">
                             <property name="name">
-                                <cstring>buttonGroup</cstring>
+                                <cstring>distributeBtn</cstring>
                             </property>
-                            <property name="frameShape">
-                                <enum>NoFrame</enum>
+                            <property name="enabled">
+                                <bool>false</bool>
                             </property>
-                            <property name="title">
-                                <string></string>
+                            <property name="text">
+                                <string>&amp;Distribute difference among all splits</string>
                             </property>
-                            <vbox>
-                                <property name="name">
-                                    <cstring>unnamed</cstring>
-                                </property>
-                                <property name="margin">
-                                    <number>11</number>
-                                </property>
-                                <property name="spacing">
-                                    <number>6</number>
-                                </property>
-                                <widget class="QRadioButton">
-                                    <property name="name">
-                                        <cstring>continueBtn</cstring>
-                                    </property>
-                                    <property name="text">
-                                        <string>Continue to &amp;edit splits</string>
-                                    </property>
-                                    <property name="checked">
-                                        <bool>true</bool>
-                                    </property>
-                                </widget>
-                                <widget class="QRadioButton">
-                                    <property name="name">
-                                        <cstring>changeBtn</cstring>
-                                    </property>
-                                    <property name="text">
-                                        <string>&amp;Change transaction amount into %2</string>
-                                    </property>
-                                </widget>
-                                <widget class="QRadioButton">
-                                    <property name="name">
-                                        <cstring>distributeBtn</cstring>
-                                    </property>
-                                    <property name="enabled">
-                                        <bool>false</bool>
-                                    </property>
-                                    <property name="text">
-                                        <string>&amp;Distribute difference among all splits</string>
-                                    </property>
-                                </widget>
-                                <widget class="QRadioButton">
-                                    <property name="name">
-                                        <cstring>leaveBtn</cstring>
-                                    </property>
-                                    <property name="text">
-                                        <string>&amp;Leave unassigned</string>
-                                    </property>
-                                </widget>
-                            </vbox>
+                        </widget>
+                        <widget class="QRadioButton">
+                            <property name="name">
+                                <cstring>leaveBtn</cstring>
+                            </property>
+                            <property name="text">
+                                <string>&amp;Leave unassigned</string>
+                            </property>
+                            <property name="accel">
+                                <string>Alt+L</string>
+                            </property>
                         </widget>
                     </vbox>
                 </widget>
-                <widget class="QLayoutWidget">
+            </vbox>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>Layout10</cstring>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="KPushButton">
                     <property name="name">
-                        <cstring>Layout10</cstring>
+                        <cstring>okBtn</cstring>
                     </property>
-                    <vbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <property name="margin">
-                            <number>0</number>
-                        </property>
-                        <property name="spacing">
-                            <number>6</number>
-                        </property>
-                        <widget class="KPushButton">
-                            <property name="name">
-                                <cstring>okBtn</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>4</hsizetype>
-                                    <vsizetype>1</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>80</width>
-                                    <height>0</height>
-                                </size>
-                            </property>
-                            <property name="text">
-                                <string>&amp;Ok</string>
-                            </property>
-                        </widget>
-                        <widget class="KPushButton">
-                            <property name="name">
-                                <cstring>cancelBtn</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>4</hsizetype>
-                                    <vsizetype>1</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>80</width>
-                                    <height>0</height>
-                                </size>
-                            </property>
-                            <property name="text">
-                                <string>&amp;Cancel</string>
-                            </property>
-                        </widget>
-                        <spacer>
-                            <property name="name">
-                                <cstring>Spacer1</cstring>
-                            </property>
-                            <property name="orientation">
-                                <enum>Vertical</enum>
-                            </property>
-                            <property name="sizeType">
-                                <enum>Expanding</enum>
-                            </property>
-                            <property name="sizeHint">
-                                <size>
-                                    <width>0</width>
-                                    <height>117</height>
-                                </size>
-                            </property>
-                        </spacer>
-                    </vbox>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>4</hsizetype>
+                            <vsizetype>1</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>80</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Ok</string>
+                    </property>
                 </widget>
-            </hbox>
+                <widget class="KPushButton">
+                    <property name="name">
+                        <cstring>cancelBtn</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>4</hsizetype>
+                            <vsizetype>1</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>80</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Cancel</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>Spacer1</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Vertical</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>0</width>
+                            <height>117</height>
+                        </size>
+                    </property>
+                </spacer>
+            </vbox>
         </widget>
     </hbox>
 </widget>
+<customwidgets>
+</customwidgets>
 <layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+</includehints>
 </UI>
