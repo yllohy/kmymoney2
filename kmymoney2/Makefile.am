@@ -109,3 +109,24 @@ messages: rc.cpp
 	if test -n "$$LIST"; then \
 	 $(XGETTEXT) $$LIST -o $(podir)/kmymoney2.pot; \
 	fi
+
+#
+# since some people might think, the application is called kmymoney, we
+# create a link to kmymoney2 after overall installation
+#
+install-exec-hook:
+	@$(NORMAL_INSTALL)
+	@list='kmymoney2'; for p in $$list; do \
+	p1=`echo $$p|sed 's/$(EXEEXT)$$//'`; \
+	if test -f $$p \
+	|| test -f $$p1 \
+	; then \
+	f=`echo "$$p1" | sed 's,^.*/,,;$(transform);s/$$/$(EXEEXT)/'`; \
+	echo "Creating symbolic link from kmymoney -> kmymoney2"; \
+	rm -f $(DESTDIR)$(bindir)/kmymoney; \
+	ln -s $(DESTDIR)$(bindir)/$$f $(DESTDIR)$(bindir)/kmymoney; \
+	else :; fi; \
+	done
+
+uninstall-hook:
+	-rm -f $(DESTDIR)$(bindir)/kmymoney
