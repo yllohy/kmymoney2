@@ -236,6 +236,7 @@ void KGlobalLedgerView::selectAccount(const QCString& accountId, const QCString&
     m_accountStack->raiseWidget(MyMoneyAccount::Checkings);
     if(m_specificView[MyMoneyAccount::Checkings] != 0) {
       m_currentView = m_specificView[MyMoneyAccount::Checkings];
+      m_currentView->setCurrentAccount(accountId, forceLoad);
     }
   }
   if(reconciliation == true && m_currentView)
