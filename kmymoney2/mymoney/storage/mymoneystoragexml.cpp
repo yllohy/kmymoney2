@@ -39,10 +39,11 @@
 // Project Includes
 
 #include "mymoneystoragexml.h"
+#include "../../kmymoneyutils.h"
 
 using namespace xmlpp;
 
-MyMoneyStorageXML::MyMoneyStorageXML()
+MyMoneyStorageXML::MyMoneyStorageXML()// : xmlpp::SaxParser(false)
 {
   m_pStorage            = NULL;
   m_pCurrentInstitution = NULL;
@@ -65,7 +66,7 @@ void MyMoneyStorageXML::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
     //reads the contents of the entire file into this buffer.
     QTextStream stream(pDevice);
     QString strEntireFile = stream.read();
-    
+    qDebug("XMLREADER: entire file is %s\n", strEntireFile.data());
     try
     {
       parse_memory(strEntireFile);
@@ -98,19 +99,16 @@ void MyMoneyStorageXML::on_end_document(void)
   qDebug("XMLREADER:  end_document() called");
 }
 
-void MyMoneyStorageXML::on_start_element(const std::string &n, const Element::AttributeMap& p)
+void MyMoneyStorageXML::on_start_element(const std::string &n, const AttributeMap& p)
 {
   qDebug("XMLREADER:  start_element called, %s", n.data());
 
   std::string strTemp;
 
-  if(!n.find("NEXTIDS"))
-  {
-
-  }
-  else if(!n.find("USER"))
+  if(!n.find("USER"))
   {
     strTemp = getPropertyValue(std::string("name"), p);
+    qDebug("XMLREADER:  user name is %s", strTemp.data());
 
     if(m_pStorage)
     {
@@ -232,16 +230,9 @@ void MyMoneyStorageXML::on_start_element(const std::string &n, const Element::At
       if(m_pCurrentPayee)
       {
         qDebug("XMLREADER: Filling out information for the new payee");
+        getPayeeDetails(m_pCurrentPayee, p);
         
-        strTemp = getPropertyValue(std::string("name"), p);
-        m_pCurrentPayee->setName(QString(strTemp.data()));
-
-        strTemp = getPropertyValue(std::string("id"), p);
-        m_pCurrentPayee->setId(QCString(strTemp.data()));
-
-        strTemp = getPropertyValue(std::string("ref"), p);
-        m_pCurrentPayee->setReference(QString(strTemp.data()));
-
+        
         qDebug("XMLREADER: Done filling out information for the new payee");
       }
     }
@@ -266,58 +257,18 @@ void MyMoneyStorageXML::on_start_element(const std::string &n, const Element::At
 
       if(m_pCurrentAccount)
       {
-        strTemp = getPropertyValue(std::string("id"), p);
-        m_pCurrentAccount->setAccountId(QCString(strTemp.data()));
-        
-        // The type of account specified must match up with one of the types, or this file should be treated as invalid.
-        MyMoneyAccount::accountTypeE acctype;
-        strTemp = getPropertyValue(std::string("type"), p);
-        acctype = KMyMoneyUtils::stringToAccountType(QString(strTemp.data()));
-        m_pCurrentAccount->setAccountType(acctype);
-        
-        strTemp = getPropertyValue(std::string("name"), p);
-        m_pCurrentAccount->setName(QString(strTemp.data()));
-
-        strTemp = getPropertyValue(std::string("description"), p);
-        m_pCurrentAccount->setDescription(QString(strTemp.data()));
-
-        strTemp = getPropertyValue(std::string("institution"), p);
-        m_pCurrentAccount->setInstitutionId(QCString(strTemp.data()));
-
-        strTemp = getPropertyValue(std::string("number"), p);
-        m_pCurrentAccount->setNumber(QString(strTemp.data()));
-
-        strTemp = getPropertyValue(std::string("opened"), p);
-        QDate openingDate = QDate::fromString(QString(strTemp.data()), Qt::ISODate);
-        m_pCurrentAccount->setOpeningDate(openingDate);
-
-        strTemp = getPropertyValue(std::string("openingbalance"), p);
-        MyMoneyMoney openBalance(QString(strTemp.data()));
-        m_pCurrentAccount->setOpeningBalance(openBalance);
-
-        strTemp = getPropertyValue(std::string("lastmodified"), p);
-        QDate lastModified = QDate::fromString(QString(strTemp.data()), Qt::ISODate);
-        m_pCurrentAccount->setLastModified(lastModified);
-
-        strTemp = getPropertyValue(std::string("lastreconciled"), p);
-        QDate lastReconciled = QDate::fromString(QString(strTemp.data()), Qt::ISODate);
-        m_pCurrentAccount->setLastReconciliationDate(lastReconciled);
+        getAccountDetails(m_pCurrentAccount, p);
       }
     }
   }
 }
 
-std::string MyMoneyStorageXML::getPropertyValue(std::string str, const Element::AttributeMap& p)
+std::string MyMoneyStorageXML::getPropertyValue(std::string str, const AttributeMap& p)
 {
-  //for(XMLPropertyMap::const_iterator i = p.begin(); i != p.end(); ++i)
-  //{
-  //  qDebug("XMLPropertyMap str=%s, first=%s",str.data(), ((*i).first).data());
-  //}
-  Element::AttributeMap::const_iterator i = p.find(str.data());
+  AttributeMap::const_iterator i = p.find(str.data());
   if(i != p.end())
   {
-    const Attribute* pProperty = (*i).second;
-    return pProperty->get_value();
+    return (*i).second;
   }
 
   return std::string("");
@@ -353,36 +304,6 @@ void MyMoneyStorageXML::on_end_element(const std::string &n)
 void MyMoneyStorageXML::on_characters(const std::string &s)
 {
   //qDebug("XMLREADER:  Character data = %s", s.data());
-  //qDebug("   length = %d", s.size());
-
-  /*if(m_pStorage)
-  {
-    const QString strData(s.data());
-
-    if(getCurrentParseState() == PARSE_USERINFO_ADDRESS)
-    {
-      if(m_addressParseState == ADDRESS_STREET)
-      {
-        m_pStorage->setUserStreet(strData);
-      }
-      else if(m_addressParseState == ADDRESS_CITY)
-      {
-        m_pStorage->setUserTown(strData);
-      }
-      else if(m_addressParseState == ADDRESS_STATE)
-      {
-        m_pStorage->setUserCounty(strData);
-      }
-      else if(m_addressParseState == ADDRESS_ZIPCODE)
-      {
-        m_pStorage->setUserPostcode(strData);
-      }
-      else if(m_addressParseState == ADDRESS_TELEPHONE)
-      {
-        m_pStorage->setUserTelephone(strData);
-      }
-    }
-  } */
 }
 
 void MyMoneyStorageXML::on_comment(const std::string &s)
@@ -411,32 +332,57 @@ void MyMoneyStorageXML::ChangeParseState(eParseState state)
   m_parseState = state;
 }
 
-void MyMoneyStorageXML::parseNextIDS(const std::string &n, const Element::AttributeMap& p)
+void MyMoneyStorageXML::getPayeeDetails(MyMoneyPayee* pCurrentPayee, const AttributeMap& p)
 {
-  std::string strValue;
-  
-  if(!n.find("ACCOUNTID"))
-  {
-    strValue = getPropertyValue(std::string("value"), p);
-  }
-  else if(!n.find("INSTITUTIONID"))
-  {
+  strTemp = getPropertyValue(std::string("name"), p);
+  pCurrentPayee->setName(QString(strTemp.data()));
 
-  }
-	else if(!n.find("TRANSACTIONID"))
-  {
+  strTemp = getPropertyValue(std::string("id"), p);
+  pCurrentPayee->setId(QCString(strTemp.data()));
 
-  }
-	else if(!n.find("PAYEEID"))
-  {
-
-  }
-  else
-  {
-
-  }
+  strTemp = getPropertyValue(std::string("reference"), p);
+  pCurrentPayee->setReference(QString(strTemp.data()));
 }
 
+void MyMoneyStorageXML::getAccountDetails(MyMoneyAccount* pCurrentAccount, const AttributeMap& p)
+{
+  strTemp = getPropertyValue(std::string("id"), p);
+  pCurrentAccount->setAccountId(QCString(strTemp.data()));
+
+  // The type of account specified must match up with one of the types, or this file should be treated as invalid.
+  MyMoneyAccount::accountTypeE acctype;
+  strTemp = getPropertyValue(std::string("type"), p);
+  acctype = KMyMoneyUtils::stringToAccountType(QString(strTemp.data()));
+  pCurrentAccount->setAccountType(acctype);
+
+  strTemp = getPropertyValue(std::string("name"), p);
+  pCurrentAccount->setName(QString(strTemp.data()));
+
+  strTemp = getPropertyValue(std::string("description"), p);
+  pCurrentAccount->setDescription(QString(strTemp.data()));
+
+  strTemp = getPropertyValue(std::string("institution"), p);
+  pCurrentAccount->setInstitutionId(QCString(strTemp.data()));
+
+  strTemp = getPropertyValue(std::string("number"), p);
+  pCurrentAccount->setNumber(QString(strTemp.data()));
+
+  strTemp = getPropertyValue(std::string("opened"), p);
+  QDate openingDate = QDate::fromString(QString(strTemp.data()), Qt::ISODate);
+  pCurrentAccount->setOpeningDate(openingDate);
+
+  strTemp = getPropertyValue(std::string("openingbalance"), p);
+  MyMoneyMoney openBalance(QString(strTemp.data()));
+  pCurrentAccount->setOpeningBalance(openBalance);
+
+  strTemp = getPropertyValue(std::string("lastmodified"), p);
+  QDate lastModified = QDate::fromString(QString(strTemp.data()), Qt::ISODate);
+  pCurrentAccount->setLastModified(lastModified);
+
+  strTemp = getPropertyValue(std::string("lastreconciled"), p);
+  QDate lastReconciled = QDate::fromString(QString(strTemp.data()), Qt::ISODate);
+  pCurrentAccount->setLastReconciliationDate(lastReconciled);
+}
 
 #endif // HAVE_LIBXMLPP
 #endif

@@ -71,7 +71,7 @@ public:
 protected:
   virtual void  on_start_document();
   virtual void  on_end_document();
-  virtual void  on_start_element(const std::string& name, const Element::AttributeMap& attributes);
+  virtual void  on_start_element(const std::string& name, const AttributeMap& attributes);
   virtual void  on_end_element(const std::string& name);
   virtual void  on_characters(const std::string& characters);
   virtual void  on_comment(const std::string& text);
@@ -83,11 +83,11 @@ protected:
 
 private:
   IMyMoneySerialize*  m_pStorage;
-  std::string         getPropertyValue(std::string str, const Element::AttributeMap& p);
+  std::string         getPropertyValue(std::string str, const AttributeMap& p);
   eParseState         m_parseState;
   eParseState         m_previousParseState;
   eParseState         getCurrentParseState() const { return m_parseState; }
-  void                parseNextIDS(const std::string &n, const Element::AttributeMap& p);
+  void                parseNextIDS(const std::string &n, const AttributeMap& p);
   MyMoneyInstitution* m_pCurrentInstitution;
   MyMoneyPayee*       m_pCurrentPayee;
   MyMoneyAccount*     m_pCurrentAccount;
@@ -143,6 +143,9 @@ private:
     * encrypted on the permanent storage device
     */
   bool m_encrypted;
+
+  void getAccountDetails(MyMoneyAccount* pCurrentAccount, const AttributeMap& p);
+  void getPayeeDetails(MyMoneyPayee* pCurrentPayee, const AttributeMap& p)
 
   
 };
