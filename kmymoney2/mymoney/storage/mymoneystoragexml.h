@@ -137,6 +137,12 @@ private:
 
   void readSchedules(QDomElement& schedules);
   MyMoneySchedule readSchedule(QDomElement& schedule);
+
+  void writeEquities(QDomElement& equities);
+  void writeEquity(QDomElement& equityElement, const MyMoneyEquity& equity);
+  
+  void readEquities(QDomElement& equities); 
+  MyMoneyEquity readEquity(QDomElement& equityElement);
   
   QDomElement findChildElement(const QString& name, const QDomElement& root);
   

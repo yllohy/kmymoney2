@@ -936,6 +936,26 @@ void MyMoneyStorageXML::writeSplit(QDomElement& splitElement, const MyMoneySplit
   splitElement.setAttribute(QString("account"), split.accountId());
 }
 
+void MyMoneyStorageXML::writeEquities(QDomElement& equities)
+{
+
+}
+
+void MyMoneyStorageXML::writeEquity(QDomElement& equityElement, const MyMoneyEquity& equity)
+{
+
+}
+
+void MyMoneyStorageXML::readEquities(QDomElement& equities)
+{
+
+}
+
+MyMoneyEquity MyMoneyStorageXML::readEquity(QDomElement& equityElement)
+{
+  return MyMoneyEquity();
+}
+
 const unsigned long MyMoneyStorageXML::extractId(const QCString& txt) const
 {
   int pos;
