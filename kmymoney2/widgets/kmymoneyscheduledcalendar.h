@@ -31,9 +31,9 @@
 
 // ----------------------------------------------------------------------------
 // Project Includes
-#include "kmymoneycalendar.h"
-#include "kmymoneyscheduleddatetbl.h"
-#include "kmymoneybriefschedule.h"
+
+#include "../widgets/kmymoneycalendar.h"
+#include "../widgets/kmymoneyscheduleddatetbl.h"
 
 class KPopupMenu;
 class kMyMoneyDateTbl;
@@ -49,7 +49,7 @@ class kMyMoneyDateTbl;
 **/
 class kMyMoneyScheduledCalendar : public kMyMoneyCalendar  {
    Q_OBJECT
-   
+
 public:
   /**
     * Standard constructor.
@@ -77,13 +77,10 @@ protected slots:
   void slotSetViewBills();
   void slotSetViewDeposits();
   void slotSetViewTransfers();
-  void slotHoverSchedules(QValueList<MyMoneySchedule>, QDate date);
-  void slotEnterClicked(const MyMoneySchedule&, const QDate&);
 
 private:
   KPopupMenu* kpopupmenu;
   kMyMoneyScheduledDateTbl *m_scheduledDateTable;
-  KMyMoneyBriefSchedule briefWidget;
 };
 
 #endif

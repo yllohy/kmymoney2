@@ -31,19 +31,22 @@
 
 // ----------------------------------------------------------------------------
 // Project Includes
-#include "kmymoneydatetbl.h"
+
+#include "../widgets/kmymoneydatetbl.h"
+#include "../widgets/kmymoneybriefschedule.h"
 #include "../mymoney/mymoneyscheduled.h"
 
 /**
-  *@author Michael Edwardes
+  * @author Michael Edwardes
   */
 
-class kMyMoneyScheduledDateTbl : public kMyMoneyDateTbl  {
-   Q_OBJECT
-public: 
-	kMyMoneyScheduledDateTbl(QWidget *parent=0,
-	       QDate date=QDate::currentDate(),
-	       const char* name=0, WFlags f=0);
+class kMyMoneyScheduledDateTbl : public kMyMoneyDateTbl
+{
+  Q_OBJECT
+public:
+  kMyMoneyScheduledDateTbl(QWidget *parent=0,
+         QDate date=QDate::currentDate(),
+         const char* name=0, WFlags f=0);
 
   ~kMyMoneyScheduledDateTbl();
   void refresh();
@@ -53,7 +56,7 @@ public:
   void setFilterAccounts(const QCStringList& list) { m_filterAccounts = list; repaintContents(false); }
 
 signals:
-  void hoverSchedules(QValueList<MyMoneySchedule>, QDate);
+  void enterClicked(const MyMoneySchedule&, const QDate&);
 
 protected:
   void drawCellContents(QPainter *painter, int row, int col, const QDate& theDate);
@@ -63,6 +66,7 @@ protected:
 private:
   bool m_filterBills, m_filterDeposits, m_filterTransfers;
   QCStringList m_filterAccounts;
+  KMyMoneyBriefSchedule briefWidget;
 };
 
 #endif

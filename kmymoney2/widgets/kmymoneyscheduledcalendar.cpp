@@ -24,8 +24,6 @@
 // QT Includes
 #include <qpushbutton.h>
 #include <qkeysequence.h>
-#include <qcursor.h>
-#include <qapplication.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -35,8 +33,7 @@
 
 // ----------------------------------------------------------------------------
 // Project Includes
-#include "kmymoneyscheduledcalendar.h"
-#include "kmymoneyscheduleddatetbl.h"
+#include "../widgets/kmymoneyscheduledcalendar.h"
 #include "../mymoney/mymoneyfile.h"
 
 kMyMoneyScheduledCalendar::kMyMoneyScheduledCalendar(QWidget *parent, const char *name )
@@ -51,7 +48,7 @@ kMyMoneyScheduledCalendar::kMyMoneyScheduledCalendar(QWidget *parent, const char
   kpopupmenu->insertItem(i18n("Transfers"), 2);
   kpopupmenu->connectItem(0, this, SLOT(slotSetViewBills()));
   kpopupmenu->connectItem(1, this, SLOT(slotSetViewDeposits()));
-  kpopupmenu->connectItem(2, this, SLOT(slotSetViewTransfers())); 
+  kpopupmenu->connectItem(2, this, SLOT(slotSetViewTransfers()));
   kpopupmenu->setItemChecked(0, true);
   kpopupmenu->setItemChecked(1, true);
   kpopupmenu->setItemChecked(2, true);
@@ -59,15 +56,13 @@ kMyMoneyScheduledCalendar::kMyMoneyScheduledCalendar(QWidget *parent, const char
 
   m_scheduledDateTable = new kMyMoneyScheduledDateTbl(this);
   setDateTable((kMyMoneyDateTbl*)m_scheduledDateTable);
-  
+
   setUserButton1(true, pb1);
-  
+
   init( QDate::currentDate() );
 
-  connect(m_scheduledDateTable, SIGNAL(hoverSchedules(QValueList<MyMoneySchedule>, QDate)),
-    this, SLOT(slotHoverSchedules(QValueList<MyMoneySchedule>, QDate)));
-
-  connect(&briefWidget, SIGNAL(enterClicked(const MyMoneySchedule&, const QDate&)), this, SLOT(slotEnterClicked(const MyMoneySchedule&, const QDate&)));
+  connect(m_scheduledDateTable, SIGNAL(enterClicked(const MyMoneySchedule&, const QDate&)),
+    this, SIGNAL(enterClicked(const MyMoneySchedule&, const QDate&)));
 }
 
 kMyMoneyScheduledCalendar::~kMyMoneyScheduledCalendar()
@@ -90,44 +85,4 @@ void kMyMoneyScheduledCalendar::slotSetViewTransfers()
 {
   kpopupmenu->setItemChecked(2, ((kpopupmenu->isItemChecked(2)) ? false : true));
   m_scheduledDateTable->filterTransfers(!kpopupmenu->isItemChecked(2));
-}
-
-void kMyMoneyScheduledCalendar::slotHoverSchedules(QValueList<MyMoneySchedule> list, QDate date)
-{
-  if (list.count() >= 1)
-  {
-    briefWidget.setSchedules(list, date);
-
-    int h = briefWidget.height();
-    int w = briefWidget.width();
-
-    // Take off five pixels so the mouse cursor
-    // will be over the widget
-    QPoint p = QCursor::pos();
-    if (p.y() + h > QApplication::desktop()->height())
-    {
-      p.setY(p.y() - (h-5));
-    }
-    else
-      p.setY(p.y() - 5);
-
-    if (p.x() + w > QApplication::desktop()->width())
-    {
-      p.setX(p.x() - (w-5));
-    }
-    else
-      p.setX(p.x() - 5);
-
-    briefWidget.move(p);
-    briefWidget.show();
-  }
-  else
-  {
-    briefWidget.hide();
-  }
-}
-
-void kMyMoneyScheduledCalendar::slotEnterClicked(const MyMoneySchedule& schedule, const QDate& date)
-{
-  emit enterClicked(schedule, date);
 }

@@ -47,6 +47,8 @@
 #include <qpainter.h>
 #include <qdialog.h>
 #include <qdrawutil.h>
+#include <qcursor.h>
+#include <qapplication.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -64,6 +66,7 @@ kMyMoneyScheduledDateTbl::kMyMoneyScheduledDateTbl(QWidget *parent, QDate date_,
   : kMyMoneyDateTbl(parent, date_, name, f),
   m_filterBills(false), m_filterDeposits(false), m_filterTransfers(false)
 {
+  connect(&briefWidget, SIGNAL(enterClicked(const MyMoneySchedule&, const QDate&)), this, SIGNAL(enterClicked(const MyMoneySchedule&, const QDate&)));
 }
 
 kMyMoneyScheduledDateTbl::~kMyMoneyScheduledDateTbl()
@@ -363,7 +366,7 @@ void kMyMoneyScheduledDateTbl::contentsMouseMoveEvent(QMouseEvent* e)
   int row, col, pos;
   QPoint mouseCoord;
 
-  if (isActiveWindow())
+  if (isActiveWindow() || briefWidget.isVisible())
   {
     mouseCoord = e->pos();
     row = rowAt(mouseCoord.y());
@@ -372,16 +375,16 @@ void kMyMoneyScheduledDateTbl::contentsMouseMoveEvent(QMouseEvent* e)
     {
       return;
     }
-  
+
   #if KDE_VERSION < 310
     int firstWeekDay = KGlobal::locale()->weekStartsMonday() ? 1 : 0;
   #else
     int firstWeekDay = KGlobal::locale()->weekStartDay();
   #endif
-  
+
     QDate drawDate(date);
     QString text;
-  
+
     if (m_type == MONTHLY)
     {
       pos=7*(row-1)+col;
@@ -389,12 +392,12 @@ void kMyMoneyScheduledDateTbl::contentsMouseMoveEvent(QMouseEvent* e)
         pos += firstWeekDay;
       else
         pos += firstWeekDay - 7;
-  
+
       if (pos<firstday || (firstday+numdays<=pos))
       { // we are either
         //  painting a day of the previous month or
         //  painting a day of the following month
-  
+
         if (pos<firstday)
         { // previous month
           drawDate = drawDate.addMonths(-1);
@@ -415,10 +418,10 @@ void kMyMoneyScheduledDateTbl::contentsMouseMoveEvent(QMouseEvent* e)
       // TODO: Handle other start weekdays than Monday
       text = QDate::shortDayName(row);
       text += " ";
-  
+
       int dayOfWeek = date.dayOfWeek();
       int diff;
-  
+
       if (row < dayOfWeek)
       {
         diff = -(dayOfWeek - row);
@@ -427,37 +430,37 @@ void kMyMoneyScheduledDateTbl::contentsMouseMoveEvent(QMouseEvent* e)
       {
         diff = row - dayOfWeek;
       }
-  
+
       drawDate = date.addDays(diff);
     }
     else if (m_type == QUARTERLY)
     {
     }
-  
+
     m_drawDateOrig = drawDate;
     MyMoneyFile *file = MyMoneyFile::instance();
     QValueList<MyMoneySchedule> schedules;
-  
+
     try
     {
       int types=0;
-  
+
       if (!m_filterBills)
       {
         types |= MyMoneySchedule::TYPE_BILL;
       }
-  
+
       if (!m_filterDeposits)
       {
         types |= MyMoneySchedule::TYPE_DEPOSIT;
       }
-  
+
       if (!m_filterTransfers)
       {
         types |= MyMoneySchedule::TYPE_TRANSFER;
       }
-  
-  
+
+
       schedules = file->scheduleListEx( types,
                                         MyMoneySchedule::OCCUR_ANY,
                                         MyMoneySchedule::STYPE_ANY,
@@ -470,8 +473,38 @@ void kMyMoneyScheduledDateTbl::contentsMouseMoveEvent(QMouseEvent* e)
       // for the selected account
       delete e;
     }
-  
-    emit hoverSchedules(schedules, drawDate);
+
+    if (schedules.count() >= 1)
+    {
+      briefWidget.setSchedules(schedules, drawDate);
+
+      int h = briefWidget.height();
+      int w = briefWidget.width();
+
+      // Take off five pixels so the mouse cursor
+      // will be over the widget
+      QPoint p = QCursor::pos();
+      if (p.y() + h > QApplication::desktop()->height())
+      {
+        p.setY(p.y() - (h-5));
+      }
+      else
+        p.setY(p.y() - 5);
+
+      if (p.x() + w > QApplication::desktop()->width())
+      {
+        p.setX(p.x() - (w-5));
+      }
+      else
+        p.setX(p.x() - 5);
+
+      briefWidget.move(p);
+      briefWidget.show();
+    }
+    else
+    {
+      briefWidget.hide();
+    }
   }
 }
 
