@@ -94,7 +94,7 @@ void KSettingsDlg::setPageGeneral()
 void KSettingsDlg::setPageList()
 {
   // Create the page.
-  QVBox *qvboxMainFrame = addVBoxPage( i18n("Main List"), i18n("List settings"),
+  QVBox *qvboxMainFrame = addVBoxPage( i18n("Register"), i18n("Register settings"),
     locate("appdata", "pics/setting_list.png"));
 
   // Create the tab widget
@@ -157,6 +157,25 @@ void KSettingsDlg::setPageList()
   m_qradiobuttonOtherRow->setText( i18n( "Change colour every other row" ) );
   qvboxlayout->addWidget(m_qradiobuttonOtherRow);
   qvboxlayoutPage->addWidget(qbuttongroup);
+
+  // Create a group to hold two radio buttons
+  QButtonGroup *qbuttongroupDates = new QButtonGroup(qwidgetPage, "ButtonGroup1");
+  qbuttongroupDates->setTitle(i18n("Restrict by date"));
+  qbuttongroupDates->setColumnLayout(0, Qt::Vertical );
+  qbuttongroupDates->layout()->setSpacing( 0 );
+  qbuttongroupDates->layout()->setMargin( 0 );
+
+  QHBoxLayout *qhboxlayout2 = new QHBoxLayout(qbuttongroupDates->layout());
+  qhboxlayout2->setAlignment( Qt::AlignTop );
+  qhboxlayout2->setSpacing( 6 );
+  qhboxlayout2->setMargin( 11 );
+
+  m_dateinputStart = new kMyMoneyDateInput(qbuttongroupDates, "dateinput");
+  QLabel *m_qlabelStartDate = new QLabel(i18n("Start Date: "), qbuttongroupDates);
+  qhboxlayout2->addWidget(m_qlabelStartDate);
+  qhboxlayout2->addWidget(m_dateinputStart);
+  qvboxlayoutPage->addWidget(qbuttongroupDates);
+
 
   // Add a vertical spacer to take up the remaining available space
   QSpacerItem* spacer = new QSpacerItem( 20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding );
@@ -287,6 +306,10 @@ void KSettingsDlg::configRead()
   m_bTempColourPerTransaction = kconfig->readBoolEntry("ColourPerTransaction", true);
   m_qradiobuttonPerTransaction->setChecked(m_bTempColourPerTransaction);
   m_qradiobuttonOtherRow->setChecked(!m_bTempColourPerTransaction);
+
+  m_qdateTempStart = kconfig->readDateTimeEntry("StartDate").date();
+  m_dateinputStart->setDate(m_qdateTempStart);
+
 }
 
 /** Write out all the settings to the global KConfig object.
@@ -307,6 +330,7 @@ void KSettingsDlg::configWrite()
   kconfig->writeEntry("ShowGrid", m_qcheckboxShowGrid->isChecked());
   kconfig->writeEntry("ColourPerTransaction", m_qradiobuttonPerTransaction->isChecked());
   kconfig->writeEntry("TextPrompt", m_qcheckboxTextPrompt->isChecked());
+  kconfig->writeEntry("StartDate", m_dateinputStart->getQDate());
 
   kconfig->setGroup("General Options");
   kconfig->writeEntry("StartDialog", m_qradiobuttonStartPrompt->isChecked());
@@ -357,6 +381,7 @@ void KSettingsDlg::slotCancel()
   kconfig->writeEntry("ShowGrid", m_bTempShowGrid);
   kconfig->writeEntry("ColourPerTransaction", m_bTempColourPerTransaction);
   kconfig->writeEntry("TextPrompt", m_bTempTextPrompt);
+  kconfig->writeEntry("StartDate", m_qdateTempStart);
 
   kconfig->setGroup("General Options");
   kconfig->writeEntry("StartDialog", m_bTempStartPrompt);
@@ -386,4 +411,5 @@ void KSettingsDlg::slotUser1()
   m_qradiobuttonPerTransaction->setChecked(m_bTempColourPerTransaction);
   m_qradiobuttonOtherRow->setChecked(!m_bTempColourPerTransaction);
   m_qcheckboxTextPrompt->setChecked(m_bTempTextPrompt);
+  m_dateinputStart->setDate(m_qdateTempStart);
 }

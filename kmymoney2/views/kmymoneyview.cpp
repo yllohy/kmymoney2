@@ -790,8 +790,39 @@ void KMyMoneyView::viewTransactionList(void)
     return;
   }
 
+  KConfig *config = KGlobal::config();
+  QDateTime defaultDate = QDate::currentDate();
+  QDate qdateStart = config->readDateTimeEntry("StartDate", &defaultDate).date();
 
-  transactionView->init(&m_file, *pBank, *pAccount, pAccount->getTransactionList(), KTransactionView::NORMAL);
+  if (qdateStart != defaultDate.date())
+  {
+    MyMoneyTransaction *transaction;
+    m_transactionList.clear();
+    for ( transaction=pAccount->transactionFirst(); transaction; transaction=pAccount->transactionNext()) {
+      if (transaction->date() >= qdateStart)
+      {
+        m_transactionList.append(new MyMoneyTransaction(
+          pAccount,
+          transaction->id(),
+          transaction->method(),
+          transaction->number(),
+          transaction->memo(),
+          transaction->amount(),
+          transaction->date(),
+          transaction->categoryMajor(),
+          transaction->categoryMinor(),
+          transaction->atmBankName(),
+          transaction->payee(),
+          transaction->accountFrom(),
+          transaction->accountTo(),
+          transaction->state()));
+      }
+    }
+    transactionView->init(&m_file, *pBank, *pAccount, &m_transactionList, KTransactionView::SUBSET);
+  }
+  else
+    transactionView->init(&m_file, *pBank, *pAccount, pAccount->getTransactionList(), KTransactionView::SUBSET);
+
   emit transactionOperations(true);
 }
 
@@ -818,17 +849,52 @@ void KMyMoneyView::settingsLists()
     return;
   }
 
-    // See which list we are viewing and then refresh it
-    switch(m_showing) {
-      case KMyMoneyView::BankList:
-        banksView->refresh(m_file);
-        break;
-      case KMyMoneyView::TransactionList:
+  KConfig *config = KGlobal::config();
+  QDateTime defaultDate = QDate::currentDate();
+  QDate qdateStart;
+
+  // See which list we are viewing and then refresh it
+  switch(m_showing) {
+    case KMyMoneyView::BankList:
+      banksView->refresh(m_file);
+      break;
+    case KMyMoneyView::TransactionList:
+      qdateStart = config->readDateTimeEntry("StartDate", &defaultDate).date();
+
+      if (qdateStart != defaultDate.date())
+      {
+        MyMoneyTransaction *transaction;
+        m_transactionList.clear();
+        for ( transaction=pAccount->transactionFirst(); transaction; transaction=pAccount->transactionNext()) {
+          if (transaction->date() >= qdateStart)
+          {
+            m_transactionList.append(new MyMoneyTransaction(
+              pAccount,
+              transaction->id(),
+              transaction->method(),
+              transaction->number(),
+              transaction->memo(),
+              transaction->amount(),
+              transaction->date(),
+              transaction->categoryMajor(),
+              transaction->categoryMinor(),
+              transaction->atmBankName(),
+              transaction->payee(),
+              transaction->accountFrom(),
+              transaction->accountTo(),
+              transaction->state()));
+          }
+        }
+
+        transactionView->init(&m_file, *pBank, *pAccount, &m_transactionList, KTransactionView::SUBSET);
+        viewTransactionList();
+      }
+      else
         transactionView->refresh();
-        break;
-      default:
-        break;
-    }
+      break;
+    default:
+      break;
+  }
 }
 
 void KMyMoneyView::accountFind()

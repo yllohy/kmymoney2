@@ -11,8 +11,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>596</width>
-            <height>495</height>
+            <width>476</width>
+            <height>509</height>
         </rect>
     </property>
     <property stdset="1">
@@ -652,6 +652,27 @@
                 </widget>
             </vbox>
         </widget>
+        <spacer>
+            <property>
+                <name>name</name>
+                <cstring>Spacer8_2</cstring>
+            </property>
+            <property stdset="1">
+                <name>orientation</name>
+                <enum>Vertical</enum>
+            </property>
+            <property stdset="1">
+                <name>sizeType</name>
+                <enum>Expanding</enum>
+            </property>
+            <property>
+                <name>sizeHint</name>
+                <size>
+                    <width>20</width>
+                    <height>20</height>
+                </size>
+            </property>
+        </spacer>
     </vbox>
 </widget>
 <customwidgets>

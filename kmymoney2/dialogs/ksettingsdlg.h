@@ -33,6 +33,7 @@
 
 // ----------------------------------------------------------------------------
 // Project Includes
+#include "../widgets/kmymoneydateinput.h"
 
 /**
   * This class is used to manipulate all the settings available for KMyMoney2.
@@ -47,7 +48,7 @@
   * @see KDialogBase
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: ksettingsdlg.h,v 1.1 2002/01/17 00:34:16 mte Exp $
+  * $Id: ksettingsdlg.h,v 1.2 2002/01/27 16:45:39 mte Exp $
   *
   * @short A class to manipulate the settings needed for running KMyMoney2
 **/
@@ -83,6 +84,9 @@ private:
   QRadioButton *m_qradiobuttonPerTransaction;
   QRadioButton *m_qradiobuttonOtherRow;
 
+  /** Restrict options */
+  kMyMoneyDateInput *m_dateinputStart;
+
   /** Set page general */
   void setPageGeneral();
   /** Set page list settings */
@@ -106,6 +110,7 @@ private:
   bool m_bTempStartPrompt;
   bool m_bDoneApply;
   bool m_bTempTextPrompt;
+  QDate m_qdateTempStart;
 
 private slots:
   /** Called when OK pressed */
