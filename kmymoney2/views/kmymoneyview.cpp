@@ -91,6 +91,7 @@
 #include "../mymoney/storage/mymoneystoragedump.h"
 #include "../mymoney/storage/mymoneystoragexml.h"
 #include "../mymoney/storage/mymoneystoragegnc.h"
+#include "../mymoney/storage/mymoneystorageanon.h"
 
 #include "../converter/mymoneybanking.h"
 
@@ -1054,7 +1055,7 @@ bool KMyMoneyView::readFile(const KURL& url)
   return true;
 }
 
-void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter)
+void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter, bool plaintext)
 {
   QIODevice *dev = qfile;
   KFilterBase *base = 0;
@@ -1097,7 +1098,7 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter)
   }
 
   if(config->readEntry("WriteDataEncrypted", false) != false
-  && encryptedOk == true) {
+  && encryptedOk == true && !plaintext ) {
     qfile->close();
     base++;
     KGPGFile *kgpg = new KGPGFile(qfile->name());
@@ -1111,7 +1112,7 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter)
     if(!dev || !dev->open(IO_WriteOnly))
       throw new MYMONEYEXCEPTION(i18n("Unable to open file '%1' for writing.").arg(qfile->name()));
 
-  } else if(config->readBoolEntry("WriteDataUncompressed", false) == false) {
+  } else if(config->readBoolEntry("WriteDataUncompressed", false) == false && !plaintext) {
     base = KFilterBase::findFilterByMimeType( COMPRESSION_MIME_TYPE );
     if(base) {
       base->setDevice(qfile, false);
@@ -1159,11 +1160,23 @@ const bool KMyMoneyView::saveFile(const KURL& url)
 
   IMyMoneyStorageFormat* pWriter = NULL;
 
-  QString strFileExtension = MyMoneyUtils::getFileExtension(filename);
+  //QString strFileExtension = MyMoneyUtils::getFileExtension(filename);
+  
+  // If this file ends in ".ANON.XML" then this should be written using the
+  // anonymous writer.
 
-  // only use XML writer. The binary format will be depreacated sometime
-  pWriter = new MyMoneyStorageXML;
-
+  bool plaintext = false;  
+  if (filename.right(9).lower() == ".anon.xml")
+  {
+    pWriter = new MyMoneyStorageANON;
+    plaintext = true;
+  }
+  else
+  {
+    // only use XML writer. The binary format will be depreacated sometime
+    pWriter = new MyMoneyStorageXML;
+  }
+  
 /* // FIXME: remove this when we do not support the binary writer anymore
   if(strFileExtension.find("XML") != -1)
   {
@@ -1188,7 +1201,7 @@ const bool KMyMoneyView::saveFile(const KURL& url)
       filename = url.path();
       KSaveFile qfile(filename, 0600);
       if(qfile.status() == 0) {
-        saveToLocalFile(qfile.file(), pWriter);
+        saveToLocalFile(qfile.file(), pWriter,plaintext);
         if(!qfile.close()) {
           throw new MYMONEYEXCEPTION(i18n("Unable to write changes to '%1'").arg(filename));
         }
@@ -1197,7 +1210,7 @@ const bool KMyMoneyView::saveFile(const KURL& url)
       }
     } else {
       KTempFile tmpfile;
-      saveToLocalFile(tmpfile.file(), pWriter);
+      saveToLocalFile(tmpfile.file(), pWriter,plaintext);
       if(!KIO::NetAccess::upload(tmpfile.name(), url))
         throw new MYMONEYEXCEPTION(i18n("Unable to upload to '%1'").arg(url.url()));
       tmpfile.unlink();

@@ -5,7 +5,7 @@ INCLUDES = $(all_includes)
 
 libstorage_a_METASOURCES = AUTO
 
-libstorage_a_SOURCES = mymoneystoragegnc.cpp imymoneystorageformat.cpp mymoneystoragexml.cpp mymoneystoragedump.cpp mymoneystoragebin.cpp mymoneyseqaccessmgr.cpp imymoneystorage.cpp imymoneyserialize.cpp 
+libstorage_a_SOURCES = mymoneystoragegnc.cpp imymoneystorageformat.cpp mymoneystoragexml.cpp mymoneystoragedump.cpp mymoneystoragebin.cpp mymoneyseqaccessmgr.cpp imymoneystorage.cpp imymoneyserialize.cpp mymoneystorageanon.cpp
 
 
 EXTRA_DIST = imymoneyserialize.cpp imymoneyserialize.h imymoneystorage.cpp imymoneystorage.h mymoneyseqaccessmgr.cpp mymoneyseqaccessmgr.h mymoneystoragebin.cpp mymoneystoragebin.h mymoneystoragedump.cpp mymoneystoragedump.h mymoneystoragexml.h mymoneystoragexml.cpp imymoneystorageformat.cpp imymoneystorageformat.h mymoneystoragegnc.cpp mymoneystoragegnc.h 
@@ -17,3 +17,4 @@ check_LIBRARIES = libstoragetest.a
 
 libstoragetest_a_SOURCES = mymoneyseqaccessmgrtest.cpp mymoneystoragebintest.cpp
 endif
+noinst_HEADERS =  mymoneystorageanon.h

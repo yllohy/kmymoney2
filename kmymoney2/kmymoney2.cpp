@@ -462,7 +462,7 @@ const bool KMyMoney2App::slotFileSaveAs()
   QString prevMsg = slotStatusMsg(i18n("Saving file with a new filename..."));
 
   QString newName=KFileDialog::getSaveFileName(readLastUsedDir(),//KGlobalSettings::documentPath(),
-                                               i18n("*.kmy|KMyMoney files\n""*.xml|XML Files\n"
+                                               i18n("*.kmy|KMyMoney files\n""*.xml|XML Files\n""*.ANON.xml|Anonymous Files\n"
 
                                                "*.*|All files"), this, i18n("Save as..."));
 
@@ -492,14 +492,24 @@ const bool KMyMoney2App::slotFileSaveAs()
       newName.append(".kmy");
     }
 
-    QFileInfo saveAsInfo(newName);
-
-    fileName = newName;
-    rc = myMoneyView->saveFile(newName);
-
-    //write the directory used for this file as the default one for next time.
-    writeLastUsedDir(newName);
-    writeLastUsedFile(newName);
+    // If this is the anonymous file export, just save it, don't actually take the 
+    // name, or remember it!
+    if (newName.right(9).lower() == ".anon.xml")
+    {
+      rc = myMoneyView->saveFile(newName);
+    }
+    else
+    {
+      
+      QFileInfo saveAsInfo(newName);
+  
+      fileName = newName;
+      rc = myMoneyView->saveFile(newName);
+  
+      //write the directory used for this file as the default one for next time.
+      writeLastUsedDir(newName);
+      writeLastUsedFile(newName);
+    }
   }
 
   slotStatusMsg(prevMsg);

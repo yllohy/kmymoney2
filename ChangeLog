@@ -1,4 +1,9 @@
 2004-11-25 Ace Jones <acejones@users.sourceforge.net>
+  * Added "Anonymous" as a file saving type, which will save off a
+    version of the user's data with all private information (names,
+    strings, amounts) masked.  Hopefully this will be enough to get
+    users to be willing to send their data files to us when they have
+    a problem.
   * Avoid runtime warnings concerning MyMoneyMoney::operator== in unit
     tests
   * Replaced some various MyMoneyMoney::operator==() calls with 
