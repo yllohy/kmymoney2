@@ -64,6 +64,15 @@ public:
 
   void refreshView(void);
 
+  /**
+    * This method is used to open the account with the specified id
+    * in the ledger view. The respective view for this account type
+    * will be selected and the account data loaded.
+    *
+    * @param id id of the account in the MyMoneyFile object
+    */
+  void selectAccount(const QCString& id);
+
 public slots:
   /**
     * Called when the user changes the visibility
@@ -77,7 +86,6 @@ protected:
   QHBoxLayout* Layout2;
 
   void loadAccounts(void);
-  void selectAccount(const QCString& id);
 
 protected slots:
   void slotAccountSelected(const QString&);

@@ -33,6 +33,7 @@
 #include <klocale.h>
 #include <kcombobox.h>
 #include <kpushbutton.h>
+#include <kmessagebox.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -73,6 +74,11 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   m_accountStack->addWidget(m_specificView[MyMoneyAccount::Checkings],
                                  MyMoneyAccount::Checkings);
 
+  // Savings account
+  KPushButton* savingsAccount = new KPushButton("Savings account", m_accountStack);
+  m_accountStack->addWidget(savingsAccount, MyMoneyAccount::Savings);
+
+  // Credit card account
   KPushButton* creditCardAccount = new KPushButton("Credit Card account", m_accountStack);
   m_accountStack->addWidget(creditCardAccount, MyMoneyAccount::CreditCard);
 
@@ -140,9 +146,16 @@ void KGlobalLedgerView::selectAccount(const QCString& accountId)
 {
   MyMoneyAccount acc = MyMoneyFile::instance()->account(accountId);
   m_accountStack->raiseWidget(acc.accountType());
-  m_currentView = m_specificView[acc.accountType()];
-  m_currentView->setCurrentAccount(accountId);
-  m_accountId = accountId;
+  if(m_specificView[acc.accountType()] != 0) {
+    m_currentView = m_specificView[acc.accountType()];
+    m_currentView->setCurrentAccount(accountId);
+    m_accountId = accountId;
+    accountComboBox->setCurrentText(acc.name());
+  } else {
+    QString msg = "Specific ledger view for account type " +
+      QString::number(acc.accountType()) + " not yet implemented";
+    KMessageBox::sorry(0, msg, "Implementation problem");
+  }
 }
 
 void KGlobalLedgerView::slotAccountSelected(const QString& account)
