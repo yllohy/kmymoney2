@@ -71,15 +71,19 @@ void MyMoneyEquity::removePriceHistory(const QDate& date)
   }
 }
 
-const bool MyMoneyEquity::hasPrice(const QDate& date) const
+const bool MyMoneyEquity::hasPrice(const QDate& date, const bool exact) const
 {
   bool result = false;
   QMap<QDate, MyMoneyMoney>::ConstIterator it;
 
-  it = m_priceHistory.begin();
-  if(it != m_priceHistory.end()) {
-    if(it.key() <= date)
-      result = true;
+  if(exact) {
+    result = (m_priceHistory.find(date) != m_priceHistory.end()) ? true : false;
+  } else {
+    it = m_priceHistory.begin();
+    if(it != m_priceHistory.end()) {
+      if(it.key() <= date)
+        result = true;
+    }
   }
   return result;
 }

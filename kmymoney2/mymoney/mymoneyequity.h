@@ -105,6 +105,21 @@ public:
     * known price is used. If no price information
     * is available, 1.0 will be returned as price.
     *
+    * If the price history contains the following entries
+    *
+    * -# 01.01.2004   12.50
+    * -# 05.01.2004   12.80
+    *
+    * then the following return values are given
+    *
+    * @code
+    *
+    *   price(02.01.2004) == 12.50
+    *   price(31.12.2003) ==  1.00
+    *   price(05.01.2004) == 12.80
+    *
+    * @endcode
+    *
     * @param date the date for which the price should be returned (default = today)
     *
     * @return price found as MyMoneyMoney object
@@ -113,14 +128,34 @@ public:
 
   /**
     * This method returns, if a price information for this currency
-    * is available for a specific date.
+    * is available for a specific date. If the parameter @p exact is
+    * @p false (default), then an older price information is also treated
+    * for the date.
+    *
+    * If the price history contains the following entries
+    *
+    * -# 01.01.2004   12.50
+    * -# 05.01.2004   12.80
+    *
+    * then the following return values are given
+    *
+    * @code
+    *
+    *   hasPrice(02.01.2004, false) == true
+    *   hasPrice(31.12.2003, false) == false
+    *   hasPrice(02.01.2004, true)  == false
+    *   hasPrice(05.01.2004, true)  == true
+    *
+    * @endcode
     *
     * @param date The date for which a price info is needed (default today)
+    * @param exact If @p true, date must match existing price info, otherwise
+    *              a previous price information would also match.
     *
     * @retval false no price info available
     * @retval true price info is available
     */
-  const bool hasPrice(const QDate& date = QDate::currentDate()) const;
+  const bool hasPrice(const QDate& date = QDate::currentDate(), const bool exact = false) const;
 
 protected:
   QCString              m_id;
