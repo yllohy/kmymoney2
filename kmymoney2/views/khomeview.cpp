@@ -44,8 +44,10 @@
 #include "../mymoney/mymoneyfile.h"
 #include "../kmymoneyutils.h"
 
-#define VIEW_LEDGER     "ledger"
-#define VIEW_SCHEDULE   "schedule"
+#define VIEW_LEDGER         "ledger"
+#define VIEW_SCHEDULE       "schedule"
+#define VIEW_WELCOME        "welcome"
+#define VIEW_HOME           "home"
 
 KHomeView::KHomeView(QWidget *parent, const char *name )
  : QWidget(parent,name)
@@ -61,11 +63,11 @@ KHomeView::KHomeView(QWidget *parent, const char *name )
 
   m_filename = KGlobal::dirs()->findResource("appdata", QString("html/home_%1.%2.html").arg(country).arg(language));
   if(m_filename.isEmpty()) {
-    qDebug(QString("html/home_%1.%2.html not found").arg(country).arg(language).latin1());
+    // qDebug(QString("html/home_%1.%2.html not found").arg(country).arg(language).latin1());
     m_filename = KGlobal::dirs()->findResource("appdata", QString("html/home_%1.html").arg(country));
   }
   if(m_filename.isEmpty()) {
-    qDebug(QString("html/home_%1.html not found").arg(country).latin1());
+    // qDebug(QString("html/home_%1.html not found").arg(country).latin1());
     m_filename = KGlobal::dirs()->findResource("appdata", "html/home.html");
   }
     
@@ -135,6 +137,8 @@ void KHomeView::slotRefreshView(void)
       }
     }
 
+    m_part->write(link(VIEW_WELCOME, QString()) + i18n("Show KMyMoney welcome page") + linkend());
+    
     m_part->write(footer);
     m_part->end();
 
@@ -407,14 +411,21 @@ void KHomeView::slotOpenURL(const KURL &url, const KParts::URLArgs& /* args */)
   QString view = url.fileName(false);
   QCString id = url.queryItem("id").data();
   
-  //qDebug("view = '%s'", url.fileName(false).latin1());
-  //qDebug("id = '%s'", url.queryItem("id").latin1());
+  // qDebug("view = '%s'", url.fileName(false).latin1());
+  // qDebug("id = '%s'", url.queryItem("id").latin1());
   
   if(view == VIEW_LEDGER) {
     emit ledgerSelected(id, QCString());
     
   } else if(view == VIEW_SCHEDULE) {
     emit scheduleSelected(id);
+    
+  } else if(view == VIEW_WELCOME) {
+    m_part->openURL(m_filename);
+    
+  } else if(view == VIEW_HOME) {
+    slotRefreshView();
+    
   } else {
     qDebug("Unknown view '%s' in KHomeView::slotOpenURL()", view.latin1());
   }
