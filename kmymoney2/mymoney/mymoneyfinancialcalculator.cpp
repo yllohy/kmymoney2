@@ -144,7 +144,7 @@ const FCALC_DOUBLE MyMoneyFinancialCalculator::numPayments(void)
     throw new MYMONEYEXCEPTION("Not all parameters set for calculation of numPayments");
 
   FCALC_DOUBLE eint = eff_int();
-  FCALC_DOUBLE CC = _C(eint);
+  FCALC_DOUBLE CC = _Cx(eint);
 
   CC = (CC - m_fv) / (CC + m_pv);
   m_npp = (CC > 0.0) ? logl (CC) / logl (eint +1.0) : 0.0;
@@ -161,8 +161,8 @@ const FCALC_DOUBLE MyMoneyFinancialCalculator::payment(void)
     throw new MYMONEYEXCEPTION("Not all parameters set for calculation of payment");
 
   FCALC_DOUBLE eint = eff_int();
-  FCALC_DOUBLE AA = _A(eint);
-  FCALC_DOUBLE BB = _B(eint);
+  FCALC_DOUBLE AA = _Ax(eint);
+  FCALC_DOUBLE BB = _Bx(eint);
 
   m_pmt = -floor((m_fv + m_pv * (AA + 1.0)) / (AA * BB));
 
@@ -178,8 +178,8 @@ const FCALC_DOUBLE MyMoneyFinancialCalculator::presentValue(void)
     throw new MYMONEYEXCEPTION("Not all parameters set for calculation of payment");
 
   FCALC_DOUBLE eint = eff_int();
-  FCALC_DOUBLE AA = _A(eint);
-  FCALC_DOUBLE CC = _C(eint);
+  FCALC_DOUBLE AA = _Ax(eint);
+  FCALC_DOUBLE CC = _Cx(eint);
   
   m_pv = roundl(-(m_fv + (AA * CC)) / (AA + 1.0));
 
@@ -195,8 +195,8 @@ const FCALC_DOUBLE MyMoneyFinancialCalculator::futureValue(void)
     throw new MYMONEYEXCEPTION("Not all parameters set for calculation of payment");
 
   FCALC_DOUBLE eint = eff_int();
-  FCALC_DOUBLE AA = _A(eint);
-  FCALC_DOUBLE CC = _C(eint);
+  FCALC_DOUBLE AA = _Ax(eint);
+  FCALC_DOUBLE CC = _Cx(eint);
   m_fv = roundl(-(m_pv + AA * (m_pv + CC)));
 
   m_mask |= FV_SET;
@@ -246,24 +246,24 @@ const FCALC_DOUBLE MyMoneyFinancialCalculator::interestRate(void)
 
 const FCALC_DOUBLE MyMoneyFinancialCalculator::_fi(const FCALC_DOUBLE eint) const
 {
-  return _A(eint) * (m_pv + _C(eint)) + m_pv + m_fv;
+  return _Ax(eint) * (m_pv + _Cx(eint)) + m_pv + m_fv;
 }
 
 const FCALC_DOUBLE MyMoneyFinancialCalculator::_fip(const FCALC_DOUBLE eint) const
 {
-  double AA = _A(eint);
-  double CC = _C(eint);
+  double AA = _Ax(eint);
+  double CC = _Cx(eint);
   double D = (AA + 1.0) / (eint + 1.0);
 
   return m_npp *(m_pv + CC) * D - (AA * CC) / eint;
 }
 
-const FCALC_DOUBLE MyMoneyFinancialCalculator::_A(const FCALC_DOUBLE eint) const
+const FCALC_DOUBLE MyMoneyFinancialCalculator::_Ax(const FCALC_DOUBLE eint) const
 {
   return powl ((eint + 1.0), m_npp) - 1.0;
 }
 
-const FCALC_DOUBLE MyMoneyFinancialCalculator::_B(const FCALC_DOUBLE eint) const
+const FCALC_DOUBLE MyMoneyFinancialCalculator::_Bx(const FCALC_DOUBLE eint) const
 {
   if(eint == 0.0)
     throw new MYMONEYEXCEPTION("Zero interest");
@@ -274,9 +274,9 @@ const FCALC_DOUBLE MyMoneyFinancialCalculator::_B(const FCALC_DOUBLE eint) const
   return (eint + 1.0) / eint;
 }
 
-const FCALC_DOUBLE MyMoneyFinancialCalculator::_C(const FCALC_DOUBLE eint) const
+const FCALC_DOUBLE MyMoneyFinancialCalculator::_Cx(const FCALC_DOUBLE eint) const
 {
-  return m_pmt * _B(eint);
+  return m_pmt * _Bx(eint);
 }
 
 const FCALC_DOUBLE MyMoneyFinancialCalculator::eff_int(void) const

@@ -42,6 +42,9 @@
 #define FCALC_DOUBLE  double
 #define modfl(a,b)    modf(a,b)
 #define roundl(a)     round(a)
+#define powl(a,b)     pow(a,b)
+#define expl(a)       exp(a)
+#define logl(a)       log(a)
 #endif
 
 /**
@@ -268,9 +271,9 @@ private:
   const FCALC_DOUBLE nom_int(const FCALC_DOUBLE eint) const;
   const FCALC_DOUBLE rnd(const FCALC_DOUBLE x) const;
   
-  const FCALC_DOUBLE _A(const FCALC_DOUBLE eint) const;
-  const FCALC_DOUBLE _B(const FCALC_DOUBLE eint) const;
-  const FCALC_DOUBLE _C(const FCALC_DOUBLE eint) const;
+  const FCALC_DOUBLE _Ax(const FCALC_DOUBLE eint) const;
+  const FCALC_DOUBLE _Bx(const FCALC_DOUBLE eint) const;
+  const FCALC_DOUBLE _Cx(const FCALC_DOUBLE eint) const;
   const FCALC_DOUBLE _fi(const FCALC_DOUBLE eint) const;
   const FCALC_DOUBLE _fip(const FCALC_DOUBLE eint) const;
         

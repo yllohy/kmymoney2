@@ -14,10 +14,10 @@
  *                                                                         *
  ***************************************************************************/
 
+#define __STDC_LIMIT_MACROS         // force definition of min and max values 
+
 #include <iostream>
 #include "mymoneymoneytest.h"
-
-#define __STDC_LIMIT_MACROS         // force definition of min and max values 
 #include <stdint.h>
 
 MyMoneyMoneyTest::MyMoneyMoneyTest()
