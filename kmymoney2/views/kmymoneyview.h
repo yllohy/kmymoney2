@@ -92,6 +92,7 @@ private:
     AccountDelete,
     AccountOnlineMap,
     AccountOnlineUpdate,
+    AccountOfxConnect,
     CategoryNew
   };
 
@@ -451,9 +452,23 @@ protected slots:
     */
   void slotAccountDelete();
 
+  /**
+    * Called by the context menu created in slotAccountRightMouse.  Calls KBanking to set up
+    * HBCI mappings
+    */
   void slotAccountOnlineMap();
 
+  /**
+    * Called by the context menu created in slotAccountRightMouse.  Calls KBanking to update
+    * the account.  Only valid if the account is mapped for HBCI.
+    */
   void slotAccountOnlineUpdate();
+
+  /**
+    * Called by the context menu created in slotAccountRightMouse.  Connects to the users
+    * bank via OFX.  Only valid if ofxConnectionSettings have been set in the institution.
+    */
+  void slotAccountOfxConnect();
 
   /**
     * Called by the context menu created in slotBankRightMouse.  Brings up

@@ -1,3 +1,13 @@
+2004-11-21 Ace Jones <acejones@users.sourceforge.net>
+  * Added support for OFX Direct Connect.  Thus you can download statements
+    directly from your bank if they expose an OFX server.  Detailed online help
+    file included, and posted to the dev list.
+  * Consolidated the work of OFX importing at the KMyMoneyApp level into a
+    single slot, KMyMoney2App::slotOfxStatementImport
+  * Better handling for online price update when selecting it for a single 
+    stock using the right-click menu in investment summary.  Automatically
+    starts the update, and only shows the selected stock.
+
 2004-11-08 Ace Jones <acejones@users.sourceforge.net>
   * Added support for multiple accounts in a single OFX file, based on a patch
     by Chris B <news@semperpax.com>.

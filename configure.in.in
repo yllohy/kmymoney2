@@ -36,6 +36,13 @@ AM_PATH_XML2(2.0.0,
 	AM_CONDITIONAL(LIBXML2, test "x$no_xml" = x)
 	AC_SUBST(XML2_LIBS)
 	)
+
+
+dnl
+dnl check for libuuid, which can be found in the libext2fs2 package
+dnl
+AC_CHECK_LIB(uuid, uuid_unparse, [AC_DEFINE_UNQUOTED(HAVE_LIBUUID, 1, [define if you have libuuid]) LIBS="-luuid $LIBS"])
+
 dnl
 dnl check for kbanking
 dnl

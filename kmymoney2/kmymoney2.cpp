@@ -813,20 +813,7 @@ void KMyMoney2App::slotOfxImport(void)
 
   if(dialog->exec() == QDialog::Accepted)
   {
-    MyMoneyOfxStatement ofx( dialog->selectedURL().path() );
-    if ( ofx.isValid() )
-    {
-      QValueList<MyMoneyStatement>::const_iterator it_s = ofx.begin();
-      while ( it_s != ofx.end() )
-      {
-        slotStatementImport(*it_s);
-        ++it_s;
-      }
-    }
-    else
-    {
-      QMessageBox::critical( this, i18n("Invalid OFX"), i18n("Error importing %1: This file is not a valid OFX file.").arg(dialog->selectedURL().path()), QMessageBox::Ok, 0 );
-    }
+    slotOfxStatementImport(dialog->selectedURL().path());
   }
   slotStatusMsg(prevMsg);
 #else
@@ -878,7 +865,9 @@ void KMyMoney2App::slotStatementImport()
 
   if(dialog->exec() == QDialog::Accepted)
   {
-    QFile f( dialog->selectedURL().path() );
+    result = slotStatementImport(dialog->selectedURL().path());
+    
+/*    QFile f( dialog->selectedURL().path() );
     f.open( IO_ReadOnly );
     QString error = "Unable to parse file";
     QDomDocument* doc = new QDomDocument;
@@ -910,7 +899,7 @@ void KMyMoney2App::slotStatementImport()
       QMessageBox::critical( this, i18n("Critical Error"), i18n("Unable to read file %1: %2").arg( dialog->selectedURL().path()).arg(error), QMessageBox::Ok, 0 );
 
       slotStatusMsg(prevMsg);
-    }
+    }*/
   }
   delete dialog;
 
@@ -920,6 +909,45 @@ void KMyMoney2App::slotStatementImport()
     setEnabled(true);
     slotStatusMsg(prevMsg);
   }
+}
+
+bool KMyMoney2App::slotOfxStatementImport(const MyMoneyOfxStatement& ofx)
+{
+  bool hasstatements = (ofx.begin() != ofx.end());
+  bool ok = true;
+  
+  QValueList<MyMoneyStatement>::const_iterator it_s = ofx.begin();
+  while ( it_s != ofx.end() )
+  {
+    ok = ok && slotStatementImport(*it_s);
+    ++it_s;
+  }
+  return hasstatements && ok;  
+}
+
+bool KMyMoney2App::slotOfxStatementImport(const QString& url)
+{
+  bool result = false;
+  MyMoneyOfxStatement s( url );
+
+  if ( s.isValid() )
+    result = slotOfxStatementImport(s);
+  else
+    QMessageBox::critical( this, i18n("Invalid OFX"), i18n("Error importing %1: This file is not a valid OFX file.").arg(url), QMessageBox::Ok, 0 );
+  
+  return result;
+}
+
+bool KMyMoney2App::slotStatementImport(const QString& url)
+{
+  bool result = false;
+  MyMoneyStatement s;
+  if ( MyMoneyStatement::readXMLFile( s, url ) )
+    result = slotStatementImport(s);
+  else
+    QMessageBox::critical( this, i18n("Invalid Statement"), i18n("Error importing %1: This file is not a valid KMM statement file.").arg(url), QMessageBox::Ok, 0 );
+  
+  return result;
 }
 
 bool KMyMoney2App::slotStatementImport(const MyMoneyStatement& s)
@@ -1650,35 +1678,9 @@ void KMyMoney2App::ofxWebConnect(const QString& url, const QCString& asn_id)
     QString prevMsg = slotStatusMsg(i18n("Importing a statement from OFX"));
 
     if ( MyMoneyOfxStatement::isOfxFile( url ) )
-    {
-      MyMoneyOfxStatement ofx( url );
-      if ( ofx.isValid() )
-      {
-        QValueList<MyMoneyStatement>::const_iterator it_s = ofx.begin();
-        while ( it_s != ofx.end() )
-        {
-          slotStatementImport(*it_s);
-          ++it_s;
-        }
-      }
-      else
-      {
-        QMessageBox::critical( this, i18n("Invalid OFX"), i18n("Error importing %1: This file is not a valid OFX file.").arg(url), QMessageBox::Ok, 0 );
-        slotStatusMsg(prevMsg);
-      }
-    }
+      slotOfxStatementImport(url);
     else if ( MyMoneyStatement::isStatementFile( url ) )
-    {
-      MyMoneyStatement s;
-      if ( MyMoneyStatement::readXMLFile( s, url ) )
-        slotStatementImport(s);
-      else
-      {
-        QMessageBox::critical( this, i18n("Invalid Statement"), i18n("Error importing %1: This file is not a valid KMM statement file.").arg(url), QMessageBox::Ok, 0 );
-        slotStatusMsg(prevMsg);
-      }
-    }
-
+      slotStatementImport(url);
   }
 
 #else

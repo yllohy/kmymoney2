@@ -49,6 +49,7 @@ class KMyMoneyView;
 class MyMoneyQifReader;
 class MyMoneyStatementReader;
 class MyMoneyStatement;
+class MyMoneyOfxStatement;
 class IMyMoneyStorage;
 
 /*! \mainpage KMyMoney Main Page for API documentation.
@@ -115,11 +116,22 @@ protected slots:
     */
   void slotQifImportFinished(void);
 
+  /**
+    * Opens a file selector dialog for the user to choose an existing OFX
+    * file from the file system to be imported.  This slot is expected to
+    * be called from the UI.
+    */
   void slotOfxImport(void);
 
   void slotGncImport(void);
 
+  /**
+    * Opens a file selector dialog for the user to choose an existing KMM
+    * statement file from the file system to be imported.  This is for testing
+    * only.  KMM statement files are not designed to be exposed to the user.
+    */
   void slotStatementImport(void);
+  
   void slotStatementImportFinished(void);
 
   void slotLoadAccountTemplates(void);
@@ -365,11 +377,29 @@ public slots:
   void slotEquityPriceUpdate();
 
   /**
-    * Imports a statement into the engine, triggering the appropriate
+    * Imports a KMM statement into the engine, triggering the appropriate
     * UI to handle account matching, payee creation, and someday
     * payee and transaction matching.
     */
-  bool slotStatementImport(const MyMoneyStatement&);
+  bool slotStatementImport(const MyMoneyStatement& s);
+  
+  /**
+    * Essentially similiar to the above slot, except this will load the file
+    * from disk first, given the URL.
+    */
+  bool slotStatementImport(const QString& url);
+  
+  /**
+    * Essentially similiar to slotStatementImport, except this one will import
+    * each individual account statement contained in the OFX Statement.
+    */
+  bool slotOfxStatementImport(const MyMoneyOfxStatement& s);
+  
+  /**
+    * Essentially similiar to the above slot, except this will load the file
+    * from disk first, given the URL.
+    */
+  bool slotOfxStatementImport(const QString& url);
 
 private:
   bool verifyImportedData(const MyMoneyAccount& account);

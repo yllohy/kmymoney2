@@ -21,6 +21,7 @@
 #include <qdialog.h>
 
 #include "../mymoney/mymoneyinstitution.h"
+#include "../mymoney/mymoneykeyvaluecontainer.h"
 
 #include "knewbankdlgdecl.h"
 
@@ -32,6 +33,7 @@ class KNewBankDlg : public KNewBankDlgDecl  {
 
 private:
   MyMoneyInstitution m_institution;
+  MyMoneyKeyValueContainer m_ofxSettings;
 
 public:
   KNewBankDlg(MyMoneyInstitution& institution, bool isEditing, QWidget *parent, const char *name);
@@ -40,6 +42,8 @@ public:
 
 protected slots:
   void okClicked();
+  void advancedClicked();
+
 };
 
 #endif

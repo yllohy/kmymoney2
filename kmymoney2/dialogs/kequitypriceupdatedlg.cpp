@@ -28,6 +28,8 @@
 #include <qradiobutton.h>
 #include <qfile.h>
 #include <qtextstream.h>
+#include <qtimer.h>
+#include <qlayout.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -51,7 +53,7 @@
 #include "../mymoney/mymoneyequity.h"
 #include "../mymoney/mymoneyonlinepriceupdate.h"
 
-KEquityPriceUpdateDlg::KEquityPriceUpdateDlg(QWidget *parent) :
+KEquityPriceUpdateDlg::KEquityPriceUpdateDlg(QWidget *parent, const QString& onlysymbol) :
   KEquityPriceUpdateDlgDecl(parent),
   m_fUpdateAll(false)
 {
@@ -75,19 +77,23 @@ KEquityPriceUpdateDlg::KEquityPriceUpdateDlg(QWidget *parent) :
 
   for(QValueList<MyMoneyEquity>::ConstIterator it = equities.begin(); it != equities.end(); ++it)
   {
-    qDebug("KEquityPriceUpdateDlg: Adding equity %s, symbol = %s", (*it).name().data(), (*it).tradingSymbol().data());
-    KListViewItem* item = new KListViewItem(lvEquityList, (*it).tradingSymbol(), (*it).name());
-    
-    QMap<QDate,MyMoneyMoney> history = (*it).priceHistory();
-    QMap<QDate,MyMoneyMoney>::const_iterator it_price = history.end();
-    if ( it_price != history.begin() )
+    const QString& symbol = (*it).tradingSymbol().data();
+    if ( onlysymbol.isEmpty() || ( symbol == onlysymbol ) )
     {
-      --it_price;
-      item->setText(2,it_price.data().formatMoney());
-      item->setText(3,it_price.key().toString(Qt::ISODate));
+      qDebug("KEquityPriceUpdateDlg: Adding equity %s, symbol = %s", (*it).name().data(), (*it).tradingSymbol().data());
+      KListViewItem* item = new KListViewItem(lvEquityList, (*it).tradingSymbol(), (*it).name());
+      
+      QMap<QDate,MyMoneyMoney> history = (*it).priceHistory();
+      QMap<QDate,MyMoneyMoney>::const_iterator it_price = history.end();
+      if ( it_price != history.begin() )
+      {
+        --it_price;
+        item->setText(2,it_price.data().formatMoney());
+        item->setText(3,it_price.key().toString(Qt::ISODate));
+      }
+      item->setText(4,(*it).id());
+      lvEquityList->insertItem(item);
     }
-    item->setText(4,(*it).id());
-    lvEquityList->insertItem(item);
   }
 
   connect(btnOK, SIGNAL(clicked()), this, SLOT(slotOKClicked()));
@@ -101,6 +107,15 @@ KEquityPriceUpdateDlg::KEquityPriceUpdateDlg(QWidget *parent) :
   // Not implemented yet.
   btnConfigure->hide();
   //connect(btnConfigure, SIGNAL(clicked()), this, SLOT(slotConfigureClicked()));
+  
+  if ( !onlysymbol.isEmpty() )
+  {
+    btnUpdateSelected->hide();
+    btnUpdateAll->hide();
+    delete layout1;
+    
+    QTimer::singleShot(100,this,SLOT(slotUpdateAllClicked()));
+  }
 }
 
 KEquityPriceUpdateDlg::~KEquityPriceUpdateDlg()
@@ -108,7 +123,7 @@ KEquityPriceUpdateDlg::~KEquityPriceUpdateDlg()
 
 }
 
-void  KEquityPriceUpdateDlg::logStatusMessage(const QString& message)
+void KEquityPriceUpdateDlg::logStatusMessage(const QString& message)
 {
   lbStatus->insertItem(message);
 }

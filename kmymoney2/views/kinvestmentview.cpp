@@ -320,9 +320,13 @@ void KInvestmentView::slotUpdatePrice()
   // TODO: When initiated from here, the price update dialog should only show 
   // the stock you picked, and it should AUTOMATICALLY launch the update.
 
-  KEquityPriceUpdateDlg *pDlg = new KEquityPriceUpdateDlg(this);
-  pDlg->exec();
-  
+  QListViewItem* item = investmentTable->selectedItem();
+  if ( item )
+  {
+    QString symbol = item->text(1);
+    KEquityPriceUpdateDlg *pDlg = new KEquityPriceUpdateDlg(this,symbol);
+    pDlg->exec();
+  }
 }
 
 void KInvestmentView::slotListRightMouse(QListViewItem* item, const QPoint& /*point*/, int /*x*/)

@@ -40,6 +40,7 @@
 #include "mymoneystoragexml.h"
 #include "../../kmymoneyutils.h"
 #include "../mymoneyreport.h"
+#include "../mymoneyinstitution.h"
 
 unsigned int MyMoneyStorageXML::fileVersionRead = 0;
 unsigned int MyMoneyStorageXML::fileVersionWrite = 0;
@@ -357,6 +358,8 @@ void MyMoneyStorageXML::writeInstitutions(QDomElement& institutions)
   }
 }
 
+//#include "../mymoneykeyvaluecontainer.h"
+
 MyMoneyInstitution MyMoneyStorageXML::readInstitution(const QDomElement& institution)
 {
   MyMoneyInstitution i;
@@ -402,6 +405,21 @@ MyMoneyInstitution MyMoneyStorageXML::readInstitution(const QDomElement& institu
     qWarning("XMLREADER: Institution %s does not have an accountids section.", i.name().data());
   }
 
+  QDomElement ofxsettings = findChildElement(QString("OFXSETTINGS"), institution);
+  if(!ofxsettings.isNull() && ofxsettings.isElement())
+  {
+    MyMoneyKeyValueContainer values;
+    
+    QDomNamedNodeMap attributes = ofxsettings.attributes();
+    int index = attributes.count();
+    while ( index-- )
+    {
+      QDomAttr it_attr = attributes.item(index).toAttr();
+      values.setValue(it_attr.name().utf8(),it_attr.value());
+    }
+    i.setOfxConnectionSettings(values);
+  }
+    
   return MyMoneyInstitution(id, i);
 }
 
@@ -431,6 +449,20 @@ void MyMoneyStorageXML::writeInstitution(QDomElement& institution, const MyMoney
   }
 
   institution.appendChild(accounts);
+  
+  QMap<QCString,QString> s = i.ofxConnectionSettings().pairs();
+  if ( s.count() )
+  {
+    QDomElement ofxsettings = m_doc->createElement("OFXSETTINGS");
+    QMap<QCString,QString>::const_iterator it_key = s.begin();
+    while ( it_key != s.end() )
+    {
+      ofxsettings.setAttribute(it_key.key(), it_key.data());
+      ++it_key;    
+    }
+  
+    institution.appendChild(ofxsettings);
+  }    
 }
 
 void MyMoneyStorageXML::readPayees(QDomElement& payees)

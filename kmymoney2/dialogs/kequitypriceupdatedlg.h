@@ -62,14 +62,14 @@ private:
 };
 
 /**
-  * @author Kevin Tambascio
+  * @author Kevin Tambascio & Ace Jones
   */
 
 class KEquityPriceUpdateDlg : public KEquityPriceUpdateDlgDecl
 {
   Q_OBJECT
 public: 
-  KEquityPriceUpdateDlg(QWidget *parent);
+  KEquityPriceUpdateDlg(QWidget *parent, const QString& symbol = QString());
   ~KEquityPriceUpdateDlg();
   void  logStatusMessage(const QString& message);
   

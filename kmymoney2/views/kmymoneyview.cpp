@@ -58,6 +58,7 @@
 #include <kfilterbase.h>
 #include <kfileitem.h>
 #include <kpushbutton.h>
+#include <kapplication.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -70,8 +71,7 @@
 #include <string>
 #endif
 
-#include <../dialogs/knewaccountwizard.h>
-
+#include "../dialogs/knewaccountwizard.h"
 #include "../dialogs/knewbankdlg.h"
 #include "../dialogs/knewaccountdlg.h"
 #include "../dialogs/kendingbalancedlg.h"
@@ -82,6 +82,7 @@
 #include "../dialogs/kexportdlg.h"
 #include "../dialogs/knewloanwizard.h"
 #include "../dialogs/kcurrencyeditdlg.h"
+#include "../dialogs/kofxdirectconnectdlg.h"
 
 #include "../mymoney/storage/mymoneyseqaccessmgr.h"
 #include "../mymoney/storage/imymoneystorageformat.h"
@@ -262,7 +263,12 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
                               i18n("Online update using HBCI..."),
                               this, SLOT(slotAccountOnlineUpdate()), 0,
                               AccountOnlineUpdate);
+
   }
+  m_accountMenu->insertItem(kiconloader->loadIcon("account", KIcon::Small),
+                              i18n("Online update using OFX..."),
+                              this, SLOT(slotAccountOfxConnect()), 0,
+                              AccountOfxConnect);
 
   m_bankMenu = new KPopupMenu(this);
   m_bankMenu->insertTitle(kiconloader->loadIcon("bank", KIcon::MainToolbar), i18n("Institution Options"));
@@ -346,6 +352,7 @@ void KMyMoneyView::slotAccountRightMouse()
   m_accountMenu->setItemEnabled(AccountDelete, false);
   m_accountMenu->setItemEnabled(AccountOnlineMap, false);
   m_accountMenu->setItemEnabled(AccountOnlineUpdate, false);
+  m_accountMenu->setItemEnabled(AccountOfxConnect, false);
 
   m_accountMenu->disconnectItem(AccountNew, this, SLOT(slotAccountNew()));
   m_accountMenu->disconnectItem(AccountNew, this, SLOT(slotCategoryNew()));
@@ -365,6 +372,13 @@ void KMyMoneyView::slotAccountRightMouse()
             if(KMyMoneyBanking::instance()->isAvailable()) {
               m_accountMenu->setItemEnabled(AccountOnlineMap, true);
               m_accountMenu->setItemEnabled(AccountOnlineUpdate, true);
+            }
+            QCString iid = account.institutionId();
+            if ( !iid.isEmpty() )
+            {            
+              MyMoneyInstitution institution = file->institution(iid);
+              if ( institution.ofxConnectionSettings().pairs().count() )
+                m_accountMenu->setItemEnabled(AccountOfxConnect, true);
             }
           }
           m_accountMenu->changeItem(AccountNew, i18n("New account..."));
@@ -639,8 +653,6 @@ void KMyMoneyView::slotAccountDelete()
   }
 }
 
-
-
 void KMyMoneyView::slotAccountOnlineMap()
 {
   if(KMyMoneyBanking::instance()->isAvailable()) {
@@ -706,8 +718,6 @@ void KMyMoneyView::slotAccountOnlineMap()
   }
 }
 
-
-
 void KMyMoneyView::slotAccountOnlineUpdate()
 {
   KMyMoneyBanking* kbanking = KMyMoneyBanking::instance();
@@ -746,6 +756,39 @@ void KMyMoneyView::slotAccountOnlineUpdate()
       return;
     }
   }
+}
+
+void KMyMoneyView::slotAccountOfxConnect(void)
+{
+  try 
+  {
+    MyMoneyFile* file = MyMoneyFile::instance();
+    MyMoneyAccount account;
+
+    if(pageIndex(m_accountsViewFrame) == activePageIndex()) 
+    {
+      bool ok;
+      QCString accountId = m_accountsView->currentAccount(ok);
+      if(!accountId.isEmpty()) 
+      {
+        account = file->account(accountId);
+        
+        KOfxDirectConnectDlg dlg(account);
+        
+        KMyMoney2App* mw = dynamic_cast<KMyMoney2App*>(kapp->mainWidget());
+        connect(&dlg,SIGNAL(statementReady(const MyMoneyOfxStatement&)),mw,SLOT(slotOfxStatementImport(const MyMoneyOfxStatement&)));
+        
+        dlg.init();
+        dlg.exec();
+      }
+    } 
+  } 
+  catch (MyMoneyException *e) 
+  {
+    KMessageBox::information(this,i18n("Error connecting to bank: %1").arg(e->what()));
+    delete e;
+  }
+
 }
 
 bool KMyMoneyView::fileOpen(void)
