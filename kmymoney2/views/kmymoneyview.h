@@ -50,7 +50,6 @@ class QFile;
 #include "kcategoriesview.h"
 #include "kpayeesview.h"
 #include "kscheduledview.h"
-#include "kmymoneyfile.h"
 #include "kgloballedgerview.h"
 #include "../mymoney/storage/mymoneyseqaccessmgr.h"
 
@@ -63,7 +62,7 @@ class IMyMoneyStorageFormat;
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.30 2003/01/26 17:33:57 ipwizard Exp $
+  * $Id: kmymoneyview.h,v 1.31 2003/02/13 20:25:28 ipwizard Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -259,7 +258,6 @@ public:
     * @return The currently selected account name.
   **/
   QString currentAccountName(void);
-
 
   void memoryDump();
 

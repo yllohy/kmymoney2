@@ -79,7 +79,6 @@
 #include "../mymoney/storage/mymoneystoragexml.h"
 
 #include "kmymoneyview.h"
-// #include "kmymoneyfile.h"
 
 #include "../kmymoney2.h"
 
