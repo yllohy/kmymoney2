@@ -298,7 +298,7 @@ KAccountsView::KAccountsView(QWidget *parent, const char *name)
 {
   KConfig *config = KGlobal::config();
   config->setGroup("List Options");
-  m_bViewNormalAccountsView = config->readBoolEntry("NormalAccountsView", true);
+  m_bViewNormalAccountsView = config->readBoolEntry("NormalAccountsView", false);
 
   accountListView->setRootIsDecorated(true);
   accountListView->setAllColumnsShowFocus(true);
@@ -374,7 +374,7 @@ KAccountsView::~KAccountsView()
   MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassInstitution, this);
 }
 
-void KAccountsView::slotListDoubleClicked(QListViewItem* item, const QPoint& pos, int c)
+void KAccountsView::slotListDoubleClicked(QListViewItem* item, const QPoint& /* pos */, int /* c */)
 {
   KAccountListItem* accountItem = static_cast<KAccountListItem*> (item);
   if(accountItem)
@@ -473,7 +473,8 @@ void KAccountsView::slotListRightMouse(QListViewItem* item, const QPoint& , int 
         m_bSelectedAccount=false;
         m_bSelectedInstitution=true;
         m_selectedInstitution = accountItem->accountID();
-
+        delete e;
+        
         emit bankRightMouseClick();
       }
     }
@@ -523,6 +524,7 @@ void KAccountsView::suspendUpdate(const bool suspend)
 
 void KAccountsView::slotRefreshView(void)
 {
+
   refresh(m_selectedAccount);
 }
 
@@ -615,7 +617,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
   config->setGroup("List Options");
   QFont defaultFont = QFont("helvetica", 12);
   accountListView->header()->setFont(config->readFontEntry("listHeaderFont", &defaultFont));
-  m_bViewNormalAccountsView = config->readBoolEntry("NormalAccountsView", true);
+  m_bViewNormalAccountsView = config->readBoolEntry("NormalAccountsView", false);
   m_hideCategory = config->readBoolEntry("HideUnusedCategory", false);
   bool accountUsed;
 
@@ -632,6 +634,31 @@ void KAccountsView::refresh(const QCString& selectAccount)
     accountListView->header()->setLabel(0, i18n("Institution"));
 
     try {
+      // scan for all asset/liability accounts w/o an institution
+      KAccountListItem *topLevelInstitution = new KAccountListItem(accountListView,
+                       i18n("Unknown institution"));
+      QValueList<MyMoneyAccount> acclist = file->accountList();
+      QValueList<MyMoneyAccount>::ConstIterator accountIterator;
+      for(accountIterator = acclist.begin();
+          accountIterator != acclist.end();
+          ++accountIterator) {
+
+        switch((*accountIterator).accountGroup()) {
+          case MyMoneyAccount::Asset:
+          case MyMoneyAccount::Liability:
+            if((*accountIterator).institutionId().isEmpty()) {
+              KAccountListItem *accountItem;
+              accountItem = new KAccountListItem(topLevelInstitution, (*accountIterator));
+              accountItem->setText(1, QString("%1").arg(m_transactionCountMap[(*accountIterator).id()]));
+              new KAccountIconItem(accountIconView, (*accountIterator),
+                accountImage((*accountIterator).accountType()));
+            }
+            break;
+          default:
+            break;
+        }
+      }
+      
       QValueList<MyMoneyInstitution> list = file->institutionList();
       QValueList<MyMoneyInstitution>::ConstIterator institutionIterator;
       for (institutionIterator = list.begin();
@@ -650,7 +677,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
               m_accountMap[*it]);
           accountItem->setText(1, QString("%1").arg(m_transactionCountMap[*it]));
 
-          KAccountIconItem* accountIcon = new KAccountIconItem(accountIconView,
+          new KAccountIconItem(accountIconView,
               m_accountMap[*it],
               accountImage(m_accountMap[*it].accountType()));
 
@@ -683,7 +710,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
             m_accountMap[*it]);
         accountItem->setText(1, QString("%1").arg(m_transactionCountMap[*it]));
 
-        KAccountIconItem* accountIcon = new KAccountIconItem(accountIconView,
+        new KAccountIconItem(accountIconView,
             m_accountMap[*it],
             accountImage(m_accountMap[*it].accountType()));
 
@@ -705,7 +732,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
             m_accountMap[*it]);
         accountItem->setText(1, QString("%1").arg(m_transactionCountMap[*it]));
 
-        KAccountIconItem* accountIcon = new KAccountIconItem(accountIconView,
+        new KAccountIconItem(accountIconView,
             m_accountMap[*it],
             accountImage(m_accountMap[*it].accountType()));
 
@@ -820,7 +847,7 @@ void KAccountsView::clear(void)
   m_bSelectedInstitution=false;
 }
 
-void KAccountsView::resizeEvent(QResizeEvent* e)
+void KAccountsView::resizeEvent(QResizeEvent* /* e */)
 {
 
   //accountListView->setColumnWidth(0, 400);
@@ -862,12 +889,13 @@ void KAccountsView::slotSelectionChanged(QListViewItem *item)
 
 void KAccountsView::show()
 {
+
   emit signalViewActivated();
 
   QWidget::show();
 }
 
-void KAccountsView::slotViewSelected(QWidget* view)
+void KAccountsView::slotViewSelected(QWidget* /* view */)
 {
   KConfig *config = KGlobal::config();
   config->setGroup("Last Use Settings");
