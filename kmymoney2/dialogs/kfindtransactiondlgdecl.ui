@@ -1082,7 +1082,7 @@ Click on Search to perform the search.</string>
 <customwidgets>
     <customwidget>
         <class>kMyMoneyEdit</class>
-        <header location="local">widgets/kmymoneyedit.h</header>
+        <header location="local">../widgets/kmymoneyedit.h</header>
         <sizehint>
             <width>90</width>
             <height>25</height>
@@ -1096,7 +1096,7 @@ Click on Search to perform the search.</string>
     </customwidget>
     <customwidget>
         <class>kMyMoneyDateInput</class>
-        <header location="global">./widgets/kmymoneydateinput.h</header>
+        <header location="global">../widgets/kmymoneydateinput.h</header>
         <sizehint>
             <width>90</width>
             <height>25</height>
