@@ -27,6 +27,7 @@
 // QT Includes
 
 #include <qwidget.h>
+#include <qtabbar.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -49,15 +50,28 @@ public:
 
   void show();
 
+  void fillForm(void);
+
 public slots:
   /**
     * refresh the current view
     */
   virtual void refreshView(void);
 
+  void slotTypeSelected(int transactionType);
+
 protected:
   void resizeEvent(QResizeEvent*);
 
+private:
+  int transactionType(const MyMoneySplit& split) const;
+
+private:
+  QTab* m_tabCheck;
+  QTab* m_tabDeposit;
+  QTab* m_tabTransfer;
+  QTab* m_tabWithdrawal;
+  QTab* m_tabAtm;
 };
 
 #endif

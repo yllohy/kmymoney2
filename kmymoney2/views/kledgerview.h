@@ -40,6 +40,7 @@
 // Project Includes
 
 #include "../widgets/kmymoneyregister.h"
+#include "../widgets/kmymoneytransactionform.h"
 #include "../mymoney/mymoneyaccount.h"
 #include "../mymoney/mymoneytransaction.h"
 #include "../mymoney/mymoneyobserver.h"
@@ -80,11 +81,39 @@ public:
   const MyMoneyMoney& balance(const int idx) const;
   const QCString accountId(void) { return m_account.id(); }
 
+  /**
+    * This method is used to convert a string used in the
+    * context of the user interface to an action string
+    * used in the mymoney engine
+    *
+    * @param action QString reference of action string
+    * @return QCString with normalized action string
+    */
+  const QCString str2action(const QString& action) const;
+
+  /**
+    * This method is used to convert an action string used
+    * within the engine to a form usable on the user interface.
+    *
+    * @param action QCString reference to normalized action string
+    * @return QString with translated action string
+    */
+  const QString action2str(const QCString& action) const;
+
+  /**
+    * This method is called to fill the transaction form
+    * with the data of the currently selected transaction
+    * in m_register. It must be overridden by any derived
+    * class.
+    */
+  virtual void fillForm(void) = 0;
+
 public slots:
   /**
     * refresh the current view
     */
   virtual void refreshView(void);
+  void slotRegisterClicked(int row, int col, int button, const QPoint &mousePos);
 
 protected:
   void loadAccount(void);
@@ -92,13 +121,17 @@ protected:
   void sortTransactions(void);
 
 protected:
-  QDate m_dateStart;
   kMyMoneyRegister *m_register;
+  kMyMoneyTransactionForm *m_form;
+
+  QDate m_dateStart;
   MyMoneyAccount m_account;
+
   QValueList<MyMoneyTransaction> m_transactionList;
   QValueVector<MyMoneyMoney> m_balance;
 
   KTransactionPtrVector m_transactionPtr;
+  MyMoneyTransaction m_newTransaction;
 };
 
 #endif

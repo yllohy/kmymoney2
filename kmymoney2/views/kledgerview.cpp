@@ -85,7 +85,21 @@ void KLedgerView::setCurrentAccount(const QCString& accountId)
 void KLedgerView::loadAccount(void)
 {
   m_transactionList = MyMoneyFile::instance()->transactionList(m_account.id());
+  // filter all unwanted transactions
   refreshView();
+
+  // add another, empty transaction that will be the new transaction
+
+  // when opened, show the last transaction
+  m_register->setCurrentTransactionIndex(m_transactionList.count()-1);
+
+  // make sure, full transaction is visible
+  m_register->ensureCellVisible(m_transactionPtr.count()-1 + m_register->rpt(), 0);
+  m_register->ensureCellVisible(m_transactionPtr.count()-1, 0);
+  m_register->repaintContents();
+
+  // fill in the form with the currently selected transaction
+  fillForm();
 }
 
 void KLedgerView::refreshView(void)
@@ -100,8 +114,7 @@ void KLedgerView::refreshView(void)
   filterTransactions();
 
   m_register->readConfig();
-  m_register->setTransactionCount(m_transactionPtr.count());
-  m_register->repaintContents();
+  m_register->setTransactionCount(m_transactionPtr.count()+1);
   resizeEvent(NULL);
 }
 
@@ -133,6 +146,9 @@ void KLedgerView::filterTransactions(void)
   // calculate the balance for each item
   MyMoneyMoney balance(0);
   m_balance.resize(i, balance);
+
+  // always keep one empty transaction at the end
+  // m_transactionPtr.insert(i, &m_newTransaction);
 
   balance = MyMoneyFile::instance()->balance(accountId());
   // the trick is to go backwards ;-)
@@ -167,3 +183,45 @@ const MyMoneyMoney& KLedgerView::balance(const int idx) const
     return m_balance[idx];
   return null;
 }
+
+void KLedgerView::slotRegisterClicked(int row, int col, int button, const QPoint &mousePos)
+{
+  m_register->setCurrentTransactionIndex(row / m_register->rpt());
+  m_register->repaintContents();
+  fillForm();
+}
+
+const QCString KLedgerView::str2action(const QString &action) const
+{
+  if(action == i18n("Check"))
+    return MyMoneySplit::ActionCheck;
+  if(action == i18n("Deposit"))
+    return MyMoneySplit::ActionDeposit;
+  if(action == i18n("Transfer"))
+    return MyMoneySplit::ActionTransfer;
+  if(action == i18n("Withdrawal"))
+    return MyMoneySplit::ActionWithdrawal;
+  if(action == i18n("ATM"))
+    return MyMoneySplit::ActionATM;
+
+  qDebug("Unsupported action string %s, set to check", action.latin1());
+  return MyMoneySplit::ActionCheck;
+}
+
+const QString KLedgerView::action2str(const QCString &action) const
+{
+  if(action == MyMoneySplit::ActionCheck)
+    return i18n("Check");
+  if(action == MyMoneySplit::ActionDeposit)
+    return i18n("Deposit");
+  if(action == MyMoneySplit::ActionTransfer)
+    return i18n("Transfer");
+  if(action == MyMoneySplit::ActionWithdrawal)
+    return i18n("Withdrawal");
+  if(action == MyMoneySplit::ActionATM)
+    return i18n("ATM");
+
+  qDebug("Unsupported action string %s, set to check", static_cast<const char *>(action));
+  return i18n("Check");
+}
+

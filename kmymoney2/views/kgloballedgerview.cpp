@@ -45,6 +45,7 @@
 KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   : QWidget(parent,name)
 {
+  m_currentView = 0;
 
   for(int i = 0; i < MyMoneyAccount::MaxAccountTypes; ++i)
     m_specificView[i] = 0;
@@ -131,7 +132,8 @@ void KGlobalLedgerView::refresh(void)
 
 void KGlobalLedgerView::refreshView(void)
 {
-  m_currentView->refreshView();
+  if(m_currentView != 0)
+    m_currentView->refreshView();
 }
 
 void KGlobalLedgerView::selectAccount(const QCString& accountId)
