@@ -49,7 +49,9 @@ from.
      Mandrake 9.0   |  omit this parameter    | /usr
      Slackware 9.0  |  omit this parameter    | /opt/kde
      MEPIS          |  omit this parameter    | /usr
-
+     RedHat 8/9     |  omit this parameter    | /usr
+     Fedora 1/2	    |  omit this parameter    | /usr
+     
      Distribution   | --man-dir               | --program-prefix
      ---------------+-------------------------+---------------------------
      SuSE 8.1       |  /usr/share/man         | ""
