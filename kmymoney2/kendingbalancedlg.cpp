@@ -27,8 +27,8 @@ KEndingBalanceDlg::KEndingBalanceDlg(MyMoneyMoney& prevBal, MyMoneyMoney& ending
  : KEndingBalanceDlgDecl(parent,name,true)
 {
 //	initDialog();
-   QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_ending_balance.png");
-  QPixmap *pm = new QPixmap(filename);
+   //QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_ending_balance.png");
+  QPixmap *pm = new QPixmap(KGlobal::dirs()->findResource("appdata", "pics/dlg_ending_balance.png"));
   m_qpixmaplabel->setPixmap(*pm);
 
 	previousbalEdit->setText(KGlobal::locale()->formatNumber(prevBal.amount()));

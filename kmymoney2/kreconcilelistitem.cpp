@@ -29,21 +29,21 @@ KReconcileListItem::KReconcileListItem(QListView *parent, MyMoneyTransaction *tr
   setText(2, m_transaction->payee());
   setText(3, KGlobal::locale()->formatMoney(m_transaction->amount().amount()));
 
-  QString tmp;
+  QString *tmp = new QString();
   switch (m_transaction->state()) {
     case MyMoneyTransaction::Reconciled:
-      tmp = i18n("R");
+      *tmp = i18n("R");
       setSelected(true);
       break;
     case MyMoneyTransaction::Cleared:
-      tmp = i18n("C");
+      *tmp = i18n("C");
       break;
     default:
-      tmp = " ";
+      *tmp = " ";
       break;
   }
 
-  setText(4, tmp);
+  setText(4, *tmp);
 }
 
 KReconcileListItem::~KReconcileListItem()
@@ -52,18 +52,18 @@ KReconcileListItem::~KReconcileListItem()
 
 void KReconcileListItem::setReconciled(bool rec)
 {
-	QString temp;
+	QString *temp = new QString();
   if(rec == true)
   {
    	m_transaction->setState(MyMoneyTransaction::Reconciled);
-    temp = i18n("R");
+    *temp = i18n("R");
   }
   else
   {
     m_transaction->setState(MyMoneyTransaction::Unreconciled);
-    temp = " ";
+    *temp = " ";
   }
-  setText(4,temp);
+  setText(4,*temp);
 
 }
 

@@ -1,3 +1,6 @@
+2001-12-16 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
+  * fixed memory leaks in the reconcile and endingbalance dialog boxes
+
 2001-12-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * fixed another memory leak bug having to do with the Transaction KPopupMenu
   * revised Felix' fixes to avoid creating countless objects

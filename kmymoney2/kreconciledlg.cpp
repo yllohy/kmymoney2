@@ -26,8 +26,8 @@ KReconcileDlg::KReconcileDlg(const MyMoneyMoney previousBal, const MyMoneyMoney 
   const MyMoneyFile file, QWidget *parent, const char *name)
  : KReconcileDlgDecl(parent,name,true)
 {
-  QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_reconcile.png");
-  QPixmap *pm = new QPixmap(filename);
+  //QString filename = KGlobal::dirs()->findResource("appdata", "pics/dlg_reconcile.png");
+  QPixmap *pm = new QPixmap(KGlobal::dirs()->findResource("appdata", "pics/dlg_reconcile.png"));
   m_qpixmaplabel->setPixmap(*pm);
 
   m_balanced = false;
@@ -77,14 +77,14 @@ KReconcileDlg::KReconcileDlg(const MyMoneyMoney previousBal, const MyMoneyMoney 
 	
 	broughtForwardLabel->setText(KGlobal::locale()->formatMoney(m_previousBalance.amount()));
 
-  QString text;
-	text = i18n("Deposits: ");
-	text += KGlobal::locale()->formatMoney(m_creditBalance.amount());
-	totalCreditsLabel->setText(text);
+  //QString text;
+	//text = i18n("Deposits: ");
+	//text += KGlobal::locale()->formatMoney(m_creditBalance.amount());
+	totalCreditsLabel->setText(i18n("Deposits: ") + KGlobal::locale()->formatMoney(m_creditBalance.amount()));
 	
-	text = i18n("Withdrawals: ");
-	text += KGlobal::locale()->formatMoney(m_debitBalance.amount());
-	totalDebitsLabel->setText(text);
+	//text = i18n("Withdrawals: ");
+	//text += KGlobal::locale()->formatMoney(m_debitBalance.amount());
+	totalDebitsLabel->setText(i18n("Withdrawals: ") + KGlobal::locale()->formatMoney(m_debitBalance.amount()));
 
 
 	loadLists();
@@ -199,9 +199,9 @@ void KReconcileDlg::slotDebitSelected(QListViewItem* item, const QPoint&/*p*/, i
 //		m_clearedBalance.setAmount(dblCleared);
 //  	MyMoneyMoney money;
 //    money.setAmount(dblDebit);
-		QString text = i18n("Withdrawals: ");
-		text += KGlobal::locale()->formatMoney(m_debitBalance.amount());
-		totalDebitsLabel->setText(text);
+		//QString text = i18n("Withdrawals: ");
+		//text += KGlobal::locale()->formatMoney(m_debitBalance.amount());
+		totalDebitsLabel->setText(i18n("Withdrawals: ") + KGlobal::locale()->formatMoney(m_debitBalance.amount()));
 
 //    money.setAmount(dblCleared);
 		endingLabel->setText(KGlobal::locale()->formatMoney(m_clearedBalance.amount()));
@@ -238,9 +238,9 @@ void KReconcileDlg::slotCreditSelected(QListViewItem* item, const QPoint&, int)
 //    m_clearedBalance.setAmount(dblCleared);
 //  	MyMoneyMoney money;
 //    money.setAmount(dblCredit);
-		QString text = i18n("Deposits: ");
-		text += KGlobal::locale()->formatMoney(m_creditBalance.amount());
-		totalCreditsLabel->setText(text);
+		//QString text = i18n("Deposits: ");
+		//text += KGlobal::locale()->formatMoney(m_creditBalance.amount());
+		totalCreditsLabel->setText(i18n("Deposits: ") + KGlobal::locale()->formatMoney(m_creditBalance.amount()));
 
 //    money.setAmount(dblCleared);
 		endingLabel->setText(KGlobal::locale()->formatMoney(m_clearedBalance.amount()));
@@ -328,14 +328,14 @@ void KReconcileDlg::resetData(const MyMoneyMoney previousBal, const MyMoneyMoney
 
 	broughtForwardLabel->setText(KGlobal::locale()->formatMoney(m_previousBalance.amount()));
 
-	QString text;
-	text = i18n("Deposits: ");
-	text += KGlobal::locale()->formatMoney(m_creditBalance.amount());
-	totalCreditsLabel->setText(text);
+	//QString text;
+	//text = i18n("Deposits: ");
+	//text += KGlobal::locale()->formatMoney(m_creditBalance.amount());
+	totalCreditsLabel->setText(i18n("Deposits: ") + KGlobal::locale()->formatMoney(m_creditBalance.amount()));
 	
-	text = i18n("Withdrawals: ");
-	text += KGlobal::locale()->formatMoney(m_debitBalance.amount());
-	totalDebitsLabel->setText(text);
+	//text = i18n("Withdrawals: ");
+	//text += KGlobal::locale()->formatMoney(m_debitBalance.amount());
+	totalDebitsLabel->setText(i18n("Withdrawals: ") + KGlobal::locale()->formatMoney(m_debitBalance.amount()));
 
 	loadLists();
 	insertTransactions();
