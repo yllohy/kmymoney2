@@ -301,6 +301,7 @@ int MyMoneyFile::readAllData(const QString& fileName)
     }
   }
 
+  m_dirty = false;
   f.close();
   return 0;
 }
