@@ -76,6 +76,7 @@ private:
   QString m_text;       // keep track of what was the original value
   kMyMoneyCalculator* m_calculator;
   QVBox*              m_calculatorFrame;
+  int                 m_prec;
 
 protected:
   void focusOutEvent(QFocusEvent *e);

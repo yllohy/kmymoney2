@@ -197,7 +197,11 @@ void kMyMoneyPriceView::slotEditPrice(void)
 {
   kMyMoneyPriceItem* item = static_cast<kMyMoneyPriceItem*>(m_priceHistory->selectedItem());
   if(item) {
-    KUpdateStockPriceDlg dlg(item->date(), item->price().formatMoney(), this);
+    KConfig *kconfig = KGlobal::config();
+    kconfig->setGroup("General Options");
+    int prec = kconfig->readNumEntry("PricePrecision", 4);
+
+    KUpdateStockPriceDlg dlg(item->date(), item->price().formatMoney("", prec), this);
     if(dlg.exec()) {
       item->setDate(dlg.getDate());
       item->setPrice(dlg.getPrice());

@@ -96,6 +96,8 @@ QValidator::State kMyMoneyMoneyValidator::validate( QString & input, int & _p ) 
 kMyMoneyEdit::kMyMoneyEdit(QWidget *parent, const char *name )
  : KLineEdit(parent,name)
 {
+  m_prec = KGlobal::locale()->fracDigits();
+
   // Yes, just a simple double validator !
   kMyMoneyMoneyValidator *validator = new kMyMoneyMoneyValidator(this);
   setValidator(validator);
@@ -174,7 +176,7 @@ void kMyMoneyEdit::ensureFractionalPart(void)
   if (!s.isEmpty()) {
     if (!s.contains(locale->monetaryDecimalSymbol())) {
       s += locale->monetaryDecimalSymbol();
-      for (int i=0; i < locale->fracDigits(); i++)
+      for (int i=0; i < m_prec; i++)
         s += "0";
       setText(s);
     }
